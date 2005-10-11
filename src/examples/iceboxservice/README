@@ -1,0 +1,11 @@
+To prepare:
+
+$ mkdir stormdb
+# cp libOrcaIceBoxExample.so /usr/local/lib/.
+(or include the current directory in the LD_LIBRARY_PATH)
+
+To run this example:
+
+$ icebox --Ice.Config=config
+
+

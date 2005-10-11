@@ -1,0 +1,71 @@
+PROJECT(ice-components)
+###################################################
+#                                                 #
+#       Start project customization section       #
+#                                                 #
+###################################################
+
+PROJECT(orca)
+
+SET( VERSION 2.0.0 )
+
+SET( PROJ_SOURCE_DIR ${orca_SOURCE_DIR} )
+SET( PROJ_BINARY_DIR ${orca_BINARY_DIR} )
+
+SET( PROJ_INTERFACE_LIB OrcaInterfaces )
+
+###################################################
+#                                                 #
+#       End project customization section         #
+#                                                 #
+###################################################
+
+#
+# Set the build type (affects debugging symbols and optimization)
+#
+IF ( NOT CMAKE_BUILD_TYPE )
+  SET( CMAKE_BUILD_TYPE Release )
+  MESSAGE( "Setting build type to '${CMAKE_BUILD_TYPE}'" )
+ELSE ( NOT CMAKE_BUILD_TYPE )
+  MESSAGE( "Build type set to '${CMAKE_BUILD_TYPE}' by user." )
+ENDIF ( NOT CMAKE_BUILD_TYPE )
+
+###################################################
+#                                                 #
+#       Do some global set-up & checking          #
+#                                                 #
+###################################################
+
+INCLUDE(config/global_setup.cmake)
+
+###########################################################
+#                                                         #
+# Look for low-level C headers, write defines to config.h #
+#                                                         #
+###########################################################
+
+# Only do this once.
+IF ( NOT WROTE_CONFIG_H )
+  MESSAGE( "Writing config.h" )
+  INCLUDE(config/write_config_h.cmake)
+  SET( WROTE_CONFIG_H TRUE CACHE INTERNAL 
+       "Remember that we've already written config.h" )
+ELSE ( NOT WROTE_CONFIG_H )
+  MESSAGE( "Not writing config.h -- wrote it previously" )
+ENDIF ( NOT WROTE_CONFIG_H )
+
+###########################################################
+#                                                         #
+# Look for dependencies required by individual components #
+#                                                         #
+###########################################################
+
+INCLUDE(config/check_depend.cmake)
+
+SUBDIRS( src )
+
+# Enable Dart support
+MESSAGE( "-- Checking for dart" )
+SET(DART_ROOT $ENV{DART_ROOT})
+INCLUDE (${CMAKE_ROOT}/Modules/Dart.cmake)
+

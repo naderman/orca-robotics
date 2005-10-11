@@ -1,0 +1,92 @@
+// **********************************************************************
+//
+// Copyright (c) 2003-2005 ZeroC, Inc. All rights reserved.
+//
+// This copy of Ice is licensed to you under the terms described in the
+// ICE_LICENSE file included in this distribution.
+//
+// **********************************************************************
+
+#include <Ice/Ice.h>
+
+#include "helloservice_i.h"
+
+#include "platform2d_i.h"
+
+#include <orca/configutils.h>
+#include <orca/sane_i.h>
+
+using namespace std;
+using namespace orca;
+
+extern "C"
+{
+
+//
+// Factory function
+//
+HELLO_API IceBox::Service*
+create(Ice::CommunicatorPtr communicator)
+{
+    return new HelloServiceI;
+}
+
+}
+
+HelloServiceI::HelloServiceI()
+{
+}
+
+HelloServiceI::~HelloServiceI()
+{
+}
+
+void HelloServiceI::start(const string& name,
+             const Ice::CommunicatorPtr& communicator,
+             const Ice::StringSeq& args)
+{
+    // create the one-and-only component adapter, parse config file to create adapter name
+    if ( orca::util::setComponentProperties( communicator, name ) ) {
+        exit( EXIT_FAILURE );
+    }
+    adapter_ = communicator->createObjectAdapter(name);
+
+    // PROVIDED : Position2d
+    string topic1 = orca::util::getTopicName( communicator, "Position2d", name );
+    Ice::ObjectPrx obj = orca::util::getIceStormPublisher( communicator, topic1 );
+    if ( !obj ) {
+        exit( EXIT_FAILURE );
+    }
+    Position2dConsumerPrx position2dConsumer = Position2dConsumerPrx::uncheckedCast(obj);
+    // create servant for direct connections
+    Ice::ObjectPtr platform2dObj = new Platform2dI;
+
+    // tell adapter about the new servant
+    string name1 = orca::util::getPortName( communicator, "Position2d", name );
+    adapter_->add( platform2dObj, Ice::stringToIdentity( name1 ) );
+
+    // start processing clients' requests
+    adapter_->activate();
+
+
+    // objects
+    orca::Position2dDataPtr posData = new Position2dData;
+
+    orca::util::setSane( posData );
+
+    while ( 1 )
+    {
+        cout<<"Pushing data to consumer"<<endl;
+        position2dConsumer->consumeData( posData );
+
+        sleep(1);
+    }
+
+    // instead of while(1){ sleep(x); }
+    //communicator()->waitForShutdown();
+}
+
+void HelloServiceI::stop()
+{
+    adapter_->deactivate();
+}
