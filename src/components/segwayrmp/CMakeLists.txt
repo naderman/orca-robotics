@@ -1,4 +1,4 @@
-OPTION( BUILD_SEGWAYRMP "Try to build SegwayRMP component" ON )
+OPTION( BUILD_SEGWAYRMP "Try to build SegwayRMP component" OFF )
 
 IF ( BUILD_SEGWAYRMP )
 
@@ -7,27 +7,23 @@ SUBDIRS( rmpusb )
 INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
 INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaiceutil.cmake )
 
-# new Seqway with USB bus
-# Note: the newer Debian libusb library is missing 2 functions
-#           use an older library which came with ftd2xx driver.
-LINK_LIBRARIES( rmp ftd2xx usb )
-#SET( CMAKE_EXE_LINKER_FLAGS rmpusb/libusb-0.1.so.4.3.2 )
-
-LINK_DIRECTORIES( rmpusb )
-
-#
-# This gathers all the source files into the variable 'SRCS'
-#
-#FILE( GLOB SRCS *.cpp )
+# Not sure how to find "all .cpp files except main.cpp", have to do it by hand
+SET( COMMON_SRCS rmpcomponent rmpFsm rmpcontext platform2d_i power_i )
 
 # Files for the component
-SET( COMP_SRCS main  rmpcomponent platform2d_i power_i )
+SET( COMP_SRCS main  COMMON_SRCS )
+
+# new Seqway with USB bus
+LINK_LIBRARIES( rmp ftd2xx usb )
+
+LINK_DIRECTORIES( rmpusb )
 
 # build a stand-alone component
 GLOBAL_ADD_EXECUTABLE( segwayrmpusb ${COMP_SRCS} )
 
+
 # Files for the service
-SET( SERV_SRCS  rmpservice_i rmpcomponent platform2d_i power_i )
+SET( SERV_SRCS  rmpservice_i  COMMON_SRCS )
 
 # build an IceBox service
 ADD_LIBRARY( OrcaSegwayRmpUsb SHARED ${SERV_SRCS} )

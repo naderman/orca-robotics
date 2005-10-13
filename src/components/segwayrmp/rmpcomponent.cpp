@@ -30,10 +30,10 @@
 // segway rmp usb driver
 #include "rmpusb/rmpusbdriver.h"
 
-#include <orca/configutils.h>
-#include <orca/ptrproxy.h>
-#include <orca/ptrbuffer.h>
-#include <orca/sane_i.h>
+#include <orcaiceutil/configutils.h>
+#include <orcaiceutil/ptrproxy.h>
+#include <orcaiceutil/ptrbuffer.h>
+#include <orcaiceutil/sane_i.h>
 
 using namespace std;
 using namespace orca;

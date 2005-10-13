@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA_POWER_I_H
-#define ORCA_POWER_I_H
+#ifndef ORCA2_SEGWAY_RMP_POWER_I_H
+#define ORCA2_SEGWAY_RMP_POWER_I_H
 
 // include defnition of Ice runtime
 #include <Ice/Ice.h>
@@ -28,7 +28,7 @@
 #include <orca/power.h>
 
 // utilities
-#include <orca/ptrproxy.h>
+#include <orcaiceutil/ptrproxy.h>
 
 
 class PowerI : public orca::Power

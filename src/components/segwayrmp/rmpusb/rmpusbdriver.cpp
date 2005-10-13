@@ -25,9 +25,9 @@
 #include "canio_usb_ftdi.h"
 #include "rmpusb_frame.h"
 
-#include <orca/sane_i.h>
-#include <orca/proputils.h>
-#include <orca/mathdefs.h>
+#include <orcaiceutil/sane_i.h>
+#include <orcaiceutil/proputils.h>
+#include <orcaiceutil/mathdefs.h>
 
 using namespace std;
 using namespace orca;
