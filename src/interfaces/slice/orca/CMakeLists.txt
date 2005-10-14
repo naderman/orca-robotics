@@ -6,7 +6,20 @@ INCLUDE( ${PROJ_SOURCE_DIR}/src/interfaces/slice/orca/slice2cpp_rules.cmake )
 
 #FILE( GLOB SLICE_SOURCES *.ice )
 SET( SLICE_SOURCES 
-  image.ice laser.ice laserdata.ice ogmap.ice opaque.ice orca.ice platform2d.ice pose2d.ice position2d.ice position2ddata.ice power.ice powerdata.ice stringobj.ice velocity2ddata.ice
+  orca.ice
+  image.ice
+  laserdata.ice
+  laser.ice
+  ogmap.ice
+  opaque.ice
+  pose2d.ice
+  velocity2ddata.ice
+  position2ddata.ice
+  position2d.ice
+  powerdata.ice
+  power.ice
+  platform2d.ice
+  stringobj.ice
   )
 
 SET( HUMAN_SOURCES )
@@ -25,8 +38,9 @@ ADD_SLICE_LIB_RULES( OrcaInterfaces "${SLICE_SOURCES}" "${HUMAN_SOURCES}" )
 
 INCLUDE_DIRECTORIES( BEFORE
     ${ICE_HOME}/include
-    ${PROJ_SOURCE_DIR}/src/interfaces/slice
-    ${PROJ_SOURCE_DIR}/src/interfaces/slice/orca
+#    ${PROJ_SOURCE_DIR}/src/interfaces/slice
+    ${PROJ_BINARY_DIR}/src/interfaces/slice
+    ${PROJ_BINARY_DIR}/src/interfaces/slice/orca
 )
 
 LINK_DIRECTORIES(
