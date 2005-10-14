@@ -2,14 +2,25 @@
 # Do not include /config/compile_flags.cmake here. It will lead to circular dependencies.
 #
 
-#
-# Dodgy way of generating from .ice files.
-# TODO: fix me.
-#
-# This only runs once on 'cmake' not on 'make'
-#
-FILE( GLOB ICE_SRCS *.ice )
-EXEC_PROGRAM( slice2cpp ${CMAKE_CURRENT_SOURCE_DIR} ARGS "-I.. *.ice" )
+INCLUDE( ${PROJ_SOURCE_DIR}/src/interfaces/slice/orca/slice2cpp_rules.cmake )
+
+#FILE( GLOB SLICE_SOURCES *.ice )
+SET( SLICE_SOURCES 
+  image.ice laser.ice laserdata.ice ogmap.ice opaque.ice orca.ice platform2d.ice pose2d.ice position2d.ice position2ddata.ice power.ice powerdata.ice stringobj.ice velocity2ddata.ice
+  )
+
+SET( HUMAN_SOURCES )
+
+ADD_SLICE_LIB_RULES( OrcaInterfaces "${SLICE_SOURCES}" "${HUMAN_SOURCES}" )
+
+##
+## Dodgy way of generating from .ice files.
+## TODO: fix me.
+##
+## This only runs once on 'cmake' not on 'make'
+##
+#FILE( GLOB ICE_SRCS *.ice )
+#EXEC_PROGRAM( slice2cpp ${CMAKE_CURRENT_SOURCE_DIR} ARGS "-I.. *.ice" )
 
 
 INCLUDE_DIRECTORIES( BEFORE
@@ -24,10 +35,10 @@ LINK_DIRECTORIES(
 
 ADD_DEFINITIONS( "-Wall" )
 
-FILE( GLOB SRCS *.cpp )
-
-ADD_LIBRARY( OrcaInterfaces SHARED ${SRCS} )
-
-INSTALL_TARGETS( /lib OrcaInterfaces )
-
-INSTALL_FILES( /include/orca .*\\.h$ )
+#FILE( GLOB SRCS *.cpp )
+#
+#ADD_LIBRARY( OrcaInterfaces SHARED ${SRCS} )
+#
+#INSTALL_TARGETS( /lib OrcaInterfaces )
+#
+#INSTALL_FILES( /include/orca .*\\.h$ )
