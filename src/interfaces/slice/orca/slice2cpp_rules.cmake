@@ -76,7 +76,14 @@ MACRO ( GENERATE_SLICE_RULES GENERATED_CPP_LIST GENERATED_HEADER_LIST )
       # Get *.cpp to depend on *.h, to ensure that *.h exists before we try to compile *.cpp.
       #
       SET( FULL_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${OUTPUT} )
-      SET( DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${SLICE_SOURCE} )
+
+      #
+      # Make each .h and .cpp file depend on _every_ slice source.  This means that if you 
+      # change any .ice file everything will be recompiled.  This is done because CMake can't 
+      # track dependencies between .ice files.
+      #
+      #SET( DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${SLICE_SOURCE} )
+      SET( DEPENDS ${ARGN} )
       IF( ${SUFFIX} STREQUAL ".cpp" )
         STRING( REGEX REPLACE "\\.cpp" ".h" ASSOCIATED_HEADER "${FULL_OUTPUT}" )
         SET( DEPENDS ${DEPENDS} ${ASSOCIATED_HEADER} )
