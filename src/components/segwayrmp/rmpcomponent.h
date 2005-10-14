@@ -22,7 +22,7 @@
 #define ORCA2_SEGWAY_RMP_COMPONENT_H
 
 #include <orcaiceutil/component.h>
-#include <orcaiceutil/driver.h>
+#include "rmpdrivercontext.h"
 
 class RmpFsm;
 
@@ -43,7 +43,7 @@ private:
 
     Ice::ObjectAdapterPtr adapter_;
 
-    orcaiceutil::Driver* driver_;
+    RmpDriverContext* driver_;
 
     RmpFsm* fsm_;
 };

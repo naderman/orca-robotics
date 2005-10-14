@@ -10,14 +10,15 @@ INCLUDE( ${PROJ_SOURCE_DIR}/src/interfaces/slice/orca/slice2cpp_rules.cmake )
 #
 SET( SLICE_SOURCES 
   orca.ice
+  bros1.ice
   image.ice
   laserdata.ice
   laser.ice
   ogmap.ice
   opaque.ice
   pose2d.ice
-  velocity2ddata.ice
-  position2ddata.ice
+#  velocity2ddata.ice
+#  position2ddata.ice
   position2d.ice
   powerdata.ice
   power.ice

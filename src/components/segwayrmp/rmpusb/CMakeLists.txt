@@ -6,6 +6,7 @@ SET( SRCS rmpusbdriver canio_usb_ftdi )
 
 INCLUDE_DIRECTORIES( 
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
 # Define some stuff to fool Player code

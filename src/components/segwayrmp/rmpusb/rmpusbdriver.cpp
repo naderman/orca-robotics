@@ -21,7 +21,7 @@
 #include <iostream>
 #include <sys/time.h>
 
-#include "rmpusbdriver.h"
+#include <rmpusbdriver.h>
 #include "canio_usb_ftdi.h"
 #include "rmpusb_frame.h"
 

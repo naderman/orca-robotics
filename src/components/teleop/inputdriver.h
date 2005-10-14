@@ -24,8 +24,7 @@
 #include <orcaiceutil/driver.h>
 #include <orcaiceutil/ptrproxy.h>
 
-//#include <orca/position2ddata.h>
-#include <orca/velocity2ddata.h>
+#include <orca/platform2d.h>
 
 
 class InputDriver : public orcaiceutil::Driver
@@ -49,7 +48,7 @@ private:
     orcaiceutil::PtrProxy* commandProxy_;
 
     // internal storage for current command
-    orca::Velocity2dDataPtr command_;
+    orca::Velocity2dCommandPtr command_;
 
     void keyboardHandler();
     void keyboardHelp();

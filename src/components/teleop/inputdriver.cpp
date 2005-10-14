@@ -49,10 +49,10 @@ InputDriver::InputDriver( orcaiceutil::PtrProxy* commands ) :
         commandProxy_(commands)
 {
     // init internal data storage
-    command_ = new Velocity2dData;
-    command_->speed = 0.0;
-    command_->sidespeed = 0.0;
-    command_->turnrate = 0.0;
+    command_ = new Velocity2dCommand;
+    command_->twist.velocity.x = 0.0;
+    command_->twist.velocity.y = 0.0;
+    command_->twist.w = 0.0;
 }
 
 InputDriver::~InputDriver()
@@ -119,13 +119,13 @@ void InputDriver::run()
 
     // storage for loop variables
     char c;
-    Velocity2dDataPtr lastCommand = new Velocity2dData;
+    Velocity2dCommandPtr lastCommand = new Velocity2dCommand;
 
     while ( isActive() )
     {
         // remember last command so we can tell if anything has changed
-        lastCommand->speed = command_->speed;
-        lastCommand->turnrate = command_->turnrate;
+        lastCommand->twist.velocity.x = command_->twist.velocity.x;
+        lastCommand->twist.w = command_->twist.w;
     
         // get the next event from the keyboard
         if( read(kfd, &c, 1) < 0 )
@@ -138,22 +138,22 @@ void InputDriver::run()
         switch( c )
         {
             case KEYCODE_i:
-                command_->speed += deltaSpeed;
+                command_->twist.velocity.x += deltaSpeed;
                 break;
             case KEYCODE_k:
-                command_->speed -= deltaSpeed;
+                command_->twist.velocity.x -= deltaSpeed;
                 break;
             case KEYCODE_o:
-                command_->speed = 0.0;
+                command_->twist.velocity.x = 0.0;
                 break;
             case KEYCODE_j:
-                command_->turnrate += deltaTurnrate;
+                command_->twist.w += deltaTurnrate;
                 break;
             case KEYCODE_l:
-                command_->turnrate -= deltaTurnrate;
+                command_->twist.w -= deltaTurnrate;
                 break;
             case KEYCODE_u:
-                command_->turnrate = 0.0;
+                command_->twist.w = 0.0;
                 break;
             case KEYCODE_q:
                 //speed *= 1.1;
@@ -181,24 +181,24 @@ void InputDriver::run()
                 break;
             default:
                 // any other key sends 'stop' command
-                command_->speed = 0.0;
-                command_->turnrate = 0.0;
+                command_->twist.velocity.x = 0.0;
+                command_->twist.w = 0.0;
         }
 
         // apply max limits
-        if ( fabs(command_->speed) > maxSpeed_ ) {
-            command_->speed =
-                (command_->speed / fabs(command_->speed)) * maxSpeed_;
+        if ( fabs(command_->twist.velocity.x) > maxSpeed_ ) {
+            command_->twist.velocity.x =
+                (command_->twist.velocity.x / fabs(command_->twist.velocity.x)) * maxSpeed_;
         }
-        if ( fabs(command_->turnrate) > maxTurnrate_ ) {
-            command_->turnrate =
-                (command_->turnrate / fabs(command_->turnrate)) * maxTurnrate_;
+        if ( fabs(command_->twist.w) > maxTurnrate_ ) {
+            command_->twist.w =
+                (command_->twist.w / fabs(command_->twist.w)) * maxTurnrate_;
         }
         //cout<<"current command: "<<command_<<endl;
 
         // commit change only if something has actually changed
-        if ( lastCommand->speed != command_->speed ||
-                    lastCommand->turnrate != command_->turnrate )
+        if ( lastCommand->twist.velocity.x != command_->twist.velocity.x ||
+             lastCommand->twist.w != command_->twist.w )
         {
             commandProxy_->set( command_ );
         }

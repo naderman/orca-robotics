@@ -38,6 +38,23 @@ class Position2dData extends OrcaObject
     bool stalled;
 };
 
+class Position2dCommand extends OrcaObject
+{
+    double x;
+    double y;
+    double heading;
+    double speed;
+    double sidespeed;
+    double turnrate;
+    bool motorEnabled;
+};
+
+//class Position2dGeometry extends OrcaObject
+//{
+//    double length;
+//    double width;
+//};
+
 //! using Orca variable names but lump Pose2D and RobotVelocity2D objects together -- Player style.
 struct SimplePosition2dData
 {

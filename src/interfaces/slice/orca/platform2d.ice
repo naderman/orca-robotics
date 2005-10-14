@@ -18,21 +18,32 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_PLATFORM2D_INTERFACE_ICE
-#define ORCA2_PLATFORM2D_INTERFACE_ICE
+#ifndef ORCA2_PLATFORM_2D_INTERFACE_ICE
+#define ORCA2_PLATFORM_2D_INTERFACE_ICE
 
+#include <orca/bros1.ice>
 #include <orca/position2d.ice>
-#include <orca/velocity2ddata.ice>
 
 module orca
 {
 
+// define messages first
+class Velocity2dCommand extends OrcaObject
+{
+    Twist2d twist;
+};
+
 //! Platform2d is an "active" Position2d. In addition to serving its current position2d
-//! it also accepts motion commands (should be in the form of velocity not position).
+//! it also accepts motion commands.
+//! Note that this platform only accepts velocity commands (unlike in Player where
+//! position2d interface also accepts waypoint commands). Planners/navigators should
+//! think in terms of waypoints.
 interface Platform2d extends Position2d
 {
-        // ClientPush_Consumer interface
-        void putData( Velocity2dData data );
+    // ClientPush_Consumer interface
+    void putData( Velocity2dCommand data );
+    
+    void enableMotor( bool enable );    
 };
 
 }; // module

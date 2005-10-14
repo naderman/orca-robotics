@@ -18,41 +18,41 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_POSITION2D_INTERFACE_ICE
-#define ORCA2_POSITION2D_INTERFACE_ICE
+#ifndef ORCA2_POSITION_2D_INTERFACE_ICE
+#define ORCA2_POSITION_2D_INTERFACE_ICE
 
-#include <orca/position2ddata.ice>
+#include <orca/orca.ice>
+#include <orca/bros1.ice>
 
 module orca
 {
+
+// define messages first
+class Position2dData extends OrcaObject
+{
+    Frame2d frame;
+    Twist2d twist;
+    bool stalled;
+};
+
+class Position2dGeometry extends OrcaObject
+{
+    Size2d size;
+};
 
 //! Data supplier interface 
 interface Position2d
 {
     // ClientPull_Supplier interface
     Position2dData getData();
+    Position2dGeometry getGeometry();
 };
 
-//! Data consumer interface
+//! Data consumer interface (needed only for the push pattern)
 interface Position2dConsumer
 {
     // ClientPush_Consumer interface
     void consumeData( Position2dData obj );
-};
-
-
-//! Data supplier interface
-interface SimplePosition2d
-{
-    // ClientPull_Supplier interface
-    SimplePosition2dData getData();
-};
-
-//! Data consumer interface
-interface SimplePosition2dConsumer
-{
-    // ClientPush_Consumer interface
-    void consumeData( SimplePosition2dData obj );
 };
 
 

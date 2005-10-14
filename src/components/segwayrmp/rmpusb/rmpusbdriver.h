@@ -21,7 +21,8 @@
 #ifndef ORCA2_SEGWAY_RMP_USB_DRIVER_H
 #define ORCA2_SEGWAY_RMP_USB_DRIVER_H
 
-#include <orcaiceutil/driver.h>
+#include "rmpdrivercontext.h"
+#include <orcaiceutil/thread.h>
 #include <orcaiceutil/ptrproxy.h>
 #include <orcaiceutil/ptrbuffer.h>
 
@@ -34,17 +35,20 @@ class DualCANIO;
 class rmpusb_frame_t;
 class CanPacket;
 
-class SegwayRmpUsb : public orcaiceutil::Driver
+class SegwayRmpUsb : public RmpDriverContext, public orcaiceutil::Thread
 {
 public:
 
     SegwayRmpUsb( orcaiceutil::PtrBuffer* position2dBuf, orcaiceutil::PtrBuffer* powerBuf,
                   orcaiceutil::PtrProxy* position, orcaiceutil::PtrProxy* commands, orcaiceutil::PtrProxy* power );
-    virtual ~SegwayRmpUsb();
+    ~SegwayRmpUsb();
 
-    virtual void setup( const Ice::PropertiesPtr & );
-    virtual void activate();
-    virtual void deactivate();
+    void setup( const Ice::PropertiesPtr & );
+    void activate();
+    void deactivate();
+
+    void repair() {};
+    void cancel() {};
 
     virtual void run();
 

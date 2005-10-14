@@ -89,10 +89,10 @@ void OutputDriver::run()
     // create a null pointer. data will be cloned into it.
     Ice::ObjectPtr data;
     // create and init command to default 'halt' command
-    Velocity2dDataPtr command = new Velocity2dData;
-    command->speed = 0.0;
-    command->sidespeed = 0.0;
-    command->turnrate = 0.0;
+    Velocity2dCommandPtr command = new Velocity2dCommand;
+    command->twist.velocity.x = 0.0;
+    command->twist.velocity.y = 0.0;
+    command->twist.w = 0.0;
 
     // how often to send repeat commands (should be in the config file)
     const int timeoutMs = 100;
@@ -102,7 +102,7 @@ void OutputDriver::run()
         int ret = commandProxy_->getNextWait( data, timeoutMs );
 
         if ( ret==0 ) { // new data
-            command = Velocity2dDataPtr::dynamicCast( data );
+            command = Velocity2dCommandPtr::dynamicCast( data );
             cout<<"new : "<<command<<endl;
         }
 
