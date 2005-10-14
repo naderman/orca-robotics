@@ -48,8 +48,8 @@ under Debian Linux are provided. Send feedback on building under other distribut
 </PRE></TD></TR></TBODY></TABLE>
    </li>
 
-  <li>Download and install Ice libraries. Orca has been tested with versions up to 2.1.2. Full instructions
-    are available from the download page.
+  <li>Download, compile and install Ice libraries. Orca has been tested with versions up to 2.1.2.
+    Full instructions are available from the <a href="http://www.zeroc.com/download.html">download page</a>.
     <ul>
     <li>First, install Ice dependencies. In debian packages for all required libraries exist.</li>
 <TABLE CLASS="ex" cellSpacing=0 width="100%" border=1><TBODY><TR><TD><PRE>
@@ -68,7 +68,8 @@ $ cd Ice-[VERSION]
 prefix                  = /usr/local
 ...
 </PRE></TD></TR></TBODY></TABLE>
-    <li>Ice is particular about the name of the compiler. Make sure the names are standard: gcc/g++!
+    <li>Ice is particular about the name of the compiler. If you are using gcc, make sure the names
+    are standard: gcc/g++!
     If you skip this step you'll see a cryptic message about 'mkshlib' not defined.</li>
 <TABLE CLASS="ex" cellSpacing=0 width="100%" border=1><TBODY><TR><TD><PRE>
 $ export CC=gcc
@@ -82,6 +83,8 @@ $ make test (optional, requires python)
 # ldconfig
 </PRE></TD></TR></TBODY></TABLE>
     </ul>
+<p>Update: there's a one-man effort to provide Debian packages for Ice but we haven't tried to use them yet.
+    See http://ice.jgaa.com/</p>
     </li>
     
 
