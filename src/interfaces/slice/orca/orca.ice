@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA_ICE
-#define ORCA_ICE
+#ifndef ORCA2_ORCA_ICE
+#define ORCA2_ORCA_ICE
 
 module orca
 {
@@ -30,10 +30,6 @@ struct Time
     int seconds;
     int useconds;
 };
-
-//interface TimeStamped
-//{  
-//}
 
 interface OrcaComponent
 {
