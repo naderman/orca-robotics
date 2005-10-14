@@ -72,22 +72,27 @@ MACRO ( GENERATE_SLICE_RULES GENERATED_CPP_LIST GENERATED_HEADER_LIST )
     FOREACH ( SUFFIX ${SLICE_SUFFIXES} )
       STRING( REGEX REPLACE "\\.ice" ${SUFFIX} OUTPUT "${SLICE_SOURCE}" )
 
-      ADD_CUSTOM_COMMAND(
-        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${OUTPUT}
-        COMMAND ${SLICE_EXE}
-        ARGS ${CMAKE_CURRENT_SOURCE_DIR}/${SLICE_SOURCE} ${SLICE_ARGS}
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${SLICE_SOURCE}
+      #
+      # Get *.cpp to depend on *.h, to ensure that *.h exists before we try to compile *.cpp.
+      #
+      SET( FULL_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${OUTPUT} )
+      SET( DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${SLICE_SOURCE} )
+      IF( ${SUFFIX} STREQUAL ".cpp" )
+        STRING( REGEX REPLACE "\\.cpp" ".h" ASSOCIATED_HEADER "${FULL_OUTPUT}" )
+        SET( DEPENDS ${DEPENDS} ${ASSOCIATED_HEADER} )
+      ENDIF( ${SUFFIX} STREQUAL ".cpp" )
+
+      #
+      # Add the command to generate file.xxx from file.ice
+      #
+      ADD_CUSTOM_TARGET(
+        ${FULL_OUTPUT} ALL
+        ${SLICE_EXE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/${SLICE_SOURCE} ${SLICE_ARGS}
+        DEPENDS ${DEPENDS}
         )
-     # ADD_CUSTOM_TARGET(
-     #   ${OUTPUT}
-     #   ALL
-     #   ${SLICE_EXE} ${SLICE_SOURCE} ${SLICE_ARGS}
-     #   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${SLICE_SOURCE}
-     #   )
-     # ADD_DEPENDENCIES( ${CMAKE_CURRENT_BINARY_DIR}/${OUTPUT} ${SLICE_SOURCE} )
 
-
-     # MESSAGE( "Added custom command for ${OUTPUT}" )
+      # MESSAGE( "Added custom command for ${OUTPUT}" )
 
     ENDFOREACH ( SUFFIX ${SLICE_SUFFIXES} )
 

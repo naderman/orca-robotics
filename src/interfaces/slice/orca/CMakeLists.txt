@@ -4,7 +4,10 @@
 
 INCLUDE( ${PROJ_SOURCE_DIR}/src/interfaces/slice/orca/slice2cpp_rules.cmake )
 
-#FILE( GLOB SLICE_SOURCES *.ice )
+#
+# Since CMake doesn't know how to automatically track dependencies for .ice files, 
+# these have to be entered manually such that the depended-on files are listed first.
+#
 SET( SLICE_SOURCES 
   orca.ice
   image.ice
@@ -26,16 +29,6 @@ SET( HUMAN_SOURCES )
 
 ADD_SLICE_LIB_RULES( OrcaInterfaces "${SLICE_SOURCES}" "${HUMAN_SOURCES}" )
 
-##
-## Dodgy way of generating from .ice files.
-## TODO: fix me.
-##
-## This only runs once on 'cmake' not on 'make'
-##
-#FILE( GLOB ICE_SRCS *.ice )
-#EXEC_PROGRAM( slice2cpp ${CMAKE_CURRENT_SOURCE_DIR} ARGS "-I.. *.ice" )
-
-
 INCLUDE_DIRECTORIES( BEFORE
     ${ICE_HOME}/include
 #    ${PROJ_SOURCE_DIR}/src/interfaces/slice
@@ -48,11 +41,3 @@ LINK_DIRECTORIES(
 )
 
 ADD_DEFINITIONS( "-Wall" )
-
-#FILE( GLOB SRCS *.cpp )
-#
-#ADD_LIBRARY( OrcaInterfaces SHARED ${SRCS} )
-#
-#INSTALL_TARGETS( /lib OrcaInterfaces )
-#
-#INSTALL_FILES( /include/orca .*\\.h$ )
