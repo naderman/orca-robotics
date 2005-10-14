@@ -21,10 +21,10 @@
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
 
-#include <orca/device.h>
 #include "deviceuser_i.h"
 
-#include <orca/sane_i.h>
+#include <orcaiceutil/device.h>
+#include <orcaiceutil/objutils.h>
 
 //#include <sstream>
 
@@ -82,7 +82,7 @@ int App::run( int argc, char* argv[] )
     }
 
     SimpleLaserScan scan;
-    orca::util::setSane( scan );
+    orcaiceutil::setSane( scan );
 
     // endpoints are in the config file!
     //Ice::ObjectAdapterPtr adapter = communicator()->createObjectAdapter("OrcaComponent");

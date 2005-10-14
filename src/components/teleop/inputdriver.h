@@ -28,11 +28,11 @@
 #include <orca/velocity2ddata.h>
 
 
-class InputDriver : public orca::util::Driver
+class InputDriver : public orcaiceutil::Driver
 {
 public:
 
-    InputDriver( orca::util::PtrProxy* commands );
+    InputDriver( orcaiceutil::PtrProxy* commands );
     virtual ~InputDriver();
 
     virtual void setup( const Ice::PropertiesPtr & );
@@ -46,7 +46,7 @@ public:
 private:
 
     // component/driver interface
-    orca::util::PtrProxy* commandProxy_;
+    orcaiceutil::PtrProxy* commandProxy_;
 
     // internal storage for current command
     orca::Velocity2dDataPtr command_;

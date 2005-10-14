@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+  <head>
+        <title>ORCA Overview</title>
+    <link rel="stylesheet" href="generic2.css" type="text/css" />
+  </head>
+    <body>
+
+<!-- Do not edit or remove this line: it causes add_sidebar.pl to add the menu -->
+
+      <p>&nbsp;</p>
+      <h1>Orca Units and Coordinate Systems</h1>
+
+      <h3>Units</h3>
+
+      <p>All component configuration is done in S.I. units (this means
+      metres, seconds, etc).  The only exception to this is angular
+      quantities, which are configured in degrees rather than
+      radians, because humans generally think better in degrees.</p>
+
+      <p>Internally, unless there is a good reason for doing
+      otherwise, S.I. units are used everywhere (including for angular
+      quantities).</p>
+
+      <h3>Coordinate Systems</h3>
+
+      <p>All angles are defined from -pi to pi, NOT 0 to 2pi.</p>
+
+      <p>There are two kinds of coordinate frames: frames that are
+      rooted in a global map, and a platform's local coordinate frame.</p>
+
+      <p>For worlds where the curvature of the earth is not important,
+      the global coordinate axes are defined as follows:</p>
+
+      <img src="images/global_frame.png">
+
+      <p>Angles are defined anti-clockwise from the x-axis, with zero
+      degrees along the x-axis.  The y-axis is at +90 degrees.  The
+      z-axis points up.</p>
+
+      <p>A local frame is defined as follows:</p>
+
+      <img src="images/local_frame.png">
+
+      <p>A robot or sensor looks down the x-axis, with the y-axis out
+      to its left.  The z-axis points up.  Zero degrees is directly in
+      front, with angles increasing to the left and decreasing to the
+      right.</p>
+
+      
+
+<!-- Do not edit or remove this line: it causes add_sidebar.pl to add the footer -->
+
+</body>
+</html>

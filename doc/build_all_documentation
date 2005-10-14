@@ -1,0 +1,87 @@
+#!/bin/sh
+#
+# WARNING: This script assumes that orca-base and orca-components are installed side-by-side.
+#
+################################################################################
+
+USAGE_ARGS="[--copy (rather than link to orca-base)]"
+
+if [ $# -ge 1 ]; then
+    if [ $1 == '--copy' ]; then
+        echo "copying from orca-base rather than linking."
+        LINK='cp -R'
+    else
+        echo "Unknown argument: $1"
+        echo "Usage: $0 $USAGE_ARGS"
+    fi
+else
+    echo "linking to orca-base rather than copying."
+    LINK='ln -sf'
+fi
+
+build_doxygen () {
+    if [ $# -ne 1 ]; then
+        echo "Require one argument"
+        exit 1
+    fi
+
+    dir=$1
+    cd $dir
+
+    doxygen
+    if [ ! $? ]; then
+        echo "Problem building doxygen in $1"
+        exit 1
+    fi
+    cd -
+}
+
+#
+# Check for orca-base
+#
+if [ ! -d ../../orca-base ]; then
+    echo "This script requires that orca-base and orca-components are installed side-by-side, but I couldn't find orca-base."
+    exit 1
+fi
+
+#
+# First build the doxygen stuff locally
+#
+build_doxygen ../src/examplecomponents
+build_doxygen ../src/components
+
+#
+# Then build the base stuff
+#
+build_doxygen ../../orca-base/src/corba
+build_doxygen ../../orca-base/src/corba/objects
+build_doxygen ../../orca-base/src/corba/patterns
+build_doxygen ../../orca-base/src/crud
+build_doxygen ../../orca-base/src/crud/objects
+build_doxygen ../../orca-base/src/crud/patterns
+build_doxygen ../../orca-base/src/objects
+build_doxygen ../../orca-base/src/patterns
+
+#
+# Then link to the base stuff from here
+#
+cd html
+for dir in  ../../../orca-base/doc/html/corba-transport \
+            ../../../orca-base/doc/html/crud-transport  \
+            ../../../orca-base/doc/html/objects         \
+            ../../../orca-base/doc/html/patterns 
+do
+    echo "Executing: '$LINK $dir .'"
+    $LINK $dir .
+    if [ ! $? ]; then
+        echo "Error executing command: '$LINK $dir'.  Docco build failed."
+    fi
+done
+cd -
+
+#
+# Then add the sidebar stuff
+#
+cd html
+./build_documentation
+cd -

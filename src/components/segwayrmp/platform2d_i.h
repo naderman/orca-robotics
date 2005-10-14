@@ -35,16 +35,16 @@
 class Platform2dI : public orca::Platform2d
 {
 public:
-    Platform2dI( orca::util::PtrProxy* position2d, orca::util::PtrProxy* commands );
+    Platform2dI( orcaiceutil::PtrProxy* position2d, orcaiceutil::PtrProxy* commands );
 
     virtual ::orca::Position2dDataPtr getData(const ::Ice::Current& );
 
     virtual void putData(const ::orca::Velocity2dDataPtr&, const ::Ice::Current& );
 
     // the driver will put the latest data into this proxy
-    orca::util::PtrProxy* position2d_;
+    orcaiceutil::PtrProxy* position2d_;
     // the driver will take the latest command from the proxy
-    orca::util::PtrProxy* command_;
+    orcaiceutil::PtrProxy* command_;
 };
 
 

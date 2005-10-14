@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+<head>
+<title>ORCA</title>
+<link rel="stylesheet" href="generic2.css" type="text/css" />
+</head>
+<body>
+
+<!-- Do not edit or remove this line: it causes add_sidebar.pl to add the menu -->
+
+
+      <p>&nbsp;</p>
+<h1>Orca FAQ</h1>
+
+      <p>(Not yet converted to Orca-2)</p>
+
+      <p>&nbsp;</p>
+            <li><strong>Q</strong>: <A HREF="#AEN28">How is Orca
+            similar and/or different from Player?</A></li>
+
+            <li><strong>Q</strong>: <A HREF="#AEN145">How do I create
+            a new object type?</A></li>
+
+            <li><strong>Q</strong>: <A HREF="#AEN151">How do I create
+                a new component?</A></p></li>
+          </ul>
+
+      <hr>
+
+      <P><A NAME="AEN28"></A><strong>Q</strong>:How is Orca similar and/or different from Player?<br>
+
+        <strong>A</strong>: <a
+        href="http://playerstage.sourceforge.net">Player</a> is a very
+        successful open-source robotic device server with a large
+        developer and user base. We've used Player (and the
+        accompanying simulator Stage) extensively and know it well,
+        both the strong points and limitations. We believe that Player
+        success can be attributed to the following:</P>
+
+      <UL>
+        <LI>Simplicity (especially on the client side)</LI>
+        <LI>Broad hardware support</LI>
+        <LI>Distributed hardware access</LI>
+        <LI>A good simulator</LI>
+      </UL>
+
+      <p>It also has a few limitations. The most important is that
+      there is a fundamental difference between the server space and
+      the client space. Figure 1 illustrates the consequences of this
+      design decision.</p>
+
+
+      <table cellpadding="5">
+      <tr>
+        <td>
+          <img src="images/player_amcl.png">
+        </td>
+        <td>
+          <img src="images/player_passthru.png">
+        </td>
+      </tr>
+
+      <tr>
+        <td><font size="-4">(a) The setup using standard Player devices plus a controller in client space.</font></td>
+        <td><font size="-4">(b) Moving AMCL to a different host requires extra PassThrough devices.</font></td>
+      </tr>
+
+      <tr>
+        <td>
+          <img src="images/player_myloc.png">
+        </td>
+        <td>
+          <img src="images/player_orca.png">
+        </td>
+      </tr>
+
+      <tr>
+        <td><font size="-4">(c) Using one's own localizer in client space requires the use of client-client communication.</font></td>
+
+        <td><font size="-4">(d) The Orca method: only one type of communication is required.</font></td>
+      </tr>
+
+      <tr>
+        <td colspan="2">
+          <font size="-4">
+          Fig. 1.  Various configurations for a system with hardware
+           servers, a localizer (either Player's Adaptive Monte Carlo
+           Localizer (AMCL) or a hand-written localizer) and a central
+           controller, using either (a)-(c) Player or (d) Orca.  The map
+           (required for AMCL) is omitted for clarity.  For Player,
+           communication links are labelled Client-Server (C-S),
+           Device-Device (D-D) or Client-Client (C-C).  The use of
+           non-standard Client-Client communication in (c) affects the
+           re-useability of both the `MyLocalizer' and `Controller'
+           implementations.
+           </font>
+        </td>
+      </tr>
+      </table>
+
+      <p>There are several types of communication in the Player diagrams in Figure 1:
+        <ol>
+         <li>Inter-device communication, either within a Player server or
+ between servers via a passthrough device</li>
+         <li>Client-Server communication</li>
+         <li>Inter-client communication</li>
+        </ol>
+      </p>
+
+      <p>Inter-client communication is not addressed by Player at all,
+         and must be invented by users.  As such, software modules
+         that rely on ad-hoc inter-client communication mechanisms do
+         not conform to any particular standards, and are not
+         re-useable in the same way as Player devices are.  To make
+         the `MyLocalizer' and `Controller' modules independently
+         re-useable under the Player model, MyLocalizer must be ported
+         to server space.  This requires significant effort, a
+         possible re-design to fit the Player Device model, and code
+         changes to the Controller.
+      </p>
+
+      <p>Rather than developing in client space then porting to server
+         space, one might develop directly in server space.  In
+         practice this doesn't happen due to the extra complexity of
+         conforming to the Player device model, and the problems of
+         developing within a monolithic server where where all
+         components must be started and stopped (or seg fault-ed!)
+         together.
+      </p>
+
+      <p>The Player model works best when its assumptions, namely that
+         there are server-only modules and client-only modules, are
+         correct.  In contrast, all Orca components are equal.
+         Components that act both as servers and clients are much more
+         natural in this model.  Since there is only one
+         inter-component communication mechanism, the localizer in
+         Figure 1 can be replaced or moved to another host easily,
+         without requiring changes to other parts of the system.
+      </p>
+
+      <p>The consequence of this design decision is that all Orca
+         components are equally re-useable.  The differences between
+         Orca and Player become more apparent as system complexity
+         scales from the simple vehicle in Figure 1 to complex
+         distributed systems.
+      </p>
+
+      <P>Orca will try to emulate Player's success by copying Player's strong
+        points while trying to remove some of the limitations. Here are the areas
+        where we will follow the Player model:</P>
+      <UL>
+
+        <LI>Simplicity: the ease of creating new clients in Player is
+        a "gold standard" we will try to achieve by wrapping and
+        hiding the complexity of the underlying transport
+        mechanism. We'll probably not match Player on the client side
+        but we will try to come close. On the server side we hope to
+        do better than Player.</LI>
+
+        <LI>Hardware: we can gain instant access to all
+        Player-supported hardware by wrapping Player drivers inside
+        Orca components.</LI>
+
+        <LI>Distribution: UDP and TCP communication will give us the
+        same distribution potential as Player but with finer
+        granularity (individual components not the entire
+        server).</LI>
+
+        <LI>Simulation: wrapping Player clients will allow us to
+        continue using Stage and Gazebo (the 2D and 3D simulators
+        respectively).</LI>
+      </UL>
+
+      <P>Here're the areas where we can do better than Player:</P>
+      <UL> <LI>Architectures. Every component can be a server, a
+      client or a peer in relation to other components. This is the
+      most important and far-reaching advantage. It is clearly a very
+      useful feature in applications where Player is currently used
+      most: single vehicle architectures. We believe it to be
+      invaluable in widely distributed applications like sensor
+      networks.</LI>
+
+        <li>Software Reuse. All components are the same and equally
+        reusable. Because each component runs in its own process, it
+        is easier to experiment with development quality software
+        without endangering the rest of the system, i.e. on a running
+        robot.</li>
+
+        <li>Transport mechanisms.  In addition to implementing a
+        light-weight UDP-based transport mechanism, we will try to
+        take advantage of standard distributed middleware. CORBA basic
+        services free the developer from the tedium of writing
+        marshaling/de-marshaling code. It also safeguards against
+        hard-to-track bugs related to cross-platform and
+        cross-language byte-level incompatibilities between data
+        types. The use of CORBA standard Naming and Trading services
+        allows greater flexibility in assembling large
+        systems/architectures without any extra development
+        effort.</LI>
+      </UL>
+
+      <hr>
+      <P><A NAME="AEN145"></A><strong>Q</strong>: How do I create a
+      new object type?<br> <strong>A</strong>: It's easy! Look at the
+      webpage describing the <A HREF="objects/html/index.html"
+      TARGET="_blank">Orca objects</A></P>
+
+      <hr>
+      <P><A NAME="AEN151"></A><strong>Q</strong>: How do I create a
+      new component?<br> <strong>A</strong>: It's also easy! Look at
+      the webpage describing the <A HREF="components/html/index.html"
+      TARGET="_blank">Orca components</A></P>
+
+
+<!-- Do not edit or remove this line: it causes add_sidebar.pl to add the footer -->
+
+
+</BODY>
+</HTML>

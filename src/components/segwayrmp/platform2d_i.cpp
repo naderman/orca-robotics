@@ -22,7 +22,7 @@
 
 using namespace orca;
 
-Platform2dI::Platform2dI( orca::util::PtrProxy* position2d, orca::util::PtrProxy* command ) :
+Platform2dI::Platform2dI( orcaiceutil::PtrProxy* position2d, orcaiceutil::PtrProxy* command ) :
                     position2d_(position2d), command_(command)
 {
 }

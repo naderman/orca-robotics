@@ -44,7 +44,7 @@ int App::run( int argc, char* argv[] )
     // NETWORK-DRIVER INTERFACE
     //
     // the driver will put the latest data into this proxy
-    orca::util::PtrProxy commandProxy;
+    orcaiceutil::PtrProxy commandProxy;
 
     //
     // NETWORK
@@ -57,7 +57,7 @@ int App::run( int argc, char* argv[] )
     //
     // DRIVER
     //
-    orca::util::Driver* driver = new InputDriver( &commandProxy );
+    orcaiceutil::Driver* driver = new InputDriver( &commandProxy );
     driver->setup( communicator()->getProperties() );
 
     // this is a dodgy hack, to let the driver shutdown the communicator and end the program

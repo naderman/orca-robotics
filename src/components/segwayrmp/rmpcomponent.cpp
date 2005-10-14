@@ -23,6 +23,9 @@
 
 #include "rmpcomponent.h"
 
+// component FSM
+#include "rmpFsm.h"
+
 // implementations of Ice objects
 #include "platform2d_i.h"
 #include "power_i.h"
@@ -30,23 +33,25 @@
 // segway rmp usb driver
 #include "rmpusb/rmpusbdriver.h"
 
-#include <orcaiceutil/configutils.h>
 #include <orcaiceutil/ptrproxy.h>
 #include <orcaiceutil/ptrbuffer.h>
-#include <orcaiceutil/sane_i.h>
+#include <orcaiceutil/configutils.h>
+#include <orcaiceutil/objutils.h>
 
 using namespace std;
 using namespace orca;
-using namespace orca::util;
+using namespace orcaiceutil;
 
 RmpComponent::RmpComponent() :
         driver_(0)
 {
+    fsm_ = new RmpFsm;
 }
 
 RmpComponent::~RmpComponent()
 {
     delete driver_;
+    delete fsm_;
 }
 
 void RmpComponent::start(const string & name,
@@ -57,20 +62,20 @@ void RmpComponent::start(const string & name,
     // NETWORK-DRIVER INTERFACES
     //
     // the driver will put the latest data into this proxy
-    orca::util::PtrProxy position2dProxy;
+    orcaiceutil::PtrProxy position2dProxy;
     // the driver will take the latest command from the proxy
-    orca::util::PtrProxy commandProxy;
+    orcaiceutil::PtrProxy commandProxy;
     // the driver will put the latest data into this proxy
-    orca::util::PtrProxy powerProxy;
+    orcaiceutil::PtrProxy powerProxy;
     // buffers for publishing service (for now, make it depth=1, essentially a proxy)
-    orca::util::PtrBuffer position2dBuffer( 1 );
-    orca::util::PtrBuffer powerBuffer( 1 );
+    orcaiceutil::PtrBuffer position2dBuffer( 1 );
+    orcaiceutil::PtrBuffer powerBuffer( 1 );
 
     //
     // EXTERNAL INTERFACES
     //
     // create the one-and-only component adapter, parse config file to create adapter name
-    if ( orca::util::setComponentProperties( communicator, name ) ) {
+    if ( orcaiceutil::setComponentProperties( communicator, name ) ) {
         exit( EXIT_FAILURE );
     }
     adapter_ = communicator->createObjectAdapter(name);
@@ -78,12 +83,12 @@ void RmpComponent::start(const string & name,
     // PROVIDED INTERFACE: Platform2d
     // create servant for direct connections and tell adapter about it
     Ice::ObjectPtr platform2dObj = new Platform2dI( &position2dProxy, &commandProxy );
-    string iceObjName1 = orca::util::getPortName( communicator, "Platform2d", name );
+    string iceObjName1 = orcaiceutil::getPortName( communicator, "Platform2d", name );
     adapter_->add( platform2dObj, Ice::stringToIdentity( iceObjName1 ) );
 
     // connect to IceStorm
-    string topic1 = orca::util::getTopicName( communicator, "Platform2d", name );
-    Ice::ObjectPrx obj = orca::util::getIceStormPublisher( communicator, topic1 );
+    string topic1 = orcaiceutil::getTopicName( communicator, "Platform2d", name );
+    Ice::ObjectPrx obj = orcaiceutil::getIceStormPublisher( communicator, topic1 );
     if ( !obj ) {
         exit( EXIT_FAILURE );
     }
@@ -93,12 +98,12 @@ void RmpComponent::start(const string & name,
     // PROVIDED INTERFACE: Power
     // create servant for direct connections and tell adapter about it
     Ice::ObjectPtr powerObj = new PowerI( &powerProxy );
-    string iceObjName2 = orca::util::getPortName( communicator, "Power", name );
+    string iceObjName2 = orcaiceutil::getPortName( communicator, "Power", name );
     adapter_->add( powerObj, Ice::stringToIdentity( iceObjName2 ) );
 
     // connect to IceStorm
-    string topic2 = orca::util::getTopicName( communicator, "Power", name );
-    obj = orca::util::getIceStormPublisher( communicator, topic2 );
+    string topic2 = orcaiceutil::getTopicName( communicator, "Power", name );
+    obj = orcaiceutil::getIceStormPublisher( communicator, topic2 );
     if ( !obj ) {
         exit( EXIT_FAILURE );
     }
@@ -112,7 +117,7 @@ void RmpComponent::start(const string & name,
     driver_->setup( communicator->getProperties() );
     driver_->activate();
 
-    // we are ready, start processing exsternal clients' requests
+    // we are ready, start processing external clients' requests
     adapter_->activate();
 
     // start pushing out data to IceStorm

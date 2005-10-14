@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+<head>
+<title>ORCA</title>
+<link rel="stylesheet" href="generic2.css" type="text/css" />
+</head>
+<body>
+
+<!-- Do not edit or remove this line: it causes add_sidebar.pl to add the menu -->
+
+<h1>&nbsp; </h1>
+
+<h1>
+Orca CVS usage
+</h1>
+
+<p>CVS is a version control system.  For general information on using
+CVS, see <a href="http://www.gnu.org/software/cvs/manual/">the CVS
+manual</a></p>
+
+<!--
+<h2>Orca CVS Policy</h2>
+
+<p>For every file, the CVS repository stores a bunch of different
+versions.  For example, suppose the repository for source.c looks like
+this:</p>
+
+<img src="images/cvs_orig.png">
+
+<p>I check out the file, make some changes, then check it back in.
+The repository will now look like so:</p>
+
+<img src="images/cvs_change.png">
+
+<p>This works for a single developer, but there is often the
+requirement for multiple developers to be modifying a single file
+simultaneously.  To handle this requirement, branches are used.  The
+default branch is called 'HEAD'.</p>
+
+<p>Developers should create branches for themselves that start with
+unique identifiers (their names), such as bruce_dev.  Any check-ins
+should be made on developers' own private branches, like so:</p>
+
+<img src="images/cvs_branch.png">
+
+<p>By default when you check stuff out (eg with <code>cvs co orca</code>), by defult it checks out the 'HEAD' branch.  To check stuff out on your own branch use: <code>cvs co -r my_branchname orca</code></p>
+
+<p>While Barry was working, I fixed a bug in HEAD:</p>
+
+<img src="images/cvs_headfix.png">
+
+<p>At some point, Bruce will be happy with the state of the code on
+his private branch.  At this point he should merge from HEAD into his
+own branch:</p>
+
+<img src="images/cvs_brucemerge.png">
+
+<p>This merge picks up any changes that other people have made in HEAD
+(like my bugfix) while Bruce was working in his own branch.
+Re-testing after this merge ensures that these changes didn't
+introduce errors.</p>
+
+<p>NOTE: when you perform a merge, this creates a local copy of the
+merged files, which you can test.  The merge is only completed when
+you commit those files.</p>
+
+<p>If everything still works he should merge from his branch back
+into HEAD, and re-test</p>
+
+<img src="images/cvs_headmerge.png">
+
+<p>Putting comments on check-ins isn't so important in developers' private branches, but when merging into HEAD a comment should always be added, such as:</p>
+
+<pre>Merge from bruce_dev.  Fixed bugs in Widget.</pre>
+
+<p>CVS doesn't keep track of merges (they're not visible in CVS's
+log).  So Bruce's comment is the <emph>only</emph> record in CVS that
+a merge took place (so he should make sure he puts it in).</p>
+
+<p>An exception to all of this is small bugfixes that are guaranteed
+not to break anything.  These can be done directly to HEAD.</p>
+
+<h2>Rationale</h2>
+
+<p>When multiple developers work on the same code, changes by one are
+guaranteed to sometimes break things for another.  Working on the same
+branch means that this happens unexpectedly.  When this happens, it
+can take a long time to track down exactly what the problem is,
+especially if the two developers are working from different sites.</p>
+
+<p>Working on separate branches lets you choose when to be affected by
+other people's changes, so there are no surprises.</p>
+
+<p>The aim of all this is to ensure that no non-working code ever gets
+checked into HEAD.  Developers should always ensure that code is good
+before checking it into HEAD.</p>
+
+-->
+
+<h2>Tools</h2>
+
+<p><a href="http://www.kde.org/apps/cervisia/">Cervisia</a> is a Graphical front-end for CVS, useful for doing the complex things like merges and branch creation.  On debian systems you can install it with:</p>
+<pre>apt-get install cervisia</pre>
+
+<h2>CVSROOT</h2>
+
+<p>Developers' CVSROOTs should look like:</p>
+
+<code>:ext:my_name@cvs.sf.net:/cvsroot/orca-robotics</code>
+
+<p>To have this automatically loaded, put: </p>
+
+<code>export CVSROOT=":ext:my_name@cvs.sf.net:/cvsroot/orca-robotics"</code>
+
+<p>into your .bashrc or similar.  Remember to replace 'my_name'.</p>
+
+
+<!-- Do not edit or remove this line: it causes add_sidebar.pl to add the footer -->
+
+
+</body>
+</html>

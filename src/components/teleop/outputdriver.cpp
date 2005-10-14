@@ -23,13 +23,13 @@
 #include "outputdriver.h"
 
 #include <orcaiceutil/configutils.h>
-#include <orcaiceutil/sane_i.h>
+#include <orcaiceutil/objutils.h>
 
 using namespace std;
 using namespace orca;
-using namespace orca::util;
+using namespace orcaiceutil;
 
-OutputDriver::OutputDriver( orca::util::PtrProxy* commands ) :
+OutputDriver::OutputDriver( orcaiceutil::PtrProxy* commands ) :
         commandProxy_(commands)
 {
 }
@@ -46,7 +46,7 @@ int OutputDriver::setupComms( const Ice::CommunicatorPtr & communicator )
 {
     // REQUIRED : Platform2d
     // create a proxy for the remote server based on its name in the config file
-    std::string proxyName = orca::util::getRemotePortName( communicator, "Platform2d" );
+    std::string proxyName = orcaiceutil::getRemotePortName( communicator, "Platform2d" );
     if(proxyName.empty()) {
         cerr << "*** ERROR: port name not specified" << endl;
         return EXIT_FAILURE;

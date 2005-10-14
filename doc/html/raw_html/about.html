@@ -1,0 +1,386 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+<head>
+<title>ORCA</title>
+<link rel="stylesheet" href="generic2.css" type="text/css" />
+</head>
+<body>
+
+<!-- Do not edit or remove this line: it causes add_sidebar.pl to add the menu -->
+
+      <p>&nbsp;</p>
+      
+      <h1>About Orca-2</h1>
+
+      <p>(Not yet converted to Orca-2)</p>
+
+      <p>
+        Orca is an open-source suite of tools for developing
+        component-based robotic systems.  It provides the means for
+        defining and developing components which can be pieced
+        together to form arbitrarily complex robotic systems, from single
+        vehicles to distributed sensor networks.  In addition it provides
+        a repository of pre-made components which can be used to quickly
+        assemble a working robotic system.
+      </p>
+
+      <h2>Contents</h2>
+      <ul>
+        <li><a href="#cbse">Component-Based Software Engineering</a></li>
+        <li><a href="#motivation">Motivation for Component-Based Robotics</a></li>
+          <ul>
+            <li><a href="#needs">Why Robotics Needs a Component-Based Approach</a></li>
+            <li><a href="#suited">Why Robotics is Particularly Suited to a Component-Based Approach</a></li>
+          </ul>
+        <li><a href="#system">An Orca System</a></li>
+        <li><a href="#deployment">Component Deployment</a></li>
+        <li><a href="#history">Orca History</a></li>
+        <li><a href="#usage">Usage</a></li>
+        <li><a href="#platforms">Platforms</a></li>
+        <li><a href="#languages">Languages</a></li>
+        <li><a href="#license">License</a></li>
+        <li><a href="#reuse">On Code Re-use</a></li>
+        <li><a href="#bibliography">Bibliography</a></li>
+      </ul>
+
+      <h2><a name="cbse">Component-Based Software Engineering</h2>
+
+      <p>Component-Based Software Engineering (CBSE) is an approach
+      that has arisen in the software engineering community in the
+      last decade or so. It aims to shift the emphasis in
+      system-building from traditional programming to composing
+      software systems from a mixture of off-the-shelf and
+      custom-built components [<A
+      HREF="#castek00component">1</A>][<A
+      HREF="#Heineman01Component">4</A>][<A
+      HREF="#Szyperski02component">5</A>][<A
+      HREF="#dsouza98objects">3</A>][<A
+      HREF="#collinscope01component">2</A>].</p>
+
+      <p>For a long time, the manufacturing industry has allowed for
+      replaceable parts by building them to a pre-defined
+      standard. Similarly, CBSE offers developers the opportunity to
+      source existing plug-in software components, rather than
+      building everything from scratch. In addition, CBSE offers
+      significant software engineering benefits by enforcing modular
+      systems, which helps control dependencies, reduce maintenance
+      costs and increase system flexibility and robustness. </p>
+
+      <p>Collins-Cope identifies a component as a unit of software
+        with the following properties: [<A
+          HREF="#collinscope01component">2</A>]:
+      <OL>
+        <LI>A component is a binary (non-source-code) unit of deployment
+        </LI>
+        <LI>A component implements (one or more) well-defined interfaces
+        </LI>
+        <LI>A component provides access to an inter-related set of functionality
+        </LI>
+        <LI>A component may have its behaviour customized in
+          well-defined manners without access to the source code.
+        </LI>
+      </OL>
+      </P>
+
+      <p>Components can be put together in various configurations
+        to form a system.  This flexibility comes from modularity,
+        enforced by the contractual nature of the interfaces between
+        components.  Interfaces and their specifications are viewed
+        in isolation of any specific component that may implement or
+        use the interface.  In addition, the contractual nature of
+        interfaces allows components on either side of the interface
+        to be developed in mutual ignorance.  Designing each
+        component and interface in isolation allows a component that
+        implements an interface to be seamlessly replaced with a
+        different component.</p>
+
+      <h2><a name="motivation">Motivation for Component-Based Robotics</h2>
+
+      <h3><a name="needs">Why Robotics Needs a Component-Based Approach</h3>
+
+      <p>Despite substantial progress in mobile robotics research in
+      the last decade, it still takes considerable effort to produce a
+      robust, working mobile robotic system with a complete set of
+      core competencies such as localization, mapping, path-planning,
+      waypoint-following, obstacle avoidance, etc. The effort
+      required to build such a system from scratch is certainly beyond
+      what can be expected from a single PhD student. This creates a
+      formidable barrier to entry for new research labs.
+      </p>
+
+      <p>We would argue that the single largest obstacle to building a
+      robust mobile robotic system is the application-level
+      software. Consider the other elements of a robotic system: Many
+      different mobile platforms are available commercially, for both
+      indoor and outdoor applications. A variety of sensors is
+      available; lasers, sonars, inertial measurement units and GPS
+      units can also be purchased off-the-shelf. The same is true for
+      processors and wireless communication networks. Operating
+      systems and software development tools can be downloaded for
+      free. Even the algorithms are not hard to obtain, since
+      solutions for all the core competencies listed above can be
+      found in journals and conference proceedings.
+      </p>
+
+      <p>The only thing that cannot be bought or downloaded is the
+      application-level software. The claim of this paper is that a
+      component-based approach offers a solution to this obstacle, by
+      making software components available for download or purchase
+      alongside everything else.</p>
+
+      <h3><a name="suited">Why Robotics is Particularly Suited to a Component-Based Approach</h3>
+
+      <P>In addition to this need, we would argue that certain domain
+      characteristics make mobile robotics particularly suited to a
+      CBSE approach:
+      </P>
+
+      <OL>
+        <LI><SPAN  CLASS="textbf">Inherent Complexity</SPAN>
+
+          <P>
+            Even a fairly simple robotic system, a single vehicle
+            working in isolation, is complex.  Correct operation
+            requires the interaction of a number of sensors, actuators
+            and algorithms.  Many of these require their own threads
+            of execution, and they are likely to need to communicate
+            both synchronously and asynchronously.  A mechanism is
+            needed to manage this complexity from a software
+            engineering standpoint.
+          </P>
+
+        </LI>
+        <LI><SPAN  CLASS="textbf">A Requirement for Flexibility</SPAN>
+
+          <P>
+            Researchers need systems that are flexible enough to allow
+            them to experiment with one particular aspect or
+            algorithm, without their experimentation having large
+            repercussions for the rest of the system.  Researchers
+            would also like to be able to compare different algorithms
+            for doing a particular task while keeping the rest of the
+            system constant.  A prerequisite for this is software with
+            strictly controlled dependencies.
+          </P>
+
+        </LI>
+        <LI><SPAN  CLASS="textbf">Distributed Environments</SPAN>
+
+          <P>
+            Robotic systems are inherently distributed.  When dealing
+            with single vehicles it's often convenient to develop on
+            workstations, controlling robots remotely.  Often the
+            processing power on a single robot is insufficient,
+            requiring the use of off-board processing power.  Code
+            should not have to change if the off-board components are
+            moved on-board.  Increasingly, complex single vehicles are
+            becoming multi-processor [<A
+            HREF="#urmson04high">6</A>].  Multi-robot
+            systems and sensor networks have many more distribution
+            issues.  Location transparency allows components to be
+            distributed readily and easily, according to processing
+            and bandwidth constraints.
+          </P>
+
+        </LI>
+        <LI><SPAN CLASS="textbf">Heterogeneity of Hardware, Operating
+        Systems, and Languages</SPAN>
+
+          <P>
+            Distributed robotic systems often require a mix of
+            hardware platforms and operating systems.  In addition, it
+            is often useful to use a variety of programming languages
+            within a single system.
+          </P>
+
+        </LI>
+        <LI><SPAN  CLASS="textbf">Similarity Between Robotic Platforms</SPAN>
+
+          <P>
+            A variety of similar robotic platforms exist on the market
+            that have different interfaces yet exhibit very similar
+            functionality, and therefore would benefit from a common
+            abstraction.
+          </P>
+        </LI>
+      </OL>
+
+      <P>
+        Orca attempts to meet the challenges above with a standard
+        approach to modularity, flexibility, location transparency,
+        platform/operating system/language independence and
+        replaceability.
+      </P>
+
+      <h2><a name="system">An Orca System</h2>
+
+      <p>An Orca component is a stand-alone process. A system consists
+      of a set of process which run asynchronously, passing objects to
+      one another. Communication is performed using a set of
+      communication patterns, which are abstract policies for how
+      objects are sent, implemented using some transport
+      mechanism. For more detailed information on the mechanics of
+      this and an explanation of terms see the rest of this site,
+      particularly the <a href="overview.html">Overview</a>.</p>
+
+      <p>Importantly, Orca does not prescribe anything about how robot
+      architectures should be built.  It simply defines components and
+      their interactions, leaving the user free to connect them in any
+      way he or she chooses.</p>
+
+
+      <h2><a name="deployment">Component Deployment</h2>
+
+      <p>Orca systems are intrinsically distributable because
+      components exhibit location transparency.  That is, components
+      can be deployed in any arrangement across hosts, without having
+      to make changes to source code, subject to communication and
+      bandwidth constraints.</p>
+
+      <a name="history"><h2>Orca History</h2>
+
+      <p>Orca began as part of the EU-funded OROCOS Project: a project
+      to develop an Open-Source Robotic Control System.  The project
+      was a collaboration between four universities: <a
+      href="http://www.cas.kth.se" target="_blank">KTH</a> (Sweden),
+      Leuven (Belgium), LAAS (France) and Ulm (Germany).  The four
+      institution worked on separate parts of a project that was
+      intended to eventually merge, but never did.  The Orocos name
+      now refers to <a href="http://www.orocos.org"
+      target="_blank">the Belgian part</a>.</p>
+
+      <p><a href="http://www.cas.kth.se" target="_blank">KTH</a>'s
+      mandate was to build a set of communication patterns to enable
+      the interaction of distributed components.  This work,
+      spearheaded by Anders Oreb&auml;ck, was called Orocos@KTH.  By
+      June 2004 Orocos@KTH had also been adopted by members of the <a
+      href="http://www.acfr.usyd.edu.au" target="_blank">Australian
+      Centre for Field Robotics</a>.  By this time it had diverged far
+      enough from the work at Leuven that a new name was required to
+      disambiguate the two, and Orca was born.</p>
+
+      <h2><a name="usage">Usage</h2>
+
+      <p>Orca is currently used and/or actively developed at the following sites:</p>
+
+      <ul>
+        <li><a href="http://www.cas.kth.se" target="_blank">KTH</a>
+        (Stockholm, Sweden)</li>
+
+        <li><a href="http://www.acfr.usyd.edu.au"
+        target="_blank">Australian Centre for Field Robotics</a>
+        (Sydney, Australia)</li>
+
+        <li><a href="http://www.uts.edu.au" target="_blank">University
+        of Technology Sydney</a> (Sydney, Australia)</li>
+      </ul>
+
+      <h2><a name="platforms">Platforms</h2>
+
+      <p>Orca was designed with the intention of being used on various
+      platforms.  To this end, Orca uses <a
+      href="www.cmake.org">CMake</a> (cross-platform make) for its
+      build system.  In addition, both ACE/TAO and CRUD transport
+      mechanisms are known to work under Windows.  So far Orca has
+      only been tested on Linux.</p>
+
+      <h2><a name="languages">Languages</h2>
+
+      <p>Orca is not fundamentally restricted to any language, but the
+      only implementation that currently exists is in C++.</p>
+
+      <h2><a name="license">License</h2>
+
+      <p>Orca has two distributions, each with a different license:
+      <ul>
+        <li>Orca-Base: released under the <a
+        href="http://www.fsf.org/copyleft/lgpl.html"
+        target="_blank">LGPL</a>.</li>
+
+        <li>Orca-Components: released under the <a
+        href="http://www.fsf.org/copyleft/gpl.html"
+        target="_blank">GPL</a>.</li>
+      </ul>
+      </p>
+
+      <p>The rationale for this is to encourage contribution and
+      collaboration by keeping everything open-source, while allowing
+      industry to produce systems composed of a mixture of open- and
+      closed-source components, all of which communicate using the
+      orca-base framework.</p>
+
+      <h2><a name="reuse">On Code Re-use</h2>
+
+      <p>A non-technical aim of the Orca project is to promote code
+      re-use.  Doug Schmidt, in his article, "<a
+      href="http://www.cs.wustl.edu/~schmidt/reuse-lessons.html">Why
+      Software Reuse has Failed and How to Make It Work For You</a>"
+      (an excellent read by the way) defines five prerequisites for
+      systematic code reuse.  Orca strives to provide prerequisite
+      number four: a '"Re-use Magnet':</p>
+
+      <blockquote>
+        4. Attractive ``reuse magnets'' exist -- To attract systematic
+        reuse, it is crucial to develop and support ``reuse magnets,''
+        i.e., well-documented framework and component
+        repositories. These repositories must be well-maintained so
+        that application developers will have confidence in their
+        quality and assurance that any defects they encounter will be
+        fixed promptly. Likewise, framework and component repositories
+        must be well-supported so that developers can gain experience
+        through hands-on training and mentoring programs.
+      </blockquote>
+
+<hr>
+
+      <h2><a name="bibliography">Bibliography</h2>
+
+<P></P><DT><A NAME="castek00component">1</A>
+<DD>
+Castek.
+<BR>Component-based development: The concepts, technology and
+  methodology.
+<BR>Castek Company's white paper, available at www.castek.com, 2000.
+
+<P></P><DT><A NAME="collinscope01component">2</A>
+<DD>
+M.&nbsp;Collins-Cope.
+<BR>Component based development and advanced OO design.
+<BR>White paper, Ratio Group Ltd., 2001.
+
+<P></P><DT><A NAME="dsouza98objects">3</A>
+<DD>
+D.&nbsp;D'Souza and A.&nbsp;Wills.
+<BR><EM>Objects, Components, and Frameworks With UML: The Catalysis
+  Approach</EM>.
+<BR>Addison-Wesley, 1998.
+
+<P></P><DT><A NAME="Heineman01Component">4</A>
+<DD>
+G.&nbsp;T. Heineman and W.&nbsp;T. Councill, editors.
+<BR><EM>Component-based software engineering : putting the pieces
+  together</EM>.
+<BR>Addison-Wesley, Boston, 2001.
+
+
+<P></P><DT><A NAME="Szyperski02component">5</A>
+<DD>
+C.&nbsp;Szyperski.
+<BR><EM>Component Software - Beyond Object-Oriented Programming</EM>.
+<BR>Addison-Wesley / ACM Press, 2002.
+
+<P></P><DT><A NAME="urmson04high">6</A>
+<DD>
+C.&nbsp;Urmson, J.&nbsp;Anhalt, M.&nbsp;Clark, T.&nbsp;Galatali, J.&nbsp;P. Gonzalez, J.&nbsp;Gowdy,
+  A.&nbsp;Gutierrez, S.&nbsp;Harbaugh, M.&nbsp;Johnson-Roberson, H.&nbsp;Kato, P.&nbsp;L Koon,
+  K.&nbsp;Peterson, B.&nbsp;K. Smith, S.&nbsp;Spiker, E.&nbsp;Tryzelaar, and W.&nbsp;Whittaker.
+<BR>High speed navigation of unrehearsed terrain: Red team technology for
+  grand challenge 2004.
+<BR>Technical Report TR-04-37, Robotics Institute, Carnegie Mellon
+  University, Pittsburgh, PA, June 2004.
+
+<!-- Do not edit or remove this line: it causes add_sidebar.pl to add the footer -->
+
+</body>
+</html>

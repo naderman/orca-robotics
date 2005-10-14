@@ -1,0 +1,84 @@
+@import url(float.css);
+
+
+body {
+/*color: #685C44; */
+  color: black;
+  background-color: white;
+  font-size: 13px;
+  font-family: Arial, sans-serif;
+  line-height: 20px;
+/*  margin-left: 5%;*/
+  margin-left: 20px;
+  text-align: left;
+
+}
+
+/*
+a:visited { color: #7A771E; }
+a:link { color: black; }
+*/
+
+h1 {
+  text-align: center;
+}
+
+
+h2 {
+  text-align: left;
+  font-family: sans-serif;
+}
+
+h6 {
+  text-align: center;
+  color: black;
+  font-family: sans-serif;
+}
+
+UL {
+  list-style-type: square;
+}
+
+img
+{
+  border: none;
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.ex {
+  background-color:#f1f1f1;
+}
+
+.emph
+{
+color:blue;
+font-weight:900;
+background-color:white
+}
+
+.red
+{
+color:red;
+font-weight:900;
+background-color:white
+}
+
+
+.orange
+{
+color:orange;
+font-weight:900;
+background-color:white
+}
+
+
+.blue
+{
+color:blue;
+font-weight:900;
+background-color:white
+}
+
+

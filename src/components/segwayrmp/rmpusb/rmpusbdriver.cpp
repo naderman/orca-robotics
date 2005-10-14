@@ -25,17 +25,18 @@
 #include "canio_usb_ftdi.h"
 #include "rmpusb_frame.h"
 
-#include <orcaiceutil/sane_i.h>
+#include <orcaiceutil/objutils.h>
 #include <orcaiceutil/proputils.h>
 #include <orcaiceutil/mathdefs.h>
 
 using namespace std;
 using namespace orca;
-using namespace orca::util;
+using namespace orcaiceutil;
 
 SegwayRmpUsb::SegwayRmpUsb(
-        orca::util::PtrBuffer* position2dBuf, orca::util::PtrBuffer* powerBuf,
-        orca::util::PtrProxy* position2dProxy, orca::util::PtrProxy* commandProxy, orca::util::PtrProxy* powerProxy ) :
+        orcaiceutil::PtrBuffer* position2dBuf, orcaiceutil::PtrBuffer* powerBuf,
+        orcaiceutil::PtrProxy* position2dProxy, orcaiceutil::PtrProxy* commandProxy,
+        orcaiceutil::PtrProxy* powerProxy ) :
                     position2dBuf_(position2dBuf), powerBuf_(powerBuf),
                     position2dProxy_(position2dProxy), commandProxy_(commandProxy),
                     powerProxy_(powerProxy)
@@ -57,8 +58,8 @@ void SegwayRmpUsb::setup( const Ice::PropertiesPtr & properties )
     //
     // Read settings
     //
-    maxSpeed_ = orca::util::getPropertyAsDoubleWithDefault( properties, "Rmp.MaxSpeed", 1.0 );
-    maxTurnrate_ = orca::util::getPropertyAsDoubleWithDefault( properties, "Rmp.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
+    maxSpeed_ = orcaiceutil::getPropertyAsDoubleWithDefault( properties, "Rmp.MaxSpeed", 1.0 );
+    maxTurnrate_ = orcaiceutil::getPropertyAsDoubleWithDefault( properties, "Rmp.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
     cout<<"properties: maxspeed="<<maxSpeed_<<", maxturn="<<maxTurnrate_<<endl;
 }
 

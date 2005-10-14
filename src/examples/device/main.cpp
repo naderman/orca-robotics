@@ -38,14 +38,14 @@ class App : virtual public Ice::Application
 int App::run( int argc, char* argv[] )
 {
     // create the one-and-only component adapter
-    if ( orca::util::setComponentProperties( communicator() ) ) {
+    if ( orcaiceutil::setComponentProperties( communicator() ) ) {
         return EXIT_FAILURE;
     }
     Ice::ObjectAdapterPtr adapter = communicator()->createObjectAdapter( "Orca" );
 
     // INTERFACE : DeviceInterface
-    string topic1 = orca::util::getTopicName( communicator(), "DeviceInterface" );
-    Ice::ObjectPrx obj = orca::util::getIceStormPublisher( communicator(), topic1 );
+    string topic1 = orcaiceutil::getTopicName( communicator(), "DeviceInterface" );
+    Ice::ObjectPrx obj = orcaiceutil::getIceStormPublisher( communicator(), topic1 );
     if ( !obj ) {
         return EXIT_FAILURE;
     }
@@ -53,7 +53,7 @@ int App::run( int argc, char* argv[] )
     // create servant for direct connections
     Ice::ObjectPtr deviceInterfaceObj = new DeviceI( deviceInterfaceConsumer );
     // tell adapter about the new servant
-    string name1 = orca::util::getPortName( communicator(), "DeviceInterface" );
+    string name1 = orcaiceutil::getPortName( communicator(), "DeviceInterface" );
     adapter->add( deviceInterfaceObj, Ice::stringToIdentity( name1 ) );
 
 

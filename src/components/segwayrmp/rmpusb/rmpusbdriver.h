@@ -34,12 +34,12 @@ class DualCANIO;
 class rmpusb_frame_t;
 class CanPacket;
 
-class SegwayRmpUsb : public orca::util::Driver
+class SegwayRmpUsb : public orcaiceutil::Driver
 {
 public:
 
-    SegwayRmpUsb( orca::util::PtrBuffer* position2dBuf, orca::util::PtrBuffer* powerBuf,
-                  orca::util::PtrProxy* position, orca::util::PtrProxy* commands, orca::util::PtrProxy* power );
+    SegwayRmpUsb( orcaiceutil::PtrBuffer* position2dBuf, orcaiceutil::PtrBuffer* powerBuf,
+                  orcaiceutil::PtrProxy* position, orcaiceutil::PtrProxy* commands, orcaiceutil::PtrProxy* power );
     virtual ~SegwayRmpUsb();
 
     virtual void setup( const Ice::PropertiesPtr & );
@@ -51,11 +51,11 @@ public:
 private:
 
     // component/driver interface
-    orca::util::PtrBuffer* position2dBuf_;
-    orca::util::PtrBuffer* powerBuf_;
-    orca::util::PtrProxy* position2dProxy_;
-    orca::util::PtrProxy* commandProxy_;
-    orca::util::PtrProxy* powerProxy_;
+    orcaiceutil::PtrBuffer* position2dBuf_;
+    orcaiceutil::PtrBuffer* powerBuf_;
+    orcaiceutil::PtrProxy* position2dProxy_;
+    orcaiceutil::PtrProxy* commandProxy_;
+    orcaiceutil::PtrProxy* powerProxy_;
 
     // internal storage
     orca::Position2dDataPtr position2dData_;

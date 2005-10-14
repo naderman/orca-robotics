@@ -23,7 +23,7 @@
 
 #include <iostream>
 #include <assert.h>
-#include <orca/orcadebug.h>
+#include <orcaiceutil/orcadebug.h>
 
 // magic numbers
 #define SEGWAY_USB_VENDOR_ID                    0x0403

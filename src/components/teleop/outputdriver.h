@@ -26,11 +26,11 @@
 
 #include <orca/platform2d.h>
 
-class OutputDriver : public orca::util::Driver
+class OutputDriver : public orcaiceutil::Driver
 {
 public:
 
-    OutputDriver( orca::util::PtrProxy* commands );
+    OutputDriver( orcaiceutil::PtrProxy* commands );
     virtual ~OutputDriver();
 
     virtual void setup( const Ice::PropertiesPtr & );
@@ -47,7 +47,7 @@ private:
     orca::Platform2dPrx platform2dPrx_;
 
     // network/driver interface
-    orca::util::PtrProxy* commandProxy_;
+    orcaiceutil::PtrProxy* commandProxy_;
 
 };
 

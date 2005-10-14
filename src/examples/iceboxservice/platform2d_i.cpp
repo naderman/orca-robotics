@@ -22,12 +22,12 @@
 
 #include "platform2d_i.h"
 
-#include <orca/sane_i.h>
+#include <orca/objutils.h>
 
 Platform2dI::Platform2dI()
 {
     position_ = new orca::Position2dData;
-    orca::util::setSane( position_ );
+    orcaiceutil::setSane( position_ );
 }
 
 orca::Position2dDataPtr Platform2dI::getData(const Ice::Current& current)

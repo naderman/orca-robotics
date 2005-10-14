@@ -23,7 +23,7 @@
 using namespace orca;
 
 
-PowerI::PowerI( orca::util::PtrProxy* power ) :
+PowerI::PowerI( orcaiceutil::PtrProxy* power ) :
         power_(power)
 {
 }

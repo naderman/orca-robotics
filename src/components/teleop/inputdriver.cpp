@@ -45,7 +45,7 @@
 using namespace std;
 using namespace orca;
 
-InputDriver::InputDriver( orca::util::PtrProxy* commands ) :
+InputDriver::InputDriver( orcaiceutil::PtrProxy* commands ) :
         commandProxy_(commands)
 {
     // init internal data storage
@@ -64,8 +64,8 @@ void InputDriver::setup( const Ice::PropertiesPtr & properties )
     //
     // Read settings
     //
-    maxSpeed_ = orca::util::getPropertyAsDoubleWithDefault( properties, "Teleop.MaxSpeed", 1.0 );
-    maxTurnrate_ = orca::util::getPropertyAsDoubleWithDefault( properties, "Teleop.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
+    maxSpeed_ = orcaiceutil::getPropertyAsDoubleWithDefault( properties, "Teleop.MaxSpeed", 1.0 );
+    maxTurnrate_ = orcaiceutil::getPropertyAsDoubleWithDefault( properties, "Teleop.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
     cout<<"properties: maxspeed="<<maxSpeed_<<", maxturn="<<maxTurnrate_<<endl;
 
     /*

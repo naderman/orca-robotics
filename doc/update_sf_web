@@ -1,0 +1,24 @@
+#!/bin/sh
+
+force () {
+    echo "$*"
+    $*
+
+    status=$?
+
+    if [ $status -ne 0 ]; then
+        echo "Problem executing '$*'"
+        exit 1
+    else
+        echo "Executed '$*' OK"
+    fi
+}
+
+force ls
+force ./build_all_documentation --copy
+force cd html
+force tar --exclude=CVS --exclude=doc.tgz -zcvf doc.tgz *
+force scp doc.tgz shell.sourceforge.net:
+
+ssh shell.sourceforge.net "cd /home/groups/o/or/orca-robotics/htdocs/; mv ~/doc.tgz .; tar -zxvf doc.tgz; rm doc.tgz; chmod -R g+w *"
+

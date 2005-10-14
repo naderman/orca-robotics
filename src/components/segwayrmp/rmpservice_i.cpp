@@ -23,7 +23,6 @@
 #include "rmpcomponent.h"
 
 using namespace std;
-using namespace orca;
 
 extern "C"
 {

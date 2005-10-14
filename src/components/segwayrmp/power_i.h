@@ -34,12 +34,12 @@
 class PowerI : public orca::Power
 {
     public:
-        PowerI( orca::util::PtrProxy* power );
+        PowerI( orcaiceutil::PtrProxy* power );
 
         virtual ::orca::PowerDataPtr getData(const ::Ice::Current& );
 
         // the driver will put the latest data into this proxy
-        orca::util::PtrProxy* power_;
+        orcaiceutil::PtrProxy* power_;
 };
 
 #endif

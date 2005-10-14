@@ -24,7 +24,9 @@
 #include <orcaiceutil/component.h>
 #include <orcaiceutil/driver.h>
 
-class RmpComponent : public orca::util::Component
+class RmpFsm;
+
+class RmpComponent : public orcaiceutil::Component
 {
 public:
 
@@ -41,7 +43,9 @@ private:
 
     Ice::ObjectAdapterPtr adapter_;
 
-    orca::util::Driver* driver_;
+    orcaiceutil::Driver* driver_;
+
+    RmpFsm* fsm_;
 };
 
 #endif

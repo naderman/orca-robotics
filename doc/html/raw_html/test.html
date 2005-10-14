@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+<head>
+<title>ORCA</title>
+<link rel="stylesheet" href="generic2.css" type="text/css" />
+</head>
+<body>
+
+<!-- Do not edit or remove this line: it causes add_sidebar.pl to add the menu -->
+
+
+<p>&nbsp;</p>
+<h1>
+Manually running the automated tests
+</h1>
+
+<p>Orca has a set of automated test to help maintain things.</p>
+
+<h2>Installing Required Stuff</h2>
+
+<ul>
+    <li>Download Dart software from the <a href="http://public.kitware.com/Dart/HTML/Download.shtml">Kitware website.</a>
+    Currently, this requires CVS.</li>
+
+   <li>install Dart on your machine (copy the Dart source into  /usr/local/Dart)</li>
+
+   <li>set the environment variable DART_ROOT (to /usr/local/Dart)</li>
+
+<TABLE CLASS="ex" cellSpacing=0 width="100%" border=1><TBODY><TR><TD><PRE>
+export DART_ROOT=/usr/local/Dart
+</PRE></TD></TR></TBODY></TABLE>
+   
+   <li>(NOTE: you need to delete CMakeCache.txt and re-do 'cmake' to read in this variable)</li>
+
+<h2>Running Tests</h2>
+
+<p>From the top level of either orca-base or orca-components, try:</p>
+
+<TABLE CLASS="ex" cellSpacing=0 width="100%" border=1><TBODY><TR><TD><PRE>
+ctest -D ExperimentalTest
+</PRE></TD></TR></TBODY></TABLE>
+
+<p>To see the output of the tests, do:</p>
+
+<TABLE CLASS="ex" cellSpacing=0 width="100%" border=1><TBODY><TR><TD><PRE>
+ctest -V -D ExperimentalTest
+</PRE></TD></TR></TBODY></TABLE>
+
+<p>To only run specific tests, do:</p>
+
+<TABLE CLASS="ex" cellSpacing=0 width="100%" border=1><TBODY><TR><TD><PRE>
+ctest -V -D ExperimentalTest -R &lt;part of test name&gt;
+</PRE></TD></TR></TBODY></TABLE>
+
+
+<!-- Do not edit or remove this line: it causes add_sidebar.pl to add the footer -->
+
+
+</body>
+</html>

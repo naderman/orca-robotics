@@ -24,7 +24,6 @@
 #include "rmpcomponent.h"
 
 using namespace std;
-using namespace orca;
 
 class App : virtual public Ice::Application
 {
