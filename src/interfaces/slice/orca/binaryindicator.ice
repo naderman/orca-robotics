@@ -18,55 +18,33 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_POSISTION2D_DATA_ICE
-#define ORCA2_POSISTION2D_DATA_ICE
+#ifndef ORCA2_BINARY_INDICATOR_ICE
+#define ORCA2_BINARY_INDICATOR_ICE
 
 #include <orca/orca.ice>
 
 module orca
 {
 
-//! using Orca variable names but lump Pose2D and RobotVelocity2D objects together -- Player style.
-class Position2dData extends OrcaObject
+//! Data supplier interface
+interface BinaryIndicator
 {
-    double x;
-    double y;
-    double heading;
-    double speed;
-    double sidespeed;
-    double turnrate;
-    bool stalled;
+    // get current state
+    nonmutating bool getState();
+
+    // set current state
+    idempotent void setState( bool state );
+
+    // set current state, then after a timeout return to previous state
+    void timedSetState( bool state, long timeoutMs );
+
+    // toggle current state
+    void toggleState();
+
+    // toggle state, then after a timeout toggle it back
+    void timedToggleState( long timeoutMs ); 
 };
 
-class Position2dCommand extends OrcaObject
-{
-    double x;
-    double y;
-    double heading;
-    double speed;
-    double sidespeed;
-    double turnrate;
-    bool motorEnabled;
-};
-
-//class Position2dGeometry extends OrcaObject
-//{
-//    double length;
-//    double width;
-//};
-
-//! using Orca variable names but lump Pose2D and RobotVelocity2D objects together -- Player style.
-struct SimplePosition2dData
-{
-    Time timeStamp;
-    double x;
-    double y;
-    double heading;
-    double speed;
-    double sidespeed;
-    double turnrate;
-    bool stalled;
-};
 
 }; // module
 
