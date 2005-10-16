@@ -20,7 +20,7 @@
 
 #include <iostream>
 
-#include "inputdriver.h"
+#include "keyboarddriver.h"
 
 //#if HAVE_TERMIO_H
 #include <termio.h>
@@ -45,7 +45,7 @@
 using namespace std;
 using namespace orca;
 
-InputDriver::InputDriver( orcaiceutil::PtrProxy* commands ) :
+KeyboardDriver::KeyboardDriver( orcaiceutil::PtrProxy* commands ) :
         commandProxy_(commands)
 {
     // init internal data storage
@@ -55,11 +55,11 @@ InputDriver::InputDriver( orcaiceutil::PtrProxy* commands ) :
     command_->twist.w = 0.0;
 }
 
-InputDriver::~InputDriver()
+KeyboardDriver::~KeyboardDriver()
 {
 }
 
-void InputDriver::setup( const Ice::PropertiesPtr & properties )
+void KeyboardDriver::setup( const Ice::PropertiesPtr & properties )
 {
     //
     // Read settings
@@ -78,22 +78,22 @@ void InputDriver::setup( const Ice::PropertiesPtr & properties )
     */
 }
 
-void InputDriver::activate()
+void KeyboardDriver::activate()
 {
     cout<<"activating device"<<endl;
     start();
 }
 
-void InputDriver::deactivate()
+void KeyboardDriver::deactivate()
 {
     cout<<"deactivating device"<<endl;
     stop();
 }
 
 // read commands from the keyboard. Launced in a separate thread.
-void InputDriver::run()
+void KeyboardDriver::run()
 {
-    cout<<"InputDriver::run: starting nicely"<<endl;
+    cout<<"KeyboardDriver::run: starting nicely"<<endl;
 
     // one key stroke changes commands by these values
     const double deltaSpeed = 0.05;     // [m/s]
@@ -216,7 +216,7 @@ void InputDriver::run()
     }
 }
 
-void InputDriver::keyboardHelp()
+void KeyboardDriver::keyboardHelp()
 {
     puts("-----------------------------------------");
     puts("Moving around:");

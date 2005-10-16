@@ -43,7 +43,7 @@ interface Platform2d extends Position2d
     // ClientPush_Consumer interface
     void putData( Velocity2dCommand data );
     
-    void enableMotor( bool enable );    
+    idempotent void enableMotor( bool enable );    
 };
 
 }; // module

@@ -13,17 +13,18 @@ SET( SLICE_SOURCES
   bros1.ice
   image.ice
   laserdata.ice
-  laser.ice
   ogmap.ice
   opaque.ice
   pose2d.ice
+  stringobj.ice
 #  velocity2ddata.ice
 #  position2ddata.ice
+#  powerdata.ice
+  binaryindicator.ice
+  laser.ice
   position2d.ice
-  powerdata.ice
-  power.ice
   platform2d.ice
-  stringobj.ice
+  power.ice
   )
 
 SET( HUMAN_SOURCES )

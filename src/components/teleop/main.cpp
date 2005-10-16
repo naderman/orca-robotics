@@ -22,7 +22,8 @@
 
 #include <orcaiceutil/ptrproxy.h>
 
-#include "inputdriver.h"
+#include "teleopFsm.h"
+#include "keyboarddriver.h"
 #include "outputdriver.h"
 
 using namespace std;
@@ -32,39 +33,15 @@ class App : virtual public Ice::Application
 {
     public:
         virtual int run(int, char * []);
-
-    private:
-
-        Platform2dPrx platform2dPrx_;
 };
 
 int App::run( int argc, char* argv[] )
 {
     //
-    // NETWORK-DRIVER INTERFACE
+    // COMPONENT STATE MACHINE
     //
-    // the driver will put the latest data into this proxy
-    orcaiceutil::PtrProxy commandProxy;
-
-    //
-    // NETWORK
-    //
-    OutputDriver* netDriver = new OutputDriver( &commandProxy );
-    // dodgy hack: non-standard function
-    netDriver->setupComms( communicator() );
-    netDriver->activate();
-
-    //
-    // DRIVER
-    //
-    orcaiceutil::Driver* driver = new InputDriver( &commandProxy );
-    driver->setup( communicator()->getProperties() );
-
-    // this is a dodgy hack, to let the driver shutdown the communicator and end the program
-    InputDriver* hack = (InputDriver*)driver;
-    hack->setupCommunicator( communicator() );
-
-    driver->activate();
+    TeleopFsm fsm;
+    fsm.activate();
 
     // Wait until we are done (this will trap signals)
     //
@@ -73,14 +50,7 @@ int App::run( int argc, char* argv[] )
     // do clean up if there was a Ctrl-C, otherwise the driver has cleaned up itself
     if ( interrupted() )  {
         cerr<< appName() << ": terminating..." << endl;
-
-        netDriver->deactivate();
-        cout<<"joining network driver..."<<endl;
-        netDriver->getThreadControl().join();
-
-        driver->deactivate();
-        cout<<"joining input driver... Hit any key please."<<endl;
-        driver->getThreadControl().join();
+        fsm.deactivate();
     } else {
         cout<<appName()<<": exiting cleanly. Good bye."<<endl;
     }

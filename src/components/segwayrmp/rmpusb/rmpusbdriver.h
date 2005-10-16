@@ -44,6 +44,8 @@ public:
     ~SegwayRmpUsb();
 
     void setup( const Ice::PropertiesPtr & );
+
+    void configure( );
     void activate();
     void deactivate();
 

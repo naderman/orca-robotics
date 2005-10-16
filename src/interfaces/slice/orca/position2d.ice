@@ -30,13 +30,19 @@ module orca
 // define messages first
 class Position2dData extends OrcaObject
 {
+    // Robot position
     Frame2d frame;
+    // Translational and angular velocities in the robot CS
     Twist2d twist;
+    // Are the motors stalled
     bool stalled;
 };
 
 class Position2dGeometry extends OrcaObject
 {
+    // Pose of the robot base, in the robot CS
+    Frame2d offset;
+    // Dimensions of the base
     Size2d size;
 };
 
@@ -44,8 +50,8 @@ class Position2dGeometry extends OrcaObject
 interface Position2d
 {
     // ClientPull_Supplier interface
-    Position2dData getData();
-    Position2dGeometry getGeometry();
+    nonmutating Position2dData getData();
+    nonmutating Position2dGeometry getGeometry();
 };
 
 //! Data consumer interface (needed only for the push pattern)

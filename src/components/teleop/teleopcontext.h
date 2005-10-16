@@ -18,38 +18,41 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_ORCA_ICE
-#define ORCA2_ORCA_ICE
+#ifndef ORCA2_TELEOP_FSM_CONTEXT_H
+#define ORCA2_TELEOP_FSM_CONTEXT_H
 
-/**
- * Orca: Components for robotics.
- **/
-module orca
-{
+#include <orcaiceutil/ptrproxy.h>
 
-/** Unix absolute time **/
-struct Time
-{
-    int seconds;
-    int useconds;
-};
+class OutputDriver;
+class KeyboardDriver;
 
-// All objects are derived from this to allow polymorphism.
-// NOTE: do we need the timestamp?
-class OrcaObject
+class TeleopContext
 {
-    Time timeStamp;
-};
+public:
 
-// NOTE: Do we need something like this? Not using it yet.
-interface OrcaComponent
-{
-    // Admin
+    TeleopContext();
+    ~TeleopContext();
+
+    void startup();
     void shutdown();
+
+    void FSMError(const char* t, const char* s);
+
+    // special
+    void setupCommunicator( const Ice::CommunicatorPtr & comm ) { comm_=comm; };
+
+private:
+    // network-hardware interface
+    // the driver will put the latest data into this proxy
+    orcaiceutil::PtrProxy commandProxy;
+
+    // network
+    OutputDriver* netDriver_;
+
+    // hardware
+    KeyboardDriver* hwDriver_;
+
+    Ice::CommunicatorPtr comm_;
 };
-
-sequence<byte> ByteSequence;
-
-}; // module
 
 #endif

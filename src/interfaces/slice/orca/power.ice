@@ -22,15 +22,32 @@
 #define ORCA2_POWER_INTERFACE_ICE
 
 #include <orca/orca.ice>
-#include <orca/powerdata.ice>
 
 module orca
 {
 
+struct BatteryData
+{
+    // Battery name
+    string name;
+    // Battery voltage [V]
+    float voltage;
+    // Percent of full charge [%]
+    float percent;
+};
+
+sequence<BatteryData> BatteriesData;
+
+class PowerData extends OrcaObject
+{
+    // battery information
+    BatteriesData batteries;
+};
+
 interface Power
 {
         // ClientPull_Supplier interface
-        PowerData getData();
+        nonmutating PowerData getData();
 };
 
 interface PowerConsumer

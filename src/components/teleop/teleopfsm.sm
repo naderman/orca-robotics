@@ -1,0 +1,17 @@
+FSMName TeleopFsm
+Context TeleopContext
+Initial Idle
+Header  teleopcontext.h
+Version $Id$
+
+{
+
+Idle{
+    activate Active startup
+}
+
+Active{
+    deactivate Idle shutdown
+}
+
+}

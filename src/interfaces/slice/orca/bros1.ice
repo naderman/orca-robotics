@@ -70,8 +70,7 @@ struct PolarAcceleration2d
     float r;
     float a;
 };
-// Vector representing a linear force
-struct Force2d
+struct Vector2d
 {
     float x;
     float y;
@@ -87,27 +86,17 @@ struct Twist2d
     CartesianVelocity2d velocity;
     float w; // degenerated AngularVelocity2d
 };
+// Vector representing a linear force
+struct Force2d
+{
+    float x;
+    float y;
+};
 struct Wrench2d
 {
   Force2d f;
   float m; // degenerated Moment2d
 };
-
-// add convenient robotics types
-/*
-struct Pose2d
-{ 
-    float x;
-    float y;
-    float a; // OrientationAngle
-};
-struct Speed2d
-{
-    float f; // forward speed
-    float s; // sideways speed
-    float t; // turn rate
-};
-*/
 struct Size2d
 {
     float l; // length
@@ -115,24 +104,24 @@ struct Size2d
 };
 
 // Three-dimensional (standard) objects
-struct Point
+struct CartesianPoint
 {
     float x;
     float y;
 };
-struct Vector
-{
-    float x;
-    float y;
-    float z;
-};
-struct Velocity
+struct CartesianVector
 {
     float x;
     float y;
     float z;
 };
-struct Acceleration
+struct CartesianVelocity
+{
+    float x;
+    float y;
+    float z;
+};
+struct CartesianAcceleration
 {
     float x;
     float y;
@@ -167,7 +156,7 @@ struct Moment
 // Twist: ordered couple (V,W) of two Vectors
 struct Twist
 {
-    Velocity v;
+    CartesianVelocity v;
     AngularVelocity w;
 };
 // Wrench: ordered couple (F,M) of two Vectors

@@ -7,9 +7,10 @@ IF ( BUILD_TELEOP )
 
   #
   # This gathers all the .cpp files into the variable 'SRCS'
-  #
+  # NOTE: globbing for {*.cpp,*.cc} should work but does not.
   FILE( GLOB SRCS *.cpp )
+  FILE( GLOB SRCS2 *.cc )
 
-  GLOBAL_ADD_EXECUTABLE( teleop ${SRCS} )
+  GLOBAL_ADD_EXECUTABLE( teleop ${SRCS} ${SRCS2} )
 
 ENDIF ( BUILD_TELEOP )

@@ -18,21 +18,21 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_KEYBOARD_AND_JOYSTICK_DRIVER_H
-#define ORCA2_KEYBOARD_AND_JOYSTICK_DRIVER_H
+#ifndef ORCA2_KEYBOARD_DRIVER_H
+#define ORCA2_KEYBOARD_DRIVER_H
 
-#include <orcaiceutil/driver.h>
+#include <orcaiceutil/thread.h>
 #include <orcaiceutil/ptrproxy.h>
 
 #include <orca/platform2d.h>
 
 
-class InputDriver : public orcaiceutil::Driver
+class KeyboardDriver : public orcaiceutil::Thread
 {
 public:
 
-    InputDriver( orcaiceutil::PtrProxy* commands );
-    virtual ~InputDriver();
+    KeyboardDriver( orcaiceutil::PtrProxy* commands );
+    virtual ~KeyboardDriver();
 
     virtual void setup( const Ice::PropertiesPtr & );
     virtual void activate();
