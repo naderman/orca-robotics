@@ -20,21 +20,21 @@
 
 #include <iostream>
 
-#include "teleopcontext.h"
+#include "teleopcomponent.h"
 #include "outputdriver.h"
 #include "keyboarddriver.h"
 
 using namespace std;
 
-TeleopContext::TeleopContext()
+TeleopComponent::TeleopComponent()
 {
 }
 
-TeleopContext::~TeleopContext()
+TeleopComponent::~TeleopComponent()
 {
 }
 
-void TeleopContext::startup()
+void TeleopComponent::startup()
 {
     //
     // NETWORK
@@ -47,13 +47,13 @@ void TeleopContext::startup()
     //
     // HARDWARE
     //
-    hwDriver_ = new KeyboardDriver( &commandProxy );
+    hwDriver_ = new KeyboardDriver( this, &commandProxy );
     hwDriver_->setup( comm_->getProperties() );
 
     hwDriver_->activate();
 }
 
-void TeleopContext::shutdown()
+void TeleopComponent::shutdown()
 {
     netDriver_->deactivate();
     cout<<"joining network hwDriver_..."<<endl;
@@ -64,7 +64,7 @@ void TeleopContext::shutdown()
     hwDriver_->getThreadControl().join();
 }
 
-void TeleopContext::FSMError(const char* t, const char* s)
+void TeleopComponent::FSMError(const char* t, const char* s)
 {
-    std::cerr << "Transition error: " << t << " in state " << s << std::endl;
+    cerr << "Transition error: " << t << " in state " << s << endl;
 }

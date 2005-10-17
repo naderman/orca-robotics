@@ -26,12 +26,13 @@
 
 #include <orca/platform2d.h>
 
+class TeleopFsm;
 
 class KeyboardDriver : public orcaiceutil::Thread
 {
 public:
 
-    KeyboardDriver( orcaiceutil::PtrProxy* commands );
+    KeyboardDriver( TeleopFsm* fsm, orcaiceutil::PtrProxy* commands );
     virtual ~KeyboardDriver();
 
     virtual void setup( const Ice::PropertiesPtr & );
@@ -45,6 +46,8 @@ public:
 private:
 
     // component/driver interface
+    TeleopFsm* fsm_;
+    // network/driver interface
     orcaiceutil::PtrProxy* commandProxy_;
 
     // internal storage for current command

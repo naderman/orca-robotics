@@ -26,9 +26,8 @@
 #include <orcaiceutil/ptrproxy.h>
 #include <orcaiceutil/ptrbuffer.h>
 
-#include <orca/position2ddata.h>
-#include <orca/velocity2ddata.h>
-#include <orca/powerdata.h>
+#include <orca/platform2d.h>
+#include <orca/power.h>
 
 // forward declarations
 class DualCANIO;
@@ -41,16 +40,16 @@ public:
 
     SegwayRmpUsb( orcaiceutil::PtrBuffer* position2dBuf, orcaiceutil::PtrBuffer* powerBuf,
                   orcaiceutil::PtrProxy* position, orcaiceutil::PtrProxy* commands, orcaiceutil::PtrProxy* power );
-    ~SegwayRmpUsb();
+    virtual ~SegwayRmpUsb();
 
     void setup( const Ice::PropertiesPtr & );
-
     void configure( );
-    void activate();
-    void deactivate();
 
-    void repair() {};
-    void cancel() {};
+    virtual void activate();
+    virtual void deactivate();
+
+    virtual void repair() {};
+    virtual void cancel() {};
 
     virtual void run();
 
@@ -65,7 +64,7 @@ private:
 
     // internal storage
     orca::Position2dDataPtr position2dData_;
-    orca::Velocity2dDataPtr commandData_;
+    orca::Velocity2dCommandPtr commandData_;
     orca::PowerDataPtr powerData_;
 
     // driver/hardware interface

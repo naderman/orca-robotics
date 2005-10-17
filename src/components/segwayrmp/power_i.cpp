@@ -28,7 +28,7 @@ PowerI::PowerI( orcaiceutil::PtrProxy* power ) :
 {
 }
 
-orca::PowerDataPtr PowerI::getData(const ::Ice::Current& )
+orca::PowerDataPtr PowerI::getData(const ::Ice::Current& ) const
 {
     std::cout << "Sending data back" << std::endl;
 

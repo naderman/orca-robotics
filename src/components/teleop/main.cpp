@@ -20,14 +20,9 @@
 
 #include <Ice/Ice.h>
 
-#include <orcaiceutil/ptrproxy.h>
-
-#include "teleopFsm.h"
-#include "keyboarddriver.h"
-#include "outputdriver.h"
+#include "teleopcomponent.h"
 
 using namespace std;
-using namespace orca;
 
 class App : virtual public Ice::Application
 {
@@ -40,7 +35,7 @@ int App::run( int argc, char* argv[] )
     //
     // COMPONENT STATE MACHINE
     //
-    TeleopFsm fsm;
+    TeleopComponent fsm;
     fsm.activate();
 
     // Wait until we are done (this will trap signals)

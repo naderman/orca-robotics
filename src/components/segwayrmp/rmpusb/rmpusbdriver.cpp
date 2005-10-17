@@ -43,8 +43,13 @@ SegwayRmpUsb::SegwayRmpUsb(
 {
     // init internal data storage
     position2dData_ = new Position2dData;
-    commandData_ = new Velocity2dData;
+    commandData_ = new Velocity2dCommand;
+    // set up data structure for 3 batteries
     powerData_ = new PowerData;
+    powerData_->batteries.resize(3);
+    powerData_->batteries[1].name = "main-front";
+    powerData_->batteries[2].name = "main-rear";
+    powerData_->batteries[3].name = "io";
 }
 
 SegwayRmpUsb::~SegwayRmpUsb(){}
@@ -165,7 +170,7 @@ void SegwayRmpUsb::run()
             {                
                 Ice::ObjectPtr data;
                 commandProxy_->get( data );
-                commandData_ = Velocity2dDataPtr::dynamicCast( data );
+                commandData_ = Velocity2dCommandPtr::dynamicCast( data );
                 //cout<<"comm : "<<commandData_<<endl;        
 
                 // Make velocity command (keep it in mm for now, so not to modify makeVelocityCommand() )
@@ -273,9 +278,9 @@ void SegwayRmpUsb::updateData( rmpusb_frame_t* data_frame )
         }
 
         // first, do 2D info.
-        position2dData_->x = odomX_;
-        position2dData_->y = odomY_;
-        position2dData_->heading = odomYaw_;
+        position2dData_->frame.point.x = odomX_;
+        position2dData_->frame.point.y = odomY_;
+        position2dData_->frame.a = odomYaw_;
     } else {
         //printf("skipping odometry\n");
     }
@@ -294,16 +299,16 @@ void SegwayRmpUsb::updateData( rmpusb_frame_t* data_frame )
     {
         // combine left and right wheel velocity to get foreward velocity
         // change from counts/sec into meters/sec
-        position2dData_->speed =
+        position2dData_->twist.velocity.x =
                 ((double)data_frame->left_dot+(double)data_frame->right_dot) /
                     (double)RMP_COUNT_PER_M_PER_S / 2.0;
         
         // no side speeds for this bot
-        position2dData_->sidespeed = 0;
+        position2dData_->twist.velocity.y = 0;
         
         // from counts/sec into deg/sec.  also, take the additive
         // inverse, since the RMP reports clockwise angular velocity as positive.
-        position2dData_->turnrate = -(double)data_frame->yaw_dot / (double)RMP_COUNT_PER_DEG_PER_S;
+        position2dData_->twist.w = -(double)data_frame->yaw_dot / (double)RMP_COUNT_PER_DEG_PER_S;
         
         position2dData_->stalled = false;
 /*        
@@ -371,8 +376,8 @@ void SegwayRmpUsb::updateData( rmpusb_frame_t* data_frame )
     if ( data_frame->battery!=RMP_CAN_DROPPED_PACKET )
     {
         // Convert battery voltage to decivolts for Player.
-        powerData_->voltage =
-                (uint16_t)(data_frame->battery / RMP_COUNT_PER_VOLT * 10.0);
+        powerData_->batteries[1].voltage = data_frame->battery / RMP_COUNT_PER_VOLT;
+        powerData_->batteries[1].percent = 99.0;
     } else {
         //printf("skipping power\n");
     }
@@ -410,21 +415,21 @@ void SegwayRmpUsb::makeVelocityCommand( CanPacket* pkt )
     // 8mph is 3576.32 mm/s
     // so then mm/s -> counts = (1176/3576.32) = 0.32882963
 
-    if ( commandData_->speed > maxSpeed_ )
+    if ( commandData_->twist.velocity.x > maxSpeed_ )
     {
-        cout<<"WARN: xspeed thresholded! ("<<commandData_->speed<<">"<<maxSpeed_<<")"<<endl;
-        commandData_->speed = maxSpeed_;
+        cout<<"WARN: xspeed thresholded! ("<<commandData_->twist.velocity.x<<">"<<maxSpeed_<<")"<<endl;
+        commandData_->twist.velocity.x = maxSpeed_;
     }
-    else if(commandData_->speed < -maxSpeed_)
+    else if(commandData_->twist.velocity.x < -maxSpeed_)
     {
-        cout<<"WARN: xspeed thresholded! ("<<commandData_->speed<<"<"<<-maxSpeed_<<")"<<endl;
-        commandData_->speed = -maxSpeed_;
+        cout<<"WARN: xspeed thresholded! ("<<commandData_->twist.velocity.x<<"<"<<-maxSpeed_<<")"<<endl;
+        commandData_->twist.velocity.x = -maxSpeed_;
     }
 
     //lastSpeedX_ = xspeed;
 
     // translational RMP command (convert m/s to mm/s first)
-    int16_t trans = (int16_t) rint(commandData_->speed * 1e3 * (double)RMP_COUNT_PER_MM_PER_S);
+    int16_t trans = (int16_t) rint(commandData_->twist.velocity.x * 1e3 * (double)RMP_COUNT_PER_MM_PER_S);
     // check for command limits
     if(trans > RMP_MAX_TRANS_VEL_COUNT) {
         trans = RMP_MAX_TRANS_VEL_COUNT;
@@ -433,15 +438,15 @@ void SegwayRmpUsb::makeVelocityCommand( CanPacket* pkt )
         trans = -RMP_MAX_TRANS_VEL_COUNT;
     }
 
-    if( commandData_->turnrate > maxTurnrate_ )
+    if( commandData_->twist.w > maxTurnrate_ )
     {
-        cout<<"WARN: yawspeed thresholded! ("<<commandData_->turnrate<<">"<<maxTurnrate_<<")"<<endl;
-        commandData_->turnrate = maxTurnrate_;
+        cout<<"WARN: yawspeed thresholded! ("<<commandData_->twist.w<<">"<<maxTurnrate_<<")"<<endl;
+        commandData_->twist.w = maxTurnrate_;
     }
-    else if( commandData_->turnrate < -maxTurnrate_ )
+    else if( commandData_->twist.w < -maxTurnrate_ )
     {
-        cout<<"WARN: yawspeed thresholded! ("<<commandData_->turnrate<<"<"<<-maxTurnrate_<<")"<<endl;
-        commandData_->turnrate = -maxTurnrate_;
+        cout<<"WARN: yawspeed thresholded! ("<<commandData_->twist.w<<"<"<<-maxTurnrate_<<")"<<endl;
+        commandData_->twist.w = -maxTurnrate_;
     }
   
     //lastSpeedYaw_ = yawspeed;
@@ -449,7 +454,7 @@ void SegwayRmpUsb::makeVelocityCommand( CanPacket* pkt )
     // rotational RMP command \in [-1024, 1024] (convert from rad/s to deg/s first)
     // this is ripped from rmi_demo... to go from deg/s to counts
     // deg/s -> count = 1/0.013805056
-    int16_t rot = (int16_t) rint(commandData_->turnrate / DEG2RAD_RATIO * (double)RMP_COUNT_PER_DEG_PER_S);
+    int16_t rot = (int16_t) rint(commandData_->twist.w / DEG2RAD_RATIO * (double)RMP_COUNT_PER_DEG_PER_S);
     // check for command limits
     if(rot > RMP_MAX_ROT_VEL_COUNT) {
         rot = RMP_MAX_ROT_VEL_COUNT;

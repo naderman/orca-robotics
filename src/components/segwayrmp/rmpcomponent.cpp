@@ -75,9 +75,7 @@ void RmpComponent::start(const string & name,
     // EXTERNAL INTERFACES
     //
     // create the one-and-only component adapter, parse config file to create adapter name
-    if ( orcaiceutil::setComponentProperties( communicator, name ) ) {
-        exit( EXIT_FAILURE );
-    }
+    orcaiceutil::setComponentProperties( communicator, name );
     adapter_ = communicator->createObjectAdapter(name);
 
     // PROVIDED INTERFACE: Platform2d
@@ -114,7 +112,9 @@ void RmpComponent::start(const string & name,
     //
     driver_ = new SegwayRmpUsb( &position2dBuffer, &powerBuffer,
                                  &position2dProxy, &commandProxy, &powerProxy );
-    driver_->setup( communicator->getProperties() );
+    // hack
+    SegwayRmpUsb* hack = (SegwayRmpUsb*)driver_;
+    hack->setup( communicator->getProperties() );
     driver_->activate();
 
     // we are ready, start processing external clients' requests

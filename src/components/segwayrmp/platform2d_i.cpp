@@ -28,7 +28,7 @@ Platform2dI::Platform2dI( orcaiceutil::PtrProxy* position2d, orcaiceutil::PtrPro
 }
 
 // served out the data to the client (it was stored here by the driver at the last read)
-orca::Position2dDataPtr Platform2dI::getData(const Ice::Current& current)
+orca::Position2dDataPtr Platform2dI::getData(const Ice::Current& current) const
 {
     std::cout << "Sending data back" << std::endl;
 
@@ -40,8 +40,16 @@ orca::Position2dDataPtr Platform2dI::getData(const Ice::Current& current)
     return Position2dDataPtr::dynamicCast( data );
 }
 
+orca::Position2dGeometryPtr Platform2dI::getGeometry(const Ice::Current& current) const
+{
+    std::cout << "Pretending to send geometry back" << std::endl;
+    Position2dGeometryPtr geometry = new Position2dGeometry;
+
+    return geometry;
+}
+
 // Store incoming command in a proxy, it will be handled by the driver at the next opportunity.
-void Platform2dI::putData(const ::orca::Velocity2dDataPtr& command, const ::Ice::Current& )
+void Platform2dI::putData(const ::orca::Velocity2dCommandPtr& command, const ::Ice::Current& )
 {
     command_->set( command );
 }

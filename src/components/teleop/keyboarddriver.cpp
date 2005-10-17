@@ -21,6 +21,7 @@
 #include <iostream>
 
 #include "keyboarddriver.h"
+#include "teleopfsm.h"
 
 //#if HAVE_TERMIO_H
 #include <termio.h>
@@ -45,8 +46,8 @@
 using namespace std;
 using namespace orca;
 
-KeyboardDriver::KeyboardDriver( orcaiceutil::PtrProxy* commands ) :
-        commandProxy_(commands)
+KeyboardDriver::KeyboardDriver( TeleopFsm* fsm, orcaiceutil::PtrProxy* commands ) :
+        fsm_(fsm), commandProxy_(commands)
 {
     // init internal data storage
     command_ = new Velocity2dCommand;
@@ -177,7 +178,7 @@ void KeyboardDriver::run()
                 break;
             case KEYCODE_ESCAPE:
                 cout<<"quitting on demand"<<endl;
-                deactivate();
+                fsm_->deactivate();
                 break;
             default:
                 // any other key sends 'stop' command
@@ -206,7 +207,7 @@ void KeyboardDriver::run()
 
     // revert to normal input mode
     ioctl( kfd, TCSETA, &cooked );
-
+    /*
     cout<<"Cleaned up, shutting down the communicator..."<<endl;
     try {
         comm_->shutdown();
@@ -214,6 +215,7 @@ void KeyboardDriver::run()
     catch ( const Ice::CommunicatorDestroyedException & e ) {
         // it's ok, if this is a Ctrl-C event, the communicator is already destroyed
     }
+    */
 }
 
 void KeyboardDriver::keyboardHelp()

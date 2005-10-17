@@ -21,22 +21,24 @@
 #ifndef ORCA2_TELEOP_FSM_CONTEXT_H
 #define ORCA2_TELEOP_FSM_CONTEXT_H
 
+#include "teleopfsm.h"
+
 #include <orcaiceutil/ptrproxy.h>
 
 class OutputDriver;
 class KeyboardDriver;
 
-class TeleopContext
+class TeleopComponent : public TeleopFsm
 {
 public:
 
-    TeleopContext();
-    ~TeleopContext();
+    TeleopComponent();
+    virtual ~TeleopComponent();
 
-    void startup();
-    void shutdown();
+    virtual void startup();
+    virtual void shutdown();
 
-    void FSMError(const char* t, const char* s);
+    virtual void FSMError(const char* t, const char* s);
 
     // special
     void setupCommunicator( const Ice::CommunicatorPtr & comm ) { comm_=comm; };

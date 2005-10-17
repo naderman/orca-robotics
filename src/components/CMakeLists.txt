@@ -1,5 +1,5 @@
 SUBDIRS(
-#  lasermon
+  lasermon
   position2dmon
   segwayrmp
   teleop
