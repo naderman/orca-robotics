@@ -2,7 +2,7 @@
 # Do not include /config/compile_flags.cmake here. It will lead to circular dependencies.
 #
 
-INCLUDE( ${PROJ_SOURCE_DIR}/src/interfaces/slice/orca/slice2cpp_rules.cmake )
+INCLUDE( ${PROJ_SOURCE_DIR}/config/slice2cpp_rules.cmake )
 
 #
 # Since CMake doesn't know how to automatically track dependencies for .ice files, 
@@ -24,9 +24,17 @@ SET( SLICE_SOURCES
   power.ice
   )
 
-SET( HUMAN_SOURCES )
+#
+# Work out the list of generated files from the list of slice sources
+#
+GENERATE_SLICE_RULES( SLICE_CPP_FILES SLICE_HEADER_FILES ${SLICE_SOURCES} )
 
-ADD_SLICE_LIB_RULES( OrcaInterfaces "${SLICE_SOURCES}" "${HUMAN_SOURCES}" )
+ADD_LIBRARY( OrcaInterfaces SHARED ${SLICE_CPP_FILES} )
+INSTALL_TARGETS( /lib OrcaInterfaces )
+INSTALL_FILES( /include/orca FILES ${SLICE_HEADER_FILES} )
+
+
+#ADD_SLICE_LIB_RULES( OrcaInterfaces "${SLICE_SOURCES}" "${HUMAN_SOURCES}" )
 
 INCLUDE_DIRECTORIES( BEFORE
     ${ICE_HOME}/include
@@ -35,8 +43,8 @@ INCLUDE_DIRECTORIES( BEFORE
     ${PROJ_BINARY_DIR}/src/interfaces/slice/orca
 )
 
-LINK_DIRECTORIES(
-    ${ICE_HOME}/lib
-)
+#LINK_DIRECTORIES(
+#    ${ICE_HOME}/lib
+#)
 
 ADD_DEFINITIONS( "-Wall" )
