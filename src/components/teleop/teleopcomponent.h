@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_TELEOP_FSM_CONTEXT_H
-#define ORCA2_TELEOP_FSM_CONTEXT_H
+#ifndef ORCA2_TELEOP_COMPONENT_H
+#define ORCA2_TELEOP_COMPONENT_H
 
 #include "teleopfsm.h"
 
@@ -35,10 +35,9 @@ public:
     TeleopComponent();
     virtual ~TeleopComponent();
 
-    virtual void startup();
-    virtual void shutdown();
-
-    virtual void FSMError(const char* t, const char* s);
+    virtual void activate();
+    virtual void humanDeactivate();
+    virtual void interruptDeactivate();
 
     // special
     void setupCommunicator( const Ice::CommunicatorPtr & comm ) { comm_=comm; };

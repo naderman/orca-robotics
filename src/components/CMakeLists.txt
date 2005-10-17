@@ -1,6 +1,6 @@
 SUBDIRS(
   lasermon
-  playerlaser
+#  playerlaser
   lasermon
   position2dmon
   powermon

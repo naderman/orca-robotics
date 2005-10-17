@@ -34,7 +34,7 @@ TeleopComponent::~TeleopComponent()
 {
 }
 
-void TeleopComponent::startup()
+void TeleopComponent::activate()
 {
     //
     // NETWORK
@@ -52,7 +52,16 @@ void TeleopComponent::startup()
     hwDriver_->activate();
 }
 
-void TeleopComponent::shutdown()
+void TeleopComponent::humanDeactivate()
+{
+    netDriver_->deactivate();
+    cout<<"joining network hwDriver_..."<<endl;
+    netDriver_->getThreadControl().join();
+
+    // hw driver is assumed to be stopped
+}
+
+void TeleopComponent::interruptDeactivate()
 {
     netDriver_->deactivate();
     cout<<"joining network hwDriver_..."<<endl;
@@ -61,9 +70,4 @@ void TeleopComponent::shutdown()
     hwDriver_->deactivate();
     cout<<"joining input hwDriver_... Hit any key please."<<endl;
     hwDriver_->getThreadControl().join();
-}
-
-void TeleopComponent::FSMError(const char* t, const char* s)
-{
-    cerr << "Transition error: " << t << " in state " << s << endl;
 }

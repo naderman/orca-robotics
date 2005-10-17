@@ -1,18 +1,15 @@
 FSMName TeleopFsm
-Context TeleopContext
 Initial Idle
-Header  teleopcontext.h
-Version $Id$
 
 {
 
 Idle{
-    activate Active startup
+    startup Active activate
 }
 
 Active{
-    humanShutdown Idle shutdown
-    interruptShutdown Idle shutdown
+    humanShutdown Idle humanDeactivate
+    interruptShutdown Idle interruptDeactivate
 }
 
 }

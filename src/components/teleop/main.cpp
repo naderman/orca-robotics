@@ -38,7 +38,7 @@ int App::run( int argc, char* argv[] )
     TeleopComponent fsm;
 
     fsm.setupCommunicator( communicator() );
-    fsm.activate();
+    fsm.startup();
 
     // Wait until we are done (this will trap signals)
     //
@@ -47,7 +47,7 @@ int App::run( int argc, char* argv[] )
     // do clean up if there was a Ctrl-C, otherwise the driver has cleaned up itself
     if ( interrupted() )  {
         cerr<< appName() << ": terminating..." << endl;
-        fsm.humanShutdown();
+        fsm.interruptShutdown();
     } else {
         cout<<appName()<<": exiting cleanly. Good bye."<<endl;
     }
