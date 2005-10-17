@@ -36,6 +36,8 @@ int App::run( int argc, char* argv[] )
     // COMPONENT STATE MACHINE
     //
     TeleopComponent fsm;
+
+    fsm.setupCommunicator( communicator() );
     fsm.activate();
 
     // Wait until we are done (this will trap signals)

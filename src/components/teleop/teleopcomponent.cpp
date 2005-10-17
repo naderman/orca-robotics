@@ -40,7 +40,6 @@ void TeleopComponent::startup()
     // NETWORK
     //
     netDriver_ = new OutputDriver( &commandProxy );
-    // dodgy hack: non-standard function
     netDriver_->setupComms( comm_ );
     netDriver_->activate();
 
