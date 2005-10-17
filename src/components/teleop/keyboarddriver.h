@@ -22,7 +22,7 @@
 #define ORCA2_KEYBOARD_DRIVER_H
 
 #include <orcaiceutil/thread.h>
-#include <orcaiceutil/ptrproxy.h>
+#include <orcaiceutil/ptrbuffer.h>
 
 #include <orca/platform2d.h>
 
@@ -32,7 +32,7 @@ class KeyboardDriver : public orcaiceutil::Thread
 {
 public:
 
-    KeyboardDriver( TeleopFsm* fsm, orcaiceutil::PtrProxy* commands );
+    KeyboardDriver( TeleopFsm* fsm, orcaiceutil::PtrBuffer* commands );
     virtual ~KeyboardDriver();
 
     virtual void setup( const Ice::PropertiesPtr & );
@@ -48,7 +48,7 @@ private:
     // component/driver interface
     TeleopFsm* fsm_;
     // network/driver interface
-    orcaiceutil::PtrProxy* commandProxy_;
+    orcaiceutil::PtrBuffer* commandBuffer_;
 
     // internal storage for current command
     orca::Velocity2dCommandPtr command_;

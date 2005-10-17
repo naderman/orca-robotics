@@ -46,8 +46,8 @@
 using namespace std;
 using namespace orca;
 
-KeyboardDriver::KeyboardDriver( TeleopFsm* fsm, orcaiceutil::PtrProxy* commands ) :
-        fsm_(fsm), commandProxy_(commands)
+KeyboardDriver::KeyboardDriver( TeleopFsm* fsm, orcaiceutil::PtrBuffer* commands ) :
+    fsm_(fsm), commandBuffer_(commands)
 {
     // init internal data storage
     command_ = new Velocity2dCommand;
@@ -201,7 +201,7 @@ void KeyboardDriver::run()
         if ( lastCommand->motion.v.x != command_->motion.v.x ||
              lastCommand->motion.w != command_->motion.w )
         {
-            commandProxy_->set( command_ );
+            commandBuffer_->push( command_ );
         }
     }
 

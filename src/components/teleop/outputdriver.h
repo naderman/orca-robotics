@@ -22,7 +22,7 @@
 #define ORCA2_TELEOP_NETWORK_DRIVER_H
 
 #include <orcaiceutil/driver.h>
-#include <orcaiceutil/ptrproxy.h>
+#include <orcaiceutil/ptrbuffer.h>
 
 #include <orca/platform2d.h>
 
@@ -30,7 +30,7 @@ class OutputDriver : public orcaiceutil::Driver
 {
 public:
 
-    OutputDriver( orcaiceutil::PtrProxy* commands );
+    OutputDriver( orcaiceutil::PtrBuffer* commands );
     virtual ~OutputDriver();
 
     virtual void setup( const Ice::PropertiesPtr & );
@@ -47,7 +47,7 @@ private:
     orca::Platform2dPrx platform2dPrx_;
 
     // network/driver interface
-    orcaiceutil::PtrProxy* commandProxy_;
+    orcaiceutil::PtrBuffer* commandBuffer_;
 
 };
 

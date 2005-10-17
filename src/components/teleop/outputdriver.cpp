@@ -29,8 +29,8 @@ using namespace std;
 using namespace orca;
 using namespace orcaiceutil;
 
-OutputDriver::OutputDriver( orcaiceutil::PtrProxy* commands ) :
-        commandProxy_(commands)
+OutputDriver::OutputDriver( orcaiceutil::PtrBuffer* commands ) :
+        commandBuffer_(commands)
 {
 }
 
@@ -99,7 +99,7 @@ void OutputDriver::run()
 
     while ( isActive() )
     {
-        int ret = commandProxy_->getNextWait( data, timeoutMs );
+        int ret = commandBuffer_->peek( data, timeoutMs );
 
         if ( ret==0 ) { // new data
             command = Velocity2dCommandPtr::dynamicCast( data );

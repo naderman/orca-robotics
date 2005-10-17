@@ -33,7 +33,7 @@
 // segway rmp usb driver
 #include "rmpusb/rmpusbdriver.h"
 
-#include <orcaiceutil/ptrproxy.h>
+#include <orcaiceutil/ptrbuffer.h>
 #include <orcaiceutil/ptrbuffer.h>
 #include <orcaiceutil/configutils.h>
 #include <orcaiceutil/objutils.h>
@@ -62,11 +62,11 @@ void RmpComponent::start(const string & name,
     // NETWORK-DRIVER INTERFACES
     //
     // the driver will put the latest data into this proxy
-    orcaiceutil::PtrProxy position2dProxy;
+    orcaiceutil::PtrBuffer position2dProxy;
     // the driver will take the latest command from the proxy
-    orcaiceutil::PtrProxy commandProxy;
+    orcaiceutil::PtrBuffer commandProxy;
     // the driver will put the latest data into this proxy
-    orcaiceutil::PtrProxy powerProxy;
+    orcaiceutil::PtrBuffer powerProxy;
     // buffers for publishing service (for now, make it depth=1, essentially a proxy)
     orcaiceutil::PtrBuffer position2dBuffer( 1 );
     orcaiceutil::PtrBuffer powerBuffer( 1 );

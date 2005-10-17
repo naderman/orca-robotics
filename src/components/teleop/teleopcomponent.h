@@ -23,7 +23,7 @@
 
 #include "teleopfsm.h"
 
-#include <orcaiceutil/ptrproxy.h>
+#include <orcaiceutil/ptrbuffer.h>
 
 class OutputDriver;
 class KeyboardDriver;
@@ -46,7 +46,7 @@ public:
 private:
     // network-hardware interface
     // the driver will put the latest data into this proxy
-    orcaiceutil::PtrProxy commandProxy;
+    orcaiceutil::PtrBuffer commandProxy;
 
     // network
     OutputDriver* netDriver_;

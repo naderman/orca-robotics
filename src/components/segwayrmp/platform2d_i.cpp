@@ -25,7 +25,7 @@ using namespace std;
 using namespace orca;
 using namespace orcaiceutil;
 
-Platform2dI::Platform2dI( orcaiceutil::PtrProxy* position2d, orcaiceutil::PtrProxy* command ) :
+Platform2dI::Platform2dI( orcaiceutil::PtrBuffer* position2d, orcaiceutil::PtrBuffer* command ) :
                     position2d_(position2d), command_(command)
 {
 }

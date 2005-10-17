@@ -35,8 +35,8 @@ using namespace orcaiceutil;
 
 SegwayRmpUsb::SegwayRmpUsb(
         orcaiceutil::PtrBuffer* position2dBuf, orcaiceutil::PtrBuffer* powerBuf,
-        orcaiceutil::PtrProxy* position2dProxy, orcaiceutil::PtrProxy* commandProxy,
-        orcaiceutil::PtrProxy* powerProxy ) :
+        orcaiceutil::PtrBuffer* position2dProxy, orcaiceutil::PtrBuffer* commandProxy,
+        orcaiceutil::PtrBuffer* powerProxy ) :
                     position2dBuf_(position2dBuf), powerBuf_(powerBuf),
                     position2dProxy_(position2dProxy), commandProxy_(commandProxy),
                     powerProxy_(powerProxy)
