@@ -1,5 +1,5 @@
-#include "teleopFsm.h"
-static char _versID[] = "Version $Id$";
+#include "teleopfsm.h"
+//static char _versID[] = "Version $Id$";
 TeleopFsmActiveState TeleopFsm::ActiveState;
 TeleopFsmIdleState TeleopFsm::IdleState;
 void TeleopFsmState::deactivate(TeleopFsm& s)

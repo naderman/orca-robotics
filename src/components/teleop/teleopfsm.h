@@ -1,7 +1,6 @@
 #ifndef _H_TeleopFsm
 #define _H_TeleopFsm
 #include <stddef.h>
-#include "teleopcontext.h"
 class TeleopFsm;
 
 class TeleopFsmState {
@@ -25,7 +24,9 @@ public:
   {return("Idle");};
   virtual void activate(TeleopFsm&);
 };
-class TeleopFsm : public TeleopContext {
+
+
+class TeleopFsm {
   public:
   static TeleopFsmActiveState ActiveState;
   static TeleopFsmIdleState IdleState;
@@ -34,6 +35,12 @@ class TeleopFsm : public TeleopContext {
   void activate() {itsState->activate(*this);}
   void SetState(TeleopFsmState& theState) {itsState=&theState;}
   TeleopFsmState& GetState() const {return *itsState;};
+
+  // to be implemented by the derived class
+  virtual void startup() = 0;
+  virtual void shutdown() = 0;
+  virtual void FSMError(const char* t, const char* s) = 0;
+
   private:
     TeleopFsmState* itsState;
 };
