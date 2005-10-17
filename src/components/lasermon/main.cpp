@@ -51,30 +51,13 @@ int App::run( int argc, char* argv[] )
     adapter->activate();
     cout<<"*** INFO: Adapter is initialized and running..."<<endl;
 
-    // Set up a consumer to receive IceStorm data stream
-//     LaserConsumerPtr laserConsumer = new LaserConsumerI;
-//     lasermonutil::subscribeConsumer<LaserConsumerPtr>( communicator(), adapter, laserConsumer, "Laser" );
+    //
+    // Get the laser's configuration details
+    //
 
     // create a proxy for the remote server based on its name in the config file
-    std::string proxyName = orcaiceutil::getRemotePortName( communicator(), "Laser" );
-
-    Ice::ObjectPrx base = communicator()->stringToProxy(proxyName);
-    // check with the server that the one we found is of the right type
     LaserPrx laserPrx;
-    int count = 0;
-    while ( true ) 
-    {
-        try {
-            laserPrx = LaserPrx::checkedCast(base);
-            break;
-        }
-        catch ( const Ice::ConnectionRefusedException & e ) {
-            if ( count++ > 5 ) exit(0);
-            cout<<"tried "<<count<<" times"<<endl;
-            sleep(1);
-        }
-    }
-
+    lasermonutil::connectProxy<LaserPrx>( communicator(), adapter, laserPrx, "Laser" );
 
     // We could set the laser's configuration like so:
     //LaserConfigPtr config = new LaserConfig;
@@ -82,7 +65,17 @@ int App::run( int argc, char* argv[] )
 
     cout<<"TRACE(main.cpp): " << laserPrx->getConfig() << endl;
     cout<<"TRACE(main.cpp): " << laserPrx->getGeometry() << endl;
-    
+
+    //
+    // Now read the laser's data
+    //
+
+    // Set up a consumer to receive IceStorm data stream
+    LaserConsumerPtr laserConsumer = new LaserConsumerI;
+//    lasermonutil::subscribeConsumerToTopic<LaserConsumerPtr>( communicator(), adapter, laserConsumer, "Laser" );
+    lasermonutil::subscribeConsumerToTopic( communicator(), adapter, (Ice::ObjectPtr&) laserConsumer, "Laser" );
+
+    //
     // Wait until we are done (this will trap signals)
     //
     communicator()->waitForShutdown();
