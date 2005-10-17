@@ -28,7 +28,7 @@
 #include <orcaiceutil/configutils.h>
 #include <orcaiceutil/objutils.h>
 #include <orcaiceutil/connectutils.h>
-#include <orca/mathdefs.h>
+#include <orcaiceutil/mathdefs.h>
 
 using namespace std;
 using namespace orca;
