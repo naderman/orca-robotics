@@ -83,33 +83,9 @@ int App::run( int argc, char* argv[] )
     cout<<"TRACE(main.cpp): " << laserPrx->getConfig() << endl;
     cout<<"TRACE(main.cpp): " << laserPrx->getGeometry() << endl;
     
-
-
-//     //
-//     // HARDWARE INTERFACES
-//     //
-//     orcaiceutil::Driver* driver = new Position2dMonInput( position2dPrx, position2dTopic, callbackPrx );
-//     driver->setup( communicator()->getProperties() );
-
-//     // this is a dodgy hack, to let the driver shutdown the communicator and end the program
-//     Position2dMonInput* hack = (Position2dMonInput*)driver;
-//     hack->setupCommunicator( communicator() );
-
-//     driver->activate();
-    
     // Wait until we are done (this will trap signals)
     //
     communicator()->waitForShutdown();
-
-//     // do clean up if there was a Ctrl-C, otherwise the driver has cleaned up itself
-//     if ( interrupted() )  {
-//         cerr<< appName() << ": terminating..." << endl;
-//         driver->deactivate();
-//         cout<<"joining... Hit any key please."<<endl;
-//         driver->getThreadControl().join();
-//     } else {
-//         cout<<appName()<<": exiting cleanly. Good bye."<<endl;
-//     }
 
     return 0;
 }
