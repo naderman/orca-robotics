@@ -35,6 +35,7 @@ class LaserConfig extends OrcaObject
 {
     float rangeResolution;
     float angleIncrement;
+    bool  isEnabled;
 };
 
 class LaserGeometry extends OrcaObject

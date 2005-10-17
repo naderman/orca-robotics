@@ -28,6 +28,7 @@
 #include <orcaiceutil/configutils.h>
 #include <orcaiceutil/objutils.h>
 #include <orcaiceutil/connectutils.h>
+#include <orca/mathdefs.h>
 
 using namespace std;
 using namespace orca;
@@ -59,8 +60,11 @@ int App::run( int argc, char* argv[] )
     orcaiceutil::connectProxy<LaserPrx>( communicator(), adapter, laserPrx, "Laser" );
 
     // We could set the laser's configuration like so:
-    //LaserConfigPtr config = new LaserConfig;
-    //laserPrx->setConfig( config );
+//     LaserConfigPtr config = new LaserConfig;
+//     config->rangeResolution = 0.01;
+//     config->angleIncrement  = DEG2RAD(0.5);
+//     config->isEnabled       = true;
+//     laserPrx->setConfig( config );
 
     cout<<"TRACE(main.cpp): " << laserPrx->getConfig() << endl;
     cout<<"TRACE(main.cpp): " << laserPrx->getGeometry() << endl;
@@ -73,6 +77,14 @@ int App::run( int argc, char* argv[] )
     LaserConsumerPtr laserConsumer = new LaserConsumerI;
 //    orcaiceutil::subscribeConsumerToTopic<LaserConsumerPtr>( communicator(), adapter, laserConsumer, "Laser" );
     orcaiceutil::subscribeConsumerToTopic( communicator(), adapter, (Ice::ObjectPtr&) laserConsumer, "Laser" );
+
+
+    // We could pull data like so:
+//     while (true)
+//     {
+//         cout << "Pulled: " << laserPrx->getData() << endl;
+//         sleep(1);
+//     }
 
     //
     // Wait until we are done (this will trap signals)
