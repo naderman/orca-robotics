@@ -17,9 +17,6 @@ SET( SLICE_SOURCES
   opaque.ice
   pose2d.ice
   stringobj.ice
-#  velocity2ddata.ice
-#  position2ddata.ice
-#  powerdata.ice
   binaryindicator.ice
   laser.ice
   position2d.ice
