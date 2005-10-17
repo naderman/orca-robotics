@@ -23,7 +23,6 @@
 
 #include "rmpdrivercontext.h"
 #include <orcaiceutil/thread.h>
-#include <orcaiceutil/ptrproxy.h>
 #include <orcaiceutil/ptrbuffer.h>
 
 #include <orca/platform2d.h>
@@ -39,7 +38,8 @@ class SegwayRmpUsb : public RmpDriverContext, public orcaiceutil::Thread
 public:
 
     SegwayRmpUsb( orcaiceutil::PtrBuffer* position2dBuf, orcaiceutil::PtrBuffer* powerBuf,
-                  orcaiceutil::PtrProxy* position, orcaiceutil::PtrProxy* commands, orcaiceutil::PtrProxy* power );
+                  orcaiceutil::PtrBuffer* position, orcaiceutil::PtrBuffer* commands,
+                  orcaiceutil::PtrBuffer* power );
     virtual ~SegwayRmpUsb();
 
     void setup( const Ice::PropertiesPtr & );
@@ -58,9 +58,9 @@ private:
     // component/driver interface
     orcaiceutil::PtrBuffer* position2dBuf_;
     orcaiceutil::PtrBuffer* powerBuf_;
-    orcaiceutil::PtrProxy* position2dProxy_;
-    orcaiceutil::PtrProxy* commandProxy_;
-    orcaiceutil::PtrProxy* powerProxy_;
+    orcaiceutil::PtrBuffer* position2dProxy_;
+    orcaiceutil::PtrBuffer* commandProxy_;
+    orcaiceutil::PtrBuffer* powerProxy_;
 
     // internal storage
     orca::Position2dDataPtr position2dData_;

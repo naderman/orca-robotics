@@ -2,11 +2,11 @@
 //static char _versID[] = "Version $Id$";
 TeleopFsmActiveState TeleopFsm::ActiveState;
 TeleopFsmIdleState TeleopFsm::IdleState;
-void TeleopFsmState::deactivate(TeleopFsm& s)
-  {s.FSMError("deactivate", s.GetState().StateName());}
+void TeleopFsmState::humanShutdown(TeleopFsm& s)
+  {s.FSMError("humanShutdown", s.GetState().StateName());}
 void TeleopFsmState::activate(TeleopFsm& s)
   {s.FSMError("activate", s.GetState().StateName());}
-void TeleopFsmActiveState::deactivate(TeleopFsm& s) {
+void TeleopFsmActiveState::humanShutdown(TeleopFsm& s) {
   s.SetState(TeleopFsm::IdleState);
   s.shutdown();
 }

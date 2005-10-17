@@ -35,7 +35,7 @@ orca::PowerDataPtr PowerI::getData(const ::Ice::Current& ) const
     // create null smart pointer. data will be cloned into it.
     Ice::ObjectPtr data;
     //! @todo what happens if there's no data?
-    power_->get( data );
+    power_->peek( data );
 
     return PowerDataPtr::dynamicCast( data );
 }

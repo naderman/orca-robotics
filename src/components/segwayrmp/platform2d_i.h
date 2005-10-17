@@ -28,14 +28,14 @@
 #include <orca/platform2d.h>
 
 // utilities
-#include <orcaiceutil/ptrproxy.h>
+#include <orcaiceutil/ptrbuffer.h>
 
 
 // serves latest data on demand and accepts commands
 class Platform2dI : public orca::Platform2d
 {
 public:
-    Platform2dI( orcaiceutil::PtrProxy* position2d, orcaiceutil::PtrProxy* commands );
+    Platform2dI( orcaiceutil::PtrBuffer* position2d, orcaiceutil::PtrBuffer* commands );
 
     virtual ::orca::Position2dDataPtr getData(const ::Ice::Current& ) const;
 
@@ -46,9 +46,9 @@ public:
     virtual void enableMotor(bool, const ::Ice::Current& = ::Ice::Current()) {};
 
     // the driver will put the latest data into this proxy
-    orcaiceutil::PtrProxy* position2d_;
+    orcaiceutil::PtrBuffer* position2d_;
     // the driver will take the latest command from the proxy
-    orcaiceutil::PtrProxy* command_;
+    orcaiceutil::PtrBuffer* command_;
 };
 
 

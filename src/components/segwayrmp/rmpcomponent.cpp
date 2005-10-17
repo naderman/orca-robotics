@@ -34,7 +34,6 @@
 #include "rmpusb/rmpusbdriver.h"
 
 #include <orcaiceutil/ptrbuffer.h>
-#include <orcaiceutil/ptrbuffer.h>
 #include <orcaiceutil/configutils.h>
 #include <orcaiceutil/objutils.h>
 
@@ -126,7 +125,7 @@ void RmpComponent::start(const string & name,
     while ( 1 )
     {
         // if the buffer is empty, this will block until next data arrives
-        position2dBuffer.front( data );
+        position2dBuffer.peek( data );
         position2dBuffer.pop();
 
         posData = Position2dDataPtr::dynamicCast( data );

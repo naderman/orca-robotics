@@ -47,7 +47,7 @@ int App::run( int argc, char* argv[] )
     // do clean up if there was a Ctrl-C, otherwise the driver has cleaned up itself
     if ( interrupted() )  {
         cerr<< appName() << ": terminating..." << endl;
-        fsm.deactivate();
+        fsm.humanShutdown();
     } else {
         cout<<appName()<<": exiting cleanly. Good bye."<<endl;
     }

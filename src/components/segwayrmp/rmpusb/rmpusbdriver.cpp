@@ -150,8 +150,8 @@ void SegwayRmpUsb::run()
 
         // make a copy of internal storage into driver/component interface
         // this will be returned to pulling clients
-        position2dProxy_->set( position2dData_ );
-        powerProxy_->set( powerData_ );
+        position2dProxy_->push( position2dData_ );
+        powerProxy_->push( powerData_ );
         // this will be pushed to IceStorm
         position2dBuf_->push( position2dData_ );
         powerBuf_->push( powerData_ );
@@ -172,7 +172,7 @@ void SegwayRmpUsb::run()
             if ( timeSinceLastWrite >= minWritePeriodUsec )
             {                
                 Ice::ObjectPtr data;
-                commandProxy_->get( data );
+                commandProxy_->peek( data );
                 commandData_ = Velocity2dCommandPtr::dynamicCast( data );
                 //cout<<"comm : "<<commandData_<<endl;        
 

@@ -177,8 +177,9 @@ void KeyboardDriver::run()
                 //turn *= 0.9;
                 break;
             case KEYCODE_ESCAPE:
-                cout<<"quitting on demand"<<endl;
-                fsm_->deactivate();
+                cout<<"Human-initiated shutdown."<<endl;
+                fsm_->humanShutdown();
+                sleep(1);
                 break;
             default:
                 // any other key sends 'stop' command

@@ -11,7 +11,8 @@ Idle{
 }
 
 Active{
-    deactivate Idle shutdown
+    humanShutdown Idle shutdown
+    interruptShutdown Idle shutdown
 }
 
 }

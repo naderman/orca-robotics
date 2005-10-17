@@ -38,7 +38,7 @@ orca::Position2dDataPtr Platform2dI::getData(const Ice::Current& current) const
     // create a null pointer. data will be cloned into it.
     Ice::ObjectPtr data;
     //! @todo what should happens if there's no data?
-    position2d_->get( data );
+    position2d_->peek( data );
 
     cout<<Position2dDataPtr::dynamicCast( data )<<endl;
     return Position2dDataPtr::dynamicCast( data );
@@ -55,5 +55,5 @@ orca::Position2dGeometryPtr Platform2dI::getGeometry(const Ice::Current& current
 // Store incoming command in a proxy, it will be handled by the driver at the next opportunity.
 void Platform2dI::putData(const ::orca::Velocity2dCommandPtr& command, const ::Ice::Current& )
 {
-    command_->set( command );
+    command_->push( command );
 }

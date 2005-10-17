@@ -7,7 +7,7 @@ class TeleopFsmState {
 public:
 
   virtual const char* StateName() const = 0;
-  virtual void deactivate(TeleopFsm& s);
+  virtual void humanShutdown(TeleopFsm& s);
   virtual void activate(TeleopFsm& s);
 };
 
@@ -15,7 +15,7 @@ class TeleopFsmActiveState : public TeleopFsmState {
 public:
   virtual const char* StateName() const
   {return("Active");};
-  virtual void deactivate(TeleopFsm&);
+  virtual void humanShutdown(TeleopFsm&);
 };
 
 class TeleopFsmIdleState : public TeleopFsmState {
@@ -31,7 +31,7 @@ class TeleopFsm {
   static TeleopFsmActiveState ActiveState;
   static TeleopFsmIdleState IdleState;
   TeleopFsm();// default constructor
-  void deactivate() {itsState->deactivate(*this);}
+  void humanShutdown() {itsState->humanShutdown(*this);}
   void activate() {itsState->activate(*this);}
   void SetState(TeleopFsmState& theState) {itsState=&theState;}
   TeleopFsmState& GetState() const {return *itsState;};

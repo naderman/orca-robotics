@@ -28,18 +28,18 @@
 #include <orca/power.h>
 
 // utilities
-#include <orcaiceutil/ptrproxy.h>
+#include <orcaiceutil/ptrbuffer.h>
 
 
 class PowerI : public orca::Power
 {
     public:
-        PowerI( orcaiceutil::PtrProxy* power );
+        PowerI( orcaiceutil::PtrBuffer* power );
 
         virtual ::orca::PowerDataPtr getData(const ::Ice::Current& ) const;
 
         // the driver will put the latest data into this proxy
-        orcaiceutil::PtrProxy* power_;
+        orcaiceutil::PtrBuffer* power_;
 };
 
 #endif
