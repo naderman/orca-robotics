@@ -281,9 +281,9 @@ void SegwayRmpUsb::updateData( rmpusb_frame_t* data_frame )
         }
 
         // first, do 2D info.
-        position2dData_->frame.p.x = odomX_;
-        position2dData_->frame.p.y = odomY_;
-        position2dData_->frame.o = odomYaw_;
+        position2dData_->pose.p.x = odomX_;
+        position2dData_->pose.p.y = odomY_;
+        position2dData_->pose.o = odomYaw_;
     } else {
         //printf("skipping odometry\n");
     }
@@ -302,16 +302,16 @@ void SegwayRmpUsb::updateData( rmpusb_frame_t* data_frame )
     {
         // combine left and right wheel velocity to get foreward velocity
         // change from counts/sec into meters/sec
-        position2dData_->twist.v.x =
+        position2dData_->motion.v.x =
                 ((double)data_frame->left_dot+(double)data_frame->right_dot) /
                     (double)RMP_COUNT_PER_M_PER_S / 2.0;
         
         // no side speeds for this bot
-        position2dData_->twist.v.y = 0;
+        position2dData_->motion.v.y = 0;
         
         // from counts/sec into deg/sec.  also, take the additive
         // inverse, since the RMP reports clockwise angular velocity as positive.
-        position2dData_->twist.w = -(double)data_frame->yaw_dot / (double)RMP_COUNT_PER_DEG_PER_S;
+        position2dData_->motion.w = -(double)data_frame->yaw_dot / (double)RMP_COUNT_PER_DEG_PER_S;
         
         position2dData_->stalled = false;
 /*        
@@ -418,21 +418,21 @@ void SegwayRmpUsb::makeVelocityCommand( CanPacket* pkt )
     // 8mph is 3576.32 mm/s
     // so then mm/s -> counts = (1176/3576.32) = 0.32882963
 
-    if ( commandData_->twist.v.x > maxSpeed_ )
+    if ( commandData_->motion.v.x > maxSpeed_ )
     {
-        cout<<"WARN: xspeed thresholded! ("<<commandData_->twist.v.x<<">"<<maxSpeed_<<")"<<endl;
-        commandData_->twist.v.x = maxSpeed_;
+        cout<<"WARN: xspeed thresholded! ("<<commandData_->motion.v.x<<">"<<maxSpeed_<<")"<<endl;
+        commandData_->motion.v.x = maxSpeed_;
     }
-    else if(commandData_->twist.v.x < -maxSpeed_)
+    else if(commandData_->motion.v.x < -maxSpeed_)
     {
-        cout<<"WARN: xspeed thresholded! ("<<commandData_->twist.v.x<<"<"<<-maxSpeed_<<")"<<endl;
-        commandData_->twist.v.x = -maxSpeed_;
+        cout<<"WARN: xspeed thresholded! ("<<commandData_->motion.v.x<<"<"<<-maxSpeed_<<")"<<endl;
+        commandData_->motion.v.x = -maxSpeed_;
     }
 
     //lastSpeedX_ = xspeed;
 
     // translational RMP command (convert m/s to mm/s first)
-    int16_t trans = (int16_t) rint(commandData_->twist.v.x * 1e3 * (double)RMP_COUNT_PER_MM_PER_S);
+    int16_t trans = (int16_t) rint(commandData_->motion.v.x * 1e3 * (double)RMP_COUNT_PER_MM_PER_S);
     // check for command limits
     if(trans > RMP_MAX_TRANS_VEL_COUNT) {
         trans = RMP_MAX_TRANS_VEL_COUNT;
@@ -441,15 +441,15 @@ void SegwayRmpUsb::makeVelocityCommand( CanPacket* pkt )
         trans = -RMP_MAX_TRANS_VEL_COUNT;
     }
 
-    if( commandData_->twist.w > maxTurnrate_ )
+    if( commandData_->motion.w > maxTurnrate_ )
     {
-        cout<<"WARN: yawspeed thresholded! ("<<commandData_->twist.w<<">"<<maxTurnrate_<<")"<<endl;
-        commandData_->twist.w = maxTurnrate_;
+        cout<<"WARN: yawspeed thresholded! ("<<commandData_->motion.w<<">"<<maxTurnrate_<<")"<<endl;
+        commandData_->motion.w = maxTurnrate_;
     }
-    else if( commandData_->twist.w < -maxTurnrate_ )
+    else if( commandData_->motion.w < -maxTurnrate_ )
     {
-        cout<<"WARN: yawspeed thresholded! ("<<commandData_->twist.w<<"<"<<-maxTurnrate_<<")"<<endl;
-        commandData_->twist.w = -maxTurnrate_;
+        cout<<"WARN: yawspeed thresholded! ("<<commandData_->motion.w<<"<"<<-maxTurnrate_<<")"<<endl;
+        commandData_->motion.w = -maxTurnrate_;
     }
   
     //lastSpeedYaw_ = yawspeed;
@@ -457,7 +457,7 @@ void SegwayRmpUsb::makeVelocityCommand( CanPacket* pkt )
     // rotational RMP command \in [-1024, 1024] (convert from rad/s to deg/s first)
     // this is ripped from rmi_demo... to go from deg/s to counts
     // deg/s -> count = 1/0.013805056
-    int16_t rot = (int16_t) rint(commandData_->twist.w / DEG2RAD_RATIO * (double)RMP_COUNT_PER_DEG_PER_S);
+    int16_t rot = (int16_t) rint(commandData_->motion.w / DEG2RAD_RATIO * (double)RMP_COUNT_PER_DEG_PER_S);
     // check for command limits
     if(rot > RMP_MAX_ROT_VEL_COUNT) {
         rot = RMP_MAX_ROT_VEL_COUNT;

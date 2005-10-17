@@ -31,9 +31,9 @@ module orca
 class Position2dData extends OrcaObject
 {
     // Robot position
-    Frame2d frame;
+    Frame2d pose;
     // Translational and angular velocities in the robot CS
-    Twist2d twist;
+    Twist2d motion;
     // Are the motors stalled
     bool stalled;
 };

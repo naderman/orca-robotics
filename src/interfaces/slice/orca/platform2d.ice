@@ -30,7 +30,7 @@ module orca
 // define messages first
 class Velocity2dCommand extends OrcaObject
 {
-    Twist2d twist;
+    Twist2d motion;
 };
 
 //! Platform2d is an "active" Position2d. In addition to serving its current position2d

@@ -51,9 +51,9 @@ KeyboardDriver::KeyboardDriver( TeleopFsm* fsm, orcaiceutil::PtrProxy* commands 
 {
     // init internal data storage
     command_ = new Velocity2dCommand;
-    command_->twist.v.x = 0.0;
-    command_->twist.v.y = 0.0;
-    command_->twist.w = 0.0;
+    command_->motion.v.x = 0.0;
+    command_->motion.v.y = 0.0;
+    command_->motion.w = 0.0;
 }
 
 KeyboardDriver::~KeyboardDriver()
@@ -125,8 +125,8 @@ void KeyboardDriver::run()
     while ( isActive() )
     {
         // remember last command so we can tell if anything has changed
-        lastCommand->twist.v.x = command_->twist.v.x;
-        lastCommand->twist.w = command_->twist.w;
+        lastCommand->motion.v.x = command_->motion.v.x;
+        lastCommand->motion.w = command_->motion.w;
     
         // get the next event from the keyboard
         if( read(kfd, &c, 1) < 0 )
@@ -139,22 +139,22 @@ void KeyboardDriver::run()
         switch( c )
         {
             case KEYCODE_i:
-                command_->twist.v.x += deltaSpeed;
+                command_->motion.v.x += deltaSpeed;
                 break;
             case KEYCODE_k:
-                command_->twist.v.x -= deltaSpeed;
+                command_->motion.v.x -= deltaSpeed;
                 break;
             case KEYCODE_o:
-                command_->twist.v.x = 0.0;
+                command_->motion.v.x = 0.0;
                 break;
             case KEYCODE_j:
-                command_->twist.w += deltaTurnrate;
+                command_->motion.w += deltaTurnrate;
                 break;
             case KEYCODE_l:
-                command_->twist.w -= deltaTurnrate;
+                command_->motion.w -= deltaTurnrate;
                 break;
             case KEYCODE_u:
-                command_->twist.w = 0.0;
+                command_->motion.w = 0.0;
                 break;
             case KEYCODE_q:
                 //speed *= 1.1;
@@ -182,24 +182,24 @@ void KeyboardDriver::run()
                 break;
             default:
                 // any other key sends 'stop' command
-                command_->twist.v.x = 0.0;
-                command_->twist.w = 0.0;
+                command_->motion.v.x = 0.0;
+                command_->motion.w = 0.0;
         }
 
         // apply max limits
-        if ( fabs(command_->twist.v.x) > maxSpeed_ ) {
-            command_->twist.v.x =
-                (command_->twist.v.x / fabs(command_->twist.v.x)) * maxSpeed_;
+        if ( fabs(command_->motion.v.x) > maxSpeed_ ) {
+            command_->motion.v.x =
+                (command_->motion.v.x / fabs(command_->motion.v.x)) * maxSpeed_;
         }
-        if ( fabs(command_->twist.w) > maxTurnrate_ ) {
-            command_->twist.w =
-                (command_->twist.w / fabs(command_->twist.w)) * maxTurnrate_;
+        if ( fabs(command_->motion.w) > maxTurnrate_ ) {
+            command_->motion.w =
+                (command_->motion.w / fabs(command_->motion.w)) * maxTurnrate_;
         }
         //cout<<"current command: "<<command_<<endl;
 
         // commit change only if something has actually changed
-        if ( lastCommand->twist.v.x != command_->twist.v.x ||
-             lastCommand->twist.w != command_->twist.w )
+        if ( lastCommand->motion.v.x != command_->motion.v.x ||
+             lastCommand->motion.w != command_->motion.w )
         {
             commandProxy_->set( command_ );
         }
