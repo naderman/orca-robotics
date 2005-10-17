@@ -53,7 +53,7 @@ interface Power
 interface PowerConsumer
 {
         // ServerPush_Consumer interface
-       void takeData( PowerData obj );
+       void setData( PowerData obj );
 };
 
 }; // module

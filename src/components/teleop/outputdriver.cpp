@@ -90,8 +90,8 @@ void OutputDriver::run()
     Ice::ObjectPtr data;
     // create and init command to default 'halt' command
     Velocity2dCommandPtr command = new Velocity2dCommand;
-    command->twist.velocity.x = 0.0;
-    command->twist.velocity.y = 0.0;
+    command->twist.v.x = 0.0;
+    command->twist.v.y = 0.0;
     command->twist.w = 0.0;
 
     // how often to send repeat commands (should be in the config file)

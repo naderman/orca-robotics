@@ -19,8 +19,11 @@
  */
 
 #include "platform2d_i.h"
+#include <orcaiceutil/objutils.h>
 
+using namespace std;
 using namespace orca;
+using namespace orcaiceutil;
 
 Platform2dI::Platform2dI( orcaiceutil::PtrProxy* position2d, orcaiceutil::PtrProxy* command ) :
                     position2d_(position2d), command_(command)
@@ -37,6 +40,7 @@ orca::Position2dDataPtr Platform2dI::getData(const Ice::Current& current) const
     //! @todo what should happens if there's no data?
     position2d_->get( data );
 
+    cout<<Position2dDataPtr::dynamicCast( data )<<endl;
     return Position2dDataPtr::dynamicCast( data );
 }
 

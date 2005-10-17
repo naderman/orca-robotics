@@ -51,8 +51,8 @@ KeyboardDriver::KeyboardDriver( TeleopFsm* fsm, orcaiceutil::PtrProxy* commands 
 {
     // init internal data storage
     command_ = new Velocity2dCommand;
-    command_->twist.velocity.x = 0.0;
-    command_->twist.velocity.y = 0.0;
+    command_->twist.v.x = 0.0;
+    command_->twist.v.y = 0.0;
     command_->twist.w = 0.0;
 }
 
@@ -125,7 +125,7 @@ void KeyboardDriver::run()
     while ( isActive() )
     {
         // remember last command so we can tell if anything has changed
-        lastCommand->twist.velocity.x = command_->twist.velocity.x;
+        lastCommand->twist.v.x = command_->twist.v.x;
         lastCommand->twist.w = command_->twist.w;
     
         // get the next event from the keyboard
@@ -139,13 +139,13 @@ void KeyboardDriver::run()
         switch( c )
         {
             case KEYCODE_i:
-                command_->twist.velocity.x += deltaSpeed;
+                command_->twist.v.x += deltaSpeed;
                 break;
             case KEYCODE_k:
-                command_->twist.velocity.x -= deltaSpeed;
+                command_->twist.v.x -= deltaSpeed;
                 break;
             case KEYCODE_o:
-                command_->twist.velocity.x = 0.0;
+                command_->twist.v.x = 0.0;
                 break;
             case KEYCODE_j:
                 command_->twist.w += deltaTurnrate;
@@ -182,14 +182,14 @@ void KeyboardDriver::run()
                 break;
             default:
                 // any other key sends 'stop' command
-                command_->twist.velocity.x = 0.0;
+                command_->twist.v.x = 0.0;
                 command_->twist.w = 0.0;
         }
 
         // apply max limits
-        if ( fabs(command_->twist.velocity.x) > maxSpeed_ ) {
-            command_->twist.velocity.x =
-                (command_->twist.velocity.x / fabs(command_->twist.velocity.x)) * maxSpeed_;
+        if ( fabs(command_->twist.v.x) > maxSpeed_ ) {
+            command_->twist.v.x =
+                (command_->twist.v.x / fabs(command_->twist.v.x)) * maxSpeed_;
         }
         if ( fabs(command_->twist.w) > maxTurnrate_ ) {
             command_->twist.w =
@@ -198,7 +198,7 @@ void KeyboardDriver::run()
         //cout<<"current command: "<<command_<<endl;
 
         // commit change only if something has actually changed
-        if ( lastCommand->twist.velocity.x != command_->twist.velocity.x ||
+        if ( lastCommand->twist.v.x != command_->twist.v.x ||
              lastCommand->twist.w != command_->twist.w )
         {
             commandProxy_->set( command_ );

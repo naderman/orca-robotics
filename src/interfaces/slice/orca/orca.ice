@@ -34,7 +34,7 @@ struct Time
     int useconds;
 };
 
-// All objects are derived from this to allow polymorphism.
+/** All objects are derived from this to allow polymorphism. **/
 // NOTE: do we need the timestamp?
 class OrcaObject
 {

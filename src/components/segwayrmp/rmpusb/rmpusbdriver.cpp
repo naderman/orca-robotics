@@ -46,10 +46,13 @@ SegwayRmpUsb::SegwayRmpUsb(
     commandData_ = new Velocity2dCommand;
     // set up data structure for 3 batteries
     powerData_ = new PowerData;
-    powerData_->batteries.resize(3);
-    powerData_->batteries[1].name = "main-front";
-    powerData_->batteries[2].name = "main-rear";
-    powerData_->batteries[3].name = "io";
+    BatteryData bd;
+    for ( int i=0; i<3; ++i ) {
+        powerData_->batteries.push_back( bd );
+    }
+    powerData_->batteries[0].name = "main-front";
+    powerData_->batteries[1].name = "main-rear";
+    powerData_->batteries[2].name = "io";
 }
 
 SegwayRmpUsb::~SegwayRmpUsb(){}
@@ -226,7 +229,7 @@ int SegwayRmpUsb::read()
         data_frame_->AddPacket(pkt);
 
         // chips's debugging stuff
-        WatchPacket( &pkt, 0x407 );
+        //WatchPacket( &pkt, 0x407 );
         //WatchDataStream( pkt );
 
         // If frame is complete, transfer data and reset frame
@@ -278,9 +281,9 @@ void SegwayRmpUsb::updateData( rmpusb_frame_t* data_frame )
         }
 
         // first, do 2D info.
-        position2dData_->frame.point.x = odomX_;
-        position2dData_->frame.point.y = odomY_;
-        position2dData_->frame.a = odomYaw_;
+        position2dData_->frame.p.x = odomX_;
+        position2dData_->frame.p.y = odomY_;
+        position2dData_->frame.o = odomYaw_;
     } else {
         //printf("skipping odometry\n");
     }
@@ -299,12 +302,12 @@ void SegwayRmpUsb::updateData( rmpusb_frame_t* data_frame )
     {
         // combine left and right wheel velocity to get foreward velocity
         // change from counts/sec into meters/sec
-        position2dData_->twist.velocity.x =
+        position2dData_->twist.v.x =
                 ((double)data_frame->left_dot+(double)data_frame->right_dot) /
                     (double)RMP_COUNT_PER_M_PER_S / 2.0;
         
         // no side speeds for this bot
-        position2dData_->twist.velocity.y = 0;
+        position2dData_->twist.v.y = 0;
         
         // from counts/sec into deg/sec.  also, take the additive
         // inverse, since the RMP reports clockwise angular velocity as positive.
@@ -376,8 +379,8 @@ void SegwayRmpUsb::updateData( rmpusb_frame_t* data_frame )
     if ( data_frame->battery!=RMP_CAN_DROPPED_PACKET )
     {
         // Convert battery voltage to decivolts for Player.
-        powerData_->batteries[1].voltage = data_frame->battery / RMP_COUNT_PER_VOLT;
-        powerData_->batteries[1].percent = 99.0;
+        powerData_->batteries[0].voltage = data_frame->battery / RMP_COUNT_PER_VOLT;
+        powerData_->batteries[0].percent = 99.0;
     } else {
         //printf("skipping power\n");
     }
@@ -415,21 +418,21 @@ void SegwayRmpUsb::makeVelocityCommand( CanPacket* pkt )
     // 8mph is 3576.32 mm/s
     // so then mm/s -> counts = (1176/3576.32) = 0.32882963
 
-    if ( commandData_->twist.velocity.x > maxSpeed_ )
+    if ( commandData_->twist.v.x > maxSpeed_ )
     {
-        cout<<"WARN: xspeed thresholded! ("<<commandData_->twist.velocity.x<<">"<<maxSpeed_<<")"<<endl;
-        commandData_->twist.velocity.x = maxSpeed_;
+        cout<<"WARN: xspeed thresholded! ("<<commandData_->twist.v.x<<">"<<maxSpeed_<<")"<<endl;
+        commandData_->twist.v.x = maxSpeed_;
     }
-    else if(commandData_->twist.velocity.x < -maxSpeed_)
+    else if(commandData_->twist.v.x < -maxSpeed_)
     {
-        cout<<"WARN: xspeed thresholded! ("<<commandData_->twist.velocity.x<<"<"<<-maxSpeed_<<")"<<endl;
-        commandData_->twist.velocity.x = -maxSpeed_;
+        cout<<"WARN: xspeed thresholded! ("<<commandData_->twist.v.x<<"<"<<-maxSpeed_<<")"<<endl;
+        commandData_->twist.v.x = -maxSpeed_;
     }
 
     //lastSpeedX_ = xspeed;
 
     // translational RMP command (convert m/s to mm/s first)
-    int16_t trans = (int16_t) rint(commandData_->twist.velocity.x * 1e3 * (double)RMP_COUNT_PER_MM_PER_S);
+    int16_t trans = (int16_t) rint(commandData_->twist.v.x * 1e3 * (double)RMP_COUNT_PER_MM_PER_S);
     // check for command limits
     if(trans > RMP_MAX_TRANS_VEL_COUNT) {
         trans = RMP_MAX_TRANS_VEL_COUNT;

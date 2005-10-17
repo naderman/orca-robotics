@@ -3,6 +3,7 @@ SUBDIRS(
   playerlaser
   lasermon
   position2dmon
+  powermon
   segwayrmp
   teleop
 )
