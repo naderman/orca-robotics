@@ -33,18 +33,10 @@ ADD_LIBRARY( OrcaInterfaces SHARED ${SLICE_CPP_FILES} )
 INSTALL_TARGETS( /lib OrcaInterfaces )
 INSTALL_FILES( /include/orca FILES ${SLICE_HEADER_FILES} )
 
-
-#ADD_SLICE_LIB_RULES( OrcaInterfaces "${SLICE_SOURCES}" "${HUMAN_SOURCES}" )
-
 INCLUDE_DIRECTORIES( BEFORE
     ${ICE_HOME}/include
-#    ${PROJ_SOURCE_DIR}/src/interfaces/slice
     ${PROJ_BINARY_DIR}/src/interfaces/slice
     ${PROJ_BINARY_DIR}/src/interfaces/slice/orca
 )
-
-#LINK_DIRECTORIES(
-#    ${ICE_HOME}/lib
-#)
 
 ADD_DEFINITIONS( "-Wall" )
