@@ -26,10 +26,14 @@
 #include "lasermoninput.h"
 
 #include <orcaiceutil/configutils.h>
+#include <orcaiceutil/objutils.h>
+
+#include "util.h"
 
 using namespace std;
 using namespace orca;
-
+//using namespace orcaiceutil;
+using orcaiceutil::operator<<;
 
 class App : virtual public Ice::Application
 {
@@ -44,27 +48,24 @@ int App::run( int argc, char* argv[] )
 
     Ice::ObjectAdapterPtr adapter = communicator()->createObjectAdapter( "Orca" );
 
-    // PROVIDED : LaserConsumer
-    Ice::ObjectPrx prx = adapter->addWithUUID( new LaserConsumerI );
-    // make a direct proxy
-    Ice::ObjectPrx callbackPrx = adapter->createDirectProxy( prx->ice_getIdentity() );
-
-    // start processing clients' requests
     adapter->activate();
-    cout<<"*** INFO: provided interfaces are initialized and running..."<<endl;
+    cout<<"*** INFO: Adapter is initialized and running..."<<endl;
 
-    // REQUIRED : Position2d
+    // Set up a consumer to receive IceStorm data stream
+//     LaserConsumerPtr laserConsumer = new LaserConsumerI;
+//     lasermonutil::subscribeConsumer<LaserConsumerPtr>( communicator(), adapter, laserConsumer, "Laser" );
+
     // create a proxy for the remote server based on its name in the config file
     std::string proxyName = orcaiceutil::getRemotePortName( communicator(), "Laser" );
 
     Ice::ObjectPrx base = communicator()->stringToProxy(proxyName);
     // check with the server that the one we found is of the right type
-    Position2dPrx position2dPrx;
+    LaserPrx laserPrx;
     int count = 0;
     while ( true ) 
     {
         try {
-            position2dPrx = Position2dPrx::checkedCast(base);
+            laserPrx = LaserPrx::checkedCast(base);
             break;
         }
         catch ( const Ice::ConnectionRefusedException & e ) {
@@ -74,36 +75,41 @@ int App::run( int argc, char* argv[] )
         }
     }
 
-    // Get the IceStorm position2dTopic
-    std::string topicName = orcaiceutil::getRemoteTopicName( communicator(), "Laser" );
-    IceStorm::TopicPrx position2dTopic = orcaiceutil::getIceStormTopic( communicator(), topicName );
-    assert(position2dTopic);
 
-    //
-    // HARDWARE INTERFACES
-    //
-    orcaiceutil::Driver* driver = new Position2dMonInput( position2dPrx, position2dTopic, callbackPrx );
-    driver->setup( communicator()->getProperties() );
+    // We could set the laser's configuration like so:
+    //LaserConfigPtr config = new LaserConfig;
+    //laserPrx->setConfig( config );
 
-    // this is a dodgy hack, to let the driver shutdown the communicator and end the program
-    Position2dMonInput* hack = (Position2dMonInput*)driver;
-    hack->setupCommunicator( communicator() );
+    cout<<"TRACE(main.cpp): " << laserPrx->getConfig() << endl;
+    cout<<"TRACE(main.cpp): " << laserPrx->getGeometry() << endl;
+    
 
-    driver->activate();
+
+//     //
+//     // HARDWARE INTERFACES
+//     //
+//     orcaiceutil::Driver* driver = new Position2dMonInput( position2dPrx, position2dTopic, callbackPrx );
+//     driver->setup( communicator()->getProperties() );
+
+//     // this is a dodgy hack, to let the driver shutdown the communicator and end the program
+//     Position2dMonInput* hack = (Position2dMonInput*)driver;
+//     hack->setupCommunicator( communicator() );
+
+//     driver->activate();
     
     // Wait until we are done (this will trap signals)
     //
     communicator()->waitForShutdown();
 
-    // do clean up if there was a Ctrl-C, otherwise the driver has cleaned up itself
-    if ( interrupted() )  {
-        cerr<< appName() << ": terminating..." << endl;
-        driver->deactivate();
-        cout<<"joining... Hit any key please."<<endl;
-        driver->getThreadControl().join();
-    } else {
-        cout<<appName()<<": exiting cleanly. Good bye."<<endl;
-    }
+//     // do clean up if there was a Ctrl-C, otherwise the driver has cleaned up itself
+//     if ( interrupted() )  {
+//         cerr<< appName() << ": terminating..." << endl;
+//         driver->deactivate();
+//         cout<<"joining... Hit any key please."<<endl;
+//         driver->getThreadControl().join();
+//     } else {
+//         cout<<appName()<<": exiting cleanly. Good bye."<<endl;
+//     }
 
     return 0;
 }

@@ -29,7 +29,7 @@
 class LaserConsumerI : public orca::LaserConsumer
 {
     public:
-        virtual void consumeData(const orca::LaserScanPtr& data, const Ice::Current&);
+        virtual void consumeData(const orca::LaserDataPtr& data, const Ice::Current&);
 };
 
 #endif

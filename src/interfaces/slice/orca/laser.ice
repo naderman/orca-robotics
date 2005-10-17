@@ -21,32 +21,52 @@
 #ifndef ORCA2_LASER_INTERFACE_ICE
 #define ORCA2_LASER_INTERFACE_ICE
 
-#include <orca/laserdata.ice>
+#include <orca/orca.ice>
+#include <orca/bros1.ice>
 
 module orca
 {
 
+// Define messages first
+sequence<float>        RangeSequence;
+sequence<byte>         IntensitySequence;
+
+class LaserConfig extends OrcaObject
+{
+    float rangeResolution;
+    float angleIncrement;
+};
+
+class LaserGeometry extends OrcaObject
+{
+    // Offset of the centre of the laser from the robot, int the robot CS
+    Frame3d offset;
+
+    // Dimensions of the laser
+    Size3d  size;
+};
+
+class LaserData extends OrcaObject
+{
+    RangeSequence     ranges;
+    IntensitySequence intensities;
+    float             startAngle;
+    float             angleIncrement;
+};
+
 interface Laser
 {
-        LaserScan getData();
+    // Functions for reading from the laser
+    nonmutating LaserData      getData();
+    nonmutating LaserConfig    getConfig();
+    nonmutating LaserGeometry  getGeometry();
+
+    idempotent  void setConfig( LaserConfig config );
 };
 
 interface LaserConsumer
 {
-        void consumeData( LaserScan obj );
-};
-
-
-// structures
-
-interface SimpleLaser
-{
-        SimpleLaserScan getData();
-};
-
-interface SimpleLaserConsumer
-{
-        void consumeData( SimpleLaserScan obj );
+    void consumeData( LaserData obj );
 };
 
 }; // module

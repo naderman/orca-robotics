@@ -30,8 +30,9 @@ class Position2dMonInput : public orcaiceutil::Driver
 {
 public:
 
-    Position2dMonInput( const orca::Position2dPrx & pos, const IceStorm::TopicPrx & topic,
-            const Ice::ObjectPrx & callbackPrx  );
+    Position2dMonInput( const orca::Position2dPrx & pos, 
+                        const IceStorm::TopicPrx & topic,
+                        const Ice::ObjectPrx & callbackPrx  );
     virtual ~Position2dMonInput();
 
     virtual void setup( const Ice::PropertiesPtr & );

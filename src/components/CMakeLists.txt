@@ -1,5 +1,7 @@
 SUBDIRS(
   lasermon
+  playerlaser
+  lasermon
   position2dmon
   segwayrmp
   teleop

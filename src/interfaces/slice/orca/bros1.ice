@@ -58,17 +58,17 @@ struct CartesianAcceleration2d
 struct PolarPoint2d
 {
     float r;
-    float a;
+    float o;
 };
 struct PolarVelocity2d
 {
     float r;
-    float a;
+    float o;
 };
 struct PolarAcceleration2d
 {
     float r;
-    float a;
+    float o;
 };
 struct Vector2d
 {
@@ -78,13 +78,13 @@ struct Vector2d
 // Frame
 struct Frame2d
 {
-    CartesianPoint2d point;
-    float a;    // OrientationAngle
+    CartesianPoint2d p;
+    float            o; // OrientationAngle
 };
 struct Twist2d
 {
-    CartesianVelocity2d velocity;
-    float w; // degenerated AngularVelocity2d
+    CartesianVelocity2d v;
+    float w;               // degenerated AngularVelocity2d
 };
 // Vector representing a linear force
 struct Force2d
@@ -95,7 +95,7 @@ struct Force2d
 struct Wrench2d
 {
   Force2d f;
-  float m; // degenerated Moment2d
+  float   m; // degenerated Moment2d
 };
 struct Size2d
 {
@@ -108,6 +108,7 @@ struct CartesianPoint
 {
     float x;
     float y;
+    float z;
 };
 struct CartesianVector
 {
@@ -162,8 +163,27 @@ struct Twist
 // Wrench: ordered couple (F,M) of two Vectors
 struct Wrench
 {
-  Force f;
+  Force  f;
   Moment m;
+};
+// Orientation
+struct OrientationE
+{
+    float r; // roll
+    float p; // pitch
+    float y; // yaw
+};
+// Frame
+struct Frame3d
+{
+    CartesianPoint p;
+    OrientationE   o;
+};
+struct Size3d
+{
+    float l; // length
+    float w; // width
+    float h; // height
 };
 
 }; // module

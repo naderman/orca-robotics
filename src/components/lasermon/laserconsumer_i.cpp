@@ -27,7 +27,7 @@
 using namespace std;
 using namespace orcaiceutil;
 
-void LaserConsumerI::consumeData(const orca::LaserScanPtr& data, const Ice::Current&)
+void LaserConsumerI::consumeData(const orca::LaserDataPtr& data, const Ice::Current&)
 {
     cout<<"received : "<<data<<endl;
 }

@@ -28,9 +28,10 @@ using namespace std;
 using namespace orca;
 using namespace orcaiceutil;
 
-Position2dMonInput::Position2dMonInput( const Position2dPrx & pos, const IceStorm::TopicPrx & topic,
-            const Ice::ObjectPrx & callbackPrx ) :
-        position2dPrx_(pos), topic_(topic), callbackPrx_(callbackPrx)
+Position2dMonInput::Position2dMonInput( const Position2dPrx & pos, 
+                                        const IceStorm::TopicPrx & topic,
+                                        const Ice::ObjectPrx & callbackPrx ) 
+    : position2dPrx_(pos), topic_(topic), callbackPrx_(callbackPrx)
 {
 }
 

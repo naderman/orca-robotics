@@ -12,7 +12,6 @@ SET( SLICE_SOURCES
   orca.ice
   bros1.ice
   image.ice
-  laserdata.ice
   ogmap.ice
   opaque.ice
   pose2d.ice
