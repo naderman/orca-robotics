@@ -22,7 +22,7 @@ subscribeConsumerToTopic( const Ice::CommunicatorPtr &communicator,
     Ice::ObjectPrx callbackPrx = adapter->createDirectProxy( prx->ice_getIdentity() );
 
     // Get the IceStorm topic
-    std::string topicName    = orcaiceutil::getRemoteTopicName( communicator, topicTag );
+    std::string topicName = orcaiceutil::getRemoteTopicName( communicator, topicTag );
 
     IceStorm::TopicPrx topicPrx = orcaiceutil::getIceStormTopic( communicator, topicName );
     assert(topicPrx);

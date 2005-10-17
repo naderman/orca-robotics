@@ -27,8 +27,7 @@
 
 #include <orcaiceutil/configutils.h>
 #include <orcaiceutil/objutils.h>
-
-#include "util.h"
+#include <orcaiceutil/connectutils.h>
 
 using namespace std;
 using namespace orca;
@@ -57,7 +56,7 @@ int App::run( int argc, char* argv[] )
 
     // create a proxy for the remote server based on its name in the config file
     LaserPrx laserPrx;
-    lasermonutil::connectProxy<LaserPrx>( communicator(), adapter, laserPrx, "Laser" );
+    orcaiceutil::connectProxy<LaserPrx>( communicator(), adapter, laserPrx, "Laser" );
 
     // We could set the laser's configuration like so:
     //LaserConfigPtr config = new LaserConfig;
@@ -72,8 +71,8 @@ int App::run( int argc, char* argv[] )
 
     // Set up a consumer to receive IceStorm data stream
     LaserConsumerPtr laserConsumer = new LaserConsumerI;
-//    lasermonutil::subscribeConsumerToTopic<LaserConsumerPtr>( communicator(), adapter, laserConsumer, "Laser" );
-    lasermonutil::subscribeConsumerToTopic( communicator(), adapter, (Ice::ObjectPtr&) laserConsumer, "Laser" );
+//    orcaiceutil::subscribeConsumerToTopic<LaserConsumerPtr>( communicator(), adapter, laserConsumer, "Laser" );
+    orcaiceutil::subscribeConsumerToTopic( communicator(), adapter, (Ice::ObjectPtr&) laserConsumer, "Laser" );
 
     //
     // Wait until we are done (this will trap signals)
