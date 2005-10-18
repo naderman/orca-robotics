@@ -96,5 +96,6 @@ int App::run( int argc, char* argv[] )
 int main(int argc, char * argv[])
 {
     App app;
+    orcaiceutil::setDefaultOrcaProperties( argc, argv );
     return app.main(argc, argv);
 }
