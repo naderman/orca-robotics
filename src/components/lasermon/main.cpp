@@ -25,7 +25,6 @@
 #include "laserconsumer_i.h"
 #include "lasermoninput.h"
 
-#include <orcaiceutil/application.h>
 #include <orcaiceutil/configutils.h>
 #include <orcaiceutil/objutils.h>
 #include <orcaiceutil/connectutils.h>
@@ -36,7 +35,7 @@ using namespace orca;
 //using namespace orcaiceutil;
 using orcaiceutil::operator<<;
 
-class App : virtual public orcaiceutil::Application
+class App : virtual public Ice::Application
 {
     public:
         virtual int run(int, char * []);
@@ -46,8 +45,7 @@ int App::run( int argc, char* argv[] )
 {
     // create the one-and-only component adapter, parse config file to create adapter name
     orcaiceutil::setComponentProperties( communicator() );
-
-    Ice::ObjectAdapterPtr adapter = communicator()->createObjectAdapter( "Orca" );
+    Ice::ObjectAdapterPtr adapter = communicator()->createObjectAdapter("Orca");
 
     adapter->activate();
     cout<<"*** INFO: Adapter is initialized and running..."<<endl;
