@@ -26,7 +26,7 @@ using namespace orca;
 using namespace orcaiceutil;
 
 Platform2dI::Platform2dI( orcaiceutil::PtrBuffer* position2d, orcaiceutil::PtrBuffer* command ) :
-                    position2d_(position2d), command_(command)
+        position2dProxy_(position2d), commandProxy_(command)
 {
 }
 
@@ -37,8 +37,11 @@ orca::Position2dDataPtr Platform2dI::getData(const Ice::Current& current) const
 
     // create a null pointer. data will be cloned into it.
     Ice::ObjectPtr data;
+
+    // we don't need to pop the data here because we don't block on it.
+    // we always want to have the latest copy in there
     //! @todo what should happens if there's no data?
-    position2d_->peek( data );
+    position2dProxy_->get( data );
 
     cout<<Position2dDataPtr::dynamicCast( data )<<endl;
     return Position2dDataPtr::dynamicCast( data );
@@ -55,5 +58,5 @@ orca::Position2dGeometryPtr Platform2dI::getGeometry(const Ice::Current& current
 // Store incoming command in a proxy, it will be handled by the driver at the next opportunity.
 void Platform2dI::putData(const ::orca::Velocity2dCommandPtr& command, const ::Ice::Current& )
 {
-    command_->push( command );
+    commandProxy_->push( command );
 }

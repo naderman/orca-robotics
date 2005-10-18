@@ -172,7 +172,9 @@ void SegwayRmpUsb::run()
             if ( timeSinceLastWrite >= minWritePeriodUsec )
             {                
                 Ice::ObjectPtr data;
-                commandProxy_->peekAndPop( data );
+                // get and pop, so that afterwards the buffer is empty
+                // but don't block with getAndPopNext(), we have other things to do
+                commandProxy_->getAndPop( data );
                 commandData_ = Velocity2dCommandPtr::dynamicCast( data );
                 //cout<<"comm : "<<commandData_<<endl;        
 

@@ -124,9 +124,8 @@ void RmpComponent::start(const string & name,
     orca::Position2dDataPtr posData = Position2dDataPtr::dynamicCast( data );
     while ( 1 )
     {
-        // if the buffer is empty, this will block until next data arrives
-        position2dBuffer.peek( data );
-        position2dBuffer.pop();
+        // if the buffer is empty, this will block until next data arrives, no timeout
+        position2dBuffer.getAndPopNext( data );
 
         posData = Position2dDataPtr::dynamicCast( data );
         //cout<<"push : "<<posData<<endl;

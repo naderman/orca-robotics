@@ -46,9 +46,9 @@ public:
     virtual void enableMotor(bool, const ::Ice::Current& = ::Ice::Current()) {};
 
     // the driver will put the latest data into this proxy
-    orcaiceutil::PtrBuffer* position2d_;
+    orcaiceutil::PtrBuffer* position2dProxy_;
     // the driver will take the latest command from the proxy
-    orcaiceutil::PtrBuffer* command_;
+    orcaiceutil::PtrBuffer* commandProxy_;
 };
 
 
