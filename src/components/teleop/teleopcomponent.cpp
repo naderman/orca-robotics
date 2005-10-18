@@ -21,35 +21,85 @@
 #include <iostream>
 
 #include "teleopcomponent.h"
-#include "outputdriver.h"
-#include "keyboarddriver.h"
+#include "networkloop.h"
+#include "inputloop.h"    
+#include "keyboard/keyboarddriver.h"
 
 using namespace std;
 
 TeleopComponent::TeleopComponent()
+    : orcaiceutil::Component( "Teleop" )
 {
 }
 
 TeleopComponent::~TeleopComponent()
 {
+    delete networkLoop_;
+    delete inputLoop_;
 }
 
+int TeleopComponent::go()
+{
+    //
+    // NETWORK
+    //
+    networkLoop_ = new NetworkLoop( &commandProxy_ );
+    networkLoop_->setupComms( communicator() );
+    networkLoop_->setupConfigs( communicator()->getProperties() );
+    networkLoop_->start();
+
+    //
+    // HARDWARE
+    //
+    inputLoop_ = new InputLoop( this, &commandProxy_ );
+    inputLoop_->setupConfigs( communicator()->getProperties() );
+    inputLoop_->start();
+    
+    communicator()->waitForShutdown();
+
+    stop();
+    /*
+    // do clean up if there was a Ctrl-C, otherwise the driver has cleaned up itself
+    if ( interrupted() )  {
+        cerr<< appName() << ": terminating..." << endl;
+        fsm.interruptShutdown();
+    } else {
+        cout<<appName()<<": exiting cleanly. Good bye."<<endl;
+    }
+    */
+    return 0;
+}
+
+void TeleopComponent::stop()
+{
+    cout<<"stopping component"<<endl;
+
+    networkLoop_->stop();
+    cout<<"joining network loop ..."<<endl;
+    networkLoop_->getThreadControl().join();
+
+    inputLoop_->stop();
+    cout<<"joining input loop ... Hit any key please."<<endl;
+    inputLoop_->getThreadControl().join();
+}
+/*
 void TeleopComponent::activate()
 {
     //
     // NETWORK
     //
-    netDriver_ = new OutputDriver( &commandProxy );
-    netDriver_->setupComms( comm_ );
-    netDriver_->activate();
+    networkLoop_ = new NetworkLoop( &commandProxy_ );
+    networkLoop_->setupComms( comm_ );
+    networkLoop_->activate();
 
     //
     // HARDWARE
     //
-    hwDriver_ = new KeyboardDriver( this, &commandProxy );
-    hwDriver_->setup( comm_->getProperties() );
+    inputLoop_ = new KeyboardDriver( this, &commandProxy_ );
+    inputLoop_->setup( comm_->getProperties() );
 
-    hwDriver_->activate();
+    inputLoop_->activate();
+
 }
 
 void TeleopComponent::humanDeactivate()
@@ -71,3 +121,4 @@ void TeleopComponent::interruptDeactivate()
     cout<<"joining input hwDriver_... Hit any key please."<<endl;
     hwDriver_->getThreadControl().join();
 }
+*/

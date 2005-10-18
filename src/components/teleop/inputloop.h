@@ -18,43 +18,44 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_TELEOP_COMPONENT_H
-#define ORCA2_TELEOP_COMPONENT_H
+#ifndef ORCA2_TELEOP_INPUT_LOOP_H
+#define ORCA2_TELEOP_INPUT_LOOP_H
 
-#include <orcaiceutil/component.h>
-#include "teleopfsm.h"
-
+#include <orcaiceutil/thread.h>
 #include <orcaiceutil/ptrbuffer.h>
 
-class NetworkLoop;
-class InputLoop;
+#include <orca/platform2d.h>
 
-class TeleopComponent : public orcaiceutil::Component, public TeleopFsm
+#include "inputdriver.h"
+
+class TeleopFsm;
+
+class InputLoop : public orcaiceutil::Thread
 {
 public:
 
-    TeleopComponent();
-    virtual ~TeleopComponent();
+    InputLoop( TeleopFsm* fsm, orcaiceutil::PtrBuffer* commands );
+    virtual ~InputLoop();
 
-    // component interface
-    virtual int  go();
-    virtual void stop();
+    void setupConfigs( const Ice::PropertiesPtr & );
 
-    // FSM events
-    virtual void activate() {};
-    virtual void humanDeactivate() {};
-    virtual void interruptDeactivate() {};
+    virtual void run();
 
 private:
-    // network-hardware interface
-    // the driver will put the latest data into this proxy
-    orcaiceutil::PtrBuffer commandProxy_;
 
-    // network loop
-    NetworkLoop* networkLoop_;
+    // component/driver interface
+    TeleopFsm* fsm_;
 
-    // hardware
-    InputLoop* inputLoop_;
+    // network/driver interface
+    orcaiceutil::PtrBuffer* commandBuffer_;
+
+    // generic interface to input hardware
+    InputDriver* driver_;
+
+    // define the speed limits for the robot
+    // at full joystick depression you'll go this fast
+    double maxSpeed_; // m/s
+    double maxTurnrate_;  // rad/s
 };
 
 #endif

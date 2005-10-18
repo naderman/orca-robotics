@@ -18,50 +18,36 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_KEYBOARD_DRIVER_H
-#define ORCA2_KEYBOARD_DRIVER_H
+#ifndef ORCA2_TELEOP_NETWORK_LOOP_H
+#define ORCA2_TELEOP_NETWORK_LOOP_H
 
 #include <orcaiceutil/thread.h>
 #include <orcaiceutil/ptrbuffer.h>
 
 #include <orca/platform2d.h>
 
-class TeleopFsm;
-
-class KeyboardDriver : public orcaiceutil::Thread
+class NetworkLoop : public orcaiceutil::Thread
 {
 public:
 
-    KeyboardDriver( TeleopFsm* fsm, orcaiceutil::PtrBuffer* commands );
-    virtual ~KeyboardDriver();
+    NetworkLoop( orcaiceutil::PtrBuffer* commandBuffer );
+    ~NetworkLoop();
 
-    virtual void setup( const Ice::PropertiesPtr & );
-    virtual void activate();
-    virtual void deactivate();
+    void setupComms( const Ice::CommunicatorPtr & );
+    void setupConfigs( const Ice::PropertiesPtr & );
 
     virtual void run();
 
-    void setupCommunicator( const Ice::CommunicatorPtr & comm ) { comm_=comm; };
-
 private:
 
-    // component/driver interface
-    TeleopFsm* fsm_;
+    // remote object
+    orca::Platform2dPrx platform2dPrx_;
+
     // network/driver interface
     orcaiceutil::PtrBuffer* commandBuffer_;
 
-    // internal storage for current command
-    orca::Velocity2dCommandPtr command_;
+    int timeoutMs_;
 
-    void keyboardHandler();
-    void keyboardHelp();
-
-    // define the speed limits for the robot
-    // at full joystick depression you'll go this fast
-    double maxSpeed_; // m/s
-    double maxTurnrate_;  // rad/s
-
-    Ice::CommunicatorPtr comm_;
 };
 
 #endif

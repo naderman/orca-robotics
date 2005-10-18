@@ -20,7 +20,7 @@
 
 #include <iostream>
 
-#include "outputdriver.h"
+#include "networkloop.h"
 
 #include <orcaiceutil/configutils.h>
 #include <orcaiceutil/objutils.h>
@@ -29,27 +29,23 @@ using namespace std;
 using namespace orca;
 using namespace orcaiceutil;
 
-OutputDriver::OutputDriver( orcaiceutil::PtrBuffer* commands ) :
-        commandBuffer_(commands)
+NetworkLoop::NetworkLoop( orcaiceutil::PtrBuffer* commandBuffer ) :
+        commandBuffer_(commandBuffer)
 {
 }
 
-OutputDriver::~OutputDriver()
+NetworkLoop::~NetworkLoop()
 {
 }
 
-void OutputDriver::setup( const Ice::PropertiesPtr & properties )
-{
-}
-
-int OutputDriver::setupComms( const Ice::CommunicatorPtr & communicator )
+void NetworkLoop::setupComms( const Ice::CommunicatorPtr & communicator )
 {
     // REQUIRED : Platform2d
     // create a proxy for the remote server based on its name in the config file
     std::string proxyName = orcaiceutil::getRemotePortName( communicator, "Platform2d" );
     if(proxyName.empty()) {
         cerr << "*** ERROR: port name not specified" << endl;
-        return EXIT_FAILURE;
+        return;
     }
     // check with the server that the one we found is of the right type
     int count = 0;
@@ -68,24 +64,18 @@ int OutputDriver::setupComms( const Ice::CommunicatorPtr & communicator )
         }
     }
     cout<<"connected"<<endl;
-
-    return 0;
 }
 
-void OutputDriver::activate()
+void NetworkLoop::setupConfigs( const Ice::PropertiesPtr & properties )
 {
-    cout<<"activating device"<<endl;
-    start();
+    // read update frequency, for example
+    timeoutMs_ = 100;
 }
 
-void OutputDriver::deactivate()
+void NetworkLoop::run()
 {
-    cout<<"deactivating device"<<endl;
-    stop();
-}
+    cout<<"NetworkLoop::run: starting up..."<<endl;
 
-void OutputDriver::run()
-{
     // create a null pointer. data will be cloned into it.
     Ice::ObjectPtr data;
     // create and init command to default 'halt' command
@@ -94,27 +84,29 @@ void OutputDriver::run()
     command->motion.v.y = 0.0;
     command->motion.w = 0.0;
 
-    // how often to send repeat commands (should be in the config file)
-    const int timeoutMs = 100;
-
     while ( isActive() )
     {
-        int ret = commandBuffer_->getAndPopNext( data, timeoutMs );
+        int ret = commandBuffer_->getAndPopNext( data, timeoutMs_ );
 
         if ( ret==0 ) { // new data
             command = Velocity2dCommandPtr::dynamicCast( data );
-            cout<<"new : "<<command<<endl;
+            cout<<"NEW : "<<command<<endl;
+        }
+        else {
+            cout<<"old : "<<command<<endl;
         }
 
         try {
             platform2dPrx_->putData( command );
         }
         catch ( const Ice::ConnectionRefusedException & e ) {
-            cout<<"lost connection. quitting..."<<endl;
-            deactivate();
+            cout<<"lost connection. stopping..."<<endl;
+            stop();
         }
-        catch ( const Ice::CommunicatorDestroyedException & e ) {
+        //catch ( const Ice::CommunicatorDestroyedException & e ) {
             // it's ok, if this is a Ctrl-C event, the communicator is already destroyed
-        }
+        //}
     }
+
+    cout<<"NetworkLoop: stopped."<<endl;
 }

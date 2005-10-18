@@ -18,36 +18,34 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_TELEOP_NETWORK_DRIVER_H
-#define ORCA2_TELEOP_NETWORK_DRIVER_H
-
-#include <orcaiceutil/driver.h>
-#include <orcaiceutil/ptrbuffer.h>
+#ifndef ORCA2_TELEOP_INPUT_DRIVER_H
+#define ORCA2_TELEOP_INPUT_DRIVER_H
 
 #include <orca/platform2d.h>
 
-class OutputDriver : public orcaiceutil::Driver
+/*!
+
+@brief Abstract interface class for human teleoperation input.
+
+@author Alex Makarenko
+
+*/
+class InputDriver
 {
+
 public:
 
-    OutputDriver( orcaiceutil::PtrBuffer* commands );
-    virtual ~OutputDriver();
+    virtual int enable()=0;
+    virtual int disable()=0;
 
-    virtual void setup( const Ice::PropertiesPtr & );
-    virtual void activate();
-    virtual void deactivate();
+    //! Blocks till new data is available
+    virtual int readdata( orca::Velocity2dCommandPtr &data )=0;
 
-    virtual void run();
+    //! Set a specifc configuration
+    //virtual int setConfig( const orca::LaserConfigPtr &cfg )=0;
 
-    int setupComms( const Ice::CommunicatorPtr & );
-
-private:
-
-    // remote object
-    orca::Platform2dPrx platform2dPrx_;
-
-    // network/driver interface
-    orcaiceutil::PtrBuffer* commandBuffer_;
+    //! Get the current configuration
+    //virtual int getConfig( orca::LaserConfigPtr &cfg )=0;
 
 };
 
