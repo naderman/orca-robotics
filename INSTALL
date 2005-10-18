@@ -1,0 +1,36 @@
+see http://orca-robotics.sf.net/getting.html for detailed instructions on installing orca.
+
+
+THE SHORT VERSION
+-----------------
+
+Just do:
+
+'cmake .'
+'make'
+(as root) 'make install'
+
+
+THE LONG VERSION
+----------------
+
+Orca uses cmake (www.cmake.org) for its build configuration.
+CMake is a cross-platform build system.
+
+
+
+There are a few ways you can do things differently to the short version:
+
+
+1) Out-of-source builds:
+
+'mkdir Bin'
+'cd Bin'
+'cmake ..'
+'make'
+
+
+2) GUI Configurator:
+
+Use 'ccmake' rather than 'cmake' for a GUI configurator.
+

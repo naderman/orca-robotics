@@ -24,33 +24,29 @@ CMake is a cross-platform tool, designed as a replacement for autotools.</p>
 is approximately one in each directory, and builds descend recursively through the source tree.</p>
 
 <p>If you just want to see how to initiate a build, see the top-level 'INSTALL'
-file in either orca-base or orca-components.</p>
+file in Orca2.</p>
 
-<h2>Orca-Components</h2>
+<h2>Orca2 Details</h2>
 
-<p>The build system for orca-components consists of a set of 'CMakeLists.txt' files, many of which INCLUDE a set of helper '.cmake' files.  The '.cmake' files live in the top-level config directory.</p>
+<p>The build system for orca2 consists of a set of 'CMakeLists.txt' files, many of which INCLUDE a set of helper '.cmake' files.  The '.cmake' files live in the top-level 'config' directory.</p>
 
 <p>The top-level 'CMakeLists.txt' file:
 <ol>
-<li>Calls config/global_setup.cmake, which checks for requirements like xerces and orca-base.</li>
-<li>Checks for a bunch of things that might be needed by one or more components.  These checks set variables which can be used by components later on.</li>
+<li>Calls config/global_setup.cmake, which checks for global requirements like Ice.</li>
+<li>Calls config/check_depend.cmake, which checks for a bunch of things that might be needed by one or more components.  These checks set variables which can be used by components later on.</li>
 </ol>
 </p>
 
 <p>Individual components maintain their own 'CMakeLists.txt' files.  Components will generally INCLUDE the following:
 <ol>
 <li>config/component_rules.cmake: Contains rules for compiler/linker flags, plus any other component-kruft.</li>
-<li>config/xml_install.cmake: Contains rules to install xml config files, .ocd files and .xsd files.</li>
-<li>config/global_registry.cmake: Contains the macro GLOBAL_ADD_EXECUTABLE, described below.</li>
+<li>possibly: config/include_orcaiceutil.cmake: Contains all the rules to include orcaiceutil, to avoid repetition.</li>
 </ol>
 </p>
 
 <p>Components should build themselves with GLOBAL_ADD_EXECUTABLE rather than ADD_EXECUTABLE.  This allows their builds to be mediated in a central location.</p>
 
-
-<h2>Orca-Base</h2>
-
-<p>In order for files to be able to '#include' header files the same when they're in situ as when they're installed, all '#included' header files live in subdirectories called 'orca'.  Source files then '#include' the directory above.</p>
+<p>Note for libraries: In order for files to be able to '#include' header files the same when they're in situ (within the distribution) as when they're installed, all '#included' header files live in subdirectories called 'orca'.  Source files then '#include' the directory above.</p>
 
 
 <!-- Do not edit or remove this line: it causes add_sidebar.pl to add the footer -->
