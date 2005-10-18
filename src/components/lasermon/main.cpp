@@ -25,6 +25,7 @@
 #include "laserconsumer_i.h"
 #include "lasermoninput.h"
 
+#include <orcaiceutil/application.h>
 #include <orcaiceutil/configutils.h>
 #include <orcaiceutil/objutils.h>
 #include <orcaiceutil/connectutils.h>
@@ -35,7 +36,7 @@ using namespace orca;
 //using namespace orcaiceutil;
 using orcaiceutil::operator<<;
 
-class App : virtual public Ice::Application
+class App : virtual public orcaiceutil::Application
 {
     public:
         virtual int run(int, char * []);
