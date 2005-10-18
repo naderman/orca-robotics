@@ -157,7 +157,7 @@ void SegwayRmpUsb::run()
         powerBuf_->push( powerData_ );
 
         // check for incoming commands
-        if ( commandProxy_->isNewData() )
+        if ( !commandProxy_->isEmpty() )
         {
             // Calculate how much time has elapsed since the last write. If it's less
             // than the minimum we specified, then skip the write step. The maximum
@@ -172,7 +172,7 @@ void SegwayRmpUsb::run()
             if ( timeSinceLastWrite >= minWritePeriodUsec )
             {                
                 Ice::ObjectPtr data;
-                commandProxy_->peek( data );
+                commandProxy_->peekAndPop( data );
                 commandData_ = Velocity2dCommandPtr::dynamicCast( data );
                 //cout<<"comm : "<<commandData_<<endl;        
 

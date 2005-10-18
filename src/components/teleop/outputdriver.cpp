@@ -99,7 +99,7 @@ void OutputDriver::run()
 
     while ( isActive() )
     {
-        int ret = commandBuffer_->peek( data, timeoutMs );
+        int ret = commandBuffer_->peekAndPopNext( data, timeoutMs );
 
         if ( ret==0 ) { // new data
             command = Velocity2dCommandPtr::dynamicCast( data );
