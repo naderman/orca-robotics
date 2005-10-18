@@ -23,42 +23,32 @@
 
 #include "rmpcomponent.h"
 
-// component FSM
-#include "rmpFsm.h"
+#include "rmpmainloop.h"
 
 // implementations of Ice objects
 #include "platform2d_i.h"
 #include "power_i.h"
 
-// segway rmp usb driver
-#include "rmpusb/rmpusbdriver.h"
-
-#include <orcaiceutil/ptrbuffer.h>
-#include <orcaiceutil/configutils.h>
-#include <orcaiceutil/objutils.h>
+#include <orcaiceutil/orcaiceutil.h>
 
 using namespace std;
 using namespace orca;
-using namespace orcaiceutil;
+using orcaiceutil::operator<<;
 
 RmpComponent::RmpComponent() :
-        driver_(0)
+    orcaiceutil::Component( "SegwayRmp" ), mainLoop_(0)
 {
-    fsm_ = new RmpFsm;
 }
 
 RmpComponent::~RmpComponent()
 {
-    delete driver_;
-    delete fsm_;
+    delete mainLoop_;
 }
 
-void RmpComponent::start(const string & name,
-             const Ice::CommunicatorPtr & communicator,
-             const Ice::StringSeq & args)
+int RmpComponent::go()
 {
     //
-    // NETWORK-DRIVER INTERFACES
+    // NETWORK-MAINLOOP INTERFACES
     //
     // the driver will put the latest data into this proxy
     orcaiceutil::PtrBuffer position2dProxy;
@@ -66,85 +56,60 @@ void RmpComponent::start(const string & name,
     orcaiceutil::PtrBuffer commandProxy;
     // the driver will put the latest data into this proxy
     orcaiceutil::PtrBuffer powerProxy;
-    // buffers for publishing service (for now, make it depth=1, essentially a proxy)
-    orcaiceutil::PtrBuffer position2dBuffer( 1 );
-    orcaiceutil::PtrBuffer powerBuffer( 1 );
 
     //
     // EXTERNAL INTERFACES
     //
-    // create the one-and-only component adapter, parse config file to create adapter name
-    orcaiceutil::setComponentProperties( communicator, name );
-    adapter_ = communicator->createObjectAdapter(name);
 
     // PROVIDED INTERFACE: Platform2d
     // create servant for direct connections and tell adapter about it
     Ice::ObjectPtr platform2dObj = new Platform2dI( &position2dProxy, &commandProxy );
-    string iceObjName1 = orcaiceutil::getPortName( communicator, "Platform2d", name );
-    adapter_->add( platform2dObj, Ice::stringToIdentity( iceObjName1 ) );
+    string iceObjName1 = orcaiceutil::getPortName( communicator(), "Platform2d", adapterName() );
+    adapter()->add( platform2dObj, Ice::stringToIdentity( iceObjName1 ) );
 
-    // connect to IceStorm
-    string topic1 = orcaiceutil::getTopicName( communicator, "Platform2d", name );
-    Ice::ObjectPrx obj = orcaiceutil::getIceStormPublisher( communicator, topic1 );
-    if ( !obj ) {
-        exit( EXIT_FAILURE );
-    }
-    Position2dConsumerPrx position2dConsumer = Position2dConsumerPrx::uncheckedCast(obj);
+    // Find IceStorm ConsumerProxy to push out data
+    Position2dConsumerPrx position2dConsumer;
+    orcaiceutil::getIceStormConsumerProxy<Position2dConsumerPrx>
+            ( communicator(), adapterName(), "Platform2d", position2dConsumer );
 
 
     // PROVIDED INTERFACE: Power
     // create servant for direct connections and tell adapter about it
     Ice::ObjectPtr powerObj = new PowerI( &powerProxy );
-    string iceObjName2 = orcaiceutil::getPortName( communicator, "Power", name );
-    adapter_->add( powerObj, Ice::stringToIdentity( iceObjName2 ) );
+    string iceObjName2 = orcaiceutil::getPortName( communicator(), "Power", adapterName() );
+    adapter()->add( powerObj, Ice::stringToIdentity( iceObjName2 ) );
 
-    // connect to IceStorm
-    string topic2 = orcaiceutil::getTopicName( communicator, "Power", name );
-    obj = orcaiceutil::getIceStormPublisher( communicator, topic2 );
-    if ( !obj ) {
-        exit( EXIT_FAILURE );
-    }
-    PowerConsumerPrx powerConsumer = PowerConsumerPrx::uncheckedCast(obj);
+    // Find IceStorm ConsumerProxy to push out data
+    PowerConsumerPrx powerConsumer;
+    orcaiceutil::getIceStormConsumerProxy<PowerConsumerPrx>
+            ( communicator(), adapterName(), "Power", powerConsumer );
 
     //
-    // HARDWARE INTERFACES
+    // ENABLE ADAPTER
     //
-    driver_ = new SegwayRmpUsb( &position2dBuffer, &powerBuffer,
-                                 &position2dProxy, &commandProxy, &powerProxy );
-    // hack
-    SegwayRmpUsb* hack = (SegwayRmpUsb*)driver_;
-    hack->setup( communicator->getProperties() );
-    driver_->activate();
+    adapter()->activate();
 
-    // we are ready, start processing external clients' requests
-    adapter_->activate();
+    //
+    // MAIN DRIVER LOOP
+    //
+    mainLoop_ = new RmpMainLoop( &position2dProxy, &commandProxy, &powerProxy,
+                                 position2dConsumer, powerConsumer );
 
-    // start pushing out data to IceStorm
-    Ice::ObjectPtr data;
-    orca::Position2dDataPtr posData = Position2dDataPtr::dynamicCast( data );
-    while ( 1 )
-    {
-        // if the buffer is empty, this will block until next data arrives, no timeout
-        position2dBuffer.getAndPopNext( data );
+    mainLoop_->setupConfigs( communicator()->getProperties() );
+    mainLoop_->start();
 
-        posData = Position2dDataPtr::dynamicCast( data );
-        //cout<<"push : "<<posData<<endl;
+    communicator()->waitForShutdown();
 
-        // push it to IceStorm
-        position2dConsumer->consumeData( posData );
+    stop();
 
-        // power ...
-
-        sleep(1);
-    }
-
+    return 0;
 }
 
 void RmpComponent::stop()
 {
     cout<<"stopping component"<<endl;
 
-    driver_->deactivate();
-
-    adapter_->deactivate();
+    mainLoop_->stop();
+    cout<<"joining main loop ..."<<endl;
+    mainLoop_->getThreadControl().join();
 }

@@ -3,7 +3,4 @@ INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaiceutil.cmake )
 # Glob all source files
 FILE( GLOB SRCS *.cpp )
 
-# Define some stuff to fool Player code
-ADD_DEFINITIONS( -DHAVE_STDINT_H )
-
-ADD_LIBRARY( RmpUsb ${SRCS} )
+ADD_LIBRARY( RmpFake ${SRCS} )

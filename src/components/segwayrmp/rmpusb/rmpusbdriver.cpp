@@ -14,73 +14,30 @@
  *  Lesser General Public License for more details.
  *
  *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
+ *  License along with this library; if not, internalWrite to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
 #include <iostream>
 #include <sys/time.h>
 
-#include <rmpusbdriver.h>
+#include "rmpusbdriver.h"
+
 #include "canio_usb_ftdi.h"
 #include "rmpusb_frame.h"
 
-#include <orcaiceutil/objutils.h>
-#include <orcaiceutil/proputils.h>
+#include <orcaiceutil/orcaiceutil.h>
 #include <orcaiceutil/mathdefs.h>
 
 using namespace std;
 using namespace orca;
-using namespace orcaiceutil;
+using orcaiceutil::operator<<;
 
-SegwayRmpUsb::SegwayRmpUsb(
-        orcaiceutil::PtrBuffer* position2dBuf, orcaiceutil::PtrBuffer* powerBuf,
-        orcaiceutil::PtrBuffer* position2dProxy, orcaiceutil::PtrBuffer* commandProxy,
-        orcaiceutil::PtrBuffer* powerProxy ) :
-                    position2dBuf_(position2dBuf), powerBuf_(powerBuf),
-                    position2dProxy_(position2dProxy), commandProxy_(commandProxy),
-                    powerProxy_(powerProxy)
-{
-    // init internal data storage
-    position2dData_ = new Position2dData;
-    commandData_ = new Velocity2dCommand;
-    // set up data structure for 3 batteries
-    powerData_ = new PowerData;
-    BatteryData bd;
-    for ( int i=0; i<3; ++i ) {
-        powerData_->batteries.push_back( bd );
-    }
-    powerData_->batteries[0].name = "main-front";
-    powerData_->batteries[1].name = "main-rear";
-    powerData_->batteries[2].name = "io";
-}
-
-SegwayRmpUsb::~SegwayRmpUsb(){}
-
-void SegwayRmpUsb::setup( const Ice::PropertiesPtr & properties )
+RmpUsbDriver::RmpUsbDriver()
 {
     // Hardware
     canio_ = new CanioUsbFtdi;
     data_frame_ = new rmpusb_frame_t;
-
-    //
-    // Read settings
-    //
-    maxSpeed_ = orcaiceutil::getPropertyAsDoubleWithDefault( properties, "Rmp.MaxSpeed", 1.0 );
-    maxTurnrate_ = orcaiceutil::getPropertyAsDoubleWithDefault( properties, "Rmp.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
-    cout<<"properties: maxspeed="<<maxSpeed_<<", maxturn="<<maxTurnrate_<<endl;
-}
-
-void SegwayRmpUsb::activate()
-{
-    cout<<"activating device"<<endl;
-
-    // init device (freq is not used)
-    if ( canio_->Init(1)<0 )
-    {
-        cerr<<"ERROR: error on USB Init"<<endl;
-        exit(1);
-    }
 
     // Initialize odometry
     odomX_ = 0.0;
@@ -96,123 +53,39 @@ void SegwayRmpUsb::activate()
     motor_allow_enable = false;
     motor_enabled = false;
     firstread_ = true;
-
-    // start the driver thread, will call run()
-    this->start();
 }
 
-void SegwayRmpUsb::deactivate()
+RmpUsbDriver::~RmpUsbDriver()
 {
-    cout<<"deactivating device"<<endl;
-
-    // tell the driver thread to stop
-    stop();
 }
 
-void SegwayRmpUsb::run()
+int RmpUsbDriver::enable()
 {
-    cout<<"SegwayRmpUsb::main: starting nicely"<<endl;
-
-    // Variables used in the loop
-    CanPacket pkt;
-    //int32_t xspeed,yawspeed;
-    bool first = true;
-
-    // Variables for the write timer
-    int       timeSinceLastWrite;
-    timeval   writeTime, priorWriteTime;
-    const double maxUsbWriteFreq = 20.0;
-    const int minWritePeriodUsec = (int)(1e6/maxUsbWriteFreq);
-
-    // HACK: magic number for reset()
-    canio_->Init( 888 );
-
-    // Initialize write timer
-    gettimeofday( &writeTime, NULL );
-    gettimeofday( &priorWriteTime, NULL );
-
-    while( isActive() )
+    // init device (freq is not used)
+    if ( canio_->Init(1)<0 )
     {
-        // Read from the RMP into internal storage
-        if ( read() < 0 ) {
-            cerr<<"read() errored; bailing"<<endl;
-            //! @todo shouldn't just quit here
-            stop();
-        }
-        
-        // Note that we got some data
-        if (first) {
-            first = false;
-            cout<<"debug: got data from rmp"<<endl;
-        }
-                
-        // TODO: report better timestamps, possibly using time info from the RMP
-
-        // make a copy of internal storage into driver/component interface
-        // this will be returned to pulling clients
-        position2dProxy_->push( position2dData_ );
-        powerProxy_->push( powerData_ );
-        // this will be pushed to IceStorm
-        position2dBuf_->push( position2dData_ );
-        powerBuf_->push( powerData_ );
-
-        // check for incoming commands
-        if ( !commandProxy_->isEmpty() )
-        {
-            // Calculate how much time has elapsed since the last write. If it's less
-            // than the minimum we specified, then skip the write step. The maximum
-            // frequency we are willing to write to the USB is defined as MAX_USB_WRITE_FREQ.
-            gettimeofday( &writeTime, NULL );
-            timeSinceLastWrite = (int) ((writeTime.tv_sec - priorWriteTime.tv_sec)*1e6 +
-                    (writeTime.tv_usec - priorWriteTime.tv_usec));
-            if ( timeSinceLastWrite>300000 ) {
-                cout<<"got late command, "<<timeSinceLastWrite<<"/"<<minWritePeriodUsec<<endl;
-            }
-
-            if ( timeSinceLastWrite >= minWritePeriodUsec )
-            {                
-                Ice::ObjectPtr data;
-                // get and pop, so that afterwards the buffer is empty
-                // but don't block with getAndPopNext(), we have other things to do
-                commandProxy_->getAndPop( data );
-                commandData_ = Velocity2dCommandPtr::dynamicCast( data );
-                //cout<<"comm : "<<commandData_<<endl;        
-
-                // Make velocity command (keep it in mm for now, so not to modify makeVelocityCommand() )
-                //xspeed = (int)floor( commandData_->speed*1000.0 );
-                //yawspeed = (int)floor( commandData_->turnrate / DEG2RAD_RATIO );
-                makeVelocityCommand( &pkt );
-            
-                //if ( xspeed || yawspeed ) printf("writing non-zero velocity command...\n");
-                if ( write(pkt) < 0 )
-                {
-                    cerr<<"SegwayRmpUsb::main: error on write"<<endl;
-                    exit(1);
-                }
-            
-                //printf("Write freq = %i Hz\n", (int)(1e6/timeSinceLastWrite) );
-                
-                // Reset timer
-                gettimeofday( &priorWriteTime, NULL );
-            }
-
-        }
-
-        // Throttle the read/write cycles to conserve cpu time. Note that this
-        // only determines how fast we execute the main loop. The frequency with which we
-        // write to the USB is still capped by MAX_USB_WRITE_FREQ and the timing code
-        // surrounding the write function in main().
-        // Ref: 1 kHz => approx 1000 usec sleep
-        //      100 Hz => approx 10000 usec sleep
-        usleep(1000);
+        cerr<<"ERROR: error on USB Init"<<endl;
+        return -1;
     }
 
-    // we are deactiveated
+    //! @todo fix this interface hack: magic number for reset()
+    canio_->Init( 888 );
 
+    cout<<"enabled"<<endl;
+    return 0;
 }
 
-int SegwayRmpUsb::read()
+int RmpUsbDriver::disable()
 {
+    cout<<"disabled"<<endl;
+    return 0;
+}
+
+int RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )
+{
+    cout<<"RmpUsbDriver::main: starting nicely"<<endl;
+
+    // Variables used in the loop
     CanPacket pkt;
     int packetsRead;
 
@@ -237,17 +110,21 @@ int SegwayRmpUsb::read()
         // If frame is complete, transfer data and reset frame
         if( data_frame_->is_ready )
         {
-            updateData( data_frame_ );
+            updateData( data_frame_, position2d, power );
             data_frame_->reset();
         }
     }
 
-    //printf("End of read cycle.\n");
-
     return 0;
 }
 
-void SegwayRmpUsb::updateData( rmpusb_frame_t* data_frame )
+int RmpUsbDriver::write( orca::Velocity2dCommandPtr &position2d )
+{
+    return 0;
+}
+
+void RmpUsbDriver::updateData( rmpusb_frame_t* data_frame,
+                orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )
 {
     int delta_lin_raw, delta_ang_raw;
     double deltaX;
@@ -283,9 +160,9 @@ void SegwayRmpUsb::updateData( rmpusb_frame_t* data_frame )
         }
 
         // first, do 2D info.
-        position2dData_->pose.p.x = odomX_;
-        position2dData_->pose.p.y = odomY_;
-        position2dData_->pose.o = odomYaw_;
+        position2d->pose.p.x = odomX_;
+        position2d->pose.p.y = odomY_;
+        position2d->pose.o = odomYaw_;
     } else {
         //printf("skipping odometry\n");
     }
@@ -304,18 +181,18 @@ void SegwayRmpUsb::updateData( rmpusb_frame_t* data_frame )
     {
         // combine left and right wheel velocity to get foreward velocity
         // change from counts/sec into meters/sec
-        position2dData_->motion.v.x =
+        position2d->motion.v.x =
                 ((double)data_frame->left_dot+(double)data_frame->right_dot) /
                     (double)RMP_COUNT_PER_M_PER_S / 2.0;
         
         // no side speeds for this bot
-        position2dData_->motion.v.y = 0;
+        position2d->motion.v.y = 0;
         
         // from counts/sec into deg/sec.  also, take the additive
         // inverse, since the RMP reports clockwise angular velocity as positive.
-        position2dData_->motion.w = -(double)data_frame->yaw_dot / (double)RMP_COUNT_PER_DEG_PER_S;
+        position2d->motion.w = -(double)data_frame->yaw_dot / (double)RMP_COUNT_PER_DEG_PER_S;
         
-        position2dData_->stalled = false;
+        position2d->stalled = false;
 /*        
         // now, do 3D info.
         this->position3d_data.xpos = htonl((int32_t)(odomX_ * 1000.0));
@@ -381,8 +258,8 @@ void SegwayRmpUsb::updateData( rmpusb_frame_t* data_frame )
     if ( data_frame->battery!=RMP_CAN_DROPPED_PACKET )
     {
         // Convert battery voltage to decivolts for Player.
-        powerData_->batteries[0].voltage = data_frame->battery / RMP_COUNT_PER_VOLT;
-        powerData_->batteries[0].percent = 99.0;
+        power->batteries[0].voltage = data_frame->battery / RMP_COUNT_PER_VOLT;
+        power->batteries[0].percent = 99.0;
     } else {
         //printf("skipping power\n");
     }
@@ -394,7 +271,7 @@ void SegwayRmpUsb::updateData( rmpusb_frame_t* data_frame )
     firstread_ = false;
 }
 
-int SegwayRmpUsb::write(CanPacket& pkt)
+int RmpUsbDriver::internalWrite(CanPacket& pkt)
 {
     int ret;
 
@@ -407,7 +284,7 @@ int SegwayRmpUsb::write(CanPacket& pkt)
 /* takes a player command (in host byte order) and turns it into CAN packets 
  * for the RMP 
  */
-void SegwayRmpUsb::makeVelocityCommand( CanPacket* pkt )
+void RmpUsbDriver::makeVelocityCommand( const Velocity2dCommandPtr & command, CanPacket* pkt )
 {
     pkt->id = RMP_CAN_ID_COMMAND;
     pkt->PutSlot(2, (uint16_t)RMP_CAN_CMD_NONE);
@@ -420,21 +297,21 @@ void SegwayRmpUsb::makeVelocityCommand( CanPacket* pkt )
     // 8mph is 3576.32 mm/s
     // so then mm/s -> counts = (1176/3576.32) = 0.32882963
 
-    if ( commandData_->motion.v.x > maxSpeed_ )
+    if ( command->motion.v.x > maxSpeed_ )
     {
-        cout<<"WARN: xspeed thresholded! ("<<commandData_->motion.v.x<<">"<<maxSpeed_<<")"<<endl;
-        commandData_->motion.v.x = maxSpeed_;
+        cout<<"WARN: xspeed thresholded! ("<<command->motion.v.x<<">"<<maxSpeed_<<")"<<endl;
+        command->motion.v.x = maxSpeed_;
     }
-    else if(commandData_->motion.v.x < -maxSpeed_)
+    else if(command->motion.v.x < -maxSpeed_)
     {
-        cout<<"WARN: xspeed thresholded! ("<<commandData_->motion.v.x<<"<"<<-maxSpeed_<<")"<<endl;
-        commandData_->motion.v.x = -maxSpeed_;
+        cout<<"WARN: xspeed thresholded! ("<<command->motion.v.x<<"<"<<-maxSpeed_<<")"<<endl;
+        command->motion.v.x = -maxSpeed_;
     }
 
     //lastSpeedX_ = xspeed;
 
     // translational RMP command (convert m/s to mm/s first)
-    int16_t trans = (int16_t) rint(commandData_->motion.v.x * 1e3 * (double)RMP_COUNT_PER_MM_PER_S);
+    int16_t trans = (int16_t) rint(command->motion.v.x * 1e3 * (double)RMP_COUNT_PER_MM_PER_S);
     // check for command limits
     if(trans > RMP_MAX_TRANS_VEL_COUNT) {
         trans = RMP_MAX_TRANS_VEL_COUNT;
@@ -443,15 +320,15 @@ void SegwayRmpUsb::makeVelocityCommand( CanPacket* pkt )
         trans = -RMP_MAX_TRANS_VEL_COUNT;
     }
 
-    if( commandData_->motion.w > maxTurnrate_ )
+    if( command->motion.w > maxTurnrate_ )
     {
-        cout<<"WARN: yawspeed thresholded! ("<<commandData_->motion.w<<">"<<maxTurnrate_<<")"<<endl;
-        commandData_->motion.w = maxTurnrate_;
+        cout<<"WARN: yawspeed thresholded! ("<<command->motion.w<<">"<<maxTurnrate_<<")"<<endl;
+        command->motion.w = maxTurnrate_;
     }
-    else if( commandData_->motion.w < -maxTurnrate_ )
+    else if( command->motion.w < -maxTurnrate_ )
     {
-        cout<<"WARN: yawspeed thresholded! ("<<commandData_->motion.w<<"<"<<-maxTurnrate_<<")"<<endl;
-        commandData_->motion.w = -maxTurnrate_;
+        cout<<"WARN: yawspeed thresholded! ("<<command->motion.w<<"<"<<-maxTurnrate_<<")"<<endl;
+        command->motion.w = -maxTurnrate_;
     }
   
     //lastSpeedYaw_ = yawspeed;
@@ -459,7 +336,7 @@ void SegwayRmpUsb::makeVelocityCommand( CanPacket* pkt )
     // rotational RMP command \in [-1024, 1024] (convert from rad/s to deg/s first)
     // this is ripped from rmi_demo... to go from deg/s to counts
     // deg/s -> count = 1/0.013805056
-    int16_t rot = (int16_t) rint(commandData_->motion.w / DEG2RAD_RATIO * (double)RMP_COUNT_PER_DEG_PER_S);
+    int16_t rot = (int16_t) rint(command->motion.w / DEG2RAD_RATIO * (double)RMP_COUNT_PER_DEG_PER_S);
     // check for command limits
     if(rot > RMP_MAX_ROT_VEL_COUNT) {
         rot = RMP_MAX_ROT_VEL_COUNT;
@@ -475,7 +352,7 @@ void SegwayRmpUsb::makeVelocityCommand( CanPacket* pkt )
 
 // Calculate the difference between two raw counter values, taking care
 // of rollover.
-int SegwayRmpUsb::diff(uint32_t from, uint32_t to, bool first)
+int RmpUsbDriver::diff(uint32_t from, uint32_t to, bool first)
 {
     int diff1, diff2;
     static uint32_t max = (uint32_t)pow(2.0,32.0)-1;
@@ -498,7 +375,7 @@ int SegwayRmpUsb::diff(uint32_t from, uint32_t to, bool first)
         return(diff2);
 }
 
-void SegwayRmpUsb::WatchPacket( CanPacket* pkt, short int pktID )
+void RmpUsbDriver::WatchPacket( CanPacket* pkt, short int pktID )
 {
     short slot0 = (short)pkt->GetSlot(0);
     short slot1 = (short)pkt->GetSlot(1);
@@ -553,7 +430,7 @@ void SegwayRmpUsb::WatchPacket( CanPacket* pkt, short int pktID )
     }
 }
 
-void SegwayRmpUsb::WatchDataStream( CanPacket& pkt )
+void RmpUsbDriver::WatchDataStream( CanPacket& pkt )
 {
     static CanPacket priorPkt;
 

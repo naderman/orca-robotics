@@ -22,9 +22,8 @@
 #define ORCA2_SEGWAY_RMP_COMPONENT_H
 
 #include <orcaiceutil/component.h>
-#include "rmpdrivercontext.h"
 
-class RmpFsm;
+class RmpMainLoop;
 
 class RmpComponent : public orcaiceutil::Component
 {
@@ -33,19 +32,14 @@ public:
     RmpComponent();
     virtual ~RmpComponent();
 
-    virtual void start(const ::std::string & name,
-               const Ice::CommunicatorPtr & communicator,
-               const Ice::StringSeq & args);
-
+    // component interface
+    virtual int  go();
     virtual void stop();
 
 private:
 
-    Ice::ObjectAdapterPtr adapter_;
+    RmpMainLoop* mainLoop_;
 
-    RmpDriverContext* driver_;
-
-    RmpFsm* fsm_;
 };
 
 #endif

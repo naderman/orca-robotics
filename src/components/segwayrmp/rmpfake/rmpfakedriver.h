@@ -18,26 +18,28 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_SEGWAY_RMP_FSM_CONTEXT_H
-#define ORCA2_SEGWAY_RMP_FSM_CONTEXT_H
+#ifndef ORCA2_SEGWAY_RMP_FAKE_DRIVER_H
+#define ORCA2_SEGWAY_RMP_FAKE_DRIVER_H
 
-#include <iostream>
+#include "../rmpdriver.h"
 
-class RmpContext
+/*!
+    A fake driver to simplify development. Does not require any hardware.
+ */
+class RmpFakeDriver : public RmpDriver
 {
 public:
 
-    RmpContext() {};
-    ~RmpContext() {};
+    RmpFakeDriver();
+    virtual ~RmpFakeDriver();
 
-    void activate() {};
-    void deactivate() {};
-    void repairNamingService() {};
-    void repairRemoteObject() {};
-    void repairHardware() {};
+    virtual int enable();
+    virtual int disable();
 
-    void FSMError(const char* t, const char* s)
-    {std::cerr << "Transition error: " << t << " in state " << s << std::endl;}
+    //! Blocks till new data is available
+    virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power );
+
+    virtual int write( orca::Velocity2dCommandPtr &position2d );
 
 };
 

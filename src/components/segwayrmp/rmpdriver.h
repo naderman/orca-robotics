@@ -18,35 +18,39 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_SEGWAY_PLATFORM2D_I_H
-#define ORCA2_SEGWAY_PLATFORM2D_I_H
+#ifndef ORCA2_SEGWAY_RMP_DRIVER_INTERFACE_H
+#define ORCA2_SEGWAY_RMP_DRIVER_INTERFACE_H
 
-// include provided interfaces
 #include <orca/platform2d.h>
+#include <orca/power.h>
 
-// utilities
-#include <orcaiceutil/ptrbuffer.h>
+/*!
 
+@brief Abstract interface class for Segway RMP hardware.
 
-// serves latest data on demand and accepts commands
-class Platform2dI : public orca::Platform2d
+@author Alex Makarenko
+
+*/
+class RmpDriver
 {
+
 public:
-    Platform2dI( orcaiceutil::PtrBuffer* position2d, orcaiceutil::PtrBuffer* commands );
 
-    virtual ::orca::Position2dDataPtr getData(const ::Ice::Current& ) const;
+    virtual int enable()=0;
+    virtual int disable()=0;
 
-    virtual ::orca::Position2dGeometryPtr getGeometry(const ::Ice::Current& ) const;
+    //! Blocks till new data is available
+    virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )=0;
 
-    virtual void putData(const ::orca::Velocity2dCommandPtr&, const ::Ice::Current& );
+    //! Writes velocity command
+    virtual int write( orca::Velocity2dCommandPtr &position2d )=0;
 
-    virtual void enableMotor(bool, const ::Ice::Current& = ::Ice::Current()) {};
+    //! Set a specifc configuration
+    //virtual int setConfig( const orca::LaserConfigPtr &cfg )=0;
 
-    // the driver will put the latest data into this proxy
-    orcaiceutil::PtrBuffer* position2dProxy_;
-    // the driver will take the latest command from the proxy
-    orcaiceutil::PtrBuffer* commandProxy_;
+    //! Get the current configuration
+    //virtual int getConfig( orca::LaserConfigPtr &cfg )=0;
+
 };
-
 
 #endif

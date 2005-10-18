@@ -14,18 +14,51 @@
  *  Lesser General Public License for more details.
  *
  *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
+ *  License along with this library; if not, internalWrite to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include <orcaiceutil/application.h>
+#include <iostream>
 
-#include "rmpcomponent.h"
+#include "rmpfakedriver.h"
 
-int main(int argc, char * argv[])
+#include <orcaiceutil/orcaiceutil.h>
+
+using namespace std;
+using namespace orca;
+using orcaiceutil::operator<<;
+
+RmpFakeDriver::RmpFakeDriver()
 {
-    orcaiceutil::Application app( argc, argv );
-    RmpComponent component;
-    app.setComponent( &component );
-    return app.main(argc, argv);
+    enable();
+}
+
+RmpFakeDriver::~RmpFakeDriver()
+{
+}
+
+int RmpFakeDriver::enable()
+{
+    cout<<"RmpFakeDriver is enabled"<<endl;
+    return 0;
+}
+
+int RmpFakeDriver::disable()
+{
+    cout<<"RmpFakeDriver is disabled"<<endl;
+    return 0;
+}
+
+int RmpFakeDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )
+{
+    orcaiceutil::setSane( position2d );
+
+    sleep( 1 );
+
+    return 0;
+}
+
+int RmpFakeDriver::write( orca::Velocity2dCommandPtr &position2d )
+{
+    return 0;
 }
