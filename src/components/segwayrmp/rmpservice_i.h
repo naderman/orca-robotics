@@ -21,26 +21,14 @@
 #ifndef ORCA2_SEGWAY_RMP_SERVICE_I_H
 #define ORCA2_SEGWAY_RMP_SERVICE_I_H
 
-#include <IceBox/IceBox.h>
+#include <orcaiceutil/orcaiceutil.h>
 
-class RmpComponent;
-
-class RmpServiceI : public IceBox::Service
+class RmpServiceI : public orcaiceutil::Service
 {
 public:
 
     RmpServiceI();
-    virtual ~RmpServiceI();
-
-    virtual void start(const ::std::string & name,
-               const Ice::CommunicatorPtr & communicator,
-               const Ice::StringSeq & args);
-
-    virtual void stop();
-
-private:
-
-    RmpComponent* component_;
+    ~RmpServiceI();
 };
 
 #endif

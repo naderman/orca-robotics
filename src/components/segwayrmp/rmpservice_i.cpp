@@ -26,35 +26,22 @@ using namespace std;
 
 extern "C"
 {
-//
-// Factory function
-//
-IceBox::Service* create( Ice::CommunicatorPtr communicator )
-{
-    return new RmpServiceI;
-}
+    //
+    // Factory function
+    //
+    IceBox::Service* create( Ice::CommunicatorPtr communicator )
+    {
+        return new RmpServiceI;
+    }
 }
 
 RmpServiceI::RmpServiceI()
 {
-    component_ = new RmpComponent;
+    orcaiceutil::Component *component = new RmpComponent;
+    setComponent( component );
 }
 
 RmpServiceI::~RmpServiceI()
 {
-    delete component_;
-}
-
-void RmpServiceI::start(const string & name,
-             const Ice::CommunicatorPtr & communicator,
-             const Ice::StringSeq & args)
-{
-    component_->start( name, communicator, args );
-
-    communicator->waitForShutdown();
-}
-
-void RmpServiceI::stop()
-{
-    component_->stop();
+    delete component();
 }

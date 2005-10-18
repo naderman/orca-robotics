@@ -22,11 +22,11 @@ IF ( BUILD_SEGWAYRMP )
     
     
     # Files for the service
-    #SET( SERV_SRCS  rmpservice_i  COMMON_SRCS )
+    SET( SERV_SRCS  rmpservice_i  COMMON_SRCS )
     
     # build an IceBox service
-    #ADD_LIBRARY( OrcaSegwayRmpUsb SHARED ${SERV_SRCS} )
+    ADD_LIBRARY( OrcaSegwayRmp SHARED ${SERV_SRCS} )
     
-    #INSTALL_TARGETS( /lib OrcaSegwayRmpUsb )
+    INSTALL_TARGETS( /lib OrcaSegwayRmp )
 
 ENDIF ( BUILD_SEGWAYRMP )
