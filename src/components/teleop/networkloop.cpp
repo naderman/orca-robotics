@@ -42,11 +42,9 @@ void NetworkLoop::setupComms( const Ice::CommunicatorPtr & communicator )
 {
     // REQUIRED : Platform2d
     // create a proxy for the remote server based on its name in the config file
-    std::string proxyName = orcaiceutil::getRemotePortName( communicator, "Platform2d" );
-    if(proxyName.empty()) {
-        cerr << "*** ERROR: port name not specified" << endl;
-        return;
-    }
+    //! @todo how to get comp. tag in here?
+    std::string proxyName = orcaiceutil::getRemotePortName( communicator, "Platform2d", "Teleop" );
+
     // check with the server that the one we found is of the right type
     int count = 0;
     while ( true ) {
@@ -58,9 +56,6 @@ void NetworkLoop::setupComms( const Ice::CommunicatorPtr & communicator )
             if ( count++ > 5 ) exit(1);
             cout<<"tried "<<count<<" times"<<endl;
             sleep(1);
-        }
-        catch ( const Ice::Exception & e ) {
-            cout<<"Something bad :"<<e<<endl;
         }
     }
     cout<<"connected"<<endl;

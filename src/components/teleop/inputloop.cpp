@@ -81,7 +81,7 @@ void InputLoop::run()
         lastCommand->motion.v.x = currCommand->motion.v.x;
         lastCommand->motion.w = currCommand->motion.w;
 
-        // Read from the laser
+        // Read from the input
         cout<<"InputLoop::run: reading from driver"<<endl;
         driver_->readdata( currCommand );
 

@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_TELEOP_INPUT_DRIVER_H
-#define ORCA2_TELEOP_INPUT_DRIVER_H
+#ifndef ORCA2_TELEOP_INPUT_DRIVER_INTERFACE_H
+#define ORCA2_TELEOP_INPUT_DRIVER_INTERFACE_H
 
 #include <orca/platform2d.h>
 
