@@ -23,20 +23,45 @@
 
 <h2>Starting Up the Infrastructure</h2>
   
-  <p>Starting and configuring the naming service.</p>
-    
-  <h2>A Simple System</h2>
+  <h3>IcePack Registry</h3>
 
-  <p>With the infrastructure running, we can start up a couple of components. We'll build a system
-  which looks like this.</p>
+  <p>The IcePack Registry provides a Naming service: a mapping from logical port names to 
+  physical addresses.  It's currently the only way for components to find one another.</p>
 
-<h2>More Information</h2>
+  <p>To set it up, do:</p>
+<TABLE CLASS="ex" cellSpacing=0 width="100%" border=1><TBODY><TR><TD><PRE>
+$ cd orca2/doc/icecfg
+$ mkdir db
+$ icepackregistry --Ice.Config=icepack.cfg
+</PRE></TD></TR></TBODY></TABLE>
 
-  <p>The two example components used here are documented just like all other Orca components.
-  See <a href="examplecomponents/html/index.html">Orca Component Examples Documentation</a>
-  for a list of all examples.</p>
+  <p>This starts icepackregistry on your local machine.  If you're going to be using Orca a lot,
+  it's probably a good idea to set this up so it's always running on a single machine on the network.</p>
 
-  <p>What's Next? Check out the rest of <a href="tutorials.html">Orca Tutorials</a>.</p>
+  <h3>IceStorm Service</h3>
+
+  <p>There should be exactly one IceStorm service per host.  This is
+  an event service, used to decouple publishers from subscribers.</p>
+
+  <p>To set it up, do:</p>
+<TABLE CLASS="ex" cellSpacing=0 width="100%" border=1><TBODY><TR><TD><PRE>
+$ cd orca2/doc/icecfg
+$ icebox --Ice.Config=icebox.cfg
+</PRE></TD></TR></TBODY></TABLE>
+
+<h2>Pointing Components at this Infrastructure</h2>
+
+<p>When an Orca component starts up, it needs to know how to find the
+services above.</p>
+
+<p>If your components use orcaiceutil, you can solve this problem
+centrally by putting the following in you '~/.orcarc' file:</p>
+<TABLE CLASS="ex" cellSpacing=0 width="100%" border=1><TBODY><TR><TD><PRE>
+# Standard Ice Configuration for Orca
+Ice.Default.Locator=IcePack/Locator:default -p 12000
+IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 10000
+</PRE></TD></TR></TBODY></TABLE>
+<p>(modify appropriately if this differs from your system setup)</p>
 
 
 <!-- Do not edit or remove this line: it causes add_sidebar.pl to add the footer -->
