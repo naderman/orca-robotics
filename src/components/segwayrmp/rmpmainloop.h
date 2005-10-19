@@ -56,8 +56,19 @@ private:
     orca::Position2dConsumerPrx position2dConsumer_;
     orca::PowerConsumerPrx powerConsumer_;
 
-    // generic interface to Segway RMP hardware
+    // generic interface to the hardware
     RmpDriver* driver_;
+
+    enum DriverType
+    {
+        USB_DRIVER,
+        CAN_DRIVER,
+        PLAYER_CLIENT_DRIVER,
+        FAKE_DRIVER,
+        UNKNOWN_DRIVER
+    };
+
+    DriverType driverType_;
 
     // Maximum allowd speeds [m/s], [rad/s]
     double maxSpeed_;

@@ -83,8 +83,6 @@ int RmpUsbDriver::disable()
 
 int RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )
 {
-    cout<<"RmpUsbDriver::main: starting nicely"<<endl;
-
     // Variables used in the loop
     CanPacket pkt;
     int packetsRead;

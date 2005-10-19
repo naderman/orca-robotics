@@ -18,11 +18,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// include defnition of Ice runtime
-#include <Ice/Ice.h>
+#include <iostream>
 
 #include "rmpcomponent.h"
-
 #include "rmpmainloop.h"
 
 // implementations of Ice objects
@@ -100,6 +98,7 @@ int RmpComponent::go()
 
     communicator()->waitForShutdown();
 
+    // someone destroyed the communicator or ctrl-c was called
     stop();
 
     return 0;

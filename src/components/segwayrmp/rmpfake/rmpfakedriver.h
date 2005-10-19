@@ -37,9 +37,9 @@ public:
     virtual int disable();
 
     //! Blocks till new data is available
-    virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power );
+    virtual int read( orca::Position2dDataPtr & position2d, orca::PowerDataPtr & power );
 
-    virtual int write( orca::Velocity2dCommandPtr &position2d );
+    virtual int write( orca::Velocity2dCommandPtr & command );
 
 };
 

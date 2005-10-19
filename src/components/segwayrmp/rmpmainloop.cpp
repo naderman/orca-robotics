@@ -26,9 +26,11 @@
 #include "rmpusb/rmpusbdriver.h"
 //#include "rmpcan/rmpcandriver.h"
 #include "rmpfake/rmpfakedriver.h"
+//#include "rmpfake/rmpplayerdriver.h"
 
 #include <orcaiceutil/orcaiceutil.h>
 #include <orcaiceutil/mathdefs.h>
+#include <orcaiceutil/exceptions.h>
 
 using namespace std;
 using namespace orca;
@@ -40,9 +42,13 @@ RmpMainLoop::RmpMainLoop(
                  orcaiceutil::PtrBuffer* powerProxy,
                  const orca::Position2dConsumerPrx & position2dConsumer,
                  const orca::PowerConsumerPrx & powerConsumer ) :
-        position2dProxy_(position2dProxy), commandProxy_(commandProxy), powerProxy_(powerProxy),
-        position2dConsumer_(position2dConsumer), powerConsumer_(powerConsumer)
+        position2dProxy_(position2dProxy),
+        commandProxy_(commandProxy),
+        powerProxy_(powerProxy),
+        position2dConsumer_(position2dConsumer),
+        powerConsumer_(powerConsumer)
 {
+    driverType_ = RmpMainLoop::UNKNOWN_DRIVER;
 }
 
 RmpMainLoop::~RmpMainLoop()
@@ -59,28 +65,55 @@ void RmpMainLoop::setupConfigs( const Ice::PropertiesPtr & properties )
     maxTurnrate_ = orcaiceutil::getPropertyAsDoubleWithDefault( properties,
             "SegwayRmp.Config.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
     string driverName = properties->getPropertyWithDefault(
-            "SegwayRmp.Config.DriverName", "RmpUsb" );
+            "SegwayRmp.Config.Driver", "usb" );
+    if ( driverName == "usb" ) {
+        driverType_ = RmpMainLoop::USB_DRIVER;
+    }
+    else if ( driverName == "fake" ) {
+        driverType_ = RmpMainLoop::FAKE_DRIVER;
+    }
+    else {
+        driverType_ = RmpMainLoop::UNKNOWN_DRIVER;
+        string errorStr = "Unknown driver type. Cannot talk to hardware.";
+        throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
+    }
+        
     cout<<"properties: maxspeed="<<maxSpeed_<<", maxturn="<<maxTurnrate_<<
-            ", driver="<<driverName<<endl;
+            ", driver="<<driverName<<" ("<<driverType_<<")"<<endl;
 }
 
 void RmpMainLoop::run()
 {
-    cout<<"RmpMainLoop::run: starting nicely"<<endl;
+    //cout<<"RmpMainLoop::run: starting nicely"<<endl;
 
     // based on some config parameter, create the right driver
-    if ( 0 ) {
-        driver_ = new RmpUsbDriver();
-    }
-    else {
-        driver_ = new RmpFakeDriver();
+    switch ( driverType_ )
+    {
+        case RmpMainLoop::USB_DRIVER :
+            driver_ = new RmpUsbDriver;
+            break;
+        case RmpMainLoop::CAN_DRIVER :
+            //driver_ = new RmpCanDriver;
+            break;
+        case RmpMainLoop::PLAYER_CLIENT_DRIVER :
+            //driver_ = new RmpPlayerClientDriver;
+            break;
+        case RmpMainLoop::FAKE_DRIVER :
+            driver_ = new RmpFakeDriver;
+            break;
+        case RmpMainLoop::UNKNOWN_DRIVER :
+            // shouldn't be here
+            exit(1);
     }
 
     // init internal data storage
     orca::Position2dDataPtr position2dData = new Position2dData;
     orca::Velocity2dCommandPtr commandData = new Velocity2dCommand;
-    // set up data structure for 3 batteries
     orca::PowerDataPtr powerData = new PowerData;
+    // generic object pointer for commands
+    Ice::ObjectPtr data;
+
+    // set up data structure for 3 batteries
     BatteryData bd;
     for ( int i=0; i<3; ++i ) {
         powerData->batteries.push_back( bd );
@@ -91,10 +124,10 @@ void RmpMainLoop::run()
 
     while( isActive() )
     {
-        // Read from the hardware
+        // Read data from the hardware
         driver_->read( position2dData, powerData );      
         
-        // push it to IceStorm
+        // push data to IceStorm
         position2dConsumer_->consumeData( position2dData );
         powerConsumer_->setData( powerData );
 
@@ -102,8 +135,17 @@ void RmpMainLoop::run()
         position2dProxy_->push( position2dData );
         powerProxy_->push( powerData );        
 
-        // Have any configuration requests arrived?
-        //! @todo
+        // Have any commands arrived?
+        if ( !commandProxy_->isEmpty() )
+        {
+            // get and pop, so that afterwards the buffer is empty
+            commandProxy_->getAndPop( data );
+
+            commandData = Velocity2dCommandPtr::dynamicCast( data );
+            cout<<"comm: " << commandData << endl;
+
+            driver_->write( commandData );
+        }
     }
 
     // Shut down the hardware
