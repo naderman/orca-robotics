@@ -2,7 +2,18 @@ OPTION( BUILD_TELEOP "Try to build Teleop" ON )
 
 IF ( BUILD_TELEOP )
 
-  SUBDIRS( keyboard )
+# keyboard driver
+IF ( HAVE_TERMIO )
+    MESSAGE("    Can build keyboard driver for Teleop")
+    SUBDIRS( keyboard )
+    LINK_LIBRARIES( TeleopKeyboard )
+    LINK_DIRECTORIES( ${PROJ_BINARY_DIR}/src/components/teleop/keyboard )
+ELSE ( HAVE_TERMIO )
+    MESSAGE("    Cannot build keyboard driver for Teleop")
+ENDIF ( HAVE_TERMIO )
+
+# continue only if we can build at least one driver
+IF ( HAVE_TERMIO )
 
   INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
   INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaiceutil.cmake )
@@ -10,9 +21,7 @@ IF ( BUILD_TELEOP )
   # This gathers all the .cpp files into the variable 'SRCS'
   FILE( GLOB SRCS *.cpp )
 
-  LINK_DIRECTORIES( ${PROJ_BINARY_DIR}/src/components/teleop/keyboard )
-  LINK_LIBRARIES( TeleopKeyboard )
-
   GLOBAL_ADD_EXECUTABLE( teleop ${SRCS} )
 
+ENDIF ( HAVE_TERMIO )
 ENDIF ( BUILD_TELEOP )

@@ -1,3 +1,5 @@
+MESSAGE ( "== COMPONENTS ==" )
+
 SUBDIRS(
   lasermon
   playerlaser
