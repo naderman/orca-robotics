@@ -4,12 +4,12 @@ IF ( BUILD_TELEOP )
 
 # keyboard driver
 IF ( HAVE_TERMIO )
-    MESSAGE("    Can build keyboard driver for Teleop")
+    MESSAGE("    Keyboard driver for Teleop - ok")
     SUBDIRS( keyboard )
     LINK_LIBRARIES( TeleopKeyboard )
     LINK_DIRECTORIES( ${PROJ_BINARY_DIR}/src/components/teleop/keyboard )
 ELSE ( HAVE_TERMIO )
-    MESSAGE("    Cannot build keyboard driver for Teleop")
+    MESSAGE("    Keyboard driver for Teleop - cannot")
 ENDIF ( HAVE_TERMIO )
 
 # continue only if we can build at least one driver
