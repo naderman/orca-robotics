@@ -2,6 +2,12 @@
 #
 # Builds all the documentation for Orca2
 #
+# This consists of the following steps:
+#
+# 1) Convert all the doxygen comments into html
+# 2) Add the header (which contains the Orca sidebar) to both
+#    the doxygen-generated html and the human-generated html (in html/raw_html)a
+#
 ################################################################################
 
 USAGE_ARGS=""
@@ -29,8 +35,8 @@ build_doxygen () {
 #
 # First build the doxygen stuff locally
 #
-#build_doxygen ../src/examplecomponents
-#build_doxygen ../src/components
+build_doxygen ../src/utils
+build_doxygen ../src/components
 
 #
 # Then add the sidebar stuff

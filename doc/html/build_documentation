@@ -12,7 +12,7 @@
 # Configuration options:
 
 # The doxygen-written directories to recurse into:
-doxygen_dirs="components util objects corba-transport crud-transport examplecomponents patterns"
+doxygen_dirs="components utils"
 
 # The directories containing human-written html:
 human_dir="raw_html"
