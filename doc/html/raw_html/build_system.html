@@ -48,6 +48,24 @@ file in Orca2.</p>
 
 <p>Note for libraries: In order for files to be able to '#include' header files the same when they're in situ (within the distribution) as when they're installed, all '#included' header files live in subdirectories called 'orca'.  Source files then '#include' the directory above.</p>
 
+<h2>Documentation</h2>
+
+<p>In order to be able to build the documentation locally, you need the following:</p>
+<ul>
+  <li>doxygen
+  </li>
+  <li>sgml2x
+  </li>
+</ul>
+
+<p>(On debian, install with: <code>sudo apt-get install doxygen sgml2x</code>)</p>
+
+<p>To build it, do:</p>
+<ul>
+  <li><code>cd doc; ./build_all_documentation</code>
+  </li>
+</ul>
+
 
 <!-- Do not edit or remove this line: it causes add_sidebar.pl to add the footer -->
 
