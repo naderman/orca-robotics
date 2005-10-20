@@ -21,19 +21,22 @@
 #include <iostream>
 
 #include "inputloop.h"
-#include "teleopfsm.h"
 
-#include "keyboard/keyboarddriver.h"
-//#include "joystick/joystickddriver.h"
+#include "keyboard/teleopkeyboarddriver.h"
+//#include "joystick/teleopjoystickddriver.h"
+#include "teleopfakedriver.h"
 
-#include <orcaiceutil/proputils.h>
+#include <orcaiceutil/orcaiceutil.h>
+#include <orcaiceutil/exceptions.h>
 #include <orcaiceutil/mathdefs.h>
 
 using namespace std;
 using namespace orca;
 
-InputLoop::InputLoop( TeleopFsm* fsm, orcaiceutil::PtrBuffer* commands ) :
-        fsm_(fsm), commandBuffer_(commands), driver_(0)
+InputLoop::InputLoop( orcaiceutil::PtrBuffer* commands ) :
+        commandBuffer_(commands),
+        driver_(0),
+        driverType_(InputLoop::UNKNOWN_DRIVER)
 {
 }
 
@@ -47,9 +50,29 @@ void InputLoop::setupConfigs( const Ice::PropertiesPtr & properties )
     //
     // Read settings
     //
-    maxSpeed_ = orcaiceutil::getPropertyAsDoubleWithDefault( properties, "Teleop.MaxSpeed", 1.0 );
-    maxTurnrate_ = orcaiceutil::getPropertyAsDoubleWithDefault( properties, "Teleop.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
-    cout<<"properties: maxspeed="<<maxSpeed_<<", maxturn="<<maxTurnrate_<<endl;
+    maxSpeed_ = orcaiceutil::getPropertyAsDoubleWithDefault( properties,
+                "Teleop.MaxSpeed", 1.0 );
+    maxTurnrate_ = orcaiceutil::getPropertyAsDoubleWithDefault( properties,
+                "Teleop.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
+    string driverName = properties->getPropertyWithDefault(
+            "SegwayRmp.Config.Driver", "keyboard" );
+    if ( driverName == "keyboard" ) {
+        driverType_ = InputLoop::KEYBOARD_DRIVER;
+    }
+    else if ( driverName == "joystick" ) {
+        driverType_ = InputLoop::JOYSTICK_DRIVER;
+    }
+    else if ( driverName == "fake" ) {
+        driverType_ = InputLoop::FAKE_DRIVER;
+    }
+    else {
+        driverType_ = InputLoop::UNKNOWN_DRIVER;
+        string errorStr = "Unknown driver type. Cannot talk to hardware.";
+        throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
+    }
+
+    cout<<"properties: maxspeed="<<maxSpeed_<<", maxturn="<<maxTurnrate_<<
+            ", driver="<<driverName<<" ("<<driverType_<<")"<<endl;
 
     /*
     xmlDoc->getParam( "useJoystick", use_joystick, DEFAULT_USE_JOYSTICK );
@@ -64,13 +87,23 @@ void InputLoop::setupConfigs( const Ice::PropertiesPtr & properties )
 // read commands from the keyboard. Launced in a separate thread.
 void InputLoop::run()
 {
-    cout<<"InputLoop::run: starting nicely"<<endl;
-
-    // based on some config parameter, create the right driver
-    if ( 1 )
+    // based on the config parameter, create the right driver
+    switch ( driverType_ )
     {
-        driver_ = new KeyboardDriver();
+        case InputLoop::KEYBOARD_DRIVER :
+            driver_ = new TeleopKeyboardDriver;
+            break;
+        case InputLoop::JOYSTICK_DRIVER :
+            //driver_ = new TeleopJoystickDriver;
+            break;
+        case InputLoop::FAKE_DRIVER :
+            driver_ = new TeleopFakeDriver;
+            break;
+        case InputLoop::UNKNOWN_DRIVER :
+            string errorStr = "Unknown driver type. Cannot talk to hardware.";
+            throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
     }
+    driver_->enable();
 
     Velocity2dCommandPtr currCommand = new Velocity2dCommand;
     Velocity2dCommandPtr lastCommand = new Velocity2dCommand;

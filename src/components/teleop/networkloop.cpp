@@ -38,12 +38,12 @@ NetworkLoop::~NetworkLoop()
 {
 }
 
-void NetworkLoop::setupComms( const Ice::CommunicatorPtr & communicator )
+void NetworkLoop::setupComms( const Ice::CommunicatorPtr & communicator, const string & compTag )
 {
     // REQUIRED : Platform2d
     // create a proxy for the remote server based on its name in the config file
     //! @todo how to get comp. tag in here?
-    std::string proxyName = orcaiceutil::getRemotePortName( communicator, "Platform2d", "Teleop" );
+    std::string proxyName = orcaiceutil::getRemotePortName( communicator, compTag, "Platform2d" );
 
     // check with the server that the one we found is of the right type
     int count = 0;

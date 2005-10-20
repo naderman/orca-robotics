@@ -33,91 +33,34 @@ TeleopComponent::TeleopComponent()
 
 TeleopComponent::~TeleopComponent()
 {
-    delete networkLoop_;
-    delete inputLoop_;
+    // do not delete networkLoop_ and inputLoop_!!! They derive from Ice::Thread and deletes itself.
 }
 
-int TeleopComponent::go()
+void TeleopComponent::start()
 {
     //
     // NETWORK
     //
     networkLoop_ = new NetworkLoop( &commandProxy_ );
-    networkLoop_->setupComms( communicator() );
+    networkLoop_->setupComms( communicator(), componentName() );
     networkLoop_->setupConfigs( communicator()->getProperties() );
     networkLoop_->start();
 
     //
     // HARDWARE
     //
-    inputLoop_ = new InputLoop( this, &commandProxy_ );
+    inputLoop_ = new InputLoop( &commandProxy_ );
     inputLoop_->setupConfigs( communicator()->getProperties() );
     inputLoop_->start();
     
-    communicator()->waitForShutdown();
-
-    stop();
-    /*
-    // do clean up if there was a Ctrl-C, otherwise the driver has cleaned up itself
-    if ( interrupted() )  {
-        cerr<< appName() << ": terminating..." << endl;
-        fsm.interruptShutdown();
-    } else {
-        cout<<appName()<<": exiting cleanly. Good bye."<<endl;
-    }
-    */
-    return 0;
+    // the rest is handled by the application/service
 }
 
 void TeleopComponent::stop()
 {
-    cout<<"stopping component"<<endl;
-
     networkLoop_->stop();
-    cout<<"joining network loop ..."<<endl;
-    networkLoop_->getThreadControl().join();
-
     inputLoop_->stop();
-    cout<<"joining input loop ... Hit any key please."<<endl;
+
+    networkLoop_->getThreadControl().join();
     inputLoop_->getThreadControl().join();
 }
-/*
-void TeleopComponent::activate()
-{
-    //
-    // NETWORK
-    //
-    networkLoop_ = new NetworkLoop( &commandProxy_ );
-    networkLoop_->setupComms( comm_ );
-    networkLoop_->activate();
-
-    //
-    // HARDWARE
-    //
-    inputLoop_ = new KeyboardDriver( this, &commandProxy_ );
-    inputLoop_->setup( comm_->getProperties() );
-
-    inputLoop_->activate();
-
-}
-
-void TeleopComponent::humanDeactivate()
-{
-    netDriver_->deactivate();
-    cout<<"joining network hwDriver_..."<<endl;
-    netDriver_->getThreadControl().join();
-
-    // hw driver is assumed to be stopped
-}
-
-void TeleopComponent::interruptDeactivate()
-{
-    netDriver_->deactivate();
-    cout<<"joining network hwDriver_..."<<endl;
-    netDriver_->getThreadControl().join();
-
-    hwDriver_->deactivate();
-    cout<<"joining input hwDriver_... Hit any key please."<<endl;
-    hwDriver_->getThreadControl().join();
-}
-*/

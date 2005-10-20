@@ -22,14 +22,14 @@
 #define ORCA2_TELEOP_COMPONENT_H
 
 #include <orcaiceutil/component.h>
-#include "teleopfsm.h"
+//#include "teleopfsm.h"
 
 #include <orcaiceutil/ptrbuffer.h>
 
 class NetworkLoop;
 class InputLoop;
 
-class TeleopComponent : public orcaiceutil::Component, public TeleopFsm
+class TeleopComponent : public orcaiceutil::Component //, public TeleopFsm
 {
 public:
 
@@ -37,14 +37,14 @@ public:
     virtual ~TeleopComponent();
 
     // component interface
-    virtual int  go();
+    virtual void start();
     virtual void stop();
-
+    /*
     // FSM events
     virtual void activate() {};
     virtual void humanDeactivate() {};
     virtual void interruptDeactivate() {};
-
+    */
 private:
     // network-hardware interface
     // the driver will put the latest data into this proxy

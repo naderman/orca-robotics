@@ -22,6 +22,9 @@
 
 #include "teleopcomponent.h"
 
+//
+// Build the component into a stand-alone application
+//
 int main(int argc, char * argv[])
 {
     TeleopComponent component;

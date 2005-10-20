@@ -14,39 +14,46 @@
  *  Lesser General Public License for more details.
  *
  *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
+ *  License along with this library; if not, internalWrite to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_TELEOP_INPUT_DRIVER_H
-#define ORCA2_TELEOP_INPUT_DRIVER_H
+#include <iostream>
 
-#include <orca/platform2d.h>
+#include "teleopfakedriver.h"
 
-/*!
+#include <orcaiceutil/orcaiceutil.h>
 
-@brief Abstract interface class for human teleoperation input.
+using namespace std;
+using namespace orca;
+using orcaiceutil::operator<<;
 
-@author Alex Makarenko
-
-*/
-class InputDriver
+TeleopFakeDriver::TeleopFakeDriver()
 {
+}
 
-public:
+TeleopFakeDriver::~TeleopFakeDriver()
+{
+    cout<<"TeleopFakeDriver~TeleopFakeDriver"<<endl;
+}
 
-    virtual int enable()=0;
-    virtual int disable()=0;
+int TeleopFakeDriver::enable()
+{
+    cout<<"TeleopFakeDriver is enabled"<<endl;
+    return 0;
+}
 
-    //! Blocks till new data is available
-    virtual int readdata( orca::Velocity2dCommandPtr &data )=0;
+int TeleopFakeDriver::disable()
+{
+    cout<<"TeleopFakeDriver is disabled"<<endl;
+    return 0;
+}
 
-    //! Set a specifc configuration
-    //virtual int setConfig( const orca::LaserConfigPtr &cfg )=0;
+int TeleopFakeDriver::readdata( orca::Velocity2dCommandPtr &data )
+{
+    orcaiceutil::setSane( data );
 
-    //! Get the current configuration
-    //virtual int getConfig( orca::LaserConfigPtr &cfg )=0;
+    sleep( 1 );
 
-};
-
-#endif
+    return 0;
+}

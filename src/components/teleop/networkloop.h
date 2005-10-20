@@ -26,6 +26,8 @@
 
 #include <orca/platform2d.h>
 
+#include <string>
+
 class NetworkLoop : public orcaiceutil::Thread
 {
 public:
@@ -33,8 +35,8 @@ public:
     NetworkLoop( orcaiceutil::PtrBuffer* commandBuffer );
     ~NetworkLoop();
 
-    void setupComms( const Ice::CommunicatorPtr & );
-    void setupConfigs( const Ice::PropertiesPtr & );
+    void setupComms( const Ice::CommunicatorPtr & communicator, const std::string & compTag );
+    void setupConfigs( const Ice::PropertiesPtr & properties );
 
     virtual void run();
 

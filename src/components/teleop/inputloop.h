@@ -28,13 +28,13 @@
 
 #include "inputdriver.h"
 
-class TeleopFsm;
+//class TeleopFsm;
 
 class InputLoop : public orcaiceutil::Thread
 {
 public:
 
-    InputLoop( TeleopFsm* fsm, orcaiceutil::PtrBuffer* commands );
+    InputLoop( orcaiceutil::PtrBuffer* commands );
     virtual ~InputLoop();
 
     void setupConfigs( const Ice::PropertiesPtr & );
@@ -44,13 +44,23 @@ public:
 private:
 
     // component/driver interface
-    TeleopFsm* fsm_;
+    //TeleopFsm* fsm_;
 
     // network/driver interface
     orcaiceutil::PtrBuffer* commandBuffer_;
 
     // generic interface to input hardware
     InputDriver* driver_;
+
+    enum DriverType
+    {
+        KEYBOARD_DRIVER,
+        JOYSTICK_DRIVER,
+        FAKE_DRIVER,
+        UNKNOWN_DRIVER
+    };
+
+    DriverType driverType_;
 
     // define the speed limits for the robot
     // at full joystick depression you'll go this fast

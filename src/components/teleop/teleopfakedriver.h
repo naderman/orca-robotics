@@ -18,34 +18,29 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_TELEOP_INPUT_DRIVER_H
-#define ORCA2_TELEOP_INPUT_DRIVER_H
+#ifndef ORCA2_TELEOP_FAKE_INPUT_DRIVER_H
+#define ORCA2_TELEOP_FAKE_INPUT_DRIVER_H
 
-#include <orca/platform2d.h>
+#include "inputdriver.h"
 
 /*!
+    A fake driver to simplify development. Does not require any hardware.
 
-@brief Abstract interface class for human teleoperation input.
-
-@author Alex Makarenko
-
+    @author Alex Makarenko
 */
-class InputDriver
+class TeleopFakeDriver : public InputDriver
 {
 
 public:
 
-    virtual int enable()=0;
-    virtual int disable()=0;
+    TeleopFakeDriver();
+    virtual ~TeleopFakeDriver();
+
+    virtual int enable();
+    virtual int disable();
 
     //! Blocks till new data is available
-    virtual int readdata( orca::Velocity2dCommandPtr &data )=0;
-
-    //! Set a specifc configuration
-    //virtual int setConfig( const orca::LaserConfigPtr &cfg )=0;
-
-    //! Get the current configuration
-    //virtual int getConfig( orca::LaserConfigPtr &cfg )=0;
+    virtual int readdata( orca::Velocity2dCommandPtr &data );
 
 };
 
