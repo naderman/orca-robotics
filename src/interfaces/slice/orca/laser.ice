@@ -31,6 +31,7 @@ module orca
 sequence<float>        RangeSequence;
 sequence<byte>         IntensitySequence;
 
+//! Laser Configuration
 class LaserConfig extends OrcaObject
 {
     float rangeResolution;    // minimum range step that can be sensed
@@ -38,6 +39,7 @@ class LaserConfig extends OrcaObject
     bool  isEnabled;
 };
 
+//! Laser Geometry
 class LaserGeometry extends OrcaObject
 {
     // Offset of the centre of the laser from the robot, int the robot CS
@@ -47,6 +49,7 @@ class LaserGeometry extends OrcaObject
     Size3d  size;
 };
 
+//! Laser Data -- the scan
 class LaserData extends OrcaObject
 {
     RangeSequence     ranges;
@@ -55,6 +58,7 @@ class LaserData extends OrcaObject
     float             angularResolution;
 };
 
+//! Laser Interface
 interface Laser
 {
     // Functions for reading from the laser
@@ -65,6 +69,7 @@ interface Laser
     idempotent  void setConfig( LaserConfig config );
 };
 
+//! Consumer of Laser Scans
 interface LaserConsumer
 {
     void consumeData( LaserData obj );

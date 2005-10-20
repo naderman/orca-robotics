@@ -64,19 +64,20 @@ build_slice () {
 # First build the doxygen stuff locally
 #
 
-#build_doxygen ../src/utils
-#build_doxygen ../src/components
+build_doxygen ../src/utils
+build_doxygen ../src/components
+build_doxygen ../src/interfaces
 
 #
 # Build the slice documentation
 #
 
-build_slice ../src/interfaces/slice/orca
+#build_slice ../src/interfaces/slice/orca
 
 #
 # Then add the sidebar stuff
 #
 
-#cd html
-#./format_documentation
-#cd -
+cd html
+./format_documentation
+cd -
