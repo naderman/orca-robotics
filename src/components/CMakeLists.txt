@@ -3,11 +3,11 @@ MESSAGE ( "== COMPONENTS ==" )
 # when adding new directories, please maintain alphabetical order
 SUBDIRS(
   lasermon
-  playerlaser
   lasermon
   position2dmon
   powermon
   segwayrmp
+  sicklaser
   teleop
 )
 

@@ -34,7 +34,7 @@ using namespace std;
 using namespace orca;
 using orcaiceutil::operator<<;
 
-#define ADAPTER_NAME "Orca"
+#define COMPONENT_NAME "LaserMon"
 
 class App : virtual public Ice::Application
 {
@@ -45,10 +45,8 @@ class App : virtual public Ice::Application
 int App::run( int argc, char* argv[] )
 {
     // create the one-and-only component adapter, parse config file to create adapter name
-    orcaiceutil::setComponentProperties( communicator() );
-    Ice::ObjectAdapterPtr adapter = communicator()->createObjectAdapter(ADAPTER_NAME);
-
-    cout << "Prop: " << communicator()->getProperties()->getProperty("Orca.Locator") << endl;
+    orcaiceutil::setComponentProperties( communicator(), COMPONENT_NAME );
+    Ice::ObjectAdapterPtr adapter = communicator()->createObjectAdapter(COMPONENT_NAME);
 
     adapter->activate();
     cout<<"*** INFO: Adapter is initialized and running..."<<endl;
@@ -59,7 +57,7 @@ int App::run( int argc, char* argv[] )
 
     // create a proxy for the remote server based on its name in the config file
     LaserPrx laserPrx;
-    orcaiceutil::connectProxy<LaserPrx>( communicator(), adapter, laserPrx, "Laser" );
+    orcaiceutil::connectProxy<LaserPrx>( communicator(), adapter, COMPONENT_NAME, laserPrx, "Laser"  );
 
 //     // We could set the laser's configuration like so:
 //     LaserConfigPtr config = new LaserConfig;
@@ -79,7 +77,7 @@ int App::run( int argc, char* argv[] )
     // Set up a consumer to receive IceStorm data stream, based on the topic name
     LaserConsumerPtr laserConsumer = new LaserConsumerI;
 //    orcaiceutil::subscribeConsumerToTopic<LaserConsumerPtr>( communicator(), adapter, laserConsumer, "Laser" );
-    orcaiceutil::subscribeConsumerToTopic( communicator(), adapter, (Ice::ObjectPtr&) laserConsumer, "Laser" );
+    orcaiceutil::subscribeConsumerToTopic( communicator(), adapter, COMPONENT_NAME, (Ice::ObjectPtr&) laserConsumer, "Laser" );
 
 
     // We could pull data like so:
@@ -101,6 +99,6 @@ int main(int argc, char * argv[])
 {
     App app;
     Ice::PropertiesPtr properties = Ice::getDefaultProperties( argc, argv );
-    orcaiceutil::setDefaultOrcaProperties( properties, ADAPTER_NAME );
+    orcaiceutil::setDefaultOrcaProperties( properties, COMPONENT_NAME );
     return app.main(argc, argv);
 }
