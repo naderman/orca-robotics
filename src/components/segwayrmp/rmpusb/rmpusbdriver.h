@@ -67,14 +67,11 @@ private:
     // Maximum allowd speeds [m/s], [rad/s]
     double maxSpeed_, maxTurnrate_;
 
-    // helper to write a packet
-    int internalWrite(CanPacket& pkt);
-
     void updateData( rmpusb_frame_t *,
             orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power );
 
     // helper to take a player command and turn it into a CAN command packet
-    void makeVelocityCommand( const orca::Velocity2dCommandPtr & command, CanPacket* pkt );
+    void makeVelocityCommandPacket( const orca::Velocity2dCommandPtr & command, CanPacket* pkt );
 
     // Calculate the difference between two raw counter values, taking care
     // of rollover.

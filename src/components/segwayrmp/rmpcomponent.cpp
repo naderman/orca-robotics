@@ -98,8 +98,9 @@ int RmpComponent::go()
 
     communicator()->waitForShutdown();
 
-    // someone destroyed the communicator or ctrl-c was called
     stop();
+
+    cout<<"fully stopped"<<endl;
 
     return 0;
 }
@@ -107,6 +108,7 @@ int RmpComponent::go()
 void RmpComponent::stop()
 {
     cout<<"stopping component"<<endl;
+    //adapter()->deactivate();
 
     mainLoop_->stop();
     cout<<"joining main loop ..."<<endl;

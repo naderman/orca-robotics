@@ -23,7 +23,9 @@
 
 #include "rmpusbdriver.h"
 
+// interface to the usb device
 #include "canio_usb_ftdi.h"
+// rmp/usb data structure
 #include "rmpusb_frame.h"
 
 #include <orcaiceutil/orcaiceutil.h>
@@ -116,9 +118,17 @@ int RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr 
     return 0;
 }
 
-int RmpUsbDriver::write( orca::Velocity2dCommandPtr &position2d )
+int RmpUsbDriver::write( orca::Velocity2dCommandPtr & command )
 {
-    return 0;
+    CanPacket pkt;
+    makeVelocityCommandPacket( command, &pkt );
+
+    int ret = canio_->WritePacket(pkt);
+            
+    // Reset timer
+    //gettimeofday( &priorWriteTime, NULL );
+
+    return ret;
 }
 
 void RmpUsbDriver::updateData( rmpusb_frame_t* data_frame,
@@ -269,20 +279,10 @@ void RmpUsbDriver::updateData( rmpusb_frame_t* data_frame,
     firstread_ = false;
 }
 
-int RmpUsbDriver::internalWrite(CanPacket& pkt)
-{
-    int ret;
-
-    //printf("SENT: pkt: %s\n", pkt.toString());
-    ret = canio_->WritePacket(pkt);
-    
-    return ret;
-}
-
-/* takes a player command (in host byte order) and turns it into CAN packets 
- * for the RMP 
+/*
+ *  Takes an Orca command object and turns it into CAN packets for the RMP
  */
-void RmpUsbDriver::makeVelocityCommand( const Velocity2dCommandPtr & command, CanPacket* pkt )
+void RmpUsbDriver::makeVelocityCommandPacket( const Velocity2dCommandPtr & command, CanPacket* pkt )
 {
     pkt->id = RMP_CAN_ID_COMMAND;
     pkt->PutSlot(2, (uint16_t)RMP_CAN_CMD_NONE);

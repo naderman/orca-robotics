@@ -25,8 +25,8 @@
 // segway rmp drivers
 #include "rmpusb/rmpusbdriver.h"
 //#include "rmpcan/rmpcandriver.h"
-#include "rmpfake/rmpfakedriver.h"
 //#include "rmpfake/rmpplayerdriver.h"
+#include "rmpfakedriver.h"
 
 #include <orcaiceutil/orcaiceutil.h>
 #include <orcaiceutil/mathdefs.h>
@@ -105,6 +105,7 @@ void RmpMainLoop::run()
             // shouldn't be here
             exit(1);
     }
+    driver_->enable();
 
     // init internal data storage
     orca::Position2dDataPtr position2dData = new Position2dData;
@@ -128,8 +129,15 @@ void RmpMainLoop::run()
         driver_->read( position2dData, powerData );      
         
         // push data to IceStorm
-        position2dConsumer_->consumeData( position2dData );
-        powerConsumer_->setData( powerData );
+        try
+        {
+            position2dConsumer_->consumeData( position2dData );
+            powerConsumer_->setData( powerData );
+        }
+        catch ( const Ice::ConnectionRefusedException & e )
+        {
+            // it's ok, the communicator may already be destroyed
+        }
 
         // Stick it in the buffer so pullers can get it
         position2dProxy_->push( position2dData );
@@ -147,6 +155,8 @@ void RmpMainLoop::run()
             driver_->write( commandData );
         }
     }
+
+    cout<<"shutting down main loop"<<endl;
 
     // Shut down the hardware
     driver_->disable();

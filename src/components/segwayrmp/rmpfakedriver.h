@@ -21,7 +21,7 @@
 #ifndef ORCA2_SEGWAY_RMP_FAKE_DRIVER_H
 #define ORCA2_SEGWAY_RMP_FAKE_DRIVER_H
 
-#include "../rmpdriver.h"
+#include "rmpdriver.h"
 
 /*!
     A fake driver to simplify development. Does not require any hardware.

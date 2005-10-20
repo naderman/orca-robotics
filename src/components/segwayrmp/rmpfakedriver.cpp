@@ -30,7 +30,6 @@ using orcaiceutil::operator<<;
 
 RmpFakeDriver::RmpFakeDriver()
 {
-    enable();
 }
 
 RmpFakeDriver::~RmpFakeDriver()
