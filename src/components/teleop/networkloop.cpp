@@ -22,8 +22,8 @@
 
 #include "networkloop.h"
 
-#include <orcaiceutil/configutils.h>
-#include <orcaiceutil/objutils.h>
+#include <orcaiceutil/orcaiceutil.h>
+#include <orcaiceutil/exceptions.h>
 
 using namespace std;
 using namespace orca;
@@ -59,12 +59,18 @@ void NetworkLoop::setupComms( const Ice::CommunicatorPtr & communicator, const s
         }
     }
     cout<<"connected"<<endl;
+
+    logger_ = communicator->getLogger();
+    logger_->print( "logger can print" );
+    logger_->trace( "bullshit", "logger can trace" );
+    logger_->warning( "logger can warn" );
+    logger_->error( "logger can err" );
 }
 
 void NetworkLoop::setupConfigs( const Ice::PropertiesPtr & properties )
 {
-    // read update frequency, for example
-    timeoutMs_ = 100;
+    timeoutMs_ = (int)floor(1000.0 * orcaiceutil::getPropertyAsDoubleWithDefault( properties,
+                        "Teleop.Config.RepeatTime", 0.2 ) );
 }
 
 void NetworkLoop::run()
@@ -93,20 +99,24 @@ void NetworkLoop::run()
         }
 
         try {
-            platform2dPrx_->putData( command );
+            platform2dPrx_->setCommand( command );
+        }
+        catch ( const Ice::ConnectionRefusedException & e ) {
+            /*  cannot throw from one thread to another :(
+            string errorStr = "Lost connection to the platform server.";
+            throw orcaiceutil::OrcaIceUtilNetworkException( ERROR_INFO, errorStr );
+            */
+            // do nothing, just keep trying
         }
         catch ( const Ice::CommunicatorDestroyedException & e )
         {
             // it's ok, the communicator may already be destroyed
-            cout<<"Communicator has passed away."<<endl;
+            cout<<"Communicator has passed away. No worries."<<endl;
         }
-        catch ( const Ice::ConnectionRefusedException & e ) {
-            cout<<"lost connection. stopping..."<<endl;
-            stop();
-        }
-        //catch ( const Ice::CommunicatorDestroyedException & e ) {
-            // it's ok, if this is a Ctrl-C event, the communicator is already destroyed
-        //}
+
+        //int dt = timer.stop();
+        // store dt
+        //timer.restart();
     }
 
     cout<<"NetworkLoop: stopped."<<endl;

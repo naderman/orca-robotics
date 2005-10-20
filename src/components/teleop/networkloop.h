@@ -50,6 +50,8 @@ private:
 
     int timeoutMs_;
 
+    Ice::LoggerPtr logger_;
+
 };
 
 #endif

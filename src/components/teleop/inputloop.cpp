@@ -51,9 +51,9 @@ void InputLoop::setupConfigs( const Ice::PropertiesPtr & properties )
     // Read settings
     //
     config_.maxSpeed = orcaiceutil::getPropertyAsDoubleWithDefault( properties,
-                "Teleop.MaxSpeed", 1.0 );
+                "Teleop.Config.MaxSpeed", 1.0 );
     config_.maxTurnrate = orcaiceutil::getPropertyAsDoubleWithDefault( properties,
-                "Teleop.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
+                "Teleop.Config.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
     string driverName = orcaiceutil::getPropertyWithDefault( properties, 
                 "Teleop.Config.Driver", "keyboard" );
 
