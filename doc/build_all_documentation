@@ -42,5 +42,5 @@ build_doxygen ../src/components
 # Then add the sidebar stuff
 #
 cd html
-./build_documentation
+./format_documentation
 cd -
