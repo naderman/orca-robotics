@@ -23,6 +23,7 @@
 
 #include <orcaiceutil/thread.h>
 #include <orcaiceutil/ptrbuffer.h>
+#include <orcaiceutil/ptrnotify.h>
 
 #include "rmpdriver.h"
 
@@ -31,13 +32,16 @@
 
 
 //! Note: this thing self-destructs when run() returns.
-class RmpMainLoop : public orcaiceutil::Thread
+class RmpMainLoop : public orcaiceutil::Thread, public orcaiceutil::PtrNotifyHandler
 {
 public:
 
     RmpMainLoop( orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy,
-                 orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> & commandProxy,
+                 //orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> & commandProxy,
+                 orcaiceutil::PtrNotify &commandNotify,
                  orcaiceutil::PtrBuffer<orca::PowerDataPtr>         & powerProxy,
+                 orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer,
+                 orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer,
                  const orca::Position2dConsumerPrx                  & position2dConsumer,
                  const orca::PowerConsumerPrx                       & powerConsumer );
     virtual ~RmpMainLoop();
@@ -46,12 +50,17 @@ public:
 
     virtual void run();
 
+    virtual void handleData( const Ice::ObjectPtr & obj );
+
 private:
 
     // network/driver interface
     orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy_;
-    orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> & commandProxy_;
+    //orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> & commandProxy_;
+    orcaiceutil::PtrNotify &commandNotify_;
     orcaiceutil::PtrBuffer<orca::PowerDataPtr>         & powerProxy_;
+    orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer_;
+    orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer_;
 
     // IceStorm consumers
     orca::Position2dConsumerPrx position2dConsumer_;
@@ -60,20 +69,9 @@ private:
     // generic interface to the hardware
     RmpDriver* driver_;
 
-    enum DriverType
-    {
-        USB_DRIVER,
-        CAN_DRIVER,
-        PLAYER_CLIENT_DRIVER,
-        FAKE_DRIVER,
-        UNKNOWN_DRIVER
-    };
+    RmpDriver::Config config_;
 
-    DriverType driverType_;
-
-    // Maximum allowd speeds [m/s], [rad/s]
-    double maxSpeed_;
-    double maxTurnrate_;
+    RmpDriver::DriverType driverType_;
 
 };
 

@@ -26,6 +26,7 @@
 #include <orca/power.h>
 
 #include <orcaiceutil/orcaiceutil.h>
+#include <orcaiceutil/ptrnotify.h>
 
 class RmpMainLoop;
 
@@ -49,9 +50,14 @@ private:
     // the driver will put the latest data into this proxy
     orcaiceutil::PtrBuffer<orca::Position2dDataPtr> position2dProxy_;
     // the driver will take the latest command from the proxy
-    orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> commandProxy_;
+    //orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> commandProxy_;
+    orcaiceutil::PtrNotify commandProxy_;
     // the driver will put the latest data into this proxy
     orcaiceutil::PtrBuffer<orca::PowerDataPtr> powerProxy_;
+    // The servant will put config requests here.  We'll use them to re-configure the hardware.
+    orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr> setConfigBuffer_;
+    // We put the current config here for the servant to serve.
+    orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr> currentConfigBuffer_;
 
     //
     // EXTERNAL INTERFACES

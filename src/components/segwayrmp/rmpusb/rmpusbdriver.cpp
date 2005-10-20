@@ -79,26 +79,21 @@ int RmpUsbDriver::enable()
 
 int RmpUsbDriver::disable()
 {
+    // anything to do here?
+
     cout<<"disabled"<<endl;
     return 0;
 }
 
 int RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )
 {
-    // Variables used in the loop
-    CanPacket pkt;
-    int packetsRead;
-
-    //! @todo get rid of this mess
-    // chip: This is a temporary way to get at our new functions
-    CanioUsbFtdi* pCanio = (CanioUsbFtdi*)canio_;
-
-    // Read packets
-    //cout<<"reading packets..."<<endl;
-    packetsRead = pCanio->ReadPackets();
+    // Read packets (can get number of packets)
+    // int packetsRead = pCanio->ReadPackets();
+    canio_->ReadPackets();
     
     // Process data packets    
-    while( pCanio->GetNextPacket(pkt) )
+    CanPacket pkt;
+    while( canio_->GetNextPacket(pkt) )
     {
         // Add packet to data frame
         data_frame_->AddPacket(pkt);
@@ -198,8 +193,10 @@ void RmpUsbDriver::updateData( rmpusb_frame_t* data_frame,
         
         // from counts/sec into deg/sec.  also, take the additive
         // inverse, since the RMP reports clockwise angular velocity as positive.
-        position2d->motion.w = -(double)data_frame->yaw_dot / (double)RMP_COUNT_PER_DEG_PER_S;
-        
+        position2d->motion.w =
+                DEG2RAD( -(double)data_frame->yaw_dot / (double)RMP_COUNT_PER_DEG_PER_S );
+
+        //! @todo stall
         position2d->stalled = false;
 /*        
         // now, do 3D info.
@@ -295,19 +292,6 @@ void RmpUsbDriver::makeVelocityCommandPacket( const Velocity2dCommandPtr & comma
     // 8mph is 3576.32 mm/s
     // so then mm/s -> counts = (1176/3576.32) = 0.32882963
 
-    if ( command->motion.v.x > maxSpeed_ )
-    {
-        cout<<"WARN: xspeed thresholded! ("<<command->motion.v.x<<">"<<maxSpeed_<<")"<<endl;
-        command->motion.v.x = maxSpeed_;
-    }
-    else if(command->motion.v.x < -maxSpeed_)
-    {
-        cout<<"WARN: xspeed thresholded! ("<<command->motion.v.x<<"<"<<-maxSpeed_<<")"<<endl;
-        command->motion.v.x = -maxSpeed_;
-    }
-
-    //lastSpeedX_ = xspeed;
-
     // translational RMP command (convert m/s to mm/s first)
     int16_t trans = (int16_t) rint(command->motion.v.x * 1e3 * (double)RMP_COUNT_PER_MM_PER_S);
     // check for command limits
@@ -318,23 +302,10 @@ void RmpUsbDriver::makeVelocityCommandPacket( const Velocity2dCommandPtr & comma
         trans = -RMP_MAX_TRANS_VEL_COUNT;
     }
 
-    if( command->motion.w > maxTurnrate_ )
-    {
-        cout<<"WARN: yawspeed thresholded! ("<<command->motion.w<<">"<<maxTurnrate_<<")"<<endl;
-        command->motion.w = maxTurnrate_;
-    }
-    else if( command->motion.w < -maxTurnrate_ )
-    {
-        cout<<"WARN: yawspeed thresholded! ("<<command->motion.w<<"<"<<-maxTurnrate_<<")"<<endl;
-        command->motion.w = -maxTurnrate_;
-    }
-  
-    //lastSpeedYaw_ = yawspeed;
-
     // rotational RMP command \in [-1024, 1024] (convert from rad/s to deg/s first)
     // this is ripped from rmi_demo... to go from deg/s to counts
     // deg/s -> count = 1/0.013805056
-    int16_t rot = (int16_t) rint(command->motion.w / DEG2RAD_RATIO * (double)RMP_COUNT_PER_DEG_PER_S);
+    int16_t rot = (int16_t) rint(RAD2DEG(command->motion.w) * (double)RMP_COUNT_PER_DEG_PER_S);
     // check for command limits
     if(rot > RMP_MAX_ROT_VEL_COUNT) {
         rot = RMP_MAX_ROT_VEL_COUNT;

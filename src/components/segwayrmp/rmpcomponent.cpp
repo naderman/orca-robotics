@@ -53,7 +53,8 @@ void RmpComponent::start()
 
     // PROVIDED INTERFACE: Platform2d
     // create servant for direct connections and tell adapter about it
-    platform2dObj_ = new Platform2dI( position2dProxy_, commandProxy_ );
+    platform2dObj_ = new Platform2dI( position2dProxy_, commandProxy_,
+                                      setConfigBuffer_, currentConfigBuffer_ );
     string iceObjName1 = orcaiceutil::getPortName( communicator(), componentName(), "Platform2d" );
     adapter()->add( platform2dObj_, Ice::stringToIdentity( iceObjName1 ) );
 
@@ -81,12 +82,12 @@ void RmpComponent::start()
     // MAIN DRIVER LOOP
     //
     mainLoop_ = new RmpMainLoop( position2dProxy_, commandProxy_, powerProxy_,
+                                 setConfigBuffer_, currentConfigBuffer_,
                                  position2dConsumer_, powerConsumer_ );
 
     mainLoop_->setupConfigs( communicator()->getProperties() );
     mainLoop_->start();
 
-    cout<<"the rest is up to the app"<<endl;
     // the rest is handled by the application/service
 }
 

@@ -24,7 +24,7 @@
 #include "../rmpdriver.h"
 
 // forward declarations
-class DualCANIO;
+class CanioUsbFtdi;
 class rmpusb_frame_t;
 class CanPacket;
 
@@ -38,7 +38,6 @@ public:
     virtual int enable();
     virtual int disable();
 
-    //! Blocks till new data is available
     virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power );
 
     virtual int write( orca::Velocity2dCommandPtr &position2d );
@@ -46,7 +45,7 @@ public:
 private:
 
     // driver/hardware interface
-    DualCANIO *canio_;
+    CanioUsbFtdi *canio_;
     rmpusb_frame_t* data_frame_;
 
     //int16_t lastSpeedX_, lastSpeedYaw_;

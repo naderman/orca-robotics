@@ -45,6 +45,21 @@ public:
     //! Writes velocity command
     virtual int write( orca::Velocity2dCommandPtr &position2d )=0;
 
+    enum DriverType
+    {
+        USB_DRIVER,
+        CAN_DRIVER,
+        PLAYER_CLIENT_DRIVER,
+        FAKE_DRIVER,
+        UNKNOWN_DRIVER
+    };
+
+    struct Config
+    {
+        double maxSpeed;
+        double maxTurnrate;
+    };
+
     //! Set a specifc configuration
     //virtual int setConfig( const orca::LaserConfigPtr &cfg )=0;
 

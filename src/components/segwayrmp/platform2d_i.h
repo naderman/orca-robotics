@@ -26,6 +26,7 @@
 
 // utilities
 #include <orcaiceutil/ptrbuffer.h>
+#include <orcaiceutil/ptrnotify.h>
 
 
 // serves latest data on demand and accepts commands
@@ -33,20 +34,35 @@ class Platform2dI : public orca::Platform2d
 {
 public:
     Platform2dI( orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    &position2d,
-                 orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> &commands );
+                 //orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> &commands,
+                 orcaiceutil::PtrNotify &commands,
+                 orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  &setConfigBuffer,
+                 orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  &currentConfigBuffer );
 
     virtual ::orca::Position2dDataPtr getData(const ::Ice::Current& ) const;
 
     virtual ::orca::Position2dGeometryPtr getGeometry(const ::Ice::Current& ) const;
 
-    virtual void putData(const ::orca::Velocity2dCommandPtr&, const ::Ice::Current& );
+    virtual ::orca::Platform2dConfigPtr getConfig(const ::Ice::Current& ) const;
 
+    virtual void setCommand(const ::orca::Velocity2dCommandPtr&, const ::Ice::Current& );
+
+    virtual void setConfig(const ::orca::Platform2dConfigPtr&, const ::Ice::Current& );
+
+    // WARING: not implemented!
     virtual void enableMotor(bool, const ::Ice::Current& = ::Ice::Current()) {};
+
 
     // the driver will put the latest data into this proxy
     orcaiceutil::PtrBuffer<orca::Position2dDataPtr> &position2dProxy_;
     // the driver will take the latest command from the proxy
-    orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> &commandProxy_;
+    //orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> &commandProxy_;
+    orcaiceutil::PtrNotify &commandNotify_;
+
+    // for incoming requests
+    orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr> &setConfigBuffer_;
+    // for the current config
+    orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr> &currentConfigBuffer_;
 };
 
 

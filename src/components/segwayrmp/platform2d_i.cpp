@@ -26,9 +26,15 @@ using namespace orca;
 using namespace orcaiceutil;
 
 Platform2dI::Platform2dI( orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    &position2d,
-                          orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> &command )
+                          //orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> &command,
+                          orcaiceutil::PtrNotify &command,
+                          orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  &setConfigBuffer,
+                          orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  &currentConfigBuffer )
     : position2dProxy_(position2d), 
-      commandProxy_(command)
+      //commandProxy_(command),
+      commandNotify_(command),
+      setConfigBuffer_(setConfigBuffer),
+      currentConfigBuffer_(currentConfigBuffer)
 {
 }
 
@@ -58,7 +64,24 @@ orca::Position2dGeometryPtr Platform2dI::getGeometry(const Ice::Current& current
 }
 
 // Store incoming command in a proxy, it will be handled by the driver at the next opportunity.
-void Platform2dI::putData(const ::orca::Velocity2dCommandPtr& command, const ::Ice::Current& )
+void Platform2dI::setCommand(const ::orca::Velocity2dCommandPtr& command, const ::Ice::Current& )
 {
-    commandProxy_.push( command );
+    //commandProxy_.push( command );
+    commandNotify_.set( command );
+}
+
+orca::Platform2dConfigPtr Platform2dI::getConfig(const ::Ice::Current& ) const
+{
+    //std::cout << "Sending config back" << std::endl;
+
+    Platform2dConfigPtr config;
+    currentConfigBuffer_.get( config );
+
+    return config;
+}
+
+void Platform2dI::setConfig(const ::orca::Platform2dConfigPtr& config, const ::Ice::Current& )
+{
+    //cout<<"TRACE(laser_i.cpp): Config set." << endl;
+    setConfigBuffer_.push( config );
 }
