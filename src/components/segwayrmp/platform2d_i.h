@@ -32,8 +32,8 @@
 class Platform2dI : public orca::Platform2d
 {
 public:
-    Platform2dI( orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    *position2d, 
-                 orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commands );
+    Platform2dI( orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    &position2d,
+                 orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> &commands );
 
     virtual ::orca::Position2dDataPtr getData(const ::Ice::Current& ) const;
 
@@ -44,9 +44,9 @@ public:
     virtual void enableMotor(bool, const ::Ice::Current& = ::Ice::Current()) {};
 
     // the driver will put the latest data into this proxy
-    orcaiceutil::PtrBuffer<orca::Position2dDataPtr>* position2dProxy_;
+    orcaiceutil::PtrBuffer<orca::Position2dDataPtr> &position2dProxy_;
     // the driver will take the latest command from the proxy
-    orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr>* commandProxy_;
+    orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> &commandProxy_;
 };
 
 

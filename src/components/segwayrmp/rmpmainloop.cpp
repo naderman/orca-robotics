@@ -37,11 +37,11 @@ using namespace orca;
 using orcaiceutil::operator<<;
 
 RmpMainLoop::RmpMainLoop(
-                 orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    * position2dProxy,
-                 orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> * commandProxy,
-                 orcaiceutil::PtrBuffer<orca::PowerDataPtr>         * powerProxy,
-                 const orca::Position2dConsumerPrx & position2dConsumer,
-                 const orca::PowerConsumerPrx & powerConsumer ) :
+                 orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy,
+                 orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> & commandProxy,
+                 orcaiceutil::PtrBuffer<orca::PowerDataPtr>         & powerProxy,
+                 const orca::Position2dConsumerPrx                  & position2dConsumer,
+                 const orca::PowerConsumerPrx                       & powerConsumer ) :
         position2dProxy_(position2dProxy),
         commandProxy_(commandProxy),
         powerProxy_(powerProxy),
@@ -68,6 +68,7 @@ void RmpMainLoop::setupConfigs( const Ice::PropertiesPtr & properties )
             "SegwayRmp.Config.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
     string driverName = properties->getPropertyWithDefault(
             "SegwayRmp.Config.Driver", "usb" );
+
     if ( driverName == "usb" ) {
         driverType_ = RmpMainLoop::USB_DRIVER;
     }
@@ -124,7 +125,7 @@ void RmpMainLoop::run()
     while( isActive() )
     {
         // Read data from the hardware
-        driver_->read( position2dData, powerData );      
+        driver_->read( position2dData, powerData );
         
         // push data to IceStorm
         try
@@ -139,18 +140,19 @@ void RmpMainLoop::run()
         }
 
         // Stick it in the buffer so pullers can get it
-        position2dProxy_->push( position2dData );
-        powerProxy_->push( powerData );        
+        position2dProxy_.push( position2dData );
+        powerProxy_.push( powerData );
 
         // Have any commands arrived?
-        if ( !commandProxy_->isEmpty() )
+        if ( !commandProxy_.isEmpty() )
         {
             // get and pop, so that afterwards the buffer is empty
-            commandProxy_->getAndPop( commandData );
+            commandProxy_.getAndPop( commandData );
             cout<<"comm: " << commandData << endl;
 
             driver_->write( commandData );
         }
+
     }
 
     cout<<"shutting down main loop"<<endl;

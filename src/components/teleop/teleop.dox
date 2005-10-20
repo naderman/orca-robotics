@@ -5,8 +5,6 @@
   \section status Development status
   Beta. Tested considerably in Orca-1.Migration to Orca-2 incomplete.
 
-  Orca-2 notes: does not create an adapter.
-
   \section descr Description
   This component connects to a robot base or waypoint server and issues motion commands according to user input from a keyboard or joystick.
     

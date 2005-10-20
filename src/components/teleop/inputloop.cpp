@@ -54,8 +54,9 @@ void InputLoop::setupConfigs( const Ice::PropertiesPtr & properties )
                 "Teleop.MaxSpeed", 1.0 );
     maxTurnrate_ = orcaiceutil::getPropertyAsDoubleWithDefault( properties,
                 "Teleop.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
-    string driverName = properties->getPropertyWithDefault(
-            "SegwayRmp.Config.Driver", "keyboard" );
+    string driverName = orcaiceutil::getPropertyWithDefault( properties, 
+                "Teleop.Config.Driver", "keyboard" );
+
     if ( driverName == "keyboard" ) {
         driverType_ = InputLoop::KEYBOARD_DRIVER;
     }
@@ -115,7 +116,6 @@ void InputLoop::run()
         lastCommand->motion.w = currCommand->motion.w;
 
         // Read from the input
-        cout<<"InputLoop::run: reading from driver"<<endl;
         driver_->readdata( currCommand );
 
         // apply max limits
@@ -133,7 +133,7 @@ void InputLoop::run()
         if ( lastCommand->motion.v.x != currCommand->motion.v.x ||
              lastCommand->motion.w != currCommand->motion.w )
         {
-            cout<<"InputLoop::run: pushing new command into buffer"<<endl;
+            //cout<<"InputLoop::run: pushing new command into buffer"<<endl;
             commandBuffer_->push( currCommand );
         }
     }

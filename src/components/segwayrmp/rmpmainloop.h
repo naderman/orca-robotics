@@ -35,11 +35,11 @@ class RmpMainLoop : public orcaiceutil::Thread
 {
 public:
 
-    RmpMainLoop( orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    *position2dProxy,
-                 orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commandProxy,
-                 orcaiceutil::PtrBuffer<orca::PowerDataPtr>         *powerProxy,
-                 const orca::Position2dConsumerPrx & position2dConsumer,
-                 const orca::PowerConsumerPrx & powerConsumer );
+    RmpMainLoop( orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy,
+                 orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> & commandProxy,
+                 orcaiceutil::PtrBuffer<orca::PowerDataPtr>         & powerProxy,
+                 const orca::Position2dConsumerPrx                  & position2dConsumer,
+                 const orca::PowerConsumerPrx                       & powerConsumer );
     virtual ~RmpMainLoop();
 
     void setupConfigs( const Ice::PropertiesPtr & );
@@ -49,9 +49,9 @@ public:
 private:
 
     // network/driver interface
-    orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    * position2dProxy_;
-    orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> * commandProxy_;
-    orcaiceutil::PtrBuffer<orca::PowerDataPtr>         * powerProxy_;
+    orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy_;
+    orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> & commandProxy_;
+    orcaiceutil::PtrBuffer<orca::PowerDataPtr>         & powerProxy_;
 
     // IceStorm consumers
     orca::Position2dConsumerPrx position2dConsumer_;

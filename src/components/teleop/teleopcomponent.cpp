@@ -36,6 +36,8 @@ TeleopComponent::~TeleopComponent()
     // do not delete networkLoop_ and inputLoop_!!! They derive from Ice::Thread and deletes itself.
 }
 
+// warning: this function returns after it's done, all variable that need to be permanet must
+//          be declared as member variables.
 void TeleopComponent::start()
 {
     //
@@ -62,5 +64,10 @@ void TeleopComponent::stop()
     inputLoop_->stop();
 
     networkLoop_->getThreadControl().join();
+
+    // inputLoop_ is blocked on user input
+    // the only way for it to realize that we want to stop is to give it some keyboard input.
+    cout<<"Quitting... Press any key to continue."<<endl;
+
     inputLoop_->getThreadControl().join();
 }

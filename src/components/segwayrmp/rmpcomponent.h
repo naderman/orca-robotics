@@ -22,6 +22,10 @@
 #define ORCA2_SEGWAY_RMP_COMPONENT_H
 
 #include <orcaiceutil/component.h>
+#include <orca/platform2d.h>
+#include <orca/power.h>
+
+#include <orcaiceutil/orcaiceutil.h>
 
 class RmpMainLoop;
 
@@ -40,6 +44,23 @@ private:
 
     RmpMainLoop* mainLoop_;
 
+    // NETWORK-MAINLOOP INTERFACES
+    //
+    // the driver will put the latest data into this proxy
+    orcaiceutil::PtrBuffer<orca::Position2dDataPtr> position2dProxy_;
+    // the driver will take the latest command from the proxy
+    orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> commandProxy_;
+    // the driver will put the latest data into this proxy
+    orcaiceutil::PtrBuffer<orca::PowerDataPtr> powerProxy_;
+
+    //
+    // EXTERNAL INTERFACES
+    //
+    Ice::ObjectPtr platform2dObj_;
+    orca::Position2dConsumerPrx position2dConsumer_;
+
+    Ice::ObjectPtr powerObj_;
+    orca::PowerConsumerPrx powerConsumer_;
 };
 
 #endif

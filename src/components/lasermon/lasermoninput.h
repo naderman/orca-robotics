@@ -18,15 +18,16 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_POSITION2DMON_KEYBOARD_DRIVER_H
-#define ORCA2_POSITION2DMON_KEYBOARD_DRIVER_H
+#ifndef ORCA2_LASERMON_KEYBOARD_DRIVER_H
+#define ORCA2_LASERMON_KEYBOARD_DRIVER_H
 
+#include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
 
-#include <orcaiceutil/driver.h>
+#include <orcaiceutil/thread.h>
 #include <orca/position2d.h>
 
-class Position2dMonInput : public orcaiceutil::Driver
+class Position2dMonInput : public orcaiceutil::Thread
 {
 public:
 
@@ -35,13 +36,14 @@ public:
                         const Ice::ObjectPrx & callbackPrx  );
     virtual ~Position2dMonInput();
 
-    virtual void setup( const Ice::PropertiesPtr & );
-    virtual void activate();
-    virtual void deactivate();
+    void setup( const Ice::PropertiesPtr & );
+    void setupCommunicator( const Ice::CommunicatorPtr & comm ) { comm_=comm; };
+
+    void activate();
+    void deactivate();
 
     virtual void run();
 
-    void setupCommunicator( const Ice::CommunicatorPtr & comm ) { comm_=comm; };
 
 private:
 

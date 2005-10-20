@@ -23,7 +23,7 @@
 using namespace orca;
 
 
-PowerI::PowerI( orcaiceutil::PtrBuffer<orca::PowerDataPtr>* power ) :
+PowerI::PowerI( orcaiceutil::PtrBuffer<orca::PowerDataPtr> &power ) :
         powerProxy_(power)
 {
 }
@@ -38,7 +38,7 @@ orca::PowerDataPtr PowerI::getData(const ::Ice::Current& ) const
     // we don't need to pop the data here because we don't block on it.
     // we always want to have the latest copy in there
     //! @todo what happens if there's no data?    
-    powerProxy_->get( data );
+    powerProxy_.get( data );
 
     return data;
 }

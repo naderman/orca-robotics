@@ -35,7 +35,7 @@ public:
     NetworkLoop( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer );
     ~NetworkLoop();
 
-    void setupComms( const Ice::CommunicatorPtr & communicator, const std::string & compTag );
+    void setupComms( const Ice::CommunicatorPtr & communicator, const std::string & componentName );
     void setupConfigs( const Ice::PropertiesPtr & properties );
 
     virtual void run();

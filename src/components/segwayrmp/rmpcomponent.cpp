@@ -43,44 +43,34 @@ RmpComponent::~RmpComponent()
     // do not delete mainLoop_!!! It derives from Ice::Thread and deletes itself.
 }
 
+// warning: this function returns after it's done, all variable that need to be permanet must
+//          be declared as member variables.
 void RmpComponent::start()
 {
-    //
-    // NETWORK-MAINLOOP INTERFACES
-    //
-    // the driver will put the latest data into this proxy
-    orcaiceutil::PtrBuffer<orca::Position2dDataPtr> position2dProxy;
-    // the driver will take the latest command from the proxy
-    orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> commandProxy;
-    // the driver will put the latest data into this proxy
-    orcaiceutil::PtrBuffer<orca::PowerDataPtr> powerProxy;
-
     //
     // EXTERNAL INTERFACES
     //
 
     // PROVIDED INTERFACE: Platform2d
     // create servant for direct connections and tell adapter about it
-    Ice::ObjectPtr platform2dObj = new Platform2dI( &position2dProxy, &commandProxy );
+    platform2dObj_ = new Platform2dI( position2dProxy_, commandProxy_ );
     string iceObjName1 = orcaiceutil::getPortName( communicator(), componentName(), "Platform2d" );
-    adapter()->add( platform2dObj, Ice::stringToIdentity( iceObjName1 ) );
+    adapter()->add( platform2dObj_, Ice::stringToIdentity( iceObjName1 ) );
 
     // Find IceStorm ConsumerProxy to push out data
-    Position2dConsumerPrx position2dConsumer;
     orcaiceutil::getIceStormConsumerProxy<Position2dConsumerPrx>
-            ( communicator(), componentName(), "Platform2d", position2dConsumer );
+            ( communicator(), componentName(), "Platform2d", position2dConsumer_ );
 
 
     // PROVIDED INTERFACE: Power
     // create servant for direct connections and tell adapter about it
-    Ice::ObjectPtr powerObj = new PowerI( &powerProxy );
+    powerObj_ = new PowerI( powerProxy_ );
     string iceObjName2 = orcaiceutil::getPortName( communicator(), componentName(), "Power" );
-    adapter()->add( powerObj, Ice::stringToIdentity( iceObjName2 ) );
+    adapter()->add( powerObj_, Ice::stringToIdentity( iceObjName2 ) );
 
     // Find IceStorm ConsumerProxy to push out data
-    PowerConsumerPrx powerConsumer;
     orcaiceutil::getIceStormConsumerProxy<PowerConsumerPrx>
-            ( communicator(), componentName(), "Power", powerConsumer );
+            ( communicator(), componentName(), "Power", powerConsumer_ );
 
     //
     // ENABLE ADAPTER
@@ -90,20 +80,23 @@ void RmpComponent::start()
     //
     // MAIN DRIVER LOOP
     //
-    mainLoop_ = new RmpMainLoop( &position2dProxy, &commandProxy, &powerProxy,
-                                 position2dConsumer, powerConsumer );
+    mainLoop_ = new RmpMainLoop( position2dProxy_, commandProxy_, powerProxy_,
+                                 position2dConsumer_, powerConsumer_ );
 
     mainLoop_->setupConfigs( communicator()->getProperties() );
     mainLoop_->start();
 
+    cout<<"the rest is up to the app"<<endl;
     // the rest is handled by the application/service
 }
 
 void RmpComponent::stop()
 {
+    cout<<"stopping loop"<<endl;
     // Tell the main loop to stop
     mainLoop_->stop();
 
+    cout<<"joining thread"<<endl;
     // Then wait for it
     mainLoop_->getThreadControl().join();
 }
