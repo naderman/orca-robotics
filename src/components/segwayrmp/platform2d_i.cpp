@@ -25,8 +25,10 @@ using namespace std;
 using namespace orca;
 using namespace orcaiceutil;
 
-Platform2dI::Platform2dI( orcaiceutil::PtrBuffer* position2d, orcaiceutil::PtrBuffer* command ) :
-        position2dProxy_(position2d), commandProxy_(command)
+Platform2dI::Platform2dI( orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    * position2d, 
+                          orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> * command )
+    : position2dProxy_(position2d), 
+      commandProxy_(command)
 {
 }
 
@@ -36,15 +38,15 @@ orca::Position2dDataPtr Platform2dI::getData(const Ice::Current& current) const
     std::cout << "Sending data back" << std::endl;
 
     // create a null pointer. data will be cloned into it.
-    Ice::ObjectPtr data;
+    Position2dDataPtr data;
 
     // we don't need to pop the data here because we don't block on it.
     // we always want to have the latest copy in there
     //! @todo what should happens if there's no data?
     position2dProxy_->get( data );
 
-    cout<<Position2dDataPtr::dynamicCast( data )<<endl;
-    return Position2dDataPtr::dynamicCast( data );
+    cout << data <<endl;
+    return data;
 }
 
 orca::Position2dGeometryPtr Platform2dI::getGeometry(const Ice::Current& current) const

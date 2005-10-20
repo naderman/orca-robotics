@@ -33,7 +33,7 @@
 using namespace std;
 using namespace orca;
 
-InputLoop::InputLoop( orcaiceutil::PtrBuffer* commands ) :
+InputLoop::InputLoop( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commands ) :
         commandBuffer_(commands),
         driver_(0),
         driverType_(InputLoop::UNKNOWN_DRIVER)

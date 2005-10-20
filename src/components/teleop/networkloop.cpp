@@ -29,8 +29,8 @@ using namespace std;
 using namespace orca;
 using namespace orcaiceutil;
 
-NetworkLoop::NetworkLoop( orcaiceutil::PtrBuffer* commandBuffer ) :
-        commandBuffer_(commandBuffer)
+NetworkLoop::NetworkLoop( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer )
+    : commandBuffer_(commandBuffer)
 {
 }
 
@@ -81,10 +81,9 @@ void NetworkLoop::run()
 
     while ( isActive() )
     {
-        int ret = commandBuffer_->getAndPopNext( data, timeoutMs_ );
+        int ret = commandBuffer_->getAndPopNext( command, timeoutMs_ );
 
         if ( ret==0 ) { // new data
-            command = Velocity2dCommandPtr::dynamicCast( data );
             cout<<"NEW : "<<command<<endl;
         }
         else {

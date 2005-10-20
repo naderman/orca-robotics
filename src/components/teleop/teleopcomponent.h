@@ -25,6 +25,7 @@
 //#include "teleopfsm.h"
 
 #include <orcaiceutil/ptrbuffer.h>
+#include <orca/platform2d.h>
 
 class NetworkLoop;
 class InputLoop;
@@ -48,7 +49,7 @@ public:
 private:
     // network-hardware interface
     // the driver will put the latest data into this proxy
-    orcaiceutil::PtrBuffer commandProxy_;
+    orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> commandProxy_;
 
     // network loop
     NetworkLoop* networkLoop_;

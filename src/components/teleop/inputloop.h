@@ -34,7 +34,7 @@ class InputLoop : public orcaiceutil::Thread
 {
 public:
 
-    InputLoop( orcaiceutil::PtrBuffer* commands );
+    InputLoop( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commands );
     virtual ~InputLoop();
 
     void setupConfigs( const Ice::PropertiesPtr & );
@@ -47,7 +47,7 @@ private:
     //TeleopFsm* fsm_;
 
     // network/driver interface
-    orcaiceutil::PtrBuffer* commandBuffer_;
+    orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer_;
 
     // generic interface to input hardware
     InputDriver* driver_;

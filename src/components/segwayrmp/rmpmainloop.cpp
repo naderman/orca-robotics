@@ -37,9 +37,9 @@ using namespace orca;
 using orcaiceutil::operator<<;
 
 RmpMainLoop::RmpMainLoop(
-                 orcaiceutil::PtrBuffer* position2dProxy,
-                 orcaiceutil::PtrBuffer* commandProxy,
-                 orcaiceutil::PtrBuffer* powerProxy,
+                 orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    * position2dProxy,
+                 orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> * commandProxy,
+                 orcaiceutil::PtrBuffer<orca::PowerDataPtr>         * powerProxy,
                  const orca::Position2dConsumerPrx & position2dConsumer,
                  const orca::PowerConsumerPrx & powerConsumer ) :
         position2dProxy_(position2dProxy),
@@ -111,8 +111,6 @@ void RmpMainLoop::run()
     orca::Position2dDataPtr position2dData = new Position2dData;
     orca::Velocity2dCommandPtr commandData = new Velocity2dCommand;
     orca::PowerDataPtr powerData = new PowerData;
-    // generic object pointer for commands
-    Ice::ObjectPtr data;
 
     // set up data structure for 3 batteries
     BatteryData bd;
@@ -148,9 +146,7 @@ void RmpMainLoop::run()
         if ( !commandProxy_->isEmpty() )
         {
             // get and pop, so that afterwards the buffer is empty
-            commandProxy_->getAndPop( data );
-
-            commandData = Velocity2dCommandPtr::dynamicCast( data );
+            commandProxy_->getAndPop( commandData );
             cout<<"comm: " << commandData << endl;
 
             driver_->write( commandData );

@@ -32,7 +32,7 @@ class NetworkLoop : public orcaiceutil::Thread
 {
 public:
 
-    NetworkLoop( orcaiceutil::PtrBuffer* commandBuffer );
+    NetworkLoop( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer );
     ~NetworkLoop();
 
     void setupComms( const Ice::CommunicatorPtr & communicator, const std::string & compTag );
@@ -46,7 +46,7 @@ private:
     orca::Platform2dPrx platform2dPrx_;
 
     // network/driver interface
-    orcaiceutil::PtrBuffer* commandBuffer_;
+    orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr>* commandBuffer_;
 
     int timeoutMs_;
 

@@ -49,11 +49,11 @@ void RmpComponent::start()
     // NETWORK-MAINLOOP INTERFACES
     //
     // the driver will put the latest data into this proxy
-    orcaiceutil::PtrBuffer position2dProxy;
+    orcaiceutil::PtrBuffer<orca::Position2dDataPtr> position2dProxy;
     // the driver will take the latest command from the proxy
-    orcaiceutil::PtrBuffer commandProxy;
+    orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> commandProxy;
     // the driver will put the latest data into this proxy
-    orcaiceutil::PtrBuffer powerProxy;
+    orcaiceutil::PtrBuffer<orca::PowerDataPtr> powerProxy;
 
     //
     // EXTERNAL INTERFACES

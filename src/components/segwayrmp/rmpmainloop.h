@@ -35,9 +35,9 @@ class RmpMainLoop : public orcaiceutil::Thread
 {
 public:
 
-    RmpMainLoop( orcaiceutil::PtrBuffer* position2dProxy,
-                 orcaiceutil::PtrBuffer* commandProxy,
-                 orcaiceutil::PtrBuffer* powerProxy,
+    RmpMainLoop( orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    *position2dProxy,
+                 orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commandProxy,
+                 orcaiceutil::PtrBuffer<orca::PowerDataPtr>         *powerProxy,
                  const orca::Position2dConsumerPrx & position2dConsumer,
                  const orca::PowerConsumerPrx & powerConsumer );
     virtual ~RmpMainLoop();
@@ -49,9 +49,9 @@ public:
 private:
 
     // network/driver interface
-    orcaiceutil::PtrBuffer* position2dProxy_;
-    orcaiceutil::PtrBuffer* commandProxy_;
-    orcaiceutil::PtrBuffer* powerProxy_;
+    orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    * position2dProxy_;
+    orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> * commandProxy_;
+    orcaiceutil::PtrBuffer<orca::PowerDataPtr>         * powerProxy_;
 
     // IceStorm consumers
     orca::Position2dConsumerPrx position2dConsumer_;
