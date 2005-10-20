@@ -52,6 +52,8 @@ interface Position2d
     // ClientPull_Supplier interface
     nonmutating Position2dData getData();
     nonmutating Position2dGeometry getGeometry();
+
+    //idempotent void setPushRate(  );
 };
 
 //! Data consumer interface (needed only for the push pattern)

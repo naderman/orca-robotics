@@ -33,15 +33,22 @@ class Velocity2dCommand extends OrcaObject
     Twist2d motion;
 };
 
+class Platform2dConfig extends OrcaObject
+{
+    Twist2d maxMotionCommand;
+};
+
 //! Platform2d is an "active" Position2d. In addition to serving its current position2d
 //! it also accepts motion commands.
 //! Note that this platform only accepts velocity commands (unlike in Player where
-//! position2d interface also accepts waypoint commands). Planners/navigators should
-//! think in terms of waypoints.
+//! position2d interface also accepts waypoint commands). The rational is that planners/navigators
+//! should think in terms of waypoints, not the hardware.
 interface Platform2d extends Position2d
 {
-    // ClientPush_Consumer interface
-    void putData( Velocity2dCommand data );
+    nonmutating Platform2dConfig getConfig();
+
+    idempotent void setCommand( Velocity2dCommand data );
+    idempotent void setConfig( Platform2dConfig config );
     
     idempotent void enableMotor( bool enable );    
 };
