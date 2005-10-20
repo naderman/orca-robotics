@@ -40,10 +40,10 @@ RmpComponent::RmpComponent() :
 
 RmpComponent::~RmpComponent()
 {
-    delete mainLoop_;
+    // do not delete mainLoop_!!! It derives from Ice::Thread and deletes itself.
 }
 
-int RmpComponent::go()
+void RmpComponent::start()
 {
     //
     // NETWORK-MAINLOOP INTERFACES
@@ -62,25 +62,25 @@ int RmpComponent::go()
     // PROVIDED INTERFACE: Platform2d
     // create servant for direct connections and tell adapter about it
     Ice::ObjectPtr platform2dObj = new Platform2dI( &position2dProxy, &commandProxy );
-    string iceObjName1 = orcaiceutil::getPortName( communicator(), "Platform2d", adapterName() );
+    string iceObjName1 = orcaiceutil::getPortName( communicator(), componentName(), "Platform2d" );
     adapter()->add( platform2dObj, Ice::stringToIdentity( iceObjName1 ) );
 
     // Find IceStorm ConsumerProxy to push out data
     Position2dConsumerPrx position2dConsumer;
     orcaiceutil::getIceStormConsumerProxy<Position2dConsumerPrx>
-            ( communicator(), adapterName(), "Platform2d", position2dConsumer );
+            ( communicator(), componentName(), "Platform2d", position2dConsumer );
 
 
     // PROVIDED INTERFACE: Power
     // create servant for direct connections and tell adapter about it
     Ice::ObjectPtr powerObj = new PowerI( &powerProxy );
-    string iceObjName2 = orcaiceutil::getPortName( communicator(), "Power", adapterName() );
+    string iceObjName2 = orcaiceutil::getPortName( communicator(), componentName(), "Power" );
     adapter()->add( powerObj, Ice::stringToIdentity( iceObjName2 ) );
 
     // Find IceStorm ConsumerProxy to push out data
     PowerConsumerPrx powerConsumer;
     orcaiceutil::getIceStormConsumerProxy<PowerConsumerPrx>
-            ( communicator(), adapterName(), "Power", powerConsumer );
+            ( communicator(), componentName(), "Power", powerConsumer );
 
     //
     // ENABLE ADAPTER
@@ -96,21 +96,14 @@ int RmpComponent::go()
     mainLoop_->setupConfigs( communicator()->getProperties() );
     mainLoop_->start();
 
-    communicator()->waitForShutdown();
-
-    stop();
-
-    cout<<"fully stopped"<<endl;
-
-    return 0;
+    // the rest is handled by the application/service
 }
 
 void RmpComponent::stop()
 {
-    cout<<"stopping component"<<endl;
-    //adapter()->deactivate();
-
+    // Tell the main loop to stop
     mainLoop_->stop();
-    cout<<"joining main loop ..."<<endl;
+
+    // Then wait for it
     mainLoop_->getThreadControl().join();
 }

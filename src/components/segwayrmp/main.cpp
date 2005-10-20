@@ -22,6 +22,9 @@
 
 #include "rmpcomponent.h"
 
+//
+// Build the component into a stand-alone application
+//
 int main(int argc, char * argv[])
 {
     RmpComponent component;

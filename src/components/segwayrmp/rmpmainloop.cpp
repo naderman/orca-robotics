@@ -46,13 +46,15 @@ RmpMainLoop::RmpMainLoop(
         commandProxy_(commandProxy),
         powerProxy_(powerProxy),
         position2dConsumer_(position2dConsumer),
-        powerConsumer_(powerConsumer)
+        powerConsumer_(powerConsumer),
+        driver_(0),
+        driverType_(RmpMainLoop::UNKNOWN_DRIVER)
 {
-    driverType_ = RmpMainLoop::UNKNOWN_DRIVER;
 }
 
 RmpMainLoop::~RmpMainLoop()
 {
+    delete driver_;
 }
 
 void RmpMainLoop::setupConfigs( const Ice::PropertiesPtr & properties )
@@ -84,9 +86,7 @@ void RmpMainLoop::setupConfigs( const Ice::PropertiesPtr & properties )
 
 void RmpMainLoop::run()
 {
-    //cout<<"RmpMainLoop::run: starting nicely"<<endl;
-
-    // based on some config parameter, create the right driver
+    // based on the config parameter, create the right driver
     switch ( driverType_ )
     {
         case RmpMainLoop::USB_DRIVER :
@@ -102,8 +102,8 @@ void RmpMainLoop::run()
             driver_ = new RmpFakeDriver;
             break;
         case RmpMainLoop::UNKNOWN_DRIVER :
-            // shouldn't be here
-            exit(1);
+            string errorStr = "Unknown driver type. Cannot talk to hardware.";
+            throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
     }
     driver_->enable();
 
@@ -134,8 +134,9 @@ void RmpMainLoop::run()
             position2dConsumer_->consumeData( position2dData );
             powerConsumer_->setData( powerData );
         }
-        catch ( const Ice::ConnectionRefusedException & e )
+        catch ( const Ice::CommunicatorDestroyedException & e )
         {
+            cout<<"The comm man is dead"<<endl;
             // it's ok, the communicator may already be destroyed
         }
 

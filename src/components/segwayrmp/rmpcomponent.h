@@ -33,7 +33,7 @@ public:
     virtual ~RmpComponent();
 
     // component interface
-    virtual int  go();
+    virtual void  start();
     virtual void stop();
 
 private:

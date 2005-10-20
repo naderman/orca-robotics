@@ -34,6 +34,7 @@ RmpFakeDriver::RmpFakeDriver()
 
 RmpFakeDriver::~RmpFakeDriver()
 {
+    cout<<"RmpFakeDriver~RmpFakeDriver"<<endl;
 }
 
 int RmpFakeDriver::enable()

@@ -30,6 +30,7 @@
 #include <orca/power.h>
 
 
+//! Note: this thing self-destructs when run() returns.
 class RmpMainLoop : public orcaiceutil::Thread
 {
 public:
