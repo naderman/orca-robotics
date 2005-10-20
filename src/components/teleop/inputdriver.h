@@ -41,11 +41,25 @@ public:
     //! Blocks till new data is available
     virtual int readdata( orca::Velocity2dCommandPtr &data )=0;
 
+    enum DriverType
+    {
+        KEYBOARD_DRIVER,
+        JOYSTICK_DRIVER,
+        FAKE_DRIVER,
+        UNKNOWN_DRIVER
+    };
+
+    struct Config
+    {
+        double maxSpeed;
+        double maxTurnrate;
+    };
+
     //! Set a specifc configuration
-    //virtual int setConfig( const orca::LaserConfigPtr &cfg )=0;
+    //virtual int setConfig( const InputDriver::Config &cfg )=0;
 
     //! Get the current configuration
-    //virtual int getConfig( orca::LaserConfigPtr &cfg )=0;
+    //virtual int getConfig( InputDriver::Config &cfg )=0;
 
 };
 

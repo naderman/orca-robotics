@@ -95,6 +95,11 @@ void NetworkLoop::run()
         try {
             platform2dPrx_->putData( command );
         }
+        catch ( const Ice::CommunicatorDestroyedException & e )
+        {
+            // it's ok, the communicator may already be destroyed
+            cout<<"Communicator has passed away."<<endl;
+        }
         catch ( const Ice::ConnectionRefusedException & e ) {
             cout<<"lost connection. stopping..."<<endl;
             stop();

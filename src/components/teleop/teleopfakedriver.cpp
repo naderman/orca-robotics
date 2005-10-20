@@ -28,13 +28,14 @@ using namespace std;
 using namespace orca;
 using orcaiceutil::operator<<;
 
-TeleopFakeDriver::TeleopFakeDriver()
+
+TeleopFakeDriver::TeleopFakeDriver( const InputDriver::Config &cfg ) :
+        config_(cfg)
 {
 }
 
 TeleopFakeDriver::~TeleopFakeDriver()
 {
-    cout<<"TeleopFakeDriver~TeleopFakeDriver"<<endl;
 }
 
 int TeleopFakeDriver::enable()

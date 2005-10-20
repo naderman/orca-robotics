@@ -33,7 +33,7 @@ class TeleopFakeDriver : public InputDriver
 
 public:
 
-    TeleopFakeDriver();
+    TeleopFakeDriver( const InputDriver::Config &cfg );
     virtual ~TeleopFakeDriver();
 
     virtual int enable();
@@ -41,6 +41,16 @@ public:
 
     //! Blocks till new data is available
     virtual int readdata( orca::Velocity2dCommandPtr &data );
+
+    //! Set a specifc configuration
+    //virtual int setConfig( const InputDriver::Config &cfg );
+
+    //! Get the current configuration
+    //virtual int getConfig( InputDriver::Config &cfg );
+
+private:
+
+    Config config_;
 
 };
 

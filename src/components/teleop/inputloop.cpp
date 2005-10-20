@@ -36,7 +36,7 @@ using namespace orca;
 InputLoop::InputLoop( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commands ) :
         commandBuffer_(commands),
         driver_(0),
-        driverType_(InputLoop::UNKNOWN_DRIVER)
+        driverType_(InputDriver::UNKNOWN_DRIVER)
 {
 }
 
@@ -50,30 +50,27 @@ void InputLoop::setupConfigs( const Ice::PropertiesPtr & properties )
     //
     // Read settings
     //
-    maxSpeed_ = orcaiceutil::getPropertyAsDoubleWithDefault( properties,
+    config_.maxSpeed = orcaiceutil::getPropertyAsDoubleWithDefault( properties,
                 "Teleop.MaxSpeed", 1.0 );
-    maxTurnrate_ = orcaiceutil::getPropertyAsDoubleWithDefault( properties,
+    config_.maxTurnrate = orcaiceutil::getPropertyAsDoubleWithDefault( properties,
                 "Teleop.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
     string driverName = orcaiceutil::getPropertyWithDefault( properties, 
                 "Teleop.Config.Driver", "keyboard" );
 
     if ( driverName == "keyboard" ) {
-        driverType_ = InputLoop::KEYBOARD_DRIVER;
+        driverType_ = InputDriver::KEYBOARD_DRIVER;
     }
     else if ( driverName == "joystick" ) {
-        driverType_ = InputLoop::JOYSTICK_DRIVER;
+        driverType_ = InputDriver::JOYSTICK_DRIVER;
     }
     else if ( driverName == "fake" ) {
-        driverType_ = InputLoop::FAKE_DRIVER;
+        driverType_ = InputDriver::FAKE_DRIVER;
     }
     else {
-        driverType_ = InputLoop::UNKNOWN_DRIVER;
+        driverType_ = InputDriver::UNKNOWN_DRIVER;
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
         throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
     }
-
-    cout<<"properties: maxspeed="<<maxSpeed_<<", maxturn="<<maxTurnrate_<<
-            ", driver="<<driverName<<" ("<<driverType_<<")"<<endl;
 
     /*
     xmlDoc->getParam( "useJoystick", use_joystick, DEFAULT_USE_JOYSTICK );
@@ -91,19 +88,20 @@ void InputLoop::run()
     // based on the config parameter, create the right driver
     switch ( driverType_ )
     {
-        case InputLoop::KEYBOARD_DRIVER :
-            driver_ = new TeleopKeyboardDriver;
+        case InputDriver::KEYBOARD_DRIVER :
+            driver_ = new TeleopKeyboardDriver( config_ );
             break;
-        case InputLoop::JOYSTICK_DRIVER :
-            //driver_ = new TeleopJoystickDriver;
+        case InputDriver::JOYSTICK_DRIVER :
+            //driver_ = new TeleopJoystickDriver( config_ );
             break;
-        case InputLoop::FAKE_DRIVER :
-            driver_ = new TeleopFakeDriver;
+        case InputDriver::FAKE_DRIVER :
+            driver_ = new TeleopFakeDriver( config_ );
             break;
-        case InputLoop::UNKNOWN_DRIVER :
+        case InputDriver::UNKNOWN_DRIVER :
             string errorStr = "Unknown driver type. Cannot talk to hardware.";
             throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
     }
+    // don't forget!
     driver_->enable();
 
     Velocity2dCommandPtr currCommand = new Velocity2dCommand;
@@ -118,15 +116,6 @@ void InputLoop::run()
         // Read from the input
         driver_->readdata( currCommand );
 
-        // apply max limits
-        if ( fabs(currCommand->motion.v.x) > maxSpeed_ ) {
-            currCommand->motion.v.x =
-                (currCommand->motion.v.x / fabs(currCommand->motion.v.x)) * maxSpeed_;
-        }
-        if ( fabs(currCommand->motion.w) > maxTurnrate_ ) {
-            currCommand->motion.w =
-                (currCommand->motion.w / fabs(currCommand->motion.w)) * maxTurnrate_;
-        }
         //cout<<"current command: "<<currCommand<<endl;
 
         // commit change only if something has actually changed

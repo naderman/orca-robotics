@@ -52,20 +52,9 @@ private:
     // generic interface to input hardware
     InputDriver* driver_;
 
-    enum DriverType
-    {
-        KEYBOARD_DRIVER,
-        JOYSTICK_DRIVER,
-        FAKE_DRIVER,
-        UNKNOWN_DRIVER
-    };
+    InputDriver::Config config_;
 
-    DriverType driverType_;
-
-    // define the speed limits for the robot
-    // at full joystick depression you'll go this fast
-    double maxSpeed_; // m/s
-    double maxTurnrate_;  // rad/s
+    InputDriver::DriverType driverType_;
 };
 
 #endif
