@@ -33,8 +33,8 @@ sequence<byte>         IntensitySequence;
 
 class LaserConfig extends OrcaObject
 {
-    float rangeResolution;
-    float angleIncrement;
+    float rangeResolution;    // minimum range step that can be sensed
+    float angularResolution;  // angle between laser returns
     bool  isEnabled;
 };
 
@@ -52,7 +52,7 @@ class LaserData extends OrcaObject
     RangeSequence     ranges;
     IntensitySequence intensities;
     float             startAngle;
-    float             angleIncrement;
+    float             angularResolution;
 };
 
 interface Laser

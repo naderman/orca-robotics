@@ -64,8 +64,8 @@ int App::run( int argc, char* argv[] )
 //     // We could set the laser's configuration like so:
 //     LaserConfigPtr config = new LaserConfig;
 //     config->rangeResolution = 0.01;
-//     config->angleIncrement  = DEG2RAD(1.0);
-//     // config->angleIncrement  = DEG2RAD(0.5);
+//     config->angularResolution  = DEG2RAD(1.0);
+//     // config->angularResolution  = DEG2RAD(0.5);
 //     config->isEnabled       = true;
 //     laserPrx->setConfig( config );
 
