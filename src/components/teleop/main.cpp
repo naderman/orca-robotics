@@ -24,8 +24,7 @@
 
 int main(int argc, char * argv[])
 {
-    orcaiceutil::Application app( argc, argv );
     TeleopComponent component;
-    app.setComponent( &component );
+    orcaiceutil::Application app( argc, argv, component );
     return app.main(argc, argv);
 }

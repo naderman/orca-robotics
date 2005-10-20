@@ -32,8 +32,9 @@
 
 using namespace std;
 using namespace orca;
-//using namespace orcaiceutil;
 using orcaiceutil::operator<<;
+
+#define ADAPTER_NAME "Orca"
 
 class App : virtual public Ice::Application
 {
@@ -45,7 +46,9 @@ int App::run( int argc, char* argv[] )
 {
     // create the one-and-only component adapter, parse config file to create adapter name
     orcaiceutil::setComponentProperties( communicator() );
-    Ice::ObjectAdapterPtr adapter = communicator()->createObjectAdapter("Orca");
+    Ice::ObjectAdapterPtr adapter = communicator()->createObjectAdapter(ADAPTER_NAME);
+
+    cout << "Prop: " << communicator()->getProperties()->getProperty("Orca.Locator") << endl;
 
     adapter->activate();
     cout<<"*** INFO: Adapter is initialized and running..."<<endl;
@@ -73,7 +76,7 @@ int App::run( int argc, char* argv[] )
     // Now read the laser's data
     //
 
-    // Set up a consumer to receive IceStorm data stream
+    // Set up a consumer to receive IceStorm data stream, based on the topic name
     LaserConsumerPtr laserConsumer = new LaserConsumerI;
 //    orcaiceutil::subscribeConsumerToTopic<LaserConsumerPtr>( communicator(), adapter, laserConsumer, "Laser" );
     orcaiceutil::subscribeConsumerToTopic( communicator(), adapter, (Ice::ObjectPtr&) laserConsumer, "Laser" );
@@ -97,6 +100,7 @@ int App::run( int argc, char* argv[] )
 int main(int argc, char * argv[])
 {
     App app;
-    orcaiceutil::setDefaultOrcaProperties( argc, argv );
+    Ice::PropertiesPtr properties = Ice::getDefaultProperties( argc, argv );
+    orcaiceutil::setDefaultOrcaProperties( properties, ADAPTER_NAME );
     return app.main(argc, argv);
 }
