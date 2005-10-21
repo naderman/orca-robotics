@@ -69,9 +69,8 @@ build_doxygen ../src/components
 build_doxygen ../src/interfaces
 
 #
-# Build the slice documentation
+# Build the slice documentation using slice2cpp
 #
-
 #build_slice ../src/interfaces/slice/orca
 
 #
