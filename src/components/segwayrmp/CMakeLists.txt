@@ -2,43 +2,38 @@ OPTION( BUILD_SEGWAYRMP "Try to build SegwayRMP component" ON )
 
 IF ( BUILD_SEGWAYRMP )
 
-# USB driver
-IF ( HAVE_FTD2XX )
-    MESSAGE("    USB driver for SegwayRmp - ok")
-    SUBDIRS( rmpusb )
-    LINK_LIBRARIES( OrcaSegwayRmpUsb ftd2xx usb )
-    LINK_DIRECTORIES( ${PROJ_BINARY_DIR}/src/components/segwayrmp/rmpusb )
-    ADD_DEFINITIONS( -DHAVE_USB_DRIVER )
-ELSE ( HAVE_FTD2XX )
-    MESSAGE("    USB driver for SegwayRmp - cannot")
-ENDIF ( HAVE_FTD2XX )
+  INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
+  INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaiceutil.cmake )
+ 
+  # OPTIONAL_SUB_LIBRARY macro defined in component_rules.cmake
+   
+  # USB driver
+  OPTIONAL_SUB_LIBRARY( 
+    "USB Driver for SegwayRMP"
+    rmpusb
+    OrcaSegwayRmpUsb
+    HAVE_FTD2XX
+    -DHAVE_USB_DRIVER
+    ftd2xx usb )
 
-# CAN driver
-IF ( HAVE_CANLIB )
-    MESSAGE("    CAN driver for SegwayRmp - ok")
-    SUBDIRS( rmpcan )
-    LINK_LIBRARIES( OrcaSegwayRmpCan canlib )
-    LINK_DIRECTORIES( ${PROJ_BINARY_DIR}/src/components/segwayrmp/rmpcan )
-    ADD_DEFINITIONS( -DHAVE_CAN_DRIVER )
-ELSE ( HAVE_CANLIB )
-    MESSAGE("    CAN driver for SegwayRmp - cannot")
-ENDIF ( HAVE_CANLIB )
+  # CAN driver
+  OPTIONAL_SUB_LIBRARY( 
+    "CAN Driver for SegwayRMP"
+    rmpcan
+    OrcaSegwayRmpCan
+    HAVE_CANLIB
+    -DHAVE_CAN_DRIVER
+    canlib )
 
-# libplayer driver (CAN segway only)
-IF ( HAVE_PLAYER_1_6 )
-    MESSAGE("    Player-client driver for SegwayRmp - ok")
-    #SUBDIRS( rmpplayer )
-    #LINK_LIBRARIES( OrcaSegwayRmpPlayer playerclient )
-    #LINK_DIRECTORIES( ${PROJ_BINARY_DIR}/src/components/segwayrmp/rmpplayer )
-    #ADD_DEFINITIONS( -DHAVE_PLAYER_DRIVER )
-ELSE ( HAVE_PLAYER_1_6 )
-    MESSAGE("    Player-client driver for SegwayRmp - cannot")
-ENDIF ( HAVE_PLAYER_1_6 )
+  # PlayerClient driver (CAN segway only)
+#  OPTIONAL_SUB_LIBRARY( 
+#    "Player-client Driver for SegwayRMP"
+#    rmpplayer
+#    OrcaSegwayRmpPlayer
+#    HAVE_PLAYER_1_6
+#    -DHAVE_PLAYERCLIENT_DRIVER
+#    playerclient )
 
-
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaiceutil.cmake )
-    
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
     SET( COMMON_SRCS rmpcomponent rmpmainloop platform2d_i power_i rmpfakedriver )
     
