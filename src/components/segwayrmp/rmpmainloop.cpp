@@ -23,9 +23,15 @@
 #include "rmpmainloop.h"
 
 // segway rmp drivers
-#include "rmpusb/rmpusbdriver.h"
-//#include "rmpcan/rmpcandriver.h"
-//#include "rmpfake/rmpplayerdriver.h"
+#ifdef HAVE_USB_DRIVER
+    #include "rmpusb/rmpusbdriver.h"
+#endif
+#ifdef HAVE_CAN_DRIVER
+    #include "rmpcan/rmpcandriver.h"
+#endif
+#ifdef HAVE_PLAYER_DRIVER
+    #include "rmpfake/rmpplayerdriver.h"
+#endif
 #include "rmpfakedriver.h"
 
 #include <orcaiceutil/orcaiceutil.h>
@@ -96,13 +102,19 @@ void RmpMainLoop::run()
     switch ( driverType_ )
     {
         case RmpDriver::USB_DRIVER :
+#ifdef HAVE_USB_DRIVER
             driver_ = new RmpUsbDriver;
+#endif
             break;
         case RmpDriver::CAN_DRIVER :
-            //driver_ = new RmpCanDriver;
+#ifdef HAVE_CAN_DRIVER
+            driver_ = new RmpCanDriver;
+#endif
             break;
         case RmpDriver::PLAYER_CLIENT_DRIVER :
-            //driver_ = new RmpPlayerClientDriver;
+#ifdef HAVE_PLAYER_DRIVER
+            driver_ = new RmpPlayerClientDriver;
+#endif
             break;
         case RmpDriver::FAKE_DRIVER :
             driver_ = new RmpFakeDriver;
