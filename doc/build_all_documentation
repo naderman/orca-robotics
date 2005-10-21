@@ -66,7 +66,9 @@ build_slice () {
 
 build_doxygen ../src/utils
 build_doxygen ../src/components
-build_doxygen ../src/interfaces
+
+# Don't do this automatically, or sourceforge will over-write.
+#build_doxygen ../src/interfaces
 
 #
 # Build the slice documentation using slice2cpp
