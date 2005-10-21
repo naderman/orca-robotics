@@ -1,4 +1,4 @@
-OPTION( BUILD_SEGWAYRMP "Try to build SegwayRMP component" OFF )
+OPTION( BUILD_SEGWAYRMP "Try to build SegwayRMP component" ON )
 
 IF ( BUILD_SEGWAYRMP )
 
