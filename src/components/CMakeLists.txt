@@ -7,7 +7,7 @@ SUBDIRS(
   position2dmon
   powermon
   segwayrmp
-#  sicklaser <- MWK removed: sicklaser no longer in repository
+  sicklaser 
   teleop
 )
 
