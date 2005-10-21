@@ -1,0 +1,78 @@
+#!/bin/sh
+#
+# Adds the Orca menu to all the human-written 
+# and doxygen-written stuff.
+#
+# The doxygen stuff from orca-base has to be 
+# copied into here manually.
+#
+# Author: Alex Brooks
+#
+
+# Configuration options:
+
+# The doxygen-written directories to recurse into:
+doxygen_dirs="components utils interfaces"
+
+# The directories containing human-written html:
+human_dir="raw_html"
+
+##############################################################################
+##               No more configuration options below here                   ##
+##############################################################################
+
+#
+# Add the Orca sidebar to all the human-written .html files in 
+# the named directories, by calling 'add_sidebar.pl'.
+#
+echo "Converting directory '$human_dir'"
+for file in $human_dir/*.html
+do
+    # Check that we haven't already converted it for some reason
+    if grep -q 'ALREADY_ADDED_HEADER_HTML' $file
+    then
+        echo "Already converted $file"
+    else
+        echo "Converting file $file"
+        #echo "./add_sidebar.pl \"human_written\" $file > `basename $file`"
+        if ! ./add_sidebar.pl "human_written" $file > `basename $file`
+        then
+            echo "ERROR Building documentation"
+            exit 1
+        fi
+    fi
+done
+
+
+#
+# Add the Orca sidebar to all the doxygen .html files in 
+# the named directories, by calling 'add_sidebar.pl'.
+#
+for dir in $doxygen_dirs
+do
+
+    if [ -d $dir ]
+    then
+        echo "Converting directory '$dir'"
+
+        for file in $dir/html/*.html
+        do
+            # Check that we haven't already converted it for some reason
+            if grep -q 'ALREADY_ADDED_HEADER_HTML' $file
+            then
+                echo "Already converted $file"
+            else
+                echo "Converting file $file"
+                if ! ./add_sidebar.pl "doxygen_written" $file > .tmp
+                then
+                    echo "ERROR Building documentation"
+                    exit 1
+                fi
+                mv .tmp $file
+            fi
+        done
+    else
+        echo "Couldn't find directory '$dir' -- skipping it."
+    fi
+
+done
