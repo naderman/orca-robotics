@@ -1,0 +1,71 @@
+/*
+ *  Orca-Base: Components for robotics.
+ *
+ *  Copyright (C) 2004
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_buildsystem The Orca Build System
+
+Orca uses <a href="http://www.cmake.org">CMake</a> to handle its build system.
+CMake is a cross-platform tool, designed as a replacement for autotools.
+
+@section basics Basics
+
+Builds are controlled by a set of files called 'CMakeLists.txt'.  There
+is approximately one in each directory, and builds descend recursively through the source tree.
+
+If you just want to see how to initiate a build, see the top-level 'INSTALL'
+file in Orca2.
+
+@section orca2 Orca2 Details
+
+The build system for orca2 consists of a set of 'CMakeLists.txt' files, many of which INCLUDE a set of helper '.cmake' files.  The '.cmake' files live in the top-level 'config' directory.
+
+The top-level 'CMakeLists.txt' file:
+    - Calls config/global_setup.cmake, which checks for global requirements like Ice.
+    - Calls config/check_depend.cmake, which checks for a bunch of things that might be needed by one or more components.  These checks set variables which can be used by components later on.
+
+Individual components maintain their own 'CMakeLists.txt' files.  Components will generally INCLUDE the following:
+
+    - config/component_rules.cmake: Contains rules for compiler/linker flags, plus any other component-kruft.
+    - possibly: config/include_orcaiceutil.cmake: Contains all the rules to include orcaiceutil, to avoid repetition.
+
+
+Components should build themselves with GLOBAL_ADD_EXECUTABLE rather than ADD_EXECUTABLE.  This allows their builds to be mediated in a central location.
+
+Note for libraries: In order for files to be able to '#include' header files the same when they're in situ (within the distribution) as when they're installed, all '#included' header files live in subdirectories called 'orca'.  Source files then '#include' the directory above.
+
+@section docco Documentation
+
+In order to be able to build the documentation locally, you need the following:
+      - doxygen
+      - sgml2x
+
+On debian systems, install with:
+@verbatim
+# apt-get install doxygen sgml2x
+@endverbatim
+
+To build it, do:
+@verbatim
+$ cd doc
+$ ./build_all_documentation
+@endverbatim
+
+*/

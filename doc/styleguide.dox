@@ -1,0 +1,459 @@
+/*
+ *  Orca-Base: Components for robotics.
+ *
+ *  Copyright (C) 2004
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_style Orca C++ Programming Style Guide
+@author Alex Brooks 9-Jun-2004
+@note This style guide was mostly taken from the ACFR Fish-Bird project, courtesy of James Hudson.
+
+  
+This is a loose style guide for programming within the
+Orca framework.  It exists for two reasons: to maintain
+a legible and uniform code-base, and to reduce bugs.
+
+
+Some examples and ideas were taken from this useful website: <a
+href="http://www.possibility.com/Cpp/CppCodingStandard.html">http://www.possibility.com/Cpp/CppCodingStandard.html</a>
+
+@section general General Guidelines
+
+In general, code should err on the side of being amply
+white-spaced and spread out, and newlines should separate
+logical blocks of code.
+
+Use asserts everywhere to check function parameters, to check
+return values and anywhere where there could possibly be an
+error. It is better for the system to crash and burn in a
+blatantly obvious way than to introduce insidious bugs
+
+Try hard to avoid global variables! Use namespaces instead.
+
+@section naming Naming Conventions
+
+@par General
+
+When naming code entities, be as descriptive as possible, ie
+maxFeathersPerBird instead of maxFeath.
+
+Do not use "Hungarian" notation, e.g. no fWidth for a double,
+CMyClass for a class or SMyStructure for a structure. It's unnecessary
+with type-safe languages and is very confusing if the type actually
+changes and the name doesn't.
+
+@par Varables
+
+Variable names begin with low-case letter and each next word is
+capitalized.
+
+@verbatim
+int    x;
+my_t   myLittleVariable;
+@endverbatim
+
+@par Classes and Structures
+
+Class and structure names begin with a capital, and each new word begins with a capital (no "_" or "-").
+
+@verbatim
+Class     BigBird;
+double    bigBird;
+@endverbatim
+
+@par Member Variables
+
+Same as normal variables but appended by "_". This prevents bugs
+and makes code clearer, letting you know instantly where the variable
+is defined.
+
+@verbatim
+...
+    // normal variable
+    int    x_;
+
+    // compare to member variable
+    my_t   myMemberVariable_;
+...
+@endverbatim
+
+@par Member Functions
+
+Member function begin with low case letters, each next word is
+capitalized.  This is the same rule as normal variables, but member
+function names are followed by parameter lists "(..)" and usually
+contain verbs.
+
+@verbatim
+...
+    // member function
+    void    setBirdFree();
+
+    // compare to member variable
+    bool    setBirdFree_;
+...
+@endverbatim
+
+@par access functions
+
+same name as the member variable which they provide access to
+(without "_").
+
+@verbatim
+...
+public:
+    // access function
+    int    x();
+private:
+    // member variable
+    int    x_;
+...
+@endverbatim
+
+@par assignment functions
+
+prepend "set" to member variable without "_"
+@verbatim
+...
+public:
+    // assignment function
+    int    setX();
+private:
+    // member variable
+    int    x_;
+...
+@endverbatim
+
+@par Class Example
+
+@verbatim
+class BigBird
+{
+public:
+
+    BigBird()
+    ~BigBird()
+
+    // Release the named bird
+    bool setBirdFree( char *birdName );
+
+    // access
+    int  numWings() { return numWings_; };
+    void setNumWings( int numWings ) { numWings_ = numWings };
+
+private:
+
+    int numWings_;
+
+};
+@endverbatim
+
+@par Namespaces
+
+Begin with low case, each next word is capitalized. This is the
+same format as used for normal variables and member functions. Easily
+destinguished from the other two by "::".  Keeping namespace names
+reasonably short makes code more readable.
+
+@verbatim
+namespace myProject
+{
+    void writeThesis();
+}
+...
+    // function in namespace
+    myProject::writeThesis();
+
+    // compare to a class member function
+    MyClass::writeThesis();
+...
+@endverbatim
+
+As a general rule, do not place "using" directives in header files. They propogate down into
+every source (.cpp) file that includes your  headers, whether or not the calling programmer
+wanted to import the entire namespace (e.g. std). Some projects may have their own
+classes called map, or string, or list and a single "using" statement deep inside nested
+header files can cause unanticipated namespace collisions.
+
+In general, it's safest and most polite to refer to classes canonically in header files (std::string, etc), and keep the "using" statements in your implementation files.
+
+\b right:
+@verbatim// myclass.h
+...
+class MyClass
+{
+    std::vector&ltstd::string&gt names_; 
+}
+...
+@endverbatim
+
+\b wrong:
+@verbatim
+// myclass.h
+...
+using std;
+
+class MyClass
+{
+    vector&ltstring&gt names_; 
+}
+...
+@endverbatim
+
+
+      @par #defines
+
+      all uppercase to distinguish them from functions and variables.
+
+@verbatim
+#define VERY_BIG_NUMBER 5
+@endverbatim
+
+
+      @par Enums
+
+      elements should have a prefix similar to their name. Each
+      enum should have a final element called _NUM_OF - this allows
+      bounds checking and is useful for many things besides. E.g.:
+
+@verbatim
+enum PinStateType
+{
+    PST_OFF = 0,
+    PST_ON,
+    ...
+    PST_NUM_OF
+};
+@endverbatim
+
+@par File Names
+
+All low case for ease of porting to non-Unix file systems. To keep the Unix
+systems happy, no spaces in file names are allowed. Extensions should be formed as follows:
+
+\b C++:
+@verbatim
+myclass.h
+myclass.cpp
+@endverbatim
+
+\b C:
+@verbatim
+myclass.h
+myclass.c
+@endverbatim
+
+@section sec Declarations
+@par  Header Files
+
+As much as possible, keep #includes out of header files as
+this can create large chains of dependencies that increase
+compile times. Ideally a header file for a class includes only
+the baseclass.hpp.
+
+Parameter lists in header files should always include the
+parameters' names:
+
+\b right:
+@verbatim
+void drawBird( int height, int width, char *title );
+@endverbatim
+
+\b wrong:
+@verbatim
+void drawBird( int, int, char* );
+@endverbatim
+
+Try to use inlines rather than defines to do simple
+operations as it makes debugging a lot easier and lets the
+compiler catch more errors.
+
+A header file should contain exactly one class, and no major
+code.  Inlines should be no longer than a couple of
+statements.
+
+When using #ifndef to prevent multiple loading of header
+files, make sure that the #define will remain unique if your
+header file is used in a different project. Prepend project name
+or other distinguishing feature. Eg.
+
+\b right:
+@verbatim
+#ifndef MYPROJECTNAME_POINT_H
+...
+#define MYPROJECTNAME_POINT_H
+@endverbatim
+
+\b wrong:
+@verbatim
+#ifndef POINT_H
+...
+#define POINT_H
+@endverbatim
+
+@par Source Files
+Variables should be declared on their own lines, for ease of
+reading and commenting:
+
+\b right:
+@verbatim
+char **a;        // add comment
+char  *x;        // add comment
+@endverbatim
+
+\b wrong:
+@verbatim
+char **a, *x;
+@endverbatim
+
+@section sec Documentation
+
+@par Comments
+
+Ideally, code should be so legible that it should speak for
+itself. In general each comment should be on a line all on its
+own, not placed after code.
+
+Comments inside brackets are handy to say what each case
+does, ie:
+
+@verbatim
+if (error == true)
+{
+    // error occurred, so quit
+    return;
+}
+else
+{
+    // no error
+    printf("hello");
+}
+@endverbatim
+
+@par Doxygen
+
+Doxygen is encouraged as a useful tool for generating documentation
+directly from code.  For simple usage:
+
+@verbatim
+//! This comment will apear in the doxygen documentation
+/*! So will this one \*/
+function doSomething();
+
+// This one will only appear in the code
+/* So will this one */
+function doSomethingElse();
+@endverbatim
+
+See <a href="http://www.doxygen.org">the doxygen documentation</a> for more details.
+
+@section sec Cosmetic
+
+@par Bracketting
+
+If statements and loops should always be bracketed, even for
+a single line of code. This reduces bugs caused by adding extra
+lines within an if statement.
+
+\b right:
+@verbatim
+if (number == 10)
+{
+    doSomething();
+}
+@endverbatim
+
+\b wrong:
+@verbatim
+if (number == 10)
+   doSomething();
+@endverbatim
+
+Brackets should have a line to themselves as this makes it a
+lot easier to spot missing brackets in large nested constructs.
+
+\b right:
+@verbatim
+if (condition)        while (condition)
+{                     {
+    ...                   ...
+}                     }
+@endverbatim
+
+\b wrong:
+@verbatim
+if (condition) {      while (condition) {
+    ...                   ...
+}                     }
+@endverbatim
+
+@par Indenting
+
+Code should be indented in the 'stroustrup' style.  This
+means four spaces between indentation levels.
+
+There should be no hard tabs.  That is, four spaces should be
+four spaces rather than a single 'tab'.  This means that code is
+still readable if someone else's editor represents tabs
+differently.  Most editors can be set up to do this.
+
+
+@par Conditional Statements
+
+When checking for null pointers or Boolean values, use the
+full == or != sign. This makes the code easier to
+understand:
+
+\b right:
+@verbatim
+if (controller_ != NULL)
+{
+    controller_->doSomething();
+}
+@endverbatim
+
+\b wrong:
+@verbatim
+if (controller_)
+{
+    controller_->doSomething();
+}
+@endverbatim
+
+@par Case statements
+
+These should be amply tabbed to make the code clearer, ie:
+
+@verbatim
+switch (blah)
+{
+case 1 :
+    doSomething();
+    break;
+default :
+    doSomethingDifferent();
+    break;
+}
+@endverbatim
+
+Always include a default case, even if you think it will
+never be hit.  Each case should have a 'break;', even if you
+think it will never be hit.  Adhering to this reduces bugs.
+
+*/

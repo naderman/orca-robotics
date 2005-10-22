@@ -1,0 +1,61 @@
+/*
+ *  Orca-Base: Components for robotics.
+ *
+ *  Copyright (C) 2004
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@defgroup interfaces Interfaces
+@defgroup objects Objects
+@defgroup components Components
+@defgroup utils Utilities
+@defgroup examples Examples
+@defgroup tests Tests
+
+@mainpage What is Orca?
+
+Orca is an open-source framework for developing component-based robotic systems. It provides the means for defining and developing the building-blocks which can be pieced together to form arbitrarily complex robotic systems, from single vehicles to distributed sensor networks. @ref orca_about
+  
+The documentation on this web page matches the latest release of Orca1. A web page is also generated hourly from <a
+href="http://orca-robotics.sourceforge.net/cvs/">the latest CVS version of Orca2.</a>.
+
+@section status Current Status
+  
+The initial implementation based on selectable transport mechanisms has been frozen as of version 1.0 and will only receive bug fixes in the future. The framework has been and is currently used in several projects.
+
+A new implementation has been started based on the Internet Communication Engine (Ice) from
+<a href="http://www.zeroc.com">ZeroC</a>. We call this implementation @b Orca2.
+Our focus on component-based sotfware remains unchanged but we feel that Ice is far superior to any commercial and custom solutions we have looked at before. We are currently figuring out the best way to build components on top of Ice. A new distribution will be available soon.
+
+
+@section news News
+
+    - 11-Oct-05: started development of @b Orca2 using Ice.
+    - 11-Oct-05: @b Orca @b 1.0.0: Orca1 source has been frozen.
+    - 18-Sep-05: Orca 0.15.2: Mostly small changes.  See Release Notes for details. 
+    - 18-Aug-05: Orca 0.15.1: Mostly small bug-fixes. 
+    - 2-Jul-05:  Orca 0.15.0:
+       - Addition of SOCKET transport: a simple transport implementation using raw TCP/IP sockets
+       - Various component improvements: see Release Notes for changes.
+    - 9-May-05:  Orca 0.14.0: See Release Notes for changes. 
+    - 16-Apr-05:  Orca 0.13.3: See Release Notes for changes. 
+    - 4-Apr-05:  Orca 0.13.2: See Release Notes for changes. 
+    - 21-Mar-05: Orca 0.13.1: XML config file system overhauled, and a bug fixed in playerbot. 
+    - @ref orca_doc_old_news
+
+*/

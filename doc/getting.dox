@@ -1,0 +1,124 @@
+/*
+ *  Orca-Base: Components for robotics.
+ *
+ *  Copyright (C) 2004
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_getting Getting Orca
+
+@section depend Overview of dependencies
+
+The diagram below shows an overview of dependencies between Orca and external libraries. Orca distribution is shown in yellow. Source code modules distributed with Orca are highlighted.
+External libraries are shown in white. Dependencies are indicated by dashed arrows.
+
+@image html orca_depend.png
+
+@b Orca2 contains objects and interface definitions. The distribution also contains
+a repository of working, documented components contributed by the developer community. It also contains some examples. The utilities contained in the distribution are strictly optional.
+Practically, this means that you can download build your own components from scratch and communicate with the existing components. Individual components may have their own dependencies as illustrated in the diagram but they never depend on each other.
+
+
+@section download Download and install instructions
+
+Follow these instructions to download and install orca2. For concreteness, commands for installing dependencies under Debian Linux are provided. Send feedback on building under other distributions.
+
+    -# <a href="http://www.cmake.org/">CMake: Cross-Platform Make</a>.
+@verbatim
+# apt-get install cmake
+@endverbatim
+
+  -# Download, compile and install Ice libraries. Orca has been tested with versions up to 2.1.2.
+    Full instructions are available from the <a href="http://www.zeroc.com/download.html">download page</a>.
+     - First, install Ice dependencies. In debian packages for all required libraries exist.
+@verbatim
+# apt-get install libdb4.2++-dev libbz2-dev bzip2 libssl-dev libreadline5-dev libexpat1-dev
+@endverbatim
+     - Get Ice distribution from <a href=http://www.zeroc.com>ZerocC</a>
+     - Unpack the distribution
+@verbatim
+$ tar -xzf Ice-[VERSION].tar.gz
+$ cd Ice-[VERSION]
+@endverbatim
+     - Suggestion: change the installation directory to something more standard. This is done by editing the 'config/Make.rules' file. This will install all Ice stuff into /usr/local.
+@verbatim
+...
+prefix                  = /usr/local
+...
+@endverbatim
+     - Ice is particular about the name of the compiler. If you are using gcc, make sure the names are standard: gcc/g++! If you skip this step you'll see a cryptic message about 'mkshlib' not defined.
+@verbatim
+$ export CC=gcc
+$ export CXX=g++
+@endverbatim
+     - Compile and install
+@verbatim
+$ make
+$ make test (optional, requires python)
+# make install
+# ldconfig
+@endverbatim
+
+Update: there's a one-man effort to provide Debian packages for Ice but we haven't tried to use them yet. See http://ice.jgaa.com/
+   
+    -# Download and install any optional dependencies you'd like:
+
+        - <a href="http://playerstage.sourceforge.net/" target="_blank">Player/Stage</a>, is required for some hardware support and for use of the Stage simulator (you probably want this). Player version 1.6 or later is required!
+
+        - <a href="http://www.stack.nl/~dimitri/doxygen/" target="_blank">Doxygen</a>  for generating local doxygen documentation</a>
+@verbatim
+# apt-get install doxygen
+@endverbatim
+
+        - <a href="http://www.trolltech.com/" target="_blank">Qt</a>, is required for a Graphical User Interface. Qt v.3.0 or later is required. Tested with versions up to 3.3.3
+@verbatim
+# apt-get install libqt3-mt-dev
+@endverbatim
+
+    -# Build and install Orca2 distribution:
+        - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647&package_id=129675">orca-components</a>.
+        - Un-tar the release.
+        - configure using cmake (note the dot after cmake)
+        - compile, and install.
+@verbatim
+$ tar -zxvf orca2-x.x.x.tar.gz
+$ cd orca-components
+$ cmake .
+$ make
+# make install
+# ldconfig
+@endverbatim
+
+
+@section cvs Getting Orca from CVS
+
+[\b Not \b yet \b converted \b to \b Orca2 ]
+
+You can get detailed instructions of how to get Orca from CVS <a href="http://sourceforge.net/cvs/?group_id=111647">here</a>. Short instructions:
+
+    - Registered developers should use ssh-based login, others should use anonymous login.
+    - Anonymous Login
+@verbatim
+cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/orca-robotics login
+@endverbatim
+    - Anonymous Checkout:
+@verbatim
+cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/orca-robotics co orca2
+@endverbatim
+
+*/

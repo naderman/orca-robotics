@@ -1,0 +1,73 @@
+/*
+ *  Orca-Base: Components for robotics.
+ *
+ *  Copyright (C) 2004
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_quickstart Quick-Start Guide
+
+(Note: revised for Orca2 release 0.1.0)
+
+This page describes how to get a quick demonstration up and running with your new Orca install.
+
+Before you begin, make sure that you've installed Orca (see @ref orca_doc_getting ).
+
+@section startup Starting Up the Infrastructure
+
+@par IcePack Registry
+
+The IcePack Registry provides a Naming service: a mapping from logical port names to
+physical addresses. It's currently the only way for components to find one another.
+
+To set it up, do:
+@verbatim
+$ cd orca2/doc/icecfg
+$ mkdir db
+$ icepackregistry --Ice.Config=icepack.cfg
+@endverbatim
+
+This starts icepackregistry on your local machine.  If you're going to be using Orca a lot,
+it's probably a good idea to set this up so it's always running on a single machine on the network.
+
+@par IceStorm Service
+
+There should be exactly one IceStorm service per host.  This is
+an event service, used to decouple publishers from subscribers.
+
+To set it up, do:
+@verbatim
+$ cd orca2/doc/icecfg
+$ icebox --Ice.Config=icebox.cfg
+@endverbatim
+
+@section point Pointing Components at this Infrastructure
+
+When an Orca component starts up, it needs to know how to find the
+services above.
+
+If your components use orcaiceutil, you can solve this problem
+centrally by putting the following in your '~/.orcarc' file:
+@verbatim
+# Standard Ice Configuration for Orca
+Ice.Default.Locator=IcePack/Locator:default -p 12000
+IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 10000
+@endverbatim
+(modify appropriately if this differs from your system setup)
+
+*/

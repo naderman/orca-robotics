@@ -1,0 +1,57 @@
+/*
+ *  Orca-Base: Components for robotics.
+ *
+ *  Copyright (C) 2004
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_old_news Old News
+
+    -  16-Mar-05: Orca 0.13.0: Enhancements:
+        -   Orca now has two options for transport mechanisms: (a) CORBA and (b) CRUD: a lightweight communications library based on UDP/Shared Memory.
+        -   The API for all Patterns and Objects has been significantly revamped, greatly improving consistency.
+        -   An automated testing setup has been added to run tests every night.
+        -   Dependency on log4cpp has been removed.
+        -   One additional pattern has been added for CRUD.
+    -  23-Dec-04: Orca 0.12.1: Various improvements, including the addition of some useful utilities (some in fairly early stages of development) for managing systems.
+    -  16-Nov-04: Orca 0.12.0: Lots of changes and improvements!  Moved from XMLWrapp to Xerces and improved format of configuration files.  Moved the build system from Autotools to CMake.  Greatly improved the documentation, and added several components.  And lots of bug-fixes of course.
+    -  13-Sep-04: Orca 0.11.0: Various fixes and improvements.  Orca now consists of just two packages: Orca-base and Orca-components.
+    -  27-Jul-04: Orca 0.10.3: Fixed most of the components that were broken in 0.10.2, although the GUI is still non-functional.  Also added a working VFH component.
+    -  17-Jul-04: Orca 0.10.2: Orca now consists of multiple packages.  Orca contains the component repository, and orca-base-xxxx implements the inter-component communication.  Currently orca-base-corba is the only well-developed implementation.  Set the environment variable ORCA_TRANSPORT to CORBA in order to use it.
+    -  28-Jun-04: Orca 0.10.1: Major changes include a simplification of the ways servers and proxies are set up, and a set of examples showing how to do this.
+    -  18-Jun-04: Orca 0.10 - first release under the new name. A global name change, file names brought in line with guidelines, added two new examples.
+    -  16-Jun-04: New Webpage is up and running.
+    -  11-Jun-04: New name! Registered with SourceForge as Orca.
+    -  09-Jun-04: Orocos@KTH 0.9.1 released! Mostly bug-fixes and documentation,
+some simple components, plus a TruthLocalizer for localizing in simulation
+(see Component Repository).
+    -  23-May-04: Orocos@KTH 0.9 released! The main additions include a Graphical
+User Interface (see Component Repository).
+    -  04-03-17 --- New FAQ, see below.
+    -  04-03-04 --- Now compiles with GCC 3.2.2.
+    -  030429 --- New presentation slides now avaiable in the Documentation section.
+    -  030416 --- New release 0.8.6. This release contains a number of important bug-fixes that address stability and memory leaks.
+    -  030407 --- A new generic robotbase-server has replaced the scout-server. Initial support for the PeopleBot robot has been added. Expect a new release in a couple of days.
+    -  030319 --- New release 0.8.5. Download a tarball. Since the file structure is totally changed, a new CVS module has been created, called orca. So you must do a clean checkout from this new module.
+    -  030310 --- A new configuration file-format (xml) is being introduced. This adds a new requirement, see below. Patric is also introducing a new makefile format.
+    -  030304 --- A fuser for MotionCommands was added. It works with a new Synchronizer class that is handy when getting data from several servers.
+    -  030210 --- The SICK laserscanner is now supported.
+    -  030128 --- A really short guide on how to get started is available. See below under Documentation.
+
+*/
+
