@@ -1,4 +1,6 @@
-All documentation is built with a single command. HTML files are dumped
-into orca2/doc/html/
+to build documentation, delete auto-generated files and run doxygen
 
+$ cd <orca2>/src/interfaces
+$ make clean
+$ cd <orca2>/doc
 $ doxyorca orcadoxyfile
