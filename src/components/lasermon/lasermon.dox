@@ -21,29 +21,30 @@
 /*!
 
 @ingroup components
-@defgroup orca_component_lasermon LaserMon: a simple component that prints laser ranges (Status: beta)
+@defgroup orca_component_lasermon LaserMon
+@brief A simple component that prints laser ranges (Status: beta)
 
 A simple example that connects to a laser server and displays the ranges
 (textually) on a terminal.
 
 Laser scans are displayed as soon as they arrive.
 
-@par provides Provided Interfaces
+@par Provided Interfaces
 -  None.
 
-@par requires Required Interfaces
-- Laser
+@par Required Interfaces
+- @ref orca_interface_laser
 
-@par config Configuration
+@par Configuration
 None.
 
-@include lasermon/lasermon.cfg
+@include components/lasermon/lasermon.cfg
 
-@par remarks Remarks
+@par Remarks
 
 Cannot run as an IceBox service.
 
-@par developer Responsible Developer
+@par Responsible Developer
 Alex Brooks (a.brooks [at] cas.edu.au)
 
 */

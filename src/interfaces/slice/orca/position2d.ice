@@ -72,7 +72,7 @@ interface Position2dConsumer
 };
 
 
-/!  @}
+//!  //@}
 }; // module
 
 #endif

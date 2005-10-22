@@ -52,11 +52,16 @@ class Platform2dConfig extends OrcaObject
 */
 interface Platform2d extends Position2d
 {
+    //! Get configuration
     nonmutating Platform2dConfig getConfig();
 
+    //! Set velocity command
     idempotent void setCommand( Velocity2dCommand data );
+
+    //! Set configuration
     idempotent void setConfig( Platform2dConfig config );
-    
+
+    //! Enable motor(s)
     idempotent void enableMotor( bool enable );    
 };
 

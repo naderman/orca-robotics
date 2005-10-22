@@ -20,72 +20,71 @@
 
 /*!
 @ingroup components
-@defgroup orca_component_teleop Teleop: A remote control for robots (Status: beta)
+@defgroup orca_component_teleop Teleop
 @brief This component provides teleoperational control from a keyboard or joystick.
 
-@par status Development status Beta
+This component connects to a robot base or waypoint server and issues motion commands according to user input from a keyboard or joystick. Development status Beta
 
-@par descr Description
-This component connects to a robot base or waypoint server and issues motion commands according to user input from a keyboard or joystick.
+@image html teleop_blackbox.png
 
-@image html teleopcontrol_blackbox.png
+@par Provides
+    - none
 
-@par providedInterfaces Provided Interfaces
-None.
+@par Requires
+    - @ref orca_interface_platform2d
 
-@par requiredInterfaces Required Interfaces
-The purposes of the interfaces are listed in brackets.
-- ClientPush_Supplier + RobotVelocity2D (velocity mode, waypoint mode)
-- ClientPush_Supplier + Pose2D (waypoint mode)
+@par Drivers
+    - Keyboard
+    - Joystick
 
-@par config Configuration
-- useJoystick
-    - Whether to use a joystick
-    - Use: optional, default = "true"
-    - Constraints:
-        - Type: boolean
-
-- joystickPort
-    - If using a joystick, which port it is connected to
-    - Use: optional, default="/dev/input/event0", only relevant if useJoystick=true
-    - Constraints:
-        - Type: string
-
-- maxLinSpeed
-    - The maximum absolute linear speed which the component will allow
-    - Units: metres per second
-    - Use: optional, default = "0.5"
-    - Constraints:
-        - Type: float
-
-- maxAngSpeed
-    - The maximum absolute rotational speed which the component will allow
-    - Units: degrees per second
-    - Use: optional, default = "60"
-    - Constraints:
-        - Type: float
-
-- timeout
-    - The rate at which commands are sent
-    - Units: seconds
-    - Use: optional, default = "-1.0"
-    - Constraints:
-        - Type: float
-        - Valid Values:
-            - t < 0: Only new commands sent (very efficient)
-            - t = 0: Commands sent constantly (terribly inefficient)
-            - t > 0: Commands sent when new, or resent after t seconds (useful if heartbeat needed)
-
-- verbose
-    - If true, prints the commands it's sending to stdout.
-    - Use: optional, default = "false"
-    - Constraints:
-        - Type: boolean
+@par Configuration
+    - useJoystick
+        - Whether to use a joystick
+        - Use: optional, default = "true"
+        - Constraints:
+            - Type: boolean
+    
+    - joystickPort
+        - If using a joystick, which port it is connected to
+        - Use: optional, default="/dev/input/event0", only relevant if useJoystick=true
+        - Constraints:
+            - Type: string
+    
+    - maxLinSpeed
+        - The maximum absolute linear speed which the component will allow
+        - Units: metres per second
+        - Use: optional, default = "0.5"
+        - Constraints:
+            - Type: float
+    
+    - maxAngSpeed
+        - The maximum absolute rotational speed which the component will allow
+        - Units: degrees per second
+        - Use: optional, default = "60"
+        - Constraints:
+            - Type: float
+    
+    - timeout
+        - The rate at which commands are sent
+        - Units: seconds
+        - Use: optional, default = "-1.0"
+        - Constraints:
+            - Type: float
+            - Valid Values:
+                - t < 0: Only new commands sent (very efficient)
+                - t = 0: Commands sent constantly (terribly inefficient)
+                - t > 0: Commands sent when new, or resent after t seconds (useful if heartbeat needed)
+    
+    - verbose
+        - If true, prints the commands it's sending to stdout.
+        - Use: optional, default = "false"
+        - Constraints:
+            - Type: boolean
 
 Here's a complete sample of a config file:
-@include teleopcontrol/teleopcontrol.xml
+@include components/teleop/teleop.cfg
 
-@par joy Joystick Troubleshooting
+@par Joystick Troubleshooting
 
 If using a joystick then TeleopControl requires either a <A HREF="http://kernel.org">Linux Kernel</A> >= 2.4 or the <A HREF="http://linuxconsole.sourceforge.net/input/input.html">Linux Input Drivers</A> .  If the driver is built as a module you may have to load it (<code>modprobe evdev</code> as root).
 
@@ -111,7 +110,7 @@ $ sudo mknod c event3 13 67
 - There are some problems with USB1.0 joysticks and older kernels.
     If your USB system hangs, try upgrading.  Kernel 2.6.10 seems to be OK.
 
-@par developer Responsible Developer
+@par Responsible Developer
 Alex Makarenko
 
 */

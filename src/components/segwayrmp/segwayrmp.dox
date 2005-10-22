@@ -20,7 +20,8 @@
 
 /*!
 @ingroup components
-@defgroup segwayrmp SegwayRMP: A component for controlling Segway. (Status: beta)
+@defgroup segwayrmp SegwayRMP
+@brief A component for controlling Segway. (Status: beta)
 
 @par Provides
 
@@ -31,18 +32,16 @@
 
 - none
 
-@par deps Dependancies
+@par Dependancies
 - CAN bus. Segway component requires that CAN software be installed.  Currently, the only
     CAN interface that works is Kvaser's.
 - USB bus. Tested with libftd2xx.so.0.4.5. Get it from www.ftdichip.com
 
-@par config Configuration
+@par Configuration
 
-@verbatim
-$ segwayrmp segwayrmp.xml
-@endverbatim
+@include components/segwayrmp/segwayrmp.cfg
 
-@par developer Responsible Developer
+@par Responsible Developer
 Alex Makarenko
 
 */

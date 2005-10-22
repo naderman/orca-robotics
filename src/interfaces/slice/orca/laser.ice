@@ -27,9 +27,9 @@
 module orca
 {
 /*!
+    @ingroup interfaces
     @defgroup orca_interface_laser Laser
     @brief Single-origin scanning range sensor
-    @ingroup interfaces
 
 The laser interface provides access to a single-origin scanning range
 sensor, such as a SICK laser range-finder (e.g., @ref orca_component_sicklaser).
