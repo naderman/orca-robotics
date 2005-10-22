@@ -3,7 +3,6 @@ MESSAGE ( "== COMPONENTS ==" )
 # when adding new directories, please maintain alphabetical order
 SUBDIRS(
   lasermon
-  lasermon
   position2dmon
   powermon
   segwayrmp
