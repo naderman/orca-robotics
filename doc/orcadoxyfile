@@ -62,7 +62,7 @@ FILE_VERSION_FILTER    =
 # configuration options related to warning and progress messages
 #---------------------------------------------------------------------------
 QUIET                  = NO
-WARNINGS               = YES
+WARNINGS               = NO
 WARN_IF_UNDOCUMENTED   = NO
 WARN_IF_DOC_ERROR      = YES
 WARN_NO_PARAMDOC       = NO
@@ -85,8 +85,9 @@ FILE_PATTERNS          = *.cpp \
 RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO
-EXCLUDE_PATTERNS       = 
-EXAMPLE_PATH           = .
+EXCLUDE_PATTERNS       = ../src/interfaces/slice/orca/*.h \
+                         ../src/interfaces/slice/orca/*.cpp
+EXAMPLE_PATH           = ../src
 EXAMPLE_PATTERNS       = 
 EXAMPLE_RECURSIVE      = NO
 IMAGE_PATH             = images
@@ -115,8 +116,8 @@ IGNORE_PREFIX          =
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
-HTML_HEADER            = 
-HTML_FOOTER            = 
+HTML_HEADER            = header.html
+HTML_FOOTER            = footer.html
 HTML_STYLESHEET        = 
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = NO

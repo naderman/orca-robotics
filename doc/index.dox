@@ -29,6 +29,7 @@
 
 @mainpage What is Orca?
 
+
 Orca is an open-source framework for developing component-based robotic systems. It provides the means for defining and developing the building-blocks which can be pieced together to form arbitrarily complex robotic systems, from single vehicles to distributed sensor networks. @ref orca_about
   
 The documentation on this web page matches the latest release of Orca1. A web page is also generated hourly from <a
@@ -57,5 +58,7 @@ Our focus on component-based sotfware remains unchanged but we feel that Ice is 
     - 4-Apr-05:  Orca 0.13.2: See Release Notes for changes. 
     - 21-Mar-05: Orca 0.13.1: XML config file system overhauled, and a bug fixed in playerbot. 
     - @ref orca_doc_old_news
+
+
 
 */
