@@ -26,23 +26,30 @@
 
 module orca
 {
+/*!
+    @ingroup interfaces
+    @defgroup orca_interface_platform2d Platform2d
+    @brief Active robotic platform
+    @{
+*/
 
-// define messages first
+//! Velocity command object
 class Velocity2dCommand extends OrcaObject
 {
     Twist2d motion;
 };
 
+//! Platform configuration object
 class Platform2dConfig extends OrcaObject
 {
     Twist2d maxMotionCommand;
 };
 
-//! Platform2d is an "active" Position2d. In addition to serving its current position2d
-//! it also accepts motion commands.
-//! Note that this platform only accepts velocity commands (unlike in Player where
-//! position2d interface also accepts waypoint commands). The rational is that planners/navigators
-//! should think in terms of waypoints, not the hardware.
+/*!
+    @brief Control mobile robot bases in 2D
+
+    Platform2d is an "active" Position2d. In addition to serving its current position2d it also accepts motion commands. Note that this platform only accepts velocity commands (unlike in Player where position2d interface also accepts waypoint commands). The rational is that planners/navigators should think in terms of waypoints, not the hardware.
+*/
 interface Platform2d extends Position2d
 {
     nonmutating Platform2dConfig getConfig();
@@ -53,6 +60,7 @@ interface Platform2d extends Position2d
     idempotent void enableMotor( bool enable );    
 };
 
+//! @}
 }; // module
 
 #endif

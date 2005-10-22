@@ -1,59 +1,49 @@
+/*
+ *  Orca-Base: Components for robotics.
+ *
+ *  Copyright (C) 2004
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
 /*!
-  \defgroup segwayrmp SegwayRMP: A component for controlling Segway. (Status: beta)
+@ingroup components
+@defgroup segwayrmp SegwayRMP: A component for controlling Segway. (Status: beta)
 
-  The Segwayrmp can provide odometry in any combination of the following forms:
-    - RobotVelocity2D objects, 
-    - Pose2D objects,
-    - Pose3D objects.
+@par Provides
 
-  RobotVelocity2D provides measurements (as measured by wheel encoders
-  or similar) of the robot's velocity and turn-rate.
+- @ref orca_interface_platform2d
+- @ref orca_interface_power
 
-  Pose2D provides measurements (as measured by wheel encoders
-  or similar) of the robot's position: (x,y,heading).  Since the
-  Segway doesn't know anything about a global frame of
-  reference, the odometric Pose2D is in a local coordinate system;
-  that is, the robot begins at (0,0,0) on initialization.
+@par Requires
 
-  Pose3D contains the same measurements as Pose2D, with the addition
-  of the pose3D.pitch(): the tilt angle of the robot.  Pose3d.yaw() is
-  the same as pose2d.heading().  Pose3d.roll() is not measured by the
-  Segway, and is thus always reported as 0.0.
+- none
 
-  Commands are given to the Segway using RobotVelocity2D objects.  3D
-  objects are not appropriate because the Segway doesn't have direct
-  control over its tilt angle.
+@par deps Dependancies
+- CAN bus. Segway component requires that CAN software be installed.  Currently, the only
+    CAN interface that works is Kvaser's.
+- USB bus. Tested with libftd2xx.so.0.4.5. Get it from www.ftdichip.com
 
-  \section deps Dependancies
-    - CAN bus. Segway component requires that CAN software be installed.  Currently, the only
-      CAN interface that works is Kvaser's.
-    - USB bus. Tested with libftd2xx.so.0.4.5. Get it from www.ftdichip.com
+@par config Configuration
 
-  \section config Configuration
-
-  \section start Startup
-  Example:
-
-\verbatim
+@verbatim
 $ segwayrmp segwayrmp.xml
-\endverbatim
+@endverbatim
 
-  \section servers Servers
-    Supported servers include:
-    - For reading from the hardware:
-      - ServerPush:Sender \<RobotVelocity2D\>
-      - ServerPush:Sender \<Pose2D\>
-      - ServerPush:Sender \<Pose3D\>
-    - For writing to the hardware:
-      - ClientPush:Sender \<RobotVelocity2D\>
-
-  \section requiredInterfaces Required Interfaces
-  None.
-
-  \section remarks Remarks
-
-  \section developer Responsible Developer
-  Alex Brooks (a.brooks [at] cas.edu.au)
+@par developer Responsible Developer
+Alex Makarenko
 
 */
 

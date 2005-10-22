@@ -1,111 +1,118 @@
+/*
+ *  Orca-Base: Components for robotics.
+ *
+ *  Copyright (C) 2004
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
 /*!
-  \defgroup teleop Teleop: A remote control for robots (Status: beta)
-  \brief This component provides teleoperational control from a keyboard or joystick.
+@ingroup components
+@defgroup orca_component_teleop Teleop: A remote control for robots (Status: beta)
+@brief This component provides teleoperational control from a keyboard or joystick.
 
-  \section status Development status
-  Beta. Tested considerably in Orca-1.Migration to Orca-2 incomplete.
+@par status Development status Beta
 
-  \section descr Description
-  This component connects to a robot base or waypoint server and issues motion commands according to user input from a keyboard or joystick.
-    
-  \image html teleopcontrol_blackbox.png
+@par descr Description
+This component connects to a robot base or waypoint server and issues motion commands according to user input from a keyboard or joystick.
 
-  \section providedInterfaces Provided Interfaces
-  None.
+@image html teleopcontrol_blackbox.png
 
-  \section requiredInterfaces Required Interfaces
-  The purposes of the interfaces are listed in brackets.
-  - ClientPush_Supplier + RobotVelocity2D (velocity mode, waypoint mode)
-  - ClientPush_Supplier + Pose2D (waypoint mode)
+@par providedInterfaces Provided Interfaces
+None.
 
-  \section config Configuration
-  - useJoystick
-      - Whether to use a joystick
-      - Use: optional, default = "true"
-      - Constraints:
-          - Type: boolean
-         
-  - joystickPort
-      - If using a joystick, which port it is connected to
-      - Use: optional, default="/dev/input/event0", only relevant if useJoystick=true
-      - Constraints:
-          - Type: string
+@par requiredInterfaces Required Interfaces
+The purposes of the interfaces are listed in brackets.
+- ClientPush_Supplier + RobotVelocity2D (velocity mode, waypoint mode)
+- ClientPush_Supplier + Pose2D (waypoint mode)
 
-  - maxLinSpeed
-      - The maximum absolute linear speed which the component will allow
-      - Units: metres per second
-      - Use: optional, default = "0.5"
-      - Constraints:
-          - Type: float
+@par config Configuration
+- useJoystick
+    - Whether to use a joystick
+    - Use: optional, default = "true"
+    - Constraints:
+        - Type: boolean
 
-  - maxAngSpeed
-      - The maximum absolute rotational speed which the component will allow
-      - Units: degrees per second
-      - Use: optional, default = "60"
-      - Constraints:
-          - Type: float
-          
-  - timeout
-      - The rate at which commands are sent
-      - Units: seconds
-      - Use: optional, default = "-1.0"
-      - Constraints:
-          - Type: float
-          - Valid Values:
-              - t < 0: Only new commands sent (very efficient)
-              - t = 0: Commands sent constantly (terribly inefficient)
-              - t > 0: Commands sent when new, or resent after t seconds (useful if heartbeat needed)
+- joystickPort
+    - If using a joystick, which port it is connected to
+    - Use: optional, default="/dev/input/event0", only relevant if useJoystick=true
+    - Constraints:
+        - Type: string
 
-  - verbose
-      - If true, prints the commands it's sending to stdout.
-      - Use: optional, default = "false"
-      - Constraints:
-          - Type: boolean
-              
-  Here's a complete sample of a config file:
-   \include teleopcontrol/teleopcontrol.xml
-  
-  \section joy Joystick Troubleshooting
+- maxLinSpeed
+    - The maximum absolute linear speed which the component will allow
+    - Units: metres per second
+    - Use: optional, default = "0.5"
+    - Constraints:
+        - Type: float
 
-  If using a joystick then TeleopControl requires either a <A HREF="http://kernel.org">Linux Kernel</A> >= 2.4 or the <A HREF="http://linuxconsole.sourceforge.net/input/input.html">Linux Input Drivers</A> .  If the driver is built as a module you may have to load it (<code>modprobe evdev</code> as root).
-  
-  - Make sure you're using the correct event device.  To see which ones are available, do:
+- maxAngSpeed
+    - The maximum absolute rotational speed which the component will allow
+    - Units: degrees per second
+    - Use: optional, default = "60"
+    - Constraints:
+        - Type: float
+
+- timeout
+    - The rate at which commands are sent
+    - Units: seconds
+    - Use: optional, default = "-1.0"
+    - Constraints:
+        - Type: float
+        - Valid Values:
+            - t < 0: Only new commands sent (very efficient)
+            - t = 0: Commands sent constantly (terribly inefficient)
+            - t > 0: Commands sent when new, or resent after t seconds (useful if heartbeat needed)
+
+- verbose
+    - If true, prints the commands it's sending to stdout.
+    - Use: optional, default = "false"
+    - Constraints:
+        - Type: boolean
+
+Here's a complete sample of a config file:
+@include teleopcontrol/teleopcontrol.xml
+
+@par joy Joystick Troubleshooting
+
+If using a joystick then TeleopControl requires either a <A HREF="http://kernel.org">Linux Kernel</A> >= 2.4 or the <A HREF="http://linuxconsole.sourceforge.net/input/input.html">Linux Input Drivers</A> .  If the driver is built as a module you may have to load it (<code>modprobe evdev</code> as root).
+
+- Make sure you're using the correct event device.  To see which ones are available, do:
 @verbatim
 $ cat /proc/bus/input/devices
 @endverbatim
 
-  - Other things that can go wrong:
-    - Make sure that your event devices exist and can be read:
-      - ie ensure that you have permissions to /dev/input/event*, eg with:
+- Other things that can go wrong:
+- Make sure that your event devices exist and can be read:
+    - ie ensure that you have permissions to /dev/input/event*, eg with:
 @verbatim
 $ sudo chmod 666 /dev/input/event*
 @endverbatim
-        - (note that these permissions may get over-written on reboot...)
-      - if not enough exist, make them with:
+    - (note that these permissions may get over-written on reboot...)
+    - if not enough exist, make them with:
 @verbatim
 $ sudo mknod c event0 13 64
 $ sudo mknod c event1 13 65
 $ sudo mknod c event2 13 66
 $ sudo mknod c event3 13 67
 @endverbatim
-    - There are some problems with USB1.0 joysticks and older kernels.
-      If your USB system hangs, try upgrading.  Kernel 2.6.10 seems to be OK.
+- There are some problems with USB1.0 joysticks and older kernels.
+    If your USB system hangs, try upgrading.  Kernel 2.6.10 seems to be OK.
 
+@par developer Responsible Developer
+Alex Makarenko
 
-  \section perf Performance
-  Generally depends on choice of <code>timeout</code> value.
-          
-  \section remarks Remarks
-  Please report any bugs to the responsible developer.
-  
-  To do:
-  - Improve commenting
-  
-  \section developer Responsible Developer
-  Tim Arney (t.arney[at]cas.edu.au)
-
-  \section update Last Update
-  22/11/2004
-  
 */
 

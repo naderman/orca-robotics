@@ -25,37 +25,62 @@
 
 module orca
 {
+/*!
+    @ingroup interfaces
+    @defgroup orca_interface_power Power
+    @brief Access to a robot's power subsystem
+    @{
+*/
 
+/*!
+    Data for a single battery.
+*/
 struct BatteryData
 {
-    // Battery name
+    //! Battery name
     string name;
-    // Battery voltage [V]
+    //! Battery voltage [V]
     float voltage;
-    // Percent of full charge [%]
+    //! Percent of full charge [%]
     float percent;
 };
 
+/*!
+    Data for all batteries on a robot.
+*/
 sequence<BatteryData> BatteriesData;
 
+/*!
+    @brief Information about the power subsystem of a robot.
+*/
 class PowerData extends OrcaObject
 {
-    // battery information
+    //! battery information
     BatteriesData batteries;
 };
 
+/*!
+    @brief Access to a robot's power subsystem
+*/
 interface Power
 {
-        // ClientPull_Supplier interface
+        //! ClientPull_Supplier interface
         nonmutating PowerData getData();
 };
 
+/*!
+    @brief Interface to the consumer of power information.
+*/
 interface PowerConsumer
 {
-        // ServerPush_Consumer interface
+        //! ServerPush_Consumer interface
        void setData( PowerData obj );
 };
 
+
+/*!
+    @}
+*/
 }; // module
 
 #endif

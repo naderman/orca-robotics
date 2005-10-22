@@ -26,6 +26,12 @@
 
 module orca
 {
+/*!
+    @ingroup interfaces
+    @defgroup orca_interface_position2d Position2d
+    @brief Access to odometry of 2d mobile robitic bases.
+    @{
+*/
 
 // define messages first
 class Position2dData extends OrcaObject
@@ -46,7 +52,9 @@ class Position2dGeometry extends OrcaObject
     Size2d size;
 };
 
-//! Data supplier interface 
+/*!
+    @brief Access to odometry of 2d mobile robitic bases.
+*/
 interface Position2d
 {
     // ClientPull_Supplier interface
@@ -64,6 +72,7 @@ interface Position2dConsumer
 };
 
 
+/!  @}
 }; // module
 
 #endif

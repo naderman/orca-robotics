@@ -1,28 +1,50 @@
+/*
+ *  Orca-Base: Components for robotics.
+ *
+ *  Copyright (C) 2004
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
 /*!
-  \defgroup lasermon LaserMon: a simple component that prints laser ranges (Status: beta)
 
-  A simple example that connects to a laser server and displays the ranges
-  (textually) on a terminal.
+@ingroup components
+@defgroup orca_component_lasermon LaserMon: a simple component that prints laser ranges (Status: beta)
 
-  Laser scans are displayed as soon as they arrive.
+A simple example that connects to a laser server and displays the ranges
+(textually) on a terminal.
 
-  \section provides Provided Interfaces
-    -  None.
+Laser scans are displayed as soon as they arrive.
 
-  \section requires Required Interfaces
-    - Laser
+@par provides Provided Interfaces
+-  None.
 
-  \section config Configuration
-    None.
+@par requires Required Interfaces
+- Laser
 
-    \include lasermon/lasermon.cfg
+@par config Configuration
+None.
 
-  \section remarks Remarks
+@include lasermon/lasermon.cfg
 
-    Cannot run as an IceBox service.
+@par remarks Remarks
 
-  \section developer Responsible Developer
-  Alex Brooks (a.brooks [at] cas.edu.au)
+Cannot run as an IceBox service.
+
+@par developer Responsible Developer
+Alex Brooks (a.brooks [at] cas.edu.au)
 
 */
 
