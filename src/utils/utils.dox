@@ -1,0 +1,19 @@
+// DOXYGEN CODE FOR THE UTILITIES PAGE
+
+/*!
+        \mainpage
+        \section utilsintro Introduction
+
+  Orca utilities contain code used by more than one component.
+
+  A special class of utilities customize and extend Ice API to make writing
+  of Orca components easier.
+
+  <a href="modules.html">Click here for the complete list of
+  utilities</a> included in this distribution.
+
+
+        \section add How to Add a New Utility?
+
+    ...
+*/
