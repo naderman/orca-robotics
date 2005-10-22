@@ -14,7 +14,6 @@ SET( SLICE_SOURCES
   image.ice
   ogmap.ice
   opaque.ice
-  pose2d.ice
   stringobj.ice
   binaryindicator.ice
   laser.ice
