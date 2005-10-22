@@ -13,48 +13,27 @@
 USAGE_ARGS=""
 
 #
-# Usage: build_doxygen <dir>
+# Usage: build_doxygen <dir> [<doxyfilename>]
 #
 build_doxygen () {
-    if [ $# -ne 1 ]; then
-        echo "Require one argument"
+    if [ $# -le 0 ]; then
+        echo "Require at least one one argument"
         exit 1
     fi
-
     dir=$1
+
+    if [ $# -eq 2 ]; then
+        doxyfile=$2
+    fi
+
     cd $dir
 
-    doxygen
-    if [ ! $? ]; then
-        echo "Problem building doxygen in $1"
-        exit 1
-    fi
-    cd -
-}
+    echo "doxygen $doxyfile"
+    doxygen $doxyfile
 
-#
-# Usage: build_slice <dir>
-#
-build_slice () {
-    if [ $# -ne 1 ]; then
-        echo "Require one argument"
-        exit 1
-    fi
-
-    dir=$1
-
-    slice2docbook -s -I$dir/.. html/orca-slice.sgml $dir/*.ice
-
-    if [ ! $? ]; then
-        echo "Problem building slice documentation in $1"
-        exit 1
-    fi
-
-    echo "Please wait...  This may take a while."
-    cd html
-    docbook-2-html orca-slice.sgml
-    if [ ! $? ]; then
-        echo "Problem building slice documentation in $1"
+    res=$?
+    if [ $res -ne 0 ]; then
+        echo "Problem building doxygen in $dir: $res"
         exit 1
     fi
     cd -
@@ -64,21 +43,11 @@ build_slice () {
 # First build the doxygen stuff locally
 #
 
-build_doxygen ../src/utils
-build_doxygen ../src/components
-
-# Don't do this automatically, or sourceforge will over-write.
-#build_doxygen ../src/interfaces
-
-#
-# Build the slice documentation using slice2cpp
-#
-#build_slice ../src/interfaces/slice/orca
+echo "build_doxygen . orcadoxyfile"
+build_doxygen . orcadoxyfile
 
 #
 # Then add the sidebar stuff
 #
 
-cd html
 ./format_documentation
-cd -
