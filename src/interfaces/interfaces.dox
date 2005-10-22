@@ -1,0 +1,14 @@
+// DOXYGEN CODE FOR INTERFACES PAGE
+
+/*!
+        \mainpage
+        \section intintro Introduction
+
+    Interfaces documentation (write me).
+
+        \section intlist Interface List
+
+  <a href="annotated.html">Click here for the complete list of
+  interfaces</a>
+
+*/
