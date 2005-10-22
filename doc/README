@@ -1,0 +1,4 @@
+All documentation is built with these two commands. HTML files are dumped
+into orca2/doc/html/
+
+$ doxyorca orcadoxyfile; ./format_documentation

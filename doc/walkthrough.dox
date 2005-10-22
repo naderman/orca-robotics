@@ -1,0 +1,155 @@
+/*
+ *  Orca-Base: Components for robotics.
+ *
+ *  Copyright (C) 2004
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_walkthrough Writing Your First Orca2 Component
+
+@section intro Intro
+
+This document will step you through the process of making your first Orca2 component. 
+In particular, we will build an Orca2 component called "drunkrobot" that simulates a robot that 
+takes a random walk. We'll use the existing Orca2 component "position2dmon" to watch the robot as it 
+moves around. 
+
+@section started Getting started
+
+Before reading this document, you should familiarise yourself with: 
+    - @ref orca_doc_getting : download, compile, install.
+    - Getting IcePack and IceStorm started. 
+    - @ref orca_doc_devcomp : the basic Orca2 component design pattern
+
+Once you've read that, things here should make a bit more sense. 
+
+@section basics Basics
+
+Our drunken robot must implement a particular interface; in this case Position2d. 
+The Position2d data file is declared in: src/interfaces/slice/orca/position2d.ice
+
+From that declaration we can see that our drunken robot must implement the following methods: 
+
+@verbatim
+interface Position2d
+{
+    // ClientPull_Supplier interface
+    nonmutating Position2dData getData();
+    nonmutating Position2dGeometry getGeometry();
+};
+@endverbatim
+
+The "nonmutating" bit means that the ICE layer can make some optimisations because getting data or 
+geometry doesn't change our drunken robot at all. 
+
+Note also that our robot must know about the Poisition2dData and Position2dGeometry objects. These 
+are also described in the ICE file. Orca2 uses BROS (Basic Robotic Standard) for representations of 
+geometry and the like. 
+
+@section setup Setting up
+
+For the moment, we'll be setting up in a subdirectory of the src/components, just to make building 
+easier. But this doesn't have to be this way. So first we go to src/components, and make a new 
+directory called drunkrobot (% mkdir drunkrobot). 
+
+As discussed in the design pattern, our implementation of the interface simply takes puts things in 
+a pointer buffer that our program then accesses in its main loop. Since we're implementing a 
+position2d object, we need to create a simple implementation of the position2d object. We'll put 
+this in a class called position2d_i. 
+
+Position2d_i.h looks like this: 
+
+@verbatim
+#ifndef ORCA2_DR_POSITION2D_I_H
+#define ORCA2_DR_POSITION2D_I_H
+
+// include provided interfaces
+#include <orca/position2d.h>
+
+// utilities
+#include <orcaiceutil/ptrbuffer.h>
+
+
+// serves latest data on demand and accepts commands
+class Position2dI : public orca::Position2d
+{
+    public:
+    Position2dI( orcaiceutil::PtrBuffer* position2ddata, orca::Position2dGeometry *geom);
+
+    virtual ::orca::Position2dDataPtr getData(const ::Ice::Current& ) const;
+
+    virtual ::orca::Position2dGeometryPtr getGeometry(const ::Ice::Current& ) const;
+
+    // the driver will put the latest data into this proxy
+    orcaiceutil::PtrBuffer* position2dData_;
+    // the driver will take the latest command from the proxy
+    orca::Position2dGeometry *geom_; 
+};
+
+#endif
+@endverbatim
+
+After we include the header files, we then declare the constructor. The first is a pointer to the 2d 
+data, and the second, since it's not going to change is the static 2d geometry. 
+
+The getData() and getGeometry() functions are also passed. Since it's ICE, some of the ICE state is 
+also passed around. There are also members for the buffered results. 
+
+@verbatim
+#include "position2d_i.h"
+#include <orcaiceutil/objutils.h>
+
+using namespace std;
+using namespace orca;
+using namespace orcaiceutil;
+
+Position2dI::Position2dI( orcaIceUtil::PtrBuffer* position2dData, orca::::Position2DGeometry *geom) 
+    :
+    position2dData_(position2dData), geom_(geom)
+{
+        
+}
+    
+// served out the data to the client (it was stored here by the driver at the last read)
+orca::Position2dDataPtr Position2d::getData(const Ice::Current& current) const
+{
+    std::cout << "Sending data back" << std::endl;
+
+    // create a null pointer. data will be cloned into it.
+    Ice::ObjectPtr data;
+
+    // Get the most up to date data in the 
+    position2dData_->get( data );
+
+    cout<<Position2dDataPtr::dynamicCast( data )<<endl;
+    return Position2dDataPtr::dynamicCast( data );
+}
+
+orca::Position2dGeometryPtr Platform2dI::getGeometry(const Ice::Current& current) const
+{
+    std::cout << "Sending the geometry we were initialised with" << std::endl;
+   
+    return geom_;
+}
+@endverbatim
+
+Everything here is pretty straightforward. 
+
+Now we've implemented these, let's write our main loop. 
+
+*/
