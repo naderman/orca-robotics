@@ -13,7 +13,7 @@ IF ( BUILD_SEGWAYRMP )
     rmpusb
     OrcaSegwayRmpUsb
     HAVE_FTD2XX
-    -DHAVE_USB_DRIVER
+    SOMETHING
     ftd2xx usb )
 
   # CAN driver
@@ -22,7 +22,7 @@ IF ( BUILD_SEGWAYRMP )
     rmpcan
     OrcaSegwayRmpCan
     HAVE_CANLIB
-    -DHAVE_CAN_DRIVER
+    "HAVE_CAN_DRIVER"
     canlib )
 
   # PlayerClient driver (CAN segway only)
@@ -31,7 +31,7 @@ IF ( BUILD_SEGWAYRMP )
 #    rmpplayer
 #    OrcaSegwayRmpPlayer
 #    HAVE_PLAYER_1_6
-#    -DHAVE_PLAYERCLIENT_DRIVER
+#    HAVE_PLAYERCLIENT_DRIVER
 #    playerclient )
 
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
