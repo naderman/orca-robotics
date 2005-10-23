@@ -26,7 +26,8 @@
 // interface to the usb device
 #include "canio_usb_ftdi.h"
 // rmp/usb data structure
-#include "rmpusb_frame.h"
+#include "rmpusbdataframe.h"
+#include "canpacket.h"
 
 #include <orcaiceutil/orcaiceutil.h>
 #include <orcaiceutil/mathdefs.h>
@@ -39,7 +40,7 @@ RmpUsbDriver::RmpUsbDriver()
 {
     // Hardware
     canio_ = new CanioUsbFtdi;
-    data_frame_ = new rmpusb_frame_t;
+    dataFrame_ = new RmpUsbDataFrame;
 
     // Initialize odometry
     odomX_ = 0.0;
@@ -63,15 +64,12 @@ RmpUsbDriver::~RmpUsbDriver()
 
 int RmpUsbDriver::enable()
 {
-    // init device (freq is not used)
-    if ( canio_->Init(1)<0 )
+    // init device
+    if ( canio_->Init()<0 )
     {
         cerr<<"ERROR: error on USB Init"<<endl;
         return -1;
     }
-
-    //! @todo fix this interface hack: magic number for reset()
-    canio_->Init( 888 );
 
     cout<<"enabled"<<endl;
     return 0;
@@ -79,44 +77,69 @@ int RmpUsbDriver::enable()
 
 int RmpUsbDriver::disable()
 {
-    // anything to do here?
+    canio_->Shutdown();
 
     cout<<"disabled"<<endl;
     return 0;
 }
 
+/*
+    empirical data:
+        read from usb to buffer: ~50ms
+        read from one can msg from buffer: 15ms
+*/
 int RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )
 {
-    // Read packets (can get number of packets)
-    // int packetsRead = pCanio->ReadPackets();
-    canio_->ReadPackets();
-    
-    // Process data packets    
-    CanPacket pkt;
-    while( canio_->GetNextPacket(pkt) )
+    int usbBusPolls = 0;
+    int canPacketsReceived = 0;
+    int canPacketsProcessed = 0;
+
+    const int maxUsbBusPolls = 10;
+
+    // keep reading data from USB buffer until we complete a data frame
+    while ( !dataFrame_->isReady_ && usbBusPolls<maxUsbBusPolls )
     {
-        // Add packet to data frame
-        data_frame_->AddPacket(pkt);
-
-        // chips's debugging stuff
-        //WatchPacket( &pkt, 0x407 );
-        //WatchDataStream( pkt );
-
-        // If frame is complete, transfer data and reset frame
-        if( data_frame_->is_ready )
+        // Read packets
+        canPacketsReceived += canio_->ReadPackets();
+        ++usbBusPolls;
+    
+        // Process data packets    
+        CanPacket pkt;
+        while( !canio_->GetNextPacket(pkt) )
         {
-            updateData( data_frame_, position2d, power );
-            data_frame_->reset();
+            ++canPacketsProcessed;
+    
+            // Add packet to data frame
+            dataFrame_->AddPacket(pkt);
+    
+            // chips's debugging stuff
+            //WatchPacket( &pkt, 0x407 );
+            //WatchDataStream( pkt );
+    
+            // If frame is complete, transfer data and reset frame
+            if( dataFrame_->isReady_ )
+            {
+                cout<<"mode:"<<dataFrame_->controller_mode
+                        <<" gain:"<<dataFrame_->controller_gain_schedule
+                        <<" state:"<<dataFrame_->operational_state<<endl;
+
+                updateData( dataFrame_, position2d, power );
+                dataFrame_->reset();
+                //cout<<"rmpusb::read: rcv:"<<canPacketsReceived<<" proc:"<<canPacketsProcessed<<endl;
+                return 0;
+            }
         }
+        // check USB bus at 100Hz
+        usleep(10000);
     }
 
-    return 0;
+    return 1;
 }
 
 int RmpUsbDriver::write( orca::Velocity2dCommandPtr & command )
 {
     CanPacket pkt;
-    makeVelocityCommandPacket( command, &pkt );
+    makeVelocityCommandPacket( &pkt, command );
 
     int ret = canio_->WritePacket(pkt);
             
@@ -126,7 +149,7 @@ int RmpUsbDriver::write( orca::Velocity2dCommandPtr & command )
     return ret;
 }
 
-void RmpUsbDriver::updateData( rmpusb_frame_t* data_frame,
+void RmpUsbDriver::updateData( RmpUsbDataFrame* data_frame,
                 orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )
 {
     int delta_lin_raw, delta_ang_raw;
@@ -196,7 +219,7 @@ void RmpUsbDriver::updateData( rmpusb_frame_t* data_frame,
         position2d->motion.w =
                 DEG2RAD( -(double)data_frame->yaw_dot / (double)RMP_COUNT_PER_DEG_PER_S );
 
-        //! @todo stall
+        //! @todo stall from currents?
         position2d->stalled = false;
 /*        
         // now, do 3D info.
@@ -263,7 +286,7 @@ void RmpUsbDriver::updateData( rmpusb_frame_t* data_frame,
     if ( data_frame->battery!=RMP_CAN_DROPPED_PACKET )
     {
         // Convert battery voltage to decivolts for Player.
-        power->batteries[0].voltage = data_frame->battery / RMP_COUNT_PER_VOLT;
+        power->batteries[0].voltage = data_frame->battery / RMP_CU_COUNT_PER_VOLT;
         power->batteries[0].percent = 99.0;
     } else {
         //printf("skipping power\n");
@@ -279,21 +302,22 @@ void RmpUsbDriver::updateData( rmpusb_frame_t* data_frame,
 /*
  *  Takes an Orca command object and turns it into CAN packets for the RMP
  */
-void RmpUsbDriver::makeVelocityCommandPacket( const Velocity2dCommandPtr & command, CanPacket* pkt )
+void RmpUsbDriver::makeVelocityCommandPacket( CanPacket* pkt, const Velocity2dCommandPtr & command )
 {
     pkt->id = RMP_CAN_ID_COMMAND;
     pkt->PutSlot(2, (uint16_t)RMP_CAN_CMD_NONE);
   
     // we only care about cmd.xspeed and cmd.yawspeed
     // translational velocity is given to RMP in counts 
-    // [-1176,1176] ([-8mph,8mph])
-    
-    // player is mm/s
-    // 8mph is 3576.32 mm/s
-    // so then mm/s -> counts = (1176/3576.32) = 0.32882963
+    // [-1176,1176] ([-8mph,8mph]) or 147counts/mph
+
+    // Orca is m/s so convert to metric
+    // 1 statute mile is 1609.344km
+    // 8mph is 3.57632 m/s
+    // so then m/s -> counts = (1176/3.57632) = 328.82963
 
     // translational RMP command (convert m/s to mm/s first)
-    int16_t trans = (int16_t) rint(command->motion.v.x * 1e3 * (double)RMP_COUNT_PER_MM_PER_S);
+    int16_t trans = (int16_t) rint(command->motion.v.x * (double)RMP_COUNT_PER_M_PER_S);
     // check for command limits
     if(trans > RMP_MAX_TRANS_VEL_COUNT) {
         trans = RMP_MAX_TRANS_VEL_COUNT;
@@ -317,6 +341,54 @@ void RmpUsbDriver::makeVelocityCommandPacket( const Velocity2dCommandPtr & comma
     // put commands into the packet
     pkt->PutSlot(0, (uint16_t)trans);
     pkt->PutSlot(1, (uint16_t)rot);
+}
+
+/*
+    Creates a status CAN packet from the given arguments
+ */  
+void RmpUsbDriver::makeStatusCommand( CanPacket* pkt, uint16_t cmd, uint16_t val )
+{
+    
+    pkt->id = RMP_CAN_ID_COMMAND;
+    pkt->PutSlot(2, cmd);
+    
+    // it was noted in the windows demo code that they
+    // copied the 8-bit value into both bytes like this
+    pkt->PutByte(6, val);
+    pkt->PutByte(7, val);
+    /*
+    int16_t trans = (int16_t) rint((double)this->last_xspeed *
+            (double)RMP_COUNT_PER_MM_PER_S);
+    
+    if(trans > RMP_MAX_TRANS_VEL_COUNT) {
+        trans = RMP_MAX_TRANS_VEL_COUNT;
+    }
+    else if(trans < -RMP_MAX_TRANS_VEL_COUNT) {
+        trans = -RMP_MAX_TRANS_VEL_COUNT;
+    }
+    int16_t rot = (int16_t) rint((double)this->last_yawspeed *
+            (double)RMP_COUNT_PER_DEG_PER_SS);
+    
+    if(rot > RMP_MAX_ROT_VEL_COUNT)
+        rot = RMP_MAX_ROT_VEL_COUNT;
+    else if(rot < -RMP_MAX_ROT_VEL_COUNT)
+        rot = -RMP_MAX_ROT_VEL_COUNT;
+    
+    // put in the last speed commands as well
+    pkt->PutSlot(0,(uint16_t)trans);
+    pkt->PutSlot(1,(uint16_t)rot);
+    */
+    if(cmd)
+    {
+        //printf("SEGWAYIO: STATUS: cmd: %02x val: %02x pkt: %s\n", cmd, val, pkt->toString());
+    }
+}
+
+void RmpUsbDriver::makeShutdownCommand( CanPacket* pkt )
+{
+    pkt->id = RMP_CAN_ID_SHUTDOWN;
+
+    //printf("SEGWAYIO: SHUTDOWN: pkt: %s\n", pkt->toString());
 }
 
 // Calculate the difference between two raw counter values, taking care

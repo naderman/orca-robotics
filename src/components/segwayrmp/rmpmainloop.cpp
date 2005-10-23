@@ -21,6 +21,7 @@
 #include <iostream>
 
 #include "rmpmainloop.h"
+#include <IceUtil/Time.h>
 
 // segway rmp drivers
 #ifdef HAVE_USB_DRIVER
@@ -103,20 +104,24 @@ void RmpMainLoop::run()
     {
         case RmpDriver::USB_DRIVER :
 #ifdef HAVE_USB_DRIVER
+            cout<<"loading USB driver"<<endl;
             driver_ = new RmpUsbDriver;
 #endif
             break;
         case RmpDriver::CAN_DRIVER :
 #ifdef HAVE_CAN_DRIVER
+            cout<<"loading CAN driver"<<endl;
             driver_ = new RmpCanDriver;
 #endif
             break;
         case RmpDriver::PLAYER_CLIENT_DRIVER :
 #ifdef HAVE_PLAYER_DRIVER
+            cout<<"loading Player-Client driver"<<endl;
             driver_ = new RmpPlayerClientDriver;
 #endif
             break;
         case RmpDriver::FAKE_DRIVER :
+            cout<<"loading Fake driver"<<endl;
             driver_ = new RmpFakeDriver;
             break;
         case RmpDriver::UNKNOWN_DRIVER :
@@ -142,8 +147,11 @@ void RmpMainLoop::run()
     while( isActive() )
     {
         // Read data from the hardware
-        driver_->read( position2dData, powerData );
-        //cout<<"read : "<<position2dData<<endl;
+        readTimer_.restart();
+        if ( driver_->read( position2dData, powerData ) ) {
+            cerr<<"Failed to read from Segway"<<endl;
+        }
+        //cout<<"read: " << readTimer_.stop().toMilliSecondsDouble()<<endl;
         
         // push data to IceStorm
         try
@@ -160,6 +168,7 @@ void RmpMainLoop::run()
         // Stick it in the buffer so pullers can get it
         position2dProxy_.push( position2dData );
         powerProxy_.push( powerData );
+
         /*
         // Have any commands arrived?
         if ( !commandProxy_.isEmpty() )
@@ -182,6 +191,7 @@ void RmpMainLoop::run()
             driver_->write( command );
         }
         */
+
         // Have any configuration requests arrived?
         if ( !setConfigBuffer_.isEmpty() )
         {
@@ -198,6 +208,8 @@ void RmpMainLoop::run()
 
 void RmpMainLoop::handleData( const Ice::ObjectPtr & obj )
 {
+    //cout<<"write: " << writeTimer_.stop().toMilliSecondsDouble()<<endl;
+
     orca::Velocity2dCommandPtr command = Velocity2dCommandPtr::dynamicCast( obj );
 
     // apply max limits
@@ -213,5 +225,11 @@ void RmpMainLoop::handleData( const Ice::ObjectPtr & obj )
     //cout<<"handling: "<<command<<endl;
 
     // write to hardware
-    driver_->write( command );
+    if( driver_->write( command ) != 0 )
+    {
+        string errString = "failed to write to segway";
+        throw orcaiceutil::OrcaIceUtilHardwareException( ERROR_INFO, errString );
+    }
+
+    writeTimer_.restart();
 }

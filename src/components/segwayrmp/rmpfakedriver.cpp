@@ -60,6 +60,6 @@ int RmpFakeDriver::read( orca::Position2dDataPtr & position2d, orca::PowerDataPt
 
 int RmpFakeDriver::write( orca::Velocity2dCommandPtr & command )
 {
-    cout<<"wrote: "<<command<<endl;
+    //cout<<"wrote: "<<command<<endl;
     return 0;
 }

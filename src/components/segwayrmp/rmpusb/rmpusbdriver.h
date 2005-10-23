@@ -25,7 +25,7 @@
 
 // forward declarations
 class CanioUsbFtdi;
-class rmpusb_frame_t;
+class RmpUsbDataFrame;
 class CanPacket;
 
 class RmpUsbDriver : public RmpDriver
@@ -38,6 +38,7 @@ public:
     virtual int enable();
     virtual int disable();
 
+    // return 0 if everything went well, 1 otherwise
     virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power );
 
     virtual int write( orca::Velocity2dCommandPtr &position2d );
@@ -46,7 +47,7 @@ private:
 
     // driver/hardware interface
     CanioUsbFtdi *canio_;
-    rmpusb_frame_t* data_frame_;
+    RmpUsbDataFrame* dataFrame_;
 
     //int16_t lastSpeedX_, lastSpeedYaw_;
 
@@ -66,11 +67,13 @@ private:
     // Maximum allowd speeds [m/s], [rad/s]
     double maxSpeed_, maxTurnrate_;
 
-    void updateData( rmpusb_frame_t *,
+    void updateData( RmpUsbDataFrame * frame,
             orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power );
 
     // helper to take a player command and turn it into a CAN command packet
-    void makeVelocityCommandPacket( const orca::Velocity2dCommandPtr & command, CanPacket* pkt );
+    void makeVelocityCommandPacket( CanPacket* pkt, const orca::Velocity2dCommandPtr & command );
+    void makeStatusCommand( CanPacket* pkt, uint16_t cmd, uint16_t val );
+    void makeShutdownCommand( CanPacket* pkt );
 
     // Calculate the difference between two raw counter values, taking care
     // of rollover.

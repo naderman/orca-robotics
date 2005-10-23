@@ -19,7 +19,8 @@
  */
 
 #include "canio_usb_ftdi.h"
-#include "rmpusb_frame.h"
+
+#include "rmpusbdataframe.h"
 
 #include <iostream>
 #include <assert.h>
@@ -39,7 +40,6 @@ using namespace std;
 
 
 CanioUsbFtdi::CanioUsbFtdi() :
-    DualCANIO(),
     debugMsgCount_(0)
 {
     // Set initial buffer size
@@ -58,14 +58,8 @@ CanioUsbFtdi::~CanioUsbFtdi()
  * returns: 0 on success, negative on error
  */
 int
-CanioUsbFtdi::Init(long channel_freq)
+CanioUsbFtdi::Init()
 {
-  // special case: reset buffers
-  if ( channel_freq==888 ) {
-      cout<<"CanioUsbFtdi::Init: resetting device"<<endl;
-    return resetDevice();
-  }
-
   cout<<"CanioUsbFtdi::Init: initizlizing device"<<endl;
   FT_STATUS ftStatus;
   DWORD num_devices;
@@ -217,13 +211,6 @@ int CanioUsbFtdi::WritePacket( CanPacket &pkt )
         //DTRACE<<"ERROR: failed to write to USB"<<endl;  
     }
 
-#if 0
-    // do we need to write to the other side?
-    //mod the message to broadcast on CANB
-    bytes[2] = 1;
-    bytes[17] = usbMessageChecksum( bytes );
-    FT_Write( ftHandle_, bytes, SEGWAY_USB_MESSAGE_SIZE, &bytesWritten );
-#endif
     return ftStatus;
 }
 
@@ -254,11 +241,26 @@ unsigned char CanioUsbFtdi::usbMessageChecksum( unsigned char *msg )
     return (unsigned char)checksum;
 }
 
-/* Reads a packet.  Looks like we can just read from one channel.
- * writes it into msg (must already be allocated), and returns id, dlc, and flags
+
+int CanioUsbFtdi::GetNextPacket(CanPacket& pkt)
+{
+
+    if ( canBuffer_.size() > 0 )
+    {
+        pkt = canBuffer_.front();
+        canBuffer_.pop();
+        return 0;
+    }
+    else {
+        return 1;
+    }
+}
+
+/*
+ * Reads from USB buffer into internal buffer if the USB buffer is not empty.
+ * Reads from internal buffer into a CAN packet queue.
  *
- * returns: # bytes in msg if a packet is read, 0 if no packet available, and
- * negative on error
+ * returns: number of CAN packets put into queue.
  */
 int CanioUsbFtdi::ReadPackets()
 {
@@ -462,17 +464,4 @@ int CanioUsbFtdi::parseCanToUsb( CanPacket *pkt, unsigned char *bytes )
     bytes[17] = usbMessageChecksum( bytes );
 
     return 0;
-}
-
-int CanioUsbFtdi::GetNextPacket(CanPacket& pkt)
-{
-
-    if ( canBuffer_.size() > 0 )
-    {
-        pkt = canBuffer_.front();
-        canBuffer_.pop();
-        return 1;
-    }
-    else
-        return 0;
 }

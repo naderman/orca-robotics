@@ -13,7 +13,7 @@ IF ( BUILD_SEGWAYRMP )
     rmpusb
     OrcaSegwayRmpUsb
     HAVE_FTD2XX
-    SOMETHING
+    HAVE_USB_DRIVER
     ftd2xx usb )
 
   # CAN driver
@@ -22,7 +22,7 @@ IF ( BUILD_SEGWAYRMP )
     rmpcan
     OrcaSegwayRmpCan
     HAVE_CANLIB
-    "HAVE_CAN_DRIVER"
+    HAVE_CAN_DRIVER
     canlib )
 
   # PlayerClient driver (CAN segway only)

@@ -54,6 +54,11 @@ public:
         UNKNOWN_DRIVER
     };
 
+    struct Status
+    {
+        int operationalState;
+    };
+
     struct Config
     {
         double maxSpeed;

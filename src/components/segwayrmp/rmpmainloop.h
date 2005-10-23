@@ -24,6 +24,7 @@
 #include <orcaiceutil/thread.h>
 #include <orcaiceutil/ptrbuffer.h>
 #include <orcaiceutil/ptrnotify.h>
+#include <orcaiceutil/timer.h>
 
 #include "rmpdriver.h"
 
@@ -72,6 +73,10 @@ private:
     RmpDriver::Config config_;
 
     RmpDriver::DriverType driverType_;
+
+    // debug
+    orcaiceutil::Timer readTimer_;
+    orcaiceutil::Timer writeTimer_;
 
 };
 

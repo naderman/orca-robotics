@@ -23,60 +23,56 @@
 
 #include <queue>
 
-#include "canio.h"
+#include "canpacket.h"
 #include <ftd2xx.h>
 
-//class FT_HANDLE;
-
-class CanioUsbFtdi : public DualCANIO
+class CanioUsbFtdi //: public DualCANIO
 {
-    public:
-
-        CanioUsbFtdi();
-
-        virtual ~CanioUsbFtdi();
-
-        // we ignore this channel_freq
-        virtual int Init(long channel_freq);
-        
-        // Override original read function
-        virtual int ReadPacket(CanPacket *pkt, int channel) {return 0;};
-        
-        // This is the new read function; the original virtual one is not used
-        int ReadPackets();
-        
-        virtual int WritePacket(CanPacket &pkt);
-        
-        virtual int Shutdown();
-
-        int GetNextPacket(CanPacket& pkt);
+public:
     
-    private:
+    CanioUsbFtdi();
+    
+    ~CanioUsbFtdi();
+    
+    // we ignore this channel_freq
+    int Init();
+    int Shutdown();
 
-        // handle to the USB device inside our Segway
-        FT_HANDLE ftHandle_;
+    // This is the new read function; the original virtual one is not used
+    int ReadPackets();
 
-        // a buffer to read USB stream into
-        std::vector<unsigned char> charBuffer_;
-
-        unsigned int residualBytes;
-
-        // a buffer to store converted CAN messages
-        std::queue<CanPacket> canBuffer_;
-
-        int resetDevice();
-
-        int readFromUsbToBuffer();
-
-        int readFromBufferToQueue( int bytesInBuffer );
-
-        int parseUsbToCan( CanPacket *pkt, unsigned char *bytes );
-
-        int parseCanToUsb( CanPacket *pkt, unsigned char *bytes );
-
-        unsigned char usbMessageChecksum( unsigned char *msg );
-
-        int debugMsgCount_;
+    // Returns 0 if copied a packet, 1 if the buffer was empty
+    int GetNextPacket(CanPacket& pkt);
+    
+    int WritePacket(CanPacket &pkt);
+    
+    
+private:
+    
+    // handle to the USB device inside our Segway
+    FT_HANDLE ftHandle_;
+    
+    // a buffer to read USB stream into
+    std::vector<unsigned char> charBuffer_;
+    
+    unsigned int residualBytes;
+    
+    // a buffer to store converted CAN messages
+    std::queue<CanPacket> canBuffer_;
+    
+    int resetDevice();
+    
+    int readFromUsbToBuffer();
+    
+    int readFromBufferToQueue( int bytesInBuffer );
+    
+    int parseUsbToCan( CanPacket *pkt, unsigned char *bytes );
+    
+    int parseCanToUsb( CanPacket *pkt, unsigned char *bytes );
+    
+    unsigned char usbMessageChecksum( unsigned char *msg );
+    
+    int debugMsgCount_;
 };
 
 #endif
