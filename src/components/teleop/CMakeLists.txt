@@ -25,7 +25,6 @@ IF ( BUILD_TELEOP )
         HAVE_KBD_DRIVER
     )
 
-    # continue only if we can build at least one driver
     IF ( NOT HAVE_KBD_DRIVER AND NOT HAVE_JOY_DRIVER )
         MESSAGE("WARNING: only default 'fake' driver can be built")
     ENDIF ( NOT HAVE_KBD_DRIVER AND NOT HAVE_JOY_DRIVER )
