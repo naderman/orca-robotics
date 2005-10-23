@@ -46,6 +46,7 @@ Our focus on component-based sotfware remains unchanged but we feel that Ice is 
 
 @section news News
 
+    - 23-Oct-05: moved to an all-doxygen documentation system based largely on <a href="http://playerstage.sf.net">Player/Stage v2.0</a> model.
     - 11-Oct-05: started development of @b Orca2 using Ice.
     - 11-Oct-05: @b Orca @b 1.0.0: Orca1 source has been frozen.
     - 18-Sep-05: Orca 0.15.2: Mostly small changes.  See Release Notes for details. 
