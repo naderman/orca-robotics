@@ -5,6 +5,16 @@ IF ( BUILD_TELEOP )
     INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
     INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaiceutil.cmake )
 
+    # keyboard driver
+    OPTIONAL_SUB_LIBRARY(
+        "Keyboard driver for Teleop"
+        keyboard
+        OrcaTeleopKeyboard
+        KBD_LIBS
+        HAVE_TERMIO_H
+        HAVE_KBD_DRIVER
+    )
+
     # joystick driver
     OPTIONAL_SUB_LIBRARY(
         "Joystick driver for Teleop"
@@ -15,15 +25,6 @@ IF ( BUILD_TELEOP )
         HAVE_JOY_DRIVER
     )
 
-    # keyboard driver
-    OPTIONAL_SUB_LIBRARY(
-        "Keyboard driver for Teleop"
-        keyboard
-        OrcaTeleopKeyboard
-        KBD_LIBS
-        HAVE_TERMIO_H
-        HAVE_KBD_DRIVER
-    )
 
     IF ( NOT HAVE_KBD_DRIVER AND NOT HAVE_JOY_DRIVER )
         MESSAGE("WARNING: only default 'fake' driver can be built")
