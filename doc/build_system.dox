@@ -64,7 +64,7 @@ To build a local copy just do this. Note that you must have the right version of
 $ cd <orca2>/src/interfaces
 $ make clean
 $ cd <orca2>/doc
-$ doxygen orcadoxyfile
+$ doxygen orca.doxyfile
 $ konqueror <orca2>/doc/html/index.html
 @endverbatim
 
