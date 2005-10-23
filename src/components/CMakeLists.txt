@@ -2,6 +2,7 @@ MESSAGE ( "== COMPONENTS ==" )
 
 # when adding new directories, please maintain alphabetical order
 SUBDIRS(
+  drunkrobot
   lasermon
   position2dmon
   powermon
