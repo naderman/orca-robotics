@@ -53,8 +53,6 @@ RmpUsbDriver::RmpUsbDriver()
 
     //lastSpeedX_ = 0;
     //lastSpeedYaw_ = 0;
-    motor_allow_enable = false;
-    motor_enabled = false;
     firstread_ = true;
 }
 
@@ -70,6 +68,8 @@ int RmpUsbDriver::enable()
         cerr<<"ERROR: error on USB Init"<<endl;
         return -1;
     }
+
+    resetIntegrators();
 
     cout<<"enabled"<<endl;
     return 0;
@@ -136,17 +136,20 @@ int RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr 
     return 1;
 }
 
-int RmpUsbDriver::write( orca::Velocity2dCommandPtr & command )
+int RmpUsbDriver::sendMotionCommand( orca::Velocity2dCommandPtr & command )
 {
     CanPacket pkt;
-    makeVelocityCommandPacket( &pkt, command );
+    makeMotionCommandPacket( &pkt, command );
 
-    int ret = canio_->WritePacket(pkt);
-            
-    // Reset timer
-    //gettimeofday( &priorWriteTime, NULL );
+    return canio_->WritePacket(pkt);
+}
 
-    return ret;
+int RmpUsbDriver::resetIntegrators()
+{
+    CanPacket pkt;
+    makeStatusCommandPacket( &pkt, RMP_CAN_CMD_RESET_INTEGRATORS, RMP_CAN_RESET_ALL );
+
+    return canio_->WritePacket(pkt);
 }
 
 void RmpUsbDriver::updateData( RmpUsbDataFrame* data_frame,
@@ -302,22 +305,14 @@ void RmpUsbDriver::updateData( RmpUsbDataFrame* data_frame,
 /*
  *  Takes an Orca command object and turns it into CAN packets for the RMP
  */
-void RmpUsbDriver::makeVelocityCommandPacket( CanPacket* pkt, const Velocity2dCommandPtr & command )
+void RmpUsbDriver::makeMotionCommandPacket( CanPacket* pkt, const Velocity2dCommandPtr & command )
 {
     pkt->id = RMP_CAN_ID_COMMAND;
+    // velocity command does not change any other values
     pkt->PutSlot(2, (uint16_t)RMP_CAN_CMD_NONE);
-  
-    // we only care about cmd.xspeed and cmd.yawspeed
-    // translational velocity is given to RMP in counts 
-    // [-1176,1176] ([-8mph,8mph]) or 147counts/mph
 
-    // Orca is m/s so convert to metric
-    // 1 statute mile is 1609.344km
-    // 8mph is 3.57632 m/s
-    // so then m/s -> counts = (1176/3.57632) = 328.82963
-
-    // translational RMP command (convert m/s to mm/s first)
-    int16_t trans = (int16_t) rint(command->motion.v.x * (double)RMP_COUNT_PER_M_PER_S);
+    // translational RMP command
+    int16_t trans = (int16_t) rint(command->motion.v.x * RMP_COUNT_PER_M_PER_S);
     // check for command limits
     if(trans > RMP_MAX_TRANS_VEL_COUNT) {
         trans = RMP_MAX_TRANS_VEL_COUNT;
@@ -326,10 +321,8 @@ void RmpUsbDriver::makeVelocityCommandPacket( CanPacket* pkt, const Velocity2dCo
         trans = -RMP_MAX_TRANS_VEL_COUNT;
     }
 
-    // rotational RMP command \in [-1024, 1024] (convert from rad/s to deg/s first)
-    // this is ripped from rmi_demo... to go from deg/s to counts
-    // deg/s -> count = 1/0.013805056
-    int16_t rot = (int16_t) rint(RAD2DEG(command->motion.w) * (double)RMP_COUNT_PER_DEG_PER_S);
+    // rotational RMP command
+    int16_t rot = (int16_t) rint(command->motion.w * RMP_COUNT_PER_RAD_PER_S);
     // check for command limits
     if(rot > RMP_MAX_ROT_VEL_COUNT) {
         rot = RMP_MAX_ROT_VEL_COUNT;
@@ -341,12 +334,16 @@ void RmpUsbDriver::makeVelocityCommandPacket( CanPacket* pkt, const Velocity2dCo
     // put commands into the packet
     pkt->PutSlot(0, (uint16_t)trans);
     pkt->PutSlot(1, (uint16_t)rot);
+
+    // save this last command
+    lastTrans_ = trans;
+    lastRot_ = rot;
 }
 
 /*
     Creates a status CAN packet from the given arguments
  */  
-void RmpUsbDriver::makeStatusCommand( CanPacket* pkt, uint16_t cmd, uint16_t val )
+void RmpUsbDriver::makeStatusCommandPacket( CanPacket* pkt, uint16_t cmd, uint16_t val )
 {
     
     pkt->id = RMP_CAN_ID_COMMAND;
@@ -356,35 +353,18 @@ void RmpUsbDriver::makeStatusCommand( CanPacket* pkt, uint16_t cmd, uint16_t val
     // copied the 8-bit value into both bytes like this
     pkt->PutByte(6, val);
     pkt->PutByte(7, val);
-    /*
-    int16_t trans = (int16_t) rint((double)this->last_xspeed *
-            (double)RMP_COUNT_PER_MM_PER_S);
     
-    if(trans > RMP_MAX_TRANS_VEL_COUNT) {
-        trans = RMP_MAX_TRANS_VEL_COUNT;
-    }
-    else if(trans < -RMP_MAX_TRANS_VEL_COUNT) {
-        trans = -RMP_MAX_TRANS_VEL_COUNT;
-    }
-    int16_t rot = (int16_t) rint((double)this->last_yawspeed *
-            (double)RMP_COUNT_PER_DEG_PER_SS);
+    // put last motion command into the packet
+    pkt->PutSlot(0, (uint16_t)lastTrans_);
+    pkt->PutSlot(1, (uint16_t)lastRot_);
     
-    if(rot > RMP_MAX_ROT_VEL_COUNT)
-        rot = RMP_MAX_ROT_VEL_COUNT;
-    else if(rot < -RMP_MAX_ROT_VEL_COUNT)
-        rot = -RMP_MAX_ROT_VEL_COUNT;
-    
-    // put in the last speed commands as well
-    pkt->PutSlot(0,(uint16_t)trans);
-    pkt->PutSlot(1,(uint16_t)rot);
-    */
     if(cmd)
     {
         //printf("SEGWAYIO: STATUS: cmd: %02x val: %02x pkt: %s\n", cmd, val, pkt->toString());
     }
 }
 
-void RmpUsbDriver::makeShutdownCommand( CanPacket* pkt )
+void RmpUsbDriver::makeShutdownCommandPacket( CanPacket* pkt )
 {
     pkt->id = RMP_CAN_ID_SHUTDOWN;
 

@@ -43,7 +43,9 @@ public:
     virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )=0;
 
     //! Writes velocity command
-    virtual int write( orca::Velocity2dCommandPtr &position2d )=0;
+    virtual int sendMotionCommand( orca::Velocity2dCommandPtr &position2d )=0;
+
+    virtual int resetIntegrators()=0;
 
     enum DriverType
     {
@@ -52,11 +54,6 @@ public:
         PLAYER_CLIENT_DRIVER,
         FAKE_DRIVER,
         UNKNOWN_DRIVER
-    };
-
-    struct Status
-    {
-        int operationalState;
     };
 
     struct Config

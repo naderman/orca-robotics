@@ -149,7 +149,7 @@ void RmpMainLoop::run()
         // Read data from the hardware
         readTimer_.restart();
         if ( driver_->read( position2dData, powerData ) ) {
-            cerr<<"Failed to read from Segway"<<endl;
+            cerr<<"Failed to read from Segway"<<endl;            
         }
         //cout<<"read: " << readTimer_.stop().toMilliSecondsDouble()<<endl;
         
@@ -168,29 +168,6 @@ void RmpMainLoop::run()
         // Stick it in the buffer so pullers can get it
         position2dProxy_.push( position2dData );
         powerProxy_.push( powerData );
-
-        /*
-        // Have any commands arrived?
-        if ( !commandProxy_.isEmpty() )
-        {
-            // get and pop, so that afterwards the buffer is empty
-            commandProxy_.getAndPop( command );
-            //cout<<"comm: " << command << endl;
-
-            // apply max limits
-            if ( fabs(command->motion.v.x) > config_.maxSpeed ) {
-                command->motion.v.x =
-                        (command->motion.v.x / fabs(command->motion.v.x)) * config_.maxSpeed;
-            }
-            if ( fabs(command->motion.w) > config_.maxTurnrate ) {
-                command->motion.w =
-                        (command->motion.w / fabs(command->motion.w)) * config_.maxTurnrate;
-            }
-
-            // write to hardware
-            driver_->write( command );
-        }
-        */
 
         // Have any configuration requests arrived?
         if ( !setConfigBuffer_.isEmpty() )
@@ -225,7 +202,7 @@ void RmpMainLoop::handleData( const Ice::ObjectPtr & obj )
     //cout<<"handling: "<<command<<endl;
 
     // write to hardware
-    if( driver_->write( command ) != 0 )
+    if( driver_->sendMotionCommand( command ) != 0 )
     {
         string errString = "failed to write to segway";
         throw orcaiceutil::OrcaIceUtilHardwareException( ERROR_INFO, errString );

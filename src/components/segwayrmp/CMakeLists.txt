@@ -12,6 +12,7 @@ IF ( BUILD_SEGWAYRMP )
     "USB Driver for SegwayRMP"
     rmpusb
     OrcaSegwayRmpUsb
+    USB_LIBS
     HAVE_FTD2XX
     HAVE_USB_DRIVER
     ftd2xx usb )
@@ -21,6 +22,7 @@ IF ( BUILD_SEGWAYRMP )
     "CAN Driver for SegwayRMP"
     rmpcan
     OrcaSegwayRmpCan
+    CAN_LIBS
     HAVE_CANLIB
     HAVE_CAN_DRIVER
     canlib )
@@ -30,9 +32,14 @@ IF ( BUILD_SEGWAYRMP )
 #    "Player-client Driver for SegwayRMP"
 #    rmpplayer
 #    OrcaSegwayRmpPlayer
+#    PLAYERCLIENT_LIBS
 #    HAVE_PLAYER_1_6
 #    HAVE_PLAYERCLIENT_DRIVER
 #    playerclient )
+
+    IF ( NOT HAVE_USB_DRIVER AND NOT HAVE_CANLIB )
+        MESSAGE("WARNING: only default 'fake' driver can be built")
+    ENDIF ( NOT HAVE_USB_DRIVER AND NOT HAVE_CANLIB )
 
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
     SET( COMMON_SRCS rmpcomponent rmpmainloop platform2d_i power_i rmpfakedriver )
@@ -42,6 +49,7 @@ IF ( BUILD_SEGWAYRMP )
     
     # build a stand-alone component
     GLOBAL_ADD_EXECUTABLE( segwayrmp ${COMP_SRCS} )
+    TARGET_LINK_LIBRARIES( segwayrmp ${USB_LIBS} ${CAN_LIBS} )
     
     
     # Files for the service

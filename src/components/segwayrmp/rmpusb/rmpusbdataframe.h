@@ -18,6 +18,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+// Segway->CPU messages
 // 0x0400 = 1024
 #define RMP_CAN_ID_MSG1         0x0400
 #define RMP_CAN_ID_MSG2         0x0401
@@ -28,10 +29,10 @@
 #define RMP_CAN_ID_MSG7         0x0406
 #define RMP_CAN_ID_MSG8         0x0407
 
+// CPU->Segway messages
 #define RMP_CAN_ID_SHUTDOWN     0x0412
 #define RMP_CAN_ID_COMMAND      0x0413
 #define RMP_CAN_ID_HEARTBEAT    0x0688
-
 
 // from Status Command table on page 7
 #define RMP_CAN_CMD_NONE            0
@@ -42,17 +43,17 @@
 #define RMP_CAN_CMD_CURR_LIMIT      14
 #define RMP_CAN_CMD_BAL_LOCKOUT     15
 #define RMP_CAN_CMD_OPER_MODE       16
-#define RMP_CAN_CMD_RST_INT         50
+#define RMP_CAN_CMD_RESET_INTEGRATORS 50
 
 // from table: Bitfield for Reset Integrators on p.7
-#define RMP_CAN_RST_RIGHT           0x01
-#define RMP_CAN_RST_LEFT            0x02
-#define RMP_CAN_RST_YAW             0x04
-#define RMP_CAN_RST_FOREAFT         0x08
-#define RMP_CAN_RST_ALL             (RMP_CAN_RST_RIGHT | \
-                                     RMP_CAN_RST_LEFT | \
-                                     RMP_CAN_RST_YAW | \
-                                     RMP_CAN_RST_FOREAFT)
+#define RMP_CAN_RESET_RIGHT           0x01
+#define RMP_CAN_RESET_LEFT            0x02
+#define RMP_CAN_RESET_YAW             0x04
+#define RMP_CAN_RESET_FOREAFT         0x08
+#define RMP_CAN_RESET_ALL             (RMP_CAN_RESET_RIGHT | \
+                                      RMP_CAN_RESET_LEFT | \
+                                      RMP_CAN_RESET_YAW | \
+                                      RMP_CAN_RESET_FOREAFT)
 
 // unit conversions from Data Reference p.12
 
@@ -62,6 +63,9 @@
 #define RMP_COUNT_PER_DEG          7.8
 #define RMP_COUNT_PER_DEG_PER_S    7.8
 #define RMP_COUNT_PER_DEG_PER_SS   7.8
+#define RMP_COUNT_PER_RAD          0.1361357
+#define RMP_COUNT_PER_RAD_PER_S    0.1361357
+#define RMP_COUNT_PER_RAD_PER_SS   0.1361357
 #define RMP_COUNT_PER_REV          112644
 
 // main (CU) battery voltage
@@ -87,6 +91,9 @@
 #define RMP_CU_MIN_VOLTAGE          66.0
 // minimum UI battery voltage (V)
 #define RMP_UI_MIN_VOLTAGE          6.0
+
+// maximum time without incoming commands [s]
+#define RMP_COMMAND_TIMEOUT         0.4
 
 // misc
 #define RMP_GEOM_WHEEL_SEP          0.54

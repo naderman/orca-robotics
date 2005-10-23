@@ -41,7 +41,9 @@ public:
     // return 0 if everything went well, 1 otherwise
     virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power );
 
-    virtual int write( orca::Velocity2dCommandPtr &position2d );
+    virtual int sendMotionCommand( orca::Velocity2dCommandPtr &position2d );
+
+    virtual int resetIntegrators();
 
 private:
 
@@ -49,20 +51,15 @@ private:
     CanioUsbFtdi *canio_;
     RmpUsbDataFrame* dataFrame_;
 
-    //int16_t lastSpeedX_, lastSpeedYaw_;
+    // last motion commands [segway counts]
+    // used to load into status command
+    int16_t lastTrans_, lastRot_;
 
     // For handling rollover
     uint32_t lastRawYaw_, lastRawLeft_, lastRawRight_, lastRawForeaft_;
 
     // Odometry calculation
     double odomX_, odomY_, odomYaw_;
-
-    // Flag set if motors can be enabled (i.e., enable them to be
-    // enabled).  Set by a config request.
-    bool motor_allow_enable;
-
-    // Flag set if motors are currently enabled
-    bool motor_enabled;
 
     // Maximum allowd speeds [m/s], [rad/s]
     double maxSpeed_, maxTurnrate_;
@@ -71,20 +68,19 @@ private:
             orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power );
 
     // helper to take a player command and turn it into a CAN command packet
-    void makeVelocityCommandPacket( CanPacket* pkt, const orca::Velocity2dCommandPtr & command );
-    void makeStatusCommand( CanPacket* pkt, uint16_t cmd, uint16_t val );
-    void makeShutdownCommand( CanPacket* pkt );
+    void makeMotionCommandPacket( CanPacket* pkt, const orca::Velocity2dCommandPtr & command );
+    void makeStatusCommandPacket( CanPacket* pkt, uint16_t cmd, uint16_t val );
+    void makeShutdownCommandPacket( CanPacket* pkt );
 
     // Calculate the difference between two raw counter values, taking care
     // of rollover.
     int diff(uint32_t from, uint32_t to, bool first);
-
+    // bullshit
+    bool firstread_;
 
     // chip's utilities
     void WatchPacket( CanPacket* pkt, short int pktID );
     void WatchDataStream( CanPacket& pkt );
-
-    bool firstread_;
 
 };
 
