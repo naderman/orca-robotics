@@ -1,6 +1,0 @@
-to build documentation, delete auto-generated files and run doxygen
-
-$ cd <orca2>/src/interfaces
-$ make clean
-$ cd <orca2>/doc
-$ doxyorca orcadoxyfile
