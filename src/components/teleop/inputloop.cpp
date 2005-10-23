@@ -22,8 +22,12 @@
 
 #include "inputloop.h"
 
-#include "keyboard/teleopkeyboarddriver.h"
-//#include "joystick/teleopjoystickddriver.h"
+#ifdef HAVE_KEYBOARD_DRIVER
+    #include "keyboard/teleopkeyboarddriver.h"
+#endif
+#ifdef HAVE_JOYSTICK_DRIVER
+    #include "joystick/teleopjoystickdriver.h"
+#endif
 #include "teleopfakedriver.h"
 
 #include <orcaiceutil/orcaiceutil.h>
@@ -89,10 +93,16 @@ void InputLoop::run()
     switch ( driverType_ )
     {
         case InputDriver::KEYBOARD_DRIVER :
+#ifdef HAVE_KEYBOARD_DRIVER
+            cout<<"loading keyboard driver"<<endl;
             driver_ = new TeleopKeyboardDriver( config_ );
+#endif
             break;
         case InputDriver::JOYSTICK_DRIVER :
-            //driver_ = new TeleopJoystickDriver( config_ );
+#ifdef HAVE_JOYSTICK_DRIVER
+            cout<<"loading joystick driver"<<endl;
+            driver_ = new TeleopJoystickDriver( config_ );
+#endif
             break;
         case InputDriver::FAKE_DRIVER :
             driver_ = new TeleopFakeDriver( config_ );
