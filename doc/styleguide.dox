@@ -86,7 +86,7 @@ is defined.
 @verbatim
 ...
     // normal variable
-    int    x_;
+    int    x;
 
     // compare to member variable
     my_t   myMemberVariable_;
