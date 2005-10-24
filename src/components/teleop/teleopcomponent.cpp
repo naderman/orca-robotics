@@ -44,7 +44,7 @@ void TeleopComponent::start()
     // NETWORK
     //
     networkLoop_ = new NetworkLoop( &commandProxy_ );
-    networkLoop_->setupComms( communicator(), componentName() );
+    networkLoop_->setupComms( communicator(), componentTag() );
     networkLoop_->setupConfigs( communicator()->getProperties() );
     networkLoop_->start();
 
