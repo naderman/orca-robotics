@@ -27,7 +27,7 @@ IF ( BUILD_TELEOP )
 
 
     IF ( NOT HAVE_KBD_DRIVER AND NOT HAVE_JOY_DRIVER )
-        MESSAGE("WARNING: only default 'fake' driver can be built")
+        MESSAGE("    WARNING: only default 'fake' driver can be built")
     ENDIF ( NOT HAVE_KBD_DRIVER AND NOT HAVE_JOY_DRIVER )
     
     # This gathers all the .cpp files into the variable 'SRCS'

@@ -38,7 +38,7 @@ IF ( BUILD_SEGWAYRMP )
 #    playerclient )
 
     IF ( NOT HAVE_USB_DRIVER AND NOT HAVE_CANLIB )
-        MESSAGE("WARNING: only default 'fake' driver can be built")
+        MESSAGE("    WARNING: only default 'fake' driver can be built")
     ENDIF ( NOT HAVE_USB_DRIVER AND NOT HAVE_CANLIB )
 
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
