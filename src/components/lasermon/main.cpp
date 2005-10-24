@@ -58,7 +58,7 @@ int App::run( int argc, char* argv[] )
 
     // create a proxy for the remote server based on its name in the config file
     LaserPrx laserPrx;
-    orcaiceutil::connectProxy<LaserPrx>( communicator(), COMPONENT_TAG, laserPrx, "Laser"  );
+    orcaiceutil::connectProxyUsingCfg<LaserPrx>( communicator(), COMPONENT_TAG, laserPrx, "Laser"  );
 
 //     // We could set the laser's configuration like so:
 //     LaserConfigPtr config = new LaserConfig;
