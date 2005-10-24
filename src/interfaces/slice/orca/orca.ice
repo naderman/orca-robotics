@@ -43,7 +43,7 @@ struct Time
     Defines the naming scheme in Orca. Contains enough information to
     register and lookup any interface. Here's how the full name is
     submitted to IcePackRegistry (Ice's naming service):
-    'interface@platform/component'
+    'interface\@platform/component'
     @see ComponentName
 */
 struct InterfaceName
