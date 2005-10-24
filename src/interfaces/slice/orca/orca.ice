@@ -41,13 +41,23 @@ struct Time
 
 /*!
     All objects are derived from this class to allow polymorphism.
-
     @note Do we need the timestamp?
 */
 class OrcaObject
 {
     Time timeStamp;
 };
+
+/*!
+    A time-stamped string.
+*/
+class StringObj extends OrcaObject
+{
+    string str;
+};
+
+//! A sequence of string objects.
+sequence<StringObj> StringObjSequence;
 
 // NOTE: Do we need something like this? Not using it yet.
 //interface OrcaComponent
