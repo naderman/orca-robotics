@@ -81,19 +81,6 @@ void RmpComponent::start()
 
     Ice::LoggerPtr logger = communicator()->getLogger();
 
-    // play
-    cout<<endl;
-    logger->print( "logger can print" );
-    logger->warning( "logger can warn" );
-    logger->error( "logger can err" );
-    cout<<endl;
-
-    // local message
-    logger->trace( "local", "logger can trace" );
-
-    // remote message
-    logger->trace( "remote", "logger can trace" );
-
     //
     // MAIN DRIVER LOOP
     //
@@ -104,16 +91,20 @@ void RmpComponent::start()
     mainLoop_->setupConfigs( communicator()->getProperties() );
     mainLoop_->start();
 
+    // local/remote messages
+    logger->trace( "local", "component started" );
+    logger->trace( "remote", "component started" );
+
     // the rest is handled by the application/service
 }
 
 void RmpComponent::stop()
 {
-    cout<<"stopping loop"<<endl;
+    communicator()->getLogger()->trace( "local", "stopping loop" );
     // Tell the main loop to stop
     mainLoop_->stop();
 
-    cout<<"joining thread"<<endl;
+    communicator()->getLogger()->trace( "local", "joining thread" );
     // Then wait for it
     mainLoop_->getThreadControl().join();
 }

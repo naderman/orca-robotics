@@ -23,7 +23,6 @@
 
 #include <orca/laser.h>
 #include "laserconsumer_i.h"
-#include "lasermoninput.h"
 
 #include <orcaiceutil/configutils.h>
 #include <orcaiceutil/objutils.h>

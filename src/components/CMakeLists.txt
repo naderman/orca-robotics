@@ -10,6 +10,7 @@ SUBDIRS(
   powermon
   segwayrmp
   sicklaser 
+  statusmon
   teleop
 )
 
