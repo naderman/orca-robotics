@@ -23,10 +23,16 @@
 @defgroup interfaces Interfaces
 @defgroup objects Objects
 @defgroup components Components
-@defgroup drivers Drivers
 @defgroup utils Utilities
 @defgroup examples Examples
 @defgroup tests Tests
+
+@defgroup apps Stand-Alone Components
+@defgroup services IceBox Services
+@defgroup cppcomps C++ Components
+@defgroup javacomps Java Components
+@defgroup linuxcomps Linux Components
+@defgroup wincomps Windows Components
 
 @mainpage What is Orca?
 

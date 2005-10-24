@@ -20,7 +20,11 @@
 
 /*!
 @ingroup components
-@defgroup segwayrmp SegwayRMP
+@ingroup apps
+@ingroup services
+@ingroup cppcomps
+@ingroup linuxcomps
+@defgroup orca_component_segwayrmp SegwayRmp
 @brief A component for controlling Segway. (Status: beta)
 
 The segwayrmp driver provides control of a Segway RMP (Robotic

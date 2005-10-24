@@ -20,6 +20,9 @@
 
 /*!
 @ingroup components
+@ingroup apps
+@ingroup cppcomps
+@ingroup linuxcomps
 @defgroup orca_component_teleop Teleop
 @brief This component provides teleoperational control from a keyboard or joystick.
 
