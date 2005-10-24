@@ -1,0 +1,19 @@
+OPTION( BUILD_LASERFEATUREEXTRACTOR "Try to build LaserFeatureExtractor" ON )
+
+IF( HAVE_OPENCV AND HAVE_CVAUX AND HAVE_HIGHGUI )
+IF( BUILD_LASERFEATUREEXTRACTOR )
+
+INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
+INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaiceutil.cmake )
+
+#
+# This gathers all the .cpp files into the variable 'SRCS'
+#
+FILE( GLOB SRCS *.cpp ) 
+
+LINK_LIBRARIES ( ${HAVE_OPENCV} ${HAVE_CVAUX} ${HAVE_HIGHGUI} )
+
+GLOBAL_ADD_EXECUTABLE( laserfeatureextractor ${SRCS} )
+
+ENDIF( BUILD_LASERFEATUREEXTRACTOR )
+ENDIF( HAVE_OPENCV AND HAVE_CVAUX AND HAVE_HIGHGUI )

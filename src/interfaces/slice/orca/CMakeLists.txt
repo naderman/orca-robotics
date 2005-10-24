@@ -22,6 +22,7 @@ SET( SLICE_SOURCES
     position2d.ice
     platform2d.ice
     power.ice
+    polarfeature2d.ice
     status.ice
     )
 

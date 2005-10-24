@@ -2,6 +2,7 @@ MESSAGE ( "== COMPONENTS ==" )
 
 # when adding new directories, please maintain alphabetical order
 SUBDIRS(
+  laserfeatureextractor
   drunkrobot
   lasermon
   orcaguilocal
