@@ -81,12 +81,18 @@ void RmpComponent::start()
 
     Ice::LoggerPtr logger = communicator()->getLogger();
 
+    // play
     cout<<endl;
     logger->print( "logger can print" );
-    logger->trace( "bullshit", "logger can trace" );
     logger->warning( "logger can warn" );
     logger->error( "logger can err" );
     cout<<endl;
+
+    // local message
+    logger->trace( "local", "logger can trace" );
+
+    // remote message
+    logger->trace( "remote", "logger can trace" );
 
     //
     // MAIN DRIVER LOOP
