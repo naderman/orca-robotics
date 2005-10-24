@@ -21,33 +21,42 @@
 #ifndef ORCA2_ORCA_ICE
 #define ORCA2_ORCA_ICE
 
-/**
- * Orca: Components for robotics.
- **/
+/*!
+    @brief namespace for the Orca project
+    @namespace orca
+
+    This namespace defines the core reusable part of Orca: interfaces and objects.
+*/
 module orca
 {
 
-/** Unix absolute time **/
+/*!
+    Unix absolute time
+*/
 struct Time
 {
     int seconds;
     int useconds;
 };
 
-/** All objects are derived from this to allow polymorphism. **/
-// NOTE: do we need the timestamp?
+/*!
+    All objects are derived from this class to allow polymorphism.
+
+    @note Do we need the timestamp?
+*/
 class OrcaObject
 {
     Time timeStamp;
 };
 
 // NOTE: Do we need something like this? Not using it yet.
-interface OrcaComponent
-{
-    // Admin
-    void shutdown();
-};
+//interface OrcaComponent
+//{
+//    // Admin
+//    void shutdown();
+//};
 
+//! A byte array which can store any information.
 sequence<byte> ByteSequence;
 
 }; // module

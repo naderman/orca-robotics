@@ -49,7 +49,7 @@ Individual components maintain their own 'CMakeLists.txt' files.  Components wil
 
 Components should build themselves with GLOBAL_ADD_EXECUTABLE rather than ADD_EXECUTABLE.  This allows their builds to be mediated in a central location.
 
-Note for libraries: In order for files to be able to '#include' header files the same when they're in situ (within the distribution) as when they're installed, all '#included' header files live in subdirectories called 'orca'.  Source files then '#include' the directory above.
+Note for libraries: In order for files to be able to @code#include@endcode header files the same when they're in situ (within the distribution) as when they're installed, all @code#include@endcode header files live in subdirectories called 'orca'.  Source files then @code#include@endcode the directory above.
 
 @section docco Documentation
 
