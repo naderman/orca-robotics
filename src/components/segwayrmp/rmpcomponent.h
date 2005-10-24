@@ -48,12 +48,11 @@ private:
     // NETWORK-MAINLOOP INTERFACES
     //
     // the driver will put the latest data into this proxy
-    orcaiceutil::PtrBuffer<orca::Position2dDataPtr> position2dProxy_;
+    orcaiceutil::PtrBuffer<orca::Position2dDataPtr> position2dBuffer_;
     // the driver will take the latest command from the proxy
-    //orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> commandProxy_;
-    orcaiceutil::PtrNotify commandProxy_;
+    orcaiceutil::PtrNotify commandBuffer_;
     // the driver will put the latest data into this proxy
-    orcaiceutil::PtrBuffer<orca::PowerDataPtr> powerProxy_;
+    orcaiceutil::PtrBuffer<orca::PowerDataPtr> powerBuffer_;
     // The servant will put config requests here.  We'll use them to re-configure the hardware.
     orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr> setConfigBuffer_;
     // We put the current config here for the servant to serve.

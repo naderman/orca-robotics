@@ -38,8 +38,7 @@ class RmpMainLoop : public orcaiceutil::Thread, public orcaiceutil::PtrNotifyHan
 public:
 
     RmpMainLoop( orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy,
-                 //orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> & commandProxy,
-                 orcaiceutil::PtrNotify &commandNotify,
+                 orcaiceutil::PtrNotify                             & commandNotify,
                  orcaiceutil::PtrBuffer<orca::PowerDataPtr>         & powerProxy,
                  orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer,
                  orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer,
@@ -57,8 +56,7 @@ private:
 
     // network/driver interface
     orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy_;
-    //orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> & commandProxy_;
-    orcaiceutil::PtrNotify &commandNotify_;
+    orcaiceutil::PtrNotify                             & commandNotify_;
     orcaiceutil::PtrBuffer<orca::PowerDataPtr>         & powerProxy_;
     orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer_;
     orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer_;

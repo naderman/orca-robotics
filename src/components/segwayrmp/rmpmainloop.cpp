@@ -45,15 +45,13 @@ using orcaiceutil::operator<<;
 
 RmpMainLoop::RmpMainLoop(
                  orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy,
-                 //orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> & commandProxy,
-                 orcaiceutil::PtrNotify &commandNotify,
+                 orcaiceutil::PtrNotify                             & commandNotify,
                  orcaiceutil::PtrBuffer<orca::PowerDataPtr>         & powerProxy,
                  orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer,
                  orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer,
                  const orca::Position2dConsumerPrx                  & position2dConsumer,
                  const orca::PowerConsumerPrx                       & powerConsumer ) :
         position2dProxy_(position2dProxy),
-        //commandProxy_(commandProxy),
         commandNotify_(commandNotify),
         powerProxy_(powerProxy),
         setConfigBuffer_(setConfigBuffer),
@@ -128,7 +126,11 @@ void RmpMainLoop::run()
             string errorStr = "Unknown driver type. Cannot talk to hardware.";
             throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
     }
-    driver_->enable();
+    if ( driver_->enable() ) {
+        //string errString = "failed to init driver";
+        //throw orcaiceutil::OrcaIceUtilHardwareException( ERROR_INFO, errString );
+        exit(1);
+    }
 
     // init internal data storage
     orca::Position2dDataPtr position2dData = new Position2dData;

@@ -8,18 +8,22 @@ INCLUDE( ${PROJ_SOURCE_DIR}/config/slice2cpp_rules.cmake )
 # Since CMake doesn't know how to automatically track dependencies for .ice files, 
 # these have to be entered manually such that the depended-on files are listed first.
 #
-SET( SLICE_SOURCES 
-  orca.ice
-  bros1.ice
-  image.ice
-  ogmap.ice
-  opaque.ice
-  binaryindicator.ice
-  laser.ice
-  position2d.ice
-  platform2d.ice
-  power.ice
-  )
+SET( SLICE_SOURCES
+# definitions
+    orca.ice
+    bros1.ice
+# objects
+    image.ice
+    ogmap.ice
+    opaque.ice
+#interfaces
+    binaryindicator.ice
+    laser.ice
+    position2d.ice
+    platform2d.ice
+    power.ice
+    status.ice
+    )
 
 #
 # Work out the list of generated files from the list of slice sources

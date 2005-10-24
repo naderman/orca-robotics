@@ -66,7 +66,7 @@ int RmpUsbDriver::enable()
     if ( canio_->Init()<0 )
     {
         cerr<<"ERROR: error on USB Init"<<endl;
-        return -1;
+        return 1;
     }
 
     resetIntegrators();

@@ -53,7 +53,7 @@ void RmpComponent::start()
 
     // PROVIDED INTERFACE: Platform2d
     // create servant for direct connections and tell adapter about it
-    platform2dObj_ = new Platform2dI( position2dProxy_, commandProxy_,
+    platform2dObj_ = new Platform2dI( position2dBuffer_, commandBuffer_,
                                       setConfigBuffer_, currentConfigBuffer_ );
     string iceObjName1 = orcaiceutil::getPortName( communicator(), componentName(), "Platform2d" );
     adapter()->add( platform2dObj_, Ice::stringToIdentity( iceObjName1 ) );
@@ -65,7 +65,7 @@ void RmpComponent::start()
 
     // PROVIDED INTERFACE: Power
     // create servant for direct connections and tell adapter about it
-    powerObj_ = new PowerI( powerProxy_ );
+    powerObj_ = new PowerI( powerBuffer_ );
     string iceObjName2 = orcaiceutil::getPortName( communicator(), componentName(), "Power" );
     adapter()->add( powerObj_, Ice::stringToIdentity( iceObjName2 ) );
 
@@ -78,10 +78,20 @@ void RmpComponent::start()
     //
     adapter()->activate();
 
+
+    Ice::LoggerPtr logger = communicator()->getLogger();
+
+    cout<<endl;
+    logger->print( "logger can print" );
+    logger->trace( "bullshit", "logger can trace" );
+    logger->warning( "logger can warn" );
+    logger->error( "logger can err" );
+    cout<<endl;
+
     //
     // MAIN DRIVER LOOP
     //
-    mainLoop_ = new RmpMainLoop( position2dProxy_, commandProxy_, powerProxy_,
+    mainLoop_ = new RmpMainLoop( position2dBuffer_, commandBuffer_, powerBuffer_,
                                  setConfigBuffer_, currentConfigBuffer_,
                                  position2dConsumer_, powerConsumer_ );
 

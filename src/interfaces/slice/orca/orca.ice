@@ -40,6 +40,31 @@ struct Time
 };
 
 /*!
+    Defines the naming scheme in Orca. Contains enough information to
+    register and lookup any interface. Here's how the full name is
+    submitted to IcePackRegistry (Ice's naming service):
+    'interface@platform/component'
+    @see ComponentName
+*/
+struct InterfaceName
+{
+    string platf;
+    string comp;
+    string iface;
+};
+
+/*!
+    Part of the Orca naming scheme. Contains enough information to
+    identify a component.
+    @see InterfaceName
+*/
+struct ComponentName
+{
+    string platf;
+    string comp;
+};
+
+/*!
     All objects are derived from this class to allow polymorphism.
     @note Do we need the timestamp?
 */
