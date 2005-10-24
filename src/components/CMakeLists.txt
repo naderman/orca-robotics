@@ -4,6 +4,7 @@ MESSAGE ( "== COMPONENTS ==" )
 SUBDIRS(
   drunkrobot
   lasermon
+  orcaguilocal
   position2dmon
   powermon
   segwayrmp

@@ -58,13 +58,13 @@ int App::run( int argc, char* argv[] )
 
     // create a proxy for the remote server based on its name in the config file
     LaserPrx laserPrx;
-    orcaiceutil::connectProxy<LaserPrx>( communicator(), adapter, COMPONENT_TAG, laserPrx, "Laser"  );
+    orcaiceutil::connectProxy<LaserPrx>( communicator(), COMPONENT_TAG, laserPrx, "Laser"  );
 
 //     // We could set the laser's configuration like so:
 //     LaserConfigPtr config = new LaserConfig;
 //     config->rangeResolution = 0.01;
-//     config->angularResolution  = DEG2RAD(1.0);
-//     // config->angularResolution  = DEG2RAD(0.5);
+//     config->angleIncrement  = DEG2RAD(1.0);
+//     // config->angleIncrement  = DEG2RAD(0.5);
 //     config->isEnabled       = true;
 //     laserPrx->setConfig( config );
 
@@ -78,7 +78,7 @@ int App::run( int argc, char* argv[] )
     // Set up a consumer to receive IceStorm data stream, based on the topic name
     LaserConsumerPtr laserConsumer = new LaserConsumerI;
 //    orcaiceutil::subscribeConsumerToTopic<LaserConsumerPtr>( communicator(), adapter, laserConsumer, "Laser" );
-    orcaiceutil::subscribeConsumerToTopic( communicator(), adapter, COMPONENT_TAG, (Ice::ObjectPtr&) laserConsumer, "Laser" );
+    orcaiceutil::subscribeConsumerToTopicUsingCfg( communicator(), adapter, COMPONENT_TAG, (Ice::ObjectPtr&) laserConsumer, "Laser" );
 
 
     // We could pull data like so:
