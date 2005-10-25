@@ -40,7 +40,7 @@ public:
     MainLoop(   FeatureExtractorBase *algorithm,
                 const orca::PolarFeature2dConsumerPrx &polarFeaturesConsumer,
                 orcaiceutil::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer, 
-                orcaiceutil::PtrBuffer<orca::PolarFeature2dSequenceDataPtr> &polarFeaturesDataBuffer,
+                orcaiceutil::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
                 Ice::PropertiesPtr *prop,
                 std::string prefix );
     ~MainLoop();
@@ -57,7 +57,7 @@ private:
     
     // buffers
     orcaiceutil::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer_;
-    orcaiceutil::PtrBuffer<orca::PolarFeature2dSequenceDataPtr> &polarFeaturesDataBuffer_;
+    orcaiceutil::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer_;
     
     // access to configuration parameters
     Ice::PropertiesPtr *prop_;

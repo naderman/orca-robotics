@@ -32,21 +32,21 @@ sequence<PolarPoint2d> PolarPoint2dSequence;
 
 
 //! Data -- the 2D polar features
-class PolarFeature2dSequenceData extends OrcaObject
+class PolarFeature2dData extends OrcaObject
 {
-    PolarPoint2dSequence polarFeatures2d;
+    PolarPoint2dSequence features;
 };
 
 //! PolarFeature2D Interface
 interface PolarFeature2d
 {
-    nonmutating PolarFeature2dSequenceData getData();
+    nonmutating PolarFeature2dData getData();
 };
 
-//! Consumer of PolarFeature2dSequence data
+//! Consumer of PolarFeature2d data
 interface PolarFeature2dConsumer
-{
-    void consumeData( PolarFeature2dSequenceData obj );
+{    
+    void setData( PolarFeature2dData obj );
 };
 
 }; // module

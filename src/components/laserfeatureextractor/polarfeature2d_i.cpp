@@ -24,7 +24,7 @@
 using namespace std;
 using namespace orca;
 
-PolarFeature2dI::PolarFeature2dI( orcaiceutil::PtrBuffer<orca::PolarFeature2dSequenceDataPtr>   &polarFeatureDataBuffer ) 
+PolarFeature2dI::PolarFeature2dI( orcaiceutil::PtrBuffer<orca::PolarFeature2dDataPtr>   &polarFeatureDataBuffer ) 
     : polarFeatureDataBuffer_( polarFeatureDataBuffer )
 {
 
@@ -32,7 +32,7 @@ PolarFeature2dI::PolarFeature2dI( orcaiceutil::PtrBuffer<orca::PolarFeature2dSeq
 
 
 // served out the data to the client (it was stored here by the driver at the last read)
-orca::PolarFeature2dSequenceDataPtr 
+orca::PolarFeature2dDataPtr 
 PolarFeature2dI::getData(const Ice::Current& current) const
 {
     std::cout << "Sending data back" << std::endl;
@@ -47,7 +47,7 @@ PolarFeature2dI::getData(const Ice::Current& current) const
     }
 
     // create a null pointer. data will be cloned into it.
-    orca::PolarFeature2dSequenceDataPtr data;
+    orca::PolarFeature2dDataPtr data;
     polarFeatureDataBuffer_.get( data );
 
     return data;

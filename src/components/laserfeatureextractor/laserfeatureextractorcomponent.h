@@ -53,7 +53,7 @@ private:
     orca::PolarFeature2dConsumerPrx polarFeatureConsumer_;
     
     orcaiceutil::PtrBuffer<orca::LaserDataPtr> laserDataBuffer_;
-    orcaiceutil::PtrBuffer<orca::PolarFeature2dSequenceDataPtr> polarFeaturesDataBuffer_;
+    orcaiceutil::PtrBuffer<orca::PolarFeature2dDataPtr> polarFeaturesDataBuffer_;
 
     MainLoop* mainLoop_;
     FeatureExtractorBase *algorithm_;

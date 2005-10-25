@@ -39,18 +39,18 @@
 class PolarFeature2dI : public orca::PolarFeature2d
 {
 public:
-    PolarFeature2dI( orcaiceutil::PtrBuffer<orca::PolarFeature2dSequenceDataPtr>   &polarFeatureDataBuffer );
+    PolarFeature2dI( orcaiceutil::PtrBuffer<orca::PolarFeature2dDataPtr>   &polarFeatureDataBuffer );
 
     // remote calls:
 
     //! Get Polarfeature2dSequence Data
-    virtual ::orca::PolarFeature2dSequenceDataPtr getData(const ::Ice::Current& ) const;
+    virtual ::orca::PolarFeature2dDataPtr getData(const ::Ice::Current& ) const;
 
 
 private:
 
     // the driver will put the latest data into this buffer
-    orcaiceutil::PtrBuffer<orca::PolarFeature2dSequenceDataPtr> &polarFeatureDataBuffer_;
+    orcaiceutil::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeatureDataBuffer_;
 };
 
 

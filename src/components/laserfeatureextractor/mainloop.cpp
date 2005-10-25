@@ -34,7 +34,7 @@ using orcaiceutil::operator<<;
 MainLoop::MainLoop( FeatureExtractorBase *algorithm,
                     const PolarFeature2dConsumerPrx &polarFeaturesConsumer,
                     PtrBuffer<LaserDataPtr> &laserDataBuffer, 
-                    PtrBuffer<PolarFeature2dSequenceDataPtr> &polarFeaturesDataBuffer,
+                    PtrBuffer<PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
                     Ice::PropertiesPtr *prop,
                     string prefix )
     : algorithm_(algorithm),
@@ -55,7 +55,7 @@ void MainLoop::run()
 {
     try
     {
-        PolarFeature2dSequenceDataPtr features = new PolarFeature2dSequenceData;
+        PolarFeature2dDataPtr features = new PolarFeature2dData;
         LaserDataPtr laserData = new LaserData;
         
         // pull out config parameters
@@ -92,7 +92,7 @@ void MainLoop::run()
 
             try {
                 // push it to IceStorm
-                polarFeaturesConsumer_->consumeData( features );
+                polarFeaturesConsumer_->setData( features );
             }
             catch ( Ice::ConnectionRefusedException &e ) {
                 cout<<"TRACE(mainloop.cpp): WARNING: Failed push to IceStorm." << endl;
