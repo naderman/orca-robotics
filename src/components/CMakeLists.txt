@@ -7,7 +7,6 @@ SUBDIRS(
   lasermon
   orcaguilocal
   position2dmon
-  powermon
   segwayrmp
   sicklaser 
   statusmon
