@@ -12,7 +12,7 @@ IF ( BUILD_TELEOP )
         OrcaTeleopKeyboard
         KBD_LIBS
         HAVE_TERMIO_H
-        HAVE_KBD_DRIVER
+        HAVE_KEYBOARD_DRIVER
     )
 
     # joystick driver
@@ -22,13 +22,13 @@ IF ( BUILD_TELEOP )
         OrcaTeleopJoystick
         JOY_LIBS
         HAVE_LINUX_INPUT_H
-        HAVE_JOY_DRIVER
+        HAVE_JOYSTICK_DRIVER
     )
 
 
-    IF ( NOT HAVE_KBD_DRIVER AND NOT HAVE_JOY_DRIVER )
+    IF ( NOT HAVE_KEYBOARD_DRIVER AND NOT HAVE_JOYSTICK_DRIVER )
         MESSAGE("    WARNING: only default 'fake' driver can be built")
-    ENDIF ( NOT HAVE_KBD_DRIVER AND NOT HAVE_JOY_DRIVER )
+    ENDIF ( NOT HAVE_KEYBOARD_DRIVER AND NOT HAVE_JOYSTICK_DRIVER )
     
     # This gathers all the .cpp files into the variable 'SRCS'
     FILE( GLOB SRCS *.cpp )

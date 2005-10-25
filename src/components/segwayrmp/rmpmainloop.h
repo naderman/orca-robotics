@@ -22,6 +22,7 @@
 #define ORCA2_RMP_MAIN_LOOP_H
 
 #include <orcaiceutil/thread.h>
+#include <orcaiceutil/current.h>
 #include <orcaiceutil/ptrbuffer.h>
 #include <orcaiceutil/ptrnotify.h>
 #include <orcaiceutil/timer.h>
@@ -46,7 +47,7 @@ public:
                  const orca::PowerConsumerPrx                       & powerConsumer );
     virtual ~RmpMainLoop();
 
-    void setupConfigs( const Ice::PropertiesPtr & );
+    void setCurrent( const orcaiceutil::Current & current ) { current_=current; };
 
     virtual void run();
 
@@ -68,9 +69,13 @@ private:
     // generic interface to the hardware
     RmpDriver* driver_;
 
+    void readConfigs();
     RmpDriver::Config config_;
 
     RmpDriver::DriverType driverType_;
+
+    // component current context
+    orcaiceutil::Current current_;
 
     // debug
     orcaiceutil::Timer readTimer_;

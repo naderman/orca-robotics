@@ -38,44 +38,31 @@ NetworkLoop::~NetworkLoop()
 {
 }
 
-void NetworkLoop::setupComms( const Ice::CommunicatorPtr & communicator, const string & componentName )
+int NetworkLoop::connect()
 {
     // REQUIRED : Platform2d
     // create a proxy for the remote server based on its name in the config file
-    //! @todo how to get comp. tag in here?
-    std::string proxyName = orcaiceutil::getRemotePortName( communicator, componentName, "Platform2d" );
+    std::string proxyName = orcaiceutil::getRemotePortName( current_, "Platform2d" );
 
     // check with the server that the one we found is of the right type
-    int count = 0;
-    while ( true ) {
-        try {
-            platform2dPrx_ = Platform2dPrx::checkedCast( communicator->stringToProxy(proxyName) );
-            break;
-        }
-        catch ( const Ice::ConnectionRefusedException & e ) {
-            if ( count++ > 5 ) exit(1);
-            cout<<"tried "<<count<<" times"<<endl;
-            sleep(1);
-        }
+    try {
+        platform2dPrx_ = Platform2dPrx::checkedCast( current_.communicator()->stringToProxy(proxyName) );
+        return 0;
     }
-    cout<<"connected"<<endl;
-
-    logger_ = communicator->getLogger();
-    logger_->print( "logger can print" );
-    logger_->trace( "bullshit", "logger can trace" );
-    logger_->warning( "logger can warn" );
-    logger_->error( "logger can err" );
+    catch ( const Ice::ConnectionRefusedException & e ) {
+        return 1;
+    }
 }
 
 void NetworkLoop::setupConfigs( const Ice::PropertiesPtr & properties )
 {
-    timeoutMs_ = (int)floor(1000.0 * orcaiceutil::getPropertyAsDoubleWithDefault( properties,
-                        "Teleop.Config.RepeatTime", 0.2 ) );
+
 }
 
 void NetworkLoop::run()
 {
-    cout<<"NetworkLoop::run: starting up..."<<endl;
+    cout<<"starting networkloop"<<endl;
+    //current_.logger()->print("running");
 
     // create a null pointer. data will be cloned into it.
     Ice::ObjectPtr data;
@@ -84,6 +71,16 @@ void NetworkLoop::run()
     command->motion.v.x = 0.0;
     command->motion.v.y = 0.0;
     command->motion.w = 0.0;
+
+    // configs
+    timeoutMs_ = (int)floor(1000.0 * orcaiceutil::getPropertyAsDoubleWithDefault(
+            current_.properties(), "Teleop.Config.RepeatTime", 0.2 ) );
+
+    // establish connection
+    while ( isActive() && connect() ) {
+        //current_.logger()->trace("remote","failed to connect to a remote interface");
+        sleep(2);
+    }
 
     while ( isActive() )
     {

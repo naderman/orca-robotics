@@ -32,7 +32,7 @@ class RmpUsbDriver : public RmpDriver
 {
 public:
 
-    RmpUsbDriver();
+    RmpUsbDriver( const orcaiceutil::Current & current );
     virtual ~RmpUsbDriver();
 
     virtual int enable();

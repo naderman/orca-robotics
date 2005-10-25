@@ -18,8 +18,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include <iostream>
-
 #include "inputloop.h"
 
 #ifdef HAVE_KEYBOARD_DRIVER
@@ -49,16 +47,16 @@ InputLoop::~InputLoop()
     delete driver_;
 }
 
-void InputLoop::setupConfigs( const Ice::PropertiesPtr & properties )
+void InputLoop::readConfigs()
 {
     //
     // Read settings
     //
-    config_.maxSpeed = orcaiceutil::getPropertyAsDoubleWithDefault( properties,
+    config_.maxSpeed = orcaiceutil::getPropertyAsDoubleWithDefault( current_.properties(),
                 "Teleop.Config.MaxSpeed", 1.0 );
-    config_.maxTurnrate = orcaiceutil::getPropertyAsDoubleWithDefault( properties,
+    config_.maxTurnrate = orcaiceutil::getPropertyAsDoubleWithDefault( current_.properties(),
                 "Teleop.Config.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
-    string driverName = orcaiceutil::getPropertyWithDefault( properties, 
+    string driverName = orcaiceutil::getPropertyWithDefault( current_.properties(), 
                 "Teleop.Config.Driver", "keyboard" );
 
     if ( driverName == "keyboard" ) {
@@ -73,46 +71,47 @@ void InputLoop::setupConfigs( const Ice::PropertiesPtr & properties )
     else {
         driverType_ = InputDriver::UNKNOWN_DRIVER;
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
+        current_.logger()->trace("remote",errorStr);
         throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
     }
-
-    /*
-    xmlDoc->getParam( "useJoystick", use_joystick, DEFAULT_USE_JOYSTICK );
-    xmlDoc->getParam( "joystickPort", joystickPort, DEFAULT_JOYSTICK_PORT );
-    xmlDoc->getParam( "maxLinSpeed", maxSpeed_, DEFAULT_MAX_SPEED );
-    xmlDoc->getAngleParam( "maxAngSpeed", maxTurnrate_, DEFAULT_MAX_TURN );
-    xmlDoc->getParam( "timeout", timeout, DEFAULT_TIMEOUT );
-    xmlDoc->getParam( "verbose", verbose, DEFAULT_VERBOSE );
-    */
 }
 
 // read commands from the keyboard. Launced in a separate thread.
 void InputLoop::run()
 {
+    //cout<<"starting inputloop"<<endl;
+    readConfigs();
+
     // based on the config parameter, create the right driver
     switch ( driverType_ )
     {
         case InputDriver::KEYBOARD_DRIVER :
 #ifdef HAVE_KEYBOARD_DRIVER
-            cout<<"loading keyboard driver"<<endl;
+            current_.logger()->trace("remote","loading keyboard driver");
             driver_ = new TeleopKeyboardDriver( config_ );
 #endif
             break;
         case InputDriver::JOYSTICK_DRIVER :
 #ifdef HAVE_JOYSTICK_DRIVER
-            cout<<"loading joystick driver"<<endl;
+            current_.logger()->trace("remote","loading joystick driver");
             driver_ = new TeleopJoystickDriver( config_ );
 #endif
             break;
         case InputDriver::FAKE_DRIVER :
+            current_.logger()->trace("remote","loading fake driver");
             driver_ = new TeleopFakeDriver( config_ );
             break;
         case InputDriver::UNKNOWN_DRIVER :
             string errorStr = "Unknown driver type. Cannot talk to hardware.";
+            current_.logger()->trace("remote",errorStr);
             throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
     }
     // don't forget!
-    driver_->enable();
+    while ( driver_->enable() ) {
+        current_.logger()->trace("remote","failed to enable driver");
+        sleep(1);
+    }
+    current_.logger()->trace("remote","driver enabled");
 
     Velocity2dCommandPtr currCommand = new Velocity2dCommand;
     Velocity2dCommandPtr lastCommand = new Velocity2dCommand;
@@ -138,5 +137,9 @@ void InputLoop::run()
     }
 
     // reset the hardware
-    driver_->disable();
+    if ( driver_->disable() ) {
+        current_.logger()->trace("remote","failed to disable driver");
+    }
+    current_.logger()->trace("remote","driver disabled");
+
 }

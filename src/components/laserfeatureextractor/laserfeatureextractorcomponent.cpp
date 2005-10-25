@@ -47,22 +47,22 @@ void LaserFeatureExtractorComponent::start()
 {
 
     // config file parameters: none at the moment
-    std::string prefix = componentTag();
+    std::string prefix = tag();
     prefix += ".Config.";
     Ice::PropertiesPtr prop = communicator()->getProperties();
 //     bool startEnabled = orcaiceutil::getPropertyAsIntWithDefault( prop, prefix+"StartEnabled", true );
     
     // =============== REQUIRED: Laser =======================
     laserConsumer_ = new LaserConsumerI( laserDataBuffer_ );
-    orcaiceutil::subscribeConsumerToTopicUsingCfg( communicator(), adapter(), componentTag(), (Ice::ObjectPtr&) laserConsumer_, "Laser" );
+    orcaiceutil::subscribeConsumerToTopicUsingCfg( current(), (Ice::ObjectPtr&) laserConsumer_, "Laser" );
     
     // ============ PROVIDED: PolarFeatures ==================
     // create servant for direct connections and tell adapter about it
     polarFeature_ = new PolarFeature2dI( polarFeaturesDataBuffer_ );
-    string polarFeatureId = orcaiceutil::getPortName( communicator(), componentTag(), "PolarFeatures" );
+    string polarFeatureId = orcaiceutil::getPortName( current(), "PolarFeatures" );
     adapter()->add( polarFeature_, Ice::stringToIdentity( polarFeatureId ) );
     // Find IceStorm ConsumerProxy to push out data
-    orcaiceutil::getIceStormConsumerProxy<PolarFeature2dConsumerPrx>( communicator(), componentTag(), "PolarFeatures", polarFeatureConsumer_ );
+    orcaiceutil::getIceStormConsumerProxy<PolarFeature2dConsumerPrx>( current(), "PolarFeatures", polarFeatureConsumer_ );
     
     // =========== ACTIVATE ADAPTER ======================
     adapter()->activate();

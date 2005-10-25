@@ -36,8 +36,10 @@ using namespace std;
 using namespace orca;
 using orcaiceutil::operator<<;
 
-RmpUsbDriver::RmpUsbDriver()
+RmpUsbDriver::RmpUsbDriver( const orcaiceutil::Current & current )
 {
+    current_ = current;
+
     // Hardware
     canio_ = new CanioUsbFtdi;
     dataFrame_ = new RmpUsbDataFrame;
@@ -65,13 +67,10 @@ int RmpUsbDriver::enable()
     // init device
     if ( canio_->Init()<0 )
     {
-        cerr<<"ERROR: error on USB Init"<<endl;
         return 1;
     }
 
     resetIntegrators();
-
-    cout<<"enabled"<<endl;
     return 0;
 }
 

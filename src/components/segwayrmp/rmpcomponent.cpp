@@ -18,8 +18,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include <iostream>
-
 #include "rmpcomponent.h"
 #include "rmpmainloop.h"
 
@@ -29,7 +27,6 @@
 
 #include <orcaiceutil/orcaiceutil.h>
 
-using namespace std;
 using namespace orca;
 using orcaiceutil::operator<<;
 
@@ -55,31 +52,28 @@ void RmpComponent::start()
     // create servant for direct connections and tell adapter about it
     platform2dObj_ = new Platform2dI( position2dBuffer_, commandBuffer_,
                                       setConfigBuffer_, currentConfigBuffer_ );
-    string iceObjName1 = orcaiceutil::getPortName( communicator(), componentTag(), "Platform2d" );
+    std::string iceObjName1 = orcaiceutil::getPortName( current(), "Platform2d" );
     adapter()->add( platform2dObj_, Ice::stringToIdentity( iceObjName1 ) );
 
     // Find IceStorm ConsumerProxy to push out data
     orcaiceutil::getIceStormConsumerProxy<Position2dConsumerPrx>
-            ( communicator(), componentTag(), "Platform2d", position2dConsumer_ );
+                            ( current(), "Platform2d", position2dConsumer_ );
 
 
     // PROVIDED INTERFACE: Power
     // create servant for direct connections and tell adapter about it
     powerObj_ = new PowerI( powerBuffer_ );
-    string iceObjName2 = orcaiceutil::getPortName( communicator(), componentTag(), "Power" );
+    std::string iceObjName2 = orcaiceutil::getPortName( current(), "Power" );
     adapter()->add( powerObj_, Ice::stringToIdentity( iceObjName2 ) );
 
     // Find IceStorm ConsumerProxy to push out data
     orcaiceutil::getIceStormConsumerProxy<PowerConsumerPrx>
-            ( communicator(), componentTag(), "Power", powerConsumer_ );
+                            ( current(), "Power", powerConsumer_ );
 
     //
     // ENABLE ADAPTER
     //
     adapter()->activate();
-
-
-    Ice::LoggerPtr logger = communicator()->getLogger();
 
     //
     // MAIN DRIVER LOOP
@@ -87,24 +81,19 @@ void RmpComponent::start()
     mainLoop_ = new RmpMainLoop( position2dBuffer_, commandBuffer_, powerBuffer_,
                                  setConfigBuffer_, currentConfigBuffer_,
                                  position2dConsumer_, powerConsumer_ );
-
-    mainLoop_->setupConfigs( communicator()->getProperties() );
+    mainLoop_->setCurrent( current() );
     mainLoop_->start();
-
-    // local/remote messages
-    logger->trace( "local", "component started" );
-    logger->trace( "remote", "component started" );
 
     // the rest is handled by the application/service
 }
 
 void RmpComponent::stop()
 {
-    communicator()->getLogger()->trace( "local", "stopping loop" );
+    logger()->trace("local", "stopping loop" );
     // Tell the main loop to stop
     mainLoop_->stop();
 
-    communicator()->getLogger()->trace( "local", "joining thread" );
+    logger()->trace("local", "joining thread" );
     // Then wait for it
     mainLoop_->getThreadControl().join();
 }

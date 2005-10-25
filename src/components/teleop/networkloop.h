@@ -22,11 +22,11 @@
 #define ORCA2_TELEOP_NETWORK_LOOP_H
 
 #include <orcaiceutil/thread.h>
+#include <orcaiceutil/current.h>
 #include <orcaiceutil/ptrbuffer.h>
 
 #include <orca/platform2d.h>
 
-#include <string>
 
 class NetworkLoop : public orcaiceutil::Thread
 {
@@ -35,12 +35,15 @@ public:
     NetworkLoop( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer );
     ~NetworkLoop();
 
-    void setupComms( const Ice::CommunicatorPtr & communicator, const std::string & componentName );
+    void setCurrent( const orcaiceutil::Current & current ) { current_=current; };
+
     void setupConfigs( const Ice::PropertiesPtr & properties );
 
     virtual void run();
 
 private:
+
+    int connect();
 
     // remote object
     orca::Platform2dPrx platform2dPrx_;
@@ -50,7 +53,8 @@ private:
 
     int timeoutMs_;
 
-    Ice::LoggerPtr logger_;
+    // component current context
+    orcaiceutil::Current current_;
 
 };
 

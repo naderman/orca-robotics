@@ -22,13 +22,13 @@
 #define ORCA2_TELEOP_INPUT_LOOP_H
 
 #include <orcaiceutil/thread.h>
+#include <orcaiceutil/current.h>
 #include <orcaiceutil/ptrbuffer.h>
 
 #include <orca/platform2d.h>
 
 #include "inputdriver.h"
 
-//class TeleopFsm;
 
 class InputLoop : public orcaiceutil::Thread
 {
@@ -37,14 +37,11 @@ public:
     InputLoop( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commands );
     virtual ~InputLoop();
 
-    void setupConfigs( const Ice::PropertiesPtr & );
+    void setCurrent( const orcaiceutil::Current & current ) { current_=current; };
 
     virtual void run();
 
 private:
-
-    // component/driver interface
-    //TeleopFsm* fsm_;
 
     // network/driver interface
     orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer_;
@@ -55,6 +52,11 @@ private:
     InputDriver::Config config_;
 
     InputDriver::DriverType driverType_;
+
+    void readConfigs();
+
+    // component current context
+    orcaiceutil::Current current_;
 };
 
 #endif

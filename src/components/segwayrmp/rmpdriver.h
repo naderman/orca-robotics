@@ -24,6 +24,8 @@
 #include <orca/platform2d.h>
 #include <orca/power.h>
 
+#include <orcaiceutil/current.h>
+
 /*!
 
 @brief Abstract interface class for Segway RMP hardware.
@@ -35,7 +37,8 @@ class RmpDriver
 {
 
 public:
-
+    virtual ~RmpDriver() {};
+    
     virtual int enable()=0;
     virtual int disable()=0;
 
@@ -61,6 +64,8 @@ public:
         double maxSpeed;
         double maxTurnrate;
     };
+
+    orcaiceutil::Current current_;
 
     //! Set a specifc configuration
     //virtual int setConfig( const orca::LaserConfigPtr &cfg )=0;

@@ -69,16 +69,16 @@ RmpMainLoop::~RmpMainLoop()
     delete driver_;
 }
 
-void RmpMainLoop::setupConfigs( const Ice::PropertiesPtr & properties )
+void RmpMainLoop::readConfigs()
 {
     //
     // Read settings
     //
-    config_.maxSpeed = orcaiceutil::getPropertyAsDoubleWithDefault( properties,
+    config_.maxSpeed = orcaiceutil::getPropertyAsDoubleWithDefault( current_.properties(),
             "SegwayRmp.Config.MaxSpeed", 1.0 );
-    config_.maxTurnrate = orcaiceutil::getPropertyAsDoubleWithDefault( properties,
+    config_.maxTurnrate = orcaiceutil::getPropertyAsDoubleWithDefault( current_.properties(),
             "SegwayRmp.Config.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
-    string driverName = orcaiceutil::getPropertyWithDefault( properties, 
+    string driverName = orcaiceutil::getPropertyWithDefault( current_.properties(), 
             "SegwayRmp.Config.Driver", "usb" );
 
     if ( driverName == "usb" ) {
@@ -90,6 +90,7 @@ void RmpMainLoop::setupConfigs( const Ice::PropertiesPtr & properties )
     else {
         driverType_ = RmpDriver::UNKNOWN_DRIVER;
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
+        current_.logger()->trace("remote",errorStr);
         throw orcaiceutil::OrcaIceUtilHardwareException( ERROR_INFO, errorStr );
     }
         
@@ -97,40 +98,43 @@ void RmpMainLoop::setupConfigs( const Ice::PropertiesPtr & properties )
 
 void RmpMainLoop::run()
 {
+    readConfigs();
+
     // based on the config parameter, create the right driver
     switch ( driverType_ )
     {
         case RmpDriver::USB_DRIVER :
 #ifdef HAVE_USB_DRIVER
-            cout<<"loading USB driver"<<endl;
-            driver_ = new RmpUsbDriver;
+            current_.logger()->trace("remote","loading USB driver");
+            driver_ = new RmpUsbDriver( current_ );
 #endif
             break;
         case RmpDriver::CAN_DRIVER :
 #ifdef HAVE_CAN_DRIVER
-            cout<<"loading CAN driver"<<endl;
+            current_.logger()->trace("remote","loading CAN driver");
             driver_ = new RmpCanDriver;
 #endif
             break;
         case RmpDriver::PLAYER_CLIENT_DRIVER :
 #ifdef HAVE_PLAYER_DRIVER
-            cout<<"loading Player-Client driver"<<endl;
+            current_.logger()->trace("remote","loading Player-Client driver");
             driver_ = new RmpPlayerClientDriver;
 #endif
             break;
         case RmpDriver::FAKE_DRIVER :
-            cout<<"loading Fake driver"<<endl;
+            current_.logger()->trace("remote","loading Fake driver");
             driver_ = new RmpFakeDriver;
             break;
         case RmpDriver::UNKNOWN_DRIVER :
             string errorStr = "Unknown driver type. Cannot talk to hardware.";
+            current_.logger()->trace("remote",errorStr);
             throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
     }
-    if ( driver_->enable() ) {
-        //string errString = "failed to init driver";
-        //throw orcaiceutil::OrcaIceUtilHardwareException( ERROR_INFO, errString );
-        exit(1);
+    while ( driver_->enable() ) {
+        current_.logger()->trace("remote","failed to enable the driver");
+        sleep(1);
     }
+    current_.logger()->trace("remote","driver enabled");
 
     // init internal data storage
     orca::Position2dDataPtr position2dData = new Position2dData;
@@ -151,7 +155,7 @@ void RmpMainLoop::run()
         // Read data from the hardware
         readTimer_.restart();
         if ( driver_->read( position2dData, powerData ) ) {
-            cerr<<"Failed to read from Segway"<<endl;            
+            current_.logger()->trace("remote","failed to read from Segway");
         }
         //cout<<"read: " << readTimer_.stop().toMilliSecondsDouble()<<endl;
         
@@ -161,9 +165,12 @@ void RmpMainLoop::run()
             position2dConsumer_->consumeData( position2dData );
             powerConsumer_->setData( powerData );
         }
+        catch ( const Ice::ConnectionRefusedException & e )
+        {
+            current_.logger()->trace("remote","lost connection to IceStorm");
+        }
         catch ( const Ice::CommunicatorDestroyedException & e )
         {
-            cout<<"The comm man is dead"<<endl;
             // it's ok, the communicator may already be destroyed
         }
 
@@ -178,10 +185,11 @@ void RmpMainLoop::run()
         }
     }
 
-    cout<<"shutting down main loop"<<endl;
-
-    // Shut down the hardware
-    driver_->disable();
+    // reset the hardware
+    if ( driver_->disable() ) {
+        current_.logger()->trace("remote","failed to disable driver");
+    }
+    current_.logger()->trace("remote","driver disabled");
 }
 
 
