@@ -55,7 +55,7 @@ void MainLoop::run()
 {
     try
     {
-        PolarFeature2dDataPtr features = new PolarFeature2dData;
+        PolarFeature2dDataPtr featuresPtr = new PolarFeature2dData;
         LaserDataPtr laserData = new LaserData;
         
         // pull out config parameters
@@ -82,19 +82,24 @@ void MainLoop::run()
             cout << "INFO(mainloop.cpp): LaserData: " << laserData << endl << endl;
             
             // execute algorithm to compute features
-            algorithm_ -> computeFeatures( features );
+            algorithm_ -> computeFeatures( featuresPtr );
 
             try {
                 // push it to IceStorm
-                polarFeaturesConsumer_->setData( features );
-                cout << "INFO(mainloop.cpp): Polarfeatures to IceStorm: " << endl; // << features << endl;
+                polarFeaturesConsumer_->setData( featuresPtr );
+                cout << "INFO(mainloop.cpp): Polarfeatures to IceStorm: " << endl; 
+                for (uint i=0; i < featuresPtr->features.size(); i++)
+                {
+                    cout << "(" << featuresPtr->features[i].r << "," << featuresPtr->features[i].o << ") ";
+                }
+                cout << endl << endl;
             }
             catch ( Ice::ConnectionRefusedException &e ) {
                 cout<<"TRACE(mainloop.cpp): WARNING: Failed push to IceStorm." << endl;
             }
             
             // Stick it into buffer, so pullers can get it
-            polarFeaturesDataBuffer_.push( features );
+            polarFeaturesDataBuffer_.push( featuresPtr );
         }
         cout<<"TRACE(mainloop.cpp): Exitting from run()" << endl;
     }
