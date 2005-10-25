@@ -34,7 +34,7 @@ LaserConsumerI::LaserConsumerI( PtrBuffer<LaserDataPtr> &laserDataBuffer )
 
 }
 
-void LaserConsumerI::consumeData(const LaserDataPtr& data, const Ice::Current&)
+void LaserConsumerI::setData(const LaserDataPtr& data, const Ice::Current&)
 {
     //cout << "Received : "<< data << endl;
     cout << "Putting laserscan into buffer now" << endl << endl;

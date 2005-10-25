@@ -104,7 +104,7 @@ interface Laser
 */
 interface LaserConsumer
 {
-    void consumeData( LaserData obj );
+    void setData( LaserData obj );
 };
 
 /*! @} */

@@ -31,7 +31,7 @@ class LaserConsumerI : public orca::LaserConsumer
 {
     public:
         LaserConsumerI ( orcaiceutil::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer );
-        virtual void consumeData(const orca::LaserDataPtr& data, const Ice::Current&);
+        virtual void setData(const orca::LaserDataPtr& data, const Ice::Current&);
         
     private:
         orcaiceutil::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer_;
