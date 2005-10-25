@@ -19,7 +19,8 @@ public:
     FakeExtractor();
     virtual ~FakeExtractor();
     
-    void initialize( ConfigParameters *configParameters ) {};
+    int initialize( ConfigParameters *configParameters );
+    int computeFeatures( orca::PolarFeature2dDataPtr features);
     
 private:
 

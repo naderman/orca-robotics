@@ -27,10 +27,10 @@ struct ConfigParameters
     double targetRangeGate ;
     int minReturnNumber; 
     int minBrightness; 
-    bool extractReflectors; 
-    bool extractForegroundPoints; 
-    bool extractCorners; 
-    bool extractDoors; 
+    int extractReflectors; 
+    int extractForegroundPoints; 
+    int extractCorners; 
+    int extractDoors; 
     double minForegroundWidth;
     double maxForegroundWidth;
     double minForegroundBackgroundSeparation;

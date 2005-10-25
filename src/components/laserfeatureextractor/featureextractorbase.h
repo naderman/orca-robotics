@@ -1,8 +1,6 @@
 #ifndef ORCA2_FEATURE_EXTRACTOR_BASE_H
 #define ORCA2_FEATURE_EXTRACTOR_BASE_H
 
-// #include <orca/laser.h>
-
 #include "configparameters.h"
 
 /*!
@@ -12,6 +10,9 @@
 \author Tobias Kaupp t.kaupp at cas.edu.au
 
 */
+
+#include <orca/polarfeature2d.h>
+
 class FeatureExtractorBase 
 {
 
@@ -19,7 +20,12 @@ public:
 
     FeatureExtractorBase();
     virtual ~FeatureExtractorBase();
-    virtual void initialize( ConfigParameters *configParameters) = 0;
+    
+    //! Passes configuration parameters to algorithm which initializes itself
+    virtual int initialize( ConfigParameters *configParameters) = 0;
+    
+    //! Computes the features
+    virtual int computeFeatures( orca::PolarFeature2dDataPtr features) = 0;
 
 private:
 

@@ -64,17 +64,10 @@ void MainLoop::run()
         configParameters.targetRangeGate = getPropertyAsDoubleWithDefault( *prop_, prefix_+"targetRangeGate", 0.5 );
         configParameters.minReturnNumber =  getPropertyAsIntWithDefault( *prop_, prefix_+"minReturnNumber", 1); 
         configParameters.minBrightness =  getPropertyAsIntWithDefault( *prop_, prefix_+"minBrightness", 1); 
-        
-        //TODO: FIX THESE
-        configParameters.extractReflectors =  true; 
-        configParameters.extractForegroundPoints =  false; 
-        configParameters.extractCorners =  false; 
-        configParameters.extractDoors =  false; 
-//         configParameters.extractReflectors =  getPropertyAsBoolWithDefault( *prop_, prefix_+"extractReflectors", true); 
-//         configParameters.extractForegroundPoints =  getPropertyAsBoolWithDefault( *prop_, prefix_+"extractForegroundPoints", false); 
-//         configParameters.extractCorners =  getPropertyAsBoolWithDefault( *prop_, prefix_+"extractCorners", false); 
-//         configParameters.extractDoors =  getPropertyAsBoolWithDefault( *prop_, prefix_+"extractDoors", false); 
-        
+        configParameters.extractReflectors =  getPropertyAsIntWithDefault( *prop_, prefix_+"extractReflectors", 1); 
+        configParameters.extractForegroundPoints =  getPropertyAsIntWithDefault( *prop_, prefix_+"extractForegroundPoints", 0); 
+        configParameters.extractCorners =  getPropertyAsIntWithDefault( *prop_, prefix_+"extractCorners", 0); 
+        configParameters.extractDoors =  getPropertyAsIntWithDefault( *prop_, prefix_+"extractDoors", 0);    
         configParameters.minForegroundWidth = getPropertyAsDoubleWithDefault( *prop_, prefix_+"minForegroundWidth", 0.1);
         configParameters.maxForegroundWidth = getPropertyAsDoubleWithDefault( *prop_, prefix_+"maxForegroundWidth", 0.5);
         configParameters.minForegroundBackgroundSeparation = getPropertyAsDoubleWithDefault( *prop_, prefix_+"minForegroundBackgroundSeparation", 0.5);
@@ -87,8 +80,9 @@ void MainLoop::run()
             // block on laser data
             laserDataBuffer_.getNext ( laserData );
             cout << "INFO(mainloop.cpp): LaserData: " << laserData << endl << endl;
-//             algorithm_ -> computeFeatures
-
+            
+            // execute algorithm to compute features
+            algorithm_ -> computeFeatures( features );
 
             try {
                 // push it to IceStorm

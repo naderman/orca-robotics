@@ -14,3 +14,15 @@ ExtractorOne::ExtractorOne()
 ExtractorOne::~ExtractorOne()
 {
 }
+
+int ExtractorOne::initialize( ConfigParameters *configParameters )
+{
+    return 0;
+}
+
+int ExtractorOne::computeFeatures( PolarFeature2dDataPtr features)
+{
+    // compute feature
+    return 0;
+}
+
