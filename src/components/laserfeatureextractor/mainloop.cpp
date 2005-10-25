@@ -87,6 +87,7 @@ void MainLoop::run()
             try {
                 // push it to IceStorm
                 polarFeaturesConsumer_->setData( features );
+                cout << "INFO(mainloop.cpp): Polarfeatures to IceStorm: " << endl; // << features << endl;
             }
             catch ( Ice::ConnectionRefusedException &e ) {
                 cout<<"TRACE(mainloop.cpp): WARNING: Failed push to IceStorm." << endl;
