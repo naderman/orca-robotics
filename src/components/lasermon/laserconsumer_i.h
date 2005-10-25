@@ -18,18 +18,23 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA_LASER_CONSUMER_I_H
-#define ORCA_LASER_CONSUMER_I_H
+#ifndef ORCA2_LASERMON_LASER_CONSUMER_I_H
+#define ORCA2_LASERMON_LASER_CONSUMER_I_H
 
-// include defnition of Ice runtime
-#include <Ice/Ice.h>
+#include <iostream>
 
 #include <orca/laser.h>
+#include <orcaiceutil/objutils.h>
+
+using orcaiceutil::operator<<;
 
 class LaserConsumerI : public orca::LaserConsumer
 {
     public:
-        virtual void consumeData(const orca::LaserDataPtr& data, const Ice::Current&);
+        virtual void setData(const orca::LaserDataPtr& data, const Ice::Current&)
+        {
+            std::cout<<"received : "<<data<<std::endl;
+        };
 };
 
 #endif

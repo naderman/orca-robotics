@@ -18,87 +18,67 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include <Ice/Ice.h>
-#include <IceStorm/IceStorm.h>
+#include <orcaiceutil/application.h>
+#include <orcaiceutil/component.h>
 
-#include <orca/laser.h>
+// implementations of Ice objects
 #include "laserconsumer_i.h"
 
-#include <orcaiceutil/configutils.h>
-#include <orcaiceutil/objutils.h>
 #include <orcaiceutil/connectutils.h>
-#include <orcaiceutil/mathdefs.h>
 
-using namespace std;
-using namespace orca;
-using orcaiceutil::operator<<;
-
-#define COMPONENT_TAG "LaserMon"
-
-class App : virtual public Ice::Application
+class LaserMonComponent : public orcaiceutil::Component
 {
-    public:
-        virtual int run(int, char * []);
+public:
+    LaserMonComponent();
+    virtual ~LaserMonComponent();
+
+    // component interface
+    virtual void start();
+    virtual void stop();
 };
 
-int App::run( int argc, char* argv[] )
+
+LaserMonComponent::LaserMonComponent()
+    : orcaiceutil::Component( "LaserMon" )
 {
-    // create the one-and-only component adapter, parse config file to create adapter name
-    orca::ComponentName componentName;
-    orcaiceutil::parseComponentProperties( communicator(), COMPONENT_TAG, componentName );
-    Ice::ObjectAdapterPtr adapter = communicator()->createObjectAdapter(COMPONENT_TAG);
-
-    adapter->activate();
-    cout<<"*** INFO: Adapter is initialized and running..."<<endl;
-
-    //
-    // Get the laser's configuration details
-    //
-
-    // create a proxy for the remote server based on its name in the config file
-    LaserPrx laserPrx;
-    orcaiceutil::connectProxyUsingCfg<LaserPrx>( communicator(), COMPONENT_TAG, laserPrx, "Laser"  );
-
-//     // We could set the laser's configuration like so:
-//     LaserConfigPtr config = new LaserConfig;
-//     config->rangeResolution = 0.01;
-//     config->angleIncrement  = DEG2RAD(1.0);
-//     // config->angleIncrement  = DEG2RAD(0.5);
-//     config->isEnabled       = true;
-//     laserPrx->setConfig( config );
-
-    cout<<"TRACE(main.cpp): " << laserPrx->getConfig() << endl;
-    cout<<"TRACE(main.cpp): " << laserPrx->getGeometry() << endl;
-
-    //
-    // Now read the laser's data
-    //
-
-    // Set up a consumer to receive IceStorm data stream, based on the topic name
-    LaserConsumerPtr laserConsumer = new LaserConsumerI;
-//    orcaiceutil::subscribeConsumerToTopic<LaserConsumerPtr>( communicator(), adapter, laserConsumer, "Laser" );
-    orcaiceutil::subscribeConsumerToTopicUsingCfg( communicator(), adapter, COMPONENT_TAG, (Ice::ObjectPtr&) laserConsumer, "Laser" );
-
-
-    // We could pull data like so:
-//     while (true)
-//     {
-//         cout << "Pulled: " << laserPrx->getData() << endl;
-//         sleep(1);
-//     }
-
-    //
-    // Wait until we are done (this will trap signals)
-    //
-    communicator()->waitForShutdown();
-
-    return 0;
 }
 
+LaserMonComponent::~LaserMonComponent()
+{
+    // do not delete inputLoop_!!! It derives from Ice::Thread and deletes itself.
+}
+
+// warning: this function returns after it's done, all variable that need to be permanet must
+//          be declared as member variables.
+void LaserMonComponent::start()
+{
+    //
+    // PROVIDED : LaserConsumer
+    //
+    // create servant and tell adapter about it (let it make up a globally unique name)
+    orca::LaserConsumerPtr statusConsumer = new LaserConsumerI;
+    orcaiceutil::subscribeConsumerToTopicUsingCfg(
+                    current(), (Ice::ObjectPtr&) statusConsumer, "Laser" );
+
+    //
+    // ENABLE ADAPTER
+    //
+    adapter()->activate();
+    
+    // the rest is handled by the application/service
+}
+
+void LaserMonComponent::stop()
+{
+    // nothing to do
+}
+
+//
+// Build the component into a stand-alone application
+//
 int main(int argc, char * argv[])
 {
-    App app;
-    Ice::PropertiesPtr properties = Ice::getDefaultProperties( argc, argv );
-    orcaiceutil::setDefaultOrcaProperties( properties, COMPONENT_TAG );
+    LaserMonComponent component;
+    orcaiceutil::Application app( argc, argv, component );
     return app.main(argc, argv);
 }
