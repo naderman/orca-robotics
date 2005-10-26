@@ -22,7 +22,7 @@
 #define LOCALISER_SECTION_H
 
 #include <vector>
-#include <orca/point2d.h>
+#include <math.h>
 
 class SectionEl
 {
