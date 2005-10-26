@@ -1,0 +1,42 @@
+
+
+#ifndef ORCA2_DR_POSITION2D_I_H
+#define ORCA2_DR_POSITION2D_I_H
+
+// include provided interfaces
+#include <orca/position2d.h>
+
+// utilities
+#include <orcaiceutil/ptrbuffer.h>
+
+//! This interface allows us to get information in and out of our 
+//! robot. It uses a pointer buffer (a nice thread safe class from the 
+//! orcaiceutil library) to allow us to handle things asynchronously. 
+//! We also use a pointer for geometry, since it's unlikely the geometry will change much. 
+
+class Position2dI : public orca::Position2d
+{
+public:
+
+    //!Constructor takes a pointer buffer 
+    Position2dI( orcaiceutil::PtrBuffer<orca::Position2dDataPtr> &posBuffer, 
+	       orca::Position2dGeometryPtr &geomBuffer);
+
+    //! Make these virtual so derived classes can override them. 
+    
+    //! We pass in the Ice context as well -- these are added to the normal list of 
+    //! parameters. 
+
+    virtual ::orca::Position2dDataPtr getData(const ::Ice::Current& ) const;
+
+    virtual ::orca::Position2dGeometryPtr getGeometry(const ::Ice::Current& ) const;
+
+    //! the driver will put the latest data into this proxy
+    orcaiceutil::PtrBuffer<orca::Position2dDataPtr> &posBuffer_;
+    
+   //! the driver will use this member to return geometry when requested. 
+    orca::Position2dGeometryPtr& geomBuffer_; 
+};
+
+
+#endif

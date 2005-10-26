@@ -125,13 +125,10 @@ void InputLoop::run()
         // Read from the input
         driver_->readdata( currCommand );
 
-        //cout<<"current command: "<<currCommand<<endl;
-
         // commit change only if something has actually changed
         if ( lastCommand->motion.v.x != currCommand->motion.v.x ||
              lastCommand->motion.w != currCommand->motion.w )
         {
-            //cout<<"InputLoop::run: pushing new command into buffer"<<endl;
             commandBuffer_->push( currCommand );
         }
     }

@@ -2,6 +2,6 @@ SUBDIRS(
 interfaces
 utils
 components 
-#examples
+examples
 #tests
 )
