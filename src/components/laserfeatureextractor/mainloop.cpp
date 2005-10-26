@@ -82,7 +82,7 @@ void MainLoop::run()
             cout << "INFO(mainloop.cpp): LaserData: " << laserData << endl << endl;
             
             // execute algorithm to compute features
-            algorithm_ -> computeFeatures( featuresPtr );
+            algorithm_ -> computeFeatures( laserData, featuresPtr );
 
             try {
                 // push it to IceStorm

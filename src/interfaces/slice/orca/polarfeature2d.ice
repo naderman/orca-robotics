@@ -29,12 +29,14 @@ module orca
 
 // Define messages first
 sequence<PolarPoint2d> PolarPoint2dSequence;
+sequence<int> FeatureType;
 
 
 //! Data -- the 2D polar features
 class PolarFeature2dData extends OrcaObject
 {
     PolarPoint2dSequence features;
+    FeatureType featureTypes;
 };
 
 //! PolarFeature2D Interface

@@ -1,4 +1,5 @@
 #include "fakeextractor.h"
+#include "featureextraction.h"
 
 #include <orcaiceutil/objutils.h>
 #include <iostream>
@@ -20,7 +21,7 @@ int FakeExtractor:: initialize( ConfigParameters *configParameters )
     return 0;
 }
 
-int FakeExtractor::computeFeatures( PolarFeature2dDataPtr featuresPtr)
+int FakeExtractor::computeFeatures( const orca::LaserDataPtr scan, PolarFeature2dDataPtr featuresPtr)
 {
     // make up some features
     
@@ -33,6 +34,7 @@ int FakeExtractor::computeFeatures( PolarFeature2dDataPtr featuresPtr)
     {
         featuresPtr->features[i].r = range;
         featuresPtr->features[i].o = bearing;
+        featuresPtr->featureTypes[i] = slamfeatures::FOREGROUND_POINT;
         range = range + 2.0;
         bearing = bearing + M_PI/5.0;
     }   

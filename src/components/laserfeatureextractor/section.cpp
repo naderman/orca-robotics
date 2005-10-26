@@ -1,0 +1,60 @@
+/*
+ *  Orca-Components: Components for robotics.
+ *  
+ *  Copyright (C) 2004
+ *  
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+#include "section.h"
+
+
+Section::Section()
+{
+	//next = NULL;
+	isNextCon = false;
+
+	isALine = false;
+	A = 0.0;
+	B = 0.0;
+	C = 0.0;
+
+	elements.clear();
+}
+
+
+Section::~Section()
+{
+	// Nothing to delete
+}
+
+
+/*
+LaserReturn *
+Section::getFirstElement()
+{
+	return elements[0];
+}
+
+
+
+LaserReturn *
+Section::getLastElement()
+{
+	if (elements.size() == 0)
+		return NULL;
+	return elements[elements.size()-1];
+}
+*/

@@ -20,7 +20,7 @@ public:
     virtual ~FakeExtractor();
     
     int initialize( ConfigParameters *configParameters );
-    int computeFeatures( orca::PolarFeature2dDataPtr features);
+    int computeFeatures( const orca::LaserDataPtr scan, orca::PolarFeature2dDataPtr features);
     
 private:
 

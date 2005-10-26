@@ -7,7 +7,7 @@ INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
 INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaiceutil.cmake )
 
 # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-SET( COMMON_SRCS extractorone featureextractorbase laserfeatureextractorcomponent polarfeature2d_i fakeextractor laserconsumer_i mainloop )
+SET( COMMON_SRCS extractorone featureextractorbase laserfeatureextractorcomponent polarfeature2d_i fakeextractor laserconsumer_i mainloop svd section polefinder )
 
 # Files for the component
 SET( COMP_SRCS main  COMMON_SRCS )

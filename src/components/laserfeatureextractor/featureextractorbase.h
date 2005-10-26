@@ -12,6 +12,7 @@
 */
 
 #include <orca/polarfeature2d.h>
+#include <orca/laser.h>
 
 class FeatureExtractorBase 
 {
@@ -25,7 +26,7 @@ public:
     virtual int initialize( ConfigParameters *configParameters) = 0;
     
     //! Computes the features
-    virtual int computeFeatures( orca::PolarFeature2dDataPtr features) = 0;
+    virtual int computeFeatures( const orca::LaserDataPtr scan, orca::PolarFeature2dDataPtr features) = 0;
 
 private:
 
