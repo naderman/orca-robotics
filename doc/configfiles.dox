@@ -20,13 +20,13 @@
 
 /*!
 
-@page orca_doc_configfiles The Orca Configuration Files
+@page orca_doc_configfiles Orca Configuration Files
 
 \b NOTE: This is not implemented yet but will be soon.
 
 Configuration files can be used for three things:
-    - Configuring how components connect to each other
-    - Setting internal component parameters
+    - @ref connection
+    - @ref config
     - Describing the component structure
 
 Orca uses Ice tools to parse configuration files. These are text files which list properties as key/value pairs. The keys are strings optionally devided into subfields with periods.
@@ -72,6 +72,6 @@ ComponentTag.Requires.InterfaceTag1.Proxy=I1@P1/C1
 
 When the second component is initialized it looks up the interface it requires at the naming service under the name \e I1\@P1/C1. The registry returns the address of the first provided interface of the component above.
 
-@section config Configurations
+@section config Setting internal component parameters
 
 */
