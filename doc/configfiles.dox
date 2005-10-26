@@ -1,0 +1,47 @@
+/*
+ *  Orca-Base: Components for robotics.
+ *
+ *  Copyright (C) 2004
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_configfiles The Orca Configuration Files
+
+Orca uses Ice tools to parse configuration files. Configuration files can be used for three things:
+    - Configuring how components connect to each other
+    - Setting internal component parameters
+    - Describing the component structure
+
+@section terms Terminology
+
+A \em platform is a logical unit, a robot would typically be a platform. We call them platforms and not robot in order not to exclude simple devices like cameras or PDA's. Calling them robots would be a stretch. Platforms are the highest level in our hierarchy, we don't define teams for example.
+
+Each platform can have one or several \em hosts -- physical computers. Each host may execute one or several \em components. Each component may have zero or more \em interfaces, some are required and some are provided.
+
+@image html hierarchy.png
+
+@section example Example
+
+@verbatim
+ComponentTag.Platform=P1
+ComponentTag.Component=C1
+...
+ComponentTag
+@endverbatim
+
+*/
