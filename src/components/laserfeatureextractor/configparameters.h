@@ -34,6 +34,7 @@ struct ConfigParameters
     double minForegroundWidth;
     double maxForegroundWidth;
     double minForegroundBackgroundSeparation;
+    
 };
 
 #endif

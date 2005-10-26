@@ -34,14 +34,14 @@ public:
     virtual ~ExtractorOne();
     
     int initialize( ConfigParameters *configParameters );
-    int computeFeatures( const orca::LaserDataPtr scan, orca::PolarFeature2dDataPtr features);
+    int computeFeatures( const orca::LaserConfigPtr laserConfigPtr, const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr);
     
 private:
     
-    bool extractReflectors_;
-    bool extractForegroundPoints_;
-    bool extractCorners_;
-    bool extractDoors_;
+    int extractReflectors_;
+    int extractForegroundPoints_;
+    int extractCorners_;
+    int extractDoors_;
 
     // Parameters for laser reflectors
     double backgroundRangeGate_;
@@ -58,16 +58,16 @@ private:
     
     std::vector<Section> sections_;
   
-    bool extractLaserReflectors(const orca::LaserDataPtr scan, orca::PolarFeature2dDataPtr features);
-    bool extractForegroundPoints(const orca::LaserDataPtr scan, orca::PolarFeature2dDataPtr features);
-    bool extractDoors(const orca::LaserDataPtr scan, orca::PolarFeature2dDataPtr features);
-    bool extractCorners(const orca::LaserDataPtr scan, orca::PolarFeature2dDataPtr features);
-    bool extractPossibleCorners(orca::PolarFeature2dDataPtr features);
+    bool extractLaserReflectors(const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr);
+    bool extractForegroundPoints(const orca::LaserConfigPtr laserConfigPtr, const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr);
+    bool extractDoors(const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr);
+    bool extractCorners(const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr);
+    bool extractPossibleCorners(orca::PolarFeature2dDataPtr featureDataPtr);
 
     //
     // Corner detector routines
-    //void calculatePos(const orca::LaserDataPtr scan);
-    void connectSections(const orca::LaserDataPtr scan);
+    //void calculatePos(const orca::LaserDataPtr laserDataPtr);
+    void connectSections(const orca::LaserDataPtr laserDataPtr);
     void extractLines();
     void findBreakPoint(Section &s, double &maxDist, int &pos);
     void fitLine(Section &s);

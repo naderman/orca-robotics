@@ -21,20 +21,23 @@ int FakeExtractor:: initialize( ConfigParameters *configParameters )
     return 0;
 }
 
-int FakeExtractor::computeFeatures( const orca::LaserDataPtr scan, PolarFeature2dDataPtr featuresPtr)
+int FakeExtractor::computeFeatures( const orca::LaserConfigPtr laserConfigPtr, const orca::LaserDataPtr laserDataPtr, PolarFeature2dDataPtr featureDataPtr)
 {
     // make up some features
+    cout << "INFO(fakeextractor.cpp): Laser configuration received: " << laserConfigPtr << endl;
+    cout << "INFO(fakeextractor.cpp): Laser scan size received: " << laserDataPtr->ranges.size() << endl << endl;
     
     double range = 1.0;
     double bearing = -M_PI;
     
-    featuresPtr->features.resize(10);
+    featureDataPtr->features.resize(10);
+    featureDataPtr->featureTypes.resize(10);
     
     for (uint i=0; i<10; i++)
     {
-        featuresPtr->features[i].r = range;
-        featuresPtr->features[i].o = bearing;
-        featuresPtr->featureTypes[i] = slamfeatures::FOREGROUND_POINT;
+        featureDataPtr->features[i].r = range;
+        featureDataPtr->features[i].o = bearing;
+        featureDataPtr->featureTypes[i] = slamfeatures::FOREGROUND_POINT;
         range = range + 2.0;
         bearing = bearing + M_PI/5.0;
     }   

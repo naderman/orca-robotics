@@ -36,7 +36,6 @@ LaserConsumerI::LaserConsumerI( PtrBuffer<LaserDataPtr> &laserDataBuffer )
 
 void LaserConsumerI::setData(const LaserDataPtr& data, const Ice::Current&)
 {
-    //cout << "Received : "<< data << endl;
-    cout << "Putting laserscan into buffer now" << endl << endl;
+    //cout << "INFO(laserconsumer_i.cpp): Received laserscan. Putting it into buffer now" << endl << endl;
     laserDataBuffer_.push( data );
 }

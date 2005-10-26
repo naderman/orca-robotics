@@ -14,7 +14,7 @@
  *  Lesser General Public License for more details.
  *
  *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
+ *  License along with this library; if not, write to the Freorca::LaserConfigPtre Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
@@ -39,6 +39,7 @@ public:
 
     MainLoop(   FeatureExtractorBase *algorithm,
                 const orca::PolarFeature2dConsumerPrx &polarFeaturesConsumer,
+                orca::LaserConfigPtr laserConfigPtr,
                 orcaiceutil::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer, 
                 orcaiceutil::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
                 Ice::PropertiesPtr *prop,
@@ -54,6 +55,9 @@ private:
     
     // IceStorm consumer
     const orca::PolarFeature2dConsumerPrx &polarFeaturesConsumer_; 
+    
+    // Laser config
+    orca::LaserConfigPtr laserConfigPtr_;
     
     // buffers
     orcaiceutil::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer_;

@@ -33,12 +33,14 @@ using orcaiceutil::operator<<;
 
 MainLoop::MainLoop( FeatureExtractorBase *algorithm,
                     const PolarFeature2dConsumerPrx &polarFeaturesConsumer,
+                    orca::LaserConfigPtr laserConfigPtr,
                     PtrBuffer<LaserDataPtr> &laserDataBuffer, 
                     PtrBuffer<PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
                     Ice::PropertiesPtr *prop,
                     string prefix )
     : algorithm_(algorithm),
       polarFeaturesConsumer_(polarFeaturesConsumer),
+      laserConfigPtr_(laserConfigPtr),
       laserDataBuffer_(laserDataBuffer),
       polarFeaturesDataBuffer_(polarFeaturesDataBuffer),
       prop_(prop),
@@ -56,10 +58,11 @@ void MainLoop::run()
     try
     {
         PolarFeature2dDataPtr featuresPtr = new PolarFeature2dData;
-        LaserDataPtr laserData = new LaserData;
+        LaserDataPtr laserDataPtr = new LaserData;
         
         // pull out config parameters
         ConfigParameters configParameters;
+        
         configParameters.backgroundRangeGate = getPropertyAsDoubleWithDefault( *prop_, prefix_+"backgroundRangeGate", 80.0 );
         configParameters.targetRangeGate = getPropertyAsDoubleWithDefault( *prop_, prefix_+"targetRangeGate", 0.5 );
         configParameters.minReturnNumber =  getPropertyAsIntWithDefault( *prop_, prefix_+"minReturnNumber", 1); 
@@ -74,25 +77,21 @@ void MainLoop::run()
         
         // initialize algorithm
         algorithm_ -> initialize( &configParameters );
-    
+        
         while( isActive() )
         {
             // block on laser data
-            laserDataBuffer_.getNext ( laserData );
-            cout << "INFO(mainloop.cpp): LaserData: " << laserData << endl << endl;
+            laserDataBuffer_.getNext ( laserDataPtr );
+            cout << "INFO(mainloop.cpp): Getting laserData of size " << laserDataPtr->ranges.size() << " from buffer" << endl << endl;
             
             // execute algorithm to compute features
-            algorithm_ -> computeFeatures( laserData, featuresPtr );
+            algorithm_ -> computeFeatures( laserConfigPtr_, laserDataPtr, featuresPtr );
 
             try {
                 // push it to IceStorm
                 polarFeaturesConsumer_->setData( featuresPtr );
-                cout << "INFO(mainloop.cpp): Polarfeatures to IceStorm: " << endl; 
-                for (uint i=0; i < featuresPtr->features.size(); i++)
-                {
-                    cout << "(" << featuresPtr->features[i].r << "," << featuresPtr->features[i].o << ") ";
-                }
-                cout << endl << endl;
+                cout << "INFO(mainloop.cpp): Sending polarfeatures to IceStorm" << endl << endl; 
+                cout << featuresPtr;
             }
             catch ( Ice::ConnectionRefusedException &e ) {
                 cout<<"TRACE(mainloop.cpp): WARNING: Failed push to IceStorm." << endl;
@@ -100,6 +99,8 @@ void MainLoop::run()
             
             // Stick it into buffer, so pullers can get it
             polarFeaturesDataBuffer_.push( featuresPtr );
+            
+            sleep(1);
         }
         cout<<"TRACE(mainloop.cpp): Exitting from run()" << endl;
     }

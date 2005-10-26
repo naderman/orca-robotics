@@ -38,23 +38,23 @@ LaserFeatureExtractorComponent::LaserFeatureExtractorComponent()
 
 LaserFeatureExtractorComponent::~LaserFeatureExtractorComponent()
 {
-    // do not delete inputLoop_!!! It derives from Ice::Thread and deletes itself.
 }
 
 // warning: this function returns after it's done, all variable that need to be permanet must
 //          be declared as member variables.
 void LaserFeatureExtractorComponent::start()
 {
-
     // config file parameters: none at the moment
     std::string prefix = tag();
     prefix += ".Config.";
-    Ice::PropertiesPtr prop = communicator()->getProperties();
-//     bool startEnabled = orcaiceutil::getPropertyAsIntWithDefault( prop, prefix+"StartEnabled", true );
-    
+    prop_ = communicator()->getProperties();
+   
     // =============== REQUIRED: Laser =======================
     laserConsumer_ = new LaserConsumerI( laserDataBuffer_ );
     orcaiceutil::subscribeConsumerToTopicUsingCfg( current(), (Ice::ObjectPtr&) laserConsumer_, "Laser" );
+    orcaiceutil::connectProxyUsingCfg<LaserPrx>( current(), laserPrx_, "Laser" );
+    //configuration only required once per startup
+    laserConfigPtr_ = laserPrx_->getConfig();
     
     // ============ PROVIDED: PolarFeatures ==================
     // create servant for direct connections and tell adapter about it
@@ -70,7 +70,7 @@ void LaserFeatureExtractorComponent::start()
    
     // ================== ALGORITHMS ================================
     std::string algorithmType;
-    int ret = orcaiceutil::getProperty( prop, prefix+"AlgorithmType", algorithmType );
+    int ret = orcaiceutil::getProperty( prop_, prefix+"AlgorithmType", algorithmType );
     if ( ret != 0 )
     {
         std::string errString = "Couldn't determine algorithmType.  Expected property";
@@ -90,11 +90,11 @@ void LaserFeatureExtractorComponent::start()
     {
         std::string errString = "Unknown algorithmType: " + algorithmType;
         throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errString );
-        cout<<"TRACE(laserfeatureextractorcomponent.cpp): Unknown algorithmTypee: " << algorithmType << endl;
+        cout<<"TRACE(laserfeatureextractorcomponent.cpp): Unknown algorithmType: " << algorithmType << endl;
         return;
     }
     
-    mainLoop_ = new MainLoop( algorithm_, polarFeatureConsumer_, laserDataBuffer_, polarFeaturesDataBuffer_, &prop, prefix );
+    mainLoop_ = new MainLoop( algorithm_, polarFeatureConsumer_, laserConfigPtr_, laserDataBuffer_, polarFeaturesDataBuffer_, &prop_, prefix );
     mainLoop_->start();
     
     // the rest is handled by the application/service
