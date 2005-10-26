@@ -69,3 +69,4 @@ MESSAGE( "-- Checking for dart" )
 SET(DART_ROOT $ENV{DART_ROOT})
 INCLUDE (${CMAKE_ROOT}/Modules/Dart.cmake)
 
+MESSAGE("CMAKE_SYSTEM: ${CMAKE_SYSTEM}")
