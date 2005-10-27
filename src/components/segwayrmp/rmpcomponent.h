@@ -62,10 +62,10 @@ private:
     // EXTERNAL INTERFACES
     //
     Ice::ObjectPtr platform2dObj_;
-    orca::Position2dConsumerPrx position2dConsumer_;
+    orca::Position2dConsumerPrx position2dPublisher_;
 
     Ice::ObjectPtr powerObj_;
-    orca::PowerConsumerPrx powerConsumer_;
+    orca::PowerConsumerPrx powerPublisher_;
 };
 
 #endif

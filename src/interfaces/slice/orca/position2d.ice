@@ -52,6 +52,19 @@ class Position2dGeometry extends OrcaObject
     Size2d size;
 };
 
+
+/*!
+ *
+ * Data consumer interface (needed only for the push pattern).
+ *
+ * In Orca-1 terms, this the Consumer side of the ClientPush interface.
+ *
+ */
+interface Position2dConsumer
+{
+    void setData( Position2dData obj );
+};
+
 /*!
     @brief Access to odometry of 2d mobile robitic bases.
 */
@@ -61,14 +74,35 @@ interface Position2d
     nonmutating Position2dData getData();
     nonmutating Position2dGeometry getGeometry();
 
-    //idempotent void setPushRate(  );
-};
+    /*!
+     *
+     * Mimics IceStorm's subscribe() but without QoS, for now. The
+     * implementation may choose to implement the push or use IceStorm. This choice
+     * is transparent to the subscriber.
+     *
+     * @param subscriber The subscriber's proxy.
+     *
+     * @param preferedPushInterval The subscriber's preference for how often it wants to
+     * receive updates [sec]. Provider's ability to fulfil this request may vary.
+     *
+     * @see unsubscribe
+     *
+     */
+    void subscribe( Position2dConsumer* subscriber, double preferedPushInterval );
 
-//! Data consumer interface (needed only for the push pattern)
-interface Position2dConsumer
-{
-    // ClientPush_Consumer interface
-    void consumeData( Position2dData obj );
+    // this is what IceStorm's subscribe function looks like.
+    //void subscribe(QoS theQoS, Object* subscriber);
+
+    /**
+     *
+     * Unsubscribe the given [subscriber].
+     *
+     * @param subscriber The proxy of an existing subscriber.
+     *
+     * @see subscribe
+     *
+    **/
+    idempotent void unsubscribe( Position2dConsumer* subscriber );
 };
 
 

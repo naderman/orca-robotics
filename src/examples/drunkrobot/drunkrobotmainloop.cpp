@@ -34,7 +34,7 @@ void DrunkRobotMainLoop::run(){
 
     try
       {
-	position2dConsumer_->consumeData( currentPos );
+	position2dConsumer_->setData( currentPos );
       }
     catch ( const Ice::CommunicatorDestroyedException & e )
       {

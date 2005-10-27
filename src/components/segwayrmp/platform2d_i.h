@@ -21,6 +21,8 @@
 #ifndef ORCA2_SEGWAY_PLATFORM2D_I_H
 #define ORCA2_SEGWAY_PLATFORM2D_I_H
 
+#include <IceStorm/IceStorm.h>
+
 // include provided interfaces
 #include <orca/platform2d.h>
 
@@ -37,13 +39,19 @@ public:
                  //orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> &commands,
                  orcaiceutil::PtrNotify &commands,
                  orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  &setConfigBuffer,
-                 orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  &currentConfigBuffer );
+                 orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  &currentConfigBuffer,
+                 const IceStorm::TopicPrx &topic );
 
     virtual ::orca::Position2dDataPtr getData(const ::Ice::Current& ) const;
 
     virtual ::orca::Position2dGeometryPtr getGeometry(const ::Ice::Current& ) const;
 
     virtual ::orca::Platform2dConfigPtr getConfig(const ::Ice::Current& ) const;
+
+    virtual void subscribe(const ::orca::Position2dConsumerPrx&, ::Ice::Double, const ::Ice::Current& = ::Ice::Current());
+
+    virtual void unsubscribe(const ::orca::Position2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+
 
     virtual void setCommand(const ::orca::Velocity2dCommandPtr&, const ::Ice::Current& );
 
@@ -63,6 +71,8 @@ public:
     orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr> &setConfigBuffer_;
     // for the current config
     orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr> &currentConfigBuffer_;
+
+    IceStorm::TopicPrx topic_;
 };
 
 

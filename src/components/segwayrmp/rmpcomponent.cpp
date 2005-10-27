@@ -18,6 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#include <IceStorm/IceStorm.h>
+
 #include "rmpcomponent.h"
 #include "rmpmainloop.h"
 
@@ -49,13 +51,15 @@ void RmpComponent::start()
     //
 
     // PROVIDED INTERFACE: Platform2d
+    // Find IceStorm Topic to which we'll publish
+    IceStorm::TopicPrx topicPrx = orcaiceutil::connectToIceStormConsumer<Position2dConsumerPrx>
+                ( current(), position2dPublisher_, "Platform2d" );
+
     // create servant for direct connections and tell adapter about it
     platform2dObj_ = new Platform2dI( position2dBuffer_, commandBuffer_,
-                                      setConfigBuffer_, currentConfigBuffer_ );
+                                      setConfigBuffer_, currentConfigBuffer_, topicPrx );
     orcaiceutil::createInterface( current(), platform2dObj_, "Platform2d" );
 
-    // Find IceStorm ConsumerProxy to push out data
-    orcaiceutil::connectToIceStormConsumer<Position2dConsumerPrx> ( current(), position2dConsumer_, "Platform2d" );
 
 
     // PROVIDED INTERFACE: Power
@@ -64,19 +68,19 @@ void RmpComponent::start()
     adapter()->add( powerObj_, orcaiceutil::getProvidedNameAsIdentity(current(),"Power") );
 
     // Find IceStorm ConsumerProxy to push out data
-    orcaiceutil::connectToIceStormConsumer<PowerConsumerPrx> ( current(), powerConsumer_, "Power" );
+    orcaiceutil::connectToIceStormConsumer<PowerConsumerPrx> ( current(), powerPublisher_, "Power" );
 
     //
-    // ENABLE ADAPTER
+    // ENABLE NETWORK CONNECTIONS
     //
-    adapter()->activate();
+    activate();
 
     //
     // MAIN DRIVER LOOP
     //
     mainLoop_ = new RmpMainLoop( position2dBuffer_, commandBuffer_, powerBuffer_,
                                  setConfigBuffer_, currentConfigBuffer_,
-                                 position2dConsumer_, powerConsumer_ );
+                                 position2dPublisher_, powerPublisher_ );
     mainLoop_->setCurrent( current() );
     mainLoop_->start();
 

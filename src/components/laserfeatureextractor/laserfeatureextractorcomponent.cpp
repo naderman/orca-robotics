@@ -63,9 +63,8 @@ void LaserFeatureExtractorComponent::start()
     // Find IceStorm ConsumerProxy to push out data
     orcaiceutil::connectToIceStormConsumer<PolarFeature2dConsumerPrx>( current(),polarFeatureConsumer_, "PolarFeatures" );
     
-    // =========== ACTIVATE ADAPTER ======================
-    adapter()->activate();
-    cout<<"*** INFO: Adapter is initialized and running..."<<endl;
+    // =========== ENABLE NETWORK CONNECTIONS ======================
+    activate();
    
     // ================== ALGORITHMS ================================
     std::string algorithmType;

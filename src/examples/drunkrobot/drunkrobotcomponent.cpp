@@ -47,7 +47,10 @@ void DrunkRobotComponent::start(){
   orcaiceutil::connectToIceStormConsumer<Position2dConsumerPrx>
           ( current(), position2dConsumer_, "Position2d" );
 
-  adapter()->activate();
+  //
+  // ENABLE NETWORK CONNECTIONS
+  //
+  activate();
 
   // the we get the main loop started. 
   mainLoop_ = new DrunkRobotMainLoop( posBuffer_, position2dConsumer_);

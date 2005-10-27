@@ -20,6 +20,7 @@
 
 #include "platform2d_i.h"
 #include <orcaiceutil/objutils.h>
+#include <orcaiceutil/connectutils.h>
 
 using namespace std;
 using namespace orca;
@@ -29,12 +30,14 @@ Platform2dI::Platform2dI( orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    &po
                           //orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> &command,
                           orcaiceutil::PtrNotify &command,
                           orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  &setConfigBuffer,
-                          orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  &currentConfigBuffer )
+                          orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  &currentConfigBuffer,
+                          const IceStorm::TopicPrx &topic )
     : position2dProxy_(position2d), 
       //commandProxy_(command),
       commandNotify_(command),
       setConfigBuffer_(setConfigBuffer),
-      currentConfigBuffer_(currentConfigBuffer)
+      currentConfigBuffer_(currentConfigBuffer),
+      topic_(topic)
 {
 }
 
@@ -61,6 +64,20 @@ orca::Position2dGeometryPtr Platform2dI::getGeometry(const Ice::Current& current
     Position2dGeometryPtr geometry = new Position2dGeometry;
 
     return geometry;
+}
+
+void Platform2dI::subscribe(const ::orca::Position2dConsumerPrx& subscriber,
+    ::Ice::Double preferedPushInterval, const ::Ice::Current&)
+{
+    cout<<"subscription request"<<endl;
+    IceStorm::QoS qos;
+    topic_->subscribe( qos, subscriber );
+}
+
+void Platform2dI::unsubscribe(const ::orca::Position2dConsumerPrx& subscriber, const ::Ice::Current&)
+{
+    cout<<"unsubscription request"<<endl;
+    topic_->unsubscribe( subscriber );
 }
 
 // Store incoming command in a proxy, it will be handled by the driver at the next opportunity.

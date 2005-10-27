@@ -162,7 +162,7 @@ void RmpMainLoop::run()
         // push data to IceStorm
         try
         {
-            position2dConsumer_->consumeData( position2dData );
+            position2dConsumer_->setData( position2dData );
             powerConsumer_->setData( powerData );
         }
         catch ( const Ice::ConnectionRefusedException & e )

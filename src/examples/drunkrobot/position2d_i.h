@@ -31,6 +31,12 @@ public:
 
     virtual ::orca::Position2dGeometryPtr getGeometry(const ::Ice::Current& ) const;
 
+    virtual void subscribe(const ::orca::Position2dConsumerPrx&, ::Ice::Double, const ::Ice::Current& = ::Ice::Current()) {};
+
+    virtual void unsubscribe(const ::orca::Position2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current()) {};
+
+
+
     //! the driver will put the latest data into this proxy
     orcaiceutil::PtrBuffer<orca::Position2dDataPtr> &posBuffer_;
     

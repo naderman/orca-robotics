@@ -77,7 +77,7 @@ void HelloServiceI::start(const string& name,
     while ( 1 )
     {
         cout<<"Pushing data to consumer"<<endl;
-        position2dConsumer->consumeData( posData );
+        position2dConsumer->setData( posData );
 
         sleep(1);
     }
