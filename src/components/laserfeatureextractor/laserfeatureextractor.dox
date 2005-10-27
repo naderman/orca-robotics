@@ -1,0 +1,82 @@
+/*!
+@ingroup components
+@ingroup apps
+@ingroup services
+@ingroup cppcomps
+@ingroup linuxcomps
+@defgroup orca_component_laserfeatureextractor LaserFeatureExtractor
+
+@brief Extracts interesting features from laser scans (Status: beta) 
+
+  The component receives features from laser scans, useful for navigation (eg a slamlocalizer requires such features)
+
+  Types of features extracted:
+
+  - reflectors: anything with high reflectivity
+  - foreground points: things like poles or trees
+  - corners: internal and external corners eg. of buildings
+  - doors: gaps in walls of a certain width
+
+@par Provides
+- @ref orca_interface_polarfeature2d
+
+@par Requires
+- @ref orca_interface_laser
+
+@par Configuration
+
+  The configuration documentation is split into sections for each feature type
+
+  - Reflectors
+    - extractReflectors
+      - boolean
+      - default: true
+    - backgroundRangeGate
+      - George/Stef, what does this do?
+    - targetRangeGate
+      - float in metres
+      - Minimum range to target to be considered as a point feature.
+    - minReturnNumber
+      - integer
+      - Minimum number of bright laser returns to be considered as a point feature.
+    - minBrightness
+      - integer
+      - minimum intensity value to be considered a feature
+      - default: 1
+
+  - Foreground Points
+    - extractForegroundPoints
+      - boolean
+      - default: 0
+    - minForegroundWidth
+      - float in metres
+      - minimum width of poles/trees
+    - maxForegroundWidth
+      - float in metres
+      - maximum width of poles/trees
+    - minForegroundBackgroundSeparation
+      - float in metres
+      - how far the pole/tree must be from the background
+
+  - Corners
+    - extractCorners
+      - boolean
+      - default: 0
+  - Doors
+    - extractDoors
+      - boolean
+      - default: 0
+
+@include components/laserfeatureextractor/laserfeatureextractor.cfg
+
+@par Dependancies
+
+
+@par Remarks
+
+@par Responsible Developer
+Alex Brooks (algorithm)
+Tobias Kaupp (port from Orca1)
+
+*/
+
