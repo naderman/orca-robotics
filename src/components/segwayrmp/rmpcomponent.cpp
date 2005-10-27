@@ -52,11 +52,10 @@ void RmpComponent::start()
     // create servant for direct connections and tell adapter about it
     platform2dObj_ = new Platform2dI( position2dBuffer_, commandBuffer_,
                                       setConfigBuffer_, currentConfigBuffer_ );
-    adapter()->add( platform2dObj_, orcaiceutil::getProvidedNameAsIdentity(current(),"Platform2d") );
+    orcaiceutil::createInterface( current(), platform2dObj_, "Platform2d" );
 
     // Find IceStorm ConsumerProxy to push out data
-    orcaiceutil::connectToIceStormConsumer<Position2dConsumerPrx>
-                    ( current(), position2dConsumer_, "Platform2d" );
+    orcaiceutil::connectToIceStormConsumer<Position2dConsumerPrx> ( current(), position2dConsumer_, "Platform2d" );
 
 
     // PROVIDED INTERFACE: Power
@@ -65,8 +64,7 @@ void RmpComponent::start()
     adapter()->add( powerObj_, orcaiceutil::getProvidedNameAsIdentity(current(),"Power") );
 
     // Find IceStorm ConsumerProxy to push out data
-    orcaiceutil::connectToIceStormConsumer<PowerConsumerPrx>
-                    ( current(), powerConsumer_, "Power" );
+    orcaiceutil::connectToIceStormConsumer<PowerConsumerPrx> ( current(), powerConsumer_, "Power" );
 
     //
     // ENABLE ADAPTER
