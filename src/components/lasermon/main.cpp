@@ -57,7 +57,7 @@ void LaserMonComponent::start()
     //
     // create servant and tell adapter about it (let it make up a globally unique name)
     orca::LaserConsumerPtr statusConsumer = new LaserConsumerI;
-    orcaiceutil::subscribeConsumerToTopicUsingCfg(
+    orcaiceutil::subscribeToIceStormTopic(
                     current(), (Ice::ObjectPtr&) statusConsumer, "Laser" );
 
     //

@@ -27,7 +27,7 @@
 
 using namespace std;
 using namespace orca;
-using namespace orcaiceutil;
+using orcaiceutil::operator<<;
 
 NetworkLoop::NetworkLoop( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer )
     : commandBuffer_(commandBuffer)
@@ -38,22 +38,6 @@ NetworkLoop::~NetworkLoop()
 {
 }
 
-int NetworkLoop::connect()
-{
-    // REQUIRED : Platform2d
-    // create a proxy for the remote server based on its name in the config file
-    std::string proxyName = orcaiceutil::getRemotePortName( current_, "Platform2d" );
-
-    // check with the server that the one we found is of the right type
-    try {
-        platform2dPrx_ = Platform2dPrx::checkedCast( current_.communicator()->stringToProxy(proxyName) );
-        return 0;
-    }
-    catch ( const Ice::ConnectionRefusedException & e ) {
-        return 1;
-    }
-}
-
 void NetworkLoop::setupConfigs( const Ice::PropertiesPtr & properties )
 {
 
@@ -61,9 +45,6 @@ void NetworkLoop::setupConfigs( const Ice::PropertiesPtr & properties )
 
 void NetworkLoop::run()
 {
-    cout<<"starting networkloop"<<endl;
-    //current_.logger()->print("running");
-
     // create a null pointer. data will be cloned into it.
     Ice::ObjectPtr data;
     // create and init command to default 'halt' command
@@ -76,10 +57,19 @@ void NetworkLoop::run()
     timeoutMs_ = (int)floor(1000.0 * orcaiceutil::getPropertyAsDoubleWithDefault(
             current_.properties(), "Teleop.Config.RepeatTime", 0.2 ) );
 
-    // establish connection
-    while ( isActive() && connect() ) {
-        //current_.logger()->trace("remote","failed to connect to a remote interface");
-        sleep(2);
+    // REQUIRED : Platform2d
+    while ( isActive() ) {
+        try
+        {
+            orcaiceutil::connectToInterface<Platform2dPrx>( current_, platform2dPrx_, "Platform2d" );
+            current_.logger()->trace("remote","connected to a 'Platform2d' interface");
+            break;
+        }
+        catch ( const Ice::ConnectionRefusedException & e )
+        {
+            //current_.logger()->trace("remote","failed to connect to a remote interface");
+            sleep(2);
+        }
     }
 
     while ( isActive() )

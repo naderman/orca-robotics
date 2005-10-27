@@ -38,7 +38,7 @@ module orca
 class StatusData extends OrcaObject
 {
     //! The full name of the interface.
-    ComponentName name;
+    FQComponentName name;
     //! Status message from component.
     string message;
 };

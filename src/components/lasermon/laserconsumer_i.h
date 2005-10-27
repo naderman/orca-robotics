@@ -31,7 +31,10 @@ using orcaiceutil::operator<<;
 class LaserConsumerI : public orca::LaserConsumer
 {
     public:
-        virtual void setData(const orca::LaserDataPtr& data, const Ice::Current&);
+        virtual void setData(const orca::LaserDataPtr& data, const Ice::Current&)
+        {
+            std::cout << data << std::endl;
+        }
 };
 
 #endif

@@ -39,29 +39,39 @@ struct Time
     int useconds;
 };
 
+
 /*!
-    Defines the naming scheme in Orca. Contains enough information to
-    register and lookup any interface. Here's how the full name is
-    submitted to IcePackRegistry (Ice's naming service):
-    'interface\@platform/component'
-    @see ComponentName
+    Fully qualified component name.
+    @see FQInterfaceName, FQTopicName
 */
-struct InterfaceName
+struct FQComponentName
 {
-    string platf;
-    string comp;
+    string platform;
+    string component;
+};
+
+/*!
+    Fully qualified interface name.
+    @note Cannot use member variable 'interface', it's reserved by Ice.
+    @see FQComponentName, FQTopicName
+*/
+struct FQInterfaceName
+{
+    string platform;
+    string component;
     string iface;
 };
 
 /*!
-    Part of the Orca naming scheme. Contains enough information to
-    identify a component.
-    @see InterfaceName
+    Fully qualified Ice Storm topic name.
+    @see FQInterfaceName, FQComponentName
 */
-struct ComponentName
+struct FQTopicName
 {
-    string platf;
-    string comp;
+    string platform;
+    string component;
+    string iface;
+    string topic;
 };
 
 /*!

@@ -43,8 +43,6 @@ public:
 
 private:
 
-    int connect();
-
     // remote object
     orca::Platform2dPrx platform2dPrx_;
 

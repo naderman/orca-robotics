@@ -41,13 +41,11 @@ void DrunkRobotComponent::start(){
 
   //First set up our proxies so other people can talk to us:
   position2dObj_ = new Position2dI( posBuffer_, geom_ );
-  string iceObjName = orcaiceutil::getPortName( current(), "Position2d" );
-
-
-  adapter()->add( position2dObj_, Ice::stringToIdentity( iceObjName ) );
+  adapter()->add( position2dObj_, orcaiceutil::getProvidedNameAsIdentity(current(),"Position2d") );
 
   // Find IceStorm ConsumerProxy to push out data
-  getIceStormConsumerProxy<Position2dConsumerPrx>( current(), "Position2d", position2dConsumer_ );
+  orcaiceutil::connectToIceStormConsumer<Position2dConsumerPrx>
+                ( current(), "Position2d", position2dConsumer_ );
 
   adapter()->activate();
 
