@@ -1,0 +1,39 @@
+/*
+ *  Orca-Base: Components for robotics.
+ *
+ *  Copyright (C) 2004
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_overview Orca Overview
+
+\b NOTE: For now this is a loose collection of things a new user should read first.
+
+
+@section terms Terminology
+
+When talking about how components connect to each other it's helpful to define some terminology.
+
+A \em platform is a logical unit, a robot would typically be a platform. We use the term platform so not to exclude simple devices like cameras or PDA's. Calling them robots would be a stretch. Platforms are the highest level in our hierarchy, so we don't define teams for example. Each platform can have one or several \em hosts -- physical computers. Each host may execute one or several \em components. Each component may have zero or more \em interfaces, some are required and some are provided.
+
+These four terms are often used in describing a distributed system but one has to be careful to keep in mind that they refer to different aspects of the system. Platforms describe a logical grouping of hardware and software. This grouping is useful because it reflects physical proximity; cheap, fast, and reliable communication, etc. Hosts are units of computing hardware. Components and interfaces describe software organization. Assigning software (components) to hardware (hosts) is called deployment.
+
+@image html orca_terminology.png
+
+
+*/
