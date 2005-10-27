@@ -49,7 +49,7 @@ Follow these instructions to download and install orca2. For concreteness, comma
 @verbatim
 # apt-get install libdb4.2++-dev libbz2-dev bzip2 libssl-dev libreadline5-dev libexpat1-dev
 @endverbatim
-     - Get Ice distribution from <a href=http://www.zeroc.com>ZerocC</a>
+     - Get Ice distribution from <a href="http://www.zeroc.com">ZeroC</a>
      - Unpack the distribution
 @verbatim
 $ tar -xzf Ice-[VERSION].tar.gz
