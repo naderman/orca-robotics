@@ -45,7 +45,7 @@ void DrunkRobotComponent::start(){
 
   // Find IceStorm ConsumerProxy to push out data
   orcaiceutil::connectToIceStormConsumer<Position2dConsumerPrx>
-                ( current(), "Position2d", position2dConsumer_ );
+          ( current(), position2dConsumer_, "Position2d" );
 
   adapter()->activate();
 

@@ -56,7 +56,7 @@ void RmpComponent::start()
 
     // Find IceStorm ConsumerProxy to push out data
     orcaiceutil::connectToIceStormConsumer<Position2dConsumerPrx>
-                            ( current(), "Platform2d", position2dConsumer_ );
+                    ( current(), position2dConsumer_, "Platform2d" );
 
 
     // PROVIDED INTERFACE: Power
@@ -66,7 +66,7 @@ void RmpComponent::start()
 
     // Find IceStorm ConsumerProxy to push out data
     orcaiceutil::connectToIceStormConsumer<PowerConsumerPrx>
-                            ( current(), "Power", powerConsumer_ );
+                    ( current(), powerConsumer_, "Power" );
 
     //
     // ENABLE ADAPTER

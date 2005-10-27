@@ -61,7 +61,7 @@ void LaserFeatureExtractorComponent::start()
     polarFeature_ = new PolarFeature2dI( polarFeaturesDataBuffer_ );
     adapter()->add( polarFeature_, orcaiceutil::getProvidedNameAsIdentity( current(), "PolarFeatures" ) );
     // Find IceStorm ConsumerProxy to push out data
-    orcaiceutil::connectToIceStormConsumer<PolarFeature2dConsumerPrx>( current(), "PolarFeatures", polarFeatureConsumer_ );
+    orcaiceutil::connectToIceStormConsumer<PolarFeature2dConsumerPrx>( current(),polarFeatureConsumer_, "PolarFeatures" );
     
     // =========== ACTIVATE ADAPTER ======================
     adapter()->activate();
