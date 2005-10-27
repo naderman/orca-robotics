@@ -31,16 +31,6 @@ Configuration files can be used for three things:
 
 Orca uses Ice tools to parse configuration files. These are text files which list properties as key/value pairs. The keys are strings optionally devided into subfields with periods.
 
-@section terms Terminology
-
-When talking about how components connect to each other it's helpful to define some terminology.
-
-A \em platform is a logical unit, a robot would typically be a platform. We use the term platform so not to exclude simple devices like cameras or PDA's. Calling them robots would be a stretch. Platforms are the highest level in our hierarchy, so we don't define teams for example. Each platform can have one or several \em hosts -- physical computers. Each host may execute one or several \em components. Each component may have zero or more \em interfaces, some are required and some are provided.
-
-These four terms are often used in describing a distributed system but one has to be careful to keep in mind that they refer to different aspects of the system. Platforms describe a logical grouping of hardware and software. This grouping is useful because it reflects physical proximity; cheap, fast, and reliable communication, etc. Hosts are units of computing hardware. Components and interfaces describe software organization. Assigning software (components) to hardware (hosts) is called deployment.
-
-@image html orca_terminology.png
-
 @section connection Connecting Components
 
 A component usually has a single config file which may also set some Ice runtime parameters which start with 'Ice', 'IceStorm', etc. We prefix all component settings with a string which we call here 'ComponentTag'. There are two rules about this tag: a) it must be unique within one config file, and b) it has to match the string hardwired into the source code. Let's look at an example.
