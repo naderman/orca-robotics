@@ -95,8 +95,8 @@ class Position2dData extends OrcaObject
 @section setup Setting up
 
 For the moment, we'll be setting up in a subdirectory of the
-src/components, just to make building easier. But this doesn't have to
-be this way. So first we go to src/components, and make a new
+src/examples, just to make building easier. But this doesn't have to
+be this way. So first we go to src/examples, and make a new
 directory called mydrunkrobot (a copy of all of the source code for
 this walkthrough can be found in drunkrobot).
 
@@ -113,7 +113,7 @@ this in a class called position2d_i.
 
 position2d_i.h looks like this: 
 
-\include ../src/components/drunkrobot/position2d_i.h
+\include ../src/examples/drunkrobot/position2d_i.h
 
 After we include the header files, we then declare the
 constructor. The first is a pointer to the 2d data, but set to use a
@@ -128,7 +128,7 @@ to get the latest position, we check the pointer buffer, to return the
 configuration, we pass the value that was initialised when the
 interface was created. position2d_i.cpp looks like this:
 
-\include ../src/components/drunkrobot/position2d_i.cpp
+\include ../src/examples/drunkrobot/position2d_i.cpp
 
 @section Creating the main loop. 
 
@@ -145,7 +145,7 @@ Prx) at the end to represent communication with IceStorm.
 
 Hence drunkrobotmainloop.h looks like this: 
 
-\include ../src/components/drunkrobot/drunkrobotmainloop.h 
+\include ../src/examples/drunkrobot/drunkrobotmainloop.h 
 
 The implementation is pretty simple as well. The constructor sets
 things up. Then our main loop does the following: 
@@ -160,7 +160,7 @@ things up. Then our main loop does the following:
 
 drunkrobotmainloop.cpp is: 
 
-\include ../src/components/drunkrobot/drunkrobotmainloop.cpp
+\include ../src/examples/drunkrobot/drunkrobotmainloop.cpp
 
 @section component Putting the component together 
 
@@ -176,7 +176,7 @@ processes.
 
 The header for the component is as follows: 
 
-\include ../src/components/drunkrobot/drunkrobotcomponent.h
+\include ../src/examples/drunkrobot/drunkrobotcomponent.h
 
 The implementation first appears to be intimidating, but if you do
 find it intimidating, it might be worth reading through some examples
@@ -194,7 +194,7 @@ Our start() method basically does the following:
 can begin. 
 -# Starts the main loop of our component. 
 
-\include ../src/components/drunkrobot/drunkrobotcomponent.cpp
+\include ../src/examples/drunkrobot/drunkrobotcomponent.cpp
 
 @section build Setting up the build system. 
 
@@ -203,7 +203,7 @@ file. As it turns out, we can use a generic one, for example, the one
 that can be found in position2dmon. So you can copy the position2dmon
 one and make some minor modifications as such (in CMakeLists.txt):
 
-\include ../src/components/drunkrobot/CMakeLists.txt
+\include ../src/examples/drunkrobot/CMakeLists.txt
 
 The next thing we have to do is go one level up to src/componenents
 and modify the CMakeLists.txt file to include this subdirectory.
@@ -221,7 +221,7 @@ Position2d protocol, we specify the platform and component, and then
 the actual interface we implement. These all go in
 drunkrobot.cfg: 
 
-\include  ../src/components/drunkrobot/drunkrobot.cfg
+\include  ../src/examples/drunkrobot/drunkrobot.cfg
 
 And finally we are ready! First, however, we have to launch the
 support services, namely IceStorm and IcePack. In order to do this,
