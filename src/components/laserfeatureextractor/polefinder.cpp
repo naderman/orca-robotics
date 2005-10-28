@@ -51,7 +51,7 @@ orca_polefinder::detect_poles( const LaserConfigPtr laserConf,
     int    last_pole_end_in_returns = -99999999;
     int    min_clearance_from_dodge_in_returns = (int) (rint( min_angle_from_dodge / laserConf->angleIncrement ));
 
-    for ( uint i = 0; i < ranges->ranges.size(); i++ )
+    for ( int i = 0; i < ranges->ranges.size(); i++ )
     {
         if ( (i != 0) )
         {
