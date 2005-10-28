@@ -217,9 +217,8 @@ We are almost there. Now we set up the config files for our robot.
 
 We need to specify the name of the platform, the component name and
 finally that we plan to use the tcp protocol. Since we implement the
-Position2d protocol, we also have to specify the parameters for that
-particular port, including the name of the port, the name of the
-component and the name of the platform. These all go in
+Position2d protocol, we specify the platform and component, and then 
+the actual interface we implement. These all go in
 drunkrobot.cfg: 
 
 \include  ../src/components/drunkrobot/drunkrobot.cfg
@@ -257,9 +256,9 @@ Position2dMon.ComponentName=position2dmon
 Position2dMon.Endpoints=default
 
 # ports
-Position2dMon.Ports.Position2d.PlatformName=test
-Position2dMon.Ports.Position2d.ComponentName=drunkrobot
-Position2dMon.Ports.Position2d.PortName=position2d
+Position2dMon.Requires.Position2d.PlatformName=local
+Position2dMon.Requires.Position2d.ComponentName=drunkrobot
+Position2dMon.Requires.Position2d.PortName=position2d
 @endverbatim
 
 In this section, we tell position2dmon where to look, in this case
