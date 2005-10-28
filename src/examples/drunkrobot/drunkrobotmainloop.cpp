@@ -10,7 +10,7 @@ DrunkRobotMainLoop::DrunkRobotMainLoop(PtrBuffer<Position2dDataPtr> &posBuffer,
 				       const Position2dConsumerPrx &position2dConsumer):
   posBuffer_(posBuffer), position2dConsumer_(position2dConsumer)
 {
-
+  //Nothing to do. 
 }
 
 DrunkRobotMainLoop::~DrunkRobotMainLoop(){
@@ -45,8 +45,9 @@ void DrunkRobotMainLoop::run(){
     // Then we put it in the buffer for pull requests. 
     posBuffer_.push( currentPos );
 
-    // And now, sleep for a little while
-    sleep(1);
+    // And now, sleep for a little while. For platform independence, use 
+    // Ice's sleep implementation. 
+    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     
   }
 

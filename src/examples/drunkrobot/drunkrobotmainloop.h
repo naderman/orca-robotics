@@ -16,9 +16,9 @@
 class DrunkRobotMainLoop: public orcaiceutil::Thread {
  public: 
 
-  //! The posData pointer tells us where to put the data
-  //! The Consumer is a proxy for IceStorm, we will use that to pass data to 
-  //! Ice storm. 
+  // The posData pointer tells us where to put the data
+  // The Consumer is a proxy for IceStorm, we will use that to pass data to 
+  // Ice storm. 
   DrunkRobotMainLoop(orcaiceutil::PtrBuffer<orca::Position2dDataPtr> &posData,
 		     const orca::Position2dConsumerPrx &position2dConsumer);
 

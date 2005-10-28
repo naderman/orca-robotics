@@ -39,20 +39,18 @@ void DrunkRobotComponent::start(){
   geom_->size.w = 0.1;  
 
 
+  IceStorm::TopicPrx topicPrx = orcaiceutil::connectToIceStormConsumer<Position2dConsumerPrx>
+    ( current(), position2dConsumer_, "Position2d" );
+
   //First set up our proxies so other people can talk to us:
-  position2dObj_ = new Position2dI( posBuffer_, geom_ );
-  adapter()->add( position2dObj_, orcaiceutil::getProvidedNameAsIdentity(current(),"Position2d") );
+  position2dObj_ = new Position2dI( posBuffer_, geom_ ,topicPrx);
+  orcaiceutil::createInterface( current(), position2dObj_, "Position2d" );
+  
+  // Start the component. 
 
-  // Find IceStorm ConsumerProxy to push out data
-  orcaiceutil::connectToIceStormConsumer<Position2dConsumerPrx>
-          ( current(), position2dConsumer_, "Position2d" );
-
-  //
-  // ENABLE NETWORK CONNECTIONS
-  //
   activate();
 
-  // the we get the main loop started. 
+  // then we get the main loop started. 
   mainLoop_ = new DrunkRobotMainLoop( posBuffer_, position2dConsumer_);
 
   mainLoop_->start();
