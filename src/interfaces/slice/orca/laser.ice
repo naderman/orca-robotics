@@ -87,6 +87,14 @@ class LaserData extends OrcaObject
 };
 
 /*!
+    @brief Consumer of laser scans
+*/
+interface LaserConsumer
+{
+    void setData( LaserData obj );
+};
+
+/*!
     @brief Single-origin scanning range sensor
  */
 interface Laser
@@ -97,14 +105,36 @@ interface Laser
     nonmutating LaserGeometry  getGeometry();
 
     idempotent  void setConfig( LaserConfig config );
-};
 
-/*!
-    @brief Consumer of laser scans
-*/
-interface LaserConsumer
-{
-    void setData( LaserData obj );
+    /*!
+     *
+     * Mimics IceStorm's subscribe() but without QoS, for now. The
+     * implementation may choose to implement the push or use IceStorm. This choice
+     * is transparent to the subscriber.
+     *
+     * @param subscriber The subscriber's proxy.
+     *
+     * @param preferedPushInterval The subscriber's preference for how often it wants to
+     * receive updates [sec]. Provider's ability to fulfil this request may vary.
+     *
+     * @see unsubscribe
+     *
+     */
+    void subscribe( LaserConsumer *subscriber );
+
+    // this is what IceStorm's subscribe function looks like.
+    //void subscribe(QoS theQoS, Object* subscriber);
+
+    /**
+     *
+     * Unsubscribe the given [subscriber].
+     *
+     * @param subscriber The proxy of an existing subscriber.
+     *
+     * @see subscribe
+     *
+    **/
+    idempotent void unsubscribe( LaserConsumer *subscriber );
 };
 
 /*! @} */

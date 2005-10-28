@@ -2,7 +2,7 @@ MESSAGE ( "== UTILITIES ==" )
 
 # when adding new directories, please maintain alphabetical order
 SUBDIRS(  
-#  liborcaguitools
+  liborcaguitools
   liborcaiceutil
   orcasmc
 )

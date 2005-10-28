@@ -620,4 +620,5 @@ bool ExtractorOne::extractPossibleCorners(PolarFeature2dDataPtr featureDataPtr)
     }
     return true;
 }
+
     
