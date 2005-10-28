@@ -25,6 +25,7 @@
 
 #include <orca/laser.h>
 #include <orcaiceutil/objutils.h>
+#include <orcaiceutil/mathdefs.h>
 
 using orcaiceutil::operator<<;
 
@@ -34,6 +35,9 @@ class LaserConsumerI : public orca::LaserConsumer
         virtual void setData(const orca::LaserDataPtr& data, const Ice::Current&)
         {
             std::cout << data << std::endl;
+            std::cout << " (startAngle, angleIncrement: " << RAD2DEG(data->startAngle) 
+                      << ", " << RAD2DEG(data->angleIncrement) << ")" 
+                      << std::endl;
         }
 };
 
