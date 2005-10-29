@@ -70,6 +70,36 @@ to CAN cards made by Kvaser, such as the LAPcan II.  However, the CAN
 I/O subsystem within this driver is modular, so that it should be pretty
 straightforward to add support for other CAN cards.
 
+@section drv Driver-specific Notes
+
+@par RmpUsb
+
+To get the kernel to recognize the rmpusb for what it is on a 2.6 kernel, create '/etc/hotplug/usb/segwayrmp.usermap':
+
+@verbatim
+# SegwayRMP
+segwayrmp           0x0003      0x0403   0xe729    0x0000       0x0000      0x00         0x00            0x00            0x00            0x00               0x00               0x00000000
+@endverbatim
+
+This causes the script '/etc/hotplug/usb/segwayrmp' to execute when the segway is plugged in.
+One possibility is to set the permissions for the segway so non-root can write to it:
+
+@verbatim
+#!/bin/bash
+
+if [ "$ACTION" = "add" ] && [ -f "$DEVICE" ]
+then
+    chmod a+w $DEVICE
+fi
+
+#echo "SegwayRMP device found" > /tmp/segwayrmp.txt
+#echo "action: $ACTION" >> /tmp/segwayrmp.txt
+#echo "device: $DEVICE" >> /tmp/segwayrmp.txt
+#echo "group: $GROUP"   >> /tmp/segwayrmp.txt
+@endverbatim
+
+Finally, remember to 'chmod 755 /etc/hotplug/usb/segwayrmp'.
+
 @par Configuration
 
 @include components/segwayrmp/segwayrmp.cfg
