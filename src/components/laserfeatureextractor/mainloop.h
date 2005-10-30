@@ -72,6 +72,8 @@ private:
     
     std::string prefix_;
     
+    void convertToRobotCS(orca::PolarFeature2dDataPtr featuresPtr);
+    
 };
 
 #endif

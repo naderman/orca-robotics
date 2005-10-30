@@ -5,6 +5,7 @@ SUBDIRS(
   laserfeatureextractor
   lasermon
   orcaguilocal
+  peoplecounter
   position2dmon
   segwayrmp
   sicklaser 

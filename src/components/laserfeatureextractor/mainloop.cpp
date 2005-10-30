@@ -94,22 +94,7 @@ void MainLoop::run()
             algorithm_ -> computeFeatures( laserConfigPtr_, laserDataPtr, featuresPtr );
 
             // convert to the robot frame CS
-            CartesianPoint offsetXyz = laserGeometryPtr_->offset.p;
-            OrientationE  offsetAngles = laserGeometryPtr_->offset.o;
-            
-            CartesianPoint LaserXy, RobotXy;
-            PolarPoint2d polarPointRobot;
-            
-            for (uint i=0; i<featuresPtr->features.size(); i++ )
-            {
-                LaserXy.x = cos(featuresPtr->features[i].o) * featuresPtr->features[i].r;
-                LaserXy.y = sin(featuresPtr->features[i].o) * featuresPtr->features[i].r;
-                RobotXy.x = LaserXy.x*cos(offsetAngles.y) - LaserXy.y*sin(offsetAngles.y) + offsetXyz.x;
-                RobotXy.y = LaserXy.x*sin(offsetAngles.y) + LaserXy.y*cos(offsetAngles.y) + offsetXyz.y;
-                polarPointRobot.r = sqrt(RobotXy.x*RobotXy.x + RobotXy.y*RobotXy.y);
-                polarPointRobot.o = atan2(RobotXy.y,RobotXy.x);
-                featuresPtr->features[i] = polarPointRobot;
-            }
+            convertToRobotCS( featuresPtr );
             
             try {
                 // push it to IceStorm
@@ -124,7 +109,6 @@ void MainLoop::run()
             // Stick it into buffer, so pullers can get it
             polarFeaturesDataBuffer_.push( featuresPtr );
             
-            sleep(1);
         }
         cout<<"TRACE(mainloop.cpp): Exitting from run()" << endl;
     }
@@ -134,3 +118,24 @@ void MainLoop::run()
     }
 }
 
+void MainLoop::convertToRobotCS(PolarFeature2dDataPtr featuresPtr)
+{
+    CartesianPoint offsetXyz = laserGeometryPtr_->offset.p;
+    OrientationE  offsetAngles = laserGeometryPtr_->offset.o;
+    
+    CartesianPoint LaserXy, RobotXy;
+    PolarPoint2d polarPointRobot;
+    
+    for (uint i=0; i<featuresPtr->features.size(); i++ )
+    {
+        LaserXy.x = cos(featuresPtr->features[i].o) * featuresPtr->features[i].r;
+        LaserXy.y = sin(featuresPtr->features[i].o) * featuresPtr->features[i].r;
+        RobotXy.x = LaserXy.x*cos(offsetAngles.y) - LaserXy.y*sin(offsetAngles.y) + offsetXyz.x;
+        RobotXy.y = LaserXy.x*sin(offsetAngles.y) + LaserXy.y*cos(offsetAngles.y) + offsetXyz.y;
+        polarPointRobot.r = sqrt(RobotXy.x*RobotXy.x + RobotXy.y*RobotXy.y);
+        polarPointRobot.o = atan2(RobotXy.y,RobotXy.x);
+        featuresPtr->features[i] = polarPointRobot;
+    }
+    const IceUtil::Time currentTime = IceUtil::Time::now();
+    featuresPtr->timeStamp = iceTimeToOrcaTime (currentTime);
+}
