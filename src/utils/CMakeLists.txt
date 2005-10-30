@@ -2,8 +2,11 @@ MESSAGE ( "== UTILITIES ==" )
 
 # when adding new directories, please maintain alphabetical order
 SUBDIRS(  
+# LIBRARIES
   liborcaguitools
   liborcaiceutil
+# UTILITY APPLICATIONS
+  iceping
 #  nsview
   orcasmc
 )
