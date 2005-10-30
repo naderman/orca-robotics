@@ -103,11 +103,11 @@ int App::run( int argc, char* argv[] )
         t1 = IceUtil::Time::now();
         IceUtil::Time dt = t1 - t0;
 
-        cout<<endl<<"ping successful"<<endl;
+        cout<<endl<<"Ping successful"<<endl;
 
-        cout<<"proxy\t\t[ "<<communicator()->proxyToString( base )<<" ]"<<endl;
+        cout<<"Proxy\t\t[ "<<communicator()->proxyToString( base )<<" ]"<<endl;
 
-        cout<<"RTT ("<<count<<") \t[ " << (dt.toMicroSeconds()-count*intervalUs)/count << "us ]" <<endl;
+        cout<<"RTT ("<<count<<") \t[ " << (dt.toMicroSeconds()-count*intervalUs)/count << " us ]" <<endl;
 
         std::string id = base->ice_id();
         cout<<"Ice ID \t\t[ "<< id << " ]"<< endl;
@@ -121,7 +121,7 @@ int App::run( int argc, char* argv[] )
     }
     catch(const Ice::Exception& ex)
     {
-        cerr << endl << "ping failed"<< endl;
+        cerr << endl << "Ping failed"<< endl;
         cerr << ex << endl;
     }
 
@@ -133,14 +133,14 @@ void App::usage()
 {
     cout << "USAGE"<<endl;
     cout << "iceping [ -rh ] [ -f file ] [ -c count ] [ -i intervalUs ] proxy"<<endl;
-    cout << "  proxy\tDesitnation specified as a string in the form 'object@adapter'"<<endl;
+    cout << "  Proxy\tDesitnation specified as a string in the form 'object@adapter'"<<endl;
     cout << "OPTIONS"<<endl;
     cout << "  -c count\n\tPing count times. Default is 3."<<endl;
     cout << "  -f file\n\tUse file as Ice.Config parameter. Default is ~/.orcarc"<<endl;
-    cout << "  -h\tprint this."<<endl;
+    cout << "  -h\tPrint this."<<endl;
     cout << "  -i interval\n\tPause for interval seconds after each ping. Default is 0."<<endl;
-    cout << "  -r\tPing the IcePackRegistry, specifically its Query interface. This is a way to"<<endl;
-    cout << "    \tmake sure that the registry is reachable."<<endl;
+    cout << "  -r\tPing the IcePackRegistry, specifically its Query interface. This is "<<endl;
+    cout << "    \ta way to make sure that the registry is reachable."<<endl;
 }
 
 
