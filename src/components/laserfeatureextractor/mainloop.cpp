@@ -33,19 +33,20 @@ using orcaiceutil::operator<<;
 
 MainLoop::MainLoop( FeatureExtractorBase *algorithm,
                     const PolarFeature2dConsumerPrx &polarFeaturesConsumer,
-                    orca::LaserConfigPtr laserConfigPtr,
+                    LaserPrx laserPrx,
                     PtrBuffer<LaserDataPtr> &laserDataBuffer, 
                     PtrBuffer<PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
                     Ice::PropertiesPtr *prop,
                     string prefix )
     : algorithm_(algorithm),
       polarFeaturesConsumer_(polarFeaturesConsumer),
-      laserConfigPtr_(laserConfigPtr),
+      laserPrx_(laserPrx),
       laserDataBuffer_(laserDataBuffer),
       polarFeaturesDataBuffer_(polarFeaturesDataBuffer),
       prop_(prop),
       prefix_(prefix)
 {
+    cout << "INFO(mainloop.cpp): Constructor" << endl;
 }
 
 MainLoop::~MainLoop()
@@ -78,15 +79,38 @@ void MainLoop::run()
         // initialize algorithm
         algorithm_ -> initialize( &configParameters );
         
+        // get laser config and geometry (only once)
+        laserConfigPtr_ = laserPrx_->getConfig();
+        laserGeometryPtr_ = laserPrx_->getGeometry();
+        
         while( isActive() )
         {
             // block on laser data
+            cout << "INFO(mainloop.cpp): Blocking on laser read" << endl;
             laserDataBuffer_.getNext ( laserDataPtr );
             cout << "INFO(mainloop.cpp): Getting laserData of size " << laserDataPtr->ranges.size() << " from buffer" << endl << endl;
             
             // execute algorithm to compute features
             algorithm_ -> computeFeatures( laserConfigPtr_, laserDataPtr, featuresPtr );
 
+            // convert to the robot frame CS
+            CartesianPoint offsetXyz = laserGeometryPtr_->offset.p;
+            OrientationE  offsetAngles = laserGeometryPtr_->offset.o;
+            
+            CartesianPoint LaserXy, RobotXy;
+            PolarPoint2d polarPointRobot;
+            
+            for (uint i=0; i<featuresPtr->features.size(); i++ )
+            {
+                LaserXy.x = cos(featuresPtr->features[i].o) * featuresPtr->features[i].r;
+                LaserXy.y = sin(featuresPtr->features[i].o) * featuresPtr->features[i].r;
+                RobotXy.x = LaserXy.x*cos(offsetAngles.y) - LaserXy.y*sin(offsetAngles.y) + offsetXyz.x;
+                RobotXy.y = LaserXy.x*sin(offsetAngles.y) + LaserXy.y*cos(offsetAngles.y) + offsetXyz.y;
+                polarPointRobot.r = sqrt(RobotXy.x*RobotXy.x + RobotXy.y*RobotXy.y);
+                polarPointRobot.o = atan2(RobotXy.y,RobotXy.x);
+                featuresPtr->features[i] = polarPointRobot;
+            }
+            
             try {
                 // push it to IceStorm
                 polarFeaturesConsumer_->setData( featuresPtr );

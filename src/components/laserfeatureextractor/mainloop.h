@@ -39,7 +39,7 @@ public:
 
     MainLoop(   FeatureExtractorBase *algorithm,
                 const orca::PolarFeature2dConsumerPrx &polarFeaturesConsumer,
-                orca::LaserConfigPtr laserConfigPtr,
+                orca::LaserPrx laserPrx,
                 orcaiceutil::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer, 
                 orcaiceutil::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
                 Ice::PropertiesPtr *prop,
@@ -56,8 +56,12 @@ private:
     // IceStorm consumer
     const orca::PolarFeature2dConsumerPrx &polarFeaturesConsumer_; 
     
-    // Laser config
+    // Laser proxy
+    orca::LaserPrx laserPrx_;
+    
+    // Laser config and geometry
     orca::LaserConfigPtr laserConfigPtr_;
+    orca::LaserGeometryPtr laserGeometryPtr_;
     
     // buffers
     orcaiceutil::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer_;

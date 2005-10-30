@@ -53,17 +53,16 @@ void LaserFeatureExtractorComponent::start()
     laserConsumer_ = new LaserConsumerI( laserDataBuffer_ );
     orcaiceutil::subscribeToIceStormTopic( current(), (Ice::ObjectPtr&) laserConsumer_, "Laser" );
     orcaiceutil::connectToInterface<LaserPrx>( current(), laserPrx_, "Laser" );
-    //configuration only required once per startup
-    laserConfigPtr_ = laserPrx_->getConfig();
     
     // ============ PROVIDED: PolarFeatures ==================
+    //IceStorm proxy
+    IceStorm::TopicPrx topicPrx = orcaiceutil::connectToIceStormConsumer<PolarFeature2dConsumerPrx>( current(),polarFeatureConsumer_, "PolarFeatures2d" );
     // create servant for direct connections and tell adapter about it
-    polarFeature_ = new PolarFeature2dI( polarFeaturesDataBuffer_ );
-    adapter()->add( polarFeature_, orcaiceutil::getProvidedNameAsIdentity( current(), "PolarFeatures" ) );
-    // Find IceStorm ConsumerProxy to push out data
-    orcaiceutil::connectToIceStormConsumer<PolarFeature2dConsumerPrx>( current(),polarFeatureConsumer_, "PolarFeatures" );
+    polarFeature_ = new PolarFeature2dI( polarFeaturesDataBuffer_, topicPrx );
+    orcaiceutil::createInterface( current(), polarFeature_, "PolarFeatures2d" );
     
     // =========== ENABLE NETWORK CONNECTIONS ======================
+    cout << "TRACE(laserfeatureextractorcomponent.cpp): calling ACTIVATE" << endl;
     activate();
    
     // ================== ALGORITHMS ================================
@@ -92,7 +91,7 @@ void LaserFeatureExtractorComponent::start()
         return;
     }
     
-    mainLoop_ = new MainLoop( algorithm_, polarFeatureConsumer_, laserConfigPtr_, laserDataBuffer_, polarFeaturesDataBuffer_, &prop_, prefix );
+    mainLoop_ = new MainLoop( algorithm_, polarFeatureConsumer_, laserPrx_, laserDataBuffer_, polarFeaturesDataBuffer_, &prop_, prefix );
     mainLoop_->start();
     
     // the rest is handled by the application/service

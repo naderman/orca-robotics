@@ -23,17 +23,17 @@
 
 using namespace std;
 using namespace orca;
+using namespace orcaiceutil;
 
-PolarFeature2dI::PolarFeature2dI( orcaiceutil::PtrBuffer<orca::PolarFeature2dDataPtr>   &polarFeatureDataBuffer ) 
-    : polarFeatureDataBuffer_( polarFeatureDataBuffer )
+PolarFeature2dI::PolarFeature2dI( PtrBuffer<PolarFeature2dDataPtr> &polarFeatureDataBuffer, const IceStorm::TopicPrx &topic ) 
+    : polarFeatureDataBuffer_( polarFeatureDataBuffer ), topic_(topic)
 {
 
 }
 
 
 // served out the data to the client (it was stored here by the driver at the last read)
-orca::PolarFeature2dDataPtr 
-PolarFeature2dI::getData(const Ice::Current& current) const
+PolarFeature2dDataPtr PolarFeature2dI::getData(const Ice::Current& current) const
 {
     std::cout << "Sending data back" << std::endl;
 
@@ -41,8 +41,8 @@ PolarFeature2dI::getData(const Ice::Current& current) const
     if ( polarFeatureDataBuffer_.isEmpty() )
     {
         //! @todo what should happen if there's no data?
-        cout << "ERROR(laser_i.cpp): getData() called when no data had been generated!!" << endl;
-        cout << "ERROR(laser_i.cpp): Don't know what to do!" << endl;
+        cout << "ERROR(polarfeature2d_i.cpp): getData() called when no data had been generated!!" << endl;
+        cout << "ERROR(polarfeature2d_i.cpp): Don't know what to do!" << endl;
         exit(EXIT_FAILURE);
     }
 
@@ -51,4 +51,17 @@ PolarFeature2dI::getData(const Ice::Current& current) const
     polarFeatureDataBuffer_.get( data );
 
     return data;
+}
+
+void PolarFeature2dI::subscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber, const ::Ice::Current&)
+{
+    cout<<"INFO(polarfeature2d_i.cpp): Subscribtion request"<<endl;
+    IceStorm::QoS qos;
+    topic_->subscribe( qos, subscriber );
+}
+
+void PolarFeature2dI::unsubscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber, const ::Ice::Current&)
+{
+    cout<<"INFO(polarfeature2d_i.cpp): Unsubscribe request"<<endl;
+    topic_->unsubscribe( subscriber );
 }

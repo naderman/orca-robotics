@@ -26,6 +26,17 @@
 
 module orca
 {
+/*!
+    @ingroup interfaces
+    @author Tobias Kaupp t.kaupp at cas.edu.au
+    @defgroup orca_interface_polarfeature2d PolarFeature2D
+    @brief Range/bearing features relative to robot frame
+
+The polarfeature2d interface provides access to features in a polar coordinate system
+centered on the robots centre. The data returned by the interface consists of a sequence of
+features with range in meters and bearing in rad (-pi<angle<pi) and the feature type.
+    @{
+*/
 
 // Define messages first
 sequence<PolarPoint2d> PolarPoint2dSequence;
@@ -39,17 +50,20 @@ class PolarFeature2dData extends OrcaObject
     FeatureType featureTypes;
 };
 
-//! PolarFeature2D Interface
-interface PolarFeature2d
-{
-    nonmutating PolarFeature2dData getData();
-};
-
 //! Consumer of PolarFeature2d data
 interface PolarFeature2dConsumer
 {    
     void setData( PolarFeature2dData obj );
 };
+
+//! PolarFeature2D Interface
+interface PolarFeature2d
+{
+    nonmutating PolarFeature2dData getData();
+    void subscribe( PolarFeature2dConsumer *subscriber );
+    idempotent void unsubscribe( PolarFeature2dConsumer *subscriber );
+};
+
 
 }; // module
 

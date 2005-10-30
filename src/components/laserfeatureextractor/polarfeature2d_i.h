@@ -23,6 +23,7 @@
 
 // include defnition of Ice runtime
 #include <Ice/Ice.h>
+#include <IceStorm/IceStorm.h>
 
 // include provided interfaces
 #include <orca/polarfeature2d.h>
@@ -39,18 +40,27 @@
 class PolarFeature2dI : public orca::PolarFeature2d
 {
 public:
-    PolarFeature2dI( orcaiceutil::PtrBuffer<orca::PolarFeature2dDataPtr>   &polarFeatureDataBuffer );
+    PolarFeature2dI( orcaiceutil::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeatureDataBuffer, const IceStorm::TopicPrx &topic );
 
     // remote calls:
 
     //! Get Polarfeature2dSequence Data
     virtual ::orca::PolarFeature2dDataPtr getData(const ::Ice::Current& ) const;
+    
+    //! Subscribe people
+    virtual void subscribe(const ::orca::PolarFeature2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+
+    //! Unsubscribe people
+    virtual void unsubscribe(const ::orca::PolarFeature2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+
 
 
 private:
 
     // the driver will put the latest data into this buffer
     orcaiceutil::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeatureDataBuffer_;
+    
+    const IceStorm::TopicPrx topic_;
 };
 
 
