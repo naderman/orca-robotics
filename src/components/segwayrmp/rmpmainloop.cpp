@@ -109,7 +109,7 @@ void RmpMainLoop::run()
         case RmpDriver::USB_DRIVER :
 #ifdef HAVE_USB_DRIVER
             current_.logger()->trace("remote","loading USB driver");
-            driver_ = new RmpUsbDriver( current_ );
+            driver_ = new RmpUsbDriver();
 #endif
             break;
         case RmpDriver::CAN_DRIVER :
@@ -205,7 +205,7 @@ void RmpMainLoop::run()
         }
 
         // time the loop rate here for now
-        usleep(100000);
+        //usleep(100000);
     }
 
     // reset the hardware

@@ -20,14 +20,14 @@
 
 // Segway->CPU messages
 // 0x0400 = 1024
-#define RMP_CAN_ID_MSG1         0x0400
-#define RMP_CAN_ID_MSG2         0x0401
-#define RMP_CAN_ID_MSG3         0x0402
-#define RMP_CAN_ID_MSG4         0x0403
-#define RMP_CAN_ID_MSG5         0x0404
-#define RMP_CAN_ID_MSG6         0x0405
-#define RMP_CAN_ID_MSG7         0x0406
-#define RMP_CAN_ID_MSG8         0x0407
+#define RMP_CAN_ID_MSG0         0x0400
+#define RMP_CAN_ID_MSG1         0x0401
+#define RMP_CAN_ID_MSG2         0x0402
+#define RMP_CAN_ID_MSG3         0x0403
+#define RMP_CAN_ID_MSG4         0x0404
+#define RMP_CAN_ID_MSG5         0x0405
+#define RMP_CAN_ID_MSG6         0x0406
+#define RMP_CAN_ID_MSG7         0x0407
 
 // CPU->Segway messages
 #define RMP_CAN_ID_SHUTDOWN     0x0412
@@ -38,15 +38,15 @@
 //#define RMP_CAN_ID_HEARTBEAT    0x0688
 
 // from Configuration Command table, see sec.2.2.1
-#define RMP_CAN_CMD_NONE            0
-#define RMP_CAN_CMD_MAX_VEL         10
-#define RMP_CAN_CMD_MAX_ACCL        11
-#define RMP_CAN_CMD_MAX_TURN        12
-#define RMP_CAN_CMD_GAIN_SCHED      13
-#define RMP_CAN_CMD_CURR_LIMIT      14
-#define RMP_CAN_CMD_BAL_LOCKOUT     15
-#define RMP_CAN_CMD_OPER_MODE       16
-#define RMP_CAN_CMD_RESET_INTEGRATORS 50
+#define RMP_CMD_NONE                        0
+#define RMP_CMD_SET_MAXIMUM_VELOCITY        10
+#define RMP_CMD_SET_MAXIMUM_ACCELERATION    11
+#define RMP_CMD_SET_MAXIMUM_TURN_RATE       12
+#define RMP_CMD_SET_GAINMODE                13
+#define RMP_CMD_SET_CURRENT_LIMIT           14
+#define RMP_CMD_SET_BALANCE_LOCKOUT         15
+#define RMP_CMD_SET_OPERATIONAL_MODE        16
+#define RMP_CMD_RESET_INTEGRATORS           50
 
 // from table: Bitfield for Reset Integrators, see sec.2.2.2
 #define RMP_CAN_RESET_RIGHT           0x01
@@ -114,13 +114,21 @@ public:
     RmpUsbDataFrame();
 
     //! Adds information from a packet
-    void AddPacket(const CanPacket &pkt);
+    void AddPacket(const CanPacket* pkt);
 
     //! Print out frame data
     void dump();
 
+    //! Allows adding more packets to the frame without resetting the data
+    void reopen();
+
     //! Resets all data to RMP_CAN_DROPPED_PACKET
     void reset();
+
+    //! Did the next frame start?
+    bool isClosed() const;
+    //! Did all the packets arrive?
+    bool isComplete() const;
 
     //! Pitch Angle
     int16_t    pitch;
@@ -163,10 +171,7 @@ public:
     //! Turn Command (as received)
     int16_t rate_command;
 
-    // Is this frame ready (i.e., did the next frame start?)
-    //bool  isReady_;
-
-    //int msgCheckList_[8];
+    bool msgCheckList_[8];
 };
 
 

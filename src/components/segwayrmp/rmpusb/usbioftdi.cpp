@@ -18,13 +18,13 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "canio_usb_ftdi.h"
+#include "usbioftdi.h"
 
 #include "rmpusbdataframe.h"
 
 #include <iostream>
 #include <assert.h>
-#include <orcaiceutil/orcadebug.h>
+#include <pthread.h>
 
 // magic numbers
 #define SEGWAY_USB_VENDOR_ID                    0x0403
@@ -39,92 +39,92 @@
 using namespace std;
 
 
-CanioUsbFtdi::CanioUsbFtdi() :
-    debugMsgCount_(0)
+UsbIoFtdi::UsbIoFtdi()
 {
     // Set initial buffer size
     charBuffer_.resize(128);
 
-    residualBytes = 0;
+    residualBytes_ = 0;
 }
 
-CanioUsbFtdi::~CanioUsbFtdi()
+UsbIoFtdi::~UsbIoFtdi()
 {
 }
 
-/* Initializes the class by opening 2 can channels at the given
- * frequency, which should be one of the #defined BAUD_*K values
+/*!
+ * Initializes the USB device.
  *
  * returns: 0 on success, negative on error
  */
-int
-CanioUsbFtdi::Init()
+int UsbIoFtdi::init()
 {
-  cout<<"CanioUsbFtdi::Init: initializing device"<<endl;
-  FT_STATUS ftStatus;
-  DWORD num_devices;
-
-  // custom device settings
-  DWORD iVID = SEGWAY_USB_VENDOR_ID;
-  DWORD iPID = SEGWAY_USB_PRODUCT_ID;
-  // without this the library will not find the segway
-  FT_SetVIDPID(iVID, iPID);   // use our VID and PID;
-
-  ftStatus = FT_ListDevices( &num_devices, NULL, FT_LIST_NUMBER_ONLY );
-  if ( ftStatus != FT_OK )
-  {
-      cout<<"couldn't get a list of devices"<<endl;
-      return -1;
-  }
-
-  cout<<"found "<<(int)num_devices<<" devices"<<endl;
-  if (num_devices <= 0) {
-      return -1;
-  }
-
-  ftStatus = FT_Open( 0, &ftHandle_ );
-  if ( ftStatus != FT_OK) {
-      cout<<"FT_Open failed ("<<ftStatus<<")"<<endl;
-  }
-  else {
-      cout<<"FT_Open OK"<<endl;
-
-      ftStatus = FT_SetBaudRate( ftHandle_, 460800 );
-      if ( ftStatus != FT_OK)  {
-          cout<<"FT_SetBaudRate failed ("<<ftStatus<<")"<<endl;
-          FT_Close( ftHandle_ );        //close open device
-          return 0;
-      }
-      else {
-          cout<<"FT_SetBaudRate OK"<<endl;
-      }
-
+    // custom device settings
+    DWORD iVID = SEGWAY_USB_VENDOR_ID;
+    DWORD iPID = SEGWAY_USB_PRODUCT_ID;
+    // without this the library will not find the segway
+    FT_SetVIDPID(iVID, iPID);   // use our VID and PID;
+    
+    DWORD num_devices;
+    FT_STATUS ftStatus = FT_ListDevices( &num_devices, NULL, FT_LIST_NUMBER_ONLY );
+    if ( ftStatus != FT_OK )
+    {
+        cout<<"couldn't get a list of devices"<<endl;
+        return -1;
+    }
+    
+    cout<<"found "<<(int)num_devices<<" devices"<<endl;
+    if (num_devices <= 0) {
+        return -1;
+    }
+    
+    ftStatus = FT_Open( 0, &ftHandle_ );
+    if ( ftStatus != FT_OK) {
+        cout<<"FT_Open failed ("<<ftStatus<<")"<<endl;
+    }
+    else {
+        cout<<"FT_Open OK"<<endl;
+    
+        ftStatus = FT_SetBaudRate( ftHandle_, 460800 );
+        if ( ftStatus != FT_OK)  {
+            cout<<"FT_SetBaudRate failed ("<<ftStatus<<")"<<endl;
+            FT_Close( ftHandle_ );        //close open device
+            return 0;
+        }
+        else {
+            cout<<"FT_SetBaudRate OK"<<endl;
+        }
+    
         //set the latency timer to 2ms (valid range is from 2 to 255 ms)
-      ftStatus = FT_SetLatencyTimer( ftHandle_, 2 );
-      if ( ftStatus != FT_OK)  {
-          cout<<"FT_SetLatencyTimer failed ("<<ftStatus<<")"<<endl;
+        ftStatus = FT_SetLatencyTimer( ftHandle_, 2 );
+        if ( ftStatus != FT_OK)  {
+            cout<<"FT_SetLatencyTimer failed ("<<ftStatus<<")"<<endl;
             //latency not set - but we won't know   return -82;
-      }
-      else {
-          cout<<"FT_SetLatencyTimer OK"<<endl;
-      }
+        }
+        else {
+            cout<<"FT_SetLatencyTimer OK"<<endl;
+        }
+    
+        ftStatus = this->resetDevice();
 
-      ftStatus = this->resetDevice();
 
-      // debug
-      /*
-      CanPacket ppp;
-      for ( int i=0; i<10; ++i )
-      {
-          ReadPacket( &ppp, 0 );
-          usleep(50);
-  } */
-  }
+        pthread_mutex_init(&eventHandle_.eMutex, NULL);
+        pthread_cond_init(&eventHandle_.eCondVar, NULL);
+    
+        // debug
+        /*
+        CanPacket ppp;
+        for ( int i=0; i<10; ++i )
+        {
+            ReadPacket( &ppp, 0 );
+            usleep(50);
+        }
+        */
+    }
 
   return ftStatus;
 }
 
-int CanioUsbFtdi::resetDevice()
+int UsbIoFtdi::resetDevice()
 {
     assert( ftHandle_ );
 
@@ -172,24 +172,118 @@ int CanioUsbFtdi::resetDevice()
     return ftStatus;
 }
   
-/* Closes the CAN channels
+/*!
+ * Closes the USB device
  *
  * returns: 0 on success, negative otherwise
  */
-int
-CanioUsbFtdi::Shutdown()
+int UsbIoFtdi::shutdown()
 {
     return FT_Close( ftHandle_ );
 }
+
+int UsbIoFtdi::readPacket(CanPacket* pkt)
+{
+    return readPacketBlocking( pkt );
+    //return readPacketPolling( pkt );
+}
+
+int UsbIoFtdi::readPacketBlocking( CanPacket* pkt )
+{
+    if ( !getPacket( pkt ) ) {
+        return 0;
+    }
+
+    // Read from the USB buffer into our own buffer
+    int bytesInBuffer = readFromUsbToBuffer();
+    // Process the buffer contents into CAN packets
+    if( bytesInBuffer > 0 ) {
+        //cout<<"read "<<bytesInBuffer<<" bytes without blocking"<<endl;
+        // Process the buffer contents into CAN packets
+        int numPackets = readFromBufferToQueue( bytesInBuffer );
+        if ( numPackets > 0 ) {
+            return getPacket( pkt );
+        }
+        else {
+            cerr<<"couldn't read any packets without blocking"<<endl;
+            return 1;
+        }
+    }
+    
+    // nothing in USB buffer right now, let's wait
+    int numberOfBlocks = 0;
+    const int maxNumberOfBlocks = 5;
+    while ( numberOfBlocks < maxNumberOfBlocks ) {
+        ++numberOfBlocks;
+
+        bytesInBuffer = readFromUsbToBufferBlocking();
+        // Process the buffer contents into CAN packets
+        if( bytesInBuffer > 0 ) {
+            // Process the buffer contents into CAN packets
+            int numPackets = readFromBufferToQueue( bytesInBuffer );
+            if ( numPackets > 0 ) {
+                return getPacket( pkt );
+            }
+            else {
+                //cout<<"not enought data, re-blocking"<<endl;
+            }
+        }
+    }
+    
+    return 1;
+}
+
+int UsbIoFtdi::readPacketPolling( CanPacket* pkt )
+{
+    if ( !getPacket( pkt ) ) {
+        return 0;
+    }
+
+    // made up variables
+    const int maxNumberOfPolls = 10;
+    const int pollingIntervalUsec = 20000;
+
+    int numberOfPolls = 0;
+
+    while ( numberOfPolls<maxNumberOfPolls )
+    {
+        ++numberOfPolls;
+
+        if ( readFromUsbToBuffer()==0 ) {
+            // try again at 50Hz
+            usleep(pollingIntervalUsec);
+            continue;
+        }
+    
+        // Read from the USB buffer into our own buffer
+        int bytesInBuffer = readFromUsbToBuffer();
+    
+        // Process the buffer contents into CAN packets
+        if( bytesInBuffer > 0 )
+        {
+            // Process the buffer contents into CAN packets
+            int numPackets = readFromBufferToQueue( bytesInBuffer );
+            if ( numPackets > 0 ) {
+                return getPacket( pkt );
+            }
+            else {
+                //cout<<"not enough data, re-reading"<<endl;
+            }
+        }    
+    }
+
+    return 0;
+}
   
-/* Writes the given packet out on both channels
+/*!
+ * Writes the given packet to USB.
  *
  * returns: 0 on success, negative error code otherwise
  */
-int CanioUsbFtdi::WritePacket( CanPacket &pkt )
+int UsbIoFtdi::writePacket( CanPacket *pkt )
 {
-    FT_STATUS ftStatus;
     /*
+    // debug
     DWORD bytesInRxUsb, bytesInTxUsb, usbEvent;
     ftStatus = FT_GetQueueStatus( ftHandle_, &bytesInRxUsb );
     //ftStatus = FT_GetStatus( ftHandle_, &bytesInRxUsb, &bytesInTxUsb, &usbEvent );
@@ -201,16 +295,17 @@ int CanioUsbFtdi::WritePacket( CanPacket &pkt )
     unsigned char bytes[SEGWAY_USB_MESSAGE_SIZE];
 
     // convet CAN packet to USB message
-    parseCanToUsb( &pkt, bytes );
+    parseCanToUsb( pkt, bytes );
 
     DWORD bytesWritten;
-    ftStatus = FT_Write( ftHandle_, bytes, SEGWAY_USB_MESSAGE_SIZE, &bytesWritten );
+    FT_STATUS ftStatus = FT_Write( ftHandle_, bytes, SEGWAY_USB_MESSAGE_SIZE, &bytesWritten );
+    /*
     if ( ftStatus == FT_OK ) {
         //DTRACE<<"wrote "<<bytesWritten<<" bytes"<<endl;
     } else {
         //DTRACE<<"ERROR: failed to write to USB"<<endl;  
     }
-
+    */
     return ftStatus;
 }
 
@@ -219,7 +314,7 @@ int CanioUsbFtdi::WritePacket( CanPacket &pkt )
  *  is expected to be exactly 18 bytes in length. The checksum byte is not set,
  *  the calling function is expected to do so.
  */
-unsigned char CanioUsbFtdi::usbMessageChecksum( unsigned char *msg )
+unsigned char UsbIoFtdi::usbMessageChecksum( unsigned char *msg )
 {
     unsigned short checksum;
     unsigned short checksum_hi;
@@ -242,14 +337,14 @@ unsigned char CanioUsbFtdi::usbMessageChecksum( unsigned char *msg )
     return (unsigned char)checksum;
 }
 
-
-int CanioUsbFtdi::GetNextPacket(CanPacket& pkt)
+int UsbIoFtdi::getPacket(CanPacket* pkt)
 {
 
     if ( canBuffer_.size() > 0 )
     {
-        pkt = canBuffer_.front();
+        *pkt = canBuffer_.front();
         canBuffer_.pop();
+        //cout<<"UsbIoFtdi::getPacket: read one packet"<<endl;
         return 0;
     }
     else {
@@ -257,36 +352,24 @@ int CanioUsbFtdi::GetNextPacket(CanPacket& pkt)
     }
 }
 
-/*
- * Reads from USB buffer into internal buffer if the USB buffer is not empty.
- * Reads from internal buffer into a CAN packet queue.
- *
- * returns: number of CAN packets put into queue.
- */
-int CanioUsbFtdi::ReadPackets()
+int UsbIoFtdi::readFromUsbToBufferBlocking()
 {
-    // if there's still some CAN packets to process, don't bother the USB thingy
-    if ( canBuffer_.size() > 0 ) {
-        return 0;
+    DWORD EventMask = FT_EVENT_RXCHAR;
+    FT_STATUS ftStatus = FT_SetEventNotification( ftHandle_, EventMask, (PVOID)&eventHandle_ );
+    if ( ftStatus != FT_OK ) {
+        cerr<<"UsbIoFtdi::readFromUsbToBufferBlocking: failed to set event notification"<<endl;
     }
 
-    int bytesInBuffer;
-    int numPackets = 0;
+    pthread_mutex_lock(&eventHandle_.eMutex);
+    //! @todo make this wait timeout
+    pthread_cond_wait(&eventHandle_.eCondVar, &eventHandle_.eMutex);
+    pthread_mutex_unlock(&eventHandle_.eMutex);
 
-    // Read from the USB buffer into our own buffer
-    bytesInBuffer = readFromUsbToBuffer();
-
-    // Process the buffer contents into CAN packets
-    if( bytesInBuffer > 0 )
-    {
-        // Process the buffer contents into CAN packets
-        numPackets = readFromBufferToQueue( bytesInBuffer );
-    }
-
-    return numPackets;
+    // now there should be something in the buffer
+    return readFromUsbToBuffer();
 }
 
-int CanioUsbFtdi::readFromUsbToBuffer()
+int UsbIoFtdi::readFromUsbToBuffer()
 {
     FT_STATUS   ftStatus;    
     DWORD       bytesInRxUsb;
@@ -294,82 +377,85 @@ int CanioUsbFtdi::readFromUsbToBuffer()
         
     // Query status to find out how many bytes are in the receive buffer 
     ftStatus = FT_GetQueueStatus( ftHandle_, &bytesInRxUsb );
-    if ( ftStatus != FT_OK )
+    if ( ftStatus != FT_OK ) {
+        //! @todo is this right?
         bytesInRxUsb = 0;
+    }
 
     // If there's nothing in the receive buffer, then just return
-    if ( bytesInRxUsb == 0)
+    if ( bytesInRxUsb == 0) {
         return 0;
-    
+    }
+
     // Resize our buffer if necessary
-    if( (bytesInRxUsb + residualBytes) > charBuffer_.size() )
-        charBuffer_.resize( bytesInRxUsb + residualBytes );
+    if( (bytesInRxUsb + residualBytes_) > charBuffer_.size() )
+        charBuffer_.resize( bytesInRxUsb + residualBytes_ );
 
     // Read from the USB buffer
-    ftStatus = FT_Read( ftHandle_, &charBuffer_[residualBytes], bytesInRxUsb, &bytesRead );
+    ftStatus = FT_Read( ftHandle_, &charBuffer_[residualBytes_], bytesInRxUsb, &bytesRead );
 
-    if ( ftStatus != FT_OK )
-    {
-        DTRACE << "read error" << endl;
+    if ( ftStatus != FT_OK ) {
+        cerr << "read error" << endl;
         return 0;
     }
 
     // Check for read timeout
-    if( bytesInRxUsb != bytesRead )
-    {
-        DTRACE << "READ TIMEOUT. bytesInRxUsb = " << bytesInRxUsb << "   bytesRead = " << bytesRead << endl;
+    if( bytesInRxUsb != bytesRead ) {
+        cerr << "UsbIoFtdi::readFromUsbToBuffer: mismatch: bytesInRxUsb = " << bytesInRxUsb << "   bytesRead = " << bytesRead << endl;
     }
 
+    //cout<<"UsbIoFtdi::readFromUsbToBuffer: read "<<bytesRead<<" bytes."<<endl;
     // Return the number of bytes that are now in the buffer
-    return residualBytes + bytesRead;
+    return residualBytes_ + bytesRead;
 }
 
-int CanioUsbFtdi::readFromBufferToQueue( int bytesInBuffer )
+int UsbIoFtdi::readFromBufferToQueue( int bytesInBuffer )
 {
     int     pos             = 0;        // Buffer position indicator
-    bool    done            = false;
+    bool    finished            = false;
     int     skippedBytes    = 0;
     int     numPackets      = 0;
 
     // While the buffer contains enough data for at least one message 
     while ( (bytesInBuffer - pos) >= SEGWAY_USB_MESSAGE_SIZE )
-    {   
+    {
+        //cout<<"UsbIoFtdi::readFromBufferToQueue: processing chars into msg #"<<numPackets<<endl;
         bool    lookingForMsgStart  = true;
 
         // Scan buffer for the start of the next valid message
-        while (lookingForMsgStart)
+        while ( lookingForMsgStart )
         {
-            // If there aren't enough bytes left to contain a full message,
-            // then kick out
+            // If there aren't enough bytes left to contain a full message, then kick out
             if( (bytesInBuffer - pos) < SEGWAY_USB_MESSAGE_SIZE )
             {
-                done = true;
+                //cout<<"UsbIoFtdi::readFromBufferToQueue: not enough char's :"<<(bytesInBuffer - pos)<<endl;
+                finished = true;
                 break;
             }
 
-            // Look for start-of-msg character at the start AND end of candidate message
+            // Look for start-of-msg character at the start of the candidate message
             if( charBuffer_[pos] == SEGWAY_USB_MESSAGE_START_OF_HEADER )
             {        
                 // Compare calculated checksum with value embedded in message. If
                 // they agree, message found. Otherwise, keep looking. 
                 if( (unsigned char)usbMessageChecksum(&charBuffer_[pos]) ==
-                        charBuffer_[pos + (SEGWAY_USB_MESSAGE_SIZE - 1)])
+                                    charBuffer_[pos + (SEGWAY_USB_MESSAGE_SIZE - 1)])
                     lookingForMsgStart = false;
                 else
                 {
-                    pos++;
-                    skippedBytes++;
+                    ++pos;
+                    ++skippedBytes;
                 }
             }
             else
             {
-                pos++;
-                skippedBytes++;
+                ++pos;
+                ++skippedBytes;
             }
         } // while (lookingForMsgStart)
         
         // Process message
-        if ( !done )
+        if ( !finished )
         {
             CanPacket pkt;
             int ret;
@@ -382,7 +468,7 @@ int CanioUsbFtdi::readFromBufferToQueue( int bytesInBuffer )
             {
                 // Store CAN packet in queue
                 canBuffer_.push( pkt );
-                numPackets++;
+                ++numPackets;
                 //printf("Stored packet: pkt: %s\n", pkt.toString());
             }
 
@@ -392,16 +478,17 @@ int CanioUsbFtdi::readFromBufferToQueue( int bytesInBuffer )
     } //  while ( (bytesInBuffer - (pos + 1)) >= SEGWAY_USB_MESSAGE_SIZE )
 
     // If there are any residual bytes in the buffer, move them to the beginning
-    residualBytes = bytesInBuffer - pos;
-    assert( residualBytes >= 0 );
+    residualBytes_ = bytesInBuffer - pos;
+    assert( residualBytes_ >= 0 );
 
-    if( residualBytes > 0 )
-        memcpy( &charBuffer_[0], &charBuffer_[pos], residualBytes );
-
+    if( residualBytes_ > 0 ) {
+        //cout<<"Buffer left with "<<residualBytes_<<" bytes."<<endl;
+        memcpy( &charBuffer_[0], &charBuffer_[pos], residualBytes_ );
+    }
     /*
-    printf("%4i skipped bytes in this read cycle (%2.0f%% loss)\n",
-        skippedBytes, ((float)skippedBytes/(float)bytesInBuffer)*100.0);
-    */
+    if ( skippedBytes>0 ) {
+        cout<<"Skipped "<<skippedBytes<<" bytes out of "<<bytesInBuffer<<endl;
+    } */
     return numPackets;
 }
 
@@ -410,7 +497,7 @@ int CanioUsbFtdi::readFromBufferToQueue( int bytesInBuffer )
 /*!
  *  returns: # bytes in msg if a packet is valid and negative on error.
  */
-int CanioUsbFtdi::parseUsbToCan( CanPacket *pkt, unsigned char *bytes )
+int UsbIoFtdi::parseUsbToCan( CanPacket *pkt, unsigned char *bytes )
 {
     // do check sum: always fails
     
@@ -428,7 +515,7 @@ int CanioUsbFtdi::parseUsbToCan( CanPacket *pkt, unsigned char *bytes )
     {            
         pkt->id = ((bytes[4] << 3) | ((bytes[5] >> 5) & 7)) & 0x0fff;
 
-        if ( pkt->id>=RMP_CAN_ID_MSG1 && pkt->id<=RMP_CAN_ID_MSG8 )
+        if ( pkt->id>=RMP_CAN_ID_MSG0 && pkt->id<=RMP_CAN_ID_MSG7 )
         {
             for ( int i = 0; i < 8; ++i )
             {
@@ -449,7 +536,7 @@ int CanioUsbFtdi::parseUsbToCan( CanPacket *pkt, unsigned char *bytes )
     return ret;
 }
 
-int CanioUsbFtdi::parseCanToUsb( CanPacket *pkt, unsigned char *bytes )
+int UsbIoFtdi::parseCanToUsb( CanPacket *pkt, unsigned char *bytes )
 {
     bytes[0] = SEGWAY_USB_MESSAGE_START_OF_HEADER;   //SOH (alexm: start of header?)
     bytes[1] = SEGWAY_USB_STATUS_MESSAGE;

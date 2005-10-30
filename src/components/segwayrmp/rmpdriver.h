@@ -37,18 +37,45 @@ class RmpDriver
 {
 
 public:
+    enum OperationalMode
+    {
+        TRACTOR=1,
+        BALANCE,
+        POWERDOWN
+    };
+
+    enum GainSchedule
+    {
+        NORMAL=0,
+        TALL,
+        HEAVY
+    };
+
     virtual ~RmpDriver() {};
     
     virtual int enable()=0;
     virtual int disable()=0;
 
-    //! Blocks till new data is available
+    //! Blocking read
     virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )=0;
+
+    //! Returns the latest data
+    //virtual int getPosition2d( orca::Position2dDataPtr & position2d )=0;
+    //virtual int getPosition3d( orca::Position3dDataPtr & position3d )=0;
+    //virtual int getPower( orca::PowerDataPtr & power )=0;
 
     //! Writes velocity command
     virtual int sendMotionCommand( orca::Velocity2dCommandPtr &position2d )=0;
 
-    virtual int resetIntegrators()=0;
+    virtual int setMaxVelocityScaleFactor( double scale )=0;
+    virtual int setMaxTurnrateScaleFactor( double scale )=0;
+    virtual int setMaxAccelerationScaleFactor( double scale )=0;
+    virtual int setMaxCurrentLimitScaleFactor( double scale )=0;
+    virtual int resetAllIntegrators()=0;
+
+    virtual int setOperationalMode( OperationalMode mode )=0;
+    virtual int setGainSchedule( GainSchedule sched )=0;
+    virtual int enableBalanceMode( bool enable )=0;
 
     enum DriverType
     {
@@ -66,15 +93,6 @@ public:
         double position2dPublishInterval;
         double powerPublishInterval;
     };
-
-    orcaiceutil::Current current_;
-
-    //! Set a specifc configuration
-    //virtual int setConfig( const orca::LaserConfigPtr &cfg )=0;
-
-    //! Get the current configuration
-    //virtual int getConfig( orca::LaserConfigPtr &cfg )=0;
-
 };
 
 #endif

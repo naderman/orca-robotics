@@ -14,7 +14,7 @@
  *  Lesser General Public License for more details.
  *
  *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, internalWrite to the Free Software
+ *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
@@ -24,7 +24,8 @@
 #include "rmpusbdriver.h"
 
 // interface to the usb device
-#include "canio_usb_ftdi.h"
+#include "usbioftdi.h"
+
 // rmp/usb data structure
 #include "rmpusbdataframe.h"
 #include "canpacket.h"
@@ -35,13 +36,12 @@
 using namespace std;
 using namespace orca;
 
-RmpUsbDriver::RmpUsbDriver( const orcaiceutil::Current & current )
+RmpUsbDriver::RmpUsbDriver()
 {
-    current_ = current;
-
     // Hardware
-    canio_ = new CanioUsbFtdi;
-    dataFrame_ = new RmpUsbDataFrame;
+    usbio_ = new UsbIoFtdi;
+    frame_ = new RmpUsbDataFrame;
+    pkt_ = new CanPacket;
 
     // Initialize odometry
     odomX_ = 0.0;
@@ -55,102 +55,165 @@ RmpUsbDriver::RmpUsbDriver( const orcaiceutil::Current & current )
 
 RmpUsbDriver::~RmpUsbDriver()
 {
+    delete usbio_;
+    delete frame_;
+    delete pkt_;
 }
 
 int RmpUsbDriver::enable()
 {
     // init device
-    if ( canio_->Init()<0 )
-    {
+    if ( usbio_->init() ) {
         return 1;
     }
 
-    if ( resetIntegrators() ) {
-        cerr<<"error in resetIntegrators()"<<endl;
+    if ( resetAllIntegrators() ) {
+        cerr<<"warning: error in resetIntegrators()"<<endl;
     }
 
-    setMaxVelocitySpeedFactor( 16 );
+    if ( setMaxVelocityScaleFactor( 1.0 ) ) {
+        cerr<<"warning: error in setMaxVelocitySpeedFactor()"<<endl;
+    }
+    
+    if ( setMaxTurnrateScaleFactor( 1.0 ) ) {
+        cerr<<"warning: error in setMaxTurnrateScaleFactor()"<<endl;
+    }
+
+    if ( setMaxAccelerationScaleFactor( 1.0 ) ) {
+        cerr<<"warning: error in setMaxAccelerationScaleFactor()"<<endl;
+    }
 
     return 0;
 }
 
 int RmpUsbDriver::disable()
 {
-    canio_->Shutdown();
+    usbio_->shutdown();
 
     cout<<"disabled"<<endl;
     return 0;
 }
 
-/*
-    empirical data:
-        read from usb to buffer: ~50ms
-        read from one can msg from buffer: 15ms
-*/
 int RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )
 {
-    int canPacketsReceived = 0;
     int canPacketsProcessed = 0;
+    int dataFramesReopened = 0;
 
-    // Read packets (will only talk to usb if can packet buffer is empty)
-    canPacketsReceived += canio_->ReadPackets();
-
-    // Process data packets
-    CanPacket pkt;
-    while( !canio_->GetNextPacket(pkt) )
+    // get next packet from the packet buffer, will block until new packet arrives
+    while( !usbio_->readPacket(pkt_) )
     {
         ++canPacketsProcessed;
+    
+        // Add packet to data frame
+        frame_->AddPacket(pkt_);
 
-        // Add packet to data dataFrame_
-        dataFrame_->AddPacket(pkt);
-
-        if ( pkt.id == RMP_CAN_ID_MSG5 ) {
+        if ( pkt_->id == RMP_CAN_ID_MSG4 ) {
             integrateMotion();
         }
 
-        // chips's debugging stuff
-        WatchPacket( &pkt, RMP_CAN_ID_MSG8 );
-        //WatchDataStream( pkt );
+        // If frame is complete and , transfer data and reset frame
+        if( frame_->isClosed() )
+        {
+            if ( frame_->isComplete() ) {
+                // process data only if the frame is complete
+                updateData( position2d, power  );
+                frame_->reset();
+                //cout<<"rmpusb::read: pkts:"<<canPacketsProcessed<<" reopnd: "<<dataFramesReopened<<endl;
+                return 0;
+            }
+            else {
+                cout<<"RmpUsbDriver::readBlocking: re-opening frame. Missing [";
+                for ( int i=1; i<8; ++i ) {
+                    if ( !frame_->msgCheckList_[i] ) { cout<<i<<" "; }
+                }
+                cout<<"]"<<endl;
+                //! @todo or should we reset?
+                frame_->reopen();
+                ++dataFramesReopened;
+            }
+        }
+
     }
 
-    updateData( position2d, power );
-    //cout<<"rmpusb::read: rcv:"<<canPacketsReceived<<" proc:"<<canPacketsProcessed<<endl;
-    return 0;
+    return 1;
 }
 
 int RmpUsbDriver::sendMotionCommand( orca::Velocity2dCommandPtr & command )
 {
-    CanPacket pkt;
-    makeMotionCommandPacket( &pkt, command );
+    makeMotionCommandPacket( pkt_, command );
 
-    return canio_->WritePacket(pkt);
+    return usbio_->writePacket(pkt_);
 }
 
-int RmpUsbDriver::resetIntegrators()
+int RmpUsbDriver::resetAllIntegrators()
 {
-    CanPacket pkt;
-    makeStatusCommandPacket( &pkt, RMP_CAN_CMD_RESET_INTEGRATORS, RMP_CAN_RESET_ALL );
+    makeStatusCommandPacket( pkt_, RMP_CMD_RESET_INTEGRATORS, RMP_CAN_RESET_ALL );
 
-    return canio_->WritePacket(pkt);
+    return usbio_->writePacket(pkt_);
 }
 
-int RmpUsbDriver::setMaxVelocitySpeedFactor( int scale )
+int RmpUsbDriver::setMaxVelocityScaleFactor( double scale )
 {
-    CanPacket pkt;
-    makeStatusCommandPacket( &pkt, RMP_CAN_CMD_MAX_VEL, (uint16_t)scale );
+    // limit input to [0.0, 1.0]
+    if ( scale>1.0 ) {
+        scale=1.0;
+    } else if ( scale<0.0 ) {
+        scale=0.0;
+    }
+    makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAXIMUM_VELOCITY, (uint16_t)ceil(scale*16.0) );
 
-    return canio_->WritePacket(pkt);
+    return usbio_->writePacket(pkt_);
+}
+
+int RmpUsbDriver::setMaxTurnrateScaleFactor( double scale )
+{
+    // limit input to [0.0, 1.0]
+    if ( scale>1.0 ) {
+        scale=1.0;
+    } else if ( scale<0.0 ) {
+        scale=0.0;
+    }
+    makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAXIMUM_TURN_RATE, (uint16_t)ceil(scale*16.0) );
+
+    return usbio_->writePacket(pkt_);
+}
+
+int RmpUsbDriver::setMaxAccelerationScaleFactor( double scale )
+{
+    // limit input to [0.0, 1.0]
+    if ( scale>1.0 ) {
+        scale=1.0;
+    } else if ( scale<0.0 ) {
+        scale=0.0;
+    }
+    makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAXIMUM_ACCELERATION, (uint16_t)ceil(scale*16.0) );
+
+    return usbio_->writePacket(pkt_);
+}
+
+int RmpUsbDriver::setMaxCurrentLimitScaleFactor( double scale )
+{
+    // limit input to [0.0, 1.0]
+    if ( scale>1.0 ) {
+        scale=1.0;
+    } else if ( scale<0.0 ) {
+        scale=0.0;
+    }
+    // note: the scale of this command is [0,256]
+    makeStatusCommandPacket( pkt_, RMP_CMD_SET_CURRENT_LIMIT, (uint16_t)ceil(scale*256.0) );
+
+    return usbio_->writePacket(pkt_);
 }
 
 void RmpUsbDriver::integrateMotion()
 {
     // Get the new linear and angular encoder values and compute odometry.
-    int deltaForeaftRaw = diff(lastRawForeaft_, dataFrame_->foreaft, firstread_);
-    int deltaYawRaw = diff(lastRawYaw_, dataFrame_->yaw, firstread_);
+    int deltaForeaftRaw = diff(lastRawForeaft_, frame_->foreaft, firstread_);
+    int deltaYawRaw = diff(lastRawYaw_, frame_->yaw, firstread_);
 
     // store current values
-    lastRawForeaft_ = dataFrame_->foreaft;
-    lastRawYaw_ = dataFrame_->yaw;
+    lastRawForeaft_ = frame_->foreaft;
+    lastRawYaw_ = frame_->yaw;
 
     // convert to SI
     double deltaForeaft = (double)deltaForeaftRaw / RMP_COUNT_PER_M;
@@ -181,7 +244,7 @@ void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerD
     // combine left and right wheel velocity to get forward velocity
     // change from counts/sec into meters/sec
     position2d->motion.v.x =
-            ((double)dataFrame_->left_dot+(double)dataFrame_->right_dot) /
+            ((double)frame_->left_dot+(double)frame_->right_dot) /
              RMP_COUNT_PER_M_PER_S / 2.0;
 
     // no side speeds for this bot
@@ -189,7 +252,7 @@ void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerD
 
     // from counts/sec into deg/sec.  also, take the additive
     // inverse, since the RMP reports clockwise angular velocity as positive.
-    position2d->motion.w = -(double)dataFrame_->yaw_dot / RMP_COUNT_PER_RAD_PER_S;
+    position2d->motion.w = -(double)frame_->yaw_dot / RMP_COUNT_PER_RAD_PER_S;
 
     //! @todo stall from currents?
     position2d->stalled = false;
@@ -198,11 +261,11 @@ void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerD
     //
     // Convert battery voltage from counts to Volts
     // we only know the minimum of the two main batteries
-    power->batteries[0].voltage = dataFrame_->base_battery / RMP_BASE_COUNT_PER_VOLT;
+    power->batteries[0].voltage = frame_->base_battery / RMP_BASE_COUNT_PER_VOLT;
     power->batteries[0].percent = 99.0;
-    power->batteries[1].voltage = dataFrame_->base_battery / RMP_BASE_COUNT_PER_VOLT;
+    power->batteries[1].voltage = frame_->base_battery / RMP_BASE_COUNT_PER_VOLT;
     power->batteries[1].percent = 99.0;
-    power->batteries[2].voltage = 1.5 + dataFrame_->ui_battery*RMP_UI_COEFF;
+    power->batteries[2].voltage = 1.5 + frame_->ui_battery*RMP_UI_COEFF;
     power->batteries[2].percent = 99.0;
 
 /*        
@@ -213,7 +276,7 @@ void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerD
         this->position3d_data.zpos = 0;
         
         // normalize angles to [0,360]
-        tmp = NORMALIZE(DTOR((double)dataFrame_->roll /
+        tmp = NORMALIZE(DTOR((double)frame_->roll /
                 (double)RMP_COUNT_PER_DEG));
         if(tmp < 0) {
             tmp += 2*M_PI;
@@ -221,7 +284,7 @@ void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerD
         this->position3d_data.roll = htonl((int32_t)rint(tmp * 1000.0));
         
         // normalize angles to [0,360]
-        tmp = NORMALIZE(DTOR((double)dataFrame_->pitch /
+        tmp = NORMALIZE(DTOR((double)frame_->pitch /
                 (double)RMP_COUNT_PER_DEG));
         if(tmp < 0) {
             tmp += 2*M_PI;
@@ -233,8 +296,8 @@ void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerD
         // combine left and right wheel velocity to get foreward velocity
         // change from counts/s into mm/s
         this->position3d_data.xspeed =
-                htonl((uint32_t)rint(((double)dataFrame_->left_dot +
-                (double)dataFrame_->right_dot) /
+                htonl((uint32_t)rint(((double)frame_->left_dot +
+                (double)frame_->right_dot) /
                 (double)RMP_COUNT_PER_M_PER_S
                 * 1000.0 / 2.0));
         // no side or vertical speeds for this bot
@@ -242,10 +305,10 @@ void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerD
         this->position3d_data.zspeed = 0;
         
         this->position3d_data.rollspeed =
-                htonl((int32_t)rint((double)dataFrame_->roll_dot /
+                htonl((int32_t)rint((double)frame_->roll_dot /
                 (double)RMP_COUNT_PER_DEG_PER_S * M_PI / 180 * 1000.0));
         this->position3d_data.pitchspeed =
-                htonl((int32_t)rint((double)dataFrame_->pitch_dot /
+                htonl((int32_t)rint((double)frame_->pitch_dot /
                 (double)RMP_COUNT_PER_DEG_PER_S * M_PI / 180 * 1000.00));
         // from counts/sec into millirad/sec.  also, take the additive
         // inverse, since the RMP reports clockwise angular velocity as
@@ -253,18 +316,18 @@ void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerD
         
         // This one uses left_dot and right_dot, which comes from odometry
         this->position3d_data.yawspeed =
-                htonl((int32_t)(rint((double)(dataFrame_->right_dot - dataFrame_->left_dot) /
+                htonl((int32_t)(rint((double)(frame_->right_dot - frame_->left_dot) /
                 (RMP_COUNT_PER_M_PER_S * RMP_GEOM_WHEEL_SEP * M_PI) * 1000)));
         // This one uses yaw_dot, which comes from the IMU
         //data.position3d_data.yawspeed =
-        //  htonl((int32_t)(-rint((double)dataFrame_->yaw_dot /
+        //  htonl((int32_t)(-rint((double)frame_->yaw_dot /
         //                        (double)RMP_COUNT_PER_DEG_PER_S * M_PI / 180 * 1000)));
         
         this->position3d_data.stall = 0;
 */
 
     // Chip
-    //dataFrame_->dump();
+    //frame_->dump();
     //dump();
 
     firstread_ = false;
@@ -277,7 +340,7 @@ void RmpUsbDriver::makeMotionCommandPacket( CanPacket* pkt, const Velocity2dComm
 {
     pkt->id = RMP_CAN_ID_COMMAND;
     // velocity command does not change any other values
-    pkt->PutSlot(2, (uint16_t)RMP_CAN_CMD_NONE);
+    pkt->PutSlot(2, (uint16_t)RMP_CMD_NONE);
 
     // translational RMP command
     int16_t trans = (int16_t) rint(command->motion.v.x * RMP_COUNT_PER_M_PER_S);
@@ -315,20 +378,23 @@ void RmpUsbDriver::makeStatusCommandPacket( CanPacket* pkt, uint16_t cmd, uint16
 {
     
     pkt->id = RMP_CAN_ID_COMMAND;
+
+    // put last motion command into the packet
+    pkt->PutSlot(0, (uint16_t)lastTrans_);
+    pkt->PutSlot(1, (uint16_t)lastRot_);
+
     pkt->PutSlot(2, cmd);
     
     // it was noted in the windows demo code that they
     // copied the 8-bit value into both bytes like this
-    pkt->PutByte(6, val);
-    pkt->PutByte(7, val);
+    //pkt->PutByte(6, val);
+    //pkt->PutByte(7, val);
+    pkt->PutSlot(3, val);
     
-    // put last motion command into the packet
-    pkt->PutSlot(0, (uint16_t)lastTrans_);
-    pkt->PutSlot(1, (uint16_t)lastRot_);
     
     if(cmd)
     {
-        //printf("SEGWAYIO: STATUS: cmd: %02x val: %02x pkt: %s\n", cmd, val, pkt->toString());
+        printf("SEGWAYIO: STATUS: cmd: %02x val: %02x pkt: %s\n", cmd, val, pkt->toString());
     }
 }
 
@@ -425,19 +491,19 @@ void RmpUsbDriver::WatchPacket( CanPacket* pkt, short int pktID )
     }
 }
 
-void RmpUsbDriver::WatchDataStream( CanPacket& pkt )
+void RmpUsbDriver::WatchDataStream( CanPacket* pkt )
 {
     static CanPacket priorPkt;
 
     // Check for breaks in the message sequence
-    if( (pkt.id != (priorPkt.id + 1) )  &&
-         !((pkt.id == 0x0400) && (priorPkt.id == 0x0407)) )
+    if( (pkt->id != (priorPkt.id + 1) )  &&
+         !((pkt->id == 0x0400) && (priorPkt.id == 0x0407)) )
     {
         printf("=== BREAK IN SEQUENCE ===\n");
     }
 
         // Update prior packet (for debugging)
-    priorPkt = pkt;
+    priorPkt = *pkt;
 
-    printf("SEGWAYIO: pkt: %s\n", pkt.toString());
+    printf("SEGWAYIO: pkt: %s\n", pkt->toString());
 }

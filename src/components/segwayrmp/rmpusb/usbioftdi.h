@@ -18,45 +18,53 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef CANIO_USB_FTDI_H
-#define CANIO_USB_FTDI_H
+#ifndef ORCA2_SEGWAY_RMP_USB_IO_FTDI_H
+#define ORCA2_SEGWAY_RMP_USB_IO_FTDI_H
 
 #include <queue>
 
-#include "canpacket.h"
+#include "usbio.h"
+
 #include <ftd2xx.h>
 
-class CanioUsbFtdi //: public DualCANIO
+class UsbIoFtdi : public UsbIo
 {
 public:
+    UsbIoFtdi();
+    virtual ~UsbIoFtdi();
     
-    CanioUsbFtdi();
-    
-    ~CanioUsbFtdi();
-    
-    // we ignore this channel_freq
-    int Init();
-    int Shutdown();
+    virtual int init();
+    virtual int shutdown();
 
-    // This is the new read function; the original virtual one is not used
-    int ReadPackets();
-
-    // Returns 0 if copied a packet, 1 if the buffer was empty
-    int GetNextPacket(CanPacket& pkt);
-    
-    // returns: 0 on success, negative error code otherwise
-    int WritePacket(CanPacket &pkt);
-    
+    virtual int readPacket(CanPacket* pkt);
+    virtual int writePacket(CanPacket* pkt);
     
 private:
-    
+
+    // utility functions
+    int readPacketBlocking(CanPacket* pkt);
+    int readPacketPolling(CanPacket* pkt);
+
+    // Returns 0 if copied a packet, 1 if the buffer was empty
+    int getPacket(CanPacket* pkt);
+    /*!
+     * Reads from USB buffer into internal buffer if the USB buffer is not empty.
+     * Then reads from the internal buffer into the CAN packet queue.
+     *
+     * returns: number of CAN packets put into queue.
+     */
+    int tryToRead();
+
     // handle to the USB device inside our Segway
     FT_HANDLE ftHandle_;
+
+    // event handle we'll use to block on data arrivale
+    EVENT_HANDLE eventHandle_;
     
     // a buffer to read USB stream into
     std::vector<unsigned char> charBuffer_;
     
-    unsigned int residualBytes;
+    unsigned int residualBytes_;
     
     // a buffer to store converted CAN messages
     std::queue<CanPacket> canBuffer_;
@@ -64,6 +72,7 @@ private:
     int resetDevice();
     
     int readFromUsbToBuffer();
+    int readFromUsbToBufferBlocking();
     
     int readFromBufferToQueue( int bytesInBuffer );
     
@@ -71,9 +80,7 @@ private:
     
     int parseCanToUsb( CanPacket *pkt, unsigned char *bytes );
     
-    unsigned char usbMessageChecksum( unsigned char *msg );
-    
-    int debugMsgCount_;
+    unsigned char usbMessageChecksum( unsigned char *msg );    
 };
 
 #endif

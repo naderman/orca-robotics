@@ -24,7 +24,7 @@
 #include "../rmpdriver.h"
 
 // forward declarations
-class CanioUsbFtdi;
+class UsbIo;
 class RmpUsbDataFrame;
 class CanPacket;
 
@@ -32,31 +32,39 @@ class RmpUsbDriver : public RmpDriver
 {
 public:
 
-    RmpUsbDriver( const orcaiceutil::Current & current );
+    RmpUsbDriver();
     virtual ~RmpUsbDriver();
 
     virtual int enable();
     virtual int disable();
 
-    // return 0 if everything went well, 1 otherwise
     virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power );
 
     virtual int sendMotionCommand( orca::Velocity2dCommandPtr &position2d );
 
-    virtual int resetIntegrators();
+    virtual int setMaxVelocityScaleFactor( double scale );
+    virtual int setMaxTurnrateScaleFactor( double scale );
+    virtual int setMaxAccelerationScaleFactor( double scale );
+    virtual int setMaxCurrentLimitScaleFactor( double scale );
+    virtual int resetAllIntegrators();
+
+    virtual int setOperationalMode( RmpDriver::OperationalMode mode ) { return 0; };
+    virtual int setGainSchedule( RmpDriver::GainSchedule sched ) { return 0; };
+    virtual int enableBalanceMode( bool enable ) { return 0; };
 
 private:
 
     // driver/hardware interface
-    CanioUsbFtdi *canio_;
-    RmpUsbDataFrame* dataFrame_;
+    UsbIo            *usbio_;
+    RmpUsbDataFrame  *frame_;
+    CanPacket        *pkt_;
 
     // last motion commands [segway counts]
     // used to load into status command
     int16_t lastTrans_;
     int16_t lastRot_;
 
-    // For handling rollover
+    // for integrating odometry
     uint32_t lastRawYaw_;
     uint32_t lastRawForeaft_;
 
@@ -69,26 +77,23 @@ private:
     double maxSpeed_;
     double maxTurnrate_;
 
-    void RmpUsbDriver::integrateMotion();
+    void integrateMotion();
 
     void updateData( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power );
-
-    int setMaxVelocitySpeedFactor( int scale );
 
     // helper to take a player command and turn it into a CAN command packet
     void makeMotionCommandPacket( CanPacket* pkt, const orca::Velocity2dCommandPtr & command );
     void makeStatusCommandPacket( CanPacket* pkt, uint16_t cmd, uint16_t val );
     void makeShutdownCommandPacket( CanPacket* pkt );
 
-    // Calculate the difference between two raw counter values, taking care
-    // of rollover.
+    // Calculate the difference between two raw counter values, taking care of rollover.
     int diff(uint32_t from, uint32_t to, bool first);
     // bullshit
     bool firstread_;
 
     // chip's utilities
     void WatchPacket( CanPacket* pkt, short int pktID );
-    void WatchDataStream( CanPacket& pkt );
+    void WatchDataStream( CanPacket* pkt );
 
 };
 
