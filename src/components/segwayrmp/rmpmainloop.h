@@ -43,8 +43,8 @@ public:
                  orcaiceutil::PtrBuffer<orca::PowerDataPtr>         & powerProxy,
                  orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer,
                  orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer,
-                 const orca::Position2dConsumerPrx                  & position2dConsumer,
-                 const orca::PowerConsumerPrx                       & powerConsumer );
+                 const orca::Position2dConsumerPrx                  & position2dPublisher,
+                 const orca::PowerConsumerPrx                       & powerPublisher );
     virtual ~RmpMainLoop();
 
     void setCurrent( const orcaiceutil::Current & current ) { current_=current; };
@@ -63,8 +63,8 @@ private:
     orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer_;
 
     // IceStorm consumers
-    orca::Position2dConsumerPrx position2dConsumer_;
-    orca::PowerConsumerPrx powerConsumer_;
+    orca::Position2dConsumerPrx position2dPublisher_;
+    orca::PowerConsumerPrx powerPublisher_;
 
     // generic interface to the hardware
     RmpDriver* driver_;
@@ -78,6 +78,8 @@ private:
     orcaiceutil::Current current_;
 
     // debug
+    orcaiceutil::Timer position2dPublishTimer_;
+    orcaiceutil::Timer powerPublishTimer_;
     orcaiceutil::Timer readTimer_;
     orcaiceutil::Timer writeTimer_;
 

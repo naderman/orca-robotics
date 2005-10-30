@@ -53,19 +53,27 @@ private:
 
     // last motion commands [segway counts]
     // used to load into status command
-    int16_t lastTrans_, lastRot_;
+    int16_t lastTrans_;
+    int16_t lastRot_;
 
     // For handling rollover
-    uint32_t lastRawYaw_, lastRawLeft_, lastRawRight_, lastRawForeaft_;
+    uint32_t lastRawYaw_;
+    uint32_t lastRawForeaft_;
 
     // Odometry calculation
-    double odomX_, odomY_, odomYaw_;
+    double odomX_;
+    double odomY_;
+    double odomYaw_;
 
     // Maximum allowd speeds [m/s], [rad/s]
-    double maxSpeed_, maxTurnrate_;
+    double maxSpeed_;
+    double maxTurnrate_;
 
-    void updateData( RmpUsbDataFrame * frame,
-            orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power );
+    void RmpUsbDriver::integrateMotion();
+
+    void updateData( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power );
+
+    int setMaxVelocitySpeedFactor( int scale );
 
     // helper to take a player command and turn it into a CAN command packet
     void makeMotionCommandPacket( CanPacket* pkt, const orca::Velocity2dCommandPtr & command );

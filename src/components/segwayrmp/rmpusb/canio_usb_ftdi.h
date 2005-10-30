@@ -44,6 +44,7 @@ public:
     // Returns 0 if copied a packet, 1 if the buffer was empty
     int GetNextPacket(CanPacket& pkt);
     
+    // returns: 0 on success, negative error code otherwise
     int WritePacket(CanPacket &pkt);
     
     

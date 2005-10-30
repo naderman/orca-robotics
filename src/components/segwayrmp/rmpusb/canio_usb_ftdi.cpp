@@ -60,7 +60,7 @@ CanioUsbFtdi::~CanioUsbFtdi()
 int
 CanioUsbFtdi::Init()
 {
-  cout<<"CanioUsbFtdi::Init: initizlizing device"<<endl;
+  cout<<"CanioUsbFtdi::Init: initializing device"<<endl;
   FT_STATUS ftStatus;
   DWORD num_devices;
 
@@ -215,8 +215,9 @@ int CanioUsbFtdi::WritePacket( CanPacket &pkt )
 }
 
 /*!
- *  caluate the checksum for the message being sent.  Note that the buffer
- *  is expected to be exactly 18 bytes in length.
+ *  Caluate the checksum for the message being sent.  Note that the buffer
+ *  is expected to be exactly 18 bytes in length. The checksum byte is not set,
+ *  the calling function is expected to do so.
  */
 unsigned char CanioUsbFtdi::usbMessageChecksum( unsigned char *msg )
 {
@@ -264,6 +265,11 @@ int CanioUsbFtdi::GetNextPacket(CanPacket& pkt)
  */
 int CanioUsbFtdi::ReadPackets()
 {
+    // if there's still some CAN packets to process, don't bother the USB thingy
+    if ( canBuffer_.size() > 0 ) {
+        return 0;
+    }
+
     int bytesInBuffer;
     int numPackets = 0;
 
@@ -403,7 +409,7 @@ int CanioUsbFtdi::readFromBufferToQueue( int bytesInBuffer )
 
 /*!
  *  returns: # bytes in msg if a packet is valid and negative on error.
-*/
+ */
 int CanioUsbFtdi::parseUsbToCan( CanPacket *pkt, unsigned char *bytes )
 {
     // do check sum: always fails

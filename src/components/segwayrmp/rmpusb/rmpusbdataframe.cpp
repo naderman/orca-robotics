@@ -45,7 +45,9 @@ void RmpUsbDataFrame::dump()
     left_torque    != RMP_CAN_DROPPED_PACKET ? printf("left_torque\t= %10i (%8X): %10.2f Nm\n", (int)left_torque, left_torque, (float)left_torque/RMP_COUNT_PER_NM) : printf("left_torque\t=    DROPPED\n");
     right_torque   != RMP_CAN_DROPPED_PACKET ? printf("right_torque\t= %10i (%8X): %10.2f Nm\n", (int)right_torque, right_torque, (float)right_torque/RMP_COUNT_PER_NM) : printf("right_torque\t=    DROPPED\n");
     frames    != RMP_CAN_DROPPED_PACKET ? printf("frames\t\t= %10i (%8X): %10i frame ctr\n", (int)frames, frames, (int)(frames)) : printf("frames\t\t=    DROPPED\n");
-    battery   != RMP_CAN_DROPPED_PACKET ? printf("battery\t\t= %10i (%8X): %10.2f V\n", (int)battery, battery, (float)battery/RMP_CU_COUNT_PER_VOLT) : printf("battery\t\t=    DROPPED\n");
+    // not tested
+    ui_battery   != RMP_CAN_DROPPED_PACKET ? printf("battery\t\t= %10i (%8X): %10.2f V\n", (int)ui_battery, ui_battery, 1.5+(float)ui_battery*RMP_UI_COEFF) : printf("battery\t\t=    DROPPED\n");
+    base_battery   != RMP_CAN_DROPPED_PACKET ? printf("battery\t\t= %10i (%8X): %10.2f V\n", (int)base_battery, base_battery, (float)base_battery/RMP_BASE_COUNT_PER_VOLT) : printf("battery\t\t=    DROPPED\n");
 }
 
 void RmpUsbDataFrame::reset()
@@ -64,17 +66,16 @@ void RmpUsbDataFrame::reset()
     left_torque                = RMP_CAN_DROPPED_PACKET;
     right_torque               = RMP_CAN_DROPPED_PACKET;
     frames                     = RMP_CAN_DROPPED_PACKET;
-    battery                    = RMP_CAN_DROPPED_PACKET;
-    controller_mode            = RMP_CAN_DROPPED_PACKET;
+    ui_battery                 = RMP_CAN_DROPPED_PACKET;
+    base_battery               = RMP_CAN_DROPPED_PACKET;
     controller_gain_schedule   = RMP_CAN_DROPPED_PACKET;
-    operational_state          = RMP_CAN_DROPPED_PACKET;
     velocity_command           = RMP_CAN_DROPPED_PACKET;
     rate_command               = RMP_CAN_DROPPED_PACKET;
 
-    isReady_ = false;
+    //isReady_ = false;
 
     for ( int i=0; i<8; ++i ) {
-        msgCheckList_[i]=0;
+        //msgCheckList_[i]=0;
     }
 }
 
@@ -92,9 +93,12 @@ void RmpUsbDataFrame::AddPacket(const CanPacket &pkt)
     {
     case RMP_CAN_ID_MSG1:
     {
-        // no data, start of new frame
+        // slot0 undefined
+        // slot1 undefined
+        // slot2 undefined
+        // slot3 undefined
         // mark current frame finished, closed, or 'ready'
-        isReady_ = true;
+        //isReady_ = true;
         break;
     }
     case RMP_CAN_ID_MSG2:
@@ -103,7 +107,7 @@ void RmpUsbDataFrame::AddPacket(const CanPacket &pkt)
         pitch_dot = pkt.GetSlot(1);
         roll =  pkt.GetSlot(2);
         roll_dot =  pkt.GetSlot(3);
-        msgCheckList_[1] = 1;
+        //msgCheckList_[1] = 1;
         break;
     }
     case RMP_CAN_ID_MSG3:
@@ -112,7 +116,7 @@ void RmpUsbDataFrame::AddPacket(const CanPacket &pkt)
         right_dot = (int16_t) pkt.GetSlot(1);
         yaw_dot = (int16_t) pkt.GetSlot(2);
         frames = pkt.GetSlot(3);
-        msgCheckList_[2] = 1;
+        //msgCheckList_[2] = 1;
         break;
     }
     case RMP_CAN_ID_MSG4:
@@ -121,7 +125,7 @@ void RmpUsbDataFrame::AddPacket(const CanPacket &pkt)
                     (uint32_t)pkt.GetSlot(0));
         right = (uint32_t)(((uint32_t)pkt.GetSlot(3) << 16) |
                 (uint32_t)pkt.GetSlot(2));
-        msgCheckList_[3] = 1;
+        //msgCheckList_[3] = 1;
         break;
     }
     case RMP_CAN_ID_MSG5:
@@ -130,30 +134,34 @@ void RmpUsbDataFrame::AddPacket(const CanPacket &pkt)
                         (uint32_t)pkt.GetSlot(0));
         yaw = (uint32_t)(((uint32_t)pkt.GetSlot(3) << 16) |
                 (uint32_t)pkt.GetSlot(2));
-        msgCheckList_[4] = 1;
+        //msgCheckList_[4] = 1;
         break;
     }
     case RMP_CAN_ID_MSG6:
     {
         left_torque = (int16_t) pkt.GetSlot(0);
         right_torque = (int16_t) pkt.GetSlot(1);
-        msgCheckList_[5] = 1;
+        // slot2 undefined
+        // slot3 undefined
+        //msgCheckList_[5] = 1;
         break;
     }
     case RMP_CAN_ID_MSG7:
     {
-        controller_mode = (uint8_t) pkt.GetSlot(0);
+        operational_mode = (uint8_t) pkt.GetSlot(0);
         controller_gain_schedule = (uint8_t) pkt.GetSlot(1);
-        operational_state = (int16_t) pkt.GetSlot(2);
-        battery = pkt.GetSlot(3);
-        msgCheckList_[6] = 1;
+        ui_battery = (int16_t) pkt.GetSlot(2);
+        base_battery = (int16_t)pkt.GetSlot(3);
+        //msgCheckList_[6] = 1;
         break;
     }
     case RMP_CAN_ID_MSG8:
     {
         velocity_command = (int16_t) pkt.GetSlot(0);
         rate_command = (int16_t) pkt.GetSlot(1);
-        msgCheckList_[7] = 1;
+        // slot2 undefined
+        // slot3 undefined
+        //msgCheckList_[7] = 1;
         break;
     }
     default:

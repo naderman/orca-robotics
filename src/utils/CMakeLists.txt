@@ -4,6 +4,7 @@ MESSAGE ( "== UTILITIES ==" )
 SUBDIRS(  
   liborcaguitools
   liborcaiceutil
+#  nsview
   orcasmc
 )
 

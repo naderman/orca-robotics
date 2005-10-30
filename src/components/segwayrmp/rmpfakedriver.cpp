@@ -26,7 +26,6 @@
 
 using namespace std;
 using namespace orca;
-using orcaiceutil::operator<<;
 
 RmpFakeDriver::RmpFakeDriver()
 {
@@ -60,6 +59,6 @@ int RmpFakeDriver::read( orca::Position2dDataPtr & position2d, orca::PowerDataPt
 
 int RmpFakeDriver::sendMotionCommand( orca::Velocity2dCommandPtr & command )
 {
-    cout<<"wrote: "<<command<<endl;
+    cout<<"wrote: "<<orcaiceutil::toString(command)<<endl;
     return 0;
 }

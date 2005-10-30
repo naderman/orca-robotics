@@ -32,9 +32,12 @@
 // CPU->Segway messages
 #define RMP_CAN_ID_SHUTDOWN     0x0412
 #define RMP_CAN_ID_COMMAND      0x0413
-#define RMP_CAN_ID_HEARTBEAT    0x0688
 
-// from Status Command table on page 7
+// Internal to Segway
+//#define RMP_CAN_ID_STATUS       0x0680
+//#define RMP_CAN_ID_HEARTBEAT    0x0688
+
+// from Configuration Command table, see sec.2.2.1
 #define RMP_CAN_CMD_NONE            0
 #define RMP_CAN_CMD_MAX_VEL         10
 #define RMP_CAN_CMD_MAX_ACCL        11
@@ -45,7 +48,7 @@
 #define RMP_CAN_CMD_OPER_MODE       16
 #define RMP_CAN_CMD_RESET_INTEGRATORS 50
 
-// from table: Bitfield for Reset Integrators on p.7
+// from table: Bitfield for Reset Integrators, see sec.2.2.2
 #define RMP_CAN_RESET_RIGHT           0x01
 #define RMP_CAN_RESET_LEFT            0x02
 #define RMP_CAN_RESET_YAW             0x04
@@ -55,25 +58,26 @@
                                       RMP_CAN_RESET_YAW | \
                                       RMP_CAN_RESET_FOREAFT)
 
-// unit conversions from Data Reference p.12
+// unit conversions from Data Reference, see sec.4
 
-#define RMP_COUNT_PER_M            33215
-#define RMP_COUNT_PER_M_PER_S      332
+#define RMP_COUNT_PER_M            33215.0
+#define RMP_COUNT_PER_M_PER_S      332.0
 
 #define RMP_COUNT_PER_DEG          7.8
 #define RMP_COUNT_PER_DEG_PER_S    7.8
 #define RMP_COUNT_PER_DEG_PER_SS   7.8
-#define RMP_COUNT_PER_RAD          0.1361357
-#define RMP_COUNT_PER_RAD_PER_S    0.1361357
-#define RMP_COUNT_PER_RAD_PER_SS   0.1361357
-#define RMP_COUNT_PER_REV          112644
+#define RMP_COUNT_PER_RAD          446.9071
+#define RMP_COUNT_PER_RAD_PER_S    446.9071
+#define RMP_COUNT_PER_RAD_PER_SS   446.9071
+//! This is different from rotation and depends on geometry
+#define RMP_COUNT_PER_REV          112644.0
 
 // main (CU) battery voltage
-#define RMP_CU_COUNT_PER_VOLT      4.0
+#define RMP_BASE_COUNT_PER_VOLT      4.0
 // user interface battery voltage: volts=1.5V + n*counts
-#define RMP_UI_COUNT_PER_VOLT      0.0125
+#define RMP_UI_COEFF                0.0125
 // motor torque
-#define RMP_COUNT_PER_NM           1094
+#define RMP_COUNT_PER_NM           1094.0
 #define RMP_SEC_PER_FRAME          0.01
 
 // alexm: where is this from?
@@ -87,9 +91,9 @@
 #define RMP_MAX_TRANS_VEL_COUNT     1176
 #define RMP_MAX_ROT_VEL_COUNT       1024
 
-// minimum CU battery voltage (V)
-#define RMP_CU_MIN_VOLTAGE          66.0
-// minimum UI battery voltage (V)
+// minimum powerbase (CU) battery voltage (V)
+#define RMP_BASE_MIN_VOLTAGE          66.0
+// minimum user interface (UI) battery voltage (V)
 #define RMP_UI_MIN_VOLTAGE          6.0
 
 // maximum time without incoming commands [s]
@@ -109,12 +113,13 @@ class RmpUsbDataFrame
 public:
     RmpUsbDataFrame();
 
-    // Adds a new packet to this frame
+    //! Adds information from a packet
     void AddPacket(const CanPacket &pkt);
 
-    // print out frame data
+    //! Print out frame data
     void dump();
 
+    //! Resets all data to RMP_CAN_DROPPED_PACKET
     void reset();
 
     //! Pitch Angle
@@ -145,23 +150,23 @@ public:
     int16_t    right_torque;
     //! Servo Frames
     uint16_t   frames;
-    //! Open Circuit Battery Voltage (min of A, B)
-    uint16_t   battery;
-    //! Controller Mode (0= disabled, 1=tractor, 2= balance)
-    uint16_t controller_mode;
+    //! User Interface battery voltage
+    uint16_t   ui_battery;
+    //! Powerbase attery Voltage (min of A, B)
+    uint16_t   base_battery;
+    //! Operational Mode (0= disabled, 1=tractor, 2= balance)
+    uint16_t operational_mode;
     //! Controller Gain Schedule (0=normal, 1=tall, 2=heavy)
     uint16_t controller_gain_schedule;
-    //! Operational State ???
-    int16_t operational_state;
     //! Velocity command (as received)
     int16_t velocity_command;
     //! Turn Command (as received)
     int16_t rate_command;
 
-    //! Is this frame ready (i.e., did the next frame start?)
-    bool  isReady_;
+    // Is this frame ready (i.e., did the next frame start?)
+    //bool  isReady_;
 
-    int msgCheckList_[8];
+    //int msgCheckList_[8];
 };
 
 

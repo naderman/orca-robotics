@@ -63,6 +63,8 @@ public:
     {
         double maxSpeed;
         double maxTurnrate;
+        double position2dPublishInterval;
+        double powerPublishInterval;
     };
 
     orcaiceutil::Current current_;

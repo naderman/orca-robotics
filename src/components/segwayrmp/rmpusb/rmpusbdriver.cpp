@@ -34,7 +34,6 @@
 
 using namespace std;
 using namespace orca;
-using orcaiceutil::operator<<;
 
 RmpUsbDriver::RmpUsbDriver( const orcaiceutil::Current & current )
 {
@@ -49,12 +48,8 @@ RmpUsbDriver::RmpUsbDriver( const orcaiceutil::Current & current )
     odomY_ = 0.0;
     odomYaw_ = 0.0;
     lastRawYaw_ = 0;
-    lastRawLeft_ = 0;
-    lastRawRight_ = 0;
     lastRawForeaft_ = 0;
 
-    //lastSpeedX_ = 0;
-    //lastSpeedYaw_ = 0;
     firstread_ = true;
 }
 
@@ -70,7 +65,12 @@ int RmpUsbDriver::enable()
         return 1;
     }
 
-    resetIntegrators();
+    if ( resetIntegrators() ) {
+        cerr<<"error in resetIntegrators()"<<endl;
+    }
+
+    setMaxVelocitySpeedFactor( 16 );
+
     return 0;
 }
 
@@ -89,50 +89,33 @@ int RmpUsbDriver::disable()
 */
 int RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )
 {
-    int usbBusPolls = 0;
     int canPacketsReceived = 0;
     int canPacketsProcessed = 0;
 
-    const int maxUsbBusPolls = 10;
+    // Read packets (will only talk to usb if can packet buffer is empty)
+    canPacketsReceived += canio_->ReadPackets();
 
-    // keep reading data from USB buffer until we complete a data frame
-    while ( !dataFrame_->isReady_ && usbBusPolls<maxUsbBusPolls )
+    // Process data packets
+    CanPacket pkt;
+    while( !canio_->GetNextPacket(pkt) )
     {
-        // Read packets
-        canPacketsReceived += canio_->ReadPackets();
-        ++usbBusPolls;
-    
-        // Process data packets    
-        CanPacket pkt;
-        while( !canio_->GetNextPacket(pkt) )
-        {
-            ++canPacketsProcessed;
-    
-            // Add packet to data frame
-            dataFrame_->AddPacket(pkt);
-    
-            // chips's debugging stuff
-            //WatchPacket( &pkt, 0x407 );
-            //WatchDataStream( pkt );
-    
-            // If frame is complete, transfer data and reset frame
-            if( dataFrame_->isReady_ )
-            {
-                cout<<"mode:"<<dataFrame_->controller_mode
-                        <<" gain:"<<dataFrame_->controller_gain_schedule
-                        <<" state:"<<dataFrame_->operational_state<<endl;
+        ++canPacketsProcessed;
 
-                updateData( dataFrame_, position2d, power );
-                dataFrame_->reset();
-                //cout<<"rmpusb::read: rcv:"<<canPacketsReceived<<" proc:"<<canPacketsProcessed<<endl;
-                return 0;
-            }
+        // Add packet to data dataFrame_
+        dataFrame_->AddPacket(pkt);
+
+        if ( pkt.id == RMP_CAN_ID_MSG5 ) {
+            integrateMotion();
         }
-        // check USB bus at 100Hz
-        usleep(10000);
+
+        // chips's debugging stuff
+        WatchPacket( &pkt, RMP_CAN_ID_MSG8 );
+        //WatchDataStream( pkt );
     }
 
-    return 1;
+    updateData( position2d, power );
+    //cout<<"rmpusb::read: rcv:"<<canPacketsReceived<<" proc:"<<canPacketsProcessed<<endl;
+    return 0;
 }
 
 int RmpUsbDriver::sendMotionCommand( orca::Velocity2dCommandPtr & command )
@@ -151,78 +134,77 @@ int RmpUsbDriver::resetIntegrators()
     return canio_->WritePacket(pkt);
 }
 
-void RmpUsbDriver::updateData( RmpUsbDataFrame* data_frame,
-                orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )
+int RmpUsbDriver::setMaxVelocitySpeedFactor( int scale )
 {
-    int delta_lin_raw, delta_ang_raw;
-    double deltaX;
-    double deltaYaw;
-    //double tmp;
+    CanPacket pkt;
+    makeStatusCommandPacket( &pkt, RMP_CAN_CMD_MAX_VEL, (uint16_t)scale );
 
-    // Use integrated values to calculate odometry
-    // make sure the required fields were not dropped in this frame
-    if (  data_frame->foreaft != RMP_CAN_DROPPED_PACKET  &&
-          data_frame->yaw     != RMP_CAN_DROPPED_PACKET  )
-    {
-        // Get the new linear and angular encoder values and compute
-        // odometry.  Note that we do the same thing here, regardless of
-        // whether we're presenting 2D or 3D position info.
-        delta_lin_raw = diff(lastRawForeaft_, data_frame->foreaft, firstread_);
-        lastRawForeaft_ = data_frame->foreaft;
-        
-        delta_ang_raw = diff(lastRawYaw_, data_frame->yaw, firstread_);
-        lastRawYaw_ = data_frame->yaw;
-        
-        deltaX = (double)delta_lin_raw / (double)RMP_COUNT_PER_M;
-        deltaYaw = DEG2RAD((double)delta_ang_raw / (double)RMP_COUNT_PER_REV * 360.0);
-        
-        // First-order odometry integration
-        odomX_ += deltaX * cos(odomYaw_);
-        odomY_ += deltaX * sin(odomYaw_);
-        odomYaw_ += deltaYaw;
-        
-        // Normalize yaw in [0, 360]
-        odomYaw_ = atan2(sin(odomYaw_), cos(odomYaw_));
-        if (odomYaw_ < 0) {
-            odomYaw_ += 2 * M_PI;
-        }
+    return canio_->WritePacket(pkt);
+}
 
-        // first, do 2D info.
-        position2d->pose.p.x = odomX_;
-        position2d->pose.p.y = odomY_;
-        position2d->pose.o = odomYaw_;
-    } else {
-        //printf("skipping odometry\n");
+void RmpUsbDriver::integrateMotion()
+{
+    // Get the new linear and angular encoder values and compute odometry.
+    int deltaForeaftRaw = diff(lastRawForeaft_, dataFrame_->foreaft, firstread_);
+    int deltaYawRaw = diff(lastRawYaw_, dataFrame_->yaw, firstread_);
+
+    // store current values
+    lastRawForeaft_ = dataFrame_->foreaft;
+    lastRawYaw_ = dataFrame_->yaw;
+
+    // convert to SI
+    double deltaForeaft = (double)deltaForeaftRaw / RMP_COUNT_PER_M;
+    double deltaYaw = (double)deltaYawRaw / RMP_COUNT_PER_REV * M_PI;
+
+    // First-order odometry integration
+    odomX_ += deltaForeaft * cos(odomYaw_);
+    odomY_ += deltaForeaft * sin(odomYaw_);
+    odomYaw_ += deltaYaw;
+
+    // Normalize yaw in [0, 360]
+    odomYaw_ = atan2(sin(odomYaw_), cos(odomYaw_));
+    if (odomYaw_ < 0) {
+        odomYaw_ += 2 * M_PI;
     }
+}
 
-    //assert( this->position_data.xpos < 100 ); // when we miss msg5. why?
+void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )
+{
+    // POSITION2D
+    //
+    // for odometry, use integrated values
+    position2d->pose.p.x    = odomX_;
+    position2d->pose.p.y    = odomY_;
+    position2d->pose.o      = odomYaw_;
 
-    // Use instanteneous values to calculate current rates
-    // make sure the required fields were not dropped in this frame
-    if ( data_frame->left_dot!=RMP_CAN_DROPPED_PACKET
-         && data_frame->right_dot!=RMP_CAN_DROPPED_PACKET
-         && data_frame->yaw_dot!=RMP_CAN_DROPPED_PACKET
-         && data_frame->roll!=RMP_CAN_DROPPED_PACKET
-         && data_frame->pitch!=RMP_CAN_DROPPED_PACKET
-         && data_frame->roll_dot!=RMP_CAN_DROPPED_PACKET
-         && data_frame->pitch_dot!=RMP_CAN_DROPPED_PACKET )
-    {
-        // combine left and right wheel velocity to get foreward velocity
-        // change from counts/sec into meters/sec
-        position2d->motion.v.x =
-                ((double)data_frame->left_dot+(double)data_frame->right_dot) /
-                    (double)RMP_COUNT_PER_M_PER_S / 2.0;
-        
-        // no side speeds for this bot
-        position2d->motion.v.y = 0;
-        
-        // from counts/sec into deg/sec.  also, take the additive
-        // inverse, since the RMP reports clockwise angular velocity as positive.
-        position2d->motion.w =
-                DEG2RAD( -(double)data_frame->yaw_dot / (double)RMP_COUNT_PER_DEG_PER_S );
+    // for current rates, use instanteneous values
+    // combine left and right wheel velocity to get forward velocity
+    // change from counts/sec into meters/sec
+    position2d->motion.v.x =
+            ((double)dataFrame_->left_dot+(double)dataFrame_->right_dot) /
+             RMP_COUNT_PER_M_PER_S / 2.0;
 
-        //! @todo stall from currents?
-        position2d->stalled = false;
+    // no side speeds for this bot
+    position2d->motion.v.y = 0.0;
+
+    // from counts/sec into deg/sec.  also, take the additive
+    // inverse, since the RMP reports clockwise angular velocity as positive.
+    position2d->motion.w = -(double)dataFrame_->yaw_dot / RMP_COUNT_PER_RAD_PER_S;
+
+    //! @todo stall from currents?
+    position2d->stalled = false;
+
+    // POWER
+    //
+    // Convert battery voltage from counts to Volts
+    // we only know the minimum of the two main batteries
+    power->batteries[0].voltage = dataFrame_->base_battery / RMP_BASE_COUNT_PER_VOLT;
+    power->batteries[0].percent = 99.0;
+    power->batteries[1].voltage = dataFrame_->base_battery / RMP_BASE_COUNT_PER_VOLT;
+    power->batteries[1].percent = 99.0;
+    power->batteries[2].voltage = 1.5 + dataFrame_->ui_battery*RMP_UI_COEFF;
+    power->batteries[2].percent = 99.0;
+
 /*        
         // now, do 3D info.
         this->position3d_data.xpos = htonl((int32_t)(odomX_ * 1000.0));
@@ -231,7 +213,7 @@ void RmpUsbDriver::updateData( RmpUsbDataFrame* data_frame,
         this->position3d_data.zpos = 0;
         
         // normalize angles to [0,360]
-        tmp = NORMALIZE(DTOR((double)data_frame->roll /
+        tmp = NORMALIZE(DTOR((double)dataFrame_->roll /
                 (double)RMP_COUNT_PER_DEG));
         if(tmp < 0) {
             tmp += 2*M_PI;
@@ -239,7 +221,7 @@ void RmpUsbDriver::updateData( RmpUsbDataFrame* data_frame,
         this->position3d_data.roll = htonl((int32_t)rint(tmp * 1000.0));
         
         // normalize angles to [0,360]
-        tmp = NORMALIZE(DTOR((double)data_frame->pitch /
+        tmp = NORMALIZE(DTOR((double)dataFrame_->pitch /
                 (double)RMP_COUNT_PER_DEG));
         if(tmp < 0) {
             tmp += 2*M_PI;
@@ -251,8 +233,8 @@ void RmpUsbDriver::updateData( RmpUsbDataFrame* data_frame,
         // combine left and right wheel velocity to get foreward velocity
         // change from counts/s into mm/s
         this->position3d_data.xspeed =
-                htonl((uint32_t)rint(((double)data_frame->left_dot +
-                (double)data_frame->right_dot) /
+                htonl((uint32_t)rint(((double)dataFrame_->left_dot +
+                (double)dataFrame_->right_dot) /
                 (double)RMP_COUNT_PER_M_PER_S
                 * 1000.0 / 2.0));
         // no side or vertical speeds for this bot
@@ -260,10 +242,10 @@ void RmpUsbDriver::updateData( RmpUsbDataFrame* data_frame,
         this->position3d_data.zspeed = 0;
         
         this->position3d_data.rollspeed =
-                htonl((int32_t)rint((double)data_frame->roll_dot /
+                htonl((int32_t)rint((double)dataFrame_->roll_dot /
                 (double)RMP_COUNT_PER_DEG_PER_S * M_PI / 180 * 1000.0));
         this->position3d_data.pitchspeed =
-                htonl((int32_t)rint((double)data_frame->pitch_dot /
+                htonl((int32_t)rint((double)dataFrame_->pitch_dot /
                 (double)RMP_COUNT_PER_DEG_PER_S * M_PI / 180 * 1000.00));
         // from counts/sec into millirad/sec.  also, take the additive
         // inverse, since the RMP reports clockwise angular velocity as
@@ -271,31 +253,18 @@ void RmpUsbDriver::updateData( RmpUsbDataFrame* data_frame,
         
         // This one uses left_dot and right_dot, which comes from odometry
         this->position3d_data.yawspeed =
-                htonl((int32_t)(rint((double)(data_frame->right_dot - data_frame->left_dot) /
+                htonl((int32_t)(rint((double)(dataFrame_->right_dot - dataFrame_->left_dot) /
                 (RMP_COUNT_PER_M_PER_S * RMP_GEOM_WHEEL_SEP * M_PI) * 1000)));
         // This one uses yaw_dot, which comes from the IMU
         //data.position3d_data.yawspeed =
-        //  htonl((int32_t)(-rint((double)data_frame->yaw_dot /
+        //  htonl((int32_t)(-rint((double)dataFrame_->yaw_dot /
         //                        (double)RMP_COUNT_PER_DEG_PER_S * M_PI / 180 * 1000)));
         
         this->position3d_data.stall = 0;
 */
-    } else {
-        //printf("skipping rates\n");
-    }
-
-    // make sure the required fields were not dropped in this frame
-    if ( data_frame->battery!=RMP_CAN_DROPPED_PACKET )
-    {
-        // Convert battery voltage to decivolts for Player.
-        power->batteries[0].voltage = data_frame->battery / RMP_CU_COUNT_PER_VOLT;
-        power->batteries[0].percent = 99.0;
-    } else {
-        //printf("skipping power\n");
-    }
 
     // Chip
-    //data_frame->dump();
+    //dataFrame_->dump();
     //dump();
 
     firstread_ = false;
@@ -372,27 +341,32 @@ void RmpUsbDriver::makeShutdownCommandPacket( CanPacket* pkt )
 
 // Calculate the difference between two raw counter values, taking care
 // of rollover.
-int RmpUsbDriver::diff(uint32_t from, uint32_t to, bool first)
+int RmpUsbDriver::diff( uint32_t from, uint32_t to, bool first )
 {
+    // if this is the first time, report no change
+    if(first) {
+        return 0;
+    }
+
     int diff1, diff2;
     static uint32_t max = (uint32_t)pow(2.0,32.0)-1;
 
-  // if this is the first time, report no change
-    if(first)
-        return(0);
-
     diff1 = to - from;
 
-        // find difference in two directions and pick shortest
-    if(to > from)
+    // find difference in two directions and pick shortest
+    if( to > from ) {
         diff2 = -(from + max - to);
-    else
+    }
+    else {
         diff2 = max - from + to;
+    }
 
-    if(abs(diff1) < abs(diff2))
-        return(diff1);
-    else
-        return(diff2);
+    if( abs(diff1) < abs(diff2) ) {
+        return diff1;
+    }
+    else {
+        return diff2;
+    }
 }
 
 void RmpUsbDriver::WatchPacket( CanPacket* pkt, short int pktID )
@@ -415,32 +389,33 @@ void RmpUsbDriver::WatchPacket( CanPacket* pkt, short int pktID )
         {
             case 0x0401:
                 printf("pitch = %6.2f, pitch rate = %6.2f,roll = %6.2f, roll rate = %6.2f\r",
-                       (float)(slot0/7.8), (float)(slot1/7.8),
-                       (float)(slot2/7.8), (float)(slot3/7.8));
+                       (float)(slot0/RMP_COUNT_PER_DEG), (float)(slot1/RMP_COUNT_PER_DEG_PER_S),
+                       (float)(slot2/RMP_COUNT_PER_DEG), (float)(slot3/RMP_COUNT_PER_DEG_PER_S));
                 break;
             case 0x402:
                 printf("LW vel = %6.2f, RW vel = %6.2f, yaw rate = %6.2f, frames = %8i\r",
-                       (float)(slot0/332.0), float(slot1/332.0),
-                       (float)(slot2/7.8), (int)(slot3/0.01)  );
+                       (float)(slot0/RMP_COUNT_PER_M_PER_S), float(slot1/RMP_COUNT_PER_M_PER_S),
+                       (float)(slot2/RMP_COUNT_PER_DEG_PER_S), (int)(slot3/RMP_SEC_PER_FRAME)  );
                 break;
             case 0x0403:
                 printf("Left wheel = %6.2f, right wheel = %6.2f\r",
-                       (float)((slot0_lo | slot1_hi)/33215.0),
-                       (float)((slot2_lo | slot3_hi)/33215.0)   );
+                       (float)((slot0_lo | slot1_hi)/RMP_COUNT_PER_M),
+                       (float)((slot2_lo | slot3_hi)/RMP_COUNT_PER_M)   );
                 break;
             case 0x0404:
                 printf("Int f/a disp  = %6.2f, int yaw disp = %6.2f\r",
-                       (float)((slot0_lo | slot1_hi)/33215.0),
-                       (float)((slot2_lo | slot3_hi)/112644.0)   );
+                       (float)((slot0_lo | slot1_hi)/RMP_COUNT_PER_M),
+                       (float)((slot2_lo | slot3_hi)/RMP_COUNT_PER_REV)   );
                 break;
             case 0x0405:
                 printf("Left motor torque  = %6.2f, right motor torque = %6.2f\r",
-                       (float)(slot0/1094.0), (float)(slot1/1094.0)   );
+                       (float)(slot0/1094.0), (float)(slot1/RMP_COUNT_PER_NM)   );
                 break;
             case 0x0406:
                 printf("Op mode = %1i, gain sch = %1i, UI batt = %6.2f, Base batt = %6.2f\r",
                        slot0, slot1,
-                       (float)(1.4 + slot2*0.0125), (float)(slot3/4.0) );
+                       (float)(1.5 + slot2*RMP_UI_COEFF),
+                       (float)(slot3/RMP_BASE_COUNT_PER_VOLT) );
                 break;
             case 0x0407:
                 printf("Vel command = %4i, turn command = %4i\n",

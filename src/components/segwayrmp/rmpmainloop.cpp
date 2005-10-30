@@ -41,7 +41,6 @@
 
 using namespace std;
 using namespace orca;
-using orcaiceutil::operator<<;
 
 RmpMainLoop::RmpMainLoop(
                  orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy,
@@ -49,15 +48,15 @@ RmpMainLoop::RmpMainLoop(
                  orcaiceutil::PtrBuffer<orca::PowerDataPtr>         & powerProxy,
                  orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer,
                  orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer,
-                 const orca::Position2dConsumerPrx                  & position2dConsumer,
-                 const orca::PowerConsumerPrx                       & powerConsumer ) :
+                 const orca::Position2dConsumerPrx                  & position2dPublisher,
+                 const orca::PowerConsumerPrx                       & powerPublisher ) :
         position2dProxy_(position2dProxy),
         commandNotify_(commandNotify),
         powerProxy_(powerProxy),
         setConfigBuffer_(setConfigBuffer),
         currentConfigBuffer_(currentConfigBuffer),
-        position2dConsumer_(position2dConsumer),
-        powerConsumer_(powerConsumer),
+        position2dPublisher_(position2dPublisher),
+        powerPublisher_(powerPublisher),
         driver_(0),
         driverType_(RmpDriver::UNKNOWN_DRIVER)
 {
@@ -78,6 +77,10 @@ void RmpMainLoop::readConfigs()
             "SegwayRmp.Config.MaxSpeed", 1.0 );
     config_.maxTurnrate = orcaiceutil::getPropertyAsDoubleWithDefault( current_.properties(),
             "SegwayRmp.Config.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
+    config_.position2dPublishInterval = orcaiceutil::getPropertyAsDoubleWithDefault( current_.properties(),
+            "SegwayRmp.Config.position2dPublishInterval", 0.1 );
+    config_.powerPublishInterval = orcaiceutil::getPropertyAsDoubleWithDefault( current_.properties(),
+            "SegwayRmp.Config.powerPublishInterval", 10.0 );
     string driverName = orcaiceutil::getPropertyWithDefault( current_.properties(), 
             "SegwayRmp.Config.Driver", "usb" );
 
@@ -132,7 +135,7 @@ void RmpMainLoop::run()
     }
     while ( driver_->enable() ) {
         current_.logger()->trace("remote","failed to enable the driver");
-        sleep(1);
+        sleep(2);
     }
     current_.logger()->trace("remote","driver enabled");
 
@@ -150,39 +153,59 @@ void RmpMainLoop::run()
     powerData->batteries[1].name = "main-rear";
     powerData->batteries[2].name = "io";
 
+    int readStatus = 1;
+
     while( isActive() )
     {
         // Read data from the hardware
+        //cout<<"frame: " << readTimer_.elapsed().toMilliSecondsDouble()<<endl;
         readTimer_.restart();
-        if ( driver_->read( position2dData, powerData ) ) {
+       
+        if ( (readStatus = driver_->read( position2dData, powerData )) ) {
             current_.logger()->trace("remote","failed to read from Segway");
+            // indicate some fault state here
+            sleep(1);
         }
-        //cout<<"read: " << readTimer_.stop().toMilliSecondsDouble()<<endl;
         
-        // push data to IceStorm
-        try
-        {
-            position2dConsumer_->setData( position2dData );
-            powerConsumer_->setData( powerData );
-        }
-        catch ( const Ice::ConnectionRefusedException & e )
-        {
-            current_.logger()->trace("remote","lost connection to IceStorm");
-        }
-        catch ( const Ice::CommunicatorDestroyedException & e )
-        {
-            // it's ok, the communicator may already be destroyed
-        }
+        //cout<<"read: " << readTimer_.elapsed().toMilliSecondsDouble()<<endl;
 
-        // Stick it in the buffer so pullers can get it
-        position2dProxy_.push( position2dData );
-        powerProxy_.push( powerData );
+        // only we maganed to read successfuly
+        if ( readStatus==0 ) {
+            // push data to IceStorm
+            try
+            {
+                if ( position2dPublishTimer_.elapsed().toSecondsDouble()>config_.position2dPublishInterval ) {
+                    position2dPublisher_->setData( position2dData );
+                    position2dPublishTimer_.restart();
+                }
+                if ( powerPublishTimer_.elapsed().toSecondsDouble()>config_.powerPublishInterval ) {
+                    powerPublisher_->setData( powerData );
+                    powerPublishTimer_.restart();
+                }
+            }
+            catch ( const Ice::ConnectionRefusedException & e )
+            {
+                current_.logger()->trace("remote","lost connection to IceStorm");
+            }
+            catch ( const Ice::CommunicatorDestroyedException & e )
+            {
+                // it's ok, the communicator may already be destroyed
+            }
+
+            // we are still inside if(readStatus==0)
+            // Stick it in the buffer so pullers can get it (do it after IceStorm 'cause it's less time sensitive)
+            position2dProxy_.push( position2dData );
+            powerProxy_.push( powerData );
+        }
 
         // Have any configuration requests arrived?
         if ( !setConfigBuffer_.isEmpty() )
         {
             // set configs
         }
+
+        // time the loop rate here for now
+        usleep(100000);
     }
 
     // reset the hardware
@@ -195,7 +218,7 @@ void RmpMainLoop::run()
 
 void RmpMainLoop::handleData( const Ice::ObjectPtr & obj )
 {
-    //cout<<"write: " << writeTimer_.stop().toMilliSecondsDouble()<<endl;
+    //cout<<"write: " << writeTimer_.elapsed().toMilliSecondsDouble()<<endl;
 
     orca::Velocity2dCommandPtr command = Velocity2dCommandPtr::dynamicCast( obj );
 
@@ -209,7 +232,7 @@ void RmpMainLoop::handleData( const Ice::ObjectPtr & obj )
                 (command->motion.w / fabs(command->motion.w)) * config_.maxTurnrate;
     }
 
-    //cout<<"handling: "<<command<<endl;
+    //cout<<"handling: "<<orcaiceutil::toString(command)<<endl;
 
     // write to hardware
     if( driver_->sendMotionCommand( command ) != 0 )
