@@ -66,33 +66,22 @@ void LaserMonComponent::start()
     // Get the geometry
     cout << "Laser Geometry: " << laserPrx->getGeometry() << endl;
 
-#if OLD_STUFF
-    // create servant and tell adapter about it (let it make up a globally unique name)
-    orca::LaserConsumerPtr statusConsumer = new LaserConsumerI;
-    orcaiceutil::subscribeToIceStormTopic(
-                    current(), (Ice::ObjectPtr&) statusConsumer, "Laser" );
-#endif
-
-    //
-    // ENABLE ADAPTER
-    //
-    activate();
-
-
-
-    //
-    // Subscribe for data
-    //
-
     // create servant and tell adapter about it (let it make up a globally unique name)
     Ice::ObjectPrx obj = adapter()->addWithUUID( new LaserConsumerI );
     // make a direct proxy
     Ice::ObjectPrx prx = adapter()->createDirectProxy( obj->ice_getIdentity() );
     orca::LaserConsumerPrx callbackPrx = orca::LaserConsumerPrx::uncheckedCast( prx );
 
+    //
+    // ENABLE NETWORK CONNECTIONS
+    //
+    activate();
+
+    //
+    // Subscribe for data
+    //
     laserPrx->subscribe( callbackPrx );
 
-    
     // the rest is handled by the application/service
 }
 
