@@ -61,4 +61,6 @@ IF ( BUILD_SEGWAYRMP )
     
     INSTALL_TARGETS( /lib OrcaSegwayRmp )
 
+    SUBDIRS( testmachine )
+
 ENDIF ( BUILD_SEGWAYRMP )
