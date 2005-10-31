@@ -57,6 +57,7 @@ IF ( BUILD_SEGWAYRMP )
     
     # build an IceBox service
     ADD_LIBRARY( OrcaSegwayRmp SHARED ${SERV_SRCS} )
+    TARGET_LINK_LIBRARIES( OrcaSegwayRmp ${USB_LIBS} ${CAN_LIBS} )
     
     INSTALL_TARGETS( /lib OrcaSegwayRmp )
 
