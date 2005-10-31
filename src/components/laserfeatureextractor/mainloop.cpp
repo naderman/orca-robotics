@@ -86,16 +86,14 @@ void MainLoop::run()
         while( isActive() )
         {
             // block on laser data
-            cout << "INFO(mainloop.cpp): Blocking on laser read" << endl;
             laserDataBuffer_.getNext ( laserDataPtr );
-            cout << "INFO(mainloop.cpp): Getting laserData of size " << laserDataPtr->ranges.size() << " from buffer" << endl << endl;
+            //cout << "INFO(mainloop.cpp): Getting laserData of size " << laserDataPtr->ranges.size() << " from buffer" << endl << endl;
             
             // execute algorithm to compute features
             algorithm_ -> computeFeatures( laserConfigPtr_, laserDataPtr, featuresPtr );
-
+            
             // convert to the robot frame CS
             convertToRobotCS( featuresPtr );
-            
             try {
                 // push it to IceStorm
                 polarFeaturesConsumer_->setData( featuresPtr );
@@ -105,10 +103,11 @@ void MainLoop::run()
             catch ( Ice::ConnectionRefusedException &e ) {
                 cout<<"TRACE(mainloop.cpp): WARNING: Failed push to IceStorm." << endl;
             }
-            
+                
             // Stick it into buffer, so pullers can get it
             polarFeaturesDataBuffer_.push( featuresPtr );
-            
+
+            usleep(50000);
         }
         cout<<"TRACE(mainloop.cpp): Exitting from run()" << endl;
     }
