@@ -68,7 +68,7 @@ void NetworkLoop::run()
         catch ( const Ice::ConnectionRefusedException & e )
         {
             //current_.logger()->trace("remote","failed to connect to a remote interface");
-            sleep(2);
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         }
     }
 

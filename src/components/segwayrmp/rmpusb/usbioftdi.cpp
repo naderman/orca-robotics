@@ -116,7 +116,7 @@ int UsbIoFtdi::init()
         for ( int i=0; i<10; ++i )
         {
             ReadPacket( &ppp, 0 );
-            usleep(50);
+             IceUtil::ThreadControl::sleep(IceUtil::Time::microSeconds(50));
         }
         */
     }
@@ -159,7 +159,7 @@ int UsbIoFtdi::resetDevice()
         cout<<"FT_SetTimeouts OK"<<endl;
     }
     */
-    usleep( 150 );
+    IceUtil::ThreadControl::sleep(IceUtil::Time::microSeconds(150));
 
       //normal timeout while board finishes reset
     ftStatus = FT_SetTimeouts( ftHandle_, 0, 0 );  // timeouts in ms
@@ -251,7 +251,7 @@ int UsbIoFtdi::readPacketPolling( CanPacket* pkt )
 
         if ( readFromUsbToBuffer()==0 ) {
             // try again at 50Hz
-            usleep(pollingIntervalUsec);
+            IceUtil::ThreadControl::sleep(IceUtil::Time::microSeconds(pollingIntervalUsec));
             continue;
         }
     

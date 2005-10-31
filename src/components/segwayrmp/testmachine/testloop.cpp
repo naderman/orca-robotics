@@ -57,7 +57,7 @@ void TestLoop::run()
         catch ( const Ice::ConnectionRefusedException & e )
         {
             //current_.logger()->trace("remote","failed to connect to a remote interface");
-            sleep(2);
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         }
     }
 
@@ -88,7 +88,7 @@ void TestLoop::run()
 
         //powerPrx->subscribe( powerCallbackPrx_, 2.0 );
 
-        sleep( 2 );
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
     //cout<<"exiting thread"<<endl;
 }

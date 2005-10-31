@@ -79,7 +79,7 @@ void HelloServiceI::start(const string& name,
         cout<<"Pushing data to consumer"<<endl;
         position2dConsumer->setData( posData );
 
-        sleep(1);
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     }
 
     // instead of while(1){ sleep(x); }

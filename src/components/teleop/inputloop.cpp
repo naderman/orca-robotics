@@ -109,7 +109,7 @@ void InputLoop::run()
     // don't forget!
     while ( driver_->enable() ) {
         current_.logger()->trace("remote","failed to enable driver");
-        sleep(1);
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     }
     current_.logger()->trace("remote","driver enabled");
 

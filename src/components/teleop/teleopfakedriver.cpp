@@ -54,7 +54,7 @@ int TeleopFakeDriver::readdata( orca::Velocity2dCommandPtr &data )
 {
     orcaiceutil::setSane( data );
 
-    sleep( 1 );
+    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
 
     return 0;
 }

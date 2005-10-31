@@ -84,8 +84,7 @@ void DeviceI::setPushInterval(Ice::Int intervalMs, const ::Ice::Current&)
 void DeviceI::publish()
 {
     stormUser_->acceptDataPush( scan_ );
-
-    usleep( intervalMs_*1000 );
+    IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(intervalMs_));
 }
 
 void DeviceI::requestData(const orca::DeviceUserPrx& user, const Ice::Current& current)

@@ -135,7 +135,7 @@ void RmpMainLoop::run()
     }
     while ( driver_->enable() ) {
         current_.logger()->trace("remote","failed to enable the driver");
-        sleep(2);
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
     current_.logger()->trace("remote","driver enabled");
 
@@ -164,7 +164,7 @@ void RmpMainLoop::run()
         if ( (readStatus = driver_->read( position2dData, powerData )) ) {
             current_.logger()->trace("remote","failed to read from Segway");
             // indicate some fault state here
-            sleep(1);
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }
         
         //cout<<"read: " << readTimer_.elapsed().toMilliSecondsDouble()<<endl;
@@ -205,7 +205,7 @@ void RmpMainLoop::run()
         }
 
         // time the loop rate here for now
-        //usleep(100000);
+        //IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(100));
     }
 
     // reset the hardware

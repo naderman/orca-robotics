@@ -107,7 +107,7 @@ void MainLoop::run()
             // Stick it into buffer, so pullers can get it
             polarFeaturesDataBuffer_.push( featuresPtr );
 
-            usleep(50000);
+            IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(50));
         }
         cout<<"TRACE(mainloop.cpp): Exitting from run()" << endl;
     }

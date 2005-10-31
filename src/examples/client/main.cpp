@@ -77,7 +77,7 @@ int App::run( int argc, char* argv[] )
         catch ( const Ice::ConnectionRefusedException & e ) {
             if ( count++ > 5 ) exit(1);
             cout<<"tried "<<count<<" times"<<endl;
-            sleep(1);
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }
     }
 

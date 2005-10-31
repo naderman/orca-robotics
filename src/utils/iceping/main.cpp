@@ -24,6 +24,8 @@
 #include <Ice/Ice.h>
 #include <IceUtil/Time.h>
 
+#include <orcaiceutil/orcaiceutil.h>
+
 
 //#include <orca/configutils.h>
 
@@ -96,7 +98,7 @@ int App::run( int argc, char* argv[] )
         for ( int i=0; i<count; ++i ) {
             base->ice_ping();
             if ( intervalUs ) {
-                usleep( intervalUs );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::microSeconds(intervalUs));
             }
         }
 
