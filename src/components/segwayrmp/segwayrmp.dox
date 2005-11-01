@@ -72,7 +72,22 @@ Orca component by Alex Makarenko. Original CAN driver code came from Player by A
 
 The USB version of RMP uses a chip from Future Technology Devices Int. (FTDI). Following the Windows  demo software from Segway we use a high-level closed-source library from FTDI to communicate with their chip. The Linux and Windows versions of the library have a (nearly) identical API. On linux the library is called libftd2xx.so and it uses the standard low-level libusb.so.
 
-The Orca component has been tested with libftd2xx.so.0.4.5 and libusb-0.1.so.4.4.2. Download the libftd2xx library from <a href="http://ftdichip.com/Drivers/FT2232CDrivers.htm#D2XX">www.ftdichip.com</a>. Untar and follow the installation instructions in README.dat file.
+Make sure libusb is installed. In Debian, the easiest is to install the developer package. It's likely that you already have the library and all this package will do is create a couple of symbolic links.
+@verbatim
+# sudo apt-get install libusb-dev
+@endverbatim
+
+The Orca component has been tested with libftd2xx.so.0.4.5 and libusb-0.1.so.4.4.2. Download the libftd2xx library from <a href="http://ftdichip.com/Drivers/FT2232CDrivers.htm#D2XX">www.ftdichip.com</a>. Untar and follow the installation instructions in README.dat file. In addition, copy the header files provided with the distribution to a standard place, e.g.
+@verbatim
+# cp ftd2xx.h WinTypes.h /usr/local/include/.
+@endverbatim
+
+As usual, make sure that both Linux and CMake detect the changes
+@verbatim
+# ldconfig
+$ rm CMakeCache.txt
+$ cmake .
+@endverbatim
 
 @par Operation
 
