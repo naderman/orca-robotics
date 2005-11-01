@@ -31,7 +31,13 @@ SET( SLICE_SOURCES
 #
 GENERATE_SLICE_RULES( SLICE_CPP_FILES SLICE_HEADER_FILES ${SLICE_SOURCES} )
 
-ADD_LIBRARY( OrcaInterfaces SHARED ${SLICE_CPP_FILES} )
+#Temporary measure until we get the shared stuff working under win32
+IF(NOT WIN32)
+  ADD_LIBRARY( OrcaInterfaces SHARED ${SLICE_CPP_FILES} )
+ELSE (NOT WIN32)
+  ADD_LIBRARY( OrcaInterfaces STATIC ${SLICE_CPP_FILES} )
+ENDIF(NOT WIN32) 
+
 INSTALL_TARGETS( /lib OrcaInterfaces )
 INSTALL_FILES( /include/orca FILES ${SLICE_HEADER_FILES} )
 
@@ -41,4 +47,12 @@ INCLUDE_DIRECTORIES( BEFORE
     ${PROJ_BINARY_DIR}/src/interfaces/slice/orca
 )
 
+# Note: Under Windows, if in debug mode, you must link against debug
+# versions of the libraries.
+# Windows needs to  know the symbols at compile time; no run-time linking
+# a-la Linux. 
+
+IF( WIN32 )
+  TARGET_LINK_LIBRARIES ( OrcaInterfaces Ice IceUtil) 
+ENDIF( WIN32 ) 
 ADD_DEFINITIONS( "-Wall" )
