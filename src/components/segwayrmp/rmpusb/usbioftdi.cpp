@@ -25,6 +25,7 @@
 #include <iostream>
 #include <assert.h>
 #include <pthread.h>
+#include <IceUtil/IceUtil.h>
 
 // magic numbers
 #define SEGWAY_USB_VENDOR_ID                    0x0403
