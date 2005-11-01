@@ -9,6 +9,7 @@ SUBDIRS(
   position2dmon
   segwayrmp
   sicklaser 
+  simplelogger
   statusmon
   teleop
 )
