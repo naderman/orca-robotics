@@ -48,7 +48,6 @@ private:
 
     orca::LaserConsumerPtr laserConsumer_;
     orca::LaserPrx laserPrx_;
-    orca::LaserConfigPtr laserConfigPtr_;
     
     // External interface: polar features
     Ice::ObjectPtr polarFeature_;
