@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_POSITION2DMON_INPUT_LOOP_H
-#define ORCA2_POSITION2DMON_INPUT_LOOP_H
+#ifndef ORCA2_FEATUREEXTRACTOR_MAINLOOP_H
+#define ORCA2_FEATUREEXTRACTOR_MAINLOOP_H
 
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
