@@ -25,7 +25,7 @@
 @ingroup cppcomps
 @ingroup linuxcomps
 @defgroup orca_component_segwayrmp SegwayRmp
-@brief A component for controlling Segway. (Status: beta)
+@brief Controls Segway RMP robot.
 
 The segwayrmp driver provides control of a Segway RMP (Robotic
 Mobility Platform), which is an experimental robotic version of the
@@ -42,9 +42,8 @@ electric scooter.
 - none
 
 @par Dependancies
-- CAN bus. Segway component requires that CAN software be installed.  Currently, the only
-    CAN interface that works is Kvaser's.
-- USB bus. Tested with libftd2xx.so.0.4.5. Get it from www.ftdichip.com
+
+None for the component. See driver section below for individual driver dependencies.
 
 @par Notes
 
@@ -64,15 +63,18 @@ continuously send your desired velocities.
 
 - Most of the configuration requests have not been tested.
 
-- Currently, the only supported type of CAN I/O is "kvaser", which uses
-Kvaser, Inc.'s CANLIB interface library.  This library provides access
-to CAN cards made by Kvaser, such as the LAPcan II.  However, the CAN
-I/O subsystem within this driver is modular, so that it should be pretty
-straightforward to add support for other CAN cards.
+@par Authors
+Orca component by Alex Makarenko. Original CAN driver code came from Player by Andrew Howard.
 
-@section drv Driver-specific Notes
+@section usb USB Driver
 
-@par RmpUsb
+@par Dependancies
+
+The USB version of RMP uses a chip from Future Technology Devices Int. (FTDI). Following the Windows  demo software from Segway we use a high-level closed-source library from FTDI to communicate with their chip. The Linux and Windows versions of the library have a (nearly) identical API. On linux the library is called libftd2xx.so and it uses the standard low-level libusb.so.
+
+The Orca component has been tested with libftd2xx.so.0.4.5 and libusb-0.1.so.4.4.2. Download the libftd2xx library from <a href="http://ftdichip.com/Drivers/FT2232CDrivers.htm#D2XX">www.ftdichip.com</a>. Untar and follow the installation instructions in README.dat file.
+
+@par Operation
 
 To get the kernel to recognize the rmpusb for what it is on a 2.6 kernel, create '/etc/hotplug/usb/segwayrmp.usermap':
 
@@ -100,12 +102,17 @@ fi
 
 Finally, remember to 'chmod 755 /etc/hotplug/usb/segwayrmp'.
 
-@par Configuration
+@section playerclient Player Client Driver
+
+This one simply connects to a Player server.
+
+Support is limited to what Player supports which is currently the original RMP with CAN I/O using Kvaser, Inc.'s CANLIB interface library. This library provides access
+to CAN cards made by Kvaser, such as the LAPcan II.
+
+@par Configuration Example
 
 @include components/segwayrmp/segwayrmp.cfg
 
-@par Authors
-Alex Makarenko. Original driver code came from Player. The CAN driver is largely untouched, the USB driver is heavily modified.
 
 */
 
