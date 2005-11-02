@@ -129,7 +129,7 @@ This one simply connects to a Player server.
 Support is limited to what Player supports which is currently the original RMP with CAN I/O using Kvaser, Inc.'s CANLIB interface library. This library provides access
 to CAN cards made by Kvaser, such as the LAPcan II.
 
-@par Configuration Example
+@section confex Configuration Example
 
 @include components/segwayrmp/segwayrmp.cfg
 

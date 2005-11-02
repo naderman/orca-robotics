@@ -81,6 +81,8 @@ void RmpMainLoop::readConfigs()
             "SegwayRmp.Config.position2dPublishInterval", 0.1 );
     config_.powerPublishInterval = orcaiceutil::getPropertyAsDoubleWithDefault( current_.properties(),
             "SegwayRmp.Config.powerPublishInterval", 10.0 );
+    config_.statusPublishInterval = orcaiceutil::getPropertyAsDoubleWithDefault( current_.properties(),
+            "SegwayRmp.Config.statusPublishInterval", 60.0 );
     string driverName = orcaiceutil::getPropertyWithDefault( current_.properties(), 
             "SegwayRmp.Config.Driver", "usb" );
 
@@ -181,6 +183,10 @@ void RmpMainLoop::run()
                 if ( powerPublishTimer_.elapsed().toSecondsDouble()>config_.powerPublishInterval ) {
                     powerPublisher_->setData( powerData );
                     powerPublishTimer_.restart();
+                }
+                if ( statusPublishTimer_.elapsed().toSecondsDouble()>config_.powerPublishInterval ) {
+                    current_.logger()->trace("remote","status OK");
+                    statusPublishTimer_.restart();
                 }
             }
             catch ( const Ice::ConnectionRefusedException & e )

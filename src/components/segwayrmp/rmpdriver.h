@@ -1,3 +1,4 @@
+
 /*
  *  Orca-Base: Components for robotics.
  *
@@ -92,6 +93,7 @@ public:
         double maxTurnrate;
         double position2dPublishInterval;
         double powerPublishInterval;
+        double statusPublishInterval;
     };
 };
 

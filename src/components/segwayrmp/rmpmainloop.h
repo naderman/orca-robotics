@@ -77,9 +77,12 @@ private:
     // component current context
     orcaiceutil::Current current_;
 
-    // debug
+    // timers for publishing to icestorm
     orcaiceutil::Timer position2dPublishTimer_;
     orcaiceutil::Timer powerPublishTimer_;
+    orcaiceutil::Timer statusPublishTimer_;
+    
+    // debug
     orcaiceutil::Timer readTimer_;
     orcaiceutil::Timer writeTimer_;
 
