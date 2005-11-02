@@ -89,13 +89,18 @@ $ rm CMakeCache.txt
 $ cmake .
 @endverbatim
 
+Use should see the following line in CMake output:
+@verbatim
+    USB Driver for SegwayRMP - can be built
+@endverbatim
+
 @par Operation
 
 To get the kernel to recognize the rmpusb for what it is on a 2.6 kernel, create '/etc/hotplug/usb/segwayrmp.usermap':
 
 @verbatim
 # SegwayRMP
-segwayrmp           0x0003      0x0403   0xe729    0x0000       0x0000      0x00         0x00            0x00            0x00            0x00               0x00               0x00000000
+segwayrmp   0x0003 0x0403 0xe729 0x0000 0x0000 0x00 0x00 0x00 0x00 0x00 0x00 0x00000000
 @endverbatim
 
 This causes the script '/etc/hotplug/usb/segwayrmp' to execute when the segway is plugged in.

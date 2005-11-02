@@ -40,6 +40,8 @@ Check if an Orca interface is reachable by trying to invoke ice_ping() method av
 
 @par Notes
 
+Usage is kept similar to ping. Ping tries to reach a destination specified by a hostname or an IP address. Iceping tries to reach a destination specified by the stringified proxy to an object. Trying to reach an address specified by its address may be added in the future.
+
 @verbatim
 USAGE
 iceping [ -rh ] [ -f file ] [ -c count ] [ -i intervalUs ] proxy
@@ -57,6 +59,8 @@ OPTIONS
 @endverbatim
 
 @par Configuration Example
+
+Only one configuration option is required: how to find the IcePackRegistry. By default, iceping tries to load ~/.orcarc file which typically contains this information. Optionally, a dedicated file can be written.
 
 @include utils/iceping/iceping.cfg
 
