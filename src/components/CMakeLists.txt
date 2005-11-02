@@ -4,12 +4,12 @@ MESSAGE ( "== COMPONENTS ==" )
 SUBDIRS(
   laserfeatureextractor
   lasermon
+  logger
   orcaguilocal
   peoplecounter
   position2dmon
   segwayrmp
   sicklaser 
-  simplelogger
   statusmon
   teleop
 )

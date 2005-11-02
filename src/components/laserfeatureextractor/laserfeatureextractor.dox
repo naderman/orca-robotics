@@ -28,42 +28,42 @@
   The configuration documentation is split into sections for each feature type
 
   - Reflectors
-    - extractReflectors
+    - ExtractReflectors
       - boolean
       - default: true
-    - backgroundRangeGate
+    - BackgroundRangeGate
       - George/Stef, what does this do?
-    - targetRangeGate
+    - TargetRangeGate
       - float in metres
       - Minimum range to target to be considered as a point feature.
-    - minReturnNumber
+    - MinReturnNumber
       - integer
       - Minimum number of bright laser returns to be considered as a point feature.
-    - minBrightness
+    - MinBrightness
       - integer
       - minimum intensity value to be considered a feature
       - default: 1
 
   - Foreground Points
-    - extractForegroundPoints
+    - ExtractForegroundPoints
       - boolean
       - default: 0
-    - minForegroundWidth
+    - MinForegroundWidth
       - float in metres
       - minimum width of poles/trees
-    - maxForegroundWidth
+    - MaxForegroundWidth
       - float in metres
       - maximum width of poles/trees
-    - minForegroundBackgroundSeparation
+    - MinForegroundBackgroundSeparation
       - float in metres
       - how far the pole/tree must be from the background
 
   - Corners
-    - extractCorners
+    - ExtractCorners
       - boolean
       - default: 0
   - Doors
-    - extractDoors
+    - ExtractDoors
       - boolean
       - default: 0
 

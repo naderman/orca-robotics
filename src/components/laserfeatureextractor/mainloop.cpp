@@ -64,17 +64,17 @@ void MainLoop::run()
         // pull out config parameters
         ConfigParameters configParameters;
         
-        configParameters.backgroundRangeGate = getPropertyAsDoubleWithDefault( *prop_, prefix_+"backgroundRangeGate", 80.0 );
-        configParameters.targetRangeGate = getPropertyAsDoubleWithDefault( *prop_, prefix_+"targetRangeGate", 0.5 );
-        configParameters.minReturnNumber =  getPropertyAsIntWithDefault( *prop_, prefix_+"minReturnNumber", 1); 
-        configParameters.minBrightness =  getPropertyAsIntWithDefault( *prop_, prefix_+"minBrightness", 1); 
-        configParameters.extractReflectors =  getPropertyAsIntWithDefault( *prop_, prefix_+"extractReflectors", 1); 
-        configParameters.extractForegroundPoints =  getPropertyAsIntWithDefault( *prop_, prefix_+"extractForegroundPoints", 0); 
-        configParameters.extractCorners =  getPropertyAsIntWithDefault( *prop_, prefix_+"extractCorners", 0); 
-        configParameters.extractDoors =  getPropertyAsIntWithDefault( *prop_, prefix_+"extractDoors", 0);    
-        configParameters.minForegroundWidth = getPropertyAsDoubleWithDefault( *prop_, prefix_+"minForegroundWidth", 0.1);
-        configParameters.maxForegroundWidth = getPropertyAsDoubleWithDefault( *prop_, prefix_+"maxForegroundWidth", 0.5);
-        configParameters.minForegroundBackgroundSeparation = getPropertyAsDoubleWithDefault( *prop_, prefix_+"minForegroundBackgroundSeparation", 0.5);
+        configParameters.backgroundRangeGate = getPropertyAsDoubleWithDefault( *prop_, prefix_+"BackgroundRangeGate", 80.0 );
+        configParameters.targetRangeGate = getPropertyAsDoubleWithDefault( *prop_, prefix_+"TargetRangeGate", 0.5 );
+        configParameters.minReturnNumber =  getPropertyAsIntWithDefault( *prop_, prefix_+"MinReturnNumber", 1); 
+        configParameters.minBrightness =  getPropertyAsIntWithDefault( *prop_, prefix_+"MinBrightness", 1); 
+        configParameters.extractReflectors =  getPropertyAsIntWithDefault( *prop_, prefix_+"ExtractReflectors", 1); 
+        configParameters.extractForegroundPoints =  getPropertyAsIntWithDefault( *prop_, prefix_+"ExtractForegroundPoints", 0); 
+        configParameters.extractCorners =  getPropertyAsIntWithDefault( *prop_, prefix_+"ExtractCorners", 0); 
+        configParameters.extractDoors =  getPropertyAsIntWithDefault( *prop_, prefix_+"ExtractDoors", 0);    
+        configParameters.minForegroundWidth = getPropertyAsDoubleWithDefault( *prop_, prefix_+"MinForegroundWidth", 0.1);
+        configParameters.maxForegroundWidth = getPropertyAsDoubleWithDefault( *prop_, prefix_+"MaxForegroundWidth", 0.5);
+        configParameters.minForegroundBackgroundSeparation = getPropertyAsDoubleWithDefault( *prop_, prefix_+"MinForegroundBackgroundSeparation", 0.5);
         
         // initialize algorithm
         algorithm_ -> initialize( &configParameters );
