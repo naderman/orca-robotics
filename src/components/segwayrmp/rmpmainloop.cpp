@@ -135,9 +135,12 @@ void RmpMainLoop::run()
             current_.logger()->trace("remote",errorStr);
             throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
     }
-    while ( driver_->enable() ) {
+    while ( isActive() && driver_->enable() ) {
         current_.logger()->trace("remote","failed to enable the driver");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+    }
+    if ( !isActive() ) {
+        return;
     }
     current_.logger()->trace("remote","driver enabled");
 

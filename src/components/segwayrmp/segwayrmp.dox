@@ -61,8 +61,6 @@ if no new command has been received from a client in the previous 400ms or so.
 Thus, even if you want to continue moving at a constant velocity, you must
 continuously send your desired velocities.
 
-- Most of the configuration requests have not been tested.
-
 @par Authors
 Orca component by Alex Makarenko. Original CAN driver code came from Player by Andrew Howard.
 

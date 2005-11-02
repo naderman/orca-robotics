@@ -58,14 +58,16 @@ ComponentTag.Requires.InterfaceTag1.Interface=i1
 
 When the second component is initialized it looks up the interface it requires at the naming service under the name \e i1\@p1/c1. The registry returns the address of the first provided interface of the component above. Because we use a slash '/' as a separator, it cannot be used in platform and component names. The \@ sign is also not permitted.
 
-@par A Possible Alternative Syntax
+@par A More Concise Alternative Syntax
 
-Here's an alternative more concise syntax. It takes precedence is both are present.
+Here's an alternative more concise syntax. This one takes precedence is both are present.
 
 @verbatim
-ComponentTag.AdapterId=p2/c2
+ComponentTag.AdapterId=p1/c1
 ...
-ComponentTag.Requires.InterfaceTag1.Proxy=i1@p1/c1
+ComponentTag.Provides.InterfaceTag1.Interface=i1
+...
+ComponentTag.Requires.InterfaceTag2.Proxy=i2@p2/c2
 ...
 @endverbatim
 
