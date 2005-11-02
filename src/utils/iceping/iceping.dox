@@ -1,0 +1,65 @@
+/*
+ *  Orca-Base: Components for robotics.
+ *
+ *  Copyright (C) 2004
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+@ingroup utils
+@ingroup linuxutils
+@defgroup orca_util_iceping IcePing
+@brief An equivalent to Unix ping for Orca components.
+
+Check if an Orca interface is reachable by trying to invoke ice_ping() method available for all Ice objects.
+
+@par Provides
+
+- none
+
+@par Requires
+
+- none
+
+@par Dependancies
+
+ - none.
+
+@par Notes
+
+@verbatim
+USAGE
+iceping [ -rh ] [ -f file ] [ -c count ] [ -i intervalUs ] proxy
+  Proxy Desitnation specified as a string in the form 'object@adapter'
+OPTIONS
+  -c count
+        Ping count times. Default is 3.
+  -f file
+        Use file as Ice.Config parameter. Default is ~/.orcarc
+  -h    Print this.
+  -i interval
+        Pause for interval seconds after each ping. Default is 0.
+  -r    Ping the IcePackRegistry, specifically its Query interface. This is
+        a way to make sure that the registry is reachable.
+@endverbatim
+
+@par Configuration Example
+
+@include utils/iceping/iceping.cfg
+
+
+*/
+

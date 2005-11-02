@@ -33,6 +33,8 @@
 @defgroup javacomps Java Components
 @defgroup linuxcomps Linux Components
 @defgroup wincomps Windows Components
+@defgroup linuxutils Linux Utilities
+@defgroup winutils Windows Utilities
 
 @mainpage What is Orca?
 
