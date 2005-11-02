@@ -1,7 +1,7 @@
 SUBDIRS(  
-interfaces
-utils
-components 
-examples
-#tests
+  interfaces
+  utils
+  components 
+  examples
+  tests
 )
