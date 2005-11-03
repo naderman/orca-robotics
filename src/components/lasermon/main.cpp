@@ -66,6 +66,9 @@ void LaserMonComponent::start()
     // Get the geometry
     cout << "Laser Geometry: " << laserPrx->getGeometry() << endl;
 
+    // Get the configuration
+    cout << "Laser Config:   " << laserPrx->getConfig() << endl;
+
     // create servant and tell adapter about it (let it make up a globally unique name)
     Ice::ObjectPrx obj = adapter()->addWithUUID( new LaserConsumerI );
     // make a direct proxy
