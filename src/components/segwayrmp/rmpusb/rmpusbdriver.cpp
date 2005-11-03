@@ -66,21 +66,32 @@ int RmpUsbDriver::enable()
     if ( usbio_->init() ) {
         return 1;
     }
-
+    
+    // segway is physically connected; try to configure
+    
+    if ( setMaxTurnrateScaleFactor( 1.0 ) ) {
+        cerr<<"warning: 1 error in setMaxTurnrateScaleFactor()"<<endl;
+        return 2;
+    }
+    
     if ( resetAllIntegrators() ) {
         cerr<<"warning: error in resetIntegrators()"<<endl;
+        return 2;
     }
 
     if ( setMaxVelocityScaleFactor( 1.0 ) ) {
         cerr<<"warning: error in setMaxVelocitySpeedFactor()"<<endl;
+        return 2;
     }
     
     if ( setMaxTurnrateScaleFactor( 1.0 ) ) {
-        cerr<<"warning: error in setMaxTurnrateScaleFactor()"<<endl;
+        cerr<<"warning: 2 error in setMaxTurnrateScaleFactor()"<<endl;
+        return 2;
     }
 
     if ( setMaxAccelerationScaleFactor( 1.0 ) ) {
         cerr<<"warning: error in setMaxAccelerationScaleFactor()"<<endl;
+        return 2;
     }
 
     return 0;
@@ -88,9 +99,9 @@ int RmpUsbDriver::enable()
 
 int RmpUsbDriver::disable()
 {
+    cout<<"RmpUsbDriver::disable"<<endl;
     usbio_->shutdown();
 
-    cout<<"disabled"<<endl;
     return 0;
 }
 
@@ -108,7 +119,7 @@ int RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr 
         frame_->AddPacket(pkt_);
 
         // debug
-        WatchDataStream( pkt_ );
+        //watchDataStream( pkt_ );
 
         if ( pkt_->id == RMP_CAN_ID_MSG4 ) {
             integrateMotion();
@@ -125,7 +136,8 @@ int RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr 
                 return 0;
             }
             else {
-                cout<<"RmpUsbDriver::readBlocking: re-opening frame. Missing [";
+                int sec = IceUtil::Time::now().toSeconds();
+                cout<<sec<<" re-opening frame. Missing [";
                 for ( int i=1; i<8; ++i ) {
                     if ( !frame_->msgCheckList_[i] ) { cout<<i<<" "; }
                 }
@@ -438,7 +450,7 @@ int RmpUsbDriver::diff( uint32_t from, uint32_t to, bool first )
     }
 }
 
-void RmpUsbDriver::WatchPacket( CanPacket* pkt, short int pktID )
+void RmpUsbDriver::watchPacket( CanPacket* pkt, short int pktID )
 {
     short slot0 = (short)pkt->GetSlot(0);
     short slot1 = (short)pkt->GetSlot(1);
@@ -494,7 +506,7 @@ void RmpUsbDriver::WatchPacket( CanPacket* pkt, short int pktID )
     }
 }
 
-void RmpUsbDriver::WatchDataStream( CanPacket* pkt )
+void RmpUsbDriver::watchDataStream( CanPacket* pkt )
 {
     static CanPacket priorPkt;
 

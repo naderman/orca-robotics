@@ -135,8 +135,12 @@ void RmpMainLoop::run()
             current_.logger()->trace("remote",errorStr);
             throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
     }
+    
+    //
+    // Enable driver
+    //
     while ( isActive() && driver_->enable() ) {
-        current_.logger()->trace("remote","failed to enable the driver");
+        current_.logger()->trace("remote","failed to enable the driver; will try again.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
     if ( !isActive() ) {
@@ -228,7 +232,10 @@ void RmpMainLoop::run()
 void RmpMainLoop::handleData( const Ice::ObjectPtr & obj )
 {
     //cout<<"write: " << writeTimer_.elapsed().toMilliSecondsDouble()<<endl;
-
+    double msecs=writeTimer_.elapsed().toMilliSecondsDouble();
+    if ( msecs>200 ) {
+        cout<<"late: " << msecs <<endl;
+    }
     orca::Velocity2dCommandPtr command = Velocity2dCommandPtr::dynamicCast( obj );
 
     // apply max limits

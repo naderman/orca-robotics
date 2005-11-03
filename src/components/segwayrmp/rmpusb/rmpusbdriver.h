@@ -92,8 +92,8 @@ private:
     bool firstread_;
 
     // chip's utilities
-    void WatchPacket( CanPacket* pkt, short int pktID );
-    void WatchDataStream( CanPacket* pkt );
+    void watchPacket( CanPacket* pkt, short int pktID );
+    void watchDataStream( CanPacket* pkt );
 
 };
 

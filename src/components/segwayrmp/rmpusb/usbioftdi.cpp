@@ -46,6 +46,9 @@ UsbIoFtdi::UsbIoFtdi()
     charBuffer_.resize(128);
 
     residualBytes_ = 0;
+    
+    pthread_mutex_init(&eventHandle_.eMutex, NULL);
+    pthread_cond_init(&eventHandle_.eCondVar, NULL);
 }
 
 UsbIoFtdi::~UsbIoFtdi()
@@ -81,46 +84,39 @@ int UsbIoFtdi::init()
     ftStatus = FT_Open( 0, &ftHandle_ );
     if ( ftStatus != FT_OK) {
         cout<<"FT_Open failed ("<<ftStatus<<")"<<endl;
+        return ftStatus;
     }
-    else {
-        cout<<"FT_Open OK"<<endl;
-    
-        ftStatus = FT_SetBaudRate( ftHandle_, 460800 );
-        if ( ftStatus != FT_OK)  {
-            cout<<"FT_SetBaudRate failed ("<<ftStatus<<")"<<endl;
-            FT_Close( ftHandle_ );        //close open device
-            return 0;
-        }
-        else {
-            cout<<"FT_SetBaudRate OK"<<endl;
-        }
-    
-        //set the latency timer to 2ms (valid range is from 2 to 255 ms)
-        ftStatus = FT_SetLatencyTimer( ftHandle_, 2 );
-        if ( ftStatus != FT_OK)  {
-            cout<<"FT_SetLatencyTimer failed ("<<ftStatus<<")"<<endl;
-            //latency not set - but we won't know   return -82;
-        }
-        else {
-            cout<<"FT_SetLatencyTimer OK"<<endl;
-        }
-    
-        ftStatus = this->resetDevice();
+    cout<<"FT_Open OK"<<endl;
+
+    ftStatus = FT_SetBaudRate( ftHandle_, 460800 );
+    if ( ftStatus != FT_OK)  {
+        cout<<"FT_SetBaudRate failed ("<<ftStatus<<")"<<endl;
+        FT_Close( ftHandle_ );        //close open device
+        return ftStatus;
+    }   
+    cout<<"FT_SetBaudRate OK"<<endl;
+
+    //set the latency timer to 2ms (valid range is from 2 to 255 ms)
+    ftStatus = FT_SetLatencyTimer( ftHandle_, 2 );
+    if ( ftStatus != FT_OK)  {
+        cout<<"FT_SetLatencyTimer failed ("<<ftStatus<<")"<<endl;
+        //latency not set - but we won't know   return -82;
+        return ftStatus;
+    }    
+    cout<<"FT_SetLatencyTimer OK"<<endl;
+
+    ftStatus = this->resetDevice();
 
 
-        pthread_mutex_init(&eventHandle_.eMutex, NULL);
-        pthread_cond_init(&eventHandle_.eCondVar, NULL);
-    
-        // debug
-        /*
-        CanPacket ppp;
-        for ( int i=0; i<10; ++i )
-        {
-            ReadPacket( &ppp, 0 );
-             IceUtil::ThreadControl::sleep(IceUtil::Time::microSeconds(50));
-        }
-        */
+    // debug
+    /*
+    CanPacket ppp;
+    for ( int i=0; i<10; ++i )
+    {
+        ReadPacket( &ppp, 0 );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::microSeconds(50));
     }
+    */   
 
   return ftStatus;
 }
@@ -286,11 +282,14 @@ int UsbIoFtdi::writePacket( CanPacket *pkt )
     /*
     // debug
     DWORD bytesInRxUsb, bytesInTxUsb, usbEvent;
-    ftStatus = FT_GetQueueStatus( ftHandle_, &bytesInRxUsb );
-    //ftStatus = FT_GetStatus( ftHandle_, &bytesInRxUsb, &bytesInTxUsb, &usbEvent );
-    if ( ftStatus == FT_OK )  {
-        cout<<"Status on write: rx: "<<bytesInRxUsb<<endl;
+    FT_STATUS ftStatusB = FT_GetQueueStatus( ftHandle_, &bytesInRxUsb );    
+    if ( ftStatusB == FT_OK )  {
+        cout<<"Status before write: rx: "<<bytesInRxUsb<<endl;
         //cout<<"Status on write: rx: "<<bytesInRxUsb<<" tx: "<<bytesInTxUsb<<" ev: "<<usbEvent<<endl;
+    }
+    ftStatusB = FT_GetStatus( ftHandle_, &bytesInRxUsb, &bytesInTxUsb, &usbEvent );
+    if ( ftStatusB == FT_OK )  {
+        cout<<"Status before write: rx: "<<bytesInRxUsb<<" tx: "<<bytesInTxUsb<<" ev: "<<usbEvent<<endl;
     }
     */
     unsigned char bytes[SEGWAY_USB_MESSAGE_SIZE];
@@ -300,6 +299,23 @@ int UsbIoFtdi::writePacket( CanPacket *pkt )
 
     DWORD bytesWritten;
     FT_STATUS ftStatus = FT_Write( ftHandle_, bytes, SEGWAY_USB_MESSAGE_SIZE, &bytesWritten );
+    
+    //cout<<"result: "<<ftStatus<<" wrote: "<<bytesWritten<<endl;
+    
+    /*
+    // debug
+    //DWORD bytesInRxUsb, bytesInTxUsb, usbEvent;
+    FT_STATUS ftStatusA = FT_GetQueueStatus( ftHandle_, &bytesInRxUsb );    
+    if ( ftStatusA == FT_OK )  {
+        cout<<"Status after write: rx: "<<bytesInRxUsb<<endl;
+        //cout<<"Status on write: rx: "<<bytesInRxUsb<<" tx: "<<bytesInTxUsb<<" ev: "<<usbEvent<<endl;
+    }
+    ftStatusA = FT_GetStatus( ftHandle_, &bytesInRxUsb, &bytesInTxUsb, &usbEvent );
+    if ( ftStatusA == FT_OK )  {
+        cout<<"Status after write: rx: "<<bytesInRxUsb<<" tx: "<<bytesInTxUsb<<" ev: "<<usbEvent<<endl;
+    }
+    */
+    
     /*
     if ( ftStatus == FT_OK ) {
         //DTRACE<<"wrote "<<bytesWritten<<" bytes"<<endl;
