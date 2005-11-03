@@ -53,7 +53,8 @@ an event service, used to decouple publishers from subscribers.
 To set it up, do:
 @verbatim
 $ cd orca2/doc/icecfg
-$ icebox --Ice.Config=icebox.cfg
+$ mkdir stormdb
+$ icebox --Ice.Config=icebox_icestorm.cfg
 @endverbatim
 
 @section point Pointing Components at this Infrastructure
