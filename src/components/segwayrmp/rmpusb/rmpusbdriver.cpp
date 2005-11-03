@@ -107,6 +107,9 @@ int RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr 
         // Add packet to data frame
         frame_->AddPacket(pkt_);
 
+        // debug
+        WatchDataStream( pkt_ );
+
         if ( pkt_->id == RMP_CAN_ID_MSG4 ) {
             integrateMotion();
         }

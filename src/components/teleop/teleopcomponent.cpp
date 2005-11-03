@@ -61,14 +61,17 @@ void TeleopComponent::start()
 
 void TeleopComponent::stop()
 {
+    IceUtil::ThreadControl networkControl = networkLoop_->getThreadControl();
+    IceUtil::ThreadControl inputControl = inputLoop_->getThreadControl();
+
     networkLoop_->stop();
     inputLoop_->stop();
 
-    networkLoop_->getThreadControl().join();
+    networkControl.join();
 
     // inputLoop_ is blocked on user input
     // the only way for it to realize that we want to stop is to give it some keyboard input.
     cout<<"Quitting... Press any key to continue."<<endl;
 
-    inputLoop_->getThreadControl().join();
+    inputControl.join();
 }

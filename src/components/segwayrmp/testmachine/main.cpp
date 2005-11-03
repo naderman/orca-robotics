@@ -98,7 +98,16 @@ void SegwayTestMachine::start()
 
 void SegwayTestMachine::stop()
 {
-    // nothing to do
+    // get a handle on the loop thread before it's stopped. This way we can join it even if it's already gone.
+    IceUtil::ThreadControl testControl = testLoop_->getThreadControl();
+
+    logger()->trace("local", "stopping loop" );
+    // Tell the main loop to stop
+    testLoop_->stop();
+
+    logger()->trace("local", "joining thread" );
+    // Then wait for it
+    testControl.join();
 }
 
 //

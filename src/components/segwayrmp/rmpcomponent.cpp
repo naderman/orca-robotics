@@ -89,11 +89,13 @@ void RmpComponent::start()
 
 void RmpComponent::stop()
 {
+    IceUtil::ThreadControl mainControl = mainLoop_->getThreadControl();
+
     logger()->trace("local", "stopping loop" );
     // Tell the main loop to stop
     mainLoop_->stop();
 
     logger()->trace("local", "joining thread" );
     // Then wait for it
-    mainLoop_->getThreadControl().join();
+    mainControl.join();
 }
