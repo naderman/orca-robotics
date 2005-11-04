@@ -13,7 +13,7 @@ IF ( BUILD_SEGWAYRMP )
     rmpusb
     OrcaSegwayRmpUsb
     USB_LIBS
-    HAVE_FTD2XX
+    FTD2XX_FOUND
     HAVE_USB_DRIVER
     ftd2xx usb )
 
@@ -23,7 +23,7 @@ IF ( BUILD_SEGWAYRMP )
     rmpcan
     OrcaSegwayRmpCan
     CAN_LIBS
-    HAVE_CANLIB
+    CANLIB_FOUND
     HAVE_CAN_DRIVER
     canlib )
 
@@ -33,7 +33,7 @@ IF ( BUILD_SEGWAYRMP )
 #    rmpplayer
 #    OrcaSegwayRmpPlayer
 #    PLAYERCLIENT_LIBS
-#    HAVE_PLAYER_1_6
+#    PLAYER_1_6_FOUND
 #    HAVE_PLAYERCLIENT_DRIVER
 #    playerclient )
 
@@ -45,7 +45,7 @@ IF ( BUILD_SEGWAYRMP )
     SET( COMMON_SRCS rmpcomponent rmpmainloop platform2d_i power_i rmpfakedriver )
     
     # Files for the component
-    SET( COMP_SRCS main  COMMON_SRCS )    
+    SET( COMP_SRCS main  ${COMMON_SRCS} )    
     
     # build a stand-alone component
     GLOBAL_ADD_EXECUTABLE( segwayrmp ${COMP_SRCS} )
@@ -53,7 +53,7 @@ IF ( BUILD_SEGWAYRMP )
     
     
     # Files for the service
-    SET( SERV_SRCS  rmpservice_i  COMMON_SRCS )
+    SET( SERV_SRCS  rmpservice_i  ${COMMON_SRCS} )
     
     # build an IceBox service
     ADD_LIBRARY( OrcaSegwayRmp SHARED ${SERV_SRCS} )

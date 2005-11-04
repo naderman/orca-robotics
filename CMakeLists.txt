@@ -1,4 +1,8 @@
-PROJECT(ice-components)
+#
+# Test CMake version
+#
+CMAKE_MINIMUM_REQUIRED(VERSION 2.2.2)
+
 ###################################################
 #                                                 #
 #       Start project customization section       #

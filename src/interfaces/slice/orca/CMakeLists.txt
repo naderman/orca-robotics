@@ -11,6 +11,7 @@ INCLUDE( ${PROJ_SOURCE_DIR}/config/slice2cpp_rules.cmake )
 SET( SLICE_SOURCES
 # definitions
     orca.ice
+
     bros1.ice
 # objects
     image.ice
