@@ -38,6 +38,10 @@ maintainable, and understandable code.
     - @ref orca_doc_buildsystem
     - @ref orca_doc_cvs
 
+@section internal Internal Documentation
+
+    - @ref orca_doc_todo
+
 */
 
 // finish this page and add the link to goodcomp section
