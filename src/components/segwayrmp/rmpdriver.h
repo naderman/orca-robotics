@@ -1,4 +1,3 @@
-
 /*
  *  Orca-Base: Components for robotics.
  *
