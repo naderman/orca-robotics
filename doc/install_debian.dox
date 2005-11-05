@@ -45,12 +45,10 @@ Now decide where to install it. Standard Debian installation puts it into /usr/l
 # cp -r bin doc man share /opt/cmake-[VERSION]/.
 @endverbatim
 
-Make symbolic links to the new binaries.
+Put the new installation in the execution path (it's handy to put it into your .bashrc file).
 @verbatim
-# cd /usr/local/bin
-# ln -s /opt/cmake-[VERSION]/bin/cmake cmake
-# ln -s /opt/cmake-[VERSION]/bin/ccmake ccmake
-# ln -s /opt/cmake-[VERSION]/bin/ctest ctest
+$ export CMAKE_ROOT=/opt/cmake-[VERSION]
+$ export PATH=$CMAKE_ROOT/bin:$PATH
 @endverbatim
 
 To keep the standard Debian cmake installed, renamed the old binaries.
