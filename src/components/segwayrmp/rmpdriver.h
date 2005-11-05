@@ -60,11 +60,6 @@ public:
     //! Blocking read
     virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )=0;
 
-    //! Returns the latest data
-    //virtual int getPosition2d( orca::Position2dDataPtr & position2d )=0;
-    //virtual int getPosition3d( orca::Position3dDataPtr & position3d )=0;
-    //virtual int getPower( orca::PowerDataPtr & power )=0;
-
     //! Writes velocity command
     virtual int sendMotionCommand( orca::Velocity2dCommandPtr &position2d )=0;
 
