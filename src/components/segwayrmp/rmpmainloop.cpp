@@ -171,7 +171,7 @@ void RmpMainLoop::run()
         readTimer_.restart();
        
         if ( (readStatus = driver_->read( position2dData, powerData )) ) {
-            current_.logger()->warning("failed to read from Segway");
+            current_.logger()->error("failed to read from Segway");
             // indicate some fault state here
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }
@@ -192,7 +192,8 @@ void RmpMainLoop::run()
                     powerPublishTimer_.restart();
                 }
                 if ( statusPublishTimer_.elapsed().toSecondsDouble()>config_.powerPublishInterval ) {
-                    current_.logger()->trace("heartbeat","status OK");
+                    // should this be "heartbeat" category?
+                    current_.logger()->trace("warning","status OK");
                     statusPublishTimer_.restart();
                 }
             }
