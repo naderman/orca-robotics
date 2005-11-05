@@ -1,0 +1,113 @@
+/*
+ *  Orca-Base: Components for robotics.
+ *
+ *  Copyright (C) 2004
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_installdebian Installing Orca on Debian Linux
+
+These are detailed instructions for installing Orca on Debian Linux. See @ref orca_doc_getting for general guidlines.
+
+@section orca_doc_installdebian_cmake CMake
+
+Download Linux binaries from <a href="http://www.cmake.org/HTML/Download.html">Kitware</a>. Unpack the archive. The instructions below work with version 2.2.2.
+@verbatim
+$ mkdir cmake-[VERSION]
+$ mv cmake-[VERSION]-x86-linux.tar.gz cmake-[VERSION]
+$ cd cmake-[VERSION]
+$ tar -xzf cmake-[VERSION]-x86-linux.tar.gz
+$ ls
+README  cmake-[VERSION]-x86-linux-files.tar  cmake-[VERSION]-x86-linux.tar.gz
+$ tar -xf cmake-[VERSION]-x86-linux-files.tar
+$ ls
+README  bin  cmake-[VERSION]-x86-linux-files.tar  cmake-[VERSION]-x86-linux.tar.gz  doc  man  share
+@endverbatim
+
+Now decide where to install it. Standard Debian installation puts it into /usr/local/share. If you want to keep both versions (the stable one from Debian and the latest one) you should install this one somewhere else, e.g. in /opt/.
+@verbatim
+# mkdir /opt/cmake-[VERSION]
+# cp -r bin doc man share /opt/cmake-[VERSION]/.
+@endverbatim
+
+Make symbolic links to the new binaries.
+@verbatim
+# cd /usr/local/bin
+# ln -s /opt/cmake-[VERSION]/bin/cmake cmake
+# ln -s /opt/cmake-[VERSION]/bin/ccmake ccmake
+# ln -s /opt/cmake-[VERSION]/bin/ctest ctest
+@endverbatim
+
+To keep the standard Debian cmake installed, renamed the old binaries.
+@verbatim
+# cd /usr/bin
+# mv cmake cmake-2.0.6
+# mv ccmake ccmake-2.0.6
+# mv ctest ctest-2.0.6
+@endverbatim
+
+@section orca_doc_installdebian_ice Ice
+
+@note The instructions below describe how to build Ice from source. There's a one-man effort to provide Debian packages for Ice but we haven't tried to use them yet. See http://ice.jgaa.com/
+
+Download source from  <a href="http://www.zeroc.com/download.html">download page</a>.
+    - First, install Ice dependencies. In debian packages for all required libraries exist.
+@verbatim
+# apt-get install libdb4.2++-dev libbz2-dev bzip2 libssl-dev libreadline5-dev libexpat1-dev
+@endverbatim
+    - Get Ice source distribution from <a href="http://www.zeroc.com">ZeroC</a> and unpack the archive
+@verbatim
+$ tar -xzf Ice-[VERSION].tar.gz
+$ cd Ice-[VERSION]
+@endverbatim
+    - Suggestion: change the installation directory to something more standard. This is done by editing the 'config/Make.rules' file. This will install all Ice stuff into /usr/local.
+@verbatim
+...
+prefix                  = /usr/local
+...
+@endverbatim
+    - Ice is particular about the name of the compiler. If you are using gcc, make sure the names are standard: gcc/g++! If you skip this step you'll see a cryptic message about 'mkshlib' not defined.
+@verbatim
+$ export CC=gcc; export CXX=g++
+@endverbatim
+    - Compile and install
+@verbatim
+$ make
+$ make test (optional, requires python)
+# make install
+# ldconfig
+@endverbatim
+
+@section orca_doc_installdebian_doxygen Doxygen
+
+Doxygen can be easily installed as a package. The standard version can build all Orca documentation except for the Slice interfaces and objects.
+@verbatim
+# apt-get install doxygen
+@endverbatim
+
+@section orca_doc_installdebian_qt Qt
+
+At the time of writing Qt4 packages are in the 'testing' distribution.
+
+@verbatim
+# apt-get install libqt4-dev libqt4-doc
+@endverbatim
+
+@endverbatim
+
+*/

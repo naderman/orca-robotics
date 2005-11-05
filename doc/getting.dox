@@ -36,65 +36,25 @@ Practically, this means that you can download build your own components from scr
 
 @section download Download and install instructions
 
-Follow these instructions to download and install orca2. For concreteness, commands for installing dependencies under Debian Linux are provided. Send feedback on building under other distributions.
+Follow these instructions to download and install orca2. The instructions below are quite general. Details differ depending on platform/distribution:
+    - @ref orca_doc_installdebian
+    - Send feedback on building under other configurations.
 
-    -# <a href="http://www.cmake.org/">CMake: Cross-Platform Make</a>.
-@verbatim
-# apt-get install cmake
-@endverbatim
-
-  -# Download, compile and install Ice libraries. Orca has been tested with versions up to 2.1.2.
-    Full instructions are available from the <a href="http://www.zeroc.com/download.html">download page</a>.
-     - First, install Ice dependencies. In debian packages for all required libraries exist.
-@verbatim
-# apt-get install libdb4.2++-dev libbz2-dev bzip2 libssl-dev libreadline5-dev libexpat1-dev
-@endverbatim
-     - Get Ice distribution from <a href="http://www.zeroc.com">ZeroC</a>
-     - Unpack the distribution
-@verbatim
-$ tar -xzf Ice-[VERSION].tar.gz
-$ cd Ice-[VERSION]
-@endverbatim
-     - Suggestion: change the installation directory to something more standard. This is done by editing the 'config/Make.rules' file. This will install all Ice stuff into /usr/local.
-@verbatim
-...
-prefix                  = /usr/local
-...
-@endverbatim
-     - Ice is particular about the name of the compiler. If you are using gcc, make sure the names are standard: gcc/g++! If you skip this step you'll see a cryptic message about 'mkshlib' not defined.
-@verbatim
-$ export CC=gcc
-$ export CXX=g++
-@endverbatim
-     - Compile and install
-@verbatim
-$ make
-$ make test (optional, requires python)
-# make install
-# ldconfig
-@endverbatim
-
-Update: there's a one-man effort to provide Debian packages for Ice but we haven't tried to use them yet. See http://ice.jgaa.com/
-   
+    -# <a href="http://www.cmake.org/">CMake: Cross-Platform Make</a> is used to build the orca distribution.
+        - Version known to work: 2.2.2. (v2.0.6 available as a Debian package is known NOT to work).
+        - Download binaries from <a href="http://www.cmake.org/HTML/Download.html">Kitware</a>.
+    -# Download and install Ice libraries.
+        - Version known to work: 2.1.2.
+        - Full instructions are available from the <a href="http://www.zeroc.com/download.html">download page</a>. Several binaries distributions exists, for others (like Debian Linux building from source is required).
     -# Download and install any optional dependencies you'd like:
-
-        - <a href="http://playerstage.sourceforge.net/" target="_blank">Player/Stage</a>, is required for some hardware support and for use of the Stage simulator (you probably want this). Player version 1.6 or later is required!
-
-        - <a href="http://www.stack.nl/~dimitri/doxygen/" target="_blank">Doxygen</a>  for generating local doxygen documentation</a>
-@verbatim
-# apt-get install doxygen
-@endverbatim
-
-        - <a href="http://www.trolltech.com/" target="_blank">Qt</a>, is required for a Graphical User Interface. Qt v.3.0 or later is required. Tested with versions up to 3.3.3
-@verbatim
-# apt-get install libqt3-mt-dev
-@endverbatim
-
-@p \b NOTE: \b a \b distribution \b does \b not \b yet \b exist \b for \b orca2. \b Download \b from \b cvs \b instead.
-
-    -# Build and install Orca2 distribution:
-        - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a>.
-        - Un-tar the release.
+        - <a href="http://playerstage.sourceforge.net/" target="_blank">Player/Stage</a>, is required for some hardware support and for use of the Stage simulator (you probably want this).
+            - For version requirements see individual component documentation.
+        - <a href="http://www.stack.nl/~dimitri/doxygen/" target="_blank">Doxygen</a>  for generating local doxygen documentation</a>.
+            - The standard version of doxygen cannot build documentation from Slice files. We have a patched version which does that. It is used to generate the documentation displayed on the Orca website. The patch may appear in future versions of Doxygen or made available here.
+        - <a href="http://www.trolltech.com/" target="_blank">Qt</a>, is used for components with Graphical User Interface.
+            - Version known to work: 4.0.1
+    -# Build and install Orca2 distribution. \b NOTE: \b a \b distribution \b does \b not \b yet \b exist \b for \b orca2. \b Download \b from \b cvs \b instead.
+        - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive.
         - configure using cmake (note the dot after cmake)
         - compile, and install.
 @verbatim
