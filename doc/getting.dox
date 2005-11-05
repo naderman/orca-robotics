@@ -36,11 +36,11 @@ Practically, this means that you can download build your own components from scr
 
 @section download Download and install instructions
 
-Follow these instructions to download and install orca2. The instructions below are quite general. Details differ depending on platform/distribution:
+Follow these instructions to install orca2 and its dependencies. The instructions below are quite general. Details differ depending on platform/distribution:
     - @ref orca_doc_installdebian
     - Send feedback on building under other configurations.
 
-    -# <a href="http://www.cmake.org/">CMake: Cross-Platform Make</a> is used to build the orca distribution.
+    -# Download and install <a href="http://www.cmake.org/">CMake: Cross-Platform Make</a> which is used to build the orca distribution.
         - Version known to work: 2.2.2. (v2.0.6 available as a Debian package is known NOT to work).
         - Download binaries from <a href="http://www.cmake.org/HTML/Download.html">Kitware</a>.
     -# Download and install Ice libraries.
@@ -51,7 +51,7 @@ Follow these instructions to download and install orca2. The instructions below 
             - For version requirements see individual component documentation.
         - <a href="http://www.stack.nl/~dimitri/doxygen/" target="_blank">Doxygen</a>  for generating local doxygen documentation</a>.
             - The standard version of doxygen cannot build documentation from Slice files. We have a patched version which does that. It is used to generate the documentation displayed on the Orca website. The patch may appear in future versions of Doxygen or made available here.
-        - <a href="http://www.trolltech.com/" target="_blank">Qt</a>, is used for components with Graphical User Interface.
+        - <a href="http://www.trolltech.com/" target="_blank">Qt</a> is a cross-platform framework for building GUI's. Some components with Graphical User Interface.
             - Version known to work: 4.0.1
     -# Build and install Orca2 distribution. \b NOTE: \b a \b distribution \b does \b not \b yet \b exist \b for \b orca2. \b Download \b from \b cvs \b instead.
         - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive.

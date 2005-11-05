@@ -30,14 +30,18 @@ Before you begin, make sure that you've installed Orca (see @ref orca_doc_gettin
 
 @section startup Starting Up the Infrastructure
 
+We'll be using sample configuration files which are distributed with Orca. As the general rule, you shouldn't work or run programs from the distribution. So we'll create a separate directory and copy config files into it.
+@verbatim
+$ cd ~
+$ mkdir sys
+@endverbatim
+
 @par IcePack Registry
 
-The IcePack Registry provides a Naming service: a mapping from logical port names to
-physical addresses. It's currently the only way for components to find one another.
-
-To set it up, do:
+The IcePack Registry provides a Naming service: a mapping from logical port names to physical addresses. It's currently the only way for components to find one another. We create a separate directory for it to run in, copy a sample config file, create the database directory and start it up.
 @verbatim
-$ cd orca2/doc/icecfg
+$ cd ~/sys; mkdir icereg; cd icereg
+$ cp [ORCA2]/doc/icecfg/icepack.cfg .
 $ mkdir db
 $ icepackregistry --Ice.Config=icepack.cfg
 @endverbatim
@@ -47,12 +51,10 @@ it's probably a good idea to set this up so it's always running on a single mach
 
 @par IceStorm Service
 
-There should be exactly one IceStorm service per host.  This is
-an event service, used to decouple publishers from subscribers.
-
-To set it up, do:
+There should be exactly one IceStorm service per host.  This is an event service, used to decouple publishers from subscribers. We create a separate directory for it to run in, copy a sample config file, create the database directory and start it up.
 @verbatim
-$ cd orca2/doc/icecfg
+$ cd ~/sys; mkdir icestorm; cd icestorm
+$ cp [ORCA2]/doc/icecfg/icebox_icestorm.cfg .
 $ mkdir stormdb
 $ icebox --Ice.Config=icebox_icestorm.cfg
 @endverbatim
