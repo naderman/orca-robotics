@@ -60,7 +60,7 @@ public:
     // WARING: not implemented!
     virtual void enableMotor(bool, const ::Ice::Current& = ::Ice::Current()) {};
 
-
+private:
     // the driver will put the latest data into this proxy
     orcaiceutil::PtrBuffer<orca::Position2dDataPtr> &position2dProxy_;
     // the driver will take the latest command from the proxy

@@ -237,7 +237,7 @@ void RmpMainLoop::handleData( const Ice::ObjectPtr & obj )
     if ( msecs>200 ) {
         cout<<"late: " << msecs <<endl;
     }
-    orca::Velocity2dCommandPtr command = Velocity2dCommandPtr::dynamicCast( obj );
+    orca::Velocity2dCommandPtr command = orca::Velocity2dCommandPtr::dynamicCast( obj );
 
     // apply max limits
     if ( fabs(command->motion.v.x) > config_.maxSpeed ) {
