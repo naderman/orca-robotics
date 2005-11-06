@@ -1,4 +1,4 @@
-OPTION( BUILD_SEGWAYRMP "Try to build SegwayRMP component" ON )
+OPTION( BUILD_SEGWAYRMP "Try to build SegwayRmp component" ON )
 
 IF ( BUILD_SEGWAYRMP )
 
@@ -9,7 +9,7 @@ IF ( BUILD_SEGWAYRMP )
    
   # USB driver
   OPTIONAL_SUB_LIBRARY( 
-    "USB Driver for SegwayRMP"
+    "USB Driver for SegwayRmp"
     rmpusb
     OrcaSegwayRmpUsb
     USB_LIBS
@@ -19,7 +19,7 @@ IF ( BUILD_SEGWAYRMP )
 
   # CAN driver
   OPTIONAL_SUB_LIBRARY( 
-    "CAN Driver for SegwayRMP"
+    "CAN Driver for SegwayRmp"
     rmpcan
     OrcaSegwayRmpCan
     CAN_LIBS
@@ -29,7 +29,7 @@ IF ( BUILD_SEGWAYRMP )
 
   # PlayerClient driver (CAN segway only)
 #  OPTIONAL_SUB_LIBRARY( 
-#    "Player-client Driver for SegwayRMP"
+#    "Player-client Driver for SegwayRmp"
 #    rmpplayer
 #    OrcaSegwayRmpPlayer
 #    PLAYERCLIENT_LIBS
