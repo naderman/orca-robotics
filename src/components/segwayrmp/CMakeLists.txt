@@ -12,7 +12,7 @@ IF ( BUILD_SEGWAYRMP )
     "USB Driver for SegwayRmp"
     rmpusb
     OrcaSegwayRmpUsb
-    USB_LIBS
+    RMP_USB_LIBS
     FTD2XX_FOUND
     HAVE_USB_DRIVER
     ftd2xx usb )
@@ -22,7 +22,7 @@ IF ( BUILD_SEGWAYRMP )
     "CAN Driver for SegwayRmp"
     rmpcan
     OrcaSegwayRmpCan
-    CAN_LIBS
+    RM_CAN_LIBS
     CANLIB_FOUND
     HAVE_CAN_DRIVER
     canlib )
@@ -32,7 +32,7 @@ IF ( BUILD_SEGWAYRMP )
 #    "Player-client Driver for SegwayRmp"
 #    rmpplayer
 #    OrcaSegwayRmpPlayer
-#    PLAYERCLIENT_LIBS
+#    RM_PLAYERCLIENT_LIBS
 #    PLAYER_1_6_FOUND
 #    HAVE_PLAYERCLIENT_DRIVER
 #    playerclient )
@@ -49,7 +49,7 @@ IF ( BUILD_SEGWAYRMP )
     
     # build a stand-alone component
     GLOBAL_ADD_EXECUTABLE( segwayrmp ${COMP_SRCS} )
-    TARGET_LINK_LIBRARIES( segwayrmp ${USB_LIBS} ${CAN_LIBS} )
+    TARGET_LINK_LIBRARIES( segwayrmp ${RMP_USB_LIBS} ${RM_CAN_LIBS} )
     
     
     # Files for the service
@@ -57,7 +57,7 @@ IF ( BUILD_SEGWAYRMP )
     
     # build an IceBox service
     ADD_LIBRARY( OrcaSegwayRmp SHARED ${SERV_SRCS} )
-    TARGET_LINK_LIBRARIES( OrcaSegwayRmp ${USB_LIBS} ${CAN_LIBS} )
+    TARGET_LINK_LIBRARIES( OrcaSegwayRmp ${RMP_USB_LIBS} ${RM_CAN_LIBS} )
     
     INSTALL_TARGETS( /lib OrcaSegwayRmp )
 

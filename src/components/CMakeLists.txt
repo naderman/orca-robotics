@@ -9,7 +9,7 @@ SUBDIRS(
   peoplecounter
   position2dmon
   segwayrmp
-  sicklaser 
+  sicklaser
   statusmon
   teleop
 )
