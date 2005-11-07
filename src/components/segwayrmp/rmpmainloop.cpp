@@ -191,9 +191,9 @@ void RmpMainLoop::run()
                     powerPublisher_->setData( powerData );
                     powerPublishTimer_.restart();
                 }
-                if ( statusPublishTimer_.elapsed().toSecondsDouble()>config_.powerPublishInterval ) {
+                if ( statusPublishTimer_.elapsed().toSecondsDouble()>config_.statusPublishInterval ) {
                     // should this be "heartbeat" category?
-                    current_.logger()->trace("warning","status OK");
+                    current_.logger()->trace("heartbeat","status OK");
                     statusPublishTimer_.restart();
                 }
             }
