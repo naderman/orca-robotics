@@ -19,6 +19,8 @@
  */
 
 #include <orcaiceutil/application.h>
+
+#include <orcaiceutil/application.h>
 #include <orcaiceutil/component.h>
 #include <iostream>
 
