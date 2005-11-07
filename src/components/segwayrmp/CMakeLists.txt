@@ -9,7 +9,7 @@ IF ( BUILD_SEGWAYRMP )
    
   # USB driver
   OPTIONAL_SUB_LIBRARY( 
-    "USB Driver for SegwayRmp"
+    "USB driver for SegwayRmp"
     rmpusb
     OrcaSegwayRmpUsb
     RMP_USB_LIBS
@@ -19,7 +19,7 @@ IF ( BUILD_SEGWAYRMP )
 
   # CAN driver
   OPTIONAL_SUB_LIBRARY( 
-    "CAN Driver for SegwayRmp"
+    "CAN driver for SegwayRmp"
     rmpcan
     OrcaSegwayRmpCan
     RM_CAN_LIBS
