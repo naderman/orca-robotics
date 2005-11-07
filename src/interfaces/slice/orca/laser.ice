@@ -65,6 +65,10 @@ class LaserConfig extends OrcaObject
     bool  isEnabled;
 };
 
+//! This gets thrown if a client tries to configure
+//! us in a way we can't be configured.
+exception CannotImplementConfiguration extends OrcaException {};
+
 //! Laser geometry data structure
 class LaserGeometry extends OrcaObject
 {
@@ -104,7 +108,9 @@ interface Laser
     nonmutating LaserConfig    getConfig();
     nonmutating LaserGeometry  getGeometry();
 
-    idempotent  void setConfig( LaserConfig config );
+    //! Set the configuration of the laser.
+    //! Throws remote exceptions if given a configuration it can't implement.
+    idempotent  void setConfig( LaserConfig config ) throws CannotImplementConfiguration;
 
     /*!
      *

@@ -104,6 +104,13 @@ sequence<StringObj> StringObjSequence;
 //! A byte array which can store any information.
 sequence<byte> ByteSequence;
 
+//! A generic run-time exception.
+//! Orca Components can use this to signal error conditions to their clients.
+exception OrcaException
+{
+    string what;
+};
+
 }; // module
 
 #endif

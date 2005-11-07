@@ -69,6 +69,19 @@ void LaserMonComponent::start()
     // Get the configuration
     cout << "Laser Config:   " << laserPrx->getConfig() << endl;
 
+//     // Could set the configuration like so:
+//     // Set some configuration
+//     orca::LaserConfigPtr cfg = new orca::LaserConfig;
+//     cfg->rangeResolution = 9999;
+//     cfg->isEnabled = true;
+//     try {
+//         laserPrx->setConfig( cfg );
+//     }
+//     catch ( orca::CannotImplementConfiguration &e ) {
+//         cout<<"TRACE(main.cpp): Caught CannotImplementConfiguration" << endl;
+//         cout<<"TRACE(main.cpp): " << e.what << endl;
+//     }
+
     // create servant and tell adapter about it (let it make up a globally unique name)
     Ice::ObjectPrx obj = adapter()->addWithUUID( new LaserConsumerI );
     // make a direct proxy
