@@ -56,18 +56,6 @@ int RmpFakeDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     return 0;
 }
-/*
-int RmpFakeDriver::getPosition2d( orca::Position2dDataPtr & position2d )
-{
-    orcaiceutil::setSane( position2d );
-    return 0;
-}
-int RmpFakeDriver::getPower( orca::PowerDataPtr & power )
-{
-    orcaiceutil::setSane( power );
-    return 0;
-}
-*/
 
 int RmpFakeDriver::sendMotionCommand( orca::Velocity2dCommandPtr & command )
 {

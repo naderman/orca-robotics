@@ -167,7 +167,7 @@ void RmpMainLoop::run()
     while( isActive() )
     {
         // Read data from the hardware
-        //cout<<"frame: " << readTimer_.elapsed().toMilliSecondsDouble()<<endl;
+        cout<<"frame: " << readTimer_.elapsed().toMilliSecondsDouble()<<endl;
         readTimer_.restart();
        
         if ( (readStatus = driver_->read( position2dData, powerData )) ) {
@@ -177,6 +177,7 @@ void RmpMainLoop::run()
         }
         
         //cout<<"read: " << readTimer_.elapsed().toMilliSecondsDouble()<<endl;
+
 
         // only we maganed to read successfuly
         if ( readStatus==0 ) {
@@ -192,8 +193,9 @@ void RmpMainLoop::run()
                     powerPublishTimer_.restart();
                 }
                 if ( statusPublishTimer_.elapsed().toSecondsDouble()>config_.statusPublishInterval ) {
-                    current_.tracer()->heartbeat("status OK");
-                    //current_.logger()->trace("heartbeat","status OK");
+                    //current_.tracer()->heartbeat("status OK");
+                    cout<<"sending heartbeat"<<endl;
+                    current_.logger()->trace("heartbeat","status OK");
                     statusPublishTimer_.restart();
                 }
             }
