@@ -39,8 +39,10 @@ class StatusData extends OrcaObject
 {
     //! The fully-qualified name of the interface.
     FQComponentName name;
-    //! Message category
+    //! Message category, e.g. warning, error, etc.
     string category;
+    //! Verbosity level, 1 being the lowest
+    int verbosity;
     //! Status message from component.
     string message;
 };
