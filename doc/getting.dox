@@ -55,17 +55,9 @@ Follow these instructions to install orca2 and its dependencies. The instruction
             - Version known to work: 4.0.1
     -# Build and install Orca2 distribution. \b NOTE: \b a \b distribution \b does \b not \b yet \b exist \b for \b orca2. \b Download \b from \b cvs \b instead.
         - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive.
-        - configure using cmake (note the dot after cmake)
-        - compile, and install.
-@verbatim
-$ tar -zxvf orca2-x.x.x.tar.gz
-$ cd orca-components
-$ cmake .
-$ make
-# make install
-# ldconfig
-@endverbatim
-
+        - Configure using CMake
+        - Compile and install
+        - Make sure that the binaries and executables are in the path. Finished!
 
 @section cvs Getting Orca from CVS
 

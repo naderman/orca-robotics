@@ -45,7 +45,7 @@ Now decide where to install it. Standard Debian installation puts it into /usr/l
 # cp -r bin doc man share /opt/cmake-[VERSION]/.
 @endverbatim
 
-Put the new installation in the execution path (it's handy to put it into your .bashrc file).
+Put the new installation in the execution path (it's handy to put it into your ~/.bashrc file).
 @verbatim
 $ export CMAKE_ROOT=/opt/cmake-[VERSION]
 $ export PATH=$CMAKE_ROOT/bin:$PATH
@@ -73,12 +73,6 @@ Download source from  <a href="http://www.zeroc.com/download.html">download page
 $ tar -xzf Ice-[VERSION].tar.gz
 $ cd Ice-[VERSION]
 @endverbatim
-    - Suggestion: change the installation directory to something more standard. This is done by editing the 'config/Make.rules' file. This will install all Ice stuff into /usr/local.
-@verbatim
-...
-prefix                  = /usr/local
-...
-@endverbatim
     - Ice is particular about the name of the compiler. If you are using gcc, make sure the names are standard: gcc/g++! If you skip this step you'll see a cryptic message about 'mkshlib' not defined.
 @verbatim
 $ export CC=gcc; export CXX=g++
@@ -89,6 +83,37 @@ $ make
 $ make test (optional, requires python)
 # make install
 # ldconfig
+@endverbatim
+
+Make sure that the Ice binaries and executables are in the path. You may want to add this snippet to your ~/.bashrc file (replace [VERSION] with the version of Ice you've just installed).
+@verbatim
+export ICE_HOME=/opt/Ice-[VERSION]
+export PATH=$ICE_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$ICE_HOME/lib:$LD_LIBRARY_PATH
+@endverbatim
+
+@section orca Orca
+
+@note A distribution does not yet exist for orca2. Download from CVS instead.
+
+Build and install Orca2 distribution.
+    - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive.
+    - Configure using cmake (note the dot after cmake)
+    - Compile, and install. The default install directory is /opt/orca-[VERSION], where [VERSION] is the Orca version. You can change it easily using ccmake tool ('$ ccmake .').
+@verbatim
+$ tar -zxf orca2-x.x.x.tar.gz
+$ cd orca2
+$ cmake .
+$ make
+# make install
+# ldconfig
+@endverbatim
+
+Make sure that the binaries and executables are in the path. You may want to add a snippet to your ~/.bashrc file similar to the one below. Replace [VERSION] with the version of Orca you've just installed. Change the directory if you've modified the default install directory.
+@verbatim
+export ORCA2_HOME=/opt/orca-[VERSION]
+export PATH=$ORCA2_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$ORCA2_HOME/lib:$LD_LIBRARY_PATH
 @endverbatim
 
 @section orca_doc_installdebian_doxygen Doxygen
