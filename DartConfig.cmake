@@ -1,0 +1,6 @@
+SET (DROP_METHOD "xmlrpc")
+SET (DROP_SITE "http://opium.acfr.usyd.edu.au:8081")
+SET (DROP_LOCATION "TestProject")
+SET (COMPRESS_SUBMISSION ON)
+
+SET (NIGHTLY_START_TIME "21:00:00 EDT")

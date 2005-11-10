@@ -66,12 +66,8 @@ ENDIF ( NOT WROTE_CONFIG_H )
 ###########################################################
 
 INCLUDE(config/check_depend.cmake)
-
 SUBDIRS( src )
 
-# Enable Dart support
-MESSAGE( "-- Checking for dart" )
-SET(DART_ROOT $ENV{DART_ROOT})
-INCLUDE (${CMAKE_ROOT}/Modules/Dart.cmake)
+ENABLE_TESTING()
+INCLUDE(Dart)
 
-MESSAGE("CMAKE_SYSTEM: ${CMAKE_SYSTEM}")
