@@ -25,6 +25,8 @@ SET( SLICE_SOURCES
     polarfeature2d.ice
     power.ice
     status.ice
+    ptz.ice 
+    hand.ice
     )
 
 #
