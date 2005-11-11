@@ -29,12 +29,20 @@
 
 using orcaiceutil::operator<<;
 
-class LaserConsumerI : public orca::LaserConsumer
+class RangeScannerConsumerI : public orca::RangeScannerConsumer
 {
     public:
-        virtual void setData(const orca::LaserDataPtr& data, const Ice::Current&)
+        virtual void setData(const orca::RangeScannerDataPtr& data, const Ice::Current&)
         {
-            std::cout << data << std::endl;
+            try {
+                // Is it a laser scan?
+                std::cout << orca::LaserDataPtr::dynamicCast( data ) << std::endl;
+            }
+            catch ( IceUtil::NullHandleException &e )
+            {
+                // Wasn't a laser scan.
+                std::cout << data << std::endl;
+            }
             std::cout << " (startAngle, angleIncrement: " << RAD2DEG(data->startAngle) 
                       << ", " << RAD2DEG(data->angleIncrement) << ")" 
                       << std::endl;

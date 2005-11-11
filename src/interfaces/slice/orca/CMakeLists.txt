@@ -19,6 +19,7 @@ SET( SLICE_SOURCES
     opaque.ice
 #interfaces
     binaryindicator.ice
+    rangescanner.ice
     laser.ice
     position2d.ice
     platform2d.ice

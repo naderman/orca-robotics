@@ -21,7 +21,7 @@ int FakeExtractor:: initialize( ConfigParameters *configParameters )
     return 0;
 }
 
-int FakeExtractor::computeFeatures( const orca::LaserConfigPtr laserConfigPtr, const orca::LaserDataPtr laserDataPtr, PolarFeature2dDataPtr featureDataPtr)
+int FakeExtractor::computeFeatures( const orca::RangeScannerConfigPtr laserConfigPtr, const orca::LaserDataPtr laserDataPtr, PolarFeature2dDataPtr featureDataPtr)
 {
     // make up some features
     cout << "INFO(fakeextractor.cpp): Laser configuration received: " << laserConfigPtr << endl;

@@ -34,7 +34,7 @@ public:
     virtual ~ExtractorOne();
     
     int initialize( ConfigParameters *configParameters );
-    int computeFeatures( const orca::LaserConfigPtr laserConfigPtr, const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr);
+    int computeFeatures( const orca::RangeScannerConfigPtr laserConfigPtr, const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr);
     
 private:
     
@@ -59,7 +59,7 @@ private:
     std::vector<Section> sections_;
   
     bool extractLaserReflectors(const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr);
-    bool extractForegroundPoints(const orca::LaserConfigPtr laserConfigPtr, const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr);
+    bool extractForegroundPoints(const orca::RangeScannerConfigPtr laserConfigPtr, const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr);
     bool extractDoors(const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr);
     bool extractCorners(const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr);
     bool extractPossibleCorners(orca::PolarFeature2dDataPtr featureDataPtr);

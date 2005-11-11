@@ -38,7 +38,7 @@ int ExtractorOne::initialize( ConfigParameters *configParameters )
     return 0;
 }
 
-int ExtractorOne::computeFeatures( const LaserConfigPtr laserConfigPtr, const LaserDataPtr laserDataPtr, PolarFeature2dDataPtr featureDataPtr)
+int ExtractorOne::computeFeatures( const RangeScannerConfigPtr laserConfigPtr, const LaserDataPtr laserDataPtr, PolarFeature2dDataPtr featureDataPtr)
 {
     featureDataPtr -> features.clear();
 
@@ -132,7 +132,7 @@ bool ExtractorOne::extractLaserReflectors(const orca::LaserDataPtr laserDataPtr,
     return 0;  
 }
 
-bool ExtractorOne::extractForegroundPoints(const LaserConfigPtr laserConfigPtr, const LaserDataPtr laserDataPtr, PolarFeature2dDataPtr featureDataPtr)
+bool ExtractorOne::extractForegroundPoints(const RangeScannerConfigPtr laserConfigPtr, const LaserDataPtr laserDataPtr, PolarFeature2dDataPtr featureDataPtr)
 {
     std::vector<orca_polefinder::positionRB> poles;
 

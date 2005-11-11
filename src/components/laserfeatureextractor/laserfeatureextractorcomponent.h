@@ -46,7 +46,7 @@ public:
 
 private:
 
-    orca::LaserConsumerPtr laserConsumer_;
+    orca::RangeScannerConsumerPtr laserConsumer_;
     orca::LaserPrx laserPrx_;
     
     // External interface: polar features

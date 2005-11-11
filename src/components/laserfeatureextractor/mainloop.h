@@ -14,7 +14,7 @@
  *  Lesser General Public License for more details.
  *
  *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Freorca::LaserConfigPtre Software
+ *  License along with this library; if not, write to the Freorca::RangeScannerConfigPtre Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
@@ -60,8 +60,8 @@ private:
     orca::LaserPrx laserPrx_;
     
     // Laser config and geometry
-    orca::LaserConfigPtr laserConfigPtr_;
-    orca::LaserGeometryPtr laserGeometryPtr_;
+    orca::RangeScannerConfigPtr laserConfigPtr_;
+    orca::RangeScannerGeometryPtr laserGeometryPtr_;
     
     // buffers
     orcaiceutil::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer_;

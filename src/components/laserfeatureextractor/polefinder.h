@@ -65,7 +65,7 @@ namespace orca_polefinder {
     //!                |--|
     //!                 y
     //!
-    int detect_poles( const orca::LaserConfigPtr laserConf,
+    int detect_poles( const orca::RangeScannerConfigPtr laserConf,
                       const orca::LaserDataPtr ranges,
                       double maxLaserRange,
                       double min_width,

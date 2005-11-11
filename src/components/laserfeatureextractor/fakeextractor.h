@@ -20,7 +20,7 @@ public:
     virtual ~FakeExtractor();
     
     int initialize( ConfigParameters *configParameters );
-    int computeFeatures( const orca::LaserConfigPtr laserConfigPtr, const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr);
+    int computeFeatures( const orca::RangeScannerConfigPtr laserConfigPtr, const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr);
     
 private:
 

@@ -29,14 +29,14 @@ using namespace orca_polefinder;
 using namespace orca;
 
 int 
-orca_polefinder::detect_poles( const LaserConfigPtr laserConf,
+orca_polefinder::detect_poles( const RangeScannerConfigPtr laserConf,
                                const LaserDataPtr ranges,
-                                 double max_laser_range,
-                                 double min_width,
-                                 double max_width,
-                                 double min_distance_to_background,
-                                 double min_angle_from_dodge,
-                                 std::vector<positionRB> &poles )
+                               double max_laser_range,
+                               double min_width,
+                               double max_width,
+                               double min_distance_to_background,
+                               double min_angle_from_dodge,
+                               std::vector<positionRB> &poles )
 {
     poles.clear();
 

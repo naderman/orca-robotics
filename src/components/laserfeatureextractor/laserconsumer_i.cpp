@@ -34,8 +34,8 @@ LaserConsumerI::LaserConsumerI( PtrBuffer<LaserDataPtr> &laserDataBuffer )
 
 }
 
-void LaserConsumerI::setData(const LaserDataPtr& data, const Ice::Current&)
+void LaserConsumerI::setData(const RangeScannerDataPtr& data, const Ice::Current&)
 {
     //cout << "INFO(laserconsumer_i.cpp): Received laserscan. Putting it into buffer now" << endl << endl;
-    laserDataBuffer_.push( data );
+    laserDataBuffer_.push( LaserDataPtr::dynamicCast( data ) );
 }

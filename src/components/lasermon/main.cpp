@@ -25,7 +25,7 @@
 #include <iostream>
 
 // implementations of Ice objects
-#include "laserconsumer_i.h"
+#include "rangescannerconsumer_i.h"
 
 #include <orcaiceutil/connectutils.h>
 
@@ -73,7 +73,7 @@ void LaserMonComponent::start()
 
 //     // Could set the configuration like so:
 //     // Set some configuration
-//     orca::LaserConfigPtr cfg = new orca::LaserConfig;
+//     orca::RangeScannerConfigPtr cfg = new orca::RangeScannerConfig;
 //     cfg->rangeResolution = 9999;
 //     cfg->isEnabled = true;
 //     try {
@@ -84,12 +84,11 @@ void LaserMonComponent::start()
 //         cout<<"TRACE(main.cpp): " << e.what << endl;
 //     }
 
-    // create servant and tell adapter about it (let it make up a globally unique name)
-    Ice::ObjectPrx obj = adapter()->addWithUUID( new LaserConsumerI );
-    // make a direct proxy
-    Ice::ObjectPrx prx = adapter()->createDirectProxy( obj->ice_getIdentity() );
-    orca::LaserConsumerPrx callbackPrx = orca::LaserConsumerPrx::uncheckedCast( prx );
-
+    // create a callback object to recieve scans
+    Ice::ObjectPtr consumer = new RangeScannerConsumerI;
+    orca::RangeScannerConsumerPrx callbackPrx =
+        orcaiceutil::createConsumerInterface<orca::RangeScannerConsumerPrx>( current(), 
+                                                                             consumer );
     //
     // ENABLE NETWORK CONNECTIONS
     //

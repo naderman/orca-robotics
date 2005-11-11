@@ -26,7 +26,7 @@ public:
     virtual int initialize( ConfigParameters *configParameters) = 0;
     
     //! Computes the features
-    virtual int computeFeatures( const orca::LaserConfigPtr laserConfigPtr, const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr) = 0;
+    virtual int computeFeatures( const orca::RangeScannerConfigPtr laserConfigPtr, const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr) = 0;
 
 private:
 

@@ -27,11 +27,11 @@
 #include <orca/laser.h>
 #include <orcaiceutil/ptrbuffer.h>
 
-class LaserConsumerI : public orca::LaserConsumer
+class LaserConsumerI : public orca::RangeScannerConsumer
 {
     public:
         LaserConsumerI ( orcaiceutil::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer );
-        virtual void setData(const orca::LaserDataPtr& data, const Ice::Current&);
+        virtual void setData(const orca::RangeScannerDataPtr& data, const Ice::Current&);
         
     private:
         orcaiceutil::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer_;
