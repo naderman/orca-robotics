@@ -12,7 +12,9 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.2.2)
 PROJECT(orca)
 
 SET( VERSION 2.0.0 CACHE STRING "Version of Orca distribution" )
+  MESSAGE( "Orca version ${VERSION}" )
 SET( CMAKE_INSTALL_PREFIX /opt/orca-${VERSION} CACHE PATH "Installation directory" FORCE )
+  MESSAGE( "Setting installation directory to ${CMAKE_INSTALL_PREFIX}" )
 
 SET( PROJ_SOURCE_DIR ${orca_SOURCE_DIR} )
 SET( PROJ_BINARY_DIR ${orca_BINARY_DIR} )
