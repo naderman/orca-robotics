@@ -3,7 +3,7 @@ MESSAGE ( "== UTILITIES ==" )
 # when adding new directories, please maintain alphabetical order
 SUBDIRS(  
 # LIBRARIES
-#  liborcaguitools
+  liborcaguitools
   generatecfg
   liborcaiceutil
   libqorcauml
