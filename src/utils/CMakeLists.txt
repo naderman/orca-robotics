@@ -4,6 +4,7 @@ MESSAGE ( "== UTILITIES ==" )
 SUBDIRS(  
 # LIBRARIES
 #  liborcaguitools
+  generatecfg
   liborcaiceutil
   libqorcauml
 # UTILITY APPLICATIONS
