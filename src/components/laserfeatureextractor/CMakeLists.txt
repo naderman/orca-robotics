@@ -25,4 +25,6 @@ IF( BUILD_LASERFEATUREEXTRACTOR )
     
     INSTALL_TARGETS( /lib OrcaLaserFeatureExtractor )
 
+    GENERATE_FROM_DEF( laserfeatureextractor.def )
+
 ENDIF( BUILD_LASERFEATUREEXTRACTOR )
