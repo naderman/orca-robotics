@@ -1,0 +1,10 @@
+DefaultComponentTag=Teleop
+
+# interfaces
+Requires.Platform2d.DefaultProxy=platform2d@local/segwayrmp
+
+# configuration
+#Teleop.Config.Driver=keyboard
+#Teleop.Config.MaxSpeed=5.0
+#Teleop.Config.MaxTurnrate=360.0
+#Teleop.Config.RepeatTime=0.05

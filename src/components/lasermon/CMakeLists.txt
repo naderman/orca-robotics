@@ -12,4 +12,6 @@ FILE( GLOB SRCS *.cpp )
 
 GLOBAL_ADD_EXECUTABLE( lasermon ${SRCS} )
 
+GENERATE_FROM_DEF( lasermon.def )
+
 ENDIF ( BUILD_LASER_MONITOR )
