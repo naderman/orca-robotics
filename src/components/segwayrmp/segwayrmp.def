@@ -1,0 +1,18 @@
+DefaultComponentTag=SegwayRmp
+
+# Provided Interfaces
+Provides.Platform2d.Type=Platform2d
+Provides.Platform2d.DefaultInterface=platform2d
+
+Provides.Power.Type=Power
+Provides.Power.DefaultInterface=power
+
+# Required Interfaces
+
+# Config Parameters
+Config.Driver.Default=usb
+Config.MaxSpeed.Default=5.0
+Config.MaxTurnrate.Default=360.0
+Config.position2dPublishInterval.Default=1.0
+Config.powerPublishInterval.Default=20.0
+Config.statusPublishInterval.Default=60.0
