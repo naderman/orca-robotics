@@ -5,6 +5,7 @@ SUBDIRS(
 # LIBRARIES
 #  liborcaguitools
   liborcaiceutil
+  libqorcauml
 # UTILITY APPLICATIONS
   iceping
 #  nsview
