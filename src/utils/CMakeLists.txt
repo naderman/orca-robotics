@@ -8,6 +8,7 @@ SUBDIRS(
   libqorcauml
 # UTILITY APPLICATIONS
   iceping
+  gorca
 #  nsview
   orcasmc
 )
