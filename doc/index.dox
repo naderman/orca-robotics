@@ -38,8 +38,7 @@
 @defgroup linuxutils Linux Utilities
 @defgroup winutils Windows Utilities
 
-@mainpage What is Orca?
-
+@mainpage Orca: Components for Robotics
 
 Orca is an open-source framework for developing component-based robotic systems. It provides the means for defining and developing the building-blocks which can be pieced together to form arbitrarily complex robotic systems, from single vehicles to distributed sensor networks. @ref orca_about
   
