@@ -60,5 +60,7 @@ IF ( BUILD_SEGWAYRMP )
     TARGET_LINK_LIBRARIES( OrcaSegwayRmp ${RMP_USB_LIBS} ${RM_CAN_LIBS} )
     
     INSTALL_TARGETS( /lib OrcaSegwayRmp )
+    
+    GENERATE_FROM_DEF( segwayrmp.def )
 
 ENDIF ( BUILD_SEGWAYRMP )
