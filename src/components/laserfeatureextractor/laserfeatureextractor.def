@@ -4,7 +4,7 @@ DefaultComponentTag=LaserFeatureExtractor
 Provides.PolarFeatures2d.Type=PolarFeatures2d
 
 # requires
-Requires.Laser.Type=laser
+Requires.Laser.Type=Laser
 Requires.Laser.DefaultProxy=laser@local/sicklaser
 
 # component configuration
