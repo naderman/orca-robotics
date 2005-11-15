@@ -39,6 +39,14 @@ struct Time
     int useconds;
 };
 
+/*!
+    Fully qualified executable name.
+*/
+struct FQExecutableName
+{
+    string executable;
+    string host;
+};
 
 /*!
     Fully qualified component name.
