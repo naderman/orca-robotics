@@ -22,6 +22,15 @@
 
 @page orca_doc_old_news Old News
 
+    - 18-Sep-05: Orca 0.15.2: Mostly small changes.  See Release Notes for details. 
+    - 18-Aug-05: Orca 0.15.1: Mostly small bug-fixes. 
+    - 2-Jul-05:  Orca 0.15.0:
+       - Addition of SOCKET transport: a simple transport implementation using raw TCP/IP sockets
+       - Various component improvements: see Release Notes for changes.
+    - 9-May-05:  Orca 0.14.0: See Release Notes for changes. 
+    - 16-Apr-05:  Orca 0.13.3: See Release Notes for changes. 
+    - 4-Apr-05:  Orca 0.13.2: See Release Notes for changes. 
+    - 21-Mar-05: Orca 0.13.1: XML config file system overhauled, and a bug fixed in playerbot. 
     -  16-Mar-05: Orca 0.13.0: Enhancements:
         -   Orca now has two options for transport mechanisms: (a) CORBA and (b) CRUD: a lightweight communications library based on UDP/Shared Memory.
         -   The API for all Patterns and Objects has been significantly revamped, greatly improving consistency.

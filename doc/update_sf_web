@@ -15,10 +15,10 @@ force () {
 }
 
 force ls
-force ./build_all_documentation --copy
+force doxygen orca.doxyfile
 force cd html
 force tar --exclude=CVS --exclude=doc.tgz -zcvf doc.tgz *
 force scp doc.tgz shell.sourceforge.net:
 
-ssh shell.sourceforge.net "cd /home/groups/o/or/orca-robotics/htdocs/; mv ~/doc.tgz .; tar -zxvf doc.tgz; rm doc.tgz; chmod -R g+w *"
+ssh shell.sourceforge.net "cd /home/groups/o/or/orca-robotics/htdocs/orca2/; mv ~/doc.tgz .; tar -zxvf doc.tgz; rm doc.tgz; chmod -R g+w *"
 
