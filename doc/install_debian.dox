@@ -63,6 +63,8 @@ To keep the standard Debian cmake installed, renamed the old binaries.
 
 @note The instructions below describe how to build Ice from source. There's a one-man effort to provide Debian packages for Ice but we haven't tried to use them yet. See http://ice.jgaa.com/
 
+Following the instructions below will install Ice to the default location /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
+
 Download source from  <a href="http://www.zeroc.com/download.html">download page</a>.
     - First, install Ice dependencies. In debian packages for all required libraries exist.
 @verbatim
