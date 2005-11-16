@@ -73,4 +73,41 @@ IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 10000
 @endverbatim
 (modify appropriately if this differs from your system setup)
 
+
+@section talk Getting Two Components Talking
+
+For a first demonstration, try connecting a fake sicklaser to a laser
+monitoring component.
+
+First, configure the laser for fake operation (or skip this step if
+you're connected to a real SICK laser).  Edit
+'src/components/sicklaser/sicklaser.cfg', and replace the line:
+
+@verbatim
+Config.Driver=native
+@endverbatim
+
+with:
+
+@verbatim
+Config.Driver=fake
+@endverbatim
+
+Then start the laser:
+
+@verbatim
+$ cd src/components/sicklaser
+$ ./sicklaser sicklaser.cfg
+@endverbatim
+
+Now start a new shell, and fire up lasermon (a laser monitoring component):
+
+@verbatim
+$ cd src/components/lasermon
+$ ./lasermon lasermon.cfg
+@endverbatim
+
+You should see the scans scroll by on the screen.  Congratulations,
+your first two components are talking!  
+
 */

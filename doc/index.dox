@@ -40,18 +40,56 @@
 
 @mainpage Orca: Components for Robotics
 
-Orca is an open-source framework for developing component-based robotic systems. It provides the means for defining and developing the building-blocks which can be pieced together to form arbitrarily complex robotic systems, from single vehicles to distributed sensor networks. @ref orca_about
-  
-The documentation on this web page matches the latest release of Orca1. A web page is also generated hourly from <a
-href="http://orca-robotics.sourceforge.net/cvs/">the latest CVS version of Orca2.</a>.
+Orca is an open-source framework for developing component-based
+robotic systems. It provides the means for defining and developing the
+building-blocks which can be pieced together to form arbitrarily
+complex robotic systems, from single vehicles to distributed sensor
+networks.
 
-@section status Current Status
-  
-The initial implementation based on selectable transport mechanisms has been frozen as of version 1.0 and will only receive bug fixes in the future. The framework has been and is currently used in several projects.
+<hr>
 
-A new implementation has been started based on the Internet Communication Engine (Ice) from
-<a href="http://www.zeroc.com">ZeroC</a>. We call this implementation @b Orca2.
-Our focus on component-based sotfware remains unchanged but we feel that Ice is far superior to any commercial and custom solutions we have looked at before. We are currently figuring out the best way to build components on top of Ice. A new distribution will be available soon.
+@section purpose Purpose
+
+An Orca component provides a set of interfaces and requires a set of
+interfaces.  The main aim of the Orca framework is to allow these
+interfaces to be defined and implemented.  Standard definitions and
+implementations allow independently-developed components to
+interoperate.
+
+Orca:
+
+- @ref orca_doc_about_whyice "uses Ice" for communication and interface definition,
+- aims to be @ref orca_doc_about_flexible "general, flexible and extensible", in order to place as few constraints as possible on system design,
+- provides @ref orca_doc_about_tools "optional tools" to assist in the development of individual components and the management of large systems, and
+- maintains a @ref orca_doc_about_repository "repository" of free, reusable components.
+
+<hr>
+
+For more information:
+
+- For general Orca information: @ref orca_doc_about
+- To download and install Orca: @ref orca_doc_getting
+- To get set up and start running components: @ref orca_doc_quickstart
+- For a quick overview of basic Orca concepts: @ref orca_doc_overview
+- To see all available components: <a href="group__components.html">Component Repository</a>
+
+
+Note: The documentation on this web page matches the latest release. A web
+page is also generated hourly from <a href="http://orca-robotics.sourceforge.net/cvs/">the latest CVS version</a>.
+
+@section current_status Current Status
+
+Orca has recently transitioned from an implementation based on
+selectable transport mechanisms (called <a href="http://orca-robotics.sf.net/orca1/">Orca1</a>) to Orca2, which @ref orca_doc_about_whyice "uses Ice" for all communications.  Our focus on component-based 
+sotfware remains unchanged but we
+feel that Ice is far superior to any commercial and custom solutions
+we have looked at before.
+
+While the current version of Orca2 is usable, things may change
+frequently and the documentation is a little thin.  The set of
+available components is currently small, however we will eventually
+port over all the <a href="http://orca-robotics.sourceforge.net/orca1/components/html/modules.html">Orca1 components</a>.  Let us know if there's a
+particular component you need.
 
 
 @section news News
