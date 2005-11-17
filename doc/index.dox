@@ -40,38 +40,28 @@
 
 @mainpage Orca: Components for Robotics
 
-Orca is an open-source framework for developing component-based
-robotic systems. It provides the means for defining and developing the
-building-blocks which can be pieced together to form arbitrarily
-complex robotic systems, from single vehicles to distributed sensor
-networks.
+Orca is an open-source framework for developing component-based robotic systems. It provides the means for defining and developing the building-blocks which can be pieced together to form arbitrarily
+complex robotic systems, from single vehicles to distributed sensor networks. The project's goals are:
+- to \b enable software reuse by defining a set commonly-used interfaces;
+- to \b simplify software reuse by providing libraries with a high-level convinient API; and
+- to \b encourage software reuse by maintaining a repository of components.
 
-<hr>
-
-@section purpose Purpose
-
-An Orca component provides a set of interfaces and requires a set of
-interfaces.  The main aim of the Orca framework is to allow these
-interfaces to be defined and implemented.  Standard definitions and
-implementations allow independently-developed components to
-interoperate.
-
-Orca:
-
-- @ref orca_doc_about_whyice "uses Ice" for communication and interface definition,
-- aims to be @ref orca_doc_about_flexible "general, flexible and extensible", in order to place as few constraints as possible on system design,
-- provides @ref orca_doc_about_tools "optional tools" to assist in the development of individual components and the management of large systems, and
+Orca, currently in its second generation, differs from other robotic software frameworks in that it:
+- adopts the @ref orca_doc_about_approach "Component-Based Software Engineering" approach;
+- uses  an @ref orca_doc_about_whyice "industrial-strength library (Ice)" for communication and interface definition;
+- aims to be @ref orca_doc_about_flexible "general, flexible and extensible", in order to place as few constraints as possible on system design;
+- provides @ref orca_doc_about_tools "optional tools" to assist in the development of individual components and the management of large systems; and
 - maintains a @ref orca_doc_about_repository "repository" of free, reusable components.
 
 <hr>
 
 @section more_information For more information
 
-- For general Orca information: @ref orca_doc_about
+- To read general information: @ref orca_doc_about
 - To download and install Orca: @ref orca_doc_getting
 - To get set up and start running components: @ref orca_doc_quickstart
-- For a quick overview of basic Orca concepts: @ref orca_doc_overview
-- To see all available components: <a href="group__components.html">Component Repository</a>
+- For a quick overview of basic concepts: @ref orca_doc_overview
+- To see a list of all available components: <a href="group__components.html">Component Repository</a>
 
 
 Note: The documentation on this web page matches the latest release. A web
@@ -94,11 +84,12 @@ particular component you need.
 
 @section news News
 
-    - 15-Nov-05: Released Orca 1.0.1 (part of Orca1).  Bugfixes only.
-    - 23-Oct-05: moved to an all-doxygen documentation system based largely on the <a href="http://playerstage.sf.net">Player/Stage v2.0</a> model.
-    - 11-Oct-05: started development of @b Orca2 using Ice.
-    - 11-Oct-05: @b Orca @b 1.0.0: Orca1 source has been frozen.
-    - @ref orca_doc_old_news
+- 17-Nov-05 Main website points to Orca2 information. Orca1 is still available on orca-robotics.sf.net/orca1.
+- 15-Nov-05 Released Orca 1.0.1 (part of Orca1).  Bugfixes only.
+- 23-Oct-05 moved to an all-doxygen documentation system based largely on the <a href="http://playerstage.sf.net">Player/Stage v2.0</a> model.
+- 11-Oct-05 started development of @b Orca2 using Ice.
+- 11-Oct-05 @b Orca @b 1.0.0: Orca1 source has been frozen.
+- @ref orca_doc_old_news
 
 
 

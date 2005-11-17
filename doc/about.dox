@@ -32,38 +32,36 @@ networks.
 
 @section orca_doc_about_toc Contents
 
-- @ref orca_doc_about_cbse
 - @ref orca_doc_about_purpose
+- @ref orca_doc_about_difference
+- @ref orca_doc_about_approach
 - @ref orca_doc_about_history
 - @ref orca_doc_about_usage
 - @ref orca_doc_about_platforms
 - @ref orca_doc_about_license
 
 
-@section orca_doc_about_cbse Component-Based Software Engineering
-
-For an overview of Component-Based Software Engineering (CBSE) and its
-application to robotics, see <a href="http://orca-robotics.sf.net/documents/brooks05_towards_component_based_robotics.pdf">this paper</a>.  While it was written for Orca1, the arguments for CBSE are
-still valid for Orca2.
-
 
 @section orca_doc_about_purpose Purpose
 
-An Orca component provides a set of interfaces and requires a set of
-interfaces.  The main aim of the Orca framework is to allow these
-interfaces to be defined and implemented.  Standard definitions and
-implementations allow independently-developed components to
-interoperate.
+Orca is an open-source framework for developing component-based robotic systems. It provides the means for defining and developing the building-blocks which can be pieced together to form arbitrarily
+complex robotic systems, from single vehicles to distributed sensor networks. The project's goals are:
+- to \b enable software reuse by defining a set commonly-used interfaces;
+- to \b simplify software reuse by providing libraries with a high-level convinient API; and
+- to \b encourage software reuse by maintaining a repository of components.
 
-Orca:
+@section orca_doc_about_difference What Makes Orca Different?
 
-- uses <a href="http://www.zeroc.com">Ice</a> for communication and
-  interface definition,
-- aims to be general, flexible and extensible, in order to place as
-  few constraints as possible on system design,
-- provides optional tools to assist in the development of individual components
-  and the management of large systems, and
+Orca, currently in its second generation, differs from other robotic software frameworks in that it:
+- adopts the Component-Based Software Engineering approach;
+- uses  an industrial-strength library (Ice) for communication and interface definition;
+- aims to be general, flexible and extensible, in order to place as few constraints as possible on system design;
+- provides optional tools to assist in the development of individual components and the management of large systems; and
 - maintains a repository of free, reusable components.
+
+@section orca_doc_about_approach Approach
+
+The approach we take is frequently called Component-Based Software Engineering (CBSE). For an overview of CBSE and its application to robotics, see <a href="http://orca-robotics.sf.net/documents/brooks05_towards_component_based_robotics.pdf">this paper</a>.  While it was written for Orca1, the arguments for CBSE fully apply to Orca2.
 
 @subsection orca_doc_about_whyice Why Use Ice?
 
@@ -156,15 +154,10 @@ institution worked on separate parts of a project that was
 intended to eventually merge, but never did.  The Orocos name
 now refers to <a href="http://www.orocos.org">the Belgian part</a>.
 
-<a href="http://www.cas.kth.se">KTH</a>'s
-mandate was to build a set of communication patterns to enable
+The task of <a href="http://www.cas.kth.se">KTH</a> was to build a set of communication patterns to enable
 the interaction of distributed components.  This work,
 spearheaded by Anders Oreb&auml;ck, was called Orocos@KTH.  By
-June 2004 Orocos@KTH had also been adopted by members of the <a href="http://www.acfr.usyd.edu.au">Australian Centre for Field Robotics</a>.  By this time it had diverged far
-enough from the work at Leuven that a new name was required to
-disambiguate the two, and Orca1 was born.  Orca2 began in late 2005,
-the main difference being the move to @ref orca_doc_about_whyice "Ice"
-as the sole communications package.
+June 2004 Orocos@KTH had also been adopted by members of the <a href="http://www.acfr.usyd.edu.au">Australian Centre for Field Robotics</a>.  By this time it had diverged far enough from the work at Leuven that a new name was required to disambiguate the two, and Orca1 was born. At that time the project moved to SourceForge. Work on porting Orca to Ice started in March of 2005. The new version called Orca2 was forked in late 2005, the main difference being the move to @ref orca_doc_about_whyice "Ice" as the sole communications package.
 
 @section orca_doc_about_usage Usage
 
