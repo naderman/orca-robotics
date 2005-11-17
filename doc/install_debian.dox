@@ -96,8 +96,6 @@ export LD_LIBRARY_PATH=$ICE_HOME/lib:$LD_LIBRARY_PATH
 
 @section orca Orca
 
-@note A distribution does not yet exist for orca2. Download from CVS instead.
-
 Build and install Orca2 distribution.
     - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive.
     - Configure using cmake (note the dot after cmake)
