@@ -122,6 +122,8 @@ Finally, remember to 'chmod 755 /etc/hotplug/usb/segwayrmp'.
 
 @section playerclient Player Client Driver
 
+@note Not implemented yet, but will be sometime soon.
+
 This one simply connects to a Player server.
 
 Support is limited to what Player supports which is currently the original RMP with CAN I/O using Kvaser, Inc.'s CANLIB interface library. This library provides access
