@@ -1,6 +1,7 @@
 DefaultComponentTag=Teleop
 
 # interfaces
+Requires.Platform2d.Type=Platform2d
 Requires.Platform2d.DefaultProxy=platform2d@local/segwayrmp
 
 # configuration
