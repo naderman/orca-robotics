@@ -44,7 +44,7 @@ Follow these instructions to install orca2 and its dependencies. The instruction
         - Version known to work: 2.2.2. (v2.0.6 available as a Debian package is known NOT to work).
         - Download binaries from <a href="http://www.cmake.org/HTML/Download.html">Kitware</a>.
     -# Download and install Ice libraries.
-        - Version known to work: 2.1.2.
+        - Version known to work: 2.1.2 (\b note: we expect to upgrade to 3.0.0 in late December).
         - Full instructions are available from the <a href="http://www.zeroc.com/download.html">download page</a>. Several binaries distributions exists, for others (e.g. Debian Linux) building from source is required.
     -# Download and install any optional dependencies you'd like:
         - <a href="http://playerstage.sourceforge.net/" target="_blank">Player/Stage</a>, is required for some hardware support and for use of the Stage simulator (you probably want this).
