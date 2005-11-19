@@ -47,13 +47,13 @@ networks.
 Orca is an open-source framework for developing component-based robotic systems. It provides the means for defining and developing the building-blocks which can be pieced together to form arbitrarily
 complex robotic systems, from single vehicles to distributed sensor networks. The project's goals are:
 - to \b enable software reuse by defining a set commonly-used interfaces;
-- to \b simplify software reuse by providing libraries with a high-level convinient API; and
+- to \b simplify software reuse by providing libraries with a high-level convenient API; and
 - to \b encourage software reuse by maintaining a repository of components.
 
 @section orca_doc_about_difference What Makes Orca Different?
 
 Orca, currently in its second generation, differs from other robotic software frameworks in that it:
-- adopts the Component-Based Software Engineering approach;
+- adopts a Component-Based Software Engineering approach;
 - uses  an industrial-strength library (Ice) for communication and interface definition;
 - aims to be general, flexible and extensible, in order to place as few constraints as possible on system design;
 - provides optional tools to assist in the development of individual components and the management of large systems; and
