@@ -128,7 +128,7 @@ Doxygen can be easily installed as a package. The standard version can build all
 At the time of writing Qt4 packages are in the 'testing' distribution.
 
 @verbatim
-# apt-get install libqt4-dev libqt4-doc
+# apt-get install libqt4-dev qt4-doc qt4-dev-tools
 @endverbatim
 
 @endverbatim

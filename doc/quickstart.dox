@@ -79,9 +79,14 @@ IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 10000
 For a first demonstration, try connecting a fake sicklaser to a laser
 monitoring component.
 
-First, configure the laser for fake operation (or skip this step if
+First, copy all configuration files to your sys directory you created before:
+@verbatim
+$ cp [ORCA2]/orca/cfg/* ~/sys
+@endverbatim
+
+Then, configure the laser for fake operation (or skip this step if
 you're connected to a real SICK laser).  Edit
-'src/components/sicklaser/sicklaser.cfg', and replace the line:
+'sicklaser.cfg', and replace the line:
 
 @verbatim
 Config.Driver=native
@@ -96,15 +101,16 @@ Config.Driver=fake
 Then start the laser:
 
 @verbatim
-$ cd src/components/sicklaser
-$ ./sicklaser sicklaser.cfg
+$ cd ~/sys
+$ sicklaser sicklaser.cfg
 @endverbatim
+(You need to have the sicklaser component built and installed before).
 
 Now start a new shell, and fire up lasermon (a laser monitoring component):
 
 @verbatim
-$ cd src/components/lasermon
-$ ./lasermon lasermon.cfg
+$ cd ~/sys
+$ lasermon lasermon.cfg
 @endverbatim
 
 You should see the scans scroll by on the screen.  Congratulations,
