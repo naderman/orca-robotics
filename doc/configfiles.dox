@@ -22,14 +22,18 @@
 
 @page orca_doc_configfiles Orca Configuration Files
 
-\b NOTE: This is not implemented yet but will be soon.
-
 Configuration files can be used for three things:
     - @ref connection
     - @ref config
     - Describing the component structure
 
 Orca uses Ice tools to parse configuration files. These are text files which list properties as key/value pairs. The keys are strings optionally devided into subfields with periods.
+
+Orca configuration files ('.cfg') can be generated from Orca definition files ('.def'). This is the recommended method since writing configuration files by hand is very error-prone. A good way is to generate the cfg file using the standard def file and then make changes to the generated cfg file. The conversion is done by the 'generatecfg' utility:
+
+@verbatim
+$ generatecfg component.def mycomponent.cfg
+@endverbatim
 
 @section connection Connecting Components
 
@@ -71,6 +75,17 @@ ComponentTag.Requires.InterfaceTag2.Proxy=i2@p2/c2
 ...
 @endverbatim
 
-@section config Setting internal component parameters
+@section config Internal Component Parameters
 
+Components' internal behaviour usually needs to be configured by setting certain parameters. A component developer should write a defintion file ('.def') which contains all possible parameters with their default values. The syntax in the generated config file ('.cfg') is:
+
+@verbatim
+ComponentTag.Config.ParameterSet1.ParameterDouble=0.1
+ComponentTag.Config.ParameterSet1.ParameterBool=1
+...
+ComponentTag.Config.ParameterSet2.ParameterInt=3
+...
+@endverbatim
+
+The component developer is responsible for reading the parameters correctly. The code can contain hard-coded default values in case the config file does not specify them.
 */
