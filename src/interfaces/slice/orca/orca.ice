@@ -119,6 +119,11 @@ exception OrcaException
     string what;
 };
 
+//! This gets thrown if a client tries to configure
+//! us in a way we can't be configured.
+exception CannotImplementConfigurationException extends OrcaException {};
+
+
 }; // module
 
 #endif
