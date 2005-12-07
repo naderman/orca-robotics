@@ -5,6 +5,7 @@ SUBDIRS(
   laserfeatureextractor
   lasermon
   logger
+  logplayer
   orcaguilocal
   peoplecounter
   position2dmon
