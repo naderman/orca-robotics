@@ -86,6 +86,7 @@ particular component you need.
 
 @section news News
 
+- 13-15-Dec-05 ORCA team gives talk at <a href="http://194.95.66.227/b-it-tutorial/index.html">B-IT Tutorial on Robot Middleware and Integration Frameworks</a>. Invited as one of the "six most prevalent middleware concepts and integration frameworks for mobile robots today" .
 - 17-Nov-05 Main website points to Orca2 information. Orca1 is still available on orca-robotics.sf.net/orca1.
 - 15-Nov-05 Released Orca 1.0.1 (part of Orca1).  Bugfixes only.
 - 23-Oct-05 moved to an all-doxygen documentation system based largely on the <a href="http://playerstage.sf.net">Player/Stage v2.0</a> model.
