@@ -22,6 +22,7 @@
 
 #include <orcaiceutil/objutils.h>
 #include <iostream>
+#include <math.h>
 
 using namespace orca;
 using namespace std;
