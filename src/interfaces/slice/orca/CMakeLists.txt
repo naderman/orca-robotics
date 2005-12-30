@@ -28,6 +28,7 @@ SET( SLICE_SOURCES
     status.ice
     ptz.ice 
     hand.ice
+    ogpatch.ice 
     )
 
 #
