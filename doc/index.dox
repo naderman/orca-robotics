@@ -73,15 +73,11 @@ page is also generated hourly from <a href="http://orca-robotics.sourceforge.net
 
 Orca has recently transitioned from an implementation based on
 selectable transport mechanisms (called <a href="http://orca-robotics.sf.net/orca1/">Orca1</a>) to Orca2, which @ref orca_doc_about_whyice "uses Ice" for all communications.  Our focus on component-based 
-sotfware remains unchanged but we
-feel that Ice is far superior to any commercial and custom solutions
-we have looked at before.
+sotfware remains unchanged but we feel that Ice is far superior to any commercial and custom solutions we have looked at before.
 
 While the current version of Orca2 is usable, things may change
-frequently and the documentation is a little thin.  The set of
-available components is currently small, however we will eventually
-port over all the <a href="http://orca-robotics.sourceforge.net/orca1/components/html/modules.html">Orca1 components</a>.  Let us know if there's a
-particular component you need.
+frequently and the documentation is a little thin. Switching to Ice has caused large changes in the component model. This means that Orca1 and Orca2 components are mutually incompatible. The set of components currently available in Orca2 is small, however we will eventually
+port over all the <a href="http://orca-robotics.sourceforge.net/orca1/components/html/modules.html">Orca1 components</a>.  Let us know if there's a particular component you need.
 
 
 @section news News
