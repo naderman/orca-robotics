@@ -26,7 +26,7 @@ These are detailed instructions for installing Orca on Debian Linux. See @ref or
 
 @section orca_doc_installdebian_cmake CMake
 
-Download Linux binaries from <a href="http://www.cmake.org/HTML/Download.html">Kitware</a>. Unpack the archive. The instructions below work with version 2.2.2.
+Download Linux binaries from <a href="http://www.cmake.org/HTML/Download.html">Kitware</a>. Unpack the archive. (The latest version to be tested with these instructions: 2.2.3)
 @verbatim
 $ mkdir cmake-[VERSION]
 $ mv cmake-[VERSION]-x86-linux.tar.gz cmake-[VERSION]
