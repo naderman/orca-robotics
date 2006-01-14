@@ -1,0 +1,31 @@
+#
+# When you add a new .ice file, insert its name into this list. This is
+# the only file which has to be updated.
+#
+
+#
+# Since CMake doesn't know how to automatically track dependencies for .ice files, 
+# these have to be entered manually in proper order: such that the depended-on
+# files are listed first.
+#
+SET( SLICE_SOURCE_FILES
+# definitions
+    orca.ice
+    bros1.ice
+# objects
+    image.ice
+    ogmap.ice
+    opaque.ice
+#interfaces
+    binaryindicator.ice
+    rangescanner.ice
+    laser.ice
+    position2d.ice
+    platform2d.ice
+    polarfeature2d.ice
+    power.ice
+    status.ice
+    ptz.ice 
+    hand.ice
+    ogpatch.ice 
+)
