@@ -70,6 +70,12 @@ ENDIF ( NOT WROTE_CONFIG_H )
 INCLUDE(config/check_depend.cmake)
 SUBDIRS( src )
 
-ENABLE_TESTING()
+
+###########################################################
+#                                                         #
+# Enable testing by including the Dart module             #
+#                                                         #
+###########################################################
+
 INCLUDE(Dart)
 
