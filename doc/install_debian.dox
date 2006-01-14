@@ -66,9 +66,9 @@ To keep the standard Debian cmake installed, renamed the old binaries.
 Following the instructions below will install Ice to the default location /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
 
 Download source from  <a href="http://www.zeroc.com/download.html">download page</a>.
-    - First, install Ice dependencies. In debian packages for all required libraries exist.
+    - First, install Ice dependencies. Debian packages for all required libraries exist.
 @verbatim
-# apt-get install libdb4.2++-dev libbz2-dev bzip2 libssl-dev libreadline5-dev libexpat1-dev
+# apt-get install libdb4.3++-dev libbz2-dev bzip2 libssl-dev libreadline5-dev libexpat1-dev
 @endverbatim
     - Get Ice source distribution from <a href="http://www.zeroc.com">ZeroC</a> and unpack the archive
 @verbatim
