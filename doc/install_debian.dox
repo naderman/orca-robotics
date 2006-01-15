@@ -26,7 +26,9 @@ These are detailed instructions for installing Orca on Debian Linux. They are kn
 
 @section orca_doc_installdebian_cmake CMake
 
-Download Linux binaries from <a href="http://www.cmake.org/HTML/Download.html">Kitware</a>. Unpack the archive. (The latest version to be tested with these instructions: 2.2.3)
+The latest version tested with these instructions: 2.2.3
+
+Download Linux binaries from <a href="http://www.cmake.org/HTML/Download.html">Kitware</a>. Unpack the archive.
 @verbatim
 $ mkdir cmake-[VERSION]
 $ mv cmake-[VERSION]-x86-linux.tar.gz cmake-[VERSION]
@@ -62,6 +64,8 @@ To keep the standard Debian cmake installed, renamed the old binaries.
 @section orca_doc_installdebian_ice Ice
 
 @note The instructions below describe how to build Ice from source. There's a one-man effort to provide Debian packages for Ice but we haven't tried to use them yet. See http://ice.jgaa.com/
+
+The latest version tested with these instructions: 3.0.0.
 
 Following the instructions below will install Ice to the default location /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
 
