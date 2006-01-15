@@ -75,10 +75,11 @@ Download source from  <a href="http://www.zeroc.com/download.html">download page
 $ tar -xzf Ice-[VERSION].tar.gz
 $ cd Ice-[VERSION]
 @endverbatim
-    - Ice is particular about the name of the compiler. If you are using gcc, make sure the names are standard: gcc/g++! If you skip this step you'll see a cryptic message about 'mkshlib' not defined.
+    - Ice is particular about the name of the compiler. If you are using a version of gcc, make sure the names are standard: gcc/g++! If you skip this step you'll see a cryptic message about 'mkshlib' not defined.
 @verbatim
 $ export CC=gcc; export CXX=g++
 @endverbatim
+    - Which gcc version to use? ZeroC recommends >=4.0.1. We've use v.4.0.3. Using v. 3.3.x may also be possible.
     - Compile and install
 @verbatim
 $ make
