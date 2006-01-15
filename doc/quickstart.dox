@@ -22,7 +22,7 @@
 
 @page orca_doc_quickstart Quick-Start Guide
 
-@note revised for Orca2 release 2.0.0.
+@note revised for Orca2 release 2.0.0-rc2 (which uses Ice-3.0.0).
 
 This page describes how to get a quick demonstration up and running with your new Orca install.
 
@@ -36,17 +36,17 @@ $ cd ~
 $ mkdir sys
 @endverbatim
 
-@par IcePack Registry
+@par IceGrid Registry
 
-The IcePack Registry provides a Naming service: a mapping from logical port names to physical addresses. It's currently the only way for components to find one another. We create a separate directory for it to run in, copy a sample config file, create the database directory and start it up.
+The IceGrid Registry provides a Naming service: a mapping from logical port names to physical addresses. It's currently the only way for components to find one another. We create a separate directory for it to run in, copy a sample config file, create the database directory and start it up.
 @verbatim
 $ cd ~/sys; mkdir icereg; cd icereg
-$ cp [ORCA2]/doc/icecfg/icepack.cfg .
+$ cp [ORCA2]/doc/icecfg/icegridregistry.cfg .
 $ mkdir db
-$ icepackregistry --Ice.Config=icepack.cfg
+$ icegridregistry --Ice.Config=icegridregistry.cfg
 @endverbatim
 
-This starts icepackregistry on your local machine.  If you're going to be using Orca a lot,
+This starts icegridregistry on your local machine.  If you're going to be using Orca a lot,
 it's probably a good idea to set this up so it's always running on a single machine on the network.
 
 @par IceStorm Service
@@ -61,14 +61,13 @@ $ icebox --Ice.Config=icebox_icestorm.cfg
 
 @section point Pointing Components at this Infrastructure
 
-When an Orca component starts up, it needs to know how to find the
-services above.
+When an Orca component starts up, it needs to know how to find the services above.
 
 If your components use orcaiceutil, you can solve this problem
 centrally by putting the following in your '~/.orcarc' file:
 @verbatim
 # Standard Ice Configuration for Orca
-Ice.Default.Locator=IcePack/Locator:default -p 12000
+Ice.Default.Locator=IceGrid/Locator:default -p 12000
 IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 10000
 @endverbatim
 (modify appropriately if this differs from your system setup)
