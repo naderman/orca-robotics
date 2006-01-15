@@ -65,7 +65,7 @@ int App::run( int argc, char* argv[] )
             usage();
             return 0;
         } else if ( args[i]=="-r" ) {
-            proxy = "IcePack/Query";
+            proxy = "IceGrid/Query";
         }
     }
 
@@ -141,7 +141,7 @@ void App::usage()
     cout << "  -f file\n\tUse file as Ice.Config parameter. Default is ~/.orcarc"<<endl;
     cout << "  -h\tPrint this."<<endl;
     cout << "  -i interval\n\tPause for interval seconds after each ping. Default is 0."<<endl;
-    cout << "  -r\tPing the IcePackRegistry, specifically its Query interface. This is "<<endl;
+    cout << "  -r\tPing the IceGridRegistry, specifically its Query interface. This is "<<endl;
     cout << "    \ta way to make sure that the registry is reachable."<<endl;
 }
 

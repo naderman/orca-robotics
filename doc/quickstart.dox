@@ -41,7 +41,7 @@ $ mkdir sys
 The IceGrid Registry provides a Naming service: a mapping from logical port names to physical addresses. It's currently the only way for components to find one another. We create a separate directory for it to run in, copy a sample config file, create the database directory and start it up.
 @verbatim
 $ cd ~/sys; mkdir icereg; cd icereg
-$ cp [ORCA2]/doc/icecfg/icegridregistry.cfg .
+$ cp [ORCA2-SRC]/doc/icecfg/icegridregistry.cfg .
 $ mkdir db
 $ icegridregistry --Ice.Config=icegridregistry.cfg
 @endverbatim
@@ -54,7 +54,7 @@ it's probably a good idea to set this up so it's always running on a single mach
 There should be exactly one IceStorm service per host.  This is an event service, used to decouple publishers from subscribers. We create a separate directory for it to run in, copy a sample config file, create the database directory and start it up.
 @verbatim
 $ cd ~/sys; mkdir icestorm; cd icestorm
-$ cp [ORCA2]/doc/icecfg/icebox_icestorm.cfg .
+$ cp [ORCA2-SRC]/doc/icecfg/icebox_icestorm.cfg .
 $ mkdir stormdb
 $ icebox --Ice.Config=icebox_icestorm.cfg
 @endverbatim
@@ -78,46 +78,32 @@ IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 10000
 For a first demonstration, try connecting a fake sicklaser to a laser
 monitoring component.
 
-First, copy all definition files to your sys directory you created before:
+First, copy the provided configuration files for the sicklaser and lasermon components.
 @verbatim
-$ cp [ORCA2]/orca/def/* ~/sys
+$ cd ~/sys; mkdir quickstart; cd quickstart
+$ cp [ORCA2-INSTALL]/cfg/sicklaser.cfg .
+$ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 @endverbatim
 
-Second, generate configuration files for the sicklaser and lasermon components.
-@verbatim
-$ cd ~/sys
-$ generatecfg sicklaser.def mysicklaser.cfg
-$ generatecfg lasermon.def mylasermon.cfg
-@endverbatim
-
-Third, configure the laser for fake operation (or skip this step if
-you're connected to a real SICK laser).  Edit
-'mysicklaser.cfg', and replace the line:
+Then, configure the laser for fake (simulated) operation (or skip this step if
+you're connected to a real SICK laser).  Edit 'sicklaser.cfg', and replace 'native' with 'fake' in this line:
 
 @verbatim
-Config.Driver=native
+SickLaser.Config.Driver=fake
 @endverbatim
 
-with:
+Start the laser component:
 
 @verbatim
-Config.Driver=fake
+$ sicklaser sicklaser.cfg
 @endverbatim
 
-Then start the laser:
+Start a new shell, and fire up the lasermon component (a laser monitor). No modifications are needed for its configuration file:
 
 @verbatim
-$ sicklaser mysicklaser.cfg
+$ lasermon lasermon.cfg
 @endverbatim
 
-Now start a new shell, and fire up lasermon (a laser monitoring component):
-
-@verbatim
-$ cd ~/sys
-$ lasermon mylasermon.cfg
-@endverbatim
-
-You should see the scans scroll by on the screen.  Congratulations,
-your first two components are talking!  
+You should see the scans scroll by on the screen. Congratulations, your first two components are talking!
 
 */

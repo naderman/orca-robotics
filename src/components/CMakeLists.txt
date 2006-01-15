@@ -7,7 +7,6 @@ SUBDIRS(
   logger
   logplayer
   orcaguilocal
-  peoplecounter
   position2dmon
   segwayrmp
   sicklaser

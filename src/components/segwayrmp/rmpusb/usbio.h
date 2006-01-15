@@ -25,7 +25,8 @@
 
 class UsbIo
 {
-public:    
+public:
+    virtual ~UsbIo() {};
     virtual int init()=0;
     virtual int shutdown()=0;
 

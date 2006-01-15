@@ -34,7 +34,7 @@ class InputDriver
 {
 
 public:
-
+    virtual ~InputDriver() {};
     virtual int enable()=0;
     virtual int disable()=0;
 
