@@ -48,7 +48,7 @@ class StatusData extends OrcaObject
 };
 
 /*!
-    @brief Access to a robot's power subsystem
+    @brief Access to a robot's status subsystem
 */
 interface Status
 {
@@ -57,7 +57,7 @@ interface Status
 };
 
 /*!
-    @brief Interface to the consumer of power information.
+    @brief Interface to the consumer of status information.
 */
 interface StatusConsumer
 {
