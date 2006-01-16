@@ -87,7 +87,7 @@ $ rm CMakeCache.txt
 $ cmake .
 @endverbatim
 
-Use should see the following line in CMake output:
+You should see the following line in CMake output:
 @verbatim
     USB Driver for SegwayRMP - can be built
 @endverbatim
