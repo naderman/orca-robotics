@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CHANGE_LICENSES=yes
+CHANGE_LICENSES=no
 FOR_REAL=yes
 
 toplevel=../..
