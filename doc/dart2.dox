@@ -25,6 +25,7 @@
 Introduction to be written.
 
 General things to note:
+- cmake at least v2.2 is required
 - It's best to do out-of-source build, i.e. all object/generated files are in one 'binary' directory. The reason is that it makes it simple for CTest to do a clean build every time by simply deleting all files in the build (or 'binary') directory.
 
 
