@@ -60,6 +60,8 @@ struct FQComponentName
 
 /*!
     Fully qualified interface name.
+    Usually represented in a single string as 'iface@platform/component'
+
     @note Cannot use member variable 'interface', it's reserved by Ice.
     @see FQComponentName, FQTopicName
 */
