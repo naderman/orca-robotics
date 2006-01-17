@@ -24,6 +24,9 @@
 
 Introduction to be written.
 
+General things to note:
+- It's best to do out-of-source build, i.e. all object/generated files are in one 'binary' directory. The reason is that it makes it simple for CTest to do a clean build every time by simply deleting all files in the build (or 'binary') directory.
+
 
 @section server Dart2 Server
 
@@ -33,15 +36,22 @@ To be written.
 
 @par Continuous Build
 
-A shell script runs indefinitely in the background. It sleeps for several minutes, then executes a CTest script which does the following: 1. it updates the source tree from CVS. 2. if any files are modified, the entire source tree is recompiled. 3. a report is sent to the Dart2 server.
+Here's the idea. A shell script runs continuously in the background. It sleeps for several minutes, then executes a CTest script which does the following: 1) the source tree is updated from CVS; 2) if any files are modified, the entire source tree is recompiled, and 3) a report is sent to the Dart2 server.
 
+Here's what to do:
 - checkout the Orca2 source tree from CVS and rename the directory, e.g. orca2-cont
 - make a copy of the CTest script file [ORCA2-SRC]/scripts/dart2/orca2-cont-gcc40.cfg
 - edit it by making sure that all paths and executables apply to your system. The settings are self-explanatory.
-- execute the shell script [ORCA2-SRC]/scripts/dart2/dart.cont
+- test the script by running it manually
+@verbatim
+$ ctest -V -S orca2-cont-gcc40.cfg
+@endverbatim
+- make a copy of [ORCA2-SRC]/scripts/dart2/dart.cont and make sure it contains the full path to orca2-cont-gcc40.cfg
+- execute the shell script dart.cont like this
 @verbatim
 $ nohup ./dart.cont >/dev/null 2>&1 &
 @endverbatim
+- now you can log out and the script will run forever.
 
 @par Nightly Build
 
