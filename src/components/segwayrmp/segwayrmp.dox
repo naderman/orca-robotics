@@ -72,10 +72,12 @@ The USB version of RMP uses a chip from Future Technology Devices Int. (FTDI). F
 
 Make sure libusb is installed. In Debian, the easiest is to install the developer package. It's likely that you already have the library and all this package will do is create a couple of symbolic links.
 @verbatim
-# sudo apt-get install libusb-dev
+# apt-get install libusb-dev
 @endverbatim
 
-The Orca component has been tested with libftd2xx.so.0.4.5 and libusb-0.1.so.4.4.2. Download the libftd2xx library from <a href="http://ftdichip.com/Drivers/FT2232CDrivers.htm#D2XX">www.ftdichip.com</a>. Untar and follow the installation instructions in README.dat file. In addition, copy the header files provided with the distribution to a standard place, e.g.
+The Orca component has been tested with libftd2xx.so.0.4.5 and libusb-0.1.so.4.4.2. Download the libftd2xx library from <a href="http://www.ftdichip.com/Drivers/D2XX.htm">www.ftdichip.com</a>. Untar and follow the installation instructions in README.dat file. Note an incorrect version number in step 4 and that newish kernels don't seem to need step 7 (based on experience with Debian 2.6.12-10).
+
+In addition, copy the header files provided with the distribution to a standard place, e.g.
 @verbatim
 # cp ftd2xx.h WinTypes.h /usr/local/include/.
 @endverbatim
@@ -94,7 +96,7 @@ You should see the following line in CMake output:
 
 @par Operation
 
-To get the kernel to recognize the rmpusb for what it is on a 2.6 kernel, create '/etc/hotplug/usb/segwayrmp.usermap':
+To get the kernel to recognize the rmpusb hardware for what it is on a 2.6 kernel, create a file '/etc/hotplug/usb/segway.usermap':
 
 @verbatim
 # SegwayRMP
@@ -102,7 +104,7 @@ segwayrmp   0x0003 0x0403 0xe729 0x0000 0x0000 0x00 0x00 0x00 0x00 0x00 0x00 0x0
 @endverbatim
 
 This causes the script '/etc/hotplug/usb/segwayrmp' to execute when the segway is plugged in.
-One possibility is to set the permissions for the segway so non-root can write to it:
+One possibility is to set the permissions for the segway so non-root users can write to it:
 
 @verbatim
 #!/bin/bash
@@ -112,6 +114,9 @@ then
     chmod a+w $DEVICE
 fi
 
+#
+# uncomment this for debugging purposes
+#
 #echo "SegwayRMP device found" > /tmp/segwayrmp.txt
 #echo "action: $ACTION" >> /tmp/segwayrmp.txt
 #echo "device: $DEVICE" >> /tmp/segwayrmp.txt
@@ -131,7 +136,7 @@ to CAN cards made by Kvaser, such as the LAPcan II.
 
 @section confex Configuration Example
 
-@include components/segwayrmp/segwayrmp.cfg
+@include components/segwayrmp/segwayrmp.def
 
 
 */
