@@ -1,7 +1,7 @@
 /*
- *  Orca: Components for robotics.
+ *  Orca Project: Components for robotics.
  *
- *  Copyright (C) 2004-2005
+ *  Copyright (C) 2004-2006
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
