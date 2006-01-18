@@ -22,7 +22,7 @@
 
 @page orca_doc_installdebian Installing Orca on Debian Linux
 
-These are detailed instructions for installing Orca on Debian Linux. They are known to work for a system using Debian \b Testing distribution. See @ref orca_doc_getting for general guidlines.
+These are detailed instructions for installing Orca on Debian Linux. They are known to work for a system using Debian \b Testing distribution. See @ref orca_doc_getting for general guidelines.
 
 @section orca_doc_installdebian_cmake CMake
 

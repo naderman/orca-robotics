@@ -38,6 +38,7 @@ Practically, this means that you can download build your own components from scr
 
 Follow these instructions to install orca2 and its dependencies. The instructions below are quite general. Details differ depending on platform/distribution:
     - @ref orca_doc_installdebian
+    - @ref orca_doc_installfedora
     - Send feedback on building under other configurations.
 
     -# Download and install <a href="http://www.cmake.org/">CMake: Cross-Platform Make</a> which is used to build the orca distribution.

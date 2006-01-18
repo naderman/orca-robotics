@@ -1,0 +1,183 @@
+/*
+ *  Orca-Base: Components for robotics.
+ *
+ *  Copyright (C) 2004
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_installfedora Installing Orca 2 on Fedora Core Linux
+
+
+These are some instructions for installing Orca 2 on Fedora Core. They
+are known to work with Fedora Core 4; later systems may be slightly
+different. See @ref orca_doc_getting for general guidelines.
+
+@section orca_doc_installfedora_assumptions Assumptions
+
+It is assumed that you know what an RPM is, what GCC is, and also what CMake is.
+
+It is assumed that you have done an "everything" install of Fedora Core 4. If you have not
+done this, you need the following packages to be installed:
+
+    - db4-4.3.27
+    - expat-1.95.8
+    - openssl-0.9.7f
+    - bzip2-libs-1.0.2
+    - readline-5.0
+    - ncurses-5.4
+    - libgcc-4.0.1
+    - libstdc++-4.0.1
+    - openssl-devel-0.9.7f
+    - db4-utils-4.3.27
+    - doxygen-1.4.4
+
+If these are not installed, they can be installed using yum or apt-get (for example to
+install expat you would something like "yum install expat").
+
+It is also assumed that you have root access to the machine you are working on. With a
+little bit of thought, these rules can be adapted to a single non-root user (basically just
+adjusting the path). In the following we use "su" but those whose systems support it and
+have set it up should consider using the safer "sudo".
+
+@section orca_doc_installfedora_cmake Installing CMake
+
+CMake can be downloaded from  <a href="http://www.cmake.org/HTML/Download.html">Kitware</a>.
+
+Note: You must download version 2.2.3 or above.
+
+CMake does not compile; it is distributed as a tar file plus a README.
+
+The easiest way to unpack it and install it as root is to untar the file:
+
+@verbatim
+% su root 
+% tar xvfz /path/to/cmake-2.2.3-x86-linux.tar.gz
+% cd /usr/local
+% tar xvf /path/to/cmake-2.2.3-x86-linux-files.tar
+@endverbatim
+
+You could also choose another directory instead of /usr/local
+
+
+
+@section orca_doc_installfedora_ice Downloading Ice
+
+ICE theoretically could be installed from the RPMs available on their web site. However,
+those RPMs are compiled against GCC 3, which does not play well with ORCA 2, so you have to
+compile it yourself.
+
+It can be downloaded from <a
+href="http://www.zeroc.com/download.html">ZeroC</a>. You want the
+source distribution. Once downloaded, it can be untarred.
+
+@verbatim
+% su root 
+% tar xvfz Ice-3.0.0.tar.gz
+@endverbatim
+
+Then provided the packages above have been installed correctly, it should be a matter of
+doing:
+
+@verbatim
+% cd Ice-3.0.0
+% make
+% make install
+% make test
+@endverbatim
+
+@section orca_doc_installfedora_qt4 Optional - Compiling Qt 4
+
+There are no standard packages for it at the time of writing. However, some of the ORCA 2
+tools (such as gorca and orcaguilocal) use Qt 4. Therefore you must compile it yourself from
+the source. As it happens this is not too difficult. As usual, download and untar it and
+then to install:
+
+@verbatim
+% cd qt-x11-opensource-src-4.1.0
+% ./configure
+% gmake
+(the above step may take a while ... perhaps 30 minutes, depending on your machine)
+% su root
+% make install
+@endverbatim
+
+
+
+@section orca_doc_installfedora_paths1 Setting up paths and libpaths
+
+To use these newly installed pieces of software to build Orca 2 minor
+modifications must also be made to .bash_profile to add the paths to these
+new tools.
+
+The following lines should be added to ~/.bash_profile to add /usr/local (where CMake is
+installed) and /opt/Ice-3.0.0 (where Ice is installed) to the path and library. If you use a
+different shell, such as tcsh, then the arrangements are slightly different (use "setenv"
+instead of "export" and omit the "=").
+
+@verbatim
+export ICE_HOME=/opt/Ice-3.0.0
+export QT_HOME=/usr/local/Trolltech/Qt-4.1.0
+export PATH=${ICE_HOME}/bin:${QT_HOME}/bin:/usr/local/bin:$PATH
+export LD_LIBRARY_PATH=${ICE_HOME}/lib:${QT_HOME}/lib:/usr/local/lib
+@endverbatim
+
+After making these changes, you should either log out then log in again for a "totally
+clean" installation, or at least do
+
+@
+% . ~/.bash_profile
+@ 
+
+in the shell you will be compiling Orca 2 in. 
+
+@section orca_doc_installfedora_getorca Getting Orca 2
+
+@ref orca_doc_getting has general guidelines for downloading Orca
+2. Follow the instructions there to download the source as a tar file
+or through CVS. In either case, the process once it is downloaded is essentially the same:
+
+% cd orca2
+% cmake .
+(At this point you may wish to confirm by looking at output that Ice and Qt are correctly
+detected).
+% make % su root
+% make install
+
+% make install
+
+@section orca_doc_installfedora_paths2 Adding Orca 2 to your path
+
+Again, minor modifications need to be made to your ~/.bash_profile file. The new section
+should look like this:
+
+@verbatim
+export ICE_HOME=/opt/Ice-3.0.0
+export QT_HOME=/usr/local/Trolltech/Qt-4.1.0
+export ORCA2_HOME=/opt/orca-2.0.0-rc2
+export PATH=${ICE_HOME}/bin:${QT_HOME}/bin:${ORCA2_HOME}/bin:/usr/local/bin:$PATH
+export LD_LIBRARY_PATH=${ICE_HOME}/lib:${QT_HOME}/lib:${ORCA2_HOME}/lib:/usr/local/lib
+@endverbatim
+
+
+@section orca_doc_installfedora_test Testing
+
+You can now follow @ref orca_doc_quickstart to check that your
+installlation works correctly. 
+
+
+*/
