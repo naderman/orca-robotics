@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# Update from cvs, and rebuild the docco.
+# If nothing has changed, just exit.
+#
+#
+
+DOXYGENCMD=/usr/local/bin/doxygen
+HTDOCS=/home/groups/o/or/orca-robotics/htdocs
+PROJDIR=$HOME/cvs/docversion/orca2
+
+did_update=0
+
+date
+
+#
+# Update project
+#
+if ! cd $PROJDIR 2>&1; then
+    echo "Problem changing to directory $PROJDIR"
+    exit 1
+fi
+pwd
+if cvs update 2>&1 | egrep -e '^[UP]' 2>&1; then
+    echo "Project has changed."
+    did_update=1
+fi
+
+#
+# Exit if nothing changed
+#
+if [ $did_update == 0 ]; then
+    echo "No need to rebuild docs -- nothing changed."
+    exit 0;
+fi
+
+#
+# Rebuild docco
+#
+cd $PROJDIR/doc
+$DOXYGEN_CMD orca.doxyfile
+
+#
+# Copy it to sourceforge
+#
+tar -zcvf html.tar.gz html
+scp  html.tar.gz shell.sf.net:$HTDOCS/cvs_version/orca2/doc/
+ssh shell.sf.net "cd $HTDOCS/cvs_version/orca2/doc/; tar -zxvf html.tar.gz"
+
+date
