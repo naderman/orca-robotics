@@ -95,7 +95,7 @@ void RmpMainLoop::readConfigs()
     else {
         driverType_ = RmpDriver::UNKNOWN_DRIVER;
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
-        current_.logger()->error( errorStr);
+        current_.tracer()->error( errorStr);
         throw orcaiceutil::OrcaIceUtilHardwareException( ERROR_INFO, errorStr );
     }
         
@@ -110,29 +110,29 @@ void RmpMainLoop::run()
     {
         case RmpDriver::USB_DRIVER :
 #ifdef HAVE_USB_DRIVER
-            current_.logger()->print( "loading USB driver");
+            current_.tracer()->print( "loading USB driver");
             driver_ = new RmpUsbDriver();
 #endif
             break;
         case RmpDriver::CAN_DRIVER :
 #ifdef HAVE_CAN_DRIVER
-            current_.logger()->print( "loading CAN driver");
+            current_.tracer()->print( "loading CAN driver");
             driver_ = new RmpCanDriver;
 #endif
             break;
         case RmpDriver::PLAYER_CLIENT_DRIVER :
 #ifdef HAVE_PLAYER_DRIVER
-            current_.logger()->print( "loading Player-Client driver");
+            current_.tracer()->print( "loading Player-Client driver");
             driver_ = new RmpPlayerClientDriver;
 #endif
             break;
         case RmpDriver::FAKE_DRIVER :
-            current_.logger()->print( "loading Fake driver");
+            current_.tracer()->print( "loading Fake driver");
             driver_ = new RmpFakeDriver;
             break;
         case RmpDriver::UNKNOWN_DRIVER :
             string errorStr = "Unknown driver type. Cannot talk to hardware.";
-            current_.logger()->error(errorStr);
+            current_.tracer()->error(errorStr);
             throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
     }
     
@@ -140,13 +140,13 @@ void RmpMainLoop::run()
     // Enable driver
     //
     while ( isActive() && driver_->enable() ) {
-        current_.logger()->warning("failed to enable the driver; will try again.");
+        current_.tracer()->warning("failed to enable the driver; will try again.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
     if ( !isActive() ) {
         return;
     }
-    current_.logger()->print("driver enabled");
+    current_.tracer()->print("driver enabled");
 
     // init internal data storage
     orca::Position2dDataPtr position2dData = new Position2dData;
@@ -171,7 +171,7 @@ void RmpMainLoop::run()
         readTimer_.restart();
        
         if ( (readStatus = driver_->read( position2dData, powerData )) ) {
-            current_.logger()->error("failed to read from Segway");
+            current_.tracer()->error("failed to read from Segway");
             // indicate some fault state here
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }
@@ -195,13 +195,13 @@ void RmpMainLoop::run()
                 if ( statusPublishTimer_.elapsed().toSecondsDouble()>config_.statusPublishInterval ) {
                     //current_.tracer()->heartbeat("status OK");
                     cout<<"sending heartbeat"<<endl;
-                    current_.logger()->trace("heartbeat","status OK");
+                    current_.tracer()->trace("heartbeat","status OK");
                     statusPublishTimer_.restart();
                 }
             }
             catch ( const Ice::ConnectionRefusedException & e )
             {
-                current_.logger()->warning("lost connection to IceStorm");
+                current_.tracer()->warning("lost connection to IceStorm");
             }
             catch ( const Ice::CommunicatorDestroyedException & e )
             {
@@ -226,9 +226,9 @@ void RmpMainLoop::run()
 
     // reset the hardware
     if ( driver_->disable() ) {
-        current_.logger()->warning("failed to disable driver");
+        current_.tracer()->warning("failed to disable driver");
     }
-    current_.logger()->print("driver disabled");
+    current_.tracer()->print("driver disabled");
 }
 
 

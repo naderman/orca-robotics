@@ -71,7 +71,7 @@ void InputLoop::readConfigs()
     else {
         driverType_ = InputDriver::UNKNOWN_DRIVER;
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
-        current_.logger()->trace("remote",errorStr);
+        current_.tracer()->trace("remote",errorStr);
         throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
     }
 }
@@ -87,31 +87,31 @@ void InputLoop::run()
     {
         case InputDriver::KEYBOARD_DRIVER :
 #ifdef HAVE_KEYBOARD_DRIVER
-            current_.logger()->trace("remote","loading keyboard driver");
+            current_.tracer()->trace("remote","loading keyboard driver");
             driver_ = new TeleopKeyboardDriver( config_ );
 #endif
             break;
         case InputDriver::JOYSTICK_DRIVER :
 #ifdef HAVE_JOYSTICK_DRIVER
-            current_.logger()->trace("remote","loading joystick driver");
+            current_.tracer()->trace("remote","loading joystick driver");
             driver_ = new TeleopJoystickDriver( config_ );
 #endif
             break;
         case InputDriver::FAKE_DRIVER :
-            current_.logger()->trace("remote","loading fake driver");
+            current_.tracer()->trace("remote","loading fake driver");
             driver_ = new TeleopFakeDriver( config_ );
             break;
         case InputDriver::UNKNOWN_DRIVER :
             string errorStr = "Unknown driver type. Cannot talk to hardware.";
-            current_.logger()->trace("remote",errorStr);
+            current_.tracer()->trace("remote",errorStr);
             throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
     }
     // don't forget!
     while ( driver_->enable() ) {
-        current_.logger()->trace("remote","failed to enable driver");
+        current_.tracer()->trace("remote","failed to enable driver");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     }
-    current_.logger()->trace("remote","driver enabled");
+    current_.tracer()->trace("remote","driver enabled");
 
     Velocity2dCommandPtr currCommand = new Velocity2dCommand;
     Velocity2dCommandPtr lastCommand = new Velocity2dCommand;
@@ -135,8 +135,8 @@ void InputLoop::run()
 
     // reset the hardware
     if ( driver_->disable() ) {
-        current_.logger()->trace("remote","failed to disable driver");
+        current_.tracer()->trace("remote","failed to disable driver");
     }
-    current_.logger()->trace("remote","driver disabled");
+    current_.tracer()->trace("remote","driver disabled");
 
 }

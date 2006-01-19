@@ -62,12 +62,12 @@ void NetworkLoop::run()
         try
         {
             orcaiceutil::connectToInterface<Platform2dPrx>( current_, platform2dPrx_, "Platform2d" );
-            current_.logger()->trace("remote","connected to a 'Platform2d' interface");
+            current_.tracer()->print("connected to a 'Platform2d' interface");
             break;
         }
         catch ( const Ice::ConnectionRefusedException & e )
         {
-            //current_.logger()->trace("remote","failed to connect to a remote interface");
+            //current_.tracer()->print("failed to connect to a remote interface");
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         }
     }
