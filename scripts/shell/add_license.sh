@@ -12,7 +12,8 @@ orca_license_signature="Components for robotics"
 for file in `find $toplevel -name *.h`   \
             `find $toplevel -name *.cpp` \
             `find $toplevel -name *.c`   \
-            `find $toplevel -name *.ice`
+            `find $toplevel -name *.ice` \
+            `find $toplevel -name *.dox`
 do
 
     if `grep -q "$search_string" $file`; then
