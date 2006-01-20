@@ -5,7 +5,7 @@ Requires.Platform2d.Type=Platform2d
 Requires.Platform2d.DefaultProxy=platform2d@local/segwayrmp
 
 # configuration
-#Teleop.Config.Driver=keyboard
-#Teleop.Config.MaxSpeed=5.0
-#Teleop.Config.MaxTurnrate=360.0
-#Teleop.Config.RepeatTime=0.05
+Config.Driver.Default=keyboard
+Config.MaxSpeed.Default=1.0
+Config.MaxTurnrate.Default=40.0
+Config.RepeatTime.Default=0.2

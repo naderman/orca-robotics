@@ -37,57 +37,49 @@ This component connects to a robot base or waypoint server and issues motion com
     - @ref orca_interface_platform2d
 
 @par Drivers
-    - Keyboard
-    - Joystick
+    - [keyboard] Keyboard
+    - [joystick] Joystick
+    - [fake] Simulated output
 
 @par Configuration
-    - useJoystick
-        - Whether to use a joystick
-        - Use: optional, default = "true"
-        - Constraints:
-            - Type: boolean
-    
-    - joystickPort
-        - If using a joystick, which port it is connected to
-        - Use: optional, default="/dev/input/event0", only relevant if useJoystick=true
+    - Teleop.Config.Driver
+        - Which input driver to use
+        - Use: optional, default = "keyboard"
         - Constraints:
             - Type: string
-    
-    - maxLinSpeed
+            - Valid Values: [keyboard | joystick | fake]
+
+    - Teleop.Config.MaxSpeed
         - The maximum absolute linear speed which the component will allow
         - Units: metres per second
-        - Use: optional, default = "0.5"
+        - Use: optional, default = "1.0"
         - Constraints:
             - Type: float
-    
-    - maxAngSpeed
+
+    - Teleop.Config.MaxTurnrate
         - The maximum absolute rotational speed which the component will allow
         - Units: degrees per second
-        - Use: optional, default = "60"
+        - Use: optional, default = "40.0"
         - Constraints:
             - Type: float
-    
-    - timeout
-        - The rate at which commands are sent
-        - Units: seconds
-        - Use: optional, default = "-1.0"
+
+    - Teleop.Config.RepeatTime
+        - Time interval before a repeat command is sent in the absence of a new command.
+        - Units: second
+        - Use: optional, default = "0.2"
         - Constraints:
             - Type: float
-            - Valid Values:
-                - t < 0: Only new commands sent (very efficient)
-                - t = 0: Commands sent constantly (terribly inefficient)
-                - t > 0: Commands sent when new, or resent after t seconds (useful if heartbeat needed)
-    
-    - verbose
-        - If true, prints the commands it's sending to stdout.
-        - Use: optional, default = "false"
-        - Constraints:
-            - Type: boolean
+            - Valid values: 
+                - t<0: Only new commands are sent
+                - t=0: Commands are sent as frequently as possible (terribly inefficient)
+                - t>0: Commands are sent when new ones are entered, or resent after t seconds (useful if "keep alive" heartbeat is needed).
 
 Here's a complete sample of a config file:
-@include components/teleop/teleop.cfg
+@include components/teleop/teleop.def
 
 @par Joystick Troubleshooting
+
+This section has not been updated for Orca2!
 
 If using a joystick then TeleopControl requires either a <A HREF="http://kernel.org">Linux Kernel</A> >= 2.4 or the <A HREF="http://linuxconsole.sourceforge.net/input/input.html">Linux Input Drivers</A> .  If the driver is built as a module you may have to load it (<code>modprobe evdev</code> as root).
 

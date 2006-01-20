@@ -29,7 +29,6 @@ using namespace std;
 TeleopComponent::TeleopComponent()
     : orcaiceutil::Component( "Teleop" ), networkLoop_(0), inputLoop_(0)
 {
-    cout<<"TeleopComponent"<<endl; 
 }
 
 TeleopComponent::~TeleopComponent()
@@ -41,7 +40,7 @@ TeleopComponent::~TeleopComponent()
 //          be declared as member variables.
 void TeleopComponent::start()
 {
-    cout<<"starting component"<<endl;
+    current().tracer()->debug("starting component");
     //
     // NETWORK
     //
