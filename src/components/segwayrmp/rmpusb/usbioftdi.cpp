@@ -528,6 +528,12 @@ int UsbIoFtdi::parseUsbToCan( CanPacket *pkt, unsigned char *bytes )
         //this message is a HEARTBEAT
         ret = 0;
     }
+/*
+    else if (bytes[1] == SEGWAY_USB_HEARTBEAT_MESSAGE) {
+        //this message is a HEARTBEAT
+        ret = 0;
+    }
+*/
     else if (bytes[1]==SEGWAY_USB_STATUS_MESSAGE && bytes[2]==SEGWAY_USB_CHANNEL_A )
     {            
         pkt->id = ((bytes[4] << 3) | ((bytes[5] >> 5) & 7)) & 0x0fff;

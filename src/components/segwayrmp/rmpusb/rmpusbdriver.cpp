@@ -115,38 +115,42 @@ int RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr 
     {
         ++canPacketsProcessed;
     
-        // Add packet to data frame
-        frame_->AddPacket(pkt_);
+    //
+    // Add packet to data frame
+    // This is where we interprete all message contents!
+    //
+    frame_->AddPacket(pkt_);
 
-        // debug
-        //watchDataStream( pkt_ );
+    // debug
+    //watchDataStream( pkt_ );
 
-        if ( pkt_->id == RMP_CAN_ID_MSG4 ) {
-            integrateMotion();
+    if ( pkt_->id == RMP_CAN_ID_MSG4 ) {
+        integrateMotion();
+    }
+
+    // If frame is closed and complete, transfer data and reset frame
+    if( frame_->isClosed() )
+    {
+        if ( frame_->isComplete() ) {
+            // process data only if the frame is complete
+            updateData( position2d, power  );
+            frame_->reset();
+            //cout<<"rmpusb::read: pkts:"<<canPacketsProcessed<<" reopnd: "<<dataFramesReopened<<endl;
+            return 0;
         }
-
-        // If frame is complete and , transfer data and reset frame
-        if( frame_->isClosed() )
-        {
-            if ( frame_->isComplete() ) {
-                // process data only if the frame is complete
-                updateData( position2d, power  );
-                frame_->reset();
-                //cout<<"rmpusb::read: pkts:"<<canPacketsProcessed<<" reopnd: "<<dataFramesReopened<<endl;
-                return 0;
+        else {
+            // the frame is closed but not complete: some packets were lost
+            int sec = IceUtil::Time::now().toSeconds();
+            cout<<sec<<" re-opening frame. Missing [";
+            for ( int i=1; i<8; ++i ) {
+                if ( !frame_->msgCheckList_[i] ) { cout<<i<<" "; }
             }
-            else {
-                int sec = IceUtil::Time::now().toSeconds();
-                cout<<sec<<" re-opening frame. Missing [";
-                for ( int i=1; i<8; ++i ) {
-                    if ( !frame_->msgCheckList_[i] ) { cout<<i<<" "; }
-                }
-                cout<<"]"<<endl;
-                //! @todo or should we reset?
-                frame_->reopen();
-                ++dataFramesReopened;
-            }
+            cout<<"]"<<endl;
+            //! @todo or should we reset?
+            frame_->reopen();
+            ++dataFramesReopened;
         }
+    }
 
     }
 
@@ -461,44 +465,44 @@ void RmpUsbDriver::watchPacket( CanPacket* pkt, short int pktID )
     int slot1_hi = (int)pkt->GetSlot(1) << 16;
     int slot2_lo = (int)pkt->GetSlot(2);
     int slot3_hi = (int)pkt->GetSlot(3) << 16;
-                
+
     if( pkt->id == pktID )
     {
         //printf("SEGWAYIO: pkt: %s\n", pkt.toString());
 
         switch( pkt->id )
         {
-            case 0x0401:
+            case RMP_CAN_ID_MSG1:
                 printf("pitch = %6.2f, pitch rate = %6.2f,roll = %6.2f, roll rate = %6.2f\r",
                        (float)(slot0/RMP_COUNT_PER_DEG), (float)(slot1/RMP_COUNT_PER_DEG_PER_S),
                        (float)(slot2/RMP_COUNT_PER_DEG), (float)(slot3/RMP_COUNT_PER_DEG_PER_S));
                 break;
-            case 0x402:
+            case RMP_CAN_ID_MSG2:
                 printf("LW vel = %6.2f, RW vel = %6.2f, yaw rate = %6.2f, frames = %8i\r",
                        (float)(slot0/RMP_COUNT_PER_M_PER_S), float(slot1/RMP_COUNT_PER_M_PER_S),
                        (float)(slot2/RMP_COUNT_PER_DEG_PER_S), (int)(slot3/RMP_SEC_PER_FRAME)  );
                 break;
-            case 0x0403:
+            case RMP_CAN_ID_MSG3:
                 printf("Left wheel = %6.2f, right wheel = %6.2f\r",
                        (float)((slot0_lo | slot1_hi)/RMP_COUNT_PER_M),
                        (float)((slot2_lo | slot3_hi)/RMP_COUNT_PER_M)   );
                 break;
-            case 0x0404:
+            case RMP_CAN_ID_MSG4:
                 printf("Int f/a disp  = %6.2f, int yaw disp = %6.2f\r",
                        (float)((slot0_lo | slot1_hi)/RMP_COUNT_PER_M),
                        (float)((slot2_lo | slot3_hi)/RMP_COUNT_PER_REV)   );
                 break;
-            case 0x0405:
+            case RMP_CAN_ID_MSG5:
                 printf("Left motor torque  = %6.2f, right motor torque = %6.2f\r",
                        (float)(slot0/1094.0), (float)(slot1/RMP_COUNT_PER_NM)   );
                 break;
-            case 0x0406:
+            case RMP_CAN_ID_MSG6:
                 printf("Op mode = %1i, gain sch = %1i, UI batt = %6.2f, Base batt = %6.2f\r",
                        slot0, slot1,
                        (float)(1.5 + slot2*RMP_UI_COEFF),
                        (float)(slot3/RMP_BASE_COUNT_PER_VOLT) );
                 break;
-            case 0x0407:
+            case RMP_CAN_ID_MSG7:
                 printf("Vel command = %4i, turn command = %4i\n",
                        slot0, slot1 );
                 break;

@@ -19,6 +19,7 @@
  */
 
 #include <stdio.h>
+#include <iostream>
 
 #include "rmpusbdataframe.h"
 
@@ -63,6 +64,7 @@ void RmpUsbDataFrame::reset()
 
 bool RmpUsbDataFrame::isClosed() const
 {
+    // The only thing that matters: did we receive MSG0?
     return msgCheckList_[0];
 }
 
@@ -87,9 +89,30 @@ void RmpUsbDataFrame::AddPacket(const CanPacket* pkt)
 {
     switch(pkt->id)
     {
+    case RMP_CAN_ID_STATUS:
+    {
+        // slot0 : controller mode and wake control
+        status_word1 = pkt->GetSlot(1);
+        status_word2 =  pkt->GetSlot(2);
+        // slot3 : undefined
+
+        //debug
+        std::cout<<"got status: "<<status_word1<<" "<<status_word2<<std::endl;
+        break;
+    }
+    case RMP_CAN_ID_HEARTBEAT:
+    {
+        // slot0 (byte 2) : CAN channel identifier
+        // slot1 : UI battery voltage (we also get in MSG6 from CU)
+        // slot2 : UI battery status
+        //! @todo have to apply mask here
+        //ui_battery_status =  pkt->GetSlot(2);
+        // slot3 : undefined
+        break;
+    }
     case RMP_CAN_ID_MSG0:
     {
-        // slot0 undefined
+        build_id = pkt->GetSlot(0);
         // slot1 undefined
         // slot2 undefined
         // slot3 undefined

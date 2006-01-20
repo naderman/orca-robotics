@@ -166,8 +166,10 @@ void RmpMainLoop::run()
 
     while( isActive() )
     {
+        // debug
+        //cout<<"frame: " << readTimer_.elapsed().toMilliSecondsDouble()<<endl;
+
         // Read data from the hardware
-        cout<<"frame: " << readTimer_.elapsed().toMilliSecondsDouble()<<endl;
         readTimer_.restart();
        
         if ( (readStatus = driver_->read( position2dData, powerData )) ) {
@@ -236,7 +238,7 @@ void RmpMainLoop::handleData( const Ice::ObjectPtr & obj )
 {
     //cout<<"write: " << writeTimer_.elapsed().toMilliSecondsDouble()<<endl;
     double msecs=writeTimer_.elapsed().toMilliSecondsDouble();
-    if ( msecs>200 ) {
+    if ( msecs>300 ) {
         cout<<"late: " << msecs <<endl;
     }
     orca::Velocity2dCommandPtr command = orca::Velocity2dCommandPtr::dynamicCast( obj );

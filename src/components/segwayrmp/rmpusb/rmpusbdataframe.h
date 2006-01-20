@@ -18,8 +18,10 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// Segway->CPU messages
-// 0x0400 = 1024
+//! Segway->CPU messages
+//! warning: Segway manual refers to them as Message 1-7
+//! we call them Message 0-6 to synch with 0x0400-406
+//! 0x0400 = 1024
 #define RMP_CAN_ID_MSG0         0x0400
 #define RMP_CAN_ID_MSG1         0x0401
 #define RMP_CAN_ID_MSG2         0x0402
@@ -29,13 +31,17 @@
 #define RMP_CAN_ID_MSG6         0x0406
 #define RMP_CAN_ID_MSG7         0x0407
 
-// CPU->Segway messages
+//! CPU->Segway message
 #define RMP_CAN_ID_SHUTDOWN     0x0412
+
+//! CPU->Segway message
 #define RMP_CAN_ID_COMMAND      0x0413
 
-// Internal to Segway
-//#define RMP_CAN_ID_STATUS       0x0680
-//#define RMP_CAN_ID_HEARTBEAT    0x0688
+//! CU->UI: CU Status message
+#define RMP_CAN_ID_STATUS       0x0680
+
+//! UI->CU: RMP Heartbeat message
+#define RMP_CAN_ID_HEARTBEAT    0x0688
 
 // from Configuration Command table, see sec.2.2.1
 #define RMP_CMD_NONE                        0
@@ -130,6 +136,8 @@ public:
     //! Did all the packets arrive?
     bool isComplete() const;
 
+    //! Build ID
+    int16_t    build_id;
     //! Pitch Angle
     int16_t    pitch;
     //! Pitch Rate
@@ -160,6 +168,8 @@ public:
     uint16_t   frames;
     //! User Interface battery voltage
     uint16_t   ui_battery;
+    //! User Interface battery status
+    uint16_t   ui_battery_status;
     //! Powerbase attery Voltage (min of A, B)
     uint16_t   base_battery;
     //! Operational Mode (0= disabled, 1=tractor, 2= balance)
@@ -170,6 +180,11 @@ public:
     int16_t velocity_command;
     //! Turn Command (as received)
     int16_t rate_command;
+
+    //! CU Status "word 1"
+    int16_t status_word1;
+    //! CU Status "word 2"
+    int16_t status_word2;
 
     bool msgCheckList_[8];
 };
