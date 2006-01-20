@@ -71,6 +71,9 @@ void LaserMonComponent::start()
     // Get the configuration
     cout << "Laser Config:   " << laserPrx->getConfig() << endl;
 
+    // Get the data once
+    cout << "Laser Data:   " << laserPrx->getData() << endl;
+
 //     // Could set the configuration like so:
 //     // Set some configuration
 //     orca::RangeScannerConfigPtr cfg = new orca::RangeScannerConfig;
