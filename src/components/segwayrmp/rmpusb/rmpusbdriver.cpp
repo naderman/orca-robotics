@@ -284,8 +284,11 @@ void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerD
     power->batteries[0].percent = 99.0;
     power->batteries[1].voltage = frame_->base_battery / RMP_BASE_COUNT_PER_VOLT;
     power->batteries[1].percent = 99.0;
-    power->batteries[2].voltage = 1.5 + frame_->ui_battery*RMP_UI_COEFF;
+    power->batteries[2].voltage = 1.4 + frame_->ui_battery*RMP_UI_COEFF;
     power->batteries[2].percent = 99.0;
+
+    //debug
+    cout<<"ui battery voltage : "<<power->batteries[2].voltage<<" ("<<frame_->ui_battery<<")"<<endl;
 
 /*        
         // now, do 3D info.

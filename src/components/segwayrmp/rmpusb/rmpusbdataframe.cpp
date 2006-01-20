@@ -27,6 +27,8 @@
 RmpUsbDataFrame::RmpUsbDataFrame()
 {
     reset();
+
+    kill_flag = false;
 }
 
 void RmpUsbDataFrame::dump()
@@ -98,6 +100,12 @@ void RmpUsbDataFrame::AddPacket(const CanPacket* pkt)
 
         //debug
         std::cout<<"got status: "<<status_word1<<" "<<status_word2<<std::endl;
+
+        //debug
+        if ( kill_flag ) exit(0);
+        if ( status_word1==16512 ) {
+            kill_flag = true;
+        }
         break;
     }
     case RMP_CAN_ID_HEARTBEAT:

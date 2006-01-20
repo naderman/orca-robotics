@@ -31,7 +31,7 @@
 #define SEGWAY_USB_VENDOR_ID                    0x0403
 #define SEGWAY_USB_PRODUCT_ID                   0xE729
 #define SEGWAY_USB_MESSAGE_SIZE                 18
-#define SEGWAY_USB_MESSAGE_START_OF_HEADER      0xF0
+#define SEGWAY_USB_MSG_START                    0xF0
 #define SEGWAY_USB_HEARTBEAT_MESSAGE            0x0
 #define SEGWAY_USB_STATUS_MESSAGE               0x55
 #define SEGWAY_USB_CHANNEL_A                    0xAA
@@ -451,7 +451,7 @@ int UsbIoFtdi::readFromBufferToQueue( int bytesInBuffer )
             }
 
             // Look for start-of-msg character at the start of the candidate message
-            if( charBuffer_[pos] == SEGWAY_USB_MESSAGE_START_OF_HEADER )
+            if( charBuffer_[pos] == SEGWAY_USB_MSG_START )
             {        
                 // Compare calculated checksum with value embedded in message. If
                 // they agree, message found. Otherwise, keep looking. 
@@ -513,32 +513,22 @@ int UsbIoFtdi::readFromBufferToQueue( int bytesInBuffer )
 
 /*!
  *  returns: # bytes in msg if a packet is valid and negative on error.
+ *
+ *  @note It's assumed that the checksum is already checked.
  */
 int UsbIoFtdi::parseUsbToCan( CanPacket *pkt, unsigned char *bytes )
 {
-    // do check sum: always fails
-    
-    //if ( bytes[17] != usbMessageChecksum( bytes ) ) {
-        //DTRACE<<"error: checksum failed"<<endl;
-    //    return -88;
-    //}
-
     int ret;
     if (bytes[1] == SEGWAY_USB_HEARTBEAT_MESSAGE) {
         //this message is a HEARTBEAT
+        cout<<"got heartbeat"<<endl;
         ret = 0;
     }
-/*
-    else if (bytes[1] == SEGWAY_USB_HEARTBEAT_MESSAGE) {
-        //this message is a HEARTBEAT
-        ret = 0;
-    }
-*/
     else if (bytes[1]==SEGWAY_USB_STATUS_MESSAGE && bytes[2]==SEGWAY_USB_CHANNEL_A )
-    {            
+    {
         pkt->id = ((bytes[4] << 3) | ((bytes[5] >> 5) & 7)) & 0x0fff;
 
-        if ( pkt->id>=RMP_CAN_ID_MSG0 && pkt->id<=RMP_CAN_ID_MSG7 )
+        if ( (pkt->id>=RMP_CAN_ID_MSG0 && pkt->id<=RMP_CAN_ID_MSG7) || pkt->id==RMP_CAN_ID_STATUS )
         {
             for ( int i = 0; i < 8; ++i )
             {
@@ -548,28 +538,38 @@ int UsbIoFtdi::parseUsbToCan( CanPacket *pkt, unsigned char *bytes )
         }
         else {
             // this is not a status message, no need to queue it
+            cout<<"got a status message with unexpected ID : "<<(int)pkt->id<<endl;
             ret = 0;
         }
     }
+    else if ( bytes[2]!=SEGWAY_USB_CHANNEL_A )
+    {
+        // channel B message, ignore
+        ret = 0;
+    }
     else {
         // we are f*d
+        cout<<"got unknown message, first byte : "<<(int)bytes[1]<<endl;
         ret = -1;
     }
 
     return ret;
 }
 
+/*!
+ *  See Section 3.4 USB Message Format of the Segway RMP manual.
+ */
 int UsbIoFtdi::parseCanToUsb( CanPacket *pkt, unsigned char *bytes )
 {
-    bytes[0] = SEGWAY_USB_MESSAGE_START_OF_HEADER;   //SOH (alexm: start of header?)
+    bytes[0] = SEGWAY_USB_MSG_START;   //SOH (alexm: start of header?)
     bytes[1] = SEGWAY_USB_STATUS_MESSAGE;
-    bytes[2] = 0;  //CAN A
-    bytes[3] = 0;
-    bytes[4] = 0;
-    bytes[5] = 0;
+    bytes[2] = 0;   // CAN A
+    bytes[3] = 0;   // always 0
+    bytes[4] = 0;   // always 0
+    bytes[5] = 0;   // always 0
     bytes[6] = pkt->id >> 8;
     bytes[7] = pkt->id ;
-    bytes[8] = 0;
+    bytes[8] = 0;   // always 0
 
     for ( int i = 0; i < 8; ++i )
     {

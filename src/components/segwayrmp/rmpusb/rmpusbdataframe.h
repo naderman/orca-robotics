@@ -187,6 +187,9 @@ public:
     int16_t status_word2;
 
     bool msgCheckList_[8];
+
+    //debug
+    bool kill_flag;
 };
 
 
