@@ -105,6 +105,10 @@ $ sudo mknod c event3 13 67
 - There are some problems with USB1.0 joysticks and older kernels.
     If your USB system hangs, try upgrading.  Kernel 2.6.10 seems to be OK.
 
+@par Internal Structure
+    
+@image html teleop_whitebox.png
+
 @par Responsible Developer
 Alex Makarenko
 

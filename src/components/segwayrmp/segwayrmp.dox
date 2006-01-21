@@ -64,6 +64,10 @@ continuously send your desired velocities.
 @par Authors
 Orca component by Alex Makarenko. Original CAN driver code came from Player by Andrew Howard.
 
+@par Internal Structure
+    
+@image html segwayrmp_whitebox.png
+
 @section usb USB Driver
 
 @par Dependancies
