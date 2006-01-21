@@ -51,6 +51,7 @@ void LaserFeatureExtractorComponent::start()
    
     // =============== REQUIRED: Laser =======================
     laserConsumer_ = new LaserConsumerI( laserDataBuffer_ );
+    //! @todo subscribe ourselves by directly calling subscribe() on the laser object. --alexm
     orcaiceutil::subscribeToIceStormTopic( current(), (Ice::ObjectPtr&) laserConsumer_, "Laser" );
     orcaiceutil::connectToInterface<LaserPrx>( current(), laserPrx_, "Laser" );
     

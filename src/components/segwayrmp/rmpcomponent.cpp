@@ -30,7 +30,6 @@
 #include <orcaiceutil/orcaiceutil.h>
 
 using namespace orca;
-using orcaiceutil::operator<<;
 
 RmpComponent::RmpComponent() :
     orcaiceutil::Component( "SegwayRmp" ), mainLoop_(0)
