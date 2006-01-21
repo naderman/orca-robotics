@@ -56,7 +56,9 @@ void LaserFeatureExtractorComponent::start()
     
     // ============ PROVIDED: PolarFeatures ==================
     //IceStorm proxy
-    IceStorm::TopicPrx topicPrx = orcaiceutil::connectToIceStormConsumer<PolarFeature2dConsumerPrx>( current(),polarFeatureConsumer_, "PolarFeatures2d" );
+    IceStorm::TopicPrx topicPrx =
+        orcaiceutil::connectToIceStormTopic<PolarFeature2dConsumerPrx>
+                    ( current(),polarFeatureConsumer_, "PolarFeatures2d" );
     // create servant for direct connections and tell adapter about it
     polarFeature_ = new PolarFeature2dI( polarFeaturesDataBuffer_, topicPrx );
     orcaiceutil::createInterface( current(), polarFeature_, "PolarFeatures2d" );
