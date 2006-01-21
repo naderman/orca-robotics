@@ -63,12 +63,13 @@ void RmpComponent::start()
 
 
     // PROVIDED INTERFACE: Power
-    // create servant for direct connections and tell adapter about it
-    powerObj_ = new PowerI( powerBuffer_ );
-    adapter()->add( powerObj_, orcaiceutil::getProvidedNameAsIdentity(current(),"Power") );
-
     // Find IceStorm ConsumerProxy to push out data
     orcaiceutil::connectToIceStormConsumer<PowerConsumerPrx> ( current(), powerPublisher_, "Power" );
+    
+    // create servant for direct connections and tell adapter about it
+    powerObj_ = new PowerI( powerBuffer_ );
+    orcaiceutil::createInterface( current(), powerObj_, "Power" );    
+
 
     //
     // ENABLE NETWORK CONNECTIONS
