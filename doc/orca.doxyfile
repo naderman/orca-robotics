@@ -85,8 +85,8 @@ FILE_PATTERNS          = *.cpp \
 RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO
-EXCLUDE_PATTERNS       = ../src/interfaces/slice/orca/*.h \
-                         ../src/interfaces/slice/orca/*.cpp
+EXCLUDE_PATTERNS       = ../src/interfaces/cpp/orca/*.h \
+                         ../src/interfaces/cpp/orca/*.cpp
 EXAMPLE_PATH           = ../src
 EXAMPLE_PATTERNS       = 
 EXAMPLE_RECURSIVE      = NO
