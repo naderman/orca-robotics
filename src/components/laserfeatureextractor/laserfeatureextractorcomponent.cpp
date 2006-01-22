@@ -52,17 +52,17 @@ void LaserFeatureExtractorComponent::start()
     // =============== REQUIRED: Laser =======================
     laserConsumer_ = new LaserConsumerI( laserDataBuffer_ );
     //! @todo subscribe ourselves by directly calling subscribe() on the laser object. --alexm
-    orcaiceutil::subscribeToIceStormTopic( current(), (Ice::ObjectPtr&) laserConsumer_, "Laser" );
-    orcaiceutil::connectToInterface<LaserPrx>( current(), laserPrx_, "Laser" );
+    orcaiceutil::subscribeToIceStormTopicWithTag( current(), (Ice::ObjectPtr&) laserConsumer_, "Laser" );
+    orcaiceutil::connectToInterfaceWithTag<LaserPrx>( current(), laserPrx_, "Laser" );
     
     // ============ PROVIDED: PolarFeatures ==================
     //IceStorm proxy
     IceStorm::TopicPrx topicPrx =
-        orcaiceutil::connectToIceStormTopic<PolarFeature2dConsumerPrx>
+        orcaiceutil::connectToIceStormTopicWithTag<PolarFeature2dConsumerPrx>
                     ( current(),polarFeatureConsumer_, "PolarFeatures2d" );
     // create servant for direct connections and tell adapter about it
     polarFeature_ = new PolarFeature2dI( polarFeaturesDataBuffer_, topicPrx );
-    orcaiceutil::createInterface( current(), polarFeature_, "PolarFeatures2d" );
+    orcaiceutil::createInterfaceWithTag( current(), polarFeature_, "PolarFeatures2d" );
     
     // =========== ENABLE NETWORK CONNECTIONS ======================
     cout << "TRACE(laserfeatureextractorcomponent.cpp): calling ACTIVATE" << endl;

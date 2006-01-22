@@ -61,7 +61,7 @@ void NetworkLoop::run()
     while ( isActive() ) {
         try
         {
-            orcaiceutil::connectToInterface<Platform2dPrx>( current_, platform2dPrx_, "Platform2d" );
+            orcaiceutil::connectToInterfaceWithTag<Platform2dPrx>( current_, platform2dPrx_, "Platform2d" );
             current_.tracer()->print("connected to a 'Platform2d' interface");
             break;
         }

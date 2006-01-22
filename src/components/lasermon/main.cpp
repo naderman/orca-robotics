@@ -63,7 +63,7 @@ void LaserMonComponent::start()
 
     // Connect directly to the interface
     orca::LaserPrx laserPrx;
-    orcaiceutil::connectToInterface<orca::LaserPrx>( current(), laserPrx, "Laser" );
+    orcaiceutil::connectToInterfaceWithTag<orca::LaserPrx>( current(), laserPrx, "Laser" );
 
     // Get the geometry
     cout << "Laser Geometry: " << laserPrx->getGeometry() << endl;
