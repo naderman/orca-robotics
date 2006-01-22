@@ -63,6 +63,10 @@ class Position2dGeometry extends OrcaObject
 interface Position2dConsumer
 {
     void setData( Position2dData obj );
+    
+    // Do we need it here? Or if someone needs geometry they should pull it
+    // with getGeometry(). In that case, do we rename this object Position2dDataConsumer?
+    //void setGeometry( Position2dGeometry obj );
 };
 
 /*!
@@ -77,8 +81,8 @@ interface Position2d
     /*!
      *
      * Mimics IceStorm's subscribe() but without QoS, for now. The
-     * implementation may choose to implement the push or use IceStorm. This choice
-     * is transparent to the subscriber.
+     * implementation may choose to implement the data push internally
+     * or use IceStorm. This choice is transparent to the subscriber.
      *
      * @param subscriber The subscriber's proxy.
      *
@@ -90,7 +94,7 @@ interface Position2d
      */
     void subscribe( Position2dConsumer* subscriber, double preferedPushInterval );
 
-    // this is what IceStorm's subscribe function looks like.
+    // for reference, this is what IceStorm's subscribe function looks like.
     //void subscribe(QoS theQoS, Object* subscriber);
 
     /**
