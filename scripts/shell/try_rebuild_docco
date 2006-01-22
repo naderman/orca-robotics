@@ -38,7 +38,9 @@ fi
 # Rebuild docco
 #
 cd $PROJDIR/doc
-$DOXYGEN_CMD orca.doxyfile
+$DOXYGENCMD orca.doxyfile
+cat html/index.html | sed "s/Generated for Orca Robotics/Generated for Orca Robotics (on `date`)/" > temp_index.html
+mv temp_index.html html/index.html
 
 #
 # Copy it to sourceforge
@@ -47,4 +49,4 @@ tar -zcvf html.tar.gz html
 scp  html.tar.gz shell.sf.net:$HTDOCS/cvs_version/orca2/doc/
 ssh shell.sf.net "cd $HTDOCS/cvs_version/orca2/doc/; tar -zxvf html.tar.gz"
 
-date
+echo "Finished $0 at: `date`"
