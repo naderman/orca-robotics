@@ -50,12 +50,6 @@ None for the component. See driver section below for individual driver dependenc
 - Because of its power, weight, height, and dynamics, the Segway RMP is
 a potentially dangerous machine.  Be @e very careful with it.
 
-- Although the RMP does not actually support motor power control from 
-software, for safety you must explicitly enable the motors using a
-@p PLAYER_POSITION_MOTOR_POWER_REQ or @p PLAYER_POSITION3D_MOTOR_POWER_REQ
-(depending on which interface you are using).  You must @e also enable
-the motors in the command packet, by setting the @p state field to 1.
-
 - For safety, this driver will stop the RMP (i.e., send zero velocities)
 if no new command has been received from a client in the previous 400ms or so.
 Thus, even if you want to continue moving at a constant velocity, you must
