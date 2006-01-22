@@ -18,6 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+// MESSAGE ID'S
+
 //! Segway->CPU messages
 //! warning: Segway manual refers to them as Message 1-7
 //! we call them Message 0-6 to synch with 0x0400-406
@@ -42,6 +44,14 @@
 
 //! UI->CU: RMP Heartbeat message
 #define RMP_CAN_ID_HEARTBEAT    0x0688
+
+// DATA MASKS
+
+//! Mask for user interface battery voltage in the heartbeat message.
+#define RMP_CAN_MASK_HEARTBEAT_UIBAT_VOLTAGE    0x03F0
+
+//! Mask for user interface battery status in the heartbeat message.
+#define RMP_CAN_MASK_HEARTBEAT_UIBAT_STATUS     0xC000
 
 // from Configuration Command table, see sec.2.2.1
 #define RMP_CMD_NONE                        0
@@ -78,11 +88,18 @@
 //! This is different from rotation and depends on geometry
 #define RMP_COUNT_PER_REV          112644.0
 
-// main (CU) battery voltage
+//! main (CU) battery voltage
 #define RMP_BASE_COUNT_PER_VOLT      4.0
-// user interface battery voltage: volts=1.5V + n*counts
+
+//! user interface battery voltage: volts=offset + n*counts
+#define RMP_UI_OFFSET               1.4
 #define RMP_UI_COEFF                0.0125
-// motor torque
+//! user interface battery status: low battery warning
+#define RMP_UI_LOW_WARNING          0x80
+//! user interface battery status: empty battery shutdown
+#define RMP_UI_EMPTY_SHUTDOWN       0x40
+
+//! motor torque
 #define RMP_COUNT_PER_NM           1094.0
 #define RMP_SEC_PER_FRAME          0.01
 
@@ -167,9 +184,9 @@ public:
     //! Servo Frames
     uint16_t   frames;
     //! User Interface battery voltage
-    uint16_t   ui_battery;
+    uint16_t   ui_battery_voltage;
     //! User Interface battery status
-    uint16_t   ui_battery_status;
+    //uint16_t   ui_battery_status;
     //! Powerbase attery Voltage (min of A, B)
     uint16_t   base_battery;
     //! Operational Mode (0= disabled, 1=tractor, 2= balance)
@@ -190,6 +207,10 @@ public:
 
     //debug
     bool kill_flag;
+    // ui battery info from the heartbeat msg
+    uint16_t   ui_heartbeat_voltage;
+    uint16_t   ui_heartbeat_status;
+
 };
 
 

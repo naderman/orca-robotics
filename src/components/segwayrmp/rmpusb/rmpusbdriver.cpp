@@ -284,11 +284,20 @@ void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerD
     power->batteries[0].percent = 99.0;
     power->batteries[1].voltage = frame_->base_battery / RMP_BASE_COUNT_PER_VOLT;
     power->batteries[1].percent = 99.0;
-    power->batteries[2].voltage = 1.4 + frame_->ui_battery*RMP_UI_COEFF;
+    power->batteries[2].voltage = RMP_UI_OFFSET + frame_->ui_battery_voltage*RMP_UI_COEFF;
     power->batteries[2].percent = 99.0;
 
     //debug
-    cout<<"ui battery voltage : "<<power->batteries[2].voltage<<" ("<<frame_->ui_battery<<")"<<endl;
+    // info from CU in msg 406
+    cout<<"ui battery voltage (CU): "<<power->batteries[2].voltage<<" ("<<frame_->ui_battery_voltage<<")"<<endl;
+    // info from UI in heartbeat msg
+    //cout<<"ui battery voltage (UI): "<<frame_->ui_heartbeat_voltage<<endl;
+    //if ( frame_->ui_heartbeat_status == RMP_UI_LOW_WARNING ) {
+    //    cout<<"ui battery status (UI) : low "<<endl;
+    //}
+    //else if ( frame_->ui_heartbeat_status == RMP_UI_EMPTY_SHUTDOWN ) {
+    //    cout<<"ui battery status (UI) : shutdown "<<endl;
+    //}
 
 /*        
         // now, do 3D info.

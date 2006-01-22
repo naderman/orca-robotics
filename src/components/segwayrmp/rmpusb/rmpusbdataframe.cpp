@@ -48,7 +48,7 @@ void RmpUsbDataFrame::dump()
     msgCheckList_[5] ? printf("left_torque\t= %10i (%8X): %10.2f Nm\n", (int)left_torque, left_torque, (float)left_torque/RMP_COUNT_PER_NM) : printf("left_torque\t=    DROPPED\n");
     msgCheckList_[5] ? printf("right_torque\t= %10i (%8X): %10.2f Nm\n", (int)right_torque, right_torque, (float)right_torque/RMP_COUNT_PER_NM) : printf("right_torque\t=    DROPPED\n");
     msgCheckList_[2] ? printf("frames\t\t= %10i (%8X): %10i frame ctr\n", (int)frames, frames, (int)(frames)) : printf("frames\t\t=    DROPPED\n");
-    msgCheckList_[6] ? printf("battery\t\t= %10i (%8X): %10.2f V\n", (int)ui_battery, ui_battery, 1.5+(float)ui_battery*RMP_UI_COEFF) : printf("battery\t\t=    DROPPED\n");
+    msgCheckList_[6] ? printf("battery\t\t= %10i (%8X): %10.2f V\n", (int)ui_battery_voltage, ui_battery_voltage, RMP_UI_OFFSET+(float)ui_battery_voltage*RMP_UI_COEFF) : printf("battery\t\t=    DROPPED\n");
     msgCheckList_[6] ? printf("battery\t\t= %10i (%8X): %10.2f V\n", (int)base_battery, base_battery, (float)base_battery/RMP_BASE_COUNT_PER_VOLT) : printf("battery\t\t=    DROPPED\n");
 }
 
@@ -114,7 +114,10 @@ void RmpUsbDataFrame::AddPacket(const CanPacket* pkt)
         // slot1 : UI battery voltage (we also get in MSG6 from CU)
         // slot2 : UI battery status
         //! @todo have to apply mask here
-        //ui_battery_status =  pkt->GetSlot(2);
+        uint16_t slot2 = (uint16_t)pkt->GetSlot(2);
+        ui_heartbeat_voltage =  slot2 & RMP_CAN_MASK_HEARTBEAT_UIBAT_VOLTAGE;
+        ui_heartbeat_status =  slot2 & RMP_CAN_MASK_HEARTBEAT_UIBAT_STATUS;
+        std::cout<<"heartbeat:slot2 : "<<slot2<<std::endl;
         // slot3 : undefined
         break;
     }
@@ -183,7 +186,7 @@ void RmpUsbDataFrame::AddPacket(const CanPacket* pkt)
     {
         operational_mode = (uint8_t) pkt->GetSlot(0);
         controller_gain_schedule = (uint8_t) pkt->GetSlot(1);
-        ui_battery = (int16_t) pkt->GetSlot(2);
+        ui_battery_voltage = (int16_t) pkt->GetSlot(2);
         base_battery = (int16_t)pkt->GetSlot(3);
 
         msgCheckList_[6] = true;

@@ -509,8 +509,6 @@ int UsbIoFtdi::readFromBufferToQueue( int bytesInBuffer )
     return numPackets;
 }
 
-// === LARGELY UNMODIFIED FROM SEGWAY WINDOWS DEMO SOFTWARE ===
-
 /*!
  *  returns: # bytes in msg if a packet is valid and negative on error.
  *
@@ -519,16 +517,21 @@ int UsbIoFtdi::readFromBufferToQueue( int bytesInBuffer )
 int UsbIoFtdi::parseUsbToCan( CanPacket *pkt, unsigned char *bytes )
 {
     int ret;
+/*
+// this is apparently no longer true
     if (bytes[1] == SEGWAY_USB_HEARTBEAT_MESSAGE) {
         //this message is a HEARTBEAT
         cout<<"got heartbeat"<<endl;
         ret = 0;
     }
-    else if (bytes[1]==SEGWAY_USB_STATUS_MESSAGE && bytes[2]==SEGWAY_USB_CHANNEL_A )
+    else  
+*/
+    if (bytes[1]==SEGWAY_USB_STATUS_MESSAGE && bytes[2]==SEGWAY_USB_CHANNEL_A )
     {
         pkt->id = ((bytes[4] << 3) | ((bytes[5] >> 5) & 7)) & 0x0fff;
 
-        if ( (pkt->id>=RMP_CAN_ID_MSG0 && pkt->id<=RMP_CAN_ID_MSG7) || pkt->id==RMP_CAN_ID_STATUS )
+        if ( (pkt->id>=RMP_CAN_ID_MSG0 && pkt->id<=RMP_CAN_ID_MSG7) 
+                || pkt->id==RMP_CAN_ID_STATUS || pkt->id==RMP_CAN_ID_HEARTBEAT )
         {
             for ( int i = 0; i < 8; ++i )
             {
