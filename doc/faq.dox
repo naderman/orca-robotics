@@ -31,6 +31,10 @@ Most likely your system is misconfigured. Turn up the warning level with Ice.Tra
 
 @par Getting "syscall exception: No such file or directory" on starting IceBox.
 
-If you use a single config file for the whole IceBox application service then individual services are started without a configuration file. In such a case make sure that the environment variable ICE_CONFIG is not set to some non-existing file. That could be what the run-time is complaining about. 
+If you use a single config file for the whole IceBox application service then individual services are started without a configuration file. In such a case make sure that the environment variable ICE_CONFIG is not set to some non-existing file. That could be what the run-time is complaining about.
+
+@par Components not connecting while looking for 127.0.1.1
+
+Some installers in Debian distribution may add a line in /etc/hosts which sets assigns the IP address 127.0.1.1 to the hostname. Comment this line out.
 
 */
