@@ -11,8 +11,8 @@ Provides.Power.DefaultInterface=power
 
 # Config Parameters
 Config.Driver.Default=usb
-Config.MaxSpeed.Default=5.0
-Config.MaxTurnrate.Default=360.0
+Config.MaxSpeed.Default=1.0
+Config.MaxTurnrate.Default=60.0
 Config.position2dPublishInterval.Default=1.0
 Config.powerPublishInterval.Default=20.0
 Config.statusPublishInterval.Default=60.0
