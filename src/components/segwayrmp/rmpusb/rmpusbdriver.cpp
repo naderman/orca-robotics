@@ -280,14 +280,15 @@ void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerD
     //
     // Convert battery voltage from counts to Volts
     // we only know the minimum of the two main batteries
-    power->batteries[0].voltage = frame_->base_battery / RMP_BASE_COUNT_PER_VOLT;
+    power->batteries[0].voltage = frame_->base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
     power->batteries[0].percent = 99.0;
-    power->batteries[1].voltage = frame_->base_battery / RMP_BASE_COUNT_PER_VOLT;
+    power->batteries[1].voltage = frame_->base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
     power->batteries[1].percent = 99.0;
     power->batteries[2].voltage = RMP_UI_OFFSET + frame_->ui_battery_voltage*RMP_UI_COEFF;
     power->batteries[2].percent = 99.0;
 
     //debug
+    cout<<"cu battery voltage (CU): "<<power->batteries[0].voltage<<" ("<<frame_->base_battery_voltage<<")"<<endl;
     // info from CU in msg 406
     cout<<"ui battery voltage (CU): "<<power->batteries[2].voltage<<" ("<<frame_->ui_battery_voltage<<")"<<endl;
     // info from UI in heartbeat msg

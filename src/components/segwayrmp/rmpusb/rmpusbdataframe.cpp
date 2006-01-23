@@ -49,7 +49,7 @@ void RmpUsbDataFrame::dump()
     msgCheckList_[5] ? printf("right_torque\t= %10i (%8X): %10.2f Nm\n", (int)right_torque, right_torque, (float)right_torque/RMP_COUNT_PER_NM) : printf("right_torque\t=    DROPPED\n");
     msgCheckList_[2] ? printf("frames\t\t= %10i (%8X): %10i frame ctr\n", (int)frames, frames, (int)(frames)) : printf("frames\t\t=    DROPPED\n");
     msgCheckList_[6] ? printf("battery\t\t= %10i (%8X): %10.2f V\n", (int)ui_battery_voltage, ui_battery_voltage, RMP_UI_OFFSET+(float)ui_battery_voltage*RMP_UI_COEFF) : printf("battery\t\t=    DROPPED\n");
-    msgCheckList_[6] ? printf("battery\t\t= %10i (%8X): %10.2f V\n", (int)base_battery, base_battery, (float)base_battery/RMP_BASE_COUNT_PER_VOLT) : printf("battery\t\t=    DROPPED\n");
+    msgCheckList_[6] ? printf("battery\t\t= %10i (%8X): %10.2f V\n", (int)base_battery_voltage, base_battery_voltage, (float)base_battery_voltage/RMP_BASE_COUNT_PER_VOLT) : printf("battery\t\t=    DROPPED\n");
 }
 
 void RmpUsbDataFrame::reopen()
@@ -102,7 +102,10 @@ void RmpUsbDataFrame::AddPacket(const CanPacket* pkt)
         std::cout<<"got status: "<<status_word1<<" "<<status_word2<<std::endl;
 
         //debug
-        if ( kill_flag ) exit(0);
+        if ( kill_flag ) {
+            std::cout<<"exiting because of CU status"<<std::endl;
+            exit(0);
+        }
         if ( status_word1==16512 ) {
             kill_flag = true;
         }
@@ -186,8 +189,8 @@ void RmpUsbDataFrame::AddPacket(const CanPacket* pkt)
     {
         operational_mode = (uint8_t) pkt->GetSlot(0);
         controller_gain_schedule = (uint8_t) pkt->GetSlot(1);
-        ui_battery_voltage = (int16_t) pkt->GetSlot(2);
-        base_battery = (int16_t)pkt->GetSlot(3);
+        ui_battery_voltage = (uint16_t) pkt->GetSlot(2);
+        base_battery_voltage = (uint16_t)pkt->GetSlot(3);
 
         msgCheckList_[6] = true;
         break;

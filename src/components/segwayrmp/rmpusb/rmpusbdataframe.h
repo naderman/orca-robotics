@@ -188,7 +188,7 @@ public:
     //! User Interface battery status
     //uint16_t   ui_battery_status;
     //! Powerbase attery Voltage (min of A, B)
-    uint16_t   base_battery;
+    uint16_t   base_battery_voltage;
     //! Operational Mode (0= disabled, 1=tractor, 2= balance)
     uint16_t operational_mode;
     //! Controller Gain Schedule (0=normal, 1=tall, 2=heavy)
