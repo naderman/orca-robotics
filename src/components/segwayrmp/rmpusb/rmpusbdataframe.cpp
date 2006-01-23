@@ -99,7 +99,7 @@ void RmpUsbDataFrame::AddPacket(const CanPacket* pkt)
         // slot3 : undefined
 
         //debug
-        std::cout<<"got status: "<<status_word1<<" "<<status_word2<<std::endl;
+        //std::cout<<"got status: "<<status_word1<<" "<<status_word2<<std::endl;
 
         //debug
         if ( kill_flag ) {

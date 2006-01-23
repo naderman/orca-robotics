@@ -19,6 +19,7 @@
  */
 
 #include <iostream>
+#include <sstream>
 
 #include "rmpmainloop.h"
 #include <IceUtil/Time.h>
@@ -191,7 +192,11 @@ void RmpMainLoop::run()
                     position2dPublishTimer_.restart();
                 }
                 if ( powerPublishTimer_.elapsed().toSecondsDouble()>config_.powerPublishInterval ) {
-                    powerPublisher_->setData( powerData );
+                    powerPublisher_->setData( powerData );    
+                    std::ostringstream os;
+                    os << "cu/ui :"<<powerData->batteries[0].voltage<<" "
+                                   <<powerData->batteries[2].voltage;
+                    current_.tracer()->debug( os.str() );
                     powerPublishTimer_.restart();
                 }
                 if ( statusPublishTimer_.elapsed().toSecondsDouble()>config_.statusPublishInterval ) {

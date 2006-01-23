@@ -139,13 +139,15 @@ int RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr 
             return 0;
         }
         else {
-            // the frame is closed but not complete: some packets were lost
+            // debug: the frame is closed but not complete: some packets were lost
+/*
             int sec = IceUtil::Time::now().toSeconds();
             cout<<sec<<" re-opening frame. Missing [";
             for ( int i=1; i<8; ++i ) {
                 if ( !frame_->msgCheckList_[i] ) { cout<<i<<" "; }
             }
             cout<<"]"<<endl;
+*/
             //! @todo or should we reset?
             frame_->reopen();
             ++dataFramesReopened;
@@ -288,9 +290,9 @@ void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerD
     power->batteries[2].percent = 99.0;
 
     //debug
-    cout<<"cu battery voltage (CU): "<<power->batteries[0].voltage<<" ("<<frame_->base_battery_voltage<<")"<<endl;
+    //cout<<"cu battery voltage (CU): "<<power->batteries[0].voltage<<" ("<<frame_->base_battery_voltage<<")"<<endl;
     // info from CU in msg 406
-    cout<<"ui battery voltage (CU): "<<power->batteries[2].voltage<<" ("<<frame_->ui_battery_voltage<<")"<<endl;
+    //cout<<"ui battery voltage (CU): "<<power->batteries[2].voltage<<" ("<<frame_->ui_battery_voltage<<")"<<endl;
     // info from UI in heartbeat msg
     //cout<<"ui battery voltage (UI): "<<frame_->ui_heartbeat_voltage<<endl;
     //if ( frame_->ui_heartbeat_status == RMP_UI_LOW_WARNING ) {
