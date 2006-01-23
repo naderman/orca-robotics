@@ -56,13 +56,16 @@ interface Platform2d extends Position2d
     nonmutating Platform2dConfig getConfig();
 
     //! Set velocity command
-    idempotent void setCommand( Velocity2dCommand data );
+    idempotent void setCommand( Velocity2dCommand data )
+            throws HardwareFailedException;
 
     //! Set configuration
-    idempotent void setConfig( Platform2dConfig config );
+    idempotent void setConfig( Platform2dConfig config )
+            throws ConfigurationNotExistException;
 
     //! Enable motor(s)
-    idempotent void enableMotor( bool enable );    
+    idempotent void enableMotor( bool enable )
+            throws HardwareFailedException;    
 };
 
 //! @}

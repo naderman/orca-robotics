@@ -123,7 +123,10 @@ exception OrcaException
 
 //! This gets thrown if a client tries to configure
 //! us in a way we can't be configured.
-exception CannotImplementConfigurationException extends OrcaException {};
+exception ConfigurationNotExistException extends OrcaException {};
+
+//! Indicates any problem with robot hardware, e.g. sensors and actuators.
+exception HardwareFailedException extends OrcaException {};
 
 
 }; // module

@@ -74,12 +74,15 @@ interface Position2dConsumer
 */
 interface Position2d
 {
-    // ClientPull_Supplier interface
-    nonmutating Position2dData getData();
+    //! Returns the latest data.
+    //! @note In Orca1 this would be called ClientPull_Supplier interface.
+    nonmutating Position2dData getData()
+            throws HardwareFailedException;
+
+    //! Returns geometry of the position device.            
     nonmutating Position2dGeometry getGeometry();
 
     /*!
-     *
      * Mimics IceStorm's subscribe() but without QoS, for now. The
      * implementation may choose to implement the data push internally
      * or use IceStorm. This choice is transparent to the subscriber.
@@ -90,22 +93,19 @@ interface Position2d
      * receive updates [sec]. Provider's ability to fulfil this request may vary.
      *
      * @see unsubscribe
-     *
      */
     void subscribe( Position2dConsumer* subscriber, double preferedPushInterval );
 
     // for reference, this is what IceStorm's subscribe function looks like.
     //void subscribe(QoS theQoS, Object* subscriber);
 
-    /**
-     *
+    /*!
      * Unsubscribe the given [subscriber].
      *
      * @param subscriber The proxy of an existing subscriber.
      *
      * @see subscribe
-     *
-    **/
+     */
     idempotent void unsubscribe( Position2dConsumer* subscriber );
 };
 

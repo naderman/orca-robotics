@@ -103,7 +103,7 @@ interface RangeScanner
 
     //! Set the configuration of the sensor.
     //! Throws remote exceptions if given a configuration it can't implement.
-    idempotent  void setConfig( RangeScannerConfig config ) throws CannotImplementConfigurationException;
+    idempotent  void setConfig( RangeScannerConfig config ) throws ConfigurationNotExistException;
 
     /*!
      *

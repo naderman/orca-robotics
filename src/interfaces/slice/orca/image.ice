@@ -83,7 +83,7 @@ interface Imager
 	nonmutating ImageConfig getConfig();
         nonmutating ImageGeometry getGeometry();
 
-	idempotent void setConfig( ImageConfig config) throws CannotImplementConfigurationException; 
+	idempotent void setConfig( ImageConfig config) throws ConfigurationNotExistException;
 
    	void subscribe (ImageConsumer *subscriber); 
         
