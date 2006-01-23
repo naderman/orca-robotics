@@ -85,8 +85,15 @@ void NetworkLoop::run()
             //cout<<"old : "<<command<<endl;
         }
 
+        //
+        // Sending motion command (probably over the network)
+        //
         try {
             platform2dPrx_->setCommand( command );
+        }
+        catch ( const Ice::UnknownException & e ) {
+            cout<<"Remote exception from the platform"<<endl;
+            cout<<e<<endl;
         }
         catch ( const Ice::ConnectionRefusedException & e ) {
             /*  cannot throw from one thread to another :(
