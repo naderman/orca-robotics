@@ -44,7 +44,7 @@ Platform2dI::Platform2dI( orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    &po
 // served out the data to the client (it was stored here by the driver at the last read)
 orca::Position2dDataPtr Platform2dI::getData(const Ice::Current& current) const
 {
-    std::cout << "Sending data back" << std::endl;
+    //std::cout << "Sending data back" << std::endl;
 
     // create a null pointer. data will be cloned into it.
     Position2dDataPtr data;
@@ -54,13 +54,15 @@ orca::Position2dDataPtr Platform2dI::getData(const Ice::Current& current) const
     //! @todo what should happens if there's no data?
     position2dProxy_.get( data );
 
-    cout << data <<endl;
+    //cout << data <<endl;
     return data;
 }
 
 orca::Position2dGeometryPtr Platform2dI::getGeometry(const Ice::Current& current) const
 {
-    std::cout << "Pretending to send geometry back" << std::endl;
+    //std::cout << "Pretending to send geometry back" << std::endl;
+
+    //! @todo implement
     Position2dGeometryPtr geometry = new Position2dGeometry;
 
     return geometry;
@@ -84,6 +86,8 @@ void Platform2dI::unsubscribe(const ::orca::Position2dConsumerPrx& subscriber, c
 void Platform2dI::setCommand(const ::orca::Velocity2dCommandPtr& command, const ::Ice::Current& )
 {
     //commandProxy_.push( command );
+
+    // this is executed directly to hardware and may throw an exception
     commandNotify_.set( command );
 }
 

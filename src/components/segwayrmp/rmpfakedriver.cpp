@@ -59,6 +59,14 @@ int RmpFakeDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr
 
 int RmpFakeDriver::sendMotionCommand( orca::Velocity2dCommandPtr & command )
 {
-    cout<<"wrote: "<<orcaiceutil::toString(command)<<endl;
+    // debug: throw exceptions to test client's response
+    if ( command->motion.v.x < 2.0 ) {
+        cout<<"wrote: "<<orcaiceutil::toString(command)<<endl;
+    }
+    else {       
+        orca::HardwareFailedException e;
+        e.what = "throwing pretend exception from RMP fake driver";
+        throw e;
+    }
     return 0;
 }

@@ -91,8 +91,11 @@ void NetworkLoop::run()
         try {
             platform2dPrx_->setCommand( command );
         }
+        catch ( const orca::HardwareFailedException & e ) {
+            cout<<e.what<<endl;
+        }
         catch ( const Ice::UnknownException & e ) {
-            cout<<"Remote exception from the platform"<<endl;
+            cout<<"Unknown exception from the platform"<<endl;
             cout<<e<<endl;
         }
         catch ( const Ice::ConnectionRefusedException & e ) {

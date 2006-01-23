@@ -174,7 +174,7 @@ void RmpMainLoop::run()
         readTimer_.restart();
        
         if ( (readStatus = driver_->read( position2dData, powerData )) ) {
-            current_.tracer()->error("failed to read from Segway");
+            current_.tracer()->error("failed to read data from Segway hardware.");
             // indicate some fault state here
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }
@@ -262,8 +262,9 @@ void RmpMainLoop::handleData( const Ice::ObjectPtr & obj )
     // write to hardware
     if( driver_->sendMotionCommand( command ) != 0 )
     {
-        string errString = "failed to write to segway";
-        throw orcaiceutil::OrcaIceUtilHardwareException( ERROR_INFO, errString );
+        orca::HardwareFailedException e;
+        e.what = "failed to write command to segway hardware.";
+        throw e;
     }
 
     writeTimer_.restart();
