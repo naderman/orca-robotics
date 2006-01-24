@@ -63,7 +63,8 @@ To keep the standard Debian cmake installed, renamed the old binaries.
 
 @section orca_doc_installdebian_ice Ice
 
-@note The instructions below describe how to build Ice from source. There's a one-man effort to provide Debian packages for Ice but we haven't tried to use them yet. See http://ice.jgaa.com/
+@note The instructions below describe how to build Ice from source. There are several efforts to provide Debian packages for Ice but we haven't tried to use them yet. See http://ice.jgaa.com/ and
+http://personales.ya.com/fmoya/ .
 
 The latest version tested with these instructions: 3.0.1.
 
