@@ -68,6 +68,14 @@ int App::run( int argc, char* argv[] )
         proxy = args[args.size()-1];
     }
 
+    // this option prepends something to proxy
+    for( uint i=1; i<args.size(); ++i )
+    {
+        if ( args[i]=="-a" ) {
+            proxy = "status@"+proxy;
+        }
+    }
+
     for( uint i=1; i<args.size()-1; i+=2 )
     {
         if ( args[i]=="-i" ) {
@@ -77,6 +85,9 @@ int App::run( int argc, char* argv[] )
             count = atoi( args[i+1].c_str() );
         }
         else if ( args[i]=="-f" ) {
+            // already parsed
+        }
+        else if ( args[i]=="-a" ) {
             // already parsed
         }
         else {
@@ -133,15 +144,18 @@ int App::run( int argc, char* argv[] )
 void App::usage()
 {
     cout << "USAGE"<<endl;
-    cout << "iceping [ -rh ] [ -f file ] [ -c count ] [ -i intervalUs ] proxy"<<endl;
-    cout << "  Proxy\tDesitnation specified as a string in the form 'object@adapter'"<<endl;
+    cout << "iceping [ -arh ] [ -f file ] [ -c count ] [ -i intervalUs ] proxy"<<endl;
+    cout << "  Proxy\t interface identity in the form 'interface@platform/component'"<<endl;
+    cout << "    \tIn Ice terms this is a string in the form 'object@adapter'"<<endl;
     cout << "OPTIONS"<<endl;
+    cout << "  -a\n\tPings the adapter in the form 'platform/component'"<<endl;
+    cout << "    \tRely on the fact that all Orca components provide Status interface"<<endl;
+    cout << "  -r\n\tPings the IceGridRegistry as described in configuration files."<<endl;
+    cout << "    \tSpecifically, pings the Query interface."<<endl;
     cout << "  -c count\n\tPing count times. Default is 3."<<endl;
     cout << "  -f file\n\tUse file as Ice.Config parameter. Default is ~/.orcarc"<<endl;
     cout << "  -h\tPrint this."<<endl;
     cout << "  -i interval\n\tPause for interval seconds after each ping. Default is 0."<<endl;
-    cout << "  -r\n\tPing the IceGridRegistry, specifically its Query interface. This is "<<endl;
-    cout << "    \ta way to make sure that the registry is reachable."<<endl;
 }
 
 
