@@ -200,7 +200,7 @@ void RmpMainLoop::run()
                     powerPublishTimer_.restart();
                 }
                 if ( statusPublishTimer_.elapsed().toSecondsDouble()>config_.statusPublishInterval ) {
-                    cout<<"sending heartbeat"<<endl;
+                    //cout<<"sending heartbeat"<<endl;
                     current_.tracer()->heartbeat("status OK");
                     statusPublishTimer_.restart();
                 }

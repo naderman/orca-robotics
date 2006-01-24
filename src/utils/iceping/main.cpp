@@ -151,7 +151,7 @@ void App::usage()
     cout << "  -f file\n\tUse file as Ice.Config parameter. Default is ~/.orcarc"<<endl;
     cout << "  -h\tPrint this."<<endl;
     cout << "  -i interval\n\tPause for interval seconds after each ping. Default is 0."<<endl;
-    cout << "  -r\tPing the IceGridRegistry, specifically its Query interface. This is "<<endl;
+    cout << "  -r\n\tPing the IceGridRegistry, specifically its Query interface. This is "<<endl;
     cout << "    \ta way to make sure that the registry is reachable."<<endl;
 }
 

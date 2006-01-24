@@ -104,6 +104,7 @@ void RmpUsbDataFrame::AddPacket(const CanPacket* pkt)
         //debug
         if ( kill_flag ) {
             std::cout<<"exiting because of CU status"<<std::endl;
+            std::cout<<"CU status: "<<std::hex<<status_word1<<" "<<status_word2<<std::endl;
             exit(0);
         }
         if ( status_word1==16512 ) {
