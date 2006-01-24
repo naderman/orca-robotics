@@ -24,9 +24,6 @@
 #include <Ice/Ice.h>
 #include <IceUtil/Time.h>
 
-//#include <orcaiceutil/orcaiceutil.h>
-//#include <orca/configutils.h>
-
 using namespace std;
 //using namespace orca;
 
@@ -89,12 +86,6 @@ int App::run( int argc, char* argv[] )
 
     Ice::ObjectPrx base = communicator()->stringToProxy( proxy );
 
-    Ice::EndpointSeq epoints = base->ice_getEndpoints();
-    if ( !epoints.empty() ) {
-        cout<<"where : "<<epoints[0]<<endl;
-    } else {
-        cout<<"no endpoints"<<endl;
-    }
     try {
         IceUtil::Time t0 = IceUtil::Time::now();
         IceUtil::Time t1;
@@ -105,19 +96,17 @@ int App::run( int argc, char* argv[] )
             IceUtil::ThreadControl::sleep(IceUtil::Time::microSeconds(intervalUs));
             }
         }
-        epoints = base->ice_getEndpoints();
-        if ( !epoints.empty() ) {
-            cout<<"where : "<<epoints[0]<<endl;
-        } else {
-            cout<<"no endpoints"<<endl;
-        }
-
+        // stop the clock
         t1 = IceUtil::Time::now();
         IceUtil::Time dt = t1 - t0;
 
         cout<<endl<<"Ping successful."<<endl;
 
+        // we must've connected, otherwise we'd have an exception
+        Ice::ConnectionPtr conn = base->ice_connection();
         cout<<"Proxy\t\t[ "<<base->ice_toString()<<" ]"<<endl;
+        
+        cout<<"Connection\t[ "<<conn->toString()<<" ]"<<endl;
 
         cout<<"RTT ("<<count<<") \t[ " << (dt.toMicroSeconds()-count*intervalUs)/count << " us ]" <<endl;
 
