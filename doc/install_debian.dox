@@ -65,7 +65,7 @@ To keep the standard Debian cmake installed, renamed the old binaries.
 
 @note The instructions below describe how to build Ice from source. There's a one-man effort to provide Debian packages for Ice but we haven't tried to use them yet. See http://ice.jgaa.com/
 
-The latest version tested with these instructions: 3.0.0.
+The latest version tested with these instructions: 3.0.1.
 
 Following the instructions below will install Ice to the default location /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
 

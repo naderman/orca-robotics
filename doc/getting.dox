@@ -42,10 +42,10 @@ Follow these instructions to install orca2 and its dependencies. The instruction
     - Send feedback on building under other configurations.
 
     -# Download and install <a href="http://www.cmake.org/">CMake: Cross-Platform Make</a> which is used to build the orca distribution.
-        - Version known to work: 2.2.3. (v2.0.6 available as a Debian package is known NOT to work).
+        - Minimum version required 2.2.2 (latest known to work: 2.2.3)
         - Download binaries from <a href="http://www.cmake.org/HTML/Download.html">Kitware</a>.
     -# Download and install Ice libraries.
-        - Version known to work: 3.0.0
+        - Minimum version required 3.0.0 (latest known to work: 3.0.1)
         - Full instructions are available from the <a href="http://www.zeroc.com/download.html">download page</a>. Several binaries distributions exists, for others (e.g. Debian Linux) building from source is required.
     -# Download and install any optional dependencies you'd like:
         - <a href="http://playerstage.sourceforge.net/" target="_blank">Player/Stage</a>, is required for some hardware support and for use of the Stage simulator (you probably want this).
@@ -53,7 +53,7 @@ Follow these instructions to install orca2 and its dependencies. The instruction
         - <a href="http://www.stack.nl/~dimitri/doxygen/" target="_blank">Doxygen</a>  for generating local doxygen documentation</a>.
             - The standard version of doxygen cannot build documentation from Slice files. We have a patched version which does that. It is used to generate the documentation displayed on the Orca website. The patch may appear in future versions of Doxygen or made available here.
         - <a href="http://www.trolltech.com/" target="_blank">Qt</a> is a cross-platform framework for building GUI's. Some components with Graphical User Interface.
-            - Version known to work: 4.0.1
+            - Minimum version required 4.0.0 (latest known to work: 4.0.1)
     -# Build and install Orca2 distribution.
         - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive.
         - Configure using CMake
