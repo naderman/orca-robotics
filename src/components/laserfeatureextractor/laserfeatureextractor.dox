@@ -86,7 +86,7 @@
       - boolean
       - default: 0
 
-@include components/laserfeatureextractor/laserfeatureextractor.cfg
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
 @par Dependancies
 

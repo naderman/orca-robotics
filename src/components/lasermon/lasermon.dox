@@ -41,6 +41,8 @@ Laser scans are displayed as soon as they arrive.
 @par Configuration
 None.
 
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
 @include components/lasermon/lasermon.cfg
 
 @par Remarks

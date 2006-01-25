@@ -55,6 +55,10 @@ if no new command has been received from a client in the previous 400ms or so.
 Thus, even if you want to continue moving at a constant velocity, you must
 continuously send your desired velocities.
 
+@par Configuration
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
 @par Authors
 Orca component by Alex Makarenko. Original CAN driver code came from Player by Andrew Howard.
 
@@ -133,10 +137,6 @@ This one simply connects to a Player server.
 
 Support is limited to what Player supports which is currently the original RMP with CAN I/O using Kvaser, Inc.'s CANLIB interface library. This library provides access
 to CAN cards made by Kvaser, such as the LAPcan II.
-
-@section confex Configuration Example
-
-@include components/segwayrmp/segwayrmp.def
 
 
 */
