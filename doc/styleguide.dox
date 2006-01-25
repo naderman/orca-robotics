@@ -217,7 +217,7 @@ class MyClass
 @endverbatim
 
 
-      @par #defines
+      @par \#defines
 
       all uppercase to distinguish them from functions and variables.
 
@@ -262,7 +262,7 @@ myclass.c
 @section sec Declarations
 @par  Header Files
 
-As much as possible, keep #includes out of header files as
+As much as possible, keep \#includes out of header files as
 this can create large chains of dependencies that increase
 compile times. Ideally a header file for a class includes only
 the baseclass.hpp.
@@ -288,8 +288,8 @@ A header file should contain exactly one class, and no major
 code.  Inlines should be no longer than a couple of
 statements.
 
-When using #ifndef to prevent multiple loading of header
-files, make sure that the #define will remain unique if your
+When using \#ifndef to prevent multiple loading of header
+files, make sure that the \#define will remain unique if your
 header file is used in a different project. Prepend project name
 or other distinguishing feature. Eg.
 

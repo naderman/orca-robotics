@@ -156,8 +156,8 @@ now refers to <a href="http://www.orocos.org">the Belgian part</a>.
 
 The task of <a href="http://www.cas.kth.se">KTH</a> was to build a set of communication patterns to enable
 the interaction of distributed components.  This work,
-spearheaded by Anders Oreb&auml;ck, was called Orocos@KTH.  By
-June 2004 Orocos@KTH had also been adopted by members of the <a href="http://www.acfr.usyd.edu.au">Australian Centre for Field Robotics</a>.  By this time it had diverged far enough from the work at Leuven that a new name was required to disambiguate the two, and Orca1 was born. At that time the project moved to SourceForge. Work on porting Orca to Ice started in March of 2005. The new version called Orca2 was forked in late 2005, the main difference being the move to @ref orca_doc_about_whyice "Ice" as the sole communications package.
+spearheaded by Anders Oreb&auml;ck, was called Orocos\@KTH.  By
+June 2004 Orocos\@KTH had also been adopted by members of the <a href="http://www.acfr.usyd.edu.au">Australian Centre for Field Robotics</a>.  By this time it had diverged far enough from the work at Leuven that a new name was required to disambiguate the two, and Orca1 was born. At that time the project moved to SourceForge. Work on porting Orca to Ice started in March of 2005. The new version called Orca2 was forked in late 2005, the main difference being the move to @ref orca_doc_about_whyice "Ice" as the sole communications package.
 
 @section orca_doc_about_usage Usage
 

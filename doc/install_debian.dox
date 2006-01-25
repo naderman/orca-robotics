@@ -137,6 +137,4 @@ At the time of writing Qt4 packages are in the 'testing' distribution.
 # apt-get install libqt4-dev qt4-doc qt4-dev-tools
 @endverbatim
 
-@endverbatim
-
 */

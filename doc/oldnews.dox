@@ -46,10 +46,10 @@
     -  18-Jun-04: Orca 0.10 - first release under the new name. A global name change, file names brought in line with guidelines, added two new examples.
     -  16-Jun-04: New Webpage is up and running.
     -  11-Jun-04: New name! Registered with SourceForge as Orca.
-    -  09-Jun-04: Orocos@KTH 0.9.1 released! Mostly bug-fixes and documentation,
+    -  09-Jun-04: Orocos\@KTH 0.9.1 released! Mostly bug-fixes and documentation,
 some simple components, plus a TruthLocalizer for localizing in simulation
 (see Component Repository).
-    -  23-May-04: Orocos@KTH 0.9 released! The main additions include a Graphical
+    -  23-May-04: Orocos\@KTH 0.9 released! The main additions include a Graphical
 User Interface (see Component Repository).
     -  04-03-17 --- New FAQ, see below.
     -  04-03-04 --- Now compiles with GCC 3.2.2.
