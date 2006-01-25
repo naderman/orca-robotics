@@ -77,13 +77,33 @@ This component connects to a robot base or waypoint server and issues motion com
 Here's a complete sample of a config file:
 @include components/teleop/teleop.def
 
-@par Joystick Troubleshooting
+@par Internal Structure
+    
+@image html teleop_whitebox.png
+
+@par Responsible Developer
+Alex Makarenko
+
+@section keyboard Keyboard Driver
+
+Motion commands are issued by pressing keyboard keys.
+    i : forward
+    j : left
+    l : right
+    k : backward
+    u : stop turn
+    o : stop movement (but still turn)
+    anything else : stop
+
+@section joystick Joystick Driver
+
+@par Troubleshooting
 
 This section has not been updated for Orca2!
 
-If using a joystick then TeleopControl requires either a <A HREF="http://kernel.org">Linux Kernel</A> >= 2.4 or the <A HREF="http://linuxconsole.sourceforge.net/input/input.html">Linux Input Drivers</A> .  If the driver is built as a module you may have to load it (<code>modprobe evdev</code> as root).
+If using a joystick then TeleopControl requires either a <A HREF="http://kernel.org">Linux Kernel</A> >= 2.4 or the <A HREF="http://linuxconsole.sourceforge.net/input/input.html">Linux Input Drivers</A> .  If the driver is built as a module you may have to load it. Check with command @code lsmod and add module with @code modprobe.
 
-- Make sure you're using the correct event device.  To see which ones are available, do:
+- Make sure you're using the correct event device. To see which ones are available:
 @verbatim
 $ cat /proc/bus/input/devices
 @endverbatim
@@ -104,13 +124,6 @@ $ sudo mknod c event3 13 67
 @endverbatim
 - There are some problems with USB1.0 joysticks and older kernels.
     If your USB system hangs, try upgrading.  Kernel 2.6.10 seems to be OK.
-
-@par Internal Structure
-    
-@image html teleop_whitebox.png
-
-@par Responsible Developer
-Alex Makarenko
 
 */
 

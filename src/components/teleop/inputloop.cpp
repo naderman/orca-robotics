@@ -105,17 +105,22 @@ void InputLoop::run()
             string errorStr = "Unknown driver type. Cannot talk to hardware.";
             current_.tracer()->error(errorStr);
             throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
-    }
-    // don't forget!
-    while ( driver_->enable() ) {
+    }    
+    
+    Velocity2dCommandPtr currCommand = new Velocity2dCommand;
+    Velocity2dCommandPtr lastCommand = new Velocity2dCommand;
+    
+    // don't forget to enable the driver, but check isActive() to see if we should quit
+    while ( driver_->enable() && isActive() ) {
         current_.tracer()->warning("failed to enable driver");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     }
-    current_.tracer()->print("driver enabled");
 
-    Velocity2dCommandPtr currCommand = new Velocity2dCommand;
-    Velocity2dCommandPtr lastCommand = new Velocity2dCommand;
-
+    // check again to make sure we are not being terminated
+    if ( isActive() ) {
+        current_.tracer()->print("driver enabled");    
+    }
+    
     while ( isActive() )
     {
         // remember last command so we can tell if anything has changed
