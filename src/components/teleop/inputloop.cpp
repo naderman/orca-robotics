@@ -64,6 +64,8 @@ void InputLoop::readConfigs()
     }
     else if ( driverName == "joystick" ) {
         driverType_ = InputDriver::JOYSTICK_DRIVER;
+        config_.joystickDevice = orcaiceutil::getPropertyWithDefault( current_.properties(),
+                "Teleop.Config.JoystickDevice", "/dev/input/event0" );
     }
     else if ( driverName == "fake" ) {
         driverType_ = InputDriver::FAKE_DRIVER;
@@ -107,8 +109,6 @@ void InputLoop::run()
             throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
     }    
     
-    Velocity2dCommandPtr currCommand = new Velocity2dCommand;
-    Velocity2dCommandPtr lastCommand = new Velocity2dCommand;
     
     // don't forget to enable the driver, but check isActive() to see if we should quit
     while ( driver_->enable() && isActive() ) {
@@ -117,9 +117,14 @@ void InputLoop::run()
     }
 
     // check again to make sure we are not being terminated
-    if ( isActive() ) {
-        current_.tracer()->print("driver enabled");    
+    if ( !isActive() ) {
+        return;
     }
+    
+    current_.tracer()->print("driver enabled");
+    
+    Velocity2dCommandPtr currCommand = new Velocity2dCommand;
+    Velocity2dCommandPtr lastCommand = new Velocity2dCommand;
     
     while ( isActive() )
     {

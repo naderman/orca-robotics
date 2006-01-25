@@ -53,14 +53,10 @@ TeleopJoystickDriver::~TeleopJoystickDriver()
 
 int TeleopJoystickDriver::enable()
 {
-    // joystick port
-    std::string joystickPort = "/dev/input/event0";
-    //xmlDoc->getParam( "joystickPort", joystickPort, DEFAULT_JOYSTICK_PORT );
-
-    jfd_ = open( joystickPort.c_str(), O_RDONLY );
+    jfd_ = open( config_.joystickDevice.c_str(), O_RDONLY );
 
     if ( jfd_<1 ) {
-        cout << "ERROR: could not open joystick on " << joystickPort << endl;
+        cout << "ERROR: could not open joystick on " << config_.joystickDevice << endl;
         return 1;
     }
 
@@ -70,7 +66,7 @@ int TeleopJoystickDriver::enable()
         cerr<<"error reading joystick name" << endl;
         return 1;
     }
-    cout<<"reading from joystick \"" << name << "\" on " << joystickPort << endl;
+    cout<<"reading from joystick \"" << name << "\" on " << config_.joystickDevice << endl;
 
     cout<<"enabled."<<endl;
     return 0;

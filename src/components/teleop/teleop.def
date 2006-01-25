@@ -9,3 +9,4 @@ Config.Driver.Default=keyboard
 Config.MaxSpeed.Default=1.0
 Config.MaxTurnrate.Default=40.0
 Config.RepeatTime.Default=0.2
+Config.JoystickDevice.Default=/dev/input/event0

@@ -22,6 +22,7 @@
 #define ORCA2_TELEOP_INPUT_DRIVER_H
 
 #include <orca/platform2d.h>
+#include <string>
 
 /*!
 
@@ -53,6 +54,7 @@ public:
     {
         double maxSpeed;
         double maxTurnrate;
+        std::string joystickDevice;
     };
 
     //! Set a specifc configuration

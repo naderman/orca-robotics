@@ -74,8 +74,7 @@ This component connects to a robot base or waypoint server and issues motion com
                 - t=0: Commands are sent as frequently as possible (terribly inefficient)
                 - t>0: Commands are sent when new ones are entered, or resent after t seconds (useful if "keep alive" heartbeat is needed).
 
-Here's a complete sample of a config file:
-@include components/teleop/teleop.def
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
 @par Internal Structure
     
@@ -87,23 +86,36 @@ Alex Makarenko
 @section keyboard Keyboard Driver
 
 Motion commands are issued by pressing keyboard keys.
-    i : forward
-    j : left
-    l : right
-    k : backward
+    i : increment speed
+    k : decrement speed
+    j : increment turnrate (positive to the left)
+    l : decrement turnrate (positive to the left)
     u : stop turn
     o : stop movement (but still turn)
     anything else : stop
 
 @section joystick Joystick Driver
 
-@par Troubleshooting
+Motion commands are issued by moving the joystick
+    forward     : set forward speed
+    backward    : set backward speed
+    left        : set turnrate to the left
+    right       : set turnrate to the right
+    
+@par Additional Configuration
 
-This section has not been updated for Orca2!
+    -Teleop.Config.JoystickDevice
+        - Unix path to the joystick device
+        - Units: none
+        - Use: optional, default = "/dev/input/event0"
+        - Constraints:
+            - Type: string
 
-If using a joystick then TeleopControl requires either a <A HREF="http://kernel.org">Linux Kernel</A> >= 2.4 or the <A HREF="http://linuxconsole.sourceforge.net/input/input.html">Linux Input Drivers</A> .  If the driver is built as a module you may have to load it. Check with command @code lsmod and add module with @code modprobe.
+@par Operation
 
-- Make sure you're using the correct event device. To see which ones are available:
+If using a joystick then TeleopControl requires either a <A HREF="http://kernel.org">Linux Kernel</A> >= 2.4 or the <A HREF="http://linuxconsole.sourceforge.net/input/input.html">Linux Input Drivers</A> . If the driver is built as a module you may have to load it. Check with command @code lsmod and add module with @code modprobe. This Orca driver has only been tested with kernel >=2.6.12.
+
+- Make sure you're using the correct event device. Get a list of available devices and find the one corresponding to your joystick.
 @verbatim
 $ cat /proc/bus/input/devices
 @endverbatim
@@ -112,18 +124,19 @@ $ cat /proc/bus/input/devices
 - Make sure that your event devices exist and can be read:
     - ie ensure that you have permissions to /dev/input/event*, eg with:
 @verbatim
-$ sudo chmod 666 /dev/input/event*
+# chmod 666 /dev/input/event*
 @endverbatim
     - (note that these permissions may get over-written on reboot...)
     - if not enough exist, make them with:
 @verbatim
-$ sudo mknod c event0 13 64
-$ sudo mknod c event1 13 65
-$ sudo mknod c event2 13 66
-$ sudo mknod c event3 13 67
+# mknod c event0 13 64
+# mknod c event1 13 65
+# mknod c event2 13 66
+# mknod c event3 13 67
 @endverbatim
+
 - There are some problems with USB1.0 joysticks and older kernels.
-    If your USB system hangs, try upgrading.  Kernel 2.6.10 seems to be OK.
+    If your USB system hangs, try upgrading.  Kernel 2.6.12 seems to be OK.
 
 */
 
