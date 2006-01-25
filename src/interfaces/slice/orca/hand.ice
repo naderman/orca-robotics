@@ -141,7 +141,8 @@ interface HandProducer
      *
      * @param subscriber The subscriber's proxy.
      *
-     * @param preferedPushInterval The subscriber's preference for how often it wants to
+     * possible additional parameter:
+     * preferedPushInterval The subscriber's preference for how often it wants to
      * receive updates [sec]. Provider's ability to fulfil this request may vary.
      *
      * @see unsubscribe
