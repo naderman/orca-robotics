@@ -144,6 +144,7 @@ void RmpMainLoop::run()
         current_.tracer()->warning("failed to enable the driver; will try again.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
+    // check again to make sure we are not being terminated
     if ( !isActive() ) {
         return;
     }
