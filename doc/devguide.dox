@@ -24,15 +24,20 @@
 
 @section emptyproject Starting Your Own Orca Project
 
-To allow people to get started quickly we provide a template empty
-project which uses CMake, mirrors the setup of the orca2 repository
-and is already set up to find Ice, find the orca2 installation, etc.
-You can of course set up a project in any way you like, however you
-might find this useful:
+A common situation is that you want to experiment with some components without the hassle of
+committing them into the Orca SourceForge repository or want to work on a closed-source
+component. In this case you should download and install the main Orca distribution and
+then setup a parallel workspace for your own project.
 
-- <a href="http://orca-robotics.sf.net/empty-project.tar.gz">empty-project.tar.gz</a>
+To help you start quickly we provide a template  project which uses CMake, mirrors
+the setup of the orca2 repository and is already set up to find Ice, find the orca2
+installation, etc. You can of course set up a project in any way you like, however you
+might find it useful. Get it from CVS (it may be more up to date) or download
+an archive.
 
-Note: empty-project is also in cvs (the module-name is 'empty-project').
+- from CVS checkout module 'empty-project'
+- download <a href="http://orca-robotics.sf.net/empty-project-2.0.0rc3.tar.gz">a snapshot of CVS repository</a> as of v.2.0.0rc2+
+
 
 @section goodcomp Notes on writing good components
 
