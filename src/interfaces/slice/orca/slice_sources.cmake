@@ -17,6 +17,7 @@ SET( SLICE_SOURCE_FILES
     ogmap.ice
     opaque.ice
 #interfaces
+    home.ice
     binaryindicator.ice
     rangescanner.ice
     laser.ice
