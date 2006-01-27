@@ -71,8 +71,8 @@ int App::run( int argc, char* argv[] )
     // this option prepends something to proxy
     for( uint i=1; i<args.size(); ++i )
     {
-        if ( args[i]=="-a" ) {
-            proxy = "status@"+proxy;
+        if ( args[i]=="-o" ) {
+            proxy = "home@"+proxy;
         }
     }
 
@@ -87,7 +87,7 @@ int App::run( int argc, char* argv[] )
         else if ( args[i]=="-f" ) {
             // already parsed
         }
-        else if ( args[i]=="-a" ) {
+        else if ( args[i]=="-o" ) {
             // already parsed
         }
         else {
@@ -144,12 +144,12 @@ int App::run( int argc, char* argv[] )
 void App::usage()
 {
     cout << "USAGE"<<endl;
-    cout << "iceping [ -arh ] [ -f file ] [ -c count ] [ -i intervalUs ] proxy"<<endl;
+    cout << "iceping [ -orh ] [ -f file ] [ -c count ] [ -i intervalUs ] proxy"<<endl;
     cout << "  Proxy\t interface identity in the form 'interface@platform/component'"<<endl;
     cout << "    \tIn Ice terms this is a string in the form 'object@adapter'"<<endl;
     cout << "OPTIONS"<<endl;
-    cout << "  -a\n\tPings the adapter in the form 'platform/component'"<<endl;
-    cout << "    \tRely on the fact that all Orca components provide Status interface"<<endl;
+    cout << "  -o\n\tPings the Home interface of component, i.e. 'home@platform/component'"<<endl;
+    cout << "    \tRelies on the fact that all Orca components provide Home interface"<<endl;
     cout << "  -r\n\tPings the IceGridRegistry as described in configuration files."<<endl;
     cout << "    \tSpecifically, pings the Query interface."<<endl;
     cout << "  -c count\n\tPing count times. Default is 3."<<endl;
