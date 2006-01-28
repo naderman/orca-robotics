@@ -35,11 +35,25 @@ module orca
 */
 
 /*!
+    @brief Contains data on the component's interfaces.
+*/
+class HomeData extends OrcaObject
+{
+    //! Names of all provided interfaces as registered with the Locator service.
+    //! The Home interface itself is also included in this list.
+    Ice::StringSeq provides;
+    
+    //! Names of all required interfaces as registered with the Locator service.
+    Ice::StringSeq requires;
+};
+
+/*!
     @brief Access to a robot's status subsystem
 */
 interface Home
 {
-    nonmutating Ice::StringSeq getAllObjects();
+    //! Returns information about the component's interfaces.
+    nonmutating HomeData getData();    
 };
 
 /*!
