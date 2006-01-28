@@ -20,7 +20,7 @@
 
 #include <iostream>
 
-#include "networkloop.h"
+#include "networkhandler.h"
 
 #include <orcaiceutil/orcaiceutil.h>
 #include <orcaiceutil/exceptions.h>
@@ -29,21 +29,21 @@ using namespace std;
 using namespace orca;
 using orcaiceutil::operator<<;
 
-NetworkLoop::NetworkLoop( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer )
+NetworkHandler::NetworkHandler( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer )
     : commandBuffer_(commandBuffer)
 {
 }
 
-NetworkLoop::~NetworkLoop()
+NetworkHandler::~NetworkHandler()
 {
 }
 
-void NetworkLoop::setupConfigs( const Ice::PropertiesPtr & properties )
+void NetworkHandler::setupConfigs( const Ice::PropertiesPtr & properties )
 {
 
 }
 
-void NetworkLoop::run()
+void NetworkHandler::run()
 {
     // create a null pointer. data will be cloned into it.
     Ice::ObjectPtr data;
@@ -116,5 +116,5 @@ void NetworkLoop::run()
         //timer.restart();
     }
 
-    cout<<"NetworkLoop: stopped."<<endl;
+    cout<<"NetworkHandler: stopped."<<endl;
 }

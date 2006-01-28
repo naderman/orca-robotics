@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_TELEOP_NETWORK_LOOP_H
-#define ORCA2_TELEOP_NETWORK_LOOP_H
+#ifndef ORCA2_TELEOP_NETWORK_HANDLER_H
+#define ORCA2_TELEOP_NETWORK_HANDLER_H
 
 #include <orcaiceutil/thread.h>
 #include <orcaiceutil/current.h>
@@ -28,12 +28,12 @@
 #include <orca/platform2d.h>
 
 
-class NetworkLoop : public orcaiceutil::Thread
+class NetworkHandler : public orcaiceutil::Thread
 {
 public:
 
-    NetworkLoop( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer );
-    ~NetworkLoop();
+    NetworkHandler( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer );
+    ~NetworkHandler();
 
     void setCurrent( const orcaiceutil::Current & current ) { current_=current; };
 

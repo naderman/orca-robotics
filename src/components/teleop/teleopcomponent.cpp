@@ -21,19 +21,19 @@
 #include <iostream>
 
 #include "teleopcomponent.h"
-#include "networkloop.h"
-#include "inputloop.h"    
+#include "networkhandler.h"
+#include "userhandler.h"    
 
 using namespace std;
 
 TeleopComponent::TeleopComponent()
-    : orcaiceutil::Component( "Teleop" ), networkLoop_(0), inputLoop_(0)
+    : orcaiceutil::Component( "Teleop" ), networkHandler_(0), userHandler_(0)
 {
 }
 
 TeleopComponent::~TeleopComponent()
 {
-    // do not delete networkLoop_ and inputLoop_!!! They derive from Ice::Thread and deletes itself.
+    // do not delete networkHandler_ and userHandler_!!! They derive from Ice::Thread and deletes itself.
 }
 
 // warning: this function returns after it's done, all variable that need to be permanet must
@@ -44,31 +44,31 @@ void TeleopComponent::start()
     //
     // NETWORK
     //
-    networkLoop_ = new NetworkLoop( &commandProxy_ );
-    networkLoop_->setCurrent( current() );
-    networkLoop_->start();
+    networkHandler_ = new NetworkHandler( &commandProxy_ );
+    networkHandler_->setCurrent( current() );
+    networkHandler_->start();
 
     //
     // HARDWARE
     //
-    inputLoop_ = new InputLoop( &commandProxy_ );
-    inputLoop_->setCurrent( current() );
-    inputLoop_->start();
+    userHandler_ = new UserHandler( &commandProxy_ );
+    userHandler_->setCurrent( current() );
+    userHandler_->start();
     
     // the rest is handled by the application/service
 }
 
 void TeleopComponent::stop()
 {
-    IceUtil::ThreadControl networkControl = networkLoop_->getThreadControl();
-    IceUtil::ThreadControl inputControl = inputLoop_->getThreadControl();
+    IceUtil::ThreadControl networkControl = networkHandler_->getThreadControl();
+    IceUtil::ThreadControl inputControl = userHandler_->getThreadControl();
 
-    networkLoop_->stop();
-    inputLoop_->stop();
+    networkHandler_->stop();
+    userHandler_->stop();
 
     networkControl.join();
 
-    // inputLoop_ is blocked on user input
+    // userHandler_ is blocked on user input
     // the only way for it to realize that we want to stop is to give it some keyboard input.
     cout<<"Quitting... Press any key or shake the joystick to continue."<<endl;
 

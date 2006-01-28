@@ -26,8 +26,8 @@
 #include <orcaiceutil/ptrbuffer.h>
 #include <orca/platform2d.h>
 
-class NetworkLoop;
-class InputLoop;
+class NetworkHandler;
+class UserHandler;
 
 class TeleopComponent : public orcaiceutil::Component
 {
@@ -46,10 +46,10 @@ private:
     orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> commandProxy_;
 
     // network loop
-    NetworkLoop* networkLoop_;
+    NetworkHandler* networkHandler_;
 
     // hardware
-    InputLoop* inputLoop_;
+    UserHandler* userHandler_;
 };
 
 #endif

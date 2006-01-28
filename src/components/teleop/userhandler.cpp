@@ -18,7 +18,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "inputloop.h"
+#include "userhandler.h"
 
 #ifdef HAVE_KEYBOARD_DRIVER
     #include "keyboard/teleopkeyboarddriver.h"
@@ -35,19 +35,19 @@
 using namespace std;
 using namespace orca;
 
-InputLoop::InputLoop( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commands ) :
+UserHandler::UserHandler( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commands ) :
         commandBuffer_(commands),
         driver_(0),
         driverType_(InputDriver::UNKNOWN_DRIVER)
 {
 }
 
-InputLoop::~InputLoop()
+UserHandler::~UserHandler()
 {
     delete driver_;
 }
 
-void InputLoop::readConfigs()
+void UserHandler::readConfigs()
 {
     //
     // Read settings
@@ -79,7 +79,7 @@ void InputLoop::readConfigs()
 }
 
 // read commands from the keyboard. Launced in a separate thread.
-void InputLoop::run()
+void UserHandler::run()
 {
     //cout<<"starting inputloop"<<endl;
     readConfigs();
