@@ -10,6 +10,5 @@ SUBDIRS(
 # UTILITY APPLICATIONS
   iceping
   gorca
-#  nsview
   orcasmc
 )
