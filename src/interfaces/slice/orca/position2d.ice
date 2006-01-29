@@ -34,21 +34,24 @@ module orca
 */
 
 // define messages first
+
+//! Position2d data structure
 class Position2dData extends OrcaObject
 {
-    // Robot position
+    //! Robot position
     Frame2d pose;
-    // Translational and angular velocities in the robot CS
+    //! Translational and angular velocities in the robot CS
     Twist2d motion;
-    // Are the motors stalled
+    //! Are the motors stalled
     bool stalled;
 };
 
+//! Position2d geometry data structure
 class Position2dGeometry extends OrcaObject
 {
-    // Pose of the robot base, in the robot CS
+    //! Pose of the robot base, in the robot CS
     Frame2d offset;
-    // Dimensions of the base
+    //! Dimensions of the base
     Size2d size;
 };
 
