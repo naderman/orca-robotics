@@ -21,6 +21,10 @@
 #ifndef ORCA2_BROS_1_ICE
 #define ORCA2_BROS_1_ICE
 
+// Definitions in this file are based on the discussion in the Player mailing list
+// taken place in 2003. Specifically, these are Slice encoding of standard
+// definitions proposed by XXX.
+
 module orca
 {
 
@@ -40,150 +44,229 @@ module orca
 
 // Two-dimensional ("planar") objects
 
+//! 2D position in Cartesian coordinate system.
 struct CartesianPoint2d
 {
+    //! x-coordinate [m]
     float x;
+    //! y-coordinate [m]
     float y;
 };
+//! 2D velocity in Cartesian coordinate system.
 struct CartesianVelocity2d
 {
+    //! x-coordinate [m/s]
     float x;
+    //! y-coordinate [m/s]
     float y;
 };
+//! 2D acceleration in Cartesian coordinate system.
 struct CartesianAcceleration2d
 {
+    //! x-coordinate [m/s^2]
     float x;
+    //! y-coordinate [m/s^2]
     float y;
 };
+//! 2D position in polar coordinate system.
 struct PolarPoint2d
 {
+    //! Range-coordinate [m]
     float r;
+    //! Bearing-coordinate [rad]
     float o;
 };
+//! 2D velocity in polar coordinate system.
 struct PolarVelocity2d
 {
+    //! Range-coordinate [m/s]
     float r;
+    //! Bearing-coordinate [rad/s]
     float o;
 };
+//! 2D acceleration in polar coordinate system.
 struct PolarAcceleration2d
 {
+    //! Range-coordinate [m/s^2]
     float r;
+    //! Bearing-coordinate [rad/s^2]
     float o;
 };
+//! 2D vector.
 struct Vector2d
 {
+    //! x-coordinate [m]
     float x;
+    //! y-coordinate [m]
     float y;
 };
-// Frame
+//! Planar position.
 struct Frame2d
 {
+    //! Point of origin
     CartesianPoint2d p;
-    float            o; // OrientationAngle
+    //! Orientation angle [rad]
+    float            o;
 };
+//! Planar velocity.
 struct Twist2d
 {
+    //! Linear velocity
     CartesianVelocity2d v;
-    float w;               // degenerated AngularVelocity2d
+    //! Angular velocity [rad/s]
+    float w;
 };
-// Vector representing a linear force
+//! Vector representing a linear force
 struct Force2d
 {
+    //! x-coordinate [N]
     float x;
+    //! y-coordinate [N]
     float y;
 };
+//! Planar force.
 struct Wrench2d
 {
-  Force2d f;
-  float   m; // degenerated Moment2d
+    //! Linear force
+    Force2d f;
+    //! Moment [N*m]
+    float   m;
 };
+//! Planar dimensions
 struct Size2d
 {
-    float l; // length
-    float w; // width
+    //! Length [m]
+    float l;
+    //! Width [m]
+    float w;    
 };
 
 // Three-dimensional (standard) objects
+
+
+//! 3D position in Cartesian coordinate system.
 struct CartesianPoint
 {
+    //! x-coordinate [m]
     float x;
+    //! y-coordinate [m]
     float y;
+    //! z-coordinate [m]
     float z;
 };
+//! 3D vector
 struct CartesianVector
 {
+    //! x-coordinate [m]
     float x;
+    //! y-coordinate [m]
     float y;
+    //! z-coordinate [m]
     float z;
 };
+//! 3D velocity in Cartesian coordinate system.
 struct CartesianVelocity
 {
+    //! x-coordinate [m/s]
     float x;
+    //! y-coordinate [m/s]
     float y;
+    //! z-coordinate [m/s]
     float z;
 };
+//! 3D acceleration in Cartesian coordinate system.
 struct CartesianAcceleration
 {
+    //! x-coordinate [m/s^2]
     float x;
+    //! y-coordinate [m/s^2]
     float y;
+    //! z-coordinate [m/s^2]
     float z;
 };
+//! 3D angular velocity.
 struct AngularVelocity
 {
+    //! Angular velocity around the x-axis [rad/s]
     float x;
+    //! Angular velocity around the y-axis [rad/s]
     float y;
+    //! Angular velocity around the z-axis [rad/s]
     float z;
 };
+//! 3D angular acceleration.
 struct AngularAcceleration
 {
+    //! Angular acceleration around the x-axis [rad/s]
     float x;
+    //! Angular acceleration around the y-axis [rad/s]
     float y;
+    //! Angular acceleration around the z-axis [rad/s]
     float z;
 };
-// Vector representing a linear force
+//! Vector representing a linear force
 struct Force
 {
-  float x;
-  float y;
-  float z;
+    //! x-coordinate [N]
+    float x;
+    //! y-coordinate [N]
+    float y;
+    //! z-coordinate [N]
+    float z;
 };
-// Moment: Vector representing a force moment
+//! Moment of force.
 struct Moment
 {
-  float x;
-  float y;
-  float z;
+    //! x-coordinate [N*m]
+    float x;
+    //! y-coordinate [N*m]
+    float y;
+    //! z-coordinate [N*m]
+    float z;
 };
-// Twist: ordered couple (V,W) of two Vectors
+//! Spatial velocity: ordered couple (V,W) of two vectors
 struct Twist
 {
+    //! Linear velocity
     CartesianVelocity v;
+    //! Angular velocity
     AngularVelocity w;
 };
-// Wrench: ordered couple (F,M) of two Vectors
+//! Spatial force: ordered couple (F,M) of two vectors
 struct Wrench
 {
-  Force  f;
-  Moment m;
+    //! Linear force
+    Force  f;
+    //! Moment of force
+    Moment m;
 };
-// Orientation
+//! Orientation defined by angles
 struct OrientationE
 {
-    float r; // roll
-    float p; // pitch
-    float y; // yaw
+    //! Roll angle [rad]
+    float r;
+    //! Pitch angle [rad]
+    float p;
+    //! Yaw angle [rad]
+    float y;
 };
-// Frame
+//! Spatial position
 struct Frame3d
 {
+    //! Planar position
     CartesianPoint p;
+    //! Orientation
     OrientationE   o;
 };
+//! Spatial dimensions
 struct Size3d
 {
-    float l; // length
-    float w; // width
-    float h; // height
+    //! Length [m]
+    float l;
+    //! Width [m]
+    float w;
+    //! Height [m]
+    float h;
 };
 
 }; // module
