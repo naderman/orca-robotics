@@ -29,7 +29,7 @@ System of Units</a>).
 
 @par Component Configuration
 
-All component configuration is done in S.I. units with one \b exception : angular quantities  are configured in degrees rather than radians, because humans generally think better in degrees.
+All component configuration is done in S.I. units with one \b exception: angular quantities are configured in degrees rather than radians, because humans generally think better in degrees.
 
 @par Component Code
 
@@ -37,6 +37,10 @@ Internally, unless there is a good reason for doing
 otherwise, S.I. units are used everywhere (including for angular
 quantities).
 
+@par Display
+
+All quantities are displayed in S.I. units with one \b exception: angular quantities are displayed in degrees rather than radians, because humans generally think better in degrees.
+    
 @par Coordinate Systems
 
 All angles are defined from -pi to pi, NOT 0 to 2pi.
