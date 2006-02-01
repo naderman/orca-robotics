@@ -65,9 +65,10 @@ void NetworkHandler::run()
             current_.tracer()->print("connected to a 'Platform2d' interface");
             break;
         }
-        catch ( const Ice::ConnectionRefusedException & e )
+        // includes common ex's: ConnectionRefusedException, ConnectTimeoutException
+        catch ( const Ice::LocalException & e )
         {
-            //current_.tracer()->print("failed to connect to a remote interface");
+            current_.tracer()->debug("failed to connect to a remote interface");
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         }
     }
@@ -76,38 +77,43 @@ void NetworkHandler::run()
     {
         int ret = commandBuffer_->getAndPopNext( command, timeoutMs_ );
 
-        if ( ret==0 ) { // new data
-            cout<<endl<<command<<endl;
-            //cout<<"NEW : <<command<<endl;
-        }
-        else {
-            cout<<"."<<flush;
-            //cout<<"old : "<<command<<endl;
-        }
-
         //
         // Sending motion command (probably over the network)
         //
         try {
             platform2dPrx_->setCommand( command );
+                
+            if ( ret==0 ) { // new command
+                cout<<endl<<command<<endl;
+                //cout<<"NEW : <<command<<endl;
+            }
+            else {
+                cout<<"."<<flush;
+                //cout<<"old : "<<command<<endl;
+            }
+        }
+        catch ( const Ice::ConnectionRefusedException & e ) {
+            // note: cannot throw one of our exceptions from here
+            // because we are running in our own thread
+            // so do nothing, just keep trying (it will check for active next time around)
+            cout<<"x"<<flush;
+        }
+        catch ( const Ice::TimeoutException & e ) {
+            cout<<"-"<<flush;
+            // keep trying
         }
         catch ( const orca::HardwareFailedException & e ) {
             cout<<e.what<<endl;
+            // keep trying
         }
         catch ( const Ice::UnknownException & e ) {
             cout<<"Unknown exception from the platform"<<endl;
             cout<<e<<endl;
-        }
-        catch ( const Ice::ConnectionRefusedException & e ) {
-            /*  cannot throw from one thread to another :(
-            string errorStr = "Lost connection to the platform server.";
-            throw orcaiceutil::OrcaIceUtilNetworkException( ERROR_INFO, errorStr );
-            */
-            // do nothing, just keep trying
+            // keep trying
         }
         catch ( const Ice::CommunicatorDestroyedException & e )
         {
-            // it's ok, the communicator may already be destroyed
+            // it's ok, we are probably shutting down
             cout<<"Communicator has passed away. No worries."<<endl;
         }
 
