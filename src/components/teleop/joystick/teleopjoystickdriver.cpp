@@ -23,8 +23,10 @@
 #include <linux/input.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
+#include <errno.h>
 
 #include "teleopjoystickdriver.h"
+#include "evdevutil.h"
 
 #include <orcaiceutil/proputils.h>
 #include <orcaiceutil/mathdefs.h>
@@ -51,22 +53,131 @@ TeleopJoystickDriver::~TeleopJoystickDriver()
 {
 }
 
+int TeleopJoystickDriver::findUSBJoystick( char *joystickDevice )
+{
+    char device[256];
+    int  maxEvdev = 10;
+    bool supportsAbsoluteAxes;
+    bool isUSB;
+    bool foundDevice = false;
+    int ret;
+
+    //
+    // Search for a joystick
+    //
+    for ( int i=0; i < maxEvdev; i++ )
+    {
+        sprintf(device,"/dev/input/event%d",i);
+
+        // printInputType( device );
+        // printDeviceInfo( device );
+
+        ret = devSupportsAbsoluteAxes( device, supportsAbsoluteAxes );
+
+        if ( ret != 0 )
+        {
+            if ( ret == ENOENT )
+            {
+                // No such file or directory
+                if ( !foundDevice )
+                {
+                    cout << "ERROR: Couldn't find a USB joystick."<<endl
+                         <<"  Searched up to and including /dev/input/event"<<i-1<<"."<<endl;
+                }
+                else
+                {
+                    // We can stop looking.
+                }
+                break;
+            }
+            else if ( ret == EACCES )
+            {
+                if ( !foundDevice )
+                {
+                    cout << "WARNING: Permission to access " << device << " denied." << endl;
+                }
+                else
+                {
+                    // We don't really care, since we've already found a useable device.
+                }
+            }
+            continue;
+        }
+
+        ret = devIsUSB( device, isUSB );
+        if ( ret != 0 )
+        {
+            cout << "ERROR: Problem checking for USB status.  This shouldn't happen." << endl;
+            exit(1);
+        }
+
+        if ( supportsAbsoluteAxes && isUSB )
+        {
+            if ( foundDevice )
+            {
+                cout << "ERROR: Found more than one USB device that supports absolute axes.  Don't know which one to use..." << endl;
+                cout << "Options are: " << joystickDevice << " and " << device << endl;
+            }
+            else
+            {
+                strcpy( joystickDevice, device );
+                foundDevice = true;
+            }
+        }
+    }
+    if ( !foundDevice )
+    {
+        return -1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 int TeleopJoystickDriver::enable()
 {
-    jfd_ = open( config_.joystickDevice.c_str(), O_RDONLY );
+    char joystickDevice[256];
+    int ret;
+
+    if ( !strcmp(config_.joystickDevice.c_str(),"auto") )
+    {
+        // Search for something that looks like a USB joystick
+        ret = findUSBJoystick( joystickDevice );
+    }
+    else
+    {
+        // Use the configured value
+        strcpy( joystickDevice, config_.joystickDevice.c_str() );
+        jfd_ = open( config_.joystickDevice.c_str(), O_RDONLY );
+
+        if ( jfd_<1 ) 
+        {
+            cout << "ERROR: could not open joystick on configured device " << config_.joystickDevice << endl;
+            return 1;
+        }
+        ret = 0;
+    }
+
+    if ( ret == 0 )
+    {
+        char name[256] = "Unknown";
+        devName( joystickDevice, name );
+        cout << "Reading from joystick \"" << name << "\" on " << joystickDevice << endl;
+    }
+    else
+    {
+        cout << "ERROR: Couldn't find anything that looks like a USB Joystick." << endl;
+        return -1;
+    }
+
+    // Open the fucker for reading input
+    jfd_ = open( joystickDevice, O_RDONLY );
 
     if ( jfd_<1 ) {
         cout << "ERROR: could not open joystick on " << config_.joystickDevice << endl;
         return 1;
     }
-
-    char name[256] = "Unknown";
-
-    if ( ioctl( jfd_, EVIOCGNAME(sizeof(name)), name ) < 0 ) {
-        cerr<<"error reading joystick name" << endl;
-        return 1;
-    }
-    cout<<"reading from joystick \"" << name << "\" on " << config_.joystickDevice << endl;
 
     cout<<"enabled."<<endl;
     return 0;

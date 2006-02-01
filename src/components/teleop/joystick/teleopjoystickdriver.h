@@ -39,6 +39,10 @@ public:
 
 private:
 
+    // returns 0 on success.  Caller should allocate
+    // space for joystickDevice
+    int findUSBJoystick( char *joystickDevice );
+
     orca::Velocity2dCommandPtr command_;
 
     Config config_;

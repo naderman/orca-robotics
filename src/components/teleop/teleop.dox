@@ -105,9 +105,10 @@ Motion commands are issued by moving the joystick
 @par Additional Configuration
 
     -Teleop.Config.JoystickDevice
-        - Unix path to the joystick device
+        - Unix path to the joystick device, or 'auto' to have teleop
+          search for a joystick.
         - Units: none
-        - Use: optional, default = "/dev/input/event0"
+        - Use: optional, default = "auto"
         - Constraints:
             - Type: string
 
