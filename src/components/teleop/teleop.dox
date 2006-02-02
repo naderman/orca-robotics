@@ -28,8 +28,6 @@
 
 This component connects to a robot base or waypoint server and issues motion commands according to user input from a keyboard or joystick. Development status Beta
 
-@image html teleop_blackbox.png
-
 @par Provides
     - none
 
@@ -114,7 +112,7 @@ Motion commands are issued by moving the joystick
 
 @par Operation
 
-If using a joystick then TeleopControl requires either a <A HREF="http://kernel.org">Linux Kernel</A> >= 2.4 or the <A HREF="http://linuxconsole.sourceforge.net/input/input.html">Linux Input Drivers</A> . If the driver is built as a module you may have to load it. Check with command @code lsmod and add module with @code modprobe. This Orca driver has only been tested with kernel >=2.6.12.
+If using a joystick then TeleopControl requires either a <A HREF="http://kernel.org">Linux Kernel</A> >= 2.4 or the <A HREF="http://linuxconsole.sourceforge.net/input/input.html">Linux Input Drivers</A> . If the driver is built as a module you may have to load it. Check with command <code>lsmod</code> and add module with <code>modprobe</code>. This Orca driver has only been tested with kernel >=2.6.12.
 
 - Make sure you're using the correct event device. Get a list of available devices and find the one corresponding to your joystick.
 @verbatim
