@@ -47,22 +47,54 @@ class StatusData extends OrcaObject
     string message;
 };
 
-/*!
-    @brief Access to a robot's status subsystem
-*/
-interface Status
-{
-    //! ClientPull_Supplier interface
-    nonmutating StatusData getStatus();
-};
 
 /*!
-    @brief Interface to the consumer of status information.
-*/
+ *
+ * Data consumer interface (needed only for the push pattern).
+ *
+ * In Orca-1 terms, this the Consumer side of the ClientPush interface.
+ *
+ */
 interface StatusConsumer
 {
     //! ServerPush_Consumer interface
     void setStatus( StatusData obj );
+};
+
+/*!
+ *  @brief Access to a robot's status subsystem
+ */
+interface Status
+{
+    //! Returns the latest status.
+    //! In Orca-1 terms, this would be called ClientPull_Supplier interface.
+    nonmutating StatusData getStatus();
+
+    /*!
+     * Mimics IceStorm's subscribe() but without QoS, for now. The
+     * implementation may choose to implement the data push internally
+     * or use IceStorm. This choice is transparent to the subscriber.
+     *
+     * @param subscriber The subscriber's proxy.
+     *
+     * @param preferedPushInterval The subscriber's preference for how often it wants to
+     * receive updates [sec]. Provider's ability to fulfil this request may vary.
+     *
+     * @see unsubscribe
+     */
+    void subscribe( StatusConsumer* subscriber, double preferedPushInterval );
+    
+    // for reference, this is what IceStorm's subscribe function looks like.
+    //void subscribe(QoS theQoS, Object* subscriber);
+    
+    /*!
+     * Unsubscribe the given [subscriber].
+     *
+     * @param subscriber The proxy of an existing subscriber.
+     *
+     * @see subscribe
+     */
+    idempotent void unsubscribe( StatusConsumer* subscriber );
 };
 
 
