@@ -111,24 +111,24 @@ void RmpMainLoop::run()
     {
         case RmpDriver::USB_DRIVER :
 #ifdef HAVE_USB_DRIVER
-            current_.tracer()->print( "loading USB driver");
+            current_.tracer()->debug( "loading USB driver",3);
             driver_ = new RmpUsbDriver();
 #endif
             break;
         case RmpDriver::CAN_DRIVER :
 #ifdef HAVE_CAN_DRIVER
-            current_.tracer()->print( "loading CAN driver");
+            current_.tracer()->debug( "loading CAN driver",3);
             driver_ = new RmpCanDriver;
 #endif
             break;
         case RmpDriver::PLAYER_CLIENT_DRIVER :
 #ifdef HAVE_PLAYER_DRIVER
-            current_.tracer()->print( "loading Player-Client driver");
+            current_.tracer()->debug( "loading Player-Client driver",3);
             driver_ = new RmpPlayerClientDriver;
 #endif
             break;
         case RmpDriver::FAKE_DRIVER :
-            current_.tracer()->print( "loading Fake driver");
+            current_.tracer()->debug( "loading Fake driver",3);
             driver_ = new RmpFakeDriver;
             break;
         case RmpDriver::UNKNOWN_DRIVER :
@@ -148,7 +148,7 @@ void RmpMainLoop::run()
     if ( !isActive() ) {
         return;
     }
-    current_.tracer()->print("driver enabled");
+    current_.tracer()->debug("driver enabled",5);
 
     // init internal data storage
     orca::Position2dDataPtr position2dData = new Position2dData;
@@ -162,7 +162,7 @@ void RmpMainLoop::run()
     }
     powerData->batteries[0].name = "main-front";
     powerData->batteries[1].name = "main-rear";
-    powerData->batteries[2].name = "io";
+    powerData->batteries[2].name = "ui";
 
     int readStatus = 1;
 
@@ -235,7 +235,7 @@ void RmpMainLoop::run()
     if ( driver_->disable() ) {
         current_.tracer()->warning("failed to disable driver");
     }
-    current_.tracer()->print("driver disabled");
+    current_.tracer()->debug("driver disabled",5);
 }
 
 
