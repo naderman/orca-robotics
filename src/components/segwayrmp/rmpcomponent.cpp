@@ -51,22 +51,23 @@ void RmpComponent::start()
 
     // PROVIDED INTERFACE: Platform2d
     // Find IceStorm Topic to which we'll publish
-    IceStorm::TopicPrx topicPrx = orcaiceutil::connectToIceStormTopicWithTag<Position2dConsumerPrx>
+    IceStorm::TopicPrx platfTopicPrx = orcaiceutil::connectToIceStormTopicWithTag<Position2dConsumerPrx>
                 ( current(), position2dPublisher_, "Platform2d" );
 
     // create servant for direct connections and tell adapter about it
     platform2dObj_ = new Platform2dI( position2dBuffer_, commandBuffer_,
-                                      setConfigBuffer_, currentConfigBuffer_, topicPrx );
+                                      setConfigBuffer_, currentConfigBuffer_, platfTopicPrx );
     orcaiceutil::createInterfaceWithTag( current(), platform2dObj_, "Platform2d" );
 
 
 
     // PROVIDED INTERFACE: Power
     // Find IceStorm ConsumerProxy to push out data
-    orcaiceutil::connectToIceStormTopicWithTag<PowerConsumerPrx> ( current(), powerPublisher_, "Power" );
+    IceStorm::TopicPrx powerTopicPrx = orcaiceutil::connectToIceStormTopicWithTag<PowerConsumerPrx>
+                ( current(), powerPublisher_, "Power" );
     
     // create servant for direct connections and tell adapter about it
-    powerObj_ = new PowerI( powerBuffer_ );
+    powerObj_ = new PowerI( powerBuffer_, powerTopicPrx );
     orcaiceutil::createInterfaceWithTag( current(), powerObj_, "Power" );    
 
 
@@ -91,11 +92,11 @@ void RmpComponent::stop()
 {
     IceUtil::ThreadControl mainControl = mainLoop_->getThreadControl();
 
-    logger()->trace("local", "stopping loop" );
+    tracer()->debug("stopping loop", 5 );
     // Tell the main loop to stop
     mainLoop_->stop();
 
-    logger()->trace("local", "joining thread" );
+    tracer()->debug("joining thread", 5 );
     // Then wait for it
     mainControl.join();
 }
