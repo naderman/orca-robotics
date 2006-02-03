@@ -26,39 +26,10 @@ These are detailed instructions for installing Orca on Debian Linux. They are kn
 
 @section orca_doc_installdebian_cmake CMake
 
-The latest version tested with these instructions: 2.2.3
+Minimum version required 2.2.2 (latest known to work: 2.2.3). Note that Stable (Sarge) release of Debian stopped at v.2.0.6 which is incompatible with Orca2. Testing (Etch) release has a version which is new enough.
 
-Download Linux binaries from <a href="http://www.cmake.org/HTML/Download.html">Kitware</a>. Unpack the archive.
 @verbatim
-$ mkdir cmake-[VERSION]
-$ mv cmake-[VERSION]-x86-linux.tar.gz cmake-[VERSION]
-$ cd cmake-[VERSION]
-$ tar -xzf cmake-[VERSION]-x86-linux.tar.gz
-$ ls
-README  cmake-[VERSION]-x86-linux-files.tar  cmake-[VERSION]-x86-linux.tar.gz
-$ tar -xf cmake-[VERSION]-x86-linux-files.tar
-$ ls
-README  bin  cmake-[VERSION]-x86-linux-files.tar  cmake-[VERSION]-x86-linux.tar.gz  doc  man  share
-@endverbatim
-
-Now decide where to install it. Standard Debian installation puts it into /usr/local/share. If you want to keep both versions (the stable one from Debian and the latest one) you should install this one somewhere else, e.g. in /opt/.
-@verbatim
-# mkdir /opt/cmake-[VERSION]
-# cp -r bin doc man share /opt/cmake-[VERSION]/.
-@endverbatim
-
-Put the new installation in the execution path (it's handy to put it into your ~/.bashrc file).
-@verbatim
-$ export CMAKE_ROOT=/opt/cmake-[VERSION]
-$ export PATH=$CMAKE_ROOT/bin:$PATH
-@endverbatim
-
-To keep the standard Debian cmake installed, renamed the old binaries.
-@verbatim
-# cd /usr/bin
-# mv cmake cmake-2.0.6
-# mv ccmake ccmake-2.0.6
-# mv ctest ctest-2.0.6
+# apt-get install cmake
 @endverbatim
 
 @section orca_doc_installdebian_ice Ice
