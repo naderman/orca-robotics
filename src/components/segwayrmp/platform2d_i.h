@@ -72,6 +72,7 @@ private:
     // for the current config
     orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr> &currentConfigBuffer_;
 
+    // IceStorm topic to which we send our updates and cand subscribe other to
     IceStorm::TopicPrx topic_;
 };
 
