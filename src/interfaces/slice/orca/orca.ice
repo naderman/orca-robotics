@@ -121,13 +121,14 @@ exception OrcaException
     string what;
 };
 
-//! This gets thrown if a client tries to configure
-//! us in a way we can't be configured.
+//! Server failed to configure itself as requrested by client.
 exception ConfigurationNotExistException extends OrcaException {};
 
-//! Indicates any problem with robot hardware, e.g. sensors and actuators.
+//! Indicates a problem with robot hardware, e.g. sensors and actuators.
 exception HardwareFailedException extends OrcaException {};
 
+//! Server failed to subscribe client for periodic updates.
+exception SubscriptionFailedException extends OrcaException {};
 
 }; // module
 
