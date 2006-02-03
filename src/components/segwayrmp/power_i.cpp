@@ -22,9 +22,12 @@
 
 using namespace orca;
 
+using namespace std;
 
-PowerI::PowerI( orcaiceutil::PtrBuffer<orca::PowerDataPtr> &power ) :
-        powerProxy_(power)
+PowerI::PowerI( orcaiceutil::PtrBuffer<orca::PowerDataPtr> &power,
+                const IceStorm::TopicPrx &topic ) :
+        powerProxy_(power),
+        topic_(topic)
 {
 }
 
@@ -42,3 +45,18 @@ orca::PowerDataPtr PowerI::getData(const ::Ice::Current& ) const
 
     return data;
 }
+
+void PowerI::subscribe(const ::orca::PowerConsumerPrx& subscriber,
+                    ::Ice::Double preferedPushInterval, const ::Ice::Current&)
+{
+    cout<<"subscription request"<<endl;
+    IceStorm::QoS qos;
+    topic_->subscribe( qos, subscriber );
+}
+
+void PowerI::unsubscribe(const ::orca::PowerConsumerPrx& subscriber, const ::Ice::Current&)
+{
+    cout<<"unsubscription request"<<endl;
+    topic_->unsubscribe( subscriber );
+}
+
