@@ -60,21 +60,49 @@ class PowerData extends OrcaObject
 };
 
 /*!
-    @brief Access to a robot's power subsystem
-*/
-interface Power
-{
-        //! ClientPull_Supplier interface
-        nonmutating PowerData getData();
-};
-
-/*!
     @brief Interface to the consumer of power information.
 */
 interface PowerConsumer
 {
-        //! ServerPush_Consumer interface
-       void setData( PowerData obj );
+    //! ServerPush_Consumer interface
+    void setData( PowerData obj );
+};
+
+/*!
+    @brief Access to a robot's power subsystem
+*/
+interface Power
+{
+    //! Returns the latest data.
+    //! @note In Orca1 this would be called ClientPull_Supplier interface.
+    nonmutating PowerData getData()
+        throws HardwareFailedException;
+
+    /*!
+     * Mimics IceStorm's subscribe() but without QoS, for now. The
+     * implementation may choose to implement the data push internally
+     * or use IceStorm. This choice is transparent to the subscriber.
+     *
+     * @param subscriber The subscriber's proxy.
+     *
+     * @param preferedPushInterval The subscriber's preference for how often it wants to
+     * receive updates [sec]. Provider's ability to fulfil this request may vary.
+     *
+     * @see unsubscribe
+     */
+    void subscribe( PowerConsumer* subscriber, double preferedPushInterval );
+
+    // for reference, this is what IceStorm's subscribe function looks like.
+    //void subscribe(QoS theQoS, Object* subscriber);
+
+    /*!
+     * Unsubscribe the given [subscriber].
+     *
+     * @param subscriber The proxy of an existing subscriber.
+     *
+     * @see subscribe
+     */
+    idempotent void unsubscribe( PowerConsumer* subscriber );
 };
 
 
