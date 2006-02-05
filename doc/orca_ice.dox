@@ -20,23 +20,26 @@
 
 /*!
 
-@page orca_doc_orcaice Orca and Ice
+@page orca_doc_orcaice Orca and Ice: assumptions, constraints, etc.
 
 Ice is a general purpose framework for distributed computation. Orca is a component-based framework for robotics. Ice hides a lot of complexity associated with distribution but it is still a large package with many options and unlimited variety of implementations. libOrcaIceUtil library suggests certain patterns for component interaction and internal organization. Here we list the conventions made in the process.
 
-@par Communicator, Object Adapter, and Objects.
+@par Ice Communicator, Object Adapter, and Objects.
 
 An Ice application can have multiple Communicators (Ice run-time), each with zero-to-N Object
 Adapters, each with zero-to-M objects. In contrast, an Orca component implemented as an
 orcaiceutil::Application has one Communicator with one Object Adapter, which may have several
 Objects.
 
+@par Slice Classes vs. Strutures
+
+We chose to use Slice classes (and not structures) to implement Orca data objects becase classes allow inheritence. A (slight) drawback of classes is larger memory footprint and higher transmission latencies. We've done some tests which showed that the penalty is acceptable. [INSERT FIGURE].
+
+Another point to keep in mind is that, generally, classes need to register with the Object Factory to be instantiated at run time. This rule does not apply if the class does not have only data members but no operations as is the case in Orca. See Ice manual Sec. 6.14.5.
+
 @par Naming Scheme
 
 Interface (Object) names are constructed from: platform + component + interface names.
 
-@par Locating IceStorm servers
-
-Each host is assumed to run one IceStorm server at the following address: tcp -h host -p 10000
 
 */
