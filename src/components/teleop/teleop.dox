@@ -85,13 +85,13 @@ Alex Makarenko
 @section keyboard Keyboard Driver
 
 Motion commands are issued by pressing keyboard keys.
-    i : increment speed
-    k : decrement speed
-    j : increment turnrate (positive to the left)
-    l : decrement turnrate (positive to the left)
-    u : stop turn
-    o : stop movement (but still turn)
-    anything else : stop
+- i : increment speed
+- k : decrement speed
+- j : increment turnrate (positive to the left)
+- l : decrement turnrate (positive to the left)
+- u : stop turn
+- o : stop movement (but still turn)
+- anything else : stop
 
 @section joystick Joystick Driver
 
