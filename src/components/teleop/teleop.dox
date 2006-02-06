@@ -29,7 +29,8 @@
 This component connects to a robot base or waypoint server and issues motion commands according to user input from a keyboard or joystick. Development status Beta
 
 @par Provides
-    - none
+    - @ref orca_interface_home
+    - @ref orca_interface_status
 
 @par Requires
     - @ref orca_interface_platform2d

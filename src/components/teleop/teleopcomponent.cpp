@@ -22,7 +22,7 @@
 
 #include "teleopcomponent.h"
 #include "networkhandler.h"
-#include "userhandler.h"    
+#include "userhandler.h"
 
 using namespace std;
 
@@ -40,7 +40,13 @@ TeleopComponent::~TeleopComponent()
 //          be declared as member variables.
 void TeleopComponent::start()
 {
-    current().tracer()->debug("starting component");
+    current().tracer()->debug("starting component",5);
+
+    // The only provided interfaces are the 2 standard ones: Home and Status.
+    // We can just skip this activation step and they will not be visible on
+    // on the network (if network traffic is an issue, for example).
+    activate();
+
     //
     // NETWORK
     //
