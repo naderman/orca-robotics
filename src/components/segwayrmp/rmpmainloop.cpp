@@ -185,6 +185,12 @@ void RmpMainLoop::run()
 
         // only we maganed to read successfuly
         if ( readStatus==0 ) {
+//debug
+std::ostringstream os;
+os << "cu/ui :"<<powerData->batteries[0].voltage<<" "
+   <<powerData->batteries[2].voltage;
+current_.tracer()->debug( os.str() );
+        
             // push data to IceStorm
             try
             {
