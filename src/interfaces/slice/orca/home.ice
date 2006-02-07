@@ -39,7 +39,7 @@ module orca
 */
 class HomeData extends OrcaObject
 {
-    //! Names of all provided interfaces as registered with the Locator service.
+    //! @brief Names of all provided interfaces as registered with the Locator service.
     //! The Home interface itself is also included in this list.
     Ice::StringSeq provides;
     
