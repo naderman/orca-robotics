@@ -51,7 +51,7 @@ int RmpFakeDriver::disable()
 int RmpFakeDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )
 {
     orcaiceutil::setSane( position2d );
-    //orcaiceutil::setSane( power );
+    orcaiceutil::setSane( power );
 
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     return 0;

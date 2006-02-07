@@ -255,7 +255,12 @@ void RmpUsbDriver::integrateMotion()
 void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )
 {
     // POSITION2D
-    //
+    
+    // set time stamps righ away
+    position2d->timeStamp = orcaiceutil::iceTimeToOrcaTime( IceUtil::Time::now() );
+    // set time stamp righ away
+    power->timeStamp = orcaiceutil::iceTimeToOrcaTime( IceUtil::Time::now() );
+    
     // for odometry, use integrated values
     position2d->pose.p.x    = odomX_;
     position2d->pose.p.y    = odomY_;
