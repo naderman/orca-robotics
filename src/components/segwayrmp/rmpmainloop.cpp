@@ -74,17 +74,17 @@ void RmpMainLoop::readConfigs()
     //
     // Read settings
     //
-    config_.maxSpeed = orcaiceutil::getPropertyAsDoubleWithDefault( current_.properties(),
+    config_.maxSpeed = orcaiceutil::getPropertyAsDoubleWithDefault( context_.properties(),
             "SegwayRmp.Config.MaxSpeed", 1.0 );
-    config_.maxTurnrate = orcaiceutil::getPropertyAsDoubleWithDefault( current_.properties(),
+    config_.maxTurnrate = orcaiceutil::getPropertyAsDoubleWithDefault( context_.properties(),
             "SegwayRmp.Config.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
-    config_.position2dPublishInterval = orcaiceutil::getPropertyAsDoubleWithDefault( current_.properties(),
+    config_.position2dPublishInterval = orcaiceutil::getPropertyAsDoubleWithDefault( context_.properties(),
             "SegwayRmp.Config.position2dPublishInterval", 0.1 );
-    config_.powerPublishInterval = orcaiceutil::getPropertyAsDoubleWithDefault( current_.properties(),
+    config_.powerPublishInterval = orcaiceutil::getPropertyAsDoubleWithDefault( context_.properties(),
             "SegwayRmp.Config.powerPublishInterval", 10.0 );
-    config_.statusPublishInterval = orcaiceutil::getPropertyAsDoubleWithDefault( current_.properties(),
+    config_.statusPublishInterval = orcaiceutil::getPropertyAsDoubleWithDefault( context_.properties(),
             "SegwayRmp.Config.statusPublishInterval", 60.0 );
-    string driverName = orcaiceutil::getPropertyWithDefault( current_.properties(), 
+    string driverName = orcaiceutil::getPropertyWithDefault( context_.properties(),
             "SegwayRmp.Config.Driver", "usb" );
 
     if ( driverName == "usb" ) {
@@ -96,7 +96,7 @@ void RmpMainLoop::readConfigs()
     else {
         driverType_ = RmpDriver::UNKNOWN_DRIVER;
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
-        current_.tracer()->error( errorStr);
+        context_.tracer()->error( errorStr);
         throw orcaiceutil::OrcaIceUtilHardwareException( ERROR_INFO, errorStr );
     }
         
@@ -111,29 +111,29 @@ void RmpMainLoop::run()
     {
         case RmpDriver::USB_DRIVER :
 #ifdef HAVE_USB_DRIVER
-            current_.tracer()->debug( "loading USB driver",3);
+            context_.tracer()->debug( "loading USB driver",3);
             driver_ = new RmpUsbDriver();
 #endif
             break;
         case RmpDriver::CAN_DRIVER :
 #ifdef HAVE_CAN_DRIVER
-            current_.tracer()->debug( "loading CAN driver",3);
+            context_.tracer()->debug( "loading CAN driver",3);
             driver_ = new RmpCanDriver;
 #endif
             break;
         case RmpDriver::PLAYER_CLIENT_DRIVER :
 #ifdef HAVE_PLAYER_DRIVER
-            current_.tracer()->debug( "loading Player-Client driver",3);
+            context_.tracer()->debug( "loading Player-Client driver",3);
             driver_ = new RmpPlayerClientDriver;
 #endif
             break;
         case RmpDriver::FAKE_DRIVER :
-            current_.tracer()->debug( "loading Fake driver",3);
+            context_.tracer()->debug( "loading Fake driver",3);
             driver_ = new RmpFakeDriver;
             break;
         case RmpDriver::UNKNOWN_DRIVER :
             string errorStr = "Unknown driver type. Cannot talk to hardware.";
-            current_.tracer()->error(errorStr);
+            context_.tracer()->error(errorStr);
             throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
     }
     
@@ -141,14 +141,14 @@ void RmpMainLoop::run()
     // Enable driver
     //
     while ( isActive() && driver_->enable() ) {
-        current_.tracer()->warning("failed to enable the driver; will try again.");
+        context_.tracer()->warning("failed to enable the driver; will try again.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
     // check again to make sure we are not being terminated
     if ( !isActive() ) {
         return;
     }
-    current_.tracer()->debug("driver enabled",5);
+    context_.tracer()->debug("driver enabled",5);
 
     // init internal data storage
     orca::Position2dDataPtr position2dData = new Position2dData;
@@ -175,7 +175,7 @@ void RmpMainLoop::run()
         readTimer_.restart();
        
         if ( (readStatus = driver_->read( position2dData, powerData )) ) {
-            current_.tracer()->error("failed to read data from Segway hardware.");
+            context_.tracer()->error("failed to read data from Segway hardware.");
             // indicate some fault state here
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }
@@ -189,7 +189,7 @@ void RmpMainLoop::run()
 std::ostringstream os;
 os << "cu/ui :"<<powerData->batteries[0].voltage<<" "
    <<powerData->batteries[2].voltage;
-current_.tracer()->debug( os.str() );
+context_.tracer()->debug( os.str() );
         
             // push data to IceStorm
             try
@@ -203,18 +203,18 @@ current_.tracer()->debug( os.str() );
                     std::ostringstream os;
                     os << "cu/ui :"<<powerData->batteries[0].voltage<<" "
                                    <<powerData->batteries[2].voltage;
-                    current_.tracer()->debug( os.str() );
+                    context_.tracer()->debug( os.str() );
                     powerPublishTimer_.restart();
                 }
                 if ( statusPublishTimer_.elapsed().toSecondsDouble()>config_.statusPublishInterval ) {
                     //cout<<"sending heartbeat"<<endl;
-                    current_.tracer()->heartbeat("status OK");
+                    context_.tracer()->heartbeat("status OK");
                     statusPublishTimer_.restart();
                 }
             }
             catch ( const Ice::ConnectionRefusedException & e )
             {
-                current_.tracer()->warning("lost connection to IceStorm");
+                context_.tracer()->warning("lost connection to IceStorm");
             }
             catch ( const Ice::CommunicatorDestroyedException & e )
             {
@@ -239,9 +239,9 @@ current_.tracer()->debug( os.str() );
 
     // reset the hardware
     if ( driver_->disable() ) {
-        current_.tracer()->warning("failed to disable driver");
+        context_.tracer()->warning("failed to disable driver");
     }
-    current_.tracer()->debug("driver disabled",5);
+    context_.tracer()->debug("driver disabled",5);
 }
 
 

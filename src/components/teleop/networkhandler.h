@@ -22,7 +22,7 @@
 #define ORCA2_TELEOP_NETWORK_HANDLER_H
 
 #include <orcaiceutil/thread.h>
-#include <orcaiceutil/current.h>
+#include <orcaiceutil/context.h>
 #include <orcaiceutil/ptrbuffer.h>
 
 #include <orca/platform2d.h>
@@ -35,7 +35,7 @@ public:
     NetworkHandler( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer );
     ~NetworkHandler();
 
-    void setCurrent( const orcaiceutil::Current & current ) { current_=current; };
+    void setCurrent( const orcaiceutil::Context & context ) { context_=context; };
 
     void setupConfigs( const Ice::PropertiesPtr & properties );
 
@@ -52,7 +52,7 @@ private:
     int timeoutMs_;
 
     // component current context
-    orcaiceutil::Current current_;
+    orcaiceutil::Context context_;
 
 };
 

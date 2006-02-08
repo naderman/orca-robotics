@@ -40,7 +40,7 @@ TeleopComponent::~TeleopComponent()
 //          be declared as member variables.
 void TeleopComponent::start()
 {
-    current().tracer()->debug("starting component",5);
+    context().tracer()->debug("starting component",5);
 
     // The only provided interfaces are the 2 standard ones: Home and Status.
     // We can just skip this activation step and they will not be visible on
@@ -51,14 +51,14 @@ void TeleopComponent::start()
     // NETWORK
     //
     networkHandler_ = new NetworkHandler( &commandProxy_ );
-    networkHandler_->setCurrent( current() );
+    networkHandler_->setCurrent( context() );
     networkHandler_->start();
 
     //
     // HARDWARE
     //
     userHandler_ = new UserHandler( &commandProxy_ );
-    userHandler_->setCurrent( current() );
+    userHandler_->setCurrent( context() );
     userHandler_->start();
     
     // the rest is handled by the application/service

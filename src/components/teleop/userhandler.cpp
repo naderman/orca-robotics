@@ -52,11 +52,11 @@ void UserHandler::readConfigs()
     //
     // Read settings
     //
-    config_.maxSpeed = orcaiceutil::getPropertyAsDoubleWithDefault( current_.properties(),
+    config_.maxSpeed = orcaiceutil::getPropertyAsDoubleWithDefault( context_.properties(),
                 "Teleop.Config.MaxSpeed", 1.0 );
-    config_.maxTurnrate = orcaiceutil::getPropertyAsDoubleWithDefault( current_.properties(),
+    config_.maxTurnrate = orcaiceutil::getPropertyAsDoubleWithDefault( context_.properties(),
                 "Teleop.Config.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
-    string driverName = orcaiceutil::getPropertyWithDefault( current_.properties(), 
+    string driverName = orcaiceutil::getPropertyWithDefault( context_.properties(),
                 "Teleop.Config.Driver", "keyboard" );
 
     if ( driverName == "keyboard" ) {
@@ -64,7 +64,7 @@ void UserHandler::readConfigs()
     }
     else if ( driverName == "joystick" ) {
         driverType_ = InputDriver::JOYSTICK_DRIVER;
-        config_.joystickDevice = orcaiceutil::getPropertyWithDefault( current_.properties(),
+        config_.joystickDevice = orcaiceutil::getPropertyWithDefault( context_.properties(),
                 "Teleop.Config.JoystickDevice", "/dev/input/event0" );
     }
     else if ( driverName == "fake" ) {
@@ -73,7 +73,7 @@ void UserHandler::readConfigs()
     else {
         driverType_ = InputDriver::UNKNOWN_DRIVER;
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
-        current_.tracer()->error(errorStr);
+        context_.tracer()->error(errorStr);
         throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
     }
 }
@@ -89,30 +89,30 @@ void UserHandler::run()
     {
         case InputDriver::KEYBOARD_DRIVER :
 #ifdef HAVE_KEYBOARD_DRIVER
-            current_.tracer()->print("loading keyboard driver");
+            context_.tracer()->print("loading keyboard driver");
             driver_ = new TeleopKeyboardDriver( config_ );
 #endif
             break;
         case InputDriver::JOYSTICK_DRIVER :
 #ifdef HAVE_JOYSTICK_DRIVER
-            current_.tracer()->print("loading joystick driver");
+            context_.tracer()->print("loading joystick driver");
             driver_ = new TeleopJoystickDriver( config_ );
 #endif
             break;
         case InputDriver::FAKE_DRIVER :
-            current_.tracer()->print("loading fake driver");
+            context_.tracer()->print("loading fake driver");
             driver_ = new TeleopFakeDriver( config_ );
             break;
         case InputDriver::UNKNOWN_DRIVER :
             string errorStr = "Unknown driver type. Cannot talk to hardware.";
-            current_.tracer()->error(errorStr);
+            context_.tracer()->error(errorStr);
             throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
     }    
     
     
     // don't forget to enable the driver, but check isActive() to see if we should quit
     while ( driver_->enable() && isActive() ) {
-        current_.tracer()->warning("failed to enable driver");
+        context_.tracer()->warning("failed to enable driver");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     }
 
@@ -121,7 +121,7 @@ void UserHandler::run()
         return;
     }
     
-    current_.tracer()->print("driver enabled");
+    context_.tracer()->print("driver enabled");
     
     Velocity2dCommandPtr currCommand = new Velocity2dCommand;
     Velocity2dCommandPtr lastCommand = new Velocity2dCommand;
@@ -145,8 +145,8 @@ void UserHandler::run()
 
     // reset the hardware
     if ( driver_->disable() ) {
-        current_.tracer()->warning("failed to disable driver");
+        context_.tracer()->warning("failed to disable driver");
     }
-    current_.tracer()->debug("driver disabled");
+    context_.tracer()->debug("driver disabled");
 
 }

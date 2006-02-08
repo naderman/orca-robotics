@@ -24,7 +24,7 @@
 #include <orca/platform2d.h>
 #include <orca/power.h>
 
-#include <orcaiceutil/current.h>
+#include <orcaiceutil/context.h>
 
 /*!
 

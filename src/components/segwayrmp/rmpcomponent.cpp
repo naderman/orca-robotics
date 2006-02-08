@@ -52,23 +52,23 @@ void RmpComponent::start()
     // PROVIDED INTERFACE: Platform2d
     // Find IceStorm Topic to which we'll publish
     IceStorm::TopicPrx platfTopicPrx = orcaiceutil::connectToIceStormTopicWithTag<Position2dConsumerPrx>
-                ( current(), position2dPublisher_, "Platform2d" );
+                ( context(), position2dPublisher_, "Platform2d" );
 
     // create servant for direct connections and tell adapter about it
     platform2dObj_ = new Platform2dI( position2dBuffer_, commandBuffer_,
                                       setConfigBuffer_, currentConfigBuffer_, platfTopicPrx );
-    orcaiceutil::createInterfaceWithTag( current(), platform2dObj_, "Platform2d" );
+    orcaiceutil::createInterfaceWithTag( context(), platform2dObj_, "Platform2d" );
 
 
 
     // PROVIDED INTERFACE: Power
     // Find IceStorm ConsumerProxy to push out data
     IceStorm::TopicPrx powerTopicPrx = orcaiceutil::connectToIceStormTopicWithTag<PowerConsumerPrx>
-                ( current(), powerPublisher_, "Power" );
+                ( context(), powerPublisher_, "Power" );
     
     // create servant for direct connections and tell adapter about it
     powerObj_ = new PowerI( powerBuffer_, powerTopicPrx );
-    orcaiceutil::createInterfaceWithTag( current(), powerObj_, "Power" );    
+    orcaiceutil::createInterfaceWithTag( context(), powerObj_, "Power" );
 
 
     //
@@ -82,7 +82,7 @@ void RmpComponent::start()
     mainLoop_ = new RmpMainLoop( position2dBuffer_, commandBuffer_, powerBuffer_,
                                  setConfigBuffer_, currentConfigBuffer_,
                                  position2dPublisher_, powerPublisher_ );
-    mainLoop_->setCurrent( current() );
+    mainLoop_->setCurrent( context() );
     mainLoop_->start();
 
     // the rest is handled by the application/service

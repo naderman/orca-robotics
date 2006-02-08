@@ -22,7 +22,7 @@
 #define ORCA2_RMP_MAIN_LOOP_H
 
 #include <orcaiceutil/thread.h>
-#include <orcaiceutil/current.h>
+#include <orcaiceutil/context.h>
 #include <orcaiceutil/ptrbuffer.h>
 #include <orcaiceutil/ptrnotify.h>
 #include <orcaiceutil/timer.h>
@@ -47,7 +47,7 @@ public:
                  const orca::PowerConsumerPrx                       & powerPublisher );
     virtual ~RmpMainLoop();
 
-    void setCurrent( const orcaiceutil::Current & current ) { current_=current; };
+    void setCurrent( const orcaiceutil::Context & context ) { context_=context; };
 
     virtual void run();
 
@@ -75,7 +75,7 @@ private:
     RmpDriver::DriverType driverType_;
 
     // component current context
-    orcaiceutil::Current current_;
+    orcaiceutil::Context context_;
 
     // timers for publishing to icestorm
     orcaiceutil::Timer position2dPublishTimer_;

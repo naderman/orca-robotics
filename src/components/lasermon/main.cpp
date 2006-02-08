@@ -63,7 +63,7 @@ void LaserMonComponent::start()
 
     // Connect directly to the interface
     orca::LaserPrx laserPrx;
-    orcaiceutil::connectToInterfaceWithTag<orca::LaserPrx>( current(), laserPrx, "Laser" );
+    orcaiceutil::connectToInterfaceWithTag<orca::LaserPrx>( context(), laserPrx, "Laser" );
 
     // Get the geometry
     cout << "Laser Geometry: " << laserPrx->getGeometry() << endl;
@@ -90,7 +90,7 @@ void LaserMonComponent::start()
     // create a callback object to recieve scans
     Ice::ObjectPtr consumer = new RangeScannerConsumerI;
     orca::RangeScannerConsumerPrx callbackPrx =
-        orcaiceutil::createConsumerInterface<orca::RangeScannerConsumerPrx>( current(), 
+        orcaiceutil::createConsumerInterface<orca::RangeScannerConsumerPrx>( context(), 
                                                                              consumer );
     //
     // ENABLE NETWORK CONNECTIONS

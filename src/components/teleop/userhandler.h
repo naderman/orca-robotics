@@ -22,7 +22,7 @@
 #define ORCA2_TELEOP_USER_HANDLER_H
 
 #include <orcaiceutil/thread.h>
-#include <orcaiceutil/current.h>
+#include <orcaiceutil/context.h>
 #include <orcaiceutil/ptrbuffer.h>
 
 #include <orca/platform2d.h>
@@ -37,7 +37,7 @@ public:
     UserHandler( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commands );
     virtual ~UserHandler();
 
-    void setCurrent( const orcaiceutil::Current & current ) { current_=current; };
+    void setCurrent( const orcaiceutil::Context & context ) { context_=context; };
 
     virtual void run();
 
@@ -56,7 +56,7 @@ private:
     void readConfigs();
 
     // component current context
-    orcaiceutil::Current current_;
+    orcaiceutil::Context context_;
 };
 
 #endif

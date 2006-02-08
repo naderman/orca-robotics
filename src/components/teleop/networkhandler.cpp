@@ -55,20 +55,20 @@ void NetworkHandler::run()
 
     // configs
     timeoutMs_ = (int)floor(1000.0 * orcaiceutil::getPropertyAsDoubleWithDefault(
-            current_.properties(), "Teleop.Config.RepeatTime", 0.2 ) );
+            context_.properties(), "Teleop.Config.RepeatTime", 0.2 ) );
 
     // REQUIRED : Platform2d
     while ( isActive() ) {
         try
         {
-            orcaiceutil::connectToInterfaceWithTag<Platform2dPrx>( current_, platform2dPrx_, "Platform2d" );
-            current_.tracer()->print("connected to a 'Platform2d' interface");
+            orcaiceutil::connectToInterfaceWithTag<Platform2dPrx>( context_, platform2dPrx_, "Platform2d" );
+            context_.tracer()->print("connected to a 'Platform2d' interface");
             break;
         }
         // includes common ex's: ConnectionRefusedException, ConnectTimeoutException
         catch ( const Ice::LocalException & e )
         {
-            current_.tracer()->debug("failed to connect to a remote interface");
+            context_.tracer()->debug("failed to connect to a remote interface");
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         }
     }
