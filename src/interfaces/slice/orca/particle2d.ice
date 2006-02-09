@@ -55,7 +55,7 @@ class Particle2dData extends OrcaObject
 /*!
     @brief Consumer of 2d particles
 */
-interface Particle2dDataConsumer
+interface Particle2dConsumer
 {
     void setData( Particle2dData obj );
 };
@@ -65,8 +65,8 @@ interface Particle2dDataConsumer
  */
 interface Particle2d
 {
-    void subscribe( Particle2dDataConsumer *subscriber );
-    idempotent void unsubscribe( Particle2dDataConsumer *subscriber );
+    void subscribe( Particle2dConsumer *subscriber );
+    idempotent void unsubscribe( Particle2dConsumer *subscriber );
 };
 
 /*! @} */
