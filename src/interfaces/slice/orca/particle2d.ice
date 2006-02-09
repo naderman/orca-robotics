@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_PARTICLES2D_INTERFACE_ICE
-#define ORCA2_PARTICLES2D_INTERFACE_ICE
+#ifndef ORCA2_PARTICLE2D_INTERFACE_ICE
+#define ORCA2_PARTICLE2D_INTERFACE_ICE
 
 #include <orca/orca.ice>
 #include <orca/bros1.ice>
@@ -28,7 +28,7 @@ module orca
 {
 /*!
     @ingroup interfaces
-    @defgroup orca_interface_particles2d Particles2D
+    @defgroup orca_interface_particle2d Particle2D
     @brief Interface for a 2D Particle Filter
 
     @{
@@ -63,7 +63,7 @@ interface Particle2dDataConsumer
 /*!
     @brief Single-origin scanning range sensor
  */
-interface Particles2d
+interface Particle2d
 {
     void subscribe( Particle2dDataConsumer *subscriber );
     idempotent void unsubscribe( Particle2dDataConsumer *subscriber );
