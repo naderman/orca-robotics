@@ -28,8 +28,8 @@ module orca
 {
 /*!
     @ingroup interfaces
-    @defgroup orca_interface_particle2d Particle2D
-    @brief Interface for a 2D Particle Filter
+    @defgroup orca_interface_particle2d Particle2d
+    @brief Interface for a 2D Particle-based Localiser
 
     @{
 */
@@ -61,7 +61,7 @@ interface Particle2dConsumer
 };
 
 /*!
-    @brief Single-origin scanning range sensor
+    @brief Interface for a 2d particle-based localiser
  */
 interface Particle2d
 {
