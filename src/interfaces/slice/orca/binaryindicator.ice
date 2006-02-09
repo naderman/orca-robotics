@@ -25,27 +25,38 @@
 
 module orca
 {
+/*!
+    @ingroup interfaces
+    @defgroup orca_interface_binaryindicator BinaryIndicator
+    @brief Hardware device with a binary state, e.g. flashing lights.
 
-//! Data supplier interface
+The BinaryIndicator interface provides access to a hardware device which has
+a binary internal state: on or off. Alarms, flahsing lights are examples of such
+devices.
+
+    @{
+*/
+
+//! BinaryIndicator interface
 interface BinaryIndicator
 {
-    // get current state
+    //! Get current state
     nonmutating bool getState();
 
-    // set current state
+    //! Set current state
     idempotent void setState( bool state );
 
-    // set current state, then after a timeout return to previous state
+    //! Set current state, then after a timeout return to previous state
     void timedSetState( bool state, long timeoutMs );
 
-    // toggle current state
+    //! Toggle current state
     void toggleState();
 
-    // toggle state, then after a timeout toggle it back
-    void timedToggleState( long timeoutMs ); 
+    //! Toggle state, then after a timeout toggle it back
+    void timedToggleState( long timeoutMs );
 };
 
-
+/*! @} */
 }; // module
 
 #endif
