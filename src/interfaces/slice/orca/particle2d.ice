@@ -35,14 +35,14 @@ module orca
 */
 
 //! A single particle
-struct Particle2d
+struct SingleParticle2d
 {
     Frame2d pose;
     float   weight;
 };
 
 //! A sequence of particles
-sequence<Particle2d>  Particle2dSequence;
+sequence<SingleParticle2d>  Particle2dSequence;
 
 /*!
     Laser scan data structure
