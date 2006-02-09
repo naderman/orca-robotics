@@ -29,7 +29,7 @@ module orca
 /*!
     @ingroup interfaces
     @author Tobias Kaupp t.kaupp at cas.edu.au
-    @defgroup orca_interface_polarfeature2d PolarFeature2D
+    @defgroup orca_interface_polarfeature2d PolarFeature2d
     @brief Range/bearing features relative to robot frame
 
 The polarfeature2d interface provides access to features in a polar coordinate system
@@ -56,7 +56,7 @@ interface PolarFeature2dConsumer
     void setData( PolarFeature2dData obj );
 };
 
-//! PolarFeature2D Interface
+//! PolarFeature2d Interface
 interface PolarFeature2d
 {
     nonmutating PolarFeature2dData getData();
