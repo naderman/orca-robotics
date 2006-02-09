@@ -29,4 +29,5 @@ SET( SLICE_SOURCE_FILES
     ptz.ice 
     hand.ice
     ogpatch.ice 
+    particles2d.ice
 )
