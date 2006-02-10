@@ -35,7 +35,7 @@ installation, etc. You can of course set up a project in any way you like, howev
 might find it useful. Get it from CVS (it may be more up to date) or download
 an archive.
 
-- from CVS checkout module 'empty-project'
+- from CVS checkout module 'empty-project' (more likely to be up-to-date)
 - download <a href="http://orca-robotics.sf.net/empty-project-2.0.0rc3.tar.gz">a snapshot of CVS repository</a> as of v.2.0.0rc2+
 
 
@@ -47,6 +47,7 @@ any way you want. Still, some approaches to organizing your component code lead 
 maintainable, and understandable code.
 
     - @ref orca_doc_devcomp. This page tries to capture some of the approaches which we found useful.
+    - @ref orca_doc_devtricks
 
 @section other Other useful information
   
