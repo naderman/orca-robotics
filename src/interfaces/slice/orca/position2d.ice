@@ -97,7 +97,8 @@ interface Position2d
      *
      * @see unsubscribe
      */
-    void subscribe( Position2dConsumer* subscriber, double preferedPushInterval );
+    void subscribe( Position2dConsumer* subscriber, double preferedPushInterval )
+            throws SubscriptionFailedException;
 
     // for reference, this is what IceStorm's subscribe function looks like.
     //void subscribe(QoS theQoS, Object* subscriber);

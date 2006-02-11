@@ -96,9 +96,15 @@ interface RangeScannerConsumer
  */
 interface RangeScanner
 {
-    //! Functions for reading from the sensor
-    nonmutating RangeScannerData      getData();
+    //! Returns the latest data.
+    //! @note In Orca1 this would be called ClientPull_Supplier interface.
+    nonmutating RangeScannerData      getData()
+            throws HardwareFailedException;
+            
+    //! Returns the current configuration.
     nonmutating RangeScannerConfig    getConfig();
+    
+    //! Returns the current geometry information.
     nonmutating RangeScannerGeometry  getGeometry();
 
     //! Set the configuration of the sensor.
@@ -115,7 +121,8 @@ interface RangeScanner
      * @see unsubscribe
      *
      */
-    void subscribe( RangeScannerConsumer *subscriber );
+    void subscribe( RangeScannerConsumer *subscriber )
+            throws SubscriptionFailedException;
 
     // this is what IceStorm's subscribe function looks like.
     //void subscribe(QoS theQoS, Object* subscriber);
