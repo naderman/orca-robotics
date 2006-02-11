@@ -37,7 +37,11 @@ module orca
 
 module feature
 {
-    const int LASERREFLECTOR = 0;
+    const int LASERREFLECTOR   = 0;
+    const int FOREGROUNDPOINT  = 1;
+    const int DOOR             = 2;
+    const int CORNER           = 3;
+    const int POSSIBLECORNER   = 4;
 };
 
 // Define messages first

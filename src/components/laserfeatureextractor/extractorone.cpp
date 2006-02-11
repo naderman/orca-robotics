@@ -23,9 +23,11 @@
 #include <iostream>
 #include <orcaiceutil/mathdefs.h>
 
+// For definitions of feature types:
+#include <orca/featuremap2d.h>
+
 #include "svd.h"
 #include "polefinder.h"
-#include "featureextraction.h"
 
 using namespace orca;
 using namespace std;
@@ -132,7 +134,7 @@ bool ExtractorOne::extractLaserReflectors(const orca::LaserDataPtr laserDataPtr,
                 if ( featureNumPnts >= minReturns_ )
                 {                 
                     orca::SinglePolarFeature2dPtr pp = new SinglePolarFeature2d;
-                    pp->type = features::LASER_REFLECTOR;
+                    pp->type = orca::feature::LASERREFLECTOR;
                     pp->p.r  = featureRange / featureNumPnts;
                     pp->p.o  = featureBearing / featureNumPnts;
                     
@@ -163,7 +165,7 @@ bool ExtractorOne::extractForegroundPoints(const RangeScannerConfigPtr laserConf
     for ( int i=0; i < numPoles; i++ )
     {
         SinglePolarFeature2dPtr pp = new SinglePolarFeature2d;
-        pp->type = features::FOREGROUND_POINT;
+        pp->type = orca::feature::FOREGROUNDPOINT;
         pp->p.r  = poles[i].range;
         pp->p.o  = poles[i].bearing;
         featureDataPtr->features.push_back(pp);
@@ -219,12 +221,12 @@ bool ExtractorOne::extractDoors(const orca::LaserDataPtr laserDataPtr, orca::Pol
                     door_width_sq < max_width )
                 {
                     SinglePolarFeature2dPtr pp1 = new SinglePolarFeature2d;
-                    pp1->type = features::DOOR;
+                    pp1->type = orca::feature::DOOR;
                     pp1->p.r = startRange;
                     pp1->p.o = startBearing;
 
                     SinglePolarFeature2dPtr pp2 = new SinglePolarFeature2d;
-                    pp2->type = features::DOOR;
+                    pp2->type = orca::feature::DOOR;
                     pp2->p.r = stopRange;
                     pp2->p.o = stopBearing;
                     
@@ -299,7 +301,7 @@ bool ExtractorOne::extractCorners(const orca::LaserDataPtr laserDataPtr, orca::P
                     bearing = -bearing;
                 }
                 SinglePolarFeature2dPtr pp = new SinglePolarFeature2d;
-                pp->type = features::CORNER;
+                pp->type = orca::feature::CORNER;
                 pp->p.r = range;
                 pp->p.o = bearing;
                 featureDataPtr->features.push_back( pp );
@@ -611,7 +613,7 @@ bool ExtractorOne::extractPossibleCorners(PolarFeature2dDataPtr featureDataPtr)
                 SectionEl iret = itr->elements.front();
                 if (iret.range() > pret.range() + POSSIBLE_BOUND) {
                     SinglePolarFeature2dPtr pp = new SinglePolarFeature2d;
-                    pp->type = features::POSSIBLE_CORNER;
+                    pp->type = orca::feature::POSSIBLECORNER;
                     pp->p.r = pret.range();
                     pp->p.o = pret.bearing();
                     featureDataPtr->features.push_back( pp );
@@ -624,7 +626,7 @@ bool ExtractorOne::extractPossibleCorners(PolarFeature2dDataPtr featureDataPtr)
                 SectionEl iret = itr->elements.front();
                 if (pret.range() > iret.range() + POSSIBLE_BOUND) {
                     SinglePolarFeature2dPtr pp = new SinglePolarFeature2d;
-                    pp->type = features::POSSIBLE_CORNER;
+                    pp->type = orca::feature::POSSIBLECORNER;
                     pp->p.r = iret.range();
                     pp->p.o = iret.bearing();
                     featureDataPtr->features.push_back( pp );

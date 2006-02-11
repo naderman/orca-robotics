@@ -18,11 +18,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 #include "fakeextractor.h"
-#include "featureextraction.h"
 
 #include <orcaiceutil/objutils.h>
 #include <iostream>
 #include <math.h>
+
+// For definitions of feature types:
+#include <orca/featuremap2d.h>
+
 
 using namespace orca;
 using namespace std;
@@ -63,7 +66,7 @@ int FakeExtractor::computeFeatures( const orca::RangeScannerConfigPtr laserConfi
     for (uint i=0; i<10; i++)
     {
         featureDataPtr->features[i] = new SinglePolarFeature2d;
-        featureDataPtr->features[i]->type = features::FOREGROUND_POINT;
+        featureDataPtr->features[i]->type = orca::feature::FOREGROUNDPOINT;
         featureDataPtr->features[i]->p.r  = range;
         featureDataPtr->features[i]->p.o  = bearing;
         range = range + 2.0;
