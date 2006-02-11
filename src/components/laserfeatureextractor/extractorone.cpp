@@ -131,18 +131,12 @@ bool ExtractorOne::extractLaserReflectors(const orca::LaserDataPtr laserDataPtr,
 
                 if ( featureNumPnts >= minReturns_ )
                 {                 
-//                     orca::PolarPointFeature2D feature( featureRange / featureNumPnts, 
-//                                                        featureBearing / featureNumPnts,
-//                                                        slamfeatures::LASER_REFLECTOR );
-
-//                     features.addElement( feature );
-
-                    orca::PolarPoint2d pp;
-                    pp.r = featureRange / featureNumPnts;
-                    pp.o = featureBearing / featureNumPnts;
+                    orca::SinglePolarFeature2dPtr pp = new SinglePolarFeature2d;
+                    pp->type = features::LASER_REFLECTOR;
+                    pp->p.r  = featureRange / featureNumPnts;
+                    pp->p.o  = featureBearing / featureNumPnts;
                     
                     featureDataPtr->features.push_back( pp );
-                    featureDataPtr->featureTypes.push_back( slamfeatures::LASER_REFLECTOR );
                 }
             } // end of end-of-cluster if
 
@@ -168,11 +162,11 @@ bool ExtractorOne::extractForegroundPoints(const RangeScannerConfigPtr laserConf
     
     for ( int i=0; i < numPoles; i++ )
     {
-        PolarPoint2d pp;
-        pp.r = poles[i].range;
-        pp.o = poles[i].bearing;
+        SinglePolarFeature2dPtr pp = new SinglePolarFeature2d;
+        pp->type = features::FOREGROUND_POINT;
+        pp->p.r  = poles[i].range;
+        pp->p.o  = poles[i].bearing;
         featureDataPtr->features.push_back(pp);
-        featureDataPtr->featureTypes.push_back(slamfeatures::FOREGROUND_POINT);
     }
 
     return true;
@@ -224,17 +218,18 @@ bool ExtractorOne::extractDoors(const orca::LaserDataPtr laserDataPtr, orca::Pol
                 if (featureNumPnts > 5 && door_width_sq > min_width &&
                     door_width_sq < max_width )
                 {
-                    PolarPoint2d pp1;
-                    pp1.r = startRange;
-                    pp1.o = startBearing;
-                    featureDataPtr->features.push_back(pp1);
-                    featureDataPtr->featureTypes.push_back( slamfeatures::DOOR );
+                    SinglePolarFeature2dPtr pp1 = new SinglePolarFeature2d;
+                    pp1->type = features::DOOR;
+                    pp1->p.r = startRange;
+                    pp1->p.o = startBearing;
+
+                    SinglePolarFeature2dPtr pp2 = new SinglePolarFeature2d;
+                    pp2->type = features::DOOR;
+                    pp2->p.r = stopRange;
+                    pp2->p.o = stopBearing;
                     
-                    PolarPoint2d pp2;
-                    pp2.r = stopRange;
-                    pp2.o = stopBearing;
+                    featureDataPtr->features.push_back(pp1);
                     featureDataPtr->features.push_back(pp2);
-                    featureDataPtr->featureTypes.push_back( slamfeatures::DOOR ); 
                 }
                 
                 buildingTarget = false;
@@ -303,11 +298,11 @@ bool ExtractorOne::extractCorners(const orca::LaserDataPtr laserDataPtr, orca::P
                 if (cornerY < 0) {
                     bearing = -bearing;
                 }
-                PolarPoint2d pp;
-                pp.r = range;
-                pp.o = bearing;
+                SinglePolarFeature2dPtr pp = new SinglePolarFeature2d;
+                pp->type = features::CORNER;
+                pp->p.r = range;
+                pp->p.o = bearing;
                 featureDataPtr->features.push_back( pp );
-                featureDataPtr->featureTypes.push_back( slamfeatures::CORNER );
             }
         }
         //itr = itr->next;
@@ -615,11 +610,11 @@ bool ExtractorOne::extractPossibleCorners(PolarFeature2dDataPtr featureDataPtr)
                 SectionEl pret = prev->elements.back();
                 SectionEl iret = itr->elements.front();
                 if (iret.range() > pret.range() + POSSIBLE_BOUND) {
-                    PolarPoint2d pp;
-                    pp.r = pret.range();
-                    pp.o = pret.bearing();
+                    SinglePolarFeature2dPtr pp = new SinglePolarFeature2d;
+                    pp->type = features::POSSIBLE_CORNER;
+                    pp->p.r = pret.range();
+                    pp->p.o = pret.bearing();
                     featureDataPtr->features.push_back( pp );
-                    featureDataPtr->featureTypes.push_back( slamfeatures::POSSIBLE_CORNER );
                 }
             }
   
@@ -628,11 +623,11 @@ bool ExtractorOne::extractPossibleCorners(PolarFeature2dDataPtr featureDataPtr)
                 SectionEl pret = prev->elements.back();
                 SectionEl iret = itr->elements.front();
                 if (pret.range() > iret.range() + POSSIBLE_BOUND) {
-                    PolarPoint2d pp;
-                    pp.r = iret.range();
-                    pp.o = iret.bearing();
+                    SinglePolarFeature2dPtr pp = new SinglePolarFeature2d;
+                    pp->type = features::POSSIBLE_CORNER;
+                    pp->p.r = iret.range();
+                    pp->p.o = iret.bearing();
                     featureDataPtr->features.push_back( pp );
-                    featureDataPtr->featureTypes.push_back( slamfeatures::POSSIBLE_CORNER );
                 }
             }
         }

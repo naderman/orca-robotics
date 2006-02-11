@@ -30,4 +30,5 @@ SET( SLICE_SOURCE_FILES
     hand.ice
     ogpatch.ice 
     particle2d.ice
+    featuremap2d.ice
 )

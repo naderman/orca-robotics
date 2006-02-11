@@ -24,7 +24,7 @@
 // Define the types of features that we deal with
 //
 
-namespace slamfeatures {
+namespace features {
 
     const int LASER_REFLECTOR  = 0;
     const int FOREGROUND_POINT = 1;

@@ -127,13 +127,14 @@ void MainLoop::convertToRobotCS(PolarFeature2dDataPtr featuresPtr)
     
     for (uint i=0; i<featuresPtr->features.size(); i++ )
     {
-        LaserXy.x = cos(featuresPtr->features[i].o) * featuresPtr->features[i].r;
-        LaserXy.y = sin(featuresPtr->features[i].o) * featuresPtr->features[i].r;
+        LaserXy.x = cos(featuresPtr->features[i]->p.o) * featuresPtr->features[i]->p.r;
+        LaserXy.y = sin(featuresPtr->features[i]->p.o) * featuresPtr->features[i]->p.r;
         RobotXy.x = LaserXy.x*cos(offsetAngles.y) - LaserXy.y*sin(offsetAngles.y) + offsetXyz.x;
         RobotXy.y = LaserXy.x*sin(offsetAngles.y) + LaserXy.y*cos(offsetAngles.y) + offsetXyz.y;
         polarPointRobot.r = sqrt(RobotXy.x*RobotXy.x + RobotXy.y*RobotXy.y);
         polarPointRobot.o = atan2(RobotXy.y,RobotXy.x);
-        featuresPtr->features[i] = polarPointRobot;
+
+        featuresPtr->features[i]->p = polarPointRobot;
     }
     const IceUtil::Time currentTime = IceUtil::Time::now();
     featuresPtr->timeStamp = iceTimeToOrcaTime (currentTime);

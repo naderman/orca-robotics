@@ -38,16 +38,21 @@ features with range in meters and bearing in rad (-pi<angle<pi) and the feature 
     @{
 */
 
-// Define messages first
-sequence<PolarPoint2d> PolarPoint2dSequence;
-sequence<int> FeatureType;
+//! A single PolarFeature2d.
+//! If a new feature has more attributes, derive from this.
+class SinglePolarFeature2d
+{
+    PolarPoint2d p;
+    int          type;
+};
 
+//! A sequence of individual features
+sequence<SinglePolarFeature2d> PolarFeature2dSequence;
 
 //! Data -- the 2D polar features
 class PolarFeature2dData extends OrcaObject
 {
-    PolarPoint2dSequence features;
-    FeatureType featureTypes;
+    PolarFeature2dSequence features;
 };
 
 //! Consumer of PolarFeature2d data
