@@ -20,9 +20,8 @@
 
 #include <iostream>
 
-#include <orcaiceutil/connectutils.h>
-
 #include "laserfeatureextractorcomponent.h"
+
 #include "mainloop.h"
 #include "featureextractorbase.h"
 #include "fakeextractor.h"
@@ -45,36 +44,55 @@ LaserFeatureExtractorComponent::~LaserFeatureExtractorComponent()
 void LaserFeatureExtractorComponent::start()
 {
     // config file parameters: none at the moment
-    std::string prefix = tag();
-    prefix += ".Config.";
+    std::string prefix = tag() + ".Config.";
     prop_ = communicator()->getProperties();
-   
-    // =============== REQUIRED: Laser =======================
-    laserConsumer_ = new LaserConsumerI( laserDataBuffer_ );
-    //! @todo subscribe ourselves by directly calling subscribe() on the laser object. --alexm
-    orcaiceutil::subscribeToIceStormTopicWithTag( context(), (Ice::ObjectPtr&) laserConsumer_, "Laser" );
-    orcaiceutil::connectToInterfaceWithTag<LaserPrx>( context(), laserPrx_, "Laser" );
-    
-    // ============ PROVIDED: PolarFeatures ==================
-    //IceStorm proxy
+
+    //
+    // PROVIDED: PolarFeatures
+    //
+    // find IceStorm publisher
     IceStorm::TopicPrx topicPrx =
         orcaiceutil::connectToIceStormTopicWithTag<PolarFeature2dConsumerPrx>
-                    ( context(),polarFeatureConsumer_, "PolarFeatures2d" );
+                    ( context(),polarFeaturePublisher_, "PolarFeatures2d" );
     // create servant for direct connections and tell adapter about it
     polarFeature_ = new PolarFeature2dI( polarFeaturesDataBuffer_, topicPrx );
     orcaiceutil::createInterfaceWithTag( context(), polarFeature_, "PolarFeatures2d" );
+
+    //
+    // REQUIRED: Laser
+    //
+    Ice::ObjectPtr consumer  = new LaserConsumerI( laserDataBuffer_ );
+    laserCallbackPrx_ = orcaiceutil::createConsumerInterface<orca::RangeScannerConsumerPrx>( context(), consumer );
+
+    // connect to remote Laser interface
+    orcaiceutil::connectToInterfaceWithTag<LaserPrx>( context(), laserPrx_, "Laser" );
     
-    // =========== ENABLE NETWORK CONNECTIONS ======================
-    cout << "TRACE(laserfeatureextractorcomponent.cpp): calling ACTIVATE" << endl;
+    //
+    // ENABLE NETWORK CONNECTIONS
+    //
     activate();
+
+    //
+    // Subscribe for data
+    //
+    try
+    {
+        laserPrx_->subscribe( laserCallbackPrx_ );
+    }
+    catch ( const orca::SubscriptionFailedException & e )
+    {
+        tracer()->error( "failed to subscribe to laser data. Quitting..." );
+        exit(1);
+    }
    
     // ================== ALGORITHMS ================================
     std::string algorithmType;
     int ret = orcaiceutil::getProperty( prop_, prefix+"AlgorithmType", algorithmType );
     if ( ret != 0 )
     {
-        std::string errString = "Couldn't determine algorithmType.  Expected property";
+        std::string errString = "Couldn't determine algorithmType. Expected property ";
         errString += prefix + "AlgorithmType";
+        tracer()->error( errString );
         throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errString );
     }
     
@@ -89,12 +107,12 @@ void LaserFeatureExtractorComponent::start()
     else
     {
         std::string errString = "Unknown algorithmType: " + algorithmType;
+        tracer()->error( errString );
         throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errString );
-        cout<<"TRACE(laserfeatureextractorcomponent.cpp): Unknown algorithmType: " << algorithmType << endl;
         return;
     }
     
-    mainLoop_ = new MainLoop( algorithm_, polarFeatureConsumer_, laserPrx_, laserDataBuffer_, polarFeaturesDataBuffer_, &prop_, prefix );
+    mainLoop_ = new MainLoop( algorithm_, polarFeaturePublisher_, laserPrx_, laserDataBuffer_, polarFeaturesDataBuffer_, &prop_, prefix );
     mainLoop_->start();
     
     // the rest is handled by the application/service
@@ -102,12 +120,11 @@ void LaserFeatureExtractorComponent::start()
 
 void LaserFeatureExtractorComponent::stop()
 {
+    tracer()->debug( "component is stopping...",5 );
+    
     // Tell the main loop to stop
     mainLoop_->stop();
 
-    // inputLoop_ is blocked on user input
-    // the only way for it to realize that we want to stop is to give it some keyboard input.
-    cout<<"Quitting..."<<endl;
 
     // Then wait for it
     mainLoop_->getThreadControl().join();

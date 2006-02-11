@@ -22,11 +22,14 @@
 #define ORCA2_LASERFEATUREEXTRACTOR_COMPONENT_H
 
 
-#include <orcaiceutil/orcaiceutil.h>
 #include <orcaiceutil/component.h>
+#include <orcaiceutil/orcaiceutil.h>
 
+// interface definitions
 #include <orca/laser.h>
 #include <orca/polarfeature2d.h>
+
+// interface implementations
 #include "laserconsumer_i.h"
 #include "polarfeature2d_i.h"
 
@@ -46,12 +49,12 @@ public:
 
 private:
 
-    orca::RangeScannerConsumerPtr laserConsumer_;
     orca::LaserPrx laserPrx_;
+    orca::RangeScannerConsumerPrx laserCallbackPrx_;
     
     // External interface: polar features
     Ice::ObjectPtr polarFeature_;
-    orca::PolarFeature2dConsumerPrx polarFeatureConsumer_;
+    orca::PolarFeature2dConsumerPrx polarFeaturePublisher_;
     
     orcaiceutil::PtrBuffer<orca::LaserDataPtr> laserDataBuffer_;
     orcaiceutil::PtrBuffer<orca::PolarFeature2dDataPtr> polarFeaturesDataBuffer_;
