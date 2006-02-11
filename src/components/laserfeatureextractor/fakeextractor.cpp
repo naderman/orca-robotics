@@ -64,8 +64,8 @@ int FakeExtractor::computeFeatures( const orca::RangeScannerConfigPtr laserConfi
     {
         featureDataPtr->features[i] = new SinglePolarFeature2d;
         featureDataPtr->features[i]->type = features::FOREGROUND_POINT;
-        featureDataPtr->features[i]->p.r = range;
-        featureDataPtr->features[i]->p.o = bearing;
+        featureDataPtr->features[i]->p.r  = range;
+        featureDataPtr->features[i]->p.o  = bearing;
         range = range + 2.0;
         bearing = bearing + M_PI/5.0;
     }
