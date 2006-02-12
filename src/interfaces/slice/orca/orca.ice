@@ -35,7 +35,9 @@ module orca
 */
 struct Time
 {
+    //! Number of seconds.
     int seconds;
+    //! Number of microseconds.
     int useconds;
 };
 
@@ -44,7 +46,9 @@ struct Time
 */
 struct FQExecutableName
 {
+    //! Name of the executable file
     string executable;
+    //! Host name
     string host;
 };
 
@@ -54,12 +58,14 @@ struct FQExecutableName
 */
 struct FQComponentName
 {
+    //! Platform name
     string platform;
+    //! Component name
     string component;
 };
 
 /*!
-    Fully qualified interface name.
+    @brief Fully qualified interface name.
     Usually represented in a single string as 'iface\@platform/component'
 
     @note Cannot use member variable 'interface', it's reserved by Ice.
@@ -67,55 +73,52 @@ struct FQComponentName
 */
 struct FQInterfaceName
 {
+    //! Platform name
     string platform;
+    //! Component name
     string component;
+    //! Interface name
     string iface;
 };
 
 /*!
-    Fully qualified Ice Storm topic name.
+    @brief Fully qualified Ice Storm topic name.
+    The idea is that the same interface can publish to multiple topics corresponding
+    different data streams.
     @see FQInterfaceName, FQComponentName
 */
 struct FQTopicName
 {
+    //! Platform name
     string platform;
+    //! Component name
     string component;
+    //! Interface name
     string iface;
+    //! Topic name
     string topic;
 };
 
 /*!
-    All objects are derived from this class to allow polymorphism.
-    @note Do we need the timestamp?
+    @brief Base class for all data types in Orca.
+    Deriving from a single class allows polymorphism.
+    
+    @note This is not an Ice 'Object' which refers to a remote servant rather than
+    a piece of data.
 */
 class OrcaObject
 {
+    //! Time when the object was observed, created, etc.
     Time timeStamp;
 };
-
-/*!
-    A time-stamped string.
-*/
-class StringObj extends OrcaObject
-{
-    string str;
-};
-
-//! A sequence of string objects.
-sequence<StringObj> StringObjSequence;
-
-// NOTE: Do we need something like this? Not using it yet.
-//interface OrcaComponent
-//{
-//    // Admin
-//    void shutdown();
-//};
 
 //! A byte array which can store any information.
 sequence<byte> ByteSequence;
 
-//! A generic run-time exception.
-//! Orca Components can use this to signal error conditions to their clients.
+/*!
+    @brief A generic run-time exception.
+    Orca Components can use this to signal error conditions to their clients.
+*/
 exception OrcaException
 {
     string what;
