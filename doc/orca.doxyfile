@@ -61,7 +61,7 @@ FILE_VERSION_FILTER    =
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
 #---------------------------------------------------------------------------
-QUIET                  = YES
+QUIET                  = NO
 WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = NO
 WARN_IF_DOC_ERROR      = YES
@@ -211,15 +211,15 @@ COLLABORATION_GRAPH    = NO
 GROUP_GRAPHS           = NO
 UML_LOOK               = YES
 TEMPLATE_RELATIONS     = NO
-INCLUDE_GRAPH          = YES
-INCLUDED_BY_GRAPH      = YES
-CALL_GRAPH             = YES
+INCLUDE_GRAPH          = NO
+INCLUDED_BY_GRAPH      = NO
+CALL_GRAPH             = NO
 GRAPHICAL_HIERARCHY    = YES
-DIRECTORY_GRAPH        = YES
+DIRECTORY_GRAPH        = NO
 DOT_IMAGE_FORMAT       = png
 DOT_PATH               = 
 DOTFILE_DIRS           = 
-MAX_DOT_GRAPH_WIDTH    = 1024
+MAX_DOT_GRAPH_WIDTH    = 800
 MAX_DOT_GRAPH_HEIGHT   = 1024
 MAX_DOT_GRAPH_DEPTH    = 0
 DOT_TRANSPARENT        = NO

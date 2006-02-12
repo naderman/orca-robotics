@@ -39,7 +39,7 @@ http://personales.ya.com/fmoya/ .
 
 The latest version tested with these instructions: 3.0.1.
 
-Following the instructions below will install Ice to the default location /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
+Following the instructions below will install Ice to the default location @c /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
 
 Download source from  <a href="http://www.zeroc.com/download.html">download page</a>.
     - First, install Ice dependencies. Debian packages for all required libraries exist.
@@ -51,7 +51,7 @@ Download source from  <a href="http://www.zeroc.com/download.html">download page
 $ tar -xzf Ice-[VERSION].tar.gz
 $ cd Ice-[VERSION]
 @endverbatim
-    - Ice is particular about the name of the compiler. If you are using a version of gcc, make sure the names are standard: gcc/g++! If you skip this step you'll see a cryptic message about 'mkshlib' not defined.
+    - Ice is particular about the name of the compiler. If you are using a version of gcc, make sure the names are standard: @c gcc/g++ ! If you skip this step you'll see a cryptic message about @c mkshlib not defined.
 @verbatim
 $ export CC=gcc; export CXX=g++
 @endverbatim
@@ -64,7 +64,7 @@ $ make test (optional, requires python)
 # ldconfig
 @endverbatim
 
-Make sure that the Ice binaries and executables are in the path. You may want to add this snippet to your ~/.bashrc file (replace [VERSION] with the version of Ice you've just installed).
+Make sure that the Ice binaries and executables are in the path. You may want to add this snippet to your @c ~/.bashrc file (replace [VERSION] with the version of Ice you've just installed).
 @verbatim
 export ICE_HOME=/opt/Ice-[VERSION]
 export PATH=$ICE_HOME/bin:$PATH
@@ -76,7 +76,7 @@ export LD_LIBRARY_PATH=$ICE_HOME/lib:$LD_LIBRARY_PATH
 Build and install Orca2 distribution.
     - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive.
     - Configure using cmake (note the dot after cmake)
-    - Compile, and install. The default install directory is /opt/orca-[VERSION], where [VERSION] is the Orca version. You can change it easily using ccmake tool ('$ ccmake .').
+    - Compile, and install. The default install directory is @c /opt/orca-[VERSION], where [VERSION] is the Orca version. You can change it easily using @c ccmake tool ('$ ccmake .').
 @verbatim
 $ tar -zxf orca2-x.x.x.tar.gz
 $ cd orca2
@@ -86,7 +86,7 @@ $ make
 # ldconfig
 @endverbatim
 
-Make sure that the binaries and executables are in the path. You may want to add a snippet to your ~/.bashrc file similar to the one below. Replace [VERSION] with the version of Orca you've just installed. Change the directory if you've modified the default install directory.
+Make sure that the binaries and executables are in the path. You may want to add a snippet to your @c ~/.bashrc file similar to the one below. Replace [VERSION] with the version of Orca you've just installed. Change the directory if you've modified the default install directory.
 @verbatim
 export ORCA2_HOME=/opt/orca-[VERSION]
 export PATH=$ORCA2_HOME/bin:$PATH
@@ -95,9 +95,9 @@ export LD_LIBRARY_PATH=$ORCA2_HOME/lib:$LD_LIBRARY_PATH
 
 @section orca_doc_installdebian_doxygen Doxygen
 
-Doxygen can be easily installed as a package. The standard version can build all Orca documentation except for the Slice interfaces and objects.
+Doxygen is a tool to produce documentation from source code. It can be easily installed as a package. The standard version can build all Orca documentation except for the Slice interfaces and objects. You may also want to install the @c graphviz package which contains the @c dot utility used by @c doxygen to generate diagrams.
 @verbatim
-# apt-get install doxygen
+# apt-get install doxygen graphviz
 @endverbatim
 
 @section orca_doc_installdebian_qt Qt
