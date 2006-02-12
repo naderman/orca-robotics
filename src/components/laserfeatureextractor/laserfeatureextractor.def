@@ -1,7 +1,7 @@
 DefaultComponentTag=LaserFeatureExtractor
 
 # provides
-Provides.PolarFeatures2d.Type=PolarFeatures2d
+Provides.PolarFeature2d.Type=PolarFeature2d
 
 # requires
 Requires.Laser.Type=Laser

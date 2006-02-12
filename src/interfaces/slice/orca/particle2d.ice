@@ -23,6 +23,7 @@
 
 #include <orca/orca.ice>
 #include <orca/bros1.ice>
+#include <orca/position2d.ice>
 
 module orca
 {
@@ -63,10 +64,13 @@ interface Particle2dConsumer
 /*!
     @brief Interface for a 2d particle-based localiser
  */
-interface Particle2d
+interface Particle2d extends Position2d
 {
-    void subscribe( Particle2dConsumer *subscriber );
-    idempotent void unsubscribe( Particle2dConsumer *subscriber );
+    void subscribeForParticles( Particle2dConsumer *subscriber );
+    idempotent void unsubscribeForParticles( Particle2dConsumer *subscriber );
+
+//     void subscribe( Particle2dConsumer *subscriber );
+//     idempotent void unsubscribe( Particle2dConsumer *subscriber );
 };
 
 /*! @} */

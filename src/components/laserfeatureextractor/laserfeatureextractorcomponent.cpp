@@ -53,16 +53,17 @@ void LaserFeatureExtractorComponent::start()
     // find IceStorm publisher
     IceStorm::TopicPrx topicPrx =
         orcaiceutil::connectToIceStormTopicWithTag<PolarFeature2dConsumerPrx>
-                    ( context(),polarFeaturePublisher_, "PolarFeatures2d" );
+                    ( context(),polarFeaturePublisher_, "PolarFeature2d" );
     // create servant for direct connections and tell adapter about it
     polarFeature_ = new PolarFeature2dI( polarFeaturesDataBuffer_, topicPrx );
-    orcaiceutil::createInterfaceWithTag( context(), polarFeature_, "PolarFeatures2d" );
+    orcaiceutil::createInterfaceWithTag( context(), polarFeature_, "PolarFeature2d" );
 
     //
     // REQUIRED: Laser
     //
     Ice::ObjectPtr consumer  = new LaserConsumerI( laserDataBuffer_ );
-    laserCallbackPrx_ = orcaiceutil::createConsumerInterface<orca::RangeScannerConsumerPrx>( context(), consumer );
+    laserCallbackPrx_ = orcaiceutil::createConsumerInterface<orca::RangeScannerConsumerPrx>( context(),
+                                                                                             consumer );
 
     // connect to remote Laser interface
     orcaiceutil::connectToInterfaceWithTag<LaserPrx>( context(), laserPrx_, "Laser" );
