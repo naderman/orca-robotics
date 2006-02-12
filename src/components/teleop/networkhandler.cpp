@@ -55,7 +55,7 @@ void NetworkHandler::run()
 
     // configs
     timeoutMs_ = (int)floor(1000.0 * orcaiceutil::getPropertyAsDoubleWithDefault(
-            context_.properties(), "Teleop.Config.RepeatTime", 0.2 ) );
+            context_.properties(), "Teleop.Config.RepeatInterval", 0.2 ) );
 
     // REQUIRED : Platform2d
     while ( isActive() ) {
