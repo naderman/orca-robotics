@@ -40,7 +40,7 @@ public:
 
     virtual ::orca::PowerDataPtr getData(const ::Ice::Current& ) const;
 
-    virtual void subscribe(const ::orca::PowerConsumerPrx&, ::Ice::Double, const ::Ice::Current& = ::Ice::Current());
+    virtual void subscribe(const ::orca::PowerConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
     virtual void unsubscribe(const ::orca::PowerConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 

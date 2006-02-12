@@ -46,8 +46,7 @@ orca::PowerDataPtr PowerI::getData(const ::Ice::Current& ) const
     return data;
 }
 
-void PowerI::subscribe(const ::orca::PowerConsumerPrx& subscriber,
-                    ::Ice::Double preferedPushInterval, const ::Ice::Current&)
+void PowerI::subscribe(const ::orca::PowerConsumerPrx& subscriber, const ::Ice::Current&)
 {
     cout<<"subscription request"<<endl;
     IceStorm::QoS qos;

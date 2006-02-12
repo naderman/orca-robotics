@@ -77,12 +77,9 @@ interface Status
      *
      * @param subscriber The subscriber's proxy.
      *
-     * @param preferedPushInterval The subscriber's preference for how often it wants to
-     * receive updates [sec]. Provider's ability to fulfil this request may vary.
-     *
      * @see unsubscribe
      */
-    void subscribe( StatusConsumer* subscriber, double preferedPushInterval );
+    void subscribe( StatusConsumer* subscriber );
     
     // for reference, this is what IceStorm's subscribe function looks like.
     //void subscribe(QoS theQoS, Object* subscriber);
