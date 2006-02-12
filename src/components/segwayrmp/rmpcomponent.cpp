@@ -51,7 +51,7 @@ void RmpComponent::start()
 
     // PROVIDED INTERFACE: Platform2d
     // Find IceStorm Topic to which we'll publish
-    IceStorm::TopicPrx platfTopicPrx = orcaiceutil::connectToIceStormTopicWithTag<Position2dConsumerPrx>
+    IceStorm::TopicPrx platfTopicPrx = orcaiceutil::connectToTopicWithTag<Position2dConsumerPrx>
                 ( context(), position2dPublisher_, "Platform2d" );
 
     // create servant for direct connections and tell adapter about it
@@ -63,7 +63,7 @@ void RmpComponent::start()
 
     // PROVIDED INTERFACE: Power
     // Find IceStorm ConsumerProxy to push out data
-    IceStorm::TopicPrx powerTopicPrx = orcaiceutil::connectToIceStormTopicWithTag<PowerConsumerPrx>
+    IceStorm::TopicPrx powerTopicPrx = orcaiceutil::connectToTopicWithTag<PowerConsumerPrx>
                 ( context(), powerPublisher_, "Power" );
     
     // create servant for direct connections and tell adapter about it

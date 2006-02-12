@@ -58,7 +58,7 @@ void DrunkRobotComponent::start(){
   geom_->size.w = 0.1;  
 
 
-  IceStorm::TopicPrx topicPrx = orcaiceutil::connectToIceStormTopicWithTag<Position2dConsumerPrx>
+  IceStorm::TopicPrx topicPrx = orcaiceutil::connectToTopicWithTag<Position2dConsumerPrx>
     ( context(), position2dConsumer_, "Position2d" );
 
   //First set up our proxies so other people can talk to us:

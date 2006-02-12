@@ -52,7 +52,7 @@ void LaserFeatureExtractorComponent::start()
     //
     // find IceStorm publisher
     IceStorm::TopicPrx topicPrx =
-        orcaiceutil::connectToIceStormTopicWithTag<PolarFeature2dConsumerPrx>
+        orcaiceutil::connectToTopicWithTag<PolarFeature2dConsumerPrx>
                     ( context(),polarFeaturePublisher_, "PolarFeature2d" );
     // create servant for direct connections and tell adapter about it
     polarFeature_ = new PolarFeature2dI( polarFeaturesDataBuffer_, topicPrx );

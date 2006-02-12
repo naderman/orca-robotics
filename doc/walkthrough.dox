@@ -109,9 +109,7 @@ this walkthrough can be found in drunkrobot).
 As discussed in the design pattern, our implementation of the interface simply takes puts things in 
 a pointer buffer that our program then accesses in its main loop. Since we're implementing a 
 position2d object, we need to create a simple implementation of the position2d object. We'll put 
-this in a class called position2d_i. 
-
-position2d_i.h looks like this: 
+this in a class called position2d_i. The file \c position2d_i.h looks like this:
 
 \include ../src/examples/drunkrobot/position2d_i.h
 
@@ -126,7 +124,7 @@ also passed around. There are also members for the buffered results.
 No we implement the above interface. There's nothing unexpected here;
 to get the latest position, we check the pointer buffer, to return the
 configuration, we pass the value that was initialised when the
-interface was created. position2d_i.cpp looks like this:
+interface was created. The file \c position2d_i.cpp looks like this:
 
 \include ../src/examples/drunkrobot/position2d_i.cpp
 
@@ -143,7 +141,7 @@ IceStorm, ICE's publish-subscribe system. This is done by using a
 proxy for a consumer of Position2dData. We use the proxy (hence the
 Prx) at the end to represent communication with IceStorm. 
 
-Hence drunkrobotmainloop.h looks like this: 
+Hence the file \c drunkrobotmainloop.h looks like this: 
 
 \include ../src/examples/drunkrobot/drunkrobotmainloop.h 
 
@@ -158,7 +156,7 @@ things up. Then our main loop does the following:
    does a getData() it returns the appropriate value. 
 -# Sleep for a second.
 
-drunkrobotmainloop.cpp is: 
+The file \c drunkrobotmainloop.cpp is: 
 
 \include ../src/examples/drunkrobot/drunkrobotmainloop.cpp
 
