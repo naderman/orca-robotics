@@ -205,7 +205,7 @@ int TeleopJoystickDriver::readdata( orca::Velocity2dCommandPtr &data )
             command_->motion.w = 0.0;
 
             string errString = "failed to read from joystick";
-            throw orcaiceutil::OrcaIceUtilHardwareException( ERROR_INFO, errString );
+            throw orcaiceutil::HardwareException( ERROR_INFO, errString );
             return 1;
         }
         else {

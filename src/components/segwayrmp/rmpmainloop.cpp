@@ -97,7 +97,7 @@ void RmpMainLoop::readConfigs()
         driverType_ = RmpDriver::UNKNOWN_DRIVER;
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
         context_.tracer()->error( errorStr);
-        throw orcaiceutil::OrcaIceUtilHardwareException( ERROR_INFO, errorStr );
+        throw orcaiceutil::HardwareException( ERROR_INFO, errorStr );
     }
         
 }
@@ -134,7 +134,7 @@ void RmpMainLoop::run()
         case RmpDriver::UNKNOWN_DRIVER :
             string errorStr = "Unknown driver type. Cannot talk to hardware.";
             context_.tracer()->error(errorStr);
-            throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
+            throw orcaiceutil::Exception( ERROR_INFO, errorStr );
     }
     
     //

@@ -94,7 +94,7 @@ void LaserFeatureExtractorComponent::start()
         std::string errString = "Couldn't determine algorithmType. Expected property ";
         errString += prefix + "AlgorithmType";
         tracer()->error( errString );
-        throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errString );
+        throw orcaiceutil::Exception( ERROR_INFO, errString );
     }
     
     if ( algorithmType == "fake" )
@@ -109,7 +109,7 @@ void LaserFeatureExtractorComponent::start()
     {
         std::string errString = "Unknown algorithmType: " + algorithmType;
         tracer()->error( errString );
-        throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errString );
+        throw orcaiceutil::Exception( ERROR_INFO, errString );
         return;
     }
     

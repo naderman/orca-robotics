@@ -74,7 +74,7 @@ void UserHandler::readConfigs()
         driverType_ = InputDriver::UNKNOWN_DRIVER;
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
         context_.tracer()->error(errorStr);
-        throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
+        throw orcaiceutil::Exception( ERROR_INFO, errorStr );
     }
 }
 
@@ -106,7 +106,7 @@ void UserHandler::run()
         case InputDriver::UNKNOWN_DRIVER :
             string errorStr = "Unknown driver type. Cannot talk to hardware.";
             context_.tracer()->error(errorStr);
-            throw orcaiceutil::OrcaIceUtilException( ERROR_INFO, errorStr );
+            throw orcaiceutil::Exception( ERROR_INFO, errorStr );
     }    
     
     
