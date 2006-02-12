@@ -66,7 +66,10 @@ interface Particle2dConsumer
  */
 interface Particle2d extends Position2d
 {
+    //! 
     void subscribeForParticles( Particle2dConsumer *subscriber );
+
+    //! 
     idempotent void unsubscribeForParticles( Particle2dConsumer *subscriber );
 
 //     void subscribe( Particle2dConsumer *subscriber );
