@@ -62,7 +62,7 @@ void DrunkRobotComponent::start(){
     ( context(), position2dConsumer_, "Position2d" );
 
   //First set up our proxies so other people can talk to us:
-  position2dObj_ = new Position2dI( posBuffer_, geom_ ,topicPrx);
+  position2dObj_ = new Position2dI( posBuffer_, geom_, topicPrx);
   orcaiceutil::createInterfaceWithTag( context(), position2dObj_, "Position2d" );
   
   // Start the component. 

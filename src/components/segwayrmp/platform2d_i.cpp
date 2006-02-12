@@ -69,7 +69,7 @@ orca::Position2dGeometryPtr Platform2dI::getGeometry(const Ice::Current& current
 }
 
 void Platform2dI::subscribe(const ::orca::Position2dConsumerPrx& subscriber,
-                    ::Ice::Double preferedPushInterval, const ::Ice::Current&)
+                            const ::Ice::Current&)
 {
     cout<<"subscription request"<<endl;
     IceStorm::QoS qos;

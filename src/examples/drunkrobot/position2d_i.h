@@ -56,7 +56,7 @@ public:
     // These functions are for subscribing and unsubscribing listeners. They give us a
     // consumer proxy, and we do the callback whenever we want to push data. 
 
-    virtual void subscribe(const ::orca::Position2dConsumerPrx&, ::Ice::Double, const ::Ice::Current& = ::Ice::Current());
+    virtual void subscribe(const ::orca::Position2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
     virtual void unsubscribe(const ::orca::Position2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 

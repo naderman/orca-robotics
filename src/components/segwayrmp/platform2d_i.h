@@ -48,7 +48,7 @@ public:
 
     virtual ::orca::Platform2dConfigPtr getConfig(const ::Ice::Current& ) const;
 
-    virtual void subscribe(const ::orca::Position2dConsumerPrx&, ::Ice::Double, const ::Ice::Current& = ::Ice::Current());
+    virtual void subscribe(const ::orca::Position2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
     virtual void unsubscribe(const ::orca::Position2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
