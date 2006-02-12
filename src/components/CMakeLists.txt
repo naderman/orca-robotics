@@ -8,6 +8,7 @@ SUBDIRS(
   logplayer
   orcaguilocal
   position2dmon
+  registryview
   segwayrmp
   sicklaser
   statusmon

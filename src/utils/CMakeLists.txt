@@ -7,6 +7,7 @@ SUBDIRS(
   liborcaguitools
   liborcaiceutil
   libqorcauml
+  qorcacm
 # UTILITY APPLICATIONS
   iceping
   gorca
