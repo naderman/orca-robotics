@@ -28,7 +28,6 @@ class LaserFeatureExtractorServiceI : public orcaice::Service
 public:
 
     LaserFeatureExtractorServiceI();
-    ~LaserFeatureExtractorServiceI();
 };
 
 #endif

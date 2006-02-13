@@ -28,7 +28,6 @@ class RmpServiceI : public orcaice::Service
 public:
 
     RmpServiceI();
-    ~RmpServiceI();
 };
 
 #endif

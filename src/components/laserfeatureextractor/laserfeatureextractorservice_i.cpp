@@ -37,11 +37,5 @@ extern "C"
 
 LaserFeatureExtractorServiceI::LaserFeatureExtractorServiceI()
 {
-    orcaice::Component *component = new LaserFeatureExtractorComponent;
-    setComponent( component );
-}
-
-LaserFeatureExtractorServiceI::~LaserFeatureExtractorServiceI()
-{
-    delete component();
+    component_ = new LaserFeatureExtractorComponent;
 }
