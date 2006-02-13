@@ -27,19 +27,19 @@
 #include <orca/platform2d.h>
 
 // utilities
-#include <orcaiceutil/ptrbuffer.h>
-#include <orcaiceutil/ptrnotify.h>
+#include <orcaice/ptrbuffer.h>
+#include <orcaice/ptrnotify.h>
 
 
 // serves latest data on demand and accepts commands
 class Platform2dI : public orca::Platform2d
 {
 public:
-    Platform2dI( orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    &position2d,
-                 //orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> &commands,
-                 orcaiceutil::PtrNotify &commands,
-                 orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  &setConfigBuffer,
-                 orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  &currentConfigBuffer,
+    Platform2dI( orcaice::PtrBuffer<orca::Position2dDataPtr>    &position2d,
+                 //orcaice::PtrBuffer<orca::Velocity2dCommandPtr> &commands,
+                 orcaice::PtrNotify &commands,
+                 orcaice::PtrBuffer<orca::Platform2dConfigPtr>  &setConfigBuffer,
+                 orcaice::PtrBuffer<orca::Platform2dConfigPtr>  &currentConfigBuffer,
                  const IceStorm::TopicPrx &topic );
 
     virtual ::orca::Position2dDataPtr getData(const ::Ice::Current& ) const;
@@ -62,15 +62,15 @@ public:
 
 private:
     // the driver will put the latest data into this proxy
-    orcaiceutil::PtrBuffer<orca::Position2dDataPtr> &position2dProxy_;
+    orcaice::PtrBuffer<orca::Position2dDataPtr> &position2dProxy_;
     // the driver will take the latest command from the proxy
-    //orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> &commandProxy_;
-    orcaiceutil::PtrNotify &commandNotify_;
+    //orcaice::PtrBuffer<orca::Velocity2dCommandPtr> &commandProxy_;
+    orcaice::PtrNotify &commandNotify_;
 
     // for incoming requests
-    orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr> &setConfigBuffer_;
+    orcaice::PtrBuffer<orca::Platform2dConfigPtr> &setConfigBuffer_;
     // for the current config
-    orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr> &currentConfigBuffer_;
+    orcaice::PtrBuffer<orca::Platform2dConfigPtr> &currentConfigBuffer_;
 
     // IceStorm topic to which we send our updates and cand subscribe other to
     IceStorm::TopicPrx topic_;

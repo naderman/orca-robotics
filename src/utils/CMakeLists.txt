@@ -3,9 +3,9 @@ MESSAGE ( "== UTILITIES ==" )
 # when adding new directories, please maintain alphabetical order
 SUBDIRS(  
 # LIBRARIES
+  orcaice
   orcadef
   liborcaguitools
-  liborcaiceutil
   libqorcauml
   qorcacm
 # UTILITY APPLICATIONS

@@ -63,7 +63,7 @@ $ icebox --Ice.Config=icebox_icestorm.cfg
 
 When an Orca component starts up, it needs to know how to find the services above.
 
-If your components use orcaiceutil, you can solve this problem
+If your components use libOrcaIce, you can solve this problem
 centrally by putting the following in your '~/.orcarc' file:
 @verbatim
 # Standard Ice Configuration for Orca

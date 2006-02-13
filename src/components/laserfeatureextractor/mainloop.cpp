@@ -23,12 +23,12 @@
 #include "mainloop.h"
 #include "configparameters.h"
 
-#include <orcaiceutil/orcaiceutil.h>
+#include <orcaice/orcaice.h>
 
 using namespace std;
 using namespace orca;
-using namespace orcaiceutil;
-using orcaiceutil::operator<<;
+using namespace orcaice;
+using orcaice::operator<<;
 
 
 MainLoop::MainLoop( FeatureExtractorBase *algorithm,

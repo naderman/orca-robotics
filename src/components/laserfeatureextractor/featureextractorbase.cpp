@@ -19,12 +19,12 @@
  */
 #include "featureextractorbase.h"
 
-#include <orcaiceutil/objutils.h>
+#include <orcaice/objutils.h>
 #include <iostream>
 
 using namespace orca;
 using namespace std;
-using namespace orcaiceutil;
+using namespace orcaice;
 
 FeatureExtractorBase::FeatureExtractorBase()
 {

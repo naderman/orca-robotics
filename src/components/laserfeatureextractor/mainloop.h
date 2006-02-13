@@ -24,8 +24,8 @@
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
 
-#include <orcaiceutil/thread.h>
-#include <orcaiceutil/ptrbuffer.h>
+#include <orcaice/thread.h>
+#include <orcaice/ptrbuffer.h>
 #include <orca/polarfeature2d.h>
 #include <orca/laser.h>
 
@@ -33,15 +33,15 @@
 
 #include <string>
 
-class MainLoop : public orcaiceutil::Thread
+class MainLoop : public orcaice::Thread
 {
 public:
 
     MainLoop(   FeatureExtractorBase *algorithm,
                 const orca::PolarFeature2dConsumerPrx &polarFeaturesConsumer,
                 orca::LaserPrx laserPrx,
-                orcaiceutil::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer, 
-                orcaiceutil::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
+                orcaice::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer,
+                orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
                 Ice::PropertiesPtr *prop,
                 std::string prefix );
     ~MainLoop();
@@ -64,8 +64,8 @@ private:
     orca::RangeScannerGeometryPtr laserGeometryPtr_;
     
     // buffers
-    orcaiceutil::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer_;
-    orcaiceutil::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer_;
+    orcaice::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer_;
+    orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer_;
     
     // access to configuration parameters
     Ice::PropertiesPtr *prop_;

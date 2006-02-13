@@ -23,8 +23,8 @@
 
 #include "deviceuser_i.h"
 
-#include <orcaiceutil/device.h>
-#include <orcaiceutil/objutils.h>
+#include <orcaice/device.h>
+#include <orcaice/objutils.h>
 
 //#include <sstream>
 
@@ -82,7 +82,7 @@ int App::run( int argc, char* argv[] )
     }
 
     SimpleLaserScan scan;
-    orcaiceutil::setSane( scan );
+    orcaice::setSane( scan );
 
     // endpoints are in the config file!
     //Ice::ObjectAdapterPtr adapter = communicator()->createObjectAdapter("OrcaComponent");

@@ -18,7 +18,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include <orcaiceutil/application.h>
+#include <orcaice/application.h>
 
 #include "rmpcomponent.h"
 
@@ -28,6 +28,6 @@
 int main(int argc, char * argv[])
 {
     RmpComponent component;
-    orcaiceutil::Application app( argc, argv, component );
+    orcaice::Application app( argc, argv, component );
     return app.main(argc, argv);
 }

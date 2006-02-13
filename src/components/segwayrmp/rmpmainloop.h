@@ -21,11 +21,11 @@
 #ifndef ORCA2_RMP_MAIN_LOOP_H
 #define ORCA2_RMP_MAIN_LOOP_H
 
-#include <orcaiceutil/thread.h>
-#include <orcaiceutil/context.h>
-#include <orcaiceutil/ptrbuffer.h>
-#include <orcaiceutil/ptrnotify.h>
-#include <orcaiceutil/timer.h>
+#include <orcaice/thread.h>
+#include <orcaice/context.h>
+#include <orcaice/ptrbuffer.h>
+#include <orcaice/ptrnotify.h>
+#include <orcaice/timer.h>
 
 #include "rmpdriver.h"
 
@@ -34,20 +34,20 @@
 
 
 //! Note: this thing self-destructs when run() returns.
-class RmpMainLoop : public orcaiceutil::Thread, public orcaiceutil::PtrNotifyHandler
+class RmpMainLoop : public orcaice::Thread, public orcaice::PtrNotifyHandler
 {
 public:
 
-    RmpMainLoop( orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy,
-                 orcaiceutil::PtrNotify                             & commandNotify,
-                 orcaiceutil::PtrBuffer<orca::PowerDataPtr>         & powerProxy,
-                 orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer,
-                 orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer,
+    RmpMainLoop( orcaice::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy,
+                 orcaice::PtrNotify                             & commandNotify,
+                 orcaice::PtrBuffer<orca::PowerDataPtr>         & powerProxy,
+                 orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer,
+                 orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer,
                  const orca::Position2dConsumerPrx                  & position2dPublisher,
                  const orca::PowerConsumerPrx                       & powerPublisher );
     virtual ~RmpMainLoop();
 
-    void setCurrent( const orcaiceutil::Context & context ) { context_=context; };
+    void setCurrent( const orcaice::Context & context ) { context_=context; };
 
     virtual void run();
 
@@ -56,11 +56,11 @@ public:
 private:
 
     // network/driver interface
-    orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy_;
-    orcaiceutil::PtrNotify                             & commandNotify_;
-    orcaiceutil::PtrBuffer<orca::PowerDataPtr>         & powerProxy_;
-    orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer_;
-    orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer_;
+    orcaice::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy_;
+    orcaice::PtrNotify                             & commandNotify_;
+    orcaice::PtrBuffer<orca::PowerDataPtr>         & powerProxy_;
+    orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer_;
+    orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer_;
 
     // IceStorm consumers
     orca::Position2dConsumerPrx position2dPublisher_;
@@ -75,16 +75,16 @@ private:
     RmpDriver::DriverType driverType_;
 
     // component current context
-    orcaiceutil::Context context_;
+    orcaice::Context context_;
 
     // timers for publishing to icestorm
-    orcaiceutil::Timer position2dPublishTimer_;
-    orcaiceutil::Timer powerPublishTimer_;
-    orcaiceutil::Timer statusPublishTimer_;
+    orcaice::Timer position2dPublishTimer_;
+    orcaice::Timer powerPublishTimer_;
+    orcaice::Timer statusPublishTimer_;
     
     // debug
-    orcaiceutil::Timer readTimer_;
-    orcaiceutil::Timer writeTimer_;
+    orcaice::Timer readTimer_;
+    orcaice::Timer writeTimer_;
 
 };
 

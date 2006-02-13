@@ -27,7 +27,7 @@
 Platform2dI::Platform2dI()
 {
     position_ = new orca::Position2dData;
-    orcaiceutil::setSane( position_ );
+    orcaice::setSane( position_ );
 }
 
 orca::Position2dDataPtr Platform2dI::getData(const Ice::Current& current)

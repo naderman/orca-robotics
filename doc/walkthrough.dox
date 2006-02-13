@@ -132,7 +132,7 @@ interface was created. The file \c position2d_i.cpp looks like this:
 
 Now we've implemented the interface, we have to write the main loop
 that actually does the processing. Main loops inherit from the
-orcaiceutil::Thread class. Because of this, it only need to implement
+orcaice::Thread class. Because of this, it only need to implement
 one method: run(). When run finishes, the thread will terminate. 
 
 The other thing that's unusual about the main loop is that is also
@@ -149,7 +149,7 @@ The implementation is pretty simple as well. The constructor sets
 things up. Then our main loop does the following: 
 
 -# Make a new Position2dData object.
--# Use the orcaiceutil method to set it to a sane value, which
+-# Use the orcaice method to set it to a sane value, which
    includes assigning random position values. 
 -# Send it to IceStorm
 -# Send it to the interface's pointer buffer so that if someone 
@@ -165,7 +165,7 @@ The file \c drunkrobotmainloop.cpp is:
 The component glues the interface class and the main loop
 together. Mostly, it is boiler-plate code; code that connects one
 object to the other. The other important characteristic of the the
-component is that it inherits from the orcaiceutil::Component
+component is that it inherits from the orcaice::Component
 class. This will allow us later to choose how we wish to run the
 drunkrobot: as a stand-alone process or within what ICE calls an
 IceBox -- an environment where lots of different components can live
@@ -186,7 +186,7 @@ Our start() method basically does the following:
 -# Asks the communicator of this component to set up the port for our
    interface.
 -# Attaches our implementation of the Position2d class to that port. 
--# Using a nice method in orcaiceutil, sets up icestorm output so that 
+-# Using a nice method in orcaice, sets up IceStorm output so that
    we can use the proxy to send out info to the proxy. 
 -# activates the adapter for this component so that communication
 can begin. 
@@ -281,7 +281,7 @@ Orca2. These include
 
 - Putting components into IceBoxes instead of standalone
 applications. 
-- How to receive "pushed" messages using the orcaiceutil::PtrNotify
+- How to receive "pushed" messages using the orcaice::PtrNotify
 class. 
 - Documenting your code using the Doxygen system. 
 - Implementing different interfaces in a single component. 

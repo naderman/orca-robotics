@@ -65,14 +65,14 @@ void HelloServiceI::start(const string& name,
              const Ice::StringSeq& args)
 {
     // create the one-and-only component adapter, parse config file to create adapter name
-    if ( orcaiceutil::setComponentProperties( communicator, name ) ) {
+    if ( orcaice::setComponentProperties( communicator, name ) ) {
         exit( EXIT_FAILURE );
     }
     adapter_ = communicator->createObjectAdapter(name);
 
     // PROVIDED : Position2d
-    string topic1 = orcaiceutil::getTopicName( communicator, "Position2d", name );
-    Ice::ObjectPrx obj = orcaiceutil::getIceStormPublisher( communicator, topic1 );
+    string topic1 = orcaice::getTopicName( communicator, "Position2d", name );
+    Ice::ObjectPrx obj = orcaice::getIceStormPublisher( communicator, topic1 );
     if ( !obj ) {
         exit( EXIT_FAILURE );
     }
@@ -81,7 +81,7 @@ void HelloServiceI::start(const string& name,
     Ice::ObjectPtr platform2dObj = new Platform2dI;
 
     // tell adapter about the new servant
-    string name1 = orcaiceutil::getPortName( communicator, "Position2d", name );
+    string name1 = orcaice::getPortName( communicator, "Position2d", name );
     adapter_->add( platform2dObj, Ice::stringToIdentity( name1 ) );
 
     // start processing clients' requests
@@ -91,7 +91,7 @@ void HelloServiceI::start(const string& name,
     // objects
     orca::Position2dDataPtr posData = new Position2dData;
 
-    orcaiceutil::setSane( posData );
+    orcaice::setSane( posData );
 
     while ( 1 )
     {

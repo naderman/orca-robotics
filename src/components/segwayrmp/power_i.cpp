@@ -24,7 +24,7 @@ using namespace orca;
 
 using namespace std;
 
-PowerI::PowerI( orcaiceutil::PtrBuffer<orca::PowerDataPtr> &power,
+PowerI::PowerI( orcaice::PtrBuffer<orca::PowerDataPtr> &power,
                 const IceStorm::TopicPrx &topic ) :
         powerProxy_(power),
         topic_(topic)

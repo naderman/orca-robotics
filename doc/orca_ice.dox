@@ -28,7 +28,7 @@ Ice is a general purpose framework for distributed computation. Orca is a compon
 
 An Ice application can have multiple Communicators (Ice run-time), each with zero-to-N Object
 Adapters, each with zero-to-M objects. In contrast, an Orca component implemented as an
-orcaiceutil::Application has one Communicator with one Object Adapter, which may have several
+orcaice::Application has one Communicator with one Object Adapter, which may have several
 Objects.
 
 @par Slice Classes vs. Strutures

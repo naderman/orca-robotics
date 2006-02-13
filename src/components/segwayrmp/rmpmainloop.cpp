@@ -36,19 +36,19 @@
 #endif
 #include "rmpfakedriver.h"
 
-#include <orcaiceutil/orcaiceutil.h>
-#include <orcaiceutil/mathdefs.h>
-#include <orcaiceutil/exceptions.h>
+#include <orcaice/orcaice.h>
+#include <orcaice/mathdefs.h>
+#include <orcaice/exceptions.h>
 
 using namespace std;
 using namespace orca;
 
 RmpMainLoop::RmpMainLoop(
-                 orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy,
-                 orcaiceutil::PtrNotify                             & commandNotify,
-                 orcaiceutil::PtrBuffer<orca::PowerDataPtr>         & powerProxy,
-                 orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer,
-                 orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer,
+                 orcaice::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy,
+                 orcaice::PtrNotify                             & commandNotify,
+                 orcaice::PtrBuffer<orca::PowerDataPtr>         & powerProxy,
+                 orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer,
+                 orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer,
                  const orca::Position2dConsumerPrx                  & position2dPublisher,
                  const orca::PowerConsumerPrx                       & powerPublisher ) :
         position2dProxy_(position2dProxy),
@@ -74,17 +74,17 @@ void RmpMainLoop::readConfigs()
     //
     // Read settings
     //
-    config_.maxSpeed = orcaiceutil::getPropertyAsDoubleWithDefault( context_.properties(),
+    config_.maxSpeed = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             "SegwayRmp.Config.MaxSpeed", 1.0 );
-    config_.maxTurnrate = orcaiceutil::getPropertyAsDoubleWithDefault( context_.properties(),
+    config_.maxTurnrate = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             "SegwayRmp.Config.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
-    config_.position2dPublishInterval = orcaiceutil::getPropertyAsDoubleWithDefault( context_.properties(),
+    config_.position2dPublishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             "SegwayRmp.Config.position2dPublishInterval", 0.1 );
-    config_.powerPublishInterval = orcaiceutil::getPropertyAsDoubleWithDefault( context_.properties(),
+    config_.powerPublishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             "SegwayRmp.Config.powerPublishInterval", 10.0 );
-    config_.statusPublishInterval = orcaiceutil::getPropertyAsDoubleWithDefault( context_.properties(),
+    config_.statusPublishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             "SegwayRmp.Config.statusPublishInterval", 60.0 );
-    string driverName = orcaiceutil::getPropertyWithDefault( context_.properties(),
+    string driverName = orcaice::getPropertyWithDefault( context_.properties(),
             "SegwayRmp.Config.Driver", "usb" );
 
     if ( driverName == "usb" ) {
@@ -97,7 +97,7 @@ void RmpMainLoop::readConfigs()
         driverType_ = RmpDriver::UNKNOWN_DRIVER;
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
         context_.tracer()->error( errorStr);
-        throw orcaiceutil::HardwareException( ERROR_INFO, errorStr );
+        throw orcaice::HardwareException( ERROR_INFO, errorStr );
     }
         
 }
@@ -134,7 +134,7 @@ void RmpMainLoop::run()
         case RmpDriver::UNKNOWN_DRIVER :
             string errorStr = "Unknown driver type. Cannot talk to hardware.";
             context_.tracer()->error(errorStr);
-            throw orcaiceutil::Exception( ERROR_INFO, errorStr );
+            throw orcaice::Exception( ERROR_INFO, errorStr );
     }
     
     //
@@ -264,7 +264,7 @@ void RmpMainLoop::handleData( const Ice::ObjectPtr & obj )
                 (command->motion.w / fabs(command->motion.w)) * config_.maxTurnrate;
     }
 
-    //cout<<"handling: "<<orcaiceutil::toString(command)<<endl;
+    //cout<<"handling: "<<orcaice::toString(command)<<endl;
 
     // write to hardware
     if( driver_->sendMotionCommand( command ) != 0 )

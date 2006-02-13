@@ -22,10 +22,10 @@
 
 #include "laserconsumer_i.h"
 
-#include <orcaiceutil/objutils.h>
+#include <orcaice/objutils.h>
 
 using namespace std;
-using namespace orcaiceutil;
+using namespace orcaice;
 using namespace orca;
 
 LaserConsumerI::LaserConsumerI( PtrBuffer<LaserDataPtr> &laserDataBuffer )

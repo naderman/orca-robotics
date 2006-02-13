@@ -25,16 +25,16 @@
 #include <Ice/Ice.h>
 
 #include <orca/laser.h>
-#include <orcaiceutil/ptrbuffer.h>
+#include <orcaice/ptrbuffer.h>
 
 class LaserConsumerI : public orca::RangeScannerConsumer
 {
     public:
-        LaserConsumerI ( orcaiceutil::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer );
+        LaserConsumerI ( orcaice::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer );
         virtual void setData(const orca::RangeScannerDataPtr& data, const Ice::Current&);
         
     private:
-        orcaiceutil::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer_;
+        orcaice::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer_;
 };
 
 #endif

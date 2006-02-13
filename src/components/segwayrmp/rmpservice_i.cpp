@@ -37,7 +37,7 @@ extern "C"
 
 RmpServiceI::RmpServiceI()
 {
-    orcaiceutil::Component *component = new RmpComponent;
+    orcaice::Component *component = new RmpComponent;
     setComponent( component );
 }
 

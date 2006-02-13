@@ -28,14 +28,14 @@
 #endif
 #include "teleopfakedriver.h"
 
-#include <orcaiceutil/orcaiceutil.h>
-#include <orcaiceutil/exceptions.h>
-#include <orcaiceutil/mathdefs.h>
+#include <orcaice/orcaice.h>
+#include <orcaice/exceptions.h>
+#include <orcaice/mathdefs.h>
 
 using namespace std;
 using namespace orca;
 
-UserHandler::UserHandler( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commands ) :
+UserHandler::UserHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commands ) :
         commandBuffer_(commands),
         driver_(0),
         driverType_(InputDriver::UNKNOWN_DRIVER)
@@ -52,11 +52,11 @@ void UserHandler::readConfigs()
     //
     // Read settings
     //
-    config_.maxSpeed = orcaiceutil::getPropertyAsDoubleWithDefault( context_.properties(),
+    config_.maxSpeed = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
                 "Teleop.Config.MaxSpeed", 1.0 );
-    config_.maxTurnrate = orcaiceutil::getPropertyAsDoubleWithDefault( context_.properties(),
+    config_.maxTurnrate = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
                 "Teleop.Config.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
-    string driverName = orcaiceutil::getPropertyWithDefault( context_.properties(),
+    string driverName = orcaice::getPropertyWithDefault( context_.properties(),
                 "Teleop.Config.Driver", "keyboard" );
 
     if ( driverName == "keyboard" ) {
@@ -64,7 +64,7 @@ void UserHandler::readConfigs()
     }
     else if ( driverName == "joystick" ) {
         driverType_ = InputDriver::JOYSTICK_DRIVER;
-        config_.joystickDevice = orcaiceutil::getPropertyWithDefault( context_.properties(),
+        config_.joystickDevice = orcaice::getPropertyWithDefault( context_.properties(),
                 "Teleop.Config.JoystickDevice", "/dev/input/event0" );
     }
     else if ( driverName == "fake" ) {
@@ -74,7 +74,7 @@ void UserHandler::readConfigs()
         driverType_ = InputDriver::UNKNOWN_DRIVER;
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
         context_.tracer()->error(errorStr);
-        throw orcaiceutil::Exception( ERROR_INFO, errorStr );
+        throw orcaice::Exception( ERROR_INFO, errorStr );
     }
 }
 
@@ -106,7 +106,7 @@ void UserHandler::run()
         case InputDriver::UNKNOWN_DRIVER :
             string errorStr = "Unknown driver type. Cannot talk to hardware.";
             context_.tracer()->error(errorStr);
-            throw orcaiceutil::Exception( ERROR_INFO, errorStr );
+            throw orcaice::Exception( ERROR_INFO, errorStr );
     }    
     
     

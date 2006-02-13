@@ -3,7 +3,7 @@ OPTION( BUILD_TELEOP "Try to build Teleop" ON )
 IF ( BUILD_TELEOP )
 
     INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaiceutil.cmake )
+    INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
 
     # keyboard driver
     OPTIONAL_SUB_LIBRARY(

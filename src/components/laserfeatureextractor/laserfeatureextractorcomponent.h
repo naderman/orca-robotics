@@ -22,8 +22,8 @@
 #define ORCA2_LASERFEATUREEXTRACTOR_COMPONENT_H
 
 
-#include <orcaiceutil/component.h>
-#include <orcaiceutil/orcaiceutil.h>
+#include <orcaice/component.h>
+#include <orcaice/orcaice.h>
 
 // interface definitions
 #include <orca/laser.h>
@@ -36,7 +36,7 @@
 class MainLoop;
 class FeatureExtractorBase;
 
-class LaserFeatureExtractorComponent : public orcaiceutil::Component
+class LaserFeatureExtractorComponent : public orcaice::Component
 {
 public:
 
@@ -56,8 +56,8 @@ private:
     Ice::ObjectPtr polarFeature_;
     orca::PolarFeature2dConsumerPrx polarFeaturePublisher_;
     
-    orcaiceutil::PtrBuffer<orca::LaserDataPtr> laserDataBuffer_;
-    orcaiceutil::PtrBuffer<orca::PolarFeature2dDataPtr> polarFeaturesDataBuffer_;
+    orcaice::PtrBuffer<orca::LaserDataPtr> laserDataBuffer_;
+    orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> polarFeaturesDataBuffer_;
 
     MainLoop* mainLoop_;
     FeatureExtractorBase *algorithm_;

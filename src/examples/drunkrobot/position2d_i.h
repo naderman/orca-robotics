@@ -26,8 +26,8 @@
 #include <orca/position2d.h>
 
 // utilities
-#include <orcaiceutil/ptrbuffer.h>
-#include <orcaiceutil/connectutils.h>
+#include <orcaice/ptrbuffer.h>
+#include <orcaice/connectutils.h>
 
 // This interface allows us to get information in and out of our 
 // robot. It uses a pointer buffer (a nice thread safe class from the 
@@ -40,7 +40,7 @@ class Position2dI : public orca::Position2d
 public:
 
     //!Constructor takes a pointer buffer 
-    Position2dI( orcaiceutil::PtrBuffer<orca::Position2dDataPtr> &posBuffer, 
+    Position2dI( orcaice::PtrBuffer<orca::Position2dDataPtr> &posBuffer, 
 		 orca::Position2dGeometryPtr &geomBuffer, 
 		 const IceStorm::TopicPrx &topic);
 
@@ -63,7 +63,7 @@ public:
 
 
     // the driver will put the latest data into this proxy
-    orcaiceutil::PtrBuffer<orca::Position2dDataPtr> &posBuffer_;
+    orcaice::PtrBuffer<orca::Position2dDataPtr> &posBuffer_;
     
    // the driver will use this member to return geometry when requested. 
     orca::Position2dGeometryPtr& geomBuffer_; 

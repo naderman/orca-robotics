@@ -22,14 +22,14 @@
 
 #include "networkhandler.h"
 
-#include <orcaiceutil/orcaiceutil.h>
-#include <orcaiceutil/exceptions.h>
+#include <orcaice/orcaice.h>
+#include <orcaice/exceptions.h>
 
 using namespace std;
 using namespace orca;
-using orcaiceutil::operator<<;
+using orcaice::operator<<;
 
-NetworkHandler::NetworkHandler( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer )
+NetworkHandler::NetworkHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer )
     : commandBuffer_(commandBuffer)
 {
 }
@@ -54,14 +54,14 @@ void NetworkHandler::run()
     command->motion.w = 0.0;
 
     // configs
-    timeoutMs_ = (int)floor(1000.0 * orcaiceutil::getPropertyAsDoubleWithDefault(
+    timeoutMs_ = (int)floor(1000.0 * orcaice::getPropertyAsDoubleWithDefault(
             context_.properties(), "Teleop.Config.RepeatInterval", 0.2 ) );
 
     // REQUIRED : Platform2d
     while ( isActive() ) {
         try
         {
-            orcaiceutil::connectToInterfaceWithTag<Platform2dPrx>( context_, platform2dPrx_, "Platform2d" );
+            orcaice::connectToInterfaceWithTag<Platform2dPrx>( context_, platform2dPrx_, "Platform2d" );
             context_.tracer()->print("connected to a 'Platform2d' interface");
             break;
         }

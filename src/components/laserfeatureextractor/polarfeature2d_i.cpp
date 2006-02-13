@@ -23,7 +23,7 @@
 
 using namespace std;
 using namespace orca;
-using namespace orcaiceutil;
+using namespace orcaice;
 
 PolarFeature2dI::PolarFeature2dI( PtrBuffer<PolarFeature2dDataPtr> &polarFeatureDataBuffer, const IceStorm::TopicPrx &topic ) 
     : polarFeatureDataBuffer_( polarFeatureDataBuffer ), topic_(topic)

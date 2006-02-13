@@ -21,30 +21,30 @@
 #ifndef ORCA2_TELEOP_USER_HANDLER_H
 #define ORCA2_TELEOP_USER_HANDLER_H
 
-#include <orcaiceutil/thread.h>
-#include <orcaiceutil/context.h>
-#include <orcaiceutil/ptrbuffer.h>
+#include <orcaice/thread.h>
+#include <orcaice/context.h>
+#include <orcaice/ptrbuffer.h>
 
 #include <orca/platform2d.h>
 
 #include "inputdriver.h"
 
 
-class UserHandler : public orcaiceutil::Thread
+class UserHandler : public orcaice::Thread
 {
 public:
 
-    UserHandler( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commands );
+    UserHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commands );
     virtual ~UserHandler();
 
-    void setCurrent( const orcaiceutil::Context & context ) { context_=context; };
+    void setCurrent( const orcaice::Context & context ) { context_=context; };
 
     virtual void run();
 
 private:
 
     // network/driver interface
-    orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer_;
+    orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer_;
 
     // generic interface to input hardware
     InputDriver* driver_;
@@ -56,7 +56,7 @@ private:
     void readConfigs();
 
     // component current context
-    orcaiceutil::Context context_;
+    orcaice::Context context_;
 };
 
 #endif

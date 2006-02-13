@@ -31,7 +31,7 @@ using namespace std;
 using namespace orca;
 
 LaserFeatureExtractorComponent::LaserFeatureExtractorComponent()
-    : orcaiceutil::Component( "LaserFeatureExtractor" )
+    : orcaice::Component( "LaserFeatureExtractor" )
 {
 }
 
@@ -52,21 +52,21 @@ void LaserFeatureExtractorComponent::start()
     //
     // find IceStorm publisher
     IceStorm::TopicPrx topicPrx =
-        orcaiceutil::connectToTopicWithTag<PolarFeature2dConsumerPrx>
+        orcaice::connectToTopicWithTag<PolarFeature2dConsumerPrx>
                     ( context(),polarFeaturePublisher_, "PolarFeature2d" );
     // create servant for direct connections and tell adapter about it
     polarFeature_ = new PolarFeature2dI( polarFeaturesDataBuffer_, topicPrx );
-    orcaiceutil::createInterfaceWithTag( context(), polarFeature_, "PolarFeature2d" );
+    orcaice::createInterfaceWithTag( context(), polarFeature_, "PolarFeature2d" );
 
     //
     // REQUIRED: Laser
     //
     Ice::ObjectPtr consumer  = new LaserConsumerI( laserDataBuffer_ );
-    laserCallbackPrx_ = orcaiceutil::createConsumerInterface<orca::RangeScannerConsumerPrx>( context(),
+    laserCallbackPrx_ = orcaice::createConsumerInterface<orca::RangeScannerConsumerPrx>( context(),
                                                                                              consumer );
 
     // connect to remote Laser interface
-    orcaiceutil::connectToInterfaceWithTag<LaserPrx>( context(), laserPrx_, "Laser" );
+    orcaice::connectToInterfaceWithTag<LaserPrx>( context(), laserPrx_, "Laser" );
     
     //
     // ENABLE NETWORK CONNECTIONS
@@ -88,13 +88,13 @@ void LaserFeatureExtractorComponent::start()
    
     // ================== ALGORITHMS ================================
     std::string algorithmType;
-    int ret = orcaiceutil::getProperty( prop_, prefix+"AlgorithmType", algorithmType );
+    int ret = orcaice::getProperty( prop_, prefix+"AlgorithmType", algorithmType );
     if ( ret != 0 )
     {
         std::string errString = "Couldn't determine algorithmType. Expected property ";
         errString += prefix + "AlgorithmType";
         tracer()->error( errString );
-        throw orcaiceutil::Exception( ERROR_INFO, errString );
+        throw orcaice::Exception( ERROR_INFO, errString );
     }
     
     if ( algorithmType == "fake" )
@@ -109,7 +109,7 @@ void LaserFeatureExtractorComponent::start()
     {
         std::string errString = "Unknown algorithmType: " + algorithmType;
         tracer()->error( errString );
-        throw orcaiceutil::Exception( ERROR_INFO, errString );
+        throw orcaice::Exception( ERROR_INFO, errString );
         return;
     }
     

@@ -21,9 +21,9 @@
 #ifndef ORCA2_LASER_FEATURE_EXTRACTOR_SERVICE_I_H
 #define ORCA2_LASER_FEATURE_EXTRACTOR_SERVICE_I_H
 
-#include <orcaiceutil/orcaiceutil.h>
+#include <orcaice/orcaice.h>
 
-class LaserFeatureExtractorServiceI : public orcaiceutil::Service
+class LaserFeatureExtractorServiceI : public orcaice::Service
 {
 public:
 

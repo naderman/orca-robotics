@@ -22,11 +22,11 @@
 
 #include "teleopfakedriver.h"
 
-#include <orcaiceutil/orcaiceutil.h>
+#include <orcaice/orcaice.h>
 
 using namespace std;
 using namespace orca;
-using orcaiceutil::operator<<;
+using orcaice::operator<<;
 
 
 TeleopFakeDriver::TeleopFakeDriver( const InputDriver::Config &cfg ) :
@@ -52,7 +52,7 @@ int TeleopFakeDriver::disable()
 
 int TeleopFakeDriver::readdata( orca::Velocity2dCommandPtr &data )
 {
-    orcaiceutil::setSane( data );
+    orcaice::setSane( data );
 
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
 

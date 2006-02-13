@@ -21,21 +21,21 @@
 #ifndef ORCA2_TELEOP_NETWORK_HANDLER_H
 #define ORCA2_TELEOP_NETWORK_HANDLER_H
 
-#include <orcaiceutil/thread.h>
-#include <orcaiceutil/context.h>
-#include <orcaiceutil/ptrbuffer.h>
+#include <orcaice/thread.h>
+#include <orcaice/context.h>
+#include <orcaice/ptrbuffer.h>
 
 #include <orca/platform2d.h>
 
 
-class NetworkHandler : public orcaiceutil::Thread
+class NetworkHandler : public orcaice::Thread
 {
 public:
 
-    NetworkHandler( orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer );
+    NetworkHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer );
     ~NetworkHandler();
 
-    void setCurrent( const orcaiceutil::Context & context ) { context_=context; };
+    void setCurrent( const orcaice::Context & context ) { context_=context; };
 
     void setupConfigs( const Ice::PropertiesPtr & properties );
 
@@ -47,12 +47,12 @@ private:
     orca::Platform2dPrx platform2dPrx_;
 
     // network/driver interface
-    orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr>* commandBuffer_;
+    orcaice::PtrBuffer<orca::Velocity2dCommandPtr>* commandBuffer_;
 
     int timeoutMs_;
 
     // component current context
-    orcaiceutil::Context context_;
+    orcaice::Context context_;
 
 };
 

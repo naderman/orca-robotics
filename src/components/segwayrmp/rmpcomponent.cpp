@@ -27,12 +27,12 @@
 #include "platform2d_i.h"
 #include "power_i.h"
 
-#include <orcaiceutil/orcaiceutil.h>
+#include <orcaice/orcaice.h>
 
 using namespace orca;
 
 RmpComponent::RmpComponent() :
-    orcaiceutil::Component( "SegwayRmp" ), mainLoop_(0)
+    orcaice::Component( "SegwayRmp" ), mainLoop_(0)
 {
 }
 
@@ -51,24 +51,24 @@ void RmpComponent::start()
 
     // PROVIDED INTERFACE: Platform2d
     // Find IceStorm Topic to which we'll publish
-    IceStorm::TopicPrx platfTopicPrx = orcaiceutil::connectToTopicWithTag<Position2dConsumerPrx>
+    IceStorm::TopicPrx platfTopicPrx = orcaice::connectToTopicWithTag<Position2dConsumerPrx>
                 ( context(), position2dPublisher_, "Platform2d" );
 
     // create servant for direct connections and tell adapter about it
     platform2dObj_ = new Platform2dI( position2dBuffer_, commandBuffer_,
                                       setConfigBuffer_, currentConfigBuffer_, platfTopicPrx );
-    orcaiceutil::createInterfaceWithTag( context(), platform2dObj_, "Platform2d" );
+    orcaice::createInterfaceWithTag( context(), platform2dObj_, "Platform2d" );
 
 
 
     // PROVIDED INTERFACE: Power
     // Find IceStorm ConsumerProxy to push out data
-    IceStorm::TopicPrx powerTopicPrx = orcaiceutil::connectToTopicWithTag<PowerConsumerPrx>
+    IceStorm::TopicPrx powerTopicPrx = orcaice::connectToTopicWithTag<PowerConsumerPrx>
                 ( context(), powerPublisher_, "Power" );
     
     // create servant for direct connections and tell adapter about it
     powerObj_ = new PowerI( powerBuffer_, powerTopicPrx );
-    orcaiceutil::createInterfaceWithTag( context(), powerObj_, "Power" );
+    orcaice::createInterfaceWithTag( context(), powerObj_, "Power" );
 
 
     //

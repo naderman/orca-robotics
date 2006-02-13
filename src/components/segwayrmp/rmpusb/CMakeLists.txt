@@ -1,4 +1,4 @@
-INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaiceutil.cmake )
+INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
 
 # Glob all source files
 FILE( GLOB SRCS *.cpp )

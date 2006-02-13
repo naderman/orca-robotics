@@ -19,11 +19,11 @@
  */
 #include <iostream>
 #include "drunkrobotmainloop.h"
-#include <orcaiceutil/objutils.h>
+#include <orcaice/objutils.h>
 
 using namespace std;
 using namespace orca;
-using namespace orcaiceutil; 
+using namespace orcaice; 
 
 DrunkRobotMainLoop::DrunkRobotMainLoop(PtrBuffer<Position2dDataPtr> &posBuffer,
 				       const Position2dConsumerPrx &position2dConsumer):

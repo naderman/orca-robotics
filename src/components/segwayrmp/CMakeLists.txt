@@ -3,7 +3,7 @@ OPTION( BUILD_SEGWAYRMP "Try to build SegwayRmp component" ON )
 IF ( BUILD_SEGWAYRMP )
 
   INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
-  INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaiceutil.cmake )
+  INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
  
   # OPTIONAL_SUB_LIBRARY macro defined in component_rules.cmake
    

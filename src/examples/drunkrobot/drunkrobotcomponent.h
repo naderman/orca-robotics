@@ -21,16 +21,16 @@
 #ifndef ORCA2_DR_COMPONENT_H
 #define ORCA2_DR_COMPONENT_H
 
-#include <orcaiceutil/component.h> 
+#include <orcaice/component.h> 
 #include <orca/position2d.h>
 
-#include <orcaiceutil/orcaiceutil.h>
-#include <orcaiceutil/ptrnotify.h>
+#include <orcaice/orcaice.h>
+#include <orcaice/ptrnotify.h>
 
 
 class DrunkRobotMainLoop; 
 
-class DrunkRobotComponent : public orcaiceutil::Component
+class DrunkRobotComponent : public orcaice::Component
 {
 public:
     DrunkRobotComponent();
@@ -44,7 +44,7 @@ public:
 
     // Now the buffers that go to the ICE interface:
 
-    orcaiceutil::PtrBuffer<orca::Position2dDataPtr> posBuffer_; 
+    orcaice::PtrBuffer<orca::Position2dDataPtr> posBuffer_; 
 
     orca::Position2dGeometryPtr geom_; 
 

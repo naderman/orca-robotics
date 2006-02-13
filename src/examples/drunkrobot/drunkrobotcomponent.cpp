@@ -31,10 +31,10 @@
 
 using namespace std;
 using namespace orca;
-using namespace orcaiceutil; 
+using namespace orcaice; 
 
 DrunkRobotComponent::DrunkRobotComponent():
-  orcaiceutil::Component("DrunkRobot"), 
+  orcaice::Component("DrunkRobot"), 
   mainLoop_(NULL),
   geom_(new Position2dGeometry)
 {
@@ -58,12 +58,12 @@ void DrunkRobotComponent::start(){
   geom_->size.w = 0.1;  
 
 
-  IceStorm::TopicPrx topicPrx = orcaiceutil::connectToTopicWithTag<Position2dConsumerPrx>
+  IceStorm::TopicPrx topicPrx = orcaice::connectToTopicWithTag<Position2dConsumerPrx>
     ( context(), position2dConsumer_, "Position2d" );
 
   //First set up our proxies so other people can talk to us:
   position2dObj_ = new Position2dI( posBuffer_, geom_, topicPrx);
-  orcaiceutil::createInterfaceWithTag( context(), position2dObj_, "Position2d" );
+  orcaice::createInterfaceWithTag( context(), position2dObj_, "Position2d" );
   
   // Start the component. 
 

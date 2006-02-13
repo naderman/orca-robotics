@@ -22,7 +22,7 @@
 
 #include "rmpfakedriver.h"
 
-#include <orcaiceutil/orcaiceutil.h>
+#include <orcaice/orcaice.h>
 
 using namespace std;
 using namespace orca;
@@ -50,8 +50,8 @@ int RmpFakeDriver::disable()
 
 int RmpFakeDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )
 {
-    orcaiceutil::setSane( position2d );
-    orcaiceutil::setSane( power );
+    orcaice::setSane( position2d );
+    orcaice::setSane( power );
 
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     return 0;
@@ -61,7 +61,7 @@ int RmpFakeDriver::sendMotionCommand( orca::Velocity2dCommandPtr & command )
 {
     // debug: throw exceptions to test client's response
     if ( command->motion.v.x < 2.0 ) {
-        cout<<"wrote: "<<orcaiceutil::toString(command)<<endl;
+        cout<<"wrote: "<<orcaice::toString(command)<<endl;
     }
     else {       
         orca::HardwareFailedException e;

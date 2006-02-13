@@ -18,20 +18,20 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include <orcaiceutil/application.h>
+#include <orcaice/application.h>
 
-#include <orcaiceutil/application.h>
-#include <orcaiceutil/component.h>
+#include <orcaice/application.h>
+#include <orcaice/component.h>
 #include <iostream>
 
 // implementations of Ice objects
 #include "rangescannerconsumer_i.h"
 
-#include <orcaiceutil/connectutils.h>
+#include <orcaice/connectutils.h>
 
 using namespace std;
 
-class LaserMonComponent : public orcaiceutil::Component
+class LaserMonComponent : public orcaice::Component
 {
 public:
     LaserMonComponent();
@@ -44,7 +44,7 @@ public:
 
 
 LaserMonComponent::LaserMonComponent()
-    : orcaiceutil::Component( "LaserMon" )
+    : orcaice::Component( "LaserMon" )
 {
 }
 
@@ -63,7 +63,7 @@ void LaserMonComponent::start()
 
     // Connect directly to the interface
     orca::LaserPrx laserPrx;
-    orcaiceutil::connectToInterfaceWithTag<orca::LaserPrx>( context(), laserPrx, "Laser" );
+    orcaice::connectToInterfaceWithTag<orca::LaserPrx>( context(), laserPrx, "Laser" );
 
     // Get the geometry
     cout << "Laser Geometry: " << laserPrx->getGeometry() << endl;
@@ -90,7 +90,7 @@ void LaserMonComponent::start()
     // create a callback object to recieve scans
     Ice::ObjectPtr consumer = new RangeScannerConsumerI;
     orca::RangeScannerConsumerPrx callbackPrx =
-        orcaiceutil::createConsumerInterface<orca::RangeScannerConsumerPrx>( context(), 
+        orcaice::createConsumerInterface<orca::RangeScannerConsumerPrx>( context(),
                                                                              consumer );
     //
     // ENABLE NETWORK CONNECTIONS
@@ -116,6 +116,6 @@ void LaserMonComponent::stop()
 int main(int argc, char * argv[])
 {
     LaserMonComponent component;
-    orcaiceutil::Application app( argc, argv, component );
+    orcaice::Application app( argc, argv, component );
     return app.main(argc, argv);
 }

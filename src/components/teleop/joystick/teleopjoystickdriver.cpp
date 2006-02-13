@@ -28,9 +28,9 @@
 #include "teleopjoystickdriver.h"
 #include "evdevutil.h"
 
-#include <orcaiceutil/proputils.h>
-#include <orcaiceutil/mathdefs.h>
-#include <orcaiceutil/exceptions.h>
+#include <orcaice/proputils.h>
+#include <orcaice/mathdefs.h>
+#include <orcaice/exceptions.h>
 
 // normalizing macros
 #define AXIS_OFFSET         128.0
@@ -205,7 +205,7 @@ int TeleopJoystickDriver::readdata( orca::Velocity2dCommandPtr &data )
             command_->motion.w = 0.0;
 
             string errString = "failed to read from joystick";
-            throw orcaiceutil::HardwareException( ERROR_INFO, errString );
+            throw orcaice::HardwareException( ERROR_INFO, errString );
             return 1;
         }
         else {

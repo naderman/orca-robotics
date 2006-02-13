@@ -30,8 +30,8 @@
 #include "rmpusbdataframe.h"
 #include "canpacket.h"
 
-#include <orcaiceutil/orcaiceutil.h>
-#include <orcaiceutil/mathdefs.h>
+#include <orcaice/orcaice.h>
+#include <orcaice/mathdefs.h>
 
 using namespace std;
 using namespace orca;
@@ -257,9 +257,9 @@ void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerD
     // POSITION2D
     
     // set time stamps righ away
-    position2d->timeStamp = orcaiceutil::iceTimeToOrcaTime( IceUtil::Time::now() );
+    position2d->timeStamp = orcaice::iceTimeToOrcaTime( IceUtil::Time::now() );
     // set time stamp righ away
-    power->timeStamp = orcaiceutil::iceTimeToOrcaTime( IceUtil::Time::now() );
+    power->timeStamp = orcaice::iceTimeToOrcaTime( IceUtil::Time::now() );
     
     // for odometry, use integrated values
     position2d->pose.p.x    = odomX_;

@@ -19,9 +19,9 @@
  */
 #include "extractorone.h"
 
-#include <orcaiceutil/objutils.h>
+#include <orcaice/objutils.h>
 #include <iostream>
-#include <orcaiceutil/mathdefs.h>
+#include <orcaice/mathdefs.h>
 
 // For definitions of feature types:
 #include <orca/featuremap2d.h>
@@ -31,7 +31,7 @@
 
 using namespace orca;
 using namespace std;
-using namespace orcaiceutil;
+using namespace orcaice;
 
 ExtractorOne::ExtractorOne()
 {

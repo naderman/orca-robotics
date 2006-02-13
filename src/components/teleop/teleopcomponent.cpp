@@ -27,7 +27,7 @@
 using namespace std;
 
 TeleopComponent::TeleopComponent()
-    : orcaiceutil::Component( "Teleop" ), networkHandler_(0), userHandler_(0)
+    : orcaice::Component( "Teleop" ), networkHandler_(0), userHandler_(0)
 {
 }
 

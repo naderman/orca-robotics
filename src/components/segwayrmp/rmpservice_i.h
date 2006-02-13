@@ -21,9 +21,9 @@
 #ifndef ORCA2_SEGWAY_RMP_SERVICE_I_H
 #define ORCA2_SEGWAY_RMP_SERVICE_I_H
 
-#include <orcaiceutil/orcaiceutil.h>
+#include <orcaice/orcaice.h>
 
-class RmpServiceI : public orcaiceutil::Service
+class RmpServiceI : public orcaice::Service
 {
 public:
 

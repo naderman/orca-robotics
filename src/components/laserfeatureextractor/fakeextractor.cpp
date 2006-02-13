@@ -19,7 +19,7 @@
  */
 #include "fakeextractor.h"
 
-#include <orcaiceutil/objutils.h>
+#include <orcaice/objutils.h>
 #include <iostream>
 #include <math.h>
 
@@ -29,7 +29,7 @@
 
 using namespace orca;
 using namespace std;
-using namespace orcaiceutil;
+using namespace orcaice;
 
 FakeExtractor::FakeExtractor()
 {

@@ -19,18 +19,18 @@
  */
 
 #include "platform2d_i.h"
-#include <orcaiceutil/objutils.h>
-#include <orcaiceutil/connectutils.h>
+#include <orcaice/objutils.h>
+#include <orcaice/connectutils.h>
 
 using namespace std;
 using namespace orca;
-using namespace orcaiceutil;
+using namespace orcaice;
 
-Platform2dI::Platform2dI( orcaiceutil::PtrBuffer<orca::Position2dDataPtr>    &position2d,
-                          //orcaiceutil::PtrBuffer<orca::Velocity2dCommandPtr> &command,
-                          orcaiceutil::PtrNotify &command,
-                          orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  &setConfigBuffer,
-                          orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr>  &currentConfigBuffer,
+Platform2dI::Platform2dI( orcaice::PtrBuffer<orca::Position2dDataPtr>    &position2d,
+                          //orcaice::PtrBuffer<orca::Velocity2dCommandPtr> &command,
+                          orcaice::PtrNotify &command,
+                          orcaice::PtrBuffer<orca::Platform2dConfigPtr>  &setConfigBuffer,
+                          orcaice::PtrBuffer<orca::Platform2dConfigPtr>  &currentConfigBuffer,
                           const IceStorm::TopicPrx &topic )
     : position2dProxy_(position2d), 
       //commandProxy_(command),

@@ -44,7 +44,7 @@ The top-level 'CMakeLists.txt' file:
 Individual components maintain their own 'CMakeLists.txt' files.  Components will generally INCLUDE the following:
 
     - config/component_rules.cmake: Contains rules for compiler/linker flags, plus any other component-kruft.
-    - possibly: config/include_orcaiceutil.cmake: Contains all the rules to include orcaiceutil, to avoid repetition.
+    - possibly: config/include_orcaice.cmake: Contains all the rules to include libOrcaIce, to avoid repetition.
 
 
 Components should build themselves with GLOBAL_ADD_EXECUTABLE rather than ADD_EXECUTABLE.  This allows their builds to be mediated in a central location.

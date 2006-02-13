@@ -21,16 +21,16 @@
 #ifndef ORCA2_SEGWAY_RMP_COMPONENT_H
 #define ORCA2_SEGWAY_RMP_COMPONENT_H
 
-#include <orcaiceutil/component.h>
+#include <orcaice/component.h>
 #include <orca/platform2d.h>
 #include <orca/power.h>
 
-#include <orcaiceutil/orcaiceutil.h>
-#include <orcaiceutil/ptrnotify.h>
+#include <orcaice/orcaice.h>
+#include <orcaice/ptrnotify.h>
 
 class RmpMainLoop;
 
-class RmpComponent : public orcaiceutil::Component
+class RmpComponent : public orcaice::Component
 {
 public:
 
@@ -48,15 +48,15 @@ private:
     // NETWORK-MAINLOOP INTERFACES
     //
     // the driver will put the latest data into this proxy
-    orcaiceutil::PtrBuffer<orca::Position2dDataPtr> position2dBuffer_;
+    orcaice::PtrBuffer<orca::Position2dDataPtr> position2dBuffer_;
     // the driver will take the latest command from the proxy
-    orcaiceutil::PtrNotify commandBuffer_;
+    orcaice::PtrNotify commandBuffer_;
     // the driver will put the latest data into this proxy
-    orcaiceutil::PtrBuffer<orca::PowerDataPtr> powerBuffer_;
+    orcaice::PtrBuffer<orca::PowerDataPtr> powerBuffer_;
     // The servant will put config requests here.  We'll use them to re-configure the hardware.
-    orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr> setConfigBuffer_;
+    orcaice::PtrBuffer<orca::Platform2dConfigPtr> setConfigBuffer_;
     // We put the current config here for the servant to serve.
-    orcaiceutil::PtrBuffer<orca::Platform2dConfigPtr> currentConfigBuffer_;
+    orcaice::PtrBuffer<orca::Platform2dConfigPtr> currentConfigBuffer_;
 
     //
     // EXTERNAL INTERFACES

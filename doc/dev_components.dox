@@ -37,14 +37,14 @@ The main pieces are:
 
 @par Component
 
-Derives from orcaiceutil::Component.
+Derives from orcaice::Component.
 
 This the main class which instantiates and contains the other
-pieces.  Deriving from orcaiceutil::Component makes it easy to
+pieces.  Deriving from orcaice::Component makes it easy to
 exist within either a stand-alone application or an IceBox
 Service.
 
-To implement an orcaiceutil::Component, the 'start()' and
+To implement an orcaice::Component, the 'start()' and
     'stop()' functions must be implemented.
 
 @par Interface Implementation
@@ -60,7 +60,7 @@ buffers.
 
 
 @par Buffers
-The buffers are instantiations of orcaiceutil::PtrBuffer.
+The buffers are instantiations of orcaice::PtrBuffer.
 They're thread-safe (to handle the concurrency issues presented by
 simultaneous access from MainLoop and the outside world), and
 specially designed for Ice classes.
@@ -70,7 +70,7 @@ specially designed for Ice classes.
 
 Most (but not all) components need to do some work
 continuously.  MainLoop is the class that holds the thread of
-execution (it derives from orcaiceutil::Thread).
+execution (it derives from orcaice::Thread).
 
 MainLoop's job is to be an intermediary between
 Hardware/Algorithm and Interface_Implementation (via the Buffers).
