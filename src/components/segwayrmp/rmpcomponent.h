@@ -25,7 +25,7 @@
 #include <orca/platform2d.h>
 #include <orca/power.h>
 
-#include <orcaice/orcaice.h>
+#include <orcaice/ptrbuffer.h>
 #include <orcaice/ptrnotify.h>
 
 class RmpMainLoop;

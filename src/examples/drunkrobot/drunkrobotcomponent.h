@@ -24,8 +24,7 @@
 #include <orcaice/component.h> 
 #include <orca/position2d.h>
 
-#include <orcaice/orcaice.h>
-#include <orcaice/ptrnotify.h>
+#include <orcaice/ptrbuffer.h>
 
 
 class DrunkRobotMainLoop; 
@@ -35,6 +34,7 @@ class DrunkRobotComponent : public orcaice::Component
 public:
     DrunkRobotComponent();
     ~DrunkRobotComponent();
+    
     virtual void start();
     virtual void stop();
 

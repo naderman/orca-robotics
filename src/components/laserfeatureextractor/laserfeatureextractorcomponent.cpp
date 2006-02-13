@@ -27,6 +27,8 @@
 #include "fakeextractor.h"
 #include "extractorone.h"
 
+#include <orcaice/orcaice.h>
+
 using namespace std;
 using namespace orca;
 
