@@ -93,6 +93,10 @@ export PATH=$ORCA2_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$ORCA2_HOME/lib:$LD_LIBRARY_PATH
 @endverbatim
 
+<hr>
+
+@b NOTE: Software below is strictly optional.
+
 @section orca_doc_installdebian_doxygen Doxygen
 
 Doxygen is a tool to produce documentation from source code. It can be easily installed as a package. The standard version can build all Orca documentation except for the Slice interfaces and objects. You may also want to install the @c graphviz package which contains the @c dot utility used by @c doxygen to generate diagrams.
@@ -107,5 +111,51 @@ At the time of writing Qt4 packages are in the 'testing' distribution.
 @verbatim
 # apt-get install libqt4-dev qt4-doc qt4-dev-tools
 @endverbatim
+
+
+@section orca_doc_installdebian_player Player/Stage
+
+At the time of writing the final version of Player-2 is about to be released. The latest version of Stage, however, does not yet work with v.2.0 release candidates. So, these notes describe how to install Player 1.6.5 and Stage 2.0.0a. Start with Stage dependencies.
+
+@verbatim
+# apt-get install libglib2.0-dev libgtk2.0-dev
+@endverbatim
+
+Download and unpack player and stage distros. We recommend installing both player and stage to some place other than the default @c /usr/local/ because the different versions quickly become unmanagable.
+
+@verbatim
+$ cd player-1.6.5
+$ ./configure --prefix=/opt/player-1.6.5
+$ make
+# make install
+@endverbatim
+
+The pkg-config files installed are not configured correctly. Edit the two files listed below so that the top line says 'prefix=/opt/player-1.6.5'
+
+@verbatim
+# vi /usr/local/lib/pkgconfig/player.pc
+# vi /usr/local/lib/pkgconfig/libplayerc.pc
+@endverbatim
+
+Now compile Stage.
+
+@verbatim
+$ cd stage-2.0.0a
+$ ./configure --prefix=/opt/stage-2.0.0
+$ make
+# make install
+@endverbatim
+
+Append the following to your @c .bashrc file
+
+@verbatim
+export PLAYER_HOME=/opt/player-1.6.5
+export PATH=$PLAYER_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$PLAYER_HOME/lib:$LD_LIBRARY_PATH
+
+export STAGE_HOME=/opt/stage-2.0.0
+export LD_LIBRARY_PATH=$STAGE_HOME/lib:$LD_LIBRARY_PATH
+@endverbatim
+
 
 */
