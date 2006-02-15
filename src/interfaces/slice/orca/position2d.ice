@@ -38,9 +38,11 @@ module orca
 //! Position2d data structure
 class Position2dData extends OrcaObject
 {
-    //! Robot position
+    //! Robot pose in global CS according to odometry.
     Frame2d pose;
-    //! Translational and angular velocities in the robot CS
+    //! Translational and angular velocities in the robot CS.
+    //! This means that Vx is forward speed and Vy is side speed
+    //! (possible only for some platforms).
     Twist2d motion;
     //! Are the motors stalled
     bool stalled;
@@ -82,6 +84,9 @@ interface Position2d
     nonmutating Position2dData getData()
             throws HardwareFailedException;
 
+    // Returns the current configuration.
+    //nonmutating Position2dConfig getConfig();
+    
     //! Returns geometry of the position device.            
     nonmutating Position2dGeometry getGeometry();
 

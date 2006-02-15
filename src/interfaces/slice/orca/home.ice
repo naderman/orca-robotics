@@ -47,13 +47,19 @@ class HomeData extends OrcaObject
     Ice::StringSeq requires;
 };
 
+//! Our properties are defined the same way as Ice::PropertyDict.
+dictionary<string,string> ComponentProperties;
+
 /*!
     @brief Access to a robot's status subsystem
 */
 interface Home
 {
-    //! Returns information about the component's interfaces.
-    nonmutating HomeData getData();    
+    //! Returns a listing about the component's interfaces.
+    nonmutating HomeData getInterfaces();
+    
+    //! Returns all component's properties.
+    nonmutating ComponentProperties getProperties();
 };
 
 /*!
