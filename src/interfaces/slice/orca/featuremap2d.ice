@@ -75,7 +75,7 @@ interface FeatureMap2dConsumer
     void setData( FeatureMap2dData obj );
 };
 
-//! FeatureMap2d Interface
+//! An interface to a map of features.
 interface FeatureMap2d
 {
     nonmutating FeatureMap2dData getData();

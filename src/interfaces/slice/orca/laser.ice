@@ -52,7 +52,7 @@ range readings included.  Scans proceed counterclockwise about the laser
 sequence<byte>         IntensitySequence;
 
 /*!
-    @brief Laser scan data structure adds return-intensity information to rangescanner data.
+    @brief %Laser scan data structure adds return-intensity information to rangescanner data.
 */
 class LaserData extends RangeScannerData
 {

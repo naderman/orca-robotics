@@ -129,7 +129,7 @@ struct Wrench2d
 {
     //! Linear force
     Force2d f;
-    //! Moment [N*m]
+    //! %Moment [N*m]
     float   m;
 };
 //! Planar dimensions
@@ -214,7 +214,7 @@ struct Force
     //! z-coordinate [N]
     float z;
 };
-//! Moment of force.
+//! %Moment of force.
 struct Moment
 {
     //! x-coordinate [N*m]
@@ -237,7 +237,7 @@ struct Wrench
 {
     //! Linear force
     Force  f;
-    //! Moment of force
+    //! %Moment of force
     Moment m;
 };
 //! Orientation defined by angles

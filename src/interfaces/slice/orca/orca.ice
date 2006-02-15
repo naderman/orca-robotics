@@ -31,7 +31,7 @@ module orca
 {
 
 /*!
-    Unix absolute time
+    @brief Unix absolute time
 */
 struct Time
 {
@@ -42,7 +42,7 @@ struct Time
 };
 
 /*!
-    Fully qualified executable name.
+    @brief Fully qualified executable name.
 */
 struct FQExecutableName
 {
@@ -53,7 +53,7 @@ struct FQExecutableName
 };
 
 /*!
-    Fully qualified component name.
+    @brief Fully qualified component name.
     @see FQInterfaceName, FQTopicName
 */
 struct FQComponentName

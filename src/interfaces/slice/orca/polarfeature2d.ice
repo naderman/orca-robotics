@@ -61,7 +61,7 @@ interface PolarFeature2dConsumer
     void setData( PolarFeature2dData obj );
 };
 
-//! PolarFeature2d Interface
+//! Interface to features in a polar coordinate system.
 interface PolarFeature2d
 {
     nonmutating PolarFeature2dData getData();

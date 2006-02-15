@@ -37,7 +37,7 @@ devices.
     @{
 */
 
-//! BinaryIndicator interface
+//! Interface to a device with a binary state.
 interface BinaryIndicator
 {
     //! Get current state
