@@ -53,18 +53,32 @@ LaserMonComponent::~LaserMonComponent()
     // do not delete inputLoop_!!! It derives from Ice::Thread and deletes itself.
 }
 
-// warning: this function returns after it's done, all variable that need to be permanet must
-//          be declared as member variables.
+// NOTE: this function returns after it's done, all variable that need to be permanet must
+//       be declared as member variables.
 void LaserMonComponent::start()
 {
     //
-    // PROVIDED : LaserConsumer
+    // REQUIRED INTERFACE: Laser
     //
 
     // Connect directly to the interface
     orca::LaserPrx laserPrx;
-    orcaice::connectToInterfaceWithTag<orca::LaserPrx>( context(), laserPrx, "Laser" );
-
+    while(1)
+    {
+        try
+        {
+            orcaice::connectToInterfaceWithTag<orca::LaserPrx>( context(), laserPrx, "Laser" );
+            break;
+        }
+        catch ( const orcaice::NetworkException & e )
+        {
+            tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+        }
+        // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
+        //       but if this happens it's ok if we just quit.
+    }
+    
     // Get the geometry
     cout << "Laser Geometry: " << laserPrx->getGeometry() << endl;
 
@@ -72,20 +86,28 @@ void LaserMonComponent::start()
     cout << "Laser Config:   " << laserPrx->getConfig() << endl;
 
     // Get the data once
-    cout << "Laser Data:   " << laserPrx->getData() << endl;
+    try
+    {
+        tracer()->info( "Trying to get one scan as a test" );
+        tracer()->print( orcaice::toString( laserPrx->getData() ) );
+    }
+    catch ( const orca::HardwareFailedException & e )
+    {
+        tracer()->error( "hardware failure reported when getting a scan. Will subscribe anyway." );
+    }
 
-//     // Could set the configuration like so:
-//     // Set some configuration
-//     orca::RangeScannerConfigPtr cfg = new orca::RangeScannerConfig;
-//     cfg->rangeResolution = 9999;
-//     cfg->isEnabled = true;
-//     try {
-//         laserPrx->setConfig( cfg );
-//     }
-//     catch ( orca::CannotImplementConfiguration &e ) {
-//         cout<<"TRACE(main.cpp): Caught CannotImplementConfiguration" << endl;
-//         cout<<"TRACE(main.cpp): " << e.what << endl;
-//     }
+    // Could set the configuration like so:
+    orca::RangeScannerConfigPtr cfg = new orca::RangeScannerConfig;
+    cfg->rangeResolution = 9999;
+    cfg->isEnabled = true;
+    try
+    {
+        laserPrx->setConfig( cfg );
+    }
+    catch ( orca::ConfigurationNotExistException & e )
+    {
+        tracer()->warning( "failed to set configuration. Will subscribe anyway." );
+    }
 
     // create a callback object to recieve scans
     Ice::ObjectPtr consumer = new RangeScannerConsumerI;
@@ -95,13 +117,28 @@ void LaserMonComponent::start()
     //
     // ENABLE NETWORK CONNECTIONS
     //
+    // this may throw an exception which will be caught in Application
+    // but will cause the app to exit
     activate();
-
+    
     //
     // Subscribe for data
     //
-    laserPrx->subscribe( callbackPrx );
-
+    // will try forever until the user quits with ctrl-c
+    while (1)
+    {
+        try
+        {
+            laserPrx->subscribe( callbackPrx );
+            break;
+        }
+        catch ( const orca::SubscriptionFailedException & e )
+        {
+            tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+        }
+    }
+    
     // the rest is handled by the application/service
 }
 
