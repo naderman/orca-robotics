@@ -96,18 +96,18 @@ void LaserMonComponent::start()
         tracer()->error( "hardware failure reported when getting a scan. Will subscribe anyway." );
     }
 
-    // Could set the configuration like so:
-    orca::RangeScannerConfigPtr cfg = new orca::RangeScannerConfig;
-    cfg->rangeResolution = 9999;
-    cfg->isEnabled = true;
-    try
-    {
-        laserPrx->setConfig( cfg );
-    }
-    catch ( orca::ConfigurationNotExistException & e )
-    {
-        tracer()->warning( "failed to set configuration. Will subscribe anyway." );
-    }
+    // Can also set the configuration like so:
+//     orca::RangeScannerConfigPtr cfg = new orca::RangeScannerConfig;
+//     cfg->rangeResolution = 9999;
+//     cfg->isEnabled = true;
+//     try
+//     {
+//         laserPrx->setConfig( cfg );
+//     }
+//     catch ( orca::ConfigurationNotExistException & e )
+//     {
+//         tracer()->warning( "failed to set configuration. Will subscribe anyway." );
+//     }
 
     // create a callback object to recieve scans
     Ice::ObjectPtr consumer = new RangeScannerConsumerI;
