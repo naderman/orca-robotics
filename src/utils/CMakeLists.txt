@@ -7,6 +7,7 @@ SUBDIRS(
   orcadef
   liborcaguitools
   libqorcauml
+  orcaplayer
   qorcacm
 # UTILITY APPLICATIONS
   iceping
