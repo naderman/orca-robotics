@@ -84,7 +84,7 @@ class RangeScannerData extends OrcaObject
 };
 
 /*!
-    @brief Consumer of scans
+    @brief Consumer of range scans
 */
 interface RangeScannerConsumer
 {

@@ -33,7 +33,8 @@ module orca
     @brief Single-origin scanning range and intensity sensor
 
 The laser interface provides access to a single-origin scanning range and intensity
-sensor, such as a SICK laser range-finder (e.g., @ref orca_component_sicklaser).
+sensor, such as a SICK laser range-finder. In terms of interface definition, Laser
+extends RangeScanner by extending the data structure with return-intensity information.
 
 Devices supporting the laser interface can be configured to scan at
 different angles and resolutions.  As such, the data returned by the
@@ -51,11 +52,11 @@ range readings included.  Scans proceed counterclockwise about the laser
 sequence<byte>         IntensitySequence;
 
 /*!
-    Laser scan data structure
+    @brief Laser scan data structure adds return-intensity information to rangescanner data.
 */
 class LaserData extends RangeScannerData
 {
-    //! Simply adds the intensities to:
+    //! Adds the intensities to the data already in RangeScannerData.
     //! - RangeSequence     ranges;
     //! - float             startAngle;
     //! - float             angleIncrement;
@@ -64,6 +65,9 @@ class LaserData extends RangeScannerData
 
 /*!
     @brief Single-origin scanning range sensor
+
+    An implementaion of this interface is understood to return LaserData instead of
+    RangeScannerData when implementing getData operation inherited from RangeScanner.
  */
 interface Laser extends RangeScanner
 {
