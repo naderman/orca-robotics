@@ -130,11 +130,10 @@ $ make
 # make install
 @endverbatim
 
-The pkg-config files installed are not configured correctly. Edit the two files listed below so that the top line says 'prefix=/opt/player-1.6.5'
+Tell pkgconfig how to find player stuff:
 
 @verbatim
-# vi /usr/local/lib/pkgconfig/player.pc
-# vi /usr/local/lib/pkgconfig/libplayerc.pc
+$ export PKG_CONFIG_PATH=/opt/player-1.6.5/lib/pkgconfig/:$PKG_CONFIG_PATH
 @endverbatim
 
 Now compile Stage.
