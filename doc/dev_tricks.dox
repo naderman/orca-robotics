@@ -35,4 +35,15 @@ home.cpp  home.h  home.ice  homeI.cpp  homeI.h
 
 You can see 4 generated files: homeI.h and homeI.cpp are the skeletons. Move them to your component directory and delete home.h and home.cpp.
 
+@par Generating Local Documentation
+
+You'll need @c doxyorca which is a patched version of Doxygen which can parse @c .ice files. If you don't have it, just use standard @c doxygen.
+
+@verbatim
+$ cd <ORCA2_SRC>/doc
+$ doxyorca orca.doxyfile
+$ konqueror html/index.html &
+@endverbatim
+
+
 */
