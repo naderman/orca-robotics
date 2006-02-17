@@ -82,7 +82,7 @@ interface Position2d
     //! Returns the latest data.
     //! @note In Orca1 this would be called ClientPull_Supplier interface.
     nonmutating Position2dData getData()
-            throws HardwareFailedException;
+            throws DataNotExistException, HardwareFailedException;
 
     // Returns the current configuration.
     //nonmutating Position2dConfig getConfig();

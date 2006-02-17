@@ -127,6 +127,10 @@ exception OrcaException
 //! Server failed to configure itself as requrested by client.
 exception ConfigurationNotExistException extends OrcaException {};
 
+//! Server does not have the requested data. Typically, this is because
+//! the server has not fully initialized yet.
+exception DataNotExistException extends OrcaException {};
+
 //! Indicates a problem with robot hardware, e.g. sensors and actuators.
 exception HardwareFailedException extends OrcaException {};
 
