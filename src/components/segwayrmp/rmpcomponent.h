@@ -22,13 +22,15 @@
 #define ORCA2_SEGWAY_RMP_COMPONENT_H
 
 #include <orcaice/component.h>
+
 #include <orca/platform2d.h>
 #include <orca/power.h>
 
 #include <orcaice/ptrbuffer.h>
 #include <orcaice/ptrnotify.h>
 
-class RmpMainLoop;
+class HwHandler;
+class NetHandler;
 
 class RmpComponent : public orcaice::Component
 {
@@ -42,30 +44,25 @@ public:
     virtual void stop();
 
 private:
+    // loop responsible for interaction with the network
+    NetHandler     *netHandler_;
+    // loop responsible for interaction with local hardware
+    HwHandler      *hwHandler_;
 
-    RmpMainLoop* mainLoop_;
-
-    // NETWORK-MAINLOOP INTERFACES
     //
-    // the driver will put the latest data into this proxy
+    // INTERFACES BETWEEN NETWORK AND HARDWARE HANDLERS
+    //
+    // hardware->network
     orcaice::PtrBuffer<orca::Position2dDataPtr> position2dBuffer_;
-    // the driver will take the latest command from the proxy
-    orcaice::PtrNotify commandBuffer_;
-    // the driver will put the latest data into this proxy
+    // hardware->network
     orcaice::PtrBuffer<orca::PowerDataPtr> powerBuffer_;
-    // The servant will put config requests here.  We'll use them to re-configure the hardware.
-    orcaice::PtrBuffer<orca::Platform2dConfigPtr> setConfigBuffer_;
-    // We put the current config here for the servant to serve.
+    // hardware->network
     orcaice::PtrBuffer<orca::Platform2dConfigPtr> currentConfigBuffer_;
 
-    //
-    // EXTERNAL INTERFACES
-    //
-    Ice::ObjectPtr platform2dObj_;
-    orca::Position2dConsumerPrx position2dPublisher_;
-
-    Ice::ObjectPtr powerObj_;
-    orca::PowerConsumerPrx powerPublisher_;
+    // network->hardware
+    orcaice::PtrNotify commandBuffer_;
+    // network->hardware
+    orcaice::PtrBuffer<orca::Platform2dConfigPtr> setConfigBuffer_;
 };
 
 #endif

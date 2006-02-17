@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_RMP_MAIN_LOOP_H
-#define ORCA2_RMP_MAIN_LOOP_H
+#ifndef ORCA2_RMP_HARDWARE_HANDLER_H
+#define ORCA2_RMP_HARDWARE_HANDLER_H
 
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
@@ -27,61 +27,75 @@
 #include <orcaice/ptrnotify.h>
 #include <orcaice/timer.h>
 
-#include "rmpdriver.h"
+//#include "hwfsm.h"
+#include "hwdriver.h"
 
 #include <orca/platform2d.h>
 #include <orca/power.h>
 
 
-//! Note: this thing self-destructs when run() returns.
-class RmpMainLoop : public orcaice::Thread, public orcaice::PtrNotifyHandler
+// Note: this thing self-destructs when run() returns.
+//class HwHandler : public orcaice::Thread, public HwFsm, public orcaice::PtrNotifyHandler
+class HwHandler : public orcaice::Thread, public orcaice::PtrNotifyHandler
 {
 public:
 
-    RmpMainLoop( orcaice::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy,
+    HwHandler( orcaice::PtrBuffer<orca::Position2dDataPtr>      & position2dProxy,
                  orcaice::PtrNotify                             & commandNotify,
                  orcaice::PtrBuffer<orca::PowerDataPtr>         & powerProxy,
                  orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer,
                  orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer,
-                 const orca::Position2dConsumerPrx                  & position2dPublisher,
-                 const orca::PowerConsumerPrx                       & powerPublisher );
-    virtual ~RmpMainLoop();
+                 const orcaice::Context                         & context );
+    virtual ~HwHandler();
 
-    void setCurrent( const orcaice::Context & context ) { context_=context; };
-
+    // from Thread
     virtual void run();
 
+    // from HwFsm
+//     virtual void read();
+//     virtual void sleep();
+//     virtual void repair();
+
+    // from PtrNotifyHandler
     virtual void handleData( const Ice::ObjectPtr & obj );
 
 private:
 
-    // network/driver interface
+    // network/hardware interface
     orcaice::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy_;
     orcaice::PtrNotify                             & commandNotify_;
     orcaice::PtrBuffer<orca::PowerDataPtr>         & powerProxy_;
     orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer_;
     orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer_;
 
-    // IceStorm consumers
-    orca::Position2dConsumerPrx position2dPublisher_;
-    orca::PowerConsumerPrx powerPublisher_;
+    // Internal data storage
+    orca::Position2dDataPtr position2dData_;
+    orca::Velocity2dCommandPtr commandData_;
+    orca::PowerDataPtr powerData_;
+    // internal RMP status
+    HwDriver::Status rmpStatus_;
+
+//     enum RmpState { RMP_INIT, RMP_OK, RMP_READ_FALED, RMP_WRITE_FAILED };
 
     // generic interface to the hardware
-    RmpDriver* driver_;
+    HwDriver* driver_;
 
-    void readConfigs();
-    RmpDriver::Config config_;
+    void init();
 
-    RmpDriver::DriverType driverType_;
+    struct Config
+    {
+        double maxSpeed;
+        double maxTurnrate;
+    };
+    Config config_;
 
     // component current context
     orcaice::Context context_;
 
-    // timers for publishing to icestorm
-    orcaice::Timer position2dPublishTimer_;
-    orcaice::Timer powerPublishTimer_;
-    orcaice::Timer statusPublishTimer_;
-    
+    // dodgy states
+    int readStatus_;
+    int writeStatus_;
+
     // debug
     orcaice::Timer readTimer_;
     orcaice::Timer writeTimer_;

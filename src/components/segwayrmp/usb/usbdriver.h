@@ -21,38 +21,39 @@
 #ifndef ORCA2_SEGWAY_RMP_USB_DRIVER_H
 #define ORCA2_SEGWAY_RMP_USB_DRIVER_H
 
-#include "../rmpdriver.h"
+#include "../hwdriver.h"
 
 // forward declarations
 class UsbIo;
 class RmpUsbDataFrame;
 class CanPacket;
 
-class RmpUsbDriver : public RmpDriver
+class UsbDriver : public HwDriver
 {
 public:
 
-    RmpUsbDriver();
-    virtual ~RmpUsbDriver();
+    UsbDriver();
+    virtual ~UsbDriver();
 
     virtual int enable();
+    virtual int repair();
     virtual int disable();
 
-    virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power );
+    virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
+                      HwDriver::Status & status );
 
     virtual int sendMotionCommand( orca::Velocity2dCommandPtr &position2d );
 
-    virtual int setMaxVelocityScaleFactor( double scale );
-    virtual int setMaxTurnrateScaleFactor( double scale );
-    virtual int setMaxAccelerationScaleFactor( double scale );
-    virtual int setMaxCurrentLimitScaleFactor( double scale );
-    virtual int resetAllIntegrators();
-
-    virtual int setOperationalMode( RmpDriver::OperationalMode mode ) { return 0; };
-    virtual int setGainSchedule( RmpDriver::GainSchedule sched ) { return 0; };
-    virtual int enableBalanceMode( bool enable ) { return 0; };
-
 private:
+    int setMaxVelocityScaleFactor( double scale );
+    int setMaxTurnrateScaleFactor( double scale );
+    int setMaxAccelerationScaleFactor( double scale );
+    int setMaxCurrentLimitScaleFactor( double scale );
+    int resetAllIntegrators();
+
+    int setOperationalMode( HwDriver::OperationalMode mode ) { return 0; };
+    int setGainSchedule( HwDriver::GainSchedule sched ) { return 0; };
+    int enableBalanceMode( bool enable ) { return 0; };
 
     // driver/hardware interface
     UsbIo            *usbio_;
@@ -79,7 +80,8 @@ private:
 
     void integrateMotion();
 
-    void updateData( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power );
+    void updateData( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
+                      HwDriver::Status & status );
 
     // helper to take a player command and turn it into a CAN command packet
     void makeMotionCommandPacket( CanPacket* pkt, const orca::Velocity2dCommandPtr & command );

@@ -11,8 +11,14 @@ Provides.Power.DefaultInterface=power
 
 # Config Parameters
 Config.Driver.Default=usb
+
+# Common to all drivers
 Config.MaxSpeed.Default=1.0
 Config.MaxTurnrate.Default=60.0
 Config.position2dPublishInterval.Default=1.0
 Config.powerPublishInterval.Default=20.0
 Config.statusPublishInterval.Default=60.0
+
+# Player-Client driver only
+Config.PlayerClient.Host.Default=localhost
+Config.PlayerClient.Port.Default=6665

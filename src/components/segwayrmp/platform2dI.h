@@ -42,6 +42,9 @@ public:
                  orcaice::PtrBuffer<orca::Platform2dConfigPtr>  &currentConfigBuffer,
                  const IceStorm::TopicPrx &topic );
 
+    // NOTE: this implementation can throw DataNotExist exception but does NOT throw
+    // HardwareFailedException because it's isolated from the hardware handler by the
+    // data buffer.
     virtual ::orca::Position2dDataPtr getData(const ::Ice::Current& ) const;
 
     virtual ::orca::Position2dGeometryPtr getGeometry(const ::Ice::Current& ) const;

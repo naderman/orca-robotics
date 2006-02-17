@@ -21,38 +21,27 @@
 #ifndef ORCA2_SEGWAY_RMP_FAKE_DRIVER_H
 #define ORCA2_SEGWAY_RMP_FAKE_DRIVER_H
 
-#include "rmpdriver.h"
+#include "hwdriver.h"
 
-/*!
+/*
     A fake driver to simplify development. Does not require any hardware.
  */
-class RmpFakeDriver : public RmpDriver
+class FakeDriver : public HwDriver
 {
 public:
 
-    RmpFakeDriver();
-    virtual ~RmpFakeDriver();
+    FakeDriver();
+    virtual ~FakeDriver();
 
     virtual int enable();
+    virtual int repair();
     virtual int disable();
 
-    int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power );
-
-    //virtual int getPosition2d( orca::Position2dDataPtr & position2d );
-    //virtual int getPosition3d( orca::Position3dDataPtr & position3d );
-    //virtual int getPower( orca::PowerDataPtr & power );
+    virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
+              HwDriver::Status & status );
 
     virtual int sendMotionCommand( orca::Velocity2dCommandPtr & command );
 
-    virtual int setMaxVelocityScaleFactor( double scale ) { return 0; };
-    virtual int setMaxTurnrateScaleFactor( double scale ) { return 0; };
-    virtual int setMaxAccelerationScaleFactor( double scale ) { return 0; };
-    virtual int setMaxCurrentLimitScaleFactor( double scale ) { return 0; };
-    virtual int resetAllIntegrators() { return 0; };
-
-    virtual int setOperationalMode( OperationalMode mode ) { return 0; };
-    virtual int setGainSchedule( GainSchedule sched ) { return 0; };
-    virtual int enableBalanceMode( bool enable ) { return 0; };
 };
 
 #endif

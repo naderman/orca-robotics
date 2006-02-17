@@ -18,24 +18,15 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "rmpservice_i.h"
+#ifndef ORCA2_SEGWAY_RMP_SERVICE_I_H
+#define ORCA2_SEGWAY_RMP_SERVICE_I_H
 
-#include "rmpcomponent.h"
+#include <orcaice/service.h>
 
-using namespace std;
-
-extern "C"
+class RmpServiceI : public orcaice::Service
 {
-    //
-    // Factory function
-    //
-    IceBox::Service* create( Ice::CommunicatorPtr communicator )
-    {
-        return new RmpServiceI;
-    }
-}
+public:
+    RmpServiceI();
+};
 
-RmpServiceI::RmpServiceI()
-{
-    component_ = new RmpComponent;
-}
+#endif

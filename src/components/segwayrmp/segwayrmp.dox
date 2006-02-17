@@ -27,11 +27,6 @@
 @defgroup orca_component_segwayrmp SegwayRmp
 @brief Controls Segway RMP robot.
 
-The segwayrmp driver provides control of a Segway RMP (Robotic
-Mobility Platform), which is an experimental robotic version of the
-Segway HT (Human Transport), a kind of two-wheeled, self-balancing
-electric scooter.
-
 @par Provides
 
 - @ref orca_interface_home
@@ -43,19 +38,21 @@ electric scooter.
 
 - none
 
+The segwayrmp driver provides control of a Segway RMP (Robotic
+Mobility Platform), which is an experimental robotic version of the
+Segway HT (Human Transport), a kind of two-wheeled, self-balancing
+electric scooter.
+
+Because of its power, weight, height, and dynamics, the Segway RMP is
+a potentially dangerous machine.  Be @b very careful with it.
+
+For safety, this Segway will stop (zero-out motion commands) if no new command has been received from the PC in the previous 400ms or so. This is done in Segway firmware and this component does not duplicate this functionality. Thus, if you want to continue moving at a constant velocity, you must continuously send your desired velocities to the Platform2d interface (Teleop component does exactly that).
+
+Development status \b Beta.
+
 @par Dependancies
 
-None for the component. See driver section below for individual driver dependencies.
-
-@par Notes
-
-- Because of its power, weight, height, and dynamics, the Segway RMP is
-a potentially dangerous machine.  Be @e very careful with it.
-
-- For safety, this driver will stop the RMP (i.e., send zero velocities)
-if no new command has been received from a client in the previous 400ms or so.
-Thus, even if you want to continue moving at a constant velocity, you must
-continuously send your desired velocities.
+None for the component. See driver sections below for individual driver dependencies.
 
 @par Configuration
 
@@ -65,8 +62,10 @@ An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ director
 Orca component by Alex Makarenko. Original CAN driver code came from Player by Andrew Howard.
 
 @par Internal Structure
-    
+
 @image html segwayrmp_whitebox.png
+
+The implementation of Platform2d interface can throw orcaice::DataNotExist exception but does NOT throw orcaice::HardwareFailedException.
 
 @section usb USB Driver
 
@@ -133,13 +132,11 @@ Finally, remember to 'chmod 755 /etc/hotplug/usb/segwayrmp'.
 
 @section playerclient Player Client Driver
 
-@note Not implemented yet, but will be sometime soon.
+@note Not implemented yet, but is easy to do.
 
 This one simply connects to a Player server.
 
-Support is limited to what Player supports which is currently the original RMP with CAN I/O using Kvaser, Inc.'s CANLIB interface library. This library provides access
-to CAN cards made by Kvaser, such as the LAPcan II.
-
+Support is limited to what Player supports which is currently the original RMP with CAN I/O using Kvaser, Inc.'s CANLIB interface library. This library provides access to CAN cards made by Kvaser, such as the LAPcan II.
 
 */
 

@@ -18,22 +18,17 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_SEGWAY_RMP_DRIVER_INTERFACE_H
-#define ORCA2_SEGWAY_RMP_DRIVER_INTERFACE_H
+#ifndef ORCA2_SEGWAY_RMP_HARDWARE_DRIVER_H
+#define ORCA2_SEGWAY_RMP_HARDWARE_DRIVER_H
 
 #include <orca/platform2d.h>
 #include <orca/power.h>
 
-#include <orcaice/context.h>
-
-/*!
-
-@brief Abstract interface class for Segway RMP hardware.
-
-@author Alex Makarenko
-
+/*
+ * @brief Abstract interface class for Segway RMP hardware.
+ * @author Alex Makarenko
 */
-class RmpDriver
+class HwDriver
 {
 
 public:
@@ -51,44 +46,28 @@ public:
         HEAVY
     };
 
-    virtual ~RmpDriver() {};
+    struct Status
+    {
+        int buildId;
+        int cuState;
+        int opMode;
+        int gainSchedule;
+        //OperationalMode opMode;
+        //GainSchedule gainSchedule;
+    };
+
+    virtual ~HwDriver() {};
     
     virtual int enable()=0;
+    virtual int repair()=0;
     virtual int disable()=0;
 
-    //! Blocking read
-    virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )=0;
+    // Blocking read
+    virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power, Status &status )=0;
 
-    //! Writes velocity command
+    // Writes velocity command
     virtual int sendMotionCommand( orca::Velocity2dCommandPtr &position2d )=0;
 
-    virtual int setMaxVelocityScaleFactor( double scale )=0;
-    virtual int setMaxTurnrateScaleFactor( double scale )=0;
-    virtual int setMaxAccelerationScaleFactor( double scale )=0;
-    virtual int setMaxCurrentLimitScaleFactor( double scale )=0;
-    virtual int resetAllIntegrators()=0;
-
-    virtual int setOperationalMode( OperationalMode mode )=0;
-    virtual int setGainSchedule( GainSchedule sched )=0;
-    virtual int enableBalanceMode( bool enable )=0;
-
-    enum DriverType
-    {
-        USB_DRIVER,
-        CAN_DRIVER,
-        PLAYER_CLIENT_DRIVER,
-        FAKE_DRIVER,
-        UNKNOWN_DRIVER
-    };
-
-    struct Config
-    {
-        double maxSpeed;
-        double maxTurnrate;
-        double position2dPublishInterval;
-        double powerPublishInterval;
-        double statusPublishInterval;
-    };
 };
 
 #endif

@@ -18,7 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "platform2d_i.h"
+#include "platform2dI.h"
+
 #include <orcaice/objutils.h>
 #include <orcaice/connectutils.h>
 
@@ -27,13 +28,11 @@ using namespace orca;
 using namespace orcaice;
 
 Platform2dI::Platform2dI( orcaice::PtrBuffer<orca::Position2dDataPtr>    &position2d,
-                          //orcaice::PtrBuffer<orca::Velocity2dCommandPtr> &command,
                           orcaice::PtrNotify &command,
                           orcaice::PtrBuffer<orca::Platform2dConfigPtr>  &setConfigBuffer,
                           orcaice::PtrBuffer<orca::Platform2dConfigPtr>  &currentConfigBuffer,
                           const IceStorm::TopicPrx &topic )
     : position2dProxy_(position2d), 
-      //commandProxy_(command),
       commandNotify_(command),
       setConfigBuffer_(setConfigBuffer),
       currentConfigBuffer_(currentConfigBuffer),
@@ -49,10 +48,16 @@ orca::Position2dDataPtr Platform2dI::getData(const Ice::Current& current) const
     // create a null pointer. data will be cloned into it.
     Position2dDataPtr data;
 
-    // we don't need to pop the data here because we don't block on it.
-    // we always want to have the latest copy in there
-    //! @todo what should happens if there's no data?
-    position2dProxy_.get( data );
+    // we don't need to pop the data here because a) we don't block on it,
+    // and b) we always want to have the latest copy in the buffer.
+    try
+    {
+        position2dProxy_.get( data );
+    }
+    catch ( const orcaice::Exception & e )
+    {
+        throw orca::DataNotExistException( "try again later." );
+    }
 
     //cout << data <<endl;
     return data;
@@ -68,8 +73,7 @@ orca::Position2dGeometryPtr Platform2dI::getGeometry(const Ice::Current& current
     return geometry;
 }
 
-void Platform2dI::subscribe(const ::orca::Position2dConsumerPrx& subscriber,
-                            const ::Ice::Current&)
+void Platform2dI::subscribe(const ::orca::Position2dConsumerPrx& subscriber, const ::Ice::Current&)
 {
     cout<<"subscription request"<<endl;
     IceStorm::QoS qos;
@@ -87,7 +91,7 @@ void Platform2dI::setCommand(const ::orca::Velocity2dCommandPtr& command, const 
 {
     //commandProxy_.push( command );
 
-    // this is executed directly to hardware and may throw an exception
+    // this is executed directly to hardware and may throw an orca::HardwareException
     commandNotify_.set( command );
 }
 

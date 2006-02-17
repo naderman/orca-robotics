@@ -19,24 +19,23 @@
  */
 
 #include <iostream>
-#include <sys/time.h>
+//#include <sys/time.h>
 
-#include "rmpusbdriver.h"
+#include "usbdriver.h"
 
 // interface to the usb device
-#include "usbioftdi.h"
+#include "usbftdi.h"
 
 // rmp/usb data structure
 #include "rmpusbdataframe.h"
 #include "canpacket.h"
 
-#include <orcaice/orcaice.h>
-#include <orcaice/mathdefs.h>
+#include <orcaice/orcaice.h>    // for time functions
 
 using namespace std;
 using namespace orca;
 
-RmpUsbDriver::RmpUsbDriver()
+UsbDriver::UsbDriver()
 {
     // Hardware
     usbio_ = new UsbIoFtdi;
@@ -53,14 +52,14 @@ RmpUsbDriver::RmpUsbDriver()
     firstread_ = true;
 }
 
-RmpUsbDriver::~RmpUsbDriver()
+UsbDriver::~UsbDriver()
 {
     delete usbio_;
     delete frame_;
     delete pkt_;
 }
 
-int RmpUsbDriver::enable()
+int UsbDriver::enable()
 {
     // init device
     if ( usbio_->init() ) {
@@ -97,15 +96,22 @@ int RmpUsbDriver::enable()
     return 0;
 }
 
-int RmpUsbDriver::disable()
+int UsbDriver::repair()
 {
-    cout<<"RmpUsbDriver::disable"<<endl;
+    disable();
+    return enable();
+}
+
+int UsbDriver::disable()
+{
+    cout<<"UsbDriver::disable"<<endl;
     usbio_->shutdown();
 
     return 0;
 }
 
-int RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )
+int UsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
+                      HwDriver::Status & status )
 {
     int canPacketsProcessed = 0;
     int dataFramesReopened = 0;
@@ -115,65 +121,65 @@ int RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr 
     {
         ++canPacketsProcessed;
     
-    //
-    // Add packet to data frame
-    // This is where we interprete all message contents!
-    //
-    frame_->AddPacket(pkt_);
-
-    // debug
-    //watchDataStream( pkt_ );
-
-    if ( pkt_->id == RMP_CAN_ID_MSG4 ) {
-        integrateMotion();
-    }
-
-    // If frame is closed and complete, transfer data and reset frame
-    if( frame_->isClosed() )
-    {
-        if ( frame_->isComplete() ) {
-            // process data only if the frame is complete
-            updateData( position2d, power  );
-            frame_->reset();
-            //cout<<"rmpusb::read: pkts:"<<canPacketsProcessed<<" reopnd: "<<dataFramesReopened<<endl;
-            return 0;
+        //
+        // Add packet to data frame
+        // This is where we interprete all message contents!
+        //
+        frame_->AddPacket(pkt_);
+    
+        // debug
+        //watchDataStream( pkt_ );
+    
+        if ( pkt_->id == RMP_CAN_ID_MSG4 ) {
+            integrateMotion();
         }
-        else {
-            // debug: the frame is closed but not complete: some packets were lost
-/*
-            int sec = IceUtil::Time::now().toSeconds();
-            cout<<sec<<" re-opening frame. Missing [";
-            for ( int i=1; i<8; ++i ) {
-                if ( !frame_->msgCheckList_[i] ) { cout<<i<<" "; }
+
+        // If frame is closed and complete, transfer data and reset frame
+        if( frame_->isClosed() )
+        {
+            if ( frame_->isComplete() ) {
+                // process data only if the frame is complete
+                updateData( position2d, power, status );
+                frame_->reset();
+                //cout<<"rmpusb::read: pkts:"<<canPacketsProcessed<<" reopnd: "<<dataFramesReopened<<endl;
+                return 0;
             }
-            cout<<"]"<<endl;
-*/
-            //! @todo or should we reset?
-            frame_->reopen();
-            ++dataFramesReopened;
+            else {
+                // debug: the frame is closed but not complete: some packets were lost
+    /*
+                int sec = IceUtil::Time::now().toSeconds();
+                cout<<sec<<" re-opening frame. Missing [";
+                for ( int i=1; i<8; ++i ) {
+                    if ( !frame_->msgCheckList_[i] ) { cout<<i<<" "; }
+                }
+                cout<<"]"<<endl;
+    */
+                //! @todo or should we reset?
+                frame_->reopen();
+                ++dataFramesReopened;
+            }
         }
-    }
 
     }
 
     return 1;
 }
 
-int RmpUsbDriver::sendMotionCommand( orca::Velocity2dCommandPtr & command )
+int UsbDriver::sendMotionCommand( orca::Velocity2dCommandPtr & command )
 {
     makeMotionCommandPacket( pkt_, command );
 
     return usbio_->writePacket(pkt_);
 }
 
-int RmpUsbDriver::resetAllIntegrators()
+int UsbDriver::resetAllIntegrators()
 {
     makeStatusCommandPacket( pkt_, RMP_CMD_RESET_INTEGRATORS, RMP_CAN_RESET_ALL );
 
     return usbio_->writePacket(pkt_);
 }
 
-int RmpUsbDriver::setMaxVelocityScaleFactor( double scale )
+int UsbDriver::setMaxVelocityScaleFactor( double scale )
 {
     // limit input to [0.0, 1.0]
     if ( scale>1.0 ) {
@@ -186,7 +192,7 @@ int RmpUsbDriver::setMaxVelocityScaleFactor( double scale )
     return usbio_->writePacket(pkt_);
 }
 
-int RmpUsbDriver::setMaxTurnrateScaleFactor( double scale )
+int UsbDriver::setMaxTurnrateScaleFactor( double scale )
 {
     // limit input to [0.0, 1.0]
     if ( scale>1.0 ) {
@@ -199,7 +205,7 @@ int RmpUsbDriver::setMaxTurnrateScaleFactor( double scale )
     return usbio_->writePacket(pkt_);
 }
 
-int RmpUsbDriver::setMaxAccelerationScaleFactor( double scale )
+int UsbDriver::setMaxAccelerationScaleFactor( double scale )
 {
     // limit input to [0.0, 1.0]
     if ( scale>1.0 ) {
@@ -212,7 +218,7 @@ int RmpUsbDriver::setMaxAccelerationScaleFactor( double scale )
     return usbio_->writePacket(pkt_);
 }
 
-int RmpUsbDriver::setMaxCurrentLimitScaleFactor( double scale )
+int UsbDriver::setMaxCurrentLimitScaleFactor( double scale )
 {
     // limit input to [0.0, 1.0]
     if ( scale>1.0 ) {
@@ -226,7 +232,7 @@ int RmpUsbDriver::setMaxCurrentLimitScaleFactor( double scale )
     return usbio_->writePacket(pkt_);
 }
 
-void RmpUsbDriver::integrateMotion()
+void UsbDriver::integrateMotion()
 {
     // Get the new linear and angular encoder values and compute odometry.
     int deltaForeaftRaw = diff(lastRawForeaft_, frame_->foreaft, firstread_);
@@ -252,7 +258,8 @@ void RmpUsbDriver::integrateMotion()
     }
 }
 
-void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )
+void UsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
+                      HwDriver::Status & status )
 {
     // POSITION2D
     
@@ -293,6 +300,12 @@ void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerD
     power->batteries[1].percent = 99.0;
     power->batteries[2].voltage = RMP_UI_OFFSET + frame_->ui_battery_voltage*RMP_UI_COEFF;
     power->batteries[2].percent = 99.0;
+
+    // INTERNAL STATUS
+    status.buildId = frame_->build_id;
+    status.cuState = frame_->status_word1;
+    status.opMode = frame_->operational_mode;
+    status.gainSchedule = frame_->controller_gain_schedule;
 
     //debug
     //cout<<"cu battery voltage (CU): "<<power->batteries[0].voltage<<" ("<<frame_->base_battery_voltage<<")"<<endl;
@@ -375,7 +388,7 @@ void RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerD
 /*
  *  Takes an Orca command object and turns it into CAN packets for the RMP
  */
-void RmpUsbDriver::makeMotionCommandPacket( CanPacket* pkt, const Velocity2dCommandPtr & command )
+void UsbDriver::makeMotionCommandPacket( CanPacket* pkt, const Velocity2dCommandPtr & command )
 {
     pkt->id = RMP_CAN_ID_COMMAND;
     // velocity command does not change any other values
@@ -413,7 +426,7 @@ void RmpUsbDriver::makeMotionCommandPacket( CanPacket* pkt, const Velocity2dComm
 /*
     Creates a status CAN packet from the given arguments
  */  
-void RmpUsbDriver::makeStatusCommandPacket( CanPacket* pkt, uint16_t cmd, uint16_t val )
+void UsbDriver::makeStatusCommandPacket( CanPacket* pkt, uint16_t cmd, uint16_t val )
 {
     
     pkt->id = RMP_CAN_ID_COMMAND;
@@ -437,7 +450,7 @@ void RmpUsbDriver::makeStatusCommandPacket( CanPacket* pkt, uint16_t cmd, uint16
     }
 }
 
-void RmpUsbDriver::makeShutdownCommandPacket( CanPacket* pkt )
+void UsbDriver::makeShutdownCommandPacket( CanPacket* pkt )
 {
     pkt->id = RMP_CAN_ID_SHUTDOWN;
 
@@ -446,7 +459,7 @@ void RmpUsbDriver::makeShutdownCommandPacket( CanPacket* pkt )
 
 // Calculate the difference between two raw counter values, taking care
 // of rollover.
-int RmpUsbDriver::diff( uint32_t from, uint32_t to, bool first )
+int UsbDriver::diff( uint32_t from, uint32_t to, bool first )
 {
     // if this is the first time, report no change
     if(first) {
@@ -474,7 +487,7 @@ int RmpUsbDriver::diff( uint32_t from, uint32_t to, bool first )
     }
 }
 
-void RmpUsbDriver::watchPacket( CanPacket* pkt, short int pktID )
+void UsbDriver::watchPacket( CanPacket* pkt, short int pktID )
 {
     short slot0 = (short)pkt->GetSlot(0);
     short slot1 = (short)pkt->GetSlot(1);
@@ -530,7 +543,7 @@ void RmpUsbDriver::watchPacket( CanPacket* pkt, short int pktID )
     }
 }
 
-void RmpUsbDriver::watchDataStream( CanPacket* pkt )
+void UsbDriver::watchDataStream( CanPacket* pkt )
 {
     static CanPacket priorPkt;
 

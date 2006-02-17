@@ -20,53 +20,59 @@
  
 #include <iostream>
 
-#include "rmpfakedriver.h"
+#include "fakedriver.h"
 
 #include <orcaice/orcaice.h>
 
 using namespace std;
 using namespace orca;
 
-RmpFakeDriver::RmpFakeDriver()
+FakeDriver::FakeDriver()
 {
 }
 
-RmpFakeDriver::~RmpFakeDriver()
+FakeDriver::~FakeDriver()
 {
-    cout<<"RmpFakeDriver~RmpFakeDriver"<<endl;
+    cout<<"FakeDriver~FakeDriver"<<endl;
 }
 
-int RmpFakeDriver::enable()
+int FakeDriver::enable()
 {
-    cout<<"RmpFakeDriver is enabled"<<endl;
+    cout<<"FakeDriver is enabled"<<endl;
     return 0;
 }
 
-int RmpFakeDriver::disable()
+int FakeDriver::repair()
 {
-    cout<<"RmpFakeDriver is disabled"<<endl;
+    cout<<"FakeDriver is repaired"<<endl;
     return 0;
 }
 
-int RmpFakeDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power )
+int FakeDriver::disable()
+{
+    cout<<"FakeDriver is disabled"<<endl;
+    return 0;
+}
+
+int FakeDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
+                HwDriver::Status & status )
 {
     orcaice::setSane( position2d );
-    orcaice::setSane( power );
+    //orcaice::setSane( power );
 
+    // slow it down a bit
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     return 0;
 }
 
-int RmpFakeDriver::sendMotionCommand( orca::Velocity2dCommandPtr & command )
+int FakeDriver::sendMotionCommand( orca::Velocity2dCommandPtr & command )
 {
-    // debug: throw exceptions to test client's response
+    // debug: simulated failure
     if ( command->motion.v.x < 2.0 ) {
         cout<<"wrote: "<<orcaice::toString(command)<<endl;
+        return 0;
     }
-    else {       
-        orca::HardwareFailedException e;
-        e.what = "throwing pretend exception from RMP fake driver";
-        throw e;
+    else {
+        return 1;
     }
-    return 0;
 }

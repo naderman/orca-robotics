@@ -18,27 +18,22 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include <IceStorm/IceStorm.h>
-
 #include "rmpcomponent.h"
-#include "rmpmainloop.h"
-
-// implementations of Ice objects
-#include "platform2d_i.h"
-#include "power_i.h"
+#include "nethandler.h"
+#include "hwhandler.h"
 
 #include <orcaice/orcaice.h>
 
 using namespace orca;
 
 RmpComponent::RmpComponent() :
-    orcaice::Component( "SegwayRmp" ), mainLoop_(0)
+    orcaice::Component( "SegwayRmp" ), netHandler_(0), hwHandler_(0)
 {
 }
 
 RmpComponent::~RmpComponent()
 {
-    // do not delete mainLoop_!!! It derives from Ice::Thread and deletes itself.
+    // do not delete handlers!!! They derive from Ice::Thread and delete itself.
 }
 
 // warning: this function returns after it's done, all variable that need to be permanet must
@@ -46,30 +41,11 @@ RmpComponent::~RmpComponent()
 void RmpComponent::start()
 {
     //
-    // EXTERNAL INTERFACES
+    // Network handling loop
     //
-
-    // PROVIDED INTERFACE: Platform2d
-    // Find IceStorm Topic to which we'll publish
-    IceStorm::TopicPrx platfTopicPrx = orcaice::connectToTopicWithTag<Position2dConsumerPrx>
-                ( context(), position2dPublisher_, "Platform2d" );
-
-    // create servant for direct connections and tell adapter about it
-    platform2dObj_ = new Platform2dI( position2dBuffer_, commandBuffer_,
-                                      setConfigBuffer_, currentConfigBuffer_, platfTopicPrx );
-    orcaice::createInterfaceWithTag( context(), platform2dObj_, "Platform2d" );
-
-
-
-    // PROVIDED INTERFACE: Power
-    // Find IceStorm ConsumerProxy to push out data
-    IceStorm::TopicPrx powerTopicPrx = orcaice::connectToTopicWithTag<PowerConsumerPrx>
-                ( context(), powerPublisher_, "Power" );
-    
-    // create servant for direct connections and tell adapter about it
-    powerObj_ = new PowerI( powerBuffer_, powerTopicPrx );
-    orcaice::createInterfaceWithTag( context(), powerObj_, "Power" );
-
+    netHandler_ = new NetHandler( position2dBuffer_, commandBuffer_, powerBuffer_,
+                                  setConfigBuffer_, currentConfigBuffer_, context() );
+    netHandler_->start();
 
     //
     // ENABLE NETWORK CONNECTIONS
@@ -77,26 +53,26 @@ void RmpComponent::start()
     activate();
 
     //
-    // MAIN DRIVER LOOP
+    // Hardware handling loop
     //
-    mainLoop_ = new RmpMainLoop( position2dBuffer_, commandBuffer_, powerBuffer_,
-                                 setConfigBuffer_, currentConfigBuffer_,
-                                 position2dPublisher_, powerPublisher_ );
-    mainLoop_->setCurrent( context() );
-    mainLoop_->start();
+    hwHandler_ = new HwHandler( position2dBuffer_, commandBuffer_, powerBuffer_,
+                                setConfigBuffer_, currentConfigBuffer_, context() );
+    hwHandler_->start();
 
     // the rest is handled by the application/service
 }
 
 void RmpComponent::stop()
 {
-    IceUtil::ThreadControl mainControl = mainLoop_->getThreadControl();
+    IceUtil::ThreadControl netControl = netHandler_->getThreadControl();
+    IceUtil::ThreadControl hwControl = hwHandler_->getThreadControl();
 
-    tracer()->debug("stopping loop", 5 );
-    // Tell the main loop to stop
-    mainLoop_->stop();
+    tracer()->debug("stopping loops", 5 );
+    // Tell both loops to stop
+    netHandler_->stop();
+    hwHandler_->stop();
 
-    tracer()->debug("joining thread", 5 );
-    // Then wait for it
-    mainControl.join();
+    tracer()->debug("joining loop threads", 5 );
+    netControl.join();
+    hwControl.join();
 }
