@@ -46,9 +46,9 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
         playerclient OrcaPlayer
     )
 
-    IF ( NOT HAVE_USB_DRIVER AND NOT HAVE_CANLIB )
+    IF ( NOT HAVE_USB_DRIVER AND NOT HAVE_PLAYERCLIENT_DRIVER )
         MESSAGE("    WARNING: only default 'fake' driver can be built")
-    ENDIF ( NOT HAVE_USB_DRIVER AND NOT HAVE_CANLIB )
+    ENDIF ( NOT HAVE_USB_DRIVER AND NOT HAVE_PLAYERCLIENT_DRIVER )
 
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
     SET( COMMON_SRCS rmpcomponent nethandler hwhandler platform2dI powerI fakedriver )

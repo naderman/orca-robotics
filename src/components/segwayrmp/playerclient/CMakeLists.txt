@@ -1,3 +1,5 @@
+# $Id$
+
 INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
 
 FILE( GLOB SRCS *.cpp )
