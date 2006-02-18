@@ -72,9 +72,10 @@ WARN_LOGFILE           = "doxywarn.txt"
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = . \
+                         ../src/interfaces \
                          ../src/components \
                          ../src/utils \
-                         ../src/interfaces
+                         ../src/tests
 FILE_PATTERNS          = *.cpp \
                          *.cxx \
                          *.hpp \
