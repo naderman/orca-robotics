@@ -1,3 +1,5 @@
+# A place for well-tested and well-documented components.
+
 MESSAGE ( "== COMPONENTS ==" )
 
 # when adding new directories, please maintain alphabetical order
@@ -14,7 +16,3 @@ SUBDIRS(
   statusmon
   teleop
 )
-
-IF ( GENERATE_DOCUMENTATION AND DOXYGEN )
-  ADD_CUSTOM_TARGET( docs ALL doxygen )
-ENDIF ( GENERATE_DOCUMENTATION AND DOXYGEN )

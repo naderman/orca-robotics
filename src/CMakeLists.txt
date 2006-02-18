@@ -4,4 +4,5 @@ SUBDIRS(
   components 
   examples
   tests
+  sandbox
 )
