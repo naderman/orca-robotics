@@ -24,7 +24,7 @@
 #include <orca/platform2d.h>
 #include <string>
 
-/*!
+/*
 
 @brief Abstract interface class for human teleoperation input.
 
@@ -39,7 +39,7 @@ public:
     virtual int enable()=0;
     virtual int disable()=0;
 
-    //! Blocks till new data is available
+    // Blocks till new data is available
     virtual int readdata( orca::Velocity2dCommandPtr &data )=0;
 
     enum DriverType
@@ -57,10 +57,10 @@ public:
         std::string joystickDevice;
     };
 
-    //! Set a specifc configuration
+    // Set a specifc configuration
     //virtual int setConfig( const InputDriver::Config &cfg )=0;
 
-    //! Get the current configuration
+    // Get the current configuration
     //virtual int getConfig( InputDriver::Config &cfg )=0;
 
 };

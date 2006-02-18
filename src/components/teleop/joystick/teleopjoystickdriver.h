@@ -34,7 +34,7 @@ public:
     virtual int enable();
     virtual int disable();
 
-    //! Blocks till new data is available
+    // Blocks till new data is available
     virtual int readdata( orca::Velocity2dCommandPtr &data );
 
 private:

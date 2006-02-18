@@ -32,11 +32,11 @@
 #include <orcaice/ptrbuffer.h>
 
 
-//!
-//! Implements the Polarfeature2d interface: Handles all our remote calls.
-//!
-//! The component interacts with this thing through the (thread-safe) buffers.
-//!
+//
+// Implements the Polarfeature2d interface: Handles all our remote calls.
+//
+// The component interacts with this thing through the (thread-safe) buffers.
+//
 class PolarFeature2dI : public orca::PolarFeature2d
 {
 public:
@@ -44,13 +44,13 @@ public:
 
     // remote calls:
 
-    //! Get Polarfeature2dSequence Data
+    // Get Polarfeature2dSequence Data
     virtual ::orca::PolarFeature2dDataPtr getData(const ::Ice::Current& ) const;
     
-    //! Subscribe people
+    // Subscribe people
     virtual void subscribe(const ::orca::PolarFeature2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
-    //! Unsubscribe people
+    // Unsubscribe people
     virtual void unsubscribe(const ::orca::PolarFeature2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
 

@@ -38,33 +38,33 @@ namespace orca_polefinder {
         double bearing; // [rad]
     } positionRB;
 
-    //!
-    //! \author Alex Brooks
-    //!
-    //! \brief Finds poles.  Returns the number of poles found.
-    //!
-    //! The actual locations of the poles are returned in the 'poles' array 
-    //! (should already have space allocated to it).
-    //! 
-    //! Other parameters are:
-    //!   max_laser_range (obvious)
-    //!   min_width (to be declared a pole) [m]
-    //!   max_width (to be declared a pole) [m]
-    //!   min_distance_to_background: minimum distance of the 'pole' from the 
-    //!     background [m]
-    //!   min_angle_from_dodge: pole should be separated by some angle from dodgy shit like max ranges.
-    //!
-    //!     ie for a laser scan looking like:
-    //!
-    //!     -      -----  -----
-    //!     |          |  |
-    //!    x|          |  |       Require: x >= min_distance_to_background
-    //!     |          |  |                min_width < y < max_width
-    //!     -          ----                to declare this a pole.
-    //!                
-    //!                |--|
-    //!                 y
-    //!
+    //
+    // \author Alex Brooks
+    //
+    // \brief Finds poles.  Returns the number of poles found.
+    //
+    // The actual locations of the poles are returned in the 'poles' array
+    // (should already have space allocated to it).
+    //
+    // Other parameters are:
+    //   max_laser_range (obvious)
+    //   min_width (to be declared a pole) [m]
+    //   max_width (to be declared a pole) [m]
+    //   min_distance_to_background: minimum distance of the 'pole' from the
+    //     background [m]
+    //   min_angle_from_dodge: pole should be separated by some angle from dodgy shit like max ranges.
+    //
+    //     ie for a laser scan looking like:
+    //
+    //     -      -----  -----
+    //     |          |  |
+    //    x|          |  |       Require: x >= min_distance_to_background
+    //     |          |  |                min_width < y < max_width
+    //     -          ----                to declare this a pole.
+    //
+    //                |--|
+    //                 y
+    //
     int detect_poles( const orca::RangeScannerConfigPtr laserConf,
                       const orca::LaserDataPtr ranges,
                       double maxLaserRange,

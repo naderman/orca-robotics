@@ -23,7 +23,7 @@
 #include "featureextractorbase.h"
 #include "configparameters.h"
 
-/*!
+/*
 
 \brief
 

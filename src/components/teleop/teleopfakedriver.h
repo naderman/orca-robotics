@@ -23,7 +23,7 @@
 
 #include "inputdriver.h"
 
-/*!
+/*
     A fake driver to simplify development. Does not require any hardware.
 
     @author Alex Makarenko
@@ -39,13 +39,13 @@ public:
     virtual int enable();
     virtual int disable();
 
-    //! Blocks till new data is available
+    // Blocks till new data is available
     virtual int readdata( orca::Velocity2dCommandPtr &data );
 
-    //! Set a specifc configuration
+    // Set a specifc configuration
     //virtual int setConfig( const InputDriver::Config &cfg );
 
-    //! Get the current configuration
+    // Get the current configuration
     //virtual int getConfig( InputDriver::Config &cfg );
 
 private:

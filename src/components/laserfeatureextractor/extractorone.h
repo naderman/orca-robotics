@@ -37,7 +37,7 @@
 #define CORNER_BOUND     0.45    // 0.45    0.45
 #define POSSIBLE_BOUND    0.2    // ???    0.2
 
-/*!
+/*
 
 \brief
 

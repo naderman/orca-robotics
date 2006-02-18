@@ -31,30 +31,30 @@ typedef enum {
   RANGE_BEARING_FOREGROUND_POINT
 } RangeBearingType;
 
-/*!
+/*
   \brief Defines a range-bearing pair in sensor (polar) coordinate system.
 */
 
 class RangeBearing
 {
 public:
-    //! constructor
+    // constructor
     RangeBearing( double R=0.0, double B=0.0 ) :
         range( R ), bearing( B ) {}
 
-    /*!
+    /*
       \var double range
       Range to return
     */
     double range;
 
-    /*!
+    /*
       \var double bearing
       Bearing to return
     */
     double bearing;
     
-    /*!
+    /*
       \var RangeBearingType type
       Type of Range/Bearing observation
     */

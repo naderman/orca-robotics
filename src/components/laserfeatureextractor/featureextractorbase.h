@@ -22,7 +22,7 @@
 
 #include "configparameters.h"
 
-/*!
+/*
 
 \brief Abstract class for a laser feature extractor
 
@@ -41,10 +41,10 @@ public:
     FeatureExtractorBase();
     virtual ~FeatureExtractorBase();
     
-    //! Passes configuration parameters to algorithm which initializes itself
+    // Passes configuration parameters to algorithm which initializes itself
     virtual int initialize( ConfigParameters *configParameters) = 0;
     
-    //! Computes the features
+    // Computes the features
     virtual int computeFeatures( const orca::RangeScannerConfigPtr laserConfigPtr, const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr) = 0;
 
 private:
