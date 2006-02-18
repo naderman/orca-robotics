@@ -20,7 +20,7 @@
 
 /*!
 @ingroup utils
-@ingroup linuxutils
+@ingroup linux
 @defgroup orca_util_iceping IcePing
 @brief An equivalent to Unix ping for Orca components.
 

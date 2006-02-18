@@ -22,8 +22,8 @@
 @ingroup components
 @ingroup apps
 @ingroup services
-@ingroup cppcomps
-@ingroup linuxcomps
+@ingroup cpp
+@ingroup linux
 @defgroup orca_component_segwayrmp SegwayRmp
 @brief Controls Segway RMP robot.
 
