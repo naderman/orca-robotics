@@ -45,7 +45,7 @@ void DrunkRobotMainLoop::run(){
 
     // Generate a random position every time stemp. 
    Position2dDataPtr currentPos = new Position2dData;
-   setSane(currentPos); // Function from orcaiceutil tha provides reasonable random values. 
+   setSane(currentPos); // Function from libOrcaIce that provides reasonable random values.
 
     cout << "Message: " << msgCount ++ << " Position is: " << currentPos << endl; 
 

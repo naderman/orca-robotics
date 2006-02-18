@@ -31,7 +31,7 @@
 
 // This interface allows us to get information in and out of our 
 // robot. It uses a pointer buffer (a nice thread safe class from the 
-// orcaiceutil library) to allow us to handle things asynchronously. 
+// libOrcaIce library) to allow us to handle things asynchronously.
 // We also use a pointer for geometry, since it's unlikely the geometry 
 // will change much. 
 
