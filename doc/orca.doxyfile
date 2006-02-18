@@ -75,7 +75,8 @@ INPUT                  = . \
                          ../src/interfaces \
                          ../src/components \
                          ../src/utils \
-                         ../src/tests
+                         ../src/tests \
+                         ../src/examples
 FILE_PATTERNS          = *.cpp \
                          *.cxx \
                          *.hpp \
