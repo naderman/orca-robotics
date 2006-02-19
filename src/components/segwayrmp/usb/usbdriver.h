@@ -42,7 +42,7 @@ public:
     virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
                       HwDriver::Status & status );
 
-    virtual int sendMotionCommand( orca::Velocity2dCommandPtr &position2d );
+    virtual int write( const orca::Velocity2dCommandPtr &position2d );
 
 private:
     int setMaxVelocityScaleFactor( double scale );

@@ -10,14 +10,14 @@ Provides.Power.DefaultInterface=power
 # Required Interfaces
 
 # Config Parameters
-Config.Driver.Default=usb
+Config.Driver.Default=segwayrmpusb
 
 # Common to all drivers
 Config.MaxSpeed.Default=1.0
 Config.MaxTurnrate.Default=60.0
-Config.position2dPublishInterval.Default=1.0
-Config.powerPublishInterval.Default=20.0
-Config.statusPublishInterval.Default=60.0
+Config.Position2dPublishInterval.Default=-1.0
+Config.PowerPublishInterval.Default=20.0
+Config.StatusPublishInterval.Default=60.0
 
 # Player-Client driver only
 Config.PlayerClient.Host.Default=localhost

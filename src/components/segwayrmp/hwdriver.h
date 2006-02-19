@@ -66,7 +66,7 @@ public:
     virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power, Status &status )=0;
 
     // Writes velocity command
-    virtual int sendMotionCommand( orca::Velocity2dCommandPtr &position2d )=0;
+    virtual int write( const orca::Velocity2dCommandPtr &position2d )=0;
 
 };
 

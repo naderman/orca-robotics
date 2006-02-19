@@ -66,26 +66,27 @@ void NetHandler::init()
     // Read settings
     //
     position2dPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            "SegwayRmp.Config.position2dPublishInterval", -1 );
+            "SegwayRmp.Config.Position2dPublishInterval", -1 );
     powerPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            "SegwayRmp.Config.powerPublishInterval", 10.0 );
+            "SegwayRmp.Config.PowerPublishInterval", 20.0 );
     statusPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            "SegwayRmp.Config.statusPublishInterval", 60.0 );
-    // should really look for the minimum of the three above
-    sleepInterval_ = position2dPublishInterval_;
+            "SegwayRmp.Config.StatusPublishInterval", 60.0 );
 
     //
     // EXTERNAL INTERFACES
     //
     // PROVIDED: Platform2d
-    // Find IceStorm Topic to which we'll publish
+    // Find IceStorm Topic to which we'll publish.
+    // NetworkException will kill it, that's what we want.
     IceStorm::TopicPrx platfTopicPrx = orcaice::connectToTopicWithTag<Position2dConsumerPrx>
                 ( context_, position2dPublisher_, "Platform2d" );
 
     // create servant for direct connections and tell adapter about it
-    platform2dObj_ = new Platform2dI( position2dBuffer_, commandNotify_,
+    // don't need to store it as a member variable, adapter will keep it alive
+    Ice::ObjectPtr platform2dObj = new Platform2dI( position2dBuffer_, commandNotify_,
                                       setConfigBuffer_, currentConfigBuffer_, platfTopicPrx );
-    orcaice::createInterfaceWithTag( context_, platform2dObj_, "Platform2d" );
+    // two possible exceptions will kill it here, that's what we want
+    orcaice::createInterfaceWithTag( context_, platform2dObj, "Platform2d" );
 
     // PROVIDED INTERFACE: Power
     // Find IceStorm ConsumerProxy to push out data
@@ -93,8 +94,8 @@ void NetHandler::init()
                 ( context_, powerPublisher_, "Power" );
     
     // create servant for direct connections and tell adapter about it
-    powerObj_ = new PowerI( powerBuffer_, powerTopicPrx );
-    orcaice::createInterfaceWithTag( context_, powerObj_, "Power" );
+    Ice::ObjectPtr powerObj = new PowerI( powerBuffer_, powerTopicPrx );
+    orcaice::createInterfaceWithTag( context_, powerObj, "Power" );
     
     // all cool, assume we can send and receive
     receiveStatus_ = 0;

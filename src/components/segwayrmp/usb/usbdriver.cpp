@@ -165,7 +165,7 @@ int UsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &po
     return 1;
 }
 
-int UsbDriver::sendMotionCommand( orca::Velocity2dCommandPtr & command )
+int UsbDriver::write( const orca::Velocity2dCommandPtr & command )
 {
     makeMotionCommandPacket( pkt_, command );
 

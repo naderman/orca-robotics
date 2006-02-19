@@ -98,7 +98,7 @@ void HwHandler::init()
     string driverName = orcaice::getPropertyWithDefault( context_.properties(),
             prefix+"Driver", "usb" );
 
-    if ( driverName == "usb" )
+    if ( driverName == "segwayrmpusb" )
     {
 #ifdef HAVE_USB_DRIVER
         context_.tracer()->debug( "loading USB driver",3);
@@ -216,10 +216,10 @@ void HwHandler::handleData( const Ice::ObjectPtr & obj )
                 (commandData_->motion.w / fabs(commandData_->motion.w)) * config_.maxTurnrate;
     }
 
-    //cout<<"handling: "<<orcaice::toString(commandData_)<<endl;
+    cout<<"handling: "<<orcaice::toString(commandData_)<<endl;
 
     // write to hardware
-    if( driver_->sendMotionCommand( commandData_ ) == 0 ) {
+    if( driver_->write( commandData_ ) == 0 ) {
         //writeStatus_ = 0;
     }
     else {

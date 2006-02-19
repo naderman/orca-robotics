@@ -40,7 +40,7 @@ public:
     virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
               HwDriver::Status & status );
 
-    virtual int sendMotionCommand( orca::Velocity2dCommandPtr & command );
+    virtual int write( const orca::Velocity2dCommandPtr & command );
 
 };
 

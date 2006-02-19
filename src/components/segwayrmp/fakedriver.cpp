@@ -65,7 +65,7 @@ int FakeDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &p
     return 0;
 }
 
-int FakeDriver::sendMotionCommand( orca::Velocity2dCommandPtr & command )
+int FakeDriver::write( const orca::Velocity2dCommandPtr & command )
 {
     // debug: simulated failure
     if ( command->motion.v.x < 2.0 ) {

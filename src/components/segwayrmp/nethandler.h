@@ -62,10 +62,7 @@ private:
     //
     // EXTERNAL INTERFACES
     //
-    Ice::ObjectPtr platform2dObj_;
     orca::Position2dConsumerPrx position2dPublisher_;
-
-    Ice::ObjectPtr powerObj_;
     orca::PowerConsumerPrx powerPublisher_;
 
     // network/hardware interface
@@ -92,9 +89,6 @@ private:
     double position2dPublishInterval_;
     double powerPublishInterval_;
     double statusPublishInterval_;
-
-    // the easiest way to time publish times is by sleeping the min of publish intervals
-    double sleepInterval_;
 
     // dodgy states
     int receiveStatus_;

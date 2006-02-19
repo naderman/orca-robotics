@@ -38,25 +38,58 @@
 
 - none
 
-The segwayrmp driver provides control of a Segway RMP (Robotic
-Mobility Platform), which is an experimental robotic version of the
-Segway HT (Human Transport), a kind of two-wheeled, self-balancing
-electric scooter.
+@par Drivers
 
-Because of its power, weight, height, and dynamics, the Segway RMP is
-a potentially dangerous machine.  Be @b very careful with it.
+- @b segwayrmpusb @ref orca_robot_segwayrmpusb
+- @b playerclient @ref orca_robot_playerclient
+- @b fake Useful for testing or if you don't have hardware or a simulator.
 
-For safety, this Segway will stop (zero-out motion commands) if no new command has been received from the PC in the previous 400ms or so. This is done in Segway firmware and this component does not duplicate this functionality. Thus, if you want to continue moving at a constant velocity, you must continuously send your desired velocities to the Platform2d interface (Teleop component does exactly that).
+@par Configuration
 
-Development status \b Beta.
+- @c Driver [string]
+    - Type of hardware driver
+    - Valid values: {segwayrmpusb, playerclient, fake}
+    - Default: segwayrmpusb
+    
+- @c MaxSpeed [float]
+    - Maximum allowed forward speed
+    - Units: meters
+    - Constraints: positive
+    - Default: 1.0
+    
+- @c MaxTurnrate [float]
+    - Maximum allowed turnrate
+    - Units: degrees/second
+    - Constraints: positive
+    - Default: 60.0
+    
+- @c Position2dPublishInterval [float]
+    - How often to send position information to the IceStorm server
+    - Units: seconds
+    - Valid values:
+        - <0 : send every new data point
+        - >0 : send approximately every t seconds
+    - Default: -1.0
+
+- @c PowerPublishInterval [float]
+    - How often to send power information to the IceStorm server
+    - Units: seconds
+    - Valid values:
+        - >0 : send approximately every t seconds
+    - Default: 20.0
+
+- @c StatusPublishInterval [float]
+    - How often to send status information to the IceStorm server
+    - Units: seconds
+    - Valid values:
+        - >0 : send approximately every t seconds
+    - Default: 60.0
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
 @par Dependancies
 
 None for the component. See driver sections below for individual driver dependencies.
-
-@par Configuration
-
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
 @par Authors
 Orca component by Alex Makarenko. Original CAN driver code came from Player by Andrew Howard.
@@ -67,7 +100,17 @@ Orca component by Alex Makarenko. Original CAN driver code came from Player by A
 
 The implementation of Platform2d interface can throw orcaice::DataNotExist exception but does NOT throw orcaice::HardwareFailedException.
 
-@section usb USB Driver
+@section orca_robot_segwayrmpusb Segway RMP USB driver
+
+The segwayrmp driver provides control of a Segway RMP (Robotic
+Mobility Platform), which is an experimental robotic version of the
+Segway HT (Human Transport), a kind of two-wheeled, self-balancing
+electric scooter.
+
+Because of its power, weight, height, and dynamics, the Segway RMP is
+a potentially dangerous machine.  Be @b very careful with it.
+
+For safety, this Segway will stop (zero-out motion commands) if no new command has been received from the PC in the previous 400ms or so. This is done in Segway firmware and this component does not duplicate this functionality. Thus, if you want to continue moving at a constant velocity, you must continuously send your desired velocities to the Platform2d interface (Teleop component does exactly that).
 
 @par Dependancies
 
@@ -130,13 +173,23 @@ fi
 
 Finally, remember to 'chmod 755 /etc/hotplug/usb/segwayrmp'.
 
-@section playerclient Player Client Driver
 
-@note Not implemented yet, but is easy to do.
+@section orca_robot_playerclient Player Client driver
 
-This one simply connects to a Player server.
+This driver wraps up a Player client. It requires a running Player server. The driver gets data from that server and converts it into Orca format.More information on Player/Stage.
 
-Support is limited to what Player supports which is currently the original RMP with CAN I/O using Kvaser, Inc.'s CANLIB interface library. This library provides access to CAN cards made by Kvaser, such as the LAPcan II.
+@par Extra configuration
+
+- @c PlayerClient.Host [string]
+    - The host that Player (or Stage) is running on
+    - Default: "localhost"
+- @c PlayerClient.Port [int]
+    - The port that PLayer (or Stage) is running on
+    - Constraints: >0
+    - Default: 6665
+    
+Naturally, both real hardware and Stage simulator are supported. Support is limited to what Player supports which is currently the original RMP with CAN I/O using Kvaser, Inc.'s CANLIB interface library. This library provides access to CAN cards made by Kvaser, such as the LAPcan II.
+
 
 */
 
