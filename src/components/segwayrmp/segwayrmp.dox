@@ -121,7 +121,10 @@ Make sure libusb is installed. In Debian, the easiest is to install the develope
 # apt-get install libusb-dev
 @endverbatim
 
-The Orca component has been tested with libftd2xx.so.0.4.5 and libusb-0.1.so.4.4.2. Download the libftd2xx library from <a href="http://www.ftdichip.com/Drivers/D2XX.htm">www.ftdichip.com</a>. Untar and follow the installation instructions in README.dat file. Note an incorrect version number in step 4 and that something similar the line step 7 already exists when using newish kernels.
+The Orca component has been tested with libftd2xx.so.0.4.5 and libusb-0.1.so.4.4.2. Download the libftd2xx library from <a href="http://www.ftdichip.com/Drivers/D2XX.htm">www.ftdichip.com</a>. Untar and follow the installation instructions in README.dat file. Note an incorrect version number in step 4 and that the line to add to your @c fstab file depends on the distribution and kernel number. The following works with Debian 2.6.12.
+@verbatim
+none            /proc/bus/usb   usbfs   defaults,devmode=0666   0       0
+@endverbatim
 
 In addition, copy the header files provided with the distribution to a standard place, e.g.
 @verbatim
