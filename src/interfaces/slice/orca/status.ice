@@ -68,7 +68,7 @@ interface Status
 {
     //! Returns the latest status.
     //! In Orca-1 terms, this would be called ClientPull_Supplier interface.
-    nonmutating StatusData getStatus();
+    nonmutating StatusData getData();
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The
