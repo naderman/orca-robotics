@@ -31,10 +31,10 @@
 
 @defgroup apps Stand-Alone Components
 @defgroup services IceBox Services
-@defgroup cpp C++ Components and Utilities
-@defgroup java Java Components and Utilities
-@defgroup linux Linux Components and Utilities
-@defgroup win Windows Components and Utilities
+@defgroup cpp C++
+@defgroup java Java
+@defgroup linux Linux
+@defgroup win Windows
 
 @mainpage Orca: Components for Robotics
 
