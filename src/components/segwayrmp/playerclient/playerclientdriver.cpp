@@ -33,8 +33,9 @@ using namespace std;
 using namespace orca;
 //using orcaice::operator<<;
 
+// experiment to pass all custom props as a disctionary
+//PlayerClientDriver::PlayerClientDriver( const std::map<std::string,std::string> & props, const std::string & prefix )
 
-//PlayerClientDriver::PlayerClientDriver( const std::map<std::string,std::string> & props )
 PlayerClientDriver::PlayerClientDriver( const char *host, int port )
     : enabled_( false ),
       robot_(0),
@@ -60,7 +61,8 @@ PlayerClientDriver::enable()
     robot_      = new PlayerClient( host_, port_ );
     positionProxy_ = new PositionProxy( robot_, 0 );
 
-    positionProxy_->ChangeAccess('r');
+    // make sure we get read/write access ('a'=all)
+    positionProxy_->ChangeAccess('a');
     if(positionProxy_->GetAccess() == 'e')
     {
         cout << "ERROR(playerclientdriver.cpp): couldn't get device access!" << endl;
@@ -72,6 +74,11 @@ PlayerClientDriver::enable()
     {
         cout << "ERROR(playerclientdriver.cpp): Error reading from robot" << endl;
         disable();
+        return -1;
+    }
+
+    if( positionProxy_->SetMotorState( 1 ) ) {
+        cout << "ERROR(playerclientdriver.cpp): Error enabling motors" << endl;
         return -1;
     }
 
@@ -103,17 +110,14 @@ int
 PlayerClientDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
                     HwDriver::Status & status )
 {
-    if ( ! enabled_ )
-    {
-        cout << "ERROR(playerclientdriver.cpp): Can't read: not connected to Player/Stage yet. Sleeping for 1 sec..." << endl;
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+    if ( ! enabled_ ) {
+        //cout << "ERROR(playerclientdriver.cpp): Can't read: not connected to Player/Stage yet." << endl;
         return -1;
     }
 
     if ( robot_->Read() )
     {
-        cout << "ERROR(playerclientdriver.cpp): Error reading from robot -- shutting down." << endl;
-        enabled_ = false;
+        cout << "ERROR(playerclientdriver.cpp): Error reading from robot." << endl;
         return -1;
     }
     
@@ -124,7 +128,9 @@ PlayerClientDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPt
 }
 
 int
-PlayerClientDriver::sendMotionCommand( orca::Velocity2dCommandPtr &position2d )
+PlayerClientDriver::write( const orca::Velocity2dCommandPtr &position2d )
 {
-    return 0;
+    // this version of Player client takes speed command in  [m, m, rad/s]
+    // the return values are same as ours: 0 if ok, -1 if not.
+    return positionProxy_->SetSpeed( position2d->motion.v.x, position2d->motion.v.y, position2d->motion.w );
 }
