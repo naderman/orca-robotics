@@ -36,13 +36,15 @@ module orca
 //! Velocity command object
 class Velocity2dCommand extends OrcaObject
 {
+    //! Commanded in-plane velocities.
     Twist2d motion;
 };
 
 //! Platform configuration object
 class Platform2dConfig extends OrcaObject
 {
-    Twist2d maxMotionCommand;
+    //! Maximum values for in-plane velocities. 
+    Twist2d maxVelocities;
 };
 
 /*!
