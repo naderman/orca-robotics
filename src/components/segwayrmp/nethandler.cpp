@@ -35,17 +35,17 @@ using namespace std;
 using namespace orca;
 
 NetHandler::NetHandler(
-                 orcaice::PtrBuffer<orca::Position2dDataPtr>    & position2dBuffer,
-                 orcaice::PtrNotify                             & commandNotify,
-                 orcaice::PtrBuffer<orca::PowerDataPtr>         & powerBuffer,
-                 orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer,
-                 orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer,
-                 const orcaice::Context                         & context ) :
-        position2dBuffer_(position2dBuffer),
-        commandNotify_(commandNotify),
-        powerBuffer_(powerBuffer),
-        setConfigBuffer_(setConfigBuffer),
-        currentConfigBuffer_(currentConfigBuffer),
+                 orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
+                 orcaice::PtrNotify                            & commandPipe,
+                 orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe,
+                 orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
+                 orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
+                 const orcaice::Context                        & context )
+      : position2dPipe_(position2dPipe),
+        commandPipe_(commandPipe),
+        powerPipe_(powerPipe),
+        setConfigPipe_(setConfigPipe),
+        currentConfigPipe_(currentConfigPipe),
         position2dData_(new Position2dData),
         commandData_(new Velocity2dCommand),
         powerData_(new PowerData),
@@ -83,8 +83,8 @@ void NetHandler::init()
 
     // create servant for direct connections and tell adapter about it
     // don't need to store it as a member variable, adapter will keep it alive
-    Ice::ObjectPtr platform2dObj = new Platform2dI( position2dBuffer_, commandNotify_,
-                                      setConfigBuffer_, currentConfigBuffer_, platfTopicPrx );
+    Ice::ObjectPtr platform2dObj = new Platform2dI( position2dPipe_, commandPipe_,
+                                      setConfigPipe_, currentConfigPipe_, platfTopicPrx );
     // two possible exceptions will kill it here, that's what we want
     orcaice::createInterfaceWithTag( context_, platform2dObj, "Platform2d" );
 
@@ -94,7 +94,7 @@ void NetHandler::init()
                 ( context_, powerPublisher_, "Power" );
     
     // create servant for direct connections and tell adapter about it
-    Ice::ObjectPtr powerObj = new PowerI( powerBuffer_, powerTopicPrx );
+    Ice::ObjectPtr powerObj = new PowerI( powerPipe_, powerTopicPrx );
     orcaice::createInterfaceWithTag( context_, powerObj, "Power" );
     
     // all cool, assume we can send and receive
@@ -114,8 +114,7 @@ void NetHandler::run()
     while( isActive() )
     {
         // block on the most frequent data source: position
-        //int ret = position2dBuffer_.getNext( position2dData_, position2dReadTimeout );
-        int ret = position2dBuffer_.getAndPopNext( position2dData_, position2dReadTimeout );
+        int ret = position2dPipe_.getNext( position2dData_, position2dReadTimeout );
         
         // it's time to publish if we publish every data point or enough time has elapsed
         bool isTimeToPublishPosition2d = position2dPublishInterval_ < 0
@@ -144,11 +143,14 @@ pushTimer.restart();
         {
             if ( powerPublishInterval_<0 ||
                         powerPublishTimer_.elapsed().toSecondsDouble()>powerPublishInterval_ ) {
-                // also check if the data is new. but how?
-                powerBuffer_.get( powerData_ );
-                powerPublisher_->setData( powerData_ );
-                powerPublishTimer_.restart();
+                // also check if the data is new
+                if ( powerPipe_.isNewData() ) {
+                    powerPipe_.get( powerData_ );
+                    powerPublisher_->setData( powerData_ );
+                    powerPublishTimer_.restart();
+                }
             }
+            // todo: the logic of this needs revisiting
             if ( statusPublishInterval_<0 ||
                         statusPublishTimer_.elapsed().toSecondsDouble()>statusPublishInterval_ ) {
                 //cout<<"sending heartbeat"<<endl;
@@ -178,12 +180,12 @@ void NetHandler::send()
     {
         if ( position2dPublishTimer_.elapsed().toSecondsDouble()>position2dPublishInterval_ ) {
             // check that there's new data
-            position2dBuffer_.get( position2dData_ );
+            position2dPipe_.get( position2dData_ );
             position2dPublisher_->setData( position2dData_ );
             position2dPublishTimer_.restart();
         }
         if ( powerPublishTimer_.elapsed().toSecondsDouble()>powerPublishInterval_ ) {
-            powerBuffer_.get( powerData_ );
+            powerPipe_.get( powerData_ );
             powerPublisher_->setData( powerData_ );
             powerPublishTimer_.restart();
         }

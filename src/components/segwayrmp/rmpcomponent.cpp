@@ -43,20 +43,21 @@ void RmpComponent::start()
     //
     // Network handling loop
     //
-    netHandler_ = new NetHandler( position2dBuffer_, commandBuffer_, powerBuffer_,
-                                  setConfigBuffer_, currentConfigBuffer_, context() );
+    netHandler_ = new NetHandler( position2dPipe_, commandPipe_, powerPipe_,
+                                  setConfigPipe_, currentConfigPipe_, context() );
     netHandler_->start();
 
     //
     // ENABLE NETWORK CONNECTIONS
     //
+    // this may throw, but may as well quit right then
     activate();
 
     //
     // Hardware handling loop
     //
-    hwHandler_ = new HwHandler( position2dBuffer_, commandBuffer_, powerBuffer_,
-                                setConfigBuffer_, currentConfigBuffer_, context() );
+    hwHandler_ = new HwHandler( position2dPipe_, commandPipe_, powerPipe_,
+                                setConfigPipe_, currentConfigPipe_, context() );
     hwHandler_->start();
 
     // the rest is handled by the application/service
@@ -65,7 +66,8 @@ void RmpComponent::start()
 void RmpComponent::stop()
 {
     // it's possible that either or both of the handlers are not even created
-    // if exceptions are raised in ttheir constructor
+    // if exceptions are raised in their constructor
+    // note: this did not help, had to turn off Component::stop() in Application
     if ( netHandler_ ) {
         IceUtil::ThreadControl netControl = netHandler_->getThreadControl();
         tracer()->debug("stopping net handler", 5 );

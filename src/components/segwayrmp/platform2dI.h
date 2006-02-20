@@ -27,7 +27,7 @@
 #include <orca/platform2d.h>
 
 // utilities
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/ptrproxy.h>
 #include <orcaice/ptrnotify.h>
 
 
@@ -35,12 +35,11 @@
 class Platform2dI : public orca::Platform2d
 {
 public:
-    Platform2dI( orcaice::PtrBuffer<orca::Position2dDataPtr>    &position2d,
-                 //orcaice::PtrBuffer<orca::Velocity2dCommandPtr> &commands,
-                 orcaice::PtrNotify &commands,
-                 orcaice::PtrBuffer<orca::Platform2dConfigPtr>  &setConfigBuffer,
-                 orcaice::PtrBuffer<orca::Platform2dConfigPtr>  &currentConfigBuffer,
-                 const IceStorm::TopicPrx &topic );
+    Platform2dI( orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
+                 orcaice::PtrNotify                            & commandsPipe,
+                 orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
+                 orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
+                 const IceStorm::TopicPrx                      & topic );
 
     // NOTE: this implementation can throw DataNotExist exception but does NOT throw
     // HardwareFailedException because it's isolated from the hardware handler by the
@@ -65,15 +64,14 @@ public:
 
 private:
     // the driver will put the latest data into this proxy
-    orcaice::PtrBuffer<orca::Position2dDataPtr> &position2dProxy_;
+    orcaice::PtrProxy<orca::Position2dDataPtr> &position2dPipe_;
     // the driver will take the latest command from the proxy
-    //orcaice::PtrBuffer<orca::Velocity2dCommandPtr> &commandProxy_;
-    orcaice::PtrNotify &commandNotify_;
+    orcaice::PtrNotify &commandPipe_;
 
     // for incoming requests
-    orcaice::PtrBuffer<orca::Platform2dConfigPtr> &setConfigBuffer_;
+    orcaice::PtrProxy<orca::Platform2dConfigPtr> &setConfigPipe_;
     // for the current config
-    orcaice::PtrBuffer<orca::Platform2dConfigPtr> &currentConfigBuffer_;
+    orcaice::PtrProxy<orca::Platform2dConfigPtr> &currentConfigPipe_;
 
     // IceStorm topic to which we send our updates and cand subscribe other to
     IceStorm::TopicPrx topic_;

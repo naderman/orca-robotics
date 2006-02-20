@@ -29,14 +29,13 @@
 #include <orca/power.h>
 
 // utilities
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/ptrproxy.h>
 
 
 class PowerI : public orca::Power
 {
 public:
-    PowerI( orcaice::PtrBuffer<orca::PowerDataPtr> &power,
-                 const IceStorm::TopicPrx &topic );
+    PowerI( orcaice::PtrProxy<orca::PowerDataPtr> &power, const IceStorm::TopicPrx &topic );
 
     virtual ::orca::PowerDataPtr getData(const ::Ice::Current& ) const;
 
@@ -46,7 +45,7 @@ public:
 
 private:
     // the driver will put the latest data into this proxy
-    orcaice::PtrBuffer<orca::PowerDataPtr> &powerProxy_;
+    orcaice::PtrProxy<orca::PowerDataPtr> &powerPipe_;
 
     // IceStorm topic to which we send our updates and cand subscribe other to
     IceStorm::TopicPrx topic_;

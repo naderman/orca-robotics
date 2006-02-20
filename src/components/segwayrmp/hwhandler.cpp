@@ -43,17 +43,17 @@ using namespace orca;
 using orcaice::operator<<;
 
 HwHandler::HwHandler(
-                 orcaice::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy,
-                 orcaice::PtrNotify                             & commandNotify,
-                 orcaice::PtrBuffer<orca::PowerDataPtr>         & powerProxy,
-                 orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer,
-                 orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer,
-                 const orcaice::Context                         & context ) :
-        position2dProxy_(position2dProxy),
-        commandNotify_(commandNotify),
-        powerProxy_(powerProxy),
-        setConfigBuffer_(setConfigBuffer),
-        currentConfigBuffer_(currentConfigBuffer),
+                 orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
+                 orcaice::PtrNotify                            & commandPipe,
+                 orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe,
+                 orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
+                 orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
+                 const orcaice::Context                        & context ) :
+        position2dPipe_(position2dPipe),
+        commandPipe_(commandPipe),
+        powerPipe_(powerPipe),
+        setConfigPipe_(setConfigPipe),
+        currentConfigPipe_(currentConfigPipe),
         position2dData_(new Position2dData),
         commandData_(new Velocity2dCommand),
         powerData_(new PowerData),
@@ -62,7 +62,7 @@ HwHandler::HwHandler(
         writeStatus_(-1)
 {
     // we'll handle incoming messages
-    commandNotify_.setNotifyHandler( this );
+    commandPipe_.setNotifyHandler( this );
 
     // set up data structure for 3 batteries
     BatteryData bd;
@@ -170,15 +170,15 @@ void HwHandler::run()
     
         if ( readStatus==0 ) {
             // Stick it in the buffer so pullers can get it
-            position2dProxy_.push( position2dData_ );
-            powerProxy_.push( powerData_ );
+            position2dPipe_.set( position2dData_ );
+            powerPipe_.set( powerData_ );
         } else {
             context_.tracer()->error("failed to read data from Segway hardware. Repairing....");
             driver_->repair();
         }
 
         // Have any configuration requests arrived?
-        if ( !setConfigBuffer_.isEmpty() )
+        if ( !setConfigPipe_.isNewData() )
         {
             // set configs
         }

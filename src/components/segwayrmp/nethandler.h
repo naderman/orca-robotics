@@ -23,7 +23,7 @@
 
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/ptrproxy.h>
 #include <orcaice/ptrnotify.h>
 #include <orcaice/timer.h>
 
@@ -39,12 +39,12 @@ class NetHandler : public orcaice::Thread
 {
 public:
 
-    NetHandler( orcaice::PtrBuffer<orca::Position2dDataPtr>    & position2dProxy,
-                 orcaice::PtrNotify                             & commandNotify,
-                 orcaice::PtrBuffer<orca::PowerDataPtr>         & powerProxy,
-                 orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer,
-                 orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer,
-                 const orcaice::Context                         & context );
+    NetHandler( orcaice::PtrProxy<orca::Position2dDataPtr>     & position2dPipe,
+                 orcaice::PtrNotify                            & commandPipe,
+                 orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe,
+                 orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
+                 orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
+                 const orcaice::Context                        & context );
     virtual ~NetHandler();
 
     // from Thread
@@ -66,11 +66,11 @@ private:
     orca::PowerConsumerPrx powerPublisher_;
 
     // network/hardware interface
-    orcaice::PtrBuffer<orca::Position2dDataPtr>    & position2dBuffer_;
-    orcaice::PtrNotify                             & commandNotify_;
-    orcaice::PtrBuffer<orca::PowerDataPtr>         & powerBuffer_;
-    orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & setConfigBuffer_;
-    orcaice::PtrBuffer<orca::Platform2dConfigPtr>  & currentConfigBuffer_;
+    orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe_;
+    orcaice::PtrNotify                            & commandPipe_;
+    orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe_;
+    orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe_;
+    orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe_;
 
     // Internal data storage
     orca::Position2dDataPtr position2dData_;

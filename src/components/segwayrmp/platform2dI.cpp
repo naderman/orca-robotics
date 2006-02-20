@@ -27,15 +27,15 @@ using namespace std;
 using namespace orca;
 using namespace orcaice;
 
-Platform2dI::Platform2dI( orcaice::PtrBuffer<orca::Position2dDataPtr>    &position2d,
-                          orcaice::PtrNotify &command,
-                          orcaice::PtrBuffer<orca::Platform2dConfigPtr>  &setConfigBuffer,
-                          orcaice::PtrBuffer<orca::Platform2dConfigPtr>  &currentConfigBuffer,
-                          const IceStorm::TopicPrx &topic )
-    : position2dProxy_(position2d), 
-      commandNotify_(command),
-      setConfigBuffer_(setConfigBuffer),
-      currentConfigBuffer_(currentConfigBuffer),
+Platform2dI::Platform2dI( orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
+                          orcaice::PtrNotify                            & commandPipe,
+                          orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
+                          orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
+                          const IceStorm::TopicPrx                      & topic )
+    : position2dPipe_(position2dPipe),
+      commandPipe_(commandPipe),
+      setConfigPipe_(setConfigPipe),
+      currentConfigPipe_(currentConfigPipe),
       topic_(topic)
 {
 }
@@ -48,11 +48,9 @@ orca::Position2dDataPtr Platform2dI::getData(const Ice::Current& current) const
     // create a null pointer. data will be cloned into it.
     Position2dDataPtr data;
 
-    // we don't need to pop the data here because a) we don't block on it,
-    // and b) we always want to have the latest copy in the buffer.
     try
     {
-        position2dProxy_.get( data );
+        position2dPipe_.get( data );
     }
     catch ( const orcaice::Exception & e )
     {
@@ -67,7 +65,7 @@ orca::Position2dGeometryPtr Platform2dI::getGeometry(const Ice::Current& current
 {
     //std::cout << "Pretending to send geometry back" << std::endl;
 
-    //! @todo implement
+    // @todo implement
     Position2dGeometryPtr geometry = new Position2dGeometry;
 
     return geometry;
@@ -89,10 +87,8 @@ void Platform2dI::unsubscribe(const ::orca::Position2dConsumerPrx& subscriber, c
 // Store incoming command in a proxy, it will be handled by the driver at the next opportunity.
 void Platform2dI::setCommand(const ::orca::Velocity2dCommandPtr& command, const ::Ice::Current& )
 {
-    //commandProxy_.push( command );
-
     // this is executed directly to hardware and may throw an orca::HardwareException
-    commandNotify_.set( command );
+    commandPipe_.set( command );
 }
 
 orca::Platform2dConfigPtr Platform2dI::getConfig(const ::Ice::Current& ) const
@@ -100,7 +96,7 @@ orca::Platform2dConfigPtr Platform2dI::getConfig(const ::Ice::Current& ) const
     //std::cout << "Sending config back" << std::endl;
 
     Platform2dConfigPtr config;
-    currentConfigBuffer_.get( config );
+    currentConfigPipe_.get( config );
 
     return config;
 }
@@ -108,5 +104,5 @@ orca::Platform2dConfigPtr Platform2dI::getConfig(const ::Ice::Current& ) const
 void Platform2dI::setConfig(const ::orca::Platform2dConfigPtr& config, const ::Ice::Current& )
 {
     //cout<<"TRACE(laser_i.cpp): Config set." << endl;
-    setConfigBuffer_.push( config );
+    setConfigPipe_.set( config );
 }

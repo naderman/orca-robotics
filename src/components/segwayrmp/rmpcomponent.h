@@ -23,10 +23,12 @@
 
 #include <orcaice/component.h>
 
+// external interface definitions
 #include <orca/platform2d.h>
 #include <orca/power.h>
 
-#include <orcaice/ptrbuffer.h>
+// data pipes
+#include <orcaice/ptrproxy.h>
 #include <orcaice/ptrnotify.h>
 
 class HwHandler;
@@ -53,16 +55,16 @@ private:
     // INTERFACES BETWEEN NETWORK AND HARDWARE HANDLERS
     //
     // hardware->network
-    orcaice::PtrBuffer<orca::Position2dDataPtr> position2dBuffer_;
+    orcaice::PtrProxy<orca::Position2dDataPtr> position2dPipe_;
     // hardware->network
-    orcaice::PtrBuffer<orca::PowerDataPtr> powerBuffer_;
+    orcaice::PtrProxy<orca::PowerDataPtr> powerPipe_;
     // hardware->network
-    orcaice::PtrBuffer<orca::Platform2dConfigPtr> currentConfigBuffer_;
+    orcaice::PtrProxy<orca::Platform2dConfigPtr> currentConfigPipe_;
 
     // network->hardware
-    orcaice::PtrNotify commandBuffer_;
+    orcaice::PtrNotify commandPipe_;
     // network->hardware
-    orcaice::PtrBuffer<orca::Platform2dConfigPtr> setConfigBuffer_;
+    orcaice::PtrProxy<orca::Platform2dConfigPtr> setConfigPipe_;
 };
 
 #endif

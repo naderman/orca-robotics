@@ -98,7 +98,7 @@ Orca component by Alex Makarenko. Original CAN driver code came from Player by A
 
 @image html segwayrmp_whitebox.png
 
-The implementation of Platform2d interface can throw orcaice::DataNotExist exception but does NOT throw orcaice::HardwareFailedException.
+The implementation of Platform2d interface can raise orca::DataNotExistException but does NOT raise orca::HardwareFailedException.
 
 @section orca_robot_segwayrmpusb Segway RMP USB driver
 

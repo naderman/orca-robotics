@@ -24,9 +24,8 @@ using namespace orca;
 
 using namespace std;
 
-PowerI::PowerI( orcaice::PtrBuffer<orca::PowerDataPtr> &power,
-                const IceStorm::TopicPrx &topic ) :
-        powerProxy_(power),
+PowerI::PowerI( orcaice::PtrProxy<orca::PowerDataPtr> &power, const IceStorm::TopicPrx &topic )
+      : powerPipe_(power),
         topic_(topic)
 {
 }
@@ -38,11 +37,14 @@ orca::PowerDataPtr PowerI::getData(const ::Ice::Current& ) const
     // create null smart pointer. data will be cloned into it.
     orca::PowerDataPtr data;
 
-    // we don't need to pop the data here because we don't block on it.
-    // we always want to have the latest copy in there
-    //! @todo what happens if there's no data?    
-    powerProxy_.get( data );
-
+    try
+    {
+        powerPipe_.get( data );
+    }
+    catch ( const orcaice::Exception & e )
+    {
+        throw orca::DataNotExistException( "power proxy is not populated yet" );
+    }
     return data;
 }
 
