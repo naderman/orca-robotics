@@ -22,8 +22,6 @@
 
 #include "rmpcomponent.h"
 
-using namespace std;
-
 extern "C"
 {
     //
