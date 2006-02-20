@@ -151,6 +151,7 @@ Append the following to your @c .bashrc file
 export PLAYER_HOME=/opt/player-1.6.5
 export PATH=$PLAYER_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$PLAYER_HOME/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=$HOME_PLAYER/lib/pkgconfig/:$PKG_CONFIG_PATH
 
 export STAGE_HOME=/opt/stage-2.0.0
 export LD_LIBRARY_PATH=$STAGE_HOME/lib:$LD_LIBRARY_PATH
