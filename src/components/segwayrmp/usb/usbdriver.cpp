@@ -19,7 +19,6 @@
  */
 
 #include <iostream>
-//#include <sys/time.h>
 
 #include "usbdriver.h"
 
@@ -50,6 +49,8 @@ UsbDriver::UsbDriver()
     lastRawForeaft_ = 0;
 
     firstread_ = true;
+    repairCounter_ = 0;
+    failCounter_ = 0;
 }
 
 UsbDriver::~UsbDriver()
@@ -98,13 +99,21 @@ int UsbDriver::enable()
 
 int UsbDriver::repair()
 {
-    disable();
-    return enable();
+    if ( failCounter_>1 ) {
+        failCounter_=0;
+        ++repairCounter_;
+        disable();
+        return enable();
+    }
+    else {
+        ++failCounter_;
+        return 0;
+    }
 }
 
 int UsbDriver::disable()
 {
-    cout<<"UsbDriver::disable"<<endl;
+    cout<<"UsbDriver::disabling... ("<<repairCounter_<<" repairs so far)"<<endl;
     usbio_->shutdown();
 
     return 0;

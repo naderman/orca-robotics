@@ -64,15 +64,20 @@ void RmpComponent::start()
 
 void RmpComponent::stop()
 {
-    IceUtil::ThreadControl netControl = netHandler_->getThreadControl();
-    IceUtil::ThreadControl hwControl = hwHandler_->getThreadControl();
-
-    tracer()->debug("stopping loops", 5 );
-    // Tell both loops to stop
-    netHandler_->stop();
-    hwHandler_->stop();
-
-    tracer()->debug("joining loop threads", 5 );
-    netControl.join();
-    hwControl.join();
+    // it's possible that either or both of the handlers are not even created
+    // if exceptions are raised in ttheir constructor
+    if ( netHandler_ ) {
+        IceUtil::ThreadControl netControl = netHandler_->getThreadControl();
+        tracer()->debug("stopping net handler", 5 );
+        netHandler_->stop();
+        tracer()->debug("joining net handler", 5 );
+        netControl.join();
+    }
+    if ( hwHandler_ ) {
+        IceUtil::ThreadControl hwControl = hwHandler_->getThreadControl();
+        tracer()->debug("stopping hw handler", 5 );
+        hwHandler_->stop();
+        tracer()->debug("joining hw handler", 5 );
+        hwControl.join();
+    }
 }

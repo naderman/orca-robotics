@@ -92,6 +92,8 @@ private:
     int diff(uint32_t from, uint32_t to, bool first);
     // bullshit
     bool firstread_;
+    int failCounter_;
+    int repairCounter_;
 
     // chip's utilities
     void watchPacket( CanPacket* pkt, short int pktID );

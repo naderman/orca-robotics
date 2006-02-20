@@ -106,6 +106,7 @@ void NetHandler::init()
 void NetHandler::run()
 {
     int position2dReadTimeout = 1000; // [ms]
+    orcaice::Timer pushTimer;
     
     try // this is once per run try/catch: waiting for the communicator to be destroyed
     {
@@ -113,12 +114,18 @@ void NetHandler::run()
     while( isActive() )
     {
         // block on the most frequent data source: position
-        int ret = position2dBuffer_.getNext( position2dData_, position2dReadTimeout );
+        //int ret = position2dBuffer_.getNext( position2dData_, position2dReadTimeout );
+        int ret = position2dBuffer_.getAndPopNext( position2dData_, position2dReadTimeout );
         
         // it's time to publish if we publish every data point or enough time has elapsed
         bool isTimeToPublishPosition2d = position2dPublishInterval_ < 0
                 || position2dPublishTimer_.elapsed().toSecondsDouble()>position2dPublishInterval_;
-        if ( ret == 0 && isTimeToPublishPosition2d ) {
+        if ( ret == 0 && isTimeToPublishPosition2d )
+        {
+//debug
+cout<<"push: " << pushTimer.elapsed().toMilliSecondsDouble()<<endl;
+pushTimer.restart();
+
             // managed to read new data and it's time to publish
             try
             {
@@ -137,6 +144,7 @@ void NetHandler::run()
         {
             if ( powerPublishInterval_<0 ||
                         powerPublishTimer_.elapsed().toSecondsDouble()>powerPublishInterval_ ) {
+                // also check if the data is new. but how?
                 powerBuffer_.get( powerData_ );
                 powerPublisher_->setData( powerData_ );
                 powerPublishTimer_.restart();

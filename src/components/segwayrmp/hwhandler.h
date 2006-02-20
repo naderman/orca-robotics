@@ -93,7 +93,6 @@ private:
     orcaice::Context context_;
 
     // dodgy states
-    int readStatus_;
     int writeStatus_;
 
     // debug

@@ -59,7 +59,6 @@ HwHandler::HwHandler(
         powerData_(new PowerData),
         driver_(0),
         context_(context),
-        readStatus_(-1),
         writeStatus_(-1)
 {
     // we'll handle incoming messages
@@ -152,6 +151,8 @@ void HwHandler::run()
     //writeStatus_ = 0;
     context_.tracer()->debug("driver enabled",5);
 
+    int readStatus = -1;
+
     while( isActive() )
     {
     /*
@@ -164,15 +165,15 @@ void HwHandler::run()
     */
         // Read data from the hardware
 //         readTimer_.restart();
-        readStatus_ = driver_->read( position2dData_, powerData_, rmpStatus_ );
+        readStatus = driver_->read( position2dData_, powerData_, rmpStatus_ );
 //         cout<<"read: " << readTimer_.elapsed().toMilliSecondsDouble()<<endl;
     
-        if ( readStatus_==0 ) {
+        if ( readStatus==0 ) {
             // Stick it in the buffer so pullers can get it
             position2dProxy_.push( position2dData_ );
             powerProxy_.push( powerData_ );
         } else {
-            context_.tracer()->error("failed to read data from Segway hardware.");
+            context_.tracer()->error("failed to read data from Segway hardware. Repairing....");
             driver_->repair();
         }
 
@@ -216,7 +217,7 @@ void HwHandler::handleData( const Ice::ObjectPtr & obj )
                 (commandData_->motion.w / fabs(commandData_->motion.w)) * config_.maxTurnrate;
     }
 
-    cout<<"handling: "<<orcaice::toString(commandData_)<<endl;
+    //cout<<"handling: "<<orcaice::toString(commandData_)<<endl;
 
     // write to hardware
     if( driver_->write( commandData_ ) == 0 ) {
