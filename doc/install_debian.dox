@@ -115,10 +115,10 @@ At the time of writing Qt4 packages are in the 'testing' distribution.
 
 @section orca_doc_installdebian_player Player/Stage
 
-At the time of writing the final version of Player-2 is about to be released. The latest version of Stage, however, does not yet work with v.2.0 release candidates. So, these notes describe how to install Player 1.6.5 and Stage 2.0.0a. Start with Stage dependencies.
+At the time of writing the final version of Player-2 is about to be released. The latest version of Stage, however, does not yet work with v.2.0 release candidates. So, these notes describe how to install Player 1.6.5 and Stage 2.0.0a. Start with Player/Stage dependencies.
 
 @verbatim
-# apt-get install libglib2.0-dev libgtk2.0-dev
+# apt-get install libglib2.0-dev libgtk2.0-dev libltdl3-dev
 @endverbatim
 
 Download and unpack player and stage distros. We recommend installing both player and stage to some place other than the default @c /usr/local/ because the different versions quickly become unmanagable.
@@ -157,5 +157,9 @@ export STAGE_HOME=/opt/stage-2.0.0
 export LD_LIBRARY_PATH=$STAGE_HOME/lib:$LD_LIBRARY_PATH
 @endverbatim
 
+For a quick start:
+@verbatim
+$ player [STAGE_SRC]/worlds/simple.cfg
+@endverbatim
 
 */
