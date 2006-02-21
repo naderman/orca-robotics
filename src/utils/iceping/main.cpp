@@ -25,15 +25,30 @@
 #include <IceUtil/Time.h>
 
 using namespace std;
-//using namespace orca;
+
+void usage()
+{
+    cout << "USAGE"<<endl;
+    cout << "iceping [ -orhvV ] [ -f file ] [ -c count ] [ -i intervalUs ] proxy"<<endl;
+    cout << "  Proxy\t interface identity in the form 'interface@platform/component'"<<endl;
+    cout << "    \tIn Ice terms this is a string in the form 'object@adapter'"<<endl;
+    cout << "OPTIONS"<<endl;
+    cout << "  -o\n\tPings the Home interface of component, i.e. 'home@platform/component'"<<endl;
+    cout << "    \tRelies on the fact that all Orca components provide Home interface"<<endl;
+    cout << "  -r\n\tPings the IceGrid Registry as described in configuration files."<<endl;
+    cout << "    \tSpecifically, pings the Query interface."<<endl;
+    cout << "  -c count\n\tPing count times. Default is 3."<<endl;
+    cout << "  -f file\n\tUse file as Ice.Config parameter. Default is ~/.orcarc"<<endl;
+    cout << "  -h\tPrints this."<<endl;
+    cout << "  -v\tPrints Ice version."<<endl;
+    cout << "  -V\tPrints extra debugging information."<<endl;
+    cout << "  -i interval\n\tPause for interval seconds after each ping. Default is 0."<<endl;
+}
 
 class App : virtual public Ice::Application
 {
     public:
         virtual int run(int, char * []);
-
-    private:
-        void usage();
 };
 
 int App::run( int argc, char* argv[] )
@@ -41,6 +56,7 @@ int App::run( int argc, char* argv[] )
     string proxy = "";
     int count = 3;
     int intervalUs = 0;
+    bool verbose = false;
 
     // Convert argc/argv to a string sequence.
     Ice::StringSeq args = Ice::argsToStringSeq(argc, argv);
@@ -56,14 +72,15 @@ int App::run( int argc, char* argv[] )
     // go through value-less keys
     for( uint i=1; i<args.size(); ++i )
     {
-        if ( args[i]=="-h" ) {
-            usage();
-            return 0;
-        } else if ( args[i]=="-r" ) {
+        if ( args[i]=="-r" ) {
             proxy = "IceGrid/Query";
+        }
+        else if ( args[i]=="-V" ) {
+            verbose = true;
         }
     }
 
+    // proxy must've been supplied as the last command line parameter
     if ( proxy.empty() ) {
         proxy = args[args.size()-1];
     }
@@ -76,13 +93,15 @@ int App::run( int argc, char* argv[] )
         }
     }
 
-    for( uint i=1; i<args.size()-1; i+=2 )
+    for( uint i=1; i<args.size()-1; ++i )
     {
         if ( args[i]=="-i" ) {
             intervalUs = (int)floor(1.0e6*atof( args[i+1].c_str() ));
+            ++i;
         }
         else if ( args[i]=="-c" ) {
             count = atoi( args[i+1].c_str() );
+            ++i;
         }
         else if ( args[i]=="-f" ) {
             // already parsed
@@ -90,11 +109,22 @@ int App::run( int argc, char* argv[] )
         else if ( args[i]=="-o" ) {
             // already parsed
         }
+        else if ( args[i]=="-r" ) {
+            // already parsed
+        }
+        else if ( args[i]=="-V" ) {
+            // already parsed
+        }
         else {
             cout<<"warning: unknown command line option "<<args[i]<<endl;
         }
     }
 
+    // got all parameters
+    if ( verbose ) {
+        cout<<"will ping "<<proxy<<" "<<count<<" times with "<<intervalUs<<"us interval"<<endl;
+    }
+    
     Ice::ObjectPrx base = communicator()->stringToProxy( proxy );
 
     try {
@@ -104,7 +134,7 @@ int App::run( int argc, char* argv[] )
         for ( int i=0; i<count; ++i ) {
             base->ice_ping();
             if ( intervalUs ) {
-            IceUtil::ThreadControl::sleep(IceUtil::Time::microSeconds(intervalUs));
+                IceUtil::ThreadControl::sleep(IceUtil::Time::microSeconds(intervalUs));
             }
         }
         // stop the clock
@@ -124,12 +154,14 @@ int App::run( int argc, char* argv[] )
         std::string id = base->ice_id();
         cout<<"Ice ID \t\t[ "<< id << " ]"<< endl;
 
-        Ice::StringSeq ids = base->ice_ids();
-        cout<<"All Ice ID's \t[ ";
-        for ( uint i=0; i<ids.size(); ++i ) {
-            cout << ids[i] << "; ";
+        if ( verbose ) {
+            Ice::StringSeq ids = base->ice_ids();
+            cout<<"All Ice ID's \t[ ";
+            for ( uint i=0; i<ids.size(); ++i ) {
+                cout << ids[i] << "; ";
+            }
+            cout<<" ]"<<endl;
         }
-        cout<<" ]"<<endl;
     }
     catch(const Ice::Exception& ex)
     {
@@ -141,30 +173,28 @@ int App::run( int argc, char* argv[] )
     return 0;
 }
 
-void App::usage()
-{
-    cout << "USAGE"<<endl;
-    cout << "iceping [ -orh ] [ -f file ] [ -c count ] [ -i intervalUs ] proxy"<<endl;
-    cout << "  Proxy\t interface identity in the form 'interface@platform/component'"<<endl;
-    cout << "    \tIn Ice terms this is a string in the form 'object@adapter'"<<endl;
-    cout << "OPTIONS"<<endl;
-    cout << "  -o\n\tPings the Home interface of component, i.e. 'home@platform/component'"<<endl;
-    cout << "    \tRelies on the fact that all Orca components provide Home interface"<<endl;
-    cout << "  -r\n\tPings the IceGridRegistry as described in configuration files."<<endl;
-    cout << "    \tSpecifically, pings the Query interface."<<endl;
-    cout << "  -c count\n\tPing count times. Default is 3."<<endl;
-    cout << "  -f file\n\tUse file as Ice.Config parameter. Default is ~/.orcarc"<<endl;
-    cout << "  -h\tPrint this."<<endl;
-    cout << "  -i interval\n\tPause for interval seconds after each ping. Default is 0."<<endl;
-}
-
-
 int main(int argc, char * argv[])
 {
     bool isModified = false;
 
+    // basic info before we do anything
+    cout<< "Ice version: "<<ICE_STRING_VERSION<<endl;
+
     // convert to string sequence for convinience
     Ice::StringSeq args = Ice::argsToStringSeq( argc, argv );
+
+    // get the quick and easy ones out of the way
+    for( uint i=1; i<args.size(); ++i )
+    {
+        if ( args[i]=="-h" ) {
+            usage();
+            return 0;
+        }
+        else if ( args[i]=="-v" ) {
+            // alrady printed out the version
+            return 0;
+        }
+    }
 
     // find the property file
     string propertiesFile;
