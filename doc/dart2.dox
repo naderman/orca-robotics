@@ -22,10 +22,10 @@
 
 @page orca_doc_dart2 Automated Testing with Dart2
 
-Introduction to be written.
+Dart2 is a rewrite of Dart -- the automated test facility which is part of CMake. The general goal is to make software more reliable by simplifying automated code (re)compilation and testing. Running Dart2 clients at different sites helps catch bugs caused by cross-platform and cross-hardware issues.
 
 General things to note:
-- cmake at least v2.2 is required
+- @c cmake at least v2.2 is required
 - It's best to do out-of-source build, i.e. all object/generated files are in one 'binary' directory. The reason is that it makes it simple for CTest to do a clean build every time by simply deleting all files in the build (or 'binary') directory.
 
 
@@ -38,10 +38,13 @@ The <a href="http://129.78.210.237:8081/orca2/Dashboard">Dart2 server for Orca2<
 
 @par Continuous Build
 
-Here's the idea. A shell script runs continuously in the background. It sleeps for several minutes, then executes a CTest script which does the following: 1) the source tree is updated from CVS; 2) if any files are modified, the entire source tree is recompiled, and 3) a report is sent to the Dart2 server.
+Here's the idea. A shell script runs continuously in the background. It sleeps for several minutes, then executes a CTest script which does the following:
+-# the source tree is updated from CVS
+-# if any files are modified, the entire source tree is recompiled, and
+-# a report is sent to the Dart2 server.
 
-Here's what to do:
-- checkout the Orca2 source tree from CVS and rename the directory, e.g. orca2-cont
+Here's how to set it up:
+- checkout the Orca2 source tree from CVS and rename the directory, e.g. @c orca2-cont. Make sure @cvs can update the module without you typing in the password (see SourceForge help page).
 - make a copy of the CTest script file [ORCA2-SRC]/scripts/dart2/orca2-cont-gcc40.cfg
 - edit it by making sure that all paths and executables apply to your system. The settings are self-explanatory.
 - test the script by running it manually

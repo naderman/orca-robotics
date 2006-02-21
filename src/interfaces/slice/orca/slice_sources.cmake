@@ -23,6 +23,7 @@ SET( SLICE_SOURCE_FILES
     rangescanner.ice
     laser.ice
     position2d.ice
+    position3d.ice
     platform2d.ice
     polarfeature2d.ice
     power.ice

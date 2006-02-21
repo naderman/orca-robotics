@@ -36,7 +36,7 @@ using namespace orca;
 
 NetHandler::NetHandler(
                  orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
-                 orcaice::PtrNotify                            & commandPipe,
+                 orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
                  orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,

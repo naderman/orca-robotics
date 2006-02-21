@@ -136,6 +136,5 @@ void MainLoop::convertToRobotCS(PolarFeature2dDataPtr featuresPtr)
 
         featuresPtr->features[i]->p = polarPointRobot;
     }
-    const IceUtil::Time currentTime = IceUtil::Time::now();
-    featuresPtr->timeStamp = iceTimeToOrcaTime (currentTime);
+    orcaice::setToNow( featuresPtr->timeStamp );
 }

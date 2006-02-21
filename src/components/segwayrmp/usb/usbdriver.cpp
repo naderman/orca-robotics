@@ -273,9 +273,9 @@ void UsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerData
     // POSITION2D
     
     // set time stamps righ away
-    position2d->timeStamp = orcaice::iceTimeToOrcaTime( IceUtil::Time::now() );
+    orcaice::setToNow( position2d->timeStamp );
     // set time stamp righ away
-    power->timeStamp = orcaice::iceTimeToOrcaTime( IceUtil::Time::now() );
+    orcaice::setToNow( power->timeStamp );
     
     // for odometry, use integrated values
     position2d->pose.p.x    = odomX_;

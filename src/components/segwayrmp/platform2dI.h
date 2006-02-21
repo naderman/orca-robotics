@@ -36,7 +36,7 @@ class Platform2dI : public orca::Platform2d
 {
 public:
     Platform2dI( orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
-                 orcaice::PtrNotify                            & commandsPipe,
+                 orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandsPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
                  const IceStorm::TopicPrx                      & topic );
@@ -66,7 +66,7 @@ private:
     // the driver will put the latest data into this proxy
     orcaice::PtrProxy<orca::Position2dDataPtr> &position2dPipe_;
     // the driver will take the latest command from the proxy
-    orcaice::PtrNotify &commandPipe_;
+    orcaice::PtrNotify<orca::Velocity2dCommandPtr> &commandPipe_;
 
     // for incoming requests
     orcaice::PtrProxy<orca::Platform2dConfigPtr> &setConfigPipe_;

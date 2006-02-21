@@ -28,7 +28,7 @@ using namespace orca;
 using namespace orcaice;
 
 Platform2dI::Platform2dI( orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
-                          orcaice::PtrNotify                            & commandPipe,
+                          orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
                           orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
                           orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
                           const IceStorm::TopicPrx                      & topic )

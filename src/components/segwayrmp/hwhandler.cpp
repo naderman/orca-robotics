@@ -44,13 +44,12 @@ using orcaice::operator<<;
 
 HwHandler::HwHandler(
                  orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
-                 orcaice::PtrNotify                            & commandPipe,
+                 orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
                  orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
-                 const orcaice::Context                        & context ) :
-        position2dPipe_(position2dPipe),
-        commandPipe_(commandPipe),
+                 const orcaice::Context                        & context )
+      : position2dPipe_(position2dPipe),
         powerPipe_(powerPipe),
         setConfigPipe_(setConfigPipe),
         currentConfigPipe_(currentConfigPipe),
@@ -62,7 +61,7 @@ HwHandler::HwHandler(
         writeStatus_(-1)
 {
     // we'll handle incoming messages
-    commandPipe_.setNotifyHandler( this );
+    commandPipe.setNotifyHandler( this );
 
     // set up data structure for 3 batteries
     BatteryData bd;
@@ -192,7 +191,7 @@ void HwHandler::run()
     context_.tracer()->debug("driver disabled",5);
 }
 
-void HwHandler::handleData( const Ice::ObjectPtr & obj )
+void HwHandler::handleData( const orca::Velocity2dCommandPtr & obj )
 {
 /*
     if ( writeStatus_ != 0 ) {
@@ -205,22 +204,21 @@ void HwHandler::handleData( const Ice::ObjectPtr & obj )
     if ( msecs>300 ) {
         cout<<"late: " << msecs <<endl;
     }
-    orca::Velocity2dCommandPtr commandData_ = orca::Velocity2dCommandPtr::dynamicCast( obj );
 
     // apply max limits
-    if ( fabs(commandData_->motion.v.x) > config_.maxSpeed ) {
-        commandData_->motion.v.x =
-                (commandData_->motion.v.x / fabs(commandData_->motion.v.x)) * config_.maxSpeed;
+    if ( fabs(obj->motion.v.x) > config_.maxSpeed ) {
+        obj->motion.v.x =
+                (obj->motion.v.x / fabs(obj->motion.v.x)) * config_.maxSpeed;
     }
-    if ( fabs(commandData_->motion.w) > config_.maxTurnrate ) {
-        commandData_->motion.w =
-                (commandData_->motion.w / fabs(commandData_->motion.w)) * config_.maxTurnrate;
+    if ( fabs(obj->motion.w) > config_.maxTurnrate ) {
+        obj->motion.w =
+                (obj->motion.w / fabs(obj->motion.w)) * config_.maxTurnrate;
     }
 
-    //cout<<"handling: "<<orcaice::toString(commandData_)<<endl;
+    //cout<<"handling: "<<orcaice::toString(obj)<<endl;
 
     // write to hardware
-    if( driver_->write( commandData_ ) == 0 ) {
+    if( driver_->write( obj ) == 0 ) {
         //writeStatus_ = 0;
     }
     else {

@@ -40,7 +40,7 @@ class NetHandler : public orcaice::Thread
 public:
 
     NetHandler( orcaice::PtrProxy<orca::Position2dDataPtr>     & position2dPipe,
-                 orcaice::PtrNotify                            & commandPipe,
+                 orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
                  orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
@@ -67,7 +67,7 @@ private:
 
     // network/hardware interface
     orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe_;
-    orcaice::PtrNotify                            & commandPipe_;
+    orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe_;
     orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe_;
     orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe_;
     orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe_;

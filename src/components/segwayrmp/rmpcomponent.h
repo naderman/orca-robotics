@@ -62,7 +62,7 @@ private:
     orcaice::PtrProxy<orca::Platform2dConfigPtr> currentConfigPipe_;
 
     // network->hardware
-    orcaice::PtrNotify commandPipe_;
+    orcaice::PtrNotify<orca::Velocity2dCommandPtr> commandPipe_;
     // network->hardware
     orcaice::PtrProxy<orca::Platform2dConfigPtr> setConfigPipe_;
 };

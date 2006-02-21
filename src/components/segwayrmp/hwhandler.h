@@ -27,7 +27,6 @@
 #include <orcaice/ptrnotify.h>
 #include <orcaice/timer.h>
 
-//#include "hwfsm.h"
 #include "hwdriver.h"
 
 #include <orca/platform2d.h>
@@ -35,13 +34,12 @@
 
 
 // Note: this thing self-destructs when run() returns.
-//class HwHandler : public orcaice::Thread, public HwFsm, public orcaice::PtrNotifyHandler
-class HwHandler : public orcaice::Thread, public orcaice::PtrNotifyHandler
+class HwHandler : public orcaice::Thread, public orcaice::NotifyHandler<orca::Velocity2dCommandPtr>
 {
 public:
 
     HwHandler( orcaice::PtrProxy<orca::Position2dDataPtr>     & position2dPipe,
-               orcaice::PtrNotify                             & commandPipe,
+               orcaice::PtrNotify<orca::Velocity2dCommandPtr> & commandPipe,
                orcaice::PtrProxy<orca::PowerDataPtr>          & powerPipe,
                orcaice::PtrProxy<orca::Platform2dConfigPtr>   & setConfigPipe,
                orcaice::PtrProxy<orca::Platform2dConfigPtr>   & currentConfigPipe,
@@ -51,19 +49,13 @@ public:
     // from Thread
     virtual void run();
 
-    // from HwFsm
-//     virtual void read();
-//     virtual void sleep();
-//     virtual void repair();
-
     // from PtrNotifyHandler
-    virtual void handleData( const Ice::ObjectPtr & obj );
+    virtual void handleData( const orca::Velocity2dCommandPtr & obj );
 
 private:
 
     // network/hardware interface
     orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe_;
-    orcaice::PtrNotify                            & commandPipe_;
     orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe_;
     orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe_;
     orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe_;
@@ -74,8 +66,6 @@ private:
     orca::PowerDataPtr powerData_;
     // internal RMP status
     HwDriver::Status rmpStatus_;
-
-//     enum RmpState { RMP_INIT, RMP_OK, RMP_READ_FALED, RMP_WRITE_FAILED };
 
     // generic interface to the hardware
     HwDriver* driver_;
