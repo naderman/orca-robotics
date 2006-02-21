@@ -122,8 +122,8 @@ void NetHandler::run()
         if ( ret == 0 && isTimeToPublishPosition2d )
         {
 //debug
-cout<<"push: " << pushTimer.elapsed().toMilliSecondsDouble()<<endl;
-pushTimer.restart();
+//cout<<"push: " << pushTimer.elapsed().toMilliSecondsDouble()<<endl;
+//pushTimer.restart();
 
             // managed to read new data and it's time to publish
             try

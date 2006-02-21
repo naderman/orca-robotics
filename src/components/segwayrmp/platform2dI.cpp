@@ -73,14 +73,14 @@ orca::Position2dGeometryPtr Platform2dI::getGeometry(const Ice::Current& current
 
 void Platform2dI::subscribe(const ::orca::Position2dConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    cout<<"subscription request"<<endl;
+    //cout<<"subscription request"<<endl;
     IceStorm::QoS qos;
     topic_->subscribe( qos, subscriber );
 }
 
 void Platform2dI::unsubscribe(const ::orca::Position2dConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    cout<<"unsubscription request"<<endl;
+    //cout<<"unsubscription request"<<endl;
     topic_->unsubscribe( subscriber );
 }
 

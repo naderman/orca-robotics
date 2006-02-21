@@ -32,7 +32,7 @@ PowerI::PowerI( orcaice::PtrProxy<orca::PowerDataPtr> &power, const IceStorm::To
 
 orca::PowerDataPtr PowerI::getData(const ::Ice::Current& ) const
 {
-    std::cout << "Sending data back" << std::endl;
+    //std::cout << "Sending data back" << std::endl;
 
     // create null smart pointer. data will be cloned into it.
     orca::PowerDataPtr data;
@@ -50,14 +50,14 @@ orca::PowerDataPtr PowerI::getData(const ::Ice::Current& ) const
 
 void PowerI::subscribe(const ::orca::PowerConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    cout<<"subscription request"<<endl;
+    //cout<<"subscription request"<<endl;
     IceStorm::QoS qos;
     topic_->subscribe( qos, subscriber );
 }
 
 void PowerI::unsubscribe(const ::orca::PowerConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    cout<<"unsubscription request"<<endl;
+    //cout<<"unsubscription request"<<endl;
     topic_->unsubscribe( subscriber );
 }
 
