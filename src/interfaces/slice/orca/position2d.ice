@@ -67,6 +67,7 @@ class Position2dGeometry extends OrcaObject
  */
 interface Position2dConsumer
 {
+    //! Transmits the data to the consumer.
     void setData( Position2dData obj );
     
     // Do we need it here? Or if someone needs geometry they should pull it
@@ -97,9 +98,6 @@ interface Position2d
      *
      * @param subscriber The subscriber's proxy.
      *
-     * @param preferedPushInterval The subscriber's preference for how often it wants to
-     * receive updates [sec]. Provider's ability to fulfil this request may vary.
-     *
      * @see unsubscribe
      */
     void subscribe( Position2dConsumer* subscriber )
@@ -109,7 +107,7 @@ interface Position2d
     //void subscribe(QoS theQoS, Object* subscriber);
 
     /*!
-     * Unsubscribe the given [subscriber].
+     * Unsubscribe the given @p subscriber.
      *
      * @param subscriber The proxy of an existing subscriber.
      *

@@ -23,6 +23,7 @@
 
 #include <orca/orca.ice>
 #include <orca/bros1.ice>
+#include <orca/stochastic.ice>
 #include <orca/position2d.ice>
 
 module orca
@@ -33,22 +34,6 @@ module orca
     @brief Provides 2d position estimates
     @{
 */
-
-//! 2d Covariance Matrix
-struct Covariance2d {
-    //! (0,0)
-    float xx;
-    //! (0,1)
-    float xy;
-    //! (1,1)
-    float yy;
-    //! (0,2)
-    float xt;
-    //! (1,2)
-    float yt;
-    //! (2,2)
-    float tt;
-};
 
 //! A Gaussian distribution over pose space
 struct Pose2dHypothesis {
@@ -66,14 +51,16 @@ sequence<Pose2dHypothesis> Pose2dHypotheses;
 //! Localise2d data structure
 class Localise2dData extends OrcaObject
 {
+    //! Localisation hypotheses.
     Pose2dHypotheses hypotheses;
 };
 
 /*!
- * Data consumer interface
+ * Data consumer interface.
  */
 interface Localise2dConsumer
 {
+    //! Transmits the data to the consumer.
     void setData( Localise2dData obj );
 };
 
@@ -101,7 +88,7 @@ interface Localise2d
     //void subscribe(QoS theQoS, Object* subscriber);
 
     /*!
-     * Unsubscribe the given [subscriber].
+     * Unsubscribe the given @p subscriber.
      *
      * @param subscriber The proxy of an existing subscriber.
      *

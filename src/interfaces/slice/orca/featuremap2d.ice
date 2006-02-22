@@ -28,7 +28,6 @@ module orca
 {
 /*!
     @ingroup interfaces
-    @author Alex Brooks
     @defgroup orca_interface_featuremap2d FeatureMap2d
     @brief A map of features, eg for SLAM purposes
 
@@ -83,7 +82,7 @@ interface FeatureMap2d
     idempotent void unsubscribe( FeatureMap2dConsumer *subscriber );
 };
 
-
+//!  //@}
 }; // module
 
 #endif

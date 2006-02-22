@@ -28,48 +28,77 @@ module orca
 {
 /*!
     @ingroup interfaces
-    @author Tobias Kaupp t.kaupp at cas.edu.au
     @defgroup orca_interface_polarfeature2d PolarFeature2d
     @brief Range/bearing features relative to robot frame
 
-The polarfeature2d interface provides access to features in a polar coordinate system
+This interface provides access to features in a polar coordinate system
 centered on the robots centre. The data returned by the interface consists of a sequence of
 features with range in meters and bearing in rad (-pi<angle<pi) and the feature type.
     @{
 */
 
-//! A single PolarFeature2d.
+//! A single polar feature.
 //! If a new feature has more attributes, derive from this.
 class SinglePolarFeature2d
 {
+    //! Feature location.
     PolarPoint2d p;
+    //! Feature type
+    //! @todo should this be an enum?
     int          type;
 };
 
 //! A sequence of individual features
 sequence<SinglePolarFeature2d> PolarFeature2dSequence;
 
-//! Data -- the 2D polar features
+//! A single data transmission may include a sequence of 2D polar features
 class PolarFeature2dData extends OrcaObject
 {
+    //! Features.
     PolarFeature2dSequence features;
 };
 
-//! Consumer of PolarFeature2d data
+/*!
+ * Data consumer interface (needed only for the push pattern).
+ *
+ * In Orca-1 terms, this the Consumer side of the ClientPush interface.
+ */
 interface PolarFeature2dConsumer
-{    
+{
+    //! Transmits the data to the consumer.
     void setData( PolarFeature2dData obj );
 };
 
 //! Interface to features in a polar coordinate system.
 interface PolarFeature2d
 {
-    nonmutating PolarFeature2dData getData();
+    //! Returns the latest data.
+    //! @note In Orca1 this would be called ClientPull_Supplier interface.
+    nonmutating PolarFeature2dData getData()
+            throws DataNotExistException;
+
+    /*!
+     * Mimics IceStorm's subscribe() but without QoS, for now. The
+     * implementation may choose to implement the data push internally
+     * or use IceStorm. This choice is transparent to the subscriber.
+     *
+     * @param subscriber The subscriber's proxy.
+     *
+     * @see unsubscribe
+     */
     void subscribe( PolarFeature2dConsumer *subscriber );
+    
+    /*!
+     * Unsubscribe the given @p subscriber.
+     *
+     * @param subscriber The proxy of an existing subscriber.
+     *
+     * @see subscribe
+     */
     idempotent void unsubscribe( PolarFeature2dConsumer *subscriber );
 };
 
-
+//!  //@}
 }; // module
 
 #endif

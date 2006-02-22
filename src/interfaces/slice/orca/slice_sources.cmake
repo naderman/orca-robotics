@@ -12,6 +12,7 @@ SET( SLICE_SOURCE_FILES
 # definitions
     orca.ice
     bros1.ice
+    stochastic.ice
 # objects
     image.ice
     ogmap.ice
