@@ -44,6 +44,8 @@ public:
 
     virtual int write( const orca::Velocity2dCommandPtr &position2d );
 
+    virtual std::string toString();
+
 private:
 
     enum OperationalMode

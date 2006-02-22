@@ -139,8 +139,11 @@ public:
     // Adds information from a packet
     void AddPacket(const CanPacket* pkt);
 
-    // Print out frame data
+    // Print out frame data to screen
     void dump();
+
+    // Print out frame data to string
+    std::string toString();
 
     // Allows adding more packets to the frame without resetting the data
     void reopen();

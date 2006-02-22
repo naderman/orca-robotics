@@ -44,6 +44,9 @@ public:
     // Writes velocity command
     virtual int write( const orca::Velocity2dCommandPtr &position2d )=0;
 
+    // For debugging, convert to string as much of internal state as possible
+    virtual std::string toString() { return std::string(""); };
+
 };
 
 #endif

@@ -20,8 +20,11 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <sstream>
 
 #include "rmpusbdataframe.h"
+
+using namespace std;
 
 // this holds all the RMP data it gives us
 RmpUsbDataFrame::RmpUsbDataFrame()
@@ -50,6 +53,40 @@ void RmpUsbDataFrame::dump()
     msgCheckList_[2] ? printf("frames\t\t= %10i (%8X): %10i frame ctr\n", (int)frames, frames, (int)(frames)) : printf("frames\t\t=    DROPPED\n");
     msgCheckList_[6] ? printf("battery\t\t= %10i (%8X): %10.2f V\n", (int)ui_battery_voltage, ui_battery_voltage, RMP_UI_OFFSET+(float)ui_battery_voltage*RMP_UI_COEFF) : printf("battery\t\t=    DROPPED\n");
     msgCheckList_[6] ? printf("battery\t\t= %10i (%8X): %10.2f V\n", (int)base_battery_voltage, base_battery_voltage, (float)base_battery_voltage/RMP_BASE_COUNT_PER_VOLT) : printf("battery\t\t=    DROPPED\n");
+}
+
+std::string RmpUsbDataFrame::toString()
+{
+    std::ostringstream os;
+    os<<"pitch      \t= "<<dec<<(int)pitch<<" "<<hex<<pitch<<":\t\t"<<dec<<(float)pitch/RMP_COUNT_PER_DEG<<" deg"<<endl;
+    os<<"pitch dot  \t= "<<dec<<(int)pitch_dot<<" "<<hex<<pitch_dot<<":\t\t"<<dec<<(float)pitch_dot/RMP_COUNT_PER_DEG<<" deg"<<endl;
+    os<<"roll       \t= "<<dec<<(int)roll<<" "<<hex<<roll<<":\t\t"<<dec<<(float)roll/RMP_COUNT_PER_DEG<<" deg"<<endl;
+    os<<"roll dot   \t= "<<dec<<(int)roll_dot<<" "<<hex<<roll_dot<<":\t\t"<<dec<<(float)roll_dot/RMP_COUNT_PER_DEG<<" deg"<<endl;
+    os<<"yaw        \t= "<<dec<<(int)yaw<<" "<<hex<<yaw<<":\t\t"<<dec<<(float)yaw/RMP_COUNT_PER_DEG<<" deg"<<endl;
+    os<<"yaw dot    \t= "<<dec<<(int)yaw_dot<<" "<<hex<<yaw_dot<<":\t\t"<<dec<<(float)yaw_dot/RMP_COUNT_PER_DEG<<" deg"<<endl;
+
+    os<<"left       \t= "<<dec<<(int)left<<" "<<hex<<left<<":\t\t"<<dec<<(float)left/RMP_COUNT_PER_M<<" m"<<endl;
+    os<<"left dot   \t= "<<dec<<(int)left_dot<<" "<<hex<<left_dot<<":\t\t"<<dec<<(float)left_dot/RMP_COUNT_PER_M<<" m"<<endl;
+    os<<"right      \t= "<<dec<<(int)right<<" "<<hex<<right<<":\t\t"<<dec<<(float)right/RMP_COUNT_PER_M<<" m"<<endl;
+    os<<"right dot  \t= "<<dec<<(int)right_dot<<" "<<hex<<right_dot<<":\t\t"<<dec<<(float)right_dot/RMP_COUNT_PER_M<<" m"<<endl;
+    os<<"fore-aft   \t= "<<dec<<(int)foreaft<<" "<<hex<<foreaft<<":\t\t"<<dec<<(float)foreaft/RMP_COUNT_PER_M<<" m"<<endl;
+
+    os<<"left torque\t= "<<dec<<(int)left_torque<<" "<<hex<<left_torque<<":\t\t"<<dec<<(float)left_torque/RMP_COUNT_PER_NM<<" Nm"<<endl;
+    os<<"right torqu\t= "<<dec<<(int)right_torque<<" "<<hex<<right_torque<<":\t\t"<<dec<<(float)right_torque/RMP_COUNT_PER_NM<<" Nm"<<endl;
+
+    os<<"ui battery \t= "<<dec<<(int)ui_battery_voltage<<" "<<hex<<ui_battery_voltage<<":\t\t"<<dec<<(float)RMP_UI_OFFSET + ui_battery_voltage*RMP_UI_COEFF<<" V"<<endl;
+    os<<"cu battery \t= "<<dec<<(int)base_battery_voltage<<" "<<hex<<base_battery_voltage<<":\t\t"<<dec<<(float)base_battery_voltage/RMP_BASE_COUNT_PER_VOLT<<" V"<<endl;
+
+    os<<"vel command\t= "<<dec<<(int)velocity_command<<" "<<hex<<velocity_command<<":\t\t"<<dec<<(float)velocity_command/RMP_COUNT_PER_M<<" m"<<endl;
+    os<<"turn comman\t= "<<dec<<(int)rate_command<<" "<<hex<<rate_command<<":\t\t"<<dec<<(float)rate_command/RMP_COUNT_PER_DEG<<" deg"<<endl;
+
+    os<<"op mode    \t= "<<dec<<(int)operational_mode<<" "<<hex<<operational_mode<<dec<<endl;
+    os<<"gain sched \t= "<<dec<<(int)controller_gain_schedule<<" "<<hex<<controller_gain_schedule<<dec<<endl;
+    os<<"status 1   \t= "<<dec<<(int)status_word1<<" "<<hex<<status_word1<<dec<<endl;
+    os<<"status 2   \t= "<<dec<<(int)status_word2<<" "<<hex<<status_word2<<dec<<endl;
+    os<<"frames     \t= "<<dec<<(int)frames<<" "<<hex<<frames<<dec<<endl;
+    os<<"build id   \t= "<<dec<<(int)build_id<<" "<<hex<<build_id<<dec<<endl;
+    return os.str();
 }
 
 void RmpUsbDataFrame::reopen()

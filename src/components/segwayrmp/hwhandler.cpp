@@ -150,8 +150,8 @@ void HwHandler::run()
     //writeStatus_ = 0;
     context_.tracer()->debug("driver enabled",5);
 
-    std::string driverStatus;
-    std::string currDriverStatus;
+    std::string driverStatus = "";
+    std::string currDriverStatus = "";
     
     int readStatus = -1;
 
@@ -181,6 +181,7 @@ void HwHandler::run()
             }
         } else {
             context_.tracer()->error("failed to read data from Segway hardware. Repairing....");
+            context_.tracer()->debug( "\n"+driver_->toString(), 1 );
             driver_->repair();
         }
 

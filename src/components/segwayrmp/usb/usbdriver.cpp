@@ -19,6 +19,7 @@
  */
 
 #include <iostream>
+#include <sstream>
 
 #include "usbdriver.h"
 
@@ -156,6 +157,13 @@ int UsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &po
                 
                 frame_->reset();
                 //cout<<"rmpusb::read: pkts:"<<canPacketsProcessed<<" re-opend: "<<dataFramesReopened<<endl;
+
+                // update status (only change it when internal state changes?)
+                std::ostringstream os;
+                os << "Build="<<usbStatus.buildId <<" CuState="<<usbStatus.cuState
+                <<" OpMode="<<usbStatus.opMode<<" GainSchedule="<<usbStatus.gainSchedule;
+                status = os.str();
+
                 return 0;
             }
             else {
@@ -176,8 +184,6 @@ int UsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &po
 
     }
 
-    status = "usb=1";
-
     return 1;
 }
 
@@ -186,6 +192,11 @@ int UsbDriver::write( const orca::Velocity2dCommandPtr & command )
     makeMotionCommandPacket( pkt_, command );
 
     return usbio_->writePacket(pkt_);
+}
+
+std::string UsbDriver::toString()
+{
+    return frame_->toString();
 }
 
 int UsbDriver::resetAllIntegrators()

@@ -154,7 +154,7 @@ void NetHandler::run()
             if ( statusPublishInterval_<0 ||
                         statusPublishTimer_.elapsed().toSecondsDouble()>statusPublishInterval_ ) {
                 //cout<<"sending heartbeat"<<endl;
-                context_.tracer()->heartbeat("status OK");
+                context_.tracer()->heartbeat( context_.tracer()->status() );
                 statusPublishTimer_.restart();
             }
         }
