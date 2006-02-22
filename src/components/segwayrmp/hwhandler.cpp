@@ -57,11 +57,13 @@ HwHandler::HwHandler(
         commandData_(new Velocity2dCommand),
         powerData_(new PowerData),
         driver_(0),
-        context_(context),
-        writeStatus_(-1)
+        context_(context)
 {
     // we'll handle incoming messages
     commandPipe.setNotifyHandler( this );
+
+    // unsure about write status until we enable the driver
+    writeStatusPipe_.set( false );
 
     // set up data structure for 3 batteries
     BatteryData bd;
@@ -140,6 +142,10 @@ void HwHandler::init()
 
 void HwHandler::run()
 {
+    // we are in a different thread now, catch all stray exceptions
+    try
+    {
+
     //
     // Enable driver
     //
@@ -147,24 +153,28 @@ void HwHandler::run()
         context_.tracer()->warning("failed to enable the driver; will try again in 2 seconds.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
-    //writeStatus_ = 0;
+    // presumably we can write to the hardware
+    writeStatusPipe_.set( true );
     context_.tracer()->debug("driver enabled",5);
 
     std::string driverStatus = "";
     std::string currDriverStatus = "";
     
     int readStatus = -1;
+    bool writeStatus = false;
 
     while( isActive() )
     {
-    /*
-        if ( writeStatus_==0 ) {
-            // carry on
-        } else {
-            context_.tracer()->error("failed to write data to Segway hardware.");
-            driver_->repair();
+        writeStatusPipe_.get( writeStatus );
+        if ( !writeStatus ) {
+            context_.tracer()->error("failed to write data to Segway hardware. Repairing....");
+            context_.tracer()->debug( "\n"+driver_->toString(), 1 );
+            int repairStatus = driver_->repair();
+            if ( repairStatus ) {
+                context_.tracer()->error("failed to repair hardware. Moving on....");
+            }
         }
-    */
+
         // Read data from the hardware
 //         readTimer_.restart();
         readStatus = driver_->read( position2dData_, powerData_, currDriverStatus );
@@ -191,19 +201,70 @@ void HwHandler::run()
             // set configs
         }
         
-    }
+    } // while
 
     // reset the hardware
     if ( driver_->disable() ) {
         context_.tracer()->warning("failed to disable driver");
     }
     context_.tracer()->debug("driver disabled",5);
+
+    // This component never can run as a service, so when unexpected exceptions are
+    // caught we don't quit by destroying the communicator, other services may still be running.
+    } // try
+    catch ( const orca::OrcaException & e )
+    {
+        context_.tracer()->print( e.what );
+        context_.tracer()->error( "unexpected (remote?) orca exception.");
+        if ( context_.isApplication() ) {
+            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.communicator()->destroy();
+        }
+    }
+    catch ( const orcaice::Exception & e )
+    {
+        context_.tracer()->print( e.what() );
+        context_.tracer()->error( "unexpected (local?) orcaice exception.");
+        if ( context_.isApplication() ) {
+            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.communicator()->destroy();
+        }
+    }
+    catch ( const Ice::Exception & e )
+    {
+        cout<<e<<endl;
+        context_.tracer()->error( "unexpected Ice exception.");
+        if ( context_.isApplication() ) {
+            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.communicator()->destroy();
+        }
+    }
+    catch ( const std::exception & e )
+    {
+        cout<<e.what()<<endl;
+        context_.tracer()->error( "unexpected std exception.");
+        if ( context_.isApplication() ) {
+            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.communicator()->destroy();
+        }
+    }
+    catch ( ... )
+    {
+        context_.tracer()->error( "unexpected exception from somewhere.");
+        if ( context_.isApplication() ) {
+            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.communicator()->destroy();
+        }
+    }
 }
 
 void HwHandler::handleData( const orca::Velocity2dCommandPtr & obj )
 {
+    // if we know we can't write, don't try again
 /*
-    if ( writeStatus_ != 0 ) {
+    bool writeStatus = false;
+    writeStatusPipe_.get( writeStatus );
+    if ( !writeStatus ) {
         return;
     }
 */
@@ -228,12 +289,12 @@ void HwHandler::handleData( const orca::Velocity2dCommandPtr & obj )
 
     // write to hardware
     if( driver_->write( obj ) == 0 ) {
-        //writeStatus_ = 0;
+        writeStatusPipe_.set( true );
     }
     else {
         context_.tracer()->error("failed to write data to Segway hardware.");
         // set local state to failure
-        //writeStatus_ = -1;
+        writeStatusPipe_.set( false );
 
         // inform remote client of hardware failure
         throw orca::HardwareFailedException( "failed to write command data to hardware." );

@@ -25,6 +25,7 @@
 #include <orcaice/context.h>
 #include <orcaice/ptrproxy.h>
 #include <orcaice/ptrnotify.h>
+#include <orcaice/proxy.h>
 #include <orcaice/timer.h>
 
 #include "hwdriver.h"
@@ -80,8 +81,8 @@ private:
     // component current context
     orcaice::Context context_;
 
-    // dodgy states
-    int writeStatus_;
+    // write status has to be protected to be accessed from both read and write threads
+    orcaice::Proxy<bool> writeStatusPipe_;
 
     // debug
     orcaice::Timer readTimer_;
