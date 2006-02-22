@@ -101,10 +101,11 @@ struct FQTopicName
 
 /*!
     @brief Base class for all data types in Orca.
+    
     Deriving from a single class allows polymorphism.
     
-    @note This is not an Ice 'Object' which refers to a remote servant rather than
-    a piece of data.
+    @note An Orca @e object refers to a piece of data whereas an Ice @e object which
+    refers to a remote servant.
 */
 class OrcaObject
 {
@@ -117,24 +118,29 @@ sequence<byte> ByteSequence;
 
 /*!
     @brief A generic run-time exception.
+    
     Orca Components can use this to signal error conditions to their clients.
 */
 exception OrcaException
 {
+    //! Error description.
     string what;
 };
 
 //! Server failed to configure itself as requrested by client.
 exception ConfigurationNotExistException extends OrcaException {};
 
-//! Server does not have the requested data. Typically, this is because
-//! the server has not fully initialized yet.
+/*!
+    Raised when the server does not have the requested data.
+
+    Typically, this is because the server has not fully initialized yet.
+*/
 exception DataNotExistException extends OrcaException {};
 
 //! Indicates a problem with robot hardware, e.g. sensors and actuators.
 exception HardwareFailedException extends OrcaException {};
 
-//! Server failed to subscribe client for periodic updates.
+//! Raised when the server fails to subscribe client for periodic updates.
 exception SubscriptionFailedException extends OrcaException {};
 
 }; // module
