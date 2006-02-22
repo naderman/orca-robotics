@@ -67,7 +67,6 @@ interface StatusConsumer
 interface Status
 {
     //! Returns the latest status.
-    //! In Orca-1 terms, this would be called ClientPull_Supplier interface.
     nonmutating StatusData getData();
 
     /*!

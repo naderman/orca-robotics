@@ -81,7 +81,8 @@ interface Position2dConsumer
 interface Position2d
 {
     //! Returns the latest data.
-    //! @note In Orca1 this would be called ClientPull_Supplier interface.
+    //! May raise DataNotExistException if the requested information is not available.
+    //! May raise HardwareFailedException if there is some problem with hardware.
     nonmutating Position2dData getData()
             throws DataNotExistException, HardwareFailedException;
 
