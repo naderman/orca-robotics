@@ -108,7 +108,7 @@ PlayerClientDriver::disable()
 
 int
 PlayerClientDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
-                    HwDriver::Status & status )
+                    std::string & status )
 {
     if ( ! enabled_ ) {
         //cout << "ERROR(playerclientdriver.cpp): Can't read: not connected to Player/Stage yet." << endl;
@@ -123,6 +123,8 @@ PlayerClientDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPt
     
     orcaplayer::convert( *positionProxy_, position2d );
     //orcaplayer::convert( *powerProxy_, power );
+
+    status = "playing=1";
 
     return 0;
 }

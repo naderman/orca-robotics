@@ -64,8 +64,6 @@ private:
     orca::Position2dDataPtr position2dData_;
     orca::Velocity2dCommandPtr commandData_;
     orca::PowerDataPtr powerData_;
-    // internal RMP status
-    HwDriver::Status rmpStatus_;
 
     // generic interface to the hardware
     HwDriver* driver_;

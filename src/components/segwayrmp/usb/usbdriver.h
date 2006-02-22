@@ -40,19 +40,44 @@ public:
     virtual int disable();
 
     virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
-                      HwDriver::Status & status );
+                      std::string & status );
 
     virtual int write( const orca::Velocity2dCommandPtr &position2d );
 
 private:
+
+    enum OperationalMode
+    {
+        TRACTOR=1,
+        BALANCE,
+        POWERDOWN
+    };
+
+    enum GainSchedule
+    {
+        NORMAL=0,
+        TALL,
+        HEAVY
+    };
+
+    struct Status
+    {
+        int buildId;
+        int cuState;
+        int opMode;
+        int gainSchedule;
+        //OperationalMode opMode;
+        //GainSchedule gainSchedule;
+    };
+    
     int setMaxVelocityScaleFactor( double scale );
     int setMaxTurnrateScaleFactor( double scale );
     int setMaxAccelerationScaleFactor( double scale );
     int setMaxCurrentLimitScaleFactor( double scale );
     int resetAllIntegrators();
 
-    int setOperationalMode( HwDriver::OperationalMode mode ) { return 0; };
-    int setGainSchedule( HwDriver::GainSchedule sched ) { return 0; };
+    int setOperationalMode( OperationalMode mode ) { return 0; };
+    int setGainSchedule( GainSchedule sched ) { return 0; };
     int enableBalanceMode( bool enable ) { return 0; };
 
     // driver/hardware interface
@@ -81,7 +106,7 @@ private:
     void integrateMotion();
 
     void updateData( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
-                      HwDriver::Status & status );
+                     Status & status );
 
     // helper to take a player command and turn it into a CAN command packet
     void makeMotionCommandPacket( CanPacket* pkt, const orca::Velocity2dCommandPtr & command );

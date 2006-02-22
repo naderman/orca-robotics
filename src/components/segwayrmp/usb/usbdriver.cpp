@@ -120,10 +120,11 @@ int UsbDriver::disable()
 }
 
 int UsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
-                      HwDriver::Status & status )
+                      std::string & status )
 {
     int canPacketsProcessed = 0;
     int dataFramesReopened = 0;
+    UsbDriver::Status usbStatus;
 
     // get next packet from the packet buffer, will block until new packet arrives
     while( !usbio_->readPacket(pkt_) )
@@ -146,11 +147,15 @@ int UsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &po
         // If frame is closed and complete, transfer data and reset frame
         if( frame_->isClosed() )
         {
-            if ( frame_->isComplete() ) {
+            if ( frame_->isComplete() )
+            {
+                //
                 // process data only if the frame is complete
-                updateData( position2d, power, status );
+                //
+                updateData( position2d, power, usbStatus );
+                
                 frame_->reset();
-                //cout<<"rmpusb::read: pkts:"<<canPacketsProcessed<<" reopnd: "<<dataFramesReopened<<endl;
+                //cout<<"rmpusb::read: pkts:"<<canPacketsProcessed<<" re-opend: "<<dataFramesReopened<<endl;
                 return 0;
             }
             else {
@@ -170,6 +175,8 @@ int UsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &po
         }
 
     }
+
+    status = "usb=1";
 
     return 1;
 }
@@ -268,7 +275,7 @@ void UsbDriver::integrateMotion()
 }
 
 void UsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
-                      HwDriver::Status & status )
+                            Status & status )
 {
     // POSITION2D
     

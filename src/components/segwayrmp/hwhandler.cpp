@@ -150,6 +150,9 @@ void HwHandler::run()
     //writeStatus_ = 0;
     context_.tracer()->debug("driver enabled",5);
 
+    std::string driverStatus;
+    std::string currDriverStatus;
+    
     int readStatus = -1;
 
     while( isActive() )
@@ -164,13 +167,18 @@ void HwHandler::run()
     */
         // Read data from the hardware
 //         readTimer_.restart();
-        readStatus = driver_->read( position2dData_, powerData_, rmpStatus_ );
+        readStatus = driver_->read( position2dData_, powerData_, currDriverStatus );
 //         cout<<"read: " << readTimer_.elapsed().toMilliSecondsDouble()<<endl;
     
         if ( readStatus==0 ) {
             // Stick it in the buffer so pullers can get it
             position2dPipe_.set( position2dData_ );
             powerPipe_.set( powerData_ );
+
+            if ( driverStatus != currDriverStatus ) {
+                context_.tracer()->status( currDriverStatus );
+                driverStatus = currDriverStatus;
+            }
         } else {
             context_.tracer()->error("failed to read data from Segway hardware. Repairing....");
             driver_->repair();

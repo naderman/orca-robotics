@@ -32,30 +32,6 @@ class HwDriver
 {
 
 public:
-    enum OperationalMode
-    {
-        TRACTOR=1,
-        BALANCE,
-        POWERDOWN
-    };
-
-    enum GainSchedule
-    {
-        NORMAL=0,
-        TALL,
-        HEAVY
-    };
-
-    struct Status
-    {
-        int buildId;
-        int cuState;
-        int opMode;
-        int gainSchedule;
-        //OperationalMode opMode;
-        //GainSchedule gainSchedule;
-    };
-
     virtual ~HwDriver() {};
     
     virtual int enable()=0;
@@ -63,7 +39,7 @@ public:
     virtual int disable()=0;
 
     // Blocking read
-    virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power, Status &status )=0;
+    virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power, std::string &status )=0;
 
     // Writes velocity command
     virtual int write( const orca::Velocity2dCommandPtr &position2d )=0;

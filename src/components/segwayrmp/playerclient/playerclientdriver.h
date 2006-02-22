@@ -42,7 +42,7 @@ public:
     virtual int disable();
 
     virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
-                      HwDriver::Status & status );
+                      std::string & status );
 
     virtual int write( const orca::Velocity2dCommandPtr &position2d );
 
