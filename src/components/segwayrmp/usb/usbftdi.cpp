@@ -202,7 +202,7 @@ int UsbIoFtdi::readPacketBlocking( CanPacket* pkt )
             return getPacket( pkt );
         }
         else {
-            cerr<<"couldn't read any packets without blocking"<<endl;
+            cerr<<"sbIoFtdi::readPacketBlocking: couldn't read any packets from non-empty buffer"<<endl;
             return 1;
         }
     }
@@ -213,7 +213,9 @@ int UsbIoFtdi::readPacketBlocking( CanPacket* pkt )
     while ( numberOfBlocks < maxNumberOfBlocks ) {
         ++numberOfBlocks;
 
+        // this blocking call uses a timed conditional variable, so it shouldn't lock up forever
         bytesInBuffer = readFromUsbToBufferBlocking();
+
         // Process the buffer contents into CAN packets
         if( bytesInBuffer > 0 ) {
             // Process the buffer contents into CAN packets
@@ -369,6 +371,7 @@ int UsbIoFtdi::getPacket(CanPacket* pkt)
     }
 }
 
+// returns number of bytes read
 int UsbIoFtdi::readFromUsbToBufferBlocking()
 {
     DWORD EventMask = FT_EVENT_RXCHAR;
@@ -377,13 +380,35 @@ int UsbIoFtdi::readFromUsbToBufferBlocking()
         cerr<<"UsbIoFtdi::readFromUsbToBufferBlocking: failed to set event notification"<<endl;
     }
 
+    // we want to timeout from listening to USB after 100ms (10Hz)
+    // this is reasonable because, normally the packets comes in at >100Hz.
+    int dusec = 100000; // [usec]
+    // ugly-ass C time structures
+    timeval tval;
+    gettimeofday( &tval, NULL );
+    if ( (tval.tv_usec + dusec)<1000000 ) {
+        tval.tv_usec = tval.tv_usec + dusec;
+    }
+    else {
+        ++tval.tv_sec;
+        tval.tv_usec = tval.tv_usec + dusec - 1000000;
+    }
+    timespec abstime;
+    abstime.tv_sec = tval.tv_sec;
+    abstime.tv_nsec = tval.tv_usec*1000;
+
     pthread_mutex_lock(&eventHandle_.eMutex);
-    //! @todo make this wait timeout
-    pthread_cond_wait(&eventHandle_.eCondVar, &eventHandle_.eMutex);
+    //pthread_cond_wait(&eventHandle_.eCondVar, &eventHandle_.eMutex);
+    int ret = pthread_cond_timedwait(&eventHandle_.eCondVar, &eventHandle_.eMutex, &abstime );
     pthread_mutex_unlock(&eventHandle_.eMutex);
 
-    // now there should be something in the buffer
-    return readFromUsbToBuffer();
+    if ( ret == ETIMEDOUT ) {
+        return 0;
+    }
+    else {
+        // now there should be something in the buffer
+        return readFromUsbToBuffer();
+    }
 }
 
 int UsbIoFtdi::readFromUsbToBuffer()

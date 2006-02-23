@@ -98,7 +98,7 @@ void HwHandler::init()
 
     // based on the config parameter, create the right driver
     string driverName = orcaice::getPropertyWithDefault( context_.properties(),
-            prefix+"Driver", "usb" );
+            prefix+"Driver", "segwayrmpusb" );
     if ( driverName == "segwayrmpusb" )
     {
 #ifdef HAVE_USB_DRIVER
@@ -117,11 +117,11 @@ void HwHandler::init()
 //         driver_ = new PlayerClientDriver(
 //                 context_.properties()->getPropertiesForPrefix( context_.tag()+".Config.PlayerClient" ) );
 
-        std::string prefix = context_.tag() + ".Config.PlayerClient.";
+        std::string playerclientPrefix = prefix + "PlayerClient.";
         std::string playerHost = orcaice::getPropertyWithDefault( context_.properties(),
-                prefix+"Host", "localhost" );
+                playerclientPrefix+"Host", "localhost" );
         int playerPort = orcaice::getPropertyAsIntWithDefault( context_.properties(),
-                prefix+"Port", 6665 );
+                playerclientPrefix+"Port", 6665 );
         driver_ = new PlayerClientDriver( playerHost.c_str(), playerPort );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'playerclient' because it was not built!" );
@@ -164,10 +164,15 @@ void HwHandler::run()
     int readStatus = -1;
     bool writeStatus = false;
 
+    //
+    // This is the main loop
+    // All operations inside are local.
+    // We do not expect to catch any exceptions.
+    //
     while( isActive() )
     {
         writeStatusPipe_.get( writeStatus );
-        if ( !writeStatus ) {
+        if ( writeStatus == false ) {
             context_.tracer()->error("failed to write data to Segway hardware. Repairing....");
             context_.tracer()->debug( "\n"+driver_->toString(), 1 );
             int repairStatus = driver_->repair();
@@ -208,10 +213,13 @@ void HwHandler::run()
     if ( driver_->disable() ) {
         context_.tracer()->warning("failed to disable driver");
     }
-    context_.tracer()->debug("driver disabled",5);
+    else {
+        context_.tracer()->debug("driver disabled",5);
+    }
 
-    // This component never can run as a service, so when unexpected exceptions are
-    // caught we don't quit by destroying the communicator, other services may still be running.
+    //
+    // unexpected exceptions
+    //
     } // try
     catch ( const orca::OrcaException & e )
     {
@@ -259,24 +267,33 @@ void HwHandler::run()
     }
 }
 
+//
+// This is the only direct incoming link from the outside.
+// Here we handle command arriving through Platform2d interface.
+//
 void HwHandler::handleData( const orca::Velocity2dCommandPtr & obj )
 {
-    // if we know we can't write, don't try again
+    //cout<<"handling: "<<orcaice::toString(obj)<<endl;
+
 /*
+    // if we know we can't write, don't try again
     bool writeStatus = false;
     writeStatusPipe_.get( writeStatus );
     if ( !writeStatus ) {
         return;
     }
 */
-    //cout<<"write: " << writeTimer_.elapsed().toMilliSecondsDouble()<<endl;
-    double msecs=writeTimer_.elapsed().toMilliSecondsDouble();
-    // this will certainly be 'late' when we throw an exception below
-    if ( msecs>300 ) {
-        cout<<"late: " << msecs <<endl;
-    }
 
+// debug
+double msecs=writeTimer_.elapsed().toMilliSecondsDouble();
+writeTimer_.restart();
+// this will certainly be 'late' when we throw an exception below
+if ( msecs>300 ) {
+    cout<<"late: " << msecs <<endl;
+}
+    //
     // apply max limits
+    //
     if ( fabs(obj->motion.v.x) > config_.maxSpeed ) {
         obj->motion.v.x =
                 (obj->motion.v.x / fabs(obj->motion.v.x)) * config_.maxSpeed;
@@ -286,20 +303,24 @@ void HwHandler::handleData( const orca::Velocity2dCommandPtr & obj )
                 (obj->motion.w / fabs(obj->motion.w)) * config_.maxTurnrate;
     }
 
-    //cout<<"handling: "<<orcaice::toString(obj)<<endl;
-
+    //
     // write to hardware
+    //
     if( driver_->write( obj ) == 0 ) {
         writeStatusPipe_.set( true );
     }
     else {
-        context_.tracer()->error("failed to write data to Segway hardware.");
+        std::string errorStr = "failed to write command data to hardware.";
+        context_.tracer()->error( errorStr );
         // set local state to failure
         writeStatusPipe_.set( false );
 
-        // inform remote client of hardware failure
-        throw orca::HardwareFailedException( "failed to write command data to hardware." );
-    }
+// debug
+bool statusCheck;
+writeStatusPipe_.get( statusCheck );
+assert( statusCheck == false && "write status should be set to FALSE" );
 
-    writeTimer_.restart();
+        // inform remote client of hardware failure
+        throw orca::HardwareFailedException( errorStr );
+    }
 }

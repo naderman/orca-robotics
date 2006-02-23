@@ -82,11 +82,36 @@ std::string RmpUsbDataFrame::toString()
 
     os<<"op mode    \t= "<<dec<<(int)operational_mode<<" "<<hex<<operational_mode<<dec<<endl;
     os<<"gain sched \t= "<<dec<<(int)controller_gain_schedule<<" "<<hex<<controller_gain_schedule<<dec<<endl;
-    os<<"status 1   \t= "<<dec<<(int)status_word1<<" "<<hex<<status_word1<<dec<<endl;
+    os<<"status 1   \t= "<<dec<<(int)status_word1<<" "<<hex<<status_word1<<dec<<":\t\t"<< CuStatus1ToString()<<endl;
     os<<"status 2   \t= "<<dec<<(int)status_word2<<" "<<hex<<status_word2<<dec<<endl;
     os<<"frames     \t= "<<dec<<(int)frames<<" "<<hex<<frames<<dec<<endl;
     os<<"build id   \t= "<<dec<<(int)build_id<<" "<<hex<<build_id<<dec<<endl;
     return os.str();
+}
+
+std::string RmpUsbDataFrame::CuStatus1ToString()
+{
+    std::string s;
+    if ( status_word1 & WORD1_SAFETY_SHUTDOWN_1 ) s += std::string(WORD1_SAFETY_SHUTDOWN_1_STRING) + "; ";
+    //if ( status_word1 & WORD1_NOT_USED_0002 ) s += std::string(WORD1_NOT_USED_0002_STRING) + "; ";
+    if ( status_word1 & WORD1_SAFETY_SHUTDOWN_2 ) s += std::string(WORD1_SAFETY_SHUTDOWN_2_STRING) + "; ";
+    if ( status_word1 & WORD1_DISABLE_RESPONSE ) s += std::string(WORD1_DISABLE_RESPONSE_STRING) + "; ";
+    if ( status_word1 & WORD1_SPEED_LIMIT_4MPH ) s += std::string(WORD1_SPEED_LIMIT_4MPH_STRING) + "; ";
+    if ( status_word1 & WORD1_SPEED_LIMIT_0MPH ) s += std::string(WORD1_SPEED_LIMIT_0MPH_STRING) + "; ";
+    if ( status_word1 & WORD1_SYSTEM_INTEGRITY_FAULT ) s += std::string(WORD1_SYSTEM_INTEGRITY_FAULT_STRING) + "; ";
+    if ( status_word1 & WORD1_MOTORS_ENABLED ) s += std::string(WORD1_MOTORS_ENABLED_STRING) + "; ";
+    if ( status_word1 & WORD1_BALANCE_MODE ) s += std::string(WORD1_BALANCE_MODE_STRING) + "; ";
+    if ( status_word1 & WORD1_YAW_TRANSIENT_FLAG ) s += std::string(WORD1_YAW_TRANSIENT_FLAG_STRING) + "; ";
+    if ( status_word1 & WORD1_EMPTY_BATTERY_HAZARD ) s += std::string(WORD1_EMPTY_BATTERY_HAZARD_STRING) + "; ";
+    //if ( status_word1 & WORD1_NOT_USED_0800 ) s += std::string(WORD1_NOT_USED_0800_STRING) + "; ";
+    if ( status_word1 & WORD1_WHEEL_SLIP_FLAG ) s += std::string(WORD1_WHEEL_SLIP_FLAG_STRING) + "; ";
+    if ( status_word1 & WORD1_MOTOR_FEEDBACK_FAULT ) s += std::string(WORD1_MOTOR_FEEDBACK_FAULT_STRING) + "; ";
+    if ( status_word1 & WORD1_WHEEL_SLIP_FLAG ) s += std::string(WORD1_WHEEL_SLIP_FLAG_STRING) + "; ";
+    if ( status_word1 & WORD1_MOTOR_FEEDBACK_FAULT ) s += std::string(WORD1_MOTOR_FEEDBACK_FAULT_STRING) + "; ";
+    if ( status_word1 & WORD1_LOW_BATTRY_HAZARD ) s += std::string(WORD1_LOW_BATTRY_HAZARD_STRING) + "; ";
+    //if ( status_word1 & WORD1_NOT_USED_8000 ) s += std::string(WORD1_NOT_USED_8000_STRING) + "; ";
+
+    return s;
 }
 
 void RmpUsbDataFrame::reopen()

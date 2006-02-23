@@ -74,6 +74,72 @@
                                       RMP_CAN_RESET_YAW | \
                                       RMP_CAN_RESET_FOREAFT)
 
+// CU STATUS WORD DEFINITIONS, see sec.2.4.1
+#define WORD1_SAFETY_SHUTDOWN_1                 0x0001
+#define WORD1_SAFETY_SHUTDOWN_1_STRING          "Safety Shutdown, type 1"
+#define WORD1_NOT_USED_0002                     0x0002
+#define WORD1_NOT_USED_0002_STRING              "Not Used"
+#define WORD1_SAFETY_SHUTDOWN_2                 0x0004
+#define WORD1_SAFETY_SHUTDOWN_2_STRING          "Safety Shutdown, type 2"
+#define WORD1_DISABLE_RESPONSE                  0x0008
+#define WORD1_DISABLE_RESPONSE_STRING           "Disable Response"
+#define WORD1_SPEED_LIMIT_4MPH                  0x0010
+#define WORD1_SPEED_LIMIT_4MPH_STRING           "Speed Limit to 4 mph"
+#define WORD1_SPEED_LIMIT_0MPH                  0x0020
+#define WORD1_SPEED_LIMIT_0MPH_STRING           "Speed Limit to 0 mph"
+#define WORD1_SYSTEM_INTEGRITY_FAULT            0x0040
+#define WORD1_SYSTEM_INTEGRITY_FAULT_STRING     "System Integrity Fault"
+#define WORD1_MOTORS_ENABLED                    0x0080
+#define WORD1_MOTORS_ENABLED_STRING             "Motors Enabled"
+#define WORD1_BALANCE_MODE                      0x0100
+#define WORD1_BALANCE_MODE_STRING               "Balance Mode"
+#define WORD1_YAW_TRANSIENT_FLAG                0x0200
+#define WORD1_YAW_TRANSIENT_FLAG_STRING         "Yaw Transient Flag"
+#define WORD1_EMPTY_BATTERY_HAZARD              0x0400
+#define WORD1_EMPTY_BATTERY_HAZARD_STRING       "Empty Battery Hazard"
+#define WORD1_NOT_USED_0800                     0x0800
+#define WORD1_NOT_USED_0800_STRING              "Not Used"
+#define WORD1_WHEEL_SLIP_FLAG                   0x1000
+#define WORD1_WHEEL_SLIP_FLAG_STRING            "Wheel Slip Flag"
+#define WORD1_MOTOR_FEEDBACK_FAULT              0x2000
+#define WORD1_MOTOR_FEEDBACK_FAULT_STRING       "Motor Feedback Fault"
+#define WORD1_LOW_BATTRY_HAZARD                 0x4000
+#define WORD1_LOW_BATTRY_HAZARD_STRING          "Low Battery Hazard"
+#define WORD1_NOT_USED_8000                     0x8000
+#define WORD1_NOT_USED_8000_STRING              "Not Used"
+
+
+#define WORD2_FOREAFT_PITCH_ANGLE_LIMIT_A       0x0001
+#define WORD2_FOREAFT_PITCH_ANGLE_LIMIT_A_STRING "Fore/Aft Pitch Angle Limit Exceeded (A)"
+#define WORD2_ESTOP_SWITCH_OPEN_A               0x0002
+#define WORD2_ESTOP_SWITCH_OPEN_A_STRING        "E-Stop Switch Open (A)"
+#define WORD2_POSITION_ERROR_LIMIT_A            0x0004
+#define WORD2_POSITION_ERROR_LIMIT_A_STRING     "Position Error Limit Exceeded (A)"
+#define WORD2_MAX_VELOCITY_A                    0x0008
+#define WORD2_MAX_VELOCITY_A_STRING             "Maximum Velocity Exceeded (A)"
+#define WORD2_BATTERY_EMPTY_A                   0x0010
+#define WORD2_BATTERY_EMPTY_A_STRING            "Battery Empty (A)"
+#define WORD2_BATTERY_TEMP_LIMIT_A              0x0020
+#define WORD2_BATTERY_TEMP_LIMIT_A_STRING       "Battery Temperature Out of Range (A)"
+#define WORD2_ROLL_ANGLE_LIMIT_A                0x0040
+#define WORD2_ROLL_ANGLE_LIMIT_A_STRING         "Roll Angle Limit Exceeded (A)"
+#define WORD2_LOW_BATTERY_BUS_VOLTAGE_A         0x0080
+#define WORD2_LOW_BATTERY_BUS_VOLTAGE_A_STRING  "Low Battery Bus Voltage (A)"
+#define WORD2_FOREAFT_PITCH_ANGLE_LIMIT_B       0x0100
+#define WORD2_FOREAFT_PITCH_ANGLE_LIMIT_B_STRING "Fore/Aft Pitch Angle Limit Exceeded (B)"
+#define WORD2_ESTOP_SWITCH_OPEN_B               0x0200
+#define WORD2_ESTOP_SWITCH_OPEN_B_STRING        "E-Stop Switch Open (B)"
+#define WORD2_POSITION_ERROR_LIMIT_B            0x0400
+#define WORD2_POSITION_ERROR_LIMIT_B_STRING     "Position Error Limit Exceeded (B)"
+#define WORD2_MAX_VELOCITY_B                    0x0800
+#define WORD2_MAX_VELOCITY_B_STRING             "Maximum Velocity Exceeded (B)"
+#define WORD2_BATTERY_EMPTY_B                   0x1000
+#define WORD2_BATTERY_EMPTY_B_STRING            "Battery Empty (B)"
+#define WORD2_BATTERY_TEMP_LIMIT_B              0x2000
+#define WORD2_BATTERY_TEMP_LIMIT_B_STRING       "Battery Temperature Out of Range (B)"
+#define WORD2_ROLL_ANGLE_LIMIT_B                0x4000
+#define WORD2_ROLL_ANGLE_LIMIT_B_STRING         "Roll Angle Limit Exceeded (B)"
+
 // unit conversions from Data Reference, see sec.4
 
 #define RMP_COUNT_PER_M            33215.0
@@ -205,6 +271,8 @@ public:
     int16_t status_word1;
     // CU Status "word 2"
     int16_t status_word2;
+
+    std::string CuStatus1ToString();
 
     bool msgCheckList_[8];
 
