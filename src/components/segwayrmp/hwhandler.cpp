@@ -95,9 +95,10 @@ void HwHandler::init()
             prefix+"MaxSpeed", 1.0 );
     config_.maxTurnrate = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             prefix+"MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
+
+    // based on the config parameter, create the right driver
     string driverName = orcaice::getPropertyWithDefault( context_.properties(),
             prefix+"Driver", "usb" );
-
     if ( driverName == "segwayrmpusb" )
     {
 #ifdef HAVE_USB_DRIVER
