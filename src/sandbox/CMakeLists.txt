@@ -8,6 +8,7 @@ IF ( BUILD_SANDBOX )
 
     # when adding new directories, please maintain alphabetical order
     SUBDIRS(
+	netcam
         orcamon
     )
     
