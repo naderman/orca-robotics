@@ -61,7 +61,7 @@ Orca, currently in its second generation, differs from other robotic software fr
 
 @section orca_doc_about_approach Approach
 
-The approach we take is frequently called Component-Based Software Engineering (CBSE). For an overview of CBSE and its application to robotics, see <a href="http://orca-robotics.sf.net/documents/brooks05_towards_component_based_robotics.pdf">this paper</a>.  While it was written for Orca1, the arguments for CBSE fully apply to Orca2.
+The approach we take is frequently called Component-Based Software Engineering (CBSE). For a broad overview of "componentry" look in <a href="http://en.wikipedia.org/wiki/Software_componentry" target="_blank">Wikipedia</a>. For a summary of CBSE and its application to robotics, see <a href="http://orca-robotics.sf.net/documents/brooks05_towards_component_based_robotics.pdf">this paper</a>.  While it was written for Orca1, the arguments for CBSE fully apply to Orca2.
 
 @subsection orca_doc_about_whyice Why Use Ice?
 
