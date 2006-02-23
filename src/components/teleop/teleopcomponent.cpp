@@ -47,17 +47,21 @@ void TeleopComponent::start()
     // The only provided interfaces are the 2 standard ones: Home and Status.
     // We can just skip this activation step and they will not be visible on
     // on the network (if network traffic is an issue, for example).
+    //
+    // this may throw, but may as well quit right then
     activate();
 
     //
     // NETWORK
     //
+    // the constructor may throw, we'll let the application shut us down
     networkHandler_ = new NetworkHandler( &commandProxy_, context() );
     networkHandler_->start();
 
     //
     // HARDWARE
     //
+    // the constructor may throw, we'll let the application shut us down
     userHandler_ = new UserHandler( &commandProxy_, context() );
     userHandler_->start();
     

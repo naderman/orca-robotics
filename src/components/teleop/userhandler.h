@@ -43,16 +43,14 @@ public:
 private:
 
     // network/driver interface
-    orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer_;
+    orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandPipe_;
 
     // generic interface to input hardware
     InputDriver* driver_;
 
     InputDriver::Config config_;
 
-    InputDriver::DriverType driverType_;
-
-    void readConfigs();
+    void init();
 
     // component current context
     orcaice::Context context_;

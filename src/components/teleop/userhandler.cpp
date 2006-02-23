@@ -36,11 +36,13 @@ using namespace orca;
 
 UserHandler::UserHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commands,
                     const orcaice::Context & context )
-      : commandBuffer_(commands),
+      : commandPipe_(commands),
         driver_(0),
-        driverType_(InputDriver::UNKNOWN_DRIVER),
         context_(context)
 {
+    // this is the last place we can throw exceptions from.
+    // after this the thread will be launched
+    init();
 }
 
 UserHandler::~UserHandler()
@@ -48,33 +50,50 @@ UserHandler::~UserHandler()
     delete driver_;
 }
 
-void UserHandler::readConfigs()
+void UserHandler::init()
 {
     //
     // Read settings
     //
+    std::string prefix = context_.tag() + ".Config.";
+    
     config_.maxSpeed = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-                "Teleop.Config.MaxSpeed", 1.0 );
+                prefix+"MaxSpeed", 1.0 );
     config_.maxTurnrate = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-                "Teleop.Config.MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
-    string driverName = orcaice::getPropertyWithDefault( context_.properties(),
-                "Teleop.Config.Driver", "keyboard" );
+                prefix+"MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
 
-    if ( driverName == "keyboard" ) {
-        driverType_ = InputDriver::KEYBOARD_DRIVER;
+    // based on the config parameter, create the right driver
+    string driverName = orcaice::getPropertyWithDefault( context_.properties(),
+                prefix+"Driver", "keyboard" );
+    if ( driverName == "keyboard" )
+    {
+#ifdef HAVE_KEYBOARD_DRIVER
+        context_.tracer()->print("loading keyboard driver");
+        driver_ = new TeleopKeyboardDriver( config_ );
+#else
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'keyboard' because it was not built!" );
+#endif
     }
-    else if ( driverName == "joystick" ) {
-        driverType_ = InputDriver::JOYSTICK_DRIVER;
+    else if ( driverName == "joystick" )
+    {
+#ifdef HAVE_JOYSTICK_DRIVER
+        context_.tracer()->print("loading joystick driver");
+        
         config_.joystickDevice = orcaice::getPropertyWithDefault( context_.properties(),
                 "Teleop.Config.JoystickDevice", "/dev/input/event0" );
+        driver_ = new TeleopJoystickDriver( config_ );
+#else
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'joystick' because it was not built!" );
+#endif
     }
-    else if ( driverName == "fake" ) {
-        driverType_ = InputDriver::FAKE_DRIVER;
+    else if ( driverName == "fake" )
+    {
+        context_.tracer()->print("loading fake driver");
+        driver_ = new TeleopFakeDriver( config_ );
     }
     else {
-        driverType_ = InputDriver::UNKNOWN_DRIVER;
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
-        context_.tracer()->error(errorStr);
+        context_.tracer()->error( errorStr);
         throw orcaice::Exception( ERROR_INFO, errorStr );
     }
 }
@@ -85,35 +104,6 @@ void UserHandler::run()
     // we are in a different thread now, catch all stray exceptions
     try
     {
-    
-    //cout<<"starting inputloop"<<endl;
-    readConfigs();
-
-    // based on the config parameter, create the right driver
-    switch ( driverType_ )
-    {
-        case InputDriver::KEYBOARD_DRIVER :
-#ifdef HAVE_KEYBOARD_DRIVER
-            context_.tracer()->print("loading keyboard driver");
-            driver_ = new TeleopKeyboardDriver( config_ );
-#endif
-            break;
-        case InputDriver::JOYSTICK_DRIVER :
-#ifdef HAVE_JOYSTICK_DRIVER
-            context_.tracer()->print("loading joystick driver");
-            driver_ = new TeleopJoystickDriver( config_ );
-#endif
-            break;
-        case InputDriver::FAKE_DRIVER :
-            context_.tracer()->print("loading fake driver");
-            driver_ = new TeleopFakeDriver( config_ );
-            break;
-        case InputDriver::UNKNOWN_DRIVER :
-            string errorStr = "Unknown driver type. Cannot talk to hardware.";
-            context_.tracer()->error(errorStr);
-            throw orcaice::Exception( ERROR_INFO, errorStr );
-    }    
-    
     
     // don't forget to enable the driver, but check isActive() to see if we should quit
     while ( driver_->enable() && isActive() ) {
@@ -144,7 +134,7 @@ void UserHandler::run()
         if ( lastCommand->motion.v.x != currCommand->motion.v.x ||
              lastCommand->motion.w != currCommand->motion.w )
         {
-            commandBuffer_->push( currCommand );
+            commandPipe_->push( currCommand );
         }
     }
 
@@ -158,9 +148,6 @@ void UserHandler::run()
     catch ( ... )
     {
         context_.tracer()->error( "unexpected exception from somewhere.");
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
+        context_.communicator()->destroy();
     }
 }
