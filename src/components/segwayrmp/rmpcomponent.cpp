@@ -18,22 +18,25 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+//#include <iostream> // debug
+#include <orcaice/orcaice.h>
+
 #include "rmpcomponent.h"
 #include "nethandler.h"
 #include "hwhandler.h"
 
-#include <orcaice/orcaice.h>
-
 using namespace orca;
 
 RmpComponent::RmpComponent() :
-    orcaice::Component( "SegwayRmp" ), netHandler_(0), hwHandler_(0)
+    orcaice::Component( "SegwayRmp" ),
+    netHandler_(0),
+    hwHandler_(0)
 {
 }
 
 RmpComponent::~RmpComponent()
 {
-    // do not delete handlers!!! They derive from Ice::Thread and delete itself.
+    // do not delete handlers!!! They derive from Ice::Thread and self-destruct.
 }
 
 // warning: this function returns after it's done, all variable that need to be permanet must
@@ -43,8 +46,9 @@ void RmpComponent::start()
     //
     // Network handling loop
     //
+    // the constructor may throw, we'll let the application shut us down
     netHandler_ = new NetHandler( position2dPipe_, commandPipe_, powerPipe_,
-                                  setConfigPipe_, currentConfigPipe_, context() );
+                                setConfigPipe_, currentConfigPipe_, context() );
     netHandler_->start();
 
     //
@@ -56,6 +60,7 @@ void RmpComponent::start()
     //
     // Hardware handling loop
     //
+    // the constructor may throw, we'll let the application shut us down
     hwHandler_ = new HwHandler( position2dPipe_, commandPipe_, powerPipe_,
                                 setConfigPipe_, currentConfigPipe_, context() );
     hwHandler_->start();
@@ -67,7 +72,6 @@ void RmpComponent::stop()
 {
     // it's possible that either or both of the handlers are not even created
     // if exceptions are raised in their constructor
-    // note: this did not help, had to turn off Component::stop() in Application
     if ( netHandler_ ) {
         IceUtil::ThreadControl netControl = netHandler_->getThreadControl();
         tracer()->debug("stopping net handler", 5 );

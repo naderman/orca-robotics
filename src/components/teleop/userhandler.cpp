@@ -18,6 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#include <orcaice/orcaice.h>
+
 #include "userhandler.h"
 
 #ifdef HAVE_KEYBOARD_DRIVER
@@ -28,17 +30,16 @@
 #endif
 #include "teleopfakedriver.h"
 
-#include <orcaice/orcaice.h>
-#include <orcaice/exceptions.h>
-#include <orcaice/mathdefs.h>
 
 using namespace std;
 using namespace orca;
 
-UserHandler::UserHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commands ) :
-        commandBuffer_(commands),
+UserHandler::UserHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commands,
+                    const orcaice::Context & context )
+      : commandBuffer_(commands),
         driver_(0),
-        driverType_(InputDriver::UNKNOWN_DRIVER)
+        driverType_(InputDriver::UNKNOWN_DRIVER),
+        context_(context)
 {
 }
 
@@ -81,6 +82,10 @@ void UserHandler::readConfigs()
 // read commands from the keyboard. Launced in a separate thread.
 void UserHandler::run()
 {
+    // we are in a different thread now, catch all stray exceptions
+    try
+    {
+    
     //cout<<"starting inputloop"<<endl;
     readConfigs();
 
@@ -149,4 +154,13 @@ void UserHandler::run()
     }
     context_.tracer()->debug("driver disabled");
 
+    } // try
+    catch ( ... )
+    {
+        context_.tracer()->error( "unexpected exception from somewhere.");
+        if ( context_.isApplication() ) {
+            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.communicator()->destroy();
+        }
+    }
 }

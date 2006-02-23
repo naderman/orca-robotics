@@ -19,18 +19,19 @@
  */
 
 #include <iostream>
-
-#include "networkhandler.h"
-
 #include <orcaice/orcaice.h>
 #include <orcaice/exceptions.h>
+
+#include "networkhandler.h"
 
 using namespace std;
 using namespace orca;
 using orcaice::operator<<;
 
-NetworkHandler::NetworkHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer )
-    : commandBuffer_(commandBuffer)
+NetworkHandler::NetworkHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer,
+                    const orcaice::Context & context )
+    : commandBuffer_(commandBuffer),
+      context_(context)
 {
 }
 

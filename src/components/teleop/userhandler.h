@@ -34,10 +34,9 @@ class UserHandler : public orcaice::Thread
 {
 public:
 
-    UserHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commands );
+    UserHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commands,
+                    const orcaice::Context & context );
     virtual ~UserHandler();
-
-    void setCurrent( const orcaice::Context & context ) { context_=context; };
 
     virtual void run();
 

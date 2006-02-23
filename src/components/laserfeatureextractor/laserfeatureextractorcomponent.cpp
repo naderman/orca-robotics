@@ -33,12 +33,14 @@ using namespace std;
 using namespace orca;
 
 LaserFeatureExtractorComponent::LaserFeatureExtractorComponent()
-    : orcaice::Component( "LaserFeatureExtractor" )
+    : orcaice::Component( "LaserFeatureExtractor" ),
+      mainLoop_(0)
 {
 }
 
 LaserFeatureExtractorComponent::~LaserFeatureExtractorComponent()
 {
+    // do not delete mainLoop_!!! They derive from Ice::Thread and self-destruct.
 }
 
 // warning: this function returns after it's done, all variable that need to be permanet must
@@ -115,7 +117,9 @@ void LaserFeatureExtractorComponent::start()
         return;
     }
     
-    mainLoop_ = new MainLoop( algorithm_, polarFeaturePublisher_, laserPrx_, laserDataBuffer_, polarFeaturesDataBuffer_, &prop_, prefix );
+    mainLoop_ = new MainLoop( algorithm_, polarFeaturePublisher_, laserPrx_,
+                              laserDataBuffer_, polarFeaturesDataBuffer_,
+                              &prop_, prefix );
     mainLoop_->start();
     
     // the rest is handled by the application/service
@@ -124,11 +128,13 @@ void LaserFeatureExtractorComponent::start()
 void LaserFeatureExtractorComponent::stop()
 {
     tracer()->debug( "component is stopping...",5 );
+
+    // make sure that the main loop was actually created
+    if ( mainLoop_ ) {
+        // Tell the main loop to stop
+        mainLoop_->stop();
     
-    // Tell the main loop to stop
-    mainLoop_->stop();
-
-
-    // Then wait for it
-    mainLoop_->getThreadControl().join();
+        // Then wait for it
+        mainLoop_->getThreadControl().join();
+    }
 }

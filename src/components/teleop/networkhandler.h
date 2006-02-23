@@ -32,10 +32,9 @@ class NetworkHandler : public orcaice::Thread
 {
 public:
 
-    NetworkHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer );
+    NetworkHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer,
+                    const orcaice::Context & context );
     ~NetworkHandler();
-
-    void setCurrent( const orcaice::Context & context ) { context_=context; };
 
     void setupConfigs( const Ice::PropertiesPtr & properties );
 

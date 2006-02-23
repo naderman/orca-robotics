@@ -24,6 +24,8 @@
 
 //
 // Build the component into a stand-alone application
+// (Since we don't expect to run Teleop as a service we could have
+// moved the contents of teleopcomponent.h/cpp into main.cpp)
 //
 int main(int argc, char * argv[])
 {

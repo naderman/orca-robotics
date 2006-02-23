@@ -27,7 +27,9 @@
 using namespace std;
 
 TeleopComponent::TeleopComponent()
-    : orcaice::Component( "Teleop" ), networkHandler_(0), userHandler_(0)
+    : orcaice::Component( "Teleop" ),
+      networkHandler_(0),
+      userHandler_(0)
 {
 }
 
@@ -50,15 +52,13 @@ void TeleopComponent::start()
     //
     // NETWORK
     //
-    networkHandler_ = new NetworkHandler( &commandProxy_ );
-    networkHandler_->setCurrent( context() );
+    networkHandler_ = new NetworkHandler( &commandProxy_, context() );
     networkHandler_->start();
 
     //
     // HARDWARE
     //
-    userHandler_ = new UserHandler( &commandProxy_ );
-    userHandler_->setCurrent( context() );
+    userHandler_ = new UserHandler( &commandProxy_, context() );
     userHandler_->start();
     
     // the rest is handled by the application/service
@@ -66,17 +66,20 @@ void TeleopComponent::start()
 
 void TeleopComponent::stop()
 {
-    IceUtil::ThreadControl networkControl = networkHandler_->getThreadControl();
-    IceUtil::ThreadControl inputControl = userHandler_->getThreadControl();
+    if ( networkHandler_ ) {
+        IceUtil::ThreadControl networkControl = networkHandler_->getThreadControl();
+        networkHandler_->stop();
+        networkControl.join();
+    }
 
-    networkHandler_->stop();
-    userHandler_->stop();
-
-    networkControl.join();
-
-    // userHandler_ is blocked on user input
-    // the only way for it to realize that we want to stop is to give it some keyboard input.
-    cout<<"Quitting... Press any key or shake the joystick to continue."<<endl;
-
-    inputControl.join();
+    if ( userHandler_ ) {
+        IceUtil::ThreadControl inputControl = userHandler_->getThreadControl();
+        userHandler_->stop();
+    
+        // userHandler_ is blocked on user input
+        // the only way for it to realize that we want to stop is to give it some keyboard input.
+        cout<<"Quitting... Press any key or shake the joystick to continue."<<endl;
+    
+        inputControl.join();
+    }
 }
