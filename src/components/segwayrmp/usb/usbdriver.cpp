@@ -70,6 +70,7 @@ int UsbDriver::enable()
     
     // segway is physically connected; try to configure
 
+    // first, tell it to stand still.
     orca::Velocity2dCommandPtr zero = new orca::Velocity2dCommand;
     zero->motion.v.x = 0.0;
     zero->motion.v.y = 0.0;
@@ -109,6 +110,8 @@ int UsbDriver::enable()
 
 int UsbDriver::repair()
 {
+    cout<<toString()<<endl;
+
     if ( failCounter_>1 ) {
         failCounter_=0;
         ++repairCounter_;
@@ -165,7 +168,7 @@ int UsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &po
                 updateData( position2d, power, usbStatus );
 
                 // do a check (before resetting the frame)
-                if ( 1 || frame_->status_word1!=128 && frame_->status_word1!=384 ) {  // 384=0x0180 128=0x0080
+                if ( frame_->status_word1!=128 && frame_->status_word1!=384 ) {  // 384=0x0180 128=0x0080
                     cout<<toString()<<endl;
                 }
 
