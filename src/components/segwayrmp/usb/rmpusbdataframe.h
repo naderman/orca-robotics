@@ -139,6 +139,8 @@
 #define WORD2_BATTERY_TEMP_LIMIT_B_STRING       "Battery Temperature Out of Range (B)"
 #define WORD2_ROLL_ANGLE_LIMIT_B                0x4000
 #define WORD2_ROLL_ANGLE_LIMIT_B_STRING         "Roll Angle Limit Exceeded (B)"
+#define WORD2_LOW_BATTERY_BUS_VOLTAGE_B         0x8000
+#define WORD2_LOW_BATTERY_BUS_VOLTAGE_B_STRING  "Low Battery Bus Voltage (B)"
 
 // unit conversions from Data Reference, see sec.4
 
@@ -273,9 +275,11 @@ public:
     int16_t status_word2;
 
     std::string CuStatus1ToString();
+    std::string CuStatus2ToString();
 
     bool msgCheckList_[8];
-
+    bool statusCheck_;
+    
     //debug
     bool kill_flag;
     // ui battery info from the heartbeat msg

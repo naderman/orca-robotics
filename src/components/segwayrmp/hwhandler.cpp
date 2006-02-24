@@ -197,9 +197,12 @@ void HwHandler::run()
             }
         } else {
             context_.tracer()->error("failed to read data from Segway hardware. Repairing....");
-            context_.tracer()->debug( "\n"+driver_->toString(), 1 );
+            //context_.tracer()->debug( "\n"+driver_->toString(), 1 );
             driver_->repair();
         }
+
+//debug
+context_.tracer()->debug( "\n"+driver_->toString(), 1 );
 
         // Have any configuration requests arrived?
         if ( !setConfigPipe_.isNewData() )

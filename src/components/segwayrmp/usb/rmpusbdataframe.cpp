@@ -43,49 +43,54 @@ void RmpUsbDataFrame::dump()
     msgCheckList_[1] ? printf("roll_dot\t= %10i (%8X): %10.2f deg/s\n", (int)roll_dot, roll_dot, (float)roll_dot/RMP_COUNT_PER_DEG) : printf("roll_dot\t=    DROPPED\n");
     msgCheckList_[4] ? printf("yaw\t\t= %10i (%8X): %10.2f deg\n", (int)yaw, yaw, (float)yaw/RMP_COUNT_PER_DEG) : printf("yaw\t\t=    DROPPED\n");
     msgCheckList_[2] ? printf("yaw_dot\t\t= %10i (%8X): %10.2f deg/s\n", (int)yaw_dot, yaw_dot, (float)yaw_dot/RMP_COUNT_PER_DEG) : printf("yaw_dot\t\t=    DROPPED\n");
+    
     msgCheckList_[3] ? printf("left\t\t= %10i (%8X): %10.2f m\n", (int)left, left, (float)left/RMP_COUNT_PER_M) : printf("left\t\t=    DROPPED\n");
     msgCheckList_[2] ? printf("left_dot\t= %10i (%8X): %10.2f m/s\n", (int)left_dot, left_dot, (float)left_dot/RMP_COUNT_PER_M) : printf("left_dot\t=    DROPPED\n");
     msgCheckList_[3] ? printf("right\t\t= %10i (%8X): %10.2f m\n", (int)right, right, (float)right/RMP_COUNT_PER_M) : printf("right\t\t=    DROPPED\n");
     msgCheckList_[2] ? printf("right_dot\t= %10i (%8X): %10.2f m/s\n", (int)right_dot, right_dot, (float)right_dot/RMP_COUNT_PER_M) : printf("right_dot\t=    DROPPED\n");
     msgCheckList_[4] ? printf("foreaft\t\t= %10i (%8X): %10.2f m\n", (int)foreaft, foreaft, (float)foreaft/RMP_COUNT_PER_M) : printf("foreaft\t\t=    DROPPED\n");
+    
     msgCheckList_[5] ? printf("left_torque\t= %10i (%8X): %10.2f Nm\n", (int)left_torque, left_torque, (float)left_torque/RMP_COUNT_PER_NM) : printf("left_torque\t=    DROPPED\n");
     msgCheckList_[5] ? printf("right_torque\t= %10i (%8X): %10.2f Nm\n", (int)right_torque, right_torque, (float)right_torque/RMP_COUNT_PER_NM) : printf("right_torque\t=    DROPPED\n");
-    msgCheckList_[2] ? printf("frames\t\t= %10i (%8X): %10i frame ctr\n", (int)frames, frames, (int)(frames)) : printf("frames\t\t=    DROPPED\n");
+    
     msgCheckList_[6] ? printf("battery\t\t= %10i (%8X): %10.2f V\n", (int)ui_battery_voltage, ui_battery_voltage, RMP_UI_OFFSET+(float)ui_battery_voltage*RMP_UI_COEFF) : printf("battery\t\t=    DROPPED\n");
     msgCheckList_[6] ? printf("battery\t\t= %10i (%8X): %10.2f V\n", (int)base_battery_voltage, base_battery_voltage, (float)base_battery_voltage/RMP_BASE_COUNT_PER_VOLT) : printf("battery\t\t=    DROPPED\n");
+    
+    msgCheckList_[2] ? printf("frames\t\t= %10i (%8X): %10i frame ctr\n", (int)frames, frames, (int)(frames)) : printf("frames\t\t=    DROPPED\n");
 }
 
 std::string RmpUsbDataFrame::toString()
 {
     std::ostringstream os;
-    os<<"pitch      \t= "<<dec<<(int)pitch<<" "<<hex<<pitch<<":\t\t"<<dec<<(float)pitch/RMP_COUNT_PER_DEG<<" deg"<<endl;
-    os<<"pitch dot  \t= "<<dec<<(int)pitch_dot<<" "<<hex<<pitch_dot<<":\t\t"<<dec<<(float)pitch_dot/RMP_COUNT_PER_DEG<<" deg"<<endl;
-    os<<"roll       \t= "<<dec<<(int)roll<<" "<<hex<<roll<<":\t\t"<<dec<<(float)roll/RMP_COUNT_PER_DEG<<" deg"<<endl;
-    os<<"roll dot   \t= "<<dec<<(int)roll_dot<<" "<<hex<<roll_dot<<":\t\t"<<dec<<(float)roll_dot/RMP_COUNT_PER_DEG<<" deg"<<endl;
-    os<<"yaw        \t= "<<dec<<(int)yaw<<" "<<hex<<yaw<<":\t\t"<<dec<<(float)yaw/RMP_COUNT_PER_DEG<<" deg"<<endl;
-    os<<"yaw dot    \t= "<<dec<<(int)yaw_dot<<" "<<hex<<yaw_dot<<":\t\t"<<dec<<(float)yaw_dot/RMP_COUNT_PER_DEG<<" deg"<<endl;
+    statusCheck_ ? os<<"status 1   \t= "<<dec<<(int)status_word1<<" "<<hex<<status_word1<<dec<<":\t\t"<< CuStatus1ToString()<<endl :os<<"status 1   \tDROPPED"<<endl;
+    statusCheck_ ? os<<"status 2   \t= "<<dec<<(int)status_word2<<" "<<hex<<status_word2<<dec<<":\t\t"<< CuStatus2ToString()<<endl :os<<"status 2   \tDROPPED"<<endl;
+    
+    msgCheckList_[1] ? os<<"pitch      \t= "<<dec<<(int)pitch<<" "<<hex<<pitch<<":\t\t"<<dec<<(float)pitch/RMP_COUNT_PER_DEG<<" deg"<<endl : os<<"pitch      \tDROPPED"<<endl;
+    msgCheckList_[1] ? os<<"pitch dot  \t= "<<dec<<(int)pitch_dot<<" "<<hex<<pitch_dot<<":\t\t"<<dec<<(float)pitch_dot/RMP_COUNT_PER_DEG<<" deg"<<endl : os<<"pitch dot  \tDROPPED"<<endl;
+    msgCheckList_[1] ? os<<"roll       \t= "<<dec<<(int)roll<<" "<<hex<<roll<<":\t\t"<<dec<<(float)roll/RMP_COUNT_PER_DEG<<" deg"<<endl : os<<"roll       \tDROPPED"<<endl;
+    msgCheckList_[1] ? os<<"roll dot   \t= "<<dec<<(int)roll_dot<<" "<<hex<<roll_dot<<":\t\t"<<dec<<(float)roll_dot/RMP_COUNT_PER_DEG<<" deg"<<endl : os<<"roll dot   \tDROPPED"<<endl;
+    msgCheckList_[4] ? os<<"yaw        \t= "<<dec<<(int)yaw<<" "<<hex<<yaw<<":\t\t"<<dec<<(float)yaw/RMP_COUNT_PER_DEG<<" deg"<<endl : os<<"yaw        \tDROPPED"<<endl;
+    msgCheckList_[2] ? os<<"yaw dot    \t= "<<dec<<(int)yaw_dot<<" "<<hex<<yaw_dot<<":\t\t"<<dec<<(float)yaw_dot/RMP_COUNT_PER_DEG<<" deg"<<endl : os<<"yaw dot    \tDROPPED"<<endl;
 
-    os<<"left       \t= "<<dec<<(int)left<<" "<<hex<<left<<":\t\t"<<dec<<(float)left/RMP_COUNT_PER_M<<" m"<<endl;
-    os<<"left dot   \t= "<<dec<<(int)left_dot<<" "<<hex<<left_dot<<":\t\t"<<dec<<(float)left_dot/RMP_COUNT_PER_M<<" m"<<endl;
-    os<<"right      \t= "<<dec<<(int)right<<" "<<hex<<right<<":\t\t"<<dec<<(float)right/RMP_COUNT_PER_M<<" m"<<endl;
-    os<<"right dot  \t= "<<dec<<(int)right_dot<<" "<<hex<<right_dot<<":\t\t"<<dec<<(float)right_dot/RMP_COUNT_PER_M<<" m"<<endl;
-    os<<"fore-aft   \t= "<<dec<<(int)foreaft<<" "<<hex<<foreaft<<":\t\t"<<dec<<(float)foreaft/RMP_COUNT_PER_M<<" m"<<endl;
+    msgCheckList_[3] ? os<<"left       \t= "<<dec<<(int)left<<" "<<hex<<left<<":\t\t"<<dec<<(float)left/RMP_COUNT_PER_M<<" m"<<endl : os<<"left       \tDROPPED"<<endl;
+    msgCheckList_[2] ? os<<"left dot   \t= "<<dec<<(int)left_dot<<" "<<hex<<left_dot<<":\t\t"<<dec<<(float)left_dot/RMP_COUNT_PER_M<<" m"<<endl : os<<"left dot   \tDROPPED"<<endl;
+    msgCheckList_[3] ? os<<"right      \t= "<<dec<<(int)right<<" "<<hex<<right<<":\t\t"<<dec<<(float)right/RMP_COUNT_PER_M<<" m"<<endl : os<<"right      \tDROPPED"<<endl;
+    msgCheckList_[2] ? os<<"right dot  \t= "<<dec<<(int)right_dot<<" "<<hex<<right_dot<<":\t\t"<<dec<<(float)right_dot/RMP_COUNT_PER_M<<" m"<<endl : os<<"right dot  \tDROPPED"<<endl;
+    msgCheckList_[4] ? os<<"fore-aft   \t= "<<dec<<(int)foreaft<<" "<<hex<<foreaft<<":\t\t"<<dec<<(float)foreaft/RMP_COUNT_PER_M<<" m"<<endl : os<<"fore-aft   \tDROPPED"<<endl;
 
-    os<<"left torque\t= "<<dec<<(int)left_torque<<" "<<hex<<left_torque<<":\t\t"<<dec<<(float)left_torque/RMP_COUNT_PER_NM<<" Nm"<<endl;
-    os<<"right torqu\t= "<<dec<<(int)right_torque<<" "<<hex<<right_torque<<":\t\t"<<dec<<(float)right_torque/RMP_COUNT_PER_NM<<" Nm"<<endl;
+    msgCheckList_[5] ? os<<"left torque\t= "<<dec<<(int)left_torque<<" "<<hex<<left_torque<<":\t\t"<<dec<<(float)left_torque/RMP_COUNT_PER_NM<<" Nm"<<endl : os<<"left torque\tDROPPED"<<endl;
+    msgCheckList_[5] ? os<<"right torqu\t= "<<dec<<(int)right_torque<<" "<<hex<<right_torque<<":\t\t"<<dec<<(float)right_torque/RMP_COUNT_PER_NM<<" Nm"<<endl : os<<"right torqu\tDROPPED"<<endl;
 
-    os<<"ui battery \t= "<<dec<<(int)ui_battery_voltage<<" "<<hex<<ui_battery_voltage<<":\t\t"<<dec<<(float)RMP_UI_OFFSET + ui_battery_voltage*RMP_UI_COEFF<<" V"<<endl;
-    os<<"cu battery \t= "<<dec<<(int)base_battery_voltage<<" "<<hex<<base_battery_voltage<<":\t\t"<<dec<<(float)base_battery_voltage/RMP_BASE_COUNT_PER_VOLT<<" V"<<endl;
+    msgCheckList_[6] ? os<<"ui battery \t= "<<dec<<(int)ui_battery_voltage<<" "<<hex<<ui_battery_voltage<<":\t\t"<<dec<<(float)RMP_UI_OFFSET + ui_battery_voltage*RMP_UI_COEFF<<" V"<<endl : os<<"ui battery \tDROPPED"<<endl;
+    msgCheckList_[6] ? os<<"cu battery \t= "<<dec<<(int)base_battery_voltage<<" "<<hex<<base_battery_voltage<<":\t\t"<<dec<<(float)base_battery_voltage/RMP_BASE_COUNT_PER_VOLT<<" V"<<endl : os<<"cu battery \tDROPPED"<<endl;
 
-    os<<"vel command\t= "<<dec<<(int)velocity_command<<" "<<hex<<velocity_command<<":\t\t"<<dec<<(float)velocity_command/RMP_COUNT_PER_M<<" m"<<endl;
-    os<<"turn comman\t= "<<dec<<(int)rate_command<<" "<<hex<<rate_command<<":\t\t"<<dec<<(float)rate_command/RMP_COUNT_PER_DEG<<" deg"<<endl;
+    msgCheckList_[7] ? os<<"vel command\t= "<<dec<<(int)velocity_command<<" "<<hex<<velocity_command<<":\t\t"<<dec<<(float)velocity_command/RMP_COUNT_PER_M<<" m"<<endl : os<<"vel command\tDROPPED"<<endl;
+    msgCheckList_[7] ? os<<"turn comman\t= "<<dec<<(int)rate_command<<" "<<hex<<rate_command<<":\t\t"<<dec<<(float)rate_command/RMP_COUNT_PER_DEG<<" deg"<<endl : os<<"turn comman\tDROPPED"<<endl;
 
-    os<<"op mode    \t= "<<dec<<(int)operational_mode<<" "<<hex<<operational_mode<<dec<<endl;
-    os<<"gain sched \t= "<<dec<<(int)controller_gain_schedule<<" "<<hex<<controller_gain_schedule<<dec<<endl;
-    os<<"status 1   \t= "<<dec<<(int)status_word1<<" "<<hex<<status_word1<<dec<<":\t\t"<< CuStatus1ToString()<<endl;
-    os<<"status 2   \t= "<<dec<<(int)status_word2<<" "<<hex<<status_word2<<dec<<endl;
-    os<<"frames     \t= "<<dec<<(int)frames<<" "<<hex<<frames<<dec<<endl;
-    os<<"build id   \t= "<<dec<<(int)build_id<<" "<<hex<<build_id<<dec<<endl;
+    msgCheckList_[6] ? os<<"op mode    \t= "<<dec<<(int)operational_mode<<" "<<hex<<operational_mode<<dec<<endl : os<<"op mode    \tDROPPED"<<endl;
+    msgCheckList_[6] ? os<<"gain sched \t= "<<dec<<(int)controller_gain_schedule<<" "<<hex<<controller_gain_schedule<<dec<<endl : os<<"gain sched \tDROPPED"<<endl;
+    msgCheckList_[2] ? os<<"frames     \t= "<<dec<<(int)frames<<" "<<hex<<frames<<dec<<endl : os<<"frames     \tDROPPED"<<endl;
+    msgCheckList_[0] ? os<<"build id   \t= "<<dec<<(int)build_id<<" "<<hex<<build_id<<dec<<endl : os<<"build id   \tDROPPED"<<endl;
     return os.str();
 }
 
@@ -106,10 +111,31 @@ std::string RmpUsbDataFrame::CuStatus1ToString()
     //if ( status_word1 & WORD1_NOT_USED_0800 ) s += std::string(WORD1_NOT_USED_0800_STRING) + "; ";
     if ( status_word1 & WORD1_WHEEL_SLIP_FLAG ) s += std::string(WORD1_WHEEL_SLIP_FLAG_STRING) + "; ";
     if ( status_word1 & WORD1_MOTOR_FEEDBACK_FAULT ) s += std::string(WORD1_MOTOR_FEEDBACK_FAULT_STRING) + "; ";
-    if ( status_word1 & WORD1_WHEEL_SLIP_FLAG ) s += std::string(WORD1_WHEEL_SLIP_FLAG_STRING) + "; ";
-    if ( status_word1 & WORD1_MOTOR_FEEDBACK_FAULT ) s += std::string(WORD1_MOTOR_FEEDBACK_FAULT_STRING) + "; ";
     if ( status_word1 & WORD1_LOW_BATTRY_HAZARD ) s += std::string(WORD1_LOW_BATTRY_HAZARD_STRING) + "; ";
     //if ( status_word1 & WORD1_NOT_USED_8000 ) s += std::string(WORD1_NOT_USED_8000_STRING) + "; ";
+
+    return s;
+}
+
+std::string RmpUsbDataFrame::CuStatus2ToString()
+{
+    std::string s;
+    if ( status_word2 & WORD2_FOREAFT_PITCH_ANGLE_LIMIT_A ) s += std::string(WORD2_FOREAFT_PITCH_ANGLE_LIMIT_A_STRING) + "; ";
+    if ( status_word2 & WORD2_ESTOP_SWITCH_OPEN_A ) s += std::string(WORD2_ESTOP_SWITCH_OPEN_A_STRING) + "; ";
+    if ( status_word2 & WORD2_POSITION_ERROR_LIMIT_A ) s += std::string(WORD2_POSITION_ERROR_LIMIT_A_STRING) + "; ";
+    if ( status_word2 & WORD2_MAX_VELOCITY_A ) s += std::string(WORD2_MAX_VELOCITY_A_STRING) + "; ";
+    if ( status_word2 & WORD2_BATTERY_EMPTY_A ) s += std::string(WORD2_BATTERY_EMPTY_A_STRING) + "; ";
+    if ( status_word2 & WORD2_BATTERY_TEMP_LIMIT_A ) s += std::string(WORD2_BATTERY_TEMP_LIMIT_A_STRING) + "; ";
+    if ( status_word2 & WORD2_ROLL_ANGLE_LIMIT_A ) s += std::string(WORD2_ROLL_ANGLE_LIMIT_A_STRING) + "; ";
+    if ( status_word2 & WORD2_LOW_BATTERY_BUS_VOLTAGE_A ) s += std::string(WORD2_LOW_BATTERY_BUS_VOLTAGE_A_STRING) + "; ";
+    if ( status_word2 & WORD2_FOREAFT_PITCH_ANGLE_LIMIT_B ) s += std::string(WORD2_FOREAFT_PITCH_ANGLE_LIMIT_B_STRING) + "; ";
+    if ( status_word2 & WORD2_ESTOP_SWITCH_OPEN_B ) s += std::string(WORD2_ESTOP_SWITCH_OPEN_B_STRING) + "; ";
+    if ( status_word2 & WORD2_POSITION_ERROR_LIMIT_B ) s += std::string(WORD2_POSITION_ERROR_LIMIT_B_STRING) + "; ";
+    if ( status_word2 & WORD2_MAX_VELOCITY_B ) s += std::string(WORD2_MAX_VELOCITY_B_STRING) + "; ";
+    if ( status_word2 & WORD2_BATTERY_EMPTY_B ) s += std::string(WORD2_BATTERY_EMPTY_B_STRING) + "; ";
+    if ( status_word2 & WORD2_BATTERY_TEMP_LIMIT_B ) s += std::string(WORD2_BATTERY_TEMP_LIMIT_B_STRING) + "; ";
+    if ( status_word2 & WORD2_ROLL_ANGLE_LIMIT_B ) s += std::string(WORD2_ROLL_ANGLE_LIMIT_B_STRING) + "; ";
+    if ( status_word2 & WORD2_LOW_BATTERY_BUS_VOLTAGE_B ) s += std::string(WORD2_LOW_BATTERY_BUS_VOLTAGE_B_STRING) + "; ";
 
     return s;
 }
@@ -119,17 +145,18 @@ void RmpUsbDataFrame::reopen()
     msgCheckList_[0] = false;
 }
 
+bool RmpUsbDataFrame::isClosed() const
+{
+    // The only thing that matters: did we receive MSG0?
+    return msgCheckList_[0];
+}
+
 void RmpUsbDataFrame::reset()
 {
     for ( int i=0; i<8; ++i ) {
         msgCheckList_[i] = false;
     }
-}
-
-bool RmpUsbDataFrame::isClosed() const
-{
-    // The only thing that matters: did we receive MSG0?
-    return msgCheckList_[0];
+    statusCheck_ = false;
 }
 
 bool RmpUsbDataFrame::isComplete() const
@@ -138,16 +165,11 @@ bool RmpUsbDataFrame::isComplete() const
     for ( int i=0; i<8; ++i ) {
         complete = (complete && msgCheckList_[i]);
     }
-    return complete;
+    return complete && statusCheck_;
 }
 
-/*!
- * Takes a CAN packet from the RMP and parses it into a
- * RmpUsbDataFrame struct.  sets the ready bitfield
- * depending on which CAN packet we have.  when
- * ready == 0x1F, then we have gotten 5 packets, so everything
- * is filled in.
- *
+/*
+ * Takes a CAN packet from the RMP and parses it into a RmpUsbDataFrame struct.
  */
 void RmpUsbDataFrame::AddPacket(const CanPacket* pkt)
 {
@@ -159,6 +181,8 @@ void RmpUsbDataFrame::AddPacket(const CanPacket* pkt)
         status_word1 = pkt->GetSlot(1);
         status_word2 =  pkt->GetSlot(2);
         // slot3 : undefined
+        
+        statusCheck_ = true;
 
         //debug
         //std::cout<<"got status: "<<status_word1<<" "<<status_word2<<std::endl;
@@ -180,6 +204,8 @@ void RmpUsbDataFrame::AddPacket(const CanPacket* pkt)
 */
         break;
     }
+/*    
+    // we don't get this message!
     case RMP_CAN_ID_HEARTBEAT:
     {
         // slot0 (byte 2) : CAN channel identifier
@@ -193,6 +219,7 @@ void RmpUsbDataFrame::AddPacket(const CanPacket* pkt)
         // slot3 : undefined
         break;
     }
+*/    
     case RMP_CAN_ID_MSG0:
     {
         build_id = pkt->GetSlot(0);
