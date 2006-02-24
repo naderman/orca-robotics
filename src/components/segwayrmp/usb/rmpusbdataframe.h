@@ -207,9 +207,6 @@ public:
     // Adds information from a packet
     void AddPacket(const CanPacket* pkt);
 
-    // Print out frame data to screen
-    void dump();
-
     // Print out frame data to string
     std::string toString();
 

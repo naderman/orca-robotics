@@ -42,7 +42,7 @@ public:
     virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power, std::string &status )=0;
 
     // Writes velocity command
-    virtual int write( const orca::Velocity2dCommandPtr &position2d )=0;
+    virtual int write( const orca::Velocity2dCommandPtr & command )=0;
 
     // For debugging, convert to string as much of internal state as possible
     virtual std::string toString() { return std::string(""); };

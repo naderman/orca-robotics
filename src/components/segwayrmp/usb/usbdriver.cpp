@@ -69,14 +69,23 @@ int UsbDriver::enable()
     }
     
     // segway is physically connected; try to configure
-    
-    if ( setMaxTurnrateScaleFactor( 1.0 ) ) {
-        cerr<<"warning: 1 error in setMaxTurnrateScaleFactor()"<<endl;
+
+    orca::Velocity2dCommandPtr zero = new orca::Velocity2dCommand;
+    zero->motion.v.x = 0.0;
+    zero->motion.v.y = 0.0;
+    zero->motion.w = 0.0;
+    if ( write( zero  ) ) {
+        cerr<<"warning: error in writing the initial zero-velocity command";
         return 2;
     }
     
     if ( resetAllIntegrators() ) {
         cerr<<"warning: error in resetIntegrators()"<<endl;
+        return 2;
+    }
+
+    if ( setMaxTurnrateScaleFactor( 1.0 ) ) {
+        cerr<<"warning: 1 error in setMaxTurnrateScaleFactor()"<<endl;
         return 2;
     }
 
@@ -154,7 +163,12 @@ int UsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &po
                 // process data only if the frame is complete
                 //
                 updateData( position2d, power, usbStatus );
-                
+
+                // do a check (before resetting the frame)
+                if ( 1 || frame_->status_word1!=128 && frame_->status_word1!=384 ) {  // 384=0x0180 128=0x0080
+                    cout<<toString()<<endl;
+                }
+
                 frame_->reset();
                 //cout<<"rmpusb::read: pkts:"<<canPacketsProcessed<<" re-opend: "<<dataFramesReopened<<endl;
 
@@ -164,6 +178,7 @@ int UsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &po
                 <<" OpMode="<<usbStatus.opMode<<" GainSchedule="<<usbStatus.gainSchedule;
                 status = os.str();
 
+                failCounter_ = 0;
                 return 0;
             }
             else {
@@ -191,7 +206,12 @@ int UsbDriver::write( const orca::Velocity2dCommandPtr & command )
 {
     makeMotionCommandPacket( pkt_, command );
 
-    return usbio_->writePacket(pkt_);
+    int ret = usbio_->writePacket(pkt_);
+
+    if ( ret == 0 ) {
+        failCounter_ = 0;
+    }
+    return ret;
 }
 
 std::string UsbDriver::toString()

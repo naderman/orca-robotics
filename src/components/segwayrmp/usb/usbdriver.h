@@ -42,7 +42,7 @@ public:
     virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
                       std::string & status );
 
-    virtual int write( const orca::Velocity2dCommandPtr &position2d );
+    virtual int write( const orca::Velocity2dCommandPtr & command );
 
     virtual std::string toString();
 

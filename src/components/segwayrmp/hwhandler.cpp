@@ -54,7 +54,7 @@ HwHandler::HwHandler(
         setConfigPipe_(setConfigPipe),
         currentConfigPipe_(currentConfigPipe),
         position2dData_(new Position2dData),
-        commandData_(new Velocity2dCommand),
+//         commandData_(new Velocity2dCommand),
         powerData_(new PowerData),
         driver_(0),
         context_(context)
@@ -200,9 +200,6 @@ void HwHandler::run()
             //context_.tracer()->debug( "\n"+driver_->toString(), 1 );
             driver_->repair();
         }
-
-//debug
-context_.tracer()->debug( "\n"+driver_->toString(), 1 );
 
         // Have any configuration requests arrived?
         if ( !setConfigPipe_.isNewData() )
