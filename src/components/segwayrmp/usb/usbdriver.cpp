@@ -66,7 +66,7 @@ int
 UsbDriver::enable()
 {
     // init device
-    if ( usbio_->init() ) {
+    if ( usbio_->init() != UsbIo::OK ) {
         return 1;
     }
     
@@ -113,18 +113,14 @@ UsbDriver::enable()
 int
 UsbDriver::repair()
 {
-    cout<<toString()<<endl;
-
-    if ( failCounter_>1 ) {
-        failCounter_=0;
-        ++repairCounter_;
-        disable();
-        return enable();
-    }
-    else {
-        ++failCounter_;
+    // try a quick reset
+    if ( usbio_->reset() == UsbIo::OK ) {
         return 0;
     }
+
+    // if didn't work, try to shutdown and init again.
+    disable();
+    return enable();
 }
 
 int
@@ -141,12 +137,12 @@ UsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
 {
     // Try to read a full data frame
     if( readFrame() ) {
-        // a single packet read failed!
+        // IO error while reading a packet, or several timeouts, or can't finish a frame
         return 1;
     }
     
-    UsbDriver::Status usbStatus;
-    updateData( position2d, power, usbStatus );
+    UsbDriver::Status rmpStatus;
+    updateData( position2d, power, rmpStatus );
 
     // do a status check (before resetting the frame)
     if ( frame_->status_word1!=128 && frame_->status_word1!=384 ) {  // 384=0x0180 128=0x0080
@@ -157,8 +153,7 @@ UsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
 
     // update status (only change it when internal state changes?)
     std::ostringstream os;
-    os << "Build="<<usbStatus.buildId <<" CuState="<<usbStatus.cuState
-        <<" OpMode="<<usbStatus.opMode<<" GainSchedule="<<usbStatus.gainSchedule;
+    os << "State1="<<frame_->CuStatus1ToString()<<" State2="<<frame_->CuStatus2ToString();
     status = os.str();
 
     failCounter_ = 0;
@@ -187,12 +182,29 @@ std::string UsbDriver::toString()
 // Returns 1 if a single packet read failed.
 int UsbDriver::readFrame()
 {
+    UsbIo::UsbIoStatus status;
     int canPacketsProcessed = 0;
     int dataFramesReopened = 0;
+    int timeoutCount = 0;
+
+    // arbitrary parameters
+    const int maxCanPacketsProcessed = 100;
+    const int maxTimeoutCount = 2;
 
     // get next packet from the packet buffer, will block until new packet arrives
-    while( !usbio_->readPacket(pkt_) )
+    while( canPacketsProcessed < maxCanPacketsProcessed && timeoutCount < maxTimeoutCount )
     {
+        status = usbio_->readPacket( pkt_ );
+
+        if ( status == UsbIo::IO_ERROR ) {
+            return -1;
+        }
+        else if ( status == UsbIo::NO_DATA ) {
+            // not sure what to do here. treat as an error? try again?
+            ++timeoutCount;
+            continue;
+        }
+        
         ++canPacketsProcessed;
         // debug
         //watchDataStream( pkt_ );
@@ -235,8 +247,9 @@ int UsbDriver::readFrame()
 
     }   // while
 
-    // failed to read a single packet
-    return 1;
+    // either processed too many packets or got too many timeouts without
+    // getting a complete frame.
+    return -1;
 }
 
 void
@@ -502,31 +515,30 @@ UsbDriver::makeMotionCommandPacket( CanPacket* pkt, const Velocity2dCommandPtr &
     Creates a status CAN packet from the given arguments
  */  
 void
-UsbDriver::makeStatusCommandPacket( CanPacket* pkt, uint16_t cmd, uint16_t val )
+UsbDriver::makeStatusCommandPacket( CanPacket* pkt, uint16_t commandId, uint16_t value )
 {
-    
     pkt->id = RMP_CAN_ID_COMMAND;
 
     // put last motion command into the packet
     pkt->PutSlot(0, (uint16_t)lastTrans_);
     pkt->PutSlot(1, (uint16_t)lastRot_);
 
-    pkt->PutSlot(2, cmd);
+    pkt->PutSlot(2, commandId);
     
     // it was noted in the windows demo code that they
     // copied the 8-bit value into both bytes like this
     //pkt->PutByte(6, val);
     //pkt->PutByte(7, val);
-    pkt->PutSlot(3, val);
+    pkt->PutSlot(3, value);
     
-    
-    if(cmd)
-    {
-        printf("SEGWAYIO: STATUS: cmd: %02x val: %02x pkt: %s\n", cmd, val, pkt->toString());
-    }
+    // debug
+//     if(cmd) {
+//         printf("SEGWAYIO: STATUS: cmd: %02x val: %02x pkt: %s\n", cmd, val, pkt->toString());
+//     }
 }
 
-void UsbDriver::makeShutdownCommandPacket( CanPacket* pkt )
+void
+UsbDriver::makeShutdownCommandPacket( CanPacket* pkt )
 {
     pkt->id = RMP_CAN_ID_SHUTDOWN;
 

@@ -180,10 +180,12 @@ void HwHandler::run()
             }
         }
 
+        //
         // Read data from the hardware
-//         readTimer_.restart();
+        //
+        // readTimer_.restart();
         readStatus = driver_->read( position2dData_, powerData_, currDriverStatus );
-//         cout<<"read: " << readTimer_.elapsed().toMilliSecondsDouble()<<endl;
+        // cout<<"read: " << readTimer_.elapsed().toMilliSecondsDouble()<<endl;
     
         if ( readStatus==0 ) {
             // Stick it in the buffer so pullers can get it
@@ -196,7 +198,6 @@ void HwHandler::run()
             }
         } else {
             context_.tracer()->error("failed to read data from Segway hardware. Repairing....");
-            //context_.tracer()->debug( "\n"+driver_->toString(), 1 );
             driver_->repair();
         }
 

@@ -46,7 +46,7 @@ UsbIoFtdi::UsbIoFtdi()
 {
     // Set initial buffer size and number of bytes stored
     charBuffer_.resize(128);
-    residualBytes_ = 0;
+    charBufferBytes_ = 0;
     
     pthread_mutex_init(&eventHandle_.eMutex, NULL);
     pthread_cond_init(&eventHandle_.eCondVar, NULL);
@@ -59,9 +59,10 @@ UsbIoFtdi::~UsbIoFtdi()
 /*
  * Initializes the USB device.
  *
- * returns: 0 on success, negative on error
+ * returns: 0 on success, non-zero on error
  */
-int UsbIoFtdi::init()
+UsbIo::UsbIoStatus
+UsbIoFtdi::init()
 {
     // custom device settings
     DWORD iVID = SEGWAY_USB_VENDOR_ID;
@@ -74,18 +75,18 @@ int UsbIoFtdi::init()
     if ( ftStatus != FT_OK )
     {
         cout<<"couldn't get a list of devices"<<endl;
-        return -1;
+        return UsbIo::IO_ERROR;
     }
     
     cout<<"found "<<(int)num_devices<<" devices"<<endl;
     if (num_devices <= 0) {
-        return -1;
+        return UsbIo::OTHER_ERROR;
     }
     
     ftStatus = FT_Open( 0, &ftHandle_ );
     if ( ftStatus != FT_OK) {
         cout<<"FT_Open failed ("<<ftStatus<<")"<<endl;
-        return ftStatus;
+        return UsbIo::IO_ERROR;
     }
     cout<<"FT_Open OK"<<endl;
 
@@ -93,7 +94,7 @@ int UsbIoFtdi::init()
     if ( ftStatus != FT_OK)  {
         cout<<"FT_SetBaudRate failed ("<<ftStatus<<")"<<endl;
         FT_Close( ftHandle_ );        //close open device
-        return ftStatus;
+        return UsbIo::IO_ERROR;
     }   
     cout<<"FT_SetBaudRate OK"<<endl;
 
@@ -102,14 +103,9 @@ int UsbIoFtdi::init()
     if ( ftStatus != FT_OK)  {
         cout<<"FT_SetLatencyTimer failed ("<<ftStatus<<")"<<endl;
         //latency not set - but we won't know   return -82;
-        return ftStatus;
+        return UsbIo::IO_ERROR;
     }    
     cout<<"FT_SetLatencyTimer OK"<<endl;
-
-    //
-    // The reset is in a separate function so we call it again later.
-    //
-    ftStatus = this->resetDevice();
 
     // debug
     /*
@@ -119,12 +115,15 @@ int UsbIoFtdi::init()
         ReadPacket( &ppp, 0 );
             IceUtil::ThreadControl::sleep(IceUtil::Time::microSeconds(50));
     }
-    */   
-
-  return ftStatus;
+    */
+    
+    //
+    // The reset is in a separate function so we call it again later.
+    //
+    return reset();
 }
 
-int UsbIoFtdi::resetDevice()
+UsbIo::UsbIoStatus UsbIoFtdi::reset()
 {
     assert( ftHandle_ );
 
@@ -169,7 +168,12 @@ int UsbIoFtdi::resetDevice()
         cout<<"FT_SetTimeouts OK"<<endl;
     }
 
-    return ftStatus;
+    if ( ftStatus == FT_OK ) {
+        return UsbIo::OK;
+    }
+    else {
+        return UsbIo::IO_ERROR;
+    }
 }
   
 /*
@@ -177,98 +181,146 @@ int UsbIoFtdi::resetDevice()
  *
  * returns: 0 on success, negative otherwise
  */
-int UsbIoFtdi::shutdown()
+UsbIo::UsbIoStatus UsbIoFtdi::shutdown()
 {
-    return FT_Close( ftHandle_ );
+    if ( FT_Close( ftHandle_ ) == FT_OK ) {
+        return UsbIo::OK;
+    }
+    else {
+        return UsbIo::IO_ERROR;
+    }
 }
 
-int UsbIoFtdi::readPacketBlocking( CanPacket* pkt )
+UsbIo::UsbIoStatus
+UsbIoFtdi::readPacket(CanPacket* pkt)
 {
-    if ( !getPacket( pkt ) ) {
-        return 0;
-    }
-
-    // Read from the USB buffer into our own buffer
-    int bytesInBuffer = readFromUsbToBuffer();
-    // Process the buffer contents into CAN packets
-    if( bytesInBuffer > 0 ) {
-        //cout<<"read "<<bytesInBuffer<<" bytes without blocking"<<endl;
-        // Process the buffer contents into CAN packets
-        int numPackets = readFromBufferToQueue( bytesInBuffer );
-        if ( numPackets > 0 ) {
-            return getPacket( pkt );
-        }
-        else {
-            cerr<<"sbIoFtdi::readPacketBlocking: couldn't read any packets from non-empty buffer"<<endl;
-            return 1;
-        }
+    UsbIo::UsbIoStatus status = readPacketNonBlocking( pkt );
+    // if got a packet or error, return right away...
+    if ( status==UsbIo::OK || status<0 ) {
+        return status;
     }
     
-    // nothing in USB buffer right now, let's wait
-    int numberOfBlocks = 0;
-    const int maxNumberOfBlocks = 5;
-    while ( numberOfBlocks < maxNumberOfBlocks ) {
-        ++numberOfBlocks;
+    // ... if not, try to block
+    return readPacketBlocking( pkt );
+}
+    
+UsbIo::UsbIoStatus
+UsbIoFtdi::readPacketNonBlocking( CanPacket* pkt )
+{
+    UsbIo::UsbIoStatus status;
+    
+    // if there's already a packet in CAN packet buffer, just return it
+    status = getPacket( pkt );
+    if ( status == UsbIo::OK ) {
+        return UsbIo::OK;
+    }
+
+    // there's not packet ready to be returned.
+    // Try to read from the USB buffer into our own char buffer
+    status = readFromUsbToBufferNonBlocking();
+    if ( status < 0 ) {
+        return status;
+    }
+    
+    // Try to parse buffer contents into CAN packets
+    status = readFromBufferToQueue();
+    if ( status < 0 ) {
+        return status;
+    }
+    
+    // try to return a packet again
+    status = getPacket( pkt );
+    if ( status == UsbIo::OK ) {
+        return UsbIo::OK;
+    }
+
+    // did not get a packet, but it's not an error
+    return UsbIo::NO_DATA;
+}
+
+UsbIo::UsbIoStatus
+UsbIoFtdi::readPacketBlocking( CanPacket* pkt )
+{
+    UsbIo::UsbIoStatus status;
+    
+    // arbitrary parameter
+    int blockCount = 5;
+    
+    while ( blockCount )
+    {
+        --blockCount;
 
         // this blocking call uses a timed conditional variable, so it shouldn't lock up forever
-        bytesInBuffer = readFromUsbToBufferBlocking();
-
-        // Process the buffer contents into CAN packets
-        if( bytesInBuffer > 0 ) {
-            // Process the buffer contents into CAN packets
-            int numPackets = readFromBufferToQueue( bytesInBuffer );
-            if ( numPackets > 0 ) {
-                return getPacket( pkt );
-            }
-            else {
-                //cout<<"not enought data, re-blocking"<<endl;
-            }
+        status = readFromUsbToBufferBlocking();
+        if ( status < 0 ) {
+            return status;
+        }
+        
+        // Try to parse buffer contents into CAN packets
+        status = readFromBufferToQueue();
+        if ( status < 0 ) {
+            return status;
+        }
+        
+        // try to return a packet
+        status = getPacket( pkt );
+        if ( status == UsbIo::OK ) {
+            return UsbIo::OK;
         }
     }
     
-    return 1;
+    // did not get a packet, but it's not an error
+    return UsbIo::NO_DATA;
 }
 
-int UsbIoFtdi::readPacketPolling( CanPacket* pkt )
+// this function is not currently used.
+// Use readFromUsbToBufferBlocking(), it is more efficient.
+UsbIo::UsbIoStatus
+UsbIoFtdi::readPacketPolling( CanPacket* pkt )
 {
-    if ( !getPacket( pkt ) ) {
-        return 0;
+    UsbIo::UsbIoStatus status;
+    status = getPacket( pkt );
+    if ( status == UsbIo::OK ) {
+        return UsbIo::OK;
     }
 
     // made up variables
-    const int maxNumberOfPolls = 10;
     const int pollingIntervalUsec = 20000;
+    int pollCount = 10;
 
-    int numberOfPolls = 0;
-
-    while ( numberOfPolls<maxNumberOfPolls )
+    while ( pollCount )
     {
-        ++numberOfPolls;
+        --pollCount;
 
-        if ( readFromUsbToBuffer()==0 ) {
-            // try again at 50Hz
+        // Read from the USB buffer into our own buffer
+        uint bytesInBuffer = charBufferBytes_;
+        
+        status = readFromUsbToBufferNonBlocking();
+        if ( status < 0 ) {
+            return status;
+        }
+        
+        // if the number of bytes in the buffer hasn't changed, try again at 50Hz
+        if ( charBufferBytes_ == bytesInBuffer ) {
             IceUtil::ThreadControl::sleep(IceUtil::Time::microSeconds(pollingIntervalUsec));
             continue;
         }
     
-        // Read from the USB buffer into our own buffer
-        int bytesInBuffer = readFromUsbToBuffer();
-    
-        // Process the buffer contents into CAN packets
-        if( bytesInBuffer > 0 )
-        {
-            // Process the buffer contents into CAN packets
-            int numPackets = readFromBufferToQueue( bytesInBuffer );
-            if ( numPackets > 0 ) {
-                return getPacket( pkt );
-            }
-            else {
-                //cout<<"not enough data, re-reading"<<endl;
-            }
-        }    
+        // Try to parse buffer contents into CAN packets
+        status = readFromBufferToQueue();
+        if ( status < 0 ) {
+            return status;
+        }
+        
+        // try to return a packet
+        status = getPacket( pkt );
+        if ( status == UsbIo::OK ) {
+            return UsbIo::OK;
+        }
     }
 
-    return 0;
+    // did not get a packet, but it's not an error
+    return UsbIo::NO_DATA;
 }
   
 /*
@@ -276,7 +328,8 @@ int UsbIoFtdi::readPacketPolling( CanPacket* pkt )
  *
  * returns: 0 on success, negative error code otherwise
  */
-int UsbIoFtdi::writePacket( CanPacket *pkt )
+UsbIo::UsbIoStatus
+UsbIoFtdi::writePacket( CanPacket *pkt )
 {
     /*
     // debug
@@ -322,7 +375,12 @@ int UsbIoFtdi::writePacket( CanPacket *pkt )
         //DTRACE<<"ERROR: failed to write to USB"<<endl;  
     }
     */
-    return ftStatus;
+    if ( ftStatus == FT_OK ) {
+        return UsbIo::OK;
+    }
+    else {
+        return UsbIo::IO_ERROR;
+    }
 }
 
 /*
@@ -330,7 +388,8 @@ int UsbIoFtdi::writePacket( CanPacket *pkt )
  *  is expected to be exactly 18 bytes in length. The checksum byte is not set,
  *  the calling function is expected to do so.
  */
-unsigned char UsbIoFtdi::usbMessageChecksum( unsigned char *msg )
+unsigned char
+UsbIoFtdi::usbMessageChecksum( unsigned char *msg )
 {
     unsigned short checksum;
     unsigned short checksum_hi;
@@ -353,27 +412,38 @@ unsigned char UsbIoFtdi::usbMessageChecksum( unsigned char *msg )
     return (unsigned char)checksum;
 }
 
-// Returns 0 if got a packet, 1 if the buffer was empty
-int UsbIoFtdi::getPacket(CanPacket* pkt)
+// Returns OK if got a packet, NO_DATA if the buffer was empty
+UsbIo::UsbIoStatus
+UsbIoFtdi::getPacket(CanPacket* pkt)
 {
-    // check for buffer size, otherwise pop() will seg fault.
+    // check for buffer size, otherwise pop() will seg.fault.
     if ( canBuffer_.empty() ) {
-        return 1;
+        return UsbIo::NO_DATA;
     }
     
     *pkt = canBuffer_.front();
     canBuffer_.pop();
     //cout<<"UsbIoFtdi::getPacket: got one packet"<<endl;
-    return 0;
+    return UsbIo::OK;
 }
 
-// returns number of bytes read
-int UsbIoFtdi::readFromUsbToBufferBlocking()
+// returns 0 if all is good, -1 on error.
+// 'all is good' may mean:
+// - woke up, try to read, success
+// - woke up, try to read, nothing there
+// - timed out.
+// possible sources of erros:
+// - FTDI errors (FT_SetEventNotification)
+// - non-blocking usb2buffer errors (FT_GetQueueStatus, FT_Read )
+// - obscure pthread errors (we assert them)
+UsbIo::UsbIoStatus
+UsbIoFtdi::readFromUsbToBufferBlocking()
 {
     DWORD EventMask = FT_EVENT_RXCHAR;
     FT_STATUS ftStatus = FT_SetEventNotification( ftHandle_, EventMask, (PVOID)&eventHandle_ );
     if ( ftStatus != FT_OK ) {
         cerr<<"UsbIoFtdi::readFromUsbToBufferBlocking: failed to set event notification"<<endl;
+        return UsbIo::IO_ERROR;
     }
 
     // we want to timeout from listening to USB after 100ms (10Hz)
@@ -398,16 +468,31 @@ int UsbIoFtdi::readFromUsbToBufferBlocking()
     int ret = pthread_cond_timedwait(&eventHandle_.eCondVar, &eventHandle_.eMutex, &abstime );
     pthread_mutex_unlock(&eventHandle_.eMutex);
 
-    if ( ret == ETIMEDOUT ) {
-        return 0;
+    // this should not happen
+    assert( (ret==0 || ret==ETIMEDOUT) && "pthread error in UsbIoFtdi::readFromUsbToBufferBlocking" );
+        
+    if ( ret == 0 ) {
+        // now there should be something in the buffer
+        return readFromUsbToBufferNonBlocking();
+    }
+    else if ( ret == ETIMEDOUT ) {
+        // this is still ok
+        return UsbIo::NO_DATA;
     }
     else {
-        // now there should be something in the buffer
-        return readFromUsbToBuffer();
+        // this is one several possible errors
+        return UsbIo::OTHER_ERROR;
     }
 }
 
-int UsbIoFtdi::readFromUsbToBuffer()
+// returns 0 if all is good, -1 on error.
+// 'all is good' may mean:
+// - try to read, success
+// - try to read, nothing there
+// possible sources of erros:
+// - FTDI errors (FT_GetQueueStatus, FT_Read )
+UsbIo::UsbIoStatus
+UsbIoFtdi::readFromUsbToBufferNonBlocking()
 {
     FT_STATUS   ftStatus;    
     DWORD       bytesInRxUsb;
@@ -416,46 +501,54 @@ int UsbIoFtdi::readFromUsbToBuffer()
     // Query status to find out how many bytes are in the receive buffer 
     ftStatus = FT_GetQueueStatus( ftHandle_, &bytesInRxUsb );
     if ( ftStatus != FT_OK ) {
-        //! @todo is this right?
-        bytesInRxUsb = 0;
+        cerr << "ERROR: UsbIoFtdi::readFromUsbToBufferNonBlocking: error in FT_GetQueueStatus" << endl;
+        return UsbIo::IO_ERROR;
     }
 
     // If there's nothing in the receive buffer, then just return
     if ( bytesInRxUsb == 0) {
-        return 0;
+        return UsbIo::NO_DATA;
     }
 
-    // Resize our buffer if necessary
-    if( (bytesInRxUsb + residualBytes_) > charBuffer_.size() )
-        charBuffer_.resize( bytesInRxUsb + residualBytes_ );
+    // Resize our buffer if necessary. can this return an error somehow?
+    if( (bytesInRxUsb + charBufferBytes_) > charBuffer_.size() ) {
+        charBuffer_.resize( bytesInRxUsb + charBufferBytes_ );
+    }
 
+    //
     // Read from the USB buffer
-    ftStatus = FT_Read( ftHandle_, &charBuffer_[residualBytes_], bytesInRxUsb, &bytesRead );
+    //
+    ftStatus = FT_Read( ftHandle_, &charBuffer_[charBufferBytes_], bytesInRxUsb, &bytesRead );
 
     if ( ftStatus != FT_OK ) {
-        cerr << "read error" << endl;
-        return 0;
+        cerr << "ERROR: UsbIoFtdi::readFromUsbToBufferNonBlocking: error in FT_Read" << endl;
+        return UsbIo::IO_ERROR;
     }
 
     // Check for read timeout
+    // this is probably not a bad error. maybe more bytes have arrived since FT_GetQueueStatus call.
     if( bytesInRxUsb != bytesRead ) {
-        cerr << "UsbIoFtdi::readFromUsbToBuffer: mismatch: bytesInRxUsb = " << bytesInRxUsb << "   bytesRead = " << bytesRead << endl;
+        cerr << "WARNING: UsbIoFtdi::readFromUsbToBufferNonBlocking: mismatch: bytesInRxUsb = " << bytesInRxUsb << "   bytesRead = " << bytesRead << endl;
+        //return -1;
     }
 
-    //cout<<"UsbIoFtdi::readFromUsbToBuffer: read "<<bytesRead<<" bytes."<<endl;
-    // Return the number of bytes that are now in the buffer
-    return residualBytes_ + bytesRead;
+    //cout<<"UsbIoFtdi::readFromUsbToBufferNonBlocking: read "<<bytesRead<<" bytes."<<endl;
+    // Adjust the number of bytes that are now in the buffer
+    charBufferBytes_ = charBufferBytes_ + bytesRead;
+    
+    return UsbIo::OK;
 }
 
-int UsbIoFtdi::readFromBufferToQueue( int bytesInBuffer )
+UsbIo::UsbIoStatus
+UsbIoFtdi::readFromBufferToQueue()
 {
     int     pos             = 0;        // Buffer position indicator
-    bool    finished            = false;
+    bool    finished        = false;
     int     skippedBytes    = 0;
     int     numPackets      = 0;
 
     // While the buffer contains enough data for at least one message 
-    while ( (bytesInBuffer - pos) >= SEGWAY_USB_MESSAGE_SIZE )
+    while ( (charBufferBytes_ - pos) >= SEGWAY_USB_MESSAGE_SIZE )
     {
         //cout<<"UsbIoFtdi::readFromBufferToQueue: processing chars into msg #"<<numPackets<<endl;
         bool    lookingForMsgStart  = true;
@@ -464,9 +557,9 @@ int UsbIoFtdi::readFromBufferToQueue( int bytesInBuffer )
         while ( lookingForMsgStart )
         {
             // If there aren't enough bytes left to contain a full message, then kick out
-            if( (bytesInBuffer - pos) < SEGWAY_USB_MESSAGE_SIZE )
+            if( (charBufferBytes_ - pos) < SEGWAY_USB_MESSAGE_SIZE )
             {
-                //cout<<"UsbIoFtdi::readFromBufferToQueue: not enough char's :"<<(bytesInBuffer - pos)<<endl;
+                //cout<<"UsbIoFtdi::readFromBufferToQueue: not enough char's :"<<(charBufferBytes_ - pos)<<endl;
                 finished = true;
                 break;
             }
@@ -513,21 +606,24 @@ int UsbIoFtdi::readFromBufferToQueue( int bytesInBuffer )
             // Increment position regardless of parsing success
             pos = pos + SEGWAY_USB_MESSAGE_SIZE;
         }
-    } //  while ( (bytesInBuffer - (pos + 1)) >= SEGWAY_USB_MESSAGE_SIZE )
+    } //  while ( (charBufferBytes_ - (pos + 1)) >= SEGWAY_USB_MESSAGE_SIZE )
 
+    // store the number of unread bytes in the member variable 'charBufferBytes_'
     // If there are any residual bytes in the buffer, move them to the beginning
-    residualBytes_ = bytesInBuffer - pos;
-    assert( residualBytes_ >= 0 );
+    charBufferBytes_ = charBufferBytes_ - pos;
+    assert( charBufferBytes_ >= 0 );
 
-    if( residualBytes_ > 0 ) {
-        //cout<<"Buffer left with "<<residualBytes_<<" bytes."<<endl;
-        memcpy( &charBuffer_[0], &charBuffer_[pos], residualBytes_ );
+    if( charBufferBytes_ > 0 ) {
+        //cout<<"Buffer left with "<<charBufferBytes_<<" bytes."<<endl;
+        memcpy( &charBuffer_[0], &charBuffer_[pos], charBufferBytes_ );
     }
     /*
     if ( skippedBytes>0 ) {
-        cout<<"Skipped "<<skippedBytes<<" bytes out of "<<bytesInBuffer<<endl;
+        cout<<"Skipped "<<skippedBytes<<" bytes out of "<<charBufferBytes_<<endl;
     } */
-    return numPackets;
+    
+    // all is good
+    return UsbIo::OK;
 }
 
 /*

@@ -112,7 +112,7 @@ private:
 
     // helper to take a player command and turn it into a CAN command packet
     void makeMotionCommandPacket( CanPacket* pkt, const orca::Velocity2dCommandPtr & command );
-    void makeStatusCommandPacket( CanPacket* pkt, uint16_t cmd, uint16_t val );
+    void makeStatusCommandPacket( CanPacket* pkt, uint16_t commandId, uint16_t value );
     void makeShutdownCommandPacket( CanPacket* pkt );
 
     // Calculate the difference between two raw counter values, taking care of rollover.

@@ -26,33 +26,47 @@ class CanPacket;
 // This is hardware interface class for RMP robots with USB connectors.
 // Because internally RMP communicates over CAN bus, this IO interface
 // reads and writes CAN (!) packets.
+//
+// Does not throw any exceptions.
 class UsbIo
 {
 public:
+
+    enum UsbIoStatus
+    {
+        OK              = 0,
+        NO_DATA         = 1,
+        IO_ERROR        = -1,
+        OTHER_ERROR     = -2
+    };
+
     virtual ~UsbIo() {};
 
     /*
      * Initializes the USB device.
-     * Returns: 0 on success, negative otherwise.
+     * Returns: OK on success.
      */
-    virtual int init()=0;
+    virtual UsbIoStatus init()=0;
 
+    // Tries to reset the device whitout shutting it down completely.
+    virtual UsbIoStatus reset()=0;
+    
     /*
      * Closes the USB device
-     * Returns: 0 on success, negative otherwise.
+     * Returns: OK on success.
      */
-    virtual int shutdown()=0;
+    virtual UsbIoStatus shutdown()=0;
 
     /*
      * Blocks until a packet is available.
-     * Returns 0 if copied a packet, non-zero on error.
+     * Returns OK if copied a packet, NO_DATA if not, or a negative ERROR code.
      */
-    virtual int readPacket(CanPacket* pkt)=0;
+    virtual UsbIoStatus readPacket(CanPacket* pkt)=0;
     
     /*
-     * Returns: 0 on success, non-zero error code otherwise.
+     * Returns OK on success, or a negative ERROR code otherwise.
      */
-    virtual int writePacket(CanPacket* pkt)=0;
+    virtual UsbIoStatus writePacket(CanPacket* pkt)=0;
     
 };
 
