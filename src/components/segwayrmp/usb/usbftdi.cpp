@@ -18,14 +18,16 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "usbftdi.h"
-
-#include "rmpusbdataframe.h"
-
 #include <iostream>
 #include <assert.h>
 #include <pthread.h>
 #include <IceUtil/IceUtil.h>
+
+#include "usbftdi.h"
+
+#include "rmpusbdataframe.h"
+#include "config.h"
+#include "canpacket.h"
 
 // magic numbers
 #define SEGWAY_USB_VENDOR_ID                    0x0403
@@ -42,9 +44,8 @@ using namespace std;
 
 UsbIoFtdi::UsbIoFtdi()
 {
-    // Set initial buffer size
+    // Set initial buffer size and number of bytes stored
     charBuffer_.resize(128);
-
     residualBytes_ = 0;
     
     pthread_mutex_init(&eventHandle_.eMutex, NULL);
@@ -55,7 +56,7 @@ UsbIoFtdi::~UsbIoFtdi()
 {
 }
 
-/*!
+/*
  * Initializes the USB device.
  *
  * returns: 0 on success, negative on error
@@ -105,8 +106,10 @@ int UsbIoFtdi::init()
     }    
     cout<<"FT_SetLatencyTimer OK"<<endl;
 
+    //
+    // The reset is in a separate function so we call it again later.
+    //
     ftStatus = this->resetDevice();
-
 
     // debug
     /*
@@ -169,7 +172,7 @@ int UsbIoFtdi::resetDevice()
     return ftStatus;
 }
   
-/*!
+/*
  * Closes the USB device
  *
  * returns: 0 on success, negative otherwise
@@ -177,12 +180,6 @@ int UsbIoFtdi::resetDevice()
 int UsbIoFtdi::shutdown()
 {
     return FT_Close( ftHandle_ );
-}
-
-int UsbIoFtdi::readPacket(CanPacket* pkt)
-{
-    return readPacketBlocking( pkt );
-    //return readPacketPolling( pkt );
 }
 
 int UsbIoFtdi::readPacketBlocking( CanPacket* pkt )
@@ -274,7 +271,7 @@ int UsbIoFtdi::readPacketPolling( CanPacket* pkt )
     return 0;
 }
   
-/*!
+/*
  * Writes the given packet to USB.
  *
  * returns: 0 on success, negative error code otherwise
@@ -328,7 +325,7 @@ int UsbIoFtdi::writePacket( CanPacket *pkt )
     return ftStatus;
 }
 
-/*!
+/*
  *  Caluate the checksum for the message being sent.  Note that the buffer
  *  is expected to be exactly 18 bytes in length. The checksum byte is not set,
  *  the calling function is expected to do so.
@@ -356,19 +353,18 @@ unsigned char UsbIoFtdi::usbMessageChecksum( unsigned char *msg )
     return (unsigned char)checksum;
 }
 
+// Returns 0 if got a packet, 1 if the buffer was empty
 int UsbIoFtdi::getPacket(CanPacket* pkt)
 {
-
-    if ( canBuffer_.size() > 0 )
-    {
-        *pkt = canBuffer_.front();
-        canBuffer_.pop();
-        //cout<<"UsbIoFtdi::getPacket: read one packet"<<endl;
-        return 0;
-    }
-    else {
+    // check for buffer size, otherwise pop() will seg fault.
+    if ( canBuffer_.empty() ) {
         return 1;
     }
+    
+    *pkt = canBuffer_.front();
+    canBuffer_.pop();
+    //cout<<"UsbIoFtdi::getPacket: got one packet"<<endl;
+    return 0;
 }
 
 // returns number of bytes read
@@ -534,7 +530,7 @@ int UsbIoFtdi::readFromBufferToQueue( int bytesInBuffer )
     return numPackets;
 }
 
-/*!
+/*
  *  returns: # bytes in msg if a packet is valid and negative on error.
  *
  *  @note It's assumed that the checksum is already checked.
@@ -584,7 +580,7 @@ int UsbIoFtdi::parseUsbToCan( CanPacket *pkt, unsigned char *bytes )
     return ret;
 }
 
-/*!
+/*
  *  See Section 3.4 USB Message Format of the Segway RMP manual.
  */
 int UsbIoFtdi::parseCanToUsb( CanPacket *pkt, unsigned char *bytes )

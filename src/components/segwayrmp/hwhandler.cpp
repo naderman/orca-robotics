@@ -54,7 +54,6 @@ HwHandler::HwHandler(
         setConfigPipe_(setConfigPipe),
         currentConfigPipe_(currentConfigPipe),
         position2dData_(new Position2dData),
-//         commandData_(new Velocity2dCommand),
         powerData_(new PowerData),
         driver_(0),
         context_(context)

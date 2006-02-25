@@ -25,6 +25,9 @@
 
 #include "rmpusbdataframe.h"
 
+#include "config.h"
+#include "canpacket.h"
+
 using namespace std;
 
 // this holds all the RMP data it gives us

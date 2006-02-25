@@ -63,7 +63,6 @@ private:
 
     // Internal data storage
     orca::Position2dDataPtr position2dData_;
-//     orca::Velocity2dCommandPtr commandData_;
     orca::PowerDataPtr powerData_;
 
     // generic interface to the hardware

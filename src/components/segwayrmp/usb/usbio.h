@@ -21,22 +21,35 @@
 #ifndef ORCA2_SEGWAY_RMP_USB_IO_H
 #define ORCA2_SEGWAY_RMP_USB_IO_H
 
-#include "canpacket.h"
+class CanPacket;
 
+// This is hardware interface class for RMP robots with USB connectors.
+// Because internally RMP communicates over CAN bus, this IO interface
+// reads and writes CAN (!) packets.
 class UsbIo
 {
 public:
     virtual ~UsbIo() {};
+
+    /*
+     * Initializes the USB device.
+     * Returns: 0 on success, negative otherwise.
+     */
     virtual int init()=0;
+
+    /*
+     * Closes the USB device
+     * Returns: 0 on success, negative otherwise.
+     */
     virtual int shutdown()=0;
 
-    /*!
+    /*
      * Blocks until a packet is available.
      * Returns 0 if copied a packet, non-zero on error.
      */
     virtual int readPacket(CanPacket* pkt)=0;
     
-    /*!
+    /*
      * Returns: 0 on success, non-zero error code otherwise.
      */
     virtual int writePacket(CanPacket* pkt)=0;

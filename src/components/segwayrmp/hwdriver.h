@@ -25,7 +25,7 @@
 #include <orca/power.h>
 
 /*
- * @brief Abstract interface class for Segway RMP hardware.
+ * @brief Abstract interface class to robotic base.
  * @author Alex Makarenko
 */
 class HwDriver
@@ -35,13 +35,15 @@ public:
     virtual ~HwDriver() {};
     
     virtual int enable()=0;
+    
     virtual int repair()=0;
+    
     virtual int disable()=0;
 
-    // Blocking read
+    // Blocking read. Returns 0 on success. Does not throw.
     virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power, std::string &status )=0;
 
-    // Writes velocity command
+    // Writes velocity command. Returns 0 on success. Does not throw.
     virtual int write( const orca::Velocity2dCommandPtr & command )=0;
 
     // For debugging, convert to string as much of internal state as possible

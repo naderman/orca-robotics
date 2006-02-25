@@ -105,8 +105,8 @@ private:
     double maxSpeed_;
     double maxTurnrate_;
 
+    int readFrame();
     void integrateMotion();
-
     void updateData( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
                      Status & status );
 
