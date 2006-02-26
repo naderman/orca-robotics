@@ -46,24 +46,23 @@
 
 @par Configuration
 
-- @c Driver [string]
+- @c SegwayRmp.Config.Driver (string)
     - Type of hardware driver
-    - Valid values: {segwayrmpusb, playerclient, fake}
-    - Default: segwayrmpusb
+    - Valid values: { 'segwayrmpusb', 'playerclient', 'fake' }
+    - Default: 'segwayrmpusb'
     
-- @c MaxSpeed [float]
+- @c SegwayRmp.Config.MaxSpeed (float)
     - Maximum allowed forward speed
     - Units: meters
     - Constraints: positive
     - Default: 1.0
     
-- @c MaxTurnrate [float]
+- @c SegwayRmp.Config.MaxTurnrate (float) [deg/s]
     - Maximum allowed turnrate
-    - Units: degrees/second
     - Constraints: positive
     - Default: 60.0
     
-- @c Position2dPublishInterval [float]
+- @c SegwayRmp.Config.Position2dPublishInterval (float) [s]
     - How often to send position information to the IceStorm server
     - Units: seconds
     - Valid values:
@@ -71,16 +70,14 @@
         - >0 : send approximately every t seconds
     - Default: -1.0
 
-- @c PowerPublishInterval [float]
+- @c SegwayRmp.Config.PowerPublishInterval (float) [s]
     - How often to send power information to the IceStorm server
-    - Units: seconds
     - Valid values:
         - >0 : send approximately every t seconds
     - Default: 20.0
 
-- @c StatusPublishInterval [float]
+- @c SegwayRmp.Config.StatusPublishInterval (float) [s]
     - How often to send status information to the IceStorm server
-    - Units: seconds
     - Valid values:
         - >0 : send approximately every t seconds
     - Default: 60.0
@@ -90,15 +87,6 @@ An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ director
 @par Dependancies
 
 None for the component. See driver sections below for individual driver dependencies.
-
-@par Authors
-Orca component by Alex Makarenko. Original CAN driver code came from Player by Andrew Howard.
-
-@par Internal Structure
-
-@image html segwayrmp_whitebox.png
-
-The implementation of Platform2d interface can raise orca::DataNotExistException but does NOT raise orca::HardwareFailedException.
 
 @section orca_robot_segwayrmpusb Segway RMP USB driver
 
@@ -183,16 +171,25 @@ This driver wraps up a Player client. It requires a running Player server. The d
 
 @par Extra configuration
 
-- @c PlayerClient.Host [string]
+- @c SegwayRmp.Config.PlayerClient.Host (string)
     - The host that Player (or Stage) is running on
     - Default: "localhost"
-- @c PlayerClient.Port [int]
+- @c SegwayRmp.Config.PlayerClient.Port (int)
     - The port that PLayer (or Stage) is running on
     - Constraints: >0
     - Default: 6665
     
 Naturally, both real hardware and Stage simulator are supported. Support is limited to what Player supports which is currently the original RMP with CAN I/O using Kvaser, Inc.'s CANLIB interface library. This library provides access to CAN cards made by Kvaser, such as the LAPcan II.
 
+@section internal Internal Structure
+
+@image html segwayrmp_whitebox.png
+
+The implementation of Platform2d interface can raise orca::DataNotExistException but does NOT raise orca::HardwareFailedException.
+
+@par Authors
+
+Orca component by Alex Makarenko. Original CAN driver code came from Player by Andrew Howard.
 
 */
 

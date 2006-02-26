@@ -81,7 +81,7 @@ void UserHandler::init()
         driver_ = new KeyboardTermioDriver( config_ );
         displayHandler_ = new StdoutDisplayHandler();
 #else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'keyboard' because it was not built!" );
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'kbd-termio' because it was not built!" );
 #endif
     }
     else if ( driverName == "kbd-ncurses" )
@@ -91,7 +91,7 @@ void UserHandler::init()
         driver_ = new KeyboardNcurcesDriver( config_ );
         //displayHandler_ = driver_;
 #else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'keyboard-nc' because it was not built!" );
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'kbd-ncurses' because it was not built!" );
 #endif
     }
     else if ( driverName == "joystick" )
@@ -99,8 +99,9 @@ void UserHandler::init()
 #ifdef HAVE_JOYSTICK_DRIVER
         context_.tracer()->print("loading joystick driver");
         
+        std::string joystickPrefix = prefix + "Joystick.";
         config_.joystickDevice = orcaice::getPropertyWithDefault( context_.properties(),
-                "Teleop.Config.JoystickDevice", "/dev/input/event0" );
+                joystickPrefix+"Device", "auto" );
         driver_ = new JoystickDriver( config_ );
         displayHandler_ = new StdoutDisplayHandler();
 #else
@@ -116,6 +117,7 @@ void UserHandler::init()
     else {
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
         context_.tracer()->error( errorStr);
+        context_.tracer()->info( "Valid driver values are {'kbd-termio', 'kbd-ncurses', 'joystick', 'fake'}" );
         throw orcaice::Exception( ERROR_INFO, errorStr );
     }
 }

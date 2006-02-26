@@ -69,6 +69,9 @@ This component connects to a robot base and issues motion commands according to 
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
+@par Dependancies
+
+None for the component. See driver sections below for individual driver dependencies.
 
 @section orca_teleop_keyboard_termio Keyboard Driver using termio.h
 
@@ -95,7 +98,7 @@ Motion commands are issued by moving the joystick
     
 @par Additional Configuration
 
-- @c Teleop.Config.JoystickDevice (string)
+- @c Teleop.Config.Joystick.Device (string)
     - Unix path to the joystick device, or "auto" to have teleop search for a joystick.
     - Default: "auto"
     - Example: "/dev/input/event0"
@@ -127,11 +130,12 @@ $ cat /proc/bus/input/devices
     If your USB system hangs, try upgrading.  Kernel 2.6.12 seems to be OK.
 
 
-@par Internal Structure
+@section internal Internal Structure
     
 @image html teleop_whitebox.png
 
-@par Responsible Developer
+@par Authors
+
 Alex Makarenko    
 
 */

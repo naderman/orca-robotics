@@ -9,4 +9,4 @@ Config.Driver.Default=kbd-termio
 Config.MaxSpeed.Default=1.0
 Config.MaxTurnrate.Default=40.0
 Config.RepeatInterval.Default=0.2
-Config.JoystickDevice.Default=auto
+Config.Joystick.Device.Default=auto
