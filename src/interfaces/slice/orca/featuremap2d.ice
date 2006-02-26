@@ -66,18 +66,13 @@ class CartesianPointFeature2d extends Feature2d
     PointCovariance2d c;
 };
 
-// class GaussCartesianPointFeature2d extends CartesianPointFeature
-// {
-//    ...    
-// };
-
 //! A list of features
-sequence<Feature2d> CartesianFeature2dSequence;
+sequence<Feature2d> Feature2dSequence;
 
 //! Data -- the 2D polar features
 class FeatureMap2dData extends OrcaObject
 {
-    CartesianFeature2dSequence features;
+    Feature2dSequence features;
 };
 
 //! Consumer of FeatureMap2d data
