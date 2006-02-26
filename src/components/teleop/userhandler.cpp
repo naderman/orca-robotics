@@ -54,9 +54,11 @@ UserHandler::UserHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *comman
 UserHandler::~UserHandler()
 {
     delete driver_;
-    driver_ = 0;
-    // it may be the same object as driver_, but we null it as above, it's ok
+#ifndef HAVE_KEYBOARD_NCURSES_DRIVER
+    // this the only driver which has an intergrated display driver,
+    // so it does not need to be deleted separately
     delete displayHandler_;
+#endif
 }
 
 void UserHandler::init()
@@ -88,8 +90,10 @@ void UserHandler::init()
     {
 #ifdef HAVE_KEYBOARD_NCURSES_DRIVER
         context_.tracer()->print("loading keyboard-nc driver (with ncurses)");
-        driver_ = new KeyboardNcurcesDriver( config_ );
-        //displayHandler_ = driver_;
+        KeyboardNcurcesDriver* keyboardTermioDriver = new KeyboardNcurcesDriver( config_ );
+        // this driver implements both interfaces
+        driver_ = keyboardTermioDriver;
+        displayHandler_ = keyboardTermioDriver;
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'kbd-ncurses' because it was not built!" );
 #endif
@@ -140,7 +144,7 @@ void UserHandler::run()
         return;
     }
     
-    context_.tracer()->print("driver enabled");
+    context_.tracer()->debug("driver enabled",5);
     
     Velocity2dCommandPtr currCommand = new Velocity2dCommand;
     Velocity2dCommandPtr lastCommand = new Velocity2dCommand;

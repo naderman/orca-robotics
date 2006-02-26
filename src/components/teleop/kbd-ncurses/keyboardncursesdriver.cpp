@@ -61,16 +61,43 @@ int KeyboardNcurcesDriver::enable()
         return -1;
     }
 
-    noecho();                  /*  Turn off key echoing                 */
-    keypad(mainwin_, TRUE);     /*  Enable the keypad for non-char keys  */
+    // Initialize colours
+    start_color();
+    
+    // Make sure we are able to do what we want. If
+    // has_colors() returns FALSE, we cannot use colours.
+    // COLOR_PAIRS is the maximum number of colour pairs
+    // we can use. We use 13 in this program, so we check
+    // to make sure we have enough available.
+
+    if ( !has_colors() && COLOR_PAIRS < 13 ) {
+        // shouldn't happen
+        return -1;
+    }
+
+    // Initialize a bunch of colour pairs, where:
+    //     init_pair(pair number, foreground, background);
+    // specifies the pair.
+
+    init_pair(1,  COLOR_BLACK,   COLOR_WHITE);
+    init_pair(2,  COLOR_GREEN,   COLOR_BLACK);
+    
+    color_set( 2, NULL );
+    mvaddstr( 1, 4, "Orca2 Teleop Component");
+
+    color_set( 1, NULL );
+    
+    // Turn off key echoing
+    noecho();
+    // Enable the keypad for non-char keys
+    keypad( mainwin_, true );
 
     //  Print a prompt and refresh() the screen
     mvaddstr(5, 10, "Press a key ('q' to quit)...");
-//     mvprintw(7, 10, "You pressed: ");
     refresh();
     
     // display keymap
-    keyboardHelp();
+    //keyboardHelp();
     
     //cout<<"enabled."<<endl;
     return 0;
@@ -89,8 +116,24 @@ int KeyboardNcurcesDriver::disable()
 int KeyboardNcurcesDriver::read( orca::Velocity2dCommandPtr &data )
 {
     // storage for loop variables
-    char c = KEYCODE_i;
+    int ch;
+    char keych[2] = {0};
+
+    //
+    // get the next event from the keyboard
+    //
+    ch = getch();
+    
+    // If a printable character
+    if ( isprint(ch) && !(ch & KEY_CODE_YES)) {
+        keych[0] = ch;
+    }
+    mvprintw( 7, 10, "You pressed: 0x%x (%s)", ch, keych );
+    refresh();
+    
 /*
+    char c = KEYCODE_i;
+    
     // get the next event from the keyboard
     if( read(kfd_, &c, 1) < 0 )
     {
@@ -102,6 +145,7 @@ int KeyboardNcurcesDriver::read( orca::Velocity2dCommandPtr &data )
         throw orcaice::HardwareException( ERROR_INFO, errString );
     }
 */
+/*
     switch( c )
     {
         case KEYCODE_i:
@@ -148,7 +192,7 @@ int KeyboardNcurcesDriver::read( orca::Velocity2dCommandPtr &data )
             command_->motion.v.y = 0.0;
             command_->motion.w = 0.0;
     }
-
+*/
     // apply max limits
     if ( fabs(command_->motion.v.x) > config_.maxSpeed ) {
         command_->motion.v.x =
@@ -170,6 +214,40 @@ int KeyboardNcurcesDriver::read( orca::Velocity2dCommandPtr &data )
     return 0;
 }
 
+void KeyboardNcurcesDriver::displayEvent( const Event e )
+{
+    switch ( e )
+    {
+    case SentNewCommand :
+    {
+        cout<<"C"<<flush;
+        break;
+    }
+    case SentRepeatCommand :
+    {
+        cout<<"."<<flush;
+        break;
+    }
+    default :
+    {
+        cout<<"x"<<flush;
+    }
+    }
+}
+
+void KeyboardNcurcesDriver::displayCommand( const orca::Velocity2dCommandPtr & command,
+                                 const bool vx, const bool vy, const bool w )
+{
+    cout<<"C"<<flush;
+    
+//     cout<<"\n"<<command;
+//     
+//     if ( vx ) cout<<"Vx LIMITED. ";
+//     if ( vy ) cout<<"Vy LIMITED. ";
+//     if ( w ) cout<<"W LIMITED. ";
+// 
+//     cout<<endl;
+}
 
 void KeyboardNcurcesDriver::keyboardHelp()
 {

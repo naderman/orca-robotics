@@ -52,8 +52,6 @@ void NetworkHandler::run()
     try
     {
     
-    // create a null pointer. data will be cloned into it.
-    Ice::ObjectPtr data;
     // create and init command to default 'halt' command
     Velocity2dCommandPtr command = new Velocity2dCommand;
     command->motion.v.x = 0.0;
@@ -61,7 +59,7 @@ void NetworkHandler::run()
     command->motion.w = 0.0;
 
     // configs
-    timeoutMs_ = (int)floor(1000.0 * orcaice::getPropertyAsDoubleWithDefault(
+    int timeoutMs = (int)floor(1000.0 * orcaice::getPropertyAsDoubleWithDefault(
             context_.properties(), "Teleop.Config.RepeatInterval", 0.2 ) );
 
     // REQUIRED : Platform2d
@@ -69,20 +67,20 @@ void NetworkHandler::run()
         try
         {
             orcaice::connectToInterfaceWithTag<Platform2dPrx>( context_, platform2dPrx_, "Platform2d" );
-            context_.tracer()->print("connected to a 'Platform2d' interface");
+            context_.tracer()->debug("connected to a 'Platform2d' interface",5);
             break;
         }
         // includes common ex's: ConnectionRefusedException, ConnectTimeoutException
         catch ( const Ice::LocalException & e )
         {
-            context_.tracer()->debug("failed to connect to a remote interface");
+            context_.tracer()->info("failed to connect to a remote interface. Will try again after 2 seconds.");
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         }
     }
 
     while ( isActive() )
     {
-        int ret = commandBuffer_->getAndPopNext( command, timeoutMs_ );
+        int ret = commandBuffer_->getAndPopNext( command, timeoutMs );
 
         //
         // Sending motion command (probably over the network)
@@ -91,14 +89,13 @@ void NetworkHandler::run()
             platform2dPrx_->setCommand( command );
                 
             if ( ret==0 ) { // new command
-                displayHandler_->displayEvent( DisplayHandler::SentNewCommand );
+                //displayHandler_->displayEvent( DisplayHandler::SentNewCommand );
+                displayHandler_->displayCommand( command );
                 //cout<<endl<<command<<endl;
-                //cout<<"NEW : <<command<<endl;
             }
             else {
                 displayHandler_->displayEvent( DisplayHandler::SentRepeatCommand );
                 //cout<<"."<<flush;
-                //cout<<"old : "<<command<<endl;
             }
         }
         catch ( const Ice::ConnectionRefusedException & e ) {

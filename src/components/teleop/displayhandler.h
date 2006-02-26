@@ -21,6 +21,8 @@
 #ifndef ORCA2_TELEOP_DISPLAY_HANDLER_H
 #define ORCA2_TELEOP_DISPLAY_HANDLER_H
 
+#include <orca/platform2d.h>
+
 class DisplayHandler
 {
 public:
@@ -35,7 +37,9 @@ public:
     virtual ~DisplayHandler() {};
 
     virtual void displayEvent( const Event e )=0;
-
+    
+    virtual void displayCommand( const orca::Velocity2dCommandPtr & command,
+                                 const bool vx=false, const bool vy=false, const bool w=false )=0;
 };
 
 #endif

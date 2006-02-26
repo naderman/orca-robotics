@@ -51,8 +51,6 @@ private:
 
     DisplayHandler* displayHandler_;
 
-    int timeoutMs_;
-
     // component current context
     orcaice::Context context_;
 

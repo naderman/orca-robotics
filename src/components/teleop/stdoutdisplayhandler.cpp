@@ -46,3 +46,15 @@ void StdoutDisplayHandler::displayEvent( const Event e )
     }
     }
 }
+
+void StdoutDisplayHandler::displayCommand( const orca::Velocity2dCommandPtr & command,
+                                 const bool vx, const bool vy, const bool w )
+{
+    cout<<"\n"<<command;
+    
+    if ( vx ) cout<<"Vx LIMITED. ";
+    if ( vy ) cout<<"Vy LIMITED. ";
+    if ( w ) cout<<"W LIMITED. ";
+
+    cout<<endl;
+}
