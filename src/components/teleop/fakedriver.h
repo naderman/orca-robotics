@@ -18,47 +18,34 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_TELEOP_USER_HANDLER_H
-#define ORCA2_TELEOP_USER_HANDLER_H
-
-#include <orcaice/thread.h>
-#include <orcaice/context.h>
-#include <orcaice/ptrbuffer.h>
-
-#include <orca/platform2d.h>
+#ifndef ORCA2_TELEOP_FAKE_INPUT_DRIVER_H
+#define ORCA2_TELEOP_FAKE_INPUT_DRIVER_H
 
 #include "inputdriver.h"
 
-class DisplayHandler;
+/*
+    A fake driver to simplify development. Does not require any hardware.
 
-class UserHandler : public orcaice::Thread
+    @author Alex Makarenko
+*/
+class FakeDriver : public InputDriver
 {
+
 public:
 
-    UserHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commands,
-                    const orcaice::Context & context );
-    virtual ~UserHandler();
+    FakeDriver( const InputDriver::Config &cfg );
+    virtual ~FakeDriver();
 
-    virtual void run();
+    virtual int enable();
+    virtual int disable();
 
-    DisplayHandler* displayHandler() { return displayHandler_; };
-    
+    // Blocks till new data is available
+    virtual int read( orca::Velocity2dCommandPtr &data );
+
 private:
 
-    // network/driver interface
-    orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandPipe_;
+    Config config_;
 
-    // generic interface to input hardware
-    InputDriver* driver_;
-
-    InputDriver::Config config_;
-
-    DisplayHandler* displayHandler_;
-    
-    void init();
-
-    // component current context
-    orcaice::Context context_;
 };
 
 #endif

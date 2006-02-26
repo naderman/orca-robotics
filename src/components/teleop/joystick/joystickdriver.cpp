@@ -25,12 +25,12 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#include "teleopjoystickdriver.h"
-#include "evdevutil.h"
-
 #include <orcaice/proputils.h>
 #include <orcaice/mathdefs.h>
 #include <orcaice/exceptions.h>
+
+#include "joystickdriver.h"
+#include "evdevutil.h"
 
 // normalizing macros
 #define AXIS_OFFSET         128.0
@@ -39,7 +39,7 @@ using namespace std;
 using namespace orca;
 
 
-TeleopJoystickDriver::TeleopJoystickDriver( const InputDriver::Config &cfg ) :
+JoystickDriver::JoystickDriver( const InputDriver::Config &cfg ) :
         config_(cfg)
 {
     // init internal data storage
@@ -49,11 +49,11 @@ TeleopJoystickDriver::TeleopJoystickDriver( const InputDriver::Config &cfg ) :
     command_->motion.w = 0.0;
 }
 
-TeleopJoystickDriver::~TeleopJoystickDriver()
+JoystickDriver::~JoystickDriver()
 {
 }
 
-int TeleopJoystickDriver::findUSBJoystick( char *joystickDevice )
+int JoystickDriver::findUSBJoystick( char *joystickDevice )
 {
     char device[256];
     int  maxEvdev = 10;
@@ -135,7 +135,7 @@ int TeleopJoystickDriver::findUSBJoystick( char *joystickDevice )
     }
 }
 
-int TeleopJoystickDriver::enable()
+int JoystickDriver::enable()
 {
     char joystickDevice[256];
     int ret;
@@ -183,19 +183,21 @@ int TeleopJoystickDriver::enable()
     return 0;
 }
 
-int TeleopJoystickDriver::disable()
+int JoystickDriver::disable()
 {
     close( jfd_ );
     return 0;
 }
 
 // read next command from the joystick
-int TeleopJoystickDriver::readdata( orca::Velocity2dCommandPtr &data )
+int JoystickDriver::read( orca::Velocity2dCommandPtr &data )
 {
     struct input_event event;
 
     // get the next event from the joystick
-    if( read(jfd_, &event, sizeof(struct input_event) ) < 0 )
+    // note the global scope of this library function
+    // (as apposed the member function JoystickDriver::read() )
+    if( ::read(jfd_, &event, sizeof(struct input_event) ) < 0 )
     {
         // check if read failed, and if so was it due to disconnection?
         if ( errno == ENODEV ) {

@@ -23,14 +23,16 @@
 #include <orcaice/exceptions.h>
 
 #include "networkhandler.h"
+#include "displayhandler.h"
 
 using namespace std;
 using namespace orca;
 using orcaice::operator<<;
 
 NetworkHandler::NetworkHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer,
-                    const orcaice::Context & context )
+                                DisplayHandler* displayHandler, const orcaice::Context & context )
     : commandBuffer_(commandBuffer),
+      displayHandler_(displayHandler),
       context_(context)
 {
 }
@@ -46,6 +48,10 @@ void NetworkHandler::setupConfigs( const Ice::PropertiesPtr & properties )
 
 void NetworkHandler::run()
 {
+    // we are in a different thread now, catch all stray exceptions
+    try
+    {
+    
     // create a null pointer. data will be cloned into it.
     Ice::ObjectPtr data;
     // create and init command to default 'halt' command
@@ -85,11 +91,13 @@ void NetworkHandler::run()
             platform2dPrx_->setCommand( command );
                 
             if ( ret==0 ) { // new command
-                cout<<endl<<command<<endl;
+                displayHandler_->displayEvent( DisplayHandler::SentNewCommand );
+                //cout<<endl<<command<<endl;
                 //cout<<"NEW : <<command<<endl;
             }
             else {
-                cout<<"."<<flush;
+                displayHandler_->displayEvent( DisplayHandler::SentRepeatCommand );
+                //cout<<"."<<flush;
                 //cout<<"old : "<<command<<endl;
             }
         }
@@ -97,10 +105,12 @@ void NetworkHandler::run()
             // note: cannot throw one of our exceptions from here
             // because we are running in our own thread
             // so do nothing, just keep trying (it will check for active next time around)
-            cout<<"x"<<flush;
+            displayHandler_->displayEvent( DisplayHandler::FailedToSendCommand );
+            //cout<<"!"<<flush;
         }
         catch ( const Ice::TimeoutException & e ) {
-            cout<<"-"<<flush;
+            displayHandler_->displayEvent( DisplayHandler::FailedToSendCommand );
+            //cout<<"x"<<flush;
             // keep trying
         }
         catch ( const orca::HardwareFailedException & e ) {
@@ -121,6 +131,56 @@ void NetworkHandler::run()
         //int dt = timer.stop();
         // store dt
         //timer.restart();
+    }
+
+    //
+    // unexpected exceptions
+    //
+    } // try
+    catch ( const orca::OrcaException & e )
+    {
+        context_.tracer()->print( e.what );
+        context_.tracer()->error( "unexpected (remote?) orca exception.");
+        if ( context_.isApplication() ) {
+            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.communicator()->destroy();
+        }
+    }
+    catch ( const orcaice::Exception & e )
+    {
+        context_.tracer()->print( e.what() );
+        context_.tracer()->error( "unexpected (local?) orcaice exception.");
+        if ( context_.isApplication() ) {
+            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.communicator()->destroy();
+        }
+    }
+    catch ( const Ice::Exception & e )
+    {
+        cout<<e<<endl;
+        context_.tracer()->error( "unexpected Ice exception.");
+        if ( context_.isApplication() ) {
+            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.communicator()->destroy();
+        }
+    }
+    catch ( const std::exception & e )
+    {
+        // once caught this beast in here, don't know who threw it 'St9bad_alloc'
+        cout<<e.what()<<endl;
+        context_.tracer()->error( "unexpected std exception.");
+        if ( context_.isApplication() ) {
+            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.communicator()->destroy();
+        }
+    }
+    catch ( ... )
+    {
+        context_.tracer()->error( "unexpected exception from somewhere.");
+        if ( context_.isApplication() ) {
+            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.communicator()->destroy();
+        }
     }
 
     cout<<"NetworkHandler: stopped."<<endl;

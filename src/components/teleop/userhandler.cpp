@@ -22,13 +22,18 @@
 
 #include "userhandler.h"
 
-#ifdef HAVE_KEYBOARD_DRIVER
-    #include "keyboard/teleopkeyboarddriver.h"
+#ifdef HAVE_KEYBOARD_TERMIO_DRIVER
+    #include "kbd-termio/keyboardtermiodriver.h"
+#endif
+#ifdef HAVE_KEYBOARD_NCURSES_DRIVER
+    #include "kbd-ncurses/keyboardncursesdriver.h"
 #endif
 #ifdef HAVE_JOYSTICK_DRIVER
-    #include "joystick/teleopjoystickdriver.h"
+    #include "joystick/joystickdriver.h"
 #endif
-#include "teleopfakedriver.h"
+#include "fakedriver.h"
+
+#include "stdoutdisplayhandler.h"
 
 
 using namespace std;
@@ -38,6 +43,7 @@ UserHandler::UserHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *comman
                     const orcaice::Context & context )
       : commandPipe_(commands),
         driver_(0),
+        displayHandler_(0),
         context_(context)
 {
     // this is the last place we can throw exceptions from.
@@ -48,6 +54,9 @@ UserHandler::UserHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *comman
 UserHandler::~UserHandler()
 {
     delete driver_;
+    driver_ = 0;
+    // it may be the same object as driver_, but we null it as above, it's ok
+    delete displayHandler_;
 }
 
 void UserHandler::init()
@@ -65,13 +74,24 @@ void UserHandler::init()
     // based on the config parameter, create the right driver
     string driverName = orcaice::getPropertyWithDefault( context_.properties(),
                 prefix+"Driver", "keyboard" );
-    if ( driverName == "keyboard" )
+    if ( driverName == "kbd-termio" )
     {
-#ifdef HAVE_KEYBOARD_DRIVER
+#ifdef HAVE_KEYBOARD_TERMIO_DRIVER
         context_.tracer()->print("loading keyboard driver");
-        driver_ = new TeleopKeyboardDriver( config_ );
+        driver_ = new KeyboardTermioDriver( config_ );
+        displayHandler_ = new StdoutDisplayHandler();
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'keyboard' because it was not built!" );
+#endif
+    }
+    else if ( driverName == "kbd-ncurses" )
+    {
+#ifdef HAVE_KEYBOARD_NCURSES_DRIVER
+        context_.tracer()->print("loading keyboard-nc driver (with ncurses)");
+        driver_ = new KeyboardNcurcesDriver( config_ );
+        //displayHandler_ = driver_;
+#else
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'keyboard-nc' because it was not built!" );
 #endif
     }
     else if ( driverName == "joystick" )
@@ -81,7 +101,8 @@ void UserHandler::init()
         
         config_.joystickDevice = orcaice::getPropertyWithDefault( context_.properties(),
                 "Teleop.Config.JoystickDevice", "/dev/input/event0" );
-        driver_ = new TeleopJoystickDriver( config_ );
+        driver_ = new JoystickDriver( config_ );
+        displayHandler_ = new StdoutDisplayHandler();
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'joystick' because it was not built!" );
 #endif
@@ -89,7 +110,8 @@ void UserHandler::init()
     else if ( driverName == "fake" )
     {
         context_.tracer()->print("loading fake driver");
-        driver_ = new TeleopFakeDriver( config_ );
+        driver_ = new FakeDriver( config_ );
+        displayHandler_ = new StdoutDisplayHandler();
     }
     else {
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
@@ -107,8 +129,8 @@ void UserHandler::run()
     
     // don't forget to enable the driver, but check isActive() to see if we should quit
     while ( driver_->enable() && isActive() ) {
-        context_.tracer()->warning("failed to enable driver");
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+        context_.tracer()->warning("Failed to enable driver. Will try again in 2 seconds.");
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
     // check again to make sure we are not being terminated
@@ -127,8 +149,10 @@ void UserHandler::run()
         lastCommand->motion.v.x = currCommand->motion.v.x;
         lastCommand->motion.w = currCommand->motion.w;
 
-        // Read from the input
-        driver_->readdata( currCommand );
+        //
+        // Read user input
+        //
+        driver_->read( currCommand );
 
         // commit change only if something has actually changed
         if ( lastCommand->motion.v.x != currCommand->motion.v.x ||

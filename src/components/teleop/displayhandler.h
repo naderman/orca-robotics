@@ -18,43 +18,23 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_TELEOP_NETWORK_HANDLER_H
-#define ORCA2_TELEOP_NETWORK_HANDLER_H
+#ifndef ORCA2_TELEOP_DISPLAY_HANDLER_H
+#define ORCA2_TELEOP_DISPLAY_HANDLER_H
 
-#include <orcaice/thread.h>
-#include <orcaice/context.h>
-#include <orcaice/ptrbuffer.h>
-
-#include <orca/platform2d.h>
-
-class DisplayHandler;
-
-class NetworkHandler : public orcaice::Thread
+class DisplayHandler
 {
 public:
 
-    NetworkHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer,
-                    DisplayHandler* displayHandler, const orcaice::Context & context );
-    ~NetworkHandler();
+    enum Event
+    {
+        SentNewCommand,
+        SentRepeatCommand,
+        FailedToSendCommand
+    };
 
-    void setupConfigs( const Ice::PropertiesPtr & properties );
+    virtual ~DisplayHandler() {};
 
-    virtual void run();
-
-private:
-
-    // remote object
-    orca::Platform2dPrx platform2dPrx_;
-
-    // network/driver interface
-    orcaice::PtrBuffer<orca::Velocity2dCommandPtr>* commandBuffer_;
-
-    DisplayHandler* displayHandler_;
-
-    int timeoutMs_;
-
-    // component current context
-    orcaice::Context context_;
+    virtual void displayEvent( const Event e )=0;
 
 };
 

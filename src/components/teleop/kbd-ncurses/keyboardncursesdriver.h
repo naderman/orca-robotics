@@ -18,47 +18,41 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_TELEOP_USER_HANDLER_H
-#define ORCA2_TELEOP_USER_HANDLER_H
+#ifndef ORCA2_TELEOP_KEYBOARD_NCURSES_DRIVER_H
+#define ORCA2_TELEOP_KEYBOARD_NCURSES_DRIVER_H
 
-#include <orcaice/thread.h>
-#include <orcaice/context.h>
-#include <orcaice/ptrbuffer.h>
+#include <curses.h>
 
-#include <orca/platform2d.h>
+#include "../inputdriver.h"
 
-#include "inputdriver.h"
 
-class DisplayHandler;
-
-class UserHandler : public orcaice::Thread
+class KeyboardNcurcesDriver : public InputDriver
 {
 public:
 
-    UserHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commands,
-                    const orcaice::Context & context );
-    virtual ~UserHandler();
+    KeyboardNcurcesDriver( const InputDriver::Config &cfg );
+    virtual ~KeyboardNcurcesDriver();
 
-    virtual void run();
+    virtual int enable();
+    virtual int disable();
 
-    DisplayHandler* displayHandler() { return displayHandler_; };
-    
+    // Blocks till new data is available
+    virtual int read( orca::Velocity2dCommandPtr &data );
+
 private:
 
-    // network/driver interface
-    orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandPipe_;
+    orca::Velocity2dCommandPtr command_;
 
-    // generic interface to input hardware
-    InputDriver* driver_;
+    Config config_;
 
-    InputDriver::Config config_;
+    double deltaSpeed_;     // [m/s]
+    double deltaTurnrate_;  // [rad/sec]
 
-    DisplayHandler* displayHandler_;
-    
-    void init();
+    void keyboardHelp();
 
-    // component current context
-    orcaice::Context context_;
+    // obscure ncurses stuff
+    WINDOW* mainwin_;
+
 };
 
 #endif

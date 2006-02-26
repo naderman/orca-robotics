@@ -18,47 +18,41 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_TELEOP_USER_HANDLER_H
-#define ORCA2_TELEOP_USER_HANDLER_H
+#ifndef ORCA2_TELEOP_JOYSTICK_DRIVER_H
+#define ORCA2_TELEOP_JOYSTICK_DRIVER_H
 
-#include <orcaice/thread.h>
-#include <orcaice/context.h>
-#include <orcaice/ptrbuffer.h>
+#include "../inputdriver.h"
 
-#include <orca/platform2d.h>
 
-#include "inputdriver.h"
-
-class DisplayHandler;
-
-class UserHandler : public orcaice::Thread
+class JoystickDriver : public InputDriver
 {
 public:
 
-    UserHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commands,
-                    const orcaice::Context & context );
-    virtual ~UserHandler();
+    JoystickDriver( const InputDriver::Config &cfg );
+    virtual ~JoystickDriver();
 
-    virtual void run();
+    virtual int enable();
+    virtual int disable();
 
-    DisplayHandler* displayHandler() { return displayHandler_; };
-    
+    // Blocks till new data is available
+    virtual int read( orca::Velocity2dCommandPtr &data );
+
 private:
 
-    // network/driver interface
-    orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandPipe_;
+    // returns 0 on success.  Caller should allocate
+    // space for joystickDevice
+    int findUSBJoystick( char *joystickDevice );
 
-    // generic interface to input hardware
-    InputDriver* driver_;
+    orca::Velocity2dCommandPtr command_;
 
-    InputDriver::Config config_;
+    Config config_;
 
-    DisplayHandler* displayHandler_;
-    
-    void init();
+    double deltaSpeed_;     // [m/s]
+    double deltaTurnrate_;  // [rad/sec]
 
-    // component current context
-    orcaice::Context context_;
+    // obscure joystick stuff
+    int jfd_;
+
 };
 
 #endif

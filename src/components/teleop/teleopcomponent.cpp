@@ -27,7 +27,7 @@
 using namespace std;
 
 TeleopComponent::TeleopComponent()
-    : orcaice::Component( "Teleop" ),
+    : orcaice::Component( "Teleop", orcaice::HomeInterface ),
       networkHandler_(0),
       userHandler_(0)
 {
@@ -52,18 +52,18 @@ void TeleopComponent::start()
     activate();
 
     //
-    // NETWORK
-    //
-    // the constructor may throw, we'll let the application shut us down
-    networkHandler_ = new NetworkHandler( &commandProxy_, context() );
-    networkHandler_->start();
-
-    //
-    // HARDWARE
+    // USER & DISPLAY
     //
     // the constructor may throw, we'll let the application shut us down
     userHandler_ = new UserHandler( &commandProxy_, context() );
     userHandler_->start();
+    
+    //
+    // NETWORK
+    //
+    // the constructor may throw, we'll let the application shut us down
+    networkHandler_ = new NetworkHandler( &commandProxy_, userHandler_->displayHandler(), context() );
+    networkHandler_->start();
     
     // the rest is handled by the application/service
 }

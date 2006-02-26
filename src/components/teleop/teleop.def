@@ -5,7 +5,7 @@ Requires.Platform2d.Type=Platform2d
 Requires.Platform2d.DefaultProxy=platform2d@local/segwayrmp
 
 # configuration
-Config.Driver.Default=keyboard
+Config.Driver.Default=kbd-termio
 Config.MaxSpeed.Default=1.0
 Config.MaxTurnrate.Default=40.0
 Config.RepeatInterval.Default=0.2

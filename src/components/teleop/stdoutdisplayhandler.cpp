@@ -19,42 +19,30 @@
  */
 
 #include <iostream>
-
-#include "teleopfakedriver.h"
-
 #include <orcaice/orcaice.h>
 
+#include "stdoutdisplayhandler.h"
+
 using namespace std;
-using namespace orca;
 using orcaice::operator<<;
 
-
-TeleopFakeDriver::TeleopFakeDriver( const InputDriver::Config &cfg ) :
-        config_(cfg)
+void StdoutDisplayHandler::displayEvent( const Event e )
 {
-}
-
-TeleopFakeDriver::~TeleopFakeDriver()
-{
-}
-
-int TeleopFakeDriver::enable()
-{
-    cout<<"TeleopFakeDriver is enabled"<<endl;
-    return 0;
-}
-
-int TeleopFakeDriver::disable()
-{
-    cout<<"TeleopFakeDriver is disabled"<<endl;
-    return 0;
-}
-
-int TeleopFakeDriver::readdata( orca::Velocity2dCommandPtr &data )
-{
-    orcaice::setSane( data );
-
-    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-
-    return 0;
+    switch ( e )
+    {
+    case SentNewCommand :
+    {
+        cout<<"C"<<flush;
+        break;
+    }
+    case SentRepeatCommand :
+    {
+        cout<<"."<<flush;
+        break;
+    }
+    default :
+    {
+        cout<<"x"<<flush;
+    }
+    }
 }

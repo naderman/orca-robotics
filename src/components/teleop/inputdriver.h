@@ -22,7 +22,6 @@
 #define ORCA2_TELEOP_INPUT_DRIVER_H
 
 #include <orca/platform2d.h>
-#include <string>
 
 /*
 
@@ -36,19 +35,15 @@ class InputDriver
 
 public:
     virtual ~InputDriver() {};
+    
+    // Returns 0 on success. Does not throw.
     virtual int enable()=0;
+    
+    // Returns 0 on success. Does not throw.
     virtual int disable()=0;
 
-    // Blocks till new data is available
-    virtual int readdata( orca::Velocity2dCommandPtr &data )=0;
-
-    enum DriverType
-    {
-        KEYBOARD_DRIVER,
-        JOYSTICK_DRIVER,
-        FAKE_DRIVER,
-        UNKNOWN_DRIVER
-    };
+    // Blocking read. Returns 0 on success. Does not throw.
+    virtual int read( orca::Velocity2dCommandPtr &data )=0;
 
     struct Config
     {

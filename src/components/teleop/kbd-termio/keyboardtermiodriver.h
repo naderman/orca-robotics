@@ -18,30 +18,28 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_TELEOP_JOYSTICK_DRIVER_H
-#define ORCA2_TELEOP_JOYSTICK_DRIVER_H
+#ifndef ORCA2_TELEOP_KEYBOARD_TERMIO_DRIVER_H
+#define ORCA2_TELEOP_KEYBOARD_TERMIO_DRIVER_H
+
+#include <termio.h>
 
 #include "../inputdriver.h"
 
 
-class TeleopJoystickDriver : public InputDriver
+class KeyboardTermioDriver : public InputDriver
 {
 public:
 
-    TeleopJoystickDriver( const InputDriver::Config &cfg );
-    virtual ~TeleopJoystickDriver();
+    KeyboardTermioDriver( const InputDriver::Config &cfg );
+    virtual ~KeyboardTermioDriver();
 
     virtual int enable();
     virtual int disable();
 
     // Blocks till new data is available
-    virtual int readdata( orca::Velocity2dCommandPtr &data );
+    virtual int read( orca::Velocity2dCommandPtr &data );
 
 private:
-
-    // returns 0 on success.  Caller should allocate
-    // space for joystickDevice
-    int findUSBJoystick( char *joystickDevice );
 
     orca::Velocity2dCommandPtr command_;
 
@@ -50,8 +48,11 @@ private:
     double deltaSpeed_;     // [m/s]
     double deltaTurnrate_;  // [rad/sec]
 
-    // obscure joystick stuff
-    int jfd_;
+    void keyboardHelp();
+
+    // obscure keyboard stuff
+    int kfd_;
+    struct termio cooked_;
 
 };
 
