@@ -92,8 +92,9 @@ void MainLoop::run()
             // execute algorithm to compute features
             algorithm_ -> computeFeatures( laserConfigPtr_, laserDataPtr, featuresPtr );
             
-            // convert to the robot frame CS
+            // convert to the robot frame CS and add timestamp
             convertToRobotCS( featuresPtr );
+            featuresPtr->timeStamp = laserDataPtr->timeStamp;
             try {
                 // push it to IceStorm
                 polarFeaturesConsumer_->setData( featuresPtr );

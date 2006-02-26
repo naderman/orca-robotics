@@ -23,6 +23,7 @@
 
 #include <orca/orca.ice>
 #include <orca/bros1.ice>
+#include <orca/localise2d.ice>
 
 module orca
 {
@@ -49,9 +50,20 @@ class Feature2d
     int type;
 };
 
+//! 2d Covariance Matrix
+struct PointCovariance2d {
+    //! (0,0)
+    float xx;
+    //! (0,1)
+    float xy;
+    //! (1,1)
+    float yy;
+};
+
 class CartesianPointFeature2d extends Feature2d
 {
-    CartesianPoint2d p;
+    CartesianPoint2d  p;
+    PointCovariance2d c;
 };
 
 // class GaussCartesianPointFeature2d extends CartesianPointFeature
