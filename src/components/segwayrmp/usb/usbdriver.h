@@ -96,6 +96,10 @@ private:
     uint32_t lastRawYaw_;
     uint32_t lastRawForeaft_;
 
+    // for detecting state change
+    int lastStatusWord1_;
+    int lastStatusWord2_;
+
     // Odometry calculation
     double odomX_;
     double odomY_;
@@ -119,8 +123,7 @@ private:
     int diff(uint32_t from, uint32_t to, bool first);
     // bullshit
     bool firstread_;
-    int failCounter_;
-    int repairCounter_;
+    bool repairCounter_;
 
     // chip's utilities
     void watchPacket( CanPacket* pkt, short int pktID );

@@ -35,6 +35,7 @@
 
 using namespace std;
 using namespace orca;
+using orcaice::operator<<;
 
 UsbDriver::UsbDriver()
 {
@@ -52,7 +53,9 @@ UsbDriver::UsbDriver()
 
     firstread_ = true;
     repairCounter_ = 0;
-    failCounter_ = 0;
+
+    lastStatusWord1_ = 0;
+    lastStatusWord2_ = 0;
 }
 
 UsbDriver::~UsbDriver()
@@ -145,8 +148,11 @@ UsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
     updateData( position2d, power, rmpStatus );
 
     // do a status check (before resetting the frame)
-    if ( frame_->status_word1!=128 && frame_->status_word1!=384 ) {  // 384=0x0180 128=0x0080
+    if ( frame_->status_word1!=lastStatusWord1_ && frame_->status_word1!=lastStatusWord2_ ) {
+        cout<<"UsbDriver internal state change : "<<IceUtil::Time::now().toString()<<endl;
         cout<<toString()<<endl;
+        lastStatusWord1_ = frame_->status_word1;
+        lastStatusWord2_ = frame_->status_word2;
     }
 
     frame_->reset();
@@ -156,7 +162,6 @@ UsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
     os << "State1="<<frame_->CuStatus1ToString()<<" State2="<<frame_->CuStatus2ToString();
     status = os.str();
 
-    failCounter_ = 0;
     return 0;
 }
 
@@ -167,9 +172,6 @@ UsbDriver::write( const orca::Velocity2dCommandPtr & command )
 
     int ret = usbio_->writePacket(pkt_);
 
-    if ( ret == 0 ) {
-        failCounter_ = 0;
-    }
     return ret;
 }
 
@@ -226,7 +228,6 @@ int UsbDriver::readFrame()
             if ( frame_->isComplete() )
             {
                 //cout<<"UsbDriver::readFrame: pkts:"<<canPacketsProcessed<<" re-opened: "<<dataFramesReopened<<endl;
-                failCounter_ = 0;
                 return 0;
             }
             else {
