@@ -86,7 +86,7 @@ void MainLoop::run()
         while( isActive() )
         {
             // block on laser data
-            laserDataBuffer_.getNext ( laserDataPtr );
+            laserDataBuffer_.getAndPopNext ( laserDataPtr );
             //cout << "INFO(mainloop.cpp): Getting laserData of size " << laserDataPtr->ranges.size() << " from buffer" << endl << endl;
             
             // execute algorithm to compute features
@@ -107,8 +107,6 @@ void MainLoop::run()
                 
             // Stick it into buffer, so pullers can get it
             polarFeaturesDataBuffer_.push( featuresPtr );
-
-            IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(50));
         }
         cout<<"TRACE(mainloop.cpp): Exitting from run()" << endl;
     }

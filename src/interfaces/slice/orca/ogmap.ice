@@ -53,8 +53,6 @@ be fused to create a larger occupancy-grid map.
 
   The three methods of referring to cells are defined as follows:
 
-  @par ogmap_geometry Geometry
-
       <pre>
      1) GLOBAL COORDINATE SYSTEM              2) CELL INDEXING                 3) DATA STORAGE
          worldCell(double,double)              gridCell(int,int)            e.g. OgMapData->data(index)
