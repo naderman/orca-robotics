@@ -9,10 +9,10 @@ SUBDIRS(
   logger
   logplayer
   orcaguilocal
+  orcamon
   position2dmon
   registryview
   segwayrmp
   sicklaser
-  statusmon
   teleop
 )
