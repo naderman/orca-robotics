@@ -25,18 +25,20 @@
 @ingroup cpp
 @ingroup linux
 @defgroup orca_component_lasermon LaserMon
-@brief A simple component that prints laser ranges (Status: beta)
+@brief A simple component that prints laser ranges
 
-A simple example that connects to a laser server and displays the ranges
-(textually) on a terminal.
-
-Laser scans are displayed as soon as they arrive.
 
 @par Provided Interfaces
--  None.
+
+- @ref orca_interface_home
 
 @par Required Interfaces
+
 - @ref orca_interface_laser
+
+A simple example that connects to a laser server and displays the ranges (textually) in the terminal window.
+
+Laser scans are displayed as soon as they arrive.
 
 @par Configuration
 None.
@@ -47,8 +49,8 @@ An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ director
 
 Cannot run as an IceBox service.
 
-@par Responsible Developer
-Alex Brooks (a.brooks [at] cas.edu.au)
+@par Authors
+Alex Brooks
 
 */
 

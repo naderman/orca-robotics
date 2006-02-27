@@ -19,15 +19,14 @@
  */
 
 #include <orcaice/application.h>
-
-#include <orcaice/application.h>
 #include <orcaice/component.h>
+
+#include <orcaice/orcaice.h>
 #include <iostream>
 
 // implementations of Ice objects
 #include "rangescannerconsumer_i.h"
 
-#include <orcaice/connectutils.h>
 
 using namespace std;
 
@@ -44,7 +43,7 @@ public:
 
 
 LaserMonComponent::LaserMonComponent()
-    : orcaice::Component( "LaserMon" )
+    : orcaice::Component( "LaserMon", orcaice::HomeInterface  )
 {
 }
 

@@ -25,77 +25,70 @@
 @ingroup linux
 @defgroup orca_component_laserfeatureextractor LaserFeatureExtractor
 
-@brief Extracts interesting features from laser scans (Status: beta) 
-
-  The component receives features from laser scans, useful for navigation (eg a slamlocalizer requires such features)
-
-  Types of features extracted:
-
-  - reflectors: anything with high reflectivity
-  - foreground points: things like poles or trees
-  - corners: internal and external corners eg. of buildings
-  - doors: gaps in walls of a certain width
+@brief Extracts interesting features from laser scans
 
 @par Provides
+
+- @ref orca_interface_home
 - @ref orca_interface_polarfeature2d
+- @ref orca_interface_status
 
 @par Requires
+
 - @ref orca_interface_laser
+
+The component receives features from laser scans, useful for navigation. Types of features extracted:
+
+- reflectors: anything with high reflectivity
+- foreground points: things like poles or trees
+- corners: internal and external corners eg. of buildings
+- doors: gaps in walls of a certain width
+
 
 @par Configuration
 
-  The configuration documentation is split into sections for each feature type
+The configuration documentation is split into sections for each feature type
 
-  - Reflectors
-    - ExtractReflectors
-      - boolean
-      - default: true
-    - BackgroundRangeGate
-      - George/Stef, what does this do?
-    - TargetRangeGate
-      - float in metres
-      - Minimum range to target to be considered as a point feature.
-    - MinReturnNumber
-      - integer
-      - Minimum number of bright laser returns to be considered as a point feature.
-    - MinBrightness
-      - integer
-      - minimum intensity value to be considered a feature
-      - default: 1
+Reflectors
 
-  - Foreground Points
-    - ExtractForegroundPoints
-      - boolean
-      - default: 0
-    - MinForegroundWidth
-      - float in metres
-      - minimum width of poles/trees
-    - MaxForegroundWidth
-      - float in metres
-      - maximum width of poles/trees
-    - MinForegroundBackgroundSeparation
-      - float in metres
-      - how far the pole/tree must be from the background
+- @c LaserFeatureExtractor.Config.ExtractReflectors (bool)
+    - Default: true
+- @c LaserFeatureExtractor.Config.BackgroundRangeGate
+    - George/Stef, what does this do?
+- @c LaserFeatureExtractor.Config.TargetRangeGate (float) [m]
+    - Minimum range to target to be considered as a point feature.
+- @c LaserFeatureExtractor.Config.MinReturnNumber (int)
+    - Minimum number of bright laser returns to be considered as a point feature.
+- @c LaserFeatureExtractor.Config.MinBrightness (int)
+    - minimum intensity value to be considered a feature
+    - Default: 1
 
-  - Corners
-    - ExtractCorners
-      - boolean
-      - default: 0
-  - Doors
-    - ExtractDoors
-      - boolean
-      - default: 0
+Foreground Points
+
+- @c LaserFeatureExtractor.Config.ExtractForegroundPoints (bool)
+    - boolean
+    - Default: 0
+- @c LaserFeatureExtractor.Config.MinForegroundWidth (float) [m]
+    - minimum width of poles/trees
+- @c LaserFeatureExtractor.Config.MaxForegroundWidth (float) [m]
+    - maximum width of poles/trees
+- @c LaserFeatureExtractor.Config.MinForegroundBackgroundSeparation (float) [m]
+    - how far the pole/tree must be from the background
+
+Corners
+
+- @c LaserFeatureExtractor.Config.ExtractCorners (bool)
+    - Default: 0
+    
+Doors
+
+- @c LaserFeatureExtractor.Config.ExtractDoors (bool)
+    - Default: 0
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
-@par Dependancies
-
-
-@par Remarks
-
-@par Responsible Developer
-Alex Brooks (algorithm)
-Tobias Kaupp (port from Orca1)
+@par Authors
+Alex Brooks (algorithm), Tobias Kaupp (port from Orca1)
 
 */
 
