@@ -22,6 +22,7 @@
 #define ORCA_OGMAP_ICE
 
 #include <orca/orca.ice>
+#include <orca/bros1.ice>
 
 module orca
 {
@@ -75,7 +76,7 @@ be fused to create a larger occupancy-grid map.
    (note: in (1), the map is aligned with the world axes.  This need not be the case.)
    </pre>
 
-/*
+*/
 class OgMapData extends OrcaObject
 {
     //! The global coordinates of the bottom-left corner of the bottom-left cell
