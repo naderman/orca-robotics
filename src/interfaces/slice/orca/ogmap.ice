@@ -94,6 +94,12 @@ class OgMapData extends OrcaObject
     ByteSequence data;
 };
 
+module ogmapvalues
+{
+    //! The midpoint between occupied and empty
+    const int UNKNOWN = 127;
+};
+
 /*!
  * Data consumer interface
  *
