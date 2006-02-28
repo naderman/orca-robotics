@@ -59,12 +59,12 @@ never issue them.
 
 - @c OgMapLoader.Config.Negate
     - Whether increasing pixel value represents increasing occupancy probability
-    - Use: optional, default = "true"
+    - Use: optional, default = 1
     - Constraints:
         - Type: boolean
         - Valid Values:
-            - false: black is occupied, white is empty
-            - true: white is occupied, black is empty
+            - 0: black is occupied, white is empty
+            - 1: white is occupied, black is empty
 
 Map Geometry (see @ref orca_interface_ogmap for a detailed explanation)
 
