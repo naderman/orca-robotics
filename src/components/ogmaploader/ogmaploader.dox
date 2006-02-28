@@ -1,0 +1,89 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+@ingroup components
+@ingroup apps
+@ingroup cpp
+@ingroup linux
+@defgroup orca_component_ogmaploader OgMapLoader
+  \defgroup ogmaploader OGMapLoader: Loads an occupancy grid from an image
+  \brief Serves an occupancy grid map which is loaded from an image file. Supports most bitmap formats and gzipped pnm
+@par Provides
+
+- @ref orca_interface_home
+- @ref orca_interface_ogmap    
+- @ref orca_interface_status
+
+@par Requires
+
+- none
+
+@par Drivers
+
+- @b fake Serves a bogus made-up map.
+- @b real Loads a real map from a file.
+
+Clients who wish to receive the map need to call getData().
+Subscribing for map updates is pointless, since this component will
+never issue them.
+
+@par Configuration
+
+- @c OgMapLoader.Config.Driver (string)
+    - Which map loader to use
+    - Valid values: { "real", "fake" }
+    - Default: "real"
+
+- @c OgMapLoader.Config.Filename (string)
+    - The name (and path) of the image to load
+    - Use: required, default = "mapfile.pgm.gz"
+    - Constraints:
+      - Type: string
+
+- @c OgMapLoader.Config.Negate
+    - Whether increasing pixel value represents increasing occupancy probability
+    - Use: optional, default = "true"
+    - Constraints:
+        - Type: boolean
+        - Valid Values:
+            - false: black is occupied, white is empty
+            - true: white is occupied, black is empty
+
+Map Geometry (see @ref orca_interface_ogmap for a detailed explanation)
+
+Map Origin (float,float,float) [m,m,deg]
+- @c OgMapLoader.Config.Origin.X
+- @c OgMapLoader.Config.Origin.Y
+- @c OgMapLoader.Config.Origin.Orientation
+
+Cell Size (float,float) [m]
+- @c OgMapLoader.Config.MetresPerCellX
+- @c OgMapLoader.Config.MetresPerCellY
+
+\section deps Dependancies
+gdk-pixbuf-2.0 (usually installed as part of GTK)
+libz
+  
+\section developer Responsible Developer
+Tobias Kaupp (t.kaupp at cas.edu.au)
+  
+*/
+

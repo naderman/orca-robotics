@@ -1,0 +1,19 @@
+DefaultComponentTag=OgMapLoader
+
+# Provided Interfaces
+Provides.OgMap.Type=OgMap
+Provides.OgMap.DefaultInterface=ogmap
+
+# Required Interfaces
+
+# Config Parameters
+Config.Driver.Default=real
+Config.MapFileName.Default=mapfile.pnm.gz
+Config.Negate.Default=1
+
+# Geometry Config
+Config.Origin.X.Default=0.0
+Config.Origin.Y.Default=0.0
+Config.Origin.Orientation.Default=0.0
+Config.MetresPerCellX.Default=0.4
+Config.MetresPerCellY.Default=0.4
