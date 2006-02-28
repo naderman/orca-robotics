@@ -23,6 +23,7 @@
 #include <iostream>
 
 // implementations of Ice objects
+#include "gpsconsumerI.h"
 #include "position2dconsumerI.h"
 #include "powerconsumerI.h"
 #include "rangescannerconsumerI.h"
@@ -105,6 +106,11 @@ void OrcaMonComponent::start()
     else if ( objId=="::orca::Status" )
     {
         attach<orca::StatusPrx,orca::StatusConsumerPrx,StatusConsumerI>
+                ( context(), proxyString );
+    }
+    else if ( objId=="::orca::Gps" )
+    {
+        attach<orca::GpsPrx,orca::GpsConsumerPrx,GpsConsumerI>
                 ( context(), proxyString );
     }
     else
