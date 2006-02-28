@@ -23,9 +23,8 @@
 @ingroup apps
 @ingroup cpp
 @ingroup linux
-@defgroup orca_component_ogmaploader OgMapLoader
-  \defgroup ogmaploader OGMapLoader: Loads an occupancy grid from an image
-  \brief Serves an occupancy grid map which is loaded from an image file. Supports most bitmap formats and gzipped pnm
+@defgroup orca_component_ogmaploader OgMapLoader: Loads an occupancy grid map from an image
+@brief Serves an occupancy grid map which is loaded from an image file. Supports most bitmap formats and gzipped pnm
 @par Provides
 
 - @ref orca_interface_home
