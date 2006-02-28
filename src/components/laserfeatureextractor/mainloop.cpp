@@ -30,6 +30,7 @@ using namespace orca;
 using namespace orcaice;
 using orcaice::operator<<;
 
+#define GET_NEXT_DATA_TIMEOUT 1000
 
 MainLoop::MainLoop( FeatureExtractorBase *algorithm,
                     const PolarFeature2dConsumerPrx &polarFeaturesConsumer,
@@ -86,27 +87,33 @@ void MainLoop::run()
         while( isActive() )
         {
             // block on laser data
-            laserDataBuffer_.getAndPopNext ( laserDataPtr );
-            //cout << "INFO(mainloop.cpp): Getting laserData of size " << laserDataPtr->ranges.size() << " from buffer" << endl << endl;
-            
-            // execute algorithm to compute features
-            algorithm_ -> computeFeatures( laserConfigPtr_, laserDataPtr, featuresPtr );
-            
-            // convert to the robot frame CS and add timestamp
-            convertToRobotCS( featuresPtr );
-            featuresPtr->timeStamp = laserDataPtr->timeStamp;
-            try {
-                // push it to IceStorm
-                polarFeaturesConsumer_->setData( featuresPtr );
-                cout << "INFO(mainloop.cpp): Sending polarfeatures to IceStorm" << endl << endl; 
-                cout << featuresPtr;
+            int ret = laserDataBuffer_.getAndPopNext ( laserDataPtr, GET_NEXT_DATA_TIMEOUT );
+            if (ret == 0)
+            {
+              //cout << "INFO(mainloop.cpp): Getting laserData of size " << laserDataPtr->ranges.size() << " from buffer" << endl << endl;
+              
+              // execute algorithm to compute features
+              algorithm_ -> computeFeatures( laserConfigPtr_, laserDataPtr, featuresPtr );
+              
+              // convert to the robot frame CS and add timestamp
+              convertToRobotCS( featuresPtr );
+              featuresPtr->timeStamp = laserDataPtr->timeStamp;
+              try {
+                  // push it to IceStorm
+                  polarFeaturesConsumer_->setData( featuresPtr );
+                  cout << "INFO(mainloop.cpp): Sending polarfeatures to IceStorm" << endl << endl; 
+                  cout << featuresPtr;
+              }
+              catch ( Ice::ConnectionRefusedException &e ) {
+                  cout<<"TRACE(mainloop.cpp): WARNING: Failed push to IceStorm." << endl;
+              }
+                  
+              // Stick it into buffer, so pullers can get it
+              polarFeaturesDataBuffer_.push( featuresPtr );
+            } else {
+              cout<<"TRACE(mainloop.cpp): WARNING: Timeout waiting for laser data." << endl;
             }
-            catch ( Ice::ConnectionRefusedException &e ) {
-                cout<<"TRACE(mainloop.cpp): WARNING: Failed push to IceStorm." << endl;
-            }
-                
-            // Stick it into buffer, so pullers can get it
-            polarFeaturesDataBuffer_.push( featuresPtr );
+              
         }
         cout<<"TRACE(mainloop.cpp): Exitting from run()" << endl;
     }
