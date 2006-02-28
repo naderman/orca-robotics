@@ -52,7 +52,7 @@ class Platform2dConfig extends OrcaObject
 
     Platform2d is an "active" Position2d. In addition to serving its current position2d it also accepts motion commands.
 
-    Note that this platform only accepts velocity commands (unlike in Player where position2d interface also accepts waypoint commands). The rational is that planners/navigators should think in terms of waypoints, not the hardware.
+    Note that this platform only accepts velocity commands (unlike in Player where position2d interface also accepts waypoint commands). The rationale is that planners/navigators should think in terms of waypoints, not the hardware.
 */
 interface Platform2d extends Position2d
 {

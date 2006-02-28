@@ -8,6 +8,7 @@ SUBDIRS(
   lasermon
   logger
   logplayer
+  ogmaploader
   orcaguilocal
   orcamon
   position2dmon
