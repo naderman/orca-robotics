@@ -2,10 +2,12 @@
 
 MESSAGE ( "== UTILITIES ==" )
 
-# when adding new directories, please maintain alphabetical order
+# when adding new directories, please maintain alphabetical order 
+# unless there are inter-dependencies.
 SUBDIRS(  
 # LIBRARIES
   orcaice
+  orcacm
   orcadef
   liborcaguitools
   libqorcauml
