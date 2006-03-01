@@ -17,31 +17,22 @@
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef ORCA2_FAKE_EXTRACTOR_H
-#define ORCA2_FAKE_EXTRACTOR_H
+ 
+#ifndef ORCA2_LASERFEATUREEXTRACTOR_FAKE_DRIVER_H
+#define ORCA2_LASERFEATUREEXTRACTOR_FAKE_DRIVER_H
 
-#include "featureextractorbase.h"
-#include "configparameters.h"
+#include "algorithmdriver.h"
 
-/*
-
-\brief
-
-\author Tobias Kaupp t.kaupp at cas.edu.au
-
-*/
-class FakeExtractor: public FeatureExtractorBase 
+class FakeDriver: public AlgorithmDriver
 {
 
 public:
 
-    FakeExtractor();
-    virtual ~FakeExtractor();
+    FakeDriver( const Config & config );
     
-    int initialize( ConfigParameters *configParameters );
-    int computeFeatures( const orca::RangeScannerConfigPtr laserConfigPtr, const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr);
-    
-private:
+    virtual int computeFeatures( const orca::RangeScannerConfigPtr & laserConfigPtr,
+                                 const orca::LaserDataPtr & laserDataPtr,
+                                 const orca::PolarFeature2dDataPtr & featureDataPtr );
 
 };
 

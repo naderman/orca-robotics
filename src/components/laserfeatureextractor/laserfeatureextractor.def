@@ -8,7 +8,7 @@ Requires.Laser.Type=Laser
 Requires.Laser.DefaultProxy=laser@local/sicklaser
 
 # component configuration
-Config.AlgorithmType.Default=extractorOne
+Config.Driver.Default=combined
 Config.BackgroundRangeGate.Default=80.0 
 Config.TargetRangeGate.Default=0.5 
 Config.MinReturnNumber.Default=1 

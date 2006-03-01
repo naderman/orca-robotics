@@ -21,9 +21,6 @@
 #ifndef ORCA_LASER_CONSUMER_I_H
 #define ORCA_LASER_CONSUMER_I_H
 
-// include defnition of Ice runtime
-#include <Ice/Ice.h>
-
 #include <orca/laser.h>
 #include <orcaice/ptrbuffer.h>
 
@@ -31,6 +28,7 @@ class LaserConsumerI : public orca::RangeScannerConsumer
 {
     public:
         LaserConsumerI ( orcaice::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer );
+        
         virtual void setData(const orca::RangeScannerDataPtr& data, const Ice::Current&);
         
     private:

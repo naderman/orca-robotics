@@ -18,10 +18,11 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "polefinder.h"
 #include <math.h>
 #include <iostream>
 #include <assert.h>
+
+#include "polefinder.h"
 
 using namespace std;
 

@@ -19,108 +19,99 @@
  */
 
 #include <iostream>
+#include <orcaice/orcaice.h>
 
 #include "laserfeatureextractorcomponent.h"
 
-#include "mainloop.h"
-#include "featureextractorbase.h"
-#include "fakeextractor.h"
-#include "extractorone.h"
+#include "algorithmhandler.h"
 
-#include <orcaice/orcaice.h>
+// interface implementations
+#include "laserconsumerI.h"
+#include "polarfeature2dI.h"
 
 using namespace std;
 using namespace orca;
 
 LaserFeatureExtractorComponent::LaserFeatureExtractorComponent()
     : orcaice::Component( "LaserFeatureExtractor" ),
-      mainLoop_(0)
+      algorithmHandler_(0)
 {
 }
 
 LaserFeatureExtractorComponent::~LaserFeatureExtractorComponent()
 {
-    // do not delete mainLoop_!!! They derive from Ice::Thread and self-destruct.
+    // do not delete algorithmHandler_!!! They derive from Ice::Thread and self-destruct.
 }
 
-// warning: this function returns after it's done, all variable that need to be permanet must
+// warning: this function returns after it's done, all variable that need to be permanent must
 //          be declared as member variables.
 void LaserFeatureExtractorComponent::start()
 {
-    // config file parameters: none at the moment
-    std::string prefix = tag() + ".Config.";
-    prop_ = communicator()->getProperties();
-
     //
     // PROVIDED: PolarFeatures
     //
     // find IceStorm publisher
-    IceStorm::TopicPrx topicPrx =
-        orcaice::connectToTopicWithTag<PolarFeature2dConsumerPrx>
-                    ( context(),polarFeaturePublisher_, "PolarFeature2d" );
+    // NetworkException will kill it, that's what we want.
+    IceStorm::TopicPrx topicPrx = orcaice::connectToTopicWithTag<PolarFeature2dConsumerPrx>
+                                        ( context(), polarFeaturePublisher_, "PolarFeature2d" );
     // create servant for direct connections and tell adapter about it
-    polarFeature_ = new PolarFeature2dI( polarFeaturesDataBuffer_, topicPrx );
-    orcaice::createInterfaceWithTag( context(), polarFeature_, "PolarFeature2d" );
+    Ice::ObjectPtr polarFeatureObj = new PolarFeature2dI( polarFeaturesDataBuffer_, topicPrx );
+    // two possible exceptions will kill it here, that's what we want
+    orcaice::createInterfaceWithTag( context(), polarFeatureObj, "PolarFeature2d" );
 
-    //
-    // REQUIRED: Laser
-    //
-    Ice::ObjectPtr consumer  = new LaserConsumerI( laserDataBuffer_ );
-    laserCallbackPrx_ = orcaice::createConsumerInterface<orca::RangeScannerConsumerPrx>( context(),
-                                                                                             consumer );
 
-    // connect to remote Laser interface
-    orcaice::connectToInterfaceWithTag<LaserPrx>( context(), laserPrx_, "Laser" );
+    // REQUIRED : Laser
+    orca::LaserPrx laserPrx;
+    while ( isActive() ) {
+        try
+        {
+            orcaice::connectToInterfaceWithTag<LaserPrx>( context(), laserPrx, "Laser" );
+            context().tracer()->debug("connected to a 'Laser' interface",5);
+            break;
+        }
+        // includes common ex's: ConnectionRefusedException, ConnectTimeoutException
+        catch ( const Ice::LocalException & e )
+        {
+            context().tracer()->info("failed to connect to a remote interface. Will try again after 2 seconds.");
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        }
+    }
+
+    // create a callback object to recieve scans
+    Ice::ObjectPtr consumer = new LaserConsumerI( laserDataBuffer_ );
+    orca::RangeScannerConsumerPrx callbackPrx =
+        orcaice::createConsumerInterface<orca::RangeScannerConsumerPrx>( context(), consumer );
     
     //
     // ENABLE NETWORK CONNECTIONS
     //
+    // this may throw, but may as well quit right then
     activate();
 
     //
     // Subscribe for data
     //
-    try
+    while ( isActive() )
     {
-        laserPrx_->subscribe( laserCallbackPrx_ );
-    }
-    catch ( const orca::SubscriptionFailedException & e )
-    {
-        tracer()->error( "failed to subscribe to laser data. Quitting..." );
-        exit(1);
-    }
-   
-    // ================== ALGORITHMS ================================
-    std::string algorithmType;
-    int ret = orcaice::getProperty( prop_, prefix+"AlgorithmType", algorithmType );
-    if ( ret != 0 )
-    {
-        std::string errString = "Couldn't determine algorithmType. Expected property ";
-        errString += prefix + "AlgorithmType";
-        tracer()->error( errString );
-        throw orcaice::Exception( ERROR_INFO, errString );
+        try
+        {
+            laserPrx->subscribe( callbackPrx );
+            break;
+        }
+        catch ( const orca::SubscriptionFailedException & e )
+        {
+            tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+        }
     }
     
-    if ( algorithmType == "fake" )
-    {
-         algorithm_ = new FakeExtractor;
-    }
-    else if ( algorithmType == "extractorOne" )
-    {
-         algorithm_ = new ExtractorOne;
-    }
-    else
-    {
-        std::string errString = "Unknown algorithmType: " + algorithmType;
-        tracer()->error( errString );
-        throw orcaice::Exception( ERROR_INFO, errString );
-        return;
-    }
-    
-    mainLoop_ = new MainLoop( algorithm_, polarFeaturePublisher_, laserPrx_,
-                              laserDataBuffer_, polarFeaturesDataBuffer_,
-                              &prop_, prefix );
-    mainLoop_->start();
+    // the constructor may throw, we'll let the application shut us down
+    algorithmHandler_ = new AlgorithmHandler( polarFeaturePublisher_,
+                                              laserPrx,
+                                              laserDataBuffer_,
+                                              polarFeaturesDataBuffer_,
+                                              context() );
+    algorithmHandler_->start();
     
     // the rest is handled by the application/service
 }
@@ -130,11 +121,11 @@ void LaserFeatureExtractorComponent::stop()
     tracer()->debug( "component is stopping...",5 );
 
     // make sure that the main loop was actually created
-    if ( mainLoop_ ) {
+    if ( algorithmHandler_ ) {
         // Tell the main loop to stop
-        mainLoop_->stop();
+        algorithmHandler_->stop();
     
         // Then wait for it
-        mainLoop_->getThreadControl().join();
+        algorithmHandler_->getThreadControl().join();
     }
 }

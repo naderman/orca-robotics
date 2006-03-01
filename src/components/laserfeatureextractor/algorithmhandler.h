@@ -18,40 +18,35 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_FEATUREEXTRACTOR_MAINLOOP_H
-#define ORCA2_FEATUREEXTRACTOR_MAINLOOP_H
-
-#include <Ice/Ice.h>
-#include <IceStorm/IceStorm.h>
+#ifndef ORCA2_FEATURE_EXTRACTOR_ALGORITHM_HANDLER_H
+#define ORCA2_FEATURE_EXTRACTOR_ALGORITHM_HANDLER_H
 
 #include <orcaice/thread.h>
 #include <orcaice/ptrbuffer.h>
+#include <orcaice/context.h>
+
 #include <orca/polarfeature2d.h>
 #include <orca/laser.h>
 
-#include "featureextractorbase.h"
+class AlgorithmDriver;
 
-#include <string>
-
-class MainLoop : public orcaice::Thread
+class AlgorithmHandler : public orcaice::Thread
 {
 public:
 
-    MainLoop(   FeatureExtractorBase *algorithm,
-                const orca::PolarFeature2dConsumerPrx &polarFeaturesConsumer,
-                orca::LaserPrx laserPrx,
-                orcaice::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer,
-                orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
-                Ice::PropertiesPtr *prop,
-                std::string prefix );
-    ~MainLoop();
+    AlgorithmHandler( const orca::PolarFeature2dConsumerPrx &polarFeaturesConsumer,
+                    orca::LaserPrx laserPrx,
+                    orcaice::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer,
+                    orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
+                    const orcaice::Context & context );
+    ~AlgorithmHandler();
 
     virtual void run();
 
 private:
     
     // generic algorithm
-    FeatureExtractorBase *algorithm_;
+    AlgorithmDriver* driver_;
     
     // IceStorm consumer
     const orca::PolarFeature2dConsumerPrx &polarFeaturesConsumer_; 
@@ -67,13 +62,11 @@ private:
     orcaice::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer_;
     orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer_;
     
-    // access to configuration parameters
-    Ice::PropertiesPtr *prop_;
-    
-    std::string prefix_;
-    
-    void convertToRobotCS(orca::PolarFeature2dDataPtr featuresPtr);
-    
+    void convertToRobotCS( const orca::PolarFeature2dDataPtr & featuresPtr );
+
+    orcaice::Context context_;
+
+    void init();
 };
 
 #endif

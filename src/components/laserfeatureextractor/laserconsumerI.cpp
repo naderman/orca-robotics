@@ -17,38 +17,17 @@
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef ORCA2_FEATURE_EXTRACTOR_BASE_H
-#define ORCA2_FEATURE_EXTRACTOR_BASE_H
 
-#include "configparameters.h"
+#include "laserconsumerI.h"
 
-/*
-
-\brief Abstract class for a laser feature extractor
-
-\author Tobias Kaupp t.kaupp at cas.edu.au
-
-*/
-
-#include <orca/polarfeature2d.h>
-#include <orca/laser.h>
-
-class FeatureExtractorBase 
+LaserConsumerI::LaserConsumerI( orcaice::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer )
+    : laserDataBuffer_(laserDataBuffer)
 {
 
-public:
+}
 
-    FeatureExtractorBase();
-    virtual ~FeatureExtractorBase();
-    
-    // Passes configuration parameters to algorithm which initializes itself
-    virtual int initialize( ConfigParameters *configParameters) = 0;
-    
-    // Computes the features
-    virtual int computeFeatures( const orca::RangeScannerConfigPtr laserConfigPtr, const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr) = 0;
-
-private:
-
-};
-
-#endif
+void LaserConsumerI::setData( const orca::RangeScannerDataPtr& data, const Ice::Current& )
+{
+    //cout << "INFO(laserconsumer_i.cpp): Received laserscan. Putting it into buffer now" << endl << endl;
+    laserDataBuffer_.push( orca::LaserDataPtr::dynamicCast( data ) );
+}

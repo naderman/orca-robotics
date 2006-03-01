@@ -24,12 +24,10 @@
 // include defnition of Ice runtime
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
+#include <orcaice/ptrbuffer.h>
 
 // include provided interfaces
 #include <orca/polarfeature2d.h>
-
-// utilities
-#include <orcaice/ptrbuffer.h>
 
 
 //
@@ -40,7 +38,8 @@
 class PolarFeature2dI : public orca::PolarFeature2d
 {
 public:
-    PolarFeature2dI( orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeatureDataBuffer, const IceStorm::TopicPrx &topic );
+    PolarFeature2dI( orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> & polarFeatureDataBuffer,
+                     const IceStorm::TopicPrx & topicPrx );
 
     // remote calls:
 
@@ -58,9 +57,9 @@ public:
 private:
 
     // the driver will put the latest data into this buffer
-    orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeatureDataBuffer_;
+    orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> & polarFeatureDataBuffer_;
     
-    const IceStorm::TopicPrx topic_;
+    const IceStorm::TopicPrx topicPrx_;
 };
 
 

@@ -17,7 +17,6 @@
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#include "fakeextractor.h"
 
 #include <orcaice/objutils.h>
 #include <iostream>
@@ -26,27 +25,19 @@
 // For definitions of feature types:
 #include <orca/featuremap2d.h>
 
+#include "fakedriver.h"
 
-using namespace orca;
 using namespace std;
 using namespace orcaice;
 
-FakeExtractor::FakeExtractor()
+FakeDriver::FakeDriver( const Config & config )
+    : AlgorithmDriver( config )
 {
 }
 
-FakeExtractor::~FakeExtractor()
-{
-}
-
-int FakeExtractor:: initialize( ConfigParameters *configParameters )
-{
-    return 0;
-}
-
-int FakeExtractor::computeFeatures( const orca::RangeScannerConfigPtr laserConfigPtr,
-                                    const orca::LaserDataPtr laserDataPtr,
-                                    PolarFeature2dDataPtr featureDataPtr)
+int FakeDriver::computeFeatures( const orca::RangeScannerConfigPtr & laserConfigPtr,
+                                 const orca::LaserDataPtr & laserDataPtr,
+                                 const orca::PolarFeature2dDataPtr & featureDataPtr )
 {
     // make up some features
     cout << "INFO(fakeextractor.cpp): Laser configuration received: " << laserConfigPtr << endl;
@@ -65,7 +56,7 @@ int FakeExtractor::computeFeatures( const orca::RangeScannerConfigPtr laserConfi
 
     for (uint i=0; i<10; i++)
     {
-        featureDataPtr->features[i] = new SinglePolarFeature2d;
+        featureDataPtr->features[i] = new orca::SinglePolarFeature2d;
         featureDataPtr->features[i]->type = orca::feature::FOREGROUNDPOINT;
         featureDataPtr->features[i]->p.r  = range;
         featureDataPtr->features[i]->p.o  = bearing;

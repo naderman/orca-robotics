@@ -7,8 +7,9 @@ IF( BUILD_LASERFEATUREEXTRACTOR )
     
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
     SET( COMMON_SRCS
-            extractorone featureextractorbase laserfeatureextractorcomponent
-            polarfeature2d_i fakeextractor laserconsumer_i mainloop svd section polefinder
+            laserfeatureextractorcomponent algorithmhandler
+            fakedriver combineddriver  svd section polefinder
+            polarfeature2dI laserconsumerI
     )
     
     # Files for the component

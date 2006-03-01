@@ -18,19 +18,20 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "polarfeature2d_i.h"
 #include <iostream>
+
+#include "polarfeature2dI.h"
 
 using namespace std;
 using namespace orca;
 using namespace orcaice;
 
-PolarFeature2dI::PolarFeature2dI( PtrBuffer<PolarFeature2dDataPtr> &polarFeatureDataBuffer, const IceStorm::TopicPrx &topic ) 
-    : polarFeatureDataBuffer_( polarFeatureDataBuffer ), topic_(topic)
+PolarFeature2dI::PolarFeature2dI( PtrBuffer<PolarFeature2dDataPtr> &polarFeatureDataBuffer,
+                                  const IceStorm::TopicPrx &topicPrx ) 
+    : polarFeatureDataBuffer_( polarFeatureDataBuffer ),
+      topicPrx_(topicPrx)
 {
-
 }
-
 
 // served out the data to the client (it was stored here by the driver at the last read)
 PolarFeature2dDataPtr PolarFeature2dI::getData(const Ice::Current& current) const
@@ -57,11 +58,11 @@ void PolarFeature2dI::subscribe(const ::orca::PolarFeature2dConsumerPrx &subscri
 {
     cout<<"INFO(polarfeature2d_i.cpp): Subscribtion request"<<endl;
     IceStorm::QoS qos;
-    topic_->subscribe( qos, subscriber );
+    topicPrx_->subscribe( qos, subscriber );
 }
 
 void PolarFeature2dI::unsubscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber, const ::Ice::Current&)
 {
     cout<<"INFO(polarfeature2d_i.cpp): Unsubscribe request"<<endl;
-    topic_->unsubscribe( subscriber );
+    topicPrx_->unsubscribe( subscriber );
 }

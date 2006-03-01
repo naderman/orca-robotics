@@ -17,7 +17,6 @@
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#include "extractorone.h"
 
 #include <orcaice/objutils.h>
 #include <iostream>
@@ -26,57 +25,64 @@
 // For definitions of feature types:
 #include <orca/featuremap2d.h>
 
+#include "combineddriver.h"
 #include "svd.h"
 #include "polefinder.h"
 
-using namespace orca;
+
+// Stage values....Real Values
+#define MAX_RANGE    79.99     // 7.99    79.99
+#define NO_SECTION    -1
+#define RANGE_DELTA     1.0    // 0.10    0.2
+#define BREAK_DIST     0.5    // 0.4    0.2
+#define MIN_POINTS_IN_LINE   6    // 6      6
+#define ERROR_THRESHOLD   0.24    // 0.10    0.24
+#define CORNER_BOUND     0.45    // 0.45    0.45
+#define POSSIBLE_BOUND    0.2    // ???    0.2
+
 using namespace std;
 using namespace orcaice;
 
-ExtractorOne::ExtractorOne()
+CombinedDriver::CombinedDriver( const Config & config )
+    : AlgorithmDriver( config )
 {
     laserRange_ = MAX_RANGE;
 }
 
-ExtractorOne::~ExtractorOne()
+CombinedDriver::~CombinedDriver()
 {
 }
 
-int ExtractorOne::initialize( ConfigParameters *configParameters )
-{   
-    backgroundRangeGate_ = configParameters -> backgroundRangeGate;
-    featureRangeGate_  = configParameters -> targetRangeGate;  
-    minReturns_  = configParameters -> minReturnNumber;
-    minBrightness_ = configParameters -> minBrightness;
-    extractReflectors_ = configParameters -> extractReflectors;
-    extractForegroundPoints_ = configParameters -> extractForegroundPoints;
-    extractCorners_ = configParameters -> extractCorners;
-    extractDoors_ = configParameters -> extractDoors;
-    minForegroundWidth_ = configParameters -> minForegroundWidth;
-    maxForegroundWidth_ = configParameters -> maxForegroundWidth;
-    minForegroundBackgroundSeparation_ = configParameters -> minForegroundBackgroundSeparation;
-    
-    return 0;
-}
-
-int ExtractorOne::computeFeatures( const RangeScannerConfigPtr laserConfigPtr, const LaserDataPtr laserDataPtr, PolarFeature2dDataPtr featureDataPtr)
+int
+CombinedDriver::computeFeatures( const orca::RangeScannerConfigPtr & laserConfigPtr,
+                                 const orca::LaserDataPtr & laserDataPtr,
+                                 const orca::PolarFeature2dDataPtr & featureDataPtr )
 {
-    featureDataPtr -> features.clear();
+    featureDataPtr->features.clear();
 
-    if (extractReflectors_)
+    if ( config_.extractReflectors ) {
         extractLaserReflectors(laserDataPtr, featureDataPtr);
-    if (extractForegroundPoints_)
+    }
+    
+    if ( config_.extractForegroundPoints ) {
         extractForegroundPoints(laserConfigPtr, laserDataPtr, featureDataPtr);
-    if (extractDoors_)
+    }
+    
+    if ( config_.extractDoors ) {
         extractDoors(laserDataPtr, featureDataPtr);
-    if (extractCorners_)
+    }
+    
+    if ( config_.extractCorners ) {
         extractCorners(laserDataPtr, featureDataPtr);
+    }
   
     return 0;
 }
 
 
-bool ExtractorOne::extractLaserReflectors(const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr)
+bool
+CombinedDriver::extractLaserReflectors( const orca::LaserDataPtr & laserDataPtr,
+                                        const orca::PolarFeature2dDataPtr & featureDataPtr)
 {
     bool buildingTarget = false;
 
@@ -88,14 +94,14 @@ bool ExtractorOne::extractLaserReflectors(const orca::LaserDataPtr laserDataPtr,
     // for each return
     for ( uint i=1; i<laserDataPtr->ranges.size()-1; i++ )
     {
-        //if ( laserDataPtr.intensity(i) >= minBrightness_ && fabs( laserDataPtr.range(i-1) - laserDataPtr.range(i) ) < backgroundRangeGate_ )
+        //if ( laserDataPtr.intensity(i) >= config_.minBrightness && fabs( laserDataPtr.range(i-1) - laserDataPtr.range(i) ) < config_.backgroundRangeGate )
         // George:
-        // include laser range and check on both sides of the return for 'possible doggy' range
+        // include laser range and check on both sides of the return for 'possible dodgy' range
         // for a range to be doggy it usually has to have both both neighbouring ranges far away. 
-        if ( laserDataPtr->intensities[i] >= minBrightness_ &&
+        if ( laserDataPtr->intensities[i] >= config_.minBrightness &&
              laserDataPtr->ranges[i] < laserRange_ &&
-             ( fabs( laserDataPtr->ranges[i-1] - laserDataPtr->ranges[i] ) < backgroundRangeGate_ ||
-               fabs( laserDataPtr->ranges[i+1] - laserDataPtr->ranges[i] ) < backgroundRangeGate_  ) )
+             ( fabs( laserDataPtr->ranges[i-1] - laserDataPtr->ranges[i] ) < config_.backgroundRangeGate ||
+               fabs( laserDataPtr->ranges[i+1] - laserDataPtr->ranges[i] ) < config_.backgroundRangeGate  ) )
         {
             // start building a new cluster of high intensity returns
             if ( buildingTarget == false )
@@ -108,7 +114,7 @@ bool ExtractorOne::extractLaserReflectors(const orca::LaserDataPtr laserDataPtr,
             }
 
             // if the new return is close enough to the current average include it in the estimate
-            if ( fabs(laserDataPtr->ranges[i] - featureRange/featureNumPnts) < featureRangeGate_ )
+            if ( fabs(laserDataPtr->ranges[i] - featureRange/featureNumPnts) < config_.targetRangeGate )
             {
                 ++featureNumPnts;
 
@@ -129,11 +135,11 @@ bool ExtractorOne::extractLaserReflectors(const orca::LaserDataPtr laserDataPtr,
                 // works, so will disable it and just check minReturns_.
                 
                 // again make sure that the feature is not a foreground point
-                //if ( fabs( laserDataPtr.range(i) -  laserDataPtr.range(i+1) ) < backgroundRangeGate_ && featureNumPnts >= minReturns_ )
+                //if ( fabs( laserDataPtr.range(i) -  laserDataPtr.range(i+1) ) < config_.backgroundRangeGate && featureNumPnts >= minReturns_ )
 
                 if ( featureNumPnts >= minReturns_ )
                 {                 
-                    orca::SinglePolarFeature2dPtr pp = new SinglePolarFeature2d;
+                    orca::SinglePolarFeature2dPtr pp = new orca::SinglePolarFeature2d;
                     pp->type = orca::feature::LASERREFLECTOR;
                     pp->p.r  = featureRange / featureNumPnts;
                     pp->p.o  = featureBearing / featureNumPnts;
@@ -147,7 +153,9 @@ bool ExtractorOne::extractLaserReflectors(const orca::LaserDataPtr laserDataPtr,
     return 0;  
 }
 
-bool ExtractorOne::extractForegroundPoints(const RangeScannerConfigPtr laserConfigPtr, const LaserDataPtr laserDataPtr, PolarFeature2dDataPtr featureDataPtr)
+bool CombinedDriver::extractForegroundPoints( const orca::RangeScannerConfigPtr & laserConfigPtr,
+                                              const orca::LaserDataPtr & laserDataPtr,
+                                              const orca::PolarFeature2dDataPtr & featureDataPtr)
 {
     std::vector<orca_polefinder::positionRB> poles;
 
@@ -156,15 +164,15 @@ bool ExtractorOne::extractForegroundPoints(const RangeScannerConfigPtr laserConf
     int numPoles = orca_polefinder::detect_poles( laserConfigPtr,
                                                   laserDataPtr,
                                                   laserRange_,
-                                                  minForegroundWidth_,
-                                                  maxForegroundWidth_,
-                                                  minForegroundBackgroundSeparation_,
+                                                  config_.minForegroundWidth,
+                                                  config_.maxForegroundWidth,
+                                                  config_.minForegroundBackgroundSeparation,
                                                   minAngleFromDodge,
                                                   poles );
     
     for ( int i=0; i < numPoles; i++ )
     {
-        SinglePolarFeature2dPtr pp = new SinglePolarFeature2d;
+        orca::SinglePolarFeature2dPtr pp = new orca::SinglePolarFeature2d;
         pp->type = orca::feature::FOREGROUNDPOINT;
         pp->p.r  = poles[i].range;
         pp->p.o  = poles[i].bearing;
@@ -175,7 +183,8 @@ bool ExtractorOne::extractForegroundPoints(const RangeScannerConfigPtr laserConf
 
 }
 
-bool ExtractorOne::extractDoors(const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr)
+bool CombinedDriver::extractDoors(const orca::LaserDataPtr & laserDataPtr,
+                                  const orca::PolarFeature2dDataPtr & featureDataPtr)
 {
     unsigned int i;
     bool buildingTarget = false;
@@ -220,12 +229,12 @@ bool ExtractorOne::extractDoors(const orca::LaserDataPtr laserDataPtr, orca::Pol
                 if (featureNumPnts > 5 && door_width_sq > min_width &&
                     door_width_sq < max_width )
                 {
-                    SinglePolarFeature2dPtr pp1 = new SinglePolarFeature2d;
+                    orca::SinglePolarFeature2dPtr pp1 = new orca::SinglePolarFeature2d;
                     pp1->type = orca::feature::DOOR;
                     pp1->p.r = startRange;
                     pp1->p.o = startBearing;
 
-                    SinglePolarFeature2dPtr pp2 = new SinglePolarFeature2d;
+                    orca::SinglePolarFeature2dPtr pp2 = new orca::SinglePolarFeature2d;
                     pp2->type = orca::feature::DOOR;
                     pp2->p.r = stopRange;
                     pp2->p.o = stopBearing;
@@ -258,7 +267,9 @@ bool ExtractorOne::extractDoors(const orca::LaserDataPtr laserDataPtr, orca::Pol
 
 }
 
-bool ExtractorOne::extractCorners(const orca::LaserDataPtr laserDataPtr, orca::PolarFeature2dDataPtr featureDataPtr)
+bool
+CombinedDriver::extractCorners( const orca::LaserDataPtr & laserDataPtr,
+                                const orca::PolarFeature2dDataPtr & featureDataPtr)
 {
     //calculatePos(scan);
     sections_.clear();
@@ -300,7 +311,7 @@ bool ExtractorOne::extractCorners(const orca::LaserDataPtr laserDataPtr, orca::P
                 if (cornerY < 0) {
                     bearing = -bearing;
                 }
-                SinglePolarFeature2dPtr pp = new SinglePolarFeature2d;
+                orca::SinglePolarFeature2dPtr pp = new orca::SinglePolarFeature2d;
                 pp->type = orca::feature::CORNER;
                 pp->p.r = range;
                 pp->p.o = bearing;
@@ -317,7 +328,7 @@ bool ExtractorOne::extractCorners(const orca::LaserDataPtr laserDataPtr, orca::P
 
 }
 
-void ExtractorOne::connectSections(const orca::LaserDataPtr laserDataPtr)
+void CombinedDriver::connectSections(const orca::LaserDataPtr & laserDataPtr)
 {
     //Section *head = new Section();
     //Section *current = head;
@@ -373,7 +384,7 @@ void ExtractorOne::connectSections(const orca::LaserDataPtr laserDataPtr)
     //return head;
 }
 
-void ExtractorOne::extractLines()
+void CombinedDriver::extractLines()
 {
     //std::cout << "Extracting lines from " << sections_.size() << " initial sections" << std::endl;
   
@@ -430,7 +441,7 @@ void ExtractorOne::extractLines()
 
 }
 
-void ExtractorOne::findBreakPoint(Section &s, double &maxDist, int &pos)
+void CombinedDriver::findBreakPoint(Section &s, double &maxDist, int &pos)
 {
     maxDist = 0;
     pos = 0;
@@ -492,7 +503,7 @@ void ExtractorOne::findBreakPoint(Section &s, double &maxDist, int &pos)
     //std::cout <<  "Found max distance " << maxDist << std::endl;
 }
 
-void ExtractorOne::fitLine(Section &s)
+void CombinedDriver::fitLine(Section &s)
 {
     double centX = 0;
     double centY = 0;
@@ -561,7 +572,7 @@ void ExtractorOne::fitLine(Section &s)
     delete V;
 }
 
-void ExtractorOne::printSections()
+void CombinedDriver::printSections()
 {
     int count = 0;
 
@@ -588,9 +599,7 @@ void ExtractorOne::printSections()
     cout << " - Count: " << count << endl;
 }
     
-
-
-bool ExtractorOne::extractPossibleCorners(PolarFeature2dDataPtr featureDataPtr)
+bool CombinedDriver::extractPossibleCorners( const orca::PolarFeature2dDataPtr & featureDataPtr )
 {
 //  return false; // for now, we won't be looking for possible corners...
 
@@ -612,7 +621,7 @@ bool ExtractorOne::extractPossibleCorners(PolarFeature2dDataPtr featureDataPtr)
                 SectionEl pret = prev->elements.back();
                 SectionEl iret = itr->elements.front();
                 if (iret.range() > pret.range() + POSSIBLE_BOUND) {
-                    SinglePolarFeature2dPtr pp = new SinglePolarFeature2d;
+                    orca::SinglePolarFeature2dPtr pp = new orca::SinglePolarFeature2d;
                     pp->type = orca::feature::POSSIBLECORNER;
                     pp->p.r = pret.range();
                     pp->p.o = pret.bearing();
@@ -625,7 +634,7 @@ bool ExtractorOne::extractPossibleCorners(PolarFeature2dDataPtr featureDataPtr)
                 SectionEl pret = prev->elements.back();
                 SectionEl iret = itr->elements.front();
                 if (pret.range() > iret.range() + POSSIBLE_BOUND) {
-                    SinglePolarFeature2dPtr pp = new SinglePolarFeature2d;
+                    orca::SinglePolarFeature2dPtr pp = new orca::SinglePolarFeature2d;
                     pp->type = orca::feature::POSSIBLECORNER;
                     pp->p.r = iret.range();
                     pp->p.o = iret.bearing();
@@ -636,5 +645,3 @@ bool ExtractorOne::extractPossibleCorners(PolarFeature2dDataPtr featureDataPtr)
     }
     return true;
 }
-
-    
