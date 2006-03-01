@@ -161,7 +161,9 @@ void AlgorithmHandler::run()
             polarFeaturesDataBuffer_.push( featureData );
         }
         else {
-            cout<<"TRACE(mainloop.cpp): WARNING: Timeout waiting for laser data." << endl;
+            stringstream ss;
+            ss << "Timed out (" << timeoutMs << "ms) waiting for laser data.";
+            context_.tracer()->warning( ss.str() );
         }
 
     } // while
