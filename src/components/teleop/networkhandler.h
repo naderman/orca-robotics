@@ -43,9 +43,6 @@ public:
 
 private:
 
-    // remote object
-    orca::Platform2dPrx platform2dPrx_;
-
     // network/driver interface
     orcaice::PtrBuffer<orca::Velocity2dCommandPtr>* commandBuffer_;
 

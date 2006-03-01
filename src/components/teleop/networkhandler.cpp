@@ -63,10 +63,11 @@ void NetworkHandler::run()
             context_.properties(), "Teleop.Config.RepeatInterval", 0.2 ) );
 
     // REQUIRED : Platform2d
+    orca::Platform2dPrx platform2dPrx;
     while ( isActive() ) {
         try
         {
-            orcaice::connectToInterfaceWithTag<Platform2dPrx>( context_, platform2dPrx_, "Platform2d" );
+            orcaice::connectToInterfaceWithTag<Platform2dPrx>( context_, platform2dPrx, "Platform2d" );
             context_.tracer()->debug("connected to a 'Platform2d' interface",5);
             break;
         }
@@ -86,7 +87,7 @@ void NetworkHandler::run()
         // Sending motion command (probably over the network)
         //
         try {
-            platform2dPrx_->setCommand( command );
+            platform2dPrx->setCommand( command );
                 
             if ( ret==0 ) { // new command
                 //displayHandler_->displayEvent( DisplayHandler::SentNewCommand );
