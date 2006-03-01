@@ -51,7 +51,7 @@ class HomeData extends OrcaObject
 dictionary<string,string> ComponentProperties;
 
 /*!
-    @brief Access to a robot's status subsystem
+    @brief Access to information about components interfaces.
 */
 interface Home
 {
