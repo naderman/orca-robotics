@@ -26,7 +26,6 @@
 
 #include "algorithmdriver.h"
 #include "section.h"
-#include "configparameters.h"
 
 /*
     \brief

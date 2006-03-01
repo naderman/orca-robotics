@@ -19,7 +19,7 @@ IF( BUILD_LASERFEATUREEXTRACTOR )
     GLOBAL_ADD_EXECUTABLE( laserfeatureextractor ${COMP_SRCS} )
     
     # Files for the service
-    SET( SERV_SRCS  laserfeatureextractorservice_i ${COMMON_SRCS} )
+    SET( SERV_SRCS  laserfeatureextractorservice ${COMMON_SRCS} )
     
     # build an IceBox service
     ADD_LIBRARY( OrcaLaserFeatureExtractor SHARED ${SERV_SRCS} )
