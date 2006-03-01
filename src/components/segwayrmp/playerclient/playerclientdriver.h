@@ -21,12 +21,15 @@
 #ifndef ORCA2_ROBOT_PLAYER_CLIENT_DRIVER_H
 #define ORCA2_ROBOT_PLAYER_CLIENT_DRIVER_H
 
-
 #include "../hwdriver.h"
 
+// Player proxies
+namespace PlayerCc
+{
 class PlayerClient;
-class PositionProxy;
+class Position2dProxy;
 class PowerProxy;
+}
 
 class PlayerClientDriver : public HwDriver
 {
@@ -49,9 +52,9 @@ public:
 private:
 
     bool enabled_;
-    PlayerClient *robot_;
-    PositionProxy *positionProxy_;
-    PowerProxy *powerProxy_;
+    PlayerCc::PlayerClient *robot_;
+    PlayerCc::Position2dProxy *positionProxy_;
+    PlayerCc::PowerProxy *powerProxy_;
     
     char *host_;
     int   port_;

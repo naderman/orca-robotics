@@ -18,20 +18,21 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "playerclientdriver.h"
-
 #include <iostream>
 #include <stdlib.h>
 #include <assert.h>
 
-#include <playerclient.h>
 //#include <orcaice/orcaice.h>
 #include <orcaplayer/orcaplayer.h>
+#include <libplayerc++/playerc++.h>
 #include <IceUtil/Thread.h>     // for sleep()
+
+#include "playerclientdriver.h"
 
 using namespace std;
 using namespace orca;
 //using orcaice::operator<<;
+using namespace PlayerCc;
 
 // experiment to pass all custom props as a disctionary
 //PlayerClientDriver::PlayerClientDriver( const std::map<std::string,std::string> & props, const std::string & prefix )
@@ -57,33 +58,26 @@ PlayerClientDriver::enable()
 
     cout << "TRACE(playerclientdriver.cpp): PlayerClientDriver: Connecting to player on host "
          << host_ << ", port " << port_ << endl;
-
-    robot_      = new PlayerClient( host_, port_ );
-    positionProxy_ = new PositionProxy( robot_, 0 );
-
-    // make sure we get read/write access ('a'=all)
-    positionProxy_->ChangeAccess('a');
-    if(positionProxy_->GetAccess() == 'e')
+    
+    // player throws exceptions on creation if we fail
+    try
     {
-        cout << "ERROR(playerclientdriver.cpp): couldn't get device access!" << endl;
-        disable();
-        return -1;
+        robot_      = new PlayerCc::PlayerClient( host_, port_ );
+        positionProxy_ = new PlayerCc::Position2dProxy( robot_, 0 );
+    
+        robot_->Read();
+    
+        positionProxy_->SetMotorEnable( true );
     }
-
-    if ( robot_->Read() )
+    catch ( const PlayerCc::PlayerError & e )
     {
-        cout << "ERROR(playerclientdriver.cpp): Error reading from robot" << endl;
+        std::cerr << e << std::endl;
+        cout << "ERROR(playerclientdriver.cpp): player error" << endl;
         disable();
-        return -1;
-    }
-
-    if( positionProxy_->SetMotorState( 1 ) ) {
-        cout << "ERROR(playerclientdriver.cpp): Error enabling motors" << endl;
         return -1;
     }
 
     enabled_ = true;
-
     return 0;
 }
 
@@ -115,9 +109,16 @@ PlayerClientDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPt
         return -1;
     }
 
-    if ( robot_->Read() )
+    // player throws exceptions on creation if we fail
+    try
     {
+        robot_->Read();
+    }
+    catch ( const PlayerCc::PlayerError & e )
+    {
+        std::cerr << e << std::endl;
         cout << "ERROR(playerclientdriver.cpp): Error reading from robot." << endl;
+        enabled_ = false;
         return -1;
     }
     
@@ -133,6 +134,15 @@ int
 PlayerClientDriver::write( const orca::Velocity2dCommandPtr &position2d )
 {
     // this version of Player client takes speed command in  [m, m, rad/s]
-    // the return values are same as ours: 0 if ok, -1 if not.
-    return positionProxy_->SetSpeed( position2d->motion.v.x, position2d->motion.v.y, position2d->motion.w );
+    try
+    {
+        positionProxy_->SetSpeed( position2d->motion.v.x, position2d->motion.v.y, position2d->motion.w );
+    }
+    catch ( const PlayerCc::PlayerError & e )
+    {
+        std::cerr << e << std::endl;
+        cout << "ERROR(playerclientdriver.cpp): Error writing to robot." << endl;
+        return -1;
+    }
+    return 0;     
 }

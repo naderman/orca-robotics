@@ -169,6 +169,10 @@ Finally, remember to 'chmod 755 /etc/hotplug/usb/segwayrmp'.
 
 This driver wraps up a Player client. It requires a running Player server. The driver gets data from that server and converts it into Orca format.More information on Player/Stage.
 
+@par Dependancies
+
+Requires that Player/Stage v.>=2.0 are installed and running. As Player itself, this driver is Linux only. See our notes on installing Player in platform-dependent installation page, e.g. @ref orca_doc_installdebian_player.
+
 @par Extra configuration
 
 - @c SegwayRmp.Config.PlayerClient.Host (string)
