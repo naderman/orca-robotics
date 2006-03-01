@@ -111,8 +111,7 @@ void LaserMonComponent::start()
     // create a callback object to recieve scans
     Ice::ObjectPtr consumer = new RangeScannerConsumerI;
     orca::RangeScannerConsumerPrx callbackPrx =
-        orcaice::createConsumerInterface<orca::RangeScannerConsumerPrx>( context(),
-                                                                             consumer );
+        orcaice::createConsumerInterface<orca::RangeScannerConsumerPrx>( context(), consumer );
     //
     // ENABLE NETWORK CONNECTIONS
     //
