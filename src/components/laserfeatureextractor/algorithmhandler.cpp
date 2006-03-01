@@ -136,7 +136,7 @@ void AlgorithmHandler::run()
             //
             driver_->computeFeatures( laserConfigPtr_, laserData, featureData );
 
-            // convert to the robot frame CS and add timestamp
+            // convert to the robot frame CS
             convertToRobotCS( featureData );
 
             // features have the same time stamp as the raw scan
@@ -245,5 +245,4 @@ void AlgorithmHandler::convertToRobotCS( const PolarFeature2dDataPtr & featureDa
 
         featureData->features[i]->p = polarPointRobot;
     }
-    orcaice::setToNow( featureData->timeStamp );
 }
