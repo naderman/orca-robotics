@@ -123,7 +123,7 @@ void LaserMonComponent::start()
     // Subscribe for data
     //
     // will try forever until the user quits with ctrl-c
-    while (1)
+    while ( isActive() )
     {
         try
         {
