@@ -55,8 +55,8 @@ the Orca services and also to other components.
 
 Our drunken robot must implement a particular interface. Let us assume
 that our robot bumbles around on a flat surface. The appropriate
-interface in this is case Position2d.  The Position2d data file is
-declared in: src/interfaces/slice/orca/position2d.ice
+interface in this is case orca::Position2d.  The orca::Position2d data file is
+declared in: @c src/interfaces/slice/orca/position2d.ice
 
 From that declaration, which is written in Slice, a language for
 describing object-oriented interfaces, we can see that our drunken
@@ -70,22 +70,22 @@ interface Position2d
 };
 @endverbatim
 
- The "nonmutating" bit means that the ICE layer can make some
+ The "nonmutating" bit means that the Ice layer can make some
 optimisations because getting data or geometry doesn't change our
 drunken robot at all.
 
-Note also that our robot must know about the Poisition2dData and
-Position2dGeometry objects. These are also described in the ICE
+Note also that our robot must know about the orca::Position2dData and
+orca::Position2dGeometry objects. These are also described in the Ice
 file. Orca2 uses BROS (Basic Robotic Standard) for representations of
 geometry and the like. These are also defined in the above file; for
-instance, Position2dData:
+instance, orca::Position2dData definition looks like this:
 
 @verbatim 
 class Position2dData extends OrcaObject
 {
-    // Robot position
+    // Robot pose in global CS according to odometry.
     Frame2d pose;
-    // Translational and angular velocities in the robot CS
+    // Translational and angular velocities in the robot CS.
     Twist2d motion;
     // Are the motors stalled
     bool stalled;
@@ -97,68 +97,67 @@ class Position2dData extends OrcaObject
 For the moment, we'll be setting up in a subdirectory of the
 src/examples, just to make building easier. But this doesn't have to
 be this way. So first we go to src/examples, and make a new
-directory called mydrunkrobot (a copy of all of the source code for
-this walkthrough can be found in drunkrobot).
+directory called @c mydrunkrobot (a copy of all of the source code for
+this walkthrough can be found in @c drunkrobot).
 
 @verbatim
 % mkdir mydrunkrobot
 @endverbatim
 
-@section interface Creating the interface classes
+@section obj_implementation Creating the interface classes
 
-As discussed in the design pattern, our implementation of the interface simply takes puts things in 
-a pointer buffer that our program then accesses in its main loop. Since we're implementing a 
-position2d object, we need to create a simple implementation of the position2d object. We'll put 
-this in a class called position2d_i. The file \c position2d_i.h looks like this:
+As discussed in the design pattern, our implementation of the interface simply puts data into
+a buffer and our program then accesses it in its main loop. Since we're implementing a
+orca::Position2d object, we need to create its simple implementation. We'll put
+this in a class called @c Position2dI. The header file @c position2d_i.h looks like this:
 
-\include ../src/examples/drunkrobot/position2d_i.h
+@include ../src/examples/drunkrobot/position2d_i.h
 
 After we include the header files, we then declare the
 constructor. The first is a pointer to the 2d data, but set to use a
 template of a Position2dData object, and the second, since it's not
 going to change is the static 2d geometry.
 
-The getData() and getGeometry() functions are also passed. Since it's ICE, some of the ICE state is 
-also passed around. There are also members for the buffered results. 
+The getData() and getGeometry() functions are also implemented. You can ignore the Ice::Current parameter or read about it in the Ice documentation. There are also members for the buffered results.
 
 No we implement the above interface. There's nothing unexpected here;
 to get the latest position, we check the pointer buffer, to return the
 configuration, we pass the value that was initialised when the
-interface was created. The file \c position2d_i.cpp looks like this:
+interface was created. The file @c position2d_i.cpp looks like this:
 
-\include ../src/examples/drunkrobot/position2d_i.cpp
+@include ../src/examples/drunkrobot/position2d_i.cpp
 
-@section Creating the main loop. 
+@section mainloop Creating the main loop.
 
 Now we've implemented the interface, we have to write the main loop
 that actually does the processing. Main loops inherit from the
-orcaice::Thread class. Because of this, it only need to implement
+orcaice::Thread class and only need to implement
 one method: run(). When run finishes, the thread will terminate. 
 
-The other thing that's unusual about the main loop is that is also
+The other thing which is unusual about the main loop is that is also
 responsible for "push" data. In Orca 2, data is pushed through
-IceStorm, ICE's publish-subscribe system. This is done by using a
-proxy for a consumer of Position2dData. We use the proxy (hence the
-Prx) at the end to represent communication with IceStorm. 
+IceStorm, Ice's publish-subscribe system. This is done by using a
+proxy for a consumer of orca::Position2dData. We use the proxy (hence the
+@e Prx at the end) to represent remote IceStorm objects.
 
-Hence the file \c drunkrobotmainloop.h looks like this: 
+Hence the file @c drunkrobotmainloop.h looks like this:
 
-\include ../src/examples/drunkrobot/drunkrobotmainloop.h 
+@include ../src/examples/drunkrobot/drunkrobotmainloop.h
 
-The implementation is pretty simple as well. The constructor sets
+The implementation in this example is trivial. The constructor sets
 things up. Then our main loop does the following: 
 
--# Make a new Position2dData object.
--# Use the orcaice method to set it to a sane value, which
+-# Make a new orca::Position2dData object.
+-# Use a library method to assign it a sane value, which
    includes assigning random position values. 
 -# Send it to IceStorm
--# Send it to the interface's pointer buffer so that if someone 
-   does a getData() it returns the appropriate value. 
+-# Push it into the buffer so that the most recent data is returned when someone
+   calls getData().
 -# Sleep for a second.
 
-The file \c drunkrobotmainloop.cpp is: 
+The file @c drunkrobotmainloop.cpp looks like this:
 
-\include ../src/examples/drunkrobot/drunkrobotmainloop.cpp
+@include ../src/examples/drunkrobot/drunkrobotmainloop.cpp
 
 @section component Putting the component together 
 
@@ -167,47 +166,48 @@ together. Mostly, it is boiler-plate code; code that connects one
 object to the other. The other important characteristic of the the
 component is that it inherits from the orcaice::Component
 class. This will allow us later to choose how we wish to run the
-drunkrobot: as a stand-alone process or within what ICE calls an
-IceBox -- an environment where lots of different components can live
+drunkrobot: as a stand-alone process or within an application servr (called
+IceBox in Ice) - an environment where lots of different components can live
 and share resources more effectively than if they were separate
-processes. 
+processes. The header for the component is as follows:
 
-The header for the component is as follows: 
-
-\include ../src/examples/drunkrobot/drunkrobotcomponent.h
+@include ../src/examples/drunkrobot/drunkrobotcomponent.h
 
 The implementation first appears to be intimidating, but if you do
 find it intimidating, it might be worth reading through some examples
-of how ICE sets up connections in the ICE manual. 
+of how Ice sets up connections in the Ice manual.
 
 Our start() method basically does the following: 
 
 -# Set up the geometry stuff so that it gets returned correctly 
--# Asks the communicator of this component to set up the port for our
-   interface.
--# Attaches our implementation of the Position2d class to that port. 
--# Using a nice method in orcaice, sets up IceStorm output so that
-   we can use the proxy to send out info to the proxy. 
--# activates the adapter for this component so that communication
-can begin. 
+-# Using a nice method in orcaice, sets up IceStorm output so that we can use the proxy to send out info to the proxy.
+-# Sets up our implementation of the Position2d based on naming information in the configuration file.
+-# Activates the adapter for this component so that communication can begin.
 -# Starts the main loop of our component. 
 
-\include ../src/examples/drunkrobot/drunkrobotcomponent.cpp
+@include ../src/examples/drunkrobot/drunkrobotcomponent.cpp
 
 @section build Setting up the build system. 
 
-To build the software, we need to put together a CMakeLists.txt
+To build the software using @c CMake, we need to write a CMakeLists.txt
 file. As it turns out, we can use a generic one, for example, the one
-that can be found in position2dmon. So you can copy the position2dmon
-one and make some minor modifications as such (in CMakeLists.txt):
+that can be found in @c [ORCA-SRC]/src/components/position2dmon. Make a copy of the one in
+position2dmon and make some minor modifications as shown:
 
-\include ../src/examples/drunkrobot/CMakeLists.txt
+@include ../src/examples/drunkrobot/CMakeLists.txt
 
-The next thing we have to do is go one level up to src/componenents
-and modify the CMakeLists.txt file to include this subdirectory.
+The next thing we have to do is go one level up to @c src/componenents
+and modify the @c CMakeLists.txt file to add the new subdirectory.
 
-Finally, in the directory above mydrunkrobot, we do a cmake .; then a
-make. We should now have a file called "drunkrobot"
+Finally, we run cmake in the top src directory to recreate all Makefele's.
+
+@verbatim
+% cd [ORCA-SRC]
+% cmake .
+% make
+@endverbatim
+
+We should now have a executable file called @c drunkrobot.
 
 @section config Setting up the Config files. 
 
@@ -215,11 +215,10 @@ We are almost there. Now we set up the config files for our robot.
 
 We need to specify the name of the platform, the component name and
 finally that we plan to use the tcp protocol. Since we implement the
-Position2d protocol, we specify the platform and component, and then 
-the actual interface we implement. These all go in
-drunkrobot.cfg: 
+orca::Position2d interface, we specify the platform and component, and then
+the actual interface we implement. These all go in @c drunkrobot.cfg:
 
-\include  ../src/examples/drunkrobot/drunkrobot.cfg
+@include  ../src/examples/drunkrobot/drunkrobot.cfg
 
 And finally we are ready! First, however, we have to launch the
 support services, namely IceStorm and IcePack. In order to do this,
@@ -228,22 +227,21 @@ follow the instructions in @ref orca_doc_quickstart.
 Then all we have to type is: 
 
 @verbatim
-./drunkrobot
+% ./drunkrobot
 @endverbatim 
 
-And we now have a robot that is generating random positions every 
-second or so. 
+And we now have a robot that is generating random positions every second or so.
 
 @section position2dmon Connecting to another component. 
 
-Let's now try to connect another component. Orca2 ships with
-position2dmon, a command line tool for watching position2d objects,
-just like our drunk robot. To get these two things to talk to one
+Let's now try to connect another component. Orca2 distribution includes
+@c position2dmon, a command line tool for displaying output from Position2d interfaces,
+just like the one our drunk robot provides. To get these two things to talk to one
 another shouldn't be hard at all, in fact all it requires is to define
-a new position2dmon config file. 
+a new @c position2dmon config file. 
 
 If we go into the position2dmon directory, we can create a file called
-"position2dmon-drunkrobot.cfg". 
+@c position2dmon-drunkrobot.cfg.
 
 The contents of the file might be something like: 
 
@@ -253,20 +251,15 @@ Position2dMon.PlatformName=local
 Position2dMon.ComponentName=position2dmon
 Position2dMon.Endpoints=default
 
-# ports
-Position2dMon.Requires.Position2d.PlatformName=local
-Position2dMon.Requires.Position2d.ComponentName=drunkrobot
-Position2dMon.Requires.Position2d.PortName=position2d
+# requires
+Position2dMon.Requires.Position2d.Proxy=position2d@local/drunkrobot
 @endverbatim
-
-In this section, we tell position2dmon where to look, in this case
-drunk robot. 
 
 Assuming that the drunkrobot process above is still running, we can
 watch the position information using: 
 
 @verbatim
-./position2dmon --Ice.Config=position2dmon-drunkrobot.cfg"
+% ./position2dmon --Ice.Config=position2dmon-drunkrobot.cfg
 @endverbatim
 
 We can hit "g" to get the data once, or hit "s" to get a constant
@@ -281,8 +274,7 @@ Orca2. These include
 
 - Putting components into IceBoxes instead of standalone
 applications. 
-- How to receive "pushed" messages using the orcaice::PtrNotify
-class. 
+- How to receive "pushed" messages using the orcaice::PtrNotify class.
 - Documenting your code using the Doxygen system. 
 - Implementing different interfaces in a single component. 
 - Implementing synchronous processing calls. 
