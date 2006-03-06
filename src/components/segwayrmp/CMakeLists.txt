@@ -66,7 +66,7 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
     
     # build an IceBox service
     ADD_LIBRARY( OrcaSegwayRmp SHARED ${SERV_SRCS} )
-    TARGET_LINK_LIBRARIES( OrcaSegwayRmp ${RMP_USB_LIBS} ${RM_CAN_LIBS} )
+    TARGET_LINK_LIBRARIES( OrcaSegwayRmp ${RMP_USB_LIBS} ${PLAYERCLIENT_LIBS} )
     
     INSTALL_TARGETS( /lib OrcaSegwayRmp )
     
