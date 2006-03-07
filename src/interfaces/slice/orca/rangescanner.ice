@@ -52,10 +52,10 @@ sequence<float>        RangeSequence;
 //! RangeScanner configuration data structure
 class RangeScannerConfig extends OrcaObject
 {
-    //! minimum range step that can be sensed
+    //! Minimum range step that can be sensed
     float rangeResolution;
 
-    //! angle between successive returns
+    //! Angle between successive returns
     float angleIncrement;
 
     //! Are we talking to the hardware?
@@ -78,8 +78,13 @@ class RangeScannerGeometry extends OrcaObject
 */
 class RangeScannerData extends OrcaObject
 {
+    //! Distance to returns
     RangeSequence     ranges;
+
+    //! Angle to the first return in local coordinate system
     float             startAngle;
+
+    //! Constant angle between successive returns.
     float             angleIncrement;
 };
 
@@ -88,6 +93,7 @@ class RangeScannerData extends OrcaObject
 */
 interface RangeScannerConsumer
 {
+    //! Transmits the data to the consumer.
     void setData( RangeScannerData obj );
 };
 
