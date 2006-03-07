@@ -26,6 +26,7 @@
 using namespace std;
 using namespace orca;
 using namespace orcaice;
+using namespace segwayrmp;
 
 Platform2dI::Platform2dI( orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
                           orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,

@@ -23,10 +23,15 @@
 
 #include <orcaice/service.h>
 
+namespace segwayrmp
+{
+
 class RmpServiceI : public orcaice::Service
 {
 public:
     RmpServiceI();
 };
+
+} // namespace
 
 #endif

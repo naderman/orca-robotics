@@ -33,6 +33,8 @@
 #include <orca/platform2d.h>
 #include <orca/power.h>
 
+namespace segwayrmp
+{
 
 // Note: this thing self-destructs when run() returns.
 class HwHandler : public orcaice::Thread, public orcaice::NotifyHandler<orca::Velocity2dCommandPtr>
@@ -88,5 +90,7 @@ private:
     orcaice::Timer writeTimer_;
 
 };
+
+} // namespace
 
 #endif

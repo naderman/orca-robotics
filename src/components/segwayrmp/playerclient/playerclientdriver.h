@@ -31,6 +31,9 @@ class Position2dProxy;
 class PowerProxy;
 }
 
+namespace segwayrmp
+{
+
 class PlayerClientDriver : public HwDriver
 {
 public:
@@ -59,5 +62,7 @@ private:
     char *host_;
     int   port_;
 };
+
+} // namespace
 
 #endif

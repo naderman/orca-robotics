@@ -25,8 +25,10 @@
 #include <stdint.h>
 #include <string.h>
 
+namespace segwayrmp
+{
 
-/*!
+/*
     @note This code originates from Player/Stage project
     http://playerstage.sf.net, file: canio.h
     @author Alex Makarenko
@@ -48,5 +50,7 @@ public:
     uint32_t flags;
 
 };
+
+} // namespace
 
 #endif

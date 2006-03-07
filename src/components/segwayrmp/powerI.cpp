@@ -20,9 +20,9 @@
 
 #include "powerI.h"
 
-using namespace orca;
-
 using namespace std;
+using namespace orca;
+using namespace segwayrmp;
 
 PowerI::PowerI( orcaice::PtrProxy<orca::PowerDataPtr> &power, const IceStorm::TopicPrx &topic )
       : powerPipe_(power),

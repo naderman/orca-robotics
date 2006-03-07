@@ -28,6 +28,7 @@
   #define canMSG_STD              0x0002
 #endif
 
+using namespace segwayrmp;
 
 /*
     This code originates from Player/Stage project

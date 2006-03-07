@@ -24,6 +24,9 @@
 #include <orca/platform2d.h>
 #include <orca/power.h>
 
+namespace segwayrmp
+{
+
 /*
  * @brief Abstract interface class to robotic base.
  * @author Alex Makarenko
@@ -53,5 +56,7 @@ public:
     virtual std::string toString() { return std::string(""); };
 
 };
+
+} // namespace
 
 #endif

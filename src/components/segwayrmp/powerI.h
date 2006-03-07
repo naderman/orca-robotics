@@ -31,6 +31,8 @@
 // utilities
 #include <orcaice/ptrproxy.h>
 
+namespace segwayrmp
+{
 
 class PowerI : public orca::Power
 {
@@ -50,5 +52,7 @@ private:
     // IceStorm topic to which we send our updates and cand subscribe other to
     IceStorm::TopicPrx topic_;
 };
+
+} // namespace
 
 #endif

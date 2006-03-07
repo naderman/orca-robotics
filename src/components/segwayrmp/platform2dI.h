@@ -30,6 +30,8 @@
 #include <orcaice/ptrproxy.h>
 #include <orcaice/ptrnotify.h>
 
+namespace segwayrmp
+{
 
 // serves latest data on demand and accepts commands
 class Platform2dI : public orca::Platform2d
@@ -77,5 +79,6 @@ private:
     IceStorm::TopicPrx topic_;
 };
 
+} // namespace
 
 #endif

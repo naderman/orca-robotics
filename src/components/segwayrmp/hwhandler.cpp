@@ -21,9 +21,11 @@
 #include <iostream>
 #include <sstream>
 
-#include "hwhandler.h"
 #include <IceUtil/Time.h>
+#include <orcaice/orcaice.h>
 
+#include "hwhandler.h"
+#include "fakedriver.h"
 // segway rmp drivers
 #ifdef HAVE_USB_DRIVER
     #include "usb/usbdriver.h"
@@ -34,12 +36,10 @@
 #ifdef HAVE_PLAYERCLIENT_DRIVER
     #include "playerclient/playerclientdriver.h"
 #endif
-#include "fakedriver.h"
-
-#include <orcaice/orcaice.h>
 
 using namespace std;
 using namespace orca;
+using namespace segwayrmp;
 using orcaice::operator<<;
 
 HwHandler::HwHandler(

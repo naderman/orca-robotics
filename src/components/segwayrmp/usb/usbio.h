@@ -21,6 +21,9 @@
 #ifndef ORCA2_SEGWAY_RMP_USB_IO_H
 #define ORCA2_SEGWAY_RMP_USB_IO_H
 
+namespace segwayrmp
+{
+
 class CanPacket;
 
 // This is hardware interface class for RMP robots with USB connectors.
@@ -69,5 +72,7 @@ public:
     virtual UsbIoStatus writePacket(CanPacket* pkt)=0;
     
 };
+
+} // namespace
 
 #endif

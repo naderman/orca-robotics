@@ -40,6 +40,7 @@
 #define SEGWAY_USB_CHANNEL_B                    0xBB
 
 using namespace std;
+using namespace segwayrmp;
 
 
 UsbIoFtdi::UsbIoFtdi()

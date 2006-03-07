@@ -35,6 +35,7 @@
 
 using namespace std;
 using namespace orca;
+using namespace segwayrmp;
 using orcaice::operator<<;
 
 UsbDriver::UsbDriver()

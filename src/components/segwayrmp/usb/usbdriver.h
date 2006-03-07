@@ -23,6 +23,9 @@
 
 #include "../hwdriver.h"
 
+namespace segwayrmp
+{
+
 // forward declarations
 class UsbIo;
 class RmpUsbDataFrame;
@@ -130,5 +133,7 @@ private:
     void watchDataStream( CanPacket* pkt );
 
 };
+
+} // namespace
 
 #endif

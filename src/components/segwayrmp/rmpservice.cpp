@@ -22,6 +22,8 @@
 
 #include "rmpcomponent.h"
 
+using namespace segwayrmp;
+
 extern "C"
 {
     //

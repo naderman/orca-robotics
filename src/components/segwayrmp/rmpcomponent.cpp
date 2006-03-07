@@ -26,6 +26,7 @@
 #include "hwhandler.h"
 
 using namespace orca;
+using namespace segwayrmp;
 
 RmpComponent::RmpComponent() :
     orcaice::Component( "SegwayRmp" ),

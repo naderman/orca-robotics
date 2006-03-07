@@ -23,6 +23,9 @@
 
 #include "hwdriver.h"
 
+namespace segwayrmp
+{
+
 /*
     A fake driver to simplify development. Does not require any hardware.
  */
@@ -43,5 +46,7 @@ public:
     virtual int write( const orca::Velocity2dCommandPtr & command );
 
 };
+
+} // namespace
 
 #endif

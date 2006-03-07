@@ -32,6 +32,8 @@
 #include <orca/platform2d.h>
 #include <orca/power.h>
 
+namespace segwayrmp
+{
 
 // Note: this thing self-destructs when run() returns.
 //class NetHandler : public orcaice::Thread, public NetFsm
@@ -95,5 +97,7 @@ private:
     int sendStatus_;
 
 };
+
+} // namespace
 
 #endif

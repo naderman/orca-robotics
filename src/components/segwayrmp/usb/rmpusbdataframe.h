@@ -21,6 +21,9 @@
 #ifndef ORCA2_RMP_USB_DATA_FRAME_H
 #define ORCA2_RMP_USB_DATA_FRAME_H
 
+namespace segwayrmp
+{
+
 class CanPacket;
 
 // this holds all the RMP data it gives us
@@ -111,5 +114,7 @@ private:
     uint16_t   ui_heartbeat_status;
 
 };
+
+} // namespace
 
 #endif

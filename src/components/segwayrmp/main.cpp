@@ -24,6 +24,8 @@
 
 #include "rmpcomponent.h"
 
+using namespace segwayrmp;
+
 //
 // Build the component into a stand-alone application
 //

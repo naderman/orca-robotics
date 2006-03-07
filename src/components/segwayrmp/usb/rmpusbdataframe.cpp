@@ -29,6 +29,7 @@
 #include "canpacket.h"
 
 using namespace std;
+using namespace segwayrmp;
 
 // this holds all the RMP data it gives us
 RmpUsbDataFrame::RmpUsbDataFrame()

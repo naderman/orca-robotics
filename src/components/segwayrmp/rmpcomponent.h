@@ -31,6 +31,9 @@
 #include <orcaice/ptrproxy.h>
 #include <orcaice/ptrnotify.h>
 
+namespace segwayrmp
+{
+
 class HwHandler;
 class NetHandler;
 
@@ -66,5 +69,7 @@ private:
     // network->hardware
     orcaice::PtrProxy<orca::Platform2dConfigPtr> setConfigPipe_;
 };
+
+} // namespace
 
 #endif

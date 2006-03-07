@@ -26,6 +26,9 @@
 
 #include "usbio.h"
 
+namespace segwayrmp
+{
+
 class UsbIoFtdi : public UsbIo
 {
 public:
@@ -90,5 +93,7 @@ private:
     
     unsigned char usbMessageChecksum( unsigned char *msg );    
 };
+
+} // namespace
 
 #endif
