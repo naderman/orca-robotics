@@ -62,7 +62,7 @@ void LaserMonComponent::start()
 
     // Connect directly to the interface
     orca::LaserPrx laserPrx;
-    while(1)
+    while( isActive() )
     {
         try
         {
@@ -71,7 +71,7 @@ void LaserMonComponent::start()
         }
         catch ( const orcaice::NetworkException & e )
         {
-            tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
         // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
