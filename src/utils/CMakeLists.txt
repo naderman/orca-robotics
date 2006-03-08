@@ -9,7 +9,7 @@ SUBDIRS(
   orcaice
   orcacm
   orcadef
-  liborcaguitools
+  orcagui
   libqorcauml
   orcaplayer
   qorcacm
