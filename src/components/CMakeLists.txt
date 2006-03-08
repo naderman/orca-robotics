@@ -9,7 +9,6 @@ SUBDIRS(
   logger
   logplayer
   ogmaploader
-  orcaguilocal
   orcamon
   orcaview
   position2dmon
