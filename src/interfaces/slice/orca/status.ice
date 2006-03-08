@@ -58,7 +58,7 @@ class StatusData extends OrcaObject
 interface StatusConsumer
 {
     //! ServerPush_Consumer interface
-    void setStatus( StatusData obj );
+    void setData( StatusData obj );
 };
 
 /*!

@@ -24,10 +24,11 @@
 #include <iostream>
 
 #include <orcaice/orcaice.h>
+#include <orcaice/printingconsumerI.h>
 
 using orcaice::operator<<;
 
-template<class ObjectPrxType, class ComsumerPrxType, class ConsumerIType>
+template<class ObjectPrxType, class ComsumerPrxType, class ConsumerType, class ObjectPtrType>
 void attach( const orcaice::Context & context, const std::string & proxyString )
 {
     // Connect directly to the interface
@@ -67,7 +68,9 @@ void attach( const orcaice::Context & context, const std::string & proxyString )
     }
 
     // create a callback object to recieve scans
-    Ice::ObjectPtr consumer = new ConsumerIType;
+//     Ice::ObjectPtr consumer = new ConsumerIType;
+    Ice::ObjectPtr consumer = new orcaice::PrintingConsumerI<ConsumerType,ObjectPtrType>;
+
     ComsumerPrxType callbackPrx = orcaice::createConsumerInterface<ComsumerPrxType>( context, consumer );
     //
     // ENABLE NETWORK CONNECTIONS

@@ -22,18 +22,26 @@
 #include <orcaice/component.h>
 #include <iostream>
 
+// definition of Ice objects
+#include <orca/gps.h>
+#include <orca/position2d.h>
+#include <orca/power.h>
+#include <orca/rangescanner.h>
+#include <orca/status.h>
+
 // implementations of Ice objects
-#include "gpsconsumerI.h"
-#include "position2dconsumerI.h"
-#include "powerconsumerI.h"
-#include "rangescannerconsumerI.h"
-#include "statusconsumerI.h"
+// #include "gpsconsumerI.h"
+// #include "position2dconsumerI.h"
+// #include "powerconsumerI.h"
+// #include "rangescannerconsumerI.h"
+// #include "statusconsumerI.h"
 
 #include "subscriber.h"
 
 #include <orcaice/orcaice.h>
 
 using namespace std;
+using namespace orca;
 
 class OrcaMonComponent : public orcaice::Component
 {
@@ -90,27 +98,27 @@ void OrcaMonComponent::start()
     // now that we know the interface type, we can create an appropriate consumer and subscribe ourselves
     if ( objId=="::orca::Laser" || objId=="::orca::RangeScanner" )
     {
-        attach<orca::LaserPrx,orca::RangeScannerConsumerPrx,RangeScannerConsumerI>
+        attach<LaserPrx,RangeScannerConsumerPrx,RangeScannerConsumer,RangeScannerDataPtr>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::Platform2d" || objId=="::orca::Position2d" )
     {
-        attach<orca::Position2dPrx,orca::Position2dConsumerPrx,Position2dConsumerI>
+        attach<Position2dPrx,Position2dConsumerPrx,Position2dConsumer,Position2dDataPtr>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::Power" )
     {
-        attach<orca::PowerPrx,orca::PowerConsumerPrx,PowerConsumerI>
+        attach<PowerPrx,PowerConsumerPrx,PowerConsumer,PowerDataPtr>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::Status" )
     {
-        attach<orca::StatusPrx,orca::StatusConsumerPrx,StatusConsumerI>
+        attach<StatusPrx,StatusConsumerPrx,StatusConsumer,StatusDataPtr>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::Gps" )
     {
-        attach<orca::GpsPrx,orca::GpsConsumerPrx,GpsConsumerI>
+        attach<GpsPrx,GpsConsumerPrx,GpsConsumer,GpsDataPtr>
                 ( context(), proxyString );
     }
     else
