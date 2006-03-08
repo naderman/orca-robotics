@@ -34,6 +34,8 @@
 @par Required Interfaces (one of)
 
 - @ref orca_interface_laser
+- @ref orca_interface_localise2d
+- @ref orca_interface_ogmap
 - @ref orca_interface_position2d
 - @ref orca_interface_power
 - @ref orca_interface_status

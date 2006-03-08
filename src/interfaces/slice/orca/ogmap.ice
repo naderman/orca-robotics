@@ -110,8 +110,10 @@ interface OgMapConsumer
     //! Transmits the data to the consumer.
     void setData( OgMapData obj );
 };
- 
-interface OgMap {
+
+//! Access to occupancy-grid map.
+interface OgMap
+{
     //! Returns the latest data.
     nonmutating OgMapData getData()
             throws DataNotExistException;
