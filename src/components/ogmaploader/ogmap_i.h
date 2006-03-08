@@ -10,9 +10,9 @@
 // include provided interfaces
 #include <orca/ogmap.h>
 
-//!
-//! Implements the Laser interface: Handles all our remote calls.
-//!
+//
+// Implements the Laser interface: Handles all our remote calls.
+//
 class OgMapI : public orca::OgMap
 {
 public:
@@ -21,14 +21,14 @@ public:
 
     // Remote calls:
 
-    //! Hand out data to people
+    // Hand out data to people
     orca::OgMapDataPtr getData(const Ice::Current&) const;
 
-    //! We ignore this request
+    // We ignore this request
     virtual void subscribe(const ::orca::OgMapConsumerPrx&,
                            const Ice::Current&);
 
-    //! We ignore this request
+    // We ignore this request
     virtual void unsubscribe(const ::orca::OgMapConsumerPrx&,
                              const Ice::Current&);
 
