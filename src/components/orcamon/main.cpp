@@ -24,17 +24,12 @@
 
 // definition of Ice objects
 #include <orca/gps.h>
+#include <orca/localise2d.h>
+#include <orca/ogmap.h>
 #include <orca/position2d.h>
 #include <orca/power.h>
 #include <orca/rangescanner.h>
 #include <orca/status.h>
-
-// implementations of Ice objects
-// #include "gpsconsumerI.h"
-// #include "position2dconsumerI.h"
-// #include "powerconsumerI.h"
-// #include "rangescannerconsumerI.h"
-// #include "statusconsumerI.h"
 
 #include "subscriber.h"
 
@@ -99,6 +94,16 @@ void OrcaMonComponent::start()
     if ( objId=="::orca::Laser" || objId=="::orca::RangeScanner" )
     {
         attach<LaserPrx,RangeScannerConsumerPrx,RangeScannerConsumer,RangeScannerDataPtr>
+                ( context(), proxyString );
+    }
+    else if ( objId=="::orca::Localise2d" )
+    {
+        attach<Localise2dPrx,Localise2dConsumerPrx,Localise2dConsumer,Localise2dDataPtr>
+                ( context(), proxyString );
+    }
+    else if ( objId=="::orca::OgMap" )
+    {
+        attach<OgMapPrx,OgMapConsumerPrx,OgMapConsumer,OgMapDataPtr>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::Platform2d" || objId=="::orca::Position2d" )
