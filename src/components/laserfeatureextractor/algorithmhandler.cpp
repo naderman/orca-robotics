@@ -32,10 +32,10 @@ using namespace orca;
 using orcaice::operator<<;
 
 AlgorithmHandler::AlgorithmHandler( const PolarFeature2dConsumerPrx &polarFeaturesConsumer,
-                    LaserPrx laserPrx,
-                    orcaice::PtrBuffer<LaserDataPtr> &laserDataBuffer, 
-                    orcaice::PtrBuffer<PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
-                    const orcaice::Context & context )
+                                    LaserPrx laserPrx,
+                                    orcaice::PtrBuffer<LaserDataPtr> &laserDataBuffer, 
+                                    orcaice::PtrBuffer<PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
+                                    const orcaice::Context & context )
     : polarFeaturesConsumer_(polarFeaturesConsumer),
       laserPrx_(laserPrx),
       laserDataBuffer_(laserDataBuffer),

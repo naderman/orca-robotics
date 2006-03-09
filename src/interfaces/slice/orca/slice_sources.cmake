@@ -35,5 +35,6 @@ SET( SLICE_SOURCE_FILES
     ogpatch.ice 
     localise2d.ice
     particle2d.ice
+    pathfollower2d.ice
     featuremap2d.ice
 )
