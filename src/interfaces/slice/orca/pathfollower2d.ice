@@ -78,12 +78,13 @@ interface PathFollower2dConsumer
 {
     //! Used by the follower to broadcast changes without transmitting the entire path.
     //!   Given that the follower is loaded up with a list of n waypoints,
-    //!   the follower will call 'currentlySeekingWaypoint' with the index
+    //!   the follower will call 'setWaypointIndex' with the index
     //!   of the waypoint it is _actively_ seeking.
-    //!   - index is in the range [0,n-1]
-    //!   - If the follower is loaded with a path but is inactive, it will call
-    //      'currentlySeekingWaypoint(0)' on activation.
-    idempotent void currentlySeekingWaypoint( int index );
+    //!   - Normal waypoint indices are in the range [0,n-1]
+    //!   - The special index '-1' means 'I just completed my path and became inactive'.
+    //!   - Suppose the follower has been loaded with a path but is inactive.  
+    //!     On activation, it will call 'setWaypointIndex(0)'.
+    idempotent void setWaypointIndex( int index );
 
     //! When the follower is loaded with a new path, it transmits that path to
     //! all subscribers.
@@ -122,15 +123,12 @@ interface PathFollower2d
     idempotent void setData( PathFollower2dData path, bool activateImmediately );
 
     //! Start following the previously-loaded path.
-    //! Throws DataNotExistException if a path wasn't previously loaded.
-    idempotent void activateNow() throws DataNotExistException;
+    idempotent void activateNow();
 
-    //! Returns the state of the follower:
-    //!   - true if it's actively following a path, or
-    //!   - false if either:
-    //!     (a) No path is loaded, or
-    //!     (b) A path has been loaded but the follower hasn't been activated.
-    nonmutating bool isActive();
+    //! Returns the index of the waypoint being seeked:
+    //!   - '-1'    : none (inactive)
+    //!   - [0,n-1] : an index into the list of n waypoints.
+    nonmutating int getWaypointIndex();
     
     /*!
      *
