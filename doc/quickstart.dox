@@ -106,4 +106,6 @@ $ lasermon lasermon.cfg
 
 You should see the scans scroll by on the screen. Congratulations, your first two components are talking!
 
+If something does not work, check out the listing of @ref orca_doc_faq.
+
 */
