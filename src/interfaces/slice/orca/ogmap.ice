@@ -36,6 +36,8 @@ The OgMapData object is a representation of a part of the world.
 It need not represent the entire world.  By describing only a subset of
 the world, agents can transmit updates to one another, which can
 be fused to create a larger occupancy-grid map.
+
+@see @ref orca_library_orcaogmap
     @{
 */
 
@@ -74,6 +76,7 @@ be fused to create a larger occupancy-grid map.
    (note: in (1), the map is aligned with the world axes.  This need not be the case.)
    </pre>
 
+   For OgMapData manipulation functions, see @ref orca_library_orcaogmap
 */
 class OgMapData extends OrcaObject
 {
