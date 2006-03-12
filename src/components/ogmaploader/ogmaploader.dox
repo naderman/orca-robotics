@@ -66,7 +66,7 @@ never issue them.
             - 0: black is occupied, white is empty
             - 1: white is occupied, black is empty
 
-Map Geometry (see @ref orca_interface_ogmap for a detailed explanation)
+Map Geometry (see @ref OgMapData for a detailed explanation)
 
 Map Origin (float,float,float) [m,m,deg]
 - @c OgMapLoader.Config.Origin.X
