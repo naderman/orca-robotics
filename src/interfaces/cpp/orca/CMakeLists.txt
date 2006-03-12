@@ -1,9 +1,13 @@
 MESSAGE( "Planning to build C++ interfaces." )
 
 #
+# Special project-specific stuff
+#
+INCLUDE( ${PROJ_SOURCE_DIR}/config/project/project_rules.cmake )
+
+#
 # Do not include /config/compile_flags.cmake here. It will lead to circular dependencies.
 #
-
 INCLUDE( ${PROJ_SOURCE_DIR}/config/slice2cpp_rules.cmake )
 
 #
