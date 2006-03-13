@@ -37,12 +37,12 @@ namespace segwayrmp
 class HwHandler;
 class NetHandler;
 
-class RmpComponent : public orcaice::Component
+class Component : public orcaice::Component
 {
 public:
 
-    RmpComponent();
-    virtual ~RmpComponent();
+    Component();
+    virtual ~Component();
 
     // component interface
     virtual void  start();

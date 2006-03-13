@@ -29,6 +29,7 @@
 
 using namespace std;
 using namespace orca;
+using namespace laserfeatures;
 using orcaice::operator<<;
 
 AlgorithmHandler::AlgorithmHandler( const PolarFeature2dConsumerPrx &polarFeaturesConsumer,

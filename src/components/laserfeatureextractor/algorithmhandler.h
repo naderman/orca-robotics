@@ -28,6 +28,9 @@
 #include <orca/polarfeature2d.h>
 #include <orca/laser.h>
 
+namespace laserfeatures
+{
+
 class AlgorithmDriver;
 
 class AlgorithmHandler : public orcaice::Thread
@@ -68,5 +71,7 @@ private:
 
     void init();
 };
+
+} // namespace
 
 #endif

@@ -42,6 +42,7 @@
 
 using namespace std;
 using namespace orcaice;
+using namespace laserfeatures;
 
 CombinedDriver::CombinedDriver( const Config & config )
     : AlgorithmDriver( config )

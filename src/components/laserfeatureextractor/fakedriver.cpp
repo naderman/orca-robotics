@@ -29,6 +29,7 @@
 
 using namespace std;
 using namespace orcaice;
+using namespace laserfeatures;
 
 FakeDriver::FakeDriver( const Config & config )
     : AlgorithmDriver( config )

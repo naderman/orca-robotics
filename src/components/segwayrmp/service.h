@@ -18,24 +18,20 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "laserfeatureextractorservice.h"
+#ifndef ORCA2_SEGWAY_RMP_SERVICE_H
+#define ORCA2_SEGWAY_RMP_SERVICE_H
 
-#include "laserfeatureextractorcomponent.h"
+#include <orcaice/service.h>
 
-using namespace std;
-
-extern "C"
+namespace segwayrmp
 {
-    //
-    // Factory function
-    //
-    IceBox::Service* create( Ice::CommunicatorPtr communicator )
-    {
-        return new LaserFeatureExtractorServiceI;
-    }
-}
 
-LaserFeatureExtractorServiceI::LaserFeatureExtractorServiceI()
+class Service : public orcaice::Service
 {
-    component_ = new LaserFeatureExtractorComponent;
-}
+public:
+    Service();
+};
+
+} // namespace
+
+#endif

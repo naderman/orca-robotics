@@ -51,7 +51,7 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
     ENDIF ( NOT HAVE_USB_DRIVER AND NOT HAVE_PLAYERCLIENT_DRIVER )
 
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-    SET( COMMON_SRCS rmpcomponent nethandler hwhandler platform2dI powerI fakedriver )
+    SET( COMMON_SRCS component nethandler hwhandler platform2dI powerI fakedriver )
 
     # Files for the component
     SET( COMP_SRCS main  ${COMMON_SRCS} )    
@@ -62,7 +62,7 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
     
     
     # Files for the service
-    SET( SERV_SRCS  rmpservice  ${COMMON_SRCS} )
+    SET( SERV_SRCS  service  ${COMMON_SRCS} )
     
     # build an IceBox service
     ADD_LIBRARY( OrcaSegwayRmp SHARED ${SERV_SRCS} )

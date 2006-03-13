@@ -20,14 +20,14 @@
 
 #include <orcaice/application.h>
 
-#include "laserfeatureextractorcomponent.h"
+#include "component.h"
 
 //
 // Build the component into a stand-alone application
 //
 int main(int argc, char * argv[])
 {
-    LaserFeatureExtractorComponent component;
+    laserfeatures::Component component;
     orcaice::Application app( argc, argv, component );
     return app.main(argc, argv);
 }

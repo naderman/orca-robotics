@@ -21,28 +21,28 @@
 //#include <iostream> // debug
 #include <orcaice/orcaice.h>
 
-#include "rmpcomponent.h"
+#include "component.h"
 #include "nethandler.h"
 #include "hwhandler.h"
 
 using namespace orca;
 using namespace segwayrmp;
 
-RmpComponent::RmpComponent() :
+Component::Component() :
     orcaice::Component( "SegwayRmp" ),
     netHandler_(0),
     hwHandler_(0)
 {
 }
 
-RmpComponent::~RmpComponent()
+Component::~Component()
 {
     // do not delete handlers!!! They derive from Ice::Thread and self-destruct.
 }
 
 // warning: this function returns after it's done, all variable that need to be permanet must
 //          be declared as member variables.
-void RmpComponent::start()
+void Component::start()
 {
     //
     // Network handling loop
@@ -69,7 +69,7 @@ void RmpComponent::start()
     // the rest is handled by the application/service
 }
 
-void RmpComponent::stop()
+void Component::stop()
 {
     // it's possible that either or both of the handlers are not even created
     // if exceptions are raised in their constructor

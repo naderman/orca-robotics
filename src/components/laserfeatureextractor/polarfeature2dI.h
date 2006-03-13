@@ -29,6 +29,8 @@
 // include provided interfaces
 #include <orca/polarfeature2d.h>
 
+namespace laserfeatures
+{
 
 //
 // Implements the Polarfeature2d interface: Handles all our remote calls.
@@ -62,5 +64,6 @@ private:
     const IceStorm::TopicPrx topicPrx_;
 };
 
+} // namespace
 
 #endif

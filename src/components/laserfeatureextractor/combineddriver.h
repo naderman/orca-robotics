@@ -27,6 +27,9 @@
 #include "algorithmdriver.h"
 #include "section.h"
 
+namespace laserfeatures
+{
+
 /*
     \brief
     \author Tobias Kaupp t.kaupp at cas.edu.au
@@ -73,5 +76,7 @@ private:
     void printSections();
 
 };
+
+} // namespace
 
 #endif

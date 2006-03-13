@@ -24,6 +24,9 @@
 #include <orca/laser.h>
 #include <orcaice/ptrbuffer.h>
 
+namespace laserfeatures
+{
+
 class LaserConsumerI : public orca::RangeScannerConsumer
 {
     public:
@@ -34,5 +37,7 @@ class LaserConsumerI : public orca::RangeScannerConsumer
     private:
         orcaice::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer_;
 };
+
+} // namespace
 
 #endif

@@ -18,18 +18,19 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_SEGWAY_RMP_SERVICE_I_H
-#define ORCA2_SEGWAY_RMP_SERVICE_I_H
+#ifndef ORCA2_LASER_FEATURE_EXTRACTOR_SERVICE_I_H
+#define ORCA2_LASER_FEATURE_EXTRACTOR_SERVICE_I_H
 
 #include <orcaice/service.h>
 
-namespace segwayrmp
+namespace laserfeatures
 {
 
-class RmpServiceI : public orcaice::Service
+class Service : public orcaice::Service
 {
 public:
-    RmpServiceI();
+
+    Service();
 };
 
 } // namespace

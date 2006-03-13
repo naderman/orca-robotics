@@ -18,24 +18,43 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "rmpservice.h"
+#ifndef ORCA2_LASER_FEATURE_EXTRACTOR_COMPONENT_H
+#define ORCA2_LASER_FEATURE_EXTRACTOR_COMPONENT_H
 
-#include "rmpcomponent.h"
+#include <orcaice/component.h>
+#include <orcaice/ptrbuffer.h>
 
-using namespace segwayrmp;
+// interface definitions
+#include <orca/laser.h>
+#include <orca/polarfeature2d.h>
 
-extern "C"
+namespace laserfeatures
 {
-    //
-    // Factory function
-    //
-    IceBox::Service* create( Ice::CommunicatorPtr communicator )
-    {
-        return new RmpServiceI;
-    }
-}
 
-RmpServiceI::RmpServiceI()
+class AlgorithmHandler;
+
+class Component : public orcaice::Component
 {
-    component_ = new RmpComponent;
-}
+public:
+
+    Component();
+    virtual ~Component();
+
+    // component interface
+    virtual void start();
+    virtual void stop();
+
+private:
+
+    // External interface: polar features
+    orca::PolarFeature2dConsumerPrx polarFeaturePublisher_;
+    
+    orcaice::PtrBuffer<orca::LaserDataPtr> laserDataBuffer_;
+    orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> polarFeaturesDataBuffer_;
+
+    AlgorithmHandler* algorithmHandler_;
+};
+
+} // namespace
+
+#endif

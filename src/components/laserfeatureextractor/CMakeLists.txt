@@ -7,19 +7,19 @@ IF( BUILD_LASERFEATUREEXTRACTOR )
     
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
     SET( COMMON_SRCS
-            laserfeatureextractorcomponent algorithmhandler
-            fakedriver combineddriver  svd section polefinder
+            component algorithmhandler
+            fakedriver combineddriver svd section polefinder
             polarfeature2dI laserconsumerI
     )
     
     # Files for the component
-    SET( COMP_SRCS main  ${COMMON_SRCS} )
+    SET( COMP_SRCS main ${COMMON_SRCS} )
     
     # stand-alone component  
     GLOBAL_ADD_EXECUTABLE( laserfeatureextractor ${COMP_SRCS} )
     
     # Files for the service
-    SET( SERV_SRCS  laserfeatureextractorservice ${COMMON_SRCS} )
+    SET( SERV_SRCS  service ${COMMON_SRCS} )
     
     # build an IceBox service
     ADD_LIBRARY( OrcaLaserFeatureExtractor SHARED ${SERV_SRCS} )

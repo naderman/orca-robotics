@@ -21,7 +21,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 
-#include "laserfeatureextractorcomponent.h"
+#include "component.h"
 
 #include "algorithmhandler.h"
 
@@ -31,21 +31,22 @@
 
 using namespace std;
 using namespace orca;
+using namespace laserfeatures;
 
-LaserFeatureExtractorComponent::LaserFeatureExtractorComponent()
+Component::Component()
     : orcaice::Component( "LaserFeatureExtractor" ),
       algorithmHandler_(0)
 {
 }
 
-LaserFeatureExtractorComponent::~LaserFeatureExtractorComponent()
+Component::~Component()
 {
     // do not delete algorithmHandler_!!! They derive from Ice::Thread and self-destruct.
 }
 
 // warning: this function returns after it's done, all variable that need to be permanent must
 //          be declared as member variables.
-void LaserFeatureExtractorComponent::start()
+void Component::start()
 {
     //
     // PROVIDED: PolarFeatures
@@ -116,7 +117,7 @@ void LaserFeatureExtractorComponent::start()
     // the rest is handled by the application/service
 }
 
-void LaserFeatureExtractorComponent::stop()
+void Component::stop()
 {
     tracer()->debug( "component is stopping...",5 );
 

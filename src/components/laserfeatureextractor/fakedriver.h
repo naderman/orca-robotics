@@ -23,6 +23,9 @@
 
 #include "algorithmdriver.h"
 
+namespace laserfeatures
+{
+
 class FakeDriver: public AlgorithmDriver
 {
 
@@ -35,5 +38,7 @@ public:
                                  const orca::PolarFeature2dDataPtr & featureDataPtr );
 
 };
+
+} // namespace
 
 #endif

@@ -22,16 +22,14 @@
 
 #include <orcaice/application.h>
 
-#include "rmpcomponent.h"
-
-using namespace segwayrmp;
+#include "component.h"
 
 //
 // Build the component into a stand-alone application
 //
 int main(int argc, char * argv[])
 {
-    RmpComponent component;
+    segwayrmp::Component component;
     orcaice::Application app( argc, argv, component );
     return app.main(argc, argv);
 }

@@ -20,6 +20,8 @@
 
 #include "laserconsumerI.h"
 
+using namespace laserfeatures;
+
 LaserConsumerI::LaserConsumerI( orcaice::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer )
     : laserDataBuffer_(laserDataBuffer)
 {

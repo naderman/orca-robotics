@@ -17,17 +17,25 @@
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+ 
+#include "service.h"
+#include "component.h"
 
-#ifndef ORCA2_LASER_FEATURE_EXTRACTOR_SERVICE_I_H
-#define ORCA2_LASER_FEATURE_EXTRACTOR_SERVICE_I_H
+using namespace std;
+using namespace laserfeatures;
 
-#include <orcaice/service.h>
-
-class LaserFeatureExtractorServiceI : public orcaice::Service
+extern "C"
 {
-public:
+    //
+    // Factory function
+    //
+    IceBox::Service* create( Ice::CommunicatorPtr communicator )
+    {
+        return new laserfeatures::Service;
+    }
+}
 
-    LaserFeatureExtractorServiceI();
-};
-
-#endif
+Service::Service()
+{
+    component_ = new laserfeatures::Component;
+}
