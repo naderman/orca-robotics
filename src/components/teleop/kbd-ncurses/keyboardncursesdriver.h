@@ -26,6 +26,8 @@
 #include "../inputdriver.h"
 #include "../displayhandler.h"
 
+namespace teleop
+{
 
 class KeyboardNcurcesDriver : public InputDriver, public DisplayHandler
 {
@@ -60,5 +62,7 @@ private:
     WINDOW* mainwin_;
 
 };
+
+} // namespace
 
 #endif

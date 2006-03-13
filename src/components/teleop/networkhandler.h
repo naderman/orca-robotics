@@ -27,6 +27,9 @@
 
 #include <orca/platform2d.h>
 
+namespace teleop
+{
+
 class DisplayHandler;
 
 class NetworkHandler : public orcaice::Thread
@@ -52,5 +55,7 @@ private:
     orcaice::Context context_;
 
 };
+
+} // namespace
 
 #endif

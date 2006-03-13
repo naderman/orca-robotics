@@ -23,6 +23,9 @@
 
 #include <orca/platform2d.h>
 
+namespace teleop
+{
+
 class DisplayHandler
 {
 public:
@@ -41,5 +44,7 @@ public:
     virtual void displayCommand( const orca::Velocity2dCommandPtr & command,
                                  const bool vx=false, const bool vy=false, const bool w=false )=0;
 };
+
+} // namespace
 
 #endif

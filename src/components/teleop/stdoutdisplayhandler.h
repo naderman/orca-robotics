@@ -23,6 +23,9 @@
 
 #include "displayhandler.h"
 
+namespace teleop
+{
+
 class StdoutDisplayHandler : public DisplayHandler
 {
 public:
@@ -32,5 +35,7 @@ public:
     virtual void displayCommand( const orca::Velocity2dCommandPtr & command,
                                  const bool vx=false, const bool vy=false, const bool w=false );
 };
+
+} // namespace
 
 #endif

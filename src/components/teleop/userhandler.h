@@ -29,6 +29,9 @@
 
 #include "inputdriver.h"
 
+namespace teleop
+{
+
 class DisplayHandler;
 
 class UserHandler : public orcaice::Thread
@@ -60,5 +63,7 @@ private:
     // component current context
     orcaice::Context context_;
 };
+
+} // namespace
 
 #endif

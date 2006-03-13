@@ -26,15 +26,18 @@
 #include <orcaice/ptrbuffer.h>
 #include <orca/platform2d.h>
 
+namespace teleop
+{
+
 class NetworkHandler;
 class UserHandler;
 
-class TeleopComponent : public orcaice::Component
+class Component : public orcaice::Component
 {
 public:
 
-    TeleopComponent();
-    virtual ~TeleopComponent();
+    Component();
+    virtual ~Component();
 
     // component interface
     virtual void start();
@@ -43,7 +46,7 @@ public:
 private:
     // network-hardware interface
     // the driver will put the latest data into this proxy
-    orcaice::PtrBuffer<orca::Velocity2dCommandPtr> commandProxy_;
+    orcaice::PtrBuffer<orca::Velocity2dCommandPtr> commandPipe_;
 
     // network loop
     NetworkHandler* networkHandler_;
@@ -51,5 +54,7 @@ private:
     // hardware
     UserHandler* userHandler_;
 };
+
+} // namespace
 
 #endif

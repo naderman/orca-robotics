@@ -37,6 +37,7 @@
 
 using namespace std;
 using namespace orca;
+using namespace teleop;
 
 
 JoystickDriver::JoystickDriver( const InputDriver::Config &cfg ) :
@@ -72,7 +73,7 @@ int JoystickDriver::findUSBJoystick( char *joystickDevice )
         // printInputType( device );
         // printDeviceInfo( device );
 
-        ret = devSupportsAbsoluteAxes( device, supportsAbsoluteAxes );
+        ret = teleop::devSupportsAbsoluteAxes( device, supportsAbsoluteAxes );
 
         if ( ret != 0 )
         {
@@ -104,7 +105,7 @@ int JoystickDriver::findUSBJoystick( char *joystickDevice )
             continue;
         }
 
-        ret = devIsUSB( device, isUSB );
+        ret = teleop::devIsUSB( device, isUSB );
         if ( ret != 0 )
         {
             cout << "ERROR: Problem checking for USB status.  This shouldn't happen." << endl;
@@ -162,7 +163,7 @@ int JoystickDriver::enable()
     if ( ret == 0 )
     {
         char name[256] = "Unknown";
-        devName( joystickDevice, name );
+        teleop::devName( joystickDevice, name );
         cout << "Reading from joystick \"" << name << "\" on " << joystickDevice << endl;
     }
     else

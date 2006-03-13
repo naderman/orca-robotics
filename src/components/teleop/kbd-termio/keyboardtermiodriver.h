@@ -25,6 +25,8 @@
 
 #include "../inputdriver.h"
 
+namespace teleop
+{
 
 class KeyboardTermioDriver : public InputDriver
 {
@@ -55,5 +57,7 @@ private:
     struct termio cooked_;
 
 };
+
+} // namespace
 
 #endif

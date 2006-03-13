@@ -20,27 +20,28 @@
 
 #include <iostream>
 
-#include "teleopcomponent.h"
+#include "component.h"
 #include "networkhandler.h"
 #include "userhandler.h"
 
 using namespace std;
+using namespace teleop;
 
-TeleopComponent::TeleopComponent()
+Component::Component()
     : orcaice::Component( "Teleop", orcaice::HomeInterface ),
       networkHandler_(0),
       userHandler_(0)
 {
 }
 
-TeleopComponent::~TeleopComponent()
+Component::~Component()
 {
     // do not delete networkHandler_ and userHandler_!!! They derive from Ice::Thread and deletes itself.
 }
 
 // warning: this function returns after it's done, all variable that need to be permanet must
 //          be declared as member variables.
-void TeleopComponent::start()
+void Component::start()
 {
     context().tracer()->debug("starting component",5);
 
@@ -55,20 +56,20 @@ void TeleopComponent::start()
     // USER & DISPLAY
     //
     // the constructor may throw, we'll let the application shut us down
-    userHandler_ = new UserHandler( &commandProxy_, context() );
+    userHandler_ = new UserHandler( &commandPipe_, context() );
     userHandler_->start();
     
     //
     // NETWORK
     //
     // the constructor may throw, we'll let the application shut us down
-    networkHandler_ = new NetworkHandler( &commandProxy_, userHandler_->displayHandler(), context() );
+    networkHandler_ = new NetworkHandler( &commandPipe_, userHandler_->displayHandler(), context() );
     networkHandler_->start();
     
     // the rest is handled by the application/service
 }
 
-void TeleopComponent::stop()
+void Component::stop()
 {
     if ( networkHandler_ ) {
         IceUtil::ThreadControl networkControl = networkHandler_->getThreadControl();

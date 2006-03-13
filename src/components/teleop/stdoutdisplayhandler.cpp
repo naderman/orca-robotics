@@ -24,6 +24,7 @@
 #include "stdoutdisplayhandler.h"
 
 using namespace std;
+using namespace teleop;
 using orcaice::operator<<;
 
 void StdoutDisplayHandler::displayEvent( const Event e )

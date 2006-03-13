@@ -35,9 +35,9 @@
 
 #include "stdoutdisplayhandler.h"
 
-
 using namespace std;
 using namespace orca;
+using namespace teleop;
 
 UserHandler::UserHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commands,
                     const orcaice::Context & context )

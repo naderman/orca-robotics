@@ -23,6 +23,9 @@
 
 #include <orca/platform2d.h>
 
+namespace teleop
+{
+
 /*
 
 @brief Abstract interface class for human teleoperation input.
@@ -59,5 +62,7 @@ public:
     //virtual int getConfig( InputDriver::Config &cfg )=0;
 
 };
+
+} // namespace
 
 #endif

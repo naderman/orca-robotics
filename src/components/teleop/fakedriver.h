@@ -23,6 +23,9 @@
 
 #include "inputdriver.h"
 
+namespace teleop
+{
+
 /*
     A fake driver to simplify development. Does not require any hardware.
 
@@ -47,5 +50,7 @@ private:
     Config config_;
 
 };
+
+} // namespace
 
 #endif

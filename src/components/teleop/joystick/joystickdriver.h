@@ -23,6 +23,8 @@
 
 #include "../inputdriver.h"
 
+namespace teleop
+{
 
 class JoystickDriver : public InputDriver
 {
@@ -54,5 +56,7 @@ private:
     int jfd_;
 
 };
+
+} // namespace
 
 #endif
