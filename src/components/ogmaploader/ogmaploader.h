@@ -18,13 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-//!
-//! @author Tim Arney (t.arney at cas.edu.au), Tobias Kaupp (t.kaupp at cas.edu.au), Alex Brooks
-//! @brief Loads an occupancy grid from an image file and sticks it into an Orca OgMap object
-//!
-
-#ifndef OGMAP_LOADER
-#define OGMAP_LOADER
+#ifndef ORCA2_OGMAP_LOADER_H
+#define ORCA2_OGMAP_LOADER_H
 
 #include <orca/ogmap.h>
 
@@ -34,8 +29,8 @@ class OgMapLoader
 public:
          
     OgMapLoader( std::string filename,
-                 float metresPerCellX,
-                 float metresPerCellY,
+                 float worldSizeX,
+                 float worldSizeY,
                  float xOrigin,
                  float yOrigin,
                  float originTheta,

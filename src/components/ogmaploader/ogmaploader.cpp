@@ -18,19 +18,18 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#include <errno.h>
+#include <zlib.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include "ogmaploader.h"
-#include <errno.h>
 
 using namespace std;
 using namespace orca;
 
-#include <zlib.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-
 OgMapLoader::OgMapLoader( std::string filename,
-                          float metresPerCellX,
-                          float metresPerCellY,
+                          float worldSizeX,
+                          float worldSizeY,
                           float xOrigin,
                           float yOrigin,
                           float originTheta,
@@ -41,26 +40,30 @@ OgMapLoader::OgMapLoader( std::string filename,
     ogMap_->origin.p.x = xOrigin;
     ogMap_->origin.p.y = xOrigin;
     ogMap_->origin.o   = originTheta;
-    ogMap_->metresPerCellX = metresPerCellX;
-    ogMap_->metresPerCellY = metresPerCellY;
     
     if ( loadMap( filename, negate ) == 0 )
     {
         hasMap_ = true;
     }
+
+    // now we know that map size in pixels, we can calculate the cell size
+    ogMap_->metresPerCellX = worldSizeX / (float)ogMap_->numCellsX;
+    ogMap_->metresPerCellY = worldSizeY / (float)ogMap_->numCellsY;
 }
 
 OgMapLoader::~OgMapLoader()
 {
 }
 
-void OgMapLoader::getMap(orca::OgMapDataPtr &toMap)
+void
+OgMapLoader::getMap(orca::OgMapDataPtr &toMap)
 {
     toMap = ogMap_;
 }
 
 // Use Glib library to load map
-int OgMapLoader::loadMap( std::string filename,
+int
+OgMapLoader::loadMap( std::string filename,
                           bool  negate )
 {
     int len = strlen( filename.c_str() );
@@ -88,7 +91,8 @@ int OgMapLoader::loadMap( std::string filename,
     return(0);        
 }
       
-int OgMapLoader::loadBitmap(const char *filename, bool negate)
+int
+OgMapLoader::loadBitmap(const char *filename, bool negate)
 {
     // from Player mapfile.cc
     GdkPixbuf* pixbuf;
@@ -162,7 +166,8 @@ int OgMapLoader::loadBitmap(const char *filename, bool negate)
 
     
 // Load a gzipped pnm image.
-int OgMapLoader::loadPnmGz(const char *filename, bool negate)
+int
+OgMapLoader::loadPnmGz(const char *filename, bool negate)
 {   
     gzFile file;
     char magic[3];
@@ -234,4 +239,3 @@ int OgMapLoader::loadPnmGz(const char *filename, bool negate)
     
     return 0;    
 }
-

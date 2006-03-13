@@ -15,5 +15,5 @@ Config.Negate.Default=1
 Config.Origin.X.Default=0.0
 Config.Origin.Y.Default=0.0
 Config.Origin.Orientation.Default=0.0
-Config.MetresPerCellX.Default=0.4
-Config.MetresPerCellY.Default=0.4
+Config.Size.X.Default=20.0
+Config.Size.Y.Default=20.0

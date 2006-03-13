@@ -45,16 +45,16 @@ MapLoaderComponent::start()
     else if ( driverName == "real" )
     {
         std::string mapFileName = orcaice::getPropertyWithDefault( prop, prefix+"MapFileName", "mapfilename" );
-        float metresPerCellX = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MetresPerCellX", 0.4 );
-        float metresPerCellY = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MetresPerCellY", 0.4 );
+        float worldSizeX = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.X", 20.0 );
+        float worldSizeY = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.Y", 20.0 );
         float originX     = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.X", 0.0 );
         float originY     = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Y", 0.0 );
         float originTheta = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Orientation", 0.0 ) * M_PI/180.0;
         bool  negate      = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Negate", true );
 
         OgMapLoader ogMapLoader( mapFileName,
-                                 metresPerCellX,
-                                 metresPerCellY,
+                                 worldSizeX,
+                                 worldSizeY,
                                  originX,
                                  originY,
                                  originTheta,

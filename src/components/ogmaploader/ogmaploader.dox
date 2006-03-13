@@ -23,8 +23,9 @@
 @ingroup apps
 @ingroup cpp
 @ingroup linux
-@defgroup orca_component_ogmaploader OgMapLoader: Loads an occupancy grid map from an image
-@brief Serves an occupancy grid map which is loaded from an image file. Supports most bitmap formats and gzipped pnm
+@defgroup orca_component_ogmaploader OgMapLoader
+@brief Serves an occupancy grid map which is loaded from an image file.
+
 @par Provides
 
 - @ref orca_interface_home
@@ -40,6 +41,8 @@
 - @b fake Serves a bogus made-up map.
 - @b real Loads a real map from a file.
 
+Supports most bitmap formats and gzipped pnm.
+
 Clients who wish to receive the map need to call getData().
 Subscribing for map updates is pointless, since this component will
 never issue them.
@@ -53,29 +56,37 @@ never issue them.
 
 - @c OgMapLoader.Config.Filename (string)
     - The name (and path) of the image to load
-    - Use: required, default = "mapfile.pgm.gz"
-    - Constraints:
-      - Type: string
+    - Default: "mapfile.pgm.gz"
 
-- @c OgMapLoader.Config.Negate
+- @c OgMapLoader.Config.Negate (bool)
     - Whether increasing pixel value represents increasing occupancy probability
-    - Use: optional, default = 1
-    - Constraints:
-        - Type: boolean
-        - Valid Values:
+    - Valid Values:
             - 0: black is occupied, white is empty
             - 1: white is occupied, black is empty
+    - Default: 1
 
-Map Geometry (see @ref OgMapData for a detailed explanation)
+Map Geometry (see orca::OgMapData documentation for a detailed explanation)
+
+World Size (float,float) [m]
+- @c OgMapLoader.Config.Size.X
+- @c OgMapLoader.Config.Size.Y
 
 Map Origin (float,float,float) [m,m,deg]
 - @c OgMapLoader.Config.Origin.X
 - @c OgMapLoader.Config.Origin.Y
 - @c OgMapLoader.Config.Origin.Orientation
 
-Cell Size (float,float) [m]
-- @c OgMapLoader.Config.MetresPerCellX
-- @c OgMapLoader.Config.MetresPerCellY
+For example, these configuration settings work for the Player's famous @c cave world:
+@verbatim
+OgMapLoader.Config.Driver=real
+OgMapLoader.Config.MapFileName=cave.png
+OgMapLoader.Config.Size.X=16.0
+OgMapLoader.Config.Size.Y=16.0
+OgMapLoader.Config.Negate=0
+OgMapLoader.Config.Origin.Orientation=0.0
+OgMapLoader.Config.Origin.X=-8.0
+OgMapLoader.Config.Origin.Y=-8.0
+@endverbatim
 
 \section deps Dependancies
 gdk-pixbuf-2.0 (usually installed as part of GTK)
