@@ -39,12 +39,17 @@ features with range in meters and bearing in rad (-pi<angle<pi) and the feature 
 
 //! A single polar feature.
 //! If a new feature has more attributes, derive from this.
+//!
+//! 
+//!
 class SinglePolarFeature2d
 {
     //! Feature location.
     PolarPoint2d p;
     //! Feature type
-    //! @todo should this be an enum?
+    //! see @ref orca_interface_featuremap2d for orca-defined feature-types.
+    //! This is an int rather than an enum to allow users to make up
+    //! non-orca-defined feature types.
     int          type;
 };
 

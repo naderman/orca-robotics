@@ -37,10 +37,17 @@ module orca
 
 module feature
 {
+    //! A laser-reflective beacon.
     const int LASERREFLECTOR   = 0;
+    //! Something like a pole or a tree.
     const int FOREGROUNDPOINT  = 1;
+    //! An opening in a wall.
     const int DOOR             = 2;
+    //! The junction of two walls.
     const int CORNER           = 3;
+    //! The end of a wall.  The junction of two walls looks 
+    //! like this when viewed from a position such that the 
+    //! other wall is obscured.  The other wall may not exist however.
     const int POSSIBLECORNER   = 4;
 };
 
