@@ -10,6 +10,7 @@ IF ( BUILD_SANDBOX )
     SUBDIRS(
 	netcam
 	reactivewalker
+	pathplanner
 	stagelocaliser
     )
     
