@@ -29,7 +29,7 @@ module orca
 /*!
     @ingroup interfaces
     @defgroup orca_interface_position2d Position2d
-    @brief Access to odometry of 2d mobile robitic bases.
+    @brief Odometry of planar mobile robots.
     @{
 */
 

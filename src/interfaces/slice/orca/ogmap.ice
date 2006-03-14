@@ -30,7 +30,7 @@ module orca
 /*!
     @ingroup  interfaces
     @defgroup orca_interface_ogmap OgMap
-    @brief    An occupancy-grid representation of the world
+    @brief    An planar occupancy-grid representation of the world
 
 The OgMapData object is a representation of a part of the world.
 It need not represent the entire world.  By describing only a subset of

@@ -31,7 +31,7 @@ module orca
 /*!
     @ingroup interfaces
     @defgroup orca_interface_localise2d Localise2d
-    @brief Provides 2d position estimates
+    @brief Multi-hypothesis planar localisation.
     @{
 */
 

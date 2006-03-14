@@ -29,7 +29,7 @@ module orca
 /*!
     @ingroup interfaces
     @defgroup orca_interface_position3d Position3d
-    @brief Access to odometry of 3d mobile robitic bases.
+    @brief Odometry of 3D mobile robots.
     @{
 */
 
