@@ -28,7 +28,7 @@ module orca
 /*!
     @ingroup interfaces
     @defgroup orca_interface_power Power
-    @brief Access to a robot's power subsystem
+    @brief Power subsystem
     @{
 */
 
