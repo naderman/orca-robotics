@@ -34,7 +34,8 @@ the robot as it moves around.
 
 Before reading this document, you should familiarise yourself with: 
     - @ref orca_doc_getting : download, compile, install.
-    - @ref orca_doc_quickstart : The Orca2 quick start guide.  
+    - @ref orca_doc_quickstart : The Orca2 quick start guide.
+    - Ch. 2 Ice Overview of the <a href="http://www.zeroc.com/download.html#doc" target="_blank">Ice manual</a>
     - @ref orca_doc_devcomp : the basic Orca2 component design pattern
 
 Once you've read that, things here should make a bit more sense. 
