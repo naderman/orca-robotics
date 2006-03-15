@@ -35,19 +35,58 @@ module orca
 
 // define messages first
 
+//! Gps time structure - for time sync
+class GpsTime extends OrcaObject
+{
+    // UTC time
+    //! Hours
+    int utcHours;
+    //! minutes
+    int utcMinutes;
+    //! seconds
+    double utcSeconds;
+    //! day
+    int day;
+    //! month
+    int month;
+    //! year
+    int year;
+};
+
 //! Gps data structure
 class GpsData extends OrcaObject
 {
+    // UTC time
+    //! Hours
+    int utcHours;
+    //! minutes
+    int utcMinutes;
+    //! seconds
+    double utcSeconds;
+ 
     // GPS position
     //! Latitude (Degrees)
-    float latitude;
+    double latitude;
     //! Longitude (Degrees)
-    float longitude;
-    //! Altitude (Metres above Sea Level)
-    float altitude;
+    double longitude;
+    //! Altitude (Metres above Ellipsoid)
+    double altitude;
+    
+    // Velocities
+    // heading/track/course (Degrees)
+    double heading; 
+    //! horizontal speed (Metres/second)
+    double speed;
+    //! vertical velocity (Metres/second)
+    double climbRate;
     
     //! Number of satellites
-    int satellites;    
+    int satellites;
+    //! Position Type (Bad (0), Ugly (1), Good (2))
+    int positionType;
+    //! Geoidal Separation (Metres)
+    double geoidalSeparation;
+    
 };
 
 
@@ -72,6 +111,11 @@ interface Gps
     //! @note In Orca1 this would be called ClientPull_Supplier interface.
     nonmutating GpsData getData()
             throws HardwareFailedException;
+
+    //! Return the latest timestamp information
+    nonmutating GpsTime getTime()
+            throws HardwareFailedException;
+
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The
