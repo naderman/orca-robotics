@@ -28,11 +28,10 @@ module orca
 {
 
 //! Specifies the format once it is decoded. 
-enum ImageFormat {IMGMONO1, IMGMONO8, IMGMONO16,
-IMGRGB565, IMGRGB888, IMGRGBA8888, IMGYUV422};
+enum ImageFormat {IMGMONO1, IMGMONO8, IMGMONO16, IMGRGB565, IMGRGB888, IMGRGBA8888, IMGYUV422};
 
 //! Specifies any encoding of the image. 
-enum ImageCompression {IMGRAW, IMGJPG, IMGPNG}; 
+enum ImageCompression {IMGRAW, IMGJPG, IMGPNG};
 
 class ImageConfig extends OrcaObject {
    int imgWidth; 
@@ -62,8 +61,8 @@ class Image extends OrcaObject
     ImageFormat format; 
     ImageCompression encoding; 
     
-   //! Note: This array should also contain any
-   //! compression specific header information  
+    //! Note: This array should also contain any
+    //! compression specific header information  
     ByteSequence imageData;
 };
 
