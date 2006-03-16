@@ -7,12 +7,12 @@
 //!
 //! Deriving from orcaice::Component means we have to implement start() and stop()
 //!
-class MapLoaderComponent : public orcaice::Component
+class Component : public orcaice::Component
 {
 public:
 
-    MapLoaderComponent();
-    virtual ~MapLoaderComponent();
+    Component();
+    virtual ~Component();
 
     virtual void start();
     virtual void stop();

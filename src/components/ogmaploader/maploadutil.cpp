@@ -21,50 +21,37 @@
 #include <errno.h>
 #include <zlib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <iostream>
+#include <sstream>
 
-#include "ogmaploader.h"
+#include "maploadutil.h"
 
 using namespace std;
-using namespace orca;
 
-OgMapLoader::OgMapLoader( std::string filename,
-                          float worldSizeX,
-                          float worldSizeY,
-                          float xOrigin,
-                          float yOrigin,
-                          float originTheta,
-                          bool  negate )
-    : ogMap_(new OgMapData),
-      hasMap_(false)
-{
-    ogMap_->origin.p.x = xOrigin;
-    ogMap_->origin.p.y = xOrigin;
-    ogMap_->origin.o   = originTheta;
-    
-    if ( loadMap( filename, negate ) == 0 )
-    {
-        hasMap_ = true;
-    }
+namespace maploadutil {
 
-    // now we know that map size in pixels, we can calculate the cell size
-    ogMap_->metresPerCellX = worldSizeX / (float)ogMap_->numCellsX;
-    ogMap_->metresPerCellY = worldSizeY / (float)ogMap_->numCellsY;
-}
+// Load a gzipped pnm image.
+int
+loadPnmGz( const char *filename, 
+           bool negate,
+           int &numCellsX,
+           int &numCellsY,
+           std::vector<unsigned char> &cells );
 
-OgMapLoader::~OgMapLoader()
-{
-}
+int
+loadBitmap( const char *filename,
+            bool negate,
+            int &numCellsX,
+            int &numCellsY,
+            std::vector<unsigned char> &cells );
+
 
 void
-OgMapLoader::getMap(orca::OgMapDataPtr &toMap)
-{
-    toMap = ogMap_;
-}
-
-// Use Glib library to load map
-int
-OgMapLoader::loadMap( std::string filename,
-                          bool  negate )
+loadMap( const std::string &filename,
+         bool negate,
+         int &numCellsX,
+         int &numCellsY,
+         std::vector<unsigned char> &cells )
 {
     int len = strlen( filename.c_str() );
     
@@ -72,27 +59,31 @@ OgMapLoader::loadMap( std::string filename,
     if ( strcmp( &filename.c_str()[len - 7], ".pnm.gz" ) == 0 )
     {
         cout << "TRACE(ogmaploader.cpp): loading " << filename << " as a gzipped PNM image..." << endl;
-        if ( this->loadPnmGz( filename.c_str(), negate ) != 0 )
+        if ( loadPnmGz( filename.c_str(), negate, numCellsX, numCellsY, cells ) != 0 )
         {
-            cout << "ERROR(ogmaploader.cpp): failed to open " << filename << endl;
-            return -1;
+            stringstream ss;
+            ss << "ERROR(ogmaploader.cpp): failed to open " << filename;
+            throw( ss.str() );
         }
     }
     else // all other non-zipped bitmap files are loaded using the gdk library
     {
         cout << "TRACE(ogmaploader.cpp): loading " << filename << endl;        
-        if (this->loadBitmap( filename.c_str(), negate) != 0 )
+        if ( loadBitmap( filename.c_str(), negate, numCellsX, numCellsY, cells ) != 0 )
         {
-            cout << "ERROR(ogmaploader.cpp): failed to open " << filename << endl;
-            return -1;
+            stringstream ss;
+            ss << "ERROR(ogmaploader.cpp): failed to open " << filename;
+            throw ss.str();
         }
     }
-    
-    return(0);        
 }
       
 int
-OgMapLoader::loadBitmap(const char *filename, bool negate)
+loadBitmap(const char *filename,
+           bool negate,
+           int &numCellsX,
+           int &numCellsY,
+           std::vector<unsigned char> &cells )
 {
     // from Player mapfile.cc
     GdkPixbuf* pixbuf;
@@ -115,10 +106,10 @@ OgMapLoader::loadBitmap(const char *filename, bool negate)
         return(-1);
     }
 
-    ogMap_->numCellsX = gdk_pixbuf_get_width(pixbuf);
-    ogMap_->numCellsY = gdk_pixbuf_get_height(pixbuf);
-    ogMap_->data.resize( ogMap_->numCellsX * ogMap_->numCellsY );
-    cout<<"TRACE(ogmaploader.cpp): Resized map to " << ogMap_->numCellsX << "x" << ogMap_->numCellsY << endl;
+    numCellsX = gdk_pixbuf_get_width(pixbuf);
+    numCellsY = gdk_pixbuf_get_height(pixbuf);
+    cells.resize( numCellsX * numCellsY );
+    cout<<"TRACE(ogmaploader.cpp): Resized map to " << numCellsX << "x" << numCellsY << endl;
 
     rowstride = gdk_pixbuf_get_rowstride(pixbuf);
     bps = gdk_pixbuf_get_bits_per_sample(pixbuf)/8;
@@ -130,9 +121,9 @@ OgMapLoader::loadBitmap(const char *filename, bool negate)
     
     // Read data
     pixels = gdk_pixbuf_get_pixels(pixbuf);
-    for(j = 0; j < ogMap_->numCellsX; j++)
+    for(j = 0; j < numCellsX; j++)
     {
-        for (i = 0; i <ogMap_->numCellsY; i++)
+        for (i = 0; i < numCellsY; i++)
         {
             p = pixels + i*rowstride + j*n_channels*bps;
             color_sum = 0;
@@ -152,9 +143,9 @@ OgMapLoader::loadBitmap(const char *filename, bool negate)
             unsigned char cellVal = (unsigned char) (occ*254.0);
 
             int xi = j;
-            int yi = ogMap_->numCellsY-1-i;
-            int index = ogMap_->numCellsX*(yi) + xi;
-            ogMap_->data[index] = cellVal;
+            int yi = numCellsY-1-i;
+            int index = numCellsX*(yi) + xi;
+            cells[index] = cellVal;
         }
     }
     
@@ -167,7 +158,11 @@ OgMapLoader::loadBitmap(const char *filename, bool negate)
     
 // Load a gzipped pnm image.
 int
-OgMapLoader::loadPnmGz(const char *filename, bool negate)
+loadPnmGz(const char *filename, 
+          bool negate,           
+          int &numCellsX,
+          int &numCellsY,
+          std::vector<unsigned char> &cells )
 {   
     gzFile file;
     char magic[3];
@@ -210,10 +205,10 @@ OgMapLoader::loadPnmGz(const char *filename, bool negate)
     sscanf (line, " %d \n", &depth );
     
     // Allocate space in the map
-    ogMap_->numCellsX = width;
-    ogMap_->numCellsY = height;
-    ogMap_->data.resize( ogMap_->numCellsX * ogMap_->numCellsY );
-    cout<<"TRACE(ogmaploader.cpp): Resized map to " << ogMap_->numCellsX << "x" << ogMap_->numCellsY << endl;
+    numCellsX = width;
+    numCellsY = height;
+    cells.resize( numCellsX * numCellsY );
+    cout<<"TRACE(ogmaploader.cpp): Resized map to " << numCellsX << "x" << numCellsY << endl;
     
     // Read in the image
     for ( j = 0; j < height; j++ )
@@ -229,13 +224,15 @@ OgMapLoader::loadPnmGz(const char *filename, bool negate)
 
             unsigned char cellVal = (unsigned char) (occProb*254.0);
             int xi = i;
-            int yi = ogMap_->numCellsY-1-j;
-            int index = ogMap_->numCellsX*(yi) + xi;
-            ogMap_->data[index] = cellVal;
+            int yi = numCellsY-1-j;
+            int index = numCellsX*(yi) + xi;
+            cells[index] = cellVal;
         }
     }
     
     gzclose( file );
     
     return 0;    
+}
+
 }

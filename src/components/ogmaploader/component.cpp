@@ -1,6 +1,6 @@
-#include "maploadercomponent.h"
+#include "component.h"
 #include "fakemaploader.h"
-#include "ogmaploader.h"
+#include "maploadutil.h"
 
 // implementations of Ice objects
 #include "ogmap_i.h"
@@ -11,17 +11,17 @@ using namespace std;
 using namespace orca;
 using orcaice::operator<<;
 
-MapLoaderComponent::MapLoaderComponent()
+Component::Component()
     : orcaice::Component( "OgMapLoader" )
 {
 }
 
-MapLoaderComponent::~MapLoaderComponent()
+Component::~Component()
 {
 }
 
 void
-MapLoaderComponent::start()
+Component::start()
 {
     //
     // INITIAL CONFIGURATION
@@ -52,20 +52,34 @@ MapLoaderComponent::start()
         float originTheta = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Orientation", 0.0 ) * M_PI/180.0;
         bool  negate      = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Negate", true );
 
-        OgMapLoader ogMapLoader( mapFileName,
-                                 worldSizeX,
-                                 worldSizeY,
-                                 originX,
-                                 originY,
-                                 originTheta,
-                                 negate );
-        if ( ogMapLoader.hasMap() )
-        {
-            ogMapLoader.getMap( theMap );
-            cout<<"TRACE(maploadercomponent.cpp): Loaded map: " << theMap << endl;
-        }
-        else
-            theMap = 0;
+        maploadutil::loadMap( mapFileName,
+                              negate,
+                              theMap->numCellsX,
+                              theMap->numCellsY,
+                              theMap->data );
+
+        theMap->origin.p.x = originX;
+        theMap->origin.p.y = originY;
+        theMap->origin.o   = originTheta;
+
+        // since we know that map size in pixels, we can calculate the cell size
+        theMap->metresPerCellX = worldSizeX / (float)theMap->numCellsX;
+        theMap->metresPerCellY = worldSizeY / (float)theMap->numCellsY;
+
+//         OgMapLoader ogMapLoader( mapFileName,
+//                                  worldSizeX,
+//                                  worldSizeY,
+//                                  originX,
+//                                  originY,
+//                                  originTheta,
+//                                  negate );
+//         if ( ogMapLoader.hasMap() )
+//         {
+//             ogMapLoader.getMap( theMap );
+//             cout<<"TRACE(maploadercomponent.cpp): Loaded map: " << theMap << endl;
+//         }
+//         else
+//             theMap = 0;
 
 //         for ( uint i=0; i < theMap->data.size(); i++ )
 //         {
@@ -98,7 +112,7 @@ MapLoaderComponent::start()
     //
 }
 
-void MapLoaderComponent::stop()
+void Component::stop()
 {
     // Nothing to do, since we don't have our own thread.
 }
