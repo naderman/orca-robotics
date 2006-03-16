@@ -29,13 +29,12 @@ IF ( REALLY_BUILD_OGMAPLOADER )
       ${GDK_PIXBUF_INCLUDE_DIRS}
       )
     
-    LINK_LIBRARIES( ${GDK_PIXBUF_LIBS} z )
-
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
     FILE( GLOB SRCS *.cpp )
 
     # build a stand-alone component
     GLOBAL_ADD_EXECUTABLE( ogmaploader ${SRCS} )
+    TARGET_LINK_LIBRARIES( ogmaploader ${GDK_PIXBUF_LIBS} z )
 
     GENERATE_FROM_DEF( ogmaploader.def )
 
