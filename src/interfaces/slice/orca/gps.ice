@@ -116,6 +116,7 @@ interface Gps
     nonmutating GpsTime getTime()
             throws HardwareFailedException;
 
+    nonmutating CartesianPoint getGeometry();
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The
