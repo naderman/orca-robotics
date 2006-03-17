@@ -62,7 +62,10 @@ class CameraConfig extends OrcaObject {
     //! Image Format
     ImageFormat format;
     //! Image compression type
-    ImageCompression compression; 
+    ImageCompression compression;
+    //! @TODO: add other camera calibration parameters like focal length, zoom, aperture size, etc.
+    //! Are we talking to the hardware?
+    bool  isEnabled;
 }; 
 
 //!
@@ -89,7 +92,7 @@ class CameraData extends OrcaObject
     ImageCompression compression;
     //! The data itself.  The structure of this ByteSequence
     //! depends on the image format and compression.
-    ByteSequence data;
+    ByteSequence image;
 };
 
 //!
