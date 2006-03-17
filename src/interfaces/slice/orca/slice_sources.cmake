@@ -14,7 +14,7 @@ SET( SLICE_SOURCE_FILES
     bros1.ice
     stochastic.ice
 # objects
-    image.ice
+#    image.ice
     ogmap.ice
     opaque.ice
 #interfaces
@@ -38,4 +38,5 @@ SET( SLICE_SOURCE_FILES
     particle2d.ice
     pathfollower2d.ice
     featuremap2d.ice
+    camera.ice
 )
