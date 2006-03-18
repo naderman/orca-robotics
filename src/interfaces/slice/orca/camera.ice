@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef ORCA2_POLARFEATURE_INTERFACE_ICE
-#define ORCA2_POLARFEATURE_INTERFACE_ICE
+#ifndef ORCA2_CAMERA_INTERFACE_ICE
+#define ORCA2_CAMERA_INTERFACE_ICE
 
 #include <orca/orca.ice>
 #include <orca/bros1.ice>
@@ -29,7 +29,9 @@ module orca
 /*!
     @ingroup interfaces
     @defgroup orca_interface_camera Camera
-    @brief Interface to a monocular camera
+    @brief Monocular camera.
+
+Remote access to images captured by a variety of monocular cameras.
 
     @{
 */
@@ -37,22 +39,35 @@ module orca
 //! Specifies the format once it is decoded. 
 //! @TODO: is this list reasonable/exhaustive?
 enum ImageFormat {
+    //! 1 bit monochrome.
     IMGFMTMONO1,
+    //! 8 bit monochrome.
     IMGFMTMONO8,
+    //! 16 bit monochrome.
     IMGFMTMONO16,
+    //! RGB color.
     IMGFMTRGB565,
+    //! RGB color.
     IMGFMTRGB888,
+    //! RGB color.
     IMGFMTRGBA8888,
+    //! YUV color.
     IMGFMTYUV422};
 
 //! Specifies any encoding of the image. 
 //! @TODO: Is this list reasonable/exhaustive?
-enum ImageCompression {IMGCOMPRESSIONNONE,
-                       IMGCOMPRESSIONJPG,
-                       IMGCOMPRESSIONPNG};
+enum ImageCompression {
+    //! No compression.
+    IMGCOMPRESSIONNONE,
+    //! JPEG compression.
+    IMGCOMPRESSIONJPG,
+    //! PNG compression.
+    IMGCOMPRESSIONPNG};
 
-//! Camera configuration objectd
-class CameraConfig extends OrcaObject {
+//! %Camera configuration objectd
+//! @TODO: add other camera calibration parameters like focal length, zoom, aperture size, etc.
+class CameraConfig extends OrcaObject
+{
     //! Image width in pixels
     int   imageWidth; 
     //! Image height in pixels
@@ -63,7 +78,6 @@ class CameraConfig extends OrcaObject {
     ImageFormat format;
     //! Image compression type
     ImageCompression compression;
-    //! @TODO: add other camera calibration parameters like focal length, zoom, aperture size, etc.
     //! Are we talking to the hardware?
     bool  isEnabled;
 }; 
@@ -73,7 +87,7 @@ class CameraConfig extends OrcaObject {
 //!
 class CameraGeometry extends OrcaObject 
 {
-    //! offset of the camera with respect to the platform
+    //! Offset of the camera with respect to the platform
     Frame3d offset; 
 }; 
 
@@ -82,15 +96,15 @@ class CameraGeometry extends OrcaObject
 //!
 class CameraData extends OrcaObject
 {
-    //! image width in pixels
+    //! Image width in pixels
     int imageWidth;
-    //! image height in pixels
+    //! Image height in pixels
     int imageHeight;
-    //! format
+    //! Image format type.
     ImageFormat format;
-    //! compression
+    //! Image compression type.
     ImageCompression compression;
-    //! The data itself.  The structure of this ByteSequence
+    //! The image data itself.  The structure of this byte sequence
     //! depends on the image format and compression.
     ByteSequence image;
 };
@@ -123,32 +137,25 @@ interface Camera
         throws ConfigurationNotExistException;
 
     /*!
-     *
-     * Mimics IceStorm's subscribe().  The implementation may choose to
-     * implement the push directly or use IceStorm.  This choice is transparent to the subscriber.
-     *
-     * @param subscriber The subscriber's proxy.
+     * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.
+     * The implementation may choose to implement the push directly or use IceStorm.
+     * This choice is transparent to the subscriber. The case when the @p subscriber is already subscribed
+     * is quietly ignored.
      *
      * @see unsubscribe
-     *
      */
     void subscribe( CameraConsumer *subscriber )
             throws SubscriptionFailedException;
 
-    // this is what IceStorm's subscribe function looks like.
-    //void subscribe(QoS theQoS, Object* subscriber);
-
-    /**
-     *
-     * Unsubscribe the given [subscriber].
-     *
-     * @param subscriber The proxy of an existing subscriber.
+    /*!
+     * Unsubscribe an existing @p subscriber. The case when the @p subscriber is not subscribed
+     * is quietly ignored.
      *
      * @see subscribe
-     *
-    **/
+     */
     idempotent void unsubscribe( CameraConsumer *subscriber );
 };
+
 
 //!  //@}
 }; // module
