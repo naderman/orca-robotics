@@ -30,13 +30,13 @@ component. In this case you should download and install the main Orca distributi
 then setup a parallel workspace for your own project.
 
 To help you start quickly we provide a template  project which uses CMake, mirrors
-the setup of the orca2 repository and is already set up to find Ice, find the orca2
+the setup of the orca2 repository and is already set up to find Ice, orca2
 installation, etc. You can of course set up a project in any way you like, however you
 might find it useful. Get it from CVS (it may be more up to date) or download
 an archive.
 
-- from CVS checkout module 'empty-project' (more likely to be up-to-date)
-- download <a href="http://orca-robotics.sf.net/empty-project-2.0.0rc3.tar.gz">a snapshot of CVS repository</a> as of v.2.0.0rc2+
+- checkout CVS module 'empty-project' (it's more likely to be up-to-date)
+- download <a href="http://orca-robotics.sf.net/empty-project-2.0.0rc3.tar.gz">a snapshot of CVS repository</a> as of v.2.0.0rc3+.
 
 
 @section goodcomp Notes on writing good components
