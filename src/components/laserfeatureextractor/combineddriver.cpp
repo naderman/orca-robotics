@@ -31,7 +31,7 @@
 
 
 // Stage values....Real Values
-#define MAX_RANGE    79.99     // 7.99    79.99
+#define MAX_RANGE    7.99     // 7.99    79.99
 #define NO_SECTION    -1
 #define RANGE_DELTA     1.0    // 0.10    0.2
 #define BREAK_DIST     0.5    // 0.4    0.2
@@ -134,17 +134,17 @@ CombinedDriver::extractLaserReflectors( const orca::LaserDataPtr & laserDataPtr,
                 // not sure whether this is suppose to stop laser beacons that are on a corner
                 // from not becoming foreground features as well?? if it is, I don't think it
                 // works, so will disable it and just check minReturns_.
-                
+                // SBW: actually, this is meant to check that the return is not on a
+                // corner.  The cor
                 // again make sure that the feature is not a foreground point
                 //if ( fabs( laserDataPtr.range(i) -  laserDataPtr.range(i+1) ) < config_.backgroundRangeGate && featureNumPnts >= minReturns_ )
 
-                if ( featureNumPnts >= minReturns_ )
+                if ( featureNumPnts >= config_.minReturnNumber )
                 {                 
                     orca::SinglePolarFeature2dPtr pp = new orca::SinglePolarFeature2d;
                     pp->type = orca::feature::LASERREFLECTOR;
                     pp->p.r  = featureRange / featureNumPnts;
                     pp->p.o  = featureBearing / featureNumPnts;
-                    
                     featureDataPtr->features.push_back( pp );
                 }
             } // end of end-of-cluster if
