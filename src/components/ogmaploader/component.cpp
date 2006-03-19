@@ -66,26 +66,7 @@ Component::start()
         theMap->metresPerCellX = worldSizeX / (float)theMap->numCellsX;
         theMap->metresPerCellY = worldSizeY / (float)theMap->numCellsY;
 
-//         OgMapLoader ogMapLoader( mapFileName,
-//                                  worldSizeX,
-//                                  worldSizeY,
-//                                  originX,
-//                                  originY,
-//                                  originTheta,
-//                                  negate );
-//         if ( ogMapLoader.hasMap() )
-//         {
-//             ogMapLoader.getMap( theMap );
-//             cout<<"TRACE(maploadercomponent.cpp): Loaded map: " << theMap << endl;
-//         }
-//         else
-//             theMap = 0;
-
-//         for ( uint i=0; i < theMap->data.size(); i++ )
-//         {
-//             cout<<"TRACE(maploadercomponent.cpp): data["<<i<<"]:"<<(int)(theMap->data[i])<< endl;
-//         }
-//         orcaice::displayAsText( theMap );
+        cout<<"TRACE(component.cpp): Loaded map: " << theMap << endl;
     }
     else
     {
