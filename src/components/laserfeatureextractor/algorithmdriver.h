@@ -62,6 +62,8 @@ public:
     virtual int computeFeatures( const orca::RangeScannerConfigPtr & laserConfigPtr,
                                  const orca::LaserDataPtr          & laserDataPtr,
                                  const orca::PolarFeature2dDataPtr & featureDataPtr ) = 0;
+
+    virtual void setMaxRange( float maxRange )=0;
                                  
 protected:
 

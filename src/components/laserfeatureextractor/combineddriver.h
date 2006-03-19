@@ -46,6 +46,9 @@ public:
                                  const orca::LaserDataPtr & laserDataPtr,
                                  const orca::PolarFeature2dDataPtr & featureDataPtr );
     
+    virtual void setMaxRange( float maxRange )
+        { laserRange_ = maxRange; }    
+
 private:
 
     // alexm: why is this one not in the Config structure?

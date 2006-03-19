@@ -31,7 +31,7 @@
 
 
 // Stage values....Real Values
-#define MAX_RANGE    7.99     // 7.99    79.99
+#define INITIAL_MAX_RANGE    79.99     // 7.99    79.99
 #define NO_SECTION    -1
 #define RANGE_DELTA     1.0    // 0.10    0.2
 #define BREAK_DIST     0.5    // 0.4    0.2
@@ -47,7 +47,7 @@ using namespace laserfeatures;
 CombinedDriver::CombinedDriver( const Config & config )
     : AlgorithmDriver( config )
 {
-    laserRange_ = MAX_RANGE;
+    laserRange_ = INITIAL_MAX_RANGE;
 }
 
 CombinedDriver::~CombinedDriver()

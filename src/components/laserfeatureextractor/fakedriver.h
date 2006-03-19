@@ -37,6 +37,7 @@ public:
                                  const orca::LaserDataPtr & laserDataPtr,
                                  const orca::PolarFeature2dDataPtr & featureDataPtr );
 
+    virtual void setMaxRange( float maxRange ) {};
 };
 
 } // namespace

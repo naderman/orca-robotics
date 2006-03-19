@@ -113,6 +113,7 @@ void AlgorithmHandler::run()
        
     // get laser config and geometry (only once)
     laserConfigPtr_ = laserPrx_->getConfig();
+    driver_->setMaxRange( laserConfigPtr_->maxRange );
     laserGeometryPtr_ = laserPrx_->getGeometry();
 
     // wake up every now and then to check if we are supposed to stop

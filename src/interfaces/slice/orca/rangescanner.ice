@@ -55,6 +55,9 @@ class RangeScannerConfig extends OrcaObject
     //! Minimum range step that can be sensed
     float rangeResolution;
 
+    //! maximum range of each return
+    float maxRange;
+
     //! Angle between successive returns
     float angleIncrement;
 
