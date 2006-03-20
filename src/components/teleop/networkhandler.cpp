@@ -83,6 +83,7 @@ void NetworkHandler::run()
     while ( isActive() )
     {
         int ret = commandBuffer_->getAndPopNext( command, timeoutMs );
+        orcaice::setToNow( command->timeStamp );
 
         //
         // Sending motion command (probably over the network)
