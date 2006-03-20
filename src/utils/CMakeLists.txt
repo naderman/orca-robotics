@@ -11,6 +11,7 @@ SUBDIRS(
   orcadef
   orcagui
   orcaogmap
+  orcapathplan
   libqorcauml
   orcaplayer
   qorcacm
