@@ -39,4 +39,5 @@ SET( SLICE_SOURCE_FILES
     pathfollower2d.ice
     featuremap2d.ice
     camera.ice
+    qgraphics2d.ice
 )
