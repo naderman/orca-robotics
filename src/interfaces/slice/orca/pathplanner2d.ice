@@ -38,9 +38,10 @@ module orca
 enum PathPlanner2dResult 
 { 
     PathOk, 
-    PathStartOutsideMap, 
-    PathDestinationOutsideMap, 
-    PathDestinationUnreachable
+    PathStartNotValid, 
+    PathDestinationNotValid, 
+    PathDestinationUnreachable,
+    OtherError
 };
 
 //! Data structure for resulting path including error codes
