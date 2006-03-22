@@ -1,0 +1,10 @@
+DefaultComponentTag=FaithLocaliser
+
+# Provided Interfaces
+Provides.Localise2d.Type=Localise2d
+Provides.Localise2d.DefaultInterface=localise2d
+
+# Required Interfaces
+
+Requires.Odometry.Type=Position2d
+Requires.Odometry.DefaultProxy=platform2d@local/segwayrmp

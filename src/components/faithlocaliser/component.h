@@ -1,0 +1,45 @@
+#ifndef ORCA2_FAITH_LOCALISER_COMPONENT_H
+#define ORCA2_FAITH_LOCALISER_COMPONENT_H
+
+#include <orcaice/component.h>
+#include <orcaice/ptrbuffer.h>
+#include <orcaice/bufferedconsumerI.h>
+
+#include <orca/localise2d.h>
+#include <orca/position2d.h>
+
+namespace faithlocaliser
+{
+
+class MainLoop;
+
+// Deriving from orcaice::Component means we have to implement start() and stop()
+class Component : public orcaice::Component
+{
+public:
+
+    Component();
+    virtual ~Component();
+
+    virtual void start();
+    virtual void stop();
+
+private:
+
+    //
+    // EXTERNAL PROVIDED INTERFACE
+    //
+    Ice::ObjectPtr localise2dObj_;
+    orca::Localise2dConsumerPrx localise2dPublisher_;
+
+    orcaice::PtrBuffer<orca::Localise2dDataPtr> locBuffer_;
+
+    // REQUIRED INTERFACE
+    orcaice::BufferedConsumerI<orca::Position2dConsumer,orca::Position2dDataPtr> *posConsumer_;
+
+    MainLoop *mainLoop_;
+};
+
+} // namespace
+
+#endif

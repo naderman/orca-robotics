@@ -4,6 +4,7 @@ MESSAGE ( "== COMPONENTS ==" )
 
 # when adding new directories, please maintain alphabetical order
 SUBDIRS(
+  faithlocaliser
   laserfeatureextractor
   lasermon
   logger
