@@ -1,0 +1,201 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+@ingroup components
+@ingroup apps
+@ingroup services
+@ingroup cpp
+@ingroup linux
+@defgroup orca_component_localnav LocalNav
+@brief A Local Navigation component: follows a waypoint-defined path while avoiding obstacles.
+
+@par Provides
+
+- @ref orca_interface_home
+- @ref orca_interface_status
+- @ref orca_interface_pathfollower2d
+
+@par Requires
+
+- @ref orca_interface_rangescanner
+- @ref orca_interface_localise2d
+- @ref orca_interface_platform2d
+
+@par Drivers
+
+- @b vfh @ref orca_localnav_vfh
+
+@par Configuration
+
+- @c LocalNav.Config.Driver (string)
+    - Which local nav algorithm to use
+    - Valid values: { "vfhdriver" }
+    - Default: "vfhdriver"
+
+@section orca_localnav_vfh Vfh driver
+
+    The Vfh driver implements the Vector Field Histogram Plus
+    local navigation method by Ulrich and Borenstein.  Vfh+ provides
+    real-time obstacle avoidance and waypoint-following capabilities
+    for mobile robots.
+
+@par Vfh configuration
+
+    Vfh Has _lots_ of parameters.  See the next section for hints on configuration.
+
+    Some important configuration parameters:
+
+    - RobotRadius: max radius of the (assumed circular) robot.
+
+    - SafetyDist0ms: the distance the robot should keep from obstacles when travelling at 0 m/s.
+
+    - SafetyDist1ms: the distance the robot should keep from obstacles when travelling at 1 m/s.
+
+    - FreeSpaceCutoff0ms: Controls how close the robot has to be to an
+      obstacle to be afraid of it, when travelling at 0 m/s.  A small value makes 
+      the robot cautious, a large value makes it brave.
+
+    - FreeSpaceCutoff1ms: See FreeSpaceCutoff0ms.  The value used scales linearly with speed.
+
+    - ObsCutoff0ms: Setting this differently to FreeSpaceCutoff0ms causes Vfh to use some hysteresis
+      in deciding what an obstacle is.  For laser range-finders, setting it to FreeSpaceCutoff0ms
+      seems to work just fine.
+
+    - ObsCutoff1ms: see ObsCutoff0ms
+
+    - WeightDesiredDir: To force it to commit, Vfh is provided with a built-in tendency to stick to its
+      previous course of action.  WeightDesiredDir and WeightCurrentDir determine the strength of this tendency.
+
+    - WeightCurrentDir: see WeightDesiredDir
+
+    - CellSize: Vfh build a small local occupancy grid map for obstacle detection.  This controls the width
+      of each occupancy grid cell.
+
+    - GridWidthInCells: This parameter, together with CellSize, determine the size of the local
+      occupancy grid.
+
+    - SectorAngle: The number of bins in Vfh's local histogram.
+
+    - MaxAcceleration: maximum acceleration, in metres/sec/sec.
+
+    - MaxTurnrate0ms: maximum turnrate at 0 m/s.  Units in degrees/sec.
+
+    - MaxTurnrate1ms: maximum turnrate at 1m/s.  Units in degrees/sec.
+
+    - AbsoluteMaxTurnrate: this is for safety.  We'll never turn faster than this.
+
+    - MinTurnRadiusSafetyFactor: MinTurnRadius is calculated for the
+      current speed and max turnrate.  It is then multiplied by
+      minTurnRadiusSafetyFactor, to account for side-slip while
+      cornering quickly.  The default value is 1.10.
+
+    For the next three speed arguments: These are the absolute max values that Vfh will use.
+    Setting a path with a long time between waypoints will cause Vfh to go slower.
+
+    - MaxSpeed: the robot's maximum speed in m/s -- it will never try to go
+      faster than this.
+
+    - MaxSpeedNarrowOpening: Max speed while travelling through a narrow opening 
+      (defined as an opening of less than 80degrees) in m/s.  This is
+      thresholded if the max_speed is decreased at run-time.
+
+    - MaxSpeedWideOpening: Max speed (in m/s) while travelling
+      along the border of an obstacle,
+      when the opening is greater than 80 degrees.  This is
+      thresholded if the max_speed is decreased at run-time.
+
+
+NOTE TO SELF: CHECK DEFAULTS IN CODE!
+
+    @par Hints for Configuration 
+
+    (some of this is taken from the Player Vfh documentation):
+
+To get initiated with Vfh, a good idea is to start with the default
+values, which are all pretty reasonable.  Then start experimenting
+with safetyDist[0|1]ms and FreeSpaceCutoff[0|1]ms (and ObsCutoff[0|1]ms),
+to get a feeling for how they affect performance.  Once comfortable,
+make the speed-controlling parameters more aggressive.  In general,
+SafetySist determines how close the robot will come to an obstacle
+while turning (around a corner for instance).  Setting this too low
+causes the robot to clip obstacles, while setting it too
+conservatively stops the robot getting through gaps like doorways.
+FreeSpaceCutoff determines how close a robot will get to an obstacle
+in the direction of motion before turning to avoid.
+
+For 'slow' robots (like Pioneers), MaxSpeedNarrowOpening and
+MaxSpeedWideOpening can be set to MaxSpeed.  The 0ms and 1ms
+variables can also be set to the same values as each other.  From
+experience, it is recommeded that MaxTurnrate[0|1]ms should be at
+least 15% of MaxSpeed.
+
+For 'fast' vehicles like Segways, firstly be aware that Vfh control is
+potentially very dangerous: start conservatively and change things
+slowly.  The speed-dependent parameters are much more important here:
+it helps to set the 0ms and 1ms variable differently.  To control
+the dynamics, it's good to set MaxSpeedNarrowOpening very slow, and
+MaxSpeedWideOpening reasonably slow.  This causes the robot to slow
+down generally near obstacles, so if it does collide it's less likely
+to be catastrophic.  MaxTurnrate[0|1]ms is also important for
+controlling how aggressively the robot turns.
+
+Unless you are familiar with the Vfh algorithm, I don't recommend
+deviating from the default values for CellSize, WindowDiameter, or
+SectorAngle.
+    
+@par Notes and credits
+
+    This is an implementation of the paper:
+
+@inproceedings{Ulrich98Reliable,
+  Author = {Ulrich, I. and Borenstein, J.},
+  Title = {VFH+: Reliable Obstacle Avoidance for Fast Mobile Robots},
+  BookTitle = {IEEE International Conference on Robotics and Automation(ICRA '98)},
+  Pages = {1572--1577},
+  Year = {1998}
+}
+
+    The code that implements the Vfh algorithm was taken
+    from Player, heavily modified, then re-submitted to the Player project.
+
+@section internal Internal Structure
+    
+@image html localnav_whitebox.png
+
+@par For developers:
+
+The Main pieces of LocalNav are:
+
+ - MainLoop: provides the single thread which runs all the internals
+ - PathMaintainer: Keeps track of the path and the robot's progress in following that path
+ - LocalNavManager: Takes progress info from the PathMaintainer.  Uses this, plus localisation info,
+                    to feed the next goalpoint to the LocalNavDriver in the robot's local reference frame,
+                    and give the LocalNavDriver guidelines on speed.
+ - LocalNavDriver: Receives goalpoints, speed parameters and sensor data from the LocalNavManager.  
+                   Decides what actions to take.
+
+@par Authors
+
+LocalNav: Alex Brooks
+Vfh:      Chris Jones, Brian Gerkey, Alex Brooks
+
+*/
+
