@@ -1,0 +1,40 @@
+DefaultComponentTag=LocalNav
+
+# Provided Interfaces
+Provides.PathFollower2d.Type=PathFollower2d
+Provides.PathFollower2d.DefaultInterface=pathfollower2d
+
+# Required Interfaces
+
+Requires.Platform2d.Type=Platform2d
+Requires.Platform2d.DefaultProxy=platform2d@local/segwayrmp
+
+Requires.Localisation.Type=Localise2d
+Requires.Localisation.DefaultProxy=localise2d@local/faithlocaliser
+
+Requires.Observations.Type=RangeScanner
+Requires.Observations.DefaultProxy=laser@local/sicklaser
+
+# Config Parameters
+Config.Driver.Default=vfhdriver
+
+Config.Vfh.CellSize.Default=0.1
+Config.Vfh.GridWidthInCells.Default=61
+Config.Vfh.SectorAngle.Default=5
+Config.Vfh.RobotRadius.Default=0.3
+Config.Vfh.SafetyDist0ms.Default=0.1
+Config.Vfh.SafetyDist1ms.Default=0.1
+Config.Vfh.MaxSpeed.Default=0.2
+Config.Vfh.MaxSpeedNarrowOpening.Default=0.2
+Config.Vfh.MaxSpeedWideOpening.Default=0.2
+Config.Vfh.MaxAcceleration.Default=0.2
+Config.Vfh.MaxTurnrate0ms.Default=40
+Config.Vfh.MaxTurnrate1ms.Default=40
+Config.Vfh.AbsoluteMaxTurnrate.Default=60
+Config.Vfh.MinTurnRadiusSafetyFactor.Default=1.10
+Config.Vfh.FreeSpaceCutoff0ms.Default=2000000.0
+Config.Vfh.FreeSpaceCutoff1ms.Default=2000000.0
+Config.Vfh.ObsCutoff0ms.Default=2000000.0
+Config.Vfh.ObsCutoff1ms.Default=2000000.0
+Config.Vfh.WeightDesiredDir.Default=5.0
+Config.Vfh.WeightCurrentDir.Default=3.0

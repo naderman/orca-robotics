@@ -1,0 +1,104 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+#include <iostream>
+#include <orcaice/objutils.h>
+#include "pathfollower2dI.h"
+
+using namespace std;
+using namespace orca;
+using namespace orcaice;
+
+
+PathFollower2dI::PathFollower2dI( orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe,
+                                  orcaice::Proxy<bool>                           &newPathArrivedPipe,
+                                  orcaice::Proxy<orca::Time>                     &activationPipe,
+                                  orcaice::Proxy<int>                            &wpIndexPipe,
+                                  const IceStorm::TopicPrx & topicPrx )
+    : pathPipe_(pathPipe),
+      newPathArrivedPipe_(newPathArrivedPipe),
+      activationPipe_(activationPipe),
+      wpIndexPipe_(wpIndexPipe),
+      topicPrx_(topicPrx)
+{
+    assert ( topicPrx_ != 0 );
+
+    // We're inactive on initialization
+    wpIndexPipe_.set( -1 );
+}
+
+orca::PathFollower2dDataPtr
+PathFollower2dI::getData( const ::Ice::Current& ) const
+{
+    cout<<"TRACE(pathfollower2dI.cpp): getData()" << endl;
+    orca::PathFollower2dDataPtr data;
+    if ( pathPipe_.isEmpty() )
+    {
+        data = new orca::PathFollower2dData;
+        return data;
+    }
+    pathPipe_.get( data );
+    return data;
+}
+
+void
+PathFollower2dI::setData( const ::orca::PathFollower2dDataPtr &data, bool activateImmediately, const ::Ice::Current& )
+{
+    cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << data << endl;
+    cout<<"TRACE(pathfollower2dI.cpp): activateImmediately: " << activateImmediately << endl;
+    pathPipe_.set( data );
+    newPathArrivedPipe_.set( true );
+    if ( activateImmediately )
+        activateNow();
+}
+
+void
+PathFollower2dI::activateNow( const ::Ice::Current& )
+{
+    activationPipe_.set( orcaice::getNow() );
+}
+
+int
+PathFollower2dI::getWaypointIndex( const ::Ice::Current& ) const
+{
+    int ret;
+    wpIndexPipe_.get( ret );
+    return ret;
+}
+
+void
+PathFollower2dI::subscribe( const ::orca::PathFollower2dConsumerPrx& subscriber, const ::Ice::Current& )
+{
+    cout<<"subscribe()"<<endl;
+    assert ( topicPrx_ != 0 );
+    cout<<"TRACE(pathfollower2dI.cpp): topicPrx_: " << topicPrx_->ice_toString() << endl;
+    IceStorm::QoS qos;
+    topicPrx_->subscribe( qos, subscriber );
+}
+
+void
+PathFollower2dI::unsubscribe( const ::orca::PathFollower2dConsumerPrx& subscriber, const ::Ice::Current& )
+{
+    assert ( topicPrx_ != 0 );
+    cout<<"unsubscribe()"<<endl;
+    topicPrx_->unsubscribe( subscriber );
+}
+
+
