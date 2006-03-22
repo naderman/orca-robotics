@@ -93,11 +93,10 @@ interface Position2d
     nonmutating Position2dGeometry getGeometry();
 
     /*!
-     * Mimics IceStorm's subscribe() but without QoS, for now. The
-     * implementation may choose to implement the data push internally
-     * or use IceStorm. This choice is transparent to the subscriber.
-     *
-     * @param subscriber The subscriber's proxy.
+     * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.
+     * The implementation may choose to implement the push directly or use IceStorm.
+     * This choice is transparent to the subscriber. The case when the @p subscriber is already subscribed
+     * is quietly ignored.
      *
      * @see unsubscribe
      */
@@ -108,9 +107,8 @@ interface Position2d
     //void subscribe(QoS theQoS, Object* subscriber);
 
     /*!
-     * Unsubscribe the given @p subscriber.
-     *
-     * @param subscriber The proxy of an existing subscriber.
+     * Unsubscribe an existing @p subscriber. The case when the @p subscriber is not subscribed
+     * is quietly ignored.
      *
      * @see subscribe
      */
