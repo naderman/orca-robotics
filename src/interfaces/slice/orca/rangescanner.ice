@@ -106,9 +106,11 @@ interface RangeScannerConsumer
 interface RangeScanner
 {
     //! Returns the latest data.
+    //! May raise DataNotExistException if the requested information is not available.
+    //! May raise HardwareFailedException if there is some problem with hardware.
     //! @note In Orca1 this would be called ClientPull_Supplier interface.
     nonmutating RangeScannerData      getData()
-            throws HardwareFailedException;
+            throws DataNotExistException, HardwareFailedException;
             
     //! Returns the current configuration.
     nonmutating RangeScannerConfig    getConfig();
@@ -117,18 +119,17 @@ interface RangeScanner
     nonmutating RangeScannerGeometry  getGeometry();
 
     //! Set the configuration of the sensor.
-    //! Throws remote exceptions if given a configuration it can't implement.
-    idempotent  void setConfig( RangeScannerConfig config ) throws ConfigurationNotExistException;
+    //! May raise ConfigurationNotExistException when given a configuration it can't implement.
+    idempotent  void setConfig( RangeScannerConfig config )
+            throws ConfigurationNotExistException;
 
     /*!
-     *
-     * Mimics IceStorm's subscribe().  The implementation may choose to
-     * implement the push directly or use IceStorm.  This choice is transparent to the subscriber.
-     *
-     * @param subscriber The subscriber's proxy.
+     * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.
+     * The implementation may choose to implement the push directly or use IceStorm.
+     * This choice is transparent to the subscriber. The case when the @p subscriber is already subscribed
+     * is quietly ignored.
      *
      * @see unsubscribe
-     *
      */
     void subscribe( RangeScannerConsumer *subscriber )
             throws SubscriptionFailedException;
@@ -136,15 +137,12 @@ interface RangeScanner
     // this is what IceStorm's subscribe function looks like.
     //void subscribe(QoS theQoS, Object* subscriber);
 
-    /**
-     *
-     * Unsubscribe the given [subscriber].
-     *
-     * @param subscriber The proxy of an existing subscriber.
+    /*!
+     * Unsubscribe an existing @p subscriber. The case when the @p subscriber is not subscribed
+     * is quietly ignored.
      *
      * @see subscribe
-     *
-    **/
+     */
     idempotent void unsubscribe( RangeScannerConsumer *subscriber );
 };
 
