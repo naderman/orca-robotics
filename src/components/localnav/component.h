@@ -17,9 +17,9 @@ class LocalNavDriver;
 class LocalNavManager;
 class PathMaintainer;
 
-//!
-//! Deriving from orcaice::Component means we have to implement start() and stop()
-//!
+//
+// Deriving from orcaice::Component means we have to implement start() and stop()
+//
 class Component : public orcaice::Component
 {
 public:

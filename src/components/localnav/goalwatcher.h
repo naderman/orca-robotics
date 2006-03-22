@@ -1,22 +1,22 @@
 #ifndef GOALWATCHER_H
 #define GOALWATCHER_H
 
-//!
-//! Monitors proximity to goal.
-//! Works entirely in robot-centric coord system.
-//!
-//! @author Alex Brooks
-//!
+//
+// Monitors proximity to goal.
+// Works entirely in robot-centric coord system.
+//
+// @author Alex Brooks
+//
 class GoalWatcher 
 {
 public:
 
     GoalWatcher();
 
-    //! Set a particular goal
+    // Set a particular goal
     void setGoal( float x, float y, float theta );
 
-    //! Call this when no goal is active.
+    // Call this when no goal is active.
     void setNoGoal();
 
     void setDistanceTolerance( float requiredDistanceFromGoal );
@@ -25,14 +25,14 @@ public:
     bool goalReached() const;
     bool translationalGoalReached() const;
 
-    //! distance to centre of goal
+    // distance to centre of goal
     float goalDistance() const { return goalDistance_; }
     float goalDistanceTolerance() const { return requiredDistanceFromGoal_; }
 
-    //! direction from robot centre to goal centre 
+    // direction from robot centre to goal centre 
     float goalDirection() const { return goalDirection_; }
 
-    //! goal heading minus robot heading
+    // goal heading minus robot heading
     float headingDifference() const { return goalTheta_; }
     float headingDifferenceTolerance() const { return requiredAngleFromGoal_; }
     

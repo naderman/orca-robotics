@@ -7,14 +7,14 @@
 #include <goalwatcher.h>
 #include <vfhdriver/vfh_algorithm.h>
 
-//!
-//! Implements VFH.
-//! All the number-crunching is done by the VFH_Algorithm class.
-//! This thing just feeds in configuration and information, plus
-//! tries heuristic escape approaches if the robot gets stuck.
-//!
-//! @author Alex Brooks
-//!
+//
+// Implements VFH.
+// All the number-crunching is done by the VFH_Algorithm class.
+// This thing just feeds in configuration and information, plus
+// tries heuristic escape approaches if the robot gets stuck.
+//
+// @author Alex Brooks
+//
 class VfhDriver : public LocalNavDriver
 {
 
@@ -26,7 +26,7 @@ public:
 
     virtual void setLocalNavParameters( LocalNavParameters params );
 
-    //! Goal location is in robot's coordinate frame
+    // Goal location is in robot's coordinate frame
     virtual LocalNavDriver::DriverState getCommand( bool  stalled,
                                                     const orca::Twist2d &currentVelocity,
                                                     const orca::RangeScannerDataPtr obs,

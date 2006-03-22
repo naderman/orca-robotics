@@ -28,13 +28,13 @@ std::ostream &operator<<( std::ostream &s, LocalNavParameters &n );
 // fwd decl
 class GoalWatcher;
 
-//!
-//! @author Alex Brooks
-//!
-//! Base class for local navigation drivers.
-//! The manager sets the goal location (in the robot's coordinate system)
-//! by modifying the goalWatcher.
-//!
+//
+// @author Alex Brooks
+//
+// Base class for local navigation drivers.
+// The manager sets the goal location (in the robot's coordinate system)
+// by modifying the goalWatcher.
+//
 class LocalNavDriver
 {
 
@@ -59,10 +59,10 @@ public:
 
     virtual void setLocalNavParameters( LocalNavParameters params )=0;
 
-    //!
-    //! Sets cmd.
-    //! Returns the state of the algorithm, from the list above.
-    //!
+    //
+    // Sets cmd.
+    // Returns the state of the algorithm, from the list above.
+    //
     virtual DriverState getCommand( bool  stalled,
                                     const orca::Twist2d &currentVelocity,
                                     const orca::RangeScannerDataPtr obs,

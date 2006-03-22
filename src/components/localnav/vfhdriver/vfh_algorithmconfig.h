@@ -4,10 +4,10 @@
 #include <string>
 #include <orcaice/context.h>
 
-//!
-//! Convenience structure to hold all the vfh_algorithm parameters.
-//! All units are S.I.
-//!
+//
+// Convenience structure to hold all the vfh_algorithm parameters.
+// All units are S.I.
+//
 class VfhAlgorithmConfig 
 {
 public:

@@ -4,13 +4,14 @@
 #include <orca/pathfollower2d.h>
 #include <orcaice/ptrproxy.h>
 #include <orcaice/context.h>
-//!
-//! @author Alex Brooks
-//!
-//! This thing is responsible for keeping track of where we are in the path.
-//! It doesn't need any mutexes, because all accesses are made by the MainLoop's thread.
-//! (hence it is _not_ thread-safe).
-//!
+
+//
+// @author Alex Brooks
+//
+// This thing is responsible for keeping track of where we are in the path.
+// It doesn't need any mutexes, because all accesses are made by the MainLoop's thread.
+// (hence it is _not_ thread-safe).
+//
 class PathMaintainer
 {
 

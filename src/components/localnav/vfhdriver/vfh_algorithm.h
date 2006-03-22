@@ -24,10 +24,10 @@
 #include <vector>
 #include "vfh_algorithmconfig.h"
 
-//!
-//! Handles all the number-crunching required for VFH.
-//! Originally came from Player.
-//!
+//
+// Handles all the number-crunching required for VFH.
+// Originally came from Player.
+//
 class VFH_Algorithm
 {
 public:

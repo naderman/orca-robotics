@@ -13,14 +13,14 @@
 class PathMaintainer;
 class PathFollower2dI;
 
-//!
-//! @brief the main executing loop of this component.
-//!
-//! Note: this thing self-destructs when run() returns.
-//!
-//!
-//! @author Alex Brooks
-//!
+//
+// @brief the main executing loop of this component.
+//
+// Note: this thing self-destructs when run() returns.
+//
+//
+// @author Alex Brooks
+//
 class MainLoop : public orcaice::Thread
 {
 
