@@ -10,6 +10,7 @@ SUBDIRS(
   orcacm
   orcadef
   orcagui
+  orcanavutil
   orcaogmap
   orcapathplan
   libqorcauml

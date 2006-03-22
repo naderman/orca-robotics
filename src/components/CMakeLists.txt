@@ -7,6 +7,7 @@ SUBDIRS(
   faithlocaliser
   laserfeatureextractor
   lasermon
+  localnav
   logger
   logplayer
   ogmaploader

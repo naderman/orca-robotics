@@ -1,0 +1,12 @@
+ADD_DEFINITIONS( -Wall )
+
+LINK_DIRECTORIES(
+)
+
+INCLUDE_DIRECTORIES(
+  ${PROJ_SOURCE_DIR}/src/components/vfh
+)
+
+FILE( GLOB SRCS *.cpp *.cc )
+
+ADD_LIBRARY( vfhdriver SHARED ${SRCS} )
