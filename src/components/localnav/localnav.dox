@@ -41,7 +41,7 @@
 
 @par Drivers
 
-- @b vfh @ref orca_localnav_vfh
+- @b @ref orca_localnav_vfh
 
 @par Configuration
 
@@ -52,7 +52,7 @@
 
 @section orca_localnav_vfh Vfh driver
 
-    The Vfh driver implements the Vector Field Histogram Plus
+    The Vfh driver implements the Vector Field Histogram Plus (Vfh+)
     local navigation method by Ulrich and Borenstein.  Vfh+ provides
     real-time obstacle avoidance and waypoint-following capabilities
     for mobile robots.
@@ -194,8 +194,8 @@ The Main pieces of LocalNav are:
 
 @par Authors
 
-LocalNav: Alex Brooks
-Vfh:      Chris Jones, Brian Gerkey, Alex Brooks
+  - LocalNav: Alex Brooks
+  - Vfh:      Chris Jones, Brian Gerkey, Alex Brooks
 
 */
 
