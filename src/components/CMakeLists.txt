@@ -5,6 +5,7 @@ MESSAGE ( "== COMPONENTS ==" )
 # when adding new directories, please maintain alphabetical order
 SUBDIRS(
   faithlocaliser
+  featuremap2dmon
   laserfeatureextractor
   lasermon
   localnav
