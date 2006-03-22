@@ -50,16 +50,16 @@
     - Valid values: { "vfhdriver" }
     - Default: "vfhdriver"
 
-@section orca_localnav_vfh Vfh driver
+@section orca_localnav_vfh VFH driver
 
-    The Vfh driver implements the Vector Field Histogram Plus (Vfh+)
-    local navigation method by Ulrich and Borenstein.  Vfh+ provides
+    The VFH driver implements the Vector Field Histogram Plus (VFH+)
+    local navigation method by Ulrich and Borenstein.  VFH+ provides
     real-time obstacle avoidance and waypoint-following capabilities
     for mobile robots.
 
-@par Vfh configuration
+@par VFH configuration
 
-    Vfh Has _lots_ of parameters.  See the next section for hints on configuration.
+    VFH Has @b lots of parameters. See the next section for hints on configuration.
 
     Some important configuration parameters:
 
@@ -75,24 +75,24 @@
 
     - FreeSpaceCutoff1ms: See FreeSpaceCutoff0ms.  The value used scales linearly with speed.
 
-    - ObsCutoff0ms: Setting this differently to FreeSpaceCutoff0ms causes Vfh to use some hysteresis
+    - ObsCutoff0ms: Setting this differently to FreeSpaceCutoff0ms causes VFH to use some hysteresis
       in deciding what an obstacle is.  For laser range-finders, setting it to FreeSpaceCutoff0ms
       seems to work just fine.
 
     - ObsCutoff1ms: see ObsCutoff0ms
 
-    - WeightDesiredDir: To force it to commit, Vfh is provided with a built-in tendency to stick to its
+    - WeightDesiredDir: To force it to commit, VFH is provided with a built-in tendency to stick to its
       previous course of action.  WeightDesiredDir and WeightCurrentDir determine the strength of this tendency.
 
     - WeightCurrentDir: see WeightDesiredDir
 
-    - CellSize: Vfh build a small local occupancy grid map for obstacle detection.  This controls the width
+    - CellSize: VFH build a small local occupancy grid map for obstacle detection.  This controls the width
       of each occupancy grid cell.
 
     - GridWidthInCells: This parameter, together with CellSize, determine the size of the local
       occupancy grid.
 
-    - SectorAngle: The number of bins in Vfh's local histogram.
+    - SectorAngle: The number of bins in VFH's local histogram.
 
     - MaxAcceleration: maximum acceleration, in metres/sec/sec.
 
@@ -107,8 +107,8 @@
       minTurnRadiusSafetyFactor, to account for side-slip while
       cornering quickly.  The default value is 1.10.
 
-    For the next three speed arguments: These are the absolute max values that Vfh will use.
-    Setting a path with a long time between waypoints will cause Vfh to go slower.
+    For the next three speed arguments: These are the absolute max values that VFH will use.
+    Setting a path with a long time between waypoints will cause VFH to go slower.
 
     - MaxSpeed: the robot's maximum speed in m/s -- it will never try to go
       faster than this.
@@ -127,9 +127,9 @@ NOTE TO SELF: CHECK DEFAULTS IN CODE!
 
     @par Hints for Configuration 
 
-    (some of this is taken from the Player Vfh documentation):
+    (some of this is taken from the Player VFH documentation):
 
-To get initiated with Vfh, a good idea is to start with the default
+To get initiated with VFH, a good idea is to start with the default
 values, which are all pretty reasonable.  Then start experimenting
 with safetyDist[0|1]ms and FreeSpaceCutoff[0|1]ms (and ObsCutoff[0|1]ms),
 to get a feeling for how they affect performance.  Once comfortable,
@@ -147,7 +147,7 @@ variables can also be set to the same values as each other.  From
 experience, it is recommeded that MaxTurnrate[0|1]ms should be at
 least 15% of MaxSpeed.
 
-For 'fast' vehicles like Segways, firstly be aware that Vfh control is
+For 'fast' vehicles like Segways, firstly be aware that VFH control is
 potentially very dangerous: start conservatively and change things
 slowly.  The speed-dependent parameters are much more important here:
 it helps to set the 0ms and 1ms variable differently.  To control
@@ -157,7 +157,7 @@ down generally near obstacles, so if it does collide it's less likely
 to be catastrophic.  MaxTurnrate[0|1]ms is also important for
 controlling how aggressively the robot turns.
 
-Unless you are familiar with the Vfh algorithm, I don't recommend
+Unless you are familiar with the VFH algorithm, I don't recommend
 deviating from the default values for CellSize, WindowDiameter, or
 SectorAngle.
     
@@ -173,7 +173,7 @@ SectorAngle.
   Year = {1998}
 }
 
-    The code that implements the Vfh algorithm was taken
+    The code that implements the VFH algorithm was taken
     from Player, heavily modified, then re-submitted to the Player project.
 
 @section internal Internal Structure
@@ -195,7 +195,7 @@ The Main pieces of LocalNav are:
 @par Authors
 
   - LocalNav: Alex Brooks
-  - Vfh:      Chris Jones, Brian Gerkey, Alex Brooks
+  - VFH:      Chris Jones, Brian Gerkey, Alex Brooks
 
 */
 
