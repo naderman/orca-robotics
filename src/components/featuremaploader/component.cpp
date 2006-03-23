@@ -73,11 +73,11 @@ Component::start()
         {
             throw orcaice::Exception( ERROR_INFO, "Failed to load map" );
         }
-        else
-        {
-            std::string errString = "Unknown driver type: "+driverName;
-            throw orcaice::Exception( ERROR_INFO, errString );
-        }
+    }
+    else
+    {
+        std::string errString = "Unknown driver type: "+driverName;
+        throw orcaice::Exception( ERROR_INFO, errString );
     }
 
     //
