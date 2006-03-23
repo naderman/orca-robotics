@@ -78,7 +78,7 @@ Component::start()
     // EXTERNAL PROVIDED INTERFACES
     //
     // create servant for direct connections
-    ogMapObj_ = new OgMapI( theMap );
+    ogMapObj_ = new OgMapI( theMap, "OgMap", context() );
     orcaice::createInterfaceWithTag( context(), ogMapObj_, "OgMap" );
 
     ////////////////////////////////////////////////////////////////////////////////

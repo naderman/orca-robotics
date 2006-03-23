@@ -10,6 +10,8 @@
 // include provided interfaces
 #include <orca/ogmap.h>
 
+#include <orcaice/context.h>
+
 //
 // Implements the Laser interface: Handles all our remote calls.
 //
@@ -17,24 +19,31 @@ class OgMapI : public orca::OgMap
 {
 public:
 
-    OgMapI( orca::OgMapDataPtr theMap );
+    OgMapI( orca::OgMapDataPtr  theMap,
+            const std::string  &tag,
+            orcaice::Context    context );
 
     // Remote calls:
 
     // Hand out data to people
     orca::OgMapDataPtr getData(const Ice::Current&) const;
 
-    // We ignore this request
     virtual void subscribe(const ::orca::OgMapConsumerPrx&,
                            const Ice::Current&);
 
-    // We ignore this request
     virtual void unsubscribe(const ::orca::OgMapConsumerPrx&,
                              const Ice::Current&);
 
 private:
 
+    // The topic to which we'll publish
+    IceStorm::TopicPrx             topicPrx_;
+    // The interface to which we'll publish
+    orca::OgMapConsumerPrx         consumerPrx_;
+
     orca::OgMapDataPtr theMap_;
+
+    orcaice::Context context_;
 };
 
 #endif

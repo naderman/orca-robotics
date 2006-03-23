@@ -43,9 +43,8 @@
 
 Supports most bitmap formats and gzipped pnm.
 
-Clients who wish to receive the map need to call getData().
-Subscribing for map updates is pointless, since this component will
-never issue them.
+Clients who wish to receive the map should call getData().
+This component will only ever issue one update to subscribers: on initialisation.
 
 @par Configuration
 

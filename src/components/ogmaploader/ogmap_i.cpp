@@ -1,14 +1,33 @@
 #include "ogmap_i.h"
 #include <iostream>
-#include <orcaice/objutils.h>
+#include <orcaice/orcaice.h>
 
 using namespace std;
 using namespace orca;
 using namespace orcaice;
 
-OgMapI::OgMapI( orca::OgMapDataPtr theMap )
-    : theMap_( theMap )
+OgMapI::OgMapI( orca::OgMapDataPtr  theMap,
+                const std::string  &tag,
+                orcaice::Context    context )
+    : context_(context)
 {
+    // Find IceStorm Topic to which we'll publish
+    topicPrx_ = orcaice::connectToTopicWithTag<OgMapConsumerPrx>
+        ( context_, consumerPrx_, tag );
+
+    // Try to push the map out to IceStorm first
+    try {
+        consumerPrx_->setData( theMap );
+    }
+    catch ( Ice::ConnectionRefusedException &e )
+    {
+        // This could happen if IceStorm dies.
+        // If we're running in an IceBox and the IceBox is shutting down, 
+        // this is expected (our co-located IceStorm is obviously going down).
+        context_.tracer()->warning( "Failed push to IceStorm." );
+    }
+
+    theMap_ = theMap;
 }
 
 OgMapDataPtr
@@ -26,12 +45,15 @@ void
 OgMapI::subscribe(const ::OgMapConsumerPrx& subscriber,
                   const Ice::Current& current)
 {
-    cout<<"Got Subscribe() request, but ignoring it since we never publish."<<endl;
+    cout<<"subscribe()"<<endl;
+    IceStorm::QoS qos;
+    topicPrx_->subscribe( qos, subscriber );
 }
 
 void
 OgMapI::unsubscribe(const ::OgMapConsumerPrx& subscriber,
                     const Ice::Current& current)
 {
-    cout<<"Got UnSubscribe() request, but ignoring it since we don't subscribe people."<<endl;
+    cout<<"unsubscribe()"<<endl;
+    topicPrx_->unsubscribe( subscriber );
 }
