@@ -41,25 +41,25 @@
 - @b fake Serves a bogus made-up map.
 - @b real Loads a real map from a file.
 
-Clients who wish to receive the map need to call getData().
-Subscribing for map updates is pointless, since this component will
-never issue them.
+This implementation of the @ref orca_interface_featuremap2d interface serves statis data only.
+Clients who wish to receive the map need to call getData(). Subscribing for map updates is pointless,
+since this component will never issue them.
 
 @par Configuration
 
-- @c OgMapLoader.Config.Driver (string)
+- @c FeatureMapLoader.Config.Driver (string)
     - Which map loader to use
     - Valid values: { "real", "fake" }
     - Default: "real"
 
-- @c OgMapLoader.Config.MapFileName (string)
+- @c FeatureMapLoader.Config.MapFileName (string)
     - The name (and path) of the image to load
     - Default: "mapfilename"
 
-\section deps Dependancies
+@section deps Dependancies
 none
   
-\section developer Responsible Developer
+@section developer Responsible Developer
 Alex Brooks
   
 */
