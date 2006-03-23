@@ -1,0 +1,11 @@
+DefaultComponentTag=FeatureMapLoader
+
+# Provided Interfaces
+Provides.FeatureMap2d.Type=FeatureMap2d
+Provides.FeatureMap2d.DefaultInterface=featuremap2d
+
+# Required Interfaces
+
+# Config Parameters
+Config.Driver.Default=real
+Config.MapFileName.Default=mapfilename
