@@ -51,19 +51,20 @@ module feature
     const int POSSIBLECORNER   = 4;
 };
 
-// Define messages first
+//! Generic 2D feature.
 class Feature2d
 {
+    //! Feature type.
     int type;
 };
 
 //! 2d Covariance Matrix
 struct PointCovariance2d {
-    //! (0,0)
+    //! Matrix index (0,0)
     float xx;
-    //! (0,1)
+    //! Matrix index (0,1)
     float xy;
-    //! (1,1)
+    //! Matrix index (1,1)
     float yy;
 };
 
@@ -76,23 +77,42 @@ class CartesianPointFeature2d extends Feature2d
 //! A list of features
 sequence<Feature2d> Feature2dSequence;
 
-//! Data -- the 2D polar features
+//! Data describing generic 2D features.
 class FeatureMap2dData extends OrcaObject
 {
+    //! Features
     Feature2dSequence features;
 };
 
 //! Consumer of FeatureMap2d data
 interface FeatureMap2dConsumer
 {    
+    //! Transmits the data to the consumer.
     void setData( FeatureMap2dData obj );
 };
 
 //! An interface to a map of features.
 interface FeatureMap2d
 {
+    //! Returns the latest data.
     nonmutating FeatureMap2dData getData();
+    
+    /*!
+     * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.
+     * The implementation may choose to implement the push directly or use IceStorm.
+     * This choice is transparent to the subscriber. The case when the @p subscriber is already subscribed
+     * is quietly ignored.
+     *
+     * @see unsubscribe
+     */
     void subscribe( FeatureMap2dConsumer *subscriber );
+
+    /*!
+     * Unsubscribe an existing @p subscriber. The case when the @p subscriber is not subscribed
+     * is quietly ignored.
+     *
+     * @see subscribe
+     */
     idempotent void unsubscribe( FeatureMap2dConsumer *subscriber );
 };
 

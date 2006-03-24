@@ -30,17 +30,17 @@ module orca
 //! @see Frame2d
 struct Covariance2d
 {
-    //! (0,0)
+    //! Matrix index (0,0)
     float xx;
-    //! (0,1)
+    //! Matrix index (0,1)
     float xy;
-    //! (1,1)
+    //! Matrix index (1,1)
     float yy;
-    //! (0,2)
+    //! Matrix index (0,2)
     float xt;
-    //! (1,2)
+    //! Matrix index (1,2)
     float yt;
-    //! (2,2)
+    //! Matrix index (2,2)
     float tt;
 };
 
