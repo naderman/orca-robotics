@@ -41,7 +41,7 @@
 - @b fake Serves a bogus made-up map.
 - @b real Loads a real map from a file.
 
-This implementation of the @ref orca_interface_featuremap2d interface serves statis data only.
+This implementation of the @ref orca_interface_featuremap2d interface only serves static feature maps.
 Clients who wish to receive the map need to call getData(). Subscribing for map updates is pointless,
 since this component will never issue them.
 
