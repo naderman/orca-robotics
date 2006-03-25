@@ -22,18 +22,39 @@
 
 @page orca_doc_configfiles Orca Configuration Files
 
-Configuration files can be used for three things:
-    - @ref connection
-    - @ref config
-    - Describing the component structure
+@par File Format
 
-Orca uses Ice tools to parse configuration files. These are text files which list properties as key/value pairs. The keys are strings optionally devided into subfields with periods.
+Orca uses Ice utilities to parse configuration files. Config files are text files which list properties as key/value pairs. Keys and values are strings which are separated by an equal sign ('='). The keys strings optionally devided into subfields with periods (aka dots, '.'). The value strings can represent strings, integers, or floats. For example:
 
-Orca configuration files ('.cfg') can be generated from Orca definition files ('.def'). This is the recommended method since writing configuration files by hand is very error-prone. A good way is to generate the cfg file using the standard def file and then make changes to the generated cfg file. The conversion is done by the 'generatecfg' utility:
+@verbatim
+Parameter=1
+Parameter.Subfield="orca"
+Parameter.Subfield.Whatever=123.4
+@endverbatim
+
+For more information on Ice properties and configuration files, see chapter "Ice Properties and Configuration" of the <a href="http://www.zeroc.com/download.html#doc" target="_blank">Ice manual</a>.
+
+@par Writing Configuration Files
+
+Orca configuration files (file extention @c cfg) can be generated from component definition files (file extention @c def). This is the recommended method since writing configuration files by hand is error-prone. A good way is to generate the @c cfg file using the standard @c def file and then customize the generated @c cfg file. The conversion is done by the @c generatecfg utility, e.g:
 
 @verbatim
 $ generatecfg component.def mycomponent.cfg
 @endverbatim
+
+Typically, an Orca component has a @c def file in the source tree and the @c cfg file is generated during compilation. The hand-written @c def file is installed into [ORCA-INSTALL-DIR]/def/ directory. The automatically generated @c cfg file is installed into [ORCA-INSTALL-DIR]/cfg/ directory. The following line in the component's CMakeLists.txt file does the conversion:
+
+@verbatim
+GENERATE_FROM_DEF( mycomponent.def )
+@endverbatim
+
+@par Usage
+
+Configuration files have three uses:
+
+- @ref connection
+- @ref config
+- Describing the component structure
 
 @section connection Connecting Components
 
