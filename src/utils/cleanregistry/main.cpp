@@ -41,13 +41,15 @@ public:
 
 
 Component::Component()
-    : orcaice::Component( "CleanRegistry", orcaice::HomeInterface  )
+    : orcaice::Component( "CleanRegistry", orcaice::NoStandardInterfaces  )
 {
 }
 
 void
 Component::start()
 {
+    // we provide no interfaces, so we don't activate the adapter
+
     //cout<<"default locator (refresh) :"<<context().communicator()->getDefaultLocator()->ice_toString()<<endl;
     
     std::string locatorString = context().communicator()->getDefaultLocator()->ice_toString();
