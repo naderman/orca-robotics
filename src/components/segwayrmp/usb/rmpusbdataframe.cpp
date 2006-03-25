@@ -191,7 +191,7 @@ void RmpUsbDataFrame::AddPacket(const CanPacket* pkt)
         // slot0 (byte 2) : CAN channel identifier
         // slot1 : UI battery voltage (we also get in MSG6 from CU)
         // slot2 : UI battery status
-        //! @todo have to apply mask here
+        // @todo have to apply mask here
         uint16_t slot2 = (uint16_t)pkt->GetSlot(2);
         ui_heartbeat_voltage =  slot2 & RMP_CAN_MASK_HEARTBEAT_UIBAT_VOLTAGE;
         ui_heartbeat_status =  slot2 & RMP_CAN_MASK_HEARTBEAT_UIBAT_STATUS;

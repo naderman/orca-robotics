@@ -4,9 +4,9 @@
 #include <orcaice/component.h>
 #include <orca/ogmap.h>
 
-//!
-//! Deriving from orcaice::Component means we have to implement start() and stop()
-//!
+//
+// Deriving from orcaice::Component means we have to implement start() and stop()
+//
 class Component : public orcaice::Component
 {
 public:

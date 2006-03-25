@@ -239,7 +239,7 @@ int UsbDriver::readFrame()
                     if ( !frame_->msgCheckList_[i] ) { cout<<i<<" "; }
                 }
                 cout<<"]"<<endl; */
-                //! @todo or should we reset?
+                // @todo or should we reset?
                 frame_->reopen();
                 ++dataFramesReopened;
                 
@@ -311,7 +311,7 @@ UsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &
     // inverse, since the RMP reports clockwise angular velocity as positive.
     position2d->motion.w = -(double)frame_->yaw_dot / RMP_COUNT_PER_RAD_PER_S;
 
-    //! @todo stall from currents?
+    // @todo stall from currents?
     position2d->stalled = false;
 
     // POWER

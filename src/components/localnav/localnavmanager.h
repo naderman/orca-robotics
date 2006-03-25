@@ -14,17 +14,17 @@ class LocalNavParameters;
 class GoalWatcher;
 class PathMaintainer;
 
-//!
-//! Takes goals and localisation info in the global reference frame.
-//! Feeds information to the driver, all in the robot's local frame
-//! of reference.
-//!
-//! Sets the driver's goal using the shared 'GoalWatcher' class.
-//! Doing things this way ensures that manager and driver don't disagree
-//! about the goal parameters, and whether it has been reached.
-//!
-//! @author Alex Brooks
-//!
+//
+// Takes goals and localisation info in the global reference frame.
+// Feeds information to the driver, all in the robot's local frame
+// of reference.
+//
+// Sets the driver's goal using the shared 'GoalWatcher' class.
+// Doing things this way ensures that manager and driver don't disagree
+// about the goal parameters, and whether it has been reached.
+//
+// @author Alex Brooks
+//
 class LocalNavManager
 {
 

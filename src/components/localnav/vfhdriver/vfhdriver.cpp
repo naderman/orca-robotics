@@ -79,7 +79,7 @@ VfhDriver::setLocalNavParameters( LocalNavParameters params )
     vfhAlgorithm_->SetTurnrateThreshold( (int) (localNavParameters_.maxTurnrate*180.0/M_PI) );
 }
 
-//! Goal location is in robot's coordinate frame
+// Goal location is in robot's coordinate frame
 LocalNavDriver::DriverState
 VfhDriver::getCommand( bool  stalled,
                        const orca::Twist2d &currentVelocity,
