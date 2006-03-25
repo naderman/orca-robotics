@@ -42,10 +42,7 @@ PolarFeature2dDataPtr PolarFeature2dI::getData(const Ice::Current& current) cons
     // we don't need to pop the data here because we don't block on it.
     if ( polarFeatureDataBuffer_.isEmpty() )
     {
-        //! @todo what should happen if there's no data?
-        cout << "ERROR(polarfeature2d_i.cpp): getData() called when no data had been generated!!" << endl;
-        cout << "ERROR(polarfeature2d_i.cpp): Don't know what to do!" << endl;
-        exit(EXIT_FAILURE);
+        throw orca::DataNotExistException( "try again later." );
     }
 
     // create a null pointer. data will be cloned into it.

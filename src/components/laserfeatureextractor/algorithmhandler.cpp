@@ -124,6 +124,8 @@ void AlgorithmHandler::run()
     //
     while( isActive() )
     {
+        context_.tracer()->debug( "=== Start of main loop ===", 5 );
+
         //
         // block on arrivale of laser data
         //
@@ -177,7 +179,7 @@ void AlgorithmHandler::run()
         cout<<"Communicator has passed away. No worries."<<endl;
     }
     
-    cout<<"TRACE(mainloop.cpp): Exitting from run()" << endl;
+    cout<<"TRACE(laserfeatureextractor::algorithmhandler.cpp): Exitting from run()" << endl;
 
     //
     // unexpected exceptions
