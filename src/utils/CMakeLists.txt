@@ -16,6 +16,7 @@ SUBDIRS(
   libqorcauml
   orcaplayer
   qorcacm
+  qorcagui
 # UTILITY APPLICATIONS
   iceping
   gorca
