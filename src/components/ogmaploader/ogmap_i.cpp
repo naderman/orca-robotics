@@ -17,6 +17,7 @@ OgMapI::OgMapI( orca::OgMapDataPtr  theMap,
 
     // Try to push the map out to IceStorm first
     try {
+        context_.tracer()->debug( "Pushing to IceStorm", 2 );
         consumerPrx_->setData( theMap );
     }
     catch ( Ice::ConnectionRefusedException &e )

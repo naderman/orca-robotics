@@ -99,6 +99,8 @@ AlgorithmHandler::~AlgorithmHandler()
 
 void AlgorithmHandler::run()
 {
+    cout<<"TRACE(algorithmhandler.cpp): run()" << endl;
+
     // we are in a different thread now, catch all stray exceptions
     try
     {
