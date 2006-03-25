@@ -18,6 +18,7 @@ SUBDIRS(
   qorcacm
 #  qorcagui
 # UTILITY APPLICATIONS
+  cleanregistry
   iceping
   gorca
   orcasmc

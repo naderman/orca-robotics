@@ -1,0 +1,9 @@
+DefaultComponentTag=CleanRegistry
+
+# Provided Interfaces
+
+# Required Interfaces
+
+# External configuration options
+Config.Ice.Override.ConnectTimeout.Default=500
+Config.Ice.Override.ConnectTimeout.External=1
