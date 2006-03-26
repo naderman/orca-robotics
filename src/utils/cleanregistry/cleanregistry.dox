@@ -36,6 +36,35 @@
 
 - IceGrid/Admin
 
+The IceGrid registry maintains a database of registered components (actually it's a list of object adapater ID's). The registry has no way of checking if a component is actually running at any given time. Component information will never be removed from the list by the registry and, because the database storage is persistent, will be reloaded if the registry is restarted. This means that after a while the registry will contain a long list of components which ran in the past but are not currently on line. The operation of the registry itself is not noticibly affected but having a long list of defunct components may be inconvinient for other reasons. For example, the display of @ref orca_component_registryview becomes cluttered and its response time slows down as it has to individually ping all the registered components.
+
+One possible solution is to periodically stop the registry and delete the contents of its database directory. One has to make sure though that no components are running at the time because they will not be accessible after the database purge.
+
+Another approach is to determine which of the registered components are not currently running and remove them from the registry list by using the IceGrid/Admin interface. This is what CleanRegistry does by executing the following steps:
+
+-# get a list of all registered adapters from the IceGrid Registry
+-# ping the Home interface on each adapter (component)
+-# tell the registry to unregister those adapters which could not be reached.
+-# exit
+
+Notice that it is impossible to ping a component (i.e. an Ice object adapter). One must ping a specific interface (i.e. an Ice object). All Orca components using libOrcaIce provide @ref orca_interface_home interface which we can ping to determine if the component is reachable.
+
+The registy may contain adapter ID's of which don't belong to Orca components. These are left in the registy if their ID does not follow the 'platform/component' pattern (i.e. if ID does not contain a slash character).
+
+@par Operation
+
+You can run this utility manualy or as a periodic job from @c cron. The following @c crontab line runs the utility daily at 6 am.
+
+@verbatim
+0 6     * * *   /opt/orca-2.0.0rc3+/bin/cleanregistry /opt/orca-2.0.0rc3+/cfg/cleanregistry.cfg
+@endverbatim
+
+The Admin interface of the IceGrid registry is disabled by default. To enable it, include the following line in the registry configuration file. On a publically accessible network there is of course a security risk which you must consider.
+
+@verbatim
+IceGrid.Registry.Admin.Endpoints=default
+@endverbatim
+
 @par Configuration
 
 - @c Ice.Override.ConnectTimeout (int) [ms]
