@@ -39,35 +39,20 @@ Remote access to images captured by a variety of monocular cameras.
 //! Specifies the format once it is decoded. 
 //! @TODO: is this list reasonable/exhaustive?
 enum ImageFormat {
-    //! 1 bit monochrome.
-    IMGFMTMONO1,
-    //! 8 bit monochrome.
-    IMGFMTMONO8,
-    //! 16 bit monochrome.
-    IMGFMTMONO16,
-    //! RGB color.
-    IMGFMTRGB565,
-    //! RGB color.
-    IMGFMTRGB888,
-    //! RGB color.
-    IMGFMTRGBA8888,
-    //! YUV color.
-    IMGFMTYUV422};
+    MODENFI,
+    MODEGRAY,  
+    MODERGB,   
+    MODEBGR,   
+    MODEYUV422};
 
 //! Specifies any encoding of the image. 
 //! @TODO: Is this list reasonable/exhaustive?
-enum ImageCompression {
-    //! No compression.
-    IMGCOMPRESSIONNONE,
-    //! JPEG compression.
-    IMGCOMPRESSIONJPG,
-    //! PNG compression.
-    IMGCOMPRESSIONPNG};
+enum ImageCompression { 
+    COMPRESSIONTYPENONE,
+    COMPRESSIONTYPEJPEG};
 
-//! %Camera configuration objectd
-//! @TODO: add other camera calibration parameters like focal length, zoom, aperture size, etc.
-class CameraConfig extends OrcaObject
-{
+//! Camera configuration objectd
+class CameraConfig extends OrcaObject {
     //! Image width in pixels
     int   imageWidth; 
     //! Image height in pixels
