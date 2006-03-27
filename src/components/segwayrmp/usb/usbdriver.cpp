@@ -173,16 +173,16 @@ UsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
         lastStatusWord2_ = frame_->status_word2;
     }
 
+    // debug
+//     cout<<IceUtil::Time::now().toString()<<endl;
+//     cout<<toString()<<endl;
+
     frame_->reset();
 
     // update status (only change it when internal state changes?)
     std::ostringstream os;
     os << "State1="<<frame_->CuStatus1ToString()<<" State2="<<frame_->CuStatus2ToString();
     status = os.str();
-
-    // debug
-    cout<<IceUtil::Time::now().toString()<<endl;
-    cout<<toString()<<endl;
 
     return 0;
 }
