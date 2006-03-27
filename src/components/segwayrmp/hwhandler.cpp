@@ -107,8 +107,8 @@ HwHandler::init()
                 segwayrmpusbPrefix+"GainSchedule", "normal" );
 
         // the driver itself should check this.
-        if ( rmpGainSchedule!="normal" && rmpGainSchedule!="tall" || rmpGainSchedule!="heavy" ) {
-            string errorStr = "SegwayRmpUsb driver: unknown gain schedule type. Cannot initialize.";
+        if ( rmpGainSchedule!="normal" && rmpGainSchedule!="tall" && rmpGainSchedule!="heavy" ) {
+            string errorStr = "SegwayRmpUsb driver: unknown gain schedule type '"+rmpGainSchedule+"'. Cannot initialize.";
             context_.tracer()->error( errorStr);
             context_.tracer()->info( "Valid gain schedule types are {'normal', 'tall', 'heavy'}" );
             throw orcaice::Exception( ERROR_INFO, errorStr );
