@@ -84,17 +84,26 @@ void LaserMonComponent::start()
     // Get the configuration
     cout << "Laser Config:   " << laserPrx->getConfig() << endl;
 
-    // Get the data once
-    try
+    // Get laser data once
+    int count = 5;
+    tracer()->info( "Trying to get one scan as a test" );
+    while ( count-- )
     {
-        tracer()->info( "Trying to get one scan as a test" );
-        tracer()->print( orcaice::toString( laserPrx->getData() ) );
+        try
+        {
+            tracer()->print( orcaice::toString( laserPrx->getData() ) );
+            break;
+        }
+        catch ( const orca::DataNotExistException & e )
+        {
+            tracer()->warning( "hardware failure reported when getting a scan." );
+        }
+        catch ( const orca::HardwareFailedException & e )
+        {
+            tracer()->warning( "hardware failure reported when getting a scan." );
+        }
     }
-    catch ( const orca::HardwareFailedException & e )
-    {
-        tracer()->error( "hardware failure reported when getting a scan. Will subscribe anyway." );
-    }
-
+    
     // Can also set the configuration like so:
 //     orca::RangeScannerConfigPtr cfg = new orca::RangeScannerConfig;
 //     cfg->rangeResolution = 9999;
