@@ -30,9 +30,6 @@
 #ifdef HAVE_USB_DRIVER
     #include "usb/usbdriver.h"
 #endif
-//#ifdef HAVE_CAN_DRIVER
-//    #include "can/candriver.h"
-//#endif
 #ifdef HAVE_PLAYERCLIENT_DRIVER
     #include "playerclient/playerclientdriver.h"
 #endif
@@ -99,11 +96,24 @@ HwHandler::init()
     // based on the config parameter, create the right driver
     string driverName = orcaice::getPropertyWithDefault( context_.properties(),
             prefix+"Driver", "segwayrmpusb" );
+            
     if ( driverName == "segwayrmpusb" )
     {
 #ifdef HAVE_USB_DRIVER
         context_.tracer()->debug( "loading USB driver",3);
-        driver_ = new UsbDriver();
+
+        std::string segwayrmpusbPrefix = prefix + "SegwayRmpUsb.";
+        std::string rmpGainSchedule = orcaice::getPropertyWithDefault( context_.properties(),
+                segwayrmpusbPrefix+"GainSchedule", "normal" );
+
+        // the driver itself should check this.
+        if ( rmpGainSchedule!="normal" && rmpGainSchedule!="tall" || rmpGainSchedule!="heavy" ) {
+            string errorStr = "SegwayRmpUsb driver: unknown gain schedule type. Cannot initialize.";
+            context_.tracer()->error( errorStr);
+            context_.tracer()->info( "Valid gain schedule types are {'normal', 'tall', 'heavy'}" );
+            throw orcaice::Exception( ERROR_INFO, errorStr );
+        }
+        driver_ = new UsbDriver( rmpGainSchedule );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'usb' because it was not built!" );
 #endif
@@ -115,7 +125,7 @@ HwHandler::init()
 
     // experiment
 //         driver_ = new PlayerClientDriver(
-//                 context_.properties()->getPropertiesForPrefix( context_.tag()+".Config.PlayerClient" ) );
+//                 context_.properties()->getPropertiesForPrefix( context_.tag()+".Config.PlayerClient", context_.tag() ) );
 
         std::string playerclientPrefix = prefix + "PlayerClient.";
         std::string playerHost = orcaice::getPropertyWithDefault( context_.properties(),

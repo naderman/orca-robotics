@@ -35,7 +35,7 @@ class UsbDriver : public HwDriver
 {
 public:
 
-    UsbDriver();
+    UsbDriver( const std::string & gainSchedule );
     virtual ~UsbDriver();
 
     virtual int enable();
@@ -53,16 +53,22 @@ private:
 
     enum OperationalMode
     {
-        TRACTOR=1,
-        BALANCE,
-        POWERDOWN
+        OperationalModeTractor=1,
+        OperationalModeBalance=2,
+        OperationalModePowerdown=3
     };
 
     enum GainSchedule
     {
-        NORMAL=0,
-        TALL,
-        HEAVY
+        GainScheduleNormal=0,
+        GainScheduleTall=1,
+        GainScheduleHeavy=2
+    };
+
+    enum BalanceLockout
+    {
+        BalanceAllowed=0,
+        BalanceNotAllowed=1
     };
 
     struct Status
@@ -72,7 +78,6 @@ private:
         int opMode;
         int gainSchedule;
         //OperationalMode opMode;
-        //GainSchedule gainSchedule;
     };
     
     int setMaxVelocityScaleFactor( double scale );
@@ -81,14 +86,17 @@ private:
     int setMaxCurrentLimitScaleFactor( double scale );
     int resetAllIntegrators();
 
-    int setOperationalMode( OperationalMode mode ) { return 0; };
-    int setGainSchedule( GainSchedule sched ) { return 0; };
-    int enableBalanceMode( bool enable ) { return 0; };
+    int setOperationalMode( OperationalMode mode );
+    int setGainSchedule( GainSchedule sched );
+    int enableBalanceMode( bool enable );
 
     // driver/hardware interface
     UsbIo            *usbio_;
     RmpUsbDataFrame  *frame_;
     CanPacket        *pkt_;
+
+    // configuration
+    GainSchedule desiredGainSchedule_;
 
     // last motion commands [segway counts]
     // used to load into status command
@@ -99,14 +107,14 @@ private:
     uint32_t lastRawYaw_;
     uint32_t lastRawForeaft_;
 
-    // for detecting state change
-    int lastStatusWord1_;
-    int lastStatusWord2_;
-
-    // Odometry calculation
+    // for odometry calculation
     double odomX_;
     double odomY_;
     double odomYaw_;
+    
+    // for detecting internal state change
+    int lastStatusWord1_;
+    int lastStatusWord2_;
 
     // Maximum allowd speeds [m/s], [rad/s]
     double maxSpeed_;

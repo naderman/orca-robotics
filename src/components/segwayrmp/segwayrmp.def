@@ -19,6 +19,9 @@ Config.Position2dPublishInterval.Default=-1.0
 Config.PowerPublishInterval.Default=20.0
 Config.StatusPublishInterval.Default=60.0
 
-# Player-Client driver only
+# SegwayRmpUsb driver only
+Config.SegwayRmpUsb.GainSchedule.Default=normal
+
+# PlayerClient driver only
 Config.PlayerClient.Host.Default=localhost
 Config.PlayerClient.Port.Default=6665

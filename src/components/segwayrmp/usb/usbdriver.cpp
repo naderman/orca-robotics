@@ -32,18 +32,33 @@
 #include "config.h"
 #include "canpacket.h"
 
-
 using namespace std;
 using namespace orca;
 using namespace segwayrmp;
 using orcaice::operator<<;
 
-UsbDriver::UsbDriver()
+UsbDriver::UsbDriver( const std::string & gainSchedule )
 {
     // Hardware
     usbio_ = new UsbIoFtdi;
     frame_ = new RmpUsbDataFrame;
     pkt_ = new CanPacket;
+
+    // Desired configuration
+    if ( gainSchedule == "normal" ) {
+        desiredGainSchedule_ = GainScheduleNormal;
+    }
+    else if ( gainSchedule == "tall" ) {
+        desiredGainSchedule_ = GainScheduleTall;
+    }
+    else if ( gainSchedule == "heavy" ) {
+        desiredGainSchedule_ = GainScheduleHeavy;
+    }
+    else {
+        // this shouldn't happen because we check in HwHandler
+        cout<<"UsbDriver::UsbDriver: warning, unknown gain schedule type. resetting to 'normal'"<<endl;
+        desiredGainSchedule_ = GainScheduleNormal;
+    }
 
     // Initialize odometry
     odomX_ = 0.0;
@@ -91,18 +106,13 @@ UsbDriver::enable()
         return 2;
     }
 
-    if ( setMaxTurnrateScaleFactor( 1.0 ) ) {
-        cerr<<"warning: 1 error in setMaxTurnrateScaleFactor()"<<endl;
-        return 2;
-    }
-
     if ( setMaxVelocityScaleFactor( 1.0 ) ) {
         cerr<<"warning: error in setMaxVelocitySpeedFactor()"<<endl;
         return 2;
     }
     
     if ( setMaxTurnrateScaleFactor( 1.0 ) ) {
-        cerr<<"warning: 2 error in setMaxTurnrateScaleFactor()"<<endl;
+        cerr<<"warning: error in setMaxTurnrateScaleFactor()"<<endl;
         return 2;
     }
 
@@ -110,7 +120,12 @@ UsbDriver::enable()
         cerr<<"warning: error in setMaxAccelerationScaleFactor()"<<endl;
         return 2;
     }
-
+    
+    if ( setGainSchedule( desiredGainSchedule_ ) ) {
+        cerr<<"warning: error in setGainSchedule()"<<endl;
+        return 2;
+    }
+    
     return 0;
 }
 
@@ -420,13 +435,15 @@ UsbDriver::resetAllIntegrators()
 int
 UsbDriver::setMaxVelocityScaleFactor( double scale )
 {
+    assert( scale>=0.0);
+    assert( scale<=1.0);
     // limit input to [0.0, 1.0]
     if ( scale>1.0 ) {
         scale=1.0;
     } else if ( scale<0.0 ) {
         scale=0.0;
     }
-    makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAXIMUM_VELOCITY, (uint16_t)ceil(scale*16.0) );
+    makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAX_VELOCITY_SCALE, (uint16_t)ceil(scale*16.0) );
 
     return usbio_->writePacket(pkt_);
 }
@@ -434,13 +451,15 @@ UsbDriver::setMaxVelocityScaleFactor( double scale )
 int
 UsbDriver::setMaxTurnrateScaleFactor( double scale )
 {
+    assert( scale>=0.0);
+    assert( scale<=1.0);
     // limit input to [0.0, 1.0]
     if ( scale>1.0 ) {
         scale=1.0;
     } else if ( scale<0.0 ) {
         scale=0.0;
     }
-    makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAXIMUM_TURN_RATE, (uint16_t)ceil(scale*16.0) );
+    makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAX_TURNRATE_SCALE, (uint16_t)ceil(scale*16.0) );
 
     return usbio_->writePacket(pkt_);
 }
@@ -448,13 +467,15 @@ UsbDriver::setMaxTurnrateScaleFactor( double scale )
 int
 UsbDriver::setMaxAccelerationScaleFactor( double scale )
 {
+    assert( scale>=0.0);
+    assert( scale<=1.0);
     // limit input to [0.0, 1.0]
     if ( scale>1.0 ) {
         scale=1.0;
     } else if ( scale<0.0 ) {
         scale=0.0;
     }
-    makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAXIMUM_ACCELERATION, (uint16_t)ceil(scale*16.0) );
+    makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAX_ACCELERATION_SCALE, (uint16_t)ceil(scale*16.0) );
 
     return usbio_->writePacket(pkt_);
 }
@@ -462,6 +483,8 @@ UsbDriver::setMaxAccelerationScaleFactor( double scale )
 int
 UsbDriver::setMaxCurrentLimitScaleFactor( double scale )
 {
+    assert( scale>=0.0);
+    assert( scale<=1.0);
     // limit input to [0.0, 1.0]
     if ( scale>1.0 ) {
         scale=1.0;
@@ -469,8 +492,37 @@ UsbDriver::setMaxCurrentLimitScaleFactor( double scale )
         scale=0.0;
     }
     // note: the scale of this command is [0,256]
-    makeStatusCommandPacket( pkt_, RMP_CMD_SET_CURRENT_LIMIT, (uint16_t)ceil(scale*256.0) );
+    makeStatusCommandPacket( pkt_, RMP_CMD_SET_CURRENT_LIMIT_SCALE, (uint16_t)ceil(scale*256.0) );
 
+    return usbio_->writePacket(pkt_);
+}
+
+int
+UsbDriver::setOperationalMode( OperationalMode mode )
+{
+    makeStatusCommandPacket( pkt_, RMP_CMD_SET_OPERATIONAL_MODE, mode );
+
+    return usbio_->writePacket(pkt_);
+}
+
+int
+UsbDriver::setGainSchedule( GainSchedule sched )
+{
+    makeStatusCommandPacket( pkt_, RMP_CMD_SET_GAIN_SCHEDULE, sched );
+
+    return usbio_->writePacket(pkt_);
+}
+
+int
+UsbDriver::enableBalanceMode( bool enable )
+{
+    if ( enable ) {
+        makeStatusCommandPacket( pkt_, RMP_CMD_SET_BALANCE_MODE_LOCKOUT, BalanceAllowed );
+    }
+    else {
+        makeStatusCommandPacket( pkt_, RMP_CMD_SET_BALANCE_MODE_LOCKOUT, BalanceNotAllowed );
+    }
+    
     return usbio_->writePacket(pkt_);
 }
 

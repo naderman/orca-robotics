@@ -57,14 +57,14 @@
 // Mask for user interface battery status in the heartbeat message.
 #define RMP_CAN_MASK_HEARTBEAT_UIBAT_STATUS     0xC000
 
-// from Configuration Command table, see sec.2.2.1
+// from 'Configuration Command' table, see sec.2.2.1
 #define RMP_CMD_NONE                        0
-#define RMP_CMD_SET_MAXIMUM_VELOCITY        10
-#define RMP_CMD_SET_MAXIMUM_ACCELERATION    11
-#define RMP_CMD_SET_MAXIMUM_TURN_RATE       12
-#define RMP_CMD_SET_GAINMODE                13
-#define RMP_CMD_SET_CURRENT_LIMIT           14
-#define RMP_CMD_SET_BALANCE_LOCKOUT         15
+#define RMP_CMD_SET_MAX_VELOCITY_SCALE      10
+#define RMP_CMD_SET_MAX_ACCELERATION_SCALE  11
+#define RMP_CMD_SET_MAX_TURNRATE_SCALE      12
+#define RMP_CMD_SET_GAIN_SCHEDULE           13
+#define RMP_CMD_SET_CURRENT_LIMIT_SCALE     14
+#define RMP_CMD_SET_BALANCE_MODE_LOCKOUT    15
 #define RMP_CMD_SET_OPERATIONAL_MODE        16
 #define RMP_CMD_RESET_INTEGRATORS           50
 
