@@ -61,7 +61,8 @@ NetHandler::~NetHandler()
 {
 }
 
-void NetHandler::init()
+void
+NetHandler::init()
 {
     //
     // Read settings
@@ -104,7 +105,8 @@ void NetHandler::init()
     context_.tracer()->debug("network enabled",5);
 }
 
-void NetHandler::run()
+void
+NetHandler::run()
 {
     int position2dReadTimeout = 1000; // [ms]
     orcaice::Timer pushTimer;
@@ -172,9 +174,16 @@ void NetHandler::run()
     {
         // it's ok, we must be quitting.
     }
+
+    // wait for the component to realize that we are quitting and tell us to stop.
+    // otherwise there's a possibility of lock up in Thread::stop()
+    while ( isActive() ) {
+        IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(10));
+    }
 }
 
-void NetHandler::send()
+void
+NetHandler::send()
 {
     // push data to IceStorm
     try

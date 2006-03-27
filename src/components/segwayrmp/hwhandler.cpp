@@ -83,7 +83,8 @@ HwHandler::~HwHandler()
     delete driver_;
 }
 
-void HwHandler::init()
+void
+HwHandler::init()
 {
     //
     // Read settings
@@ -141,7 +142,8 @@ void HwHandler::init()
     context_.tracer()->debug("driver instantiated",5);
 }
 
-void HwHandler::run()
+void
+HwHandler::run()
 {
     // we are in a different thread now, catch all stray exceptions
     try
@@ -267,13 +269,20 @@ void HwHandler::run()
             context_.communicator()->destroy();
         }
     }
+    
+    // wait for the component to realize that we are quitting and tell us to stop.
+    // otherwise there's a possibility of lock up in Thread::stop()
+    while ( isActive() ) {
+        IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(10));
+    }
 }
 
 //
 // This is the only direct incoming link from the outside.
 // Here we handle command arriving through Platform2d interface.
 //
-void HwHandler::handleData( const orca::Velocity2dCommandPtr & obj )
+void
+HwHandler::handleData( const orca::Velocity2dCommandPtr & obj )
 {
     //cout<<"handling: "<<orcaice::toString(obj)<<endl;
 
