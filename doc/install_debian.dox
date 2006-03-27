@@ -113,6 +113,15 @@ At the time of writing Qt4 packages are in the 'testing' distribution.
 @endverbatim
 
 
+@section orca_doc_installdebian_pkgconfig PkgConfig
+
+Some components require pkg-config to check for dependencies
+
+@verbatim
+# apt-get install pkg-config
+@endverbatim
+
+
 @section orca_doc_installdebian_player Player/Stage
 
 These notes describe how to install Player 2.0.0 and Stage 2.0.0. Start with Player/Stage dependencies.

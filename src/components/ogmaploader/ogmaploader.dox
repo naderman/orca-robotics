@@ -89,8 +89,10 @@ OgMapLoader.Config.Origin.Y=-8.0
 
 \section deps Dependancies
 gdk-pixbuf-2.0 (usually installed as part of GTK)
-libz
-  
+pkg-config (used to check for gdk-pixbuf-2.0) [Debian: apt-get install pkg-config]
+libz [Debian: apt-get install zlib1g-dev]
+
+
 \section developer Responsible Developer
 Tobias Kaupp (t.kaupp at cas.edu.au)
   
