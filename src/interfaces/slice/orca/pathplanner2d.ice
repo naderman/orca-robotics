@@ -74,13 +74,43 @@ class PathPlanner2dTask extends OrcaObject
 /*!
     @brief Planning a path in 2D
 
-    PathPlanner is an interface that accepts a task consisting of a start waypoing and a "rough" path. It serves a finer-grained path to the consumer via proxy. "setTask" returns the number of remaining tasks in the buffer.
+    PathPlanner is an interface that accepts a task consisting of a start waypoing and a "rough" path. It serves the computed fine-grained path to the consumer via proxy. "setTask" returns the number of remaining tasks in the buffer.
+
+    The second method of accessing the computed path is to use the getData method. The third method is via subscribe. These two methods are used when a component wants direct access to the currently computed path rather than a one-shot task-specific result (e.g. a GUI).
 */
 interface PathPlanner2d
 {
     //! Set a task
     int setTask( PathPlanner2dTask task )
             throws BusyException, RequiredInterfaceFailedException;   
+
+    //! Returns the computed path
+    nonmutating PathPlanner2dData getData();
+
+    /*!
+     *
+     * Mimics IceStorm's subscribe().  The implementation may choose to
+     * implement the push directly or use IceStorm.  This choice is transparent to the subscriber.
+     *
+     * @param subscriber The subscriber's proxy.
+     *
+     * @see unsubscribe
+     *
+     */
+    void subscribe( PathPlanner2dConsumer *subscriber )
+            throws SubscriptionFailedException;
+
+    /**
+     *
+     * Unsubscribe the given [subscriber].
+     *
+     * @param subscriber The proxy of an existing subscriber.
+     *
+     * @see subscribe
+     *
+    **/
+    idempotent void unsubscribe( PathPlanner2dConsumer *subscriber );
+
 };
 
 //! @}
