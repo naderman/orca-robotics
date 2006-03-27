@@ -61,11 +61,11 @@ class Feature2d
 //! 2d Covariance Matrix
 struct PointCovariance2d {
     //! Matrix index (0,0)
-    float xx;
+    double xx;
     //! Matrix index (0,1)
-    float xy;
+    double xy;
     //! Matrix index (1,1)
-    float yy;
+    double yy;
 };
 
 class CartesianPointFeature2d extends Feature2d

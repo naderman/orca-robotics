@@ -31,17 +31,17 @@ module orca
 struct Covariance2d
 {
     //! Matrix index (0,0)
-    float xx;
+    double xx;
     //! Matrix index (0,1)
-    float xy;
+    double xy;
     //! Matrix index (1,1)
-    float yy;
+    double yy;
     //! Matrix index (0,2)
-    float xt;
+    double xt;
     //! Matrix index (1,2)
-    float yt;
+    double yt;
     //! Matrix index (2,2)
-    float tt;
+    double tt;
 };
 
 }; // module
