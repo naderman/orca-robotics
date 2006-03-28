@@ -51,30 +51,30 @@
     - Valid values: { 'segwayrmpusb', 'playerclient', 'fake' }
     - Default: 'segwayrmpusb'
     
-- @c SegwayRmp.Config.MaxSpeed (float) [m]
+- @c SegwayRmp.Config.MaxSpeed (double) [m]
     - Maximum allowed forward speed
     - Valid values: positive
     - Default: 1.0
     
-- @c SegwayRmp.Config.MaxTurnrate (float) [deg/s]
+- @c SegwayRmp.Config.MaxTurnrate (double) [deg/s]
     - Maximum allowed turnrate
     - Valid values: positive
     - Default: 60.0
     
-- @c SegwayRmp.Config.Position2dPublishInterval (float) [s]
+- @c SegwayRmp.Config.Position2dPublishInterval (double) [s]
     - How often to send position information to the IceStorm server
     - Valid values:
         - t<0 : send every new data point
         - t>0 : send approximately every t seconds
-    - Default: -1.0 (careful, for Segway this is ~100Hz)
+    - Default: -1.0 (be careful, for Segway this translates into data rate of ~100Hz)
 
-- @c SegwayRmp.Config.PowerPublishInterval (float) [s]
+- @c SegwayRmp.Config.PowerPublishInterval (double) [s]
     - How often to send power information to the IceStorm server
     - Valid values:
         - t>0 : send approximately every t seconds
     - Default: 20.0
 
-- @c SegwayRmp.Config.StatusPublishInterval (float) [s]
+- @c SegwayRmp.Config.StatusPublishInterval (double) [s]
     - How often to send status information to the IceStorm server
     - Valid values:
         - t>0 : send approximately every t seconds
@@ -107,7 +107,7 @@ Make sure libusb is installed. In Debian, the easiest is to install the develope
 # apt-get install libusb-dev
 @endverbatim
 
-The Orca component has been tested with libftd2xx.so.0.4.5 and libusb-0.1.so.4.4.2. Download the libftd2xx library from <a href="http://www.ftdichip.com/Drivers/D2XX.htm">www.ftdichip.com</a>. Untar and follow the installation instructions in README.dat file. Note an incorrect version number in step 4 and that the line to add to your @c fstab file depends on the distribution and kernel number. The following has been tested in Debian, kernels 2.6.12 and 15.
+The Orca component has been tested with libftd2xx.so.0.4.10 and libusb-0.1.so.4.4.2. Download the libftd2xx library from <a href="http://www.ftdichip.com/Drivers/D2XX.htm" target="_blank">www.ftdichip.com</a>. Untar and follow the installation instructions in README.dat file. Note an incorrect version numbers in several places and that the line to add to your @c fstab file depends on the distribution and kernel number. The following has been tested in Debian, kernels 2.6.12 and 15.
 @verbatim
 none            /proc/bus/usb   usbfs   defaults,devmode=0666   0       0
 @endverbatim

@@ -61,12 +61,12 @@ Orca, currently in its second generation, differs from other robotic software fr
 
 @section orca_doc_about_approach Approach
 
-The approach we take is frequently called Component-Based Software Engineering (CBSE). For a broad overview of "componentry" look in <a href="http://en.wikipedia.org/wiki/Software_componentry" target="_blank">Wikipedia</a>. For a summary of CBSE and its application to robotics, see <a href="http://orca-robotics.sf.net/documents/brooks05_towards_component_based_robotics.pdf">this paper</a>.  While it was written for Orca1, the arguments for CBSE fully apply to Orca2.
+The approach we take is frequently called Component-Based Software Engineering (CBSE). For a broad overview of "componentry" look in <a href="http://en.wikipedia.org/wiki/Software_componentry" target="_blank">Wikipedia</a>. For a summary of CBSE and its application to robotics, read <a href="http://orca-robotics.sf.net/documents/brooks05_towards_component_based_robotics.pdf">a paper by Orca developers</a>.  While it was written for Orca1, the arguments for CBSE apply equally to Orca2.
 
 @subsection orca_doc_about_whyice Why Use Ice?
 
 In order to implement a distributed component-based system, one needs
-some kind of <a href="http://en.wikipedia.org/wiki/Middleware">middleware</a> package
+some kind of <a href="http://en.wikipedia.org/wiki/Middleware" target="_blank">middleware</a> package
 to enable inter-component communication.  If support for C/C++ on
 Linux is a requirement (which discounts Microsoft's COM+ and Sun's
 Enterprise JavaBeans), the following options exist today:
@@ -74,7 +74,7 @@ Enterprise JavaBeans), the following options exist today:
 - using XML-based technologies such as SOAP,
 - using CORBA,
 - writing custom middleware from scratch, or
-- using <a href="http://www.zeroc.com">Ice</a>.
+- using <a href="http://www.zeroc.com" target="_blank">Ice</a>.
 
 We discount XML-based technologies on the grounds that they are too
 inefficient for low-level robotic control tasks.  
@@ -82,7 +82,7 @@ inefficient for low-level robotic control tasks.
 While CORBA is sufficiently flexible for Orca's middleware
 requirements, it is also large and complex.  Experience with CORBA in
 Orca1 showed this complexity to be problematic.  Ice is far less
-complex: for a detailed comparison see <a href="http://www.zeroc.com/iceVsCorba.html">here</a> or <a href="www.triodia.com/staff/michi/ieee/ieee.pdf">here</a>.
+complex: for a details see <a href="http://www.zeroc.com/iceVsCorba.html" target="_blank">Ice vs. Corba comparison</a> or read <a href="www.triodia.com/staff/michi/ieee/ieee.pdf" target="_blank">a paper by ZeroC stuff</a>.
 
 Orca1 also experimented with writing custom middleware from scratch.
 While communicating over a socket is simple, implementing middleware
@@ -129,7 +129,7 @@ or components, we do provide guidelines (and working code!) for
 designs that have worked well in the past.
 
 For developing individual components, most of these established design
-patterns are encoded in <a href="group__orca__utility__orcaiceutilcpp.html">libOrcaIceUtil</a>.
+patterns are encoded in <a href="group__orca__library__orcaice.html">libOrcaIce</a>.
 We find it useful -- if you do too then go ahead and use it.  But feel
 free to copy it and modify it (or not use it at all) as required.
 
@@ -148,46 +148,46 @@ out omissions in components' documentation.
 
 Orca began as part of the EU-funded OROCOS Project: a project
 to develop an Open-Source Robotic Control System.  The project
-was a collaboration between four universities: <a href="http://www.cas.kth.se">KTH</a> (Sweden),
+was a collaboration between four universities: <a href="http://www.cas.kth.se" target="_blank">KTH</a> (Sweden),
 Leuven (Belgium), LAAS (France) and Ulm (Germany).  The four
 institution worked on separate parts of a project that was
 intended to eventually merge, but never did.  The Orocos name
-now refers to <a href="http://www.orocos.org">the Belgian part</a>.
+now refers to <a href="http://www.orocos.org" target="_blank">the Belgian part</a>.
 
-The task of <a href="http://www.cas.kth.se">KTH</a> was to build a set of communication patterns to enable
+The task of <a href="http://www.cas.kth.se" target="_blank">KTH</a> was to build a set of communication patterns to enable
 the interaction of distributed components.  This work,
 spearheaded by Anders Oreb&auml;ck, was called Orocos\@KTH.  By
-June 2004 Orocos\@KTH had also been adopted by members of the <a href="http://www.acfr.usyd.edu.au">Australian Centre for Field Robotics</a>.  By this time it had diverged far enough from the work at Leuven that a new name was required to disambiguate the two, and Orca1 was born. At that time the project moved to SourceForge. Work on porting Orca to Ice started in March of 2005. The new version called Orca2 was forked in late 2005, the main difference being the move to @ref orca_doc_about_whyice "Ice" as the sole communications package.
+June 2004 Orocos\@KTH had also been adopted by members of the <a href="http://www.acfr.usyd.edu.au" target="_blank">Australian Centre for Field Robotics</a>.  By this time it had diverged far enough from the work at Leuven that a new name was required to disambiguate the two, and Orca1 was born. At that time the project moved to SourceForge. Work on porting Orca to Ice started in March of 2005. The new version called Orca2 was forked in late 2005, the main difference being the move to @ref orca_doc_about_whyice "Ice middleware" as the sole communications package.
 
 @section orca_doc_about_usage Usage
 
 Orca is currently used and/or actively developed at the following sites:
 
-- <a href="http://www.cas.kth.se">KTH</a>
+- <a href="http://www.cas.kth.se" target="_blank">KTH</a>
           (Stockholm, Sweden)
 
-- <a href="http://www.acfr.usyd.edu.au">Australian Centre for Field Robotics</a>
+- <a href="http://www.acfr.usyd.edu.au" target="_blank">Australian Centre for Field Robotics</a>
         (Sydney, Australia)
 
 - <a href="http://www.uts.edu.au" target="_blank">University of Technology Sydney</a> 
     (Sydney, Australia)
 
-- <a href="http://www.cse.unsw.edu.au/index.html">University of New South Wales</a>
+- <a href="http://www.cse.unsw.edu.au/index.html" target="_blank">University of New South Wales</a>
     (Sydney, Australia)
 
 @section orca_doc_about_platforms Operating Systems and Languages
 
 Orca was designed with the intention of being used on various
-platforms.  To this end, Orca uses <a href="www.cmake.org">CMake</a> (cross-platform make) for its
+platforms.  To this end, Orca uses <a href="www.cmake.org" target="_blank">CMake</a> (cross-platform make) for its
 build system.  Ice has language mappings for C++, Java, Python, C#, VisualBasic and PHP.  It builds natively under various operating systems including Windows, Linux and Mac OS X.
 
 @section orca_doc_about_license License
 
-Orca is released under the <a href="http://www.fsf.org/copyleft/lgpl.html">GNU Lesser General Public License (LGPL)</a>.
+Orca is released under the <a href="http://www.fsf.org/copyleft/lgpl.html" target="_blank">GNU Lesser General Public License (LGPL)</a>.
 
 The LGPL was chosen (as opposed to the GPL) to allow commercial
 enterprises to build closed-source products using Orca technology.
-Note that Orca's only required dependency, Ice, is released under a <a href="http://www.zeroc.com/licensing.html">dual license</a>: it is GPL
-unless a commercial license is purchased from <a href="http://www.zeroc.com">ZeroC</a>.
+Note that Orca's only required dependency, Ice, is released under a <a href="http://www.zeroc.com/licensing.html" target="_blank">dual license</a>: it is GPL
+unless a commercial license is purchased from <a href="http://www.zeroc.com" target="_blank">ZeroC</a>.
 
 */

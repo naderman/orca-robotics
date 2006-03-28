@@ -26,7 +26,7 @@ To reiterate, components can be developed in any way you choose.
    So long as they implement their interfaces, other components will
    be able to interoperate with them.  This page contains suggestions
    for how to think about components, and how to write them using
-   libOrcaIceUtil.  Several of the components in the repository are
+   libOrcaIce.  Several of the components in the repository are
    designed in this way.
 
 A basic component template looks like this:

@@ -22,7 +22,7 @@
 
 @page orca_doc_orcaice Orca and Ice: assumptions, constraints, etc.
 
-Ice is a general purpose framework for distributed computation. Orca is a component-based framework for robotics. Ice hides a lot of complexity associated with distribution but it is still a large package with many options and unlimited variety of implementations. libOrcaIceUtil library suggests certain patterns for component interaction and internal organization. Here we list the conventions made in the process.
+Ice is a general purpose framework for distributed computation. Orca is a component-based framework for robotics. Ice hides a lot of complexity associated with distribution but it is still a large package with many options and unlimited variety of implementations. libOrcaIce library suggests certain patterns for component interaction and internal organization. Here we list the conventions made in the process.
 
 @par Ice Communicator, Object Adapter, and Objects.
 
