@@ -153,7 +153,10 @@ MainLoop::run()
     {
         cout<<"TRACE(mainloop.cpp): caught char *: " << e << endl;
     }
-
+    
+    // wait for the component to realize that we are quitting and tell us to stop.
+    waitForStop();
+    
     cout<<"TRACE(mainloop.cpp): Dropping out from run()" << endl;
 }
 

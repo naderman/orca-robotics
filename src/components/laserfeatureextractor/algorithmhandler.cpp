@@ -232,6 +232,9 @@ void AlgorithmHandler::run()
             context_.communicator()->destroy();
         }
     }
+
+    // wait for the component to realize that we are quitting and tell us to stop.
+    waitForStop();
 }
 
 void AlgorithmHandler::convertToRobotCS( const PolarFeature2dDataPtr & featureData )

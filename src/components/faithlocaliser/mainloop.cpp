@@ -80,5 +80,8 @@ MainLoop::run()
         // before shutting down communicator.
     }
 
+    // wait for the component to realize that we are quitting and tell us to stop.
+    waitForStop();
+
     cout<<"TRACE(filtermainloop.cpp): Dropping out from run()" << endl;
 }

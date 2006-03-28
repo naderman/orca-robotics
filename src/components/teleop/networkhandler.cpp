@@ -42,12 +42,14 @@ NetworkHandler::~NetworkHandler()
 {
 }
 
-void NetworkHandler::setupConfigs( const Ice::PropertiesPtr & properties )
+void
+NetworkHandler::setupConfigs( const Ice::PropertiesPtr & properties )
 {
 
 }
 
-void NetworkHandler::run()
+void
+NetworkHandler::run()
 {
     // we are in a different thread now, catch all stray exceptions
     try
@@ -182,6 +184,9 @@ void NetworkHandler::run()
             context_.communicator()->destroy();
         }
     }
-
+    
+    // wait for the component to realize that we are quitting and tell us to stop.
+    waitForStop();
+    
     cout<<"NetworkHandler: stopped."<<endl;
 }

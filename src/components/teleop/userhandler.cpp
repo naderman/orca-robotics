@@ -61,7 +61,8 @@ UserHandler::~UserHandler()
 #endif
 }
 
-void UserHandler::init()
+void
+UserHandler::init()
 {
     //
     // Read settings
@@ -127,7 +128,8 @@ void UserHandler::init()
 }
 
 // read commands from the keyboard. Launced in a separate thread.
-void UserHandler::run()
+void
+UserHandler::run()
 {
     // we are in a different thread now, catch all stray exceptions
     try
@@ -180,4 +182,7 @@ void UserHandler::run()
         context_.tracer()->error( "unexpected exception from somewhere.");
         context_.communicator()->destroy();
     }
+
+    // wait for the component to realize that we are quitting and tell us to stop.
+    waitForStop();
 }

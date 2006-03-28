@@ -281,10 +281,7 @@ HwHandler::run()
     }
     
     // wait for the component to realize that we are quitting and tell us to stop.
-    // otherwise there's a possibility of lock up in Thread::stop()
-    while ( isActive() ) {
-        IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(10));
-    }
+    waitForStop();
 }
 
 //
