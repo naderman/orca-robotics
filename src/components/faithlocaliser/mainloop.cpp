@@ -53,7 +53,7 @@ MainLoop::run()
             localiseData->hypotheses[0].cov.xt   = 0.0;
             localiseData->hypotheses[0].cov.yt   = 0.0;
 
-            context_.tracer()->debug( orcaice::toString(localiseData),6 );
+            context_.tracer()->debug( orcaice::toString(localiseData), 5 );
 
             // Stick the new data in the buffer
             locBuffer_.push( localiseData );
