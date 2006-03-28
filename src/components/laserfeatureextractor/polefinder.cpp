@@ -24,6 +24,10 @@
 
 #include "polefinder.h"
 
+// // Just for debugging:
+// #include <orcaice/objutils.h>
+// using orcaice::operator<<;
+
 using namespace std;
 
 using namespace orca_polefinder;
@@ -86,8 +90,9 @@ orca_polefinder::detect_poles( const RangeScannerConfigPtr laserConf,
                         poles[poles.size()-1].range   = temp_range;
                         poles[poles.size()-1].bearing = temp_bearing;
 
-                        // cout<<"TRACE(polefinder.cpp): Adding pole at " << temp_range << ", " << temp_bearing << endl;
-                        // cout<<"TRACE(polefinder.cpp): num Points: " << i-potential_pole_start+1 << endl;
+//                         cout<<"TRACE(polefinder.cpp): Adding pole at " 
+//                             << temp_range << ", " << temp_bearing*180.0/M_PI << "deg" << endl;
+//                         cout<<"TRACE(polefinder.cpp): num Points: " << i-potential_pole_start+1 << endl;
                         
                         num_poles++;
                         potential_pole_start = 0;

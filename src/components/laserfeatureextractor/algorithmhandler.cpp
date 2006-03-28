@@ -117,6 +117,7 @@ void AlgorithmHandler::run()
     laserConfigPtr_ = laserPrx_->getConfig();
     driver_->setMaxRange( laserConfigPtr_->maxRange );
     laserGeometryPtr_ = laserPrx_->getGeometry();
+    checkLaserGeometry( laserGeometryPtr_ );
 
     // wake up every now and then to check if we are supposed to stop
     const int timeoutMs = 1000;
@@ -240,7 +241,7 @@ void AlgorithmHandler::run()
 void AlgorithmHandler::convertToRobotCS( const PolarFeature2dDataPtr & featureData )
 {
     CartesianPoint offsetXyz = laserGeometryPtr_->offset.p;
-    OrientationE  offsetAngles = laserGeometryPtr_->offset.o;
+    OrientationE   offsetAngles = laserGeometryPtr_->offset.o;
     
     CartesianPoint LaserXy, RobotXy;
     PolarPoint2d polarPointRobot;
@@ -255,5 +256,26 @@ void AlgorithmHandler::convertToRobotCS( const PolarFeature2dDataPtr & featureDa
         polarPointRobot.o = atan2(RobotXy.y,RobotXy.x);
 
         featureData->features[i]->p = polarPointRobot;
+    }
+}
+
+void 
+AlgorithmHandler::checkLaserGeometry( const orca::RangeScannerGeometryPtr geom )
+{
+    bool geomOK = true;
+    if ( geom->offset.p.z != 0.0 )
+    {
+        context_.tracer()->error( "Can't handle non-zero 'z' component of laser offset." );
+        geomOK = false;
+    }
+    if ( geom->offset.o.r != 0.0 || geom->offset.o.p != 0.0 )
+    {
+        context_.tracer()->error( "Can't handle non-zero roll pitch in laser offset." );
+        geomOK = false;
+    }
+
+    if ( !geomOK )
+    {
+        throw std::string( "Couldn't handle laser offset" );
     }
 }

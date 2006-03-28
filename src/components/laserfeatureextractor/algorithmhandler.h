@@ -67,6 +67,10 @@ private:
     
     void convertToRobotCS( const orca::PolarFeature2dDataPtr & featuresPtr );
 
+    // This component is 2D-centric: can only handle certain orientations.
+    // Throws std::strings on bad offset.
+    void checkLaserGeometry( const orca::RangeScannerGeometryPtr geom );
+
     orcaice::Context context_;
 
     void init();
