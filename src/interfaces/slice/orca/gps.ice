@@ -36,7 +36,7 @@ module orca
 // define messages first
 
 //! Gps time structure - for time sync
-class GpsTime extends OrcaObject
+class GpsTimeData extends OrcaObject
 {
     // UTC time
     //! Hours
@@ -52,6 +52,40 @@ class GpsTime extends OrcaObject
     //! year
     int year;
 };
+
+//! Gps data structure
+class GpsMapGridData extends OrcaObject
+{
+    // UTC time
+    //! Hours
+    int utcHours;
+    //! minutes
+    int utcMinutes;
+    //! seconds
+    double utcSeconds;
+
+    // GPS position
+    //! Our current zone
+    int zone;
+    //! Northing (Metres)
+    double northing;
+    //! Easting (Metres)
+    double easting;
+    //! Altitude (Metres above Ellipsoid)
+    double altitude;
+    
+    // Velocities
+    // heading/track/course (Degrees)
+    double heading; 
+    //! horizontal speed (Metres/second)
+    double speed;
+    //! vertical velocity (Metres/second)
+    double climbRate;
+    
+    //! Position Type (Bad (0), Ugly (1), Good (2))
+    int positionType;
+};
+
 
 //! Gps data structure
 class GpsData extends OrcaObject
@@ -103,6 +137,22 @@ interface GpsConsumer
 };
 
 /*!
+ * Gps Map information consumer interface
+ */
+interface GpsMapGridConsumer
+{
+    void setData( GpsMapGridData obj );
+};
+
+/*!
+ * Gps Time information consumer interface
+ */
+interface GpsTimeConsumer
+{
+    void setData( GpsTimeData obj );
+};
+
+/*!
     @brief Access to GPS data.
 */
 interface Gps
@@ -113,7 +163,11 @@ interface Gps
             throws HardwareFailedException;
 
     //! Return the latest timestamp information
-    nonmutating GpsTime getTime()
+    nonmutating GpsTimeData getTimeData()
+            throws HardwareFailedException;
+
+    //! Return the latest map information
+    nonmutating GpsMapGridData getMapGridData()
             throws HardwareFailedException;
 
     nonmutating CartesianPoint getGeometry();
@@ -130,6 +184,12 @@ interface Gps
     void subscribe( GpsConsumer* subscriber )
             throws SubscriptionFailedException;
 
+    void subscribeForMapGrid( GpsMapGridConsumer* subscriber )
+            throws SubscriptionFailedException;
+
+    void subscribeForTime( GpsTimeConsumer* subscriber )
+            throws SubscriptionFailedException;
+
     // for reference, this is what IceStorm's subscribe function looks like.
     //void subscribe(QoS theQoS, Object* subscriber);
 
@@ -141,6 +201,10 @@ interface Gps
      * @see subscribe
      */
     idempotent void unsubscribe( GpsConsumer* subscriber );
+    
+    idempotent void unsubscribeForMapGrid( GpsMapGridConsumer* subscriber );
+    
+    idempotent void unsubscribeForTime( GpsTimeConsumer* subscriber );
 };
 
 

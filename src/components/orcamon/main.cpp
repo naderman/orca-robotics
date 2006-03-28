@@ -31,12 +31,16 @@
 #include <orca/rangescanner.h>
 #include <orca/status.h>
 
-#include "subscriber.h"
-
 #include <orcaice/orcaice.h>
+
+#include "subscriber.h"
+//specialisations of subscriber
+#include "special.h"
 
 using namespace std;
 using namespace orca;
+
+
 
 class OrcaMonComponent : public orcaice::Component
 {
@@ -123,7 +127,12 @@ void OrcaMonComponent::start()
     }
     else if ( objId=="::orca::Gps" )
     {
+        //GPS has three object types and consumers
         attach<GpsPrx,GpsConsumerPrx,GpsConsumer,GpsDataPtr>
+                ( context(), proxyString );
+        attach<GpsPrx,GpsMapGridConsumerPrx,GpsMapGridConsumer,GpsMapGridDataPtr>
+                ( context(), proxyString );
+        attach<GpsPrx,GpsTimeConsumerPrx,GpsTimeConsumer,GpsTimeDataPtr>
                 ( context(), proxyString );
     }
     else
