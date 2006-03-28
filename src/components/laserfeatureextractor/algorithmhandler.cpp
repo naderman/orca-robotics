@@ -265,12 +265,16 @@ AlgorithmHandler::checkLaserGeometry( const orca::RangeScannerGeometryPtr geom )
     bool geomOK = true;
     if ( geom->offset.p.z != 0.0 )
     {
-        context_.tracer()->error( "Can't handle non-zero 'z' component of laser offset." );
+        stringstream ss;
+        ss << "Can't handle non-zero 'z' component in laser offset.  geom was: " << geom;
+        context_.tracer()->error( ss.str() );
         geomOK = false;
     }
     if ( geom->offset.o.r != 0.0 || geom->offset.o.p != 0.0 )
     {
-        context_.tracer()->error( "Can't handle non-zero roll pitch in laser offset." );
+        stringstream ss;
+        ss << "Can't handle non-zero roll or pitch in laser offset.  geom was: " << geom;
+        context_.tracer()->error( ss.str() );
         geomOK = false;
     }
 
