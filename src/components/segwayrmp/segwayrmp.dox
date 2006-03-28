@@ -51,35 +51,33 @@
     - Valid values: { 'segwayrmpusb', 'playerclient', 'fake' }
     - Default: 'segwayrmpusb'
     
-- @c SegwayRmp.Config.MaxSpeed (float)
+- @c SegwayRmp.Config.MaxSpeed (float) [m]
     - Maximum allowed forward speed
-    - Units: meters
-    - Constraints: positive
+    - Valid values: positive
     - Default: 1.0
     
 - @c SegwayRmp.Config.MaxTurnrate (float) [deg/s]
     - Maximum allowed turnrate
-    - Constraints: positive
+    - Valid values: positive
     - Default: 60.0
     
 - @c SegwayRmp.Config.Position2dPublishInterval (float) [s]
     - How often to send position information to the IceStorm server
-    - Units: seconds
     - Valid values:
-        - <0 : send every new data point
-        - >0 : send approximately every t seconds
-    - Default: -1.0
+        - t<0 : send every new data point
+        - t>0 : send approximately every t seconds
+    - Default: -1.0 (careful, for Segway this is ~100Hz)
 
 - @c SegwayRmp.Config.PowerPublishInterval (float) [s]
     - How often to send power information to the IceStorm server
     - Valid values:
-        - >0 : send approximately every t seconds
+        - t>0 : send approximately every t seconds
     - Default: 20.0
 
 - @c SegwayRmp.Config.StatusPublishInterval (float) [s]
     - How often to send status information to the IceStorm server
     - Valid values:
-        - >0 : send approximately every t seconds
+        - t>0 : send approximately every t seconds
     - Default: 60.0
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
