@@ -35,6 +35,13 @@ module orca
 
 // define messages first
 
+//! Gps config structure
+class GpsConfigData extends OrcaObject
+{
+	CartesianPoint geometry;
+	CartesianPoint origin;
+};
+
 //! Gps time structure - for time sync
 class GpsTimeData extends OrcaObject
 {
@@ -170,7 +177,7 @@ interface Gps
     nonmutating GpsMapGridData getMapGridData()
             throws HardwareFailedException;
 
-    nonmutating CartesianPoint getGeometry();
+    nonmutating GpsConfigData getConfig();
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The
