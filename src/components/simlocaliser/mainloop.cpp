@@ -20,8 +20,6 @@
  
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaplayer/orcaplayer.h>
-#include <libplayerc++/playerc++.h>
 
 #include "mainloop.h"
 #include "staticdriver.h"
