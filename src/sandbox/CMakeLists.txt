@@ -12,7 +12,6 @@ IF ( BUILD_SANDBOX )
 	netcam
 	reactivewalker
 	pathplanner
-	stagelocaliser
     )
     
 ELSE ( BUILD_SANDBOX )

@@ -19,5 +19,6 @@ SUBDIRS(
   registryview
   segwayrmp
   sicklaser
+  simlocaliser
   teleop
 )

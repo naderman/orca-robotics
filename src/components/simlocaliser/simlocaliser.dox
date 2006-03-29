@@ -1,0 +1,85 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@ingroup components
+@ingroup apps
+@ingroup services
+@ingroup cpp
+@ingroup linux
+@defgroup orca_component_simlocaliser SimLocaliser
+@brief Produces simulated localisation.
+
+
+@par Provided Interfaces
+
+- @ref orca_interface_home
+- @ref orca_interface_localise2d
+- @ref orca_interface_status
+
+@par Required Interfaces
+
+- none
+
+@par Drivers
+
+- @b static @ref orca_simlocaliser_static
+- @b stage @ref orca_simlocaliser_stage (does not currently work)
+
+This component simulates localisation information internally or talks to an external simulator.
+
+@par Configuration
+None.
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
+@section orca_simlocaliser_static Static position driver
+
+This one simply sends out the pose given in the config file with some made-up uncertainty (this may be added to the config file in the future).
+
+@par Extra configuration
+
+- @c SimLocaliser.Config.Static.Pose (Frame2d) [m,m,deg]
+    - The pose which will be reported as a single localization hypothesis.
+    - Default: [0.0 0.0 0.0]
+
+@section orca_simlocaliser_stage Stage simulator driver
+
+Talks to Stage Simulation interface. Unfortunately, this does @b NOT seem to work as of Stage 2.0.0.
+
+@par Extra configuration
+
+- @c SimLocaliser.Config.Stage.Host (string)
+    - The host that Player (or Stage) is running on
+    - Default: "localhost"
+- @c SimLocaliser.Config.Stage.Port (int)
+    - The port that PLayer (or Stage) is running on
+    - Constraints: >0
+    - Default: 6665
+- @c SimLocaliser.Config.Stage.Id (string)
+    - The ID of the Simulation object.
+    - Default: "model1"
+        
+@par Authors
+Alex Makarenko
+
+*/
+
