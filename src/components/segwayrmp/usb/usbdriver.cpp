@@ -288,7 +288,7 @@ UsbDriver::integrateMotion()
 
     // convert to SI
     double deltaForeaft = (double)deltaForeaftRaw / RMP_COUNT_PER_M;
-    double deltaYaw = (double)deltaYawRaw / RMP_COUNT_PER_REV * M_PI;
+    double deltaYaw = (double)deltaYawRaw / RMP_COUNT_PER_REV * 2.0 * M_PI;
 
     // First-order odometry integration
     odomX_ += deltaForeaft * cos(odomYaw_);
