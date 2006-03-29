@@ -53,19 +53,33 @@ void AlgorithmHandler::init()
     std::string prefix = context_.tag() + ".Config.";
 
     // pull out config parameters
-    AlgorithmDriver::Config config;
+    CombinedDriver::Config config;
 
-    config.backgroundRangeGate = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"BackgroundRangeGate", 80.0 );
-    config.targetRangeGate = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"TargetRangeGate", 0.5 );
-    config.minReturnNumber =  orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"MinReturnNumber", 1);
-    config.minBrightness =  orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"MinBrightness", 1);
-    config.extractReflectors =  orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"ExtractReflectors", 1);
-    config.extractForegroundPoints =  orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"ExtractForegroundPoints", 0);
-    config.extractCorners =  orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"ExtractCorners", 0);
-    config.extractDoors =  orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"ExtractDoors", 0);
-    config.minForegroundWidth = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"MinForegroundWidth", 0.1);
-    config.maxForegroundWidth = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"MaxForegroundWidth", 0.5);
-    config.minForegroundBackgroundSeparation = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"MinForegroundBackgroundSeparation", 0.5);
+    // Which algorithms to use
+    config.extractReflectors                 =
+        orcaice::getPropertyAsIntWithDefault(    context_.properties(), prefix+"ExtractReflectors", 1);
+    config.extractForegroundPoints           =
+        orcaice::getPropertyAsIntWithDefault(    context_.properties(), prefix+"ExtractForegroundPoints", 0);
+    config.extractCorners                    =
+        orcaice::getPropertyAsIntWithDefault(    context_.properties(), prefix+"ExtractCorners", 0);
+    config.extractDoors                      =
+        orcaice::getPropertyAsIntWithDefault(    context_.properties(), prefix+"ExtractDoors", 0);
+
+    // Reflector extraction params
+    config.maxDeltaRangeWithinReflector      =
+        orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Reflectors.MaxDeltaRangeWithinReflector", 0.3 );
+    config.maxDeltaRangeNearReflector        =
+        orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Reflectors.MaxDeltaRangeNearReflector", 0.5 );
+    config.minReflectorBrightness            =
+        orcaice::getPropertyAsIntWithDefault(    context_.properties(), prefix+"Reflectors.MinBrightness", 1);
+
+    // Foreground extraction params
+    config.minForegroundWidth                =
+        orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"FGPoints.MinForegroundWidth", 0.1);
+    config.maxForegroundWidth                =
+        orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"FGPoints.MaxForegroundWidth", 0.5);
+    config.minForegroundBackgroundSeparation =
+        orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"FGPoints.MinForegroundBackgroundSeparation", 0.5);
 
     
     std::string driverName = orcaice::getPropertyWithDefault( context_.properties(),
@@ -79,7 +93,7 @@ void AlgorithmHandler::init()
     else if ( driverName == "fake" )
     {
         context_.tracer()->debug( "loading 'fake' driver",3);
-        driver_ = new FakeDriver( config );
+        driver_ = new FakeDriver();
     }
     else
     {

@@ -44,10 +44,12 @@ using namespace std;
 using namespace orcaice;
 using namespace laserfeatures;
 
-CombinedDriver::CombinedDriver( const Config & config )
-    : AlgorithmDriver( config )
+CombinedDriver::CombinedDriver( const Config &config )
+    : reflectorExtractor_( config.maxDeltaRangeNearReflector,
+                           config.maxDeltaRangeWithinReflector,
+                           config.minReflectorBrightness )
 {
-    laserRange_ = INITIAL_MAX_RANGE;
+    maxLaserRange_ = INITIAL_MAX_RANGE;
 }
 
 CombinedDriver::~CombinedDriver()
@@ -55,15 +57,14 @@ CombinedDriver::~CombinedDriver()
 }
 
 int
-CombinedDriver::computeFeatures( const orca::RangeScannerConfigPtr & laserConfigPtr,
-                                 const orca::LaserDataPtr & laserDataPtr,
-                                 const orca::PolarFeature2dDataPtr & featureDataPtr )
+CombinedDriver::computeFeatures( const orca::RangeScannerConfigPtr &laserConfigPtr,
+                                 const orca::LaserDataPtr          &laserDataPtr,
+                                 orca::PolarFeature2dDataPtr       &featureDataPtr )
 {
     featureDataPtr->features.clear();
 
-    if ( config_.extractReflectors ) {
-        extractLaserReflectors(laserDataPtr, featureDataPtr);
-    }
+    if ( config_.extractReflectors )
+        reflectorExtractor_.addFeatures( laserDataPtr, featureDataPtr );
     
     if ( config_.extractForegroundPoints ) {
         extractForegroundPoints(laserConfigPtr, laserDataPtr, featureDataPtr);
@@ -81,78 +82,78 @@ CombinedDriver::computeFeatures( const orca::RangeScannerConfigPtr & laserConfig
 }
 
 
-bool
-CombinedDriver::extractLaserReflectors( const orca::LaserDataPtr & laserDataPtr,
-                                        const orca::PolarFeature2dDataPtr & featureDataPtr)
-{
-    bool buildingTarget = false;
+// bool
+// CombinedDriver::extractLaserReflectors( const orca::LaserDataPtr          &laserDataPtr,
+//                                         const orca::PolarFeature2dDataPtr &featureDataPtr)
+// {
+//     bool buildingTarget = false;
 
-    int featureNumPnts = 0;
-    double featureRange = -1.0;
-    double featureBearing = -1.0;
-    //int featureIntensity = -1;
+//     int featureNumPnts = 0;
+//     double featureRange = -1.0;
+//     double featureBearing = -1.0;
+//     //int featureIntensity = -1;
 
-    // for each return
-    for ( uint i=1; i<laserDataPtr->ranges.size()-1; i++ )
-    {
-        //if ( laserDataPtr.intensity(i) >= config_.minBrightness && fabs( laserDataPtr.range(i-1) - laserDataPtr.range(i) ) < config_.backgroundRangeGate )
-        // George:
-        // include laser range and check on both sides of the return for 'possible dodgy' range
-        // for a range to be doggy it usually has to have both both neighbouring ranges far away. 
-        if ( laserDataPtr->intensities[i] >= config_.minBrightness &&
-             laserDataPtr->ranges[i] < laserRange_ &&
-             ( fabs( laserDataPtr->ranges[i-1] - laserDataPtr->ranges[i] ) < config_.backgroundRangeGate ||
-               fabs( laserDataPtr->ranges[i+1] - laserDataPtr->ranges[i] ) < config_.backgroundRangeGate  ) )
-        {
-            // start building a new cluster of high intensity returns
-            if ( buildingTarget == false )
-            {
-                buildingTarget = true;
-                featureNumPnts = 1;
-                featureRange = laserDataPtr->ranges[i];
-                featureBearing = M_PI*i/(laserDataPtr->ranges.size()-1) - M_PI/2;
-                continue; // go to the next return
-            }
+//     // for each return
+//     for ( uint i=1; i<laserDataPtr->ranges.size()-1; i++ )
+//     {
+//         //if ( laserDataPtr.intensity(i) >= config_.minBrightness && fabs( laserDataPtr.range(i-1) - laserDataPtr.range(i) ) < config_.backgroundRangeGate )
+//         // George:
+//         // include laser range and check on both sides of the return for 'possible dodgy' range
+//         // for a range to be doggy it usually has to have both both neighbouring ranges far away. 
+//         if ( laserDataPtr->intensities[i] >= config_.minBrightness &&
+//              laserDataPtr->ranges[i] < maxLaserRange_ &&
+//              ( fabs( laserDataPtr->ranges[i-1] - laserDataPtr->ranges[i] ) < config_.backgroundRangeGate ||
+//                fabs( laserDataPtr->ranges[i+1] - laserDataPtr->ranges[i] ) < config_.backgroundRangeGate  ) )
+//         {
+//             // start building a new cluster of high intensity returns
+//             if ( buildingTarget == false )
+//             {
+//                 buildingTarget = true;
+//                 featureNumPnts = 1;
+//                 featureRange = laserDataPtr->ranges[i];
+//                 featureBearing = M_PI*i/(laserDataPtr->ranges.size()-1) - M_PI/2;
+//                 continue; // go to the next return
+//             }
 
-            // if the new return is close enough to the current average include it in the estimate
-            if ( fabs(laserDataPtr->ranges[i] - featureRange/featureNumPnts) < config_.targetRangeGate )
-            {
-                ++featureNumPnts;
+//             // if the new return is close enough to the current average include it in the estimate
+//             if ( fabs(laserDataPtr->ranges[i] - featureRange/featureNumPnts) < config_.targetRangeGate )
+//             {
+//                 ++featureNumPnts;
 
-                featureRange += laserDataPtr->ranges[i];
-                featureBearing += M_PI*i/(laserDataPtr->ranges.size()-1) - M_PI/2;
-            }
-        }
-        else
-        {
-            // if we have reached the end of a cluster, process a new observation
-            if ( buildingTarget == true )
-            {
-                buildingTarget = false;
+//                 featureRange += laserDataPtr->ranges[i];
+//                 featureBearing += M_PI*i/(laserDataPtr->ranges.size()-1) - M_PI/2;
+//             }
+//         }
+//         else if ( buildingTarget )
+//         {
+//             // we have reached the end of a cluster, process a new observation
+//             if ( buildingTarget == true )
+//             {
+//                 buildingTarget = false;
                 
-                // George:
-                // not sure whether this is suppose to stop laser beacons that are on a corner
-                // from not becoming foreground features as well?? if it is, I don't think it
-                // works, so will disable it and just check minReturns_.
-                // SBW: actually, this is meant to check that the return is not on a
-                // corner.  The cor
-                // again make sure that the feature is not a foreground point
-                //if ( fabs( laserDataPtr.range(i) -  laserDataPtr.range(i+1) ) < config_.backgroundRangeGate && featureNumPnts >= minReturns_ )
+//                 // George:
+//                 // not sure whether this is suppose to stop laser beacons that are on a corner
+//                 // from not becoming foreground features as well?? if it is, I don't think it
+//                 // works, so will disable it and just check minReturns_.
+//                 // SBW: actually, this is meant to check that the return is not on a
+//                 // corner.  The cor
+//                 // again make sure that the feature is not a foreground point
+//                 //if ( fabs( laserDataPtr.range(i) -  laserDataPtr.range(i+1) ) < config_.backgroundRangeGate && featureNumPnts >= minReturns_ )
 
-                if ( featureNumPnts >= config_.minReturnNumber )
-                {                 
-                    orca::SinglePolarFeature2dPtr pp = new orca::SinglePolarFeature2d;
-                    pp->type = orca::feature::LASERREFLECTOR;
-                    pp->p.r  = featureRange / featureNumPnts;
-                    pp->p.o  = featureBearing / featureNumPnts;
-                    featureDataPtr->features.push_back( pp );
-                }
-            } // end of end-of-cluster if
+//                 if ( featureNumPnts >= config_.minReturnNumber )
+//                 {                 
+//                     orca::SinglePolarFeature2dPtr pp = new orca::SinglePolarFeature2d;
+//                     pp->type = orca::feature::LASERREFLECTOR;
+//                     pp->p.r  = featureRange / featureNumPnts;
+//                     pp->p.o  = featureBearing / featureNumPnts;
+//                     featureDataPtr->features.push_back( pp );
+//                 }
+//             } // end of end-of-cluster if
 
-        }     // end for each return
-    }
-    return 0;  
-}
+//         }     // end for each return
+//     }
+//     return 0;  
+// }
 
 bool CombinedDriver::extractForegroundPoints( const orca::RangeScannerConfigPtr & laserConfigPtr,
                                               const orca::LaserDataPtr & laserDataPtr,
@@ -164,7 +165,7 @@ bool CombinedDriver::extractForegroundPoints( const orca::RangeScannerConfigPtr 
 
     int numPoles = orca_polefinder::detect_poles( laserConfigPtr,
                                                   laserDataPtr,
-                                                  laserRange_,
+                                                  maxLaserRange_,
                                                   config_.minForegroundWidth,
                                                   config_.maxForegroundWidth,
                                                   config_.minForegroundBackgroundSeparation,
@@ -336,7 +337,7 @@ void CombinedDriver::connectSections(const orca::LaserDataPtr & laserDataPtr)
     Section current;
   
     bool inSection = true;
-    if (laserDataPtr->ranges[0] >= laserRange_) {
+    if (laserDataPtr->ranges[0] >= maxLaserRange_) {
         inSection = false;
     } else {
         double r = laserDataPtr->ranges[0];
@@ -346,8 +347,8 @@ void CombinedDriver::connectSections(const orca::LaserDataPtr & laserDataPtr)
     }
 
     for (uint i = 1; i < laserDataPtr->ranges.size(); i++) {
-        if (laserDataPtr->ranges[i] >= laserRange_) {
-            if (laserDataPtr->ranges[i-1] < laserRange_) {
+        if (laserDataPtr->ranges[i] >= maxLaserRange_) {
+            if (laserDataPtr->ranges[i-1] < maxLaserRange_) {
                 //Section temp;
                 sections_.push_back(current);
                 current.elements.clear();
@@ -355,7 +356,7 @@ void CombinedDriver::connectSections(const orca::LaserDataPtr & laserDataPtr)
                 // We are still in an out of range section
                 // ignore...
             }
-        } else if (laserDataPtr->ranges[i-1] >= laserRange_ ||
+        } else if (laserDataPtr->ranges[i-1] >= maxLaserRange_ ||
                    fabs(laserDataPtr->ranges[i] - laserDataPtr->ranges[i-1]) < RANGE_DELTA)  {
             // Add this point to the current section
             double r = laserDataPtr->ranges[i];

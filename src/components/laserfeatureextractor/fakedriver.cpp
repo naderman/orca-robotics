@@ -31,14 +31,13 @@ using namespace std;
 using namespace orcaice;
 using namespace laserfeatures;
 
-FakeDriver::FakeDriver( const Config & config )
-    : AlgorithmDriver( config )
+FakeDriver::FakeDriver()
 {
 }
 
-int FakeDriver::computeFeatures( const orca::RangeScannerConfigPtr & laserConfigPtr,
-                                 const orca::LaserDataPtr & laserDataPtr,
-                                 const orca::PolarFeature2dDataPtr & featureDataPtr )
+int FakeDriver::computeFeatures( const orca::RangeScannerConfigPtr &laserConfigPtr,
+                                 const orca::LaserDataPtr          &laserDataPtr,
+                                       orca::PolarFeature2dDataPtr &featureDataPtr )
 {
     // make up some features
     cout << "INFO(fakeextractor.cpp): Laser configuration received: " << laserConfigPtr << endl;

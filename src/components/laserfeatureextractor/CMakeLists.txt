@@ -9,6 +9,7 @@ IF( BUILD_LASERFEATUREEXTRACTOR )
     SET( COMMON_SRCS
             component algorithmhandler
             fakedriver combineddriver svd section polefinder
+            reflectorextractor
             polarfeature2dI laserconsumerI
     )
     

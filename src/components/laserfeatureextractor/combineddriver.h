@@ -25,6 +25,7 @@
 #include <list>
 
 #include "algorithmdriver.h"
+#include "reflectorextractor.h"
 #include "section.h"
 
 namespace laserfeatures
@@ -39,27 +40,49 @@ class CombinedDriver: public AlgorithmDriver
 
 public:
 
+    struct Config
+    {
+        // which algs
+        bool   extractReflectors; 
+        bool   extractForegroundPoints; 
+        bool   extractCorners; 
+        bool   extractDoors; 
+        // reflector params
+        double maxDeltaRangeNearReflector;
+        double maxDeltaRangeWithinReflector;
+        int    minReflectorBrightness; 
+        // foreground params
+        double minForegroundWidth;
+        double maxForegroundWidth;
+        double minForegroundBackgroundSeparation;
+    };
+    
     CombinedDriver( const Config & config );
     virtual ~CombinedDriver();
     
-    virtual int computeFeatures( const orca::RangeScannerConfigPtr & laserConfigPtr,
-                                 const orca::LaserDataPtr & laserDataPtr,
-                                 const orca::PolarFeature2dDataPtr & featureDataPtr );
+    virtual int computeFeatures( const orca::RangeScannerConfigPtr &laserConfigPtr,
+                                 const orca::LaserDataPtr          &laserDataPtr,
+                                 orca::PolarFeature2dDataPtr       &featureDataPtr );
     
     virtual void setMaxRange( float maxRange )
-        { laserRange_ = maxRange; }    
+        { 
+            reflectorExtractor_.setMaxRange( maxRange );
+            maxLaserRange_ = maxRange; 
+        }
 
 private:
 
-    // alexm: why is this one not in the Config structure?
-    int minReturns_;
-    double laserRange_;
-    
+    ReflectorExtractor reflectorExtractor_;
+
+    double maxLaserRange_;
+
     std::vector<Section> sections_;
+
+    Config config_;
     
     // uitility functions for each type of feature extraction
-    bool extractLaserReflectors( const orca::LaserDataPtr & laserDataPtr,
-                                 const orca::PolarFeature2dDataPtr & featureDataPtr);
+//     bool extractLaserReflectors( const orca::LaserDataPtr & laserDataPtr,
+//                                  const orca::PolarFeature2dDataPtr & featureDataPtr);
     bool extractForegroundPoints( const orca::RangeScannerConfigPtr & laserConfigPtr,
                                   const orca::LaserDataPtr & laserDataPtr,
                                   const orca::PolarFeature2dDataPtr & featureDataPtr);

@@ -53,13 +53,16 @@ Reflectors
 
 - @c LaserFeatureExtractor.Config.ExtractReflectors (bool)
     - Default: true
-- @c LaserFeatureExtractor.Config.BackgroundRangeGate
-    - George/Stef, what does this do?
-- @c LaserFeatureExtractor.Config.TargetRangeGate (float) [m]
-    - Minimum range to target to be considered as a point feature.
-- @c LaserFeatureExtractor.Config.MinReturnNumber (int)
-    - Minimum number of bright laser returns to be considered as a point feature.
-- @c LaserFeatureExtractor.Config.MinBrightness (int)
+- @c LaserFeatureExtractor.Config.Reflectors.MaxDeltaRangeNearReflector (float) [m]
+    - Don't extract a feature if there's a jump in the ranges > this threshold
+      near the reflector.
+      This reject spurious reflectors that are partially-obscured behind a foreground obstacle.
+      It also reduces the angles about which a reflector on a corner can be extracted.
+    - Default: 0.5
+- @c LaserFeatureExtractor.Config.Reflectors.MaxDeltaRangeWithinReflector (float) [m]
+    - A reflector that includes a jump in range > this threshold will be ignored.
+      Default: 0.3
+- @c LaserFeatureExtractor.Config.Reflectors.MinBrightness (int)
     - minimum intensity value to be considered a feature
     - Default: 1
 
@@ -68,11 +71,11 @@ Foreground Points
 - @c LaserFeatureExtractor.Config.ExtractForegroundPoints (bool)
     - boolean
     - Default: 0
-- @c LaserFeatureExtractor.Config.MinForegroundWidth (float) [m]
+- @c LaserFeatureExtractor.Config.FGPoints.MinForegroundWidth (float) [m]
     - minimum width of poles/trees
-- @c LaserFeatureExtractor.Config.MaxForegroundWidth (float) [m]
+- @c LaserFeatureExtractor.Config.FGPoints.MaxForegroundWidth (float) [m]
     - maximum width of poles/trees
-- @c LaserFeatureExtractor.Config.MinForegroundBackgroundSeparation (float) [m]
+- @c LaserFeatureExtractor.Config.FGPoints.MinForegroundBackgroundSeparation (float) [m]
     - how far the pole/tree must be from the background
 
 Corners

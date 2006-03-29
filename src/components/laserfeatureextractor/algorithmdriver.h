@@ -38,36 +38,16 @@ class AlgorithmDriver
 {
 
 public:
-    struct Config
-    {
-        double backgroundRangeGate;
-        double targetRangeGate ;
-        int minReturnNumber; 
-        int minBrightness; 
-        int extractReflectors; 
-        int extractForegroundPoints; 
-        int extractCorners; 
-        int extractDoors; 
-        double minForegroundWidth;
-        double maxForegroundWidth;
-        double minForegroundBackgroundSeparation;
-    };
-    
-    AlgorithmDriver( const Config & config )
-        : config_(config) {};
-        
+
     virtual ~AlgorithmDriver() {};
     
     // Computes the features
-    virtual int computeFeatures( const orca::RangeScannerConfigPtr & laserConfigPtr,
-                                 const orca::LaserDataPtr          & laserDataPtr,
-                                 const orca::PolarFeature2dDataPtr & featureDataPtr ) = 0;
+    virtual int computeFeatures( const orca::RangeScannerConfigPtr &laserConfigPtr,
+                                 const orca::LaserDataPtr          &laserDataPtr,
+                                       orca::PolarFeature2dDataPtr &featureDataPtr ) = 0;
 
     virtual void setMaxRange( float maxRange )=0;
                                  
-protected:
-
-    Config config_;
 };
 
 } // namespace

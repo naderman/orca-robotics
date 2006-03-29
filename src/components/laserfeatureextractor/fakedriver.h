@@ -31,11 +31,11 @@ class FakeDriver: public AlgorithmDriver
 
 public:
 
-    FakeDriver( const Config & config );
+    FakeDriver();
     
-    virtual int computeFeatures( const orca::RangeScannerConfigPtr & laserConfigPtr,
-                                 const orca::LaserDataPtr & laserDataPtr,
-                                 const orca::PolarFeature2dDataPtr & featureDataPtr );
+    virtual int computeFeatures( const orca::RangeScannerConfigPtr &laserConfigPtr,
+                                 const orca::LaserDataPtr          &laserDataPtr,
+                                 orca::PolarFeature2dDataPtr       &featureDataPtr );
 
     virtual void setMaxRange( float maxRange ) {};
 };
