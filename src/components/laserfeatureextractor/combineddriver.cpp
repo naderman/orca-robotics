@@ -47,7 +47,8 @@ using namespace laserfeatures;
 CombinedDriver::CombinedDriver( const Config &config )
     : reflectorExtractor_( config.maxDeltaRangeNearReflector,
                            config.maxDeltaRangeWithinReflector,
-                           config.minReflectorBrightness )
+                           config.minReflectorBrightness ),
+      config_(config)
 {
     maxLaserRange_ = INITIAL_MAX_RANGE;
 }
@@ -64,17 +65,26 @@ CombinedDriver::computeFeatures( const orca::RangeScannerConfigPtr &laserConfigP
     featureDataPtr->features.clear();
 
     if ( config_.extractReflectors )
+    {
+        // cout<<"TRACE(combineddriver.cpp): Extracting reflectors: " << config_.extractReflectors<< endl;
         reflectorExtractor_.addFeatures( laserDataPtr, featureDataPtr );
+    }
     
-    if ( config_.extractForegroundPoints ) {
+    if ( config_.extractForegroundPoints ) 
+    {
+        // cout<<"TRACE(combineddriver.cpp): Extracting fg points: " << config_.extractForegroundPoints<< endl;
         extractForegroundPoints(laserConfigPtr, laserDataPtr, featureDataPtr);
     }
     
-    if ( config_.extractDoors ) {
+    if ( config_.extractDoors ) 
+    {
+        // cout<<"TRACE(combineddriver.cpp): Extracting doors: " << config_.extractDoors << endl;
         extractDoors(laserDataPtr, featureDataPtr);
     }
     
-    if ( config_.extractCorners ) {
+    if ( config_.extractCorners ) 
+    {
+        // cout<<"TRACE(combineddriver.cpp): Extracting corners: " << config_.extractCorners << endl;
         extractCorners(laserDataPtr, featureDataPtr);
     }
   

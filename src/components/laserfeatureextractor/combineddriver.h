@@ -43,10 +43,10 @@ public:
     struct Config
     {
         // which algs
-        bool   extractReflectors; 
-        bool   extractForegroundPoints; 
-        bool   extractCorners; 
-        bool   extractDoors; 
+        int    extractReflectors; 
+        int    extractForegroundPoints; 
+        int    extractCorners; 
+        int    extractDoors; 
         // reflector params
         double maxDeltaRangeNearReflector;
         double maxDeltaRangeWithinReflector;

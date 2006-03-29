@@ -51,38 +51,41 @@ AlgorithmHandler::AlgorithmHandler( const PolarFeature2dConsumerPrx &polarFeatur
 void AlgorithmHandler::init()
 {
     std::string prefix = context_.tag() + ".Config.";
+    Ice::PropertiesPtr prop = context_.properties();
 
     // pull out config parameters
     CombinedDriver::Config config;
 
     // Which algorithms to use
     config.extractReflectors                 =
-        orcaice::getPropertyAsIntWithDefault(    context_.properties(), prefix+"ExtractReflectors", 1);
+        orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractReflectors", 1);
     config.extractForegroundPoints           =
-        orcaice::getPropertyAsIntWithDefault(    context_.properties(), prefix+"ExtractForegroundPoints", 0);
+        orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractForegroundPoints", 0);
     config.extractCorners                    =
-        orcaice::getPropertyAsIntWithDefault(    context_.properties(), prefix+"ExtractCorners", 0);
+        orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractCorners", 0);
     config.extractDoors                      =
-        orcaice::getPropertyAsIntWithDefault(    context_.properties(), prefix+"ExtractDoors", 0);
+        orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractDoors", 0);
+
+    assert( config.extractCorners == 0 || config.extractCorners == 1 );
 
     // Reflector extraction params
     config.maxDeltaRangeWithinReflector      =
-        orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Reflectors.MaxDeltaRangeWithinReflector", 0.3 );
+        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Reflectors.MaxDeltaRangeWithinReflector", 0.3 );
     config.maxDeltaRangeNearReflector        =
-        orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Reflectors.MaxDeltaRangeNearReflector", 0.5 );
+        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Reflectors.MaxDeltaRangeNearReflector", 0.5 );
     config.minReflectorBrightness            =
-        orcaice::getPropertyAsIntWithDefault(    context_.properties(), prefix+"Reflectors.MinBrightness", 1);
+        orcaice::getPropertyAsIntWithDefault(    prop, prefix+"Reflectors.MinBrightness", 1);
 
     // Foreground extraction params
     config.minForegroundWidth                =
-        orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"FGPoints.MinForegroundWidth", 0.1);
+        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"FGPoints.MinForegroundWidth", 0.1);
     config.maxForegroundWidth                =
-        orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"FGPoints.MaxForegroundWidth", 0.5);
+        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"FGPoints.MaxForegroundWidth", 0.5);
     config.minForegroundBackgroundSeparation =
-        orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"FGPoints.MinForegroundBackgroundSeparation", 0.5);
+        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"FGPoints.MinForegroundBackgroundSeparation", 0.5);
 
     
-    std::string driverName = orcaice::getPropertyWithDefault( context_.properties(),
+    std::string driverName = orcaice::getPropertyWithDefault( prop,
             prefix+"Driver", "combined" );
     
     if ( driverName == "combined" )
