@@ -10,6 +10,7 @@ SUBDIRS(
   orcacm
   orcadef
   orcagui
+  orcamisc
   orcanavutil
   orcaogmap
   orcapathplan
