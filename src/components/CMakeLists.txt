@@ -21,4 +21,6 @@ SUBDIRS(
   sicklaser
   simlocaliser
   teleop
+  imageserver
+  imageviewer
 )
