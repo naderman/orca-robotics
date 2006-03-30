@@ -118,9 +118,9 @@ MonoFireWireDriver::read( orca::CameraDataPtr &data )
     data->imageHeight = imageGrabber_->frame_->height;
     cout << "TODO: resize image properly for different modes" << endl;
     // for colour images
-//    int imageSize = (int)ceil( 3 * data->imageHeight * data->imageWidth );
+    int imageSize = (int)ceil( 3 * data->imageHeight * data->imageWidth );
     // for mono images
-    int imageSize = (int)ceil( 1 * data->imageHeight * data->imageWidth );
+//    int imageSize = (int)ceil( 1 * data->imageHeight * data->imageWidth );
     data->image.resize( imageSize );
 
     cout << "imageWidth: " << data->imageWidth << endl;
