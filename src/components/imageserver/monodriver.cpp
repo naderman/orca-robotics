@@ -196,7 +196,7 @@ MonoFireWireDriver::read( orca::CameraDataPtr &data )
 //     }
 
 //    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+//    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     return 0;
 }
 
