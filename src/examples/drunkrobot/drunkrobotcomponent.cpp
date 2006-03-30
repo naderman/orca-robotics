@@ -47,7 +47,8 @@ DrunkRobotComponent::~DrunkRobotComponent(){
 
 }
 
-void DrunkRobotComponent::start(){
+void
+DrunkRobotComponent::start(){
 
   // Get a reasonable geometry. 
 
@@ -78,15 +79,10 @@ void DrunkRobotComponent::start(){
 
 }
 
-
-void DrunkRobotComponent::stop()
+void
+DrunkRobotComponent::stop()
 {
   cout<<"stopping loop"<<endl;
-  // Tell the main loop to stop
-
-  mainLoop_->stop();
-
-  cout<<"joining thread"<<endl;
-  // Then wait for it
-  mainLoop_->getThreadControl().join();
+  // Tell the main loop to stop and wait for it to comply
+  orcaice::Thread::stopAndJoin( mainLoop_ );
 }

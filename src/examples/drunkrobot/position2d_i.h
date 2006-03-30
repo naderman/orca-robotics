@@ -39,7 +39,7 @@ class Position2dI : public orca::Position2d
 {
 public:
 
-    //!Constructor takes a pointer buffer 
+    // Constructor takes a pointer buffer
     Position2dI( orcaice::PtrBuffer<orca::Position2dDataPtr> &posBuffer, 
 		 orca::Position2dGeometryPtr &geomBuffer, 
 		 const IceStorm::TopicPrx &topic);

@@ -36,7 +36,8 @@ DrunkRobotMainLoop::~DrunkRobotMainLoop(){
 
 }
 
-void DrunkRobotMainLoop::run(){
+void
+DrunkRobotMainLoop::run(){
 
   cout << "Ok, starting thread ..." << endl; 
   int msgCount = 0; 

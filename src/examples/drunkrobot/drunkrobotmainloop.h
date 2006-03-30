@@ -26,10 +26,10 @@
 
 #include <orca/position2d.h>
 
-//! Implements the main loop of our drunken robot. 
-//! It's very convenient to inherit from orcaice::Thread
-//! as it means really we only have to implement one method: 
-//! run(). 
+// Implements the main loop of our drunken robot.
+// It's very convenient to inherit from orcaice::Thread
+// as it means really we only have to implement one method:
+// run().
 
 
 class DrunkRobotMainLoop: public orcaice::Thread {
