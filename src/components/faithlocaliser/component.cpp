@@ -83,11 +83,5 @@ Component::start()
 void
 Component::stop()
 {
-    // Tell the main loop to stop
-    mainLoop_->stop();
-
-    IceUtil::ThreadControl tc = mainLoop_->getThreadControl();
-
-    // Then wait for it
-    tc.join();
+    orcaice::Thread::stopAndJoin( mainLoop_ );
 }

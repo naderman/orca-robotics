@@ -42,7 +42,8 @@ Component::~Component()
 
 // warning: this function returns after it's done, all variable that need to be permanet must
 //          be declared as member variables.
-void Component::start()
+void
+Component::start()
 {
     //
     // Network handling loop
@@ -69,22 +70,9 @@ void Component::start()
     // the rest is handled by the application/service
 }
 
-void Component::stop()
+void
+Component::stop()
 {
-    // it's possible that either or both of the handlers are not even created
-    // if exceptions are raised in their constructor
-    if ( netHandler_ ) {
-        IceUtil::ThreadControl netControl = netHandler_->getThreadControl();
-        tracer()->debug("stopping net handler", 5 );
-        netHandler_->stop();
-        tracer()->debug("joining net handler", 5 );
-        netControl.join();
-    }
-    if ( hwHandler_ ) {
-        IceUtil::ThreadControl hwControl = hwHandler_->getThreadControl();
-        tracer()->debug("stopping hw handler", 5 );
-        hwHandler_->stop();
-        tracer()->debug("joining hw handler", 5 );
-        hwControl.join();
-    }
+    orcaice::Thread::stopAndJoin( netHandler_ );
+    orcaice::Thread::stopAndJoin( hwHandler_ );
 }

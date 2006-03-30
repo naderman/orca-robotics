@@ -71,20 +71,11 @@ void Component::start()
 
 void Component::stop()
 {
-    if ( networkHandler_ ) {
-        IceUtil::ThreadControl networkControl = networkHandler_->getThreadControl();
-        networkHandler_->stop();
-        networkControl.join();
-    }
-
-    if ( userHandler_ ) {
-        IceUtil::ThreadControl inputControl = userHandler_->getThreadControl();
-        userHandler_->stop();
+    orcaice::Thread::stopAndJoin( networkHandler_ );
     
-        // userHandler_ is blocked on user input
-        // the only way for it to realize that we want to stop is to give it some keyboard input.
-        cout<<"Quitting... Press any key or shake the joystick to continue."<<endl;
+    // userHandler_ is blocked on user input
+    // the only way for it to realize that we want to stop is to give it some keyboard input.
+    cout<<"Quitting... Press any key or shake the joystick to continue."<<endl;
     
-        inputControl.join();
-    }
+    orcaice::Thread::stopAndJoin( userHandler_ );
 }

@@ -120,17 +120,5 @@ void Component::start()
 void Component::stop()
 {
     tracer()->debug( "component is stopping...",5 );
-
-    // make sure that the main loop was actually created
-    if ( algorithmHandler_ ) 
-    {
-        // Tell the main loop to stop
-        tracer()->debug("stopping component the MainLoop...",5);
-        algorithmHandler_->stop();
-    
-        IceUtil::ThreadControl tc = algorithmHandler_->getThreadControl();
-    
-        // Then wait for it
-        tc.join();
-    }
+    orcaice::Thread::stopAndJoin( algorithmHandler_ );
 }
