@@ -81,6 +81,7 @@ port over all the <a href="http://orca-robotics.sourceforge.net/orca1/components
 
 @section news News
 
+- 30-Mar-06 Distribution created for Orca2.0.0rc4: the fourth release candidate for Orca v2.0.0.
 - 27-Feb-06 Distribution created for Orca2.0.0rc3: the third release candidate for Orca v2.0.0.
 - 16-Jan-06 The <a href="http://129.78.210.237:8081/orca2/Dashboard/">Dashboard</a> code testing system is back on line, now using Dart2. There's a link to it from the sidebar.
 - 13-15-Dec-05 Orca team gives a talk at <a href="http://194.95.66.227/b-it-tutorial/index.html">B-IT Tutorial on Robot Middleware and Integration Frameworks</a>. We were invited as one of "six most prevalent middleware concepts and integration frameworks for mobile robots today" .
