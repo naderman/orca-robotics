@@ -132,7 +132,7 @@ Component::start()
         hwDriver_ = new FakeDriver;
     }
 
-    else if ( driverName == "monofirewire" )
+    else if ( driverName == "mono" )
     {
         cout << "TODO(component.cpp): Still need to add in a config file." << endl;
         // this is the stuff that worked with libcamera...
