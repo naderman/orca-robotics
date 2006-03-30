@@ -1,0 +1,21 @@
+DefaultComponentTag=ImageServer
+
+# Provided Interfaces
+Provides.Camera.Type=Camera
+Provides.Camera.DefaultInterface=camera
+
+# Required Interfaces
+
+# Config Parameters
+Config.StartEnabled.Default=1
+Config.Driver.Default=fake
+
+Config.Offset.p.x.Default=0
+Config.Offset.p.y.Default=0
+Config.Offset.p.z.Default=0
+Config.Offset.p.o.r.Default=0
+Config.Offset.p.o.p.Default=0
+Config.Offset.p.o.y.Default=0
+
+# Config.Camera.ImageGrabberConfigFile.Default=fw.cfg
+

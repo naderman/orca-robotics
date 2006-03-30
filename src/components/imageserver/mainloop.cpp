@@ -1,0 +1,171 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+#include "mainloop.h"
+//#include <iostream>
+
+#include <orcaice/orcaice.h>
+
+//using namespace std;
+using namespace orca;
+using orcaice::operator<<;
+
+namespace imageserver {
+
+MainLoop::MainLoop( CameraI            &cameraObj,
+                    Driver            *hwDriver,
+                    orcaice::Context   context,
+                    bool               startEnabled )
+    : cameraObj_(cameraObj),
+      hwDriver_(hwDriver),
+      context_(context)
+{
+}
+
+MainLoop::~MainLoop()
+{
+}
+
+void
+MainLoop::run()
+{
+    const int MAX_TIME_FOR_RECONFIGURE = 20000; // ms
+    const int TIME_BETWEEN_HEARTBEATS  = 10000;  // ms
+    IceUtil::Time lastHeartbeatTime = IceUtil::Time::now();
+
+    try 
+    {
+        CameraDataPtr cameraData = new CameraData;
+
+        //
+        // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
+        //            So we have to avoid getting stuck in a loop anywhere within this main loop.
+        //
+        while ( isActive() )
+        {
+            //
+            // This big while loop checks for config requests
+            //
+            while ( !cameraObj_.desiredConfigBuffer_.isEmpty() && isActive() )
+            {
+                CameraConfigPtr desiredConfig;
+
+                // get and pop, so we remove the request from the buffer
+                cameraObj_.desiredConfigBuffer_.getAndPop( desiredConfig );
+
+                context_.tracer()->print( "Setting config to: " + orcaice::toString( desiredConfig ) );
+
+                bool configurationDone = false;
+                IceUtil::Time reconfigStartTime = IceUtil::Time::now();
+                while ( !configurationDone 
+                        && isActive()
+                        && cameraObj_.desiredConfigBuffer_.isEmpty() )
+                {
+                    if ( hwDriver_->setConfig( desiredConfig ) == 0 )
+                    {
+                        context_.tracer()->print( "Successful reconfiguration! " + hwDriver_->infoMessages() );
+
+                        // Tell the world that we've reconfigured
+                        cameraObj_.currentConfigBuffer_.push( desiredConfig );
+                        configurationDone = true;
+                    }
+                    else
+                    {
+                        if ( (IceUtil::Time::now()-reconfigStartTime).toMilliSecondsDouble() > MAX_TIME_FOR_RECONFIGURE )
+                        {
+                            context_.tracer()->error( "Configuration failed: " + orcaice::toString(desiredConfig) );
+                            context_.tracer()->error( hwDriver_->infoMessages() );
+                        }
+                        else
+                        {
+                            context_.tracer()->print( "Still trying to reconfigure..." );
+                            context_.tracer()->print( hwDriver_->infoMessages() );
+                        }
+
+                        // Tell the world that we're down while re-configuring
+                        CameraConfigPtr failedConfig = CameraConfigPtr::dynamicCast( desiredConfig->ice_clone() );
+                        failedConfig->isEnabled = false;
+                        cameraObj_.currentConfigBuffer_.push( failedConfig );
+                    }
+                } // end of configuration loop
+            } // end of check for config requires
+
+
+            //
+            // This 'if' block is what slows the loop down, by either reading from the cmaera
+            // or sleeping.
+            //
+            if ( hwDriver_->isEnabled() )
+            {
+                // Read from the camera
+                int ret = hwDriver_->read( cameraData );
+                if ( ret != 0 )
+                {
+                    context_.tracer()->error( "Problem reading from camera.  Shutting down hardware." );
+                    hwDriver_->disable();
+
+                    CameraConfigPtr cfg;
+                    cameraObj_.currentConfigBuffer_.get( cfg );
+
+                    // Tell the camera to try to get back to this config
+                    cameraObj_.desiredConfigBuffer_.push( cfg );
+
+                    // Tell the world what our current configuration is
+                    cfg->isEnabled = false;
+                    cameraObj_.currentConfigBuffer_.push( cfg );
+                }
+                else
+                {
+                    cameraObj_.localSetData( cameraData );
+                }
+            }
+            else
+            {
+                // Wait for someone to enable us
+                IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(100));
+            }
+
+            if ( (IceUtil::Time::now()-lastHeartbeatTime).toMilliSecondsDouble() >= TIME_BETWEEN_HEARTBEATS )
+            {
+                if ( hwDriver_->isEnabled() )
+                {
+                    context_.tracer()->heartbeat("Camera enabled. " + hwDriver_->heartbeatMessage() );
+                }
+                else
+                {
+                    context_.tracer()->heartbeat( "Camera disabled." );
+                }
+                lastHeartbeatTime = IceUtil::Time::now();
+            }
+        } // end of while
+    } // end of try
+    catch ( Ice::CommunicatorDestroyedException &e )
+    {
+        // This is OK: it means that the communicator shut down (eg via Ctrl-C)
+        // somewhere in mainLoop.
+        //
+        // Could probably handle it better for an Application by stopping the component on Ctrl-C
+        // before shutting down communicator.
+    }
+
+    // Camera hardware will be shut down in the driver's destructor.
+    context_.tracer()->debug( "dropping out from run()", 5 );
+}
+
+}
