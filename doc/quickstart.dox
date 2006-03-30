@@ -104,7 +104,7 @@ Start a new shell, and fire up the lasermon component (a laser monitor). No modi
 $ lasermon lasermon.cfg
 @endverbatim
 
-You should see the scans scroll by on the screen. Congratulations, your first two components are talking!
+You should see the scans scroll by on the screen. Congratulations, your first two components are talking! To stop components, hit Ctrl-C.
 
 If something does not work, check out the listing of @ref orca_doc_faq.
 
