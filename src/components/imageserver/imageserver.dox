@@ -1,0 +1,92 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+@ingroup components
+@ingroup apps
+@ingroup services
+@ingroup cpp
+@ingroup linux
+@defgroup orca_component_imageserver ImageServer
+@brief A hardware abstraction component for grabbing images from either a firewire or usb camera
+
+@par Provides
+
+- @ref orca_interface_home
+- @ref orca_interface_camera
+- @ref orca_interface_status
+
+@par Requires
+
+- none
+
+@par Drivers
+
+- @b monoopencv @ref orca_camera_monoopencv
+- @b fake Useful for testing or if you don't have hardware or a simulator.
+
+
+This component encapsulates an image grabber for usb and firewire cameras. So far it has only been tested as a stand-alone component.
+
+@par Configuration
+
+- @c Camera.Config.Driver (string)
+    - Which hardware driver to use?
+    - Valid values: { "monoopencv", "fake" }
+    - Default: "fake"
+
+Camera Settings
+
+- @c Camera.Config.StartEnabled (bool)
+    - Enable the camera on component initialisation?
+    - Default: 1
+
+- @c Camera.Config.Format (string)
+    - What format are the images? Most formats can be detected automatically so nothing is needed here. However, if images are Bayer encoded one of the following values need to be specified:
+    - Valid values: { "BAYERBG", "BAYERGB", "BAYERRG", "BAYERGR" } 
+    - Default: "MODENFI"
+
+Geometry
+
+- @c Camera.Config.Offset (Frame3d) [m, deg]
+    - Position of the camera with respect to the robot's local coordinate system
+    - Format: x y z pitch roll yaw
+    - Example: a camera mounted upside down with now translation: "0.0 0.0 0.0  0.0 180.0 0.0"
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
+@see @ref orca_component_imageviewer
+
+@section orca_camera_monoopencv Monocular OpenCv Camera driver
+
+Drives real camera hardware, directly connected to the computer. Uses opencv implementation. Add link!
+  
+@par Dependencies
+
+Requires that opencv is installed. 
+
+For developers: the code conforms to the basic approach described in the notes on @ref orca_doc_devcomp.
+
+@par Authors
+
+Ben Upcroft
+
+*/
+
