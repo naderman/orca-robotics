@@ -1,4 +1,4 @@
-OPTION( BUILD_IMAGE_VIEWER "Try to build Image Viewer" OFF )
+OPTION( BUILD_IMAGE_VIEWER "Try to build Image Viewer" ON )
 
 IF ( BUILD_IMAGE_VIEWER )
 

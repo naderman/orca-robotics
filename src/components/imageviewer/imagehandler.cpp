@@ -45,7 +45,6 @@ ImageHandler::ImageHandler( CameraPrx cameraPrx,
 void ImageHandler::init()
 {
     // initialise opencv stuff
-    //CvDisplayer cvDisplayer();
     cvNamedWindow( "ImageViewer", 1 );
 }
 
@@ -64,24 +63,6 @@ void ImageHandler::run()
     // don't need to create this one, it will be cloned from the buffer
     orca::CameraDataPtr cameraData;
 
-    // opencv gear here
-    cvImage_ = cvCreateImage( cvSize( cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight ),  8, 3 );
-    //context_.tracer()->debug("opencv window created",5);
-
-    // dodgy opencv has a bug which requires this...
-    cvResizeWindow( "ImageViewer", cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight );
-    cvWaitKey(15);
-    cvResizeWindow( "ImageViewer", cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight );
-    cvWaitKey(15);
-    cvResizeWindow( "ImageViewer", cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight );
-    cvWaitKey(15);
-    cvResizeWindow( "ImageViewer", cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight );
-    cvWaitKey(15);
-    cvResizeWindow( "ImageViewer", cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight );
-    cvWaitKey(15);
-    cvResizeWindow( "ImageViewer", cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight );
-    cvWaitKey(15);
-
 
     // try to catch expected errors
     try
@@ -91,6 +72,30 @@ void ImageHandler::run()
     cout << "Getting config and geometry in imagehandler.cpp as a test" << endl;
     cameraConfigPtr_ = cameraPrx_->getConfig();
     cameraGeometryPtr_ = cameraPrx_->getGeometry();
+
+    ImageFormat format = cameraPrx_->getConfig()->format;
+
+    cout << "bayer encoding: " << format << endl;
+    // should this be done at the imageserver level and depend on the mode and format?
+    // maybe nChannels should be in the Camera object 
+    int nChannels;
+    if( format == BAYERBG | format == BAYERGB | format == BAYERRG | format == BAYERGR )
+    {
+        nChannels = 1;
+        // set up an IplImage struct for the Greyscale bayer encoded data
+        bayerImage_  = cvCreateImage( cvSize( cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight ),  8, nChannels );
+        cout << "Image is Bayer encoded: " << endl;
+    }
+    else
+    {
+        nChannels = 3;
+    }
+
+    // opencv gear here
+    cvImage_ = cvCreateImage( cvSize( cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight ),  8, 3 );
+    // dodgy opencv needs this so it has time to resize
+    cvWaitKey(100);
+    context_.tracer()->debug("opencv window created",5);
 
     // wake up every now and then to check if we are supposed to stop
     const int timeoutMs = 2000;
@@ -112,23 +117,35 @@ void ImageHandler::run()
             //
             // execute algorithm to display image
             //
-            cout << "incoming image size: " << cameraData->image.size() << endl;
-            bool bayer = false;
-            if ( bayer )
+            
+            // check if the image is bayer encoded
+            if ( cameraData->format == BAYERBG | cameraData->format == BAYERGB | cameraData->format == BAYERRG | cameraData->format == BAYERGR )
             {
-                // colourFrame if bayer
-                IplImage* frame  = cvCreateImage( cvSize( 1024, 768),  8, 1 );
-
-                memcpy( frame->imageData, &cameraData->image[0], cameraData->image.size() );
-                cvCvtColor( frame, cvImage_, CV_BayerGR2BGR );
+                // copy the data from the camera object into the opencv structure
+                memcpy( bayerImage_->imageData, &cameraData->image[0], cameraData->image.size() );
+                // decode and convert to colour
+                if( cameraData->format == BAYERBG )
+                {
+                    cvCvtColor( bayerImage_, cvImage_, CV_BayerBG2BGR );
+                }
+                else if( cameraData->format == BAYERGB )
+                {
+                    cvCvtColor( bayerImage_, cvImage_, CV_BayerGB2BGR );
+                }
+                else if( cameraData->format == BAYERRG )
+                {
+                    cvCvtColor( bayerImage_, cvImage_, CV_BayerRG2BGR );
+                }
+                else if( cameraData->format == BAYERGR )
+                {
+                    cvCvtColor( bayerImage_, cvImage_, CV_BayerGR2BGR );
+                }
             }
-            else
+            else // no bayer encoding
             {
                 // copy the data from the camera object into the opencv structure
                 memcpy( cvImage_->imageData, &cameraData->image[0], cameraData->image.size() );
             }
-            // convert to opencv format BGR (why the hell do they store it back to front?)
-            //imageviewer::cvtToBgr(cvImage_->imageData, cameraData);
 
             // load the image into the previously created window
             cvShowImage( "ImageViewer", cvImage_ );

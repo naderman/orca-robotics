@@ -64,6 +64,7 @@ private:
     orcaice::Context context_;
 
     IplImage* cvImage_;
+    IplImage* bayerImage_;
 
     void init();
 };

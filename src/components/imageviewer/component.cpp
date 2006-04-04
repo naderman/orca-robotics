@@ -46,6 +46,7 @@ Component::~Component()
 //       be declared as member variables.
 void Component::start()
 {
+
     //
     // REQUIRED INTERFACE: Camera
     //
@@ -84,19 +85,6 @@ void Component::start()
     {
         tracer()->error( "hardware failure reported when getting a scan. Will subscribe anyway." );
     }
-
-    // Can also set the configuration like so:
-//     orca::RangeScannerConfigPtr cfg = new orca::RangeScannerConfig;
-//     cfg->rangeResolution = 9999;
-//     cfg->isEnabled = true;
-//     try
-//     {
-//         laserPrx->setConfig( cfg );
-//     }
-//     catch ( orca::ConfigurationNotExistException & e )
-//     {
-//         tracer()->warning( "failed to set configuration. Will subscribe anyway." );
-//     }
 
     // create a callback object to recieve images
     Ice::ObjectPtr consumer = new CameraConsumerI( cameraDataBuffer_ );
