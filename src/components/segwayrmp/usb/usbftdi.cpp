@@ -32,6 +32,7 @@
 // magic numbers
 #define SEGWAY_USB_VENDOR_ID                    0x0403
 #define SEGWAY_USB_PRODUCT_ID                   0xE729
+#define SEGWAY_USB_VENDOR_PRODUCT_ID            0x0403E729
 #define SEGWAY_USB_MESSAGE_SIZE                 18
 #define SEGWAY_USB_MSG_START                    0xF0
 #define SEGWAY_USB_HEARTBEAT_MESSAGE            0x0
@@ -70,21 +71,60 @@ UsbIoFtdi::init()
     DWORD iPID = SEGWAY_USB_PRODUCT_ID;
     // without this the library will not find the segway
     FT_SetVIDPID(iVID, iPID);   // use our VID and PID;
-    
-    DWORD num_devices;
-    FT_STATUS ftStatus = FT_ListDevices( &num_devices, NULL, FT_LIST_NUMBER_ONLY );
+
+    FT_STATUS ftStatus;
+    FT_HANDLE ftHandleTemp;
+    DWORD numDevs;
+    DWORD Flags;
+    DWORD ID;
+    DWORD Type;
+    DWORD LocId;
+    char SerialNumber[16];
+    char Description[64];
+    //
+    // create the device information list
+    //
+    ftStatus = FT_CreateDeviceInfoList(&numDevs);
     if ( ftStatus != FT_OK )
     {
         cout<<"couldn't get a list of devices"<<endl;
         return UsbIo::IO_ERROR;
     }
-    
-    cout<<"found "<<(int)num_devices<<" devices"<<endl;
-    if (num_devices <= 0) {
+    cout<<"found "<<(int)numDevs<<" devices"<<endl;
+    if ( numDevs <= 0 ) {
         return UsbIo::OTHER_ERROR;
     }
     
-    ftStatus = FT_Open( 0, &ftHandle_ );
+    // this is the index of segway in the list of USB devices
+    int segwayDeviceIndex = -1;
+    
+    // get information for all devices
+    for ( uint i=0; i<numDevs; ++i ) { 
+        ftStatus = FT_GetDeviceInfoDetail( i, &Flags, &Type, &ID, &LocId, SerialNumber, Description, &ftHandleTemp );
+        if ( ftStatus == FT_OK && ID==SEGWAY_USB_VENDOR_PRODUCT_ID ) {
+            cout<<"found Segway device"<<endl;
+            segwayDeviceIndex = i;
+            
+            cout<<"Device :"<<i<<endl;
+            cout<<"Flags  :"<<hex<<(int)Flags<<endl;
+            cout<<"Type   :"<<hex<<(int)Type<<endl;
+            cout<<"ID     :"<<hex<<(int)ID<<endl;
+            cout<<"LocId  :"<<hex<<(int)LocId<<endl;
+            cout<<"Serial :"<<SerialNumber<<endl;
+            cout<<"Descrip:"<<Description<<endl;
+            cout<<"Handle :"<<hex<<(int)ftHandleTemp<<endl;
+
+            break;
+        }
+    }
+    
+    // didn't find the segway device
+    if ( segwayDeviceIndex==-1 ) {
+        cout<<"did not find Segway device"<<endl;
+        return UsbIo::OTHER_ERROR;
+    }
+    
+    ftStatus = FT_Open( segwayDeviceIndex, &ftHandle_ );
     if ( ftStatus != FT_OK) {
         cout<<"FT_Open failed ("<<ftStatus<<")"<<endl;
         return UsbIo::IO_ERROR;
