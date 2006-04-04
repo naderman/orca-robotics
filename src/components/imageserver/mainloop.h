@@ -25,6 +25,7 @@
 #include <orcaice/context.h>
 
 #include "driver.h"
+#include "imagegrabber/imagegrabber.h"
 #include <orca/camera.h>
 #include "cameraI.h"
 
@@ -42,6 +43,7 @@ public:
 
     MainLoop( CameraI              &cameraObj,
               Driver              *hwDriver,
+              ImageGrabber*        imageGrabber,
               orcaice::Context     context,
               bool                 startEnabled );
     ~MainLoop();
@@ -55,6 +57,8 @@ private:
 
     // Generic driver for the hardware
     Driver *hwDriver_;
+
+    ImageGrabber *imageGrabber_;
 
     orcaice::Context context_;
 };

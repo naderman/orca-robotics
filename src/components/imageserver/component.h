@@ -24,6 +24,8 @@
 #include <orcaice/component.h>
 #include <orcaice/ptrbuffer.h>
 
+#include "imagegrabber/imagegrabber.h"
+
 #include <orca/camera.h>
 
 namespace imageserver {
@@ -49,6 +51,7 @@ private:
     // HARDWARE INTERFACES
     //
     Driver *hwDriver_;
+    ImageGrabber* imageGrabber_; 
 };
 
 }

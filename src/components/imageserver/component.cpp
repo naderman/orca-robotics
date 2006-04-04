@@ -29,7 +29,6 @@
 // implementations of Ice objects
 #include "cameraI.h"
 
-#include "imagegrabber/cvgrabber.h"
 //#include <libcamera/camera.hpp>
 
 #include <orcaice/orcaice.h>
@@ -72,10 +71,6 @@ Component::start()
     geometry->offset.o.p = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Offset.o.p", 0.0 )*DEG2RAD_RATIO;
     geometry->offset.o.y = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Offset.o.y", 0.0 )*DEG2RAD_RATIO;
 
-//     geometry->size.l = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.l", 0.0 );
-//     geometry->size.w = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.w", 0.0 );
-//     geometry->size.h = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.h", 0.0 );
-
 
     // EXTERNAL PROVIDED INTERFACE: Camera
 
@@ -98,13 +93,35 @@ Component::start()
         orcaice::getPropertyAsIntWithDefault( prop, prefix+"ImageHeight", 0 );
 
     cameraConfig->frameRate = 
-        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"FrameRate", 1.0 );
+        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"FrameRate", 0.0 );
 
-//     cameraConfig->format = 
-//         orcaice::getPropertyAsIntWithDefault( prop, prefix+"Format", MODEBGR );
+    string format = 
+        orcaice::getPropertyWithDefault( prop, prefix+"Format", "MODEDNFI" );
+    // only need to specify these formats as opencv can automatically find the other formats
+    if( format == "BAYERBG" )
+    {
+        cameraConfig->format = BAYERBG;
+    }
+    else if( format == "BAYERGB" )
+    {
+        cameraConfig->format = BAYERGB;
+    }
+    else if( format == "BAYERRG" )
+    {
+        cameraConfig->format = BAYERRG;
+    }
+    else if( format == "BAYERGR" )
+    {
+        cameraConfig->format = BAYERGR;
+    }
 
-//     cameraConfig->compression = 
-//         orcaice::getPropertyAsIntWithDefault( prop, prefix+"Compression", COMPRESSIONTYPENONE );
+    string compression = 
+        orcaice::getPropertyWithDefault( prop, prefix+"Compression", "NONE" );
+    if( compression == "NONE" )
+    {
+        // compression hasn't been included yet
+        cameraConfig->compression = COMPRESSIONTYPENONE;
+    }    
 
     // This is the initial config if someone reads before we can enable
     cameraConfig->isEnabled         = false;
@@ -132,8 +149,10 @@ Component::start()
         hwDriver_ = new FakeDriver;
     }
 
-    else if ( driverName == "mono" )
+    else if ( driverName == "monoopencv" )
     {
+        // Use opencv implementation for the monocular camera...
+
         cout << "TODO(component.cpp): Still need to add in a config file." << endl;
         // this is the stuff that worked with libcamera...
         // std::string imageGrabberConfigFile    = orcaice::getPropertyWithDefault(      prop, prefix+"Camera.ImageGrabberConfigFile",    "fw.cfg" );
@@ -141,17 +160,11 @@ Component::start()
         // ImageGrabberConfig cfg(imageGrabberConfigFile.c_str());
 
 
-        // Initialize ImageGrabber
-        // Use opencv implementation...
-        string grabberI = "opencv";
-        if ( grabberI == "opencv"  )
-        {
-            CvGrabber* cvGrabber = new CvGrabber();
+        // Initialize Opencv ImageGrabber
+        imageGrabber_ = new CvGrabber();
 
-            cout<<"ImageServer: using CvGrabber: " << endl;
-            hwDriver_ = new MonoFireWireDriver( cvGrabber, context() );
-        }
-
+        cout<<"ImageServer: using opencv image grabber - CvGrabber " << endl;
+        hwDriver_ = new MonoDriver( imageGrabber_, context() );
     }
 
     else
@@ -177,9 +190,10 @@ Component::start()
     //
 
     mainLoop_ = new MainLoop( *cameraObj,
-                               hwDriver_,
-                               context(),
-                               startEnabled );
+                              hwDriver_,
+                              imageGrabber_,
+                              context(),
+                              startEnabled );
     
     mainLoop_->start();    
 }

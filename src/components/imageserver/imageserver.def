@@ -8,7 +8,8 @@ Provides.Camera.DefaultInterface=camera
 
 # Config Parameters
 Config.StartEnabled.Default=1
-Config.Driver.Default=fake
+Config.Driver.Default=monoopencv
+Config.Format.Default=MODENFI
 
 Config.Offset.p.x.Default=0
 Config.Offset.p.y.Default=0
