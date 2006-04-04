@@ -36,14 +36,18 @@ Remote access to images captured by a variety of monocular cameras.
     @{
 */
 
-//! Specifies the format once it is decoded. 
+//! Specifies the format once it is decoded.
 //! @TODO: is this list reasonable/exhaustive?
 enum ImageFormat {
     MODENFI,
     MODEGRAY,  
     MODERGB,   
     MODEBGR,   
-    MODEYUV422};
+    MODEYUV422,
+    BAYERBG,  
+    BAYERGB,   
+    BAYERRG,   
+    BAYERGR};
 
 //! Specifies any encoding of the image. 
 //! @TODO: Is this list reasonable/exhaustive?
