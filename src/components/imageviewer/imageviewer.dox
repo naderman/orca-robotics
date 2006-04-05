@@ -25,7 +25,7 @@
 @ingroup cpp
 @ingroup linux
 @defgroup orca_component_imageviewer ImageViewer
-@brief A simple component that displays images
+@brief A simple component that displays images from a remote camera.
 
 
 @par Provided Interfaces
@@ -40,6 +40,8 @@ An example that connects to an image server and displays the image in an opencv 
 
 Images are displayed as soon as they arrive.
 
+@see @ref orca_component_imageserver
+
 @par Configuration
 None.
 
@@ -52,12 +54,6 @@ a lot more functionality for image grabbing which we think is useful
 enough that the cvs version should be used rather than the release. 
 
 Due to the version numbers of opencv in cvs being the same as that in the release, this component is not built by default. If you have the cvs version installed, please run ccmake . and manually turn the build parameter for this component ON.
-
-@par Remarks
-
-Cannot run as an IceBox service.
-
-@see @ref orca_component_imageserver
 
 @par Authors
 Ben Upcroft
