@@ -102,18 +102,7 @@ HwHandler::init()
 #ifdef HAVE_USB_DRIVER
         context_.tracer()->debug( "loading USB driver",3);
 
-        std::string segwayrmpusbPrefix = prefix + "SegwayRmpUsb.";
-        std::string rmpGainSchedule = orcaice::getPropertyWithDefault( context_.properties(),
-                segwayrmpusbPrefix+"GainSchedule", "normal" );
-
-        // the driver itself should check this.
-        if ( rmpGainSchedule!="normal" && rmpGainSchedule!="tall" && rmpGainSchedule!="heavy" ) {
-            string errorStr = "SegwayRmpUsb driver: unknown gain schedule type '"+rmpGainSchedule+"'. Cannot initialize.";
-            context_.tracer()->error( errorStr);
-            context_.tracer()->info( "Valid gain schedule types are {'normal', 'tall', 'heavy'}" );
-            throw orcaice::Exception( ERROR_INFO, errorStr );
-        }
-        driver_ = new UsbDriver( rmpGainSchedule );
+        driver_ = new UsbDriver( context_ );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'usb' because it was not built!" );
 #endif
@@ -166,10 +155,14 @@ HwHandler::run()
         context_.tracer()->warning("failed to enable the driver; will try again in 2 seconds.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
+
+    // make we actually managed to enable the driver and are not shutting down
+    if ( isActive() ) {
+        context_.tracer()->debug("driver enabled",5);
+    }
+    
     // presumably we can write to the hardware
     writeStatusPipe_.set( true );
-    context_.tracer()->debug("driver enabled",5);
-
     std::string driverStatus = "";
     std::string currDriverStatus = "";
     
@@ -221,6 +214,8 @@ HwHandler::run()
         }
         
     } // while
+
+    // we are no longer active
 
     // reset the hardware
     if ( driver_->disable() ) {

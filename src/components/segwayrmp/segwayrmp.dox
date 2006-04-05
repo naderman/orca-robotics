@@ -141,6 +141,26 @@ You should see the following line in CMake output:
     - Valid values: { "normal", "tall", "heavy" }
     - Default: "normal"
 
+- @c SegwayRmp.Config.SegwayRmpUsb.MaxVelocityScale (double)
+    - Scaling factor applied to forward velocity.
+    - Valid values: [0.0 .. 1.0]
+    - Default: 0.75
+
+- @c SegwayRmp.Config.SegwayRmpUsb.MaxTurnrateScale (double)
+    - Scaling factor applied to yaw rate.
+    - Valid values: [0.0 .. 1.0]
+    - Default: 0.75
+
+- @c SegwayRmp.Config.SegwayRmpUsb.MaxAccelerationScale (double)
+    - Scaling factor applied to forward velocity.
+    - Valid values: [0.0 .. 1.0]
+    - Default: 0.75
+
+- @c SegwayRmp.Config.SegwayRmpUsb.MaxCurrentLimitScale (double)
+    - Scaling factor applied to forward velocity.
+    - Valid values: [0.0 .. 1.0]
+    - Default: 0.75
+
 @section orca_robot_playerclient Player Client driver
 
 This driver wraps up a Player client. It requires a running Player server. The driver gets data from that server and converts it into Orca format.More information on Player/Stage.

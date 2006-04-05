@@ -22,6 +22,10 @@ Config.StatusPublishInterval.Default=60.0
 
 # SegwayRmpUsb driver only
 Config.SegwayRmpUsb.GainSchedule.Default=normal
+Config.SegwayRmpUsb.MaxVelocityScale.Default=0.75
+Config.SegwayRmpUsb.MaxTurnrateScale.Default=0.75
+Config.SegwayRmpUsb.MaxAccelerationScale.Default=0.75
+Config.SegwayRmpUsb.MaxCurrentLimitScale.Default=0.75
 
 # PlayerClient driver only
 Config.PlayerClient.Host.Default=localhost
