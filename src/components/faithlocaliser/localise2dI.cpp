@@ -20,7 +20,7 @@
 
 #include <iostream>
 
-#include "localise2d_i.h"
+#include "localise2dI.h"
 
 using namespace std;
 using namespace orca;
@@ -57,7 +57,7 @@ Localise2dI::getData(const ::Ice::Current& ) const
 void 
 Localise2dI::subscribe(const ::orca::Localise2dConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    cout<<"subscribe()"<<endl;
+//     cout<<"subscribe()"<<endl;
     IceStorm::QoS qos;
     localiseTopic_->subscribe( qos, subscriber );
 }
@@ -65,6 +65,6 @@ Localise2dI::subscribe(const ::orca::Localise2dConsumerPrx& subscriber, const ::
 void 
 Localise2dI::unsubscribe(const ::orca::Localise2dConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    cout<<"unsubscribe()"<<endl;
+//     cout<<"unsubscribe()"<<endl;
     localiseTopic_->unsubscribe( subscriber );
 }

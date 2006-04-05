@@ -56,8 +56,11 @@ MainLoop::run()
         {
             // cout<<"============================================="<<endl;
 
-            // Get odometry info
-            posBuffer_.getAndPopNext( odomData );
+            // Get odometry info, time out every so often to check if we are cancelled
+            if ( posBuffer_.getAndPopNext( odomData, 200 ) != 0 ) {
+                // no new value
+                continue;
+            }
 
             // Copy the odometry
             localiseData->timeStamp = odomData->timeStamp;
@@ -68,7 +71,7 @@ MainLoop::run()
             localiseData->hypotheses[0].mean.o   = odomData->pose.o;
             localiseData->hypotheses[0].cov.xx   = 0.01;
             localiseData->hypotheses[0].cov.yy   = 0.01;
-            localiseData->hypotheses[0].cov.tt   = 0.01*M_PI/180.0;
+            localiseData->hypotheses[0].cov.tt   = 1.0*M_PI/180.0;
             localiseData->hypotheses[0].cov.xy   = 0.0;
             localiseData->hypotheses[0].cov.xt   = 0.0;
             localiseData->hypotheses[0].cov.yt   = 0.0;
@@ -87,7 +90,7 @@ MainLoop::run()
                 // This could happen if IceStorm dies.
                 // If we're running in an IceBox and the IceBox is shutting down, 
                 // this is expected (our co-located IceStorm is obviously going down).
-                context_.tracer()->warning( "Failed push to IceStorm." );
+                context_.tracer()->warning( "Failed to push to IceStorm." );
             }
         }
     }
@@ -95,13 +98,8 @@ MainLoop::run()
     {
         // This is OK: it means that the communicator shut down (eg via Ctrl-C)
         // somewhere in mainLoop.
-        //
-        // Could probably handle it better for an Application by stopping the component on Ctrl-C
-        // before shutting down communicator.
     }
 
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
-
-    cout<<"TRACE(filtermainloop.cpp): Dropping out from run()" << endl;
 }

@@ -3,12 +3,12 @@
 #include "component.h"
 #include "mainloop.h"
 // implementations of Ice objects
-#include "localise2d_i.h"
+#include "localise2dI.h"
+#include "position2dconsumerI.h"
 
 using namespace std;
 using namespace orca;
 using namespace faithlocaliser;
-using orcaice::operator<<;
 
 Component::Component()
     : orcaice::Component( "FaithLocaliser" ),
@@ -23,7 +23,6 @@ Component::~Component()
 void
 Component::start()
 {
-    cout<<"TRACE(component.cpp): start()" << endl;
     //
     // INITIAL CONFIGURATION
     //
@@ -31,6 +30,7 @@ Component::start()
     Ice::PropertiesPtr prop = communicator()->getProperties();
     std::string prefix = tag();
     prefix += ".Config.";
+    // no configs to read yet
 
     //
     // EXTERNAL PROVIDED INTERFACE
@@ -40,7 +40,7 @@ Component::start()
         ( context(), localise2dPublisher_, "Localise2d" );
     
     // create servant for direct connections
-    localise2dObj_ = new Localise2dI( localiseTopicPrx, locBuffer_ );
+    Ice::ObjectPtr localise2dObj_ = new Localise2dI( localiseTopicPrx, locBuffer_ );
     orcaice::createInterfaceWithTag( context(), localise2dObj_, "Localise2d" );
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -48,6 +48,7 @@ Component::start()
     //
     // ENABLE NETWORK CONNECTIONS
     //
+    // this may throw, but may as well quit right then
     activate();
 
     //
@@ -58,30 +59,51 @@ Component::start()
                                                              pos2dPrx,
                                                              "Odometry" );
 
-    posConsumer_ = new orcaice::BufferedConsumerI<orca::Position2dConsumer,orca::Position2dDataPtr>;
-    Ice::ObjectPtr consumerPtr = posConsumer_;
+//     posConsumer_ = new orcaice::BufferedConsumerI<orca::Position2dConsumer,orca::Position2dDataPtr>;
+//     Ice::ObjectPtr consumerPtr = posConsumer_;
+//     orca::Position2dConsumerPrx consumerPrx =
+//         orcaice::createConsumerInterface<Position2dConsumerPrx>( context(), consumerPtr );
+
+    // create a callback object to recieve scans
+    Ice::ObjectPtr consumer = new Position2dConsumerI( posPipe_ );
     orca::Position2dConsumerPrx consumerPrx =
-        orcaice::createConsumerInterface<Position2dConsumerPrx>( context(), consumerPtr );
-    pos2dPrx->subscribe( consumerPrx );
+        orcaice::createConsumerInterface<orca::Position2dConsumerPrx>( context(), consumer );
 
-    ////////////////////////////////////////////////////////////////////////////////
-
-    cout<<"TRACE(component.cpp): entering main loop..." << endl;
+    //
+    // Subscribe for data
+    //
+    // will try forever until the user quits with ctrl-c
+    while ( isActive() )
+    {
+        try
+        {
+            pos2dPrx->subscribe( consumerPrx );
+            break;
+        }
+        catch ( const orca::SubscriptionFailedException & e )
+        {
+            tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+        }
+    }
 
     //
     // MAIN DRIVER LOOP
     //
 
     mainLoop_ = new MainLoop(  localise2dPublisher_,
-                               posConsumer_->buffer_,
+//                                posConsumer_->buffer_,
+                               posPipe_,
                                locBuffer_,
                                context() );
     
-    mainLoop_->start();    
+    mainLoop_->start();
 }
 
 void
 Component::stop()
 {
+    tracer()->debug( "stopping component", 5 );
     orcaice::Thread::stopAndJoin( mainLoop_ );
+    tracer()->debug( "stopped component", 5 );
 }

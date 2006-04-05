@@ -7,7 +7,7 @@ IF ( BUILD_FAITHLOCALISER )
 
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
     SET( COMMON_SRCS
-        component mainloop localise2d_i
+        component mainloop localise2dI position2dconsumerI
     )
 
     # Files for the component
