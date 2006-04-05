@@ -39,7 +39,7 @@ module orca
 class GpsConfigData extends OrcaObject
 {
 	CartesianPoint geometry;
-	CartesianPoint origin;
+	Frame3d origin;
 };
 
 //! Gps time structure - for time sync
