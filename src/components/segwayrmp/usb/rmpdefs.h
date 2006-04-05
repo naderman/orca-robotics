@@ -146,6 +146,11 @@
 #define WORD2_LOW_BATTERY_BUS_VOLTAGE_B         0x8000
 #define WORD2_LOW_BATTERY_BUS_VOLTAGE_B_STRING  "Low Battery Bus Voltage (B)"
 
+// gain schedule for the balance controller
+#define RMP_GAIN_SCHEDULE_NORMAL    0
+#define RMP_GAIN_SCHEDULE_TALL      1
+#define RMP_GAIN_SCHEDULE_HEAVY     2
+
 // unit conversions from Data Reference, see sec.4
 
 #define RMP_COUNT_PER_M            33215.0

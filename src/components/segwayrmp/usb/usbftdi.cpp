@@ -26,7 +26,7 @@
 #include "usbftdi.h"
 
 #include "rmpusbdataframe.h"
-#include "config.h"
+#include "rmpdefs.h"
 #include "canpacket.h"
 
 // magic numbers
@@ -120,7 +120,19 @@ UsbIoFtdi::init()
     
     // didn't find the segway device
     if ( segwayDeviceIndex==-1 ) {
-        cout<<"did not find Segway device"<<endl;
+        cout<<"Did not find Segway device. All devices: "<<endl;
+        for ( uint i=0; i<numDevs; ++i ) { 
+            ftStatus = FT_GetDeviceInfoDetail( i, &Flags, &Type, &ID, &LocId, SerialNumber, Description, &ftHandleTemp );
+            cout<<"============================"<<endl;
+            cout<<"Device :"<<i<<endl;
+            cout<<"Flags  :"<<hex<<(int)Flags<<endl;
+            cout<<"Type   :"<<hex<<(int)Type<<endl;
+            cout<<"ID     :"<<hex<<(int)ID<<endl;
+            cout<<"LocId  :"<<hex<<(int)LocId<<endl;
+            cout<<"Serial :"<<SerialNumber<<endl;
+            cout<<"Descrip:"<<Description<<endl;
+            cout<<"Handle :"<<hex<<(int)ftHandleTemp<<endl;
+        }
         return UsbIo::OTHER_ERROR;
     }
     

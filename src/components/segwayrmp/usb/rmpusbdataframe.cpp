@@ -25,7 +25,7 @@
 
 #include "rmpusbdataframe.h"
 
-#include "config.h"
+#include "rmpdefs.h"
 #include "canpacket.h"
 
 using namespace std;

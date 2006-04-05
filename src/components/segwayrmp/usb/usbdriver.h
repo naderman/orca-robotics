@@ -22,6 +22,7 @@
 #define ORCA2_SEGWAY_RMP_USB_DRIVER_H
 
 #include "../hwdriver.h"
+#include "usbdriverconfig.h"
 
 namespace segwayrmp
 {
@@ -35,7 +36,7 @@ class UsbDriver : public HwDriver
 {
 public:
 
-    UsbDriver( const std::string & gainSchedule );
+    UsbDriver( const orcaice::Context & context );
     virtual ~UsbDriver();
 
     virtual int enable();
@@ -56,13 +57,6 @@ private:
         OperationalModeTractor=1,
         OperationalModeBalance=2,
         OperationalModePowerdown=3
-    };
-
-    enum GainSchedule
-    {
-        GainScheduleNormal=0,
-        GainScheduleTall=1,
-        GainScheduleHeavy=2
     };
 
     enum BalanceLockout
@@ -87,7 +81,7 @@ private:
     int resetAllIntegrators();
 
     int setOperationalMode( OperationalMode mode );
-    int setGainSchedule( GainSchedule sched );
+    int setGainSchedule( int sched );
     int enableBalanceMode( bool enable );
 
     // driver/hardware interface
@@ -96,7 +90,8 @@ private:
     CanPacket        *pkt_;
 
     // configuration
-    GainSchedule desiredGainSchedule_;
+    orcaice::Context context_;
+    UsbDriverConfig config_;
 
     // last motion commands [segway counts]
     // used to load into status command
@@ -115,10 +110,6 @@ private:
     // for detecting internal state change
     int lastStatusWord1_;
     int lastStatusWord2_;
-
-    // Maximum allowd speeds [m/s], [rad/s]
-    double maxSpeed_;
-    double maxTurnrate_;
 
     int readFrame();
     void integrateMotion();

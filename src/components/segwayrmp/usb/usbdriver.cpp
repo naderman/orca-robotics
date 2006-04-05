@@ -29,7 +29,7 @@
 
 // rmp/usb data structure
 #include "rmpusbdataframe.h"
-#include "config.h"
+#include "rmpdefs.h"
 #include "canpacket.h"
 
 using namespace std;
@@ -37,28 +37,17 @@ using namespace orca;
 using namespace segwayrmp;
 using orcaice::operator<<;
 
-UsbDriver::UsbDriver( const std::string & gainSchedule )
+UsbDriver::UsbDriver( const orcaice::Context & context )
+    : context_(context)
 {
     // Hardware
     usbio_ = new UsbIoFtdi;
     frame_ = new RmpUsbDataFrame;
     pkt_ = new CanPacket;
 
-    // Desired configuration
-    if ( gainSchedule == "normal" ) {
-        desiredGainSchedule_ = GainScheduleNormal;
-    }
-    else if ( gainSchedule == "tall" ) {
-        desiredGainSchedule_ = GainScheduleTall;
-    }
-    else if ( gainSchedule == "heavy" ) {
-        desiredGainSchedule_ = GainScheduleHeavy;
-    }
-    else {
-        // this shouldn't happen because we check in HwHandler
-        cout<<"UsbDriver::UsbDriver: warning, unknown gain schedule type. resetting to 'normal'"<<endl;
-        desiredGainSchedule_ = GainScheduleNormal;
-    }
+    // parse configuration parameters
+    readFromProperties( context, config_ );
+    cout<<config_<<endl;
 
     // Initialize odometry
     odomX_ = 0.0;
@@ -106,22 +95,27 @@ UsbDriver::enable()
         return 2;
     }
 
-    if ( setMaxVelocityScaleFactor( 1.0 ) ) {
+    if ( setMaxVelocityScaleFactor( config_.maxVelocityScale ) ) {
         cerr<<"warning: error in setMaxVelocitySpeedFactor()"<<endl;
         return 2;
     }
     
-    if ( setMaxTurnrateScaleFactor( 1.0 ) ) {
+    if ( setMaxTurnrateScaleFactor( config_.maxTurnrateScale ) ) {
         cerr<<"warning: error in setMaxTurnrateScaleFactor()"<<endl;
         return 2;
     }
 
-    if ( setMaxAccelerationScaleFactor( 1.0 ) ) {
+    if ( setMaxAccelerationScaleFactor( config_.maxAccelerationScale ) ) {
         cerr<<"warning: error in setMaxAccelerationScaleFactor()"<<endl;
         return 2;
     }
     
-    if ( setGainSchedule( desiredGainSchedule_ ) ) {
+    if ( setMaxCurrentLimitScaleFactor( config_.maxCurrentLimitScale ) ) {
+        cerr<<"warning: error in setMaxCurrentLimitScaleFactor()"<<endl;
+        return 2;
+    }
+
+    if ( setGainSchedule( config_.gainSchedule ) ) {
         cerr<<"warning: error in setGainSchedule()"<<endl;
         return 2;
     }
@@ -512,7 +506,7 @@ UsbDriver::setOperationalMode( OperationalMode mode )
 }
 
 int
-UsbDriver::setGainSchedule( GainSchedule sched )
+UsbDriver::setGainSchedule( int sched )
 {
     makeStatusCommandPacket( pkt_, RMP_CMD_SET_GAIN_SCHEDULE, sched );
 
