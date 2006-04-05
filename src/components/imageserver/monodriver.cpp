@@ -25,6 +25,7 @@
 #include <orcaice/orcaice.h>
 
 #include <opencv/cv.h>
+#include <opencv/highgui.h>
 #include <iostream>
 #include <stdlib.h>
 

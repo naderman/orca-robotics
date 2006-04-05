@@ -5,51 +5,33 @@ IF ( BUILD_IMAGE_VIEWER )
   INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
   INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
 
+  # this is the only implemenation so far
   SET ( OPENCV_IMPLEMENTATION 1 )
 
   IF ( OPENCV_IMPLEMENTATION )
-    IF ( OPENCV_FOUND AND HIGHGUI_FOUND )
       ADD_DEFINITIONS( -DOPENCV_IMPLEMENTATION )
 
-      PKGCONFIG("opencv" OPENCV_FOUND OPENCV_INCLUDE_DIRS OPENCV_DEFINES OPENCV_LINK_DIRS OPENCV_LIBS)
-      IF( OPENCV_FOUND )
-        MESSAGE( "Using new opencv (>= 0.9.6)" )
-        INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )
-        SET( NEW_OPENCV 1 )
-      ELSE( OPENCV_FOUND )
-        MESSAGE( "Using old opencv (0.9.5)" )
-        SET( OLD_OPENCV 1 )
-        SET( OPENCV_LIBS opencv highgui )
-        # INCLUDE_DIRECTORIES( /usr/include/opencv /usr/local/include/opencv )
-        ADD_DEFINITIONS( -DOLD_OPENCV )
-        SET( OPENCV_FOUND 1)
-      ENDIF( OPENCV_FOUND )  
+      IF( OPENCV7_FOUND )
+        MESSAGE( "    Using new opencv (>= 0.9.7)" )
+        MESSAGE( "    Make sure this version is from cvs and not the release" )
+        INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} )
 
-      #       INCLUDE_DIRECTORIES( ${PROJ_SOURCE_DIR}/src/util/imageutil )
-      #       LINK_DIRECTORIES( ${PROJ_BINARY_DIR}/src/util/imageutil )
-      #       LINK_LIBRARIES( ${OPENCV_LIBS} imageutil camera )
-      LINK_LIBRARIES( ${OPENCV_LIBS} )
+        LINK_LIBRARIES( ${OPENCV7_LIBS} )
 
+        #
+        # This gathers all the source files into the variable 'SRCS'
+        #
+        FILE( GLOB SRCS *.cpp )
 
-      #
-      # This gathers all the source files into the variable 'SRCS'
-      #
-      FILE( GLOB SRCS *.cpp )
+        GLOBAL_ADD_EXECUTABLE( imageviewer ${SRCS} )
+        GENERATE_FROM_DEF( imageviewer.def )
 
-      GLOBAL_ADD_EXECUTABLE( imageviewer ${SRCS} )
-      # GLOBAL_ADD_EXECUTABLE( imageviewer main cvdisplayer )
-      GENERATE_FROM_DEF( imageviewer.def )
-
-    ENDIF ( OPENCV_FOUND AND HIGHGUI_FOUND )
+      ELSE( OPENCV7_FOUND )
+        MESSAGE( "ImageViewer will not be built.")
+        MESSAGE( "     OpenCv (0.9.7) has not been found. You need the cvs version." )
+        SET ( BUILD_IMAGE_VIEWER 0)
+      ENDIF( OPENCV7_FOUND )  
 
   ENDIF( OPENCV_IMPLEMENTATION )
-
-  #
-  # This gathers all the source files into the variable 'SRCS'
-  #
-  # FILE( GLOB SRCS *.cpp )
-
-  # GLOBAL_ADD_EXECUTABLE( imageviewer ${SRCS} )
-
 
 ENDIF ( BUILD_IMAGE_VIEWER )

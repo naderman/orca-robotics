@@ -80,7 +80,9 @@ Drives real camera hardware, directly connected to the computer. Uses opencv imp
   
 @par Dependencies
 
-Requires that opencv is installed. 
+Requires that <a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank">Opencv-0.9.7 from cvs</a> is installed. The cvs version has
+a lot more functionality for image grabbing which we think is useful
+enough that the cvs version should be used rather than the release. 
 
 For developers: the code conforms to the basic approach described in the notes on @ref orca_doc_devcomp.
 
