@@ -38,14 +38,16 @@ using namespace PlayerCc;
 // experiment to pass all custom props as a disctionary
 //PlayerClientDriver::PlayerClientDriver( const std::map<std::string,std::string> & props, const std::string & prefix )
 
-PlayerClientDriver::PlayerClientDriver( const char *host, int port )
+PlayerClientDriver::PlayerClientDriver( const orcaice::Context & context )
     : enabled_( false ),
       robot_(0),
       positionProxy_(0),
       powerProxy_(0),
-      host_(strdup(host)),
-      port_(port)
+      context_(context)
 {
+    // parse configuration parameters
+    readFromProperties( context, config_ );
+    cout<<config_<<endl;
 }
 
 PlayerClientDriver::~PlayerClientDriver()
@@ -58,12 +60,12 @@ PlayerClientDriver::enable()
     if ( enabled_ ) return 0;
 
     cout << "TRACE(playerclientdriver.cpp): PlayerClientDriver: Connecting to player on host "
-         << host_ << ", port " << port_ << endl;
+         << config_.host << ", port " << config_.port << endl;
     
     // player throws exceptions on creation if we fail
     try
     {
-        robot_      = new PlayerCc::PlayerClient( host_, port_ );
+        robot_      = new PlayerCc::PlayerClient( config_.host, config_.port );
         positionProxy_ = new PlayerCc::Position2dProxy( robot_, 0 );
     
         robot_->Read();

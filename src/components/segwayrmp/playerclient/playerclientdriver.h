@@ -22,6 +22,7 @@
 #define ORCA2_ROBOT_PLAYER_CLIENT_DRIVER_H
 
 #include "../hwdriver.h"
+#include "playerclientdriverconfig.h"
 
 // Player proxies
 namespace PlayerCc
@@ -38,7 +39,7 @@ class PlayerClientDriver : public HwDriver
 {
 public:
 
-    PlayerClientDriver( const char *host, int port );
+    PlayerClientDriver( const orcaice::Context & context );
     //PlayerClientDriver( const std::map<std::string,std::string> & props );
     virtual ~PlayerClientDriver();
 
@@ -58,9 +59,10 @@ private:
     PlayerCc::PlayerClient *robot_;
     PlayerCc::Position2dProxy *positionProxy_;
     PlayerCc::PowerProxy *powerProxy_;
-    
-    char *host_;
-    int   port_;
+
+    // configuration
+    orcaice::Context context_;
+    PlayerClientDriverConfig config_;
 };
 
 } // namespace

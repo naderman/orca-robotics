@@ -112,16 +112,7 @@ HwHandler::init()
 #ifdef HAVE_PLAYERCLIENT_DRIVER
         context_.tracer()->debug( "loading Player-Client driver",3);
 
-    // experiment
-//         driver_ = new PlayerClientDriver(
-//                 context_.properties()->getPropertiesForPrefix( context_.tag()+".Config.PlayerClient", context_.tag() ) );
-
-        std::string playerclientPrefix = prefix + "PlayerClient.";
-        std::string playerHost = orcaice::getPropertyWithDefault( context_.properties(),
-                playerclientPrefix+"Host", "localhost" );
-        int playerPort = orcaice::getPropertyAsIntWithDefault( context_.properties(),
-                playerclientPrefix+"Port", 6665 );
-        driver_ = new PlayerClientDriver( playerHost.c_str(), playerPort );
+        driver_ = new PlayerClientDriver( context_ );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'playerclient' because it was not built!" );
 #endif
