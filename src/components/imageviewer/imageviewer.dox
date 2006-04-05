@@ -51,6 +51,8 @@ Requires that <a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb
 a lot more functionality for image grabbing which we think is useful
 enough that the cvs version should be used rather than the release. 
 
+Due to the version numbers of opencv in cvs being the same as that in the release, this component is not built by default. If you have the cvs version installed, please run ccmake . and manually turn the build parameter for this component ON.
+
 @par Remarks
 
 Cannot run as an IceBox service.
