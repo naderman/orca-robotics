@@ -29,8 +29,9 @@ IF ( BUILD_IMAGE_SERVER )
         INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} )
 
         # need a check here for monodriver being built
-        LINK_LIBRARIES( ${OPENCV7_LIBS} camera ${1394_LIBS} imagegrabber )
-        LINK_DIRECTORIES( imagegrabber )
+#        LINK_LIBRARIES( ${OPENCV7_LIBS} camera ${1394_LIBS} imagegrabber )
+        LINK_LIBRARIES( ${OPENCV7_LIBS} ${1394_LIBS} imagegrabber )
+         LINK_DIRECTORIES( imagegrabber )
 
         #
         # This gathers all the source files into the variable 'SRCS'
