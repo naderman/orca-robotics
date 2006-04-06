@@ -31,7 +31,7 @@ IF ( BUILD_IMAGE_SERVER )
           LINK_LIBRARIES( ${OPENCV7_LIBS} ${1394_LIBS} imagegrabber )
         ELSE ( 1394_FOUND )
           MESSAGE( "    libdc1394 not found: you will not be able to use firewire cameras" )
-          LINK_LIBRARIES( ${OPENCV7_LIBS} ${1394_LIBS} imagegrabber )
+          LINK_LIBRARIES( ${OPENCV7_LIBS} imagegrabber )
         ENDIF ( 1394_FOUND )
 
          LINK_DIRECTORIES( imagegrabber )
