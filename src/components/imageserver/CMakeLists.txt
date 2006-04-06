@@ -8,6 +8,8 @@ IF ( BUILD_IMAGE_SERVER )
 
   IF ( 1394_FOUND )
     SET( 1394_LIBS raw1394 dc1394_control )
+  ELSE ( 1394_FOUND )
+    MESSAGE( "    libdc1394 not found: you will not be able to use firewire cameras" )
   ENDIF ( 1394_FOUND )
 
   # this is the only implementation so far
