@@ -20,7 +20,7 @@ IF ( BUILD_IMAGE_SERVER )
   IF ( NOT 1394_FOUND AND NOT V4L_FOUND )
     SET ( BUILD_IMAGE_SERVER 0 )
     MESSAGE( "ImageServer will not be built.")
-    MESSAGE( "     Video4Linux nor libdc1394 cannot be found" )
+    MESSAGE( "     Video4Linux nor libdc1394 can be found" )
   ENDIF ( NOT 1394_FOUND AND NOT V4L_FOUND )
 
   # this is the only implementation so far
@@ -28,7 +28,6 @@ IF ( BUILD_IMAGE_SERVER )
 
   IF ( OPENCV_IMPLEMENTATION )
 
-      # SUBDIRS( test ) 
       ADD_DEFINITIONS( -DOPENCV_IMPLEMENTATION )
 
       IF( OPENCV7_FOUND )
@@ -43,11 +42,9 @@ IF ( BUILD_IMAGE_SERVER )
 
         INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} )
 
-        # need a check here for monodriver being built
-        #        LINK_LIBRARIES( ${OPENCV7_LIBS} camera ${1394_LIBS} imagegrabber )
-
-        LINK_LIBRARIES( ${OPENCV7_LIBS} ${1394_LIBS} imagegrabber )
-         LINK_DIRECTORIES( imagegrabber )
+        # LINK_LIBRARIES( ${OPENCV7_LIBS} ${1394_LIBS} imagegrabber )
+        LINK_LIBRARIES( ${OPENCV7_LIBS} imagegrabber )
+        LINK_DIRECTORIES( imagegrabber )
 
         #
         # This gathers all the source files into the variable 'SRCS'

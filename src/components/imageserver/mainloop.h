@@ -29,6 +29,8 @@
 #include <orca/camera.h>
 #include "cameraI.h"
 
+#include <iostream>
+
 namespace imageserver {
 
 //
@@ -45,7 +47,9 @@ public:
               Driver              *hwDriver,
               ImageGrabber*        imageGrabber,
               orcaice::Context     context,
-              bool                 startEnabled );
+              bool                 startEnabled, 
+              std::string               driverName );
+
     ~MainLoop();
 
     virtual void run();
@@ -61,6 +65,7 @@ private:
     ImageGrabber *imageGrabber_;
 
     orcaice::Context context_;
+    std::string driverName_;
 };
 
 }

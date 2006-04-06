@@ -52,7 +52,6 @@ FakeDriver::read( orca::CameraDataPtr &data )
     int imageSize = (int)ceil( 3 * data->imageHeight * data->imageWidth );
     data->image.resize( imageSize );
 
-    //! @TODO send a real image
     bool random_data = true;
     if ( random_data )
     {

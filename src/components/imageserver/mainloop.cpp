@@ -32,11 +32,13 @@ MainLoop::MainLoop( CameraI            &cameraObj,
                     Driver*            hwDriver,
                     ImageGrabber*      imageGrabber,
                     orcaice::Context   context,
-                    bool               startEnabled )
+                    bool               startEnabled, 
+                    std::string        driverName )
     : cameraObj_(cameraObj),
       hwDriver_(hwDriver),
       context_(context),
-      imageGrabber_(imageGrabber)
+      imageGrabber_(imageGrabber),
+      driverName_(driverName)
 {
 }
 
@@ -82,29 +84,33 @@ MainLoop::run()
                     if ( hwDriver_->setConfig( desiredConfig ) == 0 )
                     {
                         context_.tracer()->print( "Successful reconfiguration! " + hwDriver_->infoMessages() );
-                        // Setup Camera object.
+
+                        // Automatically setup Camera object if we're not using the fake driver.
                         // Only need to do this once.
-                        cameraData->imageWidth = imageGrabber_->getWidth();
-                        cameraData->imageHeight = imageGrabber_->getHeight();
-                        cameraData->image.resize( imageGrabber_->getSize() );
-                        if( desiredConfig->format == BAYERBG | desiredConfig->format == BAYERGB | desiredConfig->format == BAYERRG | desiredConfig->format == BAYERGR )
+                        if( driverName_ != "fake")
                         {
-                            // force the format to be bayer
-                            cameraData->format = desiredConfig->format;
-                        }
-                        else
-                        {
-                            // let opencv figure out the format if there is no bayer encoding
-                            cameraData->format = orcaImageMode( imageGrabber_->getMode() );
-                            // include this in camera config 
-                            desiredConfig->format = cameraData->format;
-                        }
+                            cameraData->imageWidth = imageGrabber_->getWidth();
+                            cameraData->imageHeight = imageGrabber_->getHeight();
+                            cameraData->image.resize( imageGrabber_->getSize() );
+                            if( desiredConfig->format == BAYERBG | desiredConfig->format == BAYERGB | desiredConfig->format == BAYERRG | desiredConfig->format == BAYERGR )
+                            {
+                                // force the format to be bayer
+                                cameraData->format = desiredConfig->format;
+                            }
+                            else
+                            {
+                                // let opencv figure out the format if there is no bayer encoding
+                                cameraData->format = orcaImageMode( imageGrabber_->getMode() );
+                                // include this in camera config 
+                                desiredConfig->format = cameraData->format;
+                            }
 
-                        // Setup the rest of camera config 
-                        desiredConfig->imageWidth = cameraData->imageWidth;
-                        desiredConfig->imageHeight = cameraData->imageHeight;
-                        desiredConfig->frameRate = imageGrabber_->getFps();
-
+                            // Setup the rest of camera config 
+                            desiredConfig->imageWidth = cameraData->imageWidth;
+                            desiredConfig->imageHeight = cameraData->imageHeight;
+                            desiredConfig->frameRate = imageGrabber_->getFps();
+                        }
+                       
                         context_.tracer()->print( "Automatic config has the following settings: " + orcaice::toString( desiredConfig ) );
 
                         // Tell the world that we've reconfigured

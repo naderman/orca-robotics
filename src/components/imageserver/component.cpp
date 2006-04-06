@@ -193,7 +193,8 @@ Component::start()
                               hwDriver_,
                               imageGrabber_,
                               context(),
-                              startEnabled );
+                              startEnabled,
+                              driverName );
     
     mainLoop_->start();    
 }
