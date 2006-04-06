@@ -6,10 +6,16 @@ IF ( BUILD_IMAGE_SERVER )
   # Use libOrcaIce
   INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
 
+  IF ( 1394_FOUND )
+    SET( 1394_LIBS raw1394 dc1394_control )
+  ELSE ( 1394_FOUND )
+    MESSAGE( "    libdc1394 not found: you will not be able to use firewire cameras" )
+  ENDIF ( 1394_FOUND )
+
   # this is the only implementation so far
   SET ( OPENCV_IMPLEMENTATION 1 )
 
-  IF ( OPENCV_IMPLEMENTATION )
+  IF ( OPENCV_IMPLEMENTATION AND 1394_FOUND )
 
       # SUBDIRS( test ) 
       ADD_DEFINITIONS( -DOPENCV_IMPLEMENTATION )
@@ -26,14 +32,8 @@ IF ( BUILD_IMAGE_SERVER )
 
         # need a check here for monodriver being built
         #        LINK_LIBRARIES( ${OPENCV7_LIBS} camera ${1394_LIBS} imagegrabber )
-        IF ( 1394_FOUND )
-          SET( 1394_LIBS raw1394 dc1394_control )
-          LINK_LIBRARIES( ${OPENCV7_LIBS} ${1394_LIBS} imagegrabber )
-        ELSE ( 1394_FOUND )
-          MESSAGE( "    libdc1394 not found: you will not be able to use firewire cameras" )
-          LINK_LIBRARIES( ${OPENCV7_LIBS} imagegrabber )
-        ENDIF ( 1394_FOUND )
 
+        LINK_LIBRARIES( ${OPENCV7_LIBS} ${1394_LIBS} imagegrabber )
          LINK_DIRECTORIES( imagegrabber )
 
         #
@@ -53,6 +53,6 @@ IF ( BUILD_IMAGE_SERVER )
         SET ( BUILD_IMAGE_SERVER 0)
       ENDIF( OPENCV7_FOUND )  
 
-  ENDIF( OPENCV_IMPLEMENTATION )
+  ENDIF( OPENCV_IMPLEMENTATION AND 1394_FOUND )
 
 ENDIF ( BUILD_IMAGE_SERVER )
