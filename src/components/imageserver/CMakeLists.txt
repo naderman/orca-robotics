@@ -18,9 +18,7 @@ IF ( BUILD_IMAGE_SERVER )
   ENDIF ( NOT V4L_FOUND )
 
   IF ( NOT 1394_FOUND AND NOT V4L_FOUND )
-    SET ( BUILD_IMAGE_SERVER 0 )
-    MESSAGE( "ImageServer will not be built.")
-    MESSAGE( "     Video4Linux nor libdc1394 can be found" )
+    MESSAGE( "     Video4Linux nor libdc1394 can be found: only the fake driver can be used" )
   ENDIF ( NOT 1394_FOUND AND NOT V4L_FOUND )
 
   # this is the only implementation so far
@@ -38,7 +36,7 @@ IF ( BUILD_IMAGE_SERVER )
         # only cvgrabber depends on opencv... might need to fix the
         # CMakeLists.txt in imagegrabber
         SUBDIRS( imagegrabber )
-        MESSAGE( "    Monocular camera driver for ImageServer - can be built" )
+        # MESSAGE( "    Monocular camera driver for ImageServer - can be built" )
 
         INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} )
 
