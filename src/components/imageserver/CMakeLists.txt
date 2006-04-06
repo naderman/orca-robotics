@@ -1,4 +1,4 @@
-OPTION( BUILD_IMAGE_SERVER "Try to build Image Server" ON )
+OPTION( BUILD_IMAGE_SERVER "Try to build Image Server" OFF )
 
 IF ( BUILD_IMAGE_SERVER )
 
