@@ -1,4 +1,4 @@
-OPTION( BUILD_IMAGE_SERVER "Try to build Image Server" OFF )
+OPTION( BUILD_IMAGE_SERVER "Try to build Image Server" ON )
 
 IF ( BUILD_IMAGE_SERVER )
 
@@ -15,16 +15,17 @@ IF ( BUILD_IMAGE_SERVER )
 
   IF ( OPENCV_IMPLEMENTATION )
 
-      # sublibrary for opencv grabber
-      SUBDIRS( imagegrabber )
-      MESSAGE( "    Monocular camera driver for ImageServer - can be built" )
-
       # SUBDIRS( test ) 
       ADD_DEFINITIONS( -DOPENCV_IMPLEMENTATION )
 
       IF( OPENCV7_FOUND )
         MESSAGE( "    Using new opencv (>= 0.9.7)" )
         MESSAGE( "    Make sure this version is from cvs and not the release" )
+
+        # sublibrary for opencv grabber
+        SUBDIRS( imagegrabber )
+        MESSAGE( "    Monocular camera driver for ImageServer - can be built" )
+
         INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} )
 
         # need a check here for monodriver being built
@@ -39,6 +40,7 @@ IF ( BUILD_IMAGE_SERVER )
         GLOBAL_ADD_EXECUTABLE( imageserver ${SRCS} )
         GENERATE_FROM_DEF( imageserver.def )
 
+        # test image for the fake driver to send
         INSTALL_PROGRAMS(/images penguin.jpg)
 
       ELSE( OPENCV7_FOUND )
