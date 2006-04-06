@@ -6,16 +6,26 @@ IF ( BUILD_IMAGE_SERVER )
   # Use libOrcaIce
   INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
 
+  # camera driver checks
   IF ( 1394_FOUND )
     SET( 1394_LIBS raw1394 dc1394_control )
   ELSE ( 1394_FOUND )
     MESSAGE( "    libdc1394 not found: you will not be able to use firewire cameras" )
   ENDIF ( 1394_FOUND )
 
+  IF ( NOT V4L_FOUND )
+    MESSAGE( "    video4linux not found: you will not be able to use usb cameras" )
+  ENDIF ( NOT V4L_FOUND )
+
+  IF ( NOT 1394_FOUND AND NOT V4L_FOUND )
+    MESSAGE( "ImageServer will not be built.")
+    MESSAGE( "     Video4Linux nor libdc1394 cannot be found" )
+  ENDIF ( NOT 1394_FOUND AND NOT V4L_FOUND )
+
   # this is the only implementation so far
   SET ( OPENCV_IMPLEMENTATION 1 )
 
-  IF ( OPENCV_IMPLEMENTATION AND 1394_FOUND )
+  IF ( OPENCV_IMPLEMENTATION )
 
       # SUBDIRS( test ) 
       ADD_DEFINITIONS( -DOPENCV_IMPLEMENTATION )
@@ -25,6 +35,8 @@ IF ( BUILD_IMAGE_SERVER )
         MESSAGE( "    Make sure this version is from cvs and not the release" )
 
         # sublibrary for opencv grabber
+        # only cvgrabber depends on opencv... might need to fix the
+        # CMakeLists.txt in imagegrabber
         SUBDIRS( imagegrabber )
         MESSAGE( "    Monocular camera driver for ImageServer - can be built" )
 
@@ -50,9 +62,9 @@ IF ( BUILD_IMAGE_SERVER )
       ELSE( OPENCV7_FOUND )
         MESSAGE( "ImageServer will not be built.")
         MESSAGE( "     OpenCv (0.9.7) has not been found. You need the cvs version." )
-        SET ( BUILD_IMAGE_SERVER 0)
+        SET ( BUILD_IMAGE_SERVER 0 )
       ENDIF( OPENCV7_FOUND )  
 
-  ENDIF( OPENCV_IMPLEMENTATION AND 1394_FOUND )
+  ENDIF( OPENCV_IMPLEMENTATION )
 
 ENDIF ( BUILD_IMAGE_SERVER )
