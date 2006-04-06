@@ -18,6 +18,7 @@ IF ( BUILD_IMAGE_SERVER )
   ENDIF ( NOT V4L_FOUND )
 
   IF ( NOT 1394_FOUND AND NOT V4L_FOUND )
+    SET ( BUILD_IMAGE_SERVER 0 )
     MESSAGE( "ImageServer will not be built.")
     MESSAGE( "     Video4Linux nor libdc1394 cannot be found" )
   ENDIF ( NOT 1394_FOUND AND NOT V4L_FOUND )
