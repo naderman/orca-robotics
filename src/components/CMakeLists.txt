@@ -15,6 +15,7 @@ SUBDIRS(
   ogmaploader
   orcamon
   orcaview
+  pathplanner
   position2dmon
   registryview
   segwayrmp

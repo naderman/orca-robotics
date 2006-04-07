@@ -1,0 +1,98 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@ingroup components
+@ingroup apps
+@ingroup services
+@ingroup cpp
+@ingroup linux
+@defgroup orca_component_pathplanner PathPlanner
+@brief Computes a path in 2D using the grid potential algorithms
+
+@par Provided Interfaces
+
+- @ref orca_interface_home
+- @ref orca_interface_status
+- @ref orca_interface_pathplanner2d
+
+@par Required Interfaces
+
+- @ref orca_interface_ogmap
+
+@par Drivers
+
+- @b simplenav @ref orca_pathplanner_simplenav
+- @b skeletonnav @ref orca_pathplanner_skeletonnav
+- @b fake Useful for testing or if you don't have hardware or a simulator.
+
+Computes a path through the 2D environment given as an occupancy grid map.
+
+@par Configuration
+
+- @c PathPlanner.Config.Driver (string)
+    - Type of algorithm driver
+    - Valid values: { 'simplenav', 'skeletonnav', 'fake' }
+    - Default: 'simplenav'
+
+- @c PathPlanner.Config.TraversabilityTreshhold (double)
+    - Everything below this treshhold is considered traversable, everything above is an obstacle
+    - Valid values: [0.0;1.0]
+    - Default: 0.3
+
+- @c PathPlanner.Config.RobotDiameterMetres (double)
+    - The robot's diameter including some safety distance
+    - Unit: meters
+    - Default: 0.8
+
+- @c PathPlanner.Config.DoPathOptimization (bool)
+    - Flag which determines whether an optimized path should be computed @ref orca_pathplanner_pathoptimization
+    - Valid values: 0 or 1
+    - Default: 0
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
+@section orca_pathplanner_simplenav Simple navigation
+This algorithm is described in Latombe, "Robot Motion Planning", sec. 4.2.1. It is a simple grid-potential based method using wavefront propagation. We added the consideration of the robot platform's size.
+
+@section orca_pathplanner_skeletonnav Skeleton navigation
+This algorithm is described in Latombe, "Robot Motion Planning", sec. 4.2.2. It computes an improved numverical navigation function by first extracting a skeleton.
+
+@section orca_pathplanner_pathoptimization Path optimization algorithm
+This algorithm takes a fine-grained path and tries to find shortcuts by raytracing between waypoints. If no obstacle is in the way it will discard all the waypoints in between. The path it computes contains much fewer waypoints than the original path. A negative side-effect is that the path gets close to the walls but the local navigation should take care of this.
+
+@par Notes
+
+Here is a bibtex reference to the LaTombe book which contains the
+algorithms on which this component is based:
+
+@Book{latombe91robot,
+  author    =    {Jean-Claude Latombe},
+  title =        {Robot Motion Planning},
+  publisher =    {Kluwer Academic Publishers},
+  year =         {1991}
+}
+
+@par Authors
+Tobias Kaupp
+
+*/
+
