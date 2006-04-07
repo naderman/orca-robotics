@@ -30,8 +30,8 @@ namespace imageserver {
 
 MainLoop::MainLoop( CameraI            &cameraObj,
                     Driver*            hwDriver,
-                    ImageGrabber*      imageGrabber,
                     orcaice::Context   context,
+                    ImageGrabber*      imageGrabber,
                     bool               startEnabled, 
                     std::string        driverName )
     : cameraObj_(cameraObj),

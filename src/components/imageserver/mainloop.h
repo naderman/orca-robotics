@@ -44,11 +44,11 @@ class MainLoop : public orcaice::Thread
 public:
 
     MainLoop( CameraI              &cameraObj,
-              Driver              *hwDriver,
-              ImageGrabber*        imageGrabber,
+              Driver*              hwDriver,
               orcaice::Context     context,
+              ImageGrabber*        imageGrabber,
               bool                 startEnabled, 
-              std::string               driverName );
+              std::string          driverName );
 
     ~MainLoop();
 
@@ -62,9 +62,10 @@ private:
     // Generic driver for the hardware
     Driver *hwDriver_;
 
+    orcaice::Context context_;
+
     ImageGrabber *imageGrabber_;
 
-    orcaice::Context context_;
     std::string driverName_;
 };
 

@@ -191,8 +191,8 @@ Component::start()
 
     mainLoop_ = new MainLoop( *cameraObj,
                               hwDriver_,
-                              imageGrabber_,
                               context(),
+                              imageGrabber_,
                               startEnabled,
                               driverName );
     

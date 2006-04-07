@@ -29,8 +29,6 @@
 #include <iostream>
 #include <stdlib.h>
 
-// #include <libdc1394/dc1394_control.h>
-
 using namespace std;
 
 namespace imageserver {
