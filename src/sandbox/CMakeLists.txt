@@ -8,10 +8,8 @@ IF ( BUILD_SANDBOX )
 
     # when adding new directories, please maintain alphabetical order
     SUBDIRS(
-    missioncontroller
 	netcam
 	reactivewalker
-	pathplanner
     )
     
 ELSE ( BUILD_SANDBOX )

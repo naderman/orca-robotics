@@ -26,7 +26,7 @@
 @ingroup cpp
 @ingroup linux
 @defgroup orca_component_pathplanner PathPlanner
-@brief Computes a path in 2D using the grid potential algorithms
+@brief Computes a path in 2D using the grid potential algorithms. Can be tested using the pathplantester (see @ref orca_component_pathplantester).
 
 @par Provided Interfaces
 
