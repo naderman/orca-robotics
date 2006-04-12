@@ -27,6 +27,7 @@
 #include <orca/localise2d.h>
 #include <orca/ogmap.h>
 #include <orca/position2d.h>
+#include <orca/particle2d.h>
 #include <orca/power.h>
 #include <orca/rangescanner.h>
 #include <orca/status.h>
@@ -123,6 +124,12 @@ void OrcaMonComponent::start()
     else if ( objId=="::orca::Status" )
     {
         attach<StatusPrx,StatusConsumerPrx,StatusConsumer,StatusDataPtr>
+                ( context(), proxyString );
+    }
+    else if ( objId=="::orca::Particle2d" )
+    {
+        // Pretend it's just localise2d
+        attach<Localise2dPrx,Localise2dConsumerPrx,Localise2dConsumer,Localise2dDataPtr>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::Gps" )
