@@ -6,7 +6,7 @@ IF ( BUILD_FEATUREMAPLOADER )
     INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
 
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-    SET( COMMON_SRCS component component featuremap2dI fakemaploader )
+    SET( COMMON_SRCS component featuremap2dI fakemaploader )
     
     # Files for the stand-alone application
     SET( COMP_SRCS main ${COMMON_SRCS} )
