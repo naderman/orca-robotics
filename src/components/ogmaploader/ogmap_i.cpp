@@ -6,6 +6,8 @@ using namespace std;
 using namespace orca;
 using namespace orcaice;
 
+namespace ogmaploader {
+
 OgMapI::OgMapI( orca::OgMapDataPtr  theMap,
                 const std::string  &tag,
                 orcaice::Context    context )
@@ -57,4 +59,6 @@ OgMapI::unsubscribe(const ::OgMapConsumerPrx& subscriber,
 {
     cout<<"unsubscribe()"<<endl;
     topicPrx_->unsubscribe( subscriber );
+}
+
 }

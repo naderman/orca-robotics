@@ -10,6 +10,8 @@
 // include provided interfaces
 #include <orca/featuremap2d.h>
 
+namespace featuremaploader {
+
 //
 // Implements the Laser interface: Handles all our remote calls.
 //
@@ -36,5 +38,7 @@ private:
 
     orca::FeatureMap2dDataPtr theMap_;
 };
+
+}
 
 #endif

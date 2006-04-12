@@ -1,8 +1,10 @@
-#ifndef MAPSERVER_COMPONENT_H
-#define MAPSERVER_COMPONENT_H
+#ifndef FEATUREMAPLOADER_COMPONENT_H
+#define FEATUREMAPLOADER_COMPONENT_H
 
 #include <orcaice/component.h>
 #include <orca/featuremap2d.h>
+
+namespace featuremaploader {
 
 //
 // Deriving from orcaice::Component means we have to implement start() and stop()
@@ -27,5 +29,7 @@ private:
     //
     Ice::ObjectPtr featureMap2dObj_;
 };
+
+}
 
 #endif

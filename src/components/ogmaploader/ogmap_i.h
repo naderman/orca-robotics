@@ -12,6 +12,8 @@
 
 #include <orcaice/context.h>
 
+namespace ogmaploader {
+
 //
 // Implements the Laser interface: Handles all our remote calls.
 //
@@ -45,5 +47,7 @@ private:
 
     orcaice::Context context_;
 };
+
+}
 
 #endif

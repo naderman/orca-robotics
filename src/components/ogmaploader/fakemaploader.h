@@ -3,6 +3,10 @@
 
 #include <orca/ogmap.h>
 
+namespace ogmaploader {
+
 void fakeLoadMap( orca::OgMapDataPtr theMap );
+
+}
 
 #endif

@@ -30,11 +30,25 @@ IF ( REALLY_BUILD_OGMAPLOADER )
       )
     
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-    FILE( GLOB SRCS *.cpp )
+    SET( COMMON_SRCS component ogmap_i maploadutil fakemaploader )
+    
+    # Files for the stand-alone application
+    SET( COMP_SRCS main ${COMMON_SRCS} )
+    
+    # Files for the icebox service
+    SET( SERVICE_SRCS serviceI ${COMMON_SRCS} )
 
     # build a stand-alone component
-    GLOBAL_ADD_EXECUTABLE( ogmaploader ${SRCS} )
+    GLOBAL_ADD_EXECUTABLE( ogmaploader ${COMP_SRCS} )
     TARGET_LINK_LIBRARIES( ogmaploader ${GDK_PIXBUF_LIBS} z )
+
+    # build an IceBox service
+    ADD_LIBRARY( OrcaOgMapLoader SHARED ${SERVICE_SRCS} )
+    
+    # important to let linker know about this inter-library dependency
+    # otherwise IceBox fails to load the service
+    TARGET_LINK_LIBRARIES( OrcaOgMapLoader ${GDK_PIXBUF_LIBS} z )
+    INSTALL_TARGETS( /lib OrcaOgMapLoader )
 
     GENERATE_FROM_DEF( ogmaploader.def )
 

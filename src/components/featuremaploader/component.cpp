@@ -10,6 +10,8 @@ using namespace std;
 using namespace orca;
 using orcaice::operator<<;
 
+namespace featuremaploader {
+
 Component::Component()
     : orcaice::Component( "FeatureMapLoader" )
 {
@@ -102,4 +104,7 @@ Component::start()
 void Component::stop()
 {
     // Nothing to do, since we don't have our own thread.
+}
+
+
 }

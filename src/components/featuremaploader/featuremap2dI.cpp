@@ -6,6 +6,8 @@ using namespace std;
 using namespace orca;
 using namespace orcaice;
 
+namespace featuremaploader {
+
 FeatureMap2dI::FeatureMap2dI( orca::FeatureMap2dDataPtr theMap )
     : theMap_( theMap )
 {
@@ -32,4 +34,6 @@ FeatureMap2dI::unsubscribe(const ::FeatureMap2dConsumerPrx& subscriber,
                            const Ice::Current& current)
 {
     cout<<"Got UnSubscribe() request, but ignoring it since we don't subscribe people."<<endl;
+}
+
 }

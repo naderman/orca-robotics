@@ -4,6 +4,8 @@
 using namespace orca;
 using namespace std;
 
+namespace featuremaploader {
+
 void fakeLoadMap( orca::FeatureMap2dDataPtr theMap )
 {
     theMap->features.clear();
@@ -21,3 +23,4 @@ void fakeLoadMap( orca::FeatureMap2dDataPtr theMap )
     theMap->features.push_back( f2 );
 }
 
+}
