@@ -9,6 +9,7 @@ IF ( BUILD_PATHPLANNER AND QT4_FOUND )
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
     SET( COMMON_SRCS
             algohandler
+            astardriver
             component
             fakedriver
             skeletongraphicsI

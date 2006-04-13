@@ -27,6 +27,7 @@
 #include "skeletongraphicsI.h"
 #include "fakedriver.h"
 #include "gridpotentialdriver.h"
+#include "astardriver.h"
 
 using namespace std;
 using namespace orca;
@@ -132,6 +133,11 @@ AlgoHandler::initDriver()
         context_.tracer()->debug( "loading skeletonnav driver",3);
         driver_ = new GridPotentialDriver( config, graphicsI_, true );
     }
+    else if ( driverName == "astar" )
+    {
+        context_.tracer()->debug( "loading astar driver",3);
+        driver_ = new AStarDriver( config, graphicsI_, true );
+    }
     else if ( driverName == "fake" )
     {
         context_.tracer()->debug( "loading fake driver",3);
@@ -140,7 +146,7 @@ AlgoHandler::initDriver()
     else {
         string errorStr = "Unknown driver type.";
         context_.tracer()->error( errorStr);
-        context_.tracer()->info( "Valid driver values are {'simplenav', 'skeletonnav', 'fake'}" );
+        context_.tracer()->info( "Valid driver values are {'simplenav', 'skeletonnav', 'astar', 'fake'}" );
         throw orcaice::Exception( ERROR_INFO, errorStr );
     }
 
@@ -262,4 +268,7 @@ AlgoHandler::run()
             context_.communicator()->destroy();
         }
     }
+    
+    // wait for the component to realize that we are quitting and tell us to stop.
+    waitForStop();
 }
