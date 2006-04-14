@@ -16,7 +16,7 @@ Config.Driver.Default=segwayrmpusb
 # Common to all drivers
 Config.MaxSpeed.Default=1.0
 Config.MaxTurnrate.Default=60.0
-Config.Position2dPublishInterval.Default=-1.0
+Config.Position2dPublishInterval.Default=0.1
 Config.PowerPublishInterval.Default=20.0
 Config.StatusPublishInterval.Default=60.0
 

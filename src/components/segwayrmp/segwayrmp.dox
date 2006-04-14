@@ -66,7 +66,7 @@
     - Valid values:
         - t<0 : send every new data point
         - t>0 : send approximately every t seconds
-    - Default: -1.0 (be careful, for Segway this translates into data rate of ~100Hz)
+    - Default: 0.1 (10Hz)
 
 - @c SegwayRmp.Config.PowerPublishInterval (double) [s]
     - How often to send power information to the IceStorm server
