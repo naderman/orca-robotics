@@ -37,4 +37,22 @@ If you use a single config file for the whole IceBox application service then in
 
 Some installers in Debian distribution may add a line in /etc/hosts which sets assigns the IP address 127.0.1.1 to the hostname. Comment this line out.
 
+@par Tips on using IceStorm service
+
+When misconfigured, IceStorm can lock up. 
+
+When IceStorm encounters a problem with a subscriber, it immidiately drops it but only when a finite timeout is set. Otherwise, that thread will hang indefinitely and the tread pool will eventually become exausted. To solve this problem one must set a sensitive timeout. Here's a sample configuration.
+
+Ice.Override.ConnectTimeout=1000
+Ice.Override.Timeout=300
+
+Ice.ThreadPool.Client.Size=3
+Ice.ThreadPool.Client.SizeWarn=5
+Ice.ThreadPool.Client.SizeMax=5
+
+Ice.ThreadPool.Server.Size=3
+Ice.ThreadPool.Server.SizeWarn=5
+Ice.ThreadPool.Server.SizeMax=5
+
+
 */
