@@ -42,7 +42,8 @@ Platform2dI::Platform2dI( orcaice::PtrProxy<orca::Position2dDataPtr>    & positi
 }
 
 // served out the data to the client (it was stored here by the driver at the last read)
-orca::Position2dDataPtr Platform2dI::getData(const Ice::Current& current) const
+orca::Position2dDataPtr
+Platform2dI::getData(const Ice::Current& current) const
 {
     //std::cout << "Sending data back" << std::endl;
 
@@ -62,7 +63,8 @@ orca::Position2dDataPtr Platform2dI::getData(const Ice::Current& current) const
     return data;
 }
 
-orca::Position2dGeometryPtr Platform2dI::getGeometry(const Ice::Current& current) const
+orca::Position2dGeometryPtr
+Platform2dI::getGeometry(const Ice::Current& current) const
 {
     //std::cout << "Pretending to send geometry back" << std::endl;
 
@@ -72,27 +74,31 @@ orca::Position2dGeometryPtr Platform2dI::getGeometry(const Ice::Current& current
     return geometry;
 }
 
-void Platform2dI::subscribe(const ::orca::Position2dConsumerPrx& subscriber, const ::Ice::Current&)
+void
+Platform2dI::subscribe(const ::orca::Position2dConsumerPrx& subscriber, const ::Ice::Current&)
 {
     //cout<<"subscription request"<<endl;
     IceStorm::QoS qos;
     topic_->subscribe( qos, subscriber );
 }
 
-void Platform2dI::unsubscribe(const ::orca::Position2dConsumerPrx& subscriber, const ::Ice::Current&)
+void
+Platform2dI::unsubscribe(const ::orca::Position2dConsumerPrx& subscriber, const ::Ice::Current&)
 {
     //cout<<"unsubscription request"<<endl;
     topic_->unsubscribe( subscriber );
 }
 
 // Store incoming command in a proxy, it will be handled by the driver at the next opportunity.
-void Platform2dI::setCommand(const ::orca::Velocity2dCommandPtr& command, const ::Ice::Current& )
+void
+Platform2dI::setCommand(const ::orca::Velocity2dCommandPtr& command, const ::Ice::Current& )
 {
     // this is executed directly to hardware and may throw an orca::HardwareException
     commandPipe_.set( command );
 }
 
-orca::Platform2dConfigPtr Platform2dI::getConfig(const ::Ice::Current& ) const
+orca::Platform2dConfigPtr
+Platform2dI::getConfig(const ::Ice::Current& ) const
 {
     //std::cout << "Sending config back" << std::endl;
 
@@ -102,7 +108,8 @@ orca::Platform2dConfigPtr Platform2dI::getConfig(const ::Ice::Current& ) const
     return config;
 }
 
-void Platform2dI::setConfig(const ::orca::Platform2dConfigPtr& config, const ::Ice::Current& )
+void
+Platform2dI::setConfig(const ::orca::Platform2dConfigPtr& config, const ::Ice::Current& )
 {
     //cout<<"TRACE(laser_i.cpp): Config set." << endl;
     setConfigPipe_.set( config );

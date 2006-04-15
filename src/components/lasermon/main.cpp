@@ -54,7 +54,8 @@ LaserMonComponent::~LaserMonComponent()
 
 // NOTE: this function returns after it's done, all variable that need to be permanet must
 //       be declared as member variables.
-void LaserMonComponent::start()
+void
+LaserMonComponent::start()
 {
     //
     // REQUIRED INTERFACE: Laser
@@ -149,7 +150,8 @@ void LaserMonComponent::start()
     // the rest is handled by the application/service
 }
 
-void LaserMonComponent::stop()
+void
+LaserMonComponent::stop()
 {
     // nothing to do
 }
@@ -157,7 +159,8 @@ void LaserMonComponent::stop()
 //
 // Build the component into a stand-alone application
 //
-int main(int argc, char * argv[])
+int
+main(int argc, char * argv[])
 {
     LaserMonComponent component;
     orcaice::Application app( argc, argv, component );
