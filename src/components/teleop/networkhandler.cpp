@@ -82,6 +82,9 @@ NetworkHandler::run()
         }
     }
 
+    //
+    // Main loop
+    //
     while ( isActive() )
     {
         int ret = commandBuffer_->getAndPopNext( command, timeoutMs );
@@ -107,6 +110,7 @@ NetworkHandler::run()
             // note: cannot throw one of our exceptions from here
             // because we are running in our own thread
             // so do nothing, just keep trying (it will check for active next time around)
+            // todo: should probably try to reconnect instead
             displayHandler_->displayEvent( DisplayHandler::FailedToSendCommand );
             //cout<<"!"<<flush;
         }
