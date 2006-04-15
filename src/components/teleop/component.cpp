@@ -41,7 +41,8 @@ Component::~Component()
 
 // warning: this function returns after it's done, all variable that need to be permanet must
 //          be declared as member variables.
-void Component::start()
+void
+Component::start()
 {
     context().tracer()->debug("starting component",5);
 
@@ -69,7 +70,8 @@ void Component::start()
     // the rest is handled by the application/service
 }
 
-void Component::stop()
+void
+Component::stop()
 {
     orcaice::Thread::stopAndJoin( networkHandler_ );
     
