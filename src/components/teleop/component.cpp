@@ -44,7 +44,7 @@ Component::~Component()
 void
 Component::start()
 {
-    context().tracer()->debug("starting component",5);
+    tracer()->debug("starting component",5);
 
     // The only provided interfaces are the 2 standard ones: Home and Status.
     // We can just skip this activation step and they will not be visible on
@@ -77,7 +77,7 @@ Component::stop()
     
     // userHandler_ is blocked on user input
     // the only way for it to realize that we want to stop is to give it some keyboard input.
-    cout<<"Quitting... Press any key or shake the joystick to continue."<<endl;
+    tracer()->print( "Quitting... Press any key or shake the joystick to continue." );
     
     orcaice::Thread::stopAndJoin( userHandler_ );
 }
