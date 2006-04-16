@@ -62,8 +62,10 @@ NetworkHandler::run()
     command->motion.w = 0.0;
 
     // configs
+    std::string prefix = context_.tag() + ".Config.";
+    
     int timeoutMs = (int)floor(1000.0 * orcaice::getPropertyAsDoubleWithDefault(
-            context_.properties(), "Teleop.Config.RepeatInterval", 0.2 ) );
+            context_.properties(), prefix+"RepeatInterval", 0.2 ) );
 
     // REQUIRED : Platform2d
     orca::Platform2dPrx platform2dPrx;
