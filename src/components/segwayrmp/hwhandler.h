@@ -74,6 +74,7 @@ private:
 
     struct Config
     {
+        bool isMotionEnabled;
         double maxSpeed;
         double maxTurnrate;
     };

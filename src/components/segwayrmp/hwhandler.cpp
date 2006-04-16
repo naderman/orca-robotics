@@ -92,6 +92,8 @@ HwHandler::init()
             prefix+"MaxSpeed", 1.0 );
     config_.maxTurnrate = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             prefix+"MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
+    config_.isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( context_.properties(),
+            prefix+"EnableMotion", 1 );   
 
     // based on the config parameter, create the right driver
     string driverName = orcaice::getPropertyWithDefault( context_.properties(),
@@ -288,13 +290,19 @@ HwHandler::handleData( const orca::Velocity2dCommandPtr & obj )
     }
 */
 
-// debug
-double msecs=writeTimer_.elapsed().toMilliSecondsDouble();
-writeTimer_.restart();
-// this will certainly be 'late' when we throw an exception below
-if ( msecs>300 ) {
-    cout<<"late: " << msecs <<endl;
-}
+    // check that platform motion is enabled
+    if ( config_.isMotionEnabled==false ) {
+        return;
+    }
+
+    // debug
+    double msecs=writeTimer_.elapsed().toMilliSecondsDouble();
+    writeTimer_.restart();
+    // this will certainly be 'late' when we throw an exception below
+    if ( msecs>300 ) {
+        cout<<"late: " << msecs <<endl;
+    }
+    
     //
     // apply max limits
     //
@@ -319,10 +327,10 @@ if ( msecs>300 ) {
         // set local state to failure
         writeStatusPipe_.set( false );
 
-// debug
-bool statusCheck;
-writeStatusPipe_.get( statusCheck );
-assert( statusCheck == false && "write status should be set to FALSE" );
+        // debug
+        bool statusCheck;
+        writeStatusPipe_.get( statusCheck );
+        assert( statusCheck == false && "write status should be set to FALSE" );
 
         // inform remote client of hardware failure
         throw orca::HardwareFailedException( errorStr );

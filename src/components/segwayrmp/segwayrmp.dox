@@ -51,6 +51,11 @@
     - Valid values: { 'segwayrmpusb', 'playerclient', 'fake' }
     - Default: 'segwayrmpusb'
     
+- @c SegwayRmp.Config.EnableMotion (bool)
+    - Allow motion commands or not. Convinient for testing when you want to make sure that
+      the platform will not move.
+    - Default: 1
+    
 - @c SegwayRmp.Config.MaxSpeed (double) [m]
     - Maximum allowed forward speed
     - Valid values: positive
