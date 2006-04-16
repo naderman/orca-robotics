@@ -67,12 +67,14 @@ NetHandler::init()
     //
     // Read settings
     //
+    std::string prefix = context_.tag() + ".Config.";
+    
     position2dPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            "SegwayRmp.Config.Position2dPublishInterval", -1 );
+            prefix+"Position2dPublishInterval", -1 );
     powerPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            "SegwayRmp.Config.PowerPublishInterval", 20.0 );
+            prefix+"PowerPublishInterval", 20.0 );
     statusPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            "SegwayRmp.Config.StatusPublishInterval", 60.0 );
+            prefix+"StatusPublishInterval", 60.0 );
 
     //
     // EXTERNAL INTERFACES
