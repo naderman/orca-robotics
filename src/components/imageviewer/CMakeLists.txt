@@ -16,14 +16,27 @@ IF ( BUILD_IMAGE_VIEWER )
         MESSAGE( "    Make sure this version is from cvs and not the release" )
         INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} )
 
-        LINK_LIBRARIES( ${OPENCV7_LIBS} )
+        # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
+        SET( COMMON_SRCS cameraconsumer_i component imagehandler )
 
-        #
-        # This gathers all the source files into the variable 'SRCS'
-        #
-        FILE( GLOB SRCS *.cpp )
+        # Files for the stand-alone application
+        SET( COMP_SRCS main ${COMMON_SRCS} )
+        
+        # Files for the icebox service
+        SET( SERVICE_SRCS service ${COMMON_SRCS} )
 
-        GLOBAL_ADD_EXECUTABLE( imageviewer ${SRCS} )
+        GLOBAL_ADD_EXECUTABLE( imageviewer ${COMP_SRCS} )
+        TARGET_LINK_LIBRARIES( imageviewer ${OPENCV7_LIBS} )
+
+        # build an IceBox service
+        ADD_LIBRARY( OrcaImageViewer SHARED ${SERVICE_SRCS} )
+
+        # important to let linker know about this inter-library dependency
+        # otherwise IceBox fails to load the service
+        TARGET_LINK_LIBRARIES( OrcaImageViewer ${OPENCV7_LIBS} )
+
+        INSTALL_TARGETS( /lib OrcaImageViewer )
+
         GENERATE_FROM_DEF( imageviewer.def )
 
       ELSE( OPENCV7_FOUND )

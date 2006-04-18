@@ -35,8 +35,8 @@ void CameraConsumerI::setData(const orca::CameraDataPtr& data, const Ice::Curren
 {
     try {
         // Is it a camera image?
-        //std::cout << orca::CameraDataPtr::dynamicCast( data ) << std::endl;
         //std::cout << "Received camera data... " << std::endl;
+
         // put image into buffer
         cameraDataBuffer_.push( orca::CameraDataPtr::dynamicCast( data ) );
     }

@@ -19,7 +19,7 @@
  */
 
 #include "imagehandler.h"
-#include "imageutil.h"
+// #include "imageutil.h"
 
 #include <iostream>
 #include <orcaice/orcaice.h>
@@ -100,6 +100,12 @@ void ImageHandler::run()
     // wake up every now and then to check if we are supposed to stop
     const int timeoutMs = 2000;
     
+    // count the number of images received
+    int numImages = 0;
+    orca::Time arrivalTime;
+    double diff = 0.0;
+    double avDiff = 0.0;
+
     //
     // This is the main loop
     //
@@ -110,6 +116,17 @@ void ImageHandler::run()
         //
         int ret = cameraDataBuffer_.getAndPopNext ( cameraData, timeoutMs );
         
+        // time checks
+        int averageOver = 160;
+        orcaice::setToNow( arrivalTime );
+        diff += orcaice::timeDiffAsDouble( cameraData->timeStamp, arrivalTime );
+        if ( fmod((double)numImages++,(double)averageOver) == 0 )
+        {
+            avDiff = diff/averageOver;
+            cout << "             avDiff: " << avDiff << " \n\n\n" << endl;
+            diff = 0.0;
+        }
+
         if (ret == 0)
         {
             cout << "INFO(mainloop.cpp): Getting cameraData from buffer... " << endl;
@@ -118,9 +135,10 @@ void ImageHandler::run()
             // execute algorithm to display image
             //
             
-            // check if the image is bayer encoded
             if ( cameraData->format == BAYERBG | cameraData->format == BAYERGB | cameraData->format == BAYERRG | cameraData->format == BAYERGR )
             {
+                // check if the image is bayer encoded
+
                 // copy the data from the camera object into the opencv structure
                 memcpy( bayerImage_->imageData, &cameraData->image[0], cameraData->image.size() );
                 // decode and convert to colour
@@ -141,8 +159,10 @@ void ImageHandler::run()
                     cvCvtColor( bayerImage_, cvImage_, CV_BayerGR2BGR );
                 }
             }
-            else // no bayer encoding
+            else
             {
+                // no bayer encoding
+
                 // copy the data from the camera object into the opencv structure
                 memcpy( cvImage_->imageData, &cameraData->image[0], cameraData->image.size() );
             }
@@ -151,6 +171,7 @@ void ImageHandler::run()
             cvShowImage( "ImageViewer", cvImage_ );
             // need this as opencv doesn't display properly otherwise
             cvWaitKey(15);
+
         }
         else {
             stringstream ss;

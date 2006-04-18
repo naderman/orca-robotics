@@ -36,7 +36,7 @@
 
 - @ref orca_interface_camera
 
-An example that connects to an image server and displays the image in an opencv window.
+An example that connects to an image server and displays the image in an opencv window. It can run either as a stand-alone component or an IceBox Service.
 
 Images are displayed as soon as they arrive.
 

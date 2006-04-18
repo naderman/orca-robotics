@@ -42,7 +42,7 @@ Component::~Component()
     // do not delete inputLoop_ or imageHandler_!!! They derive from Ice::Thread and deletes itself.
 }
 
-// NOTE: this function returns after it's done, all variable that need to be permanet must
+// NOTE: this function returns after it's done, all variables that need to be permanent must
 //       be declared as member variables.
 void Component::start()
 {
@@ -78,6 +78,12 @@ void Component::start()
     // Get the data once
     try
     {
+        cout << "TODO(imageviewer/component.cpp): Check that ImageServer has loaded data into the buffer before trying to get data" << endl;
+        // workaround... if imageserver and imageviewer are being run in an icebox, the
+        // imageviewer needs to wait until the imageserver has loaded data
+        // into the buffer... this should check rather than waiting
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+
         tracer()->info( "Trying to get image info as a test" );
         tracer()->print( orcaice::toString( cameraPrx->getData() ) );
     }
