@@ -102,7 +102,7 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
     Result result;
     
     // conversion of ogmap to AStar format
-//     grow( ogMap_, config_ );
+//     grow( ogMap_, config_.robotDiameterMetres );
     int sizeMap = ogMap_.numCellsX() * ogMap_.numCellsY();
     double ogMapDoubles[sizeMap];
     convert( ogMap_, ogMapDoubles );
@@ -138,19 +138,42 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
         cout << "INFO(astardriver.cpp): Path successfully computed in " << watch.elapsedSeconds() * 1000.0 << " ms." << endl;
         result = orcapathplan::PathOk;
         
-        // resulting path
-        AStarNodeDeque path;
+        // ============ resulting path =====================
+        Cell2DVector path;
+        AStarNodeDeque nodes;
         AStarNode *node = aStar->m_pBestNode;
         while ( node != NULL )
         {
-            path.push_front( node );
+            nodes.push_front( node );
             node = node->m_pParent;   
         }
-        cout << "INFO(astardriver.cpp): Size of path is " << path.size() << endl;   
+        cout << "INFO(astardriver.cpp): Size of path is " << path.size() << endl;  
+        
+        for (uint k=0; k<nodes.size(); k++)
+        {
+            Cell2D cell(nodes[k]->cell_i, nodes[k]->cell_j);
+            path.push_back( cell );
+        }
+        // ===================================================
+        
+        // ============= Optional path optimization ================
+        if ( config_.doPathOptimization )
+        {
+            // separate full path into a optimized short path
+            Cell2DVector waycells;      
+            optimizePath( ogMap_, path, waycells, config_.robotDiameterMetres );
+            path = waycells;
+        }
+        // =========================================================
         
         // ====== Convert to an Orca object in global coordinate system. =====
         // ====== Will append latest path to the total pathDataPtr. ==========
         // ====== Not all data fields are filled in (e.g.tolerances) =========
+        if (i==0)
+        {
+            // the first time we'll have to insert the start cell
+            path.insert(path.begin(),startCell);
+        }
         orcapathplan::convert( ogMap_, path, result, pathDataPtr );
         // ==================================================================
         
