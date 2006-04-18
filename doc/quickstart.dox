@@ -59,6 +59,8 @@ $ mkdir stormdb
 $ icebox --Ice.Config=icebox_icestorm.cfg
 @endverbatim
 
+[Note for Debian users: See the @ref orca_doc_faq entry on 127.0.1.1 in the /etc/hosts file.]
+
 @section point Pointing Components at this Infrastructure
 
 When an Orca component starts up, it needs to know how to find the services above.
