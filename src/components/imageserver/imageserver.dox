@@ -40,6 +40,7 @@
 @par Drivers
 
 - @b monoopencv @ref orca_camera_monoopencv
+- @b digiclops @ref orca_camera_digiclops - NOTE: NOT COMPLETE YET
 - @b fake Useful for testing or if you don't have hardware or a simulator.
 
 This component encapsulates an image grabber for usb and firewire cameras. It can run either as a stand-alone component or an IceBox Service.
@@ -50,7 +51,7 @@ This component encapsulates an image grabber for usb and firewire cameras. It ca
 
 - @c Camera.Config.Driver (string)
     - Which hardware driver to use?
-    - Valid values: { "monoopencv", "fake" }
+    - Valid values: { "monoopencv", "fake", "digiclops" }
     - Default: "fake"
 
 Camera Settings
@@ -73,18 +74,44 @@ Geometry
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
+<br>
 
 @section orca_camera_monoopencv Monocular OpenCv Camera driver
 
-Drives real camera hardware, directly connected to the computer. Uses opencv implementation. Add link!
+Drives real camera hardware, directly connected to the computer. Uses
+<a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank">Opencv-0.9.7 from cvs</a>. See Dependencies below.
+
+A firewire camera or usb camera can be used. The opencv implementation
+automatically finds the type of camera. If you have any troubles with not being able to grab images with a firewire camera, it may be the dc1394 libraries playing up. Try typing @c sudo @c renew_1394 at a prompt and trying the running the component again. Also you could check that <a href="http://damien.douxchamps.net/ieee1394/coriander/index.php">coriander</a> works. 
+
+<br>
+
+@section orca_camera_digiclops Trinocular Digiclops Camera driver
+
+NOTE: NOT COMPLETE YET
+
+Drives a digiclops camera, directly connected to the computer. 
   
+<br>
+
 @par Dependencies
 
-Requires that <a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank">Opencv-0.9.7 from cvs</a> is installed. The cvs version has
+The @ref orca_camera_monoopencv requires that <a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank">Opencv-0.9.7 from cvs</a> is installed. The cvs version has
 a lot more functionality for image grabbing which we think is useful
 enough that the cvs version should be used rather than the release. 
 
 Due to the version numbers of opencv in cvs being the same as that in the release, this component is not built by default. If you have the CVS version installed, please run ccmake . and manually turn the build parameter for this component ON.
+
+The @ref orca_camera_digiclops requires that
+the digiclops and triclops libraries ( provided by the digiclops
+suppliers, <a href="http://www.ptgrey.com" target="_blank">Point
+Grey</a>) are installed either in @c
+/usr/lib or in @c /usr/local/lib. It also requires that the digiclops
+headers are in @c /usr/local/include/digiclops/ and similarly
+for the triclops libraries @c /usr/local/include/triclops/.
+
+The easiest way to install these libraries and headers are to copy them from the original directory. This code has been tested with Digiclops version 2.3.1.4-FC3 and Triclops version 3.2.0.8-FC3 on a Debian installation.
+
 
 @par Authors
 
