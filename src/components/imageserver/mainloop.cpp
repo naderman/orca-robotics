@@ -85,8 +85,11 @@ MainLoop::run()
                     {
                         context_.tracer()->print( "Successful reconfiguration! " + hwDriver_->infoMessages() );
 
-                        // Automatically setup Camera object if we're not using the fake driver.
-                        // Only need to do this once.
+                        // Automatically setup Camera object if we're
+                        // not using the fake driver. Fake driver
+                        // manually sets these without the use of
+                        // imagegrabber.
+                        //  Only need to do this once.
                         if( driverName_ != "fake")
                         {
                             cameraData->imageWidth = imageGrabber_->getWidth();

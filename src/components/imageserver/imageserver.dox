@@ -42,7 +42,7 @@
 - @b monoopencv @ref orca_camera_monoopencv
 - @b fake Useful for testing or if you don't have hardware or a simulator.
 
-This component encapsulates an image grabber for usb and firewire cameras. So far it has only been tested as a stand-alone component.
+This component encapsulates an image grabber for usb and firewire cameras. It can run either as a stand-alone component or an IceBox Service.
 
 @see @ref orca_component_imageviewer
 

@@ -41,7 +41,7 @@ MonoDriver::MonoDriver( ImageGrabber* imageGrabber, orcaice::Context context )
 
 MonoDriver::~MonoDriver()
 {
-    cvReleaseImage( &cvImage_ );
+    // cvReleaseImage( &cvImage_ );
     disable();
 }
 
@@ -50,23 +50,25 @@ MonoDriver::read( orca::CameraDataPtr &data )
 {
     cout<<"TRACE(monodriver.cpp): Grabbing camera data..." << endl;
     
-    // grab the image and load it into an IplImage struct
-    cvImage_ = imageGrabber_->queryFrame();
-    if ( !cvImage_ )
+    //grab the image and load it into the orca object
+    char* rawImage = imageGrabber_->queryFrame();
+    if ( rawImage == NULL )
     {
         cout << "ERROR(monodriver.cpp): Unable to get image from image grabber" << endl;
         exit(1);
     }
+    else
+    {
+        // set the time stamp as soon as we get the image from the imagegrabber.
+        // this is inexact... is there a better way?
+        orcaice::setToNow( data->timeStamp );
 
-    // set the time stamp as soon as we get the image from the imagegrabber.
-    // this is inexact... is there a better way?
-    orcaice::setToNow( data->timeStamp );
+        // size of the image (data->image.size()) was defined in mainloop.cpp
+        memcpy( &data->image[0], rawImage, data->image.size() );
+        data->compression = orca::COMPRESSIONTYPENONE;
 
-    // copy the image data from the IplImage struct into the orca object
-    memcpy( &data->image[0], cvImage_->imageData, cvImage_->imageSize );
-    data->compression = orca::COMPRESSIONTYPENONE;
-
-    return 0;
+        return 0;
+    }
 }
 
 int 

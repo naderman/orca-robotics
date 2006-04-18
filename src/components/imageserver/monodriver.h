@@ -23,7 +23,7 @@
 
 #include "driver.h"
 #include "imagegrabber/cvgrabber.h"
-#include "conversions.h"
+// #include "conversions.h"
 
 #include <orcaice/context.h>
 #include <orca/camera.h>
@@ -63,12 +63,9 @@ public:
 
 private:
 
-    // convert from dc_1394 colour mode to orca colour mode 
-    // orca::ImageFormat orcaImageMode( int mode );
-
     bool isEnabled_;
 
-    IplImage* cvImage_;
+    // IplImage* cvImage_;
 
     ImageGrabber* imageGrabber_;
 

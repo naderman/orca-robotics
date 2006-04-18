@@ -29,8 +29,6 @@
 // implementations of Ice objects
 #include "cameraI.h"
 
-//#include <libcamera/camera.hpp>
-
 #include <orcaice/orcaice.h>
 
 namespace imageserver {
@@ -47,6 +45,7 @@ Component::Component()
 Component::~Component()
 {
     delete hwDriver_;
+    delete imageGrabber_;
     
     // do not delete mainLoop_!!! They derive from Ice::Thread and self-destruct.
 }
@@ -131,6 +130,9 @@ Component::start()
     cameraConfig->isEnabled         = startEnabled;
     cameraObj->localSetDesiredConfig( cameraConfig );
 
+    // if we have multiple cameras, this indicates which one we want to use
+//     int cameraIndex = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CameraIndex", 0 );
+
     std::string driverName;
     int ret = orcaice::getProperty( prop, prefix+"Driver", driverName );
     if ( ret != 0 )
@@ -151,20 +153,16 @@ Component::start()
 
     else if ( driverName == "monoopencv" )
     {
-        // Use opencv implementation for the monocular camera...
+        // Use opencv implementation for a monocular camera...
 
         cout << "TODO(component.cpp): Still need to add in a config file." << endl;
-        // this is the stuff that worked with libcamera...
-        // std::string imageGrabberConfigFile    = orcaice::getPropertyWithDefault(      prop, prefix+"Camera.ImageGrabberConfigFile",    "fw.cfg" );
-        // ImageGrabber* imageGrabber = cfg.getImageGrabber();
-        // ImageGrabberConfig cfg(imageGrabberConfigFile.c_str());
-
-
         // Initialize Opencv ImageGrabber
+//        imageGrabber_ = new CvGrabber( cameraIndex );
         imageGrabber_ = new CvGrabber();
 
-        cout<<"ImageServer: using opencv image grabber - CvGrabber " << endl;
         hwDriver_ = new MonoDriver( imageGrabber_, context() );
+
+        cout<<"ImageServer: using opencv image grabber - CvGrabber for a monocular camera" << endl;
     }
 
     else

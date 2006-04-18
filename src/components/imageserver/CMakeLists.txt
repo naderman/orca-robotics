@@ -34,25 +34,40 @@ IF ( BUILD_IMAGE_SERVER )
 
         # sublibrary for opencv grabber
         # only cvgrabber depends on opencv... might need to fix the
-        # CMakeLists.txt in imagegrabber
+        # CMakeLists.txt in imagegrabber so that cvgrabber is not
+        # built when opencv is not installed rather than the whole component
         SUBDIRS( imagegrabber )
-        # MESSAGE( "    Monocular camera driver for ImageServer - can be built" )
 
         INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} )
 
-        LINK_LIBRARIES( ${OPENCV7_LIBS} imagegrabber )
+        # LINK_LIBRARIES( ${OPENCV7_LIBS} imagegrabber )
         LINK_DIRECTORIES( imagegrabber )
 
-        #
-        # This gathers all the source files into the variable 'SRCS'
-        #
-        FILE( GLOB SRCS *.cpp )
+        # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
+        SET( COMMON_SRCS cameraI camerautil component conversions driver fakedriver mainloop monodriver )
 
-        GLOBAL_ADD_EXECUTABLE( imageserver ${SRCS} )
-        GENERATE_FROM_DEF( imageserver.def )
+        # Files for the stand-alone application
+        SET( COMP_SRCS main ${COMMON_SRCS} )
+        
+        # Files for the icebox service
+        SET( SERVICE_SRCS service ${COMMON_SRCS} )
+
+        GLOBAL_ADD_EXECUTABLE( imageserver ${COMP_SRCS} )
+        TARGET_LINK_LIBRARIES( imageserver ${OPENCV7_LIBS} imagegrabber )
+
+        # build an IceBox service
+        ADD_LIBRARY( OrcaImageServer SHARED ${SERVICE_SRCS} )
+
+        # important to let linker know about this inter-library dependency
+        # otherwise IceBox fails to load the service
+        TARGET_LINK_LIBRARIES( OrcaImageServer ${OPENCV7_LIBS} imagegrabber )
+
+        INSTALL_TARGETS( /lib OrcaImageServer )
 
         # test image for the fake driver to send
         INSTALL_PROGRAMS(/images penguin.jpg)
+
+        GENERATE_FROM_DEF( imageserver.def )
 
       ELSE( OPENCV7_FOUND )
         MESSAGE( "ImageServer will not be built.")

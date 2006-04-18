@@ -41,8 +41,6 @@ FakeDriver::read( orca::CameraDataPtr &data )
 {
     cout<<"TRACE(fakedriver.cpp): Generating fake camera data..." << endl;
 
-    orcaice::setToNow( data->timeStamp );
-    
     // initialise values for the camera object
     data->imageWidth = 640;
     data->imageHeight = 480;
@@ -67,7 +65,7 @@ FakeDriver::read( orca::CameraDataPtr &data )
         // use a real image from file
 
         ifstream file;
-        // TODO: this should be loaded in from a .def file
+        cout << "    TODO(fakedriver.cpp): this image should be loaded in from a .def file" << endl;
         string filename = "/opt/empty-project-0.0.1/images/penguin.jpg";
         file.open(filename.c_str());
         if ( file.is_open() )
@@ -85,10 +83,13 @@ FakeDriver::read( orca::CameraDataPtr &data )
 
         // copy image data into ice object
         memcpy( &data->image[0], cvImage_->imageData, cvImage_->imageSize );
+
         cout << "Image copied into ice object" << endl;
     }
 
-    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+    orcaice::setToNow( data->timeStamp );
+        
+    // IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     return 0;
 }
 
