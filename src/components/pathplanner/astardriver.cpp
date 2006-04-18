@@ -84,7 +84,7 @@ AStarDriver::getGoalCell( uint i)
 void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
                                        const orca::PathPlanner2dTaskPtr  & taskPtr,
                                        const orca::PathPlanner2dDataPtr  & pathDataPtr )
-{
+{   
     // Measuring performance
     orcamisc::CpuStopwatch watch;
 
@@ -102,7 +102,10 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
     Result result;
     
     // conversion of ogmap to AStar format
-//     grow( ogMap_, config_.robotDiameterMetres );
+    watch.start();
+    grow( ogMap_, config_ );
+    watch.stop();
+    cout << "INFO(astardriver.cpp): growing the map took " << watch.elapsedSeconds() * 1000.0 << " ms " << endl;
     int sizeMap = ogMap_.numCellsX() * ogMap_.numCellsY();
     double ogMapDoubles[sizeMap];
     convert( ogMap_, ogMapDoubles );
@@ -161,7 +164,10 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
         {
             // separate full path into a optimized short path
             Cell2DVector waycells;      
+            watch.start();
             optimizePath( ogMap_, path, waycells, config_.robotDiameterMetres );
+            watch.stop();
+            cout << "INFO(astardriver.cpp): optimizing the path took " << watch.elapsedSeconds() * 1000.0 << " ms " << endl;
             path = waycells;
         }
         // =========================================================
