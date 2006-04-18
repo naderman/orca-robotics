@@ -101,15 +101,15 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
     Cell2D startCell = getStartCell();
     Result result;
     
-    // conversion of ogmap to astar format
+    // conversion of ogmap to AStar format
+//     grow( ogMap_, config_ );
     int sizeMap = ogMap_.numCellsX() * ogMap_.numCellsY();
     double ogMapDoubles[sizeMap];
-    const double offset = 1.0;  // each value from the original ogmap is decreased by one because AStar class assumes value 1 to be unoccupied
-    convert( ogMap_, ogMapDoubles, offset );
+    convert( ogMap_, ogMapDoubles );
     
     // instantiate AStar class
     const bool allowDiagonal = true;
-    const int obstacleWeight = 255;     // AStar class uses 'obstacleWeight' for occupied and 1 for unoccupied
+    const double obstacleWeight = 254.0 * config_.traversabilityTreshhold;
     assert( ogMap_.metresPerCellX() == ogMap_.metresPerCellY() );
     AStar* aStar = new AStar( ogMapDoubles, ogMap_.numCellsX(), ogMap_.numCellsY(), ogMap_.metresPerCellX(), allowDiagonal, obstacleWeight );     
     // ==============================================
@@ -140,7 +140,6 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
         
         // resulting path
         AStarNodeDeque path;
-        
         AStarNode *node = aStar->m_pBestNode;
         while ( node != NULL )
         {
