@@ -97,24 +97,23 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
     // error messages and result codes are handled in that function
     if ( !areAllWaypointsInMap(pathDataPtr) ) return;
 
-    // initialize variables
+    // ========== initialize variables ==============
     Cell2D startCell = getStartCell();
-    Cell2DVector path;
     Result result;
     
+    // conversion of ogmap to astar format
     int sizeMap = ogMap_.numCellsX() * ogMap_.numCellsY();
     double ogMapDoubles[sizeMap];
-    const double offset = 1.0;
+    const double offset = 1.0;  // each value from the original ogmap is decreased by one because AStar class assumes value 1 to be unoccupied
     convert( ogMap_, ogMapDoubles, offset );
     
+    // instantiate AStar class
     const bool allowDiagonal = true;
-    const int obstacleWeight = 255;
-    int cellSize = (int)ceil( ogMap_.metresPerCellX() );
-    cout << "Fix this up: at the moment only integers allowed for cellSize in AStar" << endl;
-    cout << "Also: only works for square at the moment. Maybe take max(sizeX,sizeY)? " << endl;
-    cout << "cellSize: " << cellSize << " "  << ogMap_.metresPerCellX() << endl;
-
-    AStar* aStar = new AStar( ogMapDoubles, ogMap_.numCellsX(), ogMap_.numCellsY(), cellSize, allowDiagonal, obstacleWeight );     
+    const int obstacleWeight = 255;     // AStar class uses 'obstacleWeight' for occupied and 1 for unoccupied
+    assert( ogMap_.metresPerCellX() == ogMap_.metresPerCellY() );
+    AStar* aStar = new AStar( ogMapDoubles, ogMap_.numCellsX(), ogMap_.numCellsY(), ogMap_.metresPerCellX(), allowDiagonal, obstacleWeight );     
+    // ==============================================
+    
     // for each waypoint in the coarse path we need to compute the navigation fct and the path
     for (uint i=0; i<coarsePath_.size(); i++)
     {   
@@ -125,7 +124,8 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
         aStar->m_iGoalNode_i = goalCell.x();
         aStar->m_iGoalNode_j = goalCell.y();
               
-        if ( !aStar->RUN() )
+        watch.start();
+        if ( !aStar->run() )
         {
             cout << "ERROR(astardriver.cpp): No path found" << endl;
             result = orcapathplan::PathDestinationUnreachable;
@@ -133,16 +133,18 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
             orcapathplan::convert( result, pathDataPtr );
             return;
         }
+        watch.stop();
         
-        cout << "INFO(astardriver.cpp): Path successfully computed" << endl;
+        cout << "INFO(astardriver.cpp): Path successfully computed in " << watch.elapsedSeconds() * 1000.0 << " ms." << endl;
         result = orcapathplan::PathOk;
         
         // resulting path
-        AStarNodeVec path;
+        AStarNodeDeque path;
+        
         AStarNode *node = aStar->m_pBestNode;
         while ( node != NULL )
         {
-            path.push_back( node );
+            path.push_front( node );
             node = node->m_pParent;   
         }
         cout << "INFO(astardriver.cpp): Size of path is " << path.size() << endl;   
