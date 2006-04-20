@@ -26,7 +26,9 @@
 @ingroup cpp
 @ingroup linux
 @defgroup orca_component_pathplanner PathPlanner
-@brief Computes a path in 2D using the grid potential algorithms. Can be tested using the pathplantester (see @ref orca_component_pathplantester).
+@brief Computes a path in a 2D occupancy grid map. 
+
+The pathplanner acts like a service receiving tasks from third parties and returning a computed path in a 2D world represented by an occupancy grid map. An example for a third party is the pathplantester (see @ref orca_component_pathplantester).
 
 @par Provided Interfaces
 
@@ -86,15 +88,19 @@ This driver uses the famous A* search algorithm to guarantee the shortest path f
 
 @par Notes
 
-Here is a bibtex reference to the LaTombe book which contains the
-algorithms on which this component is based:
+Here is a bibtex reference to the LaTombe book which contains the gridpotential-based algorithms ( @ref orca_pathplanner_simplenav and @ref orca_pathplanner_skeletonnav ):
 
+@verbatim
 @Book{latombe91robot,
   author    =    {Jean-Claude Latombe},
   title =        {Robot Motion Planning},
   publisher =    {Kluwer Academic Publishers},
   year =         {1991}
 }
+@endverbatim
+
+@par To Do
+Skeleton: only works for closed worlds at the moment, pretty slow
 
 @par Authors
 Tobias Kaupp
