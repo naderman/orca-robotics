@@ -27,6 +27,34 @@
 using namespace std;
 using namespace segwayrmp;
 
+// Returns -1 on error
+int gainScheduleAsInt( std::string gainSchedule )
+{
+    if ( gainSchedule == "normal" )
+        return RMP_GAIN_SCHEDULE_NORMAL;
+    else if ( gainSchedule == "tall" )
+        return RMP_GAIN_SCHEDULE_TALL;
+    else if ( gainSchedule == "heavy" )
+        return RMP_GAIN_SCHEDULE_HEAVY;
+    else
+    {
+        // bad gain schedule
+        return -1;
+    }
+}
+
+std::string gainScheduleAsString( int gainSchedule )
+{
+    if ( gainSchedule == RMP_GAIN_SCHEDULE_NORMAL )
+        return "normal";
+    else if ( gainSchedule == RMP_GAIN_SCHEDULE_TALL )
+        return "tall";
+    else if ( gainSchedule == RMP_GAIN_SCHEDULE_HEAVY )
+        return "heavy";
+    else
+        return "error: bad gain schedule";
+}
+
 UsbDriverConfig::UsbDriverConfig()
 {
     gainSchedule            = 0;
@@ -52,7 +80,7 @@ std::ostream &
 segwayrmp::operator<<( std::ostream &s, const UsbDriverConfig &c )
 {
     s << "UsbDriver Configuration Parameters:     "                     <<endl
-      << "\tgainSchedule:              " << c.gainSchedule              <<endl
+      << "\tgainSchedule:              " << gainScheduleAsString(c.gainSchedule) <<endl
       << "\tmaxVelocityScale:          " << c.maxVelocityScale          <<endl
       << "\tmaxTurnrateScale:          " << c.maxTurnrateScale          <<endl
       << "\tmaxAccelerationScale:      " << c.maxAccelerationScale      <<endl
@@ -69,28 +97,15 @@ segwayrmp::readFromProperties( const orcaice::Context & context, UsbDriverConfig
 
     std::string gainSchedule = orcaice::getPropertyWithDefault( prop, prefix+"GainSchedule", "normal" );
 
-    if ( gainSchedule!="normal" && gainSchedule!="tall" && gainSchedule!="heavy" ) {
+    c.gainSchedule = gainScheduleAsInt( gainSchedule );
+
+    if ( c.gainSchedule == -1 )
+    {
         string errorStr = "SegwayRmpUsb driver: unknown gain schedule type '"+gainSchedule+"'. Cannot initialize.";
         context.tracer()->error( errorStr);
         context.tracer()->info( "Valid gain schedule types are {'normal', 'tall', 'heavy'}" );
         throw orcaice::Exception( ERROR_INFO, errorStr );
     }
-
-    if ( gainSchedule == "normal" ) {
-        c.gainSchedule = RMP_GAIN_SCHEDULE_NORMAL;
-    }
-    else if ( gainSchedule == "tall" ) {
-        c.gainSchedule = RMP_GAIN_SCHEDULE_TALL;
-    }
-    else if ( gainSchedule == "heavy" ) {
-        c.gainSchedule = RMP_GAIN_SCHEDULE_HEAVY;
-    }
-    else {
-        // this shouldn't happen because we check in HwHandler
-        context.tracer()->warning( "UsbDriver: unknown gain schedule type. Resetting to 'normal'" );
-        c.gainSchedule = RMP_GAIN_SCHEDULE_NORMAL;
-    }
-
 
     c.maxVelocityScale = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxVelocityScale", 0.75 );
     c.maxTurnrateScale = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxTurnrateScale", 0.75 );
