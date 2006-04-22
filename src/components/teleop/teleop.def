@@ -5,6 +5,7 @@ Requires.Platform2d.Type=Platform2d
 Requires.Platform2d.DefaultProxy=platform2d@local/segwayrmp
 
 # configuration
+Config.Driver.Comment=valid Drivers are { kbd-termio, kbd-ncurses, joystick, fake }
 Config.Driver.Default=kbd-termio
 Config.MaxSpeed.Default=1.0
 Config.MaxTurnrate.Default=40.0
