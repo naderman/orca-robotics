@@ -31,6 +31,8 @@
 
 #include "pathmaintainer.h"
 
+namespace localnav {
+
 //
 // Implements the PathFollower interface: Handles all our remote calls.
 //
@@ -80,5 +82,6 @@ private:
     const IceStorm::TopicPrx topicPrx_;
 };
 
+}
 
 #endif

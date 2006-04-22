@@ -10,6 +10,8 @@
 #include <orca/localise2d.h>
 #include <orca/rangescanner.h>
 
+namespace localnav {
+
 class PathMaintainer;
 class PathFollower2dI;
 
@@ -85,5 +87,7 @@ private:
 
     orcaice::Context context_;
 };
+
+}
 
 #endif

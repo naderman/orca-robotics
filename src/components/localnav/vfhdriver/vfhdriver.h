@@ -7,6 +7,8 @@
 #include <goalwatcher.h>
 #include <vfhdriver/vfh_algorithm.h>
 
+namespace vfh {
+
 //
 // Implements VFH.
 // All the number-crunching is done by the VFH_Algorithm class.
@@ -15,16 +17,16 @@
 //
 // @author Alex Brooks
 //
-class VfhDriver : public LocalNavDriver
+class VfhDriver : public localnav::LocalNavDriver
 {
 
 public: 
 
-    VfhDriver( const GoalWatcher        &goalWatcher,
-               orcaice::Context context );
+    VfhDriver( const localnav::GoalWatcher &goalWatcher,
+               orcaice::Context             context );
     virtual ~VfhDriver();
 
-    virtual void setLocalNavParameters( LocalNavParameters params );
+    virtual void setLocalNavParameters( localnav::LocalNavParameters params );
 
     // Goal location is in robot's coordinate frame
     virtual LocalNavDriver::DriverState getCommand( bool  stalled,
@@ -37,10 +39,10 @@ private:
     // Functions for setting commands
     void setToZero(         orca::Velocity2dCommandPtr &cmd );
     void setToEscape(       orca::Velocity2dCommandPtr &cmd, const orca::RangeScannerDataPtr &obs );
-    void setTurnToGoal(     orca::Velocity2dCommandPtr &cmd, const GoalWatcher &goalWatcher );
+    void setTurnToGoal(     orca::Velocity2dCommandPtr &cmd, const localnav::GoalWatcher &goalWatcher );
     void setToApproachGoal( orca::Velocity2dCommandPtr &cmd,
-                            const GoalWatcher   &goalWatcher, 
-                            const orca::Twist2d &currentVelocity,
+                            const localnav::GoalWatcher     &goalWatcher, 
+                            const orca::Twist2d             &currentVelocity,
                             const orca::RangeScannerDataPtr &obs );
     
     // If we stall a lot, our sensors must have missed something.  
@@ -67,10 +69,10 @@ private:
     static const double        escapeTimeMs_ = 1000.0;
 
     // Navigation parameters
-    LocalNavParameters         localNavParameters_;
+    localnav::LocalNavParameters localNavParameters_;
 
     // Current state of the algorithm
-    LocalNavDriver::DriverState  currentState_;
+    localnav::LocalNavDriver::DriverState currentState_;
 
     // Previous command
     orca::Velocity2dCommandPtr prevCmd_;
@@ -80,5 +82,7 @@ private:
 
     orcaice::Context context_;
 };
+
+}
 
 #endif

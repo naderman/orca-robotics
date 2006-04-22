@@ -10,6 +10,8 @@
 #include <orcanavutil/orcanavutil.h>
 #include "localnavdriver.h"
 
+namespace localnav {
+
 class LocalNavParameters;
 class GoalWatcher;
 class PathMaintainer;
@@ -82,5 +84,7 @@ private:
 
     orcaice::Context  context_;
 };
+
+}
 
 #endif

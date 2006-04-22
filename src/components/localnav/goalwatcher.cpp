@@ -4,6 +4,8 @@
 
 using namespace std;
 
+namespace localnav {
+
 ////////////////////////////////////////////////////////////
 // CONSTANTS
 
@@ -57,4 +59,6 @@ bool
 GoalWatcher::translationalGoalReached(  ) const
 {
     return ( goalDistance_ < requiredDistanceFromGoal_ );
+}
+
 }

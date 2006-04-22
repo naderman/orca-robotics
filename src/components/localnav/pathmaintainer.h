@@ -5,6 +5,8 @@
 #include <orcaice/ptrproxy.h>
 #include <orcaice/context.h>
 
+namespace localnav {
+
 //
 // @author Alex Brooks
 //
@@ -69,5 +71,7 @@ private:
 
     orcaice::Context context_;
 };
+
+}
 
 #endif

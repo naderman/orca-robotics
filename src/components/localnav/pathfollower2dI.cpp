@@ -26,6 +26,7 @@ using namespace std;
 using namespace orca;
 using namespace orcaice;
 
+namespace localnav {
 
 PathFollower2dI::PathFollower2dI( orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe,
                                   orcaice::Proxy<bool>                           &newPathArrivedPipe,
@@ -101,4 +102,4 @@ PathFollower2dI::unsubscribe( const ::orca::PathFollower2dConsumerPrx& subscribe
     topicPrx_->unsubscribe( subscriber );
 }
 
-
+}

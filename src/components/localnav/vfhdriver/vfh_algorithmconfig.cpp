@@ -4,6 +4,8 @@
 
 using namespace std;
 
+namespace vfh {
+
 VfhAlgorithmConfig::VfhAlgorithmConfig()
 {
     cellSize                  = 0.0;
@@ -127,4 +129,6 @@ void readFromProperties( orcaice::Context context, VfhAlgorithmConfig &c )
     c.obsCutoff1ms              = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"ObsCutoff1ms", 2e6 );
     c.weightDesiredDir          = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"WeightDesiredDir", 5.0 );
     c.weightCurrentDir          = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"WeightCurrentDir", 3.0 );
+}
+
 }

@@ -1,6 +1,8 @@
 #ifndef GOALWATCHER_H
 #define GOALWATCHER_H
 
+namespace localnav {
+
 //
 // Monitors proximity to goal.
 // Works entirely in robot-centric coord system.
@@ -45,5 +47,7 @@ private:
     float requiredAngleFromGoal_;
 
 };
+
+}
 
 #endif

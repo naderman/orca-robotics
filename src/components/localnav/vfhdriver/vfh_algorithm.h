@@ -24,6 +24,8 @@
 #include <vector>
 #include "vfh_algorithmconfig.h"
 
+namespace vfh {
+
 //
 // Handles all the number-crunching required for VFH.
 // Originally came from Player.
@@ -172,5 +174,7 @@ private:
 
     int last_chosen_speed;
 };
+
+}
 
 #endif

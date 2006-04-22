@@ -27,6 +27,7 @@
 #include <orcaice/mathdefs.h>
 #include <math.h>
 
+namespace vfh {
 
 VFH_Algorithm::VFH_Algorithm( const VfhAlgorithmConfig &config )
     : CELL_WIDTH((int)(config.cellSize*1000.0)),
@@ -1088,4 +1089,6 @@ int VFH_Algorithm::Set_Motion( int &speed, int &turnrate, int actual_speed )
 //  speed and turnrate have been set for the calling function -- return.
 
   return(1);
+}
+
 }

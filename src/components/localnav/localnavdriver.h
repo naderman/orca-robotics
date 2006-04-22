@@ -4,6 +4,8 @@
 #include <orca/platform2d.h>
 #include <orca/rangescanner.h>
 
+namespace localnav {
+
 class LocalNavParameters {
 public:
 
@@ -75,5 +77,7 @@ protected:
 };
 
 std::ostream &operator<<( std::ostream &s, LocalNavDriver::DriverState state );
+
+}
 
 #endif

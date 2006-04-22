@@ -9,6 +9,8 @@
 using namespace std;
 using namespace orcaice;
 
+namespace localnav {
+
 LocalNavManager::LocalNavManager( LocalNavDriver   &localNavDriver,
                                   GoalWatcher      &goalWatcher,
                                   PathMaintainer   &pathMaintainer,
@@ -193,4 +195,6 @@ LocalNavManager::getHeartbeatMessage()
         }
     }
     return ss.str();
+}
+
 }

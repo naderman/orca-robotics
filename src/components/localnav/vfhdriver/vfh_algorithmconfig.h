@@ -4,6 +4,8 @@
 #include <string>
 #include <orcaice/context.h>
 
+namespace vfh {
+
 //
 // Convenience structure to hold all the vfh_algorithm parameters.
 // All units are S.I.
@@ -61,5 +63,7 @@ public:
 std::ostream &operator<<( std::ostream &s, const VfhAlgorithmConfig &c );
 
 void readFromProperties( orcaice::Context context, VfhAlgorithmConfig &c );
+
+}
 
 #endif

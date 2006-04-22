@@ -5,6 +5,8 @@
 using namespace std;
 using namespace orcaice;
 
+namespace localnav {
+
 PathMaintainer::PathMaintainer( orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe,
                                 orcaice::Proxy<bool>                           &newPathArrivedPipe,
                                 orcaice::Proxy<orca::Time>                     &activationPipe,
@@ -115,4 +117,6 @@ PathMaintainer::secSinceActivation() const
     cout<<"TRACE(pathmaintainer.cpp): diff:  " << diff << endl;
 
     return diff;
+}
+
 }

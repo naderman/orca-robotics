@@ -4,6 +4,8 @@
 
 using namespace std;
 
+namespace localnav {
+
 std::ostream &operator<<( std::ostream &s, LocalNavParameters &n )
 {
     s << "LocalNavParameters: " << endl;
@@ -45,3 +47,4 @@ std::ostream &operator<<( std::ostream &s, LocalNavDriver::DriverState state )
     return s;
 }
 
+}

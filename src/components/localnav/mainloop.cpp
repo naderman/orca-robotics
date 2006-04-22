@@ -9,6 +9,8 @@ using namespace std;
 using namespace orca;
 using namespace orcaice;
 
+namespace localnav {
+
 MainLoop::MainLoop( LocalNavManager                               &localNavManager,
                     orcaice::PtrBuffer<orca::RangeScannerDataPtr> &obsBuffer,
                     orcaice::PtrBuffer<orca::Localise2dDataPtr>   &locBuffer,
@@ -94,11 +96,12 @@ MainLoop::run()
 
                 if ( areTimestampsDodgy( rangeData_, localiseData_, odomData_ ) )
                 {
+                    // AlexB: What's going on here?  Why isn't orcaice::operator<< being found?
                     stringstream ss;
                     ss << "Timestamps are dodgy: " << endl
-                       << "\t rangeData:    " << rangeData_->timeStamp << endl
-                       << "\t localiseData: " << localiseData_->timeStamp << endl
-                       << "\t odomData:     " << odomData_->timeStamp << endl
+                       << "\t rangeData:    "; orcaice::operator<<(ss,rangeData_->timeStamp) << endl
+                       << "\t localiseData: "; orcaice::operator<<(ss,localiseData_->timeStamp) << endl
+                       << "\t odomData:     "; orcaice::operator<<(ss, odomData_->timeStamp) << endl
                        << "Stopping.";
                     context_.tracer()->error( ss.str() );
                     getStopCommand( velocityCmd_ );
@@ -196,3 +199,4 @@ MainLoop::maybeSendHeartbeat()
     }
 }
 
+}

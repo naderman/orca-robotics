@@ -11,6 +11,8 @@
 #include <orca/pathfollower2d.h>
 #include "goalwatcher.h"
 
+namespace localnav {
+
 class LocalNavDriver;
 class MainLoop;
 class LocalNavDriver;
@@ -75,5 +77,7 @@ private:
     // Shared between the driver and the manager
     GoalWatcher      sharedGoalWatcher_;
 };
+
+}
 
 #endif

@@ -12,6 +12,8 @@ using namespace std;
 using namespace orca;
 using orcaice::operator<<;
 
+namespace localnav {
+
 Component::Component()
     : orcaice::Component( "LocalNav" )
 {
@@ -69,7 +71,7 @@ Component::start()
                                              context());
 
         cout<<"TRACE(component.cpp): Initialising driver" << endl;
-        localNavDriver_  = new VfhDriver( sharedGoalWatcher_, context() );
+        localNavDriver_  = new vfh::VfhDriver( sharedGoalWatcher_, context() );
         cout<<"TRACE(component.cpp): Finished initialising driver." << endl;
         localNavManager_ = new LocalNavManager( *localNavDriver_, sharedGoalWatcher_, *pathMaintainer_, context() );
         mainLoop_        = new MainLoop( *localNavManager_,
@@ -137,4 +139,6 @@ Component::start()
 void Component::stop()
 {
     orcaice::Thread::stopAndJoin( mainLoop_ );
+}
+
 }

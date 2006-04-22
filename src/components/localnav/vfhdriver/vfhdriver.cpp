@@ -5,8 +5,11 @@
 #include <cmath>
 #include <orcaice/objutils.h>
 
+using namespace localnav;
 using namespace std;
 using orcaice::operator<<;
+
+namespace vfh {
 
 VfhDriver::VfhDriver( const GoalWatcher        &goalWatcher,
                       orcaice::Context          context )
@@ -311,4 +314,6 @@ VfhDriver::setToApproachGoal( orca::Velocity2dCommandPtr &cmd,
     cmd->motion.v.x = (float)chosenSpeed/1000.0;
     cmd->motion.v.y = 0.0;
     cmd->motion.w   = chosenTurnrate*M_PI/180.0;
+}
+
 }
