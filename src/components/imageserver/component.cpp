@@ -26,6 +26,16 @@
 #include "fakedriver.h"
 #include "monodriver.h"
 
+// define flags for building drivers
+#include "configimageserver.h"
+
+#ifdef OPENCV7_FOUND
+#include "imagegrabber/cvgrabber.h"
+#endif 
+#ifdef DIGICLOPS_FOUND
+#include "imagegrabber/digiclopsgrabber.h"
+#endif 
+
 // implementations of Ice objects
 #include "cameraI.h"
 
@@ -165,6 +175,7 @@ Component::start()
 
     else if ( driverName == "monoopencv" )
     {
+#ifdef OPENCV7_FOUND
         // Use opencv implementation for a monocular camera...
 
         // Initialize Opencv ImageGrabber
@@ -174,9 +185,11 @@ Component::start()
         hwDriver_ = new MonoDriver( imageGrabber_, context() );
 
         cout<<"ImageServer: using opencv image grabber - CvGrabber for a monocular camera" << endl;
+#endif // OPENCV7_FOUND
     }
     else if ( driverName == "digiclops" )
     {
+#ifdef DIGICLOPS_FOUND
         // Use digiclops/triclops implementation for a digiclops camera...
 
         // Initialize digiclops ImageGrabber
@@ -188,6 +201,7 @@ Component::start()
         cout<<"ImageServer: using digiclops image grabber for a digiclops camera" << endl;
     }
 
+#endif // DIGICLOPS_FOUND
     else
     {
         std::string errString = "unknown camera type: "+driverName;

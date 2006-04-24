@@ -32,12 +32,28 @@ IF ( BUILD_IMAGE_SERVER )
     MESSAGE("-- Looking for Triclops - not found")
   ENDIF ( TRICLOPS_FOUND )
 
+  # don't include parts of component.cpp
+#  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/configimageserver.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/configimageserver.h)
+  CONFIGURE_FILE( configimageserver.h.cmake ${PROJ_SOURCE_DIR}/src/components/imageserver/configimageserver.h )
+
+#     # OPTIONAL_SUB_LIBRARY macro defined in component_rules.cmake
+    
+#     OPTIONAL_SUB_LIBRARY(
+#         "Driver for digiclops"
+#         playerclient
+#         OrcaLaserPlayerClient
+#         PLAYERCLIENT_LIBS
+#         PLAYER_FOUND
+#         HAVE_PLAYERCLIENT_DRIVER
+#         ${PLAYER_LIBS} OrcaPlayer
+#     )
+
   # specify the particular orca high level drivers to be built
   IF ( V4L_FOUND OR 1394_FOUND )
     IF ( OPENCV7_FOUND OR DIGICLOPS_FOUND )
       
       # INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} )
-      # LINK_DIRECTORIES( imagegrabber)
+      #LINK_DIRECTORIES( imagegrabber)
       
       SET ( DRIVER_SRCS driver fakedriver monodriver)
 

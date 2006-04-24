@@ -22,8 +22,9 @@
 #define MONO_DRIVER_H
 
 #include "driver.h"
-#include "imagegrabber/cvgrabber.h"
-#include "imagegrabber/digiclopsgrabber.h"
+#include "imagegrabber/imagegrabber.h"
+// #include "imagegrabber/cvgrabber.h"
+// #include "imagegrabber/digiclopsgrabber.h"
 
 #include <orcaice/context.h>
 #include <orca/camera.h>
