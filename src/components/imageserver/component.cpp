@@ -193,7 +193,7 @@ Component::start()
         // Use digiclops/triclops implementation for a digiclops camera...
 
         // Initialize digiclops ImageGrabber
-//        imageGrabber_ = new CvGrabber( cameraIndex );
+//        imageGrabber_ = new DigiclopsGrabber( cameraIndex );
         imageGrabber_ = new DigiclopsGrabber();
 
         hwDriver_ = new MonoDriver( imageGrabber_, context() );
