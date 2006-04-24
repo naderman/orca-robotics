@@ -213,8 +213,8 @@ void ImageHandler::run()
                      cvImage_->imageData[i+1] = green[i/3];
                      cvImage_->imageData[i+2] = blue[i/3];
                 }
-            }
 #endif 
+            }
 
             else
             {

@@ -24,7 +24,7 @@
 #include <orca/camera.h>
 #include <orcaice/orcaice.h>
 
-#include <triclops/pnmutils.h>
+//#include <triclops/pnmutils.h>
 #include <iostream>
 #include <stdlib.h>
 
