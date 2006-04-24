@@ -40,7 +40,7 @@
 @par Drivers
 
 - @b monoopencv @ref orca_camera_monoopencv
-- @b digiclops @ref orca_camera_digiclops - NOTE: NOT COMPLETE YET
+- @b digiclops @ref orca_camera_digiclops - NOTE: NOT VERY FUNCTIONAL YET
 - @b fake Useful for testing or if you don't have hardware or a simulator.
 
 This component encapsulates an image grabber for usb and firewire cameras. It can run either as a stand-alone component or an IceBox Service.
@@ -62,7 +62,9 @@ Camera Settings
 
 - @c Camera.Config.Format (string)
     - What format are the images? Most formats can be detected automatically so nothing is needed here. However, if images are Bayer encoded one of the following values need to be specified:
-    - Valid values: { "BAYERBG", "BAYERGB", "BAYERRG", "BAYERGR" } 
+    - Valid values: { "BAYERBG", "BAYERGB", "BAYERRG", "BAYERGR" }
+    - If a digiclops is being used you must specify either {"TRICLOPSRGB", "TRICLOPSPACKED"}
+    - "TRICLOPSRGB" is used if a STEREO_IMAGE is being sent. Otherwise use "TRICLOPSPACKED"
     - Default: "MODENFI"
 
 Geometry
@@ -88,7 +90,7 @@ automatically finds the type of camera. If you have any troubles with not being 
 
 @section orca_camera_digiclops Trinocular Digiclops Camera driver
 
-NOTE: NOT COMPLETE YET
+NOTE: NOT VERY FUNCTIONAL YET. Will grab images (a digiclops STEREO_IMAGE only at the moment).
 
 Drives a digiclops camera, directly connected to the computer. 
   
