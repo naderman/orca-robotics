@@ -49,11 +49,7 @@ An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ director
 
 @par Dependencies
 
-Requires that <a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank">Opencv-0.9.7 from cvs</a>  is installed. The cvs version has
-a lot more functionality for image grabbing which we think is useful
-enough that the cvs version should be used rather than the release. 
-
-Due to the version numbers of opencv in cvs being the same as that in the release, this component is not built by default. If you have the cvs version installed, please run ccmake . and manually turn the build parameter for this component ON.
+Requires that <a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank">Opencv-0.9.7</a>  is installed.
 
 @par Authors
 Ben Upcroft
