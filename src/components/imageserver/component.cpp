@@ -30,10 +30,10 @@
 #include "configimageserver.h"
 
 #ifdef OPENCV7_FOUND
-#include "imagegrabber/cvgrabber.h"
+#   include "imagegrabber/cvgrabber.h"
 #endif 
 #ifdef DIGICLOPS_FOUND
-#include "imagegrabber/digiclopsgrabber.h"
+#   include "imagegrabber/digiclopsgrabber.h"
 #endif 
 
 // implementations of Ice objects
