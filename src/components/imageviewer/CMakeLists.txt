@@ -1,4 +1,4 @@
-OPTION( BUILD_IMAGE_VIEWER "Try to build Image Viewer" ON )
+OPTION( BUILD_IMAGE_VIEWER "Try to build Image Viewer" OFF )
 
 IF ( BUILD_IMAGE_VIEWER )
 
@@ -31,7 +31,6 @@ IF ( BUILD_IMAGE_VIEWER )
         ENDIF ( TRICLOPS_FOUND )
 
         # don't include parts of component.cpp
-        # this should be installed in a common directory as imageviewer uses it as well
         CONFIGURE_FILE( configimageviewer.h.cmake ${PROJ_SOURCE_DIR}/src/components/imageviewer/configimageviewer.h )
 
         # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
