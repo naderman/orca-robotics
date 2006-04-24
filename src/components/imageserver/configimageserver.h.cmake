@@ -1,0 +1,2 @@
+#cmakedefine DIGICLOPS_FOUND
+#cmakedefine OPENCV7_FOUND
