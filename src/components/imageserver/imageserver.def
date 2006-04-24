@@ -8,7 +8,7 @@ Provides.Camera.DefaultInterface=camera
 
 # Config Parameters
 Config.StartEnabled.Default=1
-Config.Driver.Default=digiclops
+Config.Driver.Default=fake
 Config.Format.Default=MODENFI
 Config.CameraIndex.Default=0
 
