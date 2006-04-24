@@ -45,7 +45,11 @@ Component::Component()
 Component::~Component()
 {
     delete hwDriver_;
-    delete imageGrabber_;
+    // delete imageGrabber if it has been created (only fakedriver doesn't initialise this)
+    if ( imageGrabber_ != NULL )
+    {
+        delete imageGrabber_;
+    }
     
     // do not delete mainLoop_!!! They derive from Ice::Thread and self-destruct.
 }
@@ -74,11 +78,10 @@ Component::start()
     // EXTERNAL PROVIDED INTERFACE: Camera
 
     // create servant for direct connections
-    // don't need to store it as a member variable, adapter will keep it alive
     CameraI *cameraObj = new CameraI( geometry,
                                    context() );
-    Ice::ObjectPtr cameraObjPtr = cameraObj;
-    orcaice::createInterfaceWithTag( context(), cameraObjPtr, "Camera" );
+    cameraObjPtr_ = cameraObj;
+    orcaice::createInterfaceWithTag( context(), cameraObjPtr_, "Camera" );
 
 
     bool startEnabled = orcaice::getPropertyAsIntWithDefault( prop, prefix+"StartEnabled", true );
@@ -112,6 +115,14 @@ Component::start()
     else if( format == "BAYERGR" )
     {
         cameraConfig->format = BAYERGR;
+    }
+    else if( format == "TRICLOPSRGB" )
+    {
+        cameraConfig->format = TRICLOPSRGB;
+    }
+    else if( format == "TRICLOPSPACKED" )
+    {
+        cameraConfig->format = TRICLOPSPACKED;
     }
 
     string compression = 
@@ -149,13 +160,13 @@ Component::start()
     if ( driverName == "fake" )
     {
         hwDriver_ = new FakeDriver;
+        imageGrabber_ = NULL;
     }
 
     else if ( driverName == "monoopencv" )
     {
         // Use opencv implementation for a monocular camera...
 
-        cout << "TODO(component.cpp): Still need to add in a config file." << endl;
         // Initialize Opencv ImageGrabber
 //        imageGrabber_ = new CvGrabber( cameraIndex );
         imageGrabber_ = new CvGrabber();
@@ -163,6 +174,18 @@ Component::start()
         hwDriver_ = new MonoDriver( imageGrabber_, context() );
 
         cout<<"ImageServer: using opencv image grabber - CvGrabber for a monocular camera" << endl;
+    }
+    else if ( driverName == "digiclops" )
+    {
+        // Use digiclops/triclops implementation for a digiclops camera...
+
+        // Initialize digiclops ImageGrabber
+//        imageGrabber_ = new CvGrabber( cameraIndex );
+        imageGrabber_ = new DigiclopsGrabber();
+
+        hwDriver_ = new MonoDriver( imageGrabber_, context() );
+
+        cout<<"ImageServer: using digiclops image grabber for a digiclops camera" << endl;
     }
 
     else

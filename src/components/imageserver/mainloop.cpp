@@ -95,14 +95,14 @@ MainLoop::run()
                             cameraData->imageWidth = imageGrabber_->getWidth();
                             cameraData->imageHeight = imageGrabber_->getHeight();
                             cameraData->image.resize( imageGrabber_->getSize() );
-                            if( desiredConfig->format == BAYERBG | desiredConfig->format == BAYERGB | desiredConfig->format == BAYERRG | desiredConfig->format == BAYERGR )
+                            if( desiredConfig->format == BAYERBG | desiredConfig->format == BAYERGB | desiredConfig->format == BAYERRG | desiredConfig->format == BAYERGR | desiredConfig->format == TRICLOPSRGB | desiredConfig->format == TRICLOPSPACKED )
                             {
                                 // force the format to be bayer
                                 cameraData->format = desiredConfig->format;
                             }
                             else
                             {
-                                // let opencv figure out the format if there is no bayer encoding
+                                // let the grabber figure out the format if there is no bayer encoding
                                 cameraData->format = orcaImageMode( imageGrabber_->getMode() );
                                 // include this in camera config 
                                 desiredConfig->format = cameraData->format;

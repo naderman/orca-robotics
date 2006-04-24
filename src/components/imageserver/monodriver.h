@@ -23,13 +23,13 @@
 
 #include "driver.h"
 #include "imagegrabber/cvgrabber.h"
-// #include "conversions.h"
+#include "imagegrabber/digiclopsgrabber.h"
 
 #include <orcaice/context.h>
 #include <orca/camera.h>
 
-#include <opencv/highgui.h>
-#include <opencv/cv.h>
+// #include <opencv/highgui.h>
+// #include <opencv/cv.h>
 
 #include <iostream>
 
@@ -64,8 +64,6 @@ public:
 private:
 
     bool isEnabled_;
-
-    // IplImage* cvImage_;
 
     ImageGrabber* imageGrabber_;
 

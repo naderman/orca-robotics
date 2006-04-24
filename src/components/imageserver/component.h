@@ -52,6 +52,9 @@ private:
     //
     Driver *hwDriver_;
     ImageGrabber* imageGrabber_; 
+
+    // Provided interface
+    Ice::ObjectPtr cameraObjPtr_;
 };
 
 }

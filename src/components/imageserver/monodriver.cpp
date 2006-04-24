@@ -24,8 +24,7 @@
 #include <orca/camera.h>
 #include <orcaice/orcaice.h>
 
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <triclops/pnmutils.h>
 #include <iostream>
 #include <stdlib.h>
 
@@ -41,7 +40,6 @@ MonoDriver::MonoDriver( ImageGrabber* imageGrabber, orcaice::Context context )
 
 MonoDriver::~MonoDriver()
 {
-    // cvReleaseImage( &cvImage_ );
     disable();
 }
 
@@ -59,12 +57,39 @@ MonoDriver::read( orca::CameraDataPtr &data )
     }
     else
     {
+
+//         TriclopsInput triclopsInput;
+//         triclopsInput.nrows = 768;
+//         triclopsInput.ncols = 1024;
+//         triclopsInput.inputType = TriInp_RGB;
+//         int imageSize = triclopsInput.nrows * triclopsInput.ncols;
+//         vector<char> red;
+//         vector<char> green;
+//         vector<char> blue;
+//         red.resize(imageSize);
+//         green.resize(imageSize);
+//         blue.resize(imageSize);
+
+//         // the R,G, and B values are stored in separate arrays
+//         memcpy(&red[0], rawImage, imageSize );
+//         memcpy(&green[0], rawImage+imageSize, imageSize );
+//         memcpy(&blue[0], rawImage+imageSize*2, imageSize );
+
+//         triclopsInput.u.rgb.red = &red[0];
+//         triclopsInput.u.rgb.green = &green[0];
+//         triclopsInput.u.rgb.blue = &blue[0];
+
+//         char file[] = "test2.ppm";
+//         bool res = ppmWriteFromTriclopsInput( file , &triclopsInput );
+//         cout << "res: " << res << endl;
+
         // set the time stamp as soon as we get the image from the imagegrabber.
         // this is inexact... is there a better way?
         orcaice::setToNow( data->timeStamp );
 
         // size of the image (data->image.size()) was defined in mainloop.cpp
         memcpy( &data->image[0], rawImage, data->image.size() );
+
         data->compression = orca::COMPRESSIONTYPENONE;
 
         return 0;

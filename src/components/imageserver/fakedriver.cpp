@@ -57,39 +57,39 @@ FakeDriver::read( orca::CameraDataPtr &data )
         int xr=rand()%256, xg=rand()%256, xb=rand()%256;
         fill( data->image, (unsigned char)xr, (unsigned char)xg, (unsigned char)xb );
 
-        cout << "opencv uses BGR format rather than rgb: " << endl; 
+        // cout << "opencv uses BGR format rather than rgb: " << endl; 
         cout<<"B:G:R  ("<<xr<<":"<<xg<<":"<<xb<<")"<<endl;
     }
     else 
     {
         // use a real image from file
 
-        ifstream file;
-        cout << "    TODO(fakedriver.cpp): this image should be loaded in from a .def file" << endl;
-        string filename = "/opt/empty-project-0.0.1/images/penguin.jpg";
-        file.open(filename.c_str());
-        if ( file.is_open() )
-        {
-            // if file exists close it and load into cv structure
-            file.close();
-            cvImage_ = cvLoadImage( filename.c_str()  );
-            //cout << "image loaded... " << endl;
-        }
-        else 
-        {
-            cout << "ERROR(fakedriver.cpp): \""<< filename << "\""<< " does not exist." << endl;
-            exit(1);
-        }
+//         ifstream file;
+//         cout << "    TODO(fakedriver.cpp): this image should be loaded in from a .def file" << endl;
+//         string filename = "/opt/empty-project-0.0.1/images/penguin.jpg";
+//         file.open(filename.c_str());
+//         if ( file.is_open() )
+//         {
+//             // if file exists close it and load into cv structure
+//             file.close();
+//             cvImage_ = cvLoadImage( filename.c_str()  );
+//             //cout << "image loaded... " << endl;
+//         }
+//         else 
+//         {
+//             cout << "ERROR(fakedriver.cpp): \""<< filename << "\""<< " does not exist." << endl;
+//             exit(1);
+//         }
 
-        // copy image data into ice object
-        memcpy( &data->image[0], cvImage_->imageData, cvImage_->imageSize );
+//         // copy image data into ice object
+//         memcpy( &data->image[0], cvImage_->imageData, cvImage_->imageSize );
 
-        cout << "Image copied into ice object" << endl;
+//         cout << "Image copied into ice object" << endl;
     }
 
     orcaice::setToNow( data->timeStamp );
         
-    // IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     return 0;
 }
 
