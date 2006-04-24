@@ -16,6 +16,28 @@ IF ( BUILD_IMAGE_VIEWER )
         MESSAGE( "    Make sure this version is from cvs and not the release" )
         INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} )
 
+        # FIND_LIBRARY( DIGICLOPS_FOUND NAMES digiclops PATHS /usr/lib /usr/local/lib )
+        # IF ( DIGICLOPS_FOUND )
+        #     MESSAGE("-- Looking for Digiclops - found")
+        # ELSE ( DIGICLOPS_FOUND )
+        #     MESSAGE("-- Looking for Digiclops - not found")
+        # ENDIF ( DIGICLOPS_FOUND )
+
+        FIND_LIBRARY( TRICLOPS_FOUND NAMES triclops PATHS /usr/lib /usr/local/lib )
+        IF ( TRICLOPS_FOUND )
+          MESSAGE("-- Looking for Triclops - found")
+        ELSE ( TRICLOPS_FOUND )
+          MESSAGE("-- Looking for Triclops - not found")
+        ENDIF ( TRICLOPS_FOUND )
+
+        IF ( TRICLOPS_FOUND )
+          LINK_LIBRARIES( triclops pnmutils)
+          INCLUDE_DIRECTORIES(
+            /usr/local/include/triclops
+            )
+        ENDIF ( TRICLOPS_FOUND )
+
+
         # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
         SET( COMMON_SRCS cameraconsumer_i component imagehandler )
 
@@ -26,14 +48,14 @@ IF ( BUILD_IMAGE_VIEWER )
         SET( SERVICE_SRCS service ${COMMON_SRCS} )
 
         GLOBAL_ADD_EXECUTABLE( imageviewer ${COMP_SRCS} )
-        TARGET_LINK_LIBRARIES( imageviewer ${OPENCV7_LIBS} )
+        TARGET_LINK_LIBRARIES( imageviewer ${OPENCV7_LIBS} triclops)
 
         # build an IceBox service
         ADD_LIBRARY( OrcaImageViewer SHARED ${SERVICE_SRCS} )
 
         # important to let linker know about this inter-library dependency
         # otherwise IceBox fails to load the service
-        TARGET_LINK_LIBRARIES( OrcaImageViewer ${OPENCV7_LIBS} )
+        TARGET_LINK_LIBRARIES( OrcaImageViewer ${OPENCV7_LIBS} triclops pnmutils)
 
         INSTALL_TARGETS( /lib OrcaImageViewer )
 

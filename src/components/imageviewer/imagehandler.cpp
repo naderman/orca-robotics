@@ -24,6 +24,8 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 
+#include <triclops/triclops.h>
+#include <triclops/pnmutils.h> 
 
 using namespace std;
 using namespace orca;
@@ -75,7 +77,6 @@ void ImageHandler::run()
 
     ImageFormat format = cameraPrx_->getConfig()->format;
 
-    cout << "bayer encoding: " << format << endl;
     // should this be done at the imageserver level and depend on the mode and format?
     // maybe nChannels should be in the Camera object 
     int nChannels;
@@ -85,6 +86,7 @@ void ImageHandler::run()
         // set up an IplImage struct for the Greyscale bayer encoded data
         bayerImage_  = cvCreateImage( cvSize( cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight ),  8, nChannels );
         cout << "Image is Bayer encoded: " << endl;
+        // cout << "bayer encoding: " << format << endl;
     }
     else
     {
@@ -159,6 +161,54 @@ void ImageHandler::run()
                     cvCvtColor( bayerImage_, cvImage_, CV_BayerGR2BGR );
                 }
             }
+            else if( format == TRICLOPSRGB)
+            {
+                // TODO: might be able to use the pgr stuff from triclops
+                // For now just load into an IplImage struct
+                TriclopsInput triclopsInput;
+                // TODO: this shouldn't be hardcoded... depends on the image properties
+                triclopsInput.nrows = 768;
+                triclopsInput.ncols = 1024;
+                triclopsInput.inputType = TriInp_RGB;
+                int imageSize = triclopsInput.nrows * triclopsInput.ncols;
+
+                // set up some temporary storage buffers
+                // TODO: do we need to do this?
+                vector<char> red;
+                vector<char> green;
+                vector<char> blue;
+                red.resize(imageSize);
+                green.resize(imageSize);
+                blue.resize(imageSize);
+
+                // the R,G, and B values are stored in separate arrays
+                memcpy(&red[0], &cameraData->image[0], imageSize );
+                memcpy(&green[0], &cameraData->image[0+imageSize], imageSize );
+                memcpy(&blue[0], &cameraData->image[0+2*imageSize], imageSize );
+
+                // TODO: can we copy directly into the triclopsInput?
+                triclopsInput.u.rgb.red = &red[0];
+                triclopsInput.u.rgb.green = &green[0];
+                triclopsInput.u.rgb.blue = &blue[0];
+
+//                 char file[] = "test2.ppm";
+//                 bool res = ppmWriteFromTriclopsInput( file , &triclopsInput );
+//                 cout << "res: " << res << endl;
+
+                // Triclops Input stores the data from each of the
+                // images in 3 separate buffers. Triclops libraries
+                // view the data as if each of the bayer encoded images (B&W) was a colour
+                // channel. eg. the top camera is the blue channel,
+                // left camera=red channel, etc. However opencv
+                // requires the rgb data to be interleaved:
+                for( int i = 0; i < 3*cameraData->imageHeight*cameraData->imageWidth; i += 3 )
+                {
+                     cvImage_->imageData[i] = red[i/3];
+                     cvImage_->imageData[i+1] = green[i/3];
+                     cvImage_->imageData[i+2] = blue[i/3];
+                }
+            }
+
             else
             {
                 // no bayer encoding
