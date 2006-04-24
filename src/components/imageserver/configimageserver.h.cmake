@@ -1,2 +1,3 @@
 #cmakedefine DIGICLOPS_FOUND
+#cmakedefine TRICLOPS_FOUND
 #cmakedefine OPENCV7_FOUND
