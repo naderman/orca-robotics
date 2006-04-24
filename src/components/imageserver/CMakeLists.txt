@@ -33,7 +33,6 @@ IF ( BUILD_IMAGE_SERVER )
   ENDIF ( TRICLOPS_FOUND )
 
   # don't include parts of component.cpp
-  # this should be installed in a common directory as imageviewer uses it as well
   CONFIGURE_FILE( configimageserver.h.cmake ${PROJ_SOURCE_DIR}/src/components/imageserver/configimageserver.h )
 
   # specify the particular orca high level drivers to be built

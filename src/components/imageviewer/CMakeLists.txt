@@ -1,4 +1,4 @@
-OPTION( BUILD_IMAGE_VIEWER "Try to build Image Viewer" OFF )
+OPTION( BUILD_IMAGE_VIEWER "Try to build Image Viewer" ON )
 
 IF ( BUILD_IMAGE_VIEWER )
 
@@ -23,12 +23,12 @@ IF ( BUILD_IMAGE_VIEWER )
           MESSAGE("-- Looking for Triclops - not found")
         ENDIF ( TRICLOPS_FOUND )
 
-        IF ( TRICLOPS_FOUND )
-          LINK_LIBRARIES( triclops pnmutils)
-          INCLUDE_DIRECTORIES(
-            /usr/local/include/triclops
-            )
-        ENDIF ( TRICLOPS_FOUND )
+#         IF ( TRICLOPS_FOUND )
+#           LINK_LIBRARIES( triclops pnmutils)
+#           INCLUDE_DIRECTORIES(
+#             /usr/local/include/triclops
+#             )
+#         ENDIF ( TRICLOPS_FOUND )
 
         # don't include parts of component.cpp
         CONFIGURE_FILE( configimageviewer.h.cmake ${PROJ_SOURCE_DIR}/src/components/imageviewer/configimageviewer.h )
@@ -43,14 +43,24 @@ IF ( BUILD_IMAGE_VIEWER )
         SET( SERVICE_SRCS service ${COMMON_SRCS} )
 
         GLOBAL_ADD_EXECUTABLE( imageviewer ${COMP_SRCS} )
-        TARGET_LINK_LIBRARIES( imageviewer ${OPENCV7_LIBS} triclops)
 
         # build an IceBox service
         ADD_LIBRARY( OrcaImageViewer SHARED ${SERVICE_SRCS} )
 
-        # important to let linker know about this inter-library dependency
-        # otherwise IceBox fails to load the service
-        TARGET_LINK_LIBRARIES( OrcaImageViewer ${OPENCV7_LIBS} triclops pnmutils)
+        IF ( TRICLOPS_FOUND )
+          INCLUDE_DIRECTORIES( /usr/local/include/triclops )
+          TARGET_LINK_LIBRARIES( imageviewer ${OPENCV7_LIBS} triclops)
+
+          # important to let linker know about this inter-library dependency
+          # otherwise IceBox fails to load the service
+          TARGET_LINK_LIBRARIES( OrcaImageViewer ${OPENCV7_LIBS} triclops pnmutils)
+
+        ELSE (TRICLOPS_FOUND )
+          TARGET_LINK_LIBRARIES( imageviewer ${OPENCV7_LIBS} )
+          TARGET_LINK_LIBRARIES( OrcaImageViewer ${OPENCV7_LIBS} )
+
+        ENDIF ( TRICLOPS_FOUND )
+
 
         INSTALL_TARGETS( /lib OrcaImageViewer )
 
@@ -58,7 +68,7 @@ IF ( BUILD_IMAGE_VIEWER )
 
       ELSE( OPENCV7_FOUND )
         MESSAGE( "ImageViewer will not be built.")
-        MESSAGE( "     OpenCv (0.9.7) has not been found. You need the cvs version." )
+        # MESSAGE( "     OpenCv (0.9.7) has not been found. You need the cvs version." )
         SET ( BUILD_IMAGE_VIEWER 0)
       ENDIF( OPENCV7_FOUND )  
 
