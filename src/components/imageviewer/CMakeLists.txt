@@ -1,4 +1,4 @@
-OPTION( BUILD_IMAGE_VIEWER "Try to build Image Viewer" OFF )
+OPTION( BUILD_IMAGE_VIEWER "Try to build Image Viewer" ON )
 
 IF ( BUILD_IMAGE_VIEWER )
 
@@ -16,13 +16,6 @@ IF ( BUILD_IMAGE_VIEWER )
         MESSAGE( "    Make sure this version is from cvs and not the release" )
         INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} )
 
-        # FIND_LIBRARY( DIGICLOPS_FOUND NAMES digiclops PATHS /usr/lib /usr/local/lib )
-        # IF ( DIGICLOPS_FOUND )
-        #     MESSAGE("-- Looking for Digiclops - found")
-        # ELSE ( DIGICLOPS_FOUND )
-        #     MESSAGE("-- Looking for Digiclops - not found")
-        # ENDIF ( DIGICLOPS_FOUND )
-
         FIND_LIBRARY( TRICLOPS_FOUND NAMES triclops PATHS /usr/lib /usr/local/lib )
         IF ( TRICLOPS_FOUND )
           MESSAGE("-- Looking for Triclops - found")
@@ -37,6 +30,9 @@ IF ( BUILD_IMAGE_VIEWER )
             )
         ENDIF ( TRICLOPS_FOUND )
 
+        # don't include parts of component.cpp
+        # this should be installed in a common directory as imageviewer uses it as well
+        CONFIGURE_FILE( configimageviewer.h.cmake ${PROJ_SOURCE_DIR}/src/components/imageviewer/configimageviewer.h )
 
         # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
         SET( COMMON_SRCS cameraconsumer_i component imagehandler )

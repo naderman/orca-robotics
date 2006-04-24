@@ -24,8 +24,13 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 
-#include <triclops/triclops.h>
-#include <triclops/pnmutils.h> 
+// define flags for existence of triclops libraries
+#include "configimageviewer.h"
+
+#ifdef TRICLOPS_FOUND
+#   include <triclops/triclops.h>
+#   include <triclops/pnmutils.h> 
+#endif 
 
 using namespace std;
 using namespace orca;
@@ -163,6 +168,7 @@ void ImageHandler::run()
             }
             else if( format == TRICLOPSRGB)
             {
+#ifdef TRICLOPS_FOUND
                 // TODO: might be able to use the pgr stuff from triclops
                 // For now just load into an IplImage struct
                 TriclopsInput triclopsInput;
@@ -208,6 +214,7 @@ void ImageHandler::run()
                      cvImage_->imageData[i+2] = blue[i/3];
                 }
             }
+#endif 
 
             else
             {
