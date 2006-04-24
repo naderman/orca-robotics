@@ -199,9 +199,9 @@ Component::start()
         hwDriver_ = new MonoDriver( imageGrabber_, context() );
 
         cout<<"ImageServer: using digiclops image grabber for a digiclops camera" << endl;
+#endif // DIGICLOPS_FOUND
     }
 
-#endif // DIGICLOPS_FOUND
     else
     {
         std::string errString = "unknown camera type: "+driverName;
