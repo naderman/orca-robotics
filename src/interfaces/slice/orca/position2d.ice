@@ -76,7 +76,7 @@ interface Position2dConsumer
 };
 
 /*!
-    @brief Access to odometry of 2d mobile robitic bases.
+    @brief Access to odometry of 2d mobile robotic bases.
 */
 interface Position2d
 {
