@@ -48,8 +48,9 @@ enum ImageFormat {
     BAYERGB,   
     BAYERRG,   
     BAYERGR,
-    TRICLOPSRGB,
-    TRICLOPSPACKED};
+    DIGICLOPSSTEREO,
+    DIGICLOPSRIGHT,
+    DIGICLOPSBOTH};
 
 //! Specifies any encoding of the image. 
 //! @TODO: Is this list reasonable/exhaustive?
