@@ -119,5 +119,4 @@ FakeDriver::fill( orca::ByteSequence& image, const unsigned char R, const unsign
     return 0;
 }
 
-
 }

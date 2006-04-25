@@ -36,7 +36,7 @@ to add support for different cameras.
 
 This guy is _not_ guaranteed to be thread-safe!
 
-@author Alex Brooks a.brooks at cas.edu.au
+@author Ben Upcroft b.upcroft at cas.edu.au
 */
 class Driver 
 {
