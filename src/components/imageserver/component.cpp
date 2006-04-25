@@ -32,7 +32,7 @@
 #ifdef OPENCV7_FOUND
 #   include "imagegrabber/cvgrabber.h"
 #endif 
-#ifdef DIGICLOPS_FOUND
+#ifdef DIGICLOPS_AND_TRICLOPS_FOUND
 #   include "imagegrabber/digiclopsgrabber.h"
 #endif 
 
@@ -189,7 +189,7 @@ Component::start()
     }
     else if ( driverName == "digiclops" )
     {
-#ifdef DIGICLOPS_FOUND
+#ifdef DIGICLOPS_AND_TRICLOPS_FOUND
         // Use digiclops/triclops implementation for a digiclops camera...
 
         // Initialize digiclops ImageGrabber
@@ -199,7 +199,7 @@ Component::start()
         hwDriver_ = new MonoDriver( imageGrabber_, context() );
 
         cout<<"ImageServer: using digiclops image grabber for a digiclops camera" << endl;
-#endif // DIGICLOPS_FOUND
+#endif // DIGICLOPS_AND_TRICLOPS_FOUND
     }
 
     else

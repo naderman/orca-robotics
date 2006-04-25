@@ -16,19 +16,11 @@ IF ( BUILD_IMAGE_VIEWER )
         MESSAGE( "    Make sure this version is from cvs and not the release" )
         INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} )
 
-        FIND_LIBRARY( TRICLOPS_FOUND NAMES triclops PATHS /usr/lib /usr/local/lib )
         IF ( TRICLOPS_FOUND )
-          MESSAGE("-- Looking for Triclops - found")
+          MESSAGE("    The Triclops libraries have been found - you will be able to view images from a digiclops camera")
         ELSE ( TRICLOPS_FOUND )
-          MESSAGE("-- Looking for Triclops - not found")
+          MESSAGE("    The Triclops libraries have not been found - you will not be able to view images from a digiclops camera")
         ENDIF ( TRICLOPS_FOUND )
-
-#         IF ( TRICLOPS_FOUND )
-#           LINK_LIBRARIES( triclops pnmutils)
-#           INCLUDE_DIRECTORIES(
-#             /usr/local/include/triclops
-#             )
-#         ENDIF ( TRICLOPS_FOUND )
 
         # don't include parts of component.cpp
         CONFIGURE_FILE( configimageviewer.h.cmake ${PROJ_SOURCE_DIR}/src/components/imageviewer/configimageviewer.h )
@@ -68,7 +60,7 @@ IF ( BUILD_IMAGE_VIEWER )
 
       ELSE( OPENCV7_FOUND )
         MESSAGE( "ImageViewer will not be built.")
-        # MESSAGE( "     OpenCv (0.9.7) has not been found. You need the cvs version." )
+        MESSAGE( "     OpenCv (0.9.7) has not been found." )
         SET ( BUILD_IMAGE_VIEWER 0)
       ENDIF( OPENCV7_FOUND )  
 
