@@ -63,8 +63,8 @@ Camera Settings
 - @c Camera.Config.Format (string)
     - What format are the images? Most formats can be detected automatically so nothing is needed here. However, if images are Bayer encoded one of the following values need to be specified:
     - Valid values: { "BAYERBG", "BAYERGB", "BAYERRG", "BAYERGR" }
-    - If a digiclops is being used you must specify either {"TRICLOPSRGB", "TRICLOPSPACKED"}
-    - "TRICLOPSRGB" is used if a STEREO_IMAGE is being sent. Otherwise use "TRICLOPSPACKED"
+    - If a digiclops is being used you must specify either {"DIGICLOPSSTEREO", "DIGICLOPSRIGHT", "DIGICLOPSBOTH"}
+    - "DIGICLOPSSTEREO" is used if a STEREO_IMAGE is being sent, "DIGICLOPSRIGHT" for RIGHT_IMAGE and "DIGICLOPSBOTH" for RIGHT_IMAGE and STEREO_IMAGE
     - Default: "MODENFI"
 
 Geometry
@@ -112,6 +112,10 @@ for the triclops libraries @c /usr/local/include/triclops/.
 
 The easiest way to install these libraries and headers are to copy them from the original directory. This code has been tested with Digiclops version 2.3.1.4-FC3 and Triclops version 3.2.0.8-FC3 on a Debian installation.
 
+
+@par Todo
+- The imagegrabber sublibrary should accept a camera index for specifying the particular camera to use on the firewire bus. At the moment the first camera found is used. 
+- Digiclops grabber is in its very early stages and much of the functionality in the digiclops and triclops libraries haven't been implemented yet.
 
 @par Authors
 

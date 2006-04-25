@@ -95,14 +95,22 @@ MainLoop::run()
                             cameraData->imageWidth = imageGrabber_->getWidth();
                             cameraData->imageHeight = imageGrabber_->getHeight();
                             cameraData->image.resize( imageGrabber_->getSize() );
-                            if( desiredConfig->format == BAYERBG | desiredConfig->format == BAYERGB | desiredConfig->format == BAYERRG | desiredConfig->format == BAYERGR | desiredConfig->format == TRICLOPSRGB | desiredConfig->format == TRICLOPSPACKED )
+                            if( desiredConfig->format == BAYERBG | desiredConfig->format == BAYERGB | desiredConfig->format == BAYERRG | desiredConfig->format == BAYERGR ) 
                             {
                                 // force the format to be bayer
                                 cameraData->format = desiredConfig->format;
                             }
+                            else if ( desiredConfig->format == DIGICLOPSSTEREO | desiredConfig->format == DIGICLOPSRIGHT | desiredConfig->format == DIGICLOPSBOTH )
+                            {
+                                // set the format
+                                cameraData->format = desiredConfig->format;
+
+                                // tell the digiclops what type of images to send
+                                imageGrabber_->setMode( desiredConfig->format );
+                            }
                             else
                             {
-                                // let the grabber figure out the format if there is no bayer encoding
+                                // let the grabber figure out the format if no bayer encoding or not using a digiclops camera
                                 cameraData->format = orcaImageMode( imageGrabber_->getMode() );
                                 // include this in camera config 
                                 desiredConfig->format = cameraData->format;

@@ -126,13 +126,17 @@ Component::start()
     {
         cameraConfig->format = BAYERGR;
     }
-    else if( format == "TRICLOPSRGB" )
+    else if( format == "DIGICLOPSSTEREO" )
     {
-        cameraConfig->format = TRICLOPSRGB;
+        cameraConfig->format = DIGICLOPSSTEREO;
     }
-    else if( format == "TRICLOPSPACKED" )
+    else if( format == "DIGICLOPSRIGHT" )
     {
-        cameraConfig->format = TRICLOPSPACKED;
+        cameraConfig->format = DIGICLOPSRIGHT;
+    }
+    else if( format == "DIGICLOPSBOTH" )
+    {
+        cameraConfig->format = DIGICLOPSBOTH;
     }
 
     string compression = 

@@ -24,9 +24,6 @@
 
 #include <iostream>
 
-// #include <opencv/highgui.h>
-// #include <opencv/cv.h>
-
 
 namespace imageserver {
 
@@ -61,8 +58,6 @@ public:
 private:
 
     bool isEnabled_;
-
-    // IplImage* cvImage_;
 
 };
 

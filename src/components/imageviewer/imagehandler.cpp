@@ -166,7 +166,8 @@ void ImageHandler::run()
                     cvCvtColor( bayerImage_, cvImage_, CV_BayerGR2BGR );
                 }
             }
-            else if( format == TRICLOPSRGB)
+
+            else if( format == DIGICLOPSSTEREO)
             {
 #ifdef TRICLOPS_FOUND
                 // TODO: might be able to use the pgr stuff from triclops
