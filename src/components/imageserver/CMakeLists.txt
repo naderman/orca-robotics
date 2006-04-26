@@ -80,6 +80,7 @@ IF ( BUILD_IMAGE_SERVER )
   #
   # includes and linking for the various grabbing libraries
   #
+  LINK_DIRECTORIES( imagegrabber )
 
   IF ( OPENCV7_FOUND )
     INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} )
