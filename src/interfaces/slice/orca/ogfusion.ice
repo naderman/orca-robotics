@@ -22,6 +22,7 @@
 #define ORCA2_OGFUSION_INTERFACE_ICE
 
 #include <orca/orca.ice>
+#include <orca/bros1.ice>
 
 module orca
 {
@@ -33,7 +34,20 @@ module orca
     An occupancy grid fusion interface
 
 */
+class OgFusionConfig extends OrcaObject
+{
+    //! The global coordinates of the bottom-left corner of the bottom-left cell
+    Frame2d      origin;
 
+    //! The number of cells along the x axis
+    int numCellsX;
+    //! The number of cells along the y axis
+    int numCellsY;
+    //! The size of each cell, in the x dimension
+    float metresPerCellX;
+    //! The size of each cell, in the y dimension
+    float metresPerCellY;
+};
 
 //! A basic structure for individual likelihoods
 struct OgCellLikelihood
@@ -61,6 +75,10 @@ class OgFusionData extends OrcaObject
  */
 interface OgFusion
 {
+    //! retreives map configuration etc.
+    nonmutating OgFusionConfig getConfig();
+    
+    //! set an observation
     void setData(OgFusionData data);
 };
 
