@@ -13,8 +13,15 @@ PROJECT(orca)
 
 SET( VERSION 2.0.0rc4+ CACHE STRING "Version of Orca distribution" )
   MESSAGE( "Orca version ${VERSION}" )
-SET( CMAKE_INSTALL_PREFIX /opt/orca-${VERSION} CACHE PATH "Installation directory" FORCE )
-  MESSAGE( "Setting installation directory to ${CMAKE_INSTALL_PREFIX}" )
+
+# If environment variable ORCA_INSTALL_DIR is not set, use /opt/orca-version
+SET( INSTALL_DIR $ENV{ORCA2_HOME} )
+IF( INSTALL_DIR )
+  SET( CMAKE_INSTALL_PREFIX $ENV{ORCA2_HOME} CACHE PATH "Installation directory" FORCE)
+ELSE( INSTALL_DIR )
+  SET( CMAKE_INSTALL_PREFIX /opt/orca-${VERSION} CACHE PATH "Installation directory" FORCE)
+ENDIF( INSTALL_DIR )
+MESSAGE( "Setting installation directory to ${CMAKE_INSTALL_PREFIX}" )
 
 SET( PROJ_SOURCE_DIR ${orca_SOURCE_DIR} )
 SET( PROJ_BINARY_DIR ${orca_BINARY_DIR} )
