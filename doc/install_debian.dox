@@ -75,8 +75,9 @@ export LD_LIBRARY_PATH=$ICE_HOME/lib:$LD_LIBRARY_PATH
 
 Build and install Orca2 distribution.
     - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive.
-    - Configure using cmake (note the dot after cmake)
-    - Compile, and install. The default install directory is @c /opt/orca-[VERSION], where [VERSION] is the Orca version. You can change it easily using @c ccmake tool ('$ ccmake .').
+    - Set the ORCA2_HOME environment variable as your Orca installation directory (e.g. 'export ORCA2_HOME=/opt/orca2'). If you don't set it, the default is @c /opt/orca-[VERSION], where [VERSION] is the Orca version.
+    - Configure using @c cmake . (note the dot after cmake)
+    - Compile, and install. If you've changed your mind about the installation directory, you can change it using @c ccmake tool ('$ ccmake .').
 @verbatim
 $ tar -zxf orca2-x.x.x.tar.gz
 $ cd orca2
