@@ -33,6 +33,7 @@
 #define SEGWAY_USB_VENDOR_ID                    0x0403
 #define SEGWAY_USB_PRODUCT_ID                   0xE729
 #define SEGWAY_USB_VENDOR_PRODUCT_ID            0x0403E729
+#define SEGWAY_USB_DESCRIPTION                  "Robotic Mobile Platform"
 #define SEGWAY_USB_MESSAGE_SIZE                 18
 #define SEGWAY_USB_MSG_START                    0xF0
 #define SEGWAY_USB_HEARTBEAT_MESSAGE            0x0
@@ -73,14 +74,15 @@ UsbIoFtdi::init()
     FT_SetVIDPID(iVID, iPID);   // use our VID and PID;
 
     FT_STATUS ftStatus;
-    FT_HANDLE ftHandleTemp;
-    DWORD numDevs;
-    DWORD Flags;
-    DWORD ID;
-    DWORD Type;
-    DWORD LocId;
-    char SerialNumber[16];
+//    FT_HANDLE ftHandleTemp;
+//    DWORD numDevs;
+//    DWORD Flags;
+//    DWORD ID;
+//    DWORD Type;
+//    DWORD LocId;
+//    char SerialNumber[16];
     char Description[64];
+    /*
     //
     // create the device information list
     //
@@ -142,6 +144,14 @@ UsbIoFtdi::init()
         return UsbIo::IO_ERROR;
     }
     cout<<"FT_Open OK"<<endl;
+    */
+    strcpy(Description,SEGWAY_USB_DESCRIPTION);
+    ftStatus = FT_OpenEx(Description ,FT_OPEN_BY_DESCRIPTION, &ftHandle_ );
+    if ( ftStatus != FT_OK) {
+        cout<<"FT_OpenEx failed ("<<ftStatus<<")"<<endl;
+        return UsbIo::IO_ERROR;
+    }
+    cout<<"FT_OpenEx OK"<<endl;
 
     ftStatus = FT_SetBaudRate( ftHandle_, 460800 );
     if ( ftStatus != FT_OK)  {
