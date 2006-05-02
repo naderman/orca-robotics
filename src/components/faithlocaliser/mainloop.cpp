@@ -69,9 +69,9 @@ MainLoop::run()
             localiseData->hypotheses[0].mean.p.x = odomData->pose.p.x;
             localiseData->hypotheses[0].mean.p.y = odomData->pose.p.y;
             localiseData->hypotheses[0].mean.o   = odomData->pose.o;
-            localiseData->hypotheses[0].cov.xx   = 0.01;
-            localiseData->hypotheses[0].cov.yy   = 0.01;
-            localiseData->hypotheses[0].cov.tt   = 1.0*M_PI/180.0;
+            localiseData->hypotheses[0].cov.xx   = 0.0025;
+            localiseData->hypotheses[0].cov.yy   = 0.0025;
+            localiseData->hypotheses[0].cov.tt   = (1.0*M_PI/180.0)*(1.0*M_PI/180.0);
             localiseData->hypotheses[0].cov.xy   = 0.0;
             localiseData->hypotheses[0].cov.xt   = 0.0;
             localiseData->hypotheses[0].cov.yt   = 0.0;
