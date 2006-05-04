@@ -87,7 +87,8 @@ interface Power
      *
      * @see unsubscribe
      */
-    void subscribe( PowerConsumer* subscriber );
+    void subscribe( PowerConsumer* subscriber )
+            throws ConfigurationNotExistException;
 
     // for reference, this is what IceStorm's subscribe function looks like.
     //void subscribe(QoS theQoS, Object* subscriber);
