@@ -21,20 +21,16 @@
 #ifndef ORCA2_LASERFEATUREEXTRACTOR_COMBINED_DRIVER_H
 #define ORCA2_LASERFEATUREEXTRACTOR_COMBINED_DRIVER_H
 
-#include <vector>
-#include <list>
-
 #include "algorithmdriver.h"
-#include "reflectorextractor.h"
-#include "section.h"
+
+class ReflectorExtractor;
+class ForegroundExtractor;
+class DoorExtractor;
+class CornerExtractor;
 
 namespace laserfeatures
 {
 
-/*
-    \brief
-    \author Tobias Kaupp t.kaupp at cas.edu.au
-*/
 class CombinedDriver: public AlgorithmDriver
 {
 
@@ -64,42 +60,16 @@ public:
                                  const orca::LaserDataPtr          &laserDataPtr,
                                  orca::PolarFeature2dDataPtr       &featureDataPtr );
     
-    virtual void setMaxRange( float maxRange )
-        { 
-            reflectorExtractor_.setMaxRange( maxRange );
-            maxLaserRange_ = maxRange; 
-        }
+    virtual void setMaxRange( float maxRange );
 
 private:
 
-    ReflectorExtractor reflectorExtractor_;
-
-    double maxLaserRange_;
-
-    std::vector<Section> sections_;
+    ReflectorExtractor *reflectorExtractor_;
+    ForegroundExtractor *foregroundExtractor_;
+    DoorExtractor *doorExtractor_;
+    CornerExtractor *cornerExtractor_;
 
     Config config_;
-    
-    // uitility functions for each type of feature extraction
-//     bool extractLaserReflectors( const orca::LaserDataPtr & laserDataPtr,
-//                                  const orca::PolarFeature2dDataPtr & featureDataPtr);
-    bool extractForegroundPoints( const orca::RangeScannerConfigPtr & laserConfigPtr,
-                                  const orca::LaserDataPtr & laserDataPtr,
-                                  const orca::PolarFeature2dDataPtr & featureDataPtr);
-    bool extractDoors( const orca::LaserDataPtr & laserDataPtr,
-                       const orca::PolarFeature2dDataPtr & featureDataPtr);
-    bool extractCorners( const orca::LaserDataPtr & laserDataPtr,
-                         const orca::PolarFeature2dDataPtr & featureDataPtr);
-    bool extractPossibleCorners( const orca::PolarFeature2dDataPtr & featureDataPtr );
-    
-    //
-    // Corner detector routines
-    //void calculatePos(const orca::LaserDataPtr laserDataPtr);
-    void connectSections(const orca::LaserDataPtr & laserDataPtr);
-    void extractLines();
-    void findBreakPoint(Section &s, double &maxDist, int &pos);
-    void fitLine(Section &s);
-    void printSections();
 
 };
 

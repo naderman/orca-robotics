@@ -6,9 +6,6 @@
 
 namespace laserfeatures {
 
-//!
-//! @author Alex Brooks
-//!
 class ReflectorExtractor
 {
 

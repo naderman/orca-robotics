@@ -182,6 +182,7 @@ void AlgorithmHandler::run()
             //
             // Stick it into buffer, so pullers can get it
             //
+//             cout << "INFO(algorithmhandler.cpp): Featuremap: " << featureData << endl;
             polarFeaturesDataBuffer_.push( featureData );
         }
         else {

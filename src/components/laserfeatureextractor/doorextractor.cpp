@@ -1,0 +1,96 @@
+#include "doorextractor.h"
+
+#include <iostream>
+#include <cmath>
+
+#include <orca/featuremap2d.h>
+
+
+using namespace std;
+
+namespace laserfeatures {
+    
+void DoorExtractor::addFeatures( const orca::LaserDataPtr &laserData,
+                                       orca::PolarFeature2dDataPtr &features )
+{    
+    unsigned int i;
+    bool buildingTarget = false;
+
+    int featureNumPnts = 0;
+
+    double delta_range = 0;
+    double door_width_sq;
+    double startBearing = - M_PI/2;
+    double startRange = -1.0;
+    double stopBearing = - M_PI/2;
+    double stopRange = -1.0;
+    double startX = 0.0;
+    double startY =0.0;
+    double stopX, stopY;
+    double min_width = 0.9*0.9;
+    double max_width = 1.5*1.5;
+
+    //std::cout << "Looking for open doors..." << std::endl;
+    // for each return
+    for ( i=10; i<laserData->ranges.size()-10; i++ )
+    {
+        // compute the step change in range
+        delta_range = laserData->ranges[i] - laserData->ranges[i-1];
+
+        if (buildingTarget == true)
+        {
+            // if we have reached the end of a cluster, process a new observation
+            if ( delta_range < -2.0 )
+            {
+                buildingTarget = false;
+                stopRange = laserData->ranges[i];
+                stopBearing = M_PI*(i)/(laserData->ranges.size()-1) - M_PI/2;
+                stopX = stopRange*cos(stopBearing);
+                stopY = stopRange*sin(stopBearing);
+
+
+                door_width_sq = pow(stopX - startX, 2.0) + pow(stopY - startY, 2.0);
+
+                //std::cout << " Checking a new cluster at range " << featureRange / featureNumPnts << " bearing " << featureBearing / featureNumPnts << " of width " << pole_width << " with " << featureNumPnts << " points" << std::endl;
+                // again make sure that the feature is not a foreground point
+                if (featureNumPnts > 5 && door_width_sq > min_width &&
+                    door_width_sq < max_width )
+                {
+                    orca::SinglePolarFeature2dPtr pp1 = new orca::SinglePolarFeature2d;
+                    pp1->type = orca::feature::DOOR;
+                    pp1->p.r = startRange;
+                    pp1->p.o = startBearing;
+
+                    orca::SinglePolarFeature2dPtr pp2 = new orca::SinglePolarFeature2d;
+                    pp2->type = orca::feature::DOOR;
+                    pp2->p.r = stopRange;
+                    pp2->p.o = stopBearing;
+
+                    features->features.push_back(pp1);
+                    features->features.push_back(pp2);
+                }
+
+                buildingTarget = false;
+            } else {
+                featureNumPnts++;
+            }  // end of end-of-cluster if
+        }     // end for each return
+        if ( delta_range > 2.0 )
+        {
+            // start building a new door shape
+            if ( buildingTarget == false)
+            {
+                buildingTarget = true;
+                featureNumPnts = 1;
+                startRange = laserData->ranges[i-1];
+                startBearing = M_PI*(i-1)/(laserData->ranges.size()-1) - M_PI/2;
+                startX = startRange*cos(startBearing);
+                startY = startRange*sin(startBearing);
+                continue; // go to the next return
+            }
+        }
+    }                                 
+    
+}
+
+}
