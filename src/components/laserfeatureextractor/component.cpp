@@ -119,6 +119,11 @@ void Component::start()
 
 void Component::stop()
 {
-    tracer()->debug( "component is stopping...",5 );
-    orcaice::Thread::stopAndJoin( algorithmHandler_ );
+    if ( algorithmHandler_ ) {
+        IceUtil::ThreadControl algoControl = algorithmHandler_->getThreadControl();
+        tracer()->debug("stopping algorithm handler", 5 );
+        algorithmHandler_->stop();
+        tracer()->debug("joining algorithm handler", 5 );
+        algoControl.join();
+    }
 }

@@ -125,10 +125,6 @@ void AlgorithmHandler::run()
     orca::PolarFeature2dDataPtr featureData = new orca::PolarFeature2dData;
     // don't need to create this one, it will be cloned from the buffer
     orca::LaserDataPtr laserData;
-
-    // try to catch expected errors
-    try
-    {
        
     // get laser config and geometry (only once)
     laserConfigPtr_ = laserPrx_->getConfig();
@@ -182,7 +178,7 @@ void AlgorithmHandler::run()
             //
             // Stick it into buffer, so pullers can get it
             //
-//             cout << "INFO(algorithmhandler.cpp): Featuremap: " << featureData << endl;
+            //cout << "INFO(algorithmhandler.cpp): Featuremap: " << featureData << endl;
             polarFeaturesDataBuffer_.push( featureData );
         }
         else {
@@ -193,15 +189,6 @@ void AlgorithmHandler::run()
 
     } // while
     
-    }
-    catch ( Ice::CommunicatorDestroyedException &e )
-    {
-        // it's ok, we are probably shutting down
-        cout<<"Communicator has passed away. No worries."<<endl;
-    }
-    
-    cout<<"TRACE(laserfeatureextractor::algorithmhandler.cpp): Exitting from run()" << endl;
-
     //
     // unexpected exceptions
     //

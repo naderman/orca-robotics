@@ -215,14 +215,6 @@ AlgoHandler::run()
     // unexpected exceptions
     //
     } // try
-    catch ( const IceUtil::NullHandleException & )
-    {
-        context_.tracer()->error( "Null Handle Exception. Application was probably Ctrl+C'd");
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is a stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
     catch ( const orca::OrcaException & e )
     {
         context_.tracer()->print( e.what );
