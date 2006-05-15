@@ -150,7 +150,7 @@ NetworkHandler::run()
         context_.tracer()->print( e.what );
         context_.tracer()->error( "unexpected (remote?) orca exception.");
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer()->info( "this is a stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
@@ -159,7 +159,7 @@ NetworkHandler::run()
         context_.tracer()->print( e.what() );
         context_.tracer()->error( "unexpected (local?) orcaice exception.");
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer()->info( "this is a stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
@@ -168,7 +168,7 @@ NetworkHandler::run()
         cout<<e<<endl;
         context_.tracer()->error( "unexpected Ice exception.");
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer()->info( "this is a stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
@@ -178,7 +178,7 @@ NetworkHandler::run()
         cout<<e.what()<<endl;
         context_.tracer()->error( "unexpected std exception.");
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer()->info( "this is a stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
@@ -186,13 +186,12 @@ NetworkHandler::run()
     {
         context_.tracer()->error( "unexpected exception from somewhere.");
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer()->info( "this is a stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
     
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
-    
-    cout<<"NetworkHandler: stopped."<<endl;
+    context_.tracer()->debug( "NetworkHandler: stopped.",5 );
 }

@@ -80,7 +80,7 @@ UserHandler::init()
     if ( driverName == "kbd-termio" )
     {
 #ifdef HAVE_KEYBOARD_TERMIO_DRIVER
-        context_.tracer()->print("loading keyboard driver");
+        context_.tracer()->info("loading keyboard driver (with termio)");
         driver_ = new KeyboardTermioDriver( config_ );
         displayHandler_ = new StdoutDisplayHandler();
 #else
@@ -90,7 +90,7 @@ UserHandler::init()
     else if ( driverName == "kbd-ncurses" )
     {
 #ifdef HAVE_KEYBOARD_NCURSES_DRIVER
-        context_.tracer()->print("loading keyboard-nc driver (with ncurses)");
+        context_.tracer()->info("loading keyboard driver (with ncurses)");
         KeyboardNcurcesDriver* keyboardTermioDriver = new KeyboardNcurcesDriver( config_ );
         // this driver implements both interfaces
         driver_ = keyboardTermioDriver;
@@ -102,7 +102,7 @@ UserHandler::init()
     else if ( driverName == "joystick" )
     {
 #ifdef HAVE_JOYSTICK_DRIVER
-        context_.tracer()->print("loading joystick driver");
+        context_.tracer()->info("loading joystick driver");
         
         std::string joystickPrefix = prefix + "Joystick.";
         config_.joystickDevice = orcaice::getPropertyWithDefault( context_.properties(),
@@ -115,7 +115,7 @@ UserHandler::init()
     }
     else if ( driverName == "fake" )
     {
-        context_.tracer()->print("loading fake driver");
+        context_.tracer()->info("loading fake driver");
         driver_ = new FakeDriver( config_ );
         displayHandler_ = new StdoutDisplayHandler();
     }
@@ -185,4 +185,5 @@ UserHandler::run()
 
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
+    context_.tracer()->debug( "UserHandler: stopped.",5 );
 }

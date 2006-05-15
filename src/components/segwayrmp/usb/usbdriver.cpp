@@ -191,14 +191,16 @@ UsbDriver::write( const orca::Velocity2dCommandPtr & command )
     return ret;
 }
 
-std::string UsbDriver::toString()
+std::string
+UsbDriver::toString()
 {
     return frame_->toString();
 }
 
 // Returns 0 if a full frame was read properly.
 // Returns 1 if a single packet read failed.
-int UsbDriver::readFrame()
+int
+UsbDriver::readFrame()
 {
     UsbIo::UsbIoStatus status;
     int canPacketsProcessed = 0;
@@ -302,9 +304,9 @@ UsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &
 {
     // POSITION2D
     
-    // set time stamps righ away
+    // set time stamps right away
     orcaice::setToNow( position2d->timeStamp );
-    // set time stamp righ away
+    // set time stamp right away
     orcaice::setToNow( power->timeStamp );
     
     // for odometry, use integrated values

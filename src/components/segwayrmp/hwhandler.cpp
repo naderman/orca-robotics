@@ -62,10 +62,11 @@ HwHandler::HwHandler(
     writeStatusPipe_.set( false );
 
     // set up data structure for 3 batteries
-    BatteryData bd;
-    for ( int i=0; i<3; ++i ) {
-        powerData_->batteries.push_back( bd );
-    }
+//     BatteryData bd;
+//     for ( int i=0; i<3; ++i ) {
+//         powerData_->batteries.push_back( bd );
+//     }
+    powerData_->batteries.resize(3);
     powerData_->batteries[0].name = "main-front";
     powerData_->batteries[1].name = "main-rear";
     powerData_->batteries[2].name = "ui";

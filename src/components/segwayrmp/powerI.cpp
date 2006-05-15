@@ -30,7 +30,8 @@ PowerI::PowerI( orcaice::PtrProxy<orca::PowerDataPtr> &power, const IceStorm::To
 {
 }
 
-orca::PowerDataPtr PowerI::getData(const ::Ice::Current& ) const
+orca::PowerDataPtr
+PowerI::getData(const ::Ice::Current& ) const
 {
     //std::cout << "Sending data back" << std::endl;
 
@@ -48,16 +49,17 @@ orca::PowerDataPtr PowerI::getData(const ::Ice::Current& ) const
     return data;
 }
 
-void PowerI::subscribe(const ::orca::PowerConsumerPrx& subscriber, const ::Ice::Current&)
+void
+PowerI::subscribe(const ::orca::PowerConsumerPrx& subscriber, const ::Ice::Current&)
 {
     //cout<<"subscription request"<<endl;
     IceStorm::QoS qos;
     topic_->subscribe( qos, subscriber );
 }
 
-void PowerI::unsubscribe(const ::orca::PowerConsumerPrx& subscriber, const ::Ice::Current&)
+void
+PowerI::unsubscribe(const ::orca::PowerConsumerPrx& subscriber, const ::Ice::Current&)
 {
     //cout<<"unsubscription request"<<endl;
     topic_->unsubscribe( subscriber );
 }
-

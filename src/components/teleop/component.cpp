@@ -77,7 +77,10 @@ Component::stop()
     
     // userHandler_ is blocked on user input
     // the only way for it to realize that we want to stop is to give it some keyboard input.
-    tracer()->print( "Quitting... Press any key or shake the joystick to continue." );
+    tracer()->info( "Component is quitting but the UserHandler is blocked waiting for user input.");
+    tracer()->print( "************************************************" );
+    tracer()->print( "Press any key or shake the joystick to continue." );
+    tracer()->print( "************************************************" );
     
     orcaice::Thread::stopAndJoin( userHandler_ );
 }

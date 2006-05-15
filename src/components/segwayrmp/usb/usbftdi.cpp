@@ -70,19 +70,20 @@ UsbIoFtdi::init()
     // custom device settings
     DWORD iVID = SEGWAY_USB_VENDOR_ID;
     DWORD iPID = SEGWAY_USB_PRODUCT_ID;
-    // without this the library will not find the segway
+    // without this, the FTDI library will not find the segway
     FT_SetVIDPID(iVID, iPID);   // use our VID and PID;
 
     FT_STATUS ftStatus;
-//    FT_HANDLE ftHandleTemp;
-//    DWORD numDevs;
-//    DWORD Flags;
-//    DWORD ID;
-//    DWORD Type;
-//    DWORD LocId;
-//    char SerialNumber[16];
-    char Description[64];
+    
     /*
+    FT_HANDLE ftHandleTemp;
+    DWORD numDevs;
+    DWORD Flags;
+    DWORD ID;
+    DWORD Type;
+    DWORD LocId;
+    char SerialNumber[16];
+    
     //
     // create the device information list
     //
@@ -145,6 +146,8 @@ UsbIoFtdi::init()
     }
     cout<<"FT_Open OK"<<endl;
     */
+    
+    char Description[64];
     strcpy(Description,SEGWAY_USB_DESCRIPTION);
     ftStatus = FT_OpenEx(Description ,FT_OPEN_BY_DESCRIPTION, &ftHandle_ );
     if ( ftStatus != FT_OK) {
