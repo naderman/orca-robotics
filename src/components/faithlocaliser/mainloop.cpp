@@ -31,11 +31,18 @@ using orcaice::operator<<;
 MainLoop::MainLoop( const Localise2dConsumerPrx                    localise2dConsumer,
                     orcaice::PtrBuffer<orca::Position2dDataPtr>   &posBuffer,
                     orcaice::PtrBuffer<Localise2dDataPtr>         &locBuffer,
-                    orcaice::Context                               context )
+                    orcaice::PtrBuffer<Localise2dDataPtr>         &historyBuffer,
+		    double                                         stdDevPosition,
+		    double                                         stdDevHeading,
+		    orcaice::Context                               context)
+
     : localise2dConsumer_(localise2dConsumer),
       posBuffer_(posBuffer),
       locBuffer_(locBuffer),
-      context_(context)
+      historyBuffer_(historyBuffer),
+      context_(context),
+      stdDevPosition_(stdDevPosition),
+      stdDevHeading_(stdDevHeading)
 {
     assert(localise2dConsumer_ != 0);
 }
@@ -52,6 +59,8 @@ MainLoop::run()
 
     try 
     {
+	double varPosition = stdDevPosition_*stdDevPosition_;
+        double varHeading = (stdDevHeading_*M_PI/180.0)*(stdDevHeading_*M_PI/180.0);
         while ( isActive() )
         {
             // cout<<"============================================="<<endl;
@@ -69,9 +78,9 @@ MainLoop::run()
             localiseData->hypotheses[0].mean.p.x = odomData->pose.p.x;
             localiseData->hypotheses[0].mean.p.y = odomData->pose.p.y;
             localiseData->hypotheses[0].mean.o   = odomData->pose.o;
-            localiseData->hypotheses[0].cov.xx   = 0.0025;
-            localiseData->hypotheses[0].cov.yy   = 0.0025;
-            localiseData->hypotheses[0].cov.tt   = (1.0*M_PI/180.0)*(1.0*M_PI/180.0);
+            localiseData->hypotheses[0].cov.xx   = varPosition;
+            localiseData->hypotheses[0].cov.yy   = varPosition;
+            localiseData->hypotheses[0].cov.tt   = varHeading;
             localiseData->hypotheses[0].cov.xy   = 0.0;
             localiseData->hypotheses[0].cov.xt   = 0.0;
             localiseData->hypotheses[0].cov.yt   = 0.0;
@@ -80,6 +89,15 @@ MainLoop::run()
 
             // Stick the new data in the buffer
             locBuffer_.push( localiseData );
+	    historyBuffer_.push( localiseData );
+
+	    Localise2dDataPtr Data0;
+
+            /*cout << "contents of history\n";
+            for(int i=0;i<historyBuffer_.size();i++){
+                historyBuffer_.get(Data0,i);
+		cout << "time: " << orcaice::timeAsDouble(Data0->timeStamp) << endl;
+            }*/
 
             try {
                 // push to IceStorm

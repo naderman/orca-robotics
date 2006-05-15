@@ -37,8 +37,12 @@ public:
 
     MainLoop( const orca::Localise2dConsumerPrx                localise2dConsumer,
               orcaice::PtrBuffer<orca::Position2dDataPtr>     &posBuffer,
-              orcaice::PtrBuffer<orca::Localise2dDataPtr>     &locBuffer,
-              orcaice::Context                                 context );
+ 	      orcaice::PtrBuffer<orca::Localise2dDataPtr>     &locBuffer,
+	      orcaice::PtrBuffer<orca::Localise2dDataPtr>     &historyBuffer,
+	      double                                           stdDevPosition,
+              double                                           stdDevHeading,
+	      orcaice::Context                                 context
+	    );
     ~MainLoop();
 
     virtual void run();
@@ -53,8 +57,13 @@ private:
     
     // outgoing
     orcaice::PtrBuffer<orca::Localise2dDataPtr> &locBuffer_;
+    orcaice::PtrBuffer<orca::Localise2dDataPtr> &historyBuffer_;
 
     orcaice::Context context_;
+
+    double stdDevPosition_;
+
+    double stdDevHeading_;
 };
 
 } // namespace

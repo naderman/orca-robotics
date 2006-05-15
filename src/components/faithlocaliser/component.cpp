@@ -30,8 +30,13 @@ Component::start()
     Ice::PropertiesPtr prop = communicator()->getProperties();
     std::string prefix = tag();
     prefix += ".Config.";
-    // no configs to read yet
 
+    // basic configs
+    double StdDevPosition = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StdDevPosition", 0.05 );
+    double StdDevHeading = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StdDevHeading", 1.0 );
+    int HistoryDepth = orcaice::getPropertyAsIntWithDefault( prop, prefix+"HistoryDepth", 50 );
+
+    historyBuffer_.configure(HistoryDepth);
     //
     // EXTERNAL PROVIDED INTERFACE
     //
@@ -40,7 +45,7 @@ Component::start()
         ( context(), localise2dPublisher_, "Localise2d" );
     
     // create servant for direct connections
-    Ice::ObjectPtr localise2dObj_ = new Localise2dI( localiseTopicPrx, locBuffer_ );
+    Ice::ObjectPtr localise2dObj_ = new Localise2dI( localiseTopicPrx, locBuffer_, historyBuffer_ );
     orcaice::createInterfaceWithTag( context(), localise2dObj_, "Localise2d" );
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -91,11 +96,13 @@ Component::start()
     // MAIN DRIVER LOOP
     //
 
-    mainLoop_ = new MainLoop(  localise2dPublisher_,
-//                                posConsumer_->buffer_,
-                               posPipe_,
-                               locBuffer_,
-                               context() );
+    mainLoop_ = new MainLoop(localise2dPublisher_,
+                             posPipe_,
+			     locBuffer_,
+                             historyBuffer_,
+                             StdDevPosition,
+                             StdDevHeading,
+                             context() );
     
     mainLoop_->start();
 }

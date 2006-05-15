@@ -35,6 +35,7 @@ private:
     orca::Localise2dConsumerPrx localise2dPublisher_;
 
     orcaice::PtrBuffer<orca::Localise2dDataPtr> locBuffer_;
+    orcaice::PtrBuffer<orca::Localise2dDataPtr> historyBuffer_;
 
     // REQUIRED INTERFACE
     //orcaice::BufferedConsumerI<orca::Position2dConsumer,orca::Position2dDataPtr> *posConsumer_;

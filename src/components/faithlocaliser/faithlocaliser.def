@@ -8,3 +8,11 @@ Provides.Localise2d.DefaultInterface=localise2d
 
 Requires.Odometry.Type=Position2d
 Requires.Odometry.DefaultProxy=platform2d@local/segwayrmp
+
+# configuration
+# Std deviation in position (Metres)
+Config.StdDevPosition.Default=0.05
+# Stddeviation in Heading (Degrees)
+Config.StdDevHeading.Default=1.0
+# How may objects to we keep for getDataAtTime()
+Config.HistoryDepth.Default=50

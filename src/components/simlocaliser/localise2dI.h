@@ -40,6 +40,8 @@ public:
 
     virtual ::orca::Localise2dDataPtr getData(const ::Ice::Current& ) const;
 
+    virtual ::orca::Localise2dDataPtr getDataAtTime(const orca::Time&, const ::Ice::Current& ) const;
+
     virtual void subscribe(const ::orca::Localise2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
     virtual void unsubscribe(const ::orca::Localise2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());

@@ -53,6 +53,12 @@ Localise2dI::getData(const ::Ice::Current& ) const
     return data;
 }
 
+::orca::Localise2dDataPtr
+Localise2dI::getDataAtTime(const orca::Time&, const ::Ice::Current& ) const
+{
+    return NULL;
+}
+
 void 
 Localise2dI::subscribe(const ::orca::Localise2dConsumerPrx& subscriber, const ::Ice::Current&)
 {
