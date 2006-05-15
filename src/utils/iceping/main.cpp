@@ -73,7 +73,7 @@ int App::run( int argc, char* argv[] )
     for( uint i=1; i<args.size(); ++i )
     {
         if ( args[i]=="-r" ) {
-            proxy = "IceGrid/Query";
+            proxy = "IceGrid/Query";            
         }
         else if ( args[i]=="-V" ) {
             verbose = true;
@@ -123,6 +123,9 @@ int App::run( int argc, char* argv[] )
     // got all parameters
     if ( verbose ) {
         cout<<"will ping "<<proxy<<" "<<count<<" times with "<<intervalUs<<"us interval"<<endl;
+        
+        std::string locatorStr = communicator()->getProperties()->getProperty( "Ice.Default.Locator" );
+        cout<<"will use locator:  "<<locatorStr<<endl;
     }
     
     Ice::ObjectPrx base = communicator()->stringToProxy( proxy );
@@ -165,7 +168,7 @@ int App::run( int argc, char* argv[] )
     }
     catch(const Ice::Exception& ex)
     {
-        cerr << endl << "Ping failed"<< endl;
+        cerr << endl << "Ping failed."<<endl;
         cerr << ex << endl;
     }
 
