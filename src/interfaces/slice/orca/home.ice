@@ -45,6 +45,9 @@ class HomeData extends OrcaObject
     
     //! Names of all required interfaces as registered with the Locator service.
     Ice::StringSeq requires;
+
+    //! Number of seconds since the start of the component.
+    int timeUp;
 };
 
 //! Our properties are defined the same way as Ice::PropertyDict.
