@@ -20,8 +20,9 @@
 
 /*!
 
-@page orca_doc_installfedora Installing Orca 2 on Fedora Core Linux
+@page orca_doc_installfedora Installing Orca on Fedora Core Linux
 
+@note Updated for 2.0.0-rc2 distribution.
 
 These are some instructions for installing Orca 2 on Fedora Core. They
 are known to work with Fedora Core 4; later systems may be slightly
@@ -139,9 +140,9 @@ export LD_LIBRARY_PATH=${ICE_HOME}/lib:${QT_HOME}/lib:/usr/local/lib
 After making these changes, you should either log out then log in again for a "totally
 clean" installation, or at least do
 
-@
+@verbatim
 % . ~/.bash_profile
-@ 
+@endverbatim
 
 in the shell you will be compiling Orca 2 in. 
 
@@ -151,14 +152,17 @@ in the shell you will be compiling Orca 2 in.
 2. Follow the instructions there to download the source as a tar file
 or through CVS. In either case, the process once it is downloaded is essentially the same:
 
+@verbatim
 % cd orca2
 % cmake .
+@endverbatim
 (At this point you may wish to confirm by looking at output that Ice and Qt are correctly
 detected).
-% make % su root
+@verbatim
+% make 
+% su root
 % make install
-
-% make install
+@endverbatim
 
 @section orca_doc_installfedora_paths2 Adding Orca 2 to your path
 
@@ -166,9 +170,9 @@ Again, minor modifications need to be made to your ~/.bash_profile file. The new
 should look like this:
 
 @verbatim
-export ICE_HOME=/opt/Ice-3.0.0
-export QT_HOME=/usr/local/Trolltech/Qt-4.1.0
-export ORCA2_HOME=/opt/orca-2.0.0-rc2
+export ICE_HOME=/opt/Ice-[VERSION]
+export QT_HOME=/usr/local/Trolltech/Qt-[VERSION]
+export ORCA2_HOME=/opt/orca-[VERSION]
 export PATH=${ICE_HOME}/bin:${QT_HOME}/bin:${ORCA2_HOME}/bin:/usr/local/bin:$PATH
 export LD_LIBRARY_PATH=${ICE_HOME}/lib:${QT_HOME}/lib:${ORCA2_HOME}/lib:/usr/local/lib
 @endverbatim

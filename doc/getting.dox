@@ -36,14 +36,16 @@ Practically, this means that you can download build your own components from scr
 
 @section download Download and install instructions
 
-Follow these instructions to install orca2 and its dependencies. The instructions below are quite general. Details differ depending on platform/distribution:
+Detailed instructions are available for these platforms/distributions:
     - @ref orca_doc_installdebian
     - @ref orca_doc_installfedora
     - Send feedback on building under other configurations.
 
+The instructions below are quite general, follow them if your platform/distribution combination is not described above:
+
     -# Download and install <a href="http://www.cmake.org/">CMake: Cross-Platform Make</a> which is used to build the orca distribution.
         - Minimum version required 2.2.2 (latest known to work: 2.2.3)
-        - Download binaries from <a href="http://www.cmake.org/HTML/Download.html">Kitware</a>.
+        - Full instructions are available from the <a href="http://www.cmake.org/HTML/Download.html">download page</a>.
     -# Download and install Ice libraries.
         - Minimum version required 3.0.0 (latest known to work: 3.0.1)
         - Full instructions are available from the <a href="http://www.zeroc.com/download.html">download page</a>. Several binaries distributions exists, for others (e.g. Debian Linux) building from source is required.
@@ -52,8 +54,8 @@ Follow these instructions to install orca2 and its dependencies. The instruction
             - For version requirements see individual component documentation.
         - <a href="http://www.stack.nl/~dimitri/doxygen/" target="_blank">Doxygen</a>  for generating local doxygen documentation</a>.
             - The standard version of doxygen cannot build documentation from Slice files. We have a patched version which does that. It is used to generate the documentation displayed on the Orca website. The patch may appear in future versions of Doxygen or made available here.
-        - <a href="http://www.trolltech.com/" target="_blank">Qt</a> is a cross-platform framework for building GUI's. Some components are GUI-only and some have GUI drivers.
-            - Minimum version required 4.1.0 (latest known to work: 4.1.0)
+        - <a href="http://www.trolltech.com/" target="_blank">Qt</a> is a cross-platform framework for building GUI's. Some components are GUI-only and some have optional GUI drivers.
+            - Minimum version required 4.1.0 (latest known to work: 4.1.1)
     -# Build and install Orca2 distribution.
         - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive.
         - Configure using CMake

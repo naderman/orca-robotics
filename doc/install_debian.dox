@@ -22,6 +22,8 @@
 
 @page orca_doc_installdebian Installing Orca on Debian Linux
 
+@note Updated for 2.0.0-rc4 distribution.
+
 These are detailed instructions for installing Orca on Debian Linux. They are known to work for a system using Debian \b Testing distribution. See @ref orca_doc_getting for general guidelines.
 
 @section orca_doc_installdebian_cmake CMake
@@ -71,11 +73,11 @@ export PATH=$ICE_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$ICE_HOME/lib:$LD_LIBRARY_PATH
 @endverbatim
 
-@section orca Orca
+@section orca_doc_installdebian_orca Orca
 
 Build and install Orca2 distribution.
     - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive.
-    - Set the ORCA2_HOME environment variable as your Orca installation directory (e.g. 'export ORCA2_HOME=/opt/orca2'). If you don't set it, the default is @c /opt/orca-[VERSION], where [VERSION] is the Orca version.
+    - The default installation directory is  @c /opt/orca-[VERSION], where [VERSION] is the Orca version. You can customized this by setting ORCA2_INSTALL environment variable (e.g. 'export ORCA2_INSTALL=~/orca2').
     - Configure using @c cmake . (note the dot after cmake)
     - Compile, and install. If you've changed your mind about the installation directory, you can change it using @c ccmake tool ('$ ccmake .').
 @verbatim
@@ -87,7 +89,7 @@ $ make
 # ldconfig
 @endverbatim
 
-Make sure that the binaries and executables are in the path. You may want to add a snippet to your @c ~/.bashrc file similar to the one below. Replace [VERSION] with the version of Orca you've just installed. Change the directory if you've modified the default install directory.
+Make sure that the binaries and executables are in the path. You may want to add a snippet to your @c ~/.bashrc file similar to the one below. Replace [VERSION] with the version of Orca you've just installed. Change the directory if you've modified the default install directory. Notice that the environment variable for the Orca installation to use (ORCA2_HOME) is different from the one which specifies where to install Orca (ORCA2_INSTALL). This allows multiple Orca installations on the same machine.
 @verbatim
 export ORCA2_HOME=/opt/orca-[VERSION]
 export PATH=$ORCA2_HOME/bin:$PATH
