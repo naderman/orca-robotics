@@ -179,6 +179,7 @@ NetHandler::run()
 
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
+    context_.tracer()->debug( "exiting NetHandler thread...",5);
 }
 
 void

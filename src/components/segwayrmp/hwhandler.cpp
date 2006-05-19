@@ -271,6 +271,7 @@ HwHandler::run()
     
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
+    context_.tracer()->debug( "exiting HwHandler thread...",5);
 }
 
 //
