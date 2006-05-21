@@ -67,7 +67,7 @@ void OrcaMonComponent::start()
     // If this happens we may as well quit.
     std::string proxyString = orcaice::toString(
                     orcaice::getRequiredInterface( context(), "Generic" ) );
-    Ice::ObjectPrx obj = communicator()->stringToProxy( proxyString );
+    Ice::ObjectPrx obj = context().communicator()->stringToProxy( proxyString );
     
     // connect to it and get its object ID, aka interface type.
     std::string objId;
@@ -146,7 +146,7 @@ void OrcaMonComponent::start()
     else
     {
         tracer()->error( "unsupported interface type: "+objId+". Quitting..." );
-        communicator()->destroy();
+        context().communicator()->destroy();
     }
 
     

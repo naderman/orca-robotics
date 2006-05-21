@@ -66,7 +66,7 @@ Component::start()
     catch ( const Ice::Exception & e )
     {
         // nothing else to do
-        communicator()->shutdown();
+        context().communicator()->shutdown();
     }
     
     IceGrid::AdminPrx admin = IceGrid::AdminPrx::checkedCast( adminProxy );
@@ -118,7 +118,7 @@ Component::start()
     cout<<"non-Orca    : "<<list.size()-reachCount-cleanCount<<endl;
 
     // we are done
-    communicator()->shutdown();
+    context().communicator()->shutdown();
 }
 
 //

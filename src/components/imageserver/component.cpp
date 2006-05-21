@@ -71,7 +71,7 @@ Component::start()
     // INITIAL CONFIGURATION
     //
 
-    Ice::PropertiesPtr prop = communicator()->getProperties();
+    Ice::PropertiesPtr prop = properties();
     std::string prefix = tag();
     prefix += ".Config.";
 
