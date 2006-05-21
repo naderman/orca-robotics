@@ -115,6 +115,33 @@ NetHandler::run()
     
     try // this is once per run try/catch: waiting for the communicator to be destroyed
     {
+  
+      // Just keep trying till this works...
+      // no reason to do anything else until we are registered
+      while ( isActive() )
+      {
+        try {
+          cout<<"activating..."<<endl;
+          context_.activate();
+          cout<<"activated."<<endl;
+          break;
+        }
+        catch ( orcaice::NetworkException & e )
+        {
+          cout<<e.what()<<endl;
+          cout << "Will try again..." << endl;
+        }
+        catch ( Ice::Exception & e )
+        {
+          cout<<e<<endl;
+          cout << "Caught some Ice exception while activating.  Will try again..." << endl;
+        }
+        catch ( ... )
+        {
+          cout << "Caught some other exception while activating." << endl;
+        }
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+      }                                                                                                                                                                                                                                                                                                                                            
     
     while( isActive() )
     {
