@@ -63,7 +63,9 @@ void Component::start()
 
     // REQUIRED : Laser
     orca::LaserPrx laserPrx;
-    while ( isActive() ) {
+    // TODO: this will not actually quit on ctrl-c
+    while ( true ) // ( isActive() )
+    {
         try
         {
             orcaice::connectToInterfaceWithTag<LaserPrx>( context(), laserPrx, "Laser" );
@@ -92,7 +94,8 @@ void Component::start()
     //
     // Subscribe for data
     //
-    while ( isActive() )
+    // TODO: this will not actually quit on ctrl-c
+    while ( true ) // ( isActive() )
     {
         try
         {

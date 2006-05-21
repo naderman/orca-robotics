@@ -71,7 +71,8 @@ void OrcaMonComponent::start()
     
     // connect to it and get its object ID, aka interface type.
     std::string objId;
-    while( isActive() )
+    // TODO: this will not actually quit on ctrl-c
+    while ( true ) // ( isActive() )
     {
         try
         {
@@ -83,7 +84,7 @@ void OrcaMonComponent::start()
         catch ( const Ice::CommunicatorDestroyedException & e )
         {
             // we must be shutting down
-            stop();
+            return;
         }
         catch( const Ice::LocalException & e )
         {
@@ -91,9 +92,9 @@ void OrcaMonComponent::start()
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }
-    if ( !isActive() ) {
-        return;
-    }
+//     if ( !isActive() ) {
+//         return;
+//     }
 
     // now that we know the interface type, we can create an appropriate consumer and subscribe ourselves
     if ( objId=="::orca::Laser" || objId=="::orca::RangeScanner" )
@@ -155,7 +156,6 @@ void OrcaMonComponent::start()
 void OrcaMonComponent::stop()
 {
     tracer()->debug( "stopping orcamon...", 5 );
-    Component::stop();
     // nothing to do
 }
 

@@ -53,7 +53,8 @@ void Component::start()
 
     // Connect directly to the interface
     orca::CameraPrx cameraPrx;
-    while( isActive() )
+    // TODO: this will not actually quit on ctrl-c
+    while( true ) // isActive() )
     {
         try
         {
@@ -107,7 +108,8 @@ void Component::start()
     // Subscribe for data
     //
     // will try forever until the user quits with ctrl-c
-    while ( isActive() )
+    // TODO: this will not actually quit on ctrl-c
+    while ( true ) // ( isActive() )
     {
         try
         {
