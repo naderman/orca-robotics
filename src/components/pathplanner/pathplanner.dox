@@ -87,7 +87,7 @@ This driver uses the famous A* search algorithm to guarantee the shortest path f
 
 @par Notes
 
-Here is a bibtex reference to the LaTombe book which contains the gridpotential-based algorithms (@ref orca_pathplanner_simplenav and @ref orca_pathplanner_skeletonnav):
+Bibtex reference to the LaTombe book which contains the gridpotential-based algorithms (@ref orca_pathplanner_simplenav and @ref orca_pathplanner_skeletonnav):
 
 @verbatim
 @Book{latombe91robot,
