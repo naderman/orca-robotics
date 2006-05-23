@@ -126,6 +126,22 @@ int App::run( int argc, char* argv[] )
         
         std::string locatorStr = communicator()->getProperties()->getProperty( "Ice.Default.Locator" );
         cout<<"will use locator:  "<<locatorStr<<endl;
+
+        // this is copy of orcaice::printConmponentProperties() from orcaice/privateutils.cpp
+        Ice::StringSeq propSeq = communicator()->getProperties()->getCommandLineOptions();
+        // strip off all orca-specific properties, we don't use them anyway
+        propSeq = communicator()->getProperties()->parseCommandLineOptions( "Orca", propSeq );
+
+        std::ostringstream os;
+        os << propSeq.size();
+    
+        cout<<"iceping properties ("<<os.str()<<")"<<endl;
+        cout<<"========================"<<endl;
+    
+        for ( uint i=0; i<propSeq.size(); ++i ) {
+            cout<<propSeq[i]<<endl;
+        }
+        cout<<"========================"<<endl;
     }
     
     Ice::ObjectPrx base = communicator()->stringToProxy( proxy );
