@@ -76,9 +76,6 @@ NetHandler::init()
     statusPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             prefix+"StatusPublishInterval", 60.0 );
 
-    //
-    // EXTERNAL INTERFACES
-    //
     // PROVIDED: Platform2d
     // Find IceStorm Topic to which we'll publish.
     // NetworkException will kill it, that's what we want.
@@ -141,7 +138,7 @@ NetHandler::run()
           cout << "Caught some other exception while activating." << endl;
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-      }                                                                                                                                                                                                                                                                                                                                            
+      }
     
     while( isActive() )
     {
