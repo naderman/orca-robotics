@@ -17,6 +17,7 @@ SUBDIRS(
   orcaview
   pathplanner
   position2dmon
+  registrylist
   registryview
   segwayrmp
   sicklaser
