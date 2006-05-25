@@ -33,7 +33,18 @@ $ ls home*
 home.cpp  home.h  home.ice  homeI.cpp  homeI.h
 @endverbatim
 
-You can see 4 generated files: homeI.h and homeI.cpp are the skeletons. Move them to your component directory and delete home.h and home.cpp.
+You can see 4 generated files: %homeI.h and homeI.cpp are the skeletons. Move them to your component directory and delete home.h and home.cpp. There are 2 modifications to the files you'll have to make:
+
+- The #include for the interface definition file in @c %homeI.h is missing the namespace, so it looks like this:
+@verbatim
+#include <orca/home.h>
+@endverbatim
+
+- Unless your current directory is in the include path, change brackets to quotes in @c homeI.cpp, so it looks like this:
+@verbatim
+#include "homeI.h"
+@endverbatim
+
 
 @par Generating Local Documentation
 
