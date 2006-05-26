@@ -24,16 +24,21 @@
 
 Developers: as you make substantial changes in the code (add features, fix bugs, etc.), add an item in the section on changes. When the next version is released, this list will be cut-and-pasted into the release notes.
 
+@section todo To-Do List for Release 2.0.0
+
+- License
+
+- Check docco, especially quickstart and tutorials
+
+- review libOrcaIce for stuff does not belong there
+
+- redo ping performance number
+
 @section changes Changes since Last Release
 
 - item
 
 - item
 
-@section todo To-Do List
-
-- item
-
-- item
 
 */
