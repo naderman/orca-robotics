@@ -25,6 +25,7 @@ SET( SLICE_SOURCE_FILES
     laser.ice
     ogfusion.ice
     pathplanner2d.ice
+    pingreply.ice
     position2d.ice
     position3d.ice
     platform2d.ice

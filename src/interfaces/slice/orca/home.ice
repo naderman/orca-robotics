@@ -21,6 +21,7 @@
 #ifndef ORCA2_HOME_INTERFACE_ICE
 #define ORCA2_HOME_INTERFACE_ICE
 
+// for Ice::StringSeq
 #include <Ice/BuiltinSequences.ice>
 
 #include <orca/orca.ice>
