@@ -93,15 +93,9 @@ None for the component. See driver sections below for individual driver dependen
 
 @section orca_robot_segwayrmpusb Segway RMP USB driver
 
-The segwayrmp driver provides control of a Segway RMP (Robotic
-Mobility Platform), which is an experimental robotic version of the
-Segway HT (Human Transport), a kind of two-wheeled, self-balancing
-electric scooter.
+The segwayrmp driver provides control of a Segway RMP (Robotic Mobility Platform), which is an robotic version of the Segway HT (Human Transport), a kind of two-wheeled, self-balancing electric scooter. Because of its power, weight, height, and dynamics, the Segway RMP is a potentially dangerous machine.  Be @b very careful with it.
 
-Because of its power, weight, height, and dynamics, the Segway RMP is
-a potentially dangerous machine.  Be @b very careful with it.
-
-For safety, this Segway will stop (zero-out motion commands) if no new command has been received from the PC in the previous 400ms or so. This is done in Segway firmware and this component does not duplicate this functionality. Thus, if you want to continue moving at a constant velocity, you must continuously send your desired velocities to the Platform2d interface (Teleop component does exactly that).
+For safety, this Segway will stop (zero-out motion commands) if no new command has been received from the PC in the previous 400ms or so. This is done in Segway firmware and this component does not duplicate this functionality. Thus, if you want to continue moving at a constant velocity, you must continuously send your desired velocities to the Platform2d interface (@ref orca_component_teleop component does exactly that).
 
 @par Dependancies
 
