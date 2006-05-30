@@ -1,0 +1,50 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_testing Testing Orca Components
+
+The general consensus in the software testing community is that testing component-based software is generally more challenging compared to monolithic. We are planning on doing much more to test existing Orca components and simplify testing of new ones. For an introduction to the topic, see this relatively new book: <a href="http://www.amazon.com/gp/product/1580534805" target="_blank">Testing and Quality Assurance for Component-Based Software.</a>
+
+@par Considerations
+
+These are some of abnormal conditions which most Orca components must be able to deal with:
+- no network
+- no Registry
+- no IceStorm
+- no hardware
+- no required interfaces
+
+(if the component attempts to "deal with the failure", e.g. reconnect to
+missing hardware or a required interface, make sure it's possible to stop it by Ctrl-C)
+
+Repeat tests under these conditions:
+- on startup / while running
+- both stand-alone and as a service
+- for all available drivers
+- for key configuration options
+- high/low CPU load (?)
+
+@par Components dedicated to testing other components
+
+One way to test components is to write dedicated "test machines" in the distributions. They hook up to other components to excersize their functionality. See for example, @ref orca_component_orcaicetester and @ref orca_component_segwayrmptester.
+
+*/

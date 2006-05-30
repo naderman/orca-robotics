@@ -24,7 +24,7 @@
 
 Performance of a distributed system can be measured in variety of ways. As a first step, we provide some numbers on round trip time (RTT) for sending several types of Orca objects. The plots below show average RTT for sending 100 objects  with an interval of 0.25s. Vertical bars show min and max values. Ping results are shown for comparison. 
 
-@image html rtt_all_v200.jpg
+@image html perf_rtt_all.jpg
 
 @par Hardware
 
