@@ -33,24 +33,30 @@ module orca
 */
 
 /*!
-    @brief Pinger.
+    @brief Test component which initiates timed transmission.
 */
 interface Pinger
 {
+    //! Excepts data returned in the response to calling ping1 operation of Replier.
     void callback( OrcaObject data );
 };
 
 /*!
-    @brief Replier.
+    @brief Test component which replies to timed transmission.
 */
 interface Replier
 {
-    idempotent void initiateCallback( Pinger* server );
+    //! Specifies the Pinger proxy, only required for tests with ping1.
+    idempotent void setPinger( Pinger* server );
 
+    //! Sends data one way and expects it to be returned using callback operation
+    //! of Pinger interface.
     void ping1( OrcaObject data );
 
+    //! Sends data one way and receives it back.
     OrcaObject ping2( OrcaObject data );
 
+    //! Initiate shutdown.
     idempotent void shutdown();
 };
 

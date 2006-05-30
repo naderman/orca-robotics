@@ -22,46 +22,32 @@
 
 @page orca_doc_devguide Developer's Guide
 
-@section emptyproject Starting Your Own Orca Project
-
-A common situation is that you want to experiment with some components without the hassle of
-committing them into the Orca SourceForge repository or want to work on a closed-source
-component. In this case you should download and install the main Orca distribution and
-then setup a parallel workspace for your own project.
-
-To help you start quickly we provide a template  project which uses CMake, mirrors
-the setup of the orca2 repository and is already set up to find Ice, orca2
-installation, etc. You can of course set up a project in any way you like, however you
-might find it useful. Get it from CVS (it may be more up to date) or download
-an archive.
-
-- checkout CVS module 'empty-project' (it's more likely to be up-to-date)
-- download <a href="http://orca-robotics.sf.net/empty-project-2.0.0rc3.tar.gz">a snapshot of CVS repository</a> as of v.2.0.0rc3+.
-
-
-@section goodcomp Notes on writing good components
+@section goodcomp Notes on designing and writing components
 
 Independence of individual components from each other is the cornerstone of component-based
 approach to software and, therefore, the Orca project. This means that you can write your components
 any way you want. Still, some approaches to organizing your component code lead to more efficient,
 maintainable, and understandable code.
 
-    - @ref orca_doc_devcomp. This page tries to capture some of the approaches which we found useful.
-    - @ref orca_doc_devtricks
+- @ref orca_doc_devproj
+- @ref orca_doc_devcomp
+- Testing Component Reliability.
+- @ref orca_doc_performance
+- @ref orca_doc_devtricks
 
 @section other Other useful information
   
-    - @ref orca_doc_units
-    - @ref orca_doc_style
-    - @ref orca_doc_buildsystem
-    - @ref orca_doc_cvs
-    - @ref orca_doc_dart2
+- @ref orca_doc_units
+- @ref orca_doc_style
+- @ref orca_doc_buildsystem
+- @ref orca_doc_cvs
+- @ref orca_doc_dart2
 
-@section internal Internal Documentation
+@section internal Internal project documentation
 
-    - @ref orca_doc_todo
+- @ref orca_doc_todo
 
 */
 
 // finish this page and add the link to goodcomp section
-//    - @ref orca_doc_orcaice. This page describes how Orca framework builds on top of Ice.
+// - @ref orca_doc_orcaice. This page describes how Orca framework builds on top of Ice.

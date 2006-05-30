@@ -1,0 +1,59 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_performance Performance of Orca Components
+
+Performance of a distributed system can be measured in variety of ways. As a first step, we provide some numbers on round trip time (RTT) for sending several types of Orca objects. The plots below show average RTT for sending 100 objects  with an interval of 0.25s. Vertical bars show min and max values. Ping results are shown for comparison. 
+
+@image html rtt_all_v200.jpg
+
+@par Hardware
+
+Intra-host communication: 2.0GHz laptop with Debian Linux (2.6 kernel). Power supply was plugged in.
+Host-to-Host communication: two laptops as above with 100Mb wired Ethernet.
+
+@par Software
+
+Test components Pinger and Replier which can be found in orca/src/tests/. They use BiPush communication pattern. 
+
+Each object type in the orca-base distribution is sent from Pinger to Replier and immediately sent back. The process is repeated 100 times. The objects are transmitted twice per second.
+
+All libraries (libOrca*, libcrud) were compiled with CMAKE_BUILD_TYPE=Release (translates to -O3 for gcc)
+Objects
+
+All objects are generated using orca::setSane( ObjectType & ) call. Note that Crud transport is limited to 16KB packets. For this reason the size of some objects (OgMap and Image) is transport-dependent. Similarly, ping is limited to 64KB packets.
+
+Compression was turned off for the objects which support it (e.g. Image).
+
+@par How ping tests were performed
+
+The ping settings closely follow the settings described above. RTT values are measured for packet sizes from 16 B to 64 KB.
+
+@verbatim
+$ ping host -c 100 -s 8 -i 0.25 -q
+$ ping host -c 100 -s 24 -i 0.25 -q
+...
+$ ping host -c 3 -s 32760 -i 0.25 -q
+$ ping host -c 3 -s 65499 -i 0.25 -q
+@endverbatim
+
+*/
