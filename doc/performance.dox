@@ -33,20 +33,21 @@ Host-to-Host communication: two laptops as above with 100Mb wired Ethernet.
 
 @par Software
 
-Test components Pinger and Replier which can be found in orca/src/tests/. They use BiPush communication pattern. 
+Ice v.3.0.1. Compiled with default options.
 
-Each object type in the orca-base distribution is sent from Pinger to Replier and immediately sent back. The process is repeated 100 times. The objects are transmitted twice per second.
+Orca v.2.0.0. Compiled compiled with CMAKE_BUILD_TYPE=Release (translates to -O3 for gcc). Test components @ref orca_test_pinger and @ref orca_test_replier.
 
-All libraries (libOrca*, libcrud) were compiled with CMAKE_BUILD_TYPE=Release (translates to -O3 for gcc)
-Objects
+@par Objects
 
-All objects are generated using orca::setSane( ObjectType & ) call. Note that Crud transport is limited to 16KB packets. For this reason the size of some objects (OgMap and Image) is transport-dependent. Similarly, ping is limited to 64KB packets.
+The following objects are transmitted: Position2dData, LaserData, OgMapData, CameraData. All objects are generated using orcaice::setSane( ObjectType & ) function. The size of the byte stream after serialization is @b estimated using Ice::OutputStream. The actual number of bytes on the wire is slighly higher.
 
-Compression was turned off for the objects which support it (e.g. Image).
+@par Procedure
 
-@par How ping tests were performed
+Orca objects are sent from Pinger to Replier and immediately sent back. The process is repeated 100 times. There is 0.25s delay after each send-receive operation.
 
-The ping settings closely follow the settings described above. RTT values are measured for packet sizes from 16 B to 64 KB.
+@par UNIX ping for comparison
+
+The ping settings closely follow the settings described above. RTT values are measured for packet sizes from 16 B to 64 KB (maximum allowed size).
 
 @verbatim
 $ ping host -c 100 -s 8 -i 0.25 -q
