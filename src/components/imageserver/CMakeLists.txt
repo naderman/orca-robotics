@@ -62,6 +62,8 @@ IF ( BUILD_IMAGE_SERVER )
     SET ( DRIVER_SRCS fakedriver )
 
   ENDIF ( V4L_FOUND OR 1394_FOUND )
+  
+  LINK_DIRECTORIES( imagegrabber )
 
   # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
   SET( COMMON_SRCS cameraI camerautil component conversions mainloop ${DRIVER_SRCS} )
@@ -80,7 +82,6 @@ IF ( BUILD_IMAGE_SERVER )
   #
   # includes and linking for the various grabbing libraries
   #
-  LINK_DIRECTORIES( imagegrabber )
 
   IF ( OPENCV7_FOUND )
     INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} )
