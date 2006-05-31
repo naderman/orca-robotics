@@ -47,7 +47,16 @@ For real robots, both of these assumptions will be incorrect.
 The component is useful when working in simulation however.  For
 example, odometry in the <a href=playerstage.sf.net>Stage</a>
 simulator can be set to "gps" mode (ie perfect odometry, in the global
-coordinate system).
+coordinate system). 
+
+To do this if you are using stage's @c simple.world you need to add the following lines in the @c worlds/player.inc file
+
+  @c localization @c "gps"
+  
+  @c localization_origin [0 0 0]
+
+within the "define pioneer2dx position" braces
+
 
 @par Configuration
 None.
