@@ -21,14 +21,13 @@
 /*!
 
 @page orca_doc_style Orca C++ Programming Style Guide
-@author Alex Brooks 9-Jun-2004
-@note This style guide was mostly taken from the ACFR Fish-Bird project, courtesy of James Hudson.
 
-  
+@note Reviewed for release 2.0.0.
+
 This is a loose style guide for programming within the
 Orca framework.  It exists for two reasons: to maintain
-a legible and uniform code-base, and to reduce bugs.
-
+a legible and uniform code-base, and to reduce bugs. 
+This style guide was mostly taken from the ACFR Fish-Bird project, courtesy of James Hudson.
 
 Some examples and ideas were taken from this useful website: <a
 href="http://www.possibility.com/Cpp/CppCodingStandard.html">http://www.possibility.com/Cpp/CppCodingStandard.html</a>

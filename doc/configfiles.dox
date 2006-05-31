@@ -22,9 +22,11 @@
 
 @page orca_doc_configfiles Orca Configuration Files
 
-@par File Format
+@note Reviewed for release 2.0.0.
 
-Orca uses Ice utilities to parse configuration files. Config files are text files which list properties as key/value pairs. Keys and values are strings which are separated by an equal sign ('='). The keys strings optionally devided into subfields with periods (aka dots, '.'). The value strings can represent strings, integers, or floats. For example:
+@section file_format File Format
+
+Orca uses Ice utilities to parse configuration files. Config files are text files which list properties as key/value pairs. Keys and values are strings which are separated by an equal sign ('='). The key strings are optionally devided into subfields with periods (aka dots, '.'). The value strings can represent strings, integers, or floats. For example:
 
 @verbatim
 Parameter=1
@@ -34,7 +36,7 @@ Parameter.Subfield.Whatever=123.4
 
 For more information on Ice properties and configuration files, see chapter "Ice Properties and Configuration" of the <a href="http://www.zeroc.com/download.html#doc" target="_blank">Ice manual</a>.
 
-@par Writing Configuration Files
+@section writing_config_files Writing Configuration Files
 
 Orca configuration files (file extention @c cfg) can be generated from component definition files (file extention @c def). This is the recommended method since writing configuration files by hand is error-prone. A good way is to generate the @c cfg file using the standard @c def file and then customize the generated @c cfg file. The conversion is done by the @c generatecfg utility, e.g:
 
@@ -48,7 +50,7 @@ Typically, an Orca component has a @c def file in the source tree and the @c cfg
 GENERATE_FROM_DEF( mycomponent.def )
 @endverbatim
 
-@par Usage
+@section usage Usage
 
 Configuration files have three uses:
 
@@ -56,7 +58,7 @@ Configuration files have three uses:
 - @ref config
 - Describing the component structure
 
-@section connection Connecting Components
+@subsection connection Connecting Components
 
 A component usually has a single config file which may also set some Ice runtime parameters which start with 'Ice', 'IceStorm', etc. We prefix all component settings with a string which we call here 'ComponentTag'. There are two rules about this tag: a) it must be unique within one config file, and b) it has to match the string hardwired into the source code. Let's look at an example.
 
@@ -69,7 +71,7 @@ ComponentTag.Provides.InterfaceTag2.Interface=i2
 ...
 @endverbatim
 
-This component has two provided interfaces. When this component is initialized it registers them with the naming service (or the registry) under the following names: \e i1\@p1/c1 and \e i2\@p1/c1. The implementation of ZeroC's IcePackRegistry requires that the interface name must be unique withing an Orca component, and the combination of the platform and component names must be unique within the registy.
+This component has two provided interfaces. When this component is initialized it registers them with the registry under the following names: \e i1\@p1/c1 and \e i2\@p1/c1. The implementation of ZeroC's IcePackRegistry requires that the interface name must be unique withing an Orca component, and the combination of the platform and component names must be unique within the registy.
 
 @verbatim
 ComponentTag.Platform=p2
@@ -81,11 +83,11 @@ ComponentTag.Requires.InterfaceTag1.Interface=i1
 ...
 @endverbatim
 
-When the second component is initialized it looks up the interface it requires at the naming service under the name \e i1\@p1/c1. The registry returns the address of the first provided interface of the component above. Because we use a slash '/' as a separator, it cannot be used in platform and component names. The \@ sign is also not permitted.
+When the second component is initialized it looks up the interface it requires at the naming service under the name \e i1\@p1/c1. The registry returns the address of the first provided interface of the component above. Because we use a slash '/' as a separator, it cannot be used in platform and component names. The \@ character is also not permitted.
 
 @par A More Concise Alternative Syntax
 
-Here's an alternative more concise syntax. This one takes precedence is both are present.
+Here's an alternative more concise syntax. This one takes precedence if both are present.
 
 @verbatim
 ComponentTag.AdapterId=p1/c1
@@ -96,9 +98,9 @@ ComponentTag.Requires.InterfaceTag2.Proxy=i2@p2/c2
 ...
 @endverbatim
 
-@section config Internal Component Parameters
+@subsection config Specifying Internal Configuration Parameters
 
-Components' internal behaviour usually needs to be configured by setting certain parameters. A component developer should write a defintion file ('.def') which contains all possible parameters with their default values. The syntax in the generated config file ('.cfg') is:
+Components' internal behaviour usually needs to be configured at run time by setting certain parameters. A component developer should write a defintion file ('.def') which contains all possible parameters with their default values. The syntax in the generated config file ('.cfg') is:
 
 @verbatim
 ComponentTag.Config.ParameterSet1.ParameterDouble=0.1

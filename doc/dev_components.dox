@@ -22,11 +22,13 @@
 
 @page orca_doc_devcomp Suggestions on the Internal Component Structure
 
+@note Reviewed for release 2.0.0.
+
 To reiterate, components can be developed in any way you choose.
 So long as they implement their interfaces, other components will
 be able to interoperate with them.  This page contains suggestions
 for how to think about components, and how to write them using
-libOrcaIce.  Several of the components in the repository are
+@c libOrcaIce.  Several of the components in the repository are
 designed in this way.
 
 A basic component template looks like this:
@@ -41,30 +43,29 @@ Derives from orcaice::Component.
 
 This the main class which instantiates and contains the other
 pieces.  Deriving from orcaice::Component makes it easy to
-exist within either a stand-alone application or an IceBox
+place it within either a stand-alone application or an IceBox
 Service.
 
 To implement an orcaice::Component, the 'start()' and
     'stop()' functions must be implemented.
 
 @par Interface Implementation
+
 This class implements the methods defined in the Slice
 interface definition, ie it does the talking to the outside world.
-By convention, it it's named &lt;interface_name&gt;I and lives in
-a file called &lt;interface_name&gt;_i.{h|cpp}.
+By convention, the implementation of interface @c MyInterface is called @c MyInterfaceI. The files are named @c myinterface.h and @c myinterface.cpp.
 
 Remote Method Invocations arrive asynchronously from the
 outside world or from the Main Loop.  Requests from the outside
 world can be answered using the information in the thread-safe
 buffers.
 
-
 @par Buffers
+
 The buffers are instantiations of orcaice::PtrBuffer.
 They're thread-safe (to handle the concurrency issues presented by
 simultaneous access from MainLoop and the outside world), and
 specially designed for Ice classes.
-
 
 @par Main Loop
 
@@ -83,13 +84,11 @@ A loop might look somthing like this (going vaguely clockwise in the figure):
     -# Hand the data to the Buffers so the world can query it directly
     -# Goto step 1
 
-
 @par Hardware/Algorithm
 
 This is the part that actually does the work.  It may have its own internal threads.
 
-
-The purpose of designing in this way is try to separate (a) network
+The purpose of this design is try to separate (a) network
 communication, (b) sequence of control (including setup/shutdown,
 component life-cycle), and (c) the algorithm or hardware driver itself.
 

@@ -30,6 +30,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - Check docco, especially quickstart and tutorials
 
+- Write docco on file format for def files
+
 - review libOrcaIce for stuff does not belong there
 
 - redo ping performance number

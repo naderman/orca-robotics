@@ -22,6 +22,8 @@
 
 @page orca_doc_getting Getting Orca
 
+@note Reviewed for release 2.0.0.
+
 @section depend Overview of dependencies
 
 The diagram below shows an overview of dependencies between Orca and external libraries. Orca distribution is shown in yellow. Source code modules distributed with Orca are highlighted.
@@ -44,18 +46,18 @@ Detailed instructions are available for these platforms/distributions:
 The instructions below are quite general, follow them if your platform/distribution combination is not described above:
 
     -# Download and install <a href="http://www.cmake.org/">CMake: Cross-Platform Make</a> which is used to build the orca distribution.
-        - Minimum version required 2.2.2 (latest known to work: 2.2.3)
+        - Minimum version required 2.2.2 (latest tested: 2.2.3)
         - Full instructions are available from the <a href="http://www.cmake.org/HTML/Download.html">download page</a>.
     -# Download and install Ice libraries.
-        - Minimum version required 3.0.0 (latest known to work: 3.0.1)
+        - Minimum version required 3.0.0 (latest tested: 3.0.1)
         - Full instructions are available from the <a href="http://www.zeroc.com/download.html">download page</a>. Several binaries distributions exists, for others (e.g. Debian Linux) building from source is required.
-    -# Download and install any optional dependencies you'd like:
+    -# Download and install any optional dependencies you'd like. You skip this step and do it later.
         - <a href="http://playerstage.sourceforge.net/" target="_blank">Player/Stage</a>, is required for some hardware support and for use of the Stage simulator (you probably want this).
             - For version requirements see individual component documentation.
         - <a href="http://www.stack.nl/~dimitri/doxygen/" target="_blank">Doxygen</a>  for generating local doxygen documentation</a>.
             - The standard version of doxygen cannot build documentation from Slice files. We have a patched version which does that. It is used to generate the documentation displayed on the Orca website. The patch may appear in future versions of Doxygen or made available here.
         - <a href="http://www.trolltech.com/" target="_blank">Qt</a> is a cross-platform framework for building GUI's. Some components are GUI-only and some have optional GUI drivers.
-            - Minimum version required 4.1.0 (latest known to work: 4.1.1)
+            - Minimum version required 4.1.0 (latest tested: 4.1.1)
     -# Build and install Orca2 distribution.
         - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive.
         - Configure using CMake
@@ -69,11 +71,11 @@ You can get detailed instructions of how to get Orca from CVS <a href="http://so
     - Registered developers should use ssh-based login, others should use anonymous login.
     - Anonymous Login
 @verbatim
-cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/orca-robotics login
+cvs -d:pserver:anonymous@orca-robotics.cvs.sourceforge.net:/cvsroot/orca-robotics login
 @endverbatim
     - Anonymous Checkout:
 @verbatim
-cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/orca-robotics co orca2
+cvs -z3 -d:pserver:anonymous@orca-robotics.cvs.sourceforge.net:/cvsroot/orca-robotics co orca2
 @endverbatim
 
 */

@@ -57,7 +57,7 @@ Orca, currently in its second generation, differs from other robotic software fr
 
 @section more_information For more information
 
-- To read general information: @ref orca_doc_about
+- To read general information about the project: @ref orca_doc_about
 - To download and install Orca: @ref orca_doc_getting
 - To get set up and start running components: @ref orca_doc_quickstart
 - For a quick overview of basic concepts: @ref orca_doc_overview
@@ -68,19 +68,9 @@ Orca, currently in its second generation, differs from other robotic software fr
 Note: The documentation on this web page matches the latest release. A web
 page is also generated hourly from <a href="http://orca-robotics.sourceforge.net/cvs/">the latest CVS version</a>.
 
-@section current_status Current Status
-
-Orca has recently transitioned from an implementation based on
-selectable transport mechanisms (called <a href="http://orca-robotics.sf.net/orca1/">Orca1</a>) to Orca2, which @ref orca_doc_about_whyice "uses Ice" for all communications.  Our focus on component-based 
-sotfware remains unchanged but we feel that Ice is far superior to any commercial and custom solutions we have looked at before.
-
-While the current version of Orca2 is usable, things may change
-frequently and the documentation is a little thin. Switching to Ice has caused large changes in the component model. This means that Orca1 and Orca2 components are mutually incompatible. The set of components currently available in Orca2 is small, however we will eventually
-port over all the <a href="http://orca-robotics.sourceforge.net/orca1/components/html/modules.html">Orca1 components</a>.  Let us know if there's a particular component you need.
-
-
 @section news News
 
+- ??-Jun-06 First release of Orca2.
 - 30-Mar-06 Distribution created for Orca2.0.0rc4: the fourth release candidate for Orca v2.0.0.
 - 27-Feb-06 Distribution created for Orca2.0.0rc3: the third release candidate for Orca v2.0.0.
 - 16-Jan-06 The <a href="http://129.78.210.237:8081/orca2/Dashboard/">Dashboard</a> code testing system is back on line, now using Dart2. There's a link to it from the sidebar.

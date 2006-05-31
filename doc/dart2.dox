@@ -22,12 +22,14 @@
 
 @page orca_doc_dart2 Automated Testing with Dart2
 
+@note Reviewed for release 2.0.0.
+
 Dart2 is a rewrite of Dart -- the automated test facility which is part of CMake. The general goal is to make software more reliable by simplifying automated code (re)compilation and testing. Running Dart2 clients at different sites helps catch bugs caused by cross-platform and cross-hardware issues.
 
 General things to note:
 - @c cmake at least v2.2 is required
 - It's best to do out-of-source build, i.e. all object/generated files are in one 'binary' directory. The reason is that it makes it simple for CTest to do a clean build every time by simply deleting all files in the build (or 'binary') directory.
-
+- All scripts listed on this page can be found in the [ORCA2-SRC]/scripts/dart2/ directory, so you can simply copy and edit them.
 
 @section server Dart2 Server
 
@@ -125,8 +127,5 @@ $ cd ~/ctest-scripts/orca2
 $ nohup ./dart.cont >/dev/null 2>&1 &
 @endverbatim
 -# Now you can log out and the scrip will run forever.
-
-@section note Final note
-All scripts listed above can also be found in the [ORCA2-SRC]/scripts/dart2/ directory, so you can simply copy and edit them.
 
 */

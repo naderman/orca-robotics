@@ -24,8 +24,8 @@ There are a few ways you can do things differently to the short version:
 
 1) Out-of-source builds:
 
-'mkdir Bin'
-'cd Bin'
+'mkdir build'
+'cd build'
 'cmake ..'
 'make'
 
@@ -33,4 +33,3 @@ There are a few ways you can do things differently to the short version:
 2) GUI Configurator:
 
 Use 'ccmake' rather than 'cmake' for a GUI configurator.
-

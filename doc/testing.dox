@@ -22,6 +22,8 @@
 
 @page orca_doc_testing Testing Orca Components
 
+@note Reviewed for release 2.0.0.
+
 The general consensus in the software testing community is that testing component-based software is generally more challenging compared to monolithic. We are planning on doing much more to test existing Orca components and simplify testing of new ones. For an introduction to the topic, see this relatively new book: <a href="http://www.amazon.com/gp/product/1580534805" target="_blank">Testing and Quality Assurance for Component-Based Software.</a>
 
 @par Considerations

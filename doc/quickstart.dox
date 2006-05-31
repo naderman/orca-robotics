@@ -22,11 +22,9 @@
 
 @page orca_doc_quickstart Quick-Start Guide
 
-@note revised for Orca2 release 2.0.0-rc2 (which uses Ice-3.0.0).
+@note Reviewed for release 2.0.0.
 
-This page describes how to get a quick demonstration up and running with your new Orca install.
-
-Before you begin, make sure that you've installed Orca (see @ref orca_doc_getting ).
+This page describes how to get a quick demonstration up and running with your new Orca install. Before you begin, make sure that you've installed Orca (see @ref orca_doc_getting ).
 
 @section startup Starting Up the Infrastructure
 
@@ -38,7 +36,7 @@ $ mkdir sys
 
 @par IceGrid Registry
 
-The IceGrid Registry provides a Naming service: a mapping from logical port names to physical addresses. It's currently the only way for components to find one another. We create a separate directory for it to run in, copy a sample config file, create the database directory and start it up.
+The IceGrid Registry provides a Naming service: a mapping from logical interface names to physical addresses. It's currently the only way for components to find one another. We create a separate directory for it to run in, copy a sample config file, create the database directory and start it up.
 @verbatim
 $ cd ~/sys; mkdir icereg; cd icereg
 $ cp [ORCA2-SRC]/scripts/ice/icegridregistry.cfg .
@@ -46,12 +44,12 @@ $ mkdir db
 $ icegridregistry --Ice.Config=icegridregistry.cfg
 @endverbatim
 
-This starts icegridregistry on your local machine.  If you're going to be using Orca a lot,
+This starts @c icegridregistry on your local machine.  If you're going to be using Orca a lot,
 it's probably a good idea to set this up so it's always running on a single machine on the network.
 
 @par IceStorm Service
 
-There should be exactly one IceStorm service per host.  This is an event service, used to decouple publishers from subscribers. We create a separate directory for it to run in, copy a sample config file, create the database directory and start it up.
+IceStorm is an event service, used to decouple publishers from subscribers. Typically, there is one IceStorm service per host. We create a separate directory for it to run in, copy a sample config file, create the database directory and start it up.
 @verbatim
 $ cd ~/sys; mkdir icestorm; cd icestorm
 $ cp [ORCA2-SRC]/scripts/ice/icebox_icestorm.cfg .
@@ -63,10 +61,9 @@ $ icebox --Ice.Config=icebox_icestorm.cfg
 
 @section point Pointing Components at this Infrastructure
 
-When an Orca component starts up, it needs to know how to find the services above.
+When an Orca component starts up, it needs to know how to find the services above. This information can go into config files for individual components.
 
-If your components use libOrcaIce, you can solve this problem
-centrally by putting the following in your '~/.orcarc' file:
+Components in this tutorial use @c libOrcaIce, which looks up this information in a single file @c ~/.orcarc
 @verbatim
 # Standard Ice Configuration for Orca
 Ice.Default.Locator=IceGrid/Locator:default -p 12000
@@ -77,33 +74,29 @@ IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 10000
 
 @section talk Getting Two Components Talking
 
-For a first demonstration, try connecting a fake sicklaser to a laser
-monitoring component.
-
-First, copy the provided configuration files for the sicklaser and lasermon components.
+Now will connect a fake laser component to a laser monitoring component. First, copy the provided configuration files for the SickLaser and LaserMon components.
 @verbatim
 $ cd ~/sys; mkdir quickstart; cd quickstart
 $ cp [ORCA2-INSTALL]/cfg/sicklaser.cfg .
 $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 @endverbatim
 
-Then, configure the laser for fake (simulated) operation (or skip this step if
-you're connected to a real SICK laser).  Edit 'sicklaser.cfg', and replace 'native' with 'fake' in this line:
+Then, configure the laser for fake (simulated) operation (or skip this step if you're connected to a real SICK laser).  Edit @c sicklaser.cfg, and replace 'native' with 'fake' so it looks like this:
 
 @verbatim
 SickLaser.Config.Driver=fake
 @endverbatim
 
-Start the laser component:
+Start the @c sicklaser component:
 
 @verbatim
 $ sicklaser sicklaser.cfg
 @endverbatim
 
-Start a new shell, and fire up the lasermon component (a laser monitor). No modifications are needed for its configuration file:
+Start a new shell, and fire up the @c lasermon component (a laser monitor). No modifications are needed for its configuration file. Note that the name of the configuration file is not specified and it is assumed to be @c lasermon.cfg.
 
 @verbatim
-$ lasermon lasermon.cfg
+$ lasermon
 @endverbatim
 
 You should see the scans scroll by on the screen. Congratulations, your first two components are talking! To stop components, hit Ctrl-C.

@@ -22,6 +22,8 @@
 
 @page orca_doc_devtricks Miscelaneous notes on writing Orca code with Ice.
 
+@note Reviewed for release 2.0.0.
+
 @par Generating skeleton implementations
 
 Ice utility slice2cpp can generate implementation skeletons from *.ice files. We don't do it because they would then be compiled and included (unnecessarily) with libOrcaInterfaces library. So if you need to implement an interface, e.g. Home, you can generate a skeletion like this:

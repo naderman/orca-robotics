@@ -22,6 +22,8 @@
 
 @page orca_doc_devproj Starting Your Own Orca Project
 
+@note Reviewed for release 2.0.0.
+
 A common situation is that you want to experiment with some components without the hassle of
 committing them into the Orca SourceForge repository or want to work on a closed-source
 component. In this case you should download and install the main Orca distribution and

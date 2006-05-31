@@ -22,18 +22,22 @@
 
 @page orca_doc_overview Orca Overview
 
-\b NOTE: For now this is a loose collection of things a new user should read first.
+@note Reviewed for release 2.0.0.
 
+This is currently a loose collection of things a new user should read first.
 
 @section terms Terminology
 
 When talking about how components connect to each other it's helpful to define some terminology.
 
-A \em platform is a logical unit, a robot would typically be a platform. We use the term platform so not to exclude simple devices like cameras or PDA's. Calling them robots would be a stretch. Platforms are the highest level in our hierarchy, so we don't define teams for example. Each platform can have one or several \em hosts -- physical computers. Each host may execute one or several \em components. Each component may have zero or more \em interfaces, some are required and some are provided.
+A \em platform is a logical unit, a robot would typically be a platform. We use the term platform so not to exclude simple devices like cameras or PDA's. Calling them robots would be a stretch. Platforms are the highest level in our hierarchy, so we don't define 'teams of platforms' for example. Each platform can have one or several \em hosts -- physical computers. Each host may execute one or several \em components. Each component may have zero or more \em interfaces, some are required and some are provided.
 
-These four terms are often used in describing a distributed system but one has to be careful to keep in mind that they refer to different aspects of the system. Platforms describe a logical grouping of hardware and software. This grouping is useful because it reflects physical proximity; cheap, fast, and reliable communication, etc. Hosts are units of computing hardware. Components and interfaces describe software organization. Assigning software (components) to hardware (hosts) is called deployment.
+These four terms are often used in describing a distributed system but one has to be careful to keep in mind that they refer to different aspects of the system. Platforms describe a logical grouping of hardware and software. This grouping is useful because it reflects physical proximity; cheap/fast/reliable communication, etc. Hosts are units of computing hardware. Components and interfaces describe software organization. Assigning software (components) to hardware (hosts) is called deployment.
 
 @image html orca_terminology.png
 
+In this illustration platform X has one computer host (1) which executes one component (4). Platform Y has two hosts. One would say that Component 3 is deployed on Host 2 which is located on Platform Y. 
+
+Component 1 requires Interface A and it is connected to the provided Interface A of Component B. Interface connections can be intra-host (Interface C), intra-platform (Interfaces A and B of Component 2), or inter-platform (Interfaces A and B of Component 3).
 
 */

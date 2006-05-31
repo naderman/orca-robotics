@@ -22,13 +22,13 @@
 
 @page orca_doc_installdebian Installing Orca on Debian Linux
 
-@note Updated for 2.0.0-rc4 distribution.
+@note Reviewed for release 2.0.0.
 
 These are detailed instructions for installing Orca on Debian Linux. They are known to work for a system using Debian \b Testing distribution. See @ref orca_doc_getting for general guidelines.
 
 @section orca_doc_installdebian_cmake CMake
 
-Minimum version required 2.2.2 (latest known to work: 2.2.3). Note that Stable (Sarge) release of Debian stopped at v.2.0.6 which is incompatible with Orca2. Testing (Etch) release has a version which is new enough.
+Minimum version required 2.2.2 (latest tested: 2.2.3). Note that Stable (Sarge) release of Debian stopped at v.2.0.6 which is incompatible with Orca2. Testing (Etch) release has a version which is new enough.
 
 @verbatim
 # apt-get install cmake
@@ -36,10 +36,10 @@ Minimum version required 2.2.2 (latest known to work: 2.2.3). Note that Stable (
 
 @section orca_doc_installdebian_ice Ice
 
-@note The instructions below describe how to build Ice from source. There are several efforts to provide Debian packages for Ice but we haven't tried to use them yet. See http://ice.jgaa.com/ and
-http://personales.ya.com/fmoya/ .
+Minimum version required 3.0.0 (latest tested: 3.0.1).
 
-The latest version tested with these instructions: 3.0.1.
+@note The instructions below describe how to build Ice from source. There are several efforts to provide Debian packages for Ice but we haven't tried to use them yet. See http://ice.jgaa.com/ and
+http://personales.ya.com/fmoya/
 
 Following the instructions below will install Ice to the default location @c /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
 
@@ -48,7 +48,7 @@ Download source from  <a href="http://www.zeroc.com/download.html">download page
 @verbatim
 # apt-get install libdb4.3++-dev libbz2-dev bzip2 libssl-dev libreadline5-dev libexpat1-dev
 @endverbatim
-    - Get Ice source distribution from <a href="http://www.zeroc.com">ZeroC</a> and unpack the archive
+    - Unpack the source archive (replace [VERSION] with the version of Ice you are trying to install.)
 @verbatim
 $ tar -xzf Ice-[VERSION].tar.gz
 $ cd Ice-[VERSION]
@@ -66,7 +66,7 @@ $ make test (optional, requires python)
 # ldconfig
 @endverbatim
 
-Make sure that the Ice binaries and executables are in the path. You may want to add this snippet to your @c ~/.bashrc file (replace [VERSION] with the version of Ice you've just installed).
+Make sure that the Ice binaries and executables are in the path. You may want to add this snippet to your @c ~/.bashrc file (don't forget to replace [VERSION]).
 @verbatim
 export ICE_HOME=/opt/Ice-[VERSION]
 export PATH=$ICE_HOME/bin:$PATH
@@ -127,7 +127,7 @@ Some components require pkg-config to check for dependencies
 
 @section orca_doc_installdebian_player Player/Stage
 
-These notes describe how to install Player 2.0.0 and Stage 2.0.0. Start with Player/Stage dependencies.
+These notes were tested with Player 2.0.1 and Stage 2.0.1. Start with Player/Stage dependencies.
 
 @verbatim
 # apt-get install libglib2.0-dev libgtk2.0-dev libltdl3-dev
@@ -136,8 +136,8 @@ These notes describe how to install Player 2.0.0 and Stage 2.0.0. Start with Pla
 Download and unpack player and stage distros. We recommend installing both player and stage to some place other than the default @c /usr/local/ because the different versions quickly become unmanagable.
 
 @verbatim
-$ cd player-2.0.0
-$ ./configure --prefix=/opt/player-2.0.0
+$ cd player-[VERSION]
+$ ./configure --prefix=/opt/player-[VERSION]
 $ make
 # make install
 @endverbatim
@@ -154,9 +154,9 @@ $ make -j1
 Now compile Stage. Tell pkgconfig how to find player stuff.
 
 @verbatim
-$ export PKG_CONFIG_PATH=/opt/player-2.0.0/lib/pkgconfig/:$PKG_CONFIG_PATH
-$ cd stage-2.0.0
-$ ./configure --prefix=/opt/stage-2.0.0
+$ export PKG_CONFIG_PATH=/opt/player-[VERSION]/lib/pkgconfig/:$PKG_CONFIG_PATH
+$ cd stage-[VERSION]
+$ ./configure --prefix=/opt/stage-[VERSION]
 $ make
 # make install
 @endverbatim
@@ -164,12 +164,12 @@ $ make
 Append the following to your @c .bashrc file
 
 @verbatim
-export PLAYER_HOME=/opt/player-2.0.0
+export PLAYER_HOME=/opt/player-[VERSION]
 export PATH=$PLAYER_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$PLAYER_HOME/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=$PLAYER_HOME/lib/pkgconfig/:$PKG_CONFIG_PATH
 
-export STAGE_HOME=/opt/stage-2.0.0
+export STAGE_HOME=/opt/stage-[VERSION]
 export LD_LIBRARY_PATH=$STAGE_HOME/lib:$LD_LIBRARY_PATH
 @endverbatim
 

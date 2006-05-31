@@ -22,6 +22,8 @@
 
 @page orca_doc_units Orca Units and Coordinate Systems
 
+@note Reviewed for release 2.0.0.
+
 @par Inter-Component Communication
 
 All inter-component communication is done in S.I. units (<a href="http://physics.nist.gov/cuu/Units">Systeme International d'Unites, International

@@ -22,6 +22,7 @@
 
 @page orca_doc_faq Frequently Asked Questions
 
+@note Reviewed for release 2.0.0.
 
 @section ice Troubleshooting Ice-Related Problems
 
@@ -43,6 +44,7 @@ When misconfigured, IceStorm can lock up.
 
 When IceStorm encounters a problem with a subscriber, it immidiately drops it but only when a finite timeout is set. Otherwise, that thread will hang indefinitely and the tread pool will eventually become exausted. To solve this problem one must set a sensitive timeout. Here's a sample configuration.
 
+@verbatim
 Ice.Override.ConnectTimeout=1000
 Ice.Override.Timeout=300
 
@@ -53,6 +55,6 @@ Ice.ThreadPool.Client.SizeMax=5
 Ice.ThreadPool.Server.Size=3
 Ice.ThreadPool.Server.SizeWarn=5
 Ice.ThreadPool.Server.SizeMax=5
-
+@endverbatim
 
 */
