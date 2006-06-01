@@ -21,8 +21,10 @@
 #ifndef ORCA2_ORCA_ICE
 #define ORCA2_ORCA_ICE
 
+#include <orca/ocm.ice>
+
 /*!
-    @brief namespace for the Orca project
+    @brief Defines cross-platform interfaces and data objects.
     @namespace orca
 
     This namespace defines the core reusable part of Orca: interfaces and objects.
@@ -39,64 +41,6 @@ struct Time
     int seconds;
     //! Number of microseconds.
     int useconds;
-};
-
-/*!
-    @brief Fully qualified executable name.
-*/
-struct FQExecutableName
-{
-    //! Name of the executable file
-    string executable;
-    //! Host name
-    string host;
-};
-
-/*!
-    @brief Fully qualified component name.
-    @see FQInterfaceName, FQTopicName
-*/
-struct FQComponentName
-{
-    //! Platform name
-    string platform;
-    //! Component name
-    string component;
-};
-
-/*!
-    @brief Fully qualified interface name.
-    Usually represented in a single string as 'iface\@platform/component'
-
-    @note Cannot use member variable 'interface', it's reserved by Ice.
-    @see FQComponentName, FQTopicName
-*/
-struct FQInterfaceName
-{
-    //! Platform name
-    string platform;
-    //! Component name
-    string component;
-    //! Interface name
-    string iface;
-};
-
-/*!
-    @brief Fully qualified Ice Storm topic name.
-    The idea is that the same interface can publish to multiple topics corresponding
-    different data streams.
-    @see FQInterfaceName, FQComponentName
-*/
-struct FQTopicName
-{
-    //! Platform name
-    string platform;
-    //! Component name
-    string component;
-    //! Interface name
-    string iface;
-    //! Topic name
-    string topic;
 };
 
 /*!

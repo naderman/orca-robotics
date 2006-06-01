@@ -10,6 +10,7 @@
 #
 SET( SLICE_SOURCE_FILES
 # definitions
+    ocm.ice
     orca.ice
     bros1.ice
     stochastic.ice
