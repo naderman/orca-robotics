@@ -57,12 +57,12 @@ Orca, currently in its second generation, differs from other robotic software fr
 
 @section more_information For more information
 
-- To read general information about the project: @ref orca_doc_about
-- To download and install Orca: @ref orca_doc_getting
-- To get set up and start running components: @ref orca_doc_quickstart
-- For a quick overview of basic concepts: @ref orca_doc_overview
-- For an overview of Ice middleware: Ch. 2 Ice Overview of the <a href="http://www.zeroc.com/download.html#doc" target="_blank">Ice manual</a>
-- To see a list of all available components: <a href="group__components.html">Component Repository</a>
+- Read general information about the project: @ref orca_doc_about
+- Download and install Orca: @ref orca_doc_getting
+- Get set up and start running components: @ref orca_doc_quickstart
+- A quick overview of basic concepts: @ref orca_doc_overview
+- An overview of Ice middleware: Ch. 2 Ice Overview of the <a href="http://www.zeroc.com/download.html#doc" target="_blank">Ice manual</a>
+- See a list of all available components: <a href="group__components.html">Component Repository</a>
 
 
 Note: The documentation on this web page matches the latest release. A web

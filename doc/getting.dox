@@ -39,7 +39,7 @@ Practically, this means that you can download build your own components from scr
 @section download Download and install instructions
 
 Detailed instructions are available for these platforms/distributions:
-    - @ref orca_doc_installdebian
+    - @ref orca_doc_installdebian (also tested with Kubuntu 6.06)
     - @ref orca_doc_installfedora
     - Send feedback on building under other configurations.
 
