@@ -10,6 +10,7 @@ SUBDIRS(
   orcacm
   orcadef
   orcagui
+  orcalogplayer
   orcamisc
   orcanavutil
   orcaogmap
@@ -20,7 +21,7 @@ SUBDIRS(
 #  qorcagui
 # UTILITY APPLICATIONS
   cleanregistry
-  iceping
   gorca
+  iceping
   orcasmc
 )
