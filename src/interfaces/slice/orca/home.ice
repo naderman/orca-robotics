@@ -39,13 +39,9 @@ module orca
     @brief Contains data on the component's interfaces.
 */
 class HomeData extends OrcaObject
-{
-    //! @brief Names of all provided interfaces as registered with the Locator service.
-    //! The Home interface itself is also included in this list.
-    Ice::StringSeq provides;
-    
-    //! Names of all required interfaces as registered with the Locator service.
-    Ice::StringSeq requires;
+{    
+    //! The Home interface itself is also included in this list of provided interfaces.
+    ComponentData comp;
 
     //! Number of seconds since the start of the component.
     int timeUp;
@@ -59,10 +55,13 @@ dictionary<string,string> ComponentProperties;
 */
 interface Home
 {
-    //! Returns a listing about the component's interfaces.
+    //! Returns a list the component's interfaces.
     nonmutating HomeData getInterfaces();
+
+    //! Returns the number of seconds since the start of the component.
+    nonmutating int getTimeUp();
     
-    //! Returns all component's properties.
+    //! Returns all of this component's properties.
     nonmutating ComponentProperties getProperties();
 };
 
