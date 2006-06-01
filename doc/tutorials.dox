@@ -27,6 +27,10 @@
 - @ref orca_doc_quickstart
 - @ref orca_doc_tute_icebox
 
+@section operation Operation
+
+- Using utilities
+
 @section writing Writing Components
 
 - @ref orca_doc_walkthrough

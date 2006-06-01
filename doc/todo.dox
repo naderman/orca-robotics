@@ -28,13 +28,16 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - License
 
-- Check docco, especially quickstart and tutorials
+- Check docco, especially quickstart and tutorials ... DONE
+
+- review libOrcaIce for stuff does not belong there
+    - all FQxx functions to libOrcaCompModel?
+    - all object functions to libOrcaUtil?
+    - remove long syntax for req. interfaces?
 
 - Write docco on file format for def files
 
-- review libOrcaIce for stuff does not belong there
-
-- redo ping performance number
+- redo ping performance number ... DONE
 
 @section changes Changes since Last Release
 
