@@ -1,0 +1,78 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_tute_icebox Running components inside the IceBox server
+
+@note Reviewed for release 2.0.0.
+
+In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart_startup but now the SickLaser component will run as a service inside the IceBox application server.
+
+@section orca_doc_tute_icebox_startup Start Up the Infrastructure
+
+Make sure the IceGrid Registry is running (See @ref orca_doc_quickstart for instructions).
+
+@section orca_doc_tute_icebox_talk Connect Two Components
+
+First, copy default configuration files for the SickLaser and LaserMon components.
+@verbatim
+$ cd ~/sys; mkdir tuteicebox; cd tuteicebox
+$ cp [ORCA2-INSTALL]/cfg/sicklaser.cfg .
+$ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
+@endverbatim
+
+Also, copy the IceBox configuration file for this tutorial, included with you Orca distribution.
+@verbatim
+$ cp [ORCA2-SRC]/scripts/icebox_laser.cfg .
+$ mkdir stormdb
+@endverbatim
+
+@par The IceBox Server
+
+The IceBox configuration file does not need to be modifed. It instructs the IceBox to first load the IceStorm service and then the SickLaser service. Both are configured to share one instance of Communicator which speeds up communication.
+
+The laser config file needs to be changed to fake (simulated) operation (or skip this step if you're connected to a real SICK laser).  Edit @c sicklaser.cfg, and replace @e 'native' with @e 'fake' so it looks like this:
+
+@verbatim
+SickLaser.Config.Driver=fake
+@endverbatim
+
+Start the IceBox.
+
+@verbatim
+$ icebox --Ice.Config=icebox_laser.cfg
+@endverbatim
+
+@par The Client
+
+Start a new shell, and fire up the LaserMon component (a laser monitor). No modifications are needed for its configuration file. Note that the name of the configuration file is not specified on the command line and it is assumed to be @c lasermon.cfg.
+
+@verbatim
+$ lasermon
+@endverbatim
+
+You should see the scans scroll by on the screen, just as in the @ref orca_doc_quickstart_startup tutorial. To stop the IceBox or the component, type @c Ctrl-C.
+
+@section orca_doc_tute_icebox_next What's Next
+
+If everything works, check out more @ref orca_doc_tutorials.
+
+*/

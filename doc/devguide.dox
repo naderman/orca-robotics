@@ -37,6 +37,7 @@ maintainable, and understandable code.
 
 @section other Other useful information
   
+- @ref orca_doc_configfiles
 - @ref orca_doc_units
 - @ref orca_doc_style
 - @ref orca_doc_buildsystem

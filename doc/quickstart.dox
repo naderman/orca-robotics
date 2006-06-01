@@ -26,7 +26,7 @@
 
 This page describes how to get a quick demonstration up and running with your new Orca install. Before you begin, make sure that you've installed Orca (see @ref orca_doc_getting ).
 
-@section startup Starting Up the Infrastructure
+@section orca_doc_quickstart_startup Starting Up the Infrastructure
 
 We'll be using sample configuration files which are distributed with Orca. As the general rule, you shouldn't work or run programs from the distribution. So we'll create a separate directory and copy config files into it.
 @verbatim
@@ -59,11 +59,11 @@ $ icebox --Ice.Config=icebox_icestorm.cfg
 
 [Note for Debian users: See the @ref orca_doc_faq entry on 127.0.1.1 in the /etc/hosts file.]
 
-@section point Pointing Components at this Infrastructure
+@section orca_doc_quickstart_point Pointing Components at this Infrastructure
 
 When an Orca component starts up, it needs to know how to find the services above. This information can go into config files for individual components.
 
-Components in this tutorial use @c libOrcaIce, which looks up this information in a single file @c ~/.orcarc
+Components in this tutorial use @c libOrcaIce, which looks up this information in a single file configuration file. Create a file @c ~/.orcarc (in your home directory) and place this text into it:
 @verbatim
 # Standard Ice Configuration for Orca
 Ice.Default.Locator=IceGrid/Locator:default -p 12000
@@ -72,35 +72,45 @@ IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 10000
 (modify appropriately if this differs from your system setup)
 
 
-@section talk Getting Two Components Talking
+@section orca_doc_quickstart_talk Getting Two Components Talking
 
-Now will connect a fake laser component to a laser monitoring component. First, copy the provided configuration files for the SickLaser and LaserMon components.
+Now will connect a fake laser component to a laser monitoring component. First, copy default configuration files for the SickLaser and LaserMon components.
 @verbatim
 $ cd ~/sys; mkdir quickstart; cd quickstart
 $ cp [ORCA2-INSTALL]/cfg/sicklaser.cfg .
 $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 @endverbatim
 
-Then, configure the laser for fake (simulated) operation (or skip this step if you're connected to a real SICK laser).  Edit @c sicklaser.cfg, and replace 'native' with 'fake' so it looks like this:
+@par The Server
+
+Configure the laser for fake (simulated) operation (or skip this step if you're connected to a real SICK laser).  Edit @c sicklaser.cfg, and replace 'native' with 'fake' so it looks like this:
 
 @verbatim
 SickLaser.Config.Driver=fake
 @endverbatim
 
-Start the @c sicklaser component:
+Start the SickLaser component:
 
 @verbatim
 $ sicklaser sicklaser.cfg
 @endverbatim
 
-Start a new shell, and fire up the @c lasermon component (a laser monitor). No modifications are needed for its configuration file. Note that the name of the configuration file is not specified and it is assumed to be @c lasermon.cfg.
+@par The Client
+
+Start a new shell, and fire up the LaserMon component (a laser monitor). No modifications are needed for its configuration file. Note that the name of the configuration file is not specified and it is assumed to be @c lasermon.cfg.
 
 @verbatim
 $ lasermon
 @endverbatim
 
-You should see the scans scroll by on the screen. Congratulations, your first two components are talking! To stop components, hit Ctrl-C.
+You should see the scans scroll by on the screen. Congratulations, your first two components are talking! 
+
+To stop components, type @c Ctrl-C.
 
 If something does not work, check out the listing of @ref orca_doc_faq.
+
+@section orca_doc_quickstart_next What's Next
+
+If everything works, check out more @ref orca_doc_tutorials.
 
 */

@@ -24,7 +24,9 @@
 
 @note Reviewed for release 2.0.0.
 
-Performance of a distributed system can be measured in variety of ways. As a first step, we provide some numbers on round trip time (RTT) for sending several types of Orca objects. The plots below show average RTT for sending 100 objects  with an interval of 0.25s. Vertical bars show min and max values. Ping results are shown for comparison. 
+Performance of a distributed system can be measured in variety of ways. For comprehensive performance tests of Ice itself, see this <a href="http://zeroc.com/performance/index.html" target="_blank">Ice vs CORBA comparison</a> done by ZeroC. 
+
+The tests we perform are slightly different and reflect the typical usage we see of our components: frequent transfer of small to medium size messages. As a first step, we provide some numbers on round trip time (RTT) for sending several types of Orca objects. The plots below show average RTT for sending 100 objects  with an interval of 0.25s. Vertical bars show min and max values. Ping results are shown for comparison. 
 
 @image html perf_rtt_all.jpg
 

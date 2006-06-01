@@ -24,7 +24,7 @@
 
 @note Reviewed for release 2.0.0.
 
-@section file_format File Format
+@section orca_doc_configfiles_format File Format
 
 Orca uses Ice utilities to parse configuration files. Config files are text files which list properties as key/value pairs. Keys and values are strings which are separated by an equal sign ('='). The key strings are optionally devided into subfields with periods (aka dots, '.'). The value strings can represent strings, integers, or floats. For example:
 
@@ -36,7 +36,7 @@ Parameter.Subfield.Whatever=123.4
 
 For more information on Ice properties and configuration files, see chapter "Ice Properties and Configuration" of the <a href="http://www.zeroc.com/download.html#doc" target="_blank">Ice manual</a>.
 
-@section writing_config_files Writing Configuration Files
+@section orca_doc_configfiles_write Writing Configuration Files
 
 Orca configuration files (file extention @c cfg) can be generated from component definition files (file extention @c def). This is the recommended method since writing configuration files by hand is error-prone. A good way is to generate the @c cfg file using the standard @c def file and then customize the generated @c cfg file. The conversion is done by the @c generatecfg utility, e.g:
 
@@ -50,15 +50,15 @@ Typically, an Orca component has a @c def file in the source tree and the @c cfg
 GENERATE_FROM_DEF( mycomponent.def )
 @endverbatim
 
-@section usage Usage
+@section orca_doc_configfiles_usage Usage
 
 Configuration files have three uses:
 
-- @ref connection
-- @ref config
+- @ref orca_doc_configfiles_connection
+- @ref orca_doc_configfiles_config
 - Describing the component structure
 
-@subsection connection Connecting Components
+@subsection orca_doc_configfiles_connection Connecting Components
 
 A component usually has a single config file which may also set some Ice runtime parameters which start with 'Ice', 'IceStorm', etc. We prefix all component settings with a string which we call here 'ComponentTag'. There are two rules about this tag: a) it must be unique within one config file, and b) it has to match the string hardwired into the source code. Let's look at an example.
 
@@ -98,7 +98,7 @@ ComponentTag.Requires.InterfaceTag2.Proxy=i2@p2/c2
 ...
 @endverbatim
 
-@subsection config Specifying Internal Configuration Parameters
+@subsection orca_doc_configfiles_config Specifying Internal Configuration Parameters
 
 Components' internal behaviour usually needs to be configured at run time by setting certain parameters. A component developer should write a defintion file ('.def') which contains all possible parameters with their default values. The syntax in the generated config file ('.cfg') is:
 
