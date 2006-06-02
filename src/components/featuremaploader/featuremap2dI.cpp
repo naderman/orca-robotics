@@ -1,6 +1,6 @@
 #include "featuremap2dI.h"
 #include <iostream>
-#include <orcaice/objutils.h>
+#include <orcaice/orcaice.h>
 
 using namespace std;
 using namespace orca;

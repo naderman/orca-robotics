@@ -1,9 +1,10 @@
-#include "mainloop.h"
 #include <iostream>
+#include <cmath>
+#include <orcaice/orcaice.h>
+
+#include "mainloop.h"
 #include "pathmaintainer.h"
 #include "pathfollower2dI.h"
-#include <orcaice/objutils.h>
-#include <cmath>
 
 using namespace std;
 using namespace orca;
@@ -96,12 +97,11 @@ MainLoop::run()
 
                 if ( areTimestampsDodgy( rangeData_, localiseData_, odomData_ ) )
                 {
-                    // AlexB: What's going on here?  Why isn't orcaice::operator<< being found?
                     stringstream ss;
                     ss << "Timestamps are dodgy: " << endl
-                       << "\t rangeData:    "; orcaice::operator<<(ss,rangeData_->timeStamp) << endl
-                       << "\t localiseData: "; orcaice::operator<<(ss,localiseData_->timeStamp) << endl
-                       << "\t odomData:     "; orcaice::operator<<(ss, odomData_->timeStamp) << endl
+                       << "\t rangeData:    " << orcaice::toString(rangeData_->timeStamp) << endl
+                       << "\t localiseData: " << orcaice::toString(localiseData_->timeStamp) << endl
+                       << "\t odomData:     " << orcaice::toString(odomData_->timeStamp) << endl
                        << "Stopping.";
                     context_.tracer()->error( ss.str() );
                     getStopCommand( velocityCmd_ );

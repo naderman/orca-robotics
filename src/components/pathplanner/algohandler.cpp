@@ -32,7 +32,6 @@
 using namespace std;
 using namespace orca;
 using namespace pathplanner;
-using orcaice::operator<<;
 
 AlgoHandler::AlgoHandler( const orcaice::Context & context )
     : driver_(0),

@@ -10,7 +10,6 @@
 
 using namespace std;
 using namespace orca;
-using orcaice::operator<<;
 
 namespace localnav {
 

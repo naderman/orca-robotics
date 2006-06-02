@@ -1,13 +1,13 @@
-#include "vfhdriver.h"
 #include <iostream>
+#include <cmath>
+#include <orcaice/orcaice.h>
+
+#include "vfhdriver.h"
 #include "vfh_algorithm.h"
 #include "vfh_algorithmconfig.h"
-#include <cmath>
-#include <orcaice/objutils.h>
 
 using namespace localnav;
 using namespace std;
-using orcaice::operator<<;
 
 namespace vfh {
 

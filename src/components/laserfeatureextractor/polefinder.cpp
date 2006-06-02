@@ -24,10 +24,6 @@
 
 #include "polefinder.h"
 
-// // Just for debugging:
-// #include <orcaice/objutils.h>
-// using orcaice::operator<<;
-
 using namespace std;
 
 using namespace orca_polefinder;

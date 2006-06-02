@@ -24,10 +24,7 @@
 #include <iostream>
 
 #include <orca/laser.h>
-#include <orcaice/objutils.h>
-#include <orcaice/mathdefs.h>
-
-using orcaice::operator<<;
+#include <orcaice/orcaice.h>
 
 class RangeScannerConsumerI : public orca::RangeScannerConsumer
 {

@@ -20,7 +20,6 @@
 
 #include <iostream>
 
-#include <orcaice/objutils.h>
 #include <orcaice/orcaice.h>
 
 #include "pathplanner2dI.h"
@@ -28,7 +27,6 @@
 using namespace std;
 using namespace orca;
 using namespace pathplanner;
-using orcaice::operator<<;
 
 PathPlanner2dI::PathPlanner2dI( 
         orcaice::PtrProxy<orca::PathPlanner2dTaskPtr> &pathPlannerTaskProxy,

@@ -18,14 +18,12 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#include <iostream>
+#include <orcaice/orcaice.h>
+
 #include "cameraconsumer_i.h"
 
-#include <orcaice/objutils.h>
-#include <orcaice/mathdefs.h>
-#include <iostream>
-
 using namespace imageviewer;
-using orcaice::operator<<;
 
 CameraConsumerI::CameraConsumerI( orcaice::PtrBuffer<orca::CameraDataPtr> &cameraDataBuffer ) : cameraDataBuffer_(cameraDataBuffer)
 {

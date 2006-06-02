@@ -28,7 +28,6 @@
 using namespace std;
 using namespace orca;
 using namespace simlocaliser;
-using orcaice::operator<<;
 
 Component::Component()
     : orcaice::Component( "SimLocaliser" ),

@@ -18,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#include <orcaice/orcaice.h>
 #include "position2d_i.h"
-#include <orcaice/objutils.h>
 
 using namespace std;
 using namespace orca;

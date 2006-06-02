@@ -18,10 +18,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "platform2dI.h"
+#include <orcaice/orcaice.h>
 
-#include <orcaice/objutils.h>
-#include <orcaice/connectutils.h>
+#include "platform2dI.h"
 
 using namespace std;
 using namespace orca;

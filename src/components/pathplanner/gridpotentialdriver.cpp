@@ -33,7 +33,6 @@
 using namespace std;
 using namespace orcaogmap;
 using namespace orcapathplan;
-using orcaice::operator<<;
 
 namespace pathplanner {
 

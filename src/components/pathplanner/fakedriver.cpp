@@ -27,10 +27,9 @@
 
 using namespace std;
 using namespace pathplanner;
-using orcaice::operator<<;
 
-
-void FakeDriver::computePath(   const orca::OgMapDataPtr          & ogMapDataPtr,
+void 
+FakeDriver::computePath(   const orca::OgMapDataPtr          & ogMapDataPtr,
                                 const orca::PathPlanner2dTaskPtr  & taskPtr,
                                 const orca::PathPlanner2dDataPtr  & pathDataPtr )
 {

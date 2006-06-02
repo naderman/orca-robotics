@@ -18,11 +18,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include <orcaice/objutils.h>
 #include <iostream>
-
-// For definitions of feature types:
 #include <orca/featuremap2d.h>
+#include <orcaice/orcaice.h>
 
 #include "reflectorextractor.h"
 #include "foregroundextractor.h"

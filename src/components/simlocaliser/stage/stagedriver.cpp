@@ -32,7 +32,6 @@
 using namespace std;
 using namespace orca;
 using namespace simlocaliser;
-//using orcaice::operator<<;
 using namespace PlayerCc;
 
 StageDriver::StageDriver( const char *host, int port, const char* id )

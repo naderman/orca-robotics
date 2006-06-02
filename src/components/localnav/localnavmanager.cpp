@@ -1,10 +1,10 @@
+#include <iostream>
+#include <orcaice/orcaice.h>
+
 #include "localnavmanager.h"
 #include "localnavdriver.h"
 #include "goalwatcher.h"
 #include "pathmaintainer.h"
-#include <iostream>
-#include <orcaice/objutils.h>
-#include <orcaice/mathdefs.h>
 
 using namespace std;
 using namespace orcaice;

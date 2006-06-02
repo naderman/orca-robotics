@@ -32,7 +32,6 @@
 using namespace std;
 using namespace orca;
 using namespace segwayrmp;
-//using orcaice::operator<<;
 using namespace PlayerCc;
 
 // experiment to pass all custom props as a disctionary

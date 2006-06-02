@@ -13,6 +13,7 @@ SUBDIRS(
   orcalogplayer
   orcamisc
   orcanavutil
+  orcaobj
   orcaogmap
   orcapathplan
   libqorcauml

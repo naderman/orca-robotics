@@ -31,7 +31,6 @@
 using namespace std;
 using namespace orca;
 using namespace simlocaliser;
-using orcaice::operator<<;
 
 MainLoop::MainLoop( const Localise2dConsumerPrx                    localise2dConsumer,
                     orcaice::PtrBuffer<Localise2dDataPtr>         &locBuffer,

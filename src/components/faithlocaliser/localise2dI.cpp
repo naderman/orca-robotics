@@ -19,7 +19,7 @@
  */
 
 #include <iostream>
-#include <orcaice/objutils.h>
+#include <orcaice/orcaice.h>
 
 #include "localise2dI.h"
 
@@ -93,7 +93,7 @@ Localise2dI::getDataAtTime(const orca::Time& timeStamp, const ::Ice::Current& ) 
     }
 
     // case 1: timestamp outside bounds of history
-    if(timeDiffAsDouble(ancientHistory->timeStamp, timeStamp) > 0.0 )
+    if(orcaice::timeDiffAsDouble(ancientHistory->timeStamp, timeStamp) > 0.0 )
     {
 	throw orca::DataNotExistException( "insufficient history (bounds)" );
         return NULL;

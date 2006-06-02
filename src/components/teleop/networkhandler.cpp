@@ -28,7 +28,6 @@
 using namespace std;
 using namespace orca;
 using namespace teleop;
-using orcaice::operator<<;
 
 NetworkHandler::NetworkHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer,
                                 DisplayHandler* displayHandler, const orcaice::Context & context )

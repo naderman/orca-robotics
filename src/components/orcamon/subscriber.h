@@ -26,8 +26,6 @@
 #include <orcaice/orcaice.h>
 #include <orcaice/printingconsumerI.h>
 
-using orcaice::operator<<;
-
 template<class ObjectPrxType, class ComsumerPrxType, class ConsumerType, class ObjectPtrType>
 void attach( const orcaice::Context & context, const std::string & proxyString )
 {

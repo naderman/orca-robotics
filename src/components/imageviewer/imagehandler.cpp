@@ -35,7 +35,6 @@
 using namespace std;
 using namespace orca;
 using namespace imageviewer;
-using orcaice::operator<<;
 
 ImageHandler::ImageHandler( CameraPrx cameraPrx,
                             orcaice::PtrBuffer<CameraDataPtr> &cameraDataBuffer, 

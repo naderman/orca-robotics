@@ -27,8 +27,6 @@
 using namespace std;
 using namespace orca;
 using namespace teleop;
-//using orcaice::operator<<;
-
 
 FakeDriver::FakeDriver( const InputDriver::Config &cfg ) :
         config_(cfg)

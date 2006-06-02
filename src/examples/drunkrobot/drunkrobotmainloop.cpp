@@ -18,8 +18,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 #include <iostream>
+#include <orcaice/orcaice.h>
+
 #include "drunkrobotmainloop.h"
-#include <orcaice/objutils.h>
 
 using namespace std;
 using namespace orca;

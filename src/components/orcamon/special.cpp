@@ -10,7 +10,6 @@
 
 using namespace std;
 using namespace orca;
-using orcaice::operator<<;
 
 template <> void attach<GpsPrx,GpsMapGridConsumerPrx,GpsMapGridConsumer,GpsMapGridDataPtr>
 ( const orcaice::Context & context, const std::string & proxyString  )

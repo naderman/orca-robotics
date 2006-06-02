@@ -19,12 +19,11 @@
  */
 
 #include <iostream>
-#include <orcaice/objutils.h>
+#include <orcaice/orcaice.h>
 
 #include "position2dconsumerI.h"
 
 using namespace std;
-using orcaice::operator<<;
 
 Position2dConsumerI::Position2dConsumerI( orcaice::PtrBuffer<orca::Position2dDataPtr> & pipe )
     : pipe_(pipe)

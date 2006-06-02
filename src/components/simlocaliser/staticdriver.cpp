@@ -28,7 +28,6 @@
 using namespace std;
 using namespace orca;
 using namespace simlocaliser;
-//using orcaice::operator<<;
 
 StaticDriver::StaticDriver( const orca::Frame2d & pose )
     : location2d_(new orca::Localise2dData)

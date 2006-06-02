@@ -26,7 +26,6 @@
 using namespace std;
 using namespace orca;
 using namespace faithlocaliser;
-using orcaice::operator<<;
 
 MainLoop::MainLoop( const Localise2dConsumerPrx                    localise2dConsumer,
                     orcaice::PtrBuffer<orca::Position2dDataPtr>   &posBuffer,
