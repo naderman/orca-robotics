@@ -25,7 +25,7 @@
 #include <iostream>
 
 // implementations of Ice objects
-#include "rangescannerconsumer_i.h"
+#include "rangescannerconsumerI.h"
 
 
 using namespace std;

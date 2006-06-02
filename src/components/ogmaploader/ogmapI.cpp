@@ -1,4 +1,4 @@
-#include "ogmap_i.h"
+#include "ogmapI.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
 

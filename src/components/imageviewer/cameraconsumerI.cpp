@@ -21,7 +21,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 
-#include "cameraconsumer_i.h"
+#include "cameraconsumerI.h"
 
 using namespace imageviewer;
 

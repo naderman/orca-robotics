@@ -3,7 +3,7 @@
 #include "maploadutil.h"
 
 // implementations of Ice objects
-#include "ogmap_i.h"
+#include "ogmapI.h"
 
 #include <orcaice/orcaice.h>
 

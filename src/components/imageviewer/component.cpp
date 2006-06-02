@@ -25,7 +25,7 @@
 #include <iostream>
 
 // implementations of Ice objects
-#include "cameraconsumer_i.h"
+#include "cameraconsumerI.h"
 
 
 using namespace std;

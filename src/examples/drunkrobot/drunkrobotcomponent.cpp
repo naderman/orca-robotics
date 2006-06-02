@@ -27,9 +27,9 @@
 #include "drunkrobotcomponent.h"
 #include "drunkrobotmainloop.h"
 
-//Also include headers for position2d_i.h
+//Also include headers for position2dI.h
 
-#include "position2d_i.h"
+#include "position2dI.h"
 
 using namespace std;
 using namespace orca;

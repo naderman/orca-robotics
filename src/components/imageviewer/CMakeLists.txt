@@ -26,7 +26,7 @@ IF ( BUILD_IMAGE_VIEWER )
         CONFIGURE_FILE( configimageviewer.h.cmake ${PROJ_SOURCE_DIR}/src/components/imageviewer/configimageviewer.h )
 
         # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-        SET( COMMON_SRCS cameraconsumer_i component imagehandler )
+        SET( COMMON_SRCS cameraconsumerI component imagehandler )
 
         # Files for the stand-alone application
         SET( COMP_SRCS main ${COMMON_SRCS} )

@@ -19,7 +19,7 @@
  */
 
 #include <orcaice/orcaice.h>
-#include "position2d_i.h"
+#include "position2dI.h"
 
 using namespace std;
 using namespace orca;
