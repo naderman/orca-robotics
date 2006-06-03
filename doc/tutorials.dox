@@ -29,7 +29,7 @@
 
 @section operation Operation
 
-- Using utilities
+- @ref orca_doc_tute_utils
 
 @section writing Writing Components
 

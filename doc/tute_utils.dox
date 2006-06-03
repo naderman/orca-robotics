@@ -1,0 +1,102 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_tute_utils Using utilities
+
+@note Reviewed for release 2.0.0.
+
+In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart_startup but now the SickLaser component will run as a service inside the IceBox application server.
+
+@section orca_doc_tute_utils_startup Start Up the Infrastructure
+
+Make sure the IceGrid Registry is running (See @ref orca_doc_quickstart for instructions) and the @c ~/.orcarc file exists.
+
+@section orca_doc_tute_utils_iceping Pinging the registry
+
+Use @c iceping utility to verify that the Registry is reachable
+
+@verbatim
+$ iceping -r -V
+Ice version: 3.0.1
+assumed config file: --Ice.Config=/home/makara/.orcarc
+will ping IceGrid/Query 3 times with 0us interval
+will use locator:  IceGrid/Locator:default -p 12000
+iceping properties (4)
+========================
+--Ice.Config=/home/makara/.orcarc
+--Ice.Default.Locator=IceGrid/Locator:default -p 12000
+--Ice.ProgramName=iceping
+--IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 10000
+========================
+
+Ping successful.
+Proxy           [ IceGrid/Query -t ]
+Connection      [ local address = 172.17.7.30:44125
+remote address = 172.17.7.30:12000 ]
+RTT (3)         [ 881 us ]
+Ice ID          [ ::IceGrid::Query ]
+All Ice ID's    [ ::Ice::Object; ::IceGrid::Query;  ]
+@endverbatim
+
+Use the help option to see what else you can do with @c iceping.
+
+@verbatim
+$ iceping -h
+@endverbatim
+
+@section orca_doc_tute_utils_list Listing contents of the Registry
+
+@verbatim
+$ registrylist
+Ping successful: 172.17.7.30:41646
+[ 06/03/06 13:59:26.381 agave/registrylist:  info: retrieved a list of 3 adapters ]
+agave/lasermon
+time up: 00:00:00
+agave/sicklaser
+time up: 00:01:07
+ -o laser
+ -o status
+ -o home
+/IceGrid.Registry.Internal
+time up: 00:00:00
+@endverbatim
+
+@section orca_doc_tute_utils_ping_iface Pinging Components
+
+@verbatim
+$ iceping laser@agave/sicklaser
+Ice version: 3.0.1
+assumed config file: --Ice.Config=/home/makara/.orcarc
+
+Ping successful.
+Proxy           [ laser -t @ agave/sicklaser ]
+Connection      [ local address = 172.17.7.30:51888
+remote address = 172.17.7.30:46113 ]
+RTT (3)         [ 1236 us ]
+Ice ID          [ ::orca::Laser ]
+@endverbatim
+
+@section orca_doc_tute_icebox_next What's Next
+
+If everything works, check out more @ref orca_doc_tutorials.
+
+*/
