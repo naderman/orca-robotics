@@ -201,7 +201,10 @@ AlgoHandler::run()
 
         // There are three methods to let other components know about the computed path:
         // 1. using the proxy
-        taskPtr->prx->setData( pathDataPtr );
+        if (taskPtr->prx!=0)
+        {
+            taskPtr->prx->setData( pathDataPtr );
+        }
         // 2. and 3.: use getData or icestorm
         pathPlannerI_->localSetData( pathDataPtr );
 
