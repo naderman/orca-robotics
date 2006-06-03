@@ -24,14 +24,18 @@
 
 @note Reviewed for release 2.0.0.
 
-@section orca_doc_configfiles_order Order of loading
+@section orca_doc_configfiles_order Order of Loading
 
 Configuration parameters are loaded in this order, earlier sources overwritten by later once.
 
 -# Built-in defaults
--# Global configuration file
--# Component configuration file
--# Command-line options
+-# Global configuration file, specified in one of these ways:
+    -# The contents of @c ORCA_CONFIG environment variable
+    -# File @c .orcarc in the directory specified by @c HOME environment variable.
+-# Component configuration file, specified in one of these ways:
+    -# With a command line argument --Ice.Config=file.cfg
+    -# File @c ./mycomponent.cfg when the component @c mycomponent is executed with no command line arguments.
+-# Command-line arguments
 
 @section orca_doc_configfiles_format File Format
 
