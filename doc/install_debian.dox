@@ -96,6 +96,14 @@ export PATH=$ORCA2_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$ORCA2_HOME/lib:$LD_LIBRARY_PATH
 @endverbatim
 
+These environment variables are optional but you may as well put them into your @c ~/.bashrc file now so that you have easy access to them later.
+@verbatim
+# uncomment to change the default location of Orca installation
+# export ORCA2_INSTALL=/opt/orca-[VERSION]
+# uncomment to change the default location of the Orca global config file
+# export ORCA2_CONFIG=$HOME/.orcarc
+@endverbatim
+
 <hr>
 
 @b NOTE: Software below is strictly optional.
