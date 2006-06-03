@@ -26,9 +26,9 @@
 
 In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart_startup but now the SickLaser component will run as a service inside the IceBox application server.
 
-@section orca_doc_tute_utils_startup Start Up the Infrastructure
+@section orca_doc_tute_utils_startup Start Up the Infrastructure and a System
 
-Make sure the IceGrid Registry is running (See @ref orca_doc_quickstart for instructions) and the @c ~/.orcarc file exists.
+Repeat the instructions of @ref orca_doc_quickstart. At the end you should have two components running plus the infrastructure (IceGrid Regisry and the IceBox/IceStorm combination).
 
 @section orca_doc_tute_utils_iceping Pinging the registry
 

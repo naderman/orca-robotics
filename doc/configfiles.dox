@@ -24,6 +24,15 @@
 
 @note Reviewed for release 2.0.0.
 
+@section orca_doc_configfiles_order Order of loading
+
+Configuration parameters are loaded in this order, earlier sources overwritten by later once.
+
+-# Built-in defaults
+-# Global configuration file
+-# Component configuration file
+-# Command-line options
+
 @section orca_doc_configfiles_format File Format
 
 Orca uses Ice utilities to parse configuration files. Config files are text files which list properties as key/value pairs. Keys and values are strings which are separated by an equal sign ('='). The key strings are optionally devided into subfields with periods (aka dots, '.'). The value strings can represent strings, integers, or floats. For example:

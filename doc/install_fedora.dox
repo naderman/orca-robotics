@@ -74,28 +74,27 @@ The easiest way to unpack it and install it as root is to untar the file:
 
 You could also choose another directory instead of /usr/local
 
-
-
 @section orca_doc_installfedora_ice Downloading Ice
+
+Minimum version required 3.0.1 (latest tested: 3.0.1).
 
 ICE theoretically could be installed from the RPMs available on their web site. However,
 those RPMs are compiled against GCC 3, which does not play well with ORCA 2, so you have to
 compile it yourself.
 
-It can be downloaded from <a
-href="http://www.zeroc.com/download.html">ZeroC</a>. You want the
+It can be downloaded from <a href="http://www.zeroc.com/download.html">ZeroC</a>. You want the
 source distribution. Once downloaded, it can be untarred.
 
 @verbatim
 % su root 
-% tar xvfz Ice-3.0.0.tar.gz
+% tar xvfz Ice-[VERSION].tar.gz
 @endverbatim
 
 Then provided the packages above have been installed correctly, it should be a matter of
 doing:
 
 @verbatim
-% cd Ice-3.0.0
+% cd Ice-[VERSION]
 % make
 % make install
 % make test
