@@ -33,16 +33,20 @@ void usage()
     cout << "  Proxy\t interface identity in the form 'interface@platform/component'"<<endl;
     cout << "    \tIn Ice terms this is a string in the form 'object@adapter'"<<endl;
     cout << "OPTIONS"<<endl;
-    cout << "  -o\n\tPings the Home interface of component, i.e. 'home@platform/component'"<<endl;
+    cout << "  -o component\n\tPings the Home interface of component, i.e. 'home@platform/component'"<<endl;
     cout << "    \tRelies on the fact that all Orca components provide Home interface"<<endl;
-    cout << "  -r\n\tPings the IceGrid Registry as described in configuration files."<<endl;
+    cout << "  -r registry\n\tPings the IceGrid Registry as described in configuration files."<<endl;
     cout << "    \tSpecifically, pings the Query interface."<<endl;
     cout << "  -c count\n\tPing count times. Default is 3."<<endl;
     cout << "  -f file\n\tUse file as Ice.Config parameter. Default is ~/.orcarc"<<endl;
-    cout << "  -h\tPrints this."<<endl;
-    cout << "  -v\tPrints Ice version."<<endl;
-    cout << "  -V\tPrints extra debugging information."<<endl;
+    cout << "  -h help\n\tPrints this."<<endl;
+    cout << "  -v version\n\tPrints Ice version."<<endl;
+    cout << "  -V verbose\n\tPrints extra debugging information."<<endl;
     cout << "  -i interval\n\tPause for interval seconds after each ping. Default is 0."<<endl;
+    cout << "EXAMPLE"<<endl;
+    cout << "  iceping -r -V -c 5 -i 1    : pings the registry 5 times with 1 sec interval in verbose mode."<<endl;
+    cout << "  iceping home@platf/comp    : pings the Home interface of component 'comp' on platform 'platf'"<<endl;
+    cout << "  iceping -o platf/comp      : same as above"<<endl;
 }
 
 class App : virtual public Ice::Application
