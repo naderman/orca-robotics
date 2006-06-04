@@ -29,12 +29,45 @@
 Configuration parameters are loaded in this order, earlier sources overwritten by later once.
 
 -# Built-in defaults
--# Global configuration file, specified in one of these ways:
-    -# The contents of @c ORCA_CONFIG environment variable
+-# Global configuration file, specified in one of 3 ways:
+    -# The contents of @c Orca.Config parameter, e.g.
+@verbatim
+$ ls *.cfg
+global.cfg
+$ mycomponent --Orca.Config=global.cfg
+@endverbatim
+    -# The contents of @c ORCA2_CONFIG environment variable
+@verbatim
+$ ls *.cfg
+global.cfg
+$ export ORCA2_CONFIG=global.cfg
+$ mycomponent
+@endverbatim
     -# File @c .orcarc in the directory specified by @c HOME environment variable.
--# Component configuration file, specified in one of these ways:
-    -# With a command line argument --Ice.Config=file.cfg
+@verbatim
+$ ls $HOME/.orcarc
+/home/myname/.orcarc
+$ mycomponent
+@endverbatim
+-# Component configuration file, specified in one of 3 ways:
+    -# The contents of @c Ice.Config parameter
+@verbatim
+$ ls *.cfg
+local.cfg
+$ mycomponent --Ice.Config=local.cfg
+@endverbatim
+    -# The command line argument, when there is only 1 argument.
+@verbatim
+$ ls *.cfg
+local.cfg
+$ mycomponent local.cfg
+@endverbatim
     -# File @c ./mycomponent.cfg when the component @c mycomponent is executed with no command line arguments.
+@verbatim
+$ ls *.cfg
+mycomponent.cfg
+$ mycomponent
+@endverbatim
 -# Command-line arguments
 
 @section orca_doc_configfiles_format File Format
