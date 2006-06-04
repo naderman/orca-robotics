@@ -24,7 +24,7 @@
 
 @note Reviewed for release 2.0.0.
 
-In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart_startup but now the SickLaser component will run as a service inside the IceBox application server.
+In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now the SickLaser component will run as a service inside the IceBox application server.
 
 @section orca_doc_tute_icebox_startup Start Up the Infrastructure
 
