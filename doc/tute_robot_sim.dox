@@ -1,0 +1,152 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_tute_robot_sim Setting up a simulator for controlling a robot in a 2D world
+@author Ben Upcroft
+
+@section started Getting started
+Before reading this document, you should familiarise yourself with: 
+    - @ref orca_doc_getting : download, compile, install.
+    - @ref orca_doc_quickstart : The Orca2 quick start guide.
+    - Ch. 2 Ice Overview of the <a href="http://www.zeroc.com/download.html#doc" target="_blank">Ice manual</a>
+    - @ref orca_doc_devcomp : the basic Orca2 component design pattern
+
+Note that you'll need Player and Stage. Debian installation instructions are found here @ref orca_doc_installdebian
+It's also useful to understand how Player/Stage work. 
+
+@section starting Starting Up
+
+Start communication infrastructure as described in the @ref orca_doc_quickstart
+
+We'll be using sample configuration files which are distributed with Orca and Stage. As a general rule, you shouldn't work or run programs from the distribution. So we'll create a separate directory and copy config files into it. After going through the quickstart guide, you would have created a @c sys directory in which you keep your cfg files. Create a new directory for this tutorial and copy the required cfg files there.
+@verbatim
+$ cd ~/sys
+$ mkdir tute_robot
+$ cd tute_robot
+$ cp -r <stage source>/worlds ./
+@endverbatim
+
+We'll make Stage report a global position in this simple world. To do this you need to add @c "localization" lines to the @c worlds/pioneer.inc file
+@verbatim
+define pioneer2dx position
+(
+...
+localization "gps"
+localization_origin [0 0 0]
+)
+@endverbatim
+
+Start up the Stage simulator using the simple.cfg file you just modified:
+@verbatim
+$ player worlds/simple.cfg
+@endverbatim
+
+@section configure Configuring the Rest of the System
+First open another terminal. We'll then copy a couple of standard component configuration files and modify them to suit our needs.
+@verbatim
+$ cd ~/sys/tute_robot
+$ cp /opt/<orca dir>/cfg/sicklaser.cfg ./
+$ cp /opt/<orca dir>/cfg/segwayrmp.cfg ./
+$ cp /opt/<orca dir>/cfg/faithlocaliser.cfg ./
+$ cp /opt/<orca dir>/cfg/teleop.cfg ./
+$ cp /opt/<orca dir>/cfg/localnav.cfg ./
+$ cp /opt/<orca dir>/cfg/ogmaploader.cfg ./
+$ cp /opt/<orca dir>/cfg/orcaview.cfg ./
+@endverbatim
+
+@section laser Setting up the Laser on the Robot
+
+Modify @c sicklaser.cfg file to be compatible with Stage settings i.e. 180deg with 361 scans means 0.5 deg resolution
+@verbatim
+...
+SickLaser.Config.AngularResolution=0.5
+...
+@endverbatim
+You also need to tell the laser to connect to the output from the Stage simulator
+@verbatim
+...
+SickLaser.Config.Driver=stage
+...
+@endverbatim
+Now run the sicklaser component:
+@verbatim
+$ sicklaser ./sicklaser.cfg
+@endverbatim
+
+@section robot_control Robot Control
+From here on in, each component will need a separate terminal. In the tutorial @ref orca_doc_tute_icebox, we'll show you how to put this in an icebox so that you can run all these components from one process.
+We're now going to set up the low level control to the actuators for the simulated robot using the @c segwayrmp component. First tell the component to connect to the Player simulator by changing the @c segwayrmp.cfg file so that the following line looks like
+@verbatim
+...
+SegwayRmp.Config.Driver=playerclient
+...
+@endverbatim
+Run the sewgwayrmp component
+@verbatim
+$ segwayrmp ./segwayrmp.cfg
+@endverbatim
+
+@section localiser Localisation
+We'll be viewing the simulated world and robot using the @c orcaview component but we need to tell @c orcaview where the robot is in that world. To do that we use the odometry output (which has perfect accuracy for this simulated example) using the @c faithlocaliser component. Nothing needs to be done to the @c .cfg file so just start the componenet.
+@verbatim
+$ faithlocaliser ./faithlocaliser
+@endverbatim
+
+@section map Load the Map
+To tell @c orcaview what the world looks like, we use the @c ogmaploader component which loads an occupancy grid map into orcaview. In this case, we are using the simple world from Stage so edit the @c ogmaploader.cfg file
+@verbatim
+...
+OgMapLoader.Config.MapFileName=./worlds/bitmaps/cave.png
+OgMapLoader.Config.Size.X=16.0
+OgMapLoader.Config.Size.Y=16.0
+OgMapLoader.Config.Negate=0
+OgMapLoader.Config.Origin.Orientation=0.0
+OgMapLoader.Config.Origin.X=-8.0
+OgMapLoader.Config.Origin.Y=-8.0
+... 
+@endverbatim
+and start the component
+@verbatim
+$ ogmaploader ./ogmaploader.cfg
+@endverbatim
+
+@section view View the World
+To veiw the world and the robot we use @c orcaview. Edit the @c .cfg file:
+@verbatim
+...
+OrcaView.Requires.Localise2d.Proxy=localise2d@local/faithlocaliser
+...
+@endverbatim
+and start the component
+@verbatim
+$ orcview ./orcaview.cfg
+@endverbatim
+
+You should now see the the simple world from stage. If it is partially off the screen, drag it so that you can veiw the full world. You should be able to veiw the robot and the laser scans.
+
+@section keyboard_control Keyboard/Joystick Control 
+To tell the robot to move we can use the @c teleop component which allows us to send commands to the @c segwayrmp component via keyboard or joystick.
+@verbatim
+$ teleop ./teleop.cfg
+@endverbatim
+
+*/
