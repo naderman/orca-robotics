@@ -29,18 +29,18 @@
 Configuration parameters are loaded in this order, earlier sources overwritten by later once.
 
 -# Built-in defaults
--# Global configuration file, specified in one of 3 ways:
-    -# The contents of @c Orca.Config parameter, e.g.
+-# Global configuration file, specified in one of 3 ways (we use the first one we find):
+    -# The contents of @c Orca.GlobalConfig parameter, e.g.
 @verbatim
 $ ls *.cfg
 global.cfg
-$ mycomponent --Orca.Config=global.cfg
+$ mycomponent --Orca.GlobalConfig=global.cfg
 @endverbatim
-    -# The contents of @c ORCA2_CONFIG environment variable
+    -# The contents of @c ORCA2_GLOBAL_CONFIG environment variable
 @verbatim
 $ ls *.cfg
 global.cfg
-$ export ORCA2_CONFIG=global.cfg
+$ export ORCA2_GLOBAL_CONFIG=global.cfg
 $ mycomponent
 @endverbatim
     -# File @c .orcarc in the directory specified by @c HOME environment variable.
@@ -49,12 +49,12 @@ $ ls $HOME/.orcarc
 /home/myname/.orcarc
 $ mycomponent
 @endverbatim
--# Component configuration file, specified in one of 3 ways:
-    -# The contents of @c Ice.Config parameter
+-# Component configuration file, specified in one of 3 ways (we use the first one we find):
+    -# The contents of @c Orca.Config parameter
 @verbatim
 $ ls *.cfg
 local.cfg
-$ mycomponent --Ice.Config=local.cfg
+$ mycomponent --Orca.Config=local.cfg
 @endverbatim
     -# The command line argument, when there is only 1 argument.
 @verbatim
@@ -69,6 +69,8 @@ mycomponent.cfg
 $ mycomponent
 @endverbatim
 -# Command-line arguments
+
+@note To avoid unexpected interactions between Ice runtime and Orca libraries, do not define ICE_CONFIG environment variable.
 
 @section orca_doc_configfiles_format File Format
 
