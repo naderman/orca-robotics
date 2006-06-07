@@ -52,7 +52,8 @@ GoalWatcher::setAngleTolerance( float requiredAngleFromGoal )
 bool
 GoalWatcher::goalReached() const
 {
-    return (translationalGoalReached() && fabs(goalTheta_) < requiredAngleFromGoal_);
+    bool goalReached = (translationalGoalReached() && fabs(goalTheta_) < requiredAngleFromGoal_);
+    return goalReached;
 }
 
 bool

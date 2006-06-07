@@ -50,6 +50,10 @@ LocalNavManager::setCurrentGoal( const orca::Localise2dDataPtr localiseData )
         // Get the current waypoint
         currentWaypoint = pathMaintainer_.currentWaypoint();
 
+        // Set its constraints
+        goalWatcher_.setDistanceTolerance( currentWaypoint.distanceTolerance );
+        goalWatcher_.setAngleTolerance( currentWaypoint.headingTolerance );
+
         // Set the goal in the robot's local coord-system
         bool wpReached = setGoalSpecifics( localiseData,
                                            currentWaypoint,

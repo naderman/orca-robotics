@@ -81,7 +81,7 @@ std::ostream &operator<<( std::ostream &s, const VfhAlgorithmConfig &c )
     s << "VfhAlgorithm Properties:     " << endl;
     s << "\tCellSize:                  " << c.cellSize                  << endl
       << "\tgridWidthInCells:          " << c.gridWidthInCells          << endl
-      << "\tsectorAngle:               " << c.sectorAngle               << endl
+      << "\tsectorAngle:               " << c.sectorAngle*180.0/M_PI << "deg" << endl
       << "\trobotRadius:               " << c.robotRadius               << endl
       << "\tsafetyDist0ms:             " << c.safetyDist0ms             << endl
       << "\tsafetyDist1ms:             " << c.safetyDist1ms             << endl
@@ -89,9 +89,9 @@ std::ostream &operator<<( std::ostream &s, const VfhAlgorithmConfig &c )
       << "\tmaxSpeedNarrowOpening:     " << c.maxSpeedNarrowOpening     << endl
       << "\tmaxSpeedWideOpening:       " << c.maxSpeedWideOpening       << endl
       << "\tmaxAcceleration:           " << c.maxAcceleration           << endl
-      << "\tmaxTurnrate0ms:            " << c.maxTurnrate0ms            << endl
-      << "\tmaxTurnrate1ms:            " << c.maxTurnrate1ms            << endl
-      << "\tabsoluteMaxTurnrate:       " << c.absoluteMaxTurnrate       << endl
+      << "\tmaxTurnrate0ms:            " << c.maxTurnrate0ms*180.0/M_PI << "deg" << endl
+      << "\tmaxTurnrate1ms:            " << c.maxTurnrate1ms*180.0/M_PI << "deg" << endl
+      << "\tabsoluteMaxTurnrate:       " << c.absoluteMaxTurnrate*180.0/M_PI << "deg" << endl
       << "\tminTurnRadiusSafetyFactor: " << c.minTurnRadiusSafetyFactor << endl
       << "\tfreeSpaceCutoff0ms:        " << c.freeSpaceCutoff0ms        << endl
       << "\tfreeSpaceCutoff1ms:        " << c.freeSpaceCutoff1ms        << endl
