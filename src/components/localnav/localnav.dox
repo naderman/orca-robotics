@@ -50,6 +50,39 @@
     - Valid values: { "vfhdriver" }
     - Default: "vfhdriver"
 
+@section localnav_localnav Local Nav
+
+LocalNav implements the @ref orca_interface_pathfollower2d interface.
+It receives a path, defined by set of waypoints, and follows it while
+avoiding obstacles.  The specfics of the algorithm used to follow the
+path are defined in the driver.
+
+The parameters used in following a path come from three places.  In
+order of precedence, they are:
+
+  1. The parameters of the driver, read from the configuration file, 
+
+  2. The maximum approach speed/turnrate for each waypoint, specified in the path, and
+
+  3. The schedule defined by the path.
+
+The third item exists because the path defines the times at which the
+robot should arrive at each waypoint.  To ignore this constraint, set
+all waypoint times to 'now' or 'yesterday', and the robot will move as
+fast as possible within the constraints set by items 1 and 2.
+
+The second item is again defined by the path object.  Regardless of
+the schedule, the robot won't exceed the max approach speed/turnrate
+defined for a waypoint.  Set these to something massive to ignore this
+constraint.
+
+The first item takes precedence over the other two.  Regardless of the
+specifics of the path, the robot will obey the parameters set in the
+driver.  These should be set to ensure that the robot's motion is
+within reasonable safe limits.
+
+
+
 @section orca_localnav_vfh VFH driver
 
     The VFH driver implements the Vector Field Histogram Plus (VFH+)
