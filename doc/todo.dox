@@ -26,16 +26,17 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @section todo To-Do List for Release 2.0.0
 
-- License
+- License ???
+
+-- Separate utilities from libraries?
 
 - Check docco, especially quickstart and tutorials ... DONE
 
 - review libOrcaIce for stuff does not belong there
-    - all FQxx functions to libOrcaCompModel?
-    - all object functions to libOrcaUtil?
-    - remove long syntax for req. interfaces?
+    - all object functions to libOrcaObjects? ... DONE
+    - remove long syntax for req. interfaces? ... not going to do now.
 
-- Write docco on file format for def files
+- Write docco on file format for def files ... DONE
 
 - redo ping performance number ... DONE
 
