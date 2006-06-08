@@ -1,0 +1,7 @@
+DefaultComponentTag=DrunkRobot
+
+# Provided Interfaces
+Provides.Position2d.Type=Position2d
+Provides.Position2d.DefaultInterface=position2d
+
+# component configuration
