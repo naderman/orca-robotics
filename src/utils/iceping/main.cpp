@@ -26,27 +26,33 @@
 
 using namespace std;
 
+// note: do not use options [hpt] because they are used inside endpoint definition
 void usage()
 {
     cout << "USAGE"<<endl;
     cout << "iceping [ -orhvV ] [ -f file ] [ -c count ] [ -i intervalUs ] proxy"<<endl;
-    cout << "  Proxy\t interface identity in the form 'interface@platform/component'"<<endl;
-    cout << "    \tIn Ice terms this is a string in the form 'object@adapter'"<<endl;
+    cout << "  proxy\t stringified direct or indirect proxy"<<endl;
+    cout << "    \tdirect   : interface name and address in the form 'interface:endpoint'"<<endl;
+    cout << "    \t           In Ice terms this is simply stringified direct proxy"<<endl;
+    cout << "    \tindirect : interface identity in the form 'interface@platform/component'"<<endl;
+    cout << "    \t           In Ice terms this is a string in the form 'objectId @ adapterId'"<<endl;
     cout << "OPTIONS"<<endl;
-    cout << "  -o component\n\tPings the Home interface of component, i.e. 'home@platform/component'"<<endl;
-    cout << "    \tRelies on the fact that all Orca components provide Home interface"<<endl;
+//     cout << "  -o component\n\tPings the Home interface of component, i.e. 'home@platform/component'"<<endl;
+//     cout << "    \tRelies on the fact that all Orca components provide Home interface"<<endl;
     cout << "  -r registry\n\tPings the IceGrid Registry as described in configuration files."<<endl;
     cout << "    \tSpecifically, pings the Query interface."<<endl;
     cout << "  -c count\n\tPing count times. Default is 3."<<endl;
     cout << "  -f file\n\tUse file as Ice.Config parameter. Default is ~/.orcarc"<<endl;
-    cout << "  -h help\n\tPrints this."<<endl;
-    cout << "  -v version\n\tPrints Ice version."<<endl;
+    cout << "  --help help\n\tPrints this."<<endl;
+    cout << "  --version version\n\tPrints Ice version and exits."<<endl;
     cout << "  -V verbose\n\tPrints extra debugging information."<<endl;
     cout << "  -i interval\n\tPause for interval seconds after each ping. Default is 0."<<endl;
-    cout << "EXAMPLE"<<endl;
-    cout << "  iceping -r -V -c 5 -i 1    : pings the registry 5 times with 1 sec interval in verbose mode."<<endl;
-    cout << "  iceping home@platf/comp    : pings the Home interface of component 'comp' on platform 'platf'"<<endl;
-    cout << "  iceping -o platf/comp      : same as above"<<endl;
+    cout << "EXAMPLES"<<endl;
+    cout << "  iceping -r -V -c 5 -i 1     : pings the registry 5 times with 1 sec interval in verbose mode."<<endl;
+    cout << "  iceping home@platf/comp     : pings the Home interface of component 'comp' on platform 'platf'"<<endl;
+    cout << "  iceping -o platf/comp       : same as above"<<endl;
+    cout << "  iceping 'home:tcp -p 11000' : pings the Home interface of a component listening on the "<<endl;
+    cout << "                                specified endpoint."<<endl;
 }
 
 class App : virtual public Ice::Application
@@ -57,7 +63,7 @@ class App : virtual public Ice::Application
 
 int App::run( int argc, char* argv[] )
 {
-    string proxy = "";
+    std::string proxy = "";
     int count = 3;
     int intervalUs = 0;
     bool verbose = false;
@@ -77,7 +83,7 @@ int App::run( int argc, char* argv[] )
     for( uint i=1; i<args.size(); ++i )
     {
         if ( args[i]=="-r" ) {
-            proxy = "IceGrid/Query";            
+            proxy = "IceGrid/Query";
         }
         else if ( args[i]=="-V" ) {
             verbose = true;
@@ -87,15 +93,22 @@ int App::run( int argc, char* argv[] )
     // proxy must've been supplied as the last command line parameter
     if ( proxy.empty() ) {
         proxy = args[args.size()-1];
-    }
 
-    // this option prepends something to proxy
-    for( uint i=1; i<args.size(); ++i )
-    {
-        if ( args[i]=="-o" ) {
-            proxy = "home@"+proxy;
+        // make sure it wasn't some stray option
+        if ( proxy[0] == '-' ) {
+            cout<<"Must specify the proxy name"<<endl;
+            usage();
+            return 0;
         }
     }
+
+    // this option prepends inerface name to proxy
+//     for( uint i=1; i<args.size(); ++i )
+//     {
+//         if ( args[i]=="-o" ) {
+//             proxy = "home@"+proxy;
+//         }
+//     }
 
     for( uint i=1; i<args.size()-1; ++i )
     {
@@ -148,6 +161,7 @@ int App::run( int argc, char* argv[] )
         cout<<"========================"<<endl;
     }
     
+    // this works for both direct and indirect proxies
     Ice::ObjectPrx base = communicator()->stringToProxy( proxy );
 
     try {
@@ -209,11 +223,11 @@ int main(int argc, char * argv[])
     // get the quick and easy ones out of the way
     for( uint i=1; i<args.size(); ++i )
     {
-        if ( args[i]=="-h" ) {
+        if ( args[i]=="--help" ) {
             usage();
             return 0;
         }
-        else if ( args[i]=="-v" ) {
+        else if ( args[i]=="--version" ) {
             // alrady printed out the version
             return 0;
         }
@@ -231,7 +245,6 @@ int main(int argc, char * argv[])
     }
     // Find the global property file
     if ( propertiesFile.empty() ) {
-        //! @todo Linux only!
         char *home = getenv("HOME");
         if ( home == NULL ) {
             cout<<"warning: environment variable 'HOME' is not set, while trying to load .orcarc"<<endl;

@@ -115,7 +115,9 @@ A component usually has a single config file which may also set some Ice runtime
 @verbatim
 ComponentTag.Platform=p1
 ComponentTag.Component=c1
-...
+ComponentTag.Endpoints=e1
+
+# Provided interfaces
 ComponentTag.Provides.InterfaceTag1.Interface=i1
 ComponentTag.Provides.InterfaceTag2.Interface=i2
 ...
@@ -126,10 +128,17 @@ This component has two provided interfaces. When this component is initialized i
 @verbatim
 ComponentTag.Platform=p2
 ComponentTag.Component=c2
-...
-ComponentTag.Requires.InterfaceTag1.Platform=p1
-ComponentTag.Requires.InterfaceTag1.Component=c1
+
+# Required interfaces
+
+# Direct binding by specifying the endpoint
 ComponentTag.Requires.InterfaceTag1.Interface=i1
+ComponentTag.Requires.InterfaceTag1.Endpoint=e1
+
+# Indirect binding through the naming service
+ComponentTag.Requires.InterfaceTag2.Interface=i1
+ComponentTag.Requires.InterfaceTag2.Platform=p1
+ComponentTag.Requires.InterfaceTag2.Component=c1
 ...
 @endverbatim
 
@@ -141,10 +150,13 @@ Here's an alternative more concise syntax. This one takes precedence if both are
 
 @verbatim
 ComponentTag.AdapterId=p1/c1
-...
+
+# Provided interfaces
 ComponentTag.Provides.InterfaceTag1.Interface=i1
-...
-ComponentTag.Requires.InterfaceTag2.Proxy=i2@p2/c2
+
+# Required interfaces
+ComponentTag.Requires.InterfaceTag2.Proxy=i2:e2
+ComponentTag.Requires.InterfaceTag3.Proxy=i2@p2/c2
 ...
 @endverbatim
 
@@ -161,4 +173,9 @@ ComponentTag.Config.ParameterSet2.ParameterInt=3
 @endverbatim
 
 The component developer is responsible for reading the parameters correctly. The code can contain hard-coded default values in case the config file does not specify them.
+
+@section more_info For More Information.
+
+Follow the steps @ref orca_doc_quickstart. After you get the two components to communicate, you can examine the configuration files to see how connections are specified.
+
 */
