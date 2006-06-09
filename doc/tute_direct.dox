@@ -1,0 +1,80 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_tute_direct Connecting components without the Registry
+
+@note Reviewed for release 2.0.0.
+
+@note This tutorial works except the Registry must be running even though the client does not use to connect. This will be fixed soon.
+
+In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now without running the IceGrid Registry.
+
+@section orca_doc_tute_direct_startup Start Up the Infrastructure
+
+Start the IceStorm server but make sure that the IceGrid Registry is NOT running (See @ref orca_doc_quickstart for instructions).
+
+@section orca_doc_tute_direct_talk Connect Two Components
+
+First, copy default configuration files for the SickLaser and LaserMon components.
+@verbatim
+$ cd ~/sys; mkdir tutedirect; cd tutedirect
+$ cp [ORCA2-INSTALL]/cfg/sicklaser.cfg .
+$ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
+@endverbatim
+
+@par The Server
+
+Edit @c sicklaser.cfg to configure the component to listen on a specific port (port 15000 in this case) instead of one assigned by the operating system.  Also, as before, replace @e 'sickcarmen' with @e 'fake'. The config file should contain these lines:
+
+@verbatim
+SickLaser.Endpoints=tcp -t 5000 -p 15000
+...
+SickLaser.Config.Driver=fake
+@endverbatim
+
+Start the server.
+
+@verbatim
+$ sicklaser
+@endverbatim
+
+@par The Client
+
+Start a new shell where we will run the client LaserMon. This time we have to tell it where to find the Laser interface instead of relying on the Registry to supply this information. This @c lasermon.cfg file should contain this line:
+
+@verbatim
+LaserMon.Requires.Laser.Proxy=laser:tcp -p 15000
+@endverbatim
+
+Start the client.
+
+@verbatim
+$ lasermon
+@endverbatim
+
+You should see the scans scroll by on the screen, just as in the @ref orca_doc_quickstart_startup tutorial.
+
+@section orca_doc_tute_direct_next What's Next
+
+If everything works, check out more @ref orca_doc_tutorials.
+
+*/

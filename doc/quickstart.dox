@@ -83,7 +83,7 @@ $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 
 @par The Server
 
-Configure the laser for fake (simulated) operation (or skip this step if you're connected to a real SICK laser).  Edit @c sicklaser.cfg, and replace 'native' with 'fake' so it looks like this:
+Configure the laser for fake (simulated) operation (or skip this step if you're connected to a real SICK laser).  Edit @c sicklaser.cfg, and replace @c 'sickcarmen' with @c 'fake' so it looks like this:
 
 @verbatim
 SickLaser.Config.Driver=fake

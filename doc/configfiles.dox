@@ -118,12 +118,12 @@ ComponentTag.Component=c1
 ComponentTag.Endpoints=e1
 
 # Provided interfaces
-ComponentTag.Provides.InterfaceTag1.Interface=i1
-ComponentTag.Provides.InterfaceTag2.Interface=i2
+ComponentTag.Provides.InterfaceTag1.Name=i1
+ComponentTag.Provides.InterfaceTag2.Name=i2
 ...
 @endverbatim
 
-This component has two provided interfaces. When this component is initialized it registers them with the registry under the following names: \e i1\@p1/c1 and \e i2\@p1/c1. The implementation of ZeroC's IcePackRegistry requires that the interface name must be unique withing an Orca component, and the combination of the platform and component names must be unique within the registy.
+This component has two provided interfaces. When this component is initialized it registers them with the registry under the following names: \e i1\@p1/c1 and \e i2\@p1/c1. The implementation of ZeroC's IceGrid Registry requires that the interface name must be unique within an Orca component, and the combination of the platform and component names must be unique within the registy.
 
 @verbatim
 ComponentTag.Platform=p2
@@ -132,33 +132,15 @@ ComponentTag.Component=c2
 # Required interfaces
 
 # Direct binding by specifying the endpoint
-ComponentTag.Requires.InterfaceTag1.Interface=i1
-ComponentTag.Requires.InterfaceTag1.Endpoint=e1
+ComponentTag.Requires.InterfaceTag2.Proxy=i2:e2
 
-# Indirect binding through the naming service
-ComponentTag.Requires.InterfaceTag2.Interface=i1
-ComponentTag.Requires.InterfaceTag2.Platform=p1
-ComponentTag.Requires.InterfaceTag2.Component=c1
+# Indirect binding through the Registry
+ComponentTag.Requires.InterfaceTag3.Proxy=i2@p2/c2
 ...
 @endverbatim
 
 When the second component is initialized it looks up the interface it requires at the naming service under the name \e i1\@p1/c1. The registry returns the address of the first provided interface of the component above. Because we use a slash '/' as a separator, it cannot be used in platform and component names. The \@ character is also not permitted.
 
-@par A More Concise Alternative Syntax
-
-Here's an alternative more concise syntax. This one takes precedence if both are present.
-
-@verbatim
-ComponentTag.AdapterId=p1/c1
-
-# Provided interfaces
-ComponentTag.Provides.InterfaceTag1.Interface=i1
-
-# Required interfaces
-ComponentTag.Requires.InterfaceTag2.Proxy=i2:e2
-ComponentTag.Requires.InterfaceTag3.Proxy=i2@p2/c2
-...
-@endverbatim
 
 @subsection orca_doc_configfiles_config Specifying Internal Configuration Parameters
 
@@ -176,6 +158,6 @@ The component developer is responsible for reading the parameters correctly. The
 
 @section more_info For More Information.
 
-Follow the steps @ref orca_doc_quickstart. After you get the two components to communicate, you can examine the configuration files to see how connections are specified.
+Follow the steps of @ref orca_doc_quickstart. After you get the two components to communicate, you can examine the configuration files to see how connections are specified.
 
 */

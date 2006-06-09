@@ -49,7 +49,7 @@ $ mkdir stormdb
 
 The IceBox configuration file does not need to be modifed. It instructs the IceBox to first load the IceStorm service and then the SickLaser service. Both are configured to share one instance of Communicator which speeds up communication.
 
-The laser config file needs to be changed to fake (simulated) operation (or skip this step if you're connected to a real SICK laser).  Edit @c sicklaser.cfg, and replace @e 'native' with @e 'fake' so it looks like this:
+The laser config file needs to be changed to fake (simulated) operation (or skip this step if you're connected to a real SICK laser).  Edit @c sicklaser.cfg, and replace @e 'sickcarmen' with @e 'fake' so it looks like this:
 
 @verbatim
 SickLaser.Config.Driver=fake

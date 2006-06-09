@@ -153,6 +153,10 @@ June 2004 Orocos\@KTH had also been adopted by members of the <a href="http://ww
 
 Work on porting Orca to Ice started in March of 2005. The new version called Orca2 was forked in late 2005, the main difference being the move to Ice middleware as the sole communications package. Switching to Ice has caused large changes in the component model. This means that Orca1 and Orca2 components are mutually incompatible.
 
+@image html orca_sloc.jpg
+
+Source code size gives some idea about the project's activity. Here we use Physical Source Lines of Code as a measure of source code size. The stats are generated using David A. Wheeler's SLOCCount. Sizes of Player and Ice are given for comparison. Note that we count here only a fraction of the Ice distribution for C++, namely {include/Ice, src/Ice, include/IceUtil, src/IceUtil}.
+
 @section orca_doc_about_usage Usage
 
 Orca is currently used and/or actively developed at the following sites:
