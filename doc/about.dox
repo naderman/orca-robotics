@@ -155,7 +155,7 @@ Work on porting Orca to Ice started in March of 2005. The new version called Orc
 
 @image html orca_sloc.jpg
 
-Source code size gives some idea about the project's activity. Here we use Physical Source Lines of Code as a measure of source code size. The stats are generated using David A. Wheeler's SLOCCount. Sizes of Player and Ice are given for comparison. Note that we count here only a fraction of the Ice distribution for C++, namely {include/Ice, src/Ice, include/IceUtil, src/IceUtil}.
+Source code size gives some idea about the project's activity. Here we use Physical Source Lines of Code as a measure of source code size. The stats are generated using David A. Wheeler's SLOCCount. Sizes of Player and Ice are given for comparison. Note that we count here only a fraction of the Ice C++ distribution, namely {include/Ice, src/Ice, include/IceUtil, src/IceUtil}.
 
 @section orca_doc_about_usage Usage
 
