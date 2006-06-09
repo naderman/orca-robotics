@@ -20,7 +20,7 @@
 #include "camerautil.h"
 #include <iostream>
 
-#include <orcaice/mathdefs.h>
+#include <orcaobj/mathdefs.h>
 
 using namespace std;
 using namespace orca;

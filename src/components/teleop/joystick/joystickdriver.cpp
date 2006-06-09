@@ -26,7 +26,7 @@
 #include <errno.h>
 
 #include <orcaice/proputils.h>
-#include <orcaice/mathdefs.h>
+#include <orcaobj/mathdefs.h>
 #include <orcaice/exceptions.h>
 
 #include "joystickdriver.h"

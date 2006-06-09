@@ -20,7 +20,7 @@ IF ( BUILD_CLEAN_REGISTRY )
     
     GLOBAL_ADD_EXECUTABLE( cleanregistry ${SRCS} )
 
-    TARGET_LINK_LIBRARIES ( cleanregistry OrcaCompModel IceGrid )
+    TARGET_LINK_LIBRARIES ( cleanregistry OrcaCompModel OrcaMisc IceGrid )
     
     GENERATE_FROM_DEF( cleanregistry.def )
 

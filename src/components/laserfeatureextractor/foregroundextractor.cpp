@@ -5,7 +5,7 @@
 #include <cmath>
 
 #include <orca/featuremap2d.h>
-#include <orcaice/mathdefs.h>
+#include <orcaobj/mathdefs.h>
 
 #include "polefinder.h"
 

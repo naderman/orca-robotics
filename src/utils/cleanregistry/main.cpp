@@ -22,6 +22,7 @@
 #include <IceGrid/Admin.h>
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
+#include <orcamisc/orcamisc.h>  // for connectionToRemoteAddress()
 
 #include <orcaice/application.h>
 #include <orcaice/component.h>
@@ -55,12 +56,12 @@ Component::start()
     std::string locatorString = context().communicator()->getDefaultLocator()->ice_toString();
     
     Ice::ObjectPrx adminProxy = context().communicator()->stringToProxy(
-            orcaice::stringToIceGridInstanceName(locatorString)+"/Admin");
+            orcamisc::stringToIceGridInstanceName(locatorString)+"/Admin");
     
     try
     {
         adminProxy->ice_ping();
-        std::string adminAddress = orcaice::connectionToRemoteAddress( adminProxy->ice_connection()->toString() );
+        std::string adminAddress = orcamisc::connectionToRemoteAddress( adminProxy->ice_connection()->toString() );
         cout<<"Ping successful: "<<adminAddress<<endl;
     }
     catch ( const Ice::Exception & e )
