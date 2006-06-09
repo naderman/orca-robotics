@@ -43,12 +43,14 @@ $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 
 @par The Server
 
-Edit @c sicklaser.cfg to configure the component to listen on a specific port (port 15000 in this case) instead of one assigned by the operating system.  Also, as before, replace @e 'sickcarmen' with @e 'fake'. The config file should contain these lines:
+Edit @c sicklaser.cfg to configure the component to listen on a specific port (port 15000 in this case) instead of one assigned by the operating system. Change driver type from @e 'sickcarmen' to @e 'fake'. Also, tell the component to ignore the fact the registry is not there on activation. The config file should contain these lines:
 
 @verbatim
 SickLaser.Endpoints=tcp -t 5000 -p 15000
 ...
 SickLaser.Config.Driver=fake
+...
+Orca.ActivateRetryNumber=0
 @endverbatim
 
 Start the server.
@@ -59,10 +61,12 @@ $ sicklaser
 
 @par The Client
 
-Start a new shell where we will run the client LaserMon. This time we have to tell it where to find the Laser interface instead of relying on the Registry to supply this information. This @c lasermon.cfg file should contain this line:
+Start a new shell where we will run the client LaserMon. This time we have to tell it where to find the Laser interface instead of relying on the Registry to supply this information. Disable registry pinging on activation. This @c lasermon.cfg file should contain these lines:
 
 @verbatim
 LaserMon.Requires.Laser.Proxy=laser:tcp -p 15000
+...
+Orca.ActivateRetryNumber=0
 @endverbatim
 
 Start the client.
