@@ -1,14 +1,15 @@
 #ifndef MAINLOOP_H
 #define MAINLOOP_H
 
-#include <localnavmanager.h>
+#include <orca/platform2d.h>
+#include <orca/localise2d.h>
+#include <orca/rangescanner.h>
 #include <orcaice/context.h>
 #include <orcaice/ptrbuffer.h>
 #include <orcaice/thread.h>
 #include <orcaice/heartbeater.h>
-#include <orca/platform2d.h>
-#include <orca/localise2d.h>
-#include <orca/rangescanner.h>
+
+#include <localnavmanager.h>
 
 namespace localnav {
 
