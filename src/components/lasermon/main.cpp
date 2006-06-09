@@ -57,6 +57,7 @@ LaserMonComponent::~LaserMonComponent()
 void
 LaserMonComponent::start()
 {
+    cout<<"LaserMonComponent::start"<<endl;
     //
     // REQUIRED INTERFACE: Laser
     //

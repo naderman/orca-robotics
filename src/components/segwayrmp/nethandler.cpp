@@ -107,38 +107,39 @@ NetHandler::init()
 void
 NetHandler::run()
 {
-    int position2dReadTimeout = 1000; // [ms]
-    orcaice::Timer pushTimer;
-    
     try // this is once per run try/catch: waiting for the communicator to be destroyed
     {
-  
-      // Just keep trying till this works...
-      // no reason to do anything else until we are registered
-      while ( isActive() )
-      {
+
+    int position2dReadTimeout = 1000; // [ms]
+    orcaice::Timer pushTimer;
+
+    int activateRetryNumber = context_.properties()->getPropertyAsInt( "Orca.ActivateRetryNumber" );
+    int count = -1; // this retry count, not try count
+    while ( isActive() && ( activateRetryNumber<0 || count<activateRetryNumber ) )
+    {
         try {
-          cout<<"activating..."<<endl;
-          context_.activate();
-          cout<<"activated."<<endl;
-          break;
+            cout<<"activating..."<<endl;
+            context_.activate();
+            cout<<"activated."<<endl;
+            break;
         }
         catch ( orcaice::NetworkException & e )
         {
-          cout<<e.what()<<endl;
-          cout << "Will try again..." << endl;
+            cout<<e.what()<<endl;
+            cout << "Will try again..." << endl;
         }
         catch ( Ice::Exception & e )
         {
-          cout<<e<<endl;
-          cout << "Caught some Ice exception while activating.  Will try again..." << endl;
+            cout<<e<<endl;
+            cout << "Caught some Ice exception while activating.  Will try again..." << endl;
         }
         catch ( ... )
         {
-          cout << "Caught some other exception while activating." << endl;
+            cout << "Caught some other exception while activating." << endl;
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-      }
+        ++count;
+    }
     
     while( isActive() )
     {
