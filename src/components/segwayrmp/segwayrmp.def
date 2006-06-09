@@ -2,10 +2,10 @@ DefaultComponentTag=SegwayRmp
 
 # Provided Interfaces
 Provides.Platform2d.Type=Platform2d
-Provides.Platform2d.DefaultInterface=platform2d
+Provides.Platform2d.DefaultName=platform2d
 
 Provides.Power.Type=Power
-Provides.Power.DefaultInterface=power
+Provides.Power.DefaultName=power
 
 # Required Interfaces
 

@@ -65,8 +65,8 @@ void OrcaMonComponent::start()
 
     // This may throw ConfigFileException, but we don't catch it.
     // If this happens we may as well quit.
-    std::string proxyString = orcaice::toString(
-                    orcaice::getRequiredInterface( context(), "Generic" ) );
+    std::string proxyString = 
+                    orcaice::getRequiredInterfaceAsString( context(), "Generic" );
     Ice::ObjectPrx obj = context().communicator()->stringToProxy( proxyString );
     
     // connect to it and get its object ID, aka interface type.

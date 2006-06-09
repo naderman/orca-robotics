@@ -2,7 +2,7 @@ DefaultComponentTag=SimLocaliser
 
 # Provided Interfaces
 Provides.Localise2d.Type=Localise2d
-Provides.Localise2d.DefaultInterface=localise2d
+Provides.Localise2d.DefaultName=localise2d
 
 # Required Interfaces
 

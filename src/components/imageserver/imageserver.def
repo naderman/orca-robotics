@@ -2,7 +2,7 @@ DefaultComponentTag=ImageServer
 
 # Provided Interfaces
 Provides.Camera.Type=Camera
-Provides.Camera.DefaultInterface=camera
+Provides.Camera.DefaultName=camera
 
 # Required Interfaces
 

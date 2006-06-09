@@ -2,7 +2,7 @@ DefaultComponentTag=FeatureMapLoader
 
 # Provided Interfaces
 Provides.FeatureMap2d.Type=FeatureMap2d
-Provides.FeatureMap2d.DefaultInterface=featuremap2d
+Provides.FeatureMap2d.DefaultName=featuremap2d
 
 # Required Interfaces
 

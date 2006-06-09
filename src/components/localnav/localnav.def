@@ -2,7 +2,7 @@ DefaultComponentTag=LocalNav
 
 # Provided Interfaces
 Provides.PathFollower2d.Type=PathFollower2d
-Provides.PathFollower2d.DefaultInterface=pathfollower2d
+Provides.PathFollower2d.DefaultName=pathfollower2d
 
 # Required Interfaces
 

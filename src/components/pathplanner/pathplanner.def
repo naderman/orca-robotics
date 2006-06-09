@@ -2,10 +2,10 @@ DefaultComponentTag=PathPlanner
 
 # Provided Interfaces
 Provides.PathPlanner2d.Type=PathPlanner2d
-Provides.PathPlanner2d.DefaultInterface=pathplanner2d
+Provides.PathPlanner2d.DefaultName=pathplanner2d
 
 Provides.SkeletonGraphics.Type=QGraphics
-Provides.SkeletonGraphics.DefaultInterface=skeletongraphics
+Provides.SkeletonGraphics.DefaultName=skeletongraphics
 
 # Required Interfaces
 Requires.OgMap.Type=OgMap

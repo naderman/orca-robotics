@@ -2,7 +2,7 @@ DefaultComponentTag=OgMapLoader
 
 # Provided Interfaces
 Provides.OgMap.Type=OgMap
-Provides.OgMap.DefaultInterface=ogmap
+Provides.OgMap.DefaultName=ogmap
 
 # Required Interfaces
 
