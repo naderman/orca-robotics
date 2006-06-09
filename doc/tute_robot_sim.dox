@@ -75,10 +75,11 @@ $ cp /opt/<orca dir>/cfg/orcaview.cfg ./
 
 @section laser Setting up the Laser on the Robot
 
-Modify @c sicklaser.cfg file to be compatible with Stage settings i.e. 180deg with 361 scans means 0.5 deg resolution
+Modify @c sicklaser.cfg file to be compatible with Stage settings i.e. 180deg with 361 scans means 0.5 deg resolution. There also seems to be a bug in Stage which reports the max range of the laser to be 8m. The line below is a workaround for this.
 @verbatim
 ...
 SickLaser.Config.AngularResolution=0.5
+SickLaser.Config.RangeResolution=0.001
 ...
 @endverbatim
 You also need to tell the laser to connect to the output from the Stage simulator
