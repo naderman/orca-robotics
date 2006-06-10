@@ -116,7 +116,7 @@ In addition, copy the header files provided with the distribution to a standard 
 # cp ftd2xx.h WinTypes.h /usr/local/include/.
 @endverbatim
 
-On some systems, an additional symbolic link needs to be created for IceBox to work:
+On some systems, an additional symbolic link needs to be created for shared libraries to load properly. You'll see an error message at runtime that contains "libftd2xx.so.0: cannot open shared object file".
 @verbatim
 # ln -s /usr/local/lib/libftd2xx.so.0.4.10 /usr/lib/libftd2xx.so.0
 @endverbatim
