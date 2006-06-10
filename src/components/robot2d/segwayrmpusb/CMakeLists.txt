@@ -6,6 +6,6 @@ FILE( GLOB SRCS *.cpp )
 # Define some stuff to fool Player code
 ADD_DEFINITIONS( -DHAVE_STDINT_H )
 
-ADD_LIBRARY( OrcaRobo2dSegwayRmpUsb SHARED ${SRCS} )
+ADD_LIBRARY( OrcaRobot2dSegwayRmpUsb SHARED ${SRCS} )
 
-INSTALL_TARGETS( /lib OrcaRobo2dSegwayRmpUsb )
+INSTALL_TARGETS( /lib OrcaRobot2dSegwayRmpUsb )

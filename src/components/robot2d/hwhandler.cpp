@@ -28,7 +28,7 @@
 #include "fakedriver.h"
 // segway rmp drivers
 #ifdef HAVE_USB_DRIVER
-    #include "usb/usbdriver.h"
+    #include "segwayrmpusb/usbdriver.h"
 #endif
 #ifdef HAVE_PLAYERCLIENT_DRIVER
     #include "playerclient/playerclientdriver.h"
