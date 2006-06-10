@@ -24,8 +24,6 @@
 
 @note Reviewed for release 2.0.0.
 
-@note This tutorial works except the Registry must be running even though the client does not use to connect. This will be fixed soon.
-
 In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now without running the IceGrid Registry.
 
 @section orca_doc_tute_direct_startup Start Up the Infrastructure

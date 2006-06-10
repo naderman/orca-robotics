@@ -28,7 +28,7 @@ In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but
 
 @section orca_doc_tute_icebox_startup Start Up the Infrastructure
 
-Make sure the IceGrid Registry is running (See @ref orca_doc_quickstart for instructions).
+Make sure the IceGrid Registry is running and the IceStorm server is NOT (See @ref orca_doc_quickstart for instructions).
 
 @section orca_doc_tute_icebox_talk Connect Two Components
 
@@ -69,7 +69,7 @@ Start a new shell, and fire up the LaserMon component (a laser monitor). No modi
 $ lasermon
 @endverbatim
 
-You should see the scans scroll by on the screen, just as in the @ref orca_doc_quickstart_startup tutorial. To stop the IceBox or the component, type @c Ctrl-C.
+You should see the scans scroll by on the screen, just as in the @ref orca_doc_quickstart_startup tutorial. To stop the IceBox or the component, type @c Ctrl-C in the corresponding terminal window.
 
 @section orca_doc_tute_icebox_next What's Next
 
