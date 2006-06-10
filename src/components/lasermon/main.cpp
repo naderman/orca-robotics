@@ -82,10 +82,10 @@ LaserMonComponent::start()
     }
     
     // Get the geometry
-    cout << "Laser Geometry: " << laserPrx->getGeometry() << endl;
+    cout << "Laser Geometry: " << orcaice::toString( laserPrx->getGeometry() ) << endl;
 
     // Get the configuration
-    cout << "Laser Config:   " << laserPrx->getConfig() << endl;
+    cout << "Laser Config:   " << orcaice::toString( laserPrx->getConfig() ) << endl;
 
     // Get laser data once
     int count = 5;
