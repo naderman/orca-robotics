@@ -7,7 +7,8 @@ Provides.OgMap.DefaultName=ogmap
 # Required Interfaces
 
 # Config Parameters
-Config.Driver.Default=real
+Config.Driver.Comment=Options are { 'file', 'fake' }
+Config.Driver.Default=file
 Config.MapFileName.Default=mapfile.pnm.gz
 Config.Negate.Default=1
 

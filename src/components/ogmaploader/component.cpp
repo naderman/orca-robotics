@@ -1,11 +1,11 @@
+#include <orcaice/orcaice.h>
+
 #include "component.h"
 #include "fakemaploader.h"
 #include "maploadutil.h"
 
 // implementations of Ice objects
 #include "ogmapI.h"
-
-#include <orcaice/orcaice.h>
 
 using namespace std;
 using namespace orca;
@@ -43,7 +43,7 @@ Component::start()
         cout<<"TRACE(maploadercomponent.cpp): Instantiating fake driver" << endl;
         fakeLoadMap( theMap );
     }
-    else if ( driverName == "real" )
+    else if ( driverName == "file" )
     {
         std::string mapFileName = orcaice::getPropertyWithDefault( prop, prefix+"MapFileName", "mapfilename" );
         float worldSizeX = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.X", 20.0 );

@@ -50,8 +50,8 @@ This component will only ever issue one update to subscribers: on initialisation
 
 - @c OgMapLoader.Config.Driver (string)
     - Which map loader to use
-    - Valid values: { "real", "fake" }
-    - Default: "real"
+    - Valid values: { "file", "fake" }
+    - Default: "file"
 
 - @c OgMapLoader.Config.Filename (string)
     - The name (and path) of the image to load
@@ -77,24 +77,28 @@ Map Origin (float,float,float) [m,m,deg]
 
 For example, these configuration settings work for the Player's famous @c cave world:
 @verbatim
-OgMapLoader.Config.Driver=real
+OgMapLoader.Config.Driver=file
 OgMapLoader.Config.MapFileName=cave.png
-OgMapLoader.Config.Size.X=16.0
-OgMapLoader.Config.Size.Y=16.0
 OgMapLoader.Config.Negate=0
 OgMapLoader.Config.Origin.Orientation=0.0
 OgMapLoader.Config.Origin.X=-8.0
 OgMapLoader.Config.Origin.Y=-8.0
+OgMapLoader.Config.Size.X=16.0
+OgMapLoader.Config.Size.Y=16.0
 @endverbatim
 
-\section deps Dependancies
+@section deps Dependancies
 
 - gdk-pixbuf-2.0 (usually installed as part of GTK)
-- pkg-config (used to check for gdk-pixbuf-2.0) [Debian: apt-get install pkg-config]
-- libz [Debian: apt-get install zlib1g-dev]
+- pkg-config (used to check for gdk-pixbuf-2.0)
+- libz
 
+On Debian:
+@verbatim
+# apt-get install pkg-config zlib1g-dev
+@endverbatim
 
-\section developer Responsible Developer
+@section developer Responsible Developer
 Tobias Kaupp (t.kaupp at cas.edu.au)
   
 */
