@@ -1,0 +1,194 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+@ingroup components
+@ingroup apps
+@ingroup services
+@ingroup cpp
+@ingroup linux
+@defgroup orca_component_robot2d Robot2d
+@brief Controls a 2-D mobile robot.
+
+@par Provides
+
+- @ref orca_interface_home
+- @ref orca_interface_platform2d
+- @ref orca_interface_power
+- @ref orca_interface_status
+
+@par Requires
+
+- none
+
+@par Drivers
+
+- @b segwayrmpusb @ref orca_robot2d_segwayrmpusb
+- @b playerclient @ref orca_robot2d_playerclient
+- @b fake Useful for testing or if you don't have hardware or a simulator.
+
+@par Configuration
+
+- @c Robot2d.Config.Driver (string)
+    - Type of hardware driver
+    - Valid values: { 'segwayrmpusb', 'playerclient', 'fake' }
+    - Default: 'segwayrmpusb'
+    
+- @c Robot2d.Config.EnableMotion (bool)
+    - Allow motion commands or not. Convinient for testing when you want to make sure that
+      the platform will not move.
+    - Default: 1
+    
+- @c Robot2d.Config.MaxSpeed (double) [m/s]
+    - Maximum allowed forward speed
+    - Valid values: positive
+    - Default: 1.0
+    
+- @c Robot2d.Config.MaxTurnrate (double) [deg/s]
+    - Maximum allowed turnrate
+    - Valid values: positive
+    - Default: 60.0
+    
+- @c Robot2d.Config.Position2dPublishInterval (double) [s]
+    - How often to send position information to the IceStorm server
+    - Valid values:
+        - t<0 : send every new data point
+        - t>0 : send approximately every t seconds
+    - Default: 0.1 (10Hz)
+
+- @c Robot2d.Config.PowerPublishInterval (double) [s]
+    - How often to send power information to the IceStorm server
+    - Valid values:
+        - t>0 : send approximately every t seconds
+    - Default: 20.0
+
+- @c Robot2d.Config.StatusPublishInterval (double) [s]
+    - How often to send status information to the IceStorm server
+    - Valid values:
+        - t>0 : send approximately every t seconds
+    - Default: 60.0
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
+@par Dependancies
+
+None for the component. See driver sections below for individual driver dependencies.
+
+@section orca_robot2d_segwayrmpusb Segway RMP USB driver
+
+The @c segwayrmp driver provides control of a Segway RMP (Robotic Mobility Platform), which is an robotic version of the Segway HT (Human Transport), a kind of two-wheeled, self-balancing electric scooter. Because of its power, weight, height, and dynamics, the Segway RMP is a potentially dangerous machine.  Be @b very careful with it.
+
+For safety, this Segway will stop (zero-out motion commands) if no new command has been received from the PC in the previous 400ms or so. This is done in Segway firmware and this component does not duplicate this functionality. Thus, if you want to continue moving at a constant velocity, you must continuously send your desired velocities to the Platform2d interface (@ref orca_component_teleop component does exactly that).
+
+@par Dependancies
+
+The USB version of RMP uses a chip from Future Technology Devices Int. (FTDI). Following the Windows  demo software from Segway we use a high-level closed-source library from FTDI to communicate with their chip. The Linux and Windows versions of the library have a (nearly) identical API. On linux the library is called libftd2xx.so and it uses the standard low-level libusb.so.
+
+Make sure libusb is installed. In Debian, the easiest is to install the developer package. It's likely that you already have the library and all this package will do is create a couple of symbolic links.
+@verbatim
+# apt-get install libusb-dev
+@endverbatim
+
+The Orca component has been tested with libftd2xx.so.0.4.10 and libusb-0.1.so.4.4.3 (these are the latest versions tested). Download the libftd2xx library from <a href="http://www.ftdichip.com/Drivers/D2XX.htm" target="_blank">www.ftdichip.com</a>. Untar and follow the installation instructions in README.dat file. Note an incorrect version number in several places and that the line to add to your @c fstab file depends on the distribution and kernel number. The following has been tested in Debian, kernels 2.6.12 and 2.6.15.
+@verbatim
+none            /proc/bus/usb   usbfs   defaults,devmode=0666   0       0
+@endverbatim
+
+In addition, copy the header files provided with the distribution to a standard place, e.g.
+@verbatim
+# cp ftd2xx.h WinTypes.h /usr/local/include/.
+@endverbatim
+
+On some systems, an additional symbolic link needs to be created for IceBox to work:
+@verbatim
+# ln -s /usr/local/lib/libftd2xx.so.0.4.10 /usr/lib/libftd2xx.so.0
+@endverbatim
+
+As usual, make sure that both Linux and CMake detect the changes
+@verbatim
+# ldconfig
+$ rm CMakeCache.txt
+$ cmake .
+@endverbatim
+
+You should see the following line in CMake output:
+@verbatim
+    USB Driver for Segway RMP - can be built
+@endverbatim
+
+@par Extra configuration
+
+- @c Robot2d.Config.SegwayRmpUsb.GainSchedule (string)
+    - Choice of the gain schedule for the closed-loop controller in balanced mode
+    - Valid values: { "normal", "tall", "heavy" }
+    - Default: "normal"
+
+- @c Robot2d.Config.SegwayRmpUsb.MaxVelocityScale (double)
+    - Scaling factor applied to forward velocity.
+    - Valid values: [0.0 .. 1.0]
+    - Default: 0.75
+
+- @c Robot2d.Config.SegwayRmpUsb.MaxTurnrateScale (double)
+    - Scaling factor applied to yaw rate.
+    - Valid values: [0.0 .. 1.0]
+    - Default: 0.75
+
+- @c Robot2d.Config.SegwayRmpUsb.MaxAccelerationScale (double)
+    - Scaling factor applied to forward velocity.
+    - Valid values: [0.0 .. 1.0]
+    - Default: 0.75
+
+- @c Robot2d.Config.SegwayRmpUsb.MaxCurrentLimitScale (double)
+    - Scaling factor applied to forward velocity.
+    - Valid values: [0.0 .. 1.0]
+    - Default: 0.75
+
+@section orca_robot2d_playerclient Player Client driver
+
+This driver wraps up a Player client. It requires a running Player server. The driver gets data from that server and converts it into Orca format.More information on Player/Stage.
+
+@par Dependancies
+
+Requires that Player/Stage v.>=2.0 are installed and running. As Player itself, this driver is Linux only. See our notes on installing Player in platform-dependent installation page, e.g. @ref orca_doc_installdebian_player.
+
+@par Extra configuration
+
+- @c Robot2d.Config.PlayerClient.Host (string)
+    - The host that Player (or Stage) is running on
+    - Default: "localhost"
+- @c Robot2d.Config.PlayerClient.Port (int)
+    - The port that PLayer (or Stage) is running on
+    - Constraints: >0
+    - Default: 6665
+    
+Naturally, both real hardware and Stage simulator are supported. Support is limited to what Player supports which is currently the original RMP with CAN I/O using Kvaser, Inc.'s CANLIB interface library. This library provides access to CAN cards made by Kvaser, such as the LAPcan II.
+
+@section internal Internal Structure
+
+@image html segwayrmp_whitebox.png
+
+The implementation of Platform2d interface can raise orca::DataNotExistException but does NOT raise orca::HardwareFailedException.
+
+@par Authors
+
+Orca component by Alex Makarenko. Original CAN driver code came from Player by Andrew Howard.
+
+*/
+
