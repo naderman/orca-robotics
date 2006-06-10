@@ -24,9 +24,9 @@
 
 @note Reviewed for release 2.0.0.
 
-@note Not finished!
+In this tutorial we will demonstrate the use of several custom Orca utilities which make it easier to troubleshoot systems made up from Orca components.
 
-In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart_startup but now the SickLaser component will run as a service inside the IceBox application server.
+@note Not finished!
 
 @section orca_doc_tute_utils_startup Start Up the Infrastructure and a System
 
@@ -52,8 +52,8 @@ iceping properties (4)
 
 Ping successful.
 Proxy           [ IceGrid/Query -t ]
-Connection      [ local address = 172.17.7.30:44125
-remote address = 172.17.7.30:12000 ]
+Connection      [ local address = XXX.XX.XX.XXX:44125
+remote address = XXX.XX.XX.XX:12000 ]
 RTT (3)         [ 881 us ]
 Ice ID          [ ::IceGrid::Query ]
 All Ice ID's    [ ::Ice::Object; ::IceGrid::Query;  ]
@@ -65,9 +65,19 @@ Use the help option to see what else you can do with @c iceping.
 $ iceping -h
 @endverbatim
 
+For the next two utilities, we'll need configuration files. Copy default ones from the installation directory.
+@verbatim
+$ cd ~/sys; mkdir tuteutils; cd tuteutils
+$ cp [ORCA2-INSTALL]/cfg/registrylist.cfg .
+$ cp [ORCA2-INSTALL]/cfg/registryview.cfg .
+@endverbatim
+
 @section orca_doc_tute_utils_list Listing contents of the Registry
 
+NOTE: This utility is not finished.
+
 @verbatim
+$ cd ~/sys/tuteutils
 $ registrylist
 Ping successful: 172.17.7.30:41646
 [ 06/03/06 13:59:26.381 agave/registrylist:  info: retrieved a list of 3 adapters ]
@@ -91,11 +101,19 @@ assumed config file: --Ice.Config=/home/makara/.orcarc
 
 Ping successful.
 Proxy           [ laser -t @ agave/sicklaser ]
-Connection      [ local address = 172.17.7.30:51888
-remote address = 172.17.7.30:46113 ]
+Connection      [ local address = XXX.XX.XX.XXX:51888
+remote address = XXX.XX.XX.XXX:46113 ]
 RTT (3)         [ 1236 us ]
 Ice ID          [ ::orca::Laser ]
 @endverbatim
+
+@section orca_doc_tute_utils_list Viewing contents of the Registry
+
+@verbatim
+$ cd ~/sys/tuteutils
+$ registryview
+@endverbatim
+
 
 @section orca_doc_tute_icebox_next What's Next
 
