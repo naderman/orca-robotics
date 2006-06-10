@@ -26,7 +26,8 @@
 using namespace std;
 using namespace teleop;
 
-void StdoutDisplayHandler::displayEvent( const Event e )
+void 
+StdoutDisplayHandler::displayEvent( const Event e )
 {
     switch ( e )
     {
@@ -47,10 +48,11 @@ void StdoutDisplayHandler::displayEvent( const Event e )
     }
 }
 
-void StdoutDisplayHandler::displayCommand( const orca::Velocity2dCommandPtr & command,
+void 
+StdoutDisplayHandler::displayCommand( const orca::Velocity2dCommandPtr & command,
                                  const bool vx, const bool vy, const bool w )
 {
-    cout<<"\n"<<command;
+    cout<<"\n"<<orcaice::toString( command );
     
     if ( vx ) cout<<"Vx LIMITED. ";
     if ( vy ) cout<<"Vy LIMITED. ";
