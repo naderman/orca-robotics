@@ -2,7 +2,7 @@ DefaultComponentTag=Teleop
 
 # interfaces
 Requires.Platform2d.Type=Platform2d
-Requires.Platform2d.DefaultProxy=platform2d@local/segwayrmp
+Requires.Platform2d.DefaultProxy=platform2d@local/robot2d
 
 # configuration
 Config.Driver.Comment=valid Drivers are { kbd-termio, kbd-ncurses, joystick, fake }

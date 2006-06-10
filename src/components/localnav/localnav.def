@@ -7,7 +7,7 @@ Provides.PathFollower2d.DefaultName=pathfollower2d
 # Required Interfaces
 
 Requires.Platform2d.Type=Platform2d
-Requires.Platform2d.DefaultProxy=platform2d@local/segwayrmp
+Requires.Platform2d.DefaultProxy=platform2d@local/robot2d
 
 Requires.Localisation.Type=Localise2d
 Requires.Localisation.DefaultProxy=localise2d@local/faithlocaliser

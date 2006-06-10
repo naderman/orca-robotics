@@ -19,7 +19,7 @@ SUBDIRS(
   position2dmon
   registrylist
   registryview
-  segwayrmp
+  robot2d
   sicklaser
   simlocaliser
   teleop

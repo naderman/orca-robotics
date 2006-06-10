@@ -65,7 +65,7 @@ First open another terminal. We'll then copy a couple of standard component conf
 @verbatim
 $ cd ~/sys/tute_robot
 $ cp /opt/<orca dir>/cfg/sicklaser.cfg ./
-$ cp /opt/<orca dir>/cfg/segwayrmp.cfg ./
+$ cp /opt/<orca dir>/cfg/robot2d.cfg ./
 $ cp /opt/<orca dir>/cfg/faithlocaliser.cfg ./
 $ cp /opt/<orca dir>/cfg/teleop.cfg ./
 $ cp /opt/<orca dir>/cfg/localnav.cfg ./
@@ -95,15 +95,15 @@ $ sicklaser ./sicklaser.cfg
 
 @section robot_control Robot Control
 From here on in, each component will need a separate terminal. In the tutorial @ref orca_doc_tute_icebox, we'll show you how to put this in an icebox so that you can run all these components from one process.
-We're now going to set up the low level control to the actuators for the simulated robot using the @c segwayrmp component. First tell the component to connect to the Player simulator by changing the @c segwayrmp.cfg file so that the following line looks like
+We're now going to set up the low level control to the actuators for the simulated robot using the @c robot2d component. First tell the component to connect to the Player simulator by changing the @c robot2d.cfg file so that the following line looks like
 @verbatim
 ...
-SegwayRmp.Config.Driver=playerclient
+Robot2d.Config.Driver=playerclient
 ...
 @endverbatim
-Run the sewgwayrmp component
+Run the Robot2d component
 @verbatim
-$ segwayrmp ./segwayrmp.cfg
+$ robot2d ./robot2d.cfg
 @endverbatim
 
 @section localiser Localisation
@@ -145,7 +145,7 @@ $ orcview ./orcaview.cfg
 You should now see the the simple world from stage. If it is partially off the screen, drag it so that you can veiw the full world. You should be able to veiw the robot and the laser scans.
 
 @section keyboard_control Keyboard/Joystick Control 
-To tell the robot to move we can use the @c teleop component which allows us to send commands to the @c segwayrmp component via keyboard or joystick.
+To tell the robot to move we can use the @c teleop component which allows us to send commands to the @c robot2d component via keyboard or joystick.
 @verbatim
 $ teleop ./teleop.cfg
 @endverbatim
