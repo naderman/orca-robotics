@@ -33,7 +33,7 @@ LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
 ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
     
     OPTIONAL_SUB_LIBRARY(
-        "Player client library driver: can talk to Player server on real hardware or Stage simulator"
+        "Player client driver for Robot2d"
         playerclient
         OrcaRobot2dPlayerClient
         PLAYERCLIENT_LIBS
