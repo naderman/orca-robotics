@@ -20,7 +20,8 @@
 
 /*!
 
-@page orca_doc_tute_robot_sim Setting up a simulator for controlling a robot in a 2D world
+@page orca_doc_tute_stage Using Orca with Player/Stage simulator
+@note Reviewed for release 2.0.0.
 @author Ben Upcroft
 
 @section started Getting started
@@ -28,24 +29,22 @@ Before reading this document, you should familiarise yourself with:
     - @ref orca_doc_getting : download, compile, install.
     - @ref orca_doc_quickstart : The Orca2 quick start guide.
     - Ch. 2 Ice Overview of the <a href="http://www.zeroc.com/download.html#doc" target="_blank">Ice manual</a>
-    - @ref orca_doc_devcomp : the basic Orca2 component design pattern
 
-Note that you'll need Player and Stage. Debian installation instructions are found here @ref orca_doc_installdebian
-It's also useful to understand how Player/Stage work. 
+Note that you'll need <a href="http://playerstage.sourceforge.net/" target="_blank">Player/Stage</a> installed. Debian installation instructions are found here @ref orca_doc_installdebian. It's also useful to understand how Player/Stage work. 
 
-@section starting Starting Up
+@section orca_doc_tute_stage_starting Starting Up
 
-Start communication infrastructure as described in the @ref orca_doc_quickstart
+Start IceGrid Registry and IceStorm server as described in the @ref orca_doc_quickstart
 
-We'll be using sample configuration files which are distributed with Orca and Stage. As a general rule, you shouldn't work or run programs from the distribution. So we'll create a separate directory and copy config files into it. After going through the quickstart guide, you would have created a @c sys directory in which you keep your cfg files. Create a new directory for this tutorial and copy the required cfg files there.
+We'll be using sample configuration files which are distributed with Orca and Stage. As a general rule, you shouldn't work or run programs from the distribution. So we'll create a separate directory and copy config files into it. After going through the quickstart guide, you would have created a @c sys directory in which you keep your cfg files. Create a new directory for this tutorial and copy the required config files there.
 @verbatim
 $ cd ~/sys
-$ mkdir tute_robot
-$ cd tute_robot
-$ cp -r <stage source>/worlds ./
+$ mkdir tutestage
+$ cd tutestage
+$ cp -r [STAGE_SRC]/worlds ./
 @endverbatim
 
-We'll make Stage report a global position in this simple world. To do this you need to add @c "localization" lines to the @c worlds/pioneer.inc file
+We'll make Stage report a global position in this simple world. To do this you need to add @c "localization" property to the @c worlds/pioneer.inc file
 @verbatim
 define pioneer2dx position
 (
@@ -55,99 +54,99 @@ localization_origin [0 0 0]
 )
 @endverbatim
 
-Start up the Stage simulator using the simple.cfg file you just modified:
+Start up the Stage simulator using the @c simple.cfg file.
 @verbatim
 $ player worlds/simple.cfg
 @endverbatim
 
-@section configure Configuring the Rest of the System
-First open another terminal. We'll then copy a couple of standard component configuration files and modify them to suit our needs.
+Now copy a few standard component configuration files distributed with Orca.
 @verbatim
-$ cd ~/sys/tute_robot
-$ cp /opt/<orca dir>/cfg/sicklaser.cfg ./
-$ cp /opt/<orca dir>/cfg/robot2d.cfg ./
-$ cp /opt/<orca dir>/cfg/faithlocaliser.cfg ./
-$ cp /opt/<orca dir>/cfg/teleop.cfg ./
-$ cp /opt/<orca dir>/cfg/localnav.cfg ./
-$ cp /opt/<orca dir>/cfg/ogmaploader.cfg ./
-$ cp /opt/<orca dir>/cfg/orcaview.cfg ./
+$ cd ~/sys/tutestage
+$ cp [ORCA_INSTALL]/cfg/sicklaser.cfg ./
+$ cp [ORCA_INSTALL]/cfg/robot2d.cfg ./
+$ cp [ORCA_INSTALL]/cfg/faithlocaliser.cfg ./
+$ cp [ORCA_INSTALL]/cfg/teleop.cfg ./
+$ cp [ORCA_INSTALL]/cfg/localnav.cfg ./
+$ cp [ORCA_INSTALL]/cfg/ogmaploader.cfg ./
+$ cp [ORCA_INSTALL]/cfg/orcaview.cfg ./
 @endverbatim
+
+From here on in, each component will need a separate terminal. In the tutorial @ref orca_doc_tute_icebox, you can learn how to put several components into an application server called IceBox so that you can run all these components from one process.
 
 @section laser Setting up the Laser on the Robot
 
-Modify @c sicklaser.cfg file to be compatible with Stage settings i.e. 180deg with 361 scans means 0.5 deg resolution. There also seems to be a bug in Stage which reports the max range of the laser to be 8m. The line below is a workaround for this.
+Modify @c sicklaser.cfg file to be compatible with Stage settings i.e. 180deg with 361 scans means 0.5 deg resolution. Note that as of version 2.0.1, Stage does not seem to work with 80m laser range, so we set it to 8m (range resolution of 1mm). We also tell the component to use the @e stage driver. Check that the following lines look like this.
 @verbatim
 ...
 SickLaser.Config.AngularResolution=0.5
 SickLaser.Config.RangeResolution=0.001
-...
-@endverbatim
-You also need to tell the laser to connect to the output from the Stage simulator
-@verbatim
-...
 SickLaser.Config.Driver=stage
 ...
 @endverbatim
-Now run the sicklaser component:
+
+Now run the SickLaser component. Check the Stage world window: you should see the laser scan after SickLaser component made the connection.
 @verbatim
 $ sicklaser ./sicklaser.cfg
 @endverbatim
 
-@section robot_control Robot Control
-From here on in, each component will need a separate terminal. In the tutorial @ref orca_doc_tute_icebox, we'll show you how to put this in an icebox so that you can run all these components from one process.
-We're now going to set up the low level control to the actuators for the simulated robot using the @c robot2d component. First tell the component to connect to the Player simulator by changing the @c robot2d.cfg file so that the following line looks like
+@section robot_control Robot driver
+
+We're now going to set up the low level control to the actuators for the simulated robot using the Robot2d component. First tell the component to connect to the Player simulator by changing the @c robot2d.cfg file so that the following line looks like this
 @verbatim
 ...
 Robot2d.Config.Driver=playerclient
 ...
 @endverbatim
+
 Run the Robot2d component
 @verbatim
 $ robot2d ./robot2d.cfg
 @endverbatim
 
 @section localiser Localisation
-We'll be viewing the simulated world and robot using the @c orcaview component but we need to tell @c orcaview where the robot is in that world. To do that we use the odometry output (which has perfect accuracy for this simulated example) using the @c faithlocaliser component. Nothing needs to be done to the @c .cfg file so just start the componenet.
+To display the robot in the GUI we need a localisation component. Here we'll use the simplest one possible: @c FaithLocaliser which assumes porfect odometry. Nothing needs to be done to the @c .cfg file so just start the componenet.
 @verbatim
 $ faithlocaliser ./faithlocaliser
 @endverbatim
 
 @section map Load the Map
-To tell @c orcaview what the world looks like, we use the @c ogmaploader component which loads an occupancy grid map into orcaview. In this case, we are using the simple world from Stage so edit the @c ogmaploader.cfg file
+To display the world in the GUI we'll use the @c OgMapLoader component which loads converts a given image file to a (static) Occupancy Grid and serves it on demand to clients. In this case, we are using the simple world from Stage so edit the @c ogmaploader.cfg file
 @verbatim
 ...
 OgMapLoader.Config.MapFileName=./worlds/bitmaps/cave.png
-OgMapLoader.Config.Size.X=16.0
-OgMapLoader.Config.Size.Y=16.0
 OgMapLoader.Config.Negate=0
 OgMapLoader.Config.Origin.Orientation=0.0
 OgMapLoader.Config.Origin.X=-8.0
 OgMapLoader.Config.Origin.Y=-8.0
+OgMapLoader.Config.Size.X=16.0
+OgMapLoader.Config.Size.Y=16.0
 ... 
 @endverbatim
-and start the component
+Start the component
 @verbatim
 $ ogmaploader ./ogmaploader.cfg
 @endverbatim
 
 @section view View the World
-To veiw the world and the robot we use @c orcaview. Edit the @c .cfg file:
+To veiw the world and the robot we use @c orcaview. One line of the standard config file needs to be modified:
 @verbatim
 ...
 OrcaView.Requires.Localise2d.Proxy=localise2d@local/faithlocaliser
 ...
 @endverbatim
-and start the component
+Start the GUI component
 @verbatim
-$ orcview ./orcaview.cfg
+$ orcaview ./orcaview.cfg
 @endverbatim
 
-You should now see the the simple world from stage. If it is partially off the screen, drag it so that you can veiw the full world. You should be able to veiw the robot and the laser scans.
+You should now see the the simple world from stage. If it is partially off the screen, drag it with the left mouse button so that you can veiw the full world. You should be able to see the robot and the laser scans.
 
 @section keyboard_control Keyboard/Joystick Control 
-To tell the robot to move we can use the @c teleop component which allows us to send commands to the @c robot2d component via keyboard or joystick.
+To tell the robot to move we can use the @c teleop component which allows us to send commands to the @c Robot2d component via keyboard or joystick.
 @verbatim
 $ teleop ./teleop.cfg
 @endverbatim
+
+As the robot moves through the world, compare the display of the OrcaView and the Stage world window: they should be identical.
 
 */

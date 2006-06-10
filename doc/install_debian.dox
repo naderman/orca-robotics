@@ -117,7 +117,7 @@ Doxygen is a tool to produce documentation from source code. It can be easily in
 
 @section orca_doc_installdebian_qt Qt
 
-At the time of writing Qt4 packages are in the 'testing' distribution.
+Qt is a cross-platform GUI framework. At the time of writing Qt4 packages are in the 'testing' distribution.
 
 @verbatim
 # apt-get install libqt4-dev qt4-doc qt4-dev-tools
@@ -126,7 +126,7 @@ At the time of writing Qt4 packages are in the 'testing' distribution.
 
 @section orca_doc_installdebian_pkgconfig PkgConfig
 
-Some components require pkg-config to check for dependencies
+Some components require @c pkg-config utility to check for dependencies
 
 @verbatim
 # apt-get install pkg-config
@@ -135,7 +135,7 @@ Some components require pkg-config to check for dependencies
 
 @section orca_doc_installdebian_player Player/Stage
 
-These notes were tested with Player 2.0.1 and Stage 2.0.1. Start with Player/Stage dependencies.
+<a href="http://playerstage.sourceforge.net/" target="_blank">Player/Stage</a> is an open-source device server and simulator. These notes were tested with Player 2.0.1 and Stage 2.0.1. Start with Player/Stage dependencies.
 
 @verbatim
 # apt-get install libglib2.0-dev libgtk2.0-dev libltdl3-dev
