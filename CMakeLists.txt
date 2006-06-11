@@ -11,7 +11,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.2.2)
 
 PROJECT(orca)
 
-SET( VERSION 2.0.0rc5 CACHE STRING "Version of Orca distribution" )
+SET( VERSION 2.0.0rc5+ CACHE STRING "Version of Orca distribution" )
   MESSAGE( "Orca version ${VERSION}" )
 
 # If environment variable ORCA_INSTALL_DIR is not set, use /opt/orca-version
