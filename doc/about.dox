@@ -182,11 +182,11 @@ build system.  Ice has language mappings for C++, Java, Python, C#, VisualBasic 
 
 @note Orca Licensing is under review (25 May 2006)
 
-Orca is released under the <a href="http://www.fsf.org/copyleft/lgpl.html" target="_blank">GNU Lesser General Public License (LGPL)</a>.
-
 */
 
 /*
+Orca is released under the <a href="http://www.fsf.org/copyleft/lgpl.html" target="_blank">GNU Lesser General Public License (LGPL)</a>.
+
 The LGPL was chosen (as opposed to the GPL) to allow commercial
 enterprises to build closed-source products using Orca technology.
 Note that Orca's only required dependency, Ice, is released under a <a href="http://www.zeroc.com/licensing.html" target="_blank">dual license</a>: it is GPL
