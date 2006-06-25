@@ -1,0 +1,46 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+@ingroup utils
+@ingroup linux
+@defgroup orca_util_gorca Gorca
+@brief A graphical system composition tool.
+
+Drag a component from the library into the project to make an component instance. Connect required and provided interfaces. Edit configuration parameters. Save configuration files.
+
+@par Status
+
+- Mostly unusable at this point, with the exception of making UML-style diagrams.
+
+@par Plans
+
+This utility proved to be useful in Orca-1 and will be ported to Orca-2 eventually, but we want to do it right so big changes are needed. In Orca-1, Gorca looked like Simulink. In Orca2 we imagine it to be more like a UML tool (the one we know and like is Enterprise Architect). To do it properly will require the use of Qt's model/view framework and, possibly, a database backend (Berkley DB is already installed by Ice and used by Freeze).
+
+@par Dependancies
+
+ - Qt 4.0
+
+@par Developer
+Alex Makarenko
+
+*/
+
+
