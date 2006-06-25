@@ -53,12 +53,12 @@ src
     sandbox
         gorca                              GPL
         netcam                             LGPL
-        qorcacm                            GPL
         qorcauml                           GPL
         reactivewalker                     LGPL
     tests
         *                                  LGPL
     utils
+        cleanregistry                      LGPL
         iceping                            LGPL
         orcacm                             LGPL
         orcadef                            LGPL
@@ -72,4 +72,5 @@ src
         orcapathplan                       LGPL
         orcaplayer                         GPL
         orcasmc                            LGPL
+        qorcacm                            GPL
 -------------------------------------------------------------
