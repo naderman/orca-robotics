@@ -16,13 +16,11 @@ SUBDIRS(
   orcaobj
   orcaogmap
   orcapathplan
-  libqorcauml
   orcaplayer
   qorcacm
 #  qorcagui
 # UTILITY APPLICATIONS
   cleanregistry
-  gorca
   iceping
   orcasmc
 )
