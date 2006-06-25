@@ -29,9 +29,11 @@
 - @ref orca_doc_about_purpose
 - @ref orca_doc_about_difference
 - @ref orca_doc_about_approach
+    - @ref orca_doc_about_whyice
+    - @ref orca_doc_about_flexible
+    - @ref orca_doc_about_tools
+    - @ref orca_doc_about_repository
 - @ref orca_doc_about_history
-- @ref orca_doc_about_usage
-- @ref orca_doc_about_platforms
 - @ref orca_doc_about_license
 
 @section orca_doc_about_purpose Purpose
@@ -55,7 +57,7 @@ Orca, currently in its second generation, differs from other robotic software fr
 
 The approach we take is frequently called Component-Based Software Engineering (CBSE). For a broad overview of "componentry" look in <a href="http://en.wikipedia.org/wiki/Software_componentry" target="_blank">Wikipedia</a>. For a summary of CBSE and its application to robotics, read <a href="http://orca-robotics.sf.net/documents/brooks05_towards_component_based_robotics.pdf">a paper by Orca developers</a>.  While it was written for Orca1, the arguments for CBSE apply equally to Orca2.
 
-@subsection orca_doc_about_whyice 1. Why Use Ice?
+@subsection orca_doc_about_whyice Why Use Ice?
 
 In order to implement a distributed component-based system, one needs
 some kind of <a href="http://en.wikipedia.org/wiki/Middleware" target="_blank">middleware</a> package
@@ -69,7 +71,7 @@ Enterprise JavaBeans), the following options exist today:
 - using <a href="http://www.zeroc.com" target="_blank">Ice</a>.
 
 We discount XML-based technologies on the grounds that they are too
-inefficient for low-level robotic control tasks.  
+inefficient for low-level robotic control tasks.
 
 While CORBA is sufficiently flexible for Orca's middleware
 requirements, it is also large and complex.  Experience with CORBA in
@@ -88,7 +90,6 @@ professionals such as the developers of Ice.
 We have been very pleased with Ice so far: it's easy enough to
 understand that we managed to get a system working fairly quickly, and
 we've become confident in its reliability.
-
 
 @subsection orca_doc_about_flexible General, Flexible and Extensible
 
@@ -113,6 +114,7 @@ The only thing we prescribe is the way in which interfaces are
 defined and implemented (using Ice), in order to enforce component
 compatibility.
 
+Freedom in choosing OS and programming language which is ideal for the job in hand is another aspect of flexibility. Orca was designed with the intention of being used on various platforms. To this end, we use <a href="www.cmake.org" target="_blank">CMake</a> (cross-platform make) for its build system.  Ice has language mappings for C++, Java, Python, C#, VisualBasic and PHP.  It builds natively under various operating systems including Windows, Linux and Mac OS X. While we currently use Orca in Linux/C++ configuration, nothing in principle should stop you from working with any one of the potential platform/language combinations.
 
 @subsection orca_doc_about_tools Optional Tools
 
@@ -135,7 +137,6 @@ maintain <a href="group__components.html">this online repository</a>.
 Users are encouraged to contribute their own components and to point
 out omissions in components' documentation.
 
-
 @section orca_doc_about_history History
 
 Orca began as part of the EU-funded OROCOS Project: a project
@@ -146,49 +147,31 @@ institution worked on separate parts of a project that was
 intended to eventually merge, but never did.  The Orocos name
 now refers to <a href="http://www.orocos.org" target="_blank">the Belgian part</a>.
 
-The task of <a href="http://www.cas.kth.se" target="_blank">KTH</a> was to build a set of communication patterns to enable
-the interaction of distributed components.  This work,
-spearheaded by Anders Oreb&auml;ck, was called Orocos\@KTH.  By
-June 2004 Orocos\@KTH had also been adopted by members of the <a href="http://www.acfr.usyd.edu.au" target="_blank">Australian Centre for Field Robotics</a>.  By this time it had diverged far enough from the work at Leuven that a new name was required to disambiguate the two, and Orca1 was born. At that time the project moved to SourceForge. 
+The task of <a href="http://www.cas.kth.se" target="_blank">KTH</a> was to build a set of communication patterns to enable the interaction of distributed components.  This work,
+spearheaded by Anders Oreb&auml;ck, was called Orocos\@KTH.  By June 2004 Orocos\@KTH had also been adopted by members of the <a href="http://www.acfr.usyd.edu.au" target="_blank">Australian Centre for Field Robotics</a>.  By this time it had diverged far enough from the work at Leuven that a new name was required to disambiguate the two, and Orca1 was born. At that time the project moved to SourceForge. 
 
 Work on porting Orca to Ice started in March of 2005. The new version called Orca2 was forked in late 2005, the main difference being the move to Ice middleware as the sole communications package. Switching to Ice has caused large changes in the component model. This means that Orca1 and Orca2 components are mutually incompatible.
 
+At present, Orca is mostly actively used at several Universities in Sydney, Australia. For a sample of past and current projects see @ref orca_doc_projects.
+
 @image html orca_sloc.jpg
 
-Source code size gives some idea about the project's activity. The stats are generated using David A. Wheeler's SLOCCount. This figure also helps illustrate our main objective: we are interested in a large "superstructure" -- useful components, and don't want to "dig" a deep "foundation" -- the infrastructure necessary to allow components to talk to each other. This was the main motivation for switching to Ice which is visible since v.2.0.0-rc1. Note that we count here only a fraction of the Ice C++ distribution, namely {include/Ice, src/Ice, include/IceUtil, src/IceUtil}. For comparison we show a similar analysis of Player, up to distribution v.2.0.2. For the purposes of this figure, Player 2.0.2 "base" includes the contents of {libplayercore, client_libs, libplayerxdr, libplayertcp} and Player 2.0.2 "components" is what's in {server, utils}.
-
-@section orca_doc_about_usage Usage
-
-Orca is currently used and/or actively developed at the following sites:
-
-- <a href="http://www.acfr.usyd.edu.au" target="_blank">Australian Centre for Field Robotics</a>
-        (Sydney, Australia)
-
-- <a href="http://www.uts.edu.au" target="_blank">University of Technology Sydney</a> 
-    (Sydney, Australia)
-
-- <a href="http://www.cse.unsw.edu.au/index.html" target="_blank">University of New South Wales</a>
-    (Sydney, Australia)
-
-- let us know if you are using Orca and would like to be listed here.
-
-@section orca_doc_about_platforms Operating Systems and Languages
-
-Orca was designed with the intention of being used on various
-platforms.  To this end, Orca uses <a href="www.cmake.org" target="_blank">CMake</a> (cross-platform make) for its
-build system.  Ice has language mappings for C++, Java, Python, C#, VisualBasic and PHP.  It builds natively under various operating systems including Windows, Linux and Mac OS X.
+Source code size gives some idea about the project's activity. The stats above are generated using David A. Wheeler's SLOCCount. This figure also helps illustrate our main objective: we are interested in a large "superstructure" (blue) -- useful components, and don't want to "dig" a deep "foundation" (orange) -- the infrastructure necessary to allow components to talk to each other. This was the main motivation for switching to Ice which is visible since v.2.0.0-rc1 at the end of 2005. Note that we count here only the C++ distribution of Ice. For comparison, we show a similar analysis of Player, up to distribution v.2.0.2. For the purposes of this figure, Player 2.0.2 "base" includes the contents of {libplayercore, client_libs, libplayertcp} and Player 2.0.2 "components" includes the code in {server, utils}. The autogenerated bindings are not taken into account.
 
 @section orca_doc_about_license License
 
-@note Orca Licensing is under review (25 May 2006)
+The Orca project does not, as a policy, require code to conform to any specific 
+license to be included in the distribution. However, the code is required to 
+have a license and the license must be Open Source. That is the official policy.
 
-*/
+The reality of the situation is that nearly all code in the Orca libraries and 
+components is covered under the <a href="http://www.fsf.org/copyleft/lgpl.html" target="_blank">Library GNU Public License (LGPL)</a> as defined by 
+the Free Software Foundation (FSF). Most of the remaining code is licensed under 
+the <a href="http://www.fsf.org/copyleft/gpl.html" target="_blank">GNU Public License (GPL)</a>, also defined by the FSF.
 
-/*
-Orca is released under the <a href="http://www.fsf.org/copyleft/lgpl.html" target="_blank">GNU Lesser General Public License (LGPL)</a>.
-
-The LGPL was chosen (as opposed to the GPL) to allow commercial
+The LGPL (as opposed to the GPL) is used whenever possible to allow commercial
 enterprises to build closed-source products using Orca technology.
 Note that Orca's only required dependency, Ice, is released under a <a href="http://www.zeroc.com/licensing.html" target="_blank">dual license</a>: it is GPL
 unless a commercial license is purchased from <a href="http://www.zeroc.com" target="_blank">ZeroC</a>.
+
 */
