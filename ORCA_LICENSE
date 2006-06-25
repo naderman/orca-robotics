@@ -2,16 +2,74 @@ Orca Project: Components for robotics
               http://orca-robotics.sf.net/
 Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
 
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
+The Orca project does not, as a policy, require code to conform to any specific license to be included in the
+distribution. However, the code is required to have a license and the license must be Open Source. That is the 
+official policy.
 
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
+The reality of the situation is that nearly all code in the Orca libraries and components is covered under the 
+Library GNU Public License (LGPL) as defined by the Free Software Foundation (FSF). Most of the remaining code 
+is licensed under the GNU Public License (GPL), also defined by the FSF.
 
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+The GNU General Public License is often shipped with GNU software, and is
+generally kept in a file called COPYING or LICENSE. If you do not have a 
+copy of the license, write to the Free Software Foundation, 59 Temple 
+Place, Suite 330, Boston, MA 02111 USA.
+
+The following is a complete list of subdirectories of the 'src' directory in orca2 distribution. For each 
+subdirectory with a distinct license the license is listed.
+
+DIRECTORY                                 LICENSE
+-------------------------------------------------------------
+src
+    components
+        faithlocaliser                     LGPL
+        featuremap2dmon                    LGPL
+        featuremaploader                   LGPL
+        imageserver                        LGPL
+        imageviewer                        LGPL
+        laserfeatureextractor              LGPL
+        lasermon                           LGPL
+        localnav                           LGPL
+        logger                             LGPL
+        logplayer                          LGPL
+        ogmaploader                        LGPL
+        orcamon                            LGPL
+        orcaview                           GPL
+        pathplanner                        LGPL
+        position2dmon                      LGPL
+        registrylist                       LGPL
+        registryview                       GPL
+        robot2d                            LGPL
+            playerclient                   GPL
+        sicklaser                          LGPL
+            playerclient                   GPL
+            sickcarmen                     GPL
+        simlocaliser                       LGPL
+        teleop                             LGPL
+    examples
+        *                                  LGPL
+    interfaces
+        *                                  LGPL
+    sandbox
+        gorca                              GPL
+        netcam                             LGPL
+        qorcacm                            GPL
+        qorcauml                           GPL
+        reactivewalker                     LGPL
+    tests
+        *                                  LGPL
+    utils
+        iceping                            LGPL
+        orcacm                             LGPL
+        orcadef                            LGPL
+        orcagui                            GPL
+        orcaice                            LGPL
+        orcalogplayer                      LGPL
+        orcamisc                           LGPL
+        orcanavutil                        LGPL
+        orcaobj                            LGPL
+        orcaogmap                          LGPL
+        orcapathplan                       LGPL
+        orcaplayer                         GPL
+        orcasmc                            LGPL
+-------------------------------------------------------------
