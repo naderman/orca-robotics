@@ -36,7 +36,7 @@
 @section writing Writing Components
 
 - @ref orca_doc_walkthrough
-- @ref orca_component_pureice : an example of writing a component "from scratch" without using libOrcaIce.
+- @ref orca_component_pureice : an example of writing a C++ component "from scratch" without using libOrcaIce.
 - See also @ref orca_doc_devguide
 
 */
