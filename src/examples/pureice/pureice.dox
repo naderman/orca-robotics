@@ -36,5 +36,13 @@
 
 Example code intended for component developers.
 
+To test the component, follow the directions of the @ref orca_doc_quickstart. After the SickLaser is up and running, start PureIce example which will connect to the server, get a single laser scan, and exit. 
+
+@verbatim
+$ pureice --Ice.Default.Locator='IceGrid/Locator:default -p 12000'
+@endverbatim
+
+Note that PureIce does not use any configuration files. All connection parameters are hard-wired into the code, so you have to follow the directions of the tutorial exactly, otherwise it will not work.
+
 */
 
