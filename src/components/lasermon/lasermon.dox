@@ -28,7 +28,6 @@
 @defgroup orca_component_lasermon LaserMon
 @brief A simple component that prints laser ranges
 
-
 @par Provided Interfaces
 
 - @ref orca_interface_home
@@ -45,10 +44,6 @@ Laser scans are displayed as soon as they arrive.
 None.
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
-
-@par Remarks
-
-Cannot run as an IceBox service.
 
 @par Authors
 Alex Brooks
