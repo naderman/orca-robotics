@@ -1,0 +1,49 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_installwinxp Installing Orca on Windows XP
+
+@note Reviewed for release 2.0.0.
+
+These are detailed instructions for installing Orca on Windows XP. See @ref orca_doc_getting for general guidelines.
+
+@section orca_doc_installwinxp_cmake CMake
+
+Minimum version required 2.2.2 (latest tested: 2.2.3). Download and run the installer.
+
+@section orca_doc_installwinxp_ice Ice
+
+Minimum version required 3.0.1 (latest tested: 3.0.1).
+
+Download the installer from  <a href="http://www.zeroc.com/download.html">download page</a>. Run the installer. The default installation location is @c C:\Ice-[VERSION].
+
+@section orca_doc_installwinxp_orca Orca
+
+Build and install Orca2 distribution.
+    - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive.
+    - The default installation directory is  @c C:\orca-[VERSION], where [VERSION] is the Orca version. You can customized this by setting ORCA2_INSTALL environment variable.
+    - Configure using CMake application. HOW?
+    - Compile, and install. HOW?
+
+Make sure that the binaries and executables are in the path. You may want to add a snippet to your @c ~/.bashrc file similar to the one below. Replace [VERSION] with the version of Orca you've just installed. Change the directory if you've modified the default install directory. Notice that the environment variable for the Orca installation to use (ORCA2_HOME) is different from the one which specifies where to install Orca (ORCA2_INSTALL).
+
+*/
