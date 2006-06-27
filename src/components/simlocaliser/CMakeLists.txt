@@ -1,5 +1,3 @@
-# $Id$
-
 OPTION( BUILD_SIM_LOCALISER "Try to build SimLocaliser component" ON )
 
 IF ( NOT WIN32 AND BUILD_SIM_LOCALISER )

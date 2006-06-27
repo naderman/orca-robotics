@@ -1,5 +1,3 @@
-# $Id$
-
 OPTION( BUILD_ROBOT2D "Try to build Robot2d component" ON )
 
 IF ( NOT WIN32 AND BUILD_ROBOT2D )
