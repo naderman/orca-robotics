@@ -26,6 +26,9 @@
 @ingroup linux
 @defgroup orca_component_imageserver ImageServer
 @brief A hardware abstraction component for grabbing images from either a FireWire or USB camera
+WARNING: This component has been turned off by default. If you have the cvs version of opencv-0.9.7, you can turn this component back on by running ccmake and manually switching this component ON.
+
+The reason for turning it off is that there is no way of checking that you have the cvs or release version of opencv. This component needs some of the functionality of the cvs version which is not available in the release.
 
 @par Provides
 
@@ -101,6 +104,8 @@ Drives a digiclops camera, directly connected to the computer.
 The @ref orca_camera_monoopencv requires that <a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank">Opencv-0.9.7 from cvs</a> is installed. The @b cvs @b version has
 a lot more functionality for image grabbing which we think is useful
 enough that the cvs version should be used rather than the release. 
+
+Recent compilation problems with the cvs version of opencv have been discovered due to python-dev packages not being checked for by autoconf. If you are using Debian, please install the python2.3-dev package. For other operating systems, please check that you have the headers for python installed in a standard system directory.
 
 The @ref orca_camera_digiclops requires that
 the digiclops and triclops libraries ( provided by the digiclops
