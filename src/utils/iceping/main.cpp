@@ -80,7 +80,7 @@ int App::run( int argc, char* argv[] )
     }
 
     // go through value-less keys
-    for( uint i=1; i<args.size(); ++i )
+    for( unsigned int i=1; i<args.size(); ++i )
     {
         if ( args[i]=="-r" ) {
             proxy = "IceGrid/Query";
@@ -103,14 +103,14 @@ int App::run( int argc, char* argv[] )
     }
 
     // this option prepends inerface name to proxy
-//     for( uint i=1; i<args.size(); ++i )
+//     for( unsigned int i=1; i<args.size(); ++i )
 //     {
 //         if ( args[i]=="-o" ) {
 //             proxy = "home@"+proxy;
 //         }
 //     }
 
-    for( uint i=1; i<args.size()-1; ++i )
+    for( unsigned int i=1; i<args.size()-1; ++i )
     {
         if ( args[i]=="-i" ) {
             intervalUs = (int)floor(1.0e6*atof( args[i+1].c_str() ));
@@ -155,7 +155,7 @@ int App::run( int argc, char* argv[] )
         cout<<"iceping properties ("<<os.str()<<")"<<endl;
         cout<<"========================"<<endl;
     
-        for ( uint i=0; i<propSeq.size(); ++i ) {
+        for ( unsigned int i=0; i<propSeq.size(); ++i ) {
             cout<<propSeq[i]<<endl;
         }
         cout<<"========================"<<endl;
@@ -194,7 +194,7 @@ int App::run( int argc, char* argv[] )
         if ( verbose ) {
             Ice::StringSeq ids = base->ice_ids();
             cout<<"All Ice ID's \t[ ";
-            for ( uint i=0; i<ids.size(); ++i ) {
+            for ( unsigned int i=0; i<ids.size(); ++i ) {
                 cout << ids[i] << "; ";
             }
             cout<<" ]"<<endl;
@@ -221,7 +221,7 @@ int main(int argc, char * argv[])
     Ice::StringSeq args = Ice::argsToStringSeq( argc, argv );
 
     // get the quick and easy ones out of the way
-    for( uint i=1; i<args.size(); ++i )
+    for( unsigned int i=1; i<args.size(); ++i )
     {
         if ( args[i]=="--help" ) {
             usage();
@@ -236,7 +236,7 @@ int main(int argc, char * argv[])
     // find the property file
     string propertiesFile;
     if ( args.size() > 2 ) {
-        for( uint i=1; i<args.size(); ++i )
+        for( unsigned int i=1; i<args.size(); ++i )
         {
             if ( args[i]=="-f" ) {
                 propertiesFile = args[i+1];
