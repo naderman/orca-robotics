@@ -14,7 +14,7 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
   IF ( 1394_FOUND )
     SET( 1394_LIBS raw1394 dc1394_control )
   ELSE ( 1394_FOUND )
-    MESSAGE( "    libdc1394 not found: you will not be able to use firewire cameras" )
+    MESSAGE( STATUS "    libdc1394 not found: you will not be able to use firewire cameras" )
   ENDIF ( 1394_FOUND )
 
   IF ( NOT V4L_FOUND )
@@ -23,16 +23,16 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
 
   # opencv image grabber checks
   IF ( OPENCV7_FOUND ) 
-    MESSAGE( "    OpenCv-0.9.7 Image Grabber - can be built" )
+    MESSAGE( STATUS "    OpenCv-0.9.7 Image Grabber - can be built" )
   ELSE ( OPENCV7_FOUND ) 
-    MESSAGE( "    OpenCv-0.9.7 Image Grabber - cannot be built" )
+    MESSAGE( STATUS "    OpenCv-0.9.7 Image Grabber - cannot be built" )
   ENDIF ( OPENCV7_FOUND ) 
 
   # digiclops image grabber library checks
   IF ( DIGICLOPS_AND_TRICLOPS_FOUND ) 
-    MESSAGE( "    The Digiclops Image Grabber - can be built" )
+    MESSAGE( STATUS "    The Digiclops Image Grabber - can be built" )
   ELSE ( DIGICLOPS_AND_TRICLOPS_FOUND ) 
-    MESSAGE( "    The Digiclops Image Grabber - cannot be built" )
+    MESSAGE( STATUS "    The Digiclops Image Grabber - cannot be built" )
   ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND ) 
 
   # automatically generate #ifdef's for component.cpp
@@ -51,14 +51,14 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
       SUBDIRS( imagegrabber )
 
     ELSE ( OPENCV7_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
-      MESSAGE ( "     Image grabbing libraries cannot be found... only the fake driver can be built." ) 
-      MESSAGE ( "     Please install the cvs version of opencv for monocular cameras or the digiclops libraries for the trinocular digiclops camera."  ) 
+      MESSAGE( STATUS "     Image grabbing libraries cannot be found... only the fake driver can be built." ) 
+      MESSAGE( STATUS "     Please install the cvs version of opencv for monocular cameras or the digiclops libraries for the trinocular digiclops camera."  ) 
       SET ( DRIVER_SRCS fakedriver )
     ENDIF ( OPENCV7_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
 
   ELSE ( V4L_FOUND OR 1394_FOUND )
-    MESSAGE ( "     Image grabbing drivers cannot be found... only the fake driver can be built." ) 
-    MESSAGE ( "     Please install Video4Linux for usb cameras and/or libdc1394 for firewire cameras"  ) 
+    MESSAGE( STATUS "     Image grabbing drivers cannot be found... only the fake driver can be built." ) 
+    MESSAGE( STATUS "     Please install Video4Linux for usb cameras and/or libdc1394 for firewire cameras"  ) 
     SET ( DRIVER_SRCS fakedriver )
 
   ENDIF ( V4L_FOUND OR 1394_FOUND )

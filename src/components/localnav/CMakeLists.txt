@@ -6,7 +6,7 @@ IF ( NOT WIN32 AND BUILD_LOCALNAV )
     INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
 
     SUBDIRS( vfhdriver )
-    MESSAGE( "    VfhDriver for LocalNav - can be built" )
+    MESSAGE( STATUS "    VfhDriver for LocalNav - can be built" )
 
     INCLUDE_DIRECTORIES(
       ${PROJ_SOURCE_DIR}/src/components/localnav
