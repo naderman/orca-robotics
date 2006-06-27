@@ -26,6 +26,7 @@
 @ingroup linux
 @defgroup orca_component_imageserver ImageServer
 @brief A hardware abstraction component for grabbing images from either a FireWire or USB camera
+
 WARNING: This component has been turned off by default. If you have the cvs version of opencv-0.9.7, you can turn this component back on by running ccmake and manually switching this component ON.
 
 The reason for turning it off is that there is no way of checking that you have the cvs or release version of opencv. This component needs some of the functionality of the cvs version which is not available in the release.
