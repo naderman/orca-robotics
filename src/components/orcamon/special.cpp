@@ -5,14 +5,14 @@
 
 #include <orca/gps.h>
 
-#include "subscriber.h"
+// #include "subscriber.h"
 #include "special.h"
 
 using namespace std;
 using namespace orca;
 
-template <> void attach<GpsPrx,GpsMapGridConsumerPrx,GpsMapGridConsumer,GpsMapGridDataPtr>
-( const orcaice::Context & context, const std::string & proxyString  )
+// template <> void attach<GpsPrx,GpsMapGridConsumerPrx,GpsMapGridConsumer,GpsMapGridDataPtr>
+void attachGpsMapGrid( const orcaice::Context & context, const std::string & proxyString  )
 {
     // Connect directly to the interface
     GpsPrx objectPrx;
@@ -42,8 +42,14 @@ template <> void attach<GpsPrx,GpsMapGridConsumerPrx,GpsMapGridConsumer,GpsMapGr
     // Get the data once
     try
     {
+        cout<<"in special"<<endl;
         context.tracer()->info( "Trying to get one data object as a test" );
         context.tracer()->print( orcaice::toString( objectPrx->getMapGridData() ) );
+    }
+    catch ( const orca::DataNotExistException & e )
+    {
+        cout<<e<<endl;
+        context.tracer()->warning( "data is not in the buffer yet. Will subscribe anyway." );
     }
     catch ( const orca::HardwareFailedException & e )
     {
@@ -81,8 +87,8 @@ template <> void attach<GpsPrx,GpsMapGridConsumerPrx,GpsMapGridConsumer,GpsMapGr
     }
 }
 
-template <> void attach<GpsPrx,GpsTimeConsumerPrx,GpsTimeConsumer,GpsTimeDataPtr>
-( const orcaice::Context & context, const std::string & proxyString  )
+// template <> void attach<GpsPrx,GpsTimeConsumerPrx,GpsTimeConsumer,GpsTimeDataPtr>
+void attachGpsTime( const orcaice::Context & context, const std::string & proxyString  )
 {
     // Connect directly to the interface
     GpsPrx objectPrx;
@@ -115,9 +121,14 @@ template <> void attach<GpsPrx,GpsTimeConsumerPrx,GpsTimeConsumer,GpsTimeDataPtr
         context.tracer()->info( "Trying to get one data object as a test" );
         context.tracer()->print( orcaice::toString( objectPrx->getTimeData() ) );
     }
+    catch ( const orca::DataNotExistException & e )
+    {
+        cout<<e<<endl;
+        context.tracer()->warning( "data is not in the buffer yet. Will subscribe anyway." );
+    }
     catch ( const orca::HardwareFailedException & e )
     {
-        context.tracer()->error( "hardware failure reported when getting data. Will subscribe anyway." );
+        context.tracer()->warning( "hardware failure reported when getting data. Will subscribe anyway." );
     }
 
     // create a callback object to recieve scans

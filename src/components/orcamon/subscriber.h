@@ -29,6 +29,7 @@
 template<class ObjectPrxType, class ComsumerPrxType, class ConsumerType, class ObjectPtrType>
 void attach( const orcaice::Context & context, const std::string & proxyString )
 {
+    std::cout<<"generic attach()"<<std::endl;
     // Connect directly to the interface
     ObjectPrxType objectPrx;
     int count = 3;
@@ -57,13 +58,33 @@ void attach( const orcaice::Context & context, const std::string & proxyString )
     // Get the data once
     try
     {
-        context.tracer()->info( "Trying to get one data object as a test" );
-        context.tracer()->print( orcaice::toString( objectPrx->getData() ) );
+        context.tracer()->info( "subscriber: Trying to get one data object as a test" );
+        objectPrx->getData();
+//         context.tracer()->print( orcaice::toString( objectPrx->getData() ) );
     }
-    catch ( const orca::HardwareFailedException & e )
+    catch ( const orca::OrcaException & e ) 
     {
-        context.tracer()->error( "hardware failure reported when getting data. Will subscribe anyway." );
+        std::cout<<e.what<<std::endl;
     }
+    catch ( const Ice::Exception & e ) 
+    {
+        std::cout<<e<<std::endl;
+    }
+    catch ( ... )
+    {
+        context.tracer()->error( "caught something." );
+        exit(1);
+    }
+//     catch ( const orca::DataNotExistException & e )
+//     {
+//         std::cout<<e<<std::endl;
+//         abort;
+//         context.tracer()->error( "data is not in the buffer yet. Will subscribe anyway." );
+//     }
+//     catch ( const orca::HardwareFailedException & e )
+//     {
+//         context.tracer()->error( "hardware failure reported when getting data. Will subscribe anyway." );
+//     }
 
     // create a callback object to recieve scans
 //     Ice::ObjectPtr consumer = new ConsumerIType;
