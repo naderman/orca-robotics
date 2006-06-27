@@ -72,7 +72,7 @@ LaserMonComponent::start()
             orcaice::connectToInterfaceWithTag<orca::LaserPrx>( context(), laserPrx, "Laser" );
             break;
         }
-        catch ( const orcaice::NetworkException & e )
+        catch ( const orcaice::NetworkException & )
         {
             tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
@@ -97,11 +97,11 @@ LaserMonComponent::start()
             tracer()->print( orcaice::toString( laserPrx->getData() ) );
             break;
         }
-        catch ( const orca::DataNotExistException & e )
+        catch ( const orca::DataNotExistException & )
         {
             tracer()->warning( "hardware failure reported when getting a scan." );
         }
-        catch ( const orca::HardwareFailedException & e )
+        catch ( const orca::HardwareFailedException & )
         {
             tracer()->warning( "hardware failure reported when getting a scan." );
         }
@@ -143,7 +143,7 @@ LaserMonComponent::start()
             laserPrx->subscribe( callbackPrx );
             break;
         }
-        catch ( const orca::SubscriptionFailedException & e )
+        catch ( const orca::SubscriptionFailedException & )
         {
             tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
