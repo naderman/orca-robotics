@@ -38,8 +38,10 @@ Minimum version required 2.2.2 (latest tested: 2.2.3). Note that Stable (Sarge) 
 
 Minimum version required 3.0.1 (latest tested: 3.0.1).
 
-@note The instructions below describe how to build Ice from source. There are several efforts to provide Debian packages for Ice but we haven't tried to use them yet. See http://ice.jgaa.com/ and
-http://personales.ya.com/fmoya/
+@note There's now a Debian Ice package in the testing distribution. Building from source which is described below may still be necessary if you want to install the newest version of Ice not yet available as a package.
+@verbatim
+# apt-get install zeroc-ice
+@endverbatim
 
 Following the instructions below will install Ice to the default location @c /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
 

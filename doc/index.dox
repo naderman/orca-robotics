@@ -18,8 +18,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// do we need this group?
-// @defgroup objects Objects
 
 /*!
 
@@ -31,11 +29,17 @@
 
 @defgroup apps Stand-Alone Components
 @defgroup services IceBox Services
+
 @defgroup cpp C++
 @defgroup java Java
 @defgroup linux Linux
 @defgroup win Windows
+*/
 
+// without this gap between two doxygen definition, the last group does not get 
+// populated properly for some reason.
+
+/*!
 @mainpage Orca: Components for Robotics
 
 Orca is an open-source framework for developing component-based robotic systems. It provides the means for defining and developing the building-blocks which can be pieced together to form arbitrarily
@@ -58,8 +62,8 @@ Orca, currently in its second generation, differs from other robotic software fr
 @section more_information For more information
 
 - Read general information about the project: @ref orca_doc_about
-- Download and install Orca: @ref orca_doc_getting
-- Get set up and start running components: @ref orca_doc_quickstart
+- Get set up: @ref orca_doc_getting
+- Start running components: @ref orca_doc_quickstart
 - A quick overview of basic concepts: @ref orca_doc_overview
 - An overview of Ice middleware: Ch. 2 Ice Overview of the <a href="http://www.zeroc.com/download.html#doc" target="_blank">Ice manual</a>
 - See a list of all available components: <a href="group__components.html">Component Repository</a>
