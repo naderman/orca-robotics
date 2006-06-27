@@ -135,13 +135,14 @@ void OrcaMonComponent::start()
     }
     else if ( objId=="::orca::Gps" )
     {
+        cout<<"****************** Gps interface **************"<<endl;
         //GPS has three object types and consumers
         attach<GpsPrx,GpsConsumerPrx,GpsConsumer,GpsDataPtr>
                 ( context(), proxyString );
-        attach<GpsPrx,GpsMapGridConsumerPrx,GpsMapGridConsumer,GpsMapGridDataPtr>
-                ( context(), proxyString );
-        attach<GpsPrx,GpsTimeConsumerPrx,GpsTimeConsumer,GpsTimeDataPtr>
-                ( context(), proxyString );
+//         attach<GpsPrx,GpsMapGridConsumerPrx,GpsMapGridConsumer,GpsMapGridDataPtr>
+        attachGpsMapGrid( context(), proxyString );
+//         attach<GpsPrx,GpsTimeConsumerPrx,GpsTimeConsumer,GpsTimeDataPtr>
+        attachGpsTime( context(), proxyString );
     }
     else
     {
