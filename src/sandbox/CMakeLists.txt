@@ -2,7 +2,7 @@
 # undocumented, or all of the above. The option BUILD_SANDBOX is OFF
 # by default.
 
-MESSAGE ( "== SANDBOX ==" )
+MESSAGE ( STATUS "== SANDBOX ==" )
 
 IF ( BUILD_SANDBOX )
 

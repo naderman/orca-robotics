@@ -1,6 +1,6 @@
 # A place for well-tested and well-documented components.
 
-MESSAGE ( "== COMPONENTS ==" )
+MESSAGE ( STATUS "== COMPONENTS ==" )
 
 # when adding new directories, please maintain alphabetical order
 SUBDIRS(

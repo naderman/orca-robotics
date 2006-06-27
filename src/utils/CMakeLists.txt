@@ -1,6 +1,6 @@
 # A place for well-tested and well-documented libraries and utility applications.
 
-MESSAGE ( "== UTILITIES ==" )
+MESSAGE ( STATUS "== UTILITIES ==" )
 
 # when adding new directories, please maintain alphabetical order 
 # unless there are inter-dependencies.

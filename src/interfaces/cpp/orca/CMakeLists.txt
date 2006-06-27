@@ -1,4 +1,4 @@
-MESSAGE( "Planning to build C++ interfaces." )
+MESSAGE( STATUS "Planning to build C++ interfaces." )
 
 #
 # Special project-specific stuff
