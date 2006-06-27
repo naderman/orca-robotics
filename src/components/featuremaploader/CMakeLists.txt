@@ -1,6 +1,6 @@
 OPTION( BUILD_FEATUREMAPLOADER "Try to build FeatureMapLoader component" ON )
 
-IF ( BUILD_FEATUREMAPLOADER )
+IF ( NOT WIN32 AND BUILD_FEATUREMAPLOADER )
 
     INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
     INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
@@ -23,4 +23,4 @@ IF ( BUILD_FEATUREMAPLOADER )
 
     GENERATE_FROM_DEF( featuremaploader.def )
 
-ENDIF ( BUILD_FEATUREMAPLOADER )
+ENDIF ( NOT WIN32 AND BUILD_FEATUREMAPLOADER )

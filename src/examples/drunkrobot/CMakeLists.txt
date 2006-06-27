@@ -1,6 +1,6 @@
 OPTION( BUILD_DRUNK_ROBOT "Try to build Drunk Robot Example" ON )
 
-IF ( BUILD_DRUNK_ROBOT )
+IF ( NOT WIN32 AND BUILD_DRUNK_ROBOT )
 
     INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
     INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
@@ -14,4 +14,4 @@ IF ( BUILD_DRUNK_ROBOT )
 
     GENERATE_FROM_DEF( drunkrobot.def )
 
-ENDIF ( BUILD_DRUNK_ROBOT )
+ENDIF ( NOT WIN32 AND BUILD_DRUNK_ROBOT )

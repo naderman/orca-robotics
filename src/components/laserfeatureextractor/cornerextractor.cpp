@@ -98,7 +98,7 @@ void CornerExtractor::connectSections(const orca::LaserDataPtr & laserDataPtr)
         current.elements.push_back(pos);
     }
 
-    for (uint i = 1; i < laserDataPtr->ranges.size(); i++) {
+    for (unsigned int i = 1; i < laserDataPtr->ranges.size(); i++) {
         if (laserDataPtr->ranges[i] >= laserMaxRange_) {
             if (laserDataPtr->ranges[i-1] < laserMaxRange_) {
                 //Section temp;

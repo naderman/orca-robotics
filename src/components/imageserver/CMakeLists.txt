@@ -1,6 +1,6 @@
 OPTION( BUILD_IMAGE_SERVER "Try to build Image Server" ON )
 
-IF ( BUILD_IMAGE_SERVER )
+IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
 
   INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
   # Use libOrcaIce
@@ -114,4 +114,4 @@ IF ( BUILD_IMAGE_SERVER )
 
   GENERATE_FROM_DEF( imageserver.def )
 
-ENDIF ( BUILD_IMAGE_SERVER )
+ENDIF ( NOT WIN32 AND BUILD_IMAGE_SERVER )

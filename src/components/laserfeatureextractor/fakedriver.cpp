@@ -52,7 +52,7 @@ int FakeDriver::computeFeatures( const orca::RangeScannerConfigPtr &laserConfigP
 
     cout<<"TRACE(fakeextractor.cpp): done resize" << endl;
 
-    for (uint i=0; i<10; i++)
+    for (unsigned int i=0; i<10; i++)
     {
         featureDataPtr->features[i] = new orca::SinglePolarFeature2d;
         featureDataPtr->features[i]->type = orca::feature::FOREGROUNDPOINT;

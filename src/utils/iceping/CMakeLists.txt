@@ -1,6 +1,6 @@
 OPTION( BUILD_ICEPING "Try to build the iceping utility" ON )
 
-IF ( BUILD_ICEPING )
+IF ( NOT WIN32 AND BUILD_ICEPING )
 
     INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
 #    INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
@@ -12,4 +12,4 @@ IF ( BUILD_ICEPING )
     
     GLOBAL_ADD_EXECUTABLE( iceping ${SRCS} )
 
-ENDIF ( BUILD_ICEPING )
+ENDIF ( NOT WIN32 AND BUILD_ICEPING )

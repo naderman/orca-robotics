@@ -1,6 +1,6 @@
 OPTION( BUILD_LOCALNAV "Try to build LocalNav component" ON )
 
-IF ( BUILD_LOCALNAV )
+IF ( NOT WIN32 AND BUILD_LOCALNAV )
 
     INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
     INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
@@ -40,4 +40,4 @@ IF ( BUILD_LOCALNAV )
 
     GENERATE_FROM_DEF( localnav.def )
 
-ENDIF ( BUILD_LOCALNAV )
+ENDIF ( NOT WIN32 AND BUILD_LOCALNAV )

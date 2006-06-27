@@ -1,6 +1,6 @@
 OPTION( BUILD_IMAGE_VIEWER "Try to build Image Viewer" ON )
 
-IF ( BUILD_IMAGE_VIEWER )
+IF ( NOT WIN32 AND BUILD_IMAGE_VIEWER )
 
   INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
   INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
@@ -59,11 +59,10 @@ IF ( BUILD_IMAGE_VIEWER )
         GENERATE_FROM_DEF( imageviewer.def )
 
       ELSE( OPENCV7_FOUND )
-        MESSAGE( "ImageViewer will not be built.")
-        MESSAGE( "     OpenCv (0.9.7) has not been found." )
+        MESSAGE( STATUS "ImageViewer will not be built -- OpenCv (0.9.7) not found." )
         SET ( BUILD_IMAGE_VIEWER 0)
       ENDIF( OPENCV7_FOUND )  
 
   ENDIF( OPENCV_IMPLEMENTATION )
 
-ENDIF ( BUILD_IMAGE_VIEWER )
+ENDIF ( NOT WIN32 AND BUILD_IMAGE_VIEWER )

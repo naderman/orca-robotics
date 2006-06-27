@@ -1,5 +1,6 @@
 OPTION( BUILD_PATHPLANNER "Try to build pathplanner" ON )
 
+IF ( NOT WIN32 )
 # Needs Qt4 for displaying debug stuff
 IF ( BUILD_PATHPLANNER AND QT4_FOUND )
 
@@ -46,3 +47,4 @@ ELSE ( BUILD_PATHPLANNER AND QT4_FOUND )
     MESSAGE("Not Planning to Build Pathplanner -- Qt4 not found")
 
 ENDIF ( BUILD_PATHPLANNER AND QT4_FOUND )
+ENDIF ( NOT WIN32 )

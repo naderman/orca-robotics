@@ -1,6 +1,6 @@
 OPTION( BUILD_PURE_ICE "Try to build PureIce Example" ON )
 
-IF ( BUILD_PURE_ICE )
+IF ( NOT WIN32 AND BUILD_PURE_ICE )
 
     INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
     
@@ -11,4 +11,4 @@ IF ( BUILD_PURE_ICE )
     
     GLOBAL_ADD_EXECUTABLE( pureice ${SRCS} )
 
-ENDIF ( BUILD_PURE_ICE )
+ENDIF ( NOT WIN32 AND BUILD_PURE_ICE )

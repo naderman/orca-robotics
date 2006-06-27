@@ -2,7 +2,7 @@
 
 OPTION( BUILD_SIM_LOCALISER "Try to build SimLocaliser component" ON )
 
-IF ( BUILD_SIM_LOCALISER )
+IF ( NOT WIN32 AND BUILD_SIM_LOCALISER )
 
     INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
     INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
@@ -50,4 +50,4 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
     
     GENERATE_FROM_DEF( simlocaliser.def )
 
-ENDIF ( BUILD_SIM_LOCALISER )
+ENDIF ( NOT WIN32 AND BUILD_SIM_LOCALISER )

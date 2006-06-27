@@ -1,6 +1,6 @@
 OPTION( BUILD_TELEOP "Try to build Teleop" ON )
 
-IF ( BUILD_TELEOP )
+IF ( NOT WIN32 AND BUILD_TELEOP )
 
     INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
     INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
@@ -50,4 +50,4 @@ IF ( BUILD_TELEOP )
     TARGET_LINK_LIBRARIES( teleop ${JOY_LIBS} ${KBD_TERMIO_LIBS} ${KBD_NCURSES_LIBS} )
     GENERATE_FROM_DEF( teleop.def )
 
-ENDIF ( BUILD_TELEOP )
+ENDIF ( NOT WIN32 AND BUILD_TELEOP )

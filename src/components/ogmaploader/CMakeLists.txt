@@ -6,20 +6,20 @@ PKGCONFIG("gtk+-2.0" HAVE_GTK GTK_INCLUDE_DIRS GTK_DEFINES GTK_LINK_DIRS GTK_LIB
 PKGCONFIG("gdk-pixbuf-2.0" HAVE_GDK_PIXBUF GDK_PIXBUF_INCLUDE_DIRS GDK_PIXBUF_DEFINES GDK_PIXBUF_LINK_DIRS GDK_PIXBUF_LIBS)
 
 IF ( NOT HAVE_ZLIB )
-  MESSAGE( "Not building OgMapLoader: zlib not found." )
+  MESSAGE( STATUS "Not building OgMapLoader: zlib not found." )
   SET( REALLY_BUILD_OGMAPLOADER FALSE )
 ENDIF ( NOT HAVE_ZLIB )
 IF ( NOT HAVE_GDK_PIXBUF )
-  MESSAGE( "Not building OgMapLoader: gdk-pixbuf not found." )
+  MESSAGE( STATUS "Not building OgMapLoader: gdk-pixbuf not found." )
   SET( REALLY_BUILD_OGMAPLOADER FALSE )
 ENDIF ( NOT HAVE_GDK_PIXBUF )
 IF ( NOT HAVE_GTK )
-  MESSAGE( "Not building OgMapLoader: gtk not found." )
+  MESSAGE( STATUS "Not building OgMapLoader: gtk not found." )
   SET( REALLY_BUILD_OGMAPLOADER FALSE )
 ENDIF ( NOT HAVE_GTK )
 
 
-IF ( REALLY_BUILD_OGMAPLOADER )
+IF ( NOT WIN32 AND REALLY_BUILD_OGMAPLOADER )
 
     INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
     INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
@@ -52,4 +52,4 @@ IF ( REALLY_BUILD_OGMAPLOADER )
 
     GENERATE_FROM_DEF( ogmaploader.def )
 
-ENDIF ( REALLY_BUILD_OGMAPLOADER )
+ENDIF ( NOT WIN32 AND REALLY_BUILD_OGMAPLOADER )

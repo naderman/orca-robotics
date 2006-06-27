@@ -250,7 +250,7 @@ void AlgorithmHandler::convertToRobotCS( const PolarFeature2dDataPtr & featureDa
     CartesianPoint LaserXy, RobotXy;
     PolarPoint2d polarPointRobot;
     
-    for (uint i=0; i<featureData->features.size(); i++ )
+    for (unsigned int i=0; i<featureData->features.size(); i++ )
     {
         LaserXy.x = cos(featureData->features[i]->p.o) * featureData->features[i]->p.r;
         LaserXy.y = sin(featureData->features[i]->p.o) * featureData->features[i]->p.r;

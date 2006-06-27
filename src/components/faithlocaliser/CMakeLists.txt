@@ -1,6 +1,6 @@
 OPTION( BUILD_FAITHLOCALISER "Try to build FaithLocaliser component" ON )
 
-IF ( BUILD_FAITHLOCALISER )
+IF ( NOT WIN32 AND BUILD_FAITHLOCALISER )
 
     INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
     INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
@@ -26,4 +26,4 @@ IF ( BUILD_FAITHLOCALISER )
     
     GENERATE_FROM_DEF( faithlocaliser.def )
 
-ENDIF ( BUILD_FAITHLOCALISER )
+ENDIF ( NOT WIN32 AND BUILD_FAITHLOCALISER )

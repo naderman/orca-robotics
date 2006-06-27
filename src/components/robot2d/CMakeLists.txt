@@ -2,7 +2,7 @@
 
 OPTION( BUILD_ROBOT2D "Try to build Robot2d component" ON )
 
-IF ( BUILD_ROBOT2D )
+IF ( NOT WIN32 AND BUILD_ROBOT2D )
 
     INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
     INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
@@ -68,4 +68,4 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
     
     GENERATE_FROM_DEF( robot2d.def )
 
-ENDIF ( BUILD_ROBOT2D )
+ENDIF ( NOT WIN32 AND BUILD_ROBOT2D )

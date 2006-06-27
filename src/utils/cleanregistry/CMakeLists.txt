@@ -1,6 +1,6 @@
 OPTION( BUILD_CLEAN_REGISTRY "Try to build ClearRegistry Utility" ON )
 
-IF ( BUILD_CLEAN_REGISTRY )
+IF ( NOT WIN32 AND BUILD_CLEAN_REGISTRY )
 
     INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
     INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
@@ -24,4 +24,4 @@ IF ( BUILD_CLEAN_REGISTRY )
     
     GENERATE_FROM_DEF( cleanregistry.def )
 
-ENDIF ( BUILD_CLEAN_REGISTRY )
+ENDIF ( NOT WIN32 AND BUILD_CLEAN_REGISTRY )

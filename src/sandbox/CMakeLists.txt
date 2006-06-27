@@ -4,7 +4,7 @@
 
 MESSAGE ( STATUS "== SANDBOX ==" )
 
-IF ( BUILD_SANDBOX )
+IF ( NOT WIN32 AND BUILD_SANDBOX )
 
     # when adding new directories, please maintain alphabetical order
     SUBDIRS(
@@ -18,4 +18,4 @@ ELSE ( BUILD_SANDBOX )
 
     MESSAGE ( "Sandbox compilation is disabled" )
 
-ENDIF ( BUILD_SANDBOX )
+ENDIF ( NOT WIN32 AND BUILD_SANDBOX )
