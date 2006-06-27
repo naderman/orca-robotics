@@ -41,7 +41,7 @@ Practically, this means that you can download build your own components from scr
 Detailed instructions are available for these platforms/distributions:
     - @ref orca_doc_installdebian (also tested with Kubuntu 6.06)
     - @ref orca_doc_installfedora
-    - @ref orca_doc_installwixp
+    - @ref orca_doc_installwinxp
     - Send feedback on building under other configurations.
 
 The instructions below are quite general, follow them if your platform/distribution combination is not described above:
