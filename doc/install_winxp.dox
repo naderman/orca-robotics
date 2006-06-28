@@ -36,7 +36,7 @@ Minimum version required 3.0.1 (latest tested: 3.0.1).
 
 Download the installer from  <a href="http://www.zeroc.com/download.html">download page</a>. 
     - Run the installer. Note that the default installation location is @c C:\\Ice-[VERSION].
-    - Add @c C:\\Ice-[VERSION]\\bin to the path (As super-user right-click on My Computer > Properties > Advanced > Environment Variables > Edit).
+    - Add @c C:\\Ice-[VERSION]\\bin to the Windows path (As super-user right-click on My Computer > Properties > Advanced > Environment Variables > Edit).
     
 @section orca_doc_installwinxp_orca Orca
 
@@ -49,10 +49,12 @@ Build and install Orca2 distribution.
         - Launch CMake. Point 'source code' to @c C:\\orca2. Point 'binary directory' to @c C:\\orca2\\build. 
         - Click on Configure button. Say Yes to creating @c build directory. (You may have to click Configure again  until the left column turns gray.)
         - Click on OK button.
-    - Compile.
+    - Compile
         - Open the binary directory @c C:\\orca2\\build in the Explorer and double click on the "solution file" @c orca.sln. This will open the entire solution consisting of many projects in Microsoft Visual Studio.
         - Select Menu item Build > Build Solution (F7)
     - Install
-        - HOW?
+        - While in MS Visual Studio, find INSTALL project in the Solution Exlorer list on the left.
+        - Right-click and select Project Only > Build Only INSTALL
+        - Add @c C:\\orca-[VERSION]\\bin (or custom installation path) to the Windows path (As super-user right-click on My Computer > Properties > Advanced > Environment Variables > Edit).
 
 */
