@@ -34,8 +34,10 @@ Minimum version required 2.2.2 (latest tested: 2.2.3). Download and run the inst
 
 Minimum version required 3.0.1 (latest tested: 3.0.1).
 
-Download the installer from  <a href="http://www.zeroc.com/download.html">download page</a>. Run the installer. Note that the default installation location is @c C:\\Ice-[VERSION].
-
+Download the installer from  <a href="http://www.zeroc.com/download.html">download page</a>. 
+    - Run the installer. Note that the default installation location is @c C:\\Ice-[VERSION].
+    - Add @c C:\\Ice-[VERSION]\\bin to the path (As super-user right-click on My Computer > Properties > Advanced > Environment Variables > Edit).
+    
 @section orca_doc_installwinxp_orca Orca
 
 Build and install Orca2 distribution.
