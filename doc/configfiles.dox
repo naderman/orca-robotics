@@ -45,12 +45,12 @@ $ mycomponent
 @endverbatim
     -# Default file, platform-dependent:
         - Linux: File @c $HOME/.orcarc
-        - Win32: File @c C:\orca.ini
 @verbatim
 $ ls $HOME/.orcarc
 /home/myname/.orcarc
 $ mycomponent
 @endverbatim
+        - Win32: File @c C:\\orca.ini
 -# Component configuration file, specified in one of 3 ways (we use the first one we find):
     -# The contents of @c Orca.Config parameter
 @verbatim
@@ -71,6 +71,15 @@ mycomponent.cfg
 $ mycomponent
 @endverbatim
 -# Command-line arguments
+
+For example, the following ways of starting a component are equivalent:
+@verbatim
+$ export ORCA2_GLOBAL_CONFIG=global.cfg
+$ mycomponent --Orca.Config=local.cfg --MyComponent.MaxSpeed=500
+@endverbatim
+@verbatim
+$ mycomponent --Orca.GlobalConfig=global.cfg --Orca.Config=local.cfg --MyComponent.MaxSpeed=500
+@endverbatim
 
 @note To avoid unexpected interactions between Ice runtime and Orca libraries, do not define ICE_CONFIG environment variable.
 
