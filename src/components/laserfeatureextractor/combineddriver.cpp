@@ -37,6 +37,8 @@ namespace laserfeatures {
 CombinedDriver::CombinedDriver( const Config &config )
     : reflectorExtractor_( NULL ),
       foregroundExtractor_( NULL ),
+      cornerExtractor_( NULL ),
+      doorExtractor_( NULL ),
       config_(config)
 {
     
@@ -58,13 +60,13 @@ CombinedDriver::CombinedDriver( const Config &config )
     
     if ( config_.extractDoors ) 
     {
-        // cout<<"TRACE(combineddriver.cpp): Extracting fg points: " << config_.extractForegroundPoints<< endl;
+        cout<<"TRACE(combineddriver.cpp): Extracting fg points: " << config_.extractForegroundPoints<< endl;
         doorExtractor_ = new DoorExtractor();
     }
     
     if ( config_.extractCorners ) 
     {
-        // cout<<"TRACE(combineddriver.cpp): Extracting fg points: " << config_.extractForegroundPoints<< endl;
+        cout<<"TRACE(combineddriver.cpp): Extracting fg points: " << config_.extractForegroundPoints<< endl;
         cornerExtractor_ = new CornerExtractor();
     }
 }

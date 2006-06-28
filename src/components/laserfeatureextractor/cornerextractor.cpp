@@ -9,11 +9,11 @@
 #include <orca/featuremap2d.h>
 
 // Stage values....Real Values
-#define RANGE_DELTA     1.0    // 0.10    0.2
-#define BREAK_DIST     0.5    // 0.4    0.2
+#define RANGE_DELTA     0.5    // 0.10    0.2
+#define BREAK_DIST     0.2    // 0.4    0.2
 #define MIN_POINTS_IN_LINE   6    // 6      6
 #define ERROR_THRESHOLD   0.24    // 0.10    0.24
-#define CORNER_BOUND     0.45    // 0.45    0.45
+#define CORNER_BOUND     0.2    // 0.45    0.45
 #define POSSIBLE_BOUND    0.2    // ???    0.2
 
 
@@ -48,7 +48,7 @@ void CornerExtractor::addFeatures( const orca::LaserDataPtr &laserData,
             double C2 = next->C;
 
             double dot_prod = A1*A2 + B1*B2;
-            //cout << "dot_prod: " << dot_prod << endl;
+            cout << "dot_prod: " << dot_prod << endl;
             if (fabs(dot_prod) < CORNER_BOUND) {
                 double cornerX;
                 double cornerY;
@@ -66,6 +66,8 @@ void CornerExtractor::addFeatures( const orca::LaserDataPtr &laserData,
                 if (cornerY < 0) {
                     bearing = -bearing;
                 }
+                cout << "****Identified line at r: " << range << " b: " << bearing << endl;
+                    
                 orca::SinglePolarFeature2dPtr pp = new orca::SinglePolarFeature2d;
                 pp->type = orca::feature::CORNER;
                 pp->p.r = range;
@@ -101,41 +103,44 @@ void CornerExtractor::connectSections(const orca::LaserDataPtr & laserDataPtr)
     for (unsigned int i = 1; i < laserDataPtr->ranges.size(); i++) {
         if (laserDataPtr->ranges[i] >= laserMaxRange_) {
             if (laserDataPtr->ranges[i-1] < laserMaxRange_) {
-                //Section temp;
+              // found the end of the current section with an out of range reading
+              // ignore elements with less candidate points than would constitute 2 lines
+              if (current.elements.size() > 2*MIN_POINTS_IN_LINE)
+              {
                 sections_.push_back(current);
-                current.elements.clear();
+              }
+              current.elements.clear();
             } else {
                 // We are still in an out of range section
                 // ignore...
             }
         } else if (laserDataPtr->ranges[i-1] >= laserMaxRange_ ||
-                   fabs(laserDataPtr->ranges[i] - laserDataPtr->ranges[i-1]) < RANGE_DELTA)  {
+                   fabs(laserDataPtr->ranges[i] - laserDataPtr->ranges[i-1]) < RANGE_DELTA) 
+        {
             // Add this point to the current section
-                       double r = laserDataPtr->ranges[i];
-                       double b = M_PI*i/(laserDataPtr->ranges.size()-1) - M_PI/2;
-                       SectionEl pos(r, b);
-                       current.elements.push_back(pos);
-                   }
-                   else {
-            // We should start a new section
-            //Section temp;
-                       sections_.push_back(current);
-                       current.elements.clear();
-            //temp.elements.push_back(&(scan.scan[i]));
-            //sections_.push_back(temp);
-                   }
+            double r = laserDataPtr->ranges[i];
+            double b = M_PI*i/(laserDataPtr->ranges.size()-1) - M_PI/2;
+            SectionEl pos(r, b);
+            current.elements.push_back(pos);
+         } else {
+           // There has been a step change in range, start a new section
+           // ignore elements with less candidate points than would constitute 2 lines
+           if (current.elements.size() > 2*MIN_POINTS_IN_LINE)
+           {
+             sections_.push_back(current);
+           }
+           current.elements.clear();
+         }
     }
 
+    if (current.elements.size() > 2*MIN_POINTS_IN_LINE)
+    {
+      sections_.push_back(current);
+    }
+    current.elements.clear();
+    
     //std::cout << "FeatureExtractor : Found " << sections_.size() << " sections" << std::endl;
     //printSections();
-    //
-    // If the last thing we saw was out of max range, then remove the
-    //  last entry. It is invalid
-    //
-    //if (current.elements.size() == 0) {
-    //  sections_.pop_back();
-    //}
-    //return head;
 }
 
 void CornerExtractor::extractLines()
@@ -168,7 +173,7 @@ void CornerExtractor::extractLines()
         
                 itr->elements.erase( itr->elements.begin(), itr->elements.begin() + pos );
         
-                //std::cout << "Inserting section of size " << temp.elements.size() << " after section of size " << itr->elements.size() << std::endl;
+                //std::cout << "Inserting section of size " << temp.elements.size() << " before section of size " << itr->elements.size() << std::endl;
                 try {
                     // insert the new section and get a valid handle to the inserted section
                     itr = sections_.insert(itr, temp);
@@ -186,7 +191,7 @@ void CornerExtractor::extractLines()
                 itr++;
             }
         } else {
-            // std::cout << "Not breaking this one..." << std::endl;
+            //std::cout << "Not breaking this one..." << std::endl;
             //itr = itr->next;
             itr++;
         }
@@ -197,66 +202,60 @@ void CornerExtractor::extractLines()
 
 void CornerExtractor::findBreakPoint(Section &s, double &maxDist, int &pos)
 {
-    maxDist = 0;
-    pos = 0;
+  maxDist = 0;
+  pos = 0;
   
-    int sectionLength = s.elements.size();
-    if ( sectionLength <= 2) {
-        return;
+  int numElements = s.elements.size();
+  if ( numElements <= 2) {
+    return;
+  }
+  double x1 = s.elements[0].x();
+  double y1 = s.elements[0].y();
+  double xn = s.elements[numElements-1].x();
+  double yn = s.elements[numElements-1].y();
+  double deltaX =  xn - x1;
+  double deltaY =  yn - y1;
+  //std::cout << "dx " << deltaX << " dy " << deltaY;
+  double sectionLength = sqrt(pow(deltaX, 2.0) + pow(deltaY, 2.0));
+  if (sectionLength == 0.0)
+  {
+    return;
+  }
+  
+  // compute the perpendicular distance between the line joining the first and
+  // last elements of the section and each point to find the maximum distance.  If
+  // this distance is greater than a threshold it will be used to break the section
+  // into two smaller sections
+  for (int i = 1; i < numElements - 2; i++) {
+    double x = s.elements[i].x();
+    double y = s.elements[i].y();
+    double dx = x - x1;
+    double dy = y - y1;
+
+    // the distance is computed using the dot product between the vector 
+    // joining the current point and the first endpoint 
+    // r = [ x - x1 ]
+    //     [ y - y1 ]
+    // and the vector perpendicular to the line segment
+    // v = [  yn - y1   ]
+    //     [ -(xn - y1) ]
+    // The distance is
+    //   d =  | v.r | 
+    //     =  | ( x - x1 )( yn - y1) - ( y - y1 )( xn - x1) | / sqrt((xn-x1)^2+(yn-y1)^2)
+    double r = dx*deltaY - dy*deltaX;
+    double dist = fabs(r/sectionLength);
+    //cout << "Distance : " << dist << " dist_r " << dist_r << endl;
+
+    if (dist > maxDist) {
+      maxDist = dist;
+      pos = i;
     }
-  
-    if (s.elements[0].x() - s.elements[sectionLength-1].x() == 0) {
-        // They have same x values, hence infinite slope.
-        // Do a quicker check...
+  }
 
-        //std::cout << "Same x value " << length << std::endl;
-    
-        pos = 0;
-        maxDist = 0;
-        double lineY = s.elements[0].y();
-        for (int i = 1; i < sectionLength - 1; i++) {
-    
-            double dist = fabs(lineY - s.elements[i].y());
-            if (dist > maxDist) {
-                maxDist = dist;
-                pos = i;
-            }
-        }
-        return;
-    }
-    // else
-    //std::cout << "Non-infinite slope" << std::endl;
-
-    double deltaX = s.elements[sectionLength-1].x() - s.elements[0].x();
-    double deltaY = s.elements[sectionLength-1].y() - s.elements[0].y();
-    //std::cout << "dx " << deltaX << " dy " << deltaY;
-  
-    double A = deltaY/deltaX;
-    double C = s.elements[0].y() - A*s.elements[0].x();
-    //std::cout  <<  "A " << A  << " C " << C;
-  
-    double norm = sqrt(1 + pow(A, 2));
-    //std::cout << " norm " << norm;
-    A = A/norm;
-    double B = -1/norm;
-    C = C/norm;
-
-    //std::cout  <<  "nA " << A << " nB " << B << " nC " << C << std::endl;
-      
-    //std::cout << "Looking for max distance: ";
-    for (int i = 1; i < sectionLength - 2; i++) {
-        double dist = fabs(A*s.elements[i].x() 
-                    + B*s.elements[i].y() + C);
-        //std::cout << dist << " ";
-
-        if (dist > maxDist) {
-            maxDist = dist;
-            pos = i;
-        }
-    }
-    //std::cout <<  "Found max distance " << maxDist << std::endl;
+  //std::cout <<  "Found max distance " << maxDist << std::endl;
 }
 
+    
 void CornerExtractor::fitLine(Section &s)
 {
     double centX = 0;
