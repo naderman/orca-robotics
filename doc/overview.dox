@@ -38,6 +38,6 @@ These four terms are often used in describing a distributed system but one has t
 
 In this illustration platform X has one computer host (1) which executes one component (4). Platform Y has two hosts. One would say that Component 3 is deployed on Host 2 which is located on Platform Y. 
 
-Component 1 requires Interface A and it is connected to the provided Interface A of Component B. Interface connections can be intra-host (Interface C), intra-platform (Interfaces A and B of Component 2), or inter-platform (Interfaces A and B of Component 3).
+Component 1 requires Interface A and it is connected to the provided Interfaces A and B of Component 2. Interface connections can be intra-host (Interface C), intra-platform (Interfaces A and B of Component 2), or inter-platform (Interfaces A and B of Component 3).
 
 */
