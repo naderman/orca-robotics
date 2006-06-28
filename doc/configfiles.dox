@@ -43,7 +43,9 @@ global.cfg
 $ export ORCA2_GLOBAL_CONFIG=global.cfg
 $ mycomponent
 @endverbatim
-    -# File @c .orcarc in the directory specified by @c HOME environment variable.
+    -# Default file, platform-dependent:
+        - Linux: File @c $HOME/.orcarc
+        - Win32: File @c C:\orca.ini
 @verbatim
 $ ls $HOME/.orcarc
 /home/myname/.orcarc
