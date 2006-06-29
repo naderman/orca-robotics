@@ -43,15 +43,13 @@ SET( PROJ_INTERFACE_LIB OrcaInterfaces )
 # Set the build type (affects debugging symbols and optimization)
 #
 IF ( NOT CMAKE_BUILD_TYPE )
-  SET( CMAKE_BUILD_TYPE Release )
-  
-#  IF ( NOT WIN32 )
-#    SET( CMAKE_BUILD_TYPE Release )
-#  ELSE ( NOT WIN32 )
-#    # windows... a temp hack: VCC does not seem to respect the cmake
-#    # setting and always defaults to debug, we have to match it here.
+  IF ( NOT WIN32 )
+    SET( CMAKE_BUILD_TYPE Release )
+  ELSE ( NOT WIN32 )
+    # windows... a temp hack: VCC does not seem to respect the cmake
+    # setting and always defaults to debug, we have to match it here.
 #    SET( CMAKE_BUILD_TYPE Debug )
-#  ENDIF ( NOT WIN32 )
+  ENDIF ( NOT WIN32 )
   MESSAGE( STATUS "Setting build type to '${CMAKE_BUILD_TYPE}'" )
 ELSE ( NOT CMAKE_BUILD_TYPE )
   MESSAGE( STATUS "Build type set to '${CMAKE_BUILD_TYPE}' by user." )
