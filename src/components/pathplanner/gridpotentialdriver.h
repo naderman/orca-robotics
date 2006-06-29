@@ -54,7 +54,7 @@ private:
     orcapathplan::Cell2D getStartCell();
 
     // Converts goal cell i from world to cell coordinate system
-    orcapathplan::Cell2D getGoalCell( uint i);
+    orcapathplan::Cell2D getGoalCell( unsigned int i);
 
     // Local member function which calls all the library functions used to compute the navigation function using the skeleton method
     bool calcSkeletonNavigationLocal( orcapathplan::FloatMap & navMap, orcapathplan::FloatMap & distGrid,  orcapathplan::Cell2DVector skel, orcapathplan::Cell2D & startCell );

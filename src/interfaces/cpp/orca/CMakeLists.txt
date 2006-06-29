@@ -6,7 +6,7 @@ MESSAGE( STATUS "Planning to build C++ interfaces." )
 INCLUDE( ${PROJ_SOURCE_DIR}/config/project/project_rules.cmake )
 
 #
-# Do not include /config/compile_flags.cmake here. It will lead to circular dependencies.
+# Do not include /config/component_rules.cmake here. It will lead to circular dependencies.
 #
 INCLUDE( ${PROJ_SOURCE_DIR}/config/slice2cpp_rules.cmake )
 
@@ -29,7 +29,8 @@ ELSE( NOT WIN32 )
   ADD_LIBRARY( OrcaInterfaces STATIC ${CPP_FILES} )
 ENDIF( NOT WIN32 ) 
 
-INSTALL_TARGETS( /lib OrcaInterfaces )
+# alexm: started to convert win32 to shared libs but decided it's not worth it
+INSTALL_TARGETS( /lib RUNTIME_DIRECTORY /bin OrcaInterfaces )
 INSTALL_FILES( /include/orca FILES ${HEADER_FILES} )
 
 INCLUDE_DIRECTORIES( BEFORE
@@ -37,6 +38,8 @@ INCLUDE_DIRECTORIES( BEFORE
     ${PROJ_BINARY_DIR}/src/interfaces/cpp
     ${PROJ_BINARY_DIR}/src/interfaces/cpp/orca
 )
+
+LINK_DIRECTORIES( ${ICE_HOME}/lib )
 
 IF( WIN32 )
     # Windows needs to  know the symbols at compile time; no run-time linking

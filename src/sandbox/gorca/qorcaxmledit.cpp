@@ -43,7 +43,7 @@ void QorcaXmlEdit::xmlToTree() {
 
     QDomNamedNodeMap attrmap = xml_->attributes();
     QDomNode node;
-    for ( uint i=0; i<attrmap.length(); i++ ) {
+    for ( unsigned int i=0; i<attrmap.length(); i++ ) {
         Q3ListViewItem *item = new Q3ListViewItem( topItem );
         item->setRenameEnabled( 1, true );
         node = attrmap.item(i);

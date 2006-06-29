@@ -73,16 +73,16 @@ SkeletonGraphicsI::localSetData( const Point2dVector & skeletonWorld )
         p.setBrush( color );
         const double circleSize = 0.2;     // in m, should be constant pixel size?
         
-        uint size = skeletonWorld.size();       
+        unsigned int size = skeletonWorld.size();       
 
-        for (uint i=0; i<size; i++ )
+        for (unsigned int i=0; i<size; i++ )
         {
             p.drawEllipse(QRectF( skeletonWorld[i].x()-circleSize, skeletonWorld[i].y()-circleSize, 2*circleSize, 2*circleSize) );
         }
 
 //======== This should work but doesn't for some reason ==================
 //         QPointF qpointArray[size];
-//         for (uint i=0; i<size; i++ )
+//         for (unsigned int i=0; i<size; i++ )
 //         {
 //             qpointArray[i] = QPointF( skeletonWorld[i].x(), skeletonWorld[i].y() );
 //         }

@@ -72,8 +72,6 @@ App::run( int argc, char* argv[] )
 
     // Convert argc/argv to a string sequence.
     Ice::StringSeq args = Ice::argsToStringSeq(argc, argv);
-    // debug
-    cout<<args.size()<<" app parameters ("<<argc<<")"<<endl;
 
     // need at least one parameter: the proxy name
     if ( args.size()<2 ) {
@@ -223,8 +221,6 @@ main(int argc, char * argv[])
 
     // convert to string sequence for convinience
     Ice::StringSeq args = Ice::argsToStringSeq( argc, argv );
-    // debug
-    cout<<args.size()<<" main parameters ("<<argc<<")"<<endl;
 
     // get the quick and easy ones out of the way
     for( unsigned int i=1; i<args.size(); ++i )
@@ -249,17 +245,23 @@ main(int argc, char * argv[])
             }
         }
     }
-    // Find the global property file
+    // Find the global property file (copied from orcaice/proputils.cpp)
     if ( propertiesFile.empty() ) {
+#ifndef WIN32
+        // Linux and friends
         char *home = getenv("HOME");
         if ( home == NULL ) {
             cout<<"warning: environment variable 'HOME' is not set, while trying to load .orcarc"<<endl;
         }
-        else {
-            // Load its properties
-            propertiesFile = home;
-            propertiesFile += "/.orcarc";
-        }
+    
+        // start with the home directory
+        propertiesFile = home;
+        // assume the name of the global config file
+        propertiesFile += "/.orcarc";
+#else
+        // windows
+        propertiesFile += "C:\\orca.ini";
+#endif
     }
 
     if ( !propertiesFile.empty() ) {

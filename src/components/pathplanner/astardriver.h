@@ -54,7 +54,7 @@ private:
     orcapathplan::Cell2D getStartCell();
 
     // Converts goal cell i from world to cell coordinate system
-    orcapathplan::Cell2D getGoalCell( uint i);
+    orcapathplan::Cell2D getGoalCell( unsigned int i);
 
 };
 

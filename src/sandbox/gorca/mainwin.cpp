@@ -639,7 +639,7 @@ void MainWindow::openProject()
     QDomNodeList nodelist = projDom_->elementsByTagName( "o:componentDefinition" );
     //cout<<"MainWindow::openProject: found "<<nodelist.length()<<" components in the project file"<<endl;
 
-    for ( uint i=0; i<nodelist.length(); i++ ) {
+    for ( unsigned int i=0; i<nodelist.length(); i++ ) {
         // stick into canvas
         QorcaComponent* c = new QorcaComponent( projCanvas_, nodelist.item(i).toElement() );
         c->setActive( true );
@@ -650,7 +650,7 @@ void MainWindow::openProject()
     QDomNodeList linklist = projDom_->elementsByTagName( "link" );
         cout<<"MainWindow::openProject: found "<<linklist.length()<<" links in the project file"<<endl;
 
-    for ( uint i=0; i<linklist.length(); i++ ) {
+    for ( unsigned int i=0; i<linklist.length(); i++ ) {
         // read id's of connected components
         int from = linklist.item(i).toElement().attribute( "from" ).toInt();
         int to = linklist.item(i).toElement().attribute( "to" ).toInt();

@@ -48,7 +48,7 @@ bool GridPotentialDriver::areAllWaypointsInMap(const orca::PathPlanner2dDataPtr 
     cout << "INFO(gridpotentialdriver.cpp): Start waypoint is within map" << endl;
 
     // Check whether course path is within map
-    for (uint i=0; i<coarsePath_.size(); i++)
+    for (unsigned int i=0; i<coarsePath_.size(); i++)
     {
         if ( !ogMap_.coordsWithinMap( coarsePath_[i].target.p.x, coarsePath_[i].target.p.y) )
         {
@@ -71,7 +71,7 @@ GridPotentialDriver::getStartCell()
 }
 
 Cell2D 
-GridPotentialDriver::getGoalCell( uint i)
+GridPotentialDriver::getGoalCell( unsigned int i)
 {
     assert( coarsePath_.size() > i );
     int cellX, cellY;
@@ -84,7 +84,7 @@ GridPotentialDriver::displaySkeleton( Cell2DVector & skel )
 {
     Point2dVector skelWorld;
 
-    for (uint i=0; i<skel.size(); i++)
+    for (unsigned int i=0; i<skel.size(); i++)
     {
         float worldX, worldY;
         ogMap_.getWorldCoords( skel[i].x(), skel[i].y(), worldX, worldY );
@@ -156,7 +156,7 @@ void GridPotentialDriver::computePath( const orca::OgMapDataPtr          & ogMap
     FloatMap navMapSkel = navMap;     
 
     // for each waypoint in the coarse path we need to compute the navigation fct and the path
-    for (uint i=0; i<coarsePath_.size(); i++)
+    for (unsigned int i=0; i<coarsePath_.size(); i++)
     {
         Cell2D goalCell = getGoalCell( i );
         

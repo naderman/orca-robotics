@@ -102,7 +102,7 @@ UsbIoFtdi::init()
     int segwayDeviceIndex = -1;
     
     // get information for all devices
-    for ( uint i=0; i<numDevs; ++i ) { 
+    for ( unsigned int i=0; i<numDevs; ++i ) { 
         ftStatus = FT_GetDeviceInfoDetail( i, &Flags, &Type, &ID, &LocId, SerialNumber, Description, &ftHandleTemp );
         if ( ftStatus == FT_OK && ID==SEGWAY_USB_VENDOR_PRODUCT_ID ) {
             cout<<"found Segway device"<<endl;
@@ -124,7 +124,7 @@ UsbIoFtdi::init()
     // didn't find the segway device
     if ( segwayDeviceIndex==-1 ) {
         cout<<"Did not find Segway device. All devices: "<<endl;
-        for ( uint i=0; i<numDevs; ++i ) { 
+        for ( unsigned int i=0; i<numDevs; ++i ) { 
             ftStatus = FT_GetDeviceInfoDetail( i, &Flags, &Type, &ID, &LocId, SerialNumber, Description, &ftHandleTemp );
             cout<<"============================"<<endl;
             cout<<"Device :"<<i<<endl;
@@ -359,7 +359,7 @@ UsbIoFtdi::readPacketPolling( CanPacket* pkt )
         --pollCount;
 
         // Read from the USB buffer into our own buffer
-        uint bytesInBuffer = charBufferBytes_;
+        unsigned int bytesInBuffer = charBufferBytes_;
         
         status = readFromUsbToBufferNonBlocking();
         if ( status < 0 ) {

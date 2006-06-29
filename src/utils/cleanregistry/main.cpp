@@ -83,7 +83,7 @@ Component::start()
     int reachCount = 0;
     int cleanCount = 0;
         
-    for ( uint i=0; i<list.size(); ++i ) {
+    for ( unsigned int i=0; i<list.size(); ++i ) {
         name = orcaice::toComponentName( list[i] );
         
         // ping each component's Home interface

@@ -48,7 +48,7 @@ bool AStarDriver::areAllWaypointsInMap(const orca::PathPlanner2dDataPtr & pathDa
     cout << "INFO(astardriver.cpp): Start waypoint is within map" << endl;
 
     // Check whether course path is within map
-    for (uint i=0; i<coarsePath_.size(); i++)
+    for (unsigned int i=0; i<coarsePath_.size(); i++)
     {
         if ( !ogMap_.coordsWithinMap( coarsePath_[i].target.p.x, coarsePath_[i].target.p.y) )
         {
@@ -71,7 +71,7 @@ AStarDriver::getStartCell()
 }
 
 Cell2D 
-AStarDriver::getGoalCell( uint i)
+AStarDriver::getGoalCell( unsigned int i)
 {
     assert( coarsePath_.size() > i );
     int cellX, cellY;
@@ -117,7 +117,7 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
     // ==============================================
     
     // for each waypoint in the coarse path we need to compute the navigation fct and the path
-    for (uint i=0; i<coarsePath_.size(); i++)
+    for (unsigned int i=0; i<coarsePath_.size(); i++)
     {   
         aStar->m_iStartNode_i = startCell.x();
         aStar->m_iStartNode_j = startCell.y();
@@ -151,7 +151,7 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
         }
         cout << "INFO(astardriver.cpp): Size of path is " << path.size() << endl;  
         
-        for (uint k=0; k<nodes.size(); k++)
+        for (unsigned int k=0; k<nodes.size(); k++)
         {
             Cell2D cell(nodes[k]->cell_i, nodes[k]->cell_j);
             path.push_back( cell );
