@@ -27,7 +27,8 @@
 using namespace std;
 
 // note: do not use options [hpt] because they are used inside endpoint definition
-void usage()
+void 
+usage()
 {
     cout << "USAGE"<<endl;
     cout << "iceping [ -orhvV ] [ -f file ] [ -c count ] [ -i intervalUs ] proxy"<<endl;
@@ -61,7 +62,8 @@ class App : virtual public Ice::Application
         virtual int run(int, char * []);
 };
 
-int App::run( int argc, char* argv[] )
+int 
+App::run( int argc, char* argv[] )
 {
     std::string proxy = "";
     int count = 3;
@@ -70,7 +72,8 @@ int App::run( int argc, char* argv[] )
 
     // Convert argc/argv to a string sequence.
     Ice::StringSeq args = Ice::argsToStringSeq(argc, argv);
-    //cout<<args.size()<<" parameters"<<endl;
+    // debug
+    cout<<args.size()<<" app parameters ("<<argc<<")"<<endl;
 
     // need at least one parameter: the proxy name
     if ( args.size()<2 ) {
@@ -210,7 +213,8 @@ int App::run( int argc, char* argv[] )
     return 0;
 }
 
-int main(int argc, char * argv[])
+int 
+main(int argc, char * argv[])
 {
     bool isModified = false;
 
@@ -219,6 +223,8 @@ int main(int argc, char * argv[])
 
     // convert to string sequence for convinience
     Ice::StringSeq args = Ice::argsToStringSeq( argc, argv );
+    // debug
+    cout<<args.size()<<" main parameters ("<<argc<<")"<<endl;
 
     // get the quick and easy ones out of the way
     for( unsigned int i=1; i<args.size(); ++i )

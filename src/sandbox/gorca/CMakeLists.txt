@@ -44,6 +44,7 @@ IF ( QT4_FOUND AND BUILD_GORCA )
     
     GLOBAL_ADD_EXECUTABLE( gorca ${HUMAN_SRCS} ${MOC_SRCS} )
     
+    # TODO! make sure to deal with Debug/Release of IceUtil if converting to Win32
     TARGET_LINK_LIBRARIES( gorca IceUtil QorcaUml OrcaDef OrcaInterfaces OrcaIce
         ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} ${QT_QT3SUPPORT_LIBRARY}
     )

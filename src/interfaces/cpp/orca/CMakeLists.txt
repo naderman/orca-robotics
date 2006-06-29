@@ -38,12 +38,12 @@ INCLUDE_DIRECTORIES( BEFORE
     ${PROJ_BINARY_DIR}/src/interfaces/cpp/orca
 )
 
-# Note: Under Windows, if in debug mode, you must link against debug
-# versions of the libraries.
-# Windows needs to  know the symbols at compile time; no run-time linking
-# a-la Linux. 
-
 IF( WIN32 )
-  TARGET_LINK_LIBRARIES ( OrcaInterfaces Ice IceUtil) 
-ENDIF( WIN32 ) 
+    # Windows needs to  know the symbols at compile time; no run-time linking
+    # a-la Linux. 
+    TARGET_LINK_LIBRARIES( OrcaInterfaces
+                optimized Ice optimized IceUtil 
+                debug Iced debug IceUtild )
+ENDIF( WIN32 )
+
 ADD_DEFINITIONS( "-Wall" )

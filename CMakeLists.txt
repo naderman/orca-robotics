@@ -14,18 +14,18 @@ PROJECT(orca)
 SET( VERSION 2.0.0rc5+ CACHE STRING "Version of Orca distribution" )
   MESSAGE( STATUS "Orca version ${VERSION}" )
 
-IF ( NOT WIN32 )
-  # Linux and friends: if environment variable ORCA_INSTALL_DIR is not set, install into /opt/orca-<VERSION>
-  SET( INSTALL_DIR $ENV{ORCA2_INSTALL} )
-  IF( INSTALL_DIR )
-     SET( CMAKE_INSTALL_PREFIX $ENV{ORCA2_INSTALL} CACHE PATH "Installation directory" FORCE)
-  ELSE( INSTALL_DIR )
-    SET( CMAKE_INSTALL_PREFIX /opt/orca-${VERSION} CACHE PATH "Installation directory" FORCE)
-  ENDIF( INSTALL_DIR )
-ELSE ( NOT WIN32 )
-  # Windows: install into C:\orca-<VERSION>
-  SET( CMAKE_INSTALL_PREFIX C:/orca-${VERSION} CACHE PATH "Installation directory" FORCE)
-ENDIF ( NOT WIN32 )
+SET( INSTALL_DIR $ENV{ORCA2_INSTALL} )
+# If environment variable ORCA2_INSTALL is not set, use defaults
+IF( NOT INSTALL_DIR )
+  IF   ( NOT WIN32 )
+    # Linux and friends: if environment variable ORCA2_INSTALL is not set, install into /opt/orca-<VERSION>
+    SET( INSTALL_DIR /opt/orca-${VERSION} )
+  ELSE ( NOT WIN32 )
+    # Windows: install into C:\orca-<VERSION>
+    SET( INSTALL_DIR C:/orca-${VERSION} )
+  ENDIF ( NOT WIN32 )
+ENDIF( NOT INSTALL_DIR )
+SET( CMAKE_INSTALL_PREFIX ${INSTALL_DIR} CACHE PATH "Installation directory" FORCE )
 MESSAGE( STATUS "Setting installation directory to ${CMAKE_INSTALL_PREFIX}" )
 
 SET( PROJ_SOURCE_DIR ${orca_SOURCE_DIR} )
@@ -44,6 +44,14 @@ SET( PROJ_INTERFACE_LIB OrcaInterfaces )
 #
 IF ( NOT CMAKE_BUILD_TYPE )
   SET( CMAKE_BUILD_TYPE Release )
+  
+#  IF ( NOT WIN32 )
+#    SET( CMAKE_BUILD_TYPE Release )
+#  ELSE ( NOT WIN32 )
+#    # windows... a temp hack: VCC does not seem to respect the cmake
+#    # setting and always defaults to debug, we have to match it here.
+#    SET( CMAKE_BUILD_TYPE Debug )
+#  ENDIF ( NOT WIN32 )
   MESSAGE( STATUS "Setting build type to '${CMAKE_BUILD_TYPE}'" )
 ELSE ( NOT CMAKE_BUILD_TYPE )
   MESSAGE( STATUS "Build type set to '${CMAKE_BUILD_TYPE}' by user." )
@@ -90,4 +98,3 @@ SUBDIRS( src )
 ###########################################################
 
 INCLUDE(Dart)
-
