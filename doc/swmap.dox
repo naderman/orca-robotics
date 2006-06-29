@@ -1,0 +1,54 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_swmap Software Map
+
+@see <a href="modules.html">one page version</a> of this software map.
+
+@par Interface definitions
+
+<strong><a href="group__interfaces.html">Interfaces</a></strong>
+
+@par By type
+
+<strong><a href="group__components.html">Components</a></strong><br>
+<strong><a href="group__utils.html">Utilities</a></strong><br>
+<strong><a href="group__examples.html">Examples</a></strong><br>
+<strong><a href="group__tests.html">Tests</a></strong><br>
+
+@par By form-factor
+
+<strong><a href="group__apps.html">Stand-alone components</a></strong><br>
+<strong><a href="group__services.html">IceBox services</a></strong><br>
+
+@par By Operating System
+
+<strong><a href="group__linux.html">Linux</a></strong><br>
+<strong><a href="group__win.html">Windows</a></strong><br>
+
+@par By programming language
+
+<strong><a href="group__cpp.html">C++</a></strong><br>
+<strong><a href="group__java.html">Java</a></strong><br>
+<strong><a href="group__matlab.html">Matlab</a></strong><br>
+
+*/

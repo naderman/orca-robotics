@@ -18,15 +18,15 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/*!
-
-@page orca_doc_overview Orca Overview
-
-@note Reviewed for release 2.0.0.
 
 This is currently a loose collection of things a new user should read first.
-
 @section terms Terminology
+
+/*!
+
+@page orca_doc_overview Orca Terminology
+
+@note Reviewed for release 2.0.0.
 
 When talking about how components connect to each other it's helpful to define some terminology.
 
