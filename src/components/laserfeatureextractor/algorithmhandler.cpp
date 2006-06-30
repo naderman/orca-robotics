@@ -65,10 +65,10 @@ void AlgorithmHandler::init()
     config.extractDoors                      =
         orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractDoors", 0);
 
-    assert( config.extractCorners == 1 || 
-            config.extractForegroundPoints == 1 ||
-            config.extractReflectors == 1 ||
-            config.extractDoors == 1 );
+    assert( config.extractCorners  || 
+            config.extractForegroundPoints ||
+            config.extractReflectors ||
+            config.extractDoors );
 
     // Reflector extraction params
     config.maxDeltaRangeWithinReflector      =

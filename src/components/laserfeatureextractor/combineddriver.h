@@ -66,8 +66,8 @@ private:
 
     ReflectorExtractor *reflectorExtractor_;
     ForegroundExtractor *foregroundExtractor_;
-    DoorExtractor *doorExtractor_;
     CornerExtractor *cornerExtractor_;
+    DoorExtractor *doorExtractor_;
 
     Config config_;
 
