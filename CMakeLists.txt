@@ -72,9 +72,8 @@ INCLUDE(config/global_setup.cmake)
 # Only do this once.
 IF ( NOT WROTE_CONFIG_H )
   MESSAGE( STATUS "Writing config.h" )
-  INCLUDE(config/write_config_h.cmake)
-  SET( WROTE_CONFIG_H TRUE CACHE INTERNAL 
-       "Remember that we've already written config.h" )
+  INCLUDE( config/write_config_h.cmake )
+  SET( WROTE_CONFIG_H TRUE CACHE INTERNAL "Remember that we've already written config.h" )
 ELSE ( NOT WROTE_CONFIG_H )
   MESSAGE( STATUS "Not writing config.h -- wrote it previously" )
 ENDIF ( NOT WROTE_CONFIG_H )
@@ -86,8 +85,13 @@ ENDIF ( NOT WROTE_CONFIG_H )
 ###########################################################
 
 INCLUDE(config/check_depend.cmake)
-SUBDIRS( src )
 
+###########################################################
+#                                                         #
+# Enter the source tree                                   #
+#                                                         #
+###########################################################
+SUBDIRS( src )
 
 ###########################################################
 #                                                         #

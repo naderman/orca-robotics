@@ -1,9 +1,6 @@
-#
-# Possibly build the documentation
-#
-IF ( GENERATE_DOCUMENTATION AND DOXYGEN )
-  ADD_CUSTOM_TARGET( docs ALL doxygen )
-ENDIF ( GENERATE_DOCUMENTATION AND DOXYGEN )
+# A place for interface definitions in Slice
+
+MESSAGE ( STATUS "== INTERFACES ==" )
 
 SUBDIRS( 
   cpp
