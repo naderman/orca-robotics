@@ -2,8 +2,8 @@ OPTION( BUILD_IMAGE_VIEWER "Try to build Image Viewer" ON )
 
 IF ( NOT WIN32 AND BUILD_IMAGE_VIEWER )
 
-  INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
-  INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
+  INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
+  INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
 
   # this is the only implemenation so far
   SET ( OPENCV_IMPLEMENTATION 1 )
@@ -23,7 +23,7 @@ IF ( NOT WIN32 AND BUILD_IMAGE_VIEWER )
         ENDIF ( TRICLOPS_FOUND )
 
         # don't include parts of component.cpp
-        CONFIGURE_FILE( configimageviewer.h.cmake ${PROJ_SOURCE_DIR}/src/components/imageviewer/configimageviewer.h )
+        CONFIGURE_FILE( configimageviewer.h.cmake ${PROJECT_SOURCE_DIR}/src/components/imageviewer/configimageviewer.h )
 
         # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
         SET( COMMON_SRCS cameraconsumerI component imagehandler )

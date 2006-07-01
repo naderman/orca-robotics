@@ -3,17 +3,17 @@ MESSAGE( STATUS "Planning to build C++ interfaces." )
 #
 # Special project-specific stuff
 #
-INCLUDE( ${PROJ_SOURCE_DIR}/config/project/project_rules.cmake )
+INCLUDE( ${PROJECT_SOURCE_DIR}/config/project/project_rules.cmake )
 
 #
 # Do not include /config/component_rules.cmake here. It will lead to circular dependencies.
 #
-INCLUDE( ${PROJ_SOURCE_DIR}/config/slice2cpp_rules.cmake )
+INCLUDE( ${PROJECT_SOURCE_DIR}/config/slice2cpp_rules.cmake )
 
 #
 # All Slice source files are defined in one place.
 #
-INCLUDE( ${PROJ_SOURCE_DIR}/src/interfaces/slice/orca/slice_sources.cmake )
+INCLUDE( ${PROJECT_SOURCE_DIR}/src/interfaces/slice/orca/slice_sources.cmake )
 
 #
 # Work out the list of generated files from the list of slice sources
@@ -35,8 +35,8 @@ INSTALL_FILES( /include/orca FILES ${HEADER_FILES} )
 
 INCLUDE_DIRECTORIES( BEFORE
     ${ICE_HOME}/include
-    ${PROJ_BINARY_DIR}/src/interfaces/cpp
-    ${PROJ_BINARY_DIR}/src/interfaces/cpp/orca
+    ${PROJECT_BINARY_DIR}/src/interfaces/cpp
+    ${PROJECT_BINARY_DIR}/src/interfaces/cpp/orca
 )
 
 LINK_DIRECTORIES( ${ICE_HOME}/lib )

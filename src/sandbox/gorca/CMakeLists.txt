@@ -2,7 +2,7 @@ OPTION( BUILD_GORCA "Try to build Gorca -- a system composition utility" OFF )
 
 IF ( QT4_FOUND AND BUILD_GORCA )
 
-    #INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
+    #INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
     
     #
     # This gathers all the .cpp files into the variable 'SRCS'
@@ -12,17 +12,17 @@ IF ( QT4_FOUND AND BUILD_GORCA )
     INCLUDE_DIRECTORIES(
         ${QT_INCLUDES}
         ${ICE_HOME}/include     # remove this dependency!
-        ${PROJ_BINARY_DIR}/src/interfaces/cpp   # these include files are auto generated!
-	${PROJ_SOURCE_DIR}/src/utils
-        ${PROJ_SOURCE_DIR}/src/sandbox
+        ${PROJECT_BINARY_DIR}/src/interfaces/cpp   # these include files are auto generated!
+	${PROJECT_SOURCE_DIR}/src/utils
+        ${PROJECT_SOURCE_DIR}/src/sandbox
     )
     
     LINK_DIRECTORIES(
         ${ICE_HOME}/lib         # remove this dependency!
-        ${PROJ_BINARY_DIR}/src/interfaces/cpp/orca
-        ${PROJ_BINARY_DIR}/src/utils/orcaice
-        ${PROJ_BINARY_DIR}/src/utils/orcadef
-        ${PROJ_BINARY_DIR}/src/sandbox/qorcauml
+        ${PROJECT_BINARY_DIR}/src/interfaces/cpp/orca
+        ${PROJECT_BINARY_DIR}/src/utils/orcaice
+        ${PROJECT_BINARY_DIR}/src/utils/orcadef
+        ${PROJECT_BINARY_DIR}/src/sandbox/qorcauml
     )
 
     ADD_DEFINITIONS( ${QT_DEFINITIONS} -DQT3_SUPPORT -DINSTALL_PREFIX=\\"${CMAKE_INSTALL_PREFIX}\\" -Wall )

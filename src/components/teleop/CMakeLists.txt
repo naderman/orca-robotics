@@ -2,8 +2,8 @@ OPTION( BUILD_TELEOP "Try to build Teleop" ON )
 
 IF ( NOT WIN32 AND BUILD_TELEOP )
 
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
 
     # keyboard driver with termio
     OPTIONAL_SUB_LIBRARY(

@@ -1,43 +1,45 @@
 #
 # Test CMake version
 #
-CMAKE_MINIMUM_REQUIRED(VERSION 2.2.2)
+CMAKE_MINIMUM_REQUIRED( VERSION 2.2.2 )
 
 ###################################################
 #                                                 #
-#       Start project customization section       #
+#       Project name and version                  #
 #                                                 #
 ###################################################
 
-PROJECT(orca)
+PROJECT( orca )
+SET( PROJECT_VERSION 2.0.0rc5+ CACHE STRING "Version of Orca distribution" )
+SET( PROJECT_INTERFACE_LIB OrcaInterfaces )
 
-SET( VERSION 2.0.0rc5+ CACHE STRING "Version of Orca distribution" )
-  MESSAGE( STATUS "Orca version ${VERSION}" )
+MESSAGE( STATUS "Setting project name to ${PROJECT_NAME}" )
+MESSAGE( STATUS "Setting project version to ${PROJECT_VERSION}" )
+MESSAGE( STATUS "Setting project interface lib name to ${PROJECT_INTERFACE_LIB}" )
+
+###################################################
+#                                                 #
+#       Project directories                       #
+#                                                 #
+###################################################
 
 SET( INSTALL_DIR $ENV{ORCA2_INSTALL} )
 # If environment variable ORCA2_INSTALL is not set, use defaults
 IF( NOT INSTALL_DIR )
   IF   ( NOT WIN32 )
     # Linux and friends: if environment variable ORCA2_INSTALL is not set, install into /opt/orca-<VERSION>
-    SET( INSTALL_DIR /opt/orca-${VERSION} )
+    SET( INSTALL_DIR /opt/orca-${PROJECT_VERSION} )
   ELSE ( NOT WIN32 )
     # Windows: install into C:\orca-<VERSION>
-    SET( INSTALL_DIR C:/orca-${VERSION} )
+    SET( INSTALL_DIR C:/orca-${PROJECT_VERSION} )
   ENDIF ( NOT WIN32 )
 ENDIF( NOT INSTALL_DIR )
+
 SET( CMAKE_INSTALL_PREFIX ${INSTALL_DIR} CACHE PATH "Installation directory" FORCE )
 MESSAGE( STATUS "Setting installation directory to ${CMAKE_INSTALL_PREFIX}" )
 
-SET( PROJ_SOURCE_DIR ${orca_SOURCE_DIR} )
-SET( PROJ_BINARY_DIR ${orca_BINARY_DIR} )
-
-SET( PROJ_INTERFACE_LIB OrcaInterfaces )
-
-###################################################
-#                                                 #
-#       End project customization section         #
-#                                                 #
-###################################################
+SET( PROJECT_SOURCE_DIR ${orca_SOURCE_DIR} )
+SET( PROJECT_BINARY_DIR ${orca_BINARY_DIR} )
 
 #
 # Set the build type (affects debugging symbols and optimization)
@@ -61,7 +63,7 @@ ENDIF ( NOT CMAKE_BUILD_TYPE )
 #                                                 #
 ###################################################
 
-INCLUDE(config/global_setup.cmake)
+INCLUDE( config/global_setup.cmake )
 
 ###########################################################
 #                                                         #
@@ -84,7 +86,7 @@ ENDIF ( NOT WROTE_CONFIG_H )
 #                                                         #
 ###########################################################
 
-INCLUDE(config/check_depend.cmake)
+INCLUDE( config/check_depend.cmake )
 
 ###########################################################
 #                                                         #

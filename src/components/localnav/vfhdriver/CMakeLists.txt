@@ -4,7 +4,7 @@ LINK_DIRECTORIES(
 )
 
 INCLUDE_DIRECTORIES(
-  ${PROJ_SOURCE_DIR}/src/components/vfh
+  ${PROJECT_SOURCE_DIR}/src/components/vfh
 )
 
 FILE( GLOB SRCS *.cpp *.cc )

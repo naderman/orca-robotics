@@ -2,8 +2,8 @@ OPTION( BUILD_DRUNK_ROBOT "Try to build Drunk Robot Example" ON )
 
 IF ( NOT WIN32 AND BUILD_DRUNK_ROBOT )
 
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
     
     #
     # This gathers all the source files into the variable 'SRCS'

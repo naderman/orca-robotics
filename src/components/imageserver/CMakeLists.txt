@@ -2,9 +2,9 @@ OPTION( BUILD_IMAGE_SERVER "Try to build Image Server" ON )
 
 IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
 
-  INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
+  INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
   # Use libOrcaIce
-  INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
+  INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
 
   #
   # checks for libraries and drivers
@@ -36,7 +36,7 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
   ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND ) 
 
   # automatically generate #ifdef's for component.cpp
-  CONFIGURE_FILE( configimageserver.h.cmake ${PROJ_SOURCE_DIR}/src/components/imageserver/configimageserver.h )
+  CONFIGURE_FILE( configimageserver.h.cmake ${PROJECT_SOURCE_DIR}/src/components/imageserver/configimageserver.h )
 
   #
   # orca drivers and image grabbers to be built

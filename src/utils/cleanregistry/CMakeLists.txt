@@ -2,8 +2,8 @@ OPTION( BUILD_CLEAN_REGISTRY "Try to build ClearRegistry Utility" ON )
 
 IF ( NOT WIN32 AND BUILD_CLEAN_REGISTRY )
 
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
 
     #
     # This gathers all the source files into the variable 'SRCS'
@@ -11,11 +11,11 @@ IF ( NOT WIN32 AND BUILD_CLEAN_REGISTRY )
     FILE( GLOB SRCS *.cpp )
 
     INCLUDE_DIRECTORIES(
-        ${PROJ_SOURCE_DIR}/src/utils
+        ${PROJECT_SOURCE_DIR}/src/utils
     )
 
     LINK_DIRECTORIES(
-        ${PROJ_BINARY_DIR}/src/utils/orcacm
+        ${PROJECT_BINARY_DIR}/src/utils/orcacm
     )
     
     GLOBAL_ADD_EXECUTABLE( cleanregistry ${SRCS} )

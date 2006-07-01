@@ -4,8 +4,8 @@ IF ( NOT WIN32 )
 # Needs Qt4 for displaying debug stuff
 IF ( BUILD_PATHPLANNER AND QT4_FOUND )
 
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
     
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
     SET( COMMON_SRCS
@@ -20,7 +20,7 @@ IF ( BUILD_PATHPLANNER AND QT4_FOUND )
 
     INCLUDE_DIRECTORIES(
         ${QT_INCLUDES}
-        ${PROJ_SOURCE_DIR}/src/utils
+        ${PROJECT_SOURCE_DIR}/src/utils
     )
 
     ADD_DEFINITIONS( ${QT_DEFINITIONS} )

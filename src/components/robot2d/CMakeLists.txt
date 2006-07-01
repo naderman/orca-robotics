@@ -2,8 +2,8 @@ OPTION( BUILD_ROBOT2D "Try to build Robot2d component" ON )
 
 IF ( NOT WIN32 AND BUILD_ROBOT2D )
 
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
     
     # OPTIONAL_SUB_LIBRARY macro defined in component_rules.cmake
    

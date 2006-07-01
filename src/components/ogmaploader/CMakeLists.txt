@@ -21,8 +21,8 @@ ENDIF ( NOT HAVE_GTK )
 
 IF ( NOT WIN32 AND REALLY_BUILD_OGMAPLOADER )
 
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
 
     INCLUDE_DIRECTORIES(
       ${GTK_INCLUDE_DIRS}

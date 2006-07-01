@@ -2,8 +2,8 @@ OPTION( BUILD_SIM_LOCALISER "Try to build SimLocaliser component" ON )
 
 IF ( NOT WIN32 AND BUILD_SIM_LOCALISER )
 
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
 
 # these should be in the subdir, but they have no effect there for some reason
 INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
@@ -20,8 +20,8 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
         ${PLAYER_LIBS} OrcaPlayer
     )
 
-#     INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} ${PROJ_SOURCE_DIR}/src/utils/ )
-#     LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} ${PROJ_BINARY_DIR}/src/utils/orcaplayer )
+#     INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/src/utils/ )
+#     LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} ${PROJECT_BINARY_DIR}/src/utils/orcaplayer )
 #     ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
 
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand

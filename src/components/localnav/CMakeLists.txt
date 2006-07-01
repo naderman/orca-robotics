@@ -2,20 +2,20 @@ OPTION( BUILD_LOCALNAV "Try to build LocalNav component" ON )
 
 IF ( NOT WIN32 AND BUILD_LOCALNAV )
 
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/component_rules.cmake )
-    INCLUDE( ${PROJ_SOURCE_DIR}/config/include_orcaice.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
 
     SUBDIRS( vfhdriver )
     MESSAGE( STATUS "    VfhDriver for LocalNav - can be built" )
 
     INCLUDE_DIRECTORIES(
-      ${PROJ_SOURCE_DIR}/src/components/localnav
-      ${PROJ_SOURCE_DIR}/src/utils
+      ${PROJECT_SOURCE_DIR}/src/components/localnav
+      ${PROJECT_SOURCE_DIR}/src/utils
       )
 
     LINK_DIRECTORIES(
-      ${PROJ_BINARY_DIR}/src/components/localnav/vfhdriver
-      ${PROJ_BINARY_DIR}/src/utils/orcanavutil
+      ${PROJECT_BINARY_DIR}/src/components/localnav/vfhdriver
+      ${PROJECT_BINARY_DIR}/src/utils/orcanavutil
       )
 
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
