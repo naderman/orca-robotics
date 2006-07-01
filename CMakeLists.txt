@@ -9,9 +9,12 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.2.2 )
 #                                                 #
 ###################################################
 
+# ============ BEGIN CUSTOMIZATION ===============
 PROJECT( orca )
 SET( PROJECT_VERSION 2.0.0rc5+ CACHE STRING "Version of Orca distribution" )
 SET( PROJECT_INTERFACE_LIB OrcaInterfaces )
+SET( PROJECT_INSTALL_DIR $ENV{ORCA2_INSTALL} )
+# ============ END CUSTOMIZATION =================
 
 MESSAGE( STATUS "Setting project name to ${PROJECT_NAME}" )
 MESSAGE( STATUS "Setting project version to ${PROJECT_VERSION}" )
@@ -23,23 +26,22 @@ MESSAGE( STATUS "Setting project interface lib name to ${PROJECT_INTERFACE_LIB}"
 #                                                 #
 ###################################################
 
-SET( INSTALL_DIR $ENV{ORCA2_INSTALL} )
 # If environment variable ORCA2_INSTALL is not set, use defaults
-IF( NOT INSTALL_DIR )
+IF( NOT PROJECT_INSTALL_DIR )
   IF   ( NOT WIN32 )
     # Linux and friends: if environment variable ORCA2_INSTALL is not set, install into /opt/orca-<VERSION>
-    SET( INSTALL_DIR /opt/orca-${PROJECT_VERSION} )
+    SET( PROJECT_INSTALL_DIR /opt/${PROJECT_NAME}-${PROJECT_VERSION} )
   ELSE ( NOT WIN32 )
     # Windows: install into C:\orca-<VERSION>
-    SET( INSTALL_DIR C:/orca-${PROJECT_VERSION} )
+    SET( PROJECT_INSTALL_DIR C:/${PROJECT_NAME}-${PROJECT_VERSION} )
   ENDIF ( NOT WIN32 )
-ENDIF( NOT INSTALL_DIR )
+ENDIF( NOT PROJECT_INSTALL_DIR )
 
-SET( CMAKE_INSTALL_PREFIX ${INSTALL_DIR} CACHE PATH "Installation directory" FORCE )
+SET( CMAKE_INSTALL_PREFIX ${PROJECT_INSTALL_DIR} CACHE PATH "Installation directory" FORCE )
 MESSAGE( STATUS "Setting installation directory to ${CMAKE_INSTALL_PREFIX}" )
 
-SET( PROJECT_SOURCE_DIR ${orca_SOURCE_DIR} )
-SET( PROJECT_BINARY_DIR ${orca_BINARY_DIR} )
+SET( PROJECT_SOURCE_DIR ${${PROJECT_NAME}_SOURCE_DIR} )
+SET( PROJECT_BINARY_DIR ${${PROJECT_NAME}_BINARY_DIR} )
 
 #
 # Set the build type (affects debugging symbols and optimization)
@@ -50,7 +52,7 @@ IF ( NOT CMAKE_BUILD_TYPE )
   ELSE ( NOT WIN32 )
     # windows... a temp hack: VCC does not seem to respect the cmake
     # setting and always defaults to debug, we have to match it here.
-#    SET( CMAKE_BUILD_TYPE Debug )
+    SET( CMAKE_BUILD_TYPE Debug )
   ENDIF ( NOT WIN32 )
   MESSAGE( STATUS "Setting build type to '${CMAKE_BUILD_TYPE}'" )
 ELSE ( NOT CMAKE_BUILD_TYPE )
