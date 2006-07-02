@@ -107,7 +107,7 @@ INCLUDE(Dart)
 
 ###########################################################
 #                                                         #
-# Print some results                                      #
+# Print results of CMake activity                         #
 #                                                         #
 ###########################################################
-SUBDIRS( stats )
+SUBDIRS( scripts )

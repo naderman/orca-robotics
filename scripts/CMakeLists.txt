@@ -1,0 +1,32 @@
+MESSAGE( STATUS "== CMAKE RESULTS ==" )
+
+###########################################################
+#                                                         #
+# Print some results                                      #
+#                                                         #
+###########################################################
+LIST ( LENGTH COMPONENT_LIST COMPONENT_LIST_LENGTH )
+SET ( CL ${COMPONENT_LIST} )
+MESSAGE ( STATUS "Will build ${COMPONENT_LIST_LENGTH} executables:" )
+MESSAGE ( STATUS "${CL}" )
+
+LIST ( LENGTH LIBRARY_LIST LIBRARY_LIST_LENGTH )
+SET ( LL ${LIBRARY_LIST} )
+MESSAGE ( STATUS "Will build ${LIBRARY_LIST_LENGTH} libraries :")
+MESSAGE ( STATUS "${LL}" )
+
+# SITE_NAME( DEFAULT_SITE_NAME )
+# SET ( SITE ${DEFAULT_SITE_NAME} CACHE STRING "Dart build name" FORCE )
+# MESSAGE( STATUS "DEBUG: Setting Dart site name to ${SITE}" )
+
+# TODO: should respect possible prev settins to SITE and just append our info here
+SET ( BUILDNAME "Linux-g++ (c-${COMPONENT_LIST_LENGTH} l-${LIBRARY_LIST_LENGTH})" CACHE STRING "Dart build name" FORCE )
+MESSAGE( STATUS "DEBUG: Setting Dart build name to ${BUILDNAME}" )
+
+#
+# Reset global lists of components, libraries, etc.
+#
+# MESSAGE ( STATUS "DEBUG: Resetting global component and library lists" )
+SET ( DUMMY_LIST "" )
+SET ( COMPONENT_LIST ${DUMMY_LIST} CACHE STRING "Global list of components to build" FORCE )
+SET ( LIBRARY_LIST ${DUMMY_LIST} CACHE STRING "Global list of libraries to build" FORCE )
