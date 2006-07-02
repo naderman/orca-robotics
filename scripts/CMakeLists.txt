@@ -20,8 +20,15 @@ MESSAGE ( STATUS "${LL}" )
 # MESSAGE( STATUS "DEBUG: Setting Dart site name to ${SITE}" )
 
 # TODO: should respect possible prev settins to SITE and just append our info here
-SET ( BUILDNAME "${BUILDNAME} (c-${COMPONENT_LIST_LENGTH} l-${LIBRARY_LIST_LENGTH})" CACHE STRING "Dart build name" FORCE )
+SET( OLD_BUILDNAME ${BUILDNAME} )
+STRING( REGEX REPLACE "<[^>]*>" "" STRIPPED_BUILDNAME ${OLD_BUILDNAME} )
+MESSAGE( "${OLD_BUILDNAME} --> ${STRIPPED_BUILDNAME}" )
+SET ( BUILDNAME "${STRIPPED_BUILDNAME} <c-${COMPONENT_LIST_LENGTH} l-${LIBRARY_LIST_LENGTH}>" CACHE STRING "Dart build name" FORCE )
 MESSAGE( STATUS "DEBUG: Setting Dart build name to ${BUILDNAME}" )
+
+MESSAGE( STATUS "DEBUG: old build name      :${OLD_BUILDNAME}" )
+MESSAGE( STATUS "DEBUG: stripped build name :${STRIPPED_BUILDNAME}" )
+MESSAGE( STATUS "DEBUG: new build name      :${BUILDNAME}" )
 
 #
 # Reset global lists of components, libraries, etc.
