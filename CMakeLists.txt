@@ -1,7 +1,7 @@
 #
 # Test CMake version
 #
-CMAKE_MINIMUM_REQUIRED( VERSION 2.2.2 )
+CMAKE_MINIMUM_REQUIRED( VERSION 2.4.2 FATAL_ERROR )
 
 ###################################################
 #                                                 #
