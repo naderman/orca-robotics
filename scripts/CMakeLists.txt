@@ -20,7 +20,7 @@ MESSAGE ( STATUS "${LL}" )
 # MESSAGE( STATUS "DEBUG: Setting Dart site name to ${SITE}" )
 
 # TODO: should respect possible prev settins to SITE and just append our info here
-SET ( BUILDNAME "Linux-g++ (c-${COMPONENT_LIST_LENGTH} l-${LIBRARY_LIST_LENGTH})" CACHE STRING "Dart build name" FORCE )
+SET ( BUILDNAME "${BUILDNAME} (c-${COMPONENT_LIST_LENGTH} l-${LIBRARY_LIST_LENGTH})" CACHE STRING "Dart build name" FORCE )
 MESSAGE( STATUS "DEBUG: Setting Dart build name to ${BUILDNAME}" )
 
 #
