@@ -14,8 +14,8 @@ IF ( NOT WIN32 AND BUILD_SANDBOX )
 	reactivewalker
     )
     
-ELSE ( BUILD_SANDBOX )
+ELSE ( NOT WIN32 AND BUILD_SANDBOX )
 
-    MESSAGE ( "Sandbox compilation is disabled" )
+    MESSAGE ( STATUS "Sandbox compilation is disabled" )
 
 ENDIF ( NOT WIN32 AND BUILD_SANDBOX )
