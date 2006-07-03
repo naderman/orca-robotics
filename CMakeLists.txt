@@ -6,7 +6,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.4 FATAL_ERROR )
 IF ( ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} LESS 2.4 )
   MESSAGE( FATAL_ERROR 
            "Orca2 requires at least CMake v2.4. You are running v${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}. Please upgrade." )
-ENDIF ( $(CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} LESS 2.4 )
+ENDIF ( ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} LESS 2.4 )
 
 ###################################################
 #                                                 #
