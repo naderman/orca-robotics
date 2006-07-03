@@ -1,0 +1,85 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_tute_win32 Connecting components without the Registry
+
+@note Reviewed for release 2.0.0.
+
+In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now now the LaserMon component will run on a Windows machine.
+
+@section orca_doc_tute_win32_startup Start Up the Infrastructure in Linux
+
+Start the IceGrid Registry and the IceStorm server on a Linux machine just as before (See @ref orca_doc_quickstart for instructions).
+
+@section orca_doc_tute_win32_talk Connect Two Components
+
+First, copy default configuration files for the SickLaser and LaserMon components.
+@verbatim
+$ cd ~/sys; mkdir tutedirect; cd tutedirect
+$ cp [ORCA2-INSTALL]/cfg/sicklaser.cfg .
+$ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
+@endverbatim
+
+@par The Server on Linux
+
+In Linux you should already have a directory with the server configuration file (otherwise repeat the instructions of setting it up). Start the server.
+
+@verbatim
+$ cd ~/sys/quickstart
+$ sicklaser
+@endverbatim
+
+@par The Client on Windows
+
+On the Windows machine, start the terminal application. Create a separate directory for this system, copy the standard configuration file from the Orca installation directory.
+
+@verbatim
+>cd C:\
+>mkdir sys
+>cd sys
+>mkdir tutewin
+>cd tutewin
+>copy [ORCA2-INSTALL]\cfg\lasermon.cfg .
+@endverbatim
+
+We have to modify the configuration file because the server now runs on a different platform (host). Replace [HOSTNAME] with the hostname of the Linux machine on which the server is running.
+
+@verbatim
+# Required Interfaces
+LaserMon.Requires.Laser.Proxy=laser@[HOSTNAME]/sicklaser
+@endverbatim
+
+Start the client (here we assume that [ORCA2-INSTALL]\bin is in the PATH).
+
+@verbatim
+>lasermon.exe
+@endverbatim
+
+You should see the scans scroll by on the screen, just as in the @ref orca_doc_quickstart_startup tutorial. If you see a dialog box from the Windows Firewall, you'll have to disable the firewall from the control panel.
+
+To stop components, type Ctrl-C.
+
+@section orca_doc_tute_win32_next What's Next
+
+If everything works, check out more @ref orca_doc_tutorials.
+
+*/
