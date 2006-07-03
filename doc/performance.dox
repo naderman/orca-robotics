@@ -32,8 +32,7 @@ The tests we perform are slightly different and reflect the typical usage we see
 
 @par Hardware
 
-Intra-host communication: 2.0GHz laptop with Debian Linux (2.6 kernel). Power supply was plugged in.
-Host-to-Host communication: two laptops as above with 100Mb wired Ethernet.
+Intra-host communication: 2.0GHz laptop with Debian Linux (2.6 kernel). Power supply was plugged in. Host-to-Host communication: two laptops as above with 100Mb wired Ethernet.
 
 @par Software
 
@@ -47,7 +46,7 @@ The following objects are transmitted: Position2dData, LaserData, OgMapData, Cam
 
 @par Procedure
 
-Orca objects are sent from Pinger to Replier and immediately sent back. The process is repeated 100 times. There is 0.25s delay after each send-receive operation.
+Orca objects are sent from Pinger to Replier and immediately sent back. The process is repeated 100 times. There is 0.25s delay after each send-receive operation. For a tutorial on how to obtain these results in your environment see @ref orca_doc_tute_perf_test.
 
 @par UNIX ping for comparison
 

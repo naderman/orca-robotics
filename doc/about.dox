@@ -96,25 +96,17 @@ we've become confident in its reliability.
 Orca aims to be as broadly applicable as possible by making as few
 assumptions as possible.  In particular, we make @b no @b assumptions about:
 
-- Architecture: system developers are free to compose a system from
-  any set of components, arranged to form arbitrary architectures, so
-  long as interfaces are connected correctly. There is no special
-  component which the framework requires all systems to incorporate.
+- @b Architecture: system developers are free to compose a system from any set of components, arranged to form arbitrary architectures, so long as interfaces are connected correctly. There is no special component which the framework requires all systems to incorporate.
 
-- Interfaces: individual components are free to provide or
-  require any set of interfaces. There is no particular interface
-  which all components must provide or require, and it is easy for component
-  developers to invent new interfaces.
+- @b Interfaces: individual components are free to provide or require any set of interfaces. There is no particular interface which all components must provide or require, and it is easy for component developers to invent new interfaces.
 
-- Internals: component developers are free to provide the
-  implementations of their components' interfaces (which are opaque
-  to the rest of the system) in any way they choose.
+- @b Internals: component developers are free to provide the implementations of their components' interfaces (which are opaque to the rest of the system) in any way they choose.
 
-The only thing we prescribe is the way in which interfaces are
-defined and implemented (using Ice), in order to enforce component
-compatibility.
+- @b OS/Language: Orca was designed with the intention of being used on various platforms. To this end, we use <a href="http://www.cmake.org" target="_blank">CMake</a> (cross-platform make) for its build system.  Ice has language mappings for C++, Java, Python, C#, VisualBasic and PHP. It builds natively under various operating systems including Windows, Linux and Mac OS X. While the majority of components in the repository use Linux/C++ platform, nothing in principle should stop you from working with any one of the potential platform/language combinations. For GUI development we use <a href="http://www.trolltech.com" target="_blank">TrollTech's Qt</a> -- a multi-platform C++ GUI framework.
 
-Freedom in choosing OS and programming language which is ideal for the job in hand is another aspect of flexibility. Orca was designed with the intention of being used on various platforms. To this end, we use <a href="www.cmake.org" target="_blank">CMake</a> (cross-platform make) for its build system.  Ice has language mappings for C++, Java, Python, C#, VisualBasic and PHP.  It builds natively under various operating systems including Windows, Linux and Mac OS X. While we currently use Orca in Linux/C++ configuration, nothing in principle should stop you from working with any one of the potential platform/language combinations.
+@image html headerZerocLogo.gif
+
+So, the only thing we prescribe is the way in which interfaces are defined and implemented (using Ice), in order to enforce component compatibility.
 
 @subsection orca_doc_about_tools Optional Tools
 
@@ -130,12 +122,7 @@ free to copy it and modify it (or not use it at all) as required.
 
 @subsection orca_doc_about_repository The Component Repository
 
-We recognise that the usefulness of both the framework and any
-particular component increases with the variety and quality of the
-available components with which one can interact.  We therefore
-maintain <a href="group__components.html">this online repository</a>.
-Users are encouraged to contribute their own components and to point
-out omissions in components' documentation.
+We recognise that the usefulness of both the framework and any particular component increases with the variety and quality of the available components with which one can interact.  We therefore maintain @ref orca_doc_swmap "this online repository". Users are encouraged to contribute their own components and to point out omissions in components' documentation.
 
 @section orca_doc_about_history History
 
@@ -152,7 +139,7 @@ spearheaded by Anders Oreb&auml;ck, was called Orocos\@KTH.  By June 2004 Orocos
 
 Work on porting Orca to Ice started in March of 2005. The new version called Orca2 was forked in late 2005, the main difference being the move to Ice middleware as the sole communications package. Switching to Ice has caused large changes in the component model. This means that Orca1 and Orca2 components are mutually incompatible.
 
-At present, Orca is mostly actively used at several Universities in Sydney, Australia. For a sample of past and current projects see @ref orca_doc_projects.
+At present, Orca is most actively used at several Universities in Sydney, Australia. For a sample of past and current projects see @ref orca_doc_projects.
 
 @image html orca_sloc.jpg
 

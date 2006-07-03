@@ -1,0 +1,74 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*!
+
+@page orca_doc_tute_perf_test Testing Orca Latencies
+
+@note Reviewed for release 2.0.0.
+
+In this tutorial we show how to use two utilities to measure communication latencies. The utilities are @ref orca_test_pinger and @ref orca_test_replier. The results we produce will be similar to those shown in @ref orca_doc_performance.
+
+We assume that the IceGrid registry is already running (see earlier tutorials on how to do this). Create a system directory and copy default configuration files.
+
+@verbatim
+$ cd ~/sys; mkdir perftest; cd perftest
+$ cp [ORCA2-INSTALL]/cfg/replier.cfg .
+$ cp [ORCA2-INSTALL]/cfg/pinger.cfg .
+@endverbatim
+
+@section orca_doc_tute_perftest_replier Start up Replier
+
+We start the replier first.
+
+@verbatim
+$ replier
+@endverbatim
+
+@section orca_doc_tute_perftest_pinger Start up Pinger
+
+Edit the configuration file @c pinger.cfg : change the number of pings from 101 to 5, so you don't have to wait a long time. You'll end up with something like this:
+
+@verbatim
+# Configuration Options
+Pinger.Config.Count=5
+Pinger.Config.Interval=0.250
+Pinger.Config.LogFileName=orcapingresults.dat
+Pinger.Config.Preload=1
+Pinger.Config.UseIcePing=0
+@endverbatim
+
+@verbatim
+$ pinger
+@endverbatim
+
+The results are saved in a text file called @c orcapingresults.dat. Each line corresponds to multiple pings of the same data structure and contains the following:
+
+@verbatim
+SIZE RTT_MIN RTT_AVG RTT_MAX RTT_MDEV  RTT0 RTT1 RTT2 ... RTTN
+@endverbatim
+
+Where SIZE is the size of the data structure in bytes. RTT stands for Round-Trip Time and are stored in milliseconds. RTT_MDEV is standard deviation of the data set (currently not implemented). Note that the contents are similar to the output of UNIX ping. 
+
+@section orca_doc_tute_icebox_next What's Next
+
+If everything works, check out more @ref orca_doc_tutorials.
+
+*/

@@ -33,6 +33,7 @@
 @section operation Operation
 
 - @ref orca_doc_tute_utils
+- @ref orca_doc_tute_perf_test
 
 @section writing Writing Components
 
