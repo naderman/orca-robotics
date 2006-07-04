@@ -104,7 +104,7 @@ assumptions as possible.  In particular, we make @b no @b assumptions about:
 
 - @b OS/Language: Orca was designed with the intention of being used on various platforms. To this end, we use <a href="http://www.cmake.org" target="_blank">CMake</a> (cross-platform make) for its build system.  Ice has language mappings for C++, Java, Python, C#, VisualBasic and PHP. It builds natively under various operating systems including Windows, Linux and Mac OS X. While the majority of components in the repository use Linux/C++ platform, nothing in principle should stop you from working with any one of the potential platform/language combinations. For GUI development we use <a href="http://www.trolltech.com" target="_blank">TrollTech's Qt</a> -- a multi-platform C++ GUI framework.
 
-@image html headerZerocLogo.gif
+@image html xplatform_tools.jpg
 
 So, the only thing we prescribe is the way in which interfaces are defined and implemented (using Ice), in order to enforce component compatibility.
 
