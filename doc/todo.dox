@@ -40,6 +40,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - redo ping performance number ... DONE
 
+- do not install test .cfg files
+
 @section changes Changes since Last Release
 
 - item
