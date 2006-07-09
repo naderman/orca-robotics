@@ -1,9 +1,10 @@
 MESSAGE( STATUS "Planning to build C++ interfaces." )
 
 #
-# Special project-specific stuff
+# Install sub-directory will be the same as the current sub-directory
+# which is typically the same as the name of the namespace, e.g. 'orca'
 #
-INCLUDE( ${PROJECT_SOURCE_DIR}/config/project/project_rules.cmake )
+GET_FILENAME_COMPONENT( INTERFACE_NAMESPACE ${CMAKE_CURRENT_SOURCE_DIR} NAME )
 
 #
 # Do not include /config/component_rules.cmake here. It will lead to circular dependencies.
@@ -13,40 +14,32 @@ INCLUDE( ${PROJECT_SOURCE_DIR}/config/slice2cpp_rules.cmake )
 #
 # All Slice source files are defined in one place.
 #
-INCLUDE( ${PROJECT_SOURCE_DIR}/src/interfaces/slice/orca/slice_sources.cmake )
+INCLUDE( ${PROJECT_SOURCE_DIR}/src/interfaces/slice/${INTERFACE_NAMESPACE}/slice_sources.cmake )
 
 #
 # Work out the list of generated files from the list of slice sources
 #
 GENERATE_SLICE2CPP_RULES( CPP_FILES HEADER_FILES ${SLICE_SOURCE_FILES} )
 
-#
-# Temporary measure until we get the shared stuff working under win32
-#
-IF( NOT WIN32 )
-  ADD_LIBRARY( OrcaInterfaces SHARED ${CPP_FILES} )
-ELSE( NOT WIN32 )
-  ADD_LIBRARY( OrcaInterfaces STATIC ${CPP_FILES} )
-ENDIF( NOT WIN32 ) 
-
-# alexm: started to convert win32 to shared libs but decided it's not worth it
-INSTALL_TARGETS( /lib RUNTIME_DIRECTORY /bin OrcaInterfaces )
-INSTALL_FILES( /include/orca FILES ${HEADER_FILES} )
-
 INCLUDE_DIRECTORIES( BEFORE
     ${ICE_HOME}/include
     ${PROJECT_BINARY_DIR}/src/interfaces/cpp
-    ${PROJECT_BINARY_DIR}/src/interfaces/cpp/orca
+    ${PROJECT_BINARY_DIR}/src/interfaces/cpp/${INTERFACE_NAMESPACE}
 )
 
 LINK_DIRECTORIES( ${ICE_HOME}/lib )
 
-IF( WIN32 )
-    # Windows needs to  know the symbols at compile time; no run-time linking
-    # a-la Linux. 
-    TARGET_LINK_LIBRARIES( OrcaInterfaces
+ADD_DEFINITIONS( "-Wall" )
+
+IF( NOT WIN32 )
+    GLOBAL_ADD_LIBRARY( ${PROJECT_INTERFACE_LIB} SHARED ${CPP_FILES} )
+    TARGET_LINK_LIBRARIES( ${PROJECT_INTERFACE_LIB} Ice IceUtil )
+ELSE( NOT WIN32 )
+    GLOBAL_ADD_LIBRARY( ${PROJECT_INTERFACE_LIB} STATIC ${CPP_FILES} )
+    TARGET_LINK_LIBRARIES( ${PROJECT_INTERFACE_LIB}
                 optimized Ice optimized IceUtil 
                 debug Iced debug IceUtild )
-ENDIF( WIN32 )
+ENDIF( NOT WIN32 ) 
 
-ADD_DEFINITIONS( "-Wall" )
+INSTALL_FILES( /include/${INTERFACE_NAMESPACE} FILES ${HEADER_FILES} )
+MESSAGE ( STATUS "Will install C++ header files into [PREFIX]/install/${INTERFACE_NAMESPACE}" )

@@ -7,5 +7,10 @@
 
 #
 # Install all the .ice files, so other projects can use them.
+# Install sub-directory will be the same as the current sub-directory
+# which is typically the same as the name of the namespace, e.g. 'orca'
 #
-INSTALL_FILES( /ice/orca .*\\.ice$ )
+GET_FILENAME_COMPONENT( INTERFACE_NAMESPACE ${CMAKE_CURRENT_SOURCE_DIR} NAME )
+
+INSTALL_FILES( /slice/${INTERFACE_NAMESPACE} .*\\.ice$ )
+MESSAGE ( STATUS "Will install Slice files into [PREFIX]/slice/${INTERFACE_NAMESPACE}" )
