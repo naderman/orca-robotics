@@ -16,10 +16,10 @@ ENDIF ( ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} LESS 2.4 )
 PROJECT( orca )
 # project version string
 SET( PROJECT_VERSION            2.0.0rc5+       CACHE STRING "Version of Orca distribution" )
-# the name for project interface library
-SET( PROJECT_INTERFACE_LIB      OrcaInterfaces )
 # the name of the environment variable which sets installation directory
 SET( PROJECT_INSTALL_ENV_VAR    ORCA2_INSTALL )
+# the name for project interface library
+SET( PROJECT_INTERFACE_LIB      OrcaInterfaces )
 
 #
 # The rest is done by a script
