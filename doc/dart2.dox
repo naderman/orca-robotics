@@ -27,9 +27,9 @@
 Dart2 is a rewrite of Dart -- the automated test facility which is part of CMake. The general goal is to make software more reliable by simplifying automated code (re)compilation and testing. Running Dart2 clients at different sites helps catch bugs caused by cross-platform and cross-hardware issues.
 
 General things to note:
-- @c cmake at least v2.2 is required
 - It's best to do out-of-source build, i.e. all object/generated files are in one 'binary' directory. The reason is that it makes it simple for CTest to do a clean build every time by simply deleting all files in the build (or 'binary') directory.
-- All scripts listed on this page can be found in the [ORCA2-SRC]/scripts/dart2/ directory, so you can simply copy and edit them.
+- All scripts listed on this page can be found in the @c [ORCA2-SRC]/scripts/dart2/ directory, so you can simply copy and edit them.
+- Make sure @cvs can update the checked-out module without you typing in the password (see SourceForge help page).
 
 @section server Dart2 Server
 
@@ -37,95 +37,68 @@ The <a href="http://129.78.210.237:8081/orca2/Dashboard">Dart2 server for Orca2<
 
 @section client Dart2 Client
 
-@par Experimental Build
-That's the simplest test you can run and you do things manually:
--# Checkout the Orca2 source tree from CVS and rename the directory, e.g. @c orca2-exp. Make sure @cvs can update the module without you typing in the password (see SourceForge help page).
--# Create an out-of-source build directory (e.g. ~/cvs/orca2-exp/build)
--# Run cmake and ctest
+The suggested directory structure on the client side is shown below. It is assumed in all the scripts which are included in the distribution. The contents of @c orca2-exp and @c orca2-nightly is similar to @c orca2-cont. The *.cmake and *.sh scripts are copies of files from @c orca2/scripts/dart2 (use copies so you can modify them to suit local conditions).
+
 @verbatim
-$ cd ~/cvs/orca2-exp/build
-$ cmake ..
-$ ctest -D Experimental
+ctests/
+  orca/
+    orca2-cont/
+      build-gcc40/
+      orca2/
+      orca2-cont-linux-gcc40.cmake
+      orca2-cont.sh
+    orca2-exp/
+      build-gcc40/
+      orca2/
+      orca2-exp-linux-gcc40.cmake
+    orca2-nightly/
+      build-gcc40/
+      build-gcc41/
+      orca2/
+      orca2-nightly-linux-gcc40.cmake
+      orca2-nightly-linux-gcc41.cmake
+      orca2-nightly.sh
+@endverbatim
+
+@par Experimental Build
+
+That's the simplest test you can run and you do things manually:
+-# Reproduce the file structure shown above. Orca2 source tree is checked out from CVS 
+-# Create an out-of-source build directory
+-# Copy the CTest script from [ORCA2-SRC]/scripts/dart/
+-# Execute the CTest script.
+
+@verbatim
+$ cd ~/ctests/orca/orca2-exp
+$ ctest -S orca2-exp-linux-gcc40.cmake -VV
 @endverbatim
 If this worked you should see the results on the webpage soon after (it may take a few minutes since the server polls for submissions).
 
 @par Nightly Build
-If the previous has worked out you are ready to setup scripts for nightly builds:
--# Checkout the Orca2 source tree from CVS and rename the directory, e.g. @c orca2-night.
--# Create an out-of-source build directory (e.g. ~/cvs/orca2-night/build)
--# Create a ctest config file (e.g. ~/ctest-scripts/orca2/orca2_night.cfg):
+
+Reproduce the file structure shown above. As an example, we show two build directories using two versions of the gcc compiler.
+Then add it to your crontab with 
 @verbatim
-SET (CTEST_SOURCE_DIRECTORY "/home/dart/cvs/orca2-night")
-SET (CTEST_BINARY_DIRECTORY "/home/dart/cvs/orca2_night/build")
-SET (CTEST_CVS_COMMAND "cvs")
-SET (CTEST_COMMAND "ctest -D Nightly" )
-SET (CTEST_CMAKE_COMMAND "cmake" )
-SET (CTEST_START_WITH_EMPTY_BINARY_DIRECTORY TRUE)
-SET (CTEST_INITIAL_CACHE "
-MAKECOMMAND:STRING=make
-BUILDNAME:STRING=Debian-gcc40
-SITE:STRING=devdebian.acfr.usyd.edu.au
-CMAKE_BUILD_TYPE:STRING=Debug
-")
-SET (CTEST_ENVIRONMENT
- CC=/usr/bin/gcc-4.0
- CXX=/usr/bin/g++-4.0)
+$ crontab -e
 @endverbatim
--# Write a shell script which executes the ctest script (e.g. ~/ctest-scripts/orca2/dart.night): 
+so it looks something like this:
 @verbatim
 SHELL=/bin/bash
-source ~/.bashrc
-/usr/bin/ctest -S /home/dart/ctest-scripts/orca2_night.cfg -V >> /home/dart/cron_logs/night_build.log 2>&1
+15  4    * * *  /home/users/dart/ctests/orca/orca2-nightly/orca2-nightly.sh
 @endverbatim
--# Add a cron job which executes the shell script at night. First create a file my.crontab: 
-@verbatim
-SHELL=/bin/bash
-0 2    * * *  /home/dart/ctest-scripts/dart.night
-@endverbatim
-Then add it to your crontab by doing: crontab my.crontab Check with crontab -l
 
 @par Continuous Build
+
 Continuous testing is useful during active development. Whenever something changed in CVS the tests are run and submitted to the dashboard.
--# Checkout the Orca2 source tree from CVS and rename the directory, e.g. @c orca2-cont.
--# Create an out-of-source build directory (e.g. ~/cvs/orca2-cont/build)
--# Create a configuration file (e.g. ~/ctest-scripts/orca2/orca2_cont.cfg)
+Reproduce the file structure shown above. Execute the shell script once with @c nohup so that it continues running after you log off.
 @verbatim
-SET (CTEST_SOURCE_DIRECTORY "/home/dart/cvs/orca2-cont")
-SET (CTEST_BINARY_DIRECTORY "/home/dart/cvs/orca2-cont/build")
-SET (CTEST_CVS_COMMAND "cvs")
-SET (CTEST_COMMAND "ctest -D Continuous" )
-SET (CTEST_CMAKE_COMMAND "cmake" )
-SET (CTEST_START_WITH_EMPTY_BINARY_DIRECTORY TRUE)
-SET (CTEST_INITIAL_CACHE "
-MAKECOMMAND:STRING=make
-BUILDNAME:STRING=Debian-gcc40
-SITE:STRING=devdebian.acfr.usyd.edu.au
-CMAKE_BUILD_TYPE:STRING=Debug
-")
-SET (CTEST_ENVIRONMENT
- CC=/usr/bin/gcc-4.0
- CXX=/usr/bin/g++-4.0)
+$ cd ~/ctests/orca/orca2-cont
+$ nohup ./orca2-cont.sh &
 @endverbatim
--# Write a shell script (e.g. ~/ctest-scripts/orca2/dart.cont).
+
+To suppress output logging, use this command:
 @verbatim
-#!/bin/bash
-while true; do
- echo "***************************"
- echo " Starting ctest at `date`"
- echo "***************************"
- ctest -V -S orca2-cont.cfg
- echo "***************************"
- echo " Finished ctest at `date`"
- echo "***************************"
- echo " "
- sleep 300
-done
+$ nohup ./orca2-cont.sh > /dev/null 2>&1 &
 @endverbatim
--# Execute it once using nohup:
-@verbatim
-$ cd ~/ctest-scripts/orca2
-$ nohup ./dart.cont >/dev/null 2>&1 &
-@endverbatim
--# Now you can log out and the scrip will run forever.
 
 */
