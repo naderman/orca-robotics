@@ -76,7 +76,7 @@ page is also generated hourly from <a href="http://orca-robotics.sourceforge.net
 
 @section news News
 
-- 1-Juj-06 Orca2.0.0 is released. Uses the newly released Ice-3.1.0. Supports Windows. Examples of Java and Matlab components. License issues have been resolved.
+- 21-Juj-06 Orca2.0.0 is released. Uses the newly released Ice-3.1.0. Supports Windows. Examples of Java and Matlab components. License issues have been resolved.
 - 11-Jun-06 Distribution created for Orca2.0.0rc5: the fifth release candidate for Orca v2.0.0.
 - 30-Mar-06 Distribution created for Orca2.0.0rc4: the fourth release candidate for Orca v2.0.0.
 - 27-Feb-06 Distribution created for Orca2.0.0rc3: the third release candidate for Orca v2.0.0.
