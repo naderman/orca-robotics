@@ -35,7 +35,12 @@ installation, etc. You can of course set up a project in any way you like, howev
 might find it useful. Get it from CVS (it may be more up to date) or download
 an archive.
 
-- checkout CVS module 'empty-project' (it's more likely to be up-to-date)
-- download <a href="http://orca-robotics.sf.net/empty-project-2.0.0rc3.tar.gz">a snapshot of CVS repository</a> as of v.2.0.0rc3+.
+- Option 1. Export CVS module 'empty-project' (it's more likely to be up-to-date). Use the export CVS command instead checkout, otherwise you'll have to manually remove all CVS directories. With @c orcacvs pointing at the SourceForge cvs server, the command looks like this:
+@verbatim
+$ orcacvs export empty-project
+@endverbatim
+- Option2. Download <a href="http://orca-robotics.sf.net/empty-project-2.0.0rc3.tar.gz">a snapshot of CVS repository</a> as of v.2.0.0rc3+.
+
+Edit the top level CMakeLists.txt file by providing the project name, version, and other names. This enough to get you started. Now you can add your own components, libraries, and interfaces.
 
 */
