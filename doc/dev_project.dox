@@ -37,10 +37,35 @@ an archive.
 
 - Option 1. Export CVS module 'empty-project' (it's more likely to be up-to-date). Use the export CVS command instead checkout, otherwise you'll have to manually remove all CVS directories. With @c orcacvs pointing at the SourceForge cvs server, the command looks like this:
 @verbatim
-$ orcacvs export empty-project
+$ orcacvs export -r HEAD empty-project
 @endverbatim
 - Option2. Download <a href="http://orca-robotics.sf.net/empty-project-2.0.0rc3.tar.gz">a snapshot of CVS repository</a> as of v.2.0.0rc3+.
 
-Edit the top level CMakeLists.txt file by providing the project name, version, and other names. This enough to get you started. Now you can add your own components, libraries, and interfaces.
+To cusomize the empty project a project called 'tractor' follow these steps:
+- Rename the directory 'empty-project' to 'tractor'
+- Edit the top level CMakeLists.txt file so it looks like this:
+@verbatim
+# project name
+PROJECT( tractor )
+# project version string.
+SET( PROJECT_VERSION                0.0.1       CACHE STRING "Version of Tractor distribution" )
+# the name of the environment variable which sets installation directory.
+SET( PROJECT_INSTALL_ENV_VAR        TRACTOR_INSTALL )
+# the name for project's interface library.
+SET( PROJECT_INTERFACE_LIB          TractorInterfaces )
+@endverbatim
+- Rename interface subdirectories named after the project main namespace:
+@verbatim
+$ mv src/interfaces/slice/empty src/interfaces/slice/tractor
+$ mv src/interfaces/cpp/empty src/interfaces/cpp/tractor
+@endverbatim
+- Edit the corresponding CMakeLists.txt files, change the argument of SUBDIRS() command from 'empty' to 'tractor'.
+- Edit the source file of the sample component @c src/components/somecomponent/main.cpp so that the include line looks like this:
+@verbatim
+#include <tractor/someinterface.h>
+@endverbatim
+- Run cmake and compile.
+
+This enough to get you started. Now you can commit your new project to your own CVS server and start writing code: add your own components, libraries, and interfaces.
 
 */
