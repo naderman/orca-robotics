@@ -71,22 +71,17 @@ Orca, currently in its second generation, differs from other robotic software fr
 - See a list of all available components: <a href="group__components.html">Component Repository</a>
 
 
-Note: The documentation on this web page matches the latest release. A web
-page is also generated hourly from <a href="http://orca-robotics.sourceforge.net/cvs/">the latest CVS version</a>.
+Note: The documentation on this web page matches the latest release. A web page is also generated hourly from <a href="http://orca-robotics.sourceforge.net/cvs/">the latest CVS version</a>.
 
 @section news News
 
-- 21-Juj-06 Orca2.0.0 is released. Uses the newly released Ice-3.1.0. Supports Windows. Examples of Java and Matlab components. License issues have been resolved.
+- 21-Jul-06 Orca2.0.0 is released. Uses the newly released Ice-3.1.0. Supports Windows. Examples of Java and Matlab components. License issues have been resolved.
 - 11-Jun-06 Distribution created for Orca2.0.0rc5: the fifth release candidate for Orca v2.0.0.
 - 30-Mar-06 Distribution created for Orca2.0.0rc4: the fourth release candidate for Orca v2.0.0.
 - 27-Feb-06 Distribution created for Orca2.0.0rc3: the third release candidate for Orca v2.0.0.
 - 16-Jan-06 The <a href="http://129.78.210.237:8081/orca2/Dashboard/">Dashboard</a> code testing system is back on line, now using Dart2. There's a link to it from the sidebar.
 - 13-15-Dec-05 Orca team gives a talk at <a href="http://194.95.66.227/b-it-tutorial/index.html">B-IT Tutorial on Robot Middleware and Integration Frameworks</a>. We were invited as one of "six most prevalent middleware concepts and integration frameworks for mobile robots today" .
-- 17-Nov-05 Main website points to Orca2 information. Orca1 is still available on orca-robotics.sf.net/orca1.
-- 15-Nov-05 Released Orca 1.0.1 (part of Orca1).  Bugfixes only.
-- 23-Oct-05 moved to an all-doxygen documentation system based largely on the <a href="http://playerstage.sf.net">Player/Stage v2.0</a> model.
-- 11-Oct-05 started development of @b Orca2 using Ice.
-- 11-Oct-05 @b Orca @b 1.0.0: Orca1 source has been frozen.
+- 17-Nov-05 Main website points to Orca2 information. Orca1 is still available on http://orca-robotics.sf.net/orca1.
 - @ref orca_doc_old_news
 
 */
