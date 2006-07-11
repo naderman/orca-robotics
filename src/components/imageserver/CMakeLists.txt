@@ -48,7 +48,7 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
       
       SET ( DRIVER_SRCS driver fakedriver monodriver)
 
-      SUBDIRS( imagegrabber )
+      ADD_SUBDIRECTORY( imagegrabber )
 
     ELSE ( OPENCV7_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
       MESSAGE( STATUS "     Image grabbing libraries cannot be found... only the fake driver can be built." ) 

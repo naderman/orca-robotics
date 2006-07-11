@@ -1,10 +1,7 @@
 ADD_DEFINITIONS( -Wall )
 
-LINK_DIRECTORIES(
-)
-
 INCLUDE_DIRECTORIES(
-  ${PROJECT_SOURCE_DIR}/src/components/vfh
+  ${PROJECT_SOURCE_DIR}/src/components/localnav
 )
 
 FILE( GLOB SRCS *.cpp *.cc )

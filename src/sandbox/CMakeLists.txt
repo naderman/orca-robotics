@@ -7,12 +7,10 @@ MESSAGE ( STATUS "== SANDBOX ==" )
 IF ( NOT WIN32 AND BUILD_SANDBOX )
 
     # when adding new directories, please maintain alphabetical order
-    SUBDIRS(
-	gorca
-	netcam
-	qorcauml
-	reactivewalker
-    )
+    ADD_SUBDIRECTORY ( gorca )
+    ADD_SUBDIRECTORY ( netcam )
+    ADD_SUBDIRECTORY ( qorcauml )
+    ADD_SUBDIRECTORY ( reactivewalker )
     
 ELSE ( NOT WIN32 AND BUILD_SANDBOX )
 

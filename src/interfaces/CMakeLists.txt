@@ -2,7 +2,5 @@
 
 MESSAGE ( STATUS "== INTERFACES ==" )
 
-SUBDIRS( 
-  cpp
-  slice
-)
+ADD_SUBDIRECTORY ( cpp )
+ADD_SUBDIRECTORY ( slice )

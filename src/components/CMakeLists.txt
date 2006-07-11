@@ -3,26 +3,24 @@
 MESSAGE ( STATUS "== COMPONENTS ==" )
 
 # when adding new directories, please maintain alphabetical order
-SUBDIRS(
-  faithlocaliser
-  featuremaploader
-  featuremap2dmon
-  laserfeatureextractor
-  lasermon
-  localnav
-  logger
-  logplayer
-  ogmaploader
-  orcamon
-  orcaview
-  pathplanner
-  position2dmon
-  registrylist
-  registryview
-  robot2d
-  sicklaser
-  simlocaliser
-  teleop
-  imageserver
-  imageviewer
-)
+ADD_SUBDIRECTORY ( faithlocaliser )
+ADD_SUBDIRECTORY ( featuremaploader )
+ADD_SUBDIRECTORY ( featuremap2dmon )
+ADD_SUBDIRECTORY ( laserfeatureextractor )
+ADD_SUBDIRECTORY ( lasermon )
+ADD_SUBDIRECTORY ( localnav )
+ADD_SUBDIRECTORY ( logger )
+ADD_SUBDIRECTORY ( logplayer )
+ADD_SUBDIRECTORY ( ogmaploader )
+ADD_SUBDIRECTORY ( orcamon )
+ADD_SUBDIRECTORY ( orcaview )
+ADD_SUBDIRECTORY ( pathplanner )
+ADD_SUBDIRECTORY ( position2dmon )
+ADD_SUBDIRECTORY ( registrylist )
+ADD_SUBDIRECTORY ( registryview )
+ADD_SUBDIRECTORY ( robot2d )
+ADD_SUBDIRECTORY ( sicklaser )
+ADD_SUBDIRECTORY ( simlocaliser )
+ADD_SUBDIRECTORY ( teleop )
+ADD_SUBDIRECTORY ( imageserver )
+ADD_SUBDIRECTORY ( imageviewer )

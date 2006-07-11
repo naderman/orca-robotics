@@ -4,23 +4,22 @@ MESSAGE ( STATUS "== UTILITIES ==" )
 
 # when adding new directories, please maintain alphabetical order 
 # unless there are inter-dependencies.
-SUBDIRS(  
+
 # LIBRARIES
-  orcaice
-  orcacm
-  orcadef
-  orcagui
-  orcalogplayer
-  orcamisc
-  orcanavutil
-  orcaobj
-  orcaogmap
-  orcapathplan
-  orcaplayer
-  qorcacm
+ADD_SUBDIRECTORY ( orcaice )
+ADD_SUBDIRECTORY ( orcacm )
+ADD_SUBDIRECTORY ( orcadef )
+ADD_SUBDIRECTORY ( orcagui )
+ADD_SUBDIRECTORY ( orcalogplayer )
+ADD_SUBDIRECTORY ( orcamisc )
+ADD_SUBDIRECTORY ( orcanavutil )
+ADD_SUBDIRECTORY ( orcaobj )
+ADD_SUBDIRECTORY ( orcaogmap )
+ADD_SUBDIRECTORY ( orcapathplan )
+ADD_SUBDIRECTORY ( orcaplayer )
+ADD_SUBDIRECTORY ( qorcacm )
 #  qorcagui
 # UTILITY APPLICATIONS
-  cleanregistry
-  iceping
-  orcasmc
-)
+ADD_SUBDIRECTORY ( cleanregistry )
+ADD_SUBDIRECTORY ( iceping )
+ADD_SUBDIRECTORY ( orcasmc )

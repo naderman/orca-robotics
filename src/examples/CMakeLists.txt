@@ -4,7 +4,5 @@
 MESSAGE ( STATUS "== EXAMPLES ==" )
 
 # when adding new directories, please maintain alphabetical order
-SUBDIRS(
-  drunkrobot
-  pureice
-)
+ADD_SUBDIRECTORY ( drunkrobot )
+ADD_SUBDIRECTORY ( pureice )

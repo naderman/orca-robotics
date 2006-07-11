@@ -1,8 +1,6 @@
-SUBDIRS(  
-  interfaces
-  utils
-  components 
-  examples
-  tests
-  sandbox
-)
+ADD_SUBDIRECTORY ( interfaces )
+ADD_SUBDIRECTORY ( utils )
+ADD_SUBDIRECTORY ( components ) 
+ADD_SUBDIRECTORY ( examples )
+ADD_SUBDIRECTORY ( tests )
+ADD_SUBDIRECTORY ( sandbox )
