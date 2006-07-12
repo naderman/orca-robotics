@@ -56,7 +56,7 @@ IF ( NOT WIN32 AND BUILD_IMAGE_VIEWER )
 
         INSTALL_TARGETS( /lib OrcaImageViewer )
 
-        GENERATE_FROM_DEF( imageviewer.def )
+        GENERATE_CONFIG_FILE( imageviewer.def )
 
       ELSE( OPENCV7_FOUND )
         MESSAGE( STATUS "ImageViewer will not be built -- OpenCv (0.9.7) not found." )

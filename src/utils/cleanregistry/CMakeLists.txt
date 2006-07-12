@@ -22,6 +22,6 @@ IF ( NOT WIN32 AND BUILD_CLEAN_REGISTRY )
 
     TARGET_LINK_LIBRARIES ( cleanregistry OrcaCompModel OrcaMisc IceGrid )
     
-    GENERATE_FROM_DEF( cleanregistry.def )
+    GENERATE_CONFIG_FILE( cleanregistry.def )
 
 ENDIF ( NOT WIN32 AND BUILD_CLEAN_REGISTRY )

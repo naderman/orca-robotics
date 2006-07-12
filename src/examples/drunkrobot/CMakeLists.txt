@@ -12,6 +12,6 @@ IF ( NOT WIN32 AND BUILD_DRUNK_ROBOT )
     
     GLOBAL_ADD_EXECUTABLE( drunkrobot ${SRCS} )
 
-    GENERATE_FROM_DEF( drunkrobot.def )
+    GENERATE_CONFIG_FILE( drunkrobot.def )
 
 ENDIF ( NOT WIN32 AND BUILD_DRUNK_ROBOT )

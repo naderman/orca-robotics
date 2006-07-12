@@ -38,6 +38,6 @@ IF ( NOT WIN32 AND BUILD_LOCALNAV )
     # otherwise IceBox fails to load the service
     TARGET_LINK_LIBRARIES( OrcaLocalNav vfhdriver OrcaNavUtil )
 
-    GENERATE_FROM_DEF( localnav.def )
+    GENERATE_CONFIG_FILE( localnav.def )
 
 ENDIF ( NOT WIN32 AND BUILD_LOCALNAV )

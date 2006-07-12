@@ -112,6 +112,6 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
   # test image for the fake driver to send
   INSTALL_PROGRAMS(/images penguin.jpg)
 
-  GENERATE_FROM_DEF( imageserver.def )
+  GENERATE_CONFIG_FILE( imageserver.def )
 
 ENDIF ( NOT WIN32 AND BUILD_IMAGE_SERVER )

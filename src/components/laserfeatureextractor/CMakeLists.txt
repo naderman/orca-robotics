@@ -27,6 +27,6 @@ IF ( NOT WIN32 AND BUILD_LASERFEATUREEXTRACTOR )
     
     INSTALL_TARGETS( /lib OrcaLaserFeatureExtractor )
 
-    GENERATE_FROM_DEF( laserfeatureextractor.def )
+    GENERATE_CONFIG_FILE( laserfeatureextractor.def )
 
 ENDIF ( NOT WIN32 AND BUILD_LASERFEATUREEXTRACTOR )

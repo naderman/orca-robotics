@@ -40,7 +40,7 @@ IF ( BUILD_PATHPLANNER AND QT4_FOUND )
     
     INSTALL_TARGETS( /lib OrcaPathPlanner )
 
-    GENERATE_FROM_DEF( pathplanner.def )
+    GENERATE_CONFIG_FILE( pathplanner.def )
 
 ELSE ( BUILD_PATHPLANNER AND QT4_FOUND )
 

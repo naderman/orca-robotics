@@ -12,7 +12,6 @@ IF ( BUILD_LASER_MONITOR )
 
   GLOBAL_ADD_EXECUTABLE( lasermon ${SRCS} )
 
-#   GENERATE_FROM_DEF( lasermon.def )
-  GENERATE_CONFIG_FILE( lasermon.def lasermon )
+  GENERATE_CONFIG_FILE( lasermon.def )
 
 ENDIF ( BUILD_LASER_MONITOR )

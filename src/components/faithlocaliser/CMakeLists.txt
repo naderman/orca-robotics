@@ -24,6 +24,6 @@ IF ( NOT WIN32 AND BUILD_FAITHLOCALISER )
     
     INSTALL_TARGETS( /lib OrcaFaithLocaliser )
     
-    GENERATE_FROM_DEF( faithlocaliser.def )
+    GENERATE_CONFIG_FILE( faithlocaliser.def )
 
 ENDIF ( NOT WIN32 AND BUILD_FAITHLOCALISER )

@@ -46,6 +46,6 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
     
     INSTALL_TARGETS( /lib OrcaSimLocaliser )
     
-    GENERATE_FROM_DEF( simlocaliser.def )
+    GENERATE_CONFIG_FILE( simlocaliser.def )
 
 ENDIF ( NOT WIN32 AND BUILD_SIM_LOCALISER )

@@ -21,6 +21,6 @@ IF ( NOT WIN32 AND BUILD_FEATUREMAPLOADER )
     ADD_LIBRARY( OrcaFeatureMapLoader SHARED ${SERVICE_SRCS} )
     INSTALL_TARGETS( /lib OrcaFeatureMapLoader )
 
-    GENERATE_FROM_DEF( featuremaploader.def )
+    GENERATE_CONFIG_FILE( featuremaploader.def )
 
 ENDIF ( NOT WIN32 AND BUILD_FEATUREMAPLOADER )
