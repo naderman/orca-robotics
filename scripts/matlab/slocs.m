@@ -9,11 +9,14 @@ Sice212 = [
 Sice301 = [
 (8164-1000) + (23018+19384+19169+10596+4479+4343+4308+622+319)
 ];
-% this is just a placeholder
-Sice310 = 1.1*Sice301;
+% now also add Java:
+% src/{IceInternal Ice IceUtil IceBox}
+Sice310 = [
+(8810-1200) + (24275+20494+22689+10587+4569+4877+4770+667+319) + (13190+6915+1262+493)
+];
 
 % for comparison, ASN
-Dasn = [90433   3060447];
+Sasn = 90433;
 
 % indeces
 iyy=1;
@@ -47,13 +50,19 @@ Sorca = [ ...
 2006    2   20  0   Sice301 2998    9867+14734-2998;  % 2.0.0-rc3
 2006    3   29  0   Sice301 5250    14625+18131-5250; % 2.0.0-rc4
 2006    6   11  0   Sice301 4985    19999+24867-4985; % 2.0.0-rc5
-2006    6   30  1   Sice310 4985    19999+20984-4985; % 2.0.0
-2006    7   15  0   Sice310 4985    19999+20984-4985; % 2.0.1
+2006    7   15  1   Sice310 5029    20040+21291-5029  % 2.0.0
 ];
-Torca = datenum(Sorca(:,iyy),Sorca(:,imm),Sorca(:,idd));
-
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
-    '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1' }';
+    '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0' }';
+
+% add a dummy release just for display
+Sorca(end+1,:) = Sorca(end,:);
+Sorca(end,imm) = Sorca(end,imm)+1;
+Sorca(end,iver) = 0;
+Vorca{end+1} = 'dummy';
+
+% convert dates
+Torca = datenum(Sorca(:,iyy),Sorca(:,imm),Sorca(:,idd));
 
 % 2nd digit releases
 i2 = (Sorca(:,iver)==1);
@@ -96,7 +105,7 @@ Tplayer = datenum(Splayer(:,1),Splayer(:,2),Splayer(:,3));
 %  22      doc             sh=19,php=3
 %  0       config          (none)
 
-Smax = 120;
+Smax = 130;
 d0 = [Torca Torca]'; d0=d0(:); d0(1)=[];
 d1 = Smax-Sorca(:,isub)-Sorca(:,ibase); d1 = [d1 d1]'; d1=d1(:); d1(end)=[];
 d2 = Sorca(:,isub); d2 = [d2 d2]'; d2=d2(:); d2(end)=[];

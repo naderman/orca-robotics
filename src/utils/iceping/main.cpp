@@ -182,7 +182,7 @@ App::run( int argc, char* argv[] )
         cout<<endl<<"Ping successful."<<endl;
 
         // we must've connected, otherwise we'd have an exception
-        Ice::ConnectionPtr conn = base->ice_connection();
+        Ice::ConnectionPtr conn = base->ice_getConnection();
         cout<<"Proxy\t\t[ "<<base->ice_toString()<<" ]"<<endl;
         
         cout<<"Connection\t[ "<<conn->toString()<<" ]"<<endl;
