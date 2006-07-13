@@ -29,6 +29,6 @@ int main(int argc, char * argv[])
 {
     imageviewer::Component component;
     bool installCtrlCHandler = false;
-    orcaice::Application app( argc, argv, component, installCtrlCHandler );
+    orcaice::Application app( component, installCtrlCHandler );
     return app.main(argc, argv);
 }

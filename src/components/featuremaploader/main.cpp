@@ -8,6 +8,6 @@
 int main(int argc, char * argv[])
 {
     featuremaploader::Component component;
-    orcaice::Application app( argc, argv, component );
+    orcaice::Application app( component );
     return app.main(argc, argv);
 }

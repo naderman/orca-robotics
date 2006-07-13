@@ -30,6 +30,6 @@
 int main(int argc, char * argv[])
 {
     teleop::Component component;
-    orcaice::Application app( argc, argv, component );
+    orcaice::Application app( component );
     return app.main(argc, argv);
 }

@@ -23,6 +23,6 @@
 int main(int argc, char * argv[])
 {
   DrunkRobotComponent component;
-  orcaice::Application app( argc, argv, component );
+  orcaice::Application app( component );
   return app.main(argc, argv);
 }

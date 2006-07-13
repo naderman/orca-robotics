@@ -28,6 +28,6 @@
 int main(int argc, char * argv[])
 {
     pathplanner::Component component;
-    orcaice::Application app( argc, argv, component, true );
+    orcaice::Application app( component );
     return app.main(argc, argv);
 }
