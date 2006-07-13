@@ -61,7 +61,7 @@ Component::start()
     try
     {
         adminProxy->ice_ping();
-        std::string adminAddress = orcamisc::connectionToRemoteAddress( adminProxy->ice_connection()->toString() );
+        std::string adminAddress = orcamisc::connectionToRemoteAddress( adminProxy->ice_getConnection()->toString() );
         cout<<"Ping successful: "<<adminAddress<<endl;
     }
     catch ( const Ice::Exception & e )
