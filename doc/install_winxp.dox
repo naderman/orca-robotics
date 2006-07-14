@@ -58,3 +58,7 @@ Build and install Orca2 distribution.
         - Add @c C:\\orca-[VERSION]\\bin (or custom installation path) to the Windows path (As super-user right-click on My Computer > Properties > Advanced > Environment Variables > Edit).
 
 */
+
+notes for installing Qt on windows:
+- open-source Qt for Windows is only intended to be compiled with MinGW compiler. If you want straightforward installation instructions, see this http://www.mingw.org/MinGWiki/index.php/RealDumbQuickstart
+
