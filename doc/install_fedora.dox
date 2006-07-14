@@ -59,7 +59,7 @@ have set it up should consider using the safer "sudo".
 
 CMake can be downloaded from  <a href="http://www.cmake.org/HTML/Download.html">Kitware</a>.
 
-Note: You must download version 2.2.3 or above.
+Note: You must download version 2.4.2 or above.
 
 CMake does not compile; it is distributed as a tar file plus a README.
 
@@ -67,16 +67,16 @@ The easiest way to unpack it and install it as root is to untar the file:
 
 @verbatim
 % su root 
-% tar xvfz /path/to/cmake-2.2.3-x86-linux.tar.gz
+% tar xvfz /path/to/cmake-[VERSION]-x86-linux.tar.gz
 % cd /usr/local
-% tar xvf /path/to/cmake-2.2.3-x86-linux-files.tar
+% tar xvf /path/to/cmake-[VERSION]-x86-linux-files.tar
 @endverbatim
 
 You could also choose another directory instead of /usr/local
 
 @section orca_doc_installfedora_ice Downloading Ice
 
-Minimum version required 3.0.1 (latest tested: 3.0.1).
+Minimum version required 3.1.0 (latest tested: 3.1.0).
 
 ICE theoretically could be installed from the RPMs available on their web site. However,
 those RPMs are compiled against GCC 3, which does not play well with ORCA 2, so you have to

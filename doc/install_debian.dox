@@ -36,7 +36,7 @@ Minimum version required 2.4.2 (latest tested: 2.4.2).
 
 @section orca_doc_installdebian_ice Ice
 
-Minimum version required 3.0.1 (latest tested: 3.0.1).
+Minimum version required 3.1.0 (latest tested: 3.1.0).
 
 @note There's now a Debian Ice package in the testing distribution. Building from source which is described below may still be necessary if you want to install the newest version of Ice not yet available as a package.
 @verbatim
@@ -55,11 +55,11 @@ Download source from  <a href="http://www.zeroc.com/download.html">download page
 $ tar -xzf Ice-[VERSION].tar.gz
 $ cd Ice-[VERSION]
 @endverbatim
-    - Ice is particular about the name of the compiler. If you are using a version of gcc, make sure the names are standard: @c gcc/g++ ! If you skip this step you'll see a cryptic message about @c mkshlib not defined.
+    - Ice installer is particular about the name of the compiler. If you are using a version of gcc, make sure the names are standard: @c gcc/g++ ! If you skip this step you'll see a cryptic message about @c mkshlib not defined.
 @verbatim
 $ export CC=gcc; export CXX=g++
 @endverbatim
-    - Which gcc version to use? ZeroC recommends >=4.0.1. We've use v.4.0.3. Using v. 3.3.x may also be possible.
+    - Which gcc version to use? ZeroC recommends >=4.1. We currently use v.4.0.4.
     - Compile and install
 @verbatim
 $ make
