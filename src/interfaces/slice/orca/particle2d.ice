@@ -46,7 +46,7 @@ struct SingleParticle2d
 sequence<SingleParticle2d>  Particle2dSequence;
 
 /*!
-    Laser scan data structure
+    Particle2d data structure
 */
 class Particle2dData extends OrcaObject
 {
