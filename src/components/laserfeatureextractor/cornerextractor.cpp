@@ -48,7 +48,6 @@ void CornerExtractor::addFeatures( const orca::LaserDataPtr &laserData,
             double C2 = next->C;
 
             double dot_prod = A1*A2 + B1*B2;
-            cout << "dot_prod: " << dot_prod << endl;
             if (fabs(dot_prod) < CORNER_BOUND) {
                 double cornerX;
                 double cornerY;
@@ -66,8 +65,7 @@ void CornerExtractor::addFeatures( const orca::LaserDataPtr &laserData,
                 if (cornerY < 0) {
                     bearing = -bearing;
                 }
-                cout << "****Identified line at r: " << range << " b: " << bearing << endl;
-                    
+
                 orca::SinglePolarFeature2dPtr pp = new orca::SinglePolarFeature2d;
                 pp->type = orca::feature::CORNER;
                 pp->p.r = range;
