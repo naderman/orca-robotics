@@ -58,9 +58,9 @@ void attach( const orcaice::Context & context, const std::string & proxyString )
     // Get the data once
     try
     {
-        context.tracer()->info( "subscriber: Trying to get one data object as a test" );
+        context.tracer()->info( "subscriber: Trying to get one data object as a test: " );
         objectPrx->getData();
-//         context.tracer()->print( orcaice::toString( objectPrx->getData() ) );
+        context.tracer()->print( orcaice::toString( objectPrx->getData() ) );
     }
     catch ( const orca::OrcaException & e ) 
     {
