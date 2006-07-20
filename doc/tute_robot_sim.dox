@@ -21,7 +21,7 @@
 /*!
 
 @page orca_doc_tute_stage Using Orca with Player/Stage simulator
-@note Reviewed for release 2.0.0.
+@note Reviewed for release 2.0.0 and Player/Stage 2.0.2.
 @author Ben Upcroft
 
 @section started Getting started
@@ -83,10 +83,11 @@ SickLaser.Config.Driver=stage
 ...
 @endverbatim
 
-Now run the SickLaser component. Check the Stage world window: you should see the laser scan after SickLaser component made the connection.
+Now run the SickLaser component.
 @verbatim
 $ sicklaser ./sicklaser.cfg
 @endverbatim
+Check the Stage world window: you should see the laser scan after SickLaser component made the connection.
 
 @section robot_control Robot driver
 
