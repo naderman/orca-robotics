@@ -39,17 +39,18 @@ $ cp [ORCA2-INSTALL]/cfg/sicklaser.cfg .
 $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 @endverbatim
 
-Also, copy the IceBox configuration file for this tutorial, included with you Orca distribution.
+Also, copy the IceBox configuration files for this tutorial, which are included with your Orca distribution.
 @verbatim
-$ cp [ORCA2-SRC]/scripts/icebox_laser.cfg .
+$ cp [ORCA2-SRC]/scripts/ice/icebox_laser.cfg .
+$ cp [ORCA2-SRC]/scripts/ice/icestorm.cfg .
 $ mkdir stormdb
 @endverbatim
 
 @par The IceBox Server
 
-The IceBox configuration file does not need to be modifed. It instructs the IceBox to first load the IceStorm service and then the SickLaser service. Both are configured to share one instance of Communicator which speeds up communication.
+The IceBox configuration file does not need to be modifed. It instructs the IceBox to first load the IceStorm service and then the SickLaser service. Both are configured to share a single instance of Communicator to speed up communication.
 
-The laser config file needs to be changed to fake (simulated) operation (or skip this step if you're connected to a real SICK laser).  Edit @c sicklaser.cfg, and replace @e 'sickcarmen' with @e 'fake' so it looks like this:
+The laser config file needs to be changed to @c fake (simulated) operation (you can skip this step if you're connected to a real SICK laser).  Edit @c sicklaser.cfg, and replace @e 'sickcarmen' with @e 'fake' so it looks like this:
 
 @verbatim
 SickLaser.Config.Driver=fake
