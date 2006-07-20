@@ -57,7 +57,7 @@ $ mkdir stormdb
 $ icebox --Ice.Config=icebox_icestorm.cfg
 @endverbatim
 
-[Note for Debian users: See the @ref orca_doc_faq entry on 127.0.1.1 in the /etc/hosts file.]
+[Note for Debian users: See an entry in the <a href="http://wiki2.cas.edu.au/orca/index.php/Orca:faq:ice" target="_blank">Wiki FAQ</a> on 127.0.1.1 in the /etc/hosts file.]
 
 @section orca_doc_quickstart_point Pointing Components at this Infrastructure
 
@@ -107,7 +107,7 @@ You should see the scans scroll by on the screen. Congratulations, your first tw
 
 To stop components, type @c Ctrl-C.
 
-If something does not work, check out the listing of @ref orca_doc_faq.
+If something does not work, check out the FAQ on <a href="http://wiki2.cas.edu.au/orca/index.php/" target="_blank">Orca Wiki</a>.
 
 @section orca_doc_quickstart_next What's Next
 
