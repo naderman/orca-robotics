@@ -110,9 +110,9 @@ this walkthrough can be found in @c drunkrobot).
 As discussed in the design pattern, our implementation of the interface simply puts data into
 a buffer and our program then accesses it in its main loop. Since we're implementing a
 orca::Position2d object, we need to create its simple implementation. We'll put
-this in a class called @c Position2dI. The header file @c position2d_i.h looks like this:
+this in a class called @c Position2dI. The header file @c position2dI.h looks like this:
 
-@include ../src/examples/drunkrobot/position2d_i.h
+@include ../src/examples/drunkrobot/position2dI.h
 
 After we include the header files, we then declare the
 constructor. The first is a pointer to the 2d data, but set to use a
@@ -124,9 +124,9 @@ The getData() and getGeometry() functions are also implemented. You can ignore t
 No we implement the above interface. There's nothing unexpected here;
 to get the latest position, we check the pointer buffer, to return the
 configuration, we pass the value that was initialised when the
-interface was created. The file @c position2d_i.cpp looks like this:
+interface was created. The file @c position2dI.cpp looks like this:
 
-@include ../src/examples/drunkrobot/position2d_i.cpp
+@include ../src/examples/drunkrobot/position2dI.cpp
 
 @section mainloop Creating the main loop.
 
