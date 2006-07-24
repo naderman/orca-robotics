@@ -80,7 +80,7 @@ main(int argc, char* argv[])
         ic = Ice::initialize(argc, argv);
         cout<<"Communicator initialized..."<<endl;
 
-        // Create a proxy for the root directory
+        // Create a proxy for the laser
         //
         // we'll use indirect proxy here to connect to the sicklaser component
         // setup according to the Quick Start tutorial of Orca2
@@ -93,7 +93,7 @@ main(int argc, char* argv[])
 
         base->ice_ping();
 
-        // Down-cast the proxy to a Directory proxy
+        // Down-cast the proxy to a Laser proxy
         //
         orca::LaserPrx laser = orca::LaserPrx::checkedCast(base);
         if (!laser) {
@@ -101,9 +101,12 @@ main(int argc, char* argv[])
         }
         cout<<"Derived proxy created..."<<endl;
 
+        // get one laser scan and print it out
+        //
         orca::RangeScannerDataPtr data = new orca::LaserData;
         data = laser->getData();
 
+        cout<<"Received laser scan:"<<endl;
         cout<<toString( data )<<endl;
     } 
     catch (const Ice::Exception& ex) 
