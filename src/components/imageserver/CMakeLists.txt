@@ -85,22 +85,22 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
 
   IF ( OPENCV7_FOUND )
     INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} )
-    TARGET_LINK_LIBRARIES( imageserver ${OPENCV7_LIBS} imagegrabber )
+    TARGET_LINK_LIBRARIES( imageserver ${OPENCV7_LIBS} OrcaImageGrabber )
     # important to let linker know about this inter-library dependency
     # otherwise IceBox fails to load the service
-    TARGET_LINK_LIBRARIES( OrcaImageServer ${OPENCV7_LIBS} imagegrabber )
+    TARGET_LINK_LIBRARIES( OrcaImageServer ${OPENCV7_LIBS} OrcaImageGrabber )
   ENDIF ( OPENCV7_FOUND )
 
   IF ( DIGICLOPS_AND_TRICLOPS_FOUND )
     INCLUDE_DIRECTORIES( /usr/local/include/digiclops /usr/local/include/triclops)
-    TARGET_LINK_LIBRARIES( imageserver digiclops triclops imagegrabber )
-    TARGET_LINK_LIBRARIES( OrcaImageServer digiclops triclops imagegrabber )
+    TARGET_LINK_LIBRARIES( imageserver digiclops triclops OrcaImageGrabber )
+    TARGET_LINK_LIBRARIES( OrcaImageServer digiclops triclops OrcaImageGrabber )
   ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND )
 
   IF ( OPENCV7_FOUND AND DIGICLOPS_AND_TRICLOPS_FOUND )
     INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} /usr/local/include/digiclops /usr/local/include/triclops)
-    TARGET_LINK_LIBRARIES( imageserver ${OPENCV7_LIBS} digiclops triclops imagegrabber )
-    TARGET_LINK_LIBRARIES( OrcaImageServer ${OPENCV7_LIBS} digiclops triclops imagegrabber )
+    TARGET_LINK_LIBRARIES( imageserver ${OPENCV7_LIBS} digiclops triclops OrcaImageGrabber )
+    TARGET_LINK_LIBRARIES( OrcaImageServer ${OPENCV7_LIBS} digiclops triclops OrcaImageGrabber )
   ENDIF ( OPENCV7_FOUND AND DIGICLOPS_AND_TRICLOPS_FOUND )
 
   #
