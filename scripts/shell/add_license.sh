@@ -1,8 +1,8 @@
 #!/bin/sh
 
 UPDATE_ORCA_LICENSE=yes
-REPLACE_GPL=no
-FOR_REAL=yes
+REPLACE_GPL=yes
+FOR_REAL=no
 
 toplevel=../..
 search_string=" *  You should have received a copy of the GNU"
