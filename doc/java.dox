@@ -1,0 +1,45 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@page orca_doc_java Experimental support for Java
+
+@note Reviewed for release 2.0.0.
+
+These notes cover how to enable experimental support for Java under Linux.
+
+@section orca_doc_java_install Installation
+
+We need to install Java itself, Ice for Java, and enable compiling of Orca for Java.
+
+@par Java SDK, aka JDK, aka Java development platform
+
+There's apparently no Debian package. Download Java SE Development Kit (JDK) from http://java.sun.com/javase/downloads/index.jsp. We want something recent, Java 5.0, which is also cleverly referred to as Java 1.5.0. Orca has been tested with JDK 5.0 Update 7. Follow instructions to install. We installed it into /opt/. Add the following lines to your @c .bashrc file.
+
+@verbatim
+export JAVA_COMPILER=javac
+export JAVA_HOME=/opt/jdk1.5.0_07
+export PATH=$JAVA_HOME/bin:$PATH
+@endverbatim
+
+@par Ice for Java
+
+Download IceJ-3.1.0 package for Java-5. Copy the @c lib/Ice.jar file into [ICE_HOME]/lib/ directory.
+
+@par Orca for Java
+
+Java compilation is disabled by default in the Orca distribution. To enable, run @c ccmake in your binary directory, scroll down to @c BUILD_JAVA option and hit ENTER to toggle between ON/OFF. Then press @c C to configure and @c G to generate Makefiles and exit. Now run @c make to compile.
+
+@section orca_doc_java_operation Operation
+
+Orca includes an example component which mimicks the operation of @ref orca_component_lasermon component. See @ref orca_component_pureicej documentation for instructions on how to run it.
+
+*/

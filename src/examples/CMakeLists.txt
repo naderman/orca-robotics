@@ -7,6 +7,6 @@ MESSAGE ( STATUS "== EXAMPLES ==" )
 ADD_SUBDIRECTORY ( drunkrobot )
 ADD_SUBDIRECTORY ( pureice )
 # much easier to check for java here, because the example is build as a separate project
-IF ( JAVA_FOUND )
+IF ( JAVA_FOUND AND BUILD_JAVA )
     ADD_SUBDIRECTORY ( pureicej )
-ENDIF ( JAVA_FOUND )
+ENDIF ( JAVA_FOUND AND BUILD_JAVA )
