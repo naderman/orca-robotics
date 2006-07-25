@@ -5,7 +5,6 @@ MESSAGE ( STATUS "== COMPONENTS ==" )
 # when adding new directories, please maintain alphabetical order
 ADD_SUBDIRECTORY ( faithlocaliser )
 ADD_SUBDIRECTORY ( featuremaploader )
-ADD_SUBDIRECTORY ( featuremap2dmon )
 ADD_SUBDIRECTORY ( laserfeatureextractor )
 ADD_SUBDIRECTORY ( lasermon )
 ADD_SUBDIRECTORY ( localnav )
