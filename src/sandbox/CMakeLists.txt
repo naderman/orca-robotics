@@ -7,6 +7,7 @@ MESSAGE ( STATUS "== SANDBOX ==" )
 IF ( NOT WIN32 AND BUILD_SANDBOX )
 
     # when adding new directories, please maintain alphabetical order
+    ADD_SUBDIRECTORY ( featuremap2dmon )
     ADD_SUBDIRECTORY ( gorca )
     ADD_SUBDIRECTORY ( netcam )
     ADD_SUBDIRECTORY ( qorcauml )
