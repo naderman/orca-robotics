@@ -2,9 +2,9 @@
 # Edit this to match your configuration, then set a cron job
 # to run it regularly (with 'ctest -S <script_name>').
 #
-SET (CTEST_DASHBOARD_ROOT "/home/users/dart/ctests/orca/orca2-cont")
+SET (CTEST_DASHBOARD_ROOT "/home/users/dart/ctests/orca-and-friends/orca-and-friends-cont")
 SET (CTEST_SOURCE_DIRECTORY "${CTEST_DASHBOARD_ROOT}/orca2")
-SET (CTEST_BINARY_DIRECTORY "${CTEST_DASHBOARD_ROOT}/build-gcc40")
+SET (CTEST_BINARY_DIRECTORY "${CTEST_DASHBOARD_ROOT}/build-orca2")
 
 SET (CTEST_CVS_COMMAND "cvs")
 
@@ -32,14 +32,13 @@ MAKECOMMAND:STRING=make
 BUILDNAME:STRING=Debian-gcc40
 SITE:STRING=devdebian.acfr.usyd.edu.au
 CMAKE_BUILD_TYPE:STRING=Debug
+BUILD_JAVA:BOOL=ON
+BUILD_IMAGE_SERVER:BOOL=ON
 ")
 
 # set any extra envionment variables here
 SET (CTEST_ENVIRONMENT
-  CC=/home/users/dart/bin/gcc
-  CXX=/home/users/dart/bin/g++
-  ICE_HOME=/opt/Ice-3.1.0
+CC=/home/users/dart/bin/gcc
+CXX=/home/users/dart/bin/g++
+ICE_HOME=/opt/Ice-3.1.0
 )
-
-# set build directives to influence what is built
-SET (BUILD_IMAGE_SERVER ON)

@@ -32,6 +32,8 @@ MAKECOMMAND:STRING=make
 BUILDNAME:STRING=Debian-gcc41
 SITE:STRING=devdebian.acfr.usyd.edu.au
 CMAKE_BUILD_TYPE:STRING=Debug
+BUILD_JAVA:BOOL=ON
+BUILD_IMAGE_SERVER:BOOL=ON
 ")
 
 # set any extra envionment variables here
