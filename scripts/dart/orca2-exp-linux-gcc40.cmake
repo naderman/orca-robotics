@@ -32,10 +32,13 @@ MAKECOMMAND:STRING=make
 BUILDNAME:STRING=Debian-gcc40
 SITE:STRING=devdebian.acfr.usyd.edu.au
 CMAKE_BUILD_TYPE:STRING=Debug
+BUILD_JAVA:BOOL=ON
+BUILD_IMAGE_SERVER:BOOL=ON
 ")
 
 # set any extra envionment variables here
 SET (CTEST_ENVIRONMENT
   CC=/usr/bin/gcc-4.0
   CXX=/usr/bin/g++-4.0
+  ICE_HOME=/opt/Ice-3.1.0
 )
