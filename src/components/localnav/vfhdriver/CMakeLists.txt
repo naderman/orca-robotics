@@ -7,3 +7,4 @@ INCLUDE_DIRECTORIES(
 FILE( GLOB SRCS *.cpp *.cc )
 
 ADD_LIBRARY( vfhdriver SHARED ${SRCS} )
+INSTALL_TARGETS( /lib vfhdriver )
