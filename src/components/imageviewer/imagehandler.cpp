@@ -99,9 +99,12 @@ void ImageHandler::run()
     // count the number of images received
     int numImages = 0;
     orca::Time arrivalTime;
+    orca::Time initialImageTime;
+    orca::Time finalImageTime;
     double diff = 0.0;
     double avDiff = 0.0;
-
+    double totalTime;
+    
     //
     // This is the main loop
     //
@@ -112,15 +115,28 @@ void ImageHandler::run()
         //
         int ret = cameraDataBuffer_.getAndPopNext ( cameraData, timeoutMs );
         
-        // time checks
-        int averageOver = 160;
+        // delay checks for sending objects
+        int averageOver = 100;
         orcaice::setToNow( arrivalTime );
         diff += orcaice::timeDiffAsDouble( cameraData->timeStamp, arrivalTime );
+        
+        // throughput check
+        if ((int)diff == 0)
+        {
+            orcaice::setToNow( initialImageTime );
+        }              
+        
         if ( fmod((double)numImages++,(double)averageOver) == 0 )
         {
+            // calculate average delay
             avDiff = diff/averageOver;
             cout << "             avDiff: " << avDiff << " \n\n\n" << endl;
             diff = 0.0;
+            
+            // calculate throuput in Hz
+            orcaice::setToNow( finalImageTime );
+            totalTime = orcaice::timeDiffAsDouble( finalImageTime, initialImageTime );
+            cout << "Images are arriving at " << totalTime/averageOver << " Hz." << endl;
         }
 
         if (ret == 0)
