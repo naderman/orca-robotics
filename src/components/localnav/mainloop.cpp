@@ -104,14 +104,15 @@ MainLoop::run()
                 locBuffer_.get( localiseData_ );
                 odomBuffer_.get( odomData_ );
 
-                if ( areTimestampsDodgy( rangeData_, localiseData_, odomData_ ) )
+                const double THRESHOLD = 1.0; // seconds
+                if ( areTimestampsDodgy( rangeData_, localiseData_, odomData_, THRESHOLD ) )
                 {
                     stringstream ss;
-                    ss << "Timestamps are dodgy: " << endl
+                    ss << "Timestamps are more than "<<THRESHOLD<<"sec apart: " << endl
                        << "\t rangeData:    " << orcaice::toString(rangeData_->timeStamp) << endl
                        << "\t localiseData: " << orcaice::toString(localiseData_->timeStamp) << endl
                        << "\t odomData:     " << orcaice::toString(odomData_->timeStamp) << endl
-                       << "Stopping.";
+                       << "Maybe something is wrong: Stopping.";
                     context_.tracer()->error( ss.str() );
                     getStopCommand( velocityCmd_ );
                 }
@@ -185,12 +186,12 @@ MainLoop::checkWithOutsideWorld( PathMaintainer &pathMaintainer )
 bool
 MainLoop::areTimestampsDodgy( const orca::RangeScannerDataPtr &rangeData, 
                               const orca::Localise2dDataPtr   &localiseData, 
-                              const orca::Position2dDataPtr   &odomData )
+                              const orca::Position2dDataPtr   &odomData,
+                              double                           threshold )
 {
-    const double THRESHOLD = 1.0; // seconds
-    if ( fabs( orcaice::timeDiffAsDouble( rangeData->timeStamp, localiseData->timeStamp ) ) >= THRESHOLD )
+    if ( fabs( orcaice::timeDiffAsDouble( rangeData->timeStamp, localiseData->timeStamp ) ) >= threshold )
         return true;
-    if ( fabs( orcaice::timeDiffAsDouble( rangeData->timeStamp, odomData->timeStamp ) ) >= THRESHOLD )
+    if ( fabs( orcaice::timeDiffAsDouble( rangeData->timeStamp, odomData->timeStamp ) ) >= threshold )
         return true;
 
     return false;

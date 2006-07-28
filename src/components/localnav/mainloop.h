@@ -66,7 +66,8 @@ private:
     // Returns true if the timestamps differ by more than a threshold.
     bool areTimestampsDodgy( const orca::RangeScannerDataPtr &rangeData,
                              const orca::Localise2dDataPtr   &localiseData,
-                             const orca::Position2dDataPtr   &odomData );
+                             const orca::Position2dDataPtr   &odomData,
+                             double                           threshold );
 
     void maybeSendHeartbeat();
 
