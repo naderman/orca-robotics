@@ -28,16 +28,10 @@ IF ( NOT WIN32 AND BUILD_IMAGE_VIEWER )
         # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
         SET( COMMON_SRCS cameraconsumerI component imagehandler )
 
-        # Files for the stand-alone application
-        SET( COMP_SRCS main ${COMMON_SRCS} )
-        
-        # Files for the icebox service
-        SET( SERVICE_SRCS service ${COMMON_SRCS} )
-
-        GLOBAL_ADD_EXECUTABLE( imageviewer ${COMP_SRCS} )
+        GLOBAL_ADD_EXECUTABLE( imageviewer main ${COMMON_SRCS} )
 
         # build an IceBox service
-        ADD_LIBRARY( OrcaImageViewer SHARED ${SERVICE_SRCS} )
+        GLOBAL_ADD_LIBRARY( OrcaImageViewer SHARED service ${COMMON_SRCS} )
 
         IF ( TRICLOPS_FOUND )
           INCLUDE_DIRECTORIES( /usr/local/include/triclops )
@@ -52,9 +46,6 @@ IF ( NOT WIN32 AND BUILD_IMAGE_VIEWER )
           TARGET_LINK_LIBRARIES( OrcaImageViewer ${OPENCV7_LIBS} )
 
         ENDIF ( TRICLOPS_FOUND )
-
-
-        INSTALL_TARGETS( /lib OrcaImageViewer )
 
         GENERATE_CONFIG_FILE( imageviewer.def )
 

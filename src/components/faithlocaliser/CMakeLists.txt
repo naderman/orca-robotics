@@ -9,20 +9,12 @@ IF ( NOT WIN32 AND BUILD_FAITHLOCALISER )
     SET( COMMON_SRCS
         component mainloop localise2dI position2dconsumerI
     )
-
-    # Files for the component
-    SET( COMP_SRCS main  ${COMMON_SRCS} )
     
     # stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( faithlocaliser ${COMP_SRCS} )
-
-    # Files for the service
-    SET( SERV_SRCS  service ${COMMON_SRCS} )
+    GLOBAL_ADD_EXECUTABLE( faithlocaliser main ${COMMON_SRCS} )
     
     # build an IceBox service
-    ADD_LIBRARY( OrcaFaithLocaliser SHARED ${SERV_SRCS} )
-    
-    INSTALL_TARGETS( /lib OrcaFaithLocaliser )
+    GLOBAL_ADD_LIBRARY( OrcaFaithLocaliser SHARED service ${COMMON_SRCS} )
     
     GENERATE_CONFIG_FILE( faithlocaliser.def )
 

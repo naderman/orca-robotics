@@ -8,7 +8,7 @@
  *
  */
 
-#include "serviceI.h"
+#include "service.h"
 #include "component.h"
 
 using namespace std;

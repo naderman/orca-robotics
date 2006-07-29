@@ -24,21 +24,13 @@ IF ( BUILD_PATHPLANNER AND QT4_FOUND )
     )
 
     ADD_DEFINITIONS( ${QT_DEFINITIONS} )
-   
-    # Files for the component
-    SET( COMP_SRCS main  ${COMMON_SRCS} )
     
     # stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( pathplanner ${COMP_SRCS} )
+    GLOBAL_ADD_EXECUTABLE( pathplanner main ${COMMON_SRCS} )
     TARGET_LINK_LIBRARIES( pathplanner OrcaOgMap OrcaPathPlan OrcaMisc  ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
     
-    # Files for the service
-    SET( SERV_SRCS  service ${COMMON_SRCS} )
-    
     # build an IceBox service
-    ADD_LIBRARY( OrcaPathPlanner SHARED ${SERV_SRCS} )
-    
-    INSTALL_TARGETS( /lib OrcaPathPlanner )
+    GLOBAL_ADD_LIBRARY( OrcaPathPlanner SHARED service ${COMMON_SRCS} )
 
     GENERATE_CONFIG_FILE( pathplanner.def )
 

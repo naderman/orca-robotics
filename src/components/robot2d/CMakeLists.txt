@@ -46,23 +46,14 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
 
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
     SET( COMMON_SRCS component nethandler hwhandler platform2dI powerI fakedriver )
-
-    # Files for the component
-    SET( COMP_SRCS main  ${COMMON_SRCS} )    
     
     # build a stand-alone component
-    GLOBAL_ADD_EXECUTABLE( robot2d ${COMP_SRCS} )
+    GLOBAL_ADD_EXECUTABLE( robot2d main ${COMMON_SRCS} )
     TARGET_LINK_LIBRARIES( robot2d ${SEGWAY_RMP_USB_LIBS} ${PLAYERCLIENT_LIBS} )
     
-    
-    # Files for the service
-    SET( SERV_SRCS  service  ${COMMON_SRCS} )
-    
     # build an IceBox service
-    ADD_LIBRARY( OrcaRobot2d SHARED ${SERV_SRCS} )
+    GLOBAL_ADD_LIBRARY( OrcaRobot2d SHARED service ${COMMON_SRCS} )
     TARGET_LINK_LIBRARIES( OrcaRobot2d ${SEGWAY_RMP_USB_LIBS} ${PLAYERCLIENT_LIBS} )
-    
-    INSTALL_TARGETS( /lib OrcaRobot2d )
     
     GENERATE_CONFIG_FILE( robot2d.def )
 

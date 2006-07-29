@@ -28,23 +28,15 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
     SET( COMMON_SRCS
         component mainloop localise2dI staticdriver
     )
-
-    # Files for the component
-    SET( COMP_SRCS main  ${COMMON_SRCS} )
     
     # stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( simlocaliser ${COMP_SRCS} )
+    GLOBAL_ADD_EXECUTABLE( simlocaliser main ${COMMON_SRCS} )
     
     TARGET_LINK_LIBRARIES( simlocaliser ${STAGE_LIBS} )
-
-    # Files for the service
-    SET( SERV_SRCS service ${COMMON_SRCS} )
     
     # build an IceBox service
-    ADD_LIBRARY( OrcaSimLocaliser SHARED ${SERV_SRCS} )
+    GLOBAL_ADD_LIBRARY( OrcaSimLocaliser SHARED service ${COMMON_SRCS} )
     TARGET_LINK_LIBRARIES( OrcaSimLocaliser ${STAGE_LIBS} )
-    
-    INSTALL_TARGETS( /lib OrcaSimLocaliser )
     
     GENERATE_CONFIG_FILE( simlocaliser.def )
 

@@ -68,16 +68,10 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
   # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
   SET( COMMON_SRCS cameraI camerautil component conversions mainloop ${DRIVER_SRCS} )
 
-  # Files for the stand-alone application
-  SET( COMP_SRCS main ${COMMON_SRCS} )
-  
-  # Files for the icebox service
-  SET( SERVICE_SRCS service ${COMMON_SRCS} )
-
-  GLOBAL_ADD_EXECUTABLE( imageserver ${COMP_SRCS} )
+  GLOBAL_ADD_EXECUTABLE( imageserver main ${COMMON_SRCS} )
 
   # build an IceBox service
-  ADD_LIBRARY( OrcaImageServer SHARED ${SERVICE_SRCS} )
+  GLOBAL_ADD_LIBRARY( OrcaImageServer SHARED service ${COMMON_SRCS} )
 
   #
   # includes and linking for the various grabbing libraries
@@ -102,12 +96,6 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
     TARGET_LINK_LIBRARIES( imageserver ${OPENCV7_LIBS} digiclops triclops OrcaImageGrabber )
     TARGET_LINK_LIBRARIES( OrcaImageServer ${OPENCV7_LIBS} digiclops triclops OrcaImageGrabber )
   ENDIF ( OPENCV7_FOUND AND DIGICLOPS_AND_TRICLOPS_FOUND )
-
-  #
-  # misc
-  #
-
-  INSTALL_TARGETS( /lib OrcaImageServer )
   
   # test image for the fake driver to send
   INSTALL_PROGRAMS(/images penguin.jpg)

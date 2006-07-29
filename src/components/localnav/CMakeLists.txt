@@ -20,20 +20,14 @@ IF ( NOT WIN32 AND BUILD_LOCALNAV )
 
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
     SET( COMMON_SRCS component goalwatcher localnavdriver localnavmanager mainloop pathfollower2dI pathmaintainer )
-    
-    # Files for the stand-alone application
-    SET( COMP_SRCS main ${COMMON_SRCS} )
-    
-    # Files for the icebox service
-    SET( SERVICE_SRCS serviceI ${COMMON_SRCS} )
 
     # build a stand-alone component
-    GLOBAL_ADD_EXECUTABLE( localnav ${COMP_SRCS} )
+    GLOBAL_ADD_EXECUTABLE( localnav main ${COMMON_SRCS} )
     TARGET_LINK_LIBRARIES( localnav vfhdriver OrcaNavUtil )
 
     # build an IceBox service
-    ADD_LIBRARY( OrcaLocalNav SHARED ${SERVICE_SRCS} )
-    INSTALL_TARGETS( /lib OrcaLocalNav )
+    GLOBAL_ADD_LIBRARY( OrcaLocalNav SHARED service ${COMMON_SRCS} )
+
     # important to let linker know about this inter-library dependency
     # otherwise IceBox fails to load the service
     TARGET_LINK_LIBRARIES( OrcaLocalNav vfhdriver OrcaNavUtil )

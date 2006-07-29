@@ -13,19 +13,11 @@ IF ( NOT WIN32 AND BUILD_LASERFEATUREEXTRACTOR )
             polarfeature2dI laserconsumerI
     )
     
-    # Files for the component
-    SET( COMP_SRCS main ${COMMON_SRCS} )
-    
     # stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( laserfeatureextractor ${COMP_SRCS} )
-    
-    # Files for the service
-    SET( SERV_SRCS  service ${COMMON_SRCS} )
+    GLOBAL_ADD_EXECUTABLE( laserfeatureextractor main ${COMMON_SRCS} )
     
     # build an IceBox service
-    ADD_LIBRARY( OrcaLaserFeatureExtractor SHARED ${SERV_SRCS} )
-    
-    INSTALL_TARGETS( /lib OrcaLaserFeatureExtractor )
+    GLOBAL_ADD_LIBRARY( OrcaLaserFeatureExtractor SHARED service ${COMMON_SRCS} )
 
     GENERATE_CONFIG_FILE( laserfeatureextractor.def )
 
