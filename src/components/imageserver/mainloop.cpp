@@ -81,9 +81,9 @@ MainLoop::run()
                         //  Only need to do this once.
                         if( driverName_ != "fake")
                         {
-                            cameraData->imageWidth = imageGrabber_->getWidth();
-                            cameraData->imageHeight = imageGrabber_->getHeight();
-                            cameraData->image.resize( imageGrabber_->getSize() );
+                            cameraData->imageWidth = imageGrabber_->width();
+                            cameraData->imageHeight = imageGrabber_->height();
+                            cameraData->image.resize( imageGrabber_->size() );
                             if( desiredConfig->format == BAYERBG | desiredConfig->format == BAYERGB | desiredConfig->format == BAYERRG | desiredConfig->format == BAYERGR ) 
                             {
                                 // force the format to be bayer
@@ -100,7 +100,7 @@ MainLoop::run()
                             else
                             {
                                 // let the grabber figure out the format if no bayer encoding or not using a digiclops camera
-                                cameraData->format = orcaImageMode( imageGrabber_->getMode() );
+                                cameraData->format = orcaImageMode( imageGrabber_->mode() );
                                 // include this in camera config 
                                 desiredConfig->format = cameraData->format;
                             }
@@ -108,7 +108,7 @@ MainLoop::run()
                             // Setup the rest of camera config 
                             desiredConfig->imageWidth = cameraData->imageWidth;
                             desiredConfig->imageHeight = cameraData->imageHeight;
-                            desiredConfig->frameRate = imageGrabber_->getFps();
+                            desiredConfig->frameRate = imageGrabber_->fps();
                         }
                        
                         context_.tracer()->print( "Automatic config has the following settings: " + orcaice::toString( desiredConfig ) );
