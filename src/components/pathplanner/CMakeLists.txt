@@ -13,10 +13,10 @@ IF ( BUILD_PATHPLANNER AND QT4_FOUND )
             astardriver
             component
             fakedriver
+            simplenavdriver
             skeletongraphicsI
             skeletondriver
             pathplanner2dI
-            gridpotentialdriver
     )
 
     INCLUDE_DIRECTORIES(

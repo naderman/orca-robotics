@@ -16,7 +16,7 @@
 #include "pathplanner2dI.h"
 #include "skeletongraphicsI.h"
 #include "fakedriver.h"
-#include "gridpotentialdriver.h"
+#include "simplenavdriver.h"
 #include "astardriver.h"
 #include "skeletondriver.h"
 
@@ -116,7 +116,7 @@ AlgoHandler::initDriver()
     if ( driverName == "simplenav" )
     {
         context_.tracer()->debug( "loading simplenav driver",3);
-        driver_ = new GridPotentialDriver( config );
+        driver_ = new SimpleNavDriver( config );
     }
     else if ( driverName == "skeletonnav" )
     {

@@ -17,7 +17,7 @@
 #include <orcapathplan/orcapathplan.h>
 #include <orcamisc/orcamisc.h>
 
-#include "gridpotentialdriver.h"
+#include "simplenavdriver.h"
 
 using namespace std;
 using namespace orcaogmap;
@@ -25,16 +25,16 @@ using namespace orcapathplan;
 
 namespace pathplanner {
 
-bool GridPotentialDriver::areAllWaypointsInMap(const orca::PathPlanner2dDataPtr  & pathDataPtr)
+bool SimpleNavDriver::areAllWaypointsInMap(const orca::PathPlanner2dDataPtr  & pathDataPtr)
 {
     // Check whether startCell is within map
     if ( !ogMap_.coordsWithinMap( startWp_.target.p.x, startWp_.target.p.y) )
     {
         pathDataPtr->result = orca::PathStartNotValid;
-        cout << "ERROR(gridpotentialdriver.cpp): Start waypoint outside map. Returning..." << endl;
+        cout << "ERROR(simplenavdriver.cpp): Start waypoint outside map. Returning..." << endl;
         return false;
     }
-    cout << "INFO(gridpotentialdriver.cpp): Start waypoint is within map" << endl;
+    cout << "INFO(simplenavdriver.cpp): Start waypoint is within map" << endl;
 
     // Check whether coarse path is within map
     for (unsigned int i=0; i<coarsePath_.size(); i++)
@@ -42,17 +42,17 @@ bool GridPotentialDriver::areAllWaypointsInMap(const orca::PathPlanner2dDataPtr 
         if ( !ogMap_.coordsWithinMap( coarsePath_[i].target.p.x, coarsePath_[i].target.p.y) )
         {
             pathDataPtr->result = orca::PathDestinationNotValid;
-            cout << "ERROR(gridpotentialdriver.cpp): Goal waypoint " << i << " is outside map. Returning..." << endl;
+            cout << "ERROR(simplenavdriver.cpp): Goal waypoint " << i << " is outside map. Returning..." << endl;
             return false;
         }
     }
-    cout << "INFO(gridpotentialdriver.cpp): Goals path is within map" << endl;
+    cout << "INFO(simplenavdriver.cpp): Goals path is within map" << endl;
 
     return true;
 }
 
 Cell2D 
-GridPotentialDriver::getStartCell()
+SimpleNavDriver::getStartCell()
 {
     int cellX, cellY;
     ogMap_.getCellIndices( startWp_.target.p.x, startWp_.target.p.y, cellX, cellY ); 
@@ -60,7 +60,7 @@ GridPotentialDriver::getStartCell()
 }
 
 Cell2D 
-GridPotentialDriver::getGoalCell( unsigned int i)
+SimpleNavDriver::getGoalCell( unsigned int i)
 {
     assert( coarsePath_.size() > i );
     int cellX, cellY;
@@ -68,7 +68,7 @@ GridPotentialDriver::getGoalCell( unsigned int i)
     return Cell2D( cellX, cellY ); 
 }
 
-void GridPotentialDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
+void SimpleNavDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
                                        const orca::PathPlanner2dTaskPtr  & taskPtr,
                                        const orca::PathPlanner2dDataPtr  & pathDataPtr )
 {
@@ -95,7 +95,7 @@ void GridPotentialDriver::computePath( const orca::OgMapDataPtr          & ogMap
         Cell2D goalCell = getGoalCell( i );
         
         // ============ Compute navigation function ========= 
-        cout << "INFO(gridpotentialdriver.cpp): Starting to calculate navigation function" << endl;
+        cout << "INFO(simplenavdriver.cpp): Starting to calculate navigation function" << endl;
 
         watch.start();
         success = calcSimpleNavigation( ogMap_, navMap, startCell, config_ );
@@ -104,7 +104,7 @@ void GridPotentialDriver::computePath( const orca::OgMapDataPtr          & ogMap
 
         if ( !success )
         {
-            cout << "ERROR(gridpotentialdriver.cpp): Navigation function could not be computed" << endl;
+            cout << "ERROR(simplenavdriver.cpp): Navigation function could not be computed" << endl;
             pathDataPtr->result = orca::OtherError;
             return;
         }
@@ -112,7 +112,7 @@ void GridPotentialDriver::computePath( const orca::OgMapDataPtr          & ogMap
 
         // =========== Compute path ========================
         Cell2DVector path;
-        cout << "INFO(gridpotentialdriver.cpp): Calculating path now" << endl;
+        cout << "INFO(simplenavdriver.cpp): Calculating path now" << endl;
         watch.start();
         Result result = orcapathplan::calcPath( ogMap_, navMap, goalCell, path, config_.robotDiameterMetres );
         watch.stop();
@@ -120,7 +120,7 @@ void GridPotentialDriver::computePath( const orca::OgMapDataPtr          & ogMap
 
         if ( result!=PathOk )
         {
-            cout << "ERROR(gridpotentialdriver.cpp): Path could not be computed" << endl;
+            cout << "ERROR(simplenavdriver.cpp): Path could not be computed" << endl;
             // this will set the result flag accordingly but won't touch the path
             orcapathplan::convert( result, pathDataPtr );
             return;
@@ -131,7 +131,7 @@ void GridPotentialDriver::computePath( const orca::OgMapDataPtr          & ogMap
         if ( config_.doPathOptimization )
         {
             // separate full path into a optimized short path
-            cout << "INFO(gridpotentialdriver.cpp): Optimizing path now" << endl;
+            cout << "INFO(simplenavdriver.cpp): Optimizing path now" << endl;
             Cell2DVector waycells;    
             watch.start();        
             optimizePath( ogMap_, path, waycells, config_.robotDiameterMetres );

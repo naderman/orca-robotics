@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_PATHPLANNER_GRIDPOTENTIAL_ALGORITHM_DRIVER_H
-#define ORCA2_PATHPLANNER_GRIDPOTENTIAL_ALGORITHM_DRIVER_H
+#ifndef ORCA2_PATHPLANNER_SIMPLENAVDRIVER_H
+#define ORCA2_PATHPLANNER_SIMPLENAVDRIVER_H
 
 #include "algodriver.h"
 
@@ -21,14 +21,11 @@
 namespace pathplanner
 {
 
-//
-// The 'simplenav' driver.
-//
-class GridPotentialDriver : public AlgoDriver 
+class SimpleNavDriver : public AlgoDriver 
 {
 
 public:
-    GridPotentialDriver( const orcapathplan::Config & config )
+    SimpleNavDriver( const orcapathplan::Config & config )
         : config_(config)
         {}
     
@@ -51,14 +48,6 @@ private:
     // Converts goal cell i from world to cell coordinate system
     orcapathplan::Cell2D getGoalCell( unsigned int i);
 
-    // Local member function which calls all the library functions used to compute the navigation function using the skeleton method
-//     bool calcSkeletonNavigationLocal( orcapathplan::FloatMap & navMap,
-//                                       orcapathplan::FloatMap & distGrid,
-//                                       orcapathplan::Cell2DVector skel,
-//                                       orcapathplan::Cell2D & startCell );
-
-    // Displays the skeleton in the GUI
-//     void displaySkeleton( orcapathplan::Cell2DVector & skel );
 };
 
 } // namespace
