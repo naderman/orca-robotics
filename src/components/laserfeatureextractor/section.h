@@ -46,8 +46,8 @@ class Section
   bool isNextCon;
 
   bool isALine;
-  double A;
-  double B;
+  double eigVectX;
+  double eigVectY;
   double C;
 
   std::vector<SectionEl> elements;

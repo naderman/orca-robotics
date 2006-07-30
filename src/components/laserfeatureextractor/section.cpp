@@ -18,8 +18,8 @@ Section::Section()
 	isNextCon = false;
 
 	isALine = false;
-	A = 0.0;
-	B = 0.0;
+	eigVectX = 0.0;
+	eigVectY = 0.0;
 	C = 0.0;
 
 	elements.clear();
