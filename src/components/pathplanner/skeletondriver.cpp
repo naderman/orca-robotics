@@ -13,6 +13,7 @@ SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
     : skelGraphicsI_(skelGraphicsI)
 {
     convert( ogMapDataPtr, ogMap_ );
+    cout<<"TRACE(skeletondriver.cpp): TODO: Deal with exceptions!!!" << endl;
     pathPlanner_ = new orcapathplan::SkeletonPathPlanner( ogMap_, robotDiameterMetres, traversabilityThreshhold );
 
     // Send the skeleton to the gui for debug reasons
@@ -48,7 +49,7 @@ SkeletonDriver::computePath( const orca::OgMapDataPtr         &ogMapDataPtr,
                              const orca::PathPlanner2dTaskPtr &taskPtr,
                              const orca::PathPlanner2dDataPtr &pathDataPtr )
 {
-    cout<<"TRACE(skeletondriver.cpp): Write me!" << endl;
+    cout<<"TRACE(skeletondriver.cpp): TODO: Deal with exceptions!!!" << endl;
 
     // for each waypoint in the coarse path:
     orca::Path2d &coarsePath = taskPtr->coarsePath;
@@ -62,6 +63,7 @@ SkeletonDriver::computePath( const orca::OgMapDataPtr         &ogMapDataPtr,
                                    goalWp->target.p.x,
                                    goalWp->target.p.y,
                                    pathSegment );
+
         // ====== Convert to an Orca object in global coordinate system. =====
         // ====== Will append latest path to the total pathDataPtr. ==========
         // ====== Not all data fields are filled in (e.g.tolerances) =========
