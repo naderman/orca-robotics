@@ -52,13 +52,13 @@ private:
     orcapathplan::Cell2D getGoalCell( unsigned int i);
 
     // Local member function which calls all the library functions used to compute the navigation function using the skeleton method
-    bool calcSkeletonNavigationLocal( orcapathplan::FloatMap & navMap,
-                                      orcapathplan::FloatMap & distGrid,
-                                      orcapathplan::Cell2DVector skel,
-                                      orcapathplan::Cell2D & startCell );
+//     bool calcSkeletonNavigationLocal( orcapathplan::FloatMap & navMap,
+//                                       orcapathplan::FloatMap & distGrid,
+//                                       orcapathplan::Cell2DVector skel,
+//                                       orcapathplan::Cell2D & startCell );
 
     // Displays the skeleton in the GUI
-    void displaySkeleton( orcapathplan::Cell2DVector & skel );
+//     void displaySkeleton( orcapathplan::Cell2DVector & skel );
 };
 
 } // namespace
