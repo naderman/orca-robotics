@@ -13,7 +13,6 @@
 #include <iostream>
 
 #include <orcaice/orcaice.h>
-#include "skeletongraphicsI.h"
 
 #include <orcapathplan/orcapathplan.h>
 #include <orcamisc/orcamisc.h>
@@ -101,7 +100,7 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
     
     // instantiate AStar class
     const bool allowDiagonal = true;
-    const double obstacleWeight = 254.0 * config_.traversabilityTreshhold;
+    const double obstacleWeight = 254.0 * config_.traversabilityThreshhold;
     assert( ogMap_.metresPerCellX() == ogMap_.metresPerCellY() );
     AStar* aStar = new AStar( ogMapDoubles, ogMap_.numCellsX(), ogMap_.numCellsY(), ogMap_.metresPerCellX(), allowDiagonal, obstacleWeight );     
     // ==============================================

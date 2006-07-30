@@ -14,6 +14,7 @@ IF ( BUILD_PATHPLANNER AND QT4_FOUND )
             component
             fakedriver
             skeletongraphicsI
+            skeletondriver
             pathplanner2dI
             gridpotentialdriver
     )

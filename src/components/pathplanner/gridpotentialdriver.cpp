@@ -13,7 +13,6 @@
 #include <iostream>
 
 #include <orcaice/orcaice.h>
-#include "skeletongraphicsI.h"
 
 #include <orcapathplan/orcapathplan.h>
 #include <orcamisc/orcamisc.h>
@@ -37,7 +36,7 @@ bool GridPotentialDriver::areAllWaypointsInMap(const orca::PathPlanner2dDataPtr 
     }
     cout << "INFO(gridpotentialdriver.cpp): Start waypoint is within map" << endl;
 
-    // Check whether course path is within map
+    // Check whether coarse path is within map
     for (unsigned int i=0; i<coarsePath_.size(); i++)
     {
         if ( !ogMap_.coordsWithinMap( coarsePath_[i].target.p.x, coarsePath_[i].target.p.y) )
@@ -69,49 +68,6 @@ GridPotentialDriver::getGoalCell( unsigned int i)
     return Cell2D( cellX, cellY ); 
 }
 
-void
-GridPotentialDriver::displaySkeleton( Cell2DVector & skel )
-{
-    Point2dVector skelWorld;
-
-    for (unsigned int i=0; i<skel.size(); i++)
-    {
-        float worldX, worldY;
-        ogMap_.getWorldCoords( skel[i].x(), skel[i].y(), worldX, worldY );
-        Point2d worldPoint( worldX, worldY );
-        skelWorld.push_back( worldPoint );
-    }
-
-    skelGraphicsI_->localSetData( skelWorld );
-}
-
-bool 
-GridPotentialDriver::calcSkeletonNavigationLocal( FloatMap & navMap, FloatMap & distGrid, Cell2DVector skel, Cell2D & startCell )
-{
-    orcamisc::CpuStopwatch watch;
-
-    // Connect start cell to skeleton
-    if ( !connectCell2Skeleton( skel, startCell, navMap, distGrid, robotDiameterInCells(ogMap_, config_.robotDiameterMetres) ) ) return false;
-    
-    // Display skeleton
-    displaySkeleton( skel );
-
-    // Compute potential function U along the skeleton
-    watch.start();
-    if( !computePotentialSkeleton( ogMap_, navMap, skel, startCell ) ) return false;
-    watch.stop();
-    cout << "skeleton2SkeletonUtil took " << watch.elapsedSeconds() << " s" << endl << endl;
-
-    // Compute potential function U in the free space
-    watch.start();
-    computePotentialFreeSpace( ogMap_, navMap, skel, config_  );
-    watch.stop();
-    cout << "skeletonUtil2FreeSpaceUtil took " << watch.elapsedSeconds() << " s" << endl << endl;
-
-    return true;
-}
-
-
 void GridPotentialDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
                                        const orca::PathPlanner2dTaskPtr  & taskPtr,
                                        const orca::PathPlanner2dDataPtr  & pathDataPtr )
@@ -130,20 +86,8 @@ void GridPotentialDriver::computePath( const orca::OgMapDataPtr          & ogMap
     // initialize variables
     FloatMap navMap;
     bool success;
-    Cell2DVector skel;
     FloatMap distGrid;
     Cell2D startCell = getStartCell(); 
-
-    // if skeleton is used compute once
-    if (useSkeleton_)
-    {
-        watch.start();
-        computeSkeleton( ogMap_, navMap, skel, distGrid, config_ );
-        watch.stop();
-        cout << "computeSkeleton took " << watch.elapsedSeconds() << " s" << endl << endl;
-    }
-    // store the computed navMap for later
-    FloatMap navMapSkel = navMap;     
 
     // for each waypoint in the coarse path we need to compute the navigation fct and the path
     for (unsigned int i=0; i<coarsePath_.size(); i++)
@@ -154,16 +98,7 @@ void GridPotentialDriver::computePath( const orca::OgMapDataPtr          & ogMap
         cout << "INFO(gridpotentialdriver.cpp): Starting to calculate navigation function" << endl;
 
         watch.start();
-        if (useSkeleton_)
-        {
-            //need to get the original navMap back initialized during computeSkeleton
-            if (i>0) navMap = navMapSkel;
-            success = calcSkeletonNavigationLocal( navMap, distGrid, skel, startCell );
-        }
-        else
-        {
-            success = calcSimpleNavigation( ogMap_, navMap, startCell, config_ );
-        }
+        success = calcSimpleNavigation( ogMap_, navMap, startCell, config_ );
         watch.stop();
         cout << "calculating navigation fct took (" << i << ") took: " << watch.elapsedSeconds() << " s" << endl << endl;
 
@@ -179,7 +114,7 @@ void GridPotentialDriver::computePath( const orca::OgMapDataPtr          & ogMap
         Cell2DVector path;
         cout << "INFO(gridpotentialdriver.cpp): Calculating path now" << endl;
         watch.start();
-        Result result = orcapathplan::calcPath( ogMap_, navMap, goalCell, path, config_ );
+        Result result = orcapathplan::calcPath( ogMap_, navMap, goalCell, path, config_.robotDiameterMetres );
         watch.stop();
         cout << "calcPath took (" << i << ") took: " << watch.elapsedSeconds() << " s" << endl << endl;
 

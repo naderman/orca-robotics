@@ -16,31 +16,25 @@
 
 #include <orcapathplan/pathplanutils.h>
 
-#include "skeletongraphicsI.h"
-
 namespace pathplanner
 {
 
+//
+// Base-class for path-planning drivers
+//
 class AlgoDriver 
 {
 
 public:
-    AlgoDriver( const orcapathplan::Config & config, SkeletonGraphicsI* skelGraphicsI, const bool useSkeleton=false )
-        : config_(config),
-          skelGraphicsI_(skelGraphicsI),
-          useSkeleton_(useSkeleton) {};
 
     virtual ~AlgoDriver() {};
     
     // Computes the path
-    virtual void computePath(    const orca::OgMapDataPtr          & ogMapDataPtr,
+    virtual void computePath(    const orca::OgMapDataPtr         & ogMapDataPtr,
                                 const orca::PathPlanner2dTaskPtr  & taskPtr,
                                 const orca::PathPlanner2dDataPtr  & pathDataPtr ) = 0;
 
 protected:
-    orcapathplan::Config config_;
-    SkeletonGraphicsI* skelGraphicsI_;
-    bool useSkeleton_;
 
 };
 

@@ -26,14 +26,18 @@ class AStarDriver : public AlgoDriver
 {
 
 public:
-    AStarDriver( const orcapathplan::Config & config, SkeletonGraphicsI* skelGraphicsI, bool useSkeleton )
-        : AlgoDriver( config, skelGraphicsI, useSkeleton ) {};
+    AStarDriver( const orcapathplan::Config & config )
+        : config_(config)
+        {}
+//         : AlgoDriver( config, skelGraphicsI, useSkeleton ), {};
     
     // Computes the path
     virtual void computePath(   const orca::OgMapDataPtr          & ogMapDataPtr,
                                 const orca::PathPlanner2dTaskPtr  & taskPtr,
                                 const orca::PathPlanner2dDataPtr  & pathDataPtr );
 private:
+
+    orcapathplan::Config config_;
     orcaogmap::OgMap ogMap_;
     orca::Waypoint2d startWp_;
     orca::Path2d coarsePath_;

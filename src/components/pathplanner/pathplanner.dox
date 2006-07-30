@@ -44,8 +44,8 @@ The pathplanner acts like a service receiving tasks from third parties and retur
     - Valid values: { 'simplenav', 'skeletonnav', 'astar', 'fake' }
     - Default: 'simplenav'
 
-- @c PathPlanner.Config.TraversabilityTreshhold (double)
-    - Everything below this treshhold is considered traversable, everything above is an obstacle
+- @c PathPlanner.Config.TraversabilityThreshhold (double)
+    - Everything below this threshhold is considered traversable, everything above is an obstacle
     - Valid values: [0.0;1.0]
     - Default: 0.3
 

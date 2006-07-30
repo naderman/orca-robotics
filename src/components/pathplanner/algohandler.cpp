@@ -18,6 +18,7 @@
 #include "fakedriver.h"
 #include "gridpotentialdriver.h"
 #include "astardriver.h"
+#include "skeletondriver.h"
 
 using namespace std;
 using namespace orca;
@@ -106,7 +107,7 @@ AlgoHandler::initDriver()
 
     orcapathplan::Config config;
 
-    config.traversabilityTreshhold = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"TraversabilityTreshhold", 0.3 );
+    config.traversabilityThreshhold = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"TraversabilityThreshhold", 0.3 );
     config.robotDiameterMetres = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"RobotDiameterMetres", 0.8 );
     config.doPathOptimization = orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"DoPathOptimization", 0 );
 
@@ -115,22 +116,25 @@ AlgoHandler::initDriver()
     if ( driverName == "simplenav" )
     {
         context_.tracer()->debug( "loading simplenav driver",3);
-        driver_ = new GridPotentialDriver( config, graphicsI_, false );
+        driver_ = new GridPotentialDriver( config );
     }
     else if ( driverName == "skeletonnav" )
     {
         context_.tracer()->debug( "loading skeletonnav driver",3);
-        driver_ = new GridPotentialDriver( config, graphicsI_, true );
+        driver_ = new SkeletonDriver( ogMapDataPtr_,
+                                      graphicsI_,
+                                      config.robotDiameterMetres,
+                                      config.traversabilityThreshhold );
     }
     else if ( driverName == "astar" )
     {
         context_.tracer()->debug( "loading astar driver",3);
-        driver_ = new AStarDriver( config, graphicsI_, true );
+        driver_ = new AStarDriver( config );
     }
     else if ( driverName == "fake" )
     {
         context_.tracer()->debug( "loading fake driver",3);
-        driver_ = new FakeDriver( config, graphicsI_ );
+        driver_ = new FakeDriver( config );
     }
     else {
         string errorStr = "Unknown driver type.";

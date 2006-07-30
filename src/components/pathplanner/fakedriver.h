@@ -21,8 +21,7 @@ class FakeDriver : public AlgoDriver
 
 public:
 
-    FakeDriver( const orcapathplan::Config & config, SkeletonGraphicsI* skelGraphicsI )
-        : AlgoDriver( config, skelGraphicsI ) 
+    FakeDriver( const orcapathplan::Config & config )
     { };
 
     // Computes the path

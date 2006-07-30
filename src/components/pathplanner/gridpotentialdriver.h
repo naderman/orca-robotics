@@ -18,22 +18,27 @@
 
 #include <orcaogmap/orcaogmap.h>
 
-
 namespace pathplanner
 {
 
+//
+// The 'simplenav' driver.
+//
 class GridPotentialDriver : public AlgoDriver 
 {
 
 public:
-    GridPotentialDriver( const orcapathplan::Config & config, SkeletonGraphicsI* skelGraphicsI, bool useSkeleton )
-        : AlgoDriver( config, skelGraphicsI, useSkeleton ) {};
+    GridPotentialDriver( const orcapathplan::Config & config )
+        : config_(config)
+        {}
     
     // Computes the path
     virtual void computePath(   const orca::OgMapDataPtr          & ogMapDataPtr,
                                 const orca::PathPlanner2dTaskPtr  & taskPtr,
                                 const orca::PathPlanner2dDataPtr  & pathDataPtr );
 private:
+
+    orcapathplan::Config config_;
     orcaogmap::OgMap ogMap_;
     orca::Waypoint2d startWp_;
     orca::Path2d coarsePath_;
@@ -47,7 +52,10 @@ private:
     orcapathplan::Cell2D getGoalCell( unsigned int i);
 
     // Local member function which calls all the library functions used to compute the navigation function using the skeleton method
-    bool calcSkeletonNavigationLocal( orcapathplan::FloatMap & navMap, orcapathplan::FloatMap & distGrid,  orcapathplan::Cell2DVector skel, orcapathplan::Cell2D & startCell );
+    bool calcSkeletonNavigationLocal( orcapathplan::FloatMap & navMap,
+                                      orcapathplan::FloatMap & distGrid,
+                                      orcapathplan::Cell2DVector skel,
+                                      orcapathplan::Cell2D & startCell );
 
     // Displays the skeleton in the GUI
     void displaySkeleton( orcapathplan::Cell2DVector & skel );

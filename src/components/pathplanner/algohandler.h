@@ -44,12 +44,10 @@ private:
     orca::OgMapPrx ogMapPrx_;
     orca::OgMapDataPtr ogMapDataPtr_;
 
-//     Ice::ObjectPtr pathPlanner2dObj_;
     PathPlanner2dI* pathPlannerI_;
     SkeletonGraphicsI* graphicsI_;
     orcaice::PtrProxy<orca::PathPlanner2dTaskPtr>* pathPlannerTaskProxy_;
     orcaice::PtrProxy<orca::PathPlanner2dDataPtr>* pathPlannerDataProxy_;
-//     orcaice::PtrProxy<orca::QGraphics2dPtr>* graphicsProxy_;
     
     void initNetwork();
     void initDriver();

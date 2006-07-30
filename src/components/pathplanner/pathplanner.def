@@ -12,7 +12,7 @@ Requires.OgMap.Type=OgMap
 Requires.OgMap.DefaultProxy=ogmap@local/ogmaploader
 
 # Config Parameters
-Config.Driver.Default=simplenav
-Config.TraversabilityTreshhold.Default=0.3
+Config.Driver.Default=skeletonnav
+Config.TraversabilityThreshhold.Default=0.3
 Config.RobotDiameterMetres.Default=0.8
 Config.DoPathOptimization.Default=0
