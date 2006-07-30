@@ -76,7 +76,7 @@ Component::start()
         theMap->metresPerCellX = worldSizeX / (float)theMap->numCellsX;
         theMap->metresPerCellY = worldSizeY / (float)theMap->numCellsY;
 
-        cout<<"TRACE(component.cpp): Loaded map: " << theMap << endl;
+        cout<<"TRACE(component.cpp): Loaded map: " << orcaice::toString(theMap) << endl;
     }
     else
     {
