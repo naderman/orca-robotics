@@ -171,7 +171,7 @@ AlgoHandler::run()
             int ret = pathPlannerTaskProxy_->getNext( taskPtr, 1000 );
             if ( ret!=0 )
             {
-                context_.tracer()->info("waiting for a new task");      
+                // context_.tracer()->info("waiting for a new task");      
             }
             else
             {

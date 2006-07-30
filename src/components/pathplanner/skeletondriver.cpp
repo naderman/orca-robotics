@@ -1,5 +1,7 @@
 #include "skeletondriver.h"
 #include <orcapathplan/orcapathplan.h>
+#include <orcamisc/orcamisc.h>
+#include <orcapathplan/sparseskel.h>
 #include <iostream>
 
 using namespace std;
@@ -13,11 +15,19 @@ SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
     : skelGraphicsI_(skelGraphicsI)
 {
     convert( ogMapDataPtr, ogMap_ );
-    cout<<"TRACE(skeletondriver.cpp): TODO: Deal with exceptions!!!" << endl;
+
+    orcamisc::CpuStopwatch watch(true);
     pathPlanner_ = new orcapathplan::SkeletonPathPlanner( ogMap_, robotDiameterMetres, traversabilityThreshhold );
+    cout<<"TRACE(skeletondriver.cpp): Creating skeleton took " << watch.elapsedSeconds() << "s" << endl;
 
     // Send the skeleton to the gui for debug reasons
     displaySkeleton( pathPlanner_->skeleton() );
+
+#if 0
+    orcapathplan::SparseSkel sparseSkel( pathPlanner_->navMapSkel(),
+                                         pathPlanner_->skeleton(),
+                                         pathPlanner_->distGrid() );
+#endif
 }
 
 SkeletonDriver::~SkeletonDriver()
@@ -49,8 +59,6 @@ SkeletonDriver::computePath( const orca::OgMapDataPtr         &ogMapDataPtr,
                              const orca::PathPlanner2dTaskPtr &taskPtr,
                              const orca::PathPlanner2dDataPtr &pathDataPtr )
 {
-    cout<<"TRACE(skeletondriver.cpp): TODO: Deal with exceptions!!!" << endl;
-
     // for each waypoint in the coarse path:
     orca::Path2d &coarsePath = taskPtr->coarsePath;
     orca::Waypoint2d *startWp = &(taskPtr->start);
@@ -58,11 +66,14 @@ SkeletonDriver::computePath( const orca::OgMapDataPtr         &ogMapDataPtr,
     {
         orca::Waypoint2d *goalWp = &(coarsePath[i]);
         orcapathplan::Cell2DVector pathSegment;
+
+        orcamisc::CpuStopwatch watch(true);
         pathPlanner_->computePath( startWp->target.p.x,
                                    startWp->target.p.y,
                                    goalWp->target.p.x,
                                    goalWp->target.p.y,
                                    pathSegment );
+        cout<<"TRACE(skeletondriver.cpp): computing path segment took " << watch.elapsedSeconds() << "s" << endl;
 
         // ====== Convert to an Orca object in global coordinate system. =====
         // ====== Will append latest path to the total pathDataPtr. ==========
