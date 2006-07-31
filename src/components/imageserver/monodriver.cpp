@@ -81,7 +81,7 @@ MonoDriver::read( orca::CameraDataPtr &data )
         memcpy( &data->image[0], rawImage, data->image.size() );
 
         data->compression = orca::COMPRESSIONTYPENONE;
-
+        
         return 0;
     }
 }
