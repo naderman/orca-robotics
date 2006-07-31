@@ -87,6 +87,15 @@ automatically finds the type of camera. If you have any troubles with not being 
 NOTE: NOT VERY FUNCTIONAL YET. Will grab images (a digiclops STEREO_IMAGE only at the moment).
 
 Drives a digiclops camera, directly connected to the computer. 
+
+@par Operation
+
+Ice has a default maximum object size that can be communicated between components of 1024 bytes. The digiclops camera will exceed this limit so you must add in the following extra configuration line to both the @c imageserver.cfg and @c icebox_icestorm.cfg files:
+
+@verbatim
+...
+Ice.MessageSizeMax=3000
+@endverbatim
   
 <br>
 
@@ -130,6 +139,21 @@ We then have to create two devices (if they haven't been created already): raw13
 Make sure you have read/write permissions to /dev/video1394 and /dev/raw1394
 
 @b Coriander: Also see <a href="http://damien.douxchamps.net/ieee1394/coriander/index.php">coriander's</a> manual pages if you still have troubles.
+
+@par Ice is throwing an exception
+
+@verbatim
+IceUtil::Thread::run(): uncaught exception: TcpTransceiver.cpp:217: Ice::ConnectionLostException:
+connection lost: recv() returned zero
+@endverbatim
+
+Ice has a default maximum object size that can be communicated between components of 1024 bytes. If the images from the camera exceed this limit you must add in the following extra configuration line to @b both the @c imageserver.cfg and @c icebox_icestorm.cfg files:
+
+@verbatim
+...
+Ice.MessageSizeMax=3000
+@endverbatim
+
 
 @par Performance
 
