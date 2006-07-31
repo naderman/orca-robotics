@@ -16,12 +16,21 @@ SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
 {
     convert( ogMapDataPtr, ogMap_ );
 
-    orcamisc::CpuStopwatch watch(true);
-    pathPlanner_ = new orcapathplan::SkeletonPathPlanner( ogMap_, robotDiameterMetres, traversabilityThreshhold );
-    cout<<"TRACE(skeletondriver.cpp): Creating skeleton took " << watch.elapsedSeconds() << "s" << endl;
+//     orcamisc::CpuStopwatch watch(true);
+    
+    try
+    {
+        pathPlanner_ = new orcapathplan::SkeletonPathPlanner( ogMap_, robotDiameterMetres, traversabilityThreshhold );
+        // Send the skeleton to the gui for debug reasons
+        displaySkeleton( pathPlanner_->skeleton() );
+    }
+    catch ( orcapathplan::Exception &e )
+    {
+        cout << e.what() << endl;
+    }
+    
+//     cout<<"TRACE(skeletondriver.cpp): Creating skeleton took " << watch.elapsedSeconds() << "s" << endl;
 
-    // Send the skeleton to the gui for debug reasons
-    displaySkeleton( pathPlanner_->skeleton() );
 
 #if 0
     orcapathplan::SparseSkel sparseSkel( pathPlanner_->navMapSkel(),
@@ -67,13 +76,15 @@ SkeletonDriver::computePath( const orca::OgMapDataPtr         &ogMapDataPtr,
         orca::Waypoint2d *goalWp = &(coarsePath[i]);
         orcapathplan::Cell2DVector pathSegment;
 
-        orcamisc::CpuStopwatch watch(true);
+        //orcamisc::CpuStopwatch watch(true);
+        
+        assert(pathPlanner_!=0);
         pathPlanner_->computePath( startWp->target.p.x,
                                    startWp->target.p.y,
                                    goalWp->target.p.x,
                                    goalWp->target.p.y,
                                    pathSegment );
-        cout<<"TRACE(skeletondriver.cpp): computing path segment took " << watch.elapsedSeconds() << "s" << endl;
+        //cout<<"TRACE(skeletondriver.cpp): computing path segment took " << watch.elapsedSeconds() << "s" << endl;
 
         // ====== Convert to an Orca object in global coordinate system. =====
         // ====== Will append latest path to the total pathDataPtr. ==========
