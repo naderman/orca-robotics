@@ -83,7 +83,6 @@ MainLoop::run()
                         {
                             cameraData->imageWidth = imageGrabber_->width();
                             cameraData->imageHeight = imageGrabber_->height();
-                            cameraData->image.resize( imageGrabber_->size() );
                             if( desiredConfig->format == BAYERBG | desiredConfig->format == BAYERGB | desiredConfig->format == BAYERRG | desiredConfig->format == BAYERGR ) 
                             {
                                 // force the format to be bayer
@@ -104,6 +103,7 @@ MainLoop::run()
                                 // include this in camera config 
                                 desiredConfig->format = cameraData->format;
                             }
+                            cameraData->image.resize( imageGrabber_->size() );
 
                             // Setup the rest of camera config 
                             desiredConfig->imageWidth = cameraData->imageWidth;
