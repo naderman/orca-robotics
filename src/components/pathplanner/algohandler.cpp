@@ -77,6 +77,8 @@ AlgoHandler::initNetwork()
     // two possible exceptions will kill it here, that's what we want
     orcaice::createInterfaceWithTag( context_, pathPlannerObj, "PathPlanner2d" );
 
+    // TODO: no need to instantiate for non-skeleton driver.
+
     // QGraphics2d
     graphicsI_ = new SkeletonGraphicsI( context_, "SkeletonGraphics" );
     Ice::ObjectPtr graphicsObj = graphicsI_;

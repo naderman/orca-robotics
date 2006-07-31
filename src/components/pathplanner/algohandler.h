@@ -42,6 +42,8 @@ private:
     AlgoDriver* driver_;
 
     orca::OgMapPrx ogMapPrx_;
+
+    // TODO: no need to keep as member
     orca::OgMapDataPtr ogMapDataPtr_;
 
     PathPlanner2dI* pathPlannerI_;
