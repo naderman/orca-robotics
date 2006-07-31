@@ -49,8 +49,8 @@ Sorca = [ ...
 2006    1   22  0   Sice301 2511    9801+9695-2511;   % 2.0.0-rc2
 2006    2   20  0   Sice301 2998    9867+14734-2998;  % 2.0.0-rc3
 2006    3   29  0   Sice301 5250    14625+18131-5250; % 2.0.0-rc4
-2006    6   11  0   Sice301 4985    19999+24867-4985; % 2.0.0-rc5
-2006    7   15  1   Sice310 5029    20040+21291-5029  % 2.0.0
+2006    6   11  0   Sice310 4985    19999+24867-4985; % 2.0.0-rc5
+2006    8   9   1   Sice310 5086    19979+21711-5086  % 2.0.0
 ];
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
     '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0' }';
@@ -141,9 +141,9 @@ set(ht,'fontsize',8)
 datetick( 'x', 12 )
 hp = plot( Tplayer, -Splayer(:,ibase)/1e3, 'k--o', Tplayer, Splayer(:,icomp)/1e3, 'k--o' );
 set(hp, 'color', .5*[1 1 1] )
-hpt = text( Tplayer(2), -Splayer(2,ibase)/1e3-8, 'Player "base"');
+hpt = text( Tplayer(2), -Splayer(2,ibase)/1e3-8, 'Player "middleware"');
 set(hpt, 'color', .5*[1 1 1] )
-hpt = text( Tplayer(2), Splayer(2,icomp)/1e3-5, 'Player "components"');
+hpt = text( Tplayer(2), Splayer(2,icomp)/1e3-5, 'Player "components+utils"');
 set(hpt, 'color', .5*[1 1 1] )
 %mark('y', Dasn(1,1)/1e3 );
 %text( datenum([2003 5 1]), Dasn(1,1)/1e3, 'ASN')
