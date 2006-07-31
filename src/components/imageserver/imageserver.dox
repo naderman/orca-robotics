@@ -154,6 +154,8 @@ Ice has a default maximum object size that can be communicated between component
 Ice.MessageSizeMax=3000
 @endverbatim
 
+Remember to add this line to all configuration files that will be communicating images. So if you're logging or replaying a log you will have to add this line to @c logger.cfg and @c logplayer.cfg as well.
+
 
 @par Performance
 
