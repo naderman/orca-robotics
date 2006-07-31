@@ -22,9 +22,6 @@ IF ( NOT WIN32 AND BUILD_IMAGE_VIEWER )
           MESSAGE("    The Triclops libraries have not been found - you will not be able to view images from a digiclops camera")
         ENDIF ( TRICLOPS_FOUND )
 
-        # don't include parts of component.cpp
-        # CONFIGURE_FILE( configimageviewer.h.cmake ${PROJECT_SOURCE_DIR}/src/components/imageviewer/configimageviewer.h )
-        
         INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/utils )
 
         # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
@@ -36,19 +33,9 @@ IF ( NOT WIN32 AND BUILD_IMAGE_VIEWER )
         # build an IceBox service
         GLOBAL_ADD_LIBRARY( OrcaImageViewer SHARED service ${COMMON_SRCS} )
 
-#         IF ( TRICLOPS_FOUND )
-#           INCLUDE_DIRECTORIES( /usr/local/include/triclops )
-#           TARGET_LINK_LIBRARIES( imageviewer ${OPENCV7_LIBS} triclops OrcaImage)
-# 
-#           # important to let linker know about this inter-library dependency
-#           # otherwise IceBox fails to load the service
-#           TARGET_LINK_LIBRARIES( OrcaImageViewer ${OPENCV7_LIBS} triclops pnmutils OrcaImage)
-# 
-#         ELSE (TRICLOPS_FOUND )
-          TARGET_LINK_LIBRARIES( imageviewer ${OPENCV7_LIBS} OrcaImage)
-          TARGET_LINK_LIBRARIES( OrcaImageViewer ${OPENCV7_LIBS} OrcaImage)
-
-#        ENDIF ( TRICLOPS_FOUND )
+        # link libraries
+        TARGET_LINK_LIBRARIES( imageviewer ${OPENCV7_LIBS} OrcaImage)
+        TARGET_LINK_LIBRARIES( OrcaImageViewer ${OPENCV7_LIBS} OrcaImage)
 
         GENERATE_CONFIG_FILE( imageviewer.def )
 
