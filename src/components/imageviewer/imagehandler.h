@@ -19,7 +19,6 @@
 #include <opencv/highgui.h>
 #include <opencv/cv.h>
 
-
 namespace imageviewer{
 
 //class AlgorithmDriver;
@@ -54,9 +53,12 @@ private:
     orcaice::Context context_;
 
     IplImage* cvImage_;
+    IplImage* cvImageTmp_;
     IplImage* bayerImage_;
 
     void init();
+    // setup opencv struct and window for display
+    void initCvImage();
 };
 
 } // namespace
