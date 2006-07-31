@@ -171,7 +171,6 @@ This code has @b not been optimised and there are surely areas that can be fixed
 
 - The imagegrabber sublibrary should accept a camera index for specifying the particular camera to use on the firewire bus. At the moment the first camera found is used. 
 - Digiclops grabber is in its very early stages and much of the functionality in the digiclops and triclops libraries haven't been implemented yet.
-- Convert from yuv colour space to rgb and bgr
 
 @par Authors
 
