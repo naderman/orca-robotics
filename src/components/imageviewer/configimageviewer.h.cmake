@@ -1,1 +1,0 @@
-#cmakedefine TRICLOPS_FOUND
