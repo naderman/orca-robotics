@@ -9,6 +9,7 @@
  */
 
 #include "conversions.h"
+#include <orcaimage/imageutils.h>
 
 namespace imageserver {
 
@@ -38,7 +39,8 @@ orca::ImageFormat orcaImageMode( int mode )
     case MODE_1600x1200_MONO:
         return orca::MODEGRAY;
     default:
-        cout << "WARNING(conversions.cpp): Unknown colour mode." << endl;
+        orca::ImageFormat format = orca::MODENFI;
+        cout << "WARNING(conversions.cpp): Unknown colour mode: " << orcaimage::formatName( format ) << endl;
         return orca::MODENFI;
     }
 

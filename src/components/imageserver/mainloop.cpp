@@ -81,8 +81,17 @@ MainLoop::run()
                         //  Only need to do this once.
                         if( driverName_ != "fake")
                         {
-                            cameraData->imageWidth = imageGrabber_->width();
-                            cameraData->imageHeight = imageGrabber_->height();
+                            if ( desiredConfig->imageWidth == 0 | desiredConfig->imageHeight == 0 )
+                            {
+                                cameraData->imageWidth = imageGrabber_->width();
+                                cameraData->imageHeight = imageGrabber_->height();
+                            }
+                            else
+                            {
+                                cameraData->imageWidth = desiredConfig->imageWidth;
+                                cameraData->imageHeight = desiredConfig->imageHeight;
+                            }                                                                             
+                            
                             if( desiredConfig->format == BAYERBG | desiredConfig->format == BAYERGB | desiredConfig->format == BAYERRG | desiredConfig->format == BAYERGR ) 
                             {
                                 // force the format to be bayer
