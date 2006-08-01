@@ -67,8 +67,6 @@ This algorithm is described in Latombe, "Robot Motion Planning", sec. 4.2.1. It 
 @section orca_pathplanner_skeletonnav Skeleton navigation
 This algorithm is described in Latombe, "Robot Motion Planning", sec. 4.2.2. It computes an improved numverical navigation function by first extracting a skeleton.
 
-Warning: currently only works if edges of world are occupied.
-
 @section orca_pathplanner_pathoptimization Path optimization algorithm
 This algorithm takes a fine-grained path and tries to find shortcuts by raytracing between waypoints. If no obstacle is in the way it will discard all the waypoints in between. The path it computes contains much fewer waypoints than the original path. A negative side-effect is that the path gets close to the walls but the local navigation should take care of this.
 
@@ -89,7 +87,6 @@ Bibtex reference to the LaTombe book which contains the gridpotential-based algo
 @endverbatim
 
 @par To Do
-Skeleton: make work for open worlds, speed up search through skeleton list
 
 @par Authors
 Tobias Kaupp
