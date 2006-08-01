@@ -3,7 +3,7 @@
 
 #include "algodriver.h"
 #include "skeletongraphicsI.h"
-#include <orcapathplan/skeletonpathplanner.h>
+#include <orcapathplan/ipathplanner2d.h>
 #include <orca/ogmap.h>
 #include <orcaogmap/orcaogmap.h>
 
@@ -33,9 +33,9 @@ public:
 
 private: 
 
-    SkeletonGraphicsI                 *skelGraphicsI_;
-    orcaogmap::OgMap                   ogMap_;
-    orcapathplan::SkeletonPathPlanner *pathPlanner_;
+    SkeletonGraphicsI             *skelGraphicsI_;
+    orcaogmap::OgMap               ogMap_;
+    orcapathplan::IPathPlanner2d  *pathPlanner_;
 
 };
 

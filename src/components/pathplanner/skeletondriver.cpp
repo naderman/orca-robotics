@@ -1,5 +1,7 @@
 #include "skeletondriver.h"
 #include <orcapathplan/orcapathplan.h>
+#include <orcapathplan/skeletonpathplanner.h>
+#include <orcapathplan/sparseskeletonpathplanner.h>
 #include <orcamisc/orcamisc.h>
 #include <orcapathplan/sparseskel.h>
 #include <iostream>
@@ -14,22 +16,36 @@ SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
                                 double traversabilityThreshhold )
     : skelGraphicsI_(skelGraphicsI)
 {
+    cout<<"TRACE(skeletondriver.cpp): SkeletonDriver()" << endl;
     convert( ogMapDataPtr, ogMap_ );
 
-//     orcamisc::CpuStopwatch watch(true);
-    
-    pathPlanner_ = new orcapathplan::SkeletonPathPlanner( ogMap_, robotDiameterMetres, traversabilityThreshhold );
-    
-//     cout<<"TRACE(skeletondriver.cpp): Creating skeleton took " << watch.elapsedSeconds() << "s" << endl;
+    orcamisc::CpuStopwatch watch(true);
+    bool useSparse = true;
+    if ( !useSparse )
+    {
+        orcapathplan::SkeletonPathPlanner *skelPathPlanner = 
+            new orcapathplan::SkeletonPathPlanner( ogMap_,
+                                                   robotDiameterMetres,
+                                                   traversabilityThreshhold );
+        pathPlanner_ = skelPathPlanner;
+        skelGraphicsI_->localSetSkel( ogMap_, &(skelPathPlanner->skeleton()) );
+    }
+    else
+    {
+        orcapathplan::SparseSkeletonPathPlanner *skelPathPlanner = 
+            new orcapathplan::SparseSkeletonPathPlanner( ogMap_,
+                                                         robotDiameterMetres,
+                                                         traversabilityThreshhold );
+        pathPlanner_ = skelPathPlanner;
+//         skelGraphicsI_->localSetSkel( ogMap_,
+//                                       NULL,
+//                                       &(skelPathPlanner->sparseSkel()) );
 
-    // WARNING: not actually used yet...
-    orcapathplan::SparseSkel sparseSkel( pathPlanner_->navMapSkel(),
-                                         pathPlanner_->skeleton(),
-                                         pathPlanner_->distGrid() );
-
-    cout<<"TRACE(skeletondriver.cpp): DRAWING!" << endl;
-    // Send the skeleton to the gui for debug reasons
-    skelGraphicsI_->localSetSkel( ogMap_, pathPlanner_->skeleton(), &sparseSkel );
+        skelGraphicsI_->localSetSkel( ogMap_,
+                                      &(skelPathPlanner->denseSkel()),
+                                      &(skelPathPlanner->sparseSkel()) );
+    }
+    cout<<"TRACE(skeletondriver.cpp): Creating skeleton took " << watch.elapsedSeconds() << "s" << endl;
 }
 
 SkeletonDriver::~SkeletonDriver()
@@ -50,15 +66,14 @@ SkeletonDriver::computePath( const orca::OgMapDataPtr         &ogMapDataPtr,
         orca::Waypoint2d *goalWp = &(coarsePath[i]);
         orcapathplan::Cell2DVector pathSegment;
 
-        //orcamisc::CpuStopwatch watch(true);
-        
+        orcamisc::CpuStopwatch watch(true);
         assert(pathPlanner_!=0);
         pathPlanner_->computePath( startWp->target.p.x,
                                    startWp->target.p.y,
                                    goalWp->target.p.x,
                                    goalWp->target.p.y,
                                    pathSegment );
-        //cout<<"TRACE(skeletondriver.cpp): computing path segment took " << watch.elapsedSeconds() << "s" << endl;
+        cout<<"TRACE(skeletondriver.cpp): computing path segment took " << watch.elapsedSeconds() << "s" << endl;
 
         // ====== Convert to an Orca object in global coordinate system. =====
         // ====== Will append latest path to the total pathDataPtr. ==========

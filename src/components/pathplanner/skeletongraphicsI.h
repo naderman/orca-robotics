@@ -46,9 +46,9 @@ public:
                              const Ice::Current&);
 
     // Local calls:
-    // (Leave out the third arg to draw the dense skel only)
+    // Leave eith skell NULL and it won't be drawn.
     void localSetSkel( const orcaogmap::OgMap           &ogMap,
-                       const orcapathplan::Cell2DVector &skel,
+                       const orcapathplan::Cell2DVector *skel=NULL,
                        const orcapathplan::SparseSkel   *sparseSkel=NULL );
 
 private:

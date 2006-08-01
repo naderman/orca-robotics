@@ -71,7 +71,7 @@ SkeletonGraphicsI::drawSkel( const orcaogmap::OgMap           &ogMap,
 
     p.setPen( color );
     p.setBrush( color );
-    const double circleSize = 0.2;     // in m, should be constant pixel size?
+    const double circleSize = 0.1;     // in m, should be constant pixel size?
         
     for (unsigned int i=0; i<skel.size(); i++ )
     {
@@ -97,6 +97,11 @@ SkeletonGraphicsI::drawSparseSkel( const orcaogmap::OgMap           &ogMap,
                                    const orcapathplan::SparseSkel   &skel,
                                    QPainter                         &p )
 {
+    bool print = true;
+
+    if ( print )
+        cout<<"TRACE(skeletongraphicsI.cpp): Skeleton details:" << endl;
+
     QColor color = Qt::red;
     color.setAlpha( 128 );
 
@@ -116,6 +121,10 @@ SkeletonGraphicsI::drawSparseSkel( const orcaogmap::OgMap           &ogMap,
             ogMap.getWorldCoords( node->pos.x(), node->pos.y(), nodeX, nodeY );
             p.drawEllipse( QRectF( nodeX-circleSize, nodeY-circleSize, 2*circleSize, 2*circleSize ) );
 
+            if ( print )
+                cout<<"  Node at " << nodeX << ", " << nodeY << ":" << endl;
+                
+
             // draw arcs
             for ( uint k=0; k < node->arcs.size(); k++ )
             {
@@ -123,6 +132,9 @@ SkeletonGraphicsI::drawSparseSkel( const orcaogmap::OgMap           &ogMap,
                 float toX, toY;
                 ogMap.getWorldCoords( arc->toNode->pos.x(), arc->toNode->pos.y(), toX, toY );
                 p.drawLine( QLineF( nodeX, nodeY, toX, toY ) );
+
+                if ( print )
+                    cout << "    links to " << toX << ", " << toY << " with cost " << arc->cost*ogMap.metresPerCellX() << endl;
             }
         }
     }
@@ -130,7 +142,7 @@ SkeletonGraphicsI::drawSparseSkel( const orcaogmap::OgMap           &ogMap,
 
 void 
 SkeletonGraphicsI::localSetSkel( const orcaogmap::OgMap           &ogMap,
-                                 const orcapathplan::Cell2DVector &skel,
+                                 const orcapathplan::Cell2DVector *skel,
                                  const orcapathplan::SparseSkel   *sparseSkel )
 {
     //
@@ -142,7 +154,8 @@ SkeletonGraphicsI::localSetSkel( const orcaogmap::OgMap           &ogMap,
     QPainter p;
     p.begin( &qpic );
     {
-        drawSkel( ogMap, skel, p );
+        if ( skel != NULL )
+            drawSkel( ogMap, *skel, p );
         if ( sparseSkel != NULL )
             drawSparseSkel( ogMap, *sparseSkel, p );
     }
