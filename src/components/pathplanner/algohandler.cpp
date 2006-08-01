@@ -76,13 +76,6 @@ AlgoHandler::initNetwork()
     //pathPlanner2dObj_ = new PathPlanner2dI( *pathPlannerTaskProxy_, *pathPlannerDataProxy_ );
     // two possible exceptions will kill it here, that's what we want
     orcaice::createInterfaceWithTag( context_, pathPlannerObj, "PathPlanner2d" );
-
-    // TODO: no need to instantiate for non-skeleton driver.
-
-    // QGraphics2d
-    graphicsI_ = new SkeletonGraphicsI( context_, "SkeletonGraphics" );
-    Ice::ObjectPtr graphicsObj = graphicsI_;
-    orcaice::createInterfaceWithTag( context_, graphicsObj, "SkeletonGraphics" ); 
 }
 
 void
@@ -93,8 +86,6 @@ AlgoHandler::initDriver()
     try
     {
         ogMapDataPtr_ = ogMapPrx_->getData();
-        context_.tracer()->info( "Got OG map:");
-        cout << ogMapDataPtr_;
     }
     catch ( const orca::DataNotExistException & e )
     {
@@ -123,8 +114,14 @@ AlgoHandler::initDriver()
     else if ( driverName == "skeletonnav" )
     {
         context_.tracer()->debug( "loading skeletonnav driver",3);
+        
+        // QGraphics2d
+        SkeletonGraphicsI* graphicsI = new SkeletonGraphicsI( context_, "SkeletonGraphics" );
+        Ice::ObjectPtr graphicsObj = graphicsI;
+        orcaice::createInterfaceWithTag( context_, graphicsObj, "SkeletonGraphics" ); 
+        
         driver_ = new SkeletonDriver( ogMapDataPtr_,
-                                      graphicsI_,
+                                      graphicsI,
                                       config.robotDiameterMetres,
                                       config.traversabilityThreshhold );
     }
