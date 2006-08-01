@@ -106,22 +106,22 @@ SkeletonGraphicsI::drawSparseSkel( const orcaogmap::OgMap           &ogMap,
     
     for ( uint i=0; i < skel.contiguousSkels().size(); i++ )
     {
-        const std::vector<orcapathplan::SparseSkelNode> &nodes = skel.contiguousSkels()[i].nodes();
+        const std::vector<orcapathplan::SparseSkelNode*> &nodes = skel.contiguousSkels()[i]->nodes();
         for ( uint j=0; j < nodes.size(); j++ )
         {
-            const orcapathplan::SparseSkelNode &node = nodes[j];
+            const orcapathplan::SparseSkelNode *node = nodes[j];
             float nodeX, nodeY;
 
             // draw node
-            ogMap.getWorldCoords( node.pos.x(), node.pos.y(), nodeX, nodeY );
+            ogMap.getWorldCoords( node->pos.x(), node->pos.y(), nodeX, nodeY );
             p.drawEllipse( QRectF( nodeX-circleSize, nodeY-circleSize, 2*circleSize, 2*circleSize ) );
 
             // draw arcs
-            for ( uint k=0; k < node.arcs.size(); k++ )
+            for ( uint k=0; k < node->arcs.size(); k++ )
             {
-                const orcapathplan::SparseSkelArc &arc = node.arcs[k];
+                const orcapathplan::SparseSkelArc *arc = node->arcs[k];
                 float toX, toY;
-                ogMap.getWorldCoords( nodes[arc.toNodeI].pos.x(), nodes[arc.toNodeI].pos.y(), toX, toY );
+                ogMap.getWorldCoords( arc->toNode->pos.x(), arc->toNode->pos.y(), toX, toY );
                 p.drawLine( QLineF( nodeX, nodeY, toX, toY ) );
             }
         }

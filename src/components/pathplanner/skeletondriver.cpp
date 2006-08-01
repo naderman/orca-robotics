@@ -22,12 +22,14 @@ SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
     
 //     cout<<"TRACE(skeletondriver.cpp): Creating skeleton took " << watch.elapsedSeconds() << "s" << endl;
 
-//     orcapathplan::SparseSkel sparseSkel( pathPlanner_->navMapSkel(),
-//                                          pathPlanner_->skeleton(),
-//                                          pathPlanner_->distGrid() );
+    // WARNING: not actually used yet...
+    orcapathplan::SparseSkel sparseSkel( pathPlanner_->navMapSkel(),
+                                         pathPlanner_->skeleton(),
+                                         pathPlanner_->distGrid() );
 
+    cout<<"TRACE(skeletondriver.cpp): DRAWING!" << endl;
     // Send the skeleton to the gui for debug reasons
-//    skelGraphicsI_->localSetSkel( ogMap_, pathPlanner_->skeleton(), &sparseSkel );
+    skelGraphicsI_->localSetSkel( ogMap_, pathPlanner_->skeleton(), &sparseSkel );
 }
 
 SkeletonDriver::~SkeletonDriver()
