@@ -10,7 +10,6 @@
 #include "skeletongraphicsI.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <qpainter.h>
 #include <qpicture.h>
 
 using namespace std;
@@ -63,42 +62,90 @@ SkeletonGraphicsI::unsubscribe(const ::QGraphics2dConsumerPrx& subscriber,
 
 
 void 
-SkeletonGraphicsI::localSetData( const Point2dVector & skeletonWorld )
+SkeletonGraphicsI::drawSkel( const orcaogmap::OgMap           &ogMap,
+                             const orcapathplan::Cell2DVector &skel,
+                             QPainter                         &p )
+{
+    QColor color = Qt::darkCyan;
+    color.setAlpha( 128 );
+
+    p.setPen( color );
+    p.setBrush( color );
+    const double circleSize = 0.2;     // in m, should be constant pixel size?
+        
+    for (unsigned int i=0; i<skel.size(); i++ )
+    {
+        float worldX, worldY;
+        ogMap.getWorldCoords( skel[i].x(),
+                              skel[i].y(),
+                              worldX,
+                              worldY );
+        p.drawEllipse( QRectF( worldX-circleSize, worldY-circleSize, 2*circleSize, 2*circleSize ) );
+    }
+
+//======== This should work but doesn't for some reason ==================
+//         QPointF qpointArray[skel.size()];
+//         for (unsigned int i=0; i<skel.size(); i++ )
+//         {
+//             qpointArray[i] = QPointF( skeletonWorld[i].x(), skeletonWorld[i].y() );
+//         }
+//         p.drawPolyline( &qpointArray[0], size );
+}
+
+void 
+SkeletonGraphicsI::drawSparseSkel( const orcaogmap::OgMap           &ogMap,
+                                   const orcapathplan::SparseSkel   &skel,
+                                   QPainter                         &p )
+{
+    QColor color = Qt::red;
+    color.setAlpha( 128 );
+
+    p.setPen( color );
+    p.setBrush( color );
+    const double circleSize = 0.3;     // in m, should be constant pixel size?
+    
+    for ( uint i=0; i < skel.contiguousSkels().size(); i++ )
+    {
+        const std::vector<orcapathplan::SparseSkelNode> &nodes = skel.contiguousSkels()[i].nodes();
+        for ( uint j=0; j < nodes.size(); j++ )
+        {
+            const orcapathplan::SparseSkelNode &node = nodes[j];
+            float nodeX, nodeY;
+
+            // draw node
+            ogMap.getWorldCoords( node.pos.x(), node.pos.y(), nodeX, nodeY );
+            p.drawEllipse( QRectF( nodeX-circleSize, nodeY-circleSize, 2*circleSize, 2*circleSize ) );
+
+            // draw arcs
+            for ( uint k=0; k < node.arcs.size(); k++ )
+            {
+                const orcapathplan::SparseSkelArc &arc = node.arcs[k];
+                float toX, toY;
+                ogMap.getWorldCoords( nodes[arc.toNodeI].pos.x(), nodes[arc.toNodeI].pos.y(), toX, toY );
+                p.drawLine( QLineF( nodeX, nodeY, toX, toY ) );
+            }
+        }
+    }
+}
+
+void 
+SkeletonGraphicsI::localSetSkel( const orcaogmap::OgMap           &ogMap,
+                                 const orcapathplan::Cell2DVector &skel,
+                                 const orcapathplan::SparseSkel   *sparseSkel )
 {
     //
     // Set up the orca object
     //
 
     // First draw in a QPicture
-    QColor color = Qt::darkCyan;
-    color.setAlpha( 128 );
-
     QPicture qpic;
     QPainter p;
     p.begin( &qpic );
     {
-        // Painting code
-        p.setPen( color );
-        p.setBrush( color );
-        const double circleSize = 0.2;     // in m, should be constant pixel size?
-        
-        unsigned int size = skeletonWorld.size();       
-
-        for (unsigned int i=0; i<size; i++ )
-        {
-            p.drawEllipse(QRectF( skeletonWorld[i].x()-circleSize, skeletonWorld[i].y()-circleSize, 2*circleSize, 2*circleSize) );
-        }
-
-//======== This should work but doesn't for some reason ==================
-//         QPointF qpointArray[size];
-//         for (unsigned int i=0; i<size; i++ )
-//         {
-//             qpointArray[i] = QPointF( skeletonWorld[i].x(), skeletonWorld[i].y() );
-//         }
-//         p.drawPolyline( &qpointArray[0], size );
+        drawSkel( ogMap, skel, p );
+        if ( sparseSkel != NULL )
+            drawSparseSkel( ogMap, *sparseSkel, p );
     }
-
-
     p.end();
 
     // Then stick it in the orca object
@@ -109,8 +156,6 @@ SkeletonGraphicsI::localSetData( const Point2dVector & skeletonWorld )
 
     data->qpicture.resize( qpic.size() );
     memcpy( &(data->qpicture[0]), qpic.data(), qpic.size() );
-
-
 
     // Stick it in the buffer
     dataBuffer_.push( data );

@@ -18,49 +18,21 @@ SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
 
 //     orcamisc::CpuStopwatch watch(true);
     
-    try
-    {
-        pathPlanner_ = new orcapathplan::SkeletonPathPlanner( ogMap_, robotDiameterMetres, traversabilityThreshhold );
-        // Send the skeleton to the gui for debug reasons
-        displaySkeleton( pathPlanner_->skeleton() );
-    }
-    catch ( orcapathplan::Exception &e )
-    {
-        cout << e.what() << endl;
-    }
+    pathPlanner_ = new orcapathplan::SkeletonPathPlanner( ogMap_, robotDiameterMetres, traversabilityThreshhold );
     
 //     cout<<"TRACE(skeletondriver.cpp): Creating skeleton took " << watch.elapsedSeconds() << "s" << endl;
 
+//     orcapathplan::SparseSkel sparseSkel( pathPlanner_->navMapSkel(),
+//                                          pathPlanner_->skeleton(),
+//                                          pathPlanner_->distGrid() );
 
-#if 0
-    orcapathplan::SparseSkel sparseSkel( pathPlanner_->navMapSkel(),
-                                         pathPlanner_->skeleton(),
-                                         pathPlanner_->distGrid() );
-#endif
+    // Send the skeleton to the gui for debug reasons
+//    skelGraphicsI_->localSetSkel( ogMap_, pathPlanner_->skeleton(), &sparseSkel );
 }
 
 SkeletonDriver::~SkeletonDriver()
 {
     if ( pathPlanner_ ) delete pathPlanner_;
-}
-
-void
-SkeletonDriver::displaySkeleton( const orcapathplan::Cell2DVector &skeleton )
-{
-    Point2dVector skelWorld;
-
-    for (unsigned int i=0; i<skeleton.size(); i++)
-    {
-        float worldX, worldY;
-        ogMap_.getWorldCoords( skeleton[i].x(),
-                               skeleton[i].y(),
-                               worldX,
-                               worldY );
-        Point2d worldPoint( worldX, worldY );
-        skelWorld.push_back( worldPoint );
-    }
-
-    skelGraphicsI_->localSetData( skelWorld );
 }
 
 void 

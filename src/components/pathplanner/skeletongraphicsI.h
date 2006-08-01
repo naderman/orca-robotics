@@ -19,31 +19,14 @@
 #include <orca/qgraphics2d.h>
 
 #include <orcapathplan/cell2d.h>
-
+#include <orcapathplan/sparseskel.h>
 #include <orcaice/ptrbuffer.h>
 #include <orcaice/context.h>
-
+#include <qpainter.h>
 #include <vector>
 
 namespace pathplanner
 {
-
-class Point2d
-{
-public:
-    Point2d( float x, float y ) { x_=x; y_=y; };
-    ~Point2d() {};
-    float x() const { return x_; };
-    float y() const { return y_; };
-    void setX( float x ) { x_ = x; };
-    void setY( float y ) { y_ = y; };
-
-private:
-    float x_;
-    float y_;
-};
-
-typedef std::vector<Point2d> Point2dVector;
 
 class SkeletonGraphicsI : public orca::QGraphics2d
 {
@@ -63,10 +46,20 @@ public:
                              const Ice::Current&);
 
     // Local calls:
-    void localSetData( const Point2dVector & skeletonWorld );
+    // (Leave out the third arg to draw the dense skel only)
+    void localSetSkel( const orcaogmap::OgMap           &ogMap,
+                       const orcapathplan::Cell2DVector &skel,
+                       const orcapathplan::SparseSkel   *sparseSkel=NULL );
 
 private:
 
+    void drawSkel( const orcaogmap::OgMap           &ogMap,
+                   const orcapathplan::Cell2DVector &skel,
+                   QPainter                         &p );
+    void drawSparseSkel( const orcaogmap::OgMap           &ogMap,
+                         const orcapathplan::SparseSkel   &skel,
+                         QPainter                         &p );
+    
     orcaice::PtrBuffer<orca::QGraphics2dDataPtr> dataBuffer_;
 
     orca::QGraphics2dConsumerPrx    consumerPrx_;

@@ -33,8 +33,6 @@ public:
 
 private: 
 
-    void displaySkeleton( const orcapathplan::Cell2DVector &skeleton );
-
     SkeletonGraphicsI                 *skelGraphicsI_;
     orcaogmap::OgMap                   ogMap_;
     orcapathplan::SkeletonPathPlanner *pathPlanner_;
