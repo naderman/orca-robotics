@@ -113,7 +113,7 @@ void ImageHandler::run()
             // calculate throughput in Hz
             orcaice::setToNow( finalImageTime );
             totalTime = orcaice::timeDiffAsDouble( finalImageTime, initialImageTime );
-            cout << "TRACE(imagehandler.cpp): Images are arriving at " << totalTime/averageOver << " Hz." << endl << endl;
+            cout << "TRACE(imagehandler.cpp): Images are arriving at " << 1/(totalTime/averageOver) << " Hz." << endl << endl;
         }
 
         //end of timing performance **********************************
