@@ -17,7 +17,7 @@
 @defgroup orca_component_imageserver ImageServer
 @brief A hardware abstraction component for grabbing images from either a FireWire or USB camera
 
-WARNING: This component has been turned off by default. If you have the cvs version of opencv-0.9.7, you can turn this component back on by running ccmake and manually switching this component ON.
+WARNING: This component has been turned off by default. If you have the <a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank"> cvs version of opencv-0.9.7</a>, you can turn this component back on by running ccmake and manually switching this component ON.
 
 The reason for turning it off is that there is no way of checking that you have the cvs or release version of opencv. This component needs some of the functionality of the cvs version which is not available in the release.
 
@@ -70,77 +70,22 @@ Geometry
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
-<br>
+Other examples for @c imageserver, @c imageviewer, @c logger, @c logplayer can be found at @ref orca_component_imageserver_examples
 
-@section orca_camera_monoopencv Monocular OpenCv Camera driver
 
-Drives real camera hardware, directly connected to the computer. Uses
-<a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank">Opencv-0.9.7 from cvs</a>. See Dependencies below.
-
-A firewire camera or usb camera can be used. The opencv implementation
-automatically finds the type of camera. If you have any troubles with not being able to grab images with a firewire camera, it may be the dc1394 libraries playing up. Try typing @c sudo @c renew_1394 at a prompt and trying the running the component again. Also you could check that <a href="http://damien.douxchamps.net/ieee1394/coriander/index.php">coriander</a> works. 
-
-<br>
-
-@section orca_camera_digiclops Trinocular Digiclops Camera driver
-
-NOTE: NOT VERY FUNCTIONAL YET. Will grab images (a digiclops STEREO_IMAGE only at the moment).
-
-Drives a digiclops camera, directly connected to the computer. 
-
-@par Operation
-
-Ice has a default maximum object size that can be communicated between components of 1024 bytes. The digiclops camera will exceed this limit so you must add in the following extra configuration line to both the @c imageserver.cfg and @c icebox_icestorm.cfg files:
-
-@verbatim
-...
-Ice.MessageSizeMax=3000
-@endverbatim
-  
 <br>
 
 @par Dependencies
 
-The @ref orca_camera_monoopencv requires that <a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank">Opencv-0.9.7 from cvs</a> is installed. The @b cvs @b version has
-a lot more functionality for image grabbing which we think is useful
-enough that the cvs version should be used rather than the release. 
+See @ref orca_camera_monoopencv_dependencies and @ref orca_camera_digiclops_dependencies for individual driver requirements. 
 
-Recent compilation problems with the cvs version of opencv have been discovered due to python-dev packages not being checked for by autoconf. If you are using Debian, please install the python2.3-dev package. For other operating systems, please check that you have the headers for python installed in a standard system directory.
+<br>
 
-The @ref orca_camera_digiclops requires that
-the digiclops and triclops libraries ( provided by the digiclops
-suppliers, <a href="http://www.ptgrey.com" target="_blank">Point
-Grey</a>) are installed either in @c
-/usr/lib or in @c /usr/local/lib. It also requires that the digiclops
-headers are in @c /usr/local/include/digiclops/ and similarly
-for the triclops libraries @c /usr/local/include/triclops/.
+@par Help and FAQ
 
-The easiest way to install these libraries and headers are to copy them from the original directory. This code has been tested with Digiclops version 2.3.1.4-FC3 and Triclops version 3.2.0.8-FC3 on a Debian installation.
+1. @ref orca_component_imageserver_firewire
 
-@par Firewire Help
-
-Note that some of this help has been taken from coriander's help pages. 
-
-@b Requirements: It is recommended that you have a linux kernel 2.6.11 or higher. You should enable 1394 support and select raw1394, ohci1394 (or pcilynx, depending on your card) and video1394 modules (for DMA, only works with OHCI cards). 
-
-To do this for a Debian based system type at a prompt:
-
-@c $ @c apt-get @c install @c liblibdc1394-13
-@c $ @c apt-get @c install @c liblibdc1394-13-dev
-
-Then attach your firewire camera and ensure that the raw1394, ohci1394, and video1394 modules have been loaded by typing:
-
-@c $ @c lsmod | grep 1394
-
-If they have been loaded, you're almost there. 
-
-We then have to create two devices (if they haven't been created already): raw1394 and video1394. raw1394 has major 171 and minor 0, while video1394 had major 171 and minor 16. If you use several interface cards you need one video1394 device per card. The standard way to do this is to create a video1394 directory (instead of a device), and create the first device (171,16), second device (171,17),... in that directory. The names for these devices is usually simply 0,1,2,...
-
-Make sure you have read/write permissions to /dev/video1394 and /dev/raw1394
-
-@b Coriander: Also see <a href="http://damien.douxchamps.net/ieee1394/coriander/index.php">coriander's</a> manual pages if you still have troubles.
-
-@par Ice is throwing an exception
+2. Ice is throwing the following exception
 
 @verbatim
 IceUtil::Thread::run(): uncaught exception: TcpTransceiver.cpp:217: Ice::ConnectionLostException:
@@ -156,6 +101,7 @@ Ice.MessageSizeMax=3000
 
 Remember to add this line to all configuration files that will be communicating images. So if you're logging or replaying a log you will have to add this line to @c logger.cfg and @c logplayer.cfg as well.
 
+<br>
 
 @par Performance
 
@@ -163,16 +109,25 @@ This code has @b not been optimised and there are surely areas that can be fixed
 
 - Delay = 30ms: The time for one image once it had been grabbed and before it was loaded as an orca object to the time just before the @c imageviewer displayed it on screen was on average 30ms.
    
-- Throughput = 30Hz: The number of images per second arriving at @c imageviewer was 30.
+- Throughput = 18Hz: The number of images per second arriving at @c imageviewer was 30.
 
 - CPU usage (@c imageserver) = 20%: Measured using @c top . The CPU usage of @c icestorm was 20%.
+
+The following performance figures were tested on a digiclops camera sending stereo images (an image from each camera):
+
+- Throughput = 0.5Hz at 1024x768 resolution and 6Hz at 512x384 resolution
+
+<br>
 
 @par Todo
 
 - The imagegrabber sublibrary should accept a camera index for specifying the particular camera to use on the firewire bus. At the moment the first camera found is used. 
 - Digiclops grabber is in its very early stages and much of the functionality in the digiclops and triclops libraries haven't been implemented yet.
 
+<br>
+
 @par Authors
+
 
 Ben Upcroft
 

@@ -1,0 +1,46 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Ben Upcroft
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@page orca_camera_digiclops Trinocular Digiclops Camera driver
+
+NOTE: NOT VERY FUNCTIONAL YET. Will grab images (a digiclops STEREO_IMAGE only at the moment).
+
+Drives a digiclops camera, directly connected to the computer. 
+
+<br>
+
+@section orca_camera_digiclops_dependencies Digiclops Camera dependencies
+
+The @ref orca_camera_digiclops requires that
+the digiclops and triclops libraries ( provided by the digiclops
+suppliers, <a href="http://www.ptgrey.com" target="_blank">Point
+Grey</a>) are installed either in @c
+/usr/lib or in @c /usr/local/lib. It also requires that the digiclops
+headers are in @c /usr/local/include/digiclops/ and similarly
+for the triclops libraries @c /usr/local/include/triclops/.
+
+The easiest way to install these libraries and headers are to copy them from the original directory. This code has been tested with Digiclops version 2.3.1.4-FC3 and Triclops version 3.2.0.8-FC3 on a Debian installation.
+
+@b Note: For viewing, logging, and playing back logs (using @c imageviewer, @c logger, and @c logplayer respectively) you will also need the <a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank"> cvs version of opencv-0.9.7</a>. Installation instructions can be found at @ref orca_camera_monoopencv .
+ 
+<br> 
+
+@section orca_camera_digiclops_operation Operation
+
+Ice has a default maximum object size that can be communicated between components of 1024 bytes. The digiclops camera will exceed this limit so you must add in the following extra configuration line to both the @c imageserver.cfg and @c icebox_icestorm.cfg files:
+
+@verbatim
+...
+Ice.MessageSizeMax=3000
+@endverbatim
+  
+*/
