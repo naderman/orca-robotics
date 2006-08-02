@@ -28,29 +28,29 @@ ibase=6;
 icomp=7;
 
 Sorca = [ ...
-% YY    MM  DD  ?   SUB     BASE     COMP             VERSION
+% YY    MM  DD  ?   SUB     BASE        COMP             VERSION
 % 0.8.6: a single distro, divide in halves arbitrarily
-2003    4   14  1   0       18930/2 18930/2;          % 0.8.6 (last change in doc/ChangeLog
+2003    4   14  1   0       18930/2     18930/2;          % 0.8.6 (last change in doc/ChangeLog
 % BASE: orca-base
 % COMP: orca-components
-2004    9   13  1   0       42543   21726;            % 0.11.0
-2004    11  16  1   0       8963    27310;            % 0.12.0
-2004    12  23  0   0       10596   31845;            % 0.12.1
-2005    3  16   1   0       13767   43576;            % 0.13.0
-2005    3  21   0   0       13620   45874;            % 0.13.1
-2005    4   4   0   0       15630   45944;            % 0.13.2
-2005    4   16  0   0       12283   46666;            % 0.13.3
-2005    5   9   1   0       14639   46837;            % 0.14.0
-2005    7   2   1   0       19751   49854;            % 0.15.0
-2005    10  11  1   0       20818   52408;            % 1.0.0
-% BASE: just orcaice; should include interfaces/slice but can't
+2004    9   13  1   0       42543       21726;            % 0.11.0
+2004    11  16  1   0       8963        27310;            % 0.12.0
+2004    12  23  0   0       10596       31845;            % 0.12.1
+2005    3  16   1   0       13767       43576;            % 0.13.0
+2005    3  21   0   0       13620       45874;            % 0.13.1
+2005    4   4   0   0       15630       45944;            % 0.13.2
+2005    4   16  0   0       12283       46666;            % 0.13.3
+2005    5   9   1   0       14639       46837;            % 0.14.0
+2005    7   2   1   0       19751       49854;            % 0.15.0
+2005    10  11  1   0       20818       52408;            % 1.0.0
+% BASE: just orcaice + interfaces/slice
 % COMP: comp + util - orcaice 
-2005    11  20  1   Sice212 2320    9226+8781-2320;   % 2.0.0-rc1
-2006    1   22  0   Sice301 2511    9801+9695-2511;   % 2.0.0-rc2
-2006    2   20  0   Sice301 2998    9867+14734-2998;  % 2.0.0-rc3
-2006    3   29  0   Sice301 5250    14625+18131-5250; % 2.0.0-rc4
-2006    6   11  0   Sice310 4985    19999+24867-4985; % 2.0.0-rc5
-2006    8   9   1   Sice310 5086    19979+21711-5086  % 2.0.0
+2005    11  20  1   Sice212 2320+530    9226+8781-2320;   % 2.0.0-rc1
+2006    1   22  0   Sice301 2511+596    9801+9695-2511;   % 2.0.0-rc2
+2006    2   20  0   Sice301 2998+813    9867+14734-2998;  % 2.0.0-rc3
+2006    3   29  0   Sice301 5250+1052   14625+18131-5250; % 2.0.0-rc4
+2006    6   11  0   Sice310 4985+1116   19999+24867-4985; % 2.0.0-rc5
+2006    8   9   1   Sice310 5086+1116   19979+21711-5086  % 2.0.0
 ];
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
     '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0' }';
@@ -124,7 +124,7 @@ set(ha(2),'facecolor',.85*[1 1 1]);
 set(ha(3),'facecolor',min(255,[255 153 0]+60)/255);
 set(ha(4),'facecolor',min(255,[51 102 255]+60)/255);
 ha(1)=[];
-legend(ha,'Ice middleware','libOrcaIce (orca-base)','components+utils (orca-components)', 'Location','NorthWest')
+legend(ha,'Ice middleware','Orca infrastructure','Orca components+utils', 'Location','NorthWest')
 %  xlim(datenum([2004;2005],[7;7],[1;1]) )
 ylim([-Smax 100])
 ax=axis;
@@ -141,7 +141,7 @@ set(ht,'fontsize',8)
 datetick( 'x', 12 )
 hp = plot( Tplayer, -Splayer(:,ibase)/1e3, 'k--o', Tplayer, Splayer(:,icomp)/1e3, 'k--o' );
 set(hp, 'color', .5*[1 1 1] )
-hpt = text( Tplayer(2), -Splayer(2,ibase)/1e3-8, 'Player "middleware"');
+hpt = text( Tplayer(2), -Splayer(2,ibase)/1e3-8, 'Player infrastructure');
 set(hpt, 'color', .5*[1 1 1] )
 hpt = text( Tplayer(2), Splayer(2,icomp)/1e3-5, 'Player "components+utils"');
 set(hpt, 'color', .5*[1 1 1] )
