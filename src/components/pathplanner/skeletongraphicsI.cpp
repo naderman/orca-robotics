@@ -96,7 +96,7 @@ SkeletonGraphicsI::drawSparseSkel( const orcaogmap::OgMap           &ogMap,
                                    const orcapathplan::SparseSkel   &skel,
                                    QPainter                         &p )
 {
-    bool print = true;
+    bool print = false;
 
     if ( print )
         cout<<"TRACE(skeletongraphicsI.cpp): Skeleton details:" << endl;

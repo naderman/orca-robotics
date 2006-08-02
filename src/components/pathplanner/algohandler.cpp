@@ -192,7 +192,7 @@ AlgoHandler::run()
         catch ( orcapathplan::Exception &e )
         {
             context_.tracer()->error( std::string("Couldn't compute path: ") + e.what() );
-            cout << "ERROR(algohandler.cpp): Toby, what to do here??" << endl;
+            cout << "ERROR(algohandler.cpp): TODO: AlexB: Toby, what to do here??" << endl;
             break;
         }
 
