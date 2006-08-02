@@ -110,8 +110,8 @@ interface QGraphics2dConsumer
 interface QGraphics2d
 {
    //! Returns the latest data.
-   nonmutating QGraphics2dData getData();
-
+   nonmutating QGraphics2dData getData()
+            throws DataNotExistException;
    /*!
     * Mimics IceStorm's subscribe() but without QoS, for now. The
     * implementation may choose to implement the data push internally

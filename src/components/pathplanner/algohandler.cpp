@@ -184,8 +184,17 @@ AlgoHandler::run()
         //
         
         // input: ogmap, task; output: path
-        context_.tracer()->info("telling driver to compute the path now");
-        driver_->computePath( ogMapDataPtr_, taskPtr, pathDataPtr );
+        try 
+        {
+            context_.tracer()->info("telling driver to compute the path now");
+            driver_->computePath( ogMapDataPtr_, taskPtr, pathDataPtr );
+        }
+        catch ( orcapathplan::Exception &e )
+        {
+            context_.tracer()->error( std::string("Couldn't compute path: ") + e.what() );
+            cout << "ERROR(algohandler.cpp): Toby, what to do here??" << endl;
+            break;
+        }
 
         //
         // ======= send result ===============
