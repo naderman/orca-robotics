@@ -76,11 +76,22 @@ SkeletonDriver::computePath( const orca::OgMapDataPtr         &ogMapDataPtr,
 
         orcamisc::CpuStopwatch watch(true);
         assert(pathPlanner_!=0);
-        pathPlanner_->computePath( startWp->target.p.x,
-                                   startWp->target.p.y,
-                                   goalWp->target.p.x,
-                                   goalWp->target.p.y,
-                                   pathSegment );
+        try {
+            pathPlanner_->computePath( startWp->target.p.x,
+                                       startWp->target.p.y,
+                                       goalWp->target.p.x,
+                                       goalWp->target.p.y,
+                                       pathSegment );
+        }
+        catch ( orcapathplan::Exception &e )
+        {
+            std::stringstream ss;
+            ss << "Error planning path segment from (" 
+               << startWp->target.p.x <<","<<startWp->target.p.y << ") to ("
+               << goalWp->target.p.x << ","<<goalWp->target.p.y<<"): "
+               << e.what();
+            throw orcapathplan::Exception( ss.str() );
+        }
         cout<<"TRACE(skeletondriver.cpp): computing path segment took " << watch.elapsedSeconds() << "s" << endl;
 
         // ====== Convert to an Orca object in global coordinate system. =====
