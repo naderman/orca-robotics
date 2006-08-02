@@ -11,7 +11,7 @@
 #include <iostream>
 #include <assert.h>
 #include <orcaice/orcaice.h>
-
+#include <orcamisc/orcamisc.h>
 #include "algohandler.h"
 #include "pathplanner2dI.h"
 #include "skeletongraphicsI.h"
@@ -106,39 +106,38 @@ AlgoHandler::initDriver()
 
     // based on the config parameter, create the right driver
     string driverName = orcaice::getPropertyWithDefault( context_.properties(), prefix+"Driver", "simplenav" );
+    context_.tracer()->debug( std::string("loading ")+driverName+" driver",3);
     if ( driverName == "simplenav" )
     {
-        context_.tracer()->debug( "loading simplenav driver",3);
         driver_ = new SimpleNavDriver( config );
     }
-    else if ( driverName == "skeletonnav" )
+    else if ( driverName == "skeletonnav" || driverName == "sparseskeletonnav" )
     {
-        context_.tracer()->debug( "loading skeletonnav driver",3);
-        
         // QGraphics2d
         SkeletonGraphicsI* graphicsI = new SkeletonGraphicsI( context_, "SkeletonGraphics" );
         Ice::ObjectPtr graphicsObj = graphicsI;
         orcaice::createInterfaceWithTag( context_, graphicsObj, "SkeletonGraphics" ); 
-        
+
+        bool useSparseSkeleton = (driverName == "sparseskeletonnav");
         driver_ = new SkeletonDriver( ogMapDataPtr_,
                                       graphicsI,
                                       config.robotDiameterMetres,
-                                      config.traversabilityThreshhold );
+                                      config.traversabilityThreshhold,
+                                      config.doPathOptimization,
+                                      useSparseSkeleton );
     }
     else if ( driverName == "astar" )
     {
-        context_.tracer()->debug( "loading astar driver",3);
         driver_ = new AStarDriver( config );
     }
     else if ( driverName == "fake" )
     {
-        context_.tracer()->debug( "loading fake driver",3);
         driver_ = new FakeDriver( config );
     }
     else {
         string errorStr = "Unknown driver type.";
         context_.tracer()->error( errorStr);
-        context_.tracer()->info( "Valid driver values are {'simplenav', 'skeletonnav', 'astar', 'fake'}" );
+        context_.tracer()->info( "Valid driver values are {'simplenav', 'skeletonnav', 'sparseskeletonnav', 'astar', 'fake'}" );
         throw orcaice::Exception( ERROR_INFO, errorStr );
     }
 
@@ -187,7 +186,9 @@ AlgoHandler::run()
         try 
         {
             context_.tracer()->info("telling driver to compute the path now");
+            // orcamisc::CpuStopwatch watch(true);
             driver_->computePath( ogMapDataPtr_, taskPtr, pathDataPtr );
+            // cout<<"TRACE(algohandler.cpp): time to compute path: " << watch.elapsedSeconds() << "s" << endl;
         }
         catch ( orcapathplan::Exception &e )
         {

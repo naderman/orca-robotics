@@ -34,15 +34,16 @@ The pathplanner acts like a service receiving tasks from third parties and retur
 
 - @b simplenav @ref orca_pathplanner_simplenav
 - @b skeletonnav @ref orca_pathplanner_skeletonnav
+- @b sparseskeletonnav @ref orca_pathplanner_sparseskeletonnav
 - @b astar @ref orca_pathplanner_astar
-- @b fake Useful for testing or if you don't have hardware or a simulator.
+- @b fake Useful for testing
 
 @par Configuration
 
 - @c PathPlanner.Config.Driver (string)
     - Type of algorithm driver
-    - Valid values: { 'simplenav', 'skeletonnav', 'astar', 'fake' }
-    - Default: 'simplenav'
+    - Valid values: { 'simplenav', 'skeletonnav', 'sparseskeletonnav', 'astar', 'fake' }
+    - Default: 'sparseskeletonnav'
 
 - @c PathPlanner.Config.TraversabilityThreshhold (double)
     - Everything below this threshhold is considered traversable, everything above is an obstacle
@@ -61,21 +62,69 @@ The pathplanner acts like a service receiving tasks from third parties and retur
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
-@section orca_pathplanner_simplenav Simple navigation
-This algorithm is described in Latombe, "Robot Motion Planning", sec. 4.2.1. It is a simple grid-potential based method using wavefront propagation. We added the consideration of the robot platform's size.
+@par Drivers
 
-@section orca_pathplanner_skeletonnav Skeleton navigation
-This algorithm is described in Latombe, "Robot Motion Planning", sec. 4.2.2. It computes an improved numverical navigation function by first extracting a skeleton.
+Drivers are listed below.  The quoted (approximate) speed of each
+algorithm is for a Release build, for a single path segment on a
+500x500-cell world.
+
+@section orca_pathplanner_simplenav Simple navigation
+
+This algorithm is described in Latombe, "Robot Motion Planning",
+sec. 4.2.1. It is a simple grid-potential based method using wavefront
+propagation. We added the consideration of the robot platform's size.
+
+- Speed: 
+  - No pre-computation required.
+  - ~0.5sec to plan a path.
+
+@section orca_pathplanner_skeletonnav Skeleton navigation 
+
+This algorithm is described in Latombe, "Robot Motion Planning",
+sec. 4.2.2. It computes an improved numverical navigation function by
+first extracting a skeleton.  
+
+- Speed: the current implementation is fairly slow.
+  - ~0.3sec to pre-compute the skeleton.
+  - ~0.2sec to plan a path.
+
+@section orca_pathplanner_sparseskeletonnav Sparse Skeleton navigation
+
+This algorithm uses the @ref orca_pathplanner_skeletonnav algorithm.
+After generating a dense skeleton, it extracts a sparse set of nodes
+and arcs between those nodes.  This is much faster to plan on.
+
+- Speed:
+  - ~1sec to pre-compute the skeleton.
+  - <1ms to plan a path.
 
 @section orca_pathplanner_pathoptimization Path optimization algorithm
-This algorithm takes a fine-grained path and tries to find shortcuts by raytracing between waypoints. If no obstacle is in the way it will discard all the waypoints in between. The path it computes contains much fewer waypoints than the original path. A negative side-effect is that the path gets close to the walls but the local navigation should take care of this.
+
+This algorithm takes a fine-grained path and tries to find shortcuts
+by raytracing between waypoints. If no obstacle is in the way it will
+discard all the waypoints in between. The path it computes contains
+much fewer waypoints than the original path. A negative side-effect is
+that the path gets close to the walls but the local navigation should
+take care of this.
 
 @section orca_pathplanner_astar A* search
-This driver uses the famous A* search algorithm to guarantee the shortest path from start to goal. The heuristic takes diagonal traversing into account. Original implementation was done by Pham Ngoc Hai (h dot pham at acfr.usyd.edu.au). This is the fastest of all algorithms and useful if you know where your goal is gonna be.
+
+This driver uses the famous A* search algorithm to guarantee the
+shortest path from start to goal. The heuristic takes diagonal
+traversing into account. Original implementation was done by Pham Ngoc
+Hai (h dot pham at acfr.usyd.edu.au). 
+
+- Speed:
+  - No pre-computation required
+  - To plan path: depends heavily on the particular path 
+    - A* has known problems if it needs to 'fill up' a potential bowl.
+    - Rough guide: ~10ms to ~10sec.
 
 @par Notes
 
-Bibtex reference to the LaTombe book which contains the gridpotential-based algorithms (@ref orca_pathplanner_simplenav and @ref orca_pathplanner_skeletonnav):
+Bibtex reference to the LaTombe book which contains the
+gridpotential-based algorithms (@ref orca_pathplanner_simplenav and
+@ref orca_pathplanner_skeletonnav):
 
 @verbatim
 @Book{latombe91robot,
@@ -89,7 +138,9 @@ Bibtex reference to the LaTombe book which contains the gridpotential-based algo
 @par To Do
 
 @par Authors
-Tobias Kaupp
+
+ - Tobias Kaupp
+ - Sparse Skeleton Stuff: Alex Brooks
 
 */
 

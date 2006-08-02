@@ -22,7 +22,9 @@ public:
     SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
                     SkeletonGraphicsI* skelGraphicsI,
                     double robotDiameterMetres,
-                    double traversabilityThreshhold );
+                    double traversabilityThreshhold,
+                    bool   doPathOptimization,
+                    bool   useSparseSkeleton );
     ~SkeletonDriver();
 
     // Computes the path
@@ -36,7 +38,8 @@ private:
     SkeletonGraphicsI             *skelGraphicsI_;
     orcaogmap::OgMap               ogMap_;
     orcapathplan::IPathPlanner2d  *pathPlanner_;
-
+    double                         robotDiameterMetres_;
+    bool                           doPathOptimization_;
 };
 
 }

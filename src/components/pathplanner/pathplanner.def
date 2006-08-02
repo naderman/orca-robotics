@@ -12,8 +12,8 @@ Requires.OgMap.Type=OgMap
 Requires.OgMap.DefaultProxy=ogmap@local/ogmaploader
 
 # Config Parameters
-Config.Driver.Comment=Options are { 'simplenav', 'skeletonnav', 'astar', 'fake' }
-Config.Driver.Default=skeletonnav
+Config.Driver.Comment=Options are { 'simplenav', 'skeletonnav', 'sparseskeletonnav', 'astar', 'fake' }
+Config.Driver.Default=sparseskeletonnav
 
 Config.TraversabilityThreshhold.Default=0.3
 

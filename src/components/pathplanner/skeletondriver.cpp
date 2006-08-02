@@ -13,15 +13,18 @@ namespace pathplanner {
 SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
                                 SkeletonGraphicsI* skelGraphicsI,
                                 double robotDiameterMetres,
-                                double traversabilityThreshhold )
-    : skelGraphicsI_(skelGraphicsI)
+                                double traversabilityThreshhold,
+                                bool   doPathOptimization,
+                                bool   useSparseSkeleton )
+    : skelGraphicsI_(skelGraphicsI),
+      robotDiameterMetres_(robotDiameterMetres),
+      doPathOptimization_(doPathOptimization)
 {
     cout<<"TRACE(skeletondriver.cpp): SkeletonDriver()" << endl;
     convert( ogMapDataPtr, ogMap_ );
 
     orcamisc::CpuStopwatch watch(true);
-    bool useSparse = true;
-    if ( !useSparse )
+    if ( !useSparseSkeleton )
     {
         orcapathplan::SkeletonPathPlanner *skelPathPlanner = 
             new orcapathplan::SkeletonPathPlanner( ogMap_,
@@ -93,6 +96,15 @@ SkeletonDriver::computePath( const orca::OgMapDataPtr         &ogMapDataPtr,
             throw orcapathplan::Exception( ss.str() );
         }
         cout<<"TRACE(skeletondriver.cpp): computing path segment took " << watch.elapsedSeconds() << "s" << endl;
+
+        if ( doPathOptimization_ )
+        {
+            cout<<"TRACE(skeletondriver.cpp): AlexB: doPathOptimization turned off for now, due to a bug..." << endl;
+//             // separate full path into a optimized short path
+//             orcapathplan::Cell2DVector waycells;    
+//             orcapathplan::optimizePath( ogMap_, pathSegment, waycells, robotDiameterMetres_ );
+//             pathSegment = waycells;
+        }
 
         // ====== Convert to an Orca object in global coordinate system. =====
         // ====== Will append latest path to the total pathDataPtr. ==========
