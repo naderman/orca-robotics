@@ -48,13 +48,17 @@ SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
                                                          robotDiameterMetres,
                                                          traversabilityThreshhold );
         pathPlanner_ = skelPathPlanner;
-//         skelGraphicsI_->localSetSkel( ogMap_,
-//                                       NULL,
-//                                       &(skelPathPlanner->sparseSkel()) );
 
-        skelGraphicsI_->localSetSkel( ogMap_,
-                                      &(skelPathPlanner->denseSkel()),
-                                      &(skelPathPlanner->sparseSkel()) );
+        try {
+            skelGraphicsI_->localSetSkel( ogMap_,
+                                          &(skelPathPlanner->denseSkel()),
+                                          &(skelPathPlanner->sparseSkel()) );
+        }
+        catch ( Ice::MemoryLimitException &e )
+        {
+            cout<<"TRACE(skeletondriver.cpp): Caught: " << e << endl;
+            cout<<"TRACE(skeletondriver.cpp): This means the dense skel is too big to send out." << endl;
+        }
     }
     cout<<"TRACE(skeletondriver.cpp): Creating skeleton took " << watch.elapsedSeconds() << "s" << endl;
 }
