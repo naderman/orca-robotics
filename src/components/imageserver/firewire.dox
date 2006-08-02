@@ -19,8 +19,8 @@ Note that some of this help has been taken from <a href="http://damien.douxchamp
 To do this for a Debian based system type at a prompt:
 
 @verbatim
-$ apt-get install liblibdc1394-13
-$ apt-get install liblibdc1394-13-dev
+$ apt-get install libdc1394-13
+$ apt-get install libdc1394-13-dev
 @endverbatim
 
 Then attach your firewire camera and ensure that the raw1394, ohci1394, and video1394 modules have been loaded by typing:
