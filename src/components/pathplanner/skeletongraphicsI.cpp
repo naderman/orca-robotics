@@ -36,8 +36,7 @@ SkeletonGraphicsI::getData(const Ice::Current& current) const
     // we always want to have the latest copy in there
     if ( dataBuffer_.isEmpty() )
     {
-        cout << "ERROR(skeletongraphicsI.cpp): Buffer was empty!" << endl;
-        exit(1);
+        throw orca::DataNotExistException( "No graphics available." );
     }
     dataBuffer_.get( data );
     return data;
@@ -122,7 +121,7 @@ SkeletonGraphicsI::drawSparseSkel( const orcaogmap::OgMap           &ogMap,
             p.drawEllipse( QRectF( nodeX-circleSize, nodeY-circleSize, 2*circleSize, 2*circleSize ) );
 
             if ( print )
-                cout<<"  Node at " << nodeX << ", " << nodeY << ":" << endl;
+                cout<<"  Node at " << nodeX << "," << nodeY << ":" << endl;
                 
 
             // draw arcs
@@ -134,7 +133,7 @@ SkeletonGraphicsI::drawSparseSkel( const orcaogmap::OgMap           &ogMap,
                 p.drawLine( QLineF( nodeX, nodeY, toX, toY ) );
 
                 if ( print )
-                    cout << "    links to " << toX << ", " << toY << " with cost " << arc->cost*ogMap.metresPerCellX() << endl;
+                    cout << "    links to " << toX << "," << toY << " with cost " << arc->cost*ogMap.metresPerCellX() << endl;
             }
         }
     }

@@ -32,6 +32,14 @@ SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
     }
     else
     {
+        // NOTE: Un-comment to display the dense skel first.
+        //orcapathplan::SkeletonPathPlanner *temp = 
+        //    new orcapathplan::SkeletonPathPlanner( ogMap_,
+        //                                           robotDiameterMetres,
+        //                                           traversabilityThreshhold );
+        //skelGraphicsI_->localSetSkel( ogMap_, &(temp->skeleton()) );
+        // /NOTE
+
         orcapathplan::SparseSkeletonPathPlanner *skelPathPlanner = 
             new orcapathplan::SparseSkeletonPathPlanner( ogMap_,
                                                          robotDiameterMetres,
