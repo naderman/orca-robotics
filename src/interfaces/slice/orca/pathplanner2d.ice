@@ -56,7 +56,6 @@ interface PathPlanner2dConsumer
 //!
 class PathPlanner2dTask extends OrcaObject
 {
-    Waypoint2d start;
     Path2d coarsePath;
     PathPlanner2dConsumer* prx;
 };
