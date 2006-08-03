@@ -26,7 +26,7 @@ Note that Orca's only required dependency, Ice, is released under a <a href="htt
 
 @section orca_doc_license_copyright Copyright
 
-Copyright belongs to developers and major contributors. The copyright is recorded in a comment block of every source file. We would like to leave it up to the current copyright holders to distinguish between "major" and "minor" contributions.
+Copyright belongs to developers and major contributors. The copyright is recorded in a comment block at the top of every source file. We would like to leave it up to the current copyright holders to distinguish between "major" and "minor" contributions.
 
 Here's how it works. The creators of the newly added component or utility put their names as copyright holders. Major contributions by other people are acknowledged by the current copyright holders by adding new names. 
 

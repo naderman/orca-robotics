@@ -35,12 +35,12 @@ Orca is a general-purpose robotic framework which:
 - uses a commercial open-source communication engine called Ice
 - provides (optional) tools to simplify component development
 
-@ref orca_doc_about_difference "Read more..."
+@ref orca_doc_approach "Read more..."
 
 @par OS support
 
 - full Linux support
-- interfaces, core utilities and some components compile in Windows.
+- interfaces, core utilities and some components compile in Windows XP.
 - experimental builds in MacOS-X
 
 The basic tools we use are cross-platform, so in principle Orca can be deployed as widely as CMake/Ice combination.
@@ -54,7 +54,10 @@ Slice interfaces can be compiled to C++, Java, Python, PHP, C\#, and Visual Basi
 
 @par Repository
 
-- contains components useful in mobile robotics, e.g. sensor drivers, obstacle avoidance, etc.
+We recognise that the usefulness of both the framework and any particular component increases with the variety and quality of the available components with which one can interact.  We therefore maintain @ref orca_doc_swmap "this online repository". Users are encouraged to contribute their own components and to point out omissions in components' documentation.
+
+- currently contains components useful in mobile robotics, e.g. sensor drivers, obstacle avoidance, etc.
+- feel free to contribute components or libraries for any subfield of robotics.
 
 @par Terminology
 

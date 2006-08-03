@@ -45,7 +45,7 @@ Our main goal is the continuing progress in robotic research and the robotic ind
 - Read general information about the project: @ref orca_doc_overview
 - Get set up: @ref orca_doc_getting
 - Start running components: @ref orca_doc_quickstart
-- An overview of Ice middleware: Ch. 2 of the Ice Manual <a href="http://www.zeroc.com/download.html#doc" target="_blank">[download]</a>
+- Read an overview of Ice middleware: Ch. 2 of the Ice Manual <a href="http://www.zeroc.com/download.html#doc" target="_blank">[download]</a>
 - See a list of all available Orca components: <a href="group__components.html">Component Repository</a>
 
 

@@ -1,0 +1,117 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@page orca_doc_approach The Orca Way
+
+@note Reviewed for release 2.0.0.
+
+In designing Orca the following design choices have been made:
+
+- @ref orca_doc_approach_flexible
+- @ref orca_doc_approach_whyice
+- @ref orca_doc_approach_tools
+- @ref orca_doc_approach_xplatform
+
+@section orca_doc_approach_flexible An Unconstrained Component-Based System
+
+The approach we take is frequently called Component-Based Software
+Engineering (CBSE). CBSE offers developers the
+opportunity to source existing plug-in software components, rather
+than building everything from scratch. In addition, CBSE offers
+significant software engineering benefits by enforcing modular
+systems, which helps control dependencies, reduce maintenance costs
+and increase system flexibility and robustness.
+
+For a broad overview of "componentry" look in <a href="http://en.wikipedia.org/wiki/Software_componentry" target="_blank">Wikipedia</a>. For a summary of CBSE and its application to robotics, you may want to read recent @ref orca_doc_publications "papers by Orca developers".
+
+Fundamental to CBSE are 1) the concept of interfaces considered to
+be contractual obligations between components, and 2) the choice of
+a mechanism to implement these interfaces. Strict adherence to a set
+of predefined interfaces imposes severe constraints on the
+interactions allowed between components. These constraints are
+necessary to ensure interoperability of the components.
+
+In the design of a framework for reuse it is certainly possible to
+go beyond the fundamental interface constraints but, because Orca
+aims to be as broadly applicable as possible, we choose not to do
+so. In particular, we make no prescriptions or assumptions about:
+- component granularity, 
+- system architecture, 
+- the set of provided or required interfaces, and 
+- the components' internal architecture.
+
+@section orca_doc_approach_whyice Why Use Ice?
+
+To implement a distributed component-based system, one must be able
+to define interfaces and make a choice of communication mechanism.
+In the case of cross-platform operation involving different
+operating systems, the software which provides such functionality is
+typically referred to as <a href="http://en.wikipedia.org/wiki/Middleware" target="_blank">middleware</a>. Given the realities of
+robotic software development we consider support for C/C++ on Linux
+to be essential. This rules out Microsoft's COM+ and Sun's
+Enterprise JavaBeans. With this in mind, the following options exist
+today:
+
+- using XML-based technologies such as SOAP,
+- using CORBA,
+- writing custom middleware from scratch, or
+- using <a href="http://www.zeroc.com" target="_blank">Ice</a>.
+
+We discount XML-based technologies on the grounds that they are too
+slow and inefficient for low-level robotic control tasks. While
+CORBA is sufficiently flexible for Orca's middleware requirements,
+it is also large and complex. Experience with CORBA in earlier
+versions of Orca showed this complexity to be problematic. In
+comparison, Ice offers a much smaller and more consistent API,
+superior feature set and similar performance \cite{Henning04}. For a details see <a href="http://www.zeroc.com/iceVsCorba.html" target="_blank">Ice vs. Corba comparison</a> or read <a href="www.triodia.com/staff/michi/ieee/ieee.pdf" target="_blank">a paper by ZeroC stuff</a>.
+
+Earlier versions of Orca also experimented with writing custom
+middleware from the ground up. While communicating over a socket is
+simple, implementing middleware sufficiently flexible and reliable
+to support Orca's requirements involved re-implementing (and
+maintaining) large parts of CORBA functionality, which is a
+non-trivial task.  Our conclusion was that it is unrealistic to
+expect robotics researchers to have the time or skills to develop
+middleware to the same standards as commercial products.
+
+@e Slice is the Specification Language for Ice, analogous to IDL
+for CORBA. Slice is used to define interfaces -- a contract between
+clients and servers. Slice specifications are then compiled into
+various programming languages. Ice supports C++, Java, Python, PHP,
+C\#, and Visual Basic. Ice clients and servers can work together
+regardless of the programming language in which they are
+implemented.
+
+The Ice core library manages all the communication tasks using a
+protocol which includes optional compression and support for both
+TCP and UDP. Ice optionally provides a flexible thread pool for
+multi-threaded servers.
+
+@image html orca_middleware.png
+
+Ice builds natively under various operating systems including Linux,
+Windows, and MacOS~X. A Figure above shows an example
+of two Orca components written in different languages and running on
+two different operating systems.
+
+@section orca_doc_approach_tools Optional Tools
+
+While we avoid enforcing particular design patterns for either systems
+or components, we do provide guidelines (and working code!) for
+designs that have worked well in the past.
+
+For developing individual components, most of these established design
+patterns are encoded in <a href="group__orca__library__orcaice.html">libOrcaIce</a>.
+We find it useful -- if you do too then go ahead and use it.  But feel
+free to copy it and modify it (or not use it at all) as required.
+
+*/
