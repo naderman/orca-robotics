@@ -84,10 +84,13 @@ SkeletonDriver::computePath( const orca::OgMapDataPtr         &ogMapDataPtr,
         orcamisc::CpuStopwatch watch(true);
         assert(pathPlanner_!=0);
         try {
-            pathPlanner_->computePath( startWp->target.p.x,
-                                       startWp->target.p.y,
-                                       goalWp->target.p.x,
-                                       goalWp->target.p.y,
+            int startX, startY, endX, endY;
+            ogMap_.getCellIndices( startWp->target.p.x, startWp->target.p.y, startX, startY );
+            ogMap_.getCellIndices( goalWp->target.p.x,  goalWp->target.p.y,  endX,   endY );
+            pathPlanner_->computePath( startX,
+                                       startY,
+                                       endX,
+                                       endY,
                                        pathSegment );
         }
         catch ( orcapathplan::Exception &e )
