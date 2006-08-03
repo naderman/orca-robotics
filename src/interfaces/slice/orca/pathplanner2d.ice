@@ -51,8 +51,8 @@ interface PathPlanner2dConsumer
 
 //! 
 //! Data structure holding a path planning task in
-//! form of a starting poing, a "rough" path and a 
-//! proxy that receives the computed path.
+//! form of a coarse path (first entry is the starting point) and a 
+//! proxy that receives the computed fine-grained path.
 //!
 class PathPlanner2dTask extends OrcaObject
 {
@@ -63,7 +63,7 @@ class PathPlanner2dTask extends OrcaObject
 /*!
     @brief Planning a path in 2D
 
-    PathPlanner is an interface that accepts a task consisting of a start waypoing and a "rough" path. It serves the computed fine-grained path to the consumer via proxy. "setTask" returns the number of remaining tasks in the buffer.
+    PathPlanner is an interface that accepts a task consisting of a coarse path with the first entry being the starting waypoint. It serves the computed fine-grained path to the consumer via proxy. "setTask" returns the number of remaining tasks in the buffer.
 
     The second method of accessing the computed path is to use the getData method. The third method is via subscribe. These two methods are used when a component wants direct access to the currently computed path rather than a one-shot task-specific result (e.g. a GUI).
 */
