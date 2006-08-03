@@ -31,7 +31,7 @@ We think that software reuse is key for continuing progress in robotic research 
 @par Approach
 
 Orca is a general-purpose robotic framework which:
-- follows component-based approach
+- follows a component-based approach
 - uses a commercial open-source communication engine called Ice
 - provides (optional) tools to simplify component development
 
@@ -58,10 +58,10 @@ Slice interfaces can be compiled to C++, Java, Python, PHP, C\#, and Visual Basi
 
 @par Terminology
 
-In addition to standard definition of @e components and @e interfaces, we talk about @e platforms which, rougly speaking, correspond to robots. @ref orca_doc_terminology "Read more..."
+In addition to standard definitions of @e components and @e interfaces, we talk about @e platforms which, rougly speaking, correspond to robots. @ref orca_doc_terminology "Read more..."
 
 @par History
 
-Orca grew out of Orocos\@KTH project. On SourceForge.net since June 2004. @ref orca_doc_history "Read more..."
+Orca grew out of Orocos\@KTH project. It has been on SourceForge.net since June 2004. @ref orca_doc_history "Read more..."
 
 */

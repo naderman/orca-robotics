@@ -83,7 +83,7 @@ inefficient for low-level robotic control tasks.
 While CORBA is sufficiently flexible for Orca's middleware
 requirements, it is also large and complex.  Experience with CORBA in
 Orca1 showed this complexity to be problematic.  Ice is far less
-complex: for a details see <a href="http://www.zeroc.com/iceVsCorba.html" target="_blank">Ice vs. Corba comparison</a> or read <a href="www.triodia.com/staff/michi/ieee/ieee.pdf" target="_blank">a paper by ZeroC stuff</a>.
+complex: for a details see <a href="http://www.zeroc.com/iceVsCorba.html" target="_blank">Ice vs. Corba comparison</a> or read <a href="www.triodia.com/staff/michi/ieee/ieee.pdf" target="_blank">a paper by ZeroC staff</a>.
 
 Orca1 also experimented with writing custom middleware from scratch.
 While communicating over a socket is simple, implementing middleware
