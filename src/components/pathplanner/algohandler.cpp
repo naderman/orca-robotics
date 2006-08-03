@@ -186,9 +186,7 @@ AlgoHandler::run()
         try 
         {
             context_.tracer()->info("telling driver to compute the path now");
-            // orcamisc::CpuStopwatch watch(true);
             driver_->computePath( ogMapDataPtr_, taskPtr, pathDataPtr );
-            // cout<<"TRACE(algohandler.cpp): time to compute path: " << watch.elapsedSeconds() << "s" << endl;
         }
         catch ( orcapathplan::Exception &e )
         {
@@ -197,12 +195,11 @@ AlgoHandler::run()
             ss << "Couldn't compute path: " // << orcaice::toString(taskPtr)
                << endl << "Problem was: " << e.what();
             context_.tracer()->error( ss.str() );
-            cout << "ERROR(algohandler.cpp): TODO: AlexB: Toby, how to tell client??" << endl;
-            break;
+            // Don't break here. If the path could not be computed, the driver is responsible to set an error code in pathDataPtr which the client can evaluate
         }
 
         //
-        // ======= send result ===============
+        // ======= send result (including error code) ===============
         //
         context_.tracer()->info("sending off the resulting path");
 

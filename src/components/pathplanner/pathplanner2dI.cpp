@@ -35,7 +35,7 @@ Ice::Int
 PathPlanner2dI::setTask(const ::orca::PathPlanner2dTaskPtr& taskPtr, const ::Ice::Current&)
 {
 
-    cout << "Just received a new task: " << endl << taskPtr; 
+    cout << "TRACE(pathplanner2dI.cpp): Just received a new task: " << endl << taskPtr; 
 
     pathPlannerTaskProxy_.set( taskPtr );
 
