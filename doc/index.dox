@@ -34,38 +34,27 @@
 /*!
 @mainpage Orca: Components for Robotics
 
-Orca is an open-source framework for developing component-based robotic systems. It provides the means for defining and developing the building-blocks which can be pieced together to form arbitrarily
-complex robotic systems, from single vehicles to distributed sensor networks.
+Orca is an open-source framework for developing component-based robotic systems. It provides the means for defining and developing the building-blocks which can be pieced together to form arbitrarily complex robotic systems, from single vehicles to distributed sensor networks.
 
-Our main goal is the continuing progress in robotic research and the robotic industry. The main challenge we see at present is the software specific to robots, both its complexity and the sheer amount of it. Software reuse promises a solution to both of these problems. With this in mind, the project's objectives are:
-- to \b enable software reuse by defining a set commonly-used interfaces;
-- to \b simplify software reuse by providing libraries with a high-level convenient API; and
-- to \b encourage software reuse by maintaining a repository of components.
+Our main goal is the continuing progress in robotic research and the robotic industry. The main challenge we see at present is the software specific to robots, both its complexity and the sheer amount of it. Software reuse promises a solution to both of these problems. You write your component which does something useful, then I build on your success by writing my component which works with yours. Easy!
 
-Orca, currently in its second generation, differs from other robotic software frameworks in that it:
-- adopts a @ref orca_doc_about_approach "Component-Based Software Engineering" approach;
-- uses  an @ref orca_doc_about_whyice "industrial-strength library (Ice)" for communication and interface definition;
-- aims to be @ref orca_doc_about_flexible "general, flexible and extensible", in order to place as few constraints as possible on system design;
-- provides @ref orca_doc_about_tools "optional tools" to assist in the development of individual components and the management of large systems; and
-- maintains a @ref orca_doc_about_repository "repository" of free, reusable components.
+@image html orca_concept.png
 
-<hr>
+@section more_information Where to start
 
-@section more_information For more information
-
-- Read general information about the project: @ref orca_doc_about
+- Read general information about the project: @ref orca_doc_overview
 - Get set up: @ref orca_doc_getting
 - Start running components: @ref orca_doc_quickstart
-- A quick overview of basic concepts: @ref orca_doc_overview
-- An overview of Ice middleware: Ch. 2 Ice Overview of the <a href="http://www.zeroc.com/download.html#doc" target="_blank">Ice manual</a>
-- See a list of all available components: <a href="group__components.html">Component Repository</a>
+- An overview of Ice middleware: Ch. 2 Ice Overview of the Ice Manual <a href="http://www.zeroc.com/download.html#doc" target="_blank">[download]</a>
+- See a list of all available Orca components: <a href="group__components.html">Component Repository</a>
 
 
-Note: The documentation on this web page matches the latest release. A web page is also generated hourly from <a href="http://orca-robotics.sourceforge.net/cvs/">the latest CVS version</a>.
+Note: The documentation on this web page matches the latest release. A web page is also <a href="http://orca-robotics.sourceforge.net/cvs/">generated hourly</a> from the latest CVS version.
 
 @section news News
 
-- 21-Jul-06 Orca2.0.0 is released. Uses the newly released Ice-3.1.0. Support for Windows. @ref orca_doc_java components. License issues have been resolved.
+- 09-Aug-06 Orca2.0.0 is released. Uses the newly released Ice-3.1.0. Support for Windows. @ref orca_doc_java components. License issues have been resolved.
+- 20-Jul-06 Wiki is on-line (follow link from sidebar). Anyone can add comments to the FAQ or whatever. Useful stuff may later get moved to the Doxygen documentation.
 - 11-Jun-06 Distribution created for Orca2.0.0rc5: the fifth release candidate for Orca v2.0.0.
 - 30-Mar-06 Distribution created for Orca2.0.0rc4: the fourth release candidate for Orca v2.0.0.
 - 27-Feb-06 Distribution created for Orca2.0.0rc3: the third release candidate for Orca v2.0.0.

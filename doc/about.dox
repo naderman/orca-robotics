@@ -18,18 +18,19 @@
 
 - @ref orca_doc_about_purpose
 - @ref orca_doc_about_difference
+- @ref orca_doc_about_terminology
 - @ref orca_doc_about_approach
     - @ref orca_doc_about_whyice
     - @ref orca_doc_about_flexible
     - @ref orca_doc_about_tools
     - @ref orca_doc_about_repository
-- @ref orca_doc_about_history
 - @ref orca_doc_about_license
+- @ref orca_doc_about_copyright
+- @ref orca_doc_about_history
 
 @section orca_doc_about_purpose Purpose
 
-Orca is an open-source framework for developing component-based robotic systems. It provides the means for defining and developing the building-blocks which can be pieced together to form arbitrarily
-complex robotic systems, from single vehicles to distributed sensor networks. The project's goals are:
+Orca is an open-source framework for developing component-based robotic systems. It provides the means for defining and developing the building-blocks which can be pieced together to form arbitrarily complex robotic systems, from single vehicles to distributed sensor networks. The project's goals are:
 - to \b enable software reuse by defining a set commonly-used interfaces;
 - to \b simplify software reuse by providing libraries with a high-level convenient API; and
 - to \b encourage software reuse by maintaining a repository of components.
@@ -42,6 +43,22 @@ Orca, currently in its second generation, differs from other robotic software fr
 - aims to be general, flexible and extensible, in order to place as few constraints as possible on system design;
 - provides optional tools to assist in the development of individual components and the management of large systems; and
 - maintains a repository of free, reusable components.
+
+@section orca_doc_about_terminology Orca Terminology
+
+When talking about how components connect to each other it's helpful to define some terminology.
+
+A \em platform is a logical unit, a robot would typically be a platform. We use the term platform so not to exclude simple devices like cameras or PDA's. Calling them robots would be a stretch. Platforms are the highest level in our hierarchy, so we don't define 'teams of platforms' for example. Each platform can have one or several \em hosts -- physical computers. Each host may execute one or several \em components. Each component may have zero or more \em interfaces, some are required and some are provided.
+
+These four terms are often used in describing a distributed system but one has to be careful to keep in mind that they refer to different aspects of the system. Platforms describe a logical grouping of hardware and software. This grouping is useful because it reflects physical proximity; cheap/fast/reliable communication, etc. Hosts are units of computing hardware. Components and interfaces describe software organization. Assigning software (components) to hardware (hosts) is called deployment.
+
+@image html orca_terminology.png
+
+In this illustration platform X has one computer host (1) which executes one component (4). Platform Y has two hosts. One would say that Component 3 is deployed on Host 2 which is located on Platform Y. 
+
+Component 1 requires Interface A and it is connected to the provided Interfaces A and B of Component 2. Interface connections can be intra-host (Interface C), intra-platform (Interfaces A and B of Component 2), or inter-platform (Interfaces A and B of Component 3).
+
+
 
 @section orca_doc_about_approach Approach
 
@@ -114,6 +131,24 @@ free to copy it and modify it (or not use it at all) as required.
 
 We recognise that the usefulness of both the framework and any particular component increases with the variety and quality of the available components with which one can interact.  We therefore maintain @ref orca_doc_swmap "this online repository". Users are encouraged to contribute their own components and to point out omissions in components' documentation.
 
+@section orca_doc_about_license License
+
+The Orca project does not, as a policy, require code to conform to any specific 
+license to be included in the distribution. However, the code is required to 
+have a license and the license must be Open Source. That is the official policy.
+
+The reality of the situation is that nearly all code in the Orca libraries and 
+components is covered under the <a href="http://www.fsf.org/copyleft/lgpl.html" target="_blank">Library GNU Public License (LGPL)</a> as defined by 
+the Free Software Foundation (FSF). Most of the remaining code is licensed under 
+the <a href="http://www.fsf.org/copyleft/gpl.html" target="_blank">GNU Public License (GPL)</a>, also defined by the FSF.
+
+The LGPL (as opposed to the GPL) is used whenever possible to allow commercial
+enterprises to build closed-source products using Orca technology.
+Note that Orca's only required dependency, Ice, is released under a <a href="http://www.zeroc.com/licensing.html" target="_blank">dual license</a>: it is GPL
+unless a commercial license is purchased from <a href="http://www.zeroc.com" target="_blank">ZeroC</a>.
+
+@section orca_doc_about_copyright Copyright
+
 @section orca_doc_about_history History
 
 Orca began as part of the EU-funded OROCOS Project: a project
@@ -135,20 +170,5 @@ At present, Orca is most actively used at several Universities in Sydney, Austra
 
 Source code size gives some idea about the project's activity. The stats above are generated using David A. Wheeler's SLOCCount. This figure also helps illustrate our main objective: we are interested in a large "superstructure" (blue) -- useful components, and don't want to "dig" a deep "foundation" (orange) -- the infrastructure necessary to allow components to talk to each other. This was the main motivation for switching to Ice which is visible since v.2.0.0-rc1 at the end of 2005. Note that we count here only the C++ distribution of Ice. For comparison, we show a similar analysis of Player, up to distribution v.2.0.2. For the purposes of this figure, Player 2.0.2 "base" includes the contents of {libplayercore, client_libs, libplayertcp} and Player 2.0.2 "components" includes the code in {server, utils}. The autogenerated bindings are not taken into account.
 
-@section orca_doc_about_license License
-
-The Orca project does not, as a policy, require code to conform to any specific 
-license to be included in the distribution. However, the code is required to 
-have a license and the license must be Open Source. That is the official policy.
-
-The reality of the situation is that nearly all code in the Orca libraries and 
-components is covered under the <a href="http://www.fsf.org/copyleft/lgpl.html" target="_blank">Library GNU Public License (LGPL)</a> as defined by 
-the Free Software Foundation (FSF). Most of the remaining code is licensed under 
-the <a href="http://www.fsf.org/copyleft/gpl.html" target="_blank">GNU Public License (GPL)</a>, also defined by the FSF.
-
-The LGPL (as opposed to the GPL) is used whenever possible to allow commercial
-enterprises to build closed-source products using Orca technology.
-Note that Orca's only required dependency, Ice, is released under a <a href="http://www.zeroc.com/licensing.html" target="_blank">dual license</a>: it is GPL
-unless a commercial license is purchased from <a href="http://www.zeroc.com" target="_blank">ZeroC</a>.
 
 */

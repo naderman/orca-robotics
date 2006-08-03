@@ -8,26 +8,60 @@
  *
  */
 
-
-This is currently a loose collection of things a new user should read first.
-@section terms Terminology
-
 /*!
 
-@page orca_doc_overview Orca Terminology
+@page orca_doc_overview Orca Overview
 
-@note Reviewed for release 2.0.0.
+This is a one-page overview of the Orca project with links to further information. You can quickly scan this page and follow links or you can go straight to @ref orca_doc_about "the detailed information". 
 
-When talking about how components connect to each other it's helpful to define some terminology.
+@par Purpose
 
-A \em platform is a logical unit, a robot would typically be a platform. We use the term platform so not to exclude simple devices like cameras or PDA's. Calling them robots would be a stretch. Platforms are the highest level in our hierarchy, so we don't define 'teams of platforms' for example. Each platform can have one or several \em hosts -- physical computers. Each host may execute one or several \em components. Each component may have zero or more \em interfaces, some are required and some are provided.
+We think that software reuse is key for continuing progress in robotic research and insdustry. Orca is our attempt at doing it. The project's goals are:
+- to \b enable software reuse by defining a set commonly-used interfaces;
+- to \b simplify software reuse by providing libraries with a high-level convenient API; and
+- to \b encourage software reuse by maintaining a repository of components.
 
-These four terms are often used in describing a distributed system but one has to be careful to keep in mind that they refer to different aspects of the system. Platforms describe a logical grouping of hardware and software. This grouping is useful because it reflects physical proximity; cheap/fast/reliable communication, etc. Hosts are units of computing hardware. Components and interfaces describe software organization. Assigning software (components) to hardware (hosts) is called deployment.
+@par Licence and Copyright
 
-@image html orca_terminology.png
+- License is LGPL and GPL. 
+- Copyright belongs to developers and major contributors.
 
-In this illustration platform X has one computer host (1) which executes one component (4). Platform Y has two hosts. One would say that Component 3 is deployed on Host 2 which is located on Platform Y. 
+@ref orca_doc_license "Read more..."
 
-Component 1 requires Interface A and it is connected to the provided Interfaces A and B of Component 2. Interface connections can be intra-host (Interface C), intra-platform (Interfaces A and B of Component 2), or inter-platform (Interfaces A and B of Component 3).
+@par Approach
+
+Orca is a general-purpose robotic framework which:
+- follows component-based approach
+- uses a commercial open-source communication engine called Ice
+- provides (optional) tools to simplify component development
+
+@ref orca_doc_about_difference "Read more..."
+
+@par OS support
+
+- full Linux support
+- interfaces, core utilities and some components compile in Windows.
+- experimental builds in MacOS-X
+
+The basic tools we use are cross-platform, so in principle Orca can be deployed as widely as CMake/Ice combination.
+
+@par Programming language support
+
+- all components currently in the repository are written in C++
+- there's an example in Java.
+
+Slice interfaces can be compiled to C++, Java, Python, PHP, C\#, and Visual Basic. All of these can be used to implement or use Orca interfaces.
+
+@par Repository
+
+- contains components useful in mobile robotics, e.g. sensor drivers, obstacle avoidance, etc.
+
+@par Terminology
+
+In addition to standard definition of @e components and @e interfaces, we talk about @e platforms which, rougly speaking, correspond to robots. @ref orca_doc_terminology "Read more..."
+
+@par History
+
+Orca grew out of Orocos\@KTH project. On SourceForge.net since June 2004. @ref orca_doc_history "Read more..."
 
 */

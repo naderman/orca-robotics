@@ -12,13 +12,20 @@
 
 @page orca_doc_publications Publications
 
-@section orca1 Orca-1
-    - Alex Brooks, Tobias Kaupp, Alex Makarenko, Anders Oreb&auml;ck and Stefan Williams. <a href="../documents/brooks05_towards_component_based_robotics.pdf">"Towards Component-Based Robotics".</a> IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2005) p. 163 - 168.
+@section orca_doc_publications_orca2 Orca-2
 
+- A. Makarenko, A. Brooks, T. Kaupp. <a href="../documents/makarenko06iros_orca.pdf">Orca: Components for Robotics.</a> IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2006) Workshop on Robotic Standardization (Submitted).
 
-@section orocos Orocos@KTH
-    - Anders Oreb&auml;ck. <a href="http://www.nada.kth.se/~oreback/publik/oreback-thesis.pdf">"A Component Framework for Autonomous Mobile Robots"</a>. PhD thesis, 2004.
+- A. Brooks, T. Kaupp, A. Makarenko, S. Williams, and A. Oreback. <a href="../documents/brooks06star_orca.pdf">Orca: a component model and repository.</a> In D. Brugali, editor, Principles and Practice of Software Development in Robotics. Springer, 2006 (In Press).
 
-    - Wenfeng Li; Christensen, H.I.; Oreb&auml;ck, A.; Dingfang Chen. "An architecture for indoor navigation". IEEE International Conference on Robotics and Automation (ICRA'04). 2004. p. 1783-1788.
+@section orca_doc_publications_orca1 Orca-1
+
+- A. Brooks, T. Kaupp, A. Makarenko, A. Oreb&auml;ck and S. Williams. <a href="../documents/brooks05_towards_component_based_robotics.pdf">Towards Component-Based Robotics.</a> IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2005) p. 163 - 168.
+
+@section orca_doc_publications_orocos Orocos@KTH
+
+- A. Oreb&auml;ck. <a href="http://www.nada.kth.se/~oreback/publik/oreback-thesis.pdf">A Component Framework for Autonomous Mobile Robots</a>. PhD thesis, 2004.
+
+- Wenfeng Li; Christensen, H.I.; Oreb&auml;ck, A.; Dingfang Chen. "An architecture for indoor navigation". IEEE International Conference on Robotics and Automation (ICRA'04). 2004. p. 1783-1788.
 
 */
