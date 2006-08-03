@@ -37,7 +37,6 @@ private:
 
     orcapathplan::Config config_;
     orcaogmap::OgMap ogMap_;
-    orca::Waypoint2d startWp_;
     orca::Path2d coarsePath_;
 
     bool areAllWaypointsInMap( const orca::PathPlanner2dDataPtr  & pathDataPtr );

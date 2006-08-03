@@ -28,7 +28,7 @@ namespace pathplanner {
 bool AStarDriver::areAllWaypointsInMap(const orca::PathPlanner2dDataPtr & pathDataPtr)
 {
     // Check whether startCell is within map
-    if ( !ogMap_.coordsWithinMap( startWp_.target.p.x, startWp_.target.p.y) )
+    if ( !ogMap_.coordsWithinMap( coarsePath_[0].target.p.x, coarsePath_[0].target.p.y) )
     {
         pathDataPtr->result = orca::PathStartNotValid;
         cout << "ERROR(astardriver.cpp): Start waypoint outside map. Returning..." << endl;
@@ -55,7 +55,7 @@ Cell2D
 AStarDriver::getStartCell()
 {
     int cellX, cellY;
-    ogMap_.getCellIndices( startWp_.target.p.x, startWp_.target.p.y, cellX, cellY ); 
+    ogMap_.getCellIndices( coarsePath_[0].target.p.x, coarsePath_[0].target.p.y, cellX, cellY ); 
     return Cell2D( cellX, cellY ); 
 }
 
@@ -78,7 +78,6 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
 
     // Convert to local storage
     orcaogmap::convert( ogMapDataPtr, ogMap_ );
-    startWp_ = taskPtr->start;
     coarsePath_ = taskPtr->coarsePath;
 
     // check start and goal waypoints
@@ -106,7 +105,7 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
     // ==============================================
     
     // for each waypoint in the coarse path we need to compute the navigation fct and the path
-    for (unsigned int i=0; i<coarsePath_.size(); i++)
+    for (unsigned int i=1; i<coarsePath_.size(); i++)
     {   
         aStar->m_iStartNode_i = startCell.x();
         aStar->m_iStartNode_j = startCell.y();

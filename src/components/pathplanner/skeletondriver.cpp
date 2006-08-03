@@ -75,8 +75,9 @@ SkeletonDriver::computePath( const orca::OgMapDataPtr         &ogMapDataPtr,
 {
     // for each waypoint in the coarse path:
     orca::Path2d &coarsePath = taskPtr->coarsePath;
-    orca::Waypoint2d *startWp = &(taskPtr->start);
-    for (unsigned int i=0; i<coarsePath.size(); i++)
+    orca::Waypoint2d *startWp = &(taskPtr->coarsePath[0]);
+    
+    for (unsigned int i=1; i<coarsePath.size(); i++)
     {
         orca::Waypoint2d *goalWp = &(coarsePath[i]);
         orcapathplan::Cell2DVector pathSegment;
