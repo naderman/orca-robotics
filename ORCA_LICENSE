@@ -66,6 +66,7 @@ src
         orcadef                            LGPL
         orcagui                            GPL
         orcaice                            LGPL
+        orcaimage                          LGPL
         orcalogplayer                      LGPL
         orcamisc                           LGPL
         orcanavutil                        LGPL
