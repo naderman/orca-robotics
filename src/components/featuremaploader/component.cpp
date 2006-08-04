@@ -94,7 +94,7 @@ Component::start()
     // EXTERNAL PROVIDED INTERFACES
     //
     // create servant for direct connections
-    featureMap2dObj_ = new FeatureMap2dI( theMap );
+    featureMap2dObj_ = new FeatureMap2dI( theMap, "FeatureMap2d", context() );
     orcaice::createInterfaceWithTag( context(), featureMap2dObj_, "FeatureMap2d" );
 
     ////////////////////////////////////////////////////////////////////////////////

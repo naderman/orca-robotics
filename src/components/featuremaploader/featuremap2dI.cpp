@@ -18,16 +18,39 @@ using namespace orcaice;
 
 namespace featuremaploader {
 
-FeatureMap2dI::FeatureMap2dI( orca::FeatureMap2dDataPtr theMap )
-    : theMap_( theMap )
+FeatureMap2dI::FeatureMap2dI( orca::FeatureMap2dDataPtr theMap,
+                              const std::string  &tag,
+                              orcaice::Context    context )
+    : theMap_( theMap ),
+      context_(context)
 {
+    // Find IceStorm Topic to which we'll publish
+    topicPrx_ = orcaice::connectToTopicWithTag<FeatureMap2dConsumerPrx>
+        ( context_, consumerPrx_, tag );
+
+    // Try to push the map out to IceStorm first
+    try {
+        context_.tracer()->debug( "Pushing to IceStorm", 2 );
+        consumerPrx_->setData( theMap );
+    }
+    catch ( Ice::ConnectionRefusedException &e )
+    {
+        // This could happen if IceStorm dies.
+        // If we're running in an IceBox and the IceBox is shutting down, 
+        // this is expected (our co-located IceStorm is obviously going down).
+        context_.tracer()->warning( "Failed push to IceStorm." );
+    }
     cout<<"TRACE(featuremap2d_i.cpp): Instantiated map interface with features:" << endl;
+
     cout<<orcaice::toString(theMap_)<<endl;
 }
 
 FeatureMap2dDataPtr
 FeatureMap2dI::getData(const Ice::Current& current) const
 {
+    if ( theMap_ == 0 )
+        throw orca::DataNotExistException("Map not loaded correctly.");
+
     std::cout << "getData()" << std::endl;
     return theMap_;
 }
@@ -36,14 +59,18 @@ void
 FeatureMap2dI::subscribe(const ::FeatureMap2dConsumerPrx& subscriber,
                          const Ice::Current& current)
 {
-    cout<<"Got Subscribe() request, but ignoring it since we never publish."<<endl;
+    cout<<"TRACE(featuremap2dI.cpp): subscribe()" << endl;
+    IceStorm::QoS qos;
+    topicPrx_->subscribe( qos, subscriber );
 }
 
 void
 FeatureMap2dI::unsubscribe(const ::FeatureMap2dConsumerPrx& subscriber,
                            const Ice::Current& current)
 {
-    cout<<"Got UnSubscribe() request, but ignoring it since we don't subscribe people."<<endl;
+    cout<<"TRACE(featuremap2dI.cpp): unsubscribe()" << endl;
+
+    topicPrx_->unsubscribe( subscriber );
 }
 
 }

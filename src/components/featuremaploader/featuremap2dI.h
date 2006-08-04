@@ -11,6 +11,7 @@
 #define __featuremap2dI_h__
 
 #include <orca/featuremap2d.h>
+#include <orcaice/orcaice.h>
 
 // include defnition of Ice runtime
 #include <Ice/Ice.h>
@@ -22,13 +23,15 @@
 namespace featuremaploader {
 
 //
-// Implements the Laser interface: Handles all our remote calls.
+// Implements this interface: Handles all our remote calls.
 //
 class FeatureMap2dI : public orca::FeatureMap2d
 {
 public:
 
-    FeatureMap2dI( orca::FeatureMap2dDataPtr theMap );
+    FeatureMap2dI( orca::FeatureMap2dDataPtr  theMap,
+                   const std::string         &tag,
+                   orcaice::Context           context );
 
     // Remote calls:
 
@@ -45,7 +48,14 @@ public:
 
 private:
 
+    // The topic to which we'll publish
+    IceStorm::TopicPrx             topicPrx_;
+    // The interface to which we'll publish
+    orca::FeatureMap2dConsumerPrx  consumerPrx_;
+
     orca::FeatureMap2dDataPtr theMap_;
+
+    orcaice::Context context_;
 };
 
 }
