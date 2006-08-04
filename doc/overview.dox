@@ -19,7 +19,7 @@ We think that software reuse is key for continuing progress in robotic research 
 - to \b simplify software reuse by providing @b libraries with a high-level convenient API; and
 - to \b encourage software reuse by maintaining a @b repository of components.
 
-To be successful, we think a framework like Orca must be:
+To be successful, we think that a framework with such objectives must be:
 - general, flexible and extensible
 - sufficiently robust, high-performance and full-featured for use in commercial applications
 - sufficiently simple for experimentation in university research environments.
@@ -32,7 +32,7 @@ To be successful, we think a framework like Orca must be:
 
 @ref orca_doc_license "Read more..."
 
-@par Approach
+@par Our Approach
 
 A combination of several design choices sets this project apart from other initiatives with similar objectives. Namely, Orca:
 - adopts a Component-Based Software Engineering approach without applying any additional architectural constraints
@@ -59,7 +59,7 @@ Slice interfaces can be compiled to C++, Java, Python, PHP, C\#, and Visual Basi
 
 @par Repository
 
-We recognise that the usefulness of both the framework and any particular component increases with the variety and quality of the available components with which one can interact.  We therefore maintain @ref orca_doc_swmap "this online repository". Users are encouraged to contribute their own components and to point out omissions in components' documentation.
+We recognise that the usefulness of both the framework and any particular component increases with the variety and quality of the available components with which one can interact.  We therefore maintain @ref orca_doc_swmap "an online repository". Users are encouraged to contribute their own components and to point out omissions in components' documentation.
 
 - currently contains components useful in mobile robotics, e.g. sensor drivers, obstacle avoidance, etc.
 - feel free to contribute components or libraries for any subfield of robotics.
