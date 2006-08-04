@@ -10,6 +10,7 @@
 #include "featuremap2dI.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 using namespace std;
 using namespace orca;
@@ -21,7 +22,7 @@ FeatureMap2dI::FeatureMap2dI( orca::FeatureMap2dDataPtr theMap )
     : theMap_( theMap )
 {
     cout<<"TRACE(featuremap2d_i.cpp): Instantiated map interface with features:" << endl;
-    cout<<theMap_<<endl;
+    cout<<orcaice::toString(theMap_)<<endl;
 }
 
 FeatureMap2dDataPtr
