@@ -16,13 +16,13 @@
 
 The Orca project does not, as a policy, require code to conform to any specific license to be included in the distribution. However, the code is required to have a license and the license must be Open Source.
 
-For a complete up-to-date list of licenses see @b ORCA_LICENSE file included in your distribution.
+For a complete up-to-date list of licenses see the @b ORCA_LICENSE file included in your distribution.
 
 Generally speaking, most of the code in the Orca libraries and components is covered under the <a href="http://www.fsf.org/copyleft/lgpl.html" target="_blank">Library GNU Public License (LGPL)</a> as defined by the Free Software Foundation (FSF). Most of the remaining code is licensed under the <a href="http://www.fsf.org/copyleft/gpl.html" target="_blank">GNU Public License (GPL)</a>, also defined by the FSF.
 
 The LGPL (as opposed to the GPL) is used whenever possible to allow commercial enterprises to build closed-source products using Orca technology. It could be argued that component code should be released under GPL because nobody links against it and it could be used in a commercial component-based system. We prefer the LGPL license because it makes it easy to factor out some code into a library and link to it from several components.
 
-Note that Orca's only required dependency, Ice, is released under a <a href="http://www.zeroc.com/licensing.html" target="_blank">dual license</a>: it is GPL unless a commercial license is purchased from ZeroC. Starting with version 3.1.0, the Ice license includes a special clause which allows the Orca project to distribute linked combinations of Orca libraries released under LGPL and Ice. Keep in mind that if you write your own software which links to Orca libraries you have to make sure that you comply with terms of the Ice license (see ICE_LICENSE file included in Ice distribution).
+Note that Orca's only required dependency, Ice, is released under a <a href="http://www.zeroc.com/licensing.html" target="_blank">dual license</a>: it is GPL unless a commercial license is purchased from ZeroC. Starting with version 3.1.0, the Ice license includes a special clause which allows the Orca project to distribute linked combinations of Orca libraries released under LGPL and Ice. Keep in mind that if you write your own software which links to Orca libraries you have to make sure that you comply with the terms of the Ice license (see the ICE_LICENSE file included in the Ice distribution).
 
 @section orca_doc_license_copyright Copyright
 

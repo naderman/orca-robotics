@@ -14,8 +14,9 @@
 
 @par Goals and Requirements
 
-We think that software reuse is key for continuing progress in robotic research and insdustry. Orca is our attempt at doing it. The project's goals are:
-- to \b enable software reuse by defining a set commonly-used @b interfaces;
+We think that software reuse is key for continuing progress in robotic research and industry. 
+Orca is our attempt at doing it. The project's goals are:
+- to \b enable software reuse by defining a set of commonly-used @b interfaces;
 - to \b simplify software reuse by providing @b libraries with a high-level convenient API; and
 - to \b encourage software reuse by maintaining a @b repository of components.
 
