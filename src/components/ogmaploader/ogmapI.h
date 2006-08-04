@@ -24,7 +24,7 @@
 namespace ogmaploader {
 
 //
-// Implements the Laser interface: Handles all our remote calls.
+// Implements this interface: Handles all our remote calls.
 //
 class OgMapI : public orca::OgMap
 {
