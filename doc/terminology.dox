@@ -16,8 +16,8 @@ When talking about how components connected to each other it's helpful to define
 
 - @b Platform. Platform is a logical unit, a robot would typically be a platform. We use the term platform so not to exclude simple devices like cameras or PDA's. Calling them robots would be a stretch. Platforms are the highest level in our hierarchy, so we don't define 'teams of platforms' for example. Each platform can have one or several \em hosts
 - @b Host. Hosts are physical computers. Each host may execute one or several \em components. 
-- @b Component. Each component may have zero or more \em interfaces.
-- @b Interface. Some interfaces are \em provided -- they provide services, other are \em required -- they connect to provided interfaces.
+- @b Component. Components are software modules which can be independently distributed, deployed, and configured. Each component may have zero or more \em interfaces.
+- @b Interface. Interfaces describe contractual obligations between components. Some interfaces are \em provided -- they provide services, other are \em required -- they connect to provided interfaces.
 
 These four terms are often used in describing a distributed system but one has to be careful to keep in mind that they refer to different aspects of the system. Platforms describe a logical grouping of hardware and software. This grouping is useful because it reflects physical proximity; cheap/fast/reliable communication, etc. Hosts are units of computing hardware. Components and interfaces describe software organization. Assigning software (components) to hardware (hosts) is called deployment.
 

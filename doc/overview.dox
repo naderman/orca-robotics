@@ -12,28 +12,33 @@
 
 @page orca_doc_overview Orca Overview
 
-This is a one-page overview of the Orca project with links to further information. You can quickly scan this page and follow links or you can go straight to @ref orca_doc_about "the detailed information". 
-
-@par Purpose
+@par Goals and Requirements
 
 We think that software reuse is key for continuing progress in robotic research and insdustry. Orca is our attempt at doing it. The project's goals are:
-- to \b enable software reuse by defining a set commonly-used interfaces;
-- to \b simplify software reuse by providing libraries with a high-level convenient API; and
-- to \b encourage software reuse by maintaining a repository of components.
+- to \b enable software reuse by defining a set commonly-used @b interfaces;
+- to \b simplify software reuse by providing @b libraries with a high-level convenient API; and
+- to \b encourage software reuse by maintaining a @b repository of components.
+
+To be successful, we think a framework like Orca must be:
+- general, flexible and extensible
+- sufficiently robust, high-performance and full-featured for use in commercial applications
+- sufficiently simple for experimentation in university research environments.
 
 @par Licence and Copyright
 
-- License is LGPL and GPL. 
+- Orca software is released under LGPL and GPL licenses
+- A special clause in the Ice licence allows us to distribute LGPL libraries linking to Ice.
 - Copyright belongs to developers and major contributors.
 
 @ref orca_doc_license "Read more..."
 
 @par Approach
 
-Orca is a general-purpose robotic framework which:
-- follows a component-based approach
-- uses a commercial open-source communication engine called Ice
-- provides (optional) tools to simplify component development
+A combination of several design choices sets this project apart from other initiatives with similar objectives. Namely, Orca:
+- adopts a Component-Based Software Engineering approach without applying any additional architectural constraints
+- uses a commercial open-source library for communication and interface definition
+- provides tools to simplify component development but makes them strictly optional to maintain full access to the underlying communication engine and services
+- uses cross-platform development tools
 
 @ref orca_doc_approach "Read more..."
 
@@ -47,7 +52,7 @@ The basic tools we use are cross-platform, so in principle Orca can be deployed 
 
 @par Programming language support
 
-- all components currently in the repository are written in C++
+- all components which are currently in the repository are written in C++
 - there's an example in Java.
 
 Slice interfaces can be compiled to C++, Java, Python, PHP, C\#, and Visual Basic. All of these can be used to implement or use Orca interfaces.
@@ -61,7 +66,7 @@ We recognise that the usefulness of both the framework and any particular compon
 
 @par Terminology
 
-In addition to standard definitions of @e components and @e interfaces, we talk about @e platforms which, rougly speaking, correspond to robots. @ref orca_doc_terminology "Read more..."
+In addition to standard definitions of @e components and @e interfaces, Orca naming conventions also refer to robotic @e platforms. @ref orca_doc_terminology "Read more..."
 
 @par History
 
