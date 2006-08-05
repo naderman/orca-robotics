@@ -2,9 +2,9 @@
 # Edit this to match your configuration, then set a cron job
 # to run it regularly (with 'ctest -S <script_name>').
 #
-SET (CTEST_DASHBOARD_ROOT "C:/orca/ctests/orca/orca2-nightly")
-SET (CTEST_SOURCE_DIRECTORY "${CTEST_DASHBOARD_ROOT}/orca2")
-SET (CTEST_BINARY_DIRECTORY "${CTEST_DASHBOARD_ROOT}/build-vc80")
+SET (DASHBOARD_ROOT "C:/orca/ctests/orca/orca2-nightly")
+SET (CTEST_SOURCE_DIRECTORY "${DASHBOARD_ROOT}/orca2")
+SET (CTEST_BINARY_DIRECTORY "${DASHBOARD_ROOT}/build-vc80")
 
 #SET (CTEST_CVS_COMMAND 	"C:/Program Files/TortoiseCVS/cvs.exe")
 #SET (CTEST_CVS_CHECKOUT	"${CTEST_CVS_COMMAND} -d :ext:orcacvs-session:/cvsroot/orca-robotics co -d \"${CTEST_SOURCE_DIRECTORY}\" orca2")

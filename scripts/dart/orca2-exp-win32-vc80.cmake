@@ -5,9 +5,9 @@
 # NOTE: to install from command line run this:
 # >"C:\Program Files\Microsoft Visual Studio 8\Common7\IDE\devenv.com" build-vc80\orca.sln /build Debug /project INSTALL
 #
-SET (CTEST_DASHBOARD_ROOT "C:/ctests/orca/orca2-exp")
-SET (CTEST_SOURCE_DIRECTORY "${CTEST_DASHBOARD_ROOT}/orca2")
-SET (CTEST_BINARY_DIRECTORY "${CTEST_DASHBOARD_ROOT}/build-vc80")
+SET (DASHBOARD_ROOT "C:/ctests/orca/orca2-exp")
+SET (CTEST_SOURCE_DIRECTORY "${DASHBOARD_ROOT}/orca2")
+SET (CTEST_BINARY_DIRECTORY "${DASHBOARD_ROOT}/build-vc80")
 
 SET (CTEST_CVS_COMMAND 	"C:/Program Files/TortoiseCVS/cvs.exe")
 #SET (CTEST_CVS_CHECKOUT	"${CTEST_CVS_COMMAND} -d :ext:orcacvs-session:/cvsroot/orca-robotics co -d \"${CTEST_SOURCE_DIRECTORY}\" orca2")
