@@ -1,8 +1,11 @@
 #!/bin/bash
 
 export CVS_RSH=ssh
+export ICE_HOME=/opt/Ice-3.0.1
+export LD_LIBRARY_PATH=$ICE_HOME/lib:$LD_LIBRARY_PATH
+export ORCA2_INSTALL=/opt/orca2-nightly
 
-dashboard=/home/users/dart/ctests/orca/orca2-nightly
+dashboard=$HOME/ctests/orca/orca2-nightly
 
 # compile with gcc-4.0
 logfile=$dashboard/gcc40.log
