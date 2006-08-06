@@ -101,6 +101,20 @@ Ice.MessageSizeMax=3000
 
 Remember to add this line to all configuration files that will be communicating images. So if you're logging or replaying a log you will have to add this line to @c logger.cfg and @c logplayer.cfg as well.
 
+3. Compile errors
+
+If you are getting compile errors with @c imageserver such as the ones below, you probably don't have the cvs version of opencv. Please download the <a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank"> cvs version of opencv-0.9.7</a> as it has extra functionality required for grabbing images.
+
+@verbatim
+/$SRC_DIR/orca2/src/components/imageserver/imagegrabber/cvgrabber.cpp:45: error: 'CV_CAP_PROP_CONVERT_RGB' was not declared in this scope
+/$SRC_DIR/orca2/src/components/imageserver/imagegrabber/cvgrabber.cpp: In member function 'virtual int imageserver::CvGrabber::format() const':
+/$SRC_DIR/orca2/src/components/imageserver/imagegrabber/cvgrabber.cpp:166: error: 'CV_CAP_PROP_FORMAT' was not declared in this scope
+/$SRC_DIR/orca2/src/components/imageserver/imagegrabber/cvgrabber.cpp: In member function 'virtual void imageserver::CvGrabber::setFormat(int)':
+/$SRC_DIR/orca2/src/components/imageserver/imagegrabber/cvgrabber.cpp:172: error: 'CV_CAP_PROP_FORMAT' was not declared in this scope
+/$SRC_DIR/orca2/src/components/imageserver/imagegrabber/cvgrabber.cpp: In member function 'virtual int imageserver::CvGrabber::mode() const':
+/$SRC_DIR/orca2/src/components/imageserver/imagegrabber/cvgrabber.cpp:178: error: 'CV_CAP_PROP_MODE' was not declared in this scope
+@endverbatim
+
 <br>
 
 @par Performance
@@ -109,7 +123,7 @@ This code has @b not been optimised and there are surely areas that can be fixed
 
 - Delay = 30ms: The time for one image once it had been grabbed and before it was loaded as an orca object to the time just before the @c imageviewer displayed it on screen was on average 30ms.
    
-- Throughput = 18Hz: The number of images per second arriving at @c imageviewer was 30.
+- Throughput = 30Hz: The number of images per second arriving at @c imageviewer was 30.
 
 - CPU usage (@c imageserver) = 20%: Measured using @c top . The CPU usage of @c icestorm was 20%.
 
