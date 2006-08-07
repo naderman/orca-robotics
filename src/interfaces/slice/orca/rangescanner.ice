@@ -54,7 +54,7 @@ class RangeScannerConfig extends OrcaObject
     //! Are we talking to the hardware?
     bool  isEnabled;
     
-    //! Baudrate of serial connection to laser
+    //! Baudrate of serial connection to rangescanner
     int baudrate;
 };
 
