@@ -98,18 +98,18 @@ AlgoHandler::initDriver()
     //
     std::string prefix = context_.tag() + ".Config.";
 
-    orcapathplan::Config config;
-
-    config.traversabilityThreshhold = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"TraversabilityThreshhold", 0.3 );
-    config.robotDiameterMetres = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"RobotDiameterMetres", 0.8 );
-    config.doPathOptimization = orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"DoPathOptimization", 0 );
+    double traversabilityThreshhold = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"TraversabilityThreshhold", 0.3 );
+    double robotDiameterMetres = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"RobotDiameterMetres", 0.8 );
+    int doPathOptimization = orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"DoPathOptimization", 0 );
 
     // based on the config parameter, create the right driver
     string driverName = orcaice::getPropertyWithDefault( context_.properties(), prefix+"Driver", "simplenav" );
     context_.tracer()->debug( std::string("loading ")+driverName+" driver",3);
     if ( driverName == "simplenav" )
     {
-        driver_ = new SimpleNavDriver( config );
+        driver_ = new SimpleNavDriver( robotDiameterMetres,
+                                       traversabilityThreshhold,
+                                       doPathOptimization );
     }
     else if ( driverName == "skeletonnav" || driverName == "sparseskeletonnav" )
     {
@@ -121,18 +121,20 @@ AlgoHandler::initDriver()
         bool useSparseSkeleton = (driverName == "sparseskeletonnav");
         driver_ = new SkeletonDriver( ogMapDataPtr_,
                                       graphicsI,
-                                      config.robotDiameterMetres,
-                                      config.traversabilityThreshhold,
-                                      config.doPathOptimization,
+                                      robotDiameterMetres,
+                                      traversabilityThreshhold,
+                                      doPathOptimization,
                                       useSparseSkeleton );
     }
     else if ( driverName == "astar" )
     {
-        driver_ = new AStarDriver( config );
+        driver_ = new AStarDriver( robotDiameterMetres,
+                                   traversabilityThreshhold,
+                                   doPathOptimization  );
     }
     else if ( driverName == "fake" )
     {
-        driver_ = new FakeDriver( config );
+        driver_ = new FakeDriver();
     }
     else {
         string errorStr = "Unknown driver type.";

@@ -90,7 +90,7 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
     
     // conversion of ogmap to AStar format
     watch.start();
-    grow( ogMap_, config_.traversabilityThreshhold, config_.robotDiameterMetres );
+    grow( ogMap_, traversabilityThreshhold_, robotDiameterMetres_ );
     watch.stop();
     cout << "INFO(astardriver.cpp): growing the map took " << watch.elapsedSeconds() * 1000.0 << " ms " << endl;
     int sizeMap = ogMap_.numCellsX() * ogMap_.numCellsY();
@@ -99,7 +99,7 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
     
     // instantiate AStar class
     const bool allowDiagonal = true;
-    const double obstacleWeight = 254.0 * config_.traversabilityThreshhold;
+    const double obstacleWeight = 254.0 * traversabilityThreshhold_;
     assert( ogMap_.metresPerCellX() == ogMap_.metresPerCellY() );
     AStar* aStar = new AStar( ogMapDoubles, ogMap_.numCellsX(), ogMap_.numCellsY(), ogMap_.metresPerCellX(), allowDiagonal, obstacleWeight );     
     // ==============================================
@@ -147,12 +147,12 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
         // ===================================================
         
         // ============= Optional path optimization ================
-        if ( config_.doPathOptimization )
+        if ( doPathOptimization_ )
         {
             // separate full path into a optimized short path
             Cell2DVector waycells;      
             watch.start();
-            optimizePath( ogMap_, path, waycells, config_.robotDiameterMetres );
+            optimizePath( ogMap_, path, waycells, robotDiameterMetres_ );
             watch.stop();
             cout << "INFO(astardriver.cpp): optimizing the path took " << watch.elapsedSeconds() * 1000.0 << " ms " << endl;
             path = waycells;

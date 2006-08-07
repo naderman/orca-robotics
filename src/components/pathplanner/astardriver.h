@@ -26,18 +26,22 @@ class AStarDriver : public AlgoDriver
 {
 
 public:
-    AStarDriver( const orcapathplan::Config & config )
-        : config_(config)
-        {}
-//         : AlgoDriver( config, skelGraphicsI, useSkeleton ), {};
-    
+    AStarDriver( double robotDiameterMetres, double traversabilityThreshhold, bool doPathOptimization )
+        : robotDiameterMetres_(robotDiameterMetres),
+          traversabilityThreshhold_(traversabilityThreshhold),
+          doPathOptimization_(doPathOptimization)
+    {}
+   
     // Computes the path
     virtual void computePath(   const orca::OgMapDataPtr          & ogMapDataPtr,
                                 const orca::PathPlanner2dTaskPtr  & taskPtr,
                                 const orca::PathPlanner2dDataPtr  & pathDataPtr );
 private:
 
-    orcapathplan::Config config_;
+    double robotDiameterMetres_;
+    double traversabilityThreshhold_;
+    bool doPathOptimization_;
+    
     orcaogmap::OgMap ogMap_;
     orca::Path2d coarsePath_;
 

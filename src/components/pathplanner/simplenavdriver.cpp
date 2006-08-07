@@ -97,7 +97,7 @@ void SimpleNavDriver::computePath( const orca::OgMapDataPtr          & ogMapData
         cout << "INFO(simplenavdriver.cpp): Starting to calculate navigation function" << endl;
 
         watch.start();
-        success = calcSimpleNavigation( ogMap_, navMap, startCell, config_ );
+        success = calcSimpleNavigation( ogMap_, navMap, startCell, traversabilityThreshhold_, robotDiameterMetres_ );
         watch.stop();
         cout << "calculating navigation fct took (" << i << ") took: " << watch.elapsedSeconds() << " s" << endl << endl;
 
@@ -113,7 +113,7 @@ void SimpleNavDriver::computePath( const orca::OgMapDataPtr          & ogMapData
         Cell2DVector path;
         cout << "INFO(simplenavdriver.cpp): Calculating path now" << endl;
         watch.start();
-        Result result = orcapathplan::calcPath( ogMap_, navMap, goalCell, path, config_.robotDiameterMetres );
+        Result result = orcapathplan::calcPath( ogMap_, navMap, goalCell, path, robotDiameterMetres_ );
         watch.stop();
         cout << "calcPath took (" << i << ") took: " << watch.elapsedSeconds() << " s" << endl << endl;
 
@@ -127,13 +127,13 @@ void SimpleNavDriver::computePath( const orca::OgMapDataPtr          & ogMapData
         // =================================================
     
         // ============= Optional path optimization ================
-        if ( config_.doPathOptimization )
+        if ( doPathOptimization_ )
         {
             // separate full path into a optimized short path
             cout << "INFO(simplenavdriver.cpp): Optimizing path now" << endl;
             Cell2DVector waycells;    
             watch.start();        
-            optimizePath( ogMap_, path, waycells, config_.robotDiameterMetres );
+            optimizePath( ogMap_, path, waycells, robotDiameterMetres_ );
             watch.stop();
             cout << "optimizePath took (" << i << ") took: " << watch.elapsedSeconds() << " s" << endl << endl;
             path = waycells;
