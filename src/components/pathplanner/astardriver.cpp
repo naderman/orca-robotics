@@ -90,7 +90,7 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
     
     // conversion of ogmap to AStar format
     watch.start();
-    grow( ogMap_, traversabilityThreshhold_, robotDiameterMetres_ );
+    growObstaclesOgMap( ogMap_, traversabilityThreshhold_, robotDiameterMetres_ );
     watch.stop();
     cout << "INFO(astardriver.cpp): growing the map took " << watch.elapsedSeconds() * 1000.0 << " ms " << endl;
     int sizeMap = ogMap_.numCellsX() * ogMap_.numCellsY();
