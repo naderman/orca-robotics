@@ -52,7 +52,7 @@ ylim(yscale)
 mark('y', 0.21488 );
 ylabel( 'Round Trip Time (ms)' )
 xlabel( 'Object Size (KB)' )
-legend( h, xmech_lab{:}, 'location', 'northwest');
+legend( h, 'orca rc4', 'orca lin', 'orca win', 'ping', 'location', 'northwest');
 title('Intra-Host' ) %, 101 objects, interval=0.25s, preload=1')
 wp=get(gcf,'position'); set(gcf,'position', [wp(1:2) 750 600])
 
@@ -74,7 +74,7 @@ ylim(yscale)
 mark('y', 0.43911 );
 ylabel( 'Round Trip Time (ms)' )
 xlabel( 'Object Size (KB)' )
-legend( h, xmech_lab{:}, 'location', 'northwest');
+legend( h, 'orca linux', 'orca win', 'orca mix', 'ping', 'location', 'northwest');
 title('Host-to-Host, wired') %, 101 objects, interval=0.25s, preload=1')
 wp=get(gcf,'position'); set(gcf,'position', [wp(1:2) 750 600])
 
