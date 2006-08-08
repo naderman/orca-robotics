@@ -44,7 +44,8 @@ D1oWW= load( 'pingdata/samehost_win.dat' );  % orca2 Win-Win
 
 %  figure(11),clf
 subplot(132)
-h=pingplot( D1oLL4,'b--s', D1oLL,'b-s', D1oWW,'g-^', D1p,'k--o' );
+h=pingplot( D1oLL,'b-s', D1p,'k--o' );
+%  h=pingplot( D1oLL,'b-s', D1oWW,'g-^', D1p,'k--o' );
 set(gca,'xscale','log')
 set(gca,'yscale','log')
 xlim(xscale)
@@ -52,7 +53,8 @@ ylim(yscale)
 mark('y', 0.21488 );
 ylabel( 'Round Trip Time (ms)' )
 xlabel( 'Object Size (KB)' )
-legend( h, 'orca rc4', 'orca lin', 'orca win', 'ping', 'location', 'northwest');
+legend( h, 'orca linux', 'ping', 'location', 'northwest');
+%  legend( h, 'orca linux', 'orca win', 'ping', 'location', 'northwest');
 title('Intra-Host' ) %, 101 objects, interval=0.25s, preload=1')
 wp=get(gcf,'position'); set(gcf,'position', [wp(1:2) 750 600])
 
@@ -66,7 +68,8 @@ D2oWW= load( 'pingdata/twohosts_winwin.dat' );  % orca2
 
 %  figure(12),clf
 subplot(133)
-h=pingplot( D2oLL,'b-s', D2oWW,'g-^', D2oLW,'m-d', D2p,'k--o' );
+h=pingplot( D2oLL,'b-s', D2p,'k--o' );
+%  h=pingplot( D2oLL,'b-s', D2oWW,'g-^', D2oLW,'m-d', D2p,'k--o' );
 set(gca,'xscale','log')
 set(gca,'yscale','log')
 xlim(xscale)
@@ -74,7 +77,8 @@ ylim(yscale)
 mark('y', 0.43911 );
 ylabel( 'Round Trip Time (ms)' )
 xlabel( 'Object Size (KB)' )
-legend( h, 'orca linux', 'orca win', 'orca mix', 'ping', 'location', 'northwest');
+legend( h, 'orca linux', 'ping', 'location', 'northwest');
+%  legend( h, 'orca linux', 'orca win', 'orca mix', 'ping', 'location', 'northwest');
 title('Host-to-Host, wired') %, 101 objects, interval=0.25s, preload=1')
 wp=get(gcf,'position'); set(gcf,'position', [wp(1:2) 750 600])
 
