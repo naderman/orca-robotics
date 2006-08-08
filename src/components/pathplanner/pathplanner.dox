@@ -25,6 +25,7 @@ The pathplanner acts like a service receiving tasks from third parties and retur
 - @ref orca_interface_home
 - @ref orca_interface_status
 - @ref orca_interface_pathplanner2d
+- @ref orca_interface_qgraphics2d (@ref orca_pathplanner_skeletonnav and @ref orca_pathplanner_sparseskeletonnav drivers only)
 
 @par Required Interfaces
 
@@ -97,6 +98,13 @@ and arcs between those nodes.  This is much faster to plan on.
 - Speed:
   - ~1sec to pre-compute the skeleton.
   - <1ms to plan a path.
+  
+@par Note on diplaying skeletons
+
+Both skeleton navigation algorithms can display the computed skeleton 
+in @ref orca_component_orcaview using the @ref orca_interface_qgraphics2d 
+interface. This is useful for debugging purposes. The skeleton is not part of the 
+@ref orca_interface_pathplanner2d interface data.
 
 @section orca_pathplanner_pathoptimization Path optimization algorithm
 
@@ -135,7 +143,8 @@ gridpotential-based algorithms (@ref orca_pathplanner_simplenav and
 }
 @endverbatim
 
-@par To Do
+@par To do:
+Path optimization assumes that cells are in a consecutive order. This constraint should be removed.
 
 @par Authors
 
