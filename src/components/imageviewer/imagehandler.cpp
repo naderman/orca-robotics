@@ -107,13 +107,13 @@ void ImageHandler::run()
         {
             // calculate average delay
             avDiff = diff/averageOver;
-            cout << "TRACE(imagehandler.cpp): Average delay of images between grabbing and viewing: " << avDiff << "sec" << endl;
+            // cout << "TRACE(imagehandler.cpp): Average delay of images between grabbing and viewing: " << avDiff << "sec" << endl;
             diff = 0.0;
             
             // calculate throughput in Hz
             orcaice::setToNow( finalImageTime );
             totalTime = orcaice::timeDiffAsDouble( finalImageTime, initialImageTime );
-            cout << "TRACE(imagehandler.cpp): Images are arriving at " << 1/(totalTime/averageOver) << " Hz." << endl << endl;
+            // cout << "TRACE(imagehandler.cpp): Images are arriving at " << 1/(totalTime/averageOver) << " Hz." << endl << endl;
         }
 
         //end of timing performance **********************************
