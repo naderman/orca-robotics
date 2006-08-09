@@ -13,7 +13,6 @@ IF ( NOT WIN32 AND BUILD_IMAGE_VIEWER )
 
       IF( OPENCV7_FOUND )
         MESSAGE( "    Using new opencv (>= 0.9.7)" )
-        # MESSAGE( "    Make sure this version is from cvs and not the release" )
         INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} )
 
         IF ( TRICLOPS_FOUND )
