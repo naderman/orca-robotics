@@ -14,25 +14,11 @@
 
 Developers: as you make substantial changes in the code (add features, fix bugs, etc.), add an item in the section on changes. When the next version is released, this list will be cut-and-pasted into the release notes.
 
-@section todo To-Do List for Release 2.0.0
-
-- License ???
+@section todo To-Do List for Release 2.1.0
 
 -- Separate utilities from libraries?
 
-- Check docco, especially quickstart and tutorials ... DONE
-
-- review libOrcaIce for stuff does not belong there
-    - all object functions to libOrcaObjects? ... DONE
-    - remove long syntax for req. interfaces? ... not going to do now.
-
-- Write docco on file format for def files ... DONE
-
-- redo ping performance number ... DONE
-
 - do not install test .cfg files
-
-- fix bug with rebuld/relink on install
 
 @section changes Changes since Last Release
 
