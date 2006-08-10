@@ -1,0 +1,22 @@
+DefaultComponentTag=OgNode
+
+# Provided Interfaces
+
+Provides.OgMap.Type=OgMap
+Provides.OgMap.DefaultInterface=ogmap
+
+Provides.OgFusion.Type=OgFusion
+Provides.OgFusion.DefaultInterface=ogfusion
+
+# Required Interfaces
+
+# Config Parameters
+
+Config.Map.SizeX.Default=100
+Config.Map.SizeY.Default=100
+Config.Map.ResX.Default=0.5
+Config.Map.ResY.Default=0.5
+Config.Map.OriginX.Default=-25
+Config.Map.OriginY.Default=-25
+Config.Map.Orientation.Default=0
+
