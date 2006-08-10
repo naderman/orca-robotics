@@ -1,9 +1,9 @@
 /*!
-@ingroup bcomponents
-@ingroup bapps
-@ingroup bservices
-@ingroup bcpp
-@ingroup blinux
+@ingroup components
+@ingroup apps
+@ingroup services
+@ingroup cpp
+@ingroup linux
 @defgroup orca_component_laser2og Laser2Og
 @brief Generates Occupancy Grid cell likelihoods from a raw range scans.
 

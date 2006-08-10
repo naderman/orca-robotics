@@ -1,9 +1,9 @@
 /*!
-@ingroup bcomponents
-@ingroup bapps
-@ingroup bservices
-@ingroup bcpp
-@ingroup blinux
+@ingroup components
+@ingroup apps
+@ingroup services
+@ingroup cpp
+@ingroup linux
 @defgroup orca_component_ognode OgNode
 @brief Fuses sequences of occupancy likelihoods.
 
