@@ -1,5 +1,6 @@
 OPTION( BUILD_LASER2OG "Try to build Laser2Og" OFF )
 
+IF ( NOT WIN32 )
 IF ( BUILD_LASER2OG )
 
     INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
@@ -17,3 +18,4 @@ IF ( BUILD_LASER2OG )
     GENERATE_CONFIG_FILE( laser2og.def )
 
 ENDIF ( BUILD_LASER2OG )
+ENDIF ( NOT WIN32 )

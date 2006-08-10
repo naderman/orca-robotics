@@ -1,5 +1,6 @@
 OPTION( BUILD_OGNODE "Try to build OgNode" ON )
 
+IF ( NOT WIN32 )
 IF ( BUILD_OGNODE )
 
     INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
@@ -18,3 +19,4 @@ IF ( BUILD_OGNODE )
     GENERATE_CONFIG_FILE( ognode.def )
 
 ENDIF ( BUILD_OGNODE )
+ENDIF ( NOT WIN32 )
