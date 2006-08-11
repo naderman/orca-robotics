@@ -143,9 +143,6 @@ gridpotential-based algorithms (@ref orca_pathplanner_simplenav and
 }
 @endverbatim
 
-@par To do:
-Path optimization assumes that cells are in a consecutive order. This constraint should be removed.
-
 @par Authors
 
  - Tobias Kaupp
