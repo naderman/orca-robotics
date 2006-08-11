@@ -1,4 +1,4 @@
-OPTION( BUILD_LASER2OG "Try to build Laser2Og" OFF )
+OPTION( BUILD_LASER2OG "Try to build Laser2Og" ON )
 
 IF ( NOT WIN32 )
 IF ( BUILD_LASER2OG )
