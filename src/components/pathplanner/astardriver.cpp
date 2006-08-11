@@ -153,7 +153,7 @@ void AStarDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
             // separate full path into a optimized short path
             Cell2DVector waycells;      
             watch.start();
-            optimizePath( ogMap_, path, waycells, robotDiameterMetres_ );
+            optimizePath( ogMap_, path, waycells );
             watch.stop();
             cout << "INFO(astardriver.cpp): optimizing the path took " << watch.elapsedSeconds() * 1000.0 << " ms " << endl;
             path = waycells;

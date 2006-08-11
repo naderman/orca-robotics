@@ -39,7 +39,6 @@ private:
     orcaogmap::OgMap               ogMap_;
     orcapathplan::IPathPlanner2d  *pathPlanner_;
     double                         robotDiameterMetres_;
-    bool                           doPathOptimization_;
 };
 
 }
