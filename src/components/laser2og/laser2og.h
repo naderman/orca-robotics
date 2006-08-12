@@ -10,7 +10,6 @@
 #define _BRUCE2_LASER2OG_H_
 
 // orca objects
-#include <orca/bros1.h>
 #include <orca/laser.h>
 #include <orca/localise2d.h>
 #include <orca/ogfusion.h>
@@ -40,7 +39,7 @@ private:
     // sensor config
     double laserRange_;
         
-    //! Sensor model.
+    // sensor model
     OgSensorModel* sensorModel_;
 
     // map config

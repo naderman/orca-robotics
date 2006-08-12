@@ -13,8 +13,6 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-#include <orca/bros1.h>
-
 #include <orcaice/orcaice.h>
 #include <orcaobj/mathdefs.h>
 
@@ -28,7 +26,6 @@
 #include "raytrace.h"
 
 using namespace std;
-using namespace orcaogmap;
 using namespace orcapathplan;
 using namespace orca;
 using namespace laser2og;
@@ -90,7 +87,7 @@ int Laser2Og::process( const orca::Localise2dData &sensorPose, const orca::Range
 
     if(posStDev > sensorModel_->posStDevMax() )
     {
-        cout << "WARNING(laser2og.cpp)::process(): position std dev " << posStDev << "m is too big." << endl;
+        cout << "WARNING(laser2og.cpp)::process(): position std dev " << posStDev << " m is too big." << endl;
         return -1;
     }
 
