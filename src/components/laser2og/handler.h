@@ -20,9 +20,8 @@ public:
     Handler(orcaice::PtrBuffer<orca::RangeScannerDataPtr> &RangeScannerDataBuffer,
 		    const orca::Localise2dPrx  localise2dPrx,
 		    const orca::OgFusionPrx  ogFusionPrx,
-                    Laser2Og& Ogger,
-		    orcaice::Context current
-		   );
+            Laser2Og& laser2Og,
+		    orcaice::Context context );
     ~Handler();
 
     virtual void run();
@@ -36,7 +35,7 @@ private:
     // proxy for OgFusion
     const orca::OgFusionPrx  ogFusionPrx_;
 
-    Laser2Og& Ogger_;
+    Laser2Og& laser2Og_;
 
     orcaice::Context context_;
 

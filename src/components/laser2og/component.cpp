@@ -12,15 +12,15 @@ using namespace laser2og;
 
 Component::Component()
     : orcaice::Component( "Laser2Og", orcaice::HomeInterface  ),
-    OggerDumbPtr_(NULL)
+    laser2Og_(NULL)
 {
 }
 
 Component::~Component()
 {
     // do not delete inputLoop_!!! It derives from Ice::Thread and deletes itself.
-    if(OggerDumbPtr_!=NULL)
-        delete OggerDumbPtr_;
+    if(laser2Og_!=NULL)
+        delete laser2Og_;
 }
 
 // NOTE: this function returns after it's done, all variable that need to be permanet must
@@ -169,12 +169,12 @@ Component::start()
     //
     context().tracer()->debug( "entering handler_...",5 );
 
-    OggerDumbPtr_=new Laser2Og(mapConfig,sensorConfig);
+    laser2Og_ = new Laser2Og(mapConfig,sensorConfig);
 
     handler_ = new Handler(rangeScannerDataBuffer_,
                             localise2dPrx_,
                             ogFusionPrx_,
-                            *OggerDumbPtr_,
+                            *laser2Og_,
                             context() );
 
     handler_->start();

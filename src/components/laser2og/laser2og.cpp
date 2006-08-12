@@ -68,12 +68,12 @@ int Laser2Og::process( const orca::Localise2dData &sensorPose, const orca::Range
 {
     if ( scan.ranges.size() == 0 )
     {
-        //cout << "Laser2Og::process(): empty laser scan" <<endl;
+        cout << "WARNING(laser2og.cpp)::process(): empty laser scan" << endl;
         return -1;
     }
-    if(sensorPose.hypotheses.size()!=1)
+    if(sensorPose.hypotheses.size() != 1)
     {
-        //cout << "Laser2Og::process(): too many hypotheses." <<endl;
+        cout << "ERROR(laser2og.cpp)::process(): more than one hypotheses. Can't handle this!" << endl;
         return -1;
     }
 
@@ -90,17 +90,16 @@ int Laser2Og::process( const orca::Localise2dData &sensorPose, const orca::Range
 
     if(posStDev > sensorModel_->posStDevMax() )
     {
-	//cout << "Laser2Og::process(): position variance too great." <<endl;
+        cout << "WARNING(laser2og.cpp)::process(): position std dev " << posStDev << "m is too big." << endl;
         return -1;
     }
 
-    // chech heading uncertainty
+    // check heading uncertainty
     double hedStdDev = sqrt(sensorPose.hypotheses[0].cov.tt);
 
     if( hedStdDev > sensorModel_->hedStDevMax() )
     {
-	cout << "Laser2Og::process(): heading Std Dev too great." <<endl;
-	cout << "Laser2Og::process(): heading Std Dev: " << hedStdDev << endl;
+        cout << "WARNING(laser2og.cpp)::process(): heading std dev " << RAD2DEG(hedStdDev) << " deg is too big." <<endl;
         return -1;
     }
 
@@ -115,19 +114,19 @@ int Laser2Og::process( const orca::Localise2dData &sensorPose, const orca::Range
         double rangeEff = CHECK_LIMITS( laserRange_, scan.ranges[i], 0.0 );
         
         // find (x,y) coordinates of laser return in global
-	// NOTE!!! : arbitrary 25% overshoot on range.
-	orcaogmap::CartesianPoint2d sensorPosePoint;
+	    // NOTE!!! : arbitrary 25% overshoot on range.
+        orcaogmap::CartesianPoint2d sensorPosePoint;
 
-	sensorPosePoint.x=sensorPose.hypotheses[0].mean.p.x;
-	sensorPosePoint.y=sensorPose.hypotheses[0].mean.p.y;
+        sensorPosePoint.x=sensorPose.hypotheses[0].mean.p.x;
+        sensorPosePoint.y=sensorPose.hypotheses[0].mean.p.y;
 
-	orcaogmap::CartesianPoint2d returnPoint;
+        orcaogmap::CartesianPoint2d returnPoint;
         double rayBearing = sensorPose.hypotheses[0].mean.o+laserScanBearing(scan, i );
-	returnPoint.x = sensorPose.hypotheses[0].mean.p.x +
-	    RAY_EXTENSION*rangeEff*cos( rayBearing );
+        returnPoint.x = sensorPose.hypotheses[0].mean.p.x +
+            RAY_EXTENSION*rangeEff*cos( rayBearing );
 
-	returnPoint.y = sensorPose.hypotheses[0].mean.p.y +
-	    RAY_EXTENSION*rangeEff*sin( rayBearing );
+        returnPoint.y = sensorPose.hypotheses[0].mean.p.y +
+            RAY_EXTENSION*rangeEff*sin( rayBearing );
         
         // find cells crossed by the vehicle-to-return_point ray
         std::vector<Cell2D> ray = rayTrace( sensorPosePoint, returnPoint, mapOriginX_, mapOriginY_, mapResX_, mapResY_ );
@@ -137,7 +136,7 @@ int Laser2Og::process( const orca::Localise2dData &sensorPose, const orca::Range
         //cout << "with bearing of "<< laserScanBearing(scan, i )<<endl;
 
         Cell2D currentCell;
-	OgCellLikelihood currentFeature;
+        OgCellLikelihood currentFeature;
 
         // for each traversed cell
         for ( uint j=0; j<ray.size(); j++ )
@@ -145,9 +144,9 @@ int Laser2Og::process( const orca::Localise2dData &sensorPose, const orca::Range
             // cell along the ray
             currentCell = ray[j];  
 
-	    // Check if it is inside map
-            if( currentCell.x() < 0 || currentCell.x() > mapSizeX_ || 
-                currentCell.y() < 0 || currentCell.y() > mapSizeY_ )
+            // Check if it is inside map
+            if( currentCell.x() < 0 || currentCell.x() >= mapSizeX_ || 
+                currentCell.y() < 0 || currentCell.y() >= mapSizeY_ )
             {
                 continue;
             }
@@ -163,17 +162,17 @@ int Laser2Og::process( const orca::Localise2dData &sensorPose, const orca::Range
             
             // =========== LIKELIHOOD ====================
             // get position varienace in direction of ray
-	    //double SPos = sqrt(posEll.rotCov(rayBearing,a,b,t));
-	    //double Pzx = sensorModel_->likelihood( dist, rangeEff, SPos , hedStdDev );
+            //double SPos = sqrt(posEll.rotCov(rayBearing,a,b,t));
+            //double Pzx = sensorModel_->likelihood( dist, rangeEff, SPos , hedStdDev );
 
-	    double Pzx = sensorModel_->likelihood( dist, rangeEff, 0.0 , 0.0 );
+            double Pzx = sensorModel_->likelihood( dist, rangeEff, 0.0 , 0.0 );
 
             //cout << Pzx <<" ";
             //cout<<"C:"<<currentCell<<"I:"<<currentCellIndex<<"L:"<<Pzx<<endl;
             
-	    currentFeature.likelihood=Pzx;
-	    currentFeature.x=currentCell.x();
-	    currentFeature.y=currentCell.y();
+            currentFeature.likelihood=Pzx;
+            currentFeature.x=currentCell.x();
+            currentFeature.y=currentCell.y();
 
             buffer_.insertAdd(currentCellIndex, currentFeature );
         

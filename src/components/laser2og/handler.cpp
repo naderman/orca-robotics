@@ -16,13 +16,13 @@ using namespace laser2og;
 Handler::Handler(orcaice::PtrBuffer<orca::RangeScannerDataPtr> &RangeScannerDataBuffer,
                 const orca::Localise2dPrx  localise2dPrx,
                 const orca::OgFusionPrx ogFusionPrx,
-                Laser2Og& Ogger,
-                orcaice::Context current)
+                Laser2Og& laser2Og,
+                orcaice::Context context)
     : rangeScannerDataBuffer_(RangeScannerDataBuffer),
-    localise2dPrx_(localise2dPrx),
-    ogFusionPrx_(ogFusionPrx),
-    Ogger_(Ogger),
-    context_(current)
+      localise2dPrx_(localise2dPrx),
+      ogFusionPrx_(ogFusionPrx),
+      laser2Og_(laser2Og),
+      context_(context)
 {
 }
 
@@ -35,49 +35,49 @@ Handler::run()
 {
     try
     {
-	RangeScannerDataPtr data = new RangeScannerData;
+	RangeScannerDataPtr rangeScan = new RangeScannerData;
 	Localise2dDataPtr pose = new Localise2dData;
 
 	OgFusionDataPtr obs = new OgFusionData;
 
-        //
-        // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
-        //            So we have to avoid getting stuck in a loop anywhere within this main loop.
-        //
-        while ( isActive() )
+    //
+    // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
+    //            So we have to avoid getting stuck in a loop anywhere within this main loop.
+    //
+    while ( isActive() )
 	{
-	    int ret=rangeScannerDataBuffer_.getAndPopNext(data,1000);
-	    if(ret==0){
-                //cout << "got an range scan object\n";
-		//cout << data << endl ;
-		// now we need the current pose
-		try{
-		    pose=localise2dPrx_->getDataAtTime(data->timeStamp);
-		}catch( orca::DataNotExistException e ){
-		    cout << "could not fetch pose\n";
-		    cout << "reason: " << e.what << endl;
+	    int ret=rangeScannerDataBuffer_.getAndPopNext(rangeScan,1000);
+	    if(ret==0)
+        {
+		    try
+            {
+                pose=localise2dPrx_->getDataAtTime(rangeScan->timeStamp);
+            }
+            catch( orca::DataNotExistException e )
+            {
+                cout << "ERROR(handler.cpp): could not fetch pose\n";
+                cout << "ERROR(handler.cpp): reason: " << e.what << endl;
+//                 throw orca::DataNotExistException("Could not fetch pose from localise2dPrx");
+            }
 
-		}
-		//cout << "fetched pose\n";
-		//cout << pose << endl;
-
-		//laserScan + pose to OgObservation
-		Ogger_.process(*pose,*data);
-                Ogger_.getObs(obs->observation);
-		//obs.timeStamp = orcaice::toOrcaTime(IceUtil::Time::now());
-                obs->timeStamp = data->timeStamp;
-		//cout << "have " << obs->observation.size() << " cells\n";
-		//send out OgFusionData
-                ogFusionPrx_->setData(obs);
+            laser2Og_.process(*pose,*rangeScan);
+            laser2Og_.getObs(obs->observation);
+            obs->timeStamp = rangeScan->timeStamp;
+            
+            //send out OgFusionData
+            ogFusionPrx_->setData(obs);
 
 	    }
-	    else if(ret==1){
-		//interrupted
-                cout << "interrupted\n";
-	    }else{
+	    else if (ret==1)
+        {
+            cout << "TRACE(handler.cpp): Interrupted\n";
+	    }
+        else
+        {
                 //timeout
 	    }
 	}
+    
     }   // end of try
     catch ( Ice::CommunicatorDestroyedException &e )
     {

@@ -35,7 +35,7 @@ private:
     orca::OgFusionPrx ogFusionPrx_;
     // for receiving the data
     orca::RangeScannerConsumerPrx rangeScannerConsumerPrx_;
-    Laser2Og *OggerDumbPtr_;
+    Laser2Og *laser2Og_;
 
 };
 
