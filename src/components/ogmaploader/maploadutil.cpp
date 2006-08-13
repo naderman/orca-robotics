@@ -12,61 +12,12 @@
 #include <zlib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <iostream>
-#include <sstream>
 
 #include "maploadutil.h"
 
 using namespace std;
 
 namespace maploadutil {
-
-// Load a gzipped pnm image.
-int
-loadPnmGz( const char *filename, 
-           bool negate,
-           int &numCellsX,
-           int &numCellsY,
-           std::vector<unsigned char> &cells );
-
-int
-loadBitmap( const char *filename,
-            bool negate,
-            int &numCellsX,
-            int &numCellsY,
-            std::vector<unsigned char> &cells );
-
-
-void
-loadMap( const std::string &filename,
-         bool negate,
-         int &numCellsX,
-         int &numCellsY,
-         std::vector<unsigned char> &cells )
-{
-    int len = strlen( filename.c_str() );
-    
-    // pnm.gz files
-    if ( strcmp( &filename.c_str()[len - 7], ".pnm.gz" ) == 0 )
-    {
-        cout << "TRACE(ogmaploader.cpp): loading " << filename << " as a gzipped PNM image..." << endl;
-        if ( loadPnmGz( filename.c_str(), negate, numCellsX, numCellsY, cells ) != 0 )
-        {
-            stringstream ss;
-            ss << "ERROR(ogmaploader.cpp): failed to open " << filename;
-            throw( ss.str() );
-        }
-    }
-    else // all other non-zipped bitmap files are loaded using the gdk library
-    {
-        cout << "TRACE(ogmaploader.cpp): loading " << filename << endl;        
-        if ( loadBitmap( filename.c_str(), negate, numCellsX, numCellsY, cells ) != 0 )
-        {
-            stringstream ss;
-            ss << "ERROR(ogmaploader.cpp): failed to open " << filename;
-            throw ss.str();
-        }
-    }
-}
       
 int
 loadBitmap(const char *filename,
@@ -146,7 +97,6 @@ loadBitmap(const char *filename,
 }
 
     
-// Load a gzipped pnm image.
 int
 loadPnmGz(const char *filename, 
           bool negate,           

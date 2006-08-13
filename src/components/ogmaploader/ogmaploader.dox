@@ -29,12 +29,19 @@
 @par Drivers
 
 - @b fake Serves a bogus made-up map.
-- @b real Loads a real map from a file.
+- @b file Loads an occupancy grid map from a file.
 
-Supports most bitmap formats and gzipped pnm.
+Supportes file types are:
 
-Clients who wish to receive the map should call getData().
-This component will only ever issue one update to subscribers: on initialisation.
+- most bitmaps 
+    - anything gdk can load
+- gzipped pnm 
+    - file extension: @c .pnm.gz
+- ICE stream files 
+    - file extension: @c .bin
+    - these files can be generated using @ref orca_component_orcaview
+
+Clients who wish to receive the map should call getData(). This component will only ever issue one update to subscribers: on initialisation.
 
 @par Configuration
 
@@ -54,7 +61,9 @@ This component will only ever issue one update to subscribers: on initialisation
             - 1: white is occupied, black is empty
     - Default: 1
 
-Map Geometry (see orca::OgMapData documentation for a detailed explanation)
+Map Geometry (see @ref orca_interface_ogmap for a detailed explanation)
+
+Note: These parameters have @b no effect on maps loaded from ICE stream files. Those files contain all relevant information already.
 
 World Size (float,float) [m]
 - @c OgMapLoader.Config.Size.X

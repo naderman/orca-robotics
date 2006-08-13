@@ -11,6 +11,7 @@
 
 #include "component.h"
 #include "fakemaploader.h"
+#include "maploader.h"
 #include "maploadutil.h"
 
 // implementations of Ice objects
@@ -54,28 +55,8 @@ Component::start()
     }
     else if ( driverName == "file" )
     {
-        std::string mapFileName = orcaice::getPropertyWithDefault( prop, prefix+"MapFileName", "mapfilename" );
-        float worldSizeX = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.X", 20.0 );
-        float worldSizeY = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.Y", 20.0 );
-        float originX     = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.X", 0.0 );
-        float originY     = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Y", 0.0 );
-        float originTheta = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Orientation", 0.0 ) * M_PI/180.0;
-        bool  negate      = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Negate", true );
-
-        maploadutil::loadMap( mapFileName,
-                              negate,
-                              theMap->numCellsX,
-                              theMap->numCellsY,
-                              theMap->data );
-
-        theMap->origin.p.x = originX;
-        theMap->origin.p.y = originY;
-        theMap->origin.o   = originTheta;
-
-        // since we know that map size in pixels, we can calculate the cell size
-        theMap->metresPerCellX = worldSizeX / (float)theMap->numCellsX;
-        theMap->metresPerCellY = worldSizeY / (float)theMap->numCellsY;
-
+        MapLoader* mapLoader = new MapLoader( context(), prop, prefix );
+        mapLoader->loadMapFromFile(theMap);
         cout<<"TRACE(component.cpp): Loaded map: " << orcaice::toString(theMap) << endl;
     }
     else

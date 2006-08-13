@@ -30,7 +30,7 @@ IF ( NOT WIN32 AND REALLY_BUILD_OGMAPLOADER )
       )
     
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-    SET( COMMON_SRCS component ogmapI maploadutil fakemaploader )
+    SET( COMMON_SRCS component ogmapI maploader maploadutil fakemaploader )
     
     # Files for the stand-alone application
     SET( COMP_SRCS main ${COMMON_SRCS} )

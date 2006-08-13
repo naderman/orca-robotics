@@ -12,23 +12,23 @@
 #define ORCA2_OGMAP_LOAD_UTIL_H
 
 #include <vector>
-#include <string>
 
 namespace maploadutil {
 
-    //
-    // @author Tim Arney (t.arney at cas.edu.au), Tobias Kaupp (t.kaupp at cas.edu.au), Alex Brooks
-    // @brief Loads an occupancy grid from an image file.
-    //
-    // Allowed formats: anything gdk can load, plus .pnm.gz
-    //
-    // Throws std::strings if there are problems.
-    //
-    void loadMap( const std::string &filename,
-                  bool negate,
-                  int &numCellsX,
-                  int &numCellsY,
-                  std::vector<unsigned char> &cells );
+//! Loads an occupancy grid map from a bitmap file. Supported file types is anything gdk can load.
+//! Parameters: negate (1 means white is occupied), cells (0: unoccupied, 254: occupied, 127: unknown)
+int loadBitmap( const char *filename,
+                    bool negate,
+                    int &numCellsX,
+                    int &numCellsY,
+                    std::vector<unsigned char> &cells );
+                    
+//! As above but for gzipped pnm's
+int loadPnmGz( const char *filename, 
+                bool negate,
+                int &numCellsX,
+                int &numCellsY,
+                std::vector<unsigned char> &cells );
 }
 
 #endif

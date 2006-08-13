@@ -10,8 +10,6 @@
 #ifndef __ogmapI_h__
 #define __ogmapI_h__
 
-#include <orca/ogmap.h>
-
 // include defnition of Ice runtime
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
