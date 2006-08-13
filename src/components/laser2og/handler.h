@@ -17,27 +17,28 @@ namespace laser2og
 class Handler : public orcaice::Thread
 {
 public:
-    Handler(orcaice::PtrBuffer<orca::RangeScannerDataPtr> &RangeScannerDataBuffer,
-		    const orca::Localise2dPrx  localise2dPrx,
-		    const orca::OgFusionPrx  ogFusionPrx,
-            Laser2Og& laser2Og,
-		    orcaice::Context context );
+    
+    Handler( const orcaice::Context &context );
     ~Handler();
 
     virtual void run();
+    
 private:
-    // for the scans
-    orcaice::PtrBuffer<orca::RangeScannerDataPtr> &rangeScannerDataBuffer_;
 
-    // proxy for localise2d
-    const orca::Localise2dPrx  localise2dPrx_;
-
-    // proxy for OgFusion
-    const orca::OgFusionPrx  ogFusionPrx_;
-
-    Laser2Og& laser2Og_;
-
+    void init();
+    
     orcaice::Context context_;
+    
+    orcaice::PtrBuffer<orca::RangeScannerDataPtr> rangeScannerDataBuffer_;
+    // for our requests for current location
+    orca::Localise2dPrx localise2dPrx_;
+    // for getting config data
+    orca::RangeScannerPrx rangeScannerPrx_;
+    // for setting ogfusion data
+    orca::OgFusionPrx ogFusionPrx_;
+    // for receiving the data
+    orca::RangeScannerConsumerPrx rangeScannerConsumerPrx_;
+    Laser2Og *laser2Og_;
 
 };
 

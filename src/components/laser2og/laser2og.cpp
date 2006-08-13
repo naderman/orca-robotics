@@ -70,7 +70,7 @@ int Laser2Og::process( const orca::Localise2dData &sensorPose, const orca::Range
     }
     if(sensorPose.hypotheses.size() != 1)
     {
-        cout << "ERROR(laser2og.cpp)::process(): more than one hypotheses. Can't handle this!" << endl;
+        cout << "WARNING(laser2og.cpp)::process(): more than one hypothesis. Can't handle this!" << endl;
         return -1;
     }
 

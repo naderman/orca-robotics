@@ -23,19 +23,9 @@ public:
     // component interface
     virtual void start();
     virtual void stop();
+    
 private:
     Handler *handler_;
-
-    orcaice::PtrBuffer<orca::RangeScannerDataPtr> rangeScannerDataBuffer_;
-    // for our requests for current location
-    orca::Localise2dPrx localise2dPrx_;
-    // for getting config data
-    orca::RangeScannerPrx rangeScannerPrx_;
-    // for setting ogfusion data
-    orca::OgFusionPrx ogFusionPrx_;
-    // for receiving the data
-    orca::RangeScannerConsumerPrx rangeScannerConsumerPrx_;
-    Laser2Og *laser2Og_;
 
 };
 

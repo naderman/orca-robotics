@@ -20,7 +20,7 @@ Config.Sensor.OccupMax.Default=0.575
 Config.Sensor.EmptyMax.Default=0.425
 Config.Sensor.RangeStDev.Default=0.1
 Config.Sensor.RangeStDevMax.Default=3.0
-# Maximum positon uncertainty tolerated (Metres)
+# Maximum position uncertainty tolerated (Metres)
 Config.Sensor.PosStDevMax.Default = 5.0;
 # Maximum heading uncertainty tolerated (Degrees)
 Config.Sensor.HedStDevMax.Default = 3.0;

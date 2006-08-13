@@ -5,7 +5,7 @@
 @ingroup cpp
 @ingroup linux
 @defgroup orca_component_laser2og Laser2Og
-@brief Generates Occupancy Grid cell likelihoods from a raw range scans.
+@brief Generates Occupancy Grid cell likelihoods from raw range scans.
 
 @par Provides
 
@@ -18,50 +18,37 @@
 - @ref orca_interface_ogfusion
 - @ref orca_interface_rangescanner
 
-This component generates OgCellLikelihoods sequences from a 
-Range Scanning Device and a Localised2d component.
+This component generates OgCellLikelihood sequences using 
+range scans from a globally localized range scanner.
 
-Will NOT generate likelihoods if Localised2d component is producing
+Note: can NOT generate likelihoods if @ref orca_interface_localise2d interface contains
 more than 1 hypothesis.
 
 @par Configuration
 
-- @c Laser2Og.Config.Sensor.RangeMax (double) [m]
-    - Maximum range of the sensor
-    - Default: 8.1
 - @c Laser2Og.Config.Sensor.Size (int)
-    - Number of elements in sensor model.
+    - Number of elements in sensor model
     - Default: 101
 - @c Laser2Og.Config.Sensor.OccupMax (double)
     - Default: 0.575
 - @c Laser2Og.Config.Sensor.EmptyMax (double)
     - Default: 0.425
 - @c Laser2Og.Config.Sensor.RangeStDev (double) [m]
+    - Range standard deviation
     - Default: 0.1
 - @c Laser2Og.Config.Sensor.RangeStDevMax (double) [m]
+    - Maximum range standard deviation
     - Default: 3.0
-
-
-- @c OgNode.Config.Map.SizeX (int) [cells]
-    - Size of map in Cells (X)
-    - Default: 100
-- @c OgNode.Config.Map.SizeY (int) [cells]
-    - Size of map in Cells (Y)
-    - Default: 100
-- @c OgNode.Config.Map.Res (double) [m]
-    - The Map resolution in Metres per Cell
-    - Default: 0.5
-- @c OgNode.Config.Map.OriginX (double) [m]
-    - The origin of the Map (Bottom left hand Corner) in Metres (X)
-    - Default: -25.0
-- @c OgNode.Config.Map.OriginY (double) [m]
-    - The origin of the Map (Bottom left hand Corner) in Metres (Y)
-    - Default: -25.0
-- @c OgNode.Config.Map.Orientation (double) [deg]
-    - The orientation of the Map in Degrees
-    - Default: 0.0
+- @c Laser2Og.Config.Sensor.PosStDevMax (double) [m]
+    - Maximum tolerated position uncertainty
+    - Default: 5.0
+- @c Laser2Og.Config.Sensor.HedStDevMax (double) [deg]
+    - Maximum tolerated heading uncertainty
+    - Default: 5.0
+    
 
 @par Authors
-Matthew Ridley
+- Matthew Ridley
+- Tobias Kaupp
 
 */
