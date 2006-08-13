@@ -28,11 +28,15 @@ Component::start()
 
     ogfusion::MapConfig mapConfig;
     // read map info from config
-    mapConfig.mapSizeX = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Map.SizeX", 100 );
-    mapConfig.mapSizeY = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Map.SizeY", 100 );
 
     mapConfig.mapResX = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.ResX", 0.5 );
     mapConfig.mapResY = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.ResY", 0.5 );
+    
+    double sizeXMetres = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.SizeXMetres", 50.0 );
+    double sizeYMetres = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.SizeYMetres", 50.0 );
+    
+    mapConfig.mapSizeX = (int)floor(sizeXMetres/mapConfig.mapResX);
+    mapConfig.mapSizeY = (int)floor(sizeYMetres/mapConfig.mapResY);
 
     mapConfig.mapOriginX=orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.OriginX", -25.0 );
     mapConfig.mapOriginY=orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.OriginY", -25.0 );

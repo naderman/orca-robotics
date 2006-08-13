@@ -12,11 +12,11 @@ Provides.OgFusion.DefaultInterface=ogfusion
 
 # Config Parameters
 
-Config.Map.SizeX.Default=100
-Config.Map.SizeY.Default=100
+Config.Map.SizeXMetres.Default=50.0
+Config.Map.SizeYMetres.Default=50.0
 Config.Map.ResX.Default=0.5
 Config.Map.ResY.Default=0.5
-Config.Map.OriginX.Default=-25
-Config.Map.OriginY.Default=-25
+Config.Map.OriginX.Default=-25.0
+Config.Map.OriginY.Default=-25.0
 Config.Map.Orientation.Default=0
 

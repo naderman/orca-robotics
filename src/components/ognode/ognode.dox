@@ -24,23 +24,26 @@ as an OgMap interface.
 
 @par Configuration
 
-- @c OgNode.Config.Map.SizeX (int) [cells]
-    - Size of map in Cells (X)
-    - Default: 100
-- @c OgNode.Config.Map.SizeY (int) [cells]
-    - Size of map in Cells (Y)
-    - Default: 100
-- @c OgNode.Config.Map.Res (double) [m]
-    - The Map resolution in Metres per Cell
+- @c OgNode.Config.Map.SizeXMetres (double) [m]
+    - Size of map in metres (X)
+    - Default: 50.0
+- @c OgNode.Config.Map.SizeYMetres (double) [m]
+    - Size of map in metres (Y)
+    - Default: 50.0
+- @c OgNode.Config.Map.ResX (double) [m]
+    - The Map resolution in metres per Cell in X-direction
+    - Default: 0.5
+- @c OgNode.Config.Map.ResY (double) [m]
+    - The Map resolution in metres per Cell in Y-direction
     - Default: 0.5
 - @c OgNode.Config.Map.OriginX (double) [m]
-    - The origin of the Map (bottom-left corner) in Metres (X)
+    - The origin of the map (bottom-left corner) in metres (X)
     - Default: -25.0
 - @c OgNode.Config.Map.OriginY (double) [m]
-    - The origin of the Map (bottom-left corner) in Metres (Y)
+    - The origin of the map (bottom-left corner) in metres (Y)
     - Default: -25.0
 - @c OgNode.Config.Map.Orientation (double) [deg]
-    - The orientation of the Map in Degrees
+    - The orientation of the map in degrees
     - Default: 0.0
 
 @par Authors
