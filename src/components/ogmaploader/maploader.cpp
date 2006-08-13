@@ -56,7 +56,7 @@ MapLoader::loadMapFromFile( orca::OgMapDataPtr &map )
         case PNM_GZ:        if (maploadutil::loadPnmGz( filename_.c_str(), negate_, map->numCellsX, map->numCellsY, map->data ) != 0)
                             {
                                 stringstream ss;
-                                ss << "ERROR(maploader.cpp): failed to open " << filename_;
+                                ss << "ERROR(maploader.cpp): something went wrong while loading " << filename_;
                                 throw ss.str();
                             }
                             setMapParameters( map );      
@@ -65,7 +65,7 @@ MapLoader::loadMapFromFile( orca::OgMapDataPtr &map )
         case BITMAP:        if (maploadutil::loadBitmap( filename_.c_str(), negate_, map->numCellsX, map->numCellsY, map->data ) != 0)
                             {
                                 stringstream ss;
-                                ss << "ERROR(maploader.cpp): failed to open " << filename_;
+                                ss << "ERROR(maploader.cpp): something went wrong while loading " << filename_;
                                 throw ss.str();
                             }
                             setMapParameters( map );     
@@ -74,7 +74,7 @@ MapLoader::loadMapFromFile( orca::OgMapDataPtr &map )
         case ICE_STREAM:    if ( loadIceStream( map ) != 0 )
                             {
                                 stringstream ss;
-                                ss << "ERROR(maploader.cpp): failed to open " << filename_;
+                                ss << "ERROR(maploader.cpp): something went wrong while loading " << filename_;
                                 throw ss.str();
                             }
                             break;
@@ -84,28 +84,32 @@ MapLoader::loadMapFromFile( orca::OgMapDataPtr &map )
 void
 MapLoader::setMapParameters( OgMapDataPtr &map )
 {
-        map->origin.p.x = originX_;
-        map->origin.p.y = originY_;
-        map->origin.o   = originTheta_;
-    
-        // since we know that map size in pixels, we can calculate the cell size
-        map->metresPerCellX = worldSizeX_ / (float)map->numCellsX;
-        map->metresPerCellY = worldSizeY_ / (float)map->numCellsY;    
+    map->origin.p.x = originX_;
+    map->origin.p.y = originY_;
+    map->origin.o   = originTheta_;
+
+    // since we know that map size in pixels, we can calculate the cell size
+    map->metresPerCellX = worldSizeX_ / (float)map->numCellsX;
+    map->metresPerCellY = worldSizeY_ / (float)map->numCellsY;    
 }
 
 int
 MapLoader::loadIceStream( OgMapDataPtr &map )
 {
-    orca::OgMapDataPtr ogMap = new orca::OgMapData;
         
     std::ifstream *logFile = new std::ifstream( filename_.c_str(), ios::binary|ios::in );
+    if ( !logFile->is_open() )
+    {
+        context_.tracer()->error("logFile could not be loaded");
+        return -1;
+    }
                     
     std::vector<Ice::Byte> byteData;
     size_t length;
     logFile->read( (char*)&length, sizeof(length) );
     if ( logFile->bad() )
     {
-        context_.tracer()->error("logFile is bad");
+        context_.tracer()->error("reading from logFile failed");
         return -1;
     }
     
@@ -113,7 +117,7 @@ MapLoader::loadIceStream( OgMapDataPtr &map )
     logFile->read( (char*)&byteData[0], length );
     if ( logFile->bad() )
     {
-        context_.tracer()->error("logFile is bad");
+        context_.tracer()->error("reading from logFile failed");
         return -1;
     }
     

@@ -22,6 +22,7 @@ typedef enum {
     BITMAP
 } FileType;
 
+// Class to load an occupancy grid from a file
 class MapLoader
 {
 public:

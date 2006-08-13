@@ -43,14 +43,14 @@ loadBitmap(const char *filename,
     // Read the image
     if(!(pixbuf = gdk_pixbuf_new_from_file(filename, &error)))
     {
-        cout << "ERROR(ogmaploader.cpp): failed to open image file " << filename << endl;
+        cout << "ERROR(maploadutil.cpp): failed to open image file " << filename << endl;
         return(-1);
     }
 
     numCellsX = gdk_pixbuf_get_width(pixbuf);
     numCellsY = gdk_pixbuf_get_height(pixbuf);
     cells.resize( numCellsX * numCellsY );
-    cout<<"TRACE(ogmaploader.cpp): Resized map to " << numCellsX << "x" << numCellsY << endl;
+    cout<<"TRACE(maploadutil.cpp): Resized map to " << numCellsX << "x" << numCellsY << endl;
 
     rowstride = gdk_pixbuf_get_rowstride(pixbuf);
     bps = gdk_pixbuf_get_bits_per_sample(pixbuf)/8;
@@ -148,7 +148,7 @@ loadPnmGz(const char *filename,
     numCellsX = width;
     numCellsY = height;
     cells.resize( numCellsX * numCellsY );
-    cout<<"TRACE(ogmaploader.cpp): Resized map to " << numCellsX << "x" << numCellsY << endl;
+    cout<<"TRACE(maploadutil.cpp): Resized map to " << numCellsX << "x" << numCellsY << endl;
     
     // Read in the image
     for ( j = 0; j < height; j++ )
