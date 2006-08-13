@@ -34,7 +34,7 @@
 Supportes file types are:
 
 - most bitmaps 
-    - anything gdk can load
+    - anything gdk can load: PNG, XPM, JPEG, TIFF, PNM, RAS, BMP, GIF
 - gzipped pnm 
     - file extension: @c .pnm.gz
 - ICE stream files 
