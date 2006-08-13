@@ -24,6 +24,8 @@ ReflectorExtractor::addFeatures( const orca::LaserDataPtr    &laserData,
 {
     assert( laserMaxRange_ > 0.0 );
 
+    const int numReturnsToGetOverSketch = 4;
+
     // Are we currently trying to put a cluster together?
     bool buildingTarget = false;
 
@@ -31,6 +33,7 @@ ReflectorExtractor::addFeatures( const orca::LaserDataPtr    &laserData,
     double featureRangeSum              = -1.0;
     double featureBearingSum            = -1.0;
     double maxDeltaRangeWithinReflector = 0.0;
+    int    lastSketchReturn             = -numReturnsToGetOverSketch;
 
     // Don't iterate over the endpoints, so that the helper-functions
     // don't have to check.
@@ -40,35 +43,53 @@ ReflectorExtractor::addFeatures( const orca::LaserDataPtr    &laserData,
         if ( ( laserData->intensities[i] >= minReflectorBrightness_ ) &&
              ( laserData->ranges[i] < laserMaxRange_ ) )
         {
-            if ( isSketchy( laserData, i ) )
+            // cout<<"TRACE(reflectorextractor.cpp): =========================" << endl;
+            if ( (int)i-lastSketchReturn < numReturnsToGetOverSketch )
             {
-                // cout<<"TRACE(reflectorextractor.cpp): return " << i << " was bright but sketchy." << endl;
-
-                // Invalidate the current target if we were building one
+                // Remain sketched-out while there are still bright things.
+                lastSketchReturn = i;
                 buildingTarget = false;
                 continue;
             }
 
             if ( !buildingTarget )
             {
-                // cout<<"TRACE(reflectorextractor.cpp): return "<<i
-                //     <<": started a target at bearing " << calcBearing(laserData,i)*180.0/M_PI << "deg" << endl;
+                // Start building a target?
+                if ( isSketchy( laserData, i, true ) )
+                {
+                    lastSketchReturn = i;
+                    continue;
+                }
+                else
+                {
+                    // cout<<"TRACE(reflectorextractor.cpp): return "<<i
+                    //     <<": started a target at bearing " << calcBearing(laserData,i)*180.0/M_PI << "deg" << endl;
 
-                // Start building a target
-                buildingTarget            = true;
-                numFeaturePoints          = 1;
-                featureRangeSum           = laserData->ranges[i];
-                featureBearingSum         = calcBearing( laserData, i );
-                maxDeltaRangeWithinReflector = 0.0;
+                    buildingTarget            = true;
+                    numFeaturePoints          = 1;
+                    featureRangeSum           = laserData->ranges[i];
+                    featureBearingSum         = calcBearing( laserData, i );
+                    maxDeltaRangeWithinReflector = 0.0;
+                }
             }
             else
             {
-                // Continue building the target
-                numFeaturePoints++;
-                featureRangeSum   += laserData->ranges[i];
-                featureBearingSum += calcBearing( laserData, i );
-                if ( fabs(deltaRange( laserData, i )) > maxDeltaRangeWithinReflector )
-                    maxDeltaRangeWithinReflector = deltaRange( laserData, i );
+                if ( isSketchy( laserData, i, false ) )
+                {
+                    // Invalidate the current target
+                    buildingTarget = false;
+                    lastSketchReturn = i;
+                    continue;
+                }
+                else
+                {
+                    // Continue building the target
+                    numFeaturePoints++;
+                    featureRangeSum   += laserData->ranges[i];
+                    featureBearingSum += calcBearing( laserData, i );
+                    if ( fabs(deltaRange( laserData, i )) > maxDeltaRangeWithinReflector )
+                        maxDeltaRangeWithinReflector = deltaRange( laserData, i );
+                }
             }
         }
         else
@@ -78,10 +99,11 @@ ReflectorExtractor::addFeatures( const orca::LaserDataPtr    &laserData,
             if ( buildingTarget )
             {
                 // Invalidate the cluster if something's sketchy.
-                if ( ( isSketchy( laserData, i ) ) ||
+                if ( ( isSketchy( laserData, i, false ) ) ||
                      ( maxDeltaRangeWithinReflector > maxDeltaRangeWithinReflector_ ) )
                 {
                     // cout<<"TRACE(reflectorextractor.cpp): return "<<i<<": was building a target, but end was sketchy." << endl;
+                    lastSketchReturn = i;
                     buildingTarget = false;
                 }
                 else
@@ -103,19 +125,31 @@ ReflectorExtractor::addFeatures( const orca::LaserDataPtr    &laserData,
 
 bool 
 ReflectorExtractor::isSketchy( const orca::LaserDataPtr &laserData,
-                               int returnNum )
+                               int returnNum,
+                               bool reflectorStart )
 {
     assert( returnNum != 0 && returnNum != (int)(laserData->ranges).size()-1 );
 
-    if ( fabs( deltaRange(laserData,returnNum)   ) > maxDeltaRangeNearReflector_ ||
-         fabs( deltaRange(laserData,returnNum+1) ) > maxDeltaRangeNearReflector_  )
+    bool sketchy=false;
+    if ( reflectorStart )
     {
-        return true;
+        // Invalidate for big increases in range: ie viewing a reflector behind a
+        // foreground obstacle to the right.
+        if ( deltaRange(laserData,returnNum) > maxDeltaRangeNearReflector_ )
+            sketchy=true;
+        if ( deltaRange(laserData,returnNum+1) > maxDeltaRangeNearReflector_ )
+            sketchy=true;
     }
     else
     {
-        return false;
+        // Invalidate for big drops in range: ie viewing a reflector behind a
+        // foreground obstacle to the left.
+        if ( deltaRange(laserData,returnNum) < -maxDeltaRangeNearReflector_ )
+            sketchy=true;
+        if ( deltaRange(laserData,returnNum+1) < -maxDeltaRangeNearReflector_ )
+            sketchy=true;
     }
+    return sketchy;
 }
 
 }

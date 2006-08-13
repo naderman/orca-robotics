@@ -47,13 +47,14 @@ private:
     // Helper functions.  These assume that you're not asking for
     // info about the first or last return
     //
-    
-    // This function returns true if there's a big jump in the laser
-    // ranges near the return in question.
-    // The function exists to test for bright returns in weird places
+
+    // This function exists to test for bright returns in weird places
     // as the laser grazes past corners etc.
+    // It returns true for reflectors that are partially-obscured by foreground
+    // objects.
     bool isSketchy( const orca::LaserDataPtr &laserData,
-                    int returnNum );
+                    int returnNum,
+                    bool reflectorStart );
 
     // Returns the change in range between this return and the previous one.
     double deltaRange( const orca::LaserDataPtr &laserData,
