@@ -6,7 +6,7 @@ IF ( BUILD_GPS )
     INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
     
     INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/components/gps )
-    INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/util )
+    INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/utils )
 
     # OPTIONAL_SUB_LIBRARY macro defined in component_rules.cmake
     SET( ASHTECHGPS_FOUND 1 )
@@ -31,7 +31,7 @@ IF ( BUILD_GPS )
     
     # build a stand-alone component
     GLOBAL_ADD_EXECUTABLE( gps ${COMP_SRCS} )
-    LINK_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/util/serial )
+    LINK_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/utils/serial )
     TARGET_LINK_LIBRARIES( gps ${ASHTECHGPS_LIBS} OrcaSerial OrcaNavUtil )
     
     # build an IceBox service
