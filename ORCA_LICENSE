@@ -27,14 +27,17 @@ src
         faithlocaliser                     LGPL
         featuremap2dmon                    LGPL
         featuremaploader                   LGPL
+        gps                                LGPL
         imageserver                        LGPL
         imageviewer                        LGPL
+        laser2og                           LGPL
         laserfeatureextractor              LGPL
         lasermon                           LGPL
         localnav                           LGPL
         logger                             LGPL
         logplayer                          LGPL
         ogmaploader                        LGPL
+        ognode                             LGPL
         orcamon                            LGPL
         orcaview                           GPL
         pathplanner                        LGPL
@@ -71,9 +74,11 @@ src
         orcamisc                           LGPL
         orcanavutil                        LGPL
         orcaobj                            LGPL
+        orcaogfusion                       LGPL
         orcaogmap                          LGPL
         orcapathplan                       LGPL
         orcaplayer                         GPL
+        orcaserial                         LGPL
         orcasmc                            LGPL
         qorcacm                            GPL
 -------------------------------------------------------------
