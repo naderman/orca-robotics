@@ -126,6 +126,10 @@ VfhDriver::getCommand( bool  stalled,
         currentState_ = LocalNavDriver::STATE_MOVING_TO_GOAL;
     }
 
+    stringstream ss;
+    ss << "VFH: Setting command: " << orcaice::toString(cmd);
+    context_.tracer()->debug( ss.str(), 5 );
+
     prevCmd_->motion.v.x = cmd->motion.v.x;
     prevCmd_->motion.v.y = cmd->motion.v.y;
     prevCmd_->motion.w   = cmd->motion.w;
@@ -213,7 +217,7 @@ VfhDriver::setTurnToGoal( orca::Velocity2dCommandPtr &cmd, const GoalWatcher &go
     else
     {
         // We're already turning.  Keep doing so.
-        float maxAllowedTurnrate = prevCmd_->motion.w;
+        float maxAllowedTurnrate = fabs(prevCmd_->motion.w);
 
         // Check for overshoot
         float prevPosNeg = 1.0;
@@ -225,7 +229,7 @@ VfhDriver::setTurnToGoal( orca::Velocity2dCommandPtr &cmd, const GoalWatcher &go
             maxAllowedTurnrate = maxAllowedTurnrate / 2.0;
         }
 
-        cmd->motion.w = maxAllowedTurnrate;
+        cmd->motion.w = posNeg*maxAllowedTurnrate;
     }
 }
 
