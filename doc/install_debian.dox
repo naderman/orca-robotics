@@ -42,7 +42,7 @@ Download source from  <a href="http://www.zeroc.com/download.html">download page
 $ tar -xzf Ice-[VERSION].tar.gz
 $ cd Ice-[VERSION]
 @endverbatim
-    - Download the following patch to the @c Ice-[VERSION] directory: <a href="patch.icegrid-5.txt">patch.icegrid-5.txt</a>.
+    - Download the following patch to the @c Ice-[VERSION] directory: <a href="http://www.zeroc.com/vbulletin/showthread.php?t=2499">patch.icegrid-5.txt</a>.
     - Apply the patch:
 @verbatim
 $ patch -p0 \< patch.icegrid-5.txt
