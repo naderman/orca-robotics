@@ -71,7 +71,7 @@ VfhDriver::setLocalNavParameters( LocalNavParameters params )
         ss << "VFH: requested maxSpeed ("
            <<params.maxSpeed<<") faster than its configured maximum ("<<vfhConfig_.maxSpeed
            <<").  Thresholding.";
-        context_.tracer()->warning( ss.str() );
+        context_.tracer()->debug( ss.str(), 1 );
     }
     if ( params.maxTurnrate > vfhConfig_.maxTurnrate1ms )
     {
@@ -81,7 +81,7 @@ VfhDriver::setLocalNavParameters( LocalNavParameters params )
         ss << "VFH: requested maxTurnrate ("<<params.maxTurnrate
            <<") faster than its configured maximum ("<<vfhConfig_.absoluteMaxTurnrate
            <<").  Thresholding.";
-        context_.tracer()->warning( ss.str() );
+        context_.tracer()->debug( ss.str(), 1 );
     }
 
     assert( localNavParameters_.maxSpeed >= 0.0 );
