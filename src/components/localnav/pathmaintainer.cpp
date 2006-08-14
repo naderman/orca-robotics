@@ -37,7 +37,6 @@ const orca::Waypoint2d &
 PathMaintainer::currentWaypoint() const
 {
     assert( wpIndex_ >= 0 && wpIndex_ <= (int) (path_->path.size()) );
-    cout<<"TRACE(pathmaintainer.cpp): currentWaypoint: " << orcaice::toString(path_->path[wpIndex_]) << endl;
     return path_->path[wpIndex_];
 }
 
@@ -55,13 +54,13 @@ PathMaintainer::checkForNewPath( orca::PathFollower2dConsumerPrx &pathConsumer )
         // Have we also been told to start?
         if ( activationPipe_.isNewData() )
         {
-            context_.tracer()->debug( "Activating immediately" );
+            context_.tracer()->debug( "Activating immediately", 1 );
             activationPipe_.get(pathStartTime_);
             wpIndex_ = 0;
         }
         else
         {
-            context_.tracer()->debug( "Not activating yet..." );
+            context_.tracer()->debug( "Not activating yet...", 1 );
             wpIndex_ = -1;
         }
         wpIndexChanged_ = true;
@@ -119,12 +118,12 @@ PathMaintainer::secToNextWp() const
 double
 PathMaintainer::secSinceActivation() const
 {
-    cout<<"TRACE(pathmaintainer.cpp): now:   " << orcaice::toString(orcaice::getNow()) << endl;
-    cout<<"TRACE(pathmaintainer.cpp): start: " << orcaice::toString(pathStartTime_) << endl;
+    // cout<<"TRACE(pathmaintainer.cpp): now:   " << orcaice::toString(orcaice::getNow()) << endl;
+    // cout<<"TRACE(pathmaintainer.cpp): start: " << orcaice::toString(pathStartTime_) << endl;
 
     double diff = orcaice::timeDiffAsDouble( orcaice::getNow(), pathStartTime_ );
 
-    cout<<"TRACE(pathmaintainer.cpp): diff:  " << diff << endl;
+    // cout<<"TRACE(pathmaintainer.cpp): diff:  " << diff << endl;
 
     return diff;
 }

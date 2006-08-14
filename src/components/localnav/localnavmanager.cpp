@@ -152,8 +152,6 @@ LocalNavManager::setNavParams( const GoalWatcher      &goalWatcher,
                                const PathMaintainer   &pathMaintainer, 
                                LocalNavParameters     &navParams )
 {
-    cout<<"TRACE(localnavmanager.cpp): setNavParams()" << endl;
-
     // The goal covers some area (and range of angles).  How far to the border?
     float distanceToBorder = MAX( 0.0, goalWatcher.goalDistance() - goalWatcher.goalDistanceTolerance() );
     float angleToBorder    = MAX( 0.0, fabs(goalWatcher.headingDifference()) - goalWatcher.headingDifferenceTolerance() );
@@ -185,8 +183,6 @@ LocalNavManager::setNavParams( const GoalWatcher      &goalWatcher,
     }
     navParams.maxSpeed    = wp.maxApproachSpeed    * scaleFactor;
     navParams.maxTurnrate = wp.maxApproachTurnrate * scaleFactor;
-
-    cout<<"TRACE(localnavmanager.cpp): setNavParams() exitting." << endl;
 }
 
 std::string 
