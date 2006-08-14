@@ -1,13 +1,12 @@
 /*
-  \file raytrace.h
-  \date Fri Nov 15 2002
-  \brief Misc conversion tools used in ACFR ASN project.
-  \author Copyright (C) 2002-2003 by Alex Makarenko, alexei@cas.edu.au
-  
-  \date 1 may 2005 George Mathews - converted to asntools and added to the orca project
-  \date 1 april 2006 Matthew Ridley - conversion to orca2/bruce2
-*/
-
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alexei Makarenko, George Mathews, Matthew Ridley
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
 
 #ifndef _OGMAP_RAYTRACE_H_
 #define _OGMAP_RAYTRACE_H_

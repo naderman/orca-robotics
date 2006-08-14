@@ -1,13 +1,14 @@
 /*
- *  
- *  Australian Centre for Field Robotics
- *  Sydney, Australia
- *  www.acfr.usyd.edu.au
- *  
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
  */
-
-#ifndef _BRUCE2_LASER2OG_H_
-#define _BRUCE2_LASER2OG_H_
+#ifndef _ORCA2_LASER2OG_H_
+#define _ORCA2_LASER2OG_H_
 
 // orca objects
 #include <orca/laser.h>

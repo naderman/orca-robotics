@@ -1,15 +1,12 @@
-/***************************************************************************
-                          ogsensormodel.cpp  -  description
-                             -------------------
-    begin                : Tue Mar 4 2003
-    copyright            : (C) 2003 by Alex Makarenko
-    email                : a.makarenko@acfr.usyd.edu.au
-    description          : ACFR Red Robot project
-    :
-    versions             : v0. code extracted from MapOccGrid class
-    : 10/08/03 added laser2motion model
- ***************************************************************************/
-
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
 
 #include <iostream>
 #include <orcaobj/mathdefs.h>
