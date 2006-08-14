@@ -1,0 +1,25 @@
+DefaultComponentTag=Gps
+
+# Provided Interfaces
+Provides.Gps.Type=Gps
+Provides.Gps.DefaultInterface=gps
+
+# Required Interfaces
+
+# Config Parameters
+
+Config.Driver.Comment=Options are { 'ashtech', 'fake' }
+Config.Driver.Default=ashtech
+
+Config.StartEnabled.Default=1
+
+Config.Geometry.Comment=x[m] y[m] z[m]
+Config.Geometry.x.Default=0
+Config.Geometry.y.Default=0
+Config.Geometry.z.Default=0
+
+Config.Origin.Comment=x[m] y[m] z[m] pitch[deg] roll[deg] yaw[deg]
+Config.Origin.Default=0.0 0.0 0.0  0.0 0.0 0.0
+
+Config.Device.Default=/dev/ttyS0
+Config.Baud.Default=4800

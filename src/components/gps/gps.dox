@@ -1,0 +1,102 @@
+/*
+ *  Orca Project: Components for robotics.
+ *
+ *  Copyright (C) 2004-2006
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+
+/*!
+@ingroup components
+@ingroup apps
+@ingroup services
+@ingroup cpp
+@ingroup linux
+@defgroup orca_component_gps Gps
+@brief A hardware abstraction component for GPS receivers
+
+@par Provides
+
+- @ref orca_interface_home
+- @ref orca_interface_gps
+- @ref orca_interface_status
+
+@par Requires
+
+- none
+
+@par Drivers
+
+- @b ashtech @ref gps_ashtech
+- @b fake Useful for testing or if you don't have hardware or a simulator.
+
+This component encapsulates a GPS receiver.
+
+It can run either as a stand-alone component or an IceBox Service.
+
+@par Features
+
+- When subscribed to component, position will only be received
+if the GPS receiver has a fix.
+- When requesting position, the user should check that the timestamp 
+is not out of date as the last known position will always be returned 
+iresepective of the GPS receiver currently having a valid fix.
+- an orca::DataNotExistException will be thrown if getData() etc. is called 
+without a fix ever having been achieved.
+
+@par Configuration
+
+- @c Gps.Config.Driver (string)
+    - See introduction.
+    - Valid values: { "ashtech", "fake" }
+    - Default: "ashtech"
+
+- @c Gps.Config.StartEnabled (bool)
+    - Enable the GPS on component initialisation?
+    - Default: 1
+
+Geometry
+
+Offset position [m] (the position of the GPS antenna with respect to its frame)
+- @c Offset.p.x (double) [m]
+- @c Offset.p.y (double) [m]
+- @c Offset.p.z (double) [m]
+
+- @c Gps.Config.Origin (Frame3d) [m,m,m, deg,deg,deg]
+    - GPS coordinates of the origin of the local coordinate system. 
+    - Default: [0.0 0.0 0.0  0.0 0.0 0.0]
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
+@section gps_ashtech AshTech driver
+
+Uses AshTech serial impementation.
+
+@par Extra configuration
+
+- @c Gps.Config.Ashtech.Device (string)
+  - The unix device to use
+  - Default: "/dev/ttyS0"
+
+- @c Gps.Config.Ashtech.Baud (int)
+    - Baud rate
+    - Default: 4800
+
+@par Authors
+Matthew Ridley
+
+*/
+
