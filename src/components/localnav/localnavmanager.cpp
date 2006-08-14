@@ -152,18 +152,45 @@ LocalNavManager::setNavParams( const GoalWatcher      &goalWatcher,
                                const PathMaintainer   &pathMaintainer, 
                                LocalNavParameters     &navParams )
 {
+    assert ( wp.maxApproachSpeed    >= 0.0 );
+    assert ( wp.maxApproachTurnrate >= 0.0 );
+
     // The goal covers some area (and range of angles).  How far to the border?
     float distanceToBorder = MAX( 0.0, goalWatcher.goalDistance() - goalWatcher.goalDistanceTolerance() );
     float angleToBorder    = MAX( 0.0, fabs(goalWatcher.headingDifference()) - goalWatcher.headingDifferenceTolerance() );
 
     // work out how long it would take at max speed
-    float translationTime = distanceToBorder / wp.maxApproachSpeed;
-    float rotationTime = angleToBorder / wp.maxApproachTurnrate;
+    float translationTime, rotationTime;
+    if ( distanceToBorder == 0.0 )
+        translationTime = 0.0;
+    else
+    {
+        if ( wp.maxApproachSpeed == 0.0 )
+        {
+            navParams.maxSpeed    = wp.maxApproachSpeed;
+            navParams.maxTurnrate = wp.maxApproachTurnrate;
+            return;
+        }
+        else
+            translationTime = distanceToBorder / wp.maxApproachSpeed;
+    }
+    if ( angleToBorder == 0.0 )
+         rotationTime = 0.0;
+    else
+    {
+        if ( wp.maxApproachTurnrate == 0.0 )
+        {
+            navParams.maxSpeed    = wp.maxApproachSpeed;
+            navParams.maxTurnrate = wp.maxApproachTurnrate;
+            return;
+        }
+        else
+            rotationTime = angleToBorder / wp.maxApproachTurnrate;
+    }
     float timeAtMaxSpeed = translationTime + rotationTime;
-    
     assert( timeAtMaxSpeed >= 0.0 );
 
-    // Scale by how long we actually have
+    // Scale (with a factor in [0,1]) by how long we actually have
     float timeAllowed = pathMaintainer_.secToNextWp();
     float scaleFactor = 1.0;
     if ( timeAllowed > timeAtMaxSpeed )
@@ -177,10 +204,13 @@ LocalNavManager::setNavParams( const GoalWatcher      &goalWatcher,
     }
     else
     {
-        stringstream ss; ss << "We're running late! " << timeAllowed << "s allowed, but it would take " << timeAtMaxSpeed << "s at full speed.";
+        stringstream ss; ss << "We're running late! " << timeAllowed 
+                            << "s allowed, but it would take " << timeAtMaxSpeed 
+                            << "s at full speed.";
         context_.tracer()->debug( ss.str(), 5 );
         secondsBehingSchedule_ = timeAtMaxSpeed - timeAllowed;
     }
+    assert( scaleFactor <= 1.0 );
     navParams.maxSpeed    = wp.maxApproachSpeed    * scaleFactor;
     navParams.maxTurnrate = wp.maxApproachTurnrate * scaleFactor;
 }
