@@ -65,6 +65,17 @@ SkeletonGraphicsI::drawSkel( const orcaogmap::OgMap           &ogMap,
                              const orcapathplan::Cell2DVector &skel,
                              QPainter                         &p )
 {
+    // Some of these skels get pretty large.
+    // Reduce the size of the dense skel we display...
+    const int MAX_SKEL = 500;
+    int n = (int) ceil( skel.size() / MAX_SKEL );
+    if ( n==0 ) n=1;
+    orcapathplan::Cell2DVector denseSkelToDisplay;
+    for ( uint i=0; i < skel.size(); i+=n )
+    {
+        denseSkelToDisplay.push_back( skel[i] );
+    }
+
     QColor color = Qt::darkCyan;
     color.setAlpha( 128 );
 
@@ -72,19 +83,19 @@ SkeletonGraphicsI::drawSkel( const orcaogmap::OgMap           &ogMap,
     p.setBrush( color );
     const double circleSize = 0.1;     // in m, should be constant pixel size?
         
-    for (unsigned int i=0; i<skel.size(); i++ )
+    for (unsigned int i=0; i<denseSkelToDisplay.size(); i++ )
     {
         float worldX, worldY;
-        ogMap.getWorldCoords( skel[i].x(),
-                              skel[i].y(),
+        ogMap.getWorldCoords( denseSkelToDisplay[i].x(),
+                              denseSkelToDisplay[i].y(),
                               worldX,
                               worldY );
         p.drawEllipse( QRectF( worldX-circleSize, worldY-circleSize, 2*circleSize, 2*circleSize ) );
     }
 
 //======== This should work but doesn't for some reason ==================
-//         QPointF qpointArray[skel.size()];
-//         for (unsigned int i=0; i<skel.size(); i++ )
+//         QPointF qpointArray[denseSkelToDisplay.size()];
+//         for (unsigned int i=0; i<denseSkelToDisplay.size(); i++ )
 //         {
 //             qpointArray[i] = QPointF( skeletonWorld[i].x(), skeletonWorld[i].y() );
 //         }
