@@ -46,7 +46,6 @@ PathMaintainer::checkForNewPath( orca::PathFollower2dConsumerPrx &pathConsumer )
     bool dummy;
     if ( newPathArrivedPipe_.isNewData() )
     {
-        context_.tracer()->debug( "PathMaintainer: received new path", 1 );
         newPathArrivedPipe_.get(dummy);
         pathPipe_.get( path_ );
         informWorldOfNewPath( pathConsumer, path_ );
@@ -54,13 +53,13 @@ PathMaintainer::checkForNewPath( orca::PathFollower2dConsumerPrx &pathConsumer )
         // Have we also been told to start?
         if ( activationPipe_.isNewData() )
         {
-            context_.tracer()->debug( "Activating immediately", 1 );
+            context_.tracer()->debug( "PathMaintainer: received new path, activating immediately", 1 );
             activationPipe_.get(pathStartTime_);
             wpIndex_ = 0;
         }
         else
         {
-            context_.tracer()->debug( "Not activating yet...", 1 );
+            context_.tracer()->debug( "PathMaintainer: received new path, not activating yet...", 1 );
             wpIndex_ = -1;
         }
         wpIndexChanged_ = true;
