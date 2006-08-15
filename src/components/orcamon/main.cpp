@@ -14,6 +14,7 @@
 
 // definition of Ice objects
 #include <orca/gps.h>
+#include <orca/imu.h>
 #include <orca/localise2d.h>
 #include <orca/ogmap.h>
 #include <orca/position2d.h>
@@ -90,6 +91,11 @@ void OrcaMonComponent::start()
     if ( objId=="::orca::Laser" || objId=="::orca::RangeScanner" )
     {
         attach<LaserPrx,RangeScannerConsumerPrx,RangeScannerConsumer,RangeScannerDataPtr>
+                ( context(), proxyString );
+    }
+    else if ( objId=="::orca::Imu" )
+    {
+        attach<ImuPrx,ImuConsumerPrx,ImuConsumer,ImuDataPtr>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::Localise2d" )
