@@ -42,4 +42,5 @@ SET( SLICE_SOURCE_FILES
     featuremap2d.ice
     camera.ice
     qgraphics2d.ice
+    imu.ice
 )
