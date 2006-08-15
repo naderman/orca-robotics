@@ -197,7 +197,29 @@ AlgoHandler::run()
             ss << "Couldn't compute path: " // << orcaice::toString(taskPtr)
                << endl << "Problem was: " << e.what();
             context_.tracer()->error( ss.str() );
-            // Don't break here. If the path could not be computed, the driver is responsible to set an error code in pathDataPtr which the client can evaluate
+            
+            // Don't break here. Set error codes according to the thrown exception. Client can evaluate error codes.
+            
+            if ( e.what() == "Start point was not within the map." ||  e.what() =="Start point was not traversable." || e.what() == "Couldn't connect start cell to skeleton" )
+            {
+                pathDataPtr->result = PathStartNotValid;
+            }
+            
+            if ( e.what() == "End point was not within the map." ||  e.what() =="End point was not traversable." || e.what() == "Couldn't connect skeleton to goal")
+            {
+                pathDataPtr->result = PathDestinationNotValid;
+            }
+            
+            if ( e.what() == "Couldn't compute potential function along skeleton")
+            {
+                pathDataPtr->result = OtherError;
+            }
+            
+            if ( e.what() == "Computed potential function but could not compute path.")
+            {
+                pathDataPtr->result = PathDestinationUnreachable;   
+            }
+            
         }
 
         //
