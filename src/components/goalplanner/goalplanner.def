@@ -1,0 +1,19 @@
+DefaultComponentTag=GoalPlanner
+
+# Provided Interfaces
+Provides.PathFollower2d.Type=PathFollower2d
+Provides.PathFollower2d.DefaultInterface=pathFollower2d
+
+# Required Interfaces
+Requires.Localise2d.Type=Localise2d
+Requires.Localise2d.DefaultProxy=localise2d@local/faithlocaliser
+
+Requires.PathFollower2d.Type=PathFollower2d
+Requires.PathFollower2d.DefaultProxy=pathfollower2d@local/localnav
+
+Requires.PathPlanner2d.Type=Pathplanner2d
+Requires.PathPlanner2d.DefaultProxy=pathplanner2d@local/pathplanner
+
+# Config Parameters
+
+

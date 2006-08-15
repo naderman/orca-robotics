@@ -5,6 +5,7 @@ MESSAGE ( STATUS "== COMPONENTS ==" )
 # when adding new directories, please maintain alphabetical order
 ADD_SUBDIRECTORY ( faithlocaliser )
 ADD_SUBDIRECTORY ( featuremaploader )
+ADD_SUBDIRECTORY ( goalplanner )
 ADD_SUBDIRECTORY ( gps )
 ADD_SUBDIRECTORY ( imageserver )
 ADD_SUBDIRECTORY ( imageviewer )
