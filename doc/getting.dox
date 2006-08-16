@@ -29,7 +29,7 @@ Practically, this means that you can download build your own components from scr
 @section download Download and install instructions
 
 Detailed instructions are available for these platforms/distributions:
-    - @ref orca_doc_installdebian (also tested with Kubuntu 6.06)
+    - @ref orca_doc_installdebian (also tested with Ubuntu/Kubuntu 6.06)
     - @ref orca_doc_installfedora
     - @ref orca_doc_installwinxp
     - Send feedback on building under other configurations.
@@ -37,7 +37,7 @@ Detailed instructions are available for these platforms/distributions:
 The instructions below are quite general, follow them if your platform/distribution combination is not described above:
 
     -# Download and install <a href="http://www.cmake.org/">CMake: Cross-Platform Make</a> which is used to build the orca distribution.
-        - Minimum version required 2.4.2 (latest tested: 2.4.2)
+        - Minimum version required 2.4.2 (latest tested: 2.4.3)
         - Full instructions are available from the <a href="http://www.cmake.org/HTML/Download.html">download page</a>.
     -# Download and install Ice libraries.
         - Minimum version required 3.1.0 (latest tested: 3.1.0)
