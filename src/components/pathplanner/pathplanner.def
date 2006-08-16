@@ -19,4 +19,4 @@ Config.TraversabilityThreshhold.Default=0.3
 
 Config.RobotDiameterMetres.Default=0.8
 
-Config.DoPathOptimization.Default=0
+Config.DoPathOptimization.Default=1
