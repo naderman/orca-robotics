@@ -30,7 +30,7 @@ public:
     virtual ~AlgoDriver() {};
     
     // Computes the path
-    virtual void computePath(    const orca::OgMapDataPtr         & ogMapDataPtr,
+    virtual void computePath(   const orca::OgMapDataPtr          & ogMapDataPtr,
                                 const orca::PathPlanner2dTaskPtr  & taskPtr,
                                 const orca::PathPlanner2dDataPtr  & pathDataPtr ) = 0;
 

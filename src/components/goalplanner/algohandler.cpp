@@ -163,7 +163,21 @@ AlgoHandler::run()
              
         // we're guaranteed to have only 1 hypothesis
         wp.target = localiseData->hypotheses[0].mean;
-        //TODO: handle covariance: convert to a waypoint with tolerances        
+        // hardcode uncertainties for the waypoint we start from
+        wp.distanceTolerance = 5.0; 
+        wp.headingTolerance = DEG2RAD(45);      
+        wp.maxApproachSpeed = 5.0;
+        wp.maxApproachTurnrate = DEG2RAD(2e+6); 
+        
+//         cout << "Convariance is: " << localiseData->hypotheses[0].cov.xx << " " 
+//                 << localiseData->hypotheses[0].cov.xy << " " 
+//                 << localiseData->hypotheses[0].cov.yy << " " 
+//                 << endl;
+
+//         double a, b, th;
+//         Cov2d cov(hypotheses[0].cov.xx, hypotheses[0].cov.xy, hypotheses[0].cov.yy);
+//         cov.ellipse( a, b, th );
+
         
         // put together a task for the pathplanner
         // add the position of the robot as the first waypoint in the path

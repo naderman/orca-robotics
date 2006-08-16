@@ -13,12 +13,15 @@
 #include <orcapathplan/sparseskeletonpathplanner.h>
 #include <orcamisc/orcamisc.h>
 #include <orcapathplan/sparseskel.h>
+#include <orcaice/orcaice.h>
 #include <iostream>
 
 using namespace std;
+using namespace orcapathplan;
+using namespace orcaice;
 
 namespace pathplanner {
-
+    
 SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
                                 SkeletonGraphicsI* skelGraphicsI,
                                 double robotDiameterMetres,
@@ -122,17 +125,42 @@ SkeletonDriver::computePath( const orca::OgMapDataPtr         &ogMapDataPtr,
         // ====== Convert to an Orca object in global coordinate system. =====
         // ====== Will append latest path to the total pathDataPtr. ==========
         // ====== Not all data fields are filled in (e.g.tolerances) =========
-        if (i==0)
+//         if (i==0)
+//         {
+//             // the first time we'll have to insert the start cell
+//             int cx, cy;
+//             ogMap_.getCellIndices( startWp->target.p.x, startWp->target.p.y, cx, cy );
+//             orcapathplan::Cell2D startCell( cx, cy );
+//             pathSegment.insert(pathSegment.begin(),startCell);
+//         }
+        
+        // compute waypoint parameters for this path segment
+        // simple method: use tolerances from the goal waypoint and acquidistant time intervals
+        vector<WaypointParameter> wpParaVector;
+        WaypointParameter wpPara;
+        wpPara.distanceTolerance = goalWp->distanceTolerance;
+        wpPara.headingTolerance = goalWp->headingTolerance;
+        wpPara.maxApproachSpeed = goalWp->maxApproachSpeed;
+        wpPara.maxApproachTurnrate = goalWp->maxApproachTurnrate;
+        double secondsTilGoal = orcaice::timeDiffAsDouble(goalWp->timeTarget, startWp->timeTarget);
+        assert( secondsTilGoal > 0 && "Timestamp difference between goal and start is negative" );
+        int numSegments = pathSegment.size();
+        double deltaSec = secondsTilGoal/(double)numSegments;
+        
+        for (int i=0; i<numSegments; i++)
         {
-            // the first time we'll have to insert the start cell
-            int cx, cy;
-            ogMap_.getCellIndices( startWp->target.p.x, startWp->target.p.y, cx, cy );
-            orcapathplan::Cell2D startCell( cx, cy );
-            pathSegment.insert(pathSegment.begin(),startCell);
+            if (i==0) {
+                wpPara.timeTarget = toOrcaTime( timeAsDouble( startWp->timeTarget ) + deltaSec );
+            } else {
+                wpPara.timeTarget = toOrcaTime( timeAsDouble( wpParaVector[i-1].timeTarget ) + deltaSec );
+            }
+            wpParaVector.push_back( wpPara );
         }
+        
         orcapathplan::Result result = orcapathplan::PathOk;
-        orcapathplan::convert( ogMap_, pathSegment, result, pathDataPtr );
+        orcapathplan::convert( ogMap_, pathSegment, wpParaVector, result, pathDataPtr );
         // ==================================================================
+        
         
         // set last goal cell as new start cell
         startWp = goalWp;
