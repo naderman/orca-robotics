@@ -66,7 +66,10 @@ Handler::init()
         }
         catch ( const orcaice::NetworkException & e )
         {
-            context_.tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
+            std::stringstream ss;
+            ss << "Failed to connect to remote rangeScanner object: " << e.what()
+               << "Will try again after 3 seconds.";
+            context_.tracer()->error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
             // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
@@ -82,7 +85,10 @@ Handler::init()
         }
         catch ( const orcaice::NetworkException & e )
         {
-            context_.tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
+            std::stringstream ss;
+            ss << "Failed to connect to remote localise2d object: " << e.what()
+               << "Will try again after 3 seconds.";
+            context_.tracer()->error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }
@@ -96,7 +102,10 @@ Handler::init()
         }
         catch ( const orcaice::NetworkException & e )
         {
-            context_.tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
+            std::stringstream ss;
+            ss << "Failed to connect to remote ogfusion object: " << e.what()
+               << "Will try again after 3 seconds.";
+            context_.tracer()->error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }
