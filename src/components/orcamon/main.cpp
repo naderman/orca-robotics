@@ -18,6 +18,7 @@
 #include <orca/localise2d.h>
 #include <orca/ogmap.h>
 #include <orca/position2d.h>
+#include <orca/position3d.h>
 #include <orca/particle2d.h>
 #include <orca/power.h>
 #include <orca/rangescanner.h>
@@ -111,6 +112,11 @@ void OrcaMonComponent::start()
     else if ( objId=="::orca::Platform2d" || objId=="::orca::Position2d" )
     {
         attach<Position2dPrx,Position2dConsumerPrx,Position2dConsumer,Position2dDataPtr>
+                ( context(), proxyString );
+    }
+    else if ( objId=="::orca::Position3d" )
+    {
+        attach<Position3dPrx,Position3dConsumerPrx,Position3dConsumer,Position3dDataPtr>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::Power" )
