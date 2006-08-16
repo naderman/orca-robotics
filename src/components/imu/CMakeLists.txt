@@ -1,4 +1,4 @@
-OPTION( BUILD_IMU "Try to build Imu component" OFF )
+OPTION( BUILD_IMU "Try to build Imu component" ON )
 
 IF ( BUILD_IMU )
 
@@ -20,7 +20,7 @@ IF ( BUILD_IMU )
 #     )
 
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-    SET( COMMON_SRCS imucomponent imuI imudriver imuhandler fakeimudriver )
+    SET( COMMON_SRCS imucomponent imuI position3dI imudriver imuhandler fakeimudriver )
 
     # Files for the stand-alone application
     SET( COMP_SRCS main ${COMMON_SRCS} )

@@ -46,9 +46,9 @@ public:
 
     // remote calls:
 
-    // Get imu Data
+    // Get raw imu Data
     virtual ::orca::ImuDataPtr     getData(const ::Ice::Current& ) const;
-
+    
     // Get Imu Geometry
     virtual ::orca::ImuConfigDataPtr getConfig(const ::Ice::Current& ) const;
 
@@ -58,7 +58,7 @@ public:
     // Unsubscribe people
     virtual void unsubscribe(const ::orca::ImuConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
-    // Set imu Data
+    // Set raw imu Data
     void localSetData( ::orca::ImuDataPtr data );
 
     // Get Imu Geometry
@@ -66,9 +66,9 @@ public:
 
 private:
 
-    // the driver will put the latest data into this buffer
+    // the driver will put the latest raw data into this buffer
     orcaice::PtrBuffer<orca::ImuDataPtr> imuDataBuffer_;
-
+    
     //publishers
     orca::ImuConsumerPrx imuPublisher_;
 

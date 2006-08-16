@@ -21,6 +21,7 @@
 #define ORCA2_IMU_DRIVER_H
 
 #include <orca/imu.h>
+#include <orca/position3d.h>
 #include <string>
 
 
@@ -59,8 +60,8 @@ public:
     virtual int read()=0;
     // Fetch latest raw Imu data. return -1 if unavailable
     virtual int getData(orca::ImuDataPtr &data )=0;
-    // Fetch latest Imu raw information. return -1 if unavailable
-    // virtual int getData(orca::Position3dDataPtr &data )=0;
+    // Fetch latest Imu pva information. return -1 if unavailable
+    virtual int getData(orca::Position3dDataPtr &data )=0;
 
     // mechanism to get error messages etc back from driver.
     virtual const std::string &infoMessages() { return infoMessages_; };
@@ -71,15 +72,11 @@ public:
 protected:
     // set to false by call to getData()
     bool newImuData_;
-    // set to false by call to getRawImuData()
-    bool newImuPvaData_;
-    // set to false by call to getTimeData()
-    // bool newGpsTime_;
-    // do we have a fix yet ?
-    // bool hasFix_;
+    // set to false by call to getPvaData()
+    bool newPosition3dData_;
 
     orca::ImuData ImuData_;
-    // orca::Position3dData ImuPvaData_;
+    orca::Position3dData Position3dData_;
 
     std::string infoMessages_;
 

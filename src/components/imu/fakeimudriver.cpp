@@ -37,7 +37,7 @@ FakeImuDriver::~FakeImuDriver()
 int 
 FakeImuDriver::read()
 {
-    cout<<"TRACE(fakelaserdriver.cpp): Generating fake imu data..." << endl;
+    cout<<"TRACE(fakeimudriver.cpp): Generating fake imu data..." << endl;
     newImuData_ = false;
     orcaice::setToNow( ImuData_.timeStamp );
     
@@ -50,6 +50,29 @@ FakeImuDriver::read()
 
     newImuData_ = true;
     
+    newPosition3dData_ = false;
+    orcaice::setToNow( Position3dData_.timeStamp );
+    
+    // position
+    Position3dData_.pose.p.x = 1;
+    Position3dData_.pose.p.y = 2;
+    Position3dData_.pose.p.z = 3;
+    
+    // attitude
+    Position3dData_.pose.o.r = 4;
+    Position3dData_.pose.o.p = 5;
+    Position3dData_.pose.o.y = 6;
+    
+    // velocity
+    Position3dData_.motion.v.x = 7;
+    Position3dData_.motion.v.y = 8;
+    Position3dData_.motion.v.z = 9;
+    Position3dData_.motion.w.x = 10;
+    Position3dData_.motion.w.y = 11;
+    Position3dData_.motion.w.z = 12;
+    
+    newPosition3dData_ = true;
+    
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     return 0;
 }
@@ -58,8 +81,8 @@ int
 FakeImuDriver::getData(orca::ImuDataPtr &data )
 {
     if(newImuData_){
-	newImuData_=false;
-	*data=ImuData_;
+	newImuData_ = false;
+	*data = ImuData_;
         return 0;
     }else{
         return -1;
@@ -67,5 +90,17 @@ FakeImuDriver::getData(orca::ImuDataPtr &data )
 
 }
 
+int 
+FakeImuDriver::getData(orca::Position3dDataPtr &data )
+{
+    if(newPosition3dData_){
+        newPosition3dData_ = false;
+        *data = Position3dData_;
+        return 0;
+    }else{
+        return -1;
+    }
+
+}
 
 

@@ -30,6 +30,7 @@
 
 // implementations of Ice objects
 #include "imuI.h"
+#include "position3dI.h"
 
 using namespace std;
 using namespace orca;
@@ -130,10 +131,13 @@ ImuComponent::start()
 
     // create servant for direct connections
     ImuI* imuObj_ = new ImuI(config_,context());
+    Position3dI* position3dObj_ = new Position3dI( geometry_, context() );
 
     imuObjPtr_ = imuObj_;
+    position3dObjPtr_ = position3dObj_;
 
     orcaice::createInterfaceWithTag( context(), imuObjPtr_, "Imu" );
+    orcaice::createInterfaceWithTag( context(), position3dObjPtr_, "Position3d" );
 
     ////////////////////////////////////////////////////////////////////////////////
 
@@ -148,6 +152,7 @@ ImuComponent::start()
     context().tracer()->debug( "entering handler_...",5 );
 
     handler_ = new ImuHandler(*imuObj_,
+                              *position3dObj_,
                               hwDriver_,
                               context(),
                               startEnabled );

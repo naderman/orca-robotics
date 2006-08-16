@@ -28,6 +28,7 @@
 
 #include "imudriver.h"
 #include "imuI.h"
+#include "position3dI.h"
 
 //
 // @brief the main handler of this IMU component.
@@ -39,8 +40,9 @@ class ImuHandler : public orcaice::Thread
 
 public:
 
-    ImuHandler(ImuI             &imuObj,
-	       ImuDriver        *hwDriver,
+    ImuHandler(ImuI&            imuObj,
+               Position3dI&     position3dObj,       
+	       ImuDriver*       hwDriver,
 	       orcaice::Context current,
 	       bool             startEnabled );
     ~ImuHandler();
@@ -48,9 +50,10 @@ public:
     virtual void run();
 
 private:
-    ImuI &imuObj_;
+    ImuI& imuObj_;
+    Position3dI& position3dObj_;
     // Generic driver for the hardware
-    ImuDriver *hwDriver_;
+    ImuDriver* hwDriver_;
 
     // mgaMapgrid mgaMapgrid_;
 

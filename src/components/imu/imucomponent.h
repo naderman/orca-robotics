@@ -25,6 +25,7 @@
 #include <orcaice/ptrbuffer.h>
 #include <orca/bros1.h>
 #include <orca/imu.h>
+#include <orca/position3d.h>
 
 class ImuHandler;
 class ImuDriver;
@@ -43,11 +44,13 @@ private:
 
     ImuHandler *handler_;
     orca::ImuConfigDataPtr config_;
+    orca::Position3dGeometryPtr geometry_;
 
     //
     // EXTERNAL INTERFACE: Imu
     //
     Ice::ObjectPtr imuObjPtr_;
+    Ice::ObjectPtr position3dObjPtr_;
 
     //
     // HARDWARE INTERFACES

@@ -41,12 +41,12 @@ public:
     virtual int disable() { isEnabled_=false; return 0; };
 
     virtual bool isEnabled() { return isEnabled_; };
-//    virtual bool hasFix() { return hasFix_; };
 
     // Blocks till timout expires, returns number of messages read, -1 if failure
     virtual int read();
     // Fetch latest IMU data. return -1 if unavailable
-    virtual int getData(orca::ImuDataPtr &data );
+    virtual int getData(orca::ImuDataPtr& data );
+    virtual int getData(orca::Position3dDataPtr& data );
 
 private:
 

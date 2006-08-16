@@ -27,11 +27,13 @@ using namespace std;
 using namespace orca;
 using namespace orcaice;
 
-ImuHandler::ImuHandler(ImuI              &imuObj,
-                       ImuDriver         *hwDriver,
+ImuHandler::ImuHandler(ImuI&             imuObj,
+                       Position3dI&      position3dObj,              
+                       ImuDriver*        hwDriver,
                        orcaice::Context  context,
                        bool              startEnabled )
     : imuObj_(imuObj),
+      position3dObj_(position3dObj),
       hwDriver_(hwDriver),
       context_(context)
 {
@@ -51,6 +53,7 @@ ImuHandler::run()
     {
 	ImuConfigDataPtr config_ = imuObj_.localGetConfig();
         ImuDataPtr imuData = new ImuData;
+        Position3dDataPtr position3dData = new Position3dData;
         
         //
         // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
@@ -73,18 +76,18 @@ ImuHandler::run()
 		}
 
                 // get the raw imu measurements
-                if(hwDriver_->getData(imuData)==0)
+                if( hwDriver_->getData( imuData ) == 0 )
                 {
                     // raw imu data
-                    imuObj_.localSetData(imuData);
+                    imuObj_.localSetData( imuData );
 		}
                 
                 // get the pva data              
-//                 if(hwDriver_->getData(imuData)==0)
-//                 {
-//                     // raw imu data
-//                     imuObj_.localSetData(imuData);
-//                 }
+                if( hwDriver_->getData( position3dData ) == 0 )
+                {
+                    // raw imu data
+                    position3dObj_.localSetData( position3dData );
+                }
             }
             else
             {

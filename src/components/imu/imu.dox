@@ -32,6 +32,7 @@
 
 - @ref orca_interface_home
 - @ref orca_interface_imu
+- @ref orca_interface_position3d
 - @ref orca_interface_status
 
 @par Requires
@@ -48,6 +49,7 @@ This component encapsulates a IMU receiver.
 It can run either as a stand-alone component or an IceBox Service.
 
 @par Features
+This component provides two interfaces. The first interface provides raw imu information that all physical units should output. The second interface is more for a complete Inertial Navigation System in which the position, velocity, and attitude (PVA) information is also output. Note that not all imu's will have the capability to do this.  
 
 @par Configuration
 

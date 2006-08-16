@@ -4,10 +4,12 @@ DefaultComponentTag=Imu
 Provides.Imu.Type=Imu
 Provides.Imu.DefaultInterface=imu
 
+Provides.Position3d.Type=Position3d
+Provides.Position3d.DefaultInterface=position3d
+
 # Required Interfaces
 
 # Config Parameters
-
 Config.Driver.Comment=Options are { 'honeywell', 'fake' }
 Config.Driver.Default=fake
 

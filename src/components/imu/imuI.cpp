@@ -90,7 +90,7 @@ ImuI::unsubscribe(const ::orca::ImuConsumerPrx &subscriber, const ::Ice::Current
     topicPrx_->unsubscribe( subscriber );
 }
 
-// Set IMU Data
+// Set raw IMU Data
 void
 ImuI::localSetData( ::orca::ImuDataPtr data )
 {
@@ -109,5 +109,4 @@ ImuI::localSetData( ::orca::ImuDataPtr data )
         context_.tracer()->warning( "Failed push to IceStorm." );
     }
 }
-
 
