@@ -67,7 +67,7 @@ SkeletonGraphicsI::drawSkel( const orcaogmap::OgMap           &ogMap,
 {
     // Some of these skels get pretty large.
     // Reduce the size of the dense skel we display...
-    const int MAX_SKEL = 500;
+    const int MAX_SKEL = 1000;
     int n = (int) ceil( skel.size() / MAX_SKEL );
     if ( n==0 ) n=1;
     orcapathplan::Cell2DVector denseSkelToDisplay;
