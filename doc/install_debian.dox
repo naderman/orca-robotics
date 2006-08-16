@@ -24,6 +24,8 @@ Minimum version required 2.4.2 (latest tested: 2.4.2).
 # apt-get install cmake
 @endverbatim
 
+The default version of cmake on Ubuntu/Kubuntu 6.06 is 2.2.3. You will need to download a compatible version of <a href="http://www.cmake.org/HTML/Download.html">cmake</a>. Version 2.4.3 of cmake has been tested on Ubuntu 6.06.
+
 @section orca_doc_installdebian_ice Ice
 
 Minimum version required 3.1.0 (latest tested: 3.1.0).
