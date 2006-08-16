@@ -1,5 +1,6 @@
 OPTION( BUILD_GPS "Try to build Gps component" ON )
 
+IF ( NOT WIN32 )
 IF ( BUILD_GPS )
 
     INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
@@ -46,3 +47,5 @@ IF ( BUILD_GPS )
     GENERATE_CONFIG_FILE( gps.def )
 
 ENDIF ( BUILD_GPS )
+ENDIF ( NOT WIN32 )
+
