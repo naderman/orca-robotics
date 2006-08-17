@@ -96,7 +96,7 @@ Position3dI::localSetData( ::orca::Position3dDataPtr data )
         // push it to IceStorm
         position3dPublisher_->setData( data );
     }
-    catch ( Ice::ConnectionRefusedException &e )
+    catch ( Ice::ConnectionRefusedException & )
     {
         // This could happen if IceStorm dies.
         // If we're running in an IceBox and the IceBox is shutting down,

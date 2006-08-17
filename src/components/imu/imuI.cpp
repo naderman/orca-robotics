@@ -101,7 +101,7 @@ ImuI::localSetData( ::orca::ImuDataPtr data )
         // push it to IceStorm
         imuPublisher_->setData( data );
     }
-    catch ( Ice::ConnectionRefusedException &e )
+    catch ( Ice::ConnectionRefusedException & )
     {
         // This could happen if IceStorm dies.
         // If we're running in an IceBox and the IceBox is shutting down,

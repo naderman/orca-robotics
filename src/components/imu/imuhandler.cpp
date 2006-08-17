@@ -109,7 +109,7 @@ ImuHandler::run()
             }
         } // end of while
     } // end of try
-    catch ( Ice::CommunicatorDestroyedException &e )
+    catch ( Ice::CommunicatorDestroyedException & )
     {
         // This is OK: it means that the communicator shut down (eg via Ctrl-C)
         // somewhere in mainLoop.
