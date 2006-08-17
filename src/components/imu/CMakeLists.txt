@@ -1,6 +1,6 @@
 OPTION( BUILD_IMU "Try to build Imu component" ON )
 
-IF ( BUILD_IMU )
+IF ( NOT WIN32 AND BUILD_IMU )
 
     INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
     INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
@@ -46,4 +46,4 @@ IF ( BUILD_IMU )
 
     GENERATE_CONFIG_FILE( imu.def )
 
-ENDIF ( BUILD_IMU )
+ENDIF ( NOT WIN32 AND BUILD_IMU )
