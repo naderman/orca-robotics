@@ -119,12 +119,22 @@ AlgoHandler::initDriver()
         orcaice::createInterfaceWithTag( context_, graphicsObj, "SkeletonGraphics" ); 
 
         bool useSparseSkeleton = (driverName == "sparseskeletonnav");
-        driver_ = new SkeletonDriver( ogMapDataPtr_,
+        
+        try {
+            driver_ = new SkeletonDriver( ogMapDataPtr_,
                                       graphicsI,
                                       robotDiameterMetres,
                                       traversabilityThreshhold,
                                       doPathOptimization,
                                       useSparseSkeleton );
+        }
+        catch ( orcapathplan::Exception &e )
+        {
+            std::stringstream ss;
+            ss << "Trouble constructing a skeletondriver" << endl << "Problem was: " << e.what();
+            context_.tracer()->error( ss.str() );
+            throw orcapathplan::Exception( ss.str() );  // this will exit
+        }
     }
     else if ( driverName == "astar" )
     {
@@ -198,28 +208,14 @@ AlgoHandler::run()
                << endl << "Problem was: " << e.what();
             context_.tracer()->error( ss.str() );
             
-            // Don't break here. Set error codes according to the thrown exception. Client can evaluate error codes.
-            
-//             if ( e.what() == "Start point was not within the map." ||  e.what() =="Start point was not traversable." || e.what() == "Couldn't connect start cell to skeleton" )
-//             {
-//                 pathDataPtr->result = PathStartNotValid;
-//             }
-//             
-//             if ( e.what() == "End point was not within the map." ||  e.what() =="End point was not traversable." || e.what() == "Couldn't connect skeleton to goal")
-//             {
-//                 pathDataPtr->result = PathDestinationNotValid;
-//             }
-//             
-//             if ( e.what() == "Couldn't compute potential function along skeleton")
-//             {
-//                 pathDataPtr->result = OtherError;
-//             }
-//             
-//             if ( e.what() == "Computed potential function but could not compute path.")
-//             {
-//                 pathDataPtr->result = PathDestinationUnreachable;   
-//             }
-            
+            switch( e.type() )
+            {
+                case PathStartNotValid:             pathDataPtr->result = PathStartNotValid;
+                case PathDestinationNotValid:       pathDataPtr->result = PathDestinationNotValid;
+                case PathDestinationUnreachable:    pathDataPtr->result = PathDestinationUnreachable;
+                case OtherError:                    pathDataPtr->result = OtherError; 
+                case PathOk:                        ; //compiler wants me to handle this case, otherwise produces warning
+            }
         }
 
         //

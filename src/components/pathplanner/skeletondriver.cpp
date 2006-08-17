@@ -36,13 +36,22 @@ SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
     orcamisc::CpuStopwatch watch(true);
     if ( !useSparseSkeleton )
     {
-        orcapathplan::SkeletonPathPlanner *skelPathPlanner = 
-            new orcapathplan::SkeletonPathPlanner( ogMap_,
+        try {
+            orcapathplan::SkeletonPathPlanner *skelPathPlanner = 
+                new orcapathplan::SkeletonPathPlanner( ogMap_,
                                                    robotDiameterMetres,
                                                    traversabilityThreshhold,
                                                    doPathOptimization );
-        pathPlanner_ = skelPathPlanner;
-        skelGraphicsI_->localSetSkel( ogMap_, &(skelPathPlanner->skeleton()) );
+            pathPlanner_ = skelPathPlanner;
+            skelGraphicsI_->localSetSkel( ogMap_, &(skelPathPlanner->skeleton()) );
+        }
+        catch ( orcapathplan::Exception &e )
+        {
+            std::stringstream ss;
+            ss << "Error trying to construct a skeletonpathplanner";
+            throw orcapathplan::Exception( ss.str() );
+        } 
+
     }
     else
     {
@@ -58,18 +67,23 @@ SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
             skelGraphicsI_->localSetSkel( ogMap_, &(temp->skeleton()) );
         }
 
-        orcapathplan::SparseSkeletonPathPlanner *skelPathPlanner = 
-            new orcapathplan::SparseSkeletonPathPlanner( ogMap_,
-                                                         robotDiameterMetres,
-                                                         traversabilityThreshhold,
-                                                         doPathOptimization );
-        pathPlanner_ = skelPathPlanner;
-
         try {
+            orcapathplan::SparseSkeletonPathPlanner *skelPathPlanner = 
+                new orcapathplan::SparseSkeletonPathPlanner( ogMap_,
+                                                            robotDiameterMetres,
+                                                            traversabilityThreshhold,
+                                                            doPathOptimization );
+            pathPlanner_ = skelPathPlanner;
             skelGraphicsI_->localSetSkel( ogMap_,
                                           &(skelPathPlanner->denseSkel()),
                                           &(skelPathPlanner->sparseSkel()) );
         }
+        catch( orcapathplan::Exception &e )
+        {
+            std::stringstream ss;
+            ss << "Error trying to construct a sparseskeletonpathplanner";
+            throw orcapathplan::Exception( ss.str() );
+        }  
         catch ( Ice::MemoryLimitException &e )
         {
             cout<<"TRACE(skeletondriver.cpp): Caught: " << e << endl;
@@ -116,7 +130,9 @@ SkeletonDriver::computePath( const orca::OgMapDataPtr         &ogMapDataPtr,
             ss << "Error planning path segment from (" 
                << startWp->target.p.x <<","<<startWp->target.p.y << ") to ("
                << goalWp->target.p.x << ","<<goalWp->target.p.y<<"): "
-               << e.what();
+               << e.what()
+               << endl;
+            
             throw orcapathplan::Exception( ss.str() );
         }
         cout<<"TRACE(skeletondriver.cpp): computing path segment took " << watch.elapsedSeconds() << "s" << endl;
