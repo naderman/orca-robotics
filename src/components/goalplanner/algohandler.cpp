@@ -44,7 +44,7 @@ AlgoHandler::initNetwork()
             orcaice::connectToInterfaceWithTag<orca::Localise2dPrx>( context_, localise2dPrx_, "Localise2d" );
             break;
         }
-        catch ( const orcaice::NetworkException & e )
+        catch ( const orcaice::NetworkException & )
         {
             context_.tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
@@ -63,7 +63,7 @@ AlgoHandler::initNetwork()
             localise2dPrx_->subscribe( localiseConsumerPrx_ );
             break;
         }
-        catch ( const orca::SubscriptionFailedException & e )
+        catch ( const orca::SubscriptionFailedException & )
         {
             context_.tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
@@ -78,7 +78,7 @@ AlgoHandler::initNetwork()
             orcaice::connectToInterfaceWithTag<orca::PathFollower2dPrx>( context_, localNavPrx_, "PathFollower2d" );
             break;
         }
-        catch ( const orcaice::NetworkException & e )
+        catch ( const orcaice::NetworkException & )
         {
             context_.tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
@@ -92,7 +92,7 @@ AlgoHandler::initNetwork()
             orcaice::connectToInterfaceWithTag<orca::PathPlanner2dPrx>( context_, pathplanner2dPrx_, "PathPlanner2d" );
             break;
         }
-        catch ( const orcaice::NetworkException & e )
+        catch ( const orcaice::NetworkException & )
         {
             context_.tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
@@ -148,6 +148,8 @@ AlgoHandler::run()
             int ret = incomingPathBuffer_.getNext( incomingPath, 1000 );
             if (ret==0) break;
         }
+        // tell the world about it
+        pathPublisher_->setData( incomingPath );
         
         // wait for a valid localisation
         while( isActive() )
@@ -165,9 +167,9 @@ AlgoHandler::run()
         wp.target = localiseData->hypotheses[0].mean;
         // hardcode uncertainties for the waypoint we start from
         wp.distanceTolerance = 5.0; 
-        wp.headingTolerance = DEG2RAD(45);      
+        wp.headingTolerance = (float)DEG2RAD(45);      
         wp.maxApproachSpeed = 5.0;
-        wp.maxApproachTurnrate = DEG2RAD(2e+6); 
+        wp.maxApproachTurnrate = (float)DEG2RAD(2e+6); 
         
 //         cout << "Convariance is: " << localiseData->hypotheses[0].cov.xx << " " 
 //                 << localiseData->hypotheses[0].cov.xy << " " 
@@ -228,7 +230,7 @@ AlgoHandler::run()
             try {
                 localNavPrx_->setData( outgoingPath, activateNow );
             }
-            catch ( Ice::NotRegisteredException &e )
+            catch ( Ice::NotRegisteredException & )
             {
                 stringstream ss;
                 ss << "Problem setting data on pathfollower2d proxy";

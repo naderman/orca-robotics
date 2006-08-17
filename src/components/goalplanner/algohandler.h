@@ -61,13 +61,10 @@ private:
     PathFollower2dI* incomingPathI_;
     orca::PathFollower2dConsumerPrx pathPublisher_;
     
-    // The path we're currently following.  
-    // PathFollower2dI puts data in when it arrives, and gets data out when queried by the world.
     orcaice::PtrProxy<orca::PathFollower2dDataPtr> incomingPathBuffer_;
 
     // Used by the PathFollowerI to inform of activation commands
     orcaice::Proxy<orca::Time>                     activationPipe_;
-    
     // ===========================================================================
     
     void initNetwork();
