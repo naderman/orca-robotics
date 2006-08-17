@@ -273,7 +273,6 @@ MainLoop::run()
     }
     catch ( const std::exception & e )
     {
-        // once caught this beast in here, don't know who threw it 'St9bad_alloc'
         cout<<e.what()<<endl;
         context_.tracer()->error( "unexpected std exception.");
         if ( context_.isApplication() ) {

@@ -173,7 +173,7 @@ SkeletonDriver::addWaypointParameters(  vector<WaypointParameter> &wpParaVector,
         {
             if (i==0) {
                 wpPara.timeTarget = toOrcaTime( timeAsDouble( startWp->timeTarget ) + deltaSec );
-            } else {
+            } else {                        
                 wpPara.timeTarget = toOrcaTime( timeAsDouble( wpParaVector[i-1].timeTarget ) + deltaSec );
             }
             wpParaVector.push_back( wpPara );
