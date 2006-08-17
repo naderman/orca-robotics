@@ -189,6 +189,7 @@ AlgoHandler::run()
         {
             context_.tracer()->info("telling driver to compute the path now");
             driver_->computePath( ogMapDataPtr_, taskPtr, pathDataPtr );
+            driver_->addWaypointParameters( pathDataPtr );
         }
         catch ( orcapathplan::Exception &e )
         {
@@ -200,25 +201,25 @@ AlgoHandler::run()
             
             // Don't break here. Set error codes according to the thrown exception. Client can evaluate error codes.
             
-            if ( e.what() == "Start point was not within the map." ||  e.what() =="Start point was not traversable." || e.what() == "Couldn't connect start cell to skeleton" )
-            {
-                pathDataPtr->result = PathStartNotValid;
-            }
-            
-            if ( e.what() == "End point was not within the map." ||  e.what() =="End point was not traversable." || e.what() == "Couldn't connect skeleton to goal")
-            {
-                pathDataPtr->result = PathDestinationNotValid;
-            }
-            
-            if ( e.what() == "Couldn't compute potential function along skeleton")
-            {
-                pathDataPtr->result = OtherError;
-            }
-            
-            if ( e.what() == "Computed potential function but could not compute path.")
-            {
-                pathDataPtr->result = PathDestinationUnreachable;   
-            }
+//             if ( e.what() == "Start point was not within the map." ||  e.what() =="Start point was not traversable." || e.what() == "Couldn't connect start cell to skeleton" )
+//             {
+//                 pathDataPtr->result = PathStartNotValid;
+//             }
+//             
+//             if ( e.what() == "End point was not within the map." ||  e.what() =="End point was not traversable." || e.what() == "Couldn't connect skeleton to goal")
+//             {
+//                 pathDataPtr->result = PathDestinationNotValid;
+//             }
+//             
+//             if ( e.what() == "Couldn't compute potential function along skeleton")
+//             {
+//                 pathDataPtr->result = OtherError;
+//             }
+//             
+//             if ( e.what() == "Computed potential function but could not compute path.")
+//             {
+//                 pathDataPtr->result = PathDestinationUnreachable;   
+//             }
             
         }
 

@@ -144,7 +144,7 @@ AlgoHandler::run()
         // wait for a goal path
         while( isActive() )
         {
-            cout << "TRACE(algohandler.cpp): Waiting for a goal path" << endl;
+            //cout << "TRACE(algohandler.cpp): Waiting for a goal path" << endl;
             int ret = incomingPathBuffer_.getNext( incomingPath, 1000 );
             if (ret==0) break;
         }

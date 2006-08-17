@@ -8,7 +8,6 @@
  *
  */
 #include "skeletondriver.h"
-#include <orcapathplan/orcapathplan.h>
 #include <orcapathplan/skeletonpathplanner.h>
 #include <orcapathplan/sparseskeletonpathplanner.h>
 #include <orcamisc/orcamisc.h>
@@ -122,31 +121,38 @@ SkeletonDriver::computePath( const orca::OgMapDataPtr         &ogMapDataPtr,
         }
         cout<<"TRACE(skeletondriver.cpp): computing path segment took " << watch.elapsedSeconds() << "s" << endl;
 
-        // ====== Convert to an Orca object in global coordinate system. =====
-        // ====== Will append latest path to the total pathDataPtr. ==========
-        // ====== Not all data fields are filled in (e.g.tolerances) =========
-//         if (i==0)
-//         {
-//             // the first time we'll have to insert the start cell
-//             int cx, cy;
-//             ogMap_.getCellIndices( startWp->target.p.x, startWp->target.p.y, cx, cy );
-//             orcapathplan::Cell2D startCell( cx, cy );
-//             pathSegment.insert(pathSegment.begin(),startCell);
-//         }
-        
-        // compute waypoint parameters for this path segment
-        // simple method: use tolerances from the goal waypoint and acquidistant time intervals
+        // ====== Add waypoint parameters ================================
+        // ====== Different options could be implemented and chosen and runtime (via .cfg file)
         vector<WaypointParameter> wpParaVector;
+        addWaypointParameters( wpParaVector, startWp, goalWp, pathSegment.size() );
+        // ===============================================================
+        
+        // ===== Append to the pathDataPtr which contains the entire path  ========
+        orcapathplan::Result result = orcapathplan::PathOk;
+        orcapathplan::convert( ogMap_, pathSegment, wpParaVector, result, pathDataPtr );
+        // ========================================================================
+        
+        // set last goal cell as new start cell
+        startWp = goalWp;
+    }
+}
+
+void
+SkeletonDriver::addWaypointParameters(  vector<WaypointParameter> &wpParaVector, 
+                                        orca::Waypoint2d *startWp, 
+                                        orca::Waypoint2d *goalWp, 
+                                        int numSegments )
+{
         WaypointParameter wpPara;
+        
         wpPara.distanceTolerance = goalWp->distanceTolerance;
         wpPara.headingTolerance = goalWp->headingTolerance;
         wpPara.maxApproachSpeed = goalWp->maxApproachSpeed;
         wpPara.maxApproachTurnrate = goalWp->maxApproachTurnrate;
         double secondsTilGoal = orcaice::timeDiffAsDouble(goalWp->timeTarget, startWp->timeTarget);
         assert( secondsTilGoal > 0 && "Timestamp difference between goal and start is negative" );
-        int numSegments = pathSegment.size();
         double deltaSec = secondsTilGoal/(double)numSegments;
-        
+            
         for (int i=0; i<numSegments; i++)
         {
             if (i==0) {
@@ -156,15 +162,6 @@ SkeletonDriver::computePath( const orca::OgMapDataPtr         &ogMapDataPtr,
             }
             wpParaVector.push_back( wpPara );
         }
-        
-        orcapathplan::Result result = orcapathplan::PathOk;
-        orcapathplan::convert( ogMap_, pathSegment, wpParaVector, result, pathDataPtr );
-        // ==================================================================
-        
-        
-        // set last goal cell as new start cell
-        startWp = goalWp;
-    }
 }
 
 }

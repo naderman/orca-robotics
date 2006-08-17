@@ -12,16 +12,18 @@
 
 #include "algodriver.h"
 #include "skeletongraphicsI.h"
+#include <orcapathplan/orcapathplan.h>
 #include <orcapathplan/ipathplanner2d.h>
 #include <orca/ogmap.h>
 #include <orcaogmap/orcaogmap.h>
+#include <vector>
 
 namespace pathplanner {
 
 //
 // The 'skeletonnav' driver.
 //
-// @author Alex Brooks
+// @author Alex Brooks, Tobias Kaupp
 //
 class SkeletonDriver : public AlgoDriver
 {
@@ -48,6 +50,11 @@ private:
     orcaogmap::OgMap               ogMap_;
     orcapathplan::IPathPlanner2d  *pathPlanner_;
     double                         robotDiameterMetres_;
+    
+    void addWaypointParameters( std::vector<orcapathplan::WaypointParameter> &wpParaVector, 
+                                orca::Waypoint2d                             *startWp, 
+                                orca::Waypoint2d                             *goalWp, 
+                                int                                           numSegments );
 };
 
 }
