@@ -189,7 +189,6 @@ AlgoHandler::run()
         {
             context_.tracer()->info("telling driver to compute the path now");
             driver_->computePath( ogMapDataPtr_, taskPtr, pathDataPtr );
-            driver_->addWaypointParameters( pathDataPtr );
         }
         catch ( orcapathplan::Exception &e )
         {
