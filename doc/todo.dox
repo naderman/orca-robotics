@@ -16,9 +16,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @section todo To-Do List for Release 2.1.0
 
--- Turn orcaice ServicePropTests back on.
-   (NOTE: they only seem to hang on devdebian...)
-
 -- Separate utilities from libraries?
 
 - do not install test .cfg files
