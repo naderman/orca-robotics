@@ -9,9 +9,19 @@ IF ( BUILD_GOAL_PLANNER )
     #
     # This gathers all the source files into the variable 'SRCS'
     #
-    FILE( GLOB SRCS *.cpp )
+    SET( COMMON_SRCS
+            component.cpp
+            localise2dconsumerI.cpp
+            mainloop.cpp
+            pathfollower2dI.cpp
+            pathplanner2dconsumerI.cpp
+        )
     
-    GLOBAL_ADD_EXECUTABLE( goalplanner ${SRCS} )
+    GLOBAL_ADD_EXECUTABLE( goalplanner main ${COMMON_SRCS} )
+    
+    # build an IceBox service
+    GLOBAL_ADD_LIBRARY( OrcaGoalPlanner SHARED service ${COMMON_SRCS} )
+    
     GENERATE_CONFIG_FILE( goalplanner.def goalplanner )
 
 ENDIF ( BUILD_GOAL_PLANNER )

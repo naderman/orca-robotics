@@ -1,0 +1,51 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@ingroup components
+@ingroup apps
+@ingroup services
+@ingroup cpp
+@ingroup linux
+@defgroup orca_component_goalplanner GoalPlanner
+@brief Plans a path from where you are now to a goal
+ 
+The goalplanner plans a path from the current position of a robot to a global world coordinate (or a series of coordinates - a coarse path). It currently uses @ref orca_component_pathplanner for planning. It sends the resulting fine path to a local navigator, e.g. @ref orca_component_localnav.
+
+The following happens in sequencential order in the mainloop:
+- Wait for a "task" path which someone (e.g. @ref orca_component_orcaview ) sends via the provided Pathfollower2d interface.
+- Prepend the current position of the robot to the task path.
+- Send task path to the pathplanner and wait for an answer.
+- Send out resulting, fine-grained path through the required PathFollower2d interface.
+
+@par Provided Interfaces
+
+- @ref orca_interface_home
+- @ref orca_interface_status
+- @ref orca_interface_pathfollower2d
+
+@par Required Interfaces
+
+- @ref orca_interface_pathfollower2d
+- @ref orca_interface_localise2d
+- @ref orca_interface_pathplanner2d
+
+@par Drivers
+None.
+
+@par Configuration
+None.
+
+@par Authors
+Tobias Kaupp
+
+*/
+
