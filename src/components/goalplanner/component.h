@@ -16,7 +16,7 @@
 namespace goalplanner
 {
 
-class AlgoHandler;
+class MainLoop;
 
 class Component : public orcaice::Component
 {
@@ -30,7 +30,7 @@ public:
 
 private:
 
-    AlgoHandler *algoHandler_;
+    MainLoop *mainloop_;
 
 };
 

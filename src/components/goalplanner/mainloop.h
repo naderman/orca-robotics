@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_GOALPLANNER_ALGORITHM_HANDLER_H
-#define ORCA2_GOALPLANNER_ALGORITHM_HANDLER_H
+#ifndef ORCA2_GOALPLANNER_MAINLOOP_H
+#define ORCA2_GOALPLANNER_MAINLOOP_H
 
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
@@ -24,13 +24,13 @@ namespace goalplanner
 
 class PathFollower2dI;
 
-class AlgoHandler : public orcaice::Thread
+class MainLoop : public orcaice::Thread
 {
 
 public: 
 
-    AlgoHandler( const orcaice::Context & context );
-    ~AlgoHandler();
+    MainLoop( const orcaice::Context & context );
+    ~MainLoop();
 
     virtual void run();
 

@@ -9,13 +9,13 @@
  */
 
 #include "component.h"
-#include "algohandler.h"
+#include "mainloop.h"
 
 using namespace goalplanner;
 
 Component::Component()
     : orcaice::Component( "GoalPlanner" ),
-      algoHandler_(0)
+      mainloop_(0)
 {
 }
 
@@ -39,19 +39,19 @@ void Component::start()
     // Hardware handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    algoHandler_ = new AlgoHandler( context() );
-    algoHandler_->start();
+    mainloop_ = new MainLoop( context() );
+    mainloop_->start();
     
     // the rest is handled by the application/service
 }
 
 void Component::stop()
 {
-    if ( algoHandler_ ) {
-        IceUtil::ThreadControl algoControl = algoHandler_->getThreadControl();
-        tracer()->debug("stopping algorithm handler", 5 );
-        algoHandler_->stop();
-        tracer()->debug("joining algorithm handler", 5 );
-        algoControl.join();
+    if ( mainloop_ ) {
+        IceUtil::ThreadControl mainLoopControl = mainloop_->getThreadControl();
+        tracer()->debug("stopping mainloop", 5 );
+        mainloop_->stop();
+        tracer()->debug("joining mainloop", 5 );
+        mainLoopControl.join();
     }
 }

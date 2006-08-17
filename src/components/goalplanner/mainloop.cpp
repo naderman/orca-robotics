@@ -9,7 +9,7 @@
  */
  
 #include <orcaice/orcaice.h>
-#include "algohandler.h"
+#include "mainloop.h"
 #include "pathfollower2dI.h"
 #include "localise2dconsumerI.h"
 #include "pathplanner2dconsumerI.h"
@@ -18,20 +18,20 @@ using namespace std;
 using namespace orca;
 using namespace goalplanner;
 
-AlgoHandler::AlgoHandler( const orcaice::Context & context )
+MainLoop::MainLoop( const orcaice::Context & context )
     : incomingPathI_(0),
       context_(context)
 {
     initNetwork();
 }
 
-AlgoHandler::~AlgoHandler()
+MainLoop::~MainLoop()
 {
     delete incomingPathI_;
 }
 
 void
-AlgoHandler::initNetwork()
+MainLoop::initNetwork()
 {
     //
     // REQUIRED INTERFACES: Localise2d, Pathfollower, Pathplanner
@@ -122,7 +122,7 @@ AlgoHandler::initNetwork()
 }
 
 void 
-AlgoHandler::run()
+MainLoop::run()
 {
     try
     {
@@ -144,7 +144,7 @@ AlgoHandler::run()
         // wait for a goal path
         while( isActive() )
         {
-            //cout << "TRACE(algohandler.cpp): Waiting for a goal path" << endl;
+            //cout << "TRACE(mainloop.cpp): Waiting for a goal path" << endl;
             int ret = incomingPathBuffer_.getNext( incomingPath, 1000 );
             if (ret==0) break;
         }
@@ -159,7 +159,7 @@ AlgoHandler::run()
             {
                 if ( localiseData->hypotheses.size() == 1 ) break;
                 
-                cout << "WARNING(algohandler.cpp): more than one localisation hypotheses. Can't handle this. Waiting for single hypothesis..." << endl;
+                cout << "WARNING(mainloop.cpp): more than one localisation hypotheses. Can't handle this. Waiting for single hypothesis..." << endl;
             }
         }
              
@@ -184,12 +184,12 @@ AlgoHandler::run()
         // put together a task for the pathplanner
         // add the position of the robot as the first waypoint in the path
         incomingPath->path.insert( incomingPath->path.begin(), 1, wp );
-        cout << "TRACE(algohandler.cpp): Incoming path is " << endl << orcaice::toText( incomingPath );
+        cout << "TRACE(mainloop.cpp): Incoming path is " << endl << orcaice::toText( incomingPath );
         taskPtr->coarsePath = incomingPath->path;
         taskPtr->prx = taskPrx_;
         
         // send task to pathplanner
-        cout << "TRACE(algohandler.cpp): Sending task to pathplanner" << endl;
+        cout << "TRACE(mainloop.cpp): Sending task to pathplanner" << endl;
         try {
             pathplanner2dPrx_->setTask( taskPtr );
         }
@@ -209,7 +209,7 @@ AlgoHandler::run()
         // block until path is computed
         while( isActive() )
         {
-            cout << "TRACE(algohandler.cpp): Waiting for pathplanner's answer" << endl;
+            cout << "TRACE(mainloop.cpp): Waiting for pathplanner's answer" << endl;
             int ret = computedPathBuffer_.getNext( computedPath, 1000 );
             if (ret==0) break;
         }
@@ -217,14 +217,14 @@ AlgoHandler::run()
         // check result
         if ( computedPath->result!= PathOk )
         {
-            cout << "TRACE(algohandler.cpp): Pathplanner could not compute path. Give me another goal" << endl;
+            cout << "TRACE(mainloop.cpp): Pathplanner could not compute path. Give me another goal" << endl;
         }
         else
         {
             // send out result to localnav, assemble packet first
             PathFollower2dDataPtr outgoingPath = new PathFollower2dData;
             outgoingPath->path = computedPath->path;
-            cout << "TRACE(algohandler.cpp): Sending out the resulting path to localnav." << endl;
+            cout << "TRACE(mainloop.cpp): Sending out the resulting path to localnav." << endl;
             //TODO: GUI can send this
             bool activateNow = true;
             try {
@@ -241,7 +241,7 @@ AlgoHandler::run()
         
     }
     
-    cout << "TRACE(algohandler.cpp): End of run() now..." << endl;
+    cout << "TRACE(mainloop.cpp): End of run() now..." << endl;
 
     } // try
     catch ( const orca::OrcaException & e )
