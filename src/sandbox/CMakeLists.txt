@@ -12,6 +12,9 @@ IF ( NOT WIN32 AND BUILD_SANDBOX )
     ADD_SUBDIRECTORY ( netcam )
     ADD_SUBDIRECTORY ( qorcauml )
     ADD_SUBDIRECTORY ( reactivewalker )
+    ADD_SUBDIRECTORY ( insgps )
+    ADD_SUBDIRECTORY ( imu )
+
     
 ELSE ( NOT WIN32 AND BUILD_SANDBOX )
 
