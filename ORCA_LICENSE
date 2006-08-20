@@ -36,7 +36,7 @@ src
         localnav                           LGPL
         logger                             LGPL
         logplayer                          LGPL
-        ogmaploader                        LGPL
+        ogmaploader                        GPL
         ognode                             LGPL
         orcamon                            LGPL
         orcaview                           GPL
