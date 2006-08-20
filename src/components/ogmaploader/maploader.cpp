@@ -17,90 +17,14 @@ using namespace std;
 using namespace orca;
 
 namespace ogmaploader {
-
-MapLoader::MapLoader(   orcaice::Context context,
-                        Ice::PropertiesPtr prop, 
-                        std::string prefix )
-    : context_(context)
-{
-    filename_   = orcaice::getPropertyWithDefault( prop, prefix+"MapFileName", "mapfilename" );
-    worldSizeX_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.X", 20.0 );
-    worldSizeY_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.Y", 20.0 );
-    originX_    = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.X", 0.0 );
-    originY_    = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Y", 0.0 );
-    originTheta_= orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Orientation", 0.0 ) * M_PI/180.0;
-    negate_     = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Negate", true );
     
-    int len = strlen( filename_.c_str() );
-    
-    if ( strcmp( &filename_.c_str()[len - 4], ".bin" ) == 0 )
-    {
-        type_= ICE_STREAM;
-    }
-    else if( strcmp( &filename_.c_str()[len - 7], ".pnm.gz" ) == 0 )
-    {
-        type_= PNM_GZ;
-    }
-    else
-    {
-        type_ = BITMAP;    
-    }
-    
-}
-    
-void 
-MapLoader::loadMapFromFile( orca::OgMapDataPtr &map )
-{
-    switch (type_)
-    {
-        case PNM_GZ:        if (maploadutil::loadPnmGz( filename_.c_str(), negate_, map->numCellsX, map->numCellsY, map->data ) != 0)
-                            {
-                                stringstream ss;
-                                ss << "ERROR(maploader.cpp): something went wrong while loading " << filename_;
-                                throw ss.str();
-                            }
-                            setMapParameters( map );      
-                            break;
-                        
-        case BITMAP:        if (maploadutil::loadBitmap( filename_.c_str(), negate_, map->numCellsX, map->numCellsY, map->data ) != 0)
-                            {
-                                stringstream ss;
-                                ss << "ERROR(maploader.cpp): something went wrong while loading " << filename_;
-                                throw ss.str();
-                            }
-                            setMapParameters( map );     
-                            break;
-                            
-        case ICE_STREAM:    if ( loadIceStream( map ) != 0 )
-                            {
-                                stringstream ss;
-                                ss << "ERROR(maploader.cpp): something went wrong while loading " << filename_;
-                                throw ss.str();
-                            }
-                            break;
-    }
-}
-
-void
-MapLoader::setMapParameters( OgMapDataPtr &map )
-{
-    map->origin.p.x = originX_;
-    map->origin.p.y = originY_;
-    map->origin.o   = originTheta_;
-
-    // since we know that map size in pixels, we can calculate the cell size
-    map->metresPerCellX = worldSizeX_ / (float)map->numCellsX;
-    map->metresPerCellY = worldSizeY_ / (float)map->numCellsY;    
-}
-
 int
-MapLoader::loadIceStream( OgMapDataPtr &map )
+loadIceStream( orcaice::Context context, std::string filename, OgMapDataPtr &map )
 {
-        
-    std::ifstream *logFile = new std::ifstream( filename_.c_str(), ios::binary|ios::in );
+    std::ifstream *logFile = new std::ifstream( filename.c_str(), ios::binary|ios::in );
     if ( !logFile->is_open() )
     {
-        context_.tracer()->error("logFile could not be loaded");
+        context.tracer()->error("logFile could not be loaded");
         return -1;
     }
                     
@@ -109,7 +33,7 @@ MapLoader::loadIceStream( OgMapDataPtr &map )
     logFile->read( (char*)&length, sizeof(length) );
     if ( logFile->bad() )
     {
-        context_.tracer()->error("reading from logFile failed");
+        context.tracer()->error("reading from logFile failed");
         return -1;
     }
     
@@ -117,11 +41,11 @@ MapLoader::loadIceStream( OgMapDataPtr &map )
     logFile->read( (char*)&byteData[0], length );
     if ( logFile->bad() )
     {
-        context_.tracer()->error("reading from logFile failed");
+        context.tracer()->error("reading from logFile failed");
         return -1;
     }
     
-    Ice::InputStreamPtr iceInputStreamPtr = Ice::createInputStream( context_.communicator(), byteData );
+    Ice::InputStreamPtr iceInputStreamPtr = Ice::createInputStream( context.communicator(), byteData );
     if ( !byteData.empty() )
     {
         ice_readOgMapData( iceInputStreamPtr, map );
@@ -130,6 +54,48 @@ MapLoader::loadIceStream( OgMapDataPtr &map )
     
     return 0;
     
+}
+
+void 
+loadMapFromFile( orcaice::Context context, orca::OgMapDataPtr &map )
+{
+    Ice::PropertiesPtr prop = context.properties();
+    std::string prefix = context.tag();
+    prefix += ".Config.";
+
+    std::string filename = orcaice::getPropertyWithDefault( prop, prefix+"MapFileName", "mapfilename" );
+    int len = strlen( filename.c_str() );
+    
+    if ( strcmp( &filename.c_str()[len - 4], ".bin" ) == 0 )
+    {
+        //
+        // Load an ICE stream
+        //
+        if ( loadIceStream( context, filename, map ) != 0 )
+        {
+            stringstream ss;
+            ss << "ERROR(maploader.cpp): something went wrong while loading " << filename;
+            throw ss.str();
+        }
+    }
+    else
+    {
+        //
+        // Load a normal image format
+        //
+        bool negate = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Negate", true );
+        maploadutil::loadMap( filename.c_str(), negate, map->numCellsX, map->numCellsY, map->data );
+
+        map->origin.p.x = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.X", 0.0 );
+        map->origin.p.y = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Y", 0.0 );
+        map->origin.o   = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Orientation", 0.0 ) * M_PI/180.0;
+
+        // since we know that map size in pixels, we can calculate the cell size
+        float worldSizeX = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.X", 20.0 );
+        float worldSizeY = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.Y", 20.0 );
+        map->metresPerCellX = worldSizeX / (float)map->numCellsX;
+        map->metresPerCellY = worldSizeY / (float)map->numCellsY;    
+    }
 }
 
 }

@@ -2,22 +2,10 @@ OPTION( BUILD_OGMAPLOADER "Try to build OgMapLoader component" ON )
 
 SET( REALLY_BUILD_OGMAPLOADER ${BUILD_OGMAPLOADER} )
 
-PKGCONFIG("gtk+-2.0" HAVE_GTK GTK_INCLUDE_DIRS GTK_DEFINES GTK_LINK_DIRS GTK_LIBS)
-PKGCONFIG("gdk-pixbuf-2.0" HAVE_GDK_PIXBUF GDK_PIXBUF_INCLUDE_DIRS GDK_PIXBUF_DEFINES GDK_PIXBUF_LINK_DIRS GDK_PIXBUF_LIBS)
-
-IF ( NOT HAVE_ZLIB )
-  MESSAGE( STATUS "Not building OgMapLoader: zlib not found." )
+IF ( NOT QT4_FOUND )
+  MESSAGE( STATUS "Not building OgMapLoader: Qt4 not found." )
   SET( REALLY_BUILD_OGMAPLOADER FALSE )
-ENDIF ( NOT HAVE_ZLIB )
-IF ( NOT HAVE_GDK_PIXBUF )
-  MESSAGE( STATUS "Not building OgMapLoader: gdk-pixbuf not found." )
-  SET( REALLY_BUILD_OGMAPLOADER FALSE )
-ENDIF ( NOT HAVE_GDK_PIXBUF )
-IF ( NOT HAVE_GTK )
-  MESSAGE( STATUS "Not building OgMapLoader: gtk not found." )
-  SET( REALLY_BUILD_OGMAPLOADER FALSE )
-ENDIF ( NOT HAVE_GTK )
-
+ENDIF ( NOT QT4_FOUND )
 
 IF ( NOT WIN32 AND REALLY_BUILD_OGMAPLOADER )
 
@@ -25,8 +13,7 @@ IF ( NOT WIN32 AND REALLY_BUILD_OGMAPLOADER )
     INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
 
     INCLUDE_DIRECTORIES(
-      ${GTK_INCLUDE_DIRS}
-      ${GDK_PIXBUF_INCLUDE_DIRS}
+        ${QT_INCLUDES}
       )
     
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
@@ -40,14 +27,14 @@ IF ( NOT WIN32 AND REALLY_BUILD_OGMAPLOADER )
 
     # build a stand-alone component
     GLOBAL_ADD_EXECUTABLE( ogmaploader ${COMP_SRCS} )
-    TARGET_LINK_LIBRARIES( ogmaploader ${GDK_PIXBUF_LIBS} z )
+    TARGET_LINK_LIBRARIES( ogmaploader ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
 
     # build an IceBox service
     ADD_LIBRARY( OrcaOgMapLoader SHARED ${SERVICE_SRCS} )
     
     # important to let linker know about this inter-library dependency
     # otherwise IceBox fails to load the service
-    TARGET_LINK_LIBRARIES( OrcaOgMapLoader ${GDK_PIXBUF_LIBS} z )
+    TARGET_LINK_LIBRARIES( OrcaOgMapLoader ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
     INSTALL_TARGETS( /lib OrcaOgMapLoader )
 
     GENERATE_CONFIG_FILE( ogmaploader.def )

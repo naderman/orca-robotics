@@ -16,42 +16,7 @@
 
 namespace ogmaploader {
 
-typedef enum {
-    ICE_STREAM,
-    PNM_GZ,
-    BITMAP
-} FileType;
-
-// Class to load an occupancy grid from a file
-class MapLoader
-{
-public:
-    
-    MapLoader( orcaice::Context context,
-               Ice::PropertiesPtr prop, 
-               std::string prefix );
-
-    ~MapLoader();
-    
-    void loadMapFromFile( orca::OgMapDataPtr &map );
-
-private:
-
-    orcaice::Context context_;
-    FileType type_;
-    
-    std::string filename_;
-    float worldSizeX_;
-    float worldSizeY_;
-    float originX_;
-    float originY_;
-    float originTheta_;
-    bool  negate_;
-    
-    int loadIceStream( orca::OgMapDataPtr &map );
-    void setMapParameters( orca::OgMapDataPtr &map );
-    
-};
+void loadMapFromFile( orcaice::Context context, orca::OgMapDataPtr &map );
 
 }
 

@@ -10,7 +10,7 @@ Provides.OgMap.DefaultName=ogmap
 Config.Driver.Comment=Options are { 'file', 'fake' }
 Config.Driver.Default=file
 Config.MapFileName.Default=mapfile.pnm.gz
-Config.Negate.Default=1
+Config.Negate.Default=0
 
 # Geometry Config
 Config.Origin.X.Default=0.0

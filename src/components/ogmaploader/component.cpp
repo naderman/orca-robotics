@@ -55,8 +55,7 @@ Component::start()
     }
     else if ( driverName == "file" )
     {
-        MapLoader* mapLoader = new MapLoader( context(), prop, prefix );
-        mapLoader->loadMapFromFile(theMap);
+        loadMapFromFile(context(),theMap);
         cout<<"TRACE(component.cpp): Loaded map: " << orcaice::toString(theMap) << endl;
     }
     else
