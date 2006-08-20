@@ -45,12 +45,15 @@ loadMap( const std::string &filename,
         for ( int i = 0; i < qImage.width(); i++ )
         { 
             QColor pixColor = qImage.pixel( i, j );
-            double occProb = (double)(pixColor.red()+pixColor.green()+pixColor.blue())/3.0;
+            int gray = (pixColor.red()+pixColor.green()+pixColor.blue())/3;
 
-            if ( negate )
-                occProb = 1.0-occProb;
+            // Remember: don't use 255, so we have a perfect 0.5 at 254/2.
+            if ( gray > 254 ) gray = 254;
 
-            unsigned char cellVal = (unsigned char) (occProb*254.0);
+            if ( !negate )
+                gray = 254 - gray;
+
+            unsigned char cellVal = (unsigned char) gray;
             int xi = i;
             int yi = numCellsY-1-j;
             int index = numCellsX*(yi) + xi;
