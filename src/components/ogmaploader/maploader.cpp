@@ -94,7 +94,11 @@ loadMapFromFile( orcaice::Context context, orca::OgMapDataPtr &map )
         float worldSizeX = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.X", 20.0 );
         float worldSizeY = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.Y", 20.0 );
         map->metresPerCellX = worldSizeX / (float)map->numCellsX;
-        map->metresPerCellY = worldSizeY / (float)map->numCellsY;    
+        map->metresPerCellY = worldSizeY / (float)map->numCellsY;
+
+        // Make up a timestamp
+        map->timeStamp.seconds  = 0;
+        map->timeStamp.useconds = 0;
     }
 }
 
