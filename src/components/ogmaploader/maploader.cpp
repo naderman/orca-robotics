@@ -7,11 +7,11 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
+#include "maploader.h"
 #include <orcaice/orcaice.h>
 #include <fstream>
 
-#include "maploadutil.h"
-#include "maploader.h"
+#include <orcaogmapload/maploadutil.h>
 
 using namespace std;
 using namespace orca;
@@ -84,7 +84,7 @@ loadMapFromFile( orcaice::Context context, orca::OgMapDataPtr &map )
         // Load a normal image format
         //
         bool negate = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Negate", true );
-        maploadutil::loadMap( filename.c_str(), negate, map->numCellsX, map->numCellsY, map->data );
+        orcaogmapload::loadMap( filename.c_str(), negate, map->numCellsX, map->numCellsY, map->data );
 
         map->origin.p.x = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.X", 0.0 );
         map->origin.p.y = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Y", 0.0 );

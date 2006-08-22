@@ -17,7 +17,7 @@ IF ( NOT WIN32 AND REALLY_BUILD_OGMAPLOADER )
       )
     
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-    SET( COMMON_SRCS component ogmapI maploader maploadutil fakemaploader )
+    SET( COMMON_SRCS component ogmapI maploader fakemaploader )
     
     # Files for the stand-alone application
     SET( COMP_SRCS main ${COMMON_SRCS} )
@@ -27,7 +27,7 @@ IF ( NOT WIN32 AND REALLY_BUILD_OGMAPLOADER )
 
     # build a stand-alone component
     GLOBAL_ADD_EXECUTABLE( ogmaploader ${COMP_SRCS} )
-    TARGET_LINK_LIBRARIES( ogmaploader ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
+    TARGET_LINK_LIBRARIES( ogmaploader OrcaOgMapLoad ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
 
     # build an IceBox service
     ADD_LIBRARY( OrcaOgMapLoader SHARED ${SERVICE_SRCS} )

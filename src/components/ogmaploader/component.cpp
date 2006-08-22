@@ -12,7 +12,6 @@
 #include "component.h"
 #include "fakemaploader.h"
 #include "maploader.h"
-#include "maploadutil.h"
 
 // implementations of Ice objects
 #include "ogmapI.h"
