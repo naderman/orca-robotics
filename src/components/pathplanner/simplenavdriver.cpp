@@ -133,7 +133,7 @@ void SimpleNavDriver::computePath( const orca::OgMapDataPtr          & ogMapData
             cout << "INFO(simplenavdriver.cpp): Optimizing path now" << endl;
             Cell2DVector waycells;    
             watch.start();        
-            optimizePath( ogMap_, path, waycells );
+            optimizePath( ogMap_, traversabilityThreshhold_, path, waycells );
             watch.stop();
             cout << "optimizePath took (" << i << ") took: " << watch.elapsedSeconds() << " s" << endl << endl;
             path = waycells;
