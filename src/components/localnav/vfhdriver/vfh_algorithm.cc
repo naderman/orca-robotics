@@ -29,6 +29,10 @@
 
 namespace vfh {
 
+    namespace {
+        const int VERBOSITY=0;
+    }
+
 VFH_Algorithm::VFH_Algorithm( const VfhAlgorithmConfig &config )
     : CELL_WIDTH((int)(config.cellSize*1000.0)),
       WINDOW_DIAMETER(config.gridWidthInCells),
@@ -681,6 +685,9 @@ int VFH_Algorithm::Select_Direction()
       Picked_Angle = Desired_Angle;
       Last_Picked_Angle = Picked_Angle;
       Max_Speed_For_Picked_Angle = Current_Max_Speed;
+
+      if ( VERBOSITY > 1 )
+          printf("vfh_algorithm.cc::Select_Direction(): no obstacles in front, full speed to goal!");
 
       return(1);
   }
