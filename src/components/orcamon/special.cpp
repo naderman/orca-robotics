@@ -52,19 +52,34 @@ void attachGpsMapGrid( const orcaice::Context & context, const std::string & pro
     try
     {
         cout<<"in special"<<endl;
-        context.tracer()->info( "Trying to get one data object as a test" );
+        context.tracer()->info( "TRACE(special.cpp): Trying to get one data object as a test" );
         context.tracer()->print( orcaice::toString( objectPrx->getMapGridData() ) );
     }
-    catch ( const orca::DataNotExistException & e )
+    catch ( const orca::OrcaException & e ) 
     {
-        cout<<e<<endl;
-        context.tracer()->warning( "data is not in the buffer yet. Will subscribe anyway." );
+        std::cout<<e.what<<std::endl;
     }
-    catch ( const orca::HardwareFailedException & e )
+    catch ( const Ice::Exception & e ) 
     {
-        context.tracer()->error( "hardware failure reported when getting data. Will subscribe anyway." );
+        std::cout<<e<<std::endl;
     }
+    catch ( ... )
+    {
+        context.tracer()->error( "caught something." );
+        exit(1);
+    }
+//     catch ( const orca::DataNotExistException & e )
+//     {
+//         cout<<e<<endl;
+//         context.tracer()->warning( "data is not in the buffer yet. Will subscribe anyway." );
+//     }
+//     catch ( const orca::HardwareFailedException & e )
+//     {
+//         context.tracer()->error( "hardware failure reported when getting data. Will subscribe anyway." );
+//     }
 
+    
+    
     // create a callback object to recieve scans
 //     Ice::ObjectPtr consumer = new ConsumerIType;
     Ice::ObjectPtr consumer = new orcaice::PrintingConsumerI<GpsMapGridConsumer,GpsMapGridDataPtr>;
@@ -127,18 +142,31 @@ void attachGpsTime( const orcaice::Context & context, const std::string & proxyS
     // Get the data once
     try
     {
-        context.tracer()->info( "Trying to get one data object as a test" );
+        context.tracer()->info( "TRACE(special.cpp): Trying to get one data object as a test" );
         context.tracer()->print( orcaice::toString( objectPrx->getTimeData() ) );
     }
-    catch ( const orca::DataNotExistException & e )
+    catch ( const orca::OrcaException & e ) 
     {
-        cout<<e<<endl;
-        context.tracer()->warning( "data is not in the buffer yet. Will subscribe anyway." );
+        std::cout<<e.what<<std::endl;
     }
-    catch ( const orca::HardwareFailedException & e )
+    catch ( const Ice::Exception & e ) 
     {
-        context.tracer()->warning( "hardware failure reported when getting data. Will subscribe anyway." );
+        std::cout<<e<<std::endl;
     }
+    catch ( ... )
+    {
+        context.tracer()->error( "caught something." );
+        exit(1);
+    }
+//     catch ( const orca::DataNotExistException & e )
+//     {
+//         cout<<"Data not exist exception: "<<e<<endl;
+//         context.tracer()->warning( "data is not in the buffer yet. Will subscribe anyway." );
+//     }
+//     catch ( const orca::HardwareFailedException & e )
+//     {
+//         context.tracer()->warning( "hardware failure reported when getting data. Will subscribe anyway." );
+//     }
 
     // create a callback object to recieve scans
 //     Ice::ObjectPtr consumer = new ConsumerIType;
