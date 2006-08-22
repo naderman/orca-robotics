@@ -510,15 +510,22 @@ int VFH_Algorithm::Update_VFH( double laser_ranges[REQUIRED_NUM_RANGES][2],
   {
       // The goal's too close -- we can't turn tightly enough to get to it,
       // so slow down.
+      if ( VERBOSITY > 1 )
+          printf("Goal's too close -- can't turn tightly enough, have to slow down.\n");
       speed_incr = -speed_incr;
   }
 
-  // Accelerate (if we're not already at Max_Speed_For_Picked_Angle).
-  chosen_speed = MIN( last_chosen_speed + speed_incr, Max_Speed_For_Picked_Angle );
+  // Acc/Decelerate (if we're not already at Max_Speed_For_Picked_Angle or stopped).
+  chosen_speed = MAX( 1, MIN( last_chosen_speed + speed_incr, Max_Speed_For_Picked_Angle ) );
 
-//   printf("Max Speed for picked angle: %d\n",Max_Speed_For_Picked_Angle);
-//   printf("speed_incr: %d\n", speed_incr);
-//   printf("diffSeconds: %f\n", diffSeconds);
+  if ( VERBOSITY > 2 )
+  {
+      printf("Max Speed for picked angle: %f m/s\n",Max_Speed_For_Picked_Angle/1000.0);
+      printf("chosen_speed:               %f m/s\n",chosen_speed/1000.0);
+      printf("last_chosen_speed:          %f m/s\n",last_chosen_speed/1000.0);
+      printf("speed_incr:                 %f m/s\n",speed_incr/1000.0);
+      printf("diffSeconds:                %f \n", diffSeconds);
+  }
 
   // Set the chosen_turnrate, and possibly modify the chosen_speed
   Set_Motion( chosen_speed, chosen_turnrate, current_pos_speed );
@@ -687,8 +694,11 @@ int VFH_Algorithm::Select_Direction()
       Max_Speed_For_Picked_Angle = Current_Max_Speed;
 
       if ( VERBOSITY > 1 )
-          printf("vfh_algorithm.cc::Select_Direction(): no obstacles in front, full speed to goal!");
-
+      {
+          printf("vfh_algorithm.cc::Select_Direction(): no obstacles in front, full speed to goal!\n");
+          printf("  Desired_Angle: %f, Picked_Angle: %f\n",Desired_Angle,Picked_Angle);
+          printf("  Current_Max_Speed: %f m/s\n",Current_Max_Speed/1000.0);
+      }
       return(1);
   }
 
@@ -1064,34 +1074,37 @@ int VFH_Algorithm::Build_Masked_Polar_Histogram(int speed)
 
 int VFH_Algorithm::Set_Motion( int &speed, int &turnrate, int actual_speed ) 
 {
-  // This happens if all directions blocked, so just spin in place
-  if (speed <= 0) 
-  {
-    //printf("stop\n");
-      turnrate = GetMaxTurnrate( actual_speed );
-      speed = 0;
-  }
-  else 
-  {
     //printf("Picked %f\n", Picked_Angle);
-    if ((Picked_Angle > 270) && (Picked_Angle < 360)) {
-        turnrate = -1 * GetMaxTurnrate( actual_speed );
-    } else if ((Picked_Angle < 270) && (Picked_Angle > 180)) {
-      turnrate = GetMaxTurnrate( actual_speed );
-    } else {
-      turnrate = (int)rint(((float)(Picked_Angle - 90) / 75.0) * GetMaxTurnrate( actual_speed ));
-
-      if (turnrate > GetMaxTurnrate( actual_speed )) {
+    if ( (Picked_Angle > 180) && (Picked_Angle < 270)) 
+    {
+        // Quadrant 3
+        if ( VERBOSITY > 2 )
+            printf("vfh_algorithm.cc::Set_Motion(): Quadrant 3 (behind and left)\n");
         turnrate = GetMaxTurnrate( actual_speed );
-      } else if (turnrate < (-1 * GetMaxTurnrate( actual_speed ))) {
-        turnrate = -1 * GetMaxTurnrate( actual_speed );
-      }
-
-//      if (abs(turnrate) > (0.9 * GetMaxTurnrate( actual_speed ))) {
-//        speed = 0;
-//      }
     }
-  }
+    else if ((Picked_Angle > 270) && (Picked_Angle < 360)) 
+    {
+        // Quadrant 4
+        if ( VERBOSITY > 2 )
+            printf("vfh_algorithm.cc::Set_Motion(): Quadrant 4 (behind and right)\n");
+        turnrate = -1 * GetMaxTurnrate( actual_speed );
+    }
+    else
+    {
+        // Quadrant 1 or 2
+        turnrate = (int)rint(((float)(Picked_Angle - 90) / 75.0) * GetMaxTurnrate( actual_speed ));
+
+        if ( VERBOSITY > 2 )
+        {
+            printf("vfh_algorithm.cc::Set_Motion(): Quadrant 1 or 2 (in front)\n");
+            printf("  desired turnrate is %ddeg/s\n",turnrate);
+        }
+        if (turnrate > GetMaxTurnrate( actual_speed )) {
+            turnrate = GetMaxTurnrate( actual_speed );
+        } else if (turnrate < (-1 * GetMaxTurnrate( actual_speed ))) {
+            turnrate = -1 * GetMaxTurnrate( actual_speed );
+        }
+    }
 
 //  speed and turnrate have been set for the calling function -- return.
 
