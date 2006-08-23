@@ -39,6 +39,8 @@ it's probably a good idea to set this up so it's always running on a single mach
 
 @par IceStorm Service
 
+<em>[<strong>Note for Debian/Ubuntu users</strong>: See an entry in the <a href="http://wiki2.cas.edu.au/orca/index.php/Orca:faq:ice" target="_blank">Wiki FAQ</a> on 127.0.1.1 in the /etc/hosts file.]</em>
+
 IceStorm is an event service, used to decouple publishers from subscribers. Typically, there is one IceStorm service per host. We create a separate directory for it to run in, copy a sample config file, create the database directory and start it up.
 @verbatim
 $ cd ~/sys; mkdir icestorm; cd icestorm
@@ -46,8 +48,6 @@ $ cp [ORCA2-SRC]/scripts/ice/icebox_icestorm.cfg .
 $ mkdir stormdb
 $ icebox --Ice.Config=icebox_icestorm.cfg
 @endverbatim
-
-[Note for Debian users: See an entry in the <a href="http://wiki2.cas.edu.au/orca/index.php/Orca:faq:ice" target="_blank">Wiki FAQ</a> on 127.0.1.1 in the /etc/hosts file.]
 
 @section orca_doc_quickstart_point Pointing Components at this Infrastructure
 
