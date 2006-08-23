@@ -160,7 +160,6 @@ SkeletonDriver::addWaypointParameters(  vector<WaypointParameter> &wpParaVector,
         WaypointParameter wpPara;
         
         wpPara.distanceTolerance = goalWp->distanceTolerance;
-        wpPara.headingTolerance = goalWp->headingTolerance;
         wpPara.maxApproachSpeed = goalWp->maxApproachSpeed;
         wpPara.maxApproachTurnrate = goalWp->maxApproachTurnrate;
         double secondsTilGoal = orcaice::timeDiffAsDouble(goalWp->timeTarget, startWp->timeTarget);
@@ -169,10 +168,15 @@ SkeletonDriver::addWaypointParameters(  vector<WaypointParameter> &wpParaVector,
             
         for (int i=0; i<numSegments; i++)
         {
-            if (i==0) {
+            if (i==0) 
+            {
                 wpPara.timeTarget = toOrcaTime( timeAsDouble( startWp->timeTarget ) + deltaSec );
-            } else {                        
+                wpPara.headingTolerance = DEG2RAD( 360 );
+            } 
+            else 
+            {                        
                 wpPara.timeTarget = toOrcaTime( timeAsDouble( wpParaVector[i-1].timeTarget ) + deltaSec );
+                wpPara.headingTolerance = goalWp->headingTolerance;
             }
             wpParaVector.push_back( wpPara );
         }
