@@ -8,11 +8,7 @@
  *
  */
 
-#include <Ice/Ice.h> 
-
 #include <iostream>
-
-#include <orcaice/orcaice.h>
 
 #include <orcapathplan/orcapathplan.h>
 #include <orcamisc/orcamisc.h>
@@ -20,141 +16,82 @@
 #include "simplenavdriver.h"
 
 using namespace std;
-using namespace orcaogmap;
-using namespace orcapathplan;
 
 namespace pathplanner {
-
-bool SimpleNavDriver::areAllWaypointsInMap(const orca::PathPlanner2dDataPtr  & pathDataPtr)
+    
+SimpleNavDriver::SimpleNavDriver( orca::OgMapDataPtr &ogMapDataPtr,
+                                  double robotDiameterMetres,
+                                  double traversabilityThreshhold,
+                                  bool doPathOptimization )
 {
-    // Check whether startCell is within map
-    if ( !ogMap_.coordsWithinMap( coarsePath_[0].target.p.x, coarsePath_[0].target.p.y) )
-    {
-        pathDataPtr->result = orca::PathStartNotValid;
-        cout << "ERROR(simplenavdriver.cpp): Start waypoint outside map. Returning..." << endl;
-        return false;
-    }
-    cout << "INFO(simplenavdriver.cpp): Start waypoint is within map" << endl;
-
-    // Check whether coarse path is within map
-    for (unsigned int i=0; i<coarsePath_.size(); i++)
-    {
-        if ( !ogMap_.coordsWithinMap( coarsePath_[i].target.p.x, coarsePath_[i].target.p.y) )
-        {
-            pathDataPtr->result = orca::PathDestinationNotValid;
-            cout << "ERROR(simplenavdriver.cpp): Goal waypoint " << i << " is outside map. Returning..." << endl;
-            return false;
-        }
-    }
-    cout << "INFO(simplenavdriver.cpp): Goals path is within map" << endl;
-
-    return true;
+    cout<<"TRACE(simplenavdriver.cpp): SimpleNavDriver()" << endl;
+    convert( ogMapDataPtr, ogMap_ );
+    
+    pathPlanner_ = new orcapathplan::SimpleNavPathPlanner( ogMap_,
+                                                           robotDiameterMetres,
+                                                           traversabilityThreshhold,
+                                                           doPathOptimization );
 }
-
-Cell2D 
-SimpleNavDriver::getStartCell()
+    
+SimpleNavDriver::~SimpleNavDriver()
 {
-    int cellX, cellY;
-    ogMap_.getCellIndices( coarsePath_[0].target.p.x, coarsePath_[0].target.p.y, cellX, cellY ); 
-    return Cell2D( cellX, cellY ); 
+    if ( pathPlanner_ ) delete pathPlanner_;
 }
-
-Cell2D 
-SimpleNavDriver::getGoalCell( unsigned int i)
-{
-    assert( coarsePath_.size() > i );
-    int cellX, cellY;
-    ogMap_.getCellIndices( coarsePath_[i].target.p.x, coarsePath_[i].target.p.y, cellX, cellY ); 
-    return Cell2D( cellX, cellY ); 
-}
+    
 
 void SimpleNavDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
                                        const orca::PathPlanner2dTaskPtr  & taskPtr,
                                        const orca::PathPlanner2dDataPtr  & pathDataPtr )
 {
-    // Measuring performance
-    orcamisc::CpuStopwatch watch;
-
-    // Convert to local storage
-    orcaogmap::convert( ogMapDataPtr, ogMap_ );
-    coarsePath_ = taskPtr->coarsePath;
-
-    // check start and goal waypoints
-    if ( !areAllWaypointsInMap(pathDataPtr) ) return;
-
-    // initialize variables
-    FloatMap navMap;
-    bool success;
-    FloatMap distGrid;
-    Cell2D startCell = getStartCell(); 
-
-    // for each waypoint in the coarse path we need to compute the navigation fct and the path
-    for (unsigned int i=1; i<coarsePath_.size(); i++)
-    {
-        Cell2D goalCell = getGoalCell( i );
-        
-        // ============ Compute navigation function ========= 
-        cout << "INFO(simplenavdriver.cpp): Starting to calculate navigation function" << endl;
-
-        watch.start();
-        success = calcSimpleNavigation( ogMap_, navMap, startCell, traversabilityThreshhold_, robotDiameterMetres_ );
-        watch.stop();
-        cout << "calculating navigation fct took (" << i << ") took: " << watch.elapsedSeconds() << " s" << endl << endl;
-
-        if ( !success )
-        {
-            cout << "ERROR(simplenavdriver.cpp): Navigation function could not be computed" << endl;
-            pathDataPtr->result = orca::OtherError;
-            return;
-        }
-        // ===================================================
-
-        // =========== Compute path ========================
-        Cell2DVector path;
-        cout << "INFO(simplenavdriver.cpp): Calculating path now" << endl;
-        watch.start();
-        Result result = orcapathplan::calcPath( ogMap_, navMap, goalCell, path, robotDiameterMetres_ );
-        watch.stop();
-        cout << "calcPath took (" << i << ") took: " << watch.elapsedSeconds() << " s" << endl << endl;
-
-        if ( result!=PathOk )
-        {
-            cout << "ERROR(simplenavdriver.cpp): Path could not be computed" << endl;
-            // this will set the result flag accordingly but won't touch the path
-            orcapathplan::convert( result, pathDataPtr );
-            return;
-        }
-        // =================================================
+    // for each waypoint in the coarse path:
+    orca::Path2d &coarsePath = taskPtr->coarsePath;
+    orca::Waypoint2d *startWp = &(taskPtr->coarsePath[0]);
     
-        // ============= Optional path optimization ================
-        if ( doPathOptimization_ )
-        {
-            // separate full path into a optimized short path
-            cout << "INFO(simplenavdriver.cpp): Optimizing path now" << endl;
-            Cell2DVector waycells;    
-            watch.start();        
-            optimizePath( ogMap_, traversabilityThreshhold_, path, waycells );
-            watch.stop();
-            cout << "optimizePath took (" << i << ") took: " << watch.elapsedSeconds() << " s" << endl << endl;
-            path = waycells;
+    for (unsigned int i=1; i<coarsePath.size(); i++)
+    {
+        orca::Waypoint2d *goalWp = &(coarsePath[i]);
+        orcapathplan::Cell2DVector pathSegment;
+
+        orcamisc::CpuStopwatch watch(true);
+        assert(pathPlanner_!=0);
+        try {
+            int startX, startY, endX, endY;
+            ogMap_.getCellIndices( startWp->target.p.x, startWp->target.p.y, startX, startY );
+            ogMap_.getCellIndices( goalWp->target.p.x,  goalWp->target.p.y,  endX,   endY );
+            pathPlanner_->computePath( startX,
+                                       startY,
+                                       endX,
+                                       endY,
+                                       pathSegment );
         }
-        // =========================================================
+        catch ( orcapathplan::Exception &e )
+        {
+            std::stringstream ss;
+            ss << "Error planning path segment from (" 
+                    << startWp->target.p.x <<","<<startWp->target.p.y << ") to ("
+                    << goalWp->target.p.x << ","<<goalWp->target.p.y<<"): "
+                    << e.what()
+                    << endl;
+            
+            throw orcapathplan::Exception( ss.str() );
+        }
+        cout<<"TRACE(simplenavdriver.cpp): computing path segment took " << watch.elapsedSeconds() << "s" << endl;
+
+//         // ====== Add waypoint parameters ================================
+//         // ====== Different options could be implemented and chosen and runtime (via .cfg file)
+//         vector<WaypointParameter> wpParaVector;
+//         addWaypointParameters( wpParaVector, startWp, goalWp, pathSegment.size() );
+//         // ===============================================================
         
-        // ====== Convert to an Orca object in global coordinate system. =====
-        // ====== Will append latest path to the total pathDataPtr. ==========
-        // ====== Not all data fields are filled in (e.g.tolerances) =========
-        if (i==0)
-        {
-            // the first time we'll have to insert the start cell
-            path.insert(path.begin(),startCell);
-        }
-        orcapathplan::convert( ogMap_, path, result, pathDataPtr );
-        // ==================================================================
+        // ===== Append to the pathDataPtr which contains the entire path  ========
+        orcapathplan::Result result = orcapathplan::PathOk;
+//         orcapathplan::convert( ogMap_, pathSegment, wpParaVector, result, pathDataPtr );
+        orcapathplan::convert( ogMap_, pathSegment, result, pathDataPtr );
+        // ========================================================================
         
         // set last goal cell as new start cell
-        startCell.set( goalCell.x(), goalCell.y() );
+        startWp = goalWp;
     }
-    
 }
 
 }

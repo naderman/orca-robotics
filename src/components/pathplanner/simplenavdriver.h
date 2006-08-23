@@ -13,9 +13,7 @@
 
 #include "algodriver.h"
 
-// only for Waypoint2d and Path2d data structures
-#include <orca/pathfollower2d.h>
-
+#include <orcapathplan/ipathplanner2d.h>
 #include <orcaogmap/orcaogmap.h>
 
 namespace pathplanner
@@ -25,34 +23,21 @@ class SimpleNavDriver : public AlgoDriver
 {
 
 public:
-    SimpleNavDriver( double robotDiameterMetres,
+    SimpleNavDriver( orca::OgMapDataPtr &ogMapDataPtr,
+                     double robotDiameterMetres,
                      double traversabilityThreshhold,
-                     bool doPathOptimization )
-        : robotDiameterMetres_(robotDiameterMetres),
-          traversabilityThreshhold_(traversabilityThreshhold),
-          doPathOptimization_(doPathOptimization)
-        {}
+                     bool doPathOptimization );
+    
+    ~SimpleNavDriver();
     
     // Computes the path
     virtual void computePath(   const orca::OgMapDataPtr          & ogMapDataPtr,
                                 const orca::PathPlanner2dTaskPtr  & taskPtr,
                                 const orca::PathPlanner2dDataPtr  & pathDataPtr );
 private:
-
-    double robotDiameterMetres_;
-    double traversabilityThreshhold_;
-    bool doPathOptimization_;
     
     orcaogmap::OgMap ogMap_;
-    orca::Path2d coarsePath_;
-
-    bool areAllWaypointsInMap( const orca::PathPlanner2dDataPtr  & pathDataPtr );
-
-    // Converts startWp from world to cell coordinate system
-    orcapathplan::Cell2D getStartCell();
-
-    // Converts goal cell i from world to cell coordinate system
-    orcapathplan::Cell2D getGoalCell( unsigned int i);
+    orcapathplan::IPathPlanner2d  *pathPlanner_;
 
 };
 

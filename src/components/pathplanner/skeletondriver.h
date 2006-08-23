@@ -49,7 +49,6 @@ private:
     SkeletonGraphicsI             *skelGraphicsI_;
     orcaogmap::OgMap               ogMap_;
     orcapathplan::IPathPlanner2d  *pathPlanner_;
-    double                         robotDiameterMetres_;
     
     void addWaypointParameters( std::vector<orcapathplan::WaypointParameter> &wpParaVector, 
                                 orca::Waypoint2d                             *startWp, 

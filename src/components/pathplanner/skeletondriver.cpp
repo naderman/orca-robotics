@@ -27,8 +27,7 @@ SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
                                 double traversabilityThreshhold,
                                 bool   doPathOptimization,
                                 bool   useSparseSkeleton )
-    : skelGraphicsI_(skelGraphicsI),
-      robotDiameterMetres_(robotDiameterMetres)
+    : skelGraphicsI_(skelGraphicsI)
 {
     cout<<"TRACE(skeletondriver.cpp): SkeletonDriver()" << endl;
     convert( ogMapDataPtr, ogMap_ );

@@ -107,7 +107,8 @@ AlgoHandler::initDriver()
     context_.tracer()->debug( std::string("loading ")+driverName+" driver",3);
     if ( driverName == "simplenav" )
     {
-        driver_ = new SimpleNavDriver( robotDiameterMetres,
+        driver_ = new SimpleNavDriver( ogMapDataPtr_,
+                                       robotDiameterMetres,
                                        traversabilityThreshhold,
                                        doPathOptimization );
     }

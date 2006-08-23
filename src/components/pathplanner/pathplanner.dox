@@ -49,7 +49,7 @@ The pathplanner acts like a service receiving tasks from third parties and retur
 - @c PathPlanner.Config.TraversabilityThreshhold (double)
     - Everything below this threshhold is considered traversable, everything above is an obstacle
     - Valid values: [0.0;1.0]
-    - Default: 0.3
+    - Default: 0.6
 
 - @c PathPlanner.Config.RobotDiameterMetres (double)
     - The robot's diameter including some safety distance
