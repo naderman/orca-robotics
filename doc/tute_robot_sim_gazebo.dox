@@ -1,0 +1,213 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Ben Upcroft
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@page orca_doc_tute_gazebo Using Orca with Player/Gazebo simulator
+@note Reviewed for release 2.0.0, Player 2.0.2, and Gazebo 0.6.0.
+@author Ben Upcroft
+
+@section started Getting started
+Before reading this document, you should familiarise yourself with: 
+    - @ref orca_doc_getting : download, compile, install.
+    - @ref orca_doc_quickstart : The Orca2 quick start guide.
+    - Ch. 2 Ice Overview of the <a href="http://www.zeroc.com/download.html#doc" target="_blank">Ice manual</a>
+    - @ref orca_doc_tute_stage: The 2D stage simulator is simpler to setup but has many similarities with the setup for Gazebo so is good to go through before this tutorial.
+
+Note that you'll need <a href="http://playerstage.sourceforge.net/" target="_blank">Player/Gazebo</a> installed. Debian installation instructions are found here @ref orca_doc_installdebian. It's also useful to understand how Player/Stage/Gazebo works. 
+
+@section orca_doc_tute_stage_starting Starting Up
+
+Start IceGrid Registry and IceStorm server as described in the @ref orca_doc_quickstart
+
+We'll be using sample configuration files which are distributed with Orca and Gazebo. As a general rule, you shouldn't work or run programs from the distribution. So we'll create a separate directory and copy config and world files into it. After going through the quickstart guide, you would have created a @c sys directory in which you keep your cfg files. Create a new directory for this tutorial and copy the required config and world files there.
+@verbatim
+$ cd ~/sys
+$ mkdir tutegazebo
+$ cd tutegazebo
+$ cp [GAZEBO_SRC]/worlds/example.world ./
+@endverbatim
+
+We'll make Gazebo report a global position in this simple world. To do this you need to add @c "localization" property to the @c worlds/pioneer.inc file
+@verbatim
+define pioneer2dx position
+(
+...
+localization "gps"
+localization_origin [0 0 0]
+)
+@endverbatim
+
+One of the most important things that you should make sure of is that Gazebo runs by itself. Please see <a href=http://playerstage.sourceforge.net/doc/Gazebo-manual-0.5-html/install.html target="_blank">Gazebo installation instructions</a> and <a href=http://playerstage.sourceforge.net/doc/Gazebo-manual-0.5-html/ target="_blank">Gazebo quick start</a> before anything else. Note that some of the instructions on the Gazebo website are out of date. These issues are hopefully addressed as we come across them below.
+
+After Gazebo has been installed, run it from the @c tutegazebo directory by typing
+@verbatim
+$ gazebo ./example.world
+@endverbatim
+for the non-graphical version or 
+@verbatim
+$ wxgazebo ./example.world
+@endverbatim
+for the graphical version.
+
+You may find that some graphics cards report the following error when running Gazebo:
+@verbatim
+rendering: [GLX offscreen] direct [no] RGBA [5 6 5 0] depth [16]
+ X Error of failed request:  GLXUnsupportedPrivateRequest
+   Major opcode of failed request:  144 (GLX)
+   Minor opcode of failed request:  16 (X_GLXVendorPrivate)
+   Serial number of failed request:  35
+   Current serial number in output stream:  36
+@endverbatim 
+
+Although the Gazebo mailing lists suggests that changing the renderMethod tag to @c glx in @c example.world (the file you just copied to the @c tutegazebo directory)     
+@verbatim
+<renderMethod>glx</renderMethod>
+@endverbatim
+problems may still occur. It was found that by commenting the following lines out that both gazebo and wxgazebo could be run without errors.
+@verbatim
+<!-- <model:SonyVID30>
+   <id>camera1</id>
+   <xyz>0 0 0.2</xyz>
+</model:SonyVID30> -->
+@endverbatim
+
+Once Gazebo is running, you will need to stop it and change the @c example.world file so that it reports laser readings that orca will interpret properly. Add the following tags within the SickLMS200 model. 
+@verbatim      
+<model:SickLMS200>
+  ...   
+  <rangeCount>361</rangeCount>
+  <rayCount>361</rayCount>
+  ...  
+</model:SickLMS200>
+@endverbatim
+
+Restart Gazebo.
+
+Copy the following lines into a new file called @c example.cfg and save it in the directory @c tutegazebo .
+@verbatim
+driver
+(
+    name "gazebo"
+    provides ["simulation:0"]
+    plugin "libgazeboplugin"
+)
+
+driver
+(
+   name "gazebo"
+   provides ["position3d:0"]
+   gz_id "position1"
+)
+
+driver
+(
+    name "gazebo"
+    provides ["laser:0"]
+    gz_id "laser1"
+)
+@endverbatim
+
+Start up Player using the @c example.cfg file.
+@verbatim
+$ player example.cfg
+@endverbatim
+
+Now copy a few standard component configuration files distributed with Orca.
+@verbatim
+$ cd ~/sys/tutestage
+$ cp [ORCA_INSTALL]/cfg/sicklaser.cfg ./
+$ cp [ORCA_INSTALL]/cfg/robot2d.cfg ./
+$ cp [ORCA_INSTALL]/cfg/faithlocaliser.cfg ./
+$ cp [ORCA_INSTALL]/cfg/teleop.cfg ./
+$ cp [ORCA_INSTALL]/cfg/ogmaploader.cfg ./
+$ cp [ORCA_INSTALL]/cfg/orcaview.cfg ./
+@endverbatim
+
+From here on in, each component will need a separate terminal. In the tutorial @ref orca_doc_tute_icebox, you can learn how to put several components into an application server called IceBox so that you can run all these components from one process.
+
+@section laser Setting up the Laser on the Robot
+
+Modify @c sicklaser.cfg file to be compatible with Stage settings i.e. 180deg with 361 scans means 0.5 deg resolution. Note that as of version 2.0.1, Stage does not seem to work with 80m laser range, so we set it to 8m (range resolution of 1mm). We also tell the component to use the @e stage driver. Check that the following lines look like this.
+@verbatim
+...
+SickLaser.Config.AngularResolution=0.5
+SickLaser.Config.RangeResolution=0.001
+SickLaser.Config.Driver=stage
+...
+@endverbatim
+
+Now run the SickLaser component.
+@verbatim
+$ sicklaser ./sicklaser.cfg
+@endverbatim
+Check the Stage world window: you should see the laser scan after SickLaser component made the connection.
+
+@section robot_control Robot driver
+
+We're now going to set up the low level control to the actuators for the simulated robot using the Robot2d component. First tell the component to connect to the Player simulator by changing the @c robot2d.cfg file so that the following line looks like this
+@verbatim
+...
+Robot2d.Config.Driver=playerclient
+...
+@endverbatim
+
+Run the Robot2d component
+@verbatim
+$ robot2d ./robot2d.cfg
+@endverbatim
+
+@section localiser Localisation
+To display the robot in the GUI we need a localisation component. Here we'll use the simplest one possible: @c FaithLocaliser which assumes porfect odometry. Nothing needs to be done to the @c .cfg file so just start the componenet.
+@verbatim
+$ faithlocaliser ./faithlocaliser
+@endverbatim
+
+@section map Load the Map
+To display the world in the GUI we'll use the @c OgMapLoader component which loads converts a given image file to a (static) Occupancy Grid and serves it on demand to clients. In this case, we are using the simple world from Stage so edit the @c ogmaploader.cfg file
+@verbatim
+...
+OgMapLoader.Config.MapFileName=./worlds/bitmaps/cave.png
+OgMapLoader.Config.Negate=0
+OgMapLoader.Config.Origin.Orientation=0.0
+OgMapLoader.Config.Origin.X=-8.0
+OgMapLoader.Config.Origin.Y=-8.0
+OgMapLoader.Config.Size.X=16.0
+OgMapLoader.Config.Size.Y=16.0
+... 
+@endverbatim
+Start the component
+@verbatim
+$ ogmaploader ./ogmaploader.cfg
+@endverbatim
+
+@section view View the World
+To veiw the world and the robot we use @c orcaview. One line of the standard config file needs to be modified:
+@verbatim
+...
+OrcaView.Requires.Localise2d.Proxy=localise2d@local/faithlocaliser
+...
+@endverbatim
+Start the GUI component
+@verbatim
+$ orcaview ./orcaview.cfg
+@endverbatim
+
+You should now see the the simple world from stage. If it is partially off the screen, drag it with the left mouse button so that you can veiw the full world. You should be able to see the robot and the laser scans.
+
+@section keyboard_control Keyboard/Joystick Control 
+To tell the robot to move we can use the @c teleop component which allows us to send commands to the @c Robot2d component via keyboard or joystick.
+@verbatim
+$ teleop ./teleop.cfg
+@endverbatim
+
+As the robot moves through the world, compare the display of the OrcaView and the Stage world window: they should be identical.
+
+*/
