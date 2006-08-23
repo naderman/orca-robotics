@@ -171,7 +171,7 @@ SkeletonDriver::addWaypointParameters(  vector<WaypointParameter> &wpParaVector,
             if (i==0) 
             {
                 wpPara.timeTarget = toOrcaTime( timeAsDouble( startWp->timeTarget ) + deltaSec );
-                wpPara.headingTolerance = DEG2RAD( 360 );
+                wpPara.headingTolerance = DEG2RAD( 180 );
             } 
             else 
             {                        
