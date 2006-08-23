@@ -104,11 +104,11 @@ These environment variables are optional but you may as well put them into your 
 
 @b NOTE: Software below is strictly optional. To ensure that Orca knows about these new packages you will have to rerun cmake and make in Orca once the new packages have been installed. You will also have to remove the cmake cache before rerunning cmake.
 @verbatim
-$ cd [ORCA2_SOURCE]
-$ rm CMakeCache.txt
-$ cmake .
-$ make
-$ make install
+# cd [ORCA2_SOURCE]
+# rm CMakeCache.txt
+# cmake .
+# make
+# make install
 @endverbatim
 
 @section orca_doc_installdebian_doxygen Doxygen
