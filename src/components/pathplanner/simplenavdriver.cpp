@@ -39,9 +39,8 @@ SimpleNavDriver::~SimpleNavDriver()
 }
     
 
-void SimpleNavDriver::computePath( const orca::OgMapDataPtr          & ogMapDataPtr,
-                                       const orca::PathPlanner2dTaskPtr  & taskPtr,
-                                       const orca::PathPlanner2dDataPtr  & pathDataPtr )
+void SimpleNavDriver::computePath( const orca::PathPlanner2dTaskPtr  & taskPtr,
+                                   const orca::PathPlanner2dDataPtr  & pathDataPtr )
 {
     // for each waypoint in the coarse path:
     orca::Path2d &coarsePath = taskPtr->coarsePath;

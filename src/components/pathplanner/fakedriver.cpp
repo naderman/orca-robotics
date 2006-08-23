@@ -19,9 +19,8 @@ using namespace std;
 using namespace pathplanner;
 
 void 
-FakeDriver::computePath(   const orca::OgMapDataPtr          & ogMapDataPtr,
-                                const orca::PathPlanner2dTaskPtr  & taskPtr,
-                                const orca::PathPlanner2dDataPtr  & pathDataPtr )
+FakeDriver::computePath( const orca::PathPlanner2dTaskPtr  & taskPtr,
+                         const orca::PathPlanner2dDataPtr  & pathDataPtr )
 {
 
     orca::Waypoint2d wp;

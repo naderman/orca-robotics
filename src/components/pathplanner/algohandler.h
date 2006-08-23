@@ -42,7 +42,6 @@ private:
     AlgoDriver* driver_;
 
     orca::OgMapPrx ogMapPrx_;
-    orca::OgMapDataPtr ogMapDataPtr_;
 
     PathPlanner2dI* pathPlannerI_;
     orcaice::PtrProxy<orca::PathPlanner2dTaskPtr>* pathPlannerTaskProxy_;

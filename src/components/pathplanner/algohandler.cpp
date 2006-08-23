@@ -81,11 +81,11 @@ AlgoHandler::initNetwork()
 void
 AlgoHandler::initDriver()
 {
-
-    // get the map once
+    // get the map once    
+    orca::OgMapDataPtr ogMapDataPtr;
     try
     {
-        ogMapDataPtr_ = ogMapPrx_->getData();
+        ogMapDataPtr = ogMapPrx_->getData();
     }
     catch ( const orca::DataNotExistException & e )
     {
@@ -107,7 +107,7 @@ AlgoHandler::initDriver()
     context_.tracer()->debug( std::string("loading ")+driverName+" driver",3);
     if ( driverName == "simplenav" )
     {
-        driver_ = new SimpleNavDriver( ogMapDataPtr_,
+        driver_ = new SimpleNavDriver( ogMapDataPtr,
                                        robotDiameterMetres,
                                        traversabilityThreshhold,
                                        doPathOptimization );
@@ -122,7 +122,7 @@ AlgoHandler::initDriver()
         bool useSparseSkeleton = (driverName == "sparseskeletonnav");
         
         try {
-            driver_ = new SkeletonDriver( ogMapDataPtr_,
+            driver_ = new SkeletonDriver( ogMapDataPtr,
                                       graphicsI,
                                       robotDiameterMetres,
                                       traversabilityThreshhold,
@@ -139,7 +139,8 @@ AlgoHandler::initDriver()
     }
     else if ( driverName == "astar" )
     {
-        driver_ = new AStarDriver( robotDiameterMetres,
+        driver_ = new AStarDriver( ogMapDataPtr,
+                                   robotDiameterMetres,
                                    traversabilityThreshhold,
                                    doPathOptimization  );
     }
@@ -199,7 +200,7 @@ AlgoHandler::run()
         try 
         {
             context_.tracer()->info("telling driver to compute the path now");
-            driver_->computePath( ogMapDataPtr_, taskPtr, pathDataPtr );
+            driver_->computePath( taskPtr, pathDataPtr );
         }
         catch ( orcapathplan::Exception &e )
         {

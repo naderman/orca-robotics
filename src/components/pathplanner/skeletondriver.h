@@ -38,10 +38,7 @@ public:
                     bool   useSparseSkeleton );
     ~SkeletonDriver();
 
-    // Computes the path
-    // (NOTE: ignores the input ogMap, using the one from the constructor instead...)
-    virtual void computePath( const orca::OgMapDataPtr         &ogMapDataPtr,
-                              const orca::PathPlanner2dTaskPtr &taskPtr,
+    virtual void computePath( const orca::PathPlanner2dTaskPtr &taskPtr,
                               const orca::PathPlanner2dDataPtr &pathDataPtr );
 
 private: 

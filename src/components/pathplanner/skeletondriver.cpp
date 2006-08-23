@@ -98,8 +98,7 @@ SkeletonDriver::~SkeletonDriver()
 }
 
 void 
-SkeletonDriver::computePath( const orca::OgMapDataPtr         &ogMapDataPtr,
-                             const orca::PathPlanner2dTaskPtr &taskPtr,
+SkeletonDriver::computePath( const orca::PathPlanner2dTaskPtr &taskPtr,
                              const orca::PathPlanner2dDataPtr &pathDataPtr )
 {
     // for each waypoint in the coarse path:
