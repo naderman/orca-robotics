@@ -166,7 +166,7 @@ SkeletonDriver::addWaypointParameters(  vector<WaypointParameter> &wpParaVector,
         wpPara.maxApproachSpeed = goalWp->maxApproachSpeed;
         wpPara.maxApproachTurnrate = goalWp->maxApproachTurnrate;
         double secondsTilGoal = orcaice::timeDiffAsDouble(goalWp->timeTarget, startWp->timeTarget);
-        assert( secondsTilGoal > 0 && "Timestamp difference between goal and start is negative" );
+        assert( secondsTilGoal >= 0 && "Timestamp difference between goal and start is negative" );
         double deltaSec = secondsTilGoal/(double)numSegments;
             
         for (int i=0; i<numSegments; i++)
