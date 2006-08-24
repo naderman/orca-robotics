@@ -14,6 +14,17 @@
 
 Developers: as you make substantial changes in the code (add features, fix bugs, etc.), add an item in the section on changes. When the next version is released, this list will be cut-and-pasted into the release notes.
 
+- New components: ognode & laser2og
+  - For (cooperative) occupancy-grid mapping
+  - Matt Ridely, George Mathews, and Alexei Makarenko
+- New component: gps
+  - Matt Ridley
+- Component overhaul: pathplanner
+  - Alex Brooks and Tobias Kaupp
+- New interface: imu
+  - Ben Upcroft
+
+
 @section todo To-Do List for Release 2.1.0
 
 -- Separate utilities from libraries?
