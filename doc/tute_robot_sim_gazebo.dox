@@ -19,7 +19,7 @@ Before reading this document, you should familiarise yourself with:
     - @ref orca_doc_getting : download, compile, install.
     - @ref orca_doc_quickstart : The Orca2 quick start guide.
     - Ch. 2 Ice Overview of the <a href="http://www.zeroc.com/download.html#doc" target="_blank">Ice manual</a>
-    - @ref orca_doc_tute_stage: The 2D stage simulator is simpler to setup but has many similarities with the setup for Gazebo so is good to go through before this tutorial.
+    - @ref orca_doc_tute_stage : The 2D stage simulator is simpler to setup but has many similarities with the setup for Gazebo so is good to go through before this tutorial.
 
 Note that you'll need <a href="http://playerstage.sourceforge.net/" target="_blank">Player/Gazebo</a> installed. Debian installation instructions are found here @ref orca_doc_installdebian. It's also useful to understand how Player/Stage/Gazebo works. 
 
