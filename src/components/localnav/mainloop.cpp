@@ -156,15 +156,33 @@ MainLoop::run()
     }
     catch ( std::exception &e )
     {
-        cout<<"TRACE(mainloop.cpp): caught std::exception: " << e.what() << endl;
+        std::stringstream ss;
+        ss << "mainloop.cpp: caught std::exception: " << e.what();
+        context_.tracer()->error( ss.str() );
     }
     catch ( std::string &e )
     {
-        cout<<"TRACE(mainloop.cpp): caught std::string: " << e << endl;
+        std::stringstream ss;
+        ss << "mainloop.cpp: caught std::string: " << e;
+        context_.tracer()->error( ss.str() );
     }
     catch ( char *e )
     {
-        cout<<"TRACE(mainloop.cpp): caught char *: " << e << endl;
+        std::stringstream ss;
+        ss << "mainloop.cpp: caught char*: " << e;
+        context_.tracer()->error( ss.str() );
+    }
+    catch ( Ice::Exception &e )
+    {
+        std::stringstream ss;
+        ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e;
+        context_.tracer()->error( ss.str() );
+    }
+    catch ( ... )
+    {
+        std::stringstream ss;
+        ss << "ERROR(mainloop.cpp): Caught unexpected unknown exception.";
+        context_.tracer()->error( ss.str() );
     }
     
     // wait for the component to realize that we are quitting and tell us to stop.

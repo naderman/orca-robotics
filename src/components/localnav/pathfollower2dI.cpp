@@ -52,6 +52,7 @@ PathFollower2dI::getData( const ::Ice::Current& ) const
 void
 PathFollower2dI::setData( const ::orca::PathFollower2dDataPtr &data, bool activateImmediately, const ::Ice::Current& )
 {
+    // Sanity check
     std::string insanityReason;
     if ( !orcaice::isSane( data, insanityReason ) )
     {
