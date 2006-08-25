@@ -184,7 +184,7 @@ MainLoop::run()
         // put together a task for the pathplanner
         // add the position of the robot as the first waypoint in the path
         incomingPath->path.insert( incomingPath->path.begin(), 1, wp );
-        cout << "TRACE(mainloop.cpp): Incoming path is " << endl << orcaice::toText( incomingPath );
+        cout << "TRACE(mainloop.cpp): Incoming path is " << endl << orcaice::toVerboseString( incomingPath );
         taskPtr->coarsePath = incomingPath->path;
         taskPtr->prx = taskPrx_;
         

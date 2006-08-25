@@ -52,6 +52,12 @@ PathFollower2dI::getData( const ::Ice::Current& ) const
 void
 PathFollower2dI::setData( const ::orca::PathFollower2dDataPtr &data, bool activateImmediately, const ::Ice::Current& )
 {
+    std::string insanityReason;
+    if ( !orcaice::isSane( data, insanityReason ) )
+    {
+        throw orca::MalformedParametersException( insanityReason );
+    }
+
     // cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << data << endl;
     // cout<<"TRACE(pathfollower2dI.cpp): activateImmediately: " << activateImmediately << endl;
     pathPipe_.set( data );

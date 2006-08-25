@@ -24,7 +24,7 @@ class RangeScannerConsumerI : public orca::RangeScannerConsumer
             try {
                 // Is it a laser scan?
                 //std::cout << orca::LaserDataPtr::dynamicCast( data ) << std::endl;
-                std::cout << orcaice::toText( orca::LaserDataPtr::dynamicCast( data ) ) << std::endl;
+                std::cout << orcaice::toVerboseString( orca::LaserDataPtr::dynamicCast( data ) ) << std::endl;
             }
             catch ( IceUtil::NullHandleException & )
             {

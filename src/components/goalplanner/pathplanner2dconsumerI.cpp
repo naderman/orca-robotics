@@ -26,7 +26,7 @@ void
 PathPlanner2dConsumerI::setData(const ::orca::PathPlanner2dDataPtr& data, const ::Ice::Current&)
 {
     cout << "INFO(pathplanner2dconsumerI.cpp): Received results: " << endl;
-    cout << orcaice::toText(data) << endl;
+    cout << orcaice::toVerboseString(data) << endl;
     
     // put them in the buffer now
     pathBuffer_.set( data );
