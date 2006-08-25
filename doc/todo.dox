@@ -21,6 +21,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Matt Ridley
 - Component overhaul: pathplanner
   - Alex Brooks and Tobias Kaupp
+- Substantial improvements: orcaview
+  - Tobias Kaupp
 - New interface: imu (inertial measurement unit)
   - Ben Upcroft
 
