@@ -187,17 +187,23 @@ LocalNavManager::setNavParams( const GoalWatcher      &goalWatcher,
         else
             rotationTime = angleToBorder / wp.maxApproachTurnrate;
     }
-    float timeAtMaxSpeed = translationTime + rotationTime;
-    assert( timeAtMaxSpeed >= 0.0 );
+    float requiredTimeAtMaxSpeed = translationTime + rotationTime;
+    if ( !(requiredTimeAtMaxSpeed >= 0.0) )
+    {
+        cout << "ERROR(localnavmanager.cpp): requiredTimeAtMaxSpeed: " << requiredTimeAtMaxSpeed << endl;
+        cout<<"TRACE(localnavmanager.cpp): translationTime: " << translationTime << endl;
+        cout<<"TRACE(localnavmanager.cpp): rotationTime: " << rotationTime << endl;
+    }
+    assert( requiredTimeAtMaxSpeed >= 0.0 );
 
     // Scale (with a factor in [0,1]) by how long we actually have
     float timeAllowed = pathMaintainer_.secToNextWp();
     float scaleFactor = 1.0;
-    if ( timeAllowed > timeAtMaxSpeed )
+    if ( timeAllowed > requiredTimeAtMaxSpeed )
     {
-        scaleFactor = timeAtMaxSpeed / timeAllowed;
+        scaleFactor = requiredTimeAtMaxSpeed / timeAllowed;
         stringstream ss; ss << "We have " << timeAllowed 
-                            << "s, but we could get there in " << timeAtMaxSpeed 
+                            << "s, but we could get there in " << requiredTimeAtMaxSpeed 
                             << "s if we put the foot down.  Scaling speeds with a factor of " << scaleFactor;
         context_.tracer()->debug( ss.str(), 5 );
         secondsBehingSchedule_ = 0.0;
@@ -205,10 +211,10 @@ LocalNavManager::setNavParams( const GoalWatcher      &goalWatcher,
     else
     {
         stringstream ss; ss << "We're running late! " << timeAllowed 
-                            << "s allowed, but it would take " << timeAtMaxSpeed 
+                            << "s allowed, but it would take " << requiredTimeAtMaxSpeed 
                             << "s at full speed.";
         context_.tracer()->debug( ss.str(), 5 );
-        secondsBehingSchedule_ = timeAtMaxSpeed - timeAllowed;
+        secondsBehingSchedule_ = requiredTimeAtMaxSpeed - timeAllowed;
     }
     assert( scaleFactor <= 1.0 );
     navParams.maxSpeed    = wp.maxApproachSpeed    * scaleFactor;

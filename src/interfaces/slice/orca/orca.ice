@@ -83,6 +83,9 @@ exception BusyException extends OrcaException {};
 //! Raised when a component failed to connect to a required interface
 exception RequiredInterfaceFailedException extends OrcaException {};
 
+//! Raised when one or more parameters to a remote request were malformed
+exception MalformedParametersException extends OrcaException {};
+
 }; // module
 
 #endif
