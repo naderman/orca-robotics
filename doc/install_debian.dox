@@ -189,4 +189,52 @@ For a quick start:
 $ player [STAGE_SRC]/worlds/simple.cfg
 @endverbatim
 
+@section orca_doc_installdebian_gazebo Gazebo
+
+<a href="http://playerstage.sourceforge.net/" target="_blank">Gazebo</a> is part of the Player/Stage project. It is an open-source 3D multiple robot simulator with dynamics. These notes were tested with Player 2.0.2, Gazebo 0.6.0-rc1 (CVS version of Gazebo), and Open Dynamics Engine 0.6. Note that Gazebo's documentation is not very well maintained at the moment and it has a number of bugs which are not always trivial to fix. Please see the Gazebo <a href="http://sourceforge.net/mailarchive/forum.php?forum=playerstage-gazebo" target="_blank">mailing list</a> and Gazebo manual pages for more help.
+
+Make sure that you have installed @ref orca_doc_installdebian_player Player/Stage first. 
+
+Start with Gazebo dependencies.
+@verbatim
+# apt-get install swig wxpython2.4-1 libxml2 libglu1-mesa libglut3
+@endverbatim
+Note that there may be a few other dependencies which aren't included here.
+
+You will also have to download and compile <a href="http://ode.org/" target="_blank">Open Dynamics Engine</a> which is Gazebo's physics engine.
+@verbatim
+$ tar xvzf ode-<version>.tgz
+$ cd ode-<version>
+$ ./configure
+$ make
+# make install
+@endverbatim
+
+Download the CVS version of Gazebo and unpack. 
+@verbatim
+$ tar xvzf gazebo-<version>.tar.gz
+$ cd gazebo-<version>
+@endverbatim
+
+Tell gazebo where to find player stuff.
+
+@verbatim
+$ export PKG_CONFIG_PATH=/opt/player-[VERSION]/lib/pkgconfig/:$PKG_CONFIG_PATH
+@endverbatim
+
+Run automake tools, compile, and install.
+@verbatim
+$ ./bootstrap
+$ ./configure
+$ make
+# make install
+@endverbatim
+
+For a quick start:
+@verbatim
+$ wxgazebo [GAZEBO_SRC]/worlds/example.world
+@endverbatim
+
+If you have any errors, please see @ref orca_doc_tute_gazebo , the Gazebo mailing lists and manuals for additional help.
+
 */
