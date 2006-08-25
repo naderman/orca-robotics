@@ -34,17 +34,7 @@ Component::loadMap( const std::string &fileName, orca::FeatureMap2dDataPtr &theM
 {
     try
     {
-        FILE *f = fopen( fileName.c_str(), "r" );
-        if (!f)
-        {
-            cout << "error: cannot open file '"<<fileName<<"'" <<endl;
-            return -1;
-        } 
-        else 
-        {
-            orcaice::loadFromFile( theMap, f );
-            fclose( f );
-        }
+        orcaice::loadFromFile( fileName, theMap );
     }
     catch ( const std::string &e )
     {
