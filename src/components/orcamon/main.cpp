@@ -17,6 +17,7 @@
 #include <orca/imu.h>
 #include <orca/localise2d.h>
 #include <orca/ogmap.h>
+#include <orca/featuremap2d.h>
 #include <orca/position2d.h>
 #include <orca/position3d.h>
 #include <orca/particle2d.h>
@@ -107,6 +108,11 @@ void OrcaMonComponent::start()
     else if ( objId=="::orca::OgMap" )
     {
         attach<OgMapPrx,OgMapConsumerPrx,OgMapConsumer,OgMapDataPtr>
+                ( context(), proxyString );
+    }
+    else if ( objId=="::orca::FeatureMap2d" )
+    {
+        attach<FeatureMap2dPrx,FeatureMap2dConsumerPrx,FeatureMap2dConsumer,FeatureMap2dDataPtr>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::Platform2d" || objId=="::orca::Position2d" )
