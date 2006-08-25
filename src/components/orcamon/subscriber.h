@@ -54,7 +54,7 @@ void attach( const orcaice::Context & context, const std::string & proxyString )
     }
     catch ( const orca::OrcaException & e ) 
     {
-        std::cout<<e.what<<std::endl;
+        std::cout<<e<<": "<<e.what<<std::endl;
     }
     catch ( const Ice::Exception & e ) 
     {

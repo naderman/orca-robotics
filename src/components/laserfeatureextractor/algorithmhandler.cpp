@@ -189,7 +189,7 @@ void AlgorithmHandler::run()
     catch ( const orca::OrcaException & e )
     {
         std::stringstream ss;
-        ss << "unexpected (remote?) orca exception: " << e.what;
+        ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
         context_.tracer()->error( ss.str() );
         if ( context_.isApplication() ) {
             context_.tracer()->info( "this is an stand-alone component. Quitting...");

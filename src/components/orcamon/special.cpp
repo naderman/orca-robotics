@@ -57,7 +57,7 @@ void attachGpsMapGrid( const orcaice::Context & context, const std::string & pro
     }
     catch ( const orca::OrcaException & e ) 
     {
-        std::cout<<e.what<<std::endl;
+        std::cout<<e<<": "<<e.what<<std::endl;
     }
     catch ( const Ice::Exception & e ) 
     {
@@ -147,7 +147,7 @@ void attachGpsTime( const orcaice::Context & context, const std::string & proxyS
     }
     catch ( const orca::OrcaException & e ) 
     {
-        std::cout<<e.what<<std::endl;
+        std::cout<<e<<": "<<e.what<<std::endl;
     }
     catch ( const Ice::Exception & e ) 
     {

@@ -56,6 +56,7 @@ PathFollower2dI::setData( const ::orca::PathFollower2dDataPtr &data, bool activa
     std::string insanityReason;
     if ( !orcaice::isSane( data, insanityReason ) )
     {
+        cout<<"TRACE(pathfollower2dI.cpp): Received dodgy path: " << orcaice::toString(data) << endl;
         throw orca::MalformedParametersException( insanityReason );
     }
 

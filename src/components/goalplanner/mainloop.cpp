@@ -246,37 +246,42 @@ MainLoop::run()
     } // try
     catch ( const orca::OrcaException & e )
     {
-        context_.tracer()->print( e.what );
-        context_.tracer()->error( "unexpected (remote?) orca exception.");
+        stringstream ss;
+        ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
+        context_.tracer()->error( ss.str() );
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is a stand-alone component. Quitting...");
+            context_.tracer()->info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
     catch ( const orcaice::Exception & e )
     {
-        context_.tracer()->print( e.what() );
-        context_.tracer()->error( "unexpected (local?) orcaice exception.");
+        stringstream ss;
+        ss << "unexpected (local?) orcaice exception: " << e.what();
+        context_.tracer()->error( ss.str() );
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is a stand-alone component. Quitting...");
+            context_.tracer()->info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
     catch ( const Ice::Exception & e )
     {
-        cout<<e<<endl;
-        context_.tracer()->error( "unexpected Ice exception.");
+        stringstream ss;
+        ss << "unexpected Ice exception: " << e;
+        context_.tracer()->error( ss.str() );
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is a stand-alone component. Quitting...");
+            context_.tracer()->info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
     catch ( const std::exception & e )
     {
-        cout<<e.what()<<endl;
-        context_.tracer()->error( "unexpected std exception.");
+        // once caught this beast in here, don't know who threw it 'St9bad_alloc'
+        stringstream ss;
+        ss << "unexpected std exception: " << e.what();
+        context_.tracer()->error( ss.str() );
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is a stand-alone component. Quitting...");
+            context_.tracer()->info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
@@ -284,7 +289,7 @@ MainLoop::run()
     {
         context_.tracer()->error( "unexpected exception from somewhere.");
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is a stand-alone component. Quitting...");
+            context_.tracer()->info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
