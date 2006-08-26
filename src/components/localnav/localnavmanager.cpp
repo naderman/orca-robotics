@@ -152,7 +152,9 @@ float requiredTimeToWpAtMaxSpeed( const GoalWatcher      &goalWatcher,
 {
     assert ( wp.maxApproachSpeed    >= 0.0 );
     assert ( wp.maxApproachTurnrate >= 0.0 );
-    const double FOREVER = 1e9;
+    const double FOREVER        = 1e9;
+    const double LINEAR_EPS     = 1e-5; 
+    const double ROTATIONAL_EPS = 1e-5*M_PI/180.0; 
 
     // The goal covers some area (and range of angles).  How far to the border?
     float distanceToBorder = MAX( 0.0, goalWatcher.goalDistance() - goalWatcher.goalDistanceTolerance() );
@@ -164,7 +166,7 @@ float requiredTimeToWpAtMaxSpeed( const GoalWatcher      &goalWatcher,
         translationTime = 0.0;
     else
     {
-        if ( wp.maxApproachSpeed == 0.0 )
+        if ( wp.maxApproachSpeed < LINEAR_EPS )
         {
             navParams.maxSpeed    = wp.maxApproachSpeed;
             navParams.maxTurnrate = wp.maxApproachTurnrate;
@@ -177,7 +179,7 @@ float requiredTimeToWpAtMaxSpeed( const GoalWatcher      &goalWatcher,
          rotationTime = 0.0;
     else
     {
-        if ( wp.maxApproachTurnrate == 0.0 )
+        if ( wp.maxApproachTurnrate < ROTATIONAL_EPS )
         {
             navParams.maxSpeed    = wp.maxApproachSpeed;
             navParams.maxTurnrate = wp.maxApproachTurnrate;
