@@ -60,6 +60,9 @@ private:
     void informWorldOfNewPath( orca::PathFollower2dConsumerPrx pathConsumer, orca::PathFollower2dDataPtr &path );
     void informWorldOfNewWpIndex( orca::PathFollower2dConsumerPrx pathConsumer, int newIndex );
 
+    // Issue warnings if the path is screwy in some way
+    void checkPathOut( const orca::PathFollower2dDataPtr &pathData );
+
     // Keep a local copy of the path, so we don't have to mess with the buffer every 
     // time the nav manager wants to look at it.
     orca::PathFollower2dDataPtr path_;

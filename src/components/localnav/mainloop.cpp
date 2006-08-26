@@ -118,6 +118,7 @@ MainLoop::run()
                 }
                 else
                 {
+                    velocityCmd_->timeStamp = rangeData_->timeStamp;
                     localNavManager_.getCommand( rangeData_,
                                                  localiseData_,
                                                  odomData_,

@@ -146,14 +146,13 @@ LocalNavManager::setGoalSpecifics( const orca::Localise2dDataPtr  localiseData,
     }
 }
 
-void
-LocalNavManager::setNavParams( const GoalWatcher      &goalWatcher,
-                               const orca::Waypoint2d &wp, 
-                               const PathMaintainer   &pathMaintainer, 
-                               LocalNavParameters     &navParams )
+float requiredTimeToWpAtMaxSpeed( const GoalWatcher      &goalWatcher,
+                                  const orca::Waypoint2d &wp, 
+                                  LocalNavParameters     &navParams )
 {
     assert ( wp.maxApproachSpeed    >= 0.0 );
     assert ( wp.maxApproachTurnrate >= 0.0 );
+    const double FOREVER = 1e9;
 
     // The goal covers some area (and range of angles).  How far to the border?
     float distanceToBorder = MAX( 0.0, goalWatcher.goalDistance() - goalWatcher.goalDistanceTolerance() );
@@ -169,7 +168,7 @@ LocalNavManager::setNavParams( const GoalWatcher      &goalWatcher,
         {
             navParams.maxSpeed    = wp.maxApproachSpeed;
             navParams.maxTurnrate = wp.maxApproachTurnrate;
-            return;
+            return FOREVER;
         }
         else
             translationTime = distanceToBorder / wp.maxApproachSpeed;
@@ -182,7 +181,7 @@ LocalNavManager::setNavParams( const GoalWatcher      &goalWatcher,
         {
             navParams.maxSpeed    = wp.maxApproachSpeed;
             navParams.maxTurnrate = wp.maxApproachTurnrate;
-            return;
+            return FOREVER;
         }
         else
             rotationTime = angleToBorder / wp.maxApproachTurnrate;
@@ -195,6 +194,18 @@ LocalNavManager::setNavParams( const GoalWatcher      &goalWatcher,
         cout<<"TRACE(localnavmanager.cpp): rotationTime: " << rotationTime << endl;
     }
     assert( requiredTimeAtMaxSpeed >= 0.0 );
+    
+    return requiredTimeAtMaxSpeed;
+}
+
+
+void
+LocalNavManager::setNavParams( const GoalWatcher      &goalWatcher,
+                               const orca::Waypoint2d &wp, 
+                               const PathMaintainer   &pathMaintainer, 
+                               LocalNavParameters     &navParams )
+{
+    float requiredTimeAtMaxSpeed = requiredTimeToWpAtMaxSpeed( goalWatcher, wp, navParams );
 
     // Scale (with a factor in [0,1]) by how long we actually have
     float timeAllowed = pathMaintainer_.secToNextWp();

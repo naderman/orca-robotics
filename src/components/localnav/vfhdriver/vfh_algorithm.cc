@@ -895,8 +895,13 @@ printf("%d: %f\n", x, this->laser_ranges[x][0]);
   {
       for(y=0;y<(int)ceil(WINDOW_DIAMETER/2.0);y++) 
       {
-          if ((Cell_Dist[x][y] + CELL_WIDTH / 2.0) > 
-              laser_ranges[(int)rint(Cell_Direction[x][y] * 2.0)][0]) 
+          assert( x < (int)(Cell_Dist.size()) );
+          assert( y < (int)(Cell_Dist[x].size()) );
+          assert( (int)rint(Cell_Direction[x][y] * 2.0) < REQUIRED_NUM_RANGES );
+          const double distToCellCentre = Cell_Dist[x][y] + CELL_WIDTH / 2.0;
+          const double laserRange = laser_ranges[(int)rint(Cell_Direction[x][y] * 2.0)][0];
+
+          if ( distToCellCentre > laserRange )
           {
               if ( Cell_Dist[x][y] < r && !(x==CENTER_X && y==CENTER_Y) )
               {

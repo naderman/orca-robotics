@@ -41,6 +41,50 @@ PathMaintainer::currentWaypoint() const
 }
 
 void
+PathMaintainer::checkPathOut( const orca::PathFollower2dDataPtr &pathData )
+{
+    std::stringstream ss;
+    bool normal=true;
+    const float epsLinear     = 1e-3;
+    const float epsRotational = 1.0*M_PI/180.0;
+    for ( uint i=0; i < pathData->path.size(); i++ )
+    {
+        const orca::Waypoint2d &wp = pathData->path[i];
+
+        if ( wp.distanceTolerance < epsLinear )
+        {
+            ss << "Waypoint " << i << ": possibly sketchy distance tolerance: " 
+               << wp.distanceTolerance << "m" << endl;
+            normal = false;
+        }
+        if ( wp.headingTolerance < epsRotational )
+        {
+            ss << "Waypoint " << i << ": possibly sketchy heading tolerance: " 
+               << wp.headingTolerance*180.0/M_PI << "deg" << endl;
+            normal = false;
+        }
+        if ( wp.maxApproachSpeed < epsLinear )
+        {
+            ss << "Waypoint " << i << ": possibly sketchy maxApproachSpeed: " 
+               << wp.maxApproachSpeed << "m/s" << endl;
+            normal = false;
+        }
+        if ( wp.maxApproachTurnrate < epsRotational )
+        {
+            ss << "Waypoint " << i << ": possibly sketchy maxApproachTurnrate: " 
+               << wp.maxApproachTurnrate*180.0/M_PI << "deg/s" << endl;
+            normal = false;
+        }
+    }
+    if ( !normal )
+    {
+        std::string warnString = "In newly-received path: \n";
+        warnString += ss.str();
+        context_.tracer()->warning( warnString );
+    }
+}
+
+void
 PathMaintainer::checkForNewPath( orca::PathFollower2dConsumerPrx &pathConsumer )
 {
     bool dummy;
@@ -50,12 +94,20 @@ PathMaintainer::checkForNewPath( orca::PathFollower2dConsumerPrx &pathConsumer )
         pathPipe_.get( path_ );
         informWorldOfNewPath( pathConsumer, path_ );
 
+        // Issue warnings if the path is screwy
+        checkPathOut( path_ );
+
         // Have we also been told to start?
         if ( activationPipe_.isNewData() )
         {
             context_.tracer()->debug( "PathMaintainer: received new path, activating immediately", 1 );
             activationPipe_.get(pathStartTime_);
             wpIndex_ = 0;
+            if ( path_->path.size() == 0 )
+            {
+                context_.tracer()->debug( "Path was empty.  Stopping.", 1 );
+                wpIndex_ = -1;
+            }
         }
         else
         {
@@ -63,6 +115,10 @@ PathMaintainer::checkForNewPath( orca::PathFollower2dConsumerPrx &pathConsumer )
             wpIndex_ = -1;
         }
         wpIndexChanged_ = true;
+
+        std::stringstream ss;
+        ss << "PathMaintainer: new path: " << orcaice::toVerboseString( path_ );
+        context_.tracer()->debug( ss.str(), 2 );
     }
     else
     {
