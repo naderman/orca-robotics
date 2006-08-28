@@ -60,6 +60,8 @@ src
         netcam                             LGPL
         qorcauml                           GPL
         reactivewalker                     LGPL
+        imu                                LGPL
+        insgps                             LGPL (with permission from NovAtel Inc.)
     tests
         *                                  LGPL
     utils
