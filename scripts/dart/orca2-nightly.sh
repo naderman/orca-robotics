@@ -1,7 +1,6 @@
 #!/bin/bash
 
 export CVS_RSH=ssh
-export LD_LIBRARY_PATH=$ICE_HOME/lib:$LD_LIBRARY_PATH
 
 dashboard=$HOME/ctests/orca/orca2-nightly
 
