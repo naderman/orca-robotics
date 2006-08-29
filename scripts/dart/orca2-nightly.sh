@@ -2,6 +2,9 @@
 
 export CVS_RSH=ssh
 
+# required for service tests to work
+export LD_LIBRARY_PATH=$ICE_HOME/lib:$LD_LIBRARY_PATH
+
 dashboard=$HOME/ctests/orca/orca2-nightly
 
 # compile with gcc-4.0
