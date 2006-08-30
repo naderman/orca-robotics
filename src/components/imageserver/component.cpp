@@ -179,6 +179,8 @@ Component::start()
         hwDriver_ = new MonoDriver( imageGrabber_, context() );
 
         cout<<"ImageServer: using opencv image grabber - CvGrabber for a monocular camera" << endl;
+#else
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driverName 'monoopencv' without opencv installed!" );
 #endif // OPENCV7_FOUND
     }
     else if ( driverName == "digiclops" )
@@ -193,6 +195,8 @@ Component::start()
         hwDriver_ = new MonoDriver( imageGrabber_, context() );
 
         cout<<"ImageServer: using digiclops image grabber for a digiclops camera" << endl;
+#else
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driverName 'digiclops' without digiclops/triclops libraries installed!" );
 #endif // DIGICLOPS_AND_TRICLOPS_FOUND
     }
 
