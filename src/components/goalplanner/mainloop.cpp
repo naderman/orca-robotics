@@ -46,7 +46,9 @@ MainLoop::initNetwork()
         }
         catch ( const orcaice::NetworkException & )
         {
-            context_.tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
+	    stringstream ss;
+	    ss << "Localise2d: failed to connect to remote object. Will try again after 3 seconds.";
+            context_.tracer()->error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }
@@ -65,7 +67,7 @@ MainLoop::initNetwork()
         }
         catch ( const orca::SubscriptionFailedException & )
         {
-            context_.tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            context_.tracer()->error( "failed to subscribe for localise2d data updates. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }
@@ -80,7 +82,7 @@ MainLoop::initNetwork()
         }
         catch ( const orcaice::NetworkException & )
         {
-            context_.tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
+            context_.tracer()->error( "failed to connect to remote pathfollower2d object. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }
@@ -94,7 +96,7 @@ MainLoop::initNetwork()
         }
         catch ( const orcaice::NetworkException & )
         {
-            context_.tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
+            context_.tracer()->error( "failed to connect to remote pathplanner2d object. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }
