@@ -101,7 +101,7 @@ driver
 (
    name "gazebo"
    provides ["position2d:0"]
-   gz_id "position1"
+   gz_id "robot1"
 )
 
 driver
