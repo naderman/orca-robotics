@@ -111,12 +111,15 @@ NetworkHandler::run()
             // keep trying
         }
         catch ( const orca::HardwareFailedException & e ) {
-            cout<<e.what<<endl;
+            std::stringstream ss;
+            ss << "networkhandler.cpp::run: Caught HardwareFailedException: " << e.what << endl; 
+            context_.tracer()->warning( ss.str() );
             // keep trying
         }
         catch ( const Ice::UnknownException & e ) {
-            cout<<"Unknown exception from the platform"<<endl;
-            cout<<e<<endl;
+            std::stringstream ss;
+            ss << "networkhandler.cpp::run: Caught UnknownException: " << e << endl; 
+            context_.tracer()->warning( ss.str() );
             // keep trying
         }
         catch ( const Ice::CommunicatorDestroyedException & e )

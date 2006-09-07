@@ -115,13 +115,15 @@ NetHandler::run()
         }
         catch ( orcaice::NetworkException & e )
         {
-            cout<<e.what()<<endl;
-            cout << "Will try again..." << endl;
+            std::stringstream ss;
+            ss << "nethandler::run: Caught NetworkException: " << e.what() << endl << "Will try again...";
+            context_.tracer()->warning( ss.str() );
         }
         catch ( Ice::Exception & e )
         {
-            cout<<e<<endl;
-            cout << "Caught some Ice exception while activating.  Will try again..." << endl;
+            std::stringstream ss;
+            ss << "nethandler::run: Caught Ice::Exception while activating: " << e << endl << "Will try again...";
+            context_.tracer()->warning( ss.str() );
         }
         catch ( ... )
         {
