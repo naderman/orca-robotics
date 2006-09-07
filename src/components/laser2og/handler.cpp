@@ -174,11 +174,9 @@ Handler::init()
 void
 Handler::run()
 {
-    try
-    {
+
 	RangeScannerDataPtr rangeScan = new RangeScannerData;
 	Localise2dDataPtr pose = new Localise2dData;
-
 	OgFusionDataPtr obs = new OgFusionData;
 
     //
@@ -187,46 +185,77 @@ Handler::run()
     //
     while ( isActive() )
 	{
-	    int ret=rangeScannerDataBuffer_.getAndPopNext(rangeScan,1000);
-	    if(ret==0)
+        try
         {
-		    try
+            
+            while ( isActive() )
+            {
+                int ret=rangeScannerDataBuffer_.getAndPopNext(rangeScan,1000);
+                if(ret!=0) {
+                    context_.tracer()->info("no range scan available: waiting ...");
+                } else {
+                    break;
+                }
+            }
+                
+            try
             {
                 pose=localise2dPrx_->getDataAtTime(rangeScan->timeStamp);
             }
             catch( orca::DataNotExistException e )
             {
-                cout << "ERROR(handler.cpp): could not fetch pose\n";
-                cout << "ERROR(handler.cpp): reason: " << e.what << endl;
+                std::stringstream ss;
+                ss << "handler.cpp: run: could not fetch pose because of: " << e.what;
+                context_.tracer()->warning( ss.str() );
+                throw;
             }
-
+    
             laser2Og_->process(*pose,*rangeScan);
             laser2Og_->getObs(obs->observation);
             obs->timeStamp = rangeScan->timeStamp;
             
             //send out OgFusionData
             ogFusionPrx_->setData(obs);
-
-	    }
-	    else if (ret==1)
+            
+        }   // end of try
+        catch ( orca::DataNotExistException e )
         {
-            cout << "TRACE(handler.cpp): Interrupted\n";
-	    }
-        else
+            stringstream ss;
+            ss << "handler.cpp: run: DataNotExistException, reason: " << e.what;
+            context_.tracer()->warning( ss.str() );
+        }
+        catch ( const orca::OrcaException & e )
         {
-                //timeout
-	    }
-	}
+            stringstream ss;
+            ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
+            context_.tracer()->error( ss.str() );
+        }
+        catch ( const orcaice::Exception & e )
+        {
+            stringstream ss;
+            ss << "unexpected (local?) orcaice exception: " << e.what();
+            context_.tracer()->error( ss.str() );
+        }
+        catch ( const Ice::Exception & e )
+        {
+            stringstream ss;
+            ss << "unexpected Ice exception: " << e;
+            context_.tracer()->error( ss.str() );
+        }
+        catch ( const std::exception & e )
+        {
+        // once caught this beast in here, don't know who threw it 'St9bad_alloc'
+            stringstream ss;
+            ss << "unexpected std exception: " << e.what();
+            context_.tracer()->error( ss.str() );
+        }
+        catch ( ... )
+        {
+            context_.tracer()->error( "unexpected exception from somewhere.");
+        }
+        
+    } // end of main loop
     
-    }   // end of try
-    catch ( Ice::CommunicatorDestroyedException &e )
-    {
-        // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-        // somewhere in mainLoop.
-        //
-        // Could probably handle it better for an Application by stopping the component on Ctrl-C
-        // before shutting down communicator.
-    }
     context_.tracer()->debug( "dropping out from run()", 5 );
 }
 
