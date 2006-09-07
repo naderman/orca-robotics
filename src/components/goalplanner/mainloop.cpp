@@ -143,158 +143,137 @@ MainLoop::run()
         
         try
         {
-        
-        // wait for a goal path
-        while( isActive() )
-        {
-            //cout << "TRACE(mainloop.cpp): Waiting for a goal path" << endl;
-            int ret = incomingPathBuffer_.getNext( incomingPath, 1000 );
-            if (ret==0) break;
-        }
-        // tell the world about it
-        pathPublisher_->setData( incomingPath );
-        
-        // wait for a valid localisation
-        while( isActive() )
-        {
-            int ret = localiseDataBuffer_.getNext( localiseData, 1000 );
-            if (ret==0)
+            // wait for a goal path
+            while( isActive() )
             {
-                if ( localiseData->hypotheses.size() == 1 ) break;
+                //cout << "TRACE(mainloop.cpp): Waiting for a goal path" << endl;
+                int ret = incomingPathBuffer_.getNext( incomingPath, 1000 );
+                if (ret==0) break;
+            }
+            // tell the world about it
+            pathPublisher_->setData( incomingPath );
+            
+            // wait for a valid localisation
+            while( isActive() )
+            {
+                int ret = localiseDataBuffer_.getNext( localiseData, 1000 );
+                if (ret==0)
+                {
+                    if ( localiseData->hypotheses.size() == 1 ) break;
+                    
+                    cout << "WARNING(mainloop.cpp): more than one localisation hypotheses. Can't handle this. Waiting for single hypothesis..." << endl;
+                }
+            }
                 
-                cout << "WARNING(mainloop.cpp): more than one localisation hypotheses. Can't handle this. Waiting for single hypothesis..." << endl;
-            }
-        }
-             
-        // we're guaranteed to have only 1 hypothesis
-        wp.target = localiseData->hypotheses[0].mean;
-        // hardcode uncertainties for the waypoint we start from
-        wp.distanceTolerance = 5.0; 
-        wp.headingTolerance = (float)DEG2RAD(45);      
-        wp.maxApproachSpeed = 5.0;
-        wp.maxApproachTurnrate = (float)DEG2RAD(2e+6); 
-        
-//         cout << "Convariance is: " << localiseData->hypotheses[0].cov.xx << " " 
-//                 << localiseData->hypotheses[0].cov.xy << " " 
-//                 << localiseData->hypotheses[0].cov.yy << " " 
-//                 << endl;
-
-//         double a, b, th;
-//         Cov2d cov(hypotheses[0].cov.xx, hypotheses[0].cov.xy, hypotheses[0].cov.yy);
-//         cov.ellipse( a, b, th );
-
-        
-        // put together a task for the pathplanner
-        // add the position of the robot as the first waypoint in the path
-        incomingPath->path.insert( incomingPath->path.begin(), 1, wp );
-        cout << "TRACE(mainloop.cpp): Incoming path is " << endl << orcaice::toVerboseString( incomingPath );
-        taskPtr->coarsePath = incomingPath->path;
-        taskPtr->prx = taskPrx_;
-        
-        // send task to pathplanner
-        cout << "TRACE(mainloop.cpp): Sending task to pathplanner" << endl;
-        try {
-            pathplanner2dPrx_->setTask( taskPtr );
-        }
-        catch (orca::RequiredInterfaceFailedException &e)
-        {
-            stringstream ss;
-            ss << e.what;
-            context_.tracer()->warning( ss.str() ); 
-            throw;   
-        }
-        catch (orca::BusyException &e)
-        {
-            stringstream ss;
-            ss << e.what;
-            context_.tracer()->warning( ss.str() );      
-            throw;
-        }
-        
-        // block until path is computed
-        while( isActive() )
-        {
-            cout << "TRACE(mainloop.cpp): Waiting for pathplanner's answer" << endl;
-            int ret = computedPathBuffer_.getNext( computedPath, 1000 );
-            if (ret==0) break;
-        }
-        
-        // check result
-        if ( computedPath->result!= PathOk )
-        {
-            cout << "TRACE(mainloop.cpp): Pathplanner could not compute path. Give me another goal" << endl;
-        }
-        else
-        {
-            // send out result to localnav, assemble packet first
-            PathFollower2dDataPtr outgoingPath = new PathFollower2dData;
-            outgoingPath->path = computedPath->path;
-            cout << "TRACE(mainloop.cpp): Sending out the resulting path to localnav." << endl;
-            //TODO: GUI can send this
-            bool activateNow = true;
+            // we're guaranteed to have only 1 hypothesis
+            wp.target = localiseData->hypotheses[0].mean;
+            // hardcode uncertainties for the waypoint we start from
+            wp.distanceTolerance = 5.0; 
+            wp.headingTolerance = (float)DEG2RAD(45);      
+            wp.maxApproachSpeed = 5.0;
+            wp.maxApproachTurnrate = (float)DEG2RAD(2e+6); 
+            
+    //         cout << "Convariance is: " << localiseData->hypotheses[0].cov.xx << " " 
+    //                 << localiseData->hypotheses[0].cov.xy << " " 
+    //                 << localiseData->hypotheses[0].cov.yy << " " 
+    //                 << endl;
+    
+    //         double a, b, th;
+    //         Cov2d cov(hypotheses[0].cov.xx, hypotheses[0].cov.xy, hypotheses[0].cov.yy);
+    //         cov.ellipse( a, b, th );
+    
+            
+            // put together a task for the pathplanner
+            // add the position of the robot as the first waypoint in the path
+            incomingPath->path.insert( incomingPath->path.begin(), 1, wp );
+            cout << "TRACE(mainloop.cpp): Incoming path is " << endl << orcaice::toVerboseString( incomingPath );
+            taskPtr->coarsePath = incomingPath->path;
+            taskPtr->prx = taskPrx_;
+            
+            // send task to pathplanner
+            cout << "TRACE(mainloop.cpp): Sending task to pathplanner" << endl;
             try {
-                localNavPrx_->setData( outgoingPath, activateNow );
+                pathplanner2dPrx_->setTask( taskPtr );
             }
-            catch ( Ice::NotRegisteredException & )
+            catch (orca::RequiredInterfaceFailedException &e)
             {
                 stringstream ss;
-                ss << "Problem setting data on pathfollower2d proxy";
-                context_.tracer()->warning( ss.str() );     
+                ss << e.what;
+                context_.tracer()->warning( ss.str() ); 
+                throw;   
+            }
+            catch (orca::BusyException &e)
+            {
+                stringstream ss;
+                ss << e.what;
+                context_.tracer()->warning( ss.str() );      
                 throw;
             }
-
+            
+            // block until path is computed
+            while( isActive() )
+            {
+                cout << "TRACE(mainloop.cpp): Waiting for pathplanner's answer" << endl;
+                int ret = computedPathBuffer_.getNext( computedPath, 1000 );
+                if (ret==0) break;
+            }
+            
+            // check result
+            if ( computedPath->result!= PathOk )
+            {
+                cout << "TRACE(mainloop.cpp): Pathplanner could not compute path. Give me another goal" << endl;
+            }
+            else
+            {
+                // send out result to localnav, assemble packet first
+                PathFollower2dDataPtr outgoingPath = new PathFollower2dData;
+                outgoingPath->path = computedPath->path;
+                cout << "TRACE(mainloop.cpp): Sending out the resulting path to localnav." << endl;
+                //TODO: GUI can send this
+                bool activateNow = true;
+                try {
+                    localNavPrx_->setData( outgoingPath, activateNow );
+                }
+                catch ( Ice::NotRegisteredException & )
+                {
+                    stringstream ss;
+                    ss << "Problem setting data on pathfollower2d proxy";
+                    context_.tracer()->warning( ss.str() );     
+                    throw;
+                }
+    
+            }
+    
+        } // try
+        catch ( const orca::OrcaException & e )
+        {
+            stringstream ss;
+            ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
+            context_.tracer()->error( ss.str() );
         }
-
-    } // try
-    catch ( const orca::OrcaException & e )
-    {
-        stringstream ss;
-        ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
+        catch ( const orcaice::Exception & e )
+        {
+            stringstream ss;
+            ss << "unexpected (local?) orcaice exception: " << e.what();
+            context_.tracer()->error( ss.str() );
         }
-    }
-    catch ( const orcaice::Exception & e )
-    {
-        stringstream ss;
-        ss << "unexpected (local?) orcaice exception: " << e.what();
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
+        catch ( const Ice::Exception & e )
+        {
+            stringstream ss;
+            ss << "unexpected Ice exception: " << e;
+            context_.tracer()->error( ss.str() );
         }
-    }
-    catch ( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss << "unexpected Ice exception: " << e;
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
+        catch ( const std::exception & e )
+        {
+            // once caught this beast in here, don't know who threw it 'St9bad_alloc'
+            stringstream ss;
+            ss << "unexpected std exception: " << e.what();
+            context_.tracer()->error( ss.str() );
         }
-    }
-    catch ( const std::exception & e )
-    {
-        // once caught this beast in here, don't know who threw it 'St9bad_alloc'
-        stringstream ss;
-        ss << "unexpected std exception: " << e.what();
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
+        catch ( ... )
+        {
+            context_.tracer()->error( "unexpected exception from somewhere.");
         }
-    }
-    catch ( ... )
-    {
-        context_.tracer()->error( "unexpected exception from somewhere.");
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
             
     } // end of big while loop
     
