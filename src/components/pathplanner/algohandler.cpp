@@ -176,120 +176,100 @@ AlgoHandler::run()
         try
         {
             
-        //
-        //  ======== waiting for a task (blocking) =======
-        //
-        context_.tracer()->info("waiting for a new task");
-        
-        while ( isActive() )
-        {
-            int ret = pathPlannerTaskProxy_->getNext( taskPtr, 1000 );
-            if ( ret!=0 ) {
-                // context_.tracer()->info("waiting for a new task");      
-            } else {
-                context_.tracer()->info("task arrived");  
-                break;
-            }
-        }
-        
-        //
-        // ===== tell driver to compute the path ========
-        //
-        
-        // input: ogmap, task; output: path
-        try 
-        {
-            context_.tracer()->info("telling driver to compute the path now");
-            driver_->computePath( taskPtr, pathDataPtr );
-        }
-        catch ( orcapathplan::Exception &e )
-        {
-            std::stringstream ss;
-            // TODO: display taskPtr.
-            ss << "Couldn't compute path: " // << orcaice::toString(taskPtr)
-               << endl << "Problem was: " << e.what();
-            context_.tracer()->error( ss.str() );
+            //
+            //  ======== waiting for a task (blocking) =======
+            //
+            context_.tracer()->info("waiting for a new task");
             
-            switch( e.type() )
+            while ( isActive() )
             {
-                case PathStartNotValid:             pathDataPtr->result = PathStartNotValid;
-                case PathDestinationNotValid:       pathDataPtr->result = PathDestinationNotValid;
-                case PathDestinationUnreachable:    pathDataPtr->result = PathDestinationUnreachable;
-                case OtherError:                    pathDataPtr->result = OtherError; 
-                case PathOk:                        ; //compiler wants me to handle this case, otherwise produces warning
+                int ret = pathPlannerTaskProxy_->getNext( taskPtr, 1000 );
+                if ( ret!=0 ) {
+                    // context_.tracer()->info("waiting for a new task");      
+                } else {
+                    context_.tracer()->info("task arrived");  
+                    break;
+                }
             }
-        }
-
+            
+            //
+            // ===== tell driver to compute the path ========
+            //
+            
+            // input: ogmap, task; output: path
+            try 
+            {
+                context_.tracer()->info("telling driver to compute the path now");
+                driver_->computePath( taskPtr, pathDataPtr );
+            }
+            catch ( orcapathplan::Exception &e )
+            {
+                std::stringstream ss;
+                // TODO: display taskPtr.
+                ss << "Couldn't compute path: " // << orcaice::toString(taskPtr)
+                << endl << "Problem was: " << e.what();
+                context_.tracer()->error( ss.str() );
+                
+                switch( e.type() )
+                {
+                    case PathStartNotValid:             pathDataPtr->result = PathStartNotValid;
+                    case PathDestinationNotValid:       pathDataPtr->result = PathDestinationNotValid;
+                    case PathDestinationUnreachable:    pathDataPtr->result = PathDestinationUnreachable;
+                    case OtherError:                    pathDataPtr->result = OtherError; 
+                    case PathOk:                        ; //compiler wants me to handle this case, otherwise produces warning
+                }
+            }
+    
+            //
+            // ======= send result (including error code) ===============
+            //
+            context_.tracer()->info("sending off the resulting path");
+    
+            // There are three methods to let other components know about the computed path:
+            // 1. using the proxy
+            if (taskPtr->prx!=0)
+            {
+                taskPtr->prx->setData( pathDataPtr );
+            }
+            // 2. and 3.: use getData or icestorm
+            pathPlannerI_->localSetData( pathDataPtr );
+    
+            // resize the pathDataPtr: future tasks might not compute a path successfully and we would resend the old path
+            pathDataPtr->path.resize( 0 );
+    
         //
-        // ======= send result (including error code) ===============
+        // unexpected exceptions
         //
-        context_.tracer()->info("sending off the resulting path");
-
-        // There are three methods to let other components know about the computed path:
-        // 1. using the proxy
-        if (taskPtr->prx!=0)
+        } // try
+        catch ( const orca::OrcaException & e )
         {
-            taskPtr->prx->setData( pathDataPtr );
+            stringstream ss;
+            ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
+            context_.tracer()->error( ss.str() );
         }
-        // 2. and 3.: use getData or icestorm
-        pathPlannerI_->localSetData( pathDataPtr );
-
-        // resize the pathDataPtr: future tasks might not compute a path successfully and we would resend the old path
-        pathDataPtr->path.resize( 0 );
-
-    //
-    // unexpected exceptions
-    //
-    } // try
-    catch ( const orca::OrcaException & e )
-    {
-        stringstream ss;
-        ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
+        catch ( const orcaice::Exception & e )
+        {
+            stringstream ss;
+            ss << "unexpected (local?) orcaice exception: " << e.what();
+            context_.tracer()->error( ss.str() );
         }
-    }
-    catch ( const orcaice::Exception & e )
-    {
-        stringstream ss;
-        ss << "unexpected (local?) orcaice exception: " << e.what();
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
+        catch ( const Ice::Exception & e )
+        {
+            stringstream ss;
+            ss << "unexpected Ice exception: " << e;
+            context_.tracer()->error( ss.str() );
         }
-    }
-    catch ( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss << "unexpected Ice exception: " << e;
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
+        catch ( const std::exception & e )
+        {
+            // once caught this beast in here, don't know who threw it 'St9bad_alloc'
+            stringstream ss;
+            ss << "unexpected std exception: " << e.what();
+            context_.tracer()->error( ss.str() );
         }
-    }
-    catch ( const std::exception & e )
-    {
-        // once caught this beast in here, don't know who threw it 'St9bad_alloc'
-        stringstream ss;
-        ss << "unexpected std exception: " << e.what();
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
+        catch ( ... )
+        {
+            context_.tracer()->error( "unexpected exception from somewhere.");
         }
-    }
-    catch ( ... )
-    {
-        context_.tracer()->error( "unexpected exception from somewhere.");
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
     
     } // end of while
     

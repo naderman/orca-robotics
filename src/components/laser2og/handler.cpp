@@ -257,5 +257,7 @@ Handler::run()
     } // end of main loop
     
     context_.tracer()->debug( "dropping out from run()", 5 );
+    
+    waitForStop();
 }
 
