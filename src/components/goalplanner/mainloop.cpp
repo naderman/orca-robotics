@@ -126,8 +126,6 @@ MainLoop::initNetwork()
 void 
 MainLoop::run()
 {
-    try
-    {
     
     PathFollower2dDataPtr incomingPath = new PathFollower2dData;
     Localise2dDataPtr localiseData = new Localise2dData;
@@ -142,6 +140,9 @@ MainLoop::run()
     // main loop
     while ( isActive() )
     {
+        
+        try
+        {
         
         // wait for a goal path
         while( isActive() )
@@ -240,10 +241,6 @@ MainLoop::run()
             }
 
         }
-        
-    }
-    
-    cout << "TRACE(mainloop.cpp): End of run() now..." << endl;
 
     } // try
     catch ( const orca::OrcaException & e )
@@ -296,6 +293,10 @@ MainLoop::run()
         }
     }
             
+    } // end of big while loop
+    
+    cout << "TRACE(mainloop.cpp): End of run() now..." << endl;
+    
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
 }
