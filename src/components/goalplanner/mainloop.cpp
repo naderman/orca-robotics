@@ -200,13 +200,15 @@ MainLoop::run()
         {
             stringstream ss;
             ss << e.what;
-            context_.tracer()->warning( ss.str() );    
+            context_.tracer()->warning( ss.str() ); 
+            throw;   
         }
         catch (orca::BusyException &e)
         {
             stringstream ss;
             ss << e.what;
             context_.tracer()->warning( ss.str() );      
+            throw;
         }
         
         // block until path is computed
@@ -238,6 +240,7 @@ MainLoop::run()
                 stringstream ss;
                 ss << "Problem setting data on pathfollower2d proxy";
                 context_.tracer()->warning( ss.str() );     
+                throw;
             }
 
         }
