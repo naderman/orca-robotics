@@ -73,7 +73,7 @@ AlgoHandler::initNetwork()
 
     pathPlannerI_ = new PathPlanner2dI( *pathPlannerTaskProxy_, *pathPlannerDataProxy_, context_ );
     Ice::ObjectPtr pathPlannerObj = pathPlannerI_;
-    //pathPlanner2dObj_ = new PathPlanner2dI( *pathPlannerTaskProxy_, *pathPlannerDataProxy_ );
+    
     // two possible exceptions will kill it here, that's what we want
     orcaice::createInterfaceWithTag( context_, pathPlannerObj, "PathPlanner2d" );
 }
@@ -89,7 +89,9 @@ AlgoHandler::initDriver()
     }
     catch ( const orca::DataNotExistException & e )
     {
-        cout<<"warning: "<<e.what<<endl;
+        std::stringstream ss;
+        ss << "algohandler::initDriver: DataNotExistException: "<<e.what;
+        context_.tracer()->warning( ss.str() );
     }
 
 
@@ -165,14 +167,15 @@ AlgoHandler::run()
     assert( pathPlannerTaskProxy_ );
 
     // we are in a different thread now, catch all stray exceptions
-    try
-    {
 
     PathPlanner2dTaskPtr taskPtr; 
     PathPlanner2dDataPtr pathDataPtr = new PathPlanner2dData;   
 
     while ( isActive() )
     {
+        try
+        {
+            
         //
         //  ======== waiting for a task (blocking) =======
         //
@@ -181,12 +184,9 @@ AlgoHandler::run()
         while ( isActive() )
         {
             int ret = pathPlannerTaskProxy_->getNext( taskPtr, 1000 );
-            if ( ret!=0 )
-            {
+            if ( ret!=0 ) {
                 // context_.tracer()->info("waiting for a new task");      
-            }
-            else
-            {
+            } else {
                 context_.tracer()->info("task arrived");  
                 break;
             }
@@ -236,8 +236,6 @@ AlgoHandler::run()
 
         // resize the pathDataPtr: future tasks might not compute a path successfully and we would resend the old path
         pathDataPtr->path.resize( 0 );
-
-    }
 
     //
     // unexpected exceptions
@@ -292,6 +290,8 @@ AlgoHandler::run()
             context_.communicator()->destroy();
         }
     }
+    
+    } // end of while
     
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
