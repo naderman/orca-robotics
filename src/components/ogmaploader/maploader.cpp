@@ -31,7 +31,7 @@ loadIceStream( orcaice::Context context, std::string filename, OgMapDataPtr &map
     std::vector<Ice::Byte> byteData;
     size_t length;
     logFile->read( (char*)&length, sizeof(length) );
-    if ( logFile->bad() )
+    if ( logFile->good() == false )
     {
         context.tracer()->error("reading from logFile failed");
         return -1;
@@ -39,7 +39,7 @@ loadIceStream( orcaice::Context context, std::string filename, OgMapDataPtr &map
     
     byteData.resize( length );
     logFile->read( (char*)&byteData[0], length );
-    if ( logFile->bad() )
+    if ( logFile->good() == false )
     {
         context.tracer()->error("reading from logFile failed");
         return -1;
