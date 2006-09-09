@@ -33,7 +33,7 @@ getHostname()
         return std::string("localhost");
     }
 #else
-    cout<<"geHostname() is not implemented under Windows"<<endl;
+    cout<<"getHostname() is not implemented under Windows"<<endl;
     exit(1);
     //! @todo implement getHostname in win
     return std::string("localhost");
