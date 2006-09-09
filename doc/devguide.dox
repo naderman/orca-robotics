@@ -34,6 +34,7 @@ maintainable, and understandable code.
 - @ref orca_doc_buildsystem
 - @ref orca_doc_cvs
 - <a href="http://www.kegel.com/academy/opensource.html#patches" target="_blank">How to submit a patch</a>
+- @ref orca_doc_daemons
 - @ref orca_doc_dart2
 
 @section internal Internal project documentation

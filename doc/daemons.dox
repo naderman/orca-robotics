@@ -1,0 +1,55 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@page orca_doc_daemons Running Components as Daemons
+
+@note Reviewed for release 2.0.0.
+
+@note Daemons are defined <a href="http://en.wikipedia.org/wiki/Daemon_%28computer_software%29">here</a>. 
+
+@par Starting a component as a daemon
+
+To implement a component as a daemon (or Service under Win32), one
+approach is to simply do all the forking etc yourself.  Alternatively,
+daemon support exists if your component derives from
+orcaice::Component, and can exist as an IceBox service.
+
+To start an icebox as a daemon, simply start it with:
+
+@verbatim
+$ icebox --Ice.Config=Xxxx --daemon
+@endverbatim
+
+See 'icebox --help' for more options.
+
+@par Logging to SysLog
+
+If your IceBox uses standard Ice services (such as IceStorm), start
+with '--Ice.UseSyslog=1' to get them to log information.
+
+For orcaice::Components, add something like the following to the .cfg for logging:
+
+@verbatim
+#Orca.Tracer.DebugToLog=5
+Orca.Tracer.InfoToLog=5
+Orca.Tracer.WarningToLog=5
+Orca.Tracer.ErrorToLog=5
+Orca.Tracer.OtherToLog=5
+Orca.Tracer.HeartbeatToLog=5
+@endverbatim
+
+and they'll log to /var/log/daemon.log.
+
+Currently, orcaice::Tracer logging to SysLog is implemented for Unix
+only.
+
+*/
