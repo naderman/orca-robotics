@@ -25,7 +25,12 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Tobias Kaupp
 - New interface: imu (inertial measurement unit)
   - Ben Upcroft
-
+- Support for integration with gazebo
+  - Ben Upcroft
+- Support for logging in ascii and parsing from matlab
+  - Ben Upcroft, Tobias Kaupp
+- Support for components as daemons
+  - Alex Brooks
 
 @section todo To-Do List for Release 2.1.0
 
