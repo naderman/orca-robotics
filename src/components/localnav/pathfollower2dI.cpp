@@ -65,7 +65,7 @@ PathFollower2dI::setData( const ::orca::PathFollower2dDataPtr &data, bool activa
     pathPipe_.set( data );
     newPathArrivedPipe_.set( true );
     if ( activateImmediately )
-        activateNow();
+        activationPipe_.set( orcaice::getNow() );
 }
 
 void

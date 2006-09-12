@@ -87,20 +87,24 @@ PathMaintainer::checkPathOut( const orca::PathFollower2dDataPtr &pathData )
 void
 PathMaintainer::checkForNewPath( orca::PathFollower2dConsumerPrx &pathConsumer )
 {
-    bool dummy;
-    if ( newPathArrivedPipe_.isNewData() )
+    if ( newPathArrivedPipe_.isNewData() || activationPipe_.isNewData() )
     {
-        newPathArrivedPipe_.get(dummy);
-        pathPipe_.get( path_ );
-        informWorldOfNewPath( pathConsumer, path_ );
+        // Load the path if it's there
+        if ( newPathArrivedPipe_.isNewData() )
+        {
+            bool dummy;
+            newPathArrivedPipe_.get(dummy);
+            pathPipe_.get( path_ );
+            informWorldOfNewPath( pathConsumer, path_ );
 
-        // Issue warnings if the path is screwy
-        checkPathOut( path_ );
+            // Issue warnings if the path is screwy
+            checkPathOut( path_ );
+        }
 
-        // Have we also been told to start?
+        // Have we been told to start?
         if ( activationPipe_.isNewData() )
         {
-            context_.tracer()->debug( "PathMaintainer: received new path, activating immediately", 1 );
+            context_.tracer()->debug( "PathMaintainer: activating.", 1 );
             activationPipe_.get(pathStartTime_);
             wpIndex_ = 0;
             if ( path_->path.size() == 0 )
@@ -119,15 +123,6 @@ PathMaintainer::checkForNewPath( orca::PathFollower2dConsumerPrx &pathConsumer )
         std::stringstream ss;
         ss << "PathMaintainer: new path: " << orcaice::toVerboseString( path_ );
         context_.tracer()->debug( ss.str(), 2 );
-    }
-    else
-    {
-        // No new path received.
-        if ( activationPipe_.isNewData() )
-        {
-            activationPipe_.get(pathStartTime_);
-            context_.tracer()->warning( "What the hell??  Received activation when no new path was loaded.  Ignoring it." );
-        }
     }
 }
 
