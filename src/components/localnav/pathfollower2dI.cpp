@@ -61,7 +61,7 @@ PathFollower2dI::setData( const ::orca::PathFollower2dDataPtr &data, bool activa
     }
 
     // cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << data << endl;
-    // cout<<"TRACE(pathfollower2dI.cpp): activateImmediately: " << activateImmediately << endl;
+    cout<<"TRACE(pathfollower2dI.cpp): activateImmediately: " << activateImmediately << endl;
     pathPipe_.set( data );
     newPathArrivedPipe_.set( true );
     if ( activateImmediately )
