@@ -19,10 +19,10 @@ using namespace orcaice;
 namespace goalplanner {
 
 PathFollower2dI::PathFollower2dI( orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe,
-                                  orcaice::Proxy<orca::Time>                     &activationPipe,
+                                  //orcaice::Proxy<orca::Time>                     &activationPipe,
                                   const IceStorm::TopicPrx & topicPrx )
     : pathPipe_(pathPipe),
-      activationPipe_(activationPipe),
+     // activationPipe_(activationPipe),
       topicPrx_(topicPrx)
 {
     assert ( topicPrx_ != 0 );
@@ -46,7 +46,7 @@ void
 PathFollower2dI::setData( const ::orca::PathFollower2dDataPtr &data, bool activateImmediately, const ::Ice::Current& )
 {
     cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << data << endl;
-    cout<<"TRACE(pathfollower2dI.cpp): activateImmediately: " << activateImmediately << endl;
+    cout<<"TRACE(pathfollower2dI.cpp): activateImmediately: " << activateImmediately << " .This flag will have no effect here!" << endl;
 
     // Sanity check
     std::string insanityReason;
@@ -63,7 +63,8 @@ PathFollower2dI::setData( const ::orca::PathFollower2dDataPtr &data, bool activa
 void
 PathFollower2dI::activateNow( const ::Ice::Current& )
 {
-    activationPipe_.set( orcaice::getNow() );
+    cout << "TRACE(pathfollower2dI.cpp): Received activateNow signal. Will have no effect here." << endl;
+    //activationPipe_.set( orcaice::getNow() );
 }
 
 int

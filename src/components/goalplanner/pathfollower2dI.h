@@ -28,7 +28,7 @@ class PathFollower2dI : public orca::PathFollower2d
 {
 public:
     PathFollower2dI( orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe,
-                     orcaice::Proxy<orca::Time>                     &activationPipe,
+                     //orcaice::Proxy<orca::Time>                     &activationPipe,
                      const IceStorm::TopicPrx & topicPrx );
 
     // remote calls:
@@ -57,7 +57,7 @@ private:
     orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe_;
 
     // Time of Activation from the outside world goes in here
-    orcaice::Proxy<orca::Time>                     &activationPipe_;
+    //orcaice::Proxy<orca::Time>                     &activationPipe_;
 
     const IceStorm::TopicPrx topicPrx_;
 };

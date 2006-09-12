@@ -114,7 +114,7 @@ MainLoop::initNetwork()
             ( context_, pathPublisher_, "PathFollower2d" );
     
     incomingPathI_ = new PathFollower2dI( incomingPathBuffer_,
-                                          activationPipe_,
+                                          //activationPipe_,
                                           topicPrx );
     
     Ice::ObjectPtr pathFollowerObj = incomingPathI_;
@@ -144,9 +144,9 @@ MainLoop::run()
         try
         {
             // wait for a goal path
+            cout << "TRACE(mainloop.cpp): Waiting for a goal path" << endl;
             while( isActive() )
             {
-                //cout << "TRACE(mainloop.cpp): Waiting for a goal path" << endl;
                 int ret = incomingPathBuffer_.getNext( incomingPath, 1000 );
                 if (ret==0) break;
             }
@@ -154,6 +154,7 @@ MainLoop::run()
             pathPublisher_->setData( incomingPath );
             
             // wait for a valid localisation
+            cout << "TRACE(mainloop.cpp): Waiting for single hypothesis localisation" << endl;
             while( isActive() )
             {
                 int ret = localiseDataBuffer_.getNext( localiseData, 1000 );
@@ -168,6 +169,7 @@ MainLoop::run()
             // we're guaranteed to have only 1 hypothesis
             wp.target = localiseData->hypotheses[0].mean;
             // hardcode uncertainties for the waypoint we start from
+            // should we use the uncertainty estimate of the localiser instead?
             wp.distanceTolerance = 5.0; 
             wp.headingTolerance = (float)DEG2RAD(45);      
             wp.maxApproachSpeed = 5.0;
@@ -211,9 +213,9 @@ MainLoop::run()
             }
             
             // block until path is computed
+            cout << "TRACE(mainloop.cpp): Waiting for pathplanner's answer" << endl;
             while( isActive() )
             {
-                cout << "TRACE(mainloop.cpp): Waiting for pathplanner's answer" << endl;
                 int ret = computedPathBuffer_.getNext( computedPath, 1000 );
                 if (ret==0) break;
             }
@@ -229,10 +231,8 @@ MainLoop::run()
                 PathFollower2dDataPtr outgoingPath = new PathFollower2dData;
                 outgoingPath->path = computedPath->path;
                 cout << "TRACE(mainloop.cpp): Sending out the resulting path to localnav." << endl;
-                //TODO: GUI can send this
-                bool activateNow = true;
                 try {
-                    localNavPrx_->setData( outgoingPath, activateNow );
+                    localNavPrx_->setData( outgoingPath, true );
                 }
                 catch ( Ice::NotRegisteredException & )
                 {

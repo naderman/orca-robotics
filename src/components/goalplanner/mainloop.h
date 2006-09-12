@@ -64,7 +64,7 @@ private:
     orcaice::PtrProxy<orca::PathFollower2dDataPtr> incomingPathBuffer_;
 
     // Used by the PathFollowerI to inform of activation commands
-    orcaice::Proxy<orca::Time>                     activationPipe_;
+    //orcaice::Proxy<orca::Time>                     activationPipe_;
     // ===========================================================================
     
     void initNetwork();
