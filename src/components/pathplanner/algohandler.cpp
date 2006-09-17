@@ -14,11 +14,16 @@
 #include <orcamisc/orcamisc.h>
 #include "algohandler.h"
 #include "pathplanner2dI.h"
-#include "skeletongraphicsI.h"
 #include "fakedriver.h"
 #include "simplenavdriver.h"
 #include "astardriver.h"
 #include "skeletondriver.h"
+
+#include "configpathplanner.h"
+#ifdef QT4_FOUND
+    #include "skeletongraphicsI.h"
+#endif
+
 
 using namespace std;
 using namespace orca;
@@ -116,16 +121,10 @@ AlgoHandler::initDriver()
     }
     else if ( driverName == "skeletonnav" || driverName == "sparseskeletonnav" )
     {
-        // QGraphics2d
-        SkeletonGraphicsI* graphicsI = new SkeletonGraphicsI( context_, "SkeletonGraphics" );
-        Ice::ObjectPtr graphicsObj = graphicsI;
-        orcaice::createInterfaceWithTag( context_, graphicsObj, "SkeletonGraphics" ); 
-
         bool useSparseSkeleton = (driverName == "sparseskeletonnav");
         
         try {
             driver_ = new SkeletonDriver( ogMapDataPtr,
-                                      graphicsI,
                                       robotDiameterMetres,
                                       traversabilityThreshhold,
                                       doPathOptimization,
@@ -138,6 +137,16 @@ AlgoHandler::initDriver()
             context_.tracer()->error( ss.str() );
             throw orcapathplan::Exception( ss.str() );  // this will exit
         }
+        
+        #ifdef QT4_FOUND
+        // QGraphics2d
+        SkeletonGraphicsI* graphicsI = new SkeletonGraphicsI( context_, "SkeletonGraphics" );
+        Ice::ObjectPtr graphicsObj = graphicsI;
+        orcaice::createInterfaceWithTag( context_, graphicsObj, "SkeletonGraphics" ); 
+        SkeletonDriver *skelDriver = dynamic_cast<SkeletonDriver*>( driver_ );
+        skelDriver->setGraphics( graphicsI );
+        #endif
+        
     }
     else if ( driverName == "astar" )
     {

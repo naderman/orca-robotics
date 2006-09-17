@@ -1,0 +1,1 @@
+#cmakedefine QT4_FOUND

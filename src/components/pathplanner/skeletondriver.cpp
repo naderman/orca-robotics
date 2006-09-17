@@ -15,19 +15,29 @@
 #include <orcaice/orcaice.h>
 #include <iostream>
 
+#include "configpathplanner.h"
+#ifdef QT4_FOUND
+    #include "skeletongraphicsI.h"
+#endif
+
 using namespace std;
 using namespace orcapathplan;
+using namespace pathplanner;
 using namespace orcaice;
 
 namespace pathplanner {
     
 SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
-                                SkeletonGraphicsI* skelGraphicsI,
                                 double robotDiameterMetres,
                                 double traversabilityThreshhold,
                                 bool   doPathOptimization,
                                 bool   useSparseSkeleton )
-    : skelGraphicsI_(skelGraphicsI)
+    : skelGraphicsI_(NULL),
+      robotDiameterMetres_(robotDiameterMetres),
+      traversabilityThreshhold_(traversabilityThreshhold),
+      doPathOptimization_(doPathOptimization),
+      useSparseSkeleton_(useSparseSkeleton)
+      
 {
     cout<<"TRACE(skeletondriver.cpp): SkeletonDriver()" << endl;
     convert( ogMapDataPtr, ogMap_ );
@@ -42,7 +52,6 @@ SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
                                                    traversabilityThreshhold,
                                                    doPathOptimization );
             pathPlanner_ = skelPathPlanner;
-            skelGraphicsI_->localSetSkel( ogMap_, &(skelPathPlanner->skeleton()) );
         }
         catch ( orcapathplan::Exception &e )
         {
@@ -54,18 +63,6 @@ SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
     }
     else
     {
-        // NOTE: display the dense skel first (for debugging).
-        const bool displayDenseSkelFirst = false;
-        if ( displayDenseSkelFirst )
-        {
-            orcapathplan::SkeletonPathPlanner *temp = 
-                new orcapathplan::SkeletonPathPlanner( ogMap_,
-                                                       robotDiameterMetres,
-                                                       traversabilityThreshhold,
-                                                       doPathOptimization );
-            skelGraphicsI_->localSetSkel( ogMap_, &(temp->skeleton()) );
-        }
-
         try {
             orcapathplan::SparseSkeletonPathPlanner *skelPathPlanner = 
                 new orcapathplan::SparseSkeletonPathPlanner( ogMap_,
@@ -73,9 +70,6 @@ SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
                                                             traversabilityThreshhold,
                                                             doPathOptimization );
             pathPlanner_ = skelPathPlanner;
-            skelGraphicsI_->localSetSkel( ogMap_,
-                                          &(skelPathPlanner->denseSkel()),
-                                          &(skelPathPlanner->sparseSkel()) );
         }
         catch( orcapathplan::Exception &e )
         {
@@ -95,6 +89,37 @@ SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
 SkeletonDriver::~SkeletonDriver()
 {
     if ( pathPlanner_ ) delete pathPlanner_;
+}
+
+void
+SkeletonDriver::setGraphics( SkeletonGraphicsI* skelGraphicsI )
+{
+    skelGraphicsI_ = skelGraphicsI;
+    
+    if ( !useSparseSkeleton_ )
+    {
+        SkeletonPathPlanner *skelPathPlanner = dynamic_cast<SkeletonPathPlanner*>( pathPlanner_ );
+        skelGraphicsI_->localSetSkel( ogMap_, &(skelPathPlanner->skeleton()) );
+    }
+    else
+    {
+        const bool displayDenseSkelFirst = false;
+        if ( displayDenseSkelFirst )
+        {
+            orcapathplan::SkeletonPathPlanner *temp = 
+                    new orcapathplan::SkeletonPathPlanner( ogMap_,
+                    robotDiameterMetres_,
+                    traversabilityThreshhold_,
+                    doPathOptimization_ );
+            skelGraphicsI_->localSetSkel( ogMap_, &(temp->skeleton()) );
+        }
+        
+        
+        SparseSkeletonPathPlanner *sparseSkelPathPlanner = dynamic_cast<SparseSkeletonPathPlanner*>( pathPlanner_ );
+        skelGraphicsI_->localSetSkel( ogMap_,
+                                      &(sparseSkelPathPlanner->denseSkel()),
+                                      &(sparseSkelPathPlanner->sparseSkel()) );
+    }
 }
 
 void 

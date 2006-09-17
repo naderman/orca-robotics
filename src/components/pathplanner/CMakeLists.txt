@@ -1,8 +1,15 @@
 OPTION( BUILD_PATHPLANNER "Try to build pathplanner" ON )
 
 IF ( NOT WIN32 )
-# Needs Qt4 for displaying debug stuff
-IF ( BUILD_PATHPLANNER AND QT4_FOUND )
+
+IF ( NOT QT4_FOUND )
+  MESSAGE( "     Qt4 not found: skeletongraphics will not be built" )
+ENDIF( NOT QT4_FOUND )
+
+IF ( BUILD_PATHPLANNER )
+
+    # automatically generate #ifdef's for component.cpp
+   CONFIGURE_FILE( configpathplanner.h.cmake ${PROJECT_SOURCE_DIR}/src/components/pathplanner/configpathplanner.h )
 
     INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
     INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
@@ -14,30 +21,37 @@ IF ( BUILD_PATHPLANNER AND QT4_FOUND )
             component
             fakedriver
             simplenavdriver
-            skeletongraphicsI
             skeletondriver
             pathplanner2dI
     )
-
-    INCLUDE_DIRECTORIES(
-        ${QT_INCLUDES}
-        ${PROJECT_SOURCE_DIR}/src/utils
-    )
-
-    ADD_DEFINITIONS( ${QT_DEFINITIONS} )
     
-    # stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( pathplanner main ${COMMON_SRCS} )
-    TARGET_LINK_LIBRARIES( pathplanner OrcaOgMap OrcaPathPlan OrcaMisc  ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
-    
-    # build an IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaPathPlanner SHARED service ${COMMON_SRCS} )
+    SET ( QT_SRCS skeletongraphicsI )
 
+    IF ( QT4_FOUND )
+        INCLUDE_DIRECTORIES(
+            ${QT_INCLUDES}
+            ${PROJECT_SOURCE_DIR}/src/utils
+        )
+        ADD_DEFINITIONS( ${QT_DEFINITIONS} )
+    
+        # stand-alone component  
+        GLOBAL_ADD_EXECUTABLE( pathplanner main ${COMMON_SRCS} ${QT_SRCS} )
+        # build an IceBox service
+        GLOBAL_ADD_LIBRARY( OrcaPathPlanner SHARED service ${COMMON_SRCS} )
+        TARGET_LINK_LIBRARIES( pathplanner OrcaOgMap OrcaPathPlan OrcaMisc  ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
+    ELSE( QT4_FOUND )
+        INCLUDE_DIRECTORIES(
+            ${PROJECT_SOURCE_DIR}/src/utils
+        )    
+        # stand-alone component  
+        GLOBAL_ADD_EXECUTABLE( pathplanner main ${COMMON_SRCS} )
+        # build an IceBox service
+        GLOBAL_ADD_LIBRARY( OrcaPathPlanner SHARED service ${COMMON_SRCS} ${QT_SRCS} )
+        TARGET_LINK_LIBRARIES( pathplanner OrcaOgMap OrcaPathPlan OrcaMisc )
+    ENDIF( QT4_FOUND )
+    
+    
     GENERATE_CONFIG_FILE( pathplanner.def )
 
-ELSE ( BUILD_PATHPLANNER AND QT4_FOUND )
-
-    MESSAGE("Not Planning to Build Pathplanner -- Qt4 not found")
-
-ENDIF ( BUILD_PATHPLANNER AND QT4_FOUND )
+ENDIF ( BUILD_PATHPLANNER )
 ENDIF ( NOT WIN32 )

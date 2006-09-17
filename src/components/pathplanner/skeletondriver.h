@@ -11,15 +11,16 @@
 #define ORCA_PATHPLANNER_SKELETONDRIVER_H
 
 #include "algodriver.h"
-#include "skeletongraphicsI.h"
 #include <orcapathplan/orcapathplan.h>
 #include <orcapathplan/ipathplanner2d.h>
 #include <orca/ogmap.h>
 #include <orcaogmap/orcaogmap.h>
 #include <vector>
 
+
 namespace pathplanner {
 
+class SkeletonGraphicsI;
 //
 // The 'skeletonnav' driver.
 //
@@ -31,21 +32,27 @@ class SkeletonDriver : public AlgoDriver
 public: 
 
     SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
-                    SkeletonGraphicsI* skelGraphicsI,
                     double robotDiameterMetres,
                     double traversabilityThreshhold,
                     bool   doPathOptimization,
                     bool   useSparseSkeleton );
     ~SkeletonDriver();
-
+    
     virtual void computePath( const orca::PathPlanner2dTaskPtr &taskPtr,
                               const orca::PathPlanner2dDataPtr &pathDataPtr );
+    
+    void setGraphics( SkeletonGraphicsI* skelGraphicsI );
 
 private: 
 
     SkeletonGraphicsI             *skelGraphicsI_;
     orcaogmap::OgMap               ogMap_;
     orcapathplan::IPathPlanner2d  *pathPlanner_;
+    
+    double robotDiameterMetres_;
+    double traversabilityThreshhold_;
+    bool   doPathOptimization_;
+    bool   useSparseSkeleton_; 
     
     void addWaypointParameters( std::vector<orcapathplan::WaypointParameter> &wpParaVector, 
                                 orca::Waypoint2d                             *startWp, 
