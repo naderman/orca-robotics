@@ -5,9 +5,6 @@ function [time, ranges, intensities] = parselaserdata( file )
 %    ranges = each row represents ranges from one scan corresponding to one timestamp
 %    intensities = each row represents intensities from one scan corresponding to one timestamp
 
-
-nscans = 361;
-
 fid = fopen( file );
 if ( fid == -1 )
     error(sprintf('Couldnt open file: %s\n',file));
@@ -21,13 +18,6 @@ end
 
 % time stamp format
 s1 = '%2d%*1s%2d%*1s%2d %2d%*1s%2d%*1s%f';
-
-% ranges and intensities format
-s2 = '%f ';
-sCat = '%f ';
-for j=1:nscans-1
-   s2 = strcat(s2,sCat);
-end
 
 i=1;
 
@@ -44,13 +34,26 @@ while 1
 
     % read start angle
     startAngle = fscanf(fid, '%d', 1);
+
+    % read number of points in a scan
+    numPoints = fscanf(fid, '%d', 1);
+
+    % ranges and intensities format
+    % only need to do this once
+    if i==1    
+        s2 = '%f ';
+        sCat = '%f ';
+        for j=1:numPoints-1
+            s2 = strcat(s2,sCat);
+        end
+    end
     
     % read ranges
-    rangesTmp = fscanf(fid, s2, nscans);
+    rangesTmp = fscanf(fid, s2, numPoints);
     ranges(i,:) = rangesTmp;
 
     % read intensities
-    intensitiesTmp = fscanf(fid, s2, nscans);
+    intensitiesTmp = fscanf(fid, s2, numPoints);
     intensities(i,:) = intensitiesTmp;
 
     i=i+1;
