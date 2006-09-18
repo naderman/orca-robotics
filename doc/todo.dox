@@ -14,29 +14,7 @@
 
 Developers: as you make substantial changes in the code (add features, fix bugs, etc.), add an item in the section on changes. When the next version is released, this list will be cut-and-pasted into the release notes.
 
-- New components: ognode & laser2og
-  - For (cooperative) occupancy-grid mapping
-  - Matt Ridely, George Mathews, Alexei Makarenko, Tobias Kaupp
-- New component: gps
-  - Matt Ridley
-- New component: goalplanner
-  - Tobias Kaupp
-- Component overhaul: pathplanner
-  - Alex Brooks and Tobias Kaupp
-- Substantial improvements: orcaview
-  - Tobias Kaupp
-- New interface: imu (inertial measurement unit)
-  - Ben Upcroft
-- Support for integration with gazebo
-  - Ben Upcroft
-- Support for logging in ascii and parsing from matlab
-  - Ben Upcroft, Tobias Kaupp
-- Initial support for components as daemons
-  - Alex Brooks
-- Fixed mem leak in SickLaser
-  - Alex Brooks
-- Portability of common components (logger/logplayer/orcaview) to Orca-derived projects
-  - Tobias Kaupp
+
 
 @section todo To-Do List for Release 2.1.0
 
