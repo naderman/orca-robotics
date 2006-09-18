@@ -15,7 +15,6 @@
 #include <orcaice/orcaice.h>
 #include <iostream>
 
-#include "configpathplanner.h"
 #ifdef QT4_FOUND
     #include "skeletongraphicsI.h"
 #endif
@@ -91,9 +90,12 @@ SkeletonDriver::~SkeletonDriver()
     if ( pathPlanner_ ) delete pathPlanner_;
 }
 
+#ifdef QT4_FOUND
 void
 SkeletonDriver::setGraphics( SkeletonGraphicsI* skelGraphicsI )
 {
+    assert(pathPlanner_!=NULL);
+
     skelGraphicsI_ = skelGraphicsI;
     
     if ( !useSparseSkeleton_ )
@@ -121,6 +123,7 @@ SkeletonDriver::setGraphics( SkeletonGraphicsI* skelGraphicsI )
                                       &(sparseSkelPathPlanner->sparseSkel()) );
     }
 }
+#endif
 
 void 
 SkeletonDriver::computePath( const orca::PathPlanner2dTaskPtr &taskPtr,

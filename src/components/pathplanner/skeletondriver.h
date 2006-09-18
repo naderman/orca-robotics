@@ -17,6 +17,9 @@
 #include <orcaogmap/orcaogmap.h>
 #include <vector>
 
+// for QT4_FOUND
+#include "configpathplanner.h"
+
 
 namespace pathplanner {
 
@@ -40,8 +43,9 @@ public:
     
     virtual void computePath( const orca::PathPlanner2dTaskPtr &taskPtr,
                               const orca::PathPlanner2dDataPtr &pathDataPtr );
-    
+    #ifdef QT4_FOUND
     void setGraphics( SkeletonGraphicsI* skelGraphicsI );
+    #endif
 
 private: 
 
