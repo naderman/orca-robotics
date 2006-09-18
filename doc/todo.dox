@@ -33,6 +33,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Ben Upcroft, Tobias Kaupp
 - Initial support for components as daemons
   - Alex Brooks
+- Fixed mem leak in SickLaser
+  - Alex Brooks
 - Portability of common components (logger/logplayer/orcaview) to Orca-derived projects
   - Tobias Kaupp
 
