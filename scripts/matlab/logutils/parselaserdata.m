@@ -9,6 +9,9 @@ function [time, ranges, intensities] = parselaserdata( file )
 nscans = 361;
 
 fid = fopen( file );
+if ( fid == -1 )
+    error(sprintf('Couldnt open file: %s\n',file));
+end
 
 % skip the header
 for i=1:15
