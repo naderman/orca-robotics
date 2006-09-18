@@ -31,7 +31,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Ben Upcroft
 - Support for logging in ascii and parsing from matlab
   - Ben Upcroft, Tobias Kaupp
-- Support for components as daemons
+- Initial support for components as daemons
   - Alex Brooks
 - Portability of common components (logger/logplayer/orcaview) to Orca-derived projects
   - Tobias Kaupp
