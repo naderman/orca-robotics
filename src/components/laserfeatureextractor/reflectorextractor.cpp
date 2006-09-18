@@ -22,6 +22,8 @@ void
 ReflectorExtractor::addFeatures( const orca::LaserDataPtr    &laserData,
                                  orca::PolarFeature2dDataPtr &features )
 {
+//     cout<<"TRACE(reflectorextractor.cpp): addFeatures()" << endl;
+
     assert( laserMaxRange_ > 0.0 );
 
     const int numReturnsToGetOverSketch = 4;
@@ -35,10 +37,16 @@ ReflectorExtractor::addFeatures( const orca::LaserDataPtr    &laserData,
     double maxDeltaRangeWithinReflector = 0.0;
     int    lastSketchReturn             = -numReturnsToGetOverSketch;
 
+//     cout<<"TRACE(reflectorextractor.cpp): laserData->ranges.size(): " << laserData->ranges.size() << endl;
+//     cout<<"TRACE(reflectorextractor.cpp): laserMaxRange_: " << laserMaxRange_ << endl;
+//     cout<<"TRACE(reflectorextractor.cpp): minReflectorBrightness: " << minReflectorBrightness_ << endl;
+
     // Don't iterate over the endpoints, so that the helper-functions
     // don't have to check.
     for ( unsigned int i=1; i<laserData->ranges.size()-1; i++ )
     {
+        // cout<<"TRACE(reflectorextractor.cpp): r,i: " << laserData->ranges[i] << "," << (int)(laserData->intensities[i]) << endl;
+
         // Is this a reflector inside range?
         if ( ( laserData->intensities[i] >= minReflectorBrightness_ ) &&
              ( laserData->ranges[i] < laserMaxRange_ ) )
