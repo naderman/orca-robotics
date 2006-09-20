@@ -39,7 +39,7 @@ Component::start()
     // Network handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    netHandler_ = new NetHandler( position2dPipe_, commandPipe_, powerPipe_,
+    netHandler_ = new NetHandler( position2dPipe_, position3dPipe_, commandPipe_, powerPipe_,
                                 setConfigPipe_, currentConfigPipe_, context() );
     // this thread will try to activate and register the adapter
     netHandler_->start();

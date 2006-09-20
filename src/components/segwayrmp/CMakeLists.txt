@@ -45,7 +45,7 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
     ENDIF ( NOT HAVE_USB_DRIVER AND NOT HAVE_PLAYERCLIENT_DRIVER )
 
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-    SET( COMMON_SRCS component nethandler hwhandler platform2dI powerI fakedriver )
+    SET( COMMON_SRCS component nethandler hwhandler platform2dI position3dI powerI fakedriver )
     
     # build a stand-alone component
     GLOBAL_ADD_EXECUTABLE( segwayrmp main ${COMMON_SRCS} )

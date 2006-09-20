@@ -20,6 +20,7 @@
 //#include "netfsm.h"
 
 #include <orca/platform2d.h>
+#include <orca/position3d.h>
 #include <orca/power.h>
 
 namespace segwayrmp
@@ -32,6 +33,7 @@ class NetHandler : public orcaice::Thread
 public:
 
     NetHandler( orcaice::PtrProxy<orca::Position2dDataPtr>     & position2dPipe,
+                 orcaice::PtrProxy<orca::Position3dDataPtr>    & position3dPipe,
                  orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
                  orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
@@ -55,10 +57,12 @@ private:
     // EXTERNAL INTERFACES
     //
     orca::Position2dConsumerPrx position2dPublisher_;
+    orca::Position3dConsumerPrx position3dPublisher_;
     orca::PowerConsumerPrx powerPublisher_;
 
     // network/hardware interface
     orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe_;
+    orcaice::PtrProxy<orca::Position3dDataPtr>    & position3dPipe_;
     orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe_;
     orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe_;
     orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe_;
@@ -74,11 +78,13 @@ private:
 
     // timers for publishing to icestorm
     orcaice::Timer position2dPublishTimer_;
+    orcaice::Timer position3dPublishTimer_;
     orcaice::Timer powerPublishTimer_;
     orcaice::Timer statusPublishTimer_;
 
     // publish intervals
     double position2dPublishInterval_;
+    double position3dPublishInterval_;
     double powerPublishInterval_;
     double statusPublishInterval_;
 

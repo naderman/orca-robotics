@@ -17,6 +17,7 @@
 
 // implementations of Ice objects
 #include "platform2dI.h"
+#include "position3dI.h"
 #include "powerI.h"
 
 #include <orcaice/orcaice.h>
@@ -27,12 +28,14 @@ using namespace segwayrmp;
 
 NetHandler::NetHandler(
                  orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
+                 orcaice::PtrProxy<orca::Position3dDataPtr>    & position3dPipe,
                  orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
                  orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
                  const orcaice::Context                        & context )
       : position2dPipe_(position2dPipe),
+        position3dPipe_(position3dPipe),
         commandPipe_(commandPipe),
         powerPipe_(powerPipe),
         setConfigPipe_(setConfigPipe),
@@ -61,6 +64,8 @@ NetHandler::init()
     
     position2dPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             prefix+"Position2dPublishInterval", -1 );
+    position3dPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
+            prefix+"Position3dPublishInterval", -1 );
     powerPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             prefix+"PowerPublishInterval", 20.0 );
     statusPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
@@ -78,6 +83,18 @@ NetHandler::init()
                                       setConfigPipe_, currentConfigPipe_, platfTopicPrx );
     // two possible exceptions will kill it here, that's what we want
     orcaice::createInterfaceWithTag( context_, platform2dObj, "Platform2d" );
+
+    // PROVIDED: Position3d
+    // Find IceStorm Topic to which we'll publish.
+    // NetworkException will kill it, that's what we want.
+    IceStorm::TopicPrx pos3dTopicPrx = orcaice::connectToTopicWithTag<Position3dConsumerPrx>
+                ( context_, position3dPublisher_, "Position3d" );
+
+    // create servant for direct connections and tell adapter about it
+    // don't need to store it as a member variable, adapter will keep it alive
+    Ice::ObjectPtr position3dObj = new Position3dI( position3dPipe_, platfTopicPrx );
+    // two possible exceptions will kill it here, that's what we want
+    orcaice::createInterfaceWithTag( context_, position3dObj, "Position3d" );
 
     // PROVIDED INTERFACE: Power
     // Find IceStorm ConsumerProxy to push out data
