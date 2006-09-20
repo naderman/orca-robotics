@@ -4,6 +4,9 @@ DefaultComponentTag=SegwayRmp
 Provides.Platform2d.Type=Platform2d
 Provides.Platform2d.DefaultName=platform2d
 
+Provides.Position3d.Type=Position3d
+Provides.Position3d.DefaultName=position3d
+
 Provides.Power.Type=Power
 Provides.Power.DefaultName=power
 
