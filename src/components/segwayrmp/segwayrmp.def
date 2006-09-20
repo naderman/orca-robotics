@@ -1,0 +1,33 @@
+DefaultComponentTag=SegwayRmp
+
+# Provided Interfaces
+Provides.Platform2d.Type=Platform2d
+Provides.Platform2d.DefaultName=platform2d
+
+Provides.Power.Type=Power
+Provides.Power.DefaultName=power
+
+# Required Interfaces
+
+# Config Parameters
+Config.Driver.Comment=Options are { 'segwayrmpusb', 'playerclient', 'fake' }
+Config.Driver.Default=segwayrmpusb
+Config.EnableMotion.Default=1
+
+# Common to all drivers
+Config.MaxSpeed.Default=1.0
+Config.MaxTurnrate.Default=60.0
+Config.Position2dPublishInterval.Default=0.1
+Config.PowerPublishInterval.Default=20.0
+Config.StatusPublishInterval.Default=60.0
+
+# SegwayRmpUsb driver only
+Config.SegwayRmpUsb.GainSchedule.Default=normal
+Config.SegwayRmpUsb.MaxVelocityScale.Default=0.75
+Config.SegwayRmpUsb.MaxTurnrateScale.Default=0.75
+Config.SegwayRmpUsb.MaxAccelerationScale.Default=0.75
+Config.SegwayRmpUsb.MaxCurrentLimitScale.Default=0.75
+
+# PlayerClient driver only
+Config.PlayerClient.Host.Default=localhost
+Config.PlayerClient.Port.Default=6665
