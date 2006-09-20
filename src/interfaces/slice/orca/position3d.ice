@@ -34,8 +34,6 @@ class Position3dData extends OrcaObject
     //! This means that Vx is forward speed and Vy is side speed
     //! (possible only for some platforms).
     Twist motion;
-    //! Are the motors stalled
-    bool stalled;
 };
 
 //! Position3d geometry data structure
@@ -49,19 +47,11 @@ class Position3dGeometry extends OrcaObject
 
 
 /*!
- *
  * Data consumer interface (needed only for the push pattern).
- *
- * In Orca-1 terms, this the Consumer side of the ClientPush interface.
- *
  */
 interface Position3dConsumer
 {
     void setData( Position3dData obj );
-    
-    // Do we need it here? Or if someone needs geometry they should pull it
-    // with getGeometry(). In that case, do we rename this object Position3dDataConsumer?
-    //void setGeometry( Position3dGeometry obj );
 };
 
 /*!
@@ -94,9 +84,6 @@ interface Position3d
      */
     void subscribe( Position3dConsumer* subscriber )
             throws SubscriptionFailedException;
-
-    // for reference, this is what IceStorm's subscribe function looks like.
-    //void subscribe(QoS theQoS, Object* subscriber);
 
     /*!
      * Unsubscribe the given [subscriber].
