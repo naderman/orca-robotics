@@ -24,9 +24,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @section changes Changes since Last Release
 
-- item
-
-- item
+- Imu interface
+    - accellerometer and gyro values are now stored using BROS-I structures.
+    - Alex Makarenko
 
 @section orca_doc_todo_history Changes in Past Releases
 

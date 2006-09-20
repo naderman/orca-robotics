@@ -19,7 +19,7 @@ module orca
 /*!
     @ingroup interfaces
     @defgroup orca_interface_imu Imu
-    @brief Access to IMU devices.
+    @brief Access to Inertial Measurement Units.
     @{
 */
 
@@ -32,41 +32,23 @@ class ImuConfigData extends OrcaObject
     Frame3d origin;
 };
 
-//! The @p imu interface returns calibrated acceleration, gyro and magnetic values 
+//! The @p Imu interface returns raw uncallibrated acceleration, gyro and magnetic values 
 //! from the IMU sensor. 
 class ImuData extends OrcaObject
 {
-    /** The IMU's raw acceleration value on X-axis. */
-    float accelX;
-    /** The IMU's raw acceleration value on Y-axis. */
-    float accelY;
-    /** The IMU's raw acceleration value on Z-axis. */
-    float accelZ;
-    /** The IMU's raw gyro value on X-axis.         */
-    float gyroX;
-    /** The IMU's raw gyro value on Y-axis.         */
-    float gyroY;
-    /** The IMU's raw gyro value on Z-axis.         */
-    float gyroZ;
+    //! Components of acceleration.
+    CartesianAcceleration accel;
+
+    //! Components of angular velocity.
+    AngularVelocity gyro;
+
     // maybe need to add these in the interface for some imus
     // with a magnetometer
-    // /** The IMU's raw magnetic value on X-axis.     */
-    // float magn_x;
-    // /** The IMU's raw magnetic value on Y-axis.     */
-    //float magn_y;
-    // /** The IMU's raw magnetic value on Z-axis.     */
-    // float magn_z;
+
+    // Components of the IMU's raw magnetic value.
+    // CartesianVector magnet;
 };
 
-
-
-/*!
- *
- * Data consumer interface (needed only for the push pattern).
- *
- * In Orca-1 terms, this the Consumer side of the ClientPush interface.
- *
- */
 
 /*!
  * Imu PVA state information consumer interface
@@ -99,9 +81,6 @@ interface Imu
      */
     void subscribe( ImuConsumer* subscriber )
             throws SubscriptionFailedException;
-
-    // for reference, this is what IceStorm's subscribe function looks like.
-    //void subscribe(QoS theQoS, Object* subscriber);
 
     /*!
      * Unsubscribe the given [subscriber].
