@@ -195,17 +195,18 @@ $ player [STAGE_SRC]/worlds/simple.cfg
 
 Make sure that you have installed @ref orca_doc_installdebian_player Player/Stage first. 
 
-Start with Gazebo dependencies.
+Start with Gazebo/ODE dependencies.
 @verbatim
-# apt-get install swig python-wxtools libxml2 libglu1-mesa libglut3
+# apt-get install swig python-wxtools libxml2-dev libglu1-mesa-dev libglut3-dev autoconf automake1.9 python2.4-dev libtool
 @endverbatim
 Note that there may be a few other dependencies which aren't included here.
 
-You will also have to download and compile <a href="http://ode.org/" target="_blank">Open Dynamics Engine</a> which is Gazebo's physics engine.
+You will also have to download and compile <a href="http://ode.org/" target="_blank">Open Dynamics Engine</a> which is Gazebo's physics engine. It is recommended to use the latest snapshot (tested: 060223). 
 @verbatim
 $ tar xvzf ode-<version>.tgz
 $ cd ode-<version>
-$ ./configure
+$ sh autogen.sh (if you are using a snapshot version)
+$ ./configure --with-double-precision --with-opcode
 $ make
 # make install
 @endverbatim
