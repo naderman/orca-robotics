@@ -47,6 +47,8 @@ $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 
 @par The Server
 
+Edit the file @c sicklaser.xml to change the value of @c SickLaser.Driver to "fake". Load the application described in @c sicklaser.xml into the IceGrid Node using @c icegridadmin utility.
+
 @verbatim
 $ icegridadmin --Ice.Default.Locator="IceGrid/Locator:default -p 12000" -e "application add 'sicklaser.xml'"
 @endverbatim
