@@ -12,7 +12,7 @@
 
 @page orca_doc_tutorials Orca Tutorials
 
-@section composition System composition
+@section orca_doc_tutorials_composition System composition
 
 - @ref orca_doc_quickstart
 - @ref orca_doc_tute_icebox
@@ -20,13 +20,14 @@
 - @ref orca_doc_tute_stage
 - @ref orca_doc_tute_gazebo
 - @ref orca_doc_tute_win32
+- @ref orca_doc_tute_icegrid
 
-@section operation Operation
+@section orca_doc_tutorials_operation Operation
 
 - @ref orca_doc_tute_utils
 - @ref orca_doc_tute_perf_test
 
-@section writing Writing Components
+@section orca_doc_tutorials_writing Writing Components
 
 - @ref orca_doc_walkthrough
 - @ref orca_component_pureice : an example of writing a C++ component "from scratch" without using libOrcaIce.

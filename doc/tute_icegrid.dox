@@ -1,0 +1,68 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@page orca_doc_tute_icegrid Deploying components with the IceGrid Node
+
+@note Reviewed for release 2.0.0.
+
+In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now the SickLaser component will be activated deployed and activated with IceGrid Node. IceGrid is the location and activation service for Ice applications. For more information refer to the IceGrid Chapter of the Ice manual.
+
+@section orca_doc_tute_icegrid_startup Start Up the Infrastructure
+
+@par IceGrid Registry
+
+Repeat the steps for starting IceGrid Registry (See @ref orca_doc_quickstart for instructions).
+
+@par IceGrid Node
+
+The IceGrid Node will activate our application. We create a separate directory for it to run in, copy a sample config file, create the database directory and start it up. Note that it's possible to run the Node and the Registry in one process but we choose to run them separately.
+@verbatim
+$ cd ~/sys; mkdir icenode; cd icenode
+$ cp [ORCA2-SRC]/scripts/ice/icegridnode.cfg .
+$ mkdir db
+$ icegridnode --Ice.Config=icegridnode.cfg
+@endverbatim
+
+@par IceStorm Service
+
+Repeat the steps for starting IceStorm service (See @ref orca_doc_quickstart for instructions).
+
+@section orca_doc_quickstart_talk Getting Two Components Talking
+
+First, copy default configuration files for the SickLaser and LaserMon components.
+@verbatim
+$ cd ~/sys; mkdir tuteicegrid; cd tuteicegrid
+$ cp [ORCA2-INSTALL]/xml/sicklaser.xml .
+$ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
+@endverbatim
+
+@par The Server
+
+@verbatim
+$ icegridadmin --Ice.Default.Locator="IceGrid/Locator:default -p 12000" -e "application add 'sicklaser.xml'"
+@endverbatim
+
+@par The Client
+
+Start a new shell, and fire up the LaserMon component (a laser monitor). No modifications are needed for its configuration file. Note that the name of the configuration file is not specified on the command line and it is assumed to be @c lasermon.cfg.
+
+@verbatim
+$ lasermon
+@endverbatim
+
+You should see the scans scroll by on the screen, just as in the @ref orca_doc_quickstart_startup tutorial. To stop the IceBox or the component, type @c Ctrl-C in the corresponding terminal window.
+
+@section orca_doc_tute_icegrid_next What's Next
+
+If everything works, check out more @ref orca_doc_tutorials.
+
+*/
