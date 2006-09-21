@@ -20,8 +20,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - Separate utilities from libraries?
 
-- Do not install test .cfg files
-
 @section changes Changes since Last Release
 
 - Imu interface
@@ -31,6 +29,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - removed 'stalled' flag from Position3dData object.
     - Alex Makarenko
 - New component: SegwayRmp
+    - Alex Makarenko
+- OrcaDef library: new feature
+    - generates IceGrid app descriptor (XML format) from .def file
+    - Alex Makarenko
+- Documentation: new tutorial on using IceGrid for application deployment
     - Alex Makarenko
 
 @section orca_doc_todo_history Changes in Past Releases
