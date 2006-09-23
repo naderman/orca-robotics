@@ -18,7 +18,14 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @section todo To-Do List for Release 2.1.0
 
-- Separate utilities from libraries?
+- Home interface
+    - register Home objects as well-known objects. This will make it unnecessary to use the Admin interface of the Registry and remove the associated security risk.
+    - Alex M.
+- RegistryView and RegistryList
+    - Use the RegistryObserver interface to sign up for events rather than blindly poll the registry for information.
+    - Alex M.
+- Source code structure
+    - Separate utilities from libraries?
 
 @section changes Changes since Last Release
 

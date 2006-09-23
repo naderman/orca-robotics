@@ -61,7 +61,11 @@ Start a new shell, and fire up the LaserMon component (a laser monitor). No modi
 $ lasermon
 @endverbatim
 
-You should see the scans scroll by on the screen, just as in the @ref orca_doc_quickstart_startup tutorial. To stop the IceBox or the component, type @c Ctrl-C in the corresponding terminal window.
+You should see the scans scroll by on the screen, just as in the @ref orca_doc_quickstart_startup tutorial. To stop the client component, type @c Ctrl-C in its terminal window. To stop the server you can @c Ctrl-C the IceGrid Node itself or send a remote command like this.
+
+@verbatim
+$ icegridadmin --Ice.Default.Locator="IceGrid/Locator:default -p 12000" -e "application remove OrcaApp"
+@endverbatim
 
 @section orca_doc_tute_icegrid_next What's Next
 
