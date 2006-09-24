@@ -11,6 +11,8 @@ Config.StartEnabled.Default=1
 Config.Driver.Default=fake
 Config.Format.Default=MODENFI
 Config.CameraIndex.Default=0
+Config.ImageWidth.Default=0
+Config.ImageHeight.Default=0
 
 Config.Offset.p.x.Default=0
 Config.Offset.p.y.Default=0

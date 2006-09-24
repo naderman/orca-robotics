@@ -72,60 +72,18 @@ MainLoop::run()
                 {
                     if ( hwDriver_->setConfig( desiredConfig ) == 0 )
                     {
-                        context_.tracer()->print( "Successful reconfiguration! " + hwDriver_->infoMessages() );
-
-                        // Automatically setup Camera object if we're
-                        // not using the fake driver. Fake driver
-                        // manually sets these without the use of
-                        // imagegrabber.
-                        //  Only need to do this once.
                         if( driverName_ != "fake")
                         {
-                            // width and height
-                            if ( desiredConfig->imageWidth == 0 | desiredConfig->imageHeight == 0 )
-                            {
-                                // use default if user has not specified anything
-                                cameraData->imageWidth = imageGrabber_->width();
-                                cameraData->imageHeight = imageGrabber_->height();
-                            }
-                            else
-                            {
-                                std::cout << "TODO(mainloop.cpp): there should be a check here that the image size is compatible with the hardware" << std::endl;
-                                // user specified width and height                            
-                                cameraData->imageWidth = desiredConfig->imageWidth;
-                                cameraData->imageHeight = desiredConfig->imageHeight;
-                                imageGrabber_->setWidth( desiredConfig->imageWidth );
-                                imageGrabber_->setHeight( desiredConfig->imageHeight );       
-                            }                                                                             
-                            
-                            if( desiredConfig->format == BAYERBG | desiredConfig->format == BAYERGB | desiredConfig->format == BAYERRG | desiredConfig->format == BAYERGR ) 
-                            {
-                                // force the format to be bayer
-                                cameraData->format = desiredConfig->format;
-                            }
-                            else if ( desiredConfig->format == DIGICLOPSSTEREO | desiredConfig->format == DIGICLOPSRIGHT | desiredConfig->format == DIGICLOPSBOTH )
-                            {
-                                // set the format
-                                cameraData->format = desiredConfig->format;
-
-                                // tell the digiclops what type of images to send
-                                imageGrabber_->setMode( desiredConfig->format );
-                            }
-                            else
-                            {
-                                // let the grabber figure out the format if no bayer encoding or not using a digiclops camera
-                                cameraData->format = orcaImageMode( imageGrabber_->mode() );
-                                // include this in camera config 
-                                desiredConfig->format = cameraData->format;
-                            }
-                            cameraData->image.resize( imageGrabber_->size() );
-
-                            // Setup the rest of camera config 
-                            desiredConfig->imageWidth = cameraData->imageWidth;
-                            desiredConfig->imageHeight = cameraData->imageHeight;
-                            desiredConfig->frameRate = imageGrabber_->fps();
+                            // Automatically setup Camera object if we're
+                            // not using the fake driver. Fake driver
+                            // manually sets these without the use of
+                            // imagegrabber.
+                            //  Only need to do this once.
+                            initialiseCamera( cameraData, desiredConfig );
                         }
                        
+                        context_.tracer()->print( "Successful reconfiguration! " + hwDriver_->infoMessages() );
+
                         context_.tracer()->print( "Automatic config has the following settings: " + orcaice::toString( desiredConfig ) );
 
                         // Tell the world that we've reconfigured
@@ -215,6 +173,53 @@ MainLoop::run()
     context_.tracer()->debug( "dropping out from run()", 5 );
 }
 
+void
+MainLoop::initialiseCamera(CameraDataPtr& cameraData, CameraConfigPtr& desiredConfig)
+{                            
+    // set width and height
+    if ( desiredConfig->imageWidth == 0 | desiredConfig->imageHeight == 0 )
+    {
+        // use default if user has not specified anything
+        cameraData->imageWidth = imageGrabber_->width();
+        cameraData->imageHeight = imageGrabber_->height();
+    }
+    else
+    {
+        std::cout << "TODO(mainloop.cpp): there should be a check here that the image size is compatible with the hardware" << std::endl;
+        // user specified width and height
+        cameraData->imageWidth = desiredConfig->imageWidth;
+        cameraData->imageHeight = desiredConfig->imageHeight;
+        imageGrabber_->setWidth( desiredConfig->imageWidth );
+        imageGrabber_->setHeight( desiredConfig->imageHeight );
+    }
 
-
+    // set the format
+    if( desiredConfig->format == BAYERBG | desiredConfig->format == BAYERGB | desiredConfig->format == BAYERRG | desiredConfig->format == BAYERGR )
+    {
+        // force the format to be bayer
+        cameraData->format = desiredConfig->format;
+    }
+    else if ( desiredConfig->format == DIGICLOPSSTEREO | desiredConfig->format == DIGICLOPSRIGHT | desiredConfig->format == DIGICLOPSBOTH )
+    {
+        // set digiclops format
+        cameraData->format = desiredConfig->format;
+    
+        // tell the digiclops what type of images to send
+        imageGrabber_->setMode( desiredConfig->format );
+    }
+    else
+    {
+        // let the grabber figure out the format if no bayer encoding or not using a digiclops camera
+        cameraData->format = orcaImageMode( imageGrabber_->mode() );
+        // include this in camera config
+        desiredConfig->format = cameraData->format;
+    }
+    cameraData->image.resize( imageGrabber_->size() );
+    
+    // Setup the rest of camera config
+    desiredConfig->imageWidth = cameraData->imageWidth;
+    desiredConfig->imageHeight = cameraData->imageHeight;
+    desiredConfig->frameRate = imageGrabber_->fps();
 }
+
+} // namespace

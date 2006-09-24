@@ -7,17 +7,17 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_LASER_MAIN_LOOP_H
-#define ORCA2_LASER_MAIN_LOOP_H
-
-#include <orcaice/thread.h>
-#include <orcaice/ptrbuffer.h>
-#include <orcaice/context.h>
+#ifndef ORCA2_CAMERA_MAIN_LOOP_H
+#define ORCA2_CAMERA_MAIN_LOOP_H
 
 #include "driver.h"
 #include "imagegrabber/imagegrabber.h"
 #include <orca/camera.h>
 #include "cameraI.h"
+
+#include <orcaice/thread.h>
+#include <orcaice/ptrbuffer.h>
+#include <orcaice/context.h>
 
 #include <iostream>
 
@@ -57,8 +57,11 @@ private:
     ImageGrabber *imageGrabber_;
 
     std::string driverName_;
+
+    // set up camera and configuration from .cfg parameters
+    void initialiseCamera( ::orca::CameraDataPtr& cameraData, ::orca::CameraConfigPtr& desiredConfig );
 };
 
-}
+} // namespace
 
 #endif

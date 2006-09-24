@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_SICKLASER_LASER_I_H
-#define ORCA2_SICKLASER_LASER_I_H
+#ifndef ORCA2_IMAGESERVER_CAMERA_I_H
+#define ORCA2_IMAGESERVER_CAMERA_I_H
 
 #include <IceStorm/IceStorm.h>
 

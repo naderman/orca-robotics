@@ -61,6 +61,16 @@ Camera Settings
     - "DIGICLOPSSTEREO" is used if a STEREO_IMAGE is being sent, "DIGICLOPSRIGHT" for RIGHT_IMAGE and "DIGICLOPSBOTH" for RIGHT_IMAGE and STEREO_IMAGE
     - Default: "MODENFI"
 
+- @c Camera.Config.Width (integer)
+    - Image width
+    - Valid values: { "?" } - will return an error if the camera doesn't support this particuar width
+    - Default: "0": A value of 0 causes the driver to query and use the camera's default image width.
+
+- @c Camera.Config.Height (integer)
+    - Image height
+    - Valid values: { "?" } - will return an error if the camera doesn't support this particuar height.
+    - Default: "0": A value of 0 causes the driver to query and use the camera's default image height.
+
 Geometry
 
 - @c Camera.Config.Offset (Frame3d) [m, deg]
