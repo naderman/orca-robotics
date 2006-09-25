@@ -233,10 +233,10 @@ struct Wrench
 //! Orientation defined by angles
 struct OrientationE
 {
-    //! Roll angle [rad]
-    double r;
     //! Pitch angle [rad]
     double p;
+    //! Roll angle [rad]
+    double r;
     //! Yaw angle [rad]
     double y;
 };
