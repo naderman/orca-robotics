@@ -177,7 +177,7 @@ void
 MainLoop::initialiseCamera(CameraDataPtr& cameraData, CameraConfigPtr& desiredConfig)
 {                            
     // set width and height
-    if ( desiredConfig->imageWidth == 0 | desiredConfig->imageHeight == 0 )
+    if ( desiredConfig->imageWidth == 0 || desiredConfig->imageHeight == 0 )
     {
         // use default if user has not specified anything
         cameraData->imageWidth = imageGrabber_->width();
@@ -191,13 +191,32 @@ MainLoop::initialiseCamera(CameraDataPtr& cameraData, CameraConfigPtr& desiredCo
         cameraData->imageHeight = desiredConfig->imageHeight;
         imageGrabber_->setWidth( desiredConfig->imageWidth );
         imageGrabber_->setHeight( desiredConfig->imageHeight );
+        
+        // workaround for setting width and height for firewire cameras      
+        // MODE_800x600_MONO 98
+        // imageGrabber_->setMode(69);
+        // int dc1394Mode;
+       if ( (imageGrabber_->width() != desiredConfig->imageWidth) || (imageGrabber_->height() !=  desiredConfig->imageHeight) )
+       {
+            orca::ImageFormat mode = orcaImageMode( imageGrabber_->mode() );
+            int dc1394Mode = imageserver::dc1394ImageMode( mode, desiredConfig->imageWidth, desiredConfig->imageHeight );
+            if ( dc1394Mode > 0)
+                imageGrabber_->setMode( dc1394Mode );
+            else
+            {
+                // TODO: throw an exception instead of exiting
+                std::cout << "ERROR(mainloop.cpp): unknown colour mode" << std::endl;
+                exit(1);
+            }
+        }
     }
-
+    
     // set the format
     if( desiredConfig->format == BAYERBG | desiredConfig->format == BAYERGB | desiredConfig->format == BAYERRG | desiredConfig->format == BAYERGR )
     {
         // force the format to be bayer
         cameraData->format = desiredConfig->format;
+
     }
     else if ( desiredConfig->format == DIGICLOPSSTEREO | desiredConfig->format == DIGICLOPSRIGHT | desiredConfig->format == DIGICLOPSBOTH )
     {
@@ -214,6 +233,10 @@ MainLoop::initialiseCamera(CameraDataPtr& cameraData, CameraConfigPtr& desiredCo
         // include this in camera config
         desiredConfig->format = cameraData->format;
     }
+    std::cout << "imageGrabber_->width(): " << imageGrabber_->width() << std::endl;
+    std::cout << "imageGrabber_->height(): " << imageGrabber_->height() << std::endl;
+    
+    // resize the object for the correct image size
     cameraData->image.resize( imageGrabber_->size() );
     
     // Setup the rest of camera config
