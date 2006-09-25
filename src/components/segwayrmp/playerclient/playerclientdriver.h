@@ -19,6 +19,7 @@ namespace PlayerCc
 {
 class PlayerClient;
 class Position2dProxy;
+class Position3dProxy;
 class PowerProxy;
 }
 
@@ -48,6 +49,7 @@ private:
     bool enabled_;
     PlayerCc::PlayerClient *robot_;
     PlayerCc::Position2dProxy *positionProxy_;
+    PlayerCc::Position3dProxy *position3dProxy_;
     PlayerCc::PowerProxy *powerProxy_;
 
     // configuration

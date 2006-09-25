@@ -89,10 +89,6 @@ private:
     double powerPublishInterval_;
     double statusPublishInterval_;
 
-    // dodgy states
-    int receiveStatus_;
-    int sendStatus_;
-
 };
 
 } // namespace

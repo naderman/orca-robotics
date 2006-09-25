@@ -44,9 +44,7 @@ NetHandler::NetHandler(
         position3dData_(new Position3dData),
         commandData_(new Velocity2dCommand),
         powerData_(new PowerData),
-        context_(context),
-        receiveStatus_(-1),
-        sendStatus_(-1)
+        context_(context)
 {
     init();
 }
@@ -107,8 +105,6 @@ NetHandler::init()
     orcaice::createInterfaceWithTag( context_, powerObj, "Power" );
     
     // all cool, assume we can send and receive
-    receiveStatus_ = 0;
-    sendStatus_ = 0;
     context_.tracer()->debug("network enabled",5);
 }
 
@@ -121,9 +117,7 @@ NetHandler::run()
     int position2dReadTimeout = 1000; // [ms]
     orcaice::Timer pushTimer;
 
-    int activateRetryNumber = context_.properties()->getPropertyAsInt( "Orca.ActivateRetryNumber" );
-    int count = -1; // this retry count, not try count
-    while ( isActive() && ( activateRetryNumber<0 || count<activateRetryNumber ) )
+    while ( isActive() )
     {
         try {
             cout<<"activating..."<<endl;
@@ -148,7 +142,6 @@ NetHandler::run()
             cout << "Caught some other exception while activating." << endl;
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-        ++count;
     }
     
     while( isActive() )

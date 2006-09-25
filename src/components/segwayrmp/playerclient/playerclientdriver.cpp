@@ -31,6 +31,7 @@ PlayerClientDriver::PlayerClientDriver( const orcaice::Context & context )
     : enabled_( false ),
       robot_(0),
       positionProxy_(0),
+      position3dProxy_(0),
       powerProxy_(0),
       context_(context)
 {
@@ -56,6 +57,7 @@ PlayerClientDriver::enable()
     {
         robot_      = new PlayerCc::PlayerClient( config_.host, config_.port );
         positionProxy_ = new PlayerCc::Position2dProxy( robot_, 0 );
+        position3dProxy_ = new PlayerCc::Position3dProxy( robot_, 0 );
     
         robot_->Read();
     
@@ -85,6 +87,7 @@ PlayerClientDriver::disable()
     if ( !enabled_ ) return 0;
 
     delete positionProxy_;
+    delete position3dProxy_;
     delete powerProxy_;
     delete robot_;
     enabled_ = false;
@@ -115,6 +118,7 @@ PlayerClientDriver::read( orca::Position2dDataPtr &position2d, orca::Position3dD
     }
     
     orcaplayer::convert( *positionProxy_, position2d );
+    orcaplayer::convert( *position3dProxy_, position3d );
     //orcaplayer::convert( *powerProxy_, power );
 
     status = "playing=1";
