@@ -331,8 +331,8 @@ UsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::Position3dData
     // Player got it right: "this robot doesn't fly"
     position3d->pose.p.z    = 0.0;
 
-    position3d->pose.o.p    = frame_->pitch;
     position3d->pose.o.r    = frame_->roll;
+    position3d->pose.o.p    = frame_->pitch;
     position3d->pose.o.y    = odomYaw_;
 
     // forward speed is the same as for the 2D interface
@@ -344,8 +344,8 @@ UsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::Position3dData
 
     // note the correspondence between pitch and roll rate and the 
     // axes around which the rotation happens.
-    position3d->motion.w.y = frame_->pitch_dot;
     position3d->motion.w.x = frame_->roll_dot;
+    position3d->motion.w.y = frame_->pitch_dot;
     // from counts/sec into deg/sec.  also, take the additive
     // inverse, since the RMP reports clockwise angular velocity as positive.
     position3d->motion.w.z = -(double)frame_->yaw_dot / RMP_COUNT_PER_RAD_PER_S;

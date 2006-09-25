@@ -33,8 +33,8 @@ class Position3dData extends OrcaObject
     //! Translational and angular velocities in the robot CS.
     //! This means that Vx is forward speed, Vy is side speed, and Vz is 
     //! vertical speed. Rate of change of angular position is designated by
-    //! the axis around which the rotation happens. So, pitch rate is Wy, 
-    //! roll rate is Wx, and yaw rate is Wz.
+    //! the axis around which the rotation happens. So, roll rate is Wx, 
+    //! pitch rate is Wy, and yaw rate is Wz.
     Twist motion;
 };
 
@@ -53,6 +53,7 @@ class Position3dGeometry extends OrcaObject
  */
 interface Position3dConsumer
 {
+    //! Transmits the data to the consumer.
     void setData( Position3dData obj );
 };
 
@@ -78,9 +79,6 @@ interface Position3d
      * or use IceStorm. This choice is transparent to the subscriber.
      *
      * @param subscriber The subscriber's proxy.
-     *
-     * @param preferedPushInterval The subscriber's preference for how often it wants to
-     * receive updates [sec]. Provider's ability to fulfil this request may vary.
      *
      * @see unsubscribe
      */
