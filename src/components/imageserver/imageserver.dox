@@ -17,10 +17,6 @@
 @defgroup orca_component_imageserver ImageServer
 @brief A hardware abstraction component for grabbing images from either a FireWire or USB camera
 
-WARNING: This component has been turned off by default. If you have the <a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank"> cvs version of opencv-0.9.7</a>, you can turn this component back on by running ccmake and manually switching this component ON.
-
-The reason for turning it off is that there is no way of checking that you have the cvs or release version of opencv. This component needs some of the functionality of the cvs version which is not available in the release.
-
 @par Provides
 
 - @ref orca_interface_camera
@@ -111,20 +107,6 @@ Ice.MessageSizeMax=3000
 
 Remember to add this line to all configuration files that will be communicating images. So if you're logging or replaying a log you will have to add this line to @c logger.cfg and @c logplayer.cfg as well.
 
-3. Compile errors
-
-If you are getting compile errors with @c imageserver such as the ones below, you probably don't have the cvs version of opencv. Please download the <a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank"> cvs version of opencv-0.9.7</a> as it has extra functionality required for grabbing images.
-
-@verbatim
-/$SRC_DIR/orca2/src/components/imageserver/imagegrabber/cvgrabber.cpp:45: error: 'CV_CAP_PROP_CONVERT_RGB' was not declared in this scope
-/$SRC_DIR/orca2/src/components/imageserver/imagegrabber/cvgrabber.cpp: In member function 'virtual int imageserver::CvGrabber::format() const':
-/$SRC_DIR/orca2/src/components/imageserver/imagegrabber/cvgrabber.cpp:166: error: 'CV_CAP_PROP_FORMAT' was not declared in this scope
-/$SRC_DIR/orca2/src/components/imageserver/imagegrabber/cvgrabber.cpp: In member function 'virtual void imageserver::CvGrabber::setFormat(int)':
-/$SRC_DIR/orca2/src/components/imageserver/imagegrabber/cvgrabber.cpp:172: error: 'CV_CAP_PROP_FORMAT' was not declared in this scope
-/$SRC_DIR/orca2/src/components/imageserver/imagegrabber/cvgrabber.cpp: In member function 'virtual int imageserver::CvGrabber::mode() const':
-/$SRC_DIR/orca2/src/components/imageserver/imagegrabber/cvgrabber.cpp:178: error: 'CV_CAP_PROP_MODE' was not declared in this scope
-@endverbatim
-
 <br>
 
 @par Performance
@@ -146,6 +128,8 @@ The following performance figures were tested on a digiclops camera sending ster
 @par Todo
 
 - The imagegrabber sublibrary should accept a camera index for specifying the particular camera to use on the firewire bus. At the moment the first camera found is used. 
+- Add in fps user request
+- Improve error handling
 - Digiclops grabber is in its very early stages and much of the functionality in the digiclops and triclops libraries haven't been implemented yet.
 
 <br>

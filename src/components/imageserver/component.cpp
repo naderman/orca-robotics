@@ -19,7 +19,7 @@
 // define flags for building drivers
 #include "configimageserver.h"
 
-#ifdef OPENCV7_FOUND
+#ifdef OPENCV_FOUND
 #   include "imagegrabber/cvgrabber.h"
 #endif 
 #ifdef DIGICLOPS_AND_TRICLOPS_FOUND
@@ -169,7 +169,7 @@ Component::start()
 
     else if ( driverName == "monoopencv" )
     {
-#ifdef OPENCV7_FOUND
+#ifdef OPENCV_FOUND
         // Use opencv implementation for a monocular camera...
 
         // Initialize Opencv ImageGrabber
@@ -181,7 +181,7 @@ Component::start()
         cout<<"ImageServer: using opencv image grabber - CvGrabber for a monocular camera" << endl;
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driverName 'monoopencv' without opencv installed!" );
-#endif // OPENCV7_FOUND
+#endif // OPENCV_FOUND
     }
     else if ( driverName == "digiclops" )
     {

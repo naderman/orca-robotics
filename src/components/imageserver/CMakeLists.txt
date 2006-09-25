@@ -1,4 +1,4 @@
-OPTION( BUILD_IMAGE_SERVER "Try to build Image Server" OFF )
+OPTION( BUILD_IMAGE_SERVER "Try to build Image Server" ON )
 
 IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
 
@@ -22,11 +22,11 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
   ENDIF ( NOT V4L_FOUND )
 
   # opencv image grabber checks
-  IF ( OPENCV7_FOUND ) 
-    MESSAGE( STATUS "    OpenCv-0.9.7 Image Grabber - can be built" )
-  ELSE ( OPENCV7_FOUND ) 
-    MESSAGE( STATUS "    OpenCv-0.9.7 Image Grabber - cannot be built" )
-  ENDIF ( OPENCV7_FOUND ) 
+  IF ( OPENCV_FOUND )
+    MESSAGE( STATUS "    OpenCv-0.9.9 Image Grabber - can be built" )
+  ELSE ( OPENCV_FOUND )
+    MESSAGE( STATUS "    OpenCv-0.9.9 Image Grabber - cannot be built" )
+  ENDIF ( OPENCV_FOUND )
 
   # digiclops image grabber library checks
   IF ( DIGICLOPS_AND_TRICLOPS_FOUND ) 
@@ -44,17 +44,17 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
 
   # specify the orca image grabbers to be built
   IF ( V4L_FOUND OR 1394_FOUND )
-    IF ( OPENCV7_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
+    IF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
       
       SET ( DRIVER_SRCS driver fakedriver monodriver)
 
       ADD_SUBDIRECTORY( imagegrabber )
 
-    ELSE ( OPENCV7_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
+    ELSE ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
       MESSAGE( STATUS "     Image grabbing libraries cannot be found... only the fake driver can be built." ) 
       MESSAGE( STATUS "     Please install the cvs version of opencv for monocular cameras or the digiclops libraries for the trinocular digiclops camera."  ) 
       SET ( DRIVER_SRCS fakedriver )
-    ENDIF ( OPENCV7_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
+    ENDIF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
 
   ELSE ( V4L_FOUND OR 1394_FOUND )
     MESSAGE( STATUS "     Image grabbing drivers cannot be found... only the fake driver can be built." ) 
@@ -79,13 +79,13 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
   
   INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/utils )
 
-  IF ( OPENCV7_FOUND )
-    INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} )
-    TARGET_LINK_LIBRARIES( imageserver ${OPENCV7_LIBS} OrcaImageGrabber OrcaImage )
+  IF ( OPENCV_FOUND )
+    INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )
+    TARGET_LINK_LIBRARIES( imageserver ${OPENCV_LIBS} OrcaImageGrabber OrcaImage )
     # important to let linker know about this inter-library dependency
     # otherwise IceBox fails to load the service
-    TARGET_LINK_LIBRARIES( OrcaImageServer ${OPENCV7_LIBS} OrcaImageGrabber OrcaImage )
-  ENDIF ( OPENCV7_FOUND )
+    TARGET_LINK_LIBRARIES( OrcaImageServer ${OPENCV_LIBS} OrcaImageGrabber OrcaImage )
+  ENDIF ( OPENCV_FOUND )
 
   IF ( DIGICLOPS_AND_TRICLOPS_FOUND )
     INCLUDE_DIRECTORIES( /usr/local/include/digiclops /usr/local/include/triclops)
@@ -93,11 +93,11 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
     TARGET_LINK_LIBRARIES( OrcaImageServer digiclops triclops OrcaImageGrabber OrcaImage )
   ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND )
 
-  IF ( OPENCV7_FOUND AND DIGICLOPS_AND_TRICLOPS_FOUND )
-    INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} /usr/local/include/digiclops /usr/local/include/triclops)
-    TARGET_LINK_LIBRARIES( imageserver ${OPENCV7_LIBS} digiclops triclops OrcaImageGrabber OrcaImage )
-    TARGET_LINK_LIBRARIES( OrcaImageServer ${OPENCV7_LIBS} digiclops triclops OrcaImageGrabber OrcaImage )
-  ENDIF ( OPENCV7_FOUND AND DIGICLOPS_AND_TRICLOPS_FOUND )
+  IF ( OPENCV_FOUND AND DIGICLOPS_AND_TRICLOPS_FOUND )
+    INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} /usr/local/include/digiclops /usr/local/include/triclops)
+    TARGET_LINK_LIBRARIES( imageserver ${OPENCV_LIBS} digiclops triclops OrcaImageGrabber OrcaImage )
+    TARGET_LINK_LIBRARIES( OrcaImageServer ${OPENCV_LIBS} digiclops triclops OrcaImageGrabber OrcaImage )
+  ENDIF ( OPENCV_FOUND AND DIGICLOPS_AND_TRICLOPS_FOUND )
   
   # test image for the fake driver to send
   INSTALL_PROGRAMS(/images penguin.jpg)
