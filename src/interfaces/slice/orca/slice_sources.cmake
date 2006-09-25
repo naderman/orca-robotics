@@ -43,4 +43,5 @@ SET( SLICE_SOURCE_FILES
     camera.ice
     qgraphics2d.ice
     imu.ice
+    pointcloud.ice
 )
