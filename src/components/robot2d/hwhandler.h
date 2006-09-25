@@ -21,7 +21,6 @@
 #include "hwdriver.h"
 
 #include <orca/platform2d.h>
-#include <orca/power.h>
 
 namespace robot2d
 {
@@ -33,7 +32,6 @@ public:
 
     HwHandler( orcaice::PtrProxy<orca::Position2dDataPtr>     & position2dPipe,
                orcaice::PtrNotify<orca::Velocity2dCommandPtr> & commandPipe,
-               orcaice::PtrProxy<orca::PowerDataPtr>          & powerPipe,
                orcaice::PtrProxy<orca::Platform2dConfigPtr>   & setConfigPipe,
                orcaice::PtrProxy<orca::Platform2dConfigPtr>   & currentConfigPipe,
                const orcaice::Context                         & context );
@@ -49,13 +47,11 @@ private:
 
     // network/hardware interface
     orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe_;
-    orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe_;
     orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe_;
     orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe_;
 
     // Internal data storage
     orca::Position2dDataPtr position2dData_;
-    orca::PowerDataPtr powerData_;
 
     // generic interface to the hardware
     HwDriver* driver_;

@@ -15,7 +15,6 @@
 
 // external interface definitions
 #include <orca/platform2d.h>
-#include <orca/power.h>
 
 // data pipes
 #include <orcaice/ptrproxy.h>
@@ -49,8 +48,6 @@ private:
     //
     // hardware->network
     orcaice::PtrProxy<orca::Position2dDataPtr> position2dPipe_;
-    // hardware->network
-    orcaice::PtrProxy<orca::PowerDataPtr> powerPipe_;
     // hardware->network
     orcaice::PtrProxy<orca::Platform2dConfigPtr> currentConfigPipe_;
 

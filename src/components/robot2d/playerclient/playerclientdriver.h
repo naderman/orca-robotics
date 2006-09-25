@@ -19,7 +19,6 @@ namespace PlayerCc
 {
 class PlayerClient;
 class Position2dProxy;
-class PowerProxy;
 }
 
 namespace robot2d
@@ -38,8 +37,7 @@ public:
     virtual int repair();
     virtual int disable();
 
-    virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
-                      std::string & status );
+    virtual int read( orca::Position2dDataPtr &position2d, std::string & status );
 
     virtual int write( const orca::Velocity2dCommandPtr &position2d );
 
@@ -48,7 +46,6 @@ private:
     bool enabled_;
     PlayerCc::PlayerClient *robot_;
     PlayerCc::Position2dProxy *positionProxy_;
-    PlayerCc::PowerProxy *powerProxy_;
 
     // configuration
     orcaice::Context context_;

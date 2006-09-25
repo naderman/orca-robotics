@@ -17,7 +17,6 @@
 
 // implementations of Ice objects
 #include "platform2dI.h"
-#include "powerI.h"
 
 #include <orcaice/orcaice.h>
 
@@ -28,21 +27,16 @@ using namespace robot2d;
 NetHandler::NetHandler(
                  orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
                  orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
-                 orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
                  const orcaice::Context                        & context )
       : position2dPipe_(position2dPipe),
         commandPipe_(commandPipe),
-        powerPipe_(powerPipe),
         setConfigPipe_(setConfigPipe),
         currentConfigPipe_(currentConfigPipe),
         position2dData_(new Position2dData),
         commandData_(new Velocity2dCommand),
-        powerData_(new PowerData),
-        context_(context),
-        receiveStatus_(-1),
-        sendStatus_(-1)
+        context_(context)
 {
     init();
 }
@@ -61,8 +55,6 @@ NetHandler::init()
     
     position2dPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             prefix+"Position2dPublishInterval", -1 );
-    powerPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            prefix+"PowerPublishInterval", 20.0 );
     statusPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             prefix+"StatusPublishInterval", 60.0 );
 
@@ -78,19 +70,8 @@ NetHandler::init()
                                       setConfigPipe_, currentConfigPipe_, platfTopicPrx );
     // two possible exceptions will kill it here, that's what we want
     orcaice::createInterfaceWithTag( context_, platform2dObj, "Platform2d" );
-
-    // PROVIDED INTERFACE: Power
-    // Find IceStorm ConsumerProxy to push out data
-    IceStorm::TopicPrx powerTopicPrx = orcaice::connectToTopicWithTag<PowerConsumerPrx>
-                ( context_, powerPublisher_, "Power" );
-    
-    // create servant for direct connections and tell adapter about it
-    Ice::ObjectPtr powerObj = new PowerI( powerPipe_, powerTopicPrx );
-    orcaice::createInterfaceWithTag( context_, powerObj, "Power" );
     
     // all cool, assume we can send and receive
-    receiveStatus_ = 0;
-    sendStatus_ = 0;
     context_.tracer()->debug("network enabled",5);
 }
 
@@ -103,9 +84,7 @@ NetHandler::run()
     int position2dReadTimeout = 1000; // [ms]
     orcaice::Timer pushTimer;
 
-    int activateRetryNumber = context_.properties()->getPropertyAsInt( "Orca.ActivateRetryNumber" );
-    int count = -1; // this retry count, not try count
-    while ( isActive() && ( activateRetryNumber<0 || count<activateRetryNumber ) )
+    while ( isActive() )
     {
         try {
             cout<<"activating..."<<endl;
@@ -130,7 +109,6 @@ NetHandler::run()
             cout << "Caught some other exception while activating." << endl;
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-        ++count;
     }
     
     while( isActive() )
@@ -163,15 +141,6 @@ NetHandler::run()
         // now send less frequent updates
         try
         {
-            if ( powerPublishInterval_<0 ||
-                        powerPublishTimer_.elapsed().toSecondsDouble()>powerPublishInterval_ ) {
-                // also check if the data is new
-                if ( powerPipe_.isNewData() ) {
-                    powerPipe_.get( powerData_ );
-                    powerPublisher_->setData( powerData_ );
-                    powerPublishTimer_.restart();
-                }
-            }
             // todo: the logic of this needs revisiting
             if ( statusPublishInterval_<0 ||
                         statusPublishTimer_.elapsed().toSecondsDouble()>statusPublishInterval_ ) {
@@ -210,11 +179,6 @@ NetHandler::send()
             position2dPipe_.get( position2dData_ );
             position2dPublisher_->setData( position2dData_ );
             position2dPublishTimer_.restart();
-        }
-        if ( powerPublishTimer_.elapsed().toSecondsDouble()>powerPublishInterval_ ) {
-            powerPipe_.get( powerData_ );
-            powerPublisher_->setData( powerData_ );
-            powerPublishTimer_.restart();
         }
         if ( statusPublishTimer_.elapsed().toSecondsDouble()>statusPublishInterval_ ) {
             //cout<<"sending heartbeat"<<endl;

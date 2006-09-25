@@ -12,7 +12,6 @@
 #define ORCA2_SEGWAY_RMP_HARDWARE_DRIVER_H
 
 #include <orca/platform2d.h>
-#include <orca/power.h>
 
 namespace robot2d
 {
@@ -37,7 +36,7 @@ public:
     virtual int disable()=0;
 
     // Blocking read. Returns 0 on success. Does not throw.
-    virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power, std::string &status )=0;
+    virtual int read( orca::Position2dDataPtr &position2d, std::string &status )=0;
 
     // Writes velocity command. Returns 0 on success. Does not throw.
     virtual int write( const orca::Velocity2dCommandPtr & command )=0;

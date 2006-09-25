@@ -31,7 +31,6 @@ PlayerClientDriver::PlayerClientDriver( const orcaice::Context & context )
     : enabled_( false ),
       robot_(0),
       positionProxy_(0),
-      powerProxy_(0),
       context_(context)
 {
     // parse configuration parameters
@@ -85,7 +84,6 @@ PlayerClientDriver::disable()
     if ( !enabled_ ) return 0;
 
     delete positionProxy_;
-    delete powerProxy_;
     delete robot_;
     enabled_ = false;
     return 0;
@@ -93,8 +91,7 @@ PlayerClientDriver::disable()
 
 
 int
-PlayerClientDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
-                    std::string & status )
+PlayerClientDriver::read( orca::Position2dDataPtr &position2d, std::string & status )
 {
     if ( ! enabled_ ) {
         //cout << "ERROR(playerclientdriver.cpp): Can't read: not connected to Player/Stage yet." << endl;
@@ -115,7 +112,6 @@ PlayerClientDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPt
     }
     
     orcaplayer::convert( *positionProxy_, position2d );
-    //orcaplayer::convert( *powerProxy_, power );
 
     status = "playing=1";
 

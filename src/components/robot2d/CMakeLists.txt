@@ -4,31 +4,11 @@ IF ( NOT WIN32 AND BUILD_ROBOT2D )
 
     INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
     INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
-    
-    # OPTIONAL_SUB_LIBRARY macro defined in component_rules.cmake
-   
-    OPTIONAL_SUB_LIBRARY(
-        "USB driver for Segway RMP line of platforms"
-        segwayrmpusb
-        OrcaRobot2dSegwayRmpUsb
-        SEGWAY_RMP_USB_LIBS
-        FTD2XX_FOUND
-        HAVE_USB_DRIVER
-        ftd2xx usb )
 
-#  OPTIONAL_SUB_LIBRARY( 
-#    "CAN driver for Segway RMP line of platforms"
-#    segwayrmpcan
-#    OrcaRobot2dSegwayRmpCan
-#    RM_CAN_LIBS
-#    CANLIB_FOUND
-#    HAVE_CAN_DRIVER
-#    canlib )
-
-# CMake problem: these should be in the subdir, but they have no effect there for some reason
-INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
-LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
-ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
+    # CMake problem: these should be in the subdir, but they have no effect there for some reason
+    INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
+    LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
+    ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
     
     OPTIONAL_SUB_LIBRARY(
         "Player client driver for Robot2d"
@@ -40,20 +20,19 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
         ${PLAYER_LIBS} OrcaPlayer
     )
 
-    IF ( NOT HAVE_USB_DRIVER AND NOT HAVE_PLAYERCLIENT_DRIVER )
+    IF ( NOT HAVE_PLAYERCLIENT_DRIVER )
         MESSAGE("    WARNING: only default 'fake' driver can be built")
-    ENDIF ( NOT HAVE_USB_DRIVER AND NOT HAVE_PLAYERCLIENT_DRIVER )
+    ENDIF ( NOT HAVE_PLAYERCLIENT_DRIVER )
 
-    # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-    SET( COMMON_SRCS component nethandler hwhandler platform2dI powerI fakedriver )
+    SET( COMMON_SRCS component nethandler hwhandler platform2dI fakedriver )
     
     # build a stand-alone component
     GLOBAL_ADD_EXECUTABLE( robot2d main ${COMMON_SRCS} )
-    TARGET_LINK_LIBRARIES( robot2d ${SEGWAY_RMP_USB_LIBS} ${PLAYERCLIENT_LIBS} )
+    TARGET_LINK_LIBRARIES( robot2d ${PLAYERCLIENT_LIBS} )
     
     # build an IceBox service
     GLOBAL_ADD_LIBRARY( OrcaRobot2d SHARED service ${COMMON_SRCS} )
-    TARGET_LINK_LIBRARIES( OrcaRobot2d ${SEGWAY_RMP_USB_LIBS} ${PLAYERCLIENT_LIBS} )
+    TARGET_LINK_LIBRARIES( OrcaRobot2d ${PLAYERCLIENT_LIBS} )
     
     GENERATE_CONFIG_FILE( robot2d.def )
 

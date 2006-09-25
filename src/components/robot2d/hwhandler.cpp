@@ -16,10 +16,7 @@
 
 #include "hwhandler.h"
 #include "fakedriver.h"
-// segway rmp drivers
-#ifdef HAVE_USB_DRIVER
-    #include "segwayrmpusb/usbdriver.h"
-#endif
+// hardware drivers
 #ifdef HAVE_PLAYERCLIENT_DRIVER
     #include "playerclient/playerclientdriver.h"
 #endif
@@ -31,16 +28,13 @@ using namespace robot2d;
 HwHandler::HwHandler(
                  orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
                  orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
-                 orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
                  const orcaice::Context                        & context )
       : position2dPipe_(position2dPipe),
-        powerPipe_(powerPipe),
         setConfigPipe_(setConfigPipe),
         currentConfigPipe_(currentConfigPipe),
         position2dData_(new Position2dData),
-        powerData_(new PowerData),
         driver_(0),
         context_(context)
 {
@@ -49,16 +43,6 @@ HwHandler::HwHandler(
 
     // unsure about write status until we enable the driver
     writeStatusPipe_.set( false );
-
-    // set up data structure for 3 batteries
-//     BatteryData bd;
-//     for ( int i=0; i<3; ++i ) {
-//         powerData_->batteries.push_back( bd );
-//     }
-    powerData_->batteries.resize(3);
-    powerData_->batteries[0].name = "main-front";
-    powerData_->batteries[1].name = "main-rear";
-    powerData_->batteries[2].name = "ui";
 
     // this is the last place we can throw exceptions from.
     // after this the thread will be launched
@@ -87,19 +71,9 @@ HwHandler::init()
 
     // based on the config parameter, create the right driver
     string driverName = orcaice::getPropertyWithDefault( context_.properties(),
-            prefix+"Driver", "segwayrmpusb" );
+            prefix+"Driver", "playerclient" );
             
-    if ( driverName == "segwayrmpusb" )
-    {
-#ifdef HAVE_USB_DRIVER
-        context_.tracer()->debug( "loading USB driver",3);
-
-        driver_ = new UsbDriver( context_ );
-#else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'usb' because it was not built!" );
-#endif
-    }
-    else if ( driverName == "playerclient" )
+    if ( driverName == "playerclient" )
     {
 #ifdef HAVE_PLAYERCLIENT_DRIVER
         context_.tracer()->debug( "loading Player-Client driver",3);
@@ -117,7 +91,7 @@ HwHandler::init()
     else {
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
         context_.tracer()->error( errorStr);
-        context_.tracer()->info( "Valid driver values are {'segwayrmpusb', 'playerclient', 'fake'}" );
+        context_.tracer()->info( "Valid driver values are {'playerclient', 'fake'}" );
         throw orcaice::Exception( ERROR_INFO, errorStr );
     }
 
@@ -173,13 +147,12 @@ HwHandler::run()
         // Read data from the hardware
         //
         // readTimer_.restart();
-        readStatus = driver_->read( position2dData_, powerData_, currDriverStatus );
+        readStatus = driver_->read( position2dData_, currDriverStatus );
         // cout<<"read: " << readTimer_.elapsed().toMilliSecondsDouble()<<endl;
     
         if ( readStatus==0 ) {
             // Stick it in the buffer so pullers can get it
             position2dPipe_.set( position2dData_ );
-            powerPipe_.set( powerData_ );
 
             if ( driverStatus != currDriverStatus ) {
                 context_.tracer()->status( currDriverStatus );

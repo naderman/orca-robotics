@@ -20,7 +20,6 @@
 //#include "netfsm.h"
 
 #include <orca/platform2d.h>
-#include <orca/power.h>
 
 namespace robot2d
 {
@@ -33,7 +32,6 @@ public:
 
     NetHandler( orcaice::PtrProxy<orca::Position2dDataPtr>     & position2dPipe,
                  orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
-                 orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
                  const orcaice::Context                        & context );
@@ -55,36 +53,27 @@ private:
     // EXTERNAL INTERFACES
     //
     orca::Position2dConsumerPrx position2dPublisher_;
-    orca::PowerConsumerPrx powerPublisher_;
 
     // network/hardware interface
     orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe_;
     orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe_;
-    orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe_;
     orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe_;
     orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe_;
 
     // Internal data storage
     orca::Position2dDataPtr position2dData_;
     orca::Velocity2dCommandPtr commandData_;
-    orca::PowerDataPtr powerData_;
 
     // component current context
     orcaice::Context context_;
 
     // timers for publishing to icestorm
     orcaice::Timer position2dPublishTimer_;
-    orcaice::Timer powerPublishTimer_;
     orcaice::Timer statusPublishTimer_;
 
     // publish intervals
     double position2dPublishInterval_;
-    double powerPublishInterval_;
     double statusPublishInterval_;
-
-    // dodgy states
-    int receiveStatus_;
-    int sendStatus_;
 
 };
 
