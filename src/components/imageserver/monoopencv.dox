@@ -23,7 +23,7 @@ automatically finds the type of camera. If you have any troubles with not being 
 
 The @ref orca_camera_monoopencv requires that <a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank">Opencv-0.9.9</a> is installed.
 
-Recent compilation problems with the cvs version of opencv have been discovered due to python-dev packages not being checked for by autoconf. If you are using Debian, please install the python2.3-dev package (where version corresponds to the python package you have installed) and the swig package. For other operating systems, please check that you have the headers for python installed in a standard system directory.
+Recent compilation problems with opencv have been discovered due to python-dev and swig packages not being checked for by autoconf. If you are using Debian, please install the python2.3-dev package and the swig package. For other operating systems, please check that you have the headers for python installed in a standard system directory.
 
 
 
