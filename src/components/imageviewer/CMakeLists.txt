@@ -11,9 +11,9 @@ IF ( NOT WIN32 AND BUILD_IMAGE_VIEWER )
   IF ( OPENCV_IMPLEMENTATION )
       ADD_DEFINITIONS( -DOPENCV_IMPLEMENTATION )
 
-      IF( OPENCV7_FOUND )
-        MESSAGE( "    Using new opencv (>= 0.9.7)" )
-        INCLUDE_DIRECTORIES( ${OPENCV7_INCLUDE_DIRS} )
+      IF( OPENCV_FOUND )
+        MESSAGE( "    Using new opencv (>= 0.9.9)" )
+        INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )
 
         IF ( TRICLOPS_FOUND )
           MESSAGE("    The Triclops libraries have been found - you will be able to view images from a digiclops camera")
@@ -33,15 +33,15 @@ IF ( NOT WIN32 AND BUILD_IMAGE_VIEWER )
         GLOBAL_ADD_LIBRARY( OrcaImageViewer SHARED service ${COMMON_SRCS} )
 
         # link libraries
-        TARGET_LINK_LIBRARIES( imageviewer ${OPENCV7_LIBS} OrcaImage)
-        TARGET_LINK_LIBRARIES( OrcaImageViewer ${OPENCV7_LIBS} OrcaImage)
+        TARGET_LINK_LIBRARIES( imageviewer ${OPENCV_LIBS} OrcaImage)
+        TARGET_LINK_LIBRARIES( OrcaImageViewer ${OPENCV_LIBS} OrcaImage)
 
         GENERATE_CONFIG_FILE( imageviewer.def )
 
-      ELSE( OPENCV7_FOUND )
-        MESSAGE( STATUS "ImageViewer will not be built -- OpenCv (0.9.7) not found." )
+      ELSE( OPENCV_FOUND )
+        MESSAGE( STATUS "ImageViewer will not be built -- OpenCv (0.9.9) not found." )
         SET ( BUILD_IMAGE_VIEWER 0)
-      ENDIF( OPENCV7_FOUND )  
+      ENDIF( OPENCV_FOUND )  
 
   ENDIF( OPENCV_IMPLEMENTATION )
 
