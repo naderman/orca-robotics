@@ -93,7 +93,7 @@ NetHandler::init()
 
     // create servant for direct connections and tell adapter about it
     // don't need to store it as a member variable, adapter will keep it alive
-    Ice::ObjectPtr position3dObj = new Position3dI( position3dPipe_, platfTopicPrx );
+    Ice::ObjectPtr position3dObj = new Position3dI( position3dPipe_, pos3dTopicPrx );
     // two possible exceptions will kill it here, that's what we want
     orcaice::createInterfaceWithTag( context_, position3dObj, "Position3d" );
 
