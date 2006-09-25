@@ -31,8 +31,8 @@
 
 @par Drivers
 
-- @b segwayrmpusb @ref orca_robot2d_segwayrmpusb
-- @b playerclient @ref orca_robot2d_playerclient
+- @b segwayrmpusb @ref orca_segwayrmp_segwayrmpusb
+- @b playerclient @ref orca_segwayrmp_playerclient
 - @b fake Useful for testing or if you don't have hardware or a simulator.
 
 @par Configuration
@@ -82,11 +82,13 @@ An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ director
 
 None for the component. See driver sections below for individual driver dependencies.
 
-@section orca_robot2d_segwayrmpusb Segway RMP USB driver
+@section orca_segwayrmp_segwayrmpusb Segway RMP USB driver
 
 The @c segwayrmp driver provides control of a Segway RMP (Robotic Mobility Platform), which is an robotic version of the Segway HT (Human Transport), a kind of two-wheeled, self-balancing electric scooter. Because of its power, weight, height, and dynamics, the Segway RMP is a potentially dangerous machine.  Be @b very careful with it.
 
 For safety, this Segway will stop (zero-out motion commands) if no new command has been received from the PC in the previous 400ms or so. This is done in Segway firmware and this component does not duplicate this functionality. Thus, if you want to continue moving at a constant velocity, you must continuously send your desired velocities to the Platform2d interface (@ref orca_component_teleop component does exactly that).
+
+The implementation of @ref orca_interface_position3d interface does not integrate robot's motion in the vertical direction. The altitude (z coordinate) of is always reported as 0.0. 
 
 @par Dependancies
 
@@ -151,7 +153,7 @@ You should see the following line in CMake output:
     - Valid values: [0.0 .. 1.0]
     - Default: 0.75
 
-@section orca_robot2d_playerclient Player Client driver
+@section orca_segwayrmp_playerclient Player Client driver
 
 This driver wraps up a Player client. It requires a running Player server. The driver gets data from that server and converts it into Orca format.More information on Player/Stage.
 

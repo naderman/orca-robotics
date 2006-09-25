@@ -48,7 +48,7 @@ Component::start()
     // Hardware handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    hwHandler_ = new HwHandler( position2dPipe_, commandPipe_, powerPipe_,
+    hwHandler_ = new HwHandler( position2dPipe_, position3dPipe_, commandPipe_, powerPipe_,
                                 setConfigPipe_, currentConfigPipe_, context() );
     hwHandler_->start();
 

@@ -30,16 +30,19 @@ using namespace segwayrmp;
 
 HwHandler::HwHandler(
                  orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
+                 orcaice::PtrProxy<orca::Position3dDataPtr>    & position3dPipe,
                  orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
                  orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
                  const orcaice::Context                        & context )
       : position2dPipe_(position2dPipe),
+        position3dPipe_(position3dPipe),
         powerPipe_(powerPipe),
         setConfigPipe_(setConfigPipe),
         currentConfigPipe_(currentConfigPipe),
         position2dData_(new Position2dData),
+        position3dData_(new Position3dData),
         powerData_(new PowerData),
         driver_(0),
         context_(context)
@@ -173,12 +176,13 @@ HwHandler::run()
         // Read data from the hardware
         //
         // readTimer_.restart();
-        readStatus = driver_->read( position2dData_, powerData_, currDriverStatus );
+        readStatus = driver_->read( position2dData_, position3dData_, powerData_, currDriverStatus );
         // cout<<"read: " << readTimer_.elapsed().toMilliSecondsDouble()<<endl;
     
         if ( readStatus==0 ) {
             // Stick it in the buffer so pullers can get it
             position2dPipe_.set( position2dData_ );
+            position3dPipe_.set( position3dData_ );
             powerPipe_.set( powerData_ );
 
             if ( driverStatus != currDriverStatus ) {

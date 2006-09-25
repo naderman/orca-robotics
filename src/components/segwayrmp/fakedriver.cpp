@@ -45,11 +45,12 @@ int FakeDriver::disable()
     return 0;
 }
 
-int FakeDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
-                std::string & status )
+int FakeDriver::read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 
+                      orca::PowerDataPtr &power, std::string & status )
 {
     orcaice::setSane( position2d );
-    //orcaice::setSane( power );
+    orcaice::setSane( position3d );
+    orcaice::setSane( power );
 
     // slow it down a bit
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));

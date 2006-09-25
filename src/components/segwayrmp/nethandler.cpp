@@ -41,6 +41,7 @@ NetHandler::NetHandler(
         setConfigPipe_(setConfigPipe),
         currentConfigPipe_(currentConfigPipe),
         position2dData_(new Position2dData),
+        position3dData_(new Position3dData),
         commandData_(new Velocity2dCommand),
         powerData_(new PowerData),
         context_(context),
@@ -180,6 +181,15 @@ NetHandler::run()
         // now send less frequent updates
         try
         {
+            if ( position3dPublishInterval_<0 ||
+                        position3dPublishTimer_.elapsed().toSecondsDouble()>position3dPublishInterval_ ) {
+                // also check if the data is new
+                if ( position3dPipe_.isNewData() ) {
+                    position3dPipe_.get( position3dData_ );
+                    position3dPublisher_->setData( position3dData_ );
+                    position3dPublishTimer_.restart();
+                }
+            }
             if ( powerPublishInterval_<0 ||
                         powerPublishTimer_.elapsed().toSecondsDouble()>powerPublishInterval_ ) {
                 // also check if the data is new

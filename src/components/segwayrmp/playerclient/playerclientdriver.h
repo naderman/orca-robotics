@@ -38,8 +38,8 @@ public:
     virtual int repair();
     virtual int disable();
 
-    virtual int read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
-                      std::string & status );
+    virtual int read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 
+                      orca::PowerDataPtr &power, std::string & status );
 
     virtual int write( const orca::Velocity2dCommandPtr &position2d );
 

@@ -135,7 +135,8 @@ UsbDriver::disable()
 }
 
 int
-UsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power, std::string & status )
+UsbDriver::read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 
+                 orca::PowerDataPtr &power, std::string & status )
 {
     //
     // Read a full data frame
@@ -146,7 +147,7 @@ UsbDriver::read( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
     }
     
     UsbDriver::Status rmpStatus;
-    updateData( position2d, power, rmpStatus );
+    updateData( position2d, position3d, power, rmpStatus );
 
     // do a status check (before resetting the frame)
     if ( frame_->status_word1!=lastStatusWord1_ && frame_->status_word1!=lastStatusWord2_ ) {
@@ -224,7 +225,9 @@ UsbDriver::readFrame()
         //
         frame_->AddPacket(pkt_);
    
-        // special case
+        //
+        // special case: integrate robot motion
+        //
         if ( pkt_->id == RMP_CAN_ID_MSG4 ) {
             integrateMotion();
         }
@@ -288,16 +291,16 @@ UsbDriver::integrateMotion()
 }
 
 void
-UsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
-                            Status & status )
+UsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d,
+                       orca::PowerDataPtr &power, Status & status )
 {
-    // POSITION2D
-    
-    // set time stamps right away
+    // set all time stamps right away
     orcaice::setToNow( position2d->timeStamp );
-    // set time stamp right away
+    orcaice::setToNow( position3d->timeStamp );
     orcaice::setToNow( power->timeStamp );
-    
+
+    // POSITION2D
+    //
     // for odometry, use integrated values
     position2d->pose.p.x    = odomX_;
     position2d->pose.p.y    = odomY_;
@@ -319,6 +322,34 @@ UsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &
 
     // @todo stall from currents?
     position2d->stalled = false;
+
+    // POSITION3D
+    //
+    // for odometry, use integrated values
+    position3d->pose.p.x    = odomX_;
+    position3d->pose.p.y    = odomY_;
+    // Player got it right: "this robot doesn't fly"
+    position3d->pose.p.z    = 0.0;
+
+    position3d->pose.o.p    = frame_->pitch;
+    position3d->pose.o.r    = frame_->roll;
+    position3d->pose.o.y    = odomYaw_;
+
+    // forward speed is the same as for the 2D interface
+    position3d->motion.v.x = position2d->motion.v.x
+    // no side speeds for this 'bot
+    position3d->motion.v.y = 0.0;
+    // no jumps for this 'bot
+    position3d->motion.v.z = 0.0;
+
+    // note the correspondence between pitch and roll rate and the 
+    // axes around which the rotation happens.
+    position3d->motion.w.y = frame_->pitch_dot;
+    position3d->motion.w.x = frame_->roll_dot;
+    // from counts/sec into deg/sec.  also, take the additive
+    // inverse, since the RMP reports clockwise angular velocity as positive.
+    position3d->motion.w.z = -(double)frame_->yaw_dot / RMP_COUNT_PER_RAD_PER_S;
+
 
     // POWER
     //
@@ -350,65 +381,7 @@ UsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &
     //    cout<<"ui battery status (UI) : shutdown "<<endl;
     //}
 
-/*        
-        // now, do 3D info.
-        this->position3d_data.xpos = htonl((int32_t)(odomX_ * 1000.0));
-        this->position3d_data.ypos = htonl((int32_t)(odomY_ * 1000.0));
-        // this robot doesn't fly
-        this->position3d_data.zpos = 0;
-        
-        // normalize angles to [0,360]
-        tmp = NORMALIZE(DTOR((double)frame_->roll /
-                (double)RMP_COUNT_PER_DEG));
-        if(tmp < 0) {
-            tmp += 2*M_PI;
-        }
-        this->position3d_data.roll = htonl((int32_t)rint(tmp * 1000.0));
-        
-        // normalize angles to [0,360]
-        tmp = NORMALIZE(DTOR((double)frame_->pitch /
-                (double)RMP_COUNT_PER_DEG));
-        if(tmp < 0) {
-            tmp += 2*M_PI;
-        }
-        this->position3d_data.pitch = htonl((int32_t)rint(tmp * 1000.0));
-        
-        this->position3d_data.yaw = htonl(((int32_t)(odomYaw_ * 1000.0)));
-        
-        // combine left and right wheel velocity to get foreward velocity
-        // change from counts/s into mm/s
-        this->position3d_data.xspeed =
-                htonl((uint32_t)rint(((double)frame_->left_dot +
-                (double)frame_->right_dot) /
-                (double)RMP_COUNT_PER_M_PER_S
-                * 1000.0 / 2.0));
-        // no side or vertical speeds for this bot
-        this->position3d_data.yspeed = 0;
-        this->position3d_data.zspeed = 0;
-        
-        this->position3d_data.rollspeed =
-                htonl((int32_t)rint((double)frame_->roll_dot /
-                (double)RMP_COUNT_PER_DEG_PER_S * M_PI / 180 * 1000.0));
-        this->position3d_data.pitchspeed =
-                htonl((int32_t)rint((double)frame_->pitch_dot /
-                (double)RMP_COUNT_PER_DEG_PER_S * M_PI / 180 * 1000.00));
-        // from counts/sec into millirad/sec.  also, take the additive
-        // inverse, since the RMP reports clockwise angular velocity as
-        // positive.
-        
-        // This one uses left_dot and right_dot, which comes from odometry
-        this->position3d_data.yawspeed =
-                htonl((int32_t)(rint((double)(frame_->right_dot - frame_->left_dot) /
-                (RMP_COUNT_PER_M_PER_S * RMP_GEOM_WHEEL_SEP * M_PI) * 1000)));
-        // This one uses yaw_dot, which comes from the IMU
-        //data.position3d_data.yawspeed =
-        //  htonl((int32_t)(-rint((double)frame_->yaw_dot /
-        //                        (double)RMP_COUNT_PER_DEG_PER_S * M_PI / 180 * 1000)));
-        
-        this->position3d_data.stall = 0;
-*/
-
-    // Chip
+    // Chip debug
     //frame_->dump();
     //dump();
 
