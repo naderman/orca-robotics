@@ -336,7 +336,7 @@ UsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::Position3dData
     position3d->pose.o.y    = odomYaw_;
 
     // forward speed is the same as for the 2D interface
-    position3d->motion.v.x = position2d->motion.v.x
+    position3d->motion.v.x = position2d->motion.v.x;
     // no side speeds for this 'bot
     position3d->motion.v.y = 0.0;
     // no jumps for this 'bot

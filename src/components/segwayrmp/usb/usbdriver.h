@@ -103,8 +103,8 @@ private:
 
     int readFrame();
     void integrateMotion();
-    void updateData( orca::Position2dDataPtr &position2d, orca::PowerDataPtr &power,
-                     Status & status );
+    void updateData( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d,
+                     orca::PowerDataPtr &power, Status & status );
 
     // helper to take a player command and turn it into a CAN command packet
     void makeMotionCommandPacket( CanPacket* pkt, const orca::Velocity2dCommandPtr & command );
