@@ -31,8 +31,10 @@ class Position3dData extends OrcaObject
     //! Robot pose in global CS according to odometry.
     Frame3d pose;
     //! Translational and angular velocities in the robot CS.
-    //! This means that Vx is forward speed and Vy is side speed
-    //! (possible only for some platforms).
+    //! This means that Vx is forward speed, Vy is side speed, and Vz is 
+    //! vertical speed. Rate of change of angular position is designated by
+    //! the axis around which the rotation happens. So, pitch rate is Wy, 
+    //! roll rate is Wx, and yaw rate is Wz.
     Twist motion;
 };
 
