@@ -192,13 +192,13 @@ MainLoop::initialiseCamera(CameraDataPtr& cameraData, CameraConfigPtr& desiredCo
         imageGrabber_->setWidth( desiredConfig->imageWidth );
         imageGrabber_->setHeight( desiredConfig->imageHeight );
         
-        // workaround for setting width and height for firewire cameras      
-        // MODE_800x600_MONO 98
-        // imageGrabber_->setMode(69);
-        // int dc1394Mode;
+        // workaround for setting width and height for firewire cameras
+        // opencv requires the mode to be set for the correct width and height to be set also
        if ( (imageGrabber_->width() != desiredConfig->imageWidth) || (imageGrabber_->height() !=  desiredConfig->imageHeight) )
        {
+            // check the mode
             orca::ImageFormat mode = orcaImageMode( imageGrabber_->mode() );
+            // find the dc1394 specific mode
             int dc1394Mode = imageserver::dc1394ImageMode( mode, desiredConfig->imageWidth, desiredConfig->imageHeight );
             if ( dc1394Mode > 0)
                 imageGrabber_->setMode( dc1394Mode );

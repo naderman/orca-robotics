@@ -63,12 +63,12 @@ Camera Settings
 
 - @c Camera.Config.Width (integer)
     - Image width
-    - Valid values: { "?" } - will return an error if the camera doesn't support this particuar width
+    - Valid values: { "320, 640, 800, 1024, 1280, 1600" } - will return an error if the camera doesn't support this particuar width
     - Default: "0": A value of 0 causes the driver to query and use the camera's default image width.
 
 - @c Camera.Config.Height (integer)
     - Image height
-    - Valid values: { "?" } - will return an error if the camera doesn't support this particuar height.
+    - Valid values: { "240, 480, 600, 768, 960, 1200" (respectively with width)} - will return an error if the camera doesn't support this particuar height.
     - Default: "0": A value of 0 causes the driver to query and use the camera's default image height.
 
 Geometry
