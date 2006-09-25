@@ -214,22 +214,25 @@ void ImageHandler::initCvImage()
     // should this be done at the imageserver level and depend on the mode and format?
     // maybe nChannels should be in the Camera object
     // TODO: put this nChannel calculation into imageutils as a separate function 
-    int nChannels;
+    
+    // default number of channels for a colour image
+    int nChannels = 3;
+    int nBayerChannels = 1;   
     if( format == BAYERBG | format == BAYERGB | format == BAYERRG | format == BAYERGR )
     {
-        nChannels = 1;
         // set up an IplImage struct for the Greyscale bayer encoded data
-        bayerImage_  = cvCreateImage( cvSize( cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight ),  8, nChannels );
+        bayerImage_  = cvCreateImage( cvSize( cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight ),  8, nBayerChannels );
         cout << "Image is Bayer encoded: " << endl;
         // cout << "bayer encoding: " << format << endl;
     }
-    else
+    else if ( format == MODEGRAY )
     {
-        nChannels = 3;
-    }
+        // display image is greyscale therefore only 1 channel      
+        nChannels = 1;
+    }      
 
     // opencv gear here
-    cvImage_ = cvCreateImage( cvSize( cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight ),  8, 3 );
+    cvImage_ = cvCreateImage( cvSize( cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight ),  8, nChannels );
     // dodgy opencv needs this so it has time to resize
     cvWaitKey(100);
     context_.tracer()->debug("opencv window created",5);
