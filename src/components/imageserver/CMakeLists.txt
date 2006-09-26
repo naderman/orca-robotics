@@ -52,7 +52,7 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
 
     ELSE ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
       MESSAGE( STATUS "     Image grabbing libraries cannot be found... only the fake driver can be built." ) 
-      MESSAGE( STATUS "     Please install the cvs version of opencv for monocular cameras or the digiclops libraries for the trinocular digiclops camera."  ) 
+      MESSAGE( STATUS "     Please install opencv for monocular cameras and/or the digiclops libraries for the trinocular digiclops camera."  )
       SET ( DRIVER_SRCS fakedriver )
     ENDIF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
 
@@ -97,6 +97,9 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
     INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} /usr/local/include/digiclops /usr/local/include/triclops)
     TARGET_LINK_LIBRARIES( imageserver ${OPENCV_LIBS} digiclops triclops OrcaImageGrabber OrcaImage )
     TARGET_LINK_LIBRARIES( OrcaImageServer ${OPENCV_LIBS} digiclops triclops OrcaImageGrabber OrcaImage )
+  ELSE (OPENCV_FOUND AND DIGICLOPS_AND_TRICLOPS_FOUND )
+    # If none of the optional libraries are found still link to the OrcaImage library
+    TARGET_LINK_LIBRARIES( OrcaImageServer OrcaImage )
   ENDIF ( OPENCV_FOUND AND DIGICLOPS_AND_TRICLOPS_FOUND )
   
   # test image for the fake driver to send
