@@ -99,6 +99,7 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
     TARGET_LINK_LIBRARIES( OrcaImageServer ${OPENCV_LIBS} digiclops triclops OrcaImageGrabber OrcaImage )
   ELSE (OPENCV_FOUND AND DIGICLOPS_AND_TRICLOPS_FOUND )
     # If none of the optional libraries are found still link to the OrcaImage library
+    TARGET_LINK_LIBRARIES( imageserver OrcaImage )
     TARGET_LINK_LIBRARIES( OrcaImageServer OrcaImage )
   ENDIF ( OPENCV_FOUND AND DIGICLOPS_AND_TRICLOPS_FOUND )
   
