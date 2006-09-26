@@ -14,7 +14,8 @@ IF ( NOT WIN32 AND BUILD_SANDBOX )
     ADD_SUBDIRECTORY ( reactivewalker )
     ADD_SUBDIRECTORY ( insgps )
     ADD_SUBDIRECTORY ( imu )
-
+    ADD_SUBDIRECTORY ( pointcloudserver )
+    ADD_SUBDIRECTORY ( pointcloudviewer ) 
     
 ELSE ( NOT WIN32 AND BUILD_SANDBOX )
 
