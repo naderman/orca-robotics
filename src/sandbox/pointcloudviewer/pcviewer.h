@@ -2,6 +2,7 @@
 #define ORCA2_POINT_CLOUD_VIEWER_H
 
 #include <orca/pointcloud.h>
+#include <orca/ogmap.h>
 
 #include <QtOpenGL>
 #include <GL/glut.h>
@@ -23,7 +24,9 @@ Q_OBJECT
 	QImage captureMap(); 
 	void setPointCloud(orca::PointCloudPtr pointCloud); 
   private: 
+        void loadFakeOgMap(); 
 	void renderPointCloud();
+        void renderOgMap(); 
 	int screenWidth;
         int screenHeight;  
 	float zoomFactor; 
@@ -40,10 +43,13 @@ Q_OBJECT
 	bool showPointclouds; 
 	bool showPatchBorders;
 	GLuint texId;
-	GLuint displayList;
+	GLuint pcList;
+        GLuint ogList; 
 	orca::PointCloudPtr cloud; 
 	bool freshPC; 
+        bool freshOG; 
 	float pointSize; 
+        orca::OgMapDataPtr ogMap; 
 };
    
 #endif

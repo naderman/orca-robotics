@@ -26,3 +26,7 @@ Keyboard commands include:
 * Arrow keys for controlling pitch and yaw. 
 * R resets the view. 
 * O and P decrease and increase the point size. 
+* C to toggle point cloud display 
+* L to toggle grid line display. 
+* G to toggle occupancy grid display
+* B to toggle point cloud border display 
