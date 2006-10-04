@@ -30,7 +30,10 @@ The default version of cmake on Ubuntu/Kubuntu 6.06 is 2.2.3. You will need to d
 
 Minimum version required 3.1.0 (latest tested: 3.1.0).
 
-@note There's now a Debian Ice package in the testing distribution.  At the time of writing this was only version 3.0.1 however, so Ice must be built from source.
+@note There's now a Debian Ice package in the testing distribution.
+@verbatim
+# apt-get install libzeroc-ice-dev ice-translators ice-slice icestorm icegrid icebox
+@endverbatim
 
 Following the instructions below will install Ice to the default location @c /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
 
