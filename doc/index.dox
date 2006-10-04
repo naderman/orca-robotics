@@ -53,6 +53,7 @@ Note: The documentation on this web page matches the latest release. A web page 
 
 @section news News
 
+- 05-Oct-06 Orca2.0.2 maintenance release.
 - 18-Sep-06 Orca2.0.1 is released.  See <a href="http://sourceforge.net/project/shownotes.php?release_id=448231&group_id=111647">Release Notes</a> for details.
 - 10-Aug-06 Orca2.0.0 is released.  Uses the newly released Ice-3.1.0. Support for Windows. @ref orca_doc_java components. License issues have been resolved.
 - 20-Jul-06 Wiki is on-line (follow link from sidebar). Anyone can add comments to the FAQ or whatever. Useful stuff may later get moved to the Doxygen documentation.
