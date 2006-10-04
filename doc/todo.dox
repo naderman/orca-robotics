@@ -47,7 +47,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - OrcaDef library: new feature
     - generates IceGrid app descriptor (XML format) from .def file
     - Alex Makarenko
-- Documentation: new tutorial on using IceGrid for application deployment
+- Documentation
+    - new tutorial on using IceGrid for application deployment
+    - Debian package for Ice is now the default install option. 
     - Alex Makarenko
 
 @section orca_doc_todo_history Changes in Past Releases
