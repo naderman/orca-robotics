@@ -38,7 +38,7 @@ BUILD_IMAGE_SERVER:BOOL=ON
 
 # set any extra envionment variables here
 SET (CTEST_ENVIRONMENT
-  ICE_HOME=/opt/Ice-3.1.0
+#  ICE_HOME=/opt/Ice-3.1.0
   ORCA2_INSTALL=/opt/orca2-nightly
   CC=/usr/bin/gcc-4.0
   CXX=/usr/bin/g++-4.0
