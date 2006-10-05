@@ -29,6 +29,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @section changes Changes since Last Release
 
+@section orca_doc_todo_history Changes in Past Releases
+
+@par Changes in Release 2.0.2
+
 - Build system
     - User preference for installation directory are no longer overwritten.
     - Orca will now build with Ice intalled as Debian package. 
@@ -51,8 +55,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - new tutorial on using IceGrid for application deployment
     - Debian package for Ice is now the default install option. 
     - Alex Makarenko
-
-@section orca_doc_todo_history Changes in Past Releases
+- New interface: PointCloud
+    - Waleed Kadous
 
 @par Changes in Release 2.0.1
 
