@@ -58,6 +58,13 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Alex Makarenko
 - New interface: PointCloud
     - Waleed Kadous
+- imageserver and imageviewer
+    - now rely on the latest release verisons of opencv-0.9.9.
+    - builds of these individual components have been turned on by
+      default.
+    - user specified resolutions are now supported for both firewire
+      and usb cameras.
+    - Ben Upcroft
 
 @par Changes in Release 2.0.1
 
