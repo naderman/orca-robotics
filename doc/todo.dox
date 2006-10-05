@@ -36,6 +36,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Build system
     - User preference for installation directory are no longer overwritten.
     - Orca will now build with Ice intalled as Debian package. 
+    - Fixed Windows build error in 2.0.1.
 - Imu interface
     - accellerometer and gyro values are now stored using BROS-I structures.
     - Alex Makarenko
