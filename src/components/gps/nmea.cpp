@@ -11,6 +11,20 @@
 #include <string.h>
 #include <iostream>
 
+#if defined(__sun)
+size_t strnlen(const char *s, size_t maxlen) {
+    char *p;
+    if (s == NULL) {
+        return maxlen;
+    }
+    p = (char *)memchr(s, 0, maxlen);
+    if (p == NULL) {
+        return maxlen;
+    }
+    return ((p - s) + 1);
+}
+#endif
+
 #include "nmea.h"
 
 using namespace std;
