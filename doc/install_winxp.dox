@@ -18,16 +18,22 @@ These are detailed instructions for installing Orca on Windows XP. See @ref orca
 
 @section orca_doc_installwinxp_cmake CMake
 
-Minimum version required 2.4.2 (latest tested: 2.4.2). Download and run the installer.
+Minimum version required 2.4.2 (latest tested: 2.4.2). 
+<a href="http://www.cmake.org">Download</a> and run the installer.
 
 @section orca_doc_installwinxp_ice Ice
 
 Minimum version required 3.1.0 (latest tested: 3.1.0).
 
-Download the installer from  <a href="http://www.zeroc.com/download.html">download page</a>. 
+Download the installer from 
+<a href="http://www.zeroc.com/download.html">download page</a>.
     - Run the installer. Note that the default installation location is @c C:\\Ice-[VERSION].
-    - Add @c C:\\Ice-[VERSION]\\bin to the Windows path (As an administrator right-click on My Computer > Properties > Advanced > Environment Variables > Edit).
-    
+    - Add @c C:\\Ice-[VERSION]\\bin to the Windows path (As an administrator 
+      right-click on My Computer > Properties > Advanced > Environment Variables > Edit).
+    - Add @c ICE_HOME as a new user variable (As an administrator
+      right-click on My Computer > Properties > Advanced > Environment
+      Variables > New. Variable name: @c ICE_HOME, Variable value: @c C:\\Ice-[VERSION]).
+
 @section orca_doc_installwinxp_orca Orca
 
 Build and install Orca2 distribution.
