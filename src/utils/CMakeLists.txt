@@ -21,6 +21,7 @@ ADD_SUBDIRECTORY ( orcaogmap )
 ADD_SUBDIRECTORY ( orcaogmapload )
 ADD_SUBDIRECTORY ( orcapathplan )
 ADD_SUBDIRECTORY ( orcaplayer )
+ADD_SUBDIRECTORY ( orcaportability )
 ADD_SUBDIRECTORY ( orcaserial )
 ADD_SUBDIRECTORY ( qorcacm )
 #  qorcagui

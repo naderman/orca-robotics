@@ -11,6 +11,12 @@
 #include <string.h>
 #include <iostream>
 
+// Make sure strnlen is defined.
+#include <orcaportability/strnlen.h>
+
+#include "nmea.h"
+
+/*  Dodgy hack because strnlen isn't defined on Solaris  */
 #if defined(__sun)
 size_t strnlen(const char *s, size_t maxlen) {
     char *p;
@@ -24,8 +30,6 @@ size_t strnlen(const char *s, size_t maxlen) {
     return ((p - s) + 1);
 }
 #endif
-
-#include "nmea.h"
 
 using namespace std;
 
