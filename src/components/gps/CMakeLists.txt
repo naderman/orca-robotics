@@ -6,8 +6,11 @@ IF ( BUILD_GPS )
     INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
     INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
     
-    INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/components/gps )
-    INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/utils )
+    INCLUDE_DIRECTORIES( 
+      ${PROJECT_BINARY_DIR}
+      ${PROJECT_SOURCE_DIR}/src/components/gps
+      ${PROJECT_SOURCE_DIR}/src/utils 
+    )
 
     # OPTIONAL_SUB_LIBRARY macro defined in component_rules.cmake
     SET( ASHTECHGPS_FOUND 1 )
