@@ -38,6 +38,7 @@ Download the installer from
 
 Build and install Orca2 distribution.
     - Tested with Microsoft Visual Studio 2005 v.8.0
+      - Older versions are reported not to work.
     - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive with one of many available utilities (e.g. PicoZip).
     - @b Important! Due to a bug in the current version of Ice, the full path of files in the Orca distribution may not have spaces. It's best to put it at the top level of the drive, e.i. @c C:\\orca2.
     - The default installation directory is  @c C:\\orca-[VERSION], where [VERSION] is the Orca version. You can customized this by setting ORCA2_INSTALL environment variable.
@@ -52,6 +53,7 @@ Build and install Orca2 distribution.
         - While in MS Visual Studio, find INSTALL project in the Solution Exlorer list on the left.
         - Right-click and select Project Only > Build Only INSTALL
         - Add @c C:\\orca-[VERSION]\\bin (or custom installation path) to the Windows path (As super-user right-click on My Computer > Properties > Advanced > Environment Variables > Edit).
+        - Note that the .cfg files get installed into C:\Program Files\orca.  When the QuickStart tutorials refer to [ORCA2-INSTALL], this is the directory they're referring to.
 
 */
 
