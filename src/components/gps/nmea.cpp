@@ -16,21 +16,6 @@
 
 #include "nmea.h"
 
-/*  Dodgy hack because strnlen isn't defined on Solaris  */
-#if defined(__sun)
-size_t strnlen(const char *s, size_t maxlen) {
-    char *p;
-    if (s == NULL) {
-        return maxlen;
-    }
-    p = (char *)memchr(s, 0, maxlen);
-    if (p == NULL) {
-        return maxlen;
-    }
-    return ((p - s) + 1);
-}
-#endif
-
 using namespace std;
 
 namespace nmea{
