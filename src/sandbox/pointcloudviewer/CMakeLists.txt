@@ -24,7 +24,7 @@ IF ( BUILD_POINT_CLOUD_VIEWER  )
     	GLOBAL_ADD_EXECUTABLE( pointcloudviewer main ${MOC_SRCS} ${HUMAN_SRCS} )
         TARGET_LINK_LIBRARIES ( pointcloudviewer ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} ${QT_QTOPENGL_LIBRARY})
 
-    ELSE ( NOT QT4_FOUND )
+    ELSE ( QT4_FOUND )
 	MESSAGE ( "Could NOT build pointcloudviewer as QT4 or GLUT was not found"  ) 
    ENDIF( QT4_FOUND )
 ENDIF ( BUILD_POINT_CLOUD_VIEWER )
