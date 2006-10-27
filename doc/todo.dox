@@ -33,9 +33,17 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 
 
-
-
 @section changes Changes since Last Release
+
+- Solaris Compatability
+  - Christopher Brooks, Alex Brooks
+- OrcaView3d: A 3-D visualisation component
+  - Ben Upcroft, Alex Brooks
+
+
+
+
+
 
 @section orca_doc_todo_history Changes in Past Releases
 
