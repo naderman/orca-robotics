@@ -37,11 +37,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - Solaris Compatability
   - Christopher Brooks, Alex Brooks
-- OrcaView3d: A 3-D visualisation component
+- OrcaView3d: a 3-D visualisation component
   - Ben Upcroft, Waleed Kadous, Alex Brooks
-
-
-
+- libOrcaIce
+    - added docs for tracing functions and properties
+    - Alex Makarenko
 
 
 
@@ -75,10 +75,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - New interface: PointCloud
     - Waleed Kadous
 - ImageServer and ImageViewer
-    - now rely on the latest release verisons of opencv-0.9.9.
-    - builds of these individual components have been turned on by
+- now rely on the latest release verisons of opencv-0.9.9.
+- builds of these individual components have been turned on by
       default.
-    - user specified resolutions are now supported for both firewire
+- user specified resolutions are now supported for both firewire
       and usb cameras.
     - Ben Upcroft
 
