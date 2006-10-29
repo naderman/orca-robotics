@@ -42,7 +42,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Ben Upcroft, Waleed Kadous, Alex Brooks
 - OrcaIce library
     - added docs for tracing functions and properties (Alex Makarenko)
-    - cleaned up the process of loading comp config file inside IceBox (Alex Makarenko)
+    - component config file may now be specified with Ice.Config in addition to Orca.Config parameter. This is done for compatibility with IceGrid (Alex Makarenko)
 
 
 @section orca_doc_todo_history Changes in Past Releases

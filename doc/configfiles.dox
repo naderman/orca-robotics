@@ -41,13 +41,20 @@ $ ls $HOME/.orcarc
 $ mycomponent
 @endverbatim
         - Win32: File @c C:\\orca.ini
--# Component configuration file, specified in one of 3 ways (we use the first one we find):
+-# Component configuration file, specified in one of 4 ways (we use the first one we find):
     -# The contents of @c Orca.Config parameter
 @verbatim
 $ ls *.cfg
 local.cfg
 $ mycomponent --Orca.Config=local.cfg
 @endverbatim
+    -# The contents of @c Ice.Config parameter
+@verbatim
+$ ls *.cfg
+local.cfg
+$ mycomponent --Ice.Config=local.cfg
+@endverbatim
+We parse Ice.Config for compatibility with IceGrid. In manually-written files this option should not be used to avoid confusion.
     -# The command line argument, when there is only 1 argument.
 @verbatim
 $ ls *.cfg
@@ -60,7 +67,6 @@ $ ls *.cfg
 mycomponent.cfg
 $ mycomponent
 @endverbatim
-@note Inside the IceBox, component configuration files specified with Ice.Config parameter are also recognized. This is done for compatibility with IceGrid. In manually written files this option should not be used to avoid confusion.
 -# Command-line arguments
 
 For example, the following ways of starting a component are equivalent:
