@@ -98,7 +98,7 @@ $ generatecfg component.def mycomponent.cfg
 Typically, an Orca component has a @c def file in the source tree and the @c cfg file is generated during compilation. The hand-written @c def file is installed into [ORCA-INSTALL-DIR]/def/ directory. The automatically generated @c cfg file is installed into [ORCA-INSTALL-DIR]/cfg/ directory. The following line in the component's CMakeLists.txt file does the conversion:
 
 @verbatim
-GENERATE_FROM_DEF( mycomponent.def )
+GENERATE_CONFIG_FILE( mycomponent.def )
 @endverbatim
 
 @section orca_doc_configfiles_usage Usage
