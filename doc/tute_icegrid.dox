@@ -69,6 +69,8 @@ $ icegridadmin --Ice.Default.Locator="IceGrid/Locator:default -p 12000" -e "appl
 
 @section orca_doc_tute_icegrid_next What's Next
 
+For an example of more running IceStorm through IceGrid, see @c [ORCA2-SRC]/scripts/ice/icestorm_laser.xml configuration file.
+
 If everything works, check out more @ref orca_doc_tutorials.
 
 */
