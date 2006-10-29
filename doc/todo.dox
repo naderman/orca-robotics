@@ -35,11 +35,12 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @section changes Changes since Last Release
 
-- Solaris Compatability
-  - Christopher Brooks, Alex Brooks
-- OrcaView3d: a 3-D visualisation component
-  - Ben Upcroft, Waleed Kadous, Alex Brooks
-- libOrcaIce
+- Build system
+    - Solaris compatability. Christopher Brooks, Alex Brooks
+- New component: OrcaView3d
+    - a 3-D visualisation component
+    - Ben Upcroft, Waleed Kadous, Alex Brooks
+- OrcaIce library
     - added docs for tracing functions and properties
     - Alex Makarenko
 

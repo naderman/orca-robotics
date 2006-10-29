@@ -12,7 +12,7 @@
 
 @page orca_doc_devguide Developer's Guide
 
-@section goodcomp Notes on designing and writing components
+@section orca_doc_devguide_goodcomp Notes on designing and writing components
 
 Independence of individual components from each other is the cornerstone of component-based
 approach to software and, therefore, the Orca project. This means that you can write your components
@@ -25,7 +25,7 @@ maintainable, and understandable code.
 - @ref orca_doc_performance
 - @ref orca_doc_devtricks
 
-@section other Other useful information
+@section orca_doc_devguide_other Other useful information
   
 - @ref orca_doc_overview
 - @ref orca_doc_configfiles
@@ -37,7 +37,7 @@ maintainable, and understandable code.
 - @ref orca_doc_daemons
 - @ref orca_doc_dart2
 
-@section internal Internal project documentation
+@section orca_doc_devguide_internal Internal project documentation
 
 - @ref orca_doc_todo
 
