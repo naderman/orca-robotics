@@ -1,0 +1,69 @@
+<icegrid>
+    <application name="Rover" import-default-templates="true">
+        <distrib/>
+        
+        <server-template id="sicklaserTemplate">
+            <parameter name="platform"/>
+            <server id="${platform}.sicklaser" exe="${application.distrib}/orca2/bin/sicklaser" activation="on-demand">
+                <adapter name="${platform}/sicklaser" endpoints="tcp -t 5000" register-process="true" id="${platform}/sicklaser">
+                    <object identity="${platform}.sicklaser.home" type="::orca::Home"/>
+                </adapter>
+                <!-- Component properties -->
+                <property name="SickLaser.Platform" value="local"/>
+                <property name="SickLaser.Component" value="sicklaser"/>
+                <property name="SickLaser.Endpoints" value="tcp -t 5000"/>
+                <!-- Provided interfaces -->
+                <property name="SickLaser.Provides.Laser.Name" value="laser"/>
+                <!-- Required interfaces -->
+                <!-- Component configuration parameters -->
+                <property name="SickLaser.Config.AllowRollCompensation" value="1"/>
+                <property name="SickLaser.Config.AngularResolution" value="1.0"/>
+                <property name="SickLaser.Config.Driver" value="fake"/>
+                <property name="SickLaser.Config.Offset" value="0.0 0.0 0.0  180.0 0.0 0.0"/>
+                <property name="SickLaser.Config.PlayerClient.Host" value="localhost"/>
+                <property name="SickLaser.Config.PlayerClient.Port" value="6665"/>
+                <property name="SickLaser.Config.RangeResolution" value="0.01"/>
+                <property name="SickLaser.Config.SickCarmen.Baudrate" value="38400"/>
+                <property name="SickLaser.Config.SickCarmen.Device" value="/dev/ttyS3"/>
+                <property name="SickLaser.Config.SickCarmen.LaserType" value="LMS"/>
+                <property name="SickLaser.Config.Size" value="0.155 0.155 0.185"/>
+                <property name="SickLaser.Config.StartEnabled" value="1"/>
+            </server>
+            </server-template>
+        
+        <service-template id="icestormTemplate">
+            <parameter name="platform"/>
+            <service name="IceStorm" entry="IceStormService,31:createIceStorm">
+                <adapter name="${platform}/${service}" register-process="false" endpoints="default"/>                
+                <property name="IceStorm.TopicManager.Endpoints" value="default -p 10000"/>
+                <property name="IceStorm.Publish.Endpoints" value="default"/>
+                <property name="IceStorm.Trace.TopicManager" value="1"/>
+                <property name="IceStorm.Trace.Topic" value="1"/>
+                <property name="IceStorm.Trace.Subscriber" value="1"/>
+                <property name="IceStorm.Trace.Flush" value="0"/>
+                <property name="IceStorm.Flush.Timeout" value="2000"/>
+                <property name="Freeze.DbEnv.IceStorm.DbHome" value="/home/bruce/sys/testgrid/stormdb"/>
+            </service>
+        </service-template>
+        
+        <server-template id="iceboxTemplate">
+            <parameter name="platform"/>
+            <icebox id="${platform}.icebox" exe="icebox" activation="on-demand">
+                <service-instance template="icestormTemplate" platform="${platform}"/>
+                <property name="IceBox.ServiceManager.Endpoints" value="default -p 9998"/>
+            </icebox>
+        </server-template>
+            
+        <node name="Base">
+            <server-instance template="IcePatch2" directory="/patch"/>
+        </node>
+        <node name="Alpha">
+            <server-instance template="iceboxTemplate" platform="alpha"/>
+            <server-instance template="sicklaserTemplate" platform="alpha"/>
+        </node>
+        <node name="Bravo">
+            <server-instance template="iceboxTemplate" platform="bravo"/>
+            <server-instance template="sicklaserTemplate" platform="bravo"/>
+        </node>
+    </application>
+</icegrid>
