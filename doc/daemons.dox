@@ -16,14 +16,13 @@
 
 @note Daemons are defined <a href="http://en.wikipedia.org/wiki/Daemon_%28computer_software%29">here</a>. 
 
-@par Starting a component as a daemon
+@par Running a component as a daemon
 
 To implement a component as a daemon (or Service under Win32), one
 approach is to simply do all the forking etc yourself.  Alternatively,
 daemon support exists if your component derives from
-orcaice::Component, and can exist as an IceBox service.
-
-To start an icebox as a daemon, simply start it with:
+orcaice::Component and it can run as an IceBox service. To start an icebox as a daemon, 
+simply add an command line option:
 
 @verbatim
 $ icebox --Ice.Config=Xxxx --daemon
@@ -36,7 +35,7 @@ See 'icebox --help' for more options.
 If your IceBox uses standard Ice services (such as IceStorm), start
 with '--Ice.UseSyslog=1' to get them to log information.
 
-For orcaice::Components, add something like the following to the .cfg for logging:
+For orcaice::Components, add something like the following to the .cfg file for logging:
 
 @verbatim
 #Orca.Tracer.DebugToLog=5
@@ -47,9 +46,7 @@ Orca.Tracer.OtherToLog=5
 Orca.Tracer.HeartbeatToLog=5
 @endverbatim
 
-and they'll log to /var/log/daemon.log.
-
-Currently, orcaice::Tracer logging to SysLog is implemented for Unix
+and they'll log to @c /var/log/daemon.log. Currently, orcaice::Tracer logging to SysLog is implemented for Unix
 only.
 
 */
