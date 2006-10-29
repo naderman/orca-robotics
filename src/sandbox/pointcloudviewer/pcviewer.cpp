@@ -50,21 +50,21 @@ void PointCloudViewer::loadFakeOgMap()
 
 PointCloudViewer::PointCloudViewer(QWidget *parent)
     : QGLWidget(QGLFormat(QGL::AlphaChannel), parent),
-    zoomFactor(1000),
-    xOffset(0),
-    yOffset(0),
-    zOffset(0),
-    yaw(0),
-    pitch(0),
-    fudgeFactor(3),
-    showOGs(true),
-    showSnaps(true),
-    showLabels(true),
-    showGrids(true),
-    showRobots(true),
-    showPointclouds(true),
-    showPatchBorders(true),
-    pointSize(3)
+      zoomFactor(1000),
+      xOffset(0),
+      yOffset(0),
+      zOffset(0),
+      yaw(0),
+      pitch(0),
+      fudgeFactor(3),
+      showOGs(true),
+      showSnaps(true),
+      showLabels(true),
+      showGrids(true),
+      showRobots(true),
+      showPointclouds(true),
+      showPatchBorders(true),
+      pointSize(3)
 {
   setFocusPolicy(Qt::StrongFocus);
   makeCurrent();
