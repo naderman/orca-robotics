@@ -60,6 +60,7 @@ $ ls *.cfg
 mycomponent.cfg
 $ mycomponent
 @endverbatim
+@note Inside the IceBox, component configuration files specified with Ice.Config parameter are also recognized. This is done for compatibility with IceGrid. In manually written files this option should not be used to avoid confusion.
 -# Command-line arguments
 
 For example, the following ways of starting a component are equivalent:
