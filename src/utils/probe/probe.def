@@ -3,3 +3,7 @@ DefaultComponentTag=Probe
 # configuration
 Config.Driver.Comment=Options are { 'iostream' }
 Config.Driver.Default=iostream
+
+# external configuration options
+Config.Ice.Override.ConnectTimeout.Default=150
+Config.Ice.Override.ConnectTimeout.External=1

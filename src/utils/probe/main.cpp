@@ -34,7 +34,7 @@ public:
 
 
 Component::Component()
-    : orcaice::Component( "Probe", orcaice::HomeInterface )
+    : orcaice::Component( "Probe", orcaice::NoStandardInterfaces )
 {
 }
 
@@ -42,7 +42,8 @@ Component::~Component()
 {
 }
 
-void Component::start()
+void 
+Component::start()
 {
     //
     // enable network connections
@@ -50,6 +51,8 @@ void Component::start()
     activate();
 
     orcaice::Buffer<BrowserEvent> eventPipe;
+
+    ProbeFactory probeFactory;
 
     std::string prefix = tag()+".Config.";
 
@@ -75,7 +78,7 @@ void Component::start()
     {
         tracer()->print( "loading iostream driver");
         // this driver is not interactive, so it does not need networkHandler
-        IostreamDriver* iostreamDriver = new IostreamDriver( &eventPipe );
+        IostreamDriver* iostreamDriver = new IostreamDriver( &eventPipe, &probeFactory );
         userDriver = iostreamDriver;
         displayDriver = iostreamDriver;
     }
@@ -86,20 +89,20 @@ void Component::start()
     }
 
 
-    BrowserHandler browserHandler( eventPipe, *displayDriver, context() );
+    BrowserHandler browserHandler( eventPipe, probeFactory, *displayDriver, context() );
     browserHandler.start();
 
     // for Qt driver, this will not return
     userDriver->enable();
 
-                                
     // normally ctrl-c handler does this, now we have to because MainBubble keeps the thread 
     context().communicator()->shutdown();
 
     // the rest is handled by the application/service
 }
 
-void Component::stop()
+void 
+Component::stop()
 {
     // this component cannot quit nicely
 }
@@ -109,7 +112,8 @@ void Component::stop()
 //
 // Build the component into a stand-alone application
 //
-int main(int argc, char * argv[])
+int 
+main(int argc, char * argv[])
 {
     probe::Component component;
     // do not install ctrl-c handler

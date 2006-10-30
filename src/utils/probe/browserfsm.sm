@@ -2,7 +2,6 @@ FSMName BrowserFsm
 Context BrowserContext
 Initial Idle
 Header  browsercontext.h
-//Version $Id$
 
 {
 

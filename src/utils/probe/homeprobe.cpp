@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2006 Alexei Makarenko
+ * Copyright (c) 2006 Alexei Makarenko
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -29,7 +29,8 @@ HomeProbe::HomeProbe( const orca::FQInterfaceName & name, DisplayDriver & displa
     operations_.push_back( "getProperties" );
 }
 
-int HomeProbe::loadOperation( const int index )
+int 
+HomeProbe::loadOperation( const int index )
 {
     //cout<<"loading dereivedPrx operation "<<index<<endl;
 
@@ -52,8 +53,11 @@ int HomeProbe::loadOperation( const int index )
     return ret;
 }
 
-int HomeProbe::loadGetInterfaces()
+int 
+HomeProbe::loadGetInterfaces()
 {
+    cout<<"Calling operation orca::Home::getInterfaces()..."<<endl;
+
     orca::HomeDataPtr homeData;
     
     try
@@ -67,12 +71,15 @@ int HomeProbe::loadGetInterfaces()
         return 1;
     }
 
-    cout<<homeData<<endl;
+    cout<<orcaice::toString(homeData)<<endl;
     return 0;
 }
 
-int HomeProbe::loadGetProperties()
+int 
+HomeProbe::loadGetProperties()
 {
+    cout<<"Calling operation orca::Home::getProperties()..."<<endl;
+
     std::map<std::string,std::string> props;
     
     try

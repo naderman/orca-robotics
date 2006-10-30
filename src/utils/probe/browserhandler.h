@@ -22,6 +22,7 @@
 namespace probe
 {
 
+class ProbeFactory;
 class DisplayDriver;
 class InterfaceProbe;
 
@@ -30,6 +31,7 @@ class BrowserHandler : public orcaice::Thread, public BrowserFsm
 
 public:
     BrowserHandler( orcaice::Buffer<BrowserEvent> & eventPipe,
+                    ProbeFactory & probeFactory,
                     DisplayDriver & display,
                     const orcaice::Context & context );
     virtual ~BrowserHandler();
@@ -48,8 +50,10 @@ public:
     virtual void quit();
 
 private:
-    
+
     orcaice::Buffer<BrowserEvent> & eventPipe_;
+
+    ProbeFactory & probeFactory_;
 
     DisplayDriver & displayDriver_;
     

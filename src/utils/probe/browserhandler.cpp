@@ -14,19 +14,20 @@
 #include <IceGrid/Admin.h>
 
 #include "browserhandler.h"
-#include "displaydriver.h"
 
-// interface handlers
-#include "homeprobe.h"
-#include "powerprobe.h"
+#include "probefactory.h"
+#include "displaydriver.h"
+#include "interfaceprobe.h"
 
 using namespace std;
 using namespace probe;
 
 BrowserHandler::BrowserHandler( orcaice::Buffer<BrowserEvent> & eventPipe,
+                                ProbeFactory & probeFactory,
                                 DisplayDriver & display,
                                 const orcaice::Context & context )
     : eventPipe_(eventPipe),
+      probeFactory_(probeFactory),
       displayDriver_(display),
       ifaceProbe_(0),
       context_(context)
@@ -104,24 +105,18 @@ BrowserHandler::loadComponent()
     componentData_ = orcacm::getComponentData( context_,
                         orcaice::toString(registryData_.adapters[pick_].name) );
 
-    /*
-    // mark the interfaces as (un)supported
-    for ( uint i=0; i<componentData_.provides.size(); ++i ) {
-        std::string id = componentData_.provides[i].id;
-        if ( id == "::orca::Home" || id == "::orca::Power" ) {
-            componentData_.provides[i].isSupported = true;
-        }
-        else {
-            componentData_.provides[i].isSupported = false;
-        }
-    }
-    */
     displayDriver_.showComponentData( componentData_ );
 }
 
 void 
 BrowserHandler::loadInterface()
 {
+    // special case: the interface is actually created every time, so here we try to delete it to avoid mem leak.
+    //cout<<"unloading interface"<<endl;
+    if ( ifaceProbe_ ) {
+        delete ifaceProbe_;
+    }
+
     //cout<<"loading interface data for "<<componentData_.provides[pick_].name<<endl;
     lastInterfacePick_ = pick_;
 
@@ -133,19 +128,15 @@ BrowserHandler::loadInterface()
     //
     // Load interface handler
     //
-    if ( interfaceData_.id == "::orca::Home" ) {
-        ifaceProbe_ = new HomeProbe( interfaceData_.name, displayDriver_, context_ );
-    }
-    else if ( interfaceData_.id == "::orca::Power" ) {
-        ifaceProbe_ = new PowerProbe( interfaceData_.name, displayDriver_, context_ );
-    }
-    else {
+    ifaceProbe_ = probeFactory_.create( interfaceData_.id, interfaceData_.name, displayDriver_, context_ );
+
+    if ( ifaceProbe_==0 ) {
         cout<<"unsupported interface. Sending fault event."<<endl;
         eventPipe_.push( FaultEvent );
         return;
     }
-    interfaceData_.operations = ifaceProbe_->operations();
     
+    interfaceData_.operations = ifaceProbe_->operations();
     displayDriver_.showInterfaceData( interfaceData_ );
 }
 
@@ -167,4 +158,6 @@ BrowserHandler::loadOperation()
 void 
 BrowserHandler::quit()
 {
+    cout<<"Quitting..."<<endl;
+    cout<<"Not implemented, use Ctrl-C."<<endl;
 }

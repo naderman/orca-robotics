@@ -24,7 +24,7 @@ This component receives and displays status messages coming from components depl
 
 @par Requires
 
-- orca_interface_home
+- @ref orca_interface_home
 
 @par Drivers
 

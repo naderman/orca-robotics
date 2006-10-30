@@ -12,6 +12,7 @@
 #define ORCA2_PROBE_POWER_INTERFACE_PROBE_H
 
 #include "interfaceprobe.h"
+#include <orca/power.h>
 
 namespace probe
 {
