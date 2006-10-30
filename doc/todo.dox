@@ -40,6 +40,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - New component: OrcaView3d
     - a 3-D visualisation component
     - Ben Upcroft, Waleed Kadous, Alex Brooks
+- New utility: Probe
+    - a utility to browse and probe remote orca interfaces.
+    - Alex Makarenko
 - OrcaIce library
     - added docs for tracing functions and properties (Alex Makarenko)
     - component config file may now be specified with Ice.Config in addition to Orca.Config parameter. This is done for compatibility with IceGrid (Alex Makarenko)
