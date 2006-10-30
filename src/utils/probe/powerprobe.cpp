@@ -31,7 +31,8 @@ PowerProbe::PowerProbe( const orca::FQInterfaceName & name, DisplayDriver & disp
     operations_.push_back( "unsubscribe" );
 }
     
-int PowerProbe::loadOperation( const int index )
+int 
+PowerProbe::loadOperation( const int index )
 {
     //cout<<"loading home operation "<<index<<endl;
 
@@ -57,25 +58,27 @@ int PowerProbe::loadOperation( const int index )
     return ret;
 }
 
-int PowerProbe::loadGetData()
+int 
+PowerProbe::loadGetData()
 {
-    orca::PowerDataPtr powerData;
+    orca::PowerDataPtr data;
     
     try
     {
         orca::PowerPrx derivedPrx = orca::PowerPrx::checkedCast(prx_);
-        powerData = derivedPrx->getData();
+        data = derivedPrx->getData();
     }
     catch( const Ice::Exception & e )
     {
         return 1;
     }
 
-    cout<<powerData<<endl;
+    cout<<orcaice::toString(data)<<endl;
     return 0;
 }
 
-int PowerProbe::loadSubscribe()
+int 
+PowerProbe::loadSubscribe()
 {
     // create the consumer only when needed
     Ice::ObjectPtr consumer = new PowerConsumerI;
@@ -99,7 +102,8 @@ int PowerProbe::loadSubscribe()
     return 0;
 }
 
-int PowerProbe::loadUnsubscribe()
+int 
+PowerProbe::loadUnsubscribe()
 {
     try
     {

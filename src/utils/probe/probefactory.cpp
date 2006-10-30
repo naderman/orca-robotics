@@ -12,6 +12,7 @@
 
 // interface handlers
 #include "homeprobe.h"
+#include "laserprobe.h"
 #include "powerprobe.h"
 
 using namespace probe;
@@ -19,7 +20,7 @@ using namespace probe;
 bool 
 ProbeFactory::isSupported( const std::string & id )
 {
-    if ( id == "::orca::Home" || id == "::orca::Power" ) {
+    if ( id == "::orca::Home" || id == "::orca::Laser" || id == "::orca::Power" ) {
         return true;
     }
     else {
@@ -37,6 +38,9 @@ ProbeFactory::create( const std::string & id, const orca::FQInterfaceName & name
 
     if ( id == "::orca::Home" ) {
         return new HomeProbe( name, display, context );
+    }
+    else if ( id == "::orca::Laser" ) {
+        return new LaserProbe( name, display, context );
     }
     else if ( id == "::orca::Power" ) {
         return new PowerProbe( name, display, context );
