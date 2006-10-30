@@ -32,7 +32,7 @@ This component receives and displays status messages coming from components depl
 
 @par Operation
 
-Like any other component, this one needs to connect to an IceGrid Registry on startup. After the statup, the registry may become unavailable. One can also specify additional registries to get information from.
+This utility connects to the registry and gets a list of components. The user can then select an component and get a list of its interfaces (if Home interface is available). Then choose an interface (if supported by Probe) and get a list of operations. Choose an operation to call, e.g. getData(). 
 
 @par Configuration
 
@@ -44,6 +44,20 @@ Like any other component, this one needs to connect to an IceGrid Registry on st
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
 @section orca_probe_iostream Basic display driver to terminal window.
+
+Displays lists of options with available entries numbered. Here's an example of the Interface menu. The component here has 3 interfaces but only one (Home) is supported by Probe.
+
+@verbatim
+Component : pomdpbitch/faithlocaliser
+Select an interface from the list:
+        localise2d      ::orca::Localise2d
+        status          ::orca::Status
+2       home            ::orca::Home
+u       Up
+r       Reload
+q       Quit
+==>  
+@endverbatim
 
 @par Authors
 
