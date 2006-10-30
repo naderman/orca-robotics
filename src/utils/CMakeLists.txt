@@ -24,6 +24,7 @@ ADD_SUBDIRECTORY ( orcapathplan )
 ADD_SUBDIRECTORY ( orcaplayer )
 ADD_SUBDIRECTORY ( orcaportability )
 ADD_SUBDIRECTORY ( orcaserial )
+ADD_SUBDIRECTORY ( probe )
 ADD_SUBDIRECTORY ( qorcacm )
 #  qorcagui
 # UTILITY APPLICATIONS

@@ -1,0 +1,5 @@
+DefaultComponentTag=Probe
+
+# configuration
+Config.Driver.Comment=Options are { 'iostream' }
+Config.Driver.Default=iostream

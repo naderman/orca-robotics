@@ -1,0 +1,53 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alexei Makarenko
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@ingroup utils
+@ingroup cpp
+@ingroup linux
+@defgroup orca_util_probe Probe
+@brief A tool to browse and probe remote Orca interfaces.
+
+This component receives and displays status messages coming from components deployed on multiple platforms.
+
+@par Provides
+
+- none
+
+@par Requires
+
+- orca_interface_home
+
+@par Drivers
+
+- @b iostream @ref orca_probe_iostream
+
+@par Operation
+
+Like any other component, this one needs to connect to an IceGrid Registry on startup. After the statup, the registry may become unavailable. One can also specify additional registries to get information from.
+
+@par Configuration
+
+- @c Probe.Config.Driver (string)
+    - Type of hardware driver
+    - Valid values: { 'iostream' }
+    - Default: 'iostream'
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
+@section orca_probe_iostream Basic display driver to terminal window.
+
+@par Authors
+
+Alex Makarenko
+
+*/
+

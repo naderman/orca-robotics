@@ -1,0 +1,42 @@
+FSMName BrowserFsm
+Context BrowserContext
+Initial Idle
+Header  browsercontext.h
+//Version $Id$
+
+{
+
+Idle{
+    activate    Registry    loadRegistry
+}
+
+Registry{
+    pick    Component   loadComponent
+    reload  Registry    loadRegistry
+    fault   Idle        quit
+    deactivate    Idle        quit
+}
+
+Component{
+    pick    Interface   loadInterface
+    reload  Component   {pickLastComponent loadComponent}
+    up      Registry    loadRegistry
+    fault   Registry    loadRegistry
+    deactivate    Idle        quit
+}
+
+Interface{
+    pick    Operation   loadOperation
+    reload  Interface   {pickLastInterface loadInterface}
+    up      Component   {pickLastComponent loadComponent}
+    fault   Component   {pickLastComponent loadComponent}
+    deactivate    Idle        quit
+}
+
+Operation{
+    reload  Operation   {pickLastOperation loadOperation}
+    up      Interface   {pickLastInterface loadInterface}
+    fault   Interface   {pickLastInterface loadInterface}
+    deactivate    Idle        quit
+}
+}
