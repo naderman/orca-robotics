@@ -1,5 +1,6 @@
 OPTION( BUILD_PROBE "Try to build Probe" ON )
 
+IF ( NOT WIN32 )
 IF ( BUILD_PROBE )
 
     INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
@@ -37,3 +38,4 @@ IF ( BUILD_PROBE )
     GENERATE_CONFIG_FILE( probe.def )
 
 ENDIF ( BUILD_PROBE )
+ENDIF ( NOT WIN32 )
