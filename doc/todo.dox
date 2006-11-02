@@ -46,6 +46,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - OrcaIce library
     - added docs for tracing functions and properties (Alex Makarenko)
     - component config file may now be specified with Ice.Config in addition to Orca.Config parameter. This is done for compatibility with IceGrid (Alex Makarenko)
+    - renamed Orca.Tracer.DoTimestamp config paramter to Orca.Tracer.Timestamp, to be similar to Ice.Logger.Timestamp (Alex Makarenko)
+    - added a new config parameter Orca.RequireRegistry to allow start up components without registry (Alex Makarenko)
+
 - SickLaser component
     - PlayerClient driver can now connect to multiple lasers on the same robot (Alex Makarenko)
 
