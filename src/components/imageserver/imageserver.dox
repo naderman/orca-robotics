@@ -67,6 +67,11 @@ Camera Settings
     - Valid values: { "240, 480, 600, 768, 960, 1200" (respectively with width)} - will return an error if the camera doesn't support this particuar height.
     - Default: "0": A value of 0 causes the driver to query and use the camera's default image height.
 
+  - @c Camera.Config.CameraIndex (integer)
+    - Index of the camera to be used (currently opencv supports up to 2 cameras at once)
+    - Valid values: { "0, 1"} - will return an error if the index is less than 0 or greater than 1.
+    - Default: "0": A value of 0 causes the driver to find the first available camera.
+      
 Geometry
 
 - @c Camera.Config.Offset (Frame3d) [m, deg]

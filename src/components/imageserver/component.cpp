@@ -157,6 +157,16 @@ Component::start()
         throw orcaice::Exception( ERROR_INFO, errString );
     }
 
+    int cameraIndex = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CameraIndex", 0 );
+ cout << "cameraIndex: " << cameraIndex << endl;   
+    if ( ( cameraIndex < 0 ) || ( cameraIndex > 1 ) )
+    {
+        std::string errString = "Only two cameras are supported \n \t cameraIndex must equal 0 for a single camera or 1 for a second camera'";
+        errString += prefix + "CameraIndex'";
+        throw orcaice::Exception( ERROR_INFO, errString );
+    }
+
+
     //
     // HARDWARE INTERFACES
     //
@@ -173,8 +183,8 @@ Component::start()
         // Use opencv implementation for a monocular camera...
 
         // Initialize Opencv ImageGrabber
-//        imageGrabber_ = new CvGrabber( cameraIndex );
-        imageGrabber_ = new CvGrabber();
+        imageGrabber_ = new CvGrabber( cameraIndex );
+//        imageGrabber_ = new CvGrabber();
 
         hwDriver_ = new MonoDriver( imageGrabber_, context() );
 

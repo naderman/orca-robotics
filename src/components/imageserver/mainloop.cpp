@@ -235,7 +235,8 @@ MainLoop::initialiseCamera(CameraDataPtr& cameraData, CameraConfigPtr& desiredCo
     }
     std::cout << "imageGrabber_->width(): " << imageGrabber_->width() << std::endl;
     std::cout << "imageGrabber_->height(): " << imageGrabber_->height() << std::endl;
-    
+    std::cout << "cameraData->format: " <<  cameraData->format << std::endl;    
+
     // resize the object for the correct image size
     cameraData->image.resize( imageGrabber_->size() );
     
