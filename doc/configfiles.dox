@@ -133,6 +133,8 @@ ComponentTag.Provides.InterfaceTag2.Name=i2
 
 This component has two provided interfaces. When this component is initialized it registers them with the registry under the following names: \e i1\@p1/c1 and \e i2\@p1/c1. The implementation of ZeroC's IceGrid Registry requires that the interface name must be unique within an Orca component, and the combination of the platform and component names must be unique within the registy.
 
+Default value for @c ComponentTag.Platform is "local". Default value for @c ComponentTag.Component is the value of ComponentTag converted to lower case..
+
 @verbatim
 ComponentTag.Platform=p2
 ComponentTag.Component=c2
