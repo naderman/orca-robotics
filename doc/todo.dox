@@ -46,7 +46,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - OrcaIce library
     - added docs for tracing functions and properties (Alex Makarenko)
     - component config file may now be specified with Ice.Config in addition to Orca.Config parameter. This is done for compatibility with IceGrid (Alex Makarenko)
-
+- SickLaser component
+    - PlayerClient driver can now connect to multiple lasers on the same robot (Alex Makarenko)
 
 @section orca_doc_todo_history Changes in Past Releases
 
