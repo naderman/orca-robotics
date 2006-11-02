@@ -48,6 +48,14 @@ void
 LaserMonComponent::start()
 {
     cout<<"LaserMonComponent::start"<<endl;
+
+    //
+    // ENABLE NETWORK
+    //
+    // this may throw an exception which will be caught in Application
+    // but will cause the app to exit
+    activate();
+
     //
     // REQUIRED INTERFACE: Laser
     //
@@ -114,12 +122,6 @@ LaserMonComponent::start()
     Ice::ObjectPtr consumer = new RangeScannerConsumerI;
     orca::RangeScannerConsumerPrx callbackPrx =
         orcaice::createConsumerInterface<orca::RangeScannerConsumerPrx>( context(), consumer );
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // this may throw an exception which will be caught in Application
-    // but will cause the app to exit
-    activate();
     
     //
     // Subscribe for data
