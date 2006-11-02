@@ -65,7 +65,7 @@ private:
     int lastComponentPick_;
     int lastInterfacePick_;
     int lastOperationPick_;
-    orcacm::RegistryData registryData_;
+    orcacm::RegistryHomeData registryData_;
     orcacm::ComponentData componentData_;
     orcacm::InterfaceData interfaceData_;
     orcacm::OperationData operationData_;

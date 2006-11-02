@@ -24,7 +24,7 @@ public:
 
     virtual ~DisplayDriver() {};
 
-    virtual void showRegistryData( const orcacm::RegistryData & data )=0;
+    virtual void showRegistryData( const orcacm::RegistryHomeData & data )=0;
     
     virtual void showComponentData( const orcacm::ComponentData & data )=0;
     

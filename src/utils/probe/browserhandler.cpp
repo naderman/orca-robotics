@@ -91,7 +91,8 @@ BrowserHandler::loadRegistry()
 {
     //cout<<"loading registry data for :"<<context_.communicator()->getDefaultLocator()->ice_toString()<<endl;
     
-    registryData_ = orcacm::getRegistryData( context_, context_.communicator()->getDefaultLocator()->ice_toString() );
+//     registryData_ = orcacm::getRegistryData( context_, context_.communicator()->getDefaultLocator()->ice_toString() );
+    registryData_ = orcacm::getRegistryHomeData( context_, context_.communicator()->getDefaultLocator()->ice_toString() );
     
     displayDriver_.showRegistryData( registryData_ );
 }
@@ -102,8 +103,9 @@ BrowserHandler::loadComponent()
     //cout<<"loading component data for "<<orcaice::toString(registryData_.adapters[pick_].name)<<endl;
     lastComponentPick_ = pick_;
     
-    componentData_ = orcacm::getComponentData( context_,
-                        orcaice::toString(registryData_.adapters[pick_].name) );
+//     componentData_ = orcacm::getComponentData( context_,
+//                         orcaice::toString(registryData_.adapters[pick_].name) );
+    componentData_ = orcacm::getComponentHomeData( context_, registryData_.homes[pick_] );
 
     displayDriver_.showComponentData( componentData_ );
 }
