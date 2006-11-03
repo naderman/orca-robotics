@@ -21,13 +21,13 @@
 
 - @ref orca_interface_home
 - @ref orca_interface_status
-- @ref orca_interface_pathfollower2d
+- @ref orca_interface_pathfollower2d [tag=PathFollower2d]
 
 @par Requires
 
-- @ref orca_interface_rangescanner
-- @ref orca_interface_localise2d
-- @ref orca_interface_platform2d
+- @ref orca_interface_rangescanner [tag=Observations]
+- @ref orca_interface_localise2d [tag=Locacalisation]
+- @ref orca_interface_platform2d [tag=Platform2d]
 
 @par Drivers
 
