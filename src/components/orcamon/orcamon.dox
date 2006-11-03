@@ -17,18 +17,20 @@
 @defgroup orca_component_orcamon OrcaMon
 @brief Connects the specified proxy and subscribes to data updates.
 
-@par Provided Interfaces
+@par Provides
 
 - @ref orca_interface_home
 
-@par Required Interfaces (one of)
+@par Requires (one of)
 
-- @ref orca_interface_laser
-- @ref orca_interface_localise2d
-- @ref orca_interface_ogmap
-- @ref orca_interface_position2d
-- @ref orca_interface_power
-- @ref orca_interface_status
+- @ref orca_interface_laser [OrcaMon.Requires.Generic]
+- @ref orca_interface_localise2d [OrcaMon.Requires.Generic]
+- @ref orca_interface_ogmap [OrcaMon.Requires.Generic]
+- @ref orca_interface_position2d [OrcaMon.Requires.Generic]
+- @ref orca_interface_power [OrcaMon.Requires.Generic]
+- @ref orca_interface_status [OrcaMon.Requires.Generic]
+
+@par Operation
 
 The type of the remote object is determined dynamically at the time of connection.
 

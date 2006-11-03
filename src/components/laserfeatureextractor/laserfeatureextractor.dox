@@ -21,12 +21,14 @@
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_polarfeature2d
+- @ref orca_interface_polarfeature2d [LaserFeatureExtractor.Provides.PolarFeature2d]
 - @ref orca_interface_status
 
 @par Requires
 
-- @ref orca_interface_laser
+- @ref orca_interface_laser [LaserFeatureExtractor.Requires.Laser]
+
+@par Operation
 
 The component receives features from laser scans, useful for navigation. Types of features extracted:
 
@@ -34,7 +36,6 @@ The component receives features from laser scans, useful for navigation. Types o
 - foreground points: things like poles or trees
 - corners: internal and external corners eg. of buildings
 - doors: gaps in walls of a certain width
-
 
 @par Configuration
 
@@ -44,15 +45,18 @@ Reflectors
 
 - @c LaserFeatureExtractor.Config.ExtractReflectors (bool)
     - Default: true
+
 - @c LaserFeatureExtractor.Config.Reflectors.MaxDeltaRangeNearReflector (float) [m]
     - Don't extract a feature if there's a jump in the ranges > this threshold
       near the reflector.
       This reject spurious reflectors that are partially-obscured behind a foreground obstacle.
       It also reduces the angles about which a reflector on a corner can be extracted.
     - Default: 0.5
+
 - @c LaserFeatureExtractor.Config.Reflectors.MaxDeltaRangeWithinReflector (float) [m]
     - A reflector that includes a jump in range > this threshold will be ignored.
       Default: 0.3
+
 - @c LaserFeatureExtractor.Config.Reflectors.MinBrightness (int)
     - minimum intensity value to be considered a feature
     - Default: 1
@@ -60,14 +64,16 @@ Reflectors
 Foreground Points
 
 - @c LaserFeatureExtractor.Config.ExtractForegroundPoints (bool)
-    - boolean
     - Default: 0
+
 - @c LaserFeatureExtractor.Config.FGPoints.MinForegroundWidth (float) [m]
     - minimum width of poles/trees
+
 - @c LaserFeatureExtractor.Config.FGPoints.MaxForegroundWidth (float) [m]
-    - maximum width of poles/trees
+    - maximum width of poles and trees
+
 - @c LaserFeatureExtractor.Config.FGPoints.MinForegroundBackgroundSeparation (float) [m]
-    - how far the pole/tree must be from the background
+    - how far the pole or tree must be from the background
 
 Corners
 

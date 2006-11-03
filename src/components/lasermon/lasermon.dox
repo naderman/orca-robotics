@@ -18,13 +18,15 @@
 @defgroup orca_component_lasermon LaserMon
 @brief A simple component that prints laser ranges
 
-@par Provided Interfaces
+@par Provides
 
 - @ref orca_interface_home
 
-@par Required Interfaces
+@par Requires
 
-- @ref orca_interface_laser
+- @ref orca_interface_laser [LaserMon.Requires.Laser]
+
+@par Operation
 
 A simple example that connects to a laser server and displays the ranges (textually) in the terminal window.
 

@@ -20,26 +20,25 @@
  
 The goalplanner plans a path from the current position of a robot to a global world coordinate (or a series of coordinates - a coarse path). It currently uses @ref orca_component_pathplanner for planning. It sends the resulting fine path to a local navigator, e.g. @ref orca_component_localnav.
 
-The following happens in sequencential order in the mainloop:
-- Wait for a "task" path which someone (e.g. @ref orca_component_orcaview ) sends via the provided Pathfollower2d interface.
-- Prepend the current position of the robot to the task path.
-- Send task path to the pathplanner and wait for an answer.
-- Send out resulting, fine-grained path through the required PathFollower2d interface.
-
-@par Provided Interfaces
+@par Provides
 
 - @ref orca_interface_home
 - @ref orca_interface_status
-- @ref orca_interface_pathfollower2d
+- @ref orca_interface_pathfollower2d [GoalPlanner.Provides.PathFollower2d]
 
-@par Required Interfaces
+@par Requires
 
-- @ref orca_interface_pathfollower2d
-- @ref orca_interface_localise2d
-- @ref orca_interface_pathplanner2d
+- @ref orca_interface_localise2d [GoalPlanner.Requires.Localise2d]
+- @ref orca_interface_pathfollower2d [GoalPlanner.Requires.PathFollower2d]
+- @ref orca_interface_pathplanner2d [GoalPlanner.Requires.PathPlanner2d]
 
-@par Drivers
-None.
+@par Operation
+
+The following happens in sequencential order in the mainloop:
+- Wait for a "task" path which someone (e.g. @ref orca_component_orcaview ) sends via the provided PathFollower2d interface.
+- Prepend the current position of the robot to the task path.
+- Send task path to the pathplanner and wait for an answer.
+- Send out resulting, fine-grained path through the required PathFollower2d interface.
 
 @par Configuration
 None.

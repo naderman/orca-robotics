@@ -21,17 +21,17 @@
 
 - @ref orca_interface_home
 - @ref orca_interface_status
-- @ref orca_interface_pathfollower2d [tag=PathFollower2d]
+- @ref orca_interface_pathfollower2d [LocalNav.Provides.PathFollower2d]
 
 @par Requires
 
-- @ref orca_interface_rangescanner [tag=Observations]
-- @ref orca_interface_localise2d [tag=Locacalisation]
-- @ref orca_interface_platform2d [tag=Platform2d]
+- @ref orca_interface_rangescanner [LocalNav.Requires.Observations]
+- @ref orca_interface_localise2d [LocalNav.Requires.Localisation]
+- @ref orca_interface_platform2d [LocalNav.Requires.Platform2d]
 
 @par Drivers
 
-- @b @ref orca_localnav_vfh
+- @b vfhdriver @ref orca_localnav_vfh
 
 @par Configuration
 
@@ -73,7 +73,7 @@ within reasonable safe limits.
 
 
 
-@section orca_localnav_vfh VFH driver
+@section orca_localnav_vfh Vector Field Histogram Plus (VFH+) driver
 
     The VFH driver implements the Vector Field Histogram Plus (VFH+)
     local navigation method by Ulrich and Borenstein.  VFH+ provides
@@ -86,62 +86,79 @@ within reasonable safe limits.
 
     Some important configuration parameters:
 
-    - RobotRadius: max radius of the (assumed circular) robot.
+- @c LocalNav.Config.RobotRadius (double) [m]
+    - max radius of the (assumed circular) robot.
 
-    - SafetyDist0ms: the distance the robot should keep from obstacles when travelling at 0 m/s.
+- @c LocalNav.Config.SafetyDist0ms (double) [m]
+    - the distance the robot should keep from obstacles when travelling at 0 m/s.
 
-    - SafetyDist1ms: the distance the robot should keep from obstacles when travelling at 1 m/s.
+- @c LocalNav.Config.SafetyDist1ms (double) [m]
+    - the distance the robot should keep from obstacles when travelling at 1 m/s.
 
-    - FreeSpaceCutoff0ms: Controls how close the robot has to be to an
+- @c LocalNav.Config.FreeSpaceCutoff0ms (double) [m]
+    - Controls how close the robot has to be to an
       obstacle to be afraid of it, when travelling at 0 m/s.  A small value makes 
       the robot cautious, a large value makes it brave.
 
-    - FreeSpaceCutoff1ms: See FreeSpaceCutoff0ms.  The value used scales linearly with speed.
+- @c LocalNav.Config.FreeSpaceCutoff0ms (double) [m]
+    - See FreeSpaceCutoff0ms.  The value used scales linearly with speed.
 
-    - ObsCutoff0ms: Setting this differently to FreeSpaceCutoff0ms causes VFH to use some hysteresis
+- @c LocalNav.Config.ObsCutoff0ms (double) [m]
+    - Setting this differently to FreeSpaceCutoff0ms causes VFH to use some hysteresis
       in deciding what an obstacle is.  For laser range-finders, setting it to FreeSpaceCutoff0ms
       seems to work just fine.
 
-    - ObsCutoff1ms: see ObsCutoff0ms
+- @c LocalNav.Config.ObsCutoff1ms (double) [m]
+    - see ObsCutoff0ms
 
-    - WeightDesiredDir: To force it to commit, VFH is provided with a built-in tendency to stick to its
+- @c LocalNav.Config.WeightDesiredDir (double)
+    - To force it to commit, VFH is provided with a built-in tendency to stick to its
       previous course of action.  WeightDesiredDir and WeightCurrentDir determine the strength of this tendency.
 
-    - WeightCurrentDir: see WeightDesiredDir
+- @c LocalNav.Config.WeightCurrentDir (double)
+    - see WeightDesiredDir
 
-    - CellSize: VFH build a small local occupancy grid map for obstacle detection.  This controls the width
+- @c LocalNav.Config.CellSize (double) [m]
+    - VFH builds a small local Occupancy Grid map for obstacle detection.  This controls the width
       of each occupancy grid cell.
 
-    - GridWidthInCells: This parameter, together with CellSize, determine the size of the local
+- @c LocalNav.Config.GridWidthInCells (int)
+    - This parameter, together with CellSize, determine the size of the local
       occupancy grid.
 
-    - SectorAngle: The number of bins in VFH's local histogram.
+- @c LocalNav.Config.GridWidthInCells (int)
+    - The number of bins in VFH's local histogram.
 
-    - MaxAcceleration: maximum acceleration, in metres/sec/sec.
+- @c LocalNav.Config.MaxAcceleration (double) [m/s2]
+    - maximum acceleration
 
-    - MaxTurnrate0ms: maximum turnrate at 0 m/s.  Units in degrees/sec.
+- @c LocalNav.Config.MaxTurnrate0ms (double) [deg/s]
+    - maximum turnrate at 0 m/s.
 
-    - MaxTurnrate1ms: maximum turnrate at 1m/s.  Units in degrees/sec.
+- @c LocalNav.Config.MaxTurnrate1ms (double) [deg/s]
+    - maximum turnrate at 1m/s.
 
-    - AbsoluteMaxTurnrate: this is for safety.  We'll never turn faster than this.
+- @c LocalNav.Config.AbsoluteMaxTurnrate (double) [deg/s]
+    - this is for safety.  We'll never turn faster than this.
 
-    - MinTurnRadiusSafetyFactor: MinTurnRadius is calculated for the
-      current speed and max turnrate.  It is then multiplied by
-      minTurnRadiusSafetyFactor, to account for side-slip while
-      cornering quickly.  The default value is 1.10.
+- @c LocalNav.Config.MinTurnRadiusSafetyFactor (double)
+    - MinTurnRadius is calculated for the current speed and max turnrate.  It is then multiplied by
+      minTurnRadiusSafetyFactor, to account for side-slip while cornering quickly.
+    - default 1.10
 
     For the next three speed arguments: These are the absolute max values that VFH will use.
     Setting a path with a long time between waypoints will cause VFH to go slower.
 
-    - MaxSpeed: the robot's maximum speed in m/s -- it will never try to go
-      faster than this.
+- @c LocalNav.Config.MaxSpeed (double) [m/s]
+    - the robot's maximum speed -- it will never try to go faster than this.
 
-    - MaxSpeedNarrowOpening: Max speed while travelling through a narrow opening 
-      (defined as an opening of less than 80degrees) in m/s.  This is
+- @c LocalNav.Config.MaxSpeedNarrowOpening (double) [m/s]
+    - Max speed while travelling through a narrow opening 
+      (defined as an opening of less than 80degrees).  This is
       thresholded if the max_speed is decreased at run-time.
 
-    - MaxSpeedWideOpening: Max speed (in m/s) while travelling
-      along the border of an obstacle,
+- @c LocalNav.Config.MaxSpeedWideOpening (double) [m/s]
+    - Max speed while travelling along the border of an obstacle,
       when the opening is greater than 80 degrees.  This is
       thresholded if the max_speed is decreased at run-time.
 
@@ -186,24 +203,20 @@ SectorAngle.
     
 @par Notes and credits
 
-    This is an implementation of the paper:
-
-@inproceedings{Ulrich98Reliable,
+The algorithm implemented here is described in this paper:
+@verbatim
+@inproceedings { 
+  Ulrich98Reliable,
   Author = {Ulrich, I. and Borenstein, J.},
   Title = {VFH+: Reliable Obstacle Avoidance for Fast Mobile Robots},
   BookTitle = {IEEE International Conference on Robotics and Automation(ICRA '98)},
   Pages = {1572--1577},
   Year = {1998}
 }
-
-    The code that implements the VFH algorithm was taken
-    from Player, heavily modified, then re-submitted to the Player project.
+@endverbatim
+The code that implements the VFH algorithm was taken from Player, heavily modified, then re-submitted to the Player project.
 
 @section internal Internal Structure
-    
-@image html localnav_whitebox.png
-
-@par For developers:
 
 The Main pieces of LocalNav are:
 

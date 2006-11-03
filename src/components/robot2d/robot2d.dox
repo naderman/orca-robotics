@@ -20,7 +20,7 @@
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_platform2d
+- @ref orca_interface_platform2d [Robot2d.Provides.Platform2d]
 - @ref orca_interface_status
 
 @par Requires

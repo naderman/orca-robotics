@@ -19,7 +19,7 @@
 
 @par Provides
 
-- @ref orca_interface_camera
+- @ref orca_interface_camera [ImageServer.Provides.Camera]
 - @ref orca_interface_home
 - @ref orca_interface_status
 
@@ -32,6 +32,8 @@
 - @b monoopencv @ref orca_camera_monoopencv
 - @b digiclops @ref orca_camera_digiclops - NOTE: NOT VERY FUNCTIONAL YET
 - @b fake Useful for testing or if you don't have hardware or a simulator.
+
+@par Operation
 
 This component encapsulates an image grabber for usb and firewire cameras. It can run either as a stand-alone component or an IceBox Service.
 

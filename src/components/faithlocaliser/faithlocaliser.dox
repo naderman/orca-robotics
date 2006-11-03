@@ -19,15 +19,16 @@
 @brief A simple component that produces localisation info from odometry
 
 
-@par Provided Interfaces
+@par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_localise2d
+- @ref orca_interface_localise2d [FaithLocaliser.Provides.Localise2d]
 
-@par Required Interfaces
+@par Requires
 
-- @ref orca_interface_position2d
+- @ref orca_interface_position2d [FaithLocaliser.Requires.Odometry]
 
+@par Operation
 
 This component takes odometry information and produces localisation information.
 No filtering is performed: instead, the component trusts that the odometry is perfect,

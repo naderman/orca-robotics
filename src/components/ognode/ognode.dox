@@ -19,13 +19,15 @@
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_ogfusion
-- @ref orca_interface_ogmap
+- @ref orca_interface_ogfusion [OgNode.Provides.OgFusion]
+- @ref orca_interface_ogmap [OgNode.Provides.OgMap]
 - @ref orca_interface_status
 
 @par Requires
 
 - none
+
+@par Operation
 
 This component fuses ogcell sequences from OgFusionData 
 objects (from a Laser2Og component) The result is available 

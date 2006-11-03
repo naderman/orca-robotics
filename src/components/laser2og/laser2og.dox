@@ -23,9 +23,11 @@
 
 @par Requires
 
-- @ref orca_interface_localise2d
-- @ref orca_interface_ogfusion
-- @ref orca_interface_rangescanner
+- @ref orca_interface_localise2d [Laser2Og.Requires.Localisation]
+- @ref orca_interface_ogfusion [Laser2Og.Requires.OgFusion]
+- @ref orca_interface_rangescanner [Laser2Og.Requires.RangeScanner]
+
+@par Operation
 
 This component generates OgCellLikelihood sequences using 
 range scans from a globally localized range scanner.

@@ -18,15 +18,17 @@
 @brief A simple component that displays images from a remote camera.
 
 
-@par Provided Interfaces
+@par Provides
 
 - @ref orca_interface_home
 
-@par Required Interfaces
+@par Requires
 
-- @ref orca_interface_camera
+- @ref orca_interface_camera [ImageViewer.Requires.Camera]
 
-An example that connects to an image server and displays the image in an opencv window. It can run either as a stand-alone component or an IceBox Service.
+@par Operation
+
+A simple component that connects to an ImageServer and displays the image in an opencv window. It can run either as a stand-alone component or an IceBox Service.
 
 Images are displayed as soon as they arrive.
 

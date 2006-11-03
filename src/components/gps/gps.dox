@@ -31,7 +31,7 @@
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_gps
+- @ref orca_interface_gps [Gps.Provides.Gps]
 - @ref orca_interface_status
 
 @par Requires
@@ -42,6 +42,8 @@
 
 - @b ashtech @ref gps_ashtech
 - @b fake Useful for testing or if you don't have hardware or a simulator.
+
+@par Operation
 
 This component encapsulates a GPS receiver.
 

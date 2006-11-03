@@ -20,16 +20,16 @@
 
 The pathplanner acts like a service receiving tasks from third parties and returning a computed path in a 2D world represented by an occupancy grid map. An example for a third party is the @ref orca_component_pathplantester.
 
-@par Provided Interfaces
+@par Provides
 
 - @ref orca_interface_home
+- @ref orca_interface_qgraphics2d [PathPlanner.Provides.SkeletonGraphics] (@ref orca_pathplanner_skeletonnav and @ref orca_pathplanner_sparseskeletonnav drivers only)
+- @ref orca_interface_pathplanner2d [PathPlanner.Provides.PathPlanner2d]
 - @ref orca_interface_status
-- @ref orca_interface_pathplanner2d
-- @ref orca_interface_qgraphics2d (@ref orca_pathplanner_skeletonnav and @ref orca_pathplanner_sparseskeletonnav drivers only)
 
-@par Required Interfaces
+@par Requires
 
-- @ref orca_interface_ogmap
+- @ref orca_interface_ogmap [PathPlanner.Requires.OgMap]
 
 @par Drivers
 
@@ -51,9 +51,8 @@ The pathplanner acts like a service receiving tasks from third parties and retur
     - Valid values: [0.0;1.0]
     - Default: 0.6
 
-- @c PathPlanner.Config.RobotDiameterMetres (double)
+- @c PathPlanner.Config.RobotDiameterMetres (double) [m]
     - The robot's diameter including some safety distance
-    - Unit: meters
     - Default: 0.8
 
 - @c PathPlanner.Config.DoPathOptimization (bool)

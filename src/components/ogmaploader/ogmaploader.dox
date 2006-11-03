@@ -19,7 +19,7 @@
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_ogmap    
+- @ref orca_interface_ogmap [OgMapLoader.Provides.OgMap]
 - @ref orca_interface_status
 
 @par Requires
@@ -30,6 +30,8 @@
 
 - @b fake Serves a bogus made-up map.
 - @b file Loads an occupancy grid map from a file.
+
+@par Operation
 
 Supportes file types are:
 

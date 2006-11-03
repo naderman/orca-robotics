@@ -19,13 +19,13 @@
 @brief Produces simulated localisation.
 
 
-@par Provided Interfaces
+@par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_localise2d
+- @ref orca_interface_localise2d [SimLocaliser.Provides.Localise2d]
 - @ref orca_interface_status
 
-@par Required Interfaces
+@par Requires
 
 - none
 
@@ -33,6 +33,8 @@
 
 - @b static @ref orca_simlocaliser_static
 - @b stage @ref orca_simlocaliser_stage (does not currently work)
+
+@par Operation
 
 This component simulates localisation information internally or talks to an external simulator.
 
