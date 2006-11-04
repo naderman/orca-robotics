@@ -20,6 +20,7 @@ SET( SLICE_SOURCE_FILES
     opaque.ice
 #interfaces
     binaryindicator.ice
+    binaryswitch.ice
     gps.ice
     home.ice
     rangescanner.ice

@@ -77,14 +77,17 @@ exception HardwareFailedException extends OrcaException {};
 //! Raised when the server fails to subscribe client for periodic updates.
 exception SubscriptionFailedException extends OrcaException {};
 
-//! Raised when the component is unable to process requests
+//! Raised when the component is unable to process requests.
 exception BusyException extends OrcaException {};
 
 //! Raised when a component failed to connect to a required interface
 exception RequiredInterfaceFailedException extends OrcaException {};
 
-//! Raised when one or more parameters to a remote request were malformed
+//! Raised when one or more parameters to a remote request were malformed.
 exception MalformedParametersException extends OrcaException {};
+
+//! Raised when a remote operation is not implemented.
+exception OperationNotImplementedException extends OrcaException {};
 
 }; // module
 
