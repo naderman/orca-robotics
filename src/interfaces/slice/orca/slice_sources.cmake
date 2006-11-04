@@ -21,6 +21,7 @@ SET( SLICE_SOURCE_FILES
 #interfaces
     binaryindicator.ice
     binaryswitch.ice
+    cpu.ice
     gps.ice
     home.ice
     rangescanner.ice

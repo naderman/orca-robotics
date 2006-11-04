@@ -21,7 +21,7 @@ module orca
 /*!
     @ingroup interfaces
     @defgroup orca_interface_home Home
-    @brief Navigate Orca component model (OCM)
+    @brief Component meta information.
     @{
 */
 
