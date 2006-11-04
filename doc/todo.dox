@@ -37,6 +37,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - Build system
     - Solaris compatability. Christopher Brooks, Alex Brooks
+- New interface: BinarySwitch
+    - Represents a bank of hardware devices with binary states, e.g. lights.
+    - Alex Makarenko
 - New component: OrcaView3d
     - a 3-D visualisation component
     - Ben Upcroft, Waleed Kadous, Alex Brooks
