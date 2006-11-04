@@ -26,10 +26,10 @@ BinarySwitchProbe::BinarySwitchProbe( const orca::FQInterfaceName & name, Displa
     id_ = "::orca::BinarySwitch";
     
     operations_.push_back( "getData" );
-    operations_.push_back( "loadSetState" );
-    operations_.push_back( "loadTimedSetState" );
-    operations_.push_back( "loadToggleState" );
-    operations_.push_back( "loadTimedToggleState" );
+    operations_.push_back( "setState" );
+    operations_.push_back( "timedSetState" );
+    operations_.push_back( "toggleState" );
+    operations_.push_back( "timedToggleState" );
 }
 
 int 
@@ -87,6 +87,27 @@ BinarySwitchProbe::loadGetData()
 int 
 BinarySwitchProbe::loadSetState()
 {
+    int dev = 1;
+    // ask for device number
+    bool state = true;
+    // ask for state
+
+    try
+    {
+        orca::BinarySwitchPrx derivedPrx = orca::BinarySwitchPrx::checkedCast(prx_);
+        derivedPrx->setState( dev, state );
+    }
+    catch( const orca::OrcaException & e )
+    {
+        cout << e <<endl;
+        return 1;
+    }
+    catch( const Ice::Exception & e )
+    {
+        cout << e <<endl;
+        return 1;
+    }
+    
     return 0;
 }
 

@@ -61,19 +61,19 @@ interface BinarySwitch
 
     //! Set current state
     idempotent void setState( int device, bool state )
-        throws MalformedParametersException;
+        throws MalformedParametersException, HardwareFailedException;
 
     //! Set current state, then after a timeout return to previous state
     void timedSetState( int device, bool state, long timeoutMs )
-        throws MalformedParametersException;
+        throws MalformedParametersException, HardwareFailedException;
 
     //! Toggle current state
     void toggleState( int device )
-        throws MalformedParametersException;
+        throws MalformedParametersException, HardwareFailedException;
 
     //! Toggle state, then after a timeout toggle it back
     void timedToggleState( int device, long timeoutMs )
-        throws MalformedParametersException;
+        throws MalformedParametersException, HardwareFailedException;
 };
 
 /*! @} */
