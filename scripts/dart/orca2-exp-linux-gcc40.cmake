@@ -40,5 +40,5 @@ BUILD_IMAGE_SERVER:BOOL=ON
 SET (CTEST_ENVIRONMENT
   CC=/usr/bin/gcc-4.0
   CXX=/usr/bin/g++-4.0
-  ICE_HOME=/opt/Ice-3.1.0
+#   ICE_HOME=/opt/Ice-3.1.0
 )

@@ -40,5 +40,5 @@ BUILD_IMAGE_SERVER:BOOL=ON
 SET (CTEST_ENVIRONMENT
 CC=/home/users/dart/bin/gcc
 CXX=/home/users/dart/bin/g++
-ICE_HOME=/opt/Ice-3.1.0
+#ICE_HOME=/opt/Ice-3.1.0
 )
