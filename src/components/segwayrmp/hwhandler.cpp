@@ -54,6 +54,7 @@ HwHandler::HwHandler(
     writeStatusPipe_.set( false );
 
     // set up data structure for 3 batteries
+    // @todo Should this be done by the driver?
 //     BatteryData bd;
 //     for ( int i=0; i<3; ++i ) {
 //         powerData_->batteries.push_back( bd );
