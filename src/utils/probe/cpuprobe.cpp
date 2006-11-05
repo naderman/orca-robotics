@@ -25,6 +25,7 @@ CpuProbe::CpuProbe( const orca::FQInterfaceName & name, DisplayDriver & display,
 {
     id_ = "::orca::Cpu";
     
+    operations_.push_back( "getInfo" );
     operations_.push_back( "getData" );
 }
 
@@ -38,6 +39,9 @@ CpuProbe::loadOperation( const int index )
     switch ( index )
     {
     case 0 :
+        ret = loadGetInfo();
+        break;
+    case 1 :
         ret = loadGetData();
         break;
     default :
@@ -47,6 +51,25 @@ CpuProbe::loadOperation( const int index )
     }
 
     return ret;
+}
+
+int 
+CpuProbe::loadGetInfo()
+{
+    orca::CpuInfoPtr data;
+    
+    try
+    {
+        orca::CpuPrx derivedPrx = orca::CpuPrx::checkedCast(prx_);
+        data = derivedPrx->getInfo();
+    }
+    catch( const Ice::Exception & e )
+    {
+        return 1;
+    }
+
+    cout<<orcaice::toString(data)<<endl;
+    return 0;
 }
 
 int 

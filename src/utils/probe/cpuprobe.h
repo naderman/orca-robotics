@@ -29,6 +29,7 @@ public:
     
 private:
 
+    int loadGetInfo();
     int loadGetData();
 };
 
