@@ -14,6 +14,7 @@ IF ( NOT WIN32 AND BUILD_IMAGE_VIEWER )
       IF( OPENCV_FOUND )
         MESSAGE( "    Using new opencv (>= 0.9.9)" )
         INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )
+        ADD_DEFINITIONS( -DOPENCV_FOUND )
 
         IF ( TRICLOPS_FOUND )
           MESSAGE("    The Triclops libraries have been found - you will be able to view images from a digiclops camera")
