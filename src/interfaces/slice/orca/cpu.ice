@@ -61,6 +61,15 @@ class CpuData extends OrcaObject
     float temperature;
 };
 
+/*!
+    @brief Subscriber to CPU information.
+*/
+interface CpuConsumer
+{
+    //! Set data
+    void setData( CpuData obj );
+};
+
 //! Interface to CPU information.
 interface Cpu
 {
@@ -70,6 +79,30 @@ interface Cpu
     //! Get current CPU state. Raises DataNotExistException if data is not available.
     nonmutating CpuData getData()
         throws DataNotExistException;
+
+    /*!
+     * Mimics IceStorm's subscribe() but without QoS, for now. The
+     * implementation may choose to implement the data push internally
+     * or use IceStorm. This choice is transparent to the subscriber.
+     *
+     * @param subscriber The subscriber's proxy.
+     *
+     * @see unsubscribe
+     */
+    void subscribe( CpuConsumer* subscriber )
+            throws ConfigurationNotExistException;
+
+    // for reference, this is what IceStorm's subscribe function looks like.
+    //void subscribe(QoS theQoS, Object* subscriber);
+
+    /*!
+     * Unsubscribe the given [subscriber].
+     *
+     * @param subscriber The proxy of an existing subscriber.
+     *
+     * @see subscribe
+     */
+    idempotent void unsubscribe( CpuConsumer* subscriber );
 };
 
 /*! @} */
