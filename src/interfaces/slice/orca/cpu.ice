@@ -41,8 +41,9 @@ class CpuData extends OrcaObject
 //! Interface to CPU information.
 interface Cpu
 {
-    //! Get current CPU state
-    nonmutating CpuData getData();
+    //! Get current CPU state. Raises DataNotExistException if data is not available.
+    nonmutating CpuData getData()
+        throws DataNotExistException;
 };
 
 /*! @} */

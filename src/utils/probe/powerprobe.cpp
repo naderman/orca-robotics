@@ -67,12 +67,29 @@ PowerProbe::loadGetData()
         orca::PowerPrx derivedPrx = orca::PowerPrx::checkedCast(prx_);
         data = derivedPrx->getData();
     }
+    catch( const orca::DataNotExistException & e )
+    {
+        cout<<"data is not ready on the remote interface"<<endl;
+        return 1;
+    }
+    catch( const orca::HardwareFailedException & e )
+    {
+        cout<<"remote hardware failure"<<endl;
+        return 1;
+    }
     catch( const Ice::Exception & e )
     {
+        cout<<"ice exception: "<<e<<endl;
         return 1;
     }
 
-    cout<<orcaice::toString(data)<<endl;
+    if ( data ) {
+        cout<<orcaice::toString(data)<<endl;
+    }
+    else {
+        cout<<"received empty data"<<endl;
+        return 1;
+    }
     return 0;
 }
 

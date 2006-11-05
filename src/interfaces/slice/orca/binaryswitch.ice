@@ -55,9 +55,9 @@ class BinarySwitchData extends OrcaObject
 //! Interface to a device with a binary state.
 interface BinarySwitch
 {
-    //! Get current state
+    //! Get current state. Raises DataNotExistException if data is not available.
     nonmutating BinarySwitchData getData()
-        throws HardwareFailedException;
+        throws DataNotExistException, HardwareFailedException;
 
     //! Set current state
     idempotent void setState( int device, bool state )

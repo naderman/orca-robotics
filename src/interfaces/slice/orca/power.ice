@@ -63,10 +63,10 @@ interface PowerConsumer
 */
 interface Power
 {
-    //! Returns the latest data.
-    //! @note In Orca1 this would be called ClientPull_Supplier interface.
+    //! Returns the latest data. Raises DataNotExistException if data is not available. Raises 
+    //! HardwareFailedException there is a problem with the underlying hardware.
     nonmutating PowerData getData()
-        throws HardwareFailedException;
+        throws DataNotExistException, HardwareFailedException;
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The

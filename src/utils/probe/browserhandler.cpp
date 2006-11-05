@@ -36,6 +36,7 @@ BrowserHandler::BrowserHandler( orcaice::Buffer<BrowserEvent> & eventPipe,
 
 BrowserHandler::~BrowserHandler()
 {
+    delete ifaceProbe_;
 }
 
 void 
