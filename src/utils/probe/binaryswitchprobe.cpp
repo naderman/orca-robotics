@@ -87,15 +87,23 @@ BinarySwitchProbe::loadGetData()
 int 
 BinarySwitchProbe::loadSetState()
 {
-    int dev = 1;
-    // ask for device number
-    bool state = true;
-    // ask for state
+    cout << "==> enter device number:";
+    // block until get a character + Enter
+    int dev = 0;
+    cin >> dev;
+    if ( dev<0 ) {
+        cout<<"device number cannot be negative"<<endl;
+        return 1;
+    }
+
+    cout << "==> enter desired state (0/1):";
+    int state = 1;
+    cin >> state;
 
     try
     {
         orca::BinarySwitchPrx derivedPrx = orca::BinarySwitchPrx::checkedCast(prx_);
-        derivedPrx->setState( dev, state );
+        derivedPrx->setState( dev, (bool)state );
     }
     catch( const orca::OrcaException & e )
     {

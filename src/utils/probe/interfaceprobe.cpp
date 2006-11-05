@@ -45,7 +45,12 @@ orcacm::OperationData InterfaceProbe::getOperationData( const int index )
     orcacm::OperationData data;
     data.parent = name_;
     data.parentId = id_;
-    data.name = operations_[index];
+    if ( index<0 || (unsigned int)index>operations_.size() ) {
+        data.name = "unknown";
+    }
+    else {
+        data.name = operations_[index];
+    }
 
     return data;
 }
