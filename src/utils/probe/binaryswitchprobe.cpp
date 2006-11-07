@@ -87,7 +87,31 @@ BinarySwitchProbe::loadGetData()
 int 
 BinarySwitchProbe::loadSetState()
 {
-    cout << "==> enter device number:";
+    // first get a list of devices
+    orca::BinarySwitchDataPtr data;
+    
+    try
+    {
+        orca::BinarySwitchPrx derivedPrx = orca::BinarySwitchPrx::checkedCast(prx_);
+        data = derivedPrx->getData();
+    }
+    catch( const Ice::Exception & e )
+    {
+        cout<<e<<endl;
+        return 1;
+    }
+    catch( const std::exception & e )
+    {
+        cout<<e.what()<<endl;
+        return 1;
+    }
+
+    cout << "Select device from the list:"<<endl;
+    for ( uint i=0; i<data->devices.size(); ++i ) {
+        cout<<i<<"\t"<<data->devices[i].name<<endl;
+    }
+    cout << "==>";
+
     // block until get a character + Enter
     int dev = 0;
     cin >> dev;
@@ -96,7 +120,8 @@ BinarySwitchProbe::loadSetState()
         return 1;
     }
 
-    cout << "==> enter desired state (0/1):";
+    cout << "Enter desired state (0/1):"<<endl;
+    cout << "==>";
     int state = 1;
     cin >> state;
 
