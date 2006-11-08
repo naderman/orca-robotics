@@ -9,7 +9,7 @@ namespace segwayrmp
 
     std::string ftStatusToString( FT_STATUS status )
     {
-        switch status
+        switch ( status )
         {
         case FT_OK:
             return "FT_OK";
