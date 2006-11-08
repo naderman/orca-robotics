@@ -61,6 +61,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - timestamp in log filenames is optional (Alex M.)
     - major code clean-up to simplify addition of new interfaces (Alex M.)
     - added support for Power interface (Alex M.)
+    - Added support for plug-in loggers, via dynamic library loading (Alex B.)
 
 
 @section orca_doc_todo_history Changes in Past Releases
