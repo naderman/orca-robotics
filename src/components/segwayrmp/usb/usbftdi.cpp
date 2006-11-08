@@ -14,6 +14,7 @@
 #include <IceUtil/IceUtil.h>
 
 #include "usbftdi.h"
+#include "usbftdiutil.h"
 
 #include "rmpusbdataframe.h"
 #include "rmpdefs.h"
@@ -141,14 +142,14 @@ UsbIoFtdi::init()
     strcpy(Description,SEGWAY_USB_DESCRIPTION);
     ftStatus = FT_OpenEx(Description ,FT_OPEN_BY_DESCRIPTION, &ftHandle_ );
     if ( ftStatus != FT_OK) {
-        cout<<"FT_OpenEx failed ("<<ftStatus<<")"<<endl;
+        cout<<"FT_OpenEx failed ("<<ftStatusToString(ftStatus)<<")"<<endl;
         return UsbIo::IO_ERROR;
     }
     cout<<"FT_OpenEx OK"<<endl;
 
     ftStatus = FT_SetBaudRate( ftHandle_, 460800 );
     if ( ftStatus != FT_OK)  {
-        cout<<"FT_SetBaudRate failed ("<<ftStatus<<")"<<endl;
+        cout<<"FT_SetBaudRate failed ("<<ftStatusToString(ftStatus)<<")"<<endl;
         FT_Close( ftHandle_ );        //close open device
         return UsbIo::IO_ERROR;
     }   
@@ -157,7 +158,7 @@ UsbIoFtdi::init()
     //set the latency timer to 2ms (valid range is from 2 to 255 ms)
     ftStatus = FT_SetLatencyTimer( ftHandle_, 2 );
     if ( ftStatus != FT_OK)  {
-        cout<<"FT_SetLatencyTimer failed ("<<ftStatus<<")"<<endl;
+        cout<<"FT_SetLatencyTimer failed ("<<ftStatusToString(ftStatus)<<")"<<endl;
         //latency not set - but we won't know   return -82;
         return UsbIo::IO_ERROR;
     }    
@@ -187,21 +188,21 @@ UsbIo::UsbIoStatus UsbIoFtdi::reset()
 
     ftStatus = FT_ResetDevice( ftHandle_ );
     if ( ftStatus != FT_OK ) {
-        cout<<"FT_ResetDevice failed ("<<ftStatus<<")"<<endl;
+        cout<<"FT_ResetDevice failed ("<<ftStatusToString(ftStatus)<<")"<<endl;
     } else {
         cout<<"FT_ResetDevice OK"<<endl;
     }
 
     ftStatus = FT_Purge( ftHandle_, FT_PURGE_RX | FT_PURGE_TX);
     if ( ftStatus != FT_OK ) {
-        cout<<"FT_Purge failed ("<<ftStatus<<")"<<endl;
+        cout<<"FT_Purge failed ("<<ftStatusToString(ftStatus)<<")"<<endl;
     } else {
         cout<<"FT_Purge OK"<<endl;
     }
 
     ftStatus = FT_ResetDevice( ftHandle_ );
     if ( ftStatus != FT_OK ) {
-        cout<<"FT_ResetDevice failed ("<<ftStatus<<")"<<endl;
+        cout<<"FT_ResetDevice failed ("<<ftStatusToString(ftStatus)<<")"<<endl;
     } else {
         cout<<"FT_ResetDevice OK"<<endl;
     }
@@ -209,7 +210,7 @@ UsbIo::UsbIoStatus UsbIoFtdi::reset()
         //extend timeout while board finishes reset
     ftStatus = FT_SetTimeouts( ftHandle_, 1000, 1000 );  // timeouts in ms
     if ( ftStatus != FT_OK ) {
-        cout<<"FT_SetTimeouts failed ("<<ftStatus<<")"<<endl;
+        cout<<"FT_SetTimeouts failed ("<<ftStatusToString(ftStatus)<<")"<<endl;
     } else {
         cout<<"FT_SetTimeouts OK"<<endl;
     }
@@ -219,7 +220,7 @@ UsbIo::UsbIoStatus UsbIoFtdi::reset()
       //normal timeout while board finishes reset
     ftStatus = FT_SetTimeouts( ftHandle_, 0, 0 );  // timeouts in ms
     if ( ftStatus != FT_OK ) {
-        cout<<"FT_SetTimeouts failed ("<<ftStatus<<")"<<endl;
+        cout<<"FT_SetTimeouts failed ("<<ftStatusToString(ftStatus)<<")"<<endl;
     } else {
         cout<<"FT_SetTimeouts OK"<<endl;
     }
