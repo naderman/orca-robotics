@@ -47,6 +47,7 @@ int FakeDriver::disable()
 
 int FakeDriver::read( orca::Position2dDataPtr &position2d, std::string & status )
 {
+    cout<<"TRACE(fakedriver.cpp): Generating fake info for robot2d..." << endl;
     orcaice::setSane( position2d );
 
     // slow it down a bit

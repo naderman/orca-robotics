@@ -51,13 +51,9 @@ only.
 
 @par Where logs get written
 
-Standard Ice services (such as icebox) seem to log to:
+Logs go to:
   - @c /var/log/syslog
   - @c /var/log/messages
   - @c /var/log/user.log
-
-orcaice::Components log to:
-  - @c /var/log/syslog
-  - @c /var/log/daemon.log
 
 */
