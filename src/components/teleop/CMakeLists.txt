@@ -39,7 +39,7 @@ IF ( NOT WIN32 AND BUILD_TELEOP )
     
     IF ( NOT HAVE_KEYBOARD_TERMIO_DRIVER AND NOT HAVE_JOYSTICK_DRIVER )
         IF ( NOT HAVE_KEYBOARD_NCURSES_DRIVER )
-            MESSAGE("    WARNING: only default 'fake' driver can be built")
+            MESSAGE( STATUS "    WARNING: only default 'fake' driver can be built")
         ENDIF ( NOT HAVE_KEYBOARD_NCURSES_DRIVER )
     ENDIF ( NOT HAVE_KEYBOARD_TERMIO_DRIVER AND NOT HAVE_JOYSTICK_DRIVER )
     

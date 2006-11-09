@@ -21,7 +21,7 @@ IF ( NOT WIN32 AND BUILD_ROBOT2D )
     )
 
     IF ( NOT HAVE_PLAYERCLIENT_DRIVER )
-        MESSAGE("    WARNING: only default 'fake' driver can be built")
+        MESSAGE( STATUS "    WARNING: only default 'fake' driver can be built")
     ENDIF ( NOT HAVE_PLAYERCLIENT_DRIVER )
 
     SET( COMMON_SRCS component nethandler hwhandler platform2dI fakedriver )

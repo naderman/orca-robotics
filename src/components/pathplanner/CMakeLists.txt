@@ -3,7 +3,7 @@ OPTION( BUILD_PATHPLANNER "Try to build pathplanner" ON )
 IF ( NOT WIN32 )
 
 IF ( NOT QT4_FOUND )
-  MESSAGE( "     Qt4 not found: skeletongraphics will not be built" )
+  MESSAGE( STATUS "     Qt4 not found: skeletongraphics will not be built" )
 ENDIF( NOT QT4_FOUND )
 
 IF ( BUILD_PATHPLANNER )

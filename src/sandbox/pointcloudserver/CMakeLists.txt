@@ -7,7 +7,7 @@ IF ( BUILD_POINT_CLOUD_SERVER )
     
 
     # this driver can always be built
-    MESSAGE( "Point cloud server can be built" )
+    MESSAGE( STATUS "Point cloud server can be built" )
     
     # stand-alone component  
     GLOBAL_ADD_EXECUTABLE( pointcloudserver main pcserver )

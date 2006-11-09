@@ -12,14 +12,14 @@ IF ( NOT WIN32 AND BUILD_IMAGE_VIEWER )
       ADD_DEFINITIONS( -DOPENCV_IMPLEMENTATION )
 
       IF( OPENCV_FOUND )
-        MESSAGE( "    Using new opencv (>= 0.9.9)" )
+        MESSAGE( STATUS "    Using new opencv (>= 0.9.9)" )
         INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )
         ADD_DEFINITIONS( -DOPENCV_FOUND )
 
         IF ( TRICLOPS_FOUND )
-          MESSAGE("    The Triclops libraries have been found - you will be able to view images from a digiclops camera")
+          MESSAGE( STATUS "    The Triclops libraries have been found - you will be able to view images from a digiclops camera")
         ELSE ( TRICLOPS_FOUND )
-          MESSAGE("    The Triclops libraries have not been found - you will not be able to view images from a digiclops camera")
+          MESSAGE( STATUS "    The Triclops libraries have not been found - you will not be able to view images from a digiclops camera")
         ENDIF ( TRICLOPS_FOUND )
 
         INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/utils )

@@ -18,7 +18,7 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
   ENDIF ( 1394_FOUND )
 
   IF ( NOT V4L_FOUND )
-    MESSAGE( "    video4linux not found: you will not be able to use usb cameras" )
+    MESSAGE ( STATUS "    video4linux not found: you will not be able to use usb cameras" )
   ENDIF ( NOT V4L_FOUND )
 
   # opencv image grabber checks

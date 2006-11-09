@@ -51,6 +51,6 @@ IF ( QT4_FOUND AND BUILD_GORCA )
 
 ELSE ( QT4_FOUND AND BUILD_GORCA )
 
-    MESSAGE("Not Planning to Build Utility: Gorca -- Qt4 not found")
+    MESSAGE( STATUS "Not Planning to Build Utility: Gorca -- Qt4 not found")
     
 ENDIF ( QT4_FOUND AND BUILD_GORCA )
