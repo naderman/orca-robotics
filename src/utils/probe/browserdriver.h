@@ -22,6 +22,7 @@ enum BrowserEvent
     FaultEvent,
     DeactivateEvent,
     // this must be the last event (with the highest number)
+    // because actual picks are added to this one.
     PickEvent=1000
 };
 
