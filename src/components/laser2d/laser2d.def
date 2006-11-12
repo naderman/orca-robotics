@@ -1,7 +1,7 @@
-DefaultComponentTag=SickLaser
+DefaultComponentTag=Laser2d
 
 # Provided Interfaces
-Provides.Laser.Type=::orca::Laser
+Provides.Laser.Type=::orca::LaserScanner2d
 Provides.Laser.DefaultName=laser
 
 # Required Interfaces

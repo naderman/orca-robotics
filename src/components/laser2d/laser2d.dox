@@ -15,13 +15,13 @@
 @ingroup cpp
 @ingroup linux
 @ingroup win
-@defgroup orca_component_sicklaser SickLaser
-@brief A hardware abstraction component for SICK Laser Range-Finder
+@defgroup orca_component_laser2d Laser2d
+@brief A hardware abstraction component for scanning laser range-finder
 
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_laser [SickLaser.Provides.Laser]
+- @ref orca_interface_laserscanner2d [SickLaser.Provides.LaserScanner2d]
 - @ref orca_interface_status
 
 @par Requires
@@ -42,26 +42,26 @@ This component encapsulates a SICK Laser Range-Finder (see @ref how_sick_works )
 
 @par Configuration
 
-- @c Sicklaser.Config.Driver (string)
+- @c Laser2d.Config.Driver (string)
     - Which hardware driver to use
     - Valid values: { "sickcarmen", "playerclient", "stage", "gazebo", "fake" }
     - Default: "sickcarmen"
 
 Laser Settings
-- @c Sicklaser.Config.RangeResolution (float) [m]
+- @c Laser2d.Config.RangeResolution (float) [m]
     - Valid Values: {0.01, 0.001}
     - Default: 0.001
-- @c Sicklaser.Config.AngularResolution (float) [deg]
+- @c Laser2d.Config.AngularResolution (float) [deg]
     - Valid Values: {0.5, 1.0}
     - Default: 0.5
     
-- @c Sicklaser.Config.StartEnabled (bool)
+- @c Laser2d.Config.StartEnabled (bool)
     - Enable the laser on component initialisation?
     - Default: 1
 
 Geometry
 
-- @c Sicklaser.Config.Offset (Frame3d) [m, deg]
+- @c Laser2d.Config.Offset (Frame3d) [m, deg]
     - Position of the laser with respect to the robot's local coordinate system
     - Format: x y z roll pitch yaw
     - Example: a laser mounted upside down with now translation: "0.0 0.0 0.0  180.0 0.0 0.0"
@@ -71,7 +71,7 @@ Geometry
     - Default: 1
     - Example: The laser is mounted horizontally and upside-down. You want SickLaser to take care of it and not to worry about rotations on the client side. Set the roll angle in @c Offset to 180.0 and set @c AllowRollCompensation=1. As a result, the laser will appear to be mounted normally (top-side-up) to all clients.
 
-- @c Sicklaser.Config.Size (Size3d) [m]
+- @c Laser2d.Config.Size (Size3d) [m]
     - Sensor dimensions
     - Format: length width height
 
@@ -89,10 +89,10 @@ Limitations: This is a Linux-only implementation. Does NOT work with kernel 2.6.
 
 @par Extra configuration
 
-- @c Sicklaser.Config.SickCarmen.Device (string)
+- @c Laser2d.Config.SickCarmen.Device (string)
   - The unix device to use
   - Default: "/dev/ttyS0"
-- @c Sicklaser.Config.SickCarmen.LaserType (string)
+- @c Laser2d.Config.SickCarmen.LaserType (string)
   - Valid Values: {"LMS","PMS"}
   - Default: "LMS"
 - @c SickLaser.Config.SickCarmen.Baudrate (int) [bps]
@@ -116,13 +116,13 @@ Requires that Player/Stage v.>=2.0 are installed and running. As Player itself, 
 
 @par Extra configuration
 
-- @c Sicklaser.Config.PlayerClient.Host (string)
+- @c Laser2d.Config.PlayerClient.Host (string)
     - The host that Player (or Stage) is running on
     - Default: "localhost"
-- @c Sicklaser.Config.PlayerClient.Port (int)
+- @c Laser2d.Config.PlayerClient.Port (int)
     - The port that PLayer (or Stage) is running on
     - Default: 6665
-- @c Sicklaser.Config.PlayerClient.Device (int)
+- @c Laser2d.Config.PlayerClient.Device (int)
     - Device ID of the laser to which the driver will connect to
     - Default: 0
 
