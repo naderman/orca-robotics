@@ -1,0 +1,180 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup components
+@ingroup apps
+@ingroup services
+@ingroup cpp
+@ingroup linux
+@ingroup win
+@defgroup orca_component_sicklaser SickLaser
+@brief A hardware abstraction component for SICK Laser Range-Finder
+
+@par Provides
+
+- @ref orca_interface_home
+- @ref orca_interface_laser [SickLaser.Provides.Laser]
+- @ref orca_interface_status
+
+@par Requires
+
+- none
+
+@par Drivers
+
+- @b sickcarmen @ref orca_laser_sickcarmen
+- @b playerclient @ref orca_laser_playerclient
+- @b stage @ref orca_laser_stage
+- @b gazebo @ref orca_laser_gazebo
+- @b fake Useful for testing or if you don't have hardware or a simulator.
+
+@par Operation
+
+This component encapsulates a SICK Laser Range-Finder (see @ref how_sick_works ). It can run either as a stand-alone component or an IceBox Service.
+
+@par Configuration
+
+- @c Sicklaser.Config.Driver (string)
+    - Which hardware driver to use
+    - Valid values: { "sickcarmen", "playerclient", "stage", "gazebo", "fake" }
+    - Default: "sickcarmen"
+
+Laser Settings
+- @c Sicklaser.Config.RangeResolution (float) [m]
+    - Valid Values: {0.01, 0.001}
+    - Default: 0.001
+- @c Sicklaser.Config.AngularResolution (float) [deg]
+    - Valid Values: {0.5, 1.0}
+    - Default: 0.5
+    
+- @c Sicklaser.Config.StartEnabled (bool)
+    - Enable the laser on component initialisation?
+    - Default: 1
+
+Geometry
+
+- @c Sicklaser.Config.Offset (Frame3d) [m, deg]
+    - Position of the laser with respect to the robot's local coordinate system
+    - Format: x y z roll pitch yaw
+    - Example: a laser mounted upside down with now translation: "0.0 0.0 0.0  180.0 0.0 0.0"
+
+- @c SickLaser.Config.AllowRollCompensation (bool)
+    - If TRUE and the roll in laser offset is exactly 180.0 degrees (with no pitch), then the scan is flipped left-to-right internally and the reported roll angle is 0.0 degrees. If FALSE, the scan and the offset are left unmodified.
+    - Default: 1
+    - Example: The laser is mounted horizontally and upside-down. You want SickLaser to take care of it and not to worry about rotations on the client side. Set the roll angle in @c Offset to 180.0 and set @c AllowRollCompensation=1. As a result, the laser will appear to be mounted normally (top-side-up) to all clients.
+
+- @c Sicklaser.Config.Size (Size3d) [m]
+    - Sensor dimensions
+    - Format: length width height
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
+@section orca_laser_sickcarmen SickCarmen driver
+
+Drives real laser hardware, directly connected to the computer. Uses
+Carmen's SICK laser implementation (see the <a
+href="http://carmen.sourceforge.net/" target="_blank">Carmen
+website</a>). This driver works robustly and can be configured with
+different baud rates.
+
+Limitations: This is a Linux-only implementation. Does NOT work with kernel 2.6.17 producing this message (use dmesg) "sicklaser sets custom speed on ttyS3. This is deprecated." Google search indicates that it's a known kernel issue which currently has no solution. A new method of setting custom serial speed will be introduced in future kernels at which point we'll try to convert our code.
+
+@par Extra configuration
+
+- @c Sicklaser.Config.SickCarmen.Device (string)
+  - The unix device to use
+  - Default: "/dev/ttyS0"
+- @c Sicklaser.Config.SickCarmen.LaserType (string)
+  - Valid Values: {"LMS","PMS"}
+  - Default: "LMS"
+- @c SickLaser.Config.SickCarmen.Baudrate (int) [bps]
+  - Valid Values: { 9600, 19200, 38400, 500000 }
+  - Default: 38400
+
+  
+@section orca_laser_playerclient PlayerClient driver
+
+The sicklaser component wraps a player client. Given a running Player
+server, the laser gets data from that server and distributes it over
+Orca pipes. Talks to a Player server (see the <a
+href="http://playerstage.sourceforge.net/" target="_blank">Player
+webpage</a>).
+
+[Note: will not build for Windows]
+
+@par Dependancies
+
+Requires that Player/Stage v.>=2.0 are installed and running. As Player itself, this driver is Linux only. See our notes on installing Player in platform-dependent installation page, e.g. @ref orca_doc_installdebian_player.
+
+@par Extra configuration
+
+- @c Sicklaser.Config.PlayerClient.Host (string)
+    - The host that Player (or Stage) is running on
+    - Default: "localhost"
+- @c Sicklaser.Config.PlayerClient.Port (int)
+    - The port that PLayer (or Stage) is running on
+    - Default: 6665
+- @c Sicklaser.Config.PlayerClient.Device (int)
+    - Device ID of the laser to which the driver will connect to
+    - Default: 0
+
+@section orca_laser_stage Stage driver
+
+In theory, a separate Stage driver is not needed, @c playerclient
+driver should work with both real hardware and the Stage
+simulator. However, due to a bug in Stage's laser simulation code we
+need a special driver (specifically LaserProxy::Configure()
+function). It will be removed when the bug is fixed.
+
+[Note: will not build for Windows]
+
+@section orca_laser_gazebo Gazebo driver
+
+This is just an alias to @ref orca_laser_stage. All you need is Gazebo
+running and player connected to Gazebo. Please see the tutorial @ref
+orca_doc_tute_gazebo for setting up Orca with Gazebo.
+
+[Note: will not build for Windows]
+
+@section internal Internal Structure
+    
+@image html laser_whitebox.png
+
+For developers: the code conforms to the basic approach described in the notes on @ref orca_doc_devcomp.
+
+@section how_sick_works How does the Sick Laser work?
+
+Note: This article is adapted from a posting by Brian Gerkey to the Player/Stage users mailing list on 2004-07-22.
+
+The mirror in the laser rotates at 75 Hz, so that's its "natural" frequency. It can only sample once per degree, which means the laser can generate a 180-degree scan, with resolution of 1 degree, every 1/75th of a second. If you want 0.5 degree resolution, the laser actually takes two scans at 1 degree resolution, with the second scan offset by 0.5 degrees, then interlaces them to produce a single scan with 0.5 degree resolution. This, of course, requires 1/37.5 seconds. 
+If you want 0.25 degree resolution, this interlacing requires 4 scans, which takes 1/18.75 seconds. This mode is further complicated by the fact that there's a limit of 401 readings per scan, so if you want 0.25 degree resolution, you also have to reduce the angular aperture to <= 100 degrees. 
+
+So that's how fast the laser can generate scans. How fast can it shove them down the serial line? Much slower than you might think. 
+A 180-degree scan, at 1-degree resolution, is 180 readings, at 2 bytes per reading. That's 360 bytes. Assuming a perfect 38.4kbps line with zero overhead, you can send 360-byte packets at about 13.3Hz (remember that the small "b" in "kbps" means *bits*, not *bytes*): 
+
+@verbatim
+38400 bps / 8 / 360 = 13.3 packets/sec
+@endverbatim
+
+In practice, you see a data rate of between 10Hz and 12Hz, depending on the quality of the serial cable. If you want 0.5 degree resolution, then each scan is doubled in size, to around 720 bytes. The data rate is correspondingly halved, so these packets can theoretically be sent over a 38.4kbps line at 6.67Hz. In practice, you see a rate of around 5Hz. 
+
+Now, if you have a 500Kbps RS422 line (e.g., using a USB-serial converter), then the serial line is no longer the rate-limiting component. You can get data as fast as the laser generates it. So, in 1-degree mode, you'll get scans at 75Hz. In 0.5-degree mode, you'll get them 37.5Hz. And so on.
+
+@section Notes
+
+Only the fake driver will build for Windows.
+
+@par Authors
+
+Alex Brooks, Tobias Kaupp
+
+*/
+
