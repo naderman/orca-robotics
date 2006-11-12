@@ -33,6 +33,8 @@ struct BatteryData
     float voltage;
     //! Percent of full charge [%]
     float percent;
+    //! Battery life remaining
+    float secRemaining;
 };
 
 /*!

@@ -357,10 +357,13 @@ UsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::Position3dData
     // we only know the minimum of the two main batteries
     power->batteries[0].voltage = frame_->base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
     power->batteries[0].percent = 99.0;
+    power->batteries[0].secRemaining = 8*60*60;
     power->batteries[1].voltage = frame_->base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
     power->batteries[1].percent = 99.0;
+    power->batteries[1].secRemaining = 8*60*60;
     power->batteries[2].voltage = RMP_UI_OFFSET + frame_->ui_battery_voltage*RMP_UI_COEFF;
     power->batteries[2].percent = 99.0;
+    power->batteries[2].secRemaining = 8*60*60;
 
     // INTERNAL STATUS
     status.buildId = frame_->build_id;
