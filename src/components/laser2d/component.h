@@ -16,7 +16,7 @@
 
 #include <orca/laserscanner2d.h>
 
-namespace sicklaser {
+namespace laser2d {
 
 class MainLoop;
 class Driver;

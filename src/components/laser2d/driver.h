@@ -16,7 +16,7 @@
 
 static const ::std::string __orca__laserdriver_default_heartbeat_msg = "";
 
-namespace sicklaser {
+namespace laser2d {
 
 /*
 @brief Abstract class for a scanning laser.

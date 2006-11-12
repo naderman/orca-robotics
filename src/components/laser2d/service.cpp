@@ -19,11 +19,11 @@ extern "C"
 
     IceBox::Service* create( Ice::CommunicatorPtr communicator )
     {
-        return new sicklaser::ServiceI;
+        return new laser2d::ServiceI;
     }
 }
 
-namespace sicklaser {
+namespace laser2d {
 
 ServiceI::ServiceI()
 {

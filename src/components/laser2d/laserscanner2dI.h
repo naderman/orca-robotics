@@ -20,7 +20,7 @@
 #include <orcaice/ptrbuffer.h>
 #include <orcaice/context.h>
 
-namespace sicklaser {
+namespace laser2d {
 
 //
 // Implements the Laser interface: Handles all our remote calls.

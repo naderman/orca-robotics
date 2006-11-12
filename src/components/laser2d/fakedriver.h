@@ -15,7 +15,7 @@
 #include <iostream>
 
 
-namespace sicklaser {
+namespace laser2d {
 
 //
 // Bogus laser driver, useful for testing the rest of the component.

@@ -17,7 +17,7 @@
 //
 int main(int argc, char * argv[])
 {
-    sicklaser::Component component;
+    laser2d::Component component;
     orcaice::Application app( component );
     return app.main(argc, argv);
 }

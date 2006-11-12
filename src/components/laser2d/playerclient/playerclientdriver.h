@@ -21,7 +21,7 @@ class PlayerClient;
 class LaserProxy;
 }
 
-namespace sicklaser {
+namespace laser2d {
 
 /*
     @brief Interface to PlayerLaser laser.  Uses Player.

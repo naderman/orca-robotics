@@ -13,7 +13,7 @@
 
 using namespace std;
 
-namespace sicklaser {
+namespace laser2d {
 
 FakeDriver::FakeDriver()
     : currentConfig_(new orca::RangeScanner2dConfig)

@@ -18,7 +18,7 @@
 #include "laserscanner2dI.h"
 #include "driver.h"
 
-namespace sicklaser {
+namespace laser2d {
 
 //
 // @brief the main executing loop of this laser component.

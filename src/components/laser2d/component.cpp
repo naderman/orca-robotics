@@ -27,7 +27,7 @@
 
 #include <orcaice/orcaice.h>
 
-namespace sicklaser {
+namespace laser2d {
 
 using namespace std;
 using namespace orca;

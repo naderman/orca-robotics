@@ -14,7 +14,7 @@
 #include "sick.h"
 #include <orcaice/context.h>
 
-namespace sicklaser {
+namespace laser2d {
 
 //
 // @author Alex Brooks

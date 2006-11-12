@@ -17,7 +17,7 @@
 
 using namespace std;
 
-namespace sicklaser {
+namespace laser2d {
 
 SickCarmenDriver::SickCarmenDriver( const char       *device,
                                     const char       *laserType,

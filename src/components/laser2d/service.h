@@ -13,7 +13,7 @@
 
 #include <orcaice/service.h>
 
-namespace sicklaser {
+namespace laser2d {
 //
 // Class to build the component into an icebox service
 //

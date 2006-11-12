@@ -23,7 +23,7 @@ using namespace std;
 using namespace orca;
 using namespace PlayerCc;
 
-namespace sicklaser {
+namespace laser2d {
 
 /*
   NOTE: as of player v1.5 the LaserProxy returns range in [m], the multiplication factor is no longer needed.

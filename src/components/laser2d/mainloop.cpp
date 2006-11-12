@@ -16,7 +16,7 @@
 using namespace std;
 using namespace orca;
 
-namespace sicklaser {
+namespace laser2d {
 
 namespace {
     const int MAX_TIME_FOR_RECONFIGURE = 20000; // ms
@@ -45,9 +45,9 @@ MainLoop::activate()
     while ( isActive() )
     {
         try {
-            cout<<"sicklaser::mainloop: activating..." << endl;
+            cout<<"laser2d::mainloop: activating..." << endl;
             context_.activate();
-            cout<<"sicklaser::mainloop: activated."<<endl;
+            cout<<"laser2d::mainloop: activated."<<endl;
             break;
         }
         catch ( orcaice::Exception & e )

@@ -17,7 +17,7 @@
 using namespace std;
 using namespace orca;
 
-namespace sicklaser {
+namespace laser2d {
 
 LaserScanner2dI::LaserScanner2dI( orca::RangeScanner2dGeometryPtr  geometry,
                                   const std::string             &ifaceTag,
