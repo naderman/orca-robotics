@@ -95,7 +95,7 @@ VfhDriver::setLocalNavParameters( LocalNavParameters params )
 LocalNavDriver::DriverState
 VfhDriver::getCommand( bool  stalled,
                        const orca::Twist2d &currentVelocity,
-                       const orca::RangeScannerDataPtr obs,
+                       const orca::RangeScanner2dDataPtr obs,
                        orca::Velocity2dCommandPtr &cmd )
 {
     //
@@ -173,7 +173,7 @@ VfhDriver::setToZero( orca::Velocity2dCommandPtr &cmd )
 }
 
 void
-VfhDriver::setToEscape( orca::Velocity2dCommandPtr &cmd, const orca::RangeScannerDataPtr &obs )
+VfhDriver::setToEscape( orca::Velocity2dCommandPtr &cmd, const orca::RangeScanner2dDataPtr &obs )
 {
     if ( currentState_ != LocalNavDriver::STATE_ESCAPING ||
          escapeTimer_.elapsedMs() > escapeTimeMs_ )
@@ -234,7 +234,7 @@ VfhDriver::setTurnToGoal( orca::Velocity2dCommandPtr &cmd, const GoalWatcher &go
 }
 
 void 
-VfhDriver::copyLaserScan( const orca::RangeScannerDataPtr obs, double playerLaserScan[401][2] )
+VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLaserScan[401][2] )
 {
     const float EPS = 1e-9;
 
@@ -290,7 +290,7 @@ void
 VfhDriver::setToApproachGoal( orca::Velocity2dCommandPtr &cmd,
                               const GoalWatcher &goalWatcher, 
                               const orca::Twist2d &currentVelocity,
-                              const orca::RangeScannerDataPtr &obs )
+                              const orca::RangeScanner2dDataPtr &obs )
 {
     // Copy stuff into the format required by vfh_algorithm
 

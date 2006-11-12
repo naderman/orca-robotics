@@ -14,7 +14,7 @@
 #include <orcaice/ptrbuffer.h>
 #include <orcaice/ptrproxy.h>
 #include <orcaice/bufferedconsumerI.h>
-#include <orca/rangescanner.h>
+#include <orca/rangescanner2d.h>
 #include <orca/platform2d.h>
 #include <orca/localise2d.h>
 #include <orca/pathfollower2d.h>
@@ -51,7 +51,7 @@ private:
     orca::PathFollower2dConsumerPrx pathPublisher_;
 
     // Get observations, pose, and odometric velocity
-    orcaice::BufferedConsumerI<orca::RangeScannerConsumer,orca::RangeScannerDataPtr> *obsConsumer_;
+    orcaice::BufferedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr> *obsConsumer_;
     orcaice::BufferedConsumerI<orca::Localise2dConsumer,orca::Localise2dDataPtr>     *locConsumer_;
     orcaice::BufferedConsumerI<orca::Position2dConsumer,orca::Position2dDataPtr>     *odomConsumer_;
 

@@ -81,7 +81,7 @@ LocalNavManager::setCurrentGoal( const orca::Localise2dDataPtr localiseData )
 }
 
 void
-LocalNavManager::getCommand( const orca::RangeScannerDataPtr  rangeData, 
+LocalNavManager::getCommand( const orca::RangeScanner2dDataPtr  rangeData, 
                              const orca::Localise2dDataPtr    localiseData, 
                              const orca::Position2dDataPtr    odomData, 
                              orca::Velocity2dCommandPtr      &cmd )

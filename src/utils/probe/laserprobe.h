@@ -12,7 +12,7 @@
 #define ORCA2_PROBE_LASER_INTERFACE_PROBE_H
 
 #include "interfaceprobe.h"
-#include <orca/laser.h>
+#include <orca/laserscanner2d.h>
 
 namespace probe
 {
@@ -36,7 +36,7 @@ private:
     int loadSubscribe();
     int loadUnsubscribe();
     
-//     orca::RangeScannerConsumer consumerPrx_;
+//     orca::RangeScanner2dConsumer consumerPrx_;
 
 };
 

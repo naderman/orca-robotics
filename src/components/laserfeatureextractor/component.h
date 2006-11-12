@@ -16,7 +16,7 @@
 #include <orcaice/ptrbuffer.h>
 
 // interface definitions
-#include <orca/laser.h>
+#include <orca/laserscanner2d.h>
 #include <orca/polarfeature2d.h>
 
 namespace laserfeatures
@@ -40,7 +40,7 @@ private:
     // External interface: polar features
     orca::PolarFeature2dConsumerPrx polarFeaturePublisher_;
     
-    orcaice::PtrBuffer<orca::LaserDataPtr> laserDataBuffer_;
+    orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> laserDataBuffer_;
     orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> polarFeaturesDataBuffer_;
 
     AlgorithmHandler* algorithmHandler_;

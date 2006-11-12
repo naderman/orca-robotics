@@ -12,7 +12,7 @@
 
 #include <orca/platform2d.h>
 #include <orca/localise2d.h>
-#include <orca/rangescanner.h>
+#include <orca/rangescanner2d.h>
 #include <orcaice/context.h>
 #include <orcaice/ptrbuffer.h>
 #include <orcaice/thread.h>
@@ -39,7 +39,7 @@ class MainLoop : public orcaice::Thread
 public: 
 
     MainLoop( LocalNavManager                               &localNavManager,
-              orcaice::PtrBuffer<orca::RangeScannerDataPtr> &obsBuffer,
+              orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> &obsBuffer,
               orcaice::PtrBuffer<orca::Localise2dDataPtr>   &locBuffer,
               orcaice::PtrBuffer<orca::Position2dDataPtr>   &odomBuffer,
               orca::Platform2dPrx                           &platform2dPrx,
@@ -64,7 +64,7 @@ private:
     void checkWithOutsideWorld( PathMaintainer &pathMaintainer );
 
     // Returns true if the timestamps differ by more than a threshold.
-    bool areTimestampsDodgy( const orca::RangeScannerDataPtr &rangeData,
+    bool areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData,
                              const orca::Localise2dDataPtr   &localiseData,
                              const orca::Position2dDataPtr   &odomData,
                              double                           threshold );
@@ -75,14 +75,14 @@ private:
     LocalNavManager &localNavManager_;
 
     // Incoming observations and pose info
-    orcaice::PtrBuffer<orca::RangeScannerDataPtr> &obsBuffer_;
+    orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> &obsBuffer_;
     orcaice::PtrBuffer<orca::Localise2dDataPtr>   &locBuffer_;
     orcaice::PtrBuffer<orca::Position2dDataPtr>   &odomBuffer_;
 
     // data types
     orca::Localise2dDataPtr      localiseData_;
     orca::Position2dDataPtr      odomData_;
-    orca::RangeScannerDataPtr    rangeData_;
+    orca::RangeScanner2dDataPtr    rangeData_;
     orca::Velocity2dCommandPtr   velocityCmd_;
 
     // Outgoing commands

@@ -68,7 +68,7 @@ Component::start()
         context().tracer()->debug("connected to a 'Platform2d' interface",5);
 
         // Instantiate everything
-        obsConsumer_  = new orcaice::BufferedConsumerI<orca::RangeScannerConsumer,orca::RangeScannerDataPtr>;
+        obsConsumer_  = new orcaice::BufferedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>;
         locConsumer_  = new orcaice::BufferedConsumerI<orca::Localise2dConsumer,orca::Localise2dDataPtr>;
         odomConsumer_ = new orcaice::BufferedConsumerI<orca::Position2dConsumer,orca::Position2dDataPtr>;
 
@@ -92,16 +92,16 @@ Component::start()
                                           context() );
 
         // subscribe for information from platform
-        RangeScannerPrx obsPrx;
+        RangeScanner2dPrx obsPrx;
         Localise2dPrx   locPrx;
         Position2dPrx   odomPrx;
-        orcaice::connectToInterfaceWithTag<orca::RangeScannerPrx>( context(), obsPrx, "Observations" );
+        orcaice::connectToInterfaceWithTag<orca::RangeScanner2dPrx>( context(), obsPrx, "Observations" );
         orcaice::connectToInterfaceWithTag<orca::Localise2dPrx>( context(), locPrx, "Localisation" );
         orcaice::connectToInterfaceWithTag<orca::Position2dPrx>( context(), odomPrx, "Platform2d" );
 
         Ice::ObjectPtr obsConsumerPtr = obsConsumer_;
-        orca::RangeScannerConsumerPrx obsConsumerPrx =
-            orcaice::createConsumerInterface<RangeScannerConsumerPrx>( context(), obsConsumerPtr );
+        orca::RangeScanner2dConsumerPrx obsConsumerPrx =
+            orcaice::createConsumerInterface<RangeScanner2dConsumerPrx>( context(), obsConsumerPtr );
         Ice::ObjectPtr locConsumerPtr = locConsumer_;
         orca::Localise2dConsumerPrx locConsumerPrx =
             orcaice::createConsumerInterface<Localise2dConsumerPrx>( context(), locConsumerPtr );

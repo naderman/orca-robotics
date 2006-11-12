@@ -14,7 +14,7 @@
 #include <orcaice/ptrbuffer.h>
 #include <orca/localise2d.h>
 #include <orca/platform2d.h>
-#include <orca/rangescanner.h>
+#include <orca/rangescanner2d.h>
 #include <orca/pathfollower2d.h>
 #include <orcanavutil/orcanavutil.h>
 #include "localnavdriver.h"
@@ -49,7 +49,7 @@ public:
 
     // The odometry is required for the velocity, which isn't contained
     // in Localise2d.
-    void getCommand( const orca::RangeScannerDataPtr  rangeData,
+    void getCommand( const orca::RangeScanner2dDataPtr  rangeData,
                      const orca::Localise2dDataPtr    localiseData,
                      const orca::Position2dDataPtr    odomData,
                      orca::Velocity2dCommandPtr      &cmd );

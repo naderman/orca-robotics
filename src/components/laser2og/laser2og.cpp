@@ -32,7 +32,7 @@ using namespace orca;
 using namespace laser2og;
 using namespace orcamisc;
 
-static float laserScanBearing(const orca::RangeScannerData& scan, const int i)
+static float laserScanBearing(const orca::RangeScanner2dData& scan, const int i)
 {
     return (scan.startAngle+scan.angleIncrement*i);
 }
@@ -62,7 +62,7 @@ Laser2Og::~Laser2Og()
 
 
 // NOTE: assumes both POSE in map coordinate system
-int Laser2Og::process( const orca::Localise2dData &sensorPose, const orca::RangeScannerData & scan )
+int Laser2Og::process( const orca::Localise2dData &sensorPose, const orca::RangeScanner2dData & scan )
 {
     if ( scan.ranges.size() == 0 )
     {

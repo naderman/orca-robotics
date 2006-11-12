@@ -22,7 +22,7 @@
 #include <orca/position3d.h>
 #include <orca/particle2d.h>
 #include <orca/power.h>
-#include <orca/rangescanner.h>
+#include <orca/rangescanner2d.h>
 #include <orca/status.h>
 
 #include <orcaice/orcaice.h>
@@ -92,7 +92,7 @@ void OrcaMonComponent::start()
     // now that we know the interface type, we can create an appropriate consumer and subscribe ourselves
     if ( objId=="::orca::Laser" || objId=="::orca::RangeScanner" )
     {
-        attach<LaserPrx,RangeScannerConsumerPrx,RangeScannerConsumer,RangeScannerDataPtr>
+        attach<LaserScanner2dPrx,RangeScanner2dConsumerPrx,RangeScanner2dConsumer,RangeScanner2dDataPtr>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::Imu" )

@@ -1,0 +1,15 @@
+INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
+
+FILE( GLOB SRCS *.cpp )
+
+#     MESSAGE ( "fucking variables " ${PLAYER_INCLUDE_DIRS} )
+
+INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
+
+LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
+
+ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
+
+ADD_LIBRARY( OrcaLaser2dPlayerClient SHARED ${SRCS} )
+
+INSTALL_TARGETS( /lib OrcaLaser2dPlayerClient )

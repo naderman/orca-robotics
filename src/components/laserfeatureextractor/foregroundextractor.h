@@ -11,7 +11,7 @@
 #ifndef FOREGROUNDEXTRACTOR__H
 #define FOREGROUNDEXTRACTOR__H
 
-#include <orca/laser.h>
+#include <orca/laserscanner2d.h>
 #include <orca/polarfeature2d.h>
 
 
@@ -32,8 +32,8 @@ public:
       {}
 
 //     Adds laser features to the 'features' data structure
-      void addFeatures( const orca::LaserDataPtr &laserData,
-                        const orca::RangeScannerConfigPtr &laserConfig,
+      void addFeatures( const orca::LaserScanner2dDataPtr &laserData,
+                        const orca::RangeScanner2dConfigPtr &laserConfig,
                         orca::PolarFeature2dDataPtr &features );   
 
 

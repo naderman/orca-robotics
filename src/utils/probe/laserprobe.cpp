@@ -73,11 +73,11 @@ LaserProbe::loadOperation( const int index )
 int 
 LaserProbe::loadGetData()
 {
-    orca::RangeScannerDataPtr data;
+    orca::RangeScanner2dDataPtr data;
     
     try
     {
-        orca::LaserPrx derivedPrx = orca::LaserPrx::checkedCast(prx_);
+        orca::LaserScanner2dPrx derivedPrx = orca::LaserScanner2dPrx::checkedCast(prx_);
         data = derivedPrx->getData();
     }
     catch( const Ice::Exception & e )
@@ -92,11 +92,11 @@ LaserProbe::loadGetData()
 int 
 LaserProbe::loadGetConfig()
 {
-    orca::RangeScannerConfigPtr data;
+    orca::RangeScanner2dConfigPtr data;
     
     try
     {
-        orca::LaserPrx derivedPrx = orca::LaserPrx::checkedCast(prx_);
+        orca::LaserScanner2dPrx derivedPrx = orca::LaserScanner2dPrx::checkedCast(prx_);
         data = derivedPrx->getConfig();
     }
     catch( const Ice::Exception & e )
@@ -111,11 +111,11 @@ LaserProbe::loadGetConfig()
 int 
 LaserProbe::loadGetGeometry()
 {
-    orca::RangeScannerGeometryPtr data;
+    orca::RangeScanner2dGeometryPtr data;
     
     try
     {
-        orca::LaserPrx derivedPrx = orca::LaserPrx::checkedCast(prx_);
+        orca::LaserScanner2dPrx derivedPrx = orca::LaserScanner2dPrx::checkedCast(prx_);
         data = derivedPrx->getGeometry();
     }
     catch( const Ice::Exception & e )

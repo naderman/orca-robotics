@@ -23,8 +23,8 @@ using namespace orca;
 using namespace laserfeatures;
 
 AlgorithmHandler::AlgorithmHandler( const PolarFeature2dConsumerPrx &polarFeaturesConsumer,
-                                    LaserPrx laserPrx,
-                                    orcaice::PtrBuffer<LaserDataPtr> &laserDataBuffer, 
+                                    LaserScanner2dPrx laserPrx,
+                                    orcaice::PtrBuffer<LaserScanner2dDataPtr> &laserDataBuffer, 
                                     orcaice::PtrBuffer<PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
                                     const orcaice::Context & context )
     : polarFeaturesConsumer_(polarFeaturesConsumer),
@@ -117,7 +117,7 @@ void AlgorithmHandler::run()
     
     orca::PolarFeature2dDataPtr featureData = new orca::PolarFeature2dData;
     // don't need to create this one, it will be cloned from the buffer
-    orca::LaserDataPtr laserData;
+    orca::LaserScanner2dDataPtr laserData;
        
     // get laser config and geometry (only once)
     laserConfigPtr_ = laserPrx_->getConfig();
@@ -262,7 +262,7 @@ void AlgorithmHandler::convertToRobotCS( const PolarFeature2dDataPtr & featureDa
 }
 
 void 
-AlgorithmHandler::checkLaserGeometry( const orca::RangeScannerGeometryPtr geom )
+AlgorithmHandler::checkLaserGeometry( const orca::RangeScanner2dGeometryPtr geom )
 {
     bool geomOK = true;
     if ( geom->offset.p.z != 0.0 )

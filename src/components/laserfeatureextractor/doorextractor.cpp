@@ -20,7 +20,7 @@ using namespace std;
 
 namespace laserfeatures {
     
-void DoorExtractor::addFeatures( const orca::LaserDataPtr &laserData,
+void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                                        orca::PolarFeature2dDataPtr &features )
 {    
     unsigned int i;

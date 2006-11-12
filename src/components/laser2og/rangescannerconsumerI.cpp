@@ -11,18 +11,18 @@
 
 #include "rangescannerconsumerI.h"
 
-RangeScannerConsumerI::RangeScannerConsumerI(orcaice::PtrBuffer<orca::RangeScannerDataPtr> &RangeScannerDataBuffer)
-    :rangeScannerDataBuffer_(RangeScannerDataBuffer)
+RangeScanner2dConsumerI::RangeScanner2dConsumerI(orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> &RangeScanner2dDataBuffer)
+    :rangeScannerDataBuffer_(RangeScanner2dDataBuffer)
 {
 }
 
 void
-RangeScannerConsumerI::setData(const orca::RangeScannerDataPtr& data, const Ice::Current&)
+RangeScanner2dConsumerI::setData(const orca::RangeScanner2dDataPtr& data, const Ice::Current&)
 {
     /*
     try {
 	// Is it a laser scan?
-	std::cout << orca::LaserDataPtr::dynamicCast( data ) << std::endl;
+	std::cout << orca::LaserScanner2dDataPtr::dynamicCast( data ) << std::endl;
     }
     catch ( IceUtil::NullHandleException &e )
     {

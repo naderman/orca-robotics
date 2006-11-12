@@ -24,8 +24,10 @@ SET( SLICE_SOURCE_FILES
     cpu.ice
     gps.ice
     home.ice
-    rangescanner.ice
-    laser.ice
+#     rangescanner.ice
+    rangescanner2d.ice
+#     laser.ice
+    laserscanner2d.ice
     ogfusion.ice
     pathplanner2d.ice
     pingreply.ice

@@ -53,13 +53,13 @@ void Component::start()
 
 
     // REQUIRED : Laser
-    orca::LaserPrx laserPrx;
+    orca::LaserScanner2dPrx laserPrx;
     // TODO: this will not actually quit on ctrl-c
     while ( true ) // ( isActive() )
     {
         try
         {
-            orcaice::connectToInterfaceWithTag<LaserPrx>( context(), laserPrx, "Laser" );
+            orcaice::connectToInterfaceWithTag<LaserScanner2dPrx>( context(), laserPrx, "Laser" );
             context().tracer()->debug("connected to a 'Laser' interface",5);
             break;
         }
@@ -73,8 +73,8 @@ void Component::start()
 
     // create a callback object to recieve scans
     Ice::ObjectPtr consumer = new LaserConsumerI( laserDataBuffer_ );
-    orca::RangeScannerConsumerPrx callbackPrx =
-        orcaice::createConsumerInterface<orca::RangeScannerConsumerPrx>( context(), consumer );
+    orca::RangeScanner2dConsumerPrx callbackPrx =
+        orcaice::createConsumerInterface<orca::RangeScanner2dConsumerPrx>( context(), consumer );
     
     //
     // ENABLE NETWORK CONNECTIONS

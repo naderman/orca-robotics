@@ -11,7 +11,7 @@
 #ifndef REFLECTOREXTRACTOR__H
 #define REFLECTOREXTRACTOR__H
 
-#include <orca/laser.h>
+#include <orca/laserscanner2d.h>
 #include <orca/polarfeature2d.h>
 
 namespace laserfeatures {
@@ -31,7 +31,7 @@ public:
         {}
 
     // Adds laser features to the 'features' data structure
-    void addFeatures( const orca::LaserDataPtr    &laserData,
+    void addFeatures( const orca::LaserScanner2dDataPtr    &laserData,
                       orca::PolarFeature2dDataPtr &features );
 
     void setMaxRange( double maxRange ) { laserMaxRange_ = maxRange; }
@@ -52,19 +52,19 @@ private:
     // as the laser grazes past corners etc.
     // It returns true for reflectors that are partially-obscured by foreground
     // objects.
-    bool isSketchy( const orca::LaserDataPtr &laserData,
+    bool isSketchy( const orca::LaserScanner2dDataPtr &laserData,
                     int returnNum,
                     bool reflectorStart );
 
     // Returns the change in range between this return and the previous one.
-    double deltaRange( const orca::LaserDataPtr &laserData,
+    double deltaRange( const orca::LaserScanner2dDataPtr &laserData,
                        int returnNum )
         { 
             assert( returnNum != 0 );
             return laserData->ranges[returnNum] - laserData->ranges[returnNum-1]; 
         }
 
-    double calcBearing( const orca::LaserDataPtr &laserData,
+    double calcBearing( const orca::LaserScanner2dDataPtr &laserData,
                         int returnNum )
         { return laserData->startAngle + returnNum*laserData->angleIncrement; }
 };

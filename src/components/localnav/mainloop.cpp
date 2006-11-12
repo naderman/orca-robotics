@@ -22,7 +22,7 @@ using namespace orcaice;
 namespace localnav {
 
 MainLoop::MainLoop( LocalNavManager                               &localNavManager,
-                    orcaice::PtrBuffer<orca::RangeScannerDataPtr> &obsBuffer,
+                    orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> &obsBuffer,
                     orcaice::PtrBuffer<orca::Localise2dDataPtr>   &locBuffer,
                     orcaice::PtrBuffer<orca::Position2dDataPtr>   &odomBuffer,
                     orca::Platform2dPrx                           &platform2dPrx,
@@ -41,7 +41,7 @@ MainLoop::MainLoop( LocalNavManager                               &localNavManag
 {
     localiseData_ = new orca::Localise2dData;
     odomData_     = new orca::Position2dData;
-    rangeData_    = new orca::RangeScannerData;
+    rangeData_    = new orca::RangeScanner2dData;
     velocityCmd_  = new orca::Velocity2dCommand;
 }
 
@@ -203,7 +203,7 @@ MainLoop::checkWithOutsideWorld( PathMaintainer &pathMaintainer )
 }
 
 bool
-MainLoop::areTimestampsDodgy( const orca::RangeScannerDataPtr &rangeData, 
+MainLoop::areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData, 
                               const orca::Localise2dDataPtr   &localiseData, 
                               const orca::Position2dDataPtr   &odomData,
                               double                           threshold )

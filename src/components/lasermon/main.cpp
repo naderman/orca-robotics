@@ -61,13 +61,13 @@ LaserMonComponent::start()
     //
 
     // Connect directly to the interface
-    orca::LaserPrx laserPrx;
+    orca::LaserScanner2dPrx laserPrx;
     // TODO: this will not actually quit on ctrl-c
     while ( true ) // ( isActive() )
     {
         try
         {
-            orcaice::connectToInterfaceWithTag<orca::LaserPrx>( context(), laserPrx, "Laser" );
+            orcaice::connectToInterfaceWithTag<orca::LaserScanner2dPrx>( context(), laserPrx, "Laser" );
             break;
         }
         catch ( const orcaice::NetworkException & )
@@ -106,7 +106,7 @@ LaserMonComponent::start()
     }
     
     // Can also set the configuration like so:
-//     orca::RangeScannerConfigPtr cfg = new orca::RangeScannerConfig;
+//     orca::RangeScanner2dConfigPtr cfg = new orca::RangeScanner2dConfig;
 //     cfg->rangeResolution = 9999;
 //     cfg->isEnabled = true;
 //     try
@@ -119,9 +119,9 @@ LaserMonComponent::start()
 //     }
 
     // create a callback object to recieve scans
-    Ice::ObjectPtr consumer = new RangeScannerConsumerI;
-    orca::RangeScannerConsumerPrx callbackPrx =
-        orcaice::createConsumerInterface<orca::RangeScannerConsumerPrx>( context(), consumer );
+    Ice::ObjectPtr consumer = new RangeScanner2dConsumerI;
+    orca::RangeScanner2dConsumerPrx callbackPrx =
+        orcaice::createConsumerInterface<orca::RangeScanner2dConsumerPrx>( context(), consumer );
     
     //
     // Subscribe for data

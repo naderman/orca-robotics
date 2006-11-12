@@ -13,14 +13,14 @@
 
 using namespace laserfeatures;
 
-LaserConsumerI::LaserConsumerI( orcaice::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer )
+LaserConsumerI::LaserConsumerI( orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> &laserDataBuffer )
     : laserDataBuffer_(laserDataBuffer)
 {
 
 }
 
-void LaserConsumerI::setData( const orca::RangeScannerDataPtr& data, const Ice::Current& )
+void LaserConsumerI::setData( const orca::RangeScanner2dDataPtr& data, const Ice::Current& )
 {
     //cout << "INFO(laserconsumer_i.cpp): Received laserscan. Putting it into buffer now" << endl << endl;
-    laserDataBuffer_.push( orca::LaserDataPtr::dynamicCast( data ) );
+    laserDataBuffer_.push( orca::LaserScanner2dDataPtr::dynamicCast( data ) );
 }

@@ -23,8 +23,8 @@ using namespace std;
 
 namespace laserfeatures {
     
-void ForegroundExtractor::addFeatures( const orca::LaserDataPtr &laserData, 
-                                       const orca::RangeScannerConfigPtr &laserConfig,
+void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData, 
+                                       const orca::RangeScanner2dConfigPtr &laserConfig,
                                        orca::PolarFeature2dDataPtr &features )
 {
     assert( laserMaxRange_ > 0.0 );

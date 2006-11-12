@@ -17,7 +17,7 @@
 #include <orcaice/context.h>
 
 #include <orca/polarfeature2d.h>
-#include <orca/laser.h>
+#include <orca/laserscanner2d.h>
 
 namespace laserfeatures
 {
@@ -29,8 +29,8 @@ class AlgorithmHandler : public orcaice::Thread
 public:
 
     AlgorithmHandler( const orca::PolarFeature2dConsumerPrx &polarFeaturesConsumer,
-                    orca::LaserPrx laserPrx,
-                    orcaice::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer,
+                    orca::LaserScanner2dPrx laserPrx,
+                    orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> &laserDataBuffer,
                     orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
                     const orcaice::Context & context );
     ~AlgorithmHandler();
@@ -46,21 +46,21 @@ private:
     const orca::PolarFeature2dConsumerPrx &polarFeaturesConsumer_; 
     
     // Laser proxy
-    orca::LaserPrx laserPrx_;
+    orca::LaserScanner2dPrx laserPrx_;
     
     // Laser config and geometry
-    orca::RangeScannerConfigPtr laserConfigPtr_;
-    orca::RangeScannerGeometryPtr laserGeometryPtr_;
+    orca::RangeScanner2dConfigPtr laserConfigPtr_;
+    orca::RangeScanner2dGeometryPtr laserGeometryPtr_;
     
     // buffers
-    orcaice::PtrBuffer<orca::LaserDataPtr> &laserDataBuffer_;
+    orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> &laserDataBuffer_;
     orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer_;
     
     void convertToRobotCS( const orca::PolarFeature2dDataPtr & featuresPtr );
 
     // This component is 2D-centric: can only handle certain orientations.
     // Throws std::strings on bad offset.
-    void checkLaserGeometry( const orca::RangeScannerGeometryPtr geom );
+    void checkLaserGeometry( const orca::RangeScanner2dGeometryPtr geom );
 
     orcaice::Context context_;
 

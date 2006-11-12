@@ -11,7 +11,7 @@
 #ifndef DOOREXTRACTOR__H
 #define DOOREXTRACTOR__H
 
-#include <orca/laser.h>
+#include <orca/laserscanner2d.h>
 #include <orca/polarfeature2d.h>
 
 
@@ -25,7 +25,7 @@ public:
     DoorExtractor() {}
 
 //     Adds laser features to the 'features' data structure
-      void addFeatures( const orca::LaserDataPtr &laserData,
+      void addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                         orca::PolarFeature2dDataPtr &features );   
 
 private: 

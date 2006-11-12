@@ -13,7 +13,7 @@
 #define ORCA2_LASERFEATUREEXTRACTOR_ALGORITHM_DRIVER_H
 
 #include <orca/polarfeature2d.h>
-#include <orca/laser.h>
+#include <orca/laserscanner2d.h>
 
 namespace laserfeatures
 {
@@ -33,8 +33,8 @@ public:
     virtual ~AlgorithmDriver() {};
     
     // Computes the features
-    virtual int computeFeatures( const orca::RangeScannerConfigPtr &laserConfigPtr,
-                                 const orca::LaserDataPtr          &laserDataPtr,
+    virtual int computeFeatures( const orca::RangeScanner2dConfigPtr &laserConfigPtr,
+                                 const orca::LaserScanner2dDataPtr          &laserDataPtr,
                                        orca::PolarFeature2dDataPtr &featureDataPtr ) = 0;
 
     virtual void setMaxRange( float maxRange )=0;

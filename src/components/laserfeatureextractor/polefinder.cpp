@@ -21,8 +21,8 @@ using namespace orca_polefinder;
 using namespace orca;
 
 int 
-orca_polefinder::detect_poles( const RangeScannerConfigPtr laserConf,
-                               const LaserDataPtr ranges,
+orca_polefinder::detect_poles( const RangeScanner2dConfigPtr laserConf,
+                               const LaserScanner2dDataPtr ranges,
                                double max_laser_range,
                                double min_width,
                                double max_width,
@@ -41,7 +41,7 @@ orca_polefinder::detect_poles( const RangeScannerConfigPtr laserConf,
     float  temp_bearing;
     int    last_dodgy_range = 0;
     int    last_pole_end_in_returns = -99999999;
-    int    min_clearance_from_dodge_in_returns = (int) (rint( min_angle_from_dodge / laserConf->angleIncrement ));
+    int    min_clearance_from_dodge_in_returns = 1; // alexm todo: (int) (rint( min_angle_from_dodge / laserConf->angleIncrement ));
 
     for ( int i = 0; i < (int)ranges->ranges.size(); i++ )
     {
@@ -52,7 +52,8 @@ orca_polefinder::detect_poles( const RangeScannerConfigPtr laserConf,
             if ( potential_pole_start )
             {
                 // We could be looking at a pole here...
-                pole_width = ranges->ranges[potential_pole_start]*sin( (i-potential_pole_start)*laserConf->angleIncrement );
+//alexm todo:
+                pole_width = 9999.9; //ranges->ranges[potential_pole_start]*sin( (i-potential_pole_start)*laserConf->angleIncrement );
 
                 if ( pole_width > max_width )
                 {
@@ -71,7 +72,8 @@ orca_polefinder::detect_poles( const RangeScannerConfigPtr laserConf,
                     {
                         // We have a pole!
                         temp_range   = ranges->ranges[(potential_pole_start+(i-1))/2];
-                        temp_bearing = (((i-1)+potential_pole_start)/2)*laserConf->angleIncrement + ranges->startAngle;
+//alexm todo:
+                        temp_bearing = 9999.0; //(((i-1)+potential_pole_start)/2)*laserConf->angleIncrement + ranges->startAngle;
                         
                         poles.resize( poles.size()+1 );
                         poles[poles.size()-1].range   = temp_range;

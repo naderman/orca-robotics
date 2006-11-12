@@ -80,8 +80,8 @@ void CombinedDriver::setMaxRange( float maxRange )
 }
 
 int
-CombinedDriver::computeFeatures( const orca::RangeScannerConfigPtr &laserConfigPtr,
-                                 const orca::LaserDataPtr          &laserDataPtr,
+CombinedDriver::computeFeatures( const orca::RangeScanner2dConfigPtr &laserConfigPtr,
+                                 const orca::LaserScanner2dDataPtr          &laserDataPtr,
                                  orca::PolarFeature2dDataPtr       &featureDataPtr )
 {
     featureDataPtr->features.clear();

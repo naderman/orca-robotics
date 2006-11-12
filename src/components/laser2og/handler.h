@@ -14,7 +14,7 @@
 #include <orcaice/ptrbuffer.h>
 #include <orcaice/context.h>
 
-#include <orca/rangescanner.h>
+#include <orca/rangescanner2d.h>
 #include <orca/localise2d.h>
 #include <orca/ogfusion.h>
 
@@ -38,15 +38,15 @@ private:
     
     orcaice::Context context_;
     
-    orcaice::PtrBuffer<orca::RangeScannerDataPtr> rangeScannerDataBuffer_;
+    orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> rangeScannerDataBuffer_;
     // for our requests for current location
     orca::Localise2dPrx localise2dPrx_;
     // for getting config data
-    orca::RangeScannerPrx rangeScannerPrx_;
+    orca::RangeScanner2dPrx rangeScannerPrx_;
     // for setting ogfusion data
     orca::OgFusionPrx ogFusionPrx_;
     // for receiving the data
-    orca::RangeScannerConsumerPrx rangeScannerConsumerPrx_;
+    orca::RangeScanner2dConsumerPrx rangeScannerConsumerPrx_;
     Laser2Og *laser2Og_;
 
 };

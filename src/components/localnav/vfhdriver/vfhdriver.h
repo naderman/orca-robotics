@@ -40,26 +40,26 @@ public:
     // Goal location is in robot's coordinate frame
     virtual LocalNavDriver::DriverState getCommand( bool  stalled,
                                                     const orca::Twist2d &currentVelocity,
-                                                    const orca::RangeScannerDataPtr obs,
+                                                    const orca::RangeScanner2dDataPtr obs,
                                                     orca::Velocity2dCommandPtr &cmd );
 
 private: 
 
     // Functions for setting commands
     void setToZero(         orca::Velocity2dCommandPtr &cmd );
-    void setToEscape(       orca::Velocity2dCommandPtr &cmd, const orca::RangeScannerDataPtr &obs );
+    void setToEscape(       orca::Velocity2dCommandPtr &cmd, const orca::RangeScanner2dDataPtr &obs );
     void setTurnToGoal(     orca::Velocity2dCommandPtr &cmd, const localnav::GoalWatcher &goalWatcher );
     void setToApproachGoal( orca::Velocity2dCommandPtr &cmd,
                             const localnav::GoalWatcher     &goalWatcher, 
                             const orca::Twist2d             &currentVelocity,
-                            const orca::RangeScannerDataPtr &obs );
+                            const orca::RangeScanner2dDataPtr &obs );
     
     // If we stall a lot, our sensors must have missed something.  
     // We need to try something else.
     bool shouldEscape( bool stalled );
 
     // Copy to Player units
-    void copyLaserScan( const orca::RangeScannerDataPtr obs, double playerLaserScan[361][2] );
+    void copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLaserScan[361][2] );
 
     // Class to handle the internal VFH algorithm
     // (like maintaining histograms etc).

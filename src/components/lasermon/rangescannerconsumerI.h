@@ -13,18 +13,18 @@
 
 #include <iostream>
 
-#include <orca/laser.h>
+#include <orca/laserscanner2d.h>
 #include <orcaice/orcaice.h>
 
-class RangeScannerConsumerI : public orca::RangeScannerConsumer
+class RangeScanner2dConsumerI : public orca::RangeScanner2dConsumer
 {
     public:
-        virtual void setData(const orca::RangeScannerDataPtr& data, const Ice::Current&)
+        virtual void setData(const orca::RangeScanner2dDataPtr& data, const Ice::Current&)
         {
             try {
                 // Is it a laser scan?
-                //std::cout << orca::LaserDataPtr::dynamicCast( data ) << std::endl;
-                std::cout << orcaice::toVerboseString( orca::LaserDataPtr::dynamicCast( data ) ) << std::endl;
+                //std::cout << orca::LaserScanner2dDataPtr::dynamicCast( data ) << std::endl;
+                std::cout << orcaice::toVerboseString( orca::LaserScanner2dDataPtr::dynamicCast( data ) ) << std::endl;
             }
             catch ( IceUtil::NullHandleException & )
             {

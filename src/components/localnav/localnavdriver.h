@@ -11,7 +11,7 @@
 #define LOCALNAVDRIVER_H
 
 #include <orca/platform2d.h>
-#include <orca/rangescanner.h>
+#include <orca/rangescanner2d.h>
 
 namespace localnav {
 
@@ -76,7 +76,7 @@ public:
     //
     virtual DriverState getCommand( bool  stalled,
                                     const orca::Twist2d &currentVelocity,
-                                    const orca::RangeScannerDataPtr obs,
+                                    const orca::RangeScanner2dDataPtr obs,
                                     orca::Velocity2dCommandPtr &cmd )=0;
 
 protected: 

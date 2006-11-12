@@ -9,7 +9,7 @@
  */
 #include <iostream>
 
-#include <orca/rangescanner.h>
+#include <orca/rangescanner2d.h>
 #include <orca/localise2d.h>
 #include <orca/ogfusion.h>
 #include <orcaice/orcaice.h>
@@ -61,7 +61,7 @@ Handler::init()
     {
         try
         {
-            orcaice::connectToInterfaceWithTag<orca::RangeScannerPrx>( context_, rangeScannerPrx_, "RangeScanner" );
+            orcaice::connectToInterfaceWithTag<orca::RangeScanner2dPrx>( context_, rangeScannerPrx_, "RangeScanner" );
             break;
         }
         catch ( const orcaice::NetworkException & e )
@@ -111,22 +111,23 @@ Handler::init()
     }
     
     // Get the geometry
-    RangeScannerGeometryPtr rangeScannerGeometry = rangeScannerPrx_->getGeometry();
+    RangeScanner2dGeometryPtr rangeScannerGeometry = rangeScannerPrx_->getGeometry();
     cout << "Range Scanner Geometry: " << orcaice::toString(rangeScannerGeometry) << endl;
 
     // Get the configuration
-    RangeScannerConfigPtr rangeScannerConfig = rangeScannerPrx_->getConfig();
+    RangeScanner2dConfigPtr rangeScannerConfig = rangeScannerPrx_->getConfig();
     cout << "Laser Config:   " << orcaice::toString(rangeScannerConfig) << endl;
 
     sensorConfig.rangeMax = rangeScannerConfig->maxRange;
-    sensorConfig.angleIncrement = rangeScannerConfig->angleIncrement;
+//alexm todo:
+    sensorConfig.angleIncrement = 9999.9; //rangeScannerConfig->angleIncrement;
 
     // No need to getData()
 
     // create a callback object to recieve scans
-    Ice::ObjectPtr consumer = new RangeScannerConsumerI(rangeScannerDataBuffer_);
+    Ice::ObjectPtr consumer = new RangeScanner2dConsumerI(rangeScannerDataBuffer_);
     rangeScannerConsumerPrx_ =
-            orcaice::createConsumerInterface<orca::RangeScannerConsumerPrx>( context_, consumer );
+            orcaice::createConsumerInterface<orca::RangeScanner2dConsumerPrx>( context_, consumer );
 
     OgFusionConfigPtr ogFusionConfig = ogFusionPrx_->getConfig();
 
@@ -175,7 +176,7 @@ void
 Handler::run()
 {
 
-	RangeScannerDataPtr rangeScan = new RangeScannerData;
+	RangeScanner2dDataPtr rangeScan = new RangeScanner2dData;
 	Localise2dDataPtr pose = new Localise2dData;
 	OgFusionDataPtr obs = new OgFusionData;
 

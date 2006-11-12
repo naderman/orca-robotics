@@ -10,7 +10,7 @@
 #ifndef CORNEREXTRACTOR__H
 #define CORNEREXTRACTOR__H
 
-#include <orca/laser.h>
+#include <orca/laserscanner2d.h>
 #include <orca/polarfeature2d.h>
 
 #include <vector>
@@ -30,7 +30,7 @@ public:
     {}
 
     // Adds laser features to the 'features' data structure
-    void addFeatures( const orca::LaserDataPtr &laserData,
+    void addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                         orca::PolarFeature2dDataPtr &features );  
     
     void setMaxRange( double maxRange ) { laserMaxRange_ = maxRange; }
@@ -44,7 +44,7 @@ private:
     // Not used at the moment
     bool extractPossibleCorners( const orca::PolarFeature2dDataPtr & featureDataPtr );
     
-    void connectSections(const orca::LaserDataPtr & laserDataPtr);
+    void connectSections(const orca::LaserScanner2dDataPtr & laserDataPtr);
     void extractLines();
     void findBreakPoint(Section &s, double &maxDist, int &pos);
     void fitLine(Section &s);

@@ -33,7 +33,7 @@ using namespace std;
 
 namespace laserfeatures {
     
-void CornerExtractor::addFeatures( const orca::LaserDataPtr &laserData,
+void CornerExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                                    orca::PolarFeature2dDataPtr &features )
 {  
     assert( laserMaxRange_ > 0.0 );
@@ -125,7 +125,7 @@ void CornerExtractor::addFeatures( const orca::LaserDataPtr &laserData,
  
 }
 
-void CornerExtractor::connectSections(const orca::LaserDataPtr & laserDataPtr)
+void CornerExtractor::connectSections(const orca::LaserScanner2dDataPtr & laserDataPtr)
 {
     //Section *head = new Section();
     //Section *current = head;

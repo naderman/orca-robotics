@@ -11,7 +11,7 @@
 #define _ORCA2_LASER2OG_H_
 
 // orca objects
-#include <orca/laser.h>
+#include <orca/laserscanner2d.h>
 #include <orca/localise2d.h>
 #include <orca/ogfusion.h>
 
@@ -32,7 +32,7 @@ public:
     Laser2Og(ogfusion::MapConfig& mapConfig, OgLaserModelConfig& sensorConfig);
     ~Laser2Og();
 
-    int process( const orca::Localise2dData &pose, const orca::RangeScannerData & scan );
+    int process( const orca::Localise2dData &pose, const orca::RangeScanner2dData & scan );
     int getObs( orca::OgObservation &obs );
 
 private:

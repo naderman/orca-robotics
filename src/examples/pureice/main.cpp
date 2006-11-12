@@ -14,7 +14,7 @@
 
 #include <Ice/Ice.h>
 
-#include <orca/laser.h>
+#include <orca/laserscanner2d.h>
 
 using namespace std;
 
@@ -42,11 +42,11 @@ getHostname()
 
 // this function is from libOrcaObjects (stringutils.cpp)
 std::string 
-toString( const orca::RangeScannerDataPtr & obj)
+toString( const orca::RangeScanner2dDataPtr & obj)
 {
     std::ostringstream s;
 //     s << toString(obj->timeStamp)
-    s << " RangeScannerData [" << obj->ranges.size() << " elements]: " << endl;
+    s << " RangeScanner2dData [" << obj->ranges.size() << " elements]: " << endl;
     s << "\tstartAngle: " << obj->startAngle * 180.0/M_PI << "deg" << endl;
     s << "\tangleIncrement: " << obj->angleIncrement * 180.0/M_PI << "deg" << endl;
 
@@ -85,7 +85,7 @@ main(int argc, char* argv[])
 
         // Down-cast the proxy to a Laser proxy
         //
-        orca::LaserPrx laser = orca::LaserPrx::checkedCast(base);
+        orca::LaserScanner2dPrx laser = orca::LaserScanner2dPrx::checkedCast(base);
         if (!laser) {
             throw "Invalid proxy";
         }
@@ -93,7 +93,7 @@ main(int argc, char* argv[])
 
         // get one laser scan and print it out
         //
-        orca::RangeScannerDataPtr data = new orca::LaserData;
+        orca::RangeScanner2dDataPtr data = new orca::LaserScanner2dData;
         data = laser->getData();
 
         cout<<"Received laser scan:"<<endl;

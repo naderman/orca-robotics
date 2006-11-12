@@ -12,16 +12,16 @@
 
 #include <iostream>
 
-#include <orca/rangescanner.h>
+#include <orca/rangescanner2d.h>
 #include <orcaice/ptrbuffer.h>
 
-class RangeScannerConsumerI : public orca::RangeScannerConsumer
+class RangeScanner2dConsumerI : public orca::RangeScanner2dConsumer
 {
 public:
-    RangeScannerConsumerI(orcaice::PtrBuffer<orca::RangeScannerDataPtr> &RangeScannerDataBuffer);
-    virtual void setData(const orca::RangeScannerDataPtr& data, const Ice::Current&);
+    RangeScanner2dConsumerI(orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> &RangeScanner2dDataBuffer);
+    virtual void setData(const orca::RangeScanner2dDataPtr& data, const Ice::Current&);
 private:
-    orcaice::PtrBuffer<orca::RangeScannerDataPtr> &rangeScannerDataBuffer_;
+    orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> &rangeScannerDataBuffer_;
 };
 
 #endif

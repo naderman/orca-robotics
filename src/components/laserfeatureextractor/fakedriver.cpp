@@ -24,8 +24,8 @@ FakeDriver::FakeDriver()
 {
 }
 
-int FakeDriver::computeFeatures( const orca::RangeScannerConfigPtr &laserConfigPtr,
-                                 const orca::LaserDataPtr          &laserDataPtr,
+int FakeDriver::computeFeatures( const orca::RangeScanner2dConfigPtr &laserConfigPtr,
+                                 const orca::LaserScanner2dDataPtr          &laserDataPtr,
                                        orca::PolarFeature2dDataPtr &featureDataPtr )
 {
     // make up some features

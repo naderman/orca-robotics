@@ -19,7 +19,7 @@ using namespace std;
 namespace laserfeatures {
 
 void 
-ReflectorExtractor::addFeatures( const orca::LaserDataPtr    &laserData,
+ReflectorExtractor::addFeatures( const orca::LaserScanner2dDataPtr    &laserData,
                                  orca::PolarFeature2dDataPtr &features )
 {
 //     cout<<"TRACE(reflectorextractor.cpp): addFeatures()" << endl;
@@ -132,7 +132,7 @@ ReflectorExtractor::addFeatures( const orca::LaserDataPtr    &laserData,
 }
 
 bool 
-ReflectorExtractor::isSketchy( const orca::LaserDataPtr &laserData,
+ReflectorExtractor::isSketchy( const orca::LaserScanner2dDataPtr &laserData,
                                int returnNum,
                                bool reflectorStart )
 {
