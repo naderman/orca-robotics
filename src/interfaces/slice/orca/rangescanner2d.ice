@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_RANGE_SCANNER_INTERFACE_ICE
-#define ORCA2_RANGE_SCANNER_INTERFACE_ICE
+#ifndef ORCA2_RANGE_SCANNER_2D_INTERFACE_ICE
+#define ORCA2_RANGE_SCANNER_2D_INTERFACE_ICE
 
 #include <orca/orca.ice>
 #include <orca/bros1.ice>
@@ -18,7 +18,7 @@ module orca
 {
 /*!
     @ingroup interfaces
-    @defgroup orca_interface_rangescanner RangeScanner
+    @defgroup orca_interface_rangescanner2d RangeScanner2d
     @brief Single-origin scanning range sensor
 
 The rangescanner interface provides access to a single-origin scanning range
@@ -37,19 +37,13 @@ range readings included.  Scans proceed counterclockwise about the sensor
 */
 
 //! A sequence of ranges to the target.
-sequence<float>        RangeSequence;
+sequence<float> RangeSequence;
 
 //! RangeScanner configuration data structure
-class RangeScannerConfig extends OrcaObject
+class RangeScanner2dConfig extends OrcaObject
 {
-    //! Minimum range step that can be sensed
-    float rangeResolution;
-
     //! maximum range of each return
     float maxRange;
-
-    //! Angle between successive returns
-    float angleIncrement;
 
     //! Are we talking to the hardware?
     bool  isEnabled;
@@ -57,7 +51,7 @@ class RangeScannerConfig extends OrcaObject
 
 
 //! RangeScanner Geometry data structure
-class RangeScannerGeometry extends OrcaObject
+class RangeScanner2dGeometry extends OrcaObject
 {
     //! Offset of the centre of the sensor from the robot, int the robot CS
     Frame3d offset;
@@ -69,7 +63,7 @@ class RangeScannerGeometry extends OrcaObject
 /*!
     Range scan data structure
 */
-class RangeScannerData extends OrcaObject
+class RangeScanner2dData extends OrcaObject
 {
     //! Distance to returns
     RangeSequence     ranges;
@@ -84,34 +78,29 @@ class RangeScannerData extends OrcaObject
 /*!
     @brief Consumer of range scans
 */
-interface RangeScannerConsumer
+interface RangeScanner2dConsumer
 {
     //! Transmits the data to the consumer.
-    void setData( RangeScannerData obj );
+    void setData( RangeScanner2dData obj );
 };
 
 /*!
     @brief Single-origin scanning range sensor
  */
-interface RangeScanner
+interface RangeScanner2d
 {
     //! Returns the latest data.
     //! May raise DataNotExistException if the requested information is not available.
     //! May raise HardwareFailedException if there is some problem with hardware.
     //! @note In Orca1 this would be called ClientPull_Supplier interface.
-    nonmutating RangeScannerData      getData()
+    nonmutating RangeScanner2dData      getData()
             throws DataNotExistException, HardwareFailedException;
             
     //! Returns the current configuration.
-    nonmutating RangeScannerConfig    getConfig();
+    nonmutating RangeScanner2dConfig    getConfig();
     
     //! Returns the current geometry information.
-    nonmutating RangeScannerGeometry  getGeometry();
-
-    //! Set the configuration of the sensor.
-    //! May raise ConfigurationNotExistException when given a configuration it can't implement.
-    idempotent  void setConfig( RangeScannerConfig config )
-            throws ConfigurationNotExistException;
+    nonmutating RangeScanner2dGeometry  getGeometry();
 
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.
@@ -121,11 +110,8 @@ interface RangeScanner
      *
      * @see unsubscribe
      */
-    void subscribe( RangeScannerConsumer *subscriber )
+    void subscribe( RangeScanner2dConsumer *subscriber )
             throws SubscriptionFailedException;
-
-    // this is what IceStorm's subscribe function looks like.
-    //void subscribe(QoS theQoS, Object* subscriber);
 
     /*!
      * Unsubscribe an existing @p subscriber. The case when the @p subscriber is not subscribed
@@ -133,7 +119,7 @@ interface RangeScanner
      *
      * @see subscribe
      */
-    idempotent void unsubscribe( RangeScannerConsumer *subscriber );
+    idempotent void unsubscribe( RangeScanner2dConsumer *subscriber );
 };
 
 /*! @} */

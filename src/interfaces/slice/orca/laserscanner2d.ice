@@ -8,18 +8,18 @@
  *
  */
 
-#ifndef ORCA2_LASER_INTERFACE_ICE
-#define ORCA2_LASER_INTERFACE_ICE
+#ifndef ORCA2_LASER_SCANNER_2D_INTERFACE_ICE
+#define ORCA2_LASER_SCANNER_2D_INTERFACE_ICE
 
 #include <orca/orca.ice>
 #include <orca/bros1.ice>
-#include <orca/rangescanner.ice>
+#include <orca/rangescanner2d.ice>
 
 module orca
 {
 /*!
     @ingroup interfaces
-    @defgroup orca_interface_laser Laser
+    @defgroup orca_interface_laserscanner2d Laser
     @brief Single-origin scanning range and intensity sensor
 
 The laser interface provides access to a single-origin scanning range and intensity
@@ -39,14 +39,14 @@ range readings included.  Scans proceed counterclockwise about the laser
 */
 
 //! A sequence of return intensities.
-sequence<byte>         IntensitySequence;
+sequence<byte> IntensitySequence;
 
 /*!
     @brief %Laser scan data structure adds return-intensity information to rangescanner data.
 */
-class LaserData extends RangeScannerData
+class LaserScanner2dData extends RangeScanner2dData
 {
-    //! Adds the intensities to the data already in RangeScannerData.
+    //! Adds the intensities to the data already in RangeScanner2dData.
     //! - RangeSequence     ranges;
     //! - float             startAngle;
     //! - float             angleIncrement;
@@ -59,7 +59,7 @@ class LaserData extends RangeScannerData
     An implementaion of this interface is understood to return LaserData instead of
     RangeScannerData when implementing getData operation inherited from @ref orca_interface_rangescanner.
  */
-interface Laser extends RangeScanner
+interface LaserScanner2d extends RangeScanner2d
 {
 };
 
