@@ -24,9 +24,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Home interface
     - register Home objects as well-known objects. This will make it unnecessary to use the Admin interface of the Registry and remove the associated security risk.
     - Alex M.
-- RegistryView and RegistryList
-    - Use the RegistryObserver interface to sign up for events rather than blindly poll the registry for information.
-    - Alex M.
 - Source code structure
     - Separate utilities from libraries?
 
@@ -67,7 +64,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - timestamp in log filenames is optional (Alex M.)
     - added support for Power interface (Alex M.)
     - Added support for plug-in loggers, via dynamic library loading (Alex B.)
-
+- Orca for Java
+    - now works with Debian package of IceJ (Alex M.)
 
 @section orca_doc_todo_history Changes in Past Releases
 
