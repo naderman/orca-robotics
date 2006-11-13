@@ -80,24 +80,20 @@ HwHandler::init()
     //
     // Read settings
     //
+    Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
     
-    config_.maxSpeed = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            prefix+"MaxSpeed", 1.0 );
-    config_.maxTurnrate = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            prefix+"MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
-    config_.isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( context_.properties(),
-            prefix+"EnableMotion", 1 );   
+    config_.maxSpeed = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxSpeed", 1.0 );
+    config_.maxTurnrate = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
+    config_.isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableMotion", 1 );   
 
     // based on the config parameter, create the right driver
-    string driverName = orcaice::getPropertyWithDefault( context_.properties(),
-            prefix+"Driver", "segwayrmpusb" );
+    string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "segwayrmpusb" );
             
     if ( driverName == "segwayrmpusb" )
     {
 #ifdef HAVE_USB_DRIVER
-        context_.tracer()->debug( "loading USB driver",3);
-
+        context_.tracer()->debug( "loading 'segwayrmpusb' driver",3);
         driver_ = new UsbDriver( context_ );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'usb' because it was not built!" );
@@ -106,8 +102,7 @@ HwHandler::init()
     else if ( driverName == "playerclient" )
     {
 #ifdef HAVE_PLAYERCLIENT_DRIVER
-        context_.tracer()->debug( "loading Player-Client driver",3);
-
+        context_.tracer()->debug( "loading 'playerclient' driver",3);
         driver_ = new PlayerClientDriver( context_ );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'playerclient' because it was not built!" );
@@ -115,7 +110,7 @@ HwHandler::init()
     }
     else if ( driverName == "fake" )
     {
-        context_.tracer()->debug( "loading Fake driver",3);
+        context_.tracer()->debug( "loading 'fake' driver",3);
         driver_ = new FakeDriver;
     }
     else {

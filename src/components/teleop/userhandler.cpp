@@ -57,20 +57,18 @@ UserHandler::init()
     //
     // Read settings
     //
+    Ice::PropertiesPtr prop = context_.properties();;
     std::string prefix = context_.tag() + ".Config.";
     
-    config_.maxSpeed = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-                prefix+"MaxSpeed", 1.0 );
-    config_.maxTurnrate = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-                prefix+"MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
+    config_.maxSpeed = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxSpeed", 1.0 );
+    config_.maxTurnrate = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
 
     // based on the config parameter, create the right driver
-    string driverName = orcaice::getPropertyWithDefault( context_.properties(),
-                prefix+"Driver", "keyboard" );
+    string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "kbd-termio" );
     if ( driverName == "kbd-termio" )
     {
 #ifdef HAVE_KEYBOARD_TERMIO_DRIVER
-        context_.tracer()->info("loading keyboard driver (with termio)");
+        context_.tracer()->info("loading 'kbd-termio' driver");
         driver_ = new KeyboardTermioDriver( config_ );
         displayHandler_ = new StdoutDisplayHandler();
 #else
@@ -80,7 +78,7 @@ UserHandler::init()
     else if ( driverName == "kbd-ncurses" )
     {
 #ifdef HAVE_KEYBOARD_NCURSES_DRIVER
-        context_.tracer()->info("loading keyboard driver (with ncurses)");
+        context_.tracer()->info("loading 'kbd-ncurses' driver");
         KeyboardNcurcesDriver* keyboardTermioDriver = new KeyboardNcurcesDriver( config_ );
         // this driver implements both interfaces
         driver_ = keyboardTermioDriver;
@@ -92,10 +90,10 @@ UserHandler::init()
     else if ( driverName == "joystick" )
     {
 #ifdef HAVE_JOYSTICK_DRIVER
-        context_.tracer()->info("loading joystick driver");
+        context_.tracer()->info("loading 'joystick' driver");
         
         std::string joystickPrefix = prefix + "Joystick.";
-        config_.joystickDevice = orcaice::getPropertyWithDefault( context_.properties(),
+        config_.joystickDevice = orcaice::getPropertyWithDefault( prop,
                 joystickPrefix+"Device", "auto" );
         driver_ = new JoystickDriver( config_ );
         displayHandler_ = new StdoutDisplayHandler();
@@ -105,7 +103,7 @@ UserHandler::init()
     }
     else if ( driverName == "fake" )
     {
-        context_.tracer()->info("loading fake driver");
+        context_.tracer()->info("loading 'fake' driver");
         driver_ = new FakeDriver( config_ );
         displayHandler_ = new StdoutDisplayHandler();
     }
