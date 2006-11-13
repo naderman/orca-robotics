@@ -40,16 +40,12 @@ public:
     virtual int enable();
     virtual int disable();
 
-    virtual bool isEnabled() { return isEnabled_; };
-
     virtual int read( orca::LaserScanner2dDataPtr &data );
 
     virtual int getConfig( Config &cfg );
     virtual int setConfig( const Config &cfg );
 
 private:
-
-    bool isEnabled_;
     PlayerCc::PlayerClient *robot_;
     PlayerCc::LaserProxy *laserProxy_;
 
@@ -61,6 +57,6 @@ private:
     orcaice::Context context_;
 };
 
-}
+} // namespace
 
 #endif

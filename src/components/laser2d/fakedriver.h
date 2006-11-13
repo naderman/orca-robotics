@@ -30,8 +30,6 @@ public:
     virtual int enable() { isEnabled_=true; return 0; };
     virtual int disable() { isEnabled_=false; return 0; };
 
-    virtual bool isEnabled() { return isEnabled_; };
-
     // Blocks till new data is available
     virtual int read( orca::LaserScanner2dDataPtr &data );
 
@@ -42,9 +40,6 @@ public:
     virtual int setConfig( const Config &cfg );
 
 private:
-
-    bool isEnabled_;
-
     orcaice::Context context_;
 };
 

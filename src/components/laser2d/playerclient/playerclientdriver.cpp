@@ -29,8 +29,7 @@ namespace laser2d {
   NOTE: as of player v1.5 the LaserProxy returns range in [m], the multiplication factor is no longer needed.
 */
 PlayerClientDriver::PlayerClientDriver( const orcaice::Context & context )
-    : isEnabled_( false ),
-      context_(context)
+    : context_(context)
 {
     // read driver-specific properties
     Ice::PropertiesPtr prop = context_.properties();
@@ -39,9 +38,9 @@ PlayerClientDriver::PlayerClientDriver( const orcaice::Context & context )
     std::string playerHost = orcaice::getPropertyWithDefault( prop, prefix+"Host", "localhost" );
     host_ = strdup(playerHost.c_str());
 
-    int port_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Port", 6665 );
+    port_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Port", 6665 );
 
-    int device_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Device", 0 );
+    device_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Device", 0 );
 
     std::string playerDriver_ = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "sicklms200" );
 }
@@ -57,6 +56,11 @@ PlayerClientDriver::enable()
 
     cout << "TRACE(playerlaserdriver.cpp): PlayerClientDriver: Connecting to player on host "
          << host_ << ", port " << port_ << endl;
+
+
+    std::stringstream ss;
+    ss << "Connecting to Player server with host="<<host_<<" port="<<port_<<" id="<<device_;
+    context_.tracer()->info( ss.str() );
 
     // player throws exceptions on creation if we fail
     try
@@ -100,19 +104,25 @@ PlayerClientDriver::getConfig( Config &cfg )
         // default settings
 //         cfg->angleIncrement   = DEG2RAD(0.5);
 //         cfg->rangeResolution  = 0.001;
-        cfg.maxRange         = 8.0;
+        cfg.maxRange        = 8.0;
+        cfg.fieldOfView     = 180.0;
+        cfg.startAngle      = -90.0;
+        cfg.numberOfReturns = 361;
         return 0;
     } 
     else if ( playerDriver_=="urglaser" )
     {
         // default settings
 //         cfg->angleIncrement   = DEG2RAD(230.0/654.0);
-//         cfg->rangeResolution  = 0.01;
         cfg.maxRange         = 4.0;
+        cfg.fieldOfView     = 230.0;
+        cfg.startAngle      = -112.0;
+        cfg.numberOfReturns = 655;
         return 0;
     } 
 
-    if ( ! isEnabled_ )
+    // we  are left with sicklms200 (real hardware) for which we can get live config data.
+    if ( !isEnabled_ )
     {
         cout << "ERROR(playerlaserdriver.cpp): Can't read: not connected to Player/Stage yet." << endl;
         return -1;

@@ -18,8 +18,7 @@ using namespace std;
 namespace laser2d {
 
 FakeDriver::FakeDriver( const orcaice::Context & context )
-    : isEnabled_(false),
-      context_(context)
+    : context_(context)
 {
     // setting factory config parameters
     currentConfig_.maxRange         = 99.0;

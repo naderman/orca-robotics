@@ -12,7 +12,9 @@
 
 #include <orcaice/context.h>
 #include <driver.h>
-#include "sick.h"
+
+// forward declaration of Carmen class
+class sick_laser_t;
 
 namespace laser2d {
 
@@ -27,20 +29,16 @@ class SickCarmenDriver : public Driver
 public: 
 
     SickCarmenDriver( const orcaice::Context & context );
-    ~SickCarmenDriver();
+    virtual ~SickCarmenDriver();
 
+    // returns: 0 = success, non-zero = failure
     virtual int enable();
     virtual int disable();
-
-    virtual bool isEnabled();
 
     // Blocks till new data is available
     virtual int read( orca::LaserScanner2dDataPtr &data );
 
-    // Get the current configuration
     virtual int getConfig( Config &cfg );
-
-    // Set a specifc configuration
     virtual int setConfig( const Config &cfg );
 
     virtual const std::string heartbeatMessage();
@@ -53,14 +51,12 @@ private:
     int doEnable();
     int doDisable();
 
-    bool isEnabled_;
+    // carmen core object
     sick_laser_t *laser_;
 
     char *device_;
-    
     // LMS or PMS
     char *type_; 
-    
     int baudrate_;
 
     orcaice::Context context_;

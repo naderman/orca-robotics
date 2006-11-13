@@ -41,13 +41,14 @@ public:
         int    numberOfReturns;
     };
 
-    Driver() {};
+    Driver()
+        : isEnabled_(false) {};
     virtual ~Driver() {};
 
     virtual int enable()=0;
     virtual int disable()=0;
 
-    virtual bool isEnabled()=0;
+    virtual bool isEnabled() { return isEnabled_; };
 
     // Blocks till new data is available
     virtual int read( orca::LaserScanner2dDataPtr &data )=0;
@@ -65,6 +66,8 @@ public:
     virtual const std::string heartbeatMessage() { return __orca__laserdriver_default_heartbeat_msg; };
 
 protected:
+
+    bool isEnabled_;
 
     Config currentConfig_;
 

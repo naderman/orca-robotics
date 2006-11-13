@@ -129,26 +129,18 @@ MainLoop::readLaserData( orca::LaserScanner2dDataPtr &laserData )
             
     if ( ret != 0 )
     {
-        context_.tracer()->error( "Problem reading from laser.  Shutting down hardware." );
+        context_.tracer()->error( "Problem reading from laser.  Restarting hardware." );
         hwDriver_->disable();
-
-        RangeScanner2dConfigPtr cfg;
-        laserObj_.currentConfigBuffer_.get( cfg );
-
-        // Tell the laser to try to get back to this config
-//         laserObj_.desiredConfigBuffer_.push( cfg );
-
-        // If anyone out there asks, our config has changed.
-//         cfg->isEnabled = false;
-//         laserObj_.currentConfigBuffer_.push( cfg );
+        hwDriver_->enable();
     }
     else
     {
         // Check that the angleIncrement matches what we expect
-//alexm todo:
-//         RangeScanner2dConfigPtr cfg;
-//         laserObj_.currentConfigBuffer_.get( cfg );
-//         if ( !NEAR(  cfg->angleIncrement, laserData->angleIncrement, 1e-5) )
+        Driver::Config cfg;
+        hwDriver_->getConfig( cfg );
+
+        //alexm: Config and LaserScanner2dData have this info in diff. forms
+//         if ( !NEAR(  cfg.angleIncrement, laserData->angleIncrement, 1e-5) )
 //         {
 //             cout << "ERROR(mainloop.cpp): angleIncrement of laser scan returned from driver does not match configured angleIncrement." << endl;
 //             cout << "ERROR(mainloop.cpp): config says: " << RAD2DEG(cfg->angleIncrement) << ",laser data says: " << RAD2DEG(laserData->angleIncrement) << endl; 
