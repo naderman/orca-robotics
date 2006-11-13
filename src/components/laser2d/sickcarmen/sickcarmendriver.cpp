@@ -60,8 +60,8 @@ SickCarmenDriver::setupParams( double maxRange, int numberOfReturns, int baudrat
     // first convert from generic configs to SICK-specific ones
     //
 
-    float rangeResolution = sickutil::maxRange2RangeResolution( maxRange );
-    float angleIncrement = sickutil::numberOfReturns2AngleIncrement( numberOfReturns );
+    double rangeResolution = sickutil::maxRange2RangeResolution( maxRange );
+    double angleIncrement = sickutil::numberOfReturns2AngleIncrement( numberOfReturns );
     
     stringstream ss;
     ss<<"Validating SICK config: rangeres="<<rangeResolution<<" angleincrem="<<angleIncrement<<" baud="<<baudrate;
