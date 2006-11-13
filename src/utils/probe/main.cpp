@@ -51,6 +51,7 @@ Component::start()
     activate();
 
     orcaice::Buffer<BrowserEvent> eventPipe;
+    orcaice::Proxy<std::string> filterPipe;
 
     ProbeFactory probeFactory;
 
@@ -78,7 +79,7 @@ Component::start()
     {
         tracer()->print( "loading iostream driver");
         // this driver is not interactive, so it does not need networkHandler
-        IostreamDriver* iostreamDriver = new IostreamDriver( &eventPipe, &probeFactory );
+        IostreamDriver* iostreamDriver = new IostreamDriver( &eventPipe, &filterPipe, &probeFactory );
         userDriver = iostreamDriver;
         displayDriver = iostreamDriver;
     }
@@ -89,7 +90,7 @@ Component::start()
     }
 
 
-    BrowserHandler browserHandler( eventPipe, probeFactory, *displayDriver, context() );
+    BrowserHandler browserHandler( eventPipe, filterPipe, probeFactory, *displayDriver, context() );
     browserHandler.start();
 
     // for Qt driver, this will not return

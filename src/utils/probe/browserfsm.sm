@@ -12,6 +12,7 @@ Idle{
 Registry{
     pick    Component   loadComponent
     reload  Registry    loadRegistry
+    filter  Registry    filterRegistry
     fault   Idle        quit
     deactivate    Idle        quit
 }

@@ -13,6 +13,7 @@
 
 #include <vector>
 #include <orcaice/buffer.h>
+#include <orcaice/proxy.h>
 #include <orcaice/context.h>
 #include <orcacm/types.h>
 
@@ -31,6 +32,7 @@ class BrowserHandler : public orcaice::Thread, public BrowserFsm
 
 public:
     BrowserHandler( orcaice::Buffer<BrowserEvent> & eventPipe,
+                    orcaice::Proxy<std::string> & filterPipe,
                     ProbeFactory & probeFactory,
                     DisplayDriver & display,
                     const orcaice::Context & context );
@@ -39,6 +41,7 @@ public:
     virtual void run();
 
     virtual void loadRegistry();
+    virtual void filterRegistry();
     virtual void loadComponent();
     virtual void loadInterface();
     virtual void loadOperation();
@@ -53,6 +56,8 @@ private:
 
     orcaice::Buffer<BrowserEvent> & eventPipe_;
 
+    orcaice::Proxy<std::string> & filterPipe_;
+
     ProbeFactory & probeFactory_;
 
     DisplayDriver & displayDriver_;
@@ -61,15 +66,19 @@ private:
 
     orcaice::Context context_;
 
+    // user's last choice
     int pick_;
     int lastComponentPick_;
     int lastInterfacePick_;
     int lastOperationPick_;
+
     orcacm::RegistryHomeData registryData_;
     orcacm::ComponentData componentData_;
     orcacm::InterfaceData interfaceData_;
     orcacm::OperationData operationData_;
 
+    // user's last filter
+    std::string filter_;
 };
 
 } // namespace

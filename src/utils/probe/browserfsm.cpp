@@ -48,6 +48,11 @@ void BrowserFsmState::fault(BrowserFsm& s)
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.fsmError("fault", s.GetState().StateName());
 }
+void BrowserFsmState::filter(BrowserFsm& s)
+{
+    IceUtil::Mutex::Lock lock(s.mutex_);
+    s.fsmError("filter", s.GetState().StateName());
+}
 void BrowserFsmState::reload(BrowserFsm& s)
 {
     IceUtil::Mutex::Lock lock(s.mutex_);
@@ -151,6 +156,11 @@ void BrowserFsmRegistryState::fault(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.SetState(BrowserFsm::IdleState);
     s.quit();
+}
+void BrowserFsmRegistryState::filter(BrowserFsm& s) {
+    IceUtil::Mutex::Lock lock(s.mutex_);
+    s.SetState(BrowserFsm::RegistryState);
+    s.filterRegistry();
 }
 void BrowserFsmRegistryState::reload(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);

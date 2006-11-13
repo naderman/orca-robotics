@@ -23,10 +23,12 @@ using namespace std;
 using namespace probe;
 
 BrowserHandler::BrowserHandler( orcaice::Buffer<BrowserEvent> & eventPipe,
+                                orcaice::Proxy<std::string> & filterPipe,
                                 ProbeFactory & probeFactory,
                                 DisplayDriver & display,
                                 const orcaice::Context & context )
     : eventPipe_(eventPipe),
+      filterPipe_(filterPipe),
       probeFactory_(probeFactory),
       displayDriver_(display),
       ifaceProbe_(0),
@@ -71,6 +73,10 @@ BrowserHandler::run()
             //cout<<"stop event"<<endl;
             deactivate();
             break;
+        case FilterEvent :
+            //cout<<"filter event"<<endl;
+            filterRegistry();
+            break;
         default :
         {
             if ( event >= PickEvent ) {
@@ -95,6 +101,17 @@ BrowserHandler::loadRegistry()
 //     registryData_ = orcacm::getRegistryData( context_, context_.communicator()->getDefaultLocator()->ice_toString() );
     registryData_ = orcacm::getRegistryHomeData( context_, context_.communicator()->getDefaultLocator()->ice_toString() );
     
+    displayDriver_.showRegistryData( registryData_ );
+}
+
+void 
+BrowserHandler::filterRegistry()
+{
+    cout<<"filtering registry data for :"<<context_.communicator()->getDefaultLocator()->ice_toString()<<endl;
+
+    filterPipe_.get( filter_ );
+
+    // simply call showRegistryData() again. the driver will filter it.
     displayDriver_.showRegistryData( registryData_ );
 }
 

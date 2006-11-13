@@ -38,6 +38,7 @@ public:
     virtual void up(BrowserFsm& s);
     virtual void deactivate(BrowserFsm& s);
     virtual void fault(BrowserFsm& s);
+    virtual void filter(BrowserFsm& s);
     virtual void reload(BrowserFsm& s);
     virtual void pick(BrowserFsm& s);
     virtual void activate(BrowserFsm& s);
@@ -85,6 +86,7 @@ public:
         {return("Registry");};
     virtual void deactivate(BrowserFsm&);
     virtual void fault(BrowserFsm&);
+    virtual void filter(BrowserFsm&);
     virtual void reload(BrowserFsm&);
     virtual void pick(BrowserFsm&);
 };
@@ -116,6 +118,7 @@ public:
     void up() {itsState->up(*this);}
     void deactivate() {itsState->deactivate(*this);}
     void fault() {itsState->fault(*this);}
+    void filter() {itsState->filter(*this);}
     void reload() {itsState->reload(*this);}
     void pick() {itsState->pick(*this);}
     void activate() {itsState->activate(*this);}
@@ -128,6 +131,7 @@ protected:
     virtual void pickLastComponent() = 0;
     virtual void loadInterface() = 0;
     virtual void quit() = 0;
+    virtual void filterRegistry() = 0;
     virtual void loadComponent() = 0;
     virtual void loadRegistry() = 0;
 
