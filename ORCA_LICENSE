@@ -27,28 +27,32 @@ src
         faithlocaliser                     LGPL
         featuremap2dmon                    LGPL
         featuremaploader                   LGPL
+        goalplanner                        LGPL
         gps                                LGPL
         imageserver                        LGPL
         imageviewer                        LGPL
+        laser2d                            LGPL
+            playerclient                   GPL
+            sickcarmen                     GPL
         laser2og                           LGPL
         laserfeatureextractor              LGPL
         lasermon                           LGPL
         localnav                           LGPL
         logger                             LGPL
         logplayer                          LGPL
+        noisyrobot2d                       LGPL
         ogmaploader                        GPL
         ognode                             LGPL
         orcamon                            LGPL
         orcaview                           GPL
+        orcaview3d                         GPL
         pathplanner                        LGPL
         position2dmon                      LGPL
         registrylist                       LGPL
         registryview                       GPL
         robot2d                            LGPL
             playerclient                   GPL
-        sicklaser                          LGPL
-            playerclient                   GPL
-            sickcarmen                     GPL
+        segwayrmp                          LGPL
         simlocaliser                       LGPL
         teleop                             LGPL
     examples
@@ -57,11 +61,13 @@ src
         *                                  LGPL
     sandbox
         gorca                              GPL
-        netcam                             LGPL
-        qorcauml                           GPL
-        reactivewalker                     LGPL
         imu                                LGPL
         insgps                             LGPL (with permission from NovAtel Inc.)
+        netcam                             LGPL
+        pointcloudserver                   LGPL
+        pointcloudviewer                   LGPL
+        qorcauml                           GPL
+        reactivewalker                     LGPL
     tests
         *                                  LGPL
     utils
@@ -70,9 +76,11 @@ src
         orcacm                             LGPL
         orcadef                            LGPL
         orcagui                            GPL
+        orcagui2d                          GPL
+        orcagui3d                          GPL
         orcaice                            LGPL
         orcaimage                          GPL
-        orcalogplayer                      LGPL
+        orcalog                            LGPL
         orcamisc                           LGPL
         orcanavutil                        LGPL
         orcaobj                            LGPL
@@ -80,7 +88,9 @@ src
         orcaogmap                          LGPL
         orcapathplan                       LGPL
         orcaplayer                         GPL
+        orcaportability                    LGPL
         orcaserial                         LGPL
         orcasmc                            LGPL
+        probe                              LGPL
         qorcacm                            GPL
 -------------------------------------------------------------
