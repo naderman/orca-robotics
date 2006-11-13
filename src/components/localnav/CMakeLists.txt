@@ -30,7 +30,7 @@ IF ( NOT WIN32 AND BUILD_LOCALNAV )
 
     # important to let linker know about this inter-library dependency
     # otherwise IceBox fails to load the service
-    TARGET_LINK_LIBRARIES( OrcaLocalNav vfhdriver OrcaNavUtil )
+    TARGET_LINK_LIBRARIES( OrcaLocalNav OrcaLocalNavVfh OrcaNavUtil )
 
     GENERATE_CONFIG_FILE( localnav.def )
 
