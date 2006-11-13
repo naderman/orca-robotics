@@ -7,17 +7,25 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#include "fakedriver.h"
-#include <orcaice/orcaice.h>
+
 #include <iostream>
+#include <orcaice/orcaice.h>
+
+#include "fakedriver.h"
 
 using namespace std;
 
 namespace laser2d {
 
-FakeDriver::FakeDriver()
-    : currentConfig_(new orca::RangeScanner2dConfig)
+FakeDriver::FakeDriver( const orcaice::Context & context )
+    : isEnabled_(false),
+      context_(context)
 {
+    // setting factory config parameters
+    currentConfig_.maxRange         = 99.0;
+    currentConfig_.fieldOfView      = 300.0;
+    currentConfig_.startAngle       = -150.0;
+    currentConfig_.numberOfReturns  = 100;
 }
 
 FakeDriver::~FakeDriver()
@@ -28,7 +36,7 @@ FakeDriver::~FakeDriver()
 int 
 FakeDriver::read( orca::LaserScanner2dDataPtr &data )
 {
-    cout<<"TRACE(fakelaserdriver.cpp): Generating fake laser data..." << endl;
+    context_.tracer()->debug( "Generating fake laser data...", 6 );
 
     orcaice::setToNow( data->timeStamp );
     
@@ -48,21 +56,18 @@ FakeDriver::read( orca::LaserScanner2dDataPtr &data )
 }
 
 int 
-FakeDriver::setConfig( const orca::RangeScanner2dConfigPtr &cfg )
-{
-    isEnabled_ = cfg->isEnabled;
-    
-    Ice::ObjectPtr super = cfg->ice_clone();
-    currentConfig_ = orca::RangeScanner2dConfigPtr::dynamicCast( super );
-    
-    return 0;
-}
-
-int 
-FakeDriver::getConfig( orca::RangeScanner2dConfigPtr &cfg )
+FakeDriver::getConfig( Config &cfg )
 {
     cfg = currentConfig_;
     return 0;
 }
 
+int 
+FakeDriver::setConfig( const Config &cfg )
+{
+    currentConfig_ = cfg;
+    
+    return 0;
 }
+
+} // namespace

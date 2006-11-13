@@ -7,11 +7,11 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_LASER2D_DRIVER_H
-#define ORCA2_LASER2D_DRIVER_H
+#ifndef ORCA2_LASER2D_HW_DRIVER_H
+#define ORCA2_LASER2D_HW_DRIVER_H
 
-#include <orca/laserscanner2d.h>
 #include <string>
+#include <orca/laserscanner2d.h>
 
 
 static const ::std::string __orca__laserdriver_default_heartbeat_msg = "";
@@ -33,6 +33,14 @@ class Driver
 
 public:
 
+    struct Config
+    {
+        double maxRange;
+        double fieldOfView;
+        double startAngle;
+        int    numberOfReturns;
+    };
+
     Driver() {};
     virtual ~Driver() {};
 
@@ -44,11 +52,11 @@ public:
     // Blocks till new data is available
     virtual int read( orca::LaserScanner2dDataPtr &data )=0;
 
-    // Set a specifc configuration
-    virtual int setConfig( const orca::RangeScanner2dConfigPtr &cfg )=0;
-
     // Get the current configuration
-    virtual int getConfig( orca::RangeScanner2dConfigPtr &cfg )=0;
+    virtual int getConfig( Config &cfg )=0;
+
+    // Set a specifc configuration
+    virtual int setConfig( const Config &cfg )=0;
 
     // mechanism to get error messages etc back from driver.
     virtual const std::string &infoMessages() { return infoMessages_; };
@@ -57,6 +65,8 @@ public:
     virtual const std::string heartbeatMessage() { return __orca__laserdriver_default_heartbeat_msg; };
 
 protected:
+
+    Config currentConfig_;
 
     std::string infoMessages_;
 

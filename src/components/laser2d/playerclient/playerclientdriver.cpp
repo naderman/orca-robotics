@@ -8,16 +8,16 @@
  *
  */
 
-#include "playerclientdriver.h"
 #include <iostream>
 #include <stdlib.h>
 #include <assert.h>
-
 #include <IceUtil/Thread.h>     // for sleep()
 
 #include <orcaice/orcaice.h>    // for mathdef.h only
 #include <libplayerc++/playerc++.h>
 #include <orcaplayer/orcaplayer.h>
+
+#include "playerclientdriver.h"
 
 using namespace std;
 using namespace orca;
@@ -28,13 +28,22 @@ namespace laser2d {
 /*
   NOTE: as of player v1.5 the LaserProxy returns range in [m], the multiplication factor is no longer needed.
 */
-PlayerClientDriver::PlayerClientDriver( const char *host, int port, int device, const std::string & playerDriver )
-    : enabled_( false ),
-      host_(strdup(host)),
-      port_(port),
-      device_(device),
-      playerDriver_( playerDriver )
+PlayerClientDriver::PlayerClientDriver( const orcaice::Context & context )
+    : isEnabled_( false ),
+      context_(context)
 {
+    // read driver-specific properties
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag()+".Config.PlayerClient.";
+
+    std::string playerHost = orcaice::getPropertyWithDefault( prop, prefix+"Host", "localhost" );
+    host_ = strdup(playerHost.c_str());
+
+    int port_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Port", 6665 );
+
+    int device_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Device", 0 );
+
+    std::string playerDriver_ = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "sicklms200" );
 }
 
 PlayerClientDriver::~PlayerClientDriver()
@@ -44,7 +53,7 @@ PlayerClientDriver::~PlayerClientDriver()
 int
 PlayerClientDriver::enable()
 {
-    if ( enabled_ ) return 0;
+    if ( isEnabled_ ) return 0;
 
     cout << "TRACE(playerlaserdriver.cpp): PlayerClientDriver: Connecting to player on host "
          << host_ << ", port " << port_ << endl;
@@ -65,24 +74,24 @@ PlayerClientDriver::enable()
         return -1;
     }
     
-    enabled_ = true;
+    isEnabled_ = true;
     return 0;
 }
 
 int
 PlayerClientDriver::disable()
 {
-    if ( !enabled_ ) return 0;
+    if ( !isEnabled_ ) return 0;
 
     delete laserProxy_;
     delete robot_;
-    enabled_ = false;
+    isEnabled_ = false;
     return 0;
 }
 
 
 int
-PlayerClientDriver::getConfig( RangeScanner2dConfigPtr &cfg )
+PlayerClientDriver::getConfig( Config &cfg )
 {
     // some Player drivers do not implement config requests.
     // they have to be hard-wired here.
@@ -91,8 +100,7 @@ PlayerClientDriver::getConfig( RangeScanner2dConfigPtr &cfg )
         // default settings
 //         cfg->angleIncrement   = DEG2RAD(0.5);
 //         cfg->rangeResolution  = 0.001;
-        cfg->maxRange         = 8.0;
-        cfg->isEnabled        = enabled_;
+        cfg.maxRange         = 8.0;
         return 0;
     } 
     else if ( playerDriver_=="urglaser" )
@@ -100,12 +108,11 @@ PlayerClientDriver::getConfig( RangeScanner2dConfigPtr &cfg )
         // default settings
 //         cfg->angleIncrement   = DEG2RAD(230.0/654.0);
 //         cfg->rangeResolution  = 0.01;
-        cfg->maxRange         = 4.0;
-        cfg->isEnabled        = enabled_;
+        cfg.maxRange         = 4.0;
         return 0;
     } 
 
-    if ( ! enabled_ )
+    if ( ! isEnabled_ )
     {
         cout << "ERROR(playerlaserdriver.cpp): Can't read: not connected to Player/Stage yet." << endl;
         return -1;
@@ -123,29 +130,17 @@ PlayerClientDriver::getConfig( RangeScanner2dConfigPtr &cfg )
     }
 
     // convert scan and range resolutions
-    orcaplayer::convert( *laserProxy_, cfg );
-    
-    cfg->isEnabled        = enabled_;
+    orcaplayer::convert( *laserProxy_, cfg.maxRange, cfg.startAngle, cfg.fieldOfView, cfg.numberOfReturns );
     
     return 0;
 }
 
 int
-PlayerClientDriver::setConfig( const RangeScanner2dConfigPtr &cfg )
+PlayerClientDriver::setConfig( const Config &cfg )
 {
-    // handle enable/disable
-    if ( !cfg->isEnabled )
-    {
-        return disable();
-    }
-    if ( !enabled_ && cfg->isEnabled )
-    {
-        if ( enable() != 0 )
-        {
-            return -1;
-        }
-    }
-    
+    // alexm todo: validate config
+    // alexm todo: save config
+
     // only sicklms200 driver supports remote configuration
     if ( playerDriver_!="sicklms200" ) {
         return 0;
@@ -207,7 +202,7 @@ PlayerClientDriver::read( LaserScanner2dDataPtr &data )
     // debug
     cout<<"PlayerClientDriver::read()"<<endl;
 
-    if ( ! enabled_ )
+    if ( ! isEnabled_ )
     {
         cout << "ERROR(playerlaserdriver.cpp): Can't read: not connected to Player/Stage yet. Sleeping for 1 sec..." << endl;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
@@ -222,7 +217,7 @@ PlayerClientDriver::read( LaserScanner2dDataPtr &data )
     {
         std::cerr << e << std::endl;
         cout << "ERROR(playerclientdriver.cpp): Error reading from robot." << endl;
-        enabled_ = false;
+        isEnabled_ = false;
         return -1;
     }
 

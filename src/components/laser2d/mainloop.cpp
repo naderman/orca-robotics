@@ -7,11 +7,12 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#include "mainloop.h"
-#include <iostream>
 
+#include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaice/heartbeater.h>
+
+#include "mainloop.h"
 
 using namespace std;
 using namespace orca;
@@ -24,14 +25,12 @@ namespace {
 
 MainLoop::MainLoop( LaserScanner2dI        &laserObj,
                     Driver                 *hwDriver,
-                    const orcaice::Context &context,
-                    bool                    startEnabled,
-                    bool                    compensateRoll )
+                    bool                    compensateRoll,
+                    const orcaice::Context &context )
     : laserObj_(laserObj),
       hwDriver_(hwDriver),
-      context_(context),
-      startEnabled_(startEnabled),
-      compensateRoll_(compensateRoll)
+      compensateRoll_(compensateRoll),
+      context_(context)
 {
 }
 
@@ -73,62 +72,55 @@ MainLoop::activate()
 void
 MainLoop::reconfigure()
 {
-    RangeScanner2dConfigPtr desiredConfig;
+//     context_.tracer()->print( "mainloop: Setting config to: " + orcaice::toString( desiredConfig ) );
 
-    // get and pop, so we remove the request from the buffer
-    laserObj_.desiredConfigBuffer_.getAndPop( desiredConfig );
-
-    context_.tracer()->print( "mainloop: Setting config to: " + orcaice::toString( desiredConfig ) );
-
-    bool configurationDone = false;
-    int reconfigCount = 0;
-    IceUtil::Time reconfigStartTime = IceUtil::Time::now();
-    while ( !configurationDone 
-            && isActive()
-            && laserObj_.desiredConfigBuffer_.isEmpty() )
-    {
-        if ( hwDriver_->setConfig( desiredConfig ) == 0 )
-        {
-            context_.tracer()->print( "Successful reconfiguration! " + hwDriver_->infoMessages() );
-
-            // Tell the world that we've reconfigured
-            laserObj_.currentConfigBuffer_.push( desiredConfig );
-            configurationDone = true;
-        }
-        else
-        {
-            if ( (IceUtil::Time::now()-reconfigStartTime).toMilliSecondsDouble() > MAX_TIME_FOR_RECONFIGURE )
-            {
-                std::stringstream ss;
-                cout << "Couldn't set config: " << orcaice::toString(desiredConfig) << endl;
-                ss << "Configuration failed: " << hwDriver_->infoMessages();
-                context_.tracer()->warning( ss.str() );
-                reconfigStartTime = IceUtil::Time::now();
-            }
-            else
-            {
-                context_.tracer()->print( "Still trying to reconfigure..." );
-                context_.tracer()->print( hwDriver_->infoMessages() );
-
-                // Try fast a couple of times, then slow down
-                if ( reconfigCount>5 ) {
-                    IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(300));
-                }
-                ++reconfigCount;
-            }
-
-            // Tell the world that we're down while re-configuring
-            RangeScanner2dConfigPtr failedConfig = RangeScanner2dConfigPtr::dynamicCast( desiredConfig->ice_clone() );
-            failedConfig->isEnabled = false;
-            laserObj_.currentConfigBuffer_.push( failedConfig );
-        }
-    } // end of configuration loop
+//     bool configurationDone = false;
+//     int reconfigCount = 0;
+//     IceUtil::Time reconfigStartTime = IceUtil::Time::now();
+//     while ( !configurationDone && isActive() )
+//     {
+//         if ( hwDriver_->setConfig( desiredConfig ) == 0 )
+//         {
+//             context_.tracer()->print( "Successful reconfiguration! " + hwDriver_->infoMessages() );
+// 
+//             // Tell the world that we've reconfigured
+//             laserObj_.currentConfigBuffer_.push( desiredConfig );
+//             configurationDone = true;
+//         }
+//         else
+//         {
+//             if ( (IceUtil::Time::now()-reconfigStartTime).toMilliSecondsDouble() > MAX_TIME_FOR_RECONFIGURE )
+//             {
+//                 std::stringstream ss;
+//                 cout << "Couldn't set config: " << orcaice::toString(desiredConfig) << endl;
+//                 ss << "Configuration failed: " << hwDriver_->infoMessages();
+//                 context_.tracer()->warning( ss.str() );
+//                 reconfigStartTime = IceUtil::Time::now();
+//             }
+//             else
+//             {
+//                 context_.tracer()->print( "Still trying to reconfigure..." );
+//                 context_.tracer()->print( hwDriver_->infoMessages() );
+// 
+//                 // Try fast a couple of times, then slow down
+//                 if ( reconfigCount>5 ) {
+//                     IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(300));
+//                 }
+//                 ++reconfigCount;
+//             }
+// 
+//             // Tell the world that we're down while re-configuring
+//             RangeScanner2dConfigPtr failedConfig = RangeScanner2dConfigPtr::dynamicCast( desiredConfig->ice_clone() );
+//             failedConfig->isEnabled = false;
+//             laserObj_.currentConfigBuffer_.push( failedConfig );
+//         }
+//     } // end of configuration loop
 }
 
 void
 MainLoop::readLaserData( orca::LaserScanner2dDataPtr &laserData )
 {
-    context_.tracer()->debug( "Reading laser data...", 8 );
+//     context_.tracer()->debug( "Reading laser data...", 8 );
 
     //
     // Read from the laser driver
@@ -144,11 +136,11 @@ MainLoop::readLaserData( orca::LaserScanner2dDataPtr &laserData )
         laserObj_.currentConfigBuffer_.get( cfg );
 
         // Tell the laser to try to get back to this config
-        laserObj_.desiredConfigBuffer_.push( cfg );
+//         laserObj_.desiredConfigBuffer_.push( cfg );
 
         // If anyone out there asks, our config has changed.
-        cfg->isEnabled = false;
-        laserObj_.currentConfigBuffer_.push( cfg );
+//         cfg->isEnabled = false;
+//         laserObj_.currentConfigBuffer_.push( cfg );
     }
     else
     {
@@ -191,20 +183,16 @@ MainLoop::run()
     // Catches all its exceptions.
     activate();
 
+    hwDriver_->enable();
+
     //
     // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
-    //            So we have to avoid getting stuck in a loop anywhere within this main loop.
+    //            So we have to avoid getting stuck anywhere within this main loop.
     //
     while ( isActive() )
     {
         try 
         {
-            // Service config requests
-            while ( !laserObj_.desiredConfigBuffer_.isEmpty() && isActive() )
-            {
-                reconfigure();
-            }
-
             //
             // This 'if' block is what slows the loop down, by either reading from the laser
             // or sleeping.
@@ -259,7 +247,7 @@ MainLoop::run()
     } // end of while
 
     // Laser hardware will be shut down in the driver's destructor.
-    context_.tracer()->info( "dropping out from run()", 5 );
+    context_.tracer()->debug( "dropping out from run()", 5 );
 }
 
-}
+} // namespace

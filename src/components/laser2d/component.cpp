@@ -8,8 +8,12 @@
  *
  */
 
+#include <orcaice/orcaice.h>
 #include "component.h"
 #include "mainloop.h"
+
+// implementations of Ice objects
+#include "laserscanner2dI.h"
 
 // Various bits of hardware we can drive
 #include "driver.h"
@@ -21,11 +25,6 @@
 #ifdef HAVE_PLAYERCLIENT_DRIVER
 #  include "playerclient/playerclientdriver.h"
 #endif
-
-// implementations of Ice objects
-#include "laserscanner2dI.h"
-
-#include <orcaice/orcaice.h>
 
 namespace laser2d {
 
@@ -43,7 +42,7 @@ Component::~Component()
 {
     delete hwDriver_;
     
-    // do not delete mainLoop_!!! They derive from Ice::Thread and self-destruct.
+    // do not delete mainLoop_!!! It derives from Ice::Thread and self-destructs.
 }
 
 void
@@ -54,11 +53,11 @@ Component::start()
     //
 
     Ice::PropertiesPtr prop = properties();
-    std::string prefix = tag();
-    prefix += ".Config.";
+    std::string prefix = tag()+".Config.";
 
     // Laser geometry
     orca::RangeScanner2dGeometryPtr geometry = new orca::RangeScanner2dGeometry;
+    geometry->timeStamp = orcaice::getNow();
     orcaice::setInit( geometry->offset );
     geometry->offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", geometry->offset );
 
@@ -75,102 +74,82 @@ Component::start()
     
     if ( compensateRoll ) {
         // now remove the roll angle, we'll compensate for it internally
-        geometry->offset.o.r = 0.0;                            
+        geometry->offset.o.r = 0.0;
         tracer()->info( "will compensate for upside-down mounted sensor" );
     }
 
+    // size info should really be stored in the driver
     orcaice::setInit( geometry->size );
     geometry->size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", geometry->size );
 
-    // EXTERNAL PROVIDED INTERFACE: Laser
+    //
+    // EXTERNAL PROVIDED INTERFACE: LaserScanner2d
+    //
 
     // create servant for direct connections
     // need the derived pointer to call custom functions
-    LaserScanner2dI *laserScanner2dI = new LaserScanner2dI( geometry, "Laser", context() );
+    LaserScanner2dI *laserScanner2dI = new LaserScanner2dI( geometry, "LaserScanner2d", context() );
+    // to register with the adapter, it's enough to have a generic pointer
     laserObj_ = laserScanner2dI;
-    orcaice::createInterfaceWithTag( context(), laserObj_, "Laser" );
+    // this may throw but it's better if it kills us.
+    orcaice::createInterfaceWithTag( context(), laserObj_, "LaserScanner2d" );
 
-
-    bool startEnabled = orcaice::getPropertyAsIntWithDefault( prop, prefix+"StartEnabled", true );
-
-    orca::RangeScanner2dConfigPtr   laserConfig = new RangeScanner2dConfig;
-    laserConfig->timeStamp = orcaice::getNow();
-
-    double rangeResolution   = 
-        (float)(orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"SickCarmen.RangeResolution", 0.01 ));
-
-    laserConfig->maxRange = sicklaserutil::associatedMaxRange( rangeResolution );
-
-    double angleIncrement = 
-        (float)(orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"SickCarmen.AngularResolution", 1.0 )*DEG2RAD_RATIO);
-    
-    // This is the initial config if someone reads before we can enable
-    laserConfig->isEnabled         = false;
-    laserScanner2dI->localSetCurrentConfig( laserConfig );
-
-    // This is what we'll immediately try to configure
-    laserConfig->isEnabled         = startEnabled;
-
-    // First check that the initial config is OK
-    if ( !sicklaserutil::sickCanDoConfig( rangeResolution, angleIncrement, laserConfig->maxRange ) )
-    {
-        context().tracer()->warning( "Initial configuration could not be implemented!  Check config file." );
-        laserConfig->isEnabled = false;
-    }
-    // Then ask the laser to set this config when we start up
-    laserScanner2dI->localSetDesiredConfig( laserConfig );
-
-    std::string driverName;
-    int ret = orcaice::getProperty( prop, prefix+"Driver", driverName );
-
-    if ( ret != 0 )
-    {
-        std::string errString = "Couldn't determine laser type.  Expected property '";
-        errString += prefix + "Driver'";
-        throw orcaice::Exception( ERROR_INFO, errString );
-    }
+    std::string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "sickcarmen" );
 
     //
     // HARDWARE INTERFACES
     //
-    
     if ( driverName == "sickcarmen" )
     {
-#ifdef HAVE_CARMEN_DRIVER        
-        const int baudrate = 
-            orcaice::getPropertyAsIntWithDefault( prop, prefix+"SickCarmen.Baudrate", 38400 );
-
-        std::string device    = orcaice::getPropertyWithDefault(      prop, prefix+"SickCarmen.Device",    "/dev/ttyS0" );
-        std::string laserType = orcaice::getPropertyWithDefault(      prop, prefix+"SickCarmen.LaserType", "LMS" );
-        hwDriver_ = new SickCarmenDriver( device.c_str(), laserType.c_str(), baudrate, context() );
+#ifdef HAVE_CARMEN_DRIVER
+        context().tracer()->debug( "loading 'sickcarmen' driver",3);
+        hwDriver_ = new SickCarmenDriver( context() );
 #else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driverName 'sickcarmen' because it wasn't built!" );
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'sickcarmen' because it wasn't built!" );
 #endif
     }
     else if ( driverName == "playerclient" )
     {
-#ifdef HAVE_PLAYERCLIENT_DRIVER        
-        std::string playerHost = orcaice::getPropertyWithDefault(      prop, prefix+"PlayerClient.Host", "localhost" );
-        int         playerPort = orcaice::getPropertyAsIntWithDefault( prop, prefix+"PlayerClient.Port", 6665 );
-        int         playerDevice = orcaice::getPropertyAsIntWithDefault( prop, prefix+"PlayerClient.Device", 0 );
-        std::string playerDriver = orcaice::getPropertyWithDefault( prop, prefix+"PlayerClient.Driver", "sicklms200" );
-        hwDriver_ = new PlayerClientDriver( playerHost.c_str(), playerPort, playerDevice, playerDriver );
+#ifdef HAVE_PLAYERCLIENT_DRIVER
+        context().tracer()->debug( "loading 'playerclient' driver",3);
+        hwDriver_ = new PlayerClientDriver( context() );
 #else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'playerclient' without player install!" );
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'playerclient' because it wasn't built!" );
 #endif
     }
     else if ( driverName == "fake" )
     {
-        hwDriver_ = new FakeDriver;
+        context().tracer()->debug( "loading 'fake' driver",3);
+        hwDriver_ = new FakeDriver( context() );
     }
     else
     {
-        std::string errString = "unknown laser type: "+driverName;
+        std::string errString = "Unknown laser type: "+driverName;
         context().tracer()->error( errString );
         throw orcaice::Exception( ERROR_INFO, errString );
-        return;
     }
-    tracer()->debug( "loaded '"+driverName+"' driver", 2 );
+    tracer()->debug( "Loaded '"+driverName+"' driver", 2 );
+
+    //
+    // DRIVER CONFIGURATION
+    //
+    Driver::Config cfg;
+
+    cfg.maxRange = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxRange", 80.0 );
+
+    cfg.fieldOfView = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"FieldOfView", 180.0 )*DEG2RAD_RATIO;
+
+    cfg.startAngle = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StartAngle", -cfg.fieldOfView/2.0 )*DEG2RAD_RATIO;
+
+    cfg.numberOfReturns = orcaice::getPropertyAsIntWithDefault( prop, prefix+"NumberOfReturns", 180 );
+
+    // configure driver
+    if ( hwDriver_->setConfig( cfg ) )  {
+        // this is a fatal error
+        std::string errString = "Failed to configure laser";
+        context().tracer()->error(errString);
+        throw orcaice::Exception( ERROR_INFO, errString );
+    }
 
     //
     // MAIN DRIVER LOOP
@@ -178,11 +157,10 @@ Component::start()
 
     mainLoop_ = new MainLoop( *laserScanner2dI,
                                hwDriver_,
-                               context(),
-                               startEnabled,
-                               compensateRoll );
+                               compensateRoll,
+                               context() );
     
-    mainLoop_->start();    
+    mainLoop_->start();
 }
 
 void Component::stop()
@@ -191,4 +169,4 @@ void Component::stop()
     orcaice::Thread::stopAndJoin( mainLoop_ );
 }
 
-}
+} // namespace

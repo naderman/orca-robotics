@@ -30,9 +30,9 @@ namespace laser2d {
 class LaserScanner2dI : public virtual orca::LaserScanner2d
 {
 public:
-    LaserScanner2dI( orca::RangeScanner2dGeometryPtr  geometry,
-                     const std::string             &ifaceTag,
-                     const orcaice::Context        &context );
+    LaserScanner2dI( orca::RangeScanner2dGeometryPtr geometry,
+                     const std::string              &ifaceTag,
+                     const orcaice::Context         &context );
 
     //
     // Remote calls:
@@ -59,14 +59,6 @@ public:
     //
     void localSetData( const ::orca::LaserScanner2dDataPtr data );
 
-    void localSetCurrentConfig( const ::orca::RangeScanner2dConfigPtr config )
-        { currentConfigBuffer_.push( config ); }
-    void localSetDesiredConfig( const ::orca::RangeScanner2dConfigPtr config )
-        { desiredConfigBuffer_.push( config ); }
-
-    // We put incoming config requests into this buffer
-    orcaice::PtrBuffer<orca::RangeScanner2dConfigPtr> desiredConfigBuffer_;
-
     // We get the current config from here.
     orcaice::PtrBuffer<orca::RangeScanner2dConfigPtr> currentConfigBuffer_;
 
@@ -86,6 +78,6 @@ private:
     orcaice::Context               context_;
 };
 
-}
+} // namespace
 
 #endif

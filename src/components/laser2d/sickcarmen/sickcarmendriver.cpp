@@ -8,40 +8,49 @@
  *
  */
 #include <iostream>
+#include <orcaice/orcaice.h>
+#include <sickutil.h>
 
 #include "sickcarmendriver.h"
-
-#include <sicklaserutil.h>
 #include "carmen_conversion.h"
-#include <orcaice/orcaice.h>
 
 using namespace std;
 
 namespace laser2d {
 
-SickCarmenDriver::SickCarmenDriver( const char       *device,
-                                    const char       *laserType,
-                                    const int         baudrate,
-                                    orcaice::Context  context )
-    : enabled_(false),
-      laser_(NULL),
-      device_(strdup(device)),
-      type_(strdup(laserType)),
-      baudrate_(baudrate),
+SickCarmenDriver::SickCarmenDriver( const orcaice::Context & context )
+    : isEnabled_(false),
+      laser_(0),
       context_(context)
 {
-    std::stringstream ss;
-    ss << "Instantiating SickCarmenDriver at baud rate " << baudrate;
-    context_.tracer()->print( ss.str() );
+    // read driver-specific properties
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag()+".Config.";
 
-    if ( setupParams( DEG2RAD(1.0), 0.01, baudrate_ ) )
+    baudrate_ =  orcaice::getPropertyAsIntWithDefault( prop, prefix+"SickCarmen.Baudrate", 38400 );
+
+    std::string device = orcaice::getPropertyWithDefault( prop, prefix+"SickCarmen.Device", "/dev/ttyS0" );
+    device_ = strdup(device.c_str());
+
+    std::string laserType = orcaice::getPropertyWithDefault(      prop, prefix+"SickCarmen.LaserType", "LMS" );
+    type_ = strdup(laserType.c_str());
+
+    std::stringstream ss;
+    ss << "Instantiating SickCarmenDriver with baudrate="<<baudrate_<<" device="<<device_<<" type="<<type_;
+    context_.tracer()->info( ss.str() );
+
+    // setting factory config parameters
+    currentConfig_.maxRange         = 80.0;
+    currentConfig_.fieldOfView      = 180.0;
+    currentConfig_.startAngle       = -90.0;
+    currentConfig_.numberOfReturns  = 181;
+
+    if ( setupParams( currentConfig_.maxRange, currentConfig_.numberOfReturns, baudrate_ ) )
     {
-        context_.tracer()->error( "Something went horribly wrong in constructor." );
+        context_.tracer()->error( "Failed to setup factory config parameters." );
         exit(1);
     }
 
-    currentConfig_ = new orca::RangeScanner2dConfig;
-    currentConfig_->isEnabled = false;
 }
 
 SickCarmenDriver::~SickCarmenDriver()
@@ -50,44 +59,64 @@ SickCarmenDriver::~SickCarmenDriver()
 }
 
 int
-SickCarmenDriver::setupParams( double angleIncrement, double rangeResolution, int baudrate )
-{
-    // Set the angular resolution
-    double res_deg;
-    if ( (int) rint(RAD2DEG(angleIncrement*1000)) == 1000 )
-        res_deg = 1.0;
-    else if ( (int) rint(RAD2DEG(angleIncrement*1000)) == 500 )
-        res_deg = 0.5;
-    else if ( (int) rint(RAD2DEG(angleIncrement*1000)) == 250 )
-        res_deg = 0.25;
-    else
-        return -1;
-
-    // Set the rangeResolution
-    range_res_t range_res;
-    if ( (int) rint(rangeResolution*1000) == 1 )
-        range_res = MM;
-    else if ( (int) rint(rangeResolution*1000) == 10 )
-        range_res = CM;
-    else 
-        return -1;
+SickCarmenDriver::setupParams( double maxRange, int numberOfReturns, int baudrate )
+{    
+    // first convert from generic configs to SICK-specific ones
+    float rangeResolution = sickutil::maxRange2RangeResolution( maxRange );
+    float angleIncrement = sickutil::numberOfReturns2AngleIncrement( numberOfReturns );
     
-    // Set the baud rate
-    try {
-        laser_settings_t laserSettings( device_, 
-                                        type_,
-                                        baudrate,
-                                        res_deg,
-                                        range_res );
+    stringstream ss;
+    ss<<"Validating SICK config: rangeres="<<rangeResolution<<" angleincrem="<<angleIncrement<<" baud="<<baudrate;
+    context_.tracer()->debug( ss.str(), 4 );
 
-        if ( laser_ ) delete laser_;
-        laser_ = new sick_laser_t( laserSettings );
-    }
-    catch ( std::string &e )
+    if ( !sickutil::isConfigValid( rangeResolution, angleIncrement, baudrate ) )
     {
-        infoMessages_ += "Error setting params: " + e;
-        return -1;
+        context_.tracer()->warning( "Initial configuration could not be implemented!  Check config file." );
+        return 1;
     }
+
+    // first convert from generic configs to SICK-specific ones
+
+    // range resolution
+//     range_res_t range_res;
+//     if ( (int) rint(rangeResolution*1000) == 1 )
+//         range_res = MM;
+//     else if ( (int) rint(rangeResolution*1000) == 10 )
+//         range_res = CM;
+//     else 
+//         return -1;
+
+    // Set the angular resolution
+//     double res_deg;
+//     if ( (int) rint(RAD2DEG(angleIncrement*1000)) == 1000 )
+//         res_deg = 1.0;
+//     else if ( (int) rint(RAD2DEG(angleIncrement*1000)) == 500 )
+//         res_deg = 0.5;
+//     else if ( (int) rint(RAD2DEG(angleIncrement*1000)) == 250 )
+//         res_deg = 0.25;
+//     else
+//         return -1;
+
+
+    
+
+
+    // Set the baud rate
+//     try {
+//         laser_settings_t laserSettings( device_, 
+//                                         type_,
+//                                         baudrate,
+//                                         res_deg,
+//                                         range_res );
+// 
+//         if ( laser_ ) delete laser_;
+//         laser_ = new sick_laser_t( laserSettings );
+//     }
+//     catch ( std::string &e )
+//     {
+//         infoMessages_ += "Error setting params: " + e;
+//         return -1;
+//     }
     return 0;
 }
 
@@ -101,7 +130,7 @@ SickCarmenDriver::enable( )
 int 
 SickCarmenDriver::doEnable( )
 {
-    if ( enabled_ ) return 0;
+    if ( isEnabled_ ) return 0;
 
     firstRead_     = false;
     laserStalled_  = false;
@@ -110,7 +139,7 @@ SickCarmenDriver::doEnable( )
     if ( ret == 0 )
     {
         infoMessages_ += infoMessages_ + string("Successfully enabled laser:\n") + sick_info();
-        enabled_ = true;
+        isEnabled_ = true;
     }
     else
     {
@@ -129,7 +158,7 @@ SickCarmenDriver::disable()
 int 
 SickCarmenDriver::doDisable()
 {
-    if ( !enabled_ ) return 0;
+    if ( !isEnabled_ ) return 0;
 
     int ret = sick_stop_laser(laser_);
     if ( ret != 0 )
@@ -138,21 +167,21 @@ SickCarmenDriver::doDisable()
     }
     infoMessages_ += string("Stopped laser:\n") + sick_info();
 
-    enabled_ = false;
+    isEnabled_ = false;
     return 0;
 }
 
 bool 
 SickCarmenDriver::isEnabled()
 {
-    return enabled_;
+    return isEnabled_;
 }
 
 int 
 SickCarmenDriver::read( orca::LaserScanner2dDataPtr &data )
 {
     infoMessages_ = "";
-    assert( enabled_ );
+    assert( isEnabled_ );
 
 //     cout<<"TRACE(nativelaserdriver.cpp): read()" << endl;
 
@@ -233,43 +262,23 @@ SickCarmenDriver::heartbeatMessage()
 }
 
 int 
-SickCarmenDriver::setConfig( const orca::RangeScanner2dConfigPtr &cfg )
+SickCarmenDriver::setConfig( const Config &cfg )
 {
     infoMessages_ = "";
 
-    // handle enable/disable
-    if ( !cfg->isEnabled )
+    if ( setupParams( cfg.maxRange, cfg.numberOfReturns, baudrate_ ) ) 
     {
-        return disable();
+        return -1;
     }
 
-    // At this point, cfg->isEnabled must be set.  
-    // Disable then re-enable with a new configuration.
-//alexm todo:
-//     if ( disable() ) {
-//         return -1;
-//     }
-//     if ( setupParams( cfg->angleIncrement, cfg->rangeResolution, baudrate_ ) ) {
-//         return -1;
-//     }
-    if ( cfg->isEnabled )
-    {
-        int ret = enable();
-        if ( ret == 0 )
-        {
-            Ice::ObjectPtr super = cfg->ice_clone();
-            currentConfig_ = orca::RangeScanner2dConfigPtr::dynamicCast( super );
-        }
-        return ret;
-    }
     return 0;
 }
 
 int 
-SickCarmenDriver::getConfig( orca::RangeScanner2dConfigPtr &cfg )
+SickCarmenDriver::getConfig( Config &cfg )
 {
     cfg = currentConfig_;
     return 0;
 }
 
-}
+} // namespace

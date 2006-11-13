@@ -11,10 +11,8 @@
 #ifndef ORCA2_LASER2D_COMPONENT_H
 #define ORCA2_LASER2D_COMPONENT_H
 
-#include <orcaice/component.h>
-#include <orcaice/ptrbuffer.h>
-
 #include <orca/laserscanner2d.h>
+#include <orcaice/component.h>
 
 namespace laser2d {
 

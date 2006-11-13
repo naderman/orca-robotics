@@ -23,6 +23,7 @@ LaserScanner2dI::LaserScanner2dI( orca::RangeScanner2dGeometryPtr  geometry,
                                   const std::string             &ifaceTag,
                                   const orcaice::Context        &context )
     : geometry_(geometry),
+      ifaceTag_(ifaceTag),
       context_(context)
 {
     // Initialize the current config with something
@@ -39,7 +40,7 @@ LaserScanner2dI::LaserScanner2dI( orca::RangeScanner2dGeometryPtr  geometry,
 orca::RangeScanner2dDataPtr 
 LaserScanner2dI::getData(const Ice::Current& current) const
 {
-    std::cout << "getData()" << std::endl;
+    context_.tracer()->debug( "getData()", 5 );
 
     // we don't need to pop the data here because we don't block on it.
     if ( dataBuffer_.isEmpty() )
@@ -58,7 +59,7 @@ LaserScanner2dI::getData(const Ice::Current& current) const
 orca::RangeScanner2dConfigPtr 
 LaserScanner2dI::getConfig(const Ice::Current& current) const
 {
-    std::cout << "getConfig()" << std::endl;
+    context_.tracer()->debug( "getConfig()", 5 );
 
     RangeScanner2dConfigPtr config;
     currentConfigBuffer_.get( config );
@@ -70,7 +71,8 @@ LaserScanner2dI::getConfig(const Ice::Current& current) const
 ::orca::RangeScanner2dGeometryPtr 
 LaserScanner2dI::getGeometry(const ::Ice::Current& ) const
 {
-    std::cout << "getGeometry()" << std::endl;
+    context_.tracer()->debug( "getGeometry()", 5 );
+
     return geometry_;
 }
 
@@ -78,7 +80,8 @@ LaserScanner2dI::getGeometry(const ::Ice::Current& ) const
 void 
 LaserScanner2dI::subscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber, const ::Ice::Current&)
 {
-    cout<<"subscribe()"<<endl;
+    context_.tracer()->debug( "subscribe()", 5 );
+
     if ( topicPrx_==0 ) {
         throw orca::SubscriptionFailedException( "null topic proxy." );
     }
@@ -99,7 +102,8 @@ LaserScanner2dI::subscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber, 
 void 
 LaserScanner2dI::unsubscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber, const ::Ice::Current&)
 {
-    cout<<"unsubscribe()"<<endl;
+    context_.tracer()->debug( "unsubscribe()", 5 );
+
     topicPrx_->unsubscribe( subscriber );
 }
 

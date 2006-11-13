@@ -68,7 +68,7 @@ class RangeScanner2dData extends OrcaObject
     //! Distance to returns
     RangeSequence     ranges;
 
-    //! Angle to the first return in local coordinate system
+    //! Bearing to the first return in local coordinate system
     float             startAngle;
 
     //! Constant angle between successive returns.

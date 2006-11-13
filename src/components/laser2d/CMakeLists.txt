@@ -43,6 +43,8 @@ IF ( BUILD_LASER2D )
         HAVE_CARMEN_DRIVER
     )
 
+    ADD_SUBDIRECTORY ( sickutil )
+
     FILE( GLOB SRCS *.cpp )
     # Set LIB_SRCS to everything _except_ main.cpp
     SET( LIB_SRCS ${SRCS} )

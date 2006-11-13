@@ -7,12 +7,11 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef FAKE_LASER_DRIVER_H
-#define FAKE_LASER_DRIVER_H
+#ifndef ORCA2_LASER2D_FAKE_LASER_DRIVER_H
+#define ORCA2_LASER2D_FAKE_LASER_DRIVER_H
 
+#include <orcaice/context.h>
 #include "driver.h"
-
-#include <iostream>
 
 
 namespace laser2d {
@@ -25,7 +24,7 @@ class FakeDriver : public Driver
 
 public:
 
-    FakeDriver();
+    FakeDriver( const orcaice::Context & context );
     virtual ~FakeDriver();
 
     virtual int enable() { isEnabled_=true; return 0; };
@@ -36,17 +35,17 @@ public:
     // Blocks till new data is available
     virtual int read( orca::LaserScanner2dDataPtr &data );
 
-    // Set a specifc configuration
-    virtual int setConfig( const orca::RangeScanner2dConfigPtr &cfg );
-
     // Get the current configuration
-    virtual int getConfig( orca::RangeScanner2dConfigPtr &cfg );
+    virtual int getConfig( Config &cfg );
+
+    // Set a specifc configuration
+    virtual int setConfig( const Config &cfg );
 
 private:
 
     bool isEnabled_;
-    
-    orca::RangeScanner2dConfigPtr currentConfig_;
+
+    orcaice::Context context_;
 };
 
 }

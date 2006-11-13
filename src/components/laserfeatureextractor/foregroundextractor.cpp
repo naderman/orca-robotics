@@ -31,7 +31,7 @@ void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserD
     
     std::vector<orca_polefinder::positionRB> poles;
 
-    double minAngleFromDodge = DEG2RAD( 2.0 );
+    double startAngleFromDodge = DEG2RAD( 2.0 );
 
     int numPoles = orca_polefinder::detect_poles( laserConfig,
             laserData,
@@ -39,7 +39,7 @@ void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserD
             minForegroundWidth_,
             maxForegroundWidth_,
             minForegroundBackgroundSeparation_,
-            minAngleFromDodge,
+            startAngleFromDodge,
             poles );
 
     for ( int i=0; i < numPoles; i++ )

@@ -7,15 +7,17 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef NATIVELASERDRIVER_H
-#define NATIVELASERDRIVER_H
+#ifndef ORCA2_LASER2D_SICK_CARMEN_DRIVER_H
+#define ORCA2_LASER2D_SICK_CARMEN_DRIVER_H
 
+#include <orcaice/context.h>
 #include <driver.h>
 #include "sick.h"
-#include <orcaice/context.h>
 
 namespace laser2d {
 
+//
+// This driver does not throw exceptions.
 //
 // @author Alex Brooks
 //
@@ -24,10 +26,7 @@ class SickCarmenDriver : public Driver
 
 public: 
 
-    SickCarmenDriver( const char       *device,
-                      const char       *laserType,
-                      const int         baudrate,
-                      orcaice::Context  context );
+    SickCarmenDriver( const orcaice::Context & context );
     ~SickCarmenDriver();
 
     virtual int enable();
@@ -38,23 +37,23 @@ public:
     // Blocks till new data is available
     virtual int read( orca::LaserScanner2dDataPtr &data );
 
-    // Set a specifc configuration
-    virtual int setConfig( const orca::RangeScanner2dConfigPtr &cfg );
-
     // Get the current configuration
-    virtual int getConfig( orca::RangeScanner2dConfigPtr &cfg );
+    virtual int getConfig( Config &cfg );
+
+    // Set a specifc configuration
+    virtual int setConfig( const Config &cfg );
 
     virtual const std::string heartbeatMessage();
 
 private: 
 
-    int setupParams( double angleIncrement, double rangeResolution, int baudrate );
+    int setupParams( double maxRange, int numberOfReturns, int baudrate );
 
     // these versions don't clear infoMessage_ first.
     int doEnable();
     int doDisable();
 
-    bool enabled_;
+    bool isEnabled_;
     sick_laser_t *laser_;
 
     char *device_;
@@ -62,11 +61,9 @@ private:
     // LMS or PMS
     char *type_; 
     
-    const int baudrate_;
+    int baudrate_;
 
     orcaice::Context context_;
-
-    orca::RangeScanner2dConfigPtr currentConfig_;
 
     char sickInfoMessage_[2000];
 
@@ -75,6 +72,6 @@ private:
     bool   laserStalled_;
 };
 
-}
+} // namespace
 
 #endif

@@ -27,7 +27,7 @@ namespace laser2d {
 
 ServiceI::ServiceI()
 {
-    component_ = new Component;
+    component_ = new laser2d::Component;
 }
 
 }

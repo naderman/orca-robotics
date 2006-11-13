@@ -7,11 +7,10 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_LASER_MAIN_LOOP_H
-#define ORCA2_LASER_MAIN_LOOP_H
+#ifndef ORCA2_LASER2D_MAIN_LOOP_H
+#define ORCA2_LASER2D_MAIN_LOOP_H
 
 #include <orcaice/thread.h>
-#include <orcaice/ptrbuffer.h>
 #include <orcaice/context.h>
 
 #include <orca/laserscanner2d.h>
@@ -32,9 +31,8 @@ public:
 
     MainLoop( LaserScanner2dI        &laserObj,
               Driver                 *hwDriver,
-              const orcaice::Context &context,
-              bool                    startEnabled,
-              bool                    compensateRoll );
+              bool                    compensateRoll,
+              const orcaice::Context &context );
     ~MainLoop();
 
     virtual void run();
@@ -55,10 +53,9 @@ private:
     // Generic driver for the hardware
     Driver *hwDriver_;
 
-    orcaice::Context context_;
-
-    bool startEnabled_;
     bool compensateRoll_;
+
+    orcaice::Context context_;
 };
 
 }

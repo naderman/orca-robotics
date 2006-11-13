@@ -1,8 +1,8 @@
 DefaultComponentTag=Laser2d
 
 # Provided Interfaces
-Provides.Laser.Type=::orca::LaserScanner2d
-Provides.Laser.DefaultName=laser
+Provides.LaserScanner2d.Type=::orca::LaserScanner2d
+Provides.LaserScanner2d.DefaultName=laserscanner2d
 
 # Required Interfaces
 
@@ -10,8 +10,10 @@ Provides.Laser.DefaultName=laser
 Config.Driver.Comment=Valid values: { 'sickcarmen', 'playerclient', 'fake' }
 Config.Driver.Default=sickcarmen
 
-Config.StartEnabled.Default=1
-
+Config.MaxRange.Default=80.0
+Config.FieldOfView.Default=180.0
+Config.StartAngle.Default=-90.0
+Config.NumberOfReturns.Default=181
 
 Config.Offset.Comment=x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
 Config.Offset.Default=0.0 0.0 0.0  0.0 0.0 0.0
@@ -21,9 +23,6 @@ Config.AllowRollCompensation.Default=1
 Config.Size.Comment=length[m] width[m] height[m]
 Config.Size.Default=0.155 0.155 0.185
 
-Config.SickCarmen.RangeResolution.Default=0.01
-Config.SickCarmen.AngularResolution.Comment=Valid values: { 0.5, 1.0 }
-Config.SickCarmen.AngularResolution.Default=1.0
 Config.SickCarmen.Device.Default=/dev/ttyS0
 Config.SickCarmen.LaserType.Default=LMS
 Config.SickCarmen.Baudrate.Comment=Valid values: { 9600, 19200, 38400, 500000 }

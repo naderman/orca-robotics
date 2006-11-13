@@ -8,11 +8,11 @@
  *
  */
 
-#ifndef ORCA2_PLAYER_LASER_DRIVER_H
-#define ORCA2_PLAYER_LASER_DRIVER_H
+#ifndef ORCA2_LASER2D_PLAYERCLIENT_DRIVER_H
+#define ORCA2_LASER2D_PLAYERCLIENT_DRIVER_H
 
-#include "../driver.h"
-#include "../sicklaserutil.h"
+#include <orcaice/context.h>
+#include <driver.h>
 
 // Player proxies
 namespace PlayerCc
@@ -33,23 +33,23 @@ class PlayerClientDriver : public Driver
 public:
 
     // The host and port are for player's usage
-    PlayerClientDriver( const char *host, int port, int device, const std::string & playerDriver );
+    PlayerClientDriver( const orcaice::Context & context );
     virtual ~PlayerClientDriver();
 
     // returns: 0 = success, non-zero = failure
     virtual int enable();
     virtual int disable();
 
-    virtual bool isEnabled() { return enabled_; };
+    virtual bool isEnabled() { return isEnabled_; };
 
     virtual int read( orca::LaserScanner2dDataPtr &data );
 
-    virtual int getConfig( orca::RangeScanner2dConfigPtr &config );
-    virtual int setConfig( const orca::RangeScanner2dConfigPtr &config );
+    virtual int getConfig( Config &cfg );
+    virtual int setConfig( const Config &cfg );
 
 private:
 
-    bool enabled_;
+    bool isEnabled_;
     PlayerCc::PlayerClient *robot_;
     PlayerCc::LaserProxy *laserProxy_;
 
@@ -57,6 +57,8 @@ private:
     int   port_;
     int   device_;
     std::string playerDriver_;
+
+    orcaice::Context context_;
 };
 
 }
