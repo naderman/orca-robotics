@@ -18,14 +18,14 @@ public class PureIceJ {
             // we'll use indirect proxy here to connect to the sicklaser component
             // setup according to the Quick Start tutorial of Orca2
             // see: orca-robotics.sf.net/orca_doc_quickstart.html
-    //         Ice.ObjectPrx base = ic.stringToProxy( "laser@"+getHostname()+"/sicklaser" );
+    //         Ice.ObjectPrx base = ic.stringToProxy( "laserscanner2d@"+getHostname()+"/laser2d" );
             System.out.println("*****BIG HACK: hostname is hardwired!");
-            Ice.ObjectPrx base = ic.stringToProxy( "laser@"+"agave"+"/sicklaser" );
+            Ice.ObjectPrx base = ic.stringToProxy( "laserscanner2d@"+"agave"+"/laser2d" );
             System.out.println("Base proxy created...");
     
             // Down-cast the proxy to a Laser proxy
             //
-            orca.LaserPrx laser = orca.LaserPrxHelper.checkedCast(base);
+            orca.LaserScanner2dPrx laser = orca.LaserScanner2dPrxHelper.checkedCast(base);
             if (laser == null) {
                 throw new RuntimeException("Invalid proxy");
             }
@@ -33,10 +33,10 @@ public class PureIceJ {
     
             // get one laser scan and print it out
             //
-            orca.RangeScannerData data = new orca.LaserData();
+            orca.RangeScanner2dData data = new orca.LaserScanner2dData();
             data = laser.getData();
             System.out.println("Received laser scan:");
-            System.out.println(" RangeScannerData: ["+data.ranges.length+" elements]: ");
+            System.out.println(" RangeScanner2dData: ["+data.ranges.length+" elements]: ");
             System.out.println("    startAngle     : "+data.startAngle*180.0/3.14159265358979+"deg");
             System.out.println("    angleIncrement : "+data.angleIncrement*180.0/3.14159265358979+"deg");
         } 

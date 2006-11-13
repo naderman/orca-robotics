@@ -12,9 +12,9 @@
 
 @page orca_doc_java Experimental support for Java
 
-@note Reviewed for release 2.0.0.
+@note Reviewed for release 2.0.2.
 
-These notes cover how to enable experimental support for Java under Linux.
+These notes cover how to enable experimental support for Java under Linux. Tested with Ice-3.1.1.
 
 @section orca_doc_java_install Installation
 
@@ -32,7 +32,12 @@ export PATH=$JAVA_HOME/bin:$PATH
 
 @par Ice for Java
 
-Download IceJ-3.1.0 package for Java-5. Copy the @c lib/Ice.jar file into [ICE_HOME]/lib/ directory.
+In Debian, install this package:
+@verbatim
+# apt-get install libzeroc-ice-java 
+@endverbatim
+
+Or, download IceJ-[VERSION] package for Java-5. Copy the @c lib/Ice.jar file into [ICE_HOME]/lib/ directory.
 
 @par Orca for Java
 
