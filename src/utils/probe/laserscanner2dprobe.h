@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_PROBE_LASER_INTERFACE_PROBE_H
-#define ORCA2_PROBE_LASER_INTERFACE_PROBE_H
+#ifndef ORCA2_PROBE_LASERSCANNER2D_INTERFACE_PROBE_H
+#define ORCA2_PROBE_LASERSCANNER2D_INTERFACE_PROBE_H
 
 #include "interfaceprobe.h"
 #include <orca/laserscanner2d.h>
@@ -17,12 +17,12 @@
 namespace probe
 {
 
-class LaserProbe : public InterfaceProbe
+class LaserScanner2dProbe : public InterfaceProbe
 {
 
 public:
 
-    LaserProbe( const orca::FQInterfaceName & name, DisplayDriver & display,
+    LaserScanner2dProbe( const orca::FQInterfaceName & name, DisplayDriver & display,
                                 const orcaice::Context & context );
 
     virtual int loadOperation( const int index );

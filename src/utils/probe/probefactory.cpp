@@ -14,7 +14,7 @@
 #include "binaryswitchprobe.h"
 #include "cpuprobe.h"
 #include "homeprobe.h"
-#include "laserprobe.h"
+#include "laserscanner2dprobe.h"
 #include "powerprobe.h"
 
 using namespace probe;
@@ -25,7 +25,7 @@ ProbeFactory::isSupported( const std::string & id )
     if ( id == "::orca::BinarySwitch" || 
         id == "::orca::Cpu" || 
         id == "::orca::Home" || 
-        id == "::orca::Laser" || 
+        id == "::orca::LaserScanner2d" || 
         id == "::orca::Power" ) 
     {
         return true;
@@ -52,8 +52,8 @@ ProbeFactory::create( const std::string & id, const orca::FQInterfaceName & name
     else if ( id == "::orca::Home" ) {
         return new HomeProbe( name, display, context );
     }
-    else if ( id == "::orca::Laser" ) {
-        return new LaserProbe( name, display, context );
+    else if ( id == "::orca::LaserScanner2d" ) {
+        return new LaserScanner2dProbe( name, display, context );
     }
     else if ( id == "::orca::Power" ) {
         return new PowerProbe( name, display, context );

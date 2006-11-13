@@ -13,29 +13,28 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 
-#include "laserprobe.h"
+#include "laserscanner2dprobe.h"
 #include "displaydriver.h"
-// #include "laserconsumerI.h"
+// #include "laserscanner2dconsumerI.h"
 
 using namespace std;
 using namespace probe;
 
-LaserProbe::LaserProbe( const orca::FQInterfaceName & name, DisplayDriver & display,
+LaserScanner2dProbe::LaserScanner2dProbe( const orca::FQInterfaceName & name, DisplayDriver & display,
                                 const orcaice::Context & context )
     : InterfaceProbe(name,display,context)
 {
-    id_ = "::orca::Laser";
+    id_ = "::orca::LaserScanner2d";
     
     operations_.push_back( "getData" );
     operations_.push_back( "getConfig" );
     operations_.push_back( "getGeometry" );
-//     operations_.push_back( "setConfig" );
     operations_.push_back( "subscribe" );
     operations_.push_back( "unsubscribe" );
 }
     
 int 
-LaserProbe::loadOperation( const int index )
+LaserScanner2dProbe::loadOperation( const int index )
 {
     //cout<<"loading home operation "<<index<<endl;
 
@@ -71,7 +70,7 @@ LaserProbe::loadOperation( const int index )
 }
 
 int 
-LaserProbe::loadGetData()
+LaserScanner2dProbe::loadGetData()
 {
     orca::RangeScanner2dDataPtr data;
     
@@ -90,7 +89,7 @@ LaserProbe::loadGetData()
 }
 
 int 
-LaserProbe::loadGetConfig()
+LaserScanner2dProbe::loadGetConfig()
 {
     orca::RangeScanner2dConfigPtr data;
     
@@ -109,7 +108,7 @@ LaserProbe::loadGetConfig()
 }
 
 int 
-LaserProbe::loadGetGeometry()
+LaserScanner2dProbe::loadGetGeometry()
 {
     orca::RangeScanner2dGeometryPtr data;
     
@@ -128,7 +127,7 @@ LaserProbe::loadGetGeometry()
 }
 
 int 
-LaserProbe::loadSubscribe()
+LaserScanner2dProbe::loadSubscribe()
 {
 //     // create the consumer only when needed
 //     Ice::ObjectPtr consumer = new PowerConsumerI;
@@ -153,7 +152,7 @@ LaserProbe::loadSubscribe()
 }
 
 int 
-LaserProbe::loadUnsubscribe()
+LaserScanner2dProbe::loadUnsubscribe()
 {
 //     try
 //     {
