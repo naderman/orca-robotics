@@ -23,7 +23,7 @@ IF ( NOT WIN32 AND BUILD_LOCALNAV )
 
     # build a stand-alone component
     GLOBAL_ADD_EXECUTABLE( localnav main ${COMMON_SRCS} )
-    TARGET_LINK_LIBRARIES( localnav vfhdriver OrcaNavUtil )
+    TARGET_LINK_LIBRARIES( localnav OrcaLocalNavVfh OrcaNavUtil )
 
     # build an IceBox service
     GLOBAL_ADD_LIBRARY( OrcaLocalNav SHARED service ${COMMON_SRCS} )
