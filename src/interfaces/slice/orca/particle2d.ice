@@ -13,7 +13,6 @@
 
 #include <orca/orca.ice>
 #include <orca/bros1.ice>
-#include <orca/localise2d.ice>
 
 module orca
 {
@@ -53,16 +52,35 @@ interface Particle2dConsumer
 
 /*!
     @brief Interface for a 2d particle-based localiser.
-           Extends the mixture-of-Gaussians interface Localise2d,
-           Adding the particle-based stuff.
  */
-interface Particle2d extends Localise2d
+interface Particle2d
 {
-    //! 
-    void subscribeForParticles( Particle2dConsumer *subscriber );
+    //! Returns the latest data.
+    nonmutating Particle2dData getData()
+            throws DataNotExistException;
 
-    //! 
-    idempotent void unsubscribeForParticles( Particle2dConsumer *subscriber );
+    //! Returns the data at a particular time based on the latest data.
+    nonmutating Particle2dData getDataAtTime(Time timeStamp)
+            throws DataNotExistException;
+
+    /*!
+     * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.
+     * The implementation may choose to implement the push directly or use IceStorm.
+     * This choice is transparent to the subscriber. The case when the @p subscriber is already subscribed
+     * is quietly ignored.
+     *
+     * @see unsubscribe
+     */
+    void subscribe( Particle2dConsumer* subscriber )
+        throws SubscriptionFailedException;
+
+    /*!
+     * Unsubscribe an existing @p subscriber. The case when the @p subscriber is not subscribed
+     * is quietly ignored.
+     *
+     * @see subscribe
+     */
+    idempotent void unsubscribe( Particle2dConsumer* subscriber );
 };
 
 /*! @} */
