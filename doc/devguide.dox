@@ -19,6 +19,7 @@ approach to software and, therefore, the Orca project. This means that you can w
 any way you want. Still, some approaches to organizing your component code lead to more efficient,
 maintainable, and understandable code.
 
+- @ref orca_doc_devadd
 - @ref orca_doc_devproj
 - @ref orca_doc_devcomp
 - @ref orca_doc_testing

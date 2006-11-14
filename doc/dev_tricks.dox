@@ -20,12 +20,14 @@ Ice utility slice2cpp can generate implementation skeletons from *.ice files. We
 
 @verbatim
 $ cd <ORCA2_SRC>/src/interfaces/slice/orca
-$ slice2cpp -I<ORCA2_SRC>/src/interfaces/slice/ -I$ICE_HOME/slice --impl home.ice
+$ slice2cpp -I<ORCA2_SRC>/src/interfaces/slice/ -I<ICE_SLICE_HOME> --impl home.ice
 $ ls home*
 home.cpp  home.h  home.ice  homeI.cpp  homeI.h
 @endverbatim
 
-You can see 4 generated files: %homeI.h and homeI.cpp are the skeletons. Move them to your component directory and delete home.h and home.cpp. There are 2 modifications to the files you'll have to make:
+Where ICE_SLICE_HOME location depends on how Ice was installed. Ice's standard installation puts it into @c <ICE_INSALL>/slice. Debian package puts it into @c /usr/share/slice/.
+
+In the directory you can see 4 generated files: %homeI.h and homeI.cpp are the skeletons. Move them to your component directory and delete home.h and home.cpp. There are 2 modifications to the files you'll have to make:
 
 - The #include for the interface definition file in @c %homeI.h is missing the namespace, so it looks like this:
 @verbatim
