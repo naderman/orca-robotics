@@ -59,10 +59,6 @@ interface Particle2d
     nonmutating Particle2dData getData()
             throws DataNotExistException;
 
-    //! Returns the data at a particular time based on the latest data.
-    nonmutating Particle2dData getDataAtTime(Time timeStamp)
-            throws DataNotExistException;
-
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.
      * The implementation may choose to implement the push directly or use IceStorm.
