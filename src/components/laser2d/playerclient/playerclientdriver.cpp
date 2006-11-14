@@ -42,7 +42,11 @@ PlayerClientDriver::PlayerClientDriver( const orcaice::Context & context )
 
     device_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Device", 0 );
 
-    std::string playerDriver_ = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "sicklms200" );
+    playerDriver_ = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "sicklms200" );
+    
+    std::stringstream ss;
+    ss << "Initialized playerclient driver with host="<<host_<<" port="<<port_<<" id="<<device_<<" dvr="<<playerDriver_;
+    context_.tracer()->debug(ss.str(),2);
 }
 
 PlayerClientDriver::~PlayerClientDriver()
@@ -97,6 +101,7 @@ PlayerClientDriver::getConfig( Config &cfg )
     // they have to be hard-wired here.
     if ( playerDriver_=="stage" || playerDriver_=="gazebo" )
     {
+        context_.tracer()->debug("Player driver is 'stage' or 'gazebo'. Using default configs",2);
         // default settings
 //         cfg->angleIncrement   = DEG2RAD(0.5);
 //         cfg->rangeResolution  = 0.001;
@@ -108,6 +113,7 @@ PlayerClientDriver::getConfig( Config &cfg )
     } 
     else if ( playerDriver_=="urglaser" )
     {
+        context_.tracer()->debug("Player driver is 'urglaser'. Using default configs",2);
         // default settings
 //         cfg->angleIncrement   = DEG2RAD(230.0/654.0);
         cfg.maxRange         = 4.0;
