@@ -231,19 +231,22 @@ PlayerClientDriver::read( LaserScanner2dDataPtr &data )
     }
 
     orcaplayer::convert( *laserProxy_, data );
+
     // simulators do not report correct angles
     if ( playerDriver_=="stage" | playerDriver_=="gazebo" )
     {
         // default settings
-        data->startAngle       = DEG2RAD(-90.0);
-        data->angleIncrement   = DEG2RAD(0.5);
+        data->maxRange         = currentConfig_.maxRange;
+        data->fieldOfView      = currentConfig_.fieldOfView;
+        data->startAngle       = currentConfig_.startAngle;
     }
-    else  if ( playerDriver_=="urglaser" )
-    {
-        // default settings
-        data->startAngle       = DEG2RAD(-115.0);
-        data->angleIncrement   = DEG2RAD(230.0/654.0);
-    }
+    // alexm: check that this is not reported correctly
+//     else  if ( playerDriver_=="urglaser" )
+//     {
+//         // default settings
+//         data->startAngle       = DEG2RAD(-115.0);
+//         data->angleIncrement   = DEG2RAD(230.0/654.0);
+//     }
 
     return 0;
 }

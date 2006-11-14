@@ -49,18 +49,17 @@ private:
     orca::LaserScanner2dPrx laserPrx_;
     
     // Laser config and geometry
-    orca::RangeScanner2dConfigPtr laserConfigPtr_;
-    orca::RangeScanner2dGeometryPtr laserGeometryPtr_;
-    
+    orca::Frame3d sensorOffset_;    
+
+    // This component is 2D-centric: can only handle certain orientations.
+    // Throws std::strings on bad offset.
+    void checkSensorOffset( const orca::Frame3d & offset );
+
     // buffers
     orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> &laserDataBuffer_;
     orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer_;
     
     void convertToRobotCS( const orca::PolarFeature2dDataPtr & featuresPtr );
-
-    // This component is 2D-centric: can only handle certain orientations.
-    // Throws std::strings on bad offset.
-    void checkLaserGeometry( const orca::RangeScanner2dGeometryPtr geom );
 
     orcaice::Context context_;
 

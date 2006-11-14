@@ -237,8 +237,15 @@ SickCarmenDriver::read( orca::LaserScanner2dDataPtr &data )
             }
 //            cout<<endl;
             
-            data->startAngle     = -M_PI/2;
-            data->angleIncrement = DEG2RAD(((laser_->settings.angle_resolution==RES_1_00_DEGREE)?1.0:((laser_->settings.angle_resolution==RES_0_50_DEGREE)?0.5:((laser_->settings.angle_resolution==RES_0_25_DEGREE)?0.25:0.0))));
+
+            // default settings
+            data->maxRange         = currentConfig_.maxRange;
+            data->fieldOfView      = currentConfig_.fieldOfView;
+            data->startAngle       = currentConfig_.startAngle;
+
+            // alexm: before laser iface change:
+//             data->startAngle     = -M_PI/2;
+//             data->angleIncrement = DEG2RAD(((laser_->settings.angle_resolution==RES_1_00_DEGREE)?1.0:((laser_->settings.angle_resolution==RES_0_50_DEGREE)?0.5:((laser_->settings.angle_resolution==RES_0_25_DEGREE)?0.25:0.0))));
 //             cout<<"TRACE(nativelaserdriver.cpp): read() ok." << endl;
             return 0;
         }

@@ -39,19 +39,19 @@ Handler::~Handler()
 void
 Handler::init()
 {
-
+    Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
     // configure the sensor model
     OgLaserModelConfig sensorConfig;
 
-    sensorConfig.size = orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"Sensor.Size", 101 );
-    sensorConfig.occupMax = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Sensor.OccupMax", 0.575 );
-    sensorConfig.emptyMax = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Sensor.EmptyMax", 0.425);
-    sensorConfig.rangeStDev = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Sensor.RangeStDev", 0.1);
-    sensorConfig.rangeStDevMax = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Sensor.RangeStDevMax", 3.0);
-    sensorConfig.posStDevMax = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Sensor.PosStDevMax", 5.0);
-    sensorConfig.hedStDevMax = DEG2RAD( orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Sensor.HedStDevMax", 3.0) );
+    sensorConfig.size = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Sensor.Size", 101 );
+    sensorConfig.occupMax = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.OccupMax", 0.575 );
+    sensorConfig.emptyMax = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.EmptyMax", 0.425);
+    sensorConfig.rangeStDev = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.RangeStDev", 0.1);
+    sensorConfig.rangeStDevMax = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.RangeStDevMax", 3.0);
+    sensorConfig.posStDevMax = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.PosStDevMax", 5.0);
+    sensorConfig.hedStDevMax = DEG2RAD( orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.HedStDevMax", 3.0) );
 
     //
     // REQUIRED INTERFACES: Laser, Localise2d, OgFusion
@@ -110,17 +110,12 @@ Handler::init()
         }
     }
     
-    // Get the geometry
-    RangeScanner2dGeometryPtr rangeScannerGeometry = rangeScannerPrx_->getGeometry();
-    cout << "Range Scanner Geometry: " << orcaice::toString(rangeScannerGeometry) << endl;
-
     // Get the configuration
-    RangeScanner2dConfigPtr rangeScannerConfig = rangeScannerPrx_->getConfig();
-    cout << "Laser Config:   " << orcaice::toString(rangeScannerConfig) << endl;
+    RangeScanner2dDescriptionPtr descr = rangeScannerPrx_->getDescription();
+    cout << orcaice::toString(descr) << endl;
 
-    sensorConfig.rangeMax = rangeScannerConfig->maxRange;
-//alexm todo:
-    sensorConfig.angleIncrement = 9999.9; //rangeScannerConfig->angleIncrement;
+    sensorConfig.rangeMax = descr->maxRange;
+    sensorConfig.angleIncrement = descr->fieldOfView/(descr->numberOfReturns+1);
 
     // No need to getData()
 

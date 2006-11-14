@@ -80,8 +80,7 @@ void CombinedDriver::setMaxRange( float maxRange )
 }
 
 int
-CombinedDriver::computeFeatures( const orca::RangeScanner2dConfigPtr &laserConfigPtr,
-                                 const orca::LaserScanner2dDataPtr          &laserDataPtr,
+CombinedDriver::computeFeatures( const orca::LaserScanner2dDataPtr          &laserDataPtr,
                                  orca::PolarFeature2dDataPtr       &featureDataPtr )
 {
     featureDataPtr->features.clear();
@@ -95,7 +94,7 @@ CombinedDriver::computeFeatures( const orca::RangeScanner2dConfigPtr &laserConfi
     if ( foregroundExtractor_ != NULL ) 
     {
         // cout<<"TRACE(combineddriver.cpp): Extracting fg points: " << config_.extractForegroundPoints<< endl;
-        foregroundExtractor_->addFeatures( laserDataPtr, laserConfigPtr, featureDataPtr ) ;
+        foregroundExtractor_->addFeatures( laserDataPtr, featureDataPtr ) ;
     }
     
     if ( doorExtractor_ != NULL ) 

@@ -18,6 +18,12 @@ using namespace std;
 
 namespace laserfeatures {
 
+static double laserScanBearing( const orca::RangeScanner2dDataPtr & scan, const int i )
+{
+    double angleIncrement = scan->fieldOfView / double(scan->ranges.size()+1);
+    return (scan->startAngle + angleIncrement*i);
+}
+
 void 
 ReflectorExtractor::addFeatures( const orca::LaserScanner2dDataPtr    &laserData,
                                  orca::PolarFeature2dDataPtr &features )
@@ -71,12 +77,12 @@ ReflectorExtractor::addFeatures( const orca::LaserScanner2dDataPtr    &laserData
                 else
                 {
                     // cout<<"TRACE(reflectorextractor.cpp): return "<<i
-                    //     <<": started a target at bearing " << calcBearing(laserData,i)*180.0/M_PI << "deg" << endl;
+                    //     <<": started a target at bearing " << laserScanBearing(laserData,i)*180.0/M_PI << "deg" << endl;
 
                     buildingTarget            = true;
                     numFeaturePoints          = 1;
                     featureRangeSum           = laserData->ranges[i];
-                    featureBearingSum         = calcBearing( laserData, i );
+                    featureBearingSum         = laserScanBearing( laserData, i );
                     maxDeltaRangeWithinReflector = 0.0;
                 }
             }
@@ -94,7 +100,7 @@ ReflectorExtractor::addFeatures( const orca::LaserScanner2dDataPtr    &laserData
                     // Continue building the target
                     numFeaturePoints++;
                     featureRangeSum   += laserData->ranges[i];
-                    featureBearingSum += calcBearing( laserData, i );
+                    featureBearingSum += laserScanBearing( laserData, i );
                     if ( fabs(deltaRange( laserData, i )) > maxDeltaRangeWithinReflector )
                         maxDeltaRangeWithinReflector = deltaRange( laserData, i );
                 }

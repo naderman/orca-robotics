@@ -24,12 +24,10 @@ FakeDriver::FakeDriver()
 {
 }
 
-int FakeDriver::computeFeatures( const orca::RangeScanner2dConfigPtr &laserConfigPtr,
-                                 const orca::LaserScanner2dDataPtr          &laserDataPtr,
+int FakeDriver::computeFeatures( const orca::LaserScanner2dDataPtr &laserDataPtr,
                                        orca::PolarFeature2dDataPtr &featureDataPtr )
 {
     // make up some features
-    cout << "INFO(fakeextractor.cpp): Laser configuration received: " << laserConfigPtr << endl;
     cout << "INFO(fakeextractor.cpp): Laser scan size received: " << laserDataPtr->ranges.size() << endl << endl;
 
     cout<<"TRACE(fakeextractor.cpp): initially, numFeatures = " << featureDataPtr->features.size() << endl;

@@ -30,9 +30,7 @@ public:
 private:
 
     int loadGetData();
-    int loadGetConfig();
-    int loadGetGeometry();
-//     int loadSetConfig();
+    int loadGetDescription();
     int loadSubscribe();
     int loadUnsubscribe();
     

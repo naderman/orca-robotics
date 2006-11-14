@@ -64,11 +64,8 @@ private:
             return laserData->ranges[returnNum] - laserData->ranges[returnNum-1]; 
         }
 
-    double calcBearing( const orca::LaserScanner2dDataPtr &laserData,
-                        int returnNum )
-        { return laserData->startAngle + returnNum*laserData->angleIncrement; }
 };
 
-}
+} // namespace
 
 #endif

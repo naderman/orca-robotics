@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_LASERMON_LASER_CONSUMER_I_H
-#define ORCA2_LASERMON_LASER_CONSUMER_I_H
+#ifndef ORCA2_LASERMON_RANGESCANNER2D_CONSUMER_I_H
+#define ORCA2_LASERMON_RANGESCANNER2D_CONSUMER_I_H
 
 #include <iostream>
 
@@ -21,19 +21,16 @@ class RangeScanner2dConsumerI : public orca::RangeScanner2dConsumer
     public:
         virtual void setData(const orca::RangeScanner2dDataPtr& data, const Ice::Current&)
         {
+            int skipReturns = 0;
             try {
                 // Is it a laser scan?
-                //std::cout << orca::LaserScanner2dDataPtr::dynamicCast( data ) << std::endl;
-                std::cout << orcaice::toVerboseString( orca::LaserScanner2dDataPtr::dynamicCast( data ) ) << std::endl;
+                std::cout << orcaice::toString( orca::LaserScanner2dDataPtr::dynamicCast( data ), skipReturns ) << std::endl;
             }
             catch ( IceUtil::NullHandleException & )
             {
                 // Wasn't a laser scan.
-                std::cout << data << std::endl;
+                std::cout << orcaice::toString( data, skipReturns ) << std::endl;
             }
-            std::cout << " (startAngle, angleIncrement: " << RAD2DEG(data->startAngle) 
-                      << ", " << RAD2DEG(data->angleIncrement) << ")" 
-                      << std::endl;
         }
 };
 

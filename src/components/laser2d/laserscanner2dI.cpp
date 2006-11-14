@@ -19,18 +19,13 @@ using namespace orca;
 
 namespace laser2d {
 
-LaserScanner2dI::LaserScanner2dI( orca::RangeScanner2dGeometryPtr  geometry,
+LaserScanner2dI::LaserScanner2dI( orca::RangeScanner2dDescriptionPtr  descr,
                                   const std::string             &ifaceTag,
                                   const orcaice::Context        &context )
-    : geometry_(geometry),
+    : descr_(descr),
       ifaceTag_(ifaceTag),
       context_(context)
 {
-    // Initialize the current config with something
-    RangeScanner2dConfigPtr currentConfig = new orca::RangeScanner2dConfig;
-    currentConfig->isEnabled = false;
-    currentConfigBuffer_.push( currentConfig );
-
     // Find IceStorm Topic to which we'll publish
     // this will throw NetworkException if can't connect
     topicPrx_ = orcaice::connectToTopicWithTag<orca::RangeScanner2dConsumerPrx>
@@ -56,24 +51,11 @@ LaserScanner2dI::getData(const Ice::Current& current) const
 }
 
 // served out the data to the client (it was stored here earlier by the driver)
-orca::RangeScanner2dConfigPtr 
-LaserScanner2dI::getConfig(const Ice::Current& current) const
+orca::RangeScanner2dDescriptionPtr 
+LaserScanner2dI::getDescription(const Ice::Current& current) const
 {
-    context_.tracer()->debug( "getConfig()", 5 );
-
-    RangeScanner2dConfigPtr config;
-    currentConfigBuffer_.get( config );
-
-    return config;
-}
-
-// Get Laser Geometry
-::orca::RangeScanner2dGeometryPtr 
-LaserScanner2dI::getGeometry(const ::Ice::Current& ) const
-{
-    context_.tracer()->debug( "getGeometry()", 5 );
-
-    return geometry_;
+    context_.tracer()->debug( "getDescription()", 5 );
+    return descr_;
 }
 
 // Subscribe people

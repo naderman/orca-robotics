@@ -30,7 +30,7 @@ namespace laser2d {
 class LaserScanner2dI : public virtual orca::LaserScanner2d
 {
 public:
-    LaserScanner2dI( orca::RangeScanner2dGeometryPtr geometry,
+    LaserScanner2dI( orca::RangeScanner2dDescriptionPtr descr,
                      const std::string              &ifaceTag,
                      const orcaice::Context         &context );
 
@@ -38,19 +38,12 @@ public:
     // Remote calls:
     //
 
-    // Get RangeScanner Data
     virtual ::orca::RangeScanner2dDataPtr     getData(const ::Ice::Current& ) const;
 
-    // Get Laser Config
-    virtual ::orca::RangeScanner2dConfigPtr   getConfig(const ::Ice::Current& ) const;
+    virtual ::orca::RangeScanner2dDescriptionPtr   getDescription(const ::Ice::Current& ) const;
 
-    // Get Laser Geometry
-    virtual ::orca::RangeScanner2dGeometryPtr getGeometry(const ::Ice::Current& ) const;
-
-    // Subscribe people
     virtual void subscribe(const ::orca::RangeScanner2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
-    // Unsubscribe people
     virtual void unsubscribe(const ::orca::RangeScanner2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
 
@@ -59,15 +52,12 @@ public:
     //
     void localSetData( const ::orca::LaserScanner2dDataPtr data );
 
-    // We get the current config from here.
-    orcaice::PtrBuffer<orca::RangeScanner2dConfigPtr> currentConfigBuffer_;
-
 private:
 
     // the driver will put the latest data into this buffer
     orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> dataBuffer_;
 
-    orca::RangeScanner2dGeometryPtr  geometry_;
+    orca::RangeScanner2dDescriptionPtr  descr_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx             topicPrx_;

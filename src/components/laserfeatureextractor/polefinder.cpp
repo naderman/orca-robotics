@@ -21,8 +21,7 @@ using namespace orca_polefinder;
 using namespace orca;
 
 int 
-orca_polefinder::detect_poles( const RangeScanner2dConfigPtr laserConf,
-                               const LaserScanner2dDataPtr ranges,
+orca_polefinder::detect_poles( const LaserScanner2dDataPtr & scan,
                                double max_laser_range,
                                double min_width,
                                double max_width,
@@ -41,19 +40,19 @@ orca_polefinder::detect_poles( const RangeScanner2dConfigPtr laserConf,
     float  temp_bearing;
     int    last_dodgy_range = 0;
     int    last_pole_end_in_returns = -99999999;
-    int    min_clearance_from_dodge_in_returns = 1; // alexm todo: (int) (rint( min_angle_from_dodge / laserConf->angleIncrement ));
+    double angleIncrement = scan->fieldOfView / double(scan->ranges.size()+1);
+    int    min_clearance_from_dodge_in_returns = (int) (rint( min_angle_from_dodge / angleIncrement ));
 
-    for ( int i = 0; i < (int)ranges->ranges.size(); i++ )
+    for ( int i = 0; i < (int)scan->ranges.size(); i++ )
     {
         if ( (i != 0) )
         {
-            delta_range = ranges->ranges[i] - ranges->ranges[previous_point];
+            delta_range = scan->ranges[i] - scan->ranges[previous_point];
 
             if ( potential_pole_start )
             {
                 // We could be looking at a pole here...
-//alexm todo:
-                pole_width = 9999.9; //ranges->ranges[potential_pole_start]*sin( (i-potential_pole_start)*laserConf->angleIncrement );
+                pole_width = scan->ranges[potential_pole_start]*sin( (i-potential_pole_start)*angleIncrement );
 
                 if ( pole_width > max_width )
                 {
@@ -71,9 +70,8 @@ orca_polefinder::detect_poles( const RangeScanner2dConfigPtr laserConf,
                          (i-potential_pole_start > 1) )
                     {
                         // We have a pole!
-                        temp_range   = ranges->ranges[(potential_pole_start+(i-1))/2];
-//alexm todo:
-                        temp_bearing = 9999.0; //(((i-1)+potential_pole_start)/2)*laserConf->angleIncrement + ranges->startAngle;
+                        temp_range   = scan->ranges[(potential_pole_start+(i-1))/2];
+                        temp_bearing = (((i-1)+potential_pole_start)/2)*angleIncrement + scan->startAngle;
                         
                         poles.resize( poles.size()+1 );
                         poles[poles.size()-1].range   = temp_range;
@@ -91,12 +89,12 @@ orca_polefinder::detect_poles( const RangeScanner2dConfigPtr laserConf,
                     else
                     {
                         // Pole was wrong width.
-                        // cout<<"TRACE(polefinder.cpp): bad width at ("<<ranges.ranges((potential_pole_start+i)/2)<<","<<((i+potential_pole_start)/2)*ranges.angleIncrement() + ranges.bearingStart()*180/M_PI<<"): " << pole_width << endl;
+                        // cout<<"TRACE(polefinder.cpp): bad width at ("<<scan->ranges((potential_pole_start+i)/2)<<","<<((i+potential_pole_start)/2)*ranges.angleIncrement() + ranges.bearingStart()*180/M_PI<<"): " << pole_width << endl;
                         
                         potential_pole_start = 0;
                     }
                 }
-                else if (fabs(ranges->ranges[i] - ranges->ranges[potential_pole_start]) > max_width)
+                else if (fabs(scan->ranges[i] - scan->ranges[potential_pole_start]) > max_width)
                 {
                     // All points on a 'pole' have to be within
                     // a certain range of one another
@@ -113,7 +111,7 @@ orca_polefinder::detect_poles( const RangeScanner2dConfigPtr laserConf,
             }
 
             // Is there anything screwy about this return?
-            if ( ranges->ranges[i] == max_laser_range || fabs(delta_range) > min_distance_to_background )
+            if ( scan->ranges[i] == max_laser_range || fabs(delta_range) > min_distance_to_background )
             {
                 // Yes, this range is screwy.
                 if ( !potential_pole_start )

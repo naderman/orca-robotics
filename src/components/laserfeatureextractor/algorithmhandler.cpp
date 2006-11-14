@@ -119,11 +119,11 @@ void AlgorithmHandler::run()
     // don't need to create this one, it will be cloned from the buffer
     orca::LaserScanner2dDataPtr laserData;
        
-    // get laser config and geometry (only once)
-    laserConfigPtr_ = laserPrx_->getConfig();
-    driver_->setMaxRange( laserConfigPtr_->maxRange );
-    laserGeometryPtr_ = laserPrx_->getGeometry();
-    checkLaserGeometry( laserGeometryPtr_ );
+    // get laser description (only once)
+    orca::RangeScanner2dDescriptionPtr descr = laserPrx_->getDescription();
+    driver_->setMaxRange( descr->maxRange );
+    sensorOffset_ = descr->offset;
+    checkSensorOffset( sensorOffset_ );
 
     // wake up every now and then to check if we are supposed to stop
     const int timeoutMs = 1000;
@@ -147,7 +147,7 @@ void AlgorithmHandler::run()
             //
             // execute algorithm to compute features
             //
-            driver_->computeFeatures( laserConfigPtr_, laserData, featureData );
+            driver_->computeFeatures( laserData, featureData );
 
             // convert to the robot frame CS
             convertToRobotCS( featureData );
@@ -240,10 +240,11 @@ void AlgorithmHandler::run()
     waitForStop();
 }
 
-void AlgorithmHandler::convertToRobotCS( const PolarFeature2dDataPtr & featureData )
+void 
+AlgorithmHandler::convertToRobotCS( const PolarFeature2dDataPtr & featureData )
 {
-    CartesianPoint offsetXyz = laserGeometryPtr_->offset.p;
-    OrientationE   offsetAngles = laserGeometryPtr_->offset.o;
+    CartesianPoint offsetXyz = sensorOffset_.p;
+    OrientationE   offsetAngles = sensorOffset_.o;
     
     CartesianPoint LaserXy, RobotXy;
     PolarPoint2d polarPointRobot;
@@ -262,26 +263,26 @@ void AlgorithmHandler::convertToRobotCS( const PolarFeature2dDataPtr & featureDa
 }
 
 void 
-AlgorithmHandler::checkLaserGeometry( const orca::RangeScanner2dGeometryPtr geom )
+AlgorithmHandler::checkSensorOffset( const orca::Frame3d & offset )
 {
-    bool geomOK = true;
-    if ( geom->offset.p.z != 0.0 )
+    bool offsetOk = true;
+    if ( offset.p.z != 0.0 )
     {
         stringstream ss;
-        ss << "Can't handle non-zero 'z' component in laser offset.  geom was: " << geom;
+        ss << "Can't handle non-zero 'z' component in laser offset. Offset: " << orcaice::toString(offset);
         context_.tracer()->error( ss.str() );
-        geomOK = false;
+        offsetOk = false;
     }
-    if ( geom->offset.o.r != 0.0 || geom->offset.o.p != 0.0 )
+    if ( offset.o.r != 0.0 || offset.o.p != 0.0 )
     {
         stringstream ss;
-        ss << "Can't handle non-zero roll or pitch in laser offset.  geom was: " << geom;
+        ss << "Can't handle non-zero roll or pitch in laser offset. Offset: " << orcaice::toString(offset);
         context_.tracer()->error( ss.str() );
-        geomOK = false;
+        offsetOk = false;
     }
 
-    if ( !geomOK )
+    if ( !offsetOk )
     {
-        throw std::string( "Couldn't handle laser offset" );
+        throw std::string( "Cannot handle specified sensor offset" );
     }
 }

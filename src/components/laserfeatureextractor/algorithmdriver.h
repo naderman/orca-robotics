@@ -33,9 +33,8 @@ public:
     virtual ~AlgorithmDriver() {};
     
     // Computes the features
-    virtual int computeFeatures( const orca::RangeScanner2dConfigPtr &laserConfigPtr,
-                                 const orca::LaserScanner2dDataPtr          &laserDataPtr,
-                                       orca::PolarFeature2dDataPtr &featureDataPtr ) = 0;
+    virtual int computeFeatures( const orca::LaserScanner2dDataPtr   &laserDataPtr,
+                                       orca::PolarFeature2dDataPtr   &featureDataPtr ) = 0;
 
     virtual void setMaxRange( float maxRange )=0;
                                  

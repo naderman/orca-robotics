@@ -8,8 +8,8 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef FOREGROUNDEXTRACTOR__H
-#define FOREGROUNDEXTRACTOR__H
+#ifndef ORCA2_LASERFEATUREEXTRACTOR_FOREGROUND_EXTRACTOR_H
+#define ORCA2_LASERFEATUREEXTRACTOR_FOREGROUND_EXTRACTOR_H
 
 #include <orca/laserscanner2d.h>
 #include <orca/polarfeature2d.h>
@@ -33,9 +33,7 @@ public:
 
 //     Adds laser features to the 'features' data structure
       void addFeatures( const orca::LaserScanner2dDataPtr &laserData,
-                        const orca::RangeScanner2dConfigPtr &laserConfig,
                         orca::PolarFeature2dDataPtr &features );   
-
 
     void setMaxRange( double maxRange ) { laserMaxRange_ = maxRange; }
 
@@ -45,9 +43,8 @@ private:
     double maxForegroundWidth_;
     double minForegroundBackgroundSeparation_;
     double laserMaxRange_;
-    
 };
 
-}
+} // namespace
 
 #endif

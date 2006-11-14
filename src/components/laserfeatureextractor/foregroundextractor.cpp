@@ -8,7 +8,6 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#include "foregroundextractor.h"
 
 #include <iostream>
 #include <assert.h>
@@ -17,6 +16,7 @@
 #include <orca/featuremap2d.h>
 #include <orcaobj/mathdefs.h>
 
+#include "foregroundextractor.h"
 #include "polefinder.h"
 
 using namespace std;
@@ -24,7 +24,6 @@ using namespace std;
 namespace laserfeatures {
     
 void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData, 
-                                       const orca::RangeScanner2dConfigPtr &laserConfig,
                                        orca::PolarFeature2dDataPtr &features )
 {
     assert( laserMaxRange_ > 0.0 );
@@ -33,7 +32,7 @@ void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserD
 
     double startAngleFromDodge = DEG2RAD( 2.0 );
 
-    int numPoles = orca_polefinder::detect_poles( laserConfig,
+    int numPoles = orca_polefinder::detect_poles(
             laserData,
             laserMaxRange_,
             minForegroundWidth_,

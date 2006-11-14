@@ -37,8 +37,9 @@ public class PureIceJ {
             data = laser.getData();
             System.out.println("Received laser scan:");
             System.out.println(" RangeScanner2dData: ["+data.ranges.length+" elements]: ");
-            System.out.println("    startAngle     : "+data.startAngle*180.0/3.14159265358979+"deg");
-            System.out.println("    angleIncrement : "+data.angleIncrement*180.0/3.14159265358979+"deg");
+            System.out.println("    maxRange     : "+data.maxRange+"m");
+            System.out.println("    fieldOfView  : "+data.fieldOfView*180.0/3.14159265358979+"deg");
+            System.out.println("    startAngle   : "+data.startAngle*180.0/3.14159265358979+"deg");
         } 
         catch (Ice.LocalException e) {
             e.printStackTrace();

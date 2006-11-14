@@ -47,8 +47,7 @@ public:
     CombinedDriver( const Config & config );
     virtual ~CombinedDriver();
     
-    virtual int computeFeatures( const orca::RangeScanner2dConfigPtr &laserConfigPtr,
-                                 const orca::LaserScanner2dDataPtr          &laserDataPtr,
+    virtual int computeFeatures( const orca::LaserScanner2dDataPtr          &laserDataPtr,
                                  orca::PolarFeature2dDataPtr       &featureDataPtr );
     
     virtual void setMaxRange( float maxRange );

@@ -15,7 +15,7 @@
 #include <iostream>
 
 // implementations of Ice objects
-#include "rangescannerconsumerI.h"
+#include "rangescanner2dconsumerI.h"
 
 
 using namespace std;
@@ -79,11 +79,16 @@ LaserMonComponent::start()
         //       but if this happens it's ok if we just quit.
     }
     
-    // Get the geometry
-    cout << "Laser Geometry: " << orcaice::toString( laserPrx->getGeometry() ) << endl;
-
-    // Get the configuration
-    cout << "Laser Config:   " << orcaice::toString( laserPrx->getConfig() ) << endl;
+    // Get laser description
+    try
+    {
+        cout << orcaice::toString( laserPrx->getDescription() ) << endl;
+    }
+    catch ( const Ice::Exception & e ) 
+    {
+        cout<<e<<endl;
+        tracer()->warning( "Failed to get laser description. Continue anyway." );
+    }
 
     // Get laser data once
     int count = 5;

@@ -39,14 +39,16 @@ FakeDriver::read( orca::LaserScanner2dDataPtr &data )
 
     orcaice::setToNow( data->timeStamp );
     
-    data->ranges.resize((int)(M_PI/0.5)); //currentConfig_->angleIncrement));
-    data->intensities.resize(data->ranges.size());
-    data->startAngle = (float)(DEG2RAD(-90));
-    data->angleIncrement = 0.5; //currentConfig_->angleIncrement;
+    data->maxRange          = currentConfig_.maxRange;
+    data->fieldOfView       = currentConfig_.fieldOfView;
+    data->startAngle        = currentConfig_.startAngle;
+
+    data->ranges.resize(currentConfig_.numberOfReturns);
+    data->intensities.resize(currentConfig_.numberOfReturns);
 
     for ( unsigned int i=0; i < data->ranges.size(); i++ )
     {
-        data->ranges[i] = (float)((i/(float)(data->ranges.size()))*8.0);
+        data->ranges[i] = (float)((i/(float)(currentConfig_.numberOfReturns))*data->maxRange);
         data->intensities[i] = i%2;
     }
 

@@ -236,15 +236,16 @@ VfhDriver::setTurnToGoal( orca::Velocity2dCommandPtr &cmd, const GoalWatcher &go
 void 
 VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLaserScan[401][2] )
 {
+    double angleIncrement = obs->fieldOfView / double(obs->ranges.size()+1);
     const float EPS = 1e-9;
 
     // number of times to replicate each scan when copying
     int replicateNum;
     if ( obs->ranges.size() == 181 )
     {
-        if ( obs->angleIncrement - 1.0*M_PI/180.0 > EPS ) 
+        if ( angleIncrement - 1.0*M_PI/180.0 > EPS ) 
         {
-            cout<<"TRACE(vfhdriver.cpp): obs size,increment= " << obs->ranges.size() << ", " << obs->angleIncrement*180.0/M_PI << endl;
+            cout<<"TRACE(vfhdriver.cpp): obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << endl;
             context_.tracer()->error( "VfhDriver: Can't handle weird angle increment." );
             throw( std::string("VfhDriver: Can't handle weird angle increment.") );
         }
@@ -252,11 +253,11 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
     }
     else if ( obs->ranges.size() == 361 )
     {
-        if ( obs->angleIncrement - 0.5*M_PI/180.0 > EPS ) 
+        if ( angleIncrement - 0.5*M_PI/180.0 > EPS ) 
         {
-            cout<<"TRACE(vfhdriver.cpp): obs size,increment= " << obs->ranges.size() << ", " << obs->angleIncrement*180.0/M_PI << endl;
-            cout<<"TRACE(vfhdriver.cpp): expected " << 0.5*M_PI/180.0 << ", found " << obs->angleIncrement << endl;
-            printf("%.20f, %.20f\n",0.5*M_PI/180.0,obs->angleIncrement);
+            cout<<"TRACE(vfhdriver.cpp): obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << endl;
+            cout<<"TRACE(vfhdriver.cpp): expected " << 0.5*M_PI/180.0 << ", found " << angleIncrement << endl;
+            printf("%.20f, %.20f\n",0.5*M_PI/180.0,angleIncrement);
 
             context_.tracer()->error( "VfhDriver: Can't handle weird angle increment." );
             throw( std::string("VfhDriver: Can't handle weird angle increment.") );

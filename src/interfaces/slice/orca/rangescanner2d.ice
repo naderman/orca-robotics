@@ -36,24 +36,29 @@ range readings included.  Scans proceed counterclockwise about the sensor
     @{
 */
 
-//! A sequence of ranges to the target.
+//! A sequence of ranges [m]
 sequence<float> RangeSequence;
 
-//! RangeScanner configuration data structure
-class RangeScanner2dConfig extends OrcaObject
+//! Device description
+class RangeScanner2dDescription extends OrcaObject
 {
-    //! maximum range of each return
-    float maxRange;
+    //! Maximum range [m]
+    double maxRange;
 
-    //! Are we talking to the hardware?
-    bool  isEnabled;
-};
+    //! Angular field of view [rad]
+    double fieldOfView;
 
+    //! Starting angle of the scan [rad]
+    //! In other words, this is the bearing to the first return in 
+    //! local coordinate system. All other returns have bearing angle 
+    //! larger than this one.
+    double startAngle;
 
-//! RangeScanner Geometry data structure
-class RangeScanner2dGeometry extends OrcaObject
-{
-    //! Offset of the centre of the sensor from the robot, int the robot CS
+    //! Number of returns in the scan
+    int    numberOfReturns;
+
+    //! Offset of the centre of the sensor from the robot, in the robot 
+    //! local coordinate system.
     Frame3d offset;
 
     //! Dimensions of the sensor
@@ -61,22 +66,28 @@ class RangeScanner2dGeometry extends OrcaObject
 };
 
 /*!
-    Range scan data structure
+    Planar range scan data structure
 */
 class RangeScanner2dData extends OrcaObject
 {
-    //! Distance to returns
+    //! Scan ranges [m]
     RangeSequence     ranges;
 
-    //! Bearing to the first return in local coordinate system
-    float             startAngle;
+    //! Maximum range [m]
+    double maxRange;
 
-    //! Constant angle between successive returns.
-    float             angleIncrement;
+    //! Angular field of view [rad]
+    double fieldOfView;
+
+    //! Starting angle of the scan [rad]
+    //! In other words, this is the bearing to the first return in 
+    //! local coordinate system. All other returns have bearing angle 
+    //! larger than this one.
+    double startAngle;
 };
 
 /*!
-    @brief Consumer of range scans
+    @brief Consumesrange scans
 */
 interface RangeScanner2dConsumer
 {
@@ -96,11 +107,8 @@ interface RangeScanner2d
     nonmutating RangeScanner2dData      getData()
             throws DataNotExistException, HardwareFailedException;
             
-    //! Returns the current configuration.
-    nonmutating RangeScanner2dConfig    getConfig();
-    
-    //! Returns the current geometry information.
-    nonmutating RangeScanner2dGeometry  getGeometry();
+    //! Returns device description.
+    nonmutating RangeScanner2dDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.

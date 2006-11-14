@@ -46,9 +46,10 @@ toString( const orca::RangeScanner2dDataPtr & obj)
 {
     std::ostringstream s;
 //     s << toString(obj->timeStamp)
-    s << " RangeScanner2dData [" << obj->ranges.size() << " elements]: " << endl;
+    s  << " LaserData [" << obj->ranges.size() << " elements]: " << endl;
+    s << "\tmaxRange: " << obj->maxRange << "m" << endl;
+    s << "\tfieldOfView: " << obj->fieldOfView * 180.0/M_PI << "deg" << endl;
     s << "\tstartAngle: " << obj->startAngle * 180.0/M_PI << "deg" << endl;
-    s << "\tangleIncrement: " << obj->angleIncrement * 180.0/M_PI << "deg" << endl;
 
     return s.str();
 }

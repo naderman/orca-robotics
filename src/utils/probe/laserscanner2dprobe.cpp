@@ -27,8 +27,7 @@ LaserScanner2dProbe::LaserScanner2dProbe( const orca::FQInterfaceName & name, Di
     id_ = "::orca::LaserScanner2d";
     
     operations_.push_back( "getData" );
-    operations_.push_back( "getConfig" );
-    operations_.push_back( "getGeometry" );
+    operations_.push_back( "getDescription" );
     operations_.push_back( "subscribe" );
     operations_.push_back( "unsubscribe" );
 }
@@ -46,18 +45,12 @@ LaserScanner2dProbe::loadOperation( const int index )
         ret = loadGetData();
         break;
     case 1 :
-        ret = loadGetConfig();
+        ret = loadGetDescription();
         break;
     case 2 :
-        ret = loadGetGeometry();
-        break;
-//     case 0 :
-//         ret = loadSetConfig();
-//         break;
-    case 3 :
         ret = loadSubscribe();
         break;
-    case 4 :
+    case 3 :
         ret = loadUnsubscribe();
         break;
     default :
@@ -89,33 +82,14 @@ LaserScanner2dProbe::loadGetData()
 }
 
 int 
-LaserScanner2dProbe::loadGetConfig()
+LaserScanner2dProbe::loadGetDescription()
 {
-    orca::RangeScanner2dConfigPtr data;
+    orca::RangeScanner2dDescriptionPtr data;
     
     try
     {
         orca::LaserScanner2dPrx derivedPrx = orca::LaserScanner2dPrx::checkedCast(prx_);
-        data = derivedPrx->getConfig();
-    }
-    catch( const Ice::Exception & e )
-    {
-        return 1;
-    }
-
-    cout<<orcaice::toString(data)<<endl;
-    return 0;
-}
-
-int 
-LaserScanner2dProbe::loadGetGeometry()
-{
-    orca::RangeScanner2dGeometryPtr data;
-    
-    try
-    {
-        orca::LaserScanner2dPrx derivedPrx = orca::LaserScanner2dPrx::checkedCast(prx_);
-        data = derivedPrx->getGeometry();
+        data = derivedPrx->getDescription();
     }
     catch( const Ice::Exception & e )
     {

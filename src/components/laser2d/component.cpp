@@ -56,14 +56,14 @@ Component::start()
     std::string prefix = tag()+".Config.";
 
     // Laser geometry
-    orca::RangeScanner2dGeometryPtr geometry = new orca::RangeScanner2dGeometry;
-    geometry->timeStamp = orcaice::getNow();
-    orcaice::setInit( geometry->offset );
-    geometry->offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", geometry->offset );
+    orca::RangeScanner2dDescriptionPtr descr = new orca::RangeScanner2dDescription;
+    descr->timeStamp = orcaice::getNow();
+    orcaice::setInit( descr->offset );
+    descr->offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr->offset );
 
     // consider the special case of the sensor mounted level (pitch=0) but upside-down (roll=180)
     bool compensateRoll;
-    if ( NEAR(geometry->offset.o.r,M_PI,0.001) && geometry->offset.o.p==0.0 ) {
+    if ( NEAR(descr->offset.o.r,M_PI,0.001) && descr->offset.o.p==0.0 ) {
         // the offset is appropriate, now check the user preference (default is TRUE)
         compensateRoll = orcaice::getPropertyAsIntWithDefault( prop, prefix+"AllowRollCompensation", 1 );
     }
@@ -74,13 +74,13 @@ Component::start()
     
     if ( compensateRoll ) {
         // now remove the roll angle, we'll compensate for it internally
-        geometry->offset.o.r = 0.0;
+        descr->offset.o.r = 0.0;
         tracer()->info( "will compensate for upside-down mounted sensor" );
     }
 
     // size info should really be stored in the driver
-    orcaice::setInit( geometry->size );
-    geometry->size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", geometry->size );
+    orcaice::setInit( descr->size );
+    descr->size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr->size );
 
     //
     // EXTERNAL PROVIDED INTERFACE: LaserScanner2d
@@ -88,7 +88,7 @@ Component::start()
 
     // create servant for direct connections
     // need the derived pointer to call custom functions
-    LaserScanner2dI *laserScanner2dI = new LaserScanner2dI( geometry, "LaserScanner2d", context() );
+    LaserScanner2dI *laserScanner2dI = new LaserScanner2dI( descr, "LaserScanner2d", context() );
     // to register with the adapter, it's enough to have a generic pointer
     laserObj_ = laserScanner2dI;
     // this may throw but it's better if it kills us.
