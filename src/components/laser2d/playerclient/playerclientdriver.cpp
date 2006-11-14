@@ -54,10 +54,6 @@ PlayerClientDriver::enable()
 {
     if ( isEnabled_ ) return 0;
 
-    cout << "TRACE(playerlaserdriver.cpp): PlayerClientDriver: Connecting to player on host "
-         << host_ << ", port " << port_ << endl;
-
-
     std::stringstream ss;
     ss << "Connecting to Player server with host="<<host_<<" port="<<port_<<" id="<<device_;
     context_.tracer()->info( ss.str() );
@@ -209,9 +205,6 @@ PlayerClientDriver::setConfig( const Config &cfg )
 int
 PlayerClientDriver::read( LaserScanner2dDataPtr &data )
 {
-    // debug
-    cout<<"PlayerClientDriver::read()"<<endl;
-
     if ( ! isEnabled_ )
     {
         cout << "ERROR(playerlaserdriver.cpp): Can't read: not connected to Player/Stage yet. Sleeping for 1 sec..." << endl;
