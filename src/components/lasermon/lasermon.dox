@@ -24,7 +24,7 @@
 
 @par Requires
 
-- @ref orca_interface_laser [LaserMon.Requires.Laser]
+- @ref orca_interface_laserscanner2d [LaserMon.Requires.LaserScanner2d]
 
 @par Operation
 

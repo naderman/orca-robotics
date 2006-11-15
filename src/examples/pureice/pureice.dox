@@ -22,7 +22,7 @@
 
 @par Requires
 
-- @ref orca_interface_laser
+- @ref orca_interface_laserscanner2d
 
 Example code intended for component developers.
 

@@ -26,7 +26,7 @@
 
 @par Requires
 
-- @ref orca_interface_laser [LaserFeatureExtractor.Requires.Laser]
+- @ref orca_interface_laserscanner2d [LaserFeatureExtractor.Requires.LaserScanner2d]
 
 @par Operation
 

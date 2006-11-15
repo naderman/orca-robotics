@@ -19,7 +19,7 @@ module orca
 {
 /*!
     @ingroup interfaces
-    @defgroup orca_interface_laserscanner2d Laser
+    @defgroup orca_interface_laserscanner2d LaserScanner2d
     @brief Single-origin scanning range and intensity sensor
 
 The laser interface provides access to a single-origin scanning range and intensity

@@ -23,7 +23,7 @@
 
 @par Requires (one of)
 
-- @ref orca_interface_laser [OrcaMon.Requires.Generic]
+- @ref orca_interface_laserscanner2d [OrcaMon.Requires.Generic]
 - @ref orca_interface_localise2d [OrcaMon.Requires.Generic]
 - @ref orca_interface_ogmap [OrcaMon.Requires.Generic]
 - @ref orca_interface_position2d [OrcaMon.Requires.Generic]

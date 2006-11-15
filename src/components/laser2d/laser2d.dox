@@ -21,7 +21,7 @@
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_laserscanner2d [SickLaser.Provides.LaserScanner2d]
+- @ref orca_interface_laserscanner2dscanner2d [SickLaser.Provides.LaserScanner2d]
 - @ref orca_interface_status
 
 @par Requires
