@@ -44,20 +44,27 @@ This component encapsulates a SICK Laser Range-Finder (see @ref how_sick_works )
 
 - @c Laser2d.Config.Driver (string)
     - Which hardware driver to use
-    - Valid values: { "sickcarmen", "playerclient", "stage", "gazebo", "fake" }
+    - Valid values: { "sickcarmen", "playerclient", "fake" }
     - Default: "sickcarmen"
 
 Laser Settings
-- @c Laser2d.Config.RangeResolution (float) [m]
-    - Valid Values: {0.01, 0.001}
-    - Default: 0.001
-- @c Laser2d.Config.AngularResolution (float) [deg]
-    - Valid Values: {0.5, 1.0}
-    - Default: 0.5
+- @c Laser2d.Config.MinRange (double) [m]
+    - Valid Values: >=0.0
+    - Default: 0.0
+- @c Laser2d.Config.MaxRange (double) [m]
+    - Valid Values: >0.0
+    - Default: 80.0
+- @c Laser2d.Config.FieldOfView (double) [deg]
+    - Valid Values: 0.0\<fov\<=360.0
+    - Default: 180.0
+- @c Laser2d.Config.StartAngle (double) [deg]
+    - Valid Values: -360.0\<fov\<=360.0
+    - Default: -(FieldOfView)/2.0
     
-- @c Laser2d.Config.StartEnabled (bool)
-    - Enable the laser on component initialisation?
-    - Default: 1
+- @c Laser2d.Config.NumberOfSamples (int)
+    - Number of range samples in a single scan.
+    - Valid Values: >0
+    - Default: 181
 
 Geometry
 

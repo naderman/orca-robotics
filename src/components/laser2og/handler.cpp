@@ -115,7 +115,7 @@ Handler::init()
     cout << orcaice::toString(descr) << endl;
 
     sensorConfig.rangeMax = descr->maxRange;
-    sensorConfig.angleIncrement = descr->fieldOfView/(descr->numberOfReturns+1);
+    sensorConfig.angleIncrement = descr->fieldOfView/(descr->numberOfSamples+1);
 
     // No need to getData()
 

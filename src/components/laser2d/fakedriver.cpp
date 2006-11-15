@@ -24,7 +24,7 @@ FakeDriver::FakeDriver( const orcaice::Context & context )
     currentConfig_.maxRange         = 99.0;
     currentConfig_.fieldOfView      = 300.0;
     currentConfig_.startAngle       = -150.0;
-    currentConfig_.numberOfReturns  = 100;
+    currentConfig_.numberOfSamples  = 100;
 }
 
 FakeDriver::~FakeDriver()
@@ -43,12 +43,12 @@ FakeDriver::read( orca::LaserScanner2dDataPtr &data )
     data->fieldOfView       = currentConfig_.fieldOfView;
     data->startAngle        = currentConfig_.startAngle;
 
-    data->ranges.resize(currentConfig_.numberOfReturns);
-    data->intensities.resize(currentConfig_.numberOfReturns);
+    data->ranges.resize(currentConfig_.numberOfSamples);
+    data->intensities.resize(currentConfig_.numberOfSamples);
 
     for ( unsigned int i=0; i < data->ranges.size(); i++ )
     {
-        data->ranges[i] = (float)((i/(float)(currentConfig_.numberOfReturns))*data->maxRange);
+        data->ranges[i] = (float)((i/(float)(currentConfig_.numberOfSamples))*data->maxRange);
         data->intensities[i] = i%2;
     }
 

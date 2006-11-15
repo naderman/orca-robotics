@@ -98,35 +98,24 @@ int
 PlayerClientDriver::getConfig( Config &cfg )
 {
     // some Player drivers do not implement config requests.
-    // they have to be hard-wired here.
+    // we use configs from our own config file and hope that they match the Player server configs
     if ( playerDriver_=="stage" || playerDriver_=="gazebo" )
     {
         context_.tracer()->debug("Player driver is 'stage' or 'gazebo'. Using default configs",2);
-        // default settings
-//         cfg->angleIncrement   = DEG2RAD(0.5);
-//         cfg->rangeResolution  = 0.001;
-        cfg.maxRange        = 8.0;
-        cfg.fieldOfView     = 180.0;
-        cfg.startAngle      = -90.0;
-        cfg.numberOfReturns = 361;
+        cfg = currentConfig_;
         return 0;
     } 
     else if ( playerDriver_=="urglaser" )
     {
         context_.tracer()->debug("Player driver is 'urglaser'. Using default configs",2);
-        // default settings
-//         cfg->angleIncrement   = DEG2RAD(230.0/654.0);
-        cfg.maxRange         = 4.0;
-        cfg.fieldOfView     = 230.0;
-        cfg.startAngle      = -112.0;
-        cfg.numberOfReturns = 655;
+        cfg = currentConfig_;
         return 0;
     } 
 
     // we  are left with sicklms200 (real hardware) for which we can get live config data.
     if ( !isEnabled_ )
     {
-        cout << "ERROR(playerlaserdriver.cpp): Can't read: not connected to Player/Stage yet." << endl;
+        context_.tracer()->warning( "Can't get config: not connected to Player/Stage yet." );
         return -1;
     }
 
@@ -137,12 +126,16 @@ PlayerClientDriver::getConfig( Config &cfg )
     catch ( const PlayerCc::PlayerError & e )
     {
         std::cerr << e << std::endl;
-        cout << "ERROR(playerlaserdriver.cpp): Problem getting configuration info." << endl;
+        context_.tracer()->warning( "Problem getting configuration info from Player." );
         return -1;
     }
 
     // convert scan and range resolutions
-    orcaplayer::convert( *laserProxy_, cfg.maxRange, cfg.startAngle, cfg.fieldOfView, cfg.numberOfReturns );
+    orcaplayer::convert( *laserProxy_, cfg.maxRange, cfg.startAngle, cfg.fieldOfView, cfg.numberOfSamples );
+
+    std::stringstream ss;
+    ss << "Got config info from Player: maxrange="<<cfg.maxRange<<" fov="<<cfg.fieldOfView<<" start="<<cfg.startAngle<<" num="<<cfg.numberOfSamples;
+    context_.tracer()->info( ss.str() );
     
     return 0;
 }

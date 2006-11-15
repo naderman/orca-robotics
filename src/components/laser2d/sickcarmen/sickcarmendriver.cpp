@@ -39,9 +39,9 @@ SickCarmenDriver::SickCarmenDriver( const orcaice::Context & context )
     currentConfig_.maxRange         = 80.0;
     currentConfig_.fieldOfView      = 180.0;
     currentConfig_.startAngle       = -90.0;
-    currentConfig_.numberOfReturns  = 181;
+    currentConfig_.numberOfSamples  = 181;
 
-    if ( setupParams( currentConfig_.maxRange, currentConfig_.numberOfReturns, baudrate_ ) )
+    if ( setupParams( currentConfig_.maxRange, currentConfig_.numberOfSamples, baudrate_ ) )
     {
         context_.tracer()->error( "Failed to setup factory config parameters." );
         exit(1);
@@ -54,14 +54,14 @@ SickCarmenDriver::~SickCarmenDriver()
 }
 
 int
-SickCarmenDriver::setupParams( double maxRange, int numberOfReturns, int baudrate )
+SickCarmenDriver::setupParams( double maxRange, int numberOfSamples, int baudrate )
 {    
     //
     // first convert from generic configs to SICK-specific ones
     //
 
     double rangeResolution = sickutil::maxRange2RangeResolution( maxRange );
-    double angleIncrement = sickutil::numberOfReturns2AngleIncrement( numberOfReturns );
+    double angleIncrement = sickutil::numberOfSamples2AngleIncrement( numberOfSamples );
     
     stringstream ss;
     ss<<"Validating SICK config: rangeres="<<rangeResolution<<" angleincrem="<<angleIncrement<<" baud="<<baudrate;
@@ -267,7 +267,7 @@ SickCarmenDriver::setConfig( const Config &cfg )
 {
     infoMessages_ = "";
 
-    if ( setupParams( cfg.maxRange, cfg.numberOfReturns, baudrate_ ) ) 
+    if ( setupParams( cfg.maxRange, cfg.numberOfSamples, baudrate_ ) ) 
     {
         return -1;
     }

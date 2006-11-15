@@ -33,16 +33,21 @@ class Driver
 
 public:
 
-    struct Config
-    {
+    class Config
+    {   
+    public:
+        Config();
+        bool validate() const;
+        std::string toString() const;
+
+        double minRange;
         double maxRange;
         double fieldOfView;
         double startAngle;
-        int    numberOfReturns;
+        int    numberOfSamples;
     };
 
-    Driver()
-        : isEnabled_(false) {};
+    Driver() : isEnabled_(false) {};
     virtual ~Driver() {};
 
     virtual int enable()=0;

@@ -42,6 +42,9 @@ sequence<float> RangeSequence;
 //! Device description
 class RangeScanner2dDescription extends OrcaObject
 {
+    //! Minimum range [m]
+    double minRange;
+
     //! Maximum range [m]
     double maxRange;
 
@@ -54,8 +57,8 @@ class RangeScanner2dDescription extends OrcaObject
     //! larger than this one.
     double startAngle;
 
-    //! Number of returns in the scan
-    int    numberOfReturns;
+    //! Number of range samples in a single scan
+    int    numberOfSamples;
 
     //! Offset of the centre of the sensor from the robot, in the robot 
     //! local coordinate system.

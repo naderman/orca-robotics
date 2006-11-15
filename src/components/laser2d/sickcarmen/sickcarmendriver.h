@@ -45,7 +45,7 @@ public:
 
 private: 
 
-    int setupParams( double maxRange, int numberOfReturns, int baudrate );
+    int setupParams( double maxRange, int numberOfSamples, int baudrate );
 
     // these versions don't clear infoMessage_ first.
     int doEnable();

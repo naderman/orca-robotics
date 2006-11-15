@@ -47,9 +47,6 @@ sequence<byte> IntensitySequence;
 class LaserScanner2dData extends RangeScanner2dData
 {
     //! Adds the intensities to the data already in RangeScanner2dData.
-    //! - RangeSequence     ranges;
-    //! - float             startAngle;
-    //! - float             angleIncrement;
     IntensitySequence intensities;
 };
 
