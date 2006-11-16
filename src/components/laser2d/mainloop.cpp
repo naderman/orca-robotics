@@ -70,100 +70,48 @@ MainLoop::activate()
 }
 
 void
-MainLoop::reconfigure()
-{
-//     context_.tracer()->print( "mainloop: Setting config to: " + orcaice::toString( desiredConfig ) );
-
-//     bool configurationDone = false;
-//     int reconfigCount = 0;
-//     IceUtil::Time reconfigStartTime = IceUtil::Time::now();
-//     while ( !configurationDone && isActive() )
-//     {
-//         if ( hwDriver_->setConfig( desiredConfig ) == 0 )
-//         {
-//             context_.tracer()->print( "Successful reconfiguration! " + hwDriver_->infoMessages() );
-// 
-//             // Tell the world that we've reconfigured
-//             laserObj_.currentConfigBuffer_.push( desiredConfig );
-//             configurationDone = true;
-//         }
-//         else
-//         {
-//             if ( (IceUtil::Time::now()-reconfigStartTime).toMilliSecondsDouble() > MAX_TIME_FOR_RECONFIGURE )
-//             {
-//                 std::stringstream ss;
-//                 cout << "Couldn't set config: " << orcaice::toString(desiredConfig) << endl;
-//                 ss << "Configuration failed: " << hwDriver_->infoMessages();
-//                 context_.tracer()->warning( ss.str() );
-//                 reconfigStartTime = IceUtil::Time::now();
-//             }
-//             else
-//             {
-//                 context_.tracer()->print( "Still trying to reconfigure..." );
-//                 context_.tracer()->print( hwDriver_->infoMessages() );
-// 
-//                 // Try fast a couple of times, then slow down
-//                 if ( reconfigCount>5 ) {
-//                     IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(300));
-//                 }
-//                 ++reconfigCount;
-//             }
-// 
-//             // Tell the world that we're down while re-configuring
-//             RangeScanner2dConfigPtr failedConfig = RangeScanner2dConfigPtr::dynamicCast( desiredConfig->ice_clone() );
-//             failedConfig->isEnabled = false;
-//             laserObj_.currentConfigBuffer_.push( failedConfig );
-//         }
-//     } // end of configuration loop
-}
-
-void
 MainLoop::readLaserData( orca::LaserScanner2dDataPtr &laserData )
 {
 //     context_.tracer()->debug( "Reading laser data...", 8 );
 
     //
     // Read from the laser driver
-    //
-    int ret = hwDriver_->read( laserData );
-            
-    if ( ret != 0 )
+    //            
+    if ( hwDriver_->read( laserData ) ) 
     {
-        context_.tracer()->error( "Problem reading from laser.  Restarting hardware." );
-        hwDriver_->disable();
-        hwDriver_->enable();
+        context_.tracer()->warning( "Problem reading from laser. Re-initializing hardware." );
+        hwDriver_->init();
+        return;
     }
-    else
-    {
-        // Check that the angleIncrement matches what we expect
-        Driver::Config cfg;
-        hwDriver_->getConfig( cfg );
 
-        //alexm: Config and LaserScanner2dData have this info in diff. forms
-//         if ( !NEAR(  cfg.angleIncrement, laserData->angleIncrement, 1e-5) )
-//         {
-//             cout << "ERROR(mainloop.cpp): angleIncrement of laser scan returned from driver does not match configured angleIncrement." << endl;
-//             cout << "ERROR(mainloop.cpp): config says: " << RAD2DEG(cfg->angleIncrement) << ",laser data says: " << RAD2DEG(laserData->angleIncrement) << endl; 
-//             cout << "ERROR(mainloop.cpp): If you're using the stage driver:" << endl;
-//             cout << "                       This happens because of a bug in stage where the simulated laser" << endl;
-//             cout << "                       can't be configured on-the-fly.  You have to manually ensure that" << endl;
-//             cout << "                       the sicklaser config and the stage laser config match." << endl;
-//             cout << "ERROR(mainloop.cpp): If you're using some other driver:" << endl;
-//             cout << "                       This shouldn't happen.  Something went wrong." << endl;
-//             assert( false ); exit(1);
-//         }
-//         assert( NEAR( cfg->angleIncrement, laserData->angleIncrement, 1e-5) );
+    // Check that the angleIncrement matches what we expect
+//     Driver::Config cfg;
+//     hwDriver_->getConfig( cfg );
 
-        // flip the scan left-to-right if we are configured to do so
-        if ( compensateRoll_ ) {
-            // NOTE: instead of copying around, we should be able to simply change the
-            // start bearing and bearing increment.
-            std::reverse( laserData->ranges.begin(), laserData->ranges.end() );
-            std::reverse( laserData->intensities.begin(), laserData->intensities.end() );
-        }
+    // alexm: Config and LaserScanner2dData have this info in diff. forms
+//     if ( !NEAR(  cfg.angleIncrement, laserData->angleIncrement, 1e-5) )
+//     {
+//         cout << "ERROR(mainloop.cpp): angleIncrement of laser scan returned from driver does not match configured angleIncrement." << endl;
+//         cout << "ERROR(mainloop.cpp): config says: " << RAD2DEG(cfg->angleIncrement) << ",laser data says: " << RAD2DEG(laserData->angleIncrement) << endl; 
+//         cout << "ERROR(mainloop.cpp): If you're using the stage driver:" << endl;
+//         cout << "                       This happens because of a bug in stage where the simulated laser" << endl;
+//         cout << "                       can't be configured on-the-fly.  You have to manually ensure that" << endl;
+//         cout << "                       the sicklaser config and the stage laser config match." << endl;
+//         cout << "ERROR(mainloop.cpp): If you're using some other driver:" << endl;
+//         cout << "                       This shouldn't happen.  Something went wrong." << endl;
+//         assert( false ); exit(1);
+//     }
+//     assert( NEAR( cfg->angleIncrement, laserData->angleIncrement, 1e-5) );
 
-        laserObj_.localSetData( laserData );
+    // flip the scan left-to-right if we are configured to do so
+    if ( compensateRoll_ ) {
+        // NOTE: instead of copying around, we should be able to simply change the
+        // start bearing and bearing increment.
+        std::reverse( laserData->ranges.begin(), laserData->ranges.end() );
+        std::reverse( laserData->intensities.begin(), laserData->intensities.end() );
     }
+
+    laserObj_.localSetData( laserData );
 }
 
 void
@@ -175,7 +123,7 @@ MainLoop::run()
     // Catches all its exceptions.
     activate();
 
-    hwDriver_->enable();
+    hwDriver_->init();
 
     //
     // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
@@ -185,30 +133,12 @@ MainLoop::run()
     {
         try 
         {
-            //
-            // This 'if' block is what slows the loop down, by either reading from the laser
-            // or sleeping.
-            //
-            if ( hwDriver_->isEnabled() )
-            {
-                readLaserData( laserData );
-            }
-            else
-            {
-                // Wait for someone to enable us
-                IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(100));
-            }
+            readLaserData( laserData );
+
 
             if ( heartbeater.isHeartbeatTime() )
             {
-                if ( hwDriver_->isEnabled() )
-                {
-                    heartbeater.beat( "Laser enabled. " + hwDriver_->heartbeatMessage() );
-                }
-                else
-                {
-                    heartbeater.beat( "Laser disabled." );
-                }
+                heartbeater.beat( "Laser enabled (?). " + hwDriver_->heartbeatMessage() );
             }
 
         } // end of try

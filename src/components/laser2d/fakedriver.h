@@ -24,20 +24,13 @@ class FakeDriver : public Driver
 
 public:
 
-    FakeDriver( const orcaice::Context & context );
+    FakeDriver( const Config & cfg, const orcaice::Context & context );
     virtual ~FakeDriver();
 
-    virtual int enable() { isEnabled_=true; return 0; };
-    virtual int disable() { isEnabled_=false; return 0; };
+    virtual int init();
 
     // Blocks till new data is available
     virtual int read( orca::LaserScanner2dDataPtr &data );
-
-    // Get the current configuration
-    virtual int getConfig( Config &cfg );
-
-    // Set a specifc configuration
-    virtual int setConfig( const Config &cfg );
 
 private:
     orcaice::Context context_;

@@ -76,6 +76,9 @@ class RangeScanner2dData extends OrcaObject
     //! Scan ranges [m]
     RangeSequence     ranges;
 
+    //! Minimum range [m]
+    double minRange;
+
     //! Maximum range [m]
     double maxRange;
 

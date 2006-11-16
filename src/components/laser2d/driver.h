@@ -39,6 +39,8 @@ public:
         Config();
         bool validate() const;
         std::string toString() const;
+        bool operator==( const Config & other );
+        bool operator!=( const Config & other );
 
         double minRange;
         double maxRange;
@@ -47,39 +49,32 @@ public:
         int    numberOfSamples;
     };
 
-    Driver() : isEnabled_(false) {};
+    Driver( const Config & cfg ) : config_(cfg) {};
     virtual ~Driver() {};
 
-    virtual int enable()=0;
-    virtual int disable()=0;
-
-    virtual bool isEnabled() { return isEnabled_; };
+    // Initializes the device. If it's aleady initialized, then it
+    // quietly re-initializes it.
+    // returns: 0 = success, non-zero = failure
+    virtual int init()=0;
 
     // Blocks till new data is available
+    // returns: 0 = success, non-zero = failure
     virtual int read( orca::LaserScanner2dDataPtr &data )=0;
 
-    // Get the current configuration
-    virtual int getConfig( Config &cfg )=0;
-
-    // Set a specifc configuration
-    virtual int setConfig( const Config &cfg )=0;
-
     // mechanism to get error messages etc back from driver.
-    virtual const std::string &infoMessages() { return infoMessages_; };
+    virtual const std::string &infoMessages() const { return infoMessages_; };
 
     // Any special info to put in the heartbeat messages?
-    virtual const std::string heartbeatMessage() { return __orca__laserdriver_default_heartbeat_msg; };
+    virtual const std::string heartbeatMessage()const { return __orca__laserdriver_default_heartbeat_msg; };
+
+    // Simply returns the current stored configuration. Does not talk to device 
+    Config config() const { return config_; };
 
 protected:
 
-    bool isEnabled_;
-
-    Config currentConfig_;
+    Config config_;
 
     std::string infoMessages_;
-
-private:
-
 };
 
 }

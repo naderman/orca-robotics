@@ -9,9 +9,8 @@
  */
 
 #include <iostream>
-#include <stdlib.h>
+// #include <stdlib.h>
 #include <assert.h>
-#include <IceUtil/Thread.h>     // for sleep()
 
 #include <orcaice/orcaice.h>    // for mathdef.h only
 #include <libplayerc++/playerc++.h>
@@ -28,10 +27,12 @@ namespace laser2d {
 /*
   NOTE: as of player v1.5 the LaserProxy returns range in [m], the multiplication factor is no longer needed.
 */
-PlayerClientDriver::PlayerClientDriver( const orcaice::Context & context )
-    : context_(context)
+PlayerClientDriver::PlayerClientDriver( const Config & cfg, const orcaice::Context & context )
+    : Driver(cfg),
+      context_(context)
 {
-    // read driver-specific properties
+    // read driver-specific properties from config file
+    // this only needs to be done once
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.PlayerClient.";
 
@@ -43,10 +44,6 @@ PlayerClientDriver::PlayerClientDriver( const orcaice::Context & context )
     device_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Device", 0 );
 
     playerDriver_ = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "sicklms200" );
-    
-    std::stringstream ss;
-    ss << "Initialized playerclient driver with host="<<host_<<" port="<<port_<<" id="<<device_<<" dvr="<<playerDriver_;
-    context_.tracer()->debug(ss.str(),2);
 }
 
 PlayerClientDriver::~PlayerClientDriver()
@@ -54,12 +51,10 @@ PlayerClientDriver::~PlayerClientDriver()
 }
 
 int
-PlayerClientDriver::enable()
+PlayerClientDriver::init()
 {
-    if ( isEnabled_ ) return 0;
-
     std::stringstream ss;
-    ss << "Connecting to Player server with host="<<host_<<" port="<<port_<<" id="<<device_;
+    ss << "Initializing playerclient driver with host="<<host_<<" port="<<port_<<" id="<<device_<<" dvr="<<playerDriver_;
     context_.tracer()->info( ss.str() );
 
     // player throws exceptions on creation if we fail
@@ -68,57 +63,30 @@ PlayerClientDriver::enable()
         robot_      = new PlayerCc::PlayerClient( host_, port_ );
         laserProxy_ = new PlayerCc::LaserProxy( robot_, device_ );
     
+        // read once
         robot_->Read();
     }
     catch ( const PlayerCc::PlayerError & e )
     {
         std::cerr << e << std::endl;
         cout << "ERROR(playerclientdriver.cpp): player error" << endl;
-        disable();
         return -1;
     }
     
-    isEnabled_ = true;
-    return 0;
-}
-
-int
-PlayerClientDriver::disable()
-{
-    if ( !isEnabled_ ) return 0;
-
-    delete laserProxy_;
-    delete robot_;
-    isEnabled_ = false;
-    return 0;
-}
-
-
-int
-PlayerClientDriver::getConfig( Config &cfg )
-{
     // some Player drivers do not implement config requests.
     // we use configs from our own config file and hope that they match the Player server configs
     if ( playerDriver_=="stage" || playerDriver_=="gazebo" )
     {
-        context_.tracer()->debug("Player driver is 'stage' or 'gazebo'. Using default configs",2);
-        cfg = currentConfig_;
+        context_.tracer()->debug("Player driver is 'stage' or 'gazebo'. Not verifying config.",2);
         return 0;
     } 
     else if ( playerDriver_=="urglaser" )
     {
-        context_.tracer()->debug("Player driver is 'urglaser'. Using default configs",2);
-        cfg = currentConfig_;
+        context_.tracer()->debug("Player driver is 'urglaser'. Not verifying config.",2);
         return 0;
     } 
 
     // we  are left with sicklms200 (real hardware) for which we can get live config data.
-    if ( !isEnabled_ )
-    {
-        context_.tracer()->warning( "Can't get config: not connected to Player/Stage yet." );
-        return -1;
-    }
-
     try
     {
         laserProxy_->RequestConfigure();
@@ -131,86 +99,25 @@ PlayerClientDriver::getConfig( Config &cfg )
     }
 
     // convert scan and range resolutions
-    orcaplayer::convert( *laserProxy_, cfg.maxRange, cfg.startAngle, cfg.fieldOfView, cfg.numberOfSamples );
+    Config playerCfg;
+    orcaplayer::convert( *laserProxy_, playerCfg.maxRange, playerCfg.fieldOfView, playerCfg.startAngle, playerCfg.numberOfSamples );
 
-    std::stringstream ss;
-    ss << "Got config info from Player: maxrange="<<cfg.maxRange<<" fov="<<cfg.fieldOfView<<" start="<<cfg.startAngle<<" num="<<cfg.numberOfSamples;
+    ss.clear();
+    ss << "Config info from Player: maxrange="<<playerCfg.maxRange<<" fov="<<playerCfg.fieldOfView<<" start="<<playerCfg.startAngle<<" num="<<playerCfg.numberOfSamples;
     context_.tracer()->info( ss.str() );
+
+    if ( playerCfg != config_ ) {
+        context_.tracer()->error( "Config file does not match parameters reported by Player server" );
+        return 1;
+    }
+
     
-    return 0;
-}
-
-int
-PlayerClientDriver::setConfig( const Config &cfg )
-{
-    // alexm todo: validate config
-    // alexm todo: save config
-
-    // only sicklms200 driver supports remote configuration
-    if ( playerDriver_!="sicklms200" ) {
-        return 0;
-    }
-
-    cout<<"TRACE(playerlaserdriver.cpp): Before configuring: " << endl;
-    //laserProxy_->PrintConfig();
-
-//     cout<<"TRACE(playerlaserdriver.cpp): Configuring with " << (RAD2DEG(cfg->angleIncrement)*100) << " and " << cfg->rangeResolution*1000 << endl;
-    
-    try
-    {
-//alexm todo:
-//         laserProxy_->Configure( -M_PI/2,
-//                                   M_PI/2,
-//                                   (unsigned int) (rint(RAD2DEG(cfg->angleIncrement)*100)),
-//                                   (unsigned int) (rint(cfg->rangeResolution*1000)),
-//                                   true );
-    }
-    catch ( const PlayerCc::PlayerError & e )
-    {
-        std::cerr << e << std::endl;
-        cout << "ERROR(playerlaserdriver.cpp): Error configuring laser." << endl;
-        return -1;
-    }
-
-    try
-    {
-        laserProxy_->RequestConfigure();
-    }
-    catch ( const PlayerCc::PlayerError & e )
-    {
-        std::cerr << e << std::endl;
-        cout << "ERROR(playerlaserdriver.cpp): Couldn't read back configuration." << endl;
-        return -1;
-    }
-    
-    //laserProxy_->PrintConfig();
-//alexm todo:
-//     if ( (int) (rint(RAD2DEG(cfg->angleIncrement)*100)) == (int) (rint(RAD2DEG(laserProxy_->GetScanRes())*100)) &&
-//          (int) (rint(cfg->rangeResolution*1000))        == laserProxy_->GetRangeRes() )
-//     {
-//         return 0;
-//     }
-//     else
-//     {
-//         cout << "ERROR(playerlaserdriver.cpp): Configuration that we read back doesn't match what we gave it!" << endl;
-//         cout<<"TRACE(playerlaserdriver.cpp): either " << (int) (rint(RAD2DEG(cfg->angleIncrement)*100))  <<"!="<< (int) (rint(RAD2DEG(laserProxy_->GetScanRes())*100)) << endl;
-//         cout<<"TRACE(playerlaserdriver.cpp): or     " << (int) (rint(cfg->rangeResolution*1000)) <<"!="<< laserProxy_->GetRangeRes() << endl;
-// 
-//         return -1;
-//     }
     return 0;
 }
 
 int
 PlayerClientDriver::read( LaserScanner2dDataPtr &data )
 {
-    if ( ! isEnabled_ )
-    {
-        cout << "ERROR(playerlaserdriver.cpp): Can't read: not connected to Player/Stage yet. Sleeping for 1 sec..." << endl;
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-        return -1;
-    }
-
     try
     {
         robot_->Read();
@@ -219,29 +126,22 @@ PlayerClientDriver::read( LaserScanner2dDataPtr &data )
     {
         std::cerr << e << std::endl;
         cout << "ERROR(playerclientdriver.cpp): Error reading from robot." << endl;
-        isEnabled_ = false;
         return -1;
     }
 
     orcaplayer::convert( *laserProxy_, data );
 
     // simulators do not report correct angles
-    if ( playerDriver_=="stage" | playerDriver_=="gazebo" )
+    if ( playerDriver_=="stage" | playerDriver_=="gazebo" ) //|| playerDriver_=="urglaser" )
     {
         // default settings
-        data->maxRange         = currentConfig_.maxRange;
-        data->fieldOfView      = currentConfig_.fieldOfView;
-        data->startAngle       = currentConfig_.startAngle;
+        data->minRange         = config_.minRange;
+        data->maxRange         = config_.maxRange;
+        data->fieldOfView      = config_.fieldOfView;
+        data->startAngle       = config_.startAngle;
     }
-    // alexm: check that this is not reported correctly
-//     else  if ( playerDriver_=="urglaser" )
-//     {
-//         // default settings
-//         data->startAngle       = DEG2RAD(-115.0);
-//         data->angleIncrement   = DEG2RAD(230.0/654.0);
-//     }
 
     return 0;
 }
 
-}
+} // namespace

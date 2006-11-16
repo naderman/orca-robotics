@@ -28,28 +28,21 @@ class SickCarmenDriver : public Driver
 
 public: 
 
-    SickCarmenDriver( const orcaice::Context & context );
+    SickCarmenDriver( const Config & cfg, const orcaice::Context & context );
     virtual ~SickCarmenDriver();
 
     // returns: 0 = success, non-zero = failure
-    virtual int enable();
-    virtual int disable();
+    virtual int init();
 
     // Blocks till new data is available
+    // returns: 0 = success, non-zero = failure
     virtual int read( orca::LaserScanner2dDataPtr &data );
-
-    virtual int getConfig( Config &cfg );
-    virtual int setConfig( const Config &cfg );
 
     virtual const std::string heartbeatMessage();
 
 private: 
 
     int setupParams( double maxRange, int numberOfSamples, int baudrate );
-
-    // these versions don't clear infoMessage_ first.
-    int doEnable();
-    int doDisable();
 
     // carmen core object
     sick_laser_t *laser_;

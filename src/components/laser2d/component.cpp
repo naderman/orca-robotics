@@ -52,42 +52,6 @@ Component::start()
     std::string prefix = tag()+".Config.";
 
     //
-    // HARDWARE INTERFACES
-    //
-    std::string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "sickcarmen" );
-
-    if ( driverName == "sickcarmen" )
-    {
-#ifdef HAVE_CARMEN_DRIVER
-        context().tracer()->debug( "loading 'sickcarmen' driver",3);
-        hwDriver_ = new SickCarmenDriver( context() );
-#else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'sickcarmen' because it wasn't built!" );
-#endif
-    }
-    else if ( driverName == "playerclient" )
-    {
-#ifdef HAVE_PLAYERCLIENT_DRIVER
-        context().tracer()->debug( "loading 'playerclient' driver",3);
-        hwDriver_ = new PlayerClientDriver( context() );
-#else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'playerclient' because it wasn't built!" );
-#endif
-    }
-    else if ( driverName == "fake" )
-    {
-        context().tracer()->debug( "loading 'fake' driver",3);
-        hwDriver_ = new FakeDriver( context() );
-    }
-    else
-    {
-        std::string errString = "Unknown laser type: "+driverName;
-        context().tracer()->error( errString );
-        throw orcaice::Exception( ERROR_INFO, errString );
-    }
-    tracer()->debug( "Loaded '"+driverName+"' driver", 2 );
-
-    //
     // DRIVER CONFIGURATION
     //
 
@@ -98,22 +62,51 @@ Component::start()
     cfg.maxRange = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxRange", 80.0 );
 
     cfg.fieldOfView = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"FieldOfView", 180.0 )*DEG2RAD_RATIO;
-    cfg.startAngle = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StartAngle", -cfg.fieldOfView/2.0 )*DEG2RAD_RATIO;
+    cfg.startAngle = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StartAngle", -RAD2DEG(cfg.fieldOfView)/2.0 )*DEG2RAD_RATIO;
 
     cfg.numberOfSamples = orcaice::getPropertyAsIntWithDefault( prop, prefix+"NumberOfSamples", 181 );
 
     if ( !cfg.validate() ) {
         tracer()->error( "Failed to validate laser configuration. "+cfg.toString() );
-        throw "Failed to validate laser configuration";
+        // this will this component
+        throw orcaice::Exception( ERROR_INFO, "Failed to validate laser configuration" );
     }
 
-    // configure driver
-    if ( hwDriver_->setConfig( cfg ) )  {
-        // this is a fatal error
-        std::string errString = "Failed to configure laser";
-        context().tracer()->error(errString);
+    //
+    // HARDWARE INTERFACES
+    //
+    std::string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "sickcarmen" );
+
+    if ( driverName == "sickcarmen" )
+    {
+#ifdef HAVE_CARMEN_DRIVER
+        context().tracer()->debug( "loading 'sickcarmen' driver",3);
+        hwDriver_ = new SickCarmenDriver( cfg, context() );
+#else
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'sickcarmen' because it wasn't built!" );
+#endif
+    }
+    else if ( driverName == "playerclient" )
+    {
+#ifdef HAVE_PLAYERCLIENT_DRIVER
+        context().tracer()->debug( "loading 'playerclient' driver",3);
+        hwDriver_ = new PlayerClientDriver( cfg, context() );
+#else
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'playerclient' because it wasn't built!" );
+#endif
+    }
+    else if ( driverName == "fake" )
+    {
+        context().tracer()->debug( "loading 'fake' driver",3);
+        hwDriver_ = new FakeDriver( cfg, context() );
+    }
+    else
+    {
+        std::string errString = "Unknown laser type: "+driverName;
+        context().tracer()->error( errString );
         throw orcaice::Exception( ERROR_INFO, errString );
     }
+    tracer()->debug( "Loaded '"+driverName+"' driver", 2 );
 
     //
     // SENSOR DESCRIPTION
@@ -137,17 +130,17 @@ Component::start()
     bool compensateRoll;
     if ( NEAR(descr->offset.o.r,M_PI,0.001) && descr->offset.o.p==0.0 ) {
         // the offset is appropriate, now check the user preference (default is TRUE)
-        compensateRoll = orcaice::getPropertyAsIntWithDefault( prop, prefix+"AllowRollCompensation", 1 );
+        compensateRoll = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"AllowRollCompensation", 1 );
+
+        if ( compensateRoll ) {
+            // now remove the roll angle, we'll compensate for it internally
+            descr->offset.o.r = 0.0;
+            tracer()->info( "the driver will compensate for upside-down mounted sensor" );
+        }
     }
     else {
         // no need to consider it, the offset is inappropriate for roll compensation
         compensateRoll = false;
-    }
-    
-    if ( compensateRoll ) {
-        // now remove the roll angle, we'll compensate for it internally
-        descr->offset.o.r = 0.0;
-        tracer()->info( "will compensate for upside-down mounted sensor" );
     }
 
     // size info should really be stored in the driver

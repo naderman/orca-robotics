@@ -17,19 +17,20 @@ using namespace std;
 
 namespace laser2d {
 
-FakeDriver::FakeDriver( const orcaice::Context & context )
-    : context_(context)
+FakeDriver::FakeDriver( const Config & cfg, const orcaice::Context & context )
+    : Driver(cfg),
+      context_(context)
 {
-    // setting factory config parameters
-    currentConfig_.maxRange         = 99.0;
-    currentConfig_.fieldOfView      = 300.0;
-    currentConfig_.startAngle       = -150.0;
-    currentConfig_.numberOfSamples  = 100;
 }
 
 FakeDriver::~FakeDriver()
 {
-    disable();
+}
+
+int
+FakeDriver::init()
+{ 
+    return 0;
 }
 
 int 
@@ -39,16 +40,16 @@ FakeDriver::read( orca::LaserScanner2dDataPtr &data )
 
     orcaice::setToNow( data->timeStamp );
     
-    data->maxRange          = currentConfig_.maxRange;
-    data->fieldOfView       = currentConfig_.fieldOfView;
-    data->startAngle        = currentConfig_.startAngle;
+    data->maxRange          = config_.maxRange;
+    data->fieldOfView       = config_.fieldOfView;
+    data->startAngle        = config_.startAngle;
 
-    data->ranges.resize(currentConfig_.numberOfSamples);
-    data->intensities.resize(currentConfig_.numberOfSamples);
+    data->ranges.resize(config_.numberOfSamples);
+    data->intensities.resize(config_.numberOfSamples);
 
     for ( unsigned int i=0; i < data->ranges.size(); i++ )
     {
-        data->ranges[i] = (float)((i/(float)(currentConfig_.numberOfSamples))*data->maxRange);
+        data->ranges[i] = (float)((i/(float)(config_.numberOfSamples))*data->maxRange);
         data->intensities[i] = i%2;
     }
 
@@ -56,19 +57,5 @@ FakeDriver::read( orca::LaserScanner2dDataPtr &data )
     return 0;
 }
 
-int 
-FakeDriver::getConfig( Config &cfg )
-{
-    cfg = currentConfig_;
-    return 0;
-}
-
-int 
-FakeDriver::setConfig( const Config &cfg )
-{
-    currentConfig_ = cfg;
-    
-    return 0;
-}
 
 } // namespace

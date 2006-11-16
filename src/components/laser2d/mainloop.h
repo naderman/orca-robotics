@@ -42,9 +42,6 @@ private:
     // Loops until activated
     void activate();
 
-    // Gets the desired configuration from laserObj_.desiredConfigBuffer_.
-    void reconfigure();
-
     void readLaserData( orca::LaserScanner2dDataPtr &laserData );
 
     // The laser object

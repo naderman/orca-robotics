@@ -33,19 +33,17 @@ class PlayerClientDriver : public Driver
 public:
 
     // The host and port are for player's usage
-    PlayerClientDriver( const orcaice::Context & context );
+    PlayerClientDriver( const Config & cfg, const orcaice::Context & context );
     virtual ~PlayerClientDriver();
 
     // returns: 0 = success, non-zero = failure
-    virtual int enable();
-    virtual int disable();
+    virtual int init();
 
     virtual int read( orca::LaserScanner2dDataPtr &data );
 
-    virtual int getConfig( Config &cfg );
-    virtual int setConfig( const Config &cfg );
-
 private:
+    int setupParams( double maxRange, int numberOfSamples, int baudrate );
+
     PlayerCc::PlayerClient *robot_;
     PlayerCc::LaserProxy *laserProxy_;
 

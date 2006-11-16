@@ -13,7 +13,7 @@ Config.Driver.Default=sickcarmen
 Config.MinRange.Default=0.0
 Config.MaxRange.Default=80.0
 Config.FieldOfView.Default=180.0
-Config.StartAngle.Default=-90.0
+Config.StartAngle.Default=
 Config.NumberOfSamples.Default=181
 
 Config.Offset.Comment=x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]

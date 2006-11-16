@@ -19,8 +19,9 @@ using namespace std;
 
 namespace laser2d {
 
-SickCarmenDriver::SickCarmenDriver( const orcaice::Context & context )
-    : laser_(0),
+SickCarmenDriver::SickCarmenDriver( const Config & cfg, const orcaice::Context & context )
+    : Driver(cfg),
+      laser_(0),
       context_(context)
 {
     // read driver-specific properties
@@ -32,20 +33,8 @@ SickCarmenDriver::SickCarmenDriver( const orcaice::Context & context )
     std::string device = orcaice::getPropertyWithDefault( prop, prefix+"Device", "/dev/ttyS0" );
     device_ = strdup(device.c_str());
 
-    std::string laserType = orcaice::getPropertyWithDefault(      prop, prefix+"LaserType", "LMS" );
+    std::string laserType = orcaice::getPropertyWithDefault( prop, prefix+"LaserType", "LMS" );
     type_ = strdup(laserType.c_str());
-
-    // setting factory config parameters
-    currentConfig_.maxRange         = 80.0;
-    currentConfig_.fieldOfView      = 180.0;
-    currentConfig_.startAngle       = -90.0;
-    currentConfig_.numberOfSamples  = 181;
-
-    if ( setupParams( currentConfig_.maxRange, currentConfig_.numberOfSamples, baudrate_ ) )
-    {
-        context_.tracer()->error( "Failed to setup factory config parameters." );
-        exit(1);
-    }
 }
 
 SickCarmenDriver::~SickCarmenDriver()
@@ -117,29 +106,31 @@ SickCarmenDriver::setupParams( double maxRange, int numberOfSamples, int baudrat
 }
 
 int 
-SickCarmenDriver::enable( )
+SickCarmenDriver::init( )
 {
-    infoMessages_ = "";
-    return doEnable();
-}
-
-int 
-SickCarmenDriver::doEnable( )
-{
-    if ( isEnabled_ ) return 0;
-
     firstRead_     = false;
     laserStalled_  = false;
+
+    //
+    // this talks to the laser and configures it
+    //
+    if ( setupParams( config_.maxRange, config_.numberOfSamples, baudrate_ ) )
+    {
+        context_.tracer()->error( "Failed to setup factory config parameters." );
+        exit(1);
+    }
  
     std::stringstream ss;
     ss << "Connecting to hardware with baudrate="<<baudrate_<<" device="<<device_<<" type="<<type_;
     context_.tracer()->info( ss.str() );
 
+    //
+    // tell the laser to start sending data
+    //
     int ret = sick_start_laser(laser_);
     if ( ret == 0 )
     {
         infoMessages_ += infoMessages_ + string("Successfully enabled laser:\n") + sick_info();
-        isEnabled_ = true;
     }
     else
     {
@@ -149,33 +140,9 @@ SickCarmenDriver::doEnable( )
 }
 
 int 
-SickCarmenDriver::disable()
-{
-    infoMessages_ = "";
-    return doDisable();
-}
-
-int 
-SickCarmenDriver::doDisable()
-{
-    if ( !isEnabled_ ) return 0;
-
-    int ret = sick_stop_laser(laser_);
-    if ( ret != 0 )
-    {
-        infoMessages_ += string("Problem stopping laser:\n") + sick_info();
-    }
-    infoMessages_ += string("Stopped laser:\n") + sick_info();
-
-    isEnabled_ = false;
-    return 0;
-}
-
-int 
 SickCarmenDriver::read( orca::LaserScanner2dDataPtr &data )
 {
     infoMessages_ = "";
-    assert( isEnabled_ );
 
 //     cout<<"TRACE(nativelaserdriver.cpp): read()" << endl;
 
@@ -239,9 +206,9 @@ SickCarmenDriver::read( orca::LaserScanner2dDataPtr &data )
             
 
             // default settings
-            data->maxRange         = currentConfig_.maxRange;
-            data->fieldOfView      = currentConfig_.fieldOfView;
-            data->startAngle       = currentConfig_.startAngle;
+            data->maxRange         = config_.maxRange;
+            data->fieldOfView      = config_.fieldOfView;
+            data->startAngle       = config_.startAngle;
 
             // alexm: before laser iface change:
 //             data->startAngle     = -M_PI/2;
@@ -260,26 +227,6 @@ SickCarmenDriver::heartbeatMessage()
             laserStalled_ ? "STALLED " : " ", 
             (laser_->buffer_position-laser_->processed_mark) / (float)LASER_BUFFER_SIZE * 100.0);
     return sickInfoMessage_;
-}
-
-int 
-SickCarmenDriver::setConfig( const Config &cfg )
-{
-    infoMessages_ = "";
-
-    if ( setupParams( cfg.maxRange, cfg.numberOfSamples, baudrate_ ) ) 
-    {
-        return -1;
-    }
-
-    return 0;
-}
-
-int 
-SickCarmenDriver::getConfig( Config &cfg )
-{
-    cfg = currentConfig_;
-    return 0;
 }
 
 } // namespace

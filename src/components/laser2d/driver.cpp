@@ -51,5 +51,18 @@ Driver::Config::toString() const
     return ss.str();
 }
 
+bool 
+Driver::Config::operator==( const Driver::Config & other )
+{
+    return (minRange==other.minRange && maxRange==other.maxRange && fieldOfView==other.fieldOfView 
+         && startAngle==other.startAngle && numberOfSamples==other.numberOfSamples);
+}
+
+bool 
+Driver::Config::operator!=( const Driver::Config & other )
+{
+    return (minRange!=other.minRange || maxRange!=other.maxRange || fieldOfView!=other.fieldOfView 
+         || startAngle!=other.startAngle || numberOfSamples!=other.numberOfSamples);
+}
 
 } // namespace
