@@ -8,7 +8,7 @@ Requires.OgFusion.Type=OgFusion
 Requires.OgFusion.DefaultProxy=ogfusion@local/ognode
 
 Requires.RangeScanner.Type=RangeScanner
-Requires.RangeScanner.DefaultProxy=laser@local/sicklaser
+Requires.RangeScanner.DefaultProxy=laserscanner2d@local/laser2d
 
 Requires.Localisation.Type=Localise2d
 Requires.Localisation.DefaultProxy=localise2d@local/faithlocaliser
