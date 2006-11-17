@@ -10,7 +10,6 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include "sicklaserutil.h"
 
 #include "laserscanner2dI.h"
 
