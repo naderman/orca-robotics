@@ -44,9 +44,7 @@ MainLoop::activate()
     while ( isActive() )
     {
         try {
-            cout<<"laser2d::mainloop: activating..." << endl;
             context_.activate();
-            cout<<"laser2d::mainloop: activated."<<endl;
             break;
         }
         catch ( orcaice::Exception & e )
@@ -80,6 +78,8 @@ MainLoop::readLaserData( orca::LaserScanner2dDataPtr &laserData )
     if ( hwDriver_->read( laserData ) ) 
     {
         context_.tracer()->warning( "Problem reading from laser. Re-initializing hardware." );
+        
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         hwDriver_->init();
         return;
     }

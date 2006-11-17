@@ -45,7 +45,7 @@ private:
     int setupParams( double maxRange, int numberOfSamples, int baudrate );
 
     PlayerCc::PlayerClient *robot_;
-    PlayerCc::LaserProxy *laserProxy_;
+    PlayerCc::LaserProxy *laser_;
 
     char *host_;
     int   port_;
