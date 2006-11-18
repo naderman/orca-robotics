@@ -27,9 +27,9 @@ module orca
 */
 struct Time
 {
-    //! Number of seconds.
+    //! Number of seconds
     int seconds;
-    //! Number of microseconds.
+    //! Number of microseconds
     int useconds;
 };
 
@@ -38,11 +38,11 @@ struct Time
 */
 struct TimeOfDay
 {
-    //! Hour
+    //! Hour [0..23]
     int hours;
-    //! Minutes
+    //! Minutes [0..59]
     int minutes;
-    //! Seconds
+    //! Seconds [0.0..59.9999(9)]
     double seconds;
 };
 
@@ -51,11 +51,11 @@ struct TimeOfDay
 */
 struct Date
 {    
-    //! Day
+    //! Day [1..31]
     int day;
-    //! Month
+    //! Month [1..12]
     int month;
-    //! Year
+    //! Year (2006 is 2006)
     int year;
 };
 
