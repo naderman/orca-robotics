@@ -53,6 +53,7 @@ src
         robot2d                            LGPL
             playerclient                   GPL
         segwayrmp                          LGPL
+            usb                            GPL
         simlocaliser                       LGPL
         teleop                             LGPL
     examples
