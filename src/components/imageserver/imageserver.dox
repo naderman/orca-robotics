@@ -41,42 +41,42 @@ This component encapsulates an image grabber for usb and firewire cameras. It ca
 
 @par Configuration
 
-- @c Camera.Config.Driver (string)
+- @c ImageServer.Config.Driver (string)
     - Which hardware driver to use?
     - Valid values: { "monoopencv", "fake", "digiclops" }
     - Default: "fake"
 
 Camera Settings
 
-- @c Camera.Config.StartEnabled (bool)
+- @c ImageServer.Config.StartEnabled (bool)
     - Enable the camera on component initialisation?
     - Default: 1
 
-- @c Camera.Config.Format (string)
+- @c ImageServer.Config.Format (string)
     - What format are the images? Most formats can be detected automatically so nothing is needed here. However, if images are Bayer encoded one of the following values need to be specified:
     - Valid values: { "BAYERBG", "BAYERGB", "BAYERRG", "BAYERGR" }
     - If a digiclops is being used you must specify either {"DIGICLOPSSTEREO", "DIGICLOPSRIGHT", "DIGICLOPSBOTH"}
     - "DIGICLOPSSTEREO" is used if a STEREO_IMAGE is being sent, "DIGICLOPSRIGHT" for RIGHT_IMAGE and "DIGICLOPSBOTH" for RIGHT_IMAGE and STEREO_IMAGE
     - Default: "MODENFI"
 
-- @c Camera.Config.Width (integer)
+- @c ImageServer.Config.Width (integer)
     - Image width
     - Valid values: { "320, 640, 800, 1024, 1280, 1600" } - will return an error if the camera doesn't support this particuar width
     - Default: "0": A value of 0 causes the driver to query and use the camera's default image width.
 
-- @c Camera.Config.Height (integer)
+- @c ImageServer.Config.Height (integer)
     - Image height
     - Valid values: { "240, 480, 600, 768, 960, 1200" (respectively with width)} - will return an error if the camera doesn't support this particuar height.
     - Default: "0": A value of 0 causes the driver to query and use the camera's default image height.
 
-  - @c Camera.Config.CameraIndex (integer)
+  - @c ImageServer.Config.CameraIndex (integer)
     - Index of the camera to be used (currently opencv supports up to 2 cameras at once)
     - Valid values: { "0, 1"} - will return an error if the index is less than 0 or greater than 1.
     - Default: "0": A value of 0 causes the driver to find the first available camera.
       
 Geometry
 
-- @c Camera.Config.Offset (Frame3d) [m, deg]
+- @c ImageServer.Config.Offset (Frame3d) [m, deg]
     - Position of the camera with respect to the robot's local coordinate system
     - Format: x y z pitch roll yaw
     - Example: a camera mounted upside down with no translation: "0.0 0.0 0.0  0.0 180.0 0.0"
