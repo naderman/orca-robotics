@@ -2,9 +2,9 @@ OPTION( BUILD_IMAGE_SERVER "Try to build Image Server" ON )
 
 IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
 
-  INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
+  INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
   # Use libOrcaIce
-  INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
+  INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
 
   #
   # checks for libraries and drivers

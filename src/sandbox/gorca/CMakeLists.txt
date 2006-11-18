@@ -2,7 +2,7 @@ OPTION( BUILD_GORCA "Try to build Gorca -- a system composition utility" OFF )
 
 IF ( QT4_FOUND AND BUILD_GORCA )
 
-    #INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
+    #INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     
     #
     # This gathers all the .cpp files into the variable 'SRCS'

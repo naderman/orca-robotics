@@ -32,9 +32,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @section changes Changes since Last Release
 
-- Build system (Christopher Brooks, Alex Brooks)
-    - Solaris compatability.
+- Build system
+    - Solaris compatability (Christopher Brooks, Alex Brooks)
     - Tested with Ice-3.1.1
+    - CMake scripts are now installed and can be used by satellite projects without copying. (Alex M.)
 - New interface: BinarySwitch (Alex M.)
     - Represents a bank of hardware devices with binary states, e.g. lights.
 - New interface: Cpu (Alex M.)

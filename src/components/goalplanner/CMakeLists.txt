@@ -2,9 +2,9 @@ OPTION( BUILD_GOAL_PLANNER "Try to build GoalPlanner" ON )
 
 IF ( BUILD_GOAL_PLANNER )
 
-    INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     # Remove this line if you don't plan to use libOrcaIce
-    INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
     
     #
     # This gathers all the source files into the variable 'SRCS'

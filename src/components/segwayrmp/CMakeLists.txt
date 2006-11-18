@@ -2,8 +2,8 @@ OPTION( BUILD_SEGWAYRMP "Try to build SegwayRmp component" ON )
 
 IF ( NOT WIN32 AND BUILD_SEGWAYRMP )
 
-    INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
-    INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
     
     # OPTIONAL_SUB_LIBRARY macro defined in component_rules.cmake
    

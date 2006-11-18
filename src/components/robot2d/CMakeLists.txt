@@ -2,8 +2,8 @@ OPTION( BUILD_ROBOT2D "Try to build Robot2d component" ON )
 
 IF ( NOT WIN32 AND BUILD_ROBOT2D )
 
-    INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
-    INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
 
     # CMake problem: these should be in the subdir, but they have no effect there for some reason
     INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )

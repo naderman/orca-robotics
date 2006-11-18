@@ -28,4 +28,4 @@ SET( PROJECT_INTERFACE_LIB      OrcaInterfaces )
 #
 # The rest is done by a script
 #
-INCLUDE( config/global_setup.cmake )
+INCLUDE( cmake/local/bootstrap.cmake )

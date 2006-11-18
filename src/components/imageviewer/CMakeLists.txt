@@ -2,8 +2,8 @@ OPTION( BUILD_IMAGE_VIEWER "Try to build Image Viewer" ON )
 
 IF ( NOT WIN32 AND BUILD_IMAGE_VIEWER )
 
-  INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
-  INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
+  INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
+  INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
 
   # this is the only implemenation so far
   SET ( OPENCV_IMPLEMENTATION 1 )

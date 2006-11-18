@@ -2,8 +2,8 @@ OPTION( BUILD_LASER2D "Try to build Laser2d component" ON )
 
 IF ( BUILD_LASER2D )
 
-    INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
-    INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
     
     INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/components/laser2d )
 

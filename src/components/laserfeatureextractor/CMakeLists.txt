@@ -2,8 +2,8 @@ OPTION( BUILD_LASERFEATUREEXTRACTOR "Try to build LaserFeatureExtractor" ON )
 
 IF ( NOT WIN32 AND BUILD_LASERFEATUREEXTRACTOR )
 
-    INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
-    INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
     
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
     SET( COMMON_SRCS

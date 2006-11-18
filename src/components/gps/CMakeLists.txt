@@ -3,8 +3,8 @@ OPTION( BUILD_GPS "Try to build Gps component" ON )
 IF ( NOT WIN32 )
 IF ( BUILD_GPS )
 
-    INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
-    INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
     
     INCLUDE_DIRECTORIES( 
       ${PROJECT_BINARY_DIR}

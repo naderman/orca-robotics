@@ -3,8 +3,8 @@ OPTION( BUILD_PROBE "Try to build Probe" ON )
 IF ( NOT WIN32 )
 IF ( BUILD_PROBE )
 
-    INCLUDE( ${PROJECT_SOURCE_DIR}/config/component_rules.cmake )
-    INCLUDE( ${PROJECT_SOURCE_DIR}/config/include_orcaice.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
 
     SET ( IOSTREAM_FOUND 1 )
     
