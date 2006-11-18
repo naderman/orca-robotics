@@ -1,5 +1,4 @@
-MESSAGE( STATUS "Performing project-specific setup" )
-
+MESSAGE( STATUS "== PROJECT-SPECIFIC SETUP ==" )
 #
 # Add project-specific setup
 #

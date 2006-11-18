@@ -5,9 +5,11 @@ MESSAGE( STATUS "Setting project name to ${PROJECT_NAME}" )
 MESSAGE( STATUS "Setting project version to ${PROJECT_VERSION}" )
 MESSAGE( STATUS "Setting project interface lib name to ${PROJECT_INTERFACE_LIB}" )
 
+###########################################################
 #
 # Project directories
 #
+###########################################################
 SET( PROJECT_INSTALL_DIR $ENV{${PROJECT_INSTALL_ENV_VAR}} )
 # If environment variable ORCA2_INSTALL is NOT set, use defaults
 IF( NOT PROJECT_INSTALL_DIR )
@@ -45,9 +47,11 @@ MESSAGE( STATUS "Setting installation directory to ${CMAKE_INSTALL_PREFIX}" )
 SET( PROJECT_SOURCE_DIR ${${PROJECT_NAME}_SOURCE_DIR} )
 SET( PROJECT_BINARY_DIR ${${PROJECT_NAME}_BINARY_DIR} )
 
+###########################################################
 #
 # Set the build type (affects debugging symbols and optimization)
 #
+###########################################################
 IF ( NOT CMAKE_BUILD_TYPE )
   IF ( NOT WIN32 )
     SET( CMAKE_BUILD_TYPE Release )
@@ -68,14 +72,18 @@ IF ( WIN32 )
     SET( EXE_EXTENSION ".exe" )
 ENDIF ( WIN32 )
 
+###########################################################
 #
 # Include local macro definitions
 #
+###########################################################
 INCLUDE( ${ORCA_CMAKE_DIR}/orca_macros.cmake )
 
+###########################################################
 #
 # If we're using gcc, make sure the version is OK.
 #
+###########################################################
 IF ( ${CMAKE_C_COMPILER} MATCHES gcc )
 
     EXEC_PROGRAM ( ${CMAKE_C_COMPILER} ARGS --version OUTPUT_VARIABLE GCC_VERSION )
@@ -94,10 +102,11 @@ IF ( ${CMAKE_C_COMPILER} MATCHES gcc )
              1 )
 ENDIF ( ${CMAKE_C_COMPILER} MATCHES gcc )
 
-# Try to find Ice
-# Modified. Environment variables are discouraged. 
-# If you want to manually specify the location of ICE_HOME
-# do it using -DICE_HOME:STRING=<locn> on the command line
+###########################################################
+#
+# Find Ice installation
+#
+###########################################################
 IF ( DEFINED ICE_HOME )
     # Ice home is specified with a command line option or it's already in cache
     MESSAGE( STATUS "Ice location was specified or using cached value: ${ICE_HOME}")
@@ -117,17 +126,35 @@ ASSERT ( ICE_WORKS
          "Testing Ice - ok."
          1 )
 
+###########################################################
 #
-# Big source code switches 
+# Defaults for big source code switches 
 # (these are defaults. after the user modifies these in GUI they stay in cache)
 #
+###########################################################
 OPTION( BUILD_JAVA    "Turn me on to enable compilation of all Java interfaces and components" OFF  )
 OPTION( BUILD_TESTS   "Turn me off to disable compilation of all tests"               ON  )
 OPTION( BUILD_SANDBOX "Turn me on to enable compilation of everything in the sandbox" OFF )
 
+###########################################################
+#                                                         #
+# Look for low-level C headers, write defines to config.h #
+#                                                         #
+###########################################################
+INCLUDE( ${ORCA_CMAKE_DIR}/write_config_h.cmake )
+
+###########################################################
+#                                                         #
+# Look for dependencies required by individual components #
+#                                                         #
+###########################################################
+INCLUDE( ${ORCA_CMAKE_DIR}/check_depend.cmake )
+
+###########################################################
 #
 # Project-specific global setup
 #
+###########################################################
 INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/local/project_setup.cmake )
 
 # Store the location of the command in cache
@@ -141,10 +168,12 @@ SET( ORCA_GENERATEXMLTEMPLATE_COMMAND ${GENERATE_CFG_HOME}/generatexmltemplate${
         CACHE PATH "Path to generatexmltemplate$ executable." FORCE )
 MESSAGE( STATUS "Using ${ORCA_GENERATECFG_COMMAND}" )
 
+###########################################################
 #
 # Installation preferences
-# (ORCA2_HOME is already defined for satelite projects)
 #
+###########################################################
+
 # CMake default is FALSE
 # SET( CMAKE_SKIP_BUILD_RPATH TRUE )
 # CMake default is FALSE
@@ -169,20 +198,6 @@ ENDIF ( ORCA_MOTHERSHIP )
 
 ###########################################################
 #                                                         #
-# Look for low-level C headers, write defines to config.h #
-#                                                         #
-###########################################################
-INCLUDE( ${ORCA_CMAKE_DIR}/write_config_h.cmake )
-
-###########################################################
-#                                                         #
-# Look for dependencies required by individual components #
-#                                                         #
-###########################################################
-INCLUDE( ${ORCA_CMAKE_DIR}/check_depend.cmake )
-
-###########################################################
-#                                                         #
 # Enable testing by including the Dart module             #
 # (must be done *before* entering source directories      #
 #                                                         #
@@ -195,7 +210,6 @@ ENABLE_TESTING()
 # Enter the source tree                                   #
 #                                                         #
 ###########################################################
-# MESSAGE ( STATUS "DEBUG: CMAKE_INSTALL_RPATH=${CMAKE_INSTALL_RPATH}" )
 ADD_SUBDIRECTORY ( src )
 
 ###########################################################
