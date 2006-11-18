@@ -34,6 +34,32 @@ struct Time
 };
 
 /*!
+    Time of day.
+*/
+struct TimeOfDay
+{
+    //! Hour
+    int hours;
+    //! Minutes
+    int minutes;
+    //! Seconds
+    double seconds;
+};
+
+/*!
+    @brief Date of the year.
+*/
+struct Date
+{    
+    //! Day
+    int day;
+    //! Month
+    int month;
+    //! Year
+    int year;
+};
+
+/*!
     @brief Base class for all data types in Orca.
     
     Deriving from a single class allows polymorphism.

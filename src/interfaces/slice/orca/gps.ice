@@ -28,38 +28,24 @@ module orca
 //! Gps config structure
 class GpsConfigData extends OrcaObject
 {
-	CartesianPoint geometry;
-	Frame3d origin;
+    CartesianPoint geometry;
+    Frame3d origin;
 };
 
 //! Gps time structure - for time sync
 class GpsTimeData extends OrcaObject
 {
     // UTC time
-    //! Hours
-    int utcHours;
-    //! minutes
-    int utcMinutes;
-    //! seconds
-    double utcSeconds;
-    //! day
-    int day;
-    //! month
-    int month;
-    //! year
-    int year;
+    TimeOfDay utcTime;
+    // UTC date
+    Date utcDate;
 };
 
 //! Gps data structure
 class GpsMapGridData extends OrcaObject
 {
     // UTC time
-    //! Hours
-    int utcHours;
-    //! minutes
-    int utcMinutes;
-    //! seconds
-    double utcSeconds;
+    TimeOfDay utcTime;
 
     // GPS position
     //! Our current zone
@@ -88,12 +74,7 @@ class GpsMapGridData extends OrcaObject
 class GpsData extends OrcaObject
 {
     // UTC time
-    //! Hours
-    int utcHours;
-    //! minutes
-    int utcMinutes;
-    //! seconds
-    double utcSeconds;
+    TimeOfDay utcTime;
  
     // GPS position
     //! Latitude (Degrees)
@@ -116,8 +97,7 @@ class GpsData extends OrcaObject
     //! Position Type (Bad (0), Ugly (1), Good (2))
     int positionType;
     //! Geoidal Separation (Metres)
-    double geoidalSeparation;
-    
+    double geoidalSeparation;    
 };
 
 

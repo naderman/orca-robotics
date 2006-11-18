@@ -85,9 +85,7 @@ GpsHandler::run()
 						      gpsMapGridData->easting,gpsMapGridData->northing);
 			gpsMapGridData->zone=zone;
                         //copy across all the other stuff
-                        gpsMapGridData->utcHours=gpsData->utcHours;
-                        gpsMapGridData->utcMinutes=gpsData->utcMinutes;
-			gpsMapGridData->utcSeconds=gpsData->utcSeconds;
+                        gpsMapGridData->utcTime=gpsData->utcTime;
 			gpsMapGridData->altitude=gpsData->altitude;
 
 			gpsMapGridData->heading=gpsData->heading;
