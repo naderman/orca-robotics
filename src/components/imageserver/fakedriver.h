@@ -36,7 +36,9 @@ private:
     orcaice::Context context_;
 
     // fill an image with values
-    int fill( orca::ByteSequence& image, const unsigned char R, const unsigned char G, const unsigned B );
+    int flatColor( orca::ByteSequence& image, unsigned char R, unsigned char G, unsigned char B );
+    int randomColor( orca::ByteSequence& image );
+    int fromFile( orca::ByteSequence& image, const std::string & filename );
 
 };
 

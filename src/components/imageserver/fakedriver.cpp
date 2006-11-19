@@ -23,6 +23,11 @@ FakeDriver::FakeDriver( const Config & cfg, const orcaice::Context & context )
     : Driver(cfg),
       context_(context)
 {
+    context_.tracer()->info( "Initializing fake driver with config: "+config_.toString() );
+
+//     if ( cfg.format != orca::ImageFormatModeBgr ) {
+//         throw "Unsupported image format. Only 'ModeBgr' is supported";
+//     }
 }
 
 FakeDriver::~FakeDriver()
@@ -38,64 +43,46 @@ FakeDriver::init()
 int 
 FakeDriver::read( orca::CameraDataPtr &data )
 {
-    cout<<"TRACE(fakedriver.cpp): Generating fake camera data..." << endl;
+    context_.tracer()->debug( "Generating fake image data...", 6 );
 
     // initialise values for the camera object
-    data->imageWidth = 640;
-    data->imageHeight = 480;
+    data->imageWidth = config_.imageWidth;
+    data->imageHeight = config_.imageHeight;
+
+    // alexm: are we only supporting this format in 'fake' driver?
     data->format = orca::ImageFormatModeBgr;
     data->compression = orca::ImageCompressionNone;
+
     cout << "TODO: resize image properly for different modes" << endl;
-    int imageSize = (int)ceil( 3 * data->imageHeight * data->imageWidth );
+    int imageSize = 3 * data->imageHeight * data->imageWidth;
     data->image.resize( imageSize );
 
-    bool random_data = true;
-    if ( random_data )
-    {
-        // fill the image with a random colour
-        int xr=rand()%256, xg=rand()%256, xb=rand()%256;
-        fill( data->image, (unsigned char)xr, (unsigned char)xg, (unsigned char)xb );
+    // fill the image with a random colour
+    int rr = rand()%256;
+    int gg = rand()%256;
+    int bb = rand()%256;
+    flatColor( data->image, (unsigned char)rr, (unsigned char)gg, (unsigned char)bb );
 
-        // cout << "opencv uses BGR format rather than rgb: " << endl; 
-        cout<<"B:G:R  ("<<xr<<":"<<xg<<":"<<xb<<")"<<endl;
-    }
-    else 
-    {
-        // use a real image from file
+//     randomColor( data->image );
 
-//         ifstream file;
-//         cout << "    TODO(fakedriver.cpp): this image should be loaded in from a .def file" << endl;
-//         string filename = "/opt/empty-project-0.0.1/images/penguin.jpg";
-//         file.open(filename.c_str());
-//         if ( file.is_open() )
-//         {
-//             // if file exists close it and load into cv structure
-//             file.close();
-//             cvImage_ = cvLoadImage( filename.c_str()  );
-//             //cout << "image loaded... " << endl;
-//         }
-//         else 
-//         {
-//             cout << "ERROR(fakedriver.cpp): \""<< filename << "\""<< " does not exist." << endl;
-//             exit(1);
-//         }
+    // use a real image from file
+//     fromFile( data->image, "/opt/empty-project-0.0.1/images/penguin.jpg" );
 
-//         // copy image data into ice object
-//         memcpy( &data->image[0], cvImage_->imageData, cvImage_->imageSize );
-
-//         cout << "Image copied into ice object" << endl;
-    }
 
     orcaice::setToNow( data->timeStamp );
         
+    // we are controlling frame rate by sleeping
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     return 0;
 }
 
 int 
-FakeDriver::fill( orca::ByteSequence& image, 
-            const unsigned char R, const unsigned char G, const unsigned B )
+FakeDriver::flatColor( orca::ByteSequence& image, 
+            unsigned char R, unsigned char G, unsigned char B )
 {
+    // cout << "opencv uses BGR format rather than rgb: " << endl; 
+    cout<<"B:G:R  ("<<(int)R<<":"<<(int)G<<":"<<(int)B<<")"<<endl;
+
     orca::ByteSequence::iterator i;
     for ( i= image.begin(); i != image.end(); i+=3 )
     {
@@ -106,4 +93,44 @@ FakeDriver::fill( orca::ByteSequence& image,
     return 0;
 }
 
+int 
+FakeDriver::randomColor( orca::ByteSequence& image )
+{
+    orca::ByteSequence::iterator i;
+    for ( i= image.begin(); i+2 != image.end(); i+=3 )
+    {
+        *i = (unsigned char)rand()%256;
+        *(i+1) = (unsigned char)rand()%256;
+        *(i+2) = (unsigned char)rand()%256;
+    }
+    return 0;
 }
+
+int 
+FakeDriver::fromFile( orca::ByteSequence& image, const std::string & filename )
+{
+//     ifstream file;
+//     cout << "    TODO(fakedriver.cpp): this image should be loaded in from a .def file" << endl;
+//     file.open(filename.c_str());
+// 
+//     if ( file.is_open() )
+//     {
+//         // if file exists close it and load into cv structure
+//         file.close();
+//         cvImage_ = cvLoadImage( filename.c_str()  );
+//         //cout << "image loaded... " << endl;
+//     }
+//     else 
+//     {
+//         cout << "ERROR(fakedriver.cpp): \""<< filename << "\""<< " does not exist." << endl;
+//         exit(1);
+//     }
+//     
+//     // copy image data into ice object
+//     memcpy( &data->image[0], cvImage_->imageData, cvImage_->imageSize );
+//     
+//     cout << "Image copied into ice object" << endl;
+    return 0;
+}
+
+} // namespace

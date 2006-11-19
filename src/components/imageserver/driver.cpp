@@ -30,15 +30,11 @@ Driver::Config::Config()
 bool
 Driver::Config::validate() const
 {
-//     if ( minRange < 0.0 ) return false;
-// 
-//     if ( maxRange <= 0.0 ) return false;
-// 
-//     if ( fieldOfView <= 0.0 || fieldOfView > DEG2RAD(360.0) ) return false;
-// 
-//     if ( startAngle <= DEG2RAD(-360.0) || startAngle > DEG2RAD(360.0) ) return false;
-// 
-//     if ( numberOfSamples <= 0 ) return false;
+    if ( imageWidth <= 0.0 ) return false;
+
+    if ( imageHeight <= 0.0 ) return false;
+
+    if ( frameRate <= 0.0 ) return false;
 
     return true;
 }

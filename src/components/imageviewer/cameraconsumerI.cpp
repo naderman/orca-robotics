@@ -15,18 +15,17 @@
 
 using namespace imageviewer;
 
-CameraConsumerI::CameraConsumerI( orcaice::PtrBuffer<orca::CameraDataPtr> &cameraDataBuffer ) : cameraDataBuffer_(cameraDataBuffer)
+CameraConsumerI::CameraConsumerI( orcaice::PtrBuffer<orca::CameraDataPtr> &dataPipe ) 
+    : dataPipe_(dataPipe)
 {
 }
         
-void CameraConsumerI::setData(const orca::CameraDataPtr& data, const Ice::Current&)
+void 
+CameraConsumerI::setData(const orca::CameraDataPtr& data, const Ice::Current&)
 {
     try {
-        // Is it a camera image?
-        //std::cout << "Received camera data... " << std::endl;
-
         // put image into buffer
-        cameraDataBuffer_.push( orca::CameraDataPtr::dynamicCast( data ) );
+        dataPipe_.push( data );
     }
     catch ( IceUtil::NullHandleException &e )
     {
@@ -34,4 +33,3 @@ void CameraConsumerI::setData(const orca::CameraDataPtr& data, const Ice::Curren
     }
 
 }
-

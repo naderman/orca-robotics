@@ -68,7 +68,7 @@ Component::start()
 
     if ( !cfg.validate() ) {
         tracer()->error( "Failed to validate laser configuration. "+cfg.toString() );
-        // this will this component
+        // this will kill this component
         throw orcaice::Exception( ERROR_INFO, "Failed to validate laser configuration" );
     }
 

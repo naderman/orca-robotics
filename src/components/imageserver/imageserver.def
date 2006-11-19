@@ -7,12 +7,13 @@ Provides.Camera.DefaultName=camera
 # Required Interfaces
 
 # Config Parameters
-Config.StartEnabled.Default=1
+Config.Driver.Comment=Valid values: { 'monoopencv', 'fake', 'digiclops' }
 Config.Driver.Default=fake
-Config.Format.Default=MODENFI
+Config.Format.Default=ModeNfi
 Config.CameraIndex.Default=0
 Config.ImageWidth.Default=0
 Config.ImageHeight.Default=0
+Config.FrameRate.Default=1
 
 Config.Offset.p.x.Default=0
 Config.Offset.p.y.Default=0
@@ -22,4 +23,3 @@ Config.Offset.p.o.p.Default=0
 Config.Offset.p.o.y.Default=0
 
 # Config.Camera.ImageGrabberConfigFile.Default=fw.cfg
-

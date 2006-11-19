@@ -45,13 +45,14 @@ private:
     // buffers
     orcaice::PtrBuffer<orca::CameraDataPtr> & dataPipe_;
     
+    orca::CameraDescriptionPtr  descr_;
+
     orcaice::Context context_;
 
     IplImage* cvImage_;
     IplImage* cvImageTmp_;
     IplImage* bayerImage_;
 
-    void init();
     // setup opencv struct and window for display
     void initCvImage();
 };

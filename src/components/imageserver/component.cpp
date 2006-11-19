@@ -72,32 +72,38 @@ Component::start()
     string format = orcaice::getPropertyWithDefault( prop, prefix+"Format", "ModeNfi" );
     // only need to specify these formats as opencv can automatically find the other formats
     if( format == "BayerBg" ) {
-        cfg.format = ImageFormatBayerBg;
+        cfg.format = orca::ImageFormatBayerBg;
     }
     else if( format == "BayerGb" ) {
-        cfg.format = ImageFormatBayerGb;
+        cfg.format = orca::ImageFormatBayerGb;
     }
     else if( format == "BayerRg" ) {
-        cfg.format = ImageFormatBayerRg;
+        cfg.format = orca::ImageFormatBayerRg;
     }
     else if( format == "BayerGr" ) {
-        cfg.format = ImageFormatBayerGr;
+        cfg.format = orca::ImageFormatBayerGr;
     }
     else if( format == "DigiclopsStereo" ) {
-        cfg.format = ImageFormatDigiclopsStereo;
+        cfg.format = orca::ImageFormatDigiclopsStereo;
     }
     else if( format == "DigiclopsRight" ) {
-        cfg.format = ImageFormatDigiclopsRight;
+        cfg.format = orca::ImageFormatDigiclopsRight;
     }
     else if( format == "DigiclopsBoth" ) {
-        cfg.format = ImageFormatDigiclopsBoth;
+        cfg.format = orca::ImageFormatDigiclopsBoth;
     }
 
     string compression =  orcaice::getPropertyWithDefault( prop, prefix+"Compression", "none" );
     if( compression == "none" ) {
         // compression hasn't been included yet
-        cfg.compression = ImageCompressionNone;
+        cfg.compression = orca::ImageCompressionNone;
     }    
+
+    if ( !cfg.validate() ) {
+        tracer()->error( "Failed to validate camera configuration. "+cfg.toString() );
+        // this will kill this component
+        throw orcaice::Exception( ERROR_INFO, "Failed to validate camera configuration" );
+    }
 
     // if we have multiple cameras, this indicates which one we want to use
     int cameraIndex = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CameraIndex", 0 );

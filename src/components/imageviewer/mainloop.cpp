@@ -23,11 +23,11 @@ MainLoop::MainLoop( const orca::CameraConsumerPrx & callbackPrx,
                     const orcaice::Context & context )
     : callbackPrx_(callbackPrx),
       dataPipe_(dataPipe),
+      descr_(0),
       context_(context)
 {
-    // this is the last place we can throw exceptions from.
-    // after this the thread will be launched
-    init();
+    // initialise opencv stuff
+    cvNamedWindow( "ImageViewer", 1 );
 }
 
 MainLoop::~MainLoop()
@@ -35,13 +35,6 @@ MainLoop::~MainLoop()
     // delete opencv stuff
     cvReleaseImage( &cvImage_ );
     cvReleaseImage( &bayerImage_ );
-}
-
-void 
-MainLoop::init()
-{
-    // initialise opencv stuff
-    cvNamedWindow( "ImageViewer", 1 );
 }
 
 void 
@@ -57,12 +50,6 @@ MainLoop::run()
     // try to catch expected errors
     try
     {
-
-    // setup opencv image struct for display
-    MainLoop::initCvImage();
-    
-    // wake up every now and then to check if we are supposed to stop
-    const int timeoutMs = 2000;
     
     // count the number of images received
     int numImages = 0;
@@ -93,25 +80,31 @@ MainLoop::run()
         // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
         //       but if this happens it's ok if we just quit.
     }
+
+    // get description, we need it to size the window
+    while( isActive() )
+    {
+        try
+        {
+            // workaround... if imageserver and imageviewer are being run in an icebox, the
+            // imageviewer needs to wait until the imageserver has loaded data
+            // into the buffer... this should check rather than waiting
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     
-    // Display description
-    cout << orcaice::toString(cameraPrx_->getDescription()) << endl;
-
-    // Get the data once
-    try
-    {
-        // workaround... if imageserver and imageviewer are being run in an icebox, the
-        // imageviewer needs to wait until the imageserver has loaded data
-        // into the buffer... this should check rather than waiting
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-
-        context_.tracer()->info( "Trying to get image info as a test" );
-        context_.tracer()->print( orcaice::toString( cameraPrx_->getData() ) );
+            descr_ = cameraPrx_->getDescription();
+            cout << orcaice::toString(descr_) << endl;
+            break;
+        }
+        catch ( const orca::HardwareFailedException & e )
+        {
+            context_.tracer()->error( "hardware failure reported when getting a scan. Will subscribe anyway." );
+        }
     }
-    catch ( const orca::HardwareFailedException & e )
-    {
-        context_.tracer()->error( "hardware failure reported when getting a scan. Will subscribe anyway." );
-    }
+
+
+    // setup opencv image struct for display
+    // after we got the camera description!
+    initCvImage();
 
     //
     // Subscribe for data
@@ -130,6 +123,9 @@ MainLoop::run()
         }
     }
     
+    // wake up every now and then to check if we are supposed to stop
+    const int timeoutMs = 2000;
+
     //
     // This is the main loop
     //
@@ -140,36 +136,38 @@ MainLoop::run()
         //
         int ret = dataPipe_.getAndPopNext ( cameraData, timeoutMs );
         
-        //*********************************
-        // Timing performance
-        // TODO: Put this into a separate function       
-        //*********************************       
-        // delay checks for sending objects
-        int averageOver = 100;
-        orcaice::setToNow( arrivalTime );
-        diff += orcaice::timeDiffAsDouble( cameraData->timeStamp, arrivalTime );
-        
-        // throughput check
-        if ((int)diff == 0)
+        if ( !ret ) 
         {
-            orcaice::setToNow( initialImageTime );
-        }              
-        
-        if ( fmod((double)numImages++,(double)averageOver) == 0 )
-        {
-            // calculate average delay
-            avDiff = diff/averageOver;
-            // cout << "TRACE(imagehandler.cpp): Average delay of images between grabbing and viewing: " << avDiff << "sec" << endl;
-            diff = 0.0;
+            //*********************************
+            // Timing performance
+            // TODO: Put this into a separate function       
+            //*********************************       
+            // delay checks for sending objects
+            int averageOver = 100;
+            orcaice::setToNow( arrivalTime );
+            diff += orcaice::timeDiffAsDouble( cameraData->timeStamp, arrivalTime );
             
-            // calculate throughput in Hz
-            orcaice::setToNow( finalImageTime );
-            totalTime = orcaice::timeDiffAsDouble( finalImageTime, initialImageTime );
-            // cout << "TRACE(imagehandler.cpp): Images are arriving at " << 1/(totalTime/averageOver) << " Hz." << endl << endl;
+            // throughput check
+            if ((int)diff == 0)
+            {
+                orcaice::setToNow( initialImageTime );
+            }              
+            
+            if ( fmod((double)numImages++,(double)averageOver) == 0 )
+            {
+                // calculate average delay
+                avDiff = diff/averageOver;
+                // cout << "TRACE(imagehandler.cpp): Average delay of images between grabbing and viewing: " << avDiff << "sec" << endl;
+                diff = 0.0;
+                
+                // calculate throughput in Hz
+                orcaice::setToNow( finalImageTime );
+                totalTime = orcaice::timeDiffAsDouble( finalImageTime, initialImageTime );
+                // cout << "TRACE(imagehandler.cpp): Images are arriving at " << 1/(totalTime/averageOver) << " Hz." << endl << endl;
+            }
+            //end of timing performance **********************************
         }
 
-        //end of timing performance **********************************
-        
         if (ret == 0)
         {
             cout << "INFO(mainloop.cpp): Getting cameraData from buffer... " << endl;
@@ -261,33 +259,32 @@ MainLoop::run()
 void 
 MainLoop::initCvImage()    
 {
-//     orca::ImageFormat format = cameraPrx_->getConfig()->format;
-//     cout << "TRACE(imagehandler.cpp):Image Format - " << orcaimage::formatName( format ) << endl;
-//     
-//     // should this be done at the imageserver level and depend on the mode and format?
-//     // maybe nChannels should be in the Camera object
-//     // TODO: put this nChannel calculation into imageutils as a separate function 
-//     
-//     // default number of channels for a colour image
-//     int nChannels = 3;
-//     int nBayerChannels = 1;   
-//     if( format == ImageFormatBayerBg | format == ImageFormatBayerGb | format == ImageFormatBayerRg | format == ImageFormatBayerGr )
-//     {
-//         // set up an IplImage struct for the Greyscale bayer encoded data
-//         bayerImage_  = cvCreateImage( cvSize( cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight ),  8, nBayerChannels );
-//         cout << "Image is Bayer encoded: " << endl;
-//         // cout << "bayer encoding: " << format << endl;
-//     }
-//     else if ( format == ImageFormatModeGray )
-//     {
-//         // display image is greyscale therefore only 1 channel      
-//         nChannels = 1;
-//     }      
-// 
-//     // opencv gear here
-//     cvImage_ = cvCreateImage( cvSize( cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight ),  8, nChannels );
-//     // dodgy opencv needs this so it has time to resize
-//     cvWaitKey(100);
-//     context_.tracer()->debug("opencv window created",5);
+    cout << "TRACE(imagehandler.cpp):Image Format - " << orcaimage::formatName( descr_->format ) << endl;
+    
+    // should this be done at the imageserver level and depend on the mode and format?
+    // maybe nChannels should be in the Camera object
+    // TODO: put this nChannel calculation into imageutils as a separate function 
+    
+    // default number of channels for a colour image
+    int nChannels = 3;
+    int nBayerChannels = 1;   
+    if( descr_->format == orca::ImageFormatBayerBg  || descr_->format == orca::ImageFormatBayerGb 
+            || descr_->format == orca::ImageFormatBayerRg || descr_->format == orca::ImageFormatBayerGr )
+    {
+        // set up an IplImage struct for the Greyscale bayer encoded data
+        bayerImage_  = cvCreateImage( cvSize( descr_->imageWidth, descr_->imageHeight ),  8, nBayerChannels );
+        cout << "Image is Bayer encoded: " << endl;
+        // cout << "bayer encoding: " << format << endl;
+    }
+    else if ( descr_->format == orca::ImageFormatModeGray )
+    {
+        // display image is greyscale therefore only 1 channel      
+        nChannels = 1;
+    }      
 
+    // opencv gear here
+    cvImage_ = cvCreateImage( cvSize( descr_->imageWidth, descr_->imageHeight ),  8, nChannels );
+    // dodgy opencv needs this so it has time to resize
+    cvWaitKey(100);
+    context_.tracer()->debug("opencv window created",5);
 }

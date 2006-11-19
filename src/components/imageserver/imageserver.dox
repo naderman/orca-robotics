@@ -48,10 +48,6 @@ This component encapsulates an image grabber for usb and firewire cameras. It ca
 
 Camera Settings
 
-- @c ImageServer.Config.StartEnabled (bool)
-    - Enable the camera on component initialisation?
-    - Default: 1
-
 - @c ImageServer.Config.Format (string)
     - What format are the images? Most formats can be detected automatically so nothing is needed here. However, if images are Bayer encoded one of the following values need to be specified:
     - Valid values: { "BAYERBG", "BAYERGB", "BAYERRG", "BAYERGR" }

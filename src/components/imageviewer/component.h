@@ -33,7 +33,7 @@ public:
 
 private:
 
-    orcaice::PtrBuffer<orca::CameraDataPtr> cameraDataBuffer_;
+    orcaice::PtrBuffer<orca::CameraDataPtr> dataPipe_;
     MainLoop* mainloop_;
 };
     

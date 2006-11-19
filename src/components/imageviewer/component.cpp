@@ -38,10 +38,9 @@ void
 Component::start()
 {
     // create a callback object to recieve images
-    Ice::ObjectPtr consumer = new CameraConsumerI( cameraDataBuffer_ );
+    Ice::ObjectPtr consumer = new CameraConsumerI( dataPipe_ );
     orca::CameraConsumerPrx callbackPrx =
         orcaice::createConsumerInterface<orca::CameraConsumerPrx>( context(), consumer );
-
     //
     // ENABLE NETWORK CONNECTIONS
     //
@@ -52,7 +51,7 @@ Component::start()
     //
     // start main loop
     //
-    mainloop_ = new MainLoop( callbackPrx, cameraDataBuffer_, context() );
+    mainloop_ = new MainLoop( callbackPrx, dataPipe_, context() );
     mainloop_->start();
     
     // the rest is handled by the application/service
