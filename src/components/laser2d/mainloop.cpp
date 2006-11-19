@@ -19,10 +19,6 @@ using namespace orca;
 
 namespace laser2d {
 
-namespace {
-    const int MAX_TIME_FOR_RECONFIGURE = 20000; // ms
-}
-
 MainLoop::MainLoop( LaserScanner2dI        &laserObj,
                     Driver                 *hwDriver,
                     bool                    compensateRoll,
@@ -68,14 +64,14 @@ MainLoop::activate()
 }
 
 void
-MainLoop::readLaserData( orca::LaserScanner2dDataPtr &laserData )
+MainLoop::readData( orca::LaserScanner2dDataPtr & data )
 {
 //     context_.tracer()->debug( "Reading laser data...", 8 );
 
     //
     // Read from the laser driver
     //            
-    if ( hwDriver_->read( laserData ) ) 
+    if ( hwDriver_->read( data ) ) 
     {
         context_.tracer()->warning( "Problem reading from laser. Re-initializing hardware." );
         
@@ -89,10 +85,10 @@ MainLoop::readLaserData( orca::LaserScanner2dDataPtr &laserData )
 //     hwDriver_->getConfig( cfg );
 
     // alexm: Config and LaserScanner2dData have this info in diff. forms
-//     if ( !NEAR(  cfg.angleIncrement, laserData->angleIncrement, 1e-5) )
+//     if ( !NEAR(  cfg.angleIncrement, data->angleIncrement, 1e-5) )
 //     {
 //         cout << "ERROR(mainloop.cpp): angleIncrement of laser scan returned from driver does not match configured angleIncrement." << endl;
-//         cout << "ERROR(mainloop.cpp): config says: " << RAD2DEG(cfg->angleIncrement) << ",laser data says: " << RAD2DEG(laserData->angleIncrement) << endl; 
+//         cout << "ERROR(mainloop.cpp): config says: " << RAD2DEG(cfg->angleIncrement) << ",laser data says: " << RAD2DEG(data->angleIncrement) << endl; 
 //         cout << "ERROR(mainloop.cpp): If you're using the stage driver:" << endl;
 //         cout << "                       This happens because of a bug in stage where the simulated laser" << endl;
 //         cout << "                       can't be configured on-the-fly.  You have to manually ensure that" << endl;
@@ -101,17 +97,17 @@ MainLoop::readLaserData( orca::LaserScanner2dDataPtr &laserData )
 //         cout << "                       This shouldn't happen.  Something went wrong." << endl;
 //         assert( false ); exit(1);
 //     }
-//     assert( NEAR( cfg->angleIncrement, laserData->angleIncrement, 1e-5) );
+//     assert( NEAR( cfg->angleIncrement, data->angleIncrement, 1e-5) );
 
     // flip the scan left-to-right if we are configured to do so
     if ( compensateRoll_ ) {
         // NOTE: instead of copying around, we should be able to simply change the
         // start bearing and bearing increment.
-        std::reverse( laserData->ranges.begin(), laserData->ranges.end() );
-        std::reverse( laserData->intensities.begin(), laserData->intensities.end() );
+        std::reverse( data->ranges.begin(), data->ranges.end() );
+        std::reverse( data->intensities.begin(), data->intensities.end() );
     }
 
-    laserObj_.localSetData( laserData );
+    laserObj_.localSetData( data );
 }
 
 void
@@ -133,7 +129,7 @@ MainLoop::run()
     {
         try 
         {
-            readLaserData( laserData );
+            readData( laserData );
 
 
             if ( heartbeater.isHeartbeatTime() )

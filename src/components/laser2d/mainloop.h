@@ -42,7 +42,7 @@ private:
     // Loops until activated
     void activate();
 
-    void readLaserData( orca::LaserScanner2dDataPtr &laserData );
+    void readData( orca::LaserScanner2dDataPtr & data );
 
     // The laser object
     LaserScanner2dI &laserObj_;

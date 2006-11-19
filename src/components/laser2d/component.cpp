@@ -105,6 +105,7 @@ Component::start()
         std::string errString = "Unknown laser type: "+driverName;
         context().tracer()->error( errString );
         throw orcaice::Exception( ERROR_INFO, errString );
+        return;
     }
     tracer()->debug( "Loaded '"+driverName+"' driver", 2 );
 
