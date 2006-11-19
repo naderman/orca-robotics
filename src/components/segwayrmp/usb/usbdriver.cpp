@@ -63,9 +63,12 @@ int
 UsbDriver::enable()
 {
     // init device
-    if ( usbio_->init() != UsbIo::OK ) {
+    if ( usbio_->init() != UsbIo::OK ) 
+    {
+        context_.tracer()->warning("UsbDriver::enable(): usbio_->init() failed.");
         return 1;
     }
+    context_.tracer()->debug("UsbDriver::enable(): usbio_->init() succeeded.");
     
     // segway is physically connected; try to configure
 
@@ -88,7 +91,7 @@ UsbDriver::enable()
         cerr<<"warning: error in setMaxVelocitySpeedFactor()"<<endl;
         return 2;
     }
-    
+
     if ( setMaxTurnrateScaleFactor( config_.maxTurnrateScale ) ) {
         cerr<<"warning: error in setMaxTurnrateScaleFactor()"<<endl;
         return 2;
@@ -98,7 +101,7 @@ UsbDriver::enable()
         cerr<<"warning: error in setMaxAccelerationScaleFactor()"<<endl;
         return 2;
     }
-    
+
     if ( setMaxCurrentLimitScaleFactor( config_.maxCurrentLimitScale ) ) {
         cerr<<"warning: error in setMaxCurrentLimitScaleFactor()"<<endl;
         return 2;
@@ -108,13 +111,15 @@ UsbDriver::enable()
         cerr<<"warning: error in setGainSchedule()"<<endl;
         return 2;
     }
-    
+
     return 0;
 }
 
 int
 UsbDriver::repair()
 {
+    context_.tracer()->debug( "Repairing..." );
+
     // try a quick reset
     if ( usbio_->reset() == UsbIo::OK ) {
         return 0;

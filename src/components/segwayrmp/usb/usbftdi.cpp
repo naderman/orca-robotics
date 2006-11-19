@@ -409,29 +409,30 @@ UsbIoFtdi::writePacket( CanPacket *pkt )
     DWORD bytesWritten;
     FT_STATUS ftStatus = FT_Write( ftHandle_, bytes, SEGWAY_USB_MESSAGE_SIZE, &bytesWritten );
     
-    //cout<<"result: "<<ftStatus<<" wrote: "<<bytesWritten<<endl;
+    //cout<<"UsbIoFtdi::writePacket(): result: "<<ftStatusToString(ftStatus)<<" wrote: "<<bytesWritten<<endl;
+
+    if ( ftStatus != FT_OK ) {
+        cout<<"UsbIoFtdi::writePacket(): FT_Write failed: result: "<<ftStatusToString(ftStatus)<<", bytesWritten: "<<bytesWritten<<endl;
     
-    /*
-    // debug
-    //DWORD bytesInRxUsb, bytesInTxUsb, usbEvent;
-    FT_STATUS ftStatusA = FT_GetQueueStatus( ftHandle_, &bytesInRxUsb );    
-    if ( ftStatusA == FT_OK )  {
-        cout<<"Status after write: rx: "<<bytesInRxUsb<<endl;
-        //cout<<"Status on write: rx: "<<bytesInRxUsb<<" tx: "<<bytesInTxUsb<<" ev: "<<usbEvent<<endl;
+        // debug
+        DWORD bytesInRxUsb, bytesInTxUsb, usbEvent;
+        FT_STATUS ftStatusA = FT_GetQueueStatus( ftHandle_, &bytesInRxUsb );    
+        if ( ftStatusA == FT_OK )  {
+            cout<<"Status after write: rx: "<<bytesInRxUsb<<endl;
+            //cout<<"Status on write: rx: "<<bytesInRxUsb<<" tx: "<<bytesInTxUsb<<" ev: "<<usbEvent<<endl;
+        }
+        else {
+            cout<<"FT_GetQueueStatus failed: "<<ftStatusToString(ftStatusA)<<endl;
+        }
+        ftStatusA = FT_GetStatus( ftHandle_, &bytesInRxUsb, &bytesInTxUsb, &usbEvent );
+        if ( ftStatusA == FT_OK )  {
+            cout<<"Status after write: rx: "<<bytesInRxUsb<<" tx: "<<bytesInTxUsb<<" ev: "<<usbEvent<<endl;
+        }
+        else {
+            cout<<"FT_GetStatus failed: "<<ftStatusToString(ftStatusA)<<endl;
+        }
     }
-    ftStatusA = FT_GetStatus( ftHandle_, &bytesInRxUsb, &bytesInTxUsb, &usbEvent );
-    if ( ftStatusA == FT_OK )  {
-        cout<<"Status after write: rx: "<<bytesInRxUsb<<" tx: "<<bytesInTxUsb<<" ev: "<<usbEvent<<endl;
-    }
-    */
     
-    /*
-    if ( ftStatus == FT_OK ) {
-        //DTRACE<<"wrote "<<bytesWritten<<" bytes"<<endl;
-    } else {
-        //DTRACE<<"ERROR: failed to write to USB"<<endl;  
-    }
-    */
     if ( ftStatus == FT_OK ) {
         return UsbIo::OK;
     }
