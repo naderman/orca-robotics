@@ -60,8 +60,8 @@ class RangeScanner2dDescription extends OrcaObject
     //! Number of range samples in a single scan
     int    numberOfSamples;
 
-    //! Offset of the centre of the sensor from the robot, in the robot 
-    //! local coordinate system.
+    //! Offset of the centre of the sensor with respect to the robot, 
+    //! in the robot local coordinate system.
     Frame3d offset;
 
     //! Dimensions of the sensor

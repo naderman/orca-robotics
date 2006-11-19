@@ -29,48 +29,50 @@ Remote access to images captured by a variety of monocular cameras.
 //! Specifies the format once it is decoded.
 //! @TODO: is this list reasonable/exhaustive?
 enum ImageFormat {
-    MODENFI,
-    MODEGRAY,  
-    MODERGB,   
-    MODEBGR,   
-    MODEYUV422,
-    BAYERBG,  
-    BAYERGB,   
-    BAYERRG,   
-    BAYERGR,
-    DIGICLOPSSTEREO,
-    DIGICLOPSRIGHT,
-    DIGICLOPSBOTH};
+    ImageFormatModeNfi,
+    ImageFormatModeGray,  
+    ImageFormatModeRgb,   
+    ImageFormatModeBgr,   
+    ImageFormatModeUv422,
+    ImageFormatBayerBg,  
+    ImageFormatBayerGb,   
+    ImageFormatBayerRg,   
+    ImageFormatBayerGr,
+    ImageFormatDigiclopsStereo,
+    ImageFormatDigiclopsRight,
+    ImageFormatDigiclopsBoth
+};
 
 //! Specifies any encoding of the image. 
 //! @TODO: Is this list reasonable/exhaustive?
 enum ImageCompression { 
-    COMPRESSIONTYPENONE,
-    COMPRESSIONTYPEJPEG};
+    ImageCompressionNone,
+    ImageCompressionJpeg
+};
 
 //! Camera configuration objectd
-class CameraConfig extends OrcaObject {
-    //! Image width in pixels
+class CameraDescription extends OrcaObject {
+    //! Image width [pixels]
     int   imageWidth; 
-    //! Image height in pixels
+
+    //! Image height [pixels]
     int   imageHeight;
-    //! Frame rate in fps
-    float frameRate; 
-    //! Image Format
+
+    //! Frame rate [frames/seconds]
+    double frameRate; 
+
+    //! Image format type
     ImageFormat format;
+
     //! Image compression type
     ImageCompression compression;
-    //! Are we talking to the hardware?
-    bool  isEnabled;
-}; 
 
-//!
-//! Geometric info
-//!
-class CameraGeometry extends OrcaObject 
-{
-    //! Offset of the camera with respect to the platform
+    //! Offset of the sensor with respect to the robot, 
+    //! in the robot local coordinate system.
     Frame3d offset; 
+
+    //! Dimensions of the sensor
+    Size3d  size;
 }; 
 
 //!
@@ -78,15 +80,19 @@ class CameraGeometry extends OrcaObject
 //!
 class CameraData extends OrcaObject
 {
-    //! Image width in pixels
+    //! Image width [pixels]
     int imageWidth;
-    //! Image height in pixels
+
+    //! Image height [pixels]
     int imageHeight;
+
     //! Image format type.
     ImageFormat format;
+
     //! Image compression type.
     ImageCompression compression;
-    //! The image data itself.  The structure of this byte sequence
+
+    //! The image data itself. The structure of this byte sequence
     //! depends on the image format and compression.
     ByteSequence image;
 };
@@ -108,15 +114,7 @@ interface Camera
         throws HardwareFailedException;
             
     //! Returns the current configuration.
-    nonmutating CameraConfig    getConfig();
-    
-    //! Returns the current geometry information.
-    nonmutating CameraGeometry  getGeometry();
-
-    //! Set the configuration of the sensor.
-    //! Throws remote exceptions if given a configuration it can't implement.
-    idempotent  void setConfig( CameraConfig config ) 
-        throws ConfigurationNotExistException;
+    nonmutating CameraDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.

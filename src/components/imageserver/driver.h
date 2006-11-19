@@ -7,12 +7,10 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_CAMERA_DRIVER_H
-#define ORCA2_CAMERA_DRIVER_H
+#ifndef ORCA2_IMAGESERVER_CAMERA_DRIVER_H
+#define ORCA2_IMAGESERVER_CAMERA_DRIVER_H
 
 #include <orca/camera.h>
-#include <string>
-
 
 static const ::std::string __orca__cameradriver_default_heartbeat_msg = "";
 
@@ -33,24 +31,34 @@ class Driver
 
 public:
 
-    Driver() {};
+    class Config
+    {   
+    public:
+        Config();
+        bool validate() const;
+        std::string toString() const;
+        bool operator==( const Config & other );
+        bool operator!=( const Config & other );
+
+        int imageWidth;
+        int imageHeight;
+        double frameRate;
+        orca::ImageFormat format;
+        orca::ImageCompression compression;
+    };
+
+    Driver( const Config & cfg ) : config_(cfg) {};
     virtual ~Driver() {};
 
-    virtual int enable()=0;
-    virtual int disable()=0;
-
-    virtual bool isEnabled()=0;
+    // Initializes the device. If it's aleady initialized, then it
+    // quietly re-initializes it.
+    // returns: 0 = success, non-zero = failure
+    virtual int init()=0;
 
     // Blocks till new data is available
     virtual int read( orca::CameraDataPtr &data )=0;
 
     // TODO: Should also have getData here as we don't always want all info from the read
-
-    // Set a specifc configuration
-    virtual int setConfig( const orca::CameraConfigPtr &cfg )=0;
-
-    // Get the current configuration
-    virtual int getConfig( orca::CameraConfigPtr &cfg )=0;
 
     // mechanism to get error messages etc back from driver.
     virtual const std::string &infoMessages() { return infoMessages_; };
@@ -58,14 +66,16 @@ public:
     // Any special info to put in the heartbeat messages?
     virtual const std::string heartbeatMessage() { return __orca__cameradriver_default_heartbeat_msg; };
 
+    // Simply returns the current stored configuration. Does not talk to device 
+    Config config() const { return config_; };
+
 protected:
 
+    Config config_;
+
     std::string infoMessages_;
-
-private:
-
 };
 
-}
+} // namespace
 
 #endif

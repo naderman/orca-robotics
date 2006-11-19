@@ -7,19 +7,18 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_CAMERA_MAIN_LOOP_H
-#define ORCA2_CAMERA_MAIN_LOOP_H
-
-#include "driver.h"
-#include "imagegrabber/imagegrabber.h"
-#include <orca/camera.h>
-#include "cameraI.h"
+#ifndef ORCA2_IMAGESERVER_MAIN_LOOP_H
+#define ORCA2_IMAGESERVER_MAIN_LOOP_H
 
 #include <orcaice/thread.h>
 #include <orcaice/ptrbuffer.h>
 #include <orcaice/context.h>
 
-#include <iostream>
+#include <orca/camera.h>
+#include "cameraI.h"
+#include "driver.h"
+#include "imagegrabber/imagegrabber.h"
+
 
 namespace imageserver {
 
@@ -35,10 +34,8 @@ public:
 
     MainLoop( CameraI              &cameraObj,
               Driver*              hwDriver,
-              orcaice::Context     context,
               ImageGrabber*        imageGrabber,
-              bool                 startEnabled, 
-              std::string          driverName );
+              const orcaice::Context &context );
 
     ~MainLoop();
 
@@ -52,14 +49,17 @@ private:
     // Generic driver for the hardware
     Driver *hwDriver_;
 
-    orcaice::Context context_;
-
     ImageGrabber *imageGrabber_;
 
-    std::string driverName_;
+    orcaice::Context context_;
+
+    // Loops until activated
+    void activate();
+
+    void readData( orca::CameraDataPtr & data );
 
     // set up camera and configuration from .cfg parameters
-    void initialiseCamera( ::orca::CameraDataPtr& cameraData, ::orca::CameraConfigPtr& desiredConfig );
+    void initialiseCamera();
 };
 
 } // namespace

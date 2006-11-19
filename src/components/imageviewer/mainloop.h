@@ -8,47 +8,42 @@
  *
  */
 
-#ifndef ORCA2_IMAGEVIEWER_IMAGE_HANDLER_H
-#define ORCA2_IMAGEVIEWER_IMAGE_HANDLER_H
-
-#include <orcaice/thread.h>
-#include <orcaice/ptrbuffer.h>
-#include <orcaice/context.h>
-#include <orca/camera.h>
+#ifndef ORCA2_IMAGEVIEWER_MAINLOOP_H
+#define ORCA2_IMAGEVIEWER_MAINLOOP_H
 
 #include <opencv/highgui.h>
 #include <opencv/cv.h>
 
+#include <orca/camera.h>
+#include <orcaice/thread.h>
+#include <orcaice/ptrbuffer.h>
+#include <orcaice/context.h>
+
+
 namespace imageviewer{
 
-//class AlgorithmDriver;
-
-class ImageHandler : public orcaice::Thread
+class MainLoop : public orcaice::Thread
 {
 public:
 
-    ImageHandler( orca::CameraPrx cameraPrx,
-                  orcaice::PtrBuffer<orca::CameraDataPtr> &cameraDataBuffer,
-                  const orcaice::Context & context );
+    MainLoop( const orca::CameraConsumerPrx & callbackPrx,
+                orcaice::PtrBuffer<orca::CameraDataPtr> & dataPipe, 
+                const orcaice::Context & context );
 
-    ~ImageHandler();
+    ~MainLoop();
 
     virtual void run();
 
 private:
-    
-    // generic algorithm
-    //AlgorithmDriver* driver_;
 
     // Camera proxy
     orca::CameraPrx cameraPrx_;
-    
-    // Camera config and geometry
-    orca::CameraConfigPtr cameraConfigPtr_;
-    orca::CameraGeometryPtr cameraGeometryPtr_;
+
+    // local object to receive data
+    orca::CameraConsumerPrx callbackPrx_;
     
     // buffers
-    orcaice::PtrBuffer<orca::CameraDataPtr> &cameraDataBuffer_;
+    orcaice::PtrBuffer<orca::CameraDataPtr> & dataPipe_;
     
     orcaice::Context context_;
 

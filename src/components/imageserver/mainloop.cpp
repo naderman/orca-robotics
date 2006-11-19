@@ -7,27 +7,27 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
+
+#include <iostream>
+#include <orcaice/orcaice.h>
+#include <orcaice/heartbeater.h>
+
 #include "mainloop.h"
 #include "conversions.h"
-
-#include <orcaice/orcaice.h>
 
 //using namespace std;
 using namespace orca;
 
 namespace imageserver {
 
-MainLoop::MainLoop( CameraI            &cameraObj,
-                    Driver*            hwDriver,
-                    orcaice::Context   context,
-                    ImageGrabber*      imageGrabber,
-                    bool               startEnabled, 
-                    std::string        driverName )
+MainLoop::MainLoop( CameraI              &cameraObj,
+                    Driver*              hwDriver,
+                    ImageGrabber*        imageGrabber,
+                    const orcaice::Context &context )
     : cameraObj_(cameraObj),
       hwDriver_(hwDriver),
-      context_(context),
       imageGrabber_(imageGrabber),
-      driverName_(driverName)
+      context_(context)
 {
 }
 
@@ -36,214 +36,183 @@ MainLoop::~MainLoop()
 }
 
 void
+MainLoop::activate()
+{
+    while ( isActive() )
+    {
+        try {
+            context_.activate();
+            break;
+        }
+        catch ( orcaice::Exception & e )
+        {
+            std::stringstream ss;
+            ss << "MainLoop::activate(): Caught exception: " << e.what();
+            context_.tracer()->warning( ss.str() );
+        }
+        catch ( Ice::Exception & e )
+        {
+            std::stringstream ss;
+            ss << "MainLoop::activate(): Caught exception: " << e;
+            context_.tracer()->warning( ss.str() );
+        }
+        catch ( ... )
+        {
+            context_.tracer()->warning( "MainLoop::activate(): caught unknown exception." );
+        }
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+    }
+}
+
+void
+MainLoop::readData( orca::CameraDataPtr & data )
+{
+//     context_.tracer()->debug( "Reading data...", 8 );
+
+    //
+    // Read from the driver
+    //            
+    if ( hwDriver_->read( data ) ) 
+    {
+        context_.tracer()->warning( "Problem reading from the sensor. Re-initializing hardware." );
+        
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+        hwDriver_->init();
+        return;
+    }
+
+    cameraObj_.localSetData( data );
+}
+
+void
 MainLoop::run()
 {
-    const int MAX_TIME_FOR_RECONFIGURE = 20000; // ms
-    const int TIME_BETWEEN_HEARTBEATS  = 10000;  // ms
-    IceUtil::Time lastHeartbeatTime = IceUtil::Time::now();
+    CameraDataPtr cameraData = new CameraData;
+    orcaice::Heartbeater heartbeater( context_ );
 
-    try 
+    // Catches all its exceptions.
+    activate();
+
+    hwDriver_->init();
+
+    //
+    // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
+    //            So we have to avoid getting stuck anywhere within this main loop.
+    //
+    while ( isActive() )
     {
-        CameraDataPtr cameraData = new CameraData;
-
-        //
-        // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
-        //            So we have to avoid getting stuck in a loop anywhere within this main loop.
-        //
-        while ( isActive() )
+        try 
         {
-            //
-            // This big while loop checks for config requests
-            //
-            while ( !cameraObj_.desiredConfigBuffer_.isEmpty() && isActive() )
+            readData( cameraData );
+
+
+            if ( heartbeater.isHeartbeatTime() )
             {
-                CameraConfigPtr desiredConfig;
-
-                // get and pop, so we remove the request from the buffer
-                cameraObj_.desiredConfigBuffer_.getAndPop( desiredConfig );
-
-//                context_.tracer()->print( "Setting config to: " + orcaice::toString( desiredConfig ) );
-
-                bool configurationDone = false;
-                IceUtil::Time reconfigStartTime = IceUtil::Time::now();
-                while ( !configurationDone 
-                        && isActive()
-                        && cameraObj_.desiredConfigBuffer_.isEmpty() )
-                {
-                    if ( hwDriver_->setConfig( desiredConfig ) == 0 )
-                    {
-                        if( driverName_ != "fake")
-                        {
-                            // Automatically setup Camera object if we're
-                            // not using the fake driver. Fake driver
-                            // manually sets these without the use of
-                            // imagegrabber.
-                            //  Only need to do this once.
-                            initialiseCamera( cameraData, desiredConfig );
-                        }
-                       
-                        context_.tracer()->print( "Successful reconfiguration! " + hwDriver_->infoMessages() );
-
-                        context_.tracer()->print( "Automatic config has the following settings: " + orcaice::toString( desiredConfig ) );
-
-                        // Tell the world that we've reconfigured
-                        cameraObj_.currentConfigBuffer_.push( desiredConfig );
-                        configurationDone = true;
-                    }
-                    else
-                    {
-                        if ( (IceUtil::Time::now()-reconfigStartTime).toMilliSecondsDouble() > MAX_TIME_FOR_RECONFIGURE )
-                        {
-                            context_.tracer()->error( "Configuration failed: " + orcaice::toString(desiredConfig) );
-                            context_.tracer()->error( hwDriver_->infoMessages() );
-                        }
-                        else
-                        {
-                            context_.tracer()->print( "Still trying to reconfigure..." );
-                            context_.tracer()->print( hwDriver_->infoMessages() );
-                        }
-
-                        // Tell the world that we're down while re-configuring
-                        CameraConfigPtr failedConfig = CameraConfigPtr::dynamicCast( desiredConfig->ice_clone() );
-                        failedConfig->isEnabled = false;
-                        cameraObj_.currentConfigBuffer_.push( failedConfig );
-                    }
-                } // end of configuration loop
-            } // end of check for config requires
-
-
-            //
-            // This 'if' block is what slows the loop down, by either reading from the cmaera
-            // or sleeping.
-            //
-            if ( hwDriver_->isEnabled() )
-            {
-                // Read from the camera
-                int ret = hwDriver_->read( cameraData );
-                if ( ret != 0 )
-                {
-                    context_.tracer()->error( "Problem reading from camera.  Shutting down hardware." );
-                    hwDriver_->disable();
-
-                    CameraConfigPtr cfg;
-                    cameraObj_.currentConfigBuffer_.get( cfg );
-
-                    // Tell the camera to try to get back to this config
-                    cameraObj_.desiredConfigBuffer_.push( cfg );
-
-                    // Tell the world what our current configuration is
-                    cfg->isEnabled = false;
-                    cameraObj_.currentConfigBuffer_.push( cfg );
-                }
-                else
-                {
-                    cameraObj_.localSetData( cameraData );
-                }
-            }
-            else
-            {
-                // Wait for someone to enable us
-                IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(100));
+                heartbeater.beat( "Camera enabled (?). " + hwDriver_->heartbeatMessage() );
             }
 
-            if ( (IceUtil::Time::now()-lastHeartbeatTime).toMilliSecondsDouble() >= TIME_BETWEEN_HEARTBEATS )
-            {
-                if ( hwDriver_->isEnabled() )
-                {
-                    context_.tracer()->heartbeat("Camera enabled. " + hwDriver_->heartbeatMessage() );
-                }
-                else
-                {
-                    context_.tracer()->heartbeat( "Camera disabled." );
-                }
-                lastHeartbeatTime = IceUtil::Time::now();
-            }
-        } // end of while
-    } // end of try
-    catch ( Ice::CommunicatorDestroyedException &e )
-    {
-        // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-        // somewhere in mainLoop.
-        //
-        // Could probably handle it better for an Application by stopping the component on Ctrl-C
-        // before shutting down communicator.
-    }
+        } // end of try
+        catch ( Ice::CommunicatorDestroyedException & )
+        {
+            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
+            // somewhere in mainLoop.
+        }
+        catch ( Ice::Exception &e )
+        {
+            std::stringstream ss;
+            ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e;
+            context_.tracer()->error( ss.str() );
+        }
+        catch ( std::exception &e )
+        {
+            std::stringstream ss;
+            ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e.what();
+            context_.tracer()->error( ss.str() );
+        }
+        catch ( ... )
+        {
+            std::stringstream ss;
+            ss << "ERROR(mainloop.cpp): Caught unexpected unknown exception.";
+            context_.tracer()->error( ss.str() );
+        }
+
+    } // end of while
 
     // Camera hardware will be shut down in the driver's destructor.
     context_.tracer()->debug( "dropping out from run()", 5 );
 }
 
 void
-MainLoop::initialiseCamera(CameraDataPtr& cameraData, CameraConfigPtr& desiredConfig)
+MainLoop::initialiseCamera()
 {                            
-    // set width and height
-    if ( desiredConfig->imageWidth == 0 || desiredConfig->imageHeight == 0 )
-    {
-        // use default if user has not specified anything
-        cameraData->imageWidth = imageGrabber_->width();
-        cameraData->imageHeight = imageGrabber_->height();
-    }
-    else
-    {
-        std::cout << "TODO(mainloop.cpp): there should be a check here that the image size is compatible with the hardware" << std::endl;
-        // user specified width and height
-        cameraData->imageWidth = desiredConfig->imageWidth;
-        cameraData->imageHeight = desiredConfig->imageHeight;
-        imageGrabber_->setWidth( desiredConfig->imageWidth );
-        imageGrabber_->setHeight( desiredConfig->imageHeight );
-        
-        // workaround for setting width and height for firewire cameras
-        // opencv requires the mode to be set for the correct width and height to be set also
-       if ( (imageGrabber_->width() != desiredConfig->imageWidth) || (imageGrabber_->height() !=  desiredConfig->imageHeight) )
-       {
-            // check the mode
-            orca::ImageFormat mode = orcaImageMode( imageGrabber_->mode() );
-            // find the dc1394 specific mode
-            int dc1394Mode = imageserver::dc1394ImageMode( mode, desiredConfig->imageWidth, desiredConfig->imageHeight );
-            if ( dc1394Mode > 0)
-                imageGrabber_->setMode( dc1394Mode );
-            else
-            {
-                // TODO: throw an exception instead of exiting
-                std::cout << "ERROR(mainloop.cpp): unknown colour mode" << std::endl;
-                exit(1);
-            }
-        }
-    }
-    
-    // set the format
-    if( desiredConfig->format == BAYERBG | desiredConfig->format == BAYERGB | desiredConfig->format == BAYERRG | desiredConfig->format == BAYERGR )
-    {
-        // force the format to be bayer
-        cameraData->format = desiredConfig->format;
-
-    }
-    else if ( desiredConfig->format == DIGICLOPSSTEREO | desiredConfig->format == DIGICLOPSRIGHT | desiredConfig->format == DIGICLOPSBOTH )
-    {
-        // set digiclops format
-        cameraData->format = desiredConfig->format;
-    
-        // tell the digiclops what type of images to send
-        imageGrabber_->setMode( desiredConfig->format );
-    }
-    else
-    {
-        // let the grabber figure out the format if no bayer encoding or not using a digiclops camera
-        cameraData->format = orcaImageMode( imageGrabber_->mode() );
-        // include this in camera config
-        desiredConfig->format = cameraData->format;
-    }
-    std::cout << "imageGrabber_->width(): " << imageGrabber_->width() << std::endl;
-    std::cout << "imageGrabber_->height(): " << imageGrabber_->height() << std::endl;
-    std::cout << "cameraData->format: " <<  cameraData->format << std::endl;    
-
-    // resize the object for the correct image size
-    cameraData->image.resize( imageGrabber_->size() );
-    
-    // Setup the rest of camera config
-    desiredConfig->imageWidth = cameraData->imageWidth;
-    desiredConfig->imageHeight = cameraData->imageHeight;
-    desiredConfig->frameRate = imageGrabber_->fps();
+//     // set width and height
+//     if ( desiredConfig->imageWidth == 0 || desiredConfig->imageHeight == 0 )
+//     {
+//         // use default if user has not specified anything
+//         cameraData->imageWidth = imageGrabber_->width();
+//         cameraData->imageHeight = imageGrabber_->height();
+//     }
+//     else
+//     {
+//         std::cout << "TODO(mainloop.cpp): there should be a check here that the image size is compatible with the hardware" << std::endl;
+//         // user specified width and height
+//         cameraData->imageWidth = desiredConfig->imageWidth;
+//         cameraData->imageHeight = desiredConfig->imageHeight;
+//         imageGrabber_->setWidth( desiredConfig->imageWidth );
+//         imageGrabber_->setHeight( desiredConfig->imageHeight );
+//         
+//         // workaround for setting width and height for firewire cameras
+//         // opencv requires the mode to be set for the correct width and height to be set also
+//        if ( (imageGrabber_->width() != desiredConfig->imageWidth) || (imageGrabber_->height() !=  desiredConfig->imageHeight) )
+//        {
+//             // check the mode
+//             orca::ImageFormat mode = orcaImageMode( imageGrabber_->mode() );
+//             // find the dc1394 specific mode
+//             int dc1394Mode = imageserver::dc1394ImageMode( mode, desiredConfig->imageWidth, desiredConfig->imageHeight );
+//             if ( dc1394Mode > 0)
+//                 imageGrabber_->setMode( dc1394Mode );
+//             else
+//             {
+//                 // TODO: throw an exception instead of exiting
+//                 std::cout << "ERROR(mainloop.cpp): unknown colour mode" << std::endl;
+//                 exit(1);
+//             }
+//         }
+//     }
+//     
+//     // set the format
+//     if( desiredConfig->format == ImageFormatBayerBg | desiredConfig->format == ImageFormatBayerGb | desiredConfig->format == ImageFormatBayerRg | desiredConfig->format == ImageFormatBayerGr )
+//     {
+//         // force the format to be bayer
+//         cameraData->format = desiredConfig->format;
+// 
+//     }
+//     else if ( desiredConfig->format == ImageFormatDigiclopsStereo | desiredConfig->format == ImageFormatDigiclopsRight | desiredConfig->format == ImageFormatDigiclopsBoth )
+//     {
+//         // set digiclops format
+//         cameraData->format = desiredConfig->format;
+//     
+//         // tell the digiclops what type of images to send
+//         imageGrabber_->setMode( desiredConfig->format );
+//     }
+//     else
+//     {
+//         // let the grabber figure out the format if no bayer encoding or not using a digiclops camera
+//         cameraData->format = orcaImageMode( imageGrabber_->mode() );
+//         // include this in camera config
+//         desiredConfig->format = cameraData->format;
+//     }
+//     std::cout << "imageGrabber_->width(): " << imageGrabber_->width() << std::endl;
+//     std::cout << "imageGrabber_->height(): " << imageGrabber_->height() << std::endl;
+//     std::cout << "cameraData->format: " <<  cameraData->format << std::endl;    
+// 
+//     // resize the object for the correct image size
+//     cameraData->image.resize( imageGrabber_->size() );
+//     
+//     // Setup the rest of camera config
+//     desiredConfig->imageWidth = cameraData->imageWidth;
+//     desiredConfig->imageHeight = cameraData->imageHeight;
+//     desiredConfig->frameRate = imageGrabber_->fps();
 }
 
 } // namespace

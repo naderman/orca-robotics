@@ -18,7 +18,7 @@
 
 namespace imageviewer{
 
-class ImageHandler;
+class MainLoop;
 
 class Component : public orcaice::Component
 {
@@ -34,7 +34,7 @@ public:
 private:
 
     orcaice::PtrBuffer<orca::CameraDataPtr> cameraDataBuffer_;
-    ImageHandler* imageHandler_;
+    MainLoop* mainloop_;
 };
     
 } // namespace

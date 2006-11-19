@@ -8,21 +8,17 @@
  *
  */
 
-#ifndef MONO_DRIVER_H
-#define MONO_DRIVER_H
-
-#include "driver.h"
-#include "imagegrabber/imagegrabber.h"
-// #include "imagegrabber/cvgrabber.h"
-// #include "imagegrabber/digiclopsgrabber.h"
+#ifndef ORCA2_IMAGESERVER_MONO_DRIVER_H
+#define ORCA2_IMAGESERVER_MONO_DRIVER_H
 
 #include <orcaice/context.h>
-#include <orca/camera.h>
+#include "driver.h"
+#include "imagegrabber/imagegrabber.h"
 
+// #include "imagegrabber/cvgrabber.h"
+// #include "imagegrabber/digiclopsgrabber.h"
 // #include <opencv/highgui.h>
 // #include <opencv/cv.h>
-
-#include <iostream>
 
 namespace imageserver {
 
@@ -34,29 +30,19 @@ class MonoDriver : public Driver
 
 public:
 
-//    MonoDriver( CvGrabber* cvGrabber, orcaice::Context context );
-    MonoDriver( ImageGrabber* imageGrabber, orcaice::Context context );
+    MonoDriver( ImageGrabber* imageGrabber, 
+                const Config & cfg, const orcaice::Context & context );
     virtual ~MonoDriver();
 
-    virtual int enable() { isEnabled_=true; return 0; };
-    virtual int disable() { isEnabled_=false; return 0; };
-
-    virtual bool isEnabled() { return isEnabled_; };
+    virtual int init();
 
     // Blocks till new data is available
     virtual int read( orca::CameraDataPtr &data );
 
-    // Set a specific configuration
-    virtual int setConfig( const orca::CameraConfigPtr &cfg );
-
-    // Get the current configuration
-    virtual int getConfig( orca::CameraConfigPtr &cfg );
-
 private:
-
-    bool isEnabled_;
-
     ImageGrabber* imageGrabber_;
+
+    orcaice::Context context_;
 
 };
 

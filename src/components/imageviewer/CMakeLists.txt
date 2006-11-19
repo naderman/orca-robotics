@@ -26,7 +26,7 @@ IF ( NOT WIN32 AND BUILD_IMAGE_VIEWER )
 
         # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
         # SET( COMMON_SRCS cameraconsumerI component imagehandler colourconversions conversions  imageutils)
-        SET( COMMON_SRCS cameraconsumerI component imagehandler )
+        SET( COMMON_SRCS cameraconsumerI component mainloop )
 
         GLOBAL_ADD_EXECUTABLE( imageviewer main ${COMMON_SRCS} )
 

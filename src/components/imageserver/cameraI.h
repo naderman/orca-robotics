@@ -30,29 +30,20 @@ namespace imageserver {
 class CameraI : public virtual orca::Camera
 {
 public:
-    CameraI( orca::CameraGeometryPtr geometry,
-            orcaice::Context              context );
+    CameraI( const orca::CameraDescriptionPtr & descr,
+             const std::string                &ifaceTag,
+             const orcaice::Context           & context );
 
     //
-    // Remote calls:
+    // From orca object
     //
 
-    // Get Camera Data
     virtual ::orca::CameraDataPtr     getData(const ::Ice::Current& ) const;
 
-    // Get Camera Config
-    virtual ::orca::CameraConfigPtr   getConfig(const ::Ice::Current& ) const;
+    virtual ::orca::CameraDescriptionPtr   getDescription(const ::Ice::Current& ) const;
 
-    // Get Camera Geometry
-    virtual ::orca::CameraGeometryPtr getGeometry(const ::Ice::Current& ) const;
-
-    // Set Camera Config
-    virtual void setConfig(const ::orca::CameraConfigPtr &config, const ::Ice::Current& );
-
-    // Subscribe people
     virtual void subscribe(const ::orca::CameraConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
-    // Unsubscribe people
     virtual void unsubscribe(const ::orca::CameraConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
 
@@ -61,30 +52,20 @@ public:
     //
     void localSetData( const ::orca::CameraDataPtr data );
 
-    void localSetCurrentConfig( const ::orca::CameraConfigPtr config )
-        { currentConfigBuffer_.push( config ); }
-    void localSetDesiredConfig( const ::orca::CameraConfigPtr config )
-        { desiredConfigBuffer_.push( config ); }
-
-    // We put incoming config requests into this buffer
-    orcaice::PtrBuffer<orca::CameraConfigPtr> desiredConfigBuffer_;
-
-    // We get the current config from here.
-    orcaice::PtrBuffer<orca::CameraConfigPtr> currentConfigBuffer_;
-
 private:
 
     // the driver will put the latest data into this buffer
     orcaice::PtrBuffer<orca::CameraDataPtr>          dataBuffer_;
 
-    orca::CameraGeometryPtr  geometry_;
+    orca::CameraDescriptionPtr  descr_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx             topicPrx_;
     // The interface to which we'll publish
     orca::CameraConsumerPrx  consumerPrx_;
 
-    orcaice::Context context_;
+    std::string                    ifaceTag_;
+    orcaice::Context               context_;
 };
 
 }

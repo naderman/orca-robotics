@@ -8,11 +8,11 @@
  *
  */
 
-#include "component.h"
-#include "imagehandler.h"
-
-#include <orcaice/orcaice.h>
 #include <iostream>
+#include <orcaice/orcaice.h>
+
+#include "component.h"
+#include "mainloop.h"
 
 // implementations of Ice objects
 #include "cameraconsumerI.h"
@@ -23,70 +23,25 @@ using namespace imageviewer;
 
 Component::Component()
     : orcaice::Component( "ImageViewer", orcaice::HomeInterface  ),
-      imageHandler_(0)
+      mainloop_(0)
 {
 }
 
 Component::~Component()
 {
-    // do not delete inputLoop_ or imageHandler_!!! They derive from Ice::Thread and deletes itself.
+    // do not delete inputLoop_ or mainloop_!!! They derive from Ice::Thread and deletes itself.
 }
 
 // NOTE: this function returns after it's done, all variables that need to be permanent must
 //       be declared as member variables.
-void Component::start()
+void 
+Component::start()
 {
-
-    //
-    // REQUIRED INTERFACE: Camera
-    //
-
-    // Connect directly to the interface
-    orca::CameraPrx cameraPrx;
-    // TODO: this will not actually quit on ctrl-c
-    while( true ) // isActive() )
-    {
-        try
-        {
-            orcaice::connectToInterfaceWithTag<orca::CameraPrx>( context(), cameraPrx, "Camera" );
-            break;
-        }
-        catch ( const orcaice::NetworkException & e )
-        {
-            tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
-        }
-        // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
-        //       but if this happens it's ok if we just quit.
-    }
-    
-    // Get the geometry
-    cout << "Camera Geometry: " << cameraPrx->getGeometry() << endl;
-
-    // Get the configuration
-    cout << "Camera Config:   " << cameraPrx->getConfig() << endl;
-
-    // Get the data once
-    try
-    {
-        cout << "TODO(imageviewer/component.cpp): Check that ImageServer has loaded data into the buffer before trying to get data" << endl;
-        // workaround... if imageserver and imageviewer are being run in an icebox, the
-        // imageviewer needs to wait until the imageserver has loaded data
-        // into the buffer... this should check rather than waiting
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-
-        tracer()->info( "Trying to get image info as a test" );
-        tracer()->print( orcaice::toString( cameraPrx->getData() ) );
-    }
-    catch ( const orca::HardwareFailedException & e )
-    {
-        tracer()->error( "hardware failure reported when getting a scan. Will subscribe anyway." );
-    }
-
     // create a callback object to recieve images
     Ice::ObjectPtr consumer = new CameraConsumerI( cameraDataBuffer_ );
     orca::CameraConsumerPrx callbackPrx =
         orcaice::createConsumerInterface<orca::CameraConsumerPrx>( context(), consumer );
+
     //
     // ENABLE NETWORK CONNECTIONS
     //
@@ -95,43 +50,17 @@ void Component::start()
     activate();
     
     //
-    // Subscribe for data
+    // start main loop
     //
-    // will try forever until the user quits with ctrl-c
-    // TODO: this will not actually quit on ctrl-c
-    while ( true ) // ( isActive() )
-    {
-        try
-        {
-            cameraPrx->subscribe( callbackPrx );
-            break;
-        }
-        catch ( const orca::SubscriptionFailedException & e )
-        {
-            tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
-        }
-    }
-    
-    imageHandler_ = new ImageHandler( cameraPrx,
-                                      cameraDataBuffer_,
-                                      context() );
-    imageHandler_->start();
+    mainloop_ = new MainLoop( callbackPrx, cameraDataBuffer_, context() );
+    mainloop_->start();
     
     // the rest is handled by the application/service
 }
 
-void Component::stop()
+void 
+Component::stop()
 {
-    tracer()->debug( "component is stopping...",5 );
-    // make sure that the main loop was actually created
-
-    if ( imageHandler_ ) {
-        // Tell the main loop to stop
-        imageHandler_->stop();
-    
-        // Then wait for it
-        imageHandler_->getThreadControl().join();
-    }
-
+    tracer()->info("stopping component...");
+    orcaice::Thread::stopAndJoin( mainloop_ );
 }

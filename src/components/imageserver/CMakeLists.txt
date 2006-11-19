@@ -66,7 +66,7 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
   LINK_DIRECTORIES( imagegrabber )
 
   # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-  SET( COMMON_SRCS cameraI camerautil component conversions mainloop ${DRIVER_SRCS} )
+  SET( COMMON_SRCS cameraI component conversions mainloop ${DRIVER_SRCS} )
 
   GLOBAL_ADD_EXECUTABLE( imageserver main ${COMMON_SRCS} )
 

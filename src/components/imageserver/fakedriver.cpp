@@ -7,23 +7,32 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#include "fakedriver.h"
-#include <orca/camera.h>
-#include <orcaice/orcaice.h>
+
 #include <iostream>
 #include <stdlib.h>
+#include <orca/camera.h>
+#include <orcaice/orcaice.h>
+
+#include "fakedriver.h"
 
 using namespace std;
 
 namespace imageserver {
 
-FakeDriver::FakeDriver()
+FakeDriver::FakeDriver( const Config & cfg, const orcaice::Context & context )
+    : Driver(cfg),
+      context_(context)
 {
 }
 
 FakeDriver::~FakeDriver()
 {
-    disable();
+}
+
+int
+FakeDriver::init()
+{ 
+    return 0;
 }
 
 int 
@@ -34,8 +43,8 @@ FakeDriver::read( orca::CameraDataPtr &data )
     // initialise values for the camera object
     data->imageWidth = 640;
     data->imageHeight = 480;
-    data->format = orca::MODEBGR;
-    data->compression = orca::COMPRESSIONTYPENONE;
+    data->format = orca::ImageFormatModeBgr;
+    data->compression = orca::ImageCompressionNone;
     cout << "TODO: resize image properly for different modes" << endl;
     int imageSize = (int)ceil( 3 * data->imageHeight * data->imageWidth );
     data->image.resize( imageSize );
@@ -84,20 +93,8 @@ FakeDriver::read( orca::CameraDataPtr &data )
 }
 
 int 
-FakeDriver::setConfig( const orca::CameraConfigPtr &cfg )
-{
-    isEnabled_ = cfg->isEnabled;
-    return 0;
-}
-
-int 
-FakeDriver::getConfig( orca::CameraConfigPtr &cfg )
-{
-    return 0;
-}
-
-int 
-FakeDriver::fill( orca::ByteSequence& image, const unsigned char R, const unsigned char G, const unsigned B )
+FakeDriver::fill( orca::ByteSequence& image, 
+            const unsigned char R, const unsigned char G, const unsigned B )
 {
     orca::ByteSequence::iterator i;
     for ( i= image.begin(); i != image.end(); i+=3 )

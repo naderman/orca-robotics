@@ -8,29 +8,34 @@
  *
  */
 
-#include "monodriver.h"
-#include "imagegrabber/imagegrabber.h"
-
-#include <orca/camera.h>
-#include <orcaice/orcaice.h>
-
-//#include <triclops/pnmutils.h>
 #include <iostream>
 #include <stdlib.h>
+#include <orca/camera.h>
+#include <orcaice/orcaice.h>
+//#include <triclops/pnmutils.h>
+
+#include "monodriver.h"
 
 using namespace std;
 
 namespace imageserver {
 
-MonoDriver::MonoDriver( ImageGrabber* imageGrabber, orcaice::Context context )
-    : imageGrabber_(imageGrabber)
+MonoDriver::MonoDriver( ImageGrabber* imageGrabber, 
+                        const Config & cfg, const orcaice::Context & context )
+    : Driver(cfg),
+      imageGrabber_(imageGrabber),
+      context_(context)
 {
-
 }
 
 MonoDriver::~MonoDriver()
 {
-    disable();
+}
+
+int
+MonoDriver::init()
+{ 
+    return 0;
 }
 
 int 
@@ -80,24 +85,10 @@ MonoDriver::read( orca::CameraDataPtr &data )
         // size of the image (data->image.size()) was defined in mainloop.cpp
         memcpy( &data->image[0], rawImage, data->image.size() );
 
-        data->compression = orca::COMPRESSIONTYPENONE;
+        data->compression = orca::ImageCompressionNone;
         
         return 0;
     }
 }
-
-int 
-MonoDriver::setConfig( const orca::CameraConfigPtr &cfg )
-{
-    isEnabled_ = cfg->isEnabled;
-    return 0;
-}
-
-int 
-MonoDriver::getConfig( orca::CameraConfigPtr &cfg )
-{
-    return 0;
-}
-
 
 }

@@ -25,24 +25,24 @@ orca::ImageFormat orcaImageMode( int mode )
     case MODE_1024x768_YUV422:
     case MODE_1280x960_YUV422:
     case MODE_1600x1200_YUV422:
-        return orca::MODEYUV422;
+        return orca::ImageFormatModeUv422;
     case MODE_640x480_RGB:
     case MODE_800x600_RGB:
     case MODE_1024x768_RGB:
     case MODE_1280x960_RGB:
     case MODE_1600x1200_RGB:
-        return orca::MODERGB;
+        return orca::ImageFormatModeRgb;
     case MODE_640x480_MONO:
     case MODE_800x600_MONO:
     case MODE_1024x768_MONO:
         cout << "MODE_1024x768_MONO" << endl;
     case MODE_1280x960_MONO:
     case MODE_1600x1200_MONO:
-        return orca::MODEGRAY;
+        return orca::ImageFormatModeGray;
     default:
-        orca::ImageFormat format = orca::MODENFI;
+        orca::ImageFormat format = orca::ImageFormatModeNfi;
         cout << "WARNING(conversions.cpp): Unknown colour mode: " << orcaimage::formatName( format ) << endl;
-        return orca::MODENFI;
+        return orca::ImageFormatModeNfi;
     }
 
 }
@@ -51,7 +51,7 @@ int dc1394ImageMode( orca::ImageFormat mode, int width, int height )
 {
     switch( mode )
     {
-        case orca::MODEYUV422:
+        case orca::ImageFormatModeUv422:
             if ( width==320 & height==240 )         
                 return MODE_320x240_YUV422;
             else if ( width==640 & height==480 )
@@ -70,7 +70,7 @@ int dc1394ImageMode( orca::ImageFormat mode, int width, int height )
                 return -1;
             }          
         
-        case orca::MODERGB:
+        case orca::ImageFormatModeRgb:
             if ( width==640 & height==480 )
                 return MODE_640x480_RGB;
             else if ( width==800 & height==600 )
@@ -87,7 +87,7 @@ int dc1394ImageMode( orca::ImageFormat mode, int width, int height )
                 return -1;
             }
             
-        case orca::MODEGRAY:
+        case orca::ImageFormatModeGray:
             if ( width==640 & height==480 )
                 return MODE_640x480_MONO;
             else if ( width==800 & height==600 )
@@ -104,9 +104,9 @@ int dc1394ImageMode( orca::ImageFormat mode, int width, int height )
                 return -1;
             }
         
-        case orca::MODENFI:
+        case orca::ImageFormatModeNfi:
         default:
-            cout << "ERROR(conversions.cpp): Unknown colour mode or MODENFI - cannot convert" << endl;
+            cout << "ERROR(conversions.cpp): Unknown colour mode or ImageFormatModeNfi - cannot convert" << endl;
             return -1;
     }
 

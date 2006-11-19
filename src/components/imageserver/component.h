@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_CAMERA_COMPONENT_H
-#define ORCA2_CAMERA_COMPONENT_H
+#ifndef ORCA2_IMAGESERVER_COMPONENT_H
+#define ORCA2_IMAGESERVER_COMPONENT_H
 
 #include <orcaice/component.h>
 #include <orcaice/ptrbuffer.h>

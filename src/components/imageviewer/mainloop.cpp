@@ -8,23 +8,21 @@
  *
  */
 
-#include "imagehandler.h"
-
 #include <iostream>
 #include <orcaice/orcaice.h>
-
 #include <orcaimage/colourconversions.h>
 #include <orcaimage/imageutils.h>
 
+#include "mainloop.h"
+
 using namespace std;
-using namespace orca;
 using namespace imageviewer;
 
-ImageHandler::ImageHandler( CameraPrx cameraPrx,
-                            orcaice::PtrBuffer<CameraDataPtr> &cameraDataBuffer, 
-                            const orcaice::Context & context )
-    : cameraPrx_(cameraPrx),
-      cameraDataBuffer_(cameraDataBuffer),
+MainLoop::MainLoop( const orca::CameraConsumerPrx & callbackPrx,
+                    orcaice::PtrBuffer<orca::CameraDataPtr> & dataPipe, 
+                    const orcaice::Context & context )
+    : callbackPrx_(callbackPrx),
+      dataPipe_(dataPipe),
       context_(context)
 {
     // this is the last place we can throw exceptions from.
@@ -32,20 +30,22 @@ ImageHandler::ImageHandler( CameraPrx cameraPrx,
     init();
 }
 
-void ImageHandler::init()
-{
-    // initialise opencv stuff
-    cvNamedWindow( "ImageViewer", 1 );
-}
-
-ImageHandler::~ImageHandler()
+MainLoop::~MainLoop()
 {
     // delete opencv stuff
     cvReleaseImage( &cvImage_ );
     cvReleaseImage( &bayerImage_ );
 }
 
-void ImageHandler::run()
+void 
+MainLoop::init()
+{
+    // initialise opencv stuff
+    cvNamedWindow( "ImageViewer", 1 );
+}
+
+void 
+MainLoop::run()
 {
     // we are in a different thread now, catch all stray exceptions
     try
@@ -57,14 +57,9 @@ void ImageHandler::run()
     // try to catch expected errors
     try
     {
-       
-    // get camera config and geometry (only once)
-    cout << "Getting config and geometry in imagehandler.cpp as a test" << endl;
-    cameraConfigPtr_ = cameraPrx_->getConfig();
-    cameraGeometryPtr_ = cameraPrx_->getGeometry();
 
     // setup opencv image struct for display
-    ImageHandler::initCvImage();
+    MainLoop::initCvImage();
     
     // wake up every now and then to check if we are supposed to stop
     const int timeoutMs = 2000;
@@ -77,6 +72,63 @@ void ImageHandler::run()
     double diff = 0.0;
     double avDiff = 0.0;
     double totalTime;
+
+    //
+    // REQUIRED INTERFACE: Camera
+    //
+
+    // Connect directly to the interface
+    while( isActive() )
+    {
+        try
+        {
+            orcaice::connectToInterfaceWithTag<orca::CameraPrx>( context_, cameraPrx_, "Camera" );
+            break;
+        }
+        catch ( const orcaice::NetworkException & e )
+        {
+            context_.tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+        }
+        // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
+        //       but if this happens it's ok if we just quit.
+    }
+    
+    // Display description
+    cout << orcaice::toString(cameraPrx_->getDescription()) << endl;
+
+    // Get the data once
+    try
+    {
+        // workaround... if imageserver and imageviewer are being run in an icebox, the
+        // imageviewer needs to wait until the imageserver has loaded data
+        // into the buffer... this should check rather than waiting
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+
+        context_.tracer()->info( "Trying to get image info as a test" );
+        context_.tracer()->print( orcaice::toString( cameraPrx_->getData() ) );
+    }
+    catch ( const orca::HardwareFailedException & e )
+    {
+        context_.tracer()->error( "hardware failure reported when getting a scan. Will subscribe anyway." );
+    }
+
+    //
+    // Subscribe for data
+    //
+    while ( isActive() )
+    {
+        try
+        {
+            cameraPrx_->subscribe( callbackPrx_ );
+            break;
+        }
+        catch ( const orca::SubscriptionFailedException & e )
+        {
+            context_.tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+        }
+    }
     
     //
     // This is the main loop
@@ -86,7 +138,7 @@ void ImageHandler::run()
         //
         // block on arrival of camera data
         //
-        int ret = cameraDataBuffer_.getAndPopNext ( cameraData, timeoutMs );
+        int ret = dataPipe_.getAndPopNext ( cameraData, timeoutMs );
         
         //*********************************
         // Timing performance
@@ -206,35 +258,36 @@ void ImageHandler::run()
     }
 }
 
-void ImageHandler::initCvImage()    
+void 
+MainLoop::initCvImage()    
 {
-    ImageFormat format = cameraPrx_->getConfig()->format;
-    cout << "TRACE(imagehandler.cpp):Image Format - " << orcaimage::formatName( format ) << endl;
-    
-    // should this be done at the imageserver level and depend on the mode and format?
-    // maybe nChannels should be in the Camera object
-    // TODO: put this nChannel calculation into imageutils as a separate function 
-    
-    // default number of channels for a colour image
-    int nChannels = 3;
-    int nBayerChannels = 1;   
-    if( format == BAYERBG | format == BAYERGB | format == BAYERRG | format == BAYERGR )
-    {
-        // set up an IplImage struct for the Greyscale bayer encoded data
-        bayerImage_  = cvCreateImage( cvSize( cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight ),  8, nBayerChannels );
-        cout << "Image is Bayer encoded: " << endl;
-        // cout << "bayer encoding: " << format << endl;
-    }
-    else if ( format == MODEGRAY )
-    {
-        // display image is greyscale therefore only 1 channel      
-        nChannels = 1;
-    }      
-
-    // opencv gear here
-    cvImage_ = cvCreateImage( cvSize( cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight ),  8, nChannels );
-    // dodgy opencv needs this so it has time to resize
-    cvWaitKey(100);
-    context_.tracer()->debug("opencv window created",5);
+//     orca::ImageFormat format = cameraPrx_->getConfig()->format;
+//     cout << "TRACE(imagehandler.cpp):Image Format - " << orcaimage::formatName( format ) << endl;
+//     
+//     // should this be done at the imageserver level and depend on the mode and format?
+//     // maybe nChannels should be in the Camera object
+//     // TODO: put this nChannel calculation into imageutils as a separate function 
+//     
+//     // default number of channels for a colour image
+//     int nChannels = 3;
+//     int nBayerChannels = 1;   
+//     if( format == ImageFormatBayerBg | format == ImageFormatBayerGb | format == ImageFormatBayerRg | format == ImageFormatBayerGr )
+//     {
+//         // set up an IplImage struct for the Greyscale bayer encoded data
+//         bayerImage_  = cvCreateImage( cvSize( cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight ),  8, nBayerChannels );
+//         cout << "Image is Bayer encoded: " << endl;
+//         // cout << "bayer encoding: " << format << endl;
+//     }
+//     else if ( format == ImageFormatModeGray )
+//     {
+//         // display image is greyscale therefore only 1 channel      
+//         nChannels = 1;
+//     }      
+// 
+//     // opencv gear here
+//     cvImage_ = cvCreateImage( cvSize( cameraPrx_->getData()->imageWidth, cameraPrx_->getData()->imageHeight ),  8, nChannels );
+//     // dodgy opencv needs this so it has time to resize
+//     cvWaitKey(100);
+//     context_.tracer()->debug("opencv window created",5);
 
 }

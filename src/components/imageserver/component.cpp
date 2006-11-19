@@ -8,8 +8,12 @@
  *
  */
 
+#include <orcaice/orcaice.h>
 #include "component.h"
 #include "mainloop.h"
+
+// implementations of Ice objects
+#include "cameraI.h"
 
 // Various bits of hardware we can drive
 #include "driver.h"
@@ -26,10 +30,6 @@
 #   include "imagegrabber/digiclopsgrabber.h"
 #endif 
 
-// implementations of Ice objects
-#include "cameraI.h"
-
-#include <orcaice/orcaice.h>
 
 namespace imageserver {
 
@@ -38,18 +38,16 @@ using namespace orca;
 
 Component::Component()
     : orcaice::Component( "ImageServer" ),
-      mainLoop_(0)
+      mainLoop_(0),
+      hwDriver_(0),
+      imageGrabber_(0)
 {
 }
 
 Component::~Component()
 {
     delete hwDriver_;
-    // delete imageGrabber if it has been created (only fakedriver doesn't initialise this)
-    if ( imageGrabber_ != NULL )
-    {
-        delete imageGrabber_;
-    }
+    delete imageGrabber_;
     
     // do not delete mainLoop_!!! They derive from Ice::Thread and self-destruct.
 }
@@ -57,159 +55,98 @@ Component::~Component()
 void
 Component::start()
 {
-    //
-    // INITIAL CONFIGURATION
-    //
-
     Ice::PropertiesPtr prop = properties();
-    std::string prefix = tag();
-    prefix += ".Config.";
+    std::string prefix = tag()+".Config.";
 
-    // Camera geometry
-    orca::CameraGeometryPtr geometry = new orca::CameraGeometry;
-    geometry->offset.p.x = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Offset.p.x", 0.0 );
-    geometry->offset.p.y = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Offset.p.y", 0.0 );
-    geometry->offset.p.z = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Offset.p.z", 0.0 );
-    geometry->offset.o.r = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Offset.o.r", 0.0 )*DEG2RAD_RATIO;
-    geometry->offset.o.p = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Offset.o.p", 0.0 )*DEG2RAD_RATIO;
-    geometry->offset.o.y = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Offset.o.y", 0.0 )*DEG2RAD_RATIO;
+    //
+    // DRIVER CONFIGURATION
+    //
 
+    // read config options
+    Driver::Config cfg;
 
-    // EXTERNAL PROVIDED INTERFACE: Camera
+    cfg.imageWidth = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ImageWidth", 0 );
+    cfg.imageHeight = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ImageHeight", 0 );
+    cfg.frameRate = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"FrameRate", 0.0 );
 
-    // create servant for direct connections
-    CameraI *cameraObj = new CameraI( geometry,
-                                   context() );
-    cameraObjPtr_ = cameraObj;
-    orcaice::createInterfaceWithTag( context(), cameraObjPtr_, "Camera" );
-
-
-    bool startEnabled = orcaice::getPropertyAsIntWithDefault( prop, prefix+"StartEnabled", true );
-
-    orca::CameraConfigPtr   cameraConfig = new CameraConfig;
-
-    cameraConfig->imageWidth   = 
-        orcaice::getPropertyAsIntWithDefault( prop, prefix+"ImageWidth", 0 );
-
-    cameraConfig->imageHeight = 
-        orcaice::getPropertyAsIntWithDefault( prop, prefix+"ImageHeight", 0 );
-
-    cameraConfig->frameRate = 
-        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"FrameRate", 0.0 );
-
-    string format = 
-        orcaice::getPropertyWithDefault( prop, prefix+"Format", "MODEDNFI" );
+    string format = orcaice::getPropertyWithDefault( prop, prefix+"Format", "ModeNfi" );
     // only need to specify these formats as opencv can automatically find the other formats
-    if( format == "BAYERBG" )
-    {
-        cameraConfig->format = BAYERBG;
+    if( format == "BayerBg" ) {
+        cfg.format = ImageFormatBayerBg;
     }
-    else if( format == "BAYERGB" )
-    {
-        cameraConfig->format = BAYERGB;
+    else if( format == "BayerGb" ) {
+        cfg.format = ImageFormatBayerGb;
     }
-    else if( format == "BAYERRG" )
-    {
-        cameraConfig->format = BAYERRG;
+    else if( format == "BayerRg" ) {
+        cfg.format = ImageFormatBayerRg;
     }
-    else if( format == "BAYERGR" )
-    {
-        cameraConfig->format = BAYERGR;
+    else if( format == "BayerGr" ) {
+        cfg.format = ImageFormatBayerGr;
     }
-    else if( format == "DIGICLOPSSTEREO" )
-    {
-        cameraConfig->format = DIGICLOPSSTEREO;
+    else if( format == "DigiclopsStereo" ) {
+        cfg.format = ImageFormatDigiclopsStereo;
     }
-    else if( format == "DIGICLOPSRIGHT" )
-    {
-        cameraConfig->format = DIGICLOPSRIGHT;
+    else if( format == "DigiclopsRight" ) {
+        cfg.format = ImageFormatDigiclopsRight;
     }
-    else if( format == "DIGICLOPSBOTH" )
-    {
-        cameraConfig->format = DIGICLOPSBOTH;
+    else if( format == "DigiclopsBoth" ) {
+        cfg.format = ImageFormatDigiclopsBoth;
     }
 
-    string compression = 
-        orcaice::getPropertyWithDefault( prop, prefix+"Compression", "NONE" );
-    if( compression == "NONE" )
-    {
+    string compression =  orcaice::getPropertyWithDefault( prop, prefix+"Compression", "none" );
+    if( compression == "none" ) {
         // compression hasn't been included yet
-        cameraConfig->compression = COMPRESSIONTYPENONE;
+        cfg.compression = ImageCompressionNone;
     }    
 
-    // This is the initial config if someone reads before we can enable
-    cameraConfig->isEnabled         = false;
-    cameraObj->localSetCurrentConfig( cameraConfig );
-
-    // This is what we'll immediately try to configure
-    cameraConfig->isEnabled         = startEnabled;
-    cameraObj->localSetDesiredConfig( cameraConfig );
-
     // if we have multiple cameras, this indicates which one we want to use
-//     int cameraIndex = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CameraIndex", 0 );
-
-    std::string driverName;
-    int ret = orcaice::getProperty( prop, prefix+"Driver", driverName );
-    if ( ret != 0 )
-    {
-        std::string errString = "Couldn't determine camera type.  Expected property '";
-        errString += prefix + "Driver'";
-        throw orcaice::Exception( ERROR_INFO, errString );
-    }
-
     int cameraIndex = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CameraIndex", 0 );
- cout << "cameraIndex: " << cameraIndex << endl;   
-    if ( ( cameraIndex < 0 ) || ( cameraIndex > 1 ) )
+    if ( cameraIndex<0  || cameraIndex>1 )
     {
         std::string errString = "Only two cameras are supported \n \t cameraIndex must equal 0 for a single camera or 1 for a second camera'";
         errString += prefix + "CameraIndex'";
         throw orcaice::Exception( ERROR_INFO, errString );
     }
 
-
     //
     // HARDWARE INTERFACES
     //
+    std::string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "fake" );
 
     if ( driverName == "fake" )
     {
-        hwDriver_ = new FakeDriver;
-        imageGrabber_ = NULL;
+        context().tracer()->debug( "loading 'fake' driver",3);
+        hwDriver_ = new FakeDriver( cfg, context() );
+        imageGrabber_ = 0;
     }
-
     else if ( driverName == "monoopencv" )
     {
 #ifdef OPENCV_FOUND
+        context().tracer()->debug( "loading 'monoopencv' driver",3);
         // Use opencv implementation for a monocular camera...
 
         // Initialize Opencv ImageGrabber
         imageGrabber_ = new CvGrabber( cameraIndex );
-//        imageGrabber_ = new CvGrabber();
 
-        hwDriver_ = new MonoDriver( imageGrabber_, context() );
-
-        cout<<"ImageServer: using opencv image grabber - CvGrabber for a monocular camera" << endl;
+        hwDriver_ = new MonoDriver( imageGrabber_, cfg, context() );
 #else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driverName 'monoopencv' without opencv installed!" );
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'monoopencv' because it wasn't built!" );
 #endif // OPENCV_FOUND
     }
     else if ( driverName == "digiclops" )
     {
 #ifdef DIGICLOPS_AND_TRICLOPS_FOUND
+        context().tracer()->debug( "loading 'digiclops' driver",3);
         // Use digiclops/triclops implementation for a digiclops camera...
 
         // Initialize digiclops ImageGrabber
-//        imageGrabber_ = new DigiclopsGrabber( cameraIndex );
         imageGrabber_ = new DigiclopsGrabber();
 
-        hwDriver_ = new MonoDriver( imageGrabber_, context() );
-
-        cout<<"ImageServer: using digiclops image grabber for a digiclops camera" << endl;
+        hwDriver_ = new MonoDriver( imageGrabber_, cfg, context() );
 #else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driverName 'digiclops' without digiclops/triclops libraries installed!" );
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'digiclops' because it wasn't built!" );
 #endif // DIGICLOPS_AND_TRICLOPS_FOUND
     }
-
     else
     {
         std::string errString = "unknown camera type: "+driverName;
@@ -218,44 +155,56 @@ Component::start()
         return;
     }
     tracer()->debug( "loaded '"+driverName+"' driver", 2 );
-    
-    ////////////////////////////////////////////////////////////////////////////////
+
 
     //
-    // ENABLE NETWORK CONNECTIONS
+    // SENSOR DESCRIPTION
     //
-    activate();
 
-    tracer()->debug( "entering main loop...",5 );
+    orca::CameraDescriptionPtr descr = new orca::CameraDescription;
+    descr->timeStamp = orcaice::getNow();
+
+    // transfer internal sensor configs
+    descr->imageWidth   = cfg.imageWidth;
+    descr->imageHeight  = cfg.imageHeight;
+    descr->frameRate    = cfg.frameRate;
+    descr->format       = cfg.format;
+    descr->compression  = cfg.compression;
+
+    // offset from the robot coordinate system
+    orcaice::setInit( descr->offset );
+    descr->offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr->offset );
+
+    orcaice::setInit( descr->size );
+    descr->size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr->size );
+
+    // EXTERNAL PROVIDED INTERFACE: Camera
+
+    // create servant for direct connections
+    CameraI *cameraI = new CameraI( descr, "Camera", context() );
+    // to register with the adapter, it's enough to have a generic pointer
+    cameraObjPtr_ = cameraI;
+    // this may throw but it's better if it kills us.
+    orcaice::createInterfaceWithTag( context(), cameraObjPtr_, "Camera" );
+
 
     //
     // MAIN DRIVER LOOP
     //
 
-    mainLoop_ = new MainLoop( *cameraObj,
+    mainLoop_ = new MainLoop( *cameraI,
                               hwDriver_,
-                              context(),
                               imageGrabber_,
-                              startEnabled,
-                              driverName );
+                              context() );
     
     mainLoop_->start();    
 }
 
-void Component::stop()
+void 
+Component::stop()
 {
-    tracer()->debug("stopping component Component...",5);
-
-    // make sure that the main loop was actually created
-    if ( mainLoop_ ) {
-        // Tell the main loop to stop
-        mainLoop_->stop();
-    
-        IceUtil::ThreadControl tc = mainLoop_->getThreadControl();
-    
-        // Then wait for it
-        tc.join();
-    }
+    tracer()->info("stopping component...");
+    orcaice::Thread::stopAndJoin( mainLoop_ );
 }
 
-}
+} // namespace
