@@ -12,6 +12,7 @@
 
 // interface handlers
 #include "binaryswitchprobe.h"
+#include "cameraprobe.h"
 #include "cpuprobe.h"
 #include "homeprobe.h"
 #include "laserscanner2dprobe.h"
@@ -23,6 +24,7 @@ bool
 ProbeFactory::isSupported( const std::string & id )
 {
     if ( id == "::orca::BinarySwitch" || 
+        id == "::orca::Camera" || 
         id == "::orca::Cpu" || 
         id == "::orca::Home" || 
         id == "::orca::LaserScanner2d" || 
@@ -45,6 +47,9 @@ ProbeFactory::create( const std::string & id, const orca::FQInterfaceName & name
 
     if ( id == "::orca::BinarySwitch" ) {
         return new BinarySwitchProbe( name, display, context );
+    }
+    else if ( id == "::orca::Camera" ) {
+        return new CameraProbe( name, display, context );
     }
     else if ( id == "::orca::Cpu" ) {
         return new CpuProbe( name, display, context );

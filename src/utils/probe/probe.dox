@@ -34,6 +34,14 @@ This component receives and displays status messages coming from components depl
 
 This utility connects to the registry and gets a list of components. The user can then select an component and get a list of its interfaces (if Home interface is available). Then choose an interface (if supported by Probe) and get a list of operations. Choose an operation to call, e.g. getData(). 
 
+Supported interfaces:
+- @ref orca_interface_binaryswitch
+- @ref orca_interface_camera
+- @ref orca_interface_cpu
+- @ref orca_interface_home
+- @ref orca_interface_laserscanner2d
+- @ref orca_interface_power
+
 @par Configuration
 
 - @c Probe.Config.Driver (string)
