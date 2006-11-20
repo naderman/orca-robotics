@@ -63,44 +63,44 @@ Component::start()
     //
 
     // read config options
-    Driver::Config cfg;
+    Driver::Config desiredCfg;
 
-    cfg.imageWidth = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ImageWidth", 0 );
-    cfg.imageHeight = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ImageHeight", 0 );
-    cfg.frameRate = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"FrameRate", 0.0 );
+    desiredCfg.imageWidth = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ImageWidth", 0 );
+    desiredCfg.imageHeight = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ImageHeight", 0 );
+    desiredCfg.frameRate = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"FrameRate", 0.0 );
 
     string format = orcaice::getPropertyWithDefault( prop, prefix+"Format", "ModeNfi" );
     // only need to specify these formats as opencv can automatically find the other formats
     if( format == "BayerBg" ) {
-        cfg.format = orca::ImageFormatBayerBg;
+        desiredCfg.format = orca::ImageFormatBayerBg;
     }
     else if( format == "BayerGb" ) {
-        cfg.format = orca::ImageFormatBayerGb;
+        desiredCfg.format = orca::ImageFormatBayerGb;
     }
     else if( format == "BayerRg" ) {
-        cfg.format = orca::ImageFormatBayerRg;
+        desiredCfg.format = orca::ImageFormatBayerRg;
     }
     else if( format == "BayerGr" ) {
-        cfg.format = orca::ImageFormatBayerGr;
+        desiredCfg.format = orca::ImageFormatBayerGr;
     }
     else if( format == "DigiclopsStereo" ) {
-        cfg.format = orca::ImageFormatDigiclopsStereo;
+        desiredCfg.format = orca::ImageFormatDigiclopsStereo;
     }
     else if( format == "DigiclopsRight" ) {
-        cfg.format = orca::ImageFormatDigiclopsRight;
+        desiredCfg.format = orca::ImageFormatDigiclopsRight;
     }
     else if( format == "DigiclopsBoth" ) {
-        cfg.format = orca::ImageFormatDigiclopsBoth;
+        desiredCfg.format = orca::ImageFormatDigiclopsBoth;
     }
 
     string compression =  orcaice::getPropertyWithDefault( prop, prefix+"Compression", "none" );
     if( compression == "none" ) {
         // compression hasn't been included yet
-        cfg.compression = orca::ImageCompressionNone;
+        desiredCfg.compression = orca::ImageCompressionNone;
     }    
 
-    if ( !cfg.validate() ) {
-        tracer()->error( "Failed to validate camera configuration. "+cfg.toString() );
+    if ( !desiredCfg.validate() ) {
+        tracer()->error( "Failed to validate camera configuration. "+desiredCfg.toString() );
         // this will kill this component
         throw orcaice::Exception( ERROR_INFO, "Failed to validate camera configuration" );
     }
@@ -122,7 +122,7 @@ Component::start()
     if ( driverName == "fake" )
     {
         context().tracer()->debug( "loading 'fake' driver",3);
-        hwDriver_ = new FakeDriver( cfg, context() );
+        hwDriver_ = new FakeDriver( desiredCfg, context() );
         imageGrabber_ = 0;
     }
     else if ( driverName == "monoopencv" )
@@ -134,7 +134,7 @@ Component::start()
         // Initialize Opencv ImageGrabber
         imageGrabber_ = new CvGrabber( cameraIndex );
 
-        hwDriver_ = new MonoDriver( imageGrabber_, cfg, context() );
+        hwDriver_ = new MonoDriver( imageGrabber_, desiredCfg, context() );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'monoopencv' because it wasn't built!" );
 #endif // OPENCV_FOUND
@@ -148,7 +148,7 @@ Component::start()
         // Initialize digiclops ImageGrabber
         imageGrabber_ = new DigiclopsGrabber();
 
-        hwDriver_ = new MonoDriver( imageGrabber_, cfg, context() );
+        hwDriver_ = new MonoDriver( imageGrabber_, desiredCfg, context() );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'digiclops' because it wasn't built!" );
 #endif // DIGICLOPS_AND_TRICLOPS_FOUND
@@ -162,7 +162,15 @@ Component::start()
     }
     tracer()->debug( "loaded '"+driverName+"' driver", 2 );
 
+    //
+    // Init driver
+    //
+    hwDriver_->init();
 
+    // query driver for the actual configuration after initialization
+    Driver::Config actualCfg = hwDriver_->config();
+
+    
     //
     // SENSOR DESCRIPTION
     //
@@ -171,11 +179,12 @@ Component::start()
     descr->timeStamp = orcaice::getNow();
 
     // transfer internal sensor configs
-    descr->imageWidth   = cfg.imageWidth;
-    descr->imageHeight  = cfg.imageHeight;
-    descr->frameRate    = cfg.frameRate;
-    descr->format       = cfg.format;
-    descr->compression  = cfg.compression;
+    descr->imageWidth   = actualCfg.imageWidth;
+    descr->imageHeight  = actualCfg.imageHeight;
+    descr->frameRate    = actualCfg.frameRate;
+    descr->format       = actualCfg.format;
+    descr->compression  = actualCfg.compression;
+    descr->imageSize    = actualCfg.imageSize;
 
     // offset from the robot coordinate system
     orcaice::setInit( descr->offset );
@@ -184,7 +193,9 @@ Component::start()
     orcaice::setInit( descr->size );
     descr->size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr->size );
 
+    //
     // EXTERNAL PROVIDED INTERFACE: Camera
+    //
 
     // create servant for direct connections
     CameraI *cameraI = new CameraI( descr, "Camera", context() );

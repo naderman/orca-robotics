@@ -37,6 +37,14 @@ FakeDriver::~FakeDriver()
 int
 FakeDriver::init()
 { 
+    config_.imageWidth = 640;
+    config_.imageHeight = 480;
+    config_.imageSize = 3 * config_.imageHeight * config_.imageWidth;
+  
+    config_.format = orca::ImageFormatModeBgr;
+    config_.compression = orca::ImageCompressionNone;
+    context_.tracer()->info( "FakeDriver configuration has now been initialised to: "+config_.toString() );
+    
     return 0;
 }
 
@@ -46,12 +54,12 @@ FakeDriver::read( orca::CameraDataPtr &data )
     context_.tracer()->debug( "Generating fake image data...", 6 );
 
     // initialise values for the camera object
-    data->imageWidth = config_.imageWidth;
-    data->imageHeight = config_.imageHeight;
-
-    // alexm: are we only supporting this format in 'fake' driver?
-    data->format = orca::ImageFormatModeBgr;
-    data->compression = orca::ImageCompressionNone;
+//     data->imageWidth = config_.imageWidth;
+//     data->imageHeight = config_.imageHeight;
+// 
+//     // alexm: are we only supporting this format in 'fake' driver?
+//     data->format = orca::ImageFormatModeBgr;
+//     data->compression = orca::ImageCompressionNone;
 
     cout << "TODO: resize image properly for different modes" << endl;
     int imageSize = 3 * data->imageHeight * data->imageWidth;

@@ -12,7 +12,12 @@
 #include <stdlib.h>
 #include <orca/camera.h>
 #include <orcaice/orcaice.h>
+
 //#include <triclops/pnmutils.h>
+
+// image mode conversions
+#include "conversions.h"
+
 
 #include "monodriver.h"
 
@@ -34,7 +39,88 @@ MonoDriver::~MonoDriver()
 
 int
 MonoDriver::init()
-{ 
+{
+    // set width and height
+    if ( config_.imageWidth == 0 || config_.imageHeight == 0 )
+    {
+        // use default if user has not specified anything
+        config_.imageWidth = imageGrabber_->width();
+        config_.imageHeight = imageGrabber_->height();
+    }
+    else
+    {
+        std::cout << "TODO(mainloop.cpp): there should be a check here that the image size is compatible with the hardware" << std::endl;
+        // user specified width and height
+        // cameraData->imageWidth = config_.imageWidth;
+        // cameraData->imageHeight = config_.imageHeight;
+        imageGrabber_->setWidth( config_.imageWidth );
+        imageGrabber_->setHeight( config_.imageHeight );
+        
+        // workaround for setting width and height for firewire cameras
+        // opencv requires the mode to be set for the correct width and height to be set also
+        if ( (imageGrabber_->width() != config_.imageWidth) || (imageGrabber_->height() !=  config_.imageHeight) )
+        {
+            // check the mode
+            orca::ImageFormat mode = orcaImageMode( imageGrabber_->mode() );
+            // find the dc1394 specific mode
+            int dc1394Mode = dc1394ImageMode( mode, config_.imageWidth, config_.imageHeight );
+            if ( dc1394Mode > 0)
+                imageGrabber_->setMode( dc1394Mode );
+            else
+            {
+                // TODO: throw an exception instead of exiting
+                std::cout << "ERROR(mainloop.cpp): unknown colour mode" << std::endl;
+                exit(1);
+            }
+        }
+    }
+    
+    // set the format
+    if( config_.format == orca::ImageFormatBayerBg | config_.format == orca::ImageFormatBayerGb | config_.format == orca::ImageFormatBayerRg | config_.format == orca::ImageFormatBayerGr )
+    {
+        // force the format to be bayer
+        // cameraData->format = config_.format;
+
+    }
+    else if ( config_.format == orca::ImageFormatDigiclopsStereo | config_.format == orca::ImageFormatDigiclopsRight | config_.format == orca::ImageFormatDigiclopsBoth )
+    {
+        // set digiclops format
+        // cameraData->format = config_.format;
+    
+        // tell the digiclops what type of images to send
+        imageGrabber_->setMode( config_.format );
+    }
+    else
+    {
+        // let the grabber figure out the format if no bayer encoding or not using a digiclops camera
+        // cameraData->format = orcaImageMode( imageGrabber_->mode() );
+        // include this in camera config
+        config_.format = orcaImageMode( imageGrabber_->mode() );
+    }
+    // std::cout << "imageGrabber_->width(): " << imageGrabber_->width() << std::endl;
+    // std::cout << "imageGrabber_->height(): " << imageGrabber_->height() << std::endl;
+    // std::cout << "cameraData->format: " <<  cameraData->format << std::endl;    
+
+    // resize the object for the correct image size
+    // cameraData->image.resize( imageGrabber_->size() );
+    
+    // Setup the rest of camera config
+    // config_.imageWidth = cameraData->imageWidth;
+    // config_.imageHeight = cameraData->imageHeight;
+    config_.frameRate = imageGrabber_->fps();
+
+    // this is never read as opencv deals with it
+    config_.compression = orca::ImageCompressionNone;
+
+     // query the image grabber for the actual image size
+    config_.imageSize = imageGrabber_->size();
+    if( config_.imageSize <= 0 )
+    {
+        cout << "ERROR(monodriver.cpp): Image size is <= 0. It must be a positive value." << endl;
+        // this will kill this component
+        throw orcaice::Exception( ERROR_INFO, "Image size is <=0. It must be a positive value." );
+    }
+   
     return 0;
 }
 
@@ -82,10 +168,21 @@ MonoDriver::read( orca::CameraDataPtr &data )
         // this is inexact... is there a better way?
         orcaice::setToNow( data->timeStamp );
 
+        // resize the object for the correct image size
+        // TODO: should this be moved so it only does this once???
+        // data->image.resize( imageGrabber_->size() );
+
+
         // size of the image (data->image.size()) was defined in mainloop.cpp
         memcpy( &data->image[0], rawImage, data->image.size() );
 
-        data->compression = orca::ImageCompressionNone;
+        // TODO: should this be moved so it only does this once???
+        // Transfer config info to object info
+        // data->imageWidth = config_.imageWidth;
+        // data->imageHeight = config_.imageHeight;
+        // data->format = config_.format;
+        // data->compression = config_.compression;
+        //orca::ImageCompressionNone;
         
         return 0;
     }

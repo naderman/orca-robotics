@@ -13,17 +13,16 @@
 #include <orcaice/heartbeater.h>
 
 #include "mainloop.h"
-#include "conversions.h"
+// #include "conversions.h"
 
-//using namespace std;
 using namespace orca;
 
 namespace imageserver {
 
-MainLoop::MainLoop( CameraI              &cameraObj,
-                    Driver*              hwDriver,
-                    ImageGrabber*        imageGrabber,
-                    const orcaice::Context &context )
+MainLoop::MainLoop( CameraI&                cameraObj,
+                    Driver*                 hwDriver,
+                    ImageGrabber*           imageGrabber,
+                    const orcaice::Context& context )
     : cameraObj_(cameraObj),
       hwDriver_(hwDriver),
       imageGrabber_(imageGrabber),
@@ -67,7 +66,7 @@ MainLoop::activate()
 void
 MainLoop::readData( orca::CameraDataPtr & data )
 {
-//     context_.tracer()->debug( "Reading data...", 8 );
+     context_.tracer()->debug( "Reading data...", 8 );
 
     //
     // Read from the driver
@@ -78,6 +77,10 @@ MainLoop::readData( orca::CameraDataPtr & data )
         
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         hwDriver_->init();
+
+        // copy config parameters into object fields
+        hwDriver_->initData( data );
+
         return;
     }
 
@@ -88,12 +91,17 @@ void
 MainLoop::run()
 {
     CameraDataPtr cameraData = new CameraData;
+    // Copy config parameters into static object fields
+    // Only need to do this once
+    hwDriver_->initData( cameraData );
+    
     orcaice::Heartbeater heartbeater( context_ );
 
     // Catches all its exceptions.
     activate();
 
-    hwDriver_->init();
+    // ben: remove if it works from component.
+//     hwDriver_->init();
 
     //
     // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
@@ -108,7 +116,7 @@ MainLoop::run()
 
             if ( heartbeater.isHeartbeatTime() )
             {
-                heartbeater.beat( "Camera enabled (?). " + hwDriver_->heartbeatMessage() );
+                heartbeater.beat( hwDriver_->heartbeatMessage() );
             }
 
         } // end of try
@@ -120,13 +128,13 @@ MainLoop::run()
         catch ( Ice::Exception &e )
         {
             std::stringstream ss;
-            ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e;
+            ss << "ERROR(mainloop.cpp): Caught unexpected Ice exception: " << e;
             context_.tracer()->error( ss.str() );
         }
         catch ( std::exception &e )
         {
             std::stringstream ss;
-            ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e.what();
+            ss << "ERROR(mainloop.cpp): Caught unexpected std::exception: " << e.what();
             context_.tracer()->error( ss.str() );
         }
         catch ( ... )

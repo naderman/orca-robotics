@@ -55,7 +55,7 @@ public:
 private:
 
     // the driver will put the latest data into this buffer
-    orcaice::PtrBuffer<orca::CameraDataPtr>          dataBuffer_;
+    orcaice::PtrBuffer<orca::CameraDataPtr>          dataPipe_;
 
     orca::CameraDescriptionPtr  descr_;
 

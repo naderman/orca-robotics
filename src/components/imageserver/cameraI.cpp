@@ -39,14 +39,14 @@ CameraI::getData(const Ice::Current& current) const
     context_.tracer()->debug( "getData()", 5 );
 
     // we don't need to pop the data here because we don't block on it.
-    if ( dataBuffer_.isEmpty() )
+    if ( dataPipe_.isEmpty() )
     {
         throw orca::DataNotExistException( "try again later." );
     }
 
     // create a null pointer. data will be cloned into it.
     orca::CameraDataPtr data;
-    dataBuffer_.get( data );
+    dataPipe_.get( data );
 
     return data;
 }
@@ -92,7 +92,7 @@ CameraI::unsubscribe(const ::orca::CameraConsumerPrx &subscriber, const ::Ice::C
 void
 CameraI::localSetData( const ::orca::CameraDataPtr data )
 {
-    dataBuffer_.push( data );
+    dataPipe_.push( data );
 
     // Try to push it out to IceStorm too
     try {

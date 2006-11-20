@@ -42,6 +42,7 @@ public:
 
         int imageWidth;
         int imageHeight;
+        int imageSize;
         double frameRate;
         orca::ImageFormat format;
         orca::ImageCompression compression;
@@ -54,6 +55,13 @@ public:
     // quietly re-initializes it.
     // returns: 0 = success, non-zero = failure
     virtual int init()=0;
+
+    // Utility function.
+    // Initializes static data fields (e.g. imageWidth, etc.)
+    // Reimplement this in derived drivers if something
+    // non-standard is required.
+    // returns: 0 = success, non-zero = failure
+    virtual int initData( orca::CameraDataPtr& data ) const;
 
     // Blocks till new data is available
     virtual int read( orca::CameraDataPtr &data )=0;
