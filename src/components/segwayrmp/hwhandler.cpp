@@ -18,7 +18,7 @@
 #include "fakedriver.h"
 // segway rmp drivers
 #ifdef HAVE_USB_DRIVER
-    #include "usb/usbdriver.h"
+    #include "usb/rmpusbdriver.h"
 #endif
 #ifdef HAVE_PLAYERCLIENT_DRIVER
     #include "playerclient/playerclientdriver.h"
@@ -94,7 +94,7 @@ HwHandler::init()
     {
 #ifdef HAVE_USB_DRIVER
         context_.tracer()->debug( "loading 'segwayrmpusb' driver",3);
-        driver_ = new UsbDriver( context_ );
+        driver_ = new RmpUsbDriver( context_ );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'usb' because it was not built!" );
 #endif

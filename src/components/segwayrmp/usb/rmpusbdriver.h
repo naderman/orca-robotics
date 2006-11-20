@@ -12,22 +12,22 @@
 #define ORCA2_SEGWAY_RMP_USB_DRIVER_H
 
 #include "../hwdriver.h"
-#include "usbdriverconfig.h"
+#include "rmpusbdriverconfig.h"
 
 namespace segwayrmp
 {
 
 // forward declarations
-class UsbIo;
+class RmpUsbIo;
 class RmpUsbDataFrame;
 class CanPacket;
 
-class UsbDriver : public HwDriver
+class RmpUsbDriver : public HwDriver
 {
 public:
 
-    UsbDriver( const orcaice::Context & context );
-    virtual ~UsbDriver();
+    RmpUsbDriver( const orcaice::Context & context );
+    virtual ~RmpUsbDriver();
 
     virtual int enable();
     virtual int repair();
@@ -75,13 +75,13 @@ private:
     int enableBalanceMode( bool enable );
 
     // driver/hardware interface
-    UsbIo            *usbio_;
+    RmpUsbIo         *usbio_;
     RmpUsbDataFrame  *frame_;
     CanPacket        *pkt_;
 
     // configuration
     orcaice::Context context_;
-    UsbDriverConfig config_;
+    RmpUsbDriverConfig config_;
 
     // last motion commands [segway counts]
     // used to load into status command

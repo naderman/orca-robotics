@@ -14,31 +14,31 @@
 #include <queue>
 #include <ftd2xx.h>
 
-#include "usbio.h"
+#include "rmpusbio.h"
 
 namespace segwayrmp
 {
 
-class UsbIoFtdi : public UsbIo
+class RmpUsbIoFtdi : public RmpUsbIo
 {
 public:
-    UsbIoFtdi();
-    virtual ~UsbIoFtdi();
+    RmpUsbIoFtdi();
+    virtual ~RmpUsbIoFtdi();
     
     // Returns: 0 on success, non-zero otherwise.
-    virtual UsbIoStatus init();
+    virtual RmpUsbIoStatus init();
 
     // Tries to reset the device whitout shutting it down completely.
-    virtual UsbIoStatus reset();
+    virtual RmpUsbIoStatus reset();
     
     // Returns: 0 on success, non-zero otherwise.
-    virtual UsbIoStatus shutdown();
+    virtual RmpUsbIoStatus shutdown();
     
     // Returns OK if copied a packet, NO_DATA if not, or a negative ERROR code.
-    virtual UsbIoStatus readPacket( CanPacket* pkt );
+    virtual RmpUsbIoStatus readPacket( CanPacket* pkt );
     
     // Returns OK on success, or a negative ERROR code otherwise.
-    virtual UsbIoStatus writePacket( CanPacket* pkt );
+    virtual RmpUsbIoStatus writePacket( CanPacket* pkt );
     
 private:
 
@@ -61,22 +61,22 @@ private:
     
     // LOW-LEVEL READ/WRITE FUNCTIONS
     // Returns 0 if got a packet from the CAN buffer, 1 if the buffer was empty
-    UsbIoStatus getPacket( CanPacket* pkt );
+    RmpUsbIoStatus getPacket( CanPacket* pkt );
     
     // Returns 0 if copied a packet, positive if not, negative on error.
-    UsbIoStatus readPacketNonBlocking( CanPacket* pkt );
+    RmpUsbIoStatus readPacketNonBlocking( CanPacket* pkt );
     // Returns 0 if copied a packet, positive if not, negative on error.
-    UsbIoStatus readPacketBlocking( CanPacket* pkt );
+    RmpUsbIoStatus readPacketBlocking( CanPacket* pkt );
     // Not used but keep for reference
-    UsbIoStatus readPacketPolling( CanPacket* pkt );
+    RmpUsbIoStatus readPacketPolling( CanPacket* pkt );
     
     // returns 0 if all is good, -1 on error.
-    UsbIoStatus readFromUsbToBufferNonBlocking();
+    RmpUsbIoStatus readFromUsbToBufferNonBlocking();
     // returns 0 if all is good, -1 on error.
-    UsbIoStatus readFromUsbToBufferBlocking();
+    RmpUsbIoStatus readFromUsbToBufferBlocking();
     
     // returns 0 if all is good, -1 on error. non-blocking.
-    UsbIoStatus readFromBufferToQueue();
+    RmpUsbIoStatus readFromBufferToQueue();
     
     int parseUsbToCan( CanPacket *pkt, unsigned char *bytes );
     int parseCanToUsb( CanPacket *pkt, unsigned char *bytes );

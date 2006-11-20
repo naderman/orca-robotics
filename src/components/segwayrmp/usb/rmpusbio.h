@@ -21,11 +21,11 @@ class CanPacket;
 // reads and writes CAN (!) packets.
 //
 // Does not throw any exceptions.
-class UsbIo
+class RmpUsbIo
 {
 public:
 
-    enum UsbIoStatus
+    enum RmpUsbIoStatus
     {
         OK              = 0,
         NO_DATA         = 1,
@@ -33,33 +33,33 @@ public:
         OTHER_ERROR     = -2
     };
 
-    virtual ~UsbIo() {};
+    virtual ~RmpUsbIo() {};
 
     /*
      * Initializes the USB device.
      * Returns: OK on success.
      */
-    virtual UsbIoStatus init()=0;
+    virtual RmpUsbIoStatus init()=0;
 
     // Tries to reset the device whitout shutting it down completely.
-    virtual UsbIoStatus reset()=0;
+    virtual RmpUsbIoStatus reset()=0;
     
     /*
      * Closes the USB device
      * Returns: OK on success.
      */
-    virtual UsbIoStatus shutdown()=0;
+    virtual RmpUsbIoStatus shutdown()=0;
 
     /*
      * Blocks until a packet is available.
      * Returns OK if copied a packet, NO_DATA if not, or a negative ERROR code.
      */
-    virtual UsbIoStatus readPacket(CanPacket* pkt)=0;
+    virtual RmpUsbIoStatus readPacket(CanPacket* pkt)=0;
     
     /*
      * Returns OK on success, or a negative ERROR code otherwise.
      */
-    virtual UsbIoStatus writePacket(CanPacket* pkt)=0;
+    virtual RmpUsbIoStatus writePacket(CanPacket* pkt)=0;
     
 };
 

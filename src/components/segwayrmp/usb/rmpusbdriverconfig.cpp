@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 
-#include "usbdriverconfig.h"
+#include "rmpusbdriverconfig.h"
 #include "rmpdefs.h"
 
 using namespace std;
@@ -45,7 +45,7 @@ std::string gainScheduleAsString( int gainSchedule )
         return "error: bad gain schedule";
 }
 
-UsbDriverConfig::UsbDriverConfig()
+RmpUsbDriverConfig::RmpUsbDriverConfig()
 {
     gainSchedule            = 0;
     maxVelocityScale        = 0.75;
@@ -55,7 +55,7 @@ UsbDriverConfig::UsbDriverConfig()
 }
 
 int
-UsbDriverConfig::checkSanity( std::string &warnings, std::string &errors )
+RmpUsbDriverConfig::checkSanity( std::string &warnings, std::string &errors )
 {
     std::stringstream ssWarn, ssErr;
 
@@ -67,9 +67,9 @@ UsbDriverConfig::checkSanity( std::string &warnings, std::string &errors )
 }
 
 std::ostream &
-segwayrmp::operator<<( std::ostream &s, const UsbDriverConfig &c )
+segwayrmp::operator<<( std::ostream &s, const RmpUsbDriverConfig &c )
 {
-    s << "UsbDriver Configuration Parameters:     "                     <<endl
+    s << "RmpUsbDriver Configuration Parameters:     "                     <<endl
       << "\tgainSchedule:              " << gainScheduleAsString(c.gainSchedule) <<endl
       << "\tmaxVelocityScale:          " << c.maxVelocityScale          <<endl
       << "\tmaxTurnrateScale:          " << c.maxTurnrateScale          <<endl
@@ -80,7 +80,7 @@ segwayrmp::operator<<( std::ostream &s, const UsbDriverConfig &c )
 }
 
 void
-segwayrmp::readFromProperties( const orcaice::Context & context, UsbDriverConfig & c )
+segwayrmp::readFromProperties( const orcaice::Context & context, RmpUsbDriverConfig & c )
 {
     Ice::PropertiesPtr prop = context.properties();
     std::string prefix = context.tag() + ".Config.SegwayRmpUsb.";

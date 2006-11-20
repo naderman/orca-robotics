@@ -21,11 +21,11 @@ namespace segwayrmp
 // Convenience structure to hold all the config parameters.
 // All units are S.I.
 //
-class UsbDriverConfig 
+class RmpUsbDriverConfig 
 {
 public:
 
-    UsbDriverConfig();
+    RmpUsbDriverConfig();
 
     int gainSchedule;
     double maxVelocityScale;
@@ -37,9 +37,9 @@ public:
     int checkSanity( std::string &warnings, std::string &errors );
 };
 
-std::ostream &operator<<( std::ostream & s, const UsbDriverConfig & c );
+std::ostream &operator<<( std::ostream & s, const RmpUsbDriverConfig & c );
 
-void readFromProperties( const orcaice::Context & context, UsbDriverConfig & c );
+void readFromProperties( const orcaice::Context & context, RmpUsbDriverConfig & c );
 
 } // namespace
 
