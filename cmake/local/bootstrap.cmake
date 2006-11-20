@@ -9,10 +9,9 @@ IF ( ${PROJECT_NAME} MATCHES "orca" )
     SET ( ORCA_MOTHERSHIP 1 INTERNAL )
 
     SET ( ORCA_CMAKE_DIR ${${PROJECT_NAME}_SOURCE_DIR}/cmake CACHE PATH "Location of Orca CMake scripts" )
-    MESSAGE ( STATUS "Using custom CMake scripts in ${ORCA_CMAKE_DIR}" )
 
 ELSE ( ${PROJECT_NAME} MATCHES "orca" )
-#     MESSAGE ( STATUS "DEBUG: ************ we are on a satelite! ***********" )
+    MESSAGE ( STATUS "DEBUG: ************ we are on a satelite! ***********" )
     SET ( ORCA_MOTHERSHIP 0 INTERNAL )
 
     # If this is NOT the Orca project, we need to find Orca installation
@@ -35,6 +34,8 @@ ELSE ( ${PROJECT_NAME} MATCHES "orca" )
     SET ( ORCA_CMAKE_DIR ${ORCA2_HOME}/cmake CACHE PATH "Location of Orca CMake scripts" )
 
 ENDIF ( ${PROJECT_NAME} MATCHES "orca" )
+
+MESSAGE ( STATUS "Using custom CMake scripts in ${ORCA_CMAKE_DIR}" )
 
 #
 # The rest is done by a script
