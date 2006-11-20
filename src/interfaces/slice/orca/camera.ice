@@ -67,6 +67,9 @@ class CameraDescription extends OrcaObject {
     //! Image compression type
     ImageCompression compression;
 
+    //! Image size [bytes]
+    int imageSize;
+
     //! Offset of the sensor with respect to the robot, 
     //! in the robot local coordinate system.
     Frame3d offset; 
