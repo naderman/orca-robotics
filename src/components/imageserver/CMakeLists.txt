@@ -23,9 +23,9 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
 
   # opencv image grabber checks
   IF ( OPENCV_FOUND )
-    MESSAGE( STATUS "    OpenCv-0.9.9 Image Grabber - can be built" )
+    MESSAGE( STATUS "    OpenCv Image Grabber (>= OpenCv version 0.9.9)  - can be built" )
   ELSE ( OPENCV_FOUND )
-    MESSAGE( STATUS "    OpenCv-0.9.9 Image Grabber - cannot be built" )
+    MESSAGE( STATUS "    OpenCv Image Grabber (>= OpenCv version 0.9.9)  - cannot be built" )
   ENDIF ( OPENCV_FOUND )
 
   # digiclops image grabber library checks
@@ -53,7 +53,7 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
     ELSE ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
       MESSAGE( STATUS "     Image grabbing libraries cannot be found... only the fake driver can be built." ) 
       MESSAGE( STATUS "     Please install opencv for monocular cameras and/or the digiclops libraries for the trinocular digiclops camera."  )
-      SET ( DRIVER_SRCS fakedriver )
+      SET ( DRIVER_SRCS driver fakedriver )
     ENDIF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
 
   ELSE ( V4L_FOUND OR 1394_FOUND )
