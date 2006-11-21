@@ -20,14 +20,14 @@ using namespace std;
 namespace imageserver {
 
 FakeDriver::FakeDriver( const Config & cfg, const orcaice::Context & context )
-    : Driver(cfg),
+    : Driver(cfg, context),
       context_(context)
 {
-    context_.tracer()->info( "Initializing fake driver with config: "+config_.toString() );
+     context_.tracer()->info( "Initializing fake driver with config: "+config_.toString() );
 
-//     if ( cfg.format != orca::ImageFormatModeBgr ) {
-//         throw "Unsupported image format. Only 'ModeBgr' is supported";
-//     }
+//      if ( cfg.format != orca::ImageFormatModeBgr ) {
+//          throw "Unsupported image format. Only 'ModeBgr' is supported";
+//      }
 }
 
 FakeDriver::~FakeDriver()
@@ -39,7 +39,7 @@ FakeDriver::init()
 { 
     config_.imageWidth = 640;
     config_.imageHeight = 480;
-    cout << "TODO: resize image properly for different modes" << endl;
+    context_.tracer()->debug("TODO(fakedriver::init()): resize image properly for different modes", 3);
     config_.imageSize = 3 * config_.imageHeight * config_.imageWidth;
   
     config_.format = orca::ImageFormatModeBgr;
@@ -54,17 +54,6 @@ FakeDriver::read( orca::CameraDataPtr &data )
 {
     context_.tracer()->debug( "Generating fake image data...", 6 );
 
-    // initialise values for the camera object
-//     data->imageWidth = config_.imageWidth;
-//     data->imageHeight = config_.imageHeight;
-// 
-//     // alexm: are we only supporting this format in 'fake' driver?
-//     data->format = orca::ImageFormatModeBgr;
-//     data->compression = orca::ImageCompressionNone;
-
-//    int imageSize = 3 * data->imageHeight * data->imageWidth;
-//    data->image.resize( imageSize );
-
     // fill the image with a random colour
     int rr = rand()%256;
     int gg = rand()%256;
@@ -75,7 +64,6 @@ FakeDriver::read( orca::CameraDataPtr &data )
 
     // use a real image from file
 //     fromFile( data->image, "/opt/empty-project-0.0.1/images/penguin.jpg" );
-
 
     orcaice::setToNow( data->timeStamp );
         
@@ -88,8 +76,10 @@ int
 FakeDriver::flatColor( orca::ByteSequence& image, 
             unsigned char R, unsigned char G, unsigned char B )
 {
-    // cout << "opencv uses BGR format rather than rgb: " << endl; 
-    cout<<"B:G:R  ("<<(int)R<<":"<<(int)G<<":"<<(int)B<<")"<<endl;
+    // cout << "opencv uses BGR format rather than rgb: " << endl;
+    std::stringstream infoString;
+    infoString << "B:G:R  (" << (int)B << ":" << (int)G << ":" << (int)R << ")";
+    context_.tracer()->info( infoString.str() );
 
     orca::ByteSequence::iterator i;
     for ( i= image.begin(); i != image.end(); i+=3 )

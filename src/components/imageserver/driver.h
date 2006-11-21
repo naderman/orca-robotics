@@ -11,6 +11,7 @@
 #define ORCA2_IMAGESERVER_CAMERA_DRIVER_H
 
 #include <orca/camera.h>
+#include <orcaice/context.h>
 
 static const ::std::string __orca__cameradriver_default_heartbeat_msg = "";
 
@@ -48,7 +49,7 @@ public:
         orca::ImageCompression compression;
     };
 
-    Driver( const Config & cfg ) : config_(cfg) {};
+    Driver( const Config& cfg, const orcaice::Context& context );
     virtual ~Driver() {};
 
     // Initializes the device. If it's aleady initialized, then it
@@ -82,6 +83,9 @@ protected:
     Config config_;
 
     std::string infoMessages_;
+    
+    orcaice::Context context_;
+         
 };
 
 } // namespace

@@ -18,16 +18,23 @@ using namespace std;
 
 namespace imageserver {
 
+Driver::Driver( const Config& cfg, const orcaice::Context& context )
+    : config_(cfg)
+{
+};
+    
+    
 int
 Driver::initData( orca::CameraDataPtr &data ) const
 {
-    if ( !config_.validate() ) {
-        cout <<  "ERROR(driver.cpp): Failed to validate camera configuration." << endl;;
+    if ( !config_.validate() )
+    {
+        std::string errString = "Failed to validate camera configuration.";
+        context_.tracer()->error( errString );
         // this will kill this component
-        throw orcaice::Exception( ERROR_INFO, "Failed to validate camera configuration" );
+        throw orcaice::Exception( ERROR_INFO, errString );
         return -1;
     }
-
     else
     {
         // resize the object to the correct image size
@@ -72,7 +79,7 @@ std::string
 Driver::Config::toString() const
 {
     std::stringstream ss;
-    ss << "Camera driver config: width="<<imageWidth<<" height="<<imageHeight<<" size="<<imageSize<<" frames="<<frameRate<<" fmt="<<format<<" compr="<<compression;
+    ss << "Camera driver config: width="<<imageWidth<<" height="<<imageHeight<<" imageSize="<<imageSize<<" frames="<<frameRate<<" fmt="<<format<<" compr="<<compression;
     return ss.str();
 }
 

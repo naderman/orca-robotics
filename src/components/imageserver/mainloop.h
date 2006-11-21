@@ -58,8 +58,6 @@ private:
 
     void readData( orca::CameraDataPtr & data );
 
-    // set up camera and configuration from .cfg parameters
-    void initialiseCamera();
 };
 
 } // namespace

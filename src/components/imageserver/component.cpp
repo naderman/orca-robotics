@@ -132,7 +132,7 @@ Component::start()
         // Use opencv implementation for a monocular camera...
 
         // Initialize Opencv ImageGrabber
-        imageGrabber_ = new CvGrabber( cameraIndex );
+        imageGrabber_ = new CvGrabber( cameraIndex, context() );
 
         hwDriver_ = new MonoDriver( imageGrabber_, desiredCfg, context() );
 #else
@@ -146,7 +146,7 @@ Component::start()
         // Use digiclops/triclops implementation for a digiclops camera...
 
         // Initialize digiclops ImageGrabber
-        imageGrabber_ = new DigiclopsGrabber();
+        imageGrabber_ = new DigiclopsGrabber( context() );
 
         hwDriver_ = new MonoDriver( imageGrabber_, desiredCfg, context() );
 #else
