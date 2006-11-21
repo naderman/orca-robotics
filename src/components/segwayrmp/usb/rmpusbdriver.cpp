@@ -106,6 +106,7 @@ RmpUsbDriver::enable()
         stringstream ss;
         ss << "RmpUsbDriver::enable() failed: " << e.what();
         context_.tracer()->warning( ss.str() );
+        rmpusbio_->shutdown();
         return 2;
     }
     return 0;
