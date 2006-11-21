@@ -50,10 +50,10 @@ Camera Settings
 
 - @c ImageServer.Config.Format (string)
     - What format are the images? Most formats can be detected automatically so nothing is needed here. However, if images are Bayer encoded one of the following values need to be specified:
-    - Valid values: { "BAYERBG", "BAYERGB", "BAYERRG", "BAYERGR" }
-    - If a digiclops is being used you must specify either {"DIGICLOPSSTEREO", "DIGICLOPSRIGHT", "DIGICLOPSBOTH"}
-    - "DIGICLOPSSTEREO" is used if a STEREO_IMAGE is being sent, "DIGICLOPSRIGHT" for RIGHT_IMAGE and "DIGICLOPSBOTH" for RIGHT_IMAGE and STEREO_IMAGE
-    - Default: "MODENFI"
+    - Valid values: { "BayerBg", "BayerGb", "BayerRg", "BayerGr" }
+    - If a digiclops is being used you must specify either {"DigiclopsStereo", "DigiclopsRight", "DigiclopsBoth"}
+    - "DigiclopsStereo" is used if a STEREO_IMAGE is being sent, "DigiclopsRight" for RIGHT_IMAGE and "DigiclopsBoth" for RIGHT_IMAGE and STEREO_IMAGE
+    - Default: "ModeNfi"
 
 - @c ImageServer.Config.Width (integer)
     - Image width
