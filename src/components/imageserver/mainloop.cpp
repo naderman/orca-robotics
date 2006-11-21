@@ -89,62 +89,85 @@ MainLoop::readData( orca::CameraDataPtr & data )
 void
 MainLoop::run()
 {
-    CameraDataPtr cameraData = new CameraData;
-    // Copy config parameters into static object fields
-    // Only need to do this once
-    hwDriver_->initData( cameraData );
+    try
+    {   
     
-    orcaice::Heartbeater heartbeater( context_ );
+        CameraDataPtr cameraData = new CameraData;
+        // Copy config parameters into static object fields
+        // Only need to do this once
+        hwDriver_->initData( cameraData );
+        
+        orcaice::Heartbeater heartbeater( context_ );
 
-    // Catches all its exceptions.
-    activate();
+        // Catches all its exceptions.
+        activate();
 
-    //
-    // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
-    //            So we have to avoid getting stuck anywhere within this main loop.
-    //
-    while ( isActive() )
-    {
-        try 
+        //
+        // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
+        //            So we have to avoid getting stuck anywhere within this main loop.
+        //
+        while ( isActive() )
         {
-            readData( cameraData );
-
-
-            if ( heartbeater.isHeartbeatTime() )
+            try
             {
-                heartbeater.beat( hwDriver_->heartbeatMessage() );
+                readData( cameraData );
+
+
+                if ( heartbeater.isHeartbeatTime() )
+                {
+                    heartbeater.beat( hwDriver_->heartbeatMessage() );
+                }
+
+            } // end of try
+            catch ( Ice::CommunicatorDestroyedException & )
+            {
+                // This is OK: it means that the communicator shut down (eg via Ctrl-C)
+                // somewhere in mainLoop.
+            }
+            catch ( Ice::Exception &e )
+            {
+                std::stringstream ss;
+                ss << "ERROR(mainloop::run()): Caught unexpected Ice exception: " << e;
+                context_.tracer()->error( ss.str() );
+            }
+            catch ( std::exception &e )
+            {
+                std::stringstream ss;
+                ss << "ERROR(mainloop::run()): Caught unexpected std::exception: ";
+                context_.tracer()->error( ss.str() );
+            }
+            catch ( ... )
+            {
+                std::stringstream ss;
+                ss << "ERROR(mainloop::run()): Caught unexpected unknown exception.";
+                context_.tracer()->error( ss.str() );
             }
 
-        } // end of try
-        catch ( Ice::CommunicatorDestroyedException & )
-        {
-            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-            // somewhere in mainLoop.
-        }
-        catch ( Ice::Exception &e )
-        {
-            std::stringstream ss;
-            ss << "ERROR(mainloop.cpp): Caught unexpected Ice exception: " << e;
-            context_.tracer()->error( ss.str() );
-        }
-        catch ( std::exception &e )
-        {
-            std::stringstream ss;
-            ss << "ERROR(mainloop.cpp): Caught unexpected std::exception: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
-        catch ( ... )
-        {
-            std::stringstream ss;
-            ss << "ERROR(mainloop.cpp): Caught unexpected unknown exception.";
-            context_.tracer()->error( ss.str() );
-        }
+        } // end of while
 
-    } // end of while
+        // Camera hardware will be shut down in the driver's destructor.
+        context_.tracer()->debug( "dropping out from run()", 5 );
 
-    // Camera hardware will be shut down in the driver's destructor.
-    context_.tracer()->debug( "dropping out from run()", 5 );
+    } // end of try
+    catch ( Ice::Exception &e )
+    {
+        std::stringstream ss;
+        ss << "ERROR(mainloop::run()): Caught unexpected Ice exception: " << e;
+        context_.tracer()->error( ss.str() );
+    }
+    catch ( std::exception &e )
+    {
+        std::stringstream ss;
+        ss << "ERROR(mainloop::run()): Caught unexpected std::exception: ";
+        context_.tracer()->error( ss.str() );
+    }
+    catch ( ... )
+    {
+        std::stringstream ss;
+        ss << "ERROR(mainloop::run()): Caught unexpected unknown exception.";
+        context_.tracer()->error( ss.str() );
+    }
+    
 }
-
 
 } // namespace
