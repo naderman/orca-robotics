@@ -39,6 +39,7 @@ FakeDriver::init()
 { 
     config_.imageWidth = 640;
     config_.imageHeight = 480;
+    cout << "TODO: resize image properly for different modes" << endl;
     config_.imageSize = 3 * config_.imageHeight * config_.imageWidth;
   
     config_.format = orca::ImageFormatModeBgr;
@@ -61,9 +62,8 @@ FakeDriver::read( orca::CameraDataPtr &data )
 //     data->format = orca::ImageFormatModeBgr;
 //     data->compression = orca::ImageCompressionNone;
 
-    cout << "TODO: resize image properly for different modes" << endl;
-    int imageSize = 3 * data->imageHeight * data->imageWidth;
-    data->image.resize( imageSize );
+//    int imageSize = 3 * data->imageHeight * data->imageWidth;
+//    data->image.resize( imageSize );
 
     // fill the image with a random colour
     int rr = rand()%256;

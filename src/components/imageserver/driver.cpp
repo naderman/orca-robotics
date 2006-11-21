@@ -57,11 +57,13 @@ Driver::Config::Config()
 bool
 Driver::Config::validate() const
 {
+    // 0 is default configuration if user has not specified anything
     if ( imageWidth < 0 ) return false;
 
     if ( imageHeight < 0 ) return false;
 
-    if ( frameRate < 0.0 ) return false;
+    // -1 means use default for the camera   
+    if ( frameRate < -1 ) return false;
 
     return true;
 }
@@ -70,7 +72,7 @@ std::string
 Driver::Config::toString() const
 {
     std::stringstream ss;
-    ss << "Camera driver config: width="<<imageWidth<<" height="<<imageHeight<<" frames="<<frameRate<<" fmt="<<format<<" compr="<<compression;
+    ss << "Camera driver config: width="<<imageWidth<<" height="<<imageHeight<<" size="<<imageSize<<" frames="<<frameRate<<" fmt="<<format<<" compr="<<compression;
     return ss.str();
 }
 

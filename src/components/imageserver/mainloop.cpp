@@ -13,7 +13,6 @@
 #include <orcaice/heartbeater.h>
 
 #include "mainloop.h"
-// #include "conversions.h"
 
 using namespace orca;
 
@@ -99,9 +98,6 @@ MainLoop::run()
 
     // Catches all its exceptions.
     activate();
-
-    // ben: remove if it works from component.
-//     hwDriver_->init();
 
     //
     // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
