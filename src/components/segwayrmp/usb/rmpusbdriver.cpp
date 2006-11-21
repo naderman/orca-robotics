@@ -118,19 +118,19 @@ RmpUsbDriver::repair()
     context_.tracer()->debug( "Repairing..." );
     repairCounter_++;
 
-    try {
-        // try a quick reset
-        rmpusbio_->reset();
-        return 0;
-    }
-    catch ( std::exception &e )
-    {
-        stringstream ss;
-        ss << "RmpUsbDriver::repair(): Quick reset failed: " << e.what();
-        context_.tracer()->debug( ss.str() );
-    }
+//     try {
+//         // try a quick reset
+//         rmpusbio_->reset();
+//         return 0;
+//     }
+//     catch ( std::exception &e )
+//     {
+//         stringstream ss;
+//         ss << "RmpUsbDriver::repair(): Quick reset failed: " << e.what();
+//         context_.tracer()->debug( ss.str() );
+//     }
 
-    // it didn't work, try to shutdown and init again.
+    // Try to shutdown and init again.
     disable();
     return enable();
 }
