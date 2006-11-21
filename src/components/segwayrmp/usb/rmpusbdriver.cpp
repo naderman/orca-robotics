@@ -59,55 +59,34 @@ int
 RmpUsbDriver::enable()
 {
     // init device
-    if ( usbio_->init() != RmpUsbIo::OK ) 
+    try {
+        usbio_->init();
+
+        context_.tracer()->debug("RmpUsbDriver::enable(): usbio_->init() succeeded.");
+    
+        // segway is physically connected; try to configure
+
+        // first, tell it to stand still.
+        orca::Velocity2dCommandPtr zero = new orca::Velocity2dCommand;
+        zero->motion.v.x = 0.0;
+        zero->motion.v.y = 0.0;
+        zero->motion.w = 0.0;
+        write( zero  );
+        
+        resetAllIntegrators();
+        setMaxVelocityScaleFactor( config_.maxVelocityScale );
+        setMaxTurnrateScaleFactor( config_.maxTurnrateScale );
+        setMaxAccelerationScaleFactor( config_.maxAccelerationScale );
+        setMaxCurrentLimitScaleFactor( config_.maxCurrentLimitScale );
+        setGainSchedule( config_.gainSchedule );
+    }
+    catch ( std::exception &e )
     {
-        context_.tracer()->warning("RmpUsbDriver::enable(): usbio_->init() failed.");
-        return 1;
-    }
-    context_.tracer()->debug("RmpUsbDriver::enable(): usbio_->init() succeeded.");
-    
-    // segway is physically connected; try to configure
-
-    // first, tell it to stand still.
-    orca::Velocity2dCommandPtr zero = new orca::Velocity2dCommand;
-    zero->motion.v.x = 0.0;
-    zero->motion.v.y = 0.0;
-    zero->motion.w = 0.0;
-    if ( write( zero  ) ) {
-        cerr<<"warning: error in writing the initial zero-velocity command";
+        stringstream ss;
+        ss << "RmpUsbDriver::enable() failed: " << e.what();
+        context_.tracer()->warning( ss.str() );
         return 2;
     }
-    
-    if ( resetAllIntegrators() ) {
-        cerr<<"warning: error in resetIntegrators()"<<endl;
-        return 2;
-    }
-
-    if ( setMaxVelocityScaleFactor( config_.maxVelocityScale ) ) {
-        cerr<<"warning: error in setMaxVelocitySpeedFactor()"<<endl;
-        return 2;
-    }
-
-    if ( setMaxTurnrateScaleFactor( config_.maxTurnrateScale ) ) {
-        cerr<<"warning: error in setMaxTurnrateScaleFactor()"<<endl;
-        return 2;
-    }
-
-    if ( setMaxAccelerationScaleFactor( config_.maxAccelerationScale ) ) {
-        cerr<<"warning: error in setMaxAccelerationScaleFactor()"<<endl;
-        return 2;
-    }
-
-    if ( setMaxCurrentLimitScaleFactor( config_.maxCurrentLimitScale ) ) {
-        cerr<<"warning: error in setMaxCurrentLimitScaleFactor()"<<endl;
-        return 2;
-    }
-
-    if ( setGainSchedule( config_.gainSchedule ) ) {
-        cerr<<"warning: error in setGainSchedule()"<<endl;
-        return 2;
-    }
-
     return 0;
 }
 
@@ -115,13 +94,21 @@ int
 RmpUsbDriver::repair()
 {
     context_.tracer()->debug( "Repairing..." );
+    repairCounter_++;
 
-    // try a quick reset
-    if ( usbio_->reset() == RmpUsbIo::OK ) {
+    try {
+        // try a quick reset
+        usbio_->reset();
         return 0;
     }
+    catch ( std::exception &e )
+    {
+        stringstream ss;
+        ss << "RmpUsbDriver::repair(): Quick reset failed: " << e.what();
+        context_.tracer()->debug( ss.str() );
+    }
 
-    // if didn't work, try to shutdown and init again.
+    // it didn't work, try to shutdown and init again.
     disable();
     return enable();
 }
@@ -137,49 +124,60 @@ RmpUsbDriver::disable()
 
 int
 RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 
-                 orca::PowerDataPtr &power, std::string & status )
+                    orca::PowerDataPtr &power, std::string & status )
 {
-    //
-    // Read a full data frame
-    //
-    if( readFrame() ) {
-        // IO error while reading a packet, or several timeouts, or can't finish a frame
-        return 1;
-    }
+    try {
+        //
+        // Read a full data frame
+        //
+        readFrame();
     
-    RmpUsbDriver::Status rmpStatus;
-    updateData( position2d, position3d, power, rmpStatus );
+        RmpUsbDriver::Status rmpStatus;
+        updateData( position2d, position3d, power, rmpStatus );
 
-    // do a status check (before resetting the frame)
-    if ( frame_->status_word1!=lastStatusWord1_ && frame_->status_word1!=lastStatusWord2_ ) {
-        cout<<"RmpUsbDriver internal state change : "<<IceUtil::Time::now().toString()<<endl;
-        cout<<toString()<<endl;
-        lastStatusWord1_ = frame_->status_word1;
-        lastStatusWord2_ = frame_->status_word2;
+        // do a status check (before resetting the frame)
+        if ( frame_->status_word1!=lastStatusWord1_ && frame_->status_word1!=lastStatusWord2_ ) {
+            cout<<"RmpUsbDriver internal state change : "<<IceUtil::Time::now().toString()<<endl;
+            cout<<toString()<<endl;
+            lastStatusWord1_ = frame_->status_word1;
+            lastStatusWord2_ = frame_->status_word2;
+        }
+
+        frame_->reset();
+
+        // update status (only change it when internal state changes?)
+        std::ostringstream os;
+        os << "State1="<<frame_->CuStatus1ToString()<<" State2="<<frame_->CuStatus2ToString();
+        status = os.str();
+
+        return 0;
     }
-
-    // debug
-//     cout<<IceUtil::Time::now().toString()<<endl;
-//     cout<<toString()<<endl;
-
-    frame_->reset();
-
-    // update status (only change it when internal state changes?)
-    std::ostringstream os;
-    os << "State1="<<frame_->CuStatus1ToString()<<" State2="<<frame_->CuStatus2ToString();
-    status = os.str();
-
-    return 0;
+    catch ( std::exception &e )
+    {
+        stringstream ss; 
+        ss << "RmpUsbDriver::read(): Error: " << e.what();
+        context_.tracer()->error( ss.str() );
+        return -1;
+    }
 }
 
 int
 RmpUsbDriver::write( const orca::Velocity2dCommandPtr & command )
 {
-    makeMotionCommandPacket( pkt_, command );
+    try {
+        makeMotionCommandPacket( pkt_, command );
 
-    int ret = usbio_->writePacket(pkt_);
+        usbio_->writePacket(pkt_);
 
-    return ret;
+        return 0;
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss;
+        ss << "RmpUsbDriver::write(): Error: " << e.what();
+        context_.tracer()->error( ss.str() );
+        return -1;
+    }
 }
 
 std::string
@@ -188,9 +186,7 @@ RmpUsbDriver::toString()
     return frame_->toString();
 }
 
-// Returns 0 if a full frame was read properly.
-// Returns 1 if a single packet read failed.
-int
+void
 RmpUsbDriver::readFrame()
 {
     RmpUsbIo::RmpUsbIoStatus status;
@@ -207,10 +203,7 @@ RmpUsbDriver::readFrame()
     {
         status = usbio_->readPacket( pkt_ );
 
-        if ( status == RmpUsbIo::IO_ERROR ) {
-            return -1;
-        }
-        else if ( status == RmpUsbIo::NO_DATA ) {
+        if ( status == RmpUsbIo::NO_DATA ) {
             // not sure what to do here. treat as an error? try again?
             ++timeoutCount;
             continue;
@@ -239,7 +232,7 @@ RmpUsbDriver::readFrame()
             if ( frame_->isComplete() )
             {
                 //cout<<"RmpUsbDriver::readFrame: pkts:"<<canPacketsProcessed<<" re-opened: "<<dataFramesReopened<<endl;
-                return 0;
+                return;
             }
             else {
                 // debug: the frame is closed but not complete: some packets were lost
@@ -261,7 +254,7 @@ RmpUsbDriver::readFrame()
 
     // either processed too many packets or got too many timeouts without
     // getting a complete frame.
-    return -1;
+    throw Exception( "RmpUsbDriver::readFrame(): either processed too many packets or got too many timeouts without getting a complete frame" );
 }
 
 void
@@ -293,7 +286,7 @@ RmpUsbDriver::integrateMotion()
 
 void
 RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d,
-                       orca::PowerDataPtr &power, Status & status )
+                          orca::PowerDataPtr &power, Status & status )
 {
     // set all time stamps right away
     orcaice::setToNow( position2d->timeStamp );
@@ -392,15 +385,22 @@ RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::Position3dD
     firstread_ = false;
 }
 
-int
+void
 RmpUsbDriver::resetAllIntegrators()
 {
     makeStatusCommandPacket( pkt_, RMP_CMD_RESET_INTEGRATORS, RMP_CAN_RESET_ALL );
 
-    return usbio_->writePacket(pkt_);
+    try {
+        usbio_->writePacket(pkt_);
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss; ss << "RmpUsbDriver::resetAllIntegrators(): " << e.what();
+        throw Exception( ss.str() );
+    }
 }
 
-int
+void
 RmpUsbDriver::setMaxVelocityScaleFactor( double scale )
 {
     assert( scale>=0.0);
@@ -413,10 +413,17 @@ RmpUsbDriver::setMaxVelocityScaleFactor( double scale )
     }
     makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAX_VELOCITY_SCALE, (uint16_t)ceil(scale*16.0) );
 
-    return usbio_->writePacket(pkt_);
+    try {
+        usbio_->writePacket(pkt_);
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss; ss << "RmpUsbDriver::setMaxVelocityScaleFactor(): " << e.what();
+        throw Exception( ss.str() );
+    }
 }
 
-int
+void
 RmpUsbDriver::setMaxTurnrateScaleFactor( double scale )
 {
     assert( scale>=0.0);
@@ -429,10 +436,17 @@ RmpUsbDriver::setMaxTurnrateScaleFactor( double scale )
     }
     makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAX_TURNRATE_SCALE, (uint16_t)ceil(scale*16.0) );
 
-    return usbio_->writePacket(pkt_);
+    try {
+        usbio_->writePacket(pkt_);
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss; ss << "RmpUsbDriver::setMaxTurnrateScaleFactor(): " << e.what();
+        throw Exception( ss.str() );
+    }
 }
 
-int
+void
 RmpUsbDriver::setMaxAccelerationScaleFactor( double scale )
 {
     assert( scale>=0.0);
@@ -445,10 +459,17 @@ RmpUsbDriver::setMaxAccelerationScaleFactor( double scale )
     }
     makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAX_ACCELERATION_SCALE, (uint16_t)ceil(scale*16.0) );
 
-    return usbio_->writePacket(pkt_);
+    try {
+        usbio_->writePacket(pkt_);
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss; ss << "RmpUsbDriver::setMaxAccelerationScaleFactor(): " << e.what();
+        throw Exception( ss.str() );
+    }
 }
 
-int
+void
 RmpUsbDriver::setMaxCurrentLimitScaleFactor( double scale )
 {
     assert( scale>=0.0);
@@ -462,26 +483,49 @@ RmpUsbDriver::setMaxCurrentLimitScaleFactor( double scale )
     // note: the scale of this command is [0,256]
     makeStatusCommandPacket( pkt_, RMP_CMD_SET_CURRENT_LIMIT_SCALE, (uint16_t)ceil(scale*256.0) );
 
-    return usbio_->writePacket(pkt_);
+    try {
+        usbio_->writePacket(pkt_);
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss; ss << "RmpUsbDriver::setMaxCurrentLimitScaleFactor(): " << e.what();
+        throw Exception( ss.str() );
+    }
+
 }
 
-int
+void
 RmpUsbDriver::setOperationalMode( OperationalMode mode )
 {
     makeStatusCommandPacket( pkt_, RMP_CMD_SET_OPERATIONAL_MODE, mode );
 
-    return usbio_->writePacket(pkt_);
+    try {
+        usbio_->writePacket(pkt_);
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss; ss << "RmpUsbDriver::setOperationalMode(): " << e.what();
+        throw Exception( ss.str() );
+    }
 }
 
-int
+void
 RmpUsbDriver::setGainSchedule( int sched )
 {
     makeStatusCommandPacket( pkt_, RMP_CMD_SET_GAIN_SCHEDULE, sched );
 
-    return usbio_->writePacket(pkt_);
+    try {
+        usbio_->writePacket(pkt_);
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss; ss << "RmpUsbDriver::setGainSchedule(): " << e.what();
+        throw Exception( ss.str() );
+    }
+
 }
 
-int
+void
 RmpUsbDriver::enableBalanceMode( bool enable )
 {
     if ( enable ) {
@@ -491,7 +535,14 @@ RmpUsbDriver::enableBalanceMode( bool enable )
         makeStatusCommandPacket( pkt_, RMP_CMD_SET_BALANCE_MODE_LOCKOUT, BalanceNotAllowed );
     }
     
-    return usbio_->writePacket(pkt_);
+    try {
+        usbio_->writePacket(pkt_);
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss; ss << "RmpUsbDriver::enableBalanceMode(): " << e.what();
+        throw Exception( ss.str() );
+    }
 }
 
 /*

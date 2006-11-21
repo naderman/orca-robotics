@@ -19,26 +19,29 @@
 namespace segwayrmp
 {
 
+//
+//
+//
 class RmpUsbIoFtdi : public RmpUsbIo
 {
 public:
     RmpUsbIoFtdi( int debugLevel=0 );
     virtual ~RmpUsbIoFtdi();
     
-    // Returns: 0 on success, non-zero otherwise.
-    virtual RmpUsbIoStatus init();
+    // Returns: 0 on success
+    virtual void init();
 
     // Tries to reset the device without shutting it down completely.
-    virtual RmpUsbIoStatus reset();
+    virtual void reset();
     
-    // Returns: 0 on success, non-zero otherwise.
-    virtual RmpUsbIoStatus shutdown();
+    // Returns: 0 on success
+    virtual void shutdown();
     
-    // Returns OK if copied a packet, NO_DATA if not, or a negative ERROR code.
+    // Returns OK if copied a packet, NO_DATA if not
     virtual RmpUsbIoStatus readPacket( CanPacket* pkt );
     
-    // Returns OK on success, or a negative ERROR code otherwise.
-    virtual RmpUsbIoStatus writePacket( CanPacket* pkt );
+    // Returns OK on success
+    virtual void writePacket( CanPacket* pkt );
     
 private:
 
@@ -59,20 +62,14 @@ private:
     // Don't call this if the buffer's empty.
     void getPacketFromCanBuffer( CanPacket* pkt );
     
-    // Returns 0 if copied a packet, positive if not, negative on error.
     RmpUsbIoStatus readPacketNonBlocking( CanPacket* pkt );
-    // Returns 0 if copied a packet, positive if not, negative on error.
     RmpUsbIoStatus readPacketBlocking( CanPacket* pkt );
     // Not used but keep for reference
-    RmpUsbIoStatus readPacketPolling( CanPacket* pkt );
+    //RmpUsbIoStatus readPacketPolling( CanPacket* pkt );
     
-    // returns 0 if all is good, -1 on error.
     RmpUsbIoStatus readFromUsbToBufferNonBlocking();
-    // returns 0 if all is good, -1 on error.
     RmpUsbIoStatus readFromUsbToBufferBlocking();
-    
-    // returns 0 if all is good, -1 on error. non-blocking.
-    RmpUsbIoStatus readFromBufferToQueue();
+    void readFromBufferToQueue();
     
     int parseUsbToCan( CanPacket *pkt, unsigned char *bytes );
     int parseCanToUsb( CanPacket *pkt, unsigned char *bytes );

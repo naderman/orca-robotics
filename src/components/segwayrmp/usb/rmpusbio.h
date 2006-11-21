@@ -16,11 +16,32 @@ namespace segwayrmp
 
 class CanPacket;
 
+
+//
+// Exceptions thrown around in segwayrmp.
+//
+class Exception : public std::exception
+{
+public:
+
+    Exception(const char *message)
+        : message_(message) {}
+    Exception(const std::string &message)
+        : message_(message) {}
+
+    virtual ~Exception() throw() {}
+
+    virtual const char* what() const throw() { return message_.c_str(); }
+
+protected:
+
+    std::string  message_;
+};
+
 // This is hardware interface class for RMP robots with USB connectors.
 // Because internally RMP communicates over CAN bus, this IO interface
 // reads and writes CAN (!) packets.
 //
-// Does not throw any exceptions.
 class RmpUsbIo
 {
 public:
@@ -29,37 +50,32 @@ public:
     {
         OK              = 0,
         NO_DATA         = 1,
-        IO_ERROR        = -1,
-        OTHER_ERROR     = -2
     };
 
     virtual ~RmpUsbIo() {};
 
     /*
      * Initializes the USB device.
-     * Returns: OK on success.
      */
-    virtual RmpUsbIoStatus init()=0;
+    virtual void init()=0;
 
     // Tries to reset the device without shutting it down completely.
-    virtual RmpUsbIoStatus reset()=0;
+    virtual void reset()=0;
     
     /*
      * Closes the USB device
-     * Returns: OK on success.
      */
-    virtual RmpUsbIoStatus shutdown()=0;
+    virtual void shutdown()=0;
 
     /*
      * Blocks until a packet is available.
-     * Returns OK if copied a packet, NO_DATA if not, or a negative ERROR code.
+     * Returns OK if copied a packet, NO_DATA if not
      */
     virtual RmpUsbIoStatus readPacket(CanPacket* pkt)=0;
     
     /*
-     * Returns OK on success, or a negative ERROR code otherwise.
      */
-    virtual RmpUsbIoStatus writePacket(CanPacket* pkt)=0;
+    virtual void writePacket(CanPacket* pkt)=0;
     
 };
 

@@ -64,15 +64,15 @@ private:
         //OperationalMode opMode;
     };
     
-    int setMaxVelocityScaleFactor( double scale );
-    int setMaxTurnrateScaleFactor( double scale );
-    int setMaxAccelerationScaleFactor( double scale );
-    int setMaxCurrentLimitScaleFactor( double scale );
-    int resetAllIntegrators();
+    void setMaxVelocityScaleFactor( double scale );
+    void setMaxTurnrateScaleFactor( double scale );
+    void setMaxAccelerationScaleFactor( double scale );
+    void setMaxCurrentLimitScaleFactor( double scale );
+    void resetAllIntegrators();
 
-    int setOperationalMode( OperationalMode mode );
-    int setGainSchedule( int sched );
-    int enableBalanceMode( bool enable );
+    void setOperationalMode( OperationalMode mode );
+    void setGainSchedule( int sched );
+    void enableBalanceMode( bool enable );
 
     // driver/hardware interface
     RmpUsbIo         *usbio_;
@@ -101,7 +101,7 @@ private:
     int lastStatusWord1_;
     int lastStatusWord2_;
 
-    int readFrame();
+    void readFrame();
     void integrateMotion();
     void updateData( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d,
                      orca::PowerDataPtr &power, Status & status );
