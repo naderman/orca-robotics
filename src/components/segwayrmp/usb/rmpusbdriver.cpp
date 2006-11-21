@@ -64,6 +64,7 @@ RmpUsbDriver::enable()
 
     // init device
     try {
+        assert( rmpusbio_==NULL );
         rmpusbio_ = new RmpUsbIoFtdi( DEBUG_LEVEL );
     }
     catch ( std::exception &e )

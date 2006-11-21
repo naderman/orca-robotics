@@ -71,6 +71,7 @@ UsbFtdi::~UsbFtdi()
     if ( ftStatus != FT_OK )
         cout << "ERROR(usbftdi.cpp): FT_Close failed: " << ftStatusToString(ftStatus) << endl;
 
+#if 0
     int ret;
     cout<<"TRACE(usbftdi.cpp): pthread_mutex_destroy" << endl;
     ret = pthread_mutex_destroy( &eventHandle_.eMutex );
@@ -79,12 +80,16 @@ UsbFtdi::~UsbFtdi()
         cout << "ERROR(usbftdi.cpp): Error destroying mutex" << endl;
     }
 
+    // AlexB: For some reason, this line was sometimes hanging...
+    //        Perhaps the FTDI lib destroys it in FT_Close??
+    //
     cout<<"TRACE(usbftdi.cpp): pthread_cond_destroy" << endl;
     ret = pthread_cond_destroy( &eventHandle_.eCondVar );
     if ( ret != 0 )
     {
         cout << "ERROR(usbftdi.cpp): Error destroying condition variable" << endl;
     }
+#endif
 
     if ( debugLevel_ > 1 )
         cout<<"TRACE(usbftdi.cpp): destructor() done." << endl;
@@ -199,6 +204,8 @@ UsbFtdi::waitForData()
 
     if ( ret == 0 )
     {
+        cout<<"TRACE(usbftdi.cpp): Event was triggered." << endl;
+        printQueueStatus();
         return USBFTDI_OK;
     }
     else if ( ret == ETIMEDOUT ) {
