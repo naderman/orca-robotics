@@ -55,29 +55,39 @@ UsbFtdi::UsbFtdi( DWORD iVID, DWORD iPID, const std::string &description, int de
     //
     // Since we got to here, we found the USB device OK.  Initialise stuff we'll need
     //
-    pthread_mutex_init(&eventHandle_.eMutex, NULL);
-    pthread_cond_init(&eventHandle_.eCondVar, NULL);
+    pthread_mutex_init(&(eventHandle_.eMutex), NULL);
+    pthread_cond_init(&(eventHandle_.eCondVar), NULL);
 }
 
 UsbFtdi::~UsbFtdi()
 {
+    if ( debugLevel_ > 1 )
+        cout<<"TRACE(usbftdi.cpp): destructor()" << endl;
+
+    assert( ftHandle_ );
+
     // Nothing we can do about errors here...
+    FT_STATUS ftStatus = FT_Close( ftHandle_ );
+    if ( ftStatus != FT_OK )
+        cout << "ERROR(usbftdi.cpp): FT_Close failed: " << ftStatusToString(ftStatus) << endl;
+
     int ret;
+    cout<<"TRACE(usbftdi.cpp): pthread_mutex_destroy" << endl;
     ret = pthread_mutex_destroy( &eventHandle_.eMutex );
     if ( ret != 0 )
     {
         cout << "ERROR(usbftdi.cpp): Error destroying mutex" << endl;
     }
 
+    cout<<"TRACE(usbftdi.cpp): pthread_cond_destroy" << endl;
     ret = pthread_cond_destroy( &eventHandle_.eCondVar );
     if ( ret != 0 )
     {
         cout << "ERROR(usbftdi.cpp): Error destroying condition variable" << endl;
     }
 
-    FT_STATUS ftStatus = FT_Close( ftHandle_ );
-    if ( ftStatus != FT_OK )
-        cout << "ERROR(usbftdi.cpp): FT_Close failed: " << ftStatusToString(ftStatus) << endl;
+    if ( debugLevel_ > 1 )
+        cout<<"TRACE(usbftdi.cpp): destructor() done." << endl;
 }
 
 void

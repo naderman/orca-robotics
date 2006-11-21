@@ -13,7 +13,7 @@
 #include <pthread.h>
 #include <IceUtil/IceUtil.h>
 
-#include "rmpusbftdi.h"
+#include "rmpusbioftdi.h"
 
 #include "rmpusbdataframe.h"
 #include "rmpdefs.h"
@@ -47,7 +47,7 @@ RmpUsbIoFtdi::RmpUsbIoFtdi( int debugLevel )
 RmpUsbIoFtdi::~RmpUsbIoFtdi()
 {
     if ( debugLevel_ > 0 )
-        cout<<"TRACE(rmpusbftdi.cpp): destructor()" << endl;
+        cout<<"TRACE(rmpusbioftdi.cpp): destructor()" << endl;
 
     if ( usbFtdi_ ) delete usbFtdi_;
 }
@@ -56,7 +56,7 @@ void
 RmpUsbIoFtdi::init()
 {
     if ( debugLevel_ > 0 )
-        cout<<"TRACE(rmpusbftdi.cpp): init()" << endl;
+        cout<<"TRACE(rmpusbioftdi.cpp): init()" << endl;
 
     try {
         usbFtdi_ = new usbftdi::UsbFtdi( SEGWAY_USB_VENDOR_ID,
@@ -70,13 +70,16 @@ RmpUsbIoFtdi::init()
         ss << "RmpUsbIoFtdi::init(): Error: "<<e.what();
         throw Exception( ss.str() );
     }
+
+    if ( debugLevel_ > 0 )
+        cout<<"TRACE(rmpusbioftdi.cpp): init() succeeded" << endl;
 }
 
 void
 RmpUsbIoFtdi::reset()
 {
     if ( debugLevel_ > 0 )
-        cout<<"TRACE(rmpusbftdi.cpp): reset()" << endl;
+        cout<<"TRACE(rmpusbioftdi.cpp): reset()" << endl;
 
     assert( usbFtdi_ != NULL );
 
@@ -103,13 +106,14 @@ void
 RmpUsbIoFtdi::shutdown()
 {
     if ( debugLevel_ > 0 )
-        cout<<"TRACE(rmpusbftdi.cpp): shutdown()" << endl;
-    assert( usbFtdi_ != NULL );
+        cout<<"TRACE(rmpusbioftdi.cpp): shutdown()" << endl;
 
     if (usbFtdi_ != NULL) 
     {
+        cout<<"TRACE(rmpusbioftdi.cpp): deleting usbFtdi_" << endl;
         delete usbFtdi_;
         usbFtdi_ = NULL;
+        cout<<"TRACE(rmpusbioftdi.cpp): deleted." << endl;
     }
 }
 
@@ -349,7 +353,7 @@ RmpUsbIoFtdi::readFromUsbToBufferBlocking()
     {
         return readFromUsbToBufferNonBlocking();
     }
-    else if ( ret == usbftdi::USBFTDI_OK )
+    else if ( ret == usbftdi::USBFTDI_TIMEOUT )
     {
         // this is still ok
         return RmpUsbIo::NO_DATA;

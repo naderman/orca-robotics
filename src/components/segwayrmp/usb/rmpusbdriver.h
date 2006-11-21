@@ -75,7 +75,7 @@ private:
     void enableBalanceMode( bool enable );
 
     // driver/hardware interface
-    RmpUsbIo         *usbio_;
+    RmpUsbIo         *rmpusbio_;
     RmpUsbDataFrame  *frame_;
     CanPacket        *pkt_;
 

@@ -15,7 +15,7 @@
 #include "rmpusbdriver.h"
 
 // USB IO implementation
-#include "rmpusbftdi.h"
+#include "rmpusbioftdi.h"
 
 // rmp/usb data structure
 #include "rmpusbdataframe.h"
@@ -39,7 +39,8 @@ RmpUsbDriver::RmpUsbDriver( const orcaice::Context & context )
       repairCounter_(0)
 {
     // Hardware
-    usbio_ = new RmpUsbIoFtdi( 1 );
+    int debugLevel = 5;
+    rmpusbio_ = new RmpUsbIoFtdi( debugLevel );
     frame_ = new RmpUsbDataFrame;
     pkt_ = new CanPacket;
 
@@ -50,9 +51,14 @@ RmpUsbDriver::RmpUsbDriver( const orcaice::Context & context )
 
 RmpUsbDriver::~RmpUsbDriver()
 {
-    delete usbio_;
+    cout<<"TRACE(rmpusbdriver.cpp): destructor()" << endl;
+
+    delete rmpusbio_;
     delete frame_;
     delete pkt_;
+
+    cout<<"TRACE(rmpusbdriver.cpp): destructed." << endl;
+
 }
 
 int
@@ -60,9 +66,9 @@ RmpUsbDriver::enable()
 {
     // init device
     try {
-        usbio_->init();
+        rmpusbio_->init();
 
-        context_.tracer()->debug("RmpUsbDriver::enable(): usbio_->init() succeeded.");
+        context_.tracer()->debug("RmpUsbDriver::enable(): rmpusbio_->init() succeeded.");
     
         // segway is physically connected; try to configure
 
@@ -98,7 +104,7 @@ RmpUsbDriver::repair()
 
     try {
         // try a quick reset
-        usbio_->reset();
+        rmpusbio_->reset();
         return 0;
     }
     catch ( std::exception &e )
@@ -117,7 +123,7 @@ int
 RmpUsbDriver::disable()
 {
     cout<<"RmpUsbDriver::disabling... ("<<repairCounter_<<" repairs so far)"<<endl;
-    usbio_->shutdown();
+    rmpusbio_->shutdown();
 
     return 0;
 }
@@ -137,7 +143,7 @@ RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr
 
         // do a status check (before resetting the frame)
         if ( frame_->status_word1!=lastStatusWord1_ && frame_->status_word1!=lastStatusWord2_ ) {
-            cout<<"RmpUsbDriver internal state change : "<<IceUtil::Time::now().toString()<<endl;
+            cout<<"RmpUsbDriver: internal state change : "<<IceUtil::Time::now().toString()<<endl;
             cout<<toString()<<endl;
             lastStatusWord1_ = frame_->status_word1;
             lastStatusWord2_ = frame_->status_word2;
@@ -167,7 +173,7 @@ RmpUsbDriver::write( const orca::Velocity2dCommandPtr & command )
     try {
         makeMotionCommandPacket( pkt_, command );
 
-        usbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(pkt_);
 
         return 0;
     }
@@ -201,7 +207,7 @@ RmpUsbDriver::readFrame()
     // get next packet from the packet buffer, will block until new packet arrives
     while( canPacketsProcessed < maxCanPacketsProcessed && timeoutCount < maxTimeoutCount )
     {
-        status = usbio_->readPacket( pkt_ );
+        status = rmpusbio_->readPacket( pkt_ );
 
         if ( status == RmpUsbIo::NO_DATA ) {
             // not sure what to do here. treat as an error? try again?
@@ -391,7 +397,7 @@ RmpUsbDriver::resetAllIntegrators()
     makeStatusCommandPacket( pkt_, RMP_CMD_RESET_INTEGRATORS, RMP_CAN_RESET_ALL );
 
     try {
-        usbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(pkt_);
     }
     catch ( std::exception &e )
     {
@@ -414,7 +420,7 @@ RmpUsbDriver::setMaxVelocityScaleFactor( double scale )
     makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAX_VELOCITY_SCALE, (uint16_t)ceil(scale*16.0) );
 
     try {
-        usbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(pkt_);
     }
     catch ( std::exception &e )
     {
@@ -437,7 +443,7 @@ RmpUsbDriver::setMaxTurnrateScaleFactor( double scale )
     makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAX_TURNRATE_SCALE, (uint16_t)ceil(scale*16.0) );
 
     try {
-        usbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(pkt_);
     }
     catch ( std::exception &e )
     {
@@ -460,7 +466,7 @@ RmpUsbDriver::setMaxAccelerationScaleFactor( double scale )
     makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAX_ACCELERATION_SCALE, (uint16_t)ceil(scale*16.0) );
 
     try {
-        usbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(pkt_);
     }
     catch ( std::exception &e )
     {
@@ -484,7 +490,7 @@ RmpUsbDriver::setMaxCurrentLimitScaleFactor( double scale )
     makeStatusCommandPacket( pkt_, RMP_CMD_SET_CURRENT_LIMIT_SCALE, (uint16_t)ceil(scale*256.0) );
 
     try {
-        usbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(pkt_);
     }
     catch ( std::exception &e )
     {
@@ -500,7 +506,7 @@ RmpUsbDriver::setOperationalMode( OperationalMode mode )
     makeStatusCommandPacket( pkt_, RMP_CMD_SET_OPERATIONAL_MODE, mode );
 
     try {
-        usbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(pkt_);
     }
     catch ( std::exception &e )
     {
@@ -515,7 +521,7 @@ RmpUsbDriver::setGainSchedule( int sched )
     makeStatusCommandPacket( pkt_, RMP_CMD_SET_GAIN_SCHEDULE, sched );
 
     try {
-        usbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(pkt_);
     }
     catch ( std::exception &e )
     {
@@ -536,7 +542,7 @@ RmpUsbDriver::enableBalanceMode( bool enable )
     }
     
     try {
-        usbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(pkt_);
     }
     catch ( std::exception &e )
     {
