@@ -81,7 +81,7 @@ RmpUsbDriver::enable()
         
         // try reading from it
         readFrame();
-        cout<<"TRACE(rmpusbdriver.cpp): Initial exploratory read says: " << toString() << endl;
+        cout<<"TRACE(rmpusbdriver.cpp): Initial exploratory read says: " << endl << toString() << endl;
 
 
         resetAllIntegrators();
