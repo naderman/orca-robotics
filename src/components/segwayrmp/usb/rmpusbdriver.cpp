@@ -40,8 +40,7 @@ RmpUsbDriver::RmpUsbDriver( const orcaice::Context & context )
       odomYaw_(0),
       lastStatusWord1_(0),
       lastStatusWord2_(0),
-      firstread_(true),
-      repairCounter_(0)
+      firstread_(true)
 {
     // parse configuration parameters
     readFromProperties( context, config_ );
@@ -51,11 +50,18 @@ RmpUsbDriver::RmpUsbDriver( const orcaice::Context & context )
 RmpUsbDriver::~RmpUsbDriver()
 {
     cout<<"TRACE(rmpusbdriver.cpp): destructor()" << endl;
+    if ( rmpusbio_ ) delete rmpusbio_;
 }
 
 int
 RmpUsbDriver::enable()
 {
+    if ( rmpusbio_ )
+    {
+        delete rmpusbio_;
+        rmpusbio_ = NULL;
+    }
+
     // init device
     try {
         rmpusbio_ = new RmpUsbIoFtdi( DEBUG_LEVEL );
@@ -107,45 +113,46 @@ RmpUsbDriver::enable()
         stringstream ss;
         ss << "RmpUsbDriver::enable() failed: " << e.what();
         context_.tracer()->warning( ss.str() );
-        disable();
+        delete rmpusbio_;
+        rmpusbio_ = NULL;
         return 2;
     }
     return 0;
 }
 
-int
-RmpUsbDriver::repair()
-{
-    context_.tracer()->debug( "Repairing..." );
-    repairCounter_++;
+// int
+// RmpUsbDriver::repair()
+// {
+//     context_.tracer()->debug( "Repairing..." );
+//     repairCounter_++;
 
-//     try {
-//         // try a quick reset
-//         rmpusbio_->reset();
-//         return 0;
-//     }
-//     catch ( std::exception &e )
-//     {
-//         stringstream ss;
-//         ss << "RmpUsbDriver::repair(): Quick reset failed: " << e.what();
-//         context_.tracer()->debug( ss.str() );
-//     }
+// //     try {
+// //         // try a quick reset
+// //         rmpusbio_->reset();
+// //         return 0;
+// //     }
+// //     catch ( std::exception &e )
+// //     {
+// //         stringstream ss;
+// //         ss << "RmpUsbDriver::repair(): Quick reset failed: " << e.what();
+// //         context_.tracer()->debug( ss.str() );
+// //     }
 
-    // Try to shutdown and init again.
-    disable();
-    return enable();
-}
+//     // Try to shutdown and init again.
+//     disable();
+//     return enable();
+// }
 
-int
-RmpUsbDriver::disable()
-{
-    cout<<"RmpUsbDriver::disabling... ("<<repairCounter_<<" repairs so far)"<<endl;
-    assert( rmpusbio_ );
-    delete rmpusbio_;
-    rmpusbio_ = NULL;
+// int
+// RmpUsbDriver::disable()
+// {
+//     cout<<"RmpUsbDriver::disabling... ("<<repairCounter_<<" repairs so far)"<<endl;
+//     assert( rmpusbio_ );
+//     delete rmpusbio_;
+//     rmpusbio_ = NULL;
 
-    return 0;
-}
+//     return 0;
+// }
 
 int
 RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 

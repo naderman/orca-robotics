@@ -49,6 +49,9 @@ public:
 
 private:
 
+    // Keeps trying until success or !isActive()
+    void enableDriver();
+
     // network/hardware interface
     orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe_;
     orcaice::PtrProxy<orca::Position3dDataPtr>    & position3dPipe_;
@@ -79,7 +82,7 @@ private:
 
     // write status has to be protected to be accessed from both read and write threads
     // true is good, false is bad.
-    orcaice::Proxy<bool> writeStatusPipe_;
+    orcaice::Proxy<bool> isOkProxy_;
 
     // debug
     orcaice::Timer readTimer_;

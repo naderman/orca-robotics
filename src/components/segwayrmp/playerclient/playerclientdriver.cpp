@@ -42,6 +42,7 @@ PlayerClientDriver::PlayerClientDriver( const orcaice::Context & context )
 
 PlayerClientDriver::~PlayerClientDriver()
 {
+    disable();
 }
 
 int
@@ -75,11 +76,11 @@ PlayerClientDriver::enable()
     return 0;
 }
 
-int PlayerClientDriver::repair()
-{
-    disable();
-    return enable();
-}
+// int PlayerClientDriver::repair()
+// {
+//     disable();
+//     return enable();
+// }
 
 int
 PlayerClientDriver::disable()
@@ -93,7 +94,6 @@ PlayerClientDriver::disable()
     enabled_ = false;
     return 0;
 }
-
 
 int
 PlayerClientDriver::read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 

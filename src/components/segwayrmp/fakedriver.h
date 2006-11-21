@@ -27,8 +27,8 @@ public:
     virtual ~FakeDriver();
 
     virtual int enable();
-    virtual int repair();
-    virtual int disable();
+//     virtual int repair();
+//     virtual int disable();
 
     virtual int read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 
                       orca::PowerDataPtr &power, std::string & status );

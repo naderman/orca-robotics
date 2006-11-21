@@ -31,11 +31,11 @@ public:
     // Returns 0 on success. Does not throw.
     virtual int enable()=0;
     
-    // Returns 0 on success. Does not throw.
-    virtual int repair()=0;
+//     // Returns 0 on success. Does not throw.
+//     virtual int repair()=0;
     
-    // Returns 0 on success. Does not throw.
-    virtual int disable()=0;
+//     // Returns 0 on success. Does not throw.
+//     virtual int disable()=0;
 
     // Blocking read. Returns 0 on success. Does not throw.
     virtual int read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 

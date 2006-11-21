@@ -50,8 +50,8 @@ HwHandler::HwHandler(
     // we'll handle incoming messages
     commandPipe.setNotifyHandler( this );
 
-    // unsure about write status until we enable the driver
-    writeStatusPipe_.set( false );
+    // unsure about isOk until we enable the driver
+    isOkProxy_.set( false );
 
     // set up data structure for 3 batteries
     // @todo Should this be done by the driver?
@@ -124,15 +124,8 @@ HwHandler::init()
 }
 
 void
-HwHandler::run()
+HwHandler::enableDriver()
 {
-    // we are in a different thread now, catch all stray exceptions
-    try
-    {
-
-    //
-    // Enable driver
-    //
     while ( isActive() ) {
         context_.tracer()->info("Enabling driver...");
         if ( driver_->enable() == 0 ) break;
@@ -140,130 +133,112 @@ HwHandler::run()
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
-    // make we actually managed to enable the driver and are not shutting down
-    if ( isActive() ) {
-        context_.tracer()->debug("driver enabled",5);
-    }
-    
-    // presumably we can write to the hardware
-    writeStatusPipe_.set( true );
+    context_.tracer()->info( "Enable succeeded." );
+}
+
+void
+HwHandler::run()
+{
     std::string driverStatus = "";
     std::string currDriverStatus = "";
-    
-    int readStatus = -1;
-    bool writeStatus = false;
-
-    //
-    // This is the main loop
-    // All operations inside are local.
-    // We do not expect to catch any exceptions.
-    //
+            
     while( isActive() )
     {
-        writeStatusPipe_.get( writeStatus );
-        if ( writeStatus == false ) {
-            context_.tracer()->error("failed to write data to Segway hardware. Repairing....");
-            context_.tracer()->debug( "\n"+driver_->toString(), 1 );
-            int repairStatus = driver_->repair();
-            if ( repairStatus ) {
-                context_.tracer()->error("failed to repair hardware. Moving on....");
-            }
-        }
-
-        //
-        // Read data from the hardware
-        //
-        // readTimer_.restart();
-        readStatus = driver_->read( position2dData_, position3dData_, powerData_, currDriverStatus );
-        // cout<<"read: " << readTimer_.elapsed().toMilliSecondsDouble()<<endl;
-    
-        if ( readStatus==0 ) {
-            // Stick it in the buffer so pullers can get it
-            position2dPipe_.set( position2dData_ );
-            position3dPipe_.set( position3dData_ );
-            powerPipe_.set( powerData_ );
-
-            if ( driverStatus != currDriverStatus ) {
-                context_.tracer()->status( currDriverStatus );
-                driverStatus = currDriverStatus;
-            }
-        } else {
-            context_.tracer()->error("failed to read data from Segway hardware. Repairing....");
-            driver_->repair();
-        }
-
-        // Have any configuration requests arrived?
-        if ( !setConfigPipe_.isNewData() )
+        try 
         {
-            // set configs
+            //
+            // Make sure we're OK
+            //
+            bool isOk;
+            isOkProxy_.get( isOk );
+            if ( !isOk ) 
+            {
+                enableDriver();
+                isOkProxy_.set( true );
+
+                // we enabled, so presume we're OK.
+                isOkProxy_.set( true );
+
+                // but make sure we're not shutting down.
+                if ( !isActive() )
+                    break;
+            }
+
+            //
+            // Read data from the hardware
+            //
+            int readStatus = driver_->read( position2dData_, position3dData_, powerData_, currDriverStatus );
+    
+            if ( readStatus==0 ) 
+            {
+                // Stick it in the buffer so pullers can get it
+                position2dPipe_.set( position2dData_ );
+                position3dPipe_.set( position3dData_ );
+                powerPipe_.set( powerData_ );
+                
+                if ( driverStatus != currDriverStatus ) {
+                    context_.tracer()->status( currDriverStatus );
+                    driverStatus = currDriverStatus;
+                }
+            } 
+            else 
+            {
+                context_.tracer()->error("failed to read data from Segway hardware.");
+                isOkProxy_.set( false );
+            }
+
+        } // try
+        catch ( const orca::OrcaException & e )
+        {
+            stringstream ss;
+            ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
+            context_.tracer()->error( ss.str() );
+            if ( context_.isApplication() ) {
+                context_.tracer()->info( "this is an stand-alone component. Quitting...");
+                context_.communicator()->destroy();
+            }
         }
-        
+        catch ( const orcaice::Exception & e )
+        {
+            stringstream ss;
+            ss << "unexpected (local?) orcaice exception: " << e.what();
+            context_.tracer()->error( ss.str() );
+            if ( context_.isApplication() ) {
+                context_.tracer()->info( "this is an stand-alone component. Quitting...");
+                context_.communicator()->destroy();
+            }
+        }
+        catch ( const Ice::Exception & e )
+        {
+            stringstream ss;
+            ss << "unexpected Ice exception: " << e;
+            context_.tracer()->error( ss.str() );
+            if ( context_.isApplication() ) {
+                context_.tracer()->info( "this is an stand-alone component. Quitting...");
+                context_.communicator()->destroy();
+            }
+        }
+        catch ( const std::exception & e )
+        {
+            stringstream ss;
+            ss << "unexpected std exception: " << e.what();
+            context_.tracer()->error( ss.str() );
+            if ( context_.isApplication() ) {
+                context_.tracer()->info( "this is an stand-alone component. Quitting...");
+                context_.communicator()->destroy();
+            }
+        }
+        catch ( ... )
+        {
+            context_.tracer()->error( "unexpected exception from somewhere.");
+            if ( context_.isApplication() ) {
+                context_.tracer()->info( "this is an stand-alone component. Quitting...");
+                context_.communicator()->destroy();
+            }
+        }
+
     } // while
 
-    // we are no longer active
-
-    // reset the hardware
-    if ( driver_->disable() ) {
-        context_.tracer()->warning("failed to disable driver");
-    }
-    else {
-        context_.tracer()->debug("driver disabled",5);
-    }
-
-    //
-    // unexpected exceptions
-    //
-    } // try
-    catch ( const orca::OrcaException & e )
-    {
-        stringstream ss;
-        ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( const orcaice::Exception & e )
-    {
-        stringstream ss;
-        ss << "unexpected (local?) orcaice exception: " << e.what();
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss << "unexpected Ice exception: " << e;
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( const std::exception & e )
-    {
-        // once caught this beast in here, don't know who threw it 'St9bad_alloc'
-        stringstream ss;
-        ss << "unexpected std exception: " << e.what();
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( ... )
-    {
-        context_.tracer()->error( "unexpected exception from somewhere.");
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
     context_.tracer()->debug( "exiting HwHandler thread...",5);
@@ -281,7 +256,7 @@ HwHandler::handleData( const orca::Velocity2dCommandPtr & obj )
 /*
     // if we know we can't write, don't try again
     bool writeStatus = false;
-    writeStatusPipe_.get( writeStatus );
+    isOkProxy_.get( writeStatus );
     if ( !writeStatus ) {
         return;
     }
@@ -315,19 +290,12 @@ HwHandler::handleData( const orca::Velocity2dCommandPtr & obj )
     //
     // write to hardware
     //
-    if( driver_->write( obj ) == 0 ) {
-        writeStatusPipe_.set( true );
-    }
-    else {
+    if( driver_->write( obj ) != 0 ) 
+    {
         std::string errorStr = "failed to write command data to hardware.";
         context_.tracer()->error( errorStr );
         // set local state to failure
-        writeStatusPipe_.set( false );
-
-        // debug
-        bool statusCheck;
-        writeStatusPipe_.get( statusCheck );
-        assert( statusCheck == false && "write status should be set to FALSE" );
+        isOkProxy_.set( false );
 
         // inform remote client of hardware failure
         throw orca::HardwareFailedException( errorStr );

@@ -33,17 +33,17 @@ int FakeDriver::enable()
     return 0;
 }
 
-int FakeDriver::repair()
-{
-    cout<<"FakeDriver is repaired"<<endl;
-    return 0;
-}
+// int FakeDriver::repair()
+// {
+//     cout<<"FakeDriver is repaired"<<endl;
+//     return 0;
+// }
 
-int FakeDriver::disable()
-{
-    cout<<"FakeDriver is disabled"<<endl;
-    return 0;
-}
+// int FakeDriver::disable()
+// {
+//     cout<<"FakeDriver is disabled"<<endl;
+//     return 0;
+// }
 
 int FakeDriver::read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 
                       orca::PowerDataPtr &power, std::string & status )

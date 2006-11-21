@@ -30,8 +30,8 @@ public:
     virtual ~RmpUsbDriver();
 
     virtual int enable();
-    virtual int repair();
-    virtual int disable();
+//     virtual int repair();
+//     virtual int disable();
 
     virtual int read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 
                       orca::PowerDataPtr &power, std::string & status );
@@ -115,7 +115,6 @@ private:
     int diff(uint32_t from, uint32_t to, bool first);
     // bullshit
     bool firstread_;
-    bool repairCounter_;
 
     // chip's utilities
     void watchPacket( CanPacket* pkt, short int pktID );
