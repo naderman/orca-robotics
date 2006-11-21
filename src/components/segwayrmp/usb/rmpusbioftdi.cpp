@@ -271,6 +271,20 @@ RmpUsbIoFtdi::writePacket( CanPacket *pkt )
     {
         stringstream ss;
         ss << "RmpUsbIoFtdi::writePacket(): Error: " << e.what();
+
+        //
+        // OK, so the write failed.  Is the Segway still writing to us?
+        //
+        try { 
+            for ( int i=0; i < 3; i++ )
+                usbFtdi_->waitForData();
+            ss << endl << " --> The Segway is still writing to us though.  Seems like we're in that fucked-up state.";
+        }
+        catch ( usbftdi::Exception &e )
+        {
+            ss << endl << " --> The Segway is not writing to us.  Looks like it's powered off.";
+        }
+
         throw Exception( ss.str() );
     }    
 }

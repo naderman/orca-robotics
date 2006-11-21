@@ -80,10 +80,20 @@ RmpUsbDriver::enable()
         write( zero  );
         
         // try reading from it
-        readFrame();
-        cout<<"TRACE(rmpusbdriver.cpp): Initial exploratory read says: " << endl << toString() << endl;
+        try {
+            readFrame();
+        }
+        catch ( Exception &e )
+        {
+            stringstream ss;
+            ss << "Looks like the Segway is powered off.  Symptom is: " << endl << e.what();
+            throw Exception( ss.str() );
+        }
+        stringstream ssread;
+        ssread << "Initial exploratory read says:"<<endl<<toString();
+        context_.tracer()->debug( ssread.str() );
 
-
+        // Initialise everything
         resetAllIntegrators();
         setMaxVelocityScaleFactor( config_.maxVelocityScale );
         setMaxTurnrateScaleFactor( config_.maxTurnrateScale );

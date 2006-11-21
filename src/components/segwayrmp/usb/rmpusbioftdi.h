@@ -28,19 +28,16 @@ public:
     RmpUsbIoFtdi( int debugLevel=0 );
     virtual ~RmpUsbIoFtdi();
     
-    // Returns: 0 on success
     virtual void init();
 
     // Tries to reset the device without shutting it down completely.
     virtual void reset();
     
-    // Returns: 0 on success
     virtual void shutdown();
     
     // Returns OK if copied a packet, NO_DATA if not
     virtual RmpUsbIoStatus readPacket( CanPacket* pkt );
     
-    // Returns OK on success
     virtual void writePacket( CanPacket* pkt );
     
 private:
