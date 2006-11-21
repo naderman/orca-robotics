@@ -14,31 +14,52 @@
 #include <queue>
 #include <ftd2xx.h>
 #include <usbftdi/usbftdi.h>
-#include "rmpusbio.h"
+#include "canpacket.h"
 
 namespace segwayrmp
 {
 
 //
+// Exceptions thrown around in segwayrmp.
 //
-//
-class RmpUsbIoFtdi : public RmpUsbIo
+class Exception : public std::exception
 {
 public:
-    RmpUsbIoFtdi( int debugLevel=0 );
-    virtual ~RmpUsbIoFtdi();
-    
-    virtual void init();
 
-    // Tries to reset the device without shutting it down completely.
-    virtual void reset();
-    
-    virtual void shutdown();
+    Exception(const char *message)
+        : message_(message) {}
+    Exception(const std::string &message)
+        : message_(message) {}
+
+    virtual ~Exception() throw() {}
+
+    virtual const char* what() const throw() { return message_.c_str(); }
+
+protected:
+
+    std::string  message_;
+};
+
+//
+//
+//
+class RmpUsbIoFtdi
+{
+public:
+
+    enum RmpUsbStatus
+    {
+        OK              = 0,
+        NO_DATA         = 1,
+    };
+
+    RmpUsbIoFtdi( int debugLevel=0 );
+    ~RmpUsbIoFtdi();
     
     // Returns OK if copied a packet, NO_DATA if not
-    virtual RmpUsbIoStatus readPacket( CanPacket* pkt );
+    RmpUsbStatus readPacket( CanPacket* pkt );
     
-    virtual void writePacket( CanPacket* pkt );
+    void writePacket( CanPacket* pkt );
     
 private:
 
@@ -59,13 +80,13 @@ private:
     // Don't call this if the buffer's empty.
     void getPacketFromCanBuffer( CanPacket* pkt );
     
-    RmpUsbIoStatus readPacketNonBlocking( CanPacket* pkt );
-    RmpUsbIoStatus readPacketBlocking( CanPacket* pkt );
+    RmpUsbStatus readPacketNonBlocking( CanPacket* pkt );
+    RmpUsbStatus readPacketBlocking( CanPacket* pkt );
     // Not used but keep for reference
     //RmpUsbIoStatus readPacketPolling( CanPacket* pkt );
     
-    RmpUsbIoStatus readFromUsbToBufferNonBlocking();
-    RmpUsbIoStatus readFromUsbToBufferBlocking();
+    RmpUsbStatus readFromUsbToBufferNonBlocking();
+    RmpUsbStatus readFromUsbToBufferBlocking();
     void readFromBufferToQueue();
     
     int parseUsbToCan( CanPacket *pkt, unsigned char *bytes );

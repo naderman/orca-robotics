@@ -26,8 +26,13 @@ using namespace std;
 using namespace orca;
 using namespace segwayrmp;
 
+namespace {
+    const int DEBUG_LEVEL=5;
+}
+
 RmpUsbDriver::RmpUsbDriver( const orcaice::Context & context )
-    : context_(context),
+    : rmpusbio_(NULL),
+      context_(context),
       lastRawYaw_(0),
       lastRawForeaft_(0),
       odomX_(0),
@@ -38,12 +43,6 @@ RmpUsbDriver::RmpUsbDriver( const orcaice::Context & context )
       firstread_(true),
       repairCounter_(0)
 {
-    // Hardware
-    int debugLevel = 5;
-    rmpusbio_ = new RmpUsbIoFtdi( debugLevel );
-    frame_ = new RmpUsbDataFrame;
-    pkt_ = new CanPacket;
-
     // parse configuration parameters
     readFromProperties( context, config_ );
     cout<<config_<<endl;
@@ -52,13 +51,6 @@ RmpUsbDriver::RmpUsbDriver( const orcaice::Context & context )
 RmpUsbDriver::~RmpUsbDriver()
 {
     cout<<"TRACE(rmpusbdriver.cpp): destructor()" << endl;
-
-    delete rmpusbio_;
-    delete frame_;
-    delete pkt_;
-
-    cout<<"TRACE(rmpusbdriver.cpp): destructed." << endl;
-
 }
 
 int
@@ -66,9 +58,9 @@ RmpUsbDriver::enable()
 {
     // init device
     try {
-        rmpusbio_->init();
+        rmpusbio_ = new RmpUsbIoFtdi( DEBUG_LEVEL );
 
-        context_.tracer()->debug("RmpUsbDriver::enable(): rmpusbio_->init() succeeded.");
+        context_.tracer()->debug("RmpUsbDriver::enable(): connected to USB device.");
     
         // segway is physically connected; try to configure
 
@@ -106,7 +98,6 @@ RmpUsbDriver::enable()
         stringstream ss;
         ss << "RmpUsbDriver::enable() failed: " << e.what();
         context_.tracer()->warning( ss.str() );
-        rmpusbio_->shutdown();
         return 2;
     }
     return 0;
@@ -139,7 +130,9 @@ int
 RmpUsbDriver::disable()
 {
     cout<<"RmpUsbDriver::disabling... ("<<repairCounter_<<" repairs so far)"<<endl;
-    rmpusbio_->shutdown();
+    assert( rmpusbio_ );
+    delete rmpusbio_;
+    rmpusbio_ = NULL;
 
     return 0;
 }
@@ -158,18 +151,18 @@ RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr
         updateData( position2d, position3d, power, rmpStatus );
 
         // do a status check (before resetting the frame)
-        if ( frame_->status_word1!=lastStatusWord1_ && frame_->status_word1!=lastStatusWord2_ ) {
+        if ( frame_.status_word1!=lastStatusWord1_ && frame_.status_word1!=lastStatusWord2_ ) {
             cout<<"RmpUsbDriver: internal state change : "<<IceUtil::Time::now().toString()<<endl;
             cout<<toString()<<endl;
-            lastStatusWord1_ = frame_->status_word1;
-            lastStatusWord2_ = frame_->status_word2;
+            lastStatusWord1_ = frame_.status_word1;
+            lastStatusWord2_ = frame_.status_word2;
         }
 
-        frame_->reset();
+        frame_.reset();
 
         // update status (only change it when internal state changes?)
         std::ostringstream os;
-        os << "State1="<<frame_->CuStatus1ToString()<<" State2="<<frame_->CuStatus2ToString();
+        os << "State1="<<frame_.CuStatus1ToString()<<" State2="<<frame_.CuStatus2ToString();
         status = os.str();
 
         return 0;
@@ -187,9 +180,9 @@ int
 RmpUsbDriver::write( const orca::Velocity2dCommandPtr & command )
 {
     try {
-        makeMotionCommandPacket( pkt_, command );
+        makeMotionCommandPacket( &pkt_, command );
 
-        rmpusbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(&pkt_);
 
         return 0;
     }
@@ -205,13 +198,13 @@ RmpUsbDriver::write( const orca::Velocity2dCommandPtr & command )
 std::string
 RmpUsbDriver::toString()
 {
-    return frame_->toString();
+    return frame_.toString();
 }
 
 void
 RmpUsbDriver::readFrame()
 {
-    RmpUsbIo::RmpUsbIoStatus status;
+    RmpUsbIoFtdi::RmpUsbStatus status;
     int canPacketsProcessed = 0;
     int dataFramesReopened = 0;
     int timeoutCount = 0;
@@ -223,9 +216,9 @@ RmpUsbDriver::readFrame()
     // get next packet from the packet buffer, will block until new packet arrives
     while( canPacketsProcessed < maxCanPacketsProcessed && timeoutCount < maxTimeoutCount )
     {
-        status = rmpusbio_->readPacket( pkt_ );
+        status = rmpusbio_->readPacket( &pkt_ );
 
-        if ( status == RmpUsbIo::NO_DATA ) {
+        if ( status == RmpUsbIoFtdi::NO_DATA ) {
             // not sure what to do here. treat as an error? try again?
             ++timeoutCount;
             continue;
@@ -233,25 +226,25 @@ RmpUsbDriver::readFrame()
         
         ++canPacketsProcessed;
         // debug
-        //watchDataStream( pkt_ );
+        //watchDataStream( &pkt_ );
     
         //
         // Add packet to data frame
         // This is where we interprete all message contents!
         //
-        frame_->AddPacket(pkt_);
+        frame_.AddPacket(&pkt_);
    
         //
         // special case: integrate robot motion
         //
-        if ( pkt_->id == RMP_CAN_ID_MSG4 ) {
+        if ( pkt_.id == RMP_CAN_ID_MSG4 ) {
             integrateMotion();
         }
 
         // If frame is closed and complete, transfer data and reset frame
-        if( frame_->isClosed() )
+        if( frame_.isClosed() )
         {
-            if ( frame_->isComplete() )
+            if ( frame_.isComplete() )
             {
                 //cout<<"RmpUsbDriver::readFrame: pkts:"<<canPacketsProcessed<<" re-opened: "<<dataFramesReopened<<endl;
                 return;
@@ -261,11 +254,11 @@ RmpUsbDriver::readFrame()
                 /* int sec = IceUtil::Time::now().toSeconds();
                 cout<<sec<<" re-opening frame. Missing [";
                 for ( int i=1; i<8; ++i ) {
-                    if ( !frame_->msgCheckList_[i] ) { cout<<i<<" "; }
+                    if ( !frame_.msgCheckList_[i] ) { cout<<i<<" "; }
                 }
                 cout<<"]"<<endl; */
                 // @todo or should we reset?
-                frame_->reopen();
+                frame_.reopen();
                 ++dataFramesReopened;
                 
                 // remain in the while loop, read another frame
@@ -283,12 +276,12 @@ void
 RmpUsbDriver::integrateMotion()
 {
     // Get the new linear and angular encoder values and compute odometry.
-    int deltaForeaftRaw = diff(lastRawForeaft_, frame_->foreaft, firstread_);
-    int deltaYawRaw = diff(lastRawYaw_, frame_->yaw, firstread_);
+    int deltaForeaftRaw = diff(lastRawForeaft_, frame_.foreaft, firstread_);
+    int deltaYawRaw = diff(lastRawYaw_, frame_.yaw, firstread_);
 
     // store current values
-    lastRawForeaft_ = frame_->foreaft;
-    lastRawYaw_ = frame_->yaw;
+    lastRawForeaft_ = frame_.foreaft;
+    lastRawYaw_ = frame_.yaw;
 
     // convert to SI
     double deltaForeaft = (double)deltaForeaftRaw / RMP_COUNT_PER_M;
@@ -326,7 +319,7 @@ RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::Position3dD
     // combine left and right wheel velocity to get forward velocity
     // change from counts/sec into meters/sec
     position2d->motion.v.x =
-            ((double)frame_->left_dot+(double)frame_->right_dot) /
+            ((double)frame_.left_dot+(double)frame_.right_dot) /
              RMP_COUNT_PER_M_PER_S / 2.0;
 
     // no side speeds for this bot
@@ -334,7 +327,7 @@ RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::Position3dD
 
     // from counts/sec into deg/sec.  also, take the additive
     // inverse, since the RMP reports clockwise angular velocity as positive.
-    position2d->motion.w = -(double)frame_->yaw_dot / RMP_COUNT_PER_RAD_PER_S;
+    position2d->motion.w = -(double)frame_.yaw_dot / RMP_COUNT_PER_RAD_PER_S;
 
     // @todo stall from currents?
     position2d->stalled = false;
@@ -347,8 +340,8 @@ RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::Position3dD
     // Player got it right: "this robot doesn't fly"
     position3d->pose.p.z    = 0.0;
 
-    position3d->pose.o.r    = frame_->roll;
-    position3d->pose.o.p    = frame_->pitch;
+    position3d->pose.o.r    = frame_.roll;
+    position3d->pose.o.p    = frame_.pitch;
     position3d->pose.o.y    = odomYaw_;
 
     // forward speed is the same as for the 2D interface
@@ -360,48 +353,48 @@ RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::Position3dD
 
     // note the correspondence between pitch and roll rate and the 
     // axes around which the rotation happens.
-    position3d->motion.w.x = frame_->roll_dot;
-    position3d->motion.w.y = frame_->pitch_dot;
+    position3d->motion.w.x = frame_.roll_dot;
+    position3d->motion.w.y = frame_.pitch_dot;
     // from counts/sec into deg/sec.  also, take the additive
     // inverse, since the RMP reports clockwise angular velocity as positive.
-    position3d->motion.w.z = -(double)frame_->yaw_dot / RMP_COUNT_PER_RAD_PER_S;
+    position3d->motion.w.z = -(double)frame_.yaw_dot / RMP_COUNT_PER_RAD_PER_S;
 
 
     // POWER
     //
     // Convert battery voltage from counts to Volts
     // we only know the minimum of the two main batteries
-    power->batteries[0].voltage = frame_->base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
+    power->batteries[0].voltage = frame_.base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
     power->batteries[0].percent = 99.0;
     power->batteries[0].secRemaining = 8*60*60;
-    power->batteries[1].voltage = frame_->base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
+    power->batteries[1].voltage = frame_.base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
     power->batteries[1].percent = 99.0;
     power->batteries[1].secRemaining = 8*60*60;
-    power->batteries[2].voltage = RMP_UI_OFFSET + frame_->ui_battery_voltage*RMP_UI_COEFF;
+    power->batteries[2].voltage = RMP_UI_OFFSET + frame_.ui_battery_voltage*RMP_UI_COEFF;
     power->batteries[2].percent = 99.0;
     power->batteries[2].secRemaining = 8*60*60;
 
     // INTERNAL STATUS
-    status.buildId = frame_->build_id;
-    status.cuState = frame_->status_word1;
-    status.opMode = frame_->operational_mode;
-    status.gainSchedule = frame_->controller_gain_schedule;
+    status.buildId = frame_.build_id;
+    status.cuState = frame_.status_word1;
+    status.opMode = frame_.operational_mode;
+    status.gainSchedule = frame_.controller_gain_schedule;
 
     //debug
-    //cout<<"cu battery voltage (CU): "<<power->batteries[0].voltage<<" ("<<frame_->base_battery_voltage<<")"<<endl;
+    //cout<<"cu battery voltage (CU): "<<power->batteries[0].voltage<<" ("<<frame_.base_battery_voltage<<")"<<endl;
     // info from CU in msg 406
-    //cout<<"ui battery voltage (CU): "<<power->batteries[2].voltage<<" ("<<frame_->ui_battery_voltage<<")"<<endl;
+    //cout<<"ui battery voltage (CU): "<<power->batteries[2].voltage<<" ("<<frame_.ui_battery_voltage<<")"<<endl;
     // info from UI in heartbeat msg
-    //cout<<"ui battery voltage (UI): "<<frame_->ui_heartbeat_voltage<<endl;
-    //if ( frame_->ui_heartbeat_status == RMP_UI_LOW_WARNING ) {
+    //cout<<"ui battery voltage (UI): "<<frame_.ui_heartbeat_voltage<<endl;
+    //if ( frame_.ui_heartbeat_status == RMP_UI_LOW_WARNING ) {
     //    cout<<"ui battery status (UI) : low "<<endl;
     //}
-    //else if ( frame_->ui_heartbeat_status == RMP_UI_EMPTY_SHUTDOWN ) {
+    //else if ( frame_.ui_heartbeat_status == RMP_UI_EMPTY_SHUTDOWN ) {
     //    cout<<"ui battery status (UI) : shutdown "<<endl;
     //}
 
     // Chip debug
-    //frame_->dump();
+    //frame_.dump();
     //dump();
 
     firstread_ = false;
@@ -410,10 +403,10 @@ RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::Position3dD
 void
 RmpUsbDriver::resetAllIntegrators()
 {
-    makeStatusCommandPacket( pkt_, RMP_CMD_RESET_INTEGRATORS, RMP_CAN_RESET_ALL );
+    makeStatusCommandPacket( &pkt_, RMP_CMD_RESET_INTEGRATORS, RMP_CAN_RESET_ALL );
 
     try {
-        rmpusbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(&pkt_);
     }
     catch ( std::exception &e )
     {
@@ -433,10 +426,10 @@ RmpUsbDriver::setMaxVelocityScaleFactor( double scale )
     } else if ( scale<0.0 ) {
         scale=0.0;
     }
-    makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAX_VELOCITY_SCALE, (uint16_t)ceil(scale*16.0) );
+    makeStatusCommandPacket( &pkt_, RMP_CMD_SET_MAX_VELOCITY_SCALE, (uint16_t)ceil(scale*16.0) );
 
     try {
-        rmpusbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(&pkt_);
     }
     catch ( std::exception &e )
     {
@@ -456,10 +449,10 @@ RmpUsbDriver::setMaxTurnrateScaleFactor( double scale )
     } else if ( scale<0.0 ) {
         scale=0.0;
     }
-    makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAX_TURNRATE_SCALE, (uint16_t)ceil(scale*16.0) );
+    makeStatusCommandPacket( &pkt_, RMP_CMD_SET_MAX_TURNRATE_SCALE, (uint16_t)ceil(scale*16.0) );
 
     try {
-        rmpusbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(&pkt_);
     }
     catch ( std::exception &e )
     {
@@ -479,10 +472,10 @@ RmpUsbDriver::setMaxAccelerationScaleFactor( double scale )
     } else if ( scale<0.0 ) {
         scale=0.0;
     }
-    makeStatusCommandPacket( pkt_, RMP_CMD_SET_MAX_ACCELERATION_SCALE, (uint16_t)ceil(scale*16.0) );
+    makeStatusCommandPacket( &pkt_, RMP_CMD_SET_MAX_ACCELERATION_SCALE, (uint16_t)ceil(scale*16.0) );
 
     try {
-        rmpusbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(&pkt_);
     }
     catch ( std::exception &e )
     {
@@ -503,10 +496,10 @@ RmpUsbDriver::setMaxCurrentLimitScaleFactor( double scale )
         scale=0.0;
     }
     // note: the scale of this command is [0,256]
-    makeStatusCommandPacket( pkt_, RMP_CMD_SET_CURRENT_LIMIT_SCALE, (uint16_t)ceil(scale*256.0) );
+    makeStatusCommandPacket( &pkt_, RMP_CMD_SET_CURRENT_LIMIT_SCALE, (uint16_t)ceil(scale*256.0) );
 
     try {
-        rmpusbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(&pkt_);
     }
     catch ( std::exception &e )
     {
@@ -519,10 +512,10 @@ RmpUsbDriver::setMaxCurrentLimitScaleFactor( double scale )
 void
 RmpUsbDriver::setOperationalMode( OperationalMode mode )
 {
-    makeStatusCommandPacket( pkt_, RMP_CMD_SET_OPERATIONAL_MODE, mode );
+    makeStatusCommandPacket( &pkt_, RMP_CMD_SET_OPERATIONAL_MODE, mode );
 
     try {
-        rmpusbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(&pkt_);
     }
     catch ( std::exception &e )
     {
@@ -534,10 +527,10 @@ RmpUsbDriver::setOperationalMode( OperationalMode mode )
 void
 RmpUsbDriver::setGainSchedule( int sched )
 {
-    makeStatusCommandPacket( pkt_, RMP_CMD_SET_GAIN_SCHEDULE, sched );
+    makeStatusCommandPacket( &pkt_, RMP_CMD_SET_GAIN_SCHEDULE, sched );
 
     try {
-        rmpusbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(&pkt_);
     }
     catch ( std::exception &e )
     {
@@ -551,14 +544,14 @@ void
 RmpUsbDriver::enableBalanceMode( bool enable )
 {
     if ( enable ) {
-        makeStatusCommandPacket( pkt_, RMP_CMD_SET_BALANCE_MODE_LOCKOUT, BalanceAllowed );
+        makeStatusCommandPacket( &pkt_, RMP_CMD_SET_BALANCE_MODE_LOCKOUT, BalanceAllowed );
     }
     else {
-        makeStatusCommandPacket( pkt_, RMP_CMD_SET_BALANCE_MODE_LOCKOUT, BalanceNotAllowed );
+        makeStatusCommandPacket( &pkt_, RMP_CMD_SET_BALANCE_MODE_LOCKOUT, BalanceNotAllowed );
     }
     
     try {
-        rmpusbio_->writePacket(pkt_);
+        rmpusbio_->writePacket(&pkt_);
     }
     catch ( std::exception &e )
     {

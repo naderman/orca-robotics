@@ -78,6 +78,7 @@ private:
     orcaice::Context context_;
 
     // write status has to be protected to be accessed from both read and write threads
+    // true is good, false is bad.
     orcaice::Proxy<bool> writeStatusPipe_;
 
     // debug

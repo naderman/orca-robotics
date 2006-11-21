@@ -13,14 +13,14 @@
 
 #include "../hwdriver.h"
 #include "rmpusbdriverconfig.h"
+//#include "rmpusbioftdi.h"
+#include "rmpusbdataframe.h"
+#include "canpacket.h"
 
 namespace segwayrmp
 {
 
-// forward declarations
-class RmpUsbIo;
-class RmpUsbDataFrame;
-class CanPacket;
+class RmpUsbIoFtdi;
 
 class RmpUsbDriver : public HwDriver
 {
@@ -75,9 +75,9 @@ private:
     void enableBalanceMode( bool enable );
 
     // driver/hardware interface
-    RmpUsbIo         *rmpusbio_;
-    RmpUsbDataFrame  *frame_;
-    CanPacket        *pkt_;
+    RmpUsbIoFtdi     *rmpusbio_;
+    RmpUsbDataFrame   frame_;
+    CanPacket         pkt_;
 
     // configuration
     orcaice::Context context_;
