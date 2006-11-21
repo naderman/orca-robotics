@@ -128,12 +128,14 @@ HwHandler::enableDriver()
 {
     while ( isActive() ) {
         context_.tracer()->info("Enabling driver...");
-        if ( driver_->enable() == 0 ) break;
+        if ( driver_->enable() == 0 ) 
+        {
+            context_.tracer()->info( "Enable succeeded." );
+            return;
+        }
         context_.tracer()->warning("failed to enable the driver; will try again in 2 seconds.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
-
-    context_.tracer()->info( "Enable succeeded." );
 }
 
 void
