@@ -59,7 +59,16 @@ RmpUsbDriver::enable()
     // init device
     try {
         rmpusbio_ = new RmpUsbIoFtdi( DEBUG_LEVEL );
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss;
+        ss << "Looks like the Segway is not connected.  Symptom is: "<<endl<<e.what();
+        context_.tracer()->error(ss.str());
+        return -1;
+    }
 
+    try {
         context_.tracer()->debug("RmpUsbDriver::enable(): connected to USB device.");
     
         // segway is physically connected; try to configure
@@ -98,6 +107,7 @@ RmpUsbDriver::enable()
         stringstream ss;
         ss << "RmpUsbDriver::enable() failed: " << e.what();
         context_.tracer()->warning( ss.str() );
+        disable();
         return 2;
     }
     return 0;
