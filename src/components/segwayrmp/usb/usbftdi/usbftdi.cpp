@@ -186,8 +186,12 @@ UsbFtdi::waitForData()
 
     // this should not happen
     assert( (ret==0 || ret==ETIMEDOUT) && "pthread error in UsbFtdi::readBlocking" );
-        
-    if ( ret == ETIMEDOUT ) {
+
+    if ( ret == 0 )
+    {
+        return USBFTDI_OK;
+    }
+    else if ( ret == ETIMEDOUT ) {
         return USBFTDI_TIMEOUT;
     }
     else {
@@ -195,7 +199,6 @@ UsbFtdi::waitForData()
         ss << "Error returned from pthread_cond_timedwait: " << strerror(ret);
         throw Exception( ERROR_INFO, ss.str() );
     }
-    return USBFTDI_OK;
 }
 
 int 
