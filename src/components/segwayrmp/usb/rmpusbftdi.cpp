@@ -14,7 +14,6 @@
 #include <IceUtil/IceUtil.h>
 
 #include "rmpusbftdi.h"
-#include "usbftdiutil.h"
 
 #include "rmpusbdataframe.h"
 #include "rmpdefs.h"
@@ -37,17 +36,16 @@ using namespace segwayrmp;
 
 
 RmpUsbIoFtdi::RmpUsbIoFtdi()
+    : usbFtdi_(0)
 {
     // Set initial buffer size and number of bytes stored
     charBuffer_.resize(128);
     charBufferBytes_ = 0;
-    
-    pthread_mutex_init(&eventHandle_.eMutex, NULL);
-    pthread_cond_init(&eventHandle_.eCondVar, NULL);
 }
 
 RmpUsbIoFtdi::~RmpUsbIoFtdi()
 {
+    if ( usbFtdi_ ) delete usbFtdi_;
 }
 
 /*
@@ -58,221 +56,73 @@ RmpUsbIoFtdi::~RmpUsbIoFtdi()
 RmpUsbIo::RmpUsbIoStatus
 RmpUsbIoFtdi::init()
 {
-    // custom device settings
-    DWORD iVID = SEGWAY_USB_VENDOR_ID;
-    DWORD iPID = SEGWAY_USB_PRODUCT_ID;
-    // without this, the FTDI library will not find the segway
-    FT_SetVIDPID(iVID, iPID);   // use our VID and PID;
-
-    FT_STATUS ftStatus;
-    
-    /*
-    FT_HANDLE ftHandleTemp;
-    DWORD numDevs;
-    DWORD Flags;
-    DWORD ID;
-    DWORD Type;
-    DWORD LocId;
-    char SerialNumber[16];
-    
-    //
-    // create the device information list
-    //
-    ftStatus = FT_CreateDeviceInfoList(&numDevs);
-    if ( ftStatus != FT_OK )
+    try {
+        usbFtdi_ = new usbftdi::UsbFtdi( SEGWAY_USB_VENDOR_ID,
+                                         SEGWAY_USB_PRODUCT_ID,
+                                         SEGWAY_USB_DESCRIPTION );
+    }
+    catch ( usbftdi::Exception &e )
     {
-        cout<<"couldn't get a list of devices"<<endl;
+        cout << "ERROR(rmpusbftdi.cpp): Error initialising USB device: " << e.what() << endl;
         return RmpUsbIo::IO_ERROR;
     }
-    cout<<"found "<<(int)numDevs<<" devices"<<endl;
-    if ( numDevs <= 0 ) {
-        return RmpUsbIo::OTHER_ERROR;
-    }
-    
-    // this is the index of segway in the list of USB devices
-    int segwayDeviceIndex = -1;
-    
-    // get information for all devices
-    for ( unsigned int i=0; i<numDevs; ++i ) { 
-        ftStatus = FT_GetDeviceInfoDetail( i, &Flags, &Type, &ID, &LocId, SerialNumber, Description, &ftHandleTemp );
-        if ( ftStatus == FT_OK && ID==SEGWAY_USB_VENDOR_PRODUCT_ID ) {
-            cout<<"found Segway device"<<endl;
-            segwayDeviceIndex = i;
-            
-            cout<<"Device :"<<i<<endl;
-            cout<<"Flags  :"<<hex<<(int)Flags<<endl;
-            cout<<"Type   :"<<hex<<(int)Type<<endl;
-            cout<<"ID     :"<<hex<<(int)ID<<endl;
-            cout<<"LocId  :"<<hex<<(int)LocId<<endl;
-            cout<<"Serial :"<<SerialNumber<<endl;
-            cout<<"Descrip:"<<Description<<endl;
-            cout<<"Handle :"<<hex<<(int)ftHandleTemp<<endl;
 
-            break;
-        }
-    }
-    
-    // didn't find the segway device
-    if ( segwayDeviceIndex==-1 ) {
-        cout<<"Did not find Segway device. All devices: "<<endl;
-        for ( unsigned int i=0; i<numDevs; ++i ) { 
-            ftStatus = FT_GetDeviceInfoDetail( i, &Flags, &Type, &ID, &LocId, SerialNumber, Description, &ftHandleTemp );
-            cout<<"============================"<<endl;
-            cout<<"Device :"<<i<<endl;
-            cout<<"Flags  :"<<hex<<(int)Flags<<endl;
-            cout<<"Type   :"<<hex<<(int)Type<<endl;
-            cout<<"ID     :"<<hex<<(int)ID<<endl;
-            cout<<"LocId  :"<<hex<<(int)LocId<<endl;
-            cout<<"Serial :"<<SerialNumber<<endl;
-            cout<<"Descrip:"<<Description<<endl;
-            cout<<"Handle :"<<hex<<(int)ftHandleTemp<<endl;
-        }
-        return RmpUsbIo::OTHER_ERROR;
-    }
-    
-    ftStatus = FT_Open( segwayDeviceIndex, &ftHandle_ );
-    if ( ftStatus != FT_OK) {
-        cout<<"FT_Open failed ("<<ftStatus<<")"<<endl;
-        return RmpUsbIo::IO_ERROR;
-    }
-    cout<<"FT_Open OK"<<endl;
-    */
-    
-    char Description[64];
-    strcpy(Description,SEGWAY_USB_DESCRIPTION);
-    ftStatus = FT_OpenEx(Description ,FT_OPEN_BY_DESCRIPTION, &ftHandle_ );
-    if ( ftStatus != FT_OK) {
-        cout<<"FT_OpenEx failed ("<<ftStatusToString(ftStatus)<<")"<<endl;
-        return RmpUsbIo::IO_ERROR;
-    }
-    cout<<"FT_OpenEx OK"<<endl;
-
-    ftStatus = FT_SetBaudRate( ftHandle_, 460800 );
-    if ( ftStatus != FT_OK)  {
-        cout<<"FT_SetBaudRate failed ("<<ftStatusToString(ftStatus)<<")"<<endl;
-        FT_Close( ftHandle_ );        //close open device
-        return RmpUsbIo::IO_ERROR;
-    }   
-    cout<<"FT_SetBaudRate OK"<<endl;
-
-    //set the latency timer to 2ms (valid range is from 2 to 255 ms)
-    ftStatus = FT_SetLatencyTimer( ftHandle_, 2 );
-    if ( ftStatus != FT_OK)  {
-        cout<<"FT_SetLatencyTimer failed ("<<ftStatusToString(ftStatus)<<")"<<endl;
-        //latency not set - but we won't know   return -82;
-        return RmpUsbIo::IO_ERROR;
-    }    
-    cout<<"FT_SetLatencyTimer OK"<<endl;
-
-    // debug
-    /*
-    CanPacket ppp;
-    for ( int i=0; i<10; ++i )
-    {
-        ReadPacket( &ppp, 0 );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::microSeconds(50));
-    }
-    */
-    
-    //
-    // The reset is in a separate function so we call it again later.
-    //
-    return reset();
+    return RmpUsbIo::OK;
 }
 
 RmpUsbIo::RmpUsbIoStatus RmpUsbIoFtdi::reset()
 {
-    assert( ftHandle_ );
+    assert( usbFtdi_ != 0 );
 
-    FT_STATUS ftStatus;
-
-    ftStatus = FT_ResetDevice( ftHandle_ );
-    if ( ftStatus != FT_OK ) {
-        cout<<"FT_ResetDevice failed ("<<ftStatusToString(ftStatus)<<")"<<endl;
-    } else {
-        cout<<"FT_ResetDevice OK"<<endl;
+    //
+    // Nuclear reset...
+    //
+    try {
+        delete( usbFtdi_ );
+        init();
     }
-
-    ftStatus = FT_Purge( ftHandle_, FT_PURGE_RX | FT_PURGE_TX);
-    if ( ftStatus != FT_OK ) {
-        cout<<"FT_Purge failed ("<<ftStatusToString(ftStatus)<<")"<<endl;
-    } else {
-        cout<<"FT_Purge OK"<<endl;
-    }
-
-    ftStatus = FT_ResetDevice( ftHandle_ );
-    if ( ftStatus != FT_OK ) {
-        cout<<"FT_ResetDevice failed ("<<ftStatusToString(ftStatus)<<")"<<endl;
-    } else {
-        cout<<"FT_ResetDevice OK"<<endl;
-    }
-    /*
-        //extend timeout while board finishes reset
-    ftStatus = FT_SetTimeouts( ftHandle_, 1000, 1000 );  // timeouts in ms
-    if ( ftStatus != FT_OK ) {
-        cout<<"FT_SetTimeouts failed ("<<ftStatusToString(ftStatus)<<")"<<endl;
-    } else {
-        cout<<"FT_SetTimeouts OK"<<endl;
-    }
-    */
-    IceUtil::ThreadControl::sleep(IceUtil::Time::microSeconds(150));
-
-      //normal timeout while board finishes reset
-    ftStatus = FT_SetTimeouts( ftHandle_, 0, 0 );  // timeouts in ms
-    if ( ftStatus != FT_OK ) {
-        cout<<"FT_SetTimeouts failed ("<<ftStatusToString(ftStatus)<<")"<<endl;
-    } else {
-        cout<<"FT_SetTimeouts OK"<<endl;
-    }
-
-    if ( ftStatus == FT_OK ) {
-        return RmpUsbIo::OK;
-    }
-    else {
+    catch ( usbftdi::Exception &e )
+    {
+        cout << "ERROR(rmpusbftdi.cpp): Error resetting USB device: " << e.what() << endl;
         return RmpUsbIo::IO_ERROR;
     }
+
+    return RmpUsbIo::OK;
 }
   
-/*
- * Closes the USB device
- *
- * returns: 0 on success, negative otherwise
- */
 RmpUsbIo::RmpUsbIoStatus RmpUsbIoFtdi::shutdown()
 {
-    if ( FT_Close( ftHandle_ ) == FT_OK ) {
-        return RmpUsbIo::OK;
-    }
-    else {
-        return RmpUsbIo::IO_ERROR;
-    }
+    delete usbFtdi_;
+    return RmpUsbIo::OK;
 }
 
 RmpUsbIo::RmpUsbIoStatus
 RmpUsbIoFtdi::readPacket(CanPacket* pkt)
 {
-    RmpUsbIo::RmpUsbIoStatus status = readPacketNonBlocking( pkt );
-    // if got a packet or error, return right away...
-    if ( status==RmpUsbIo::OK || status<0 ) {
+    RmpUsbIo::RmpUsbIoStatus status;
+
+    // First try non-blocking (maybe there's a packet there already)
+    status = readPacketNonBlocking( pkt );
+ 
+    if ( status == RmpUsbIo::NO_DATA )
+        return readPacketBlocking( pkt );
+    else
         return status;
-    }
-    
-    // ... if not, try to block
-    return readPacketBlocking( pkt );
 }
-    
+
 RmpUsbIo::RmpUsbIoStatus
 RmpUsbIoFtdi::readPacketNonBlocking( CanPacket* pkt )
 {
     RmpUsbIo::RmpUsbIoStatus status;
     
     // if there's already a packet in CAN packet buffer, just return it
-    status = getPacket( pkt );
-    if ( status == RmpUsbIo::OK ) {
+    if ( !canBuffer_.empty() )
+    {
+        getPacketFromCanBuffer( pkt );
         return RmpUsbIo::OK;
     }
 
-    // there's not packet ready to be returned.
+    // there's no packet ready to be returned.
     // Try to read from the USB buffer into our own char buffer
     status = readFromUsbToBufferNonBlocking();
     if ( status < 0 ) {
@@ -286,8 +136,9 @@ RmpUsbIoFtdi::readPacketNonBlocking( CanPacket* pkt )
     }
     
     // try to return a packet again
-    status = getPacket( pkt );
-    if ( status == RmpUsbIo::OK ) {
+    if ( !canBuffer_.empty() )
+    {
+        getPacketFromCanBuffer( pkt );
         return RmpUsbIo::OK;
     }
 
@@ -320,8 +171,9 @@ RmpUsbIoFtdi::readPacketBlocking( CanPacket* pkt )
         }
         
         // try to return a packet
-        status = getPacket( pkt );
-        if ( status == RmpUsbIo::OK ) {
+        if ( !canBuffer_.empty() )
+        {
+            getPacketFromCanBuffer( pkt );
             return RmpUsbIo::OK;
         }
     }
@@ -336,8 +188,10 @@ RmpUsbIo::RmpUsbIoStatus
 RmpUsbIoFtdi::readPacketPolling( CanPacket* pkt )
 {
     RmpUsbIo::RmpUsbIoStatus status;
-    status = getPacket( pkt );
-    if ( status == RmpUsbIo::OK ) {
+
+    if ( !canBuffer_.empty() )
+    {
+        getPacketFromCanBuffer( pkt );
         return RmpUsbIo::OK;
     }
 
@@ -370,8 +224,9 @@ RmpUsbIoFtdi::readPacketPolling( CanPacket* pkt )
         }
         
         // try to return a packet
-        status = getPacket( pkt );
-        if ( status == RmpUsbIo::OK ) {
+        if ( !canBuffer_.empty() )
+        {
+            getPacketFromCanBuffer( pkt );
             return RmpUsbIo::OK;
         }
     }
@@ -388,57 +243,20 @@ RmpUsbIoFtdi::readPacketPolling( CanPacket* pkt )
 RmpUsbIo::RmpUsbIoStatus
 RmpUsbIoFtdi::writePacket( CanPacket *pkt )
 {
-    /*
-    // debug
-    DWORD bytesInRxUsb, bytesInTxUsb, usbEvent;
-    FT_STATUS ftStatusB = FT_GetQueueStatus( ftHandle_, &bytesInRxUsb );    
-    if ( ftStatusB == FT_OK )  {
-        cout<<"Status before write: rx: "<<bytesInRxUsb<<endl;
-        //cout<<"Status on write: rx: "<<bytesInRxUsb<<" tx: "<<bytesInTxUsb<<" ev: "<<usbEvent<<endl;
-    }
-    ftStatusB = FT_GetStatus( ftHandle_, &bytesInRxUsb, &bytesInTxUsb, &usbEvent );
-    if ( ftStatusB == FT_OK )  {
-        cout<<"Status before write: rx: "<<bytesInRxUsb<<" tx: "<<bytesInTxUsb<<" ev: "<<usbEvent<<endl;
-    }
-    */
     unsigned char bytes[SEGWAY_USB_MESSAGE_SIZE];
 
     // convet CAN packet to USB message
     parseCanToUsb( pkt, bytes );
 
-    DWORD bytesWritten;
-    FT_STATUS ftStatus = FT_Write( ftHandle_, bytes, SEGWAY_USB_MESSAGE_SIZE, &bytesWritten );
-    
-    //cout<<"RmpUsbIoFtdi::writePacket(): result: "<<ftStatusToString(ftStatus)<<" wrote: "<<bytesWritten<<endl;
-
-    if ( ftStatus != FT_OK ) {
-        cout<<"RmpUsbIoFtdi::writePacket(): FT_Write failed: result: "<<ftStatusToString(ftStatus)<<", bytesWritten: "<<bytesWritten<<endl;
-    
-        // debug
-        DWORD bytesInRxUsb, bytesInTxUsb, usbEvent;
-        FT_STATUS ftStatusA = FT_GetQueueStatus( ftHandle_, &bytesInRxUsb );    
-        if ( ftStatusA == FT_OK )  {
-            cout<<"Status after write: rx: "<<bytesInRxUsb<<endl;
-            //cout<<"Status on write: rx: "<<bytesInRxUsb<<" tx: "<<bytesInTxUsb<<" ev: "<<usbEvent<<endl;
-        }
-        else {
-            cout<<"FT_GetQueueStatus failed: "<<ftStatusToString(ftStatusA)<<endl;
-        }
-        ftStatusA = FT_GetStatus( ftHandle_, &bytesInRxUsb, &bytesInTxUsb, &usbEvent );
-        if ( ftStatusA == FT_OK )  {
-            cout<<"Status after write: rx: "<<bytesInRxUsb<<" tx: "<<bytesInTxUsb<<" ev: "<<usbEvent<<endl;
-        }
-        else {
-            cout<<"FT_GetStatus failed: "<<ftStatusToString(ftStatusA)<<endl;
-        }
+    try {
+        usbFtdi_->write( bytes, SEGWAY_USB_MESSAGE_SIZE );
     }
-    
-    if ( ftStatus == FT_OK ) {
-        return RmpUsbIo::OK;
-    }
-    else {
+    catch ( usbftdi::Exception &e )
+    {
+        cout << "ERROR(rmpusbftdi.cpp): Error during write: " << e.what() << endl;
         return RmpUsbIo::IO_ERROR;
-    }
+    }    
+    return RmpUsbIo::OK;
 }
 
 /*
@@ -470,19 +288,27 @@ RmpUsbIoFtdi::usbMessageChecksum( unsigned char *msg )
     return (unsigned char)checksum;
 }
 
-// Returns OK if got a packet, NO_DATA if the buffer was empty
-RmpUsbIo::RmpUsbIoStatus
-RmpUsbIoFtdi::getPacket(CanPacket* pkt)
-{
-    // check for buffer size, otherwise pop() will seg.fault.
-    if ( canBuffer_.empty() ) {
-        return RmpUsbIo::NO_DATA;
-    }
+// // Returns OK if got a packet, NO_DATA if the buffer was empty
+// RmpUsbIo::RmpUsbIoStatus
+// RmpUsbIoFtdi::getPacket(CanPacket* pkt)
+// {
+//     // check for buffer size, otherwise pop() will seg.fault.
+//     if ( canBuffer_.empty() ) {
+//         return RmpUsbIo::NO_DATA;
+//     }
     
+//     *pkt = canBuffer_.front();
+//     canBuffer_.pop();
+//     //cout<<"RmpUsbIoFtdi::getPacket: got one packet"<<endl;
+//     return RmpUsbIo::OK;
+// }
+
+void
+RmpUsbIoFtdi::getPacketFromCanBuffer(CanPacket *pkt)
+{
+    assert( !canBuffer_.empty() );
     *pkt = canBuffer_.front();
     canBuffer_.pop();
-    //cout<<"RmpUsbIoFtdi::getPacket: got one packet"<<endl;
-    return RmpUsbIo::OK;
 }
 
 // returns 0 if all is good, -1 on error.
@@ -497,48 +323,27 @@ RmpUsbIoFtdi::getPacket(CanPacket* pkt)
 RmpUsbIo::RmpUsbIoStatus
 RmpUsbIoFtdi::readFromUsbToBufferBlocking()
 {
-    DWORD EventMask = FT_EVENT_RXCHAR;
-    FT_STATUS ftStatus = FT_SetEventNotification( ftHandle_, EventMask, (PVOID)&eventHandle_ );
-    if ( ftStatus != FT_OK ) {
-        cerr<<"RmpUsbIoFtdi::readFromUsbToBufferBlocking: failed to set event notification"<<endl;
+    int ret;
+    try {
+        ret = usbFtdi_->waitForData();
+    }
+    catch ( usbftdi::Exception &e )
+    {
+        cout << "ERROR(rmpusbftdi.cpp): readFromUsbToBufferBlocking: error: " << e.what() << endl;
         return RmpUsbIo::IO_ERROR;
     }
-
-    // we want to timeout from listening to USB after 100ms (10Hz)
-    // this is reasonable because, normally the packets comes in at >100Hz.
-    int dusec = 100000; // [usec]
-    // ugly-ass C time structures
-    timeval tval;
-    gettimeofday( &tval, NULL );
-    if ( (tval.tv_usec + dusec)<1000000 ) {
-        tval.tv_usec = tval.tv_usec + dusec;
-    }
-    else {
-        ++tval.tv_sec;
-        tval.tv_usec = tval.tv_usec + dusec - 1000000;
-    }
-    timespec abstime;
-    abstime.tv_sec = tval.tv_sec;
-    abstime.tv_nsec = tval.tv_usec*1000;
-
-    pthread_mutex_lock(&eventHandle_.eMutex);
-    //pthread_cond_wait(&eventHandle_.eCondVar, &eventHandle_.eMutex);
-    int ret = pthread_cond_timedwait(&eventHandle_.eCondVar, &eventHandle_.eMutex, &abstime );
-    pthread_mutex_unlock(&eventHandle_.eMutex);
-
-    // this should not happen
-    assert( (ret==0 || ret==ETIMEDOUT) && "pthread error in RmpUsbIoFtdi::readFromUsbToBufferBlocking" );
-        
-    if ( ret == 0 ) {
-        // now there should be something in the buffer
+    if ( ret == usbftdi::USBFTDI_OK )
+    {
         return readFromUsbToBufferNonBlocking();
     }
-    else if ( ret == ETIMEDOUT ) {
+    else if ( ret == usbftdi::USBFTDI_OK )
+    {
         // this is still ok
         return RmpUsbIo::NO_DATA;
     }
-    else {
-        // this is one several possible errors
+    else
+    {
+        assert( false && "Unknown return type" );
         return RmpUsbIo::OTHER_ERROR;
     }
 }
@@ -552,49 +357,31 @@ RmpUsbIoFtdi::readFromUsbToBufferBlocking()
 RmpUsbIo::RmpUsbIoStatus
 RmpUsbIoFtdi::readFromUsbToBufferNonBlocking()
 {
-    FT_STATUS   ftStatus;    
-    DWORD       bytesInRxUsb;
-    DWORD       bytesRead;
-        
-    // Query status to find out how many bytes are in the receive buffer 
-    ftStatus = FT_GetQueueStatus( ftHandle_, &bytesInRxUsb );
-    if ( ftStatus != FT_OK ) {
-        cerr << "ERROR: RmpUsbIoFtdi::readFromUsbToBufferNonBlocking: error in FT_GetQueueStatus" << endl;
+    try {
+
+        int bytesInRxUsb = usbFtdi_->bytesInRxQueue();
+
+        if ( bytesInRxUsb == 0) {
+            return RmpUsbIo::NO_DATA;
+        }
+
+        // Resize our buffer if necessary.
+        if( (bytesInRxUsb + charBufferBytes_) > charBuffer_.size() )
+            charBuffer_.resize( bytesInRxUsb + charBufferBytes_ );
+
+        // Read the bytes that we know are there
+        int numBytesRead = usbFtdi_->readNonBlocking( &charBuffer_[charBufferBytes_], bytesInRxUsb );
+
+        // Adjust the number of bytes that are now in the buffer
+        charBufferBytes_ = charBufferBytes_ + numBytesRead;
+
+        return RmpUsbIo::OK;
+    }
+    catch ( usbftdi::Exception &e )
+    {
+        cout << "ERROR(rmpusbftdi.cpp): readFromUsbToBufferNonBlocking(): error: " << e.what() << endl;
         return RmpUsbIo::IO_ERROR;
     }
-
-    // If there's nothing in the receive buffer, then just return
-    if ( bytesInRxUsb == 0) {
-        return RmpUsbIo::NO_DATA;
-    }
-
-    // Resize our buffer if necessary. can this return an error somehow?
-    if( (bytesInRxUsb + charBufferBytes_) > charBuffer_.size() ) {
-        charBuffer_.resize( bytesInRxUsb + charBufferBytes_ );
-    }
-
-    //
-    // Read from the USB buffer
-    //
-    ftStatus = FT_Read( ftHandle_, &charBuffer_[charBufferBytes_], bytesInRxUsb, &bytesRead );
-
-    if ( ftStatus != FT_OK ) {
-        cerr << "ERROR: RmpUsbIoFtdi::readFromUsbToBufferNonBlocking: error in FT_Read" << endl;
-        return RmpUsbIo::IO_ERROR;
-    }
-
-    // Check for read timeout
-    // this is probably not a bad error. maybe more bytes have arrived since FT_GetQueueStatus call.
-    if( bytesInRxUsb != bytesRead ) {
-        cerr << "WARNING: RmpUsbIoFtdi::readFromUsbToBufferNonBlocking: mismatch: bytesInRxUsb = " << bytesInRxUsb << "   bytesRead = " << bytesRead << endl;
-        //return -1;
-    }
-
-    //cout<<"RmpUsbIoFtdi::readFromUsbToBufferNonBlocking: read "<<bytesRead<<" bytes."<<endl;
-    // Adjust the number of bytes that are now in the buffer
-    charBufferBytes_ = charBufferBytes_ + bytesRead;
-    
-    return RmpUsbIo::OK;
 }
 
 RmpUsbIo::RmpUsbIoStatus

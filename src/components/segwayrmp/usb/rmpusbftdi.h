@@ -13,7 +13,7 @@
 
 #include <queue>
 #include <ftd2xx.h>
-
+#include <usbftdi/usbftdi.h>
 #include "rmpusbio.h"
 
 namespace segwayrmp
@@ -28,7 +28,7 @@ public:
     // Returns: 0 on success, non-zero otherwise.
     virtual RmpUsbIoStatus init();
 
-    // Tries to reset the device whitout shutting it down completely.
+    // Tries to reset the device without shutting it down completely.
     virtual RmpUsbIoStatus reset();
     
     // Returns: 0 on success, non-zero otherwise.
@@ -54,14 +54,10 @@ private:
     // HARDWDARE
     
     // handle to the USB device inside our Segway
-    FT_HANDLE ftHandle_;
-
-    // event handle we'll use to block on data arrivale
-    EVENT_HANDLE eventHandle_;
+    usbftdi::UsbFtdi *usbFtdi_;
     
-    // LOW-LEVEL READ/WRITE FUNCTIONS
-    // Returns 0 if got a packet from the CAN buffer, 1 if the buffer was empty
-    RmpUsbIoStatus getPacket( CanPacket* pkt );
+    // Don't call this if the buffer's empty.
+    void getPacketFromCanBuffer( CanPacket* pkt );
     
     // Returns 0 if copied a packet, positive if not, negative on error.
     RmpUsbIoStatus readPacketNonBlocking( CanPacket* pkt );

@@ -41,7 +41,7 @@ public:
      */
     virtual RmpUsbIoStatus init()=0;
 
-    // Tries to reset the device whitout shutting it down completely.
+    // Tries to reset the device without shutting it down completely.
     virtual RmpUsbIoStatus reset()=0;
     
     /*

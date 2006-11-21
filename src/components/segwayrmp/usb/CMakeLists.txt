@@ -6,8 +6,9 @@ FILE( GLOB SRCS *.cpp )
 # Define some stuff to fool Player code
 ADD_DEFINITIONS( -DHAVE_STDINT_H )
 
+INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/components/segwayrmp/usb )
+
 ADD_LIBRARY( OrcaSegwayRmpUsb SHARED ${SRCS} )
-
 INSTALL_TARGETS( /lib OrcaSegwayRmpUsb )
-
-ADD_SUBDIRECTORY( test )
+TARGET_LINK_LIBRARIES( OrcaSegwayRmpUsb OrcaSegwayRmpUsbFtdi )
+ADD_SUBDIRECTORY( usbftdi ) # test )
