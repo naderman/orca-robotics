@@ -27,7 +27,16 @@ using namespace orca;
 using namespace segwayrmp;
 
 RmpUsbDriver::RmpUsbDriver( const orcaice::Context & context )
-    : context_(context)
+    : context_(context),
+      lastRawYaw_(0),
+      lastRawForeaft_(0),
+      odomX_(0),
+      odomY_(0),
+      odomYaw_(0),
+      lastStatusWord1_(0),
+      lastStatusWord2_(0),
+      firstread_(true),
+      repairCounter_(0)
 {
     // Hardware
     usbio_ = new RmpUsbIoFtdi;
@@ -37,19 +46,6 @@ RmpUsbDriver::RmpUsbDriver( const orcaice::Context & context )
     // parse configuration parameters
     readFromProperties( context, config_ );
     cout<<config_<<endl;
-
-    // Initialize odometry
-    odomX_ = 0.0;
-    odomY_ = 0.0;
-    odomYaw_ = 0.0;
-    lastRawYaw_ = 0;
-    lastRawForeaft_ = 0;
-
-    firstread_ = true;
-    repairCounter_ = 0;
-
-    lastStatusWord1_ = 0;
-    lastStatusWord2_ = 0;
 }
 
 RmpUsbDriver::~RmpUsbDriver()

@@ -22,7 +22,7 @@ namespace segwayrmp
 class RmpUsbIoFtdi : public RmpUsbIo
 {
 public:
-    RmpUsbIoFtdi();
+    RmpUsbIoFtdi( int debugLevel=0 );
     virtual ~RmpUsbIoFtdi();
     
     // Returns: 0 on success, non-zero otherwise.
@@ -78,6 +78,8 @@ private:
     int parseCanToUsb( CanPacket *pkt, unsigned char *bytes );
     
     unsigned char usbMessageChecksum( unsigned char *msg );    
+
+    int debugLevel_;
 };
 
 } // namespace

@@ -35,8 +35,9 @@ using namespace std;
 using namespace segwayrmp;
 
 
-RmpUsbIoFtdi::RmpUsbIoFtdi()
-    : usbFtdi_(0)
+RmpUsbIoFtdi::RmpUsbIoFtdi( int debugLevel )
+    : usbFtdi_(0),
+      debugLevel_(debugLevel)
 {
     // Set initial buffer size and number of bytes stored
     charBuffer_.resize(128);
@@ -45,21 +46,23 @@ RmpUsbIoFtdi::RmpUsbIoFtdi()
 
 RmpUsbIoFtdi::~RmpUsbIoFtdi()
 {
+    if ( debugLevel_ > 0 )
+        cout<<"TRACE(rmpusbftdi.cpp): destructor()" << endl;
+
     if ( usbFtdi_ ) delete usbFtdi_;
 }
 
-/*
- * Initializes the USB device.
- *
- * returns: 0 on success, non-zero on error
- */
 RmpUsbIo::RmpUsbIoStatus
 RmpUsbIoFtdi::init()
 {
+    if ( debugLevel_ > 0 )
+        cout<<"TRACE(rmpusbftdi.cpp): init()" << endl;
+
     try {
         usbFtdi_ = new usbftdi::UsbFtdi( SEGWAY_USB_VENDOR_ID,
                                          SEGWAY_USB_PRODUCT_ID,
-                                         SEGWAY_USB_DESCRIPTION );
+                                         SEGWAY_USB_DESCRIPTION,
+                                         debugLevel_ );
     }
     catch ( usbftdi::Exception &e )
     {
@@ -72,6 +75,9 @@ RmpUsbIoFtdi::init()
 
 RmpUsbIo::RmpUsbIoStatus RmpUsbIoFtdi::reset()
 {
+    if ( debugLevel_ > 0 )
+        cout<<"TRACE(rmpusbftdi.cpp): reset()" << endl;
+
     assert( usbFtdi_ != 0 );
 
     //
@@ -92,13 +98,19 @@ RmpUsbIo::RmpUsbIoStatus RmpUsbIoFtdi::reset()
   
 RmpUsbIo::RmpUsbIoStatus RmpUsbIoFtdi::shutdown()
 {
-    delete usbFtdi_;
+    if ( debugLevel_ > 0 )
+        cout<<"TRACE(rmpusbftdi.cpp): shutdown()" << endl;
+    assert( usbFtdi_ != 0 );
+
+    if (usbFtdi_) delete usbFtdi_;
     return RmpUsbIo::OK;
 }
 
 RmpUsbIo::RmpUsbIoStatus
 RmpUsbIoFtdi::readPacket(CanPacket* pkt)
 {
+    assert( usbFtdi_ != 0 );
+
     RmpUsbIo::RmpUsbIoStatus status;
 
     // First try non-blocking (maybe there's a packet there already)
@@ -243,6 +255,8 @@ RmpUsbIoFtdi::readPacketPolling( CanPacket* pkt )
 RmpUsbIo::RmpUsbIoStatus
 RmpUsbIoFtdi::writePacket( CanPacket *pkt )
 {
+    assert( usbFtdi_ != 0 );
+
     unsigned char bytes[SEGWAY_USB_MESSAGE_SIZE];
 
     // convet CAN packet to USB message
