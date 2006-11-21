@@ -49,7 +49,8 @@ RmpUsbIoFtdi::~RmpUsbIoFtdi()
     if ( debugLevel_ > 0 )
         cout<<"TRACE(rmpusbftdi.cpp): destructor()" << endl;
 
-    if ( usbFtdi_ ) delete usbFtdi_;
+    // usbFtdi_ should be destroyed in shutdown().
+    //if ( usbFtdi_ ) delete usbFtdi_;
 }
 
 RmpUsbIo::RmpUsbIoStatus
