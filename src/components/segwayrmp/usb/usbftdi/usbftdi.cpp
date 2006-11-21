@@ -67,6 +67,7 @@ UsbFtdi::~UsbFtdi()
     assert( ftHandle_ );
 
     // Nothing we can do about errors here...
+    cout<<"TRACE(usbftdi.cpp): ============ Calling FT_Close =========" << endl;
     FT_STATUS ftStatus = FT_Close( ftHandle_ );
     if ( ftStatus != FT_OK )
         cout << "ERROR(usbftdi.cpp): FT_Close failed: " << ftStatusToString(ftStatus) << endl;
@@ -204,8 +205,8 @@ UsbFtdi::waitForData()
 
     if ( ret == 0 )
     {
-        cout<<"TRACE(usbftdi.cpp): Event was triggered." << endl;
-        printQueueStatus();
+        //cout<<"TRACE(usbftdi.cpp): Event was triggered." << endl;
+        //printQueueStatus();
         return USBFTDI_OK;
     }
     else if ( ret == ETIMEDOUT ) {

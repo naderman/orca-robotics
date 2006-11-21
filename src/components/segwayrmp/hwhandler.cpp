@@ -127,7 +127,7 @@ void
 HwHandler::enableDriver()
 {
     while ( isActive() ) {
-        context_.tracer()->info("Enabling driver...");
+        context_.tracer()->info("(Re-)Enabling driver...");
         if ( driver_->enable() == 0 ) 
         {
             context_.tracer()->info( "Enable succeeded." );
