@@ -85,7 +85,7 @@ RmpUsbIo::RmpUsbIoStatus RmpUsbIoFtdi::reset()
     // Nuclear reset...
     //
     try {
-        delete( usbFtdi_ );
+        if (usbFtdi_ != 0) delete( usbFtdi_ );
         init();
     }
     catch ( usbftdi::Exception &e )
@@ -96,14 +96,14 @@ RmpUsbIo::RmpUsbIoStatus RmpUsbIoFtdi::reset()
 
     return RmpUsbIo::OK;
 }
-  
+ 
 RmpUsbIo::RmpUsbIoStatus RmpUsbIoFtdi::shutdown()
 {
     if ( debugLevel_ > 0 )
         cout<<"TRACE(rmpusbftdi.cpp): shutdown()" << endl;
     assert( usbFtdi_ != 0 );
 
-    if (usbFtdi_) delete usbFtdi_;
+    if (usbFtdi_ != 0) delete usbFtdi_;
     return RmpUsbIo::OK;
 }
 
