@@ -36,7 +36,7 @@ using namespace segwayrmp;
 
 
 RmpUsbIoFtdi::RmpUsbIoFtdi( int debugLevel )
-    : usbFtdi_(0),
+    : usbFtdi_(NULL),
       debugLevel_(debugLevel)
 {
     // Set initial buffer size and number of bytes stored
@@ -79,13 +79,13 @@ RmpUsbIo::RmpUsbIoStatus RmpUsbIoFtdi::reset()
     if ( debugLevel_ > 0 )
         cout<<"TRACE(rmpusbftdi.cpp): reset()" << endl;
 
-    assert( usbFtdi_ != 0 );
+    assert( usbFtdi_ != NULL );
 
     //
     // Nuclear reset...
     //
     try {
-        if (usbFtdi_ != 0) delete( usbFtdi_ );
+        if (usbFtdi_ != NULL) delete( usbFtdi_ );
         init();
     }
     catch ( usbftdi::Exception &e )
@@ -101,9 +101,9 @@ RmpUsbIo::RmpUsbIoStatus RmpUsbIoFtdi::shutdown()
 {
     if ( debugLevel_ > 0 )
         cout<<"TRACE(rmpusbftdi.cpp): shutdown()" << endl;
-    assert( usbFtdi_ != 0 );
+    assert( usbFtdi_ != NULL );
 
-    if (usbFtdi_ != 0) delete usbFtdi_;
+    if (usbFtdi_ != NULL) delete usbFtdi_;
     return RmpUsbIo::OK;
 }
 
