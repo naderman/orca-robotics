@@ -22,14 +22,10 @@ then setup a parallel workspace for your own project.
 To help you start quickly we provide a template  project which uses CMake, mirrors
 the setup of the orca2 repository and is already set up to find Ice, orca2
 installation, etc. You can of course set up a project in any way you like, however you
-might find it useful. Get it from CVS (it may be more up to date) or download
-an archive.
-
-- Option 1. Export CVS module 'empty-project' (it's more likely to be up-to-date). Use the export CVS command instead checkout, otherwise you'll have to manually remove all CVS directories. With @c orcacvs pointing at the SourceForge cvs server, the command looks like this:
+might find it useful. Export CVS module 'empty-project'. Use the export CVS command instead checkout, otherwise you'll have to manually remove all CVS directories. With @c orcacvs pointing at the SourceForge cvs server, the command looks like this:
 @verbatim
 $ orcacvs export -r HEAD empty-project
 @endverbatim
-- Option2. Download <a href="http://orca-robotics.sf.net/empty-project-2.0.0rc3.tar.gz">a snapshot of CVS repository</a> as of v.2.0.0rc3+.
 
 To cusomize the empty project a project called 'tractor' follow these steps:
 - Rename the directory 'empty-project' to 'tractor'
