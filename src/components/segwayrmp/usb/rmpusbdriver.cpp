@@ -79,6 +79,11 @@ RmpUsbDriver::enable()
         zero->motion.w = 0.0;
         write( zero  );
         
+        // try reading from it
+        readFrame();
+        cout<<"TRACE(rmpusbdriver.cpp): Initial exploratory read says: " << toString() << endl;
+
+
         resetAllIntegrators();
         setMaxVelocityScaleFactor( config_.maxVelocityScale );
         setMaxTurnrateScaleFactor( config_.maxTurnrateScale );
