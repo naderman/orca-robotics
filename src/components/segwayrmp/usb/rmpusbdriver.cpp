@@ -39,7 +39,7 @@ RmpUsbDriver::RmpUsbDriver( const orcaice::Context & context )
       repairCounter_(0)
 {
     // Hardware
-    usbio_ = new RmpUsbIoFtdi;
+    usbio_ = new RmpUsbIoFtdi( 1 );
     frame_ = new RmpUsbDataFrame;
     pkt_ = new CanPacket;
 
