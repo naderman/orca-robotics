@@ -30,7 +30,7 @@ namespace laser2d {
 class LaserScanner2dI : public virtual orca::LaserScanner2d
 {
 public:
-    LaserScanner2dI( orca::RangeScanner2dDescriptionPtr descr,
+    LaserScanner2dI( const orca::RangeScanner2dDescriptionPtr & descr,
                      const std::string              &ifaceTag,
                      const orcaice::Context         &context );
 

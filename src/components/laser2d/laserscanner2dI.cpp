@@ -18,7 +18,7 @@ using namespace orca;
 
 namespace laser2d {
 
-LaserScanner2dI::LaserScanner2dI( orca::RangeScanner2dDescriptionPtr  descr,
+LaserScanner2dI::LaserScanner2dI( const orca::RangeScanner2dDescriptionPtr & descr,
                                   const std::string             &ifaceTag,
                                   const orcaice::Context        &context )
     : descr_(descr),

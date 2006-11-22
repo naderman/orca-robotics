@@ -206,9 +206,10 @@ SickCarmenDriver::read( orca::LaserScanner2dDataPtr &data )
             
 
             // default settings
-            data->maxRange         = config_.maxRange;
-            data->fieldOfView      = config_.fieldOfView;
-            data->startAngle       = config_.startAngle;
+            data->minRange     = config_.minRange;
+            data->maxRange     = config_.maxRange;
+            data->fieldOfView  = config_.fieldOfView;
+            data->startAngle   = config_.startAngle;
 
             // alexm: before laser iface change:
 //             data->startAngle     = -M_PI/2;
