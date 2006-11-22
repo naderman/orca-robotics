@@ -10,9 +10,9 @@
 
 /*!
 
-@page orca_doc_devadd Adding Interfaces and Components to Orca2
+@page orca_doc_devadd Adding Interfaces, Components, and Libraries to Orca2
 
-@note Reviewed for release 2.0.2+.
+@note Reviewed for release 2.1.0
 
 @section orca_doc_devadd_iface Adding an Interface to Orca2
 
@@ -34,12 +34,24 @@ Optionally, consider creating tool plug-ins for your new interface. The followin
 
 -# Create a new directory in @c [ORCA2_SRC]/src/components
     - Start by copying the directory of a similar component.
-    - Edit the CMake file @c CMakeLists.txt
+    - Edit the CMake file @c CMakeLists.txt in the new directory
     - Edit the component definition file @c mycomponent.def
     - Edit the documentation file @c mycomponent.dox
     - Modify the names of classes, namespaces, etc. using the name of your component
--# Add the new directory to the build system.
+-# Add an entry for the new directory to the build system.
     - Edit file @c [ORCA2_SRC]/src/components/CMakeLists.txt
     - In alphabetical order, add a line "ADD_SUBDIRECTORY ( mycomponent )"
+
+@section orca_doc_devadd_lib Adding a library to Orca2
+
+-# Create a new directory in @c [ORCA2_SRC]/src/utils
+    - Start by copying the directory of a similar library.
+    - Edit the CMake file @c CMakeLists.txt in the new directory
+    - Edit the component definition file @c mylib.def
+    - Edit the documentation file @c mylib.dox
+    - Modify the names of classes, namespaces, etc. using the name of your library
+-# Add an entry for the new directory to the build system.
+    - Edit file @c [ORCA2_SRC]/src/utils/CMakeLists.txt
+    - In alphabetical order, add a line "ADD_SUBDIRECTORY ( mylib )"
 
 */
