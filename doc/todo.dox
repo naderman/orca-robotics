@@ -16,18 +16,16 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 
 
-@section todo To-Do List for Release 2.1.0
+@section todo To-Do List for Next Release
 
 - OrcaView
   - Make sure changing focus still works.
 
-- Home interface
-    - register Home objects as well-known objects. This will make it unnecessary to use the Admin interface of the Registry and remove the associated security risk.
-    - Alex M.
 - Source code structure
     - Separate utilities from libraries?
 
-
+- libOrcaIce
+    - resolve issue with direct connections withour the registry
 
 
 @section changes Changes since Last Release
