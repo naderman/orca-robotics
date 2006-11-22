@@ -56,10 +56,10 @@ Sorca = [ ...
 2006    8   9   1   Sice310 5086+1116   19979+21711-5086; % 2.0.0
 2006    9   18  0   Sice310 5251+1094   19317+30847-5251  % 2.0.1
 2006    10  5   0   Sice310 5248+1094   20384+31798-5248  % 2.0.2
-2006    11  15  1   Sice311 5385+1094   20720+35348-5385  % 2.0.3
+2006    11  23  1   Sice311 5532+1178   21408+35311-5532  % 2.0.1
 ];
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
-    '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.0.3' }';
+    '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.1.0' }';
 
 % add a dummy release just for display
 Sorca(end+1,:) = Sorca(end,:);
@@ -142,7 +142,9 @@ set(hpt, 'color', .5*[1 1 1] )
 xlabel('Releases')
 title('orca-robotics.sf.net')
 
-ht=text(datenum(2003,7,1),-Smax+10, '* generated using David A. Wheeler`s SLOCCount' );
+ht=text(datenum(2003,7,1),-Smax+10, '*   generated using David A. Wheeler`s SLOCCount' );
+set(ht,'fontsize',8)
+ht=text(datenum(2003,7,1),-Smax+5, '** see data in [ORCA2]/scripts/matlab/sloccount/slocs.m' );
 set(ht,'fontsize',8)
 
 return
