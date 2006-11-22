@@ -35,6 +35,7 @@ class BrowserFsmState
 public:
     virtual ~BrowserFsmState() {};
     virtual const char* StateName() const = 0;
+    virtual void top(BrowserFsm& s);
     virtual void up(BrowserFsm& s);
     virtual void deactivate(BrowserFsm& s);
     virtual void fault(BrowserFsm& s);
@@ -51,6 +52,7 @@ public:
         {return("Operation");};
     virtual void deactivate(BrowserFsm&);
     virtual void fault(BrowserFsm&);
+    virtual void top(BrowserFsm&);
     virtual void up(BrowserFsm&);
     virtual void reload(BrowserFsm&);
 };
@@ -62,6 +64,7 @@ public:
         {return("Interface");};
     virtual void deactivate(BrowserFsm&);
     virtual void fault(BrowserFsm&);
+    virtual void top(BrowserFsm&);
     virtual void up(BrowserFsm&);
     virtual void reload(BrowserFsm&);
     virtual void pick(BrowserFsm&);
@@ -115,6 +118,7 @@ public:
     virtual ~BrowserFsm() {};
 
     // anybody can issue events to the FSM
+    void top() {itsState->top(*this);}
     void up() {itsState->up(*this);}
     void deactivate() {itsState->deactivate(*this);}
     void fault() {itsState->fault(*this);}

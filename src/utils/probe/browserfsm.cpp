@@ -33,6 +33,11 @@ BrowserFsmRegistryState BrowserFsm::RegistryState;
 BrowserFsmIdleState BrowserFsm::IdleState;
 
 // Missing transitions
+void BrowserFsmState::top(BrowserFsm& s)
+{
+    IceUtil::Mutex::Lock lock(s.mutex_);
+    s.fsmError("top", s.GetState().StateName());
+}
 void BrowserFsmState::up(BrowserFsm& s)
 {
     IceUtil::Mutex::Lock lock(s.mutex_);
@@ -81,6 +86,11 @@ void BrowserFsmOperationState::fault(BrowserFsm& s) {
     s.pickLastInterface();
     s.loadInterface();
 }
+void BrowserFsmOperationState::top(BrowserFsm& s) {
+    IceUtil::Mutex::Lock lock(s.mutex_);
+    s.SetState(BrowserFsm::RegistryState);
+    s.loadRegistry();
+}
 void BrowserFsmOperationState::up(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.SetState(BrowserFsm::InterfaceState);
@@ -103,6 +113,11 @@ void BrowserFsmInterfaceState::fault(BrowserFsm& s) {
     s.SetState(BrowserFsm::ComponentState);
     s.pickLastComponent();
     s.loadComponent();
+}
+void BrowserFsmInterfaceState::top(BrowserFsm& s) {
+    IceUtil::Mutex::Lock lock(s.mutex_);
+    s.SetState(BrowserFsm::RegistryState);
+    s.loadRegistry();
 }
 void BrowserFsmInterfaceState::up(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);

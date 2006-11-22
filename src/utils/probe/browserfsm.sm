@@ -29,6 +29,7 @@ Interface{
     pick    Operation   loadOperation
     reload  Interface   {pickLastInterface loadInterface}
     up      Component   {pickLastComponent loadComponent}
+    top     Registry    loadRegistry
     fault   Component   {pickLastComponent loadComponent}
     deactivate    Idle        quit
 }
@@ -36,6 +37,7 @@ Interface{
 Operation{
     reload  Operation   {pickLastOperation loadOperation}
     up      Interface   {pickLastInterface loadInterface}
+    top     Registry    loadRegistry
     fault   Interface   {pickLastInterface loadInterface}
     deactivate    Idle        quit
 }

@@ -65,6 +65,10 @@ BrowserHandler::run()
             //cout<<"up event"<<endl;
             up();
             break;
+        case TopEvent :
+            //cout<<"up event"<<endl;
+            top();
+            break;
         case FaultEvent :
             //cout<<"fault event"<<endl;
             fault();
