@@ -12,7 +12,7 @@
 
 @page orca_doc_quickstart Quick-Start Guide
 
-@note Reviewed for release 2.0.0.
+@note Reviewed for release 2.1.0.
 
 This page describes how to get a quick demonstration up and running with your new Orca install. Before you begin, make sure that you've installed Orca (see @ref orca_doc_getting ).
 
@@ -64,30 +64,30 @@ IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 10000
 
 @section orca_doc_quickstart_talk Getting Two Components Talking
 
-Now will connect a fake laser component to a laser monitoring component. First, copy default configuration files for the SickLaser and LaserMon components.
+Now will connect a fake laser component to a laser monitoring component. First, copy default configuration files for the Laser2d and LaserMon components.
 @verbatim
 $ cd ~/sys; mkdir quickstart; cd quickstart
-$ cp [ORCA2-INSTALL]/cfg/sicklaser.cfg .
+$ cp [ORCA2-INSTALL]/cfg/laser2d.cfg .
 $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 @endverbatim
 
 @par The Server
 
-Configure the laser for fake (simulated) operation (or skip this step if you're connected to a real SICK laser).  Edit @c sicklaser.cfg, and replace @c 'sickcarmen' with @c 'fake' so it looks like this:
+Configure the laser for fake (simulated) operation (or skip this step if you're connected to a real SICK laser).  Edit @c laser2d.cfg, and replace @c 'sickcarmen' with @c 'fake' so it looks like this:
 
 @verbatim
-SickLaser.Config.Driver=fake
+Laser2d.Config.Driver=fake
 @endverbatim
 
-Start the SickLaser component:
+Start the Laser2d component.
 
 @verbatim
-$ sicklaser sicklaser.cfg
+$ laser2d laser2d.cfg
 @endverbatim
 
 @par The Client
 
-Start a new shell, and fire up the LaserMon component (a laser monitor). No modifications are needed for its configuration file. Note that the name of the configuration file is not specified and it is assumed to be @c lasermon.cfg.
+Start a new shell, go to the quickstart directory and fire up the LaserMon component (a laser monitor). No modifications are needed for its configuration file. Note that the name of the configuration file is not specified and it is assumed to be @c lasermon.cfg. By default, all Orca components assume @c componentname.cfg as an argument if nothing is specified.
 
 @verbatim
 $ lasermon

@@ -12,9 +12,9 @@
 
 @page orca_doc_tute_icebox Running components inside the IceBox server
 
-@note Reviewed for release 2.0.0.
+@note Reviewed for release 2.1.0.
 
-In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now the SickLaser component will run as a service inside the IceBox application server.
+In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now the Laser2d component will run as a service inside the IceBox application server. The difference is that a @b single process is used to run the Laser2d component and IceStorm. Later you can run many components within one IceBox which has advantages with respect to performance and deployment.
 
 @section orca_doc_tute_icebox_startup Start Up the Infrastructure
 
@@ -25,7 +25,7 @@ Make sure the IceGrid Registry is running and the IceStorm server is NOT (See @r
 First, copy default configuration files for the SickLaser and LaserMon components.
 @verbatim
 $ cd ~/sys; mkdir tuteicebox; cd tuteicebox
-$ cp [ORCA2-INSTALL]/cfg/sicklaser.cfg .
+$ cp [ORCA2-INSTALL]/cfg/laser2d.cfg .
 $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 @endverbatim
 
@@ -38,12 +38,12 @@ $ mkdir stormdb
 
 @par The IceBox Server
 
-The IceBox configuration file does not need to be modifed. It instructs the IceBox to first load the IceStorm service and then the SickLaser service. Both are configured to share a single instance of Communicator to speed up communication.
+The IceBox configuration file does not need to be modifed. It instructs the IceBox to first load the IceStorm service and then the Laser2d service. Both are configured to share a single instance of Communicator to speed up communication.
 
-The laser config file needs to be changed to @c fake (simulated) operation (you can skip this step if you're connected to a real SICK laser).  Edit @c sicklaser.cfg, and replace @e 'sickcarmen' with @e 'fake' so it looks like this:
+The laser config file needs to be changed to @c fake (simulated) operation (you can skip this step if you're connected to a real SICK laser).  Edit @c laser2d.cfg, and replace @e 'sickcarmen' with @e 'fake' so it looks like this:
 
 @verbatim
-SickLaser.Config.Driver=fake
+Laser2d.Config.Driver=fake
 @endverbatim
 
 Start the IceBox.
