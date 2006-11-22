@@ -135,18 +135,15 @@ MACRO ( GENERATE_SLICE2CPP_RULES GENERATED_CPP_LIST GENERATED_HEADER_LIST )
 
   ENDFOREACH( SLICE_SOURCE_BASENAME ${ARGN} )
 
-  #
-  # Tell CMake that these files are generated, and need to be deleted on 'make clean'.
-  # This also prevents cmake from bitching when we add non-existent files to targets.
-  #
-  SET_SOURCE_FILES_PROPERTIES(${${GENERATED_HEADER_LIST}} PROPERTIES GENERATED true)
-  SET_SOURCE_FILES_PROPERTIES(${${GENERATED_CPP_LIST}}    PROPERTIES GENERATED true)
-  SET_DIRECTORY_PROPERTIES( 
-    PROPERTIES 
-    ADDITIONAL_MAKE_CLEAN_FILES 
-    "${${GENERATED_HEADER_LIST}} ${${GENERATED_CPP_LIST}}" )
+  # alexm:
+  # as of cmake v.2.2, we don't need to explicitly set the generated files to be 'generated'.
+  # see cmake FAQ entry:
+  # http://www.cmake.org/Wiki/CMake_FAQ#Running_.22make_clean.22_does_not_remove_custom_command_outputs._Why.3F
+  # one small problem: the last header file is not deleted on 'make clean' for some reason. don't know why?
 
-  #MESSAGE( STATUS "DEBUG: GENERATED_CPP_LIST: ${${GENERATED_CPP_LIST}}")
+  MESSAGE ( STATUS "DEBUG: GENERATED_CPP_LIST: ${${GENERATED_CPP_LIST}}")
+  MESSAGE ( STATUS "DEBUG: GENERATED_HEADER_LIST: ${${GENERATED_HEADER_LIST}}")
+
   MESSAGE ( STATUS "Will generate cpp header and source files from ${SLICE_SOURCE_COUNTER} Slice definitions using this command:" )
   MESSAGE ( STATUS "${SLICE2CPP_COMMAND} <source.ice> ${SLICE_ARGS}" )
 
