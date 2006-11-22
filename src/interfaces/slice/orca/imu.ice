@@ -25,11 +25,15 @@ module orca
 
 // define messages first
 
-//! Imu config structure
-class ImuConfigData extends OrcaObject
+//! Imu configuration objectd
+class ImuDescription extends OrcaObject
 {
-    CartesianPoint geometry;
-    Frame3d origin;
+    //! Offset of the sensor with respect to the robot,
+    //! in the robot local coordinate system.
+    Frame3d offset; 
+
+    //! Dimensions of the sensor
+    Size3d  size;
 };
 
 //! The @p Imu interface returns raw uncallibrated acceleration, gyro and magnetic values 
@@ -68,7 +72,7 @@ interface Imu
     nonmutating ImuData getData()
             throws HardwareFailedException;
 
-    nonmutating ImuConfigData getConfig();
+    nonmutating ImuDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The
