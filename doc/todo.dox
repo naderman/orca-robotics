@@ -24,11 +24,20 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Source code structure
     - Separate utilities from libraries?
 
+- Topic Tracer to attempt reconnections
+
 - libOrcaIce
     - resolve issue with direct connections withour the registry
 
-
 @section changes Changes since Last Release
+
+
+
+
+
+@section orca_doc_todo_history Changes in Past Releases
+
+@par Changes in Release 2.1.0
 
 - Build system
     - Solaris compatability (Christopher Brooks, Alex Brooks)
@@ -50,6 +59,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - renamed enum parameters from all-caps to Orca standard notation
 - New component: OrcaView3d (Ben Upcroft, Waleed Kadous, Alex Brooks)
     - a 3-D visualisation component
+- OrcaGui Library
+    - Broken into separate 2D, 3D, and general libraries
 - New utility: Probe (Alex M.)
     - a utility to browse and probe remote orca interfaces.
 - OrcaIce library
@@ -81,8 +92,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - added ctests to test that replayers can read logs.
 - Orca for Java
     - now works with Debian package of IceJ (Alex M.)
-
-@section orca_doc_todo_history Changes in Past Releases
 
 @par Changes in Release 2.0.2
 
