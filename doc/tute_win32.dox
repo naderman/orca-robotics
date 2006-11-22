@@ -12,7 +12,7 @@
 
 @page orca_doc_tute_win32 Connecting components between Linux and Windows
 
-@note Reviewed for release 2.0.0.
+@note Reviewed for release 2.1.0.
 
 In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now now the LaserMon component will run on a Windows machine.
 
@@ -22,10 +22,10 @@ Start the IceGrid Registry and the IceStorm server on a Linux machine just as be
 
 @section orca_doc_tute_win32_talk Connect Two Components
 
-First, copy default configuration files for the SickLaser and LaserMon components.
+First, copy default configuration files for the Laser2d and LaserMon components.
 @verbatim
 $ cd ~/sys; mkdir tutedirect; cd tutedirect
-$ cp [ORCA2-INSTALL]/cfg/sicklaser.cfg .
+$ cp [ORCA2-INSTALL]/cfg/laser2d.cfg .
 $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 @endverbatim
 
@@ -35,7 +35,7 @@ In Linux you should already have a directory with the server configuration file 
 
 @verbatim
 $ cd ~/sys/quickstart
-$ sicklaser
+$ laser2d
 @endverbatim
 
 @par The Client on Windows
@@ -55,7 +55,7 @@ We have to modify the configuration file because the server now runs on a differ
 
 @verbatim
 # Required Interfaces
-LaserMon.Requires.Laser.Proxy=laser@[HOSTNAME]/sicklaser
+LaserMon.Requires.Laser.Proxy=laserscanner2d@[HOSTNAME]/laser2d
 @endverbatim
 
 Start the client (here we assume that [ORCA2-INSTALL]\bin is in the PATH).

@@ -190,4 +190,9 @@ $ teleop
 
 As the robot moves through the world, compare the display of the OrcaView and the Gazebo world window: they should be showing similar reports.
 
+@section orca_doc_tute_direct_next What's Next
+
+If everything works, check out more @ref orca_doc_tutorials.
+
+
 */

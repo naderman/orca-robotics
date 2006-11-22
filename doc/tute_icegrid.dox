@@ -12,9 +12,9 @@
 
 @page orca_doc_tute_icegrid Deploying components with the IceGrid Node
 
-@note Reviewed for release 2.0.0.
+@note Reviewed for release 2.1.0.
 
-In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now the SickLaser component will be activated deployed and activated with IceGrid Node. IceGrid is the location and activation service for Ice applications. For more information refer to the IceGrid Chapter of the Ice manual.
+In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now the Laser2d component will be deployed and activated with IceGrid Node. IceGrid is the location and activation service for Ice applications. For more information refer to the IceGrid Chapter of the Ice manual.
 
 @section orca_doc_tute_icegrid_startup Start Up the Infrastructure
 
@@ -38,24 +38,24 @@ Repeat the steps for starting IceStorm service (See @ref orca_doc_quickstart for
 
 @section orca_doc_quickstart_talk Getting Two Components Talking
 
-First, copy default configuration files for the SickLaser and LaserMon components.
+First, copy default configuration files for the Laser2d and LaserMon components.
 @verbatim
 $ cd ~/sys; mkdir tuteicegrid; cd tuteicegrid
-$ cp [ORCA2-INSTALL]/xml/sicklaser.xml .
+$ cp [ORCA2-INSTALL]/xml/laser2d.xml .
 $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 @endverbatim
 
 @par The Server
 
-Edit the file @c sicklaser.xml to change the value of @c SickLaser.Driver to "fake". Load the application described in @c sicklaser.xml into the IceGrid Node using @c icegridadmin utility.
+Edit the file @c laser2d.xml to change the value of @c Laser2d.Driver to "fake". Load the application described in @c laser2d.xml into the IceGrid Node using @c icegridadmin utility.
 
 @verbatim
-$ icegridadmin --Ice.Default.Locator="IceGrid/Locator:default -p 12000" -e "application add 'sicklaser.xml'"
+$ icegridadmin --Ice.Default.Locator="IceGrid/Locator:default -p 12000" -e "application add 'laser2d.xml'"
 @endverbatim
 
 @par The Client
 
-Start a new shell, and fire up the LaserMon component (a laser monitor). No modifications are needed for its configuration file. Note that the name of the configuration file is not specified on the command line and it is assumed to be @c lasermon.cfg.
+Start a new shell, and fire up the LaserMon component (a laser monitor). No modifications are needed for its configuration file.
 
 @verbatim
 $ lasermon
