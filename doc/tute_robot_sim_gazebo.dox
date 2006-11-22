@@ -11,15 +11,14 @@
 /*!
 
 @page orca_doc_tute_gazebo Using Orca with Player/Gazebo simulator
-@note Reviewed for cvs version 2.0.0+, Player 2.0.2, and Gazebo 0.6.0.
-@author Ben Upcroft
+@note Reviewed for release 2.1.0, Player 2.0.2, and Gazebo 0.6.0.
 
 @section started Getting started
 Before reading this document, you should familiarise yourself with: 
     - @ref orca_doc_getting : download, compile, install.
     - @ref orca_doc_quickstart : The Orca2 quick start guide.
     - Ch. 2 Ice Overview of the <a href="http://www.zeroc.com/download.html#doc" target="_blank">Ice manual</a>
-    - @ref orca_doc_tute_stage : The 2D stage simulator is simpler to setup but has many similarities with the setup for Gazebo so is good to go through before this tutorial.
+    - @ref orca_doc_tute_stage : The 2D Stage simulator is simpler to setup but has many similarities to the setup using Gazebo - a 3D simulator.
 
 Note that you'll need <a href="http://playerstage.sourceforge.net/" target="_blank">Player/Gazebo</a> installed. Debian installation instructions are found here @ref orca_doc_installdebian_gazebo. It's also useful to understand how Player/Stage/Gazebo works. 
 
@@ -139,45 +138,38 @@ From here on in, each component will need a separate terminal. In the tutorial @
 
 @section orca_doc_tute_gazebo_laser Setting up the Laser on the Robot
 
-Modify @c sicklaser.cfg file to be compatible with Gazebo settings i.e. 180deg with 361 scans means 0.5 deg resolution. We also tell the component to use the @e gazebo driver. Check that the following lines look like this.
+Tell the component to use the @e gazebo driver by modifying the @c laser2d.cfg file. Check that the following lines look like this.
 @verbatim
 ...
-SickLaser.Config.AngularResolution=0.5
-SickLaser.Config.RangeResolution=0.001
-SickLaser.Config.Driver=gazebo
+Laser2d.Config.Driver=playerclient
+aser2d.Config.PlayerClient.Driver=gazebo
 ...
 @endverbatim
 
 Note that if you want to change the configuration of the laser or other hardware components, see the  
 <a href=http://playerstage.sourceforge.net/doc/Gazebo-manual-0.5-html/group__models.html target="_blank">Gazebo models page</a>.
 
-Now run the SickLaser component.
+Now run the Laser2d component.
 @verbatim
-$ sicklaser ./sicklaser.cfg
+$ laser2d
 @endverbatim
 
 @section orca_doc_tute_gazebo_robot_control Robot driver
 
-We're now going to set up the low level control to the actuators for the simulated robot using the Robot2d component. First tell the component to connect to the Player simulator by changing the @c robot2d.cfg file so that the following line looks like this
-@verbatim
-...
-Robot2d.Config.Driver=playerclient
-...
-@endverbatim
+We're now going to set up the low level control to the actuators for the simulated robot using the Robot2d component. No modifications to the @c robot2d.cfg file need to be made, so just run it.
 
-Run the Robot2d component
 @verbatim
-$ robot2d ./robot2d.cfg
+$ robot2d
 @endverbatim
 
 @section orca_doc_tute_gazebo_localiser Localisation
-To display the robot in the GUI we need a localisation component. Here we'll use the simplest one possible: @c FaithLocaliser which assumes porfect odometry. Nothing needs to be done to the @c .cfg file so just start the componenet.
+To display the robot in the GUI we need a localisation component. Here we'll use the simplest one possible: @c FaithLocaliser which assumes porfect odometry. Nothing needs to be done to the @c .cfg file so just start the component.
 @verbatim
-$ faithlocaliser ./faithlocaliser
+$ faithlocaliser
 @endverbatim
 
 @section orca_doc_tute_gazebo_view View the World
-To veiw the world and the robot we use @c orcaview. One line of the standard config file needs to be modified:
+To view the world and the robot we use @c orcaview. One line of the standard config file needs to be modified:
 @verbatim
 ...
 OrcaView.Requires.Localise2d.Proxy=localise2d@local/faithlocaliser
@@ -185,7 +177,7 @@ OrcaView.Requires.Localise2d.Proxy=localise2d@local/faithlocaliser
 @endverbatim
 Start the GUI component
 @verbatim
-$ orcaview ./orcaview.cfg
+$ orcaview
 @endverbatim
 
 You should now see the the robot and laser scan. If it is partially off the screen, drag it with the left mouse button so that you can view the full scan.
@@ -193,7 +185,7 @@ You should now see the the robot and laser scan. If it is partially off the scre
 @section orca_doc_tute_gazebo_keyboard_control Keyboard/Joystick Control 
 To tell the robot to move we can use the @c teleop component which allows us to send commands to the @c Robot2d component via keyboard or joystick.
 @verbatim
-$ teleop ./teleop.cfg
+$ teleop
 @endverbatim
 
 As the robot moves through the world, compare the display of the OrcaView and the Gazebo world window: they should be showing similar reports.
