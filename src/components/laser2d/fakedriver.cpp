@@ -36,7 +36,7 @@ FakeDriver::init()
 int 
 FakeDriver::read( orca::LaserScanner2dDataPtr &data )
 {
-    context_.tracer()->debug( "Generating fake laser data...", 6 );
+    context_.tracer()->info( "Generating fake laser data..." );
 
     orcaice::setToNow( data->timeStamp );
     

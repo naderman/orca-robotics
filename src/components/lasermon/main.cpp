@@ -67,7 +67,7 @@ LaserMonComponent::start()
     {
         try
         {
-            orcaice::connectToInterfaceWithTag<orca::LaserScanner2dPrx>( context(), laserPrx, "Laser" );
+            orcaice::connectToInterfaceWithTag<orca::LaserScanner2dPrx>( context(), laserPrx, "LaserScanner2d" );
             break;
         }
         catch ( const orcaice::NetworkException & )
