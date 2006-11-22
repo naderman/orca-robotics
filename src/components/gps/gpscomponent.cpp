@@ -37,7 +37,7 @@ using namespace orca;
 GpsComponent::GpsComponent()
     : orcaice::Component( "Gps" ),
       handler_(NULL),
-      config_(new GpsConfigData),
+      descr_(new GpsDescription),
       hwDriver_(NULL)
 {
 
@@ -61,15 +61,19 @@ GpsComponent::start()
     prefix += ".Config.";
 
     bool startEnabled = orcaice::getPropertyAsIntWithDefault( prop, prefix+"StartEnabled", true );
+       
+    //
+    // DRIVER CONFIGURATION
+    //
 
-    config_->geometry.x = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Geometry.x", 0.0 );
-    config_->geometry.y = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Geometry.y", 0.0 );
-    config_->geometry.z = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Geometry.z", 0.0 );
+    // read config options
+    // GpsDriver::Config cfg;
+    // no configuration required here   
 
-    //set to default
-    orcaice::setInit( config_->origin );
-    config_->origin = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", config_->origin );
-
+    //
+    // HARDWARE INTERFACES   
+    //
+    
     std::string driverName;
     int ret = orcaice::getProperty( prop, prefix+"Driver", driverName );
     if ( ret != 0 )
@@ -79,11 +83,6 @@ GpsComponent::start()
         throw orcaice::Exception( ERROR_INFO, errString );
     }
 
-    //
-    // HARDWARE INTERFACES
-    //
-
-    
     if ( driverName == "ashtech" )
     {
         std::string device = orcaice::getPropertyWithDefault( prop, prefix+"Device", "/dev/ttyS0" );
@@ -109,8 +108,23 @@ GpsComponent::start()
         throw orcaice::Exception( ERROR_INFO, errString );
         return;
     }
-
+    
     hwDriver_->enable();
+
+    //
+    // SENSOR DESCRIPTION   
+    //
+    
+    orca::GpsDescriptionPtr descr = new orca::GpsDescription;
+    descr->timeStamp = orcaice::getNow();
+
+    orcaice::setInit( descr->offset );
+    descr->offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr->offset );
+
+    orcaice::setInit( descr->size );
+    descr->size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr->size );
+
+    // hwDriver_->enable();
 
     // wait until we have a fix before publishing etc.
     /*
@@ -129,7 +143,7 @@ GpsComponent::start()
     */
 
     // create servant for direct connections
-    GpsI* gpsObj_ = new GpsI(config_,context());
+    GpsI* gpsObj_ = new GpsI(descr_, context());
 
     gpsObjPtr_ = gpsObj_;
 

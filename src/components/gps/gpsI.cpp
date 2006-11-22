@@ -26,9 +26,9 @@
 using namespace std;
 using namespace orca;
 
-GpsI::GpsI(GpsConfigDataPtr   config,
+GpsI::GpsI(GpsDescriptionPtr   descr,
            orcaice::Context   context )
-    : config_(config),
+    : descr_(descr),
     context_(context)
 {
     //
@@ -110,17 +110,17 @@ GpsI::getTimeData(const Ice::Current& current) const
 }
 
 // Get Laser Geometry
-::orca::GpsConfigDataPtr
-GpsI::getConfig(const ::Ice::Current& ) const
+::orca::GpsDescriptionPtr
+GpsI::getDescription(const ::Ice::Current& ) const
 {
-    std::cout << "getConfig()" << std::endl;
-    return config_;
+    std::cout << "getDescription()" << std::endl;
+    return descr_;
 }
 
-::orca::GpsConfigDataPtr
-GpsI::localGetConfig() const
+::orca::GpsDescriptionPtr
+GpsI::localGetDescription() const
 {
-    return config_;
+    return descr_;
 }
 
 // Subscribe people

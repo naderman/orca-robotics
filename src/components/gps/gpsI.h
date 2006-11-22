@@ -41,7 +41,7 @@
 class GpsI : public orca::Gps
 {
 public:
-    GpsI(orca::GpsConfigDataPtr config,
+    GpsI(orca::GpsDescriptionPtr descr,
          orcaice::Context        context);
 
     // remote calls:
@@ -56,7 +56,7 @@ public:
     virtual ::orca::GpsMapGridDataPtr getMapGridData(const ::Ice::Current& ) const;
 
     // Get Gps Geometry
-    virtual ::orca::GpsConfigDataPtr getConfig(const ::Ice::Current& ) const;
+    virtual ::orca::GpsDescriptionPtr getDescription(const ::Ice::Current& ) const;
 
     // Subscribe people
     virtual void subscribe(const ::orca::GpsConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
@@ -86,7 +86,7 @@ public:
     void localSetMapGridData( ::orca::GpsMapGridDataPtr data );
 
     // Get Gps Geometry
-    orca::GpsConfigDataPtr localGetConfig() const;
+    orca::GpsDescriptionPtr localGetDescription() const;
 
 private:
 
@@ -107,7 +107,7 @@ private:
     IceStorm::TopicPrx topicMapGridPrx_;
     IceStorm::TopicPrx topicTimePrx_;
 
-    orca::GpsConfigDataPtr config_;
+    orca::GpsDescriptionPtr descr_;
 
     orcaice::Context context_;
 };

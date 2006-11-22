@@ -49,7 +49,7 @@ GpsHandler::run()
 
     try 
     {
-	GpsConfigDataPtr config_ = gpsObj_.localGetConfig();
+	GpsDescriptionPtr descr_ = gpsObj_.localGetDescription();
         GpsDataPtr gpsData = new GpsData;
         GpsMapGridDataPtr gpsMapGridData = new GpsMapGridData;
         GpsTimeDataPtr gpsTimeData = new GpsTimeData;
@@ -102,7 +102,7 @@ GpsHandler::run()
 			p.y=gpsMapGridData->northing;
 			p.z=gpsMapGridData->altitude;
                         //convert
-			p=convertToFrame3d(config_->origin,p);
+			p=convertToFrame3d(descr_->offset,p);
                         // reset object
 			gpsMapGridData->easting=p.x;
 			gpsMapGridData->northing=p.y;

@@ -42,7 +42,7 @@ public:
 private:
 
     GpsHandler *handler_;
-    orca::GpsConfigDataPtr config_;
+    orca::GpsDescriptionPtr descr_;
 
     //
     // EXTERNAL INTERFACE: Gps
