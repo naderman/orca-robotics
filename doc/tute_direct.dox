@@ -20,6 +20,14 @@ In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but
 
 Start the IceStorm server but make sure that the IceGrid Registry is NOT running (See @ref orca_doc_quickstart for instructions).
 
+Modify the global configuration file ~/.orcarc to disable adapter registration.
+@verbatim
+# Standard Ice Configuration for Orca
+#Ice.Default.Locator=IceGrid/Locator:default -p 12000
+IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 10000
+Ice.Override.Timeout=5000
+@endverbatim
+
 @section orca_doc_tute_direct_talk Connect Two Components
 
 First, copy default configuration files for the Laser2d and LaserMon components.
