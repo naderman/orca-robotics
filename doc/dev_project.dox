@@ -46,9 +46,21 @@ $ mv src/interfaces/slice/empty src/interfaces/slice/tractor
 $ mv src/interfaces/cpp/empty src/interfaces/cpp/tractor
 @endverbatim
 - Edit the corresponding CMakeLists.txt files, change the argument of SUBDIRS() command from 'empty' to 'tractor'.
+- Rename the module name in the sample interface .ice file @c src/interfaces/slice/someinterface.ice so that the include line looks like this:
+@verbatim
+#ifndef TRACTOR_SOME_INTERFACE_ICE
+#define TRACTOR_SOME_INTERFACE_ICE
+
+#include <orca/orca.ice>
+
+module tractor
+{
+@endverbatim
 - Edit the source file of the sample component @c src/components/somecomponent/main.cpp so that the include line looks like this:
 @verbatim
 #include <tractor/someinterface.h>
+...
+    tractor::SomeDataPtr someData = new tractor::SomeData;
 @endverbatim
 - Run cmake and compile.
 
