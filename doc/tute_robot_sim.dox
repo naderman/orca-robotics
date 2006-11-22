@@ -11,8 +11,8 @@
 /*!
 
 @page orca_doc_tute_stage Using Orca with Player/Stage simulator
-@note Reviewed for release 2.0.0 and Player/Stage 2.0.2.
-@author Ben Upcroft
+
+@note Reviewed for release 2.1.0 and Player/Stage 2.0.2.
 
 @section started Getting started
 Before reading this document, you should familiarise yourself with: 
@@ -54,7 +54,7 @@ $ player worlds/simple.cfg
 Now copy a few standard component configuration files distributed with Orca.
 @verbatim
 $ cd ~/sys/tutestage
-$ cp [ORCA_INSTALL]/cfg/sicklaser.cfg ./
+$ cp [ORCA_INSTALL]/cfg/laser2d.cfg ./
 $ cp [ORCA_INSTALL]/cfg/robot2d.cfg ./
 $ cp [ORCA_INSTALL]/cfg/faithlocaliser.cfg ./
 $ cp [ORCA_INSTALL]/cfg/teleop.cfg ./
@@ -62,47 +62,40 @@ $ cp [ORCA_INSTALL]/cfg/ogmaploader.cfg ./
 $ cp [ORCA_INSTALL]/cfg/orcaview.cfg ./
 @endverbatim
 
-From here on in, each component will need a separate terminal. In the tutorial @ref orca_doc_tute_icebox, you can learn how to put several components into an application server called IceBox so that you can run all these components from one process.
+From here on in, each component will need a separate terminal. Another option is to put all components into an application server called IceBox which runs them in a single process. This is described in tutorial @ref orca_doc_tute_icebox.
 
 @section laser Setting up the Laser on the Robot
 
-Modify @c sicklaser.cfg file to be compatible with Stage settings i.e. 180deg with 361 scans means 0.5 deg resolution. Note that as of version 2.0.1, Stage does not seem to work with 80m laser range, so we set it to 8m (range resolution of 1mm). We also tell the component to use the @e stage driver. Check that the following lines look like this.
+The laser component needs to know that we're using stage. You have to modify two lines in @c laser2d.cfg:
 @verbatim
 ...
-SickLaser.Config.AngularResolution=0.5
-SickLaser.Config.RangeResolution=0.001
-SickLaser.Config.Driver=stage
+Laser2d.Config.Driver=playerclient
+Laser2d.Config.PlayerClient.Driver=stage
 ...
 @endverbatim
 
-Now run the SickLaser component.
+Now run the Laser2d component.
 @verbatim
-$ sicklaser ./sicklaser.cfg
+$ laser2d
 @endverbatim
-Check the Stage world window: you should see the laser scan after SickLaser component made the connection.
+Check the Stage world window: you should see the laser scan after the Laser2d component made the connection. A quick check to see whether it's working is to run lasermon (as described in @ref orca_doc_quickstart).
 
 @section robot_control Robot driver
 
-We're now going to set up the low level control to the actuators for the simulated robot using the Robot2d component. First tell the component to connect to the Player simulator by changing the @c robot2d.cfg file so that the following line looks like this
-@verbatim
-...
-Robot2d.Config.Driver=playerclient
-...
-@endverbatim
+We're now going to set up the low level control to the actuators for the simulated robot using the Robot2d component. The @c robot2d.cfg file is already configured the way we want it here, so simply run the component:
 
-Run the Robot2d component
 @verbatim
-$ robot2d ./robot2d.cfg
+$ robot2d
 @endverbatim
 
 @section localiser Localisation
 To display the robot in the GUI we need a localisation component. Here we'll use the simplest one possible: @c FaithLocaliser which assumes porfect odometry. Nothing needs to be done to the @c .cfg file so just start the componenet.
 @verbatim
-$ faithlocaliser ./faithlocaliser
+$ faithlocaliser
 @endverbatim
 
 @section map Load the Map
-To display the world in the GUI we'll use the @c OgMapLoader component which loads converts a given image file to a (static) Occupancy Grid and serves it on demand to clients. In this case, we are using the simple world from Stage so edit the @c ogmaploader.cfg file
+To display the world in the GUI we'll use the @c OgMapLoader component which loads an image file, converts it to a (static) occupancy grid map and serves it on demand to clients. In this case, we are using the simple world from Stage so edit the @c ogmaploader.cfg file
 @verbatim
 ...
 OgMapLoader.Config.MapFileName=./worlds/bitmaps/cave.png
@@ -116,11 +109,11 @@ OgMapLoader.Config.Size.Y=16.0
 @endverbatim
 Start the component
 @verbatim
-$ ogmaploader ./ogmaploader.cfg
+$ ogmaploader
 @endverbatim
 
 @section view View the World
-To veiw the world and the robot we use @c orcaview. One line of the standard config file needs to be modified:
+To view the world and the robot we use @c orcaview. One line of the standard config file needs to be modified:
 @verbatim
 ...
 OrcaView.Requires.Localise2d.Proxy=localise2d@local/faithlocaliser
@@ -128,15 +121,15 @@ OrcaView.Requires.Localise2d.Proxy=localise2d@local/faithlocaliser
 @endverbatim
 Start the GUI component
 @verbatim
-$ orcaview ./orcaview.cfg
+$ orcaview
 @endverbatim
 
-You should now see the the simple world from stage. If it is partially off the screen, drag it with the left mouse button so that you can veiw the full world. You should be able to see the robot and the laser scans.
+You should now see the the simple world from stage. If it is partially off the screen, drag it with the left mouse button so that you can view the full world. You should be able to see the robot and the laser scans.
 
 @section keyboard_control Keyboard/Joystick Control 
 To tell the robot to move we can use the @c teleop component which allows us to send commands to the @c Robot2d component via keyboard or joystick.
 @verbatim
-$ teleop ./teleop.cfg
+$ teleop
 @endverbatim
 
 As the robot moves through the world, compare the display of the OrcaView and the Stage world window: they should be identical.
