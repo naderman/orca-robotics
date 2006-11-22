@@ -72,7 +72,7 @@ LaserMonComponent::start()
         }
         catch ( const orcaice::NetworkException & )
         {
-            tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
+            tracer()->error( "Failed to connect to remote object. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
         // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
