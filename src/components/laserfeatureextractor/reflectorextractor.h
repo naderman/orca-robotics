@@ -13,22 +13,17 @@
 
 #include <orca/laserscanner2d.h>
 #include <orca/polarfeature2d.h>
+#include "iextractor.h"
+#include <orcaice/context.h>
 
 namespace laserfeatures {
 
-class ReflectorExtractor
+class ReflectorExtractor : public IExtractor
 {
 
 public: 
 
-    ReflectorExtractor( double maxDeltaRangeNearReflector,
-                        double maxDeltaRangeWithinReflector,
-                        double minReflectorBrightness )
-        : maxDeltaRangeNearReflector_(maxDeltaRangeNearReflector),
-          maxDeltaRangeWithinReflector_(maxDeltaRangeWithinReflector),
-          minReflectorBrightness_(minReflectorBrightness),
-          laserMaxRange_( -1 )
-        {}
+    ReflectorExtractor( orcaice::Context context, double laserMaxRange );
 
     // Adds laser features to the 'features' data structure
     void addFeatures( const orca::LaserScanner2dDataPtr    &laserData,

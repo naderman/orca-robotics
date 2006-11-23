@@ -15,14 +15,28 @@
 
 #include <orca/featuremap2d.h>
 #include <orcaobj/mathdefs.h>
-
+#include <orcaice/orcaice.h>
 #include "foregroundextractor.h"
 #include "polefinder.h"
 
 using namespace std;
 
 namespace laserfeatures {
-    
+
+ForegroundExtractor::ForegroundExtractor( orcaice::Context context, double laserMaxRange )
+    : laserMaxRange_( laserMaxRange )
+{
+    std::string prefix = context.tag() + ".Config.FGPoints.";
+    Ice::PropertiesPtr prop = context.properties();
+
+    minForegroundWidth_                =
+        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MinForegroundWidth", 0.1);
+    maxForegroundWidth_                =
+        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxForegroundWidth", 0.5);
+    minForegroundBackgroundSeparation_ =
+        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MinForegroundBackgroundSeparation", 0.5);
+}
+
 void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData, 
                                        orca::PolarFeature2dDataPtr &features )
 {

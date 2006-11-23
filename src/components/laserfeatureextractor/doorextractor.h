@@ -13,16 +13,17 @@
 
 #include <orca/laserscanner2d.h>
 #include <orca/polarfeature2d.h>
-
+#include "iextractor.h"
+#include <orcaice/context.h>
 
 namespace laserfeatures {
 
-class DoorExtractor
+class DoorExtractor : public IExtractor
 {
 
 public: 
 
-    DoorExtractor() {}
+    DoorExtractor( orcaice::Context context ) {}
 
 //     Adds laser features to the 'features' data structure
       void addFeatures( const orca::LaserScanner2dDataPtr &laserData,

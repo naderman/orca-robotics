@@ -12,12 +12,10 @@
 #ifndef ORCA2_LASERFEATUREEXTRACTOR_COMBINED_DRIVER_H
 #define ORCA2_LASERFEATUREEXTRACTOR_COMBINED_DRIVER_H
 
+#include <orcaice/context.h>
 #include "algorithmdriver.h"
-
-class ReflectorExtractor;
-class ForegroundExtractor;
-class DoorExtractor;
-class CornerExtractor;
+#include <vector>
+#include "iextractor.h"
 
 namespace laserfeatures
 {
@@ -27,40 +25,32 @@ class CombinedDriver: public AlgorithmDriver
 
 public:
 
-    struct Config
-    {
-        // which algs
-        int    extractReflectors; 
-        int    extractForegroundPoints; 
-        int    extractCorners; 
-        int    extractDoors; 
-        // reflector params
-        double maxDeltaRangeNearReflector;
-        double maxDeltaRangeWithinReflector;
-        int    minReflectorBrightness; 
-        // foreground params
-        double minForegroundWidth;
-        double maxForegroundWidth;
-        double minForegroundBackgroundSeparation;
-    };
+//     struct Config
+//     {
+//         // which algs
+//         int    extractReflectors; 
+//         int    extractForegroundPoints; 
+//         int    extractCorners; 
+//         int    extractDoors; 
+//         // reflector params
+//         double maxDeltaRangeNearReflector;
+//         double maxDeltaRangeWithinReflector;
+//         int    minReflectorBrightness; 
+//         // foreground params
+//         double minForegroundWidth;
+//         double maxForegroundWidth;
+//         double minForegroundBackgroundSeparation;
+//     };
     
-    CombinedDriver( const Config & config );
+    CombinedDriver( orcaice::Context context, double maxRange );
     virtual ~CombinedDriver();
     
-    virtual int computeFeatures( const orca::LaserScanner2dDataPtr          &laserDataPtr,
+    virtual int computeFeatures( const orca::LaserScanner2dDataPtr &laserDataPtr,
                                  orca::PolarFeature2dDataPtr       &featureDataPtr );
     
-    virtual void setMaxRange( float maxRange );
-
 private:
 
-    ReflectorExtractor *reflectorExtractor_;
-    ForegroundExtractor *foregroundExtractor_;
-    CornerExtractor *cornerExtractor_;
-    DoorExtractor *doorExtractor_;
-
-    Config config_;
-
+    std::vector<IExtractor*> extractors_;
 };
 
 } // namespace

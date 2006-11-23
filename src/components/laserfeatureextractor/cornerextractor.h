@@ -12,21 +12,20 @@
 
 #include <orca/laserscanner2d.h>
 #include <orca/polarfeature2d.h>
-
 #include <vector>
-
 #include "section.h"
-
+#include <orcaice/context.h>
+#include "iextractor.h"
 
 namespace laserfeatures {
 
-class CornerExtractor
+class CornerExtractor : public IExtractor
 {
 
 public: 
 
-    CornerExtractor()
-    : laserMaxRange_( -1 )
+    CornerExtractor( orcaice::Context, double laserMaxRange )
+        : laserMaxRange_( laserMaxRange )
     {}
 
     // Adds laser features to the 'features' data structure

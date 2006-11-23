@@ -22,7 +22,7 @@
 namespace laserfeatures
 {
 
-class AlgorithmHandler;
+class MainLoop;
 
 class Component : public orcaice::Component
 {
@@ -43,7 +43,7 @@ private:
     orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> laserDataBuffer_;
     orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> polarFeaturesDataBuffer_;
 
-    AlgorithmHandler* algorithmHandler_;
+    MainLoop *mainLoop_;
 };
 
 } // namespace

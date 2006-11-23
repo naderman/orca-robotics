@@ -26,8 +26,6 @@ public:
     
     virtual int computeFeatures( const orca::LaserScanner2dDataPtr &laserDataPtr,
                                  orca::PolarFeature2dDataPtr       &featureDataPtr );
-
-    virtual void setMaxRange( float maxRange ) {};
 };
 
 } // namespace

@@ -22,7 +22,7 @@ namespace laserfeatures
 
 \brief Abstract class for a laser feature extractor
 
-\author Tobias Kaupp t.kaupp at cas.edu.au
+\author Tobias Kaupp t.kaupp at cas.edu.au, Alex Brooks
 
 */
 class AlgorithmDriver 
@@ -35,9 +35,6 @@ public:
     // Computes the features
     virtual int computeFeatures( const orca::LaserScanner2dDataPtr   &laserDataPtr,
                                        orca::PolarFeature2dDataPtr   &featureDataPtr ) = 0;
-
-    virtual void setMaxRange( float maxRange )=0;
-                                 
 };
 
 } // namespace

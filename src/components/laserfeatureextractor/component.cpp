@@ -14,7 +14,7 @@
 
 #include "component.h"
 
-#include "algorithmhandler.h"
+#include "mainloop.h"
 
 // interface implementations
 #include "laserconsumerI.h"
@@ -26,13 +26,13 @@ using namespace laserfeatures;
 
 Component::Component()
     : orcaice::Component( "LaserFeatureExtractor" ),
-      algorithmHandler_(0)
+      mainLoop_(0)
 {
 }
 
 Component::~Component()
 {
-    // do not delete algorithmHandler_!!! They derive from Ice::Thread and self-destruct.
+    // do not delete mainLoop_!!! They derive from Ice::Thread and self-destruct.
 }
 
 // warning: this function returns after it's done, all variable that need to be permanent must
@@ -54,8 +54,7 @@ void Component::start()
 
     // REQUIRED : Laser
     orca::LaserScanner2dPrx laserPrx;
-    // TODO: this will not actually quit on ctrl-c
-    while ( true ) // ( isActive() )
+    while (true) // ( isActive() )
     {
         try
         {
@@ -85,8 +84,7 @@ void Component::start()
     //
     // Subscribe for data
     //
-    // TODO: this will not actually quit on ctrl-c
-    while ( true ) // ( isActive() )
+    while (true) // ( isActive() )
     {
         try
         {
@@ -101,22 +99,22 @@ void Component::start()
     }
     
     // the constructor may throw, we'll let the application shut us down
-    algorithmHandler_ = new AlgorithmHandler( polarFeaturePublisher_,
-                                              laserPrx,
-                                              laserDataBuffer_,
-                                              polarFeaturesDataBuffer_,
-                                              context() );
-    algorithmHandler_->start();
+    mainLoop_ = new MainLoop( polarFeaturePublisher_,
+                              laserPrx,
+                              laserDataBuffer_,
+                              polarFeaturesDataBuffer_,
+                              context() );
+    mainLoop_->start();
     
     // the rest is handled by the application/service
 }
 
 void Component::stop()
 {
-    if ( algorithmHandler_ ) {
-        IceUtil::ThreadControl algoControl = algorithmHandler_->getThreadControl();
+    if ( mainLoop_ ) {
+        IceUtil::ThreadControl algoControl = mainLoop_->getThreadControl();
         tracer()->debug("stopping algorithm handler", 5 );
-        algorithmHandler_->stop();
+        mainLoop_->stop();
         tracer()->debug("joining algorithm handler", 5 );
         algoControl.join();
     }

@@ -5,19 +5,19 @@ IF ( NOT WIN32 AND BUILD_LASERFEATUREEXTRACTOR )
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
     
-    # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-    SET( COMMON_SRCS
-            component algorithmhandler
-            fakedriver combineddriver svd section polefinder
-            reflectorextractor foregroundextractor doorextractor cornerextractor
-            polarfeature2dI laserconsumerI
-    )
-    
+    FILE( GLOB SRCS *.cpp )
+    # Set LIB_SRCS to everything _except_ main.cpp
+    SET( LIB_SRCS ${SRCS} )
+    LIST( REMOVE_ITEM LIB_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp" )
+    # Set COMP_SRCS to everything _except_ service.cpp
+    SET( COMP_SRCS ${SRCS} )
+    LIST( REMOVE_ITEM COMP_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/service.cpp" )
+
     # stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( laserfeatureextractor main ${COMMON_SRCS} )
+    GLOBAL_ADD_EXECUTABLE( laserfeatureextractor ${COMP_SRCS} )
     
     # build an IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaLaserFeatureExtractor SHARED service ${COMMON_SRCS} )
+    GLOBAL_ADD_LIBRARY( OrcaLaserFeatureExtractor SHARED ${LIB_SRCS} )
 
     GENERATE_CONFIG_FILE( laserfeatureextractor.def )
 

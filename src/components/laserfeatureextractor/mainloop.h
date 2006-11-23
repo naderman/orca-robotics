@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef ORCA2_FEATURE_EXTRACTOR_ALGORITHM_HANDLER_H
-#define ORCA2_FEATURE_EXTRACTOR_ALGORITHM_HANDLER_H
+#ifndef ORCA2_FEATURE_EXTRACTOR_MAIN_LOOP_H
+#define ORCA2_FEATURE_EXTRACTOR_MAIN_LOOP_H
 
 #include <orcaice/thread.h>
 #include <orcaice/ptrbuffer.h>
@@ -24,16 +24,16 @@ namespace laserfeatures
 
 class AlgorithmDriver;
 
-class AlgorithmHandler : public orcaice::Thread
+class MainLoop : public orcaice::Thread
 {
 public:
 
-    AlgorithmHandler( const orca::PolarFeature2dConsumerPrx &polarFeaturesConsumer,
+    MainLoop( const orca::PolarFeature2dConsumerPrx &polarFeaturesConsumer,
                     orca::LaserScanner2dPrx laserPrx,
                     orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> &laserDataBuffer,
                     orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
                     const orcaice::Context & context );
-    ~AlgorithmHandler();
+    ~MainLoop();
 
     virtual void run();
 
@@ -52,8 +52,9 @@ private:
     orca::Frame3d sensorOffset_;    
 
     // This component is 2D-centric: can only handle certain orientations.
-    // Throws std::strings on bad offset.
-    void checkSensorOffset( const orca::Frame3d & offset );
+    bool sensorOffsetOK( const orca::Frame3d & offset );
+
+    void initDriver();
 
     // buffers
     orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> &laserDataBuffer_;
@@ -63,7 +64,6 @@ private:
 
     orcaice::Context context_;
 
-    void init();
 };
 
 } // namespace

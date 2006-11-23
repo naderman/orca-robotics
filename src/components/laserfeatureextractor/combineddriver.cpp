@@ -25,57 +25,41 @@ using namespace orcaice;
 
 namespace laserfeatures {
 
-CombinedDriver::CombinedDriver( const Config &config )
-    : reflectorExtractor_( NULL ),
-      foregroundExtractor_( NULL ),
-      cornerExtractor_( NULL ),
-      doorExtractor_( NULL ),
-      config_(config)
+CombinedDriver::CombinedDriver( orcaice::Context context, double maxRange )
 {
+    std::string prefix = context.tag() + ".Config.";
+    Ice::PropertiesPtr prop = context.properties();
+
+    bool extractReflectors                 =
+        orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractReflectors", 1);
+    bool extractForegroundPoints           =
+        orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractForegroundPoints", 0);
+    bool extractCorners                    =
+        orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractCorners", 0);
+    bool extractDoors                      =
+        orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractDoors", 0);
     
-    if ( config_.extractReflectors )
+    if ( extractReflectors )
+        extractors_.push_back( new ReflectorExtractor(context,maxRange) );
+    if ( extractForegroundPoints )
+        extractors_.push_back( new ForegroundExtractor(context,maxRange) );
+    if ( extractDoors )
+        extractors_.push_back( new DoorExtractor(context) );
+    if ( extractCorners ) 
+        extractors_.push_back( new CornerExtractor(context,maxRange) );
+
+    if ( extractors_.size() == 0 )
     {
-        // cout<<"TRACE(combineddriver.cpp): Extracting reflectors: " << config_.extractReflectors<< endl;
-        reflectorExtractor_ = new ReflectorExtractor( config.maxDeltaRangeNearReflector,
-                config.maxDeltaRangeWithinReflector,
-                config.minReflectorBrightness );
-    }
-    
-    if ( config_.extractForegroundPoints ) 
-    {
-        // cout<<"TRACE(combineddriver.cpp): Extracting fg points: " << config_.extractForegroundPoints<< endl;
-        foregroundExtractor_ = new ForegroundExtractor( config.minForegroundWidth,
-                config.maxForegroundWidth,
-                config.minForegroundBackgroundSeparation);
-    }
-    
-    if ( config_.extractDoors ) 
-    {
-        cout<<"TRACE(combineddriver.cpp): Extracting fg points: " << config_.extractForegroundPoints<< endl;
-        doorExtractor_ = new DoorExtractor();
-    }
-    
-    if ( config_.extractCorners ) 
-    {
-        cout<<"TRACE(combineddriver.cpp): Extracting fg points: " << config_.extractForegroundPoints<< endl;
-        cornerExtractor_ = new CornerExtractor();
+        cout << "ERROR(combineddriver.cpp): No feature extractors defined in .cfg file!" << endl;
+        exit(1);
     }
 }
 
 CombinedDriver::~CombinedDriver()
 {
-}
-
-void CombinedDriver::setMaxRange( float maxRange )
-{ 
-    if (reflectorExtractor_!=NULL) {
-        reflectorExtractor_->setMaxRange( maxRange );
-    }
-    if (foregroundExtractor_!=NULL) {
-        foregroundExtractor_->setMaxRange( maxRange );
-    }
-    if (cornerExtractor_!=NULL) {
-        cornerExtractor_->setMaxRange( maxRange );
+    for ( uint i=0; i < extractors_.size(); i++ )
+    {
+        delete extractors_[i];
     }
 }
 
@@ -84,29 +68,10 @@ CombinedDriver::computeFeatures( const orca::LaserScanner2dDataPtr          &las
                                  orca::PolarFeature2dDataPtr       &featureDataPtr )
 {
     featureDataPtr->features.clear();
-    
-    if ( reflectorExtractor_ != NULL )
+
+    for ( uint i=0; i < extractors_.size(); i++ )
     {
-        // cout<<"TRACE(combineddriver.cpp): Extracting reflectors: " << config_.extractReflectors<< endl;
-        reflectorExtractor_->addFeatures( laserDataPtr, featureDataPtr );
-    }
-    
-    if ( foregroundExtractor_ != NULL ) 
-    {
-        // cout<<"TRACE(combineddriver.cpp): Extracting fg points: " << config_.extractForegroundPoints<< endl;
-        foregroundExtractor_->addFeatures( laserDataPtr, featureDataPtr ) ;
-    }
-    
-    if ( doorExtractor_ != NULL ) 
-    {
-        // cout<<"TRACE(combineddriver.cpp): Extracting doors: " << config_.extractDoors << endl;
-        doorExtractor_->addFeatures(laserDataPtr, featureDataPtr);
-    }
-    
-    if ( cornerExtractor_ != NULL ) 
-    {
-        // cout<<"TRACE(combineddriver.cpp): Extracting corners: " << config_.extractCorners << endl;
-        cornerExtractor_->addFeatures(laserDataPtr, featureDataPtr);
+        extractors_[i]->addFeatures( laserDataPtr, featureDataPtr );
     }
   
     return 0;

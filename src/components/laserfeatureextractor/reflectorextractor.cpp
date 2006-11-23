@@ -13,6 +13,7 @@
 #include <assert.h>
 #include <cmath>
 #include <orca/featuremap2d.h>
+#include <orcaice/orcaice.h>
 
 using namespace std;
 
@@ -22,6 +23,20 @@ static double laserScanBearing( const orca::RangeScanner2dDataPtr & scan, const 
 {
     double angleIncrement = scan->fieldOfView / double(scan->ranges.size()+1);
     return (scan->startAngle + angleIncrement*i);
+}
+
+ReflectorExtractor::ReflectorExtractor( orcaice::Context context, double laserMaxRange )
+    : laserMaxRange_(laserMaxRange)
+{
+    std::string prefix = context.tag() + ".Config.Reflectors.";
+    Ice::PropertiesPtr prop = context.properties();
+
+    maxDeltaRangeWithinReflector_      =
+        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxDeltaRangeWithinReflector", 0.3 );
+    maxDeltaRangeNearReflector_        =
+        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxDeltaRangeNearReflector", 0.5 );
+    minReflectorBrightness_            =
+        orcaice::getPropertyAsIntWithDefault(    prop, prefix+"MinBrightness", 1);
 }
 
 void 
