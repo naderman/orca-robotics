@@ -32,9 +32,6 @@ public:
     void addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                         orca::PolarFeature2dDataPtr &features );  
     
-    void setMaxRange( double maxRange ) { laserMaxRange_ = maxRange; }
- 
-
 private: 
     
     std::vector<Section> sections_;
