@@ -35,7 +35,7 @@ public:
 
 private:
 
-    MainLoop *mainLoop_;
+    MainLoop* mainLoop_;
 
     //
     // HARDWARE INTERFACES

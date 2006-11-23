@@ -65,7 +65,7 @@ public:
     virtual int initData( orca::CameraDataPtr& data ) const;
 
     // Blocks till new data is available
-    virtual int read( orca::CameraDataPtr &data )=0;
+    virtual int read( orca::CameraDataPtr& data )=0;
 
     // TODO: Should also have getData here as we don't always want all info from the read
 

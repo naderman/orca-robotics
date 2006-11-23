@@ -50,7 +50,7 @@ FakeDriver::init()
 }
 
 int 
-FakeDriver::read( orca::CameraDataPtr &data )
+FakeDriver::read( orca::CameraDataPtr& data )
 {
     context_.tracer()->debug( "Generating fake image data...", 6 );
 

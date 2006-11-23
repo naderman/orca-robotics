@@ -198,7 +198,7 @@ Component::start()
     //
 
     // create servant for direct connections
-    CameraI *cameraI = new CameraI( descr, "Camera", context() );
+    CameraI* cameraI = new CameraI( descr, "Camera", context() );
     // to register with the adapter, it's enough to have a generic pointer
     cameraObjPtr_ = cameraI;
     // this may throw but it's better if it kills us.
