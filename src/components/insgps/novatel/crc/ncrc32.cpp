@@ -133,7 +133,7 @@ int TestASCII( char* ucBuf_ )
       return( FALSE );
       
    // Convert the ascii crc32 to a binary value
-   if( sscanf( szCheckCrc32+1, "%x ", &ulCrc32 ) == 0)
+   if( sscanf( szCheckCrc32+1, "%lx ", &ulCrc32 ) == 0)
       return( FALSE );
 
    // Make a copy of the log with the '#' and '*' wrapper removed
