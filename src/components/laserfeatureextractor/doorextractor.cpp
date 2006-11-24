@@ -19,6 +19,10 @@
 using namespace std;
 
 namespace laserfeatures {
+
+namespace {
+    const double P_FALSE_POSITIVE = 0.3;
+}
     
 void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                                        orca::PolarFeature2dDataPtr &features )
@@ -70,11 +74,13 @@ void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                     pp1->type = orca::feature::DOOR;
                     pp1->p.r = startRange;
                     pp1->p.o = startBearing;
+                    pp1->pFalsePositive = P_FALSE_POSITIVE;
 
                     orca::SinglePolarFeature2dPtr pp2 = new orca::SinglePolarFeature2d;
                     pp2->type = orca::feature::DOOR;
                     pp2->p.r = stopRange;
                     pp2->p.o = stopBearing;
+                    pp2->pFalsePositive = P_FALSE_POSITIVE;
 
                     features->features.push_back(pp1);
                     features->features.push_back(pp2);

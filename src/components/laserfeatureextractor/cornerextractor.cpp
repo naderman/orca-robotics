@@ -18,7 +18,6 @@
 
 #include <orca/featuremap2d.h>
 
-// Stage values....Real Values
 #define RANGE_DELTA     0.5    // 0.10    0.2
 #define BREAK_DIST     0.2    // 0.4    0.2
 #define MIN_POINTS_IN_LINE   6    // 6      6
@@ -32,6 +31,10 @@
 using namespace std;
 
 namespace laserfeatures {
+
+namespace {
+    const double P_FALSE_POSITIVE = 0.3;
+}
     
 void CornerExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                                    orca::PolarFeature2dDataPtr &features )
@@ -111,6 +114,7 @@ void CornerExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                     pp->type = orca::feature::CORNER;
                     pp->p.r = range;
                     pp->p.o = bearing;
+                    pp->pFalsePositive = P_FALSE_POSITIVE;
                     features->features.push_back( pp );
                   }
                } 
@@ -427,6 +431,7 @@ bool CornerExtractor::extractPossibleCorners( const orca::PolarFeature2dDataPtr 
                     pp->type = orca::feature::POSSIBLECORNER;
                     pp->p.r = pret.range();
                     pp->p.o = pret.bearing();
+                    pp->pFalsePositive = P_FALSE_POSITIVE;
                     featureDataPtr->features.push_back( pp );
                 }
             }
@@ -440,6 +445,7 @@ bool CornerExtractor::extractPossibleCorners( const orca::PolarFeature2dDataPtr 
                     pp->type = orca::feature::POSSIBLECORNER;
                     pp->p.r = iret.range();
                     pp->p.o = iret.bearing();
+                    pp->pFalsePositive = P_FALSE_POSITIVE;
                     featureDataPtr->features.push_back( pp );
                 }
             }

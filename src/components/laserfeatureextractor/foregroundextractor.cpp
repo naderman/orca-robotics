@@ -23,6 +23,10 @@ using namespace std;
 
 namespace laserfeatures {
 
+namespace {
+    const double P_FALSE_POSITIVE = 0.3;
+}
+
 ForegroundExtractor::ForegroundExtractor( orcaice::Context context, double laserMaxRange )
     : laserMaxRange_( laserMaxRange )
 {
@@ -61,6 +65,7 @@ void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserD
         pp->type = orca::feature::FOREGROUNDPOINT;
         pp->p.r  = poles[i].range;
         pp->p.o  = poles[i].bearing;
+        pp->pFalsePositive = P_FALSE_POSITIVE;
         features->features.push_back(pp);
     }
 

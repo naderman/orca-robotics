@@ -19,6 +19,11 @@ using namespace std;
 
 namespace laserfeatures {
 
+namespace {
+    const double P_FALSE_POSITIVE = 0.05;
+}
+
+
 static double laserScanBearing( const orca::RangeScanner2dDataPtr & scan, const int i )
 {
     double angleIncrement = scan->fieldOfView / double(scan->ranges.size()+1);
@@ -145,6 +150,7 @@ ReflectorExtractor::addFeatures( const orca::LaserScanner2dDataPtr    &laserData
                     f->type = orca::feature::LASERREFLECTOR;
                     f->p.r  = featureRangeSum / numFeaturePoints;
                     f->p.o  = featureBearingSum / numFeaturePoints;
+                    f->pFalsePositive = P_FALSE_POSITIVE;
                     features->features.push_back( f );
                 }
             }
