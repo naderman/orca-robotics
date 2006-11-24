@@ -46,15 +46,15 @@ Position3dI::getData(const Ice::Current& current) const
     return data;
 }
 
-orca::Position3dGeometryPtr
-Position3dI::getGeometry(const Ice::Current& current) const
+orca::Position3dDescriptionPtr
+Position3dI::getDescription(const Ice::Current& current) const
 {
-    //std::cout << "Pretending to send geometry back" << std::endl;
+    //std::cout << "Pretending to send description back" << std::endl;
 
     // @todo implement
-    Position3dGeometryPtr geometry = new Position3dGeometry;
+    Position3dDescriptionPtr descr = new Position3dDescription;
 
-    return geometry;
+    return descr;
 }
 
 void

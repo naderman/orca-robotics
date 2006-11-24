@@ -34,7 +34,7 @@ public:
     // data buffer.
     virtual ::orca::Position3dDataPtr getData(const ::Ice::Current& ) const;
 
-    virtual ::orca::Position3dGeometryPtr getGeometry(const ::Ice::Current& ) const;
+    virtual ::orca::Position3dDescriptionPtr getDescription(const ::Ice::Current& ) const;
 
     virtual void subscribe(const ::orca::Position3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
