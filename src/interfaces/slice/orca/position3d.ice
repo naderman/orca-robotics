@@ -38,8 +38,8 @@ class Position3dData extends OrcaObject
     Twist motion;
 };
 
-//! Position3d geometry data structure
-class Position3dGeometry extends OrcaObject
+//! Position3d description data structure
+class Position3dDescription extends OrcaObject
 {
     //! Pose of the robot base, in the robot CS
     Frame3d offset;
@@ -67,11 +67,8 @@ interface Position3d
     nonmutating Position3dData getData()
             throws DataNotExistException, HardwareFailedException;
 
-    // Returns the current configuration.
-    //nonmutating Position3dConfig getConfig();
-    
-    //! Returns geometry of the position device.            
-    nonmutating Position3dGeometry getGeometry();
+    //! Returns description of the position device.
+    nonmutating Position3dDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The
