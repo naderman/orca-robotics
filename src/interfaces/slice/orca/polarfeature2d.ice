@@ -36,11 +36,18 @@ class SinglePolarFeature2d
 {
     //! Feature location.
     PolarPoint2d p;
+
     //! Feature type
     //! see @ref orca_interface_featuremap2d for orca-defined feature-types.
     //! This is an int rather than an enum to allow users to make up
     //! non-orca-defined feature types.
     int          type;
+
+    //! The probability that the feature is a false positive.
+    //! This should be a number between:
+    //!   - 0 (feature definitely exists), and
+    //!   - 1 (feature definitely does not exist)
+    double pFalsePositive;
 };
 
 //! A sequence of individual features
