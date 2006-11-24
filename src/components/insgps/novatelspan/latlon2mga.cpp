@@ -16,6 +16,8 @@ using std::sin;
 using std::tan;
 using std::pow;
 
+#include <iostream>
+
 #include "latlon2mga.h"
 
 namespace insgps{
@@ -53,8 +55,9 @@ void LatLon2MGA(const double& lat, const double& lon, double& Northing, double& 
 	double sLat, sLat2;
 	double tLat, tLat2, tLat4, tLat6;
 	double omega, omega2, omega4, omega6, omega8;
-	double m, nu, rho, Lat, Lon;
-	double t1, t2, t3, t4;
+	double m, nu, Lat, Lon;
+	// double rho; 
+    double t1, t2, t3, t4;
 	double psi, psi2, psi3, psi4;
 	
 	if (GeodModel != geodmodel) {
@@ -91,6 +94,9 @@ void LatLon2MGA(const double& lat, const double& lon, double& Northing, double& 
 				a = 20926348.0*0.3048;
 				f = 1.0/294.26;
       	break;
+            default:
+                std::cout << "The parameters for this GeoModel type have not been implemented" << std::endl;
+        break;                  
       }
 
 		// Semi minor axis (m)
@@ -209,8 +215,9 @@ void MGA2LatLon(const double& Northing, const double& Easting, const int& Zone, 
 	double LonCM;				// Longitude of the central meridian of calculation zone
 	double psip, psip2, psip3, psip4;
 	double tp, tp2, tp4, tp6;
-	double m, sigma, phip, sphip, sphip2, rhop, nup, Ep, EtKr, Secphip;
-	double x, x3, x5, x7;
+	double m, sigma, phip, sphip2, rhop, nup, Ep, EtKr, Secphip;
+	// double sphip;
+    double x, x3, x5, x7;
 	double t1, t2, t3, t4;
 	double Lat, Lon;
 	
@@ -248,6 +255,9 @@ void MGA2LatLon(const double& Northing, const double& Easting, const int& Zone, 
 				a = 20926348.0*0.3048;
 				f = 1.0/294.26;
       	break;
+            default:
+                std::cout << "The parameters for this GeoModel type have not been implemented" << std::endl;
+        break;                  
 		}
       
 		// Semi minor axis (m)
