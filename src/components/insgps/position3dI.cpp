@@ -1,0 +1,177 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Ben Upcroft
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+#include <iostream>
+#include <orcaice/orcaice.h>
+
+#include "position3dI.h"
+
+using namespace std;
+using namespace orca;
+using namespace insgps;
+
+Position3dI::Position3dI( Position3dDescriptionPtr  descr,
+                          Driver*                   hwDriver,
+                          orcaice::Context          context )
+    :   descr_(descr),
+        hwDriver_(hwDriver),
+        context_(context)
+{
+    //
+    // EXTERNAL PROVIDED INTERFACE: Position3d
+    //
+    // Find IceStorm Topic to which we'll publish
+    // the main topic is 'name/*@platform/component'
+    topicPrx_ = orcaice::connectToTopicWithTag<Position3dConsumerPrx>
+            ( context_, position3dPublisher_, "Position3d" );
+}
+
+void
+Position3dI::run()
+{
+    const int TIME_BETWEEN_HEARTBEATS  = 10000;  // ms
+    IceUtil::Time lastHeartbeatTime = IceUtil::Time::now();
+
+    try 
+    {
+        context_.tracer()->debug( "TRACE(position3dI::run()): Position3dI thread is running", 5);
+        
+        Position3dDataPtr position3dData = new Position3dData;
+        
+        //
+        // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks
+        // for requests to shut down. So we have to avoid getting stuck in a loop anywhere within this main loop.
+        //
+        while ( isActive() )
+        {
+            if ( hwDriver_->isEnabled() )
+            {
+   
+                // blocking read with timeout (2000ms by default)
+                // get position3d
+                read( position3dData );
+                
+                // send the data to icestorm and to a buffer for direct connections
+                localSetData( position3dData );
+            
+            }
+            else
+            {
+                // Wait for someone to enable us
+                IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(100));
+            }
+
+            if ( (IceUtil::Time::now()-lastHeartbeatTime).toMilliSecondsDouble() >= TIME_BETWEEN_HEARTBEATS )
+            {
+                if ( hwDriver_->isEnabled() )
+                {
+                    context_.tracer()->heartbeat("InsGps enabled. " + hwDriver_->heartbeatMessage() );
+                }
+                else
+                {
+                    context_.tracer()->heartbeat( "InsGps disabled." );
+                }
+                lastHeartbeatTime = IceUtil::Time::now();
+            }
+        } // end of while
+    } // end of try
+    catch ( Ice::CommunicatorDestroyedException &e )
+    {
+        // This is OK: it means that the communicator shut down (eg via Ctrl-C)
+        // somewhere in mainLoop.
+    }
+
+    // wait for the component to realize that we are quitting and tell us to stop.
+    waitForStop();
+    
+    // InsGps hardware will be shut down in the driver's destructor.
+    context_.tracer()->debug( "dropping out from run()", 5 );
+            
+}
+
+//
+// local calls
+//
+
+void
+Position3dI::read( ::orca::Position3dDataPtr& data )
+{
+    hwDriver_->readPosition3d( data );
+}         
+
+
+//
+// remote calls
+//
+
+orca::Position3dDataPtr
+Position3dI::getData(const Ice::Current& current) const
+{
+    std::cout << "getData()" << std::endl;
+
+    // create a null pointer. data will be cloned into it.
+    orca::Position3dDataPtr data;
+    // we don't need to pop the data here because we don't block on it.
+    if ( position3dDataBuffer_.isEmpty() )
+    {
+        cout << "ERROR(position3dI.cpp): getData() was called when no data had been generated!!" << endl;
+        throw orca::DataNotExistException( "Position3d proxy is not populated yet" );
+    }else{
+        position3dDataBuffer_.get( data );
+    }
+
+    return data;
+}
+
+
+::orca::Position3dDescriptionPtr
+Position3dI::getDescription(const ::Ice::Current& ) const
+{
+    std::cout << "getDescription()" << std::endl;
+    return descr_;
+}
+
+// Subscribe people
+void 
+Position3dI::subscribe(const ::orca::Position3dConsumerPrx &subscriber, const ::Ice::Current&)
+{
+    cout << "subscribe()" << endl;
+    IceStorm::QoS qos;
+    topicPrx_->subscribe( qos, subscriber );
+}
+
+// Unsubscribe people
+void 
+Position3dI::unsubscribe(const ::orca::Position3dConsumerPrx &subscriber, const ::Ice::Current&)
+{
+    cout << "unsubscribe() Position3d" << endl;
+    topicPrx_->unsubscribe( subscriber );
+}
+
+// Set pva IMU Data
+void
+Position3dI::localSetData( ::orca::Position3dDataPtr data )
+{
+    // Stick it in the buffer so pullers can get it
+    position3dDataBuffer_.push( data );
+
+    try {
+        // push it to IceStorm
+        position3dPublisher_->setData( data );
+    }
+    catch ( Ice::ConnectionRefusedException &e )
+    {
+        // This could happen if IceStorm dies.
+        // If we're running in an IceBox and the IceBox is shutting down,
+        // this is expected (our co-located IceStorm is obviously going down).
+        context_.tracer()->warning( "Failed push to IceStorm." );
+    }
+}
+
