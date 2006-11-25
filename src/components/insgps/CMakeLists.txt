@@ -1,6 +1,6 @@
 OPTION( BUILD_INSGPS "Try to build InsGps component" ON )
 
-IF ( BUILD_INSGPS )
+IF ( NOT WIN32 AND BUILD_INSGPS )
 
     SUBDIRS( novatel )
     
@@ -50,4 +50,4 @@ IF ( BUILD_INSGPS )
 
     GENERATE_CONFIG_FILE( insgps.def )
 
-ENDIF ( BUILD_INSGPS )
+ENDIF ( NOT WIN32 AND BUILD_INSGPS )
