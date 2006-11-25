@@ -117,8 +117,6 @@ Handler::init()
     sensorConfig.rangeMax = descr->maxRange;
     sensorConfig.angleIncrement = descr->fieldOfView/(descr->numberOfSamples+1);
 
-    // No need to getData()
-
     // create a callback object to recieve scans
     Ice::ObjectPtr consumer = new RangeScanner2dConsumerI(rangeScannerDataBuffer_);
     rangeScannerConsumerPrx_ =

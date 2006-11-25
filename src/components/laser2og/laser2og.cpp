@@ -110,6 +110,9 @@ Laser2Og::process( const orca::Localise2dData &sensorPose, const orca::RangeScan
     // for each return
     for ( int i=0; i<(int)scan.ranges.size(); i++ )
     {
+        // Ignore non-returns
+        if ( scan.ranges[i] >= laserRange_-1e-3 ) continue;
+
         // limit useful range. Note: negative range should be considered an error, but here it's just clipped to 0.
         double rangeEff = CHECK_LIMITS( laserRange_, scan.ranges[i], 0.0 );
         
