@@ -43,30 +43,34 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
   # 
 
   # specify the orca image grabbers to be built
+
+  # these can always be built
+  SET ( DRIVER_SRCS driver fakedriver )
+
   IF ( V4L_FOUND OR 1394_FOUND )
     IF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
       
-      SET ( DRIVER_SRCS driver fakedriver monodriver)
+      SET ( MONO_DRIVER_SRCS monodriver)
 
       ADD_SUBDIRECTORY( imagegrabber )
 
     ELSE ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
       MESSAGE( STATUS "     Image grabbing libraries cannot be found... only the fake driver can be built." ) 
       MESSAGE( STATUS "     Please install opencv for monocular cameras and/or the digiclops libraries for the trinocular digiclops camera."  )
-      SET ( DRIVER_SRCS driver fakedriver )
+      # SET ( DRIVER_SRCS driver fakedriver )
     ENDIF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
 
   ELSE ( V4L_FOUND OR 1394_FOUND )
     MESSAGE( STATUS "     Image grabbing drivers cannot be found... only the fake driver can be built." ) 
     MESSAGE( STATUS "     Please install Video4Linux for usb cameras and/or libdc1394 for firewire cameras"  ) 
-    SET ( DRIVER_SRCS fakedriver )
+    #SET ( DRIVER_SRCS fakedriver )
 
   ENDIF ( V4L_FOUND OR 1394_FOUND )
   
   LINK_DIRECTORIES( imagegrabber )
 
   # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-  SET( COMMON_SRCS cameraI component conversions mainloop ${DRIVER_SRCS} )
+  SET( COMMON_SRCS cameraI component conversions mainloop ${DRIVER_SRCS} ${MONO_DRIVER_SRCS} )
 
   GLOBAL_ADD_EXECUTABLE( imageserver main ${COMMON_SRCS} )
 
