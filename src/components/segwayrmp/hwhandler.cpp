@@ -255,14 +255,12 @@ HwHandler::handleData( const orca::Velocity2dCommandPtr & obj )
 {
     //cout<<"handling: "<<orcaice::toString(obj)<<endl;
 
-/*
-    // if we know we can't write, don't try again
-    bool writeStatus = false;
-    isOkProxy_.get( writeStatus );
-    if ( !writeStatus ) {
+    // if we know we can't write, don't try
+    bool writeOk = false;
+    isOkProxy_.get( writeOk );
+    if ( !writeOk ) {
         return;
     }
-*/
 
     // check that platform motion is enabled
     if ( config_.isMotionEnabled==false ) {
