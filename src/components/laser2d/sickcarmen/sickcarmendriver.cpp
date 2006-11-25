@@ -144,16 +144,25 @@ SickCarmenDriver::read( orca::LaserScanner2dDataPtr &data )
 {
     infoMessages_ = "";
 
-//     cout<<"TRACE(nativelaserdriver.cpp): read()" << endl;
+    context_.tracer()->debug( "SickCarmenDriver::read()", 4 );
 
     double currentTime;
     const  double LASER_STALL_TIMEOUT = 1.0; // seconds
     const  int    POLL_PERIOD_US = 1000;
 
+    if ( laser_->timestamp == 0 )
+    {
+        // Haven't read anything yet
+        laser_->timestamp = carmen_get_time_ms();
+    }
+
+    int i=0;
+
     // Poll till we get new data, or the laser is screwed.
     while ( true )
     {
-//         cout<<"TRACE(nativelaserdriver.cpp): start of read while loop." << endl;
+        if ( (i++ % 1000) == 0 )
+            context_.tracer()->debug( "SickCarmenDriver: start of read while loop.", 5 );
 
         usleep(POLL_PERIOD_US);
 
@@ -168,14 +177,7 @@ SickCarmenDriver::read( orca::LaserScanner2dDataPtr &data )
             infoMessages_ = string("sick_handle_laser: %s") + sick_info();
         }
 
-        if ( laser_->timestamp == 0 ) {
-            // Haven't read anything yet.
-            laserStalled_ = false;
-        }
-        else {
-            laserStalled_ = ( currentTime - laser_->timestamp > LASER_STALL_TIMEOUT );
-        }
-
+        laserStalled_ = ( currentTime - laser_->timestamp > LASER_STALL_TIMEOUT );
         if ( laserStalled_ )
         {
 //             cout<<"TRACE(nativelaserdriver.cpp): returning on stall" << endl;

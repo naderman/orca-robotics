@@ -843,7 +843,10 @@ int sick_start_laser(sick_laser_p laser)
         if ( laser->dev.fd != -1 )
             close(laser->dev.fd);
     }
-    // printf("Returning %d\n",ret);
+    else
+    {
+        printf("Opened. %d\n",ret);
+    }
     return ret;
 }
 
