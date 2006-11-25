@@ -34,6 +34,7 @@ namespace laserfeatures {
 
 namespace {
     const double P_FALSE_POSITIVE = 0.3;
+    const double P_TRUE_POSITIVE  = 0.6;
 }
     
 void CornerExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
@@ -115,6 +116,7 @@ void CornerExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                     pp->p.r = range;
                     pp->p.o = bearing;
                     pp->pFalsePositive = P_FALSE_POSITIVE;
+                    pp->pTruePositive  = P_TRUE_POSITIVE;
                     features->features.push_back( pp );
                   }
                } 
@@ -432,6 +434,7 @@ bool CornerExtractor::extractPossibleCorners( const orca::PolarFeature2dDataPtr 
                     pp->p.r = pret.range();
                     pp->p.o = pret.bearing();
                     pp->pFalsePositive = P_FALSE_POSITIVE;
+                    pp->pTruePositive  = P_TRUE_POSITIVE;
                     featureDataPtr->features.push_back( pp );
                 }
             }
@@ -446,6 +449,7 @@ bool CornerExtractor::extractPossibleCorners( const orca::PolarFeature2dDataPtr 
                     pp->p.r = iret.range();
                     pp->p.o = iret.bearing();
                     pp->pFalsePositive = P_FALSE_POSITIVE;
+                    pp->pTruePositive  = P_TRUE_POSITIVE;
                     featureDataPtr->features.push_back( pp );
                 }
             }

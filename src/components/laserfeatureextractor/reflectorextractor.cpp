@@ -21,6 +21,7 @@ namespace laserfeatures {
 
 namespace {
     const double P_FALSE_POSITIVE = 0.05;
+    const double P_TRUE_POSITIVE  = 0.75;
 }
 
 
@@ -151,6 +152,7 @@ ReflectorExtractor::addFeatures( const orca::LaserScanner2dDataPtr    &laserData
                     f->p.r  = featureRangeSum / numFeaturePoints;
                     f->p.o  = featureBearingSum / numFeaturePoints;
                     f->pFalsePositive = P_FALSE_POSITIVE;
+                    f->pTruePositive = P_TRUE_POSITIVE;
                     features->features.push_back( f );
                 }
             }

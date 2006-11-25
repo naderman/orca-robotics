@@ -43,11 +43,19 @@ class SinglePolarFeature2d
     //! non-orca-defined feature types.
     int          type;
 
-    //! The probability that the feature is a false positive.
+    //! The probability of detecting the feature when it's not there
+    //! [ p(obs=true|exists=false) ]
     //! This should be a number between:
-    //!   - 0 (feature definitely exists), and
-    //!   - 1 (feature definitely does not exist)
+    //!   - 0 (sensor never screws up), and
+    //!   - 1 (sensor always screws up)
     double pFalsePositive;
+
+    //! The probability of detecting the feature when it is there
+    //! [ p(obs=true|exists=true) ]
+    //! This should be a number between:
+    //!   - 0 (sensor will never find features when they're there), and
+    //!   - 1 (sensor always finds features when they're there)
+    double pTruePositive;
 };
 
 //! A sequence of individual features
