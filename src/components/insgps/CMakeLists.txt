@@ -24,7 +24,7 @@ IF ( NOT WIN32 AND BUILD_INSGPS )
     )
     
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-    SET( COMMON_SRCS fakeinsgpsdriver component gpsI imuI position3dI driver)
+    SET( COMMON_SRCS fakeinsgpsdriver component gpsI imuI position3dI handler driver)
 
     # Files for the stand-alone application
     SET( COMP_SRCS main ${COMMON_SRCS} )

@@ -22,10 +22,11 @@
 #include "gpsI.h"
 #include "imuI.h"
 #include "position3dI.h"
+// #include "handler.h"
 
 namespace insgps{
 
-class InsGpsHandler;
+class Handler;
 class Driver;
 
 class Component : public orcaice::Component
@@ -43,7 +44,7 @@ private:
 //     orca::GpsDescriptionPtr gpsDescr_;
 //     orca::ImuDescriptionPtr imuDescr_;
 //     orca::Position3dDescriptionPtr position3dDescr_;
-
+    
     //
     // EXTERNAL INTERFACE: InsGps
     //
@@ -59,6 +60,10 @@ private:
     // HARDWARE INTERFACES
     //
     Driver *hwDriver_;
+    
+    Handler* gpsHandler_;
+    Handler* imuHandler_;
+    Handler* position3dHandler_;
 };
 
 } //namespace

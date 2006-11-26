@@ -224,9 +224,9 @@ FakeInsGpsDriver::readPosition3d(orca::Position3dDataPtr &data, int timeoutMs )
 void
 FakeInsGpsDriver::shutdown()
 {
-    context_.tracer()->debug( "stopping driver", 5 );
+    context_.tracer()->debug( "stopping fake insgps driver", 5 );
     orcaice::Thread::stopAndJoin( this );
-    context_.tracer()->debug( "stopped driver", 5 );
+    context_.tracer()->debug( "stopped fake insgps driver", 5 );
 }               
 
 

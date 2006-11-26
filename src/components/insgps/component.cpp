@@ -16,6 +16,7 @@
 #include "driver.h"
 #include "fakeinsgpsdriver.h"
 #include "novatelspan/novatelspandriver.h"
+#include "handler.h"
 
 using namespace std;
 using namespace orca;
@@ -24,16 +25,17 @@ namespace insgps{
 
 Component::Component()
     : orcaice::Component( "InsGps" ),
-      hwDriver_(0)
-{
-
+      hwDriver_(0),
+      gpsHandler_(0),         
+      imuHandler_(0),
+      position3dHandler_(0)
+      {
 }
 
 Component::~Component()
 {
-    delete hwDriver_;
-    
-    // do not delete the gpsObj_, imuObj_, or position3dObj_ as they are orcaice::Threads and self-distruct.
+    // do not delete the gpsObj_, imuObj_, or position3dObj_ as they are smart pointers and self destruct
+    // do not delete handlers: gpsHandler_, imuHandler_, or position3dHandler_, or the hwDriver_ as they are orcaice::Threads and self-distruct.    
 }
 
 void
@@ -186,14 +188,30 @@ Component::start()
     activate();
 
     //
-    // MAIN DRIVER LOOP
+    // HANDLERS
     //
     context().tracer()->debug( "entering handlers_...", 5 );
 
+    gpsHandler_ = new Handler( *gpsObj_,
+                               hwDriver_,
+                               context() );
+
+    imuHandler_ = new Handler( *imuObj_,
+                                hwDriver_,
+                                context() );
+    
+    position3dHandler_ = new Handler( *position3dObj_,
+                                hwDriver_,
+                                context() );
+
+    gpsHandler_->start();
+    imuHandler_->start();
+    position3dHandler_->start();
+
     // now that each of the objects have been registered, we can start their threads
-    gpsObj_->start();
-    imuObj_->start();
-    position3dObj_->start();
+    // gpsObj_->start();
+    // imuObj_->start();
+    // position3dObj_->start();
 
 
 }
@@ -201,9 +219,12 @@ Component::start()
 void Component::stop()
 {
     tracer()->debug( "stopping component", 5 );
-    orcaice::Thread::stopAndJoin( gpsObj_ );
-    orcaice::Thread::stopAndJoin( imuObj_ );
-    orcaice::Thread::stopAndJoin( position3dObj_ );
+    //orcaice::Thread::stopAndJoin( gpsObj_ );
+    orcaice::Thread::stopAndJoin( gpsHandler_ );
+    orcaice::Thread::stopAndJoin( imuHandler_ );
+    orcaice::Thread::stopAndJoin( position3dHandler_ );
+    // orcaice::Thread::stopAndJoin( imuObj_ );
+    // orcaice::Thread::stopAndJoin( position3dObj_ );
     hwDriver_->shutdown();
     tracer()->debug( "stopped component", 5 );
 }

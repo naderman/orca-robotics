@@ -25,6 +25,9 @@
 // hardware driver      
 #include "driver.h"
 
+// base class
+#include "insgpsi.h"
+
 //
 // Implements the Gps interface:
 //     - Reads the gps messages provided by the driver and publishes them
@@ -32,7 +35,7 @@
 //
 // The component interacts with this thing through the (thread-safe) buffers.
 //
-class GpsI : public orca::Gps, public orcaice::Thread
+class GpsI : public orca::Gps, public insgps::InsGpsI
 {
 public:
     GpsI(orca::GpsDescriptionPtr descr,
@@ -45,7 +48,11 @@ public:
      
     // This is the thread's function.  It listens for data from the insgps driver,
     // and sticks it in a buffer for publishing.
-    virtual void run();
+    // virtual void run();
+
+    // the handler calls this function which reads from the hwDriver_'s  buffers
+    // and then publishes to the outside world   
+    virtual void publish();
     
     //
     // remote calls:
@@ -100,10 +107,12 @@ private:
     //
     // handler stuff
     //
-    
-    // hardware driver   
+
+    // hardware driver
     insgps::Driver* hwDriver_;
 
+    orca::GpsDataPtr gpsData_;
+    
     // read from the hwDriver_'s buffer
     void read( ::orca::GpsDataPtr& );
     

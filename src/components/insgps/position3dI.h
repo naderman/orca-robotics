@@ -25,6 +25,9 @@
 // hardware driver      
 #include "driver.h"
 
+// base class
+#include "insgpsi.h"
+
 //
 // Implements the Position3d interface:
 //     - Reads the position3d messages provided by the driver and publishes them
@@ -33,7 +36,7 @@
 // The component interacts with this thing through the (thread-safe) buffers.
 //
 
-class Position3dI : public orca::Position3d, public orcaice::Thread
+class Position3dI : public orca::Position3d, public insgps::InsGpsI
 {
 public:
     Position3dI(orca::Position3dDescriptionPtr descr,
@@ -46,8 +49,12 @@ public:
      
     // This is the thread's function.  It listens for data from the insgps driver,
     // and sticks it in a buffer for publishing.
-    virtual void run();
-    
+    // virtual void run();
+
+    // the handler calls this function which reads from the hwDriver_'s  buffers
+    // and then publishes to the outside world   
+    virtual void publish();
+   
     //
     // remote calls:
     //
@@ -83,6 +90,8 @@ private:
     // hardware driver   
     insgps::Driver* hwDriver_;
 
+    orca::Position3dDataPtr position3dData_;
+    
     // read from the hwDriver_'s buffer
     void read( ::orca::Position3dDataPtr& );
     

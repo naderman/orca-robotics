@@ -20,8 +20,10 @@ using namespace insgps;
 GpsI::GpsI(GpsDescriptionPtr   descr,
            Driver*      hwDriver,
            orcaice::Context   context )
-    : descr_(descr),
+    : InsGpsI(context),
+      descr_(descr),
       hwDriver_(hwDriver),
+      gpsData_(new GpsData),
       context_(context)
 {
     //
@@ -45,71 +47,71 @@ GpsI::GpsI(GpsDescriptionPtr   descr,
 }
 
 void
-GpsI::run()
+GpsI::publish()
 {
-    const int TIME_BETWEEN_HEARTBEATS  = 10000;  // ms
-    IceUtil::Time lastHeartbeatTime = IceUtil::Time::now();
-
-    try 
-    {
-        context_.tracer()->debug( "TRACE(gpsI::run()): GpsI thread is running", 5);
+//     const int TIME_BETWEEN_HEARTBEATS  = 10000;  // ms
+//     IceUtil::Time lastHeartbeatTime = IceUtil::Time::now();
+// 
+//     try 
+//     {
+        // context_.tracer()->debug( "TRACE(gpsI::run()): GpsI thread is running", 5);
         
-        GpsDataPtr gpsData = new GpsData;
+        // GpsDataPtr gpsData = new GpsData;
         // GpsTimeDataPtr gpsTimeData = new GpsTimeData;
         
         //
         // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks
         // for requests to shut down. So we have to avoid getting stuck in a loop anywhere within this main loop.
         //
-        while ( isActive() )
-        {
-            if ( hwDriver_->isEnabled() )
-            {
+//         while ( isActive() )
+//         {
+//             if ( hwDriver_->isEnabled() )
+//             {
    
                 // blocking read with timeout (2000ms by default)
                 // get the gps position
-                read( gpsData );
+                read( gpsData_ );
                 
                 // send the data to icestorm and to a buffer for direct connections
-                localSetData( gpsData );
+                localSetData( gpsData_ );
             
                 // get the gps time
                 // read( gpsTimeData );
                 
                 // send the data to icestorm
                 // gpsObj_.localSetData( gpsTimeData );
-            }
-            else
-            {
-                // Wait for someone to enable us
-                IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(100));
-            }
-
-            if ( (IceUtil::Time::now()-lastHeartbeatTime).toMilliSecondsDouble() >= TIME_BETWEEN_HEARTBEATS )
-            {
-                if ( hwDriver_->isEnabled() )
-                {
-                    context_.tracer()->heartbeat("InsGps enabled. " + hwDriver_->heartbeatMessage() );
-                }
-                else
-                {
-                    context_.tracer()->heartbeat( "InsGps disabled." );
-                }
-                lastHeartbeatTime = IceUtil::Time::now();
-            }
-        } // end of while
-    } // end of try
-    catch ( Ice::CommunicatorDestroyedException &e )
-    {
-        // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-        // somewhere in mainLoop.
-    }
-
-    // wait for the component to realize that we are quitting and tell us to stop.
-    waitForStop();
-    
-    // InsGps hardware will be shut down in the driver's destructor.
-    context_.tracer()->debug( "dropping out from run()", 5 );
+//             }
+//             else
+//             {
+//                 // Wait for someone to enable us
+//                 IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(100));
+//             }
+// 
+//             if ( (IceUtil::Time::now()-lastHeartbeatTime).toMilliSecondsDouble() >= TIME_BETWEEN_HEARTBEATS )
+//             {
+//                 if ( hwDriver_->isEnabled() )
+//                 {
+//                     context_.tracer()->heartbeat("InsGps enabled. " + hwDriver_->heartbeatMessage() );
+//                 }
+//                 else
+//                 {
+//                     context_.tracer()->heartbeat( "InsGps disabled." );
+//                 }
+//                 lastHeartbeatTime = IceUtil::Time::now();
+//             }
+//         } // end of while
+//     } // end of try
+//     catch ( Ice::CommunicatorDestroyedException &e )
+//     {
+//         // This is OK: it means that the communicator shut down (eg via Ctrl-C)
+//         // somewhere in mainLoop.
+//     }
+// 
+//     // wait for the component to realize that we are quitting and tell us to stop.
+//     waitForStop();
+//     
+//     // InsGps hardware will be shut down in the driver's destructor.
+//     context_.tracer()->debug( "dropping out from run()", 5 );
             
 }
 
