@@ -1,8 +1,11 @@
 DefaultComponentTag=Probe
 
 # configuration
-Config.Driver.Comment=Options are { 'iostream' }
+Config.Driver.Comment=Options are { 'iostream', 'qt' }
 Config.Driver.Default=iostream
+
+# Config Parameters
+Config.FactoryLibNames.Default=libOrcaProbeFactory.so
 
 # external configuration options
 Config.Ice.Override.ConnectTimeout.Default=150

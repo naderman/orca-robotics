@@ -11,26 +11,19 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
+#include <orcaprobe/orcaprobe.h>
 #include <IceGrid/Admin.h>
 
 #include "browserhandler.h"
 
-#include "probefactory.h"
-#include "displaydriver.h"
-#include "interfaceprobe.h"
-
 using namespace std;
 using namespace probe;
 
-BrowserHandler::BrowserHandler( orcaice::Buffer<BrowserEvent> & eventPipe,
-                                orcaice::Proxy<std::string> & filterPipe,
-                                ProbeFactory & probeFactory,
-                                DisplayDriver & display,
+BrowserHandler::BrowserHandler( orcaprobe::DisplayDriver & display,
+                                std::vector<orcaprobe::Factory*> &factories,
                                 const orcaice::Context & context )
-    : eventPipe_(eventPipe),
-      filterPipe_(filterPipe),
-      probeFactory_(probeFactory),
-      displayDriver_(display),
+    : factories_(factories),
+      display_(display),
       ifaceProbe_(0),
       context_(context)
 {
@@ -41,6 +34,50 @@ BrowserHandler::~BrowserHandler()
     delete ifaceProbe_;
 }
 
+void
+BrowserHandler::chooseActivate()
+{
+    eventPipe_.push( ActivateEvent );
+}
+
+void 
+BrowserHandler::chooseReload()
+{
+    eventPipe_.push( ReloadEvent );
+}
+
+void 
+BrowserHandler::chooseUp()
+{
+    eventPipe_.push( UpEvent );
+}
+
+void 
+BrowserHandler::chooseTop()
+{
+    eventPipe_.push( TopEvent );
+}
+
+void 
+BrowserHandler::choosePick( int pick )
+{
+    pick_ = pick;
+    eventPipe_.push( PickEvent );
+}
+
+void 
+BrowserHandler::chooseFilter( const std::string & filter )
+{
+    filter_ = filter;
+    eventPipe_.push( FilterEvent );
+}
+
+void
+BrowserHandler::chooseDeactivate()
+{
+    eventPipe_.push( DeactivateEvent );
+}
+
 void 
 BrowserHandler::run()
 {
@@ -48,18 +85,15 @@ BrowserHandler::run()
     
     while ( isActive() )
     {
-        //cout<<"waiting for an event..."<<endl;
+//         cout<<"BrowserHandler: waiting for an event..."<<endl;
         eventPipe_.getAndPopNext( event );
 
         switch ( event )
         {
-        case ActivateEvent :
-            //cout<<"load event"<<endl;
-            activate();
-            break;
-        case ReloadEvent :
-            //cout<<"reload event"<<endl;
-            reload();
+        // approx in order of call frequency
+        case PickEvent :
+            //cout<<"pick event"<<endl;
+            pick();
             break;
         case UpEvent :
             //cout<<"up event"<<endl;
@@ -69,6 +103,18 @@ BrowserHandler::run()
             //cout<<"up event"<<endl;
             top();
             break;
+        case ReloadEvent :
+            //cout<<"reload event"<<endl;
+            reload();
+            break;
+        case FilterEvent :
+            //cout<<"filter event"<<endl;
+            filterRegistry();
+            break;
+        case ActivateEvent :
+            //cout<<"load event"<<endl;
+            activate();
+            break;
         case FaultEvent :
             //cout<<"fault event"<<endl;
             fault();
@@ -77,22 +123,9 @@ BrowserHandler::run()
             //cout<<"stop event"<<endl;
             deactivate();
             break;
-        case FilterEvent :
-            //cout<<"filter event"<<endl;
-            filterRegistry();
-            break;
         default :
-        {
-            if ( event >= PickEvent ) {
-                pick_ = event - PickEvent;
-                pick();
-            }
-            else {
-                cout<<"unknown event "<<event<<". Ignoring..."<<endl;
-                eventPipe_.push( FaultEvent );
-            }
-            break;
-        }
+            cout<<"unknown event "<<event<<". Ignoring..."<<endl;
+            eventPipe_.push( FaultEvent );
         } // switch
     } // while
 }
@@ -105,7 +138,7 @@ BrowserHandler::loadRegistry()
 //     registryData_ = orcacm::getRegistryData( context_, context_.communicator()->getDefaultLocator()->ice_toString() );
     registryData_ = orcacm::getRegistryHomeData( context_, context_.communicator()->getDefaultLocator()->ice_toString() );
     
-    displayDriver_.showRegistryData( registryData_ );
+    display_.showRegistryData( registryData_ );
 }
 
 void 
@@ -113,10 +146,8 @@ BrowserHandler::filterRegistry()
 {
     cout<<"filtering registry data for :"<<context_.communicator()->getDefaultLocator()->ice_toString()<<endl;
 
-    filterPipe_.get( filter_ );
-
     // simply call showRegistryData() again. the driver will filter it.
-    displayDriver_.showRegistryData( registryData_ );
+    display_.showRegistryData( registryData_ );
 }
 
 void 
@@ -129,7 +160,7 @@ BrowserHandler::loadComponent()
 //                         orcaice::toString(registryData_.adapters[pick_].name) );
     componentData_ = orcacm::getComponentHomeData( context_, registryData_.homes[pick_] );
 
-    displayDriver_.showComponentData( componentData_ );
+    display_.showComponentData( componentData_ );
 }
 
 void 
@@ -152,7 +183,15 @@ BrowserHandler::loadInterface()
     //
     // Load interface handler
     //
-    ifaceProbe_ = probeFactory_.create( interfaceData_.id, interfaceData_.name, displayDriver_, context_ );
+    // one of them must support it, otherwise it would not have an index
+    for ( uint i=0; i < factories_.size(); ++i )
+    {
+        // if this interface is not supported, skip this factory
+        if ( factories_[i]->isSupported( interfaceData_.id ) ) {
+            ifaceProbe_ = factories_[i]->create( interfaceData_.id, interfaceData_.name, display_, context_ );
+        }
+
+    }
 
     if ( ifaceProbe_==0 ) {
         cout<<"unsupported interface. Sending fault event."<<endl;
@@ -161,7 +200,7 @@ BrowserHandler::loadInterface()
     }
     
     interfaceData_.operations = ifaceProbe_->operations();
-    displayDriver_.showInterfaceData( interfaceData_ );
+    display_.showInterfaceData( interfaceData_ );
 }
 
 void 
@@ -176,7 +215,7 @@ BrowserHandler::loadOperation()
     
     operationData_ = ifaceProbe_->getOperationData( pick_ );
     
-    displayDriver_.showOperationData( operationData_ );
+    display_.showOperationData( operationData_ );
 }
 
 void 

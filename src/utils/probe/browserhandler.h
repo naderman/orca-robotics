@@ -16,30 +16,45 @@
 #include <orcaice/proxy.h>
 #include <orcaice/context.h>
 #include <orcacm/types.h>
+#include <orcaprobe/browserdriver.h>
 
 #include "browserfsm.h"
-#include "browserdriver.h"
+
+namespace orcaprobe
+{
+    class DisplayDriver;
+}
 
 namespace probe
 {
 
 class ProbeFactory;
-class DisplayDriver;
 class InterfaceProbe;
 
-class BrowserHandler : public orcaice::Thread, public BrowserFsm
+class BrowserHandler : public orcaprobe::BrowserDriver, public orcaice::Thread, public BrowserFsm
 {
 
 public:
-    BrowserHandler( orcaice::Buffer<BrowserEvent> & eventPipe,
-                    orcaice::Proxy<std::string> & filterPipe,
-                    ProbeFactory & probeFactory,
-                    DisplayDriver & display,
+    BrowserHandler( orcaprobe::DisplayDriver & display,
+                    std::vector<orcaprobe::Factory*> &factories,
                     const orcaice::Context & context );
     virtual ~BrowserHandler();
 
+    // from BrowserDriver
+    virtual void chooseActivate();
+    virtual void chooseReload();
+    virtual void chooseUp();
+    virtual void chooseTop();
+    virtual void choosePick( int );
+    virtual void chooseFilter( const std::string & );
+    virtual void chooseDeactivate();
+
+private:
+
+    // from Thread
     virtual void run();
 
+    // from BrowserFsm
     virtual void loadRegistry();
     virtual void filterRegistry();
     virtual void loadComponent();
@@ -52,17 +67,27 @@ public:
     
     virtual void quit();
 
-private:
+    std::vector<orcaprobe::Factory*> &factories_;
 
-    orcaice::Buffer<BrowserEvent> & eventPipe_;
+    orcaprobe::DisplayDriver & display_;
 
-    orcaice::Proxy<std::string> & filterPipe_;
+    enum BrowserEvent
+    {
+        ActivateEvent,
+        ReloadEvent,
+        UpEvent,
+        FaultEvent,
+        DeactivateEvent,
+        FilterEvent,
+        TopEvent,
+        // this must be the last event (with the highest number)
+        // because actual picks are added to this one.
+        PickEvent=1000
+    };
 
-    ProbeFactory & probeFactory_;
-
-    DisplayDriver & displayDriver_;
-    
-    InterfaceProbe* ifaceProbe_;
+    orcaice::Buffer<BrowserEvent> eventPipe_;
+ 
+    orcaprobe::InterfaceProbe* ifaceProbe_;
 
     orcaice::Context context_;
 
