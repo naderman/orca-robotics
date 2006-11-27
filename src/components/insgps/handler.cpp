@@ -34,9 +34,6 @@ Handler::run()
     {
         context_.tracer()->debug( "TRACE(handler::run()): Handler thread is running", 5);
         
-        // GpsDataPtr gpsData = new GpsData;
-        // GpsTimeDataPtr gpsTimeData = new GpsTimeData;
-        
         //
         // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks
         // for requests to shut down. So we have to avoid getting stuck in a loop anywhere within this main loop.
@@ -45,15 +42,8 @@ Handler::run()
         {
             if ( hwDriver_->isEnabled() )
             {
-   
-                
                 // blocking read with timeout (2000ms by default)
-                // get the gps position
-                // read( gpsData );
-                
-                // send the data to icestorm and to a buffer for direct connections
-                // localSetData( gpsData );
-
+                // get & send the gps data to icestorm and to a buffer for direct connections
                 insGpsI_->publish();
             }
             else

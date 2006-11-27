@@ -22,7 +22,6 @@
 #include "gpsI.h"
 #include "imuI.h"
 #include "position3dI.h"
-// #include "handler.h"
 
 namespace insgps{
 
@@ -41,10 +40,6 @@ public:
 
 private:
 
-//     orca::GpsDescriptionPtr gpsDescr_;
-//     orca::ImuDescriptionPtr imuDescr_;
-//     orca::Position3dDescriptionPtr position3dDescr_;
-    
     //
     // EXTERNAL INTERFACE: InsGps
     //
@@ -59,8 +54,11 @@ private:
     //
     // HARDWARE INTERFACES
     //
+
+    // hardware driver
     Driver *hwDriver_;
     
+    // handlers for the interfaces
     Handler* gpsHandler_;
     Handler* imuHandler_;
     Handler* position3dHandler_;

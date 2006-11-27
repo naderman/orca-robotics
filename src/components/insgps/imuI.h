@@ -44,7 +44,8 @@
 //     - Reads the imu messages provided by the driver and publishes them
 //     - Handles all our remote calls.
 //
-// The component interacts with this thing through the (thread-safe) buffers.
+// The component interacts with hardware and the outside
+// world through the handler and (thread-safe) buffers.
 //
 class ImuI : public orca::Imu, public insgps::InsGpsI
 {
@@ -54,13 +55,9 @@ public:
          orcaice::Context        context);
     
     //
-    // Imu message handler
+    // Imu message handler functions
     //
-     
-    // This is the thread's function.  It listens for data from the insgps driver,
-    // and sticks it in a buffer for publishing.
-    // virtual void run();
-
+    
     // the handler calls this function which reads from the hwDriver_'s  buffers
     // and then publishes to the outside world   
     virtual void publish();

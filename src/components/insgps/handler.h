@@ -11,25 +11,18 @@
 #ifndef ORCA2_INSGPS_HANDLER_H
 #define ORCA2_INSGPS_HANDLER_H
 
-// #include <IceStorm/IceStorm.h>
-
-// include provided interfaces
-// #include <orca/gps.h>
-
-// for context()
+// for context and thread
 #include <orcaice/orcaice.h>
-
-// utilities
-// #include <orcaice/ptrbuffer.h>
 
 // hardware driver      
 #include "driver.h"
 
+// for publish()
 #include "insgpsi.h"
 
 //
 // Handler for InsGps interfaces which include Gps, Imu, and Position3d:
-//     - Reads the gps messages provided by the driver and publishes them
+//     - Reads the gps, imu, and position3d messages provided by the driver and publishes them
 //
 // The component interacts with the driver and interfaces through (thread-safe) buffers.
 //

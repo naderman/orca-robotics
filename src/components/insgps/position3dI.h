@@ -33,7 +33,8 @@
 //     - Reads the position3d messages provided by the driver and publishes them
 //     - Handles all our remote calls.
 //
-// The component interacts with this thing through the (thread-safe) buffers.
+// The component interacts with hardware and the outside
+// world through the handler and (thread-safe) buffers.
 //
 
 class Position3dI : public orca::Position3d, public insgps::InsGpsI
@@ -43,14 +44,10 @@ public:
                 insgps::Driver*  hwDriver,
                 orcaice::Context context);
 
-     //
-    // pos3d message handler
+    //
+    // position3d message handler functions
     //
      
-    // This is the thread's function.  It listens for data from the insgps driver,
-    // and sticks it in a buffer for publishing.
-    // virtual void run();
-
     // the handler calls this function which reads from the hwDriver_'s  buffers
     // and then publishes to the outside world   
     virtual void publish();
