@@ -29,11 +29,25 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - libOrcaIce
     - resolve issue with direct connections withour the registry
 
+- Probe
+  - Use libOrcaDynamicLoad to reduce cut-n-paste.
+
+
+
 @section changes Changes since Last Release
 
+- libOrcaGui
+  - Made the generic bits in libOrcaGui unaware of any specific bits in libOrcaGui2d (Alex B.)
+  - Added support for dynamically-loaded plug-in GuiElementFactories, to allow satelite projects to 
+    extend the GUI (Alex B.)
+- PolarFeature2d interface
+  - Added two fields: pFalsePositive and pTruePositive, to characterise
+    feature detection reliability (Alex B.)
 - Probe utility (Alex M.)
     - using dynamically loaded factory libraries to allow use with satellite projects
     - added a gui driver
+- New library: libOrcaDynamicLoad
+  - factored out the dynamic loading stuff into a separate library (Alex B.)
 
 
 @section orca_doc_todo_history Changes in Past Releases
