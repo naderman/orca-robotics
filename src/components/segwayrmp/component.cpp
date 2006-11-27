@@ -35,6 +35,8 @@ Component::~Component()
 void
 Component::start()
 {
+    tracer()->info( "Starting Component." );
+
     //
     // Network handling loop
     //
