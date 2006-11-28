@@ -75,7 +75,7 @@ void MainLoop::initDriver()
         }
 
         context_.tracer()->debug( "loading 'combined' driver",3);
-        driver_ = new CombinedDriver( context_, descr->maxRange );
+        driver_ = new CombinedDriver( context_, descr->maxRange, descr->numberOfSamples );
     }
     else
     {

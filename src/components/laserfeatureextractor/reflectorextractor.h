@@ -23,7 +23,7 @@ class ReflectorExtractor : public IExtractor
 
 public: 
 
-    ReflectorExtractor( orcaice::Context context, double laserMaxRange );
+    ReflectorExtractor( orcaice::Context context, double laserMaxRange, int numReturns );
 
     // Adds laser features to the 'features' data structure
     void addFeatures( const orca::LaserScanner2dDataPtr    &laserData,
@@ -35,19 +35,18 @@ private:
     double maxDeltaRangeWithinReflector_;
     double minReflectorBrightness_;
     double laserMaxRange_;
+    double pFalsePositive_;
+    double pTruePositive_;
+    
+    // '-1' means 'invalid cluster'
+    double calcPFalsePositive( const orca::LaserScanner2dDataPtr &laserData,
+                               int start,
+                               int end );
 
     // 
     // Helper functions.  These assume that you're not asking for
     // info about the first or last return
     //
-
-    // This function exists to test for bright returns in weird places
-    // as the laser grazes past corners etc.
-    // It returns true for reflectors that are partially-obscured by foreground
-    // objects.
-    bool isSketchy( const orca::LaserScanner2dDataPtr &laserData,
-                    int returnNum,
-                    bool reflectorStart );
 
     // Returns the change in range between this return and the previous one.
     double deltaRange( const orca::LaserScanner2dDataPtr &laserData,
@@ -56,6 +55,9 @@ private:
             assert( returnNum != 0 );
             return laserData->ranges[returnNum] - laserData->ranges[returnNum-1]; 
         }
+
+    bool isSketchy( const orca::LaserScanner2dDataPtr &laserData,
+                    int returnNum );
 
 };
 

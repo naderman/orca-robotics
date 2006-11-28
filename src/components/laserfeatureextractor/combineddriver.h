@@ -25,24 +25,7 @@ class CombinedDriver: public AlgorithmDriver
 
 public:
 
-//     struct Config
-//     {
-//         // which algs
-//         int    extractReflectors; 
-//         int    extractForegroundPoints; 
-//         int    extractCorners; 
-//         int    extractDoors; 
-//         // reflector params
-//         double maxDeltaRangeNearReflector;
-//         double maxDeltaRangeWithinReflector;
-//         int    minReflectorBrightness; 
-//         // foreground params
-//         double minForegroundWidth;
-//         double maxForegroundWidth;
-//         double minForegroundBackgroundSeparation;
-//     };
-    
-    CombinedDriver( orcaice::Context context, double maxRange );
+    CombinedDriver( orcaice::Context context, double maxRange, int numberOfSamples );
     virtual ~CombinedDriver();
     
     virtual int computeFeatures( const orca::LaserScanner2dDataPtr &laserDataPtr,

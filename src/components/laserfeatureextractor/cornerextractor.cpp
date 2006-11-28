@@ -34,6 +34,7 @@ namespace laserfeatures {
 
 namespace {
     const double P_FALSE_POSITIVE = 0.3;
+    const double P_FALSE_POSITIVE_POSSIBLE_GROUND = 0.3;
     const double P_TRUE_POSITIVE  = 0.6;
 }
     
@@ -60,48 +61,52 @@ void CornerExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
             //(itr->elements.size() < MAX_POINTS_IN_LINE) &&
             //(next->elements.size() < MAX_POINTS_IN_LINE)) {
 
+            double pFalsePositive = P_FALSE_POSITIVE;
+
             if (REJECT_GROUND_OBSERVATIONS && 
             ((itr->elements.size() > MAX_POINTS_IN_LINE && fabs(itr->eigVectY) < 0.1) ||
-            (next->elements.size() > MAX_POINTS_IN_LINE && fabs(next->eigVectY) < 0.1))) {
+            (next->elements.size() > MAX_POINTS_IN_LINE && fabs(next->eigVectY) < 0.1))) 
+            {
               std::cout << "We have a big line with a near horizontal slope.  Could be the ground??? Slope A : " << itr->eigVectY << " Slope B : " << next->eigVectY << std::endl;
-            } else {
+              pFalsePositive = P_FALSE_POSITIVE_POSSIBLE_GROUND;
+            }
   
-              // We have a corner
-              double A1 = itr->eigVectX;
-              double B1 = itr->eigVectY;
-              double C1 = itr->C;
+            // We have a corner
+            double A1 = itr->eigVectX;
+            double B1 = itr->eigVectY;
+            double C1 = itr->C;
   
-              double A2 = next->eigVectX;
-              double B2 = next->eigVectY;
-              double C2 = next->C;
+            double A2 = next->eigVectX;
+            double B2 = next->eigVectY;
+            double C2 = next->C;
   
-              double dot_prod = A1*A2 + B1*B2;
+            double dot_prod = A1*A2 + B1*B2;
               
-              // the dot product of the two unit vectors will be 0 if the lines are perpendicular
-              if (fabs(dot_prod) < CORNER_BOUND) {
-                  double cornerX;
-                  double cornerY;
+            // the dot product of the two unit vectors will be 0 if the lines are perpendicular
+            if (fabs(dot_prod) < CORNER_BOUND) {
+                double cornerX;
+                double cornerY;
   
-                  // use Kramer's rule to find the intersection point of the two lines
-                  // The equations for the lines are:
-                  // A1 x + B1 y + C1 = 0 and
-                  // A2 x + B2 y + C2 = 0
-                  //
-                  // We need to solve for the (x, y) that satisfies both equations
-                  //
-                  // x = | C1 B1 |  / | A1 B1 | 
-                  //     | C2 B2 | /  | A2 B2 |
-                  //
-                  // y = | A1 C1 |  / | A1 B1 | 
-                  //     | A2 C2 | /  | A2 B2 |
+                // use Kramer's rule to find the intersection point of the two lines
+                // The equations for the lines are:
+                // A1 x + B1 y + C1 = 0 and
+                // A2 x + B2 y + C2 = 0
+                //
+                // We need to solve for the (x, y) that satisfies both equations
+                //
+                // x = | C1 B1 |  / | A1 B1 | 
+                //     | C2 B2 | /  | A2 B2 |
+                //
+                // y = | A1 C1 |  / | A1 B1 | 
+                //     | A2 C2 | /  | A2 B2 |
   
-                  double den = (B1*A2 - B2*A1);
+                double den = (B1*A2 - B2*A1);
                   
-                  // this check isn't really necessary as we have already established that the lines
-                  // are close to perpendicular.  The determinant will only be zero if the lines
-                  // are parallel
-                  if (den != 0)
-                  {
+                // this check isn't really necessary as we have already established that the lines
+                // are close to perpendicular.  The determinant will only be zero if the lines
+                // are parallel
+                if (den != 0)
+                {
                     cornerX = (B2*C1 - B1*C2)/den;
                     cornerY = (A1*C2 - A2*C1)/den;
     
@@ -115,11 +120,10 @@ void CornerExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                     pp->type = orca::feature::CORNER;
                     pp->p.r = range;
                     pp->p.o = bearing;
-                    pp->pFalsePositive = P_FALSE_POSITIVE;
+                    pp->pFalsePositive = pFalsePositive;
                     pp->pTruePositive  = P_TRUE_POSITIVE;
                     features->features.push_back( pp );
-                  }
-               } 
+                }
             }
         }
         //itr = itr->next;
