@@ -17,9 +17,6 @@
 // for reading and writing to a serial device
 #include <orcaserial/serial.h>
 
-// this class is a thread which inherits from thread.h
-#include <orcaice/thread.h>
-
 // buffer for gps data
 #include <orcaice/buffer.h>
 
@@ -57,7 +54,7 @@ namespace insgps{
 
 @author Matthew Ridley, Ben Upcroft
  */
-class NovatelSpanInsGpsDriver : public Driver, public orcaice::Thread
+class NovatelSpanInsGpsDriver : public Driver
 {
 public:
 
@@ -139,7 +136,7 @@ private:
     // novatel position type
     unsigned long pos_type_;
 
-    // the driver will put the latest data into this queue buffer of infinite depth
+    // the driver will put the latest data into this queue buffer of depth 100
     orcaice::PtrBuffer<orca::GpsDataPtr> gpsDataBuffer_;
     orcaice::PtrBuffer<orca::ImuDataPtr> imuDataBuffer_;
     orcaice::PtrBuffer<orca::Position3dDataPtr> position3dDataBuffer_;

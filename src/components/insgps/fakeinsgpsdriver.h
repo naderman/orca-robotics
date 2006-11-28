@@ -20,7 +20,7 @@ namespace insgps{
 //
 // Bogus insgps driver, useful for testing the rest of the component.
 //
-class FakeInsGpsDriver : public Driver, public orcaice::Thread
+class FakeInsGpsDriver : public Driver
 {
 
 public:

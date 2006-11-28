@@ -103,7 +103,13 @@ Component::start()
         return;
     }
 
-    hwDriver_->init();
+    if ( hwDriver_->init() < 0)
+    {      
+        std::string errString = "ERROR(component::start()): Failed to initialise InsGps.";
+        context().tracer()->error( errString );
+        throw orcaice::Exception( ERROR_INFO, errString );
+        return;
+    }
    
     // query driver for the actual configuration after initialization
     Driver::Config actualCfg = hwDriver_->config();
@@ -217,10 +223,17 @@ Component::start()
 void Component::stop()
 {
     tracer()->debug( "stopping component", 5 );
+
+    tracer()->debug( "stopping handlers", 5 );
     orcaice::Thread::stopAndJoin( gpsHandler_ );
     orcaice::Thread::stopAndJoin( imuHandler_ );
-    orcaice::Thread::stopAndJoin( position3dHandler_ );
-    hwDriver_->shutdown();
+    orcaice::Thread::stopAndJoin( position3dHandler_ );   
+    // tracer()->debug( "stopped handlers", 5 );
+
+    tracer()->debug( "stopping driver", 5 );
+    orcaice::Thread::stopAndJoin( hwDriver_ );
+    // tracer()->debug( "stopped driver", 5 );
+    
     tracer()->debug( "stopped component", 5 );
 }
 

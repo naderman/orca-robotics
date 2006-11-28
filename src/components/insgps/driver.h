@@ -11,6 +11,9 @@
 #ifndef ORCA2_INSGPS_DRIVER_H
 #define ORCA2_INSGPS_DRIVER_H
 
+// this class is a thread which inherits from thread.h
+#include <orcaice/thread.h>
+
 #include <orca/imu.h>
 #include <orca/position3d.h>
 #include <orca/gps.h>
@@ -25,8 +28,8 @@ namespace insgps{
 
 @brief Abstract class for a insgps.
 
-All insgpsi should implement this, making it simple
-to add support for different insgpsi.
+All drivers should implement this, making it simple
+to add support for different drivers.
 
 This guy is _not_ guaranteed to be thread-safe!
 
@@ -63,7 +66,7 @@ typedef struct Pps{
 }Pps;
 
 
-class Driver
+class Driver : public orcaice::Thread
 {
 
 public:
@@ -89,7 +92,10 @@ public:
    
     Driver( const Config& cfg, const orcaice::Context& context ) : config_(cfg) {};
     virtual ~Driver() {};
-    
+
+    // This is the thread's function.
+    virtual void run(){ std::cout << "TRACE(driver::run()): You must implement run for your derived driver " << std::endl; };
+
     // Initializes the device. If it's aleady initialized, then it
     // quietly re-initializes it.
     // returns: 0 = success, non-zero = failure

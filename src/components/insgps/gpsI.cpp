@@ -66,7 +66,9 @@ GpsI::publish()
 void
 GpsI::read( ::orca::GpsDataPtr& data )
 {
+    // cout << "TRACE(gpsi::read()): in read()" << endl;
     hwDriver_->readGps( data );
+    // cout << "TRACE(gpsi::read()): after read()" << endl;
 }         
 
 

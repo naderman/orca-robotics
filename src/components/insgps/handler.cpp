@@ -9,6 +9,7 @@
  */
 
 #include "handler.h"
+#include "novatelspan/novatelspandriver.h"
 
 using namespace std;
 using namespace orca;
@@ -40,29 +41,41 @@ Handler::run()
         //
         while ( isActive() )
         {
-            if ( hwDriver_->isEnabled() )
-            {
-                // blocking read with timeout (2000ms by default)
-                // get & send the gps data to icestorm and to a buffer for direct connections
-                insGpsI_->publish();
-            }
-            else
-            {
-                // Wait for someone to enable us
-                IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(100));
-            }
 
-            if ( (IceUtil::Time::now()-lastHeartbeatTime).toMilliSecondsDouble() >= TIME_BETWEEN_HEARTBEATS )
+            try
             {
+                               
                 if ( hwDriver_->isEnabled() )
                 {
-                    context_.tracer()->heartbeat("InsGps enabled. " + hwDriver_->heartbeatMessage() );
+                    // blocking read with timeout (2000ms by default)
+                    // get & send the gps data to icestorm and to a buffer for direct connections
+                    
+                    // context_.tracer()->debug( "TRACE(handler::run()): publishing data", 5 );
+                    insGpsI_->publish();
+                    // context_.tracer()->debug( "TRACE(handler::run()): published data", 5 );
                 }
                 else
                 {
-                    context_.tracer()->heartbeat( "InsGps disabled." );
+                    // Wait for someone to enable us
+                    IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(100));
                 }
-                lastHeartbeatTime = IceUtil::Time::now();
+
+                if ( (IceUtil::Time::now()-lastHeartbeatTime).toMilliSecondsDouble() >= TIME_BETWEEN_HEARTBEATS )
+                {
+                    if ( hwDriver_->isEnabled() )
+                    {
+                        context_.tracer()->heartbeat("InsGps enabled. " + hwDriver_->heartbeatMessage() );
+                    }
+                    else
+                    {
+                        context_.tracer()->heartbeat( "InsGps disabled." );
+                    }
+                    lastHeartbeatTime = IceUtil::Time::now();
+                } 
+            } // end of try
+            catch ( insgps::NovatelSpanException& e )
+            {
+                // this ok, data is not available yet
             }
         } // end of while
     } // end of try
