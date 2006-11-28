@@ -36,6 +36,13 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @section changes Changes since Last Release
 
+- libOrcaIce
+    - added basename() and dirname() similar to Unix equivalents (Alex M.)
+    - added ctest for string utilities (Alex M.)
+    - added pathDelimeter() function to sysutils (Alex M.)
+- LogPlayer component
+    - interface name is set properly on replay (Alex M.)
+    - execution dir of logplayer and the dir where logs are stored may be different (Alex M.)
 - libOrcaGui
   - Made the generic bits in libOrcaGui unaware of any specific bits in libOrcaGui2d (Alex B.)
   - Added support for dynamically-loaded plug-in GuiElementFactories, to allow satelite projects to 
@@ -48,7 +55,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - added a gui driver
 - New library: libOrcaDynamicLoad
   - factored out the dynamic loading stuff into a separate library (Alex B.)
-
 
 @section orca_doc_todo_history Changes in Past Releases
 
