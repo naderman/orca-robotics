@@ -40,6 +40,7 @@ FakeDriver::read( orca::LaserScanner2dDataPtr &data )
 
     orcaice::setToNow( data->timeStamp );
     
+    data->minRange          = config_.minRange;
     data->maxRange          = config_.maxRange;
     data->fieldOfView       = config_.fieldOfView;
     data->startAngle        = config_.startAngle;
