@@ -109,11 +109,21 @@ ReflectorExtractor::calcPFalsePositive( const orca::LaserScanner2dDataPtr &laser
     {
         delta = fabs(laserData->ranges[start-i]-laserData->ranges[start-i-1]);
         if ( delta > maxDeltaRangeNearReflector_ )
-            pFalse *= 2;
+        {
+            if ( i==0 )
+                pFalse *= 4;
+            else
+                pFalse *= 2;
+        }
 
         delta = fabs(laserData->ranges[end+i]-laserData->ranges[end+i+1]);
         if ( delta > maxDeltaRangeNearReflector_ )
-            pFalse *= 2;
+        {
+            if ( i==0 )
+                pFalse *= 4;
+            else
+                pFalse *= 2;
+        }
     }
     return pFalse;
 }
@@ -257,7 +267,7 @@ ReflectorExtractor::addFeatures( const orca::LaserScanner2dDataPtr    &laserData
                         f->type = orca::feature::LASERREFLECTOR;
                         f->p.r  = featureRangeSum / numFeaturePoints;
                         f->p.o  = featureBearingSum / numFeaturePoints;
-                        f->pFalsePositive = pFalsePositive_;
+                        f->pFalsePositive = pFalse;
                         f->pTruePositive = pTruePositive_;
                         features->features.push_back( f );
                     }

@@ -34,7 +34,7 @@ namespace laserfeatures {
 
 namespace {
     const double P_FALSE_POSITIVE = 0.3;
-    const double P_FALSE_POSITIVE_POSSIBLE_GROUND = 0.3;
+    const double P_FALSE_POSITIVE_POSSIBLE_GROUND = 0.5;
     const double P_TRUE_POSITIVE  = 0.6;
 }
     
@@ -67,7 +67,7 @@ void CornerExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
             ((itr->elements.size() > MAX_POINTS_IN_LINE && fabs(itr->eigVectY) < 0.1) ||
             (next->elements.size() > MAX_POINTS_IN_LINE && fabs(next->eigVectY) < 0.1))) 
             {
-              std::cout << "We have a big line with a near horizontal slope.  Could be the ground??? Slope A : " << itr->eigVectY << " Slope B : " << next->eigVectY << std::endl;
+              //std::cout << "We have a big line with a near horizontal slope.  Could be the ground??? Slope A : " << itr->eigVectY << " Slope B : " << next->eigVectY << std::endl;
               pFalsePositive = P_FALSE_POSITIVE_POSSIBLE_GROUND;
             }
   

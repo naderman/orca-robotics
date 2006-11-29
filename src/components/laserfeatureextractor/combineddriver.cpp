@@ -74,6 +74,11 @@ CombinedDriver::computeFeatures( const orca::LaserScanner2dDataPtr          &las
         extractors_[i]->addFeatures( laserDataPtr, featureDataPtr );
     }
   
+    for ( uint i=0; i < featureDataPtr->features.size(); i++ )
+    {
+        assert ( featureDataPtr->features[i]->pTruePositive > featureDataPtr->features[i]->pFalsePositive );
+    }
+
     return 0;
 }
 
