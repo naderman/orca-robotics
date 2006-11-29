@@ -44,54 +44,6 @@ ReflectorExtractor::ReflectorExtractor( orcaice::Context context, double laserMa
         orcaice::getPropertyAsDoubleWithDefault(    prop, prefix+"PTruePositive", 0.6);
 }
 
-// void
-// ReflectorExtractor::cluster( const orca::LaserScanner2dDataPtr &laserData )
-// {
-//     bool inCluster=false;
-//     clusters_.resize(0);
-
-//     // Don't iterate over the endpoints, so that the helper-functions
-//     // don't have to check.
-//     for ( unsigned int i=1; i<laserData->ranges.size()-1; i++ )
-//     {
-//         // Is this a reflector inside maxRange?
-//         if ( ( laserData->intensities[i] >= minReflectorBrightness_ ) &&
-//              ( laserData->ranges[i] < laserMaxRange_ ) )
-//         {
-//             if ( inCluster )
-//             {
-//                 if ( fabs(deltaRange(laserData,i)) > maxDeltaRangeWithinReflector_ )
-//                 {
-//                     // remove the cluster: too big a jump.
-//                     inCluster = false;
-//                     clusters_.resize(clusters_.size()-1);
-//                 }
-//                 else
-//                 {
-//                     clusters_[clusters_.size()-1].rangeSum += laserData->ranges[i];
-//                 }
-//             }
-//             else
-//             {
-//                 // start new cluster
-//                 Cluster c;
-//                 c.start=i;
-//                 c.rangeSum += laserData->ranges[i];
-//                 clusters_.push_back(c);
-//             }
-//         }
-//         else // not a reflector
-//         {
-//             if ( inCluster ) 
-//             {
-//                 // end it.
-//                 clusters_[clusters_.size()-1].end = i-1;
-//                 inCluster = false;
-//             }
-//         }
-//     }
-// }
-
 double
 ReflectorExtractor::calcPFalsePositive( const orca::LaserScanner2dDataPtr &laserData,
                                         int start,
@@ -110,63 +62,23 @@ ReflectorExtractor::calcPFalsePositive( const orca::LaserScanner2dDataPtr &laser
         delta = fabs(laserData->ranges[start-i]-laserData->ranges[start-i-1]);
         if ( delta > maxDeltaRangeNearReflector_ )
         {
-            if ( i==0 )
-                pFalse *= 4;
-            else
-                pFalse *= 2;
+//             if ( i<=2 )
+                return -1;
+//             else
+//                 pFalse *= 2;
         }
 
         delta = fabs(laserData->ranges[end+i]-laserData->ranges[end+i+1]);
         if ( delta > maxDeltaRangeNearReflector_ )
         {
-            if ( i==0 )
-                pFalse *= 4;
-            else
-                pFalse *= 2;
+//             if ( i<=2 )
+                return -1;
+//             else
+//                 pFalse *= 2;
         }
     }
     return pFalse;
 }
-
-// void
-// ReflectorExtractor::clustersToFeatures( const orca::LaserScanner2dDataPtr &laserData,
-//                                         orca::PolarFeature2dDataPtr &features )    
-// {
-//     for ( uint i=0; i < clusters_.size(); i++ )
-//     {
-//         double pFalse = calcPFalsePositive( laserData, clusters_[i] );
-        
-//         if ( pFalse > 0 && pFalse < pTruePositive_ )
-//         {
-//             // Create a new feature from the cluster
-//             orca::SinglePolarFeature2dPtr f = new orca::SinglePolarFeature2d;
-//             f->type = orca::feature::LASERREFLECTOR;
-//             double numFeaturePoints = (clusters_[i].end-clusters_[i].start+1);
-//             f->p.r  = clusters_[i].rangeSum / numFeaturePoints;
-//             f->p.o  = laserScanBearing(laserData,(clusters_[i].start+clusters_[i].end)/2);
-//             f->pFalsePositive = pFalse;
-//             f->pTruePositive = pTruePositive_;
-//             features->features.push_back( f );
-
-
-//             cout<<"TRACE(reflectorextractor.cpp): numFeaturePoints: " << numFeaturePoints << endl;
-//             cout<<"TRACE(reflectorextractor.cpp): rangeSum: " << clusters_[i].rangeSum << endl;
-//             cout<<"TRACE(reflectorextractor.cpp): fpr: " << f->p.r << endl;
-//             cout<<"TRACE(reflectorextractor.cpp): c: " << clusters_[i].start << ", " << clusters_[i].end << endl;
-
-//         }
-//     }
-
-//     cout<<"TRACE(reflectorextractor.cpp): f: " << orcaice::toString(features) << endl;
-// }
-
-// void 
-// ReflectorExtractor::addFeatures( const orca::LaserScanner2dDataPtr    &laserData,
-//                                  orca::PolarFeature2dDataPtr &features )
-// {
-//     cluster( laserData );
-//     clustersToFeatures( laserData, features );
-// }
 
 void 
 ReflectorExtractor::addFeatures( const orca::LaserScanner2dDataPtr    &laserData,

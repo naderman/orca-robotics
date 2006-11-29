@@ -18,6 +18,8 @@ Config.ExtractDoors.Default=0
 Config.Reflectors.MaxDeltaRangeWithinReflector.Default=0.3
 Config.Reflectors.MaxDeltaRangeNearReflector.Default=0.5 
 Config.Reflectors.MinBrightness.Default=1 
+Config.Reflectors.PFalsePositive.Default=0.1
+Config.Reflectors.PTruePositive.Default=0.6
 
 Config.FGPoints.MinForegroundWidth.Default=0.1
 Config.FGPoints.MaxForegroundWidth.Default=0.5

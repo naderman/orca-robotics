@@ -49,7 +49,7 @@ Reflectors
 - @c LaserFeatureExtractor.Config.Reflectors.MaxDeltaRangeNearReflector (float) [m]
     - Don't extract a feature if there's a jump in the ranges > this threshold
       near the reflector.
-      This reject spurious reflectors that are partially-obscured behind a foreground obstacle.
+      This rejects spurious reflectors that are partially-obscured behind a foreground obstacle.
       It also reduces the angles about which a reflector on a corner can be extracted.
     - Default: 0.5
 
@@ -60,6 +60,14 @@ Reflectors
 - @c LaserFeatureExtractor.Config.Reflectors.MinBrightness (int)
     - minimum intensity value to be considered a feature
     - Default: 1
+
+- @c LaserFeatureExtractor.Config.Reflectors.PFalsePositive (float)
+    - porbability of a false positive
+    - Default: 0.1
+
+- @c LaserFeatureExtractor.Config.Reflectors.PTruePositive (float)
+    - probability of a true positive
+    - Default: 0.6
 
 Foreground Points
 
