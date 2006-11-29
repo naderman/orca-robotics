@@ -42,6 +42,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - added pathDelimeter() function to sysutils (Alex M.)
 - LogPlayer component
     - interface name is set properly on replay (Alex M.)
+    - interfaces are initialized before waiting for user input to start replay (Alex M.)
     - execution dir of logplayer and the dir where logs are stored may be different (Alex M.)
 - libOrcaGui
   - Made the generic bits in libOrcaGui unaware of any specific bits in libOrcaGui2d (Alex B.)
