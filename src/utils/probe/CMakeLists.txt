@@ -29,7 +29,7 @@ IF ( BUILD_PROBE )
         PROBE_QT_LIBS
         QT4_OK
         HAVE_QT_DRIVER
-        ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
+        QorcaCompModel ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
 
     #
     # This gathers all the source files into the variable 'SRCS'
@@ -37,8 +37,7 @@ IF ( BUILD_PROBE )
     FILE( GLOB SRCS *.cpp )
     
     GLOBAL_ADD_EXECUTABLE( probe ${SRCS} )
-#     TARGET_LINK_LIBRARIES( probe QorcaCompModel OrcaCompModel IceGrid OrcaProbe ${PROBE_IOSTREAM_LIBS} ${PROBE_QT_LIBS} )
-    TARGET_LINK_LIBRARIES( probe QorcaCompModel OrcaCompModel IceGrid OrcaProbe ${PROBE_IOSTREAM_LIBS} OrcaProbeQt ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
+    TARGET_LINK_LIBRARIES( probe OrcaCompModel IceGrid OrcaProbe ${PROBE_IOSTREAM_LIBS} ${PROBE_QT_LIBS} )
 
     GENERATE_CONFIG_FILE( probe.def )
 
