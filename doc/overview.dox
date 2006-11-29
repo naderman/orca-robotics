@@ -21,9 +21,9 @@ Orca is our attempt at doing it. The project's goals are:
 - to \b encourage software reuse by maintaining a @b repository of components.
 
 To be successful, we think that a framework with such objectives must be:
-- general, flexible and extensible
-- sufficiently robust, high-performance and full-featured for use in commercial applications
-- sufficiently simple for experimentation in university research environments.
+- general, flexible and extensible,
+- sufficiently robust, high-performance and full-featured for use in commercial applications,
+- yet sufficiently simple for experimentation in university research environments.
 
 @par Licence and Copyright
 
@@ -42,6 +42,13 @@ A combination of several design choices sets this project apart from other initi
 - uses cross-platform development tools
 
 @ref orca_doc_approach "Read more..."
+
+@par How to Use Orca
+
+We can think of several scenarios which lead to different usage patterns:
+- "You like everything we are doing." Then download and install Orca, configure a system out of existing components, write your own components, contribute them back to Orca if you wish.
+- "You like Ice and would like to use some of the existing components, but you don't like our build system or something else about the project." You can setup your own build system outside of Orca but use our @b interface @b definition @b files (Slice files with .ice extension). They are key to inter-operability. If you want to add new interfaces or modify existing ones, we'd be happy to work with you.
+- "You don't want to use Ice at all but like the idea of "standardization" in the robotics community." Even if your software cannot talk to Orca directly, it may still be useful to have our interfaces and data structures designed so that they are as close to each other as possible. This way it would be easier to write "glue libraries" which translate from one to another. So when writing your interfaces take a look at our interface definition files (Slice files with .ice extension). Of course we'd consider making changes to make our definitions more general or more understandable.
 
 @par OS support
 

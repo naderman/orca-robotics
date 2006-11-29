@@ -36,7 +36,7 @@
 
 Orca is an open-source framework for developing component-based robotic systems. It provides the means for defining and developing the building-blocks which can be pieced together to form arbitrarily complex robotic systems, from single vehicles to distributed sensor networks.
 
-Our main goal is the continuing progress in robotic research and the robotic industry. The main challenge we see at present is the software specific to robots, both its complexity and the sheer amount of it. Software reuse promises a solution to both of these problems. You write your component which does something useful, then I build on your success by writing my component which works with yours. Easy!
+Our main goal is the continuing progress in robotic research and the robotic industry. The main challenge we see at present is the software specific to robots, both its complexity and the sheer amount of it. Software reuse promises a solution to both of these problems. You write your component which does something useful, then I build on your success by writing my component which works with yours. Now the two of us have a system of two components. Easy!
 
 @image html orca_concept.png
 
