@@ -46,6 +46,9 @@ class Feature2d
 {
     //! Feature type.
     int type;
+
+    //! The probability that the feature is really there
+    double pExists;
 };
 
 //! 2d Covariance Matrix
