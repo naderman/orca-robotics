@@ -29,9 +29,7 @@ To be successful, we think that a framework with such objectives must be:
 
 - Orca software is released under LGPL and GPL licenses
 - A special clause in the Ice licence allows us to distribute LGPL libraries linking to Ice.
-- Copyright belongs to developers and major contributors.
-
-@ref orca_doc_license "Read more..."
+- Copyright belongs to developers and major contributors. @ref orca_doc_license "Read more..."
 
 @par Our Approach
 
@@ -39,9 +37,8 @@ A combination of several design choices sets this project apart from other initi
 - adopts a Component-Based Software Engineering approach without applying any additional architectural constraints
 - uses a commercial open-source library for communication and interface definition
 - provides tools to simplify component development but makes them strictly optional to maintain full access to the underlying communication engine and services
-- uses cross-platform development tools
+- uses cross-platform development tools. @ref orca_doc_approach "Read more..."
 
-@ref orca_doc_approach "Read more..."
 
 @par How to Use Orca
 
@@ -63,7 +60,7 @@ The basic tools we use are cross-platform, so in principle Orca can be deployed 
 - all components which are currently in the repository are written in C++
 - there's an example in Java.
 
-Slice interfaces can be compiled to C++, Java, Python, PHP, C\#, and Visual Basic. All of these can be used to implement or use Orca interfaces.
+Slice interfaces can be compiled to C++, Java, Python, PHP, C\#, Visual Basic, and Ruby. All of these can be used to implement or use Orca interfaces.
 
 @par Repository
 
