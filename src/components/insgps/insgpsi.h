@@ -28,7 +28,7 @@ public:
     // Read  from the drivers buffer and publish to the outside world
     // This function is called by the handler
     virtual void publish() = 0;
-
+    
 private:
     orcaice::Context context_;
     

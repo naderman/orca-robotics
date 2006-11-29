@@ -88,8 +88,8 @@ public:
     virtual void readImu(orca::ImuDataPtr& data, int timeoutMs=2000 );
     virtual void readPosition3d(orca::Position3dDataPtr& data, int timeoutMs=2000 );
     
-    virtual void shutdown();   
-
+    virtual void shutdown();
+       
 private:
 
     // send all the commands to the driver for setup and types of output messages.
@@ -116,12 +116,6 @@ private:
     orca::CartesianPoint imuAntennaOffset_;
     orca::CartesianPoint imuAntennaOffsetUncertainty_;
     
-//      // read novatel response messages and return error value
-//     int readResponse();
-//    
-//      // return the response value of a command: OK = 1, everything else results in an error
-//     int responseValue( int id );
-   
     // serial class for reading and writing to and from a serial device
     orcaserial::Serial* serial_;
     
@@ -151,6 +145,8 @@ private:
     novatel::INSPVASB_LOG   INSPVA_;
     novatel::INSCOVSB_LOG   INSCOV_;
     novatel::RAWIMUSB_LOG   RAWIMU_;
+
+    int position3dCount_;
 
     orcaice::Context context_;
 

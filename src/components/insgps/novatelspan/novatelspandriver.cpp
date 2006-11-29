@@ -39,7 +39,8 @@ NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device
     : Driver(cfg, context),
       serial_(0),
       enabled_( false ),
-//      gpsData_(0),
+      position3dCount_(0),
+      //      gpsData_(0),
 //      imuData_(0),
 //      position3dData_(0),
       context_(context)
@@ -152,23 +153,11 @@ NovatelSpanInsGpsDriver::init()
     cout << "NovatelSpanInsGps: Initialising Novatel Span InsGps driver\n";
 
     int put;
-    // char response[5];
     char response[13];
     char trash[256];
     std::string responseString;
     std::string responseOk;
     responseOk = "\r\n<OK";
-    // responseOk = "\r\n<OK\n";
-    
-    // just in case something is running... stops the novatel logging any messages
-    // put = serial_->write( "unlogall\r\n" );
-
-    // this should flush the input output buffers but it appears to be that things are
-    // still left in the input buffer       
-    // serial_->flush();
-
-        
-    // IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
 
     //
     // send initialisation commands to the Novatel   
@@ -177,8 +166,10 @@ NovatelSpanInsGpsDriver::init()
     while ( responseString != responseOk )
     {
         // just in case something is running... stops the novatel logging any messages
+        serial_->flush();
         put = serial_->write( "unlogall\r\n" );
         //printf("put %d bytes\n",put);
+        serial_->drain();
         
         // Read the serial device to check response ( "<OK" is 3 bytes long )
         // Note that the response is in abbreviated ASCII format so only need to check for "<OK"
@@ -195,13 +186,17 @@ NovatelSpanInsGpsDriver::init()
 
         if ( responseString != responseOk )
         {
-            cout << "WARNING(novatelspandriver.cpp): Response to 'unlogall' returned error: " << responseString << endl;
-            cout << "\t We will keep trying to unlogall messages" << endl;
+            cout << "WARNING(novatelspandriver.cpp): Response to 'unlogall' returned error " << endl;
+            cout << "\t We will continue trying to stop all messages so that we can reset the device" << endl;
             
             // check how much data is left in the input buffer and throw it away
             int unreadBytes = serial_->data_avail_wait();
-            cout << "unreadBytes: " << unreadBytes << endl;
-            serial_->read_full( trash, unreadBytes );
+            // cout << "unreadBytes: " << unreadBytes << endl;
+            if (unreadBytes < 256 )
+            {            
+                serial_->read_full( trash, unreadBytes );
+
+            }
 
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }
@@ -350,26 +345,140 @@ NovatelSpanInsGpsDriver::init()
     // receiver status
     put = serial_->write( "log rxstatusb ontime 1.0\r\n" );
     
+//      // Read the serial device to check response ( "<OK" is 3 bytes long )
+//     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
+//     if ( serial_->read_full( response, 13 ) < 0 )
+//     {
+//         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
+//         return -1;
+//     }
+//     else
+//     {
+//         responseString = response;
+//         responseString.resize(5);
+//     }
+// 
+//     if ( responseString != responseOk )
+//     {
+//         cout << "WARNING(novatelspandriver.cpp): Response to 'setimutype' returned error: " << responseString << endl;
+//         return -1;
+//     }
+    
     // PPS pulse will be triggered before this arrives
     
     // time used to sync with the pps signal
     put = serial_->write( "log timeb ontime 1.0\r\n" );
 //      put = serial_->write("log timesyncb ontime 1.0\r\n");
         
+//          // Read the serial device to check response ( "<OK" is 3 bytes long )
+//     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
+//     if ( serial_->read_full( response, 13 ) < 0 )
+//     {
+//         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
+//         return -1;
+//     }
+//     else
+//     {
+//         responseString = response;
+//         responseString.resize(5);
+//     }
+// 
+//     if ( responseString != responseOk )
+//     {
+//         cout << "WARNING(novatelspandriver.cpp): Response to 'log timeb' returned error: " << responseString << endl;
+//         return -1;
+//     }
+    
     // IMU message
     
     // gps position without ins
     put = serial_->write( "log bestgpsposb ontime 1.0\r\n" );
         
+//          // Read the serial device to check response ( "<OK" is 3 bytes long )
+//     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
+//     if ( serial_->read_full( response, 13 ) < 0 )
+//     {
+//         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
+//         return -1;
+//     }
+//     else
+//     {
+//         responseString = response;
+//         responseString.resize(5);
+//     }
+// 
+//     if ( responseString != responseOk )
+//     {
+//         cout << "WARNING(novatelspandriver.cpp): Response to 'log bestgpsposb' returned error: " << responseString << endl;
+//         return -1;
+//     }
+
     //short IMU messages
     // pva data in wgs84 coordinates
     put = serial_->write( "log inspvasb ontime 0.1\r\n" );
     
+//      // Read the serial device to check response ( "<OK" is 3 bytes long )
+//     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
+//     if ( serial_->read_full( response, 13 ) < 0 )
+//     {
+//         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
+//         return -1;
+//     }
+//     else
+//     {
+//         responseString = response;
+//         responseString.resize(5);
+//     }
+// 
+//     if ( responseString != responseOk )
+//     {
+//         cout << "WARNING(novatelspandriver.cpp): Response to 'log inspvasb' returned error: " << responseString << endl;
+//         return -1;
+//     }
+    
     // raw accelerometer and gyro data
     put = serial_->write( "log rawimusb onnew\r\n" );
     
+//          // Read the serial device to check response ( "<OK" is 3 bytes long )
+//     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
+//     if ( serial_->read_full( response, 13 ) < 0 )
+//     {
+//         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
+//         return -1;
+//     }
+//     else
+//     {
+//         responseString = response;
+//         responseString.resize(5);
+//     }
+// 
+//     if ( responseString != responseOk )
+//     {
+//         cout << "WARNING(novatelspandriver.cpp): Response to 'log rawimusb' returned error: " << responseString << endl;
+//         return -1;
+//     }
+
     // pva covariances
     put = serial_->write( "log inscovsb onchanged\r\n" );
+     
+//     // Read the serial device to check response ( "<OK" is 3 bytes long )
+//     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
+//     if ( serial_->read_full( response, 13 ) < 0 )
+//     {
+//         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
+//         return -1;
+//     }
+//     else
+//     {
+//         responseString = response;
+//         responseString.resize(5);
+//     }
+// 
+//     if ( responseString != responseOk )
+//     {
+//         cout << "WARNING(novatelspandriver.cpp): Response to 'log inscovsb' returned error: " << responseString << endl;
+//         return -1;
+//     }
 
     start();
     enabled_ = true;
@@ -380,17 +489,72 @@ NovatelSpanInsGpsDriver::init()
 int
 NovatelSpanInsGpsDriver::disable()
 {
+    cout << "enabled_: " << enabled_ << endl;
+
     if ( !enabled_ ) return 0;
 
     cout << "NovatelSpanInsGps: Disabling Novatel Span InsGps driver\n";
  
+    // int put;
+    // put = serial_->write( "unlogall\r\n" );
     int put;
-    put = serial_->write( "unlogall\r\n" );
+    char response[13];
+    char trash[256];
+    std::string responseString;
+    std::string responseOk;
+    responseOk = "\r\n<OK";
+
+    //
+    // send initialisation commands to the Novatel   
+    //
+    
+    while ( responseString != responseOk )
+    {
+        // just in case something is running... stops the novatel logging any messages
+        serial_->flush();
+        put = serial_->write( "unlogall\r\n" );
+        //printf("put %d bytes\n",put);
+        serial_->drain();
+        
+        // Read the serial device to check response ( "<OK" is 3 bytes long )
+        // Note that the response is in abbreviated ASCII format so only need to check for "<OK"
+        if ( serial_->read_full( response, 13 ) < 0 )
+        {
+            cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
+            return -1;
+        }
+        else
+        {
+            responseString = response;
+            responseString.resize(5);
+        }
+
+        if ( responseString != responseOk )
+        {
+            cout << "WARNING(novatelspandriver.cpp): Response to 'unlogall' returned error " << endl;
+            cout << "\t We will continue trying to stop all messages so that we can reset the device" << endl;
+            
+            // check how much data is left in the input buffer and throw it away
+            int unreadBytes = serial_->data_avail_wait();
+            // cout << "unreadBytes: " << unreadBytes << endl;
+            if (unreadBytes < 256 )
+            {
+                serial_->read_full( trash, unreadBytes );
+
+            }
+
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+        }
+        else
+        {
+            cout << "INFO: all messages were stopped " << endl;
+        }
+    } // end of while     
 
     //force data to be sent
-    serial_->drain();
+    // serial_->drain();
 
-    serial_->flush();
+    // serial_->flush();
     
     enabled_ = false;
 
@@ -409,10 +573,10 @@ NovatelSpanInsGpsDriver::readGps( orca::GpsDataPtr& data, int timeoutMs )
     }
     else
     {      
-        context_.tracer()->debug( "TRACE(novatelspandriver::readGps()): got gps data", 5 );
+        context_.tracer()->debug( "TRACE(novatelspandriver::readGps()): got gps data", 6 );
     }
     
-    cout << "Gps Data Buffer has " << gpsDataBuffer_.size() << " elements" << endl;
+    // cout << "Gps Data Buffer has " << gpsDataBuffer_.size() << " elements" << endl;
     
     return;
 }
@@ -445,9 +609,9 @@ NovatelSpanInsGpsDriver::readImu( orca::ImuDataPtr& data, int timeoutMs )
     }
     else
     {
-        context_.tracer()->debug( "TRACE(novatelspandriver::readImu()): got imu data", 5 );
+        context_.tracer()->debug( "TRACE(novatelspandriver::readImu()): got imu data", 6 );
     }
-    cout << "Imu Data Buffer has " << imuDataBuffer_.size() << " elements" << endl;
+    // cout << "Imu Data Buffer has " << imuDataBuffer_.size() << " elements" << endl;
     
     return;
 
@@ -474,11 +638,14 @@ NovatelSpanInsGpsDriver::readPosition3d( orca::Position3dDataPtr& data, int time
     }
     else
     {   
-        context_.tracer()->info( "TRACE(novatelspandriver::readPosition3d()): got position3d data" );
+        context_.tracer()->debug( "TRACE(novatelspandriver::readPosition3d()): got position3d data", 6 );
     }
     
-    cout << "Position3d Data Buffer has " << position3dDataBuffer_.size() << " elements" << endl;
-
+    if (position3dCount_ > 20 )
+    {
+        cout << "Position3d Data Buffer is " << position3dDataBuffer_.size()/100 << "% full" << endl;
+    }
+    
     return;
 }
 
@@ -722,9 +889,9 @@ NovatelSpanInsGpsDriver::populateData( int id )
             // set flag
             // newGpsData_ = true;
 
-            context_.tracer()->debug( "TRACE(novatelspandriver::populateData()): Pushing gps data to buffer", 5);
+            // context_.tracer()->debug( "TRACE(novatelspandriver::populateData()): Pushing gps data to buffer", 5);
             gpsDataBuffer_.push( gpsData_ );
-            context_.tracer()->debug( "TRACE(novatelspandriver::populateData()): Pushed gps data to buffer", 5);
+            // context_.tracer()->debug( "TRACE(novatelspandriver::populateData()): Pushed gps data to buffer", 5);
             
             return 0;       
             break;
@@ -1016,104 +1183,4 @@ NovatelSpanInsGpsDriver::shutdown()
 }               
 
 } //namespace
-
-// int
-// NovatelSpanInsGpsDriver::readResponse()
-// {
-//     if ( ! enabled_ )
-//     {
-//     cout << "NovatelSpanInsGps: ERROR: Can't read: not enabled . Sleeping for 1 sec..." << endl;
-//         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-//         return -1;
-//     }
-// 
-//     int ret;
-//     int msgs = 0;
-//         
-//     // read novatel binary messages
-//     ret = read_message( &serial_data_ );
-//     // ret = serial_->read_line(serial_data_,1024,'\n');
-// 
-//     if( ret>0 )
-//     {
-//         if( responseValue( ret ) != 1 ) // Value of 1 = OK, everything else is an error
-//         {
-//             cout << "ERROR (novatelspandriver.cpp): Initialisation command was not acknowledged" << endl;
-//             return -1;         
-//         }
-//     }
-// 
-//     if ( ret <= 0 )
-//     {
-//         if( errno != EAGAIN )
-//         {
-//             cout << "NovatelSpanInsGps: ERROR: Error reading from InsGps:" << strerror(errno) << " -- shutting down." << endl;
-//             enabled_ = false;
-//             return -1;
-//         }
-//     }
-//     
-//     //return OK
-//     return 1;
-// }
-// 
-// int
-// NovatelSpanInsGpsDriver::responseValue( int id )
-// {
-//     // check that the message is a response/acknowledgment message
-//     if ( &serial_data_.raw_message.type != )
-//     {
-//         cout << "WARNING (novatelspandriver.cpp): Expecting a resoponse/acknowledgment message but got something else" << endl;
-//         return -1;
-//     }            
-//               
-//     switch(id)
-//     {
-//         case novatel::UNLOGALL_CMD_TYPE:
-//         {
-//             // memcpy( &UNLOGALL_, &serial_data_.raw_message, sizeof(RXSTATUS_) );
-//             &serial_data_.raw_message.data         
-//             printf("got RXSTATUS\n");
-//             return 0;       
-//             break;
-//         }
-//         case novatel::TIMEB_LOG_TYPE:
-//         {
-//             printf("got TIME\n");
-//             memcpy( &TIME_, &serial_data_.raw_message, sizeof(TIME_ ) );
-//             if( !TIME_.data.bUtcStatus )
-//             {
-//                 printf("UTC time not available\n");
-//                 break;
-//             }
-//             
-//             // retrieve all the offsets
-//             pps_.offset=TIME_.data.dGPSOffset;
-//             pps_.offset_std=TIME_.data.dOffsetStd;
-//             pps_.utc_offset=TIME_.data.dUtcOffset;
-// 
-//             gpsTimeData_.utcSeconds = TIME_.data.lUtcMillisec/1000;
-//             gpsTimeData_.utcMinutes = TIME_.data.ucUtcMin;
-//             gpsTimeData_.utcHours = TIME_.data.ucUtcHour;
-//             gpsTimeData_.day = TIME_.data.ucUtcDay;
-//             gpsTimeData_.month = TIME_.data.ucUtcMonth-1;
-//             gpsTimeData_.year = TIME_.data.lUtcYear-1900;
-//             
-// 
-//             // set flag
-//             newGpsTime_ = true;       
-//             
-//             return 0;       
-//             break;
-//         }
-// 
-//           default:
-//         {
-//             printf("message %d not yet servicable\n",id);
-//             return -1;
-//             break;
-//         }
-//     }
-//     return -1;
-// }
 

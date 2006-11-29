@@ -33,7 +33,7 @@ Handler::run()
 
     try 
     {
-        context_.tracer()->debug( "TRACE(handler::run()): Handler thread is running", 5);
+        context_.tracer()->debug( "TRACE(handler::run()): Handler thread is running", 6);
         
         //
         // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks
@@ -89,7 +89,7 @@ Handler::run()
     waitForStop();
     
     // InsGps hardware will be shut down in the driver's destructor.
-    context_.tracer()->debug( "dropping out from run()", 5 );
+    context_.tracer()->debug( "dropping out from run()", 6 );
             
 }
 

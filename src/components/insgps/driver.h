@@ -131,8 +131,8 @@ public:
     Config config() const { return config_; };
 
     // the thread should be stopped and joined in this function   
-    virtual void shutdown()=0;   
-    
+    virtual void shutdown()=0;
+
 protected:
     // do we have raw imu data yet?
     // set to false by call to getData()
