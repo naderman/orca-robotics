@@ -130,10 +130,12 @@ SickCarmenDriver::init( )
     int ret = sick_start_laser(laser_);
     if ( ret == 0 )
     {
+        context_.tracer()->info( "connect succeeded." );
         infoMessages_ += infoMessages_ + string("Successfully enabled laser:\n") + sick_info();
     }
     else
     {
+        context_.tracer()->info( "connect failed." );
         infoMessages_ += infoMessages_ + string("Problem enabling laser:\n") + sick_info();
     }
     return ret;

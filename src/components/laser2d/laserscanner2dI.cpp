@@ -29,6 +29,57 @@ LaserScanner2dI::LaserScanner2dI( const orca::RangeScanner2dDescriptionPtr & des
     // this will throw NetworkException if can't connect
     topicPrx_ = orcaice::connectToTopicWithTag<orca::RangeScanner2dConsumerPrx>
         ( context_, consumerPrx_, ifaceTag_ );
+
+#if 0
+    std::string topicName;
+
+    // lookup the name of the interface in the config file and generate topic name.
+    try {
+        // this generates a standard topic name based on fully-qualified interface name.
+        topicName = orcaice::toString(
+            orcaice::getProvidedTopic( context, ifaceTag, "*" ) );
+    }
+    catch ( orcaice::Exception &e )
+    {
+        std::string errString = e.what();
+        throw orcaice::ConfigFileException( ERROR_INFO,
+                "Couldn't get name for IceStorm topic tag '"+ifaceTag+"': "+errString );
+    }
+
+    //return connectToTopicWithString( context, consumerPrx_, topicName );
+    {
+        const bool createIfMissing = true;
+        //
+        // set the proxy to the topic
+        //
+        topicPrx_ = orcaice::connectToIceStormTopicPrx( context.communicator(), topicName, createIfMissing );
+
+        //Ice::ObjectPrx obj = connectToIceStormTopicPublisherPrx( topicPrx );
+        Ice::ObjectPrx obj;
+        {
+            // Retrieve the topic by name, if does not exist: create
+            IceStorm::TopicPrx topic = orcaice::connectToIceStormTopicPrx( context.communicator(), topicName, true );
+            
+            // now that we have the topic itself, get its publisher object
+            //return connectToIceStormTopicPublisherPrx( topic );
+            {
+                // Get the topic's publisher object
+                // @todo should we verify that the publisher is an object of the right type? need template.
+                Ice::ObjectPrx obj = topic->getPublisher();
+    
+                // create a oneway proxy (for efficiency reasons).
+                if(!obj->ice_isDatagram()) {
+                    obj = obj->ice_oneway();
+                }
+            }
+        }
+
+        //
+        // set the proxy to the publisher
+        //
+        consumerPrx_ = RangeScanner2dConsumerPrx::uncheckedCast(obj);
+    }
+#endif
 }
 
 orca::RangeScanner2dDataPtr 

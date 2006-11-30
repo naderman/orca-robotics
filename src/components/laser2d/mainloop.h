@@ -42,7 +42,8 @@ private:
     // Loops until activated
     void activate();
 
-    void readData( orca::LaserScanner2dDataPtr & data );
+    // Returns zero on succcess
+    int readData( orca::LaserScanner2dDataPtr & data );
 
     // The laser object
     LaserScanner2dI &laserObj_;

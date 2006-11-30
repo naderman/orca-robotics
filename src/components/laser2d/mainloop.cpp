@@ -63,7 +63,7 @@ MainLoop::activate()
     }
 }
 
-void
+int
 MainLoop::readData( orca::LaserScanner2dDataPtr & data )
 {
 //     context_.tracer()->debug( "Reading laser data...", 8 );
@@ -73,11 +73,15 @@ MainLoop::readData( orca::LaserScanner2dDataPtr & data )
     //            
     if ( hwDriver_->read( data ) ) 
     {
-        context_.tracer()->warning( "Problem reading from laser. Re-initializing hardware." );
+        context_.tracer()->warning( "Problem reading from laser. Re-initialising hardware." );
         
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-        hwDriver_->init();
-        return;
+        int ret = hwDriver_->init();
+        if ( ret == 0 )
+            context_.tracer()->info( "Re-Initialisation succeeded." );
+        else
+            context_.tracer()->info( "Re-Initialisation failed." );
+        return -1;
     }
 
     // Check that the angleIncrement matches what we expect
@@ -108,6 +112,8 @@ MainLoop::readData( orca::LaserScanner2dDataPtr & data )
     }
 
     laserObj_.localSetData( data );
+
+    return 0;
 }
 
 void
@@ -129,12 +135,16 @@ MainLoop::run()
     {
         try 
         {
-            readData( laserData );
-
+            int ret = readData( laserData );
 
             if ( heartbeater.isHeartbeatTime() )
             {
-                heartbeater.beat( "Laser enabled (?). " + hwDriver_->heartbeatMessage() );
+                stringstream ss;
+                if ( ret == 0 )
+                    ss << "Laser enabled. ";
+                else
+                    ss << "Laser having problems.";
+                heartbeater.beat( ss.str() + hwDriver_->heartbeatMessage() );
             }
 
         } // end of try
