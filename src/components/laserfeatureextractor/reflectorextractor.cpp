@@ -49,7 +49,7 @@ ReflectorExtractor::calcPFalsePositive( const orca::LaserScanner2dDataPtr &laser
                                         int start,
                                         int end )
 {
-    const int numEitherSide=4;
+    const int numEitherSide=2;
     if ( start < numEitherSide ) return -1;
     if ( (int)(laserData->ranges.size())-end < numEitherSide ) return -1;
 
@@ -62,19 +62,19 @@ ReflectorExtractor::calcPFalsePositive( const orca::LaserScanner2dDataPtr &laser
         delta = fabs(laserData->ranges[start-i]-laserData->ranges[start-i-1]);
         if ( delta > maxDeltaRangeNearReflector_ )
         {
-//             if ( i<=2 )
+            if ( i==0 )
                 return -1;
-//             else
-//                 pFalse *= 2;
+            else
+                pFalse *= 2;
         }
 
         delta = fabs(laserData->ranges[end+i]-laserData->ranges[end+i+1]);
         if ( delta > maxDeltaRangeNearReflector_ )
         {
-//             if ( i<=2 )
+            if ( i==0 )
                 return -1;
-//             else
-//                 pFalse *= 2;
+            else
+                pFalse *= 2;
         }
     }
     return pFalse;
