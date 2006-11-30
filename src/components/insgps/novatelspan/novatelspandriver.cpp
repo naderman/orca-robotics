@@ -39,6 +39,8 @@ NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device
     : Driver(cfg, context),
       serial_(0),
       enabled_( false ),
+      gpsCount_(0),
+      imuCount_(0),
       position3dCount_(0),
       //      gpsData_(0),
 //      imuData_(0),
@@ -145,8 +147,8 @@ NovatelSpanInsGpsDriver::init()
 {
     // start the orcaice::thread for this driver
     // start();
-    
-    
+
+
     if ( enabled_ )
         return 0;
     
@@ -392,7 +394,8 @@ NovatelSpanInsGpsDriver::init()
     // IMU message
     
     // gps position without ins
-    put = serial_->write( "log bestgpsposb ontime 1.0\r\n" );
+    // put = serial_->write( "log bestgpsposb ontime 1.0\r\n" );
+    put = serial_->write( "log bestgpsposb ontime 0.05\r\n" );
         
 //          // Read the serial device to check response ( "<OK" is 3 bytes long )
 //     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
@@ -415,7 +418,7 @@ NovatelSpanInsGpsDriver::init()
 
     //short IMU messages
     // pva data in wgs84 coordinates
-    put = serial_->write( "log inspvasb ontime 0.1\r\n" );
+    put = serial_->write( "log inspvasb ontime 0.05\r\n" );
     
 //      // Read the serial device to check response ( "<OK" is 3 bytes long )
 //     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
@@ -489,7 +492,7 @@ NovatelSpanInsGpsDriver::init()
 int
 NovatelSpanInsGpsDriver::disable()
 {
-    cout << "enabled_: " << enabled_ << endl;
+//    cout << "enabled_: " << enabled_ << endl;
 
     if ( !enabled_ ) return 0;
 
@@ -574,9 +577,16 @@ NovatelSpanInsGpsDriver::readGps( orca::GpsDataPtr& data, int timeoutMs )
     else
     {      
         context_.tracer()->debug( "TRACE(novatelspandriver::readGps()): got gps data", 6 );
-    }
+
+        // cout << "gpsCount_: " << gpsCount_ << endl;
+        if (gpsCount_ > 200 )
+        {
+            cout << "Gps Data Buffer is " << gpsDataBuffer_.size()/100 << "% full" << endl;
+            gpsCount_ = 0;
+        }
+        gpsCount_++;
     
-    // cout << "Gps Data Buffer has " << gpsDataBuffer_.size() << " elements" << endl;
+    }
     
     return;
 }
@@ -584,17 +594,8 @@ NovatelSpanInsGpsDriver::readGps( orca::GpsDataPtr& data, int timeoutMs )
 void
 NovatelSpanInsGpsDriver::readGpsTime( orca::GpsTimeDataPtr& data, int timeoutMs )
 {
-//     if(newGpsTime_)
-//     {
-// 	newGpsTime_ = false;
-// 	*data = gpsTimeData_;
-//         return 0;
-//     }
-//     else
-//     {
-//         return -1;
-//     }
-return;
+
+    return;
     
 }
 
@@ -610,21 +611,18 @@ NovatelSpanInsGpsDriver::readImu( orca::ImuDataPtr& data, int timeoutMs )
     else
     {
         context_.tracer()->debug( "TRACE(novatelspandriver::readImu()): got imu data", 6 );
+    
+        if (imuCount_ > 1000 )
+        {
+            cout << "Imu Data Buffer is " << imuDataBuffer_.size()/100 << "% full" << endl;
+            imuCount_ = 0;
+        }
+        imuCount_++;
+    
     }
-    // cout << "Imu Data Buffer has " << imuDataBuffer_.size() << " elements" << endl;
     
     return;
 
-    //     if(newImuData_)
-//     {
-//         newImuData_ = false;
-//         *data = imuData_;
-//         return 0;
-//     }
-//     else
-//     {
-//         return -1;
-//     }
 }
     
 void
@@ -639,11 +637,14 @@ NovatelSpanInsGpsDriver::readPosition3d( orca::Position3dDataPtr& data, int time
     else
     {   
         context_.tracer()->debug( "TRACE(novatelspandriver::readPosition3d()): got position3d data", 6 );
-    }
+        
+        if (position3dCount_ > 200 )
+        {
+            cout << "Position3d Data Buffer is " << position3dDataBuffer_.size()/100 << "% full" << endl;
+            position3dCount_ = 0;
+        }
+        position3dCount_++;
     
-    if (position3dCount_ > 20 )
-    {
-        cout << "Position3d Data Buffer is " << position3dDataBuffer_.size()/100 << "% full" << endl;
     }
     
     return;

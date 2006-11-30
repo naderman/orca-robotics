@@ -80,6 +80,7 @@ Component::start()
     if ( driverName == "novatelspan" )
     {
         std::string device = orcaice::getPropertyWithDefault( prop, prefix+"Device", "/dev/ttyS0" );
+        // TODO: need to set this at a baud rate of 230400
         int baud = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Baud", 115200 );
         hwDriver_ = new NovatelSpanInsGpsDriver( device.c_str(), baud, desiredCfg, context() );
     }

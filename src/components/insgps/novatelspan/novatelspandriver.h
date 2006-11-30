@@ -146,6 +146,8 @@ private:
     novatel::INSCOVSB_LOG   INSCOV_;
     novatel::RAWIMUSB_LOG   RAWIMU_;
 
+    int gpsCount_;
+    int imuCount_;
     int position3dCount_;
 
     orcaice::Context context_;
