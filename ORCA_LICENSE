@@ -90,8 +90,13 @@ src
         orcapathplan                       LGPL
         orcaplayer                         GPL
         orcaportability                    LGPL
+        orcaprobe                          LGPL
+        orcaprobefactory                   LGPL
+        orcaquml                           GPL
         orcaserial                         LGPL
         orcasmc                            LGPL
         probe                              LGPL
+            iostream                       LGPL
+            qt                             GPL
         qorcacm                            GPL
 -------------------------------------------------------------
