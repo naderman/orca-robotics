@@ -42,6 +42,12 @@ IF( QT4_FOUND )
 ELSE ( QT4_FOUND )
     MESSAGE( STATUS "Looking for Qt4 >= 4.1 - not found")
 ENDIF ( QT4_FOUND )
+# some libraries require v.4.2
+SET ( QT42_FOUND FALSE )
+IF ( QTVERSION MATCHES "4.2.*")
+    SET ( QT42_FOUND TRUE )
+    MESSAGE( STATUS "Looking for Qt4 >= 4.2 - found")
+ENDIF ( QTVERSION MATCHES "4.2.*")
 
 # Check for GLUT
 CHECK_INCLUDE_FILE( GL/glut.h GLUT_FOUND )
