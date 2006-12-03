@@ -32,6 +32,8 @@
 #define READ_TIMEOUT          250000      /* less than 1e6 */
 #define _POSIX
 
+#define ALEXB_OLDWAY 1
+
 int carmen_serial_connect(int *dev_fd, char *dev_name)
 {
   int BAUDRATE = B9600;
@@ -43,8 +45,6 @@ int carmen_serial_connect(int *dev_fd, char *dev_name)
     return -1;
   }
   tcgetattr(*dev_fd, &newtio);
-  cfsetispeed(&newtio, BAUDRATE);
-  cfsetospeed(&newtio, BAUDRATE);
   newtio.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
   newtio.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON | IXOFF);
   newtio.c_cflag &= ~(CSIZE | PARENB | PARODD);
@@ -52,6 +52,15 @@ int carmen_serial_connect(int *dev_fd, char *dev_name)
   newtio.c_oflag &= ~(OPOST);
   newtio.c_cc[VTIME] = 1;      
   newtio.c_cc[VMIN] = 0;       
+
+#if ALEXB_OLDWAY
+  cfsetispeed(&newtio, BAUDRATE);
+  cfsetospeed(&newtio, BAUDRATE);
+#else
+  newtio.c_ispeed = 9600;
+  newtio.c_ospeed = 9600;
+#endif
+
   tcflush(*dev_fd, TCIFLUSH);
   tcsetattr(*dev_fd, TCSANOW, &newtio);
   return 0;
@@ -182,8 +191,13 @@ void carmen_serial_setparms(int fd, char *baudr, char *par, char *bits,
 
 #ifdef _POSIX
   if(spd != -1) {
-    cfsetospeed(&tty, (speed_t)spd);
-    cfsetispeed(&tty, (speed_t)spd);
+#if ALEXB_OLDWAY
+      cfsetospeed(&tty, (speed_t)spd);
+      cfsetispeed(&tty, (speed_t)spd);
+#else
+      tty.c_ispeed = newbaud;
+      tty.c_ospeed = newbaud;
+#endif
   }
   switch (bit) {
   case '5':
@@ -216,7 +230,7 @@ void carmen_serial_setparms(int fd, char *baudr, char *par, char *bits,
 #endif
   tty.c_cc[VMIN] = 1;
   tty.c_cc[VTIME] = 5;
-  
+
   /* Flow control. */
   if(hwf) {
     tty.c_cflag |= CRTSCTS;
