@@ -36,6 +36,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @section changes Changes since Last Release
 
+- Build system
+    - split utils directory into libs and utils. components are not affected.
 - libOrcaIce
     - added basename() and dirname() similar to Unix equivalents (Alex M.)
     - added ctest for string utilities (Alex M.)
@@ -44,8 +46,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - interface name is set properly on replay (Alex M.)
     - interfaces are initialized before waiting for user input to start replay (Alex M.)
     - execution dir of logplayer and the dir where logs are stored may be different (Alex M.)
-- libOrcaGui
-  - Made the generic bits in libOrcaGui unaware of any specific bits in libOrcaGui2d (Alex B.)
+- libOrcaQGui
+  - renamed from libOrcaGui
+  - Made the generic bits in libOrcaQGui unaware of any specific bits in libOrcaQGui2d (Alex B.)
   - Added support for dynamically-loaded plug-in GuiElementFactories, to allow satelite projects to 
     extend the GUI (Alex B.)
 - PolarFeature2d interface
@@ -56,12 +59,14 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - added a gui driver
 - New library: libOrcaDynamicLoad
   - factored out the dynamic loading stuff into a separate library (Alex B.)
-- New library: libOrcaQuml (Alex M.)
+- New library: libOrcaQUml (Alex M.)
   - port of old libQorcaUml from QCanvas to QGraphicView
-  - now includes a utility generateuml for creating images of UML symbols from component
-    definition files.
+- New utilities: def2cfg, def2xml, def2xmltemplate, def2definverted, def2uml
+  - the first 4 are renamed from generatecfg, etc. and moved into a separate dir.
+  - new utility def2uml for creating images of UML symbols from component definition files.
 - Documentation
   - added graphical UML symbol to documentation pages of all components. (Alex M.)
+  - fixed broken doxygen references.
 
 @section orca_doc_todo_history Changes in Past Releases
 
