@@ -32,8 +32,8 @@ src
         imageserver                        LGPL
         imageviewer                        LGPL
         laser2d                            LGPL
-            playerclient                   GPL
-            sickcarmen                     GPL
+            playerclient                    GPL
+            sickcarmen                      GPL
         laser2og                           LGPL
         laserfeatureextractor              LGPL
         lasermon                           LGPL
@@ -41,46 +41,28 @@ src
         logger                             LGPL
         logplayer                          LGPL
         noisyrobot2d                       LGPL
-        ogmaploader                        GPL
+        ogmaploader                         GPL
         ognode                             LGPL
         orcamon                            LGPL
-        orcaview                           GPL
-        orcaview3d                         GPL
+        orcaview                            GPL
+        orcaview3d                          GPL
         pathplanner                        LGPL
         position2dmon                      LGPL
-        registrylist                       LGPL
-        registryview                       GPL
         robot2d                            LGPL
-            playerclient                   GPL
+            playerclient                    GPL
         segwayrmp                          LGPL
-            usb                            GPL
+            usb                             GPL
         simlocaliser                       LGPL
         teleop                             LGPL
     examples
         *                                  LGPL
     interfaces
         *                                  LGPL
-    sandbox
-        gorca                              GPL
-        imu                                LGPL
-        insgps                             LGPL (with permission from NovAtel Inc.)
-        netcam                             LGPL
-        pointcloudserver                   LGPL
-        pointcloudviewer                   LGPL
-        qorcauml                           GPL
-        reactivewalker                     LGPL
-    tests
-        *                                  LGPL
-    utils
-        cleanregistry                      LGPL
-        iceping                            LGPL
+    libs
         orcacm                             LGPL
         orcadef                            LGPL
-        orcagui                            GPL
-        orcagui2d                          GPL
-        orcagui3d                          GPL
         orcaice                            LGPL
-        orcaimage                          GPL
+        orcaimage                           GPL
         orcalog                            LGPL
         orcamisc                           LGPL
         orcanavutil                        LGPL
@@ -88,15 +70,36 @@ src
         orcaogfusion                       LGPL
         orcaogmap                          LGPL
         orcapathplan                       LGPL
-        orcaplayer                         GPL
+        orcaplayer                          GPL
         orcaportability                    LGPL
         orcaprobe                          LGPL
         orcaprobefactory                   LGPL
-        orcaquml                           GPL
+        orcaqcm                             GPL
+        orcaqgui                            GPL
+        orcaqgui2d                          GPL
+        orcaqgui2dfactory                   GPL
+        orcaqgui3d                          GPL
+        orcaqgui3dfactory                   GPL
+        orcaquml                            GPL
         orcaserial                         LGPL
+    sandbox
+        gorca                               GPL
+        imu                                LGPL
+        insgps                             LGPL (with permission from NovAtel Inc.)
+        netcam                             LGPL
+        pointcloudserver                   LGPL
+        pointcloudviewer                   LGPL
+        reactivewalker                     LGPL
+    tests
+        *                                  LGPL
+    utils
+        cleanregistry                      LGPL
+        deftools                           LGPL
+        iceping                            LGPL
         orcasmc                            LGPL
         probe                              LGPL
             iostream                       LGPL
-            qt                             GPL
-        qorcacm                            GPL
+            qt                              GPL
+        registrylist                       LGPL
+        registryview                        GPL
 -------------------------------------------------------------
