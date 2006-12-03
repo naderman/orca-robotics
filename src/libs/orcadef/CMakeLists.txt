@@ -1,7 +1,5 @@
 INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
-
-INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
 # for some reason cannot get shared libs working in windows
 IF(NOT WIN32)

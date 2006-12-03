@@ -12,7 +12,7 @@ IF ( BUILD_PATHPLANNER )
    CONFIGURE_FILE( configpathplanner.h.cmake ${PROJECT_SOURCE_DIR}/src/components/pathplanner/configpathplanner.h )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
     
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
     SET( COMMON_SRCS
@@ -28,21 +28,14 @@ IF ( BUILD_PATHPLANNER )
     SET ( QT_SRCS skeletongraphicsI )
 
     IF ( QT4_FOUND )
-        INCLUDE_DIRECTORIES(
-            ${QT_INCLUDES}
-            ${PROJECT_SOURCE_DIR}/src/libs
-        )
-        ADD_DEFINITIONS( ${QT_DEFINITIONS} )
+        INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
     
         # stand-alone component  
         GLOBAL_ADD_EXECUTABLE( pathplanner main ${COMMON_SRCS} ${QT_SRCS} )
         # build an IceBox service
         GLOBAL_ADD_LIBRARY( OrcaPathPlanner SHARED service ${COMMON_SRCS} )
-        TARGET_LINK_LIBRARIES( pathplanner OrcaOgMap OrcaPathPlan OrcaMisc  ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
+        TARGET_LINK_LIBRARIES( pathplanner OrcaOgMap OrcaPathPlan OrcaMisc )
     ELSE( QT4_FOUND )
-        INCLUDE_DIRECTORIES(
-            ${PROJECT_SOURCE_DIR}/src/libs
-        )    
         # stand-alone component  
         GLOBAL_ADD_EXECUTABLE( pathplanner main ${COMMON_SRCS} )
         # build an IceBox service

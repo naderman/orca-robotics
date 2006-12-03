@@ -4,7 +4,7 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
 
   INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
   # Use libOrcaIce
-  INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
+  INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
   #
   # checks for libraries and drivers

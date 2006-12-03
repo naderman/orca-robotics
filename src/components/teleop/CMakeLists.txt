@@ -3,7 +3,7 @@ OPTION( BUILD_TELEOP "Try to build Teleop" ON )
 IF ( NOT WIN32 AND BUILD_TELEOP )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
     # keyboard driver with termio
     OPTIONAL_SUB_LIBRARY(

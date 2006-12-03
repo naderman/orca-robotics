@@ -1,0 +1,8 @@
+#
+# Include and link against Qt core and gui libs
+#
+INCLUDE_DIRECTORIES( ${QT_INCLUDES} )
+
+ADD_DEFINITIONS( ${QT_DEFINITIONS} )
+
+LINK_LIBRARIES( ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )

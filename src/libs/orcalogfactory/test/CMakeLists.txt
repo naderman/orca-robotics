@@ -1,5 +1,5 @@
 INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
 ADD_EXECUTABLE( logreplaytest logreplaytest.cpp )
 TARGET_LINK_LIBRARIES( logreplaytest OrcaLog OrcaLogFactory )
@@ -15,8 +15,6 @@ ADD_TEST( LogReplayTest logreplaytest )
 GENERATE_CONFIG_FILE( logreplaytest.def logreplaytest 0 )
 MESSAGE ( STATUS "Planning to Build Test     : LogReplayTest [libOrcaLogFactory]")
 
-
-INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs )
 ADD_EXECUTABLE( defaultfactoryinstantiate defaultfactoryinstantiate.cpp )
 TARGET_LINK_LIBRARIES( defaultfactoryinstantiate OrcaLog OrcaLogFactory )
 ADD_TEST( DefaultFactoryInstantiate defaultfactoryinstantiate )

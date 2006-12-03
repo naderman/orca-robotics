@@ -3,7 +3,7 @@ OPTION( BUILD_POINT_CLOUD_VIEWER "Try to build point cloud viewer" ON )
 IF ( BUILD_POINT_CLOUD_VIEWER  )
     IF ( QT4_FOUND )
     	INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    	INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
+    	INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
     
  	SET ( MOC_HEADERS 
 		pcviewer.h

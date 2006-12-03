@@ -3,7 +3,7 @@ OPTION( BUILD_SIM_LOCALISER "Try to build SimLocaliser component" ON )
 IF ( NOT WIN32 AND BUILD_SIM_LOCALISER )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
 # these should be in the subdir, but they have no effect there for some reason
 INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
@@ -19,10 +19,6 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
         HAVE_STAGE_DRIVER
         ${PLAYER_LIBS} OrcaPlayer
     )
-
-#     INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/src/libs/ )
-#     LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} ${PROJECT_BINARY_DIR}/src/utils/orcaplayer )
-#     ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
 
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
     SET( COMMON_SRCS

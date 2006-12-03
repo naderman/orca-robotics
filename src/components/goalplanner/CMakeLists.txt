@@ -4,7 +4,7 @@ IF ( BUILD_GOAL_PLANNER )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     # Remove this line if you don't plan to use libOrcaIce
-    INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
     
     #
     # This gathers all the source files into the variable 'SRCS'

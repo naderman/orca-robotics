@@ -3,7 +3,7 @@ OPTION( BUILD_POINT_CLOUD_SERVER "Try to build point cloud server" ON )
 IF ( BUILD_POINT_CLOUD_SERVER )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
     
 
     # this driver can always be built

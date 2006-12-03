@@ -3,7 +3,7 @@ OPTION( BUILD_LASERFEATUREEXTRACTOR "Try to build LaserFeatureExtractor" ON )
 IF ( NOT WIN32 AND BUILD_LASERFEATUREEXTRACTOR )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
     
     FILE( GLOB SRCS *.cpp )
     # Set LIB_SRCS to everything _except_ main.cpp

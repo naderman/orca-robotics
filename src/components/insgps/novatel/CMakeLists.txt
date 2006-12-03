@@ -25,7 +25,7 @@ SUBDIRS(cmd
         crc)
 
 INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
 SET( NOVATEL_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR} )
 

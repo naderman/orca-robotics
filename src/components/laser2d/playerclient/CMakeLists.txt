@@ -1,4 +1,4 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
 FILE( GLOB SRCS *.cpp )
 

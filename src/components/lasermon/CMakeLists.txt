@@ -3,7 +3,7 @@ OPTION( BUILD_LASER_MONITOR "Try to build Laser Monitor" ON )
 IF ( BUILD_LASER_MONITOR )
 
   INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-  INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
+  INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
   #
   # This gathers all the source files into the variable 'SRCS'

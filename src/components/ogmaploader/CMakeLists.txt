@@ -10,7 +10,7 @@ ENDIF ( NOT QT4_FOUND )
 IF ( NOT WIN32 AND REALLY_BUILD_OGMAPLOADER )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
     INCLUDE_DIRECTORIES(
         ${QT_INCLUDES}

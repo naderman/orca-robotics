@@ -1,7 +1,6 @@
 INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
-INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs )
 LINK_DIRECTORIES( ${ICE_HOME}/lib
                   ${PROJECT_BINARY_DIR}/src/utils/orcamisc
                   ${PROJECT_BINARY_DIR}/src/utils/orcaice

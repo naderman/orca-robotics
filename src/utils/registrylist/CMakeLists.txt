@@ -3,7 +3,7 @@ OPTION( BUILD_REGISTRY_LIST "Try to build RegistryList component" ON )
 IF ( BUILD_REGISTRY_LIST )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
     FILE( GLOB SRCS *.cpp )
     

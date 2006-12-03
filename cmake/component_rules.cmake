@@ -2,6 +2,7 @@
 # Include and link against required stuff
 #
 INCLUDE_DIRECTORIES( 
+    ${PROJECT_SOURCE_DIR}/src/libs
     ${PROJECT_BINARY_DIR}/src/interfaces/cpp
     ${ICE_HOME}/include
 )

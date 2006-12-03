@@ -5,7 +5,7 @@ IF ( NOT WIN32 AND BUILD_INSGPS )
     SUBDIRS( novatel )
     
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
     SET( INSGPS_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR} )
     INCLUDE_DIRECTORIES( ${INSGPS_SRC_DIR} )

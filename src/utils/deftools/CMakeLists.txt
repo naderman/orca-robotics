@@ -1,7 +1,5 @@
 INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
-
-INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
 GLOBAL_ADD_EXECUTABLE( def2cfg def2cfg.cpp )
 TARGET_LINK_LIBRARIES( def2cfg OrcaDef )
