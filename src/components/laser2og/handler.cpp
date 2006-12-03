@@ -61,7 +61,7 @@ Handler::init()
     {
         try
         {
-            orcaice::connectToInterfaceWithTag<orca::RangeScanner2dPrx>( context_, rangeScannerPrx_, "RangeScanner" );
+            orcaice::connectToInterfaceWithTag<orca::RangeScanner2dPrx>( context_, rangeScannerPrx_, "Observations" );
             break;
         }
         catch ( const orcaice::NetworkException & e )

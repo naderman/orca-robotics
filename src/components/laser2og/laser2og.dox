@@ -25,7 +25,7 @@
 
 - @ref orca_interface_localise2d [Laser2Og.Requires.Localisation]
 - @ref orca_interface_ogfusion [Laser2Og.Requires.OgFusion]
-- @ref orca_interface_rangescanner [Laser2Og.Requires.RangeScanner]
+- @ref orca_interface_rangescanner2d [Laser2Og.Requires.Observations]
 
 @image html laser2og.png
 

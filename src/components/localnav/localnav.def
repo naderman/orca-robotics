@@ -12,7 +12,7 @@ Requires.Platform2d.DefaultProxy=platform2d@local/robot2d
 Requires.Localisation.Type=Localise2d
 Requires.Localisation.DefaultProxy=localise2d@local/faithlocaliser
 
-Requires.Observations.Type=RangeScanner
+Requires.Observations.Type=RangeScanner2d
 Requires.Observations.DefaultProxy=laserscanner2d@local/laser2d
 
 # Config Parameters
