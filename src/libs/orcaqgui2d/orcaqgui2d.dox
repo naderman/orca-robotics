@@ -1,0 +1,38 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup libs
+@ingroup linux
+@defgroup orca_library_orcaqgui2d libOrcaQGui2d
+@brief Tools for building 2D Orca-compliant GUI's with Qt library.
+
+@par Overview
+This library contains reusable elements to build a 2D Orca GUI component using the Qt library. 
+
+For a full list of functions and classes see @ref orcaqgui2d.
+
+@sa orcagui
+@sa orcagui3d
+
+@par Authors
+
+Tobias Kaupp, Alex Brooks, Alex Makarenko
+  
+*/
+
+/*!
+@brief libOrcaQGui2d provides tools for building 2D Orca-compliant GUI's with Qt library.
+@namespace orcaqgui2d
+
+This namespace is part of a library.
+
+@see @ref orca_library_orcaqgui2d
+
+*/

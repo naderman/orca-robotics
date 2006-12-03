@@ -30,7 +30,7 @@ IF ( BUILD_PATHPLANNER )
     IF ( QT4_FOUND )
         INCLUDE_DIRECTORIES(
             ${QT_INCLUDES}
-            ${PROJECT_SOURCE_DIR}/src/utils
+            ${PROJECT_SOURCE_DIR}/src/libs
         )
         ADD_DEFINITIONS( ${QT_DEFINITIONS} )
     
@@ -41,7 +41,7 @@ IF ( BUILD_PATHPLANNER )
         TARGET_LINK_LIBRARIES( pathplanner OrcaOgMap OrcaPathPlan OrcaMisc  ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
     ELSE( QT4_FOUND )
         INCLUDE_DIRECTORIES(
-            ${PROJECT_SOURCE_DIR}/src/utils
+            ${PROJECT_SOURCE_DIR}/src/libs
         )    
         # stand-alone component  
         GLOBAL_ADD_EXECUTABLE( pathplanner main ${COMMON_SRCS} )

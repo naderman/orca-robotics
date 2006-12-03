@@ -1,0 +1,43 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+/*!
+
+@ingroup libs
+@defgroup orca_library_orcaplayer libOrcaPlayer
+@brief Converts between Player and Orca types.
+
+@par Development status
+Just created.
+
+@section overview Overview
+
+This library works with Player 2.0 or later.
+
+For a full list of functions and classes see @ref orcaplayer.
+
+Header file:
+@verbatim
+#include <orcaplayer/orcaplayer.h>
+@endverbatim
+
+@par Responsible Developer
+Alex Makarenko
+  
+*/
+
+/*!
+@namespace orcaplayer
+@brief Converts between Player and Orca types.
+
+This namespace is part of a library which converts between Player and Orca types..
+
+@see @ref orca_library_orcaplayer 
+*/
+

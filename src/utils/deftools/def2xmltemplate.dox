@@ -1,0 +1,32 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup utils
+@ingroup linux
+@defgroup orca_util_def2xmltemplate Def2XmlTemplate
+@brief Converts component definition file to templated server descriptor file.
+
+The resulting XML file defines server template and a sample node definition which creates a server instance. See IceGrid Node documentation for more details.
+
+@par Usage
+
+@verbatim
+$ def2xmltemplate <.def file> <.xml file> [--verbose]
+@endverbatim
+
+File name convention: for @c component.def, create @c component-template.xml
+
+@see @ref orca_util_generatexml.
+
+@author Alex Makarenko
+
+*/
+

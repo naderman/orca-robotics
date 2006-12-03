@@ -1,0 +1,1 @@
+uic-qt4 -o waypointdialog.h waypointdialog.ui

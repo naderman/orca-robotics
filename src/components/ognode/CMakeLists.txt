@@ -11,7 +11,7 @@ IF ( BUILD_OGNODE )
     #
     FILE( GLOB SRCS *.cpp )           
     
-    INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/utils )
+    INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs )
     
     GLOBAL_ADD_EXECUTABLE( ognode ${SRCS} )
     TARGET_LINK_LIBRARIES( ognode OrcaOgFusion OrcaOgMap )

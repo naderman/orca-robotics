@@ -159,14 +159,14 @@ INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/local/project_setup.cmake )
 
 # Store the location of the command in cache
 # (after the project-specific Find functions are defined ...)
-FIND_GENERATE_CFG( GENERATE_CFG_HOME )
-SET( ORCA_GENERATECFG_COMMAND ${GENERATE_CFG_HOME}/generatecfg${EXE_EXTENSION} 
-        CACHE PATH "Path to generatecfg executable." FORCE )
-SET( ORCA_GENERATEXML_COMMAND ${GENERATE_CFG_HOME}/generatexml${EXE_EXTENSION} 
-        CACHE PATH "Path to generatexml executable." FORCE )
-SET( ORCA_GENERATEXMLTEMPLATE_COMMAND ${GENERATE_CFG_HOME}/generatexmltemplate${EXE_EXTENSION} 
-        CACHE PATH "Path to generatexmltemplate$ executable." FORCE )
-MESSAGE( STATUS "Using ${ORCA_GENERATECFG_COMMAND}" )
+FIND_DEFTOOLS( DEFTOOLS_HOME )
+SET( ORCA_DEF2CFG_COMMAND ${DEFTOOLS_HOME}/def2cfg${EXE_EXTENSION} 
+        CACHE PATH "Path to def2cfg executable." FORCE )
+SET( ORCA_DEF2XML_COMMAND ${DEFTOOLS_HOME}/def2xml${EXE_EXTENSION} 
+        CACHE PATH "Path to def2xml executable." FORCE )
+SET( ORCA_DEF2XMLTEMPLATE_COMMAND ${DEFTOOLS_HOME}/def2xmltemplate${EXE_EXTENSION} 
+        CACHE PATH "Path to def2xmltemplate executable." FORCE )
+MESSAGE( STATUS "Using ${ORCA_DEF2CFG_COMMAND}" )
 
 ###########################################################
 #

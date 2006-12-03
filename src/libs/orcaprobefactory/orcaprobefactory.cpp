@@ -1,0 +1,71 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2006 Alexei Makarenko
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+#include "orcaprobefactory.h"
+
+// all plug-ins
+#include "binaryswitchprobe.h"
+#include "cameraprobe.h"
+#include "cpuprobe.h"
+#include "homeprobe.h"
+#include "laserscanner2dprobe.h"
+#include "powerprobe.h"
+
+using namespace orcaprobefactory;
+
+OrcaProbeFactory::OrcaProbeFactory()
+{
+    addSupportedType("BinarySwitch");
+    addSupportedType("Camera");
+    addSupportedType("Cpu");
+//     addSupportedType("Gps");
+    addSupportedType("Home");
+    addSupportedType("LaserScanner2d");
+//     addSupportedType("Localise2d");
+//     addSupportedType("PolarFeature2d");
+//     addSupportedType("Position2d");
+//     addSupportedType("Position3d");
+    addSupportedType("Power");
+}
+
+orcaprobe::InterfaceProbe* 
+OrcaProbeFactory::create( const std::string           & interfaceType, 
+                          const orca::FQInterfaceName & name, 
+                          orcaprobe::DisplayDriver    & display, 
+                          const orcaice::Context      & context )
+{
+    orcaprobe::InterfaceProbe* probe = 0;
+
+    if ( interfaceType == "BinarySwitch" ) {
+        probe = new BinarySwitchProbe( name, display, context );
+    }
+    else if ( interfaceType == "Camera" ) {
+        probe = new CameraProbe( name, display, context );
+    }
+    else if ( interfaceType == "Cpu" ) {
+        probe = new CpuProbe( name, display, context );
+    }
+    else if ( interfaceType == "Home" ) {
+        probe = new HomeProbe( name, display, context );
+    }
+    else if ( interfaceType == "LaserScanner2d" ) {
+        probe = new LaserScanner2dProbe( name, display, context );
+    }
+    else if ( interfaceType == "Power" ) {
+        probe = new PowerProbe( name, display, context );
+    }
+
+    return probe;
+}
+
+orcaprobe::Factory* createFactory()
+{
+    return new OrcaProbeFactory;
+}

@@ -1,0 +1,65 @@
+#
+# Component Configuration
+# -----------------------
+#
+# Format:
+#   DefaultComponentTag=DefTestInput                            (REQUIRED)
+#   DefaultComponentEndpoints=DefTestInput                      (optional)
+#   Component.Comment.1=Line 1 of comments about this component (optional)
+#   Component.Comment.2=Line 2 of comments about this component (optional)
+# Note: Any number of comment lines can be used, just keep incrementing the number.
+
+DefaultComponentTag=DefTestInput
+DefaultComponentEndpoints=
+Component.Comment.1=Line 1 of comments about this component
+Component.Comment.2=Line 2 of comments about this component
+
+# Provided Interfaces
+# -------------------
+#
+# Format: 
+#   Provides.<InterfaceTag>.Type=<type>                     (REQUIRED)
+#   Provides.<InterfaceTag>.DefaultName=<name>              (optional)
+
+Provides.Laser.Type=::orca::Laser
+Provides.Laser.DefaultName=laser
+
+Provides.Platform2d.Type=::orca::Platform2d
+
+# Required Interfaces
+# -------------------
+#
+# Format 1 : Direct Proxy
+#   Requires.<InterfaceTag>.Type=<type>                     (REQUIRED)
+#   Requires.<InterfaceTag>.DefaultProxy=<name>:<endpoint>  (optional)
+
+Requires.Interface1.Type=Position2d
+Requires.Interface1.DefaultProxy=position2d:tcp -h localhost -p 15000
+
+#
+# Format 2 : Indirect Proxy
+#   Requires.<InterfaceTag>.Type=<type>                        (REQUIRED)
+#   Requires.<InterfaceTag>.DefaultProxy=<name>@<platf>/<comp> (optional)
+
+Requires.Interface2.Type=Position2d
+Requires.Interface2.DefaultProxy=position2d@local/position2d
+
+#
+# Config Parameters
+# -----------------
+#
+# Format:
+#   Config.<ParamTag>.Default=xxx                (REQUIRED)
+#   Config.<ParamTag>.Comment=xxx                (optional)
+#   Config.<ParamTag>.Type=xxx                   (optional)
+#   Config.<ParamTag>.External=xxx               (optional)
+
+Config.Max.Default=default value
+Config.Max.Comment=The max blah
+Config.Max.Type=string
+Config.Max.External=0
+
+Config.Min.Default=another default value
+
+Config.Ext.One.Two.Default=another default value
+Config.Ext.One.Two.External=1

@@ -1,0 +1,48 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup libs
+@defgroup orca_library_orcapathplan libOrcaPathplan
+@brief Library useful for path planning applications
+
+@section Development status
+Beta
+
+@section overview Overview
+
+This library contains an API to common path planning functionality in a 2D world. All path planning uses an occupancy grid representation of the world.
+
+The library consists of plain C-functions and a few a few helper classes. They can be used in a pathplanning component such as @ref orca_component_pathplanner.
+
+Header file:
+@verbatim
+#include <orcapathplan/orcapathplan.h>
+@endverbatim
+
+@section configuration Configuration parameters
+
+Here's a list of a few configuration parameters and their meaning. For more information, refer to @ref orca_component_pathplanner.
+
+- @c traversabilityThreshhold (double)
+    - Everything below this threshhold is considered traversable, everything above is an obstacle
+    - Valid values: [0.0;1.0]
+    
+- @c robotDiameterMetres (double)
+    - The robot's diameter including some safety distance
+    - Unit: meters
+
+- @c doPathOptimization (bool)
+    - Flag which determines whether an optimized path should be computed @ref orca_pathplanner_pathoptimization
+    - Valid values: 0 or 1
+
+@section Responsible Developer
+Tobias Kaupp
+  
+*/

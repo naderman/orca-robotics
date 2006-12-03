@@ -1,0 +1,8 @@
+DefaultComponentTag=RegistryView
+
+# configuration
+Config.RefreshInterval.Default=120.0
+
+# external configuration options
+Config.Ice.Override.ConnectTimeout.Default=150
+Config.Ice.Override.ConnectTimeout.External=1

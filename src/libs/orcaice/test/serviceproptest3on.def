@@ -1,0 +1,20 @@
+DefaultComponentTag=ServiceTest3
+
+# Provided Interfaces
+
+# Required Interfaces
+
+# Configuration
+Config.Quit.Default=1
+
+# External configuration options
+Config.Orca.Tracer.ErrorToFile.Default=300
+Config.Orca.Tracer.ErrorToFile.External=1
+
+Config.Orca.RequireRegistry.Default=0
+Config.Orca.RequireRegistry.External=1
+
+# Ensure timeouts
+Config.Ice.Override.ConnectTimeout.Default=150
+Config.Ice.Override.ConnectTimeout.External=1
+

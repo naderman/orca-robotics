@@ -13,7 +13,7 @@ IF ( QT4_FOUND AND BUILD_GORCA )
         ${QT_INCLUDES}
         ${ICE_HOME}/include     # remove this dependency!
         ${PROJECT_BINARY_DIR}/src/interfaces/cpp   # these include files are auto generated!
-	${PROJECT_SOURCE_DIR}/src/utils
+	${PROJECT_SOURCE_DIR}/src/libs
         ${PROJECT_SOURCE_DIR}/src/sandbox
     )
     

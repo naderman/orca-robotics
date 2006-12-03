@@ -1,0 +1,9 @@
+DefaultComponentTag=AppTest
+
+# Provided Interfaces
+
+# Required Interfaces
+
+# Ensure timeouts
+Config.Ice.Override.ConnectTimeout.Default=1000
+Config.Ice.Override.Timeout.Default=200

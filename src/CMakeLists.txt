@@ -1,4 +1,5 @@
 ADD_SUBDIRECTORY ( interfaces )
+ADD_SUBDIRECTORY ( libs )
 ADD_SUBDIRECTORY ( utils )
 ADD_SUBDIRECTORY ( components ) 
 ADD_SUBDIRECTORY ( examples )

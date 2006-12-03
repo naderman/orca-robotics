@@ -1,7 +1,7 @@
 INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/include_orcaice.cmake )
 
-INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/utils )
+INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs )
 
 FILE( GLOB SRCS *.cpp )
 

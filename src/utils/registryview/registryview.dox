@@ -1,0 +1,63 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@ingroup components
+@ingroup apps
+@ingroup cpp
+@ingroup linux
+@defgroup orca_component_registryview RegistryView
+@brief A graphical viewer for the Orca %Component Model
+
+@par Provides
+
+- @ref orca_interface_home
+
+@par Requires
+
+- IceGrid/Admin
+- @ref orca_interface_home
+
+@par Operation
+
+This component contacts the registry and gets a list of registered Orca components (Ice adapters). Then it tries to contact Home interface at every component. If successful, it gets a list of provided and required interfaces and displays them. If not successful, it assumes the component is not running or is unreachable.
+
+The information about the component is shown in a tree view, aggregated by platform and component. Several display options are available under the View menu.
+
+@image html registryview_treeview.png
+
+@see @ref orca_component_registrylist
+
+@par Dependancies
+
+- Qt GUI library >=v.4.1
+
+@par Configuration
+
+- @c RegistryView.Config.RefreshInterval (float) [s]
+    - Time interval between requests to Registry for a list of adapters.
+    - Valid values:
+        - t<0: Don't refresh automatically.
+        - t=0: Refresh as frequently as possible (don't do it!)
+        - t>0: Normal operation.
+    - Default: 120.0
+
+- @c Ice.Override.ConnectTimeout (int) [ms]
+    - The operation of this utility depends on time-out when the components listed in the registry are not reachable.
+    - Default: 150
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
+@par Authors
+Alex Makarenko
+
+*/
+

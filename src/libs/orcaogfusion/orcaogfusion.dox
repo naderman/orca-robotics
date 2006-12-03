@@ -1,0 +1,41 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup libs
+@defgroup _library_ogfusionutil ogfusionutil
+@brief Occupancy Grid Fusion Util: Stuff useful for Occupancy grid operations.
+
+    @par Development status
+    Always ongoing.
+    
+    @section overview Overview
+
+Occupancy Grid Fusion Util: Stuff useful for Occupancy grid operations. Such 
+as the fusion of cells, and configuration of occupancy grid maps.
+
+For a full list of functions and classes see @ref ogfusionutil
+
+Have to include things by name:
+@verbatim
+#include <ogfusionutil/ogfusionutil.h>
+@endverbatim
+
+    @par Responsible Developer
+    Matthew Ridley
+  
+*/
+
+/*!
+@brief Occupancy Grid Fusion Util: Stuff useful for Occupancy grid operations.
+@namespace ogfusionutil
+
+@see @ref _library_abutil
+
+*/

@@ -1,0 +1,38 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup utils
+@ingroup linux
+@defgroup orca_util_def2uml Def2Uml
+@brief Loads component definition file and creates an image of the corresponding UML symbol.
+
+@par Operation
+
+@verbatim
+$ def2uml --help
+@endverbatim
+
+File name convention: for @c component.def, will create @c component.png in the local directory.
+
+Example output:
+
+@image html laser2d.png
+
+@par Defintion File Format
+
+Here's an example which contains all types of entries.
+
+@include utils/orcadef/test/def_test_input.def
+
+@author Alex Makarenko
+
+*/
+

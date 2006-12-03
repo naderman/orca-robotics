@@ -1,0 +1,30 @@
+# Ice config
+Ice.Default.Locator=IcePack/Locator: default -p 12000
+#Ice.Default.Locator=IcePack/Locator: default: default -h host.xxx.xxx.xxx -p 12000
+
+# Orca config
+Orca.PrintProperties=1
+Orca.RequireRegisty=1
+
+# Orca Tracer config
+Orca.Tracer.RequireStatusTopic=0
+Orca.Tracer.Filename=orca_component_trace.txt
+Orca.Tracer.InfoToStdout=1
+Orca.Tracer.InfoToTopic=0
+Orca.Tracer.InfoToFile=0
+Orca.Tracer.InfoToLog=0
+Orca.Tracer.WarningToStdout=1
+Orca.Tracer.WarningToTopic=1
+Orca.Tracer.WarningToFile=0
+Orca.Tracer.WarningToLog=0
+Orca.Tracer.ErrorToStdout=1
+Orca.Tracer.ErrorToTopic=1
+Orca.Tracer.ErrorToFile=0
+Orca.Tracer.ErrorToLog=0
+Orca.Tracer.OtherToStdout=1
+Orca.Tracer.OtherToTopic=0
+Orca.Tracer.OtherToFile=0
+Orca.Tracer.OtherToLog=0
+Orca.Tracer.IgnoreRepeatedWarnings=1
+Orca.Tracer.IgnoreRepeatedErrors=1
+Orca.Tracer.Timestamp=1

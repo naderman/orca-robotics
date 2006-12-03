@@ -1,0 +1,13 @@
+DefaultComponentTag=AppPropTest
+
+# Provided Interfaces
+
+# Required Interfaces
+
+# External configuration options
+Config.Orca.RequireRegistry.Default=0
+Config.Orca.RequireRegistry.External=1
+
+# Ensure timeouts
+Config.Ice.Override.ConnectTimeout.Default=150
+Config.Ice.Override.ConnectTimeout.External=1

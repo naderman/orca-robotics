@@ -1,0 +1,37 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp, George Mathews
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup libs
+@defgroup orca_library_orcaogmap libOrcaOgMap
+@brief Occupancy Grid Map manipulation utilities
+
+    @section overview Overview
+
+Provides some simple OG map manipulation utilities.
+For a full list of functions and classes see @ref orcaogmap.
+
+Header file:
+@verbatim
+#include <orcaogmap/orcaogmap.h>
+@endverbatim
+
+    @par Responsible Developer
+    Alex Brooks
+  
+*/
+
+/*!
+@brief libOrcaOgMap provides OgMap manipulation utilities
+@namespace orcaogmap
+
+@see @ref orca_library_orcaogmap
+@see @ref orca_interface_ogmap
+
+*/

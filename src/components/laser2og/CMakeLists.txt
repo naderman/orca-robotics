@@ -11,7 +11,7 @@ IF ( BUILD_LASER2OG )
     #
     FILE( GLOB SRCS *.cpp )
     
-    INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/utils )
+    INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs )
     
     GLOBAL_ADD_EXECUTABLE( laser2og ${SRCS} )
     TARGET_LINK_LIBRARIES( laser2og OrcaOgFusion OrcaPathPlan OrcaMisc )

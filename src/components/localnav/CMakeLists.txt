@@ -10,7 +10,7 @@ IF ( NOT WIN32 AND BUILD_LOCALNAV )
 
     INCLUDE_DIRECTORIES(
       ${PROJECT_SOURCE_DIR}/src/components/localnav
-      ${PROJECT_SOURCE_DIR}/src/utils
+      ${PROJECT_SOURCE_DIR}/src/libs
       )
 
     LINK_DIRECTORIES(

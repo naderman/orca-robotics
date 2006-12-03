@@ -1,0 +1,413 @@
+#if 0
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+#include "pathplanner2delement.h"
+#include <orcaqgui/ihumanmanager.h>
+#include <orcaqgui/orcaicons.h>
+#include <iostream>
+#include <orcaqgui/icestormlistener.h>
+#include <orcaice/orcaice.h>
+#include <QFileDialog>
+#include <orcaqgui2dfactory/wptolerancesdialog.h>
+
+
+using namespace std;
+using namespace orca;
+
+namespace orcaqgui {
+
+////////////////////////////////////////////////////////////////////////////////
+void
+PathPlannerUpdateConsumer::setData( const orca::PathPlanner2dDataPtr &newPath, const ::Ice::Current& )
+{
+    pathPipe_.set( newPath );
+}
+
+
+void
+PathPlannerTaskAnswerConsumer::setData(const ::orca::PathPlanner2dDataPtr& data, const ::Ice::Current& )
+{
+    std::cout << "INFO(pathplanner2dconsumerI.cpp): Received results: " << orcaice::toVerboseString(data) << std::endl;
+    if (data->result==PathOk) return; 
+    
+    QString msg("Pathplanner could not compute path!\nReason is: ");
+    
+    if (data->result==PathStartNotValid) 
+        msg.append("Start waypoint not valid");    
+    else if (data->result==PathDestinationNotValid) 
+        msg.append("Goal waypoint not valid");    
+    else if (data->result==PathDestinationUnreachable) 
+        msg.append("Destination unreachable");    
+    else if (data->result==OtherError) 
+        msg.append("Unknown");    
+
+    msgBuffer_.set(msg); 
+}
+////////////////////////////////////////////////////////////////////////////////
+
+PathplannerButtons::PathplannerButtons( QObject *parent, IHumanManager *humanManager, string proxyString)
+{
+    QPixmap savePathIcon(filesave_path_xpm);
+    QPixmap saveAsPathIcon(filesaveas_path_xpm);
+
+    QPixmap globalwpIcon(globalwaypoint_xpm);
+
+    QPixmap sendIcon(send_xpm);
+    QPixmap cancelIcon(cancel_xpm);
+
+    QAction *fileSavePathAs = new QAction(saveAsPathIcon, QString(proxyString.c_str()) + "\n" + "Save PathPlanner Path As", this );
+    connect(fileSavePathAs, SIGNAL(activated()), parent, SLOT(savePathAs()));
+    QAction *fileSavePath = new QAction(savePathIcon, QString(proxyString.c_str()) + "\n" + "Save PathPlanner Path", this );
+    connect(fileSavePath, SIGNAL(activated()), parent, SLOT(savePath()));
+
+    hiWaypoints_ = new QAction(globalwpIcon, QString(proxyString.c_str()) + "\n" + "PathPlanner waypoints mode", this);
+    hiWaypoints_->setCheckable(true);
+    connect( hiWaypoints_,SIGNAL(activated()), parent, SLOT(waypointModeSelected()) );
+
+    QAction *hiSend = new QAction(sendIcon, QString(proxyString.c_str()) + "\n" + "Send PathPlanner Task", this);
+    connect( hiSend,SIGNAL(activated()), parent, SLOT(send()) );
+    QAction *hiCancel = new QAction(cancelIcon, QString(proxyString.c_str()) + "\n" + "Discard PathPlanner Task", this);
+    connect( hiCancel,SIGNAL(activated()), parent ,SLOT(cancel()) );
+    
+    QAction *wpDialogAction = new QAction( QString(proxyString.c_str()) + "\n" + "PathPlanner Waypoint settings", this );
+    connect( wpDialogAction, SIGNAL(activated()), parent, SLOT(waypointSettingsDialog()) );
+
+    humanManager->fileMenu()->addAction(fileSavePathAs);
+    humanManager->fileMenu()->addAction(fileSavePath);
+
+    humanManager->toolBar()->addAction(fileSavePathAs);
+    humanManager->toolBar()->addAction(fileSavePath);
+
+    humanManager->toolBar()->addAction( hiWaypoints_ );
+    humanManager->toolBar()->addAction( hiSend );
+    humanManager->toolBar()->addAction( hiCancel );
+    
+    humanManager->optionsMenu()->addAction( wpDialogAction );
+    
+    QAction *sep = humanManager->toolBar()->addSeparator();
+    sep->setParent( this );
+}
+
+void 
+PathplannerButtons::setWpButton( bool onOff )
+{
+    hiWaypoints_->setChecked( onOff ); 
+}
+/////////////////////////////////////////////////////
+
+PathPlanner2dElement::PathPlanner2dElement( orcaice::Context   context,
+                                            const std::string &proxyString,
+                                            IHumanManager* humanManager )
+    : doneInitialSetup_(false),
+      context_(context),
+      proxyString_(proxyString),
+      humanManager_(humanManager),
+      firstTime_(true),
+      pathHI_( this,
+               proxyString,
+               humanManager,
+               painter_,
+               readWaypointSettings( context ) )
+{
+    cout<<"TRACE(pathplanner2delement.cpp): Instantiating w/ proxyString '" << proxyString << "'" << endl;   
+    
+//     QString str( proxyString.c_str() );
+//     str = str.section('@',1,1);
+//     str = str.section('/',0,0);
+//     cout << "platformname: " << str.toStdString() << endl;
+    
+    pathUpdateConsumer_ = new PathPlannerUpdateConsumer;
+    pathTaskAnswerConsumer_ = new PathPlannerTaskAnswerConsumer;
+    cout<<"TRACE(pathplanner2delement.cpp): constructor finished." << endl;
+    timer_ = new orcaice::Timer;
+}
+
+PathPlanner2dElement::~PathPlanner2dElement()
+{
+}
+
+void
+PathPlanner2dElement::update()
+{
+    if ( !doneInitialSetup_ )
+    {
+        if (firstTime_) {
+            doInitialSetup();
+            timer_->restart();
+            firstTime_=false;
+        }
+        if (timer_->elapsedSec()>5.0) {
+            doInitialSetup();
+            timer_->restart();
+        }
+    }
+    
+    if ( pathUpdateConsumer_->pathPipe_.isNewData() )
+    {
+        orca::PathPlanner2dDataPtr newPath;
+        pathUpdateConsumer_->pathPipe_.get( newPath );
+        painter_.setData( newPath );
+    }
+    
+    if ( pathTaskAnswerConsumer_->msgBuffer_.isNewData() )
+    {
+        QString msg;
+        pathTaskAnswerConsumer_->msgBuffer_.get( msg );
+        humanManager_->showBoxMsg(Error, msg);    
+    }
+}
+
+void
+PathPlanner2dElement::doInitialSetup()
+{
+    humanManager_->showStatusMsg(Information, "PathplannerElement is trying to connect");
+    
+    // Subscribe for updates
+    //cout<<"TRACE(pathplanner2delement.cpp): Connecting with proxyString_=" << proxyString_ << endl;
+
+    try {
+        orcaqgui::subscribeListener<PathPlanner2dPrx,
+            PathPlanner2dConsumer,
+            PathPlanner2dConsumerPrx,
+            DefaultSubscriptionMaker<PathPlanner2dPrx,
+            PathPlanner2dConsumerPrx> >( context_,
+                                         proxyString_,
+                                         pathUpdateConsumer_,
+                                         callbackPrx_ );
+    }
+    catch ( ... )
+    {
+        humanManager_->showStatusMsg(Warning, "Problem subscribing pathplanner listener. Will try again later.");
+        return;
+    }
+    humanManager_->showStatusMsg(Information, "Pathplanner listener subscribed successfully.");
+    
+    try 
+    {
+        orcaice::connectToInterfaceWithString( context_, pathPlanner2dPrx_, proxyString_ );
+    }
+    catch ( ... )
+    {
+        humanManager_->showStatusMsg(Warning, "Problem connecting to pathplanner interface. Will try again later.");
+        //cout << "WARNING(pathplanner2delement.cpp): Problem connecting to interface. Will try again later." << endl;
+        return;
+    }
+    humanManager_->showStatusMsg(Information, "Connected to pathplanner interface successfully.");
+    
+    
+    pathPlanner2dConsumerObj_ = pathTaskAnswerConsumer_;
+    taskCallbackPrx_ = orcaice::createConsumerInterface<PathPlanner2dConsumerPrx>( context_, pathPlanner2dConsumerObj_ );
+       
+    doneInitialSetup_ = true;
+    
+}
+
+QStringList
+PathPlanner2dElement::contextMenu()
+{
+    QStringList s;
+    s << "Toggle All Waypoints" << "Toggle Past Waypoints";
+    return s;
+}
+
+void 
+PathPlanner2dElement::execute( int action )
+{
+    cout<<"TRACE(pathplanner2delement.cpp): execute: " << action << endl;
+    if ( action == 0 )
+    {
+        painter_.toggleDisplayWaypoints();    
+    }
+    else if ( action == 1 )
+    {
+        painter_.togglePastWaypoints();
+    }
+    else
+    {
+        assert( false && "PathPlanner2dElement::execute(): bad action" );
+    }
+}
+
+void 
+PathPlanner2dElement::sendPath( const PathPlannerInput &pathInput )
+{
+    try
+    {
+        pathPlanner2dPrx_->setTask( pathInput.getTask() );
+    }
+    catch ( const Ice::Exception &e )
+    {
+        stringstream ss;
+        ss << "While trying to set a pathfollowing data: " << endl << e;
+        humanManager_->showStatusMsg( Error, ss.str().c_str() );
+    }
+}
+
+void 
+PathPlanner2dElement::paint( QPainter *p, int z )
+{ 
+    painter_.paint( p, z );
+    pathHI_.paint( p );
+}
+
+void
+PathPlanner2dElement::setFocus( bool inFocus ) 
+{ 
+    painter_.setFocus( inFocus );
+    pathHI_.setFocus( inFocus );
+}
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+PathPlannerHI::PathPlannerHI( PathPlanner2dElement *ppElement,
+                              string proxyString,
+                              IHumanManager *humanManager, 
+                              PathPainter &painter,
+                              WaypointSettings wpSettings )
+    : ppElement_(ppElement),
+      proxyString_( proxyString ),
+      humanManager_(humanManager),
+      painter_(painter),
+      pathFileName_("/home"),
+      pathFileSet_(false),
+      wpSettings_(wpSettings),
+      pathInput_(NULL),
+      gotMode_(false)
+{
+    buttons_ = new PathplannerButtons( this, humanManager, proxyString );
+}
+
+PathPlannerHI::~PathPlannerHI()
+{
+    if ( pathInput_ ) delete pathInput_;
+    if ( buttons_ ) delete buttons_;
+}
+
+void 
+PathPlannerHI::setFocus( bool inFocus )
+{
+    if (inFocus) {
+        if (buttons_==0) {
+            buttons_ = new PathplannerButtons( this, humanManager_, proxyString_ );
+        }
+    } else {
+        delete buttons_;
+        buttons_=0;
+    }
+}
+
+void 
+PathPlannerHI::paint( QPainter *p )
+{
+    if ( pathInput_ ) 
+    {
+        pathInput_->paint(p);
+    }
+}
+
+void PathPlannerHI::waypointSettingsDialog()
+{
+    QDialog *myDialog = new QDialog;
+    Ui::WpTolerancesDialog ui;
+    ui.setupUi(myDialog);
+    
+    ui.timePeriodSpin->setValue( wpSettings_.timePeriod );
+    ui.distanceSpin->setValue( wpSettings_.distanceTolerance );
+    ui.headingSpin->setValue( wpSettings_.headingTolerance );
+    ui.maxSpeedSpin->setValue( wpSettings_.maxApproachSpeed );
+    ui.maxTurnrateSpin->setValue( wpSettings_.maxApproachTurnrate );
+    
+    int ret = myDialog->exec();
+    if (ret==QDialog::Rejected) return;
+    
+    wpSettings_.timePeriod = ui.timePeriodSpin->value();
+    wpSettings_.distanceTolerance = ui.distanceSpin->value(); 
+    wpSettings_.headingTolerance = ui.headingSpin->value();
+    wpSettings_.maxApproachSpeed = ui.maxSpeedSpin->value();
+    wpSettings_.maxApproachTurnrate = ui.maxTurnrateSpin->value();
+
+    if (pathInput_!=NULL)
+        pathInput_->updateWpSettings( &wpSettings_ );
+}
+
+void 
+PathPlannerHI::waypointModeSelected()
+{
+    if ( gotMode_ ) return;
+    gotMode_ = humanManager_->requestMode( ppElement_ );
+
+    if ( !gotMode_ )
+    {
+        humanManager_->showBoxMsg( Warning, "Couldn't take over the mode for PathPlanner waypoints!" );
+        return;
+    }
+
+    pathInput_ = new PathPlannerInput( &wpSettings_ );
+    buttons_->setWpButton( true );   
+}
+void 
+PathPlannerHI::send()
+{
+    ppElement_->sendPath( *pathInput_ );
+    cancel();
+}
+void 
+PathPlannerHI::cancel()
+{
+    if ( gotMode_ )
+    {
+        humanManager_->relinquishMode( ppElement_ );
+        lostMode();
+    }
+}
+void
+PathPlannerHI::lostMode()
+{
+    assert( pathInput_ != NULL );
+    delete pathInput_;
+    pathInput_ = NULL;
+    buttons_->setWpButton( false );
+    gotMode_ = false;
+}
+
+void 
+PathPlannerHI::savePathAs()
+{
+    QString fileName = QFileDialog::getSaveFileName(
+            0,
+            "Choose a filename to save under",
+            pathFileName_,
+            "*.txt");
+    
+    if (!fileName.isEmpty())
+    {
+        painter_.savePath( fileName, humanManager_ );
+        pathFileSet_ = true;
+    }
+}
+
+void 
+PathPlannerHI::savePath()
+{
+    if (!pathFileSet_)
+    {   
+        savePathAs();
+    }
+    else
+    {
+        painter_.savePath( pathFileName_, humanManager_ );
+    }
+}
+
+
+}
+#endif

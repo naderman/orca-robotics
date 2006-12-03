@@ -1,0 +1,26 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup utils
+@ingroup linux
+@defgroup orca_util_invertdef InvertDef
+@brief Inverts component definition file to a perfect match.
+
+@par Usage
+
+@verbatim
+$ invertdef <input.def file> <output.cfg file> [--verbose]
+@endverbatim
+
+@author Alex Makarenko
+
+*/
+
