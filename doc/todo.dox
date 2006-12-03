@@ -54,6 +54,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - PolarFeature2d interface
   - Added two fields: pFalsePositive and pTruePositive, to characterise
     feature detection reliability (Alex B.)
+- FeatureMap2d interface
+  - Added field to each feature: pExists.  Quantifies the certainty that the feature
+    is really there. (Alex B.)
 - Probe utility (Alex M.)
     - using dynamically loaded factory libraries to allow use with satellite projects
     - added a gui driver
