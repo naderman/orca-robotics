@@ -10,8 +10,7 @@
 
 /*!
 
-@ingroup components
-@ingroup apps
+@ingroup utils
 @ingroup cpp
 @ingroup linux
 @defgroup orca_component_registryview RegistryView

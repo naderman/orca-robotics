@@ -95,7 +95,7 @@ For more information on Ice properties and configuration files, see chapter "Ice
 @section orca_doc_configfiles_write Writing Configuration Files
 
 Orca configuration files (file extention @c cfg) can be generated from component definition files (file extention @c def). This is the recommended method since writing configuration files by hand is error-prone. Here's the typical steps to generate @c mycomponent.cfg file:
--# write a @c mycomponent.def file (see @ref orca_utility_orcadef for its format)
+-# write a @c mycomponent.def file (see @ref orca_library_orcadef for its format)
 -# generate @c mycomponent.cfg file using the @c generatecfg utility:
 @verbatim
 $ generatecfg component.def mycomponent.cfg

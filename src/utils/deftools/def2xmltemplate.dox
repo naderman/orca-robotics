@@ -24,7 +24,7 @@ $ def2xmltemplate <.def file> <.xml file> [--verbose]
 
 File name convention: for @c component.def, create @c component-template.xml
 
-@see @ref orca_util_generatexml.
+@see @ref orca_util_def2xml.
 
 @author Alex Makarenko
 

@@ -9,9 +9,9 @@
  */
 
 /*!
-@ingroup utils
+@ingroup libs
 @ingroup linux
-@defgroup orca_library_orcaquml libOrcaQuml
+@defgroup orca_library_orcaquml libOrcaQUml
 @brief Classes for displaying UML symbols using Qt's GraphicsView framework.
 
 @par Overview
@@ -31,7 +31,7 @@ Alex Makarenko, Alex Brooks
 */
 
 /*!
-@brief libOrcaQuml provides tools for displaying UML symbols using Qt's GraphicsView framework.
+@brief libOrcaQUml provides tools for displaying UML symbols using Qt's GraphicsView framework.
 @namespace orcaquml
 
 This namespace is part of a library.

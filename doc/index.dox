@@ -13,8 +13,8 @@
 
 @defgroup interfaces Interfaces
 @defgroup components Components
-@defgroup utils Utilities
 @defgroup libs Libraries
+@defgroup utils Utilities
 @defgroup examples Examples
 @defgroup tests Tests
 

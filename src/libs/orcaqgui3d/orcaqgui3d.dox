@@ -10,16 +10,15 @@
 /*!
 @ingroup libs
 @ingroup linux
-@defgroup orca_library_orcaqgui2d libOrcaQGui2d
-@brief Tools for building 2D Orca-compliant GUI's with Qt library.
+@defgroup orca_library_orcaqgui3d libOrcaQGui3d
+@brief Tools for building 3D Orca-compliant GUI's with Qt library.
 
 @par Overview
-This library contains reusable elements to build a 2D Orca GUI component using the Qt library. 
+This library contains reusable elements to build a 3D Orca GUI component using the Qt library. 
 
-For a full list of functions and classes see @ref orcaqgui2d.
+For a full list of functions and classes see @ref orcaqgui3d.
 
-@sa orcagui
-@sa orcagui3d
+@see @ref orca_library_orcaqgui, @ref orca_library_orcaqgui2d
 
 @par Authors
 
@@ -28,11 +27,11 @@ Tobias Kaupp, Alex Brooks, Alex Makarenko
 */
 
 /*!
-@brief libOrcaQGui2d provides tools for building 2D Orca-compliant GUI's with Qt library.
-@namespace orcaqgui2d
+@brief libOrcaQGui3d provides tools for building 3D Orca-compliant GUI's with Qt library.
+@namespace orcaqgui3d
 
 This namespace is part of a library.
 
-@see @ref orca_library_orcaqgui2d
+@see @ref orca_library_orcaqgui3d
 
 */
