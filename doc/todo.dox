@@ -60,6 +60,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - port of old libQorcaUml from QCanvas to QGraphicView
   - now includes a utility generateuml for creating images of UML symbols from component
     definition files.
+- Documentation
+  - added graphical UML symbol to documentation pages of all components. (Alex M.)
 
 @section orca_doc_todo_history Changes in Past Releases
 
