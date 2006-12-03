@@ -1,0 +1,75 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alexei Makarenko
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@ingroup utils
+@ingroup cpp
+@ingroup linux
+@defgroup orca_util_probe Probe
+@brief A tool to browse and probe remote Orca interfaces.
+
+This component receives and displays status messages coming from components deployed on multiple platforms.
+
+@par Provides
+
+- none
+
+@par Requires
+
+- @ref orca_interface_home
+
+@par Drivers
+
+- @b iostream @ref orca_probe_iostream
+
+@par Operation
+
+This utility connects to the registry and gets a list of components. The user can then select an component and get a list of its interfaces (if Home interface is available). Then choose an interface (if supported by Probe) and get a list of operations. Choose an operation to call, e.g. getData(). 
+
+Supported interfaces:
+- @ref orca_interface_binaryswitch
+- @ref orca_interface_camera
+- @ref orca_interface_cpu
+- @ref orca_interface_home
+- @ref orca_interface_laserscanner2d
+- @ref orca_interface_power
+
+@par Configuration
+
+- @c Probe.Config.Driver (string)
+    - Type of hardware driver
+    - Valid values: { 'iostream' }
+    - Default: 'iostream'
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
+@section orca_probe_iostream Basic display driver to terminal window.
+
+Displays lists of options with available entries numbered. Here's an example of the Interface menu. The component here has 3 interfaces but only one (Home) is supported by Probe.
+
+@verbatim
+Component : pomdpbitch/faithlocaliser
+Select an interface from the list:
+        localise2d      ::orca::Localise2d
+        status          ::orca::Status
+2       home            ::orca::Home
+u       Up
+r       Reload
+q       Quit
+==>  
+@endverbatim
+
+@par Authors
+
+Alex Makarenko
+
+*/
+
