@@ -56,8 +56,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - added a gui driver
 - New library: libOrcaDynamicLoad
   - factored out the dynamic loading stuff into a separate library (Alex B.)
-- New library: libOrcaQuml
-  - porting old libQorcaUml from QCanvas to QGraphicView (Alex M.)
+- New library: libOrcaQuml (Alex M.)
+  - port of old libQorcaUml from QCanvas to QGraphicView
+  - now includes a utility generateuml for creating images of UML symbols from component
+    definition files.
 
 @section orca_doc_todo_history Changes in Past Releases
 
