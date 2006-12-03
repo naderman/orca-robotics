@@ -20,7 +20,7 @@
 #include <IceUtil/Shared.h>
 #include <Ice/Exception.h>
 
-namespace qorcacm
+namespace orcaqcm
 {
 
 class Call : public IceUtil::Shared

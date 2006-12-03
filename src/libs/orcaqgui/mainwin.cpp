@@ -43,7 +43,7 @@ using namespace std;
 namespace orcaqgui {
 
     MainWindow::MainWindow( std::string              title,
-                            qorcacm::NetworkHandler *networkHandler,
+                            orcaqcm::NetworkHandler *networkHandler,
                             ScreenDumpParams         screenDumpParams,
                             int                      displayRefreshTime,
                             QWidget                 *parent, 
@@ -75,9 +75,9 @@ namespace orcaqgui {
     // Select-from-Registry widget
     //
     // Model
-    regModelHandler_ = new qorcacm::ModelHandler( *networkHandler );
+    regModelHandler_ = new orcaqcm::ModelHandler( *networkHandler );
     // Delegate
-    regDelegate_ = new qorcacm::OcmDelegate();
+    regDelegate_ = new orcaqcm::OcmDelegate();
     // View
     regView_ = new RegSelectView(side_);
     regView_->setModel( regModelHandler_->model() );

@@ -20,7 +20,7 @@
 
 using namespace std;
 
-namespace qorcacm
+namespace orcaqcm
 {
 
 OcmIconProvider::OcmIconProvider()

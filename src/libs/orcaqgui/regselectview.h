@@ -15,7 +15,7 @@
 
 namespace orcaqgui {
 
-class RegSelectView : public qorcacm::OcmView
+class RegSelectView : public orcaqcm::OcmView
 {
     Q_OBJECT
 

@@ -22,8 +22,6 @@ IF ( NOT WIN32 AND BUILD_IMAGE_VIEWER )
           MESSAGE( STATUS "    The Triclops libraries have not been found - you will not be able to view images from a digiclops camera")
         ENDIF ( TRICLOPS_FOUND )
 
-        INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs )
-
         # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
         # SET( COMMON_SRCS cameraconsumerI component imagehandler colourconversions conversions  imageutils)
         SET( COMMON_SRCS cameraconsumerI component mainloop )

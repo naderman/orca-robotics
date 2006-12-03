@@ -11,7 +11,7 @@
 #ifndef ORCA2_OCM_ICONS_H
 #define ORCA2_OCM_ICONS_H
 
-namespace qorcacm
+namespace orcaqcm
 {
 
 /* XPM */

@@ -16,7 +16,7 @@
 #include "calls.h"
 
 using namespace std;
-using namespace qorcacm;
+using namespace orcaqcm;
 
 GetComponentsCall::GetComponentsCall( const orcaice::Context & context, const std::string & locatorString,
                 orcaice::Notify<orcacm::ComponentData>* homePipe )

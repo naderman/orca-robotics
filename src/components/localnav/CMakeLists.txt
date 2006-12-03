@@ -10,12 +10,6 @@ IF ( NOT WIN32 AND BUILD_LOCALNAV )
 
     INCLUDE_DIRECTORIES(
       ${PROJECT_SOURCE_DIR}/src/components/localnav
-      ${PROJECT_SOURCE_DIR}/src/libs
-      )
-
-    LINK_DIRECTORIES(
-      ${PROJECT_BINARY_DIR}/src/components/localnav/vfhdriver
-      ${PROJECT_BINARY_DIR}/src/utils/orcanavutil
       )
 
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand

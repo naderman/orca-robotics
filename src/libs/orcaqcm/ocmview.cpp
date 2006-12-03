@@ -15,7 +15,7 @@
 
 using namespace std;
 
-namespace qorcacm
+namespace orcaqcm
 {
 
 OcmView::OcmView( QWidget *parent )

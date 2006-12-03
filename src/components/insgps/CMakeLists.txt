@@ -9,8 +9,6 @@ IF ( NOT WIN32 AND BUILD_INSGPS )
 
     SET( INSGPS_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR} )
     INCLUDE_DIRECTORIES( ${INSGPS_SRC_DIR} )
-    INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs )
-
 
     # OPTIONAL_SUB_LIBRARY macro defined in component_rules.cmake
     SET( NOVATELSPANINSGPS_FOUND 1 )
@@ -34,7 +32,6 @@ IF ( NOT WIN32 AND BUILD_INSGPS )
     
     # build a stand-alone component
     GLOBAL_ADD_EXECUTABLE( insgps ${COMP_SRCS} )
-    LINK_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs/serial )
     TARGET_LINK_LIBRARIES( insgps ${NOVATELSPANINSGPS_LIBS} OrcaSerial OrcaNavUtil )
 # TARGET_LINK_LIBRARIES( insgps OrcaSerial OrcaNavUtil )
     

@@ -20,7 +20,7 @@
 
 class QApplication;
 
-namespace qorcacm
+namespace orcaqcm
 {
 
 class ModelHandler : public QObject, public orcaice::NotifyHandler<orcacm::ComponentData>
@@ -28,7 +28,7 @@ class ModelHandler : public QObject, public orcaice::NotifyHandler<orcacm::Compo
     Q_OBJECT
     
 public:
-    ModelHandler( qorcacm::NetworkHandler & networkHandler );
+    ModelHandler( orcaqcm::NetworkHandler & networkHandler );
     virtual ~ModelHandler();
 
     QAbstractItemModel* model() { return &model_; };
@@ -41,7 +41,7 @@ public:
     virtual void customEvent( QEvent* e );
 
 private:
-    qorcacm::OcmModel model_;
+    orcaqcm::OcmModel model_;
 };
 
 } // namespace

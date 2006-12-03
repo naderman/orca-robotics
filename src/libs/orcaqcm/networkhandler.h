@@ -19,7 +19,7 @@
 
 #include "callqueue.h"
 
-namespace qorcacm
+namespace orcaqcm
 {
 
 typedef std::map<std::string,std::string> PropertiesMessage;

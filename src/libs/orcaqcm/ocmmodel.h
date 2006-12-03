@@ -16,7 +16,7 @@
 #include <QStringList>
 #include <QIcon>
 
-namespace qorcacm
+namespace orcaqcm
 {
 
 class OcmIconProvider

@@ -15,7 +15,7 @@
 
 using namespace std;
 
-namespace qorcacm
+namespace orcaqcm
 {
 
 void OcmDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,

@@ -14,7 +14,7 @@
 #include <QItemDelegate>
 //#include <QModelIndex>
 
-namespace qorcacm
+namespace orcaqcm
 {
 
 class OcmDelegate : public QItemDelegate

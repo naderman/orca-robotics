@@ -20,10 +20,10 @@
 
 using namespace std;
 
-namespace qorcacm
+namespace orcaqcm
 {
 
-ModelHandler::ModelHandler( qorcacm::NetworkHandler & networkHandler )
+ModelHandler::ModelHandler( orcaqcm::NetworkHandler & networkHandler )
 {
     // set the handler right away
     networkHandler.homePipe_.setNotifyHandler( this );

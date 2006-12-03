@@ -14,7 +14,7 @@
 #include <QTreeView>
 #include <QModelIndex>
 
-namespace qorcacm
+namespace orcaqcm
 {
 
 class OcmView : public QTreeView

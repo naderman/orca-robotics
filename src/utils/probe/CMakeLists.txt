@@ -29,7 +29,7 @@ IF ( BUILD_PROBE )
         PROBE_QT_LIBS
         QT4_OK
         HAVE_QT_DRIVER
-        QorcaCompModel ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
+        OrcaQCompModel ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
 
     #
     # This gathers all the source files into the variable 'SRCS'

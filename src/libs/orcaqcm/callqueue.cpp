@@ -14,7 +14,7 @@
 #include "callqueue.h"
 
 using namespace std;
-using namespace qorcacm;
+using namespace orcaqcm;
 
 CallQueue::CallQueue()
     : destroy_(false)

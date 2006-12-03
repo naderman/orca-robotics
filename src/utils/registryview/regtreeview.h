@@ -13,7 +13,7 @@
 
 #include <orcaqcm/ocmview.h>
 
-class RegTreeView : public qorcacm::OcmView
+class RegTreeView : public orcaqcm::OcmView
 {
     Q_OBJECT
 

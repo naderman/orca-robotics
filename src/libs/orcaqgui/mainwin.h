@@ -47,7 +47,7 @@ class MainWindow : public QMainWindow, public orcaqgui::IHumanManager
 
 public:
     MainWindow( std::string                        title,
-                qorcacm::NetworkHandler           *networkHandler,           
+                orcaqcm::NetworkHandler           *networkHandler,           
                 ScreenDumpParams                   screenDumpParams,
                 int                                displayRefreshTime,
                 QWidget                           *parent = 0, 
@@ -107,8 +107,8 @@ private:
     QSplitter *side_;
 
     // registry
-    qorcacm::NetworkHandler     *networkHandler_;
-    qorcacm::ModelHandler       *regModelHandler_;
+    orcaqcm::NetworkHandler     *networkHandler_;
+    orcaqcm::ModelHandler       *regModelHandler_;
     QTreeView                   *regView_;
     QItemDelegate               *regDelegate_;
     

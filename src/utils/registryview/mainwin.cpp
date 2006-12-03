@@ -34,7 +34,7 @@
 
 using namespace std;
 
-MainWindow::MainWindow( qorcacm::NetworkHandler *networkHandler, double refreshInterval,
+MainWindow::MainWindow( orcaqcm::NetworkHandler *networkHandler, double refreshInterval,
                         QWidget *parent, Qt::WFlags flags)
     : QMainWindow(parent, flags),
       networkHandler_(networkHandler)
@@ -52,15 +52,15 @@ MainWindow::MainWindow( qorcacm::NetworkHandler *networkHandler, double refreshI
     //
     // Model
     //
-    //model_ = new qorcacm::OcmTreeModel();
-    modelHandler_ = new qorcacm::ModelHandler( *networkHandler );
+    //model_ = new orcaqcm::OcmTreeModel();
+    modelHandler_ = new orcaqcm::ModelHandler( *networkHandler );
     
     //selections_ = new QItemSelectionModel(model_);
 
     //
     // Delegate
     //
-    delegate_ = new qorcacm::OcmDelegate();
+    delegate_ = new orcaqcm::OcmDelegate();
     
     //
     // View

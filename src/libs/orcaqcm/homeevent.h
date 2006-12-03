@@ -14,7 +14,7 @@
 #include <QEvent>
 #include <orcacm/types.h>
 
-namespace qorcacm
+namespace orcaqcm
 {
 
 class HomeEvent : public QEvent

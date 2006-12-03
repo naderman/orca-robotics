@@ -80,8 +80,6 @@ IF ( NOT WIN32 AND BUILD_IMAGE_SERVER )
   #
   # includes and linking for the various grabbing libraries
   #
-  
-  INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs )
 
   IF ( OPENCV_FOUND )
     INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )

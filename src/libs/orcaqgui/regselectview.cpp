@@ -35,7 +35,7 @@ void RegSelectView::contextMenuEvent( QContextMenuEvent* e )
     QMenu menu(this);
     
     // only react interfaces
-    if ( currentIndex().data( qorcacm::OcmModel::TypeRole) == "Interface" )
+    if ( currentIndex().data( orcaqcm::OcmModel::TypeRole) == "Interface" )
     {
         if ( currentIndex().data() == "::orca::Platform2d" ) {
             menu.addAction("Add to Project as OdometryPainter", this, SLOT(addCurrentToProject()) );
@@ -53,7 +53,7 @@ void RegSelectView::contextMenuEvent( QContextMenuEvent* e )
 void RegSelectView::mouseDoubleClickEvent( QMouseEvent* e )
 {
     // only react interfaces
-    if ( currentIndex().data( qorcacm::OcmModel::TypeRole) == "Interface" ) {
+    if ( currentIndex().data( orcaqcm::OcmModel::TypeRole) == "Interface" ) {
         addCurrentToProject();
     }
 }
@@ -62,7 +62,7 @@ void RegSelectView::addCurrentToProject()
 {
     cout<<"addToProject() :"<<currentIndex().data().toString().toStdString()<<endl;
 
-    qorcacm::OcmModel* ocmModel = (qorcacm::OcmModel*)model();
+    orcaqcm::OcmModel* ocmModel = (orcaqcm::OcmModel*)model();
     QString registry;
     QString platform;
     QString component;

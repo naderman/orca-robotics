@@ -17,7 +17,7 @@
 #include "calls.h"
 
 using namespace std;
-using namespace qorcacm;
+using namespace orcaqcm;
 
 NetworkHandler::NetworkHandler( const orcaice::Context & context )
         : context_(context)

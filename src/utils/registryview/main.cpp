@@ -62,7 +62,7 @@ void Component::start()
     activate();
 
     // this runs in its own thread
-    qorcacm::NetworkHandler networkHandler( context() );
+    orcaqcm::NetworkHandler networkHandler( context() );
     networkHandler.start();
     
     // Set up QT stuff

@@ -26,7 +26,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow( qorcacm::NetworkHandler* networkHandler, double refreshInterval,
+    MainWindow( orcaqcm::NetworkHandler* networkHandler, double refreshInterval,
                 QWidget *parent = 0, Qt::WFlags flags = 0 );
 
 private slots:
@@ -42,8 +42,8 @@ private slots:
 private:
     void setupMenuBar();
 
-    qorcacm::NetworkHandler     *networkHandler_;
-    qorcacm::ModelHandler       *modelHandler_;
+    orcaqcm::NetworkHandler     *networkHandler_;
+    orcaqcm::ModelHandler       *modelHandler_;
     
     QTreeView                   *view_;
     QItemDelegate               *delegate_;

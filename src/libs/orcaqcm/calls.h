@@ -15,7 +15,7 @@
 
 #include "callqueue.h"
 
-namespace qorcacm
+namespace orcaqcm
 {
 /*
 class GetHomeCall : public Call

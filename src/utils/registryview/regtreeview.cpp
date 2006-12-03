@@ -50,8 +50,8 @@ RegTreeView::contextMenuEvent( QContextMenuEvent* e )
     QMenu menu(this);
         
     // only react interfaces
-    QString nodeType = currentIndex().data( qorcacm::OcmModel::TypeRole ).toString();
-//     QString nodeType = model()->data( currentIndex(), qorcacm::OcmModel::TypeRole ).toString();
+    QString nodeType = currentIndex().data( orcaqcm::OcmModel::TypeRole ).toString();
+//     QString nodeType = model()->data( currentIndex(), orcaqcm::OcmModel::TypeRole ).toString();
     if ( nodeType != "Interface" ) {
         return;
     }
@@ -70,8 +70,8 @@ void
 RegTreeView::mouseDoubleClickEvent( QMouseEvent* e )
 {
     // only react interfaces
-    QString nodeType = currentIndex().data( qorcacm::OcmModel::TypeRole ).toString();
-//     QString nodeType = model()->data( currentIndex(), qorcacm::OcmModel::TypeRole ).toString();
+    QString nodeType = currentIndex().data( orcaqcm::OcmModel::TypeRole ).toString();
+//     QString nodeType = model()->data( currentIndex(), orcaqcm::OcmModel::TypeRole ).toString();
     if ( nodeType != "Interface" ) {
         return;
     }
@@ -88,8 +88,8 @@ void
 RegTreeView::home_getProperties()
 {
     // only react interfaces
-    QString nodeType = currentIndex().data( qorcacm::OcmModel::TypeRole ).toString();
-//     QString nodeType = model()->data( currentIndex(), qorcacm::OcmModel::TypeRole ).toString();
+    QString nodeType = currentIndex().data( orcaqcm::OcmModel::TypeRole ).toString();
+//     QString nodeType = model()->data( currentIndex(), orcaqcm::OcmModel::TypeRole ).toString();
     if ( nodeType != "Interface" ) {
         return;
     }
