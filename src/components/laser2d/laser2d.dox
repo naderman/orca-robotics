@@ -16,24 +16,24 @@
 @ingroup linux
 @ingroup win
 @defgroup orca_component_laser2d Laser2d
-@brief A hardware abstraction component for scanning laser range-finder
+@brief A hardware abstraction component for scanning laser range-finders
 
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_laserscanner2dscanner2d [SickLaser.Provides.LaserScanner2d]
+- @ref orca_interface_laserscanner2d [Laser2d.Provides.LaserScanner2d]
 - @ref orca_interface_status
 
 @par Requires
 
 - none
 
+@image html laser2d.png
+
 @par Drivers
 
 - @b sickcarmen @ref orca_laser_sickcarmen
 - @b playerclient @ref orca_laser_playerclient
-- @b stage @ref orca_laser_stage
-- @b gazebo @ref orca_laser_gazebo
 - @b fake Useful for testing or if you don't have hardware or a simulator.
 
 @par Operation
@@ -49,38 +49,39 @@ This component encapsulates a SICK Laser Range-Finder (see @ref how_sick_works )
 
 Laser Settings
 - @c Laser2d.Config.MinRange (double) [m]
-    - Valid Values: >=0.0
+    - Valid Values: MinRange>=0.0
     - Default: 0.0
 - @c Laser2d.Config.MaxRange (double) [m]
-    - Valid Values: >0.0
+    - Valid Values: MaxRange>0.0
     - Default: 80.0
 - @c Laser2d.Config.FieldOfView (double) [deg]
-    - Valid Values: 0.0\<fov\<=360.0
+    - Valid Values: 0.0\<FieldOfView<=360.0
     - Default: 180.0
 - @c Laser2d.Config.StartAngle (double) [deg]
-    - Valid Values: -360.0\<fov\<=360.0
-    - Default: -(FieldOfView)/2.0
+    - Valid Values: -360.0\<StartAngle<=360.0
+    - Default: -FieldOfView/2.0
     
 - @c Laser2d.Config.NumberOfSamples (int)
     - Number of range samples in a single scan.
-    - Valid Values: >0
+    - Valid Values: NumberOfSamples>0
     - Default: 181
 
 Geometry
 
 - @c Laser2d.Config.Offset (Frame3d) [m, deg]
-    - Position of the laser with respect to the robot's local coordinate system
-    - Format: x y z roll pitch yaw
+    - Position of the laser with respect to the robot's local coordinate system.
+    - Format: x y z roll pitch yaw.
     - Example: a laser mounted upside down with now translation: "0.0 0.0 0.0  180.0 0.0 0.0"
 
-- @c SickLaser.Config.AllowRollCompensation (bool)
+- @c Laser2d.Config.AllowRollCompensation (bool)
     - If TRUE and the roll in laser offset is exactly 180.0 degrees (with no pitch), then the scan is flipped left-to-right internally and the reported roll angle is 0.0 degrees. If FALSE, the scan and the offset are left unmodified.
     - Default: 1
-    - Example: The laser is mounted horizontally and upside-down. You want SickLaser to take care of it and not to worry about rotations on the client side. Set the roll angle in @c Offset to 180.0 and set @c AllowRollCompensation=1. As a result, the laser will appear to be mounted normally (top-side-up) to all clients.
+    - Example: The laser is mounted horizontally and upside-down. You want Laser2d to take care of it and not to worry about rotations on the client side. Set the roll angle in @c Offset to 180.0 and set @c AllowRollCompensation=1. As a result, the laser will appear to be mounted normally (top-side-up) to all clients.
 
 - @c Laser2d.Config.Size (Size3d) [m]
-    - Sensor dimensions
+    - Sensor physical dimensions.
     - Format: length width height
+    - Default: 0.155 0.155 0.185 (SICK LMS dimensions)
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
@@ -92,7 +93,7 @@ href="http://carmen.sourceforge.net/" target="_blank">Carmen
 website</a>). This driver works robustly and can be configured with
 different baud rates.
 
-Limitations: This is a Linux-only implementation. Does NOT work with kernel 2.6.17 producing this message (use dmesg) "sicklaser sets custom speed on ttyS3. This is deprecated." Google search indicates that it's a known kernel issue which currently has no solution. A new method of setting custom serial speed will be introduced in future kernels at which point we'll try to convert our code.
+Limitations: This is a Linux-only implementation. Does NOT work with kernel 2.6.17 producing this message (use dmesg) "laser2d sets custom speed on ttyS3. This is deprecated." Google search indicates that it's a known kernel issue which currently has no solution. A new method of setting custom serial speed will be introduced in future kernels at which point we'll try to convert our code.
 
 @par Extra configuration
 
@@ -102,20 +103,15 @@ Limitations: This is a Linux-only implementation. Does NOT work with kernel 2.6.
 - @c Laser2d.Config.SickCarmen.LaserType (string)
   - Valid Values: {"LMS","PMS"}
   - Default: "LMS"
-- @c SickLaser.Config.SickCarmen.Baudrate (int) [bps]
+- @c Laser2d.Config.SickCarmen.Baudrate (int) [bps]
   - Valid Values: { 9600, 19200, 38400, 500000 }
   - Default: 38400
 
   
 @section orca_laser_playerclient PlayerClient driver
 
-The sicklaser component wraps a player client. Given a running Player
-server, the laser gets data from that server and distributes it over
-Orca pipes. Talks to a Player server (see the <a
-href="http://playerstage.sourceforge.net/" target="_blank">Player
-webpage</a>).
-
-[Note: will not build for Windows]
+This driver wraps a player client. Given a running Player server, the laser gets data from that server and distributes it over Orca pipes. Talks to a Player server (see the <a
+href="http://playerstage.sourceforge.net/" target="_blank">Player webpage</a>).
 
 @par Dependancies
 
@@ -132,24 +128,10 @@ Requires that Player/Stage v.>=2.0 are installed and running. As Player itself, 
 - @c Laser2d.Config.PlayerClient.Device (int)
     - Device ID of the laser to which the driver will connect to
     - Default: 0
-
-@section orca_laser_stage Stage driver
-
-In theory, a separate Stage driver is not needed, @c playerclient
-driver should work with both real hardware and the Stage
-simulator. However, due to a bug in Stage's laser simulation code we
-need a special driver (specifically LaserProxy::Configure()
-function). It will be removed when the bug is fixed.
-
-[Note: will not build for Windows]
-
-@section orca_laser_gazebo Gazebo driver
-
-This is just an alias to @ref orca_laser_stage. All you need is Gazebo
-running and player connected to Gazebo. Please see the tutorial @ref
-orca_doc_tute_gazebo for setting up Orca with Gazebo.
-
-[Note: will not build for Windows]
+- @c Laser2d.Config.PlayerClient.Driver (string)
+    - Driver used by the Player server. In theory this is unnecessary because the Player laser interface should abstract these differences. In reality the drivers either do not implement the interface fully or the implementation contains bugs. So we need to specify the driver here and implement various work-arounds.
+    - Valid values: { "sicklms200", "stage", "gazebo", "urglaser" }
+    - Default: "sicklms200"
 
 @section internal Internal Structure
     
