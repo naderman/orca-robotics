@@ -155,6 +155,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
             feature->type = type;
             // include conversion char 'l' before 'f' to indicate that the pointers are to doubles
             // (rather than floats)
+            const int numElements = 6;
             int num = sscanf(featureInfoBuf,"%lf %lf %lf %lf %lf %lf\n",
                              &(feature->pExists),
                              &(feature->p.x),
@@ -162,7 +163,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
                              &(feature->c.xx),
                              &(feature->c.xy),
                              &(feature->c.yy) );
-            if ( num != 5 )
+            if ( num != numElements )
             {
                 std::stringstream ss;
                 ss << "Malformed featuremap file!  Couldn't understand line " << line <<":"<<endl<<buf;
