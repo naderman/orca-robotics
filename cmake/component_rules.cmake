@@ -29,11 +29,6 @@ ELSE ( NOT WIN32 )
 
 ENDIF ( NOT WIN32 )
 
-#
-# Install component definition files (.def files)
-#
-INSTALL_FILES( /cfg .+\\.cfg$ )
-INSTALL_FILES( /def .+\\.def$ )
 
 #
 # Project-specific rules

@@ -107,40 +107,6 @@ MACRO( OPTIONAL_SUB_LIBRARY DESCRIPTION SUBDIRECTORY OUTPUT_LIBRARY LINK_LIBS OK
 ENDMACRO( OPTIONAL_SUB_LIBRARY DESCRIPTION DIRECTORY LIBNAME )
 
 #
-# Obsolete: use GENERATE_CONFIG_FILE instead
-# Rule for generating .cfg files from .def files
-#
-MACRO( GENERATE_FROM_DEF DEF_FILE )
-
-  # The standard CMAKE_CFG_INTDIR does not seem to get resolved in INSTALL_FILES, do it manually
-  # alexm: I'm not sure if this is the right way to do it. I think this is a problem only 
-  # when trying to install from command line. so maybe not all the variables are set.
-  IF( WIN32 )
-    # VCC defaults to Debug
-    SET( MANUAL_CFG_INTDIR "debug" )
-  ELSE( WIN32 )
-    SET( MANUAL_CFG_INTDIR "." )
-  ENDIF( WIN32 )
-
-  STRING( REGEX REPLACE "\\.def" ".cfg" CFG_FILE ${DEF_FILE} )
-  ADD_CUSTOM_TARGET( 
-    ${CFG_FILE} ALL
-#     ${ORCA_GENERATECFG_COMMAND} ${CMAKE_CURRENT_SOURCE_DIR}/${DEF_FILE} ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${CFG_FILE}
-    ${ORCA_GENERATECFG_COMMAND} ${CMAKE_CURRENT_SOURCE_DIR}/${DEF_FILE} ${CMAKE_CURRENT_BINARY_DIR}/${MANUAL_CFG_INTDIR}/${CFG_FILE}
-#     ${ORCA_GENERATECFG_COMMAND} ${CMAKE_CURRENT_SOURCE_DIR}/${DEF_FILE} ${CMAKE_CURRENT_BINARY_DIR}/${CFG_FILE}
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${DEF_FILE} 
-#    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} 
-    )
-  # What happens with this line for satelite projects?
-  ADD_DEPENDENCIES( ${CFG_FILE} generatecfg )
-
-  INSTALL_FILES( /cfg FILES ${CMAKE_CURRENT_BINARY_DIR}/${MANUAL_CFG_INTDIR}/${CFG_FILE} )
-#   INSTALL_FILES( /cfg FILES ${CMAKE_CURRENT_BINARY_DIR}/${CFG_FILE} )
-
-ENDMACRO( GENERATE_FROM_DEF DEF_FILE )
-
-
-#
 # GENERATE_CONFIG_FILE
 #   Rule for generating .cfg files from .def files.
 #
@@ -168,14 +134,20 @@ MACRO( GENERATE_CONFIG_FILE DEF_FILE )
 
   IF ( ${ARGC} GREATER 2 )
     # Target name is specified
+    SET ( INSTALL_DEF ${ARGV2} )
     SET ( INSTALL_CFG ${ARGV2} )
     SET ( INSTALL_XML ${ARGV2} )
   ELSE ( ${ARGC} GREATER 2 )
     # Default behavior is to install the config file
+    SET ( INSTALL_DEF 1 )
     SET ( INSTALL_CFG 1 )
     SET ( INSTALL_XML 1 )
 #     MESSAGE ( STATUS "DEBUG: assumed that the config file needs to be installed" )
   ENDIF ( ${ARGC} GREATER 2 )
+
+  IF ( INSTALL_DEF )
+    INSTALL_FILES( /def FILES ${CMAKE_CURRENT_SOURCE_DIR}/${DEF_FILE} )
+  ENDIF ( INSTALL_DEF )
 
   # The standard CMAKE_CFG_INTDIR does not seem to get resolved in INSTALL_FILES, do it manually
   # alexm: I'm not sure if this is the right way to do it. I think this is a problem only 
@@ -196,12 +168,9 @@ MACRO( GENERATE_CONFIG_FILE DEF_FILE )
 #     COMMENT "-- Generating ${CFG_FILE} from ${DEF_FILE}"
     )
 
-  IF ( ${PROJECT_NAME} MATCHES "orca" )
-#     MESSAGE ( STATUS "DEBUG: ************ we are on the mothership! ***********" )
+  IF ( ORCA_MOTHERSHIP )
     ADD_DEPENDENCIES( ${COMPONENT_TARGET} generatecfg )
-#   ELSE ( ${PROJECT_NAME} MATCHES "orca" )
-#     MESSAGE ( STATUS "DEBUG: ************ we are on a satelite! ***********" )
-  ENDIF ( ${PROJECT_NAME} MATCHES "orca" )
+  ENDIF ( ORCA_MOTHERSHIP )
 
   IF ( INSTALL_CFG )
     INSTALL_FILES( /cfg FILES ${CMAKE_CURRENT_BINARY_DIR}/${MANUAL_CFG_INTDIR}/${CFG_FILE} )
