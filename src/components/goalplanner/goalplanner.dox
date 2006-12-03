@@ -32,6 +32,8 @@ The goalplanner plans a path from the current position of a robot to a global wo
 - @ref orca_interface_pathfollower2d [GoalPlanner.Requires.PathFollower2d]
 - @ref orca_interface_pathplanner2d [GoalPlanner.Requires.PathPlanner2d]
 
+@image html goalplanner.png
+
 @par Operation
 
 The following happens in sequencential order in the mainloop:

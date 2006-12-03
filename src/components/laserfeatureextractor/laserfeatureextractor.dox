@@ -28,6 +28,8 @@
 
 - @ref orca_interface_laserscanner2d [LaserFeatureExtractor.Requires.LaserScanner2d]
 
+@image html laserfeatureextractor.png
+
 @par Operation
 
 The component receives features from laser scans, useful for navigation. Types of features extracted:

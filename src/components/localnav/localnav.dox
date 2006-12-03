@@ -25,9 +25,11 @@
 
 @par Requires
 
-- @ref orca_interface_rangescanner [LocalNav.Requires.Observations]
+- @ref orca_interface_rangescanner2d [LocalNav.Requires.Observations]
 - @ref orca_interface_localise2d [LocalNav.Requires.Localisation]
 - @ref orca_interface_platform2d [LocalNav.Requires.Platform2d]
+
+@image html localnav.png
 
 @par Drivers
 

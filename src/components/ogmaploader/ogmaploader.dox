@@ -26,6 +26,8 @@
 
 - none
 
+@image html ogmaploader.png
+
 @par Drivers
 
 - @b fake Serves a bogus made-up map.

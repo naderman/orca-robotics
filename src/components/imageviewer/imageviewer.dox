@@ -26,6 +26,8 @@
 
 - @ref orca_interface_camera [ImageViewer.Requires.Camera]
 
+@image html imageviewer.png
+
 @par Operation
 
 A simple component that connects to an ImageServer and displays the image in an opencv window. It can run either as a stand-alone component or an IceBox Service.

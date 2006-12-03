@@ -26,6 +26,8 @@
 
 - @ref orca_interface_laserscanner2d [LaserMon.Requires.LaserScanner2d]
 
+@image html lasermon.png
+
 @par Operation
 
 A simple example that connects to a laser server and displays the ranges (textually) in the terminal window.

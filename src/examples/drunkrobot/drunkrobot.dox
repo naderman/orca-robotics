@@ -19,12 +19,14 @@
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_position2d
+- @ref orca_interface_position2d [DrunkRobot.Provides.Position2d]
 - @ref orca_interface_status
 
 @par Requires
 
 - none
+
+@image html drunkrobot.png
 
 Example code intended for component developers.
 

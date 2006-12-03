@@ -29,6 +29,8 @@
 
 - none
 
+@image html insgps.png
+
 @par Drivers
 
 - @b novatelspan @ref insgps_novatel

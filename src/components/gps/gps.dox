@@ -38,6 +38,8 @@
 
 - none
 
+@image html gps.png
+
 @par Drivers
 
 - @b ashtech @ref gps_ashtech

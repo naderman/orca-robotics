@@ -29,6 +29,8 @@
 
 - none
 
+@image html simlocaliser.png
+
 @par Drivers
 
 - @b static @ref orca_simlocaliser_static

@@ -29,6 +29,8 @@
 
 - none
 
+@image html segwayrmp.png
+
 @par Drivers
 
 - @b segwayrmpusb @ref orca_segwayrmp_segwayrmpusb

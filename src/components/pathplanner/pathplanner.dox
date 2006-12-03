@@ -31,6 +31,8 @@ The pathplanner acts like a service receiving tasks from third parties and retur
 
 - @ref orca_interface_ogmap [PathPlanner.Requires.OgMap]
 
+@image html pathplanner.png
+
 @par Drivers
 
 - @b simplenav @ref orca_pathplanner_simplenav

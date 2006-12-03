@@ -28,6 +28,8 @@
 
 - @ref orca_interface_position2d [FaithLocaliser.Requires.Odometry]
 
+@image html faithlocaliser.png
+
 @par Operation
 
 This component takes odometry information and produces localisation information.

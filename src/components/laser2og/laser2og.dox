@@ -27,6 +27,8 @@
 - @ref orca_interface_ogfusion [Laser2Og.Requires.OgFusion]
 - @ref orca_interface_rangescanner [Laser2Og.Requires.RangeScanner]
 
+@image html laser2og.png
+
 @par Operation
 
 This component generates OgCellLikelihood sequences using 

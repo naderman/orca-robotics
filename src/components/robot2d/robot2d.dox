@@ -27,6 +27,8 @@
 
 - none
 
+@image html robot2d.png
+
 @par Drivers
 
 - @b playerclient @ref orca_robot2d_playerclient

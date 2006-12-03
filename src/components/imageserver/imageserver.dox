@@ -27,6 +27,8 @@
 
 - none
 
+@image html imageserver.png
+
 @par Drivers
 
 - @b monoopencv @ref orca_camera_monoopencv
