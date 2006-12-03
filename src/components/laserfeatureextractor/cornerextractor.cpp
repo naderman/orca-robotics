@@ -9,6 +9,7 @@
  *
  */
 #include "cornerextractor.h"
+#include <orcaice/orcaice.h>
 
 #include <iostream>
 #include <assert.h>
@@ -37,6 +38,24 @@ namespace {
     const double P_FALSE_POSITIVE_POSSIBLE_GROUND = 0.5;
     const double P_TRUE_POSITIVE  = 0.6;
 }
+
+double lineLength( const Section &s )
+{
+    const SectionEl &start = s.elements[0];
+    const SectionEl &end   = s.elements[s.elements.size()-1];
+
+    // A bit unstable if the end-points are screwy, but should be mostly OK...
+    return hypotf( start.y()-end.y(), start.x()-end.x() );
+}
+
+CornerExtractor::CornerExtractor( orcaice::Context context, double laserMaxRange )
+    : laserMaxRange_( laserMaxRange )
+{
+    std::string prefix = context.tag() + ".Config.Reflectors.";
+    Ice::PropertiesPtr prop = context.properties();
+
+    minLineLength_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MinLineLength", 1.0 );
+}
     
 void CornerExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                                    orca::PolarFeature2dDataPtr &features )
@@ -60,6 +79,17 @@ void CornerExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
         if (itr->isALine && itr->isNextCon && next->isALine) {// &&
             //(itr->elements.size() < MAX_POINTS_IN_LINE) &&
             //(next->elements.size() < MAX_POINTS_IN_LINE)) {
+
+            if ( lineLength( *itr ) < minLineLength_ )
+            {
+                cout<<"TRACE(cornerextractor.cpp): line too small: length is " << lineLength(*itr) << endl;
+                continue;
+            }
+            if ( lineLength( *next ) < minLineLength_ )
+            {
+                cout<<"TRACE(cornerextractor.cpp): line too small: length is " << lineLength(*next) << endl;
+                continue;
+            }
 
             double pFalsePositive = P_FALSE_POSITIVE;
 

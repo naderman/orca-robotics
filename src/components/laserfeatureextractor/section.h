@@ -20,11 +20,11 @@ class SectionEl
 public:  
   SectionEl( double r, double b ) { r_ = r; b_ = b; x_ = r*cos(b); y_ = r*sin(b); };
   
-  double x() { return x_; };
-  double y() { return y_; };
+  double x() const { return x_; };
+  double y() const { return y_; };
   
-  double range() { return r_; };
-  double bearing() { return b_; }
+  double range() const { return r_; };
+  double bearing() const { return b_; }
 
 private:
   double x_;

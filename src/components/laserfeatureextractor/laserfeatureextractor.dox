@@ -89,6 +89,10 @@ Corners
 
 - @c LaserFeatureExtractor.Config.ExtractCorners (bool)
     - Default: 0
+
+- @c LaserFeatureExtractor.Config.MinLineLength (float) [m]
+    - A corner is only extracted if the lines which meet at the corner are at least this long.
+    - Default: 1.0
     
 Doors
 

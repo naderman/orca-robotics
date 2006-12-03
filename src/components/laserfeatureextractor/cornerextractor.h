@@ -24,9 +24,7 @@ class CornerExtractor : public IExtractor
 
 public: 
 
-    CornerExtractor( orcaice::Context, double laserMaxRange )
-        : laserMaxRange_( laserMaxRange )
-    {}
+    CornerExtractor( orcaice::Context, double laserMaxRange );
 
     // Adds laser features to the 'features' data structure
     void addFeatures( const orca::LaserScanner2dDataPtr &laserData,
@@ -36,7 +34,8 @@ private:
     
     std::vector<Section> sections_;
     double laserMaxRange_;
-    
+    double minLineLength_;
+
     // Not used at the moment
     bool extractPossibleCorners( const orca::PolarFeature2dDataPtr & featureDataPtr );
     
