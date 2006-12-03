@@ -79,7 +79,7 @@ struct ConfigDef
 /*!
     @brief Holds the information for component definition.
 
-    To load from file use @ref parseDefFile.
+    To load from file use orcadef::parseDefFile.
 */
 struct ComponentDef
 {
@@ -143,7 +143,7 @@ struct ConfigCfg
 /*!
     @brief Holds the information for component configuration.
 
-    To convert from component definition, use @ref defToCfg.
+    To convert from component definition, use orcadef::defToCfg.
 */
 struct ComponentCfg
 {
@@ -174,7 +174,7 @@ ComponentCfg toCfg( const ComponentDef & def );
 const std::string toCfgText( const ComponentDef & def );
 
 /*!
-    Same as @ref toCfgText but adds some common properties.
+    Same as orcadef::toCfgText but adds some common properties.
 */
 const std::string toCfgTextWithHeaders( const ComponentDef &def, const std::vector<std::string> & headers );
 

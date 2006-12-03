@@ -19,8 +19,8 @@ namespace orcaice
 /*!
  *  @brief The object which implements the callback function.
  *
- *  Derive from this class and implement the callback function @ref handleData and
- *  register it with Notify by calline @ref setNotifyHandler.
+ *  Derive from this class and implement the callback function NotifyHandler::handleData and
+ *  register it with Notify by calline Notify::setNotifyHandler.
  */
 template<class Type>
 class NotifyHandler
@@ -36,8 +36,8 @@ public:
 /*!
  * @brief A data pipe with callback semantics.
  *
- *  Write new data with @ref set. The data is delivered to the data handler by
- *  calling @ref handleData in the registered NotifyHandler.
+ *  Write new data with Notify::set. The data is delivered to the data handler by
+ *  calling NotifyHandler::handleData in the registered NotifyHandler.
  *
  *  @see Buffer, Proxy
  */

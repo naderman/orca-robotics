@@ -9,7 +9,7 @@
  */
 /*!
 @ingroup libs
-@defgroup _library_ogfusionutil ogfusionutil
+@defgroup orca_library_orcaogfusionutil libOrcaOgFusion
 @brief Occupancy Grid Fusion Util: Stuff useful for Occupancy grid operations.
 
     @par Development status
@@ -20,11 +20,11 @@
 Occupancy Grid Fusion Util: Stuff useful for Occupancy grid operations. Such 
 as the fusion of cells, and configuration of occupancy grid maps.
 
-For a full list of functions and classes see @ref ogfusionutil
+For a full list of functions and classes see @ref orcaogfusion
 
 Have to include things by name:
 @verbatim
-#include <ogfusionutil/ogfusionutil.h>
+#include <orcaogfusion/orcaogfusion.h>
 @endverbatim
 
     @par Responsible Developer
@@ -34,8 +34,8 @@ Have to include things by name:
 
 /*!
 @brief Occupancy Grid Fusion Util: Stuff useful for Occupancy grid operations.
-@namespace ogfusionutil
+@namespace orcaogfusion
 
-@see @ref _library_abutil
+@see @ref orca_library_orcaogfusionutil
 
 */

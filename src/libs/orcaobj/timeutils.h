@@ -24,20 +24,20 @@ orca::Time getNow();
 //! Set to current time.
 void setToNow( orca::Time & t );
 
-//! Converts from @ref Time to Ice standard time format.
+//! Converts from orca::Time to Ice standard time format.
 IceUtil::Time toIceTime( const orca::Time & t );
-//! Converts from Ice standard time format to @ref Time.
+//! Converts from Ice standard time format to orca::Time.
 orca::Time toOrcaTime( const IceUtil::Time & t );
 
-//! Converts from number of seconds to @ref Time.
+//! Converts from number of seconds to orca::Time.
 orca::Time toOrcaTime( const double seconds );
 //! Converts an orca::Time to a double in seconds
 double timeAsDouble( const orca::Time &t );
 
-//! Converts from Ice standard time format to @ref TimeOfDay.
+//! Converts from Ice standard time format to orca::TimeOfDay.
 //! Unlike IceUtil::Time::toDateTime(), we use UTC time and not local time.
 orca::TimeOfDay toOrcaTimeOfDay( const IceUtil::Time & t );
-//! Converts from Ice standard time format to @ref Date.
+//! Converts from Ice standard time format to orca::Date.
 //! Unlike IceUtil::Time::toDateTime(), we use UTC time and not local time.
 orca::Date toOrcaDate( const IceUtil::Time & t );
 

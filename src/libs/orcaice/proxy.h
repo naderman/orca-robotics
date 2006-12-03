@@ -26,7 +26,7 @@ namespace orcaice
  *  This container is similar to a circular Buffer of size one but with two
  *  differences:
  *  - a copy of the data is always available, yet the user knows when new
- *    data has arrived by calling @ref isNew
+ *    data has arrived by calling @ref isNewData
  *  - @ref getNext returns the new data arrives (not when the buffer
  *    is non-empty.
  *
