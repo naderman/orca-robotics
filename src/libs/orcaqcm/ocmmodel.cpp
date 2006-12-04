@@ -110,6 +110,8 @@ OcmModel::index(int row, int column, const QModelIndex &parent) const
         //cout<<"index: looking for "<<row<<","<<column<<" of "<<cn->name.toStdString()<<endl;
         return createIndex( row, column, (void*)&(N->interfaces.at(row)) );
     }
+    default :
+        return QModelIndex();
     } // type
     return QModelIndex();
 }
@@ -393,7 +395,7 @@ OcmModel::data(const QModelIndex &idx, int role) const
         {
             PlatformNode* N = (PlatformNode*)n;
             // regardless of the column
-            for ( unsigned int i=0; i<N->components.size(); ++i ) {
+            for ( int i=0; i<N->components.size(); ++i ) {
                 if ( N->components[i].isConnected ) {
                     return 1;
                 }

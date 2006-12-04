@@ -66,7 +66,7 @@ ModelHandler::customEvent( QEvent* e )
         //cout<<"reg proxy: "<<he->registryAddress.toStdString()<<endl;
 
         // provided interfaces
-        for ( int j=0; j<he->data_.provides.size(); ++j ) {
+        for ( unsigned int j=0; j<he->data_.provides.size(); ++j ) {
             bool isProvided = true;
             model_.setInterface(
                 QString::fromStdString( he->data_.locatorString ),
@@ -81,7 +81,7 @@ ModelHandler::customEvent( QEvent* e )
                 he->data_.timeUp );
         }
         // required interfaces
-        for ( int j=0; j<he->data_.requires.size(); ++j ) {
+        for ( unsigned int j=0; j<he->data_.requires.size(); ++j ) {
             bool isProvided = false;
             model_.setInterface( 
                 QString::fromStdString( he->data_.locatorString ),

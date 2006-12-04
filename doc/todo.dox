@@ -21,17 +21,12 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - OrcaView
   - Make sure changing focus still works.
 
-- Source code structure
-    - Separate utilities from libraries?
-
-- Topic Tracer to attempt reconnections
+- RegistryView
+    - fix stale display of components
 
 - libOrcaIce
     - resolve issue with direct connections withour the registry
-
-- Probe
-  - Use libOrcaDynamicLoad to reduce cut-n-paste.
-
+    - Topic Tracer to attempt reconnections
 
 
 @section changes Changes since Last Release
@@ -69,7 +64,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - new utility def2uml for creating images of UML symbols from component definition files.
 - Documentation
   - added graphical UML symbol to documentation pages of all components. (Alex M.)
-  - fixed broken doxygen references.
+  - separate listing of libs and utils (Alex M.)
+  - fixed broken doxygen references. (Alex M.)
 
 @section orca_doc_todo_history Changes in Past Releases
 
