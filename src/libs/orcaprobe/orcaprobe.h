@@ -17,7 +17,6 @@
 #include <orcaprobe/browserdriver.h>
 #include <orcaprobe/displaydriver.h>
 
-#include <orcaprobe/dynamicload.h>
 // #include <orcaprobe/exceptions.h>
 
 #endif

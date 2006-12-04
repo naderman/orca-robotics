@@ -28,10 +28,10 @@ namespace probe
 
 static const char *DEFAULT_FACTORY_NAME="libOrcaProbeFactory.so";
 
-orcaprobe::Factory* loadFactory( orcaprobe::DynamicallyLoadedLibrary &lib )
+orcaprobe::Factory* loadFactory( orcadynamicload::DynamicallyLoadedLibrary &lib )
 {
     orcaprobe::Factory *f = 
-        orcaprobe::dynamicallyLoadClass<orcaprobe::Factory,FactoryMakerFunc>
+        orcadynamicload::dynamicallyLoadClass<orcaprobe::Factory,FactoryMakerFunc>
                                         (lib, "createFactory");
     return f;
 }
@@ -65,12 +65,12 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
         context().tracer()->info( ss.str() );
         
         try {
-            orcaprobe::DynamicallyLoadedLibrary *lib = new orcaprobe::DynamicallyLoadedLibrary(libNames[i]);
+            orcadynamicload::DynamicallyLoadedLibrary *lib = new orcadynamicload::DynamicallyLoadedLibrary(libNames[i]);
             orcaprobe::Factory *f = loadFactory( *lib );
             libraries_.push_back(lib);
             factories_.push_back(f);
         }
-        catch (orcaprobe::DynamicLoadException &e)
+        catch (orcadynamicload::DynamicLoadException &e)
         {
             cout << "ERROR(loggercomponent.cpp): " << e.what() << endl;
             throw;

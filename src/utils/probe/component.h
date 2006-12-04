@@ -15,7 +15,7 @@
 #include <vector>
 #include <string>
 #include <orcaice/component.h>
-#include <orcaprobe/dynamicload.h>
+#include <orcadynamicload/dynamicload.h>
 
 namespace orcaprobe
 {
@@ -37,7 +37,7 @@ public:
 
 private:
     std::vector<orcaprobe::Factory*>                  factories_;
-    std::vector<orcaprobe::DynamicallyLoadedLibrary*> libraries_;
+    std::vector<orcadynamicload::DynamicallyLoadedLibrary*> libraries_;
 
     // utilities
     void loadPluginLibraries( const std::string & factoryLibNames );
