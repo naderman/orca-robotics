@@ -26,7 +26,8 @@ InterfaceProbe::InterfaceProbe( const orca::FQInterfaceName & name, DisplayDrive
     prx_ = context_.communicator()->stringToProxy( orcaice::toString( name_ ) );
 };
 
-std::vector<orcacm::OperationHeader> InterfaceProbe::operations()
+std::vector<orcacm::OperationHeader> 
+InterfaceProbe::operations()
 {
     std::vector<orcacm::OperationHeader> headers;
     
@@ -40,9 +41,9 @@ std::vector<orcacm::OperationHeader> InterfaceProbe::operations()
     return headers;
 }
 
-orcacm::OperationData InterfaceProbe::getOperationData( const int index )
+void
+InterfaceProbe::fillOperationData( const int index, orcacm::OperationData & data )
 {
-    orcacm::OperationData data;
     data.parent = name_;
     data.parentId = id_;
     if ( index<0 || (unsigned int)index>operations_.size() ) {
@@ -51,6 +52,4 @@ orcacm::OperationData InterfaceProbe::getOperationData( const int index )
     else {
         data.name = operations_[index];
     }
-
-    return data;
 }

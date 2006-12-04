@@ -45,7 +45,7 @@ pingComponent( const orcaice::Context & context, const std::string & adapterId )
 }
 
 RegistryData
-getRegistryData( const orcaice::Context & context, const std::string & locatorString, bool pingAdapters )
+getRegistryData( const orcaice::Context & context, const std::string & locatorString, bool tryToPing )
 {
     RegistryData data;
     
@@ -53,34 +53,37 @@ getRegistryData( const orcaice::Context & context, const std::string & locatorSt
     
     Ice::ObjectPrx adminPrx = context.communicator()->stringToProxy(
             orcamisc::stringToIceGridInstanceName(locatorString)+"/Admin");
-    
+
+    Ice::StringSeq list;
     try {
         adminPrx->ice_ping();
-        data.adminAddress = orcamisc::connectionToRemoteAddress( adminPrx->ice_getConnection()->toString() );
+        data.address = orcamisc::connectionToRemoteAddress( adminPrx->ice_getConnection()->toString() );
         data.isReachable = true;
 
         std::ostringstream os;
-        os<<"Ping successful: "<<data.adminAddress;
+        os<<"Ping successful: "<<data.address;
         context.tracer()->debug( os.str() );
-    } catch ( const Ice::Exception & ) {
+
+        IceGrid::AdminPrx admin = IceGrid::AdminPrx::checkedCast( adminPrx );
+        
+        //
+        // get adapter list
+        //
+        list = admin->getAllAdapterIds();
+    } 
+    catch ( const Ice::Exception & ) {
         data.isReachable = false;
         return data;
     }
-    
-    IceGrid::AdminPrx admin = IceGrid::AdminPrx::checkedCast( adminPrx );
-    
-    //
-    // get adapter list
-    //
-    Ice::StringSeq list = admin->getAllAdapterIds();
 
     // add more information
     ComponentHeader comp;
-    for ( unsigned int i=0; i<list.size(); ++i ) {
+    for ( unsigned int i=0; i<list.size(); ++i ) 
+    {
         comp.name = orcaice::toComponentName( list[i] );
         
         // ping each component's Home interface, if requested
-        if ( pingAdapters ) {
+        if ( tryToPing ) {
             comp.isReachable = orcacm::pingComponent( context, list[i] );
             comp.address = "not implemented";
         }
@@ -96,7 +99,7 @@ getRegistryData( const orcaice::Context & context, const std::string & locatorSt
 }
 
 RegistryHomeData
-getRegistryHomeData( const orcaice::Context & context, const std::string & locatorString, bool pingAdapters )
+getRegistryHomeData( const orcaice::Context & context, const std::string & locatorString, bool tryToPing )
 {
     RegistryHomeData data;
 
@@ -105,25 +108,49 @@ getRegistryHomeData( const orcaice::Context & context, const std::string & locat
     Ice::ObjectPrx queryPrx = context.communicator()->stringToProxy(
             orcamisc::stringToIceGridInstanceName(locatorString)+"/Query");
     
+    Ice::ObjectProxySeq list;
     try {
         queryPrx->ice_ping();
-        data.adminAddress = orcamisc::connectionToRemoteAddress( queryPrx->ice_getConnection()->toString() );
+        data.address = orcamisc::connectionToRemoteAddress( queryPrx->ice_getConnection()->toString() );
         data.isReachable = true;
 
         std::ostringstream os;
-        os<<"Ping successful: "<<data.adminAddress;
+        os<<"Registry ping successful: "<<data.address;
         context.tracer()->debug( os.str() );
-    } catch ( const Ice::Exception & ) {
+
+        IceGrid::QueryPrx query = IceGrid::QueryPrx::checkedCast( queryPrx );
+
+        //
+        // get list of homes
+        //
+        list = query->findAllObjectsByType( "::orca::Home" );
+    } 
+    catch ( const Ice::Exception & ) {
         data.isReachable = false;
         return data;
     }
-    
-    IceGrid::QueryPrx query = IceGrid::QueryPrx::checkedCast( queryPrx );
 
-    //
-    // get list of homes
-    //
-    data.homes = query->findAllObjectsByType( "::orca::Home" );
+    // add more information
+    HomeHeader home;
+    for ( unsigned int i=0; i<list.size(); ++i ) 
+    {
+        home.proxy = list[i];
+        
+        // ping each component's Home interface, if requested
+        if ( tryToPing ) {
+            try {
+                home.proxy->ice_ping();
+                home.isReachable = true;
+            }
+            catch( const Ice::Exception & )
+            {
+                home.isReachable = false;
+            }
+            home.address = "not implemented";
+        }
+        
+        data.homes.push_back( home );
+    }
 
     return data;
 }

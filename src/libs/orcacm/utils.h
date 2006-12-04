@@ -22,6 +22,8 @@ namespace orcacm
 //@{
 
 /*!
+ *  OBSOLETE! This function does not work with Homes registered as well-known objects.
+ *
  *  Attempts to ping the @ref orca_interface_home interface of the component
  *  whose stringified name is given as @p adapterId. Returns TRUE if successful.
  */
@@ -31,20 +33,32 @@ pingComponent( const orcaice::Context & context, const std::string & adapterId )
 /*!
  *  Connects to IceGrid/Admin interface of the specified registry and gets the
  *  list of registered adapters. If connection fails for some reason,
- *  @p isReachable field of ComponentData is set to FALSE.
+ *  @p isReachable field of RegistryData is set to FALSE.
  *
  *  When using the default registry, you can obtain the @p locatorString like this:
  *  communicator()->getDefaultLocator()->ice_toString()
  *
- *  If @p pingAdapters is TRUE (default), the function attempts to ping each
+ *  If @p tryToPing is TRUE (default), the function attempts to ping each
  *  registered adapter. Otherwise it doesn't and the @p isReachable field for
  *  each adapter is set to FALSE;
  */
 RegistryData
-getRegistryData( const orcaice::Context & context, const std::string & locatorString, bool pingAdapters=true );
+getRegistryData( const orcaice::Context & context, const std::string & locatorString, bool tryToPing=true );
 
+/*!
+ *  Connects to IceGrid/Query interface of the specified registry and gets the
+ *  list of objects of type ::orca::Home. If connection fails for some reason,
+ *  @p isReachable field of RegistryData is set to FALSE.
+ *
+ *  When using the default registry, you can obtain the @p locatorString like this:
+ *  communicator()->getDefaultLocator()->ice_toString()
+ *
+ *  If @p tryToPing is TRUE (default), the function attempts to ping each
+ *  Home object. Otherwise it doesn't and the @p isReachable field for
+ *  each Home is set to FALSE;
+ */
 RegistryHomeData
-getRegistryHomeData( const orcaice::Context & context, const std::string & locatorString, bool pingAdapters=true );
+getRegistryHomeData( const orcaice::Context & context, const std::string & locatorString, bool tryToPing=true );
 
 /*!
  *  Connects to Home interface of the specified component and gets its

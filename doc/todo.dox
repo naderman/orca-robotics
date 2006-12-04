@@ -62,6 +62,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - New utilities: def2cfg, def2xml, def2xmltemplate, def2definverted, def2uml
   - the first 4 are renamed from generatecfg, etc. and moved into a separate dir.
   - new utility def2uml for creating images of UML symbols from component definition files.
+- libOrcaCompModel
+  - improved exception handling when contacting the Registry (Alex M.)
 - Documentation
   - added graphical UML symbol to documentation pages of all components. (Alex M.)
   - separate listing of libs and utils (Alex M.)

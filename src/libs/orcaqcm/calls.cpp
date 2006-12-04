@@ -51,10 +51,10 @@ GetComponentsCall::execute()
 
         // this function talks to the Home interface
 //         compData = orcacm::getComponentData( context_, regData.adapters[i].name );
-        compData = orcacm::getComponentHomeData( context_, regData.homes[i] );
+        compData = orcacm::getComponentHomeData( context_, regData.homes[i].proxy );
 
         compData.locatorString = regData.locatorString;
-        compData.adminAddress = regData.adminAddress;
+        compData.adminAddress = regData.address;
         //
         // push results one by one to UserHandler
         //

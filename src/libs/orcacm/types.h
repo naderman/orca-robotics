@@ -37,6 +37,9 @@ struct OperationData
     std::string parentId;
     //! Operation name
     std::string name;
+    //! Stringified result of the operation. For example, 
+    //! laser scan values converted to text.
+    std::string result;
 };
 
 //! Brief version of provided interface data
@@ -115,11 +118,22 @@ struct RegistryData
     //! Stringified proxy for the Locator object
     std::string locatorString;
     //! Address of the endpoint on which the Admin object was reached.
-    std::string adminAddress;
+    std::string address;
     //! Is the registry reachable?
     bool isReachable;
     //! A listing of registered object adapters.
     std::vector<ComponentHeader> adapters;
+};
+
+//! Information about a Home object.
+struct HomeHeader
+{
+    //! Component name
+    Ice::ObjectPrx proxy;
+    //! Is Home object reachable?
+    bool isReachable;
+    //! Address of the endpoint on which the Home object was reached.
+    std::string address;
 };
 
 //! Registry data
@@ -127,12 +141,12 @@ struct RegistryHomeData
 {
     //! Stringified proxy for the Locator object
     std::string locatorString;
-    //! Address of the endpoint on which the Admin object was reached.
-    std::string adminAddress;
+    //! Address of the endpoint on which the Query object was reached.
+    std::string address;
     //! Is the registry reachable?
     bool isReachable;
-    //! A listing of registered Home objects.
-    Ice::ObjectProxySeq homes;
+    //! A listing of registered object adapters.
+    std::vector<HomeHeader> homes;
 };
 
 } // namespace

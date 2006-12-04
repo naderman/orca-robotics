@@ -30,19 +30,19 @@ HomeProbe::HomeProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriv
 }
 
 int 
-HomeProbe::loadOperation( const int index )
+HomeProbe::loadOperation( const int index, orcacm::OperationData & data )
 {
-    //cout<<"loading dereivedPrx operation "<<index<<endl;
+    fillOperationData( index, data );
 
     int ret = 1;
     
     switch ( index )
     {
     case 0 :
-        ret = loadGetInterfaces();
+        ret = loadGetInterfaces( data );
         break;
     case 1 :
-        ret = loadGetProperties();
+        ret = loadGetProperties( data );
         break;
     default :
         ret = 1;
@@ -54,48 +54,56 @@ HomeProbe::loadOperation( const int index )
 }
 
 int 
-HomeProbe::loadGetInterfaces()
+HomeProbe::loadGetInterfaces( orcacm::OperationData & data )
 {
     cout<<"Calling operation orca::Home::getInterfaces()..."<<endl;
 
-    orca::HomeDataPtr homeData;
+    orca::HomeDataPtr result;
     
     try
     {
         orca::HomePrx dereivedPrx = orca::HomePrx::checkedCast(prx_);
 
-        homeData = dereivedPrx->getInterfaces();
+        result = dereivedPrx->getInterfaces();
     }
     catch( const Ice::Exception & e )
     {
+        stringstream ss;
+        ss << e;
+        data.result = ss.str();
         return 1;
     }
 
-    cout<<orcaice::toString(homeData)<<endl;
+    data.result = orcaice::toString(result);
     return 0;
 }
 
 int 
-HomeProbe::loadGetProperties()
+HomeProbe::loadGetProperties( orcacm::OperationData & data )
 {
     cout<<"Calling operation orca::Home::getProperties()..."<<endl;
 
-    std::map<std::string,std::string> props;
+    std::map<std::string,std::string> result;
     
     try
     {
         orca::HomePrx dereivedPrx = orca::HomePrx::checkedCast(prx_);
 
-        props = dereivedPrx->getProperties();
+        result = dereivedPrx->getProperties();
     }
     catch( const Ice::Exception & e )
     {
+        stringstream ss;
+        ss << e;
+        data.result = ss.str();
         return 1;
     }
 
-    for ( map<string,string>::iterator it=props.begin(); it!=props.end(); ++it ) {
-        cout<<setw(40)<<it->first<<"\t\t"<<it->second<<endl;
+    stringstream ss;
+    for ( map<string,string>::iterator it=result.begin(); it!=result.end(); ++it ) {
+        ss<<setw(40)<<it->first<<"\t\t"<<it->second<<endl;
     }
+    data.result = ss.str();
 
     return 0;
 }

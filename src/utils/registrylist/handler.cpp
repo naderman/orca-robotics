@@ -69,9 +69,9 @@ Handler::run()
         for ( unsigned int i=0; i<regData.homes.size(); ++i ) {
             // get full component data based on the component header information
 //             compData = orcacm::getComponentData( context_, regData.adapters[i].name );
-            compData = orcacm::getComponentHomeData( context_, regData.homes[i] );
+            compData = orcacm::getComponentHomeData( context_, regData.homes[i].proxy );
             compData.locatorString = regData.locatorString;
-            compData.adminAddress = regData.adminAddress;
+            compData.adminAddress = regData.address;
             
             cout<<orcaice::toString( compData.name )<<endl;
 

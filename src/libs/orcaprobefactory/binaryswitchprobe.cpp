@@ -33,7 +33,7 @@ BinarySwitchProbe::BinarySwitchProbe( const orca::FQInterfaceName & name, orcapr
 }
 
 int 
-BinarySwitchProbe::loadOperation( const int index )
+BinarySwitchProbe::loadOperation( const int index, orcacm::OperationData & data )
 {
     //cout<<"loading home operation "<<index<<endl;
 

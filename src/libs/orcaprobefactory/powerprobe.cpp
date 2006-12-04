@@ -31,7 +31,7 @@ PowerProbe::PowerProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDr
 }
     
 int 
-PowerProbe::loadOperation( const int index )
+PowerProbe::loadOperation( const int index, orcacm::OperationData & data )
 {
     //cout<<"loading home operation "<<index<<endl;
 

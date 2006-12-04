@@ -25,7 +25,7 @@ public:
     PowerProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver & display,
                                 const orcaice::Context & context );
 
-    virtual int loadOperation( const int index );
+    virtual int loadOperation( const int index, orcacm::OperationData & data );
     
 private:
 

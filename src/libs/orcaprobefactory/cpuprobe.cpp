@@ -30,7 +30,7 @@ CpuProbe::CpuProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver
 }
 
 int 
-CpuProbe::loadOperation( const int index )
+CpuProbe::loadOperation( const int index, orcacm::OperationData & data )
 {
     //cout<<"loading home operation "<<index<<endl;
 

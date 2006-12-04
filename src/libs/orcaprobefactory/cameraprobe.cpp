@@ -32,7 +32,7 @@ CameraProbe::CameraProbe( const orca::FQInterfaceName & name, orcaprobe::Display
 }
     
 int 
-CameraProbe::loadOperation( const int index )
+CameraProbe::loadOperation( const int index, orcacm::OperationData & data )
 {
     //cout<<"loading home operation "<<index<<endl;
 

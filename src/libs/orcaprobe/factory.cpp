@@ -21,7 +21,7 @@ Factory::supportedTypes() const
 bool 
 Factory::isSupported( const std::string &interfaceType ) const
 {
-    for ( uint i=0; i<types_.size(); ++i ) {
+    for ( unsigned int i=0; i<types_.size(); ++i ) {
         if ( types_[i] == interfaceType ) {
             return true;
         }

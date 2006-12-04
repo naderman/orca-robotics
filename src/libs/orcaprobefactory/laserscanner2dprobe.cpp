@@ -33,25 +33,25 @@ LaserScanner2dProbe::LaserScanner2dProbe( const orca::FQInterfaceName & name, or
 }
     
 int 
-LaserScanner2dProbe::loadOperation( const int index )
+LaserScanner2dProbe::loadOperation( const int index, orcacm::OperationData & data )
 {
-    //cout<<"loading home operation "<<index<<endl;
+    fillOperationData( index, data );
 
     int ret = 1;
     
     switch ( index )
     {
     case 0 :
-        ret = loadGetData();
+        ret = loadGetData( data );
         break;
     case 1 :
-        ret = loadGetDescription();
+        ret = loadGetDescription( data );
         break;
     case 2 :
-        ret = loadSubscribe();
+        ret = loadSubscribe( data );
         break;
     case 3 :
-        ret = loadUnsubscribe();
+        ret = loadUnsubscribe( data );
         break;
     default :
         ret = 1;
@@ -63,45 +63,53 @@ LaserScanner2dProbe::loadOperation( const int index )
 }
 
 int 
-LaserScanner2dProbe::loadGetData()
+LaserScanner2dProbe::loadGetData( orcacm::OperationData & data )
 {
-    orca::RangeScanner2dDataPtr data;
+    orca::RangeScanner2dDataPtr result;
     
     try
     {
         orca::LaserScanner2dPrx derivedPrx = orca::LaserScanner2dPrx::checkedCast(prx_);
-        data = derivedPrx->getData();
+        result = derivedPrx->getData();
     }
     catch( const Ice::Exception & e )
     {
+        stringstream ss;
+        ss << e;
+        data.result = ss.str();
         return 1;
     }
 
-    cout<<orcaice::toString(data)<<endl;
+//     cout<<orcaice::toString(result)<<endl;
+    data.result = orcaice::toString(result);
     return 0;
 }
 
 int 
-LaserScanner2dProbe::loadGetDescription()
+LaserScanner2dProbe::loadGetDescription( orcacm::OperationData & data )
 {
-    orca::RangeScanner2dDescriptionPtr data;
+    orca::RangeScanner2dDescriptionPtr result;
     
     try
     {
         orca::LaserScanner2dPrx derivedPrx = orca::LaserScanner2dPrx::checkedCast(prx_);
-        data = derivedPrx->getDescription();
+        result = derivedPrx->getDescription();
     }
     catch( const Ice::Exception & e )
     {
+        stringstream ss;
+        ss << e;
+        data.result = ss.str();
         return 1;
     }
 
-    cout<<orcaice::toString(data)<<endl;
+//     cout<<orcaice::toString(result)<<endl;
+    data.result = orcaice::toString(result);
     return 0;
 }
 
 int 
-LaserScanner2dProbe::loadSubscribe()
+LaserScanner2dProbe::loadSubscribe( orcacm::OperationData & data )
 {
 //     // create the consumer only when needed
 //     Ice::ObjectPtr consumer = new PowerConsumerI;
@@ -126,7 +134,7 @@ LaserScanner2dProbe::loadSubscribe()
 }
 
 int 
-LaserScanner2dProbe::loadUnsubscribe()
+LaserScanner2dProbe::loadUnsubscribe( orcacm::OperationData & data )
 {
 //     try
 //     {

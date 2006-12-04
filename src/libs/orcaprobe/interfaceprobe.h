@@ -30,11 +30,9 @@ public:
     virtual ~InterfaceProbe() {};
 
     std::vector<orcacm::OperationHeader> operations();
-    
-    orcacm::OperationData getOperationData( const int index );
 
     // returns 0 if all good, 1 on error
-    virtual int loadOperation( const int index )=0;
+    virtual int loadOperation( const int index, orcacm::OperationData & data )=0;
 
 protected:
 
@@ -45,6 +43,9 @@ protected:
     DisplayDriver & displayDriver_;
     orcaice::Context context_;
     Ice::ObjectPrx prx_;
+
+    // fills out the header information, does not touch the 'result' field
+    void fillOperationData( const int index, orcacm::OperationData & data );
 };
 
 } // namespace

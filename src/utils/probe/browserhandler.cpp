@@ -135,6 +135,9 @@ BrowserHandler::loadRegistry()
 {
     //cout<<"loading registry data for :"<<context_.communicator()->getDefaultLocator()->ice_toString()<<endl;
     
+    //
+    // remote call!
+    //
 //     registryData_ = orcacm::getRegistryData( context_, context_.communicator()->getDefaultLocator()->ice_toString() );
     registryData_ = orcacm::getRegistryHomeData( context_, context_.communicator()->getDefaultLocator()->ice_toString() );
     
@@ -156,9 +159,12 @@ BrowserHandler::loadComponent()
     //cout<<"loading component data for "<<orcaice::toString(registryData_.adapters[pick_].name)<<endl;
     lastComponentPick_ = pick_;
     
+    //
+    // remote call!
+    //
 //     componentData_ = orcacm::getComponentData( context_,
 //                         orcaice::toString(registryData_.adapters[pick_].name) );
-    componentData_ = orcacm::getComponentHomeData( context_, registryData_.homes[pick_] );
+    componentData_ = orcacm::getComponentHomeData( context_, registryData_.homes[pick_].proxy );
 
     display_.showComponentData( componentData_ );
 }
@@ -194,12 +200,14 @@ BrowserHandler::loadInterface()
     }
 
     if ( ifaceProbe_==0 ) {
-        cout<<"unsupported interface. Sending fault event."<<endl;
+        cout<<"Unsupported interface: '"<<interfaceData_.id<<"'. Sending fault event."<<endl;
         eventPipe_.push( FaultEvent );
         return;
     }
     
+    // local call
     interfaceData_.operations = ifaceProbe_->operations();
+
     display_.showInterfaceData( interfaceData_ );
 }
 
@@ -209,11 +217,12 @@ BrowserHandler::loadOperation()
     //cout<<"loading operation data for "<<interfaceData_.operations[pick_].name<<endl;
     lastOperationPick_ = pick_;
 
-    if ( ifaceProbe_->loadOperation( pick_ ) ) {
+    //
+    // remote call!
+    //
+    if ( ifaceProbe_->loadOperation( pick_, operationData_ ) ) {
         eventPipe_.push( FaultEvent );
     }
-    
-    operationData_ = ifaceProbe_->getOperationData( pick_ );
     
     display_.showOperationData( operationData_ );
 }

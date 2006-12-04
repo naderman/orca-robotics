@@ -37,12 +37,12 @@ public:
     virtual ~Factory() {};
 
     //! Returns a vector of all supported interface types.
-    //! Use addSupportedType() to define a list of supported types during
+    //! Use @p addSupportedType to define a list of supported types during
     //! initialization.
     std::vector<std::string> supportedTypes() const;
 
     //! Returns TRUE if the specified interface type is supported by this factory.
-    //! Use addSupportedType() to define a list of supported types during
+    //! Use @p addSupportedType to define a list of supported types during
     //! initialization.
     bool isSupported( const std::string &interfaceType ) const;
 
