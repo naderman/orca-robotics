@@ -32,6 +32,7 @@
 #define READ_TIMEOUT          250000      /* less than 1e6 */
 #define _POSIX
 
+// Shows how the serial speed setting bits should be changed once the kernel works properly.
 #define ALEXB_OLDWAY 1
 
 int carmen_serial_connect(int *dev_fd, char *dev_name)
@@ -57,6 +58,7 @@ int carmen_serial_connect(int *dev_fd, char *dev_name)
   cfsetispeed(&newtio, BAUDRATE);
   cfsetospeed(&newtio, BAUDRATE);
 #else
+  printf("AlexB: setting speed w/ c_ispeed.\n");
   newtio.c_ispeed = 9600;
   newtio.c_ospeed = 9600;
 #endif
@@ -195,6 +197,7 @@ void carmen_serial_setparms(int fd, char *baudr, char *par, char *bits,
       cfsetospeed(&tty, (speed_t)spd);
       cfsetispeed(&tty, (speed_t)spd);
 #else
+      printf("AlexB: setting speed w/ c_ispeed.\n");
       tty.c_ispeed = newbaud;
       tty.c_ospeed = newbaud;
 #endif
