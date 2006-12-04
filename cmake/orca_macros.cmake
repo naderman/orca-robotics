@@ -169,7 +169,7 @@ MACRO( GENERATE_CONFIG_FILE DEF_FILE )
     )
 
   IF ( ORCA_MOTHERSHIP )
-    ADD_DEPENDENCIES( ${COMPONENT_TARGET} def2cfg )
+    ADD_DEPENDENCIES( ${COMPONENT_TARGET} def2cfg def2xml def2xmltemplate )
   ENDIF ( ORCA_MOTHERSHIP )
 
   IF ( INSTALL_CFG )
@@ -188,16 +188,9 @@ MACRO( GENERATE_CONFIG_FILE DEF_FILE )
 #     COMMENT "-- Generating ${XML_FILE} from ${DEF_FILE}"
     )
 
-  IF ( ${PROJECT_NAME} MATCHES "orca" )
-#     MESSAGE ( STATUS "DEBUG: ************ we are on the mothership! ***********" )
-    ADD_DEPENDENCIES( ${COMPONENT_TARGET} generatexml )
-#   ELSE ( ${PROJECT_NAME} MATCHES "orca" )
-#     MESSAGE ( STATUS "DEBUG: ************ we are on a satelite! ***********" )
-  ENDIF ( ${PROJECT_NAME} MATCHES "orca" )
-
-  IF ( INSTALL_CFG )
+  IF ( INSTALL_XML )
     INSTALL_FILES( /xml FILES ${CMAKE_CURRENT_BINARY_DIR}/${MANUAL_CFG_INTDIR}/${XML_FILE} )
-  ENDIF ( INSTALL_CFG )
+  ENDIF ( INSTALL_XML )
 
   #
   # ICEGRID SERVER TEMPLATE XML FILE
@@ -212,16 +205,9 @@ MACRO( GENERATE_CONFIG_FILE DEF_FILE )
 #     COMMENT "-- Generating ${XML_FILE} from ${DEF_FILE}"
     )
 
-  IF ( ${PROJECT_NAME} MATCHES "orca" )
-#     MESSAGE ( STATUS "DEBUG: ************ we are on the mothership! ***********" )
-    ADD_DEPENDENCIES( ${COMPONENT_TARGET} generatexmltemplate )
-#   ELSE ( ${PROJECT_NAME} MATCHES "orca" )
-#     MESSAGE ( STATUS "DEBUG: ************ we are on a satelite! ***********" )
-  ENDIF ( ${PROJECT_NAME} MATCHES "orca" )
-
-  IF ( INSTALL_CFG )
+  IF ( INSTALL_XML )
     INSTALL_FILES( /xml FILES ${CMAKE_CURRENT_BINARY_DIR}/${MANUAL_CFG_INTDIR}/${TEMPLATE_XML_FILE} )
-  ENDIF ( INSTALL_CFG )
+  ENDIF ( INSTALL_XML )
 
 ENDMACRO( GENERATE_CONFIG_FILE DEF_FILE )
 
