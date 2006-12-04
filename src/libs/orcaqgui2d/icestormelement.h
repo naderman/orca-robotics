@@ -55,8 +55,8 @@ public:
     //! Here we pop data from the consumer buffer, and give it to the painter.
     virtual void update();
 
-    //! This implementation is sufficient for all derived classes.
-    void paint( QPainter *p, int z )
+    //! Derived classes may override this if they have to paint other stuff than just interface data (e.g. user input)
+    virtual void paint( QPainter *p, int z )
         { painter_.paint( p, z ); }
 
     bool paintThisLayer( int z ) const

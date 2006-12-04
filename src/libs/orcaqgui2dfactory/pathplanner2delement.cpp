@@ -1,4 +1,3 @@
-#if 0
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -12,8 +11,6 @@
 #include "pathplanner2delement.h"
 #include <orcaqgui/ihumanmanager.h>
 #include <orcaqgui/orcaicons.h>
-#include <iostream>
-#include <orcaqgui/icestormlistener.h>
 #include <orcaice/orcaice.h>
 #include <QFileDialog>
 #include <orcaqgui2dfactory/wptolerancesdialog.h>
@@ -25,13 +22,6 @@ using namespace orca;
 namespace orcaqgui {
 
 ////////////////////////////////////////////////////////////////////////////////
-void
-PathPlannerUpdateConsumer::setData( const orca::PathPlanner2dDataPtr &newPath, const ::Ice::Current& )
-{
-    pathPipe_.set( newPath );
-}
-
-
 void
 PathPlannerTaskAnswerConsumer::setData(const ::orca::PathPlanner2dDataPtr& data, const ::Ice::Current& )
 {
@@ -106,11 +96,15 @@ PathplannerButtons::setWpButton( bool onOff )
 PathPlanner2dElement::PathPlanner2dElement( orcaice::Context   context,
                                             const std::string &proxyString,
                                             IHumanManager* humanManager )
-    : doneInitialSetup_(false),
+    : IceStormElement<  PathPainter,
+                        orca::PathPlanner2dData,
+                        orca::PathPlanner2dDataPtr,
+                        orca::PathPlanner2dPrx,
+                        orca::PathPlanner2dConsumer,
+                        orca::PathPlanner2dConsumerPrx>( context, proxyString, painter_, -1 ),
       context_(context),
       proxyString_(proxyString),
       humanManager_(humanManager),
-      firstTime_(true),
       pathHI_( this,
                proxyString,
                humanManager,
@@ -118,16 +112,7 @@ PathPlanner2dElement::PathPlanner2dElement( orcaice::Context   context,
                readWaypointSettings( context ) )
 {
     cout<<"TRACE(pathplanner2delement.cpp): Instantiating w/ proxyString '" << proxyString << "'" << endl;   
-    
-//     QString str( proxyString.c_str() );
-//     str = str.section('@',1,1);
-//     str = str.section('/',0,0);
-//     cout << "platformname: " << str.toStdString() << endl;
-    
-    pathUpdateConsumer_ = new PathPlannerUpdateConsumer;
     pathTaskAnswerConsumer_ = new PathPlannerTaskAnswerConsumer;
-    cout<<"TRACE(pathplanner2delement.cpp): constructor finished." << endl;
-    timer_ = new orcaice::Timer;
 }
 
 PathPlanner2dElement::~PathPlanner2dElement()
@@ -136,26 +121,13 @@ PathPlanner2dElement::~PathPlanner2dElement()
 
 void
 PathPlanner2dElement::update()
-{
-    if ( !doneInitialSetup_ )
-    {
-        if (firstTime_) {
-            doInitialSetup();
-            timer_->restart();
-            firstTime_=false;
-        }
-        if (timer_->elapsedSec()>5.0) {
-            doInitialSetup();
-            timer_->restart();
-        }
+{    
+     if ( !needToUpdate() ) {
+        return;
     }
     
-    if ( pathUpdateConsumer_->pathPipe_.isNewData() )
-    {
-        orca::PathPlanner2dDataPtr newPath;
-        pathUpdateConsumer_->pathPipe_.get( newPath );
-        painter_.setData( newPath );
-    }
+    listener_.buffer().getAndPop( data_ );
+    painter_.setData( data_ );
     
     if ( pathTaskAnswerConsumer_->msgBuffer_.isNewData() )
     {
@@ -166,30 +138,10 @@ PathPlanner2dElement::update()
 }
 
 void
-PathPlanner2dElement::doInitialSetup()
+PathPlanner2dElement::actionOnConnection()
 {
     humanManager_->showStatusMsg(Information, "PathplannerElement is trying to connect");
-    
-    // Subscribe for updates
-    //cout<<"TRACE(pathplanner2delement.cpp): Connecting with proxyString_=" << proxyString_ << endl;
-
-    try {
-        orcaqgui::subscribeListener<PathPlanner2dPrx,
-            PathPlanner2dConsumer,
-            PathPlanner2dConsumerPrx,
-            DefaultSubscriptionMaker<PathPlanner2dPrx,
-            PathPlanner2dConsumerPrx> >( context_,
-                                         proxyString_,
-                                         pathUpdateConsumer_,
-                                         callbackPrx_ );
-    }
-    catch ( ... )
-    {
-        humanManager_->showStatusMsg(Warning, "Problem subscribing pathplanner listener. Will try again later.");
-        return;
-    }
-    humanManager_->showStatusMsg(Information, "Pathplanner listener subscribed successfully.");
-    
+     
     try 
     {
         orcaice::connectToInterfaceWithString( context_, pathPlanner2dPrx_, proxyString_ );
@@ -202,12 +154,8 @@ PathPlanner2dElement::doInitialSetup()
     }
     humanManager_->showStatusMsg(Information, "Connected to pathplanner interface successfully.");
     
-    
     pathPlanner2dConsumerObj_ = pathTaskAnswerConsumer_;
     taskCallbackPrx_ = orcaice::createConsumerInterface<PathPlanner2dConsumerPrx>( context_, pathPlanner2dConsumerObj_ );
-       
-    doneInitialSetup_ = true;
-    
 }
 
 QStringList
@@ -241,7 +189,9 @@ PathPlanner2dElement::sendPath( const PathPlannerInput &pathInput )
 {
     try
     {
-        pathPlanner2dPrx_->setTask( pathInput.getTask() );
+        PathPlanner2dTaskPtr task = pathInput.getTask();
+        task->prx = taskCallbackPrx_;
+        pathPlanner2dPrx_->setTask( task );
     }
     catch ( const Ice::Exception &e )
     {
@@ -410,4 +360,4 @@ PathPlannerHI::savePath()
 
 
 }
-#endif
+

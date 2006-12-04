@@ -1,4 +1,3 @@
-#if 0
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -12,32 +11,23 @@
 #ifndef PATHPLANNER2DELEMENT_H
 #define PATHPLANNER2DELEMENT_H
 
+#include <iostream>
 #include <orca/pathplanner2d.h>
 #include <orcaice/ptrproxy.h>
-#include <orcaice/timer.h>
-#include <orcaice/context.h>
-#include <orcaqgui2dfactory/pathpainter.h>
+#include <orcaqgui2d/icestormelement.h>
 #include <orcaqgui2d/guielement2d.h>
-#include <iostream>
+#include <orcaqgui2dfactory/pathpainter.h>
 #include <orcaqgui2dfactory/pathinput.h>
 
 namespace orcaqgui {
 
 class IHumanManager;
 
-// There's two consumer objects: the first one for icestorm (pathplanner pushes out whatever it computed),
-// the second one is for answers to tasks which were set by the GUI
+// There's two consumer objects: the first one for icestorm (pathplanner pushes out whatever it computed) which is part
+// of the base class IceStormElement.
+// The second one here is for answers to tasks which were set by the GUI.
 
 ////////////////////////////////////////////////////////////////////////////////
-class PathPlannerUpdateConsumer : public orca::PathPlanner2dConsumer
-{
-public:
-    
-    void setData( const orca::PathPlanner2dDataPtr &newPath, const ::Ice::Current& );
-    orcaice::PtrProxy<orca::PathPlanner2dDataPtr> pathPipe_;
-};
-
-
 class PathPlannerTaskAnswerConsumer : public orca::PathPlanner2dConsumer
 {
     public:
@@ -124,7 +114,12 @@ private:
 //
 // @author Tobias Kaupp
 //
-class PathPlanner2dElement : public GuiElement2d
+class PathPlanner2dElement : public orcaqgui::IceStormElement<PathPainter,
+                             orca::PathPlanner2dData,
+                             orca::PathPlanner2dDataPtr,
+                             orca::PathPlanner2dPrx,
+                             orca::PathPlanner2dConsumer,
+                             orca::PathPlanner2dConsumerPrx>
 {
 
 public: 
@@ -134,11 +129,12 @@ public:
                           IHumanManager* humanManager );
     ~PathPlanner2dElement();
 
-    // inherited from guielement
     void update();
+    
+    // overriding paint since we have to paint human input
     void paint( QPainter *p, int z );
-    bool paintThisLayer( int z ) const
-        { return painter_.paintThisLayer(z); }
+    
+    virtual void actionOnConnection();
     
     virtual bool isInGlobalCS() { return true; }
     virtual QStringList contextMenu();
@@ -155,29 +151,18 @@ public:
 
 private: 
 
-    void doInitialSetup();
-
     PathPainter painter_;
-    
-    bool doneInitialSetup_;
     
     // Task answer
     PathPlannerTaskAnswerConsumer *pathTaskAnswerConsumer_;
     orca::PathPlanner2dConsumerPrx taskCallbackPrx_;
     Ice::ObjectPtr pathPlanner2dConsumerObj_;
     
-    // Icestorm
-    PathPlannerUpdateConsumer *pathUpdateConsumer_;
-    orca::PathPlanner2dConsumerPrx callbackPrx_;
-    
     orca::PathPlanner2dPrx pathPlanner2dPrx_;
     
     orcaice::Context context_;
     std::string proxyString_;
     IHumanManager *humanManager_;
-    
-    bool firstTime_;
-    orcaice::Timer *timer_;
 
     // Handles human interface
     PathPlannerHI pathHI_;
@@ -185,5 +170,4 @@ private:
 
 }
 
-#endif
 #endif
