@@ -17,7 +17,7 @@
 namespace orcaprobefactory
 {
 
-class PowerProbe : public orcaprobe::InterfaceProbe
+class PowerProbe : public orca::PowerConsumer, public orcaprobe::InterfaceProbe
 {
 
 public:
@@ -27,13 +27,13 @@ public:
 
     virtual int loadOperation( const int index, orcacm::OperationData & data );
     
+    virtual void setData(const orca::PowerDataPtr& data, const Ice::Current&);
+
 private:
 
-    int loadGetData();
-    int loadSubscribe();
-    int loadUnsubscribe();
-    
-    orca::PowerConsumerPrx consumerPrx_;
+    int loadGetData( orcacm::OperationData & data );
+    int loadSubscribe( orcacm::OperationData & data );
+    int loadUnsubscribe( orcacm::OperationData & data );
 
 };
 

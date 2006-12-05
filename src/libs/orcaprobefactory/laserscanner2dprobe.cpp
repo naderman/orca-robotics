@@ -12,10 +12,9 @@
 #include <iomanip>    // for setw()
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
+#include <orcaprobe/orcaprobe.h>
 
 #include "laserscanner2dprobe.h"
-#include <orcaprobe/orcaprobe.h>
-// #include "laserscanner2dconsumerI.h"
 
 using namespace std;
 using namespace orcaprobefactory;

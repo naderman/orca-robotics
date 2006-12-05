@@ -11,10 +11,9 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
+#include <orcaprobe/orcaprobe.h>
 
 #include "powerprobe.h"
-#include <orcaprobe/orcaprobe.h>
-#include "powerconsumerI.h"
 
 using namespace std;
 using namespace orcaprobefactory;
@@ -40,13 +39,13 @@ PowerProbe::loadOperation( const int index, orcacm::OperationData & data )
     switch ( index )
     {
     case 0 :
-        ret = loadGetData();
+        ret = loadGetData( data );
         break;
     case 1 :
-        ret = loadSubscribe();
+        ret = loadSubscribe( data );
         break;
     case 2 :
-        ret = loadUnsubscribe();
+        ret = loadUnsubscribe( data );
         break;
     default :
         ret = 1;
@@ -58,14 +57,14 @@ PowerProbe::loadOperation( const int index, orcacm::OperationData & data )
 }
 
 int 
-PowerProbe::loadGetData()
+PowerProbe::loadGetData( orcacm::OperationData & data )
 {
-    orca::PowerDataPtr data;
+    orca::PowerDataPtr result;
     
     try
     {
         orca::PowerPrx derivedPrx = orca::PowerPrx::checkedCast(prx_);
-        data = derivedPrx->getData();
+        result = derivedPrx->getData();
     }
     catch( const orca::DataNotExistException & e )
     {
@@ -83,58 +82,63 @@ PowerProbe::loadGetData()
         return 1;
     }
 
-    if ( data ) {
-        cout<<orcaice::toString(data)<<endl;
+    if ( result ) {
+        data.result = orcaice::toString(result);
     }
     else {
-        cout<<"received empty data"<<endl;
+        data.result = "received empty data";
         return 1;
     }
     return 0;
 }
 
 int 
-PowerProbe::loadSubscribe()
+PowerProbe::loadSubscribe( orcacm::OperationData & data )
 {
-    // create the consumer only when needed
-    Ice::ObjectPtr consumer = new PowerConsumerI;
-    orca::PowerConsumerPrx powerConsumerPrx =
+    Ice::ObjectPtr consumer = this;
+    orca::PowerConsumerPrx callbackPrx =
             orcaice::createConsumerInterface<orca::PowerConsumerPrx>( context_, consumer );
-    consumerPrx_ = powerConsumerPrx;
-    //debug
-//     cout<<"sub  "<<Ice::identityToString( powerConsumerPrx->ice_getIdentity() )<<endl;
-//     cout<<"sub  "<<Ice::identityToString( consumerPrx_->ice_getIdentity() )<<endl;
 
     try
     {
         orca::PowerPrx derivedPrx = orca::PowerPrx::checkedCast(prx_);
-        derivedPrx->subscribe( powerConsumerPrx );
+        derivedPrx->subscribe( callbackPrx );
     }
     catch( const Ice::Exception & e )
     {
+        stringstream ss;
+        ss << e;
+        data.result = ss.str();
         return 1;
     }
     
+    data.result = "Subscribed successfully";
     return 0;
 }
 
 int 
-PowerProbe::loadUnsubscribe()
+PowerProbe::loadUnsubscribe( orcacm::OperationData & data )
 {
-    try
-    {
-        orca::PowerPrx derivedPrx = orca::PowerPrx::checkedCast(prx_);
-//         cout<<"unsub  "<<Ice::identityToString( consumerPrx_->ice_getIdentity() )<<endl;
-        
-        orca::PowerConsumerPrx powerConsumerPrx = orca::PowerConsumerPrx::uncheckedCast(consumerPrx_);
-//         cout<<"unsub  "<<Ice::identityToString( powerConsumerPrx->ice_getIdentity() )<<endl;
-        derivedPrx->unsubscribe( powerConsumerPrx );
-    }
-    catch( const Ice::Exception & e )
-    {
-        cout<<"caught "<<e<<endl;
-        return 1;
-    }
+//     try
+//     {
+//         orca::PowerPrx derivedPrx = orca::PowerPrx::checkedCast(prx_);
+// //         cout<<"unsub  "<<Ice::identityToString( consumerPrx_->ice_getIdentity() )<<endl;
+//         
+//         orca::PowerConsumerPrx powerConsumerPrx = orca::PowerConsumerPrx::uncheckedCast(consumerPrx_);
+// //         cout<<"unsub  "<<Ice::identityToString( powerConsumerPrx->ice_getIdentity() )<<endl;
+//         derivedPrx->unsubscribe( powerConsumerPrx );
+//     }
+//     catch( const Ice::Exception & e )
+//     {
+//         cout<<"caught "<<e<<endl;
+//         return 1;
+//     }
     
     return 0;
 }
+
+void 
+PowerProbe::setData(const orca::PowerDataPtr& data, const Ice::Current&)
+{
+    std::cout << orcaice::toString(data) << std::endl;
+};
