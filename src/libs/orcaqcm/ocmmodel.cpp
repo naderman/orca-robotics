@@ -566,6 +566,37 @@ OcmModel::setInterfacePrivate( const QString & registry, const QString & regAddr
     return index(ii,0,cindex);
 }
 
+QModelIndex 
+OcmModel::registryIndex( const QString & registry ) const
+{
+    // matching is done by name only
+    RegistryNode rn( registry, "", 0 );
+    int ri = registries_.indexOf( rn );
+    if ( ri==-1 ) {
+        return QModelIndex();
+        cout<<"DEBUG: didn't find registry"<<endl;
+    }
+    cout<<"DEBUG: found registry "<<ri<<endl;
+    return index(ri,0,QModelIndex());
+}
+
+QModelIndex 
+OcmModel::platformIndex( const QString & platf, const QString & reg ) const
+{
+    return QModelIndex();
+}
+
+QModelIndex 
+OcmModel::componentIndex( const QString & comp, const QString & platf, const QString & reg ) const
+{
+    return QModelIndex();
+}
+
+QModelIndex 
+OcmModel::interfaceIndex( const QString & iface, const QString & comp, const QString & platf, const QString & reg ) const
+{
+    return QModelIndex();
+}
 
 int
 OcmModel::getInterface( const QModelIndex& ind,

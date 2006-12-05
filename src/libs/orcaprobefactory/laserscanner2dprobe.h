@@ -17,7 +17,7 @@
 namespace orcaprobefactory
 {
 
-class LaserScanner2dProbe : public orcaprobe::InterfaceProbe
+class LaserScanner2dProbe : public orca::RangeScanner2dConsumer, public orcaprobe::InterfaceProbe
 {
 
 public:
@@ -26,6 +26,9 @@ public:
                                 const orcaice::Context & context );
 
     virtual int loadOperation( const int index, orcacm::OperationData & data );
+
+    // from consumer
+    virtual void setData(const orca::RangeScanner2dDataPtr& data, const Ice::Current&);
     
 private:
 

@@ -49,18 +49,20 @@ public:
     explicit OcmModel(QObject *parent = 0);
     ~OcmModel();
 
-    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex parent(const QModelIndex &child) const;
+    // implementation of generic API
 
-    int rowCount(const QModelIndex &parent) const;
-    int columnCount(const QModelIndex &parent) const;
+    virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
+    virtual QModelIndex parent(const QModelIndex &child) const;
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    //bool setData(const QModelIndex &index, const QVariant &value, int role);
+    virtual int rowCount(const QModelIndex &parent) const;
+    virtual int columnCount(const QModelIndex &parent) const;
 
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    //virtual bool setData(const QModelIndex &index, const QVariant &value, int role);
 
-    bool hasChildren(const QModelIndex &index) const;
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+
+    virtual bool hasChildren(const QModelIndex &index) const;
 
     // OcmModel specific API
     
@@ -81,6 +83,11 @@ public:
                        bool connected, int timeUp )
             { setInterfacePrivate( registry, regAddress, platform, component, interface,
                     isProvided, compAddress, ids, connected, timeUp ); };
+
+    QModelIndex registryIndex( const QString & reg ) const;
+    QModelIndex platformIndex( const QString & platf, const QString & reg="" ) const;
+    QModelIndex componentIndex( const QString & comp, const QString & platf="", const QString & reg="" ) const;
+    QModelIndex interfaceIndex( const QString & iface, const QString & comp="", const QString & platf="", const QString & reg="" ) const;
 
     //! Returns 0 if the data was retrieved properly or 1 if something went wrong, e.g.
     //! the index does not point to an InterfaceType.
@@ -191,7 +198,9 @@ private:
         virtual NodeType type() { return RegistryType; };
     };
 
+    //
     // top level of data storage
+    //
     QList<RegistryNode> registries_;
 
     QStringList headers_;

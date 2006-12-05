@@ -111,25 +111,24 @@ LaserScanner2dProbe::loadGetDescription( orcacm::OperationData & data )
 int 
 LaserScanner2dProbe::loadSubscribe( orcacm::OperationData & data )
 {
-//     // create the consumer only when needed
-//     Ice::ObjectPtr consumer = new PowerConsumerI;
-//     orca::PowerConsumerPrx powerConsumerPrx =
-//             orcaice::createConsumerInterface<orca::PowerConsumerPrx>( context_, consumer );
-//     consumerPrx_ = powerConsumerPrx;
-//     //debug
-// //     cout<<"sub  "<<Ice::identityToString( powerConsumerPrx->ice_getIdentity() )<<endl;
-// //     cout<<"sub  "<<Ice::identityToString( consumerPrx_->ice_getIdentity() )<<endl;
-// 
-//     try
-//     {
-//         orca::PowerPrx derivedPrx = orca::PowerPrx::checkedCast(prx_);
-//         derivedPrx->subscribe( powerConsumerPrx );
-//     }
-//     catch( const Ice::Exception & e )
-//     {
-//         return 1;
-//     }
+    Ice::ObjectPtr consumer = this;
+    orca::RangeScanner2dConsumerPrx callbackPrx = 
+            orcaice::createConsumerInterface<orca::RangeScanner2dConsumerPrx>( context_, consumer );
+
+    try
+    {
+        orca::LaserScanner2dPrx derivedPrx = orca::LaserScanner2dPrx::checkedCast(prx_);
+        derivedPrx->subscribe( callbackPrx );
+    }
+    catch( const Ice::Exception & e )
+    {
+        stringstream ss;
+        ss << e;
+        data.result = ss.str();
+        return 1;
+    }
     
+    data.result = "Subscribed successfully";
     return 0;
 }
 
@@ -153,3 +152,9 @@ LaserScanner2dProbe::loadUnsubscribe( orcacm::OperationData & data )
     
     return 0;
 }
+
+void 
+LaserScanner2dProbe::setData(const orca::RangeScanner2dDataPtr& data, const Ice::Current&)
+{
+    std::cout << orcaice::toString(data) << std::endl;
+};
