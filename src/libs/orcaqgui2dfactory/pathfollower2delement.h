@@ -1,4 +1,3 @@
-#if 0
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -13,8 +12,9 @@
 #define PATHFOLLOWER2DELEMENT_H
 
 #include <orca/pathfollower2d.h>
-#include <orcaice/context.h>
+
 #include <orcaice/ptrproxy.h>
+#include <orcaice/orcaice.h>
 #include <orcaice/timer.h>
 
 #include <orcaqgui2d/guielement2d.h>
@@ -26,7 +26,8 @@ namespace orcaqgui {
 class IHumanManager;
 
 ////////////////////////////////////////////////////////////////////////////////
-// First: the consumer object
+// The consumer object. We need this here because PathFollower2dElement cannot inherit from IceStormElement.
+// Reason is that PathFollower2dConsumer has a non-standard purely virtual member function setWaypointIndex.
 class PathUpdateConsumer : public orca::PathFollower2dConsumer
 {
 public:
@@ -36,12 +37,10 @@ public:
 
     orcaice::PtrProxy<orca::PathFollower2dDataPtr> pathPipe_;
     orcaice::Proxy<int> indexPipe_;
-private:
 };
 ////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////
-
+///////////////////////////////////////////////////////////////////////////////
 // This class sets up all the buttons and actions for user interaction.
 // It can be instantiated on the heap and deleted, Qt cleans up for us
 class PathfollowerButtons : public QObject
@@ -59,7 +58,7 @@ public:
 private:
     QAction *hiWaypoints_;
 };
-/////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
 class PathFollower2dElement;
 //
@@ -121,9 +120,7 @@ private:
     bool gotMode_;
 };
 
-//
-// @author Alex Brooks
-//
+// We need to inherit from GuiElement2d, not from IceStormElement. Reason is that PathFollower2dConsumer has a non-standard purely virtual member function setWaypointIndex. Disadvantage is that we have to subscribe ourselves.
 class PathFollower2dElement : public GuiElement2d
 {
 
@@ -164,7 +161,6 @@ private:
     bool doneInitialSetup_;
 
     PathUpdateConsumer *pathUpdateConsumer_;
-    orca::PathFollower2dConsumerPrx callbackPrx_;
     orca::PathFollower2dPrx pathFollower2dPrx_;
     std::string proxyString_;
 
@@ -181,5 +177,4 @@ private:
 
 }
 
-#endif
 #endif

@@ -13,7 +13,7 @@
 #include <orcaqgui2dfactory/simpleguielements.h>
 #include <orcaqgui2dfactory/featuremap2delement.h>
 #include <orcaqgui2dfactory/ogmapelement.h>
-// #include <orcaqgui2dfactory/pathfollower2delement.h>
+#include <orcaqgui2dfactory/pathfollower2delement.h>
 #include <orcaqgui2dfactory/pathplanner2delement.h>
 #include <orcaqgui2dfactory/gpselement.h>
 
@@ -69,10 +69,10 @@ DefaultFactory::create( const orcaice::Context           &context,
         cout<<"creating PolarFeature2d element"<<endl;
         elem = new orcaqgui::PolarFeature2dElement( context, proxyStr.toStdString() );
     }
-//     else if ( interfaceId == "::orca::PathFollower2d" ) {
-//         cout<<"creating PathFollower2d element with proxyString "<<proxyStr.toStdString()<<endl;
-//         elem = new orcaqgui::PathFollower2dElement( context, proxyStr.toStdString(), humanManager );
-//     }
+    else if ( interfaceId == "::orca::PathFollower2d" ) {
+        cout<<"creating PathFollower2d element with proxyString "<<proxyStr.toStdString()<<endl;
+        elem = new orcaqgui::PathFollower2dElement( context, proxyStr.toStdString(), humanManager );
+    }
     else if ( interfaceId == "::orca::PathPlanner2d" ) {
         cout<<"creating PathPlanner2d element with proxyString "<<proxyStr.toStdString()<<endl;
         elem = new orcaqgui::PathPlanner2dElement( context, proxyStr.toStdString(), humanManager );

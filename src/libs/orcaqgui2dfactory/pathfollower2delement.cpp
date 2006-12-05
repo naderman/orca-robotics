@@ -1,4 +1,3 @@
-#if 0
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -9,13 +8,15 @@
  *
  */
 
-#include "pathfollower2delement.h"
+
 #include <iostream>
-#include <orcaqgui/ihumanmanager.h>
-#include <orcaqgui/icestormlistener.h>
-#include <orcaqgui/orcaicons.h>
 #include <QFileDialog>
+
+#include <orcaqgui/ihumanmanager.h>
+#include <orcaqgui/orcaicons.h>
 #include <orcaqgui2dfactory/wptolerancesdialog.h>
+
+#include "pathfollower2delement.h"
 
 using namespace std;
 using namespace orca;
@@ -131,6 +132,8 @@ PathFollower2dElement::~PathFollower2dElement()
 void
 PathFollower2dElement::update()
 {
+    // if initial setup is not done yet (no connection established)
+    // then try to connect every 5 seconds
     if ( !doneInitialSetup_ )
     {
         if (firstTime_) {
@@ -161,38 +164,16 @@ PathFollower2dElement::update()
 void
 PathFollower2dElement::doInitialSetup()
 {
-    // Subscribe for updates
-    //cout<<"TRACE(pathfollower2delement.cpp): Connecting with proxyString_=" << proxyString_ << endl;
     humanManager_->showStatusMsg(Information, "PathFollowerElement is trying to connect");
-
-    try {
-        orcaqgui::subscribeListener<PathFollower2dPrx,
-            PathFollower2dConsumer,
-            PathFollower2dConsumerPrx,
-            DefaultSubscriptionMaker<PathFollower2dPrx,
-            PathFollower2dConsumerPrx> >( context_,
-                                          proxyString_,
-                                          pathUpdateConsumer_,
-                                          callbackPrx_ );
-    }
-    catch ( ... )
-    {
-        humanManager_->showStatusMsg(Warning, "Problem subscribing pathfollower listener. Will try again later.");
-        return;
-    }
-    humanManager_->showStatusMsg(Information, "Pathfollower listener subscribed successfully.");
     
-    // get the initial path
+    // Here's what IceStormElement usually does for you if the GuiElement inherits from IceStormElement (see comments in .h file for more information)
     try 
     {
         orcaice::connectToInterfaceWithString( context_, pathFollower2dPrx_, proxyString_ );
-
-        PathFollower2dDataPtr path = new PathFollower2dData;
-        path = pathFollower2dPrx_->getData();
-        int index = pathFollower2dPrx_->getWaypointIndex();
-
-        painter_.setData( path );
-        painter_.setWpIndex( index );
+        Ice::ObjectPtr pathFollowerObj = pathUpdateConsumer_;
+        orca::PathFollower2dConsumerPrx callbackPrx = 
+                orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( context_, pathFollowerObj );
+        pathFollower2dPrx_->subscribe(callbackPrx);
     }
     catch ( ... )
     {
@@ -270,6 +251,8 @@ PathFollower2dElement::sendPath( const PathFollowerInput &pathInput, bool activa
     try
     {
         pathFollower2dPrx_->setData( pathInput.getPath(), activateImmediately );
+        if (!activateImmediately) 
+            humanManager_->showStatusMsg( Information, "Path needs to be activated by pressing the Go buttion." );
     }
     catch ( const Ice::Exception &e )
     {
@@ -481,4 +464,3 @@ PathFollowerHI::savePath()
 
 
 }
-#endif

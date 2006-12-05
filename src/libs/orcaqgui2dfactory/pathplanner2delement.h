@@ -135,7 +135,6 @@ public:
     void paint( QPainter *p, int z );
     
     virtual void actionOnConnection();
-    
     virtual bool isInGlobalCS() { return true; }
     virtual QStringList contextMenu();
     virtual void execute( int action );
