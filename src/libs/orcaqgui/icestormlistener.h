@@ -154,7 +154,7 @@ private:
     // 0=success
     int shutdown()
         {
-            std::cout<<"TRACE(icestormlistener.h): start of shutdown(): isSubscribed_: " << isSubscribed_ << std::endl;
+            // std::cout<<"TRACE(icestormlistener.h): start of shutdown(): isSubscribed_: " << isSubscribed_ << std::endl;
             // unsubscribe
             if ( isSubscribed_ )
             {
@@ -168,7 +168,7 @@ private:
                     context_.adapter()->remove( callbackPrx_->ice_getIdentity() );
 
                     isSubscribed_ = false;
-                    std::cout<<"TRACE(icestormlistener.h): unsubscription successful." << std::endl;
+                    // std::cout<<"TRACE(icestormlistener.h): unsubscription successful." << std::endl;
                 } catch ( ... ) {
                     return -1;
                 }
