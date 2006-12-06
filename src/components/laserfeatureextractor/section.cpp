@@ -9,8 +9,15 @@
  *
  */
 
+#include <iostream>
 #include "section.h"
+#include "svd.h"
 
+using namespace std;
+
+namespace {
+    const double LINEFIT_ERROR_THRESHOLD = 0.24;    // 0.10    0.24
+}
 
 Section::Section()
 {
@@ -31,21 +38,224 @@ Section::~Section()
 	// Nothing to delete
 }
 
-
-/*
-LaserReturn *
-Section::getFirstElement()
+void 
+fitLine(Section &s)
 {
-	return elements[0];
+    double centX = 0;
+    double centY = 0;
+    int n = 2;
+    int m = s.elements.size();
+
+    // Find the centroid of the section..
+    //std::cout << "Finding the centroid of the section" << std::endl;
+
+    for (int i = 0; i < m; i++) {
+        centX += s.elements[i].x();
+        centY += s.elements[i].y();
+    }
+    centX = centX/(double)m;
+    centY = centY/(double)m;
+  
+    float **A = new float*[m];
+    for (int i = 0; i < m; i++) {
+        A[i] = new float[n];
+    }
+
+    float *W = new float[n];
+
+    float **V = new float*[n];
+    for (int i = 0; i < n; i++) {
+        V[i] = new float[n];
+    }
+
+    for (int i = 0; i < m; i++) {
+        A[i][0] = s.elements[i].x() - centX;
+        A[i][1] = s.elements[i].y() - centY;
+    }
+
+    //std::cout << "Calling SVD" << std::endl;
+    dsvd(A, m, n, W, V);
+
+    int minIndex = 0;
+    for (int i = 0; i < n; i++) {
+        if (fabs(W[i]) < fabs(W[minIndex])) {
+            minIndex = i;
+        }
+    }
+
+    // the equation for the line is defined as:
+    //
+    //  vx x - vy y + c = 0
+    //  vx x - vy y + (vy y0 + vx x0) = 0
+    //
+    //   where vx is the first component of the eigenvector
+    //         vy is the second component of the eigencector
+    //         c is the intercept
+    s.eigVectX = V[0][minIndex];
+    s.eigVectY = V[1][minIndex];
+    s.C = -s.eigVectX*centX - s.eigVectY*centY;
+
+    double total_error = 0;
+    for (int i = 0; i < m; i++) {
+        double dist = fabs(s.eigVectX*s.elements[i].x() 
+                           + s.eigVectY*s.elements[i].y() + s.C);
+
+        total_error += dist;
+    }
+    if (total_error/(double)m < LINEFIT_ERROR_THRESHOLD) {
+        s.isALine = true;
+    }
+    else {
+        cout << "Unable to bound line: error " << total_error/(double)m << endl;
+    }
+
+    // Cleanup the arrays...
+    delete A;
+
+    delete W;
+    delete V;
 }
 
-
-
-LaserReturn *
-Section::getLastElement()
+void 
+findBreakPoint(Section &s, double &maxDist, int &pos)
 {
-	if (elements.size() == 0)
-		return NULL;
-	return elements[elements.size()-1];
+    maxDist = 0;
+    pos = 0;
+  
+    int numElements = s.elements.size();
+    if ( numElements <= 2) {
+        return;
+    }
+    double x1 = s.elements[0].x();
+    double y1 = s.elements[0].y();
+    double xn = s.elements[numElements-1].x();
+    double yn = s.elements[numElements-1].y();
+    double deltaX =  xn - x1;
+    double deltaY =  yn - y1;
+    //std::cout << "dx " << deltaX << " dy " << deltaY;
+    double sectionLength = sqrt(pow(deltaX, 2.0) + pow(deltaY, 2.0));
+    if (sectionLength == 0.0)
+    {
+        return;
+    }
+  
+    // compute the perpendicular distance between the line joining the first and
+    // last elements of the section and each point to find the maximum distance.  If
+    // this distance is greater than a threshold it will be used to break the section
+    // into two smaller sections
+    for (int i = 1; i < numElements - 2; i++) {
+        double x = s.elements[i].x();
+        double y = s.elements[i].y();
+        double dx = x - x1;
+        double dy = y - y1;
+
+        // the distance is computed using the dot product between the vector 
+        // joining the current point and the first endpoint 
+        // r = [ x - x1 ]
+        //     [ y - y1 ]
+        // and the vector perpendicular to the line segment
+        // v = [  yn - y1   ]
+        //     [ -(xn - y1) ]
+        // The distance is
+        //   d =  | v.r | 
+        //     =  | ( x - x1 )( yn - y1) - ( y - y1 )( xn - x1) | / sqrt((xn-x1)^2+(yn-y1)^2)
+        double r = dx*deltaY - dy*deltaX;
+        double dist = fabs(r/sectionLength);
+        //cout << "Distance : " << dist << " dist_r " << dist_r << endl;
+
+        if (dist > maxDist) {
+            maxDist = dist;
+            pos = i;
+        }
+    }
+
+    //std::cout <<  "Found max distance " << maxDist << std::endl;
 }
-*/
+
+void 
+extractLines( std::vector<Section> &sections, int minPointsInLine )
+{
+    const double BREAK_DIST = 0.2;
+
+    //std::cout << "Extracting lines from " << sections.size() << " initial sections" << std::endl;
+  
+    //for (std::vector<Section>::iterator itr = sections.begin(); itr != sections.end(); itr++) {
+    std::vector<Section>::iterator itr = sections.begin();
+  
+    while (itr != sections.end())
+    {
+        if (itr->elements.size() >= (uint)(minPointsInLine)) {
+            int pos = 0;
+            double maxDist = 0;
+            //std::cout << "Preparing to find breaks for section of size << " << itr->elements.size() << std::endl;
+            Section sec = *itr;
+            //findBreakPoint(*itr, maxDist, pos);
+            findBreakPoint(sec, maxDist, pos);
+
+            if (maxDist > BREAK_DIST) {
+                //std::cout << "Found a break point at position " << pos << " in section of size " << itr->elements.size() << std::endl;
+        
+                Section temp;
+                // insert at...
+                //temp->next = itr->next;
+                //itr->next = temp;
+                temp.isNextCon = true;
+        
+                temp.elements.insert( temp.elements.begin(), itr->elements.begin(), itr->elements.begin() + pos);
+        
+                itr->elements.erase( itr->elements.begin(), itr->elements.begin() + pos );
+        
+                //std::cout << "Inserting section of size " << temp.elements.size() << " before section of size " << itr->elements.size() << std::endl;
+                try {
+                    // insert the new section and get a valid handle to the inserted section
+                    itr = sections.insert(itr, temp);
+                    //itr--;
+                } catch(...) {
+                    std::cout << "Exception in inserting new section!!!" << std::endl;
+                }
+                //printSections();
+                //sections.insert(itr+1, temp);
+                //itr++;
+            } else {
+                // std::cout << "Preparing to fit lines" << std::endl;
+                fitLine(*itr);
+                //itr = itr->next;in 
+                itr++;
+            }
+        } else {
+            //std::cout << "Not breaking this one..." << std::endl;
+            //itr = itr->next;
+            itr++;
+        }
+    }
+    //std::cout << "FeatureExtractor : Extracted " << sections.size() << " lines" << std::endl;
+
+}
+
+void printSections( const std::vector<Section> &sections )
+{
+    int count = 0;
+
+    cout << "Sections : ";
+    for (std::vector<Section>::const_iterator itr = sections.begin(); itr != sections.end(); itr++) {
+        count += itr->elements.size();
+        cout << "{s:" << itr->elements.size();
+        if (itr->isALine) {
+            cout << " L";
+        }
+        else {
+            cout << " -";
+        }
+        if (itr->isNextCon) {
+            cout << "C";
+        }
+        else {
+            cout << "-";
+        }
+
+        cout << "}  ";
+        //itr = itr->next;
+    }
+    cout << " - Count: " << count << endl;
+}
+

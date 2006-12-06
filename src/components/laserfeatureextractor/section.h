@@ -42,7 +42,6 @@ class Section
   Section();
   ~Section();
 
-  //Section *next;
   bool isNextCon;
 
   bool isALine;
@@ -51,11 +50,19 @@ class Section
   double C;
 
   std::vector<SectionEl> elements;
-  //std::vector<orca::Point2D> elements;
-  //std::vector<LaserReturn *> elements;
-  //LaserReturn *getFirstElement();
-  //LaserReturn *getLastElement();
 };
 
+//
+// Utility functions
+//
+
+// Sets the line parameters and isALine
+void fitLine( Section &s );
+
+// Try to fit lines to the sections provided.
+void extractLines( std::vector<Section> &sections, int minPointsInLine );
+
+// Print to cout
+void printSections( const std::vector<Section> &sections );
 
 #endif  // LOCALISER_SECION_H

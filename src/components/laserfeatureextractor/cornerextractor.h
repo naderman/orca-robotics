@@ -32,19 +32,16 @@ public:
     
 private: 
     
-    std::vector<Section> sections_;
     double laserMaxRange_;
     double minLineLength_;
 
     // Not used at the moment
-    bool extractPossibleCorners( const orca::PolarFeature2dDataPtr & featureDataPtr );
+    // bool extractPossibleCorners( const orca::PolarFeature2dDataPtr & featureDataPtr );
     
-    void connectSections(const orca::LaserScanner2dDataPtr & laserDataPtr);
-    void extractLines();
-    void findBreakPoint(Section &s, double &maxDist, int &pos);
-    void fitLine(Section &s);
-    void printSections();
-        
+    void connectSections( const orca::LaserScanner2dDataPtr & laserDataPtr,
+                          std::vector<Section> &sections );
+    void addCorners( const std::vector<Section> &sections, 
+                     orca::PolarFeature2dDataPtr &features );
 };
 
 }
