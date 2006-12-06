@@ -418,7 +418,7 @@ NovatelSpanInsGpsDriver::init()
 
     //short IMU messages
     // pva data in wgs84 coordinates
-    put = serial_->write( "log inspvasb ontime 0.05\r\n" );
+    put = serial_->write( "log inspvasb ontime 0.01\r\n" );
     
 //      // Read the serial device to check response ( "<OK" is 3 bytes long )
 //     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
