@@ -20,6 +20,9 @@ using namespace std;
 
 namespace vfh {
 
+// need definition (in case its not inlined)
+const double VfhDriver::escapeTimeMs_;
+	
 VfhDriver::VfhDriver( const GoalWatcher        &goalWatcher,
                       orcaice::Context          context )
     : LocalNavDriver(goalWatcher),
