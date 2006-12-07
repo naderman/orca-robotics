@@ -38,7 +38,7 @@
 Supportes file types are:
 
 - most image formats
-    - anything qt can load.
+    - anything qt can load: @c .png @c .bmp @c .jpg @c .jpeg @c .ppm @c .xbm @c .xpm
 - ICE stream files 
     - file extension: @c .bin
     - these files can be generated using @ref orca_component_orcaview
@@ -54,7 +54,7 @@ Clients who wish to receive the map should call getData(). This component will o
 
 - @c OgMapLoader.Config.Filename (string)
     - The name (and path) of the image to load
-    - Default: "mapfile.pgm.gz"
+    - Default: "mapfile.png"
 
 - @c OgMapLoader.Config.Negate (bool)
     - Whether increasing pixel value represents increasing occupancy probability
