@@ -18,46 +18,95 @@
 class SectionEl
 {
 public:  
-  SectionEl( double r, double b ) { r_ = r; b_ = b; x_ = r*cos(b); y_ = r*sin(b); };
+    SectionEl() {}
+    SectionEl( double r, double b ) { r_ = r; b_ = b; x_ = r*cos(b); y_ = r*sin(b); };
+
+    void setXY( double x, double y ) { r_ = hypotf(y,x); b_ = atan2(y,x); x_ = x; y_ = y; };
   
-  double x() const { return x_; };
-  double y() const { return y_; };
+    double x() const { return x_; };
+    double y() const { return y_; };
   
-  double range() const { return r_; };
-  double bearing() const { return b_; }
+    double range() const { return r_; };
+    double bearing() const { return b_; }
 
 private:
-  double x_;
-  double y_;
-  double r_;
-  double b_;
-
+    double x_;
+    double y_;
+    double r_;
+    double b_;
 };
 
 
 class Section
 {
-  public:
+public:
 
-  Section();
-  ~Section();
+    Section();
+    ~Section();
 
-  bool isNextCon;
+    void tryFitLine();
 
-  bool isALine;
-  double eigVectX;
-  double eigVectY;
-  double C;
+    // Is this section connected to the next?
+    bool isNextCon() const { return isNextCon_; }
 
-  std::vector<SectionEl> elements;
+    // Are the points linear enough to be considered a line?
+    bool isALine() const { return isALine_; }
+
+    // centroid of the line segment
+    double centroidX() const { assert(isALine()); return centroidX_; }
+    double centroidY() const { assert(isALine()); return centroidY_; }
+
+    // vector perpendicular to line segment.
+    // guaranteed to be of length 1.
+    double perpVectX() const { assert(isALine()); return eigVectX_; }
+    double perpVectY() const { assert(isALine()); return eigVectY_; }
+
+    //  Line equation is: eigVectX*x - eigVectY*y + c = 0
+    double c() const { assert(isALine()); return c_; }
+
+    // Get end-points of line (using entire estimate from all points)
+    const SectionEl &start() const { assert(isALine()); return start_; }
+    const SectionEl &end() const { assert(isALine()); return end_; }
+
+    // length of segment (using entire estimate from all points)
+    double lineLength() const;
+
+    // Try to find a point to break a line in two
+    void findBreakPoint(double &maxDist, int &pos) const;
+
+    const std::vector<SectionEl> &elements() const { return elements_; }
+
+    // extractLines needs to access some stuff...
+    std::vector<SectionEl> &elements() { return elements_; }
+    void setIsNextCon( bool val ) { isNextCon_ = val; }
+
+private:
+
+    void setEndPoints();
+
+    bool isNextCon_;
+
+    bool isALine_;
+
+    double centroidX_;
+    double centroidY_;
+
+    // eigVect describes a vector perpendicular to the line
+    double eigVectX_;
+    double eigVectY_;
+
+    double c_;
+
+    std::vector<SectionEl> elements_;
+
+    // end-points of line (using entire estimate from all points)
+    SectionEl start_;
+    SectionEl end_;
 };
 
 //
 // Utility functions
 //
-
-// Sets the line parameters and isALine
-void fitLine( Section &s );
 
 // Try to fit lines to the sections provided.
 void extractLines( std::vector<Section> &sections, int minPointsInLine );

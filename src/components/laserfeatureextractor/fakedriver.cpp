@@ -35,18 +35,13 @@ int FakeDriver::computeFeatures( const orca::LaserScanner2dDataPtr &laserDataPtr
     double range = 1.0;
     double bearing = -M_PI;
 
-    cout<<"TRACE(fakeextractor.cpp): resizing." << endl;
-    
-    featureDataPtr->features.resize(10);
-
-    cout<<"TRACE(fakeextractor.cpp): done resize" << endl;
-
     for (unsigned int i=0; i<10; i++)
     {
-        featureDataPtr->features[i] = new orca::SinglePolarFeature2d;
-        featureDataPtr->features[i]->type = orca::feature::FOREGROUNDPOINT;
-        featureDataPtr->features[i]->p.r  = range;
-        featureDataPtr->features[i]->p.o  = bearing;
+        orca::PointPolarFeature2dPtr f = new orca::PointPolarFeature2d;
+        f->type = orca::feature::FOREGROUNDPOINT;
+        f->p.r  = range;
+        f->p.o  = bearing;
+        featureDataPtr->features.push_back( f );
         range = range + 2.0;
         bearing = bearing + M_PI/5.0;
     }

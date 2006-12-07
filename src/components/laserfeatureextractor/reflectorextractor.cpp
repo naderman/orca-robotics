@@ -175,7 +175,7 @@ ReflectorExtractor::addFeatures( const orca::LaserScanner2dDataPtr    &laserData
                     double pFalse = calcPFalsePositive( laserData, targetStart, targetStart+numFeaturePoints );
                     if ( pFalse > 0.0 && pFalse < pTruePositive_ )
                     {
-                        orca::SinglePolarFeature2dPtr f = new orca::SinglePolarFeature2d;
+                        orca::PointPolarFeature2dPtr f = new orca::PointPolarFeature2d;
                         f->type = orca::feature::LASERREFLECTOR;
                         f->p.r  = featureRangeSum / numFeaturePoints;
                         f->p.o  = featureBearingSum / numFeaturePoints;

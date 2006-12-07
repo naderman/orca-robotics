@@ -46,6 +46,40 @@ PolarFeature2dPainter::setData( const orca::PolarFeature2dDataPtr & data )
 }
 
 void
+drawPointFeature( QPainter *painter, const orca::PointPolarFeature2d &f )
+{
+    const double boxWidth = 0.750;
+    const double lineWidthMax = boxWidth/2.0;
+
+    painter->save();
+    {
+        painter->rotate( (int)floor(RAD2DEG(f.p.o)) );
+        painter->translate( f.p.r, 0.0 );
+        
+        // Not sure of a better way to represent both pFalsePositive and pTruePositive
+        // with just one number...
+        double lineWidth = lineWidthMax*( f.pTruePositive-f.pFalsePositive );
+        painter->setPen( QPen( orcaqgui::featureColour(f.type),lineWidth) );
+        painter->drawRect( QRectF( -boxWidth/2.0, -boxWidth/2.0, boxWidth, boxWidth) );
+    }
+    painter->restore();
+}
+
+void
+drawLineFeature( QPainter *painter, const orca::LinePolarFeature2d &f )
+{
+    cout<<"TRACE(polarfeature2dpainter.cpp): drawLineFeature()" << endl;
+
+    painter->setPen( QPen( orcaqgui::featureColour(f.type), 0.3 ) );
+
+    double x1 = f.start.r*cos(f.start.o);
+    double y1 = f.start.r*sin(f.start.o);
+    double x2 = f.end.r*cos(f.end.o);
+    double y2 = f.end.r*sin(f.end.o);
+    painter->drawLine( QLineF( x1,y1, x2,y2 ) );
+}
+
+void
 PolarFeature2dPainter::paint( QPainter *painter, int z )
 {
     if ( z != Z_LASER_FEATURES ) return;
@@ -59,26 +93,27 @@ PolarFeature2dPainter::paint( QPainter *painter, int z )
 //     }
 //     cout<<endl;
 
-    const double boxWidth = 0.750;
-    const double lineWidthMax = boxWidth/2.0;
-
     painter->setBrush(QBrush());
 
     for ( unsigned int i=0; i<featureDataPtr_->features.size(); ++i )
     {
-        painter->save();
+        const orca::SinglePolarFeature2d &ftr = *(featureDataPtr_->features[i]);
+        switch ( ftr.type )
         {
-            const orca::SinglePolarFeature2dPtr &f = featureDataPtr_->features[i];
-            painter->rotate( (int)floor(RAD2DEG(f->p.o)) );
-            painter->translate( f->p.r, 0.0 );
-
-            // Not sure of a better way to represent both pFalsePositive and pTruePositive
-            // with just one number...
-            double lineWidth = lineWidthMax*( f->pTruePositive-f->pFalsePositive );
-            painter->setPen( QPen( orcaqgui::featureColour(f->type),lineWidth) );
-            painter->drawRect( QRectF( -boxWidth/2.0, -boxWidth/2.0, boxWidth, boxWidth) );
+        case orca::feature::LINE:
+        {
+            const orca::LinePolarFeature2d &lf = dynamic_cast<const LinePolarFeature2d&>(ftr);
+            drawLineFeature( painter, lf );
+            break;
         }
-        painter->restore();
+        default:
+        {
+            const orca::PointPolarFeature2d &pf = dynamic_cast<const PointPolarFeature2d&>(ftr);
+            drawPointFeature( painter, pf );
+            break;
+        }
+        }
     }
-
 }
+
+

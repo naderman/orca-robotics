@@ -35,15 +35,6 @@ namespace {
     const double P_TRUE_POSITIVE  = 0.6;
 }
 
-double lineLength( const Section &s )
-{
-    const SectionEl &start = s.elements[0];
-    const SectionEl &end   = s.elements[s.elements.size()-1];
-
-    // A bit unstable if the end-points are screwy, but should be mostly OK...
-    return hypotf( start.y()-end.y(), start.x()-end.x() );
-}
-
 CornerExtractor::CornerExtractor( orcaice::Context context, double laserMaxRange )
     : laserMaxRange_( laserMaxRange )
 {
@@ -66,8 +57,62 @@ void CornerExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
     // Fit lines to the sections
     extractLines( sections, MIN_POINTS_IN_LINE );
 
-    // Find corners, add them to the list of features
+    // Find corner features, add them to the list of features
     addCorners( sections, features );
+
+    // Find line features, add them to the list of features
+    addLines( sections, features );
+}
+
+void
+CornerExtractor::addLines( const std::vector<Section> &sections, 
+                           orca::PolarFeature2dDataPtr &features )
+{
+    std::vector<Section>::const_iterator i;
+    for ( i = sections.begin(); i != sections.end(); i++ )
+    {
+        if ( ! i->isALine() ) continue;
+
+        orca::LinePolarFeature2dPtr f = new orca::LinePolarFeature2d;
+        f->type = orca::feature::LINE;
+
+        f->start.r = (*i).start().range();
+        f->start.o = (*i).start().bearing();
+        f->end.r   = (*i).end().range();
+        f->end.o   = (*i).end().bearing();
+
+        f->pFalsePositive = 0.3;
+        f->pTruePositive  = 0.7;
+        features->features.push_back( f );
+
+#if 0        
+        // Find p in x-y coords
+        double denom = (*i).eigVectX*(*i).eigVectX+(*i).eigVectY*(*i).eigVectY;
+        double px = -((*i).C*(*i).eigVectX)/denom;
+        double py = -((*i).C*(*i).eigVectY)/denom;
+
+        // convert to polar
+        f->p.r = hypotf(py,px);
+        f->p.o = atan2(py,px);
+
+        f->pFalsePositive = 0.3;
+        f->pTruePositive  = 0.7;
+
+        features->features.push_back( f );
+
+        double slopeEnd = ((*i).elements.back().y()-(*i).elements.front().y())/((*i).elements.back().x()-(*i).elements.front().x());
+        cout<<"TRACE(cornerextractor.cpp): slope of line (based on endpoints): " << slopeEnd << endl;
+        double slopeEig = -(*i).eigVectX/(*i).eigVectY;
+        cout<<"TRACE(cornerextractor.cpp): slope of line (based on eigvect)  : " << slopeEig << endl;
+        cout<<"TRACE(cornerextractor.cpp): slope of perp (based on eigvect)  : " << -1.0/slopeEig << endl;
+        double slopeP = py/px;
+        cout<<"TRACE(cornerextractor.cpp): slope of perp: " << slopeP << endl;
+        cout<<"TRACE(cornerextractor.cpp): start: " << (*i).elements.front().x() <<", "<<(*i).elements.front().y() << endl;
+        cout<<"TRACE(cornerextractor.cpp): p:     " << px << ", " << py << endl;
+        cout<<"TRACE(cornerextractor.cpp): end:   " << (*i).elements.back().x() <<", "<<(*i).elements.back().y() << endl;
+        cout << "----------------------------" << endl;
+#endif
+    }
 }
 
 void
@@ -82,39 +127,39 @@ CornerExtractor::addCorners( const std::vector<Section> &sections,
         // check that we have two connected lines before computing the angle between them
         // We also want to avoid extracting corners at the junction between observations of the
         // ground and a wall.
-        if (itr->isALine && itr->isNextCon && next->isALine) {// &&
+        if (itr->isALine() && itr->isNextCon() && next->isALine()) {// &&
             //(itr->elements.size() < MAX_POINTS_IN_LINE) &&
             //(next->elements.size() < MAX_POINTS_IN_LINE)) {
 
-            if ( lineLength( *itr ) < minLineLength_ )
+            if ( itr->lineLength() < minLineLength_ )
             {
-                cout<<"TRACE(cornerextractor.cpp): line too small: length is " << lineLength(*itr) << endl;
+                cout<<"TRACE(cornerextractor.cpp): line too small: length is " << itr->lineLength() << endl;
                 continue;
             }
-            if ( lineLength( *next ) < minLineLength_ )
+            if ( next->lineLength() < minLineLength_ )
             {
-                cout<<"TRACE(cornerextractor.cpp): line too small: length is " << lineLength(*next) << endl;
+                cout<<"TRACE(cornerextractor.cpp): line too small: length is " << next->lineLength() << endl;
                 continue;
             }
 
             double pFalsePositive = P_FALSE_POSITIVE;
 
             if (REJECT_GROUND_OBSERVATIONS && 
-            ((itr->elements.size() > MAX_POINTS_IN_LINE && fabs(itr->eigVectY) < 0.1) ||
-            (next->elements.size() > MAX_POINTS_IN_LINE && fabs(next->eigVectY) < 0.1))) 
+            ((itr->elements().size() > MAX_POINTS_IN_LINE && fabs(itr->perpVectY()) < 0.1) ||
+            (next->elements().size() > MAX_POINTS_IN_LINE && fabs(next->perpVectY()) < 0.1))) 
             {
               //std::cout << "We have a big line with a near horizontal slope.  Could be the ground??? Slope A : " << itr->eigVectY << " Slope B : " << next->eigVectY << std::endl;
               pFalsePositive = P_FALSE_POSITIVE_POSSIBLE_GROUND;
             }
   
             // We have a corner
-            double A1 = itr->eigVectX;
-            double B1 = itr->eigVectY;
-            double C1 = itr->C;
+            double A1 = itr->perpVectX();
+            double B1 = itr->perpVectY();
+            double C1 = itr->c();
   
-            double A2 = next->eigVectX;
-            double B2 = next->eigVectY;
-            double C2 = next->C;
+            double A2 = next->perpVectX();
+            double B2 = next->perpVectY();
+            double C2 = next->c();
   
             double dot_prod = A1*A2 + B1*B2;
               
@@ -152,7 +197,7 @@ CornerExtractor::addCorners( const std::vector<Section> &sections,
                         bearing = -bearing;
                     }
     
-                    orca::SinglePolarFeature2dPtr pp = new orca::SinglePolarFeature2d;
+                    orca::PointPolarFeature2dPtr pp = new orca::PointPolarFeature2d;
                     pp->type = orca::feature::CORNER;
                     pp->p.r = range;
                     pp->p.o = bearing;
@@ -186,7 +231,7 @@ CornerExtractor::connectSections( const orca::LaserScanner2dDataPtr & laserDataP
         double r = laserDataPtr->ranges[0];
         double b = - M_PI/2;
         SectionEl pos(r, b);
-        current.elements.push_back(pos);
+        current.elements().push_back(pos);
     }
 
     for (unsigned int i = 1; i < laserDataPtr->ranges.size(); i++) {
@@ -194,11 +239,11 @@ CornerExtractor::connectSections( const orca::LaserScanner2dDataPtr & laserDataP
             if (laserDataPtr->ranges[i-1] < laserMaxRange_) {
               // found the end of the current section with an out of range reading
               // ignore elements with less candidate points than would constitute 2 lines
-              if (current.elements.size() > 2*MIN_POINTS_IN_LINE)
+              if (current.elements().size() > 2*MIN_POINTS_IN_LINE)
               {
                 sections.push_back(current);
               }
-              current.elements.clear();
+              current.elements().clear();
             } else {
                 // We are still in an out of range section
                 // ignore...
@@ -210,23 +255,23 @@ CornerExtractor::connectSections( const orca::LaserScanner2dDataPtr & laserDataP
             double r = laserDataPtr->ranges[i];
             double b = M_PI*i/(laserDataPtr->ranges.size()-1) - M_PI/2;
             SectionEl pos(r, b);
-            current.elements.push_back(pos);
+            current.elements().push_back(pos);
          } else {
            // There has been a step change in range, start a new section
            // ignore elements with less candidate points than would constitute 2 lines
-           if (current.elements.size() > 2*MIN_POINTS_IN_LINE)
+           if (current.elements().size() > 2*MIN_POINTS_IN_LINE)
            {
              sections.push_back(current);
            }
-           current.elements.clear();
+           current.elements().clear();
          }
     }
 
-    if (current.elements.size() > 2*MIN_POINTS_IN_LINE)
+    if (current.elements().size() > 2*MIN_POINTS_IN_LINE)
     {
       sections.push_back(current);
     }
-    current.elements.clear();
+    current.elements().clear();
     
     //std::cout << "FeatureExtractor : Found " << sections.size() << " sections" << std::endl;
     //printSections();
@@ -254,7 +299,7 @@ CornerExtractor::connectSections( const orca::LaserScanner2dDataPtr & laserDataP
 //                 SectionEl pret = prev->elements.back();
 //                 SectionEl iret = itr->elements.front();
 //                 if (iret.range() > pret.range() + POSSIBLE_BOUND) {
-//                     orca::SinglePolarFeature2dPtr pp = new orca::SinglePolarFeature2d;
+//                     orca::PointPolarFeature2dPtr pp = new orca::PointPolarFeature2d;
 //                     pp->type = orca::feature::POSSIBLECORNER;
 //                     pp->p.r = pret.range();
 //                     pp->p.o = pret.bearing();
@@ -269,7 +314,7 @@ CornerExtractor::connectSections( const orca::LaserScanner2dDataPtr & laserDataP
 //                 SectionEl pret = prev->elements.back();
 //                 SectionEl iret = itr->elements.front();
 //                 if (pret.range() > iret.range() + POSSIBLE_BOUND) {
-//                     orca::SinglePolarFeature2dPtr pp = new orca::SinglePolarFeature2d;
+//                     orca::PointPolarFeature2dPtr pp = new orca::PointPolarFeature2d;
 //                     pp->type = orca::feature::POSSIBLECORNER;
 //                     pp->p.r = iret.range();
 //                     pp->p.o = iret.bearing();

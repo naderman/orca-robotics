@@ -22,14 +22,12 @@ namespace {
 Section::Section()
 {
 	//next = NULL;
-	isNextCon = false;
+	isNextCon_ = false;
 
-	isALine = false;
-	eigVectX = 0.0;
-	eigVectY = 0.0;
-	C = 0.0;
-
-	elements.clear();
+	isALine_ = false;
+	eigVectX_ = 0.0;
+	eigVectY_ = 0.0;
+	c_ = 0.0;
 }
 
 
@@ -38,23 +36,55 @@ Section::~Section()
 	// Nothing to delete
 }
 
-void 
-fitLine(Section &s)
+double 
+Section::lineLength() const
 {
-    double centX = 0;
-    double centY = 0;
+    assert( isALine() );
+    return hypotf( start().y()-end().y(), start().x()-end().x() );
+}
+
+void
+Section::setEndPoints()
+{
+    // calc length using the actual endpoints
+    const SectionEl &s = elements_.front();
+    const SectionEl &e = elements_.back();
+    double halfLength = 0.5 * hypotf( s.y()-e.y(), s.x()-e.x() );
+
+    double vParallelX = -eigVectY_;
+    double vParallelY =  eigVectX_;
+
+    start_.setXY( centroidX_ - vParallelX*halfLength, centroidY_ - vParallelY*halfLength );
+    end_.setXY(   centroidX_ + vParallelX*halfLength, centroidY_ + vParallelY*halfLength );
+
+    // Make sure the points are ordered correctly.
+    if ( end_.bearing()-start_.bearing() < 0 )
+    {
+        // swap them
+        SectionEl temp = start_;
+        start_ = end_;
+        end_ = temp;
+    }
+
+    // Make sure the points are ordered correctly.
+    assert( end_.bearing()-start_.bearing() > 0 );
+}
+
+void 
+Section::tryFitLine()
+{
     int n = 2;
-    int m = s.elements.size();
+    int m = elements_.size();
 
     // Find the centroid of the section..
     //std::cout << "Finding the centroid of the section" << std::endl;
 
     for (int i = 0; i < m; i++) {
-        centX += s.elements[i].x();
-        centY += s.elements[i].y();
+        centroidX_ += elements_[i].x();
+        centroidY_ += elements_[i].y();
     }
-    centX = centX/(double)m;
-    centY = centY/(double)m;
+    centroidX_ /= (double)m;
+    centroidY_ /= (double)m;
   
     float **A = new float*[m];
     for (int i = 0; i < m; i++) {
@@ -69,8 +99,8 @@ fitLine(Section &s)
     }
 
     for (int i = 0; i < m; i++) {
-        A[i][0] = s.elements[i].x() - centX;
-        A[i][1] = s.elements[i].y() - centY;
+        A[i][0] = elements_[i].x() - centroidX_;
+        A[i][1] = elements_[i].y() - centroidY_;
     }
 
     //std::cout << "Calling SVD" << std::endl;
@@ -91,19 +121,21 @@ fitLine(Section &s)
     //   where vx is the first component of the eigenvector
     //         vy is the second component of the eigencector
     //         c is the intercept
-    s.eigVectX = V[0][minIndex];
-    s.eigVectY = V[1][minIndex];
-    s.C = -s.eigVectX*centX - s.eigVectY*centY;
+    eigVectX_ = V[0][minIndex];
+    eigVectY_ = V[1][minIndex];
+    c_ = -eigVectX_*centroidX_ - eigVectY_*centroidY_;
 
     double total_error = 0;
     for (int i = 0; i < m; i++) {
-        double dist = fabs(s.eigVectX*s.elements[i].x() 
-                           + s.eigVectY*s.elements[i].y() + s.C);
+        double dist = fabs(eigVectX_*elements_[i].x() 
+                           + eigVectY_*elements_[i].y() + c_);
 
         total_error += dist;
     }
-    if (total_error/(double)m < LINEFIT_ERROR_THRESHOLD) {
-        s.isALine = true;
+    if (total_error/(double)m < LINEFIT_ERROR_THRESHOLD) 
+    {
+        isALine_ = true;
+        setEndPoints();
     }
     else {
         cout << "Unable to bound line: error " << total_error/(double)m << endl;
@@ -117,19 +149,19 @@ fitLine(Section &s)
 }
 
 void 
-findBreakPoint(Section &s, double &maxDist, int &pos)
+Section::findBreakPoint(double &maxDist, int &pos) const
 {
     maxDist = 0;
     pos = 0;
   
-    int numElements = s.elements.size();
+    int numElements = elements_.size();
     if ( numElements <= 2) {
         return;
     }
-    double x1 = s.elements[0].x();
-    double y1 = s.elements[0].y();
-    double xn = s.elements[numElements-1].x();
-    double yn = s.elements[numElements-1].y();
+    double x1 = elements_[0].x();
+    double y1 = elements_[0].y();
+    double xn = elements_[numElements-1].x();
+    double yn = elements_[numElements-1].y();
     double deltaX =  xn - x1;
     double deltaY =  yn - y1;
     //std::cout << "dx " << deltaX << " dy " << deltaY;
@@ -144,8 +176,8 @@ findBreakPoint(Section &s, double &maxDist, int &pos)
     // this distance is greater than a threshold it will be used to break the section
     // into two smaller sections
     for (int i = 1; i < numElements - 2; i++) {
-        double x = s.elements[i].x();
-        double y = s.elements[i].y();
+        double x = elements_[i].x();
+        double y = elements_[i].y();
         double dx = x - x1;
         double dy = y - y1;
 
@@ -179,57 +211,47 @@ extractLines( std::vector<Section> &sections, int minPointsInLine )
 
     //std::cout << "Extracting lines from " << sections.size() << " initial sections" << std::endl;
   
-    //for (std::vector<Section>::iterator itr = sections.begin(); itr != sections.end(); itr++) {
     std::vector<Section>::iterator itr = sections.begin();
   
     while (itr != sections.end())
     {
-        if (itr->elements.size() >= (uint)(minPointsInLine)) {
-            int pos = 0;
-            double maxDist = 0;
-            //std::cout << "Preparing to find breaks for section of size << " << itr->elements.size() << std::endl;
-            Section sec = *itr;
-            //findBreakPoint(*itr, maxDist, pos);
-            findBreakPoint(sec, maxDist, pos);
+        if ( itr->elements().size() < (uint)(minPointsInLine) )
+        {
+            // Don't break this one.
+            itr++;
+            continue;
+        }
 
-            if (maxDist > BREAK_DIST) {
-                //std::cout << "Found a break point at position " << pos << " in section of size " << itr->elements.size() << std::endl;
+        int pos = 0;
+        double maxDist = 0;
+        //std::cout << "Preparing to find breaks for section of size << " << itr->elements.size() << std::endl;
+        (*itr).findBreakPoint(maxDist, pos);
+
+        if (maxDist > BREAK_DIST) {
+            //std::cout << "Found a break point at position " << pos << " in section of size " << itr->elements.size() << std::endl;
         
-                Section temp;
-                // insert at...
-                //temp->next = itr->next;
-                //itr->next = temp;
-                temp.isNextCon = true;
+            Section temp;
+            temp.setIsNextCon( true );
         
-                temp.elements.insert( temp.elements.begin(), itr->elements.begin(), itr->elements.begin() + pos);
+            temp.elements().insert( temp.elements().begin(), itr->elements().begin(), itr->elements().begin() + pos);
         
-                itr->elements.erase( itr->elements.begin(), itr->elements.begin() + pos );
+            itr->elements().erase( itr->elements().begin(), itr->elements().begin() + pos );
         
-                //std::cout << "Inserting section of size " << temp.elements.size() << " before section of size " << itr->elements.size() << std::endl;
-                try {
-                    // insert the new section and get a valid handle to the inserted section
-                    itr = sections.insert(itr, temp);
-                    //itr--;
-                } catch(...) {
-                    std::cout << "Exception in inserting new section!!!" << std::endl;
-                }
-                //printSections();
-                //sections.insert(itr+1, temp);
-                //itr++;
-            } else {
-                // std::cout << "Preparing to fit lines" << std::endl;
-                fitLine(*itr);
-                //itr = itr->next;in 
-                itr++;
+            //std::cout << "Inserting section of size " << temp.elements().size() << " before section of size " << itr->elements().size() << std::endl;
+            try {
+                // insert the new section and get a valid handle to the inserted section
+                itr = sections.insert(itr, temp);
+                //itr--;
+            } catch(...) {
+                std::cout << "Exception in inserting new section!!!" << std::endl;
             }
         } else {
-            //std::cout << "Not breaking this one..." << std::endl;
-            //itr = itr->next;
+            // std::cout << "Preparing to fit lines" << std::endl;
+            (*itr).tryFitLine();
             itr++;
         }
     }
     //std::cout << "FeatureExtractor : Extracted " << sections.size() << " lines" << std::endl;
-
 }
 
 void printSections( const std::vector<Section> &sections )
@@ -238,15 +260,15 @@ void printSections( const std::vector<Section> &sections )
 
     cout << "Sections : ";
     for (std::vector<Section>::const_iterator itr = sections.begin(); itr != sections.end(); itr++) {
-        count += itr->elements.size();
-        cout << "{s:" << itr->elements.size();
-        if (itr->isALine) {
+        count += itr->elements().size();
+        cout << "{s:" << itr->elements().size();
+        if (itr->isALine()) {
             cout << " L";
         }
         else {
             cout << " -";
         }
-        if (itr->isNextCon) {
+        if (itr->isNextCon()) {
             cout << "C";
         }
         else {

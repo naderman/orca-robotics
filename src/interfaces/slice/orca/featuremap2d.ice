@@ -33,12 +33,14 @@ module feature
     const int FOREGROUNDPOINT  = 1;
     //! An opening in a wall.
     const int DOOR             = 2;
-    //! The junction of two walls.
+    //! The junction of two lines.
     const int CORNER           = 3;
-    //! The end of a wall.  The junction of two walls looks 
-    //! like this when viewed from a position such that the 
-    //! other wall is obscured.  The other wall may not exist however.
-    const int POSSIBLECORNER   = 4;
+//     //! The end of a wall.  The junction of two walls looks 
+//     //! like this when viewed from a position such that the 
+//     //! other wall is obscured.  The other wall may not exist however.
+//     const int POSSIBLECORNER   = 4;
+    //! A line segment.
+    const int LINE             = 4;
 };
 
 //! Generic 2D feature.

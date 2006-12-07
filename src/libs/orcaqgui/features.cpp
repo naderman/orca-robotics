@@ -28,14 +28,14 @@ namespace orcaqgui {
         case orca::feature::CORNER:
             return Qt::green;
             break;
-        case orca::feature::POSSIBLECORNER:
-            return Qt::yellow;
+        case orca::feature::LINE:
+            return Qt::black;
             break;
         default:
             // Don't know what this feature is.
             // Could probably do better, eg return
             // a (deterministic) random colour.
-            return Qt::black;
+            return Qt::yellow;
         }
     }
 

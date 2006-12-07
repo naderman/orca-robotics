@@ -62,7 +62,7 @@ void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserD
 
     for ( int i=0; i < numPoles; i++ )
     {
-        orca::SinglePolarFeature2dPtr pp = new orca::SinglePolarFeature2d;
+        orca::PointPolarFeature2dPtr pp = new orca::PointPolarFeature2d;
         pp->type = orca::feature::FOREGROUNDPOINT;
         pp->p.r  = poles[i].range;
         pp->p.o  = poles[i].bearing;

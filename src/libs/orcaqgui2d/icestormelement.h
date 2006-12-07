@@ -76,7 +76,6 @@ protected:
                      ProxyType,
                      ConsumerType,
                      ConsumerPrxType> listener_;
-    
 
     //! Object to handle painting to our data to screen
     PainterType                     &painter_;

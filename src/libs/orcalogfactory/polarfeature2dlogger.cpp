@@ -86,7 +86,10 @@ PolarFeature2dLogger::setData(const orca::PolarFeature2dDataPtr& data, const Ice
     }
     else if ( format_ == "ascii" )
     {
-	(*file_) << orcalog::toLogString(data) << endl;
+        // (*file_) << orcalog::toLogString(data) << endl;
+        context_.tracer()->warning( interfaceType_+"Logger: format not supported: "+format_ );
+        throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: format not supported: "+format_ );
+        
     }
     else
     {

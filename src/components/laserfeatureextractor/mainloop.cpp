@@ -190,25 +190,48 @@ void MainLoop::run()
     waitForStop();
 }
 
+void
+convertPointToRobotCS( double &range,
+                       double &bearing,
+                       const CartesianPoint &offsetXyz,
+                       const OrientationE offsetAngles )
+{
+    CartesianPoint LaserXy, RobotXy;
+    
+    LaserXy.x = cos(bearing) * range;
+    LaserXy.y = sin(bearing) * range;
+    RobotXy.x = LaserXy.x*cos(offsetAngles.y) - LaserXy.y*sin(offsetAngles.y) + offsetXyz.x;
+    RobotXy.y = LaserXy.x*sin(offsetAngles.y) + LaserXy.y*cos(offsetAngles.y) + offsetXyz.y;
+    range   = sqrt(RobotXy.x*RobotXy.x + RobotXy.y*RobotXy.y);
+    bearing = atan2(RobotXy.y,RobotXy.x);
+}
+
 void 
 MainLoop::convertToRobotCS( const PolarFeature2dDataPtr & featureData )
 {
     CartesianPoint offsetXyz = sensorOffset_.p;
     OrientationE   offsetAngles = sensorOffset_.o;
     
-    CartesianPoint LaserXy, RobotXy;
-    PolarPoint2d polarPointRobot;
-    
     for (unsigned int i=0; i<featureData->features.size(); i++ )
     {
-        LaserXy.x = cos(featureData->features[i]->p.o) * featureData->features[i]->p.r;
-        LaserXy.y = sin(featureData->features[i]->p.o) * featureData->features[i]->p.r;
-        RobotXy.x = LaserXy.x*cos(offsetAngles.y) - LaserXy.y*sin(offsetAngles.y) + offsetXyz.x;
-        RobotXy.y = LaserXy.x*sin(offsetAngles.y) + LaserXy.y*cos(offsetAngles.y) + offsetXyz.y;
-        polarPointRobot.r = sqrt(RobotXy.x*RobotXy.x + RobotXy.y*RobotXy.y);
-        polarPointRobot.o = atan2(RobotXy.y,RobotXy.x);
-
-        featureData->features[i]->p = polarPointRobot;
+        // a bit ugly...
+        orca::SinglePolarFeature2dPtr ftr = featureData->features[i];
+        if ( ftr->ice_isA( "::orca::PointPolarFeature2d" ) )
+        {
+            orca::PointPolarFeature2d& f = dynamic_cast<orca::PointPolarFeature2d&>(*ftr);
+            convertPointToRobotCS( f.p.r, f.p.o, offsetXyz, offsetAngles );
+        }
+        else if ( ftr->ice_isA( "::orca::LinePolarFeature2d" ) )
+        {
+            orca::LinePolarFeature2d& f = dynamic_cast<orca::LinePolarFeature2d&>(*ftr);
+            convertPointToRobotCS( f.start.r, f.start.o, offsetXyz, offsetAngles );
+            convertPointToRobotCS( f.end.r,   f.end.o,   offsetXyz, offsetAngles );
+        }
+        else
+        {
+            stringstream ss; ss<<"ERROR(mainloop.cpp): Unknown feature type: " << ftr->type;
+            throw ss.str();
+        }
     }
 }
 

@@ -42,6 +42,8 @@ private:
                           std::vector<Section> &sections );
     void addCorners( const std::vector<Section> &sections, 
                      orca::PolarFeature2dDataPtr &features );
+    void addLines( const std::vector<Section> &sections, 
+                   orca::PolarFeature2dDataPtr &features );
 };
 
 }

@@ -27,21 +27,16 @@ features with range in meters and bearing in rad (-pi<angle<pi) and the feature 
     @{
 */
 
-//! A single polar feature.
-//! If a new feature has more attributes, derive from this.
 //!
-//! 
+//! A generic polar feature.  Derive from this to fill out the details.
 //!
 class SinglePolarFeature2d
 {
-    //! Feature location.
-    PolarPoint2d p;
-
     //! Feature type
     //! see @ref orca_interface_featuremap2d for orca-defined feature-types.
     //! This is an int rather than an enum to allow users to make up
     //! non-orca-defined feature types.
-    int          type;
+    int type;
 
     //! The probability of detecting the feature when it's not there
     //! [ p(obs=true|exists=false) ]
@@ -56,6 +51,28 @@ class SinglePolarFeature2d
     //!   - 0 (sensor will never find features when they're there), and
     //!   - 1 (sensor always finds features when they're there)
     double pTruePositive;
+};
+
+//!
+//! A single polar feature.
+//! If a new feature has more attributes, derive from this.
+//!
+class PointPolarFeature2d extends SinglePolarFeature2d
+{
+    //! Feature location.
+    PolarPoint2d p;
+};
+
+//!
+//! A line, specified by its endpoints.
+//!
+class LinePolarFeature2d extends SinglePolarFeature2d
+{
+    //! Start of line (by definition, on the right)
+    PolarPoint2d start;
+
+    //! end of line (by definition, on the left)
+    PolarPoint2d end;
 };
 
 //! A sequence of individual features

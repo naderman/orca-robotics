@@ -164,34 +164,34 @@ toLogString( const orca::Position3dDataPtr &obj )
     return s.str();
 }
 
-std::string 
-toLogString( const orca::PolarFeature2dDataPtr & obj )
-{
-    std::stringstream s;
+// std::string 
+// toLogString( const orca::PolarFeature2dDataPtr & obj )
+// {
+//     std::stringstream s;
 
-    // timestamp on the first line
-    s << toLogString(obj->timeStamp) << " \n";
+//     // timestamp on the first line
+//     s << toLogString(obj->timeStamp) << " \n";
 
-    // feature type, range, and bearing (deg) on second line
-    const orca::PolarFeature2dSequence &features = obj->features;
-    for (unsigned int i=0; i < obj->features.size(); i++)
-    {
-        if ( features[i] == 0 )
-        {
-            s << "  " << i << ": ERROR: Feature was NULL!" << endl;
-        }
-        else
-        {
-            const orca::SinglePolarFeature2dPtr &f = features[i];
-            s << f->type << " "
-              << f->p.r << " "
-              << f->p.o*180.0/M_PI << " ";
-        }
-    }
-    s << "\n";
+//     // feature type, range, and bearing (deg) on second line
+//     const orca::PolarFeature2dSequence &features = obj->features;
+//     for (unsigned int i=0; i < obj->features.size(); i++)
+//     {
+//         if ( features[i] == 0 )
+//         {
+//             s << "  " << i << ": ERROR: Feature was NULL!" << endl;
+//         }
+//         else
+//         {
+//             const orca::SinglePolarFeature2dPtr &f = features[i];
+//             s << f->type << " "
+//               << f->p.r << " "
+//               << f->p.o*180.0/M_PI << " ";
+//         }
+//     }
+//     s << "\n";
     
-    return s.str();
-}
+//     return s.str();
+// }
 
 // logs only numeric data. all data on one line
 // the number of batteries usually does not change over time

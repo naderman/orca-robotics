@@ -149,7 +149,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
         case orca::feature::FOREGROUNDPOINT:
         case orca::feature::DOOR:
         case orca::feature::CORNER:
-        case orca::feature::POSSIBLECORNER:
+            //case orca::feature::POSSIBLECORNER:
         {
             orca::CartesianPointFeature2dPtr feature = new orca::CartesianPointFeature2d;
             feature->type = type;

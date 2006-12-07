@@ -71,14 +71,14 @@ void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                 if (featureNumPnts > 5 && door_width_sq > min_width &&
                     door_width_sq < max_width )
                 {
-                    orca::SinglePolarFeature2dPtr pp1 = new orca::SinglePolarFeature2d;
+                    orca::PointPolarFeature2dPtr pp1 = new orca::PointPolarFeature2d;
                     pp1->type = orca::feature::DOOR;
                     pp1->p.r = startRange;
                     pp1->p.o = startBearing;
                     pp1->pFalsePositive = P_FALSE_POSITIVE;
                     pp1->pTruePositive  = P_TRUE_POSITIVE;
 
-                    orca::SinglePolarFeature2dPtr pp2 = new orca::SinglePolarFeature2d;
+                    orca::PointPolarFeature2dPtr pp2 = new orca::PointPolarFeature2d;
                     pp2->type = orca::feature::DOOR;
                     pp2->p.r = stopRange;
                     pp2->p.o = stopBearing;

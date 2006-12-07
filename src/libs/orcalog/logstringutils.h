@@ -28,7 +28,7 @@
 #include <orca/platform2d.h>
 #include <orca/power.h>
 #include <orca/status.h>
-#include <orca/polarfeature2d.h>
+//#include <orca/polarfeature2d.h>
 #include <orca/featuremap2d.h>
 #include <orca/pathfollower2d.h>
 #include <orca/pathplanner2d.h>
@@ -50,8 +50,8 @@ std::string toLogString( const orca::Localise2dDataPtr & );
 std::string toLogString( const orca::PathPlanner2dDataPtr & );
 //! Prints out task path (coarse) to text in a parsable format
 std::string toLogString( const orca::PathPlanner2dTaskPtr & );
-//! Prints out polarfeature2d data to text which is easy to parse
-std::string toLogString( const orca::PolarFeature2dDataPtr & );
+// //! Prints out polarfeature2d data to text which is easy to parse
+// std::string toLogString( const orca::PolarFeature2dDataPtr & );
 //! Prints out position2d data to text which is easy to parse
 std::string toLogString( const orca::Position2dDataPtr & );
 //! Prints out position3d data to text which is easy to parse
