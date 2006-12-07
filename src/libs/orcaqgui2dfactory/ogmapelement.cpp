@@ -66,7 +66,7 @@ void OgMapElement::saveMapAs()
         //this,
         "Choose a filename to save under",
         mapFileName_,
-        "*.txt");
+        "*.png *.bmp *.jpg *.jpeg *.ppm *.xbm *.xpm *.bin");
     
     if ( mapFileName_ != "" )
     {
