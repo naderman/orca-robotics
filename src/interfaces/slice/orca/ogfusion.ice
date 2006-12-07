@@ -21,7 +21,8 @@ module orca
     @defgroup orca_interface_ogfusion OgFusion
     @brief An occupancy grid fusion interface
 
-    An occupancy grid fusion interface
+    An occupancy grid fusion interface which receives occupancy likelihoods per grid cell
+    for fusing them into an occupancy grid map.
 
 */
 class OgFusionConfig extends OrcaObject
@@ -39,7 +40,7 @@ class OgFusionConfig extends OrcaObject
     float metresPerCellY;
 };
 
-//! A basic structure for individual likelihoods
+//! A basic structure for individual likelihoods per cell
 struct OgCellLikelihood
 {
    int x;
@@ -51,21 +52,22 @@ struct OgCellLikelihood
 sequence<OgCellLikelihood>         OgObservation;
 
 /*!
-    @brief Blah.
+    OgFusionData simply contains a sequence of occupancy likelihoods per cell
 */
 class OgFusionData extends OrcaObject
 {
-    //! The actual data
+    //! A sequence of cell likelihoods is an observation
     OgObservation observation;
 };
 
 /*!
-    @brief Blah.
-
+    The OgFusion interface receives sequences of cell
+    likelihoods in form of OgFusionData. It can also be
+    queried for its configuration.
  */
 interface OgFusion
 {
-    //! retreives map configuration etc.
+    //! retrieves map configuration etc.
     nonmutating OgFusionConfig getConfig();
     
     //! set an observation
