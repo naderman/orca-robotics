@@ -21,6 +21,7 @@
 namespace orcaqgui {
 
 class OrcaGuiUserEvent;
+class IHumanManager;
 
 // all units are SI units
 class WaypointSettings
@@ -50,6 +51,8 @@ class PathInput
         virtual void processMoveEvent( QMouseEvent* e);
         
         virtual void updateWpSettings( WaypointSettings* wpSettings );
+        
+        virtual void savePath( const QString &fileName, IHumanManager *humanManager ) const;
         
 
     protected:    

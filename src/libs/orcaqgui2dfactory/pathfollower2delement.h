@@ -86,6 +86,13 @@ public:
     void mouseReleaseEvent(QMouseEvent *e) {pathInput_->processReleaseEvent(e);}
     void mouseDoubleClickEvent(QMouseEvent *e) {pathInput_->processDoubleClickEvent(e);}
     void setFocus( bool inFocus );
+    
+    // to dump the user (green) path to /tmp
+    void savePath( const QString &fileName, IHumanManager *humanManager ) const
+    {
+        pathInput_->savePath( fileName, humanManager );
+    }
+        
 
 public slots:
     void savePathAs();
@@ -170,9 +177,14 @@ private:
     
     bool firstTime_;
     orcaice::Timer *timer_;
-
+    
+    void getDumpPath();
+    QString dumpPath_;
+    int numPathDumps_;
+    
     // Handles human interface
     PathFollowerHI pathHI_;
+    
 };
 
 }

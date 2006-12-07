@@ -111,6 +111,7 @@ PathFollower2dElement::PathFollower2dElement( orcaice::Context   context,
       context_(context),
       humanManager_(humanManager),
       firstTime_(true),
+      numPathDumps_(0),
       pathHI_( this,
                proxyString,
                humanManager,
@@ -120,13 +121,25 @@ PathFollower2dElement::PathFollower2dElement( orcaice::Context   context,
 {
     cout<<"TRACE(pathfollower2delement.cpp): Instantiating w/ proxyString '" << proxyString << "'" << endl;
     pathUpdateConsumer_ = new PathUpdateConsumer;
+    
+    getDumpPath();
 
     timer_ = new orcaice::Timer;
-    cout<<"TRACE(pathfollower2delement.cpp): constructor finished." << endl;
 }
 
 PathFollower2dElement::~PathFollower2dElement()
 {
+}
+
+void
+PathFollower2dElement::getDumpPath()
+{
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag();
+    prefix += ".Config.";
+    Ice::StringSeq strIn; strIn.push_back("/tmp"); Ice::StringSeq strOut;
+    strOut = orcaice::getPropertyAsStringSeqWithDefault( prop, prefix+"DumpPath", strIn );
+    dumpPath_ = QString(strOut[0].c_str());
 }
 
 void
@@ -253,6 +266,12 @@ PathFollower2dElement::sendPath( const PathFollowerInput &pathInput, bool activa
         pathFollower2dPrx_->setData( pathInput.getPath(), activateImmediately );
         if (!activateImmediately) 
             humanManager_->showStatusMsg( Information, "Path needs to be activated by pressing the Go buttion." );
+        
+        // save path to file automatically
+        char buffer [5];
+        sprintf(buffer,"%05d",numPathDumps_++);
+        QString filename = dumpPath_ + "/pathdump" + QString(buffer) + ".txt";
+        pathHI_.savePath( filename, humanManager_ );
     }
     catch ( const Ice::Exception &e )
     {

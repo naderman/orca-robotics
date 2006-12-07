@@ -17,6 +17,7 @@
 #include <math.h>
 #include <assert.h>
 #include <orcaice/orcaice.h>
+#include <orcaqgui/ihumanmanager.h>
 
 #include <QPainter>
 #include <QString>
@@ -219,6 +220,39 @@ void PathInput::changeWpParameters( QPointF p1 )
         }
     }
 
+}
+
+void 
+PathInput::savePath( const QString &fileName, IHumanManager *humanManager ) const
+{
+    int size=waypoints_.size();
+    
+    if (size==0)
+    {
+        humanManager->showBoxMsg(Warning, "Path has no waypoints. File will be empty!");
+    }
+    
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        humanManager->showBoxMsg(Error, "Cannot create file " + fileName );
+        return;
+    }
+
+    QTextStream out(&file);
+    for (int i=0; i<size; i++)
+    {
+        out << waypoints_[i].x() << " " << waypoints_[i].y() << " "
+                << headings_[i] << " "
+                << times_[i] << " "
+                << distTolerances_[i] << " "
+                << headingTolerances_[i]<< " "
+                << maxSpeeds_[i]<< " "
+                << maxTurnrates_[i]<< "\n";
+    }
+    
+    file.close();
+    humanManager->showStatusMsg(Information, "Path successfully saved to " + fileName );
 }
 
 PathFollowerInput::PathFollowerInput( WaypointSettings *wpSettings )

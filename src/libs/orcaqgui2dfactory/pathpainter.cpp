@@ -200,7 +200,7 @@ int PathPainter::savePath( const QString fileName, IHumanManager *humanManager )
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         humanManager->showBoxMsg(Error, "Cannot create file " + fileName );
-        return -2;
+        return -1;
     }
 
     QTextStream out(&file);
