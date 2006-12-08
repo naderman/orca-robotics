@@ -28,6 +28,8 @@ public:
     // need a separate enable function because the Qt driver does not return
     virtual void enable( BrowserDriver* browser )=0;
 
+    virtual void showNetworkActivity( bool isActive )=0;
+
     virtual void showRegistryData( const orcacm::RegistryHomeData & data )=0;
     
     virtual void showComponentData( const orcacm::ComponentData & data )=0;
