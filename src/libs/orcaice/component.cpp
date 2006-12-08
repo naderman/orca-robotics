@@ -175,8 +175,10 @@ Component::activate()
     {
         bool requireRegistry = properties()->getPropertyAsInt( "Orca.RequireRegistry" );
         if ( requireRegistry ) {
-            std::stringstream ss; ss<<"Error while activating Component: "<<e<<". Check IceGrid Registry.";
+            std::stringstream ss; 
+            ss<<"Error while activating Component: "<<e<<". Check IceGrid Registry.";
             tracer()->error( ss.str() );
+            tracer()->info( "You may allow to continue by setting Orca.RequireRegistry=0." );
             throw orcaice::NetworkException( ERROR_INFO, ss.str() );
         }
         else {
