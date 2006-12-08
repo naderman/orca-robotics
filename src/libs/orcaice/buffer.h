@@ -28,6 +28,23 @@ namespace orcaice
  * For a type-safe buffer, template over the specific Object type you want to put in it.
  * Buffering Ice smart pointers requires a specialized class Buffer.
  *
+ * You should always try to @ref get() data before blocking with @ref getNext() because
+ * closely spaced push events may be lost. For example:
+ * @verbatim
+orcaice::Buffer<double> buffer( 10 );
+double data;
+while (1)
+{
+    try {
+        buffer.getAndPop( data );
+    }
+    catch ( const orcaice::Exception & e ) {
+        buffer.getAndPopNext( data );
+    }
+    // do something with data
+}
+ * @endverbatim
+ *
  * @note This implementation uses IceUtil threading classes. See example in sec. 28.9.2
  * @see PtrBuffer, Nofity, Proxy
  */
@@ -37,11 +54,11 @@ class Buffer : public IceUtil::Monitor<IceUtil::Mutex>
 public:
 
     /*!
-     *  Buffer depth:
+     *  Buffer depth, i.e. the maximum number of objects this buffer can hold:
      *      - positive numbers to specify finite depth,
-     *      - negative numbers for infinite depth, limited by memory size (DEFAULT)
+     *      - negative numbers for infinite depth, limited by memory size
      *      - zero is undefined
-     *  Default buffer type is CIRCULAR, of depth 1.
+     *  Default configuration: buffer type is BufferTypeCircular, of depth 1.
      */
     Buffer( int depth=1, BufferType type=BufferTypeCircular );
 
@@ -49,9 +66,15 @@ public:
 
     //! Typically is called before the buffer is used, or if, for some reason, the configuration
     //! information was not available at the time when the constructor was called.
-    //! Careful: all data currently in the buffer is lost, because @ref purge is called.
+    //! Careful: all data currently in the buffer is lost, because @ref purge() is calledfirst.
     //! NOTE: can do smarter by trancating queue only as much as needed.
     void configure( int depth, BufferType type=BufferTypeCircular );
+
+    //! Returns buffer depth.
+    int depth() const;
+
+    //! Returns buffer type.
+    BufferType type() const;
 
     //! Returns TRUE if there's something in the buffer.
     bool isEmpty() const;
@@ -59,11 +82,11 @@ public:
     //! Returns the number of items in the buffer.
     int  size() const;
 
-    //! Delete all entries, makes the buffer empty.
+    //! Deletes all entries, makes the buffer empty.
     void purge();
 
     /*!
-     *  Add an object to the end of the buffer. If there is no room left in a finite-depth
+     *  Adds an object to the end of the buffer. If there is no room left in a finite-depth
      *  circular buffer, the front element of the buffer is quietly deleted and the new data
      *  is added to the end. If there is no room left in a finite-depth queue buffer
      *  the new data is quietly ignored.
@@ -71,7 +94,7 @@ public:
     void push( const Type & obj );
 
     /*! 
-     *  Pop the front element off and discards it (usually after calling @ref get).
+     *  Pops the front element off and discards it (usually after calling @ref get() ).
      *  If the buffer is empty this command is quietly ignored.
      */
     void pop();
@@ -79,23 +102,24 @@ public:
     /*!
      *  Non-popping and non-blocking read from the front of the buffer.
      *
-     *  Calls to @ref get on an empty buffer raises an orcaice::Exception exception.
-     *  You can trap these and call @ref getNext which will block until new data arrives.
+     *  Calls to @ref get() on an empty buffer raises an orcaice::Exception exception.
+     *  You can trap these and call @ref getNext() which will block until new data arrives.
      */
     void  get( Type & obj ) const;
 
     /*!
-     *  Array style access version
+     *  Non-popping and non-blocking random-access read. Returns n-th element from the buffer.
+     *  Indexing starts at 0.
      */
     void  get( Type & obj, unsigned int n ) const;
 
     /*!
-     *  Same as @ref get but calls @ref pop afterwards.
+     *  Same as @ref get() but calls @ref pop() afterwards.
      */
     void  getAndPop( Type & obj );
 
     /*! 
-     *  If the buffer is empty, @ref getNext blocks until an object is pushed in and returns the new value.
+     *  If the buffer is empty, @ref getNext() blocks until an object is pushed in and returns the new value.
      *  By default, there is no timeout (negative value). Returns 0 if successful.
      *
      *  If timeout is set to a positive value and the wait times out, the function returns -1
@@ -164,6 +188,22 @@ void Buffer<Type>::configure( int depth, BufferType type )
     IceUtil::Monitor<IceUtil::Mutex>::Lock lock(*this);
     depth_ = depth;
     type_ = type;
+}
+
+template<class Type>
+int 
+Buffer<Type>::depth() const
+{
+    IceUtil::Monitor<IceUtil::Mutex>::Lock lock(*this);
+    return depth_;
+}
+
+template<class Type>
+BufferType 
+Buffer<Type>::type() const
+{
+    IceUtil::Monitor<IceUtil::Mutex>::Lock lock(*this);
+    return type_;
 }
 
 template<class Type>

@@ -11,17 +11,25 @@
 #include <iostream>
 
 #include <orcaice/buffer.h>
-#include <orca/position2d.h>
+// #include <orca/bros1.h>
 
 using namespace std;
 
 int main(int argc, char * argv[])
 {
-    // that's what different from PtrBuffer: buffery type and data type
-    orcaice::Buffer<orca::Frame2d> buffer;
-    orca::Frame2d data;
+//     orcaice::Buffer<orca::Frame2d> buffer;
+//     orca::Frame2d data;
+    orcaice::Buffer<int> buffer;
+    int data;
 
-    cout<<"testing get() ... ";
+    cout<<"testing default constructor and depth() and type() ... ";
+    if ( buffer.depth()!=1 || buffer.type()!=orcaice::BufferTypeCircular ) {
+        cout<<"failed. depth: exp=1 got="<<buffer.depth()<<" type: exp="<<(int)orcaice::BufferTypeCircular<<" got="<<(int)buffer.type()<<endl;
+        return EXIT_FAILURE;
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing get() with empty buffer ... ";
     // call get on an empty stomach
     try
     {
@@ -35,7 +43,7 @@ int main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
     
-    cout<<"testing getAndPop()... ";
+    cout<<"testing getAndPop() with empty buffer ... ";
     try
     {
         buffer.getAndPop( data );
@@ -48,21 +56,21 @@ int main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
 
-    cout<<"testing getNext() ... ";
+    cout<<"testing getNext() with empty buffer ... ";
     if ( buffer.getNext( data, 50 )==0 ) {
         cout<<"failed. not expecting anybody setting the proxy"<<endl;
         return EXIT_FAILURE;
     }
     cout<<"ok"<<endl;
 
-    cout<<"testing getAndPopNext() ... ";
+    cout<<"testing getAndPopNext() with empty buffer ... ";
     if ( buffer.getAndPopNext( data, 50 )==0 ) {
         cout<<"failed. not expecting anybody setting the proxy"<<endl;
         return EXIT_FAILURE;
     }
     cout<<"ok"<<endl;
 
-    cout<<"testing isEmpty() and size() ... ";
+    cout<<"testing isEmpty() and size() with empty buffer ... ";
     if ( !buffer.isEmpty() || buffer.size()!=0 ) {
         cout<<"failed. expecting an empty buffer."<<endl;
         return EXIT_FAILURE;
@@ -114,6 +122,32 @@ int main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
     
+    cout<<"testing circular buffer behavior ...";
+    buffer.configure( 1, orcaice::BufferTypeCircular );
+    //this fills the buffer
+    buffer.push( 0 );
+    // this should over-write
+    buffer.push( 1 );
+    buffer.get( data );
+    if ( data != 1 ) {
+        cout<<"failed. second push should overwrite: expected=1, got="<<data<<endl;
+        return EXIT_FAILURE;
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing queue buffer behavior ...";
+    buffer.configure( 1, orcaice::BufferTypeQueue );
+    //this fills the buffer
+    buffer.push( 0 );
+    // this should be ignored
+    buffer.push( 1 );
+    buffer.get( data );
+    if ( data != 0 ) {
+        cout<<"failed. second push should not overwrite: expected=0, got="<<data<<endl;
+        return EXIT_FAILURE;
+    }
+    cout<<"ok"<<endl;
+
     cout<<"testing configure() with orcaice::BufferTypeCircular ... ";
     buffer.configure( 300, orcaice::BufferTypeCircular );
     for ( int i=0; i<400; ++i ) {
