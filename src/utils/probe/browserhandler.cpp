@@ -27,6 +27,7 @@ BrowserHandler::BrowserHandler( orcaprobe::DisplayDriver & display,
       ifaceProbe_(0),
       context_(context)
 {
+    eventPipe_.configure( 10 );
 }
 
 BrowserHandler::~BrowserHandler()
@@ -86,7 +87,12 @@ BrowserHandler::run()
     while ( isActive() )
     {
 //         cout<<"BrowserHandler: waiting for an event..."<<endl;
-        eventPipe_.getAndPopNext( event );
+        try {
+            eventPipe_.getAndPop( event );
+        }
+        catch ( const orcaice::Exception & e ) {
+            eventPipe_.getAndPopNext( event );
+        }
 
         switch ( event )
         {
@@ -104,7 +110,7 @@ BrowserHandler::run()
             top();
             break;
         case ReloadEvent :
-            //cout<<"reload event"<<endl;
+            cout<<"reload event"<<endl;
             reload();
             break;
         case FilterEvent :
@@ -138,9 +144,12 @@ BrowserHandler::loadRegistry()
     //
     // remote call!
     //
+    display_.showNetworkActivity( true );
 //     registryData_ = orcacm::getRegistryData( context_, context_.communicator()->getDefaultLocator()->ice_toString() );
     registryData_ = orcacm::getRegistryHomeData( context_, context_.communicator()->getDefaultLocator()->ice_toString() );
-    
+
+    display_.showNetworkActivity( false );
+
     display_.showRegistryData( registryData_ );
 }
 
@@ -162,9 +171,13 @@ BrowserHandler::loadComponent()
     //
     // remote call!
     //
+    display_.showNetworkActivity( true );
+
 //     componentData_ = orcacm::getComponentData( context_,
 //                         orcaice::toString(registryData_.adapters[pick_].name) );
     componentData_ = orcacm::getComponentHomeData( context_, registryData_.homes[pick_].proxy );
+
+    display_.showNetworkActivity( false );
 
     display_.showComponentData( componentData_ );
 }
@@ -220,10 +233,14 @@ BrowserHandler::loadOperation()
     //
     // remote call!
     //
+    display_.showNetworkActivity( true );
+
     if ( ifaceProbe_->loadOperation( pick_, operationData_ ) ) {
         eventPipe_.push( FaultEvent );
     }
     
+    display_.showNetworkActivity( false );
+
     display_.showOperationData( operationData_ );
 }
 

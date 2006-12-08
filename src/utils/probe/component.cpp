@@ -142,7 +142,7 @@ Component::start()
 void 
 Component::stop()
 {
-    // this component cannot quit nicely
+    // this component cannot quit nicely because display drivers are using the main thread
 }
 
 } // namespace

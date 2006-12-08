@@ -12,17 +12,7 @@
 #include <map>
 #include <cmath>        // for floor()
 
-#include <QTreeView>
-#include <QSplitter>
-#include <QHeaderView>
-#include <QStatusBar>
-#include <QMenu>
-#include <QMenuBar>
-#include <QToolBar>
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QStringList>
-#include <QTimer>
+#include <QtGui>
 
 #include <orcaqcm/ocmdelegate.h>
 #include <orcaqcm/orcaicons.h>
