@@ -5,7 +5,7 @@
 #
 #
 
-DOXYGENCMD=/usr/local/bin/doxygen
+DOXYGENCMD=/usr/local/bin/doxyorca
 HTDOCS=/home/groups/o/or/orca-robotics/htdocs
 PROJDIR=$HOME/cvs/docversion/orca2
 TARBALL=orca-cvs-doc.tar.gz

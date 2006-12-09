@@ -14,11 +14,13 @@ force () {
     fi
 }
 
-force ls
-force doxygen orca.doxyfile
-force cd html
-force tar --exclude=CVS --exclude=doc.tgz -zcvf doc.tgz *
-force scp doc.tgz shell.sourceforge.net:
+TARBALL=orca-release-doc.tar.gz
 
-ssh shell.sourceforge.net "cd /home/groups/o/or/orca-robotics/htdocs/; mv ~/doc.tgz .; tar -zxvf doc.tgz; rm doc.tgz; chmod -R g+w *"
+force ls
+force doxyorca orca.doxyfile
+force cd html
+force tar --exclude=CVS --exclude=$TARBALL -zcvf $TARBALL *
+force scp $TARBALL shell.sourceforge.net:
+
+ssh shell.sourceforge.net "cd /home/groups/o/or/orca-robotics/htdocs/; mv ~/$TARBALL .; tar -zxvf $TARBALL; chmod -R g+w *"
 
