@@ -59,6 +59,8 @@ HomeProbe::loadGetInterfaces( orcacm::OperationData & data )
     cout<<"Calling operation orca::Home::getInterfaces()..."<<endl;
 
     orca::HomeDataPtr result;
+    data.results.clear();
+    orcacm::ResultHeader res;
     
     try
     {
@@ -70,11 +72,15 @@ HomeProbe::loadGetInterfaces( orcacm::OperationData & data )
     {
         stringstream ss;
         ss << e;
-        data.result = ss.str();
+        res.name = "exception";
+        res.text = ss.str();
+        data.results.push_back( res );
         return 1;
     }
 
-    data.result = orcaice::toString(result);
+    res.name = "data";
+    res.text = orcaice::toString(result);
+    data.results.push_back( res );
     return 0;
 }
 
@@ -84,6 +90,8 @@ HomeProbe::loadGetProperties( orcacm::OperationData & data )
     cout<<"Calling operation orca::Home::getProperties()..."<<endl;
 
     std::map<std::string,std::string> result;
+    data.results.clear();
+    orcacm::ResultHeader res;
     
     try
     {
@@ -95,7 +103,9 @@ HomeProbe::loadGetProperties( orcacm::OperationData & data )
     {
         stringstream ss;
         ss << e;
-        data.result = ss.str();
+        res.name = "exception";
+        res.text = ss.str();
+        data.results.push_back( res );
         return 1;
     }
 
@@ -103,7 +113,9 @@ HomeProbe::loadGetProperties( orcacm::OperationData & data )
     for ( map<string,string>::iterator it=result.begin(); it!=result.end(); ++it ) {
         ss<<setw(40)<<it->first<<"\t\t"<<it->second<<endl;
     }
-    data.result = ss.str();
+    res.name = "data";
+    res.text = ss.str();
+    data.results.push_back( res );
 
     return 0;
 }

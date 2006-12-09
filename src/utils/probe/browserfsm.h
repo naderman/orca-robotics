@@ -82,6 +82,18 @@ public:
     virtual void pick(BrowserFsm&);
 };
 
+class BrowserFsmPlatformState : public BrowserFsmState 
+{
+public:
+    virtual const char* StateName() const
+        {return("Platform");};
+    virtual void deactivate(BrowserFsm&);
+    virtual void fault(BrowserFsm&);
+    virtual void up(BrowserFsm&);
+    virtual void reload(BrowserFsm&);
+    virtual void pick(BrowserFsm&);
+};
+
 class BrowserFsmRegistryState : public BrowserFsmState 
 {
 public:
@@ -109,6 +121,7 @@ class BrowserFsm
     friend class BrowserFsmOperationState;
     friend class BrowserFsmInterfaceState;
     friend class BrowserFsmComponentState;
+    friend class BrowserFsmPlatformState;
     friend class BrowserFsmRegistryState;
     friend class BrowserFsmIdleState;
 
@@ -131,12 +144,19 @@ protected:
     // Implement these actions in the derived class
     virtual void pickLastOperation() = 0;
     virtual void pickLastInterface() = 0;
+    virtual void showOperation() = 0;
     virtual void loadOperation() = 0;
     virtual void pickLastComponent() = 0;
+    virtual void showInterface() = 0;
     virtual void loadInterface() = 0;
+    virtual void pickLastPlatform() = 0;
+    virtual void showComponent() = 0;
+    virtual void loadComponent() = 0;
     virtual void quit() = 0;
     virtual void filterRegistry() = 0;
-    virtual void loadComponent() = 0;
+    virtual void showPlatform() = 0;
+    virtual void loadPlatform() = 0;
+    virtual void showRegistry() = 0;
     virtual void loadRegistry() = 0;
 
     // Overwrite the base implementation if needed.
@@ -151,6 +171,7 @@ private:
     static BrowserFsmOperationState OperationState;
     static BrowserFsmInterfaceState InterfaceState;
     static BrowserFsmComponentState ComponentState;
+    static BrowserFsmPlatformState PlatformState;
     static BrowserFsmRegistryState RegistryState;
     static BrowserFsmIdleState IdleState;
 };

@@ -6,39 +6,47 @@ Header  browsercontext.h
 {
 
 Idle{
-    activate    Registry    loadRegistry
+    activate    Registry    {loadRegistry showRegistry}
 }
 
 Registry{
-    pick    Component   loadComponent
-    reload  Registry    loadRegistry
-    filter  Registry    filterRegistry
-    fault   Idle        quit
-    deactivate    Idle        quit
+    pick        Platform    {loadPlatform showPlatform}
+    reload      Registry    {loadRegistry showRegistry}
+    filter      Registry    {filterRegistry showRegistry}
+    fault       Idle        quit
+    deactivate  Idle        quit
+}
+
+Platform{
+    pick        Component   {loadComponent showComponent}
+    reload      Platform    {pickLastPlatform loadPlatform showPlatform}
+    up          Registry    showRegistry
+    fault       Registry    showRegistry
+    deactivate  Idle        quit
 }
 
 Component{
-    pick    Interface   loadInterface
-    reload  Component   {pickLastComponent loadComponent}
-    up      Registry    loadRegistry
-    fault   Registry    loadRegistry
-    deactivate    Idle        quit
+    pick        Interface   {loadInterface showInterface}
+    reload      Component   {pickLastComponent loadComponent showComponent}
+    up          Platform    showPlatform
+    fault       Platform    showPlatform
+    deactivate  Idle        quit
 }
 
 Interface{
-    pick    Operation   loadOperation
-    reload  Interface   {pickLastInterface loadInterface}
-    up      Component   {pickLastComponent loadComponent}
-    top     Registry    loadRegistry
-    fault   Component   {pickLastComponent loadComponent}
-    deactivate    Idle        quit
+    pick        Operation   {loadOperation showOperation}
+    reload      Interface   {pickLastInterface loadInterface showInterface}
+    up          Component   showComponent
+    top         Registry    loadRegistry
+    fault       Component   showComponent
+    deactivate  Idle        quit
 }
 
 Operation{
-    reload  Operation   {pickLastOperation loadOperation}
-    up      Interface   {pickLastInterface loadInterface}
-    top     Registry    loadRegistry
-    fault   Interface   {pickLastInterface loadInterface}
-    deactivate    Idle        quit
+    reload      Operation   {pickLastOperation loadOperation showOperation}
+    up          Interface   showInterface
+    top         Registry    showRegistry
+    fault       Interface   showInterface
+    deactivate  Idle        quit
 }
 }

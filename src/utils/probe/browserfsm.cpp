@@ -29,6 +29,7 @@
 BrowserFsmOperationState BrowserFsm::OperationState;
 BrowserFsmInterfaceState BrowserFsm::InterfaceState;
 BrowserFsmComponentState BrowserFsm::ComponentState;
+BrowserFsmPlatformState BrowserFsm::PlatformState;
 BrowserFsmRegistryState BrowserFsm::RegistryState;
 BrowserFsmIdleState BrowserFsm::IdleState;
 
@@ -83,25 +84,24 @@ void BrowserFsmOperationState::deactivate(BrowserFsm& s) {
 void BrowserFsmOperationState::fault(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.SetState(BrowserFsm::InterfaceState);
-    s.pickLastInterface();
-    s.loadInterface();
+    s.showInterface();
 }
 void BrowserFsmOperationState::top(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.SetState(BrowserFsm::RegistryState);
-    s.loadRegistry();
+    s.showRegistry();
 }
 void BrowserFsmOperationState::up(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.SetState(BrowserFsm::InterfaceState);
-    s.pickLastInterface();
-    s.loadInterface();
+    s.showInterface();
 }
 void BrowserFsmOperationState::reload(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.SetState(BrowserFsm::OperationState);
     s.pickLastOperation();
     s.loadOperation();
+    s.showOperation();
 }
 void BrowserFsmInterfaceState::deactivate(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
@@ -111,8 +111,7 @@ void BrowserFsmInterfaceState::deactivate(BrowserFsm& s) {
 void BrowserFsmInterfaceState::fault(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.SetState(BrowserFsm::ComponentState);
-    s.pickLastComponent();
-    s.loadComponent();
+    s.showComponent();
 }
 void BrowserFsmInterfaceState::top(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
@@ -122,19 +121,20 @@ void BrowserFsmInterfaceState::top(BrowserFsm& s) {
 void BrowserFsmInterfaceState::up(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.SetState(BrowserFsm::ComponentState);
-    s.pickLastComponent();
-    s.loadComponent();
+    s.showComponent();
 }
 void BrowserFsmInterfaceState::reload(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.SetState(BrowserFsm::InterfaceState);
     s.pickLastInterface();
     s.loadInterface();
+    s.showInterface();
 }
 void BrowserFsmInterfaceState::pick(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.SetState(BrowserFsm::OperationState);
     s.loadOperation();
+    s.showOperation();
 }
 void BrowserFsmComponentState::deactivate(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
@@ -143,24 +143,54 @@ void BrowserFsmComponentState::deactivate(BrowserFsm& s) {
 }
 void BrowserFsmComponentState::fault(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
-    s.SetState(BrowserFsm::RegistryState);
-    s.loadRegistry();
+    s.SetState(BrowserFsm::PlatformState);
+    s.showPlatform();
 }
 void BrowserFsmComponentState::up(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
-    s.SetState(BrowserFsm::RegistryState);
-    s.loadRegistry();
+    s.SetState(BrowserFsm::PlatformState);
+    s.showPlatform();
 }
 void BrowserFsmComponentState::reload(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.SetState(BrowserFsm::ComponentState);
     s.pickLastComponent();
     s.loadComponent();
+    s.showComponent();
 }
 void BrowserFsmComponentState::pick(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.SetState(BrowserFsm::InterfaceState);
     s.loadInterface();
+    s.showInterface();
+}
+void BrowserFsmPlatformState::deactivate(BrowserFsm& s) {
+    IceUtil::Mutex::Lock lock(s.mutex_);
+    s.SetState(BrowserFsm::IdleState);
+    s.quit();
+}
+void BrowserFsmPlatformState::fault(BrowserFsm& s) {
+    IceUtil::Mutex::Lock lock(s.mutex_);
+    s.SetState(BrowserFsm::RegistryState);
+    s.showRegistry();
+}
+void BrowserFsmPlatformState::up(BrowserFsm& s) {
+    IceUtil::Mutex::Lock lock(s.mutex_);
+    s.SetState(BrowserFsm::RegistryState);
+    s.showRegistry();
+}
+void BrowserFsmPlatformState::reload(BrowserFsm& s) {
+    IceUtil::Mutex::Lock lock(s.mutex_);
+    s.SetState(BrowserFsm::PlatformState);
+    s.pickLastPlatform();
+    s.loadPlatform();
+    s.showPlatform();
+}
+void BrowserFsmPlatformState::pick(BrowserFsm& s) {
+    IceUtil::Mutex::Lock lock(s.mutex_);
+    s.SetState(BrowserFsm::ComponentState);
+    s.loadComponent();
+    s.showComponent();
 }
 void BrowserFsmRegistryState::deactivate(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
@@ -176,21 +206,25 @@ void BrowserFsmRegistryState::filter(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.SetState(BrowserFsm::RegistryState);
     s.filterRegistry();
+    s.showRegistry();
 }
 void BrowserFsmRegistryState::reload(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.SetState(BrowserFsm::RegistryState);
     s.loadRegistry();
+    s.showRegistry();
 }
 void BrowserFsmRegistryState::pick(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
-    s.SetState(BrowserFsm::ComponentState);
-    s.loadComponent();
+    s.SetState(BrowserFsm::PlatformState);
+    s.loadPlatform();
+    s.showPlatform();
 }
 void BrowserFsmIdleState::activate(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.SetState(BrowserFsm::RegistryState);
     s.loadRegistry();
+    s.showRegistry();
 }
 
 // Base implementation of error handler

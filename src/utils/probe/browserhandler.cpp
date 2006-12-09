@@ -98,7 +98,7 @@ BrowserHandler::run()
         {
         // approx in order of call frequency
         case PickEvent :
-            //cout<<"pick event"<<endl;
+            cout<<"pick event"<<endl;
             pick();
             break;
         case UpEvent :
@@ -145,12 +145,18 @@ BrowserHandler::loadRegistry()
     // remote call!
     //
     display_.showNetworkActivity( true );
-//     registryData_ = orcacm::getRegistryData( context_, context_.communicator()->getDefaultLocator()->ice_toString() );
-    registryData_ = orcacm::getRegistryHomeData( context_, context_.communicator()->getDefaultLocator()->ice_toString() );
-
+    registryHomeData_ = orcacm::getRegistryHomeData( context_, context_.communicator()->getDefaultLocator()->ice_toString() );
     display_.showNetworkActivity( false );
 
-    display_.showRegistryData( registryData_ );
+    registryData_ = orcacm::home2hierarch1( registryHomeData_ );
+
+    display_.setRegistryData( registryData_ );
+}
+
+void 
+BrowserHandler::showRegistry()
+{
+    display_.showRegistry();
 }
 
 void 
@@ -159,27 +165,50 @@ BrowserHandler::filterRegistry()
     cout<<"filtering registry data for :"<<context_.communicator()->getDefaultLocator()->ice_toString()<<endl;
 
     // simply call showRegistryData() again. the driver will filter it.
-    display_.showRegistryData( registryData_ );
+    display_.setRegistryData( registryData_ );
+}
+
+void 
+BrowserHandler::loadPlatform()
+{
+    cout<<"loading platform data for "<<registryData_.platforms[pick_].name<<endl;
+    lastPlatformPick_ = pick_;
+    
+    platformData_ = orcacm::home2hierarch2( registryHomeData_, registryData_.platforms[pick_] );
+
+    display_.setPlatformData( platformData_ );
+}
+
+void 
+BrowserHandler::showPlatform()
+{
+    display_.showPlatform();
 }
 
 void 
 BrowserHandler::loadComponent()
 {
-    //cout<<"loading component data for "<<orcaice::toString(registryData_.adapters[pick_].name)<<endl;
+    cout<<"loading component data for "<<endl; //<<orcaice::toString(platformData_.homes[pick_].name)<<endl;
     lastComponentPick_ = pick_;
     
     //
     // remote call!
     //
     display_.showNetworkActivity( true );
-
-//     componentData_ = orcacm::getComponentData( context_,
-//                         orcaice::toString(registryData_.adapters[pick_].name) );
-    componentData_ = orcacm::getComponentHomeData( context_, registryData_.homes[pick_].proxy );
-
+    componentData_ = orcacm::getComponentHomeData( context_, platformData_.homes[pick_].proxy );
     display_.showNetworkActivity( false );
 
-    display_.showComponentData( componentData_ );
+    // todo: this is a bit ugly
+    componentData_.locatorString = platformData_.locatorString;
+
+    cout<<"DEBUG: got a list of "<<componentData_.provides.size()<<" provided interfaces for "<<orcaice::toString(componentData_.name)<<endl;
+    display_.setComponentData( componentData_ );
+}
+
+void 
+BrowserHandler::showComponent()
+{
+    display_.showComponent();
 }
 
 void 
@@ -191,9 +220,10 @@ BrowserHandler::loadInterface()
         delete ifaceProbe_;
     }
 
-    //cout<<"loading interface data for "<<componentData_.provides[pick_].name<<endl;
+    cout<<"loading interface data for "<<componentData_.provides[pick_].name<<endl;
     lastInterfacePick_ = pick_;
 
+    interfaceData_.locatorString = componentData_.locatorString;
     interfaceData_.name.platform = componentData_.name.platform;
     interfaceData_.name.component = componentData_.name.component;
     interfaceData_.name.iface = componentData_.provides[pick_].name;
@@ -221,7 +251,13 @@ BrowserHandler::loadInterface()
     // local call
     interfaceData_.operations = ifaceProbe_->operations();
 
-    display_.showInterfaceData( interfaceData_ );
+    display_.setInterfaceData( interfaceData_ );
+}
+
+void 
+BrowserHandler::showInterface()
+{
+    display_.showInterface();
 }
 
 void 
@@ -234,14 +270,21 @@ BrowserHandler::loadOperation()
     // remote call!
     //
     display_.showNetworkActivity( true );
-
     if ( ifaceProbe_->loadOperation( pick_, operationData_ ) ) {
         eventPipe_.push( FaultEvent );
     }
-    
     display_.showNetworkActivity( false );
 
-    display_.showOperationData( operationData_ );
+    // todo: this is a bit ugly
+    operationData_.locatorString = interfaceData_.locatorString;
+
+    display_.setOperationData( operationData_ );
+}
+
+void 
+BrowserHandler::showOperation()
+{
+    display_.showOperation();
 }
 
 void 

@@ -42,7 +42,7 @@ pingComponent( const orcaice::Context & context, const std::string & adapterId )
  *  registered adapter. Otherwise it doesn't and the @p isReachable field for
  *  each adapter is set to FALSE;
  */
-RegistryData
+RegistryFlatData
 getRegistryData( const orcaice::Context & context, const std::string & locatorString, bool tryToPing=true );
 
 /*!
@@ -93,6 +93,12 @@ getProvidesHeader( const orcaice::Context & context, const orca::FQInterfaceName
  */
 RequiresHeader
 getRequiresHeader( const orcaice::Context & context, const orca::FQInterfaceName & fqName );
+
+RegistryHierarchicalData1
+home2hierarch1( const RegistryHomeData & registryHomeData );
+
+RegistryHierarchicalData2
+home2hierarch2( const RegistryHomeData & registryHomeData, const PlatformHeader & platform );
 
 //@}
 } // namespace

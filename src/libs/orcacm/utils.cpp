@@ -44,10 +44,10 @@ pingComponent( const orcaice::Context & context, const std::string & adapterId )
     return true;
 }
 
-RegistryData
+RegistryFlatData
 getRegistryData( const orcaice::Context & context, const std::string & locatorString, bool tryToPing )
 {
-    RegistryData data;
+    RegistryFlatData data;
     
     data.locatorString = locatorString;
     
@@ -334,6 +334,70 @@ getRequiresHeader( const orcaice::Context & context, const orca::FQInterfaceName
         header.id = "unknown";
     }
     return header;
+}
+
+RegistryHierarchicalData1
+home2hierarch1( const RegistryHomeData & registryHomeData )
+{
+    RegistryHierarchicalData1 hierData;
+    
+    hierData.locatorString = registryHomeData.locatorString;
+    hierData.address = registryHomeData.address;
+    hierData.isReachable = registryHomeData.isReachable;
+
+    std::string adapt;
+    orca::FQComponentName compName;
+    PlatformHeader platformHeader;
+    bool isDuplicate;
+    for ( unsigned int i=0; i<registryHomeData.homes.size(); ++i ) {
+        isDuplicate = false;
+        // local call
+        adapt = registryHomeData.homes[i].proxy->ice_getAdapterId();
+        compName = orcaice::toComponentName( adapt );
+        
+        // eliminate duplicates
+        for ( unsigned int j=0; j<hierData.platforms.size(); ++j ) {
+//             cout<<"DEBUG: new="<<compName.platform<<" exist="<<hierData.platforms[j].name<<endl;
+            if ( compName.platform == hierData.platforms[j].name ) {
+                isDuplicate = true;
+                break;
+            }
+        }
+        if ( !isDuplicate ) {
+            platformHeader.name = compName.platform;
+            hierData.platforms.push_back( platformHeader );
+        }
+    }
+//     cout<<"DEBUG: processed "<<registryHomeData.homes.size()<<" homes into "<<hierData.platforms.size()<<" platforms"<<endl;
+    return hierData;
+}
+
+RegistryHierarchicalData2
+home2hierarch2( const RegistryHomeData & registryHomeData, const PlatformHeader & platform )
+{
+    RegistryHierarchicalData2 hierData;
+
+    hierData.locatorString = registryHomeData.locatorString;
+    hierData.address = registryHomeData.address;
+    hierData.isReachable = registryHomeData.isReachable;
+    hierData.platform = platform;
+
+    std::string adapt;
+    orca::FQComponentName compName;
+    HomeHeader homeHeader;
+    for ( unsigned int i=0; i<registryHomeData.homes.size(); ++i ) {
+        // local call
+        adapt = registryHomeData.homes[i].proxy->ice_getAdapterId();
+        compName = orcaice::toComponentName( adapt );
+        
+        // select home headers on the given platform
+        if ( compName.platform == platform.name ) {
+            hierData.homes.push_back( registryHomeData.homes[i] );
+        }
+    }
+    cout<<"DEBUG: filtered "<<registryHomeData.homes.size()<<" homes into "<<hierData.homes.size()<<" on platform "<<hierData.platform.name<<endl;
+ 
+    return hierData;
 }
 
 } // namespace

@@ -35,7 +35,7 @@ GetComponentsCall::execute()
     bool pingAdapters = false;
 
     // this function talks to the Registry
-//     orcacm::RegistryData regData = orcacm::getRegistryData( context_, locatorString_, pingAdapters );
+//     orcacm::RegistryFlatData regData = orcacm::getRegistryData( context_, locatorString_, pingAdapters );
     orcacm::RegistryHomeData regData = orcacm::getRegistryHomeData( context_, locatorString_, pingAdapters );
 
     if ( !regData.isReachable ) {

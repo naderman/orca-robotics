@@ -51,6 +51,8 @@ OcmIconProvider::icon(IconType type) const
         return required;
     case Operation:
         return operation;
+    case Result:
+        return result;
     default:
         break;
     };
@@ -113,9 +115,22 @@ OcmModel::index(int row, int column, const QModelIndex &parent) const
         //cout<<"index: looking for "<<row<<","<<column<<" of "<<cn->name.toStdString()<<endl;
         return createIndex( row, column, (void*)&(N->interfaces.at(row)) );
     }
-    // to avoid warning about InterfaceType
-    default :
+    case InterfaceType :
+    {
+        InterfaceNode* N = (InterfaceNode*)n;
+        //cout<<"index: looking for "<<row<<","<<column<<" of "<<cn->name.toStdString()<<endl;
+        return createIndex( row, column, (void*)&(N->operations.at(row)) );
+    }
+    case OperationType :
+    {
+        OperationNode* N = (OperationNode*)n;
+        return createIndex( row, column, (void*)&(N->results.at(row)) );
+    }
+    case ResultType :
+    {
+        cout<<"*********** index() for ResultType should not be called! *********"<<endl;
         return QModelIndex();
+    }
     } // type
     return QModelIndex();
 }
@@ -168,10 +183,22 @@ OcmModel::parent(const QModelIndex &child) const
     }
     case OperationType :
     {
-        return QModelIndex();
+        // parent is an interface
+        OperationNode* me = (OperationNode*)n;      // me
+        InterfaceNode* pa = me->interface;          // parent
+        ComponentNode* gp = pa->component;          // grandparent
+        return createIndex( gp->interfaces.indexOf(*pa), 0, pa );
+    }
+    case ResultType :
+    {
+        // parent is an interface
+        ResultNode* me = (ResultNode*)n;            // me
+        OperationNode* pa = me->operation;          // parent
+        InterfaceNode* gp = pa->interface;          // grandparent
+        return createIndex( gp->operations.indexOf(*pa), 0, pa );
     }
     } // end switch
-    //cout<<"warning: unknown node type in parent()"<<endl;
+    cout<<"warning: unknown node type in parent()"<<endl;
     return QModelIndex();
 }
 
@@ -206,10 +233,17 @@ OcmModel::hasChildren(const QModelIndex &parent) const
     }
     case InterfaceType :
     {
-        // no children
-        return false;
+        InterfaceNode* N = (InterfaceNode*)n;
+        //cout<<"hasChildren: for "<<cn->name.toStdString()<<": "<<!cn->interfaces.isEmpty()<<endl;
+        return !N->operations.isEmpty();
     }
     case OperationType :
+    {
+        OperationNode* N = (OperationNode*)n;
+        //cout<<"hasChildren: for "<<cn->name.toStdString()<<": "<<!cn->interfaces.isEmpty()<<endl;
+        return !N->results.isEmpty();
+    }
+    case ResultType :
     {
         // no children
         return false;
@@ -248,10 +282,15 @@ OcmModel::rowCount(const QModelIndex &parent) const
     }
     case InterfaceType :
     {
-        // no children
-        return 0;
+        InterfaceNode* N = (InterfaceNode*)n;
+        return N->operations.size();
     }
     case OperationType :
+    {
+        OperationNode* N = (OperationNode*)n;
+        return N->results.size();
+    }
+    case ResultType :
     {
         // no children
         return 0;
@@ -366,6 +405,20 @@ OcmModel::data(const QModelIndex &idx, int role) const
             switch ( idx.column() ) {
             case 0 :
                 return N->name;
+            case 1 :
+            case 2 :
+            case 3 :
+                return QVariant();
+            }
+        }
+        case ResultType :
+        {
+            ResultNode* N = (ResultNode*)n;
+            switch ( idx.column() ) {
+            case 0 :
+                return N->result;
+            case 1 :
+            case 2 :
             case 3 :
                 return QVariant();
             }
@@ -393,6 +446,8 @@ OcmModel::data(const QModelIndex &idx, int role) const
         }
         case OperationType :
             return iconProvider_.icon( OcmIconProvider::Operation );
+        case ResultType :
+            return iconProvider_.icon( OcmIconProvider::Result );
         } // type
         //cout<<"warning: unknown node type in data() : "<<n->type()<<" (r,c)=("<<idx.row()<<","<<idx.column()<<")"<<endl;
     } // role
@@ -410,6 +465,8 @@ OcmModel::data(const QModelIndex &idx, int role) const
             return "Interface";
         case OperationType :
             return "Operation";
+        case ResultType :
+            return "Result";
         default :
             return QVariant();
         }
@@ -451,6 +508,10 @@ OcmModel::data(const QModelIndex &idx, int role) const
             OperationNode* N = (OperationNode*)n;
             // regardless of the column
             return ( int(N->interface->isConnected));
+        }
+        case ResultType :
+        {
+            return true;
         }
         default :
             return 1;
@@ -505,48 +566,12 @@ OcmModel::clear()
 }
 
 QModelIndex 
-OcmModel::registryIndex( const QString & registry ) const
+OcmModel::registryIndex( const QString & registry, bool create )
 {
-    // find our registry or make a new one
-    RegistryNode rn( registry, "", true );
-    // this will return an invalid index if the registry is not found
-    return index(registries_.indexOf( rn ),0,QModelIndex());
-}
-
-QModelIndex 
-OcmModel::platformIndex( const QString & registry, const QString &platform ) const
-{
-    return QModelIndex();
-}
-  
-QModelIndex 
-OcmModel::componentIndex( const QString & registry, const QString & platform, const QString & component ) const
-{
-    return QModelIndex();
-}
-
-QModelIndex 
-OcmModel::interfaceIndex( const QString & registry, const QString & platform, const QString & component,
-                    const QString & interface ) const
-{
-    return QModelIndex();
-}
-
-QModelIndex 
-OcmModel::operationIndex( const QString & registry, const QString & platform, const QString & component, 
-                    const QString & interface, const QString & operation )
-{
-    return QModelIndex();
-}
-
-// Returns the model index of the registry with specified name.
-QModelIndex
-OcmModel::setRegistryPrivate( const QString &registry, const QString & regAddress, bool connected )
-{
-    // find our registry or make a new one
-    RegistryNode rn( registry, regAddress, connected );
+    RegistryNode rn(registry);
     int ri = registries_.indexOf( rn );
-    if ( ri==-1 ) {
+
+    if ( ri==-1 && create ) {
         // the registry is not in the model yet, so create a new one
         ri = registries_.size();
 
@@ -554,142 +579,262 @@ OcmModel::setRegistryPrivate( const QString &registry, const QString & regAddres
         beginInsertRows( QModelIndex(), ri,ri );
         registries_.append( rn );
         endInsertRows();
-        
-        // @todo sort the list alphabetically, not easy because it will break parent links
-        registries_[ri].isConnected = connected;
-        //cout<<"created a platform node "<<pi<<endl;
+        cout<<"DEBUG: created registry "<<registry.toStdString()<<endl;
     }
-    else {
-        //cout<<"found existing registry "<<ri<<" "<<name.toStdString()<<endl;
-        //registries_[ri].isConnected = connected;
-        //emit dataChanged( index(ri,0,QModelIndex()), index(ri,0,QModelIndex()) );
-    }
-    return index(ri,0,QModelIndex());
+    return index( ri, 0, QModelIndex() );
 }
 
-// Returns the index of the platform with specified name.
-QModelIndex
-OcmModel::setPlatformPrivate( const QString & registry,
-                const QString & platform )
+// Returns the model index of the registry with specified name.
+void
+OcmModel::setRegistry( const QString &registry, const QString & regAddress, bool connected )
 {
-    // this will find our registry
-    QModelIndex rindex = registryIndex( registry );
-    // failed to find
-    if ( !rindex.isValid() ) {
-        return QModelIndex();
-    }
-    RegistryNode* r = static_cast<RegistryNode*>(rindex.internalPointer());
-    
-    // find our platform or make a new one
-    PlatformNode pn( platform, r );
-    int pi = r->platforms.indexOf( pn );
-    if ( pi==-1 ) {
-        // the platform is not in the model yet, so create a new one
-        pi = r->platforms.size();
+    QModelIndex ind = registryIndex( registry, true );
 
-        //cout<<endl<<"about to insert platform "<<platform.toStdString()<<" at "<<pi<<endl;
-        beginInsertRows( rindex, pi,pi );
-        r->platforms.append( pn );
-        endInsertRows();
-        
-        // @todo sort the list alphabetically, not easy because it will break parent links
-        //cout<<"created a platform node "<<pi<<endl;
+    if ( ind.isValid() ) 
+    {
+        RegistryNode* node = static_cast<RegistryNode*>(ind.internalPointer());
+        node->address       = regAddress;
+        node->isConnected   = connected;
+        emit dataChanged( ind,ind );
     }
-    else {
-        //cout<<"found existing platform "<<pi<<" "<<name.toStdString()<<endl;
-        //emit dataChanged(index( pi,0,rindex ), index( pi,columnCount(QModelIndex()),rindex ));
-    }
-    return index(pi,0,rindex);
-}
-
-QModelIndex
-OcmModel::setComponentPrivate( const QString & registry, const QString & platform, 
-            const QString & component, const QString & compAddress, bool connected, int timeUp )
-{
-    cout<<"adding reg="<<registry.toStdString()<<" ptf="<<platform.toStdString()
-        <<" cmp="<<component.toStdString()<<" caddr="<<compAddress.toStdString()
-        <<" con="<<connected<<" time="<<timeUp<<endl;
-    // this will find our platform
-    QModelIndex pindex = platformIndex( registry, platform );
-    // failed to find
-    if ( !pindex.isValid() ) {
-        return QModelIndex();
-    }
-    PlatformNode* p = static_cast<PlatformNode*>(pindex.internalPointer());
-    
-    // find our component or make a new one
-    ComponentNode cn( component, p, compAddress, connected, timeUp );
-    int ci = p->components.indexOf( cn );
-    if ( ci==-1 ) {
-        ci = p->components.size();
-    
-        //cout<<endl<<"about to insert component "<<component.toStdString()<<" at "<<ci<<endl;
-        beginInsertRows( pindex, ci,ci );
-        p->components.append( cn );
-        endInsertRows();
-        
-        //! @todo sort the list alphabetically, not easy because it will break parent links
-        //cout<<"created a component node "<<ci<<" at platform "<<pi<<endl;        
-    }
-    else {
-        // don't create new one, just update attributes
-        //cout<<"using component node "<<ci<<" at platform "<<pi<<endl;
-        p->components[ci].isConnected = connected;
-        p->components[ci].daysUp = (int)floor( (double)timeUp / (24.0*60.0*60.0) );
-        QTime t;
-        p->components[ci].timeUp = t.addSecs( timeUp - p->components[ci].daysUp*24*60*60 );
-        
-        emit dataChanged(index( ci,0,pindex ), index( ci,columnCount(QModelIndex()),pindex ));
-    }
-    return index(ci,0,pindex);
-}
-
-QModelIndex
-OcmModel::setInterfacePrivate( const QString & registry, const QString & platform, const QString & component, 
-            const QString & interface, const bool isProvided, const QString & ids, bool isReachable )
-{
-    // this will find our platform
-    QModelIndex cindex = componentIndex( registry, platform, component );
-    // failed to find
-    if ( !cindex.isValid() ) {
-        return QModelIndex();
-    }
-    ComponentNode* c = static_cast<ComponentNode*>(cindex.internalPointer());    
-    
-    // find our interface or make a new one
-    InterfaceNode in( interface, c );
-    if ( isProvided ) {
-        in.subtype = ProvidedInterfaceSubtype;
-    }
-    else {
-        in.subtype = RequiredInterfaceSubtype;
-    }
-    in.ids = ids;
-    in.isConnected = isReachable;
-    
-    int ii = c->interfaces.indexOf( in );
-    if ( ii==-1 ) {    
-        ii = c->interfaces.size();
-        
-        beginInsertRows( cindex, ii,ii );
-        c->interfaces.append( in );
-        endInsertRows();
-        
-        // @todo sort the list alphabetically, not easy because it will break parent links
-        //cout<<"created an interface node "<<ii<<" for component "<<c->name.toStdString()<<
-        //        " ("<<c->interfaces.size()<<")"<<endl;                
-    }
-    else {
-        //cout<<"using interface node "<<ii<<" for component "<<c->name.toStdString()<<endl;
-    }
-    return index(ii,0,cindex);
 }
 
 QModelIndex 
-OcmModel::setOperationPrivate( const QString & registry, const QString & platform, const QString & component, const QString & interface, 
-            const QString & name, const QString & result )
+OcmModel::platformIndex( const QString & registry, const QString &platform, bool create )
 {
-    return QModelIndex();
+    QModelIndex rindex = registryIndex( registry, false );
+    // failed to find
+    if ( !rindex.isValid() ) {
+        cout<<"failed to find registry "<<registry.toStdString()<<endl;
+        return QModelIndex();
+    }
+    RegistryNode* rnode = static_cast<RegistryNode*>(rindex.internalPointer());
+    
+    PlatformNode pnode( platform, rnode );
+    int pi = rnode->platforms.indexOf( pnode );
+
+    if ( pi==-1 && create ) {
+        // the platform is not in the model yet, so create a new one
+        pi = rnode->platforms.size();
+
+        //cout<<endl<<"about to insert platform "<<platform.toStdString()<<" at "<<pi<<endl;
+        beginInsertRows( rindex, pi,pi );
+        rnode->platforms.append( pnode );
+        endInsertRows();
+        cout<<"DEBUG: created platform "<<platform.toStdString()<<endl;
+        
+        // @todo sort the list alphabetically, not easy because it will break parent links
+        //cout<<"created a platform node "<<pi<<endl;
+    }
+    return index( pi , 0, rindex );
+}
+
+void
+OcmModel::setPlatform( const QString & registry,
+                const QString & platform )
+{
+    QModelIndex ind = platformIndex( registry, platform, true );
+
+//     if ( ind.isValid() ) 
+//     {
+//         PlatformNode* node = static_cast<PlatformNode*>(ind.internalPointer());
+//         node->isConnected = connected;
+//         emit dataChanged( ind,ind );
+//     }
+}
+  
+QModelIndex 
+OcmModel::componentIndex( const QString & registry, const QString & platform, 
+                    const QString & component, bool create )
+{
+    // special case: can create platform because we have all the info
+    QModelIndex pindex = platformIndex( registry, platform, true );
+    // failed to find
+    if ( !pindex.isValid() ) {
+        cout<<"DEBUG: failed to find platform "<<platform.toStdString()<<endl;
+        return QModelIndex();
+    }
+    PlatformNode* pnode = static_cast<PlatformNode*>(pindex.internalPointer());
+    
+    ComponentNode cnode( component, pnode );
+    int ci = pnode->components.indexOf( cnode );
+
+    if ( ci==-1 && create ) {
+        ci = pnode->components.size();
+    
+        //cout<<endl<<"about to insert component "<<component.toStdString()<<" at "<<ci<<endl;
+        beginInsertRows( pindex, ci,ci );
+        pnode->components.append( cnode );
+        endInsertRows();
+        cout<<"DEBUG: created component "<<component.toStdString()<<endl;
+        
+//         @todo sort the list alphabetically, not easy because it will break parent links      
+    }
+    // this will return an invalid index if the platform is not found
+    return index( ci , 0, pindex );
+}
+
+void
+OcmModel::setComponent( const QString & registry, const QString & platform, 
+            const QString & component, const QString & compAddress, bool connected, int timeUp )
+{
+//     cout<<"adding reg="<<registry.toStdString()<<" ptf="<<platform.toStdString()
+//         <<" cmp="<<component.toStdString()<<" caddr="<<compAddress.toStdString()
+//         <<" con="<<connected<<" time="<<timeUp<<endl;
+
+    // this will find our platform
+    QModelIndex ind = componentIndex( registry, platform, component, true );
+
+    if ( ind.isValid() ) {
+        ComponentNode* node = static_cast<ComponentNode*>(ind.internalPointer());
+        node->isConnected = connected;
+        node->daysUp = (int)floor( (double)timeUp / (24.0*60.0*60.0) );
+        QTime t;
+        node->timeUp = t.addSecs( timeUp - node->daysUp*24*60*60 );
+        emit dataChanged( ind,ind );
+    }
+}
+
+QModelIndex 
+OcmModel::interfaceIndex( const QString & registry, const QString & platform, const QString & component,
+                    const QString & interface, bool create )
+{
+    QModelIndex cindex = componentIndex( registry, platform, component );
+    // failed to find
+    if ( !cindex.isValid() ) {
+        cout<<"DEBUG: failed to find component "<<component.toStdString()<<endl;
+        return QModelIndex();
+    }
+    ComponentNode* cnode = static_cast<ComponentNode*>(cindex.internalPointer());    
+    
+    // find our interface or make a new one
+    InterfaceNode inode( interface, cnode );
+    int ii = cnode->interfaces.indexOf( inode );
+
+    if ( ii==-1 && create ) {
+        ii = cnode->interfaces.size();
+        
+        beginInsertRows( cindex, ii,ii );
+        cnode->interfaces.append( inode );
+        endInsertRows();
+        cout<<"DEBUG: created interface "<<interface.toStdString()<<endl;
+        
+        // @todo sort the list alphabetically, not easy because it will break parent link
+    }
+
+    // this will return an invalid index if the platform is not found
+    return index( ii , 0, cindex );
+}
+
+void
+OcmModel::setInterface( const QString & registry, const QString & platform, const QString & component, 
+            const QString & interface, const bool isProvided, const QString & ids, bool isReachable )
+{
+    QModelIndex ind = interfaceIndex( registry, platform, component, interface, true );
+
+    if ( ind.isValid() ) {
+        InterfaceNode* node = static_cast<InterfaceNode*>(ind.internalPointer());
+        if ( isProvided ) {
+            node->subtype = ProvidedInterfaceSubtype;
+        }
+        else {
+            node->subtype = RequiredInterfaceSubtype;
+        }
+        node->ids = ids;
+        node->isConnected = isReachable;
+        emit dataChanged( ind,ind );
+    }
+}
+
+QModelIndex 
+OcmModel::operationIndex( const QString & registry, const QString & platform, const QString & component, 
+                    const QString & interface, const QString & operation, bool create )
+{
+    QModelIndex iindex = interfaceIndex( registry, platform, component, interface );
+    // failed to find
+    if ( !iindex.isValid() ) {
+        cout<<"DEBUG: failed to find interface "<<interface.toStdString()<<endl;
+        return QModelIndex();
+    }
+    InterfaceNode* inode = static_cast<InterfaceNode*>(iindex.internalPointer());    
+    
+    OperationNode onode( operation, inode );
+    int oi = inode->operations.indexOf( onode );
+
+    if ( oi==-1 && create ) {
+        oi = inode->operations.size();
+        
+        beginInsertRows( iindex, oi,oi );
+        inode->operations.append( onode );
+        endInsertRows();
+        cout<<"DEBUG: created operation "<<operation.toStdString()<<" ("<<oi<<")"<<endl;
+        
+        // @todo sort the list alphabetically, not easy because it will break parent link
+    }
+
+    // this will return an invalid index if the platform is not found
+    return index( oi, 0, iindex );
+}
+
+void 
+OcmModel::setOperation( const QString & registry, const QString & platform, const QString & component, const QString & interface, 
+            const QString & operation )
+{    
+    QModelIndex ind = operationIndex( registry, platform, component, interface, operation, true );
+
+//     if ( ind.isValid() ) {
+//         OperationNode* node = static_cast<OperationNode*>(ind.internalPointer());
+//         // nothing to add yet
+//         emit dataChanged( ind,ind );
+//     }
+}
+
+QModelIndex 
+OcmModel::resultIndex( const QString & registry, const QString & platform, const QString & component, 
+                    const QString & interface, const QString & operation, const QString & result, bool create )
+{
+    QModelIndex oindex = operationIndex( registry, platform, component, interface, operation );
+    // failed to find
+    if ( !oindex.isValid() ) {
+        cout<<"DEBUG: failed to find operation "<<operation.toStdString()<<endl;
+        cout<<"\treg="<<registry.toStdString()
+            <<" ptfm="<<platform.toStdString()
+            <<"\tcomp="<<component.toStdString()
+            <<"\tiface="<<interface.toStdString()
+            <<"\toper="<<operation.toStdString()<<endl;
+        return QModelIndex();
+    }
+    OperationNode* onode = static_cast<OperationNode*>(oindex.internalPointer());    
+    
+    ResultNode rnode( result, onode );
+    int ri = onode->results.indexOf( rnode );
+
+    if ( ri==-1 && create ) {
+        ri = onode->results.size();
+        
+        beginInsertRows( oindex, ri,ri );
+        onode->results.append( rnode );
+        endInsertRows();
+        cout<<"DEBUG: created result "<<result.toStdString()<<" ("<<ri<<")"<<endl;
+        
+        // @todo sort the list alphabetically, not easy because it will break parent link
+    }
+
+    // this will return an invalid index if the platform is not found
+    return index( ri, 0, oindex );
+}
+
+void 
+OcmModel::setResult( const QString & registry, const QString & platform, const QString & component, const QString & interface, 
+            const QString & operation, const QString & result, const QString & text )
+{    
+    QModelIndex ind = resultIndex( registry, platform, component, interface, operation, result, true );
+
+    if ( ind.isValid() ) {
+        ResultNode* node = static_cast<ResultNode*>(ind.internalPointer());
+        node->result = text;
+        emit dataChanged( ind,ind );
+    }
 }
 
 // OBSOLETE
@@ -700,7 +845,7 @@ OcmModel::setPlatformPrivate( const QString & registry, const QString & regAddre
                 const QString & platform )
 {
     // this will find our registry or make a new one
-    QModelIndex rindex = setRegistryPrivate( registry, regAddress, true );
+    QModelIndex rindex = registryIndex( registry, true );
 
     RegistryNode* r = static_cast<RegistryNode*>(rindex.internalPointer());
     
@@ -731,9 +876,9 @@ OcmModel::setComponentPrivate( const QString & registry, const QString & regAddr
                     const QString & platform, const QString & component,
                     const QString & compAddress, bool connected, int timeUp )
 {
-    cout<<"adding reg="<<registry.toStdString()<<" raddr="<<regAddress.toStdString()
-        <<" ptf="<<platform.toStdString()<<" cmp="<<component.toStdString()
-        <<" caddr="<<compAddress.toStdString()<<" con="<<connected<<" time="<<timeUp<<endl;
+//     cout<<"adding reg="<<registry.toStdString()<<" raddr="<<regAddress.toStdString()
+//         <<" ptf="<<platform.toStdString()<<" cmp="<<component.toStdString()
+//         <<" caddr="<<compAddress.toStdString()<<" con="<<connected<<" time="<<timeUp<<endl;
     // this will find our platform or make a new one
     QModelIndex pindex = setPlatformPrivate( registry, regAddress, platform );
     PlatformNode* p = static_cast<PlatformNode*>(pindex.internalPointer());

@@ -65,6 +65,8 @@ int
 LaserScanner2dProbe::loadGetData( orcacm::OperationData & data )
 {
     orca::RangeScanner2dDataPtr result;
+    data.results.clear();
+    orcacm::ResultHeader res;
     
     try
     {
@@ -75,12 +77,16 @@ LaserScanner2dProbe::loadGetData( orcacm::OperationData & data )
     {
         stringstream ss;
         ss << e;
-        data.result = ss.str();
+        res.name = "exception";
+        res.text = ss.str();
+        data.results.push_back( res );
         return 1;
     }
 
 //     cout<<orcaice::toString(result)<<endl;
-    data.result = orcaice::toString(result);
+    res.name = "data";
+    res.text = orcaice::toString(result);
+    data.results.push_back( res );
     return 0;
 }
 
@@ -88,6 +94,8 @@ int
 LaserScanner2dProbe::loadGetDescription( orcacm::OperationData & data )
 {
     orca::RangeScanner2dDescriptionPtr result;
+    data.results.clear();
+    orcacm::ResultHeader res;
     
     try
     {
@@ -98,12 +106,16 @@ LaserScanner2dProbe::loadGetDescription( orcacm::OperationData & data )
     {
         stringstream ss;
         ss << e;
-        data.result = ss.str();
+        res.name = "exception";
+        res.text = ss.str();
+        data.results.push_back( res );
         return 1;
     }
 
 //     cout<<orcaice::toString(result)<<endl;
-    data.result = orcaice::toString(result);
+    res.name = "data";
+    res.text = orcaice::toString(result);
+    data.results.push_back( res );
     return 0;
 }
 
@@ -114,6 +126,9 @@ LaserScanner2dProbe::loadSubscribe( orcacm::OperationData & data )
     orca::RangeScanner2dConsumerPrx callbackPrx = 
             orcaice::createConsumerInterface<orca::RangeScanner2dConsumerPrx>( context_, consumer );
 
+    data.results.clear();
+    orcacm::ResultHeader res;
+
     try
     {
         orca::LaserScanner2dPrx derivedPrx = orca::LaserScanner2dPrx::checkedCast(prx_);
@@ -123,11 +138,15 @@ LaserScanner2dProbe::loadSubscribe( orcacm::OperationData & data )
     {
         stringstream ss;
         ss << e;
-        data.result = ss.str();
+        res.name = "exception";
+        res.text = ss.str();
+        data.results.push_back( res );
         return 1;
     }
     
-    data.result = "Subscribed successfully";
+    res.name = "outcome";
+    res.text = "Subscribed successfully";
+    data.results.push_back( res );
     return 0;
 }
 
@@ -155,5 +174,6 @@ LaserScanner2dProbe::loadUnsubscribe( orcacm::OperationData & data )
 void 
 LaserScanner2dProbe::setData(const orca::RangeScanner2dDataPtr& data, const Ice::Current&)
 {
+    // how do we display this?
     std::cout << orcaice::toString(data) << std::endl;
 };

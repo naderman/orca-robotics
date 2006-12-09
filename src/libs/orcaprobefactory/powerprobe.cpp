@@ -60,6 +60,8 @@ int
 PowerProbe::loadGetData( orcacm::OperationData & data )
 {
     orca::PowerDataPtr result;
+    data.results.clear();
+    orcacm::ResultHeader res;
     
     try
     {
@@ -83,10 +85,14 @@ PowerProbe::loadGetData( orcacm::OperationData & data )
     }
 
     if ( result ) {
-        data.result = orcaice::toString(result);
+        res.name = "data";
+        res.text = orcaice::toString(result);
+        data.results.push_back( res );
     }
     else {
-        data.result = "received empty data";
+        res.name = "outcome";
+        res.text = "Received empty data";
+        data.results.push_back( res );
         return 1;
     }
     return 0;
@@ -99,6 +105,9 @@ PowerProbe::loadSubscribe( orcacm::OperationData & data )
     orca::PowerConsumerPrx callbackPrx =
             orcaice::createConsumerInterface<orca::PowerConsumerPrx>( context_, consumer );
 
+    data.results.clear();
+    orcacm::ResultHeader res;
+
     try
     {
         orca::PowerPrx derivedPrx = orca::PowerPrx::checkedCast(prx_);
@@ -108,11 +117,15 @@ PowerProbe::loadSubscribe( orcacm::OperationData & data )
     {
         stringstream ss;
         ss << e;
-        data.result = ss.str();
+        res.name = "exception";
+        res.text = ss.str();
+        data.results.push_back( res );
         return 1;
     }
     
-    data.result = "Subscribed successfully";
+    res.name = "outcome";
+    res.text = "Subscribed successfully";
+    data.results.push_back( res );
     return 0;
 }
 

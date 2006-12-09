@@ -57,10 +57,17 @@ private:
     // from BrowserFsm
     virtual void loadRegistry();
     virtual void filterRegistry();
+    virtual void showRegistry();
+    virtual void loadPlatform();
+    virtual void showPlatform();
     virtual void loadComponent();
+    virtual void showComponent();
     virtual void loadInterface();
+    virtual void showInterface();
     virtual void loadOperation();
+    virtual void showOperation();
     
+    virtual void pickLastPlatform()  { pick_=lastPlatformPick_;};
     virtual void pickLastComponent() { pick_=lastComponentPick_;};
     virtual void pickLastInterface() { pick_=lastInterfacePick_;};
     virtual void pickLastOperation() { pick_=lastOperationPick_;};
@@ -93,11 +100,15 @@ private:
 
     // user's last choice
     int pick_;
+    int lastPlatformPick_;
     int lastComponentPick_;
     int lastInterfacePick_;
     int lastOperationPick_;
 
-    orcacm::RegistryHomeData registryData_;
+    orcacm::RegistryHomeData registryHomeData_;
+
+    orcacm::RegistryHierarchicalData1 registryData_;
+    orcacm::RegistryHierarchicalData2 platformData_;
     orcacm::ComponentData componentData_;
     orcacm::InterfaceData interfaceData_;
     orcacm::OperationData operationData_;

@@ -23,7 +23,7 @@ class OcmIconProvider
 {
 public:
     OcmIconProvider();
-    enum IconType { Registry, Platform, Component, Provided, Required, Operation };
+    enum IconType { Registry, Platform, Component, Provided, Required, Operation, Result };
     QIcon icon(IconType type) const;
 
 private:
@@ -33,6 +33,7 @@ private:
     QIcon provided;
     QIcon required;
     QIcon operation;
+    QIcon result;
 };
 
 
@@ -65,37 +66,43 @@ public:
 
     // OcmModel specific API
     
-    QModelIndex registryIndex( const QString & registry ) const;
+    //! Find registry node by its name. If not found and create=TRUE, create a new one.
+    QModelIndex registryIndex( const QString & registry, bool create=false );
 
-    QModelIndex platformIndex( const QString & registry, const QString &platform ) const;
+    //! Find platform node by its name and the name of its registry. If not found and 
+    //! create=TRUE, create a new one.
+    QModelIndex platformIndex( const QString & registry, const QString &platform, bool create=false );
             
+    //! Find component node by its name, the name of its platform and its registry. If not found and 
+    //! create=TRUE, create a new one.
     QModelIndex componentIndex( const QString & registry, const QString & platform, 
-                        const QString & component ) const;
+                        const QString & component, bool create=false );
 
     QModelIndex interfaceIndex( const QString & registry, const QString & platform, 
-                        const QString & component, const QString & interface ) const;
+                        const QString & component, const QString & interface, bool create=false );
 
     QModelIndex operationIndex( const QString & registry, const QString & platform, const QString & component, 
-                       const QString & interface, const QString & operation );
+                       const QString & interface, const QString & operation, bool create=false );
 
-    void setRegistry( const QString & registry, const QString & regAddress, bool connected )
-            { setRegistryPrivate(registry, regAddress, connected); };
+    QModelIndex resultIndex( const QString & registry, const QString & platform, const QString & component, 
+                       const QString & interface, const QString & operation, const QString & result, bool create=false );
+
+    void setRegistry( const QString & registry, const QString & regAddress, bool connected );
 
     void setPlatform( const QString & registry, 
-                      const QString &platform )
-            { setPlatformPrivate( registry, platform ); };
+                      const QString &platform );
             
     void setComponent( const QString & registry, const QString & platform,
-                       const QString & component, const QString & compAddress, bool connected, int timeUp )
-            { setComponentPrivate( registry, platform, component, compAddress, connected, timeUp ); };
+                       const QString & component, const QString & compAddress, bool connected, int timeUp );
 
     void setInterface( const QString & registry, const QString & platform, const QString & component,
-                       const QString & interface, const bool isProvided, const QString & ids, bool isReachable )
-            { setInterfacePrivate( registry, platform, component, interface, isProvided, ids, isReachable ); };
+                       const QString & interface, const bool isProvided, const QString & ids, bool isReachable );
 
     void setOperation( const QString & registry, const QString & platform, const QString & component, const QString & interface, 
-                       const QString & name, const QString & result )
-            { setOperationPrivate( registry, platform, component, interface, name, result ); };
+                       const QString & operation );
+
+    void setResult( const QString & registry, const QString & platform, const QString & component, const QString & interface, 
+                       const QString & operation, const QString & result, const QString & text );
 
     // OBSOLETE OcmModel specific API
 
@@ -132,7 +139,8 @@ private:
         PlatformType,
         ComponentType,
         InterfaceType,
-        OperationType
+        OperationType,
+        ResultType
     };
 
     enum InterfaceSubtype
@@ -153,6 +161,23 @@ private:
     class ComponentNode;
     class InterfaceNode;
     class OperationNode;
+    class ResultNode;
+
+    class ResultNode : public Node
+    {
+    public:
+        ResultNode( const QString &n, OperationNode* o )
+            : name(n), operation(o) {};
+        // to be used in list search, name is sufficient
+        bool operator==( const ResultNode & other ) const
+        {
+            return name==other.name;
+        }
+        QString name;
+        OperationNode* operation;
+        QString result;
+        virtual NodeType type() { return ResultType; };
+    };
 
     class OperationNode : public Node
     {
@@ -166,6 +191,7 @@ private:
         }
         QString name;
         InterfaceNode* interface;
+        QList<ResultNode> results;
         virtual NodeType type() { return OperationType; };
     };
 
@@ -182,6 +208,8 @@ private:
         QString name;
         ComponentNode* component;
         InterfaceSubtype subtype;
+        // not very clean: only provided interfaces can have operations 
+        QList<OperationNode> operations;
         QString ids;
         bool isConnected;
         virtual NodeType type() { return InterfaceType; };
@@ -190,7 +218,8 @@ private:
     class ComponentNode : public Node
     {
     public:
-        ComponentNode( const QString &n, PlatformNode* p, const QString &a, bool connected, int t );
+        ComponentNode( const QString &n, PlatformNode* p, 
+            const QString &a="", bool connected=true, int t=0 );
         // to be used in list search, name is sufficient
         bool operator==( const ComponentNode & other ) const
         {
@@ -226,7 +255,7 @@ private:
     class RegistryNode : public Node
     {
     public:
-        RegistryNode( const QString &n, const QString &a, bool connected )
+        RegistryNode( const QString &n, const QString &a="", bool connected=true )
             : name(n), address(a), isConnected(connected) {};
         // to be used in list search, name is sufficient
         bool operator==( const RegistryNode & other ) const
@@ -246,21 +275,6 @@ private:
     QStringList headers_;
 
     OcmIconProvider iconProvider_;
-
-    
-    QModelIndex setRegistryPrivate( const QString & registry, const QString & regAddress, bool connected );
-    
-    QModelIndex setPlatformPrivate( const QString & registry,
-                const QString &platform );
-    
-    QModelIndex setComponentPrivate( const QString & registry, const QString & platform, 
-                const QString & component, const QString & compAddress, bool connected, int timeUp );
-
-    QModelIndex setInterfacePrivate( const QString & registry, const QString & platform, const QString & component, 
-                const QString & interface, const bool isProvided, const QString & ids, bool isReachable );
-
-    QModelIndex setOperationPrivate( const QString & registry, const QString & platform, const QString & component, const QString & interface, 
-                const QString & name, const QString & result );
 
     // OBSOLETE
     QModelIndex setPlatformPrivate( const QString & registry, const QString & regAddress,

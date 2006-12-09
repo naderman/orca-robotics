@@ -30,14 +30,25 @@ public:
 
     virtual void showNetworkActivity( bool isActive )=0;
 
-    virtual void showRegistryData( const orcacm::RegistryHomeData & data )=0;
-    
-    virtual void showComponentData( const orcacm::ComponentData & data )=0;
-    
-    virtual void showInterfaceData( const orcacm::InterfaceData & data )=0;
-    
-    virtual void showOperationData( const orcacm::OperationData & data )=0;
+    virtual void setRegistryData( const orcacm::RegistryHierarchicalData1 & data )=0;
 
+    virtual void setPlatformData( const orcacm::RegistryHierarchicalData2 & data )=0;
+    
+    virtual void setComponentData( const orcacm::ComponentData & data )=0;
+    
+    virtual void setInterfaceData( const orcacm::InterfaceData & data )=0;
+    
+    virtual void setOperationData( const orcacm::OperationData & data )=0;
+
+    virtual void showRegistry()=0;
+
+    virtual void showPlatform()=0;
+    
+    virtual void showComponent()=0;
+    
+    virtual void showInterface()=0;
+    
+    virtual void showOperation()=0;
 };
 
 } // namespace
