@@ -14,20 +14,20 @@
 using namespace std;
 
 void
-compareAgainstMatlab( float Pxx,
-                      float Pxy,
-                      float Pyy,
-                      float Pxt,
-                      float Pyt,
-                      float Ptt,
-                      float mPxx,
-                      float mPxy,
-                      float mPyy,
-                      float mPxt,
-                      float mPyt,
-                      float mPtt )
+compareAgainstMatlab( double Pxx,
+                      double Pxy,
+                      double Pyy,
+                      double Pxt,
+                      double Pyt,
+                      double Ptt,
+                      double mPxx,
+                      double mPxy,
+                      double mPyy,
+                      double mPxt,
+                      double mPyt,
+                      double mPtt )
 {
-    float e = 1e-6;
+    double e = 1e-6;
 
 
     if ( !NEAR( Pxx, mPxx, e ) )
@@ -57,33 +57,33 @@ compareAgainstMatlab( float Pxx,
 
 int main()
 {
-    float Pxx;
-    float Pxy;
-    float Pyy;
-    float Pxt;
-    float Pyt;
-    float Ptt;
+    double Pxx;
+    double Pxy;
+    double Pyy;
+    double Pxt;
+    double Pyt;
+    double Ptt;
 
-    float velScale = 0.3*0.3;
-    float yawScale = 0.3*0.3;
+    double velScale = 0.3*0.3;
+    double yawScale = 0.3*0.3;
 
-    float stabNoisexx = 0.01;
-    float stabNoiseyy = 0.01;
-    float stabNoisett = 0.01;
+    double stabNoisexx = 0.01;
+    double stabNoiseyy = 0.01;
+    double stabNoisett = 0.01;
 
-    float dt = 1.0;
+    double dt = 1.0;
 
-    float scaledStabNoisexx = stabNoisexx * dt;
-    float scaledStabNoiseyy = stabNoiseyy * dt;
-    float scaledStabNoisett = stabNoisett * dt;
+    double scaledStabNoisexx = stabNoisexx * dt;
+    double scaledStabNoiseyy = stabNoiseyy * dt;
+    double scaledStabNoisett = stabNoisett * dt;
 
-    float poseX;
-    float poseY;
-    float poseT;
+    double poseX;
+    double poseY;
+    double poseT;
 
-    float actX;
-    float actY;
-    float actT;
+    double actX;
+    double actY;
+    double actT;
 
     // ------------------------------------------------------------
     cout<<"------------------------1--------------------------" << endl;

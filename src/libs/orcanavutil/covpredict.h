@@ -21,23 +21,23 @@ namespace orcanavutil {
 // [ref: Hugh's notes, esp. slides 146 & 248]
 //
 void
-covPredict( float  poseX,
-            float  poseY,
-            float  poseT,
-            float &Pxx,
-            float &Pxy,
-            float &Pyy,
-            float &Pxt,
-            float &Pyt,
-            float &Ptt,
-            float  actX,
-            float  actY,
-            float  actT,
-            float  velScaleSd,
-            float  yawScaleSd,
-            float  scaledStabNoisePxx,
-            float  scaledStabNoisePyy,
-            float  scaledStabNoisePtt );
+covPredict( double  poseX,
+            double  poseY,
+            double  poseT,
+            double &Pxx,
+            double &Pxy,
+            double &Pyy,
+            double &Pxt,
+            double &Pyt,
+            double &Ptt,
+            double  actX,
+            double  actY,
+            double  actT,
+            double  velScaleSd,
+            double  yawScaleSd,
+            double  scaledStabNoisePxx,
+            double  scaledStabNoisePyy,
+            double  scaledStabNoisePtt );
 
 //
 // The prediction step of an EKF for the covariance, assuming known starting point:
@@ -48,33 +48,33 @@ covPredict( float  poseX,
 // [ref: Hugh's notes, esp. slides 146 & 248]
 //
 void
-covPredictFromCertainStart( float  poseX,
-                            float  poseY,
-                            float  poseT,
-                            float &Pxx,
-                            float &Pxy,
-                            float &Pyy,
-                            float &Pxt,
-                            float &Pyt,
-                            float &Ptt,
-                            float  actX,
-                            float  actY,
-                            float  actT,
-                            float  velScaleSd,
-                            float  yawScaleSd,
-                            float  scaledStabNoisePxx,
-                            float  scaledStabNoisePyy,
-                            float  scaledStabNoisePtt );
+covPredictFromCertainStart( double  poseX,
+                            double  poseY,
+                            double  poseT,
+                            double &Pxx,
+                            double &Pxy,
+                            double &Pyy,
+                            double &Pxt,
+                            double &Pyt,
+                            double &Ptt,
+                            double  actX,
+                            double  actY,
+                            double  actT,
+                            double  velScaleSd,
+                            double  yawScaleSd,
+                            double  scaledStabNoisePxx,
+                            double  scaledStabNoisePyy,
+                            double  scaledStabNoisePtt );
 
 
 // for debugging
 void
-printP( float Pxx,
-        float Pxy,
-        float Pyy,
-        float Pxt,
-        float Pyt,
-        float Ptt );
+printP( double Pxx,
+        double Pxy,
+        double Pyy,
+        double Pxt,
+        double Pyt,
+        double Ptt );
 
 }
 

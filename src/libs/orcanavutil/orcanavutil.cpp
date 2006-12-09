@@ -36,12 +36,12 @@ namespace orcanavutil {
     }
 
 
-    void addPoseOffset( float &poseX,
-                        float &poseY,
-                        float &poseT,
-                        float  offsetX,
-                        float  offsetY,
-                        float  offsetT,
+    void addPoseOffset( double &poseX,
+                        double &poseY,
+                        double &poseT,
+                        double  offsetX,
+                        double  offsetY,
+                        double  offsetT,
                         bool   normaliseHeading )
     {
         // Add x and y in the local coordinate frame
@@ -58,15 +58,15 @@ namespace orcanavutil {
         }
     }
 
-    void addPoseOffset( float  startX,
-                        float  startY,
-                        float  startT,
-                        float  offsetX,
-                        float  offsetY,
-                        float  offsetT,
-                        float &resultX,
-                        float &resultY,
-                        float &resultT,
+    void addPoseOffset( double  startX,
+                        double  startY,
+                        double  startT,
+                        double  offsetX,
+                        double  offsetY,
+                        double  offsetT,
+                        double &resultX,
+                        double &resultY,
+                        double &resultT,
                         bool   normaliseHeading )
     {
         // Add x and y in the local coordinate frame
@@ -83,7 +83,7 @@ namespace orcanavutil {
         }
     }
 
-    void normaliseAngle( float &angle )
+    void normaliseAngle( double &angle )
     {
         // Normalise to [-pi,pi)
         while ( angle >= M_PI )
@@ -92,16 +92,16 @@ namespace orcanavutil {
             angle += 2*M_PI;
     }
 
-    void subtractInitialOffset( float &totalOffsetX,
-                                float &totalOffsetY,
-                                float &totalOffsetTheta,
-                                float  initialOffsetX,
-                                float  initialOffsetY,
-                                float  initialOffsetTheta )
+    void subtractInitialOffset( double &totalOffsetX,
+                                double &totalOffsetY,
+                                double &totalOffsetTheta,
+                                double  initialOffsetX,
+                                double  initialOffsetY,
+                                double  initialOffsetTheta )
     {
         // First, remove the linear part by translating
-        float remainingOffsetX = totalOffsetX - initialOffsetX;
-        float remainingOffsetY = totalOffsetY - initialOffsetY;
+        double remainingOffsetX = totalOffsetX - initialOffsetX;
+        double remainingOffsetY = totalOffsetY - initialOffsetY;
 
         // Then, rotate the remaining offset by -initialOffsetTheta
         totalOffsetX =   remainingOffsetX*cos(-initialOffsetTheta) 
@@ -113,19 +113,19 @@ namespace orcanavutil {
     }
 
 
-    void subtractInitialOffset( float  totalOffsetX,
-                                float  totalOffsetY,
-                                float  totalOffsetTheta,
-                                float  initialOffsetX,
-                                float  initialOffsetY,
-                                float  initialOffsetTheta,
-                                float &resultX,
-                                float &resultY,
-                                float &resultTheta )
+    void subtractInitialOffset( double  totalOffsetX,
+                                double  totalOffsetY,
+                                double  totalOffsetTheta,
+                                double  initialOffsetX,
+                                double  initialOffsetY,
+                                double  initialOffsetTheta,
+                                double &resultX,
+                                double &resultY,
+                                double &resultTheta )
     {
         // First, remove the linear part by translating
-        float remainingOffsetX = totalOffsetX - initialOffsetX;
-        float remainingOffsetY = totalOffsetY - initialOffsetY;
+        double remainingOffsetX = totalOffsetX - initialOffsetX;
+        double remainingOffsetY = totalOffsetY - initialOffsetY;
 
         // Then, rotate the remaining offset by -initialOffsetTheta
         resultX =   remainingOffsetX*cos(-initialOffsetTheta) 

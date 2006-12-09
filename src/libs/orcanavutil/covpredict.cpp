@@ -22,17 +22,17 @@ namespace orcanavutil {
 // NOTE: These calcs come from ~a.brooks/matlab/vehicle_prediction/symbolicCalc.m
 //
 void
-PgetsFPF( float &Pxx,
-          float &Pxy,
-          float &Pyy,
-          float &Pxt,
-          float &Pyt,
-          float &Ptt,
-          float  actX,
-          float  actY,
-          float  actT,
-          float  sTheta,
-          float  cTheta )
+PgetsFPF( double &Pxx,
+          double &Pxy,
+          double &Pyy,
+          double &Pxt,
+          double &Pyt,
+          double &Ptt,
+          double  actX,
+          double  actY,
+          double  actT,
+          double  sTheta,
+          double  cTheta )
 {
     // A = -actX*sPsi-actY*cPsi
     // B =  actX*cPsi-actY*sPsi
@@ -46,18 +46,18 @@ PgetsFPF( float &Pxx,
     // [       C,         D,           Ptt ]
 
 
-    const float A = -actX*sTheta-actY*cTheta;
-    const float B =  actX*cTheta-actY*sTheta;
+    const double A = -actX*sTheta-actY*cTheta;
+    const double B =  actX*cTheta-actY*sTheta;
 
-    const float C = Pxt+A*Ptt;
-    const float D = Pyt+B*Ptt;
+    const double C = Pxt+A*Ptt;
+    const double D = Pyt+B*Ptt;
 
-    const float FPFxx = Pxx+A*Pxt+C*A;
-    const float FPFxy = Pxy+B*Pxt+D*A;
-    const float FPFyy = Pyy+B*Pyt+D*B;
-    const float FPFxt = C;
-    const float FPFyt = D;
-    const float FPFtt = Ptt;
+    const double FPFxx = Pxx+A*Pxt+C*A;
+    const double FPFxy = Pxy+B*Pxt+D*A;
+    const double FPFyy = Pyy+B*Pyt+D*B;
+    const double FPFxt = C;
+    const double FPFyt = D;
+    const double FPFtt = Ptt;
 
     Pxx = FPFxx;
     Pxy = FPFxy;
@@ -71,19 +71,19 @@ PgetsFPF( float &Pxx,
 // NOTE: These calcs come from ~a.brooks/matlab/vehicle_prediction/symbolicCalc.m
 //
 void
-addGQG( float &Pxx,
-        float &Pxy,
-        float &Pyy,
-        float &Pxt,
-        float &Pyt,
-        float &Ptt,
-        float  actX,
-        float  actY,
-        float  actT,
-        float  velScaleSd,
-        float  yawScaleSd,
-        float  sTheta,
-        float  cTheta )
+addGQG( double &Pxx,
+        double &Pxy,
+        double &Pyy,
+        double &Pxt,
+        double &Pyt,
+        double &Ptt,
+        double  actX,
+        double  actY,
+        double  actT,
+        double  velScaleSd,
+        double  yawScaleSd,
+        double  sTheta,
+        double  cTheta )
 {
     // E = velScaleSd^2*actX^2
     // F = velScaleSd^2*actY^2
@@ -93,17 +93,17 @@ addGQG( float &Pxx,
     // [ sPsi*E*cPsi-cPsi*F*sPsi, sPsi*E*sPsi+cPsi*F*cPsi,           0          ]
     // [           0,                       0,                yawScale^2*actT^2 ]
 
-    float E = velScaleSd*actX;
+    double E = velScaleSd*actX;
     E = E*E;
-    float F = velScaleSd*actY;
+    double F = velScaleSd*actY;
     F = F*F;
 
-    float GQGxx = cTheta*E*cTheta+sTheta*F*sTheta;
-    float GQGxy = cTheta*E*sTheta-sTheta*F*cTheta;
-    float GQGxt = 0;
-    float GQGyy = sTheta*E*sTheta+cTheta*F*cTheta;
-    float GQGyt = 0;
-    float GQGtt = yawScaleSd*actT;
+    double GQGxx = cTheta*E*cTheta+sTheta*F*sTheta;
+    double GQGxy = cTheta*E*sTheta-sTheta*F*cTheta;
+    double GQGxt = 0;
+    double GQGyy = sTheta*E*sTheta+cTheta*F*cTheta;
+    double GQGyt = 0;
+    double GQGtt = yawScaleSd*actT;
     GQGtt = GQGtt*GQGtt;
 
     Pxx += GQGxx;
@@ -118,15 +118,15 @@ addGQG( float &Pxx,
 // NOTE: These calcs come from ~a.brooks/matlab/vehicle_prediction/symbolicCalc.m
 //
 void
-addStabilisingNoise( float &Pxx,
-                     float &Pxy,
-                     float &Pyy,
-                     float &Pxt,
-                     float &Pyt,
-                     float &Ptt,
-                     float  scaledStabNoisePxx,
-                     float  scaledStabNoisePyy,
-                     float  scaledStabNoisePtt )
+addStabilisingNoise( double &Pxx,
+                     double &Pxy,
+                     double &Pyy,
+                     double &Pxt,
+                     double &Pyt,
+                     double &Ptt,
+                     double  scaledStabNoisePxx,
+                     double  scaledStabNoisePyy,
+                     double  scaledStabNoisePtt )
 {
     Pxx += scaledStabNoisePxx;
     Pyy += scaledStabNoisePyy;
@@ -135,26 +135,26 @@ addStabilisingNoise( float &Pxx,
 
 
 void
-covPredict( float  poseX,
-            float  poseY,
-            float  poseT,
-            float &Pxx,
-            float &Pxy,
-            float &Pyy,
-            float &Pxt,
-            float &Pyt,
-            float &Ptt,
-            float  actX,
-            float  actY,
-            float  actT,
-            float  velScaleSd,
-            float  yawScaleSd,
-            float  scaledStabNoisePxx,
-            float  scaledStabNoisePyy,
-            float  scaledStabNoisePtt )
+covPredict( double  poseX,
+            double  poseY,
+            double  poseT,
+            double &Pxx,
+            double &Pxy,
+            double &Pyy,
+            double &Pxt,
+            double &Pyt,
+            double &Ptt,
+            double  actX,
+            double  actY,
+            double  actT,
+            double  velScaleSd,
+            double  yawScaleSd,
+            double  scaledStabNoisePxx,
+            double  scaledStabNoisePyy,
+            double  scaledStabNoisePtt )
 {
-    const float cTheta = cos(poseT);
-    const float sTheta = sin(poseT);
+    const double cTheta = cos(poseT);
+    const double sTheta = sin(poseT);
 
     // P = FPF' + GQG' + sigma;
 
@@ -168,26 +168,26 @@ covPredict( float  poseX,
 }
 
 void
-covPredictFromCertainStart( float  poseX,
-                            float  poseY,
-                            float  poseT,
-                            float &Pxx,
-                            float &Pxy,
-                            float &Pyy,
-                            float &Pxt,
-                            float &Pyt,
-                            float &Ptt,
-                            float  actX,
-                            float  actY,
-                            float  actT,
-                            float  velScaleSd,
-                            float  yawScaleSd,
-                            float  scaledStabNoisePxx,
-                            float  scaledStabNoisePyy,
-                            float  scaledStabNoisePtt )
+covPredictFromCertainStart( double  poseX,
+                            double  poseY,
+                            double  poseT,
+                            double &Pxx,
+                            double &Pxy,
+                            double &Pyy,
+                            double &Pxt,
+                            double &Pyt,
+                            double &Ptt,
+                            double  actX,
+                            double  actY,
+                            double  actT,
+                            double  velScaleSd,
+                            double  yawScaleSd,
+                            double  scaledStabNoisePxx,
+                            double  scaledStabNoisePyy,
+                            double  scaledStabNoisePtt )
 {
-    const float cTheta = cos(poseT);
-    const float sTheta = sin(poseT);
+    const double cTheta = cos(poseT);
+    const double sTheta = sin(poseT);
 
     // P = 0 + GQG' + sigma;
 
@@ -204,12 +204,12 @@ covPredictFromCertainStart( float  poseX,
 
 
 void
-printP( float Pxx,
-        float Pxy,
-        float Pyy,
-        float Pxt,
-        float Pyt,
-        float Ptt )
+printP( double Pxx,
+        double Pxy,
+        double Pyy,
+        double Pxt,
+        double Pyt,
+        double Ptt )
 {
     cout<<"TRACE(testcovpredict.cpp): P:  " << Pxx << endl;
     cout<<"TRACE(testcovpredict.cpp): P:  " << Pxy << "\t " << Pyy << endl;

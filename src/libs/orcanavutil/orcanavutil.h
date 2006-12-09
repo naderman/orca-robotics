@@ -26,11 +26,11 @@ namespace orcanavutil {
     public:
         Offset() 
             { x=0.0; y=0.0; theta=0.0; }
-        Offset(float x, float y, float theta)
+        Offset(double x, double y, double theta)
             { this->x=x; this->y=y; this->theta=theta; }
-        float x;
-        float y;
-        float theta;
+        double x;
+        double y;
+        double theta;
     };
 
     std::ostream &operator<<( std::ostream &s, const Offset &o );
@@ -41,12 +41,12 @@ namespace orcanavutil {
     //!
     //! Adds the linear bit, then applies the rotation. 
     //!
-    void addPoseOffset( float &poseX,
-                        float &poseY,
-                        float &poseT,
-                        float offsetX,
-                        float offsetY,
-                        float offsetT,
+    void addPoseOffset( double &poseX,
+                        double &poseY,
+                        double &poseT,
+                        double offsetX,
+                        double offsetY,
+                        double offsetT,
                         bool  normaliseHeading );
 
     //!
@@ -54,44 +54,44 @@ namespace orcanavutil {
     //!
     //! Adds the linear bit, then applies the rotation. 
     //!
-    void addPoseOffset( float startX,
-                        float startY,
-                        float startT,
-                        float offsetX,
-                        float offsetY,
-                        float offsetT,
-                        float &resultX,
-                        float &resultY,
-                        float &resultT,
+    void addPoseOffset( double startX,
+                        double startY,
+                        double startT,
+                        double offsetX,
+                        double offsetY,
+                        double offsetT,
+                        double &resultX,
+                        double &resultY,
+                        double &resultT,
                         bool   normaliseHeading );
 
     //! normalise to [-pi,pi).
-    void normaliseAngle( float &angle );
+    void normaliseAngle( double &angle );
 
     //!
     //! We have some path, defined by an offset.
     //! This removes a chunk of it fron the front.
     //!
-    void subtractInitialOffset( float &totalOffsetX,
-                                float &totalOffsetY,
-                                float &totalOffsetTheta,
-                                float  initialOffsetX,
-                                float  initialOffsetY,
-                                float  initialOffsetTheta );
+    void subtractInitialOffset( double &totalOffsetX,
+                                double &totalOffsetY,
+                                double &totalOffsetTheta,
+                                double  initialOffsetX,
+                                double  initialOffsetY,
+                                double  initialOffsetTheta );
 
     //!
     //! We have some path, defined by an offset.
     //! This removes a chunk of it fron the front.
     //!
-    void subtractInitialOffset( float  totalOffsetX,
-                                float  totalOffsetY,
-                                float  totalOffsetTheta,
-                                float  initialOffsetX,
-                                float  initialOffsetY,
-                                float  initialOffsetTheta,
-                                float &resultX,
-                                float &resultY,
-                                float &resultTheta );
+    void subtractInitialOffset( double  totalOffsetX,
+                                double  totalOffsetY,
+                                double  totalOffsetTheta,
+                                double  initialOffsetX,
+                                double  initialOffsetY,
+                                double  initialOffsetTheta,
+                                double &resultX,
+                                double &resultY,
+                                double &resultTheta );
 }
 
 #endif
