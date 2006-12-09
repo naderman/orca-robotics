@@ -9,3 +9,8 @@ ADD_EXECUTABLE( timetest timetest.cpp )
 TARGET_LINK_LIBRARIES( timetest OrcaObjects )
 ADD_TEST( TimeTest timetest )
 MESSAGE( STATUS "Planning to Build Test     : TimeTest [libOrcaObjects]")
+
+ADD_EXECUTABLE( mathtest mathtest.cpp )
+TARGET_LINK_LIBRARIES( mathtest OrcaObjects )
+ADD_TEST( MathTest mathtest )
+MESSAGE( STATUS "Planning to Build Test     : MathTest [libOrcaObjects]")

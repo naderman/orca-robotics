@@ -79,17 +79,9 @@ inline void NORMALISE_ANGLE( double &theta )
 //! mistake of doing: 'NORMALISE_ANGLE( myAngle )', ignoring the return value.
 inline void NORMALISE_ANGLE( float &theta )
 {
-    double multiplier;
-
-    if (theta >= -M_PI && theta < M_PI)
-        return;
-
-    multiplier = floor(theta / (2.0*M_PI));
-    theta -= float(multiplier*2.0*M_PI);
-    if (theta >= M_PI)
-        theta -= float(2.0*M_PI);
-    else if (theta < -M_PI)
-        theta += float(2.0*M_PI);
+    double thDouble = theta;
+    NORMALISE_ANGLE( thDouble );
+    theta = thDouble;
 }
 
 /*****************************************************************************
