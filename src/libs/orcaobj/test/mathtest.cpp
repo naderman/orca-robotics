@@ -8,7 +8,7 @@
 
 using namespace std;
 
-#define EPS 1e-7;
+#define EPS 1e-8;
 
 template<typename T>
 void
