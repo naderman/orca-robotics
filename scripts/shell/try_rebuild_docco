@@ -8,6 +8,7 @@
 DOXYGENCMD=/usr/local/bin/doxygen
 HTDOCS=/home/groups/o/or/orca-robotics/htdocs
 PROJDIR=$HOME/cvs/docversion/orca2
+TARBALL=orca-cvs-doc.tar.gz
 
 did_update=0
 
@@ -45,8 +46,8 @@ mv temp_index.html html/index.html
 #
 # Copy it to sourceforge
 #
-tar -zcvf html.tar.gz html
-scp  html.tar.gz shell.sf.net:$HTDOCS/cvs_version/orca2/doc/
-ssh shell.sf.net "cd $HTDOCS/cvs_version/orca2/doc/; tar -zxvf html.tar.gz"
+tar -zcvf $TARBALL html
+scp  $TARBALL shell.sf.net:$HTDOCS/cvs_version/orca2/doc/
+ssh shell.sf.net "cd $HTDOCS/cvs_version/orca2/doc/; tar -zxvf $TARBALL"
 
 echo "Finished $0 at: `date`"
