@@ -63,10 +63,48 @@ struct PointCovariance2d {
     double yy;
 };
 
+//! A basic x-y point feature
 class CartesianPointFeature2d extends Feature2d
 {
+    //! mean
     CartesianPoint2d  p;
+    //! covariance descrbing Gaussian uncertainty
     PointCovariance2d c;
+};
+
+//!
+//! A line feature.
+//!
+//! Infinite lines are parameterised by (rho,alpha), which describes
+//! the vector from the origin which meets the line at 90deg:
+//!   - rho   is the length of this vector, and
+//!   - alpha is the angle the vector makes with the x-axis (in (-pi,pi]).
+//!
+//! This information is augmented with info that describes the fact that
+//! the line is a finite segment, visible from one direction only.
+//!
+//! By definition, a line is visible iff the start appears to the
+//! right of the end.
+//!
+class CartesianLineFeature2d extends Feature2d
+{
+    //! mean rho
+    double rho;
+    //! mean alpha
+    double alpha;
+    //! covariance of (rho,alpha)
+    PointCovariance2d c;
+
+    //! start of line
+    CartesianPoint2d  start;
+    //! end of line
+    CartesianPoint2d  end;
+
+    //! Is the reported start point the actual extent of the line? 
+    bool startSighted;
+
+    //! Is the reported end point the actual extent of the line? 
+    bool endSighted;
 };
 
 //! A list of features

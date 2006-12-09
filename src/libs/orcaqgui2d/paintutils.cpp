@@ -119,17 +119,16 @@ paintPlatformPose( QPainter *p, QColor colour, float transparencyMultiplier )
 void
 paintUncertaintyInfo( QPainter *p, QColor colour, float thetaMean, float pxx, float pxy, float pyy, float ptt )
 {
-    paintHeadingUncertainty( p, colour, thetaMean, ptt );
+    paintUncertaintyWedge( p, colour, thetaMean, ptt );
     paintCovarianceEllipse( p, colour, pxx, pxy, pyy );
 }
 
 void
-paintHeadingUncertainty( QPainter *p, QColor colour, float thetaMean, float ptt )
+paintUncertaintyWedge( QPainter *p, QColor colour, float thetaMean, float ptt )
 {
     p->save();
     {
-        p->rotate( thetaMean );
-        // paint heading uncertainty
+        p->rotate( RAD2DEG(thetaMean) );
         p->setPen( QPen(colour, THIN_LINE_THICKNESS) );
         p->setBrush( Qt::NoBrush );
         int pTheta = (int) (ptt * (180.0/M_PI));

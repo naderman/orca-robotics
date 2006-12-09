@@ -102,7 +102,7 @@ void GpsPainter::paint( QPainter *painter, int z )
 //
 //                paintUncertaintyInfo( p,
 //                                      colour,
-//                                      RAD2DEG( mean.o ),
+//                                      mean.o,
 //                                      cov.xx,
 //                                      cov.xy,
 //                                      cov.yy,

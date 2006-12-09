@@ -92,8 +92,8 @@ void paintPlatformPose( QPainter *p, QColor colour, float transparencyMultiplier
 //!
 void paintUncertaintyInfo( QPainter *p, QColor colour, float thetaMean, float pxx, float pxy, float pyy, float ptt );
 
-//! Paints a little wedge for the heading uncertainty.
-void paintHeadingUncertainty( QPainter *p, QColor colour, float thetaMean, float ptt );
+//! Paints a little wedge representing rotational uncertainty
+void paintUncertaintyWedge( QPainter *p, QColor colour, float thetaMean, float ptt );
 
 //! Paints 2-sigma ellipse for the position uncertainty
 void paintCovarianceEllipse( QPainter *p, QColor colour, float pxx, float pxy, float pyy );

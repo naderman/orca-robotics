@@ -41,6 +41,14 @@ class FeatureMap2dPainter
     int saveMap( const QString fileName, IHumanManager *humanManager ) const;
 
   private:
+
+    void paintPointFeature( QPainter *painter,
+                            const orca::CartesianPointFeature2d &f,
+                            int featureNum );
+    void paintLineFeature(  QPainter *painter,
+                            const orca::CartesianLineFeature2d  &f,
+                            int featureNum );
+
     orca::FeatureMap2dDataPtr data_;
     bool displayFeatureNumbers_;
     bool displayUncertainty_;

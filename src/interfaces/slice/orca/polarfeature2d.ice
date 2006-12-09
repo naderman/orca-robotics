@@ -66,13 +66,24 @@ class PointPolarFeature2d extends SinglePolarFeature2d
 //!
 //! A line, specified by its endpoints.
 //!
+//! It's a bit more complicated though: the endpoints will not always
+//! be visible.  So the observation endpoints are set to the most
+//! extreme points that can be seen.  The 'sighted' flags are set if the 
+//! observer is confident that the end of the line can be seen.
+//!
 class LinePolarFeature2d extends SinglePolarFeature2d
 {
     //! Start of line (by definition, on the right)
     PolarPoint2d start;
 
-    //! end of line (by definition, on the left)
+    //! End of line (by definition, on the left)
     PolarPoint2d end;
+
+    //! Is the reported start point the actual extent of the line? 
+    bool startSighted;
+
+    //! Is the reported end point the actual extent of the line? 
+    bool endSighted;
 };
 
 //! A sequence of individual features
