@@ -29,7 +29,7 @@ MainWindow::MainWindow( orcaqcm::NetworkHandler *networkHandler, double refreshI
     : QMainWindow(parent, flags),
       networkHandler_(networkHandler)
 {
-    setWindowTitle("Orca2: Registry View");
+    setWindowTitle("Orca: Registry View");
     setWindowIcon ( QPixmap(orcaqt::orca2_2x3_yellow_130_xpm) );
     //
     // Widget
@@ -71,7 +71,6 @@ MainWindow::MainWindow( orcaqcm::NetworkHandler *networkHandler, double refreshI
     
     refreshTimer_ = new QTimer( this );
     connect( refreshTimer_,SIGNAL(timeout()), this,SLOT(updateRegistryView()) );
-    //refreshTimer_->start( (int)floor(config.refreshInterval*1000.0) );
     refreshTimer_->start( (int)floor(refreshInterval*1000.0) );
 
     statusBar()->showMessage( "Initialized", 2000 );
@@ -88,19 +87,19 @@ MainWindow::setupMenuBar()
 
     QMenu *viewMenu = menuBar()->addMenu("&View");
     viewMenu->addAction("Toggle &Disconnected", view_, SLOT(toggleDisconnected()), QKeySequence("Ctrl+`") );
-    viewMenu->addAction("Toggle &Standard", view_, SLOT(toggleStandard()), QKeySequence("Ctrl+0") );
+    viewMenu->addAction("Toggle &Standard", view_, SLOT(toggleStandard()), Qt::CTRL | Qt::Key_0 );
     QMenu *levelSubMenu = viewMenu->addMenu("Show &Level");
-    levelSubMenu->addAction("&Registries", view_, SLOT(showLevelOne()), QKeySequence("Ctrl+1") );
-    levelSubMenu->addAction("&Platforms", view_, SLOT(showLevelTwo()), QKeySequence("Ctrl+2") );
-    levelSubMenu->addAction("&Components", view_, SLOT(showLevelThree()), QKeySequence("Ctrl+3") );
-    levelSubMenu->addAction("&Interfaces", view_, SLOT(showLevelFour()), QKeySequence("Ctrl+4") );
+    levelSubMenu->addAction("&Registries", view_, SLOT(showLevelOne()), Qt::CTRL | Qt::Key_1 );
+    levelSubMenu->addAction("&Platforms", view_, SLOT(showLevelTwo()), Qt::CTRL | Qt::Key_2 );
+    levelSubMenu->addAction("&Components", view_, SLOT(showLevelThree()), Qt::CTRL | Qt::Key_3 );
+    levelSubMenu->addAction("&Interfaces", view_, SLOT(showLevelFour()), Qt::CTRL | Qt::Key_4 );
     viewMenu->addSeparator();
-    viewMenu->addAction("&Update", this, SLOT(updateRegistryView()), QKeySequence("F5") );
-    viewMenu->addAction("&Reload", this, SLOT(reloadRegistryView()), QKeySequence("Ctrl+L") );
+    viewMenu->addAction("&Update", this, SLOT(updateRegistryView()), Qt::Key_F5);
+    viewMenu->addAction("&Reload", this, SLOT(reloadRegistryView()), Qt::CTRL | Qt::Key_L );
     
     QMenu* helpMenu = menuBar()->addMenu("&Help");
-    helpMenu->addAction("About &RegistryView", this, SLOT(aboutApp()), Qt::Key_F1);
-    helpMenu->addAction("About &Orca", this, SLOT(aboutOrca()), Qt::SHIFT | Qt::Key_F1);
+    helpMenu->addAction("About &RegistryView", this, SLOT(aboutApp()), Qt::Key_F1 );
+    helpMenu->addAction("About &Orca", this, SLOT(aboutOrca()), Qt::SHIFT | Qt::Key_F1 );
 
 }
 
