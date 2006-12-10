@@ -17,7 +17,7 @@ IF ( NOT WIN32 AND QT4_FOUND )
     
     GLOBAL_ADD_LIBRARY( OrcaQGui SHARED ${HUMAN_SRCS} ${MOC_SRCS} )
     
-    TARGET_LINK_LIBRARIES ( OrcaQGui OrcaQCompModel )
+    TARGET_LINK_LIBRARIES ( OrcaQGui OrcaQt OrcaQCompModel )
     
     INSTALL_FILES( /include/orcaqgui .*\\.h$ )
 

@@ -27,11 +27,12 @@
 #include <QComboBox>
 
 #include <orcaice/orcaice.h>
+#include <orcaqt/orcaqt.h>
 #include <orcacm/orcacm.h>
 
 #include <orcaqcm/ocmdelegate.h>
 
-#include <orcaqgui/orcaicons.h>
+#include <orcaqgui/guiicons.h>
 
 #include "mainwin.h"
 #include "regselectview.h"
@@ -58,7 +59,7 @@ namespace orcaqgui {
       modeOwner_(NULL)
 {
     setWindowTitle(title.c_str());
-    setWindowIcon ( QPixmap(orca2_2x3_yellow_130_xpm) );
+    setWindowIcon ( QPixmap(orcaqt::orca2_2x3_yellow_130_xpm) );
     
     //
     // Widget
@@ -342,27 +343,13 @@ MainWindow::showStatusMsg( MessageType type, QString msg )
 void
 MainWindow::aboutOrca()
 {
-    QPixmap orcaIcon( orca2_2x3_yellow_130_xpm );
-
-    QMessageBox mb( this );
-    mb.setWindowTitle("About Orca");
-    mb.setWindowIcon ( orcaIcon );
-    mb.setText("Orca is an open-source framework for\n"
-            "developing component-based robotic systems. It\n"
-            "provides the means for defining and developing the\n"
-            "building-blocks which can be pieced together to\n"
-            "form arbitrarily complex robotic systems, from single\n"
-            "vehicles to distributed sensor networks.\n\n"
-            "http://orca-robotics.sf.net\n" );
-    mb.setIconPixmap( orcaIcon );
-    //mb.setMaximumWidth( 400 );
-    mb.exec();
+    orcaqt::aboutOrca( this );
 }
 
 void
 MainWindow::aboutApp()
 {
-    QPixmap orcaIcon( orca2_2x3_yellow_130_xpm );
+    QPixmap orcaIcon( orcaqt::orca2_2x3_yellow_130_xpm );
 
     QMessageBox mb( this );
     mb.setWindowTitle("About OrcaView");

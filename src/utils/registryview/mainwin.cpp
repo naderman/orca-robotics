@@ -15,7 +15,7 @@
 #include <QtGui>
 
 #include <orcaqcm/ocmdelegate.h>
-#include <orcaqcm/orcaicons.h>
+#include <orcaqt/orcaqt.h>
 
 #include "mainwin.h"
 #include "regtreeview.h"
@@ -30,7 +30,7 @@ MainWindow::MainWindow( orcaqcm::NetworkHandler *networkHandler, double refreshI
       networkHandler_(networkHandler)
 {
     setWindowTitle("Orca2: Registry View");
-    setWindowIcon ( QPixmap(orca2_2x3_yellow_130_xpm) );
+    setWindowIcon ( QPixmap(orcaqt::orca2_2x3_yellow_130_xpm) );
     //
     // Widget
     //
@@ -152,27 +152,13 @@ MainWindow::quit()
 void
 MainWindow::aboutOrca()
 {
-    QPixmap orcaIcon( orca2_2x3_yellow_130_xpm );
-
-    QMessageBox mb( this );
-    mb.setWindowTitle("About Orca");
-    mb.setWindowIcon ( orcaIcon );
-    mb.setText("Orca is an open-source framework for\n"
-            "developing component-based robotic systems. It\n"
-            "provides the means for defining and developing the\n"
-            "building-blocks which can be pieced together to\n"
-            "form arbitrarily complex robotic systems, from single\n"
-            "vehicles to distributed sensor networks.\n\n"
-            "http://orca-robotics.sf.net\n" );
-    mb.setIconPixmap( orcaIcon );
-    //mb.setMaximumWidth( 400 );
-    mb.exec();
+    orcaqt::aboutOrca( this );
 }
 
 void
 MainWindow::aboutApp()
 {
-    QPixmap orcaIcon( orca2_2x3_yellow_130_xpm );
+    QPixmap orcaIcon( orcaqt::orca2_2x3_yellow_130_xpm );
 
     QMessageBox mb( this );
     mb.setWindowTitle("About RegistryView");
@@ -182,6 +168,5 @@ MainWindow::aboutApp()
                "an IceGrid Registry.\n\n"
                 "http://orca-robotics.sf.net\n" );
     mb.setIconPixmap( orcaIcon );
-    //mb.setMaximumWidth( 400 );
     mb.exec();
 }

@@ -13,6 +13,5 @@
 
 #include <orcaqcm/ocmmodel.h>
 #include <orcaqcm/ocmdelegate.h>
-#include <orcaqcm/orcaicons.h>
  
 #endif

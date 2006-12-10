@@ -26,7 +26,7 @@
 #include "worldview.h"
 #include <orcaqgui/guielementmodel.h>
 #include <orcaqgui/mainwin.h>
-#include <orcaqgui/orcaicons.h>
+#include <orcaqgui/guiicons.h>
 #include <orcaqgui2d/definitions2d.h>
 #include <orcaqgui2d/platformcsfinder.h>
 #include <orcaqgui2d/iknowsplatformposition2d.h>

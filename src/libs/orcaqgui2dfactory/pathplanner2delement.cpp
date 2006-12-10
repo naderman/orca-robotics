@@ -10,7 +10,7 @@
 
 #include "pathplanner2delement.h"
 #include <orcaqgui/ihumanmanager.h>
-#include <orcaqgui/orcaicons.h>
+#include <orcaqgui/guiicons.h>
 #include <orcaice/orcaice.h>
 #include <QFileDialog>
 #include <orcaqgui2dfactory/wptolerancesdialog.h>

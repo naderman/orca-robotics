@@ -13,7 +13,7 @@
 #include <QFileDialog>
 
 #include <orcaqgui/ihumanmanager.h>
-#include <orcaqgui/orcaicons.h>
+#include <orcaqgui/guiicons.h>
 #include <orcaqgui2dfactory/wptolerancesdialog.h>
 
 #include "pathfollower2delement.h"
