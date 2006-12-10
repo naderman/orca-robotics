@@ -12,7 +12,6 @@
 #define ORCA2_OCM_DELEGATE_H
 
 #include <QItemDelegate>
-//#include <QModelIndex>
 
 namespace orcaqcm
 {
