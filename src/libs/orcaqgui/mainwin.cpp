@@ -11,37 +11,23 @@
 #include <iostream>
 #include <cmath>        // for floor()
 
-#include <QTextEdit>
-#include <QTreeView>
-#include <QTableView>
-#include <QSplitter>
-#include <QHeaderView>
-#include <QStatusBar>
-#include <QMenu>
-#include <QMenuBar>
-#include <QToolBar>
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QStringList>
-#include <QTimer>
-#include <QComboBox>
+#include <QtGui>
 
 #include <orcaice/orcaice.h>
-#include <orcaqt/orcaqt.h>
 #include <orcacm/orcacm.h>
-
-#include <orcaqcm/ocmdelegate.h>
-
-#include <orcaqgui/guiicons.h>
+#include <orcaqt/orcaqt.h>
+#include <orcaqcm/orcaqcm.h>
 
 #include "mainwin.h"
 #include "regselectview.h"
 #include "guielementmodel.h"
 #include "guielementview.h"
+#include "guiicons.h"
 
 using namespace std;
 
-namespace orcaqgui {
+namespace orcaqgui 
+{
 
     MainWindow::MainWindow( std::string              title,
                             orcaqcm::NetworkHandler *networkHandler,

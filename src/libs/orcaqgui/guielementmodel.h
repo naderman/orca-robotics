@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_GUI_ELEMENT_MODEL_H
-#define ORCA2_GUI_ELEMENT_MODEL_H
+#ifndef ORCA2_ORCAQGUI_GUI_ELEMENT_MODEL_H
+#define ORCA2_ORCAQGUI_GUI_ELEMENT_MODEL_H
 
 #include <QAbstractTableModel>
 #include <QStringList>
@@ -49,11 +49,11 @@ public:
     //
     // STANDARD MODEL API
     //
-    int rowCount(const QModelIndex &parent) const;
-    int columnCount(const QModelIndex &parent) const;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
+    virtual int rowCount(const QModelIndex &parent) const;
+    virtual int columnCount(const QModelIndex &parent) const;
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
 
     //
     // CUSTOM API

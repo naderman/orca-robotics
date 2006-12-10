@@ -8,27 +8,24 @@
  *
  */
 
-#ifndef ORCA2_PROBE_MAIN_WINDOW_H
-#define ORCA2_PROBE_MAIN_WINDOW_H
+#ifndef ORCA2_ORCAQGUI_MAIN_WINDOW_H
+#define ORCA2_ORCAQGUI_MAIN_WINDOW_H
 
-#include <QMainWindow>
-#include <QActionGroup>
 #include <vector>
+#include <QMainWindow>
 
+#include <orcaqgui/ihumanmanager.h>
 #include <orcaqcm/networkhandler.h>
 #include <orcaqcm/modelhandler.h>
-#include <orcaqgui/ihumanmanager.h>
 
-class QActionGroup;
-class QTextEdit;
-class QTableView;
 class QTreeView;
 class QItemDelegate;
 class QSplitter;
 class QTimer;
 class QComboBox;
 
-namespace orcaqgui {
+namespace orcaqgui 
+{
 
 // configuration parameters for screen capture
 typedef struct {
@@ -44,7 +41,6 @@ class GuiElementView;
 class MainWindow : public QMainWindow, public orcaqgui::IHumanManager
 {
     Q_OBJECT
-
 public:
     MainWindow( std::string                        title,
                 orcaqcm::NetworkHandler           *networkHandler,           
@@ -78,8 +74,6 @@ public:
     virtual GuiElementModel &guiElementModel() { return *elemModel_; }
 
     void changePlatformFocusFromView(const QString& platform);
-    
-public slots:
 
 private slots:
 
@@ -87,10 +81,6 @@ private slots:
     void reloadRegistryView();
     
     void updateDisplayView();
-    
-    void quit();
-    void aboutOrca();
-    void aboutApp();
 
     void changePlatformFocus(const QString&);
     void addPlatformToList(const QString&);
@@ -99,9 +89,11 @@ private slots:
     void toggleScreenCapture( bool capture );
     void grabWindow();
 
-private:
+    void quit();
+    void aboutOrca();
+    void aboutApp();
 
-    void setupInterface();
+private:
 
     QSplitter *win_;
     QSplitter *side_;
@@ -136,6 +128,8 @@ private:
     
     bool firstTime_;
     
+    void setupInterface();
+
     // screen capture
     void initScreenCapture();
     int screenDumpCounter_;

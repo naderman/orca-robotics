@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCAGUI_GUI_ELEMENT_H
-#define ORCAGUI_GUI_ELEMENT_H
+#ifndef ORCA2_ORCAQGUI_GUI_ELEMENT_H
+#define ORCA2_ORCAQGUI_GUI_ELEMENT_H
 
 #include <string>
 #include <assert.h>
@@ -65,9 +65,7 @@ public:
     virtual void mousePressEvent(QMouseEvent *e) {assert(false&&"unimplemented mouse function");}
     virtual void mouseMoveEvent(QMouseEvent *e) {assert(false&&"unimplemented mouse function");}
     virtual void mouseReleaseEvent(QMouseEvent *e) {assert(false&&"unimplemented mouse function");}
-    virtual void mouseDoubleClickEvent(QMouseEvent *e) {assert(false&&"unimplemented mouse function");}
-    
-private:   
+    virtual void mouseDoubleClickEvent(QMouseEvent *e) {assert(false&&"unimplemented mouse function");} 
     
 };
 
