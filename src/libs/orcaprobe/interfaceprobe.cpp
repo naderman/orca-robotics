@@ -19,26 +19,21 @@ using namespace orcaprobe;
 InterfaceProbe::InterfaceProbe( const orca::FQInterfaceName & name, DisplayDriver & display,
                             const orcaice::Context & context )
     : name_(name),
-      displayDriver_(display),
+      display_(display),
       context_(context)
 {
     // the generic proxy is created just once and then reused
     prx_ = context_.communicator()->stringToProxy( orcaice::toString( name_ ) );
 };
 
-std::vector<orcacm::OperationHeader> 
-InterfaceProbe::operations()
+void 
+InterfaceProbe::addOperation( const std::string & name, const std::string & signature )
 {
-    std::vector<orcacm::OperationHeader> headers;
-    
     orcacm::OperationHeader op;
-
-    for ( uint i=0; i<operations_.size(); ++i ) {
-        op.name = operations_[i];
-        headers.push_back( op );
-    }   
-
-    return headers;
+   
+    op.name = name;
+    op.signature = signature;
+    operations_.push_back( op );
 }
 
 void
@@ -50,6 +45,6 @@ InterfaceProbe::fillOperationData( const int index, orcacm::OperationData & data
         data.name = "unknown";
     }
     else {
-        data.name = operations_[index];
+        data.name = operations_[index].name;
     }
 }

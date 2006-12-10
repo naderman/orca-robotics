@@ -25,8 +25,8 @@ CpuProbe::CpuProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver
 {
     id_ = "::orca::Cpu";
     
-    operations_.push_back( "getInfo" );
-    operations_.push_back( "getData" );
+    addOperation( "getInfo" );
+    addOperation( "getData" );
 }
 
 int 

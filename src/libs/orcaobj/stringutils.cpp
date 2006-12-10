@@ -145,10 +145,10 @@ toString( const orca::CameraDataPtr & obj )
     std::ostringstream s;
     s << toString(obj->timeStamp)
         << " CameraData: ["<<obj->image.size()<<" bytes]\n" 
-        << "\tImage height              " << obj->imageHeight << "pix\n"
-        << "\tImage width               " << obj->imageWidth << "pix\n"
-        << "\tFormat                    " << obj->format << "\n"
-        << "\tCompression               " << obj->compression << "\n";
+        << "Image height              " << obj->imageHeight << "pix\n"
+        << "Image width               " << obj->imageWidth << "pix\n"
+        << "Format                    " << obj->format << "\n"
+        << "Compression               " << obj->compression << "\n";
     return s.str();
 }
 
@@ -158,17 +158,17 @@ toString( const orca::CameraDescriptionPtr & obj )
     std::ostringstream s;
     s << toString(obj->timeStamp)
         << " CameraDescription:\n" 
-        << "\tImage height              " << obj->imageHeight << "pix\n"
-        << "\tImage width               " << obj->imageWidth << "pix\n"
-        << "\tFrame rate                " << obj->frameRate << "fps\n"
-        << "\tFormat                    " << obj->format << "\n"
-        << "\tCompression               " << obj->compression << "\n"
-        << "\toffset.point.x            " << obj->offset.p.x << "m\n"
-        << "\toffset.point.y            " << obj->offset.p.y << "m\n"
-        << "\toffset.point.z            " << obj->offset.p.z << "m\n"
-        << "\toffset.orientation.roll   " << RAD2DEG(obj->offset.o.r) << "deg\n"
-        << "\toffset.orientation.pitch  " << RAD2DEG(obj->offset.o.p) << "deg\n"
-        << "\toffset.orientation.yaw    " << RAD2DEG(obj->offset.o.y) << "deg\n";
+        << "Image height              " << obj->imageHeight << "pix\n"
+        << "Image width               " << obj->imageWidth << "pix\n"
+        << "Frame rate                " << obj->frameRate << "fps\n"
+        << "Format                    " << obj->format << "\n"
+        << "Compression               " << obj->compression << "\n"
+        << "offset.point.x            " << obj->offset.p.x << "m\n"
+        << "offset.point.y            " << obj->offset.p.y << "m\n"
+        << "offset.point.z            " << obj->offset.p.z << "m\n"
+        << "offset.orientation.roll   " << RAD2DEG(obj->offset.o.r) << "deg\n"
+        << "offset.orientation.pitch  " << RAD2DEG(obj->offset.o.p) << "deg\n"
+        << "offset.orientation.yaw    " << RAD2DEG(obj->offset.o.y) << "deg\n";
     return s.str();
 }
 
@@ -201,15 +201,15 @@ toString( const orca::GpsDescriptionPtr & obj )
     std::ostringstream s;
     s << toString(obj->timeStamp)
         << " GpsDescription: \n"
-        << "\tsize.l                " << obj->size.l << "m\n"
-        << "\tsize.w                " << obj->size.w << "m\n"
-        << "\tsize.h                " << obj->size.h << "m\n"
-        << "\toffset.point.x            " << obj->offset.p.x << "m\n"
-        << "\toffset.point.y            " << obj->offset.p.y << "m\n"
-        << "\toffset.point.z            " << obj->offset.p.z << "m\n"
-        << "\toffset.orientation.roll   " << RAD2DEG(obj->offset.o.r) << "deg\n"
-        << "\toffset.orientation.pitch  " << RAD2DEG(obj->offset.o.p) << "deg\n"
-        << "\toffset.orientation.yaw    " << RAD2DEG(obj->offset.o.y) << "deg\n";
+        << "size.l                " << obj->size.l << "m\n"
+        << "size.w                " << obj->size.w << "m\n"
+        << "size.h                " << obj->size.h << "m\n"
+        << "offset.point.x            " << obj->offset.p.x << "m\n"
+        << "offset.point.y            " << obj->offset.p.y << "m\n"
+        << "offset.point.z            " << obj->offset.p.z << "m\n"
+        << "offset.orientation.roll   " << RAD2DEG(obj->offset.o.r) << "deg\n"
+        << "offset.orientation.pitch  " << RAD2DEG(obj->offset.o.p) << "deg\n"
+        << "offset.orientation.yaw    " << RAD2DEG(obj->offset.o.y) << "deg\n";
     return s.str();
 }
 
@@ -400,16 +400,16 @@ toString( const orca::HomeDataPtr & obj )
     s << toString(obj->timeStamp) << " HomeData"<<endl;
 
     IceUtil::Time t = IceUtil::Time::seconds(obj->timeUp);
-    s << "  time up: "<<t.toDuration()<<endl;
+    s << "time up="<<t.toDuration()<<endl;
 
-    s << "  provides={";
+    s << "provides={";
     for ( unsigned int i=0; i<obj->comp.provides.size(); ++i ) {
         if ( i>0) { s<<":"; }
         s << obj->comp.provides[i].name;
     }
     s << "}"<<endl;
 
-    s << "  requires={";
+    s << "requires={";
     for ( unsigned int i=0; i<obj->comp.requires.size(); ++i ) {
         if ( i>0) { s<<":"; }
         s << toString( obj->comp.requires[i].name );
@@ -425,11 +425,11 @@ toString( const orca::ImuDataPtr & obj )
     std::ostringstream s;
     s << toString(obj->timeStamp)
         << " ImuData: \n"
-        << "\t Accelerometer (x,y,z): "
+        << " Accelerometer (x,y,z): "
         << obj->accel.x << " "
         << obj->accel.y << " "
         << obj->accel.z << " " << "\n"
-        << "\t Gyro (x,y,z): "
+        << " Gyro (x,y,z): "
         << obj->gyro.x << " "
         << obj->gyro.y << " "
         << obj->gyro.z << " ";
@@ -444,6 +444,11 @@ toString( const orca::LaserScanner2dDataPtr & obj, int skip )
     s << toString(obj->timeStamp)
       << " LaserData [" << obj->ranges.size() << " elements]";
 
+    s << "minRange=" << obj->minRange << "m" << endl;
+    s << "maxRange=" << obj->maxRange << "m" << endl;
+    s << "fieldOfView=" << obj->fieldOfView * 180.0/M_PI << "deg" << endl;
+    s << "startAngle=" << obj->startAngle * 180.0/M_PI << "deg" << endl;
+
     if ( skip > -1 ) 
     {
         s << ": (";
@@ -452,14 +457,8 @@ toString( const orca::LaserScanner2dDataPtr & obj, int skip )
             i = i + skip;
         }
         s << ")";
+        s << endl;
     }
-
-    s << endl;
-    s << "\tminRange: " << obj->minRange << "m" << endl;
-    s << "\tmaxRange: " << obj->maxRange << "m" << endl;
-    s << "\tfieldOfView: " << obj->fieldOfView * 180.0/M_PI << "deg" << endl;
-    s << "\tstartAngle: " << obj->startAngle * 180.0/M_PI << "deg" << endl;
-
     return s.str();
 }
 
@@ -470,6 +469,11 @@ toString( const orca::RangeScanner2dDataPtr & obj, int skip )
     s << toString(obj->timeStamp)
       << " RangeScanner2dData [" << obj->ranges.size() << " elements]: " << endl;
 
+    s << "minRange=" << obj->minRange << "m" << endl;
+    s << "maxRange=" << obj->maxRange << "m" << endl;
+    s << "fieldOfView=" << obj->fieldOfView * 180.0/M_PI << "deg" << endl;
+    s << "startAngle=" << obj->startAngle * 180.0/M_PI << "deg" << endl;
+
     if ( skip > -1 ) 
     {
         s << ": (";
@@ -478,14 +482,8 @@ toString( const orca::RangeScanner2dDataPtr & obj, int skip )
             i = i + skip;
         }
         s << ")";
+        s << endl;
     }
-
-    s << endl;
-    s << "\tminRange: " << obj->minRange << "m" << endl;
-    s << "\tmaxRange: " << obj->maxRange << "m" << endl;
-    s << "\tfieldOfView: " << obj->fieldOfView * 180.0/M_PI << "deg" << endl;
-    s << "\tstartAngle: " << obj->startAngle * 180.0/M_PI << "deg" << endl;
-
     return s.str();
 }
 
@@ -525,20 +523,20 @@ toString( const orca::RangeScanner2dDescriptionPtr & obj )
     std::ostringstream s;
     s << toString(obj->timeStamp)
         << " RangeScanner2dDescription: \n"
-        << "\tminRange:                 " << obj->minRange << "m\n"
-        << "\tmaxRange:                 " << obj->maxRange << "m\n"
-        << "\tfieldOfView:              " << RAD2DEG(obj->fieldOfView) << "deg\n"
-        << "\tstartAngle:               " << RAD2DEG(obj->startAngle) << "deg\n"
-        << "\tnumberOfSamples:          " << obj->numberOfSamples << "\n"
-        << "\toffset.point.x:           " << obj->offset.p.x << "m\n"
-        << "\toffset.point.y:           " << obj->offset.p.y << "m\n"
-        << "\toffset.point.z:           " << obj->offset.p.z << "m\n"
-        << "\toffset.orientation.roll:  " << RAD2DEG(obj->offset.o.r) << "deg\n"
-        << "\toffset.orientation.pitch: " << RAD2DEG(obj->offset.o.p) << "deg\n"
-        << "\toffset.orientation.yaw:   " << RAD2DEG(obj->offset.o.y) << "deg\n"
-        << "\tsize.length:              " << obj->size.l << "m\n"
-        << "\tsize.width:               " << obj->size.w << "m\n"
-        << "\tsize.height:              " << obj->size.h << "m";
+        << "minRange=" << obj->minRange << "m\n"
+        << "maxRange=" << obj->maxRange << "m\n"
+        << "fieldOfView=" << RAD2DEG(obj->fieldOfView) << "deg\n"
+        << "startAngle=" << RAD2DEG(obj->startAngle) << "deg\n"
+        << "numberOfSamples=" << obj->numberOfSamples << "\n"
+        << "offset.point.x=" << obj->offset.p.x << "m\n"
+        << "offset.point.y=" << obj->offset.p.y << "m\n"
+        << "offset.point.z=" << obj->offset.p.z << "m\n"
+        << "offset.orientation.roll=" << RAD2DEG(obj->offset.o.r) << "deg\n"
+        << "offset.orientation.pitch=" << RAD2DEG(obj->offset.o.p) << "deg\n"
+        << "offset.orientation.yaw=" << RAD2DEG(obj->offset.o.y) << "deg\n"
+        << "size.length=" << obj->size.l << "m\n"
+        << "size.width=" << obj->size.w << "m\n"
+        << "size.height=" << obj->size.h << "m";
 
     return s.str();
 }
@@ -549,17 +547,17 @@ toString( const orca::ImuDescriptionPtr & obj )
     std::ostringstream s;
     s << toString(obj->timeStamp)
             << " ImuDescription: \n"
-            << "\tSize: \n"
-            << "\tsize.l:           " << obj->size.l << "m\n"
-            << "\tsize.w:           " << obj->size.w << "m\n"
-            << "\tsize.h:           " << obj->size.h << "m\n"
-            << "\tOffset: \n"
-            << "\torigin.p.x:           " << obj->offset.p.x << "m\n"
-            << "\toffset.p.y:           " << obj->offset.p.y << "m\n"
-            << "\toffset.p.z:           " << obj->offset.p.z << "m\n"
-            << "\toffset.o.r:           " << obj->offset.o.r << "m\n"
-            << "\toffset.o.p:           " << obj->offset.o.p << "m\n"
-            << "\toffset.o.y:           " << obj->offset.o.y << "m\n";
+            << "Size: \n"
+            << "size.l:           " << obj->size.l << "m\n"
+            << "size.w:           " << obj->size.w << "m\n"
+            << "size.h:           " << obj->size.h << "m\n"
+            << "Offset: \n"
+            << "origin.p.x:           " << obj->offset.p.x << "m\n"
+            << "offset.p.y:           " << obj->offset.p.y << "m\n"
+            << "offset.p.z:           " << obj->offset.p.z << "m\n"
+            << "offset.o.r:           " << obj->offset.o.r << "m\n"
+            << "offset.o.p:           " << obj->offset.o.p << "m\n"
+            << "offset.o.y:           " << obj->offset.o.y << "m\n";
 
     return s.str();
 }
@@ -632,9 +630,9 @@ toString( const orca::OgMapDataPtr &obj )
     std::ostringstream s;
     s << toString(obj->timeStamp)
       << " OgMap: \n"
-      << "\torigin:        [" << obj->origin.p.x << ", " << obj->origin.p.y << ", " << obj->origin.o*180.0/M_PI << "]\n"
-      << "\tnumCells:      [" << obj->numCellsX << ", " << obj->numCellsY << "]\n"
-      << "\tmetresPerCell: [" << obj->metresPerCellX << ", " << obj->metresPerCellY << "]\n";
+      << "origin:        [" << obj->origin.p.x << ", " << obj->origin.p.y << ", " << obj->origin.o*180.0/M_PI << "]\n"
+      << "numCells:      [" << obj->numCellsX << ", " << obj->numCellsY << "]\n"
+      << "metresPerCell: [" << obj->metresPerCellX << ", " << obj->metresPerCellY << "]\n";
 
     return s.str();
 }

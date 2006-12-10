@@ -25,11 +25,11 @@ BinarySwitchProbe::BinarySwitchProbe( const orca::FQInterfaceName & name, orcapr
 {
     id_ = "::orca::BinarySwitch";
     
-    operations_.push_back( "getData" );
-    operations_.push_back( "setState" );
-    operations_.push_back( "timedSetState" );
-    operations_.push_back( "toggleState" );
-    operations_.push_back( "timedToggleState" );
+    addOperation( "getData" );
+    addOperation( "setState" );
+    addOperation( "timedSetState" );
+    addOperation( "toggleState" );
+    addOperation( "timedToggleState" );
 }
 
 int 

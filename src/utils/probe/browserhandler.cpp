@@ -98,7 +98,7 @@ BrowserHandler::run()
         {
         // approx in order of call frequency
         case PickEvent :
-            cout<<"pick event"<<endl;
+//             cout<<"pick event"<<endl;
             pick();
             break;
         case UpEvent :
@@ -110,7 +110,7 @@ BrowserHandler::run()
             top();
             break;
         case ReloadEvent :
-            cout<<"reload event"<<endl;
+//             cout<<"reload event"<<endl;
             reload();
             break;
         case FilterEvent :
@@ -165,7 +165,7 @@ BrowserHandler::showRegistry()
 void 
 BrowserHandler::filterRegistry()
 {
-    cout<<"filtering registry data for :"<<context_.communicator()->getDefaultLocator()->ice_toString()<<endl;
+//     cout<<"filtering registry data for :"<<context_.communicator()->getDefaultLocator()->ice_toString()<<endl;
 
     // simply call showRegistryData() again. the driver will filter it.
     display_.setRegistryData( registryData_ );
@@ -174,7 +174,7 @@ BrowserHandler::filterRegistry()
 void 
 BrowserHandler::loadPlatform()
 {
-    cout<<"loading platform data for "<<registryData_.platforms[pick_].name<<endl;
+//     cout<<"loading platform data for "<<registryData_.platforms[pick_].name<<endl;
     lastPlatformPick_ = pick_;
     
     platformData_ = orcacm::home2hierarch2( registryHomeData_, registryData_.platforms[pick_] );
@@ -191,7 +191,7 @@ BrowserHandler::showPlatform()
 void 
 BrowserHandler::loadComponent()
 {
-    cout<<"loading component data for "<<endl; //<<orcaice::toString(platformData_.homes[pick_].name)<<endl;
+//     cout<<"loading component data for "<<endl; //<<orcaice::toString(platformData_.homes[pick_].name)<<endl;
     lastComponentPick_ = pick_;
     
     //
@@ -204,7 +204,7 @@ BrowserHandler::loadComponent()
     // todo: this is a bit ugly
     componentData_.locatorString = platformData_.locatorString;
 
-    cout<<"DEBUG: got a list of "<<componentData_.provides.size()<<" provided interfaces for "<<orcaice::toString(componentData_.name)<<endl;
+//     cout<<"DEBUG: got a list of "<<componentData_.provides.size()<<" provided interfaces for "<<orcaice::toString(componentData_.name)<<endl;
     display_.setComponentData( componentData_ );
 }
 
@@ -223,7 +223,7 @@ BrowserHandler::loadInterface()
         delete ifaceProbe_;
     }
 
-    cout<<"loading interface data for "<<componentData_.provides[pick_].name<<endl;
+//     cout<<"loading interface data for "<<componentData_.provides[pick_].name<<endl;
     lastInterfacePick_ = pick_;
 
     interfaceData_.locatorString = componentData_.locatorString;
@@ -247,6 +247,7 @@ BrowserHandler::loadInterface()
 
     if ( ifaceProbe_==0 ) {
         cout<<"Unsupported interface: '"<<interfaceData_.id<<"'. Sending fault event."<<endl;
+        // alexm: here we are not synch'd with Qt driver!
         eventPipe_.push( FaultEvent );
         return;
     }

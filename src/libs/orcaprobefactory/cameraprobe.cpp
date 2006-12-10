@@ -25,10 +25,10 @@ CameraProbe::CameraProbe( const orca::FQInterfaceName & name, orcaprobe::Display
 {
     id_ = "::orca::Camera";
     
-    operations_.push_back( "getData" );
-    operations_.push_back( "getDescription" );
-    operations_.push_back( "subscribe" );
-    operations_.push_back( "unsubscribe" );
+    addOperation( "getData" );
+    addOperation( "getDescription" );
+    addOperation( "subscribe" );
+    addOperation( "unsubscribe" );
 }
     
 int 

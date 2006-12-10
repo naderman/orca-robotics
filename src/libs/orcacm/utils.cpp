@@ -126,8 +126,7 @@ getRegistryHomeData( const orcaice::Context & context, const std::string & locat
         list = query->findAllObjectsByType( "::orca::Home" );
     } 
     catch ( const Ice::Exception & ) {
-        // default
-        data.isReachable = true;
+        data.isReachable = false;
         return data;
     }
 
@@ -136,12 +135,13 @@ getRegistryHomeData( const orcaice::Context & context, const std::string & locat
     for ( unsigned int i=0; i<list.size(); ++i ) 
     {
         home.proxy = list[i];
+        // assume it's reachable
+        home.isReachable = true;
         
         // ping each component's Home interface, if requested
         if ( tryToPing ) {
             try {
                 home.proxy->ice_ping();
-                home.isReachable = true;
             }
             catch( const Ice::Exception & )
             {

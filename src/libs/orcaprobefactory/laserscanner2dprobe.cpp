@@ -24,11 +24,11 @@ LaserScanner2dProbe::LaserScanner2dProbe( const orca::FQInterfaceName & name, or
     : InterfaceProbe(name,display,context)
 {
     id_ = "::orca::LaserScanner2d";
-    
-    operations_.push_back( "getData" );
-    operations_.push_back( "getDescription" );
-    operations_.push_back( "subscribe" );
-    operations_.push_back( "unsubscribe" );
+
+    addOperation( "getData", "nonmutating RangeScanner2dData getData()" );
+    addOperation( "getDescription", "nonmutating RangeScanner2dDescription getDescription()" );
+    addOperation( "subscribe", "void subscribe( RangeScanner2dConsumer *subscriber )" );
+    addOperation( "unsubscribe", "idempotent void unsubscribe( RangeScanner2dConsumer *subscriber )" );
 }
     
 int 
@@ -172,8 +172,18 @@ LaserScanner2dProbe::loadUnsubscribe( orcacm::OperationData & data )
 }
 
 void 
-LaserScanner2dProbe::setData(const orca::RangeScanner2dDataPtr& data, const Ice::Current&)
+LaserScanner2dProbe::setData(const orca::RangeScanner2dDataPtr& result, const Ice::Current&)
 {
-    // how do we display this?
-    std::cout << orcaice::toString(data) << std::endl;
+    std::cout << orcaice::toString(result) << std::endl;
+
+    orcacm::OperationData data;
+    // this is the result for operation "subscribe" which has index=2;
+    fillOperationData( 2, data );
+
+    orcacm::ResultHeader res;
+    res.name = "data";
+    res.text = orcaice::toString(result);
+    data.results.push_back( res );
+
+    display_.setOperationData( data );
 };

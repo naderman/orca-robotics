@@ -45,7 +45,9 @@ public:
     enum Roles {
         StatusIconRole = Qt::DecorationRole,
         TypeRole = Qt::UserRole + 1,
-        ConnectionRole
+        ConnectionRole,
+        SummaryRole,
+        DetailRole
     };
 
     explicit OcmModel(QObject *parent = 0);
@@ -73,36 +75,57 @@ public:
     //! create=TRUE, create a new one.
     QModelIndex platformIndex( const QString & registry, const QString &platform, bool create=false );
             
-    //! Find component node by its name, the name of its platform and its registry. If not found and 
+    //! Find component node by its name, and the names of its parents. If not found and 
     //! create=TRUE, create a new one.
     QModelIndex componentIndex( const QString & registry, const QString & platform, 
                         const QString & component, bool create=false );
 
+    //! Find interface node by its name, and the names of its parents. If not found and 
+    //! create=TRUE, create a new one.
     QModelIndex interfaceIndex( const QString & registry, const QString & platform, 
                         const QString & component, const QString & interface, bool create=false );
 
+    //! Find operation node by its name, and the names of its parents. If not found and 
+    //! create=TRUE, create a new one.
     QModelIndex operationIndex( const QString & registry, const QString & platform, const QString & component, 
                        const QString & interface, const QString & operation, bool create=false );
 
+    //! Find result node by its name, and the names of its parents. If not found and 
+    //! create=TRUE, create a new one.
     QModelIndex resultIndex( const QString & registry, const QString & platform, const QString & component, 
                        const QString & interface, const QString & operation, const QString & result, bool create=false );
 
+    //! Set info for a registry node.
     void setRegistry( const QString & registry, const QString & regAddress, bool connected );
 
+    //! Set info for a platform node.
     void setPlatform( const QString & registry, 
                       const QString &platform );
             
+    //! Set info for a component node.
     void setComponent( const QString & registry, const QString & platform,
                        const QString & component, const QString & compAddress, bool connected, int timeUp );
 
+    //! Set info for a interface node.
     void setInterface( const QString & registry, const QString & platform, const QString & component,
-                       const QString & interface, const bool isProvided, const QString & ids, bool isReachable );
+                       const QString & interface, const bool isProvided, const QString & ids, bool isEnabled );
 
-    void setOperation( const QString & registry, const QString & platform, const QString & component, const QString & interface, 
-                       const QString & operation );
+    //! Set info for a operation node.
+    void setOperation( const QString & registry, const QString & platform, const QString & component, 
+                                    const QString & interface, 
+                       const QString & operation, const QString & signature );
 
-    void setResult( const QString & registry, const QString & platform, const QString & component, const QString & interface, 
-                       const QString & operation, const QString & result, const QString & text );
+    //! Set info for a result node.
+    void setResult( const QString & registry, const QString & platform, const QString & component, 
+                                    const QString & interface, const QString & operation, 
+                       const QString & result, const QString & text );
+
+    //! Custom function for getting information about an interface.
+    //! Returns 0 if the data was retrieved properly or 1 if something went wrong, e.g.
+    //! the index does not point to an InterfaceType.
+    int interfaceData( const QModelIndex& ind,
+                       QString & registry, QString & platform, QString & component,
+                       QString & interface, QString & id );
 
     // OBSOLETE OcmModel specific API
 
@@ -120,12 +143,6 @@ public:
                        bool connected, int timeUp )
             { setInterfacePrivate( registry, regAddress, platform, component, interface,
                     isProvided, compAddress, ids, connected, timeUp ); };
-
-    //! Returns 0 if the data was retrieved properly or 1 if something went wrong, e.g.
-    //! the index does not point to an InterfaceType.
-    int getInterface( const QModelIndex& ind,
-                       QString & registry, QString & platform, QString & component,
-                       QString & interface, QString & id );
 
 public slots:
     //! Delete all data from the model
@@ -190,6 +207,7 @@ private:
             return name==other.name;
         }
         QString name;
+        QString signature;
         InterfaceNode* interface;
         QList<ResultNode> results;
         virtual NodeType type() { return OperationType; };
@@ -211,7 +229,7 @@ private:
         // not very clean: only provided interfaces can have operations 
         QList<OperationNode> operations;
         QString ids;
-        bool isConnected;
+        bool isEnabled;
         virtual NodeType type() { return InterfaceType; };
     };
     
@@ -229,7 +247,7 @@ private:
         PlatformNode* platform;
         QList<InterfaceNode> interfaces;
         QString address;
-        bool isConnected;
+        bool isEnabled;
         int daysUp;
         QTime timeUp;
         virtual NodeType type() { return ComponentType; };
@@ -248,7 +266,7 @@ private:
         QString name;
         RegistryNode* registry;
         QList<ComponentNode> components;
-        bool isConnected;
+        bool isEnabled;
         virtual NodeType type() { return PlatformType; };
     };
 
@@ -256,7 +274,7 @@ private:
     {
     public:
         RegistryNode( const QString &n, const QString &a="", bool connected=true )
-            : name(n), address(a), isConnected(connected) {};
+            : name(n), address(a), isEnabled(connected) {};
         // to be used in list search, name is sufficient
         bool operator==( const RegistryNode & other ) const
         {
@@ -265,7 +283,7 @@ private:
         QString name;
         QList<PlatformNode> platforms;
         QString address;
-        bool isConnected;
+        bool isEnabled;
         virtual NodeType type() { return RegistryType; };
     };
 

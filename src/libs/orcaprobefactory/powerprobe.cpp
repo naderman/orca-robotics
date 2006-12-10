@@ -24,9 +24,9 @@ PowerProbe::PowerProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDr
 {
     id_ = "::orca::Power";
     
-    operations_.push_back( "getData" );
-    operations_.push_back( "subscribe" );
-    operations_.push_back( "unsubscribe" );
+    addOperation( "getData" );
+    addOperation( "subscribe" );
+    addOperation( "unsubscribe" );
 }
     
 int 

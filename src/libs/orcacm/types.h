@@ -32,8 +32,10 @@ struct ResultHeader
 //! @see OperationData
 struct OperationHeader
 {
-    //! Operation name
+    //! Operation name, e.g. "getData"
     std::string name;
+    //! Operation signature, e.g. "double getData(int)"
+    std::string signature;
 };
 
 //! Operation data
@@ -46,7 +48,7 @@ struct OperationData
     orca::FQInterfaceName parent;
     //! Object ID of the parent interface
     std::string parentId;
-    //! Operation name
+    //! Operation name, e.g. "getData"
     std::string name;
     //! A listing of stringified results of the operation.
     //! For example, laser scan values converted to text.

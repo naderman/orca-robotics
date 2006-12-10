@@ -68,7 +68,8 @@ void RegSelectView::addCurrentToProject()
     QString component;
     QString interface;
     QString id;
-    ocmModel->getInterface( currentIndex(), registry, platform, component, interface, id );
+    // lookup interface information in the model
+    ocmModel->interfaceData( currentIndex(), registry, platform, component, interface, id );
     QStringList interfaceInfo;
     interfaceInfo << registry<<platform<<component<<interface<<id;
     emit interfaceToBeAdded( interfaceInfo );
