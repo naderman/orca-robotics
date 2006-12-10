@@ -523,28 +523,28 @@ OcmModel::data(const QModelIndex &idx, int role) const
         {
             RegistryNode* N = (RegistryNode*)n;
             QString s;
-            s =  "Platforms for Registry "+N->name;
+            s =  "Platforms for registry:  identity='"+N->name+"'";
             return s;
         }        
         case PlatformType :
         {
             PlatformNode* N = (PlatformNode*)n;
-            return "Components for platform "+N->name;
+            return "Components for platform:  name='"+N->name+"'";
         }        
         case ComponentType :
         {
             ComponentNode* N = (ComponentNode*)n;
-            return "Interfaces for component "+N->name;
+            return "Interfaces for component:  name='"+N->name+"'  type='"+N->name+"'";
         }        
         case InterfaceType :
         {
             InterfaceNode* N = (InterfaceNode*)n;
-            return "Operations for interface "+N->name+" of type "+N->ids;
+            return "Operations for interface:  name='"+N->name+"'  type="+N->ids+"'";
         }      
         case OperationType :
         {
             OperationNode* N = (OperationNode*)n;
-            return "Results for operations "+N->signature;
+            return "Results for operation: signature='"+N->signature+"'";
         }
         case ResultType :
         {
@@ -571,22 +571,22 @@ OcmModel::data(const QModelIndex &idx, int role) const
         case ComponentType :
         {
             ComponentNode* N = (ComponentNode*)n;
-            return "Component:  name="+N->name+"  type="+N->name;
+            return "Component:  name='"+N->name+"'  type='"+N->name+"'";
         }        
         case InterfaceType :
         {
             InterfaceNode* N = (InterfaceNode*)n;
-            return "Interface:  name="+N->name+"  type="+N->ids;
+            return "Interface:  name='"+N->name+"'  type='"+N->ids+"'";
         }      
         case OperationType :
         {
             OperationNode* N = (OperationNode*)n;
-            return "Operation:  signature="+N->signature;
+            return "Operation:  signature='"+N->signature+"'";
         }
         case ResultType :
         {
             ResultNode* N = (ResultNode*)n;
-            return "Result:  type="+N->name;
+            return "Result:  type='"+N->name+"'";
         }
         } // switch
     } // role
