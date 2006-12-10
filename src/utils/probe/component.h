@@ -39,8 +39,8 @@ private:
     std::vector<orcaprobe::Factory*>                  factories_;
     std::vector<orcadynamicload::DynamicallyLoadedLibrary*> libraries_;
 
-    // utilities
-    void loadPluginLibraries( const std::string & factoryLibNames );
+    // loads all factory libs and returns a listing of unique supported interfaces
+    std::vector<std::string> loadPluginLibraries( const std::string & factoryLibNames );
 };
 
 } // namespace

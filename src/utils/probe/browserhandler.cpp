@@ -145,7 +145,10 @@ BrowserHandler::loadRegistry()
     // remote call!
     //
     display_.showNetworkActivity( true );
-    registryHomeData_ = orcacm::getRegistryHomeData( context_, context_.communicator()->getDefaultLocator()->ice_toString() );
+    bool tryToPing = false;
+    registryHomeData_ = orcacm::getRegistryHomeData( context_, 
+            context_.communicator()->getDefaultLocator()->ice_toString(),
+            tryToPing );
     display_.showNetworkActivity( false );
 
     registryData_ = orcacm::home2hierarch1( registryHomeData_ );

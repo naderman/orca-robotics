@@ -80,6 +80,7 @@ src
         orcaqgui2dfactory                   GPL
         orcaqgui3d                          GPL
         orcaqgui3dfactory                   GPL
+        orcaqt                              GPL
         orcaquml                            GPL
         orcaserial                         LGPL
     sandbox

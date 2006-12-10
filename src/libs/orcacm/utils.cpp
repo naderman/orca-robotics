@@ -126,7 +126,8 @@ getRegistryHomeData( const orcaice::Context & context, const std::string & locat
         list = query->findAllObjectsByType( "::orca::Home" );
     } 
     catch ( const Ice::Exception & ) {
-        data.isReachable = false;
+        // default
+        data.isReachable = true;
         return data;
     }
 

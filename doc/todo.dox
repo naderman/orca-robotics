@@ -66,6 +66,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - new utility def2uml for creating images of UML symbols from component definition files.
 - libOrcaCompModel
   - improved exception handling when contacting the Registry (Alex M.)
+- New library: libOrcaQt
+  - factored out commonly used Qt elements. Currently contains the Orca icon and 
+    aboutOrca() function.
 - Documentation
   - added graphical UML symbol to documentation pages of all components. (Alex M.)
   - separate listing of libs and utils (Alex M.)

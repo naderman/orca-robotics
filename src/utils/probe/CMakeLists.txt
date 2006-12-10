@@ -29,7 +29,7 @@ IF ( BUILD_PROBE )
         PROBE_QT_LIBS
         QT4_OK
         HAVE_QT_DRIVER
-        OrcaQCompModel ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
+        OrcaQt OrcaQCompModel ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
 
     FILE( GLOB SRCS *.cpp )
     

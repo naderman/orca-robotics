@@ -9,6 +9,7 @@
  */
 
 #include <iostream>
+#include <algorithm>
 
 #include <orcaice/orcaice.h>
 #include <orcaprobe/orcaprobe.h>
@@ -52,11 +53,15 @@ Component::~Component()
     }
 }
 
-void
+std::vector<std::string>
 Component::loadPluginLibraries( const std::string & factoryLibNames )
 {
     // Parse space-separated list of lib names
     Ice::StringSeq libNames = orcaice::toStringSeq( factoryLibNames, ' ' );
+    
+    // this will be a listing of unique supported interfaces
+    std::vector<std::string> supportedInterfaces;
+    std::vector<std::string> ifaces;
     
     for ( uint i=0; i < libNames.size(); i++ )
     {
@@ -69,6 +74,11 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
             orcaprobe::Factory *f = loadFactory( *lib );
             libraries_.push_back(lib);
             factories_.push_back(f);
+    
+            ifaces = f->supportedTypes();
+            for ( unsigned int j=0; j<ifaces.size(); ++j ) {
+                supportedInterfaces.push_back( ifaces[j] );
+            }                        
         }
         catch (orcadynamicload::DynamicLoadException &e)
         {
@@ -82,6 +92,12 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
         context().tracer()->error( err );
         throw err;
     }
+
+    // eliminate duplicates from the listing of supported interfaces
+    std::sort( supportedInterfaces.begin(), supportedInterfaces.end() );
+    std::unique( supportedInterfaces.begin(), supportedInterfaces.end() );
+
+    return supportedInterfaces;
 }
 
 void 
@@ -96,7 +112,8 @@ Component::start()
     std::string prefix = tag()+".Config.";
 
     string libNames = orcaice::getPropertyWithDefault( props, prefix+"FactoryLibNames", DEFAULT_FACTORY_NAME );
-    loadPluginLibraries( libNames );
+    // returns a listing of unique supported interfaces, for display drivers to know what's supported
+    std::vector<std::string> supportedInterfaces = loadPluginLibraries( libNames );    
 
     // which driver to load?
     std::string driverName = orcaice::getPropertyWithDefault( props, prefix+"Driver", "iostream" );
@@ -110,7 +127,7 @@ Component::start()
     {
 #ifdef HAVE_QT_DRIVER        
         tracer()->info( "Loading Qt driver");
-        displayDriver = new DisplayQtDriver( &factories_ );
+        displayDriver = new DisplayQtDriver( supportedInterfaces );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver type 'qt' because it was not compiled." );
 #endif
@@ -118,7 +135,7 @@ Component::start()
     else if ( driverName == "iostream" ) 
     {
         tracer()->info( "Loading iostream driver");
-        displayDriver = new IostreamDriver( &factories_ );
+        displayDriver = new IostreamDriver( supportedInterfaces );
     }
     else {
         std::string errorStr = "Unknown driver type." + driverName + " Cannot talk to hardware.";

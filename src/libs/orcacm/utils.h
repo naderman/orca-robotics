@@ -55,7 +55,7 @@ getRegistryData( const orcaice::Context & context, const std::string & locatorSt
  *
  *  If @p tryToPing is TRUE (default), the function attempts to ping each
  *  Home object. Otherwise it doesn't and the @p isReachable field for
- *  each Home is set to FALSE;
+ *  each Home is set to TRUE;
  */
 RegistryHomeData
 getRegistryHomeData( const orcaice::Context & context, const std::string & locatorString, bool tryToPing=true );
