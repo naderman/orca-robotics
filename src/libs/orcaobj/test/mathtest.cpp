@@ -16,11 +16,19 @@ testNormalise()
 {
     T angle;
 
+    angle = -M_PI;
+    NORMALISE_ANGLE(angle);
+    assert( angle >= -M_PI && angle < M_PI );
+
     angle = -M_PI+EPS;
     NORMALISE_ANGLE(angle);
     assert( angle >= -M_PI && angle < M_PI );
 
     angle = -M_PI-EPS;
+    NORMALISE_ANGLE(angle);
+    assert( angle >= -M_PI && angle < M_PI );
+
+    angle = M_PI;
     NORMALISE_ANGLE(angle);
     assert( angle >= -M_PI && angle < M_PI );
 
