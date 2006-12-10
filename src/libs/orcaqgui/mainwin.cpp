@@ -245,8 +245,8 @@ MainWindow::setupInterface()
 //    toolBar_->addAction(screenCapture);
 
     QMenu* helpMenu = menuBar()->addMenu("&Help");
-    helpMenu->addAction("About Orca&View", this, SLOT(aboutApp()));
-    helpMenu->addAction("About &Orca", this, SLOT(aboutOrca()));
+    helpMenu->addAction("About Orca&View", this, SLOT(aboutApp()), Qt::Key_F1 );
+    helpMenu->addAction("About &Orca", this, SLOT(aboutOrca()), Qt::SHIFT | Qt::Key_F1 );
     
 #if 0    
     QPixmap selectIcon(select_xpm);
@@ -349,16 +349,9 @@ MainWindow::aboutOrca()
 void
 MainWindow::aboutApp()
 {
-    QPixmap orcaIcon( orcaqt::orca2_2x3_yellow_130_xpm );
-
-    QMessageBox mb( this );
-    mb.setWindowTitle("About OrcaView");
-    mb.setWindowIcon ( orcaIcon );
-    mb.setText("Displays state of Orca components.\n\n"
-                "http://orca-robotics.sf.net\n" );
-    mb.setIconPixmap( orcaIcon );
-    //mb.setMaximumWidth( 400 );
-    mb.exec();
+    QString text;
+    text += "Connects to Orca components and displays information arriving from their interfaces.\n";
+    orcaqt::aboutApp( this, "About OrcaView", text );
 }
 
 void 

@@ -20,6 +20,13 @@ namespace orcaqt
 */
 void aboutOrca( QWidget* parent, const QString & title = QString() );
 
+
+/*!
+    A basic "About Application" dialog which uses Orca icon. Adds the URL of
+    of the Orca website to the @p text.
+*/
+void aboutApp( QWidget* parent, const QString & title, const QString & text );
+
 } // namespace
 
 #endif

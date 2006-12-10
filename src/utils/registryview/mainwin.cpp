@@ -99,8 +99,8 @@ MainWindow::setupMenuBar()
     viewMenu->addAction("&Reload", this, SLOT(reloadRegistryView()), QKeySequence("Ctrl+L") );
     
     QMenu* helpMenu = menuBar()->addMenu("&Help");
-    helpMenu->addAction("About &RegistryView", this, SLOT(aboutApp()));
-    helpMenu->addAction("About &Orca", this, SLOT(aboutOrca()));
+    helpMenu->addAction("About &RegistryView", this, SLOT(aboutApp()), Qt::Key_F1);
+    helpMenu->addAction("About &Orca", this, SLOT(aboutOrca()), Qt::SHIFT | Qt::Key_F1);
 
 }
 
@@ -158,15 +158,10 @@ MainWindow::aboutOrca()
 void
 MainWindow::aboutApp()
 {
-    QPixmap orcaIcon( orcaqt::orca2_2x3_yellow_130_xpm );
+    QString text;
+    text += "Gives a view of the currently deployed\n";
+    text += "Orca system based on the information from\n";
+    text += "an IceGrid Registry.\n";
 
-    QMessageBox mb( this );
-    mb.setWindowTitle("About RegistryView");
-    mb.setWindowIcon ( orcaIcon );
-    mb.setText("Gives a view of the currently deployed\n"
-               "Orca system based on the information from\n"
-               "an IceGrid Registry.\n\n"
-                "http://orca-robotics.sf.net\n" );
-    mb.setIconPixmap( orcaIcon );
-    mb.exec();
+    orcaqt::aboutApp( this, "About RegistryView", text );
 }
