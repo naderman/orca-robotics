@@ -12,6 +12,7 @@
 #include <QPainter>
 #include <QString>
 #include <QPixmap>
+#include <QBitmap>
 
 #include <fstream>
 #include <orcaobj/orcaobj.h>
@@ -45,10 +46,6 @@ OgMapPainter::OgMapPainter( QObject* parent, int winMaxWidth, int winMaxHeight )
 
     mapSizePix_.setHeight(0);
     mapSizePix_.setWidth(0);
-
-    // connect the scaling/sizing signal coming from the component container
-//     QObject::connect( parent_, SIGNAL(worldMatrixChanged(const QMatrix*)), this,SLOT(updateWorldMatrix(const QMatrix*)) );
-//     QObject::connect( parent_, SIGNAL(windowSizeChanged(const QSize &)), this,SLOT(updateWindowSize(const QSize &)) );
 }
 
 
@@ -65,8 +62,8 @@ OgMapPainter::clear()
 void
 OgMapPainter::setData( const OgMapDataPtr & data )
 {
-    cout<<"TRACE(ogmappainter.cpp): setData(): " << data << endl;
-//        orcaice::displayAsText(data);
+    cout<<"TRACE(ogmappainter.cpp): setData(): " << endl;
+    cout << orcaice::toVerboseString(data);
     data_ = data;
 
     if ( data->origin.o != 0.0 ) {
@@ -154,43 +151,11 @@ OgMapPainter::paint( QPainter *painter, int z )
     if ( dirty ) {
         rescale();
     }
-    
-//     cout<<"TRACE(ogmappainter.cpp): painting map "<<mapWin_.width()<<"x"<<mapWin_.height()<<" pix"<< endl;
-
+     
     painter->save();
     painter->setMatrix( QMatrix() );
     painter->drawPixmap( QPoint(), mapWin_ );
     painter->restore();
-    
-//     painter->save();
-//     painter->setMatrix( QMatrix() );
-//     QPixmap test( 600,500 );
-//     //QPixmap test( 60,50 );
-//     test.fill( Qt::green );
-//     painter->drawPixmap( QPoint(), test );
-//     painter->restore();
-    
-//     orcaqgui::paintOrigin( p, Qt::red );
-
-//     painter->drawPixmap( QRectF(QPointF(),QSizeF(50.0,20.0)), qMap_, QRectF(QPointF(),QSizeF(500.0,200.0)) );
-
-    // TODO: Shouldn't re-paint this every time.
-//     QPen pen;
-//     pen.setWidth( (int)(data_->metresPerCellX * 1000) );
-//     for( int x=0; x<data_->numCellsX; x++)
-//     {
-//         for (int y=0; y<data_->numCellsY; y++)
-//         {
-//             unsigned char occ = orcaice::gridCell( data_, x, y );
-//             int c = 255 - (int)occ;
-//             pen.setColor( qRgb(c,c,c) );
-//             painter->setPen( pen );
-//             painter->drawPoint( x, y );
-//         }
-//     }
-// 
-// 
-//     paintOrigin( p, Qt::red );
 }
 
 bool
@@ -207,39 +172,27 @@ OgMapPainter::updateWorldMatrix( const QMatrix & m )
     // copy "m2win" matrix ...
     map2win_ = m2win_;
     QMatrix M = map2win_;
-    cout<<"m2win_: " << M.m11()<<","<<M.m12()<<","<<M.m21()<<","<<M.m22()<<", "<<M.dx()<<","<<M.dy()<<endl;
+    //cout<<"m2win_: " << M.m11()<<","<<M.m12()<<","<<M.m21()<<","<<M.m22()<<", "<<M.dx()<<","<<M.dy()<<endl;
 
     // and translate to the origin of the map [m]
     // remove scale and translation
     double s = sqrt( map2win_.m11()*map2win_.m11() + map2win_.m12()*map2win_.m12() );
     QMatrix rot( map2win_.m11()/s, map2win_.m12()/s, -map2win_.m21()/s, -map2win_.m22()/s, 0.0, 0.0);
     M = rot;
-    cout<<"rotation only: " << M.m11()<<","<<M.m12()<<","<<M.m21()<<","<<M.m22()<<", "<<M.dx()<<","<<M.dy()<<endl;
+    //cout<<"rotation only: " << M.m11()<<","<<M.m12()<<","<<M.m21()<<","<<M.m22()<<", "<<M.dx()<<","<<M.dy()<<endl;
     
     QPointF origin = rot.map( origin_ );
-    cout<<"origin in meters: "<<origin_.x()<<","<<origin_.y()<<" rotated :"<<origin.x()<<","<<origin.y()<<endl;
+    //cout<<"origin in meters: "<<origin_.x()<<","<<origin_.y()<<" rotated :"<<origin.x()<<","<<origin.y()<<endl;
     
     map2win_.translate( origin.x(), origin.y() );
-//     map2win_.translate( origin_.x(), origin_.y() );
     M = map2win_;
-    cout<<"translated: " << M.m11()<<","<<M.m12()<<","<<M.m21()<<","<<M.m22()<<", "<<M.dx()<<","<<M.dy()<<endl;
+    //cout<<"translated: " << M.m11()<<","<<M.m12()<<","<<M.m21()<<","<<M.m22()<<", "<<M.dx()<<","<<M.dy()<<endl;
 
     // and scale it by cell size in [m]
     // this matrix is [pix-2-pix]
     map2win_.scale( cellSize_.width(), cellSize_.height() );
     M = map2win_;
-    cout<<"scaled: " << M.m11()<<","<<M.m12()<<","<<M.m21()<<","<<M.m22()<<", "<<M.dx()<<","<<M.dy()<<endl;
-
-    // and translate to the origin of the map
-//     map2win_.setMatrix( map2win_.m11(),
-//                         map2win_.m12(),
-//                         map2win_.m21(),
-//                         map2win_.m22(),
-//                         map2win_.dx()+originX_*map2win_.m11() ,
-//                         map2win_.dy()+originY_*map2win_.m22() );
-//     M = map2win_;
-//     cout<<"translated: " << M.m11()<<","<<M.m12()<<","<<M.m21()<<","<<M.m22()<<", "<<M.dx()<<","<<M.dy()<<endl;
-
+    //cout<<"scaled: " << M.m11()<<","<<M.m12()<<","<<M.m21()<<","<<M.m22()<<", "<<M.dx()<<","<<M.dy()<<endl;
     return true;
 }
 
@@ -253,16 +206,9 @@ OgMapPainter::updateWindowSize( const QSize & s )
     cout << "TRACE(ogmappainter.cpp): updateWindowSize " << endl;
 
     winSize_ = s;
-
-//     if ( winSize_.width()>winMaxSize_.width() || winSize_.height()>winMaxSize_.height() )
-//     {
-//         // ???
-//         winMaxSize_ = winSize_;
-//         cout<<"QredOgMap::updateWindowSize: current window size is larger than expected max size. Resizing map buffer..."<<endl;
-//     }
     
     mapWin_ = QPixmap( winSize_ );
-    cout<<"QredOgMap::updateWindowSize: new size ["<<winSize_.width()<<","<<winSize_.height()<<"], so rescaled map buffer to ["<<mapWin_.width()<<"x"<<mapWin_.height()<<"]"<<endl;
+    //cout<<"QredOgMap::updateWindowSize: new size ["<<winSize_.width()<<","<<winSize_.height()<<"], so rescaled map buffer to ["<<mapWin_.width()<<"x"<<mapWin_.height()<<"]"<<endl;
 
     return true;
 }
@@ -273,7 +219,7 @@ OgMapPainter::updateWindowSize( const QSize & s )
 */
 void OgMapPainter::rescale()
 {
-    cout<<"TRACE(ogmappainter.cpp): ----------- rescale() -----------" << endl;
+    //cout<<"TRACE(ogmappainter.cpp): ----------- rescale() -----------" << endl;
     if ( !haveMap_ ) return;
 
     // peep hole into window display [pix] of the map [pix]
@@ -281,11 +227,11 @@ void OgMapPainter::rescale()
     // this is in [pix]
     QRect peepRectPix = win2map.mapRect( QRect( QPoint(), winSize_) );
 
-    cout<<"peep hole [pix] ["<<peepRectPix.width()<<","<<peepRectPix.height()<<"] at ("<<peepRectPix.left()<<","<<peepRectPix.top()<<")"<<endl;
+    //cout<<"peep hole [pix] ["<<peepRectPix.width()<<","<<peepRectPix.height()<<"] at ("<<peepRectPix.left()<<","<<peepRectPix.top()<<")"<<endl;
 
     // make sure that the peep rectangle is not outside the map (insideRect is also in map CS)
     QRect insideRectPix = peepRectPix.intersect( QRect( QPoint(), mapSizePix_ ) );
-    cout<<"inside hole ["<<insideRectPix.width()<<","<<insideRectPix.height()<<"] at ("<<insideRectPix.left()<<","<<insideRectPix.top()<<")"<<endl;
+    //cout<<"inside hole ["<<insideRectPix.width()<<","<<insideRectPix.height()<<"] at ("<<insideRectPix.left()<<","<<insideRectPix.top()<<")"<<endl;
 
     // copy unscaled peep hole into a separate pixmap
     QPixmap unscaledInsideRect( insideRectPix.size() );
@@ -293,12 +239,8 @@ void OgMapPainter::rescale()
     toUnscaledInsideRect.drawPixmap( QPoint(), qMap_, insideRectPix );
 
     // scale to the window buffer [pix] (no translation)
-//     QMatrix mapPix2winPix( map2win_.m11(),map2win_.m12(), map2win_.m21(),map2win_.m22(), 0.0,0.0 );
-//     QPixmap scaledInsideRect = unscaledInsideRect.transformed( mapPix2winPix );
     QPixmap scaledInsideRect = unscaledInsideRect.transformed( map2win_ );
-
-//     cout<<"TRACE(ogmappainter.cpp): m11,m22: " << map2win_.m11() << "," << map2win_.m22() << endl;
-// 
+ 
     // Find the win coords of the top-left point of insideRect
     QPoint topCorner = map2win_.map( insideRectPix.bottomLeft() );
 
@@ -317,7 +259,7 @@ void OgMapPainter::rescale()
 void
 OgMapPainter::toggleDisplayMap()
 {
-        isDisplayMap_ = !isDisplayMap_;
+    isDisplayMap_ = !isDisplayMap_;
 }
 
 

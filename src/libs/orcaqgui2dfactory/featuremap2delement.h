@@ -1,7 +1,6 @@
 #ifndef FEATUREMAP2DELEMENT_H
 #define FEATUREMAP2DELEMENT_H
 
-#include <QObject>
 #include <orcaqgui2d/icestormelement.h>
 #include <orcaqgui/ihumanmanager.h>
 #include <orcaqgui2dfactory/featuremap2dpainter.h>
@@ -14,14 +13,13 @@ namespace orcaqgui
 //! @author Alex Brooks
 //!
 class FeatureMap2dElement
-    : public QObject, public IceStormElement<FeatureMap2dPainter,
+    : public IceStormElement<FeatureMap2dPainter,
                                              orca::FeatureMap2dData,
                                              orca::FeatureMap2dDataPtr,
                                              orca::FeatureMap2dPrx,
                                              orca::FeatureMap2dConsumer,
                                              orca::FeatureMap2dConsumerPrx>
 {
-    Q_OBJECT
 
 public: 
 
@@ -38,7 +36,7 @@ public:
     virtual QStringList contextMenu();
     virtual void execute( int action );
 
- public slots:
+ public:
     void saveFeatureMapAs();
     void saveFeatureMap();
 

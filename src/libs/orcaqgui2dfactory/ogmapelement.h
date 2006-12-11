@@ -2,7 +2,6 @@
 #define OGMAPELEMENT_H
 
 #include <orcaqgui2dfactory/ogmappainter.h>
-#include <QObject>
 #include <orcaqgui2d/icestormelement.h>
 #include <orcaqgui/ihumanmanager.h>
 #include <orcaqgui2dfactory/connectutils.h>
@@ -10,14 +9,13 @@
 namespace orcaqgui {
 
 class OgMapElement
-    : public QObject, public IceStormElement<OgMapPainter,
+    : public IceStormElement<OgMapPainter,
                                              orca::OgMapData,
                                              orca::OgMapDataPtr,
                                              orca::OgMapPrx,
                                              orca::OgMapConsumer,
                                              orca::OgMapConsumerPrx>
 {
-    Q_OBJECT
 
 public:
     OgMapElement( const orcaice::Context  &context,
@@ -35,7 +33,7 @@ public:
     virtual QStringList contextMenu();
     virtual void execute( int action );
 
-public slots:
+public:
     void saveMapAs();
     void saveMap();
 

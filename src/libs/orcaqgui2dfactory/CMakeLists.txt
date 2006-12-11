@@ -7,8 +7,6 @@ IF ( NOT WIN32 AND QT4_FOUND )
     FILE( GLOB HUMAN_SRCS *.cpp )
     
     SET( MOC_HEADERS
-        featuremap2delement.h
-        ogmapelement.h
         pathfollower2delement.h
         pathplanner2delement.h
     )
