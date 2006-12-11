@@ -18,45 +18,60 @@
 namespace orcaserial {
 
 //!
-//! Encapsulates a serial port.  
+//! @brief Encapsulates a serial port.  
 //!
 class Serial
 {
 public:
+    //! Constructor.
     Serial();
     ~Serial();
-    //! open a device.  O_NONBLOCK might be handy in flags.
+
+    //! Opens a device @ref dev.
+    //! O_NONBLOCK might be handy in flags.
     int open(const char *dev, const int flags);
-    //! read some data
+
+    //! Reads some data into buffer @ref buf.
     int read(void *buf, size_t count);
-    //! read some data (exactly count bytes or error)
-    //! returns the number of bytes read, or -1 on error
+
+    //! Reads some data (exactly @ref count bytes or error).
+    //! Returns the number of bytes read, or -1 on error.
     int read_full(void *buf, size_t count);
-    //! read a line of data up to count bytes (including \0) terminated by termchar
-    //! returns the number of bytes read, or -1 on error
+
+    //! Reads a line of data up to @ref count bytes (including \0) terminated by termchar.
+    //! Returns the number of bytes read, or -1 on error.
     int read_line(void *buf, size_t count, char termchar);
+
     //! Returns the number of bytes available for reading (non-blocking).
     int data_avail();
+
     //! Returns the number of bytes available for reading.  Waits according to the timeout.
     //! Returns:
-    //! 0:  timed out
-    //! >0: data ready
-    //! <0: error
+    //! - 0  :  timed out
+    //! - >0 :  data ready
+    //! - <0 :  error
     int data_avail_wait();
-    //! write some data
+
+    //! Writes some data.
     int write(const void *buf, size_t count);
-    //! write a string
+
+    //! Writes a string (default up to 256 chars)
     int write(const char *buf, size_t maxlen=256);
-    //! set baud rate of an open device
+
+    //! Sets the baud rate of an open device. Flushes any data.
     int baud(int baud);
-    //! set timeout for blocking operations
-    void timeout(int sec, int usec){to_sec=sec;to_usec=usec;};
-    //! flush both input and output buffers
+
+    //! Sets timeout for blocking operations.
+    void timeout(int sec, int usec) { to_sec=sec; to_usec=usec; };
+
+    //! Flushs both input and output buffers.
+    //! This discards all data in buffers.
     int flush();
-    //! finish transmission and drain input buffers
+
+    //! Finishes transmission from output buffers and drains input buffers.
     int drain();
 
-    //! If one of the functions above produce an error, you can see it with this call.
+    //! If any of the functions above produced an error, you can see it with this call.
     std::string last_error() const { return lastError_; }
 
 private:

@@ -25,7 +25,6 @@
 // Ensure we have strnlen
 #include <orcaportability/strnlen.h>
 
-
 using namespace std;
 
 namespace orcaserial {
@@ -49,18 +48,18 @@ Serial::~Serial()
     }
 }
 
-//! set the baud rate. flushes any data
-int Serial::baud(int baud)
+int 
+Serial::baud(int baud)
 {
     if(port_fd==-1){
-        fprintf(stderr,"Serial():baud() no valid device open\n");
-        lastError_ = "Serial():baud() no valid device open\n";
+        fprintf(stderr,"Serial:baud() no valid device open\n");
+        lastError_ = "Serial:baud() no valid device open\n";
         return -1;
     }
     if(tcgetattr(port_fd, &ser_opts) == -1)
     {
         fprintf(stderr,"Serial::baud():tcgetattr() Error reading attr.\n");
-        lastError_ = "Serial():baud() no valid device open\n";
+        lastError_ = "Serial:baud() no valid device open\n";
     }
 
     switch(baud){
@@ -149,8 +148,8 @@ int Serial::baud(int baud)
     return 0;
 }
 
-//! open a device
-int Serial::open(const char *device, const int flags)
+int 
+Serial::open(const char *device, const int flags)
 {
     if((port_fd = ::open(device, flags|O_RDWR|O_NOCTTY))== -1)
     {
@@ -166,7 +165,7 @@ int Serial::open(const char *device, const int flags)
         return -1;
     }
 
-    // enable receiver & Ignore control lines
+    // enable receiver & ignore control lines
     ser_opts.c_cflag |=  (CLOCAL | CREAD) ;
 
     // set 8 data bits
@@ -200,8 +199,8 @@ int Serial::open(const char *device, const int flags)
     return 0;
 }
 
-//! read some data
-int Serial::read(void *buf, size_t count)
+int 
+Serial::read(void *buf, size_t count)
 {
     int got;
     got = ::read(port_fd, buf, count);
@@ -210,8 +209,8 @@ int Serial::read(void *buf, size_t count)
     return got;
 }
 
-//! read a line of text terminated by termchar
-int Serial::read_line(void *buf, size_t count, char termchar)
+int 
+Serial::read_line(void *buf, size_t count, char termchar)
 {
     int got = 0;
     char lastchar=0;
@@ -251,8 +250,8 @@ int Serial::read_line(void *buf, size_t count, char termchar)
     return got;
 }
 
-//! read some data
-int Serial::read_full(void *buf, size_t count)
+int 
+Serial::read_full(void *buf, size_t count)
 {
     int got=0;
     while(got<(int)count){
@@ -283,8 +282,8 @@ int Serial::read_full(void *buf, size_t count)
     return got;
 }
 
-//! data available to read
-int Serial::data_avail()
+int 
+Serial::data_avail()
 {
     int ret,n_read;
     ret=ioctl(port_fd,FIONREAD,&n_read);
@@ -297,7 +296,8 @@ int Serial::data_avail()
     return n_read;
 }
 
-int Serial::data_avail_wait()
+int 
+Serial::data_avail_wait()
 {
     fd_set rfds;
     struct timeval tv;
@@ -318,8 +318,8 @@ int Serial::data_avail_wait()
     return data_avail();
 }
 
-//! write some data
-int Serial::write(const void *buf, size_t count)
+int 
+Serial::write(const void *buf, size_t count)
 {
     int put;
     put = ::write(port_fd, buf, count);
@@ -328,8 +328,8 @@ int Serial::write(const void *buf, size_t count)
     return put;
 }
 
-//! write a string (default up to 256 chars)
-int Serial::write(const char *str, size_t maxlen)
+int 
+Serial::write(const char *str, size_t maxlen)
 {
     int toput=strnlen(str, maxlen);
     int put;
@@ -339,14 +339,14 @@ int Serial::write(const char *str, size_t maxlen)
     return put;
 }
 
-//! discard all data in buffers
-int Serial::flush()
+int 
+Serial::flush()
 {
     return(tcflush(port_fd,TCIOFLUSH));
 }
 
-//! send all output and drain input buffers
-int Serial::drain()
+int 
+Serial::drain()
 {
     // wait till all output sent
     if(tcdrain(port_fd)){
@@ -359,4 +359,4 @@ int Serial::drain()
     }
 }
 
-}
+} // namespace
