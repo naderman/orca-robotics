@@ -108,6 +108,15 @@ private:
 // Utility functions
 //
 
+// Find sections from the raw data
+void extractSections( const std::vector<float> &ranges,
+                      double angleStart,
+                      double angleIncrement,
+                      double maxRange,
+                      double minPointsInLine,
+                      double maxRangeDelta,
+                      std::vector<Section> &sections );
+
 // Try to fit lines to the sections provided.
 void extractLines( std::vector<Section> &sections, int minPointsInLine );
 

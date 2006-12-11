@@ -48,11 +48,18 @@ void CornerExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                                    orca::PolarFeature2dDataPtr &features )
 {  
     assert( laserMaxRange_ > 0.0 );
+    double angleIncrement = laserData->fieldOfView / (double)(laserData->ranges.size()+1);
     
     std::vector<Section> sections;
 
     // Use the laser data to generate a set of sections
-    connectSections(laserData,sections);
+    extractSections(laserData->ranges,
+                    laserData->startAngle,
+                    angleIncrement,
+                    laserMaxRange_,
+                    MIN_POINTS_IN_LINE,
+                    RANGE_DELTA,
+                    sections);
 
     // Fit lines to the sections
     extractLines( sections, MIN_POINTS_IN_LINE );
@@ -80,6 +87,9 @@ CornerExtractor::addLines( const std::vector<Section> &sections,
         f->start.o = (*i).start().bearing();
         f->end.r   = (*i).end().range();
         f->end.o   = (*i).end().bearing();
+
+        f->startSighted = true;
+        f->endSighted = true;
 
         f->pFalsePositive = 0.3;
         f->pTruePositive  = 0.7;
@@ -214,67 +224,6 @@ CornerExtractor::addCorners( const std::vector<Section> &sections,
     //
 //  extractPossibleCorners(features);  
  
-}
-
-void 
-CornerExtractor::connectSections( const orca::LaserScanner2dDataPtr & laserDataPtr,
-                                  std::vector<Section> &sections )
-{
-    //Section *head = new Section();
-    //Section *current = head;
-    Section current;
-  
-    bool inSection = true;
-    if (laserDataPtr->ranges[0] >= laserMaxRange_) {
-        inSection = false;
-    } else {
-        double r = laserDataPtr->ranges[0];
-        double b = - M_PI/2;
-        SectionEl pos(r, b);
-        current.elements().push_back(pos);
-    }
-
-    for (unsigned int i = 1; i < laserDataPtr->ranges.size(); i++) {
-        if (laserDataPtr->ranges[i] >= laserMaxRange_) {
-            if (laserDataPtr->ranges[i-1] < laserMaxRange_) {
-              // found the end of the current section with an out of range reading
-              // ignore elements with less candidate points than would constitute 2 lines
-              if (current.elements().size() > 2*MIN_POINTS_IN_LINE)
-              {
-                sections.push_back(current);
-              }
-              current.elements().clear();
-            } else {
-                // We are still in an out of range section
-                // ignore...
-            }
-        } else if (laserDataPtr->ranges[i-1] >= laserMaxRange_ ||
-                   fabs(laserDataPtr->ranges[i] - laserDataPtr->ranges[i-1]) < RANGE_DELTA) 
-        {
-            // Add this point to the current section
-            double r = laserDataPtr->ranges[i];
-            double b = M_PI*i/(laserDataPtr->ranges.size()-1) - M_PI/2;
-            SectionEl pos(r, b);
-            current.elements().push_back(pos);
-         } else {
-           // There has been a step change in range, start a new section
-           // ignore elements with less candidate points than would constitute 2 lines
-           if (current.elements().size() > 2*MIN_POINTS_IN_LINE)
-           {
-             sections.push_back(current);
-           }
-           current.elements().clear();
-         }
-    }
-
-    if (current.elements().size() > 2*MIN_POINTS_IN_LINE)
-    {
-      sections.push_back(current);
-    }
-    current.elements().clear();
-    
-    //std::cout << "FeatureExtractor : Found " << sections.size() << " sections" << std::endl;
-    //printSections();
 }
 
 // bool CornerExtractor::extractPossibleCorners( const orca::PolarFeature2dDataPtr & featureDataPtr )

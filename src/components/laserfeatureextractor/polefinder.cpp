@@ -16,12 +16,12 @@
 #include "polefinder.h"
 
 using namespace std;
-
 using namespace orca_polefinder;
-using namespace orca;
 
 int 
-orca_polefinder::detect_poles( const LaserScanner2dDataPtr & scan,
+orca_polefinder::detect_poles( const std::vector<float> &scan,
+                               double startAngle,
+                               double angleIncrement,
                                double max_laser_range,
                                double min_width,
                                double max_width,
@@ -40,19 +40,18 @@ orca_polefinder::detect_poles( const LaserScanner2dDataPtr & scan,
     float  temp_bearing;
     int    last_dodgy_range = 0;
     int    last_pole_end_in_returns = -99999999;
-    double angleIncrement = scan->fieldOfView / double(scan->ranges.size()+1);
     int    min_clearance_from_dodge_in_returns = (int) (rint( min_angle_from_dodge / angleIncrement ));
 
-    for ( int i = 0; i < (int)scan->ranges.size(); i++ )
+    for ( int i = 0; i < (int)scan.size(); i++ )
     {
         if ( (i != 0) )
         {
-            delta_range = scan->ranges[i] - scan->ranges[previous_point];
+            delta_range = scan[i] - scan[previous_point];
 
             if ( potential_pole_start )
             {
                 // We could be looking at a pole here...
-                pole_width = scan->ranges[potential_pole_start]*sin( (i-potential_pole_start)*angleIncrement );
+                pole_width = scan[potential_pole_start]*sin( (i-potential_pole_start)*angleIncrement );
 
                 if ( pole_width > max_width )
                 {
@@ -70,8 +69,8 @@ orca_polefinder::detect_poles( const LaserScanner2dDataPtr & scan,
                          (i-potential_pole_start > 1) )
                     {
                         // We have a pole!
-                        temp_range   = scan->ranges[(potential_pole_start+(i-1))/2];
-                        temp_bearing = (((i-1)+potential_pole_start)/2)*angleIncrement + scan->startAngle;
+                        temp_range   = scan[(potential_pole_start+(i-1))/2];
+                        temp_bearing = (((i-1)+potential_pole_start)/2)*angleIncrement + startAngle;
                         
                         poles.resize( poles.size()+1 );
                         poles[poles.size()-1].range   = temp_range;
@@ -89,12 +88,12 @@ orca_polefinder::detect_poles( const LaserScanner2dDataPtr & scan,
                     else
                     {
                         // Pole was wrong width.
-                        // cout<<"TRACE(polefinder.cpp): bad width at ("<<scan->ranges((potential_pole_start+i)/2)<<","<<((i+potential_pole_start)/2)*ranges.angleIncrement() + ranges.bearingStart()*180/M_PI<<"): " << pole_width << endl;
+                        // cout<<"TRACE(polefinder.cpp): bad width at ("<<scan((potential_pole_start+i)/2)<<","<<((i+potential_pole_start)/2)*ranges.angleIncrement() + ranges.bearingStart()*180/M_PI<<"): " << pole_width << endl;
                         
                         potential_pole_start = 0;
                     }
                 }
-                else if (fabs(scan->ranges[i] - scan->ranges[potential_pole_start]) > max_width)
+                else if (fabs(scan[i] - scan[potential_pole_start]) > max_width)
                 {
                     // All points on a 'pole' have to be within
                     // a certain range of one another
@@ -111,7 +110,7 @@ orca_polefinder::detect_poles( const LaserScanner2dDataPtr & scan,
             }
 
             // Is there anything screwy about this return?
-            if ( scan->ranges[i] == max_laser_range || fabs(delta_range) > min_distance_to_background )
+            if ( scan[i] == max_laser_range || fabs(delta_range) > min_distance_to_background )
             {
                 // Yes, this range is screwy.
                 if ( !potential_pole_start )

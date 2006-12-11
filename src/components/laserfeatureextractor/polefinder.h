@@ -12,7 +12,6 @@
 #ifndef POLE_FINDER_H
 #define POLE_FINDER_H
 
-#include <orca/laserscanner2d.h>
 #include <vector>
 
 namespace orca_polefinder {
@@ -56,7 +55,9 @@ namespace orca_polefinder {
     //                |--|
     //                 y
     //
-    int detect_poles( const orca::LaserScanner2dDataPtr & ranges,
+    int detect_poles( const std::vector<float> &ranges,
+                      double startAngle,
+                      double angleIncrement,
                       double maxLaserRange,
                       double min_width,
                       double max_width,

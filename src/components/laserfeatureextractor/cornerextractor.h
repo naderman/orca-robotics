@@ -28,7 +28,7 @@ public:
 
     // Adds laser features to the 'features' data structure
     void addFeatures( const orca::LaserScanner2dDataPtr &laserData,
-                        orca::PolarFeature2dDataPtr &features );  
+                      orca::PolarFeature2dDataPtr &features );  
     
 private: 
     
@@ -38,8 +38,6 @@ private:
     // Not used at the moment
     // bool extractPossibleCorners( const orca::PolarFeature2dDataPtr & featureDataPtr );
     
-    void connectSections( const orca::LaserScanner2dDataPtr & laserDataPtr,
-                          std::vector<Section> &sections );
     void addCorners( const std::vector<Section> &sections, 
                      orca::PolarFeature2dDataPtr &features );
     void addLines( const std::vector<Section> &sections, 

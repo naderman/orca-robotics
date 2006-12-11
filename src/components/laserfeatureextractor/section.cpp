@@ -71,6 +71,70 @@ Section::setEndPoints()
 }
 
 void 
+extractSections( const std::vector<float> &ranges,
+                 double angleStart,
+                 double angleIncrement,
+                 double maxRange,
+                 double minPointsInLine,
+                 double maxRangeDelta,
+                 std::vector<Section> &sections )
+{
+    Section current;
+  
+    bool inSection = true;
+    if (ranges[0] >= maxRange) {
+        inSection = false;
+    } else {
+        double r = ranges[0];
+        double b = - M_PI/2;
+        SectionEl pos(r, b);
+        current.elements().push_back(pos);
+    }
+
+    for (unsigned int i = 1; i < ranges.size(); i++) {
+        if (ranges[i] >= maxRange) {
+            if (ranges[i-1] < maxRange) {
+              // found the end of the current section with an out of range reading
+              // ignore elements with less candidate points than would constitute 2 lines
+              if (current.elements().size() > 2*minPointsInLine)
+              {
+                sections.push_back(current);
+              }
+              current.elements().clear();
+            } else {
+                // We are still in an out of range section
+                // ignore...
+            }
+        } else if (ranges[i-1] >= maxRange ||
+                   fabs(ranges[i] - ranges[i-1]) < maxRangeDelta) 
+        {
+            // Add this point to the current section
+            double r = ranges[i];
+            double b = M_PI*i/(ranges.size()-1) - M_PI/2;
+            SectionEl pos(r, b);
+            current.elements().push_back(pos);
+         } else {
+           // There has been a step change in range, start a new section
+           // ignore elements with less candidate points than would constitute 2 lines
+           if (current.elements().size() > 2*minPointsInLine)
+           {
+             sections.push_back(current);
+           }
+           current.elements().clear();
+         }
+    }
+
+    if (current.elements().size() > 2*minPointsInLine)
+    {
+      sections.push_back(current);
+    }
+    current.elements().clear();
+    
+    //std::cout << "FeatureExtractor : Found " << sections.size() << " sections" << std::endl;
+    //printSections();
+}
+
+void 
 Section::tryFitLine()
 {
     int n = 2;
