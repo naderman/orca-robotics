@@ -9,6 +9,7 @@
  */
 
 #include <QMessageBox> 
+#include <QPixmap> 
 
 #include "utils.h"
 #include "orcaicons.h"
