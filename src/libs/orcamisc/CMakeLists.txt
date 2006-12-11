@@ -1,6 +1,6 @@
 INCLUDE_DIRECTORIES( 
   ${PROJECT_SOURCE_DIR} # for config.h
-  ${PROJECT_SOURCE_DIR}/src/util 
+  ${PROJECT_SOURCE_DIR}/src/libs
 )
 
 FILE( GLOB SRCS *.cpp )
