@@ -95,6 +95,9 @@ SickCarmenDriver::setupParams( double maxRange, int numberOfSamples, int baudrat
                                         range_res );
 
         if ( laser_ ) delete laser_;
+        //
+        // Core object (re)sinitialisation
+        //
         laser_ = new sick_laser_t( laserSettings );
     }
     catch ( std::string &e )
