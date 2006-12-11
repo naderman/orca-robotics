@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cmath>
 #include <orcaobj/mathdefs.h>
+#include <assert.h>
 
 namespace orcamisc {
 

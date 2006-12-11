@@ -21,6 +21,10 @@ Header file:
 #include <orcaserial/serial.h>
 @endverbatim
 
+Other serial libraries:
+- http://libserial.sourceforge.net (GPL)
+- http://qextserialport.sourceforge.net (requires Qt)
+
     @par Authors
     Mathew Ridley, Alex Brooks
   
