@@ -30,36 +30,24 @@ HomeProbe::HomeProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriv
 }
 
 int 
-HomeProbe::loadOperation( const int index, orcacm::OperationData & data )
-{
-    fillOperationData( index, data );
-
-    int ret = 1;
-    
+HomeProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
+{    
     switch ( index )
     {
-    case 0 :
-        ret = loadGetInterfaces( data );
-        break;
-    case 1 :
-        ret = loadGetProperties( data );
-        break;
-    default :
-        ret = 1;
-        cout<<"unknown operation index"<<endl;
-        break;
+    case orcaprobe::UserIndex :
+        return loadGetInterfaces( data );
+    case orcaprobe::UserIndex+1 :
+        return loadGetProperties( data );
     }
-
-    return ret;
+    return 1;
 }
 
 int 
 HomeProbe::loadGetInterfaces( orcacm::OperationData & data )
 {
-    cout<<"Calling operation orca::Home::getInterfaces()..."<<endl;
+//     cout<<"Calling operation orca::Home::getInterfaces()..."<<endl;
 
     orca::HomeDataPtr result;
-    data.results.clear();
     orcacm::ResultHeader res;
     
     try
@@ -87,10 +75,9 @@ HomeProbe::loadGetInterfaces( orcacm::OperationData & data )
 int 
 HomeProbe::loadGetProperties( orcacm::OperationData & data )
 {
-    cout<<"Calling operation orca::Home::getProperties()..."<<endl;
+//     cout<<"Calling operation orca::Home::getProperties()..."<<endl;
 
     std::map<std::string,std::string> result;
-    data.results.clear();
     orcacm::ResultHeader res;
     
     try

@@ -9,7 +9,6 @@
  */
 
 #include <iostream>
-#include <iomanip>    // for setw()
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
@@ -32,33 +31,20 @@ CameraProbe::CameraProbe( const orca::FQInterfaceName & name, orcaprobe::Display
 }
     
 int 
-CameraProbe::loadOperation( const int index, orcacm::OperationData & data )
+CameraProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
 {
-    //cout<<"loading home operation "<<index<<endl;
-
-    int ret = 1;
-    
     switch ( index )
     {
-    case 0 :
-        ret = loadGetData();
-        break;
-    case 1 :
-        ret = loadGetDescription();
-        break;
-    case 2 :
-        ret = loadSubscribe();
-        break;
-    case 3 :
-        ret = loadUnsubscribe();
-        break;
-    default :
-        ret = 1;
-        cout<<"unknown operation index"<<endl;
-        break;
+    case orcaprobe::UserIndex :
+        return loadGetData();
+    case orcaprobe::UserIndex+1 :
+        return loadGetDescription();
+    case orcaprobe::UserIndex+2 :
+        return loadSubscribe();
+    case orcaprobe::UserIndex+3 :
+        return loadUnsubscribe();
     }
-
-    return ret;
+    return 1;
 }
 
 int 

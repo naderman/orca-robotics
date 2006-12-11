@@ -9,7 +9,6 @@
  */
 
 #include <iostream>
-#include <iomanip>    // for setw()
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
@@ -25,47 +24,33 @@ LaserScanner2dProbe::LaserScanner2dProbe( const orca::FQInterfaceName & name, or
 {
     id_ = "::orca::LaserScanner2d";
 
-    addOperation( "getData", "nonmutating RangeScanner2dData getData()" );
+    addOperation( "getData",        "nonmutating RangeScanner2dData getData()" );
     addOperation( "getDescription", "nonmutating RangeScanner2dDescription getDescription()" );
-    addOperation( "subscribe", "void subscribe( RangeScanner2dConsumer *subscriber )" );
-    addOperation( "unsubscribe", "idempotent void unsubscribe( RangeScanner2dConsumer *subscriber )" );
+    addOperation( "subscribe",      "void subscribe( RangeScanner2dConsumer *subscriber )" );
+    addOperation( "unsubscribe",    "idempotent void unsubscribe( RangeScanner2dConsumer *subscriber )" );
 }
     
 int 
-LaserScanner2dProbe::loadOperation( const int index, orcacm::OperationData & data )
-{
-    fillOperationData( index, data );
-
-    int ret = 1;
-    
+LaserScanner2dProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
+{    
     switch ( index )
     {
-    case 0 :
-        ret = loadGetData( data );
-        break;
-    case 1 :
-        ret = loadGetDescription( data );
-        break;
-    case 2 :
-        ret = loadSubscribe( data );
-        break;
-    case 3 :
-        ret = loadUnsubscribe( data );
-        break;
-    default :
-        ret = 1;
-        cout<<"unknown operation index"<<endl;
-        break;
+    case orcaprobe::UserIndex :
+        return loadGetData( data );
+    case orcaprobe::UserIndex+1 :
+        return loadGetDescription( data );
+    case orcaprobe::UserIndex+2 :
+        return loadSubscribe( data );
+    case orcaprobe::UserIndex+3 :
+        return loadUnsubscribe( data );
     }
-
-    return ret;
+    return 1;
 }
 
 int 
 LaserScanner2dProbe::loadGetData( orcacm::OperationData & data )
 {
     orca::RangeScanner2dDataPtr result;
-    data.results.clear();
     orcacm::ResultHeader res;
     
     try
@@ -94,7 +79,6 @@ int
 LaserScanner2dProbe::loadGetDescription( orcacm::OperationData & data )
 {
     orca::RangeScanner2dDescriptionPtr result;
-    data.results.clear();
     orcacm::ResultHeader res;
     
     try
@@ -126,7 +110,6 @@ LaserScanner2dProbe::loadSubscribe( orcacm::OperationData & data )
     orca::RangeScanner2dConsumerPrx callbackPrx = 
             orcaice::createConsumerInterface<orca::RangeScanner2dConsumerPrx>( context_, consumer );
 
-    data.results.clear();
     orcacm::ResultHeader res;
 
     try
@@ -177,8 +160,8 @@ LaserScanner2dProbe::setData(const orca::RangeScanner2dDataPtr& result, const Ic
     std::cout << orcaice::toString(result) << std::endl;
 
     orcacm::OperationData data;
-    // this is the result for operation "subscribe" which has index=2;
-    fillOperationData( 2, data );
+    // this is the result for operation "subscribe" which has user index=2;
+    fillOperationData( orcaprobe::UserIndex+2, data );
 
     orcacm::ResultHeader res;
     res.name = "data";

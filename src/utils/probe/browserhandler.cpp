@@ -246,9 +246,12 @@ BrowserHandler::loadInterface()
     }
 
     if ( ifaceProbe_==0 ) {
-        cout<<"Unsupported interface: '"<<interfaceData_.id<<"'. Sending fault event."<<endl;
-        // alexm: here we are not synch'd with Qt driver!
-        eventPipe_.push( FaultEvent );
+        // load generic interface
+        ifaceProbe_ = new orcaprobe::InterfaceProbe( interfaceData_.name, display_, context_ );
+
+//         cout<<"Unsupported interface: '"<<interfaceData_.id<<"'. Sending fault event."<<endl;
+//         // alexm: here we are not synch'd with Qt driver!
+//         eventPipe_.push( FaultEvent );
         return;
     }
     

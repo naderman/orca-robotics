@@ -20,10 +20,17 @@ namespace orcaprobe
 
 class DisplayDriver;
 
+enum OperationIndex
+{
+    IcePingIndex=0,
+    UserIndex
+};
+
 class InterfaceProbe
 {
 
 public:
+    //! Constructor
     InterfaceProbe( const orca::FQInterfaceName & name, DisplayDriver & display,
                                 const orcaice::Context & context );
         
@@ -33,27 +40,46 @@ public:
     std::vector<orcacm::OperationHeader> operations() { return operations_; };
 
     //! Loads and executes the operation. The index matches the listing returned by
-    //! @p operations(). Returns 0 on success good, 1 on error.
-    virtual int loadOperation( const int index, orcacm::OperationData & data )=0;
+    //! @p operations(). Note that the first several operations are generic to all
+    //! interfaces.
+    //! Returns 0 on success good, 1 on error.
+    int loadOperation( const int index, orcacm::OperationData & data );
 
 protected:
 
+    //! Fully-qualified name of the interface.
     orca::FQInterfaceName name_;
-    std::string id_;
-    std::vector<orcacm::OperationHeader> operations_;
 
-    void addOperation( const std::string & name, const std::string & signature="" );
-    
-    // keep a direct link to display so if get some data asynchronously from browser
-    // (e.g. through subscription) we can display it. it's safe because all of display's
-    // public API is thread-safe.
+    //! Interface type, e.g. ::orca::LaserScanner2d. It is set by the derived class.
+    std::string id_;
+
+    //! keep a direct link to display so if get some data asynchronously from browser
+    //! (e.g. through subscription) we can display it. it's safe because all of display's
+    //! public API is thread-safe.
     DisplayDriver & display_;
 
+    //! Component communication context with pointers to Communicator, Tracer, etc.
     orcaice::Context context_;
+
+    //! Proxy to the remote object. This probe will use it to call the remote operations.
     Ice::ObjectPrx prx_;
 
-    // fills out the header information, does not touch the 'result' field
+    //! Adds @p name and @p signature of an interface operation to the listing
+    //! which will be later returned by @p operations().
+    void addOperation( const std::string & name, const std::string & signature="" );
+
+    //! Implement this function in the derived probe class.
+    virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
+
+    //! fills out the header information, does not touch the 'result' field
     void fillOperationData( const int index, orcacm::OperationData & data );
+
+private:
+    std::vector<orcacm::OperationHeader> operations_;
+
+    // Pings the remote interface.
+    int loadIcePing( orcacm::OperationData & data );
+
 };
 
 } // namespace

@@ -9,11 +9,14 @@
  */
 
 #include <vector>
+#include <iostream>
+#include <sstream>
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 
 #include "interfaceprobe.h"
 
+using namespace std;
 using namespace orcaprobe;
 
 InterfaceProbe::InterfaceProbe( const orca::FQInterfaceName & name, DisplayDriver & display,
@@ -22,6 +25,14 @@ InterfaceProbe::InterfaceProbe( const orca::FQInterfaceName & name, DisplayDrive
       display_(display),
       context_(context)
 {
+    // this is the least common denominator: all Orca objects derive from Ice::Object.
+    // A derived class will OVERWRITE this with its own type.
+    id_ = "::Ice::Object";
+
+    // these are the basic operations which all Ice::Objects support.
+    // A derived class will ADD its own operations to these.
+    addOperation( "ice_ping", "void ice_ping()" );
+
     // the generic proxy is created just once and then reused
     prx_ = context_.communicator()->stringToProxy( orcaice::toString( name_ ) );
 };
@@ -34,6 +45,57 @@ InterfaceProbe::addOperation( const std::string & name, const std::string & sign
     op.name = name;
     op.signature = signature;
     operations_.push_back( op );
+}
+
+int 
+InterfaceProbe::loadOperation( const int index, orcacm::OperationData & data )
+{
+    fillOperationData( index, data );
+    data.results.clear();
+    
+    switch ( index )
+    {
+    // process standard operations
+    case IcePingIndex :
+        return loadIcePing( data );
+    // process derived operations
+    default :
+        // base implementation will return error because we are given a non-base operation option
+        return loadOperationEvent( index, data );
+    }
+    return 1;
+}
+
+int 
+InterfaceProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
+{
+    return 1;
+}
+
+int 
+InterfaceProbe::loadIcePing( orcacm::OperationData & data )
+{
+    orcacm::ResultHeader res;
+    
+    try
+    {
+        prx_->ice_ping();
+    }
+    catch( const Ice::Exception & e )
+    {
+        stringstream ss;
+        ss << e;
+        res.name = "exception";
+        res.text = ss.str();
+        data.results.push_back( res );
+        return 1;
+    }
+
+//     cout<<orcaice::toString(result)<<endl;
+    res.name = "outcome";
+    res.text = "ping successful";
+    data.results.push_back( res );
+    return 0;
 }
 
 void

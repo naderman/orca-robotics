@@ -9,7 +9,6 @@
  */
 
 #include <iostream>
-#include <iomanip>    // for setw()
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 
@@ -30,27 +29,16 @@ CpuProbe::CpuProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver
 }
 
 int 
-CpuProbe::loadOperation( const int index, orcacm::OperationData & data )
+CpuProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
 {
-    //cout<<"loading home operation "<<index<<endl;
-
-    int ret = 1;
-    
     switch ( index )
     {
-    case 0 :
-        ret = loadGetInfo();
-        break;
-    case 1 :
-        ret = loadGetData();
-        break;
-    default :
-        ret = 1;
-        cout<<"unknown operation index"<<endl;
-        break;
+    case orcaprobe::UserIndex :
+        return loadGetInfo();
+    case orcaprobe::UserIndex+1 :
+        return loadGetData();
     }
-
-    return ret;
+    return 1;
 }
 
 int 

@@ -30,37 +30,24 @@ PowerProbe::PowerProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDr
 }
     
 int 
-PowerProbe::loadOperation( const int index, orcacm::OperationData & data )
+PowerProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
 {
-    //cout<<"loading home operation "<<index<<endl;
-
-    int ret = 1;
-    
     switch ( index )
     {
-    case 0 :
-        ret = loadGetData( data );
-        break;
-    case 1 :
-        ret = loadSubscribe( data );
-        break;
-    case 2 :
-        ret = loadUnsubscribe( data );
-        break;
-    default :
-        ret = 1;
-        cout<<"unknown operation index"<<endl;
-        break;
+    case orcaprobe::UserIndex :
+        return loadGetData( data );
+    case orcaprobe::UserIndex+1 :
+        return loadSubscribe( data );
+    case orcaprobe::UserIndex+2 :
+        return loadUnsubscribe( data );
     }
-
-    return ret;
+    return 1;
 }
 
 int 
 PowerProbe::loadGetData( orcacm::OperationData & data )
 {
     orca::PowerDataPtr result;
-    data.results.clear();
     orcacm::ResultHeader res;
     
     try
@@ -105,7 +92,6 @@ PowerProbe::loadSubscribe( orcacm::OperationData & data )
     orca::PowerConsumerPrx callbackPrx =
             orcaice::createConsumerInterface<orca::PowerConsumerPrx>( context_, consumer );
 
-    data.results.clear();
     orcacm::ResultHeader res;
 
     try

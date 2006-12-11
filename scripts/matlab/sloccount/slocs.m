@@ -17,6 +17,7 @@ Sice310 = [
 Sice311 = [
 (8950-1275) + (24511+20505+22898+10590+4600+4884+4782+683+323) + (13266+6929+1262+504)
 ];
+Sice312 = 1.02*Sice311;
 
 % for comparison, ASN
 Sasn = 90433;
@@ -46,7 +47,7 @@ Sorca = [ ...
 2005    5   9   1   0       14639       46837;            % 0.14.0
 2005    7   2   1   0       19751       49854;            % 0.15.0
 2005    10  11  1   0       20818       52408;            % 1.0.0
-% BASE: just orcaice + interfaces/slice
+% BASE: just orcaice w/out test + interfaces/slice
 % COMP: comp + util - orcaice 
 2005    11  20  1   Sice212 2320+530    9226+8781-2320;   % 2.0.0-rc1
 2006    1   22  0   Sice301 2511+596    9801+9695-2511;   % 2.0.0-rc2
@@ -57,9 +58,9 @@ Sorca = [ ...
 2006    9   18  0   Sice310 3647+1094   19317+30847-3647  % 2.0.1
 2006    10  5   0   Sice310 3644+1094   20384+31798-3644  % 2.0.2
 2006    11  23  1   Sice311 3853+1178   21408+35311-3853  % 2.1.0
-% BASE: just orcaice + interfaces/slice
+% BASE: just orcaice w/out test + interfaces/slice
 % COMP: comp + util + libs - orcaice 
-2006    12  15  1   Sice311 3906+1178   24208+37641-3906  % 2.1.1
+2006    12  15  0   Sice312 3924+1178   23926+3723+35585-3924  % 2.1.1
 ];
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
     '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.1.0', '2.1.1' }';
@@ -119,7 +120,7 @@ set(ha(2),'facecolor',.85*[1 1 1]);
 set(ha(3),'facecolor',min(255,[255 153 0]+60)/255);
 set(ha(4),'facecolor',min(255,[51 102 255]+60)/255);
 ha(1)=[];
-legend(ha,'Ice middleware','Orca infrastructure','Orca components+utils', 'Location','NorthWest')
+legend(ha,'Ice middleware','Orca infrastructure','Orca components+libs+utils', 'Location','NorthWest')
 %  xlim(datenum([2004;2005],[7;7],[1;1]) )
 ylim([-Smax 100])
 ax=axis;
@@ -143,7 +144,7 @@ set(hpt, 'color', .5*[1 1 1] )
 %mark('y', Dasn(1,1)/1e3 );
 %text( datenum([2003 5 1]), Dasn(1,1)/1e3, 'ASN')
 xlabel('Releases')
-title('orca-robotics.sf.net')
+title('http://orca-robotics.sf.net')
 
 ht=text(datenum(2003,7,1),-Smax+10, '*   generated using David A. Wheeler`s SLOCCount' );
 set(ht,'fontsize',8)

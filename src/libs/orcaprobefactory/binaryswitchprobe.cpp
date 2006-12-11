@@ -9,7 +9,6 @@
  */
 
 #include <iostream>
-#include <iomanip>    // for setw()
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 
@@ -33,36 +32,22 @@ BinarySwitchProbe::BinarySwitchProbe( const orca::FQInterfaceName & name, orcapr
 }
 
 int 
-BinarySwitchProbe::loadOperation( const int index, orcacm::OperationData & data )
-{
-    //cout<<"loading home operation "<<index<<endl;
-
-    int ret = 1;
-    
+BinarySwitchProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
+{    
     switch ( index )
     {
-    case 0 :
-        ret = loadGetData();
-        break;
-    case 1 :
-        ret = loadSetState();
-        break;
-    case 2 :
-        ret = loadTimedSetState();
-        break;
-    case 3 :
-        ret = loadToggleState();
-        break;
-    case 4 :
-        ret = loadTimedToggleState();
-        break;
-    default :
-        ret = 1;
-        cout<<"unknown operation index"<<endl;
-        break;
+    case orcaprobe::UserIndex :
+        return loadGetData();
+    case orcaprobe::UserIndex+1 :
+        return loadSetState();
+    case orcaprobe::UserIndex+2 :
+        return loadTimedSetState();
+    case orcaprobe::UserIndex+3 :
+        return loadToggleState();
+    case orcaprobe::UserIndex+4 :
+        return loadTimedToggleState();
     }
-
-    return ret;
+    return 1;
 }
 
 int 
