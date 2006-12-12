@@ -16,6 +16,7 @@
 #include <orcaqgui2dfactory/pathfollower2delement.h>
 #include <orcaqgui2dfactory/pathplanner2delement.h>
 #include <orcaqgui2dfactory/gpselement.h>
+#include <orcaqgui2dfactory/ogmapscombinedelement.h>
 
 #include "defaultfactory.h"
 #include <orcaqgui/ihumanmanager.h>
@@ -113,8 +114,8 @@ DefaultFactory::create( const orcaice::Context           &context,
         QString interfaceId = interfaceIds[0] + interfaceIds[1];
         
         if ( interfaceId == "::orca::OgMap::orca::OgMap" ) {
-        cout<<"creating OgMapsCombined element"<<endl;
-//         elem = new orcaqgui::OgMapsCombinedElement( context, proxyStrList );
+            cout<<"creating OgMapsCombined element"<<endl;
+            elem = new orcaqgui::OgMapsCombinedElement( context, proxyStrList, humanManager );
         }
         else
         {

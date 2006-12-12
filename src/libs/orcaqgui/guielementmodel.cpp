@@ -224,12 +224,12 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
     
     // set properties of guielement
     element->setPlatform( platform );
-    QString details;
-    QString name;
+    QString details = "";
+    QString name = "";
     for (int i=0; i<ids.size(); i++)
     {
-        details = details + ids[i] + "\n";
-        name = name + proxyStrList[i] + "\n";
+        details = details + ids[i] + " ";
+        name = name + proxyStrList[i] + " ";
     }
     element->setDetails( details );
     element->setName(name);
