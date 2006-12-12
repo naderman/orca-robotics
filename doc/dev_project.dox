@@ -62,6 +62,14 @@ module tractor
 ...
     tractor::SomeDataPtr someData = new tractor::SomeData;
 @endverbatim
+
+- Edit the source file of the sample utility @c src/utils/someutil/main.cpp so that the include line looks like this:
+@verbatim
+#include <tractor/someinterface.h>
+...
+    tractor::SomeDataPtr someData = new tractor::SomeData;
+@endverbatim
+
 - Run cmake and compile.
 
 This enough to get you started. Now you can commit your new project to your own CVS server and start writing code: add your own components, libraries, and interfaces.
