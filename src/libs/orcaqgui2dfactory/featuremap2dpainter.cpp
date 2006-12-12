@@ -51,7 +51,7 @@ FeatureMap2dPainter::setData( const orca::FeatureMap2dDataPtr &data )
 {
     assert( data != 0 );
 
-    cout<<"TRACE(featuremap2dpainter.cpp): got data: " << orcaice::toString(data) << endl;
+    // cout<<"TRACE(featuremap2dpainter.cpp): got data: " << orcaice::toString(data) << endl;
 
     data_ = data;
 }
@@ -124,6 +124,32 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
     if ( f.endSighted )
         painter->drawRect( QRectF( f.end.x-boxWidth/2, f.end.y-boxWidth/2, boxWidth, boxWidth ) );
 
+//     // DEBUG
+//     painter->save();
+//     {
+//         painter->translate( f.start.x, f.start.y );
+//         painter->setPen(Qt::black);
+//     painter->setFont( QFont("Helvetica [Cronyx]", 12) );
+//     const double offset = 0.3;
+//     QMatrix m = painter->matrix();  // this is m2win matrix
+//     QPointF labelPos = QPointF(offset,offset) * m;       // x-label position in window cs
+//     painter->setMatrix( QMatrix() );
+//     painter->drawText( labelPos, "S" );
+//     }
+//     painter->restore();
+//     painter->save();
+//     {
+//         painter->translate( f.end.x, f.end.y );
+//         painter->setPen(Qt::black);
+//     painter->setFont( QFont("Helvetica [Cronyx]", 12) );
+//     const double offset = 0.3;
+//     QMatrix m = painter->matrix();  // this is m2win matrix
+//     QPointF labelPos = QPointF(offset,offset) * m;       // x-label position in window cs
+//     painter->setMatrix( QMatrix() );
+//     painter->drawText( labelPos, "E" );
+//     }
+//     painter->restore();
+//     // end DEBUG
 
     // Need to represent the uncertainty and direction
     painter->save();
@@ -150,9 +176,6 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
                 // alpha uncertainty: a wedge on the back (non-visible) side of the line
                 double bearingStart = atan2(f.start.y,f.start.x);
                 double bearingEnd   = atan2(f.end.y,f.end.x);
-
-                if ( bearingStart < bearingEnd )
-                    painter->rotate( 180 );
 
                 paintUncertaintyWedge( painter, featureColour(f.type), 0.0, f.c.yy );
             }
