@@ -67,6 +67,7 @@ public:
 
     // To help determine visibility of line endpoints, keep track
     // of the range on either side of the line segment.
+    // For the first and last returns, the range either side is set to -1.
     double rangeBeforeStart() const { return rangeBeforeStart_; }
     double rangeAfterEnd()    const { return rangeAfterEnd_; }
     double &rangeBeforeStart() { return rangeBeforeStart_; }

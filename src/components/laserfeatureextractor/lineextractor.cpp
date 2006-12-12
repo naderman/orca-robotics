@@ -119,6 +119,10 @@ LineExtractor::isStartVisible( const Section &section,
 {
     //cout<<"TRACE(lineextractor.cpp): isStartVisible()" << endl;
 
+    // Check for section at edge of scan
+    if ( section.rangeBeforeStart() < 0 )
+        return false;
+
     // Junction of two lines
     if ( prevSection != NULL &&
          prevSection->isALine() &&
@@ -156,6 +160,10 @@ LineExtractor::isEndVisible( const Section &section,
                              const Section *nextSection )
 {
     //cout<<"TRACE(lineextractor.cpp): isEndVisible()" << endl;
+
+    // Check for section at edge of scan
+    if ( section.rangeAfterEnd() < 0 )
+        return false;
 
     // Junction of two lines
     if ( nextSection != NULL &&

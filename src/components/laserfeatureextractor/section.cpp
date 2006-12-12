@@ -108,7 +108,7 @@ extractSections( const std::vector<float> &ranges,
         double b = angleStart;
         SectionEl pos(r, b);
         current.elements().push_back(pos);
-        current.rangeBeforeStart() = maxRange;
+        current.rangeBeforeStart() = -1;
     }
 
     // Loop through remaining points
@@ -143,7 +143,7 @@ extractSections( const std::vector<float> &ranges,
     {
         // This section would have been added if there were a segment break.
         // Therefore it must contain the last return.
-        current.rangeAfterEnd() = maxRange;
+        current.rangeAfterEnd() = -1;
         sections.push_back(current);
     }
     
