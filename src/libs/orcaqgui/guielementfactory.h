@@ -55,7 +55,7 @@ public:
     // returns a NULL pointer if something goes wrong
     virtual GuiElement* create( const orcaice::Context         &context,
                                 const QString                  &interfaceId,
-                                const QString                  &proxyStr,
+                                const QStringList              &proxyStrList,
                                 QColor                          suggestedColor,
                                 orcaqgui::IHumanManager  *msgDisplayer ) const = 0;
 

@@ -33,7 +33,7 @@ DefaultFactory::DefaultFactory()
 orcaqgui::GuiElement*
 DefaultFactory::create( const orcaice::Context           &context,
                         const QString                    &interfaceId,
-                        const QString                    &proxyStr,
+                        const QStringList                &proxyStrList,
                         QColor                            suggestedColor,
                         orcaqgui::IHumanManager           *humanManager) const
 {
@@ -45,11 +45,11 @@ DefaultFactory::create( const orcaice::Context           &context,
     }
     else if ( interfaceId == "::orca::LaserScanner2d" ) {
         cout<<"creating LaserScanner2d element"<<endl;
-        elem = new orcaqgui3d::LaserScanner2dElement( context, proxyStr.toStdString() );
+        elem = new orcaqgui3d::LaserScanner2dElement( context, proxyStrList[0].toStdString() );
     }
     else if ( interfaceId == "::orca::Position3d" ) {
         cout<<"creating Position3d element"<<endl;
-        elem = new orcaqgui3d::Position3dElement( context, proxyStr.toStdString() );
+        elem = new orcaqgui3d::Position3dElement( context, proxyStrList[0].toStdString() );
     }
     else
     {

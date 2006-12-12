@@ -72,26 +72,7 @@ public:
     const QString& coordinateFramePlatform() { return coordinateFramePlatform_; };
     QString coordinateFramePlatform() const { return coordinateFramePlatform_; }
     
-
-    class InterfaceNode
-    {
-        public:
-            InterfaceNode( const QString &r, const QString &p, const QString &c,
-                           const QString &iface, const QString &i  );
-            ~InterfaceNode();
-        
-            bool operator==( const InterfaceNode & other ) const;
-        
-            QString registry;
-            QString platform;
-            QString component;
-            QString interface;
-            QString id;
-            orcaqgui::GuiElement *element;
-    };
-
-     // access list of elements
-    const QList<InterfaceNode*> elements() { return elements_; };
+    const QList<GuiElement*> elements() { return elements_; };
     
 signals:
     void newPlatform(const QString&);
@@ -102,9 +83,10 @@ public slots:
 
 private:
 
-    GuiElement *instantiateFromFactories( const QString &id, const QColor &platformColor, const QString &proxyStr );
+    GuiElement *instantiateFromFactories( const QString &id, const QColor &platformColor, const QStringList &proxyStrList );
 
-    QList<InterfaceNode*> elements_;
+    QList<GuiElement*> elements_;
+    
     const std::vector<orcaqgui::GuiElementFactory*> factories_;
     QStringList headers_;
     QString coordinateFramePlatform_;
@@ -120,7 +102,6 @@ private:
     GuiElementView* view_;
 };
 
-std::string toString( const GuiElementModel::InterfaceNode &n );
 
 }
 #endif

@@ -42,11 +42,12 @@ void RegSelectView::contextMenuEvent( QContextMenuEvent* e )
         }
         else {
             menu.addAction("Add to Project Individually", this, SLOT(addSelectionIndividually()) );
+            menu.addAction("Add to Project Combined", this, SLOT(addSelectionCombined()) );
         }
         menu.addSeparator();
     }
     
-    menu.addAction("&Properties" );
+//     menu.addAction("&Properties" );
     menu.exec( e->globalPos() );
 }
 
@@ -76,6 +77,26 @@ void RegSelectView::addSelectionIndividually()
         interfaceInfo << registry<<platform<<component<<interface<<id;
         emit interfaceToBeAdded( interfaceInfo );
     }
+}
+
+void RegSelectView::addSelectionCombined()
+{    
+//     for (int i=0; i<selectionModel()->selectedRows().size(); i++)
+//     {
+//         cout<<"addSelectionCombined " <<selectedIndexes()[i].data().toString().toStdString()<<endl;
+//         
+//         orcaqcm::OcmModel* ocmModel = (orcaqcm::OcmModel*)model();
+//         QString registry;
+//         QString platform;
+//         QString component;
+//         QString interface;
+//         QString id;
+//         // lookup interface information in the model
+//         ocmModel->interfaceData( selectionModel()->selectedRows()[i], registry, platform, component, interface, id );
+//         QStringList interfaceInfo;
+//         interfaceInfo << registry<<platform<<component<<interface<<id;
+//         emit interfaceToBeAdded( interfaceInfo );
+//     }
 }
 
 void RegSelectView::addRegistry()

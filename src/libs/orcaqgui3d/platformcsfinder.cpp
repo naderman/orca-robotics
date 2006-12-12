@@ -17,7 +17,7 @@ using namespace std;
 namespace orcaqgui3d {
 
 bool 
-PlatformCSFinder::findPlatformCS( const QList<orcaqgui::GuiElementModel::InterfaceNode*> elements,
+PlatformCSFinder::findPlatformCS( const QList<orcaqgui::GuiElement*> elements,
                                     const QString                                &platform,
                                     float                                        &x,
                                     float                                        &y,
@@ -37,11 +37,11 @@ PlatformCSFinder::findPlatformCS( const QList<orcaqgui::GuiElementModel::Interfa
         //cout<<endl<<elements_[i]->id.toStdString()<<" on "<<elements_[i]->platformatrix.toStdString();
 
         IKnowsPlatformPosition *posElem = 
-            dynamic_cast<IKnowsPlatformPosition*>(elements[i]->element);
+            dynamic_cast<IKnowsPlatformPosition*>(elements[i]);
         if ( posElem != NULL )
         {
             // Ignore if it's the wrong platform.
-            if ( elements[i]->platform != platform ) continue;
+            if ( elements[i]->platform() != platform ) continue;
 
             if ( posElem->platformKnowledgeReliability() > mostReliable )
             {

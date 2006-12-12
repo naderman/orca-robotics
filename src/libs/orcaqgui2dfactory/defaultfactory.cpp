@@ -38,12 +38,13 @@ DefaultFactory::DefaultFactory()
     addSupportedType("::orca::Particle2d");
     addSupportedType("::orca::Gps");
     addSupportedType("::orca::QGraphics2d");
+    addSupportedType("::orca::OgMapsCombined");
 }
 
 orcaqgui::GuiElement*
 DefaultFactory::create( const orcaice::Context           &context,
                         const QString                    &interfaceId,
-                        const QString                    &proxyStr,
+                        const QStringList                &proxyStrList,
                         QColor                            suggestedColor,
                         IHumanManager                    *humanManager ) const
 {
@@ -55,43 +56,47 @@ DefaultFactory::create( const orcaice::Context           &context,
     }
     else if ( interfaceId == "::orca::LaserScanner2d" ) {
         cout<<"creating LaserScanner2d element"<<endl;
-            elem = new orcaqgui::LaserScanner2dElement( context, proxyStr.toStdString() );
+            elem = new orcaqgui::LaserScanner2dElement( context, proxyStrList[0].toStdString() );
     }
     else if ( interfaceId == "::orca::Localise2d" ) {
         cout<<"creating Localise2d element"<<endl;
-        elem = new orcaqgui::Localise2dElement( context, proxyStr.toStdString() );
+        elem = new orcaqgui::Localise2dElement( context, proxyStrList[0].toStdString() );
     }
     else if ( interfaceId == "::orca::OgMap" ) {
         cout<<"creating OgMap element"<<endl;
-        elem = new orcaqgui::OgMapElement( context, proxyStr.toStdString(), humanManager );
+        elem = new orcaqgui::OgMapElement( context, proxyStrList[0].toStdString(), humanManager );
     }
     else if ( interfaceId == "::orca::PolarFeature2d" ) {
         cout<<"creating PolarFeature2d element"<<endl;
-        elem = new orcaqgui::PolarFeature2dElement( context, proxyStr.toStdString() );
+        elem = new orcaqgui::PolarFeature2dElement( context, proxyStrList[0].toStdString() );
     }
     else if ( interfaceId == "::orca::PathFollower2d" ) {
-        cout<<"creating PathFollower2d element with proxyString "<<proxyStr.toStdString()<<endl;
-        elem = new orcaqgui::PathFollower2dElement( context, proxyStr.toStdString(), humanManager );
+        cout<<"creating PathFollower2d element with proxyString "<<proxyStrList[0].toStdString()<<endl;
+        elem = new orcaqgui::PathFollower2dElement( context, proxyStrList[0].toStdString(), humanManager );
     }
     else if ( interfaceId == "::orca::PathPlanner2d" ) {
-        cout<<"creating PathPlanner2d element with proxyString "<<proxyStr.toStdString()<<endl;
-        elem = new orcaqgui::PathPlanner2dElement( context, proxyStr.toStdString(), humanManager );
+        cout<<"creating PathPlanner2d element with proxyString "<<proxyStrList[0].toStdString()<<endl;
+        elem = new orcaqgui::PathPlanner2dElement( context, proxyStrList[0].toStdString(), humanManager );
     }
     else if ( interfaceId == "::orca::FeatureMap2d" ) {
-        cout<<"creating FeatureMap2d element with proxyString "<<proxyStr.toStdString()<<endl;
-        elem = new orcaqgui::FeatureMap2dElement( context, proxyStr.toStdString(), humanManager );
+        cout<<"creating FeatureMap2d element with proxyString "<<proxyStrList[0].toStdString()<<endl;
+        elem = new orcaqgui::FeatureMap2dElement( context, proxyStrList[0].toStdString(), humanManager );
     }
     else if ( interfaceId == "::orca::Particle2d" ) {
-        cout<<"creating Particle2d element with proxyString "<<proxyStr.toStdString()<<endl;
-        elem = new orcaqgui::Particle2dElement( context, proxyStr.toStdString() );
+        cout<<"creating Particle2d element with proxyString "<<proxyStrList[0].toStdString()<<endl;
+        elem = new orcaqgui::Particle2dElement( context, proxyStrList[0].toStdString() );
     }
     else if ( interfaceId == "::orca::Gps" ) {
-        cout<<"creating Gps element with proxyString "<<proxyStr.toStdString()<<endl;
-        elem = new orcaqgui::GpsElement( context, proxyStr.toStdString() );
+        cout<<"creating Gps element with proxyString "<<proxyStrList[0].toStdString()<<endl;
+        elem = new orcaqgui::GpsElement( context, proxyStrList[0].toStdString() );
     }
     else if ( interfaceId == "::orca::QGraphics2d" ) {
-        cout<<"creating QGraphics2d element with proxyString "<<proxyStr.toStdString()<<endl;
-        elem = new orcaqgui::QGraphics2dElement( context, proxyStr.toStdString() );
+        cout<<"creating QGraphics2d element with proxyString "<<proxyStrList[0].toStdString()<<endl;
+        elem = new orcaqgui::QGraphics2dElement( context, proxyStrList[0].toStdString() );
+    }
+    else if ( interfaceId == "::orca::OgMapsCombined" ) {
+        cout<<"creating OgMapsCombined element"<<endl;
+//         elem = new orcaqgui::OgMapsCombinedElement( context, proxyStrList );
     }
     else
     {

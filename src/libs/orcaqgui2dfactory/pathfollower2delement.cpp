@@ -397,10 +397,10 @@ PathFollowerHI::cancel()
 void 
 PathFollowerHI::allGo()
 {
-    const QList<GuiElementModel::InterfaceNode*> elements = humanManager_->guiElementModel().elements();
+    const QList<GuiElement*> elements = humanManager_->guiElementModel().elements();
     for ( int i=0; i < elements.size(); i++ )
     {
-        PathFollower2dElement *typedElem = dynamic_cast<PathFollower2dElement *>(elements[i]->element);
+        PathFollower2dElement *typedElem = dynamic_cast<PathFollower2dElement *>(elements[i]);
         if ( typedElem != NULL )
         {
             typedElem->go();
@@ -410,10 +410,10 @@ PathFollowerHI::allGo()
 void 
 PathFollowerHI::allStop()
 {
-    const QList<GuiElementModel::InterfaceNode*> elements = humanManager_->guiElementModel().elements();
+    const QList<GuiElement*> elements = humanManager_->guiElementModel().elements();
     for ( int i=0; i < elements.size(); i++ )
     {
-        PathFollower2dElement *typedElem = dynamic_cast<PathFollower2dElement *>(elements[i]->element);
+        PathFollower2dElement *typedElem = dynamic_cast<PathFollower2dElement *>(elements[i]);
         if ( typedElem != NULL )
         {
             typedElem->stop();

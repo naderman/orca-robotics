@@ -24,9 +24,11 @@
 #include <orcaobj/mathdefs.h>
 #include <orcaqgui/guielementmodel.h>
 #include <orcaqgui/mainwin.h>
-#include <orcaqgui3d/guielement3d.h>
+#include <orcaqgui/ipermanentelement.h>
 
 #include <orcaqgui3d/glutil.h>
+#include <orcaqgui3d/guielement3d.h>
+
 
 #include "glutil.h"
 
@@ -264,22 +266,25 @@ void WorldView::paintGL()
 void
 WorldView::paintAllGuiElements( bool isFocusLocalised )
 {
-    const QList<orcaqgui::GuiElementModel::InterfaceNode*> &elements = model_->elements();
+    const QList<orcaqgui::GuiElement*> &elements = model_->elements();
 
     for ( int i=0; i<elements.size(); ++i )
     {
-        if ( !elements[i]->element ) {
+        if ( !elements[i] ) {
             continue;
         }
         
+        orcaqgui::IPermanentElement *permElement = dynamic_cast<orcaqgui::IPermanentElement*>(elements[i]);
+        
         try {
            // paint the platform that has focus and the background grid         
-            if ( isFocusLocalised || elements[i]->platform==model_->coordinateFramePlatform() || elements[i]->id=="::local::Grid" ) 
+            
+            if ( isFocusLocalised || elements[i]->platform()==model_->coordinateFramePlatform() || (permElement!=NULL) )
             {
-                GuiElement3d *elem = dynamic_cast<GuiElement3d*>(elements[i]->element);
+                GuiElement3d *elem = dynamic_cast<GuiElement3d*>(elements[i]);
                 assert(elem != NULL);
 
-                if ( elements[i]->element->isInGlobalCS() )
+                if ( elem->isInGlobalCS() )
                 {
                     elem->paint( this );
                 }
@@ -310,28 +315,28 @@ WorldView::paintAllGuiElements( bool isFocusLocalised )
         }
         catch ( Ice::Exception &e )
         {
-            std::cout<<"TRACE(worldview3d.cpp): Caught some ice exception during painting of "
-                     <<elements[i]->id.toStdString()<<": " << e << std::endl;
+            std::cout<<"TRACE(worldview3d.cpp): Caught some ice exception during painting of ";
+//                      <<elements[i]->id.toStdString()<<": " << e << std::endl;
         }
         catch ( std::exception &e )
         {
-            std::cout<<"TRACE(worldview3d.cpp): Caught some std exception during painting of "
-                     <<elements[i]->id.toStdString()<<": " << e.what() << std::endl;
+            std::cout<<"TRACE(worldview3d.cpp): Caught some std exception during painting of ";
+//                      <<elements[i]->id.toStdString()<<": " << e.what() << std::endl;
         }
         catch ( std::string &e )
         {
-            std::cout<<"TRACE(worldview3d.cpp): Caught std::string during painting of "
-                     <<elements[i]->id.toStdString()<<": " << e << std::endl;
+            std::cout<<"TRACE(worldview3d.cpp): Caught std::string during painting of ";
+//                      <<elements[i]->id.toStdString()<<": " << e << std::endl;
         }
         catch ( char *e )
         {
-            std::cout<<"TRACE(worldview3d.cpp): Caught char * during painting of "
-                     <<elements[i]->id.toStdString()<<": " << e << std::endl;
+            std::cout<<"TRACE(worldview3d.cpp): Caught char * during painting of ";
+//                      <<elements[i]->id.toStdString()<<": " << e << std::endl;
         }
         catch ( ... )
         {
-            std::cout<<"TRACE(worldview3d.cpp): Caught some other exception during painting of "
-                     <<elements[i]->id.toStdString()<<": " << std::endl;
+            std::cout<<"TRACE(worldview3d.cpp): Caught some other exception during painting of ";
+//                      <<elements[i]->id.toStdString()<<": " << std::endl;
         }
     }
 }

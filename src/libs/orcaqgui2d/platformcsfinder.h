@@ -25,7 +25,7 @@ public:
     PlatformCSFinder() {};
 
     // returns false if it doesn't know.
-    bool findPlatformCS( const QList<GuiElementModel::InterfaceNode*> elements,
+    bool findPlatformCS( const QList<GuiElement*> elements,
                          const QString                                &platform,
                          float                                        &x,
                          float                                        &y,

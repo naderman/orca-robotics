@@ -22,7 +22,7 @@
 #include <QDialog>
 #include <QToolTip>
 
-#include "guielement2d.h"
+#include <orcaqgui2dfactory/gridelement.h>
 #include "worldview.h"
 #include <orcaqgui/guielementmodel.h>
 #include <orcaqgui/mainwin.h>
@@ -178,26 +178,30 @@ WorldView::paintEvent( QPaintEvent* e )
 void
 WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFramePlatformLocalised )
 {
-    const QList<GuiElementModel::InterfaceNode*> &elements = model_->elements();
+//     const QList<GuiElementModel::InterfaceNode*> &elements = model_->elements();
+    const QList<GuiElement*> &elements = model_->elements();
 
     for ( int i=0; i<elements.size(); ++i )
     {
-        if ( !elements[i]->element ) {
+        if ( !elements[i] ) {
             continue;
         }
         
         try {
            // paint all elements in the world if platform that owns coordinate system is localised 
            // also paint all elements of the platform that owns coordinate system even if it's not localised
-           // always paint the grid         
-            if ( isCoordinateFramePlatformLocalised || elements[i]->platform==model_->coordinateFramePlatform() || elements[i]->id=="::local::Grid" ) 
+           // always paint the permanent elements         
+            
+            IPermanentElement *permElement = dynamic_cast<IPermanentElement*>(elements[i]);
+            
+            if ( isCoordinateFramePlatformLocalised || elements[i]->platform()==model_->coordinateFramePlatform() || (permElement!=NULL) ) 
             {
-                GuiElement2d *elem = dynamic_cast<GuiElement2d*>(elements[i]->element);
+                GuiElement2d *elem = dynamic_cast<GuiElement2d*>(elements[i]);
                 assert(elem != NULL);
 
                 if ( !elem->paintThisLayer(z) ) continue;
 
-                if ( elements[i]->element->isInGlobalCS() )
+                if ( elem->isInGlobalCS() )
                 {
                     elem->paint( painter, z );
                 }
@@ -209,7 +213,7 @@ WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFrame
                         // will not be transformed and the element will be painted at the
                         // saved coords
                         float x, y, theta;
-                        if ( platformCSFinder_->findPlatformCS( model_->elements(), elements[i]->platform, x, y, theta ) )
+                        if ( platformCSFinder_->findPlatformCS( model_->elements(), elements[i]->platform(), x, y, theta ) )
                         {
                             painter->translate( x, y );
                             painter->rotate( RAD2DEG(theta) );
@@ -222,28 +226,28 @@ WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFrame
         }
         catch ( Ice::Exception &e )
         {
-            std::cout<<"TRACE(worldview.cpp): Caught some ice exception during painting of "
-                     <<elements[i]->id.toStdString()<<": " << e << std::endl;
+            std::cout<<"TRACE(worldview.cpp): Caught some ice exception during painting of ";
+//                      <<elements[i]->id.toStdString()<<": " << e << std::endl;
         }
         catch ( std::exception &e )
         {
-            std::cout<<"TRACE(worldview.cpp): Caught some std exception during painting of "
-                     <<elements[i]->id.toStdString()<<": " << e.what() << std::endl;
+            std::cout<<"TRACE(worldview.cpp): Caught some std exception during painting of ";
+//                      <<elements[i]->id.toStdString()<<": " << e.what() << std::endl;
         }
         catch ( std::string &e )
         {
-            std::cout<<"TRACE(worldview.cpp): Caught std::string during painting of "
-                     <<elements[i]->id.toStdString()<<": " << e << std::endl;
+            std::cout<<"TRACE(worldview.cpp): Caught std::string during painting of ";
+//                      <<elements[i]->id.toStdString()<<": " << e << std::endl;
         }
         catch ( char *e )
         {
-            std::cout<<"TRACE(worldview.cpp): Caught char * during painting of "
-                     <<elements[i]->id.toStdString()<<": " << e << std::endl;
+            std::cout<<"TRACE(worldview.cpp): Caught char * during painting of ";
+//                      <<elements[i]->id.toStdString()<<": " << e << std::endl;
         }
         catch ( ... )
         {
-            std::cout<<"TRACE(worldview.cpp): Caught some other exception during painting of "
-                     <<elements[i]->id.toStdString()<<": " << std::endl;
+            std::cout<<"TRACE(worldview.cpp): Caught some other exception during painting of ";
+//                      <<elements[i]->id.toStdString()<<": " << std::endl;
         }
     }
 }
@@ -373,24 +377,23 @@ bool WorldView::event(QEvent *event)
 QString 
 WorldView::nearestComponent( const QPointF& pclick, const double & radius )
 {
-    const QList<GuiElementModel::InterfaceNode*> &elements = model_->elements();
+    const QList<GuiElement*> &elements = model_->elements();
     
     for ( int i=0; i<elements.size(); ++i )
     {
         // only certain types are real 'platform elements' 
-        const GuiElement *elem = elements[i]->element;
-        const IKnowsPlatformPosition2d* platformElem = dynamic_cast<const IKnowsPlatformPosition2d*>(elem);
+        const IKnowsPlatformPosition2d* platformElem = dynamic_cast<const IKnowsPlatformPosition2d*>(elements[i]);
         if ( platformElem != NULL )
         {
             //cout << "Platform pos: x: " << elements_[i]->element->pos().x() << " y: " << elements_[i]->element->pos().y() << endl;
             //cout << "Click pos: x: " << pclick.x() << " y: " << pclick.y() << endl;
 
             // We know that really it's a GuiElement2d...
-            const GuiElement2d *elem2d = dynamic_cast<const GuiElement2d*>(elem);
+            const GuiElement2d *elem2d = dynamic_cast<const GuiElement2d*>(elements[i]);
             assert( elem2d != NULL );
             QPointF delta = pclick - elem2d->pos();
             double dist = sqrt( pow(delta.x(),2.0) + pow(delta.y(),2.0) ) ;
-            if ( dist<radius ) return elements[i]->platform;
+            if ( dist<radius ) return elements[i]->platform();
         }
     }
     
@@ -402,6 +405,41 @@ WorldView::nearestComponent( const QPointF& pclick, const double & radius )
     // neither a platform nor (0,0) was close to where the user clicked
     return "";
 }
+
+// QString 
+// WorldView::nearestComponent( const QPointF& pclick, const double & radius )
+// {
+//     const QList<GuiElementModel::InterfaceNode*> &elements = model_->elements();
+//     
+//     for ( int i=0; i<elements.size(); ++i )
+//     {
+//         // only certain types are real 'platform elements' 
+//         const GuiElement *elem = elements[i]->element;
+//         const IKnowsPlatformPosition2d* platformElem = dynamic_cast<const IKnowsPlatformPosition2d*>(elem);
+//         if ( platformElem != NULL )
+//         {
+//             //cout << "Platform pos: x: " << elements_[i]->element->pos().x() << " y: " << elements_[i]->element->pos().y() << endl;
+//             //cout << "Click pos: x: " << pclick.x() << " y: " << pclick.y() << endl;
+// 
+//             // We know that really it's a GuiElement2d...
+//             const GuiElement2d *elem2d = dynamic_cast<const GuiElement2d*>(elem);
+//             assert( elem2d != NULL );
+//             QPointF delta = pclick - elem2d->pos();
+//             double dist = sqrt( pow(delta.x(),2.0) + pow(delta.y(),2.0) ) ;
+//             if ( dist<radius ) return elements[i]->platform;
+//         }
+//     }
+//     
+//     // if user clicked around the origin (0,0) we switch to a global view (all platforms in focus)
+//     double dist = sqrt( pow(pclick.x(),2.0) + pow(pclick.y(),2.0) );
+// //     cout << "Click pos: x: " << pclick.x() << " y: " << pclick.y() << " dist: " << dist << endl;
+//     if (dist<radius) return "global";
+//     
+//     // neither a platform nor (0,0) was close to where the user clicked
+//     return "";
+// }
+
+
 
 void 
 WorldView::setAntiAliasing(bool antiAliasing)

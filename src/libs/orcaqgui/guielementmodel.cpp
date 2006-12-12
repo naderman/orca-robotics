@@ -12,6 +12,7 @@
 #include <orcaqgui/orcaguiuserevent.h>
 #include <orcaice/orcaice.h>
 
+#include "ipermanentelement.h"
 #include "guielementmodel.h"
 #include "guielementfactory.h"
 #include "guielementview.h"
@@ -20,32 +21,6 @@
 using namespace std;
 
 namespace orcaqgui {
-    
-// ================= INTERFACENODE ===========================================
-GuiElementModel::InterfaceNode::InterfaceNode( const QString &r, const QString &p, const QString &c, const QString &iface, const QString &i  )
-    : registry(r),
-      platform(p),
-      component(c),
-      interface(iface),
-      id(i),
-      element(0)
-{
-}
-
-GuiElementModel::InterfaceNode::~InterfaceNode()
-{
-    delete element;
-}
-
-// to be used in list search, name is sufficient
-bool
-GuiElementModel::InterfaceNode::operator==( const InterfaceNode & other ) const
-{
-    return registry==other.registry && platform==other.platform
-        && component==other.component && interface==other.interface
-        && id==other.id;
-}
-// ==============================================================================
 
 GuiElementModel::GuiElementModel( const std::vector<orcaqgui::GuiElementFactory*> &factories,
                                   const orcaice::Context & context, 
@@ -112,30 +87,30 @@ GuiElementModel::data(const QModelIndex &idx, int role) const
         switch ( idx.column() ) {
         case 0 :
         {
-            QString fqIName = elements_[idx.row()]->interface+"@"
-                        +elements_[idx.row()]->platform+"/"
-                        +elements_[idx.row()]->component;
+            QString fqIName = elements_[idx.row()]->interface()+"@"
+                        +elements_[idx.row()]->platform()+"/"
+                        +elements_[idx.row()]->component();
             return fqIName;
         }
         case 1 :
-            return elements_[idx.row()]->id;
+            return elements_[idx.row()]->id();
         }
     }  
     else if ( role == InterfaceIdRole ) {
         // for all columns
-        return elements_[idx.row()]->id;
+        return elements_[idx.row()]->id();
     }  
     else if ( role == ContextMenuRole ) {
         // for all columns
-        if ( elements_[idx.row()]->element==0 ) {
+        if ( elements_[idx.row()]==0 ) {
             return QVariant();
         }
-        return elements_[idx.row()]->element->contextMenu();
+        return elements_[idx.row()]->contextMenu();
     }
     else if ( role == FocusRole ) {
         // for all columns
         // if it's in Global CS we can set the coordinate frame to it.
-        return elements_[idx.row()]->element->isInGlobalCS();
+        return elements_[idx.row()]->isInGlobalCS();
     }   // role
 
     return QVariant();
@@ -162,7 +137,7 @@ GuiElementModel::removeRows( int row, int count, const QModelIndex & parent )
     assert( parent==QModelIndex() && "this is a table model, parent must be root" );
 
     // if it's the mode owner, reset the mode
-    if ( elements_[row]->element == humanManager_->modeOwner() )
+    if ( elements_[row] == humanManager_->modeOwner() )
         humanManager_->modeOwner()->lostMode();
 
     beginRemoveRows( QModelIndex(), row, row );
@@ -176,7 +151,7 @@ GuiElementModel::removeRows( int row, int count, const QModelIndex & parent )
 }
 
 GuiElement *
-GuiElementModel::instantiateFromFactories( const QString &id, const QColor &platformColor, const QString &proxyStr )
+GuiElementModel::instantiateFromFactories( const QString &id, const QColor &platformColor, const QStringList &proxyStrList )
 {
     for ( uint i=0; i < factories_.size(); i++ )
     {
@@ -184,30 +159,30 @@ GuiElementModel::instantiateFromFactories( const QString &id, const QColor &plat
         if ( !factories_[i]->isSupported( id ) )
             continue;
 
-        return factories_[i]->create( context_, id, proxyStr, platformColor, humanManager_  );
+        return factories_[i]->create( context_, id, proxyStrList, platformColor, humanManager_  );
     }
     return NULL;
 }
-                                      
 
 void
 GuiElementModel::createGuiElement( const QStringList & interfaceInfo )
 {
     Q_ASSERT( interfaceInfo.size()==5 );
-
-    // find our interface or make a new one
-    InterfaceNode* node = new InterfaceNode( interfaceInfo[0], interfaceInfo[1], interfaceInfo[2],
-                      interfaceInfo[3], interfaceInfo[4] );
-
+    
+    QString platform = interfaceInfo[1];
+    QString component = interfaceInfo[2];
+    QString interface = interfaceInfo[3];
+    QString id = interfaceInfo[4];
+    
     QString proxyStr = interfaceInfo[3]+"@"+interfaceInfo[1]+"/"+interfaceInfo[2];
     
-    cout<<"TRACE(guielementmodel.cpp): creating element with of type "<<node->id.toStdString()<<" with proxy "<<proxyStr.toStdString()<<endl;
+    cout<<"TRACE(guielementmodel.cpp): creating element of type "<< id.toStdString() <<" with proxy "<<proxyStr.toStdString()<<endl;
     
     // 
     // Set color for all elements on the platform
     //
     QColor platformColor;
-    if ( isNewPlatform( node->platform ) )
+    if ( isNewPlatform( platform ) )
     {
         // assign a new colour
         if ( colorCounter_>=colorVector_.size() ) {
@@ -217,47 +192,51 @@ GuiElementModel::createGuiElement( const QStringList & interfaceInfo )
             colorCounter_++;
         }
         // save for the future
-        colorMap_[node->platform] = platformColor;
+        colorMap_[platform] = platformColor;
         //cout<<"TRACE(guielementmodel.cpp): emit newPlatform signal" << endl;
-        emit ( newPlatform(node->platform) );
+        emit ( newPlatform(platform) );
     }
     else
     {
         // lookup in our map
-        platformColor = colorMap_[node->platform];
+        platformColor = colorMap_[platform];
     }
     //node->element->setColor( color );
 
     //
     // Instantiate the GuiElement of the right kind
     //
-    node->element = instantiateFromFactories( node->id, platformColor, proxyStr );
-    if (node->element==NULL)
+    
+    
+    QStringList proxyStrList;
+    proxyStrList << proxyStr;
+    
+    GuiElement* element = instantiateFromFactories( id, platformColor, proxyStrList );
+    if (element==NULL)
     {
         //cout << "TRACE(guielementmodel.cpp): Interface not supported." << endl;
         humanManager_->showBoxMsg(orcaqgui::Warning, "Interface is not supported by the GUI");
-        delete node;
+        delete element;
         return;   
     }
-    
+    element->setPlatform( platform );
+    element->setComponent( component );
+    element->setInterface( interface );
+    element->setId( id );
     
     //
     // We need to tell the new element whether it's in focus or not
     //
-    if (node->platform == platformInFocus_)
+    if (platform == platformInFocus_ || platformInFocus_== "global" )
     {
-        node->element->setFocus( true );
+        element->setFocus( true );
     }
-    else if ( platformInFocus_== "global")
-    {
-        node->element->setFocus( true );
-    } 
     else 
     {
-        node->element->setFocus( false );
+        element->setFocus( false );
     }
         
-    int ii = elements_.indexOf( node );
+    int ii = elements_.indexOf( element );
     if ( ii==-1 ) {    
         ii = elements_.size();
         cout<<"TRACE(guielementmodel.cpp): creating interface node "<<ii<<endl;
@@ -266,11 +245,11 @@ GuiElementModel::createGuiElement( const QStringList & interfaceInfo )
         // stick new node into the list
         //
         beginInsertRows( QModelIndex(), ii,ii );
-        elements_.append( node );
+        elements_.append( element );
         endInsertRows();
         
         // hide if not in focus
-        if ( (node->platform != platformInFocus_) && (view_!=NULL) && (platformInFocus_ != "global") ) {
+        if ( (platform != platformInFocus_) && (view_!=NULL) && (platformInFocus_ != "global") ) {
             view_->hideRow( ii );
         }
         
@@ -287,7 +266,7 @@ GuiElementModel::isNewPlatform( QString &platformName )
 {
     for ( int i=0; i<elements_.size(); ++i )
     {
-        if ( elements_[i]->platform == platformName ) return false;
+        if ( elements_[i]->platform() == platformName ) return false;
     }
     return true;    
 }
@@ -320,17 +299,17 @@ GuiElementModel::changePlatformFocus( const QString &platform )
         // special case: show everybody with their colours
         if (platform=="global") 
         {
-            elements_[i]->element->setFocus(true);
+            elements_[i]->setFocus(true);
             continue;
         }
         
-        if ( elements_[i]->platform == platform )
+        if ( elements_[i]->platform() == platform )
         {
-            elements_[i]->element->setFocus(true);
+            elements_[i]->setFocus(true);
         }
         else
         {
-            elements_[i]->element->setFocus(false);  
+            elements_[i]->setFocus(false);  
         }
     }
     
@@ -344,7 +323,7 @@ GuiElementModel::changePlatformFocus( const QString &platform )
     vector<int> elementIndices;
     for ( int i=0; i<elements_.size(); ++i )
     {
-        if (elements_[i]->platform!=platform)
+        if (elements_[i]->platform() != platform)
             elementIndices.push_back(i);
     }
     view_->hideElements( elements_.size(), elementIndices );
@@ -356,7 +335,8 @@ GuiElementModel::removeAllGuiElements()
     for ( int i=0; i<elements_.size(); ++i )
     {
         // don't delete the permanent elements e.g. grid
-        if ( elements_[i]->id != "::local::Grid" ) {
+        IPermanentElement *permElement = dynamic_cast<IPermanentElement*>(elements_[i]);
+        if ( permElement==NULL ) {
             removeRows( i, 1, QModelIndex() );
         }
     }
@@ -367,39 +347,39 @@ GuiElementModel::updateGuiElements()
 {
     for ( int i=0; i<elements_.size(); ++i )
     {
-        if ( elements_[i]->element ) {
+        if ( elements_[i] ) {
             std::stringstream ss;
             try {
-                elements_[i]->element->update();
+                elements_[i]->update();
             }
             catch ( Ice::Exception &e )
             {
-                ss<<"TRACE(guielementmodel.h): Caught some ice exception during update of "
-                  <<elements_[i]->id.toStdString()<<": " << e << std::endl;
+                ss<<"TRACE(guielementmodel.h): Caught some ice exception during update of ";
+//                   <<elements_[i]->id.toStdString()<<": " << e << std::endl;
                 humanManager_->showStatusMsg(orcaqgui::Warning,ss.str().c_str());
             }
             catch ( std::exception &e )
             {
-                ss<<"TRACE(guielementmodel.h): Caught some std exception during update of "
-                  <<elements_[i]->id.toStdString()<<": " << e.what() << std::endl;
+                ss<<"TRACE(guielementmodel.h): Caught some std exception during update of ";
+//                   <<elements_[i]->id.toStdString()<<": " << e.what() << std::endl;
                 humanManager_->showStatusMsg(orcaqgui::Warning,ss.str().c_str());
             }
             catch ( std::string &e )
             {
-                ss<<"TRACE(guielementmodel.h): Caught std::string during update of "
-                  <<elements_[i]->id.toStdString()<<": " << e << std::endl;
+                ss<<"TRACE(guielementmodel.h): Caught std::string during update of ";
+//                   <<elements_[i]->id.toStdString()<<": " << e << std::endl;
                 humanManager_->showStatusMsg(orcaqgui::Warning,ss.str().c_str());
             }
             catch ( char *e )
             {
-                ss<<"TRACE(guielementmodel.h): Caught char * during update of "
-                  <<elements_[i]->id.toStdString()<<": " << e << std::endl;
+                ss<<"TRACE(guielementmodel.h): Caught char * during update of ";
+//                   <<elements_[i]->id.toStdString()<<": " << e << std::endl;
                 humanManager_->showStatusMsg(orcaqgui::Warning,ss.str().c_str());
             }
             catch ( ... )
             {
-                ss<<"TRACE(guielementmodel.h): Caught some other exception during update of "
-                  <<elements_[i]->id.toStdString()<<": " << std::endl;
+                ss<<"TRACE(guielementmodel.h): Caught some other exception during update of ";
+//                   <<elements_[i]->id.toStdString()<<": " << std::endl;
                 humanManager_->showStatusMsg(orcaqgui::Warning,ss.str().c_str());
             }
         }
@@ -410,20 +390,20 @@ void
 GuiElementModel::setCoordinateFramePlatform( int guiElementIndex )
 {
     if ( guiElementIndex<0 || guiElementIndex >= elements_.size() ) return;
-
+    
     // by convention, Grid's platform is "global"
-    coordinateFramePlatform_ = elements_[guiElementIndex]->platform;
+    coordinateFramePlatform_ = elements_[guiElementIndex]->platform();
 }
 
 void
 GuiElementModel::executeGuiElement( int guiElementIndex, int actionIndex )
 {
 
-    if ( guiElementIndex<0 || guiElementIndex >= elements_.size() || elements_[guiElementIndex]->element==NULL ) return;
+    if ( guiElementIndex<0 || guiElementIndex >= elements_.size() || elements_[guiElementIndex]==NULL ) return;
     // debug
     cout<<"GuiElementModel:executeGuiElement: executing action #"<<actionIndex<<endl;
 
-    elements_[guiElementIndex]->element->execute( actionIndex );
+    elements_[guiElementIndex]->execute( actionIndex );
 }
 
 void 
@@ -436,18 +416,6 @@ void
 GuiElementModel::selectedAdaptersInView( vector<int> &indices )
 {
     view_->selectedAdaptersInView( elements_.size(), indices );
-}
-
-
-std::string toString( const GuiElementModel::InterfaceNode &n )
-{
-    stringstream ss;
-    ss << "reg: " << n.registry.toStdString()
-       << ", platform: " << n.platform.toStdString()
-       << ", comp: " << n.component.toStdString()
-       << ", iface: " << n.interface.toStdString()
-       << ", id: " << n.id.toStdString();
-    return ss.str();
 }
 
 }

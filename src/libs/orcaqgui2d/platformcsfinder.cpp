@@ -7,11 +7,11 @@ using namespace std;
 namespace orcaqgui {
 
 bool 
-PlatformCSFinder::findPlatformCS( const QList<GuiElementModel::InterfaceNode*> elements,
-                                  const QString                                &platform,
-                                  float                                        &x,
-                                  float                                        &y,
-                                  float                                        &theta )
+PlatformCSFinder::findPlatformCS( QList<GuiElement*>  elements,
+                                  const QString                       &platform,
+                                  float                               &x,
+                                  float                               &y,
+                                  float                               &theta )
 {
     //
     // Find the most reliable element that reckons it knows where we are.
@@ -24,11 +24,11 @@ PlatformCSFinder::findPlatformCS( const QList<GuiElementModel::InterfaceNode*> e
         //cout<<endl<<elements_[i]->id.toStdString()<<" on "<<elements_[i]->platformatrix.toStdString();
 
         orcaqgui::IKnowsPlatformPosition2d *posElem = 
-            dynamic_cast<orcaqgui::IKnowsPlatformPosition2d*>(elements[i]->element);
+            dynamic_cast<orcaqgui::IKnowsPlatformPosition2d*>(elements[i]);
         if ( posElem != NULL )
         {
             // Ignore if it's the wrong platform.
-            if ( elements[i]->platform != platform ) continue;
+            if ( elements[i]->platform() != platform ) continue;
 
             if ( posElem->platformKnowledgeReliability() > mostReliable )
             {

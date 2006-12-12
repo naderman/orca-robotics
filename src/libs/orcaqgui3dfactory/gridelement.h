@@ -12,6 +12,7 @@
 #define ORCAGUI3D_GRIDELEMENT3D_H
 
 #include <QGLWidget>
+#include <orcaqgui/ipermanentelement.h>
 #include <orcaqgui3d/guielement3d.h>
 
 namespace orcaqgui3d
@@ -19,9 +20,9 @@ namespace orcaqgui3d
 
 /*!
   @brief Paints a rectangular grid in the 3d display.
-  @author Alex Brooks
+  @author Alex Brooks, Tobias Kaupp
 */  
-class GridElement : public GuiElement3d
+class GridElement : public GuiElement3d, public orcaqgui::IPermanentElement
 {
 public:
 

@@ -34,6 +34,12 @@ class GuiElement
 {                                 
 public:
     
+    GuiElement() : platform_(""),
+                   component_(""),
+                   interface_(""),
+                   id_("")
+                   {};
+    
     virtual ~GuiElement() {};
 
     //! Determines whether the element should be painted in the global coordinate system
@@ -66,6 +72,24 @@ public:
     virtual void mouseMoveEvent(QMouseEvent *e) {assert(false&&"unimplemented mouse function");}
     virtual void mouseReleaseEvent(QMouseEvent *e) {assert(false&&"unimplemented mouse function");}
     virtual void mouseDoubleClickEvent(QMouseEvent *e) {assert(false&&"unimplemented mouse function");} 
+    
+    QString platform() { return platform_; };
+    void setPlatform( QString platform ) { platform_ = platform; };
+    
+    QString component() { return component_; };
+    void setComponent( QString component ) { component_ = component; };
+    
+    QString interface() { return interface_; };
+    void setInterface( QString interface ) { interface_ = interface; };
+    
+    QString id() { return id_; };
+    void setId( QString id ) { id_ = id; };
+    
+    private:
+        QString platform_;
+        QString component_;
+        QString interface_;
+        QString id_;
     
 };
 

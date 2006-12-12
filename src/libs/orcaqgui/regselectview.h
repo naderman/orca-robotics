@@ -33,6 +33,7 @@ protected:
 
 private slots:
     void addSelectionIndividually();
+    void addSelectionCombined();
     void addRegistry();
     
 };
