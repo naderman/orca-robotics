@@ -199,8 +199,8 @@ void
 LineExtractor::addLines( const std::vector<Section> &sections, 
                          orca::PolarFeature2dDataPtr &features )
 {
-    const double P_FALSE_POSITIVE = 0.3;
-    const double P_FALSE_POSITIVE_POSSIBLE_GROUND = 0.5;
+    const double P_FALSE_POSITIVE = 0.4;
+    const double P_FALSE_POSITIVE_POSSIBLE_GROUND = 0.55;
     const double P_TRUE_POSITIVE  = 0.6;
     
     std::vector<Section>::const_iterator i=sections.begin();
