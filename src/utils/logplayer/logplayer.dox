@@ -1,0 +1,101 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup utils
+@ingroup cpp
+@ingroup linux
+@defgroup orca_component_logplayer LogPlayer
+
+@brief Replays logged data
+
+@par Provides
+
+- @ref orca_interface_camera [LogPlayer.Provides.CameraX]
+- @ref orca_interface_home
+- @ref orca_interface_laserscanner2d [LogPlayer.Provides.LaserX]
+- @ref orca_interface_position2d [LogPlayer.Provides.Position2dX]
+- @ref orca_interface_position3d [LogPlayer.Provides.Position3dX]
+- @ref orca_interface_status
+
+@par Requires
+
+- none
+
+@par Operation
+
+This component plays back logged data: either recorded by the Orca @ref orca_component_logger or other non-Orca loggers (see @ref logfile_format for an explanation). It sets up provided interfaces to which components can hook up to. Data can be accessed by remote calls (such as getData(), getConfig()). Data is also "pushed" to IceStorm, so components can directly subscribe to the interfaces.
+
+Note that no provided interfaces need to be specified in the @c .cfg file. This is an exception because all interface information is contained in the master file. One problem with this is that Logplayer's @ref orca_interface_home interface does not contain its provided interfaces because they are read from the @c .cfg files. That's why @ref orca_component_orcaview does not display a list of interfaces (it gets this information from the @ref orca_interface_home interfaces). To display replayed data with @ref orca_component_orcaview you'll have to specify the interfaces in the @c orcaview.cfg file. This will be fixed in the future.
+
+The LogPLayer can be extended by adding dynamically-loaded plug-in replayer slaves.  See LogPlayer.Config.FactoryLibNames.
+
+@section logfile_format Logfile format
+
+The standard way to replay data is to use data logged by the Orca @ref orca_component_logger. It generates a human-readable master file containing a header that specifies subfiles with the actual data. The master file body contains timestamps and references to the subfiles. See @ref orca_component_logger for a detailed description of the logfile format.
+
+The subfiles can be encoded in two different formats using the Orca @ref orca_component_logger : {'ice','ascii'}. Replaying is only supported for 'ice'. Subfiles encoded in 'ascii' are human-readable and can be parsed by Matlab for example.
+
+To distinguish between the different encoding types, the master file header contains a field called @c encoding @c type. If the data is logged with the Orca @ref orca_component_logger, it will be set to either 'ice' or 'ascii'.
+
+@section Configuration
+
+- @c LogPlayer.Config.FactoryLibNames (string)
+    - A space-separated list of libraries containing slave factories.
+    - This list is ordered.  Putting a custom library earlier in the list means that it will be used to 
+      instantiate slaves before later factories.
+    - default: libOrcaLogFactory.so
+
+- @c LogPlayer.Config.AutoStart (bool)
+    - Start replaying automatically. If AutoStart=0, will wait for user to type ENTER on command line before starting to replay.
+    - Default: 0
+
+- @c LogPlayer.Config.LogFilename (string)
+    - The name of the master file
+    - Default: 'master.log'
+
+- @c LogPlayer.Config.BeginTime (double) [s]
+    - Start playing the log starting at time BeginTime from the start of the log.
+    - Valid values: >=0
+    - Default: 0 (i.e. starts at the start)
+    
+- @c LogPlayer.Config.EndTime  (double) [s]
+    - Stop playing the log after EndTime is reached (measured from the start of the log).
+    - Valid values:
+        - >0 and EndTime>BeginTime: plays to time EndTime from the start of the log. If EndTime is greater than the duration of the log, the log is simply played to the end.
+        - <0 : play to the end of the log.
+    - Default: -1 (i.e. plays to the end)
+
+- @c LogPlayer.Config.ReplayRate (double)
+    - Adjusts the playback speed. ReplayRate>1 means that the logs are replayed faster than real time. For obvious reasons do not set ReplayRate=0.0.
+    - Default: 1.0
+    
+- @c LogPlayer.Config.EndlessLoop (bool)
+    - Determines whether to restart when reaching the end of the log file
+    - Default: 1
+
+@par Configuration for specific replayers
+
+- @c LogPlayer.Config.Gps.Geometry (x,y,z) [m]
+    - Gps geometry
+    - Default: 0.0 0.0 0.0
+    - If this value is specified it takes precedence over logged values ('ice') or hardcoded values ('jose')
+
+- @c LogPlayer.Config.Gps.Origin (x,y,z,roll,pitch,yaw) [m,deg]
+    - Gps origin
+    - Default: 0.0 0.0 0.0 0.0 0.0 0.0 
+    - If this value is specified it takes precedence over logged values ('ice') or hardcoded values ('jose')
+
+    
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
+@par Authors
+- Tobias Kaupp, Alex Brooks, Alexei Makarenko
+
+*/

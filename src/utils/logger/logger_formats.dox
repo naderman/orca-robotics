@@ -1,0 +1,99 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+/*!
+@page orca_component_logger_formats ASCII log formats
+
+@section laser_format Laser Format
+Example Laser text file with two laser scans recorded looks like:
+@verbatim
+08/29/06 12:14:48.000 RangeScannerConfig: 
+	RangeResolution:   0.01m
+	MaxRange:          80m
+	AngleIncrement:    1deg
+	isEnabled:         1
+08/29/06 12:14:48.058 RangeScannerGeometry: 
+	offset.point.x:           0m
+	offset.point.y:           0m
+	offset.point.z:           0m
+	offset.orientation.roll:  0deg
+	offset.orientation.pitch: 0deg
+	offset.orientation.yaw:   0deg
+	size.length:              0.155m
+	size.width:               0.155m
+	size.height:              0.185m
+08/29/06 12:14:49.309 -90 10
+0 1 2 3 4 5 6 7 8 9 
+0 1 0 1 0 1 0 1 0 1 
+
+08/29/06 12:14:50.313 -90 10
+0 1 2 3 4 5 6 7 8 9 
+0 1 0 1 0 1 0 1 0 1 
+@endverbatim
+
+The first lines up to @c size.height: are the configuration and geometry of the laser. The line starting with "08/29/06 12:14:49.309 -90 10" is the actual laser scan data. Each scan is recorded in 3 lines. The first two fields in the first line "08/29/06 12:14:49.309" are the date and time, the third field "-90" is the start angle in degrees, and the fourth field is the number of laser points in one scan. The data in the second line "0 1 2 3 4 5 6 7 8 9" are the ranges separated by spaces. The third line "0 1 0 1 0 1 0 1 0 1" are the intensities separated by spaces.
+
+@section position2d_format Position2d Format
+
+Example Position2d text file with two poses:
+@verbatim
+Implement streaming Position2dGeometryPtr
+08/29/06 10:01:01.400 
+-3.18018e-07 1.63886e-13 -5.75795e-05 2.14573e-09 0 -1.49593e-06
+
+08/29/06 10:01:01.500 
+-3.18358e-07 1.64228e-13 -5.7609e-05 -5.01235e-09 0 -3.34303e-07
+@endverbatim
+The first line prints out the position2d geometry (in this case the position2d geometry toString() function has not been implemented). The second line has two fields: the date and time. The third line is x,y position, orientation(deg), and respective velocities separated by spaces.
+
+@section localise2d_format Localise2d Format
+
+Example Localise2d text file with two items:
+@verbatim
+01/01/70 12:34:31.000
+1
+1 11.9763 -92.9983 1e-06 0 1e-06 0 0 1e-06 1
+
+01/01/70 12:34:31.500
+1
+0.999994 11.9762 -92.537 1e-06 0 1e-06 0 0 1e-06 1
+@endverbatim
+The format for each localise2dData object is:
+ - timestamp
+ - number of hypotheses
+ - hypothesis 1 .. n (in the format [meanX,meanY,meanO,Pxx,Pxy,Pyy,Pxt,Pyt,Ptt,weight])
+
+@section position3d_format Position3d Format
+
+Example Position3d text file with two poses:
+@verbatim
+Implement streaming Position3dGeometryPtr
+01/01/70 10:00:10.699 
+-1.05142e-08 4.47912e-16 0 0 0 -4.4921e-06 
+1.45443e-08 0 0 0 0 -3.97325e-07 
+
+01/01/70 10:00:10.799 
+-1.04068e-08 4.39438e-16 0 0 0 -4.55647e-06 
+-3.31451e-10 0 0 0 0 -8.07088e-07 
+@endverbatim
+The first line prints out the position3d geometry (in this case the position3d geometry toString() function has not been implemented). The second line has two fields: the date and time. The third line is x,y,z position, roll,pitch, and yaw(deg), and fourth line are the respective velocities of the third line separated by spaces.
+
+@section polarfeature2d_format PolarFeature2d Format
+
+Example PolarFeature2d text file with two features recorded looks like:
+@verbatim
+08/29/06 10:00:02.500 
+1 1.21232 -35 
+
+08/29/06 10:00:02.600 
+1 1.21232 -35 
+@endverbatim
+The first line is the date and time separated by spaces. The second line is the type, range, and bearing from the platform's position of the extracted feature
+
+*/
