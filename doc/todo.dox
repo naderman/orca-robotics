@@ -46,14 +46,18 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Made the generic bits in libOrcaQGui unaware of any specific bits in libOrcaQGui2d (Alex B.)
   - Added support for dynamically-loaded plug-in GuiElementFactories, to allow satelite projects to 
     extend the GUI (Alex B.)
+  - Added support for line features (Alex B.)
+  - Added a fix for multiple-subscriptions and increased re-subscribe timeout (Alex B.)
 - PolarFeature2d interface
-  - Added two fields: pFalsePositive and pTruePositive, to characterise
+  - Added two fields to all features: pFalsePositive and pTruePositive, to characterise
     feature detection reliability (Alex B.)
+  - Allowed different feature representations using inheritence (Alex B.)
 - FeatureMap2d interface
   - Added field to each feature: pExists.  Quantifies the certainty that the feature
     is really there. (Alex B.)
+  - Allowed different feature representations using inheritence (Alex B.)
 - LaserFeatureExtractor
-  - Various improvements, esp. with corner extraction (Alex B.)
+  - Huge Overhaul, plus added line features (Alex B.)
 - Probe utility (Alex M.)
     - using dynamically loaded factory libraries to allow use with satellite projects
     - added a gui driver
