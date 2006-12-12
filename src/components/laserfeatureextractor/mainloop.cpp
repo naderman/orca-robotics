@@ -180,6 +180,12 @@ void MainLoop::run()
             ss << "MainLoop: unexpected std exception: " << e.what();
             context_.tracer()->error( ss.str() );
         }
+        catch ( const std::string &e )
+        {
+            std::stringstream ss;
+            ss << "MainLoop: unexpected std::string exception: " << e;
+            context_.tracer()->error( ss.str() );
+        }
         catch ( ... )
         {
             context_.tracer()->error( "MainLoop: unexpected exception from somewhere.");

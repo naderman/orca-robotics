@@ -19,7 +19,7 @@
 
 //#define RANGE_DELTA     0.5    // 0.10    0.2
 //#define MIN_POINTS_IN_LINE   6    // 6      6
-#define GROUND_MAX_POINTS_IN_LINE   20   // 360    25
+//#define GROUND_MAX_POINTS_IN_LINE   20   // 360    25
 #define CORNER_BOUND     0.2    // 0.45    0.45
 #define POSSIBLE_BOUND    0.2    // ???    0.2
 #define REJECT_GROUND_OBSERVATIONS 1  // 0  1
@@ -28,12 +28,6 @@
 using namespace std;
 
 namespace laserfeatures {
-
-namespace {
-    const double P_FALSE_POSITIVE = 0.3;
-    const double P_FALSE_POSITIVE_POSSIBLE_GROUND = 0.5;
-    const double P_TRUE_POSITIVE  = 0.6;
-}
 
 LineExtractor::LineExtractor( orcaice::Context context, double laserMaxRange, bool extractLines, bool extractCorners )
     : laserMaxRange_( laserMaxRange ),
@@ -194,13 +188,20 @@ LineExtractor::isEndVisible( const Section &section,
 
     return true;
 }
-                     
+             
+bool lineMightBeGround( const Section &section )
+{
+    // Look for lines with near-horizontal slope
+    return fabs(section.eigVectY()) < 0.1;
+}
 
 void
 LineExtractor::addLines( const std::vector<Section> &sections, 
                          orca::PolarFeature2dDataPtr &features )
 {
-    
+    const double P_FALSE_POSITIVE = 0.3;
+    const double P_FALSE_POSITIVE_POSSIBLE_GROUND = 0.5;
+    const double P_TRUE_POSITIVE  = 0.6;
     
     std::vector<Section>::const_iterator i=sections.begin();
     std::vector<Section>::const_iterator prev = sections.begin();
@@ -212,6 +213,22 @@ LineExtractor::addLines( const std::vector<Section> &sections,
              i->lineLength() < minLineLength_ )
             continue;
 
+        double pFalsePositive = P_FALSE_POSITIVE;
+        if ( REJECT_GROUND_OBSERVATIONS )
+        {
+            // Look for lines with near-horizontal slope
+            if ( fabs( i->eigVectY() ) < 0.1 )
+            {
+                // cout<<"TRACE(lineextractor.cpp): rejecting outright" << endl;
+                continue;
+            }
+            if ( fabs( i->eigVectY() ) < 0.25 )
+            {
+                // cout<<"TRACE(lineextractor.cpp): lowering prob" << endl;
+                pFalsePositive = P_FALSE_POSITIVE_POSSIBLE_GROUND;
+            }
+        }
+
         orca::LinePolarFeature2dPtr f = new orca::LinePolarFeature2d;
         f->type = orca::feature::LINE;
 
@@ -220,8 +237,8 @@ LineExtractor::addLines( const std::vector<Section> &sections,
         f->end.r   = (*i).end().range();
         f->end.o   = (*i).end().bearing();
 
-        f->pFalsePositive = 0.3;
-        f->pTruePositive  = 0.7;
+        f->pFalsePositive = pFalsePositive;
+        f->pTruePositive  = P_TRUE_POSITIVE;
         features->features.push_back( f );
 
         //
@@ -255,6 +272,10 @@ void
 LineExtractor::addCorners( const std::vector<Section> &sections, 
                              orca::PolarFeature2dDataPtr &features )
 {
+    const double P_FALSE_POSITIVE = 0.3;
+    const double P_FALSE_POSITIVE_POSSIBLE_GROUND = 0.5;
+    const double P_TRUE_POSITIVE  = 0.6;
+
     std::vector<Section>::const_iterator itr;
     std::vector<Section>::const_iterator next;
   
@@ -267,22 +288,21 @@ LineExtractor::addCorners( const std::vector<Section> &sections,
         {
             if ( itr->lineLength() < minLineLength_ )
             {
-                cout<<"TRACE(lineextractor.cpp): line too small: length is " << itr->lineLength() << endl;
+                //cout<<"TRACE(lineextractor.cpp): line too small: length is " << itr->lineLength() << endl;
                 continue;
             }
             if ( next->lineLength() < minLineLength_ )
             {
-                cout<<"TRACE(lineextractor.cpp): line too small: length is " << next->lineLength() << endl;
+                //cout<<"TRACE(lineextractor.cpp): line too small: length is " << next->lineLength() << endl;
                 continue;
             }
 
             double pFalsePositive = P_FALSE_POSITIVE;
 
-            if (REJECT_GROUND_OBSERVATIONS && 
-            ((itr->elements().size() > GROUND_MAX_POINTS_IN_LINE && fabs(itr->eigVectY()) < 0.1) ||
-            (next->elements().size() > GROUND_MAX_POINTS_IN_LINE && fabs(next->eigVectY()) < 0.1))) 
+            if ( REJECT_GROUND_OBSERVATIONS && 
+                 (lineMightBeGround( *itr ) || lineMightBeGround( *next )) )
             {
-              //std::cout << "We have a big line with a near horizontal slope.  Could be the ground??? Slope A : " << itr->eigVectY << " Slope B : " << next->eigVectY << std::endl;
+              //std::cout << "We have a line with a near horizontal slope.  Could be the ground??? Slope A : " << itr->eigVectY << " Slope B : " << next->eigVectY << std::endl;
               pFalsePositive = P_FALSE_POSITIVE_POSSIBLE_GROUND;
             }
   

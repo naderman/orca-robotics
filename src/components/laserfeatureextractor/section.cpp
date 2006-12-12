@@ -62,11 +62,19 @@ Section::setEndPoints()
 #ifndef NDEBUG    
     if ( end_.bearing()-start_.bearing() < 0 )
     {
-        cout<<"TRACE(section.cpp): start: " << start_.toStringRB() << endl;
-        cout<<"TRACE(section.cpp): end  : " << end_.toStringRB() << endl;
-        cout<<"TRACE(section.cpp): first: " << elements_.front().toStringRB() << endl;
-        cout<<"TRACE(section.cpp): last : " << elements_.back().toStringRB() << endl;
-        assert( false && "incorrect ordering of points!" );
+        stringstream ss;
+        ss<<"  setEndPoints(): Incorrect ordering of points: " << endl;
+        ss<<"TRACE(section.cpp): startRB: " << start_.toStringRB() << endl;
+        ss<<"TRACE(section.cpp): endRB  : " << end_.toStringRB() << endl;
+        ss<<"TRACE(section.cpp): startXY: " << start_.toStringXY() << endl;
+        ss<<"TRACE(section.cpp): endXY  : " << end_.toStringXY() << endl;
+        ss<<"TRACE(section.cpp): firstRB: " << elements_.front().toStringRB() << endl;
+        ss<<"TRACE(section.cpp): lastRB : " << elements_.back().toStringRB() << endl;
+        ss<<"TRACE(section.cpp): firstXY: " << elements_.front().toStringXY() << endl;
+        ss<<"TRACE(section.cpp): lastXY : " << elements_.back().toStringXY() << endl;
+        //cout<<ss.str();
+        //assert( false && "incorrect ordering of points!" );
+        throw ss.str();
     }
 #endif
 
