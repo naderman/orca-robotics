@@ -12,7 +12,6 @@
 #include <QPainter>
 #include <QString>
 #include <QPixmap>
-#include <QBitmap>
 
 #include <fstream>
 #include <orcaobj/orcaobj.h>
@@ -36,7 +35,7 @@ OgMapPainter::OgMapPainter( QObject* parent, int winMaxWidth, int winMaxHeight )
 
     winMaxSize_.setWidth( winMaxWidth );
     winMaxSize_.setHeight( winMaxHeight );
-    // ???
+
     winSize_.setWidth( 0 );
     winSize_.setHeight( 0 );
 
@@ -62,8 +61,8 @@ OgMapPainter::clear()
 void
 OgMapPainter::setData( const OgMapDataPtr & data )
 {
-    cout<<"TRACE(ogmappainter.cpp): setData(): " << endl;
-    cout << orcaice::toVerboseString(data);
+//     cout<<"TRACE(ogmappainter.cpp): setData(): " << endl;
+//     cout << orcaice::toVerboseString(data);
     data_ = data;
 
     if ( data->origin.o != 0.0 ) {
@@ -156,6 +155,10 @@ OgMapPainter::paint( QPainter *painter, int z )
     painter->setMatrix( QMatrix() );
     painter->drawPixmap( QPoint(), mapWin_ );
     painter->restore();
+    
+//     QPixmap test(500,500);
+//     test.fill(QColor(255,0,0,127));
+//     painter->drawPixmap( QPoint(), test );
 }
 
 bool
@@ -165,7 +168,7 @@ OgMapPainter::updateWorldMatrix( const QMatrix & m )
     if ( m2win_ == m ) {
         return false;
     }
-    cout << "TRACE(ogmappainter.cpp): updateWorldMatrix " << endl;
+//     cout << "TRACE(ogmappainter.cpp): updateWorldMatrix " << endl;
 
     m2win_ = m;
 
@@ -248,8 +251,8 @@ void OgMapPainter::rescale()
 
     mapWin_.fill( Qt::gray );
 
-    cout<<"TRACE(ogmappainter.cpp): copying from "<<scaledInsideRect.width()<<"x"<<scaledInsideRect.height()
-        <<" to "<<mapWin_.width()<<"x"<<mapWin_.height()<<endl;
+//     cout<<"TRACE(ogmappainter.cpp): copying from "<<scaledInsideRect.width()<<"x"<<scaledInsideRect.height()
+//         <<" to "<<mapWin_.width()<<"x"<<mapWin_.height()<<endl;
         
     // copy into window buffer
     QPainter toMapWin( &mapWin_ );

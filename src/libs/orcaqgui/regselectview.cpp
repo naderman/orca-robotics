@@ -38,10 +38,10 @@ void RegSelectView::contextMenuEvent( QContextMenuEvent* e )
     if ( currentIndex().data( orcaqcm::OcmModel::TypeRole) == "Interface" )
     {
         if ( currentIndex().data() == "::orca::Platform2d" ) {
-            menu.addAction("Add to Project as OdometryPainter", this, SLOT(addCurrentToProject()) );
+            menu.addAction("Add to Project as OdometryPainter", this, SLOT(addSelectionIndividually()) );
         }
         else {
-            menu.addAction("Add to Project", this, SLOT(addCurrentToProject()) );
+            menu.addAction("Add to Project Individually", this, SLOT(addSelectionIndividually()) );
         }
         menu.addSeparator();
     }
@@ -54,25 +54,28 @@ void RegSelectView::mouseDoubleClickEvent( QMouseEvent* e )
 {
     // only react interfaces
     if ( currentIndex().data( orcaqcm::OcmModel::TypeRole) == "Interface" ) {
-        addCurrentToProject();
+        addSelectionIndividually();
     }
 }
 
-void RegSelectView::addCurrentToProject()
-{
-    cout<<"addToProject() :"<<currentIndex().data().toString().toStdString()<<endl;
-
-    orcaqcm::OcmModel* ocmModel = (orcaqcm::OcmModel*)model();
-    QString registry;
-    QString platform;
-    QString component;
-    QString interface;
-    QString id;
-    // lookup interface information in the model
-    ocmModel->interfaceData( currentIndex(), registry, platform, component, interface, id );
-    QStringList interfaceInfo;
-    interfaceInfo << registry<<platform<<component<<interface<<id;
-    emit interfaceToBeAdded( interfaceInfo );
+void RegSelectView::addSelectionIndividually()
+{    
+    for (int i=0; i<selectionModel()->selectedRows().size(); i++)
+    {
+        cout<<"addSelectionIndividually " <<selectedIndexes()[i].data().toString().toStdString()<<endl;
+        
+        orcaqcm::OcmModel* ocmModel = (orcaqcm::OcmModel*)model();
+        QString registry;
+        QString platform;
+        QString component;
+        QString interface;
+        QString id;
+        // lookup interface information in the model
+        ocmModel->interfaceData( selectionModel()->selectedRows()[i], registry, platform, component, interface, id );
+        QStringList interfaceInfo;
+        interfaceInfo << registry<<platform<<component<<interface<<id;
+        emit interfaceToBeAdded( interfaceInfo );
+    }
 }
 
 void RegSelectView::addRegistry()

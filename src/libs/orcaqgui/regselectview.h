@@ -32,7 +32,7 @@ protected:
     virtual void mouseDoubleClickEvent ( QMouseEvent* e );
 
 private slots:
-    void addCurrentToProject();
+    void addSelectionIndividually();
     void addRegistry();
     
 };
