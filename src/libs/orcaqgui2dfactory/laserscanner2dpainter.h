@@ -60,6 +60,7 @@ class LaserScanner2dPainter
     double bearingStart_;
 
     bool isDisplayScan_;
+    bool isDisplayPoints_;
     bool isDisplayWalls_;
     bool isDisplayReflectors_;
     bool isFilledPolygon_;

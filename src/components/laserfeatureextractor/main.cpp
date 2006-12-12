@@ -18,7 +18,8 @@
 //
 int main(int argc, char * argv[])
 {
+    bool installCtrlCHandler=false;
     laserfeatures::Component component;
-    orcaice::Application app( component );
+    orcaice::Application app( component, installCtrlCHandler );
     return app.main(argc, argv);
 }

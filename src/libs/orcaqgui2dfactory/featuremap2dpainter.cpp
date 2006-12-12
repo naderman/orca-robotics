@@ -51,7 +51,7 @@ FeatureMap2dPainter::setData( const orca::FeatureMap2dDataPtr &data )
 {
     assert( data != 0 );
 
-    //cout<<"TRACE(featuremap2dpainter.cpp): got data: " << orcaice::toString(data) << endl;
+    cout<<"TRACE(featuremap2dpainter.cpp): got data: " << orcaice::toString(data) << endl;
 
     data_ = data;
 }

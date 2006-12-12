@@ -48,7 +48,7 @@ class PolarFeature2dElement
 public:
     PolarFeature2dElement( const orcaice::Context  &context,
                            const std::string       &proxyString,
-                           int                      timeoutMs=5000 )
+                           int                      timeoutMs=60000 )
         : IceStormElement<PolarFeature2dPainter,
                             orca::PolarFeature2dData,
                             orca::PolarFeature2dDataPtr,
@@ -85,7 +85,7 @@ class LaserScanner2dElement
 public:
     LaserScanner2dElement( const orcaice::Context  &context,
                   const std::string       &proxyString,
-                  int                      timeoutMs=5000,
+                  int                      timeoutMs=60000,
                   QColor                   outlineColor=QColor( 102,102,153, 255 ),
                   float                    outlineThickness=-1,
                   float                    brightReturnWidth=0.2 )
@@ -127,7 +127,7 @@ public:
     Localise2dElement( const orcaice::Context  &context,
                        const std::string       &proxyString,
                        bool                     beginDisplayHistory=false,
-                       int                      timeoutMs=5000 )
+                       int                      timeoutMs=60000 )
         : IceStormElement<Localise2dPainter,
                             orca::Localise2dData,
                             orca::Localise2dDataPtr,
@@ -184,7 +184,7 @@ class Particle2dElement
 public:
     Particle2dElement( const orcaice::Context  &context,
                        const std::string       &proxyString,
-                       int                      timeoutMs=5000 )
+                       int                      timeoutMs=60000 )
         : IceStormElement<Particle2dPainter,
                             orca::Particle2dData,
                             orca::Particle2dDataPtr,

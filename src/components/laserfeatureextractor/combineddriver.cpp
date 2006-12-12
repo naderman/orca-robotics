@@ -16,7 +16,7 @@
 #include "reflectorextractor.h"
 #include "foregroundextractor.h"
 #include "doorextractor.h"
-#include "cornerextractor.h"
+#include "lineextractor.h"
 
 #include "combineddriver.h"
 
@@ -34,6 +34,8 @@ CombinedDriver::CombinedDriver( orcaice::Context context, double maxRange, int n
         orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractReflectors", 1);
     bool extractForegroundPoints           =
         orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractForegroundPoints", 0);
+    bool extractLines                      =
+        orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractCorners", 0);
     bool extractCorners                    =
         orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractCorners", 0);
     bool extractDoors                      =
@@ -45,8 +47,8 @@ CombinedDriver::CombinedDriver( orcaice::Context context, double maxRange, int n
         extractors_.push_back( new ForegroundExtractor(context,maxRange) );
     if ( extractDoors )
         extractors_.push_back( new DoorExtractor(context) );
-    if ( extractCorners ) 
-        extractors_.push_back( new CornerExtractor(context,maxRange) );
+    if ( extractCorners || extractLines ) 
+        extractors_.push_back( new LineExtractor(context,maxRange,extractLines,extractCorners) );
 
     if ( extractors_.size() == 0 )
     {

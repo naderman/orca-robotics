@@ -681,6 +681,11 @@ toString( const orca::FeatureMap2dDataPtr &obj )
             const orca::CartesianPointFeature2d& r = dynamic_cast<const orca::CartesianPointFeature2d&>(*f);
             s << "("<<r.p.x<<","<<r.p.y<<") ("<<r.c.xx<<","<<r.c.xy<<","<<r.c.yy<<")";
         }
+        else if ( f->ice_isA( "::orca::CartesianLineFeature2d" ) )
+        {
+            const orca::CartesianLineFeature2d& r = dynamic_cast<const orca::CartesianLineFeature2d&>(*f);
+            s << "(r="<<r.rho<<",a="<<r.alpha*180.0/M_PI<<"deg) ("<<r.c.xx<<","<<r.c.xy<<","<<r.c.yy<<")" << " ("<<r.start.x<<","<<r.start.y<<")->("<<r.end.x<<","<<r.end.y<<")";
+        }
         else
         {
             // Don't really know how to display info about this feature.

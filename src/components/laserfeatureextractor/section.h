@@ -29,6 +29,9 @@ public:
     double range() const { return r_; };
     double bearing() const { return b_; }
 
+    std::string toStringXY() const;
+    std::string toStringRB() const;
+
 private:
     double x_;
     double y_;
@@ -44,22 +47,16 @@ public:
     Section();
     ~Section();
 
-    void tryFitLine();
-
     // Is this section connected to the next?
     bool isNextCon() const { return isNextCon_; }
 
     // Are the points linear enough to be considered a line?
     bool isALine() const { return isALine_; }
 
-    // centroid of the line segment
-    double centroidX() const { assert(isALine()); return centroidX_; }
-    double centroidY() const { assert(isALine()); return centroidY_; }
-
     // vector perpendicular to line segment.
     // guaranteed to be of length 1.
-    double perpVectX() const { assert(isALine()); return eigVectX_; }
-    double perpVectY() const { assert(isALine()); return eigVectY_; }
+    double eigVectX() const { assert(isALine()); return eigVectX_; }
+    double eigVectY() const { assert(isALine()); return eigVectY_; }
 
     //  Line equation is: eigVectX*x - eigVectY*y + c = 0
     double c() const { assert(isALine()); return c_; }
@@ -68,11 +65,15 @@ public:
     const SectionEl &start() const { assert(isALine()); return start_; }
     const SectionEl &end() const { assert(isALine()); return end_; }
 
+    // To help determine visibility of line endpoints, keep track
+    // of the range on either side of the line segment.
+    double rangeBeforeStart() const { return rangeBeforeStart_; }
+    double rangeAfterEnd()    const { return rangeAfterEnd_; }
+    double &rangeBeforeStart() { return rangeBeforeStart_; }
+    double &rangeAfterEnd()    { return rangeAfterEnd_; }
+
     // length of segment (using entire estimate from all points)
     double lineLength() const;
-
-    // Try to find a point to break a line in two
-    void findBreakPoint(double &maxDist, int &pos) const;
 
     const std::vector<SectionEl> &elements() const { return elements_; }
 
@@ -80,16 +81,29 @@ public:
     std::vector<SectionEl> &elements() { return elements_; }
     void setIsNextCon( bool val ) { isNextCon_ = val; }
 
+    void setIsALine( double eigVectX,
+                     double eigVectY,
+                     double c ) 
+        { 
+            isALine_=true; 
+            eigVectX_=eigVectX;
+            eigVectY_=eigVectY;
+            c_=c;            
+            setEndPoints(); 
+        }
+
 private:
 
     void setEndPoints();
+
+    double rangeBeforeStart_;
+    double rangeAfterEnd_;
 
     bool isNextCon_;
 
     bool isALine_;
 
-    double centroidX_;
-    double centroidY_;
+    SectionEl centroid_;
 
     // eigVect describes a vector perpendicular to the line
     double eigVectX_;
@@ -119,6 +133,42 @@ void extractSections( const std::vector<float> &ranges,
 
 // Try to fit lines to the sections provided.
 void extractLines( std::vector<Section> &sections, int minPointsInLine );
+
+// Finds the point which maximises the projected distance to the line.
+// Sets its index and the distance, or negative values if non found.
+// Returns true if a break-point was found.
+//
+// TODO: This algorithm has problems...  In an 'L'-shaped segment,
+//       it chooses to break near the lower-right rather than the lower-left.
+//
+bool findBreakPoint( const std::vector<SectionEl> &sectionElements,
+                     double eigVectX,
+                     double eigVectY,
+                     double c,
+                     double &maxDist,
+                     int &pos );
+
+
+// Split any bent sections into multiple smaller sections.
+// breakDistThreshold says when to break: when the orthogonal projection
+// onto the line is greater than this.
+void breakAndFitLines( std::vector<Section> &sections,
+                       int minPointsInLine,
+                       double breakDistThreshold );
+
+// The equation for the line is defined as:
+//
+//  vx x - vy y + c = 0
+//  vx x - vy y + (vy y0 + vx x0) = 0
+//
+//   where vx is the first component of the eigenvector (perpendicular to line)
+//         vy is the second component of the eigenvector (perpendicular to line)
+//         c is the intercept
+//
+// The eigenvector is of unit length
+//
+void fitLine( const std::vector<SectionEl> &elements,
+              double &eigVectX, double &eigVectY, double &c );
 
 // Print to cout
 void printSections( const std::vector<Section> &sections );

@@ -89,6 +89,8 @@ void OrcaMonComponent::start()
 //         return;
 //     }
 
+    cout<<"TRACE(main.cpp): Connecting to " << proxyString << endl;
+
     // now that we know the interface type, we can create an appropriate consumer and subscribe ourselves
     if ( objId=="::orca::Laser" || objId=="::orca::RangeScanner" )
     {

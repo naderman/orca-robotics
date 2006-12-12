@@ -110,7 +110,8 @@ orca_polefinder::detect_poles( const std::vector<float> &scan,
             }
 
             // Is there anything screwy about this return?
-            if ( scan[i] == max_laser_range || fabs(delta_range) > min_distance_to_background )
+            if ( scan[i] >= max_laser_range ||
+                 fabs(delta_range) > min_distance_to_background )
             {
                 // Yes, this range is screwy.
                 if ( !potential_pole_start )

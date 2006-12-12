@@ -58,7 +58,7 @@ namespace orcaqgui
         
             GpsElement( const orcaice::Context  &context,
                         const std::string       &interfaceTag,
-                        int                      timeoutMs=5000 );
+                        int                      timeoutMs=60000 );
         
         // inherited from guielement
             void update();

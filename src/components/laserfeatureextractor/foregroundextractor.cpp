@@ -64,6 +64,8 @@ void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserD
 
     for ( int i=0; i < numPoles; i++ )
     {
+        assert( poles[i].range > 0 && poles[i].range < laserMaxRange_ );
+
         orca::PointPolarFeature2dPtr pp = new orca::PointPolarFeature2d;
         pp->type = orca::feature::FOREGROUNDPOINT;
         pp->p.r  = poles[i].range;

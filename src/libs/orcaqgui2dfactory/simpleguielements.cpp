@@ -44,7 +44,7 @@ QStringList
 LaserScanner2dElement::contextMenu()
 {
     QStringList s;
-    s<<"Toggle Scan"<<"Toggle Walls"<<"Toggle Reflectors"<<"Toggle Filling Polygon"<<"Toggle Transparency";
+    s<<"Toggle Scan"<<"Toggle Points"<<"Toggle Walls"<<"Toggle Reflectors"<<"Toggle Filling Polygon"<<"Toggle Transparency";
     return s;
 }
 

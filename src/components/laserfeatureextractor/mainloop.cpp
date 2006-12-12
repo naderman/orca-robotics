@@ -55,13 +55,13 @@ void MainLoop::initDriver()
     }
     else if ( driverName == "combined" )
     {
-        orca::RangeScanner2dDescriptionPtr descr;
         while ( isActive() )
         {
             try {
                 // get laser description
-                descr = laserPrx_->getDescription();
-                sensorOffset_ = descr->offset;
+                laserDescr_ = laserPrx_->getDescription();
+                cout << "Laser Description: " << orcaice::toString(laserDescr_) << endl;
+                sensorOffset_ = laserDescr_->offset;
                 if ( sensorOffsetOK( sensorOffset_ ) )
                     break;
                 IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
@@ -75,7 +75,7 @@ void MainLoop::initDriver()
         }
 
         context_.tracer()->debug( "loading 'combined' driver",3);
-        driver_ = new CombinedDriver( context_, descr->maxRange, descr->numberOfSamples );
+        driver_ = new CombinedDriver( context_, laserDescr_->maxRange, laserDescr_->numberOfSamples );
     }
     else
     {
@@ -219,11 +219,32 @@ MainLoop::convertToRobotCS( const PolarFeature2dDataPtr & featureData )
         if ( ftr->ice_isA( "::orca::PointPolarFeature2d" ) )
         {
             orca::PointPolarFeature2d& f = dynamic_cast<orca::PointPolarFeature2d&>(*ftr);
+            assert( f.p.r >= 0 && f.p.r < laserDescr_->maxRange );
+            assert( f.p.o > laserDescr_->startAngle && 
+                    f.p.o < laserDescr_->startAngle+laserDescr_->fieldOfView );
             convertPointToRobotCS( f.p.r, f.p.o, offsetXyz, offsetAngles );
         }
         else if ( ftr->ice_isA( "::orca::LinePolarFeature2d" ) )
         {
             orca::LinePolarFeature2d& f = dynamic_cast<orca::LinePolarFeature2d&>(*ftr);
+#ifndef NDEBUG
+            // Check a few things...
+            // (Allow slack because funny things can happen as endpoints are projected)
+            const bool EPSR=0.5;
+            const bool EPSB=5*M_PI/180.0;
+            if ( f.startSighted )
+            {
+                assert( f.start.r >= -EPSR && f.start.r < laserDescr_->maxRange+EPSR );
+                assert( f.start.o > laserDescr_->startAngle-EPSB && 
+                        f.start.o < laserDescr_->startAngle+laserDescr_->fieldOfView+EPSB );
+            }
+            if ( f.endSighted )
+            {
+                assert( f.end.r >= -EPSR && f.end.r < laserDescr_->maxRange+EPSR );
+                assert( f.end.o > laserDescr_->startAngle-EPSB && 
+                        f.end.o < laserDescr_->startAngle+laserDescr_->fieldOfView+EPSB );
+            }
+#endif
             convertPointToRobotCS( f.start.r, f.start.o, offsetXyz, offsetAngles );
             convertPointToRobotCS( f.end.r,   f.end.o,   offsetXyz, offsetAngles );
         }

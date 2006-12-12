@@ -52,6 +52,8 @@
  *   n = column dimension of a
  *   w = returns the vector of singular values of a
  *   v = returns the right orthogonal transformation matrix
+ * Returns:
+ *   0=success, non-zero=failure
 */
 
 
@@ -84,8 +86,8 @@ int dsvd(float **a, int m, int n, float *w, float **v)
   
     if (m < n) 
     {
-        fprintf(stderr, "#rows must be > #cols \n");
-        return(0);
+        fprintf(stderr, "dsvd: #rows must be > #cols \n");
+        return(-1);
     }
   
     rv1 = (double *)malloc((unsigned int) n*sizeof(double));
@@ -280,7 +282,7 @@ int dsvd(float **a, int m, int n, float *w, float **v)
             if (its >= 30) {
                 free((void*) rv1);
                 fprintf(stderr, "No convergence after 30,000! iterations \n");
-                return(0);
+                return(-1);
             }
     
             /* shift from bottom 2 x 2 minor */
@@ -341,6 +343,6 @@ int dsvd(float **a, int m, int n, float *w, float **v)
         }
     }
     free((void*) rv1);
-    return(1);
+    return(0);
 }
 

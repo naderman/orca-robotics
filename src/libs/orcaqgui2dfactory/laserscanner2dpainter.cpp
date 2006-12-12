@@ -28,6 +28,7 @@ LaserScanner2dPainter::LaserScanner2dPainter( QColor outlineColor,
                             float  brightReturnWidth )
     : bearingStart_(0),
       isDisplayScan_(true),
+      isDisplayPoints_(false),
       isDisplayWalls_(true),
       isDisplayReflectors_(true),
       isFilledPolygon_(false),
@@ -152,7 +153,7 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
     // draw the scan itself
     //
     painter->drawConvexPolygon( qScan_ );
-        
+
     // draw the walls
     if ( isDisplayWalls_ ) {
         //debug
@@ -164,11 +165,8 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
         bool isWallSegment = isCurrWall;
         int start = 1;
         int finish = 1;
-//         int segmentCount = 0;
         
         for ( int i=2; i<qScan_.size(); ++i ) {
-        // alexm: temp hack! laserMaxRange_ is not set on connection
-//             isCurrWall = ( data_->ranges[i-1] < laserMaxRange_
             isCurrWall = ( data_->ranges[i-1] < 80.0
                            && fabs(data_->ranges[i-1]-data_->ranges[i-2])<0.5 );
 
@@ -187,8 +185,6 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
                 }
                 else {
                     finish = i;
-                    //painter->setPen( QPen( outlineColor_ ) );
-                    //painter->drawPolyline( &qScan_[start], finish-start+1 );
                     
                     // start of next segment
                     start = i;
@@ -201,8 +197,12 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
         }
     }
 
-    // this has not been tested yet
-    
+    if ( isDisplayPoints_ )
+    {
+        painter->setPen( QPen( Qt::black, .1 ) );
+        painter->drawPoints( qScan_ );
+    }
+
     // draw bright rectangles for high intensity returns
     if ( isDisplayReflectors_ ) {    
         QColor intensityColor;
@@ -245,18 +245,22 @@ LaserScanner2dPainter::execute( int action )
         isDisplayScan_ = !isDisplayScan_;
         break;
     case 1 :
+        // toggle points
+        isDisplayPoints_ = !isDisplayPoints_;
+        break;
+    case 2 :
         // toggle walls
         isDisplayWalls_ = !isDisplayWalls_;
         break;
-    case 2 :
+    case 3 :
         // toggle reflectors
         isDisplayReflectors_ = !isDisplayReflectors_;
         break;
-    case 3 :
+    case 4 :
         // toggle filling
         isFilledPolygon_ = !isFilledPolygon_;
         break;
-    case 4 :
+    case 5 :
         // toggle transparency
         if (fillColor_.alpha()==127) {
             fillColor_.setAlpha(255);

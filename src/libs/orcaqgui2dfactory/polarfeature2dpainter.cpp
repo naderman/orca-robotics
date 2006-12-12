@@ -22,6 +22,11 @@ using namespace orca;
 
 using namespace orcaqgui;
 
+namespace {
+    const double BOX_WIDTH = 0.750;
+    const double LINE_WIDTH_MAX = BOX_WIDTH/2.0;
+}
+
 PolarFeature2dPainter::PolarFeature2dPainter()
 {
 }
@@ -48,9 +53,6 @@ PolarFeature2dPainter::setData( const orca::PolarFeature2dDataPtr & data )
 void
 drawPointFeature( QPainter *painter, const orca::PointPolarFeature2d &f )
 {
-    const double boxWidth = 0.750;
-    const double lineWidthMax = boxWidth/2.0;
-
     painter->save();
     {
         painter->rotate( (int)floor(RAD2DEG(f.p.o)) );
@@ -58,9 +60,9 @@ drawPointFeature( QPainter *painter, const orca::PointPolarFeature2d &f )
         
         // Not sure of a better way to represent both pFalsePositive and pTruePositive
         // with just one number...
-        double lineWidth = lineWidthMax*( f.pTruePositive-f.pFalsePositive );
+        double lineWidth = LINE_WIDTH_MAX*( f.pTruePositive-f.pFalsePositive );
         painter->setPen( QPen( orcaqgui::featureColour(f.type),lineWidth) );
-        painter->drawRect( QRectF( -boxWidth/2.0, -boxWidth/2.0, boxWidth, boxWidth) );
+        painter->drawRect( QRectF( -BOX_WIDTH/2.0, -BOX_WIDTH/2.0, BOX_WIDTH, BOX_WIDTH) );
     }
     painter->restore();
 }
@@ -68,15 +70,31 @@ drawPointFeature( QPainter *painter, const orca::PointPolarFeature2d &f )
 void
 drawLineFeature( QPainter *painter, const orca::LinePolarFeature2d &f )
 {
-    cout<<"TRACE(polarfeature2dpainter.cpp): drawLineFeature()" << endl;
+    painter->save();
+    {
+        double lineWidth = LINE_WIDTH_MAX*( f.pTruePositive-f.pFalsePositive );
+        painter->setPen( QPen( orcaqgui::featureColour(f.type), lineWidth ) );
 
-    painter->setPen( QPen( orcaqgui::featureColour(f.type), 0.3 ) );
+        double x1 = f.start.r*cos(f.start.o);
+        double y1 = f.start.r*sin(f.start.o);
+        double x2 = f.end.r*cos(f.end.o);
+        double y2 = f.end.r*sin(f.end.o);
 
-    double x1 = f.start.r*cos(f.start.o);
-    double y1 = f.start.r*sin(f.start.o);
-    double x2 = f.end.r*cos(f.end.o);
-    double y2 = f.end.r*sin(f.end.o);
-    painter->drawLine( QLineF( x1,y1, x2,y2 ) );
+        // Move to the first point, and rotate the x-axis parallel to the line
+        painter->translate( x1, y1 );
+        painter->rotate( atan2(y2-y1,x2-x1)*180.0/M_PI );
+
+        double len = hypotf(y2-y1,x2-x1);
+
+        painter->drawLine( QLineF( 0,  BOX_WIDTH/2, len,  BOX_WIDTH/2 ) );
+        painter->drawLine( QLineF( 0, -BOX_WIDTH/2, len, -BOX_WIDTH/2 ) );
+
+        if ( f.startSighted )
+            painter->drawLine( QLineF( 0, -BOX_WIDTH/2, 0, BOX_WIDTH/2 ) );
+        if ( f.endSighted )
+            painter->drawLine( QLineF( len, -BOX_WIDTH/2, len, BOX_WIDTH/2 ) );
+    }
+    painter->restore();
 }
 
 void

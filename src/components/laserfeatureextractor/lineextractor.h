@@ -1,14 +1,14 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp,v
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp,
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef CORNEREXTRACTOR__H
-#define CORNEREXTRACTOR__H
+#ifndef LINEEXTRACTOR__H
+#define LINEEXTRACTOR__H
 
 #include <orca/laserscanner2d.h>
 #include <orca/polarfeature2d.h>
@@ -19,12 +19,12 @@
 
 namespace laserfeatures {
 
-class CornerExtractor : public IExtractor
+class LineExtractor : public IExtractor
 {
 
 public: 
 
-    CornerExtractor( orcaice::Context, double laserMaxRange );
+    LineExtractor( orcaice::Context, double laserMaxRange, bool extractLines, bool extractCorners );
 
     // Adds laser features to the 'features' data structure
     void addFeatures( const orca::LaserScanner2dDataPtr &laserData,
@@ -33,6 +33,14 @@ public:
 private: 
     
     double laserMaxRange_;
+
+    bool extractLines_;
+    bool extractCorners_;
+
+    // config
+    double clusterMaxRangeDelta_;
+    double breakDistThreshold_;
+    int    minPointsInLine_;
     double minLineLength_;
 
     // Not used at the moment
@@ -42,6 +50,13 @@ private:
                      orca::PolarFeature2dDataPtr &features );
     void addLines( const std::vector<Section> &sections, 
                    orca::PolarFeature2dDataPtr &features );
+
+    bool isStartVisible( const Section &section,
+                         double alpha,
+                         const Section *prevSection );
+    bool isEndVisible( const Section &section,
+                       double alpha,
+                       const Section *nextSection );
 };
 
 }

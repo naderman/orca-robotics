@@ -12,6 +12,7 @@
 #include <iostream>
 #include "section.h"
 #include "svd.h"
+#include <sstream>
 
 using namespace std;
 
@@ -46,28 +47,47 @@ Section::lineLength() const
 void
 Section::setEndPoints()
 {
-    // calc length using the actual endpoints
-    const SectionEl &s = elements_.front();
-    const SectionEl &e = elements_.back();
-    double halfLength = 0.5 * hypotf( s.y()-e.y(), s.x()-e.x() );
+    // Project the end-points onto the line
+    double off1 = eigVectX_*elements_.front().x() + eigVectY_*elements_.front().y()+ c_;
+    double x1 = elements_.front().x() - off1*eigVectX_;
+    double y1 = elements_.front().y() - off1*eigVectY_;
+    start_.setXY( x1, y1 );
 
-    double vParallelX = -eigVectY_;
-    double vParallelY =  eigVectX_;
-
-    start_.setXY( centroidX_ - vParallelX*halfLength, centroidY_ - vParallelY*halfLength );
-    end_.setXY(   centroidX_ + vParallelX*halfLength, centroidY_ + vParallelY*halfLength );
+    double off2 = eigVectX_*elements_.back().x() + eigVectY_*elements_.back().y()+ c_;
+    double x2 = elements_.back().x() - off2*eigVectX_;
+    double y2 = elements_.back().y() - off2*eigVectY_;
+    end_.setXY( x2, y2 );
 
     // Make sure the points are ordered correctly.
+#ifndef NDEBUG    
     if ( end_.bearing()-start_.bearing() < 0 )
     {
-        // swap them
-        SectionEl temp = start_;
-        start_ = end_;
-        end_ = temp;
+        cout<<"TRACE(section.cpp): start: " << start_.toStringRB() << endl;
+        cout<<"TRACE(section.cpp): end  : " << end_.toStringRB() << endl;
+        cout<<"TRACE(section.cpp): first: " << elements_.front().toStringRB() << endl;
+        cout<<"TRACE(section.cpp): last : " << elements_.back().toStringRB() << endl;
+        assert( false && "incorrect ordering of points!" );
     }
+#endif
 
-    // Make sure the points are ordered correctly.
-    assert( end_.bearing()-start_.bearing() > 0 );
+    // sanity check...
+    assert ( hypotf( start_.y()-elements().front().y(), start_.x()-elements().front().x() ) < 1.0 );
+    assert ( hypotf( end_.y()-elements().back().y(),    end_.x()-elements().back().x() ) < 1.0 );
+}
+
+std::string
+SectionEl::toStringXY() const
+{
+    stringstream ss;
+    ss << "("<<x()<<", "<<y()<<")";
+    return ss.str();
+}
+std::string
+SectionEl::toStringRB() const
+{
+    stringstream ss;
+    ss << "("<<range()<<", "<<bearing()*180.0/M_PI<<"deg)";
+    return ss.str();
 }
 
 void 
@@ -80,95 +100,102 @@ extractSections( const std::vector<float> &ranges,
                  std::vector<Section> &sections )
 {
     Section current;
-  
-    bool inSection = true;
-    if (ranges[0] >= maxRange) {
-        inSection = false;
-    } else {
+
+    // Deal with first point
+    if (ranges[0] < maxRange) 
+    {
         double r = ranges[0];
-        double b = - M_PI/2;
+        double b = angleStart;
         SectionEl pos(r, b);
         current.elements().push_back(pos);
+        current.rangeBeforeStart() = maxRange;
     }
 
-    for (unsigned int i = 1; i < ranges.size(); i++) {
-        if (ranges[i] >= maxRange) {
-            if (ranges[i-1] < maxRange) {
-              // found the end of the current section with an out of range reading
-              // ignore elements with less candidate points than would constitute 2 lines
-              if (current.elements().size() > 2*minPointsInLine)
-              {
+    // Loop through remaining points
+    for (unsigned int i = 1; i < ranges.size(); i++) 
+    {
+        bool segmentBreak = ( ranges[i] >= maxRange ||
+                              ranges[i-1] >= maxRange ||
+                              fabs(ranges[i]-ranges[i-1]) > maxRangeDelta );
+        if ( segmentBreak )
+        {
+            // Add the previous section if it's big enough, and start fresh
+            if ( current.elements().size() >= minPointsInLine )
+            {
+                current.rangeAfterEnd() = ranges[i];
                 sections.push_back(current);
-              }
-              current.elements().clear();
-            } else {
-                // We are still in an out of range section
-                // ignore...
             }
-        } else if (ranges[i-1] >= maxRange ||
-                   fabs(ranges[i] - ranges[i-1]) < maxRangeDelta) 
+            current.elements().clear();
+        }
+        if ( ranges[i] < maxRange )
         {
             // Add this point to the current section
             double r = ranges[i];
-            double b = M_PI*i/(ranges.size()-1) - M_PI/2;
-            SectionEl pos(r, b);
-            current.elements().push_back(pos);
-         } else {
-           // There has been a step change in range, start a new section
-           // ignore elements with less candidate points than would constitute 2 lines
-           if (current.elements().size() > 2*minPointsInLine)
-           {
-             sections.push_back(current);
-           }
-           current.elements().clear();
-         }
+            double b = angleStart + i*angleIncrement;
+            current.elements().push_back( SectionEl(r,b) );
+            if ( current.elements().size() == 1 )
+                current.rangeBeforeStart() = maxRange;
+        }
     }
 
-    if (current.elements().size() > 2*minPointsInLine)
+    // Finish final section
+    if (current.elements().size() >= minPointsInLine)
     {
-      sections.push_back(current);
+        // This section would have been added if there were a segment break.
+        // Therefore it must contain the last return.
+        current.rangeAfterEnd() = maxRange;
+        sections.push_back(current);
     }
-    current.elements().clear();
     
-    //std::cout << "FeatureExtractor : Found " << sections.size() << " sections" << std::endl;
-    //printSections();
+//     std::cout << "section.cpp: Found " << sections.size() << " sections" << std::endl;
+//     //printSections( sections );
+//     for ( uint i=0; i < sections.size(); i++ )
+//     {
+//         cout << "  Sec "<<i<<": ("
+//              <<sections[i].elements()[0].x()<<", "<<sections[i].elements()[0].y()<<") -> ("
+//              <<sections[i].elements().back().x()<<", "<<sections[i].elements().back().y()<<")" << endl;
+//     }
 }
 
 void 
-Section::tryFitLine()
+fitLine( const std::vector<SectionEl> &elements,
+         double &eigVectX, double &eigVectY, double &c )
 {
+    assert( elements.size() > 2 );
+    // TODO: range-weight this calculation?
+
     int n = 2;
-    int m = elements_.size();
+    int m = elements.size();
 
     // Find the centroid of the section..
     //std::cout << "Finding the centroid of the section" << std::endl;
 
+    double centroidX=0, centroidY=0;
     for (int i = 0; i < m; i++) {
-        centroidX_ += elements_[i].x();
-        centroidY_ += elements_[i].y();
+        centroidX += elements[i].x();
+        centroidY += elements[i].y();
     }
-    centroidX_ /= (double)m;
-    centroidY_ /= (double)m;
+    centroidX /= (double)m;
+    centroidY /= (double)m;
   
+    float *W = new float[n];
+
     float **A = new float*[m];
     for (int i = 0; i < m; i++) {
         A[i] = new float[n];
     }
-
-    float *W = new float[n];
-
     float **V = new float*[n];
     for (int i = 0; i < n; i++) {
         V[i] = new float[n];
     }
 
     for (int i = 0; i < m; i++) {
-        A[i][0] = elements_[i].x() - centroidX_;
-        A[i][1] = elements_[i].y() - centroidY_;
+        A[i][0] = elements[i].x() - centroidX;
+        A[i][1] = elements[i].y() - centroidY;
     }
 
-    //std::cout << "Calling SVD" << std::endl;
-    dsvd(A, m, n, W, V);
+    int ret = dsvd(A, m, n, W, V);
+    assert( ret == 0 );
 
     int minIndex = 0;
     for (int i = 0; i < n; i++) {
@@ -185,137 +212,120 @@ Section::tryFitLine()
     //   where vx is the first component of the eigenvector
     //         vy is the second component of the eigencector
     //         c is the intercept
-    eigVectX_ = V[0][minIndex];
-    eigVectY_ = V[1][minIndex];
-    c_ = -eigVectX_*centroidX_ - eigVectY_*centroidY_;
+    eigVectX = V[0][minIndex];
+    eigVectY = V[1][minIndex];
+    c = -eigVectX*centroidX - eigVectY*centroidY;
 
+    // Cleanup the arrays...
+    delete[] W;
+    for ( int i=0; i < m; i++ )
+        delete[] A[i];
+    delete[] A;
+    for ( int i=0; i < n; i++ )
+        delete[] V[i];
+    delete[] V;
+
+#if 0
     double total_error = 0;
-    for (int i = 0; i < m; i++) {
-        double dist = fabs(eigVectX_*elements_[i].x() 
-                           + eigVectY_*elements_[i].y() + c_);
+    for (int i = 0; i < m; i++) 
+    {
+        double dist = fabs(eigVectX*elements[i].x() +
+                           eigVectY*elements[i].y() + c);
 
         total_error += dist;
     }
-    if (total_error/(double)m < LINEFIT_ERROR_THRESHOLD) 
-    {
-        isALine_ = true;
-        setEndPoints();
-    }
-    else {
-        cout << "Unable to bound line: error " << total_error/(double)m << endl;
-    }
 
-    // Cleanup the arrays...
-    delete A;
-
-    delete W;
-    delete V;
+    bool isALine = ((total_error/(double)m)) < LINEFIT_ERROR_THRESHOLD;
+    return isALine;
+#endif
 }
 
-void 
-Section::findBreakPoint(double &maxDist, int &pos) const
+bool
+findBreakPoint( const std::vector<SectionEl> &sectionElements,
+                double eigVectX,
+                double eigVectY,
+                double c,
+                double &maxDist,
+                int    &pos )
 {
-    maxDist = 0;
-    pos = 0;
-  
-    int numElements = elements_.size();
-    if ( numElements <= 2) {
-        return;
-    }
-    double x1 = elements_[0].x();
-    double y1 = elements_[0].y();
-    double xn = elements_[numElements-1].x();
-    double yn = elements_[numElements-1].y();
-    double deltaX =  xn - x1;
-    double deltaY =  yn - y1;
-    //std::cout << "dx " << deltaX << " dy " << deltaY;
-    double sectionLength = sqrt(pow(deltaX, 2.0) + pow(deltaY, 2.0));
-    if (sectionLength == 0.0)
+    if ( sectionElements.size() < 3 )
     {
-        return;
+        // All points will be co-linear
+        return false;
     }
-  
-    // compute the perpendicular distance between the line joining the first and
-    // last elements of the section and each point to find the maximum distance.  If
-    // this distance is greater than a threshold it will be used to break the section
-    // into two smaller sections
-    for (int i = 1; i < numElements - 2; i++) {
-        double x = elements_[i].x();
-        double y = elements_[i].y();
-        double dx = x - x1;
-        double dy = y - y1;
 
-        // the distance is computed using the dot product between the vector 
-        // joining the current point and the first endpoint 
-        // r = [ x - x1 ]
-        //     [ y - y1 ]
-        // and the vector perpendicular to the line segment
-        // v = [  yn - y1   ]
-        //     [ -(xn - y1) ]
-        // The distance is
-        //   d =  | v.r | 
-        //     =  | ( x - x1 )( yn - y1) - ( y - y1 )( xn - x1) | / sqrt((xn-x1)^2+(yn-y1)^2)
-        double r = dx*deltaY - dy*deltaX;
-        double dist = fabs(r/sectionLength);
-        //cout << "Distance : " << dist << " dist_r " << dist_r << endl;
+    maxDist = -1;
+    pos = -1;
+    // Note: don't iterate over the end-points, since there's
+    // no point breaking there.
+    for ( uint i=1; i < sectionElements.size()-1; i++ )
+    {
+        const SectionEl &e = sectionElements[i];
 
-        if (dist > maxDist) {
-            maxDist = dist;
+        // orthogonal distance from the line
+        double orthDist = fabs( eigVectX*e.x() + eigVectY*e.y() + c );
+
+        if ( orthDist > maxDist )
+        {
+            maxDist = orthDist;
             pos = i;
         }
     }
 
-    //std::cout <<  "Found max distance " << maxDist << std::endl;
+    assert( maxDist >= 0 );
+    return true;
 }
 
 void 
-extractLines( std::vector<Section> &sections, int minPointsInLine )
+breakAndFitLines( std::vector<Section> &sections, int minPointsInLine, double breakDistThreshold )
 {
-    const double BREAK_DIST = 0.2;
-
-    //std::cout << "Extracting lines from " << sections.size() << " initial sections" << std::endl;
-  
     std::vector<Section>::iterator itr = sections.begin();
-  
     while (itr != sections.end())
     {
-        if ( itr->elements().size() < (uint)(minPointsInLine) )
+        if ( (int)(itr->elements().size()) < minPointsInLine ) 
         {
-            // Don't break this one.
-            itr++;
+            ++itr;
             continue;
         }
 
-        int pos = 0;
-        double maxDist = 0;
-        //std::cout << "Preparing to find breaks for section of size << " << itr->elements.size() << std::endl;
-        (*itr).findBreakPoint(maxDist, pos);
+        // try to fit a line to the section
+        double eigVectX, eigVectY, c;
+        fitLine( itr->elements(), eigVectX, eigVectY, c );
 
-        if (maxDist > BREAK_DIST) {
-            //std::cout << "Found a break point at position " << pos << " in section of size " << itr->elements.size() << std::endl;
-        
-            Section temp;
-            temp.setIsNextCon( true );
-        
-            temp.elements().insert( temp.elements().begin(), itr->elements().begin(), itr->elements().begin() + pos);
-        
-            itr->elements().erase( itr->elements().begin(), itr->elements().begin() + pos );
-        
-            //std::cout << "Inserting section of size " << temp.elements().size() << " before section of size " << itr->elements().size() << std::endl;
-            try {
-                // insert the new section and get a valid handle to the inserted section
-                itr = sections.insert(itr, temp);
-                //itr--;
-            } catch(...) {
-                std::cout << "Exception in inserting new section!!!" << std::endl;
-            }
-        } else {
-            // std::cout << "Preparing to fit lines" << std::endl;
-            (*itr).tryFitLine();
-            itr++;
+        int    pos;
+        double maxDist;
+        if ( findBreakPoint( itr->elements(), eigVectX, eigVectY, c, maxDist, pos ) &&
+             maxDist >= breakDistThreshold )
+        {
+            // We should break the line.
+            
+            // Split this section in two:
+            //   a newSection just before the current one.
+            //   the break point ends up in both segments.
+            Section newSection;
+            newSection.setIsNextCon( true );
+            
+            newSection.elements().insert( newSection.elements().begin(), 
+                                          itr->elements().begin(), 
+                                          itr->elements().begin() + pos+1);
+            newSection.rangeBeforeStart() = itr->rangeBeforeStart();
+            newSection.rangeAfterEnd() = itr->elements()[pos+1].range();
+
+            itr->elements().erase( itr->elements().begin(), 
+                                   itr->elements().begin() + pos );
+            itr->rangeBeforeStart() = newSection.elements()[newSection.elements().size()-2].range();
+
+            // insert the new section before the current one, and
+            // point itr to it.
+            itr = sections.insert(itr, newSection);
+        }
+        else
+        {
+            if ( (int)(itr->elements().size()) >= minPointsInLine )
+                itr->setIsALine( eigVectX, eigVectY, c );
+            ++itr;
         }
     }
-    //std::cout << "FeatureExtractor : Extracted " << sections.size() << " lines" << std::endl;
 }
 
 void printSections( const std::vector<Section> &sections )
@@ -340,7 +350,6 @@ void printSections( const std::vector<Section> &sections )
         }
 
         cout << "}  ";
-        //itr = itr->next;
     }
     cout << " - Count: " << count << endl;
 }
