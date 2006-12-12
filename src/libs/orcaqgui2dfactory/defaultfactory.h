@@ -33,11 +33,11 @@ namespace orcaqgui
         DefaultFactory();
 
         // returns a NULL pointer if something goes wrong
-        virtual orcaqgui::GuiElement* create(const orcaice::Context                 &context,
-                                             const QString                          &interfaceId,
-                                             const QStringList                      &proxyStrList,
-                                             QColor                                  suggestedColor,
-                                             orcaqgui::IHumanManager                 *humanManager ) const;
+        virtual orcaqgui::GuiElement* create(const orcaice::Context     &context,
+                                             const QStringList          &interfaceIds,
+                                             const QStringList          &proxyStrList,
+                                             QColor                      suggestedColor,
+                                             orcaqgui::IHumanManager    *humanManager ) const;
 
     private:
         

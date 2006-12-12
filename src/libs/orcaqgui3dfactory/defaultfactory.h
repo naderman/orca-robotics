@@ -27,7 +27,7 @@ namespace orcaqgui
 namespace orcaqgui3d {
 
 //!
-//! Generates Gui Elements based on its type.
+//! Generates 3D Gui Elements based on its type.
 //!
 class DefaultFactory : public orcaqgui::GuiElementFactory
 {
@@ -36,11 +36,11 @@ public:
     DefaultFactory();
 
     // returns a NULL pointer if something goes wrong
-    virtual orcaqgui::GuiElement* create(const orcaice::Context                 &context,
-                                         const QString                          &interfaceId,
-                                         const QStringList                      &proxyStrList,
-                                         QColor                                  suggestedColor,
-                                         orcaqgui::IHumanManager                 *humanManager) const;
+    virtual orcaqgui::GuiElement* create(const orcaice::Context     &context,
+                                         const QStringList          &interfaceId,
+                                         const QStringList          &proxyStrList,
+                                         QColor                      suggestedColor,
+                                         orcaqgui::IHumanManager    *humanManager) const;
 
 private:
 };

@@ -87,18 +87,16 @@ GuiElementModel::data(const QModelIndex &idx, int role) const
         switch ( idx.column() ) {
         case 0 :
         {
-            QString fqIName = elements_[idx.row()]->interface()+"@"
-                        +elements_[idx.row()]->platform()+"/"
-                        +elements_[idx.row()]->component();
+            QString fqIName = elements_[idx.row()]->name();
             return fqIName;
         }
         case 1 :
-            return elements_[idx.row()]->id();
+            return elements_[idx.row()]->details();
         }
     }  
     else if ( role == InterfaceIdRole ) {
         // for all columns
-        return elements_[idx.row()]->id();
+        return elements_[idx.row()]->details();
     }  
     else if ( role == ContextMenuRole ) {
         // for all columns
@@ -151,32 +149,45 @@ GuiElementModel::removeRows( int row, int count, const QModelIndex & parent )
 }
 
 GuiElement *
-GuiElementModel::instantiateFromFactories( const QString &id, const QColor &platformColor, const QStringList &proxyStrList )
+GuiElementModel::instantiateFromFactories( const QStringList &ids, const QColor &platformColor, const QStringList &proxyStrList )
 {
     for ( uint i=0; i < factories_.size(); i++ )
     {
         // if this interface is not supported, skip this factory
-        if ( !factories_[i]->isSupported( id ) )
+        if ( !factories_[i]->isSupported( ids ) )
             continue;
 
-        return factories_[i]->create( context_, id, proxyStrList, platformColor, humanManager_  );
+        return factories_[i]->create( context_, ids, proxyStrList, platformColor, humanManager_  );
     }
     return NULL;
 }
 
-void
-GuiElementModel::createGuiElement( const QStringList & interfaceInfo )
+
+void 
+GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
 {
-    Q_ASSERT( interfaceInfo.size()==5 );
+    // get interface data out of stringlist
+    QStringList ids;
+    QStringList proxyStrList;
+    QStringList platformStrList;
+    for (int i=0; i<interfacesInfo.size(); i++)
+    {
+        QStringList info = interfacesInfo[i]; 
+        ids << info[4];
+        cout << "ids: " << info[3].toStdString() << endl;
+        proxyStrList << info[3]+"@"+info[1]+"/"+info[2];
+        cout << "proxylist: " << (info[3]+"@"+info[1]+"/"+info[2]).toStdString() << endl;
+        platformStrList << info[1];
+        cout << "platform: " << info[1].toStdString() << endl;
+    }
     
-    QString platform = interfaceInfo[1];
-    QString component = interfaceInfo[2];
-    QString interface = interfaceInfo[3];
-    QString id = interfaceInfo[4];
-    
-    QString proxyStr = interfaceInfo[3]+"@"+interfaceInfo[1]+"/"+interfaceInfo[2];
-    
-    cout<<"TRACE(guielementmodel.cpp): creating element of type "<< id.toStdString() <<" with proxy "<<proxyStr.toStdString()<<endl;
+    // set platform name: if they disagree, set to global
+    QString platform = platformStrList[0];
+    for (int i=1; i<platformStrList.size(); i++)
+    {   
+        if (platformStrList[i] != platform)
+            platform="global";
+    }        
     
     // 
     // Set color for all elements on the platform
@@ -201,17 +212,8 @@ GuiElementModel::createGuiElement( const QStringList & interfaceInfo )
         // lookup in our map
         platformColor = colorMap_[platform];
     }
-    //node->element->setColor( color );
-
-    //
-    // Instantiate the GuiElement of the right kind
-    //
     
-    
-    QStringList proxyStrList;
-    proxyStrList << proxyStr;
-    
-    GuiElement* element = instantiateFromFactories( id, platformColor, proxyStrList );
+    GuiElement* element = instantiateFromFactories( ids, platformColor, proxyStrList );
     if (element==NULL)
     {
         //cout << "TRACE(guielementmodel.cpp): Interface not supported." << endl;
@@ -219,10 +221,18 @@ GuiElementModel::createGuiElement( const QStringList & interfaceInfo )
         delete element;
         return;   
     }
+    
+    // set properties of guielement
     element->setPlatform( platform );
-    element->setComponent( component );
-    element->setInterface( interface );
-    element->setId( id );
+    QString details;
+    QString name;
+    for (int i=0; i<ids.size(); i++)
+    {
+        details = details + ids[i] + "\n";
+        name = name + proxyStrList[i] + "\n";
+    }
+    element->setDetails( details );
+    element->setName(name);
     
     //
     // We need to tell the new element whether it's in focus or not
@@ -239,7 +249,7 @@ GuiElementModel::createGuiElement( const QStringList & interfaceInfo )
     int ii = elements_.indexOf( element );
     if ( ii==-1 ) {    
         ii = elements_.size();
-        cout<<"TRACE(guielementmodel.cpp): creating interface node "<<ii<<endl;
+        cout<<"TRACE(guielementmodel.cpp): creating element "<<ii<<endl;
 
         //
         // stick new node into the list
@@ -254,12 +264,8 @@ GuiElementModel::createGuiElement( const QStringList & interfaceInfo )
         }
         
     }
-    else {
-        //cout<<"using interface node "<<ii<<" for component "<<c->name.toStdString()<<endl;
-    }
-
-    //cout<<"finished creating"<<endl;
 }
+        
 
 bool
 GuiElementModel::isNewPlatform( QString &platformName )

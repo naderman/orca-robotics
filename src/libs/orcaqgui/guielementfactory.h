@@ -11,7 +11,7 @@
 #ifndef ORCAGUI_GUIELEMENTFACTORY_H
 #define ORCAGUI_GUIELEMENTFACTORY_H
 
-#include <QString>
+#include <QStringList>
 #include <QColor>
 #include <orcaice/context.h>
 #include <vector>
@@ -41,12 +41,12 @@ public:
     //! Returns a vector of all supported interface types.
     //! Use addSupportedType() to define a list of supported types during
     //! initialization.
-    std::vector<QString> supportedInterfaceIds() const;
+    std::vector<QStringList> supportedInterfaceIds() const;
 
-    //! Returns TRUE if the specified interface type is supported by this factory.
+    //! Returns TRUE if the specified list of interface types is supported by this factory.
     //! Use addSupportedType() to define a list of supported types during
     //! initialization.
-    bool isSupported( const QString &interfaceId ) const;
+    bool isSupported( const QStringList &interfaceIds ) const;
 
     //
     // The factory should set a colour with guiElement->setColor, possibly
@@ -54,7 +54,7 @@ public:
     //
     // returns a NULL pointer if something goes wrong
     virtual GuiElement* create( const orcaice::Context         &context,
-                                const QString                  &interfaceId,
+                                const QStringList              &interfaceId,
                                 const QStringList              &proxyStrList,
                                 QColor                          suggestedColor,
                                 orcaqgui::IHumanManager  *msgDisplayer ) const = 0;
@@ -62,11 +62,11 @@ public:
 protected:
 
     //! Adds type to the list of supported interfaces.
-    void addSupportedType( const QString & interfaceType );
+    void addSupportedType( const QStringList & interfaceType );
 
 
 private:
-    std::vector<QString> supportedInterfaceIds_;
+    std::vector<QStringList> supportedInterfaceIds_;
     
 };
 

@@ -24,32 +24,41 @@ namespace orcaqgui3d {
 
 DefaultFactory::DefaultFactory()
 {
-    addSupportedType("::local::Grid");
-    addSupportedType("::orca::LaserScanner2d");
-    addSupportedType("::orca::Position3d");
+    addSupportedType(QStringList("::local::Grid"));
+    addSupportedType(QStringList("::orca::LaserScanner2d"));
+    addSupportedType(QStringList("::orca::Position3d"));
 }
 
 
 orcaqgui::GuiElement*
-DefaultFactory::create( const orcaice::Context           &context,
-                        const QString                    &interfaceId,
-                        const QStringList                &proxyStrList,
-                        QColor                            suggestedColor,
-                        orcaqgui::IHumanManager           *humanManager) const
+DefaultFactory::create( const orcaice::Context  &context,
+                        const QStringList       &interfaceIds,
+                        const QStringList       &proxyStrList,
+                        QColor                   suggestedColor,
+                        orcaqgui::IHumanManager *humanManager) const
 {
     orcaqgui::GuiElement *elem = NULL;
    
+    if (interfaceIds.size()>1)
+    {
+        cout << "ERROR(guielementfactory.cpp): Factory does not support elements with more than one interface" << endl;
+        return elem;
+    }
+    
+    QString interfaceId = interfaceIds[0];
+    QString proxyString = proxyStrList[0];
+    
     if ( interfaceId == "::local::Grid" ) {
         cout<<"creating Grid element"<<endl;
         elem = new orcaqgui3d::GridElement();
     }
     else if ( interfaceId == "::orca::LaserScanner2d" ) {
         cout<<"creating LaserScanner2d element"<<endl;
-        elem = new orcaqgui3d::LaserScanner2dElement( context, proxyStrList[0].toStdString() );
+        elem = new orcaqgui3d::LaserScanner2dElement( context, proxyString.toStdString() );
     }
     else if ( interfaceId == "::orca::Position3d" ) {
         cout<<"creating Position3d element"<<endl;
-        elem = new orcaqgui3d::Position3dElement( context, proxyStrList[0].toStdString() );
+        elem = new orcaqgui3d::Position3dElement( context, proxyString.toStdString() );
     }
     else
     {

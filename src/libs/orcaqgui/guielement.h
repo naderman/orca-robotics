@@ -35,9 +35,8 @@ class GuiElement
 public:
     
     GuiElement() : platform_(""),
-                   component_(""),
-                   interface_(""),
-                   id_("")
+                   details_(""),
+                   name_("")
                    {};
     
     virtual ~GuiElement() {};
@@ -73,23 +72,22 @@ public:
     virtual void mouseReleaseEvent(QMouseEvent *e) {assert(false&&"unimplemented mouse function");}
     virtual void mouseDoubleClickEvent(QMouseEvent *e) {assert(false&&"unimplemented mouse function");} 
     
+    //! Access and set functions for platform name
     QString platform() { return platform_; };
     void setPlatform( QString platform ) { platform_ = platform; };
     
-    QString component() { return component_; };
-    void setComponent( QString component ) { component_ = component; };
+    //! Access and set functions for details string displayed in table, e.g. ogmap@hemp/ogmaploader 
+    QString details() { return details_; };
+    void setDetails( QString details ) { details_ = details; };
     
-    QString interface() { return interface_; };
-    void setInterface( QString interface ) { interface_ = interface; };
-    
-    QString id() { return id_; };
-    void setId( QString id ) { id_ = id; };
+    //! Access and set functions for name string displayed in table, e.g. ::orca::OgMap
+    QString name() { return name_; };
+    void setName( QString name ) { name_ = name; };
     
     private:
         QString platform_;
-        QString component_;
-        QString interface_;
-        QString id_;
+        QString details_;
+        QString name_;
     
 };
 

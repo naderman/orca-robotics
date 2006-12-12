@@ -79,11 +79,12 @@ signals:
 
 public slots:
     void removeAllGuiElements();
-    void createGuiElement( const QStringList & interfaceInfo );
+//     void createGuiElement( const QStringList & interfaceInfo );
+    void createGuiElement( const QList<QStringList> & );
 
 private:
 
-    GuiElement *instantiateFromFactories( const QString &id, const QColor &platformColor, const QStringList &proxyStrList );
+    GuiElement *instantiateFromFactories( const QStringList &ids, const QColor &platformColor, const QStringList &proxyStrList );
 
     QList<GuiElement*> elements_;
     

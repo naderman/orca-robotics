@@ -129,9 +129,9 @@ void MainWindow::init( GuiElementModel                   *guiElemModel,
     
     // Give the model a pointer to the view
     elemModel_->setView( elemView_ );
-
-    QObject::connect( regView_,SIGNAL(interfaceToBeAdded( const QStringList & )),
-             elemModel_,SLOT(createGuiElement( const QStringList & )) );
+    
+    QObject::connect( regView_,SIGNAL(newSelection( const QList<QStringList> & )),
+             elemModel_,SLOT(createGuiElement( const QList<QStringList> & )) );
 
     regTimer_ = new QTimer( this );
     QObject::connect( regTimer_,SIGNAL(timeout()), this,SLOT(refreshRegistryView()) );
@@ -159,10 +159,12 @@ void
 MainWindow::loadElementsFromConfigFile( const orcaice::Context & context )
 {
     // default elements
+    QList<QStringList> list;
     QStringList sl;
     sl << "default" << "global" << "local" << "local" << "::local::Grid";
     cout<<"adding grid..."<<endl;
-    elemModel_->createGuiElement( sl );
+    list << sl;
+    elemModel_->createGuiElement( list );
     elemModel_->setCoordinateFramePlatform( 0 );
 
     // elements from the config file
@@ -190,12 +192,14 @@ MainWindow::loadElementsFromConfigFile( const orcaice::Context & context )
             cout<<"adding "<<ifaceHeader.id<<"..."<<endl;
 
             sl.clear();
+            list.clear();
             sl << "default"
                << QString::fromStdString(ifaceHeader.name.platform)
                << QString::fromStdString(ifaceHeader.name.component)
                << QString::fromStdString(ifaceHeader.name.iface)
                << QString::fromStdString(ifaceHeader.id);
-            elemModel_->createGuiElement( sl );
+            list << sl;
+            elemModel_->createGuiElement( list );
         }
     }
 }
