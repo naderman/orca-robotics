@@ -33,8 +33,8 @@ subclass the point cloud interface.
 /*! Currently supports uncoloured and coloured point clouds. 
 */ 
 
-enum PointCloudType { PCXYZ, 
-                      PCXYZRGB }; 
+enum PointCloudType { PointCloudTypeNoColour, 
+                      PointCloudTypeColour }; 
 
 /*! While it would be nice from a software engineering point of view
 to have a collection of points as structs or classes, OpenGL works
@@ -44,9 +44,7 @@ time just packing and unpacking stuff.
 sequence<float> FloatSequence; 
 
 
-/*!
-    Description of the point cloud
-*/
+//! Description of the point cloud
 class PointCloudDescription extends OrcaObject 
 {
   
@@ -68,8 +66,8 @@ class PointCloudData extends OrcaObject
   //! type of point cloud: colour or uncoloured
   PointCloudType type; 
 
-/*! Points are interleaved. if the Type is PCXYZ, then the sequence
-    is X0,Y0,Z0,X1,Y1,Z1... If the type is PCXYZRGB, then it is
+/*! Points are interleaved. if the Type is PointCloudTypeNoColour, then the sequence
+    is X0,Y0,Z0,X1,Y1,Z1... If the type is PointCloudTypeColour, then it is
     X0,Y0,Z0,R0,G0,B0,.... Colours are specified between 0.0 and 1.0  
 */ 
   FloatSequence points;
