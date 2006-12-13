@@ -202,7 +202,7 @@ QStringList
 PathFollower2dElement::contextMenu()
 {
     QStringList s;
-    s << "Toggle All Waypoints" << "Toggle Past Waypoints";
+    s << "Toggle All Waypoints" << "Toggle Past Waypoints" << "Toggle enabled";
     return s;
 }
 
@@ -217,6 +217,10 @@ PathFollower2dElement::execute( int action )
     else if ( action == 1 )
     {
         painter_.togglePastWaypoints();
+    }
+    else if ( action == 2 )
+    {
+        pathFollower2dPrx_->setEnabled( !pathFollower2dPrx_->enabled() );
     }
     else
     {

@@ -76,8 +76,7 @@ FeatureMap2dPainter::paintPointFeature( QPainter *painter,
     // draw a little square on the mean, with weight proportional to pExists.
     const float boxWidth = 0.2;
     QPen pen(featureColour(f.type));
-    double widthFactor = f.pExists-0.5;
-    double newWidth =  0.1 * widthFactor;
+    double newWidth =  MAX(0.1, 0.1 * (f.pExists-0.2));
     pen.setWidthF( newWidth );
     painter->setPen( pen );
     painter->drawRect( QRectF( f.p.x-boxWidth/2, f.p.y-boxWidth/2, boxWidth, boxWidth ) );
@@ -111,8 +110,7 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
 {
     // draw the line
     QPen pen(featureColour(f.type));
-    double widthFactor = f.pExists-0.5;
-    double newWidth =  0.2 * widthFactor;
+    double newWidth =  MAX(0.1, 0.2 * (f.pExists-0.2));
     pen.setWidthF( newWidth );
     painter->setPen( pen );
     painter->drawLine( QLineF( f.start.x, f.start.y, f.end.x, f.end.y ) );
@@ -199,6 +197,19 @@ void FeatureMap2dPainter::paint( QPainter *painter, const int z )
 
     QColor color;
 
+    // Paint all lines first, so the less-obvious point features are on top.
+
+    for ( unsigned int i=0; i < data_->features.size(); i++ )
+    {
+        if ( data_->features[i]->ice_isA( "::orca::CartesianLineFeature2d" ) )
+        {
+            const orca::CartesianLineFeature2d *f = 
+                dynamic_cast<const orca::CartesianLineFeature2d*>(&(*(data_->features[i])));
+            assert( f != NULL );
+            
+            paintLineFeature( painter, *f, i );
+        }
+    }
     for ( unsigned int i=0; i < data_->features.size(); i++ )
     {
         if ( data_->features[i]->ice_isA( "::orca::CartesianPointFeature2d" ) )
@@ -208,19 +219,6 @@ void FeatureMap2dPainter::paint( QPainter *painter, const int z )
             assert( f != NULL );
 
             paintPointFeature( painter, *f, i );
-        }
-        else if ( data_->features[i]->ice_isA( "::orca::CartesianLineFeature2d" ) )
-        {
-            const orca::CartesianLineFeature2d *f = 
-                dynamic_cast<const orca::CartesianLineFeature2d*>(&(*(data_->features[i])));
-            assert( f != NULL );
-            
-            paintLineFeature( painter, *f, i );
-        }
-        else
-        {
-            stringstream ss; ss << "Don't know how to display feature of type: " << data_->features[i];
-            throw orcaqgui::Exception( ss.str() );
         }
     }
 }

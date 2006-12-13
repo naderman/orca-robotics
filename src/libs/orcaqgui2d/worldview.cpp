@@ -259,10 +259,13 @@ WorldView::mousePressEvent( QMouseEvent* e )
 {
     if ( mainWin_->modeIsOwned() )
     {
+        //cout<<"TRACE(worldview.cpp): giving mousePressEvent to mode owner" << endl;
         mainWin_->modeOwner()->mousePressEvent( e );
+        return;
     }
     else
     {
+        //cout<<"TRACE(worldview.cpp): Using mousePressEvent ourself" << endl;
         mouseDownPnt_ = e->pos();
         prevDragPos_ = e->pos();
     }
@@ -272,8 +275,11 @@ void
 WorldView::mouseMoveEvent( QMouseEvent* e )
 {
     if ( mainWin_->modeIsOwned() )
-        mainWin_->modeOwner()->mouseMoveEvent( e );
-    else    
+    {
+        //mainWin_->modeOwner()->mouseMoveEvent( e );
+        return;
+    }
+    else
         mouseMovePnt_ = e->pos();
     // cout << "MouseMoveEvent(x,y): " << e->pos().x() << " " << e->pos().y() << endl;
     if ( e->buttons() & Qt::LeftButton )
@@ -302,9 +308,12 @@ WorldView::mouseReleaseEvent( QMouseEvent* e )
 {
     if ( mainWin_->modeIsOwned() )
     {
+        //cout<<"TRACE(worldview.cpp): Giving mouseReleaseEvent to mode owner" << endl;
         mainWin_->modeOwner()->mouseReleaseEvent( e );
         return;
     }
+
+    //cout<<"TRACE(worldview.cpp): Using mouseReleaseEvent ourself." << endl;
 
     QPointF mouseUpPnt = e->pos();
 
