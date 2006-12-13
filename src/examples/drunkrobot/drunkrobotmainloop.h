@@ -23,22 +23,22 @@
 
 
 class DrunkRobotMainLoop: public orcaice::Thread {
- public: 
+public: 
 
-  // The posData pointer tells us where to put the data
-  // The Consumer is a proxy for IceStorm, we will use that to pass data to 
-  // Ice storm. 
-  DrunkRobotMainLoop(orcaice::PtrBuffer<orca::Position2dDataPtr> &posData,
-		     const orca::Position2dConsumerPrx &position2dConsumer);
+    // The posData pointer tells us where to put the data
+    // The Consumer is a proxy for IceStorm, we will use that to pass data to 
+    // Ice storm. 
+    DrunkRobotMainLoop(orcaice::PtrBuffer<orca::Position2dDataPtr> &posData,
+                       const orca::Position2dConsumerPrx &position2dConsumer);
 
-  ~DrunkRobotMainLoop(); 
+    ~DrunkRobotMainLoop(); 
 
-  virtual void run();
+    virtual void run();
 
- private: 
-  orcaice::PtrBuffer<orca::Position2dDataPtr>    & posBuffer_;
+private: 
+    orcaice::PtrBuffer<orca::Position2dDataPtr>    & posBuffer_;
 
-  orca::Position2dConsumerPrx position2dConsumer_;
+    orca::Position2dConsumerPrx position2dConsumer_;
 };
 
 #endif

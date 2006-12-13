@@ -12,7 +12,7 @@
 
 int main(int argc, char * argv[])
 {
-  DrunkRobotComponent component;
-  orcaice::Application app( component );
-  return app.main(argc, argv);
+    DrunkRobotComponent component;
+    orcaice::Application app( component );
+    return app.main(argc, argv);
 }

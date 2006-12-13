@@ -31,8 +31,8 @@ public:
 
     // Constructor takes a pointer buffer
     Position2dI( orcaice::PtrBuffer<orca::Position2dDataPtr> &posBuffer, 
-		 orca::Position2dGeometryPtr &geomBuffer, 
-		 const IceStorm::TopicPrx &topic);
+                 orca::Position2dGeometryPtr &geomBuffer, 
+                 const IceStorm::TopicPrx &topic);
 
     // Make these virtual so derived classes can override them. 
     
@@ -55,7 +55,7 @@ public:
     // the driver will put the latest data into this proxy
     orcaice::PtrBuffer<orca::Position2dDataPtr> &posBuffer_;
     
-   // the driver will use this member to return geometry when requested. 
+    // the driver will use this member to return geometry when requested. 
     orca::Position2dGeometryPtr& geomBuffer_; 
 
     // This is used to set up the topic for us to push information. 

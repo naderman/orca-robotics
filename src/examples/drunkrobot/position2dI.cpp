@@ -16,7 +16,7 @@ using namespace orca;
 using namespace orcaice;
 
 Position2dI::Position2dI( PtrBuffer<Position2dDataPtr> &posBuffer, Position2dGeometryPtr &geomBuffer, const IceStorm::TopicPrx &topic) :
-  posBuffer_(posBuffer), geomBuffer_(geomBuffer), topic_(topic)
+    posBuffer_(posBuffer), geomBuffer_(geomBuffer), topic_(topic)
 {
 		
 }

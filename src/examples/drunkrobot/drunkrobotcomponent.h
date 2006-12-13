@@ -28,7 +28,7 @@ public:
     virtual void start();
     virtual void stop();
 
- private:
+private:
 
     DrunkRobotMainLoop *mainLoop_;
 

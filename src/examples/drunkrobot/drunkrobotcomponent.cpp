@@ -26,9 +26,9 @@ using namespace orca;
 using namespace orcaice; 
 
 DrunkRobotComponent::DrunkRobotComponent():
-  orcaice::Component("DrunkRobot"), 
-  mainLoop_(NULL),
-  geom_(new Position2dGeometry)
+    orcaice::Component("DrunkRobot"), 
+    mainLoop_(NULL),
+    geom_(new Position2dGeometry)
 {
 
 }
@@ -40,39 +40,39 @@ DrunkRobotComponent::~DrunkRobotComponent(){
 void
 DrunkRobotComponent::start(){
 
-  // Get a reasonable geometry. 
+    // Get a reasonable geometry. 
 
-  geom_->offset.p.x = 0; 
-  geom_->offset.p.y = 0; 
-  geom_->offset.o = 0; 
-
-
-  geom_->size.l = 0.1; 
-  geom_->size.w = 0.1;  
+    geom_->offset.p.x = 0; 
+    geom_->offset.p.y = 0; 
+    geom_->offset.o = 0; 
 
 
-  IceStorm::TopicPrx topicPrx = orcaice::connectToTopicWithTag<Position2dConsumerPrx>
-    ( context(), position2dConsumer_, "Position2d" );
+    geom_->size.l = 0.1; 
+    geom_->size.w = 0.1;  
 
-  //First set up our proxies so other people can talk to us:
-  position2dObj_ = new Position2dI( posBuffer_, geom_, topicPrx);
-  orcaice::createInterfaceWithTag( context(), position2dObj_, "Position2d" );
+
+    IceStorm::TopicPrx topicPrx = orcaice::connectToTopicWithTag<Position2dConsumerPrx>
+        ( context(), position2dConsumer_, "Position2d" );
+
+    //First set up our proxies so other people can talk to us:
+    position2dObj_ = new Position2dI( posBuffer_, geom_, topicPrx);
+    orcaice::createInterfaceWithTag( context(), position2dObj_, "Position2d" );
   
-  // Start the component. 
+    // Start the component. 
 
-  activate();
+    activate();
 
-  // then we get the main loop started. 
-  mainLoop_ = new DrunkRobotMainLoop( posBuffer_, position2dConsumer_);
+    // then we get the main loop started. 
+    mainLoop_ = new DrunkRobotMainLoop( posBuffer_, position2dConsumer_);
 
-  mainLoop_->start();
+    mainLoop_->start();
 
 }
 
 void
 DrunkRobotComponent::stop()
 {
-  cout<<"stopping loop"<<endl;
-  // Tell the main loop to stop and wait for it to comply
-  orcaice::Thread::stopAndJoin( mainLoop_ );
+    cout<<"stopping loop"<<endl;
+    // Tell the main loop to stop and wait for it to comply
+    orcaice::Thread::stopAndJoin( mainLoop_ );
 }
