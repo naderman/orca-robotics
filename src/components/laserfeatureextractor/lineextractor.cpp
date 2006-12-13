@@ -45,6 +45,11 @@ LineExtractor::LineExtractor( orcaice::Context context, double laserMaxRange, bo
     minPointsInLine_      = orcaice::getPropertyAsIntWithDefault( prop, prefix+"MinPointsInLine", 6 );
     minLineLength_        = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MinLineLength", 1.0 );
 
+    prefix = context.tag() + ".Config.";
+    prop = context.properties();
+    rhoSd_        = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"RangeSd", 0.2 );
+    alphaSd_      = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"BearingSd", 5.0 );
+
     cout<<"TRACE(lineextractor.cpp): Config:" << endl;
     cout<<"TRACE(lineextractor.cpp):   ClusterMaxRangeDelta: "<<clusterMaxRangeDelta_ << endl;
     cout<<"TRACE(lineextractor.cpp):   BreakDistThreshold  : "<<breakDistThreshold_ << endl;
@@ -236,6 +241,9 @@ LineExtractor::addLines( const std::vector<Section> &sections,
         f->start.o = (*i).start().bearing();
         f->end.r   = (*i).end().range();
         f->end.o   = (*i).end().bearing();
+
+        f->rhoSd   = rhoSd_;
+        f->alphaSd = alphaSd_;
 
         f->pFalsePositive = pFalsePositive;
         f->pTruePositive  = P_TRUE_POSITIVE;

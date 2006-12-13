@@ -40,6 +40,11 @@ ForegroundExtractor::ForegroundExtractor( orcaice::Context context, double laser
         orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxForegroundWidth", 0.5);
     minForegroundBackgroundSeparation_ =
         orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MinForegroundBackgroundSeparation", 0.5);
+
+    prefix = context.tag() + ".Config.";
+    prop = context.properties();
+    rangeSd_   = orcaice::getPropertyAsDoubleWithDefault(    prop, prefix+"PointTargetRangeSd", 0.2);
+    bearingSd_ = orcaice::getPropertyAsDoubleWithDefault(    prop, prefix+"PointTargetBearingSd", 5.0);
 }
 
 void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData, 
@@ -72,6 +77,8 @@ void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserD
         pp->p.o  = poles[i].bearing;
         pp->pFalsePositive = P_FALSE_POSITIVE;
         pp->pTruePositive = P_TRUE_POSITIVE;
+        pp->rangeSd = rangeSd_;
+        pp->bearingSd = bearingSd_;
         features->features.push_back(pp);
     }
 

@@ -61,6 +61,12 @@ class PointPolarFeature2d extends SinglePolarFeature2d
 {
     //! Feature location.
     PolarPoint2d p;
+
+    //! standard deviation in range
+    double rangeSd;
+
+    //! standard deviation in bearing
+    double bearingSd;
 };
 
 //!
@@ -78,6 +84,11 @@ class LinePolarFeature2d extends SinglePolarFeature2d
 
     //! End of line (by definition, on the left)
     PolarPoint2d end;
+
+    //! uncertainty in perpendicular range to (infinite) line
+    double rhoSd;
+    //! uncertainty in angle of perpendicular to (infinite) line
+    double alphaSd;
 
     //! Is the reported start point the actual extent of the line? 
     bool startSighted;

@@ -42,6 +42,9 @@ private:
     double breakDistThreshold_;
     int    minPointsInLine_;
     double minLineLength_;
+    
+    double rhoSd_;
+    double alphaSd_;
 
     // Not used at the moment
     // bool extractPossibleCorners( const orca::PolarFeature2dDataPtr & featureDataPtr );

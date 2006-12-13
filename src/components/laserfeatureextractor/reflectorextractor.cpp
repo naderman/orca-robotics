@@ -42,6 +42,11 @@ ReflectorExtractor::ReflectorExtractor( orcaice::Context context, double laserMa
         orcaice::getPropertyAsDoubleWithDefault(    prop, prefix+"PFalsePositive", 0.1);
     pTruePositive_            =
         orcaice::getPropertyAsDoubleWithDefault(    prop, prefix+"PTruePositive", 0.6);
+
+    prefix = context.tag() + ".Config.";
+    prop = context.properties();
+    rangeSd_   = orcaice::getPropertyAsDoubleWithDefault(    prop, prefix+"PointTargetRangeSd", 0.2);
+    bearingSd_ = orcaice::getPropertyAsDoubleWithDefault(    prop, prefix+"PointTargetBearingSd", 5.0);
 }
 
 double
@@ -181,6 +186,8 @@ ReflectorExtractor::addFeatures( const orca::LaserScanner2dDataPtr    &laserData
                         f->p.o  = featureBearingSum / numFeaturePoints;
                         f->pFalsePositive = pFalse;
                         f->pTruePositive = pTruePositive_;
+                        f->rangeSd = rangeSd_;
+                        f->bearingSd = bearingSd_;
                         features->features.push_back( f );
                     }
                 }

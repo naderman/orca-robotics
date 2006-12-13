@@ -37,6 +37,8 @@ private:
     double laserMaxRange_;
     double pFalsePositive_;
     double pTruePositive_;
+    double rangeSd_;
+    double bearingSd_;
     
     // '-1' means 'invalid cluster'
     double calcPFalsePositive( const orca::LaserScanner2dDataPtr &laserData,

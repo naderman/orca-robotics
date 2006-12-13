@@ -35,6 +35,8 @@ private:
     double maxForegroundWidth_;
     double minForegroundBackgroundSeparation_;
     double laserMaxRange_;
+    double rangeSd_;
+    double bearingSd_;
 };
 
 } // namespace

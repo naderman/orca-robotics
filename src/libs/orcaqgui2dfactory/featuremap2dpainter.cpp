@@ -112,7 +112,7 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
     // draw the line
     QPen pen(featureColour(f.type));
     double widthFactor = f.pExists-0.5;
-    double newWidth =  0.1 * widthFactor;
+    double newWidth =  0.2 * widthFactor;
     pen.setWidthF( newWidth );
     painter->setPen( pen );
     painter->drawLine( QLineF( f.start.x, f.start.y, f.end.x, f.end.y ) );
@@ -157,13 +157,16 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
         double midpointX = (f.start.x+f.end.x)/2.0;
         double midpointY = (f.start.y+f.end.y)/2.0;
         painter->translate( midpointX, midpointY );
-
         
         if ( displayUncertainty_ )
         {
             painter->save();
             {
-                painter->rotate( f.alpha*180.0/M_PI );
+                // The direction from start point to end point.
+                double angleStoE = atan2( f.end.y-f.start.y, f.end.x-f.start.x );
+
+                // Face perpendicular to the line, 90deg right of of StoE
+                painter->rotate( RAD2DEG(angleStoE) - 90 );
 
                 // rho uncertainty: lines at the ends
                 double halfLineLength = hypotf( f.end.y-midpointY, f.end.x-midpointX );
