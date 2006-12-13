@@ -97,6 +97,22 @@ saveToFile(   const orca::FeatureMap2dDataPtr &fmap, FILE *f )
                     r.c.xy,
                     r.c.yy );
         }
+        else if ( feature->ice_isA( "::orca::CartesianLineFeature2d" ) )
+        {
+            const orca::CartesianLineFeature2d& r = dynamic_cast<const orca::CartesianLineFeature2d&>(*feature);
+            fprintf(f, "%f %f %f %f %f %f %f %f %f %d %d\n",
+                    r.rho,
+                    r.alpha,
+                    r.c.xx,
+                    r.c.xy,
+                    r.c.yy,
+                    r.start.x,
+                    r.start.y,
+                    r.end.x,
+                    r.end.y,
+                    r.startSighted,
+                    r.endSighted );
+        }
         else
         {
             // Don't really know how to display info about this feature.
@@ -149,7 +165,6 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
         case orca::feature::FOREGROUNDPOINT:
         case orca::feature::DOOR:
         case orca::feature::CORNER:
-            //case orca::feature::POSSIBLECORNER:
         {
             orca::CartesianPointFeature2dPtr feature = new orca::CartesianPointFeature2d;
             feature->type = type;
@@ -170,6 +185,41 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
                 f.close();
                 throw( ss.str() );
             }
+
+            fmap->features.push_back( feature );
+            line++;
+            break;
+        }
+        case orca::feature::LINE:
+        {
+            orca::CartesianLineFeature2dPtr feature = new orca::CartesianLineFeature2d;
+            feature->type = type;
+            // include conversion char 'l' before 'f' to indicate that the pointers are to doubles
+            // (rather than floats)
+            const int numElements = 12;
+            int ss, es;
+            int num = sscanf(featureInfoBuf,"%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %d %d\n",
+                             &(feature->pExists),
+                             &(feature->rho),
+                             &(feature->alpha),
+                             &(feature->c.xx),
+                             &(feature->c.xy),
+                             &(feature->c.yy),
+                             &(feature->start.x),
+                             &(feature->start.y),
+                             &(feature->end.x),
+                             &(feature->end.y),
+                             &ss,
+                             &es );
+            if ( num != numElements )
+            {
+                std::stringstream ss;
+                ss << "Malformed featuremap file!  Couldn't understand line " << line <<":"<<endl<<buf;
+                f.close();
+                throw( ss.str() );
+            }
+            feature->startSighted = ss;
+            feature->endSighted = es;
 
             fmap->features.push_back( feature );
             line++;
