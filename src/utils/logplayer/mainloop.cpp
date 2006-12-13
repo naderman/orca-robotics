@@ -49,8 +49,22 @@ MainLoop::run()
 //     double beginTime      = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"BeginTime", 0.0 );
 //     double endTime        = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"EndTime", -1.0 );
     double replayRate = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"ReplayRate", 1.0 );
-    ReplayClock clock( replayRate );
+    ReplayClock clock;
         
+    bool waitForUserInput;
+    // special case: wait for human input for every object
+    if ( replayRate == 0.0 ) {
+        waitForUserInput = true;
+        context_.tracer()->info( "Replay is triggered by user input." );
+    }
+    else {
+        waitForUserInput = false;
+        clock.setReplayRate( replayRate );
+        stringstream ss;
+        ss<<"Replay is triggered by the clock (real/replay="<<replayRate<<").";
+        context_.tracer()->info( ss.str() );
+    }
+
     stringstream ss;
     ss<<"Initializing "<<replayers_.size()<<" replayers.";
     context_.tracer()->debug( ss.str() );
@@ -60,7 +74,7 @@ MainLoop::run()
 
     bool autoStart  = orcaice::getPropertyAsIntWithDefault( props, prefix+"AutoStart", 0 );
     if ( !autoStart ) {
-        cout<<"Hit return to start replay:" << endl;
+        cout<<"Type ENTER to start replay:" << endl;
         cout<<"==>"<<endl;
         getchar();
     }
@@ -93,6 +107,7 @@ MainLoop::run()
         clock.setReplayStartTime( IceUtil::Time::now() );
         clock.setLogStartTime( IceUtil::Time::seconds(seconds) + IceUtil::Time::microSeconds(useconds) );
         IceUtil::Time untilLogTime;
+        // should this be a configurable parameter? can't think why it would be useful.
         IceUtil::Time replayTimeTolerance = IceUtil::Time::microSeconds(10);
 
         //
@@ -113,17 +128,27 @@ MainLoop::run()
                 exit(1);
             }
     
-//             do
-//             {
-                // Work out how long till we should send
-                untilLogTime = clock.untilLogTime( IceUtil::Time::seconds(seconds) + IceUtil::Time::microSeconds(useconds) );
-                    
-                if ( untilLogTime > replayTimeTolerance )
+            // replay is driven by user input
+            if ( waitForUserInput ) {
+                cout<<"Type ENTER to replay the next object:" << endl;
+                cout<<"==>"<<endl;
+                getchar();
+            }
+            // replay is driven by the clock
+            else {
+                // alexm: probably better to do a loop, but for some reason we *always* sleep twice.
+                do
                 {
-                    IceUtil::ThreadControl::sleep(untilLogTime);
-                }
-                
-//             } while ( isActive() && untilLogTime > replayTimeTolerance  );
+                    // Work out how long till we should send
+                    untilLogTime = clock.untilLogTime( IceUtil::Time::seconds(seconds) + IceUtil::Time::microSeconds(useconds) );
+                        
+                    if ( untilLogTime > replayTimeTolerance )
+                    {
+                        IceUtil::ThreadControl::sleep(untilLogTime);
+                    }
+                    
+                } while ( isActive() && untilLogTime > replayTimeTolerance  );
+            }
     
             //
             // Now send it out

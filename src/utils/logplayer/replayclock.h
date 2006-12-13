@@ -22,6 +22,8 @@ public:
     // Throws an error string if replayRate is set to zero.
     ReplayClock( double replayRate=1.0 );
 
+    void setReplayRate( double replayRate ) { replayRate_=replayRate; };
+
     void setLogStartTime( const IceUtil::Time & t ) { logStartTime_=t; };
 
     void setReplayStartTime( const IceUtil::Time & t ) { replayStartTime_=t; };

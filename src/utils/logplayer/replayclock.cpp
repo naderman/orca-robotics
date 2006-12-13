@@ -44,7 +44,7 @@ ReplayClock::untilLogTime( const IceUtil::Time & logDataTime )
 //     cout<<"replay started        : "<<replayStartTime_.toString()<<endl;
 //     cout<<"next data log time    : "<<logDataTime.toString()<<endl;
 //     cout<<"next data replay time : "<<replayDataTime.toString()<<endl;
-    cout<<"time remaining        : "<<timeLeft.toDuration()<<endl;
+//     cout<<"time remaining        : "<<timeLeft.toDuration()<<endl;
 
     return timeLeft;
 }
