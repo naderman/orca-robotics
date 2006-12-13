@@ -83,6 +83,9 @@ private:
     // Used by mainLoop to inform of changes in wpIndex
     orcaice::Proxy<int>                            wpIndexPipe_;
 
+    // Allow external en/dis-able
+    orcaice::Proxy<bool>                           enabledPipe_;
+
     // Shared between the driver and the manager
     GoalWatcher      sharedGoalWatcher_;
 };

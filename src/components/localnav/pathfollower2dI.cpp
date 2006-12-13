@@ -22,17 +22,22 @@ PathFollower2dI::PathFollower2dI( orcaice::PtrProxy<orca::PathFollower2dDataPtr>
                                   orcaice::Proxy<bool>                           &newPathArrivedPipe,
                                   orcaice::Proxy<orca::Time>                     &activationPipe,
                                   orcaice::Proxy<int>                            &wpIndexPipe,
+                                  orcaice::Proxy<bool>                           &enabledPipe,
                                   const IceStorm::TopicPrx & topicPrx )
     : pathPipe_(pathPipe),
       newPathArrivedPipe_(newPathArrivedPipe),
       activationPipe_(activationPipe),
       wpIndexPipe_(wpIndexPipe),
+      enabledPipe_(enabledPipe),
       topicPrx_(topicPrx)
 {
     assert ( topicPrx_ != 0 );
 
     // We're inactive on initialization
     wpIndexPipe_.set( -1 );
+
+    // But enabled
+    enabledPipe_.set( true );
 }
 
 orca::PathFollower2dDataPtr
@@ -80,6 +85,19 @@ PathFollower2dI::getWaypointIndex( const ::Ice::Current& ) const
     int ret;
     wpIndexPipe_.get( ret );
     return ret;
+}
+
+void 
+PathFollower2dI::setEnabled( bool enabled, const ::Ice::Current& )
+{
+    enabledPipe_.set( enabled );
+}
+bool 
+PathFollower2dI::enabled(const ::Ice::Current&) const
+{
+    bool enabled;
+    enabledPipe_.get( enabled );
+    return enabled;
 }
 
 void

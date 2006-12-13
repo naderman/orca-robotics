@@ -86,6 +86,7 @@ Component::start()
                                           obsConsumer_->buffer_,
                                           locConsumer_->buffer_,
                                           odomConsumer_->buffer_,
+                                          enabledPipe_,
                                          *platform2dPrx_,
                                          *pathMaintainer_,
                                           pathPublisher_,
@@ -119,6 +120,7 @@ Component::start()
                                                                 newPathArrivedPipe_,
                                                                 activationPipe_,
                                                                 wpIndexPipe_,
+                                                                enabledPipe_,
                                                                 topicPrx );
         orcaice::createInterfaceWithTag( context(), pathFollower2dObj, "PathFollower2d" );
     }

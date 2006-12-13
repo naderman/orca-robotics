@@ -120,6 +120,14 @@ interface PathFollower2d
     //!   - '-1'    : none (inactive)
     //!   - [0,n-1] : an index into the list of n waypoints.
     nonmutating int getWaypointIndex();
+
+    //! Disabling the PathFollower stops it from sending any commands to the 
+    //! robot.  It says, "Take your hands off the wheel!".  No commands can
+    //! be send until it is re-enabled.
+    idempotent void setEnabled( bool enabled );
+
+    //! Get the enabled/disabled state.
+    nonmutating bool enabled();
     
     /*!
      *

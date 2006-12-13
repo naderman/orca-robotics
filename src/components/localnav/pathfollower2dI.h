@@ -33,6 +33,7 @@ public:
                      orcaice::Proxy<bool>                           &newPathArrivedPipe,
                      orcaice::Proxy<orca::Time>                     &activationPipe,
                      orcaice::Proxy<int>                            &wpIndexPipe,
+                     orcaice::Proxy<bool>                           &enabledPipe,
                      const IceStorm::TopicPrx & topicPrx );
 
     // remote calls:
@@ -46,6 +47,9 @@ public:
     virtual void activateNow(const ::Ice::Current& = ::Ice::Current());
     
     virtual int  getWaypointIndex(const ::Ice::Current& = ::Ice::Current()) const;
+
+    virtual void setEnabled( bool enabled, const ::Ice::Current& = ::Ice::Current() );
+    virtual bool enabled(const ::Ice::Current& = ::Ice::Current()) const;
 
     // Subscribe people
     virtual void subscribe(const ::orca::PathFollower2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
@@ -68,6 +72,9 @@ private:
 
     // Progress info from the component goes in here
     orcaice::Proxy<int>                            &wpIndexPipe_;
+
+    // Allow external en/dis-able
+    orcaice::Proxy<bool>                           &enabledPipe_;
     
     const IceStorm::TopicPrx topicPrx_;
 };

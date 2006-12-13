@@ -25,6 +25,7 @@ MainLoop::MainLoop( LocalNavManager                               &localNavManag
                     orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> &obsBuffer,
                     orcaice::PtrBuffer<orca::Localise2dDataPtr>   &locBuffer,
                     orcaice::PtrBuffer<orca::Position2dDataPtr>   &odomBuffer,
+                    orcaice::Proxy<bool>                          &enabledPipe,
                     orca::Platform2dPrx                           &platform2dPrx,
                     PathMaintainer                                &pathMaintainer,
                     orca::PathFollower2dConsumerPrx               &pathPublisher,
@@ -33,6 +34,7 @@ MainLoop::MainLoop( LocalNavManager                               &localNavManag
       obsBuffer_(obsBuffer),
       locBuffer_(locBuffer),
       odomBuffer_(odomBuffer),
+      enabledPipe_(enabledPipe),
       platform2dPrx_(platform2dPrx),
       pathMaintainer_(pathMaintainer),
       pathPublisher_(pathPublisher),
@@ -91,8 +93,18 @@ MainLoop::run()
             //cout<<"============================================="<<endl;
 
             // The rangeScanner provides the 'clock' which is the trigger for this loop
-            int ret = obsBuffer_.getAndPopNext( rangeData_, TIMEOUT_MS );
-            if ( ret != 0 )
+            int sensorRet = obsBuffer_.getAndPopNext( rangeData_, TIMEOUT_MS );
+
+            // Before we do anything, check whether we're enabled.
+            bool isEnabled;
+            enabledPipe_.get( isEnabled );
+            if ( !isEnabled )
+            {
+                context_.tracer()->debug( "Doing nothing because disabled" );
+                continue;
+            }
+
+            if ( sensorRet != 0 )
             {
                 stringstream ss;
                 ss << "Timeout waiting for range data: no data for " << TIMEOUT_MS << "ms.  Stopping.";

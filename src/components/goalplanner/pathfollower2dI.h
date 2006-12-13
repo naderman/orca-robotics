@@ -43,6 +43,9 @@ public:
     
     virtual int  getWaypointIndex(const ::Ice::Current& = ::Ice::Current()) const;
 
+    virtual void setEnabled( bool enabled, const ::Ice::Current& = ::Ice::Current() );
+    virtual bool enabled(const ::Ice::Current& = ::Ice::Current()) const;
+
     // Subscribe people
     virtual void subscribe(const ::orca::PathFollower2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 

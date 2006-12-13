@@ -64,6 +64,7 @@ void
 PathFollower2dI::activateNow( const ::Ice::Current& )
 {
     cout << "TRACE(pathfollower2dI.cpp): Received activateNow signal. Will have no effect here." << endl;
+    cout<<"TRACE(pathfollower2dI.cpp): AlexB: Why not??" << endl;
     //activationPipe_.set( orcaice::getNow() );
 }
 
@@ -71,6 +72,17 @@ int
 PathFollower2dI::getWaypointIndex( const ::Ice::Current& ) const
 {
     return -1;
+}
+
+void 
+PathFollower2dI::setEnabled( bool enabled, const ::Ice::Current& )
+{
+    cout<<"TRACE(pathfollower2dI.cpp): TODO: implement me." << endl;
+}
+bool 
+PathFollower2dI::enabled(const ::Ice::Current&) const
+{
+    return true;
 }
 
 void

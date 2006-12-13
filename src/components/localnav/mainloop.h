@@ -17,6 +17,7 @@
 #include <orcaice/ptrbuffer.h>
 #include <orcaice/thread.h>
 #include <orcaice/heartbeater.h>
+#include <orcaice/proxy.h>
 
 #include <localnavmanager.h>
 
@@ -42,6 +43,7 @@ public:
               orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> &obsBuffer,
               orcaice::PtrBuffer<orca::Localise2dDataPtr>   &locBuffer,
               orcaice::PtrBuffer<orca::Position2dDataPtr>   &odomBuffer,
+              orcaice::Proxy<bool>                          &enabledPipe,
               orca::Platform2dPrx                           &platform2dPrx,
               PathMaintainer                                &pathMaintainer,
               orca::PathFollower2dConsumerPrx               &pathPublisher,
@@ -78,6 +80,9 @@ private:
     orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> &obsBuffer_;
     orcaice::PtrBuffer<orca::Localise2dDataPtr>   &locBuffer_;
     orcaice::PtrBuffer<orca::Position2dDataPtr>   &odomBuffer_;
+
+    // Allows external enable/disable
+    orcaice::Proxy<bool> &enabledPipe_;
 
     // data types
     orca::Localise2dDataPtr      localiseData_;
