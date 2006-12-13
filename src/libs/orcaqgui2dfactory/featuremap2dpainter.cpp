@@ -174,9 +174,6 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
                                             uncertaintyLength, halfLineLength ) );
 
                 // alpha uncertainty: a wedge on the back (non-visible) side of the line
-                double bearingStart = atan2(f.start.y,f.start.x);
-                double bearingEnd   = atan2(f.end.y,f.end.x);
-
                 paintUncertaintyWedge( painter, featureColour(f.type), 0.0, f.c.yy );
             }
             painter->restore();

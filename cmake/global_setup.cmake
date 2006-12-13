@@ -81,6 +81,13 @@ INCLUDE( ${ORCA_CMAKE_DIR}/orca_macros.cmake )
 
 ###########################################################
 #
+# Include os-specific definitions
+#
+###########################################################
+INCLUDE( ${ORCA_CMAKE_DIR}/os.cmake )
+
+###########################################################
+#
 # If we're using gcc, make sure the version is OK.
 #
 ###########################################################

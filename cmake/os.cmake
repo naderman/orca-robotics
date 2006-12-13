@@ -20,6 +20,11 @@ ENDIF ( OS_IS_QNX )
 
 IF ( OS_IS_LINUX )
 
-    MESSAGE("Operating System: Linux")
+  MESSAGE("Operating System: Linux")
+  # gcc-4.1 adds stack protection, which makes code robust to buffer-overrun attacks
+  #      (see: http://www.trl.ibm.com/projects/security/ssp/)
+  # However for some reason this can result in the symbol '__stack_chk_fail_local' not being found.
+  # So turn it off.
+  ADD_DEFINITIONS( -fno-stack-protector )
 
 ENDIF ( OS_IS_LINUX )
