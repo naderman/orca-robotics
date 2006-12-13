@@ -1,6 +1,7 @@
 #include <iostream>
 #include <orcaobj/mathdefs.h>
 #include <iomanip>
+#include <assert.h>
 
 #ifdef NDEBUG
 #undef NDEBUG
