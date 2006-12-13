@@ -5,13 +5,13 @@
 #
 
 IF ( ${PROJECT_NAME} MATCHES "orca" )
-    MESSAGE ( STATUS "DEBUG: ************ we are on the mothership! ***********" )
+    MESSAGE ( STATUS "Setting project type to orca mothership" )
     SET ( ORCA_MOTHERSHIP 1 INTERNAL )
 
     SET ( ORCA_CMAKE_DIR ${${PROJECT_NAME}_SOURCE_DIR}/cmake CACHE PATH "Location of Orca CMake scripts" )
 
 ELSE ( ${PROJECT_NAME} MATCHES "orca" )
-    MESSAGE ( STATUS "DEBUG: ************ we are on a satelite! ***********" )
+    MESSAGE ( STATUS "Setting project type to orca satelite" )
     SET ( ORCA_MOTHERSHIP 0 INTERNAL )
 
     # If this is NOT the Orca project, we need to find Orca installation

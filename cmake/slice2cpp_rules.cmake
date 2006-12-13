@@ -141,8 +141,8 @@ MACRO ( GENERATE_SLICE2CPP_RULES GENERATED_CPP_LIST GENERATED_HEADER_LIST )
   # http://www.cmake.org/Wiki/CMake_FAQ#Running_.22make_clean.22_does_not_remove_custom_command_outputs._Why.3F
   # one small problem: the last header file is not deleted on 'make clean' for some reason. don't know why?
 
-  MESSAGE ( STATUS "DEBUG: GENERATED_CPP_LIST: ${${GENERATED_CPP_LIST}}")
-  MESSAGE ( STATUS "DEBUG: GENERATED_HEADER_LIST: ${${GENERATED_HEADER_LIST}}")
+#   MESSAGE ( STATUS "DEBUG: GENERATED_CPP_LIST: ${${GENERATED_CPP_LIST}}")
+#   MESSAGE ( STATUS "DEBUG: GENERATED_HEADER_LIST: ${${GENERATED_HEADER_LIST}}")
 
   MESSAGE ( STATUS "Will generate cpp header and source files from ${SLICE_SOURCE_COUNTER} Slice definitions using this command:" )
   MESSAGE ( STATUS "${SLICE2CPP_COMMAND} <source.ice> ${SLICE_ARGS}" )
