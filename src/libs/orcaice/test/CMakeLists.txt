@@ -4,53 +4,53 @@ INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
 ADD_EXECUTABLE( ptrbuffertest ptrbuffertest.cpp )
 ADD_TEST( PtrBufferTest ptrbuffertest )
-MESSAGE ( STATUS "Planning to Build Test     : PtrBufferTest [libOrcaIce]")
+MESSAGE ( STATUS "Planning to Build Test      : PtrBufferTest [libOrcaIce]")
 
 ADD_EXECUTABLE( ptrproxytest ptrproxytest.cpp )
 ADD_TEST( PtrProxyTest ptrproxytest )
-MESSAGE ( STATUS "Planning to Build Test     : PtrProxyTest [libOrcaIce]")
+MESSAGE ( STATUS "Planning to Build Test      : PtrProxyTest [libOrcaIce]")
 
 ADD_EXECUTABLE( ptrnotifytest ptrnotifytest.cpp )
 ADD_TEST( PtrNotifyTest ptrnotifytest )
-MESSAGE ( STATUS "Planning to Build Test     : PtrNotifyTest [libOrcaIce]")
+MESSAGE ( STATUS "Planning to Build Test      : PtrNotifyTest [libOrcaIce]")
 
 ADD_EXECUTABLE( buffertest buffertest.cpp )
 ADD_TEST( BufferTest buffertest )
-MESSAGE ( STATUS "Planning to Build Test     : BufferTest [libOrcaIce]")
+MESSAGE ( STATUS "Planning to Build Test      : BufferTest [libOrcaIce]")
 
 ADD_EXECUTABLE( proxytest proxytest.cpp )
 ADD_TEST( ProxyTest proxytest )
-MESSAGE ( STATUS "Planning to Build Test     : ProxyTest [libOrcaIce]")
+MESSAGE ( STATUS "Planning to Build Test      : ProxyTest [libOrcaIce]")
 
 ADD_EXECUTABLE( notifytest notifytest.cpp )
 ADD_TEST( NotifyTest notifytest )
-MESSAGE ( STATUS "Planning to Build Test     : NotifyTest [libOrcaIce]")
+MESSAGE ( STATUS "Planning to Build Test      : NotifyTest [libOrcaIce]")
 
 ADD_EXECUTABLE( stringtest stringtest.cpp )
 ADD_TEST( StringTest stringtest )
-MESSAGE ( STATUS "Planning to Build Test     : StringTest [libOrcaIce]")
+MESSAGE ( STATUS "Planning to Build Test      : StringTest [libOrcaIce]")
 
 ADD_EXECUTABLE( systest systest.cpp )
 ADD_TEST( SysTest systest )
-MESSAGE ( STATUS "Planning to Build Test     : SysTest [libOrcaIce]")
+MESSAGE ( STATUS "Planning to Build Test      : SysTest [libOrcaIce]")
 
 ADD_EXECUTABLE( threadtest threadtest.cpp )
 ADD_TEST( ThreadTest threadtest )
-MESSAGE ( STATUS "Planning to Build Test     : ThreadTest [libOrcaIce]")
+MESSAGE ( STATUS "Planning to Build Test      : ThreadTest [libOrcaIce]")
 
 ADD_EXECUTABLE( proptest proptest.cpp )
 ADD_TEST( PropUtilsTest proptest )
-MESSAGE ( STATUS "Planning to Build Test     : PropUtilsTest [libOrcaIce]")
+MESSAGE ( STATUS "Planning to Build Test      : PropUtilsTest [libOrcaIce]")
 
 ADD_EXECUTABLE( propfiletest propfiletest.cpp )
 ADD_TEST( PropFileTest propfiletest )
-MESSAGE ( STATUS "Planning to Build Test     : PropFileTest [libOrcaIce]")
+MESSAGE ( STATUS "Planning to Build Test      : PropFileTest [libOrcaIce]")
 
 # basic app test
 ADD_EXECUTABLE( apptest apptest.cpp )
 ADD_TEST( AppTest apptest )
 GENERATE_CONFIG_FILE( apptest.def apptest 0 )
-MESSAGE ( STATUS "Planning to Build Test     : AppTest [libOrcaIce]")
+MESSAGE ( STATUS "Planning to Build Test      : AppTest [libOrcaIce]")
 
 # advanced app tests
 ADD_EXECUTABLE( appproptest appproptest.cpp )
@@ -81,7 +81,7 @@ ADD_TEST( AppPropTest1xx0 appproptest --Orca.GlobalConfig=crap.cfg --Orca.Config
 ADD_TEST( AppPropTest11x0 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globalon.cfg --AppPropTest.Expect=200 --Orca.RequireRegistry=0 )
 GENERATE_CONFIG_FILE( apppropteston.def appproptest 0 )
 GENERATE_CONFIG_FILE( appproptestoff.def appproptest 0 )
-MESSAGE ( STATUS "Planning to Build 10 Tests : AppPropTestXXXX [libOrcaIce]")
+MESSAGE ( STATUS "Planning to Build 10 Tests  : AppPropTestXXXX [libOrcaIce]")
 
 # can't do this in win 'cause: 1) need shared libs for services, 2) need to copy files
 
@@ -90,7 +90,7 @@ IF ( NOT WIN32 )
 # basic service test
 ADD_LIBRARY( ServiceTest SHARED servicetest )
 ADD_TEST( ServiceTest ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/iceboxbasic.cfg )
-MESSAGE ( STATUS "Planning to Build Test     : ServiceTest [libOrcaIce]")
+MESSAGE ( STATUS "Planning to Build Test      : ServiceTest [libOrcaIce]")
 
 # advanced service tests
 ADD_LIBRARY( ServicePropTest SHARED serviceproptest )
@@ -119,20 +119,20 @@ ADD_TEST( ServicePropTest1100 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURREN
 ADD_TEST( ServicePropTest1101 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1101.cfg )
 ADD_TEST( ServicePropTest1110 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1110.cfg )
 ADD_TEST( ServicePropTest1111 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1111.cfg )
-MESSAGE ( STATUS "Planning to Build 8  Tests : ServicePropTestXXXX [libOrcaIce]")
+MESSAGE ( STATUS "Planning to Build 8  Tests  : ServicePropTestXXXX [libOrcaIce]")
 ENDIF ( NOT WIN32 )
 
 ADD_EXECUTABLE( configtest configtest.cpp )
 ADD_TEST( ConfigUtilsTest configtest )
 GENERATE_CONFIG_FILE( configtest.def configtest 0 )
-MESSAGE ( STATUS "Planning to Build Test     : ConfigUtilsTest [libOrcaIce]")
+MESSAGE ( STATUS "Planning to Build Test      : ConfigUtilsTest [libOrcaIce]")
 
 ADD_EXECUTABLE( connecttest connecttest.cpp )
 ADD_TEST( ConnectUtilsTest connecttest )
 GENERATE_CONFIG_FILE( connecttest.def connecttest 0 )
-MESSAGE ( STATUS "Planning to Build Test     : ConnectUtilsTest [libOrcaIce]")
+MESSAGE ( STATUS "Planning to Build Test      : ConnectUtilsTest [libOrcaIce]")
 
 ADD_EXECUTABLE( nettest nettest.cpp )
 # ADD_TEST( NetUtilsTest nettest )
 GENERATE_CONFIG_FILE( nettest.def nettest 0 )
-# MESSAGE ( STATUS "Planning to Build Test     : NetUtilsTest [libOrcaIce]")
+# MESSAGE ( STATUS "Planning to Build Test      : NetUtilsTest [libOrcaIce]")
