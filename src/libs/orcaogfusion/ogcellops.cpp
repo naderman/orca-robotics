@@ -12,7 +12,6 @@
 
 #include "ogcellops.h"
 
-//! Fuses two probability distributions and performs normalization.
 orca::OgCellLikelihood 
 ogfusion::add (const orca::OgCellLikelihood& f, const orca::OgCellLikelihood& g )
 {
@@ -30,7 +29,6 @@ ogfusion::add (const orca::OgCellLikelihood& f, const orca::OgCellLikelihood& g 
     return out;
 }
  
-//! Fuses two a cell from a map with likelihood performing normalization.
 int 
 ogfusion::add (orcaogmap::OgMap& m, const orca::OgCellLikelihood& f )
 {

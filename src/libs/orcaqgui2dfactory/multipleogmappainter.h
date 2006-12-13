@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCAGUI_OGMAP_PAINTER_H
-#define ORCAGUI_OGMAP_PAINTER_H
+#ifndef MULTIPLE_OGMAP_PAINTER_H
+#define MULTIPLE_OGMAP_PAINTER_H
 
 #include <QPixmap>
 #include <QMatrix>
@@ -17,37 +17,25 @@
 #include <orca/ogmap.h>
 #include <orcaice/context.h>
 #include <orcaqgui2d/definitions2d.h>
+#include <orcaqgui2dfactory/ogmappainter.h>
 
 
 namespace orcaqgui
 {
-    
-class IHumanManager;  
 
-    
-typedef enum
+class MultipleOgMapPainter
 {
-    BITMAP,
-    ICE_STREAM,
-    NOT_SUPPORTED
-} ImageFileType;
-
-class OgMapPainter // : public QObject
-{
-//     Q_OBJECT
-    
   public:
-    OgMapPainter( int winMaxWidth=1000, int winMaxHeight=1000  );
-    ~OgMapPainter();
+    MultipleOgMapPainter( int winMaxWidth=1000, int winMaxHeight=1000  );
+    ~MultipleOgMapPainter();
 
     void paint( QPainter *p, int z );
     bool paintThisLayer( int z ) const { return z==Z_OG_MAP; }
 
     // Copy the orca map structure into a QPixmap
-    void setData( const orca::OgMapDataPtr & data );
+    void setData( const orca::OgMapDataPtr & data0, const orca::OgMapDataPtr & data1 );
     void clear();
     void toggleDisplayMap();
-    int saveMap( const orcaice::Context context, const QString fileName, IHumanManager *humanManager );
     
   private:
       
@@ -93,8 +81,7 @@ class OgMapPainter // : public QObject
     bool isDisplayMap_;
 
     bool haveMap_;
-    
-    ImageFileType checkFileExtension( QString &fe, IHumanManager *humanManager );
+
 };
 
 } // namespace

@@ -15,9 +15,8 @@
 
 #include <fstream>
 #include <orcaobj/orcaobj.h>
-#include <orcaqgui/ihumanmanager.h>
 
-#include "ogmappainter.h"
+#include "multipleogmappainter.h"
 #include <orcaqgui2d/paintutils.h>
 
 using namespace orca;
@@ -26,7 +25,7 @@ using namespace orcaqgui;
 using namespace std;
 
 
-OgMapPainter::OgMapPainter( int winMaxWidth, int winMaxHeight )
+MultipleOgMapPainter::MultipleOgMapPainter( int winMaxWidth, int winMaxHeight )
     : isDisplayMap_(true),
       haveMap_(false)
 {
@@ -47,62 +46,66 @@ OgMapPainter::OgMapPainter( int winMaxWidth, int winMaxHeight )
 }
 
 
-OgMapPainter::~OgMapPainter()
+MultipleOgMapPainter::~MultipleOgMapPainter()
 {
 }
 
 void
-OgMapPainter::clear()
+MultipleOgMapPainter::clear()
 {
     reset();
 }
 
 void
-OgMapPainter::setData( const OgMapDataPtr & data )
+MultipleOgMapPainter::setData( const OgMapDataPtr & data0, const OgMapDataPtr & data1 )
 {
 //     cout<<"TRACE(ogmappainter.cpp): setData(): " << endl;
 //     cout << orcaice::toVerboseString(data);
-    data_ = data;
+//     data_ = data;
 
-    if ( data->origin.o != 0.0 ) {
+    if ( data0->origin.o != 0.0 ) {
         cout << "ERROR(ogmappainter.cpp): Don't know how to display a non-axis-aligned map." << endl;
         return;
     }
 
     // [m]
-    cellSize_.setWidth( data->metresPerCellX );
-    cellSize_.setHeight( data->metresPerCellY );
+    cellSize_.setWidth( data0->metresPerCellX );
+    cellSize_.setHeight( data0->metresPerCellY );
     // [cells]
-    mapSizePix_.setWidth( data->numCellsX );
-    mapSizePix_.setHeight( data->numCellsY );
+    mapSizePix_.setWidth( data0->numCellsX );
+    mapSizePix_.setHeight( data0->numCellsY );
     // [m]
-    mapSizeM_.setWidth( data->numCellsX * cellSize_.width() );
-    mapSizeM_.setHeight( data->numCellsY * cellSize_.height() );
+    mapSizeM_.setWidth( data0->numCellsX * cellSize_.width() );
+    mapSizeM_.setHeight( data0->numCellsY * cellSize_.height() );
 
     // map origin [cells]
-    originX_ = (int)floor(data->origin.p.x/data->metresPerCellX);
-    originY_ = (int)floor(data->origin.p.y/data->metresPerCellY);
+    originX_ = (int)floor(data0->origin.p.x/data0->metresPerCellX);
+    originY_ = (int)floor(data0->origin.p.y/data0->metresPerCellY);
     // map origin [m]
-    origin_.setX( data->origin.p.x );
-    origin_.setY( data->origin.p.y );
+    origin_.setX( data0->origin.p.x );
+    origin_.setY( data0->origin.p.y );
     
     cout<<"TRACE(ogmappainter.cpp): Painting full-size pixmap" << endl;
-    assert( (int)data->data.size() == data->numCellsX*data->numCellsY );
+    assert( (int)data0->data.size() == data0->numCellsX*data0->numCellsY );
     
     QPainter p;
-    unsigned char occ;
-    int c;
+    unsigned char occ0;
+    unsigned char occ1;
+    int c0;
+    int c1;
     
-    qMap_ = QPixmap( data->numCellsX, data->numCellsY );
+    qMap_ = QPixmap( data0->numCellsX, data0->numCellsY );
     p.begin( &qMap_ );
     
-    for( int x=0; x<data->numCellsX; ++x )
+    for( int x=0; x<data0->numCellsX; ++x )
     {
-        for ( int y=0; y<data->numCellsY; ++y )
+        for ( int y=0; y<data0->numCellsY; ++y )
         {
-            occ = orcaice::gridCell( data, x, y );
-            c = 255 - (int)occ;
-            p.setPen( QColor( c,c,c ) );
+            occ0 = orcaice::gridCell( data0, x, y );
+            occ1 = orcaice::gridCell( data1, x, y );
+            c0 = 255 - (int)occ0;
+            c1 = 255 - (int)occ1;
+            p.setPen( QColor( c0,c1,1 ) );
             p.drawPoint( x, y );
         }
     }
@@ -114,7 +117,7 @@ OgMapPainter::setData( const OgMapDataPtr & data )
 
 // Reallocates pixmaps for scaled and unscaled map storage.
 void
-OgMapPainter::reset()
+MultipleOgMapPainter::reset()
 {
     return;
     
@@ -135,7 +138,7 @@ OgMapPainter::reset()
 }
 
 void
-OgMapPainter::paint( QPainter *painter, int z )
+MultipleOgMapPainter::paint( QPainter *painter, int z )
 {
     if ( !haveMap_ ) return;
     
@@ -161,7 +164,7 @@ OgMapPainter::paint( QPainter *painter, int z )
 }
 
 bool
-OgMapPainter::updateWorldMatrix( const QMatrix & m )
+MultipleOgMapPainter::updateWorldMatrix( const QMatrix & m )
 {
     // don't waste time resizing to the same scale
     if ( m2win_ == m ) {
@@ -199,7 +202,7 @@ OgMapPainter::updateWorldMatrix( const QMatrix & m )
 }
 
 bool
-OgMapPainter::updateWindowSize( const QSize & s )
+MultipleOgMapPainter::updateWindowSize( const QSize & s )
 {
     // don't waste time resizing to the same size
     if ( winSize_ == s ) {
@@ -219,7 +222,7 @@ OgMapPainter::updateWindowSize( const QSize & s )
     (Slooowly) transforms the unscaled OG map to current window view. Assumes that the window
     map buffer is sized correctly.
 */
-void OgMapPainter::rescale()
+void MultipleOgMapPainter::rescale()
 {
     //cout<<"TRACE(ogmappainter.cpp): ----------- rescale() -----------" << endl;
     if ( !haveMap_ ) return;
@@ -259,90 +262,7 @@ void OgMapPainter::rescale()
 }
 
 void
-OgMapPainter::toggleDisplayMap()
+MultipleOgMapPainter::toggleDisplayMap()
 {
     isDisplayMap_ = !isDisplayMap_;
-}
-
-
-ImageFileType
-OgMapPainter::checkFileExtension( QString &fe, IHumanManager *humanManager )
-{
-    if ( fe.isEmpty() ) 
-    {
-        fe="png";
-        return BITMAP;
-    }
-    else if (fe=="png" || fe=="bmp" || fe=="jpg" || fe=="jpeg" || fe=="ppm" || fe=="xbm" || fe=="xpm")
-    {
-        return BITMAP;    
-    }
-    else if (fe=="bin")
-    {
-        return ICE_STREAM;
-    }
-    else
-    {
-        cout << "ERROR(ogmappainter.cpp): File extension not supported" << endl;
-        humanManager->showBoxMsg(Error, "File extension not supported" );
-        return NOT_SUPPORTED;
-    }
-}
-
-int 
-OgMapPainter::saveMap( const orcaice::Context context, const QString fileName, IHumanManager *humanManager )
-{
-    QString fileExtension = fileName.section('.',-1,-1);
-    ImageFileType type = checkFileExtension( fileExtension, humanManager );
-    
-    if ( type == NOT_SUPPORTED )
-    {
-        return -1;
-    }
-    else if ( type == BITMAP )
-    {
-        // We have to mirror the map first
-        QMatrix matrix(1.0, 0.0, 0.0, -1.0, 0.0, 0.0);
-    
-        int ret = qMap_.transformed( matrix ).save( fileName, fileExtension.toLatin1() );
-        if (!ret)
-        {
-            cout << "ERROR(ogmappainter.cpp): Problems saving file " << fileName.toStdString() << endl; 
-            humanManager->showBoxMsg(Error, "Problems saving file " + fileName);
-            return -1;
-        }
-        cout << "TRACE(ogmappainter.cpp): Successfully saved qMap to file: " << fileName.toStdString() << endl;      
-        humanManager->showStatusMsg(Information, "Successfully saved ogMap to file: " + fileName);
-    }
-    else if ( type == ICE_STREAM )
-    {
-        // create data file
-        std::ofstream *dataFile = new ofstream( fileName.toStdString().c_str(),ios::binary );
-        if ( !dataFile->is_open() ) 
-        {
-            cout << "ERROR(ogmappainter.cpp): Could not create data file " << fileName.toStdString() << endl;
-            humanManager->showBoxMsg(Error, "Could not create ICE_STREAM file " + fileName); 
-            return -1;
-        }
-                
-        // create stream
-        vector<Ice::Byte> byteData;
-        Ice::OutputStreamPtr outStreamPtr = Ice::createOutputStream( context.communicator() );
-        ice_writeOgMapData(outStreamPtr, data_);
-        outStreamPtr->writePendingObjects();
-        outStreamPtr->finished(byteData);
-                
-        // write stream to binary file
-        size_t length = byteData.size();
-        dataFile->write( (char*)&length, sizeof(size_t) );
-        dataFile->flush();
-        dataFile->write( (char*)&byteData[0], length);
-        dataFile->flush();
-        dataFile->close();
-        delete dataFile;
-        cout << "INFO(ogmappainter.cpp): Successfully saved map to file " << fileName.toStdString() << endl;
-        humanManager->showStatusMsg(Information, "Successfully saved ogMap to file: " + fileName);
-    }
-    
-    return 0;
 }

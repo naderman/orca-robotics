@@ -19,10 +19,12 @@ namespace ogfusion{
     const double ogLimitLowD = 1.0E-2;
     const unsigned char ogLimitHighUC = 253;
     const unsigned char ogLimitLowUC = 1;
-
+    
+    //! Fuses two probability distributions and performs normalization.
     orca::OgCellLikelihood add(const orca::OgCellLikelihood& f, const orca::OgCellLikelihood& g );
 
-    // return -1 if failed else 0
+    //! Fuses two a cell from a map with likelihood performing normalization.
+    //! Returns -1 if failed else 0
     int add(orcaogmap::OgMap& m, const orca::OgCellLikelihood& f );
 
 }

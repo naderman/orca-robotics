@@ -115,7 +115,7 @@ DefaultFactory::create( const orcaice::Context           &context,
         
         if ( interfaceId == "::orca::OgMap::orca::OgMap" ) {
             cout<<"creating OgMapsCombined element"<<endl;
-            elem = new orcaqgui::OgMapsCombinedElement( context, proxyStrList, humanManager );
+            elem = new orcaqgui::OgMapsCombinedElement( context, proxyStrList );
         }
         else
         {

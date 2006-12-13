@@ -12,11 +12,10 @@
 #define OGMAPS_COMBINED_ELEMENT_H
 
 #include <vector>
-#include <orcaqgui2dfactory/ogmappainter.h>
 #include <orcaqgui/icestormlistener.h>
 #include <orcaqgui2d/guielement2d.h>
-#include <orcaqgui/ihumanmanager.h>
 #include <orcaqgui2dfactory/connectutils.h>
+#include <orcaqgui2dfactory/multipleogmappainter.h>
 
 namespace orcaqgui {
     
@@ -25,8 +24,7 @@ class OgMapsCombinedElement : public GuiElement2d
 
 public:
     OgMapsCombinedElement( const orcaice::Context  &context,
-                           const QStringList       &proxyStrList,
-                           IHumanManager*           humanManager);
+                           const QStringList       &proxyStrList);
 
     // inherited from guielement
     void update();
@@ -38,30 +36,14 @@ public:
     
     virtual bool isInGlobalCS() { return true; }
     virtual void actionOnConnection();
-//     { 
-//         std::cout << "Paint initial data begin" << std::endl;
-//         paintInitialData<orca::OgMapPrx, OgMapPainter>
-//             ( context_, listener_.interfaceName(), painter_ );
-//             std::cout << "Paint initial data finished" << std::endl;
-//     }
     virtual QStringList contextMenu();
     virtual void execute( int action );
 
-public:
-    void saveMapAs();
-    void saveMap();
-
 private:
-    std::vector<IceStormListener<orca::OgMapData,orca::OgMapDataPtr,orca::OgMapPrx,orca::OgMapConsumer,orca::OgMapConsumerPrx>* > listeners_;
-    OgMapPainter painter_;
-    IHumanManager *humanManager_;
-    QString mapFileName_;
-    bool mapFileNameSet_;
     orcaice::Context context_;
-    orca::OgMapDataPtr totalMap_;
-    void fuse( orca::OgMapDataPtr data);
-    double                           timeoutMs_;
-    bool                             isConnected_;
+    std::vector<IceStormListener<orca::OgMapData,orca::OgMapDataPtr,orca::OgMapPrx,orca::OgMapConsumer,orca::OgMapConsumerPrx>* > listeners_;
+    MultipleOgMapPainter painter_;
+    bool isConnected_;
 };
 
 }

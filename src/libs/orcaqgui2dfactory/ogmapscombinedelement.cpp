@@ -9,6 +9,7 @@
  */
 
 #include "ogmapscombinedelement.h"
+#include <orcaogmap/orcaogmap.h>
 #include <iostream>
 #include <QFileDialog>
 #include <orcaqgui/exceptions.h>
@@ -19,12 +20,8 @@ using namespace orca;
 namespace orcaqgui {
 
 OgMapsCombinedElement::OgMapsCombinedElement( const orcaice::Context  &context,
-                                              const QStringList       &proxyStrList,
-                                              IHumanManager* humanManager )
-    : humanManager_(humanManager),
-      mapFileName_("/home"),
-      mapFileNameSet_(false),
-      timeoutMs_(5000.0),
+                                              const QStringList       &proxyStrList)
+    : context_(context),
       isConnected_(false)
 {
     cout << "TRACE(ogmapscombinedelement.cpp): Constructor" << endl;
@@ -61,25 +58,13 @@ bool OgMapsCombinedElement::needToUpdate()
                 actionOnConnection();
                 isConnected_ = true;
             }
-            return false;
+            else
+            {
+                return false;
+            }
         }
     }
-
-    for (uint i=0; i<listeners_.size(); i++)
-    {
-        // The buffer is empty.  How long since we last received something?
-        if ( timeoutMs_ != -1 && listeners_[i]->msSinceReceipt() >= timeoutMs_ )
-        {
-            std::cout<<"TRACE(ogmapscombinedelement.h): Haven't received anything from " 
-                    << listeners_[i]->interfaceName() << " for " << listeners_[i]->msSinceReceipt() << "ms" << std::endl;
-            std::cout<<"TRACE(ogmapscombinedelement.h): Timing out..." << std::endl;
     
-            painter_.clear();
-            listeners_[i]->resetTimer();
-            if ( listeners_[i]->connect() == 0 )
-                actionOnConnection();
-        }
-    }
     return false;
 }
 
@@ -89,41 +74,73 @@ void OgMapsCombinedElement::update()
         return;
     }
 
-    OgMapDataPtr data;
+//     OgMapDataPtr data;
+//     for (uint i=0; i<listeners_.size(); i++)
+//     {
+//         // get data from the buffer
+//         listeners_[i]->buffer().getAndPop( data );
+//     }
     
-    for (uint i=0; i<listeners_.size(); i++)
-    {
-        // get data from the buffer
-        listeners_[i]->buffer().getAndPop( data );
-        fuse(data);
-    }
-
+    OgMapDataPtr data0;
+    listeners_[0]->buffer().getAndPop( data0 );
+    OgMapDataPtr data1;
+    listeners_[1]->buffer().getAndPop( data1 );
+    
     // transfer data into painter
-    cout << orcaice::toVerboseString(totalMap_);
-    painter_.setData( totalMap_ );
+    painter_.setData( data0, data1 );
 }
 
-void OgMapsCombinedElement::fuse( OgMapDataPtr data)
-{
-    totalMap_ = data;
-}
 
 void OgMapsCombinedElement::actionOnConnection()
 {
-    for (uint i=0; i<listeners_.size(); i++)
+    assert(listeners_.size()>0);
+    try 
     {
         OgMapPrx prx;
-        orcaice::connectToInterfaceWithString( context_, prx, listeners_[i]->interfaceName() );
-        fuse( prx->getData() );
+        cout<< "TRACE(actionOnConnection.cpp): connect to interface " << listeners_[0]->interfaceName() << endl;
+        orcaice::connectToInterfaceWithString( context_, prx, listeners_[0]->interfaceName() );
+        OgMapDataPtr data0 = prx->getData();
+        
+        cout<< "TRACE(actionOnConnection.cpp): connect to interface " << listeners_[1]->interfaceName() << endl;
+        orcaice::connectToInterfaceWithString( context_, prx, listeners_[1]->interfaceName() );
+        OgMapDataPtr data1 = prx->getData(); 
+        
+        painter_.setData( data0, data1 );
+        
+            
+//         for (uint i=0; i<listeners_.size(); i++)
+//         {
+//             OgMapPrx prx;
+//             cout<< "TRACE(actionOnConnection.cpp): connect to interface " << listeners_[i]->interfaceName() << endl;
+//             orcaice::connectToInterfaceWithString( context_, prx, listeners_[i]->interfaceName() );
+// //             fuse( prx->getData() );
+//         }
+//         cout << "painter_->setData" << endl;
+//         painter_.setData( totalMap_ );
     }
-    painter_.setData( totalMap_ );
+    catch ( Ice::ConnectionRefusedException &e )
+    {
+        std::cout<<"TRACE(actionOnConnection.cpp): Caught exception: " << e << std::endl;
+    }
+    catch ( Ice::Exception &e )
+    {
+        std::cout<<"TRACE(actionOnConnection.cpp): Caught some ice exception: " << e << std::endl;
+    }
+    catch ( std::exception &e )
+    {
+        std::cout<<"TRACE(actionOnConnection.cpp): Caught some std exception: " << e.what() << std::endl;
+    }
+    catch ( ... )
+    {
+        std::cout<<"TRACE(actionOnConnection.cpp): Caught some other exception" << std::endl;
+    }
 }
 
 QStringList
 OgMapsCombinedElement::contextMenu()
 {
     QStringList s;
-    s<<"Toggle Map"<<"Save OG Map"<<"Save OG Map As";
+    s<<"Toggle Map";
     return s;
 }
 
@@ -132,55 +149,16 @@ OgMapsCombinedElement::execute( int action )
 {
     switch ( action )
     {
-    case 0 :
-    {
-        painter_.toggleDisplayMap();
-        break;
-    }
-    case 1 :
-    {
-        saveMap();
-        break;
-    }
-    case 2 :
-    {
-        saveMapAs();
-        break;
-    }
-    default:
-    {
-        throw orcaqgui::Exception( "OgMapsCombinedElement::execute(): What the hell? bad action." );
-        break;
-    }
-    }
-}
-
-
-void OgMapsCombinedElement::saveMapAs()
-{
-    mapFileName_ = QFileDialog::getSaveFileName(
-        0,
-        //this,
-        "Choose a filename to save under",
-        mapFileName_,
-        "*.png *.bmp *.jpg *.jpeg *.ppm *.xbm *.xpm *.bin");
-    
-    if ( mapFileName_ != "" )
-    {
-        painter_.saveMap( context_, mapFileName_, humanManager_ );
-        mapFileNameSet_ = true;
-    }
-}
-
-void OgMapsCombinedElement::saveMap()
-{
-    if (!mapFileNameSet_)
-    {   
-        saveMapAs();
-    }
-    else
-    {
-        painter_.saveMap( context_, mapFileName_, humanManager_ );
+        case 0 :
+        {
+            painter_.toggleDisplayMap();
+            break;
+        }
+        default:
+        {
+            throw orcaqgui::Exception( "OgMapsCombinedElement::execute(): What the hell? bad action." );
+            break;
+        }
     }
 }
 
