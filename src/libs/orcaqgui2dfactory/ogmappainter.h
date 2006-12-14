@@ -33,16 +33,18 @@ class OgMapPainter
 {
     
   public:
-    OgMapPainter( int winMaxWidth=1000, int winMaxHeight=1000  );
+    OgMapPainter();
     ~OgMapPainter();
 
-    void paint( QPainter *p, int z ) { pixmapPainter_->paint( p,z); };
+    void paint( QPainter *p, int z );
     bool paintThisLayer( int z ) const { return z==Z_OG_MAP; }
 
-    // Copy the orca map structure into a QPixmap
+    // Give the PixmapPainter the data relevant for painting
     void setData( const orca::OgMapDataPtr & data );
-    void clear() { pixmapPainter_->clear(); };
+    
+    void clear() {};
     void toggleDisplayMap() { pixmapPainter_->toggleDisplayMap(); };
+    
     int saveMap( const orcaice::Context context, const QString fileName, IHumanManager *humanManager );
     
   private:

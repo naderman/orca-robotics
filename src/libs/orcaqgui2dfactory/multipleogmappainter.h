@@ -22,15 +22,15 @@ namespace orcaqgui
 class MultipleOgMapPainter
 {
   public:
-    MultipleOgMapPainter( int winMaxWidth=1000, int winMaxHeight=1000  );
+    MultipleOgMapPainter();
     ~MultipleOgMapPainter();
 
-    void paint( QPainter *p, int z ) { pixmapPainter_->paint( p,z); };
+    void paint( QPainter *p, int z );
     bool paintThisLayer( int z ) const { return z==Z_OG_MAP; }
 
-    // Copy the orca map structure into a QPixmap
+    // Give the PixmapPainter the data relevant for painting
     void setData( const orca::OgMapDataPtr & data0, const orca::OgMapDataPtr & data1 );
-    void clear() { pixmapPainter_->clear(); };
+    
     void toggleDisplayMap() { pixmapPainter_->toggleDisplayMap(); };
     
   private:

@@ -8,27 +8,20 @@
  *
  */
 
-#include <cmath>
-#include <QPainter>
-#include <QString>
-#include <QPixmap>
-
 #include <fstream>
-#include <orcaobj/orcaobj.h>
+#include <QPainter>
+
 #include <orcaqgui/ihumanmanager.h>
 
 #include "ogmappainter.h"
-#include <orcaqgui2d/paintutils.h>
 
-using namespace orca;
-using namespace orcaice;
 using namespace orcaqgui;
 using namespace std;
 
 
-OgMapPainter::OgMapPainter( int winMaxWidth, int winMaxHeight )
-{
-    pixmapPainter_ = new PixmapPainter( winMaxWidth, winMaxHeight );
+OgMapPainter::OgMapPainter()
+{    
+    pixmapPainter_ = new PixmapPainter();
 }
 
 
@@ -37,8 +30,15 @@ OgMapPainter::~OgMapPainter()
     delete pixmapPainter_;
 }
 
+void 
+OgMapPainter::paint( QPainter *p, int z )
+{
+    if (z!=Z_OG_MAP) return;
+    pixmapPainter_->paint(p); 
+}
+
 void
-OgMapPainter::setData( const OgMapDataPtr & data )
+OgMapPainter::setData( const orca::OgMapDataPtr & data )
 {
 //     cout << orcaice::toVerboseString(data);
     data_ = data;
@@ -58,9 +58,6 @@ OgMapPainter::setData( const OgMapDataPtr & data )
     pixmapData.rgbB = data->data;
     
     pixmapPainter_->setData( pixmapData );
-
-    cout<<"TRACE(ogmappainter.cpp): Painting full-size pixmap" << endl;
-    assert( (int)data->data.size() == data->numCellsX*data->numCellsY );
 }
 
 ImageFileType

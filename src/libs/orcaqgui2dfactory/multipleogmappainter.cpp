@@ -8,26 +8,17 @@
  *
  */
 
-#include <cmath>
 #include <QPainter>
-#include <QString>
-#include <QPixmap>
-
-#include <fstream>
-#include <orcaobj/orcaobj.h>
 
 #include "multipleogmappainter.h"
-#include <orcaqgui2d/paintutils.h>
 
-using namespace orca;
-using namespace orcaice;
 using namespace orcaqgui;
 using namespace std;
 
 
-MultipleOgMapPainter::MultipleOgMapPainter( int winMaxWidth, int winMaxHeight )
+MultipleOgMapPainter::MultipleOgMapPainter()
 {
-    pixmapPainter_ = new PixmapPainter( winMaxWidth, winMaxHeight );
+    pixmapPainter_ = new PixmapPainter();
 }
 
 
@@ -35,8 +26,15 @@ MultipleOgMapPainter::~MultipleOgMapPainter()
 {
 }
 
+void 
+MultipleOgMapPainter::paint( QPainter *p, int z )
+{
+    if (z!=Z_OG_MAP) return;
+    pixmapPainter_->paint(p); 
+}
+
 void
-MultipleOgMapPainter::setData( const OgMapDataPtr & data0, const OgMapDataPtr & data1 )
+MultipleOgMapPainter::setData( const orca::OgMapDataPtr & data0, const orca::OgMapDataPtr & data1 )
 {
 
 //     cout << orcaice::toVerboseString(data);
@@ -56,8 +54,5 @@ MultipleOgMapPainter::setData( const OgMapDataPtr & data0, const OgMapDataPtr & 
     pixmapData.rgbB = data1->data;
     
     pixmapPainter_->setData( pixmapData );
-    
-    cout<<"TRACE(ogmappainter.cpp): Painting full-size pixmap" << endl;
-    assert( (int)data0->data.size() == data0->numCellsX*data0->numCellsY );
 }
 

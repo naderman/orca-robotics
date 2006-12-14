@@ -15,21 +15,25 @@
 #include <QPixmap>
 #include <QMatrix>
 
-#include <orcaqgui2d/definitions2d.h>
-
 
 namespace orcaqgui
 {
     
+// Data structure containing drawing information
 struct PixmapData
 {
-    // OG cell size in [m]
+    // Each pixel is a cell of size cellSize in [m]
     QSizeF cellSize;
-    // OG map size in number of cells
+    
+    // Pixmap size in number of cells
     QSize mapSizePix;
-    // origin of the bottomleft cnr of the map
+    
+    // Origin of the bottomleft corner of the pixmap
     QPointF origin;
-    // three color channels as a flat representation of the pixels
+    
+    // Three color channels as a flat representation of the pixels:
+    // vectorIndex = y*mapSizePix.width()+x
+    // WARNING: need to make sure that vector is of size ( mapSizePix.width()*mapSizePix.height() )
     std::vector<unsigned char> rgbR;
     std::vector<unsigned char> rgbG;
     std::vector<unsigned char> rgbB;
@@ -37,19 +41,22 @@ struct PixmapData
     
 class IHumanManager; 
 
-// Class to paint pixmaps such as certainty grid maps and aerial maps
+//! Class to paint pixmaps such as certainty grid maps and aerial maps.
+//! Don't inherit from it but rather use as a member variable (composition).
+//! Interface to it using PixmapData (constructor and/or setData).
+//! @author Tobias Kaupp
 class PixmapPainter
 {
     
   public:
-    PixmapPainter( int winMaxWidth=1000, int winMaxHeight=1000  );
+    PixmapPainter();
+    PixmapPainter( PixmapData &pixmapData );
     ~PixmapPainter();
     
     void setData( PixmapData &pixmapData );
 
-    void paint( QPainter *p, int z );
+    void paint( QPainter *p );
 
-    void clear();
     void toggleDisplayMap();
     int saveMap( const QString fileName, IHumanManager *humanManager );
     
@@ -58,10 +65,6 @@ class PixmapPainter
     bool updateWorldMatrix( const QMatrix & );
     bool updateWindowSize( const QSize & );
     void rescale();
-    void reset();
-    
-    // Maximum widget size in pixels (WorldView)
-    QSize winMaxSize_;
     
     // Unscaled map storage
     QPixmap qMap_;

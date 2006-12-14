@@ -10,27 +10,27 @@
 
 #include <cmath>
 #include <QPainter>
-#include <QString>
-#include <QPixmap>
-
-#include <fstream>
-#include <orcaobj/orcaobj.h>
 #include <orcaqgui/ihumanmanager.h>
 
 #include "pixmappainter.h"
-#include <orcaqgui2d/paintutils.h>
 
-using namespace orca;
-using namespace orcaice;
 using namespace orcaqgui;
 using namespace std;
 
 
-PixmapPainter::PixmapPainter( int winMaxWidth, int winMaxHeight )
+PixmapPainter::PixmapPainter()
     : isDisplayMap_(true),
       haveMap_(false)
 {
 }
+
+
+PixmapPainter::PixmapPainter( PixmapData &pixmapData )
+    : data_(pixmapData),
+      isDisplayMap_(true),
+      haveMap_(false)
+{
+}        
 
 
 PixmapPainter::~PixmapPainter()
@@ -40,6 +40,10 @@ PixmapPainter::~PixmapPainter()
 void
 PixmapPainter::setData( PixmapData &pixmapData )
 {
+    assert( (int)pixmapData.rgbR.size() == pixmapData.mapSizePix.width()*pixmapData.mapSizePix.height() );
+    assert( (int)pixmapData.rgbG.size() == pixmapData.mapSizePix.width()*pixmapData.mapSizePix.height() );
+    assert( (int)pixmapData.rgbB.size() == pixmapData.mapSizePix.width()*pixmapData.mapSizePix.height() );
+    
     data_ = pixmapData;
     
     QPainter p;
@@ -66,39 +70,9 @@ PixmapPainter::setData( PixmapData &pixmapData )
 }
 
 void
-PixmapPainter::clear()
+PixmapPainter::paint( QPainter *painter )
 {
-    reset();
-}
-
-// Reallocates pixmaps for scaled and unscaled map storage.
-void
-PixmapPainter::reset()
-{
-    return;
-    
-    cout<<"TRACE(pixmappainter.cpp): reset()" << endl;
-
-    map2win_.reset();
-
-    // set size of the OG original
-    qMap_ = QPixmap( data_.mapSizePix );
-    qMap_.fill( Qt::white );
-    cout<<"QredOgMap::reset: allocated unscaled map"<<data_.mapSizePix.width()<<"x"<<data_.mapSizePix.height()<<endl;
-
-    // set the size of the window buffer to the maximum allowed size of the window
-    // to minimize resizing. (Is this the best approach?)
-    mapWin_ = QPixmap( winMaxSize_ );
-    mapWin_.fill( Qt::white );
-    cout<<"QredOgMap::reset: allocated scaled (win size) map "<<winMaxSize_.width()<<"x"<<winMaxSize_.height()<<endl;
-}
-
-void
-PixmapPainter::paint( QPainter *painter, int z )
-{
-    if ( !haveMap_ ) return;
-    
-    if ( z!=Z_OG_MAP || !isDisplayMap_ ) return;
+    if ( !haveMap_ || !isDisplayMap_ ) return;
 
     // check that the window size has not changed
     bool dirty = false;
@@ -160,18 +134,18 @@ PixmapPainter::updateWindowSize( const QSize & s )
     if ( winSize_ == s ) {
         return false;
     }
-    cout << "TRACE(pixmappainter.cpp): updateWindowSize " << endl;
+//     cout << "TRACE(pixmappainter.cpp): updateWindowSize " << endl;
 
     winSize_ = s;
     
     mapWin_ = QPixmap( winSize_ );
-    //cout<<"QredOgMap::updateWindowSize: new size ["<<winSize_.width()<<","<<winSize_.height()<<"], so rescaled map buffer to ["<<mapWin_.width()<<"x"<<mapWin_.height()<<"]"<<endl;
+    //cout<<"TRACE(pixmappainter.cpp):updateWindowSize: new size ["<<winSize_.width()<<","<<winSize_.height()<<"], so rescaled map buffer to ["<<mapWin_.width()<<"x"<<mapWin_.height()<<"]"<<endl;
 
     return true;
 }
 
 /*
-    (Slooowly) transforms the unscaled OG map to current window view. Assumes that the window
+    (Slooowly) transforms the unscaled map to current window view. Assumes that the window
     map buffer is sized correctly.
 */
 void PixmapPainter::rescale()
@@ -231,11 +205,11 @@ PixmapPainter::saveMap( const QString fileName, IHumanManager *humanManager )
     if (!ret)
     {
         cout << "ERROR(pixmappainter.cpp): Problems saving file " << fileName.toStdString() << endl; 
-        humanManager->showBoxMsg(Error, "Problems saving file " + fileName);
+        humanManager->showBoxMsg(Error, "Problems saving pixmap to file " + fileName);
         return -1;
     }
     cout << "TRACE(pixmappainter.cpp): Successfully saved qMap to file: " << fileName.toStdString() << endl;      
-    humanManager->showStatusMsg(Information, "Successfully saved ogMap to file: " + fileName);
+    humanManager->showStatusMsg(Information, "Successfully saved pixmap to file: " + fileName);
     
     return 0;
 }
