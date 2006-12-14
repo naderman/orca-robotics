@@ -74,14 +74,13 @@ without a fix ever having been achieved.
 
 Geometry
 
-Offset position [m] (the position of the GPS antenna with respect to its frame)
-- @c Offset.p.x (double) [m]
-- @c Offset.p.y (double) [m]
-- @c Offset.p.z (double) [m]
-
-- @c Gps.Config.Origin (Frame3d) [m,m,m, deg,deg,deg]
-    - GPS coordinates of the origin of the local coordinate system. 
+- @c Gps.Config.Offset (Frame3d) [m,m,m, deg,deg,deg]
+    - GPS coordinates of the local coordinate system origin.
     - Default: [0.0 0.0 0.0  0.0 0.0 0.0]
+
+- @c Gps.Config.Size (Size3d) [m,m,m]
+    - Size of the GPS sensor
+    - Default: [0.0 0.0 0.0]
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
