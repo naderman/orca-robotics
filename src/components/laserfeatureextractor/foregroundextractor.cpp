@@ -44,7 +44,7 @@ ForegroundExtractor::ForegroundExtractor( orcaice::Context context, double laser
     prefix = context.tag() + ".Config.";
     prop = context.properties();
     rangeSd_   = orcaice::getPropertyAsDoubleWithDefault(    prop, prefix+"PointTargetRangeSd", 0.2);
-    bearingSd_ = orcaice::getPropertyAsDoubleWithDefault(    prop, prefix+"PointTargetBearingSd", 5.0);
+    bearingSd_ = (M_PI/180.0)*orcaice::getPropertyAsDoubleWithDefault(    prop, prefix+"PointTargetBearingSd", 5.0);
 }
 
 void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData, 

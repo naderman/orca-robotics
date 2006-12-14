@@ -330,7 +330,7 @@ breakAndFitLines( std::vector<Section> &sections, int minPointsInLine, double br
         else
         {
             if ( (int)(itr->elements().size()) >= minPointsInLine )
-                itr->setIsALine( eigVectX, eigVectY, c );
+                itr->setIsALine( eigVectX, eigVectY, c, maxDist );
             ++itr;
         }
     }

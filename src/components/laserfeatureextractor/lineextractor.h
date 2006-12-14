@@ -43,8 +43,8 @@ private:
     int    minPointsInLine_;
     double minLineLength_;
     
-    double rhoSd_;
-    double alphaSd_;
+    double rangeSd_;
+    double bearingSd_;
 
     // Not used at the moment
     // bool extractPossibleCorners( const orca::PolarFeature2dDataPtr & featureDataPtr );
@@ -60,6 +60,9 @@ private:
     bool isEndVisible( const Section &section,
                        double alpha,
                        const Section *nextSection );
+
+    void determineUncertainty( double &rhoSd, double &alphaSd, const Section &s );
+
 };
 
 }

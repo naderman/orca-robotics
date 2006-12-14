@@ -47,8 +47,8 @@ LineExtractor::LineExtractor( orcaice::Context context, double laserMaxRange, bo
 
     prefix = context.tag() + ".Config.";
     prop = context.properties();
-    rhoSd_        = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"RangeSd", 0.2 );
-    alphaSd_      = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"BearingSd", 5.0 );
+    rangeSd_        = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"RangeSd", 0.2 );
+    bearingSd_      = (M_PI/180.0)*orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"BearingSd", 5.0 );
 
     cout<<"TRACE(lineextractor.cpp): Config:" << endl;
     cout<<"TRACE(lineextractor.cpp):   ClusterMaxRangeDelta: "<<clusterMaxRangeDelta_ << endl;
@@ -201,6 +201,31 @@ bool lineMightBeGround( const Section &section )
 }
 
 void
+LineExtractor::determineUncertainty( double &rhoSd, double &alphaSd, const Section &s )
+{
+    // Two sources of uncertainty: (1) sensor, and (2) line fitting.
+
+    // (1) Sensor uncertainty.
+    // If individual range returns were independent, range errors would induce 
+    // alpha errors.  But they're not, they're correlated.  
+    // Assume they're perfectly correlated.
+    double sensorRhoSd   = rangeSd_;
+    double sensorAlphaSd = bearingSd_;
+
+    // (2) Line Fit Uncertainty
+    // Errors in line fitting can:
+    // (a) push the line back and forth,
+    double fitRhoSd = s.maxLineFitError();
+    // (b) rotate the line.  This effect is reduced for longer lines
+    //     Assume the worst: the line could be off by maxLineFitError on the ends.
+    double fitAlphaSd = 2 * atan( s.maxLineFitError() / s.lineLength() );
+
+    // Add them up
+    rhoSd   = sensorRhoSd   + fitRhoSd;
+    alphaSd = sensorAlphaSd + fitAlphaSd;
+}
+
+void
 LineExtractor::addLines( const std::vector<Section> &sections, 
                          orca::PolarFeature2dDataPtr &features )
 {
@@ -242,8 +267,7 @@ LineExtractor::addLines( const std::vector<Section> &sections,
         f->end.r   = (*i).end().range();
         f->end.o   = (*i).end().bearing();
 
-        f->rhoSd   = rhoSd_;
-        f->alphaSd = alphaSd_;
+        determineUncertainty( f->rhoSd, f->alphaSd, *i );
 
         f->pFalsePositive = pFalsePositive;
         f->pTruePositive  = P_TRUE_POSITIVE;
@@ -363,6 +387,8 @@ LineExtractor::addCorners( const std::vector<Section> &sections,
                     pp->type = orca::feature::CORNER;
                     pp->p.r = range;
                     pp->p.o = bearing;
+                    pp->rangeSd   = rangeSd_;
+                    pp->bearingSd = bearingSd_;
                     pp->pFalsePositive = pFalsePositive;
                     pp->pTruePositive  = P_TRUE_POSITIVE;
                     features->features.push_back( pp );

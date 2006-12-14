@@ -62,6 +62,8 @@ public:
     //  Line equation is: eigVectX*x - eigVectY*y + c = 0
     double c() const { assert(isALine()); return c_; }
 
+    double maxLineFitError() const { assert(isALine()); return maxLineFitError_; }
+
     // Get end-points of line (using entire estimate from all points)
     const SectionEl &start() const { assert(isALine()); return start_; }
     const SectionEl &end() const { assert(isALine()); return end_; }
@@ -85,12 +87,14 @@ public:
 
     void setIsALine( double eigVectX,
                      double eigVectY,
-                     double c ) 
+                     double c,
+                     double maxLineFitError ) 
         { 
             isALine_=true; 
             eigVectX_=eigVectX;
             eigVectY_=eigVectY;
             c_=c;            
+            maxLineFitError_=maxLineFitError;
             setEndPoints(); 
         }
 
@@ -112,6 +116,9 @@ private:
     double eigVectY_;
 
     double c_;
+
+    // Max orthogonal distance to line
+    double maxLineFitError_;
 
     std::vector<SectionEl> elements_;
 

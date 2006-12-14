@@ -228,6 +228,7 @@ MainLoop::convertToRobotCS( const PolarFeature2dDataPtr & featureData )
             assert( f.p.r >= 0 && f.p.r < laserDescr_->maxRange );
             assert( f.p.o > laserDescr_->startAngle && 
                     f.p.o < laserDescr_->startAngle+laserDescr_->fieldOfView );
+            assert( f.rangeSd >= 0 && f.bearingSd >= 0 );
             convertPointToRobotCS( f.p.r, f.p.o, offsetXyz, offsetAngles );
         }
         else if ( ftr->ice_isA( "::orca::LinePolarFeature2d" ) )
@@ -250,6 +251,7 @@ MainLoop::convertToRobotCS( const PolarFeature2dDataPtr & featureData )
                 assert( f.end.o > laserDescr_->startAngle-EPSB && 
                         f.end.o < laserDescr_->startAngle+laserDescr_->fieldOfView+EPSB );
             }
+            assert ( f.rhoSd >= 0 && f.alphaSd >= 0 );
 #endif
             convertPointToRobotCS( f.start.r, f.start.o, offsetXyz, offsetAngles );
             convertPointToRobotCS( f.end.r,   f.end.o,   offsetXyz, offsetAngles );
