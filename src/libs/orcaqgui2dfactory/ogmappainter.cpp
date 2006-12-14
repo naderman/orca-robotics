@@ -53,9 +53,13 @@ OgMapPainter::setData( const orca::OgMapDataPtr & data )
     pixmapData.cellSize = QSizeF(data->metresPerCellX,data->metresPerCellY);
     pixmapData.mapSizePix = QSize(data->numCellsX,data->numCellsY);
     pixmapData.origin = QPointF(data->origin.p.x,data->origin.p.y);
-    pixmapData.rgbR = data->data;
-    pixmapData.rgbG = data->data;
-    pixmapData.rgbB = data->data;
+    
+    for (int i=0; i<(data->numCellsX*data->numCellsX); i++)
+    {
+        pixmapData.rgbR.push_back(255-data->data[i]);
+        pixmapData.rgbG.push_back(255-data->data[i]);
+        pixmapData.rgbB.push_back(255-data->data[i]);
+    }
     
     pixmapPainter_->setData( pixmapData );
 }
