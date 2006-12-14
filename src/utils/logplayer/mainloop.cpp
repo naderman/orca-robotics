@@ -46,14 +46,28 @@ MainLoop::run()
     Ice::PropertiesPtr props = context_.properties();
     string prefix = context_.tag() + ".Config.";
 
-    double beginTime  = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"BeginTime", 0.0 );
-    if ( beginTime<0.0 ) {
+    // BeginTime: Replay data starting from BeginTime (seconds) from the start of the log
+    orca::Time tempTime;
+    orcaice::setInit( tempTime );
+    tempTime  = orcaice::getPropertyAsTimeDurationWithDefault( props, prefix+"BeginTime", tempTime );
+    IceUtil::Time beginTime = orcaice::toIceTime( tempTime );
+    if ( beginTime<IceUtil::Time() ) {
         context_.tracer()->warning( "Reset negative BeginTime to 0.0" );
-        beginTime = 0.0;
+        beginTime = IceUtil::Time();
     }
-    double endTime    = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"EndTime",  -1.0 );
-    double replayRate = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"ReplayRate", 1.0 );
 
+    // EndTime: Replay data up to EndTime (seconds) from the start of the log
+    // by convention, negative time means play to the ened
+    orcaice::setInit( tempTime );
+    tempTime.seconds = -1;
+    tempTime = orcaice::getPropertyAsTimeDurationWithDefault( props, prefix+"EndTime", tempTime );
+    IceUtil::Time endTime = orcaice::toIceTime( tempTime );
+    if ( endTime<IceUtil::Time() ) {
+        context_.tracer()->info( "Negative EndTime means the log file will play to the end" );
+    }
+
+    // ReplayRate: Adjusts the playback speed
+    double replayRate = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"ReplayRate", 1.0 );
     ReplayClock clock;        
     bool waitForUserInput;
     // special case: wait for human input for every object
@@ -83,137 +97,129 @@ MainLoop::run()
         getchar();
     }
 
-//     bool endlessLoop = orcaice::getPropertyAsIntWithDefault( props, prefix+"EndlessLoop", 1 );
-    // this loop is for loop replay
-//     int loopCount = 0;
-//     while( loopCount<loopNumber )
-//     {
+    int seconds = 0;
+    int useconds = 0;
+    int id = 0;
+    int index = 0;
 
-        int seconds = 0;
-        int useconds = 0;
-        int id = 0;
-        int index = 0;
+    // Read the first data line
+    if ( master_->getData( seconds, useconds, id, index ) ) {
+        context_.tracer()->error( "Failed to read the 1st line of master file" );
+        exit(1);
+    }
 
-        // Read the first data line
-        if ( master_->getData( seconds, useconds, id, index ) ) {
-            context_.tracer()->error( "Failed to read the 1st line of master file" );
+    // fast forward to the desired start time
+    // have to do it after we read the first line because begin time
+    // is specified since the start of the log
+    if ( beginTime>IceUtil::Time() ) {
+        // absolute time of the time from which to start replay
+        IceUtil::Time beginLogTime = beginTime +
+                    IceUtil::Time::seconds(seconds) + IceUtil::Time::microSeconds(useconds);
+        cout<<"DEBUG: Begin log absolute time :"<<beginLogTime.toSeconds()<<endl;
+
+        // use special Fast-Forward version of getData()
+        if ( master_->getData( seconds, useconds, id, index, 
+                beginLogTime.toSeconds(), beginLogTime.toMicroSeconds()%1000000 ) ) {
+            context_.tracer()->error( "Failed to fast forward to BeginTime "+beginTime.toDuration() );
             exit(1);
         }
-    
-        // fast forward to the desired start time
-        // have to do it after we read the first line because begin time
-        // is specified since the start of the log
-        int beginSec  = (int)floor( beginTime );
-        int beginUsec = (int)floor( (beginTime-beginSec)*1e6 );
-//         IceUtil::Time beginTime
-//             = IceUtil::Time::seconds(beginSec) + IceUtil::Time::microSeconds(beginUsec);
-        if ( beginSec>0 || beginUsec>0 ) {
-            if ( master_->seekData( seconds, useconds, id, index, beginSec, beginUsec ) ) {
-                context_.tracer()->error( "Failed to fast forward to BeginTime" );
-                exit(1);
-            }
 
-            ostringstream ss;
-            ss<<"Fast-forwarded to "<<seconds<<"s, "<<useconds<<"us";
-            context_.tracer()->info( ss.str() );
+        ostringstream ss;
+        ss<<"Fast-forwarded to "<<seconds<<"s, "<<useconds<<"us";
+        context_.tracer()->info( ss.str() );
+    }
+
+    if ( id > (int)replayers_.size() ) {
+        ostringstream ss;
+        ss << "Reference to subfile number " << id << ", but only " << replayers_.size() << " exist.";
+        context_.tracer()->error( ss.str() );
+        exit(1);
+    }
+
+    try {
+        replayers_[id]->replayData( index );
+    }
+    catch ( const std::exception & e) {
+        ostringstream ss;
+        ss<<"Caught from replayer of type "<<replayers_[id]->interfaceType()<<": "<<e.what();;
+        context_.tracer()->warning( ss.str() );
+    }
+
+    // Read the start time: this is the offset for the rest of the playback
+    clock.setReplayStartTime( IceUtil::Time::now() );
+    clock.setLogStartTime( IceUtil::Time::seconds(seconds) + IceUtil::Time::microSeconds(useconds) );
+    IceUtil::Time nextLogTime;
+    IceUtil::Time untilNextLogTime;
+    // should this be a configurable parameter? can't think why it would be useful.
+    IceUtil::Time replayTimeTolerance = IceUtil::Time::microSeconds(10);
+
+    ///////////////////////////////////////////////////
+    //
+    // The main loop
+    //
+    ///////////////////////////////////////////////////
+    while( isActive() )
+    {
+        // read a line and act appropriately
+        if ( master_->getData( seconds, useconds, id, index ) ) {
+            // end of file
+            break;
+        }   
+        nextLogTime = IceUtil::Time::seconds(seconds)+IceUtil::Time::microSeconds(useconds);
+        
+        // check end time (negative end time means play to the end)
+        if ( endTime>IceUtil::Time() && nextLogTime>=endTime ) {
+            // reached specified end time
+            break;
         }
 
         if ( id > (int)replayers_.size() ) {
             ostringstream ss;
-            ss << "Reference to subfile number " << id << ", but only " << replayers_.size() << " exist.";
+            ss << "Reference to subfile number " << id << ", when only " << replayers_.size() << " exist.";
             context_.tracer()->error( ss.str() );
             exit(1);
         }
 
+        // replay is driven by user input
+        if ( waitForUserInput ) {
+            cout<<"Type ENTER to replay the next object:" << endl;
+            cout<<"==>"<<endl;
+            getchar();
+        }
+        // replay is driven by the clock
+        else {
+            // alexm: probably better to do a loop, but for some reason we *always* sleep twice.
+            do
+            {
+                // Work out how long till we should send
+                untilNextLogTime = clock.untilNextLogTime( nextLogTime );
+                    
+                if ( untilNextLogTime > replayTimeTolerance )
+                {
+                    IceUtil::ThreadControl::sleep(untilNextLogTime);
+                }
+                
+            } while ( isActive() && untilNextLogTime > replayTimeTolerance  );
+        }
+    
+        //
+        // Now send it out
+        //
         try {
             replayers_[id]->replayData( index );
-        }
+        } 
         catch ( const std::exception & e) {
             ostringstream ss;
             ss<<"Caught from replayer of type "<<replayers_[id]->interfaceType()<<": "<<e.what();;
             context_.tracer()->warning( ss.str() );
         }
-    
-        // Read the start time: this is the offset for the rest of the playback
-        clock.setReplayStartTime( IceUtil::Time::now() );
-        clock.setLogStartTime( IceUtil::Time::seconds(seconds) + IceUtil::Time::microSeconds(useconds) );
-        IceUtil::Time untilLogTime;
-        // should this be a configurable parameter? can't think why it would be useful.
-        IceUtil::Time replayTimeTolerance = IceUtil::Time::microSeconds(10);
 
-        //
-        // The main loop
-        //
-        while( isActive() )
-        {
-            // read a line and act appropriately
-            if ( master_->getData( seconds, useconds, id, index ) ) {
-                // end of file
-                break;
-            }   
-            
-            // check end time (negative end time means play to the end)
-            if ( !(endTime<0.0) && ((double)seconds+(double)useconds/1e6)>=endTime ) {
-                // reached specified end time
-                break;
-            }
-
-            if ( id > (int)replayers_.size() ) {
-                ostringstream ss;
-                ss << "Reference to subfile number " << id << ", when only " << replayers_.size() << " exist.";
-                context_.tracer()->error( ss.str() );
-                exit(1);
-            }
+    } // end of main loop
     
-            // replay is driven by user input
-            if ( waitForUserInput ) {
-                cout<<"Type ENTER to replay the next object:" << endl;
-                cout<<"==>"<<endl;
-                getchar();
-            }
-            // replay is driven by the clock
-            else {
-                // alexm: probably better to do a loop, but for some reason we *always* sleep twice.
-                do
-                {
-                    // Work out how long till we should send
-                    untilLogTime = clock.untilLogTime( IceUtil::Time::seconds(seconds) + IceUtil::Time::microSeconds(useconds) );
-                        
-                    if ( untilLogTime > replayTimeTolerance )
-                    {
-                        IceUtil::ThreadControl::sleep(untilLogTime);
-                    }
-                    
-                } while ( isActive() && untilLogTime > replayTimeTolerance  );
-            }
+    // we can only get here if it's the end of the logfile
+    context_.tracer()->info( "Reached the end of log file." );
     
-            //
-            // Now send it out
-            //
-            try {
-                replayers_[id]->replayData( index );
-//                 cout<<"TRACE(mainloop.cpp): hit return..." << endl;
-//                 getchar();
-            } 
-            catch ( const std::exception & e) {
-                ostringstream ss;
-                ss<<"Caught from replayer of type "<<replayers_[id]->interfaceType()<<": "<<e.what();;
-                context_.tracer()->warning( ss.str() );
-            }
     
-        } // end of main loop
-        
-        // we can only get here if it's the end of the logfile
-        context_.tracer()->info( "Reached the end of log file." );
-//         if ( endlessLoop ) {
-//             context_.tracer()->print( "Starting again from the beginning" );
-//         }
-//         else {
-//             break;
-//         }
-//     } // end of endless loop
-    
-
     // we are done here. So to let the application know that we are finished,
     // we destroy the communicator, triggering clean-up and shutdown.
     context_.communicator()->destroy();

@@ -32,8 +32,13 @@ public:
                     std::vector<std::string> & formats );
     
     //! Rewind to the start of the data log. Calling getData() afterwards will
-    //! return the first data point.
-    void seekStart();
+    //! return the first data point. Returns 0 if data read sucessfully. Returns 
+    //! 1 if end of file is reached without finding data.
+    int seekDataStart();
+
+    //! Read one line of data log. Returns 0 if data read sucessfully. Returns 
+    //! 1 if end of file is reached.
+    int getData( int & seconds, int & useconds, int & id, int & index );
 
     //! Steps through the data entries until the time stamp is equal to or is after
     //! the one specified. For example, data is logged every second and the last replayed
@@ -44,11 +49,8 @@ public:
     //! For example, calling seekData(..,,2,0) at t=3 will return the data at time t=4.
     //!
     //! Seeking time after the end of the log will result in fast forwarding to the end.
-    int seekData( int & seconds, int & useconds, int & id, int & index, int seekSec, int secUsec=0 );
+    int getData( int & seconds, int & useconds, int & id, int & index, int seekSec, int secUsec=0 );
 
-    //! Read one line of data log. Returns 0 if data read sucessfully. Returns 
-    //! 1 if end of file is reached.
-    int getData( int & seconds, int & useconds, int & id, int & index );
 
 private:
     std::ifstream *file_;

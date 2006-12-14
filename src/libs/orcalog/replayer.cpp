@@ -132,7 +132,7 @@ Replayer::checkIndex( int index )
     if ( ! (dataCounter_ % 50 ) )
     {
         ostringstream ss;
-        ss << interfaceType_ << "Replayer: replayed " << dataCounter_ << " data objects.";
+        ss << interfaceType_ << "Replayer: replayed " << dataCounter_ << " data objects from "<<filename_;
         context_.tracer()->info( ss.str() );
     } 
 }

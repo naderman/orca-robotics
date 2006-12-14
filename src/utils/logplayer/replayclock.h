@@ -28,7 +28,7 @@ public:
 
     void setReplayStartTime( const IceUtil::Time & t ) { replayStartTime_=t; };
 
-    IceUtil::Time untilLogTime( const IceUtil::Time & logDataTime );
+    IceUtil::Time untilNextLogTime( const IceUtil::Time & logDataTime );
 
 private:
     double replayRate_;

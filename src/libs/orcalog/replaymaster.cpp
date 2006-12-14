@@ -84,27 +84,23 @@ ReplayMaster::getLogs( std::vector<std::string> & filenames,
     }
 }
 
-void 
-ReplayMaster::seekStart()
-{
-
-}
-
 int 
-ReplayMaster::seekData( int & seconds, int & useconds, int & id, int & index, int seekSec, int seekUsec )
-{
-    IceUtil::Time seekTime = 
-            IceUtil::Time::seconds(seekSec) + IceUtil::Time::microSeconds(seekUsec);
+ReplayMaster::seekDataStart()
+{   
+    // STL book p.634-36
+    file_->clear();
+    file_->seekg( 0 );
 
-    IceUtil::Time dataTime;
-    while ( !getData( seconds, useconds, id, index ) ) {
-        dataTime = IceUtil::Time::seconds(seconds) + IceUtil::Time::microSeconds(useconds);
-        if ( dataTime >= seekTime ) {
-            // success
+//     int count = 0;
+    std::string line;
+    while ( std::getline( *file_, line ) ) {
+//         cout<<count++<<endl;
+        // data starts here, don't parse headers anymore
+        if ( orcalog::isEndOfHeader( line ) ) {
             return 0;
         }
     }
-    // eof
+    // this is EOF, failed to find DATA
     return 1;
 }
 
@@ -141,5 +137,25 @@ ReplayMaster::getData( int & seconds, int & useconds, int & id, int & index )
     }
     
 //     cout<<"ReplayMaster::getData: this is EOF"<<endl;
+    return 1;
+}
+
+int 
+ReplayMaster::getData( int & seconds, int & useconds, int & id, int & index, int seekSec, int seekUsec )
+{
+//     cout<<"seeking "<<seekSec<<"s "<<seekUsec<<"us"<<endl;
+    IceUtil::Time seekTime = 
+            IceUtil::Time::seconds(seekSec) + IceUtil::Time::microSeconds(seekUsec);
+
+    IceUtil::Time dataTime;
+    while ( !getData( seconds, useconds, id, index ) ) {
+//         cout<<"read "<<seconds<<"s "<<useconds<<"us"<<endl;
+        dataTime = IceUtil::Time::seconds(seconds) + IceUtil::Time::microSeconds(useconds);
+        if ( dataTime >= seekTime ) {
+            // success
+            return 0;
+        }
+    }
+    // eof
     return 1;
 }

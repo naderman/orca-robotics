@@ -260,12 +260,10 @@ int
 getPropertyAsStringSeq( const Ice::PropertiesPtr & prop, const ::std::string& key, Ice::StringSeq & value )
 {
     std::string stringVal;
-    if ( getProperty( prop, key, stringVal ) )
-    {
+    if ( getProperty( prop, key, stringVal ) ) {
         return -1;
     }
-    else
-    {
+    else {
         value = toStringSeq( stringVal, ':' );
         return 0;
     }
@@ -276,13 +274,9 @@ getPropertyAsStringSeqWithDefault( const Ice::PropertiesPtr & prop, const ::std:
 {
     std::string stringVal;
     if ( getProperty( prop, key, stringVal ) )
-    {
         return defaultValue;
-    }
     else
-    {
         return toStringSeq( stringVal, ':' );
-    }
 }
 
 int
@@ -290,14 +284,9 @@ getPropertyAsFrame2d( const Ice::PropertiesPtr & prop, const ::std::string& key,
 {
     std::string stringVal;
     if ( getProperty( prop, key, stringVal ) )
-    {
         return -1;
-    }
     else
-    {
         return toFrame2d( stringVal, value );
-    }
-    return 0;
 }
 
 orca::Frame2d
@@ -305,13 +294,9 @@ getPropertyAsFrame2dWithDefault( const Ice::PropertiesPtr & prop, const ::std::s
 {
     orca::Frame2d value;
     if ( getPropertyAsFrame2d( prop, key, value ) )
-    {
         return defaultValue;
-    }
     else
-    {
         return value;
-    }
 }
 
 int
@@ -319,14 +304,9 @@ getPropertyAsFrame3d( const Ice::PropertiesPtr & prop, const ::std::string& key,
 {
     std::string stringVal;
     if ( getProperty( prop, key, stringVal ) )
-    {
         return -1;
-    }
     else
-    {
         return toFrame3d( stringVal, value );
-    }
-    return 0;
 }
 
 orca::Frame3d
@@ -334,13 +314,9 @@ getPropertyAsFrame3dWithDefault( const Ice::PropertiesPtr & prop, const ::std::s
 {
     orca::Frame3d value;
     if ( getPropertyAsFrame3d( prop, key, value ) )
-    {
         return defaultValue;
-    }
     else
-    {
         return value;
-    }
 }
 
 int
@@ -348,13 +324,9 @@ getPropertyAsSize3d( const Ice::PropertiesPtr & prop, const ::std::string& key, 
 {
     std::string stringVal;
     if ( getProperty( prop, key, stringVal ) )
-    {
         return -1;
-    }
     else
-    {
         return toSize3d( stringVal, value );
-    }
     return 0;
 }
 
@@ -364,13 +336,9 @@ getPropertyAsSize3dWithDefault( const Ice::PropertiesPtr & prop, const ::std::st
 {
     orca::Size3d value;
     if ( getPropertyAsSize3d( prop, key, value ) )
-    {
         return defaultValue;
-    }
     else
-    {
         return value;
-    }
 }
 
 int
@@ -378,13 +346,9 @@ getPropertyAsCartesianPoint( const Ice::PropertiesPtr & prop, const ::std::strin
 {
     std::string stringVal;
     if ( getProperty( prop, key, stringVal ) )
-    {
         return -1;
-    }
     else
-    {
         return toCartesianPoint( stringVal, value );
-    }
     return 0;
 }
 
@@ -393,13 +357,29 @@ getPropertyAsCartesianPointWithDefault( const Ice::PropertiesPtr & prop, const :
 {
     orca::CartesianPoint value;
     if ( getPropertyAsCartesianPoint( prop, key, value ) )
-    {
         return defaultValue;
-    }
     else
-    {
         return value;
-    }
+}
+
+int 
+getPropertyAsTimeDuration( const Ice::PropertiesPtr & prop, const ::std::string& key, orca::Time &value )
+{
+    std::string stringVal;
+    if ( getProperty( prop, key, stringVal ) )
+        return -1;
+    else
+        return toTimeDuration( stringVal, value );
+}
+
+orca::Time
+getPropertyAsTimeDurationWithDefault( const Ice::PropertiesPtr & prop, const ::std::string& key, const orca::Time & defaultValue )
+{
+    orca::Time value;
+    if ( getPropertyAsTimeDuration( prop, key, value ) )
+        return defaultValue;
+    else
+        return value;
 }
 
 std::string 

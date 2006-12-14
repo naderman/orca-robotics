@@ -53,10 +53,12 @@ void TestComponent::start()
 
     int s0=24, u0=555, l0=0, d0=0;
     logMaster->addData( s0, u0, l0, d0 );
-    logMaster->addData( 24, 888000, 0, 1 );
-    int s1=25, u1=333, l1=1, d1=0;
-    logMaster->addData( 25, 333, 1, 0 );
-    logMaster->addData( 25, 333000, 1, 1 );
+    logMaster->addData( s0+1, 888000, 0, 1 );
+    logMaster->addData( s0+2, 888000, 0, 1 );
+    logMaster->addData( s0+3, 888000, 0, 1 );
+    int s1=28, u1=333, l1=1, d1=0;
+    logMaster->addData( s1, u1, l1, d1 );
+    logMaster->addData( s1+1, 333000, 1, 1 );
     cout<<"ok"<<endl;
 
     cout<<"testing LogMaster() ... ";
@@ -76,25 +78,61 @@ void TestComponent::start()
 
     cout<<"testing getData() ... ";
     int s, u, l, d;
-    playMaster->getData( s, u, l, d );
+    int ret;
+    ret = playMaster->getData( s, u, l, d );
+    if ( ret ) {
+        cout<<"failed: expected to find line, ret="<<ret<<endl;
+        exit(EXIT_FAILURE);
+    }
     if ( s!=s0 || u!=u0 || l!=l0 || d!=d0 ) {
         cout<<"failed"<<endl<<"wrong data in first line"<<endl
             <<"expected="<<s0<<","<<u0<<","<<l0<<","<<d0
-            <<"expected="<<s<<","<<u<<","<<l<<","<<d<<endl;
+            <<"got="<<s<<","<<u<<","<<l<<","<<d<<endl;
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
     
-    cout<<"testing seekData() ... ";
-    playMaster->seekData( s, u, l, d, 25 );
+    cout<<"testing FF getData() to good line ... ";
+    ret = playMaster->getData( s, u, l, d,  s1, u1 );
+    if ( ret ) {
+        cout<<"failed: ret="<<ret<<endl;
+        exit(EXIT_FAILURE);
+    }
     if ( s!=s1 || u!=u1 || l!=l1 || d!=d1 ) {
         cout<<"failed"<<endl<<"wrong data in sought line"<<endl
             <<"expected="<<s1<<","<<u1<<","<<l1<<","<<d1
-            <<"expected="<<s<<","<<u<<","<<l<<","<<d<<endl;
+            <<"got="<<s<<","<<u<<","<<l<<","<<d<<endl;
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
-    
+
+    cout<<"testing FF getData() to line which is after the end of log  ... ";
+    ret = playMaster->getData( s, u, l, d,  1000 );
+    if ( !ret ) {
+        cout<<"failed: expected not to find line, ret="<<ret<<endl
+            <<"got="<<s<<","<<u<<","<<l<<","<<d<<endl;
+        exit(EXIT_FAILURE);
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing seekDataStart() ... ";
+    ret = playMaster->seekDataStart();
+    if ( ret ) {
+        cout<<"failed: expected find data, ret="<<ret<<endl;
+        exit(EXIT_FAILURE);
+    }
+    ret = playMaster->getData( s, u, l, d );
+    if ( ret ) {
+        cout<<"failed: expected to find line, ret="<<ret<<endl;
+        exit(EXIT_FAILURE);
+    }
+    if ( s!=s0 || u!=u0 || l!=l0 || d!=d0 ) {
+        cout<<"failed"<<endl<<"wrong data in first line"<<endl
+            <<"expected="<<s0<<","<<u0<<","<<l0<<","<<d0
+            <<"got="<<s<<","<<u<<","<<l<<","<<d<<endl;
+        exit(EXIT_FAILURE);
+    }
+    cout<<"ok"<<endl;
 
     // NOTE: cannot call communicator()->destroy() from here
     // because they'll be caught by Ice::Application and show up as failed ctest.

@@ -60,17 +60,21 @@ To distinguish between the different encoding types, the master file header cont
     - The name of the master file
     - Default: 'master.log'
 
-- @c LogPlayer.Config.BeginTime (double) [s]
-    - Replay data starting from BeginTime (seconds) from the start of the log.
-    - Valid values: 0.0\<=BeginTime\<LogDuration. If BeginTime is greater than the duration of the log, no data is played.
-    - Default: 0.0 (i.e. plays from the begining)
+- @c LogPlayer.Config.BeginTime (Time)
+    - Replay data starting at BeginTime from the start of the log.
+    - Format: DD:HH:MM:SS.uuu
+    - Note that none of the values have to be normalized (e.g.<60) and minutes, hours, and days are optional. The following statements are valid and equivalent:
+        - 121.250
+        - 1:61.250
+        - 2:1.250
+        - 0:0:2:1.250
+    - Default: 0.0 (i.e. replays from the begining)
     
 - @c LogPlayer.Config.EndTime  (double) [s]
     - Replay data up to EndTime (seconds) from the start of the log.
-    - Valid values:
-        - >0.0 and EndTime>BeginTime. If BeginTime>EndTime, no data is played. If EndTime is greater than the duration of the log, the log is simply played to the end.
-        - <0.0 : play to the end of the log.
-    - Default: -1 (i.e. plays to the end)
+    - Format: see BeginTime
+    - Special value: if EndTime<0.0 : replays to the end of the log.
+    - Default: -1.0 (i.e. plays to the end)
 
 - @c LogPlayer.Config.ReplayRate (double)
     - Adjusts the playback speed. 
@@ -80,10 +84,6 @@ To distinguish between the different encoding types, the master file header cont
         - 1.0 : real time
         - >1.0 : faster than real time.
     - Default: 1.0
-    
-- @c LogPlayer.Config.EndlessLoop (bool)
-    - Determines whether to restart when reaching the end of the log file
-    - Default: 1
 
 @par Configuration for specific replayers
 

@@ -26,7 +26,7 @@ ReplayClock::ReplayClock( double replayRate )
 }
 
 IceUtil::Time 
-ReplayClock::untilLogTime( const IceUtil::Time & logDataTime )
+ReplayClock::untilNextLogTime( const IceUtil::Time & logDataTime )
 {
     IceUtil::Time replayDataTime;
 
