@@ -65,7 +65,7 @@ Description
     - Default: [0.0 0.0 0.0]
 
 - @c InsGps.Config.Imu.Offset (Frame3d) [m,m,m, deg,deg,deg]
-    - Imu coordinates of the origin of the local coordinate system.
+    - Imu offset from the platform's local coordinate system.
     - Default: [0.0 0.0 0.0  0.0 0.0 0.0]
 
 - @c InsGps.Config.Imu.Size (Size3d) [m,m,m]
@@ -73,11 +73,11 @@ Description
     - Default: [0.0 0.0 0.0]
 
 - @c InsGps.Config.Position3d.Offset (Frame3d) [m,m,m, deg,deg,deg]
-    - Coordinates of the origin of the local coordinate system.
+    - Position3d sensor offset from the platform's local coordinate system. This is normally the same as the IMU
     - Default: [0.0 0.0 0.0  0.0 0.0 0.0]
 
 - @c InsGps.Config.Position3d.Size (Size3d) [m,m,m]
-    - Length, width, and height of the InsGps.
+    - Length, width, and height of the Positoin3d sensor. This is normally the same as the IMU
     - Default: [0.0 0.0 0.0]
 
 Serial
