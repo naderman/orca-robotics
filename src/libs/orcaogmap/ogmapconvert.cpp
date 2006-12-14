@@ -19,6 +19,7 @@ namespace orcaogmap {
         output.reallocate( input->numCellsX, input->numCellsY );
         memcpy( output.data(), &input->data[0], input->data.size()*sizeof(unsigned char) );
 
+        output.setMapType( input->mapType );
         output.origin().p.x = input->origin.p.x;
         output.origin().p.y = input->origin.p.y;
         output.origin().o = input->origin.o;
@@ -33,6 +34,7 @@ namespace orcaogmap {
         output->data.resize( output->numCellsX*output->numCellsY );
         memcpy( &(output->data[0]), input.data(), output->data.size() );
 
+        output->mapType = input.mapType();
         output->origin.p.x = input.origin().p.x;
         output->origin.p.y = input.origin().p.y;
         output->origin.o   = input.origin().o;

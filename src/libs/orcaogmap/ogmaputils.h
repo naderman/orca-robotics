@@ -66,6 +66,12 @@ namespace orcaogmap {
         float worldSizeX() const { return numCellsX_*metresPerCellX_; };
         //! Returns the size of the world, in metres, along the y-axis
         float worldSizeY() const { return numCellsY_*metresPerCellY_; };
+        
+        //! Get the map type (user-defined)
+        int mapType() const { return mapType_; };
+        
+        //! Set the map type (user-defined)
+        void setMapType( int mapType ) { mapType_ = mapType; };
 
         //! Set the origin (global coordinates of the bottom-left corner of the bottom-left cell)
         Frame2d & origin() { return origin_; };
@@ -188,6 +194,9 @@ namespace orcaogmap {
         int numCellsX_;
         //! The number of cells along the y axis
         int numCellsY_;
+        
+        //! Map type, e.g. occupancy, motion, hazard
+        int mapType_;
 
     };
 

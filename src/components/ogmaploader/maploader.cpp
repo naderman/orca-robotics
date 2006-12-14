@@ -99,6 +99,9 @@ loadMapFromFile( orcaice::Context context, orca::OgMapDataPtr &map )
         // Make up a timestamp
         map->timeStamp.seconds  = 0;
         map->timeStamp.useconds = 0;
+        
+        // Set type
+        map->mapType = orcaice::getPropertyAsIntWithDefault( prop, prefix+"MapType", 0 );
     }
 }
 

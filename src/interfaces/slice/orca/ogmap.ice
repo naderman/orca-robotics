@@ -72,7 +72,6 @@ class OgMapData extends OrcaObject
 {
     //! The global coordinates of the bottom-left corner of the bottom-left cell
     Frame2d      origin;
-
     //! The number of cells along the x axis
     int numCellsX;
     //! The number of cells along the y axis
@@ -85,6 +84,10 @@ class OgMapData extends OrcaObject
     //! The occupancy values.  To give a definite mid-point the last level (255) is not used:
     //!   i.e. 0 = unoccupied, 254 = occupied and 127 = unknown. 
     ByteSequence data;
+    
+    //! User-defined type of certainty grid map.
+    //! Useful to distinguish between occupancy, motion, hazard maps etc.
+    int mapType;
 };
 
 module ogmapvalues

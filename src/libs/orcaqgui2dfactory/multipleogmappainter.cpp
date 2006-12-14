@@ -36,13 +36,33 @@ MultipleOgMapPainter::paint( QPainter *p, int z )
 void
 MultipleOgMapPainter::setData( const orca::OgMapDataPtr & data0, const orca::OgMapDataPtr & data1 )
 {
-
-//     cout << orcaice::toVerboseString(data);
-
+    // both maps currently need to have the same dimensions
+    assert( data0->origin == data1->origin );
+    assert( data0->numCellsX == data1->numCellsX );
+    assert( data0->numCellsY == data1->numCellsY );
+    assert( data0->metresPerCellX == data1->metresPerCellX );
+    assert( data0->metresPerCellY == data1->metresPerCellY );
+    assert( (data0->mapType==0 || data0->mapType==1) && (data1->mapType==0 || data1->mapType==1) );
+    
     if ( data0->origin.o != 0.0 ) {
         cout << "ERROR(ogmappainter.cpp): Don't know how to display a non-axis-aligned map." << endl;
         return;
     }
+    
+    orca::OgMapDataPtr occMap;
+    orca::OgMapDataPtr hazMap;
+    if (data0->mapType==0)
+    {
+        occMap = data0;
+        hazMap = data1;
+    }
+    else
+    {
+        occMap = data1;
+        hazMap = data0;
+    }
+    // if both maps are of type occMap then it doesn't matter which one is occMap/hazMap    
+        
     
     vector<int> occR;
     vector<int> occG;
@@ -51,11 +71,11 @@ MultipleOgMapPainter::setData( const orca::OgMapDataPtr & data0, const orca::OgM
     vector<int> hazG;
     vector<int> hazB;
     
-    for (int i=0; i<(data0->numCellsX*data0->numCellsY); i++)
+    for (int i=0; i<(data0->numCellsX*occMap->numCellsY); i++)
     {   
-        int r=255-(int)data0->data[i];
-        int g=255-(int)data0->data[i];
-        int b=255-(int)data0->data[i];
+        int r=255-(int)occMap->data[i];
+        int g=255-(int)occMap->data[i];
+        int b=255-(int)occMap->data[i];
         
         occR.push_back(r);
         occG.push_back(g);
@@ -63,8 +83,8 @@ MultipleOgMapPainter::setData( const orca::OgMapDataPtr & data0, const orca::OgM
         //cout << "occ: rgb is " << r << " " << g << " " << b << endl;
         
         r = 255;
-        g = (255-(int)data1->data[i]);
-        b = (255-(int)data1->data[i]);
+        g = (255-(int)hazMap->data[i]);
+        b = (255-(int)hazMap->data[i]);
         hazR.push_back(r);
         hazG.push_back(g);
         hazB.push_back(b);
@@ -73,7 +93,7 @@ MultipleOgMapPainter::setData( const orca::OgMapDataPtr & data0, const orca::OgM
     
     PixmapData pixmapData;
         
-    for (int i=0; i<(data0->numCellsX*data0->numCellsY); i++)
+    for (int i=0; i<(occMap->numCellsX*occMap->numCellsY); i++)
     {
         pixmapData.rgbR.push_back( (occR[i]+hazR[i])/2 );
         pixmapData.rgbG.push_back( (occG[i]+hazG[i])/2 );
@@ -82,9 +102,9 @@ MultipleOgMapPainter::setData( const orca::OgMapDataPtr & data0, const orca::OgM
     
     
     // assemble information to give to pixmapPainter
-    pixmapData.cellSize = QSizeF(data0->metresPerCellX,data0->metresPerCellY);
-    pixmapData.mapSizePix = QSize(data0->numCellsX,data0->numCellsY);
-    pixmapData.origin = QPointF(data0->origin.p.x,data0->origin.p.y);
+    pixmapData.cellSize = QSizeF(occMap->metresPerCellX,occMap->metresPerCellY);
+    pixmapData.mapSizePix = QSize(occMap->numCellsX,occMap->numCellsY);
+    pixmapData.origin = QPointF(occMap->origin.p.x,occMap->origin.p.y);
     
     pixmapPainter_->setData( pixmapData );
 }

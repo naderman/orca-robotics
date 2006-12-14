@@ -62,6 +62,11 @@ Clients who wish to receive the map should call getData(). This component will o
             - 0: black is occupied, white is empty
             - 1: white is occupied, black is empty
     - Default: 0
+    
+- @c OgMapLoader.MapType (int)
+    - Can be use to determine what the served ogMap is used for, e.g. occupancy, motion, hazard
+    - Values are user-defined integers
+    - Default: 0
 
 Map Geometry (see @ref orca_interface_ogmap for a detailed explanation)
 
