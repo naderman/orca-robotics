@@ -209,6 +209,11 @@ namespace orcaogmap {
     //! - the resolutions match
     //! - the maps have zero orientation.
     void fuse( OgMap &master, const OgMap &update, unsigned char newCells=127 ); 
+    
+    //! Overlays two OgMaps, i.e. their occupancy values are bitwise or'd. 
+    //! Resulting map is stored in 'master'.
+    //! Assumes that all map parameters (origin, resolution, number of cells) are the same.
+    void overlay( OgMap &master, const OgMap &slave ); 
 
     //! Convert an occupancy grid map to text
     std::string toText( const OgMap &map );

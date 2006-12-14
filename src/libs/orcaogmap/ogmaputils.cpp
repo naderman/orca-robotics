@@ -256,6 +256,28 @@ void fuse( OgMap &master, const OgMap &update, unsigned char newCells )
     }
 }
 
+void overlay( OgMap &master, const OgMap &slave )
+{
+    // Check assumptions
+    assert( master.metresPerCellX() == slave.metresPerCellX() );
+    assert( master.metresPerCellY() == slave.metresPerCellY() );    
+    assert( master.numCellsX() == slave.numCellsX() );
+    assert( master.numCellsY() == slave.numCellsY() );
+    assert( master.origin().p.x == slave.origin().p.x );
+    assert( master.origin().p.y == slave.origin().p.y );
+    assert( master.origin().o == slave.origin().o );    
+
+    for (int x=0; x<master.numCellsX(); x++)
+    {
+        for (int y=0; y<master.numCellsY(); y++)
+        {
+            int valueA = (int)master.gridCell(x,y);
+            int valueB = (int)slave.gridCell(x,y);
+            master.gridCell(x,y) = (unsigned char)(valueA | valueB);
+        }
+    }
+}
+
 std::string toString(const CartesianPoint2d &p)
 {
     std::stringstream ss;
