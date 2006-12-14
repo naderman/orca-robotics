@@ -85,9 +85,27 @@ ReplayMaster::getLogs( std::vector<std::string> & filenames,
 }
 
 void 
-ReplayMaster::rewindToStart()
+ReplayMaster::seekStart()
 {
 
+}
+
+int 
+ReplayMaster::seekData( int & seconds, int & useconds, int & id, int & index, int seekSec, int seekUsec )
+{
+    IceUtil::Time seekTime = 
+            IceUtil::Time::seconds(seekSec) + IceUtil::Time::microSeconds(seekUsec);
+
+    IceUtil::Time dataTime;
+    while ( !getData( seconds, useconds, id, index ) ) {
+        dataTime = IceUtil::Time::seconds(seconds) + IceUtil::Time::microSeconds(useconds);
+        if ( dataTime >= seekTime ) {
+            // success
+            return 0;
+        }
+    }
+    // eof
+    return 1;
 }
 
 int 
@@ -115,10 +133,10 @@ ReplayMaster::getData( int & seconds, int & useconds, int & id, int & index )
         }
 
         // success
-        stringstream ss;
-        ss << "parsed data line sec="<<seconds<<" usec="<<useconds<<" id="<<id<<" idx="<<index;
-        context_.tracer()->debug( line, 10);
-        context_.tracer()->debug( ss.str(), 10);
+//         stringstream ss;
+//         ss << "parsed data line sec="<<seconds<<" usec="<<useconds<<" id="<<id<<" idx="<<index;
+//         context_.tracer()->debug( line, 10);
+//         context_.tracer()->debug( ss.str(), 10);
         return 0;
     }
     

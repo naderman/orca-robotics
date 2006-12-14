@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 #include <cmath>
 // M_PI is not defined after including cmath for the MS visual studio compiler?
 #ifndef M_PI
@@ -28,9 +29,9 @@
 #define DEG2RAD_RATIO	(M_PI/180.0)
 #endif
 
-//! Converts from degrees to radians.
+// Converts from degrees to radians.
 #define DEG2RAD(deg)	((deg)*DEG2RAD_RATIO)
-//! Converts from radians to degrees.
+// Converts from radians to degrees.
 #define RAD2DEG(rad) 	((rad)/DEG2RAD_RATIO)
 //==============
 
@@ -38,6 +39,59 @@ using namespace std;
 
 namespace orcaice
 {
+
+Ice::StringSeq
+toStringSeq( const std::string & s, const char delim )
+{
+    std::string::size_type beg;
+    std::string::size_type end = 0;
+    const std::string whitespace = " \t\n\r";
+
+    Ice::StringSeq seq;
+    while( end < s.length() )
+    {
+        // skip leading white space
+        beg = s.find_first_not_of(whitespace, end);
+        if(beg == std::string::npos) {
+            break;
+        }
+
+        // find the delimeter
+        end = s.find( delim, beg );
+        if(end == std::string::npos) {
+            end = s.length();
+        }
+
+        // empty string in the sequence, i.e. "something: :else"
+        if(end == beg) {
+            ++end;
+            continue;
+        }
+
+        seq.push_back( s.substr(beg, end - beg) );
+        ++end;
+    }
+
+    return seq;
+}
+
+std::string
+toString( const Ice::StringSeq & seq, const char delim )
+{
+    std::string s;
+
+    // check for empty sequence
+    if ( seq.empty() ) {
+        return s;
+    }
+
+    s = seq[0];
+    // append the rest of the sequence with delimeters
+    for ( unsigned int i=1; i<seq.size(); ++i ) {
+        s += delim + seq[i];
+    }
+    return s;
+}
 
 std::string 
 toString( const orca::FQComponentName & name )
@@ -122,6 +176,257 @@ toStatusTopic( const orca::FQComponentName & fqCName )
 //**************************
 // toString()
 //*************************
+
+std::string 
+toString( const orca::CartesianPoint2d & obj )
+{
+    std::ostringstream s;
+    s << obj.x << " " << obj.y << " x[m], y[m]";
+    return s.str();
+}
+
+int 
+toCartesianPoint2d( const std::string & s, orca::CartesianPoint2d & obj )
+{
+    std::istringstream ss( s );
+    ss >> obj.x;
+    if ( !ss ) return -1;
+    ss >> obj.y;
+    if ( !ss ) return -1;
+    // success
+    return 0;
+}
+
+std::string 
+toString( const orca::CartesianPoint & obj )
+{
+    std::ostringstream s;
+    s << obj.x << " " << obj.y << " " << obj.z << " x[m], y[m], z[m]";
+    return s.str();
+}
+
+int 
+toCartesianPoint( const std::string & s, orca::CartesianPoint & obj )
+{
+    std::istringstream ss( s );
+    ss >> obj.x;
+    if ( !ss ) return -1;
+    ss >> obj.y;
+    if ( !ss ) return -1;
+    ss >> obj.z;
+    if ( !ss ) return -1;
+    // success
+    return 0;
+}
+
+std::string 
+toString( const orca::Frame2d & obj )
+{
+    std::ostringstream s;
+//     s << "[" << obj.p.x << "m," << obj.p.y << "m," << obj.o*180.0/M_PI << "deg]";
+    s << obj.p.x << " " << obj.p.y << " " << obj.o*180.0/M_PI << " x[m], y[m], yaw[deg]";
+    return s.str();
+}
+
+int 
+toFrame2d( const std::string & s, orca::Frame2d & obj )
+{
+    std::istringstream ss( s );
+    ss >> obj.p.x;
+    if ( !ss ) return -1;
+    ss >> obj.p.y;
+    if ( !ss ) return -1;
+    ss >> obj.o;
+    if ( !ss ) return -1;
+    obj.o *= DEG2RAD_RATIO;
+    // success
+    return 0;
+}
+
+std::string 
+toString( const orca::Frame3d & obj )
+{
+    std::ostringstream s;
+//     s << "[" <<obj.p.x<<"m," <<obj.p.y<<"m," <<obj.p.z<<"m, " 
+//       << obj.o.r*180.0/M_PI<<"," <<obj.o.p*180.0/M_PI<<"," <<obj.o.y*180.0/M_PI << "deg]";
+    s << obj.p.x << " " << obj.p.y << " " << obj.p.z << "   " 
+      << obj.o.r*180.0/M_PI << " "<< obj.o.p*180.0/M_PI << " "<< obj.o.y*180.0/M_PI 
+      << " x[m], y[m], z[m],   roll[deg], pitch[deg], yaw[deg]";
+    return s.str();
+}
+
+int 
+toFrame3d( const std::string & s, orca::Frame3d & obj )
+{
+    std::istringstream ss( s );
+    ss >> obj.p.x;
+    if ( !ss ) return -1;
+    ss >> obj.p.y;
+    if ( !ss ) return -1;
+    ss >> obj.p.z;
+    if ( !ss ) return -1;
+    ss >> obj.o.r;
+    if ( !ss ) return -1;
+    obj.o.r *= DEG2RAD_RATIO;
+    ss >> obj.o.p;
+    if ( !ss ) return -1;
+    obj.o.p *= DEG2RAD_RATIO;
+    ss >> obj.o.y;
+    if ( !ss ) return -1;
+    obj.o.y *= DEG2RAD_RATIO;
+    // success
+    return 0;
+}
+
+std::string 
+toString( const orca::Size2d & obj )
+{
+    std::ostringstream s;
+    s << obj.l << " " << obj.w << " length[m], width[m]";
+    return s.str();
+}
+
+int 
+toSize2d( const std::string & s, orca::Size2d & obj )
+{
+    std::istringstream ss( s );
+    ss >> obj.l;
+    if ( !ss ) return -1;
+    ss >> obj.w;
+    if ( !ss ) return -1;
+    // success
+    return 0;
+}
+
+std::string 
+toString( const orca::Size3d & obj )
+{
+    std::ostringstream ss;
+    ss << obj.l << " " << obj.w << " " << obj.h << " length[m], width[m], height[m]";
+    return ss.str();
+}
+
+int 
+toSize3d( const std::string & s, orca::Size3d & obj )
+{
+    std::istringstream ss( s );
+    ss >> obj.l;
+    if ( !ss ) return -1;
+    ss >> obj.w;
+    if ( !ss ) return -1;
+    ss >> obj.h;
+    if ( !ss ) return -1;
+    // success
+    return 0;
+}
+
+// adapted from IceUtil::Time::toDuration()
+// the only difference is in NOT printing 'd' after the number of days
+// this is to make it easier to parse back
+std::string 
+toStringDuration( const orca::Time & obj )
+{
+    int secs  = obj.seconds % 60;
+    int mins  = obj.seconds / 60 % 60;
+    int hours = obj.seconds / 60 / 60 % 24;
+    int days  = obj.seconds / 60 / 60 / 24;
+
+    using namespace std;
+
+    ostringstream os;
+    if(days != 0)
+    {
+        os << days << ":";
+    }
+    os << setfill('0') << setw(2) << hours << ":" << setw(2) << mins << ":" << setw(2) << secs;
+    if(obj.useconds != 0)
+    {
+        os << "." << setw(6) << obj.useconds;
+    }
+
+    return os.str();
+}
+
+int 
+toTimeDuration( const std::string & s, orca::Time & obj )
+{
+    Ice::StringSeq sseq = orcaice::toStringSeq( s );
+    if ( sseq.empty() ) return -1;
+//     cout<<"forward :"<<endl; for ( unsigned int i=0; i<sseq.size(); ++i ) cout<<sseq[i]<<endl;
+
+    // reverse the order so the seconds come first, and the optional elements come last
+    std::reverse( sseq.begin(), sseq.end() );
+//     cout<<"reversed :"<<endl; for ( unsigned int i=0; i<sseq.size(); ++i ) cout<<sseq[i]<<endl;
+
+    // convert to a single string but now with spaces as delimeters
+    std::string s2 = orcaice::toString( sseq, ' ' );
+    std::istringstream ss( s2 );
+
+    IceUtil::Time t;
+
+    double secs;
+    ss >> secs;
+//     cout<<setprecision(12)<<secs<<" sec"<<endl;
+    int sec = (int)floor( secs );
+    int usec = (int)round( (secs-sec)*1.0e6 );
+//     cout<<sec<<" sec"<<endl;
+//     cout<<usec<<" usec"<<endl;
+    t = IceUtil::Time::seconds( sec ) + IceUtil::Time::microSeconds( usec );
+
+    int mins;
+    ss >> mins;
+    if ( !ss ) {
+        obj = toOrcaTime( t );
+        return 0;
+    }
+//     cout<<mins<<" mins"<<endl;
+    t += IceUtil::Time::seconds( mins*60 );
+
+    int hours;
+    ss >> hours;
+    if ( !ss ) {
+        obj = toOrcaTime( t );
+        return 0;
+    }
+//     cout<<hours<<" hrs"<<endl;
+    t += IceUtil::Time::seconds( hours*3600 );
+
+    int days;
+    ss >> days;
+    if ( !ss ) {
+        obj = toOrcaTime( t );
+        return 0;
+    }
+//     cout<<days<<" days"<<endl;
+    t += IceUtil::Time::seconds( days*24*3600 );
+
+    obj = toOrcaTime( t );
+    return 0;
+}
+
+std::string 
+toString( const orca::Time & obj )
+{
+    std::ostringstream s;
+    s << toIceTime( obj ).toString();
+    return s.str();
+}
+
+std::string 
+toString( const orca::TimeOfDay & obj )
+{
+    char c[64];
+    sprintf(c,"%02d:%02d:%06.3f", obj.hours, obj.minutes, obj.seconds);
+    return std::string(c);
+}
+
+std::string 
+toString( const orca::Date & obj )
+{
+    char c[64];
+    sprintf(c,"%04d/%02d/%02d", obj.year, obj.month, obj.day);
+    return std::string(c);
+}
 
 std::string 
 toString( const orca::BinarySwitchDataPtr & obj )
@@ -263,35 +568,6 @@ toString( const orca::GpsTimeDataPtr & obj )
     s << toString(obj->timeStamp) 
       << " UTC: " << toString(obj->utcDate) << " " << toString(obj->utcTime);
     return s.str();
-}
-
-std::string 
-toString( const orca::Time & obj )
-{
-    std::ostringstream s;
-    s << toIceTime( obj ).toString();
-    // old style. should we provide both somehow?
-//     s << "Time (s,us) : ("
-//             << obj.seconds << ","
-//             << obj.useconds << ")";
-
-    return s.str();
-}
-
-std::string 
-toString( const orca::TimeOfDay & obj )
-{
-    char c[64];
-    sprintf(c,"%02d:%02d:%06.3f", obj.hours, obj.minutes, obj.seconds);
-    return std::string(c);
-}
-
-std::string 
-toString( const orca::Date & obj )
-{
-    char c[64];
-    sprintf(c,"%04d/%02d/%02d", obj.year, obj.month, obj.day);
-    return std::string(c);
 }
 
 std::string 
@@ -604,23 +880,6 @@ toString( const orca::PolarFeature2dDataPtr & obj )
     }
     s << endl;
     
-    return s.str();
-}
-
-std::string 
-toString( const orca::Frame2d & obj )
-{
-    std::ostringstream s;
-    s << "[" << obj.p.x << "m," << obj.p.y << "m," << obj.o*180.0/M_PI << "deg]";
-    return s.str();
-}
-
-std::string 
-toString( const orca::Frame3d & obj )
-{
-    std::ostringstream s;
-    s << "[" <<obj.p.x<<"m," <<obj.p.y<<"m," <<obj.p.z<<"m, " 
-      << obj.o.r*180.0/M_PI<<"," <<obj.o.p*180.0/M_PI<<"," <<obj.o.y*180.0/M_PI << "deg]";
     return s.str();
 }
 

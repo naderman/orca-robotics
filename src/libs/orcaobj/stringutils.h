@@ -35,6 +35,19 @@
 
 namespace orcaice
 {
+
+/*!
+ *  @name String Utilities
+ */
+//@{
+
+//! Parses the string into a sequence of strings for a given separator.
+Ice::StringSeq toStringSeq( const std::string & s, const char delim=':' );
+//! Combines the sequence of strings into a single string using a given separator.
+std::string toString( const Ice::StringSeq & seq, const char delim=':' );
+
+//@}
+
 /*!
  *  @name Stringify OCM Structures
  */
@@ -79,6 +92,63 @@ orca::FQTopicName toStatusTopic( const orca::FQComponentName & fqCName );
  *  @name Stringify Data Objects
  */
 //@{
+
+//! Converts to string
+//! @see toCartesianPoint()
+std::string toString( const orca::CartesianPoint & );
+//! Parses result of the correspondinng toString().
+//! Returns: 0 = parsing successful, non-zero = parsing failed.
+int toCartesianPoint( const std::string &, orca::CartesianPoint & );
+
+//! Converts to string
+//! @see toCartesianPoint2d()
+std::string toString( const orca::CartesianPoint2d & );
+//! Parses result of the correspondinng toString().
+//! Returns: 0 = parsing successful, non-zero = parsing failed.
+int toCartesianPoint2d( const std::string &, orca::CartesianPoint2d & );
+
+//! Converts to string
+//! @see toFrame2d()
+std::string toString( const orca::Frame2d & );
+//! Parses result of the correspondinng toString().
+//! Returns: 0 = parsing successful, non-zero = parsing failed.
+int toFrame2d( const std::string &, orca::Frame2d & );
+
+//! Converts to string
+//! @see toFrame3d()
+std::string toString( const orca::Frame3d & );
+//! Parses result of the correspondinng toString().
+//! Returns: 0 = parsing successful, non-zero = parsing failed.
+int toFrame3d( const std::string &, orca::Frame3d & );
+
+//! Converts to string
+//! @see toSize2d()
+std::string toString( const orca::Size2d & );
+//! Parses result of the correspondinng toString().
+//! Returns: 0 = parsing successful, non-zero = parsing failed.
+int toSize2d( const std::string &, orca::Size2d & );
+
+//! Converts to string
+//! @see toSize3d()
+std::string toString( const orca::Size3d & );
+//! Parses result of the correspondinng toString().
+//! Returns: 0 = parsing successful, non-zero = parsing failed.
+int toSize3d( const std::string &, orca::Size3d & );
+
+//! For durations less than 24hrs returns string HH:MM:SS.sss.
+//! Otherwise, DD:HH:MM:SS.sss
+std::string toStringDuration( const orca::Time & );
+//! Parses result of the correspondinng toString().
+//! Returns: 0 = parsing successful, non-zero = parsing failed.
+int toTimeDuration( const std::string &, orca::Time & );
+
+//! Returns string in human readable format:
+//! MM/DD/YY HH:MM:SS.sss.
+std::string toString( const orca::Time & );
+//! Returns string in format HH:MM:SS.sss.
+std::string toString( const orca::TimeOfDay & );
+//! Returns string in format YYYY/MM/DD.
+std::string toString( const orca::Date & );
 
 //! Converts to string
 std::string toString( const orca::BinarySwitchDataPtr & );
@@ -132,20 +202,8 @@ std::string toString( const orca::Localise2dDataPtr & );
 std::string toString( const orca::PowerDataPtr & );
 //! Converts to string
 std::string toString( const orca::StatusDataPtr & );
-//! Returns string in human readable format MM/DD/YY HH:MM:SS.sss.
-//! See also toLogString version which simply outputs "sec usec" which may be 
-//! more convenient for ASCII logging.
-std::string toString( const orca::Time & );
-//! Returns string in format HH:MM:SS.sss.
-std::string toString( const orca::TimeOfDay & );
-//! Returns string in format YYYY/MM/DD.
-std::string toString( const orca::Date & );
 //! Converts to string
 std::string toString( const orca::Velocity2dCommandPtr & );
-//! Converts to string
-std::string toString( const orca::Frame2d & );
-//! Converts to string
-std::string toString( const orca::Frame3d & );
 //! Converts to string
 std::string toString( const orca::OgMapDataPtr & );
 //! Converts to string
@@ -164,10 +222,6 @@ std::string toString( const orca::Waypoint2d & );
 //! Displays the contents of the map on to the console
 //! (large maps can be displyed with a small font size)
 std::string toVerboseString( const orca::OgMapDataPtr & );
-//! Prints out all the ranges
-// std::string toVerboseString( const orca::RangeScanner2dDataPtr & obj ) { return toString(obj,0); };
-//! Prints out all the laser ranges and intensities
-// std::string toVerboseString( const orca::LaserScanner2dDataPtr & obj ) { return toString(obj,0); };
 //! Prints out each waypoint
 std::string toVerboseString( const orca::PathFollower2dDataPtr & );
 //! Prints out the path and result code
@@ -178,6 +232,11 @@ std::string toVerboseString( const orca::PathPlanner2dTaskPtr & );
 std::string toVerboseString( const orca::ImuDataPtr & );
 //! Prints out position3d data
 std::string toVerboseString( const orca::Position3dDataPtr & );
+
+// Prints out all the ranges
+// std::string toVerboseString( const orca::RangeScanner2dDataPtr & obj ) { return toString(obj,0); };
+// Prints out all the laser ranges and intensities
+// std::string toVerboseString( const orca::LaserScanner2dDataPtr & obj ) { return toString(obj,0); };
 
 //}
 

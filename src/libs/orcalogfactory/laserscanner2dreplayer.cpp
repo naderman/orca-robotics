@@ -120,10 +120,6 @@ LaserScanner2dReplayer::replayData( int index, bool isTest )
     {
         loadDataIce( index );
     }
-    else
-    {
-        throw orcalog::FormatNotSupportedException( ERROR_INFO, "Unknown format: "+format_ );
-    }
 
     // push to buffer for direct remote access
     dataPipe_.push( data_ );
@@ -131,15 +127,8 @@ LaserScanner2dReplayer::replayData( int index, bool isTest )
     if ( !isTest ) 
     {
         // push to IceStorm
+        // catch exceptions and reconnect.
         publisher_->setData( data_ );
-        
-        // Let the user know that something's happening
-        if ( ! (dataCounter_ % 50 ) )
-        {
-            ostringstream ss;
-            ss << filename_ << ": sent object " << dataCounter_;
-            context_.tracer()->info( ss.str() );
-        } 
     }
 }
 

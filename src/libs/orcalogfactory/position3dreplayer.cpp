@@ -120,14 +120,6 @@ Position3dReplayer::replayData( int index, bool isTest )
     {
         // push to IceStorm
         publisher_->setData( data_ );
-        
-        // Let the user know that something's happening
-        if ( ! (dataCounter_ % 50 ) )
-        {
-            ostringstream ss;
-            ss << filename_ << ": sent object " << dataCounter_;
-            context_.tracer()->info( ss.str() );
-        } 
     }
 }
 

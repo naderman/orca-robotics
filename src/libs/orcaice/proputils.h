@@ -124,11 +124,6 @@ orca::Size3d getPropertyAsSize3dWithDefault( const Ice::PropertiesPtr &, const :
 //! Returns the default value if key is not found or cannot be converted to a CartesianPoint.
 orca::CartesianPoint getPropertyAsCartesianPointWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::CartesianPoint &defaultValue );
 
-//! Parses the string into a sequence of strings for a given separator.
-Ice::StringSeq toStringSeq( const std::string & s, const char delim=':' );
-//! Combines the sequence of strings into a single string using a given separator.
-std::string toString( const Ice::StringSeq & seq, const char delim=':' );
-
 //! Returns standardized text which warns that a configuration property is not set.
 std::string warnMissingProperty( const std::string & prop );
 //! Returns standardized text which warns that a configuration property is not set.

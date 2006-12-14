@@ -46,7 +46,7 @@ toOrcaTime( const IceUtil::Time & icetime )
 }
 
 orca::Time 
-toOrcaTime( const double sec )
+toOrcaTime( double sec )
 {
     orca::Time orcatime;
     //! @todo are these casts ok?

@@ -120,13 +120,5 @@ PowerReplayer::replayData( int index, bool isTest )
     {
         // push to IceStorm
         publisher_->setData( data_ );
-        
-        // Let the user know that something's happening
-        if ( ! (dataCounter_ % 50 ) )
-        {
-            ostringstream stream;
-            stream << filename_ << ": sent object " << dataCounter_;
-            context_.tracer()->print( stream.str() );
-        }
     }
 }

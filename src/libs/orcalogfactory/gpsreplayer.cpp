@@ -260,14 +260,6 @@ GpsReplayer::replayData( int index, bool isTest )
         {
             gpsMapGridConsumerPrx_->setData( gpsMapGridDataPtr_ );
         }
-        
-        // Let the user know that something's happening
-        if ( ! (dataCounter_ % 50 ) )
-        {
-            ostringstream ss;
-            ss << filename_ << ": sent object " << dataCounter_;
-            context_.tracer()->info( ss.str() );
-        } 
     }
 }
 

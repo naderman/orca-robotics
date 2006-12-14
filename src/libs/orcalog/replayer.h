@@ -28,12 +28,21 @@ public:
               const orcaice::Context &context );
     virtual ~Replayer();
 
-    //! Opens data file and calls virtual functions initInterfaces and
-    //! initConfigs. The first one must be implemented in derived classes the
+    //! Opens data file and calls virtual functions initInterfaces() and
+    //! initConfigs(). The first one must be implemented in derived classes the
     //! second one is optional.
     void init();
 
+    //! Reads the specified data object from the log and sends it out.
     virtual void replayData( int index, bool isTest=false ) = 0;
+
+//     void 
+
+    //! Returns interface type.
+    std::string interfaceType() const { return interfaceType_; };
+
+    //! Returns interface name.
+    std::string interfaceName() const { return interfaceName_; };
 
 protected:
     //! Summary of component and communicator information

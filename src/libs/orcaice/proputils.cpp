@@ -12,6 +12,7 @@
 #include <stdlib.h>             // for getenv()
 
 #include <orcaobj/mathdefs.h>           // for DEG2RAD_RATIO
+#include <orcaobj/stringutils.h>
 
 #include "proputils.h"
 #include "configutils.h"        // ??? for initTracerPrint(), etc.
@@ -294,14 +295,7 @@ getPropertyAsFrame2d( const Ice::PropertiesPtr & prop, const ::std::string& key,
     }
     else
     {
-        std::istringstream iss( stringVal );
-        iss >> value.p.x;
-        if ( !iss ) return -1;
-        iss >> value.p.y;
-        if ( !iss ) return -1;
-        iss >> value.o;
-        value.o *= DEG2RAD_RATIO;
-        if ( !iss ) return -1;
+        return toFrame2d( stringVal, value );
     }
     return 0;
 }
@@ -330,22 +324,7 @@ getPropertyAsFrame3d( const Ice::PropertiesPtr & prop, const ::std::string& key,
     }
     else
     {
-        std::istringstream iss( stringVal );
-        iss >> value.p.x;
-        if ( !iss ) return -1;
-        iss >> value.p.y;
-        if ( !iss ) return -1;
-        iss >> value.p.z;
-        if ( !iss ) return -1;
-        iss >> value.o.r;
-        value.o.r *= DEG2RAD_RATIO;
-        if ( !iss ) return -1;
-        iss >> value.o.p;
-        value.o.p *= DEG2RAD_RATIO;
-        if ( !iss ) return -1;
-        iss >> value.o.y;
-        value.o.y *= DEG2RAD_RATIO;
-        if ( !iss ) return -1;
+        return toFrame3d( stringVal, value );
     }
     return 0;
 }
@@ -374,13 +353,7 @@ getPropertyAsSize3d( const Ice::PropertiesPtr & prop, const ::std::string& key, 
     }
     else
     {
-        std::istringstream iss( stringVal );
-        iss >> value.l;
-        if ( !iss ) return -1;
-        iss >> value.w;
-        if ( !iss ) return -1;
-        iss >> value.h;
-        if ( !iss ) return -1;
+        return toSize3d( stringVal, value );
     }
     return 0;
 }
@@ -410,13 +383,7 @@ getPropertyAsCartesianPoint( const Ice::PropertiesPtr & prop, const ::std::strin
     }
     else
     {
-        std::istringstream iss( stringVal );
-        iss >> value.x;
-        if ( !iss ) return -1;
-        iss >> value.y;
-        if ( !iss ) return -1;
-        iss >> value.z;
-        if ( !iss ) return -1;
+        return toCartesianPoint( stringVal, value );
     }
     return 0;
 }
@@ -433,59 +400,6 @@ getPropertyAsCartesianPointWithDefault( const Ice::PropertiesPtr & prop, const :
     {
         return value;
     }
-}
-
-Ice::StringSeq
-toStringSeq( const std::string & s, const char delim )
-{
-    std::string::size_type beg;
-    std::string::size_type end = 0;
-    const std::string whitespace = " \t\n\r";
-
-    Ice::StringSeq seq;
-    while( end < s.length() )
-    {
-        // skip leading white space
-        beg = s.find_first_not_of(whitespace, end);
-        if(beg == std::string::npos) {
-            break;
-        }
-
-        // find the delimeter
-        end = s.find( delim, beg );
-        if(end == std::string::npos) {
-            end = s.length();
-        }
-
-        // empty string in the sequence, i.e. "something: :else"
-        if(end == beg) {
-            ++end;
-            continue;
-        }
-
-        seq.push_back( s.substr(beg, end - beg) );
-        ++end;
-    }
-
-    return seq;
-}
-
-std::string
-toString( const Ice::StringSeq & seq, const char delim )
-{
-    std::string s;
-
-    // check for empty sequence
-    if ( seq.empty() ) {
-        return s;
-    }
-
-    s = seq[0];
-    // append the rest of the sequence with delimeters
-    for ( unsigned int i=1; i<seq.size(); ++i ) {
-        s += delim + seq[i];
-    }
-    return s;
 }
 
 std::string 

@@ -13,9 +13,9 @@ ENDIF ( OPENCV_FOUND )
 
 ADD_TEST( LogReplayTest logreplaytest )
 GENERATE_CONFIG_FILE( logreplaytest.def logreplaytest 0 )
-MESSAGE ( STATUS "Planning to Build Test     : LogReplayTest [libOrcaLogFactory]")
+MESSAGE ( STATUS "Planning to Build Test      : LogReplayTest [libOrcaLogFactory]")
 
 ADD_EXECUTABLE( defaultfactoryinstantiate defaultfactoryinstantiate.cpp )
 TARGET_LINK_LIBRARIES( defaultfactoryinstantiate OrcaLog OrcaLogFactory )
 ADD_TEST( DefaultFactoryInstantiate defaultfactoryinstantiate )
-MESSAGE ( STATUS "Planning to Build Test     : DefaultFactoryInstantiate [libOrcaLogFactory]")
+MESSAGE ( STATUS "Planning to Build Test      : DefaultFactoryInstantiate [libOrcaLogFactory]")

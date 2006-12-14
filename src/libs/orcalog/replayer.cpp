@@ -127,4 +127,12 @@ Replayer::checkIndex( int index )
         ss << "Attempt to read the log backwards: last="<<dataCounter_<<" this="<<index;
         throw orcalog::Exception( ERROR_INFO, ss.str() );
     }
+
+    // Let the user know that something's happening
+    if ( ! (dataCounter_ % 50 ) )
+    {
+        ostringstream ss;
+        ss << interfaceType_ << "Replayer: replayed " << dataCounter_ << " data objects.";
+        context_.tracer()->info( ss.str() );
+    } 
 }

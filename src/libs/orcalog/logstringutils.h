@@ -64,7 +64,6 @@ std::string toLogString( const orca::PowerDataPtr & );
 void fromLogString( std::stringstream & stream, orca::PowerDataPtr & );
 
 //! Returns string in simple format "sec usec" 
-//! See also toString version which is more human readable.
 std::string toLogString( const orca::Time & );
 //! Parses a line of ASCII log. Throws orcalog::ParseException on error.
 void fromLogString( std::stringstream & stream, orca::Time & );

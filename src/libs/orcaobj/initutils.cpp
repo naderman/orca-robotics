@@ -51,6 +51,13 @@ setInit( orca::Frame3d & obj )
 }
 
 void
+setInit( orca::Size2d & obj )
+{
+    obj.l = 0.0;
+    obj.w = 0.0;
+}
+
+void
 setInit( orca::Size3d & obj )
 {
     obj.l = 0.0;
@@ -80,9 +87,7 @@ setInit( const orca::Position2dDataPtr & obj )
     setInit( t );
     obj->timeStamp = t;
 
-    obj->pose.p.x = 0.0;
-    obj->pose.p.y = 0.0;
-    obj->pose.o = 0.0;
+    setInit( obj->pose );
     obj->motion.v.x = 0.0;
     obj->motion.v.y = 0.0;
     obj->motion.w = 0.0;
@@ -127,15 +132,62 @@ setSane( orca::Date & obj )
 }
 
 void 
+setSane( orca::CartesianPoint2d & obj )
+{
+    obj.x = double(RINT%100000)/1000.0;
+    obj.y = double(RINT%100000)/1000.0;
+}
+
+void 
+setSane( orca::CartesianPoint & obj )
+{
+    obj.x = double(RINT%100000)/1000.0;
+    obj.y = double(RINT%100000)/1000.0;
+    obj.z = double(RINT%100000)/1000.0;
+}
+
+void 
+setSane( orca::Frame2d & obj )
+{
+    obj.p.x = double(RINT%100000)/1000.0;
+    obj.p.y = double(RINT%100000)/1000.0;
+    obj.o   = double(RINT%100000)/1000.0;
+}
+
+void 
+setSane( orca::Frame3d & obj )
+{
+    obj.p.x = double(RINT%100000)/1000.0;
+    obj.p.y = double(RINT%100000)/1000.0;
+    obj.p.z = double(RINT%100000)/1000.0;
+    obj.o.r = double(RINT%100000)/1000.0;
+    obj.o.p = double(RINT%100000)/1000.0;
+    obj.o.y = double(RINT%100000)/1000.0;
+}
+
+void 
+setSane( orca::Size2d & obj )
+{
+    obj.l = double(RINT%100000)/1000.0;
+    obj.w = double(RINT%100000)/1000.0;
+}
+
+void 
+setSane( orca::Size3d & obj )
+{
+    obj.l = double(RINT%100000)/1000.0;
+    obj.w = double(RINT%100000)/1000.0;
+    obj.h = double(RINT%100000)/1000.0;
+}
+
+void 
 setSane( const orca::Position2dDataPtr & obj )
 {
     orca::Time t;
     setSane( t );
     obj->timeStamp = t;
 
-    obj->pose.p.x = double(RINT%100000)/1000.0;
-    obj->pose.p.y = double(RINT%100000)/1000.0;
-    obj->pose.o = double(RINT%100000)/1000.0;
+    setSane( obj->pose );
     obj->motion.v.x = double(RINT%100000)/1000.0;
     obj->motion.v.y = double(RINT%100000)/1000.0;
     obj->motion.w = double(RINT%100000)/1000.0;
@@ -149,12 +201,7 @@ setSane( const orca::Position3dDataPtr & obj )
     setSane( t );
     obj->timeStamp = t;
 
-    obj->pose.p.x = double(RINT%100000)/1000.0;
-    obj->pose.p.y = double(RINT%100000)/1000.0;
-    obj->pose.p.z = double(RINT%100000)/1000.0;
-    obj->pose.o.p = double(RINT%100000)/1000.0;
-    obj->pose.o.r = double(RINT%100000)/1000.0;
-    obj->pose.o.y = double(RINT%100000)/1000.0;
+    setSane( obj->pose );
     obj->motion.v.x = double(RINT%100000)/1000.0;
     obj->motion.v.y = double(RINT%100000)/1000.0;
     obj->motion.v.z = double(RINT%100000)/1000.0;
@@ -279,9 +326,7 @@ setSane( const orca::OgMapDataPtr & obj, int width, int height )
 
     obj->numCellsX = width;
     obj->numCellsY = height;
-    obj->origin.p.x = 0;
-    obj->origin.p.y = 0;
-    obj->origin.o   = 0;
+    setSane( obj->origin );
     obj->metresPerCellX = 1.0;
     obj->metresPerCellY = 1.0;
     obj->data.resize( 640*480, char(88) );

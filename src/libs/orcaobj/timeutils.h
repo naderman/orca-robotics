@@ -30,7 +30,7 @@ IceUtil::Time toIceTime( const orca::Time & t );
 orca::Time toOrcaTime( const IceUtil::Time & t );
 
 //! Converts from number of seconds to orca::Time.
-orca::Time toOrcaTime( const double seconds );
+orca::Time toOrcaTime( double seconds );
 //! Converts an orca::Time to a double in seconds
 double timeAsDouble( const orca::Time &t );
 

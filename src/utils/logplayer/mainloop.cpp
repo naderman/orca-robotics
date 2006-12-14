@@ -46,11 +46,15 @@ MainLoop::run()
     Ice::PropertiesPtr props = context_.properties();
     string prefix = context_.tag() + ".Config.";
 
-//     double beginTime      = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"BeginTime", 0.0 );
-//     double endTime        = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"EndTime", -1.0 );
+    double beginTime  = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"BeginTime", 0.0 );
+    if ( beginTime<0.0 ) {
+        context_.tracer()->warning( "Reset negative BeginTime to 0.0" );
+        beginTime = 0.0;
+    }
+    double endTime    = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"EndTime",  -1.0 );
     double replayRate = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"ReplayRate", 1.0 );
-    ReplayClock clock;
-        
+
+    ReplayClock clock;        
     bool waitForUserInput;
     // special case: wait for human input for every object
     if ( replayRate == 0.0 ) {
@@ -80,28 +84,55 @@ MainLoop::run()
     }
 
 //     bool endlessLoop = orcaice::getPropertyAsIntWithDefault( props, prefix+"EndlessLoop", 1 );
-    // this loop is for endless replay
-//     while( isActive() )
+    // this loop is for loop replay
+//     int loopCount = 0;
+//     while( loopCount<loopNumber )
 //     {
 
         int seconds = 0;
         int useconds = 0;
         int id = 0;
         int index = 0;
-        
-        // Read the first line
+
+        // Read the first data line
         if ( master_->getData( seconds, useconds, id, index ) ) {
-            context_.tracer()->error( "Failed to read the first line of master file" );
+            context_.tracer()->error( "Failed to read the 1st line of master file" );
             exit(1);
         }
     
+        // fast forward to the desired start time
+        // have to do it after we read the first line because begin time
+        // is specified since the start of the log
+        int beginSec  = (int)floor( beginTime );
+        int beginUsec = (int)floor( (beginTime-beginSec)*1e6 );
+//         IceUtil::Time beginTime
+//             = IceUtil::Time::seconds(beginSec) + IceUtil::Time::microSeconds(beginUsec);
+        if ( beginSec>0 || beginUsec>0 ) {
+            if ( master_->seekData( seconds, useconds, id, index, beginSec, beginUsec ) ) {
+                context_.tracer()->error( "Failed to fast forward to BeginTime" );
+                exit(1);
+            }
+
+            ostringstream ss;
+            ss<<"Fast-forwarded to "<<seconds<<"s, "<<useconds<<"us";
+            context_.tracer()->info( ss.str() );
+        }
+
         if ( id > (int)replayers_.size() ) {
             ostringstream ss;
-            ss << "Reference to subfile number " << id << ", when only " << replayers_.size() << " exist.";
+            ss << "Reference to subfile number " << id << ", but only " << replayers_.size() << " exist.";
             context_.tracer()->error( ss.str() );
             exit(1);
         }
-        replayers_[id]->replayData( index );
+
+        try {
+            replayers_[id]->replayData( index );
+        }
+        catch ( const std::exception & e) {
+            ostringstream ss;
+            ss<<"Caught from replayer of type "<<replayers_[id]->interfaceType()<<": "<<e.what();;
+            context_.tracer()->warning( ss.str() );
+        }
     
         // Read the start time: this is the offset for the rest of the playback
         clock.setReplayStartTime( IceUtil::Time::now() );
@@ -120,6 +151,12 @@ MainLoop::run()
                 // end of file
                 break;
             }   
+            
+            // check end time (negative end time means play to the end)
+            if ( !(endTime<0.0) && ((double)seconds+(double)useconds/1e6)>=endTime ) {
+                // reached specified end time
+                break;
+            }
 
             if ( id > (int)replayers_.size() ) {
                 ostringstream ss;
@@ -153,22 +190,15 @@ MainLoop::run()
             //
             // Now send it out
             //
-            try
-            {
+            try {
                 replayers_[id]->replayData( index );
 //                 cout<<"TRACE(mainloop.cpp): hit return..." << endl;
 //                 getchar();
-            }
-            catch ( const std::exception & e)
-            {
-                cout<<"caught from replayer: "<<e.what()<<endl;
-            }
-
-            // debug
-            if ( !(index++ % 50) ) {
-                ostringstream stream;
-                stream << "Sent object " << index << endl;
-                context_.tracer()->debug( stream.str(),3 );
+            } 
+            catch ( const std::exception & e) {
+                ostringstream ss;
+                ss<<"Caught from replayer of type "<<replayers_[id]->interfaceType()<<": "<<e.what();;
+                context_.tracer()->warning( ss.str() );
             }
     
         } // end of main loop

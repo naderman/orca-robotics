@@ -30,9 +30,21 @@ public:
     void getLogs( std::vector<std::string> & filenames,
                     std::vector<std::string> & interfaceTypes,
                     std::vector<std::string> & formats );
+    
+    //! Rewind to the start of the data log. Calling getData() afterwards will
+    //! return the first data point.
+    void seekStart();
 
-    //! Rewind to the beginning of data log.
-    void rewindToStart();
+    //! Steps through the data entries until the time stamp is equal to or is after
+    //! the one specified. For example, data is logged every second and the last replayed
+    //! time was t=3. Calling seekData(...,5,0) or seekData(...,5,1) will return 
+    //! the data at time t=5.
+    //! 
+    //! Seeking time earlier than the current time will move one step forward and return. 
+    //! For example, calling seekData(..,,2,0) at t=3 will return the data at time t=4.
+    //!
+    //! Seeking time after the end of the log will result in fast forwarding to the end.
+    int seekData( int & seconds, int & useconds, int & id, int & index, int seekSec, int secUsec=0 );
 
     //! Read one line of data log. Returns 0 if data read sucessfully. Returns 
     //! 1 if end of file is reached.
@@ -47,7 +59,7 @@ private:
 
     orcaice::Context context_;
 
-    IceUtil::Mutex mutex_;
+//     IceUtil::Mutex mutex_;
 };
 
 }

@@ -37,10 +37,12 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - added basename() and dirname() similar to Unix equivalents (Alex M.)
     - added ctest for string utilities (Alex M.)
     - added pathDelimeter() function to sysutils (Alex M.)
-- LogPlayer component
-    - interface name is set properly on replay (Alex M.)
-    - interfaces are initialized before waiting for user input to start replay (Alex M.)
-    - execution dir of logplayer and the dir where logs are stored may be different (Alex M.)
+- LogPlayer component (Alex M.)
+    - interface name is set properly on replay
+    - interfaces are initialized before waiting for user input to start repla
+    - execution dir of logplayer and the dir where logs are stored may be different
+    - custom begin and end time of replay are working again
+    - it's possible to step through data objects one at a time by  settiing ReplayRate=0
 - libOrcaQGui
   - renamed from libOrcaGui
   - Made the generic bits in libOrcaQGui unaware of any specific bits in libOrcaQGui2d (Alex B.)

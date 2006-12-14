@@ -61,15 +61,15 @@ To distinguish between the different encoding types, the master file header cont
     - Default: 'master.log'
 
 - @c LogPlayer.Config.BeginTime (double) [s]
-    - Start playing the log starting at time BeginTime from the start of the log.
-    - Valid values: >=0.0
-    - Default: 0 (i.e. starts at the start)
+    - Replay data starting from BeginTime (seconds) from the start of the log.
+    - Valid values: 0.0\<=BeginTime\<LogDuration. If BeginTime is greater than the duration of the log, no data is played.
+    - Default: 0.0 (i.e. plays from the begining)
     
 - @c LogPlayer.Config.EndTime  (double) [s]
-    - Stop playing the log after EndTime is reached (measured from the start of the log).
+    - Replay data up to EndTime (seconds) from the start of the log.
     - Valid values:
-        - >0 and EndTime>BeginTime: plays to time EndTime from the start of the log. If EndTime is greater than the duration of the log, the log is simply played to the end.
-        - <0 : play to the end of the log.
+        - >0.0 and EndTime>BeginTime. If BeginTime>EndTime, no data is played. If EndTime is greater than the duration of the log, the log is simply played to the end.
+        - <0.0 : play to the end of the log.
     - Default: -1 (i.e. plays to the end)
 
 - @c LogPlayer.Config.ReplayRate (double)
