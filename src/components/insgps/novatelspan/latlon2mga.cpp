@@ -314,7 +314,11 @@ void MGA2LatLon(const double& Northing, const double& Easting, const int& Zone, 
 	t2 = inv_24*x3*EtKr*(-4.0*psip2 + 9.0*psip*(1.0 - tp2) + 12.0*tp2);
 	t3 = inv_720*x5*EtKr*(8.0*psip4*(11.0 - 24.0*tp2) - 12.0*psip3*(21.0 - 71.0*tp2) + 15.0*psip2*(15.0 - 98.0*tp2 + 15.0*tp4) + 180.0*psip*(5.0*tp2 - 3.0*tp4) + 360.0*tp4);
 	t4 = inv_40320*x7*EtKr*(1385.0 + 3633.0*tp2 + 4095.0*tp4 + 1575.0*tp6);
-	lat = phip - t1 + t2 - t3 + t4;
+    // The following line use to be:	
+    // lat = phip - t1 + t2 - t3 + t4;
+    // which didn't make sense as lat was assigned two different values twice. Changed it so
+    // that compiler warnings were removed but hasn't been tested         
+    Lat = phip - t1 + t2 - t3 + t4;
 	lat = Lat*R2D;
 
 	// Longitude
@@ -323,7 +327,11 @@ void MGA2LatLon(const double& Northing, const double& Easting, const int& Zone, 
 	t2 = inv_6*x3*Secphip*(psip + 2.0*tp2);
 	t3 = inv_120*x5*Secphip*(psip3*(-4.0 + 24.0*tp2) + psip2*(9.0 - 68.0*tp2) + 72.0*psip*tp2 + 24.0*tp4);
 	t4 = inv_5040*x7*Secphip*(61.0 + 662.0*tp2 + 1320.0*tp4 + 720.0*tp6);
-	lon = LonCM + t1 - t2 + t3 - t4;
+    // The following line use to be:    
+    // lon = LonCM + t1 - t2 + t3 - t4;
+    // which didn't make sense as lon was assigned two different values twice. Changed it so
+    // that compiler warnings were removed but hasn't been tested         
+    Lon = LonCM + t1 - t2 + t3 - t4;
 	lon = Lon*R2D;
 }
 
