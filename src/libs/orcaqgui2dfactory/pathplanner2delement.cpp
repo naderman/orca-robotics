@@ -307,7 +307,8 @@ PathPlannerHI::waypointModeSelected()
 void 
 PathPlannerHI::send()
 {
-    ppElement_->sendPath( *pathInput_ );
+    if ( pathInput_ != NULL )
+        ppElement_->sendPath( *pathInput_ );
     cancel();
 }
 void 

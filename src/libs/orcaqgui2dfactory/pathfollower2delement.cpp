@@ -386,7 +386,8 @@ PathFollowerHI::waypointModeSelected()
 void 
 PathFollowerHI::send()
 {
-    pfElement_->sendPath( *pathInput_, activateImmediately_ );
+    if ( pathInput_ != NULL )
+        pfElement_->sendPath( *pathInput_, activateImmediately_ );
     cancel();
 }
 void 

@@ -92,7 +92,6 @@ public:
     {
         pathInput_->savePath( fileName, humanManager );
     }
-        
 
 public slots:
     void savePathAs();
