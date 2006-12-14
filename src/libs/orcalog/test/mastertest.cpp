@@ -49,7 +49,7 @@ void TestComponent::start()
     int id;
     id = logMaster->addLog( "file0", "type0", "format0", "proxy0" );
     id = logMaster->addLog( "file1", "type1", "format1", "proxy1" );
-    int logCount = id+1;
+    unsigned int logCount = id+1;
 
     int s0=24, u0=555, l0=0, d0=0;
     logMaster->addData( s0, u0, l0, d0 );
