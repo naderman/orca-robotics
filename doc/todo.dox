@@ -37,6 +37,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - added basename() and dirname() similar to Unix equivalents (Alex M.)
     - added ctest for string utilities (Alex M.)
     - added pathDelimeter() function to sysutils (Alex M.)
+    - added toString and "reverse" functions for several BROS-I structures. added tests. (Alex M.)
 - LogPlayer component (Alex M.)
     - interface name is set properly on replay
     - interfaces are initialized before waiting for user input to start repla
