@@ -19,14 +19,13 @@ using namespace std;
 
 namespace pathplanner {
     
-SimpleNavDriver::SimpleNavDriver( orca::OgMapDataPtr &ogMapDataPtr,
+SimpleNavDriver::SimpleNavDriver( orcaogmap::OgMap &ogMap,
                                   double robotDiameterMetres,
                                   double traversabilityThreshhold,
                                   bool doPathOptimization )
+    : ogMap_(ogMap)
 {
     cout<<"TRACE(simplenavdriver.cpp): SimpleNavDriver()" << endl;
-    convert( ogMapDataPtr, ogMap_ );
-    
     pathPlanner_ = new orcapathplan::SimpleNavPathPlanner( ogMap_,
                                                            robotDiameterMetres,
                                                            traversabilityThreshhold,

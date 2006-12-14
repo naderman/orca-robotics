@@ -23,7 +23,7 @@ class SimpleNavDriver : public AlgoDriver
 {
 
 public:
-    SimpleNavDriver( orca::OgMapDataPtr &ogMapDataPtr,
+    SimpleNavDriver( orcaogmap::OgMap &ogMap,
                      double robotDiameterMetres,
                      double traversabilityThreshhold,
                      bool doPathOptimization );

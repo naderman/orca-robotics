@@ -19,6 +19,8 @@
 #include "astardriver.h"
 #include "skeletondriver.h"
 
+#include <orcaogmap/orcaogmap.h>
+
 #include "configpathplanner.h"
 #ifdef QT4_FOUND
     #include "skeletongraphicsI.h"
@@ -65,6 +67,29 @@ AlgoHandler::initNetwork()
         // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
         //       but if this happens it's ok if we just quit.
     }
+    
+    // Optional hazard map
+    std::string prefix = context_.tag() + ".Config.";
+    useHazardMap_ = orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"UseHazardMap", 0 );
+    
+    if (useHazardMap_)
+    {
+        while( isActive() )
+        {
+            try
+            {
+                orcaice::connectToInterfaceWithTag<orca::OgMapPrx>( context_, hazardMapPrx_, "HazardMap" );
+                break;
+            }
+            catch ( const orcaice::NetworkException & e )
+            {
+                context_.tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
+                IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+            }
+            // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
+            //       but if this happens it's ok if we just quit.
+        }
+    }
 
     //
     // PROVIDED INTERFACES
@@ -86,17 +111,41 @@ AlgoHandler::initNetwork()
 void
 AlgoHandler::initDriver()
 {
-    // get the map once    
-    orca::OgMapDataPtr ogMapDataPtr;
+    // get the og map once    
+    orca::OgMapDataPtr ogMapSlice;
+    orcaogmap::OgMap ogMap;
     try
     {
-        ogMapDataPtr = ogMapPrx_->getData();
+        ogMapSlice = ogMapPrx_->getData();
     }
     catch ( const orca::DataNotExistException & e )
     {
         std::stringstream ss;
         ss << "algohandler::initDriver: DataNotExistException: "<<e.what;
         context_.tracer()->warning( ss.str() );
+    }
+    // convert into internal representation
+    orcaogmap::convert(ogMapSlice,ogMap);
+    
+    // hazard map is optional
+    if (useHazardMap_)
+    {
+        orca::OgMapDataPtr hazardMapSlice;
+        orcaogmap::OgMap hazardMap;
+        try
+        {
+            hazardMapSlice = hazardMapPrx_->getData();
+        }
+        catch ( const orca::DataNotExistException & e )
+        {
+            std::stringstream ss;
+            ss << "algohandler::initDriver: DataNotExistException: "<<e.what;
+            context_.tracer()->warning( ss.str() );
+        }
+        // convert into internal representation
+        orcaogmap::convert(hazardMapSlice,hazardMap);
+        // overlay the two maps, result is stored in ogMap
+        orcaogmap::overlay(ogMap,hazardMap);
     }
 
 
@@ -114,7 +163,7 @@ AlgoHandler::initDriver()
     context_.tracer()->debug( std::string("loading ")+driverName+" driver",3);
     if ( driverName == "simplenav" )
     {
-        driver_ = new SimpleNavDriver( ogMapDataPtr,
+        driver_ = new SimpleNavDriver( ogMap,
                                        robotDiameterMetres,
                                        traversabilityThreshhold,
                                        doPathOptimization );
@@ -124,7 +173,7 @@ AlgoHandler::initDriver()
         bool useSparseSkeleton = (driverName == "sparseskeletonnav");
         
         try {
-            driver_ = new SkeletonDriver( ogMapDataPtr,
+            driver_ = new SkeletonDriver( ogMap,
                                       robotDiameterMetres,
                                       traversabilityThreshhold,
                                       doPathOptimization,
@@ -150,7 +199,7 @@ AlgoHandler::initDriver()
     }
     else if ( driverName == "astar" )
     {
-        driver_ = new AStarDriver( ogMapDataPtr,
+        driver_ = new AStarDriver( ogMap,
                                    robotDiameterMetres,
                                    traversabilityThreshhold,
                                    doPathOptimization  );

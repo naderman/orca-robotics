@@ -19,13 +19,13 @@ using namespace std;
 
 namespace pathplanner {
 
-AStarDriver::AStarDriver( orca::OgMapDataPtr &ogMapDataPtr,
+AStarDriver::AStarDriver( orcaogmap::OgMap &ogMap,
                           double robotDiameterMetres,
                           double traversabilityThreshhold,
                           bool doPathOptimization )
+    : ogMap_(ogMap)
 {
     cout<<"TRACE(astardriver.cpp): AStarDriver()" << endl;
-    convert( ogMapDataPtr, ogMap_ );
 
     pathPlanner_ = new orcapathplan::AStarPathPlanner( ogMap_,
                                                        robotDiameterMetres,

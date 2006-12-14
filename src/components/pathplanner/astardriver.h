@@ -24,7 +24,7 @@ class AStarDriver : public AlgoDriver
 {
 
 public:
-    AStarDriver( orca::OgMapDataPtr &ogMapDataPtr,
+    AStarDriver( orcaogmap::OgMap &ogMap,
                  double robotDiameterMetres,
                  double traversabilityThreshhold,
                  bool doPathOptimization );

@@ -34,7 +34,7 @@ class SkeletonDriver : public AlgoDriver
 
 public: 
 
-    SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
+    SkeletonDriver( orcaogmap::OgMap &ogMap,
                     double robotDiameterMetres,
                     double traversabilityThreshhold,
                     bool   doPathOptimization,
@@ -49,8 +49,8 @@ public:
 
 private: 
 
-    SkeletonGraphicsI             *skelGraphicsI_;
     orcaogmap::OgMap               ogMap_;
+    SkeletonGraphicsI             *skelGraphicsI_;
     orcapathplan::IPathPlanner2d  *pathPlanner_;
     
     double robotDiameterMetres_;

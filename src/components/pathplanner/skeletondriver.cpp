@@ -26,12 +26,13 @@ using namespace orcaice;
 
 namespace pathplanner {
     
-SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
+SkeletonDriver::SkeletonDriver( orcaogmap::OgMap &ogMap,
                                 double robotDiameterMetres,
                                 double traversabilityThreshhold,
                                 bool   doPathOptimization,
                                 bool   useSparseSkeleton )
-    : skelGraphicsI_(NULL),
+    : ogMap_(ogMap),
+      skelGraphicsI_(NULL),
       robotDiameterMetres_(robotDiameterMetres),
       traversabilityThreshhold_(traversabilityThreshhold),
       doPathOptimization_(doPathOptimization),
@@ -39,7 +40,6 @@ SkeletonDriver::SkeletonDriver( orca::OgMapDataPtr &ogMapDataPtr,
       
 {
     cout<<"TRACE(skeletondriver.cpp): SkeletonDriver()" << endl;
-    convert( ogMapDataPtr, ogMap_ );
 
     orcamisc::CpuStopwatch watch(true);
     if ( !useSparseSkeleton )
