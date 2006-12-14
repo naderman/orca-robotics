@@ -13,10 +13,12 @@
 #include <vector>
 #include <orcaogmap/orcaogmap.h>
 #include "cell2d.h"
+#include "typemap.h"
 
 namespace orcapathplan
 {
-
+    typedef TypeMap<float> FloatMap;
+    
     enum Result 
     { 
         PathOk, 
@@ -25,69 +27,18 @@ namespace orcapathplan
         PathDestinationUnreachable,
         OtherError
     };
+
+// ================= CHECKING FUNCTIONS ================================
     
-    //! A 2-dimensional gridmap of floats
-    class FloatMap
-    {
-
-    public:
-        FloatMap( unsigned int szx=0, unsigned int sz=0 );
-        ~FloatMap();
-
-        //! Returns the number of cells along the x-axis 
-        unsigned int sizeX() const { return sizeX_; };
-
-        //! Returns the number of cells along the y-axis
-        unsigned int sizeY() const { return sizeY_; };
-
-        //! Change the size of the map
-        void resize( unsigned int szx, unsigned int szy );
-
-        //! Fill the map with a value
-        void fill( float val );
+    //! Checks whether all values are nans
+    bool areAllNans( const FloatMap &floatMap );
     
-        //! Check whether a cell is within the grid
-        bool isInGrid( int x, int y ) const;
-
-        //! Convenience function, see above
-        bool isInGrid( Cell2D & cell ) const { return isInGrid( cell.x(), cell.y() ); };
-      
-        //! Gets the value of cell with index x,y. Will return NaN if cell is outside the map
-        float element( int x, int y ) const;
-        //! Gets the value of cell with indexes x,y, will return FALSE if outside map, otherwise TRUE
-        bool tryElement( int x, int y, float & val ) const;
-
-        //! Gets the value of cell c. Will return NaN if cell is outside the map
-        float element( Cell2D c ) const { return element( c.x(), c.y() ); };
-        //! Gets the value of cell c, will return FALSE if outside map, otherwise TRUE
-        bool tryElement( Cell2D c, float & val ) const { return tryElement(c.x(),c.y(),val); };
-        
-        //! Sets the value of a cell, size limits are checked
-        void setElement( int x, int y, float val );
-
-        //! Sets the value of a cell, size limits are checked
-        void setElement( Cell2D c, float val ) { setElement(c.x(),c.y(),val); };
-
-        //! Check whether all values are nans
-        bool areAllNans() const;
-        
-            
-    private:
-        unsigned int sizeX_;
-        unsigned int sizeY_;
-        std::vector< std::vector< float > > data_;
-    };
-
-
-// =================== NON-MEMBER FUNCTIONS =============================
-
     //! Does Line-Of-Sight exist between the two cells?
     bool losExists( const orcaogmap::OgMap &ogMap,
                     double traversabilityThreshhold,
                     const Cell2D &c1,
                     const Cell2D &c2 );
-
-// ================= CHECKING FUNCTIONS ================================
+    
     //! Returns TRUE if c is in C otherwise false
     bool isIncluded( const Cell2DVector & C, const Cell2D & c );
     //! Returns TRUE if c is in C otherwise false

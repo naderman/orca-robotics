@@ -22,81 +22,24 @@ using namespace orcaogmap;
 
 namespace orcapathplan {
 
-FloatMap::FloatMap( unsigned int szx, unsigned int szy )
-    : sizeX_( 0 ), sizeY_( 0 )
-{
-    resize( szx, szy );
-}
-
-FloatMap::~FloatMap()
-{
-}
-
-bool FloatMap::isInGrid( int x, int y ) const
-{
-    return (x >= 0 && x < (int)sizeX_ && y >= 0 && y < (int)sizeY_ );
-}
-
-float FloatMap::element( int x, int y ) const 
-{
-    return ( x >= (int)sizeX_ || y >= (int)sizeY_ || x < 0 || y < 0 ) ? NAN : data_[x][y]; 
-}
 
 
-void FloatMap::resize( unsigned int szx, unsigned int szy )
+// ================ NON-MEMBER FUNCTIONS =============================
+
+bool areAllNans( const FloatMap &floatMap )
 {
-    data_.resize(szx);
-            
-    for ( std::vector< std::vector< float > >::iterator it=data_.begin(); it!=data_.end(); it++ )
+    for (unsigned int x=0; x<floatMap.sizeX(); x++ )
     {
-        it->resize(szy);
-    }
-            
-    sizeX_ = szx;
-    sizeY_ = szy;
-}
-
-void FloatMap::fill(float val)
-{
-    for( std::vector< std::vector<float> >::iterator it=data_.begin(); it!=data_.end(); it++ )
-    {
-        std::fill( it->begin(), it->end(), val );
-    }
-}
-
-bool FloatMap::tryElement( int x, int y, float & val ) const
-{ 
-    //will return -1.0 if outside the grid
-    if (!isInGrid( x, y )) return false;
-    val = element( x,y );
-    return true;
-}
-
-
-void FloatMap::setElement( int x, int y, float val )
-{ 
-    //will not set any value if outside the grid
-    if( x >= (int)sizeX_ || y >= (int)sizeY_ || x < 0 || y < 0 ) return;
-    data_[x][y] = val;
-}
-
-bool FloatMap::areAllNans() const
-{
-    for (unsigned int x=0; x<sizeX_; x++ )
-    {
-        for (unsigned int y=0; y<sizeY_; y++ )
+        for (unsigned int y=0; y<floatMap.sizeY(); y++ )
         {
             // if we find a single element that is not nan we return false
-            if ( !isnan(element(x,y)) ) return false;
+            if ( !isnan(floatMap.element(x,y)) ) return false;
         }
     }
     // if we get here all elements are nan
     return true;
 }
-
-
-// ================ NON-MEMBER FUNCTIONS =============================
-
+    
 int sub2ind( const int          &indX,
              const int          &indY,
              const unsigned int &sizeX,
@@ -996,7 +939,7 @@ Result calcPath( const OgMap    &ogMap,
 {
     
     // Make sure that navigation map is not empty and values are not all nans
-    assert( navMap.sizeX()!=0 && navMap.sizeY()!=0 && !navMap.areAllNans() );
+    assert( navMap.sizeX()!=0 && navMap.sizeY()!=0 && !areAllNans(navMap) );
     
     int robotDiameterCells = robotDiameterInCells( ogMap, robotDiameterMetres );
 
