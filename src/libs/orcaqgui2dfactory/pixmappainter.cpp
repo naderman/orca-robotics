@@ -56,9 +56,9 @@ PixmapPainter::setData( PixmapData &pixmapData )
     {
         for ( int y=0; y<data_.mapSizePix.height(); ++y )
         {
-            cR = 255-(int)data_.rgbR[y*data_.mapSizePix.width() + x];
-            cG = 255-(int)data_.rgbG[y*data_.mapSizePix.width() + x];
-            cB = 255-(int)data_.rgbB[y*data_.mapSizePix.width() + x];
+            cR = data_.rgbR[y*data_.mapSizePix.width() + x];
+            cG = data_.rgbG[y*data_.mapSizePix.width() + x];
+            cB = data_.rgbB[y*data_.mapSizePix.width() + x];
             p.setPen( QColor( cR, cG, cB ) );
             p.drawPoint( x, y );
         }

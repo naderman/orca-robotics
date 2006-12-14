@@ -24,6 +24,9 @@ OgMapsCombinedElement::OgMapsCombinedElement( const orcaice::Context  &context,
     : context_(context),
       isConnected_(false)
 {
+    
+    assert(proxyStrList.size()==2 && "Only 2 OgMaps supported at this point");
+    
     cout << "TRACE(ogmapscombinedelement.cpp): Constructor" << endl;
     for (int i=0; i<proxyStrList.size(); i++)
     {
