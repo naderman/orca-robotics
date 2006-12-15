@@ -27,7 +27,6 @@ MainLoop::MainLoop( const orcaice::Context & context )
 
 MainLoop::~MainLoop()
 {
-    delete incomingPathI_;
 }
 
 void
@@ -114,7 +113,7 @@ MainLoop::initNetwork()
             ( context_, pathPublisher_, "PathFollower2d" );
     
     incomingPathI_ = new PathFollower2dI( incomingPathBuffer_,
-                                          //activationPipe_,
+                                          localise2dExceptionBuffer_,
                                           topicPrx );
     
     Ice::ObjectPtr pathFollowerObj = incomingPathI_;
@@ -150,14 +149,16 @@ MainLoop::run()
                 int ret = incomingPathBuffer_.getNext( incomingPath, 1000 );
                 if (ret==0) break;
             }
-            // tell the world about it
-            pathPublisher_->setData( incomingPath );
+//             // tell the world about it
+//             pathPublisher_->setData( incomingPath );
             
             // wait for a valid localisation
             cout << "TRACE(mainloop.cpp): Waiting for single hypothesis localisation" << endl;
             while( isActive() )
             {
                 int ret = localiseDataBuffer_.getNext( localiseData, 1000 );
+                // store in special buffer, so PathFollower2dI can access it for throwing exceptions
+                localise2dExceptionBuffer_.set( localiseData );
                 if (ret==0)
                 {
                     if ( localiseData->hypotheses.size() == 1 ) break;
@@ -165,6 +166,9 @@ MainLoop::run()
                     cout << "WARNING(mainloop.cpp): more than one localisation hypotheses. Can't handle this. Waiting for single hypothesis..." << endl;
                 }
             }
+            
+            // tell the world about the incoming path
+            pathPublisher_->setData( incomingPath );
                 
             // we're guaranteed to have only 1 hypothesis
             wp.target = localiseData->hypotheses[0].mean;

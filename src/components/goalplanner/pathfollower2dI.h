@@ -28,7 +28,7 @@ class PathFollower2dI : public orca::PathFollower2d
 {
 public:
     PathFollower2dI( orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe,
-                     //orcaice::Proxy<orca::Time>                     &activationPipe,
+                     orcaice::PtrProxy<orca::Localise2dDataPtr> &localiseDataBuffer,
                      const IceStorm::TopicPrx & topicPrx );
 
     // remote calls:
@@ -58,9 +58,10 @@ private:
 
     // New paths from the outside world go in here
     orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe_;
+    
+    // Localise data buffer required to throw an exception if we're not localized and someone gives us a path from the outside
+    orcaice::PtrProxy<orca::Localise2dDataPtr> &localiseDataBuffer_;
 
-    // Time of Activation from the outside world goes in here
-    //orcaice::Proxy<orca::Time>                     &activationPipe_;
 
     const IceStorm::TopicPrx topicPrx_;
 };

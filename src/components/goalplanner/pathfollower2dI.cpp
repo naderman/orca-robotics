@@ -19,10 +19,10 @@ using namespace orcaice;
 namespace goalplanner {
 
 PathFollower2dI::PathFollower2dI( orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe,
-                                  //orcaice::Proxy<orca::Time>                     &activationPipe,
+                                  orcaice::PtrProxy<orca::Localise2dDataPtr> &localiseDataBuffer,
                                   const IceStorm::TopicPrx & topicPrx )
     : pathPipe_(pathPipe),
-     // activationPipe_(activationPipe),
+      localiseDataBuffer_(localiseDataBuffer),
       topicPrx_(topicPrx)
 {
     assert ( topicPrx_ != 0 );
@@ -55,22 +55,32 @@ PathFollower2dI::setData( const ::orca::PathFollower2dDataPtr &data, bool activa
         throw orca::MalformedParametersException( insanityReason );
     }
 
+    // give the data to the buffer
     pathPipe_.set( data );
-    if ( activateImmediately )
-        activateNow();
+    
+    // Check whether we are localized
+    Localise2dDataPtr localiseData = new Localise2dData;
+    int ret = localiseDataBuffer_.getNext( localiseData, 1000 );
+    cout << "localiseDataBuffer returns " << ret << endl;
+    if (ret==0)
+    {
+        if ( localiseData->hypotheses.size() != 1 )
+        {
+            throw orca::BusyException( "Currently more than one localization hypothesis. Will wait for a single hypothesis to execute your path");
+        }
+    }
 }
 
 void
 PathFollower2dI::activateNow( const ::Ice::Current& )
 {
     cout << "TRACE(pathfollower2dI.cpp): Received activateNow signal. Will have no effect here." << endl;
-    cout<<"TRACE(pathfollower2dI.cpp): AlexB: Why not??" << endl;
-    //activationPipe_.set( orcaice::getNow() );
 }
 
 int
 PathFollower2dI::getWaypointIndex( const ::Ice::Current& ) const
 {
+    cout<<"TRACE(pathfollower2dI.cpp): TODO: implement me." << endl;
     return -1;
 }
 
@@ -82,6 +92,7 @@ PathFollower2dI::setEnabled( bool enabled, const ::Ice::Current& )
 bool 
 PathFollower2dI::enabled(const ::Ice::Current&) const
 {
+    cout<<"TRACE(pathfollower2dI.cpp): TODO: implement me." << endl;
     return true;
 }
 

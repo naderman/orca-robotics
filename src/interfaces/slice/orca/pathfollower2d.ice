@@ -111,7 +111,7 @@ interface PathFollower2d
     //! The follower can therefore be stopped by calling setData(dummyPath,false).
     //!
     idempotent void setData( PathFollower2dData path, bool activateImmediately )
-        throws MalformedParametersException;
+        throws MalformedParametersException, BusyException;
 
     //! Start following the previously-loaded path.
     idempotent void activateNow();

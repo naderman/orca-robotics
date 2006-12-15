@@ -21,6 +21,6 @@ Localise2dConsumerI::Localise2dConsumerI(orcaice::PtrProxy<orca::Localise2dDataP
 void
 Localise2dConsumerI::setData(const orca::Localise2dDataPtr& data, const Ice::Current&)
 {
-//     cout << "TRACE(localise2dconsumerI.cpp): Just received new localise2d data" << endl;
+    //cout << "TRACE(localise2dconsumerI.cpp): Just received new localise2d data" << endl;
     localise2dDataBuffer_.set(data);
 }

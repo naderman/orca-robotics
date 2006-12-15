@@ -277,10 +277,16 @@ PathFollower2dElement::sendPath( const PathFollowerInput &pathInput, bool activa
         QString filename = dumpPath_ + "/pathdump" + QString(buffer) + ".txt";
         pathHI_.savePath( filename, humanManager_ );
     }
+    catch ( const orca::BusyException &e )
+    {
+        stringstream ss;
+        ss << e.what;
+        humanManager_->showBoxMsg( Error, ss.str().c_str() );
+    }
     catch ( const Ice::Exception &e )
     {
         stringstream ss;
-        ss << "While trying to set a pathfollowing data: " << endl << e;
+        ss << "While trying to set pathfollowing data: " << endl << e;
         humanManager_->showStatusMsg( Error, ss.str().c_str() );
     }
 }

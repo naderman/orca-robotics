@@ -62,9 +62,10 @@ private:
     orca::PathFollower2dConsumerPrx pathPublisher_;
     
     orcaice::PtrProxy<orca::PathFollower2dDataPtr> incomingPathBuffer_;
-
-    // Used by the PathFollowerI to inform of activation commands
-    //orcaice::Proxy<orca::Time>                     activationPipe_;
+    
+    // This buffer is used to communicate between the mainloop and PathFollower2dI
+    // PathFollower2dI needs to throw exception based on localisation data
+    orcaice::PtrProxy<orca::Localise2dDataPtr> localise2dExceptionBuffer_;
     // ===========================================================================
     
     void initNetwork();
