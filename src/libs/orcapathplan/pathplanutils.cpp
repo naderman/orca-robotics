@@ -33,11 +33,30 @@ bool areAllNans( const FloatMap &floatMap )
         for (unsigned int y=0; y<floatMap.sizeY(); y++ )
         {
             // if we find a single element that is not nan we return false
-            if ( !isnan(floatMap.element(x,y)) ) return false;
+            if ( !isnan(element(floatMap,x,y)) ) return false;
         }
     }
     // if we get here all elements are nan
     return true;
+}
+
+float element( const FloatMap &floatMap, int x, int y )
+{ 
+    float val;
+    bool isValidElement = floatMap.tryElement(x,y,val);
+    if (isValidElement)
+    {
+        return val;
+    }
+    else
+    {
+        return NAN;
+    }
+}
+
+float element( const FloatMap &floatMap,  Cell2D c )
+{ 
+    return element( floatMap, c.x(), c.y() );
 }
     
 int sub2ind( const int          &indX,
@@ -106,7 +125,7 @@ std::string toText( FloatMap &map )
         ss<<"     | ";
         for( x=0; x<szX; x+=step)
         {
-            ss<<displayMapCell( map.element(x,y) );
+            ss<<displayMapCell( element(map,x,y) );
         }
         ss<<"|"<<endl;
     }
@@ -130,14 +149,14 @@ Cell2D min8Cells( const FloatMap & floatMap, const Cell2D & c )
     Cell2D q;
 
     Cell2D cmin = c;
-    double cval = floatMap.element( c );
+    double cval = element(floatMap,  c );
 
     for ( int k=0; k<8; k++ )
     {
         q = surroundCell(c,k);
         if( floatMap.isInGrid( q ) )
         {
-            qval = floatMap.element( q );
+            qval = element(floatMap,  q );
             if( qval < cval && !isnan(qval) )
             {
                 cmin = q;
@@ -156,13 +175,13 @@ Cell2D max4Cells( const FloatMap & floatMap, const Cell2D & c )
     
     //start with one cell
     cmax = adjacentCell(c,0);
-    cval = floatMap.element( cmax );
+    cval = element(floatMap,  cmax );
     
     // and check the rest
     for ( int i=1; i<4; i++ )
     {
         q = adjacentCell(c,i);
-        qval = floatMap.element( q );
+        qval = element(floatMap,  q );
         
         if( qval > cval )
         {
@@ -181,13 +200,13 @@ Cell2D max8Cells( const FloatMap & floatMap, const Cell2D & c )
     
     //start with one cell
     Cell2D cmax = surroundCell(c,0);
-    float cval = floatMap.element( cmax );
+    float cval = element(floatMap,  cmax );
 
     // and check the rest
     for ( int i=1; i<8; i++ )
     {
         q = surroundCell(c,i);
-        qval = floatMap.element( q );
+        qval = element(floatMap,  q );
         if( qval > cval )
         {
             cmax = q;
@@ -394,18 +413,18 @@ calcSimpleNavigation( const OgMap & ogMap, FloatMap & navMap, Cell2D & startCell
                 q1 = adjacentCell(q,k);
                 if( !containsNan(navMap,q1) ) // i.e. is traversable and not too close to obstacle
                 {
-                    if( navMap.element( q1 ) > navMap.element( q ) + AC ) //+ OCCUP_PENALTY*mq2
+                    if( element(navMap, q1 ) > element(navMap, q ) + AC ) //+ OCCUP_PENALTY*mq2
                     {
-                        navMap.setElement( q1, navMap.element( q ) + AC ); //+ OCCUP_PENALTY*mq2
+                        navMap.setElement( q1, element(navMap, q ) + AC ); //+ OCCUP_PENALTY*mq2
                         Lnext.push_back( q1 );
                     }
                     // check diagonal
                     q1 = diagonalCell(q,k);
                     if( prev && !containsNan(navMap,q1) )  // other cells are traversable, diagonal is reachable
                     {
-                        if( navMap.element( q1 ) > navMap.element( q ) + DC )  //+ OCCUP_PENALTY*mq2
+                        if( element(navMap, q1 ) > element(navMap, q ) + DC )  //+ OCCUP_PENALTY*mq2
                         {
-                            navMap.setElement( q1, navMap.element( q ) + DC ); //+ OCCUP_PENALTY*mq2
+                            navMap.setElement( q1, element(navMap, q ) + DC ); //+ OCCUP_PENALTY*mq2
                             if( !isIncluded(Lnext,q1) )
                             {
                                 Lnext.push_back( q1 );
@@ -418,10 +437,10 @@ calcSimpleNavigation( const OgMap & ogMap, FloatMap & navMap, Cell2D & startCell
                         q1 = diagonalCell(q,0);
                         if( first && !containsNan(navMap,q1) )  // other cells are traversable, diagonal is reachable
                         {
-                            if( navMap.element( q1 ) > navMap.element( q ) + DC )  //+ OCCUP_PENALTY*mq2
+                            if( element(navMap, q1 ) > element(navMap, q ) + DC )  //+ OCCUP_PENALTY*mq2
                             {
                                 //update cell
-                                navMap.setElement( q1, navMap.element( q ) + DC ); //+ OCCUP_PENALTY*mq2
+                                navMap.setElement( q1, element(navMap, q ) + DC ); //+ OCCUP_PENALTY*mq2
                                 if( !isIncluded(Lnext,q1) )
                                 {
                                     Lnext.push_back( q1 );
@@ -637,7 +656,7 @@ bool computeSkeleton( const orcaogmap::OgMap &ogMap,
     Cell2DVector Lcurr, Lnext;
     Cell2D q, q1, c, c1;
     
-    FloatMap zeroMap;
+    IntMap zeroMap;
     zeroMap.resize( sx, sy );    
     // AlexB: added this just to be sure uninitialised elements aren't touched...
     zeroMap.fill( -1 );
@@ -701,23 +720,27 @@ bool computeSkeleton( const orcaogmap::OgMap &ogMap,
                 // if q1 is traversable ...
                 if ( !containsNan( navMap, q1 ) )
                 {
-                    if ( distGrid.element( q1 )==M ) // i.e. traversable and untouched
+                    int val;
+                    if ( element(distGrid, q1 )==M ) // i.e. traversable and untouched
                     {
-                        distGrid.setElement( q1, distGrid.element( q ) + AC );
-                        zeroMap.setElement( q1, zeroMap.element( q ) );
+                        distGrid.setElement( q1, element(distGrid, q ) + AC );
+                        zeroMap.tryElement( q, val);
+                        zeroMap.setElement( q1, val );
                         Lnext.push_back( q1 );
                     }
                     else
                     { 
                         // two waves meet
                         // Set c and c1 to the cells of the wave-originating border points.
-                        c  = ind2sub( (int)zeroMap.element( q  ), sx, sy );
-                        c1 = ind2sub( (int)zeroMap.element( q1 ), sx, sy );
+                        zeroMap.tryElement( q, val  );
+                        c  = ind2sub( val, sx, sy );
+                        zeroMap.tryElement( q1, val  );
+                        c1 = ind2sub( val, sx, sy );
                         // if distance between the two originating points is greater than ALPHA
                         if ( euclideanDistance( c, c1 ) > ALPHA )
                         {
                             // AlexB: How does this check work?
-                            if ( distGrid.element( q ) <= distGrid.element( q1 ) 
+                            if ( element(distGrid, q ) <= element(distGrid, q1 ) 
                                  && !isIncluded( skel, q ) && !isIncluded( skel, q1 ) )
                             {
                                 skel.push_back( q1 );
@@ -849,7 +872,7 @@ computePotentialSkeleton( const OgMap & ogMap, FloatMap & navMap, const Cell2DVe
         q = Q.front(); //always pull off lowest utility valued cell i.e. cell that is closest to start
         Q.pop_front();
         
-        qval = navMap.element(q);
+        qval = element(navMap,q);
 
         // for every m-neighbors q' of q in S (this is m-dim space, so 2nd neighbors)
         for ( unsigned int k=0; k<8; k++ )
@@ -860,7 +883,7 @@ computePotentialSkeleton( const OgMap & ogMap, FloatMap & navMap, const Cell2DVe
             if ( !isIncluded( skel, q1 ) ) continue; 
 
             // if the potential equals to the large number we need to update it
-            if ( navMap.element( q1 ) > M-1.0 ) // not sure if we can safely say ==M because of precision?
+            if ( element(navMap, q1 ) > M-1.0 ) // not sure if we can safely say ==M because of precision?
             {
                 if ( k<4 ) {
                     q1val = qval + AC;  // adjacent cells (0-3)
@@ -875,7 +898,7 @@ computePotentialSkeleton( const OgMap & ogMap, FloatMap & navMap, const Cell2DVe
                 Q.reverse();
                 for ( Cell2DList::iterator it=Q.begin(); it!=Q.end(); it++ )
                 {
-                    if ( q1val <= navMap.element( *it ) ) 
+                    if ( q1val <= element(navMap, *it ) ) 
                     {
                         Q.insert( it, q1 ); //insert it just in front of *it
                         hasInserted = true;
@@ -918,9 +941,9 @@ void computePotentialFreeSpace( const OgMap & ogMap, FloatMap & navMap, const Ce
                 q1 = adjacentCell(q,k);
                 if ( isTraversable( ogMap, q1, traversabilityThreshhold ) )
                 {
-                    if ( navMap.element( q1 ) == M  )
+                    if ( element(navMap, q1 ) == M  )
                     {
-                        navMap.setElement( q1, navMap.element( q ) +AC  );
+                        navMap.setElement( q1, element(navMap, q ) +AC  );
                         Lnext.push_back( q1 );
                     }
                 }
@@ -964,7 +987,7 @@ Result calcPath( const OgMap    &ogMap,
     const int MAX_PATH_LENGTH = 5*navMap.sizeX();
 
     // termination conditions: zero distance or max path length
-    while ( navMap.element( cnext ) > 0.0 )
+    while ( element(navMap, cnext ) > 0.0 )
     {
         cprev = cnext;
         cnext = min8Cells( navMap, cnext );
@@ -972,7 +995,7 @@ Result calcPath( const OgMap    &ogMap,
 //         //Debugging only
 //         float worldX, worldY;
 //         ogMap.getWorldCoords(cnext.x(),cnext.y(),worldX,worldY);
-//         cout << cnext << ": (" << worldX << ", " << worldY <<"):" << navMap.element( cnext ) << endl;
+//         cout << cnext << ": (" << worldX << ", " << worldY <<"):" << element(navMap, cnext ) << endl;
         
         if ( cnext == cprev )
         {

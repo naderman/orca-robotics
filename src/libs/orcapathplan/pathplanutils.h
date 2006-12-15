@@ -18,6 +18,7 @@
 namespace orcapathplan
 {
     typedef TypeMap<float> FloatMap;
+    typedef TypeMap<int> IntMap;
     
     enum Result 
     { 
@@ -28,8 +29,15 @@ namespace orcapathplan
         OtherError
     };
 
-// ================= CHECKING FUNCTIONS ================================
+// =========== ELEMENT ACCESS (without specializing templated TypeMap) =========
     
+    //! Gets the value of cell with index x,y. Will return NaN if cell is outside the map
+    float element( const FloatMap &floatMap, int x, int y );      
+    
+    //! Convenience function, see above
+    float element( const FloatMap &floatMap,  Cell2D c );
+    
+// ================= CHECKING FUNCTIONS ================================
     //! Checks whether all values are nans
     bool areAllNans( const FloatMap &floatMap );
     
@@ -61,7 +69,7 @@ namespace orcapathplan
     //! Checks whether the cell contains a nan value (returns TRUE if yes, otherwise FALSE). 
     //! If cell is outside map, FALSE is returned.
     inline bool containsNan( const FloatMap & navMap, const int x, const int y) 
-    { return ( isnan(navMap.element( x, y )) ); };
+    { return ( isnan(element(navMap, x, y )) ); };
     //! Convenience function, see above
     inline bool containsNan( const FloatMap & navMap, const Cell2D & c ) 
     { return containsNan(navMap,c.x(),c.y()); };

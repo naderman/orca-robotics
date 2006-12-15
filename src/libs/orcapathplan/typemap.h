@@ -42,14 +42,10 @@ namespace orcapathplan
 
         //! Convenience function, see above
         bool isInGrid( Cell2D & cell ) const { return isInGrid( cell.x(), cell.y() ); };
-      
-        //! Gets the value of cell with index x,y. Will return NaN if cell is outside the map
-        Type element( int x, int y ) const { return ( x >= (int)sizeX_ || y >= (int)sizeY_ || x < 0 || y < 0 ) ? NAN : data_[x][y]; };
+        
         //! Gets the value of cell with indexes x,y, will return FALSE if outside map, otherwise TRUE
         bool tryElement( int x, int y, Type & val ) const;
 
-        //! Gets the value of cell c. Will return NaN if cell is outside the map
-        float element( Cell2D c ) const { return element( c.x(), c.y() ); };
         //! Gets the value of cell c, will return FALSE if outside map, otherwise TRUE
         bool tryElement( Cell2D c, Type & val ) const { return tryElement(c.x(),c.y(),val); };
         
@@ -64,6 +60,7 @@ namespace orcapathplan
         unsigned int sizeX_;
         unsigned int sizeY_;
         std::vector< std::vector< Type > > data_;
+        
     };
     
     template<typename Type>
@@ -106,7 +103,7 @@ namespace orcapathplan
     { 
         //will return -1.0 if outside the grid
         if (!isInGrid( x, y )) return false;
-        val = element( x,y );
+        val = data_[x][y];
         return true;
     }
     
@@ -119,6 +116,8 @@ namespace orcapathplan
         if( x >= (int)sizeX_ || y >= (int)sizeY_ || x < 0 || y < 0 ) return;
         data_[x][y] = val;
     }
+    
+    
 
 }
 #endif
