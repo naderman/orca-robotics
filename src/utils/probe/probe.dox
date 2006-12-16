@@ -16,7 +16,9 @@
 @defgroup orca_util_probe Probe
 @brief A tool to browse and probe remote Orca interfaces.
 
-This component receives and displays status messages coming from components deployed on multiple platforms.
+@par Development status
+
+@b Experimental
 
 @par Provides
 
@@ -29,6 +31,7 @@ This component receives and displays status messages coming from components depl
 @par Drivers
 
 - @b iostream @ref orca_probe_iostream
+- @b iostream @ref orca_probe_qt
 
 @par Operation
 
@@ -45,9 +48,16 @@ Supported interfaces:
 @par Configuration
 
 - @c Probe.Config.Driver (string)
-    - Type of hardware driver
-    - Valid values: { 'iostream' }
+    - Type of display driver
+    - Valid values: { 'iostream', 'qt' }
     - Default: 'iostream'
+
+- @c Probe.Config.FactoryLibNames (string)
+    - A space-separated list of libraries containing slave factories.
+    - This list is ordered.  Putting a custom library earlier in the list means that it will be used to 
+      instantiate slaves before later factories.
+    - Example: 'libMyProbeFactory.so libOrcaProbeFactory.so'. If MyProbeFactory implements the LaserScanner2d probe it will be used in place of the standard one. 
+    - Default: 'libOrcaProbeFactory.so'
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
@@ -66,6 +76,10 @@ r       Reload
 q       Quit
 ==>  
 @endverbatim
+
+@section orca_probe_qt Basic display driver to terminal window.
+
+A GUI driver which emulates the 'column view' of the MacOS X Finder. This driver is still under development.
 
 @par Authors
 
