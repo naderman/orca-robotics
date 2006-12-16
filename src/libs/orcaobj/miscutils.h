@@ -11,23 +11,12 @@
 #ifndef ORCAOBJ_MISC_UTILITIES_H
 #define ORCAOBJ_MISC_UTILITIES_H
 
-#include <orca/orca.h>
-#include <orca/camera.h>
-#include <orca/gps.h>
-#include <orca/ogmap.h>
-#include <orca/home.h>
-#include <orca/imu.h>
-#include <orca/laserscanner2d.h>
-#include <orca/position2d.h>
-#include <orca/position3d.h>
-#include <orca/localise2d.h>
-#include <orca/platform2d.h>
-#include <orca/power.h>
-#include <orca/status.h>
-#include <orca/polarfeature2d.h>
 #include <orca/featuremap2d.h>
+#include <orca/localise2d.h>
+#include <orca/ogmap.h>
 #include <orca/pathfollower2d.h>
-#include <orca/pathplanner2d.h>
+
+#include <stdio.h>  // for FILE on QNX
 
 namespace orcaice
 {
@@ -53,21 +42,20 @@ orca::Pose2dHypothesis &mlHypothesis( const orca::Localise2dDataPtr &obj );
 //!
 bool isSane( const orca::PathFollower2dDataPtr &pathData, std::string &reason );
 
+//!
+//! Display OG map cell
+//!
 char displayOgmapCell(unsigned char cell);
 
 //! Get a reference to a grid cell (no bounds checking is performed)
 inline unsigned char &gridCell( const orca::OgMapDataPtr &map, int indX, int indY )
 { return map->data[indY*map->numCellsX + indX]; }
 
-//! Throws std::strings on exceptions
+//! Throws std::string on exceptions
 void saveToFile(   const orca::FeatureMap2dDataPtr &fmap, FILE *f );
-//! Throws std::strings on exceptions
+
+//! Throws std::string on exceptions
 void loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap );
-
-////////////////////////////////////////////////////////////
-
-
-
 
 //@}
 

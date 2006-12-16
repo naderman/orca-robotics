@@ -27,7 +27,9 @@
 #define _USE_MATH_DEFINES
 #endif
 
-#include <cmath>
+// for some reason QNX prefers the old version of this file: floor() is not defined in <cmath>
+//#include <cmath>
+#include <math.h>
 
 /*****************************************************************************
  * CONSTANTS

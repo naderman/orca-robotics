@@ -240,7 +240,7 @@ bool isSane( const orca::PathFollower2dDataPtr &pathData, std::string &reason )
 {
     std::stringstream ss;
     bool sane=true;
-    for ( uint i=0; i < pathData->path.size(); i++ )
+    for ( unsigned int i=0; i < pathData->path.size(); i++ )
     {
         const orca::Waypoint2d &wp = pathData->path[i];
 
