@@ -35,7 +35,7 @@ CombinedDriver::CombinedDriver( orcaice::Context context, double maxRange, int n
     bool extractForegroundPoints           =
         orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractForegroundPoints", 0);
     bool extractLines                      =
-        orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractCorners", 0);
+        orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractLines", 0);
     bool extractCorners                    =
         orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractCorners", 0);
     bool extractDoors                      =

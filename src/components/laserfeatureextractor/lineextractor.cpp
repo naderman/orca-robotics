@@ -55,6 +55,8 @@ LineExtractor::LineExtractor( orcaice::Context context, double laserMaxRange, bo
     cout<<"TRACE(lineextractor.cpp):   BreakDistThreshold  : "<<breakDistThreshold_ << endl;
     cout<<"TRACE(lineextractor.cpp):   MinPointsInLine     : "<<minPointsInLine_ << endl;
     cout<<"TRACE(lineextractor.cpp):   MinLineLength       : "<<minLineLength_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   ExtractLines        : "<<extractLines_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   ExtractCorners      : "<<extractCorners_ << endl;
 }
     
 void LineExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
