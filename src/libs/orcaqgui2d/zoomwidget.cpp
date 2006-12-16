@@ -8,7 +8,7 @@
  *
  */
 
-#include <cmath>
+// #include <cmath>
 #include <QResizeEvent>
 
 #include "zoomwidget.h"

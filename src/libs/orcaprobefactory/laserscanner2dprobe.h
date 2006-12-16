@@ -36,9 +36,6 @@ private:
     int loadGetDescription( orcacm::OperationData & data );
     int loadSubscribe( orcacm::OperationData & data );
     int loadUnsubscribe( orcacm::OperationData & data );
-    
-//     orca::RangeScanner2dConsumer consumerPrx_;
-
 };
 
 } // namespace

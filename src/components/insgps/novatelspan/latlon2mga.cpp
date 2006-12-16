@@ -24,10 +24,10 @@ namespace insgps{
 
 // LatLon_2_MGA convert (lat,lon) in degrees to (Northing, Easting) in meters
 void LatLon2MGA(const double& lat, const double& lon, double& Northing, double& Easting, int& Zone, EGeodModel geodmodel) {
-	const double Lon_WE_Z0 = -186.0;								// [°], Longitude of western edge of zone zero
-	const double ZoneWidth = 6.0;									// [°], inverse zone width
-	const double inv_ZoneWidth = 1.0/ZoneWidth;				// [1/°], inverse zone width
-	const double Lon_cM_Z0 = Lon_WE_Z0 + 0.5*ZoneWidth;	// [°], Longitude of the central meridian of zone 0
+	const double Lon_WE_Z0 = -186.0;								// [], Longitude of western edge of zone zero
+	const double ZoneWidth = 6.0;									// [], inverse zone width
+	const double inv_ZoneWidth = 1.0/ZoneWidth;				// [1/], inverse zone width
+	const double Lon_cM_Z0 = Lon_WE_Z0 + 0.5*ZoneWidth;	// [], Longitude of the central meridian of zone 0
 	const double False_Easting = 500000.0;						// [m], False Easting 
 	const double False_Northing = 10000000.0;					// [m], False Northing 
 	const double K0 = 0.9996;							    		// Central Scale Factor
@@ -177,10 +177,10 @@ void LatLon2MGA(const double& lat, const double& lon, double& Northing, double& 
 
 // MGA_2_LatLon convert (Northing, Easting) in meters to (lat,lon) in degrees
 void MGA2LatLon(const double& Northing, const double& Easting, const int& Zone, double& lat, double& lon, EGeodModel geodmodel) {
-	const double Lon_WE_Z0 = -186.0;								// [°], Longitude of western edge of zone zero
-	const double ZoneWidth = 6.0;									// [°], inverse zone width
-//	const double inv_ZoneWidth = 1.0/ZoneWidth;				// [1/°], inverse zone width
-	const double Lon_cM_Z0 = Lon_WE_Z0 + 0.5*ZoneWidth;	// [°], Longitude of the central meridian of zone 0
+	const double Lon_WE_Z0 = -186.0;								// [], Longitude of western edge of zone zero
+	const double ZoneWidth = 6.0;									// [], inverse zone width
+//	const double inv_ZoneWidth = 1.0/ZoneWidth;				// [1/], inverse zone width
+	const double Lon_cM_Z0 = Lon_WE_Z0 + 0.5*ZoneWidth;	// [], Longitude of the central meridian of zone 0
 	const double False_Easting = 500000.0;						// [m], False Easting
 	const double False_Northing = 10000000.0;					// [m], False Northing
 	const double K0 = 0.9996;							    		// Central Scale Factor

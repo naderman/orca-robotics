@@ -59,13 +59,15 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+#include <cmath>
 
 #define SIGN(a, b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
 #define MAX(x,y) ((x)>(y)?(x):(y))
 
 //#include "defs_and_types.h"
  
+using namespace std; // for math functions on QNX
+
 static double PYTHAG(double a, double b)
 {
     double at = fabs(a), bt = fabs(b), ct, result;

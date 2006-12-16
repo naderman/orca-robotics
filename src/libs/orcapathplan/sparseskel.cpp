@@ -24,10 +24,10 @@ void findWps( const FloatMap            &navMapSkel,
     // A wp is anything else.
 
     // This could _definitely_ be optimised...
-    for ( uint i=0; i < skel.size(); i++ )
+    for ( unsigned int i=0; i < skel.size(); i++ )
     {
         std::vector<Cell2D> adjacencies;
-        for ( uint j=0; j < skel.size(); j++ )
+        for ( unsigned int j=0; j < skel.size(); j++ )
         {
             if ( (isAdjacentN( skel[i], skel[j], 1 )) && (skel[i] != skel[j]) )
             {
@@ -79,7 +79,7 @@ SparseSkel::SparseSkel( const orcaogmap::OgMap &ogMap,
 
     // Convert skel from a vector to a list
     Cell2DList skelList;
-    for ( uint i=0; i < skel.size(); i++ )
+    for ( unsigned int i=0; i < skel.size(); i++ )
         skelList.push_back( skel[i] );
 
     build( navMapSkel,
@@ -90,7 +90,7 @@ SparseSkel::SparseSkel( const orcaogmap::OgMap &ogMap,
 
 SparseSkel::~SparseSkel()
 {
-    for ( uint i=0; i < contiguousSkels_.size(); i++ )
+    for ( unsigned int i=0; i < contiguousSkels_.size(); i++ )
     {
         delete contiguousSkels_[i];
     }
@@ -100,7 +100,7 @@ int
 SparseSkel::numNodes() const
 {
     int num = 0;
-    for ( uint i=0; i < contiguousSkels_.size(); i++ )
+    for ( unsigned int i=0; i < contiguousSkels_.size(); i++ )
     {
         num += contiguousSkels_[i]->nodes().size();
     }
@@ -187,7 +187,7 @@ ContiguousSparseSkel::ContiguousSparseSkel( SparseSkel &parent,
     // modify wps, stripping the ones we found.
     //cout<<"TRACE(sparseskel.cpp): original wps was of size " << wps.size() << endl;
     //cout<<"TRACE(sparseskel.cpp): Found " << nodes_.size() << " nodes:" << endl;
-    for ( uint i=0; i < nodes_.size(); i++ )
+    for ( unsigned int i=0; i < nodes_.size(); i++ )
     {
         Cell2D wpCell = nodes_[i]->pos;
         //cout<<"  " << wpCell << endl;
@@ -208,7 +208,7 @@ ContiguousSparseSkel::ContiguousSparseSkel( SparseSkel &parent,
 ContiguousSparseSkel::~ContiguousSparseSkel()
 {
     // cout<<"TRACE(sparseskel.cpp): ~ContiguousSparseSkel()" << endl;
-    for ( uint i=0; i < nodes_.size(); i++ )
+    for ( unsigned int i=0; i < nodes_.size(); i++ )
     {
         delete nodes_[i];
     }
@@ -219,7 +219,7 @@ areLinked( const SparseSkelNode *a, const SparseSkelNode *b )
 {
     bool aLinksb=false;
 
-    for ( uint i=0; i < a->arcs.size(); i++ )
+    for ( unsigned int i=0; i < a->arcs.size(); i++ )
     {
         if ( a->arcs[i]->toNode == b )
             aLinksb = true;
@@ -227,7 +227,7 @@ areLinked( const SparseSkelNode *a, const SparseSkelNode *b )
 #ifndef NDEBUG
     bool bLinksa=false;
 
-    for ( uint i=0; i < b->arcs.size(); i++ )
+    for ( unsigned int i=0; i < b->arcs.size(); i++ )
     {
         if ( b->arcs[i]->toNode == a )
             bLinksa = true;
@@ -245,10 +245,10 @@ ContiguousSparseSkel::canMerge( SparseSkelNode *slave, SparseSkelNode *master )
     // First test if it's ok
 
     // go through all the nodes
-    for ( uint i=0; i < nodes_.size(); i++ )
+    for ( unsigned int i=0; i < nodes_.size(); i++ )
     {
         // go through each node's arcs
-        for ( uint j=0; j < nodes_[i]->arcs.size(); j++ )
+        for ( unsigned int j=0; j < nodes_[i]->arcs.size(); j++ )
         {
             if ( nodes_[i]->arcs[j]->toNode == slave )
             {
@@ -270,13 +270,13 @@ void
 ContiguousSparseSkel::merge( SparseSkelNode *slave, SparseSkelNode *master )
 {
     // go through all the nodes, linking to master if linked to slave
-    for ( uint i=0; i < nodes_.size(); i++ )
+    for ( unsigned int i=0; i < nodes_.size(); i++ )
     {
         SparseSkelNode *considerNode = nodes_[i];
         if ( considerNode == slave || considerNode == master ) continue;
 
         // go through each node's arcs
-        for ( uint j=0; j < considerNode->arcs.size(); j++ )
+        for ( unsigned int j=0; j < considerNode->arcs.size(); j++ )
         {
             // if we currently link to slave,
             if ( considerNode->arcs[j]->toNode == slave )
@@ -297,7 +297,7 @@ ContiguousSparseSkel::merge( SparseSkelNode *slave, SparseSkelNode *master )
     // cout<<"TRACE(sparseskel.cpp): removing links to " << slave->pos << endl;
 
     // go through all the nodes, removing links to slave
-    for ( uint i=0; i < nodes_.size(); i++ )
+    for ( unsigned int i=0; i < nodes_.size(); i++ )
     {
         SparseSkelNode *considerNode = nodes_[i];
         if ( considerNode == slave ) continue;
@@ -321,11 +321,11 @@ ContiguousSparseSkel::merge( SparseSkelNode *slave, SparseSkelNode *master )
 
 #ifndef NDEBUG
     // Double-check.
-    for ( uint i=0; i < nodes_.size(); i++ )
+    for ( unsigned int i=0; i < nodes_.size(); i++ )
     {
         if ( nodes_[i] == slave ) continue;
 
-        for ( uint j=0; j < nodes_[i]->arcs.size(); j++ )
+        for ( unsigned int j=0; j < nodes_[i]->arcs.size(); j++ )
         {
             if ( nodes_[i]->arcs[j]->toNode == slave )
             {
@@ -391,7 +391,7 @@ ContiguousSparseSkel::optimise()
                     assert( false );
                 }
             }
-            for ( uint k=0; k < (*i)->arcs.size(); k++ )
+            for ( unsigned int k=0; k < (*i)->arcs.size(); k++ )
             {
                 if ( (*i)->arcs[k]->cost <= 1.42 )
                 {
@@ -412,7 +412,7 @@ ContiguousSparseSkel::optimise()
 SparseSkelNode*
 ContiguousSparseSkel::findNode( const Cell2D &pos )
 {
-    for ( uint i=0; i < nodes_.size(); i++ )
+    for ( unsigned int i=0; i < nodes_.size(); i++ )
     {
         if ( pos == nodes_[i]->pos )
             return nodes_[i];
@@ -597,10 +597,10 @@ ContiguousSparseSkel::createArc( SparseSkelNode  *fromNode,
         Cell2DVector segment2Cells;
         
         // If there's an odd number, make segment1 larger
-        uint midI = (int)(ceil(cellsEnRoute.size()/2.0));
-        for ( uint i=0; i < midI; i++ )
+        unsigned int midI = (int)(ceil(cellsEnRoute.size()/2.0));
+        for ( unsigned int i=0; i < midI; i++ )
             segment1Cells.push_back( cellsEnRoute[i] );
-        for ( uint i=midI; i < cellsEnRoute.size(); i++ )
+        for ( unsigned int i=midI; i < cellsEnRoute.size(); i++ )
             segment2Cells.push_back( cellsEnRoute[i] );
 
         assert( segment1Cells.size() > 0 );
@@ -652,7 +652,7 @@ ContiguousSparseSkel::createArc( SparseSkelNode  *fromNode,
 SparseSkelNode::~SparseSkelNode()
 {
     // cout<<"TRACE(sparseskel.cpp): ~SparseSkelNode()" << endl;
-    for ( uint i=0; i < arcs.size(); i++ )
+    for ( unsigned int i=0; i < arcs.size(); i++ )
     {
         delete arcs[i];
     }
@@ -667,7 +667,7 @@ ContiguousSparseSkel::isSane() const
 
 #ifndef NDEBUG
     // Loop over nodes
-    for ( uint i=0; i < nodes_.size(); i++ )
+    for ( unsigned int i=0; i < nodes_.size(); i++ )
     {
         // NOT A VALID CHECK: a contiguous dense skel can consist of a single point.
 //         // at least one arc
@@ -678,11 +678,11 @@ ContiguousSparseSkel::isSane() const
 //         }
 
         // Loop over this node's arcs
-        for ( uint j=0; j < nodes_[i]->arcs.size(); j++ )
+        for ( unsigned int j=0; j < nodes_[i]->arcs.size(); j++ )
         {
             // symmetric arcs
             bool arcSymmetric = false;
-            for ( uint k=0; k < nodes_[i]->arcs[j]->toNode->arcs.size(); k++ )
+            for ( unsigned int k=0; k < nodes_[i]->arcs[j]->toNode->arcs.size(); k++ )
             {
                 if ( nodes_[i]->arcs[j]->toNode->arcs[k]->toNode == nodes_[i] )
                     arcSymmetric = true;
@@ -696,7 +696,7 @@ ContiguousSparseSkel::isSane() const
             }
             
             // no repeat arcs
-            for ( uint k=0; k < nodes_[i]->arcs.size(); k++ )
+            for ( unsigned int k=0; k < nodes_[i]->arcs.size(); k++ )
             {
                 if ( j == k ) continue;
                 if ( nodes_[i]->arcs[j]->toNode == nodes_[i]->arcs[k]->toNode )
@@ -718,7 +718,7 @@ ContiguousSparseSkel::isSane() const
         }
 
         // no repeat nodes
-        for ( uint j=i+1; j < nodes_.size(); j++ )
+        for ( unsigned int j=i+1; j < nodes_.size(); j++ )
         {
             if ( nodes_[i]->pos == nodes_[j]->pos )
             {
@@ -806,7 +806,7 @@ void setCosts( const ContiguousSparseSkel   &cSkel,
                const std::vector<SparseSkelNode*> &nodes )
 {
     // initialise
-    for ( uint i=0; i < nodes.size(); i++ )
+    for ( unsigned int i=0; i < nodes.size(); i++ )
         nodes[i]->nodeCost = NAN;
 
     // Unexpanded is kept ordered from low cost to high cost
@@ -825,7 +825,7 @@ void setCosts( const ContiguousSparseSkel   &cSkel,
         //cout<<"TRACE(sparseskel.cpp): popped " << current->nodeCost*M_PER_CELL << endl;
 
         // for each arc leaving current
-        for ( uint i=0; i < current->arcs.size(); i++ )
+        for ( unsigned int i=0; i < current->arcs.size(); i++ )
         {
             SparseSkelNode *toNode = current->arcs[i]->toNode;
             float costToNode = current->nodeCost + current->arcs[i]->cost;
@@ -856,7 +856,7 @@ minCostNode( const SparseSkelNode *node )
 {
     float minCost = node->nodeCost;
     SparseSkelNode *cheapest = NULL;
-    for ( uint i=0; i < node->arcs.size(); i++ )
+    for ( unsigned int i=0; i < node->arcs.size(); i++ )
     {
         SparseSkelNode *possibleNode = node->arcs[i]->toNode;
         //cout<<"TRACE(sparseskel.cpp): minCostNode: possibly " 
@@ -885,7 +885,7 @@ void findShortestPath( const ContiguousSparseSkel        &cSkel,
     //  find start and goal
     int startI = -1;
     int goalI  = -1;
-    for ( uint i=0; i < cSkel.nodes().size(); i++ )
+    for ( unsigned int i=0; i < cSkel.nodes().size(); i++ )
     {
         if ( cSkel.nodes()[i] == start ) startI = i;
         if ( cSkel.nodes()[i] == goal )  goalI  = i;
@@ -900,10 +900,10 @@ void findShortestPath( const ContiguousSparseSkel        &cSkel,
 
     //cout<<"TRACE(sparseskel.cpp): ======= costs =======" << endl;
     //cout<<"TRACE(sparseskel.cpp): goal at: " << toWorldString(goal->pos) << endl;
-    //for ( uint i=0; i < cSkel.nodes().size(); i++ )
+    //for ( unsigned int i=0; i < cSkel.nodes().size(); i++ )
     //{
     //    cout << "  node at " << toWorldString(cSkel.nodes()[i]->pos) << ": " << cSkel.nodes()[i]->nodeCost*M_PER_CELL<<endl;
-    //    for ( uint j=0; j < cSkel.nodes()[i]->arcs.size(); j++ )
+    //    for ( unsigned int j=0; j < cSkel.nodes()[i]->arcs.size(); j++ )
     //    {
     //        cout << "    --> " << toWorldString(cSkel.nodes()[i]->arcs[j]->toNode->pos) << "[" << cSkel.nodes()[i]->arcs[j]->toNode->nodeCost*M_PER_CELL << "]" << endl;
     //    }
@@ -935,7 +935,7 @@ void findShortestPath( const ContiguousSparseSkel        &cSkel,
 
 #ifndef NDEBUG
     // Make sure the path is cool
-    for ( uint i=0; i < path.size()-1; i++ )
+    for ( unsigned int i=0; i < path.size()-1; i++ )
     {
         assert( directLinkExists( cSkel.ogMap(), cSkel.traversabilityThreshhold(), path[i]->pos, path[i+1]->pos ) );
     }

@@ -10,7 +10,7 @@
  */
 
 #include <iostream>
-#include <math.h>
+#include <cmath>
 #include <orca/featuremap2d.h>
 #include <orcaice/orcaice.h>
 

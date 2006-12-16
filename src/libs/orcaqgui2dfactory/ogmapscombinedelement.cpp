@@ -43,7 +43,7 @@ OgMapsCombinedElement::OgMapsCombinedElement( const orcaice::Context  &context,
 
 bool OgMapsCombinedElement::needToUpdate()
 {
-    for (uint i=0; i<listeners_.size(); i++)
+    for (unsigned int i=0; i<listeners_.size(); i++)
     {
         if ( !listeners_[i]->buffer().isEmpty() )
         {
@@ -54,7 +54,7 @@ bool OgMapsCombinedElement::needToUpdate()
 
     if ( !isConnected_ )
     {
-        for (uint i=0; i<listeners_.size(); i++)
+        for (unsigned int i=0; i<listeners_.size(); i++)
         { 
             if ( listeners_[i]->connect() == 0 )
             {
@@ -78,7 +78,7 @@ void OgMapsCombinedElement::update()
     }
 
 //     OgMapDataPtr data;
-//     for (uint i=0; i<listeners_.size(); i++)
+//     for (unsigned int i=0; i<listeners_.size(); i++)
 //     {
 //         // get data from the buffer
 //         listeners_[i]->buffer().getAndPop( data );
@@ -111,7 +111,7 @@ void OgMapsCombinedElement::actionOnConnection()
         painter_.setData( data0, data1 );
         
             
-//         for (uint i=0; i<listeners_.size(); i++)
+//         for (unsigned int i=0; i<listeners_.size(); i++)
 //         {
 //             OgMapPrx prx;
 //             cout<< "TRACE(actionOnConnection.cpp): connect to interface " << listeners_[i]->interfaceName() << endl;

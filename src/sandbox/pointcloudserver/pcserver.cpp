@@ -1,6 +1,6 @@
 #include "pcserver.h"
 #include <orcaice/orcaice.h>
-#include <math.h>
+#include <cmath>
 
 using namespace orca;
 using namespace std; 

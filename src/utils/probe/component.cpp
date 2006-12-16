@@ -45,7 +45,7 @@ Component::Component()
 Component::~Component()
 {
     assert( libraries_.size() == factories_.size() );
-    for ( uint i=0; i < libraries_.size(); i++ ){
+    for ( unsigned int i=0; i < libraries_.size(); i++ ){
 //         cout<<"deleting factory #"<<i<<endl;
         delete factories_[i];
 //         cout<<"deleting library #"<<i<<endl;
@@ -63,7 +63,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
     std::vector<std::string> supportedInterfaces;
     std::vector<std::string> ifaces;
     
-    for ( uint i=0; i < libNames.size(); i++ )
+    for ( unsigned int i=0; i < libNames.size(); i++ )
     {
         stringstream ss;
         ss << "Loading factory library: " << libNames[i];

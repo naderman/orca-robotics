@@ -10,12 +10,14 @@
 #include "orcanavutil.h"
 #include <iostream>
 #include <sstream>
-#include <math.h>
+#include <cmath>
 
 // M_PI is not defined after including cmath for the MS visual studio compiler?
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
+
+using namespace std; // for math functions in QNX
 
 namespace orcanavutil {
 

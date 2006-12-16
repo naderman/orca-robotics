@@ -34,7 +34,7 @@ GuiElementModel::GuiElementModel( const std::vector<orcaqgui::GuiElementFactory*
       view_(0)
 {
     double timeInSec = orcaice::timeAsDouble( orcaice::getNow() );
-    seed_ = (uint)floor(timeInSec);
+    seed_ = (unsigned int)floor(timeInSec);
     
     colorVector_.push_back(Qt::black);  // this one gets assigned to "global", no display
     colorVector_.push_back(Qt::red);
@@ -151,7 +151,7 @@ GuiElementModel::removeRows( int row, int count, const QModelIndex & parent )
 GuiElement *
 GuiElementModel::instantiateFromFactories( const QStringList &ids, const QColor &platformColor, const QStringList &proxyStrList )
 {
-    for ( uint i=0; i < factories_.size(); i++ )
+    for ( unsigned int i=0; i < factories_.size(); i++ )
     {
         // if this interface is not supported, skip this factory
         if ( !factories_[i]->isSupported( ids ) )

@@ -13,16 +13,16 @@
 #define LOCALISER_SECTION_H
 
 #include <vector>
-#include <math.h>
+#include <cmath>
 #include <assert.h>
 
 class SectionEl
 {
 public:  
     SectionEl() {}
-    SectionEl( double r, double b ) { r_ = r; b_ = b; x_ = r*cos(b); y_ = r*sin(b); };
+    SectionEl( double r, double b ) { r_ = r; b_ = b; x_ = r*std::cos(b); y_ = r*std::sin(b); };
 
-    void setXY( double x, double y ) { r_ = hypotf(y,x); b_ = atan2(y,x); x_ = x; y_ = y; };
+    void setXY( double x, double y ) { r_ = hypotf(y,x); b_ = std::atan2(y,x); x_ = x; y_ = y; };
   
     double x() const { return x_; };
     double y() const { return y_; };

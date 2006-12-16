@@ -14,7 +14,7 @@
 #include <orcaqgui2dfactory/waypointdialog.h>
 #include <orcaobj/orcaobj.h>
 #include <iostream>
-#include <math.h>
+#include <cmath>
 #include <assert.h>
 #include <orcaice/orcaice.h>
 #include <orcaqgui/ihumanmanager.h>

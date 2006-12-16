@@ -11,7 +11,7 @@
 #define ORCAOGMAP_OGMAPUTILS_H
 
 #include <assert.h>
-#include <math.h>
+#include <cmath>
 #include <vector>
 #include <string>
 
@@ -147,9 +147,9 @@ namespace orcaogmap {
            
         //! translate a world coord to a map coord
         int worldToIndexX( float worldX ) const
-        { assert(origin_.o==0.0); return (int) floor( (worldX-origin_.p.x)/metresPerCellX_ ); }
+        { assert(origin_.o==0.0); return (int) std::floor( (worldX-origin_.p.x)/metresPerCellX_ ); }
         int worldToIndexY( float worldY ) const
-        { assert(origin_.o==0.0); return (int) floor( (worldY-origin_.p.y)/metresPerCellY_ ); }
+        { assert(origin_.o==0.0); return (int) std::floor( (worldY-origin_.p.y)/metresPerCellY_ ); }
     
         //! Change the size of the map
         void reallocate( int numCellsX, int numCellsY );

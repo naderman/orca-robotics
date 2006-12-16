@@ -170,7 +170,7 @@ MainWindow::loadElementsFromConfigFile( const orcaice::Context & context )
     // elements from the config file
     std::vector<std::string> tags = orcaice::getRequiredTags( context );
     cout << "TRACE(mainwin.cpp): Tags from config file: " << endl;
-    for (uint i=0; i<tags.size(); i++)
+    for (unsigned int i=0; i<tags.size(); i++)
     {
         cout << tags[i] << endl;
     }

@@ -22,6 +22,8 @@
 
 #include "cell2d.h"
 
+using namespace std; // for math functions in QNX
+
 namespace orcapathplan {
 
 

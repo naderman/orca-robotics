@@ -96,9 +96,9 @@ private:
     bool isNewPlatform( QString &platformName );
     QColor generateRandomColor();
     QMap<QString, QColor> colorMap_;
-    uint colorCounter_;
+    unsigned int colorCounter_;
     std::vector<QColor> colorVector_;
-    uint seed_;
+    unsigned int seed_;
     QString platformInFocus_;
     GuiElementView* view_;
 };

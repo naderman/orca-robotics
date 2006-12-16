@@ -59,7 +59,7 @@ CombinedDriver::CombinedDriver( orcaice::Context context, double maxRange, int n
 
 CombinedDriver::~CombinedDriver()
 {
-    for ( uint i=0; i < extractors_.size(); i++ )
+    for ( unsigned int i=0; i < extractors_.size(); i++ )
     {
         delete extractors_[i];
     }
@@ -71,12 +71,12 @@ CombinedDriver::computeFeatures( const orca::LaserScanner2dDataPtr          &las
 {
     featureDataPtr->features.clear();
 
-    for ( uint i=0; i < extractors_.size(); i++ )
+    for ( unsigned int i=0; i < extractors_.size(); i++ )
     {
         extractors_[i]->addFeatures( laserDataPtr, featureDataPtr );
     }
   
-    for ( uint i=0; i < featureDataPtr->features.size(); i++ )
+    for ( unsigned int i=0; i < featureDataPtr->features.size(); i++ )
     {
         assert ( featureDataPtr->features[i]->pTruePositive > featureDataPtr->features[i]->pFalsePositive );
     }

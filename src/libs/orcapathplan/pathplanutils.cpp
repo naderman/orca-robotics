@@ -1028,7 +1028,7 @@ void optimizePath( const OgMap        &ogMap,
     // Check that the original path is OK.
     if ( origPath.size() >= 2 )
     {
-        for ( uint i=1; i < origPath.size(); i++ )
+        for ( unsigned int i=1; i < origPath.size(); i++ )
         {
             Cell2D wp1 = origPath[i-1];
             Cell2D wp2 = origPath[i];
@@ -1038,7 +1038,7 @@ void optimizePath( const OgMap        &ogMap,
                 cout<<"TRACE(pathplanutils.cpp): Couldn't get from wp "<<i-1<<" to "<<i<< endl;
                 cout<<"TRACE(pathplanutils.cpp):   " << wp1 << " --> " << wp2 << endl;
                 cout<<"TRACE(pathplanutils.cpp): entire origPath: " << endl;
-                for ( uint j=0; j < origPath.size(); j++ )
+                for ( unsigned int j=0; j < origPath.size(); j++ )
                 {
                     cout << "  " << j << ": " << origPath[j] << endl;
                 }
@@ -1075,7 +1075,7 @@ void optimizePath( const OgMap        &ogMap,
                 cout<<"TRACE(pathplanutils.cpp): middle: " << middle << endl;
                 cout<<"TRACE(pathplanutils.cpp): post:   " << post << endl;
                 cout<<"TRACE(pathplanutils.cpp): origPath: " << endl;
-                for ( uint j=0; j < origPath.size(); j++ )
+                for ( unsigned int j=0; j < origPath.size(); j++ )
                     cout << "  " << j << ": " << origPath[j] << endl;
                 assert( false );
             }
@@ -1102,7 +1102,7 @@ void optimizePath( const OgMap        &ogMap,
 #ifndef NDEBUG
     // Just double-check that the path is OK.
     if ( optimisedPath.size() < 2 ) return;
-    for ( uint i=1; i < optimisedPath.size(); i++ )
+    for ( unsigned int i=1; i < optimisedPath.size(); i++ )
     {
         Cell2D wp1 = optimisedPath[i-1];
         Cell2D wp2 = optimisedPath[i];
@@ -1112,12 +1112,12 @@ void optimizePath( const OgMap        &ogMap,
             cout<<"TRACE(pathplanutils.cpp): Couldn't get from wp "<<i-1<<" to "<<i<< endl;
             cout<<"TRACE(pathplanutils.cpp):   " << wp1 << " --> " << wp2 << endl;
             cout<<"TRACE(pathplanutils.cpp): entire optimised path: " << endl;
-            for ( uint j=0; j < optimisedPath.size(); j++ )
+            for ( unsigned int j=0; j < optimisedPath.size(); j++ )
             {
                 cout << "  " << j << ": " << optimisedPath[j] << endl;
             }
             cout<<"TRACE(pathplanutils.cpp): origPath: " << endl;
-            for ( uint j=0; j < origPath.size(); j++ )
+            for ( unsigned int j=0; j < origPath.size(); j++ )
             {
                 cout << "  " << j << ": " << origPath[j] << endl;
             }

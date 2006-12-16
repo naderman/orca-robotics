@@ -9,7 +9,9 @@
  */
 
 #include "chisquare.h"
-#include <math.h>
+#include <cmath>
+
+using namespace std; // for math functions in QNX
 
 namespace orcanavutil {
 

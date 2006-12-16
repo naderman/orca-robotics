@@ -1,6 +1,6 @@
 ADD_DEFINITIONS( "-Wall" )
 INCLUDE_DIRECTORIES( 
-	${ICE_HOME}/include
+    ${ICE_HOME}/include
     ${PROJECT_BINARY_DIR}/src/interfaces/cpp 
     ${PROJECT_SOURCE_DIR}/src/libs
     )

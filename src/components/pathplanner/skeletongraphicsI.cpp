@@ -71,7 +71,7 @@ SkeletonGraphicsI::drawSkel( const orcaogmap::OgMap           &ogMap,
     int n = (int) ceil( skel.size() / MAX_SKEL );
     if ( n==0 ) n=1;
     orcapathplan::Cell2DVector denseSkelToDisplay;
-    for ( uint i=0; i < skel.size(); i+=n )
+    for ( unsigned int i=0; i < skel.size(); i+=n )
     {
         denseSkelToDisplay.push_back( skel[i] );
     }
@@ -119,10 +119,10 @@ SkeletonGraphicsI::drawSparseSkel( const orcaogmap::OgMap           &ogMap,
     p.setBrush( color );
     const double circleSize = 0.3;     // in m, should be constant pixel size?
     
-    for ( uint i=0; i < skel.contiguousSkels().size(); i++ )
+    for ( unsigned int i=0; i < skel.contiguousSkels().size(); i++ )
     {
         const std::vector<orcapathplan::SparseSkelNode*> &nodes = skel.contiguousSkels()[i]->nodes();
-        for ( uint j=0; j < nodes.size(); j++ )
+        for ( unsigned int j=0; j < nodes.size(); j++ )
         {
             const orcapathplan::SparseSkelNode *node = nodes[j];
             float nodeX, nodeY;
@@ -136,7 +136,7 @@ SkeletonGraphicsI::drawSparseSkel( const orcaogmap::OgMap           &ogMap,
                 
 
             // draw arcs
-            for ( uint k=0; k < node->arcs.size(); k++ )
+            for ( unsigned int k=0; k < node->arcs.size(); k++ )
             {
                 const orcapathplan::SparseSkelArc *arc = node->arcs[k];
                 float toX, toY;

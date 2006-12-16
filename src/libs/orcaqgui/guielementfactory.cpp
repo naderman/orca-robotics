@@ -14,7 +14,7 @@ GuiElementFactory::supportedInterfaceIds() const
 bool 
 GuiElementFactory::isSupported( const QStringList &interfaceIds ) const
 {
-    for ( uint i=0; i<supportedInterfaceIds_.size(); ++i ) {
+    for ( unsigned int i=0; i<supportedInterfaceIds_.size(); ++i ) {
         if ( supportedInterfaceIds_[i] == interfaceIds ) {
             return true;
         }

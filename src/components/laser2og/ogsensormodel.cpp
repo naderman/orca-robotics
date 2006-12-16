@@ -135,7 +135,7 @@ void
 OgSensorModel::print()
 {
     printf("range [std] \tL in range \tL out of range\n");
-    for ( uint i=0; i<r_.size(); ++i )
+    for ( unsigned int i=0; i<r_.size(); ++i )
     {
         printf("%4.2f\t%8.6F\t%4.2F\n",r_[i],pIn_[i],pOut_[i]);
     }

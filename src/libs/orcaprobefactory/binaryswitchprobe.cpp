@@ -92,7 +92,7 @@ BinarySwitchProbe::loadSetState()
     }
 
     cout << "Select device from the list:"<<endl;
-    for ( uint i=0; i<data->devices.size(); ++i ) {
+    for ( unsigned int i=0; i<data->devices.size(); ++i ) {
         cout<<i<<"\t"<<data->devices[i].name<<endl;
     }
     cout << "==>";

@@ -236,7 +236,7 @@ BrowserHandler::loadInterface()
     // Load interface handler
     //
     // one of them must support it, otherwise it would not have an index
-    for ( uint i=0; i < factories_.size(); ++i )
+    for ( unsigned int i=0; i < factories_.size(); ++i )
     {
         // if this interface is not supported, skip this factory
         if ( factories_[i]->isSupported( interfaceData_.id ) ) {

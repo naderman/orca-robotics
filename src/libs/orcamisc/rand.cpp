@@ -1,8 +1,10 @@
 #include "rand.h"
-#include <math.h>
+#include <cmath>
 #include <stdlib.h>
 #include <assert.h>
 #include <iostream>
+
+using namespace std; // for math functions in QNX
 
 ////////////////////////////////////////////////////////////////////////////////
 

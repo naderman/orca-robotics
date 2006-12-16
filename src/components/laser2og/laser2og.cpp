@@ -142,7 +142,7 @@ Laser2Og::process( const orca::Localise2dData &sensorPose, const orca::RangeScan
         OgCellLikelihood currentFeature;
 
         // for each traversed cell
-        for ( uint j=0; j<ray.size(); j++ )
+        for ( unsigned int j=0; j<ray.size(); j++ )
         {
             // cell along the ray
             currentCell = ray[j];  

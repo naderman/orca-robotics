@@ -157,7 +157,7 @@ extractSections( const std::vector<float> &ranges,
     
 //     std::cout << "section.cpp: Found " << sections.size() << " sections" << std::endl;
 //     //printSections( sections );
-//     for ( uint i=0; i < sections.size(); i++ )
+//     for ( unsigned int i=0; i < sections.size(); i++ )
 //     {
 //         cout << "  Sec "<<i<<": ("
 //              <<sections[i].elements()[0].x()<<", "<<sections[i].elements()[0].y()<<") -> ("
@@ -266,7 +266,7 @@ findBreakPoint( const std::vector<SectionEl> &sectionElements,
     pos = -1;
     // Note: don't iterate over the end-points, since there's
     // no point breaking there.
-    for ( uint i=1; i < sectionElements.size()-1; i++ )
+    for ( unsigned int i=1; i < sectionElements.size()-1; i++ )
     {
         const SectionEl &e = sectionElements[i];
 

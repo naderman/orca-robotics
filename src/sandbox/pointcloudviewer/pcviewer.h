@@ -42,9 +42,9 @@ Q_OBJECT
 	bool showRobots; 
 	bool showPointclouds; 
 	bool showPatchBorders;
-	GLuint texId;
-	GLuint pcList;
-        GLuint ogList; 
+	GLunsigned int texId;
+	GLunsigned int pcList;
+        GLunsigned int ogList; 
 	orca::PointCloudPtr cloud; 
 	bool freshPC; 
         bool freshOG; 

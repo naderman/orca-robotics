@@ -1,5 +1,5 @@
 #include "pcviewer.h"
-#include <math.h>
+#include <cmath>
 
 
 using namespace orca;

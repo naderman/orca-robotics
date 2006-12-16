@@ -9,7 +9,7 @@
  */
 
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 #include <Ice/Ice.h>
 #include <IceUtil/Time.h>

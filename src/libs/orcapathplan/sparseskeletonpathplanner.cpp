@@ -98,7 +98,7 @@ SparseSkeletonPathPlanner::checkInputs( int           startX,
 
 bool isIncluded( const std::vector<SparseSkelNode*> &v, SparseSkelNode *n ) 
 {
-    for ( uint i=0; i < v.size(); i++ )
+    for ( unsigned int i=0; i < v.size(); i++ )
     {
         if ( v[i] == n )
             return true;
@@ -117,10 +117,10 @@ SparseSkeletonPathPlanner::findClosestNode( const Cell2D                        
     float minDist = 1e9;
     closestNode = NULL;
     cSkel       = NULL;
-    for ( uint i=0; i < sparseSkel_->contiguousSkels().size(); i++ )
+    for ( unsigned int i=0; i < sparseSkel_->contiguousSkels().size(); i++ )
     {
         const std::vector<SparseSkelNode*> &nodes = sparseSkel_->contiguousSkels()[i]->nodes();
-        for ( uint j=0; j < nodes.size(); j++ )
+        for ( unsigned int j=0; j < nodes.size(); j++ )
         {
             float thisDist = hypotf( nodes[j]->pos.x()-cell.x(),
                                      nodes[j]->pos.y()-cell.y() );
@@ -197,7 +197,7 @@ SparseSkeletonPathPlanner::convertToCellVector( const std::vector<Cell2D>       
 
     path.resize(0);
 
-    for ( uint i=0; i < startCells.size(); i++ )
+    for ( unsigned int i=0; i < startCells.size(); i++ )
         path.push_back( startCells[0] );
 
     // Do we need the first node?
@@ -237,21 +237,21 @@ SparseSkeletonPathPlanner::convertToCellVector( const std::vector<Cell2D>       
             path.push_back( nodePath[i]->pos );
         }
     }
-    for ( uint i=0; i < goalCells.size(); i++ )
+    for ( unsigned int i=0; i < goalCells.size(); i++ )
     {
         path.push_back( goalCells[i] );
     }
 
 #ifndef NDEBUG
     // Double-check that the path is OK
-    for ( uint i=0; i < path.size()-1; i++ )
+    for ( unsigned int i=0; i < path.size()-1; i++ )
     {
         assert( losExists( *planOgMap_, traversabilityThreshhold_, path[i], path[i+1] ) );
     }
 #endif
 
 //     cout<<"TRACE(sparseskeletonpathplanner.cpp): full path is: " << endl;
-//     for ( uint i=0; i < path.size(); i++ )
+//     for ( unsigned int i=0; i < path.size(); i++ )
 //     {
 //         cout << "  " << path[i] << endl;
 //     }

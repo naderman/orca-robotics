@@ -27,9 +27,7 @@
 #define _USE_MATH_DEFINES
 #endif
 
-// for some reason QNX prefers the old version of this file: floor() is not defined in <cmath>
-//#include <cmath>
-#include <math.h>
+#include <cmath>
 
 /*****************************************************************************
  * CONSTANTS
@@ -68,7 +66,7 @@ inline void NORMALISE_ANGLE( double &theta )
     if (theta >= -M_PI && theta < M_PI)
         return;
 
-    multiplier = floor(theta / (2*M_PI));
+    multiplier = std::floor(theta / (2*M_PI));
     theta -= multiplier*2*M_PI;
     if (theta >= M_PI)
         theta -= 2*M_PI;

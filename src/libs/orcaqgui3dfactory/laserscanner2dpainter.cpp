@@ -98,7 +98,7 @@ LaserScanner2dPainter::paint( QGLWidget *p )
     glColor4f( 1, 0, 0, 1 );
     glVertex3f( 0, 0, 0 );
     double angleIncrement = data_->fieldOfView / double(data_->ranges.size()+1);
-    for ( uint i=0; i < data_->ranges.size(); ++i )
+    for ( unsigned int i=0; i < data_->ranges.size(); ++i )
     {
         float bearing = data_->startAngle + i * angleIncrement;
         glVertex3f( data_->ranges[i] * cos(bearing),

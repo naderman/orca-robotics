@@ -22,7 +22,7 @@ void testPathPlan( const IPathPlanner2d   &planner,
         cout << "ERROR(testpathplan.cpp): Path too short: just one element." << endl;
         exit(1);
     }
-    for ( uint i=1; i < path.size(); i++ )
+    for ( unsigned int i=1; i < path.size(); i++ )
     {
         Cell2D wp1 = path[i-1];
         Cell2D wp2 = path[i];
@@ -32,7 +32,7 @@ void testPathPlan( const IPathPlanner2d   &planner,
             cout<<"TRACE(testpathplan.cpp): Couldn't get from wp "<<i-1<<" to "<<i<< endl;
             cout<<"TRACE(testpathplan.cpp):   " << wp1 << " --> " << wp2 << endl;
             cout<<"TRACE(testpathplan.cpp): entire path: " << endl;
-            for ( uint j=0; j < path.size(); j++ )
+            for ( unsigned int j=0; j < path.size(); j++ )
             {
                 cout << "  " << j << ": " << path[j] << endl;
             }

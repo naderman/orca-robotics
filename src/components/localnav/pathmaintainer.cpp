@@ -47,7 +47,7 @@ PathMaintainer::checkPathOut( const orca::PathFollower2dDataPtr &pathData )
     bool normal=true;
     const float epsLinear     = 1e-3;
     const float epsRotational = 1.0*M_PI/180.0;
-    for ( uint i=0; i < pathData->path.size(); i++ )
+    for ( unsigned int i=0; i < pathData->path.size(); i++ )
     {
         const orca::Waypoint2d &wp = pathData->path[i];
 

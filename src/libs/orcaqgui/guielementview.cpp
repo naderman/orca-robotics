@@ -111,7 +111,7 @@ GuiElementView::selectedAdaptersInView(int numElements, vector<int>& indeces)
     }
     
     // check if any of the selected adapters match any of shortlisted ones
-    for( uint i=0; i<shortList.size(); i++ )
+    for( unsigned int i=0; i<shortList.size(); i++ )
     {
         if ( selectedRows.contains(shortList[i]) )
         {
@@ -138,7 +138,7 @@ GuiElementView::hideElements(int numElements, const vector<int>& indeces)
 {
     showAllElements(numElements);
     
-    for (uint i=0; i<indeces.size(); i++) {
+    for (unsigned int i=0; i<indeces.size(); i++) {
         hideRow( indeces[i] );
     }
 }

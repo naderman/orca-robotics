@@ -17,6 +17,7 @@
 #include "homeprobe.h"
 #include "laserscanner2dprobe.h"
 #include "powerprobe.h"
+#include "statusprobe.h"
 
 using namespace orcaprobefactory;
 
@@ -33,6 +34,7 @@ OrcaProbeFactory::OrcaProbeFactory()
 //     addSupportedType("::orca::Position2d");
 //     addSupportedType("::orca::Position3d");
     addSupportedType("::orca::Power");
+    addSupportedType("::orca::Status");
 }
 
 orcaprobe::InterfaceProbe* 
@@ -60,6 +62,9 @@ OrcaProbeFactory::create( const std::string           & interfaceType,
     }
     else if ( interfaceType == "::orca::Power" ) {
         probe = new PowerProbe( name, display, context );
+    }
+    else if ( interfaceType == "::orca::Status" ) {
+        probe = new StatusProbe( name, display, context );
     }
 
     return probe;

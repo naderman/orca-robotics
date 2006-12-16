@@ -44,7 +44,7 @@ Component::~Component()
     // in seg fault.
 
     assert( libraries_.size() == logFactories_.size() );
-    for ( uint i=0; i < libraries_.size(); i++ ){
+    for ( unsigned int i=0; i < libraries_.size(); i++ ){
 //         cout<<"deleting factory #"<<i<<endl;
         delete logFactories_[i];
 //         cout<<"deleting library #"<<i<<endl;
@@ -58,7 +58,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
     // Parse space-separated list of lib names
     Ice::StringSeq libNames = orcaice::toStringSeq( factoryLibNames, ' ' );
     
-    for ( uint i=0; i < libNames.size(); i++ )
+    for ( unsigned int i=0; i < libNames.size(); i++ )
     {
         stringstream ss;
         ss << "Loading factory library: " << libNames[i];
@@ -93,7 +93,7 @@ Component::createLogger( const std::string  &interfaceType,
     // debug
 //     cout<<"adding slave type="<<interfaceType<<" sfx="<<interfaceTypeSuffix<<" fmt="<<format<<" prfx="<<filenamePrefix<<endl;
 
-    for ( uint i=0; i < logFactories_.size(); ++i )
+    for ( unsigned int i=0; i < logFactories_.size(); ++i )
     {
         // if this interface is not supported, skip this factory
         if ( !logFactories_[i]->isSupported( interfaceType ) ) {
@@ -174,7 +174,7 @@ Component::start()
     context().tracer()->info( ss.str() );
 
     // Instantiate a logger for each required interface
-    for ( uint i=0; i<requiredTags.size(); ++i ) 
+    for ( unsigned int i=0; i<requiredTags.size(); ++i ) 
     {
         context().tracer()->debug( "processing required interface tag="+requiredTags[i], 5);
 

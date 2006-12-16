@@ -44,7 +44,7 @@ Component::~Component()
     // in seg fault.
 
     assert( libraries_.size() == replayFactories_.size() );
-    for ( uint i=0; i < libraries_.size(); i++ ){
+    for ( unsigned int i=0; i < libraries_.size(); i++ ){
         delete replayFactories_[i];
         delete libraries_[i];
     }
@@ -56,7 +56,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
     // Parse space-separated list of lib names
     Ice::StringSeq libNames = orcaice::toStringSeq( factoryLibNames, ' ' );
     
-    for ( uint i=0; i < libNames.size(); i++ )
+    for ( unsigned int i=0; i < libNames.size(); i++ )
     {
         stringstream ss;
         ss << "Loading factory library: " << libNames[i];
@@ -89,7 +89,7 @@ Component::createReplayer( const std::string  &interfaceType,
 {
     // debug
 //     cout<<"adding slave type="<<interfaceType<<" sfx="<<interfaceTypeSuffix<<" fmt="<<format<<" prfx="<<filenamePrefix<<endl;
-    for ( uint i=0; i < replayFactories_.size(); ++i )
+    for ( unsigned int i=0; i < replayFactories_.size(); ++i )
     {
         // if this interface is not supported, skip this factory
         if ( !replayFactories_[i]->isSupported( interfaceType ) ) {
@@ -148,7 +148,7 @@ Component::start()
     context().tracer()->info( ss.str() );
 
     // Instantiate a replayer for each log in the master file
-    for ( uint i=0; i<filenames.size(); ++i ) 
+    for ( unsigned int i=0; i<filenames.size(); ++i ) 
     {
         context().tracer()->debug( "Processing log: file="+filenames[i]+" type="+interfaceTypes[i]+" fmt="+formats[i], 5);
 

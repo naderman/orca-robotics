@@ -9,7 +9,7 @@
  */
 
 #include <iostream>
-#include <math.h>
+#include <cmath>
 #include <QtGui>
 
 #include "interface.h"

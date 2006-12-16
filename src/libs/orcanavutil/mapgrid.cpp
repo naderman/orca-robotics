@@ -8,7 +8,7 @@
  *
  */
 #include <stdlib.h>
-#include <math.h>
+#include <cmath>
 // M_PI is not defined after including cmath for the MS visual studio compiler?
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -20,6 +20,7 @@ const ellipsoid WGS84 = {6378137.0 , 298.257223563};
 const ellipsoid AGD84 = {6378160.0 , 298.25};
 const ellipsoid GRS80 = {6378137.0 , 298.257222101};
 
+using namespace std; // for math functions in QNX
 
 mapgrid::mapgrid()
 {

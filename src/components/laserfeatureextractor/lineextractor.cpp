@@ -77,7 +77,7 @@ void LineExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
 
 #ifndef NDEBUG
     // Check that everything makes sense.
-    for ( uint i=0; i < sections.size(); i++ )
+    for ( unsigned int i=0; i < sections.size(); i++ )
     {
         if ( sections[i].isALine() )
         {
