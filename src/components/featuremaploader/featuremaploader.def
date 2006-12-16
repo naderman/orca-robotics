@@ -8,4 +8,4 @@ Provides.FeatureMap2d.DefaultName=featuremap2d
 
 # Config Parameters
 Config.Driver.Default=real
-Config.MapFileName.Default=mapfilename
+Config.MapFileName.Default=featuremap.txt

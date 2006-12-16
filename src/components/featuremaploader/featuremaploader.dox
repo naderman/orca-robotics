@@ -48,7 +48,7 @@ since this component will never issue them.
 
 - @c FeatureMapLoader.Config.MapFileName (string)
     - The name (and path) of the image to load
-    - Default: "mapfilename"
+    - Default: "featuremap.txt"
 
 @section deps Dependancies
 none
