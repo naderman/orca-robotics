@@ -1,5 +1,16 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+#
+# These utilities are not components.
+# We do not include the standard component compile options
+# to minimize dependencies.
+#
+ADD_DEFINITIONS( "-Wall" )
+INCLUDE_DIRECTORIES( 
+	${ICE_HOME}/include
+    ${PROJECT_BINARY_DIR}/src/interfaces/cpp 
+    ${PROJECT_SOURCE_DIR}/src/libs
+    )
+LINK_DIRECTORIES( ${ICE_HOME}/lib )
+LINK_LIBRARIES( Ice IceUtil OrcaInterfaces OrcaIce OrcaObjects )
 
 GLOBAL_ADD_EXECUTABLE( def2cfg def2cfg.cpp )
 TARGET_LINK_LIBRARIES( def2cfg OrcaDef )
