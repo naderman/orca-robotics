@@ -196,7 +196,11 @@ void findShortestPath( const ContiguousSparseSkel &cSkel,
 
 inline float distance( const Cell2D &a, const Cell2D &b )
 {
+#ifdef __QNX__
     return std::hypotf( a.x()-b.x(), a.y()-b.y() );
+#else
+    return hypotf( a.x()-b.x(), a.y()-b.y() );
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////

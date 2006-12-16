@@ -43,6 +43,6 @@ orcapathplan::cell2point( const Cell2D c, const double originX, const double ori
 double 
 orcapathplan::euclideanDistance( const orcaogmap::CartesianPoint2d p1, const orcaogmap::CartesianPoint2d p2 )
 {
-    return std::hypot(p1.x-p2.x, p1.y-p2.y );
+    return hypot(p1.x-p2.x, p1.y-p2.y );
 }
 

@@ -21,9 +21,11 @@ class SectionEl
 public:  
     SectionEl() {}
     SectionEl( double r, double b ) { r_ = r; b_ = b; x_ = r*std::cos(b); y_ = r*std::sin(b); };
-
+#ifdef __QNX__
     void setXY( double x, double y ) { r_ = std::hypot(y,x); b_ = std::atan2(y,x); x_ = x; y_ = y; };
-  
+#else
+    void setXY( double x, double y ) { r_ = hypot(y,x); b_ = std::atan2(y,x); x_ = x; y_ = y; };
+#endif
     double x() const { return x_; };
     double y() const { return y_; };
   
