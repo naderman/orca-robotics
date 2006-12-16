@@ -7,9 +7,11 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
+
 #include "pathconvert.h"
 #include <orcaice/orcaice.h>
 
+using namespace std; // for math functions
 
 namespace orcapathplan {
 

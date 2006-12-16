@@ -9,7 +9,7 @@ IF ( BUILD_LASER2D )
 
     SET( WE_CAN_BUILD_SICK_CARMEN_DRIVER 0 )
     SET( WE_CAN_BUILD_PLAYERCLIENT_DRIVER 0 )
-    IF ( NOT WIN32 )
+    IF ( NOT WIN32 AND NOT QNXNTO )
 
       # Has no outside dependencies, so we can always build it
       SET( WE_CAN_BUILD_SICK_CARMEN_DRIVER 1 )
@@ -22,7 +22,7 @@ IF ( BUILD_LASER2D )
         ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
       ENDIF ( PLAYER_FOUND )
 
-    ENDIF ( NOT WIN32 )
+    ENDIF ( NOT WIN32 AND NOT QNXNTO )
 
     OPTIONAL_SUB_LIBRARY(
         "Player client driver for Laser2d"

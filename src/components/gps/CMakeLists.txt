@@ -1,6 +1,6 @@
 OPTION( BUILD_GPS "Try to build Gps component" ON )
 
-IF ( NOT WIN32 )
+IF ( NOT WIN32 AND NOT QNXNTO )
 IF ( BUILD_GPS )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
@@ -48,5 +48,5 @@ IF ( BUILD_GPS )
     GENERATE_CONFIG_FILE( gps.def )
 
 ENDIF ( BUILD_GPS )
-ENDIF ( NOT WIN32 )
+ENDIF ( NOT WIN32 AND NOT QNXNTO )
 

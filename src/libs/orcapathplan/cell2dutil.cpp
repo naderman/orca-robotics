@@ -19,16 +19,18 @@
 
 using namespace orcapathplan;
 using namespace orcaogmap;
+using namespace std; // for math functions
 
-
-Cell2D orcapathplan::point2cell( const CartesianPoint2d & pt, const double & originX, const double & originY,
+Cell2D 
+orcapathplan::point2cell( const CartesianPoint2d & pt, const double & originX, const double & originY,
                         const double & resX, const double & resY )
 {
     double tmpResY = (resY > 0 ?  resY : resX); 
     return Cell2D( (int)floor( ( pt.x-originX ) / resX + 0.5 ) , (int)floor( ( pt.y-originY ) / tmpResY + 0.5 ) );
 }
 
-CartesianPoint2d orcapathplan::cell2point( const Cell2D c, const double originX, const double originY,
+CartesianPoint2d 
+orcapathplan::cell2point( const Cell2D c, const double originX, const double originY,
                        const double resX, const double resY )
 {
     double tmpResY = (resY > 0 ?  resY : resX);
@@ -38,8 +40,9 @@ CartesianPoint2d orcapathplan::cell2point( const Cell2D c, const double originX,
     return  p;
 }
 
-double orcapathplan::euclideanDistance( const orcaogmap::CartesianPoint2d p1, const orcaogmap::CartesianPoint2d p2 )
+double 
+orcapathplan::euclideanDistance( const orcaogmap::CartesianPoint2d p1, const orcaogmap::CartesianPoint2d p2 )
 {
-    return sqrt( pow(p1.x-p2.x,2.0) + pow(p1.y-p2.y,2.0) );
+    return std::hypot(p1.x-p2.x, p1.y-p2.y );
 }
 

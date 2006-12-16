@@ -12,6 +12,8 @@
 
 #include "ogcellops.h"
 
+using namespace std; // for math functions in QNX
+
 orca::OgCellLikelihood 
 ogfusion::add (const orca::OgCellLikelihood& f, const orca::OgCellLikelihood& g )
 {
