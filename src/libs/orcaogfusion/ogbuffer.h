@@ -29,7 +29,7 @@ public:
     ~OgBuffer();
 
     bool isEmpty() const;
-    uint size() const;
+    unsigned int size() const;
     void clear();
 
     orca::OgCellLikelihood& begin();
@@ -62,7 +62,7 @@ private:
 inline bool OgBuffer::isEmpty() const
 { return buffer_.empty(); };
 
-inline uint OgBuffer::size() const
+inline unsigned int OgBuffer::size() const
 { return buffer_.size(); };
 
 inline void OgBuffer::clear()

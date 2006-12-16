@@ -8,7 +8,7 @@
  *
  */
 #include <stdlib.h>
-#include <cmath>
+#include <math.h>
 // M_PI is not defined after including cmath for the MS visual studio compiler?
 #ifndef M_PI
 #define M_PI 3.14159265358979323846

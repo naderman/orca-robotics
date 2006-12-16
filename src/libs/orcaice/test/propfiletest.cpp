@@ -57,10 +57,15 @@ main(int argc, char * argv[])
     cout<<"testing getGlobalConfigFilename() with HOME ... ";
     // make sure ORCA2_GLOBAL_CONFIG is not set
 #ifndef WIN32
+#ifdef __QNX__
+	// the QNX version of unsetenv() returns void
+    unsetenv( "ORCA2_GLOBAL_CONFIG" );
+#else
     if ( unsetenv( "ORCA2_GLOBAL_CONFIG" ) ) {
         cout<<"failed to unset ORCA2_GLOBAL_CONFIG env variable."<<endl;
         return EXIT_FAILURE;
     }
+#endif
 #else
     // windows does not have unsetenv() for some reason!
     if ( _putenv_s( "ORCA2_GLOBAL_CONFIG", "" ) ) {
@@ -94,10 +99,15 @@ main(int argc, char * argv[])
     cout<<"testing getGlobalConfigFilename() with empty input ... ";
 #ifndef WIN32
     // make sure HOME is not set
+#ifdef __QNX__
+	// the QNX version of unsetenv() returns void
+    unsetenv( "HOME" );
+#else
     if ( unsetenv( "HOME" ) ) {
         cout<<"failed to unset HOME env variable."<<endl;
         return EXIT_FAILURE;
     }
+#endif
     args.clear();
     try
     {

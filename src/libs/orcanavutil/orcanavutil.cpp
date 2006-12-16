@@ -10,7 +10,7 @@
 #include "orcanavutil.h"
 #include <iostream>
 #include <sstream>
-#include <cmath>
+#include <math.h>
 
 // M_PI is not defined after including cmath for the MS visual studio compiler?
 #ifndef M_PI

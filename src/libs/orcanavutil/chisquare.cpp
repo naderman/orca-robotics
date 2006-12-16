@@ -9,7 +9,7 @@
  */
 
 #include "chisquare.h"
-#include <cmath>
+#include <math.h>
 
 namespace orcanavutil {
 

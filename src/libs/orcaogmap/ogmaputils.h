@@ -11,7 +11,7 @@
 #define ORCAOGMAP_OGMAPUTILS_H
 
 #include <assert.h>
-#include <cmath>
+#include <math.h>
 #include <vector>
 #include <string>
 

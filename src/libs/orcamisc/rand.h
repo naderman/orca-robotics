@@ -1,7 +1,8 @@
 #ifndef ORCAMISC_NRAND__H
 #define ORCAMISC_NRAND__H
 
-#include <cmath>
+// QNX prefers <math.h> over <cmath> for some reason
+#include <math.h>
 
 //
 // General-purpose random number utilities
