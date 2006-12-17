@@ -39,5 +39,5 @@ IceWriteHelper::write( std::ofstream *file, char id )
     file->write( (char*)&byteData[0], length);
     file->flush();
 
-    cout << "ByteDataSize: " << byteData.size() << endl;
+//     cout << "ByteDataSize: " << byteData.size() << endl;
 }
