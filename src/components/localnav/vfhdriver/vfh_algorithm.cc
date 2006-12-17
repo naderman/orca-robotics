@@ -931,19 +931,10 @@ printf("%d: %f\n", x, this->laser_ranges[x][0]);
 
 int VFH_Algorithm::Build_Primary_Polar_Histogram( double laser_ranges[REQUIRED_NUM_RANGES][2], int speed ) 
 {
-  int x, y;
-  unsigned int i;
-  // index into the vector of Cell_Sector tables
-  int speed_index = Get_Speed_Index( speed );
-
-  for(x=0;x<HIST_SIZE;x++) {
-    Hist[x] = 0;
-  }
-
   if ( Calculate_Cells_Mag( laser_ranges, speed ) == 0 )
   {
       // set Hist to all blocked
-      for(x=0;x<HIST_SIZE;x++) {
+      for(int x=0;x<HIST_SIZE;x++) {
           Hist[x] = 1;
       }
       return 0;
@@ -955,7 +946,16 @@ int VFH_Algorithm::Build_Primary_Polar_Histogram( double laser_ranges[REQUIRED_N
 //  Print_Cells_Sector();
 //  Print_Cells_Enlargement_Angle();
 
-  // Only have to go through the cells in front.
+  for(int x=0;x<HIST_SIZE;x++) {
+    Hist[x] = 0;
+  }
+
+  int x, y;
+  unsigned int i;
+  // index into the vector of Cell_Sector tables
+  int speed_index = Get_Speed_Index( speed );
+
+  // Note: Only have to go through the cells in front.
   for(y=0;y<=(int)ceil(WINDOW_DIAMETER/2.0);y++) {
     for(x=0;x<WINDOW_DIAMETER;x++) {
       for(i=0;i<Cell_Sector[speed_index][x][y].size();i++) {
