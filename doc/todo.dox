@@ -28,8 +28,13 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - resolve issue with direct connections withour the registry
     - Topic Tracer to attempt reconnections
 
-
 @section changes Changes since Last Release
+
+
+
+@section orca_doc_todo_history Changes in Past Releases
+
+@par Changes in Release 2.1.1
 
 - Build system
     - split utils directory into libs and utils. components are not affected.
@@ -80,8 +85,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - added graphical UML symbol to documentation pages of all components. (Alex M.)
   - separate listing of libs and utils (Alex M.)
   - fixed broken doxygen references. (Alex M.)
-
-@section orca_doc_todo_history Changes in Past Releases
 
 @par Changes in Release 2.1.0
 
