@@ -35,6 +35,7 @@ public:
     }
     virtual QStringList contextMenu();
     virtual void execute( int action );
+    virtual void setTransparency( bool useTransparency ) { painter_.setTransparency( useTransparency ); };
 
  public:
     void saveFeatureMapAs();

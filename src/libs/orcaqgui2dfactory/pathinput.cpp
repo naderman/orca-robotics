@@ -55,7 +55,12 @@ void PathInput::paint( QPainter *p )
     if ( waypoints_.isEmpty() ) return;
     
     const float PATH_WIDTH = 0.05;
-    QColor color(getTransparentVersion(Qt::green));
+    QColor color;
+    if (useTransparency_) {
+        color = getTransparentVersion(Qt::green);
+    } else {
+        color=Qt::green;
+    }
     
     for ( int i=0; i<waypoints_.size(); i++)
     {

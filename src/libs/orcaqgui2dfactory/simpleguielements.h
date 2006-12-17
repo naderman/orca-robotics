@@ -148,6 +148,7 @@ public:
     
     virtual void setColor( QColor color ) { painter_.setColor(color); }
     virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); };
+    virtual void setTransparency( bool useTransparency ) { painter_.setTransparency( useTransparency ); };
 
     // Need a special update function to set (x,y,theta)
     // The Localise2dElement needs this because it's special kind of GuiElement:
@@ -200,6 +201,7 @@ public:
             ( context_, listener_.interfaceName(), painter_ );
     }
     virtual void setColor( QColor color ) { painter_.setColor(color); }
+    virtual void setTransparency( bool useTransparency ) { painter_.setTransparency( useTransparency ); };
 
 private:
     Particle2dPainter painter_;

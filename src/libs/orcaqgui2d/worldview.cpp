@@ -102,6 +102,15 @@ WorldView::setupInterface()
     antiAliasing->setShortcut( QKeySequence("Ctrl+A") );
     connect(antiAliasing,SIGNAL(toggled(bool)), this, SLOT(setAntiAliasing(bool)) );
     mainWin_->displayMenu()->addAction(antiAliasing);
+    
+    QAction* transparency = new QAction(tr("&Transparency"),this);
+    transparency->setCheckable(true);
+    // initialize to true, could be configurable
+    transparency->setChecked(true);
+    model_->setTransparency( true );
+    transparency->setShortcut( QKeySequence("Ctrl+T") );
+    connect(transparency,SIGNAL(toggled(bool)), model_, SLOT(setTransparency(bool)) );
+    mainWin_->displayMenu()->addAction(transparency);   
 
     mainWin_->displayMenu()->addAction(moveUp);
     mainWin_->displayMenu()->addAction(moveDown);

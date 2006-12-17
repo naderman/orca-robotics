@@ -41,7 +41,7 @@ public slots:
     void zoomAllPix();
     
     void setAntiAliasing(bool antiAliasing);
-
+    
 private:
 
     void printStatusMessage(bool antiAliasing);

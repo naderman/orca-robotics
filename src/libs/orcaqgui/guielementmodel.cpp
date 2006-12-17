@@ -31,7 +31,8 @@ GuiElementModel::GuiElementModel( const std::vector<orcaqgui::GuiElementFactory*
       context_(context),
       humanManager_(messageDisplayer),
       colorCounter_(0),
-      view_(0)
+      view_(0),
+      currentTransparency_(true)
 {
     double timeInSec = orcaice::timeAsDouble( orcaice::getNow() );
     seed_ = (unsigned int)floor(timeInSec);
@@ -223,6 +224,7 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
     }
     
     // set properties of guielement
+    element->setTransparency( currentTransparency_ );
     element->setPlatform( platform );
     QString details = "";
     QString name = "";
@@ -422,6 +424,18 @@ void
 GuiElementModel::selectedAdaptersInView( vector<int> &indices )
 {
     view_->selectedAdaptersInView( elements_.size(), indices );
+}
+
+void 
+GuiElementModel::setTransparency(bool transparency)
+{
+    cout << "TRACE(guielementmodel.cpp): setTransparency to " << transparency << endl;
+    currentTransparency_ = transparency;
+    
+    for ( int i=0; i<elements_.size(); ++i )
+    {
+        elements_[i]->setTransparency( transparency );
+    }    
 }
 
 }

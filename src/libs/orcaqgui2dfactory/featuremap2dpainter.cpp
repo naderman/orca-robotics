@@ -57,9 +57,13 @@ FeatureMap2dPainter::setData( const orca::FeatureMap2dDataPtr &data )
 }
 
 void
-paintFeatureNum( QPainter *painter, int featureType, int featureNum )
+paintFeatureNum( QPainter *painter, int featureType, int featureNum, bool useTransparency )
 {
-    painter->setPen(getTransparentVersion(featureColour(featureType),0.3));
+    if ( useTransparency ) {
+        painter->setPen(getTransparentVersion(featureColour(featureType),0.3));
+    } else {
+        painter->setPen(featureColour(featureType));
+    }
     painter->setFont( QFont("Helvetica [Cronyx]", 12) );
     const double offset = 0.3;
     QMatrix m = painter->matrix();  // this is m2win matrix
@@ -98,7 +102,7 @@ FeatureMap2dPainter::paintPointFeature( QPainter *painter,
 
         // Numbers
         if ( displayFeatureNumbers_ )
-            paintFeatureNum( painter, f.type, featureNum );
+            paintFeatureNum( painter, f.type, featureNum, useTransparency_ );
     }
     painter->restore();
 }
@@ -182,7 +186,7 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
 
         // Numbers
         if ( displayFeatureNumbers_ )
-            paintFeatureNum( painter, f.type, featureNum );
+            paintFeatureNum( painter, f.type, featureNum, useTransparency_ );
     }
     painter->restore();
     

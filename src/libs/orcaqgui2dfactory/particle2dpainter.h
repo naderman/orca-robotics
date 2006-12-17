@@ -36,6 +36,7 @@ class Particle2dPainter
     void setColor( QColor color );
     void paint( QPainter *p, int z1 );
     bool paintThisLayer(int z) const { return z==Z_POSE-2; }
+    void setTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
     void clear();
     
   private:
@@ -44,7 +45,8 @@ class Particle2dPainter
     std::vector<float> weights_;
     float              maxWeight_;
     int particlePenThickness_;
-
+    
+    bool useTransparency_;
     QColor activeColour_;
     QColor kaputColour_;
     QColor currentColour_;

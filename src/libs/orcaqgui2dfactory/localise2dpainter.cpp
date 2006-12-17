@@ -69,7 +69,12 @@ void Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothes
         ScopedSaver translateSaver(p);
         p->translate( mean.p.x, mean.p.y );
 
-        QColor color = getTransparentVersion( currentColor_, weight );
+        QColor color;
+        if (useTransparency_) {
+            color = getTransparentVersion( currentColor_, weight );
+        } else {
+            color = currentColor_;
+        }
 
         // Rotate to draw the platform correctly
         {

@@ -79,8 +79,8 @@ signals:
 
 public slots:
     void removeAllGuiElements();
-//     void createGuiElement( const QStringList & interfaceInfo );
     void createGuiElement( const QList<QStringList> & );
+    void setTransparency(bool transparency);
 
 private:
 
@@ -94,13 +94,16 @@ private:
     orcaice::Context context_;
     IHumanManager *humanManager_;
     bool isNewPlatform( QString &platformName );
+    
     QColor generateRandomColor();
     QMap<QString, QColor> colorMap_;
     unsigned int colorCounter_;
     std::vector<QColor> colorVector_;
     unsigned int seed_;
+    
     QString platformInFocus_;
     GuiElementView* view_;
+    bool currentTransparency_;
 };
 
 

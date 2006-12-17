@@ -72,6 +72,9 @@ public:
     virtual void mouseReleaseEvent(QMouseEvent *e) {assert(false&&"unimplemented mouse function");}
     virtual void mouseDoubleClickEvent(QMouseEvent *e) {assert(false&&"unimplemented mouse function");} 
     
+    //! Tell the GuiElement whether to paint itself using transparent colors
+    virtual void setTransparency( bool useTransparency ) {};
+    
     //! Access and set functions for platform name
     QString platform() { return platform_; };
     void setPlatform( QString platform ) { platform_ = platform; };

@@ -110,12 +110,6 @@ void PathPainter::paint( QPainter *painter, int z )
 
     const float PATH_WIDTH = 0.05;
 
-
-/*    const QColor futureWpColor(Qt::blue);
-    const QColor inactiveWpColor = getTransparentVersion(futureWpColor);
-    const QColor pastWpColor(getTransparentVersion(futureWpColor,0.25));
-    const QColor currentWpColor(Qt::red);    
-    */
     QColor fillColor;
     QColor drawColor;
     QColor futureWpColor;
@@ -126,9 +120,19 @@ void PathPainter::paint( QPainter *painter, int z )
         futureWpColor = Qt::gray;
     }
       
-    const QColor inactiveWpColor = getTransparentVersion(futureWpColor);
-    const QColor pastWpColor(getTransparentVersion(futureWpColor,0.25));
-    const QColor currentWpColor(getTransparentVersion(futureWpColor,0.75));
+    QColor inactiveWpColor;
+    QColor pastWpColor;
+    QColor currentWpColor;
+    
+    if (useTransparency_) {
+        inactiveWpColor = getTransparentVersion(futureWpColor);
+        pastWpColor = getTransparentVersion(futureWpColor,0.25);
+        currentWpColor = getTransparentVersion(futureWpColor,0.75);
+    } else {
+        inactiveWpColor = futureWpColor;
+        pastWpColor = futureWpColor;
+        currentWpColor = futureWpColor;
+    }
     
     for ( int i=0; i < waypoints_.size(); i++)
     {

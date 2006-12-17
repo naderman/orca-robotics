@@ -91,7 +91,11 @@ void Particle2dPainter::paint( QPainter *painter, int z )
 
     for ( int i=0; i < qParticles_.size(); i++ )
     {
-        painter->setPen( QPen( getTransparentVersion( currentColour_, MAX( 0.25, weights_[i]/maxWeight_)  ) ) );
+        if (useTransparency_) {
+            painter->setPen( QPen( getTransparentVersion( currentColour_, MAX( 0.25, weights_[i]/maxWeight_)  ) ) );
+        } else {
+            painter->setPen( QPen( currentColour_ ) );
+        }
         painter->drawLine( qParticles_[i] );
     }
 }

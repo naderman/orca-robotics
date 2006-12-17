@@ -37,7 +37,8 @@ class PathPainter
     void setData( const orca::PathPlanner2dDataPtr &path );
     void setWpIndex( int index );
     void paint( QPainter *p, int z );
-    bool paintThisLayer(int z) const { return z==Z_PATH; }
+    bool paintThisLayer(int z) const { return z==Z_PATH; };
+    void setTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
 
     void clear();
     void togglePastWaypoints()
@@ -65,6 +66,7 @@ class PathPainter
 
     int wpIndex_;
 
+    bool useTransparency_;
     bool displayPastWaypoints_;
     bool displayWaypoints_;
     

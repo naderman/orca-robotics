@@ -105,6 +105,7 @@ PathPlanner2dElement::PathPlanner2dElement( orcaice::Context   context,
       context_(context),
       proxyString_(proxyString),
       humanManager_(humanManager),
+      currentTransparency_(true),
       pathHI_( this,
                proxyString,
                humanManager,
@@ -137,6 +138,15 @@ PathPlanner2dElement::update()
     }
 }
 
+void 
+PathPlanner2dElement::setTransparency( bool useTransparency ) 
+{ 
+    cout << "TRACE(pathplanner2delement.cpp): setTransparency: " << useTransparency << endl;
+    painter_.setTransparency( useTransparency ); 
+    pathHI_.setTransparency( useTransparency );
+    currentTransparency_ = useTransparency;
+}
+
 void
 PathPlanner2dElement::actionOnConnection()
 {
@@ -162,7 +172,7 @@ QStringList
 PathPlanner2dElement::contextMenu()
 {
     QStringList s;
-    s << "Toggle All Waypoints" << "Toggle Past Waypoints";
+    s << "Toggle All Waypoints" << "Toggle Past Waypoints" << "Toggle Transparency";
     return s;
 }
 
@@ -177,6 +187,10 @@ PathPlanner2dElement::execute( int action )
     else if ( action == 1 )
     {
         painter_.togglePastWaypoints();
+    }    
+    else if ( action == 2 )
+    {
+        setTransparency(!currentTransparency_);
     }
     else
     {
@@ -302,8 +316,18 @@ PathPlannerHI::waypointModeSelected()
     }
 
     pathInput_ = new PathPlannerInput( &wpSettings_ );
+    pathInput_->setTransparency( useTransparency_ );
     buttons_->setWpButton( true );   
 }
+
+void
+PathPlannerHI::setTransparency( bool useTransparency )
+{ 
+    useTransparency_ = useTransparency;
+    if (pathInput_) 
+        pathInput_->setTransparency( useTransparency ); 
+}
+
 void 
 PathPlannerHI::send()
 {

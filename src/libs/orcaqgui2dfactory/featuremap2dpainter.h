@@ -32,7 +32,8 @@ class FeatureMap2dPainter
     void setData( const orca::FeatureMap2dDataPtr &featureDataPtr );
     void paint( QPainter *p, int z );
     bool paintThisLayer(int z) const {return z==Z_SLAM_MAP;}
-
+    void setTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
+    
     void clear();
     
     void toggleFeatureNumbers() { displayFeatureNumbers_ = !displayFeatureNumbers_; }
@@ -50,6 +51,7 @@ class FeatureMap2dPainter
                             int featureNum );
 
     orca::FeatureMap2dDataPtr data_;
+    bool useTransparency_;
     bool displayFeatureNumbers_;
     bool displayUncertainty_;
 };

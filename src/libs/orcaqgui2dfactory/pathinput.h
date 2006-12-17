@@ -44,6 +44,7 @@ class PathInput
         virtual ~PathInput() {};  
      
         virtual void paint( QPainter *painter );
+        virtual void setTransparency( bool useTransparency ) { useTransparency_=useTransparency; };
         
         virtual void processPressEvent( QMouseEvent* e);
         virtual void processReleaseEvent( QMouseEvent* e );
@@ -58,6 +59,8 @@ class PathInput
     protected:    
         WaypointSettings *wpSettings_;
         QMatrix wmInv_; // win2mm matrix
+        
+        bool useTransparency_;
         
         void addWaypoint( QPointF );
         void removeWaypoint( QPointF ); 

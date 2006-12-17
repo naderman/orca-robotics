@@ -81,6 +81,7 @@ public:
     void mouseReleaseEvent(QMouseEvent *e) {pathInput_->processReleaseEvent(e);}
     void mouseDoubleClickEvent(QMouseEvent *e) {pathInput_->processDoubleClickEvent(e);}
     void setFocus( bool inFocus );
+    void setTransparency( bool useTransparency ); 
 
 public slots:
     void savePathAs();
@@ -109,6 +110,8 @@ private:
     
     // Do we own the global mode?
     bool gotMode_;
+    
+    bool useTransparency_;
 };
 
 //
@@ -140,6 +143,7 @@ public:
     virtual void execute( int action );
     virtual void setColor( QColor color ) { painter_.setColor( color ); };
     virtual void setFocus( bool inFocus );
+    virtual void setTransparency( bool useTransparency );
 
     virtual void lostMode() { pathHI_.lostMode(); }
     virtual void mousePressEvent(QMouseEvent *e) { pathHI_.mousePressEvent(e); }
@@ -163,8 +167,11 @@ private:
     std::string proxyString_;
     IHumanManager *humanManager_;
 
+    bool currentTransparency_;
+        
     // Handles human interface
     PathPlannerHI pathHI_;
+
 };
 
 }

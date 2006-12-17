@@ -174,6 +174,15 @@ PathFollower2dElement::update()
     }
 }
 
+void 
+PathFollower2dElement::setTransparency( bool useTransparency ) 
+{ 
+    cout << "TRACE(pathfollower2delement.cpp): setTransparency: " << useTransparency << endl;
+    painter_.setTransparency( useTransparency ); 
+    pathHI_.setTransparency( useTransparency );
+    currentTransparency_ = useTransparency;
+}
+
 void
 PathFollower2dElement::doInitialSetup()
 {
@@ -202,7 +211,7 @@ QStringList
 PathFollower2dElement::contextMenu()
 {
     QStringList s;
-    s << "Toggle All Waypoints" << "Toggle Past Waypoints" << "Toggle enabled";
+    s << "Toggle All Waypoints" << "Toggle Past Waypoints" << "Toggle Transparency" << "Toggle enabled";
     return s;
 }
 
@@ -219,6 +228,10 @@ PathFollower2dElement::execute( int action )
         painter_.togglePastWaypoints();
     }
     else if ( action == 2 )
+    {
+        setTransparency(!currentTransparency_);
+    }
+    else if ( action == 3 )
     {
         pathFollower2dPrx_->setEnabled( !pathFollower2dPrx_->enabled() );
     }
@@ -387,8 +400,18 @@ PathFollowerHI::waypointModeSelected()
     }
 
     pathInput_ = new PathFollowerInput( &wpSettings_ );
+    pathInput_->setTransparency( useTransparency_ );
     buttons_->setWpButton( true );    
 }
+
+void
+PathFollowerHI::setTransparency( bool useTransparency )
+{ 
+    useTransparency_ = useTransparency;
+    if (pathInput_) 
+        pathInput_->setTransparency( useTransparency ); 
+}
+
 void 
 PathFollowerHI::send()
 {
