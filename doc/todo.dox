@@ -85,7 +85,15 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - added graphical UML symbol to documentation pages of all components. (Alex M.)
   - separate listing of libs and utils (Alex M.)
   - fixed broken doxygen references. (Alex M.)
-
+- OrcaView
+    - now supports guielements with multiple interfaces, see e.g. ogmapscombined (Tobias K.)
+- PathPlanner
+    - fixed potential problem with skeleton (zeromap is now a map of ints) (Tobias K.)
+- GoalPlanner
+    - throws remote exception if there are more than one localisation hypotheses (Tobias K.)
+- OgMap interface
+    - added a user-defined type, useful to determine the type of certainty grid map, e.g. hazard, ogmap, motion etc. (Tobias K.)
+    
 @par Changes in Release 2.1.0
 
 - Build system
