@@ -32,12 +32,12 @@ Alex Makarenko
   
 */
 
-/*!
-@namespace orcacm
-@brief Utilities for initializing and manipulating Orca data objects.
-
-This namespace is part of a library.
-
-@see @ref orca_library_orcaobj
-*/
+// /*
+// @namespace orcaobg
+// @brief Utilities for initializing and manipulating Orca data objects.
+// 
+// This namespace is part of a library.
+// 
+// @see @ref orca_library_orcaobj
+// */
 

@@ -10,16 +10,16 @@
 /*!
 
 @ingroup libs
-@defgroup orca_library_orcalog libOrcaLog
-@brief Basic definitions for Orca logging facilities.
+@defgroup orca_library_orcaprobe libOrcaProbe
+@brief Basic definitions for Orca probing facilities.
 
 @section overview Overview
 
-For a full list of functions and classes see @ref orcalog.
+For a full list of functions and classes see @ref orcaprobe.
 
 Header file:
 @verbatim
-#include <orcalog/orcalog.h>
+#include <orcaprobe/orcaprobe.h>
 @endverbatim
 
 @par Responsible Developer
@@ -28,10 +28,10 @@ Alex Brooks, Alexei Makarenko, Tobias Kaupp
 */
 
 /*!
-@namespace orcalog
-@brief Basic definitions for Orca logging facilities.
+@namespace orcaprobe
+@brief Basic definitions for Orca probing facilities.
 
-This namespace is part of a library which contains basic definitions for Orca logging facilities.
+This namespace is part of a library which contains basic definitions for Orca probing facilities.
 
-@see @ref orca_library_orcalog
+@see @ref orca_library_orcaprobe
 */
