@@ -6,6 +6,7 @@ TARGET_LINK_LIBRARIES( OrcaLaser2dSickCarmen sickutil )
 INSTALL_TARGETS( /lib OrcaLaser2dSickCarmen )
 
 INCLUDE_DIRECTORIES( 
-  ${PROJECT_BINARY_DIR}
-  ${PROJECT_SOURCE_DIR}/src/components/laser2d/sickutil
-  )
+    # for <config.h>
+    ${PROJECT_BINARY_DIR}
+    ${PROJECT_SOURCE_DIR}/src/components/laser2d/sickutil
+    )

@@ -4,7 +4,7 @@
 
 MESSAGE ( STATUS "== SANDBOX ==" )
 
-IF ( NOT WIN32 AND BUILD_SANDBOX )
+IF ( NOT OS_WIN AND BUILD_SANDBOX )
 
     # when adding new directories, please maintain alphabetical order
     ADD_SUBDIRECTORY ( featuremap2dmon )
@@ -15,8 +15,8 @@ IF ( NOT WIN32 AND BUILD_SANDBOX )
     ADD_SUBDIRECTORY ( pointcloudserver )
     ADD_SUBDIRECTORY ( pointcloudviewer ) 
     
-ELSE ( NOT WIN32 AND BUILD_SANDBOX )
+ELSE ( NOT OS_WIN AND BUILD_SANDBOX )
 
     MESSAGE ( STATUS "Sandbox compilation is disabled" )
 
-ENDIF ( NOT WIN32 AND BUILD_SANDBOX )
+ENDIF ( NOT OS_WIN AND BUILD_SANDBOX )

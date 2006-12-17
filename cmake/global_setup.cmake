@@ -7,32 +7,39 @@ MESSAGE( STATUS "Setting project interface lib name to ${PROJECT_INTERFACE_LIB}"
 
 ###########################################################
 #
+# Determin OS
+#
+###########################################################
+INCLUDE( ${ORCA_CMAKE_DIR}/os.cmake )
+
+###########################################################
+#
 # Project directories
 #
 ###########################################################
 SET( PROJECT_INSTALL_DIR $ENV{${PROJECT_INSTALL_ENV_VAR}} )
 # If environment variable ORCA2_INSTALL is NOT set, use defaults
 IF( NOT PROJECT_INSTALL_DIR )
-  IF   ( NOT WIN32 )
+  IF   ( NOT OS_WIN )
     # Linux and friends: if environment variable ORCA2_INSTALL is not set, e.g. /opt/orca-1.2.3
     SET( PROJECT_INSTALL_DIR /opt/${PROJECT_NAME}-${PROJECT_VERSION} )
-  ELSE ( NOT WIN32 )
+  ELSE ( NOT OS_WIN )
     # Windows: e.g. C:\orca-1.2.3
     SET( PROJECT_INSTALL_DIR C:/${PROJECT_NAME}-${PROJECT_VERSION} )
-  ENDIF ( NOT WIN32 )
+  ENDIF ( NOT OS_WIN )
 ENDIF( NOT PROJECT_INSTALL_DIR )
 
 # It's impossible in cmake to tell whether a variable was set by the system or by 
 # the user. The hack we use is to check whether the installation directory is set 
 # to cmake initial default (OS-dependent).
 # btw: is there LINUX variable? or do we have to do this nonsense?
-IF ( NOT WIN32 AND ${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local" )
+IF ( NOT OS_WIN AND ${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local" )
     SET ( IS_INSTALL_PREFIX_UNTOUCHED 1 )
-ENDIF ( NOT WIN32 AND ${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local" )
+ENDIF ( NOT OS_WIN AND ${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local" )
 # windows side is untested
-IF ( WIN32 AND ${CMAKE_INSTALL_PREFIX} STREQUAL "C:/Program Files" )
+IF ( OS_WIN AND ${CMAKE_INSTALL_PREFIX} STREQUAL "C:/Program Files" )
     SET ( IS_INSTALL_PREFIX_UNTOUCHED 1 )
-ENDIF ( WIN32 AND ${CMAKE_INSTALL_PREFIX} STREQUAL "C:/Program Files" )
+ENDIF ( OS_WIN AND ${CMAKE_INSTALL_PREFIX} STREQUAL "C:/Program Files" )
 
 # Now, if it's still set to default, change it to our own prefered location. 
 # Otherwise, it's probably set by us or by the user and we don't
@@ -53,13 +60,13 @@ SET( PROJECT_BINARY_DIR ${${PROJECT_NAME}_BINARY_DIR} )
 #
 ###########################################################
 IF ( NOT CMAKE_BUILD_TYPE )
-  IF ( NOT WIN32 )
+  IF ( NOT OS_WIN )
     SET( CMAKE_BUILD_TYPE Release )
-  ELSE ( NOT WIN32 )
+  ELSE ( NOT OS_WIN )
     # windows... a temp hack: VCC does not seem to respect the cmake
     # setting and always defaults to debug, we have to match it here.
     SET( CMAKE_BUILD_TYPE Debug )
-  ENDIF ( NOT WIN32 )
+  ENDIF ( NOT OS_WIN )
   MESSAGE( STATUS "Setting build type to '${CMAKE_BUILD_TYPE}'" )
 ELSE ( NOT CMAKE_BUILD_TYPE )
   MESSAGE( STATUS "Build type set to '${CMAKE_BUILD_TYPE}' by user." )
@@ -68,9 +75,9 @@ ENDIF ( NOT CMAKE_BUILD_TYPE )
 #
 # CMake seems not to set this property correctly for some reason
 #
-IF ( WIN32 )
+IF ( OS_WIN )
     SET( EXE_EXTENSION ".exe" )
-ENDIF ( WIN32 )
+ENDIF ( OS_WIN )
 
 ###########################################################
 #
@@ -78,13 +85,6 @@ ENDIF ( WIN32 )
 #
 ###########################################################
 INCLUDE( ${ORCA_CMAKE_DIR}/orca_macros.cmake )
-
-###########################################################
-#
-# Include os-specific definitions
-#
-###########################################################
-INCLUDE( ${ORCA_CMAKE_DIR}/os.cmake )
 
 ###########################################################
 #

@@ -1,6 +1,8 @@
+IF ( NOT OS_WIN )
+
 OPTION( BUILD_SIM_LOCALISER "Try to build SimLocaliser component" ON )
 
-IF ( NOT WIN32 AND BUILD_SIM_LOCALISER )
+IF ( BUILD_SIM_LOCALISER )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
@@ -20,20 +22,18 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
         ${PLAYER_LIBS} OrcaPlayer
     )
 
-    # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-    SET( COMMON_SRCS
-        component mainloop localise2dI staticdriver
-    )
+    # build common sources into a convenience library
+    BUILD_COMPONENT_SOURCES( SimLocaliserSources )
     
-    # stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( simlocaliser main ${COMMON_SRCS} )
+    # build stand-alone component  
+    GLOBAL_ADD_EXECUTABLE( simlocaliser main )
+    TARGET_LINK_LIBRARIES( simlocaliser SimLocaliserSources ${STAGE_LIBS} )
     
-    TARGET_LINK_LIBRARIES( simlocaliser ${STAGE_LIBS} )
-    
-    # build an IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaSimLocaliser SHARED service ${COMMON_SRCS} )
-    TARGET_LINK_LIBRARIES( OrcaSimLocaliser ${STAGE_LIBS} )
+    # build IceBox service
+    GLOBAL_ADD_LIBRARY( OrcaSimLocaliser SHARED service )
+    TARGET_LINK_LIBRARIES( OrcaSimLocaliser SimLocaliserSources ${STAGE_LIBS} )
     
     GENERATE_CONFIG_FILE( simlocaliser.def )
 
-ENDIF ( NOT WIN32 AND BUILD_SIM_LOCALISER )
+ENDIF ( BUILD_SIM_LOCALISER )
+ENDIF ( NOT OS_WIN )

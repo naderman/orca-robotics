@@ -1,6 +1,6 @@
 OPTION( BUILD_PROBE "Try to build Probe" ON )
 
-IF ( NOT WIN32 )
+IF ( NOT OS_WIN )
 IF ( BUILD_PROBE )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
@@ -39,4 +39,4 @@ IF ( BUILD_PROBE )
     GENERATE_CONFIG_FILE( probe.def )
 
 ENDIF ( BUILD_PROBE )
-ENDIF ( NOT WIN32 )
+ENDIF ( NOT OS_WIN )

@@ -11,18 +11,18 @@ IF ( NOT DEFINED ICE_HOME )
     SET( ICE_WORKS 0 )
 ENDIF ( NOT DEFINED ICE_HOME )
 
-IF ( NOT WIN32 )
+IF ( NOT OS_WIN )
     CHECK_INCLUDE_FILE_CXX( "Ice/Ice.h" ICE_WORKS "-I${ICE_HOME}/include -L${ICE_HOME}/lib -lIce -lIceUtil" )
     IF ( ICE_WORKS )
         SET ( ICE_WORKS 1 )
     ELSE ( ICE_WORKS )
         SET ( ICE_WORKS 0 )
     ENDIF ( ICE_WORKS )
-ELSE (NOT WIN32)
+ELSE (NOT OS_WIN)
     # Windows: there is no easy way to pass separate compile and link options to the macro, 
     # so assume we are told the truth when
     SET ( ICE_WORKS 1 )
-ENDIF(NOT WIN32)
+ENDIF(NOT OS_WIN)
 
 # Check Ice version
 EXEC_PROGRAM ( ${ICE_HOME}/bin/slice2cpp ARGS --version OUTPUT_VARIABLE ICE_VERSION )

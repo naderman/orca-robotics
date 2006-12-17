@@ -1,3 +1,5 @@
+IF ( NOT OS_WIN )
+
 OPTION( BUILD_OGMAPLOADER "Try to build OgMapLoader component" ON )
 
 SET( REALLY_BUILD_OGMAPLOADER ${BUILD_OGMAPLOADER} )
@@ -7,7 +9,7 @@ IF ( NOT QT4_FOUND )
   SET( REALLY_BUILD_OGMAPLOADER FALSE )
 ENDIF ( NOT QT4_FOUND )
 
-IF ( NOT WIN32 AND REALLY_BUILD_OGMAPLOADER )
+IF ( REALLY_BUILD_OGMAPLOADER )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
@@ -16,27 +18,18 @@ IF ( NOT WIN32 AND REALLY_BUILD_OGMAPLOADER )
         ${QT_INCLUDES}
       )
     
-    # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-    SET( COMMON_SRCS component ogmapI maploader fakemaploader )
+    # build common sources into a convenience library
+    BUILD_COMPONENT_SOURCES( OgMapLoaderSources )
     
-    # Files for the stand-alone application
-    SET( COMP_SRCS main ${COMMON_SRCS} )
+    # build stand-alone component  
+    GLOBAL_ADD_EXECUTABLE( ogmaploader main )
+    TARGET_LINK_LIBRARIES( ogmaploader OgMapLoaderSources OrcaOgMapLoad ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
     
-    # Files for the icebox service
-    SET( SERVICE_SRCS serviceI ${COMMON_SRCS} )
-
-    # build a stand-alone component
-    GLOBAL_ADD_EXECUTABLE( ogmaploader ${COMP_SRCS} )
-    TARGET_LINK_LIBRARIES( ogmaploader OrcaOgMapLoad ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
-
-    # build an IceBox service
-    ADD_LIBRARY( OrcaOgMapLoader SHARED ${SERVICE_SRCS} )
-    
-    # important to let linker know about this inter-library dependency
-    # otherwise IceBox fails to load the service
-    TARGET_LINK_LIBRARIES( OrcaOgMapLoader ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
-    INSTALL_TARGETS( /lib OrcaOgMapLoader )
+    # build IceBox service
+    GLOBAL_ADD_LIBRARY( OrcaOgMapLoader SHARED service )
+    TARGET_LINK_LIBRARIES( OrcaOgMapLoader OgMapLoaderSources OrcaOgMapLoad ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
 
     GENERATE_CONFIG_FILE( ogmaploader.def )
 
-ENDIF ( NOT WIN32 AND REALLY_BUILD_OGMAPLOADER )
+ENDIF ( REALLY_BUILD_OGMAPLOADER )
+ENDIF ( NOT OS_WIN  )

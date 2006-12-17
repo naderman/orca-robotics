@@ -1,9 +1,10 @@
+IF ( OS_LINUX )
+
 OPTION( BUILD_INSGPS "Try to build InsGps component" ON )
 
-IF ( NOT WIN32 AND NOT QNXNTO )
 IF ( BUILD_INSGPS )
 
-    SUBDIRS( novatel )
+    ADD_SUBDIRECTORY( novatel )
     
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
@@ -20,33 +21,21 @@ IF ( BUILD_INSGPS )
         NOVATELSPANINSGPS_LIBS
         NOVATELSPANINSGPS_FOUND
         HAVE_NOVATELSPANINSGPS_DRIVER
+        OrcaSerial novatel
     )
     
-    # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-    SET( COMMON_SRCS fakeinsgpsdriver component gpsI imuI position3dI handler driver)
-
-    # Files for the stand-alone application
-    SET( COMP_SRCS main ${COMMON_SRCS} )
+    # build common sources into a convenience library
+    BUILD_COMPONENT_SOURCES( InsGpsSources )
     
-    # Files for the icebox service
-    SET( SERVICE_SRCS insgpsservice ${COMMON_SRCS} )
+    # build stand-alone component  
+    GLOBAL_ADD_EXECUTABLE( insgps main )
+    TARGET_LINK_LIBRARIES( insgps InsGpsSources ${NOVATELSPANINSGPS_LIBS} OrcaNavUtil )
     
-    # build a stand-alone component
-    GLOBAL_ADD_EXECUTABLE( insgps ${COMP_SRCS} )
-    TARGET_LINK_LIBRARIES( insgps ${NOVATELSPANINSGPS_LIBS} OrcaSerial OrcaNavUtil )
-# TARGET_LINK_LIBRARIES( insgps OrcaSerial OrcaNavUtil )
-    
-    # build an IceBox service
-    ADD_LIBRARY( OrcaInsGps SHARED ${SERVICE_SRCS} )
-    
-    # important to let linker know about this inter-library dependency
-    # otherwise IceBox fails to load the service
-    TARGET_LINK_LIBRARIES( OrcaInsGps ${NOVATELSPANINSGPS_LIBS} OrcaSerial OrcaNavUtil )
-#    TARGET_LINK_LIBRARIES( OrcaInsGps OrcaSerial OrcaNavUtil )
-
-    INSTALL_TARGETS( /lib OrcaInsGps )
+    # build IceBox service
+    GLOBAL_ADD_LIBRARY( OrcaInsGps SHARED service )
+    TARGET_LINK_LIBRARIES( OrcaInsGps InsGpsSources ${NOVATELSPANINSGPS_LIBS} OrcaNavUtil )
 
     GENERATE_CONFIG_FILE( insgps.def )
 
 ENDIF ( BUILD_INSGPS )
-ENDIF ( NOT WIN32 AND NOT QNXNTO )
+ENDIF ( OS_LINUX )

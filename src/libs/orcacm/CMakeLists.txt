@@ -8,16 +8,16 @@ LINK_DIRECTORIES( ${ICE_HOME}/lib
 
 FILE( GLOB SRCS *.cpp )
 
-IF ( NOT WIN32 )
+IF ( NOT OS_WIN )
   GLOBAL_ADD_LIBRARY( OrcaCompModel SHARED ${SRCS} )
   TARGET_LINK_LIBRARIES( OrcaCompModel OrcaMisc )
-ELSE ( NOT WIN32 )
+ELSE ( NOT OS_WIN )
   GLOBAL_ADD_LIBRARY( OrcaCompModel STATIC ${SRCS} )
   TARGET_LINK_LIBRARIES( OrcaCompModel 
               optimized IceGrid debug IceGridd
               optimized Glacier2 debug Glacier2d
               OrcaMisc )
-ENDIF ( NOT WIN32 )
+ENDIF ( NOT OS_WIN )
 
 # special dependency on the generated files
 ADD_DEPENDENCIES( OrcaCompModel OrcaInterfaces )

@@ -55,12 +55,12 @@ MESSAGE ( STATUS "Planning to Build Test      : AppTest [libOrcaIce]")
 # advanced app tests
 ADD_EXECUTABLE( appproptest appproptest.cpp )
 # The standard CFG_INTDIR does not seem to get resolved here, do it manually
-IF( WIN32 )
+IF( OS_WIN )
     # VCC defaults to Debug
     SET( MANUAL_CFG_INTDIR "debug" )
-ELSE( WIN32 )
+ELSE( OS_WIN )
     SET( MANUAL_CFG_INTDIR "." )
-ENDIF( WIN32 )
+ENDIF( OS_WIN )
 # settings: FACT=0, GLOBAL=200, LOCAL=300, ARGS=400
 # test1000 = factory YES, global NO, local NO, args NO --> expect=FACT, which is 0
 # NOTE: the CTEST variable is escaped here so it's ignored by CMake and is put into the CTest script which then
@@ -85,7 +85,7 @@ MESSAGE ( STATUS "Planning to Build 10 Tests  : AppPropTestXXXX [libOrcaIce]")
 
 # can't do this in win 'cause: 1) need shared libs for services, 2) need to copy files
 
-IF ( NOT WIN32 )
+IF ( NOT OS_WIN )
 
 # basic service test
 ADD_LIBRARY( ServiceTest SHARED servicetest )
@@ -120,7 +120,7 @@ ADD_TEST( ServicePropTest1101 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURREN
 ADD_TEST( ServicePropTest1110 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1110.cfg )
 ADD_TEST( ServicePropTest1111 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1111.cfg )
 MESSAGE ( STATUS "Planning to Build 8  Tests  : ServicePropTestXXXX [libOrcaIce]")
-ENDIF ( NOT WIN32 )
+ENDIF ( NOT OS_WIN )
 
 ADD_EXECUTABLE( configtest configtest.cpp )
 ADD_TEST( ConfigUtilsTest configtest )

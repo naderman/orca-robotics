@@ -7,11 +7,11 @@ INCLUDE_DIRECTORIES(
 FILE( GLOB SRCS *.cpp )
 
 # for some reason cannot get shared libs working in windows
-IF(NOT WIN32)
+IF(NOT OS_WIN)
   GLOBAL_ADD_LIBRARY( OrcaObjects SHARED ${SRCS} )
-ELSE (NOT WIN32)
+ELSE (NOT OS_WIN)
   GLOBAL_ADD_LIBRARY( OrcaObjects STATIC ${SRCS} )
-ENDIF (NOT WIN32)
+ENDIF (NOT OS_WIN)
 
 TARGET_LINK_LIBRARIES( OrcaObjects OrcaInterfaces )
 

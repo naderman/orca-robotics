@@ -1,4 +1,4 @@
-IF ( NOT WIN32 AND PLAYER_FOUND )
+IF ( NOT OS_WIN AND PLAYER_FOUND )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UsePlayer.cmake )
@@ -7,8 +7,8 @@ IF ( NOT WIN32 AND PLAYER_FOUND )
 
     INSTALL_FILES( /include/orcaplayer .*\\.h$ )
 
-ELSE  ( NOT WIN32 AND PLAYER_FOUND )
+ELSE  ( NOT OS_WIN AND PLAYER_FOUND )
 
     MESSAGE( STATUS "Not Planning to Build Library: libOrcaPlayer -- Player not found")
 
-ENDIF ( NOT WIN32 AND PLAYER_FOUND )
+ENDIF ( NOT OS_WIN AND PLAYER_FOUND )

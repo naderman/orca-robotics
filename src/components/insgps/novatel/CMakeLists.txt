@@ -18,7 +18,7 @@
 # 
 # SUBDIRS(cmd log crc novatel)
 
-#############33
+#############
 
 SUBDIRS(cmd
         log
@@ -43,12 +43,12 @@ FILE(GLOB NOVATEL_SOURCES cmd/*.cpp crc/*.cpp log/*.cpp)
 
 # LINK_DIRECTORIES( ${PROJECT_BINARY_DIR}/src/util/serial )
 
-ADD_LIBRARY(novatel SHARED ${NOVATEL_SOURCES} )
+ADD_LIBRARY ( novatel ${NOVATEL_SOURCES} )
 
 # ADD_LIBRARY( OrcaNovatelSpanInsGps SHARED ${SRCS} )
 
 # INSTALL_TARGETS( /lib OrcaNovatelSpanInsGps )
-INSTALL_TARGETS(/lib novatel )
-INSTALL_FILES(/include/novatel/ .?\\.h\($|[\ ]\) )
+# INSTALL_TARGETS( /lib novatelutil )
+# INSTALL_FILES( /include/novatel/ .?\\.h\($|[\ ]\) )
 
 

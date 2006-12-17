@@ -18,10 +18,11 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "gpsservice.h"
+#include "service.h"
 #include "gpscomponent.h"
 
 using namespace std;
+using namespace gps;
 
 extern "C"
 {
@@ -29,11 +30,11 @@ extern "C"
 
     IceBox::Service* create( Ice::CommunicatorPtr communicator )
     {
-        return new GpsService;
+        return new gps::Service;
     }
 }
 
-GpsService::GpsService()
+Service::Service()
 {
     component_ = new GpsComponent;
 }

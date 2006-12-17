@@ -9,14 +9,14 @@ IF ( BUILD_REGISTRY_LIST )
     
     GLOBAL_ADD_EXECUTABLE( registrylist ${SRCS} )
         
-    IF ( NOT WIN32 )
+    IF ( NOT OS_WIN )
         TARGET_LINK_LIBRARIES( registrylist IceGrid OrcaCompModel OrcaMisc )
-    ELSE ( NOT WIN32 )
+    ELSE ( NOT OS_WIN )
         TARGET_LINK_LIBRARIES( registrylist 
               optimized IceGrid debug IceGridd
               optimized Glacier2 debug Glacier2d
               OrcaCompModel OrcaMisc )
-    ENDIF ( NOT WIN32 )
+    ENDIF ( NOT OS_WIN )
 
     GENERATE_CONFIG_FILE( registrylist.def )
 

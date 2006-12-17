@@ -5,16 +5,18 @@ MESSAGE( STATUS "== SUMMARY ==" )
 # Print some results                                      #
 #                                                         #
 ###########################################################
-MESSAGE ( STATUS "Project ${PROJECT_NAME} version ${PROJECT_VERSION}")
+MESSAGE ( STATUS "Project name      ${PROJECT_NAME}")
+MESSAGE ( STATUS "Project version   ${PROJECT_VERSION}")
 # would be nice to print out Orca version for satellite projects
 # for this we need an executable which is guaranteed to be installed.
 # then we can run it with --version flag.
 # IF ( NOT ORCA_MOTHERSHIP )
-#     MESSAGE ( STATUS "Using Orca version ${ICE_VERSION}")
+#     MESSAGE ( STATUS "Using Orca version ${ORCA_VERSION}")
 # ENDIF ( NOT ORCA_MOTHERSHIP )
-MESSAGE ( STATUS "Using CMake version ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}")
-MESSAGE ( STATUS "Using Ice version ${ICE_VERSION}")
-MESSAGE ( STATUS "Will install to ${CMAKE_INSTALL_PREFIX}")
+MESSAGE ( STATUS "Platform          ${CMAKE_SYSTEM}")
+MESSAGE ( STATUS "CMake version     ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}-patch ${CMAKE_PATCH_VERSION}")
+MESSAGE ( STATUS "Ice version       ${ICE_VERSION}")
+MESSAGE ( STATUS "Install dir       ${CMAKE_INSTALL_PREFIX}")
 
 LIST ( LENGTH COMPONENT_LIST COMPONENT_LIST_LENGTH )
 SET ( CL ${COMPONENT_LIST} )

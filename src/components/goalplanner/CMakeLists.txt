@@ -3,25 +3,19 @@ OPTION( BUILD_GOAL_PLANNER "Try to build GoalPlanner" ON )
 IF ( BUILD_GOAL_PLANNER )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    # Remove this line if you don't plan to use libOrcaIce
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+
+    # build common sources into a convenience library
+    BUILD_COMPONENT_SOURCES( GoalPlannerSources )
     
-    #
-    # This gathers all the source files into the variable 'SRCS'
-    #
-    SET( COMMON_SRCS
-            component.cpp
-            localise2dconsumerI.cpp
-            mainloop.cpp
-            pathfollower2dI.cpp
-            pathplanner2dconsumerI.cpp
-        )
+    # build stand-alone component  
+    GLOBAL_ADD_EXECUTABLE( goalplanner main )
+    TARGET_LINK_LIBRARIES( goalplanner GoalPlannerSources )
     
-    GLOBAL_ADD_EXECUTABLE( goalplanner main ${COMMON_SRCS} )
+    # build IceBox service
+    GLOBAL_ADD_LIBRARY( OrcaGoalPlanner SHARED service )
+    TARGET_LINK_LIBRARIES( OrcaGoalPlanner GoalPlannerSources )
     
-    # build an IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaGoalPlanner SHARED service ${COMMON_SRCS} )
-    
-    GENERATE_CONFIG_FILE( goalplanner.def goalplanner )
+    GENERATE_CONFIG_FILE( goalplanner.def )
 
 ENDIF ( BUILD_GOAL_PLANNER )

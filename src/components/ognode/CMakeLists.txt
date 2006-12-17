@@ -1,6 +1,7 @@
+IF ( NOT OS_WIN )
+
 OPTION( BUILD_OGNODE "Try to build OgNode" ON )
 
-IF ( NOT WIN32 )
 IF ( BUILD_OGNODE )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
@@ -17,4 +18,4 @@ IF ( BUILD_OGNODE )
     GENERATE_CONFIG_FILE( ognode.def )
 
 ENDIF ( BUILD_OGNODE )
-ENDIF ( NOT WIN32 )
+ENDIF ( NOT OS_WIN )

@@ -15,22 +15,22 @@ LINK_DIRECTORIES ( ${ICE_HOME}/lib
                    ${PROJECT_BINARY_DIR}/src/interfaces/cpp/orca )
 
 # pass the Orca release version to the library so it can report it through its API
-IF ( NOT WIN32 )
+IF ( NOT OS_WIN )
   # note: for gcc need to produce this in the Makefile: -DORCA_VERSION=\"X.Y.Z\", without
   # escaping the quotes the compiler will strip them off.
   ADD_DEFINITIONS( "-Wall -DORCA_VERSION=\\\"${PROJECT_VERSION}\\\"" )
-ELSE ( NOT WIN32 )
+ELSE ( NOT OS_WIN )
   # windows: turn off deprication warnings  
   ADD_DEFINITIONS( "-Wall -DORCA_VERSION=\"${PROJECT_VERSION}\" -D_CRT_SECURE_NO_DEPRECATE" )
-ENDIF ( NOT WIN32)
+ENDIF ( NOT OS_WIN )
 
 FILE( GLOB SRCS *.cpp )
 
-IF(NOT WIN32)
+IF( NOT OS_WIN )
   GLOBAL_ADD_LIBRARY( OrcaIce SHARED ${SRCS} )
   TARGET_LINK_LIBRARIES( OrcaIce
               Ice IceUtil IceStorm IceBox IceGrid OrcaInterfaces )
-ELSE (NOT WIN32)
+ELSE ( NOT OS_WIN )
   # building shared libs is complicated in windows
   GLOBAL_ADD_LIBRARY( OrcaIce STATIC ${SRCS} )
   # windows... have to link to different libs depending on build type
@@ -39,7 +39,7 @@ ELSE (NOT WIN32)
               debug Iced debug IceUtild debug IceStormd debug IceBoxd debug IceGridd
               optimized Glacier2 debug Glacier2d
               OrcaInterfaces )
-ENDIF (NOT WIN32)
+ENDIF ( NOT OS_WIN )
 
 # special dependency on the generated files
 ADD_DEPENDENCIES( OrcaIce OrcaInterfaces )

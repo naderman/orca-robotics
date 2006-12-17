@@ -1,4 +1,4 @@
-IF ( NOT WIN32 )
+IF ( NOT OS_WIN )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     
@@ -32,4 +32,4 @@ IF ( NOT WIN32 )
     
     INSTALL_FILES( /include/orcaimage .*\\.h$ )
 
-ENDIF ( NOT WIN32 )
+ENDIF ( NOT OS_WIN )

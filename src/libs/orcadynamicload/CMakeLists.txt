@@ -1,4 +1,4 @@
-IF ( NOT WIN32 )
+IF ( NOT OS_WIN )
 
   FILE( GLOB SRCS *.cpp )
   
@@ -8,4 +8,4 @@ IF ( NOT WIN32 )
   
   INSTALL_FILES( /include/orcadynamicload .*\\.h$ ) 
 
-ENDIF ( NOT WIN32 )
+ENDIF ( NOT OS_WIN )

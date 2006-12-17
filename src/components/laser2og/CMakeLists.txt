@@ -1,6 +1,7 @@
+IF ( NOT OS_WIN )
+
 OPTION( BUILD_LASER2OG "Try to build Laser2Og" ON )
 
-IF ( NOT WIN32 )
 IF ( BUILD_LASER2OG )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
@@ -16,4 +17,4 @@ IF ( BUILD_LASER2OG )
     GENERATE_CONFIG_FILE( laser2og.def )
 
 ENDIF ( BUILD_LASER2OG )
-ENDIF ( NOT WIN32 )
+ENDIF ( NOT OS_WIN )

@@ -7,11 +7,11 @@ INCLUDE_DIRECTORIES(
 LINK_DIRECTORIES( ${ICE_HOME}/lib )
 
 # for some reason cannot get shared libs working in windows
-IF(NOT WIN32)
+IF(NOT OS_WIN)
   GLOBAL_ADD_LIBRARY( OrcaDef SHARED defparser.cpp componentdefinition.cpp exceptions.cpp )
-ELSE (NOT WIN32)
+ELSE (NOT OS_WIN)
   GLOBAL_ADD_LIBRARY( OrcaDef STATIC defparser.cpp componentdefinition.cpp exceptions.cpp )
-ENDIF (NOT WIN32)
+ENDIF (NOT OS_WIN)
 
 TARGET_LINK_LIBRARIES( OrcaDef OrcaInterfaces OrcaIce OrcaObjects Ice IceUtil )
 

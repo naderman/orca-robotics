@@ -1,4 +1,4 @@
-IF ( NOT WIN32 )
+IF ( NOT OS_WIN )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
@@ -9,4 +9,4 @@ IF ( NOT WIN32 )
     
     TARGET_LINK_LIBRARIES( OrcaProbeFactory OrcaProbe )
     
-ENDIF ( NOT WIN32 )
+ENDIF ( NOT OS_WIN )

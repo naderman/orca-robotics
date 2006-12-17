@@ -1,14 +1,14 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2006 Ben Upcroft
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
  *
  */
 
-#include "serviceI.h"
+#include "service.h"
 #include "component.h"
 
 using namespace std;
@@ -19,15 +19,15 @@ extern "C"
 
     IceBox::Service* create( Ice::CommunicatorPtr communicator )
     {
-        return new ogmaploader::ServiceI;
+        return new insgps::Service;
     }
 }
 
-namespace ogmaploader {
+namespace insgps{
 
-ServiceI::ServiceI()
+Service::Service()
 {
     component_ = new Component;
 }
 
-}
+} // namespace

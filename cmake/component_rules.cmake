@@ -15,12 +15,12 @@ LINK_DIRECTORIES(
 #
 # Platform-specific compiler and linker flags
 #
-IF ( NOT WIN32 )
+IF ( NOT OS_WIN )
 
     ADD_DEFINITIONS( "-Wall" )
     LINK_LIBRARIES( Ice IceUtil IceStorm ${PROJECT_INTERFACE_LIB} )
 
-ELSE ( NOT WIN32 )
+ELSE ( NOT OS_WIN )
 
     ADD_DEFINITIONS( "-Wall -D_CRT_SECURE_NO_DEPRECATE" )
     # windows... have to link to different libs depending on build type
@@ -28,7 +28,7 @@ ELSE ( NOT WIN32 )
                     debug Iced debug IceUtild debug IceStormd 
                     ${PROJECT_INTERFACE_LIB} )
 
-ENDIF ( NOT WIN32 )
+ENDIF ( NOT OS_WIN )
 
 
 #

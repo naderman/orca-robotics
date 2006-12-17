@@ -23,15 +23,20 @@
 
 #include <orcaice/service.h>
 
+namespace gps
+{
+
 //
 // Class to build the component into an icebox service
 //
-class GpsService : public orcaice::Service
+class Service : public orcaice::Service
 {
 
 public:
-    GpsService();
+    Service();
 
 };
+
+} // namespace
 
 #endif

@@ -1,4 +1,4 @@
-IF ( NOT WIN32 AND QT4_FOUND )
+IF ( NOT OS_WIN AND QT4_FOUND )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
 
@@ -14,8 +14,8 @@ IF ( NOT WIN32 AND QT4_FOUND )
     
     TARGET_LINK_LIBRARIES ( OrcaQUml OrcaDef )
 
-ELSE  ( NOT WIN32 AND QT4_FOUND )
+ELSE  ( NOT OS_WIN AND QT4_FOUND )
 
     MESSAGE( STATUS "Not Planning to Build Library: libOrcaQuml -- Windows or Qt not found")
 
-ENDIF ( NOT WIN32 AND QT4_FOUND )
+ENDIF ( NOT OS_WIN AND QT4_FOUND )

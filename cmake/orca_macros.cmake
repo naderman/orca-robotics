@@ -106,6 +106,26 @@ MACRO( OPTIONAL_SUB_LIBRARY DESCRIPTION SUBDIRECTORY OUTPUT_LIBRARY LINK_LIBS OK
 
 ENDMACRO( OPTIONAL_SUB_LIBRARY DESCRIPTION DIRECTORY LIBNAME )
 
+
+# BUILD_COMPONENT_SOURCES
+#   Builds source files common to stand-alone component and IceStorm service.
+#
+#       BUILD_COMPONENT_SOURCES( CONV_LIB_NAME )
+#   The common sources are compiled into a convenience static library with
+#   specified name.
+#
+MACRO( BUILD_COMPONENT_SOURCES CONV_LIB_NAME )
+    # "common sources" are common to stand-alone component and IceStorm service 
+    # these include ALL .cpp files EXCEPT main.cpp and service.cpp
+    FILE( GLOB COMMON_SRCS *.cpp )
+    LIST( REMOVE_ITEM COMMON_SRCS 
+        "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp" 
+        "${CMAKE_CURRENT_SOURCE_DIR}/service.cpp" )
+
+    # build common sources into a static "convenience" library
+    ADD_LIBRARY ( ${CONV_LIB_NAME} ${COMMON_SRCS} )
+ENDMACRO( BUILD_COMPONENT_SOURCES CONV_LIB_NAME )
+
 #
 # GENERATE_CONFIG_FILE
 #   Rule for generating .cfg files from .def files.
@@ -152,12 +172,12 @@ MACRO( GENERATE_CONFIG_FILE DEF_FILE )
   # The standard CMAKE_CFG_INTDIR does not seem to get resolved in INSTALL_FILES, do it manually
   # alexm: I'm not sure if this is the right way to do it. I think this is a problem only 
   # when trying to install from command line. so maybe not all the variables are set.
-  IF( WIN32 )
+  IF( OS_WIN )
     # VCC defaults to Debug
     SET( MANUAL_CFG_INTDIR "debug" )
-  ELSE( WIN32 )
+  ELSE( OS_WIN )
     SET( MANUAL_CFG_INTDIR "." )
-  ENDIF( WIN32 )
+  ENDIF( OS_WIN )
 
   STRING( REGEX REPLACE "\\.def" ".cfg" CFG_FILE ${DEF_FILE} )
   ADD_CUSTOM_COMMAND( 

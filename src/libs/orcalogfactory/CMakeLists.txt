@@ -1,4 +1,4 @@
-IF ( NOT WIN32 )
+IF ( NOT OS_WIN )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
@@ -20,4 +20,4 @@ IF ( NOT WIN32 )
         ADD_SUBDIRECTORY ( test )
     ENDIF ( BUILD_TESTS )
     
-ENDIF ( NOT WIN32 )
+ENDIF ( NOT OS_WIN )

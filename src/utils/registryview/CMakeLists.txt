@@ -1,6 +1,6 @@
 OPTION( BUILD_REGISTRY_VIEWER "Try to build RegistryView GUI" ON )
 
-IF ( NOT WIN32 )
+IF ( NOT OS_WIN )
 IF ( BUILD_REGISTRY_VIEWER AND QT4_FOUND )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
@@ -27,4 +27,4 @@ ELSE ( BUILD_REGISTRY_VIEWER AND QT4_FOUND )
     MESSAGE( STATUS "Not Planning to Build Utility: RegistryView -- Qt4 not found")
     
 ENDIF ( BUILD_REGISTRY_VIEWER AND QT4_FOUND )
-ENDIF ( NOT WIN32 )
+ENDIF ( NOT OS_WIN )
