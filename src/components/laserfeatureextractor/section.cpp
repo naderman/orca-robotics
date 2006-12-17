@@ -232,20 +232,6 @@ fitLine( const std::vector<SectionEl> &elements,
     for ( int i=0; i < n; i++ )
         delete[] V[i];
     delete[] V;
-
-#if 0
-    double total_error = 0;
-    for (int i = 0; i < m; i++) 
-    {
-        double dist = fabs(eigVectX*elements[i].x() +
-                           eigVectY*elements[i].y() + c);
-
-        total_error += dist;
-    }
-
-    bool isALine = ((total_error/(double)m)) < LINEFIT_ERROR_THRESHOLD;
-    return isALine;
-#endif
 }
 
 bool
@@ -297,8 +283,19 @@ breakAndFitLines( std::vector<Section> &sections, int minPointsInLine, double br
         }
 
         // try to fit a line to the section
-        double eigVectX, eigVectY, c;
-        fitLine( itr->elements(), eigVectX, eigVectY, c );
+        //double eigVectX, eigVectY, c;
+        //fitLine( itr->elements(), eigVectX, eigVectY, c );
+        // Instead: use the line defined by the endpoints
+        double eigVectX =  (itr->elements().back().y()-itr->elements().front().y());
+        double eigVectY = -(itr->elements().back().x()-itr->elements().front().x());
+        double norm = hypotf(eigVectX,eigVectY);
+        eigVectX /= norm;
+        eigVectY /= norm;
+        double c = -eigVectX*itr->elements().front().x() - eigVectY*itr->elements().front().y();
+                
+
+//         cout<<"TRACE(section.cpp): examining line from "<<itr->elements().front().toStringXY()<<" to "<<itr->elements().back().toStringXY() << "("<<itr->elements().size()<<" elements)" << endl;
+//         cout<<"TRACE(section.cpp):               =from "<<itr->elements().front().toStringRB()<<" to "<<itr->elements().back().toStringRB() << endl;
 
         int    pos;
         double maxDist;
@@ -306,6 +303,7 @@ breakAndFitLines( std::vector<Section> &sections, int minPointsInLine, double br
              maxDist >= breakDistThreshold )
         {
             // We should break the line.
+            //cout<<"TRACE(section.cpp): splitting at pos = " << pos << endl;
             
             // Split this section in two:
             //   a newSection just before the current one.
@@ -330,7 +328,11 @@ breakAndFitLines( std::vector<Section> &sections, int minPointsInLine, double br
         else
         {
             if ( (int)(itr->elements().size()) >= minPointsInLine )
+            {
+                // Fit a line properly now
+                fitLine( itr->elements(), eigVectX, eigVectY, c );
                 itr->setIsALine( eigVectX, eigVectY, c, maxDist );
+            }
             ++itr;
         }
     }

@@ -61,7 +61,9 @@ LineExtractor::LineExtractor( orcaice::Context context, double laserMaxRange, bo
     
 void LineExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                                    orca::PolarFeature2dDataPtr &features )
-{  
+{
+//     cout<<"TRACE(lineextractor.cpp): ------------------- addFeatures() --------------------" << endl;
+
     double angleIncrement = laserData->fieldOfView / (double)(laserData->ranges.size()+1);
     
     std::vector<Section> sections;
