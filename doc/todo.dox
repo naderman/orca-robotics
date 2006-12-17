@@ -8,6 +8,15 @@
  *
  */
 
+TEMPLATE
+@par Project wide
+@par New components
+@par New utilities
+@par New libraries
+@par Updated interfaces
+@par Updated components
+@par Updated libraries
+
 /*!
 
 @page orca_doc_todo Changes since Last Release and To-Do List
@@ -15,8 +24,7 @@
 Developers: as you make substantial changes in the code (add features, fix bugs, etc.), add an item in the section on changes. When the next version is released, this list will be cut-and-pasted into the release notes.
 
 
-
-@section todo To-Do List for Next Release
+@section orca_doc_todo_todo To-Do List for Next Release
 
 - OrcaView
   - Make sure changing focus still works.
@@ -28,73 +36,112 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - resolve issue with direct connections withour the registry
     - Topic Tracer to attempt reconnections
 
-@section changes Changes since Last Release
+@section orca_doc_history_head Changes since Last Release
 
+@par Project wide
 
+- Build system
+    - New CMake macro BUILD_COMPONENT_SOURCES to simplify building both stand-alone component and an IceBox service. 
+        Internally it builds a convenience library which cuts down compilation time in half.
+    - Defined new CMake variables to establish the local OS: OS_LINUX, OS_QNX, OS_WIN.
 
-@section orca_doc_todo_history Changes in Past Releases
+@par New components
 
-@par Changes in Release 2.1.1
+@par New utilities
+
+@par New libraries
+
+@par Updated interfaces
+
+@par Updated components
+
+@par Updated libraries
+
+@section orca_doc_history_211 Changes in Release 2.1.1
+
+@par Project wide
 
 - Build system
     - split utils directory into libs and utils. components are not affected.
-- libOrcaIce
-    - added basename() and dirname() similar to Unix equivalents (Alex M.)
-    - added ctest for string utilities (Alex M.)
-    - added pathDelimeter() function to sysutils (Alex M.)
-    - added toString and "reverse" functions for several BROS-I structures. added tests. (Alex M.)
+- Documentation
+    - added graphical UML symbol to documentation pages of all components.
+    - added separate listing of libs and utils.
+    - fixed broken doxygen references.
+
+@par New components
+
+- InsGps (Ben Upcroft)
+    - hardware component for Inertial navigation systems which include IMU and GPS units. It 
+    provides raw imu data, gps data, and position3d data. It is also planned that Localise3d interface will also 
+    be provided. At present, the Novatel Span INS system is supported.
+
+@par New utilities
+
+- def2cfg, def2xml, def2xmltemplate, def2definverted, def2uml
+    - the first 4 are renamed from generatecfg, etc. and moved into a separate dir.
+    - new utility def2uml for creating images of UML symbols from component definition files.
+
+@par New libraries
+
+- libOrcaDynamicLoad
+    - factored out the dynamic loading stuff into a separate library (Alex B.)
+- libOrcaQUml (Alex M.)
+    - port of old libQorcaUml from QCanvas to QGraphicView
+- libOrcaQt
+    - factored out commonly used Qt elements. Currently contains the Orca icon and 
+        aboutOrca() function.
+
+@par Updated interfaces
+
+- PolarFeature2d
+    - Added two fields to all features: pFalsePositive and pTruePositive, to characterise
+        feature detection reliability (Alex B.)
+    - Allowed different feature representations using inheritence (Alex B.)
+- FeatureMap2d
+    - Added field to each feature: pExists.  Quantifies the certainty that the feature
+        is really there. (Alex B.)
+    - Allowed different feature representations using inheritence (Alex B.)
+- OgMap interface
+    - added a user-defined type, useful to determine the type of certainty grid map, e.g. hazard, ogmap, motion etc. (Tobias K.)
+
+@par Updated components
+
 - LogPlayer component (Alex M.)
     - interface name is set properly on replay
     - interfaces are initialized before waiting for user input to start repla
     - execution dir of logplayer and the dir where logs are stored may be different
     - custom begin and end time of replay are working again
     - it's possible to step through data objects one at a time by  settiing ReplayRate=0
-- libOrcaQGui
-  - renamed from libOrcaGui
-  - Made the generic bits in libOrcaQGui unaware of any specific bits in libOrcaQGui2d (Alex B.)
-  - Added support for dynamically-loaded plug-in GuiElementFactories, to allow satelite projects to 
-    extend the GUI (Alex B.)
-  - Added support for line features (Alex B.)
-  - Added a fix for multiple-subscriptions and increased re-subscribe timeout (Alex B.)
-- PolarFeature2d interface
-  - Added two fields to all features: pFalsePositive and pTruePositive, to characterise
-    feature detection reliability (Alex B.)
-  - Allowed different feature representations using inheritence (Alex B.)
-- FeatureMap2d interface
-  - Added field to each feature: pExists.  Quantifies the certainty that the feature
-    is really there. (Alex B.)
-  - Allowed different feature representations using inheritence (Alex B.)
 - LaserFeatureExtractor
-  - Huge Overhaul, plus added line features (Alex B.)
+    - Huge Overhaul, plus added line features (Alex B.)
 - Probe utility (Alex M.)
     - using dynamically loaded factory libraries to allow use with satellite projects
     - added a gui driver
-- New library: libOrcaDynamicLoad
-  - factored out the dynamic loading stuff into a separate library (Alex B.)
-- New library: libOrcaQUml (Alex M.)
-  - port of old libQorcaUml from QCanvas to QGraphicView
-- New utilities: def2cfg, def2xml, def2xmltemplate, def2definverted, def2uml
-  - the first 4 are renamed from generatecfg, etc. and moved into a separate dir.
-  - new utility def2uml for creating images of UML symbols from component definition files.
-- libOrcaCompModel
-  - improved exception handling when contacting the Registry (Alex M.)
-- New library: libOrcaQt
-  - factored out commonly used Qt elements. Currently contains the Orca icon and 
-    aboutOrca() function.
-- Documentation
-  - added graphical UML symbol to documentation pages of all components. (Alex M.)
-  - separate listing of libs and utils (Alex M.)
-  - fixed broken doxygen references. (Alex M.)
 - OrcaView
     - now supports guielements with multiple interfaces, see e.g. ogmapscombined (Tobias K.)
 - PathPlanner
     - fixed potential problem with skeleton (zeromap is now a map of ints) (Tobias K.)
 - GoalPlanner
     - throws remote exception if there are more than one localisation hypotheses (Tobias K.)
-- OgMap interface
-    - added a user-defined type, useful to determine the type of certainty grid map, e.g. hazard, ogmap, motion etc. (Tobias K.)
+
+@par Updated libraries
+
+- libOrcaIce
+    - added basename() and dirname() similar to Unix equivalents (Alex M.)
+    - added ctest for string utilities (Alex M.)
+    - added pathDelimeter() function to sysutils (Alex M.)
+    - added toString and "reverse" functions for several BROS-I structures. added tests. (Alex M.)
+- libOrcaQGui
+    - renamed from libOrcaGui
+    - Made the generic bits in libOrcaQGui unaware of any specific bits in libOrcaQGui2d (Alex B.)
+    - Added support for dynamically-loaded plug-in GuiElementFactories, to allow satelite projects to 
+        extend the GUI (Alex B.)
+    - Added support for line features (Alex B.)
+    - Added a fix for multiple-subscriptions and increased re-subscribe timeout (Alex B.)
+- libOrcaCompModel
+    - improved exception handling when contacting the Registry (Alex M.)
     
-@par Changes in Release 2.1.0
+@section orca_doc_history_210 Changes in Release 2.1.0
 
 - Build system
     - Solaris compatability (Christopher Brooks, Alex Brooks)
@@ -150,7 +197,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Orca for Java
     - now works with Debian package of IceJ (Alex M.)
 
-@par Changes in Release 2.0.2
+@section orca_doc_history_202 Changes in Release 2.0.2
 
 - Build system
     - User preference for installation directory are no longer overwritten.
@@ -185,7 +232,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
       and usb cameras.
     - Ben Upcroft
 
-@par Changes in Release 2.0.1
+@section orca_doc_history_201 Changes in Release 2.0.1
 
 - New components: ognode & laser2og
   - For (cooperative) occupancy-grid mapping
