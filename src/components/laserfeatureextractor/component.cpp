@@ -39,6 +39,7 @@ Component::~Component()
 //          be declared as member variables.
 void Component::start()
 {
+    context().tracer()->info( "Starting component..." );
     //
     // PROVIDED: PolarFeatures
     //
@@ -111,6 +112,7 @@ void Component::start()
 
 void Component::stop()
 {
+    tracer()->info("stopping component...");
     if ( mainLoop_ ) {
         IceUtil::ThreadControl algoControl = mainLoop_->getThreadControl();
         tracer()->debug("stopping algorithm handler", 5 );
