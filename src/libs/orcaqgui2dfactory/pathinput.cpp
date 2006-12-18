@@ -364,7 +364,7 @@ readWaypointSettings( const orcaice::Context  &context )
 
     float timePeriod = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"TimePeriod", 5.0 );
     float distanceTolerance = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"DistanceTolerance", 1.0 );
-    int headingTolerance = orcaice::getPropertyAsIntWithDefault( prop, prefix+"HeadingTolerance", 45 );
+    int headingTolerance = orcaice::getPropertyAsIntWithDefault( prop, prefix+"HeadingTolerance", 90 );
     float maxApproachSpeed = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxApproachSpeed", 2e6 );
     int maxApproachTurnrate = orcaice::getPropertyAsIntWithDefault( prop, prefix+"MaxApproachTurnRate", 6000000 );
     WaypointSettings wpSettings(timePeriod, distanceTolerance, headingTolerance, maxApproachSpeed, maxApproachTurnrate);
