@@ -27,14 +27,15 @@ class IHumanManager;
 class WaypointSettings
 {
     public:
-        WaypointSettings(float a, float b, int c, float d, int e):
-            timePeriod(a), distanceTolerance(b), headingTolerance(c), maxApproachSpeed(d), maxApproachTurnrate(e)
+        WaypointSettings(float a, float b, int c, float d, int e, int f):
+            timePeriod(a), distanceTolerance(b), headingTolerance(c), maxApproachSpeed(d), maxApproachTurnrate(e), numberOfLoops(f)
             {}
             float timePeriod;
             float distanceTolerance;
             int headingTolerance;
             float maxApproachSpeed;
             int maxApproachTurnrate;
+            int numberOfLoops;
 };
 
 class PathInput

@@ -230,7 +230,7 @@ void PathInput::changeWpParameters( QPointF p1 )
 void 
 PathInput::savePath( const QString &fileName, IHumanManager *humanManager ) const
 {
-    int size=waypoints_.size();
+    int size=wpSettings_->numberOfLoops * waypoints_.size();
     
     if (size==0)
     {
@@ -245,15 +245,18 @@ PathInput::savePath( const QString &fileName, IHumanManager *humanManager ) cons
     }
 
     QTextStream out(&file);
-    for (int i=0; i<size; i++)
+    for (int k=0; k<wpSettings_->numberOfLoops; k++)
     {
-        out << waypoints_[i].x() << " " << waypoints_[i].y() << " "
-                << headings_[i] << " "
-                << times_[i] << " "
-                << distTolerances_[i] << " "
-                << headingTolerances_[i]<< " "
-                << maxSpeeds_[i]<< " "
-                << maxTurnrates_[i]<< "\n";
+        for (int i=0; i<waypoints_.size(); i++)
+        {
+            out << waypoints_[i].x() << " " << waypoints_[i].y() << " "
+                    << headings_[i] << " "
+                    << times_[i] << " "
+                    << distTolerances_[i] << " "
+                    << headingTolerances_[i]<< " "
+                    << maxSpeeds_[i]<< " "
+                    << maxTurnrates_[i]<< "\n";
+        }
     }
     
     file.close();
@@ -268,31 +271,39 @@ PathFollowerInput::PathFollowerInput( WaypointSettings *wpSettings )
 orca::PathFollower2dDataPtr 
 PathFollowerInput::getPath() const
 {
-    int size = waypoints_.size();
+    int size = wpSettings_->numberOfLoops * waypoints_.size();
+    cout << "DEBUG(pathinput.cpp): size is " << size << endl;
     
     orca::PathFollower2dDataPtr pathData = new orca::PathFollower2dData;
     pathData->path.resize( size );
+    int counter = -1;
     
-    for (int i=0; i<size; i++)
+    for (int k=0; k<wpSettings_->numberOfLoops; k++)
     {
-        float heading = headings_[i]/16;
-        if (heading>180.0) {
-            heading = heading - 360.0;
-        }
-        float headingTolerance = headingTolerances_[i]/16;
-        if (headingTolerance>180.0) {
-            headingTolerance = headingTolerance - 360.0;
-        }
-
-        pathData->path[i].target.p.x = waypoints_[i].x();
-        pathData->path[i].target.p.y = waypoints_[i].y();
-        pathData->path[i].target.o = heading/180.0 * M_PI;
-        pathData->path[i].distanceTolerance = distTolerances_[i];
-        pathData->path[i].headingTolerance = (float)headingTolerance/180.0*M_PI;      
-        pathData->path[i].timeTarget = orcaice::toOrcaTime( times_[i] );
+        for (int i=0; i<waypoints_.size(); i++)
+        {
+            counter++;
+            cout << "counter: " << counter << endl;
             
-        pathData->path[i].maxApproachSpeed = maxSpeeds_[i];
-        pathData->path[i].maxApproachTurnrate = (float)maxTurnrates_[i]/180.0*M_PI;
+            float heading = headings_[i]/16;
+            if (heading>180.0) {
+                heading = heading - 360.0;
+            }
+            float headingTolerance = headingTolerances_[i]/16;
+            if (headingTolerance>180.0) {
+                headingTolerance = headingTolerance - 360.0;
+            }
+    
+            pathData->path[counter].target.p.x = waypoints_[i].x();
+            pathData->path[counter].target.p.y = waypoints_[i].y();
+            pathData->path[counter].target.o = heading/180.0 * M_PI;
+            pathData->path[counter].distanceTolerance = distTolerances_[i];
+            pathData->path[counter].headingTolerance = (float)headingTolerance/180.0*M_PI;      
+            pathData->path[counter].timeTarget = orcaice::toOrcaTime( times_[i] );
+                
+            pathData->path[counter].maxApproachSpeed = maxSpeeds_[i];
+            pathData->path[counter].maxApproachTurnrate = (float)maxTurnrates_[i]/180.0*M_PI;
+        }
     }
 
     return pathData;
@@ -308,6 +319,7 @@ PathPlannerInput::getTask() const
         
     for (int i=0; i<size; i++)
     {
+        
         float heading = headings_[i]/16;
         if (heading>180.0) {
             heading = heading - 360.0;
@@ -328,7 +340,6 @@ PathPlannerInput::getTask() const
             
         task->coarsePath[i] = wp;
     }
-
     return task;
 }
 
@@ -361,13 +372,14 @@ readWaypointSettings( const orcaice::Context  &context )
 {
     Ice::PropertiesPtr prop = context.properties();
     std::string prefix = context.tag() + ".Config.";
-
+    
     float timePeriod = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"TimePeriod", 5.0 );
     float distanceTolerance = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"DistanceTolerance", 1.0 );
     int headingTolerance = orcaice::getPropertyAsIntWithDefault( prop, prefix+"HeadingTolerance", 90 );
     float maxApproachSpeed = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxApproachSpeed", 2e6 );
     int maxApproachTurnrate = orcaice::getPropertyAsIntWithDefault( prop, prefix+"MaxApproachTurnRate", 6000000 );
-    WaypointSettings wpSettings(timePeriod, distanceTolerance, headingTolerance, maxApproachSpeed, maxApproachTurnrate);
+    int numberOfLoops = orcaice::getPropertyAsIntWithDefault( prop, prefix+"NumberOfLoops", 1 );
+    WaypointSettings wpSettings(timePeriod, distanceTolerance, headingTolerance, maxApproachSpeed, maxApproachTurnrate, numberOfLoops);
     return wpSettings;
 }
 
