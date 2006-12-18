@@ -425,20 +425,14 @@ int VFH_Algorithm::Update_VFH( double laser_ranges[REQUIRED_NUM_RANGES][2],
   // the actual speed.
   // Ensure that this speed is positive.
   //
-  int current_pos_speed;
-  if ( current_speed < 0 )
-  {
+  int current_pos_speed = current_speed;
+  if ( current_pos_speed < 0 )
       current_pos_speed = 0;
-  }
-  else
-  {
-      current_pos_speed = current_speed;
-  }
 
+#if 0
   if ( current_pos_speed < last_chosen_speed )
-  {
       current_pos_speed = last_chosen_speed;
-  }
+#endif
   // printf("Update_VFH: current_pos_speed = %d\n",current_pos_speed);
 
 
@@ -516,7 +510,7 @@ int VFH_Algorithm::Update_VFH( double laser_ranges[REQUIRED_NUM_RANGES][2],
   }
 
   // Acc/Decelerate (if we're not already at Max_Speed_For_Picked_Angle or stopped).
-  chosen_speed = MAX( 1, MIN( last_chosen_speed + speed_incr, Max_Speed_For_Picked_Angle ) );
+  chosen_speed = MAX( 1, MIN( current_pos_speed + speed_incr, Max_Speed_For_Picked_Angle ) );
 
   if ( VERBOSITY > 2 )
   {
