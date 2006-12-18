@@ -7,8 +7,9 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_DR_MAIN_LOOP_H
-#define ORCA2_DR_MAIN_LOOP_H
+
+#ifndef ORCA2_DRUNK_ROBOT_MAIN_LOOP_H
+#define ORCA2_DRUNK_ROBOT_MAIN_LOOP_H
 
 
 #include <orcaice/thread.h>
@@ -16,22 +17,26 @@
 
 #include <orca/position2d.h>
 
+namespace drunk 
+{
+
 // Implements the main loop of our drunken robot.
 // It's very convenient to inherit from orcaice::Thread
 // as it means really we only have to implement one method:
 // run().
 
 
-class DrunkRobotMainLoop: public orcaice::Thread {
+class MainLoop: public orcaice::Thread 
+{
 public: 
 
     // The posData pointer tells us where to put the data
     // The Consumer is a proxy for IceStorm, we will use that to pass data to 
     // Ice storm. 
-    DrunkRobotMainLoop(orcaice::PtrBuffer<orca::Position2dDataPtr> &posData,
+    MainLoop(orcaice::PtrBuffer<orca::Position2dDataPtr> &posData,
                        const orca::Position2dConsumerPrx &position2dConsumer);
 
-    ~DrunkRobotMainLoop(); 
+    ~MainLoop(); 
 
     virtual void run();
 
@@ -40,5 +45,7 @@ private:
 
     orca::Position2dConsumerPrx position2dConsumer_;
 };
+
+} // namespace
 
 #endif

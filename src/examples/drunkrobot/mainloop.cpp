@@ -10,25 +10,25 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 
-#include "drunkrobotmainloop.h"
+#include "mainloop.h"
 
 using namespace std;
-using namespace orca;
-using namespace orcaice; 
+using namespace drunk; 
 
-DrunkRobotMainLoop::DrunkRobotMainLoop(PtrBuffer<Position2dDataPtr> &posBuffer,
-                                       const Position2dConsumerPrx &position2dConsumer):
-    posBuffer_(posBuffer), position2dConsumer_(position2dConsumer)
+MainLoop::MainLoop( orcaice::PtrBuffer<orca::Position2dDataPtr> &posBuffer,
+                    const orca::Position2dConsumerPrx &position2dConsumer):
+    posBuffer_(posBuffer), 
+    position2dConsumer_(position2dConsumer)
 {
     //Nothing to do. 
 }
 
-DrunkRobotMainLoop::~DrunkRobotMainLoop(){
+MainLoop::~MainLoop(){
 
 }
 
 void
-DrunkRobotMainLoop::run(){
+MainLoop::run(){
 
     cout << "Ok, starting thread ..." << endl; 
     int msgCount = 0; 
@@ -36,8 +36,8 @@ DrunkRobotMainLoop::run(){
     {
 
         // Generate a random position every time stemp. 
-        Position2dDataPtr currentPos = new Position2dData;
-        setSane(currentPos); // Function from libOrcaIce that provides reasonable random values.
+        orca::Position2dDataPtr currentPos = new orca::Position2dData;
+        orcaice::setSane(currentPos); // Function from libOrcaIce that provides reasonable random values.
 
         cout << "Message: " << msgCount ++ << " Position is: " << orcaice::toString(currentPos) << endl; 
 

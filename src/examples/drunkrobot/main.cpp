@@ -7,12 +7,13 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
+
 #include <orcaice/application.h>
-#include "drunkrobotcomponent.h"
+#include "component.h"
 
 int main(int argc, char * argv[])
 {
-    DrunkRobotComponent component;
+    drunk::Component component;
     orcaice::Application app( component );
     return app.main(argc, argv);
 }

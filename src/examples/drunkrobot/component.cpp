@@ -14,31 +14,30 @@
 
 // Include headers for the main loop and components. 
 
-#include "drunkrobotcomponent.h"
-#include "drunkrobotmainloop.h"
+#include "component.h"
+#include "mainloop.h"
 
 //Also include headers for position2dI.h
 
 #include "position2dI.h"
 
 using namespace std;
-using namespace orca;
-using namespace orcaice; 
+using namespace drunk; 
 
-DrunkRobotComponent::DrunkRobotComponent():
+Component::Component():
     orcaice::Component("DrunkRobot"), 
-    mainLoop_(NULL),
-    geom_(new Position2dGeometry)
+    mainLoop_(0),
+    geom_(new orca::Position2dGeometry)
 {
 
 }
 
-DrunkRobotComponent::~DrunkRobotComponent(){
+Component::~Component(){
 
 }
 
 void
-DrunkRobotComponent::start(){
+Component::start(){
 
     // Get a reasonable geometry. 
 
@@ -51,7 +50,7 @@ DrunkRobotComponent::start(){
     geom_->size.w = 0.1;  
 
 
-    IceStorm::TopicPrx topicPrx = orcaice::connectToTopicWithTag<Position2dConsumerPrx>
+    IceStorm::TopicPrx topicPrx = orcaice::connectToTopicWithTag<orca::Position2dConsumerPrx>
         ( context(), position2dConsumer_, "Position2d" );
 
     //First set up our proxies so other people can talk to us:
@@ -63,14 +62,14 @@ DrunkRobotComponent::start(){
     activate();
 
     // then we get the main loop started. 
-    mainLoop_ = new DrunkRobotMainLoop( posBuffer_, position2dConsumer_);
+    mainLoop_ = new MainLoop( posBuffer_, position2dConsumer_);
 
     mainLoop_->start();
 
 }
 
 void
-DrunkRobotComponent::stop()
+Component::stop()
 {
     cout<<"stopping loop"<<endl;
     // Tell the main loop to stop and wait for it to comply
