@@ -29,6 +29,7 @@ Component{
     pick        Interface   {loadInterface showInterface}
     reload      Component   {pickLastComponent loadComponent showComponent}
     up          Platform    showPlatform
+    top         Registry    showRegistry
     fault       Platform    showPlatform
     deactivate  Idle        quit
 }
@@ -37,7 +38,7 @@ Interface{
     pick        Operation   {loadOperation showOperation}
     reload      Interface   {pickLastInterface loadInterface showInterface}
     up          Component   showComponent
-    top         Registry    loadRegistry
+    top         Registry    showRegistry
     fault       Component   showComponent
     deactivate  Idle        quit
 }

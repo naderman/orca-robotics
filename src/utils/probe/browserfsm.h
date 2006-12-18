@@ -64,6 +64,7 @@ public:
         {return("Component");};
     virtual void deactivate(BrowserFsm&);
     virtual void fault(BrowserFsm&);
+    virtual void top(BrowserFsm&);
     virtual void up(BrowserFsm&);
     virtual void reload(BrowserFsm&);
     virtual void pick(BrowserFsm&);

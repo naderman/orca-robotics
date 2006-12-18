@@ -374,7 +374,7 @@ home2hierarch1( const RegistryHomeData & registryHomeData )
 }
 
 RegistryHierarchicalData2
-home2hierarch2( const RegistryHomeData & registryHomeData, const PlatformHeader & platform )
+home2hierarch2( const RegistryHomeData & registryHomeData, const PlatformHeader & platform, bool tryToPing )
 {
     RegistryHierarchicalData2 hierData;
 
@@ -385,7 +385,7 @@ home2hierarch2( const RegistryHomeData & registryHomeData, const PlatformHeader 
 
     std::string adapt;
     orca::FQComponentName compName;
-    HomeHeader homeHeader;
+
     for ( unsigned int i=0; i<registryHomeData.homes.size(); ++i ) {
         // local call
         adapt = registryHomeData.homes[i].proxy->ice_getAdapterId();
@@ -393,7 +393,23 @@ home2hierarch2( const RegistryHomeData & registryHomeData, const PlatformHeader 
         
         // select home headers on the given platform
         if ( compName.platform == platform.name ) {
-            hierData.homes.push_back( registryHomeData.homes[i] );
+
+            HomeHeader homeHeader = registryHomeData.homes[i];
+            // first, we are optimistic
+            homeHeader.isReachable = true;
+            // ping each component's Home interface, if requested
+            if ( tryToPing ) {
+                try {
+                    homeHeader.proxy->ice_ping();
+                }
+                catch( const Ice::Exception & )
+                {
+                    homeHeader.isReachable = false;
+                }
+                homeHeader.address = "not implemented";
+            }
+            // store it
+            hierData.homes.push_back( homeHeader );
         }
     }
     cout<<"DEBUG: filtered "<<registryHomeData.homes.size()<<" homes into "<<hierData.homes.size()<<" on platform "<<hierData.platform.name<<endl;

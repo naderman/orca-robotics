@@ -25,8 +25,8 @@ HomeProbe::HomeProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriv
 {
     id_ = "::orca::Home";
     
-    addOperation( "getInterfaces" );
-    addOperation( "getProperties" );
+    addOperation( "getInterfaces", "nonmutating HomeData getInterfaces()" );
+    addOperation( "getProperties", "nonmutating ComponentProperties getProperties()" );
 }
 
 int 

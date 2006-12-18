@@ -103,7 +103,7 @@ void BrowserFsmInterfaceState::fault(BrowserFsm& s) {
 void BrowserFsmInterfaceState::top(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.SetState(BrowserFsm::RegistryState);
-    s.loadRegistry();
+    s.showRegistry();
 }
 void BrowserFsmInterfaceState::up(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
@@ -132,6 +132,11 @@ void BrowserFsmComponentState::fault(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);
     s.SetState(BrowserFsm::PlatformState);
     s.showPlatform();
+}
+void BrowserFsmComponentState::top(BrowserFsm& s) {
+    IceUtil::Mutex::Lock lock(s.mutex_);
+    s.SetState(BrowserFsm::RegistryState);
+    s.showRegistry();
 }
 void BrowserFsmComponentState::up(BrowserFsm& s) {
     IceUtil::Mutex::Lock lock(s.mutex_);

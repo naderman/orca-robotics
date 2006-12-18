@@ -10,11 +10,13 @@
 
 TEMPLATE
 @par Project wide
+@par New interfaces
 @par New components
 @par New utilities
 @par New libraries
 @par Updated interfaces
 @par Updated components
+@par Updated utilities
 @par Updated libraries
 
 /*!
@@ -45,6 +47,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
         Internally it builds a convenience library which cuts down compilation time in half.
     - Defined new CMake variables to establish the local OS: OS_LINUX, OS_QNX, OS_WIN.
 
+@par New interfaces
+
 @par New components
 
 @par New utilities
@@ -55,7 +59,12 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated components
 
+@par Updated utilities
+
 @par Updated libraries
+
+- libOrcaProbeFactory
+    - added support for Status interface
 
 @section orca_doc_history_211 Changes in Release 2.1.1
 

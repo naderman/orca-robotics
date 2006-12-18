@@ -49,6 +49,8 @@ public:
     virtual void showInterface()=0;
     
     virtual void showOperation()=0;
+
+    virtual void showResult()=0;
 };
 
 } // namespace
