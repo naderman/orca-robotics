@@ -124,6 +124,8 @@ MACRO( BUILD_COMPONENT_SOURCES CONV_LIB_NAME )
 
     # build common sources into a static "convenience" library
     ADD_LIBRARY ( ${CONV_LIB_NAME} ${COMMON_SRCS} )
+    # special dependency on the generated files
+    ADD_DEPENDENCIES( ${CONV_LIB_NAME} OrcaInterfaces )
 ENDMACRO( BUILD_COMPONENT_SOURCES CONV_LIB_NAME )
 
 #
