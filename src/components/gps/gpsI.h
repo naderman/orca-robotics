@@ -42,7 +42,7 @@ class GpsI : public orca::Gps
 {
 public:
     GpsI(orca::GpsDescriptionPtr descr,
-         orcaice::Context        context);
+         const orcaice::Context & context);
 
     // remote calls:
 

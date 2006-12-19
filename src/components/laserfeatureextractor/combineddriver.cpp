@@ -25,7 +25,7 @@ using namespace orcaice;
 
 namespace laserfeatures {
 
-CombinedDriver::CombinedDriver( orcaice::Context context, double maxRange, int numberOfSamples )
+CombinedDriver::CombinedDriver( const orcaice::Context & context, double maxRange, int numberOfSamples )
 {
     std::string prefix = context.tag() + ".Config.";
     Ice::PropertiesPtr prop = context.properties();

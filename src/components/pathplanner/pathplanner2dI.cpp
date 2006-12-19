@@ -21,7 +21,7 @@ using namespace pathplanner;
 PathPlanner2dI::PathPlanner2dI( 
         orcaice::PtrProxy<orca::PathPlanner2dTaskPtr> &pathPlannerTaskProxy,
         orcaice::PtrProxy<orca::PathPlanner2dDataPtr> &pathPlannerDataProxy,
-        orcaice::Context context)
+        const orcaice::Context & context )
             : pathPlannerTaskProxy_(pathPlannerTaskProxy),
               pathPlannerDataProxy_(pathPlannerDataProxy),
               context_(context)

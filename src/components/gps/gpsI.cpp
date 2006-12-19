@@ -27,7 +27,7 @@ using namespace std;
 using namespace orca;
 
 GpsI::GpsI(GpsDescriptionPtr   descr,
-           orcaice::Context   context )
+           const orcaice::Context & context )
     : descr_(descr),
     context_(context)
 {

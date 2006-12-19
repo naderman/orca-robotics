@@ -127,7 +127,7 @@ class PathPlanner2dElement : public orcaqgui::IceStormElement<PathPainter,
 
 public: 
 
-    PathPlanner2dElement( const orcaice::Context context,
+    PathPlanner2dElement( const orcaice::Context & context,
                           const std::string &proxyString,
                           IHumanManager* humanManager );
     ~PathPlanner2dElement();

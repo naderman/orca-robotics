@@ -32,7 +32,7 @@ class VfhDriver : public localnav::LocalNavDriver
 public: 
 
     VfhDriver( const localnav::GoalWatcher &goalWatcher,
-               orcaice::Context             context );
+               const orcaice::Context & context );
     virtual ~VfhDriver();
 
     virtual void setLocalNavParameters( localnav::LocalNavParameters params );

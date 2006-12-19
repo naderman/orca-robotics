@@ -23,7 +23,7 @@ MainLoop::MainLoop( const Localise2dConsumerPrx                    localise2dCon
                     orcaice::PtrBuffer<Localise2dDataPtr>         &historyBuffer,
 		    double                                         stdDevPosition,
 		    double                                         stdDevHeading,
-		    orcaice::Context                               context)
+		    const orcaice::Context & context)
 
     : localise2dConsumer_(localise2dConsumer),
       posBuffer_(posBuffer),

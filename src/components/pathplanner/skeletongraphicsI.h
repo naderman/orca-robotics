@@ -32,7 +32,7 @@ class SkeletonGraphicsI : public orca::QGraphics2d
 {
 public:
 
-    SkeletonGraphicsI( orcaice::Context context, const std::string &tag );
+    SkeletonGraphicsI( const orcaice::Context & context, const std::string &tag );
 
     // Remote calls:
 

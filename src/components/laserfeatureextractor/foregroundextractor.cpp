@@ -28,7 +28,7 @@ namespace {
     const double P_TRUE_POSITIVE  = 0.5;
 }
 
-ForegroundExtractor::ForegroundExtractor( orcaice::Context context, double laserMaxRange )
+ForegroundExtractor::ForegroundExtractor( const orcaice::Context & context, double laserMaxRange )
     : laserMaxRange_( laserMaxRange )
 {
     std::string prefix = context.tag() + ".Config.FGPoints.";

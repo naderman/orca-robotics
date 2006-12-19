@@ -23,7 +23,7 @@ namespace localnav {
 LocalNavManager::LocalNavManager( LocalNavDriver   &localNavDriver,
                                   GoalWatcher      &goalWatcher,
                                   PathMaintainer   &pathMaintainer,
-                                  orcaice::Context  context)
+                                  const orcaice::Context & context)
     : localNavDriver_(localNavDriver),
       goalWatcher_(goalWatcher),
       pathMaintainer_(pathMaintainer),

@@ -18,11 +18,11 @@ using namespace ognode;
 Handler::Handler(OgMapI& OgMapInterface,
                 orcaice::PtrBuffer<orca::OgFusionDataPtr> &OgFusionDataBuffer,
                 orcaogmap::OgMap& localMap,
-                orcaice::Context current )
+                const orcaice::Context & context)
     : ogMapInterface_(OgMapInterface),
     OgFusionDataBuffer_(OgFusionDataBuffer),
     localMap_(localMap),
-    context_(current)
+    context_(context)
 {
 }
 

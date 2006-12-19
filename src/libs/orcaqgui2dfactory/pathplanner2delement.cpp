@@ -93,7 +93,7 @@ PathplannerButtons::setWpButton( bool onOff )
 }
 /////////////////////////////////////////////////////
 
-PathPlanner2dElement::PathPlanner2dElement( orcaice::Context   context,
+PathPlanner2dElement::PathPlanner2dElement( const orcaice::Context & context,
                                             const std::string &proxyString,
                                             IHumanManager* humanManager )
     : IceStormElement<  PathPainter,
@@ -110,7 +110,7 @@ PathPlanner2dElement::PathPlanner2dElement( orcaice::Context   context,
                proxyString,
                humanManager,
                painter_,
-               readWaypointSettings( context ) )
+               readWaypointSettings( context_.properties(), context_.tag() ) )
 {
     cout<<"TRACE(pathplanner2delement.cpp): Instantiating w/ proxyString '" << proxyString << "'" << endl;   
     pathTaskAnswerConsumer_ = new PathPlannerTaskAnswerConsumer;

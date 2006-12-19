@@ -19,7 +19,7 @@ namespace ogmaploader {
 
 OgMapI::OgMapI( orca::OgMapDataPtr  theMap,
                 const std::string  &tag,
-                orcaice::Context    context )
+                const orcaice::Context & context )
     : context_(context)
 {
     // Find IceStorm Topic to which we'll publish

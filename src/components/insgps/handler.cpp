@@ -18,7 +18,7 @@ namespace insgps{
 
 Handler::Handler(InsGpsI&           insGpsI,
                  insgps::Driver*    hwDriver,
-                 orcaice::Context   context )
+                 const orcaice::Context & context )
     : insGpsI_(&insGpsI),
       hwDriver_(hwDriver),
       context_(context)

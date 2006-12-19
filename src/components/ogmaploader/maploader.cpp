@@ -19,7 +19,7 @@ using namespace orca;
 namespace ogmaploader {
     
 int
-loadIceStream( orcaice::Context context, std::string filename, OgMapDataPtr &map )
+loadIceStream( const orcaice::Context & context, std::string filename, OgMapDataPtr &map )
 {
     std::ifstream *logFile = new std::ifstream( filename.c_str(), ios::binary|ios::in );
     if ( !logFile->is_open() )
@@ -57,7 +57,7 @@ loadIceStream( orcaice::Context context, std::string filename, OgMapDataPtr &map
 }
 
 void 
-loadMapFromFile( orcaice::Context context, orca::OgMapDataPtr &map )
+loadMapFromFile( const orcaice::Context & context, orca::OgMapDataPtr &map )
 {
     Ice::PropertiesPtr prop = context.properties();
     std::string prefix = context.tag();

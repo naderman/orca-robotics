@@ -19,7 +19,7 @@ using namespace insgps;
 
 Position3dI::Position3dI( Position3dDescriptionPtr  descr,
                           Driver*                   hwDriver,
-                          orcaice::Context          context )
+                          const orcaice::Context & context )
     :   InsGpsI(context),
         descr_(descr),
         hwDriver_(hwDriver),

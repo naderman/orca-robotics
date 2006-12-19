@@ -27,7 +27,7 @@ class Heartbeater
 
 public: 
 
-    Heartbeater( orcaice::Context context, double secBetweenHeartbeats = 10.0, double urgencyDivider=4.0 );
+    Heartbeater( const orcaice::Context & context, double secBetweenHeartbeats = 10.0, double urgencyDivider=4.0 );
 
     //! Is it time for the next heartbeat?
     bool isHeartbeatTime();

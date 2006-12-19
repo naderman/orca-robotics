@@ -20,7 +20,7 @@ namespace featuremaploader {
 
 FeatureMap2dI::FeatureMap2dI( orca::FeatureMap2dDataPtr theMap,
                               const std::string  &tag,
-                              orcaice::Context    context )
+                              const orcaice::Context & context )
     : theMap_( theMap ),
       context_(context)
 {

@@ -29,7 +29,7 @@ using namespace std;
 
 namespace laserfeatures {
 
-LineExtractor::LineExtractor( orcaice::Context context, double laserMaxRange, bool extractLines, bool extractCorners )
+LineExtractor::LineExtractor( const orcaice::Context & context, double laserMaxRange, bool extractLines, bool extractCorners )
     : laserMaxRange_( laserMaxRange ),
       extractLines_(extractLines),
       extractCorners_(extractCorners)

@@ -135,7 +135,7 @@ class PathFollower2dElement : public GuiElement2d
 
 public: 
 
-    PathFollower2dElement( const orcaice::Context context,
+    PathFollower2dElement( const orcaice::Context & context,
                            const std::string &proxyString,
                            IHumanManager *humanManager );
     ~PathFollower2dElement();

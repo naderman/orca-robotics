@@ -24,7 +24,7 @@ using namespace simlocaliser;
 
 MainLoop::MainLoop( const Localise2dConsumerPrx                    localise2dConsumer,
                     orcaice::PtrBuffer<Localise2dDataPtr>         &locBuffer,
-                    orcaice::Context                               context )
+                    const orcaice::Context & context )
     : localise2dConsumer_(localise2dConsumer),
       locBuffer_(locBuffer),
       context_(context)

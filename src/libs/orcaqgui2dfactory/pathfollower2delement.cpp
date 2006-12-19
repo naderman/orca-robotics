@@ -103,7 +103,7 @@ PathfollowerButtons::setWpButton( bool onOff )
 }
 /////////////////////////////////////////////////////
 
-PathFollower2dElement::PathFollower2dElement( orcaice::Context   context,
+PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
                                               const std::string &proxyString,
                                               IHumanManager *humanManager)
     : doneInitialSetup_(false),
@@ -116,8 +116,8 @@ PathFollower2dElement::PathFollower2dElement( orcaice::Context   context,
                proxyString,
                humanManager,
                painter_,
-               readWaypointSettings( context ),
-               readActivateImmediately( context ))
+               readWaypointSettings( context_.properties(), context_.tag() ),
+               readActivateImmediately( context_.properties(), context_.tag() ) )
 {
     cout<<"TRACE(pathfollower2delement.cpp): Instantiating w/ proxyString '" << proxyString << "'" << endl;
     pathUpdateConsumer_ = new PathUpdateConsumer;

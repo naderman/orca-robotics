@@ -23,7 +23,7 @@ namespace laserfeatures {
 
 public: 
 
-    ForegroundExtractor( orcaice::Context context, double laserMaxRange );
+    ForegroundExtractor( const orcaice::Context & context, double laserMaxRange );
 
     // Adds laser features to the 'features' data structure
     void addFeatures( const orca::LaserScanner2dDataPtr &laserData,

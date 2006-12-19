@@ -21,7 +21,7 @@ namespace insgps{
 class InsGpsI
 {
 public:
-    InsGpsI( orcaice::Context context) : context_(context) {};
+    InsGpsI( const orcaice::Context & context ) : context_(context) {};
 
     virtual ~InsGpsI() {};
     

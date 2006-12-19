@@ -25,7 +25,7 @@ public:
     PathPlanner2dI( 
         orcaice::PtrProxy<orca::PathPlanner2dTaskPtr> &pathPlannerTaskProxy,
         orcaice::PtrProxy<orca::PathPlanner2dDataPtr> &pathPlannerDataProxy,
-        orcaice::Context context
+        const orcaice::Context & context
     );
 
     // remote calls

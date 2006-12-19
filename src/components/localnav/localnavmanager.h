@@ -44,7 +44,7 @@ public:
     LocalNavManager( LocalNavDriver   &localNavDriver,
                      GoalWatcher      &goalWatcher,
                      PathMaintainer   &pathMaintainer,
-                     orcaice::Context  context );
+                     const orcaice::Context & context );
     ~LocalNavManager();
 
     // The odometry is required for the velocity, which isn't contained

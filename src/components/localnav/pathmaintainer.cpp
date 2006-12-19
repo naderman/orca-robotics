@@ -21,7 +21,7 @@ PathMaintainer::PathMaintainer( orcaice::PtrProxy<orca::PathFollower2dDataPtr> &
                                 orcaice::Proxy<bool>                           &newPathArrivedPipe,
                                 orcaice::Proxy<orca::Time>                     &activationPipe,
                                 orcaice::Proxy<int>                            &wpIndexPipe,
-                                orcaice::Context                                context)
+                                const orcaice::Context & context)
     : path_(new orca::PathFollower2dData),
       wpIndex_(-1),
       wpIndexChanged_(false),

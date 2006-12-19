@@ -108,10 +108,10 @@ public:
     orca::PathPlanner2dTaskPtr getTask() const;
 };
 
-WaypointSettings
-readWaypointSettings( const orcaice::Context  &context );
-bool readActivateImmediately( orcaice::Context &context );
+WaypointSettings readWaypointSettings( const Ice::PropertiesPtr & props, const std::string & tag );
 
-}
+bool readActivateImmediately( const Ice::PropertiesPtr & props, const std::string & tag );
+
+} // namespace
 
 #endif

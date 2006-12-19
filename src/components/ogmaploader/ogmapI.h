@@ -30,7 +30,7 @@ public:
 
     OgMapI( orca::OgMapDataPtr  theMap,
             const std::string  &tag,
-            orcaice::Context    context );
+            const orcaice::Context & context );
 
     // Remote calls:
 

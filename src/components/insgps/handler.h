@@ -34,7 +34,7 @@ class Handler : public orcaice::Thread
 public:
     Handler(insgps::InsGpsI&  insGpsI,
             insgps::Driver*  hwDriver,
-            orcaice::Context  context);
+            const orcaice::Context & context);
     
     // This is the thread's function.  It listens for data from the insgps driver,
     // and sticks it in a buffer for publishing.

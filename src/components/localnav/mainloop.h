@@ -47,7 +47,7 @@ public:
               orca::Platform2dPrx                           &platform2dPrx,
               PathMaintainer                                &pathMaintainer,
               orca::PathFollower2dConsumerPrx               &pathPublisher,
-              orcaice::Context                               context );
+              const orcaice::Context & context );
     ~MainLoop();
 
     virtual void run();

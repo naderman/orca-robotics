@@ -38,7 +38,7 @@ class Component;
 class MyClass
 {
 public:
-    MyClass( orcaice::Context context )
+    MyClass( const orcaice::Context & context )
         : context_(context) {};
 private:
     orcaice::Context context_;

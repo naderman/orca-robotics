@@ -45,7 +45,7 @@ class OgMapPainter
     void clear() {};
     void toggleDisplayMap() { pixmapPainter_->toggleDisplayMap(); };
     
-    int saveMap( const orcaice::Context context, const QString fileName, IHumanManager *humanManager );
+    int saveMap( const orcaice::Context & context, const QString fileName, IHumanManager *humanManager );
     
   private:
       

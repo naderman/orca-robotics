@@ -52,7 +52,7 @@ class ImuI : public orca::Imu, public insgps::InsGpsI
 public:
     ImuI(orca::ImuDescriptionPtr descr,
          insgps::Driver*  hwDriver,
-         orcaice::Context        context);
+         const orcaice::Context & context);
     
     //
     // Imu message handler functions

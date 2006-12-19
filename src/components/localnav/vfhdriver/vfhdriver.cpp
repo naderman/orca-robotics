@@ -24,7 +24,7 @@ namespace vfh {
 const double VfhDriver::escapeTimeMs_;
 	
 VfhDriver::VfhDriver( const GoalWatcher        &goalWatcher,
-                      orcaice::Context          context )
+                      const orcaice::Context & context )
     : LocalNavDriver(goalWatcher),
       stallRatio_(0.0),
       currentState_(LocalNavDriver::STATE_GOAL_REACHED),

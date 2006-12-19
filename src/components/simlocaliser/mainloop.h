@@ -29,7 +29,7 @@ public:
 
     MainLoop( const orca::Localise2dConsumerPrx                localise2dConsumer,
               orcaice::PtrBuffer<orca::Localise2dDataPtr>     &locBuffer,
-              orcaice::Context                                 context );
+              const orcaice::Context & context );
     virtual ~MainLoop();
 
     virtual void run();

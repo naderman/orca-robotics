@@ -32,7 +32,7 @@ public:
                     orcaice::Proxy<bool>                           &newPathArrivedPipe,
                     orcaice::Proxy<orca::Time>                     &activationPipe,
                     orcaice::Proxy<int>                            &wpIndexPipe,
-                    orcaice::Context                                context );
+                    const orcaice::Context & context );
 
     //
     // Functions for the LocalNavManager

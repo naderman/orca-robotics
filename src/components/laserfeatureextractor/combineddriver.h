@@ -25,7 +25,7 @@ class CombinedDriver: public AlgorithmDriver
 
 public:
 
-    CombinedDriver( orcaice::Context context, double maxRange, int numberOfSamples );
+    CombinedDriver( const orcaice::Context & context, double maxRange, int numberOfSamples );
     virtual ~CombinedDriver();
     
     virtual int computeFeatures( const orca::LaserScanner2dDataPtr &laserDataPtr,

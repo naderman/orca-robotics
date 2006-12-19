@@ -25,7 +25,7 @@ static double laserScanBearing( const orca::RangeScanner2dDataPtr & scan, const 
     return (scan->startAngle + angleIncrement*i);
 }
 
-ReflectorExtractor::ReflectorExtractor( orcaice::Context context, double laserMaxRange, int numReturns )
+ReflectorExtractor::ReflectorExtractor( const orcaice::Context & context, double laserMaxRange, int numReturns )
     : laserMaxRange_(laserMaxRange)
 {
     std::string prefix = context.tag() + ".Config.Reflectors.";

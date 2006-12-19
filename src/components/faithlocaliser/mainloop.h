@@ -31,7 +31,7 @@ public:
 	      orcaice::PtrBuffer<orca::Localise2dDataPtr>     &historyBuffer,
 	      double                                           stdDevPosition,
               double                                           stdDevHeading,
-	      orcaice::Context                                 context
+	      const orcaice::Context & context
 	    );
     ~MainLoop();
 

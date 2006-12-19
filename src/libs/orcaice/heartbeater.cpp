@@ -15,7 +15,7 @@ using namespace std;
 
 namespace orcaice {
 
-Heartbeater::Heartbeater( orcaice::Context context, double secBetweenHeartbeats, double urgencyDivider )
+Heartbeater::Heartbeater( const orcaice::Context & context, double secBetweenHeartbeats, double urgencyDivider )
     : secBetweenHeartbeats_(secBetweenHeartbeats),
       urgencyDivider_(urgencyDivider),
       context_(context)

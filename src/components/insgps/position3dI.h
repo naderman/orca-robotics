@@ -42,7 +42,7 @@ class Position3dI : public orca::Position3d, public insgps::InsGpsI
 public:
     Position3dI(orca::Position3dDescriptionPtr descr,
                 insgps::Driver*  hwDriver,
-                orcaice::Context context);
+                const orcaice::Context & context);
 
     //
     // position3d message handler functions

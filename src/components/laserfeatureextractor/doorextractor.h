@@ -23,7 +23,7 @@ class DoorExtractor : public IExtractor
 
 public: 
 
-    DoorExtractor( orcaice::Context context ) {}
+    DoorExtractor( const orcaice::Context & context ) {}
 
 //     Adds laser features to the 'features' data structure
       void addFeatures( const orca::LaserScanner2dDataPtr &laserData,

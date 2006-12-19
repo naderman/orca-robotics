@@ -19,7 +19,7 @@ using namespace insgps;
 
 ImuI::ImuI( ImuDescriptionPtr   descr,
             Driver*      hwDriver,
-            orcaice::Context   context )
+            const orcaice::Context & context )
     : InsGpsI(context),
       descr_(descr),
       hwDriver_(hwDriver),

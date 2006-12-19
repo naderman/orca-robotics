@@ -18,7 +18,7 @@ using namespace orcaice;
 
 namespace pathplanner {
 
-SkeletonGraphicsI::SkeletonGraphicsI( Context context, const std::string &tag )
+SkeletonGraphicsI::SkeletonGraphicsI( const orcaice::Context & context, const std::string &tag )
     : context_(context)
 {
     // Find IceStorm Topic to which we'll publish

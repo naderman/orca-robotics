@@ -89,7 +89,7 @@ OgMapPainter::checkFileExtension( QString &fe, IHumanManager *humanManager )
 }
 
 int 
-OgMapPainter::saveMap( const orcaice::Context context, const QString fileName, IHumanManager *humanManager )
+OgMapPainter::saveMap( const orcaice::Context & context, const QString fileName, IHumanManager *humanManager )
 {
     QString fileExtension = fileName.section('.',-1,-1);
     ImageFileType type = checkFileExtension( fileExtension, humanManager );

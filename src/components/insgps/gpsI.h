@@ -41,7 +41,7 @@ class GpsI : public orca::Gps, public insgps::InsGpsI
 public:
     GpsI(orca::GpsDescriptionPtr descr,
          insgps::Driver*  hwDriver,
-         orcaice::Context       context);
+         const orcaice::Context & context);
 
     //
     // gps message handler functions

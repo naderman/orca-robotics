@@ -24,7 +24,7 @@ class LineExtractor : public IExtractor
 
 public: 
 
-    LineExtractor( orcaice::Context, double laserMaxRange, bool extractLines, bool extractCorners );
+    LineExtractor( const orcaice::Context & context, double laserMaxRange, bool extractLines, bool extractCorners );
 
     // Adds laser features to the 'features' data structure
     void addFeatures( const orca::LaserScanner2dDataPtr &laserData,

@@ -367,26 +367,25 @@ void PathFollowerInput::loadDataFromFile( QString* fileName )
 //////////////////////////////////////////////////////////////////////
 
 WaypointSettings
-readWaypointSettings( const orcaice::Context  &context )
+readWaypointSettings( const Ice::PropertiesPtr & props, const std::string & tag )
 {
-    Ice::PropertiesPtr prop = context.properties();
-    std::string prefix = context.tag() + ".Config.Waypoints.";
+    std::string prefix = tag + ".Config.Waypoints.";
     
-    float timePeriod = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"TimePeriod", 5.0 );
-    float distanceTolerance = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"DistanceTolerance", 1.0 );
-    int headingTolerance = orcaice::getPropertyAsIntWithDefault( prop, prefix+"HeadingTolerance", 90 );
-    float maxApproachSpeed = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxApproachSpeed", 2e6 );
-    int maxApproachTurnrate = orcaice::getPropertyAsIntWithDefault( prop, prefix+"MaxApproachTurnRate", 6000000 );
-    int numberOfLoops = orcaice::getPropertyAsIntWithDefault( prop, prefix+"NumberOfLoops", 1 );
+    float timePeriod = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"TimePeriod", 5.0 );
+    float distanceTolerance = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"DistanceTolerance", 1.0 );
+    int headingTolerance = orcaice::getPropertyAsIntWithDefault( props, prefix+"HeadingTolerance", 90 );
+    float maxApproachSpeed = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"MaxApproachSpeed", 2e6 );
+    int maxApproachTurnrate = orcaice::getPropertyAsIntWithDefault( props, prefix+"MaxApproachTurnRate", 6000000 );
+    int numberOfLoops = orcaice::getPropertyAsIntWithDefault( props, prefix+"NumberOfLoops", 1 );
     WaypointSettings wpSettings(timePeriod, distanceTolerance, headingTolerance, maxApproachSpeed, maxApproachTurnrate, numberOfLoops);
     return wpSettings;
 }
 
-bool readActivateImmediately( orcaice::Context &context )
+bool 
+readActivateImmediately( const Ice::PropertiesPtr & props, const std::string & tag )
 {
-    Ice::PropertiesPtr prop = context.properties();
-    std::string prefix = context.tag() + ".Config.PathFollower2d";
-    return orcaice::getPropertyAsIntWithDefault( prop, prefix+"ActivatePathImmediately", 1 );
+    std::string prefix = tag + ".Config.PathFollower2d";
+    return orcaice::getPropertyAsIntWithDefault( props, prefix+"ActivatePathImmediately", 1 );
 }
 
 
