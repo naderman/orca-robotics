@@ -91,35 +91,11 @@ Behavior of libOrcaIce functions and classes can be influenced by setting severa
     - When component activates it tries to register its adapter with the Registry. If it cannot connect (e.g. Registy is not running) it gets an exception. When indirect binding (using names) is used this makes a component with provided interfaces useless because nobody can connect to it. In this case requiring registry makes sense and the component should exit at this point. There are cases however when you may want to ignore this and continue with the startup.
     - Default: 1
 
-@par Tracer Configuration
-
-- @c  Orca.Tracer.RequireStatusTopic (bool)
-    - orcaice::Component sets up a tracer and tries to connect to an
-      IceStorm server on the same host in order to publish component's
-      status messages. This parameter determines what happens if no server
-      is found. If set to 0, the startup continues with status messages not
-      published remotely. If set to 1, the application exits.
-    - Default: 0
-
-- @c  Orca.Tracer.Filename (string)
-    - The name of the output file to which trace statements are saved. Each component creates its own file. If you want several component to write trace files and they execute in the same directory you have to set this property to unique file names in the component config file.
-    - Default: "orca_component_trace.txt"
-    
-- @c  Orca.Tracer.Timestamp (bool)
-    - Print timestamp before all trace statements.
-    - Default: 1
-
-Possible tracer destinations are:
-  - ToDisplay: display on the terminal (ie cout)
-  - ToTopic:   push to an IceStorm topic, for remote viewing
-  - ToFile:    write to a file (currently not implemented)
-  - ToLog:     write to SysLog on Unix, EventLog on windows (currently only SysLog implemented)
-
-Verbosity levels range from 0 (nothing) to 5 (everything).
+@see orcaice::Tracer configuration.
 
 A sample configuration file which sets all parameters to sensible defaults is shown here.
 
-@include utils/orcaice/orcarc
+@include libs/orcaice/orcarc
 
     @par Responsible Developer
     Alex Brooks, Alex Makarenko

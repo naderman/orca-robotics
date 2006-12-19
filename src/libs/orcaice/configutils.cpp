@@ -9,17 +9,18 @@
  */
 
 #include <iostream>
+#include <string>
 
 #include <orcaice/configutils.h>
 #include <orcaice/sysutils.h>
 #include <orcaice/proputils.h>
 #include <orcaice/printutils.h>
 #include <orcaice/exceptions.h>
-#include <orcaice/privateutils.h>
 
 #include <orcaobj/stringutils.h>
 
-#include <string>
+#include "privateutils.h"
+
 using namespace std;
 
 namespace orcaice

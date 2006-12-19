@@ -13,9 +13,9 @@
 
 #include <Ice/Ice.h>
 
-#include <orca/orca.h>
-#include <orca/status.h>
+#include <orca/ocm.h>
 #include <orcaice/tracer.h>
+#include <orcaice/status.h>
 
 namespace orcaice
 {
@@ -32,6 +32,18 @@ class Component;
  *  A note on thread safety. None of access functions are thread-safe. However, all
  *  smart pointer types are themselves thread-safe. This means that once a copy of
  *  of Context is created, it is safe to use it from different threads.
+ *
+ *  Pass context by value and store a copy, e.g. a class definition would look like this:
+@verbatim
+class MyClass
+{
+public:
+    MyClass( orcaice::Context context )
+        : context_(context) {};
+private:
+    orcaice::Context context_;
+}
+@endverbatim
  */
 class Context
 {
@@ -54,11 +66,13 @@ public:
     Ice::ObjectAdapterPtr  adapter() const { return adapter_; };
     //! Returns smart pointer to the component's properties.
     Ice::PropertiesPtr     properties() const { return communicator_->getProperties(); };
+    //! Access tracing functions.
+    orcaice::Tracer*       tracer() const { return tracer_; };
+    //! Access status functions.
+    orcaice::Status*       status() const { return status_; };
     //! Access logging functions through standard Ice::Logger interface.
     //! Use @ref tracer instead.
     Ice::LoggerPtr         logger() const { return communicator_->getLogger(); };
-    //! Access tracing functions.
-    orcaice::Tracer*       tracer() const { return tracer_; };
 
     //! Convenience function which calls Component::activate.
     void activate();
@@ -83,7 +97,9 @@ private:
 
     // need this pointer to call activate()
     Component*             component_; 
+
     orcaice::Tracer*       tracer_;
+    orcaice::Status*       status_;
 };
 
 } // end namespace

@@ -48,4 +48,5 @@ SET( SLICE_SOURCE_FILES
     qgraphics2d.ice
     imu.ice
     pointcloud.ice
+    tracer.ice
 )

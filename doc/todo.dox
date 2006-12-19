@@ -30,10 +30,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - OrcaView
   - Make sure changing focus still works.
-
 - RegistryView
     - fix stale display of components
-
 - libOrcaIce
     - resolve issue with direct connections withour the registry
     - Topic Tracer to attempt reconnections
@@ -48,6 +46,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Defined new CMake variables to establish the local OS: OS_LINUX, OS_QNX, OS_WIN.
 
 @par New interfaces
+
+- Tracer
+    - Remote access to component's traces, e.g. errors, warning, etc. Separated from the existing Status interface. 
 
 @par New components
 
@@ -66,6 +67,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated libraries
 
+- libOrcaIce
+    - an overhaul of tracing and status facilities. (alex m.)
 - libOrcaProbeFactory
     - added support for Status interface
 

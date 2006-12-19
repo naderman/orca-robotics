@@ -12,7 +12,7 @@
 
 #include "privateutils.h"
 
-#include "orcaice.h"
+#include "../orcaice.h"
 
 using namespace std;
 
@@ -124,29 +124,23 @@ setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag
 
 
     // all tracer tempProperties have default values
-    tempProperties->setProperty( "Orca.Tracer.RequireStatusTopic", "0" );
+    tempProperties->setProperty( "Orca.Tracer.RequireIceStorm",    "0" );
     tempProperties->setProperty( "Orca.Tracer.Filename",           "orca_component_trace.txt" );
     // format
     tempProperties->setProperty( "Orca.Tracer.Timestamp",          "1" );
     // destinations
-    tempProperties->setProperty( "Orca.Tracer.InfoToStdout",       "1" );
-    tempProperties->setProperty( "Orca.Tracer.InfoToTopic",        "0" );
+    tempProperties->setProperty( "Orca.Tracer.InfoToDisplay",      "1" );
+    tempProperties->setProperty( "Orca.Tracer.InfoToNetwork",      "0" );
     tempProperties->setProperty( "Orca.Tracer.InfoToFile",         "0" );
-    tempProperties->setProperty( "Orca.Tracer.HeartbeatToStdout",  "1" );
-    tempProperties->setProperty( "Orca.Tracer.HeartbeatToTopic",   "1" );
-    tempProperties->setProperty( "Orca.Tracer.HeartbeatToFile",    "0" );
-    tempProperties->setProperty( "Orca.Tracer.WarningToStdout",    "1" );
-    tempProperties->setProperty( "Orca.Tracer.WarningToTopic",     "1" );
+    tempProperties->setProperty( "Orca.Tracer.WarningToDisplay",   "1" );
+    tempProperties->setProperty( "Orca.Tracer.WarningToNetwork",   "0" );
     tempProperties->setProperty( "Orca.Tracer.WarningToFile",      "0" );
-    tempProperties->setProperty( "Orca.Tracer.ErrorToStdout",      "1" );
-    tempProperties->setProperty( "Orca.Tracer.ErrorToTopic",       "1" );
+    tempProperties->setProperty( "Orca.Tracer.ErrorToDisplay",     "10" );
+    tempProperties->setProperty( "Orca.Tracer.ErrorToNetwork",     "0" );
     tempProperties->setProperty( "Orca.Tracer.ErrorToFile",        "0" );
-    tempProperties->setProperty( "Orca.Tracer.DebugToStdout",      "1" );
-    tempProperties->setProperty( "Orca.Tracer.DebugToTopic",       "0" );
+    tempProperties->setProperty( "Orca.Tracer.DebugToDisplay",     "0" );
+    tempProperties->setProperty( "Orca.Tracer.DebugToNetwork",     "0" );
     tempProperties->setProperty( "Orca.Tracer.DebugToFile",        "0" );
-    tempProperties->setProperty( "Orca.Tracer.OtherToStdout",      "1" );
-    //tempProperties->setProperty( "Orca.Tracer.OtherToTopic",       "0" );
-    tempProperties->setProperty( "Orca.Tracer.OtherToFile",        "0" );
     // filtering
     tempProperties->setProperty( "Orca.Tracer.IgnoreRepeatedWarnings","0" );
     tempProperties->setProperty( "Orca.Tracer.IgnoreRepeatedErrors",  "0" );

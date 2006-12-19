@@ -42,7 +42,7 @@ Heartbeater::isHeartbeatTimeUrgent()
 void
 Heartbeater::beat( const std::string &heartbeatMessage )
 {
-    context_.tracer()->heartbeat(heartbeatMessage);
+    context_.status()->heartbeat(heartbeatMessage);
     lastHeartbeatTime_ = orcaice::getNow();
 }
 

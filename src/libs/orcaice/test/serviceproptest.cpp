@@ -15,7 +15,8 @@
 
 #include <orcaice/orcaice.h>
 
-#include <orcaice/homeI.h>
+// is this dodgy?
+#include "../detail/homeI.h"
 
 using namespace std;
 

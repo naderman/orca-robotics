@@ -11,8 +11,6 @@
 #ifndef ORCAICE_COMPONENT_H
 #define ORCAICE_COMPONENT_H
 
-#include <Ice/Ice.h>
-
 #include <orcaice/context.h>
 
 namespace orcaice
@@ -22,13 +20,15 @@ namespace orcaice
 //! will provide.
 enum ComponentInterfaceFlag {
     //! No standard interfaces
-    NoStandardInterfaces    = 0x0,
+    NoStandardInterfaces    = 0x000,
     //! Home interface only.
-    HomeInterface           = 0x01,
+    HomeInterface           = 0x001,
     //! Status interface only.
-    StatusInterface         = 0x10,
+    StatusInterface         = 0x010,
+    //! Tracer interface only.
+    TracerInterface         = 0x100,
     //! All standard interfaces.
-    AllStandardInterfaces   = HomeInterface | StatusInterface
+    AllStandardInterfaces   = HomeInterface | StatusInterface | TracerInterface
 };
 
 //!
@@ -130,11 +130,18 @@ protected:
     //! Convenience shortcut to component's tracer.
     //! Same result as context().tracer().
     Tracer* tracer() const { return context_.tracer_; };
+    //! Convenience shortcut to component's tracer.
+    //! Same result as context().tracer().
+    Status* status() const { return context_.status_; };
     //! Convenience shortcut to component's configuration properties.
     //! Same result as context().properties().
     Ice::PropertiesPtr properties() const { return context_.properties(); };
 
 private:
+
+    // Not implemented; prevents accidental use.
+    Component( const Component & );
+    Component& operator= ( const Component & );
 
     // One of the container classes (Application or Service) will
     // call this function before calling start().
@@ -153,15 +160,16 @@ private:
     // Save init flags
     ComponentInterfaceFlag interfaceFlag_;
 
-    // Initialized Orca custom Tracer -- an object to handle local and remote tracing
-    Tracer* initTracer();
-    Ice::ObjectPtr statusTracerObj_;
-
     // create standard Home interface which implements Orca Component Model
     void initHome();
 
-    // create standard Status interface which provides remote status information
-    //void initStatus();
+    // Initialized Orca custom Tracer -- an object to handle local and remote tracing
+    orcaice::Tracer* initTracer();
+    orcaice::Status* initStatus();
+
+    // keep the smart pointer so it's not destroyed with the adapter
+    Ice::ObjectPtr tracerObj_;
+    Ice::ObjectPtr statusObj_;
 };
 
 } // end namespace

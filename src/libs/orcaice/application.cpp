@@ -10,9 +10,9 @@
 
 #include <orcaice/application.h>
 #include <orcaice/component.h>
-
 #include <orcaice/orcaice.h>
-#include <orcaice/privateutils.h>
+
+#include "privateutils.h"
 
 using namespace std;
 

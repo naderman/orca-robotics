@@ -794,6 +794,18 @@ toString( const orca::StatusDataPtr & obj )
 }
 
 std::string 
+toString( const orca::TracerData & obj )
+{
+    std::ostringstream s;
+    // this toString() function is defined in nameutils.h
+    s << toString( obj.name ) << ": "
+      << obj.category << ": "
+      << obj.message;
+
+    return s.str();
+}
+
+std::string 
 toString( const orca::RangeScanner2dDescriptionPtr & obj )
 {
     std::ostringstream s;

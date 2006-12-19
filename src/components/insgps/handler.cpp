@@ -64,11 +64,11 @@ Handler::run()
                 {
                     if ( hwDriver_->isEnabled() )
                     {
-                        context_.tracer()->heartbeat("InsGps enabled. " + hwDriver_->heartbeatMessage() );
+                        context_.status()->heartbeat("InsGps enabled. " + hwDriver_->heartbeatMessage() );
                     }
                     else
                     {
-                        context_.tracer()->heartbeat( "InsGps disabled." );
+                        context_.status()->heartbeat( "InsGps disabled." );
                     }
                     lastHeartbeatTime = IceUtil::Time::now();
                 } 

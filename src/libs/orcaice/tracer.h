@@ -1,6 +1,6 @@
 /*
  * Orca Project: Components for robotics 
- *               http://orca-robotics.sf.net/
+             http://orca-robotics.sf.net/
  * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
  * This copy of Orca is licensed to you under the terms described in the
@@ -15,41 +15,68 @@ namespace orcaice
 {
 
 /*!
- *  @brief Local and remote tracing.
+@brief Local and remote tracing.
+
+Orca Tracer is similar to the Ice Logger interface. We call it Tracer because
+we use it to log trace statements, e.g. warnings, error messages, etc (not data).
+
+A single Tracer object is meant to be shared by all threads in the component so the
+implementation must be thread-safe.
+
+@par Tracer Configuration
+
+- @c  Orca.Tracer.RequireIceStorm (bool)
+    - orcaice::Component sets up a tracer and tries to connect to an
+      IceStorm server on the same host in order to publish component's
+      status messages. This parameter determines what happens if no server
+      is found. If set to 0, the startup continues with status messages not
+      published remotely. If set to 1, the application exits.
+    - Default: 0
+
+- @c  Orca.Tracer.Filename (string)
+    - The name of the output file to which trace statements are saved. Each component creates its own file. If you want several component to write trace files and they execute in the same directory you have to set this property to unique file names in the component config file.
+    - Default: "orca_component_trace.txt"
+    
+- @c  Orca.Tracer.Timestamp (bool)
+    - Print timestamp before all trace statements.
+    - Default: 1
+
+Enum orcaice::Tracer::TraceType defines types of traced information. Enum orcaice::Tracer::DestinationType defines possible tracer destinations are. Verbosity levels range from 0 (nothing) to 10 (everything). The built-in defaults as follows:
+@verbatim
+                ToDisplay   ToNetwork   ToLog   ToFile
+Info                1           0         0       0
+Warning             1           0         0       0
+Error              10           0         0       0
+Debug               0           0         0       0
+@endverbatim
+
+A sample configuration file which sets all parameters to sensible defaults is shown here.
+
+@include libs/orcaice/orcarc
  *
- *  Orca Tracer is similar to the Ice Logger interface. We call it Tracer because
- *  we use it to log trace statements, warnings, error messages, etc (not data).
- *
- *  A single Tracer object is meant to be shared by all threads in the component so the
- *  implementation must be thread-safe.
- *
- *  Use heartbeat( status() ) to send the current status with every heartbeat message.
+@see Status
  *
  */
 // implem notes:
-//   - This class could also be defined as a local interface in Slice
-//   - status() may be separated into a local Status interface.
-// see also: StatusTracerI
+//   - The local API of this class could also be defined as a local interface in Slice.
 class Tracer
 {
 public:
+    virtual ~Tracer() {}; 
 
     //! Types of traced information
     enum TraceType {
         //! Information
         InfoTrace=0,
-        //! Heartbeat
-        HeartbeatTrace,
         //! Warning
         WarningTrace,
         //! Error
         ErrorTrace,
         //! Debug statement
         DebugTrace,
-        //! Status statement
-        StatusTrace,
-        //! Other
-        OtherTrace,
+        //! Use this index to find out the maximum verbosity among all trace types to
+        //! a particular destination.
+        AnyTrace,
         //! Number of trace types
         NumberOfTraceTypes
     };
@@ -58,12 +85,15 @@ public:
     enum DestinationType {
         //! Write to stardard display
         ToDisplay=0,
-        //! Push to an IceStorm topic, for remote monitoring or logging.
-        ToTopic,
-        //! Write to a file (currently not implemented)
-        ToFile,
+        //! Send over the network to an IceStorm topic
+        ToNetwork,
         //! Write to SysLog on Unix, EventLog on windows (currently only SysLog implemented)
         ToLog,
+        //! Write to a file
+        ToFile,
+        //! Use this index to request the maximum verbosity of a particular type among 
+        //! all destinations
+        ToAny,
         //! Number of destination types
         NumberOfDestinationTypes
     };
@@ -77,25 +107,17 @@ public:
         // If the message and source are identical, ignore this message
         bool ignoreRepeatedErrors;
         // affects only the printout to stdout. Remote messages always have a timestamp.
-        bool doTimestamp;
+        bool addTimestamp;
     };
-    
 
-    virtual ~Tracer() {};
-
+    // LOCAL INTERFACE
     
-    //! Prints out verbatim to stdout.
+    //! Prints out verbatim to stdout. It is never routed over the network.
     //! @see info
     virtual void print( const std::string &message ) = 0;
 
-    //! Routing is determined by OtherToXXX parameter.
-    virtual void trace( const std::string &category, const std::string &message, int level=1 ) = 0;
-
     //! Routing is determined by InfoToXxx parameter.
     virtual void info( const std::string &message, int level=1 ) = 0;
-
-    //! Routing is determined by HeartbeatToXxx parameter.
-    virtual void heartbeat( const std::string &message, int level=1 ) = 0;
     
     //! Routing is determined by WarningToXxx parameter.
     virtual void warning( const std::string &message, int level=1 ) = 0;
@@ -106,14 +128,6 @@ public:
     //! Routing is determined by DebugToXxx parameter.
     virtual void debug( const std::string &message, int level=1 ) = 0;
 
-    //! Sets internal status to @p message so it can be returned when requested from the outside.
-    //! If the status has changed it will be distributed to destinations according to
-    //! StatusToXxx parameter. If @p force is TRUE, the new status is distributed regardless
-    //! of whether there was a change or not (this is usefull for heartbeat functionality).
-    virtual void status( const std::string &message, bool force=false ) = 0;
-
-    //! Returns current status.
-    virtual std::string status() const = 0;
 };
 
 } // namespace

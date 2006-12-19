@@ -28,10 +28,12 @@
 #include <orca/platform2d.h>
 #include <orca/power.h>
 #include <orca/status.h>
+#include <orca/tracer.h>
 #include <orca/polarfeature2d.h>
 #include <orca/featuremap2d.h>
 #include <orca/pathfollower2d.h>
 #include <orca/pathplanner2d.h>
+#include <orca/tracer.h>
 
 namespace orcaice
 {
@@ -204,6 +206,8 @@ std::string toString( const orca::PowerDataPtr & );
 std::string toString( const orca::StatusDataPtr & );
 //! Converts to string
 std::string toString( const orca::Velocity2dCommandPtr & );
+//! Converts to string
+std::string toString( const orca::TracerData & );
 //! Converts to string
 std::string toString( const orca::OgMapDataPtr & );
 //! Converts to string

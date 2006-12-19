@@ -1,0 +1,3 @@
+FILE( GLOB SRCS *.cpp )
+
+ADD_LIBRARY( OrcaIceDetail STATIC ${SRCS} )

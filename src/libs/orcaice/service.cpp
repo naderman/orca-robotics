@@ -11,10 +11,11 @@
 #include <orcaice/service.h>
 #include <orcaice/component.h>
 
-#include <orcaice/orcaice.h>
-#include <orcaice/privateutils.h>
-
 #include <orca/orca.h>
+#include <orcaice/orcaice.h>
+
+#include "privateutils.h"
+
 
 using namespace std;
 

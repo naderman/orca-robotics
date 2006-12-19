@@ -145,7 +145,7 @@ NetHandler::run()
             if ( statusPublishInterval_<0 ||
                         statusPublishTimer_.elapsed().toSecondsDouble()>statusPublishInterval_ ) {
                 //cout<<"sending heartbeat"<<endl;
-                context_.tracer()->heartbeat( context_.tracer()->status() );
+                context_.status()->heartbeat( context_.status()->status() );
                 statusPublishTimer_.restart();
             }
         }
@@ -182,7 +182,7 @@ NetHandler::send()
         }
         if ( statusPublishTimer_.elapsed().toSecondsDouble()>statusPublishInterval_ ) {
             //cout<<"sending heartbeat"<<endl;
-            context_.tracer()->heartbeat("status OK");
+            context_.status()->heartbeat("status OK");
             statusPublishTimer_.restart();
         }
     }
