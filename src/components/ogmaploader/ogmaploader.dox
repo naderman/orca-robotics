@@ -41,7 +41,7 @@ Supportes file types are:
     - anything qt can load: @c .png @c .bmp @c .jpg @c .jpeg @c .ppm @c .xbm @c .xpm
 - ICE stream files 
     - file extension: @c .bin
-    - these files can be generated using @ref orca_component_orcaview
+    - these files can be generated using @ref orca_util_orcaview2d
 
 Clients who wish to receive the map should call getData(). This component will only ever issue one update to subscribers: on initialisation.
 

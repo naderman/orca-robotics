@@ -12,7 +12,7 @@
 @ingroup apps
 @ingroup cpp
 @ingroup linux
-@defgroup orca_component_orcaview3d OrcaView3d
+@defgroup orca_util_orcaview3d OrcaView3d
 
 @brief Graphical display of global and local 3D information.
        This thing is _very_much_ alpha-quality at this stage...
@@ -24,6 +24,7 @@
 @par Requires
 
 - @ref orca_interface_laserscanner2d [OrcaView3d.Requires.LaserScanner2d]
+- @ref orca_interface_position2d [OrcaView3d.Requires.Position2d]
 
 @image html orcaview3d.png
 

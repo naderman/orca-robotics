@@ -37,7 +37,7 @@ The goalplanner plans a path from the current position of a robot to a global wo
 @par Operation
 
 The following happens in sequencential order in the mainloop:
-- Wait for a "task" path which someone (e.g. @ref orca_component_orcaview ) sends via the provided PathFollower2d interface.
+- Wait for a "task" path which someone (e.g. @ref orca_util_orcaview2d ) sends via the provided PathFollower2d interface.
 - Prepend the current position of the robot to the task path.
 - Send task path to the pathplanner and wait for an answer.
 - Send out resulting, fine-grained path through the required PathFollower2d interface.

@@ -62,7 +62,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
         }
         catch (orcadynamicload::DynamicLoadException &e)
         {
-            cout << "ERROR(loggercomponent.cpp): " << e.what() << endl;
+            cout << "ERROR(orcaview3d:component.cpp): " << e.what() << endl;
             throw;
         }
     }
@@ -119,7 +119,7 @@ void Component::start()
     std::string prefix = context().tag() + ".Config.";
     int displayRefreshTime = orcaice::getPropertyAsIntWithDefault( props, prefix+"General.DisplayRefreshTime", 200 );
 
-    string libNames = orcaice::getPropertyWithDefault( props, prefix+"FactoryLibNames", DEFAULT_FACTORY_LIB_NAME );
+    string libNames = orcaice::getPropertyWithDefault( props, prefix+"General.FactoryLibNames", DEFAULT_FACTORY_LIB_NAME );
     loadPluginLibraries( libNames );
    
     // main window for display
