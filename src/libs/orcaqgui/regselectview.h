@@ -23,8 +23,6 @@ public:
     RegSelectView( QWidget *parent = 0 );
 
 signals:
-//     void interfaceToBeAdded( const QStringList & iterfaceInfo );
-//     void addCombinedElement( const QList<QStringList> &interfacesInfo );
     void newSelection( const QList<QStringList> &interfacesInfo );
     void registryRequested( const QString & proxy );
 
@@ -34,8 +32,6 @@ protected:
     virtual void mouseDoubleClickEvent ( QMouseEvent* e );
 
 private slots:
-//     void addSelectionIndividually();
-//     void addSelectionCombined();
     void addElement();
     void addRegistry();
     

@@ -75,6 +75,7 @@ namespace orcaqgui
     regView_->setUniformRowHeights(true);
     regView_->setMinimumWidth( 300 );
     regView_->setSelectionMode ( QAbstractItemView::ExtendedSelection );
+    regView_->setColumnWidth( 0, 200 );
             
     // enable sorting
     //connect( regView_->header(),SIGNAL(sectionClicked(int)), model_,SLOT(sort(int)) );
