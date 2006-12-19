@@ -202,7 +202,7 @@ void paintWaypoint( QPainter *p,
                     float distanceTolerance,
                     int   headingTolerance )
 {
-    p -> setPen( QPen( drawColor, 0.05 ) );
+    p -> setPen( QPen( drawColor, 0.1 ) );
     p -> drawEllipse( QRectF( -distanceTolerance,
                       -distanceTolerance,
                       2*distanceTolerance,

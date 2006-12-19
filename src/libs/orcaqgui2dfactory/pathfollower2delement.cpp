@@ -78,9 +78,9 @@ PathfollowerButtons::PathfollowerButtons( QObject *parent, IHumanManager *humanM
     humanManager->fileMenu()->addAction(fileSavePathAs);
     humanManager->fileMenu()->addAction(fileSavePath);
 
-    humanManager->toolBar()->addAction(fileOpenPath);
-    humanManager->toolBar()->addAction(fileSavePathAs);
-    humanManager->toolBar()->addAction(fileSavePath);
+//     humanManager->toolBar()->addAction(fileOpenPath);
+//     humanManager->toolBar()->addAction(fileSavePathAs);
+//     humanManager->toolBar()->addAction(fileSavePath);
 
     humanManager->toolBar()->addAction( hiWaypoints_ );
     humanManager->toolBar()->addAction( hiSend );
@@ -211,7 +211,13 @@ QStringList
 PathFollower2dElement::contextMenu()
 {
     QStringList s;
-    s << "Toggle All Waypoints" << "Toggle Past Waypoints" << "Toggle Transparency" << "Toggle enabled";
+    s << "Toggle All Waypoints" 
+      << "Toggle Past Waypoints" 
+      << "Toggle Transparency" 
+      << "Toggle enabled"
+      << "Load path..."
+      << "Save path as..."
+      << "Save path";
     return s;
 }
 
@@ -234,6 +240,18 @@ PathFollower2dElement::execute( int action )
     else if ( action == 3 )
     {
         pathFollower2dPrx_->setEnabled( !pathFollower2dPrx_->enabled() );
+    }
+    else if ( action == 4 )
+    {
+        pathHI_.loadPathFromFile();
+    }
+    else if ( action == 5 )
+    {
+        pathHI_.savePathAs();
+    }
+    else if ( action == 6 )
+    {
+        pathHI_.savePath();
     }
     else
     {

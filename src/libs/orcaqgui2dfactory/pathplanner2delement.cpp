@@ -73,8 +73,8 @@ PathplannerButtons::PathplannerButtons( QObject *parent, IHumanManager *humanMan
     humanManager->fileMenu()->addAction(fileSavePathAs);
     humanManager->fileMenu()->addAction(fileSavePath);
 
-    humanManager->toolBar()->addAction(fileSavePathAs);
-    humanManager->toolBar()->addAction(fileSavePath);
+//     humanManager->toolBar()->addAction(fileSavePathAs);
+//     humanManager->toolBar()->addAction(fileSavePath);
 
     humanManager->toolBar()->addAction( hiWaypoints_ );
     humanManager->toolBar()->addAction( hiSend );
@@ -172,7 +172,11 @@ QStringList
 PathPlanner2dElement::contextMenu()
 {
     QStringList s;
-    s << "Toggle All Waypoints" << "Toggle Past Waypoints" << "Toggle Transparency";
+    s << "Toggle All Waypoints" 
+      << "Toggle Past Waypoints" 
+      << "Toggle Transparency" 
+      << "Save path as..."
+      << "Save path";
     return s;
 }
 
@@ -191,6 +195,14 @@ PathPlanner2dElement::execute( int action )
     else if ( action == 2 )
     {
         setTransparency(!currentTransparency_);
+    }
+    else if ( action == 3 )
+    {
+        pathHI_.savePathAs();
+    }
+    else if ( action == 4 )
+    {
+        pathHI_.savePath();
     }
     else
     {
