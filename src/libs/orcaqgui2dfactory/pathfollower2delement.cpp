@@ -138,7 +138,7 @@ PathFollower2dElement::getDumpPath()
     std::string prefix = context_.tag();
     prefix += ".Config.";
     Ice::StringSeq strIn; strIn.push_back("/tmp"); Ice::StringSeq strOut;
-    strOut = orcaice::getPropertyAsStringSeqWithDefault( prop, prefix+"DumpPath", strIn );
+    strOut = orcaice::getPropertyAsStringSeqWithDefault( prop, prefix+"General.DumpPath", strIn );
     dumpPath_ = QString(strOut[0].c_str());
 }
 

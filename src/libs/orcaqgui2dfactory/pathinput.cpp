@@ -370,7 +370,7 @@ WaypointSettings
 readWaypointSettings( const orcaice::Context  &context )
 {
     Ice::PropertiesPtr prop = context.properties();
-    std::string prefix = context.tag() + ".Config.";
+    std::string prefix = context.tag() + ".Config.Waypoints.";
     
     float timePeriod = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"TimePeriod", 5.0 );
     float distanceTolerance = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"DistanceTolerance", 1.0 );
@@ -385,7 +385,7 @@ readWaypointSettings( const orcaice::Context  &context )
 bool readActivateImmediately( orcaice::Context &context )
 {
     Ice::PropertiesPtr prop = context.properties();
-    std::string prefix = context.tag() + ".Config.";
+    std::string prefix = context.tag() + ".Config.PathFollower2d";
     return orcaice::getPropertyAsIntWithDefault( prop, prefix+"ActivatePathImmediately", 1 );
 }
 

@@ -44,7 +44,7 @@ GpsElement::getGpsProperties()
     prefix += ".Config.";
 
     orcaice::setInit( gpsOrigin_ );
-    orcaice::getPropertyAsCartesianPoint( prop, prefix+"GpsOrigin", gpsOrigin_ );
+    orcaice::getPropertyAsCartesianPoint( prop, prefix+"Gps.Origin", gpsOrigin_ );
     return;
 }  
         
