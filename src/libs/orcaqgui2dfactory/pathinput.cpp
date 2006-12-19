@@ -272,7 +272,7 @@ orca::PathFollower2dDataPtr
 PathFollowerInput::getPath() const
 {
     int size = wpSettings_->numberOfLoops * waypoints_.size();
-    cout << "DEBUG(pathinput.cpp): size is " << size << endl;
+//     cout << "DEBUG(pathinput.cpp): size is " << size << endl;
     
     orca::PathFollower2dDataPtr pathData = new orca::PathFollower2dData;
     pathData->path.resize( size );
@@ -283,7 +283,6 @@ PathFollowerInput::getPath() const
         for (int i=0; i<waypoints_.size(); i++)
         {
             counter++;
-            cout << "counter: " << counter << endl;
             
             float heading = headings_[i]/16;
             if (heading>180.0) {
