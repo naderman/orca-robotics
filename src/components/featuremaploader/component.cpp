@@ -68,15 +68,18 @@ Component::start()
     }
     else if ( driverName == "real" )
     {
-        std::string mapFileName = orcaice::getPropertyWithDefault( prop, prefix+"MapFileName", "mapfilename" );
+        std::string mapFileName = orcaice::getPropertyWithDefault( prop, prefix+"MapFileName", "featuremap.txt" );
         if ( loadMap( mapFileName, theMap ) != 0 )
         {
-            throw orcaice::Exception( ERROR_INFO, "Failed to load map" );
+            std::string errString = "Failed to load map from file '"+mapFileName+"'";
+            tracer()->error( errString );
+            throw orcaice::Exception( ERROR_INFO, errString );
         }
     }
     else
     {
         std::string errString = "Unknown driver type: "+driverName;
+        tracer()->error( errString );
         throw orcaice::Exception( ERROR_INFO, errString );
     }
 

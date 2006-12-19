@@ -59,6 +59,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated components
 
+- FeatureMapLoader
+    - added error tracing (alex m.)
+
 @par Updated utilities
 
 @par Updated libraries
