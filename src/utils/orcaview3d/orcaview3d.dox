@@ -1,0 +1,48 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup utils
+@ingroup apps
+@ingroup cpp
+@ingroup linux
+@defgroup orca_component_orcaview3d OrcaView3d
+
+@brief Graphical display of global and local 3D information.
+       This thing is _very_much_ alpha-quality at this stage...
+
+@par Provides
+    
+- @ref orca_interface_home
+
+@par Requires
+
+- @ref orca_interface_laserscanner2d [OrcaView3d.Requires.LaserScanner2d]
+
+@image html orcaview3d.png
+
+@par Operation
+
+OrcaView3d is a 3d-generalisation of OrcaView.
+
+@section dependencies Dependencies   
+- Qt GUI library >= version 4.1
+- OpenGL: libglut
+- 3DS loading: lib3ds
+
+On Debian: 
+@verbatim
+# apt-get install libglut3-dev lib3ds-dev
+@endverbatim
+
+@section authors Authors
+Ben Upcroft, Alex Brooks, Tobias Kaupp, Alexei Makarenko
+
+*/
+

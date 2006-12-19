@@ -1,0 +1,48 @@
+# component
+DefaultComponentTag=OrcaView2d
+
+# required interfaces
+Requires.Laser.Type=LaserScanner2d
+Requires.Laser.DefaultProxy=laserscanner2d@local/laser2d
+
+Requires.Localise2d.Type=Localise2d
+Requires.Localise2d.DefaultProxy=localise2d@local/localiser
+
+Requires.Particle2d.Type=Particle2d
+Requires.Particle2d.DefaultProxy=particle2d@local/localiser
+
+Requires.PolarFeature2d.Type=PolarFeature2d
+Requires.PolarFeature2d.DefaultProxy=polarfeature2d@local/laserfeatureextractor
+
+Requires.PathFollower2d.Type=PathFollower2d
+Requires.PathFollower2d.DefaultProxy=pathfollower2d@local/localnav
+
+Requires.PathPlanner2d.Type=PathPlanner2d
+Requires.PathPlanner2d.DefaultProxy=pathplanner2d@local/pathplanner
+
+Requires.FeatureMap2d.Type=FeatureMap2d
+Requires.FeatureMap2d.DefaultProxy=featuremap2d@local/featuremaploader
+
+Requires.OgMap.Type=OgMap
+Requires.OgMap.DefaultProxy=ogmap@local/ogmaploader
+
+# Config Parameters
+Config.General.FactoryLibNames.Default=libOrcaQGui2dFactory.so
+Config.General.DisplayRefreshTime.Default=200
+Config.General.DumpPath.Default = /tmp
+Config.Waypoints.TimePeriod.Default=5.0
+Config.Waypoints.DistanceTolerance.Default=1.0
+Config.Waypoints.HeadingTolerance.Default=90
+Config.Waypoints.MaxApproachSpeed.Default=2e6
+Config.Waypoints.MaxApproachTurnRate.Default=2000000
+Config.Waypoints.NumberOfLoops.Default=1
+Config.PathFollower2d.ActivatePathImmediately.Default=1
+Config.ScreenCapture.TopPad.Default = 25
+Config.ScreenCapture.SidePad.Default = 2
+Config.ScreenCapture.BottomPad.Default = 2
+Config.ScreenCapture.CaptureTimerInterval.Default = 1000
+Config.Gps.Origin.Default=0.0 0.0 0.0
+
+# external configuration options
+Config.Ice.Override.ConnectTimeout.Default=150
+Config.Ice.Override.ConnectTimeout.External=1

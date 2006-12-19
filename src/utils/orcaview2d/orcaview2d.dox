@@ -1,0 +1,194 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup utils
+@ingroup apps
+@ingroup cpp
+@ingroup linux
+@defgroup orca_component_orcaview OrcaView2d
+
+@brief Graphical display of global and local 2D information.
+
+@par Provides
+    
+- @ref orca_interface_home
+
+@par Requires
+
+- @ref orca_interface_featuremap2d [OrcaView.Requires.FeatureMap2d]
+- @ref orca_interface_laserscanner2d [OrcaView.Requires.LaserScanner2d]
+- @ref orca_interface_localise2d [OrcaView.Requires.Localise2d]
+- @ref orca_interface_ogmap [OrcaView.Requires.OgMap]
+- @ref orca_interface_particle2d [OrcaView.Requires.Particle2d]
+- @ref orca_interface_pathfollower2d [OrcaView.Requires.PathFollower2d]
+- @ref orca_interface_pathplanner2d [OrcaView.Requires.PathPlanner2d]
+- @ref orca_interface_polarfeature2d [OrcaView.Requires.PolarFeature2d]
+
+@image html orcaview.png
+
+@par Operation
+
+Orcaview consists of three parts: the registry view (upper left), the element view (bottom left), and the world view (right).
+
+@par Registry view
+The registry view displays all currently existing "adapters" (interface@host/platform) in the Orca world by connecting to the central Icegrid registry. Pressing @c F5 triggers a request to the registry to update the view.
+
+@par Element view
+This table lists the interfaces which are currently connected to the GUI. Connected interfaces are represented by so-called GUI element (see orcagui::GuiElement). Two mechanisms exist to create GUI elements which subscribe to Orca interfaces:
+
+-# by specifying required interfaces in the @c .cfg file
+-# by interactively adding them using the registry view. Right-click and select "Add to project". It is possible to select several interfaces by holding down the Ctrl or Shift key. Several interfaces can form a single GuiElement, see e.g. OgMapsCombined which subscribes to two occupancy grid map interfaces and displays both of them as one element.
+
+Right-clicking on elements in the elements view brings up configuration/interaction options. Interfaces can also be removed interactively this way.
+ 
+ @par World view
+ The world view shows the graphical representation of the GUI elements. Each GUI element is periodically updated, stores its own data, paints itself to the world view, adds buttons to the toolbar and entries to the menu. This modular design makes the GUI extensible ( see @ref extensibility ). 
+
+The world view is usually a global coordinate system but it can also be centered on a particular GUI element (e.g. a local view of a particular platform).
+
+@par Plugin libraries
+In order to instantiate GuiElements, OrcaView dynamically loads libraries
+containing GuiElement factories.  See the Logger.Config.General.FactoryLibNames
+config parameter for how to add new factories.  This plug-in
+architecture allows custom GuiElements to be added without modifying the
+main source code.
+
+@section MRS Multi-robot systems
+When many platforms need to be displayed, the element view table grows quickly and you it's hard to figure out which GUI elements belong to which platform. For this situation, it is possible to filter the element view list on a per-platform basis. By selecting a particular platform in the combo box above the list, only interfaces belonging to that platform will be displayed. At the same time, all GUI elements belonging to that platform are displayed in their respective platform color (assigned at startup). All other GUI elements are grayed out. If everything needs to be displayed, choose the special "global" platform from the list.
+ 
+A second way of putting a particular platform into focus, is to click on a localised representation of them in the world view (e.g. Localise2d or Gps of a robot). The combo box changes simultaneously. By hovering the mouse pointer above localised GUI elements, a tooltip with the platform name shows up. The origin of the world view (indicated by a cross) corresponds to the "global" platform (try clicking on it).
+
+@section user_input User input
+ 
+Apart from receiving information from the interfaces, users can also send data to them via their corresponding GUI elements. Each element adds its own buttons to the toolbar and entries into the menu. Right-clicking on the elements in the element view brings up some interaction options too. 
+ 
+The following interactions are currently implemented:
+
+- <b>PathFollower2d interactions:</b>
+  - <i>drawing paths</i>: choose the "Pathfollower waypoints mode" icon. Draw connecting waypoints by left-clicks. They show up as circles with uncertainty in distance (circle diameter) and heading (filled wedge). The default settings for the waypoints can be found at Options->Waypoint Settings. Right-clicking close to the last waypoint removes it. Middle-clicking close to a waypoint lets you change the waypoint parameters. All waypoints can be discarded by clicking the "Discard" icon. When satisfied, click the "Send" icon to send it to the interface(s). A moment later, you should see the path sent back by the interface in blue. 
+  - <i>activate path</i>: After sending a new path, clicking on the "Go robot" icon will activate the path.
+  - <i>stopping robot</i>: clicking on the "Stop robot" icon (or hitting the ESC key) will send an empty path to the pathfollower which stops the robot(s).
+  
+- <b>Open/save pathfollower waypoints:</b> once subscribed to a @ref orca_interface_pathfollower2d interface, you can save the displayed path to a text file (could be the one you just sent to it). You can load the path back into the GUI later. It can then be sent to the interface(s) by clicking the "Send" button.
+
+- <b>PathPlanner2d interactions:</b> choose the "Pathplanner waypoints mode" icon. Draw/remove/configure waypoints the same way as described for the PathFollower2d. This defines a "coarse" path which gets sent to the PathPlanner interface for "fine" pathplanning by clicking the "Send" button. If the path is computed successfully, the pathplanner sends back a computed fine-grained path which is displayed differently.
+
+- <b>Save feature map:</b> once subscribed to a @ref orca_interface_featuremap2d interface, you can save the displayed feature map to a text file. It can be loaded later by a component that provides the @ref orca_interface_featuremap2d interface (not the GUI!), e.g. @ref orca_component_featuremaploader.
+
+- <b>Save OG map:</b> once subscribed to a @ref orca_interface_ogmap interface, you can save the displayed occupancy grid map to different file formats which are determined via the file extension you specify in the dialog. The saved files can be loaded later by the @ref orca_component_ogmaploader. 
+
+Supported file formats are:
+    - binary ICE stream file ( extension @c .bin ). The advantage is that this file contains all information of the OgMap including origin, resolution etc.
+    - bitmaps: one pixel per cell (extensions: <i>.bmp .jpg .jpeg .png .ppm .xbm .xpm</i> ). The advantage is that these files can be processed.
+
+@section screenshot Screenshot
+Here's a screenshot of the GUI connected to a few interfaces belonging to two platforms. Robot "hemp" is in focus and thus its GUI elements are displayed in color: they are Laser, Localise2d, and PathPlanner2d. The other platform's GUI elements are grayed out.
+
+@image html orcaview_screenshot.png
+
+@section dependencies Dependencies   
+- Qt GUI library >= version 4.1
+   
+@section configuration Configuration
+
+@par General Settings
+
+- @c OrcaView.Config.General.FactoryLibNames (string)
+     - names of plugin factory libraries
+     - Default: libOrcaQGui2dFactory.so
+
+- @c OrcaView.Config.General.DisplayRefreshTime (int) [ms]
+     - refresh time of the display
+     - Default: 200
+     
+- @c OrcaView.Config.General.DumpPath (string)
+    - directory to dump files
+    - currently used for two purposes: 
+        (1) screen dumps (filename @c orcaviewdumpXXXXX.png)
+        (2) paths sent to pathfollower2d interface (filename @c pathdumpXXXXX.png)
+    - Default: "/tmp"
+
+@par Waypoint Settings 
+
+These are the default waypoint settings that can be changed in the menu later. Choose Options->Waypoint Settings.
+
+- @c OrcaView.Config.Waypoints.DistanceTolerance (double) [m]
+     - distance tolerance from waypoint before it has been set as reached
+     - Default: 1.0
+
+- @c OrcaView.Config.Waypoints.HeadingTolerance (integer) [deg]
+     - heading tolerance from waypoint before it has been set as reached
+     - Default: 45
+     
+- @c OrcaView.Config.Waypoints.MaxApproachSpeed (double) [m/s]
+    - maximum approach speed to waypoint
+    - Default: 2e6
+    
+- @c OrcaView.Config.Waypoints.MaxApproachTurnRate (int) [deg/s]
+    - maximum approach turn rate to waypoint
+    - Default: 2000000
+    
+- @c OrcaView.Config.Waypoints.NumberOfLoops (int)
+    - for pathfollower2d: specified path can be repeated NumberOfLoops times
+    - Default: 1
+    
+- @c OrcaView.Config.Waypoints.TimePeriod (double)
+    - time interval between waypoints (in sec) i.e. if the first waypoint is set so that you need to reach it "now", the second waypoint will be set to reach at "now + 5", third waypoint at "now + 10", etc.
+    - Default: 5.0
+
+@par Screencapture settings
+    
+- @c OrcaView.Config.ScreenCapture.TopPad (int)
+    - for screen dumps: number of pixels included in the dumps from the widget top (to get window decoration) 
+    - Default: 25
+
+- @c OrcaView.Config.ScreenCapture.SidePad (int)
+    - for screen dumps: number of pixels included in the dumps from the widget side (to get window decoration) 
+    - Default: 2
+    
+- @c OrcaView.Config.ScreenCapture.BottomPad (int)
+    - for screen dumps: number of pixels included in the dumps from the widget bottom (to get window decoration) 
+    - Default: 2
+
+- @c OrcaView.Config.ScreenCapture.CaptureTimerInterval (int) [ms]
+    - time interval between screen dumps
+    - Default: 1000
+    
+@par Specific Gui element configuration
+
+- @c OrcaView.Config.PathFollower2d.ActivatePathImmediately (int)
+    - activate path immediately after sending (1) or wait until go button is pressed (0)
+    - Default: 1
+    
+- @c OrcaView.Config.Gps.Origin (orca::CartesianPoint)
+    - origin of the gui coordinate system in northing/easting/height coordinates
+    - Default: 0.0 0.0 0.0
+    
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory. 
+
+Note: If several interfaces of the same type are to be connected, just number the tags. Consider a system with two robots, @c bigrobot has two lasers and @c smallrobot has one laser. You wanna display all of them in one GUI. The configuration file would look something like this:
+\verbatim
+OrcaView.Requires.Laser0.Proxy=laser0@bigrobot/sicklaser
+OrcaView.Requires.Laser1.Proxy=laser1@bigrobot/sicklaser
+OrcaView.Requires.Laser2.Proxy=laser@smallrobot/sicklaser
+\endverbatim
+
+@section extensibility Extensibility
+Orcaview is designed in a modular way to allow easy extensions. There are two options of how to paint items in the GUI:
+-# by implementing a new orcagui::GuiElement. This is the preferred method to paint data from provided interfaces.
+-# by using the "special" @ref orca_interface_qgraphics2d interface. This is the preferred method to paint data which doesn't directly belong to an interface (not included in the Slice interface definition) but is useful for debugging purposes etc.
+
+To see how the first option works, check out the orcagui::LaserElement. To see how the second option works, check out @ref orca_component_pathplanner which can display the skeleton for a grid-potential-based pathplanning algorithm.
+
+@section authors Authors
+Tobias Kaupp, Alex Brooks, Alex Makarenko
+
+*/
+
