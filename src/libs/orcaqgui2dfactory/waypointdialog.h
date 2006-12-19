@@ -1,12 +1,12 @@
-/*
- * Orca Project: Components for robotics 
- *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
- *
- * This copy of Orca is licensed to you under the terms described in the
- * ORCA_LICENSE file included in this distribution.
- *
- */
+/********************************************************************************
+** Form generated from reading ui file 'waypointdialog.ui'
+**
+** Created: Tue Dec 19 13:43:46 2006
+**      by: Qt User Interface Compiler version 4.2.1
+**
+** WARNING! All changes made in this file will be lost when recompiling ui file!
+********************************************************************************/
+
 #ifndef WAYPOINTDIALOG_H
 #define WAYPOINTDIALOG_H
 
@@ -61,7 +61,6 @@ public:
     void setupUi(QDialog *WaypointDialog)
     {
     WaypointDialog->setObjectName(QString::fromUtf8("WaypointDialog"));
-    WaypointDialog->resize(QSize(344, 360).expandedTo(WaypointDialog->minimumSizeHint()));
     QSizePolicy sizePolicy(static_cast<QSizePolicy::Policy>(0), static_cast<QSizePolicy::Policy>(0));
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
@@ -235,7 +234,13 @@ public:
 
     vboxLayout->addLayout(hboxLayout);
 
+
     retranslateUi(WaypointDialog);
+
+    QSize size(344, 360);
+    size = size.expandedTo(WaypointDialog->minimumSizeHint());
+    WaypointDialog->resize(size);
+
     QObject::connect(okButton, SIGNAL(clicked()), WaypointDialog, SLOT(accept()));
     QObject::connect(cancelButton, SIGNAL(clicked()), WaypointDialog, SLOT(reject()));
 

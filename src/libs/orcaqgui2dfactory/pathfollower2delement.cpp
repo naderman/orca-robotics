@@ -368,6 +368,7 @@ void PathFollowerHI::waypointSettingsDialog()
     Ui::WpTolerancesDialog ui;
     ui.setupUi(myDialog);
     
+    ui.numLoopsSpin->setValue( wpSettings_.numberOfLoops);
     ui.timePeriodSpin->setValue( wpSettings_.timePeriod );
     ui.distanceSpin->setValue( wpSettings_.distanceTolerance );
     ui.headingSpin->setValue( wpSettings_.headingTolerance );
@@ -377,6 +378,7 @@ void PathFollowerHI::waypointSettingsDialog()
     int ret = myDialog->exec();
     if (ret==QDialog::Rejected) return;
     
+    wpSettings_.numberOfLoops = ui.numLoopsSpin->value();
     wpSettings_.timePeriod = ui.timePeriodSpin->value();
     wpSettings_.distanceTolerance = ui.distanceSpin->value(); 
     wpSettings_.headingTolerance = ui.headingSpin->value();

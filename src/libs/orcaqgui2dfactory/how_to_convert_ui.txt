@@ -1,1 +1,2 @@
 uic-qt4 -o waypointdialog.h waypointdialog.ui
+uic-qt4 -o wptolerancesdialog.h wptolerancesdialog.ui

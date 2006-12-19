@@ -284,6 +284,7 @@ void PathPlannerHI::waypointSettingsDialog()
     Ui::WpTolerancesDialog ui;
     ui.setupUi(myDialog);
     
+    ui.numLoopsSpin->setEnabled( false );
     ui.timePeriodSpin->setValue( wpSettings_.timePeriod );
     ui.distanceSpin->setValue( wpSettings_.distanceTolerance );
     ui.headingSpin->setValue( wpSettings_.headingTolerance );

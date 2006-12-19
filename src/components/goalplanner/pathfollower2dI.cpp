@@ -66,7 +66,7 @@ PathFollower2dI::setData( const ::orca::PathFollower2dDataPtr &data, bool activa
     {
         if ( localiseData->hypotheses.size() != 1 )
         {
-            throw orca::BusyException( "Currently more than one localization hypothesis. Will wait for a single hypothesis to execute your path");
+            throw orca::BusyException( "Multiple localization hypotheses. Will wait for a single hypothesis to execute your path");
         }
     }
 }
