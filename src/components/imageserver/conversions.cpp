@@ -25,7 +25,7 @@ orca::ImageFormat orcaImageMode( int mode )
     case MODE_1024x768_YUV422:
     case MODE_1280x960_YUV422:
     case MODE_1600x1200_YUV422:
-        return orca::ImageFormatModeUv422;
+        return orca::ImageFormatModeYuv422;
     case MODE_640x480_RGB:
     case MODE_800x600_RGB:
     case MODE_1024x768_RGB:
@@ -51,7 +51,7 @@ int dc1394ImageMode( orca::ImageFormat mode, int width, int height )
 {
     switch( mode )
     {
-        case orca::ImageFormatModeUv422:
+        case orca::ImageFormatModeYuv422:
             if ( width==320 & height==240 )         
                 return MODE_320x240_YUV422;
             else if ( width==640 & height==480 )

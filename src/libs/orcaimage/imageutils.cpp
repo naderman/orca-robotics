@@ -31,7 +31,7 @@ formatName( orca::ImageFormat& format )
         case orca::ImageFormatModeBgr:   
             return "ImageFormatModeBgr: BGR";
             break;
-        case orca::ImageFormatModeUv422:
+        case orca::ImageFormatModeYuv422:
             return "ImageFormatModeUv422: YUV 4:2:2";
             break;
         case orca::ImageFormatBayerBg:  

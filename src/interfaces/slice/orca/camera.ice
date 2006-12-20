@@ -33,7 +33,7 @@ enum ImageFormat {
     ImageFormatModeGray,  
     ImageFormatModeRgb,   
     ImageFormatModeBgr,   
-    ImageFormatModeUv422,
+    ImageFormatModeYuv422,
     ImageFormatBayerBg,  
     ImageFormatBayerGb,   
     ImageFormatBayerRg,   

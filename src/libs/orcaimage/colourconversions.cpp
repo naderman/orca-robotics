@@ -32,7 +32,7 @@ cvtToRgb( IplImage* dest, IplImage* bayerSrc, const orca::CameraDataPtr& src )
         case orca::ImageFormatModeRgb:
             memcpy( dest->imageData, &src->image[0], src->image.size() );
             break;
-        case orca::ImageFormatModeUv422:
+        case orca::ImageFormatModeYuv422:
         case orca::ImageFormatModeBgr:
         default:
             cout<<"ERROR(colourconversions.cpp): Don't know how to convert from image mode " 
@@ -49,7 +49,7 @@ cvtToBgr( IplImage* dest, IplImage* bayerSrc, const orca::CameraDataPtr& src )
         case orca::ImageFormatModeBgr:
             memcpy( dest->imageData, &src->image[0], src->image.size() );
             break;
-        case orca::ImageFormatModeUv422:
+        case orca::ImageFormatModeYuv422:
         // function comes from coriander
             uyvy2bgr( (unsigned char *) (&src->image[0]),
                        (unsigned char *) (dest->imageData), 
