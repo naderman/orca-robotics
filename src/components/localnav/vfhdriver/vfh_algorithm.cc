@@ -429,10 +429,8 @@ int VFH_Algorithm::Update_VFH( double laser_ranges[REQUIRED_NUM_RANGES][2],
   if ( current_pos_speed < 0 )
       current_pos_speed = 0;
 
-#if 0
   if ( current_pos_speed < last_chosen_speed )
       current_pos_speed = last_chosen_speed;
-#endif
   // printf("Update_VFH: current_pos_speed = %d\n",current_pos_speed);
 
 
