@@ -121,8 +121,13 @@ protected:
     //! hoping that the regisry will become reachable. If RequireRegistry=0 no exception is thrown.
     void activate();
 
-    //! Component's context. Contains component's naming and networking information.
-    Context context() const { return context_; };
+    //! Component's "context", which contains component's naming and networking information.
+    //! It can be used directly or passed to threads and classes. For example:
+    //! @verbatim
+    //!context().tracer()->info("Everything is OK");
+    //!MainLoop myloop( context() );
+    //! @endverbatim
+    Context & context() { return context_; };
 
     //! Convenience shortcut to component's tag used in configuration files.
     //! Same result as context().tag().

@@ -177,7 +177,8 @@ StatusI::status() const
     orca::StatusDataPtr currentStatus;
 //     statusPipe_.get( currentStatus );
     
-    return currentStatus->message;
+//     return currentStatus->message;
+    return "StatusI::status(): under construction";
 }
 /*
 void
