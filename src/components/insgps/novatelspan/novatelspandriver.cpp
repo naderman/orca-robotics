@@ -901,15 +901,22 @@ NovatelSpanInsGpsDriver::populateData( int id )
         {
             // printf("got INSPVASB\n");
             memcpy( &INSPVA_, &serial_data_.raw_message, sizeof(INSPVA_) );
+
+            position3dData_->timeStamp = orcaice::toOrcaTime (timeOfRead_);
+
+            // cout << "lattitude and longitude: " << INSPVA_.data.latitude << " " << INSPVA_.data.longitude << endl;
             
-            // int zone;
-            // LatLon2MGA(INSPVA_.data.latitude, INSPVA_.data.longitude,
-            //           x_(0), x_(2), zone);
+            int zone;
+            LatLon2MGA(INSPVA_.data.latitude, INSPVA_.data.longitude,
+                       position3dData_->pose.p.x, position3dData_->pose.p.y, zone);
+
+            // cout << "MGA x and y: " << position3dData_->pose.p.x << " " << position3dData_->pose.p.y << endl;
+
 
             // TODO: do we have to convert pva data into local coordinate frame? 
             // load the pva data into the position3d object       
-            position3dData_->pose.p.x = INSPVA_.data.latitude;
-            position3dData_->pose.p.y = INSPVA_.data.longitude;
+            // position3dData_->pose.p.x = INSPVA_.data.latitude;
+            // position3dData_->pose.p.y = INSPVA_.data.longitude;
             position3dData_->pose.p.z = -INSPVA_.data.height;
        
             //velocities
