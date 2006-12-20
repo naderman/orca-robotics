@@ -19,10 +19,14 @@ using namespace orcaice;
 namespace goalplanner {
 
 PathFollower2dI::PathFollower2dI( orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe,
+                                  orcaice::Proxy<bool> &activationPipe,
                                   orcaice::PtrProxy<orca::Localise2dDataPtr> &localiseDataBuffer,
+                                  orca::PathFollower2dPrx localNavPrx,
                                   const IceStorm::TopicPrx & topicPrx )
     : pathPipe_(pathPipe),
+      activationPipe_(activationPipe),
       localiseDataBuffer_(localiseDataBuffer),
+      localNavPrx_(localNavPrx),
       topicPrx_(topicPrx)
 {
     assert ( topicPrx_ != 0 );
@@ -57,6 +61,7 @@ PathFollower2dI::setData( const ::orca::PathFollower2dDataPtr &data, bool activa
 
     // give the data to the buffer
     pathPipe_.set( data );
+    activationPipe_.set( activateImmediately );
     
     // Check whether we are localized
     Localise2dDataPtr localiseData = new Localise2dData;
@@ -74,26 +79,33 @@ PathFollower2dI::setData( const ::orca::PathFollower2dDataPtr &data, bool activa
 void
 PathFollower2dI::activateNow( const ::Ice::Current& )
 {
-    cout << "TRACE(pathfollower2dI.cpp): Received activateNow signal. Will have no effect here." << endl;
+    cout << "Received activateNow signal. Will pass on to localnav." << endl;
+    localNavPrx_->activateNow(); 
 }
 
 int
 PathFollower2dI::getWaypointIndex( const ::Ice::Current& ) const
 {
-    cout<<"TRACE(pathfollower2dI.cpp): TODO: implement me." << endl;
-    return -1;
+    cout << "getWaypointIndex called. passing request on to localnav" << endl;
+    return localNavPrx_->getWaypointIndex(); 
+//     cout<<"TRACE(pathfollower2dI.cpp): TODO: implement me." << endl;
+//     return -1;
 }
 
 void 
 PathFollower2dI::setEnabled( bool enabled, const ::Ice::Current& )
 {
-    cout<<"TRACE(pathfollower2dI.cpp): TODO: implement me." << endl;
+    cout << "setEnabled called. passing request on to localnav" << endl;
+    localNavPrx_->setEnabled(enabled); 
+//     cout<<"TRACE(pathfollower2dI.cpp): TODO: implement me." << endl;
 }
 bool 
 PathFollower2dI::enabled(const ::Ice::Current&) const
 {
-    cout<<"TRACE(pathfollower2dI.cpp): TODO: implement me." << endl;
-    return true;
+    cout << "enabled called. passing request on to localnav" << endl;
+    return localNavPrx_->enabled();
+//     cout<<"TRACE(pathfollower2dI.cpp): TODO: implement me." << endl;
+//     return true;
 }
 
 void

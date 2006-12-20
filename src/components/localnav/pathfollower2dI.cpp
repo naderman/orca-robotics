@@ -76,6 +76,7 @@ PathFollower2dI::setData( const ::orca::PathFollower2dDataPtr &data, bool activa
 void
 PathFollower2dI::activateNow( const ::Ice::Current& )
 {
+    cout << "TRACE(pathfollower2dI.cpp): activateNow called" << endl;
     activationPipe_.set( orcaice::getNow() );
 }
 

@@ -157,6 +157,7 @@ void
 PathMaintainer::informWorldOfNewWpIndex( orca::PathFollower2dConsumerPrx pathConsumer, int newIndex )
 {
     pathConsumer->setWaypointIndex( newIndex );
+    wpIndexPipe_.set( newIndex );
 }
 
 double

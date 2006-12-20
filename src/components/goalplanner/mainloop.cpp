@@ -113,7 +113,9 @@ MainLoop::initNetwork()
             ( context_, pathPublisher_, "PathFollower2d" );
     
     incomingPathI_ = new PathFollower2dI( incomingPathBuffer_,
+                                          activationBuffer_,
                                           localise2dExceptionBuffer_,
+                                          localNavPrx_,
                                           topicPrx );
     
     Ice::ObjectPtr pathFollowerObj = incomingPathI_;
@@ -143,17 +145,18 @@ MainLoop::run()
         try
         {
             // wait for a goal path
-            cout << "TRACE(mainloop.cpp): Waiting for a goal path" << endl;
+            context_.tracer()->info("Waiting for a goal path");
             while( isActive() )
             {
-                int ret = incomingPathBuffer_.getNext( incomingPath, 1000 );
+//                 cout << "get wp index from localnav: " << localNavPrx_->getWaypointIndex() << endl;
+                // get wp index from localnav and publish to the world while we're waiting for a new goal
+                pathPublisher_->setWaypointIndex( localNavPrx_->getWaypointIndex() );
+                int ret = incomingPathBuffer_.getNext( incomingPath, 500 );
                 if (ret==0) break;
             }
-//             // tell the world about it
-//             pathPublisher_->setData( incomingPath );
             
             // wait for a valid localisation
-            cout << "TRACE(mainloop.cpp): Waiting for single hypothesis localisation" << endl;
+            context_.tracer()->info("Waiting for single hypothesis localisation");
             while( isActive() )
             {
                 int ret = localiseDataBuffer_.getNext( localiseData, 1000 );
@@ -163,12 +166,9 @@ MainLoop::run()
                 {
                     if ( localiseData->hypotheses.size() == 1 ) break;
                     
-                    cout << "WARNING(mainloop.cpp): more than one localisation hypotheses. Can't handle this. Waiting for single hypothesis..." << endl;
+                    context_.tracer()->warning("More than one localisation hypotheses. Can't handle this. Waiting for single hypothesis...");
                 }
             }
-            
-            // tell the world about the incoming path
-            pathPublisher_->setData( incomingPath );
                 
             // we're guaranteed to have only 1 hypothesis
             wp.target = localiseData->hypotheses[0].mean;
@@ -192,12 +192,12 @@ MainLoop::run()
             // put together a task for the pathplanner
             // add the position of the robot as the first waypoint in the path
             incomingPath->path.insert( incomingPath->path.begin(), 1, wp );
-            cout << "TRACE(mainloop.cpp): Incoming path is " << endl << orcaice::toVerboseString( incomingPath );
+            cout << "DEBUG(mainloop.cpp): Incoming path is " << endl << orcaice::toVerboseString( incomingPath );
             taskPtr->coarsePath = incomingPath->path;
             taskPtr->prx = taskPrx_;
             
             // send task to pathplanner
-            cout << "TRACE(mainloop.cpp): Sending task to pathplanner" << endl;
+            context_.tracer()->debug("Sending task to pathplanner");
             try {
                 pathplanner2dPrx_->setTask( taskPtr );
             }
@@ -217,7 +217,7 @@ MainLoop::run()
             }
             
             // block until path is computed
-            cout << "TRACE(mainloop.cpp): Waiting for pathplanner's answer" << endl;
+            context_.tracer()->debug("Waiting for pathplanner's answer");
             while( isActive() )
             {
                 int ret = computedPathBuffer_.getNext( computedPath, 1000 );
@@ -227,16 +227,29 @@ MainLoop::run()
             // check result
             if ( computedPath->result!= PathOk )
             {
-                cout << "TRACE(mainloop.cpp): Pathplanner could not compute path. Give me another goal" << endl;
+                context_.tracer()->warning("Pathplanner could not compute path. Give me another goal");
             }
             else
             {
                 // send out result to localnav, assemble packet first
                 PathFollower2dDataPtr outgoingPath = new PathFollower2dData;
                 outgoingPath->path = computedPath->path;
-                cout << "TRACE(mainloop.cpp): Sending out the resulting path to localnav." << endl;
+                context_.tracer()->debug("Sending out the resulting path to localnav.");
                 try {
-                    localNavPrx_->setData( outgoingPath, true );
+                    // get what's currently in the activation pipe
+                    bool activation=0;
+                    while( isActive() )
+                    {
+                        int ret = activationBuffer_.getNext( activation, 1000 );
+                        if (ret==0) break;
+                    }
+                    stringstream ss; ss << "Activation is " << activation;
+                    context_.tracer()->debug(ss.str());
+                    localNavPrx_->setData( outgoingPath, activation );
+
+                    // consumers should see what I send to localnav for proxy functionality
+                    pathPublisher_->setData( outgoingPath );
+                    pathPublisher_->setWaypointIndex( localNavPrx_->getWaypointIndex() );
                 }
                 catch ( Ice::NotRegisteredException & )
                 {

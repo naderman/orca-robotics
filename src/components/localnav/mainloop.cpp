@@ -154,7 +154,7 @@ MainLoop::run()
                 ss << "While giving command to platform: " << e;
                 context_.tracer()->warning( ss.str() );
             }
-
+            
             checkWithOutsideWorld( pathMaintainer_ );
             maybeSendHeartbeat();
         }
@@ -204,6 +204,7 @@ MainLoop::run()
     cout<<"TRACE(mainloop.cpp): Dropping out from run()" << endl;
 }
 
+// Tobi: why do you pass a parameter here and then use the member variable?
 void
 MainLoop::checkWithOutsideWorld( PathMaintainer &pathMaintainer )
 {

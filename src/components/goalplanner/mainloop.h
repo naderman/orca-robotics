@@ -63,6 +63,8 @@ private:
     
     orcaice::PtrProxy<orca::PathFollower2dDataPtr> incomingPathBuffer_;
     
+    orcaice::Proxy<bool> activationBuffer_;
+    
     // This buffer is used to communicate between the mainloop and PathFollower2dI
     // PathFollower2dI needs to throw exception based on localisation data
     orcaice::PtrProxy<orca::Localise2dDataPtr> localise2dExceptionBuffer_;
