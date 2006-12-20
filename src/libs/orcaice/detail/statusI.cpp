@@ -147,19 +147,19 @@ void
 StatusI::status( const std::string &message, bool force )
 {
     // get the current status and update it
-    orca::StatusDataPtr currentStatus;
+//     orca::StatusDataPtr currentStatus;
 //     statusPipe_.get( currentStatus );
 
-    if ( currentStatus->message != message )
-    {
-        currentStatus->message = message;
-        orcaice::setToNow( currentStatus->timeStamp );
-    }
-    else
-    {
-        // the message has not changed, just update the time stamp
-        orcaice::setToNow( currentStatus->timeStamp );
-    }
+//     if ( currentStatus->message != message )
+//     {
+//         currentStatus->message = message;
+//         orcaice::setToNow( currentStatus->timeStamp );
+//     }
+//     else
+//     {
+//         // the message has not changed, just update the time stamp
+//         orcaice::setToNow( currentStatus->timeStamp );
+//     }
 
     // stick it back into the data pipe
 //     statusPipe_.set( currentStatus );
