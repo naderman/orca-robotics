@@ -36,7 +36,9 @@ typedef struct {
     int captureTimerInterval;
 } ScreenDumpParams;
 
+
 class GuiElementView;
+class ShortcutAction;
 
 class MainWindow : public QMainWindow, public orcaqgui::IHumanManager
 {
@@ -74,6 +76,8 @@ public:
     virtual GuiElementModel &guiElementModel() { return *elemModel_; }
 
     void changePlatformFocusFromView(const QString& platform);
+    
+    virtual void subscribeToKey( QAction *elementAction, QKeySequence key );
 
 private slots:
 
@@ -142,7 +146,11 @@ private:
 
     // NULL means mode is not owned
     GuiElement *modeOwner_;
+    
+    // list of shorcut actions
+    QList<ShortcutAction*> shortcutActions_;
 };
+
 
 }
 #endif

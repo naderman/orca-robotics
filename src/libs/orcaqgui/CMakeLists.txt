@@ -7,10 +7,11 @@ IF ( NOT OS_WIN AND QT4_FOUND )
     FILE( GLOB HUMAN_SRCS *.cpp )
     
     SET( MOC_HEADERS
-        mainwin.h
-        regselectview.h
         guielementmodel.h
         guielementview.h
+        mainwin.h
+        regselectview.h
+        shortcutaction.h
     )
 
     QT4_WRAP_CPP( MOC_SRCS ${MOC_HEADERS} )

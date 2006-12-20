@@ -19,6 +19,7 @@
 #include <orcaqcm/orcaqcm.h>
 
 #include "mainwin.h"
+#include "shortcutaction.h"
 #include "regselectview.h"
 #include "guielementmodel.h"
 #include "guielementview.h"
@@ -91,6 +92,7 @@ namespace orcaqgui
 
     // setup all the menus/toolbars etc.
     setupInterface();
+
 }
 
 
@@ -440,6 +442,36 @@ MainWindow::relinquishMode( GuiElement *relinquisher )
     if ( relinquisher==modeOwner_ ) 
         modeOwner_=NULL;
     else showStatusMsg( Error, "Attempt to relinquish mode from non-owner!" );
+}
+
+void
+MainWindow::subscribeToKey( QAction* elementAction, QKeySequence key )
+{
+    cout << "TRACE(mainwin.cpp): subscribeToKey: number of shortcutActions " << shortcutActions_.size() << endl;
+    
+    // in any case, add the action to the toolbar
+    // TODO: check if a shortcut exists and remove it?
+    toolBar_->addAction(elementAction);
+    
+    // check whether this shortcut already exists
+    for (int i=0; i<shortcutActions_.size(); i++)
+    {
+        if (shortcutActions_[i]->key() == key)
+        {
+            shortcutActions_[i]->subscribe(elementAction);
+            return;
+        }
+    }
+            
+    // if we get here then the shortcut doesn't exist yet
+    cout << "TRACE(mainwin.cpp): we have a new shortcut" << endl;
+    ShortcutAction *shortcutAction = new ShortcutAction(this, key);
+    shortcutAction->subscribe( elementAction );
+    // add the action to this widget, so it can catch keys
+    addAction(shortcutAction);
+    
+    // put it into the list, so it's persistent and can be checked for its key later
+    shortcutActions_.push_back( shortcutAction );
 }
 
 }

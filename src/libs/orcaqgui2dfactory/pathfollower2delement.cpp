@@ -71,7 +71,7 @@ PathfollowerButtons::PathfollowerButtons( QObject *parent, IHumanManager *humanM
     QAction* hiGo = new QAction(goIcon, QString(proxyString.c_str()) + "\n" + "&PathFollower Go All Robots", this);
     connect( hiGo, SIGNAL(activated()), parent, SLOT(allGo()) ); 
     QAction* hiStop = new QAction(stopIcon, QString(proxyString.c_str()) + "\n" + "&PathFollower Stop All Robots", this);
-    hiStop->setShortcut(QKeySequence(Qt::Key_Escape));
+//     hiStop->setShortcut(QKeySequence(Qt::Key_Escape));
     connect( hiStop, SIGNAL(activated()), parent, SLOT(allStop()) ); 
 
     humanManager->fileMenu()->addAction(fileOpenPath);
@@ -86,7 +86,8 @@ PathfollowerButtons::PathfollowerButtons( QObject *parent, IHumanManager *humanM
     humanManager->toolBar()->addAction( hiSend );
     humanManager->toolBar()->addAction( hiCancel );
     humanManager->toolBar()->addAction( hiGo );
-    humanManager->toolBar()->addAction( hiStop );
+//     humanManager->toolBar()->addAction( hiStop );
+    humanManager->subscribeToKey( hiStop, QKeySequence(Qt::Key_Escape) );
 
     QAction *wpDialogAction = new QAction( QString(proxyString.c_str()) + "\n" + "&PathFollower Waypoint settings", this );
     connect( wpDialogAction, SIGNAL(activated()), parent, SLOT(waypointSettingsDialog()) );

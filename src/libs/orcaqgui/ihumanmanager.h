@@ -38,6 +38,12 @@ public:
     virtual QMenu    *optionsMenu()=0;
     virtual QMenu    *displayMenu()=0;
     virtual QToolBar *toolBar()=0;
+    
+    //! Warning: if a QAction should have a shortcut (e.g. ESC), then do *not* assign 
+    //! them in the guielement by doing toolBar()->setShortcut(QKeySequence(Qt::Esc)).
+    //! Otherwise you'll end up with an ambiguiety Qt can't resolve.
+    //! Use this function instead.
+    virtual void subscribeToKey( QAction* elementAction, QKeySequence key ) = 0;
 
     //! There's a global 'mode'.
     //! Zero or one of the GuiElements 'owns' this mode.
