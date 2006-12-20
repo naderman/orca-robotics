@@ -29,8 +29,6 @@ namespace orcaqgui {
 
 PathPainter::PathPainter()
     : wpIndex_(-1),
-      displayPastWaypoints_(true),
-      displayWaypoints_(true),
       color_(Qt::blue),
       inFocus_(true)
 {
@@ -38,6 +36,13 @@ PathPainter::PathPainter()
 
 PathPainter::~PathPainter()
 {
+}
+
+void PathPainter::initialize(bool displayWaypoints, bool displayPastWaypoints, bool useTransparency)
+{
+    displayWaypoints_ = displayWaypoints;
+    displayPastWaypoints_ = displayPastWaypoints;
+    useTransparency_ = useTransparency;
 }
 
 void PathPainter::clear()

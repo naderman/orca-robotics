@@ -167,6 +167,7 @@ private:
     std::string proxyString_;
     IHumanManager *humanManager_;
 
+    bool displayWaypoints_;
     bool currentTransparency_;
         
     // Handles human interface

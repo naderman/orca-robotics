@@ -105,6 +105,7 @@ PathPlanner2dElement::PathPlanner2dElement( const orcaice::Context & context,
       context_(context),
       proxyString_(proxyString),
       humanManager_(humanManager),
+      displayWaypoints_(true),
       currentTransparency_(false),
       pathHI_( this,
                proxyString,
@@ -113,6 +114,7 @@ PathPlanner2dElement::PathPlanner2dElement( const orcaice::Context & context,
                readWaypointSettings( context_.properties(), context_.tag() ) )
 {
     cout<<"TRACE(pathplanner2delement.cpp): Instantiating w/ proxyString '" << proxyString << "'" << endl;   
+    painter_.initialize( displayWaypoints_, true, currentTransparency_);
     pathTaskAnswerConsumer_ = new PathPlannerTaskAnswerConsumer;
 }
 
@@ -172,11 +174,19 @@ QStringList
 PathPlanner2dElement::contextMenu()
 {
     QStringList s;
-    s << "Toggle All Waypoints" 
-      << "Toggle Past Waypoints" 
-      << "Toggle Transparency" 
-      << "Save path as..."
-      << "Save path";
+    if (displayWaypoints_) {
+        s << "Switch all waypoints OFF";
+    } else {
+        s << "Switch all waypoints ON";
+    }
+    if (currentTransparency_) {
+        s << "Switch transparency OFF";
+    } else {
+        s << "Switch transparency ON";
+    }
+    
+    s  << "Save path as..."
+       << "Save path";
     return s;
 }
 
@@ -186,21 +196,18 @@ PathPlanner2dElement::execute( int action )
     cout<<"TRACE(pathplanner2delement.cpp): execute: " << action << endl;
     if ( action == 0 )
     {
+        displayWaypoints_ = !displayWaypoints_;
         painter_.toggleDisplayWaypoints();    
-    }
+    }  
     else if ( action == 1 )
-    {
-        painter_.togglePastWaypoints();
-    }    
-    else if ( action == 2 )
     {
         setTransparency(!currentTransparency_);
     }
-    else if ( action == 3 )
+    else if ( action == 2 )
     {
         pathHI_.savePathAs();
     }
-    else if ( action == 4 )
+    else if ( action == 3 )
     {
         pathHI_.savePath();
     }

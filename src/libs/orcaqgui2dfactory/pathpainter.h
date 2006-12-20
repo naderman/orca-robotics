@@ -33,6 +33,7 @@ class PathPainter
   public:
     PathPainter();
     ~PathPainter();
+    void initialize( bool displayWaypoints, bool displayPastWaypoints, bool useTransparency);
     void setData( const orca::PathFollower2dDataPtr &path );
     void setData( const orca::PathPlanner2dDataPtr &path );
     void setWpIndex( int index );
@@ -66,9 +67,10 @@ class PathPainter
 
     int wpIndex_;
 
-    bool useTransparency_;
-    bool displayPastWaypoints_;
+    // toggle states
     bool displayWaypoints_;
+    bool displayPastWaypoints_;
+    bool useTransparency_;
     
     QColor color_;
     bool inFocus_;

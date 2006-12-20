@@ -187,6 +187,10 @@ private:
     QString dumpPath_;
     int numPathDumps_;
     
+    // toggle states
+    bool displayWaypoints_;
+    bool displayPastWaypoints_;
+    bool isEnabled_;
     bool currentTransparency_;
     
     // Handles human interface

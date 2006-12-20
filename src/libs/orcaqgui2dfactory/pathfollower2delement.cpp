@@ -111,6 +111,9 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
       humanManager_(humanManager),
       firstTime_(true),
       numPathDumps_(0),
+      displayWaypoints_(true),
+      displayPastWaypoints_(true),
+      isEnabled_(true),
       currentTransparency_(false),
       pathHI_( this,
                proxyString,
@@ -120,6 +123,9 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
                readActivateImmediately( context_.properties(), context_.tag() ) )
 {
     cout<<"TRACE(pathfollower2delement.cpp): Instantiating w/ proxyString '" << proxyString << "'" << endl;
+    
+    painter_.initialize( displayWaypoints_, displayPastWaypoints_, currentTransparency_);
+    
     pathUpdateConsumer_ = new PathUpdateConsumer;
     
     getDumpPath();
@@ -211,11 +217,28 @@ QStringList
 PathFollower2dElement::contextMenu()
 {
     QStringList s;
-    s << "Toggle All Waypoints" 
-      << "Toggle Past Waypoints" 
-      << "Toggle Transparency" 
-      << "Toggle enabled"
-      << "Load path..."
+    if (displayWaypoints_) {
+        s << "Switch all waypoints OFF";
+    } else {
+        s << "Switch all waypoints ON";
+    }
+    if (displayPastWaypoints_) {
+        s << "Switch past waypoints OFF";
+    } else {
+        s << "Switch past waypoints ON";
+    }
+    if (currentTransparency_) {
+        s << "Switch transparency OFF";
+    } else {
+        s << "Switch transparency ON";
+    }
+    if (isEnabled_) {
+        s << "Disable interface";
+    } else {
+        s << "Enable interface";
+    }
+    
+    s << "Load path..."
       << "Save path as..."
       << "Save path";
     return s;
@@ -227,10 +250,12 @@ PathFollower2dElement::execute( int action )
     cout<<"TRACE(pathfollower2delement.cpp): execute: " << action << endl;
     if ( action == 0 )
     {
+        displayWaypoints_ = !displayPastWaypoints_;
         painter_.toggleDisplayWaypoints();    
     }
     else if ( action == 1 )
     {
+        displayPastWaypoints_ = !displayPastWaypoints_;
         painter_.togglePastWaypoints();
     }
     else if ( action == 2 )
@@ -239,6 +264,7 @@ PathFollower2dElement::execute( int action )
     }
     else if ( action == 3 )
     {
+        isEnabled_ = !isEnabled_;
         pathFollower2dPrx_->setEnabled( !pathFollower2dPrx_->enabled() );
     }
     else if ( action == 4 )
