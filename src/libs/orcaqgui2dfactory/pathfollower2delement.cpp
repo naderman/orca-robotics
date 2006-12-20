@@ -250,7 +250,7 @@ PathFollower2dElement::execute( int action )
     cout<<"TRACE(pathfollower2delement.cpp): execute: " << action << endl;
     if ( action == 0 )
     {
-        displayWaypoints_ = !displayPastWaypoints_;
+        displayWaypoints_ = !displayWaypoints_;
         painter_.toggleDisplayWaypoints();    
     }
     else if ( action == 1 )
@@ -289,6 +289,7 @@ void
 PathFollower2dElement::go()
 {
     cout<<"TRACE(PathFollower2dElement): go()" << endl;
+    humanManager_->showStatusMsg(Information,"Received GO signal");
     try
     {
         pathFollower2dPrx_->activateNow();
@@ -305,6 +306,7 @@ void
 PathFollower2dElement::stop()
 {
     cout<<"TRACE(PathFollower2dElement): stop()" << endl;
+    humanManager_->showStatusMsg(Information,"Received STOP signal");
     PathFollower2dDataPtr dummyPath = new PathFollower2dData;
     const bool activateNow = false;
     try

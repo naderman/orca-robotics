@@ -16,11 +16,12 @@
 
 namespace orcaqgui {
 
+    
 class ShortcutAction : public QAction
 {
     Q_OBJECT
     public:
-        ShortcutAction(QObject * parent, QKeySequence keySequence);
+        ShortcutAction(QKeySequence keySequence);
         ~ShortcutAction() {};
         void subscribe( QAction *action );
         QKeySequence key() { return keySequence_; };

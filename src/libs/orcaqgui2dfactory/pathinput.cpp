@@ -384,7 +384,7 @@ readWaypointSettings( const Ice::PropertiesPtr & props, const std::string & tag 
 bool 
 readActivateImmediately( const Ice::PropertiesPtr & props, const std::string & tag )
 {
-    std::string prefix = tag + ".Config.PathFollower2d";
+    std::string prefix = tag + ".Config.PathFollower2d.";
     return orcaice::getPropertyAsIntWithDefault( props, prefix+"ActivatePathImmediately", 1 );
 }
 

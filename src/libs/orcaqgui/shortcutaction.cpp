@@ -8,15 +8,16 @@
  *
  */
  
-#include "shortcutaction.h"
 #include <iostream>
+
+#include "shortcutaction.h"
 
 using namespace orcaqgui;
 using namespace std;
 
-ShortcutAction::ShortcutAction( QObject *parent, QKeySequence keySequence)
-    : QAction( parent ),
-      keySequence_(keySequence)
+ShortcutAction::ShortcutAction( QKeySequence keySequence )
+    :  QAction(this),
+       keySequence_(keySequence)
 {
     setShortcut(keySequence);
     connect(this,SIGNAL(triggered()),this,SLOT(triggerElementActions()));

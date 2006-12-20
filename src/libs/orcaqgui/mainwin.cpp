@@ -465,7 +465,7 @@ MainWindow::subscribeToKey( QAction *elementAction, QKeySequence key )
             
     // if we get here then the shortcut doesn't exist yet
     cout << "TRACE(mainwin.cpp): we have a new shortcut" << endl;
-    ShortcutAction *shortcutAction = new ShortcutAction(this, key);
+    ShortcutAction *shortcutAction = new ShortcutAction(key);
     shortcutAction->subscribe( elementAction );
     // add the action to this widget, so it can catch keys
     addAction(shortcutAction);
