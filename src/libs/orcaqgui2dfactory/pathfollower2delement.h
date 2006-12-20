@@ -104,6 +104,8 @@ public slots:
     void cancel();
     void allGo();
     void allStop();
+    void go();
+    void stop();
 
 private:
 

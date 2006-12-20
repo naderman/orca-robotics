@@ -445,7 +445,7 @@ MainWindow::relinquishMode( GuiElement *relinquisher )
 }
 
 void
-MainWindow::subscribeToKey( QAction* elementAction, QKeySequence key )
+MainWindow::subscribeToKey( QAction *elementAction, QKeySequence key )
 {
     cout << "TRACE(mainwin.cpp): subscribeToKey: number of shortcutActions " << shortcutActions_.size() << endl;
     

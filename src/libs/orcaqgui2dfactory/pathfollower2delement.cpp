@@ -69,10 +69,9 @@ PathfollowerButtons::PathfollowerButtons( QObject *parent, IHumanManager *humanM
     connect( hiCancel,SIGNAL(activated()), parent ,SLOT(cancel()) );
 
     QAction* hiGo = new QAction(goIcon, QString(proxyString.c_str()) + "\n" + "&PathFollower Go All Robots", this);
-    connect( hiGo, SIGNAL(activated()), parent, SLOT(allGo()) ); 
+    connect( hiGo, SIGNAL(activated()), parent, SLOT(go()) ); 
     QAction* hiStop = new QAction(stopIcon, QString(proxyString.c_str()) + "\n" + "&PathFollower Stop All Robots", this);
-//     hiStop->setShortcut(QKeySequence(Qt::Key_Escape));
-    connect( hiStop, SIGNAL(activated()), parent, SLOT(allStop()) ); 
+    connect( hiStop, SIGNAL(activated()), parent, SLOT(stop()) ); 
 
     humanManager->fileMenu()->addAction(fileOpenPath);
     humanManager->fileMenu()->addAction(fileSavePathAs);
@@ -85,9 +84,8 @@ PathfollowerButtons::PathfollowerButtons( QObject *parent, IHumanManager *humanM
     humanManager->toolBar()->addAction( hiWaypoints_ );
     humanManager->toolBar()->addAction( hiSend );
     humanManager->toolBar()->addAction( hiCancel );
-    humanManager->toolBar()->addAction( hiGo );
-//     humanManager->toolBar()->addAction( hiStop );
     humanManager->subscribeToKey( hiStop, QKeySequence(Qt::Key_Escape) );
+    humanManager->subscribeToKey( hiGo, QKeySequence(Qt::Key_F12) );
 
     QAction *wpDialogAction = new QAction( QString(proxyString.c_str()) + "\n" + "&PathFollower Waypoint settings", this );
     connect( wpDialogAction, SIGNAL(activated()), parent, SLOT(waypointSettingsDialog()) );
@@ -263,7 +261,7 @@ PathFollower2dElement::execute( int action )
 void 
 PathFollower2dElement::go()
 {
-    cout<<"TRACE(pathfollower2delement.cpp): go()" << endl;
+    cout<<"TRACE(PathFollower2dElement): go()" << endl;
     try
     {
         pathFollower2dPrx_->activateNow();
@@ -279,7 +277,7 @@ PathFollower2dElement::go()
 void 
 PathFollower2dElement::stop()
 {
-    cout<<"TRACE(pathfollower2delement.cpp): stop()" << endl;
+    cout<<"TRACE(PathFollower2dElement): stop()" << endl;
     PathFollower2dDataPtr dummyPath = new PathFollower2dData;
     const bool activateNow = false;
     try
@@ -297,6 +295,7 @@ PathFollower2dElement::stop()
 void 
 PathFollower2dElement::sendPath( const PathFollowerInput &pathInput, bool activateImmediately )
 {
+    cout<<"TRACE(PathFollower2dElement): sendPath()" << endl;
     try
     {
         pathFollower2dPrx_->setData( pathInput.getPath(), activateImmediately );
@@ -436,6 +435,7 @@ PathFollowerHI::setTransparency( bool useTransparency )
 void 
 PathFollowerHI::send()
 {
+    cout<<"TRACE(PathFollowerHI): send()" << endl;
     if ( pathInput_ != NULL )
         pfElement_->sendPath( *pathInput_, activateImmediately_ );
     cancel();
@@ -443,15 +443,32 @@ PathFollowerHI::send()
 void 
 PathFollowerHI::cancel()
 {
+    cout<<"TRACE(PathFollowerHI): cancel()" << endl;
     if ( gotMode_ )
     {
         humanManager_->relinquishMode( pfElement_ );
         lostMode();
     }
 }
+
+void 
+PathFollowerHI::go()
+{
+    cout<<"TRACE(PathFollowerHI): go()" << endl;
+    pfElement_->go();
+}
+
+void 
+PathFollowerHI::stop()
+{
+    cout<<"TRACE(PathFollowerHI): stop()" << endl;
+    pfElement_->stop();
+}
+
 void 
 PathFollowerHI::allGo()
 {
+    cout<<"TRACE(PathFollowerHI): allGo()" << endl;
     const QList<GuiElement*> elements = humanManager_->guiElementModel().elements();
     for ( int i=0; i < elements.size(); i++ )
     {
@@ -465,6 +482,7 @@ PathFollowerHI::allGo()
 void 
 PathFollowerHI::allStop()
 {
+    cout<<"TRACE(PathFollowerHI): allStop()" << endl;
     const QList<GuiElement*> elements = humanManager_->guiElementModel().elements();
     for ( int i=0; i < elements.size(); i++ )
     {
