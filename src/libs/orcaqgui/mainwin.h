@@ -77,7 +77,8 @@ public:
 
     void changePlatformFocusFromView(const QString& platform);
     
-    virtual void subscribeToKey( QAction *elementAction, QKeySequence key );
+    virtual void subscribeToKey( QAction *elementAction, QKeySequence key, QObject *parent  );
+    virtual void unsubscribeFromKey( QKeySequence key, QObject *parent );
 
 private slots:
 

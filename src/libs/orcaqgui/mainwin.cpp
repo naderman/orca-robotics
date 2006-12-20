@@ -445,7 +445,7 @@ MainWindow::relinquishMode( GuiElement *relinquisher )
 }
 
 void
-MainWindow::subscribeToKey( QAction *elementAction, QKeySequence key )
+MainWindow::subscribeToKey( QAction *elementAction, QKeySequence key, QObject *parent )
 {
     cout << "TRACE(mainwin.cpp): subscribeToKey: number of shortcutActions " << shortcutActions_.size() << endl;
     
@@ -458,7 +458,7 @@ MainWindow::subscribeToKey( QAction *elementAction, QKeySequence key )
     {
         if (shortcutActions_[i]->key() == key)
         {
-            shortcutActions_[i]->subscribe(elementAction);
+            shortcutActions_[i]->subscribe( parent, elementAction);
             return;
         }
     }
@@ -466,12 +466,25 @@ MainWindow::subscribeToKey( QAction *elementAction, QKeySequence key )
     // if we get here then the shortcut doesn't exist yet
     cout << "TRACE(mainwin.cpp): we have a new shortcut" << endl;
     ShortcutAction *shortcutAction = new ShortcutAction(key);
-    shortcutAction->subscribe( elementAction );
+    shortcutAction->subscribe( parent, elementAction );
     // add the action to this widget, so it can catch keys
     addAction(shortcutAction);
     
     // put it into the list, so it's persistent and can be checked for its key later
     shortcutActions_.push_back( shortcutAction );
+}
+
+void 
+MainWindow::unsubscribeFromKey( QKeySequence key, QObject *parent )
+{
+    for (int i=0; i<shortcutActions_.size(); i++)
+    {
+        if (shortcutActions_[i]->key() == key)
+        {
+            shortcutActions_[i]->unsubscribe( parent );
+            return;
+        }
+    }
 }
 
 }

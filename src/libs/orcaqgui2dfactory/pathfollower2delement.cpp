@@ -40,6 +40,7 @@ PathUpdateConsumer::setWaypointIndex( int index, const ::Ice::Current& )
 ////////////////////////////////////////////////////////////////////////////////
 
 PathfollowerButtons::PathfollowerButtons( QObject *parent, IHumanManager *humanManager, string proxyString)
+    : humanManager_(humanManager)
 {
     QPixmap openIcon(fileopen_xpm);
     QPixmap savePathIcon(filesave_path_xpm);
@@ -84,11 +85,11 @@ PathfollowerButtons::PathfollowerButtons( QObject *parent, IHumanManager *humanM
     humanManager->toolBar()->addAction( hiWaypoints_ );
     humanManager->toolBar()->addAction( hiSend );
     humanManager->toolBar()->addAction( hiCancel );
-    humanManager->toolBar()->addAction( hiStop );
-    humanManager->toolBar()->addAction( hiGo );
+//     humanManager->toolBar()->addAction( hiStop );
+//     humanManager->toolBar()->addAction( hiGo );
     
-//     humanManager->subscribeToKey( hiStop, QKeySequence(Qt::Key_Escape) );
-//     humanManager->subscribeToKey( hiGo, QKeySequence(Qt::Key_F12) );
+    humanManager->subscribeToKey( hiStop, QKeySequence(Qt::Key_Escape), this );
+    humanManager->subscribeToKey( hiGo, QKeySequence(Qt::Key_F12), this );
 
     QAction *wpDialogAction = new QAction( QString(proxyString.c_str()) + "\n" + "&PathFollower Waypoint settings", this );
     connect( wpDialogAction, SIGNAL(activated()), parent, SLOT(waypointSettingsDialog()) );
@@ -96,6 +97,12 @@ PathfollowerButtons::PathfollowerButtons( QObject *parent, IHumanManager *humanM
 
     QAction *sep = humanManager->toolBar()->addSeparator();
     sep->setParent( this );
+}
+
+PathfollowerButtons::~PathfollowerButtons() 
+{
+    humanManager_->unsubscribeFromKey( QKeySequence(Qt::Key_Escape), this ); 
+    humanManager_->unsubscribeFromKey( QKeySequence(Qt::Key_F12), this ); 
 }
 
 void 

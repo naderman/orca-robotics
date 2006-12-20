@@ -16,14 +16,22 @@
 
 namespace orcaqgui {
 
-    
+// This class is an action proxy representing a bunch of actions with
+// the same key shortcut, e.g. ESC. Shortcuts need to be unique, that's
+// why we need this proxy. Actions can be subscribed to ShortcutAction and
+// are stored in a multimap with their parent as a key. When the parent dies,
+// we need to unsubscribe (Qt style: in the destructor), so we can delete
+// the pointer from the map.
+//
+// author: Tobias Kaupp
 class ShortcutAction : public QAction
 {
     Q_OBJECT
     public:
         ShortcutAction(QKeySequence keySequence);
         ~ShortcutAction() {};
-        void subscribe( QAction *action );
+        void subscribe( QObject *parent, QAction *action );
+        void unsubscribe( QObject *parent );
         QKeySequence key() { return keySequence_; };
         
     public slots:
@@ -31,7 +39,7 @@ class ShortcutAction : public QAction
         
     private:
         QKeySequence keySequence_;
-        QList<QAction*> actionList_;
+        QMultiMap<QObject*,QAction*> actionMap_;
 };
 
 }

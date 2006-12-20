@@ -24,19 +24,28 @@ ShortcutAction::ShortcutAction( QKeySequence keySequence )
 }
 
 void 
-ShortcutAction::subscribe( QAction *action )
+ShortcutAction::subscribe( QObject *parent, QAction *action )
 {
-    cout << "TRACE(shortcutaction.cpp): pushing back new element action" << endl;
-    actionList_.push_back( action );
+    cout << "TRACE(shortcutaction.cpp): inserting new element action" << endl;
+    actionMap_.insert(parent,action);
+}
+
+void
+ShortcutAction::unsubscribe( QObject *parent )
+{
+    int numRemoved = actionMap_.remove ( parent );
+    cout << "TRACE(shortcutaction.cpp): Just removed " << numRemoved << " items from the map" << endl;
 }
 
 void
 ShortcutAction::triggerElementActions()
 {
-    cout << "TRACE(shortcutaction.cpp): triggerElementActions: list has size: " << actionList_.size() << endl;
-    for (int i=0; i<actionList_.size(); i++)
+    cout << "TRACE(shortcutaction.cpp): triggerElementActions: map has size: " << actionMap_.size() << endl;    
+    QMultiMap<QObject*, QAction*>::const_iterator i = actionMap_.constBegin();
+    while (i != actionMap_.constEnd()) 
     {
-        actionList_[i]->trigger();        
+        i.value()->trigger();
+        ++i;
     }
 }
 

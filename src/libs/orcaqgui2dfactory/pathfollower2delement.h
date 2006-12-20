@@ -49,14 +49,13 @@ class PathfollowerButtons : public QObject
             
 public:
     PathfollowerButtons( QObject *parent, IHumanManager *humanManager, std::string proxyString);
-    ~PathfollowerButtons() 
-    { 
-        // Qt cleans up for us 
-    };
+    ~PathfollowerButtons();
+    
     void setWpButton( bool onOff );
 
 private:
     QAction *hiWaypoints_;
+    IHumanManager *humanManager_;
 };
 //////////////////////////////////////////////////////////////////////////////
 
@@ -152,7 +151,7 @@ public:
     virtual QStringList contextMenu();
     virtual void execute( int action );
     virtual void setColor( QColor color ) { painter_.setColor( color ); };
-    virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); };
+    virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); pathHI_.setFocus( inFocus); };
     virtual void setTransparency( bool useTransparency );
 
     virtual void lostMode() { pathHI_.lostMode(); }
