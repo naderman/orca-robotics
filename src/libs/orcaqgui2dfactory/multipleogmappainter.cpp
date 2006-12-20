@@ -14,6 +14,7 @@
 
 using namespace orcaqgui;
 using namespace std;
+using namespace orca;
 
 
 MultipleOgMapPainter::MultipleOgMapPainter()
@@ -42,7 +43,8 @@ MultipleOgMapPainter::setData( const orca::OgMapDataPtr & data0, const orca::OgM
     assert( data0->numCellsY == data1->numCellsY );
     assert( data0->metresPerCellX == data1->metresPerCellX );
     assert( data0->metresPerCellY == data1->metresPerCellY );
-    assert( (data0->mapType==0 || data0->mapType==1) && (data1->mapType==0 || data1->mapType==1) );
+    assert( (data0->mapType==ogmaptype::OCCUPANCY || data0->mapType==ogmaptype::HAZARD)
+             && (data1->mapType==ogmaptype::OCCUPANCY  || data1->mapType==ogmaptype::HAZARD) );
     
     if ( data0->origin.o != 0.0 ) {
         cout << "ERROR(ogmappainter.cpp): Don't know how to display a non-axis-aligned map." << endl;
@@ -51,7 +53,7 @@ MultipleOgMapPainter::setData( const orca::OgMapDataPtr & data0, const orca::OgM
     
     orca::OgMapDataPtr occMap;
     orca::OgMapDataPtr hazMap;
-    if (data0->mapType==0)
+    if (data0->mapType==ogmaptype::OCCUPANCY)
     {
         occMap = data0;
         hazMap = data1;

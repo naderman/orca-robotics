@@ -16,6 +16,16 @@
 
 module orca
 {
+    
+module ogmaptype
+{
+    //! Map represents occupancy
+    const int OCCUPANCY = 0;
+    //! Map represents hazards
+    const int HAZARD    = 1;
+    //! Map represents motion
+    const int MOTION    = 2;    
+};
 
 /*!
     @ingroup  interfaces

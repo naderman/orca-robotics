@@ -69,12 +69,12 @@ A second way of putting a particular platform into focus, is to click on a local
  
 Apart from receiving information from the interfaces, users can also send data to them via their corresponding GUI elements. Each element adds its own buttons to the toolbar and entries into the menu. Right-clicking on the elements in the element view brings up some interaction options too. 
  
-The following interactions are currently implemented:
+The following interactions are currently implemented. Note that they work on a per-element basis:
 
 - <b>PathFollower2d interactions:</b>
   - <i>drawing paths</i>: choose the "Pathfollower waypoints mode" icon. Draw connecting waypoints by left-clicks. They show up as circles with uncertainty in distance (circle diameter) and heading (filled wedge). The default settings for the waypoints can be found at Options->Waypoint Settings. Right-clicking close to the last waypoint removes it. Middle-clicking close to a waypoint lets you change the waypoint parameters. All waypoints can be discarded by clicking the "Discard" icon. When satisfied, click the "Send" icon to send it to the interface(s). A moment later, you should see the path sent back by the interface in blue. 
   - <i>activate path</i>: After sending a new path, clicking on the "Go robot" icon will activate the path.
-  - <i>stopping robot</i>: clicking on the "Stop robot" icon (or hitting the ESC key) will send an empty path to the pathfollower which stops the robot(s).
+  - <i>stopping robot</i>: clicking on the "Stop robot" icon will send an empty path to the pathfollower which stops the robot(s).
   
 - <b>Open/save pathfollower waypoints:</b> once subscribed to a @ref orca_interface_pathfollower2d interface, you can save the displayed path to a text file (could be the one you just sent to it). You can load the path back into the GUI later. It can then be sent to the interface(s) by clicking the "Send" button.
 
@@ -87,6 +87,11 @@ The following interactions are currently implemented:
 Supported file formats are:
     - binary ICE stream file ( extension @c .bin ). The advantage is that this file contains all information of the OgMap including origin, resolution etc.
     - bitmaps: one pixel per cell (extensions: <i>.bmp .jpg .jpeg .png .ppm .xbm .xpm</i> ). The advantage is that these files can be processed.
+
+Sometimes, it is desirable to interact with many elements at the same time, e.g. to stop all robots. These type of interactions are implemented using keyboard shortcuts. Currently, we have:
+
+- Stop for all PathFollower2dElements: ESC
+- Go for all PathFollower2dElementss: F12
 
 @section screenshot Screenshot
 Here's a screenshot of the GUI connected to a few interfaces belonging to two platforms. Robot "hemp" is in focus and thus its GUI elements are displayed in color: they are Laser, Localise2d, and PathPlanner2d. The other platform's GUI elements are grayed out.

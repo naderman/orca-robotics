@@ -330,7 +330,7 @@ setSane( const orca::OgMapDataPtr & obj, int width, int height )
     obj->metresPerCellX = 1.0;
     obj->metresPerCellY = 1.0;
     obj->data.resize( 640*480, char(88) );
-    obj->mapType = 0;
+    obj->mapType = orca::ogmaptype::OCCUPANCY;
 }
 
 void 

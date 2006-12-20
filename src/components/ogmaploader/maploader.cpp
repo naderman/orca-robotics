@@ -101,7 +101,7 @@ loadMapFromFile( const orcaice::Context & context, orca::OgMapDataPtr &map )
         map->timeStamp.useconds = 0;
         
         // Set type
-        map->mapType = orcaice::getPropertyAsIntWithDefault( prop, prefix+"MapType", 0 );
+        map->mapType = orcaice::getPropertyAsIntWithDefault( prop, prefix+"MapType", orca::ogmaptype::OCCUPANCY );
     }
 }
 

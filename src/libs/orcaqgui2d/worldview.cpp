@@ -105,9 +105,9 @@ WorldView::setupInterface()
     
     QAction* transparency = new QAction(tr("&Transparency"),this);
     transparency->setCheckable(true);
-    // initialize to true, could be configurable
-    transparency->setChecked(true);
-    model_->setTransparency( true );
+    // initialize to false, could be configurable
+    transparency->setChecked(false);
+    model_->setTransparency( false );
     transparency->setShortcut( QKeySequence("Ctrl+T") );
     connect(transparency,SIGNAL(toggled(bool)), model_, SLOT(setTransparency(bool)) );
     mainWin_->displayMenu()->addAction(transparency);   
