@@ -164,10 +164,23 @@ toStatusTopic( const orca::FQComponentName & fqCName )
 {
     orca::FQTopicName fqTName;
         
-    fqTName.platform = fqCName.platform;
+    fqTName.platform  = fqCName.platform;
     fqTName.component = fqCName.component;
-    fqTName.iface = "status";
-    fqTName.topic = "*";
+    fqTName.iface     = "status";
+    fqTName.topic     = "*";
+
+    return fqTName;
+}
+
+orca::FQTopicName 
+toTracerTopic( const orca::FQComponentName & fqCName )
+{
+    orca::FQTopicName fqTName;
+        
+    fqTName.platform  = fqCName.platform;
+    fqTName.component = fqCName.component;
+    fqTName.iface     = "tracer";
+    fqTName.topic     = "*";
 
     return fqTName;
 }
@@ -796,13 +809,23 @@ toString( const orca::StatusDataPtr & obj )
 std::string 
 toString( const orca::TracerData & obj )
 {
-    std::ostringstream s;
-    // this toString() function is defined in nameutils.h
-    s << toString( obj.name ) << ": "
-      << obj.category << ": "
-      << obj.message;
+    std::string s;
 
-    return s.str();
+    s = "[ ";
+    s += toString( obj.timeStamp ) + " ";
+    s += toString( obj.name );
+    s += " " + obj.category + ": ";
+    s += obj.message + " ]";
+
+    // replace line breaks with spaces
+    string::size_type idx = 0;
+    while((idx = s.find("\n", idx)) != string::npos)
+    {
+        s.insert(idx + 1, "  ");
+        ++idx;
+    }
+
+    return s;
 }
 
 std::string 

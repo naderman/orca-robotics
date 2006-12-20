@@ -1,0 +1,59 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup components
+@ingroup apps
+@ingroup cpp
+@ingroup linux
+@defgroup orca_component_tracermon TracerMon
+@brief Connects to Tracer interface and displays messages on screen.
+
+Connects to Tracer interface and displays messages on screen.
+
+@par Provides
+
+- @ref orca_interface_home
+
+@par Requires
+
+- @ref orca_interface_tracer
+
+@image html tracer.png
+
+@par Drivers
+
+- @b term-std @ref orca_component_tracermon_term_std
+- @b term-ncurses @ref orca_component_tracermon_term_ncurses
+
+@par Configuration
+
+- @c TracerMon.Config.Driver (string)
+    - Which input driver to use
+    - Valid values: { "term-std", "term-ncurses" }
+    - Default: "kbd-std"
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
+@par Dependancies
+
+None for the component. See driver sections below for individual driver dependencies.
+
+@section orca_component_tracermon_term_std Terminal Driver using iostream
+
+Provides no user input. Connects to the specified Tracer interface, sets the parameters, and prints out incoming traces to cout.
+
+@section orca_component_tracermon_term_ncurses Terminal Driver using libncurses
+
+@par Authors
+
+Alex Makarenko    
+
+*/

@@ -64,7 +64,7 @@ interface Tracer
 {
     //! Set verbosity level for traces transmitted over the network.
     //! Set to -1 to leave unchanged.
-    void setVerbosity( int error, int warn, int info, int debug );
+    idempotent void setVerbosity( int error, int warn, int info, int debug );
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The

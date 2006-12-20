@@ -145,6 +145,13 @@ Component::initHome()
     provided.name = homeIdentity;
     provided.id = "::orca::Home";
     compData.provides.push_back( provided );
+
+    if ( interfaceFlag_ & TracerInterface ) {
+        provided.name = "tracer";
+        provided.id = "::orca::Tracer";
+        compData.provides.push_back( provided );
+    }
+
     if ( interfaceFlag_ & StatusInterface ) {
         provided.name = "status";
         provided.id = "::orca::Status";

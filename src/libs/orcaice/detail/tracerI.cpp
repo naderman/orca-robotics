@@ -28,60 +28,27 @@ TracerI::TracerI( const orcaice::Context & context )
     parseConfigFile();
         
     // do we need IceStorm topic?
-    bool needIceStorm = false;
-    for ( int i=0; i<NumberOfTraceTypes; ++i ) {
-        if ( config_.verbosity[i][ToNetwork] )
-        {
-            // cout<<"TRACE(statustracerI.cpp): Need syslogger for traceType " << i << endl;
-            needIceStorm = true;
-            break;
-        }
-    }
-    if ( needIceStorm ) {
+    if ( config_.verbosity[AnyTrace][ToNetwork] ) {
         connectToIceStorm();
     }
 
     // do we need output file?
-    bool needFile = false;
-    for ( int i=0; i<NumberOfTraceTypes; ++i ) {
-        if ( config_.verbosity[i][ToFile] )
-        {
-            needFile = true;
-            break;
-        }
-    }
-    if ( needFile ) {
+    if ( config_.verbosity[AnyTrace][ToFile] ) {
         string filename = context_.properties()->getProperty("Orca.Tracer.Filename");
         file_ = new ofstream( filename.c_str() );
         if ( !file_->is_open() ) {
             initTracerError( "Could not create file " + filename );
         }
+        else {
+            initTracerPrint("Created output file.");
+        }
     }
     
     // do we need a syslogger?
-    bool needSysLogger = false;
-    for ( int i=0; i<NumberOfTraceTypes; ++i ) {
-        if ( config_.verbosity[i][ToLog] )
-        {
-            // cout<<"TRACE(statustracerI.cpp): Need syslogger for traceType " << i << endl;
-            needSysLogger = true;
-            break;
-        }
-    }
-    if ( needSysLogger ) {
+    if ( config_.verbosity[AnyTrace][ToLog] ) {
         sysLogger_ = new orcaice::detail::SysLogger(context);
+        initTracerPrint("Created syslogger.");
     }
-
-//     cout<<"TRACE(tracerI.cpp): verbosity:" << endl;
-//     for ( int i=0; i < NumberOfTraceTypes; i++ )
-//     {
-//         cout << "  ";
-//         for ( int j=0; j < NumberOfDestinationTypes; j++ )
-//         {
-//             cout << config_.verbosity[i][j] << " ";
-//         }
-//         cout << endl;
-//     }
 }
 
 TracerI::~TracerI()
@@ -188,8 +155,8 @@ TracerI::connectToIceStorm()
     // are we required to connect to status topic? (there's always default value for this property)
     bool isStatusTopicRequired = props->getPropertyAsInt( "Orca.Tracer.RequireIceStorm" );
 
-    orca::FQTopicName fqTName = orcaice::toStatusTopic( context_.name() );
-    initTracerPrint( prefix_+": Connecting to status topic "+orcaice::toString( fqTName ));
+    orca::FQTopicName fqTName = orcaice::toTracerTopic( context_.name() );
+    initTracerPrint( prefix_+": Connecting to tracer topic "+orcaice::toString( fqTName ));
 
     try
     {
@@ -231,7 +198,7 @@ void
 TracerI::subscribe(const ::orca::TracerConsumerPrx& subscriber, const ::Ice::Current&)
 {
     if ( !topic_ ) {
-        throw orca::SubscriptionFailedException("Component does not have a topic to publish its status.");
+        throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
     }
     
     //cout<<"subscription request"<<endl;
