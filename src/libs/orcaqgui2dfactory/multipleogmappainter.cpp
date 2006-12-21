@@ -73,7 +73,7 @@ MultipleOgMapPainter::setData( const orca::OgMapDataPtr & data0, const orca::OgM
     vector<int> hazG;
     vector<int> hazB;
     
-    for (int i=0; i<(data0->numCellsX*occMap->numCellsY); i++)
+    for (int i=0; i<(occMap->numCellsX*occMap->numCellsY); i++)
     {   
         int r=255-(int)occMap->data[i];
         int g=255-(int)occMap->data[i];
