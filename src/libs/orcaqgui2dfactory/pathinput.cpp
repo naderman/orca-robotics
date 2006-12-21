@@ -243,6 +243,8 @@ PathInput::savePath( const QString &fileName, IHumanManager *humanManager ) cons
         humanManager->showBoxMsg(Error, "Cannot create file " + fileName );
         return;
     }
+    
+    const float timeOffset = times_[waypoints_.size()-1];
 
     QTextStream out(&file);
     for (int k=0; k<wpSettings_->numberOfLoops; k++)
@@ -251,7 +253,7 @@ PathInput::savePath( const QString &fileName, IHumanManager *humanManager ) cons
         {
             out << waypoints_[i].x() << " " << waypoints_[i].y() << " "
                     << headings_[i] << " "
-                    << times_[i] << " "
+                    << times_[i]+k*timeOffset << " "
                     << distTolerances_[i] << " "
                     << headingTolerances_[i]<< " "
                     << maxSpeeds_[i]<< " "
@@ -278,6 +280,8 @@ PathFollowerInput::getPath() const
     pathData->path.resize( size );
     int counter = -1;
     
+    const float timeOffset = times_[waypoints_.size()-1];
+    
     for (int k=0; k<wpSettings_->numberOfLoops; k++)
     {
         for (int i=0; i<waypoints_.size(); i++)
@@ -298,7 +302,7 @@ PathFollowerInput::getPath() const
             pathData->path[counter].target.o = heading/180.0 * M_PI;
             pathData->path[counter].distanceTolerance = distTolerances_[i];
             pathData->path[counter].headingTolerance = (float)headingTolerance/180.0*M_PI;      
-            pathData->path[counter].timeTarget = orcaice::toOrcaTime( times_[i] );
+            pathData->path[counter].timeTarget = orcaice::toOrcaTime( times_[i] + k*timeOffset );
                 
             pathData->path[counter].maxApproachSpeed = maxSpeeds_[i];
             pathData->path[counter].maxApproachTurnrate = (float)maxTurnrates_[i]/180.0*M_PI;
