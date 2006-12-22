@@ -24,6 +24,7 @@
 #include <orcaice/exceptions.h>
 #include <orcaice/ptrbuffer.h>
 #include <orcaice/ptrnotify.h>
+#include <orcaice/eventqueue.h>
 
 #include <orcaice/configutils.h>
 #include <orcaice/connectutils.h>
