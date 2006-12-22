@@ -175,8 +175,8 @@ Component::initHome()
     // make Home a well-known object
     Ice::ObjectPrx homePrx =context_.adapter()->add( homeObj, context_.communicator()->stringToIdentity(homeIdentity) );
 
-    Ice::ObjectPrx adminPrx = context_.communicator()->stringToProxy("IceGrid/Admin");
-//             orcamisc::stringToIceGridInstanceName(locatorString)+"/Admin");
+    std::string instanceName = properties()->getPropertyWithDefault( "IceGrid.InstanceName", "IceGrid" );
+    Ice::ObjectPrx adminPrx = context_.communicator()->stringToProxy( instanceName+"/Admin" );
     
     IceGrid::AdminPrx admin;
     try {
