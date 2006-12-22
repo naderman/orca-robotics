@@ -20,12 +20,25 @@ namespace orcaice
 /*!
  *  @brief A minor extention of the Ice Thread class.
  * 
- *  Adds an option to stop a thread with @ref stop. Requires that the thread periodically checks
- *  whether it has to stop by calling isActive(); Since @ref stop is public, it can be called
+ *  Adds an option to stop a thread with @ref stop(). Requires that the thread periodically checks
+ *  whether it has to stop by calling isActive(); Since @ref stop() is public, it can be called
  *  from inside or outside of the derived class.
  *
- *  To use, simply overload the virtual Ice::Thread::run function.
- *
+ *  To use, simply overload the virtual Ice::Thread::run() function.
+@verbatim
+void MyThread::run()
+{
+    // initialize
+
+    // main loop
+    while ( isActive() )
+    {
+        // do something
+    }
+
+    // clean up
+}
+@endverbatim
  *  Caution: Make sure you catch all exception which can possibly be raised inside Ice::Thread::run.
  *  Otherwise, you'll see "uncaught exception" printed out and the component will hang.
  *
@@ -53,8 +66,8 @@ protected:
 
     //! Wait for someone from the outside to call @ref stop.
     //! It may be necessary to call this function before exitting from Ice::Thread::run after
-    //! catching an exception. If someone calls @ref stop afterwards there's a
-    //! possibility of lock up.
+    //! catching an exception. If we just exit run and someone calls our @ref stop() function
+    //! afterwards there's a possibility of lock up.
     void waitForStop();
 
 private:
