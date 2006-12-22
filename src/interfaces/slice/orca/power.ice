@@ -45,9 +45,11 @@ sequence<BatteryData> BatteriesData;
 /*!
     @brief Information about the power subsystem of a robot.
 */
-class PowerData extends OrcaObject
+struct PowerData
 {
-    //! battery information
+    //! Time when data was measured.
+    Time timeStamp;
+    //! Battery information
     BatteriesData batteries;
 };
 
@@ -81,9 +83,6 @@ interface Power
      */
     void subscribe( PowerConsumer* subscriber )
             throws ConfigurationNotExistException;
-
-    // for reference, this is what IceStorm's subscribe function looks like.
-    //void subscribe(QoS theQoS, Object* subscriber);
 
     /*!
      * Unsubscribe the given [subscriber].

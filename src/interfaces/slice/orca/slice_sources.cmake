@@ -11,24 +11,21 @@
 SET( SLICE_SOURCE_FILES
 # definitions
     ocm.ice
+    datetime.ice
+    exceptions.ice
     orca.ice
     bros1.ice
     stochastic.ice
-# objects
-#    image.ice
-    ogmap.ice
-    opaque.ice
 #interfaces
     binaryindicator.ice
     binaryswitch.ice
     cpu.ice
     gps.ice
     home.ice
-#     rangescanner.ice
     rangescanner2d.ice
-#     laser.ice
     laserscanner2d.ice
     ogfusion.ice
+    ogmap.ice
     pathplanner2d.ice
     pingreply.ice
     position2d.ice

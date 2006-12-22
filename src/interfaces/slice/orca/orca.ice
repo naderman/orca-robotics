@@ -12,6 +12,8 @@
 #define ORCA2_ORCA_ICE
 
 #include <orca/ocm.ice>
+#include <orca/datetime.ice>
+#include <orca/exceptions.ice>
 
 /*!
     @brief Defines cross-platform interfaces and data objects.
@@ -23,46 +25,9 @@ module orca
 {
 
 /*!
-    @brief Unix absolute time
-*/
-struct Time
-{
-    //! Number of seconds
-    int seconds;
-    //! Number of microseconds
-    int useconds;
-};
-
-/*!
-    Time of day.
-*/
-struct TimeOfDay
-{
-    //! Hour [0..23]
-    int hours;
-    //! Minutes [0..59]
-    int minutes;
-    //! Seconds [0.0..59.9999(9)]
-    double seconds;
-};
-
-/*!
-    @brief Date of the year.
-*/
-struct Date
-{    
-    //! Day [1..31]
-    int day;
-    //! Month [1..12]
-    int month;
-    //! Year (2006 is 2006)
-    int year;
-};
-
-/*!
-    @brief Base class for all data types in Orca.
+    @brief Base class for data types in Orca.
     
-    Deriving from a single class allows polymorphism.
+    Deriving from this class is optional. It allows polymorphism. 
     
     @note An Orca @e object refers to a piece of data whereas an Ice @e object which
     refers to a remote servant.
@@ -76,44 +41,6 @@ class OrcaObject
 //! A byte array which can store any information.
 sequence<byte> ByteSequence;
 
-/*!
-    @brief A generic run-time exception.
-    
-    Orca Components can use this to signal error conditions to their clients.
-*/
-exception OrcaException
-{
-    //! Error description.
-    string what;
-};
-
-//! Server failed to configure itself as requrested by client.
-exception ConfigurationNotExistException extends OrcaException {};
-
-/*!
-    Raised when the server does not have the requested data.
-
-    Typically, this is because the server has not fully initialized yet.
-*/
-exception DataNotExistException extends OrcaException {};
-
-//! Indicates a problem with robot hardware, e.g. sensors and actuators.
-exception HardwareFailedException extends OrcaException {};
-
-//! Raised when the server fails to subscribe client for periodic updates.
-exception SubscriptionFailedException extends OrcaException {};
-
-//! Raised when the component is unable to process requests.
-exception BusyException extends OrcaException {};
-
-//! Raised when a component failed to connect to a required interface
-exception RequiredInterfaceFailedException extends OrcaException {};
-
-//! Raised when one or more parameters to a remote request were malformed.
-exception MalformedParametersException extends OrcaException {};
-
-//! Raised when a remote operation is not implemented.
-exception OperationNotImplementedException extends OrcaException {};
 
 }; // module
 
