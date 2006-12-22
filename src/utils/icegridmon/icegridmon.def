@@ -1,0 +1,8 @@
+DefaultComponentTag=IceGridMon
+
+# Provided Interfaces
+
+# Required Interfaces
+
+# Config Parameters
+Config.FilenameTimestamp.Default=1
