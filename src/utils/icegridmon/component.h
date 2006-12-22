@@ -14,6 +14,9 @@
 #include <vector>
 #include <string>
 #include <orcaice/component.h>
+#include <IceGrid/Session.h>
+#include "sessionkeepalive.h"
+
 
 namespace icegridmon
 {
@@ -31,6 +34,11 @@ public:
 
 private:
 
+    SessionKeepAliveThreadPtr keepAlive_;
+    IceGrid::AdminSessionPrx session_;
+
+    Ice::ObjectPtr regObserver_;
+    Ice::ObjectPtr nodeObserver_;
 };
 
 }

@@ -10,9 +10,13 @@
 
 #include <iostream>
 
+#include <IceGrid/Registry.h>
+#include <IceGrid/Observer.h>
 #include <orcaice/orcaice.h>
 #include <orcalog/orcalog.h>
+
 #include "component.h"
+#include "observerI.h"
 
 using namespace std;
 using namespace orca;
@@ -39,12 +43,54 @@ Component::start()
     // activate component, this may throw and it will kill us
     activate();
 
+    std::string instanceName = properties()->getPropertyWithDefault( "IceGrid.InstanceName", "IceGrid" );
+
+    IceGrid::RegistryPrx registry = 
+	IceGrid::RegistryPrx::checkedCast( context().communicator()->stringToProxy(instanceName+"/Registry") );
+
+    if(!registry)
+    {
+        tracer()->error( "Could not contact registry" );
+        context().communicator()->shutdown();
+    }
+
+    try
+    {
+        session_ = registry->createAdminSession( "horse", "shit" );
+        cout << "created session"<<endl;
+    }
+    catch(const IceGrid::PermissionDeniedException& ex)
+    {
+        cout << "permission denied:\n" << ex.reason << endl;
+    }
+
+    keepAlive_ = new SessionKeepAliveThread( session_, registry->getSessionTimeout() / 2 );
+    keepAlive_->start();
+
+    regObserver_ = new RegistryObserverI( context() );
+    nodeObserver_ = new NodeObserverI( context() );
+
+    IceGrid::RegistryObserverPrx regObserverPrx =
+        orcaice::createConsumerInterface<IceGrid::RegistryObserverPrx> ( context(), regObserver_ );
+    IceGrid::NodeObserverPrx nodeObserverPrx =
+        orcaice::createConsumerInterface<IceGrid::NodeObserverPrx> ( context(), nodeObserver_ );
+
+    session_->setObservers( regObserverPrx, nodeObserverPrx );
+    cout<<"set observers"<<endl;
+
+    
 }
 
 void Component::stop()
 {
-//     context().tracer()->debug("Stopping logger component", 5 );
-    // there are no threads to stop, we are done
+    //
+    // Destroy the keepAlive_ thread and the sesion object otherwise
+    // the session_ will be kept allocated until the timeout occurs.
+    // Destroying the session_ will release all allocated objects.
+    //
+    keepAlive_->destroy();
+    keepAlive_->getThreadControl().join();
+    session_->destroy();
 }
 
 } // namespace
