@@ -23,6 +23,25 @@ we use it to log trace statements, e.g. warnings, error messages, etc (not data)
 A single Tracer object is meant to be shared by all threads in the component so the
 implementation must be thread-safe.
 
+When the tracing message is cheap to generate, simply call one of the tracing functions. The routing to destinations will be performed internally.
+
+@verbatim
+Tracer* tracer = context().tracer();
+std::string s = "something is wrong";
+tracer->error( s );
+@endverbatim
+
+If the tracing message is a result of an expensive operation, you many want to perform the tracing test yourself and then call the tracing function. You may test verbosity for specific TraceType / DestinationType combinations or use summary fields AnyTrace and ToAny.
+
+@verbatim
+Tracer* tracer = context().tracer();
+if ( tracer->verbocity( orcaice::Tracer::ErrorTrace, orcaice::Tracer::ToAny ) ) {
+    std::string s = expensiveOperation();
+    tracer->error( s );
+}
+@endverbatim
+
+
 @par Tracer Configuration
 
 - @c  Orca.Tracer.RequireIceStorm (bool)
@@ -127,6 +146,13 @@ public:
 
     //! Routing is determined by DebugToXxx parameter.
     virtual void debug( const std::string &message, int level=1 ) = 0;
+
+    //! Returns the verbosity level for traceType to destType. This test is performed 
+    //! internally by all tracing functions, e.g. error(). You may want to call this 
+    //! function yourself @e before calling error() if there is a significant overhead
+    //! in forming the tracing string. See class documentation for an example of such
+    //! usage.
+    virtual int verbosity( TraceType traceType, DestinationType destType ) const = 0;
 
 };
 

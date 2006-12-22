@@ -91,19 +91,7 @@ TracerI::parseConfigFile()
     config_.verbosity[TracerI::DebugTrace][TracerI::ToFile]       = props->getPropertyAsInt("Orca.Tracer.DebugToFile");
 
     // pre-calculate marginals: accross trace types
-    for ( int i=0; i<TracerI::AnyTrace; ++i ) {
-        config_.verbosity[i][TracerI::ToAny] = 0;
-        for ( int j=0; j<TracerI::ToAny-1; ++j ) {
-            config_.verbosity[i][TracerI::ToAny] = MAX ( config_.verbosity[i][TracerI::ToAny], config_.verbosity[i][j] );
-        }
-    }
-    // pre-calculate marginals: accross destination types
-    for ( int j=0; j<TracerI::ToAny; ++j ) {
-        config_.verbosity[TracerI::AnyTrace][j] = 0;
-        for ( int i=0; i<TracerI::AnyTrace; ++i ) {
-            config_.verbosity[TracerI::AnyTrace][j] = MAX ( config_.verbosity[TracerI::AnyTrace][j], config_.verbosity[i][j] );
-        }
-    }
+    recalcMarginals();
 
     // filtering
     config_.ignoreRepeatedWarnings = props->getPropertyAsInt( "Orca.Tracer.IgnoreRepeatedWarnings" );
@@ -191,7 +179,39 @@ TracerI::connectToIceStorm()
 void 
 TracerI::setVerbosity( ::Ice::Int error, ::Ice::Int warn, ::Ice::Int info, ::Ice::Int debug,  const ::Ice::Current& )
 {
+    if ( info > -1 ) {
+        config_.verbosity[TracerI::InfoTrace][TracerI::ToNetwork]     = info;
+    }
+    if ( warn > -1 ) {
+        config_.verbosity[TracerI::WarningTrace][TracerI::ToNetwork]  = warn;
+    }
+    if ( error > -1 ) {
+        config_.verbosity[TracerI::ErrorTrace][TracerI::ToNetwork]    = error;
+    }
+    if ( debug > -1 ) {
+        config_.verbosity[TracerI::DebugTrace][TracerI::ToNetwork]    = debug;
+    }
 
+    stringstream ss;
+    ss << "New ToNetwork verbosity levels:"
+        << " info="<<config_.verbosity[TracerI::InfoTrace][TracerI::ToNetwork]
+        << " warn="<<config_.verbosity[TracerI::WarningTrace][TracerI::ToNetwork]
+        << " error="<<config_.verbosity[TracerI::ErrorTrace][TracerI::ToNetwork]
+        << " debug="<<config_.verbosity[TracerI::DebugTrace][TracerI::ToNetwork];
+    // do not call info because it may go back to the network and lock up
+    // do it manually
+    if ( config_.verbosity[InfoTrace][ToDisplay] ) {
+        toDisplay( "info", ss.str(), 1 );
+    }
+    if ( config_.verbosity[InfoTrace][ToFile] ) {
+        toFile( "info", ss.str(), 1 );
+    }   
+    if ( config_.verbosity[InfoTrace][ToLog] ) {
+        sysLogger_->logInfo( ss.str() );
+    }  
+
+    // pre-calculate marginals: accross trace types
+    recalcMarginals();
 }
 
 void
@@ -292,6 +312,12 @@ TracerI::debug( const std::string &message, int level )
     }
 }
 
+int 
+TracerI::verbosity( TraceType traceType, DestinationType destType ) const
+{
+    return 1;
+}
+
 void
 TracerI::toDisplay( const std::string& category, const std::string& message, int level )
 {
@@ -383,5 +409,24 @@ TracerI::assembleMessage( const std::string& category, const std::string& messag
     {
         s.insert(idx + 1, "  ");
         ++idx;
+    }
+}
+
+void
+TracerI::recalcMarginals()
+{
+    // pre-calculate marginals: accross trace types
+    for ( int i=0; i<TracerI::AnyTrace; ++i ) {
+        config_.verbosity[i][TracerI::ToAny] = 0;
+        for ( int j=0; j<TracerI::ToAny-1; ++j ) {
+            config_.verbosity[i][TracerI::ToAny] = MAX ( config_.verbosity[i][TracerI::ToAny], config_.verbosity[i][j] );
+        }
+    }
+    // pre-calculate marginals: accross destination types
+    for ( int j=0; j<TracerI::ToAny; ++j ) {
+        config_.verbosity[TracerI::AnyTrace][j] = 0;
+        for ( int i=0; i<TracerI::AnyTrace; ++i ) {
+            config_.verbosity[TracerI::AnyTrace][j] = MAX ( config_.verbosity[TracerI::AnyTrace][j], config_.verbosity[i][j] );
+        }
     }
 }

@@ -42,6 +42,11 @@ NetworkHandler::run()
     
     // configs
     std::string prefix = context_.tag() + ".Config.";
+    Ice::PropertiesPtr props = context_.properties();
+    int infoVerb = orcaice::getPropertyAsIntWithDefault( props, prefix+"InfoVerbosity", 10 );
+    int warnVerb = orcaice::getPropertyAsIntWithDefault( props, prefix+"WarningVerbosity", 10 );
+    int errorVerb = orcaice::getPropertyAsIntWithDefault( props, prefix+"ErrorVerbosity", 10 );
+    int debugVerb = orcaice::getPropertyAsIntWithDefault( props, prefix+"DebugVerbosity", 10 );
 
     // REQUIRED : Tracer
     orca::TracerPrx tracerPrx;
@@ -71,12 +76,18 @@ NetworkHandler::run()
     while ( isActive() ) {
         try
         {
+            tracerPrx->setVerbosity( errorVerb, warnVerb, infoVerb, debugVerb );
             tracerPrx->subscribe( callbackPrx );
             break;
         }
         catch ( const orca::SubscriptionFailedException & )
         {
             context_.tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+        }
+        catch ( const Ice::Exception & )
+        {
+            context_.tracer()->error( "Ice exception. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }

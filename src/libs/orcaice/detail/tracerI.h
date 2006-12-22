@@ -43,21 +43,17 @@ public:
 
     // orcaice::Tracer interface
     
-    //! Prints out verbatim to stdout. It is never routed over the network.
-    //! @see info
     virtual void print( const std::string &message );
 
-    //! Routing is determined by InfoToXxx parameter.
     virtual void info( const std::string &message, int level=1 );
     
-    //! Routing is determined by WarningToXxx parameter.
     virtual void warning( const std::string &message, int level=1 );
     
-    //! Routing is determined by ErrorToXxx parameter.
     virtual void error( const std::string &message, int level=1 );
 
-    //! Routing is determined by DebugToXxx parameter.
     virtual void debug( const std::string &message, int level=1 );
+
+    virtual int verbosity( TraceType traceType, DestinationType destType ) const;
 
 private:
 
@@ -97,7 +93,7 @@ private:
     // utilities
     void parseConfigFile();
     void assembleMessage( const std::string& category, const std::string& message, int level, std::string& s );
-
+    void recalcMarginals();
 };
 
 } // namespace

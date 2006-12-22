@@ -53,7 +53,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New components
 
 - TracerMon (alex m.)
-    - Connects to Tracer interface of an component and displays all trace statements.
+    - Connects to Tracer interface of a component and displays all trace statements.
+
+- IceGridMon (alex m.)
+    - Connects to the registry and installs itself as the Registry and Node Observer. Then all registry and node events are traced locally or remotely.
 
 @par New utilities
 

@@ -38,7 +38,30 @@ Connects to Tracer interface and displays messages on screen.
 - @c TracerMon.Config.Driver (string)
     - Which input driver to use
     - Valid values: { "term-std", "term-ncurses" }
-    - Default: "kbd-std"
+    - Default: "term-std"
+
+- @c TracerMon.Config.InfoVerbosity (int)
+    - Initial setting for verbosity level of information traces.
+    - Valid values:
+        - -1 : leave unchanged
+        - 0  : no traces
+        - >0 : higher number means more traces
+    - Default: 1
+
+- @c TracerMon.Config.WarningVerbosity (int)
+    - Initial setting for verbosity level of warning traces.
+    - Valid values: same as for InfoVerbosity
+    - Default: 1
+
+- @c TracerMon.Config.ErrorVerbosity (int)
+    - Initial setting for verbosity level of error traces.
+    - Valid values: same as for InfoVerbosity
+    - Default: 1
+
+- @c TracerMon.Config.DebugVerbosity (int)
+    - Initial setting for verbosity level of debug traces.
+    - Valid values: same as for InfoVerbosity
+    - Default: 1
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 

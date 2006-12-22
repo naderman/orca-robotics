@@ -191,7 +191,7 @@ BrowserHandler::showPlatform()
 void 
 BrowserHandler::loadComponent()
 {
-//     cout<<"loading component data for "<<endl; //<<orcaice::toString(platformData_.homes[pick_].name)<<endl;
+    cout<<"loading component data for pick="<<pick_<<endl; //orcaice::toString(platformData_.homes[pick_].name)<<endl;
     lastComponentPick_ = pick_;
     
     //
@@ -204,7 +204,7 @@ BrowserHandler::loadComponent()
     // todo: this is a bit ugly
     componentData_.locatorString = platformData_.locatorString;
 
-//     cout<<"DEBUG: got a list of "<<componentData_.provides.size()<<" provided interfaces for "<<orcaice::toString(componentData_.name)<<endl;
+    cout<<"DEBUG: got a list of "<<componentData_.provides.size()<<" provided interfaces for "<<orcaice::toString(componentData_.name)<<endl;
     display_.setComponentData( componentData_ );
 }
 
@@ -258,6 +258,7 @@ BrowserHandler::loadInterface()
     // local call
     interfaceData_.operations = ifaceProbe_->operations();
 
+    cout<<"DEBUG: BrowserHandler is calling setInterfaceData()"<<endl;
     display_.setInterfaceData( interfaceData_ );
 }
 

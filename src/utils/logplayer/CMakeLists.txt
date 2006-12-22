@@ -1,13 +1,12 @@
+IF( NOT OS_WIN )
+
 OPTION( BUILD_LOGPLAYER "Try to build LogPlayer" ON )
 
-IF ( NOT OS_WIN AND BUILD_LOGPLAYER )
+IF( BUILD_LOGPLAYER )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
     
-    #
-    # This gathers all the source files into the variable 'SRCS'
-    #
     FILE( GLOB SRCS *.cpp )
     
     GLOBAL_ADD_EXECUTABLE( logplayer ${SRCS} )
@@ -15,4 +14,5 @@ IF ( NOT OS_WIN AND BUILD_LOGPLAYER )
 
     GENERATE_CONFIG_FILE( logplayer.def )
     
-ENDIF ( NOT OS_WIN AND BUILD_LOGPLAYER )
+ENDIF( BUILD_LOGPLAYER )
+ENDIF( NOT OS_WIN )
