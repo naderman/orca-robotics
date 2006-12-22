@@ -368,17 +368,17 @@ toXmlTemplateText( const ComponentDef &def )
     // define tab to be 4 spaces.
     std::string tab = "    ";
 
-    ss << "<!-- Orca version " << orcaice::orcaVersion() << " -->" << endl;
-    ss << endl;
-
-    ss << "<icegrid>" << endl;
-
-    ss <<tab
-        <<"<application "
-        <<"name=\"OrcaApp\">" << endl;
-
-    ss <<tab<<tab
-        <<"<distrib/>" << endl;
+//     ss << "<!-- Orca version " << orcaice::orcaVersion() << " -->" << endl;
+//     ss << endl;
+// 
+//     ss << "<icegrid>" << endl;
+// 
+//     ss <<tab
+//         <<"<application "
+//         <<"name=\"OrcaApp\">" << endl;
+// 
+//     ss <<tab<<tab
+//         <<"<distrib/>" << endl;
 
     ss <<tab<<tab
         <<"<server-template "
@@ -451,16 +451,16 @@ toXmlTemplateText( const ComponentDef &def )
     ss <<tab<<tab<<tab<<"</server>" << endl;
     ss <<tab<<tab<<"</server-template>" << endl;
 
-    // sample use of the server template
-    ss <<tab<<tab<<"<node name=\"Localhost\">" << endl;
-    ss <<tab<<tab<<tab
-        <<"<server-instance "
-        <<"template=\""<<cfg.fqname.component<<"Template\" "
-        <<"platform=\"localhost\"/>" << endl;
-    ss <<tab<<tab<<"</node>" << endl;
-
-    ss <<tab<<"</application>" << endl;
-    ss <<"</icegrid>" << endl;
+//     // sample use of the server template
+//     ss <<tab<<tab<<"<node name=\"Localhost\">" << endl;
+//     ss <<tab<<tab<<tab
+//         <<"<server-instance "
+//         <<"template=\""<<cfg.fqname.component<<"Template\" "
+//         <<"platform=\"localhost\"/>" << endl;
+//     ss <<tab<<tab<<"</node>" << endl;
+// 
+//     ss <<tab<<"</application>" << endl;
+//     ss <<"</icegrid>" << endl;
 
     return ss.str();
 }
