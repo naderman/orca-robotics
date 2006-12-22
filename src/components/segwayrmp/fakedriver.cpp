@@ -46,7 +46,7 @@ int FakeDriver::enable()
 // }
 
 int FakeDriver::read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 
-                      orca::PowerDataPtr &power, std::string & status )
+                      orca::PowerData &power, std::string & status )
 {
     orcaice::setSane( position2d );
     orcaice::setSane( position3d );

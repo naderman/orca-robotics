@@ -35,7 +35,7 @@ public:
     NetHandler( orcaice::PtrProxy<orca::Position2dDataPtr>     & position2dPipe,
                  orcaice::PtrProxy<orca::Position3dDataPtr>    & position3dPipe,
                  orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
-                 orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe,
+                 orcaice::Proxy<orca::PowerData>         & powerPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
                  const orcaice::Context                        & context );
@@ -64,7 +64,7 @@ private:
     orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe_;
     orcaice::PtrProxy<orca::Position3dDataPtr>    & position3dPipe_;
     orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe_;
-    orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe_;
+    orcaice::Proxy<orca::PowerData>         & powerPipe_;
     orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe_;
     orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe_;
 
@@ -72,7 +72,7 @@ private:
     orca::Position2dDataPtr position2dData_;
     orca::Position3dDataPtr position3dData_;
     orca::Velocity2dCommandPtr commandData_;
-    orca::PowerDataPtr powerData_;
+    orca::PowerData powerData_;
 
     // component current context
     orcaice::Context context_;

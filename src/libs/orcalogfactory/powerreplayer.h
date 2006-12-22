@@ -30,7 +30,7 @@ public:
     
     // from Orca object
 
-    virtual ::orca::PowerDataPtr getData(const ::Ice::Current& ) const;
+    virtual ::orca::PowerData getData(const ::Ice::Current& ) const;
     
     virtual void subscribe(const ::orca::PowerConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
@@ -41,9 +41,9 @@ public:
     virtual void replayData( int index, bool isTest=false );
 
 private:
-    orcaice::PtrBuffer<orca::PowerDataPtr> dataPipe_;
+    orcaice::Buffer<orca::PowerData> dataPipe_;
     
-    orca::PowerDataPtr data_;
+    orca::PowerData data_;
     orca::PowerConsumerPrx publisher_;
     IceStorm::TopicPrx topic_;
 

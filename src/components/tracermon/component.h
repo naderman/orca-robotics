@@ -13,7 +13,7 @@
 
 #include <orcaice/component.h>
 #include <orcaice/thread.h>
-#include "eventqueue.h"
+#include <orcaice/eventqueue.h>
 
 namespace tracermon
 {
@@ -31,8 +31,8 @@ public:
 
 private:
 
-    EventQueuePtr netQueue_;
-    EventQueuePtr usrQueue_;
+    orcaice::EventQueuePtr netQueue_;
+    orcaice::EventQueuePtr usrQueue_;
 
     orcaice::Thread* netHandler_;
     orcaice::Thread* usrHandler_;

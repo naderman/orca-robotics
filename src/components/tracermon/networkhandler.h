@@ -13,8 +13,7 @@
 
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
-#include "eventqueue.h"
-// #include <orca/tracer.h>
+#include <orcaice/eventqueue.h>
 
 namespace tracermon
 {
@@ -23,8 +22,8 @@ class NetworkHandler : public orcaice::Thread //, public orca::TracerConsumer
 {
 public:
 
-    NetworkHandler( const EventQueuePtr & myQueue, 
-                    const EventQueuePtr & otherQueue, 
+    NetworkHandler( const orcaice::EventQueuePtr & myQueue, 
+                    const orcaice::EventQueuePtr & otherQueue, 
                     const orcaice::Context & context );
     virtual ~NetworkHandler();
 
@@ -36,8 +35,8 @@ public:
 
 private:
 
-    EventQueuePtr myQueue_;
-    EventQueuePtr otherQueue_;
+    orcaice::EventQueuePtr myQueue_;
+    orcaice::EventQueuePtr otherQueue_;
 
     orcaice::Context context_;
 

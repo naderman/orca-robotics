@@ -19,8 +19,8 @@ using namespace std;
 using namespace orca;
 using namespace tracermon;
 
-NetworkHandler::NetworkHandler( const EventQueuePtr & myQueue, 
-                                const EventQueuePtr & otherQueue, 
+NetworkHandler::NetworkHandler( const orcaice::EventQueuePtr & myQueue, 
+                                const orcaice::EventQueuePtr & otherQueue, 
                                 const orcaice::Context & context )
     : myQueue_(myQueue),
       otherQueue_(otherQueue),
@@ -92,7 +92,7 @@ NetworkHandler::run()
         }
     }
 
-    EventPtr eventPtr;
+    orcaice::EventPtr eventPtr;
     int timeoutMs = 500;
     bool ret = false;
 

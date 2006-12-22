@@ -11,10 +11,17 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
-#include <cmath>
+
+// trying to solve a problem in win, round() is not found
+#ifdef WIN32
+#   include <math.h>
+#else
+#   include <cmath>
+#endif
+
 // M_PI is not defined after including cmath for the MS visual studio compiler?
 #ifndef M_PI
-#define M_PI 3.14159265358979323846
+#   define M_PI 3.14159265358979323846
 #endif
 
 #include <orcaobj/timeutils.h>
@@ -26,7 +33,7 @@
 // make a copy here to cut circular dependency
 //==============
 #ifndef DEG2RAD_RATIO
-#define DEG2RAD_RATIO	(M_PI/180.0)
+#   define DEG2RAD_RATIO	(M_PI/180.0)
 #endif
 
 // Converts from degrees to radians.
@@ -777,19 +784,19 @@ toString( const orca::RangeScanner2dDataPtr & obj, int skip )
 }
 
 std::string 
-toString( const orca::PowerDataPtr & obj )
+toString( const orca::PowerData & obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp)
-        << " Power ["<<obj->batteries.size()<<" batteries] (name,volt,%,sec) :";
+    s << toString(obj.timeStamp)
+        << " Power ["<<obj.batteries.size()<<" batteries] (name,volt,%,sec) :";
 
-    for ( unsigned int i=0; i < obj->batteries.size(); ++i )
+    for ( unsigned int i=0; i < obj.batteries.size(); ++i )
     {
         s << endl << "    [" 
-          <<obj->batteries[i].name<<","
-          <<obj->batteries[i].voltage<<"V,"
-          <<obj->batteries[i].percent<<"%,"
-          <<obj->batteries[i].secRemaining<<"s]";
+          <<obj.batteries[i].name<<","
+          <<obj.batteries[i].voltage<<"V,"
+          <<obj.batteries[i].percent<<"%,"
+          <<obj.batteries[i].secRemaining<<"s]";
     }
     return s.str();
 }

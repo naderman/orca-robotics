@@ -197,29 +197,29 @@ toLogString( const orca::Position3dDataPtr &obj )
 // the number of batteries usually does not change over time
 // format: sec usec voltage0 percent0 voltage1 percent1 ... voltageN percentN
 std::string 
-toLogString( const orca::PowerDataPtr &obj )
+toLogString( const orca::PowerData &obj )
 {
     std::stringstream s;
-    s << toLogString(obj->timeStamp);
+    s << toLogString(obj.timeStamp);
 
-    s << " " << obj->batteries.size();
-    for ( unsigned int i=0; i < obj->batteries.size(); ++i ) {
-        s << " " << obj->batteries[i].voltage << " " << obj->batteries[i].percent << " " << obj->batteries[i].secRemaining;
+    s << " " << obj.batteries.size();
+    for ( unsigned int i=0; i < obj.batteries.size(); ++i ) {
+        s << " " << obj.batteries[i].voltage << " " << obj.batteries[i].percent << " " << obj.batteries[i].secRemaining;
     }
     return s.str();
 }
 
 void 
-fromLogString( std::stringstream & stream, orca::PowerDataPtr & obj )
+fromLogString( std::stringstream & stream, orca::PowerData & obj )
 {
-    fromLogString( stream, obj->timeStamp );
+    fromLogString( stream, obj.timeStamp );
 
     unsigned int size;
     stream >> size;
 
-    obj->batteries.resize(size);
+    obj.batteries.resize(size);
     for ( unsigned int i=0; i < size; ++i ) {
-        stream >> obj->batteries[i].voltage >> obj->batteries[i].percent >> obj->batteries[i].secRemaining;
+        stream >> obj.batteries[i].voltage >> obj.batteries[i].percent >> obj.batteries[i].secRemaining;
     }
 }
 

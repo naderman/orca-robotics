@@ -38,7 +38,7 @@ public:
     virtual int enable();
 
     virtual int read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 
-                      orca::PowerDataPtr &power, std::string & status );
+                      orca::PowerData &power, std::string & status );
 
     virtual int write( const orca::Velocity2dCommandPtr &position2d );
 

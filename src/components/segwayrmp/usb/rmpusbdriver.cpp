@@ -157,7 +157,7 @@ RmpUsbDriver::enable()
 
 int
 RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 
-                    orca::PowerDataPtr &power, std::string & status )
+                    orca::PowerData &power, std::string & status )
 {
     try {
         //
@@ -319,12 +319,12 @@ RmpUsbDriver::integrateMotion()
 
 void
 RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d,
-                          orca::PowerDataPtr &power, Status & status )
+                          orca::PowerData &power, Status & status )
 {
     // set all time stamps right away
     orcaice::setToNow( position2d->timeStamp );
     orcaice::setToNow( position3d->timeStamp );
-    orcaice::setToNow( power->timeStamp );
+    orcaice::setToNow( power.timeStamp );
 
     // POSITION2D
     //
@@ -382,15 +382,15 @@ RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::Position3dD
     //
     // Convert battery voltage from counts to Volts
     // we only know the minimum of the two main batteries
-    power->batteries[0].voltage = frame_.base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
-    power->batteries[0].percent = 99.0;
-    power->batteries[0].secRemaining = 8*60*60;
-    power->batteries[1].voltage = frame_.base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
-    power->batteries[1].percent = 99.0;
-    power->batteries[1].secRemaining = 8*60*60;
-    power->batteries[2].voltage = RMP_UI_OFFSET + frame_.ui_battery_voltage*RMP_UI_COEFF;
-    power->batteries[2].percent = 99.0;
-    power->batteries[2].secRemaining = 8*60*60;
+    power.batteries[0].voltage = frame_.base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
+    power.batteries[0].percent = 99.0;
+    power.batteries[0].secRemaining = 8*60*60;
+    power.batteries[1].voltage = frame_.base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
+    power.batteries[1].percent = 99.0;
+    power.batteries[1].secRemaining = 8*60*60;
+    power.batteries[2].voltage = RMP_UI_OFFSET + frame_.ui_battery_voltage*RMP_UI_COEFF;
+    power.batteries[2].percent = 99.0;
+    power.batteries[2].secRemaining = 8*60*60;
 
     // INTERNAL STATUS
     status.buildId = frame_.build_id;
@@ -399,9 +399,9 @@ RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::Position3dD
     status.gainSchedule = frame_.controller_gain_schedule;
 
     //debug
-    //cout<<"cu battery voltage (CU): "<<power->batteries[0].voltage<<" ("<<frame_.base_battery_voltage<<")"<<endl;
+    //cout<<"cu battery voltage (CU): "<<power.batteries[0].voltage<<" ("<<frame_.base_battery_voltage<<")"<<endl;
     // info from CU in msg 406
-    //cout<<"ui battery voltage (CU): "<<power->batteries[2].voltage<<" ("<<frame_.ui_battery_voltage<<")"<<endl;
+    //cout<<"ui battery voltage (CU): "<<power.batteries[2].voltage<<" ("<<frame_.ui_battery_voltage<<")"<<endl;
     // info from UI in heartbeat msg
     //cout<<"ui battery voltage (UI): "<<frame_.ui_heartbeat_voltage<<endl;
     //if ( frame_.ui_heartbeat_status == RMP_UI_LOW_WARNING ) {

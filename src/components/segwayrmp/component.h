@@ -52,7 +52,7 @@ private:
     orcaice::PtrProxy<orca::Position2dDataPtr> position2dPipe_;
     orcaice::PtrProxy<orca::Position3dDataPtr> position3dPipe_;
     // hardware->network
-    orcaice::PtrProxy<orca::PowerDataPtr> powerPipe_;
+    orcaice::Proxy<orca::PowerData> powerPipe_;
     // hardware->network
     orcaice::PtrProxy<orca::Platform2dConfigPtr> currentConfigPipe_;
 

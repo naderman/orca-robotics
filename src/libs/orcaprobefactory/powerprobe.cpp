@@ -47,7 +47,7 @@ PowerProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
 int 
 PowerProbe::loadGetData( orcacm::OperationData & data )
 {
-    orca::PowerDataPtr result;
+    orca::PowerData result;
     orcacm::ResultHeader res;
     
     try
@@ -71,17 +71,9 @@ PowerProbe::loadGetData( orcacm::OperationData & data )
         return 1;
     }
 
-    if ( result ) {
-        res.name = "data";
-        res.text = orcaice::toString(result);
-        data.results.push_back( res );
-    }
-    else {
-        res.name = "outcome";
-        res.text = "Received empty data";
-        data.results.push_back( res );
-        return 1;
-    }
+    res.name = "data";
+    res.text = orcaice::toString(result);
+    data.results.push_back( res );
     return 0;
 }
 
@@ -137,7 +129,7 @@ PowerProbe::loadUnsubscribe( orcacm::OperationData & data )
 }
 
 void 
-PowerProbe::setData(const orca::PowerDataPtr& data, const Ice::Current&)
+PowerProbe::setData(const orca::PowerData & data, const Ice::Current&)
 {
     std::cout << orcaice::toString(data) << std::endl;
 };

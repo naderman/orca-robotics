@@ -87,7 +87,7 @@ void setSane( const orca::Position2dDataPtr & );
 //! Set to randomized but sane values.
 void setSane( const orca::Position3dDataPtr & );
 //! Set to randomized but sane values.
-void setSane( const orca::PowerDataPtr &, int count=2 );
+void setSane( orca::PowerData &, int count=2 );
 //! Set to randomized but sane values.
 void setSane( const orca::Velocity2dCommandPtr & );
 //@}

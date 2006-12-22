@@ -28,8 +28,8 @@ using namespace std;
 using namespace orca;
 using namespace tracermon;
 
-UserHandler::UserHandler( const EventQueuePtr & myQueue, 
-                          const EventQueuePtr & otherQueue, 
+UserHandler::UserHandler( const orcaice::EventQueuePtr & myQueue, 
+                          const orcaice::EventQueuePtr & otherQueue, 
                           const orcaice::Context & context )
     : myQueue_(myQueue),
       otherQueue_(otherQueue),
@@ -49,7 +49,7 @@ UserHandler::run()
     try
     {
     
-    EventPtr eventPtr = 0;
+    orcaice::EventPtr eventPtr = 0;
     int timeoutMs = 500;
     int ret = 0;
     
@@ -59,7 +59,7 @@ UserHandler::run()
 //     cout<<"UserHandler: entering main loop"<<endl;
     while ( isActive() )
     {
-        eventPtr = new Event( 0 );
+        eventPtr = new orcaice::Event( 0 );
 
         // block with timeout on user events (change in verbosity)
         ret = myQueue_->timedGet( eventPtr, timeoutMs );

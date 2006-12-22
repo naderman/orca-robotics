@@ -13,7 +13,7 @@
 
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
-#include "eventqueue.h"
+#include <orcaice/eventqueue.h>
 
 namespace tracermon
 {
@@ -22,8 +22,8 @@ class UserHandler : public orcaice::Thread
 {
 public:
 
-    UserHandler( const EventQueuePtr & myQueue,
-                 const EventQueuePtr & otherQueue,
+    UserHandler( const orcaice::EventQueuePtr & myQueue,
+                 const orcaice::EventQueuePtr & otherQueue,
                  const orcaice::Context & context );
     virtual ~UserHandler();
 
@@ -32,8 +32,8 @@ public:
     
 private:
 
-    EventQueuePtr myQueue_;
-    EventQueuePtr otherQueue_;
+    orcaice::EventQueuePtr myQueue_;
+    orcaice::EventQueuePtr otherQueue_;
 
     orcaice::Context context_;
 };

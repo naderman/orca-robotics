@@ -204,7 +204,7 @@ std::string toString( const orca::Position3dDescriptionPtr & );
 //! Converts to string
 std::string toString( const orca::Localise2dDataPtr & );
 //! Converts to string
-std::string toString( const orca::PowerDataPtr & );
+std::string toString( const orca::PowerData & );
 //! Converts to string
 std::string toString( const orca::StatusDataPtr & );
 //! Converts to string

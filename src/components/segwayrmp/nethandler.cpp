@@ -30,7 +30,7 @@ NetHandler::NetHandler(
                  orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
                  orcaice::PtrProxy<orca::Position3dDataPtr>    & position3dPipe,
                  orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
-                 orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe,
+                 orcaice::Proxy<orca::PowerData>         & powerPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
                  const orcaice::Context                        & context )
@@ -43,7 +43,6 @@ NetHandler::NetHandler(
         position2dData_(new Position2dData),
         position3dData_(new Position3dData),
         commandData_(new Velocity2dCommand),
-        powerData_(new PowerData),
         context_(context)
 {
     init();

@@ -32,7 +32,7 @@ HwHandler::HwHandler(
                  orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
                  orcaice::PtrProxy<orca::Position3dDataPtr>    & position3dPipe,
                  orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
-                 orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe,
+                 orcaice::Proxy<orca::PowerData>         & powerPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
                  orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
                  const orcaice::Context                        & context )
@@ -43,7 +43,6 @@ HwHandler::HwHandler(
         currentConfigPipe_(currentConfigPipe),
         position2dData_(new Position2dData),
         position3dData_(new Position3dData),
-        powerData_(new PowerData),
         driver_(0),
         context_(context)
 {
@@ -57,12 +56,12 @@ HwHandler::HwHandler(
     // @todo Should this be done by the driver?
 //     BatteryData bd;
 //     for ( int i=0; i<3; ++i ) {
-//         powerData_->batteries.push_back( bd );
+//         powerData_.batteries.push_back( bd );
 //     }
-    powerData_->batteries.resize(3);
-    powerData_->batteries[0].name = "main-front";
-    powerData_->batteries[1].name = "main-rear";
-    powerData_->batteries[2].name = "ui";
+    powerData_.batteries.resize(3);
+    powerData_.batteries[0].name = "main-front";
+    powerData_.batteries[1].name = "main-rear";
+    powerData_.batteries[2].name = "ui";
 
     // this is the last place we can throw exceptions from.
     // after this the thread will be launched

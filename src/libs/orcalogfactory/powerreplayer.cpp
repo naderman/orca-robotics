@@ -22,8 +22,7 @@ int PowerReplayer::_counter = 0;
 PowerReplayer::PowerReplayer( const std::string      &format,
                             const std::string      &filename,
                             const orcaice::Context &context )
-    : orcalog::Replayer("Power", format, filename, context),
-      data_(new orca::PowerData)
+    : orcalog::Replayer("Power", format, filename, context)
 {
     // check that we support this format
     if ( format_!="ice" && format_!="ascii" )
@@ -51,7 +50,7 @@ PowerReplayer::initInterfaces()
     orcaice::createInterfaceWithString( context_, obj, interfaceName_ );
 }
 
-orca::PowerDataPtr 
+orca::PowerData
 PowerReplayer::getData(const Ice::Current& current) const
 {
     if ( dataPipe_.isEmpty() )
@@ -59,7 +58,7 @@ PowerReplayer::getData(const Ice::Current& current) const
         throw orca::DataNotExistException( "logplayer buffer is empty, probably because we are not replaying yet" );
     }
 
-    orca::PowerDataPtr data;
+    orca::PowerData data;
     dataPipe_.get( data );
 
     return data;

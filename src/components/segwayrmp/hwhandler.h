@@ -35,7 +35,7 @@ public:
     HwHandler( orcaice::PtrProxy<orca::Position2dDataPtr>     & position2dPipe,
                orcaice::PtrProxy<orca::Position3dDataPtr>     & position3dPipe,
                orcaice::PtrNotify<orca::Velocity2dCommandPtr> & commandPipe,
-               orcaice::PtrProxy<orca::PowerDataPtr>          & powerPipe,
+               orcaice::Proxy<orca::PowerData>          & powerPipe,
                orcaice::PtrProxy<orca::Platform2dConfigPtr>   & setConfigPipe,
                orcaice::PtrProxy<orca::Platform2dConfigPtr>   & currentConfigPipe,
                const orcaice::Context                         & context );
@@ -55,14 +55,14 @@ private:
     // network/hardware interface
     orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe_;
     orcaice::PtrProxy<orca::Position3dDataPtr>    & position3dPipe_;
-    orcaice::PtrProxy<orca::PowerDataPtr>         & powerPipe_;
+    orcaice::Proxy<orca::PowerData>         & powerPipe_;
     orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe_;
     orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe_;
 
     // Internal data storage
     orca::Position2dDataPtr position2dData_;
     orca::Position3dDataPtr position3dData_;
-    orca::PowerDataPtr powerData_;
+    orca::PowerData powerData_;
 
     // generic interface to the hardware
     HwDriver* driver_;

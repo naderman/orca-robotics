@@ -59,9 +59,9 @@ std::string toLogString( const orca::Position3dDataPtr & );
 
 
 //! Prints out Power data to text which is easy to parse
-std::string toLogString( const orca::PowerDataPtr & );
+std::string toLogString( const orca::PowerData & );
 //! Parses a line of ASCII log. Throws orcalog::ParseException on error.
-void fromLogString( std::stringstream & stream, orca::PowerDataPtr & );
+void fromLogString( std::stringstream & stream, orca::PowerData & );
 
 //! Returns string in simple format "sec usec" 
 std::string toLogString( const orca::Time & );

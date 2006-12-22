@@ -39,8 +39,8 @@ Component::start()
     //
     // EVENT QUEUES
     //
-    netQueue_ = new EventQueue();    
-    usrQueue_ = new EventQueue();    
+    netQueue_ = new orcaice::EventQueue();    
+    usrQueue_ = new orcaice::EventQueue();    
 
     //
     // USER & DISPLAY

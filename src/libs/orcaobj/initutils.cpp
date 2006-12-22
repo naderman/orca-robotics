@@ -267,11 +267,11 @@ setSane( const orca::GpsMapGridDataPtr & obj )
 }
 
 void 
-setSane( const orca::PowerDataPtr & obj, int count )
+setSane( orca::PowerData & obj, int count )
 {
     orca::Time t;
     setSane( t );
-    obj->timeStamp = t;
+    obj.timeStamp = t;
 
     // set up data structure for 3 batteries
     orca::BatteryData bd;
@@ -284,7 +284,7 @@ setSane( const orca::PowerDataPtr & obj, int count )
         bd.percent = float(double(RINT%100000)/1000.0);
         bd.secRemaining = float(double(RINT%1000000)/1000.0);
 
-        obj->batteries.push_back( bd );
+        obj.batteries.push_back( bd );
     }
 }
 

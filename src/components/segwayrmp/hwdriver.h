@@ -39,7 +39,7 @@ public:
 
     // Blocking read. Returns 0 on success. Does not throw.
     virtual int read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 
-                      orca::PowerDataPtr &power, std::string &status )=0;
+                      orca::PowerData &power, std::string &status )=0;
 
     // Writes velocity command. Returns 0 on success. Does not throw.
     virtual int write( const orca::Velocity2dCommandPtr & command )=0;

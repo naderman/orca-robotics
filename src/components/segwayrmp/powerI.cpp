@@ -14,19 +14,19 @@ using namespace std;
 using namespace orca;
 using namespace segwayrmp;
 
-PowerI::PowerI( orcaice::PtrProxy<orca::PowerDataPtr> &power, const IceStorm::TopicPrx &topic )
+PowerI::PowerI( orcaice::Proxy<orca::PowerData> &power, const IceStorm::TopicPrx &topic )
       : powerPipe_(power),
         topic_(topic)
 {
 }
 
-orca::PowerDataPtr
+orca::PowerData
 PowerI::getData(const ::Ice::Current& ) const
 {
     //std::cout << "Sending data back" << std::endl;
 
     // create null smart pointer. data will be cloned into it.
-    orca::PowerDataPtr data;
+    orca::PowerData data;
 
     try
     {

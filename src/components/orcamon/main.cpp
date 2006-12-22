@@ -127,11 +127,11 @@ void OrcaMonComponent::start()
         attach<Position3dPrx,Position3dConsumerPrx,Position3dConsumer,Position3dDataPtr>
                 ( context(), proxyString );
     }
-    else if ( objId=="::orca::Power" )
-    {
-        attach<PowerPrx,PowerConsumerPrx,PowerConsumer,PowerDataPtr>
-                ( context(), proxyString );
-    }
+//     else if ( objId=="::orca::Power" )
+//     {
+//         attach<PowerPrx,PowerConsumerPrx,PowerConsumer,PowerDataPtr>
+//                 ( context(), proxyString );
+//     }
     else if ( objId=="::orca::Status" )
     {
         attach<StatusPrx,StatusConsumerPrx,StatusConsumer,StatusDataPtr>

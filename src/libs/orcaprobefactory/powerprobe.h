@@ -27,7 +27,7 @@ public:
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
     
-    virtual void setData(const orca::PowerDataPtr& data, const Ice::Current&);
+    virtual void setData(const orca::PowerData & data, const Ice::Current&);
 
 private:
 

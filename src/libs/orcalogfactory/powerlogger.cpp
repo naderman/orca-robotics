@@ -60,10 +60,10 @@ PowerLogger::init()
 }
 
 void 
-PowerLogger::setData(const orca::PowerDataPtr& data, const Ice::Current&)
+PowerLogger::setData(const orca::PowerData & data, const Ice::Current&)
 {
     // Write reference to master file
-    appendMasterFile( data->timeStamp.seconds, data->timeStamp.useconds );
+    appendMasterFile( data.timeStamp.seconds, data.timeStamp.useconds );
     
     if ( format_ == "ice" )
     {

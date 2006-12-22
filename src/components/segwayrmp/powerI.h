@@ -27,9 +27,9 @@ namespace segwayrmp
 class PowerI : public orca::Power
 {
 public:
-    PowerI( orcaice::PtrProxy<orca::PowerDataPtr> &power, const IceStorm::TopicPrx &topic );
+    PowerI( orcaice::Proxy<orca::PowerData> &power, const IceStorm::TopicPrx &topic );
 
-    virtual ::orca::PowerDataPtr getData(const ::Ice::Current& ) const;
+    virtual ::orca::PowerData getData(const ::Ice::Current& ) const;
 
     virtual void subscribe(const ::orca::PowerConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
@@ -37,7 +37,7 @@ public:
 
 private:
     // the driver will put the latest data into this proxy
-    orcaice::PtrProxy<orca::PowerDataPtr> &powerPipe_;
+    orcaice::Proxy<orca::PowerData> &powerPipe_;
 
     // IceStorm topic to which we send our updates and cand subscribe other to
     IceStorm::TopicPrx topic_;

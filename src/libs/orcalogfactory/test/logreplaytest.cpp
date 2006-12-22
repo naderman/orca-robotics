@@ -268,17 +268,17 @@ TestComponent::start()
 
         orcalogfactory::PowerLogger* logger = 
             new orcalogfactory::PowerLogger( logMaster, "0", "ice", "", context() );
-        orca::PowerDataPtr dataIn = new orca::PowerData;
+        orca::PowerData dataIn;
         orcaice::setSane( dataIn );
         logger->setData( dataIn, Ice::Current() );
     
         orcalogfactory::PowerReplayer* replayer = 
             new orcalogfactory::PowerReplayer( "ice", "power0.log", context() );
         replayer->replayData( 0, true );  
-        orca::PowerDataPtr dataOut = replayer->getData( Ice::Current() );
+        orca::PowerData dataOut = replayer->getData( Ice::Current() );
     
-        if ( dataIn->batteries.size() != dataOut->batteries.size()
-                || dataIn->batteries[0].voltage != dataOut->batteries[0].voltage ) {
+        if ( dataIn.batteries.size() != dataOut.batteries.size()
+                || dataIn.batteries[0].voltage != dataOut.batteries[0].voltage ) {
             cout<<"failed"<<endl<<"object logged incorrectly"<<endl;
             cout<<"\tIN : "<<orcaice::toString(dataIn)<<endl;
             cout<<"\tOUT: "<<orcaice::toString(dataOut)<<endl;
@@ -297,17 +297,17 @@ TestComponent::start()
 
         orcalogfactory::PowerLogger* logger = 
             new orcalogfactory::PowerLogger( logMaster, "0", "ascii", "", context() );
-        orca::PowerDataPtr dataIn = new orca::PowerData;
+        orca::PowerData dataIn;
         orcaice::setSane( dataIn );
         logger->setData( dataIn, Ice::Current() );
     
         orcalogfactory::PowerReplayer* replayer = 
             new orcalogfactory::PowerReplayer( "ascii", "power0.log", context() );
         replayer->replayData( 0, true );  
-        orca::PowerDataPtr dataOut = replayer->getData( Ice::Current() );
+        orca::PowerData dataOut = replayer->getData( Ice::Current() );
     
-        if ( dataIn->batteries.size() != dataOut->batteries.size()
-                || dataIn->batteries[0].voltage != dataOut->batteries[0].voltage ) {
+        if ( dataIn.batteries.size() != dataOut.batteries.size()
+                || dataIn.batteries[0].voltage != dataOut.batteries[0].voltage ) {
             cout<<"failed"<<endl<<"object logged incorrectly"<<endl;
             cout<<"\tIN : "<<orcaice::toString(dataIn)<<endl;
             cout<<"\tOUT: "<<orcaice::toString(dataOut)<<endl;

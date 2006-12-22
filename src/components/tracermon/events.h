@@ -11,7 +11,7 @@
 #ifndef ORCA2_TRACERMON_EVENTS_H
 #define ORCA2_TRACERMON_EVENTS_H
 
-#include "eventqueue.h"
+#include <orcaice/eventqueue.h>
 
 namespace tracermon
 {
@@ -24,7 +24,7 @@ enum EventType
     NewTraceMessage
 };
 
-class NewTraceMessageEvent : public Event
+class NewTraceMessageEvent : public orcaice::Event
 {
 public:
     NewTraceMessageEvent( const orca::TracerData & data )

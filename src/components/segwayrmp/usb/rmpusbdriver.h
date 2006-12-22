@@ -34,7 +34,7 @@ public:
 //     virtual int disable();
 
     virtual int read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 
-                      orca::PowerDataPtr &power, std::string & status );
+                      orca::PowerData &power, std::string & status );
 
     virtual int write( const orca::Velocity2dCommandPtr & command );
 
@@ -104,7 +104,7 @@ private:
     void readFrame();
     void integrateMotion();
     void updateData( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d,
-                     orca::PowerDataPtr &power, Status & status );
+                     orca::PowerData &power, Status & status );
 
     // helper to take a player command and turn it into a CAN command packet
     void makeMotionCommandPacket( CanPacket* pkt, const orca::Velocity2dCommandPtr & command );

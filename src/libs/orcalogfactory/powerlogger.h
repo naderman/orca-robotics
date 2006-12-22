@@ -32,7 +32,7 @@ class PowerLogger : public orca::PowerConsumer, public orcalog::Logger
         virtual void init();
 
         // from *Consumer
-        virtual void setData(const orca::PowerDataPtr& data, const Ice::Current&);
+        virtual void setData(const orca::PowerData & data, const Ice::Current&);
 };
 
 }
