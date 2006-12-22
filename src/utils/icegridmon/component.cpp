@@ -76,9 +76,6 @@ Component::start()
         orcaice::createConsumerInterface<IceGrid::NodeObserverPrx> ( context(), nodeObserver_ );
 
     session_->setObservers( regObserverPrx, nodeObserverPrx );
-    cout<<"set observers"<<endl;
-
-    
 }
 
 void Component::stop()
