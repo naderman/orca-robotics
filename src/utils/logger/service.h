@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_REACTIVE_WALKER_SERVICE_H
-#define ORCA2_REACTIVE_WALKER_SERVICE_H
+#ifndef ORCA2_LOGGER_SERVICE_H
+#define ORCA2_LOGGER_SERVICE_H
 
 #include <orcaice/service.h>
 
