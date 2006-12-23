@@ -18,6 +18,7 @@ TEMPLATE
 @par Updated components
 @par Updated utilities
 @par Updated libraries
+@par Removed
 
 /*!
 
@@ -41,12 +42,14 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Project wide
 
 - Interfaces
-    - Data objects in Orca interfaces no longer have to derive from ::orca::OrcaObject class. Most existing interfaces now use struct's. The following
-      interfaces still use classes RangeScanner2d, LaserScanner2d, FeatureMap2d.
+    - Data objects in Orca interfaces no longer have to derive from ::orca::OrcaObject class. Most existing interfaces now use struct's. 
+      The following interfaces still use classes RangeScanner2d, LaserScanner2d, FeatureMap2d.
 - Build system
     - New CMake macro BUILD_COMPONENT_SOURCES to simplify building both stand-alone component and an IceBox service. 
         Internally it builds a convenience library which cuts down compilation time in half.
     - Defined new CMake variables to establish the local OS: OS_LINUX, OS_QNX, OS_WIN.
+- Documentation
+    - Expanded docco on adding interfaces and souce code ( orca-robotics.sf.net/orca_doc_devguide.html )
 
 @par New interfaces
 
@@ -74,11 +77,15 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated utilities
 
+- Probe (alex m.)
+    - now using orcaice::EventQueue for cross-thread communication.
+
 @par Updated libraries
 
 - libOrcaIce
     - an overhaul of tracing and status facilities. (alex m.)
-- libOrcaProbeFactory
+    - added EventQueue class using events defined as Ice smart pointers. (alex m.)
+- libOrcaProbeFactory (alex m.)
     - added support for Status and Tracer interfaces
 
 @section orca_doc_history_211 Changes in Release 2.1.1
