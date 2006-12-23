@@ -27,7 +27,7 @@ OgMapI::OgMapI( orca::OgMapData&  theMap,
     topicPrx_ = orcaice::connectToTopicWithTag<OgMapConsumerPrx>
         ( context_, consumerPrx_, tag );
 
-    assert( (int)(theMap->data.size()) == theMap->numCellsX*theMap->numCellsY );
+    assert( (int)(theMap.data.size()) == theMap.numCellsX*theMap.numCellsY );
 
     // Try to push the map out to IceStorm first
     try {
