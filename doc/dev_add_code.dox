@@ -1,0 +1,57 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@page orca_doc_devadd_code Adding Souce Code to Orca2
+
+@note Reviewed for release 2.1.2
+
+@see @ref orca_doc_devadd_iface
+
+@par What is what and where does it live?
+
+All source code is divided into 6 categories, each has a subdirectory in [ORCA2_SRC]/src
+-# @e Components
+    - Well-tested and well-documented with staticly-defined provided and required interfaces
+    - Can be stand-alone executables and/or IceBox services
+-# @e Utilities
+    - Utility applications. This is a broad category which currently includes 
+        - implementation of global services, e.g. logging
+        - debugging tools,
+        - utilitiies used in the build process, etc.
+-# @e Libraries
+        - Code which is used by more than one component or utility is put into shared libraries.
+-# @e Tests 
+        - Components and utilities whose sole purpose is to test reliability, performance, etc. of other components and the system as a whole.
+-# @e Examples
+        - Components intended as examples for developers
+-# @e Sandbox
+        - Experimental code. 
+        - Compilation is turned off by default     
+
+@par Adding code to the build system
+
+-# Create a new sub-directory in the appropriate place, e.g.
+    - @c [ORCA2_SRC]/src/components for components
+    - @c [ORCA2_SRC]/src/utils for utilitites
+    - @c [ORCA2_SRC]/src/libs for libraries
+-# Edit files
+    - Start by copying the directory of a similar module.
+    - Edit the CMake file @c CMakeLists.txt in the new directory
+    - Edit the component definition file @c mymodule.def (does not apply to libraries)
+    - Edit the documentation file @c mymodule.dox
+    - Modify the names of classes, namespaces, etc. using the name of your module
+-# Add an entry for the new directory to the build system.
+    - Edit file @c ../CMakeLists.txt, e.g.
+        - @c [ORCA2_SRC]/src/components/CMakeLists.txt for components
+    - In alphabetical order, add a line "ADD_SUBDIRECTORY ( mymodule )"
+
+*/
