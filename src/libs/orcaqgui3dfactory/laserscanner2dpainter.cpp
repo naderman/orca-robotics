@@ -41,11 +41,11 @@ LaserScanner2dPainter::~LaserScanner2dPainter()
 void
 LaserScanner2dPainter::clear()
 {
-    data_ = 0;
+//     data_ = 0;
 }
 
 void
-LaserScanner2dPainter::setDescription( const orca::RangeScanner2dDescriptionPtr & descr )
+LaserScanner2dPainter::setDescription( const orca::RangeScanner2dDescription& descr )
 {
     description_ = descr;
 }
@@ -53,7 +53,7 @@ LaserScanner2dPainter::setDescription( const orca::RangeScanner2dDescriptionPtr 
 void
 LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
 {
-    if ( data==0 ) return;
+//     if ( data==0 ) return;
 
     // Assume that this thing is really a laser data.
     LaserScanner2dDataPtr scan = LaserScanner2dDataPtr::dynamicCast( data );
@@ -69,28 +69,28 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
 void
 LaserScanner2dPainter::paint( QGLWidget *p )
 {
-    if ( description_ == 0 ) return;
+//     if ( description_ == 0 ) return;
 
     glutil::ScopedMatrixSave s;
 
     // Apply the vehicle-to-sensor transformation
-    orcaqgui3d::glutil::transform(  description_->offset.p.x,
-                                 description_->offset.p.y,
-                                 description_->offset.p.z,
-                                 RAD2DEG(description_->offset.o.y),
-                                 RAD2DEG(description_->offset.o.p),
-                                 RAD2DEG(description_->offset.o.r) );
+    orcaqgui3d::glutil::transform(  description_.offset.p.x,
+                                 description_.offset.p.y,
+                                 description_.offset.p.z,
+                                 RAD2DEG(description_.offset.o.y),
+                                 RAD2DEG(description_.offset.o.p),
+                                 RAD2DEG(description_.offset.o.r) );
 
     const bool drawSurfaces  = true;
     const bool drawWireFrame = true;
     glColor4f( 0, 0, 1, 0.3 );
-    orcaqgui3d::glutil::drawBox( description_->size.l,
-                              description_->size.w,
-                              description_->size.h,
+    orcaqgui3d::glutil::drawBox( description_.size.l,
+                              description_.size.w,
+                              description_.size.h,
                               drawSurfaces, 
                               drawWireFrame );
 
-    if ( data_ == 0 ) return;
+//     if ( data_ == 0 ) return;
 
 //    Polygon doesn't work so good...  slows things _right_ down.
 //    glBegin( GL_POLYGON );  

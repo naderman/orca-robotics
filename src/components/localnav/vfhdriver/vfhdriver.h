@@ -41,15 +41,15 @@ public:
     virtual LocalNavDriver::DriverState getCommand( bool  stalled,
                                                     const orca::Twist2d &currentVelocity,
                                                     const orca::RangeScanner2dDataPtr obs,
-                                                    orca::Velocity2dCommandPtr &cmd );
+                                                    orca::Velocity2dCommand& cmd );
 
 private: 
 
     // Functions for setting commands
-    void setToZero(         orca::Velocity2dCommandPtr &cmd );
-    void setToEscape(       orca::Velocity2dCommandPtr &cmd, const orca::RangeScanner2dDataPtr &obs );
-    void setTurnToGoal(     orca::Velocity2dCommandPtr &cmd, const localnav::GoalWatcher &goalWatcher );
-    void setToApproachGoal( orca::Velocity2dCommandPtr &cmd,
+    void setToZero(         orca::Velocity2dCommand& cmd );
+    void setToEscape(       orca::Velocity2dCommand& cmd, const orca::RangeScanner2dDataPtr &obs );
+    void setTurnToGoal(     orca::Velocity2dCommand& cmd, const localnav::GoalWatcher &goalWatcher );
+    void setToApproachGoal( orca::Velocity2dCommand& cmd,
                             const localnav::GoalWatcher     &goalWatcher, 
                             const orca::Twist2d             &currentVelocity,
                             const orca::RangeScanner2dDataPtr &obs );
@@ -84,7 +84,7 @@ private:
     localnav::LocalNavDriver::DriverState currentState_;
 
     // Previous command
-    orca::Velocity2dCommandPtr prevCmd_;
+    orca::Velocity2dCommand prevCmd_;
 
     // Configuration from file
     VfhAlgorithmConfig vfhConfig_;

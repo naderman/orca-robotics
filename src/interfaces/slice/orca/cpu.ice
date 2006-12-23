@@ -40,8 +40,10 @@ node `Alpha'
 }
 @endverbatim
 */
-class CpuInfo extends OrcaObject
+struct CpuInfo
 {
+    //! Time when info was compiled.
+    Time timeStamp;
     //! Unparsed string with CPU information, e.g. output of uname in Linux.
     string info;
 };
@@ -49,8 +51,10 @@ class CpuInfo extends OrcaObject
 /*!
     @brief Current CPU information.
 */
-class CpuData extends OrcaObject
+struct CpuData
 {
+    //! Time when data was measured.
+    Time timeStamp;
     //! CPU load in user space [%]
     int userLoad;
     //! CPU load in system space [%]

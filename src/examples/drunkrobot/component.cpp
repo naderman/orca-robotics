@@ -25,9 +25,8 @@ using namespace std;
 using namespace drunk; 
 
 Component::Component():
-    orcaice::Component("DrunkRobot"), 
-    mainLoop_(0),
-    geom_(new orca::Position2dGeometry)
+    orcaice::Component( "DrunkRobot" ), 
+    mainLoop_(0)
 {
 
 }
@@ -41,13 +40,12 @@ Component::start(){
 
     // Get a reasonable geometry. 
 
-    geom_->offset.p.x = 0; 
-    geom_->offset.p.y = 0; 
-    geom_->offset.o = 0; 
+    geom_.offset.p.x = 0; 
+    geom_.offset.p.y = 0; 
+    geom_.offset.o = 0; 
 
-
-    geom_->size.l = 0.1; 
-    geom_->size.w = 0.1;  
+    geom_.size.l = 0.1; 
+    geom_.size.w = 0.1;  
 
 
     IceStorm::TopicPrx topicPrx = orcaice::connectToTopicWithTag<orca::Position2dConsumerPrx>

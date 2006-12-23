@@ -14,7 +14,7 @@
 
 namespace ogmaploader {
 
-void fakeLoadMap( orca::OgMapDataPtr theMap );
+void fakeLoadMap( orca::OgMapData& theMap );
 
 }
 

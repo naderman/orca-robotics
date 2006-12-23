@@ -36,9 +36,8 @@ using namespace orca;
 
 GpsComponent::GpsComponent()
     : orcaice::Component( "Gps" ),
-      handler_(NULL),
-      descr_(new GpsDescription),
-      hwDriver_(NULL)
+      handler_(0),
+      hwDriver_(0)
 {
 
 }
@@ -115,14 +114,14 @@ GpsComponent::start()
     // SENSOR DESCRIPTION   
     //
     
-    orca::GpsDescriptionPtr descr = new orca::GpsDescription;
-    descr->timeStamp = orcaice::getNow();
+    orca::GpsDescription descr;
+    descr.timeStamp = orcaice::getNow();
 
-    orcaice::setInit( descr->offset );
-    descr->offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr->offset );
+    orcaice::setInit( descr.offset );
+    descr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr.offset );
 
-    orcaice::setInit( descr->size );
-    descr->size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr->size );
+    orcaice::setInit( descr.size );
+    descr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr.size );
 
     // hwDriver_->enable();
 

@@ -60,7 +60,7 @@ LaserScanner2dReplayer::getData(const Ice::Current& current) const
     return data;
 }
 
-orca::RangeScanner2dDescriptionPtr 
+orca::RangeScanner2dDescription
 LaserScanner2dReplayer::getDescription(const Ice::Current& current) const
 {    
 //     std::cout << "Sending config back" << std::endl;
@@ -68,7 +68,7 @@ LaserScanner2dReplayer::getDescription(const Ice::Current& current) const
     {
         throw orca::DataNotExistException( "logplayer buffer is empty, probably because we are not replaying yet" );
     }
-    orca::RangeScanner2dDescriptionPtr obj;
+    orca::RangeScanner2dDescription obj;
     laserDescriptionBuffer_.get( obj );
     return obj;
 }
@@ -135,7 +135,7 @@ LaserScanner2dReplayer::replayData( int index, bool isTest )
 void 
 LaserScanner2dReplayer::loadHeaderIce()
 {
-    orca::RangeScanner2dDescriptionPtr obj = new orca::RangeScanner2dDescription;
+    orca::RangeScanner2dDescription obj;
 
     orcalog::IceReadHelper helper( context_.communicator(), file_ );
     ice_readRangeScanner2dDescription( helper.stream_, obj );

@@ -51,8 +51,8 @@ GpsLogger::init()
     orcaice::connectToInterfaceWithTag<orca::GpsPrx>( context_, objectPrx, interfaceTag_ );
 
     // Config and geometry
-    orca::GpsDescriptionPtr descrPtr = objectPrx->getDescription();
-    writeDescriptionToFile( descrPtr );
+    orca::GpsDescription descr = objectPrx->getDescription();
+    writeDescriptionToFile( descr );
     
     // data consumer
     consumerGps_ = new GpsConsumerI(this);
@@ -72,7 +72,7 @@ GpsLogger::init()
 }
 
 void 
-GpsLogger::writeDescriptionToFile( const orca::GpsDescriptionPtr& descr )
+GpsLogger::writeDescriptionToFile( const orca::GpsDescription& descr )
 {
 
     context_.tracer()->print( "Writing configuration to file" );
@@ -92,10 +92,10 @@ GpsLogger::writeDescriptionToFile( const orca::GpsDescriptionPtr& descr )
 }
 
 void 
-GpsLogger::localSetData( const orca::GpsDataPtr& data )
+GpsLogger::localSetData( const orca::GpsData& data )
 {
     // Write reference to master file
-    appendMasterFile( data->timeStamp.seconds, data->timeStamp.useconds );
+    appendMasterFile( data.timeStamp.seconds, data.timeStamp.useconds );
 
     orcalog::IceWriteHelper helper( context_.communicator() );
     ice_writeGpsData( helper.stream_, data );
@@ -104,10 +104,10 @@ GpsLogger::localSetData( const orca::GpsDataPtr& data )
 
 
 void 
-GpsLogger::localSetData( const orca::GpsTimeDataPtr& data )
+GpsLogger::localSetData( const orca::GpsTimeData& data )
 {
     // Write reference to master file
-    appendMasterFile( data->timeStamp.seconds, data->timeStamp.useconds );
+    appendMasterFile( data.timeStamp.seconds, data.timeStamp.useconds );
     
     orcalog::IceWriteHelper helper( context_.communicator() );
     ice_writeGpsTimeData( helper.stream_, data );
@@ -115,10 +115,10 @@ GpsLogger::localSetData( const orca::GpsTimeDataPtr& data )
 }
 
 void 
-GpsLogger::localSetData( const orca::GpsMapGridDataPtr& data )
+GpsLogger::localSetData( const orca::GpsMapGridData& data )
 {
     // Write reference to master file
-    appendMasterFile( data->timeStamp.seconds, data->timeStamp.useconds );
+    appendMasterFile( data.timeStamp.seconds, data.timeStamp.useconds );
     
     orcalog::IceWriteHelper helper( context_.communicator() );
     ice_writeGpsMapGridData( helper.stream_, data );

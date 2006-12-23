@@ -52,7 +52,7 @@ private:
     orca::Frame3d sensorOffset_;    
 
     // Description of laser details
-    orca::RangeScanner2dDescriptionPtr laserDescr_;
+    orca::RangeScanner2dDescription laserDescr_;
 
     // This component is 2D-centric: can only handle certain orientations.
     bool sensorOffsetOK( const orca::Frame3d & offset );

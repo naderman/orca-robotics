@@ -43,14 +43,14 @@ Position2dPainter::clear()
 }
 
 void
-Position2dPainter::setData( const orca::Position2dDataPtr & data )
+Position2dPainter::setData( const orca::Position2dData& data )
 {
-    if ( data==0 ) return;
+//     if ( data==0 ) return;
 
     // set local storage
-    x_ = data->pose.p.x;
-    y_ = data->pose.p.y;
-    heading_ = (int)floor( RAD2DEG( data->pose.o ) );
+    x_ = data.pose.p.x;
+    y_ = data.pose.p.y;
+    heading_ = (int)floor( RAD2DEG( data.pose.o ) );
     //std::cout << "Position2dPainter: x,y: " << x_<< ", " << y_ <<std::endl;
 
     // should we keep history even if not displaying?

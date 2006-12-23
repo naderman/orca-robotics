@@ -48,7 +48,7 @@ namespace orcaice
 {
 
 Ice::StringSeq
-toStringSeq( const std::string & s, const char delim )
+toStringSeq( const std::string& s, const char delim )
 {
     std::string::size_type beg;
     std::string::size_type end = 0;
@@ -83,7 +83,7 @@ toStringSeq( const std::string & s, const char delim )
 }
 
 std::string
-toString( const Ice::StringSeq & seq, const char delim )
+toString( const Ice::StringSeq& seq, const char delim )
 {
     std::string s;
 
@@ -101,30 +101,30 @@ toString( const Ice::StringSeq & seq, const char delim )
 }
 
 std::string 
-toString( const orca::FQComponentName & name )
+toString( const orca::FQComponentName& name )
 {
     return name.platform + "/" + name.component;
 }
 
 std::string 
-toString( const orca::FQInterfaceName & name )
+toString( const orca::FQInterfaceName& name )
 {
     return name.iface + "@" + name.platform + "/" + name.component;
 }
 
 std::string 
-toString( const orca::FQTopicName & name )
+toString( const orca::FQTopicName& name )
 {
     return name.iface + "/" + name.topic + "@" + name.platform + "/" + name.component;
 }
 
-std::string toString( const orca::FQExecutableName & name )
+std::string toString( const orca::FQExecutableName& name )
 {
     return name.executable + "@" + name.host ;
 }
 
 orca::FQComponentName 
-toComponentName( const std::string & s )
+toComponentName( const std::string& s )
 {
     orca::FQComponentName fqCName;
 
@@ -144,7 +144,7 @@ toComponentName( const std::string & s )
 }
 
 orca::FQInterfaceName 
-toInterfaceName( const std::string & s )
+toInterfaceName( const std::string& s )
 {
     orca::FQInterfaceName fqIName;
 
@@ -167,7 +167,7 @@ toInterfaceName( const std::string & s )
 }
 
 orca::FQTopicName 
-toStatusTopic( const orca::FQComponentName & fqCName )
+toStatusTopic( const orca::FQComponentName& fqCName )
 {
     orca::FQTopicName fqTName;
         
@@ -180,7 +180,7 @@ toStatusTopic( const orca::FQComponentName & fqCName )
 }
 
 orca::FQTopicName 
-toTracerTopic( const orca::FQComponentName & fqCName )
+toTracerTopic( const orca::FQComponentName& fqCName )
 {
     orca::FQTopicName fqTName;
         
@@ -198,7 +198,7 @@ toTracerTopic( const orca::FQComponentName & fqCName )
 //*************************
 
 std::string 
-toString( const orca::CartesianPoint2d & obj )
+toString( const orca::CartesianPoint2d& obj )
 {
     std::ostringstream s;
     s << obj.x << " " << obj.y << " x[m], y[m]";
@@ -206,7 +206,7 @@ toString( const orca::CartesianPoint2d & obj )
 }
 
 int 
-toCartesianPoint2d( const std::string & s, orca::CartesianPoint2d & obj )
+toCartesianPoint2d( const std::string& s, orca::CartesianPoint2d& obj )
 {
     std::istringstream ss( s );
     ss >> obj.x;
@@ -218,7 +218,7 @@ toCartesianPoint2d( const std::string & s, orca::CartesianPoint2d & obj )
 }
 
 std::string 
-toString( const orca::CartesianPoint & obj )
+toString( const orca::CartesianPoint& obj )
 {
     std::ostringstream s;
     s << obj.x << " " << obj.y << " " << obj.z << " x[m], y[m], z[m]";
@@ -226,7 +226,7 @@ toString( const orca::CartesianPoint & obj )
 }
 
 int 
-toCartesianPoint( const std::string & s, orca::CartesianPoint & obj )
+toCartesianPoint( const std::string& s, orca::CartesianPoint& obj )
 {
     std::istringstream ss( s );
     ss >> obj.x;
@@ -240,7 +240,7 @@ toCartesianPoint( const std::string & s, orca::CartesianPoint & obj )
 }
 
 std::string 
-toString( const orca::Frame2d & obj )
+toString( const orca::Frame2d& obj )
 {
     std::ostringstream s;
 //     s << "[" << obj.p.x << "m," << obj.p.y << "m," << obj.o*180.0/M_PI << "deg]";
@@ -249,7 +249,7 @@ toString( const orca::Frame2d & obj )
 }
 
 int 
-toFrame2d( const std::string & s, orca::Frame2d & obj )
+toFrame2d( const std::string& s, orca::Frame2d& obj )
 {
     std::istringstream ss( s );
     ss >> obj.p.x;
@@ -264,7 +264,7 @@ toFrame2d( const std::string & s, orca::Frame2d & obj )
 }
 
 std::string 
-toString( const orca::Frame3d & obj )
+toString( const orca::Frame3d& obj )
 {
     std::ostringstream s;
 //     s << "[" <<obj.p.x<<"m," <<obj.p.y<<"m," <<obj.p.z<<"m, " 
@@ -276,7 +276,7 @@ toString( const orca::Frame3d & obj )
 }
 
 int 
-toFrame3d( const std::string & s, orca::Frame3d & obj )
+toFrame3d( const std::string& s, orca::Frame3d& obj )
 {
     std::istringstream ss( s );
     ss >> obj.p.x;
@@ -299,7 +299,7 @@ toFrame3d( const std::string & s, orca::Frame3d & obj )
 }
 
 std::string 
-toString( const orca::Size2d & obj )
+toString( const orca::Size2d& obj )
 {
     std::ostringstream s;
     s << obj.l << " " << obj.w << " length[m], width[m]";
@@ -307,7 +307,7 @@ toString( const orca::Size2d & obj )
 }
 
 int 
-toSize2d( const std::string & s, orca::Size2d & obj )
+toSize2d( const std::string& s, orca::Size2d& obj )
 {
     std::istringstream ss( s );
     ss >> obj.l;
@@ -319,7 +319,7 @@ toSize2d( const std::string & s, orca::Size2d & obj )
 }
 
 std::string 
-toString( const orca::Size3d & obj )
+toString( const orca::Size3d& obj )
 {
     std::ostringstream ss;
     ss << obj.l << " " << obj.w << " " << obj.h << " length[m], width[m], height[m]";
@@ -327,7 +327,7 @@ toString( const orca::Size3d & obj )
 }
 
 int 
-toSize3d( const std::string & s, orca::Size3d & obj )
+toSize3d( const std::string& s, orca::Size3d& obj )
 {
     std::istringstream ss( s );
     ss >> obj.l;
@@ -344,7 +344,7 @@ toSize3d( const std::string & s, orca::Size3d & obj )
 // the only difference is in NOT printing 'd' after the number of days
 // this is to make it easier to parse back
 std::string 
-toStringDuration( const orca::Time & obj )
+toStringDuration( const orca::Time& obj )
 {
     int secs  = obj.seconds % 60;
     int mins  = obj.seconds / 60 % 60;
@@ -368,7 +368,7 @@ toStringDuration( const orca::Time & obj )
 }
 
 int 
-toTimeDuration( const std::string & s, orca::Time & obj )
+toTimeDuration( const std::string& s, orca::Time& obj )
 {
     Ice::StringSeq sseq = orcaice::toStringSeq( s );
     if ( sseq.empty() ) return -1;
@@ -425,7 +425,7 @@ toTimeDuration( const std::string & s, orca::Time & obj )
 }
 
 std::string 
-toString( const orca::Time & obj )
+toString( const orca::Time& obj )
 {
     std::ostringstream s;
     s << toIceTime( obj ).toString();
@@ -433,7 +433,7 @@ toString( const orca::Time & obj )
 }
 
 std::string 
-toString( const orca::TimeOfDay & obj )
+toString( const orca::TimeOfDay& obj )
 {
     char c[64];
     sprintf(c,"%02d:%02d:%06.3f", obj.hours, obj.minutes, obj.seconds);
@@ -441,7 +441,7 @@ toString( const orca::TimeOfDay & obj )
 }
 
 std::string 
-toString( const orca::Date & obj )
+toString( const orca::Date& obj )
 {
     char c[64];
     sprintf(c,"%04d/%02d/%02d", obj.year, obj.month, obj.day);
@@ -449,218 +449,218 @@ toString( const orca::Date & obj )
 }
 
 std::string 
-toString( const orca::BinarySwitchDataPtr & obj )
+toString( const orca::BinarySwitchData& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp)
-        << " BinarySwitch ["<<obj->devices.size()<<" devices] (name,state) :";
+    s << toString(obj.timeStamp)
+        << " BinarySwitch ["<<obj.devices.size()<<" devices] (name,state) :";
 
-    for ( unsigned int i=0; i < obj->devices.size(); i++ )
+    for ( unsigned int i=0; i < obj.devices.size(); i++ )
     {
         s << endl << "    " << i << " [" 
-          <<obj->devices[i].name<<","
-          <<(int)obj->devices[i].state<<"]";
+          <<obj.devices[i].name<<","
+          <<(int)obj.devices[i].state<<"]";
     }
     return s.str();
 }
 
 std::string 
-toString( const orca::CameraDataPtr & obj )
+toString( const orca::CameraData& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp)
-        << " CameraData: ["<<obj->image.size()<<" bytes]\n" 
-        << "Image height              " << obj->imageHeight << "pix\n"
-        << "Image width               " << obj->imageWidth << "pix\n"
-        << "Format                    " << obj->format << "\n"
-        << "Compression               " << obj->compression << "\n";
+    s << toString(obj.timeStamp)
+        << " CameraData: ["<<obj.image.size()<<" bytes]\n" 
+        << "Image height              " << obj.imageHeight << "pix\n"
+        << "Image width               " << obj.imageWidth << "pix\n"
+        << "Format                    " << obj.format << "\n"
+        << "Compression               " << obj.compression << "\n";
     return s.str();
 }
 
 std::string 
-toString( const orca::CameraDescriptionPtr & obj )
+toString( const orca::CameraDescription& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp)
+    s << toString(obj.timeStamp)
         << " CameraDescription:\n" 
-        << "Image height              " << obj->imageHeight << "pix\n"
-        << "Image width               " << obj->imageWidth << "pix\n"
-        << "Frame rate                " << obj->frameRate << "fps\n"
-        << "Format                    " << obj->format << "\n"
-        << "Compression               " << obj->compression << "\n"
-        << "offset.point.x            " << obj->offset.p.x << "m\n"
-        << "offset.point.y            " << obj->offset.p.y << "m\n"
-        << "offset.point.z            " << obj->offset.p.z << "m\n"
-        << "offset.orientation.roll   " << RAD2DEG(obj->offset.o.r) << "deg\n"
-        << "offset.orientation.pitch  " << RAD2DEG(obj->offset.o.p) << "deg\n"
-        << "offset.orientation.yaw    " << RAD2DEG(obj->offset.o.y) << "deg\n";
+        << "Image height              " << obj.imageHeight << "pix\n"
+        << "Image width               " << obj.imageWidth << "pix\n"
+        << "Frame rate                " << obj.frameRate << "fps\n"
+        << "Format                    " << obj.format << "\n"
+        << "Compression               " << obj.compression << "\n"
+        << "offset.point.x            " << obj.offset.p.x << "m\n"
+        << "offset.point.y            " << obj.offset.p.y << "m\n"
+        << "offset.point.z            " << obj.offset.p.z << "m\n"
+        << "offset.orientation.roll   " << RAD2DEG(obj.offset.o.r) << "deg\n"
+        << "offset.orientation.pitch  " << RAD2DEG(obj.offset.o.p) << "deg\n"
+        << "offset.orientation.yaw    " << RAD2DEG(obj.offset.o.y) << "deg\n";
     return s.str();
 }
 
 std::string 
-toString( const orca::CpuInfoPtr & obj )
+toString( const orca::CpuInfo& obj )
 {
     std::ostringstream s;
-    //s << toString(obj->timeStamp)
-    s  << " CpuInfo: info = " << obj->info <<endl;
-
-    return s.str();
-}
-
-std::string 
-toString( const orca::CpuDataPtr & obj )
-{
-    std::ostringstream s;
-    s << toString(obj->timeStamp);
-    s  << " CpuData: user = " << obj->userLoad <<"%";
-    s << " sys = " << obj->systemLoad <<"%";
-    s << " idle = " << obj->idleLoad <<"%";
-    s << " temp = " << obj->temperature <<"C"<<endl;
+    //s << toString(obj.timeStamp)
+    s  << " CpuInfo: info = " << obj.info <<endl;
 
     return s.str();
 }
 
 std::string 
-toString( const orca::GpsDescriptionPtr & obj )
+toString( const orca::CpuData& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp)
+    s << toString(obj.timeStamp);
+    s  << " CpuData: user = " << obj.userLoad <<"%";
+    s << " sys = " << obj.systemLoad <<"%";
+    s << " idle = " << obj.idleLoad <<"%";
+    s << " temp = " << obj.temperature <<"C"<<endl;
+
+    return s.str();
+}
+
+std::string 
+toString( const orca::GpsDescription& obj )
+{
+    std::ostringstream s;
+    s << toString(obj.timeStamp)
         << " GpsDescription: \n"
-        << "size.l                " << obj->size.l << "m\n"
-        << "size.w                " << obj->size.w << "m\n"
-        << "size.h                " << obj->size.h << "m\n"
-        << "offset.point.x            " << obj->offset.p.x << "m\n"
-        << "offset.point.y            " << obj->offset.p.y << "m\n"
-        << "offset.point.z            " << obj->offset.p.z << "m\n"
-        << "offset.orientation.roll   " << RAD2DEG(obj->offset.o.r) << "deg\n"
-        << "offset.orientation.pitch  " << RAD2DEG(obj->offset.o.p) << "deg\n"
-        << "offset.orientation.yaw    " << RAD2DEG(obj->offset.o.y) << "deg\n";
+        << "size.l                " << obj.size.l << "m\n"
+        << "size.w                " << obj.size.w << "m\n"
+        << "size.h                " << obj.size.h << "m\n"
+        << "offset.point.x            " << obj.offset.p.x << "m\n"
+        << "offset.point.y            " << obj.offset.p.y << "m\n"
+        << "offset.point.z            " << obj.offset.p.z << "m\n"
+        << "offset.orientation.roll   " << RAD2DEG(obj.offset.o.r) << "deg\n"
+        << "offset.orientation.pitch  " << RAD2DEG(obj.offset.o.p) << "deg\n"
+        << "offset.orientation.yaw    " << RAD2DEG(obj.offset.o.y) << "deg\n";
     return s.str();
 }
 
 std::string 
-toString( const orca::GpsDataPtr & obj )
+toString( const orca::GpsData&  obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp) 
-        << " UTC: " << toString(obj->utcTime) << endl
+    s << toString(obj.timeStamp) 
+        << " UTC: " << toString(obj.utcTime) << endl
 	<< " Gps (latitude,longitude,altitude) : ("
-        << obj->latitude << ","
-	<< obj->longitude << ","
-	<< obj->altitude << ")" << endl
+        << obj.latitude << ","
+	<< obj.longitude << ","
+	<< obj.altitude << ")" << endl
         << " Gps (heading,speed,climbrate) : ("
-        << obj->heading << ","
-	<< obj->speed << ","
-	<< obj->climbRate << ")" << endl
+        << obj.heading << ","
+	<< obj.speed << ","
+	<< obj.climbRate << ")" << endl
         << " Gps (satellites,positionType,geoidalSeparation) : ("
-	<< obj->satellites << ","
-	<< obj->positionType << ","
-        << obj->geoidalSeparation << ")";
+	<< obj.satellites << ","
+	<< obj.positionType << ","
+        << obj.geoidalSeparation << ")";
 
     return s.str();
 }
 
 std::string 
-toString( const orca::GpsMapGridDataPtr & obj )
+toString( const orca::GpsMapGridData& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp) 
-        << " UTC: " << toString(obj->utcTime) << endl
+    s << toString(obj.timeStamp) 
+        << " UTC: " << toString(obj.utcTime) << endl
 	<< " Gps (northing,easting,altitude) : ("
-        << obj->northing << ","
-	<< obj->easting << ","
-	<< obj->altitude << ")" << endl
+        << obj.northing << ","
+	<< obj.easting << ","
+	<< obj.altitude << ")" << endl
         << " Gps (heading,speed,climbrate) : ("
-        << obj->heading << ","
-	<< obj->speed << ","
-	<< obj->climbRate << ")" << endl
+        << obj.heading << ","
+	<< obj.speed << ","
+	<< obj.climbRate << ")" << endl
 	<< " Gps (zone, positionType) : ("
-        << obj->zone << ","
-	<< obj->positionType << ")";
+        << obj.zone << ","
+	<< obj.positionType << ")";
 
     return s.str();
 }
 
 std::string 
-toString( const orca::GpsTimeDataPtr & obj )
+toString( const orca::GpsTimeData&  obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp) 
-      << " UTC: " << toString(obj->utcDate) << " " << toString(obj->utcTime);
+    s << toString(obj.timeStamp) 
+      << " UTC: " << toString(obj.utcDate) << " " << toString(obj.utcTime);
     return s.str();
 }
 
 std::string 
-toString( const orca::Position2dDataPtr & obj )
+toString( const orca::Position2dData& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp)
+    s << toString(obj.timeStamp)
         << " Position2d (x,y,a(deg), vx,vy,w(deg/s)) : ("
-        << obj->pose.p.x << ","
-        << obj->pose.p.y << ","
-        << RAD2DEG(obj->pose.o) << ", "
-        << obj->motion.v.x << ","
-        << obj->motion.v.y << ","
-        << RAD2DEG(obj->motion.w) << ")";
+        << obj.pose.p.x << ","
+        << obj.pose.p.y << ","
+        << RAD2DEG(obj.pose.o) << ", "
+        << obj.motion.v.x << ","
+        << obj.motion.v.y << ","
+        << RAD2DEG(obj.motion.w) << ")";
 
     return s.str();
 }
 
 std::string 
-toString( const orca::Position3dDataPtr & obj )
+toString( const orca::Position3dData& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp)
+    s << toString(obj.timeStamp)
             << " \t Position (x,y,z): "
-            << obj->pose.p.x << ","
-            << obj->pose.p.y << ","
-            << obj->pose.p.z << ", \n"
+            << obj.pose.p.x << ","
+            << obj.pose.p.y << ","
+            << obj.pose.p.z << ", \n"
             << " \t Attitude r,p,y(deg): "     
-            << RAD2DEG(obj->pose.o.r) << ", "
-            << RAD2DEG(obj->pose.o.p) << ", "
-            << RAD2DEG(obj->pose.o.y) << ", \n"
+            << RAD2DEG(obj.pose.o.r) << ", "
+            << RAD2DEG(obj.pose.o.p) << ", "
+            << RAD2DEG(obj.pose.o.y) << ", \n"
             << " \t Velocity vx,vy,vz:"     
-            << obj->motion.v.x << ","
-            << obj->motion.v.y << ","
-            << obj->motion.v.z << ", \n"
+            << obj.motion.v.x << ","
+            << obj.motion.v.y << ","
+            << obj.motion.v.z << ", \n"
             << " \t Angular Velocity wx,wy,wz(deg/s): "     
-            << RAD2DEG(obj->motion.w.x) << ","
-            << RAD2DEG(obj->motion.w.y) << ","
-            << RAD2DEG(obj->motion.w.z);
+            << RAD2DEG(obj.motion.w.x) << ","
+            << RAD2DEG(obj.motion.w.y) << ","
+            << RAD2DEG(obj.motion.w.z);
 
     return s.str();
 }
 
 std::string 
-toString( const orca::Position3dDescriptionPtr & obj )
+toString( const orca::Position3dDescription& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp)
+    s << toString(obj.timeStamp)
             << " \t Position (x,y,z): "
-            << obj->offset.p.x << ","
-            << obj->offset.p.y << ","
-            << obj->offset.p.z << ", \n"
+            << obj.offset.p.x << ","
+            << obj.offset.p.y << ","
+            << obj.offset.p.z << ", \n"
             << " \t Attitude r,p,y(deg): "     
-            << RAD2DEG(obj->offset.o.r) << ", "
-            << RAD2DEG(obj->offset.o.p) << ", "
-            << RAD2DEG(obj->offset.o.y) << ", \n"
+            << RAD2DEG(obj.offset.o.r) << ", "
+            << RAD2DEG(obj.offset.o.p) << ", "
+            << RAD2DEG(obj.offset.o.y) << ", \n"
             << " \t Size l,w,h: "
-            << obj->size.l << ", "
-            << obj->size.w << ", "
-            << obj->size.h;
+            << obj.size.l << ", "
+            << obj.size.w << ", "
+            << obj.size.h;
     
     return s.str();   
 }
 
 std::string 
-toString( const orca::Localise2dDataPtr & obj )
+toString( const orca::Localise2dData& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp)
-        << " Localise2d ["<<obj->hypotheses.size()<<" elements] [weight] (x,y,a(deg) (pxx,pxy,pyy,pxt,pyt,pyy(deg)) :"<<endl;
-    for ( unsigned int i=0; i < obj->hypotheses.size(); i++ )
+    s << toString(obj.timeStamp)
+        << " Localise2d ["<<obj.hypotheses.size()<<" elements] [weight] (x,y,a(deg) (pxx,pxy,pyy,pxt,pyt,pyy(deg)) :"<<endl;
+    for ( unsigned int i=0; i < obj.hypotheses.size(); i++ )
     {
-        const orca::Pose2dHypothesis &h = obj->hypotheses[i];
+        const orca::Pose2dHypothesis &h = obj.hypotheses[i];
         s << "  " << i << ": [" 
           << h.weight << "] (" 
           << h.mean.p.x << ","
@@ -677,38 +677,38 @@ toString( const orca::Localise2dDataPtr & obj )
 }
 
 std::string 
-toString( const orca::Velocity2dCommandPtr & obj )
+toString( const orca::Velocity2dCommand& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp)
+    s << toString(obj.timeStamp)
         << " Velocity2dCommand (vx,vy,w(deg/s)) : ("
-            << obj->motion.v.x << ", "
-            << obj->motion.v.y << ", "
-            << RAD2DEG(obj->motion.w) << ")";
+            << obj.motion.v.x << ", "
+            << obj.motion.v.y << ", "
+            << RAD2DEG(obj.motion.w) << ")";
 
     return s.str();
 }
 
 std::string 
-toString( const orca::HomeDataPtr & obj )
+toString( const orca::HomeData& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp) << " HomeData"<<endl;
+    s << toString(obj.timeStamp) << " HomeData"<<endl;
 
-    IceUtil::Time t = IceUtil::Time::seconds(obj->timeUp);
+    IceUtil::Time t = IceUtil::Time::seconds(obj.timeUp);
     s << "time up="<<t.toDuration()<<endl;
 
     s << "provides={";
-    for ( unsigned int i=0; i<obj->comp.provides.size(); ++i ) {
+    for ( unsigned int i=0; i<obj.comp.provides.size(); ++i ) {
         if ( i>0) { s<<":"; }
-        s << obj->comp.provides[i].name;
+        s << obj.comp.provides[i].name;
     }
     s << "}"<<endl;
 
     s << "requires={";
-    for ( unsigned int i=0; i<obj->comp.requires.size(); ++i ) {
+    for ( unsigned int i=0; i<obj.comp.requires.size(); ++i ) {
         if ( i>0) { s<<":"; }
-        s << toString( obj->comp.requires[i].name );
+        s << toString( obj.comp.requires[i].name );
     }
     s << "}" << endl;
 
@@ -716,19 +716,19 @@ toString( const orca::HomeDataPtr & obj )
 }
 
 std::string 
-toString( const orca::ImuDataPtr & obj )
+toString( const orca::ImuData& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp)
+    s << toString(obj.timeStamp)
         << " ImuData: \n"
         << " Accelerometer (x,y,z): "
-        << obj->accel.x << " "
-        << obj->accel.y << " "
-        << obj->accel.z << " " << "\n"
+        << obj.accel.x << " "
+        << obj.accel.y << " "
+        << obj.accel.z << " " << "\n"
         << " Gyro (x,y,z): "
-        << obj->gyro.x << " "
-        << obj->gyro.y << " "
-        << obj->gyro.z << " ";
+        << obj.gyro.x << " "
+        << obj.gyro.y << " "
+        << obj.gyro.z << " ";
     
     return s.str();
 }
@@ -784,7 +784,7 @@ toString( const orca::RangeScanner2dDataPtr & obj, int skip )
 }
 
 std::string 
-toString( const orca::PowerData & obj )
+toString( const orca::PowerData& obj )
 {
     std::ostringstream s;
     s << toString(obj.timeStamp)
@@ -802,19 +802,19 @@ toString( const orca::PowerData & obj )
 }
 
 std::string 
-toString( const orca::StatusDataPtr & obj )
+toString( const orca::StatusData& obj )
 {
     std::ostringstream s;
     // this toString() function is defined in nameutils.h
-    s << toString( obj->name ) << ": "
-      << obj->category << ": "
-      << obj->message;
+    s << toString( obj.name ) << ": "
+      << obj.category << ": "
+      << obj.message;
 
     return s.str();
 }
 
 std::string 
-toString( const orca::TracerData & obj )
+toString( const orca::TracerData& obj )
 {
     std::string s;
 
@@ -836,52 +836,52 @@ toString( const orca::TracerData & obj )
 }
 
 std::string 
-toString( const orca::RangeScanner2dDescriptionPtr & obj )
+toString( const orca::RangeScanner2dDescription& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp)
+    s << toString(obj.timeStamp)
         << " RangeScanner2dDescription: \n"
-        << "minRange=" << obj->minRange << "m\n"
-        << "maxRange=" << obj->maxRange << "m\n"
-        << "fieldOfView=" << RAD2DEG(obj->fieldOfView) << "deg\n"
-        << "startAngle=" << RAD2DEG(obj->startAngle) << "deg\n"
-        << "numberOfSamples=" << obj->numberOfSamples << "\n"
-        << "offset.point.x=" << obj->offset.p.x << "m\n"
-        << "offset.point.y=" << obj->offset.p.y << "m\n"
-        << "offset.point.z=" << obj->offset.p.z << "m\n"
-        << "offset.orientation.roll=" << RAD2DEG(obj->offset.o.r) << "deg\n"
-        << "offset.orientation.pitch=" << RAD2DEG(obj->offset.o.p) << "deg\n"
-        << "offset.orientation.yaw=" << RAD2DEG(obj->offset.o.y) << "deg\n"
-        << "size.length=" << obj->size.l << "m\n"
-        << "size.width=" << obj->size.w << "m\n"
-        << "size.height=" << obj->size.h << "m";
+        << "minRange=" << obj.minRange << "m\n"
+        << "maxRange=" << obj.maxRange << "m\n"
+        << "fieldOfView=" << RAD2DEG(obj.fieldOfView) << "deg\n"
+        << "startAngle=" << RAD2DEG(obj.startAngle) << "deg\n"
+        << "numberOfSamples=" << obj.numberOfSamples << "\n"
+        << "offset.point.x=" << obj.offset.p.x << "m\n"
+        << "offset.point.y=" << obj.offset.p.y << "m\n"
+        << "offset.point.z=" << obj.offset.p.z << "m\n"
+        << "offset.orientation.roll=" << RAD2DEG(obj.offset.o.r) << "deg\n"
+        << "offset.orientation.pitch=" << RAD2DEG(obj.offset.o.p) << "deg\n"
+        << "offset.orientation.yaw=" << RAD2DEG(obj.offset.o.y) << "deg\n"
+        << "size.length=" << obj.size.l << "m\n"
+        << "size.width=" << obj.size.w << "m\n"
+        << "size.height=" << obj.size.h << "m";
 
     return s.str();
 }
 
 std::string 
-toString( const orca::ImuDescriptionPtr & obj )
+toString( const orca::ImuDescription& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp)
+    s << toString(obj.timeStamp)
             << " ImuDescription: \n"
             << "Size: \n"
-            << "size.l:           " << obj->size.l << "m\n"
-            << "size.w:           " << obj->size.w << "m\n"
-            << "size.h:           " << obj->size.h << "m\n"
+            << "size.l:           " << obj.size.l << "m\n"
+            << "size.w:           " << obj.size.w << "m\n"
+            << "size.h:           " << obj.size.h << "m\n"
             << "Offset: \n"
-            << "origin.p.x:           " << obj->offset.p.x << "m\n"
-            << "offset.p.y:           " << obj->offset.p.y << "m\n"
-            << "offset.p.z:           " << obj->offset.p.z << "m\n"
-            << "offset.o.r:           " << obj->offset.o.r << "m\n"
-            << "offset.o.p:           " << obj->offset.o.p << "m\n"
-            << "offset.o.y:           " << obj->offset.o.y << "m\n";
+            << "origin.p.x:           " << obj.offset.p.x << "m\n"
+            << "offset.p.y:           " << obj.offset.p.y << "m\n"
+            << "offset.p.z:           " << obj.offset.p.z << "m\n"
+            << "offset.o.r:           " << obj.offset.o.r << "m\n"
+            << "offset.o.p:           " << obj.offset.o.p << "m\n"
+            << "offset.o.y:           " << obj.offset.o.y << "m\n";
 
     return s.str();
 }
 
 std::string 
-toString( const orca::PolarFeature2dDataPtr & obj )
+toString( const orca::PolarFeature2dDataPtr& obj )
 {
     std::ostringstream s;
     s << toString(obj->timeStamp)
@@ -926,24 +926,24 @@ toString( const orca::PolarFeature2dDataPtr & obj )
 }
 
 std::string 
-toString( const orca::OgMapDataPtr &obj )
+toString( const orca::OgMapData& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp)
+    s << toString(obj.timeStamp)
       << " OgMap: \n"
-      << "origin:        [" << obj->origin.p.x << ", " << obj->origin.p.y << ", " << obj->origin.o*180.0/M_PI << "]\n"
-      << "numCells:      [" << obj->numCellsX << ", " << obj->numCellsY << "]\n"
-      << "metresPerCell: [" << obj->metresPerCellX << ", " << obj->metresPerCellY << "]\n";
+      << "origin:        [" << obj.origin.p.x << ", " << obj.origin.p.y << ", " << obj.origin.o*180.0/M_PI << "]\n"
+      << "numCells:      [" << obj.numCellsX << ", " << obj.numCellsY << "]\n"
+      << "metresPerCell: [" << obj.metresPerCellX << ", " << obj.metresPerCellY << "]\n";
 
     return s.str();
 }
 
 std::string 
-toString( const orca::PathFollower2dDataPtr &obj )
+toString( const orca::PathFollower2dData& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp)
-      << " PathFollower2dData: " << obj->path.size() << " waypoints.";
+    s << toString(obj.timeStamp)
+      << " PathFollower2dData: " << obj.path.size() << " waypoints.";
     return s.str();
 }
 
@@ -1004,13 +1004,13 @@ toString( const orca::FeatureMap2dDataPtr &obj )
 //*************************
 
 std::string 
-toVerboseString( const orca::OgMapDataPtr &map )
+toVerboseString( const orca::OgMapData& obj )
 {
     std::stringstream ss;
-    int szX=map->numCellsX;
-    int szY=map->numCellsY;
+    int szX=obj.numCellsX;
+    int szY=obj.numCellsY;
     int x, y;
-    int step = 1 + map->numCellsX / 200;
+    int step = 1 + obj.numCellsX / 200;
 
     ss<<endl;
     ss<<"      ";
@@ -1025,7 +1025,7 @@ toVerboseString( const orca::OgMapDataPtr &map )
         ss<<"     | ";
         for( x=0; x<szX; x+=step)
         {
-            ss<<displayOgmapCell( gridCell(map,x,y) );
+            ss<<displayOgmapCell( obj.data[ gridCellIndex(obj,x,y) ] );
         }
         ss<<"|"<<endl;
     }
@@ -1043,90 +1043,90 @@ toVerboseString( const orca::OgMapDataPtr &map )
 }
 
 std::string 
-toVerboseString( const orca::PathFollower2dDataPtr &obj )
+toVerboseString( const orca::PathFollower2dData& obj )
 {
     std::stringstream s;
 
-    s << orcaice::toString(obj->timeStamp)
-      << " PathFollower2dData [" << obj->path.size() << " waypoints]:" << endl;
-    for ( unsigned int i=0; i < obj->path.size(); i++ )
+    s << orcaice::toString(obj.timeStamp)
+      << " PathFollower2dData [" << obj.path.size() << " waypoints]:" << endl;
+    for ( unsigned int i=0; i < obj.path.size(); i++ )
     {
-        s << "  " << i << ":" << orcaice::toString(obj->path[i]) << endl;
+        s << "  " << i << ":" << orcaice::toString(obj.path[i]) << endl;
     }
 
     return s.str();
 }
 
 std::string 
-toVerboseString( const orca::PathPlanner2dDataPtr &obj )
+toVerboseString( const orca::PathPlanner2dData& obj )
 {
     std::stringstream s;
 
-    s << orcaice::toString(obj->timeStamp)
-      << " PathPlanner2dDataPtr [" << obj->path.size() << " waypoints. Result code: " << obj->result << " ]:" << endl;
-    for ( unsigned int i=0; i < obj->path.size(); i++ )
+    s << orcaice::toString(obj.timeStamp)
+      << " PathPlanner2dDataPtr [" << obj.path.size() << " waypoints. Result code: " << obj.result << " ]:" << endl;
+    for ( unsigned int i=0; i < obj.path.size(); i++ )
     {
-        s << "  " << i << ":" << orcaice::toString(obj->path[i]) << endl;
+        s << "  " << i << ":" << orcaice::toString(obj.path[i]) << endl;
     }
 
     return s.str();
 }
 
 std::string 
-toVerboseString( const orca::PathPlanner2dTaskPtr &obj )
+toVerboseString( const orca::PathPlanner2dTask& obj )
 {
     std::stringstream s;
 
-    s << orcaice::toString(obj->timeStamp)
-      << " PathPlanner2dTaskPtr [path contains "<< obj->coarsePath.size() << " waypoints]:" << endl;
-    for ( unsigned int i=0; i < obj->coarsePath.size(); i++ )
+    s << orcaice::toString(obj.timeStamp)
+      << " PathPlanner2dTaskPtr [path contains "<< obj.coarsePath.size() << " waypoints]:" << endl;
+    for ( unsigned int i=0; i < obj.coarsePath.size(); i++ )
     {
-        s << "  " << i << ":" << orcaice::toString(obj->coarsePath[i]) << endl;
+        s << "  " << i << ":" << orcaice::toString(obj.coarsePath[i]) << endl;
     }
 
     return s.str();
 }
 
 std::string 
-toVerboseString( const orca::ImuDataPtr &obj )
+toVerboseString( const orca::ImuData& obj )
 {
     std::stringstream s;
 
-    s << orcaice::toString(obj->timeStamp)
+    s << orcaice::toString(obj.timeStamp)
         << " ImuData: \n"
         << "Accelerometer (x,y,z): "
-        << obj->accel.x << " "
-        << obj->accel.y << " "
-        << obj->accel.z << " \n"
+        << obj.accel.x << " "
+        << obj.accel.y << " "
+        << obj.accel.z << " \n"
         << "Gyro (x,y,z): "
-        << obj->gyro.x << " "
-        << obj->gyro.y << " "
-        << obj->gyro.z << " ";
+        << obj.gyro.x << " "
+        << obj.gyro.y << " "
+        << obj.gyro.z << " ";
 
     return s.str();
 }
 
 std::string 
-toVerboseString( const orca::Position3dDataPtr &obj )
+toVerboseString( const orca::Position3dData& obj )
 {
     std::stringstream s;
-    s << toString(obj->timeStamp)
+    s << toString(obj.timeStamp)
             << " \t Position (x,y,z): "
-            << obj->pose.p.x << ","
-            << obj->pose.p.y << ","
-            << obj->pose.p.z << ", \n"
+            << obj.pose.p.x << ","
+            << obj.pose.p.y << ","
+            << obj.pose.p.z << ", \n"
             << " \t Attitude r,p,y(deg): "     
-            << RAD2DEG(obj->pose.o.r) << ", "
-            << RAD2DEG(obj->pose.o.p) << ", "
-            << RAD2DEG(obj->pose.o.y) << ", \n"
+            << RAD2DEG(obj.pose.o.r) << ", "
+            << RAD2DEG(obj.pose.o.p) << ", "
+            << RAD2DEG(obj.pose.o.y) << ", \n"
             << " \t Velocity vx,vy,vz:"     
-            << obj->motion.v.x << ","
-            << obj->motion.v.y << ","
-            << obj->motion.v.z << ", \n"
+            << obj.motion.v.x << ","
+            << obj.motion.v.y << ","
+            << obj.motion.v.z << ", \n"
             << " \t Angular Velocity wx,wy,wz(deg/s): "     
-            << RAD2DEG(obj->motion.w.x) << ","
-            << RAD2DEG(obj->motion.w.y) << ","
-            << RAD2DEG(obj->motion.w.z);
+            << RAD2DEG(obj.motion.w.x) << ","
+            << RAD2DEG(obj.motion.w.y) << ","
+            << RAD2DEG(obj.motion.w.z);
 
     return s.str();
 }

@@ -81,17 +81,17 @@ setInit( orca::Time & obj )
 }
 
 void
-setInit( const orca::Position2dDataPtr & obj )
+setInit( orca::Position2dData & obj )
 {
     orca::Time t;
     setInit( t );
-    obj->timeStamp = t;
+    obj.timeStamp = t;
 
-    setInit( obj->pose );
-    obj->motion.v.x = 0.0;
-    obj->motion.v.y = 0.0;
-    obj->motion.w = 0.0;
-    obj->stalled=false;
+    setInit( obj.pose );
+    obj.motion.v.x = 0.0;
+    obj.motion.v.y = 0.0;
+    obj.motion.w = 0.0;
+    obj.stalled=false;
 }
 
 void 
@@ -181,89 +181,89 @@ setSane( orca::Size3d & obj )
 }
 
 void 
-setSane( const orca::Position2dDataPtr & obj )
+setSane( orca::Position2dData & obj )
 {
     orca::Time t;
     setSane( t );
-    obj->timeStamp = t;
+    obj.timeStamp = t;
 
-    setSane( obj->pose );
-    obj->motion.v.x = double(RINT%100000)/1000.0;
-    obj->motion.v.y = double(RINT%100000)/1000.0;
-    obj->motion.w = double(RINT%100000)/1000.0;
-    obj->stalled=false;
+    setSane( obj.pose );
+    obj.motion.v.x = double(RINT%100000)/1000.0;
+    obj.motion.v.y = double(RINT%100000)/1000.0;
+    obj.motion.w = double(RINT%100000)/1000.0;
+    obj.stalled=false;
 }
 
 void 
-setSane( const orca::Position3dDataPtr & obj )
+setSane( orca::Position3dData & obj )
 {
     orca::Time t;
     setSane( t );
-    obj->timeStamp = t;
+    obj.timeStamp = t;
 
-    setSane( obj->pose );
-    obj->motion.v.x = double(RINT%100000)/1000.0;
-    obj->motion.v.y = double(RINT%100000)/1000.0;
-    obj->motion.v.z = double(RINT%100000)/1000.0;
-    obj->motion.w.x = double(RINT%100000)/1000.0;
-    obj->motion.w.y = double(RINT%100000)/1000.0;
-    obj->motion.w.z = double(RINT%100000)/1000.0;
+    setSane( obj.pose );
+    obj.motion.v.x = double(RINT%100000)/1000.0;
+    obj.motion.v.y = double(RINT%100000)/1000.0;
+    obj.motion.v.z = double(RINT%100000)/1000.0;
+    obj.motion.w.x = double(RINT%100000)/1000.0;
+    obj.motion.w.y = double(RINT%100000)/1000.0;
+    obj.motion.w.z = double(RINT%100000)/1000.0;
 }
 
 void 
-setSane( const orca::GpsDataPtr & obj )
+setSane( orca::GpsData & obj )
 {
     orca::Time t;
     setSane( t );
-    obj->timeStamp = t;
+    obj.timeStamp = t;
 
-    setSane( obj->utcTime );
+    setSane( obj.utcTime );
 
-    obj->latitude = double(RINT%90000)/1000.0;
-    obj->longitude = double(RINT%360000)/1000.0;
-    obj->altitude = double(RINT%90000)/1000.0;
+    obj.latitude = double(RINT%90000)/1000.0;
+    obj.longitude = double(RINT%360000)/1000.0;
+    obj.altitude = double(RINT%90000)/1000.0;
 
-    obj->speed = double(RINT%1000000)/1000.0;
-    obj->climbRate = double(RINT%1000000)/1000.0;
+    obj.speed = double(RINT%1000000)/1000.0;
+    obj.climbRate = double(RINT%1000000)/1000.0;
 
-    obj->satellites = RINT%50;
-    obj->positionType = RINT%2;
+    obj.satellites = RINT%50;
+    obj.positionType = RINT%2;
 
-    obj->geoidalSeparation = double(RINT%10000000)/1000.0;
-}
-
-
-void 
-setSane( const orca::GpsTimeDataPtr & obj )
-{
-    orca::Time t;
-    setSane( t );
-    obj->timeStamp = t;
-
-    setSane( obj->utcTime );
-    setSane( obj->utcDate );
+    obj.geoidalSeparation = double(RINT%10000000)/1000.0;
 }
 
 
 void 
-setSane( const orca::GpsMapGridDataPtr & obj )
+setSane( orca::GpsTimeData & obj )
 {
     orca::Time t;
     setSane( t );
-    obj->timeStamp = t;
+    obj.timeStamp = t;
 
-    setSane( obj->utcTime );
+    setSane( obj.utcTime );
+    setSane( obj.utcDate );
+}
 
-    obj->zone = RINT%500;
 
-    obj->northing = double(RINT%800000)/1000.0;
-    obj->easting = double(RINT%800000)/1000.0;
-    obj->altitude = double(RINT%90000)/1000.0;
+void 
+setSane( orca::GpsMapGridData & obj )
+{
+    orca::Time t;
+    setSane( t );
+    obj.timeStamp = t;
 
-    obj->speed = double(RINT%1000000)/1000.0;
-    obj->climbRate = double(RINT%1000000)/1000.0;
+    setSane( obj.utcTime );
 
-    obj->positionType = RINT%2;
+    obj.zone = RINT%500;
+
+    obj.northing = double(RINT%800000)/1000.0;
+    obj.easting = double(RINT%800000)/1000.0;
+    obj.altitude = double(RINT%90000)/1000.0;
+
+    obj.speed = double(RINT%1000000)/1000.0;
+    obj.climbRate = double(RINT%1000000)/1000.0;
+
+    obj.positionType = RINT%2;
 }
 
 void 
@@ -289,15 +289,31 @@ setSane( orca::PowerData & obj, int count )
 }
 
 void 
-setSane( const orca::Velocity2dCommandPtr & obj )
+setSane( orca::Velocity2dCommand & obj )
+{
+    orca::Time t;
+    setSane( t );
+    obj.timeStamp = t;
+
+    obj.motion.v.x = double(RINT%100000)/1000.0;
+    obj.motion.v.y = double(RINT%100000)/1000.0;
+    obj.motion.w = double(RINT%100000)/1000.0;
+}
+
+void 
+setSane( const orca::RangeScanner2dDataPtr & obj, int numberOfSamples )
 {
     orca::Time t;
     setSane( t );
     obj->timeStamp = t;
 
-    obj->motion.v.x = double(RINT%100000)/1000.0;
-    obj->motion.v.y = double(RINT%100000)/1000.0;
-    obj->motion.w = double(RINT%100000)/1000.0;
+    obj->maxRange = 80.0;
+    obj->fieldOfView = M_PI;
+    obj->startAngle = -(obj->fieldOfView/2.0);
+
+    for ( int i=0; i<numberOfSamples; ++i ) {
+        obj->ranges.push_back( fmod((float)RINT,80) );
+    }
 }
 
 void 
@@ -318,34 +334,34 @@ setSane( const orca::LaserScanner2dDataPtr & obj, int numberOfSamples )
 }
 
 void 
-setSane( const orca::OgMapDataPtr & obj, int width, int height )
+setSane( orca::OgMapData & obj, int width, int height )
 {
     orca::Time t;
     setSane( t );
-    obj->timeStamp = t;
+    obj.timeStamp = t;
 
-    obj->numCellsX = width;
-    obj->numCellsY = height;
-    setSane( obj->origin );
-    obj->metresPerCellX = 1.0;
-    obj->metresPerCellY = 1.0;
-    obj->data.resize( 640*480, char(88) );
-    obj->mapType = orca::ogmaptype::OCCUPANCY;
+    obj.numCellsX = width;
+    obj.numCellsY = height;
+    setSane( obj.origin );
+    obj.metresPerCellX = 1.0;
+    obj.metresPerCellY = 1.0;
+    obj.data.resize( 640*480, char(88) );
+    obj.mapType = orca::ogmaptype::OCCUPANCY;
 }
 
 void 
-setSane( const orca::CameraDataPtr & obj, int width, int height )
+setSane( orca::CameraData & obj, int width, int height )
 {
     orca::Time t;
     setSane( t );
-    obj->timeStamp = t;
+    obj.timeStamp = t;
 
-    obj->imageWidth = width;
-    obj->imageHeight = height;
-    obj->format = orca::ImageFormatModeNfi;
-    obj->compression = orca::ImageCompressionNone;
+    obj.imageWidth = width;
+    obj.imageHeight = height;
+    obj.format = orca::ImageFormatModeNfi;
+    obj.compression = orca::ImageCompressionNone;
     // assume RGB/BGR mode
-    obj->image.resize( obj->imageWidth*obj->imageHeight*3, char(88) );
+    obj.image.resize( obj.imageWidth*obj.imageHeight*3, char(88) );
 }
 
 } // namespace

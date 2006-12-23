@@ -63,13 +63,7 @@ FakeInsGpsDriver::init()
 
 void
 FakeInsGpsDriver::run()
-{
-
-    // objects for copying data from driver   
-    gpsData_ = new orca::GpsData;
-    imuData_ = new orca::ImuData;
-    position3dData_ = new orca::Position3dData;
-     
+{     
     // We can't block in this loop -- have to keep it rolling so 
     // that isActive() is always checked.
     while ( isActive() )
@@ -98,14 +92,14 @@ FakeInsGpsDriver::readMsgsFromHardware()
     cout<<"TRACE(fakeinsgpsdriver.cpp): Generating fake insgps data:" << endl;
    
     // imu data is sent at 100Hz
-    orcaice::setToNow( imuData_->timeStamp );
+    orcaice::setToNow( imuData_.timeStamp );
 
-    imuData_->accel.x = -35.0;
-    imuData_->accel.y = 149.0;
-    imuData_->accel.z = 50.0;
-    imuData_->gyro.x  = 0.5;
-    imuData_->gyro.y  = 1.0;
-    imuData_->gyro.z  = 3.0;
+    imuData_.accel.x = -35.0;
+    imuData_.accel.y = 149.0;
+    imuData_.accel.z = 50.0;
+    imuData_.gyro.x  = 0.5;
+    imuData_.gyro.y  = 1.0;
+    imuData_.gyro.z  = 3.0;
     
     imuDataBuffer_.push( imuData_ );
 
@@ -114,40 +108,40 @@ FakeInsGpsDriver::readMsgsFromHardware()
     if ( count_ == 10)
     {
         // create fake gps data
-        orcaice::setToNow( gpsData_->timeStamp );
+        orcaice::setToNow( gpsData_.timeStamp );
         
-        gpsData_->latitude = -35.0;
-        gpsData_->longitude = 149.0;
-        gpsData_->altitude = 50;
-        gpsData_->heading = 20;
-        gpsData_->speed = 5;
-        gpsData_->climbRate = 3;
-        gpsData_->satellites = 6;
-        gpsData_->positionType = 1;
-        gpsData_->geoidalSeparation = 10;
+        gpsData_.latitude = -35.0;
+        gpsData_.longitude = 149.0;
+        gpsData_.altitude = 50;
+        gpsData_.heading = 20;
+        gpsData_.speed = 5;
+        gpsData_.climbRate = 3;
+        gpsData_.satellites = 6;
+        gpsData_.positionType = 1;
+        gpsData_.geoidalSeparation = 10;
 
         gpsDataBuffer_.push( gpsData_ );
 
         // create fake pva data
-        orcaice::setToNow( position3dData_->timeStamp );
+        orcaice::setToNow( position3dData_.timeStamp );
 
         // position
-        position3dData_->pose.p.x = -2 + ((numReads_%20)*0.2);
-        position3dData_->pose.p.y = 2;
-        position3dData_->pose.p.z = 3;
+        position3dData_.pose.p.x = -2 + ((numReads_%20)*0.2);
+        position3dData_.pose.p.y = 2;
+        position3dData_.pose.p.z = 3;
 
         // attitude
-        position3dData_->pose.o.r = 4;
-        position3dData_->pose.o.p = 5;
-        position3dData_->pose.o.y = (-180 + numReads_*5 % 360)*M_PI/180.0;
+        position3dData_.pose.o.r = 4;
+        position3dData_.pose.o.p = 5;
+        position3dData_.pose.o.y = (-180 + numReads_*5 % 360)*M_PI/180.0;
 
         // velocity
-        position3dData_->motion.v.x = 7;
-        position3dData_->motion.v.y = 8;
-        position3dData_->motion.v.z = 9;
-        position3dData_->motion.w.x = 10;
-        position3dData_->motion.w.y = 11;
-        position3dData_->motion.w.z = 12;
+        position3dData_.motion.v.x = 7;
+        position3dData_.motion.v.y = 8;
+        position3dData_.motion.v.z = 9;
+        position3dData_.motion.w.x = 10;
+        position3dData_.motion.w.y = 11;
+        position3dData_.motion.w.z = 12;
 
         position3dDataBuffer_.push( position3dData_ );
         
@@ -163,7 +157,7 @@ FakeInsGpsDriver::readMsgsFromHardware()
 }
 
 void
-FakeInsGpsDriver::readGps(orca::GpsDataPtr& data, int timeoutMs )
+FakeInsGpsDriver::readGps(orca::GpsData& data, int timeoutMs )
 {
     // blocking read with timeout. Also deletes the front element from the buffer
     int ret = gpsDataBuffer_.getAndPopNext( data, timeoutMs );
@@ -178,7 +172,7 @@ FakeInsGpsDriver::readGps(orca::GpsDataPtr& data, int timeoutMs )
 }
 
 void
-FakeInsGpsDriver::readGpsTime(orca::GpsTimeDataPtr &data, int timeoutMs )
+FakeInsGpsDriver::readGpsTime(orca::GpsTimeData& data, int timeoutMs )
 {
 //     if(newGpsTime_)
 //     {
@@ -194,7 +188,7 @@ return;
 }
 
 void
-FakeInsGpsDriver::readImu(orca::ImuDataPtr &data, int timeoutMs )
+FakeInsGpsDriver::readImu(orca::ImuData& data, int timeoutMs )
 {
     // blocking read with timeout. Also deletes the front element from the buffer
     int ret = imuDataBuffer_.getAndPopNext( data, timeoutMs );
@@ -208,7 +202,7 @@ FakeInsGpsDriver::readImu(orca::ImuDataPtr &data, int timeoutMs )
 }
 
 void
-FakeInsGpsDriver::readPosition3d(orca::Position3dDataPtr &data, int timeoutMs )
+FakeInsGpsDriver::readPosition3d(orca::Position3dData& data, int timeoutMs )
 {
     // blocking read with timeout. Also deletes the front element from the buffer
     int ret = position3dDataBuffer_.getAndPopNext( data, timeoutMs );

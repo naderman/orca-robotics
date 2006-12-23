@@ -175,23 +175,23 @@ Component::start()
     // SENSOR DESCRIPTION
     //
 
-    orca::CameraDescriptionPtr descr = new orca::CameraDescription;
-    descr->timeStamp = orcaice::getNow();
+    orca::CameraDescription descr;
+    descr.timeStamp = orcaice::getNow();
 
     // transfer internal sensor configs
-    descr->imageWidth   = actualCfg.imageWidth;
-    descr->imageHeight  = actualCfg.imageHeight;
-    descr->frameRate    = actualCfg.frameRate;
-    descr->format       = actualCfg.format;
-    descr->compression  = actualCfg.compression;
-    descr->imageSize    = actualCfg.imageSize;
+    descr.imageWidth   = actualCfg.imageWidth;
+    descr.imageHeight  = actualCfg.imageHeight;
+    descr.frameRate    = actualCfg.frameRate;
+    descr.format       = actualCfg.format;
+    descr.compression  = actualCfg.compression;
+    descr.imageSize    = actualCfg.imageSize;
 
     // offset from the robot coordinate system
-    orcaice::setInit( descr->offset );
-    descr->offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr->offset );
+    orcaice::setInit( descr.offset );
+    descr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr.offset );
 
-    orcaice::setInit( descr->size );
-    descr->size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr->size );
+    orcaice::setInit( descr.size );
+    descr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr.size );
 
     //
     // EXTERNAL PROVIDED INTERFACE: Camera

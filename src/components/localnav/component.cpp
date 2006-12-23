@@ -68,9 +68,9 @@ Component::start()
         context().tracer()->debug("connected to a 'Platform2d' interface",5);
 
         // Instantiate everything
-        obsConsumer_  = new orcaice::BufferedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>;
-        locConsumer_  = new orcaice::BufferedConsumerI<orca::Localise2dConsumer,orca::Localise2dDataPtr>;
-        odomConsumer_ = new orcaice::BufferedConsumerI<orca::Position2dConsumer,orca::Position2dDataPtr>;
+        obsConsumer_  = new orcaice::PtrBufferedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>;
+        locConsumer_  = new orcaice::BufferedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>;
+        odomConsumer_ = new orcaice::BufferedConsumerI<orca::Position2dConsumer,orca::Position2dData>;
 
         pathMaintainer_ = new PathMaintainer(pathPipe_,
                                              newPathArrivedPipe_,

@@ -40,15 +40,13 @@ private:
     //
     // EXTERNAL PROVIDED INTERFACE
     //
-    //Ice::ObjectPtr localise2dObj_;
     orca::Localise2dConsumerPrx localise2dPublisher_;
 
-    orcaice::PtrBuffer<orca::Localise2dDataPtr> locBuffer_;
-    orcaice::PtrBuffer<orca::Localise2dDataPtr> historyBuffer_;
+    orcaice::Buffer<orca::Localise2dData> locBuffer_;
+    orcaice::Buffer<orca::Localise2dData> historyBuffer_;
 
     // REQUIRED INTERFACE
-    //orcaice::BufferedConsumerI<orca::Position2dConsumer,orca::Position2dDataPtr> *posConsumer_;
-    orcaice::PtrBuffer<orca::Position2dDataPtr> posPipe_;
+    orcaice::Buffer<orca::Position2dData> posPipe_;
 
 };
 

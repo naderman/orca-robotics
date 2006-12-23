@@ -89,7 +89,7 @@ class PathFollowerInput : public PathInput
         PathFollowerInput( WaypointSettings *wpSettings );
         virtual ~PathFollowerInput() {};  
 
-        orca::PathFollower2dDataPtr getPath() const;
+        orca::PathFollower2dData getPath() const;
        
         // loading the path is done from here, saving is done by the pathpainter
         virtual void loadDataFromFile( QString* fileName );   
@@ -105,7 +105,7 @@ public:
     
     virtual ~PathPlannerInput() {};  
     
-    orca::PathPlanner2dTaskPtr getTask() const;
+    orca::PathPlanner2dTask getTask() const;
 };
 
 WaypointSettings readWaypointSettings( const Ice::PropertiesPtr & props, const std::string & tag );

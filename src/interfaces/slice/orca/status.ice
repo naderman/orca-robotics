@@ -25,8 +25,10 @@ module orca
 /*!
     @brief Component status data.
 */
-class StatusData extends OrcaObject
+struct StatusData
 {
+    //! Time when data was measured.
+    Time timeStamp;
     //! The fully-qualified name of the interface.
     FQComponentName name;
     //! Message category, e.g. warning, error, etc.

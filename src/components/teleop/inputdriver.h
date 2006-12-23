@@ -36,7 +36,7 @@ public:
     virtual int disable()=0;
 
     // Blocking read. Returns 0 on success. Does not throw.
-    virtual int read( orca::Velocity2dCommandPtr &data )=0;
+    virtual int read( orca::Velocity2dCommand& data )=0;
 
     struct Config
     {

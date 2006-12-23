@@ -14,7 +14,7 @@
 #include <IceStorm/IceStorm.h>
 
 #include <orca/pathplanner2d.h>
-#include <orcaice/ptrproxy.h>
+#include <orcaice/proxy.h>
 
 namespace pathplanner
 {
@@ -23,28 +23,28 @@ class PathPlanner2dI : public orca::PathPlanner2d
 {
 public:
     PathPlanner2dI( 
-        orcaice::PtrProxy<orca::PathPlanner2dTaskPtr> &pathPlannerTaskProxy,
-        orcaice::PtrProxy<orca::PathPlanner2dDataPtr> &pathPlannerDataProxy,
+        orcaice::Proxy<orca::PathPlanner2dTask> &pathPlannerTaskProxy,
+        orcaice::Proxy<orca::PathPlanner2dData> &pathPlannerDataProxy,
         const orcaice::Context & context
     );
 
     // remote calls
-    virtual ::Ice::Int setTask(const ::orca::PathPlanner2dTaskPtr&, const ::Ice::Current& = ::Ice::Current());
+    virtual ::Ice::Int setTask(const ::orca::PathPlanner2dTask&, const ::Ice::Current& = ::Ice::Current());
 
     virtual void subscribe(const ::orca::PathPlanner2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
     virtual void unsubscribe(const ::orca::PathPlanner2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
-    virtual ::orca::PathPlanner2dDataPtr getData(const ::Ice::Current& ) const;
+    virtual ::orca::PathPlanner2dData getData(const ::Ice::Current& ) const;
 
     // local calls
-    void localSetData( const ::orca::PathPlanner2dDataPtr data );
+    void localSetData( const ::orca::PathPlanner2dData& data );
 
 private:
 
-    orcaice::PtrProxy<orca::PathPlanner2dTaskPtr> &pathPlannerTaskProxy_;
+    orcaice::Proxy<orca::PathPlanner2dTask>& pathPlannerTaskProxy_;
 
     // the driver puts the latest computed path into here
-    orcaice::PtrProxy<orca::PathPlanner2dDataPtr> &pathPlannerDataProxy_;
+    orcaice::Proxy<orca::PathPlanner2dData>& pathPlannerDataProxy_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx topicPrx_;

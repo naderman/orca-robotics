@@ -45,32 +45,36 @@ sequence<float> FloatSequence;
 
 
 //! Description of the point cloud
-class PointCloudDescription extends OrcaObject 
+struct PointCloudDescription
 {
+    //! Time when data was measured.
+    Time timeStamp;
   
-  //! type of point cloud: colour or uncoloured
-  PointCloudType type;
-
-  //! Offset of the centre of the sensor from the robot, in the robot coord system
-  Frame3d offset; 
-
- //! Dimensions of the sensor
-  Size3d size; 
+    //! type of point cloud: colour or uncoloured
+    PointCloudType type;
+    
+    //! Offset of the centre of the sensor from the robot, in the robot coord system
+    Frame3d offset; 
+    
+    //! Dimensions of the sensor
+    Size3d size; 
 
 };
 
 //! Point cloud data structure
-class PointCloudData extends OrcaObject 
+struct PointCloudData
 {
+    //! Time when data was measured.
+    Time timeStamp;
 
-  //! type of point cloud: colour or uncoloured
-  PointCloudType type; 
+    //! type of point cloud: colour or uncoloured
+    PointCloudType type; 
 
 /*! Points are interleaved. if the Type is PointCloudTypeNoColour, then the sequence
     is X0,Y0,Z0,X1,Y1,Z1... If the type is PointCloudTypeColour, then it is
     X0,Y0,Z0,R0,G0,B0,.... Colours are specified between 0.0 and 1.0  
 */ 
-  FloatSequence points;
+    FloatSequence points;
 };
 
 /*! 

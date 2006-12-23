@@ -33,13 +33,13 @@ class GpsLogger : public orcalog::Logger
         virtual void init();
 
         // these are called from consumers
-        void localSetData( const orca::GpsDataPtr& data );
-        void localSetData( const orca::GpsTimeDataPtr& data );
-        void localSetData( const orca::GpsMapGridDataPtr& data );
+        void localSetData( const orca::GpsData& data );
+        void localSetData( const orca::GpsTimeData& data );
+        void localSetData( const orca::GpsMapGridData& data );
         
     private:
         // utility
-        void writeDescriptionToFile( const orca::GpsDescriptionPtr& descr );
+        void writeDescriptionToFile( const orca::GpsDescription& descr );
 
         // these are the actual consumer object, they must be members to stay alive
         Ice::ObjectPtr consumerGps_;

@@ -1,4 +1,4 @@
-OPTION( BUILD_PROBE "Try to build Probe" ON )
+OPTION( BUILD_PROBE "Try to build Probe" OFF )
 
 IF ( NOT OS_WIN )
 IF ( BUILD_PROBE )

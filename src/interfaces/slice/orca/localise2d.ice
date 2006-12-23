@@ -26,7 +26,8 @@ module orca
 */
 
 //! A Gaussian distribution over pose space
-struct Pose2dHypothesis {
+struct Pose2dHypothesis 
+{
     //! The mean of the distribution
     Frame2d      mean;
     //! The Gaussian covariance
@@ -38,9 +39,12 @@ struct Pose2dHypothesis {
 //! A set of Gaussian pose hypotheses: essentially a mixture of Gaussians
 sequence<Pose2dHypothesis> Pose2dHypotheses;
 
-//! Localise2d data structure
-class Localise2dData extends OrcaObject
+//! Location estimate
+struct Localise2dData
 {
+    //! Time when data was measured.
+    Time timeStamp;
+
     //! Localisation hypotheses.
     Pose2dHypotheses hypotheses;
 };

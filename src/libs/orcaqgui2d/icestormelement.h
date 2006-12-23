@@ -30,7 +30,7 @@ namespace orcaqgui {
 
   @author Alex Brooks
 */
-template<class PainterType, class DataType, class DataPtrType, class ProxyType, class ConsumerType, class ConsumerPrxType>
+template<class PainterType, class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
 class IceStormElement : public orcaqgui::GuiElement2d
 {
   
@@ -66,13 +66,12 @@ protected:
 
     orcaice::Context              context_;
     
-    DataPtrType                       data_;
+    DataType                       data_;
     
     bool needToUpdate();
     
     //! Object to handle network communication, including subscription process
     IceStormListener<DataType,
-                     DataPtrType,
                      ProxyType,
                      ConsumerType,
                      ConsumerPrxType> listener_;
@@ -84,9 +83,9 @@ protected:
     bool                             isConnected_;
 };
 
-template<class PainterType, class DataType, class DataPtrType, class ProxyType, class ConsumerType, class ConsumerPrxType>
+template<class PainterType, class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
 bool 
-IceStormElement<PainterType,DataType,DataPtrType,ProxyType,ConsumerType,ConsumerPrxType>::needToUpdate()
+IceStormElement<PainterType,DataType,ProxyType,ConsumerType,ConsumerPrxType>::needToUpdate()
 {
     if ( !listener_.buffer().isEmpty() )
     {
@@ -119,9 +118,9 @@ IceStormElement<PainterType,DataType,DataPtrType,ProxyType,ConsumerType,Consumer
     return false;
 }
 
-template<class PainterType, class DataType, class DataPtrType, class ProxyType, class ConsumerType, class ConsumerPrxType>
+template<class PainterType, class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
 void 
-IceStormElement<PainterType,DataType,DataPtrType,ProxyType,ConsumerType,ConsumerPrxType>::update()
+IceStormElement<PainterType,DataType,ProxyType,ConsumerType,ConsumerPrxType>::update()
 {
     if ( !needToUpdate() ) {
         return;
@@ -136,8 +135,6 @@ IceStormElement<PainterType,DataType,DataPtrType,ProxyType,ConsumerType,Consumer
     painter_.setData( data_ );
 }
 
-}
-
-
+} // namespace
 
 #endif

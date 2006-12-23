@@ -76,19 +76,19 @@ TestComponent::start()
         cout<<"Testing Camera logger with 'ice' format ... ";
         orcalogfactory::CameraLogger* logger = 
             new orcalogfactory::CameraLogger( logMaster, "0", "ice", "", context() );
-        orca::CameraDataPtr dataIn = new orca::CameraData;
+        orca::CameraData dataIn;
         orcaice::setSane( dataIn, 20, 10 );
         logger->setData( dataIn, Ice::Current() );
     
         orcalogfactory::CameraReplayer* replayer = 
             new orcalogfactory::CameraReplayer( "ice", "camera0.log", context() );
         replayer->replayData( 0, true );  
-        orca::CameraDataPtr dataOut = replayer->getData( Ice::Current() );
+        orca::CameraData dataOut = replayer->getData( Ice::Current() );
     
-        if ( dataIn->imageWidth != dataOut->imageWidth
-                || dataIn->compression != dataOut->compression
-                || dataIn->image.size() != dataOut->image.size()
-                || dataIn->image[7] != dataOut->image[7] ) {
+        if ( dataIn.imageWidth != dataOut.imageWidth
+                || dataIn.compression != dataOut.compression
+                || dataIn.image.size() != dataOut.image.size()
+                || dataIn.image[7] != dataOut.image[7] ) {
             cout<<"failed"<<endl<<"object logged incorrectly"<<endl;
             cout<<"\tIN : "<<orcaice::toString(dataIn)<<endl;
             cout<<"\tOUT: "<<orcaice::toString(dataOut)<<endl;
@@ -123,15 +123,15 @@ TestComponent::start()
         cout<<"Testing Gps logger with 'ice' format ... ";
         orcalogfactory::GpsLogger* logger = 
             new orcalogfactory::GpsLogger( logMaster, "0", "ice", "", context() );
-        orca::GpsDataPtr dataIn = new orca::GpsData;
+        orca::GpsData dataIn;
         orcaice::setSane( dataIn );
         logger->localSetData( dataIn );
 
-        orca::GpsTimeDataPtr timeDataIn = new orca::GpsTimeData;
+        orca::GpsTimeData timeDataIn;
         orcaice::setSane( timeDataIn );
         logger->localSetData( timeDataIn );
     
-        orca::GpsMapGridDataPtr mapDataIn = new orca::GpsMapGridData;
+        orca::GpsMapGridData mapDataIn;
         orcaice::setSane( mapDataIn );
         logger->localSetData( mapDataIn );
         cout<<"ok"<<endl;
@@ -140,30 +140,30 @@ TestComponent::start()
         orcalogfactory::GpsReplayer* replayer = 
             new orcalogfactory::GpsReplayer( "ice", "gps0.log", context() );
         replayer->replayData( 0, true );  
-        orca::GpsDataPtr dataOut = replayer->getData( Ice::Current() );
+        orca::GpsData dataOut = replayer->getData( Ice::Current() );
 
         replayer->replayData( 1, true );  
-        orca::GpsTimeDataPtr timeDataOut = replayer->getTimeData( Ice::Current() );
+        orca::GpsTimeData timeDataOut = replayer->getTimeData( Ice::Current() );
     
         replayer->replayData( 2, true );  
-        orca::GpsMapGridDataPtr mapDataOut = replayer->getMapGridData( Ice::Current() );
+        orca::GpsMapGridData mapDataOut = replayer->getMapGridData( Ice::Current() );
 
-        if ( dataIn->utcTime != dataOut->utcTime
-                || dataIn->altitude != dataOut->altitude ) {
+        if ( dataIn.utcTime != dataOut.utcTime
+                || dataIn.altitude != dataOut.altitude ) {
             cout<<"failed"<<endl<<"object logged incorrectly"<<endl;
             cout<<"\tIN : "<<orcaice::toString(dataIn)<<endl;
             cout<<"\tOUT: "<<orcaice::toString(dataOut)<<endl;
             exit(EXIT_FAILURE);
         }
-        if ( timeDataIn->utcTime != timeDataOut->utcTime
-                || timeDataIn->utcDate != timeDataOut->utcDate ) {
+        if ( timeDataIn.utcTime != timeDataOut.utcTime
+                || timeDataIn.utcDate != timeDataOut.utcDate ) {
             cout<<"failed"<<endl<<"object logged incorrectly"<<endl;
             cout<<"\tIN : "<<orcaice::toString(timeDataIn)<<endl;
             cout<<"\tOUT: "<<orcaice::toString(timeDataOut)<<endl;
             exit(EXIT_FAILURE);
         }
-        if ( mapDataIn->utcTime != mapDataOut->utcTime
-                || mapDataIn->speed != mapDataOut->speed ) {
+        if ( mapDataIn.utcTime != mapDataOut.utcTime
+                || mapDataIn.speed != mapDataOut.speed ) {
             cout<<"failed"<<endl<<"object logged incorrectly"<<endl;
             cout<<"\tIN : "<<orcaice::toString(mapDataIn)<<endl;
             cout<<"\tOUT: "<<orcaice::toString(mapDataOut)<<endl;
@@ -212,16 +212,16 @@ TestComponent::start()
 
         orcalogfactory::Position2dLogger* logger = 
             new orcalogfactory::Position2dLogger( logMaster, "0", "ice", "", context() );
-        orca::Position2dDataPtr dataIn = new orca::Position2dData;
+        orca::Position2dData dataIn;
         orcaice::setSane( dataIn );
         logger->setData( dataIn, Ice::Current() );
     
         orcalogfactory::Position2dReplayer* replayer = 
             new orcalogfactory::Position2dReplayer( "ice", "position2d0.log", context() );
         replayer->replayData( 0, true );  
-        orca::Position2dDataPtr dataOut = replayer->getData( Ice::Current() );
+        orca::Position2dData dataOut = replayer->getData( Ice::Current() );
     
-        if ( dataIn->pose != dataOut->pose ) {
+        if ( dataIn.pose != dataOut.pose ) {
             cout<<"failed"<<endl<<"object logged incorrectly"<<endl;
             cout<<"\tIN : "<<orcaice::toString(dataIn)<<endl;
             cout<<"\tOUT: "<<orcaice::toString(dataOut)<<endl;
@@ -240,16 +240,16 @@ TestComponent::start()
 
         orcalogfactory::Position3dLogger* logger = 
             new orcalogfactory::Position3dLogger( logMaster, "0", "ice", "", context() );
-        orca::Position3dDataPtr dataIn = new orca::Position3dData;
+        orca::Position3dData dataIn;
         orcaice::setSane( dataIn );
         logger->setData( dataIn, Ice::Current() );
     
         orcalogfactory::Position3dReplayer* replayer = 
             new orcalogfactory::Position3dReplayer( "ice", "position3d0.log", context() );
         replayer->replayData( 0, true );  
-        orca::Position3dDataPtr dataOut = replayer->getData( Ice::Current() );
+        orca::Position3dData dataOut = replayer->getData( Ice::Current() );
     
-        if ( dataIn->pose != dataOut->pose ) {
+        if ( dataIn.pose != dataOut.pose ) {
             cout<<"failed"<<endl<<"object logged incorrectly"<<endl;
             cout<<"\tIN : "<<orcaice::toString(dataIn)<<endl;
             cout<<"\tOUT: "<<orcaice::toString(dataOut)<<endl;

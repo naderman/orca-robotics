@@ -30,7 +30,7 @@ class Position3dPainter
     ~Position3dPainter();
 
     // void setGeometry( orca::RangeScanner2dGeometryPtr &geom );
-    void setData( const orca::Position3dDataPtr &scan );
+    void setData( const orca::Position3dData& obj );
     
     void paint( QGLWidget *p );
 
@@ -41,11 +41,11 @@ class Position3dPainter
     //void setColor( QColor color );
     //void setFocus( bool inFocus );
 
-    const orca::Frame3d pose() const { return data_->pose; }
+    const orca::Frame3d pose() const { return data_.pose; }
 
   private:
 
-    orca::Position3dDataPtr data_;
+    orca::Position3dData data_;
 
     // This thing loads a 3d model from a file
     ObjectModel *objectModel_;

@@ -18,23 +18,24 @@ using namespace std;
 using namespace orcalogfactory;
 
 void 
-GpsConsumerI::setData(const orca::GpsDataPtr& data, const Ice::Current&)
+GpsConsumerI::setData(const orca::GpsData& data, const Ice::Current&)
 {
     cout << "INFO(gpsconsumerI.cpp): Received GPS data. Telling gpsSlave to log it" << endl << endl;
     logger_->localSetData( data );
 }
 
 void 
-GpsTimeConsumerI::setData(const orca::GpsTimeDataPtr& data, const Ice::Current&)
+GpsTimeConsumerI::setData(const orca::GpsTimeData& data, const Ice::Current&)
 {
     cout << "INFO(gpsconsumerI.cpp): Received GPS time data. Telling gpsSlave to log it" << endl << endl;
     logger_->localSetData( data );
 }
 
 void 
-GpsMapGridConsumerI::setData(const orca::GpsMapGridDataPtr& data, const Ice::Current&)
+GpsMapGridConsumerI::setData(const orca::GpsMapGridData& data, const Ice::Current&)
 {
     cout << "INFO(gpsconsumerI.cpp): Received GPS mapgrid data. Telling gpsSlave to log it" << endl << endl;
     logger_->localSetData( data );
 }
+
     

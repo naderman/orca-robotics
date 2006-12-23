@@ -59,29 +59,16 @@ CpuLogger::init()
 }
 
 void 
-CpuLogger::setData(const orca::CpuDataPtr& data, const Ice::Current&)
+CpuLogger::setData(const orca::CpuData& data, const Ice::Current&)
 {
     // Write reference to master file
-    appendMasterFile( data->timeStamp.seconds, data->timeStamp.useconds );
+    appendMasterFile( data.timeStamp.seconds, data.timeStamp.useconds );
 
     if ( format_ == "ice" )
     {
-        // Write the details to our personal file
-        vector<Ice::Byte> byteData;
-        Ice::OutputStreamPtr outStreamPtr = Ice::createOutputStream( context_.communicator() );
-        ice_writeCpuData(outStreamPtr, data);
-        outStreamPtr->writePendingObjects();
-        outStreamPtr->finished(byteData);
-        
-        size_t length = byteData.size();
-        file_->write( (char*)&length, sizeof(size_t) );
-        file_->flush();
-        file_->write( (char*)&byteData[0], length);
-        file_->flush();
-        
-        ostringstream stream;
-        stream << "ByteDataSize: " << byteData.size();
-        context_.tracer()->debug( stream.str(), 8 );
+        orcalog::IceWriteHelper helper( context_.communicator() );
+        ice_writeCpuData( helper.stream_, data );
+        helper.write( file_ );
     }
     else if ( format_ == "ascii" )
     {

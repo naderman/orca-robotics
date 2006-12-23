@@ -31,18 +31,18 @@ class QGraphics2dPainter
     QGraphics2dPainter();
     ~QGraphics2dPainter();
 
-    void setData( const orca::QGraphics2dDataPtr &data );
+    void setData( const orca::QGraphics2dData& data );
     
     void paint( QPainter *p, int z );
     bool paintThisLayer(int z) const;
 
     void clear();
     
-    bool isInGlobalCS() const { return data_->isInGlobalCS; }
+    bool isInGlobalCS() const { return data_.isInGlobalCS; }
 
   private:
 
-    orca::QGraphics2dDataPtr data_;    
+    orca::QGraphics2dData data_;    
     QPicture qPicture_;
 };
 

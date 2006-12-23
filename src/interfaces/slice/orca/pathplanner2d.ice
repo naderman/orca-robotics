@@ -35,9 +35,13 @@ enum PathPlanner2dResult
 };
 
 //! Data structure for resulting path including error codes
-class PathPlanner2dData extends OrcaObject
+struct PathPlanner2dData
 {
+    //! Time when data was measured.
+    Time timeStamp;
+    //! path
     Path2d path;
+    //! result of path-planning
     PathPlanner2dResult result;    
 };
 
@@ -54,9 +58,13 @@ interface PathPlanner2dConsumer
 //! form of a coarse path (first entry is the starting point) and a 
 //! proxy that receives the computed fine-grained path.
 //!
-class PathPlanner2dTask extends OrcaObject
+struct PathPlanner2dTask
 {
+    //! Time when data was measured.
+    Time timeStamp;
+    //! Coarse path
     Path2d coarsePath;
+    //! Consumer proxy
     PathPlanner2dConsumer* prx;
 };
 

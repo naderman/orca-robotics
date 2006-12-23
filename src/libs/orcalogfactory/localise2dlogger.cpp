@@ -59,10 +59,10 @@ Localise2dLogger::init()
 }
 
 void 
-Localise2dLogger::setData(const orca::Localise2dDataPtr& data, const Ice::Current&)
+Localise2dLogger::setData(const orca::Localise2dData& data, const Ice::Current&)
 {
     // Write reference to master file
-    appendMasterFile( data->timeStamp.seconds, data->timeStamp.useconds );
+    appendMasterFile( data.timeStamp.seconds, data.timeStamp.useconds );
 
     if ( format_ == "ice" )
     {

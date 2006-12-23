@@ -10,35 +10,35 @@
 
 #include <iostream>
 
-#include <orca/position2d.h>
+#include <orca/rangescanner2d.h>
 #include <orcaice/ptrnotify.h>
 #include <orcaobj/orcaobj.h>
 
 using namespace std;
 
-class TestNotifyHandler : public orcaice::NotifyHandler<orca::Position2dDataPtr>
+class TestNotifyHandler : public orcaice::NotifyHandler<orca::RangeScanner2dDataPtr>
 {
 public:
     TestNotifyHandler()
-        : copy_( new orca::Position2dData )
+        : copy_( new orca::RangeScanner2dData )
     {};
     
-    virtual void handleData( const orca::Position2dDataPtr & obj )
+    virtual void handleData( const orca::RangeScanner2dDataPtr & obj )
     {
         *copy_=*obj;
     };
 
-    orca::Position2dDataPtr copy_;
+    orca::RangeScanner2dDataPtr copy_;
 };
 
 int 
 main(int argc, char * argv[])
 {
-    orcaice::PtrNotify<orca::Position2dDataPtr> notify;
-    orca::Position2dDataPtr data = new orca::Position2dData;
+    orcaice::PtrNotify<orca::RangeScanner2dDataPtr> notify;
+    orca::RangeScanner2dDataPtr data = new orca::RangeScanner2dData;
     orcaice::setSane( data );
     
-    orcaice::NotifyHandler<orca::Position2dDataPtr>* emptyHandler = 0;
+    orcaice::NotifyHandler<orca::RangeScanner2dDataPtr>* emptyHandler = 0;
     TestNotifyHandler testHandler;
 
     cout<<"testing set() ... ";
@@ -86,9 +86,10 @@ main(int argc, char * argv[])
         return EXIT_FAILURE;
     }
     if ( data->timeStamp != testHandler.copy_->timeStamp
-         || data->pose != testHandler.copy_->pose
-         || data->motion != testHandler.copy_->motion
-         || data->stalled != testHandler.copy_->stalled )
+         || data->minRange != testHandler.copy_->minRange
+         || data->maxRange != testHandler.copy_->maxRange
+         || data->fieldOfView != testHandler.copy_->fieldOfView
+         || data->ranges != testHandler.copy_->ranges )
     {
         cout<<"failed. expecting an exact copy of the data."<<endl;
         cout<<"\tin\t"<<orcaice::toString(data->timeStamp)<<" "<<data<<endl;

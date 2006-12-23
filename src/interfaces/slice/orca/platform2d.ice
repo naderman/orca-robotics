@@ -24,15 +24,20 @@ module orca
 */
 
 //! Velocity command object
-class Velocity2dCommand extends OrcaObject
+struct Velocity2dCommand
 {
+    //! Time when data was measured.
+    Time timeStamp;
+
     //! Commanded in-plane velocities.
     Twist2d motion;
 };
 
 //! Platform configuration object
-class Platform2dConfig extends OrcaObject
+struct Platform2dConfig
 {
+    //! Time when data was measured.
+    Time timeStamp;
     //! Maximum values for in-plane velocities. 
     Twist2d maxVelocities;
 };

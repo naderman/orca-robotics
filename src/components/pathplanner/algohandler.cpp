@@ -98,8 +98,8 @@ AlgoHandler::initNetwork()
 
     // PathPlanner2d
     // create the proxy/buffer for tasks
-    pathPlannerTaskProxy_ = new orcaice::PtrProxy<PathPlanner2dTaskPtr>; 
-    pathPlannerDataProxy_ = new orcaice::PtrProxy<PathPlanner2dDataPtr>;
+    pathPlannerTaskProxy_ = new orcaice::Proxy<PathPlanner2dTask>; 
+    pathPlannerDataProxy_ = new orcaice::Proxy<PathPlanner2dData>;
 
     pathPlannerI_ = new PathPlanner2dI( *pathPlannerTaskProxy_, *pathPlannerDataProxy_, context_ );
     Ice::ObjectPtr pathPlannerObj = pathPlannerI_;
@@ -112,7 +112,7 @@ void
 AlgoHandler::initDriver()
 {
     // get the og map once    
-    orca::OgMapDataPtr ogMapSlice;
+    orca::OgMapData ogMapSlice;
     orcaogmap::OgMap ogMap;
     try
     {
@@ -130,7 +130,7 @@ AlgoHandler::initDriver()
     // hazard map is optional
     if (useHazardMap_)
     {
-        orca::OgMapDataPtr hazardMapSlice;
+        orca::OgMapData hazardMapSlice;
         orcaogmap::OgMap hazardMap;
         try
         {
@@ -226,8 +226,8 @@ AlgoHandler::run()
 
     // we are in a different thread now, catch all stray exceptions
 
-    PathPlanner2dTaskPtr taskPtr; 
-    PathPlanner2dDataPtr pathDataPtr = new PathPlanner2dData;   
+    PathPlanner2dTask task; 
+    PathPlanner2dData pathData;   
 
     while ( isActive() )
     {
@@ -241,7 +241,7 @@ AlgoHandler::run()
             
             while ( isActive() )
             {
-                int ret = pathPlannerTaskProxy_->getNext( taskPtr, 1000 );
+                int ret = pathPlannerTaskProxy_->getNext( task, 1000 );
                 if ( ret!=0 ) {
                     // context_.tracer()->info("waiting for a new task");      
                 } else {
@@ -258,23 +258,32 @@ AlgoHandler::run()
             try 
             {
                 context_.tracer()->info("telling driver to compute the path now");
-                driver_->computePath( taskPtr, pathDataPtr );
+                driver_->computePath( task, pathData );
             }
             catch ( orcapathplan::Exception &e )
             {
                 std::stringstream ss;
-                // TODO: display taskPtr.
-                ss << "Couldn't compute path: " // << orcaice::toString(taskPtr)
+                // TODO: display task.
+                ss << "Couldn't compute path: " // << orcaice::toString(task)
                 << endl << "Problem was: " << e.what();
                 context_.tracer()->error( ss.str() );
                 
                 switch( e.type() )
                 {
-                    case PathStartNotValid:             pathDataPtr->result = PathStartNotValid;
-                    case PathDestinationNotValid:       pathDataPtr->result = PathDestinationNotValid;
-                    case PathDestinationUnreachable:    pathDataPtr->result = PathDestinationUnreachable;
-                    case OtherError:                    pathDataPtr->result = OtherError; 
-                    case PathOk:                        ; //compiler wants me to handle this case, otherwise produces warning
+                    case PathStartNotValid:             
+                        pathData.result = PathStartNotValid;
+                        break;
+                    case PathDestinationNotValid:       
+                        pathData.result = PathDestinationNotValid;
+                        break;
+                    case PathDestinationUnreachable:    
+                        pathData.result = PathDestinationUnreachable;
+                        break;
+                    case OtherError:                    
+                        pathData.result = OtherError; 
+                        break;
+                    default : {}
+                        // nothing
                 }
             }
     
@@ -285,15 +294,15 @@ AlgoHandler::run()
     
             // There are three methods to let other components know about the computed path:
             // 1. using the proxy
-            if (taskPtr->prx!=0)
+            if (task.prx!=0)
             {
-                taskPtr->prx->setData( pathDataPtr );
+                task.prx->setData( pathData );
             }
             // 2. and 3.: use getData or icestorm
-            pathPlannerI_->localSetData( pathDataPtr );
+            pathPlannerI_->localSetData( pathData );
     
-            // resize the pathDataPtr: future tasks might not compute a path successfully and we would resend the old path
-            pathDataPtr->path.resize( 0 );
+            // resize the pathData: future tasks might not compute a path successfully and we would resend the old path
+            pathData.path.resize( 0 );
     
         //
         // unexpected exceptions

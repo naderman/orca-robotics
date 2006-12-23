@@ -37,10 +37,10 @@ public:
     // returns: 0 = success, non-zero = failure
     virtual int enable();
 
-    virtual int read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 
+    virtual int read( orca::Position2dData& position2d, orca::Position3dData& position3d, 
                       orca::PowerData &power, std::string & status );
 
-    virtual int write( const orca::Velocity2dCommandPtr &position2d );
+    virtual int write( const orca::Velocity2dCommand& command );
 
 private:
 

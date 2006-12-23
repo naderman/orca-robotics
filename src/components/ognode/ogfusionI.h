@@ -27,15 +27,15 @@ namespace ognode
 class OgFusionI : public orca::OgFusion
 {
 public:
-    OgFusionI(orca::OgFusionConfigPtr &config, orcaice::PtrBuffer<orca::OgFusionDataPtr> &OgFusionDataBuffer);
-    virtual void setData(const orca::OgFusionDataPtr&, const Ice::Current&);
-    virtual orca::OgFusionConfigPtr getConfig(const ::Ice::Current& ) const;
+    OgFusionI(orca::OgFusionConfig& config, orcaice::Buffer<orca::OgFusionData> &OgFusionDataBuffer);
+    virtual void setData(const orca::OgFusionData&, const Ice::Current&);
+    virtual orca::OgFusionConfig getConfig(const ::Ice::Current& ) const;
 private:
     //config
-    orca::OgFusionConfigPtr config_;
+    orca::OgFusionConfig config_;
 
     //buffer
-    orcaice::PtrBuffer<orca::OgFusionDataPtr> &ogFusionDataBuffer_;
+    orcaice::Buffer<orca::OgFusionData>& ogFusionDataBuffer_;
 
 
 };

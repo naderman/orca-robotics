@@ -17,10 +17,11 @@ using namespace orcaice;
 
 namespace ogmaploader {
 
-OgMapI::OgMapI( orca::OgMapDataPtr  theMap,
+OgMapI::OgMapI( orca::OgMapData&  theMap,
                 const std::string  &tag,
-                const orcaice::Context & context )
-    : context_(context)
+                const orcaice::Context & context ) :
+    theMap_(theMap),
+    context_(context)
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithTag<OgMapConsumerPrx>
@@ -40,17 +41,12 @@ OgMapI::OgMapI( orca::OgMapDataPtr  theMap,
         // this is expected (our co-located IceStorm is obviously going down).
         context_.tracer()->warning( "Failed push to IceStorm." );
     }
-
-    theMap_ = theMap;
 }
 
-OgMapDataPtr
+OgMapData
 OgMapI::getData(const Ice::Current& current) const
 {
-    std::cout << "getData()" << std::endl;
-
-    if ( theMap_ == 0 )
-        throw orca::DataNotExistException("Map not loaded correctly.");
+//     std::cout << "getData()" << std::endl;
     
     return theMap_;
 }
@@ -59,7 +55,7 @@ void
 OgMapI::subscribe(const ::OgMapConsumerPrx& subscriber,
                   const Ice::Current& current)
 {
-    cout<<"subscribe()"<<endl;
+//     cout<<"subscribe()"<<endl;
     IceStorm::QoS qos;
     topicPrx_->subscribe( qos, subscriber );
 }
@@ -68,7 +64,7 @@ void
 OgMapI::unsubscribe(const ::OgMapConsumerPrx& subscriber,
                     const Ice::Current& current)
 {
-    cout<<"unsubscribe()"<<endl;
+//     cout<<"unsubscribe()"<<endl;
     topicPrx_->unsubscribe( subscriber );
 }
 

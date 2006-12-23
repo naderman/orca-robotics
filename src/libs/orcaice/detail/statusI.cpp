@@ -107,15 +107,15 @@ StatusI::connectToIceStorm()
     return publisher_ != 0;
 }
 
-orca::StatusDataPtr
+orca::StatusData
 StatusI::getData(const ::Ice::Current& ) const
 {
     //std::cout << "Sending data back" << std::endl;
-    orca::StatusDataPtr currentStatus;
+    orca::StatusData currentStatus;
 //     statusPipe_.get( currentStatus );
     // use the last status message, but update the time stamp.
     // does this make sense?
-    orcaice::setToNow( currentStatus->timeStamp );
+    orcaice::setToNow( currentStatus.timeStamp );
     
     return currentStatus;
 }
@@ -174,7 +174,7 @@ StatusI::heartbeat( const std::string &message, int level )
 std::string
 StatusI::status() const
 {
-    orca::StatusDataPtr currentStatus;
+//     orca::StatusData currentStatus;
 //     statusPipe_.get( currentStatus );
     
 //     return currentStatus->message;

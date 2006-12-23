@@ -33,9 +33,9 @@ public:
     
     // from Orca object
 
-    virtual ::orca::CameraDataPtr     getData(const ::Ice::Current& ) const;
+    virtual ::orca::CameraData getData(const ::Ice::Current& ) const;
 
-    virtual ::orca::CameraDescriptionPtr   getDescription(const ::Ice::Current& ) const;
+    virtual ::orca::CameraDescription getDescription(const ::Ice::Current& ) const;
 
     virtual void subscribe(const ::orca::CameraConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
@@ -46,11 +46,11 @@ public:
     virtual void replayData( int index, bool isTest=false );
 
 private:
-    orcaice::PtrBuffer<orca::CameraDataPtr> dataPipe_;
+    orcaice::Buffer<orca::CameraData> dataPipe_;
     // alexm: this pipe is not necessary
-    orcaice::PtrBuffer<orca::CameraDescriptionPtr> descrPipe_;
+    orcaice::Buffer<orca::CameraDescription> descrPipe_;
     
-    orca::CameraDataPtr data_;
+    orca::CameraData data_;
     orca::CameraConsumerPrx publisher_;
     IceStorm::TopicPrx topic_;
 

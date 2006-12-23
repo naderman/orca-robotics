@@ -32,7 +32,7 @@ class Particle2dPainter
     Particle2dPainter( int particlePenThickness=30 );
     ~Particle2dPainter();
 
-    void setData( orca::Particle2dDataPtr particleData );
+    void setData( const orca::Particle2dData& particleData );
     void setColor( QColor color );
     void paint( QPainter *p, int z1 );
     bool paintThisLayer(int z) const { return z==Z_POSE-2; }

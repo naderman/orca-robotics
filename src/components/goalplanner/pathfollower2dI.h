@@ -27,19 +27,19 @@ namespace goalplanner {
 class PathFollower2dI : public orca::PathFollower2d
 {
 public:
-    PathFollower2dI( orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe,
+    PathFollower2dI( orcaice::Proxy<orca::PathFollower2dData> &pathPipe,
                      orcaice::Proxy<bool> &activationPipe,
-                     orcaice::PtrProxy<orca::Localise2dDataPtr> &localiseDataBuffer,
+                     orcaice::Proxy<orca::Localise2dData> &localiseDataBuffer,
                      orca::PathFollower2dPrx localNavPrx,
                      const IceStorm::TopicPrx & topicPrx );
 
     // remote calls:
 
     // Get the current path
-    virtual ::orca::PathFollower2dDataPtr getData(const ::Ice::Current& = ::Ice::Current()) const;
+    virtual ::orca::PathFollower2dData getData(const ::Ice::Current& = ::Ice::Current()) const;
 
     // Set a path
-    virtual void setData(const ::orca::PathFollower2dDataPtr &data, bool activateImmediately, const ::Ice::Current& = ::Ice::Current());
+    virtual void setData(const ::orca::PathFollower2dData& data, bool activateImmediately, const ::Ice::Current& = ::Ice::Current());
 
     virtual void activateNow(const ::Ice::Current& = ::Ice::Current());
     
@@ -59,13 +59,13 @@ public:
 private:
 
     // New paths from the outside world go in here
-    orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe_;
+    orcaice::Proxy<orca::PathFollower2dData> &pathPipe_;
     
     // Are we activated?
     orcaice::Proxy<bool> &activationPipe_;
     
     // Localise data buffer required to throw an exception if we're not localized and someone gives us a path from the outside
-    orcaice::PtrProxy<orca::Localise2dDataPtr> &localiseDataBuffer_;
+    orcaice::Proxy<orca::Localise2dData> &localiseDataBuffer_;
     
     orca::PathFollower2dPrx localNavPrx_;
     

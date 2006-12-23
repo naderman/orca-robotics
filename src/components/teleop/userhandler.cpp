@@ -29,7 +29,7 @@ using namespace std;
 using namespace orca;
 using namespace teleop;
 
-UserHandler::UserHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commands,
+UserHandler::UserHandler( orcaice::Buffer<orca::Velocity2dCommand> *commands,
                     const orcaice::Context & context )
       : commandPipe_(commands),
         driver_(0),
@@ -136,14 +136,14 @@ UserHandler::run()
     
     context_.tracer()->debug("driver enabled",5);
     
-    Velocity2dCommandPtr currCommand = new Velocity2dCommand;
-    Velocity2dCommandPtr lastCommand = new Velocity2dCommand;
+    Velocity2dCommand currCommand;
+    Velocity2dCommand lastCommand;
     
     while ( isActive() )
     {
         // remember last command so we can tell if anything has changed
-        lastCommand->motion.v.x = currCommand->motion.v.x;
-        lastCommand->motion.w = currCommand->motion.w;
+        lastCommand.motion.v.x = currCommand.motion.v.x;
+        lastCommand.motion.w = currCommand.motion.w;
 
         //
         // Read user input
@@ -151,8 +151,8 @@ UserHandler::run()
         driver_->read( currCommand );
 
         // commit change only if something has actually changed
-        if ( lastCommand->motion.v.x != currCommand->motion.v.x ||
-             lastCommand->motion.w != currCommand->motion.w )
+        if ( lastCommand.motion.v.x != currCommand.motion.v.x ||
+             lastCommand.motion.w != currCommand.motion.w )
         {
             commandPipe_->push( currCommand );
         }

@@ -99,17 +99,17 @@ void OrcaMonComponent::start()
     }
     else if ( objId=="::orca::Imu" )
     {
-        attach<ImuPrx,ImuConsumerPrx,ImuConsumer,ImuDataPtr>
+        attach<ImuPrx,ImuConsumerPrx,ImuConsumer,ImuData>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::Localise2d" )
     {
-        attach<Localise2dPrx,Localise2dConsumerPrx,Localise2dConsumer,Localise2dDataPtr>
+        attach<Localise2dPrx,Localise2dConsumerPrx,Localise2dConsumer,Localise2dData>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::OgMap" )
     {
-        attach<OgMapPrx,OgMapConsumerPrx,OgMapConsumer,OgMapDataPtr>
+        attach<OgMapPrx,OgMapConsumerPrx,OgMapConsumer,OgMapData>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::FeatureMap2d" )
@@ -119,12 +119,12 @@ void OrcaMonComponent::start()
     }
     else if ( objId=="::orca::Platform2d" || objId=="::orca::Position2d" )
     {
-        attach<Position2dPrx,Position2dConsumerPrx,Position2dConsumer,Position2dDataPtr>
+        attach<Position2dPrx,Position2dConsumerPrx,Position2dConsumer,Position2dData>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::Position3d" )
     {
-        attach<Position3dPrx,Position3dConsumerPrx,Position3dConsumer,Position3dDataPtr>
+        attach<Position3dPrx,Position3dConsumerPrx,Position3dConsumer,Position3dData>
                 ( context(), proxyString );
     }
 //     else if ( objId=="::orca::Power" )
@@ -134,20 +134,20 @@ void OrcaMonComponent::start()
 //     }
     else if ( objId=="::orca::Status" )
     {
-        attach<StatusPrx,StatusConsumerPrx,StatusConsumer,StatusDataPtr>
+        attach<StatusPrx,StatusConsumerPrx,StatusConsumer,StatusData>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::Particle2d" )
     {
         // Pretend it's just localise2d
-        attach<Localise2dPrx,Localise2dConsumerPrx,Localise2dConsumer,Localise2dDataPtr>
+        attach<Localise2dPrx,Localise2dConsumerPrx,Localise2dConsumer,Localise2dData>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::Gps" )
     {
         cout<<"****************** Gps interface **************"<<endl;
         //GPS has three object types and consumers
-        attach<GpsPrx,GpsConsumerPrx,GpsConsumer,GpsDataPtr>
+        attach<GpsPrx,GpsConsumerPrx,GpsConsumer,GpsData>
                 ( context(), proxyString );
 //         attach<GpsPrx,GpsMapGridConsumerPrx,GpsMapGridConsumer,GpsMapGridDataPtr>
         attachGpsMapGrid( context(), proxyString );

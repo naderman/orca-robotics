@@ -26,7 +26,7 @@ class NetworkHandler : public orcaice::Thread
 {
 public:
 
-    NetworkHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer,
+    NetworkHandler( orcaice::Buffer<orca::Velocity2dCommand> *commandBuffer,
                     DisplayHandler* displayHandler, const orcaice::Context & context );
     ~NetworkHandler();
 
@@ -37,7 +37,7 @@ public:
 private:
 
     // network/driver interface
-    orcaice::PtrBuffer<orca::Velocity2dCommandPtr>* commandBuffer_;
+    orcaice::Buffer<orca::Velocity2dCommand>* commandBuffer_;
 
     DisplayHandler* displayHandler_;
 

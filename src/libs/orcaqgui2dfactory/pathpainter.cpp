@@ -50,15 +50,15 @@ void PathPainter::clear()
     waypoints_.resize(0);
 }
 
-void PathPainter::setData( const PathFollower2dDataPtr &path )
+void PathPainter::setData( const PathFollower2dData& path )
 {
-    Path2d path2d = path->path;
+    Path2d path2d = path.path;
     setDataLocal( path2d );
 }
 
-void PathPainter::setData( const PathPlanner2dDataPtr &path )
+void PathPainter::setData( const PathPlanner2dData& path )
 {
-    Path2d path2d = path->path;
+    Path2d path2d = path.path;
     setDataLocal( path2d );
 }
 

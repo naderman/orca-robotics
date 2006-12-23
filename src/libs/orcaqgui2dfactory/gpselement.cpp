@@ -88,8 +88,8 @@ GpsElement::update()
             gpsListener_.buffer().getAndPop( gpsMapGridData_ );
             // cout << "TRACE(gpselement.cpp): Just got data from buffer" << endl;
             // shift the coordinates by gpsOrigin coordinates so that orcaview starts at (0,0)
-            gpsMapGridData_->northing -= gpsOrigin_.x;
-            gpsMapGridData_->easting -= gpsOrigin_.y;
+            gpsMapGridData_.northing -= gpsOrigin_.x;
+            gpsMapGridData_.easting -= gpsOrigin_.y;
             gpsPainter_.setData( gpsMapGridData_ );
         }
     }
@@ -104,9 +104,9 @@ GpsElement::update()
 //     y_ = h.mean.p.y;
 //     theta_ = h.mean.o;
 
-    x_ = gpsMapGridData_->northing;
-    y_ = gpsMapGridData_->easting;
-    theta_ = gpsMapGridData_->heading;
+    x_ = gpsMapGridData_.northing;
+    y_ = gpsMapGridData_.easting;
+    theta_ = gpsMapGridData_.heading;
     return; 
 }
 

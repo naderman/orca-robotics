@@ -63,7 +63,7 @@ MainLoop::activate()
 }
 
 void
-MainLoop::readData( orca::CameraDataPtr & data )
+MainLoop::readData( orca::CameraData& data )
 {
      context_.tracer()->debug( "Reading data...", 8 );
 
@@ -92,7 +92,7 @@ MainLoop::run()
     try
     {   
     
-        CameraDataPtr cameraData = new CameraData;
+        CameraData cameraData;
         // Copy config parameters into static object fields
         // Only need to do this once
         hwDriver_->initData( cameraData );

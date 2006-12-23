@@ -33,16 +33,16 @@ class OgMapI : public orca::OgMap
 {
 public:
 
-    OgMapI( orca::OgMapDataPtr  theMap,
+    OgMapI( const orca::OgMapData& theMap,
             const std::string  &tag,
             const orcaice::Context & context );
 
     // Remote calls:
 
     // Hand out data to people
-    orca::OgMapDataPtr getData(const Ice::Current&) const;
+    orca::OgMapData getData(const Ice::Current&) const;
 
-    void localSetData(orca::OgMapDataPtr data);
+    void localSetData( const orca::OgMapData& data);
 
     virtual void subscribe(const ::orca::OgMapConsumerPrx&,
                            const Ice::Current&);
@@ -58,9 +58,7 @@ private:
     orca::OgMapConsumerPrx         consumerPrx_;
 
     // The latest data goes into this buffer
-    orcaice::PtrBuffer<orca::OgMapDataPtr> ogMapDataBuffer_;
-
-    //orca::OgMapDataPtr theMap_;
+    orcaice::Buffer<orca::OgMapData> ogMapDataBuffer_;
 
     orcaice::Context context_;
 };

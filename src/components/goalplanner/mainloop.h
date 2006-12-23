@@ -52,22 +52,22 @@ private:
     orca::PathPlanner2dConsumerPrx taskPrx_;
     
     // buffer which stores computed path from pathplanner
-    orcaice::PtrProxy<orca::PathPlanner2dDataPtr> computedPathBuffer_;
+    orcaice::Proxy<orca::PathPlanner2dData> computedPathBuffer_;
     
     // buffer that stores current localisation data
-    orcaice::PtrProxy<orca::Localise2dDataPtr> localiseDataBuffer_;
+    orcaice::Proxy<orca::Localise2dData> localiseDataBuffer_;
         
     // ========== provided pathfollower interface (incoming paths) ===============
     PathFollower2dI* incomingPathI_;
     orca::PathFollower2dConsumerPrx pathPublisher_;
     
-    orcaice::PtrProxy<orca::PathFollower2dDataPtr> incomingPathBuffer_;
+    orcaice::Proxy<orca::PathFollower2dData> incomingPathBuffer_;
     
     orcaice::Proxy<bool> activationBuffer_;
     
     // This buffer is used to communicate between the mainloop and PathFollower2dI
     // PathFollower2dI needs to throw exception based on localisation data
-    orcaice::PtrProxy<orca::Localise2dDataPtr> localise2dExceptionBuffer_;
+    orcaice::Proxy<orca::Localise2dData> localise2dExceptionBuffer_;
     // ===========================================================================
     
     void initNetwork();

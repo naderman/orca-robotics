@@ -33,25 +33,25 @@ AStarDriver::AStarDriver( orcaogmap::OgMap &ogMap,
                                                        doPathOptimization );
 }
 
-
-void AStarDriver::computePath( const orca::PathPlanner2dTaskPtr  & taskPtr,
-                               const orca::PathPlanner2dDataPtr  & pathDataPtr )
+void 
+AStarDriver::computePath( const orca::PathPlanner2dTask& task,
+                           orca::PathPlanner2dData& pathDataPtr )
 {   
     // for each waypoint in the coarse path:
-    orca::Path2d &coarsePath = taskPtr->coarsePath;
-    orca::Waypoint2d *startWp = &(taskPtr->coarsePath[0]);
+    orca::Waypoint2d startWp = task.coarsePath[0];
     
-    for (unsigned int i=1; i<coarsePath.size(); i++)
+    for (unsigned int i=1; i<task.coarsePath.size(); i++)
     {
-        orca::Waypoint2d *goalWp = &(coarsePath[i]);
         orcapathplan::Cell2DVector pathSegment;
 
         orcamisc::CpuStopwatch watch(true);
         assert(pathPlanner_!=0);
         try {
             int startX, startY, endX, endY;
-            ogMap_.getCellIndices( startWp->target.p.x, startWp->target.p.y, startX, startY );
-            ogMap_.getCellIndices( goalWp->target.p.x,  goalWp->target.p.y,  endX,   endY );
+            // start waypoint
+            ogMap_.getCellIndices( startWp.target.p.x, startWp.target.p.y, startX, startY );
+            // goal waypoint
+            ogMap_.getCellIndices( task.coarsePath[i].target.p.x,  task.coarsePath[i].target.p.y,  endX,   endY );
             pathPlanner_->computePath( startX,
                                        startY,
                                        endX,
@@ -62,8 +62,8 @@ void AStarDriver::computePath( const orca::PathPlanner2dTaskPtr  & taskPtr,
         {
             std::stringstream ss;
             ss << "Error planning path segment from (" 
-                    << startWp->target.p.x <<","<<startWp->target.p.y << ") to ("
-                    << goalWp->target.p.x << ","<<goalWp->target.p.y<<"): "
+                    << startWp.target.p.x <<","<<startWp.target.p.y << ") to ("
+                    << task.coarsePath[i].target.p.x << ","<<task.coarsePath[i].target.p.y<<"): "
                     << e.what()
                     << endl;
             
@@ -84,7 +84,7 @@ void AStarDriver::computePath( const orca::PathPlanner2dTaskPtr  & taskPtr,
         // ========================================================================
         
         // set last goal cell as new start cell
-        startWp = goalWp;
+        startWp = task.coarsePath[i];
     }
 }
 

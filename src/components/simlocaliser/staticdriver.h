@@ -28,11 +28,11 @@ public:
     virtual int repair() { return 0; };
     virtual int disable() { return 0; };
 
-    virtual int read( orca::Localise2dDataPtr & location2d );
+    virtual int read( orca::Localise2dData& location2d );
 
 private:
 
-    orca::Localise2dDataPtr location2d_;
+    orca::Localise2dData location2d_;
 };
 
 } // namespace

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCAGUI3D_ICESTORM_ELEMENT3D_H
-#define ORCAGUI3D_ICESTORM_ELEMENT3D_H
+#ifndef ORCAGUI3D_ICESTORM_ELEMENT_3D_H
+#define ORCAGUI3D_ICESTORM_ELEMENT_3D_H
 
 #include <assert.h>
 #include <Ice/Ice.h>
@@ -30,15 +30,15 @@ namespace orcaqgui3d {
 
   @author Alex Brooks
 */
-template<class PainterType, class DataType, class DataPtrType, class ProxyType, class ConsumerType, class ConsumerPrxType>
-class IceStormElement : public GuiElement3d
+template<class PainterType, class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
+class IceStormElement3d : public GuiElement3d
 {
   
 public:
 
     //! timeoutMs is how long we wait before assuming a problem and trying to reconnect.
     //! (timoutMs = -1 means we never timeout)
-    IceStormElement( const orcaice::Context  &context,
+    IceStormElement3d( const orcaice::Context  &context,
                        const std::string       &proxyString,
                        PainterType             &painter,
                        const double            timeoutMs=5000.0 )
@@ -63,13 +63,12 @@ protected:
 
     orcaice::Context              context_;
     
-    DataPtrType                       data_;
+    DataType                       data_;
     
     bool needToUpdate();
     
     //! Object to handle network communication, including subscription process
     orcaqgui::IceStormListener<DataType,
-                     DataPtrType,
                      ProxyType,
                      ConsumerType,
                      ConsumerPrxType> listener_;
@@ -82,9 +81,9 @@ protected:
     bool                             isConnected_;
 };
 
-template<class PainterType, class DataType, class DataPtrType, class ProxyType, class ConsumerType, class ConsumerPrxType>
+template<class PainterType, class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
 bool 
-IceStormElement<PainterType,DataType,DataPtrType,ProxyType,ConsumerType,ConsumerPrxType>::needToUpdate()
+IceStormElement3d<PainterType,DataType,ProxyType,ConsumerType,ConsumerPrxType>::needToUpdate()
 {
     if ( !listener_.buffer().isEmpty() )
     {
@@ -117,9 +116,9 @@ IceStormElement<PainterType,DataType,DataPtrType,ProxyType,ConsumerType,Consumer
     return false;
 }
 
-template<class PainterType, class DataType, class DataPtrType, class ProxyType, class ConsumerType, class ConsumerPrxType>
+template<class PainterType, class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
 void 
-IceStormElement<PainterType,DataType,DataPtrType,ProxyType,ConsumerType,ConsumerPrxType>::update()
+IceStormElement3d<PainterType,DataType,ProxyType,ConsumerType,ConsumerPrxType>::update()
 {
     if ( !needToUpdate() ) {
         return;
@@ -135,7 +134,5 @@ IceStormElement<PainterType,DataType,DataPtrType,ProxyType,ConsumerType,Consumer
 }
 
 }
-
-
 
 #endif

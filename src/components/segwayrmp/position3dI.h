@@ -26,15 +26,15 @@ namespace segwayrmp
 class Position3dI : public orca::Position3d
 {
 public:
-    Position3dI( orcaice::PtrProxy<orca::Position3dDataPtr>    & position3dPipe,
+    Position3dI( orcaice::Proxy<orca::Position3dData>    & position3dPipe,
                  const IceStorm::TopicPrx                      & topic );
 
     // NOTE: this implementation can throw DataNotExist exception but does NOT throw
     // HardwareFailedException because it's isolated from the hardware handler by the
     // data buffer.
-    virtual ::orca::Position3dDataPtr getData(const ::Ice::Current& ) const;
+    virtual ::orca::Position3dData getData(const ::Ice::Current& ) const;
 
-    virtual ::orca::Position3dDescriptionPtr getDescription(const ::Ice::Current& ) const;
+    virtual ::orca::Position3dDescription getDescription(const ::Ice::Current& ) const;
 
     virtual void subscribe(const ::orca::Position3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
@@ -42,7 +42,7 @@ public:
 
 private:
     // the driver will put the latest data into this proxy
-    orcaice::PtrProxy<orca::Position3dDataPtr> &position3dPipe_;
+    orcaice::Proxy<orca::Position3dData> &position3dPipe_;
 
     // IceStorm topic to which we send our updates and cand subscribe other to
     IceStorm::TopicPrx topic_;

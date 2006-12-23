@@ -45,8 +45,8 @@ private:
     orca::OgMapPrx hazardMapPrx_;
 
     PathPlanner2dI* pathPlannerI_;
-    orcaice::PtrProxy<orca::PathPlanner2dTaskPtr>* pathPlannerTaskProxy_;
-    orcaice::PtrProxy<orca::PathPlanner2dDataPtr>* pathPlannerDataProxy_;
+    orcaice::Proxy<orca::PathPlanner2dTask>* pathPlannerTaskProxy_;
+    orcaice::Proxy<orca::PathPlanner2dData>* pathPlannerDataProxy_;
     
     void initNetwork();
     void initDriver();

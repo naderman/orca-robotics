@@ -15,13 +15,13 @@
 
 using namespace imageviewer;
 
-CameraConsumerI::CameraConsumerI( orcaice::PtrBuffer<orca::CameraDataPtr> &dataPipe ) 
+CameraConsumerI::CameraConsumerI( orcaice::Buffer<orca::CameraData> &dataPipe ) 
     : dataPipe_(dataPipe)
 {
 }
         
 void 
-CameraConsumerI::setData(const orca::CameraDataPtr& data, const Ice::Current&)
+CameraConsumerI::setData(const orca::CameraData& data, const Ice::Current&)
 {
     try {
         // put image into buffer
@@ -31,5 +31,4 @@ CameraConsumerI::setData(const orca::CameraDataPtr& data, const Ice::Current&)
     {
         std::cout << "cameraconsumer_i.cpp: Couldn't get image from camera" << std::endl;
     }
-
 }

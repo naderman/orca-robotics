@@ -24,7 +24,10 @@ module orca
     @{
 */
 
-class PtzConfig extends OrcaObject {
+struct PtzConfig
+{
+    //! Time when data was measured.
+    Time timeStamp;
     float minPanAngle;
     float maxPanAngle; 
     float minTiltAngle;
@@ -35,8 +38,11 @@ class PtzConfig extends OrcaObject {
 
 
 //! PTZ geometry data structure
-class PtzGeometry extends OrcaObject
+struct PtzGeometry
 {
+    //! Time when data was measured.
+    Time timeStamp;
+
     //! Offset of the centre of the laser from the robot, int the robot CS
     Frame3d offset;
 
@@ -47,8 +53,10 @@ class PtzGeometry extends OrcaObject
 /*!
     Ptz data structure
 */
-class PtzData extends OrcaObject
+struct PtzData
 {
+    //! Time when data was measured.
+    Time timeStamp;
     float pan; // From straight ahead 
     float tilt; // From flat
     float zoom; // Expressed as the field of view. 

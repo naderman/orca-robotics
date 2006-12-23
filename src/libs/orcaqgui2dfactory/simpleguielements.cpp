@@ -33,11 +33,11 @@ LaserScanner2dElement::getLaserInfo()
 
     orcaice::connectToInterfaceWithString( context_, laserPrx, listener_.interfaceName() );
     
-    RangeScanner2dDescriptionPtr descr = new RangeScanner2dDescription;
+    RangeScanner2dDescription descr;
     descr = laserPrx->getDescription();
 
-    painter_.setOffset( descr->offset );
-    painter_.setLaserMaxRange( descr->maxRange );
+    painter_.setOffset( descr.offset );
+    painter_.setLaserMaxRange( descr.maxRange );
 }
 
 QStringList
@@ -62,7 +62,6 @@ Localise2dElement::update()
     // standard update as in IceStormElement
     if ( !IceStormElement<Localise2dPainter,
             orca::Localise2dData,
-            orca::Localise2dDataPtr,
             orca::Localise2dPrx,
             orca::Localise2dConsumer,
             orca::Localise2dConsumerPrx>::needToUpdate() )
@@ -74,7 +73,7 @@ Localise2dElement::update()
     painter_.setData( data_ );
 
     // custom update, but first error-check.
-    if ( data_->hypotheses.size() == 0 )
+    if ( data_.hypotheses.size() == 0 )
     {
         std::stringstream ss;
         ss << "Localise2dElement::update(): Interface " << listener_.interfaceName() << ": Localise2dData had zero hypotheses";

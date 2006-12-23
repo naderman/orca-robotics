@@ -50,8 +50,8 @@ Position2dLogger::init()
     orcaice::connectToInterfaceWithTag<orca::Position2dPrx>( context_, objectPrx, interfaceTag_ );
     
     // Config and geometry
-    orca::Position2dGeometryPtr geometryPtr = objectPrx->getGeometry();
-    writeConfigToFile( geometryPtr );
+    orca::Position2dGeometry geometry = objectPrx->getGeometry();
+    writeConfigToFile( geometry );
 
     // consumer
     Ice::ObjectPtr consumer = this;
@@ -63,10 +63,10 @@ Position2dLogger::init()
 }
 
 void 
-Position2dLogger::setData(const orca::Position2dDataPtr& data, const Ice::Current&)
+Position2dLogger::setData(const orca::Position2dData& data, const Ice::Current&)
 {
     // Write reference to master file
-    appendMasterFile( data->timeStamp.seconds, data->timeStamp.useconds );
+    appendMasterFile( data.timeStamp.seconds, data.timeStamp.useconds );
         
     if ( format_ == "ice" )
     {
@@ -87,7 +87,7 @@ Position2dLogger::setData(const orca::Position2dDataPtr& data, const Ice::Curren
 }
 
 void 
-Position2dLogger::writeConfigToFile( const orca::Position2dGeometryPtr & obj )
+Position2dLogger::writeConfigToFile( const orca::Position2dGeometry& obj )
 {
     context_.tracer()->print( "Writing geometry to file" );
     

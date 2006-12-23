@@ -22,11 +22,7 @@ int GpsReplayer::_counter = 0;
 GpsReplayer::GpsReplayer( const std::string      &format,
                           const std::string      &filename,
                           const orcaice::Context &context )
-    : orcalog::Replayer("Gps", format, filename, context),
-      descrPtr_(new orca::GpsDescription),
-      gpsDataPtr_(new orca::GpsData),
-      gpsTimeDataPtr_(new orca::GpsTimeData),
-      gpsMapGridDataPtr_(new orca::GpsMapGridData)
+    : orcalog::Replayer("Gps", format, filename, context)
 {
     checkDescriptionFile();
 
@@ -66,11 +62,11 @@ GpsReplayer::checkDescriptionFile()
     string prefix = context_.tag() + ".Config.Gps.";
    
     // initialize 
-    orcaice::setInit( descrPtr_->size );
-    orcaice::setInit( descrPtr_->offset );
+    orcaice::setInit( descr_.size );
+    orcaice::setInit( descr_.offset );
 
-    retSize_ = orcaice::getPropertyAsSize3d( context_.properties(), prefix+"Size", descrPtr_->size );
-    retOffset_ = orcaice::getPropertyAsFrame3d( context_.properties(), prefix+"Offset", descrPtr_->offset );
+    retSize_ = orcaice::getPropertyAsSize3d( context_.properties(), prefix+"Size", descr_.size );
+    retOffset_ = orcaice::getPropertyAsFrame3d( context_.properties(), prefix+"Offset", descr_.offset );
 }
 
 void 
@@ -95,7 +91,7 @@ GpsReplayer::initInterfaces()
     orcaice::createInterfaceWithString( context_, obj, interfaceName_ );
 }
 
-orca::GpsDescriptionPtr
+orca::GpsDescription
 GpsReplayer::getDescription(const ::Ice::Current& ) const
 {    
 //     cout << "INFO(gpsreplayer.cpp): getConfig " << endl;
@@ -104,12 +100,12 @@ GpsReplayer::getDescription(const ::Ice::Current& ) const
         throw orca::DataNotExistException( "logplayer buffer is empty, probably because we are not replaying yet" );
     }
  
-    orca::GpsDescriptionPtr descr;
+    orca::GpsDescription descr;
     gpsDescriptionBuffer_.get( descr );
     return descr;
 }
 
-orca::GpsDataPtr 
+orca::GpsData
 GpsReplayer::getData(const Ice::Current& current) const
 {
     // we don't need to pop the data here because we don't block on it.
@@ -119,13 +115,13 @@ GpsReplayer::getData(const Ice::Current& current) const
     }
 
     // create a null pointer. data will be cloned into it.
-    orca::GpsDataPtr data;
+    orca::GpsData data;
     gpsDataBuffer_.get( data );
 
     return data;
 }
 
-orca::GpsTimeDataPtr
+orca::GpsTimeData
 GpsReplayer::getTimeData(const ::Ice::Current& current ) const
 {
     // we don't need to pop the data here because we don't block on it.
@@ -135,13 +131,13 @@ GpsReplayer::getTimeData(const ::Ice::Current& current ) const
     }
 
     // create a null pointer. data will be cloned into it.
-    orca::GpsTimeDataPtr data;
+    orca::GpsTimeData data;
     gpsTimeDataBuffer_.get( data );
 
     return data;
 }
 
-orca::GpsMapGridDataPtr
+orca::GpsMapGridData
 GpsReplayer::getMapGridData(const ::Ice::Current& current ) const
 {
     // we don't need to pop the data here because we don't block on it.
@@ -151,7 +147,7 @@ GpsReplayer::getMapGridData(const ::Ice::Current& current ) const
     }
 
     // create a null pointer. data will be cloned into it.
-    orca::GpsMapGridDataPtr data;
+    orca::GpsMapGridData data;
     gpsMapGridDataBuffer_.get( data );
 
     return data;    
@@ -214,7 +210,7 @@ GpsReplayer::initDescriptions()
         throw orcalog::FormatNotSupportedException( ERROR_INFO, "Unknown format: "+format_ );
     }
 
-    cout << "GpsDescription: " << orcaice::toString( descrPtr_ ) << endl;
+    cout << "GpsDescription: " << orcaice::toString( descr_ ) << endl;
 }
 
 void 
@@ -234,15 +230,15 @@ GpsReplayer::replayData( int index, bool isTest )
     // push to buffer for direct remote access
     if ( id_ == 0 )
     {
-        gpsDataBuffer_.push( gpsDataPtr_ );
+        gpsDataBuffer_.push( gpsData_ );
     }
     else if ( id_ == 1 )
     {
-        gpsTimeDataBuffer_.push( gpsTimeDataPtr_ );
+        gpsTimeDataBuffer_.push( gpsTimeData_ );
     }
     else if ( id_ == 2 )
     {
-        gpsMapGridDataBuffer_.push( gpsMapGridDataPtr_ );
+        gpsMapGridDataBuffer_.push( gpsMapGridData_ );
     }
 
     if ( !isTest ) 
@@ -250,15 +246,15 @@ GpsReplayer::replayData( int index, bool isTest )
         // push to IceStorm
         if ( id_ == 0 )
         {
-            gpsConsumerPrx_->setData( gpsDataPtr_ );
+            gpsConsumerPrx_->setData( gpsData_ );
         }
         else if ( id_ == 1 )
         {
-            gpsTimeConsumerPrx_->setData( gpsTimeDataPtr_ );
+            gpsTimeConsumerPrx_->setData( gpsTimeData_ );
         }
         else if ( id_ == 2 )
         {
-            gpsMapGridConsumerPrx_->setData( gpsMapGridDataPtr_ );
+            gpsMapGridConsumerPrx_->setData( gpsMapGridData_ );
         }
     }
 }
@@ -266,7 +262,7 @@ GpsReplayer::replayData( int index, bool isTest )
 void 
 GpsReplayer::loadHeaderIce()
 {
-    orca::GpsDescriptionPtr localDescriptionPtr = new orca::GpsDescription;
+    orca::GpsDescription localDescription;
 
     std::vector<Ice::Byte> byteData;
     size_t length;
@@ -280,26 +276,26 @@ GpsReplayer::loadHeaderIce()
     
     if ( !byteData.empty() )
     {
-        ice_readGpsDescription( iceInputStreamPtr, localDescriptionPtr );
+        ice_readGpsDescription( iceInputStreamPtr, localDescription );
         iceInputStreamPtr -> readPendingObjects();
         ostringstream stream;
-        stream << "Result of readGpsDescription: " << orcaice::toString(localDescriptionPtr);
+        stream << "Result of readGpsDescription: " << orcaice::toString(localDescription);
         context_.tracer()->print( stream.str() );
     }
 
     // if there was no geometry specified in the cfg file, take logged geometry
     if (retSize_!=0)
     {
-        descrPtr_->size= localDescriptionPtr->size;
+        descr_.size= localDescription.size;
     }
 
     // if there was no origin specified in the cfg file, take logged origin
     if (retOffset_!=0)
     {
-        descrPtr_->offset= localDescriptionPtr->offset;
+        descr_.offset= localDescription.offset;
     }
 
-    gpsDescriptionBuffer_.push( descrPtr_ );
+    gpsDescriptionBuffer_.push( descr_ );
 }
 
 void 
@@ -310,13 +306,13 @@ GpsReplayer::loadDataIce( int index )
         orcalog::IceReadHelper helper( context_.communicator(), file_ );
         id_ = helper.id();
         if ( id_ == 0 ) {
-            ice_readGpsData( helper.stream_, gpsDataPtr_ );
+            ice_readGpsData( helper.stream_, gpsData_ );
         }
         else if ( id_ == 1 ) {
-            ice_readGpsTimeData( helper.stream_, gpsTimeDataPtr_ );
+            ice_readGpsTimeData( helper.stream_, gpsTimeData_ );
         }
         else if ( id_ == 2 ) {
-            ice_readGpsMapGridData( helper.stream_, gpsMapGridDataPtr_ );
+            ice_readGpsMapGridData( helper.stream_, gpsMapGridData_ );
         }
         else {
             std::stringstream ss;

@@ -37,7 +37,7 @@ private:
     //
     // EXTERNAL PROVIDED INTERFACE
     //
-    orcaice::PtrBuffer<orca::Localise2dDataPtr> locBuffer_;
+    orcaice::Buffer<orca::Localise2dData> locBuffer_;
 
     MainLoop *mainLoop_;
 };

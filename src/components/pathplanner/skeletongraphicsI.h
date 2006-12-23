@@ -37,7 +37,7 @@ public:
     // Remote calls:
 
     // Hand out data to people
-    orca::QGraphics2dDataPtr getData(const Ice::Current&) const;
+    orca::QGraphics2dData getData(const Ice::Current&) const;
 
     virtual void subscribe(const ::orca::QGraphics2dConsumerPrx&,
                            const Ice::Current&);
@@ -60,7 +60,7 @@ private:
                          const orcapathplan::SparseSkel   &skel,
                          QPainter                         &p );
     
-    orcaice::PtrBuffer<orca::QGraphics2dDataPtr> dataBuffer_;
+    orcaice::Buffer<orca::QGraphics2dData> dataBuffer_;
 
     orca::QGraphics2dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx              topicPrx_;

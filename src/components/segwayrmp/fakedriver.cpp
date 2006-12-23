@@ -45,7 +45,7 @@ int FakeDriver::enable()
 //     return 0;
 // }
 
-int FakeDriver::read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 
+int FakeDriver::read( orca::Position2dData& position2d, orca::Position3dData& position3d, 
                       orca::PowerData &power, std::string & status )
 {
     orcaice::setSane( position2d );
@@ -59,10 +59,10 @@ int FakeDriver::read( orca::Position2dDataPtr &position2d, orca::Position3dDataP
     return 0;
 }
 
-int FakeDriver::write( const orca::Velocity2dCommandPtr & command )
+int FakeDriver::write( const orca::Velocity2dCommand& command )
 {
     // debug: simulated failure
-    if ( command->motion.v.x < 2.0 ) {
+    if ( command.motion.v.x < 2.0 ) {
         cout<<"wrote: "<<orcaice::toString(command)<<endl;
         return 0;
     }

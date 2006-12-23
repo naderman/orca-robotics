@@ -17,13 +17,12 @@ using namespace std;
 using namespace orca;
 using namespace insgps;
 
-GpsI::GpsI(GpsDescriptionPtr   descr,
-           Driver*      hwDriver,
-           const orcaice::Context & context )
+GpsI::GpsI( const orca::GpsDescription& descr,
+            Driver*      hwDriver,
+            const orcaice::Context & context )
     : InsGpsI(context),
       descr_(descr),
       hwDriver_(hwDriver),
-      gpsData_(new GpsData),
       context_(context)
 {
     //
@@ -64,7 +63,7 @@ GpsI::publish()
 //
 
 void
-GpsI::read( ::orca::GpsDataPtr& data )
+GpsI::read( ::orca::GpsData& data )
 {
     // cout << "TRACE(gpsi::read()): in read()" << endl;
     hwDriver_->readGps( data );
@@ -76,13 +75,13 @@ GpsI::read( ::orca::GpsDataPtr& data )
 // remote calls
 //
 
-orca::GpsDataPtr
+orca::GpsData
 GpsI::getData(const Ice::Current& current) const
 {
     std::cout << "getData()" << std::endl;
 
     // create a null pointer. data will be cloned into it.
-    orca::GpsDataPtr data;
+    orca::GpsData data;
     // we don't need to pop the data here because we don't block on it.
     if ( gpsDataBuffer_.isEmpty() )
     {
@@ -95,13 +94,13 @@ GpsI::getData(const Ice::Current& current) const
     return data;
 }
 
-orca::GpsMapGridDataPtr
+orca::GpsMapGridData
 GpsI::getMapGridData(const Ice::Current& current) const
 {
     std::cout << "getMapGridData()" << std::endl;
 
     // create a null pointer. data will be cloned into it.
-    orca::GpsMapGridDataPtr data;
+    orca::GpsMapGridData data;
     // we don't need to pop the data here because we don't block on it.
     if ( gpsMapGridDataBuffer_.isEmpty() )
     {
@@ -114,13 +113,13 @@ GpsI::getMapGridData(const Ice::Current& current) const
     return data;
 }
 
-orca::GpsTimeDataPtr
+orca::GpsTimeData
 GpsI::getTimeData(const Ice::Current& current) const
 {
     std::cout << "getTimeData()" << std::endl;
 
     // create a null pointer. data will be cloned into it.
-    orca::GpsTimeDataPtr data;
+    orca::GpsTimeData data;
     // we don't need to pop the data here because we don't block on it.
     if ( gpsTimeDataBuffer_.isEmpty() )
     {
@@ -134,14 +133,14 @@ GpsI::getTimeData(const Ice::Current& current) const
 
 }
 
-::orca::GpsDescriptionPtr
+::orca::GpsDescription
 GpsI::getDescription(const ::Ice::Current& ) const
 {
     std::cout << "getDescription()" << std::endl;
     return descr_;
 }
 
-::orca::GpsDescriptionPtr
+::orca::GpsDescription
 GpsI::localGetDescription() const
 {
     return descr_;
@@ -200,7 +199,7 @@ GpsI::unsubscribeForMapGrid(const ::orca::GpsMapGridConsumerPrx &subscriber, con
 
 // Set GPS Data
 void
-GpsI::localSetData( ::orca::GpsDataPtr data )
+GpsI::localSetData( const ::orca::GpsData& data )
 {
     // Stick it in the buffer so pullers can get it
     gpsDataBuffer_.push( data );
@@ -220,7 +219,7 @@ GpsI::localSetData( ::orca::GpsDataPtr data )
 
 // Set GPS Time Data
 void
-GpsI::localSetTimeData( ::orca::GpsTimeDataPtr data )
+GpsI::localSetTimeData( const ::orca::GpsTimeData& data )
 {
     // Stick it in the buffer so pullers can get it
     gpsTimeDataBuffer_.push( data );
@@ -240,7 +239,7 @@ GpsI::localSetTimeData( ::orca::GpsTimeDataPtr data )
 
 // Set GPS Map Grid Data
 void
-GpsI::localSetMapGridData( ::orca::GpsMapGridDataPtr data )
+GpsI::localSetMapGridData( const ::orca::GpsMapGridData& data )
 {
     // Stick it in the buffer so pullers can get it
     gpsMapGridDataBuffer_.push( data );
@@ -257,5 +256,3 @@ GpsI::localSetMapGridData( ::orca::GpsMapGridDataPtr data )
         context_.tracer()->warning( "Failed push to IceStorm." );
     }
 }
-
-

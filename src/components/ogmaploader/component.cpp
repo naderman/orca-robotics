@@ -44,7 +44,7 @@ Component::start()
     //
     // LOAD THE MAP
     //
-    orca::OgMapDataPtr theMap = new OgMapData;
+    orca::OgMapData theMap;
 
     std::string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "fake" );
     if ( driverName == "fake" )

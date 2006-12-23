@@ -18,6 +18,7 @@
 #include <QPointF>
 #include <QObject>
 
+#include <orcaqgui2d/ptricestormelement.h>
 #include <orcaqgui2d/icestormelement.h>
 #include <orcaqgui/ihumanmanager.h>
 #include <orcaqgui2d/iknowsplatformposition2d.h>
@@ -38,7 +39,7 @@ namespace orcaqgui
 {
 
 class PolarFeature2dElement
-    : public IceStormElement<PolarFeature2dPainter,
+    : public PtrIceStormElement<PolarFeature2dPainter,
                                orca::PolarFeature2dData,
                                orca::PolarFeature2dDataPtr,
                                orca::PolarFeature2dPrx,
@@ -49,7 +50,7 @@ public:
     PolarFeature2dElement( const orcaice::Context  &context,
                            const std::string       &proxyString,
                            int                      timeoutMs=60000 )
-        : IceStormElement<PolarFeature2dPainter,
+        : PtrIceStormElement<PolarFeature2dPainter,
                             orca::PolarFeature2dData,
                             orca::PolarFeature2dDataPtr,
                             orca::PolarFeature2dPrx,
@@ -75,7 +76,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // A laser GUI element
 class LaserScanner2dElement
-    : public IceStormElement<LaserScanner2dPainter,
+    : public PtrIceStormElement<LaserScanner2dPainter,
                              orca::RangeScanner2dData,
                              orca::RangeScanner2dDataPtr,
                              orca::LaserScanner2dPrx,
@@ -89,7 +90,7 @@ public:
                   QColor                   outlineColor=QColor( 102,102,153, 255 ),
                   float                    outlineThickness=-1,
                   float                    brightReturnWidth=0.2 )
-        : IceStormElement<LaserScanner2dPainter,
+        : PtrIceStormElement<LaserScanner2dPainter,
                           orca::RangeScanner2dData,
                           orca::RangeScanner2dDataPtr,
                           orca::LaserScanner2dPrx,
@@ -117,7 +118,6 @@ private:
 class Localise2dElement
     : public IceStormElement<Localise2dPainter,
                              orca::Localise2dData,
-                             orca::Localise2dDataPtr,
                              orca::Localise2dPrx,
                              orca::Localise2dConsumer,
                              orca::Localise2dConsumerPrx>,
@@ -130,7 +130,6 @@ public:
                        int                      timeoutMs=60000 )
         : IceStormElement<Localise2dPainter,
                             orca::Localise2dData,
-                            orca::Localise2dDataPtr,
                             orca::Localise2dPrx,
                             orca::Localise2dConsumer,
                             orca::Localise2dConsumerPrx>(context, proxyString, painter_, timeoutMs ),
@@ -177,7 +176,6 @@ private:
 class Particle2dElement
     : public IceStormElement<Particle2dPainter,
                              orca::Particle2dData,
-                             orca::Particle2dDataPtr,
                              orca::Particle2dPrx,
                              orca::Particle2dConsumer,
                              orca::Particle2dConsumerPrx>
@@ -188,7 +186,6 @@ public:
                        int                      timeoutMs=60000 )
         : IceStormElement<Particle2dPainter,
                             orca::Particle2dData,
-                            orca::Particle2dDataPtr,
                             orca::Particle2dPrx,
                             orca::Particle2dConsumer,
                             orca::Particle2dConsumerPrx>(context, proxyString, painter_, timeoutMs )
@@ -213,7 +210,6 @@ private:
 class QGraphics2dElement
     : public IceStormElement<QGraphics2dPainter,
                              orca::QGraphics2dData,
-                             orca::QGraphics2dDataPtr,
                              orca::QGraphics2dPrx,
                              orca::QGraphics2dConsumer,
                              orca::QGraphics2dConsumerPrx>
@@ -224,7 +220,6 @@ public:
                         int                      timeoutMs=-1 )
     : IceStormElement<QGraphics2dPainter,
                           orca::QGraphics2dData,
-                          orca::QGraphics2dDataPtr,
                           orca::QGraphics2dPrx,
                           orca::QGraphics2dConsumer,
                           orca::QGraphics2dConsumerPrx>(context, proxyString, painter_, timeoutMs )

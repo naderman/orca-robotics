@@ -26,8 +26,11 @@ module orca
 // define messages first
 
 //! Imu configuration objectd
-class ImuDescription extends OrcaObject
+struct ImuDescription
 {
+    //! Time when data was measured.
+    Time timeStamp;
+
     //! Offset of the sensor with respect to the robot,
     //! in the robot local coordinate system.
     Frame3d offset; 
@@ -38,8 +41,11 @@ class ImuDescription extends OrcaObject
 
 //! The @p Imu interface returns raw uncallibrated acceleration, gyro and magnetic values 
 //! from the IMU sensor. 
-class ImuData extends OrcaObject
+struct ImuData
 {
+    //! Time when data was measured.
+    Time timeStamp;
+
     //! Components of acceleration.
     CartesianAcceleration accel;
 

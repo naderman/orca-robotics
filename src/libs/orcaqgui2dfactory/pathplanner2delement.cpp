@@ -23,20 +23,20 @@ namespace orcaqgui {
 
 ////////////////////////////////////////////////////////////////////////////////
 void
-PathPlannerTaskAnswerConsumer::setData(const ::orca::PathPlanner2dDataPtr& data, const ::Ice::Current& )
+PathPlannerTaskAnswerConsumer::setData(const ::orca::PathPlanner2dData& data, const ::Ice::Current& )
 {
     std::cout << "INFO(pathplanner2dconsumerI.cpp): Received results: " << orcaice::toVerboseString(data) << std::endl;
-    if (data->result==PathOk) return; 
+    if (data.result==PathOk) return; 
     
     QString msg("Pathplanner could not compute path!\nReason is: ");
     
-    if (data->result==PathStartNotValid) 
+    if (data.result==PathStartNotValid) 
         msg.append("Start waypoint not valid");    
-    else if (data->result==PathDestinationNotValid) 
+    else if (data.result==PathDestinationNotValid) 
         msg.append("Goal waypoint not valid");    
-    else if (data->result==PathDestinationUnreachable) 
+    else if (data.result==PathDestinationUnreachable) 
         msg.append("Destination unreachable");    
-    else if (data->result==OtherError) 
+    else if (data.result==OtherError) 
         msg.append("Unknown");    
 
     msgBuffer_.set(msg); 
@@ -98,7 +98,6 @@ PathPlanner2dElement::PathPlanner2dElement( const orcaice::Context & context,
                                             IHumanManager* humanManager )
     : IceStormElement<  PathPainter,
                         orca::PathPlanner2dData,
-                        orca::PathPlanner2dDataPtr,
                         orca::PathPlanner2dPrx,
                         orca::PathPlanner2dConsumer,
                         orca::PathPlanner2dConsumerPrx>( context, proxyString, painter_, -1 ),
@@ -222,8 +221,8 @@ PathPlanner2dElement::sendPath( const PathPlannerInput &pathInput )
 {
     try
     {
-        PathPlanner2dTaskPtr task = pathInput.getTask();
-        task->prx = taskCallbackPrx_;
+        PathPlanner2dTask task = pathInput.getTask();
+        task.prx = taskCallbackPrx_;
         pathPlanner2dPrx_->setTask( task );
     }
     catch ( const Ice::Exception &e )

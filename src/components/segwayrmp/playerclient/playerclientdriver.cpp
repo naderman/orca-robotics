@@ -96,7 +96,7 @@ PlayerClientDriver::disable()
 }
 
 int
-PlayerClientDriver::read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 
+PlayerClientDriver::read( orca::Position2dData& position2d, orca::Position3dData& position3d, 
                     orca::PowerData &power, std::string & status )
 {
     if ( ! enabled_ ) {
@@ -127,12 +127,12 @@ PlayerClientDriver::read( orca::Position2dDataPtr &position2d, orca::Position3dD
 }
 
 int
-PlayerClientDriver::write( const orca::Velocity2dCommandPtr &position2d )
+PlayerClientDriver::write( const orca::Velocity2dCommand& command )
 {
     // this version of Player client takes speed command in  [m, m, rad/s]
     try
     {
-        positionProxy_->SetSpeed( position2d->motion.v.x, position2d->motion.v.y, position2d->motion.w );
+        positionProxy_->SetSpeed( command.motion.v.x, command.motion.v.y, command.motion.w );
     }
     catch ( const PlayerCc::PlayerError & e )
     {

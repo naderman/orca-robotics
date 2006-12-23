@@ -28,7 +28,6 @@ VfhDriver::VfhDriver( const GoalWatcher        &goalWatcher,
     : LocalNavDriver(goalWatcher),
       stallRatio_(0.0),
       currentState_(LocalNavDriver::STATE_GOAL_REACHED),
-      prevCmd_(new orca::Velocity2dCommand),
       context_(context)
 {
     // Configure and instantiate the core vfh algorithm
@@ -99,7 +98,7 @@ LocalNavDriver::DriverState
 VfhDriver::getCommand( bool  stalled,
                        const orca::Twist2d &currentVelocity,
                        const orca::RangeScanner2dDataPtr obs,
-                       orca::Velocity2dCommandPtr &cmd )
+                       orca::Velocity2dCommand& cmd )
 {
     //
     // Four distinct cases
@@ -133,9 +132,9 @@ VfhDriver::getCommand( bool  stalled,
     ss << "VFH: Setting command: " << orcaice::toString(cmd);
     context_.tracer()->debug( ss.str(), 5 );
 
-    prevCmd_->motion.v.x = cmd->motion.v.x;
-    prevCmd_->motion.v.y = cmd->motion.v.y;
-    prevCmd_->motion.w   = cmd->motion.w;
+    prevCmd_.motion.v.x = cmd.motion.v.x;
+    prevCmd_.motion.v.y = cmd.motion.v.y;
+    prevCmd_.motion.w   = cmd.motion.w;
 
     return currentState_;
 }
@@ -168,46 +167,46 @@ VfhDriver::shouldEscape( bool stalled )
 }
 
 void
-VfhDriver::setToZero( orca::Velocity2dCommandPtr &cmd )
+VfhDriver::setToZero( orca::Velocity2dCommand& cmd )
 {
-    cmd->motion.v.x = 0.0;
-    cmd->motion.v.y = 0.0;
-    cmd->motion.w   = 0.0;
+    cmd.motion.v.x = 0.0;
+    cmd.motion.v.y = 0.0;
+    cmd.motion.w   = 0.0;
 }
 
 void
-VfhDriver::setToEscape( orca::Velocity2dCommandPtr &cmd, const orca::RangeScanner2dDataPtr &obs )
+VfhDriver::setToEscape( orca::Velocity2dCommand& cmd, const orca::RangeScanner2dDataPtr &obs )
 {
     if ( currentState_ != LocalNavDriver::STATE_ESCAPING ||
          escapeTimer_.elapsedMs() > escapeTimeMs_ )
     {
         // Choose a new random escape command
         float escapeSpeed       = ((2.0*(float)rand()/(float)RAND_MAX)-1.0) * localNavParameters_.maxSpeed;
-        float maxEscapeTurnrate = vfhAlgorithm_->GetMaxTurnrate((int)(cmd->motion.v.x*1000.0)) * M_PI/180.0;
+        float maxEscapeTurnrate = vfhAlgorithm_->GetMaxTurnrate((int)(cmd.motion.v.x*1000.0)) * M_PI/180.0;
         float escapeTurnrate    = ((2.0*(float)rand()/(float)RAND_MAX)-1.0) * maxEscapeTurnrate;
 
         cout<<"TRACE(vfhdriver.cpp): escapeSpeed: " << escapeSpeed << endl;
         cout<<"TRACE(vfhdriver.cpp): max is: " << localNavParameters_.maxSpeed << endl;
-        cmd->motion.v.x = escapeSpeed;
-        cmd->motion.v.y = 0.0;
-        cmd->motion.w   = escapeTurnrate;
+        cmd.motion.v.x = escapeSpeed;
+        cmd.motion.v.y = 0.0;
+        cmd.motion.w   = escapeTurnrate;
 
         escapeTimer_.restart();
     }
     else
     {
         // Continue the escape
-        cmd->motion.v.x = prevCmd_->motion.v.x;
-        cmd->motion.v.y = prevCmd_->motion.v.y;
-        cmd->motion.w   = prevCmd_->motion.w;
+        cmd.motion.v.x = prevCmd_.motion.v.x;
+        cmd.motion.v.y = prevCmd_.motion.v.y;
+        cmd.motion.w   = prevCmd_.motion.w;
     }
 }
 
 void
-VfhDriver::setTurnToGoal( orca::Velocity2dCommandPtr &cmd, const GoalWatcher &goalWatcher )
+VfhDriver::setTurnToGoal( orca::Velocity2dCommand& cmd, const GoalWatcher &goalWatcher )
 {
-    cmd->motion.v.x = 0.0;
-    cmd->motion.v.y = 0.0;
+    cmd.motion.v.x = 0.0;
+    cmd.motion.v.y = 0.0;
 
     float posNeg = 1.0;
     if ( goalWatcher.headingDifference() < 0.0 ) posNeg = -1.0;
@@ -215,16 +214,16 @@ VfhDriver::setTurnToGoal( orca::Velocity2dCommandPtr &cmd, const GoalWatcher &go
     if ( currentState_ != LocalNavDriver::STATE_TURNING_AT_GOAL )
     {
         // Just got here: turn hard.
-        cmd->motion.w = posNeg * localNavParameters_.maxTurnrate;
+        cmd.motion.w = posNeg * localNavParameters_.maxTurnrate;
     }
     else
     {
         // We're already turning.  Keep doing so.
-        float maxAllowedTurnrate = fabs(prevCmd_->motion.w);
+        float maxAllowedTurnrate = fabs(prevCmd_.motion.w);
 
         // Check for overshoot
         float prevPosNeg = 1.0;
-        if ( prevCmd_->motion.w < 0.0 ) prevPosNeg = -1.0;
+        if ( prevCmd_.motion.w < 0.0 ) prevPosNeg = -1.0;
 
         if ( posNeg != prevPosNeg )
         {
@@ -232,7 +231,7 @@ VfhDriver::setTurnToGoal( orca::Velocity2dCommandPtr &cmd, const GoalWatcher &go
             maxAllowedTurnrate = maxAllowedTurnrate / 2.0;
         }
 
-        cmd->motion.w = posNeg*maxAllowedTurnrate;
+        cmd.motion.w = posNeg*maxAllowedTurnrate;
     }
 }
 
@@ -291,7 +290,7 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
 }
 
 void
-VfhDriver::setToApproachGoal( orca::Velocity2dCommandPtr &cmd,
+VfhDriver::setToApproachGoal( orca::Velocity2dCommand& cmd,
                               const GoalWatcher &goalWatcher, 
                               const orca::Twist2d &currentVelocity,
                               const orca::RangeScanner2dDataPtr &obs )
@@ -328,9 +327,9 @@ VfhDriver::setToApproachGoal( orca::Velocity2dCommandPtr &cmd,
                                chosenTurnrate );
 
     // Now copy back from player format
-    cmd->motion.v.x = (float)chosenSpeed/1000.0;
-    cmd->motion.v.y = 0.0;
-    cmd->motion.w   = chosenTurnrate*M_PI/180.0;
+    cmd.motion.v.x = (float)chosenSpeed/1000.0;
+    cmd.motion.v.y = 0.0;
+    cmd.motion.w   = chosenTurnrate*M_PI/180.0;
 }
 
 }

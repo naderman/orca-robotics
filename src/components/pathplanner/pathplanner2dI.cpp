@@ -19,8 +19,8 @@ using namespace orca;
 using namespace pathplanner;
 
 PathPlanner2dI::PathPlanner2dI( 
-        orcaice::PtrProxy<orca::PathPlanner2dTaskPtr> &pathPlannerTaskProxy,
-        orcaice::PtrProxy<orca::PathPlanner2dDataPtr> &pathPlannerDataProxy,
+        orcaice::Proxy<orca::PathPlanner2dTask> &pathPlannerTaskProxy,
+        orcaice::Proxy<orca::PathPlanner2dData> &pathPlannerDataProxy,
         const orcaice::Context & context )
             : pathPlannerTaskProxy_(pathPlannerTaskProxy),
               pathPlannerDataProxy_(pathPlannerDataProxy),
@@ -32,12 +32,12 @@ PathPlanner2dI::PathPlanner2dI(
 }
 
 Ice::Int
-PathPlanner2dI::setTask(const ::orca::PathPlanner2dTaskPtr& taskPtr, const ::Ice::Current&)
+PathPlanner2dI::setTask(const ::orca::PathPlanner2dTask& task, const ::Ice::Current&)
 {
 
-    cout << "TRACE(pathplanner2dI.cpp): Just received a new task: " << endl << taskPtr; 
+    cout << "TRACE(pathplanner2dI.cpp): Just received a new task: " << endl << orcaice::toVerboseString(task); 
 
-    pathPlannerTaskProxy_.set( taskPtr );
+    pathPlannerTaskProxy_.set( task );
 
     return 0;
     
@@ -45,7 +45,7 @@ PathPlanner2dI::setTask(const ::orca::PathPlanner2dTaskPtr& taskPtr, const ::Ice
 //     // For now, we only allow one task (proxy instead of buffer) and overwriting the current task is not allowed.
 //     if ( pathPlannerTaskProxy_.isEmpty() )
 //     {
-//         pathPlannerTaskProxy_.set( taskPtr );
+//         pathPlannerTaskProxy_.set( task );
 //         return 0;
 //     }
 //     else
@@ -54,7 +54,7 @@ PathPlanner2dI::setTask(const ::orca::PathPlanner2dTaskPtr& taskPtr, const ::Ice
 //     }
 }
 
-orca::PathPlanner2dDataPtr
+orca::PathPlanner2dData
 PathPlanner2dI::getData(const Ice::Current& current ) const 
 {
     std::cout << "getData()" << std::endl;
@@ -66,14 +66,14 @@ PathPlanner2dI::getData(const Ice::Current& current ) const
     }
 
     // create a null pointer. data will be cloned into it.
-    PathPlanner2dDataPtr data;
+    PathPlanner2dData data;
     pathPlannerDataProxy_.get( data );
 
     return data;
 }
 
 void 
-PathPlanner2dI::localSetData( const PathPlanner2dDataPtr data )
+PathPlanner2dI::localSetData( const PathPlanner2dData& data )
 {
     pathPlannerDataProxy_.set( data );
 
@@ -106,6 +106,3 @@ PathPlanner2dI::unsubscribe(const PathPlanner2dConsumerPrx &subscriber, const ::
     cout<<"unsubscribe()"<<endl;
     topicPrx_->unsubscribe( subscriber );
 }
-
-
-

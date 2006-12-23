@@ -91,7 +91,7 @@ PlayerClientDriver::disable()
 
 
 int
-PlayerClientDriver::read( orca::Position2dDataPtr &position2d, std::string & status )
+PlayerClientDriver::read( orca::Position2dData& position2d, std::string & status )
 {
     if ( ! enabled_ ) {
         //cout << "ERROR(playerclientdriver.cpp): Can't read: not connected to Player/Stage yet." << endl;
@@ -119,12 +119,12 @@ PlayerClientDriver::read( orca::Position2dDataPtr &position2d, std::string & sta
 }
 
 int
-PlayerClientDriver::write( const orca::Velocity2dCommandPtr &position2d )
+PlayerClientDriver::write( const orca::Velocity2dCommand& position2d )
 {
     // this version of Player client takes speed command in  [m, m, rad/s]
     try
     {
-        positionProxy_->SetSpeed( position2d->motion.v.x, position2d->motion.v.y, position2d->motion.w );
+        positionProxy_->SetSpeed( position2d.motion.v.x, position2d.motion.v.y, position2d.motion.w );
     }
     catch ( const PlayerCc::PlayerError & e )
     {

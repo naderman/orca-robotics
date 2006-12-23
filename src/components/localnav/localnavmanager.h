@@ -50,24 +50,24 @@ public:
     // The odometry is required for the velocity, which isn't contained
     // in Localise2d.
     void getCommand( const orca::RangeScanner2dDataPtr  rangeData,
-                     const orca::Localise2dDataPtr    localiseData,
-                     const orca::Position2dDataPtr    odomData,
-                     orca::Velocity2dCommandPtr      &cmd );
+                     const orca::Localise2dData&        localiseData,
+                     const orca::Position2dData&        odomData,
+                     orca::Velocity2dCommand&           cmd );
 
     std::string getHeartbeatMessage();
 
 private: 
 
-    void setCurrentGoal( const orca::Localise2dDataPtr localiseData );
+    void setCurrentGoal( const orca::Localise2dData&    localiseData );
 
     //
     // Sets the goalWatcher and the navParams.
     //
     // Returns: true =  waypoint reached
     //          false = waypoint not reached.
-    bool setGoalSpecifics( const orca::Localise2dDataPtr  localiseData,
-                           const orca::Waypoint2d        &currentWaypoint,
-                           GoalWatcher                   &goalWatcher );
+    bool setGoalSpecifics( const orca::Localise2dData&  localiseData,
+                           const orca::Waypoint2d&      currentWaypoint,
+                           GoalWatcher&                 goalWatcher );
 
     // Work out how fast to go, given the time constraints
     void setNavParams( const GoalWatcher      &goalWatcher,

@@ -31,7 +31,7 @@ public:
 
     virtual void displayEvent( const Event e )=0;
     
-    virtual void displayCommand( const orca::Velocity2dCommandPtr & command,
+    virtual void displayCommand( const orca::Velocity2dCommand& command,
                                  const bool vx=false, const bool vy=false, const bool w=false )=0;
 };
 

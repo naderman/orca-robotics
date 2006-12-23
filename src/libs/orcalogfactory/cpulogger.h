@@ -32,7 +32,7 @@ class CpuLogger : public orca::CpuConsumer, public orcalog::Logger
         virtual void init();
 
         // from *Consumer
-        virtual void setData(const orca::CpuDataPtr& data, const Ice::Current&);
+        virtual void setData(const orca::CpuData& data, const Ice::Current&);
 };
 
 }

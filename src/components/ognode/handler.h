@@ -26,7 +26,7 @@ class Handler : public orcaice::Thread
 {
 public:
     Handler(OgMapI& OgMapInterface,
-            orcaice::PtrBuffer<orca::OgFusionDataPtr> &OgFusionDataBuffer,
+            orcaice::Buffer<orca::OgFusionData>& OgFusionDataBuffer,
             orcaogmap::OgMap& localMap_,
             const orcaice::Context & context);
     ~Handler();
@@ -35,7 +35,7 @@ public:
 private:
     OgMapI& ogMapInterface_;
 
-    orcaice::PtrBuffer<orca::OgFusionDataPtr> &OgFusionDataBuffer_;
+    orcaice::Buffer<orca::OgFusionData>& OgFusionDataBuffer_;
 
     orcaogmap::OgMap& localMap_;
 

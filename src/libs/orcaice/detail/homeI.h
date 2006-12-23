@@ -27,14 +27,15 @@ class HomeI : public virtual orca::Home
 public:
     HomeI( const orca::ComponentData & compData, const Ice::PropertyDict & props );
 
-    virtual orca::HomeDataPtr getInterfaces(const ::Ice::Current& ) const;
+    virtual orca::HomeData getInterfaces(const ::Ice::Current& ) const;
 
     virtual int getTimeUp(const ::Ice::Current& ) const;
     
     virtual orca::ComponentProperties getProperties(const ::Ice::Current& ) const;
 
 private:
-    orca::HomeDataPtr homeData_;
+    // we update the timeUp field every time getInterfaces() is called.
+    mutable orca::HomeData homeData_;
     
     orca::ComponentProperties properties_;
 

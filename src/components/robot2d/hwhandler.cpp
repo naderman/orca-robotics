@@ -26,15 +26,14 @@ using namespace orca;
 using namespace robot2d;
 
 HwHandler::HwHandler(
-                 orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
-                 orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
-                 orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
-                 orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
+                 orcaice::Proxy<orca::Position2dData>    & position2dPipe,
+                 orcaice::Notify<orca::Velocity2dCommand>& commandPipe,
+                 orcaice::Proxy<orca::Platform2dConfig>  & setConfigPipe,
+                 orcaice::Proxy<orca::Platform2dConfig>  & currentConfigPipe,
                  const orcaice::Context                        & context )
       : position2dPipe_(position2dPipe),
         setConfigPipe_(setConfigPipe),
         currentConfigPipe_(currentConfigPipe),
-        position2dData_(new Position2dData),
         driver_(0),
         context_(context)
 {
@@ -245,9 +244,12 @@ HwHandler::run()
 // Here we handle command arriving through Platform2d interface.
 //
 void
-HwHandler::handleData( const orca::Velocity2dCommandPtr & obj )
+HwHandler::handleData( const orca::Velocity2dCommand& origObj )
 {
     //cout<<"handling: "<<orcaice::toString(obj)<<endl;
+    
+    // make a copy so we can apply limits
+    orca::Velocity2dCommand obj = origObj;
 
 /*
     // if we know we can't write, don't try again
@@ -274,13 +276,13 @@ HwHandler::handleData( const orca::Velocity2dCommandPtr & obj )
     //
     // apply max limits
     //
-    if ( fabs(obj->motion.v.x) > config_.maxSpeed ) {
-        obj->motion.v.x =
-                (obj->motion.v.x / fabs(obj->motion.v.x)) * config_.maxSpeed;
+    if ( fabs(obj.motion.v.x) > config_.maxSpeed ) {
+        obj.motion.v.x =
+                (obj.motion.v.x / fabs(obj.motion.v.x)) * config_.maxSpeed;
     }
-    if ( fabs(obj->motion.w) > config_.maxTurnrate ) {
-        obj->motion.w =
-                (obj->motion.w / fabs(obj->motion.w)) * config_.maxTurnrate;
+    if ( fabs(obj.motion.w) > config_.maxTurnrate ) {
+        obj.motion.w =
+                (obj.motion.w / fabs(obj.motion.w)) * config_.maxTurnrate;
     }
 
     //

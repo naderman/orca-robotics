@@ -28,7 +28,7 @@ LaserScanner2dElement::getLaserInfo()
     {
         orcaice::connectToInterfaceWithString( context_, laserPrx, listener_.interfaceName() );
 
-        RangeScanner2dDescriptionPtr descr = new RangeScanner2dDescription;
+        RangeScanner2dDescription descr;
         descr = laserPrx->getDescription();
         painter_.setDescription( descr );
     }

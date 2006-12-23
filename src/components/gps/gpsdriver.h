@@ -58,9 +58,9 @@ public:
     // Blocks till timout expires, returns number of messages read, -1 if failure
     virtual int read()=0;
     // Fetch latest GPS data. return -1 if unavailable
-    virtual int getData(orca::GpsDataPtr &data )=0;
+    virtual int getData(orca::GpsData& data )=0;
     // Fetch latest GPS Time information. return -1 if unavailable
-    virtual int getTimeData(orca::GpsTimeDataPtr &data )=0;
+    virtual int getTimeData(orca::GpsTimeData& data )=0;
 
     // mechanism to get error messages etc back from driver.
     virtual const std::string &infoMessages() { return infoMessages_; };

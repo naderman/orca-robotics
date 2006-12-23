@@ -40,7 +40,7 @@ namespace orcalog
 {
 
 std::string 
-toLogString( const orca::Waypoint2d &obj )
+toLogString( const orca::Waypoint2d& obj )
 {
     std::ostringstream s;
     s << obj.target.p.x << " " << obj.target.p.y << " " << obj.target.o*180.0/M_PI << " " 
@@ -53,19 +53,19 @@ toLogString( const orca::Waypoint2d &obj )
 }
 
 std::string 
-toLogString( const orca::CpuDataPtr & obj )
+toLogString( const orca::CpuData& obj )
 {
     std::ostringstream s;
-    s << toLogString(obj->timeStamp)
-        << " " << obj->userLoad
-        << " " << obj->systemLoad
-        << " " << obj->idleLoad
-        << " " << obj->temperature;
+    s << toLogString(obj.timeStamp)
+        << " " << obj.userLoad
+        << " " << obj.systemLoad
+        << " " << obj.idleLoad
+        << " " << obj.temperature;
     return s.str();
 }
 
 std::string 
-toLogString( const orca::LaserScanner2dDataPtr &obj )
+toLogString( const orca::LaserScanner2dDataPtr& obj )
 {
     std::stringstream s;
 
@@ -92,38 +92,38 @@ toLogString( const orca::LaserScanner2dDataPtr &obj )
 }
 
 std::string 
-toLogString( const orca::Position2dDataPtr &obj )
+toLogString( const orca::Position2dData& obj )
 {
     std::stringstream s;
     
     // timestamp on the first line
-    s << toLogString(obj->timeStamp) << " \n";
+    s << toLogString(obj.timeStamp) << " \n";
 
     // x,y position, orientation(deg), and respective velocities
-    s << obj->pose.p.x << " " 
-      << obj->pose.p.y << " "
-      << RAD2DEG(obj->pose.o) << " "
-      << obj->motion.v.x << " "
-      << obj->motion.v.y << " "
-      << RAD2DEG(obj->motion.w) << "\n";
+    s << obj.pose.p.x << " " 
+      << obj.pose.p.y << " "
+      << RAD2DEG(obj.pose.o) << " "
+      << obj.motion.v.x << " "
+      << obj.motion.v.y << " "
+      << RAD2DEG(obj.motion.w) << "\n";
 
     return s.str();
 }
 
 std::string 
-toLogString( const orca::Localise2dDataPtr &obj )
+toLogString( const orca::Localise2dData& obj )
 {
     std::stringstream s;
     
     // timestamp on the first line
-    s << toLogString(obj->timeStamp) << endl;
+    s << toLogString(obj.timeStamp) << endl;
 
     // number of hypotheses on a line
-    s << obj->hypotheses.size() << endl;
+    s << obj.hypotheses.size() << endl;
 
-    for ( unsigned int i=0; i < obj->hypotheses.size(); i++ )
+    for ( unsigned int i=0; i < obj.hypotheses.size(); i++ )
     {
-        const orca::Pose2dHypothesis &h = obj->hypotheses[i];
+        const orca::Pose2dHypothesis &h = obj.hypotheses[i];
 
         s << h.mean.p.x << " "
           << h.mean.p.y << " "
@@ -140,41 +140,41 @@ toLogString( const orca::Localise2dDataPtr &obj )
 }
 
 std::string 
-toLogString( const orca::Position3dDataPtr &obj )
+toLogString( const orca::Position3dData& obj )
 {
     std::stringstream s;
     
     // timestamp on the first line
-    s << toLogString(obj->timeStamp) << " \n";
+    s << toLogString(obj.timeStamp) << " \n";
 
     // x,y,z position, roll,pitch,yaw(deg), and respective velocities on the second line
-    s << obj->pose.p.x << " " 
-      << obj->pose.p.y << " "
-      << obj->pose.p.z << " "
-      << RAD2DEG(obj->pose.o.r) << " "
-      << RAD2DEG(obj->pose.o.p) << " "
-      << RAD2DEG(obj->pose.o.y) << " \n"
-      << obj->motion.v.x << " "
-      << obj->motion.v.y << " "
-      << obj->motion.v.z << " "
-      << RAD2DEG(obj->motion.w.x) << " "
-      << RAD2DEG(obj->motion.w.y) << " "
-      << RAD2DEG(obj->motion.w.z) << " \n";
+    s << obj.pose.p.x << " " 
+      << obj.pose.p.y << " "
+      << obj.pose.p.z << " "
+      << RAD2DEG(obj.pose.o.r) << " "
+      << RAD2DEG(obj.pose.o.p) << " "
+      << RAD2DEG(obj.pose.o.y) << " \n"
+      << obj.motion.v.x << " "
+      << obj.motion.v.y << " "
+      << obj.motion.v.z << " "
+      << RAD2DEG(obj.motion.w.x) << " "
+      << RAD2DEG(obj.motion.w.y) << " "
+      << RAD2DEG(obj.motion.w.z) << " \n";
 
     return s.str();
 }
 
 // std::string 
-// toLogString( const orca::PolarFeature2dDataPtr & obj )
+// toLogString( const orca::PolarFeature2dData& obj )
 // {
 //     std::stringstream s;
 
 //     // timestamp on the first line
-//     s << toLogString(obj->timeStamp) << " \n";
+//     s << toLogString(obj.timeStamp) << " \n";
 
 //     // feature type, range, and bearing (deg) on second line
-//     const orca::PolarFeature2dSequence &features = obj->features;
-//     for (unsigned int i=0; i < obj->features.size(); i++)
+//     const orca::PolarFeature2dSequence &features = obj.features;
+//     for (unsigned int i=0; i < obj.features.size(); i++)
 //     {
 //         if ( features[i] == 0 )
 //         {
@@ -182,7 +182,7 @@ toLogString( const orca::Position3dDataPtr &obj )
 //         }
 //         else
 //         {
-//             const orca::SinglePolarFeature2dPtr &f = features[i];
+//             const orca::SinglePolarFeature2d&f = features[i];
 //             s << f->type << " "
 //               << f->p.r << " "
 //               << f->p.o*180.0/M_PI << " ";
@@ -197,7 +197,7 @@ toLogString( const orca::Position3dDataPtr &obj )
 // the number of batteries usually does not change over time
 // format: sec usec voltage0 percent0 voltage1 percent1 ... voltageN percentN
 std::string 
-toLogString( const orca::PowerData &obj )
+toLogString( const orca::PowerData& obj )
 {
     std::stringstream s;
     s << toLogString(obj.timeStamp);
@@ -210,7 +210,7 @@ toLogString( const orca::PowerData &obj )
 }
 
 void 
-fromLogString( std::stringstream & stream, orca::PowerData & obj )
+fromLogString( std::stringstream& stream, orca::PowerData& obj )
 {
     fromLogString( stream, obj.timeStamp );
 
@@ -224,17 +224,17 @@ fromLogString( std::stringstream & stream, orca::PowerData & obj )
 }
 
 std::string 
-toLogString( const orca::PathPlanner2dTaskPtr &obj )
+toLogString( const orca::PathPlanner2dTask& obj )
 {
     std::stringstream s;
 
     // first line: timestamp, number of waypoints
-    s << toLogString(obj->timeStamp) << " " 
-      << obj->coarsePath.size() << " \n";
+    s << toLogString(obj.timeStamp) << " " 
+      << obj.coarsePath.size() << " \n";
     
-    for ( unsigned int i=0; i < obj->coarsePath.size(); i++ )
+    for ( unsigned int i=0; i < obj.coarsePath.size(); i++ )
     {
-        s << toLogString(obj->coarsePath[i]) << " ";
+        s << toLogString(obj.coarsePath[i]) << " ";
     }
     s << "\n";
 
@@ -242,19 +242,19 @@ toLogString( const orca::PathPlanner2dTaskPtr &obj )
 }
 
 std::string 
-toLogString( const orca::PathPlanner2dDataPtr &obj )
+toLogString( const orca::PathPlanner2dData& obj )
 {
     std::stringstream s;
     
     // first line: timestamp, result code, number of waypoints
-    s << toLogString(obj->timeStamp) << " "
-      << obj->result << " "
-      << obj->path.size() << "\n";
+    s << toLogString(obj.timeStamp) << " "
+      << obj.result << " "
+      << obj.path.size() << "\n";
     
     // second line: path
-    for ( unsigned int i=0; i < obj->path.size(); i++ )
+    for ( unsigned int i=0; i < obj.path.size(); i++ )
     {
-        s << toLogString(obj->path[i]) << " ";
+        s << toLogString(obj.path[i]) << " ";
     }
     s << "\n";
 
@@ -263,14 +263,14 @@ toLogString( const orca::PathPlanner2dDataPtr &obj )
 
 
 std::string 
-toLogString( const orca::Time & obj )
+toLogString( const orca::Time& obj )
 {
     std::ostringstream s;
     s << obj.seconds << " " << obj.useconds;
     return s.str();
 }
 void 
-fromLogString( std::stringstream & stream, orca::Time & obj )
+fromLogString( std::stringstream& stream, orca::Time& obj )
 {
     stream >> obj.seconds >> obj.useconds;
 }

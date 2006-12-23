@@ -36,7 +36,7 @@ public:
     virtual int repair();
     virtual int disable();
 
-    virtual int read( orca::Localise2dDataPtr &position2d );
+    virtual int read( orca::Localise2dData& position2d );
 
 
 private:

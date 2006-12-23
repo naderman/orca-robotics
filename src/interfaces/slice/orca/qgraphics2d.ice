@@ -74,8 +74,11 @@ module orca
 sequence<byte> SerializedQPicture;
 
 //! QGraphics2d command structure: tells how to paint something.
-class QGraphics2dData extends OrcaObject
+struct QGraphics2dData
 {
+    //! Time when data was measured.
+    Time timeStamp;
+
     //! The serialized QPicture
     SerializedQPicture qpicture;
 

@@ -11,14 +11,14 @@
 #include <iostream>
 
 #include <orcaice/ptrbuffer.h>
-#include <orca/position2d.h>
+#include <orca/rangescanner2d.h>
 
 using namespace std;
 
 int main(int argc, char * argv[])
 {
-    orcaice::PtrBuffer<orca::Position2dDataPtr> buffer;
-    orca::Position2dDataPtr data = new orca::Position2dData;
+    orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> buffer;
+    orca::RangeScanner2dDataPtr data = new orca::RangeScanner2dData;
 
     cout<<"testing get() ... ";
     // call get on an empty stomach
@@ -68,7 +68,7 @@ int main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
 
-    cout<<"testing push() ... ";
+    cout<<"testing push() with circular buffer ... ";
     for ( int i=0; i<3; ++i ) {
         buffer.push( data );
     }

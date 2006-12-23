@@ -55,8 +55,11 @@ sequence<Waypoint2d>        Path2d;
 /*!
     WaypointFollower data structure
 */
-class PathFollower2dData extends OrcaObject
+struct PathFollower2dData
 {
+    //! Time when data was measured.
+    Time timeStamp;
+
     //! The path
     Path2d              path;
 };

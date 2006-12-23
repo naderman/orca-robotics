@@ -77,7 +77,7 @@ public:
     virtual DriverState getCommand( bool  stalled,
                                     const orca::Twist2d &currentVelocity,
                                     const orca::RangeScanner2dDataPtr obs,
-                                    orca::Velocity2dCommandPtr &cmd )=0;
+                                    orca::Velocity2dCommand& cmd )=0;
 
 protected: 
 

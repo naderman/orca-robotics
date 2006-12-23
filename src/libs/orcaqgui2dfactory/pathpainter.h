@@ -34,8 +34,8 @@ class PathPainter
     PathPainter();
     ~PathPainter();
     void initialize( bool displayWaypoints, bool displayPastWaypoints, bool useTransparency);
-    void setData( const orca::PathFollower2dDataPtr &path );
-    void setData( const orca::PathPlanner2dDataPtr &path );
+    void setData( const orca::PathFollower2dData& path );
+    void setData( const orca::PathPlanner2dData& path );
     void setWpIndex( int index );
     void paint( QPainter *p, int z );
     bool paintThisLayer(int z) const { return z==Z_PATH; };
@@ -43,10 +43,10 @@ class PathPainter
 
     void clear();
     void togglePastWaypoints()
-    { displayPastWaypoints_ = !displayPastWaypoints_; }
+        { displayPastWaypoints_ = !displayPastWaypoints_; }
     
     void toggleDisplayWaypoints()
-    { displayWaypoints_ = !displayWaypoints_; }
+        { displayWaypoints_ = !displayWaypoints_; }
     
     int savePath( const QString fileName, IHumanManager *humanManager ) const;
     void setColor( QColor color ) { color_ = color; };

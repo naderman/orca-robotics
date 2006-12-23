@@ -47,7 +47,7 @@ StatusProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
 int 
 StatusProbe::loadGetData( orcacm::OperationData & data )
 {
-    orca::StatusDataPtr result;
+    orca::StatusData result;
     orcacm::ResultHeader res;
     
     try
@@ -124,7 +124,7 @@ StatusProbe::loadUnsubscribe( orcacm::OperationData & data )
 }
 
 void 
-StatusProbe::setData(const orca::StatusDataPtr& result, const Ice::Current&)
+StatusProbe::setData(const orca::StatusData& result, const Ice::Current&)
 {
     std::cout << orcaice::toString(result) << std::endl;
 

@@ -78,7 +78,7 @@ LaserScanner2dProbe::loadGetData( orcacm::OperationData & data )
 int 
 LaserScanner2dProbe::loadGetDescription( orcacm::OperationData & data )
 {
-    orca::RangeScanner2dDescriptionPtr result;
+    orca::RangeScanner2dDescription result;
     orcacm::ResultHeader res;
     
     try

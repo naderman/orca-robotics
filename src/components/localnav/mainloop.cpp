@@ -23,8 +23,8 @@ namespace localnav {
 
 MainLoop::MainLoop( LocalNavManager                               &localNavManager,
                     orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> &obsBuffer,
-                    orcaice::PtrBuffer<orca::Localise2dDataPtr>   &locBuffer,
-                    orcaice::PtrBuffer<orca::Position2dDataPtr>   &odomBuffer,
+                    orcaice::Buffer<orca::Localise2dData>   &locBuffer,
+                    orcaice::Buffer<orca::Position2dData>   &odomBuffer,
                     orcaice::Proxy<bool>                          &enabledPipe,
                     orca::Platform2dPrx                           &platform2dPrx,
                     PathMaintainer                                &pathMaintainer,
@@ -41,10 +41,7 @@ MainLoop::MainLoop( LocalNavManager                               &localNavManag
       heartbeater_(context),
       context_(context)
 {
-    localiseData_ = new orca::Localise2dData;
-    odomData_     = new orca::Position2dData;
     rangeData_    = new orca::RangeScanner2dData;
-    velocityCmd_  = new orca::Velocity2dCommand;
 }
 
 MainLoop::~MainLoop()
@@ -72,11 +69,11 @@ MainLoop::ensureBuffersNotEmpty()
 }
 
 void 
-MainLoop::getStopCommand( orca::Velocity2dCommandPtr cmd )
+MainLoop::getStopCommand( orca::Velocity2dCommand& cmd )
 {
-    cmd->motion.v.x = 0.0;
-    cmd->motion.v.y = 0.0;
-    cmd->motion.w   = 0.0;
+    cmd.motion.v.x = 0.0;
+    cmd.motion.v.y = 0.0;
+    cmd.motion.w   = 0.0;
 }
 
 void
@@ -122,15 +119,15 @@ MainLoop::run()
                     stringstream ss;
                     ss << "Timestamps are more than "<<THRESHOLD<<"sec apart: " << endl
                        << "\t rangeData:    " << orcaice::toString(rangeData_->timeStamp) << endl
-                       << "\t localiseData: " << orcaice::toString(localiseData_->timeStamp) << endl
-                       << "\t odomData:     " << orcaice::toString(odomData_->timeStamp) << endl
+                       << "\t localiseData: " << orcaice::toString(localiseData_.timeStamp) << endl
+                       << "\t odomData:     " << orcaice::toString(odomData_.timeStamp) << endl
                        << "Maybe something is wrong: Stopping.";
                     context_.tracer()->error( ss.str() );
                     getStopCommand( velocityCmd_ );
                 }
                 else
                 {
-                    velocityCmd_->timeStamp = rangeData_->timeStamp;
+                    velocityCmd_.timeStamp = rangeData_->timeStamp;
                     localNavManager_.getCommand( rangeData_,
                                                  localiseData_,
                                                  odomData_,
@@ -217,13 +214,13 @@ MainLoop::checkWithOutsideWorld( PathMaintainer &pathMaintainer )
 
 bool
 MainLoop::areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData, 
-                              const orca::Localise2dDataPtr   &localiseData, 
-                              const orca::Position2dDataPtr   &odomData,
+                              const orca::Localise2dData&       localiseData, 
+                              const orca::Position2dData&       odomData,
                               double                           threshold )
 {
-    if ( fabs( orcaice::timeDiffAsDouble( rangeData->timeStamp, localiseData->timeStamp ) ) >= threshold )
+    if ( fabs( orcaice::timeDiffAsDouble( rangeData->timeStamp, localiseData.timeStamp ) ) >= threshold )
         return true;
-    if ( fabs( orcaice::timeDiffAsDouble( rangeData->timeStamp, odomData->timeStamp ) ) >= threshold )
+    if ( fabs( orcaice::timeDiffAsDouble( rangeData->timeStamp, odomData.timeStamp ) ) >= threshold )
         return true;
 
     return false;

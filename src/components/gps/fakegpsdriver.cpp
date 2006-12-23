@@ -57,29 +57,25 @@ FakeGpsDriver::read()
 }
 
 int 
-FakeGpsDriver::getData(orca::GpsDataPtr &data )
+FakeGpsDriver::getData( orca::GpsData& data )
 {
     if(newGpsData_){
 	newGpsData_=false;
-	*data=GpsData_;
+	data=GpsData_;
         return 0;
     }else{
         return -1;
     }
-
 }
 
 int 
-FakeGpsDriver::getTimeData(orca::GpsTimeDataPtr &data )
+FakeGpsDriver::getTimeData( orca::GpsTimeData& data )
 {
     if(newGpsTime_){
 	newGpsTime_=false;
-	*data=GpsTimeData_;
+	data=GpsTimeData_;
         return 0;
     }else{
         return -1;
     }
-
 }
-
-

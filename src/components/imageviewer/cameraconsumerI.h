@@ -20,12 +20,12 @@ namespace imageviewer{
 class CameraConsumerI : public orca::CameraConsumer
 {
 public:
-    CameraConsumerI ( orcaice::PtrBuffer<orca::CameraDataPtr> &dataPipe );
+    CameraConsumerI ( orcaice::Buffer<orca::CameraData> &dataPipe );
     
-    virtual void setData(const orca::CameraDataPtr& data, const Ice::Current&);
+    virtual void setData(const orca::CameraData& data, const Ice::Current&);
 
 private:
-    orcaice::PtrBuffer<orca::CameraDataPtr> &dataPipe_;
+    orcaice::Buffer<orca::CameraData> &dataPipe_;
 };
 
 } // namespace

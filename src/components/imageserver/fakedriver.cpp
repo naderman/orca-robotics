@@ -50,7 +50,7 @@ FakeDriver::init()
 }
 
 int 
-FakeDriver::read( orca::CameraDataPtr& data )
+FakeDriver::read( orca::CameraData& data )
 {
     context_.tracer()->debug( "Generating fake image data...", 6 );
 
@@ -58,14 +58,14 @@ FakeDriver::read( orca::CameraDataPtr& data )
     int rr = rand()%256;
     int gg = rand()%256;
     int bb = rand()%256;
-    flatColor( data->image, (unsigned char)rr, (unsigned char)gg, (unsigned char)bb );
+    flatColor( data.image, (unsigned char)rr, (unsigned char)gg, (unsigned char)bb );
 
 //     randomColor( data->image );
 
     // use a real image from file
 //     fromFile( data->image, "/opt/empty-project-0.0.1/images/penguin.jpg" );
 
-    orcaice::setToNow( data->timeStamp );
+    orcaice::setToNow( data.timeStamp );
         
     // we are controlling frame rate by sleeping
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));

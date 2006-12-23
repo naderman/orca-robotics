@@ -25,8 +25,11 @@ module orca
     for fusing them into an occupancy grid map.
 
 */
-class OgFusionConfig extends OrcaObject
+struct OgFusionConfig
 {
+    //! Time when data was measured.
+    Time timeStamp;
+
     //! The global coordinates of the bottom-left corner of the bottom-left cell
     Frame2d      origin;
 
@@ -54,8 +57,11 @@ sequence<OgCellLikelihood>         OgObservation;
 /*!
     OgFusionData simply contains a sequence of occupancy likelihoods per cell
 */
-class OgFusionData extends OrcaObject
+struct OgFusionData
 {
+    //! Time when data was measured.
+    Time timeStamp;
+
     //! A sequence of cell likelihoods is an observation
     OgObservation observation;
 };

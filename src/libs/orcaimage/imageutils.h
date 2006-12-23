@@ -16,10 +16,10 @@
 namespace orcaimage{
     
 // returns the image format as character array
-std::string formatName( orca::ImageFormat& format );
+std::string formatName( const orca::ImageFormat& format );
 
 // number of channels used to store the image
-int numChannels( orca::ImageFormat& format );
+int numChannels( const orca::ImageFormat& format );
 }
 
 #endif

@@ -21,50 +21,10 @@
 #include <orcaice/context.h>
 #include <orcaice/timer.h>
 
+#include <orcaqgui/detail.h>
+
 namespace orcaqgui
 {
-
-// non-member utility stuff
-namespace detail {
-
-    // A little bit of magic to get around the fact that different (un)subscription
-    // functions may have different names
-    template< class ProxyType, class ConsumerPrxType >
-    class DefaultSubscriptionMaker {
-    public:
-        DefaultSubscriptionMaker( ProxyType proxy, ConsumerPrxType callbackPrx )
-            { proxy->subscribe( callbackPrx ); }
-    };
-    template< class ProxyType, class ConsumerPrxType >
-    class DefaultUnSubscriptionMaker {
-    public:
-        DefaultUnSubscriptionMaker( ProxyType proxy, ConsumerPrxType callbackPrx )
-            { proxy->unsubscribe( callbackPrx ); }
-    };
-
-    // Subscribe/unsubscribe IceStormListeners
-
-    template< class ProxyType,
-              class ConsumerType,
-              class ConsumerPrxType,
-              class SubscriptionMakerType >
-    void
-    subscribeListener( orcaice::Context      &context,
-                       const std::string     &proxyString,
-                       ConsumerType          *consumer,
-                       ConsumerPrxType       &callbackPrx );
-    template< class ProxyType,
-              class ConsumerType,
-              class ConsumerPrxType,
-              class UnSubscriptionMakerType >
-    void
-    unSubscribeListener( orcaice::Context      &context,
-                         const std::string     &proxyString,
-                         ConsumerType          *consumer,
-                         ConsumerPrxType       &callbackPrx );
-}
-
-////////////////////////////////////////////////////////////////////////////////
 
 /*!
     \brief Listens to IceStorm and stores the incoming data.
@@ -74,7 +34,6 @@ namespace detail {
     \author Alex Brooks
 */
 template< class DataType,
-          class DataPtrType,
           class ProxyType,
           class ConsumerType,
           class ConsumerPrxType,
@@ -87,13 +46,12 @@ public:
 
     IceStormListener( const orcaice::Context  &context,
                       const std::string       &proxyStr )
-        : data_(new DataType),
-          context_(context),
+        : context_(context),
           proxyString_(proxyStr),
           isSubscribed_(false)
         {
             // Register with the adapter
-            consumer_ = new orcaice::BufferedTimedConsumerI<ConsumerType,DataPtrType>;
+            consumer_ = new orcaice::BufferedTimedConsumerI<ConsumerType,DataType>;
             registerWithAdapter();
         }
 
@@ -104,7 +62,7 @@ public:
             // do not delete consumer_, it's deletedwhen the smart pointers fall out of scope.
         }
 
-    orcaice::PtrBuffer<DataPtrType> &buffer() { return consumer_->buffer_; }
+    orcaice::Buffer<DataType> &buffer() { return consumer_->buffer_; }
 
     // Returns zero on success
     int connect()
@@ -136,8 +94,8 @@ public:
 
 private:
 
-    DataPtrType                                                data_;
-    orcaice::BufferedTimedConsumerI<ConsumerType,DataPtrType> *consumer_;
+    DataType                                                data_;
+    orcaice::BufferedTimedConsumerI<ConsumerType,DataType> *consumer_;
 
     orcaice::Context  context_;
     std::string       proxyString_;
@@ -184,84 +142,6 @@ private:
     ConsumerPrxType callbackPrx_;
     bool            isSubscribed_;
 };
-
-
-
-namespace detail {
-
-    template< class ProxyType,
-              class ConsumerType,
-              class ConsumerPrxType,
-              class SubscriptionMakerType >
-    void
-    subscribeListener( orcaice::Context      &context,
-                       const std::string     &proxyString,
-                       ConsumerType          *consumer,
-                       ConsumerPrxType       &callbackPrx )
-    {
-        try {
-            // Connect to remote interface
-            ProxyType proxy;
-            orcaice::connectToInterfaceWithString( context, proxy, proxyString );
-
-            // Ask the remote object to subscribe us to the topic.
-            SubscriptionMakerType s( proxy, callbackPrx );
-        }
-        // Ignore all exceptions, and try again next time.
-        catch ( Ice::ConnectionRefusedException &e ) {
-            std::cout<<"TRACE(IceStormListener::subscribeListener): Caught exception: " << e << std::endl;
-            throw;
-        }
-        catch ( Ice::Exception &e ) {
-            std::cout<<"TRACE(IceStormListener::subscribeListener): Caught ice exception: " << e << std::endl;
-            throw;
-        }
-        catch ( std::exception &e ) {
-            std::cout<<"TRACE(IceStormListener::subscribeListener): Caught std exception: " << e.what() << std::endl;
-            throw;
-        }
-        catch ( ... ) {
-            std::cout<<"TRACE(IceStormListener::subscribeListener): Caught unknown exception." << std::endl;
-            throw;
-        }
-    }
-    template< class ProxyType,
-              class ConsumerType,
-              class ConsumerPrxType,
-              class UnSubscriptionMakerType >
-    void
-    unSubscribeListener( orcaice::Context      &context,
-                         const std::string     &proxyString,
-                         ConsumerType          *consumer,
-                         ConsumerPrxType       &callbackPrx )
-    {
-        try {
-            // Connect to remote object
-            ProxyType proxy;
-            orcaice::connectToInterfaceWithString( context, proxy, proxyString );
-
-            // Ask the remote object to unsubscribe us from the topic.
-            UnSubscriptionMakerType s( proxy, callbackPrx );
-        }
-        // Ignore all exceptions, and try again next time.
-        catch ( Ice::ConnectionRefusedException &e ) {
-            std::cout<<"TRACE(IceStormListener::unSubscribeListener): Caught exception: " << e << std::endl;
-            throw;
-        }
-        catch ( Ice::Exception &e ) {
-            std::cout<<"TRACE(IceStormListener::unSubscribeListener): Caught ice exception: " << e << std::endl;
-            throw;
-        }
-        catch ( std::exception &e ) {
-            std::cout<<"TRACE(IceStormListener::unSubscribeListener): Caught std exception: " << e.what() << std::endl;
-            throw;
-        }
-        catch ( ... ) {
-            std::cout<<"TRACE(IceStormListener::unSubscribeListener): Caught unknown exception." << std::endl;
-            throw;
-        }
-    }
-}
 
 } // namespace
 

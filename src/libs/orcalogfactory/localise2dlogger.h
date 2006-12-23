@@ -32,7 +32,7 @@ class Localise2dLogger : public orca::Localise2dConsumer, public orcalog::Logger
         virtual void init();
 
         // from *Consumer
-        virtual void setData(const orca::Localise2dDataPtr& data, const Ice::Current&);
+        virtual void setData(const orca::Localise2dData& data, const Ice::Current&);
 };
 
 }

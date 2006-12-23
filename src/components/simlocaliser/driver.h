@@ -32,7 +32,7 @@ public:
     virtual int disable()=0;
 
     // Blocking read. Returns 0 on success. Does not throw.
-    virtual int read( orca::Localise2dDataPtr &position2d )=0;
+    virtual int read( orca::Localise2dData& position2d )=0;
 
     // For debugging, convert to string as much of internal state as possible
     virtual std::string toString() { return std::string(""); };

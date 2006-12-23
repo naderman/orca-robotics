@@ -11,7 +11,7 @@
 #ifndef ORCAICE_BUFFERED_CONSUMER_I_H
 #define ORCAICE_BUFFERED_CONSUMER_I_H
 
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/buffer.h>
 
 namespace orcaice
 {
@@ -21,8 +21,10 @@ namespace orcaice
  *
  *  Relies on the fact that the Consumer objects has only one operation
  *  to implement and it's called setData().
+ *
+ *  @see PtrBufferedConsumerI when ObjectType is an Ice smart pointer.
  */
-template<class ConsumerType, class ObjectPtrType>
+template<class ConsumerType, class ObjectType>
 class BufferedConsumerI : public ConsumerType
 {
 public:
@@ -30,21 +32,21 @@ public:
     BufferedConsumerI( int depth=1, orcaice::BufferType bufferType = orcaice::BufferTypeCircular )
         : buffer_( depth, bufferType ) {};
 
-    virtual void setData( const ObjectPtrType& data, const Ice::Current& );
+    virtual void setData( const ObjectType& data, const Ice::Current& );
 
     // buffer_ is public so that guielements can access it directly
-    orcaice::PtrBuffer<ObjectPtrType> buffer_;
+    orcaice::Buffer<ObjectType> buffer_;
 
 protected:
 
     //! You can derive from this class and do something when an object is received.
     //! (besides sticking it in the buffer). This adds the functionality of orcaice::PtrNotify.
-    virtual void handleData( const ObjectPtrType & obj ) {};
+    virtual void handleData( const ObjectType & obj ) {};
 };
 
-template<class ConsumerType, class ObjectPtrType>
+template<class ConsumerType, class ObjectType>
 void
-BufferedConsumerI<ConsumerType,ObjectPtrType>::setData( const ObjectPtrType& data, const Ice::Current& )
+BufferedConsumerI<ConsumerType,ObjectType>::setData( const ObjectType& data, const Ice::Current& )
 {
     buffer_.push( data );
     handleData( data );

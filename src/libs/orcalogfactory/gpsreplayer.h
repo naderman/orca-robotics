@@ -33,10 +33,10 @@ public:
     // remote calls:
 
     // Get Gps Data and config
-    virtual ::orca::GpsDataPtr getData(const ::Ice::Current& ) const;    
-    virtual ::orca::GpsTimeDataPtr getTimeData(const ::Ice::Current& ) const;    
-    virtual ::orca::GpsMapGridDataPtr getMapGridData(const ::Ice::Current& ) const;
-    virtual ::orca::GpsDescriptionPtr getDescription(const ::Ice::Current& ) const;
+    virtual ::orca::GpsData getData(const ::Ice::Current& ) const;    
+    virtual ::orca::GpsTimeData getTimeData(const ::Ice::Current& ) const;    
+    virtual ::orca::GpsMapGridData getMapGridData(const ::Ice::Current& ) const;
+    virtual ::orca::GpsDescription getDescription(const ::Ice::Current& ) const;
 
     // Subscribes and unsubscribes
     virtual void subscribe(const ::orca::GpsConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
@@ -49,15 +49,15 @@ public:
     virtual void replayData( int index, bool isTest=false );
 
 private:
-    orcaice::PtrBuffer<orca::GpsDescriptionPtr> gpsDescriptionBuffer_;
-    orcaice::PtrBuffer<orca::GpsDataPtr> gpsDataBuffer_;
-    orcaice::PtrBuffer<orca::GpsTimeDataPtr> gpsTimeDataBuffer_;
-    orcaice::PtrBuffer<orca::GpsMapGridDataPtr> gpsMapGridDataBuffer_;
+    orcaice::Buffer<orca::GpsDescription> gpsDescriptionBuffer_;
+    orcaice::Buffer<orca::GpsData> gpsDataBuffer_;
+    orcaice::Buffer<orca::GpsTimeData> gpsTimeDataBuffer_;
+    orcaice::Buffer<orca::GpsMapGridData> gpsMapGridDataBuffer_;
     
-    orca::GpsDescriptionPtr descrPtr_;
-    orca::GpsDataPtr gpsDataPtr_;
-    orca::GpsTimeDataPtr gpsTimeDataPtr_;
-    orca::GpsMapGridDataPtr gpsMapGridDataPtr_;
+    orca::GpsDescription descr_;
+    orca::GpsData gpsData_;
+    orca::GpsTimeData gpsTimeData_;
+    orca::GpsMapGridData gpsMapGridData_;
     
     virtual void initInterfaces();
     virtual void initDescriptions();

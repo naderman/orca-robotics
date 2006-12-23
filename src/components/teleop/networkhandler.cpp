@@ -19,7 +19,7 @@ using namespace std;
 using namespace orca;
 using namespace teleop;
 
-NetworkHandler::NetworkHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandBuffer,
+NetworkHandler::NetworkHandler( orcaice::Buffer<orca::Velocity2dCommand> *commandBuffer,
                                 DisplayHandler* displayHandler, const orcaice::Context & context )
     : commandBuffer_(commandBuffer),
       displayHandler_(displayHandler),
@@ -45,10 +45,10 @@ NetworkHandler::run()
     {
     
     // create and init command to default 'halt' command
-    Velocity2dCommandPtr command = new Velocity2dCommand;
-    command->motion.v.x = 0.0;
-    command->motion.v.y = 0.0;
-    command->motion.w = 0.0;
+    Velocity2dCommand command;
+    command.motion.v.x = 0.0;
+    command.motion.v.y = 0.0;
+    command.motion.w = 0.0;
 
     // configs
     std::string prefix = context_.tag() + ".Config.";
@@ -79,7 +79,7 @@ NetworkHandler::run()
     while ( isActive() )
     {
         int ret = commandBuffer_->getAndPopNext( command, timeoutMs );
-        orcaice::setToNow( command->timeStamp );
+        orcaice::setToNow( command.timeStamp );
 
         //
         // Sending motion command (probably over the network)

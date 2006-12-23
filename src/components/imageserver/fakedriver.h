@@ -29,7 +29,7 @@ public:
     virtual int init();
 
     // Blocks till new data is available
-    virtual int read( orca::CameraDataPtr &data );
+    virtual int read( orca::CameraData& data );
 
 private:
 

@@ -17,7 +17,7 @@ using namespace orca;
 using namespace orcaice;
 using namespace segwayrmp;
 
-Position3dI::Position3dI( orcaice::PtrProxy<orca::Position3dDataPtr>    & position3dPipe,
+Position3dI::Position3dI( orcaice::Proxy<orca::Position3dData>    & position3dPipe,
                           const IceStorm::TopicPrx                      & topic )
     : position3dPipe_(position3dPipe),
       topic_(topic)
@@ -25,13 +25,13 @@ Position3dI::Position3dI( orcaice::PtrProxy<orca::Position3dDataPtr>    & positi
 }
 
 // served out the data to the client (it was stored here by the driver at the last read)
-orca::Position3dDataPtr
+orca::Position3dData
 Position3dI::getData(const Ice::Current& current) const
 {
     //std::cout << "Sending data back" << std::endl;
 
     // create a null pointer. data will be cloned into it.
-    Position3dDataPtr data;
+    Position3dData data;
 
     try
     {
@@ -46,14 +46,13 @@ Position3dI::getData(const Ice::Current& current) const
     return data;
 }
 
-orca::Position3dDescriptionPtr
+orca::Position3dDescription
 Position3dI::getDescription(const Ice::Current& current) const
 {
-    //std::cout << "Pretending to send description back" << std::endl;
+    throw orca::DataNotExistException( "not implemented." );
 
     // @todo implement
-    Position3dDescriptionPtr descr = new Position3dDescription;
-
+    Position3dDescription descr;
     return descr;
 }
 

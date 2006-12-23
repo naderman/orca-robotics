@@ -47,7 +47,7 @@ void setInit( orca::CartesianPoint & );
 //! Sets all fields to zero.
 void setInit( orca::Time & );
 //! Sets all fields to zero and stalled to FALSE.
-void setInit( const orca::Position2dDataPtr & );
+void setInit( orca::Position2dData & );
 //! Sets all fields to zero
 void setInit( orca::Waypoint2d & );
 
@@ -71,25 +71,27 @@ void setSane( orca::Time & );
 void setSane( orca::TimeOfDay & );
 
 //! Set to randomized but sane values.
-void setSane( const orca::CameraDataPtr &, int width=640, int height=480 );
+void setSane( orca::CameraData&, int width=640, int height=480 );
 //! Set to randomized but sane values.
-void setSane( const orca::GpsDataPtr & );
+void setSane( orca::GpsData& );
 //! Set to randomized but sane values.
-void setSane( const orca::GpsTimeDataPtr & );
+void setSane( orca::GpsTimeData& );
 //! Set to randomized but sane values.
-void setSane( const orca::GpsMapGridDataPtr & );
+void setSane( orca::GpsMapGridData& );
+//! Set to randomized but sane values.
+void setSane( const orca::RangeScanner2dDataPtr &, int numberOfSamples=361 );
 //! Set to randomized but sane values.
 void setSane( const orca::LaserScanner2dDataPtr &, int numberOfSamples=361 );
 //! Set to randomized but sane values.
-void setSane( const orca::OgMapDataPtr &, int width=640, int height=480 );
+void setSane( orca::OgMapData &, int width=640, int height=480 );
 //! Set to randomized but sane values.
-void setSane( const orca::Position2dDataPtr & );
+void setSane( orca::Position2dData & );
 //! Set to randomized but sane values.
-void setSane( const orca::Position3dDataPtr & );
+void setSane( orca::Position3dData & );
 //! Set to randomized but sane values.
 void setSane( orca::PowerData &, int count=2 );
 //! Set to randomized but sane values.
-void setSane( const orca::Velocity2dCommandPtr & );
+void setSane( orca::Velocity2dCommand & );
 //@}
 
 //@}

@@ -28,7 +28,7 @@ class UserHandler : public orcaice::Thread
 {
 public:
 
-    UserHandler( orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commands,
+    UserHandler( orcaice::Buffer<orca::Velocity2dCommand> *commands,
                     const orcaice::Context & context );
     virtual ~UserHandler();
 
@@ -39,7 +39,7 @@ public:
 private:
 
     // network/driver interface
-    orcaice::PtrBuffer<orca::Velocity2dCommandPtr> *commandPipe_;
+    orcaice::Buffer<orca::Velocity2dCommand> *commandPipe_;
 
     // generic interface to input hardware
     InputDriver* driver_;

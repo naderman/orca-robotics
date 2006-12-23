@@ -31,9 +31,8 @@ OgMapsCombinedElement::OgMapsCombinedElement( const orcaice::Context  &context,
     for (int i=0; i<proxyStrList.size(); i++)
     {
         cout << "proxyString: " << proxyStrList[i].toStdString() << endl;
-        IceStormListener<OgMapData,OgMapDataPtr,OgMapPrx,OgMapConsumer,OgMapConsumerPrx>
+        IceStormListener<OgMapData,OgMapPrx,OgMapConsumer,OgMapConsumerPrx>
             *listener = new IceStormListener<OgMapData,
-                                             OgMapDataPtr,
                                              OgMapPrx,
                                              OgMapConsumer,
                                              OgMapConsumerPrx>(context, proxyStrList[i].toStdString());
@@ -84,9 +83,9 @@ void OgMapsCombinedElement::update()
 //         listeners_[i]->buffer().getAndPop( data );
 //     }
     
-    OgMapDataPtr data0;
+    OgMapData data0;
     listeners_[0]->buffer().getAndPop( data0 );
-    OgMapDataPtr data1;
+    OgMapData data1;
     listeners_[1]->buffer().getAndPop( data1 );
     
     // transfer data into painter
@@ -102,11 +101,11 @@ void OgMapsCombinedElement::actionOnConnection()
         OgMapPrx prx;
         cout<< "TRACE(actionOnConnection.cpp): connect to interface " << listeners_[0]->interfaceName() << endl;
         orcaice::connectToInterfaceWithString( context_, prx, listeners_[0]->interfaceName() );
-        OgMapDataPtr data0 = prx->getData();
+        OgMapData data0 = prx->getData();
         
         cout<< "TRACE(actionOnConnection.cpp): connect to interface " << listeners_[1]->interfaceName() << endl;
         orcaice::connectToInterfaceWithString( context_, prx, listeners_[1]->interfaceName() );
-        OgMapDataPtr data1 = prx->getData(); 
+        OgMapData data1 = prx->getData(); 
         
         painter_.setData( data0, data1 );
         

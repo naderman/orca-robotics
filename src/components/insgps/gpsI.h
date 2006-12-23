@@ -39,9 +39,9 @@
 class GpsI : public orca::Gps, public insgps::InsGpsI
 {
 public:
-    GpsI(orca::GpsDescriptionPtr descr,
-         insgps::Driver*  hwDriver,
-         const orcaice::Context & context);
+    GpsI( const orca::GpsDescription& descr,
+            insgps::Driver*  hwDriver,
+            const orcaice::Context & context);
 
     //
     // gps message handler functions
@@ -56,11 +56,11 @@ public:
     //
     
     // Get GPS Data
-    virtual ::orca::GpsDataPtr     getData(const ::Ice::Current& ) const;
-    virtual ::orca::GpsTimeDataPtr getTimeData(const ::Ice::Current& ) const;
-    virtual ::orca::GpsMapGridDataPtr getMapGridData(const ::Ice::Current& ) const;
+    virtual ::orca::GpsData getData(const ::Ice::Current& ) const;
+    virtual ::orca::GpsTimeData getTimeData(const ::Ice::Current& ) const;
+    virtual ::orca::GpsMapGridData getMapGridData(const ::Ice::Current& ) const;
     
-    virtual ::orca::GpsDescriptionPtr getDescription(const ::Ice::Current& ) const;
+    virtual ::orca::GpsDescription getDescription(const ::Ice::Current& ) const;
 
     // Subscribe and unsubcribe people
     virtual void subscribe(const ::orca::GpsConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
@@ -71,12 +71,12 @@ public:
     virtual void unsubscribeForMapGrid(const ::orca::GpsMapGridConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
     // Set GPS Data
-    void localSetData( ::orca::GpsDataPtr data );
-    void localSetTimeData( ::orca::GpsTimeDataPtr data );
-    void localSetMapGridData( ::orca::GpsMapGridDataPtr data );
+    void localSetData( const ::orca::GpsData& data );
+    void localSetTimeData( const ::orca::GpsTimeData& data );
+    void localSetMapGridData( const ::orca::GpsMapGridData& data );
 
     // Get Gps Description
-    orca::GpsDescriptionPtr localGetDescription() const;
+    orca::GpsDescription localGetDescription() const;
 
 private:
 
@@ -85,9 +85,9 @@ private:
     //      
 
     // the handler (this class) will put the latest data into this buffer
-    orcaice::PtrBuffer<orca::GpsDataPtr> gpsDataBuffer_;
-    orcaice::PtrBuffer<orca::GpsMapGridDataPtr> gpsMapGridDataBuffer_;
-    orcaice::PtrBuffer<orca::GpsTimeDataPtr> gpsTimeDataBuffer_;
+    orcaice::Buffer<orca::GpsData> gpsDataBuffer_;
+    orcaice::Buffer<orca::GpsMapGridData> gpsMapGridDataBuffer_;
+    orcaice::Buffer<orca::GpsTimeData> gpsTimeDataBuffer_;
 
     //publishers
     orca::GpsConsumerPrx gpsPublisher_;
@@ -99,7 +99,7 @@ private:
     IceStorm::TopicPrx topicMapGridPrx_;
     IceStorm::TopicPrx topicTimePrx_;
 
-    orca::GpsDescriptionPtr descr_;
+    orca::GpsDescription descr_;
 
     //
     // handler stuff
@@ -108,10 +108,10 @@ private:
     // hardware driver
     insgps::Driver* hwDriver_;
 
-    orca::GpsDataPtr gpsData_;
+    orca::GpsData gpsData_;
     
     // read from the hwDriver_'s buffer
-    void read( ::orca::GpsDataPtr& );
+    void read( ::orca::GpsData& );
     
     orcaice::Context context_;
     

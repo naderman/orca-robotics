@@ -38,27 +38,27 @@ OgMapPainter::paint( QPainter *p, int z )
 }
 
 void
-OgMapPainter::setData( const orca::OgMapDataPtr & data )
+OgMapPainter::setData( const orca::OgMapData& data )
 {
 //     cout << orcaice::toVerboseString(data);
     data_ = data;
 
-    if ( data->origin.o != 0.0 ) {
+    if ( data.origin.o != 0.0 ) {
         cout << "ERROR(ogmappainter.cpp): Don't know how to display a non-axis-aligned map." << endl;
         return;
     }
     
     // assemble information to give to pixmapPainter
     PixmapData pixmapData;
-    pixmapData.cellSize = QSizeF(data->metresPerCellX,data->metresPerCellY);
-    pixmapData.mapSizePix = QSize(data->numCellsX,data->numCellsY);
-    pixmapData.origin = QPointF(data->origin.p.x,data->origin.p.y);
+    pixmapData.cellSize = QSizeF(data.metresPerCellX,data.metresPerCellY);
+    pixmapData.mapSizePix = QSize(data.numCellsX,data.numCellsY);
+    pixmapData.origin = QPointF(data.origin.p.x,data.origin.p.y);
     
-    for (int i=0; i<(data->numCellsX*data->numCellsY); i++)
+    for (int i=0; i<(data.numCellsX*data.numCellsY); i++)
     {
-        pixmapData.rgbR.push_back(255-data->data[i]);
-        pixmapData.rgbG.push_back(255-data->data[i]);
-        pixmapData.rgbB.push_back(255-data->data[i]);
+        pixmapData.rgbR.push_back(255-data.data[i]);
+        pixmapData.rgbG.push_back(255-data.data[i]);
+        pixmapData.rgbB.push_back(255-data.data[i]);
     }
     
     pixmapPainter_->setData( pixmapData );

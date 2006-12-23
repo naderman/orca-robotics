@@ -15,17 +15,16 @@ class OdometryDifferentiator
 public: 
 
     OdometryDifferentiator()
-        : prevOdomInitialised_(false),
-          prevOdom_(new orca::Position2dData)
+        : prevOdomInitialised_(false)
         {}
 
     //! Calculates the delta that this new odometry reading represents
-    void addOdom( const orca::Position2dDataPtr odom, orcanavutil::Offset &delta );
+    void addOdom( const orca::Position2dData& odom, orcanavutil::Offset &delta );
 
 private: 
 
-    bool                    prevOdomInitialised_;
-    orca::Position2dDataPtr prevOdom_;
+    bool                 prevOdomInitialised_;
+    orca::Position2dData prevOdom_;
 
 };
 

@@ -32,10 +32,10 @@ class PathUpdateConsumer : public orca::PathFollower2dConsumer
 {
 public:
     
-    void setData( const orca::PathFollower2dDataPtr &newPath, const ::Ice::Current& );
+    void setData( const orca::PathFollower2dData& newPath, const ::Ice::Current& );
     void setWaypointIndex( int index, const ::Ice::Current& );
 
-    orcaice::PtrProxy<orca::PathFollower2dDataPtr> pathPipe_;
+    orcaice::Proxy<orca::PathFollower2dData> pathPipe_;
     orcaice::Proxy<int> indexPipe_;
 };
 ////////////////////////////////////////////////////////////////////////////////

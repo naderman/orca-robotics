@@ -168,7 +168,7 @@ getComponentData( const orcaice::Context & context, const orca::FQComponentName 
     ComponentData data;
     data.name = component;
     
-    orca::HomeDataPtr homeData;
+    orca::HomeData homeData;
     
     try
     {
@@ -179,7 +179,7 @@ getComponentData( const orcaice::Context & context, const orca::FQComponentName 
         data.isReachable = true;
 
         // copy time since activation
-        data.timeUp = homeData->timeUp;
+        data.timeUp = homeData.timeUp;
         // debug
 //         cout<<"time up :"<<data.timeUp<<"s"<<endl;
 
@@ -188,7 +188,7 @@ getComponentData( const orcaice::Context & context, const orca::FQComponentName 
         {
             Ice::ConnectionPtr conn = ohome->ice_getConnection();
             data.address = orcamisc::connectionToRemoteAddress( conn->toString() );
-            //std::cout<<"remote address : ["<<homeData->address<<"]"<<std::endl;
+            //std::cout<<"remote address : ["<<homeData.address<<"]"<<std::endl;
         }
         catch( const Ice::CollocationOptimizationException & )
         {
@@ -204,17 +204,17 @@ getComponentData( const orcaice::Context & context, const orca::FQComponentName 
     
     // look up provided interface types
     ProvidesHeader pface;
-    for ( unsigned int j=0; j<homeData->comp.provides.size(); ++j ) {   
+    for ( unsigned int j=0; j<homeData.comp.provides.size(); ++j ) {   
         pface = getProvidesHeader( context,
-                    orcaice::toInterfaceName( homeData->comp.provides[j].name+"@"+orcaice::toString(data.name) ) );
+                    orcaice::toInterfaceName( homeData.comp.provides[j].name+"@"+orcaice::toString(data.name) ) );
         data.provides.push_back( pface );
     }
 
     // for now, we don't actually try to lookup required interfaces
     RequiresHeader rface;
-    for ( unsigned int j=0; j<homeData->comp.requires.size(); ++j ) {
-        rface.name = homeData->comp.requires[j].name;
-        rface.id = homeData->comp.requires[j].id;
+    for ( unsigned int j=0; j<homeData.comp.requires.size(); ++j ) {
+        rface.name = homeData.comp.requires[j].name;
+        rface.id = homeData.comp.requires[j].id;
         rface.isReachable = false;
         data.requires.push_back( rface );
     }
@@ -228,7 +228,7 @@ getComponentHomeData( const orcaice::Context & context, const Ice::ObjectPrx & o
     ComponentData data;
     data.name = orcaice::toComponentName( ohome->ice_getAdapterId() );
 
-    orca::HomeDataPtr homeData;
+    orca::HomeData homeData;
 
     try
     {
@@ -240,7 +240,7 @@ getComponentHomeData( const orcaice::Context & context, const Ice::ObjectPrx & o
         data.isReachable = true;
 
         // copy time since activation
-        data.timeUp = homeData->timeUp;
+        data.timeUp = homeData.timeUp;
         // debug
 //         cout<<"time up :"<<data.timeUp<<"s"<<endl;
 
@@ -249,7 +249,7 @@ getComponentHomeData( const orcaice::Context & context, const Ice::ObjectPrx & o
         {
             Ice::ConnectionPtr conn = ohome->ice_getConnection();
             data.address = orcamisc::connectionToRemoteAddress( conn->toString() );
-            //std::cout<<"remote address : ["<<homeData->address<<"]"<<std::endl;
+            //std::cout<<"remote address : ["<<homeData.address<<"]"<<std::endl;
         }
         catch( const Ice::CollocationOptimizationException & )
         {
@@ -265,22 +265,22 @@ getComponentHomeData( const orcaice::Context & context, const Ice::ObjectPrx & o
 
     // look up provided interface types
     ProvidesHeader pface;
-    for ( unsigned int j=0; j<homeData->comp.provides.size(); ++j ) {   
+    for ( unsigned int j=0; j<homeData.comp.provides.size(); ++j ) {   
         // debug
-//         cout<<"looking up interface "<<homeData->comp.provides[j].name<<" on "<<orcaice::toString(data.name)<<endl;
+//         cout<<"looking up interface "<<homeData.comp.provides[j].name<<" on "<<orcaice::toString(data.name)<<endl;
         orca::FQInterfaceName fqName;
         fqName.platform = data.name.platform;
         fqName.component = data.name.component;
-        fqName.iface = homeData->comp.provides[j].name;
+        fqName.iface = homeData.comp.provides[j].name;
         pface = getProvidesHeader( context, fqName );
         data.provides.push_back( pface );
     }
 
     // for now, we don't actually try to lookup required interfaces
     RequiresHeader rface;
-    for ( unsigned int j=0; j<homeData->comp.requires.size(); ++j ) {
-        rface.name = homeData->comp.requires[j].name;
-        rface.id = homeData->comp.requires[j].id;
+    for ( unsigned int j=0; j<homeData.comp.requires.size(); ++j ) {
+        rface.name = homeData.comp.requires[j].name;
+        rface.id = homeData.comp.requires[j].id;
         rface.isReachable = false;
         data.requires.push_back( rface );
     }

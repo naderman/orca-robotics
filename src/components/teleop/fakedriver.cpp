@@ -39,7 +39,7 @@ int FakeDriver::disable()
     return 0;
 }
 
-int FakeDriver::read( orca::Velocity2dCommandPtr &data )
+int FakeDriver::read( orca::Velocity2dCommand& data )
 {
     orcaice::setSane( data );
 

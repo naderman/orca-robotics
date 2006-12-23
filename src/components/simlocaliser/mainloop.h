@@ -28,7 +28,7 @@ class MainLoop : public orcaice::Thread
 public:
 
     MainLoop( const orca::Localise2dConsumerPrx                localise2dConsumer,
-              orcaice::PtrBuffer<orca::Localise2dDataPtr>     &locBuffer,
+              orcaice::Buffer<orca::Localise2dData>     &locBuffer,
               const orcaice::Context & context );
     virtual ~MainLoop();
 
@@ -40,7 +40,7 @@ private:
     const orca::Localise2dConsumerPrx  localise2dConsumer_;
     
     // outgoing
-    orcaice::PtrBuffer<orca::Localise2dDataPtr> &locBuffer_;
+    orcaice::Buffer<orca::Localise2dData> &locBuffer_;
 
     // generic interface to the hardware
     Driver* driver_;

@@ -15,7 +15,7 @@ using namespace std;
 namespace orcaimage{
 
 std::string 
-formatName( orca::ImageFormat& format )
+formatName( const orca::ImageFormat& format )
 {
     switch( format )
     {
@@ -61,7 +61,7 @@ formatName( orca::ImageFormat& format )
 }
 
 int 
-numChannels( orca::ImageFormat& format )
+numChannels( const orca::ImageFormat& format )
 {
     switch( format )
     {

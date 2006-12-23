@@ -78,8 +78,11 @@ be fused to create a larger occupancy-grid map.
 
    For OgMapData manipulation functions, see @ref orca_library_orcaogmap
 */
-class OgMapData extends OrcaObject
+struct OgMapData
 {
+    //! Time when data was measured.
+    Time timeStamp;
+
     //! The global coordinates of the bottom-left corner of the bottom-left cell
     Frame2d      origin;
     //! The number of cells along the x axis

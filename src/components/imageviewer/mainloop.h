@@ -27,7 +27,7 @@ class MainLoop : public orcaice::Thread
 public:
 
     MainLoop( const orca::CameraConsumerPrx & callbackPrx,
-                orcaice::PtrBuffer<orca::CameraDataPtr> & dataPipe, 
+                orcaice::Buffer<orca::CameraData> & dataPipe, 
                 const orcaice::Context & context );
 
     ~MainLoop();
@@ -43,9 +43,9 @@ private:
     orca::CameraConsumerPrx callbackPrx_;
     
     // buffers
-    orcaice::PtrBuffer<orca::CameraDataPtr> & dataPipe_;
+    orcaice::Buffer<orca::CameraData> & dataPipe_;
     
-    orca::CameraDescriptionPtr  descr_;
+    orca::CameraDescription  descr_;
 
     orcaice::Context context_;
 

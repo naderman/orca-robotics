@@ -21,7 +21,6 @@ namespace orcaqgui {
 class OgMapElement
     : public IceStormElement<OgMapPainter,
                                              orca::OgMapData,
-                                             orca::OgMapDataPtr,
                                              orca::OgMapPrx,
                                              orca::OgMapConsumer,
                                              orca::OgMapConsumerPrx>

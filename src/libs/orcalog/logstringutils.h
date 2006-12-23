@@ -12,7 +12,6 @@
 #define ORCALOG_STRINGIFY_UTILITIES_H
 
 #include <string>
-#include <orca/ocm.h>
 #include <orca/orca.h>
 #include <orca/binaryswitch.h>
 #include <orca/camera.h>
@@ -41,32 +40,32 @@ namespace orcalog
 //@{
 
 //! Prints out laser data to text which is easy to parse
-std::string toLogString( const orca::CpuDataPtr & );
+std::string toLogString( const orca::CpuData& );
 //! Prints out laser data to text which is easy to parse
-std::string toLogString( const orca::LaserScanner2dDataPtr & );
+std::string toLogString( const orca::LaserScanner2dDataPtr& );
 //! Prints out localise2d data to text which is easy to parse
-std::string toLogString( const orca::Localise2dDataPtr & );
+std::string toLogString( const orca::Localise2dData& );
 //! Prints out resulting fine path to text in a parsable format
-std::string toLogString( const orca::PathPlanner2dDataPtr & );
+std::string toLogString( const orca::PathPlanner2dData& );
 //! Prints out task path (coarse) to text in a parsable format
-std::string toLogString( const orca::PathPlanner2dTaskPtr & );
+std::string toLogString( const orca::PathPlanner2dTask& );
 // //! Prints out polarfeature2d data to text which is easy to parse
-// std::string toLogString( const orca::PolarFeature2dDataPtr & );
+// std::string toLogString( const orca::PolarFeature2dData& );
 //! Prints out position2d data to text which is easy to parse
-std::string toLogString( const orca::Position2dDataPtr & );
+std::string toLogString( const orca::Position2dData& );
 //! Prints out position3d data to text which is easy to parse
-std::string toLogString( const orca::Position3dDataPtr & );
+std::string toLogString( const orca::Position3dData& );
 
 
 //! Prints out Power data to text which is easy to parse
-std::string toLogString( const orca::PowerData & );
+std::string toLogString( const orca::PowerData& );
 //! Parses a line of ASCII log. Throws orcalog::ParseException on error.
-void fromLogString( std::stringstream & stream, orca::PowerData & );
+void fromLogString( std::stringstream& stream, orca::PowerData& );
 
 //! Returns string in simple format "sec usec" 
-std::string toLogString( const orca::Time & );
+std::string toLogString( const orca::Time& );
 //! Parses a line of ASCII log. Throws orcalog::ParseException on error.
-void fromLogString( std::stringstream & stream, orca::Time & );
+void fromLogString( std::stringstream& stream, orca::Time& );
 //}
 
 

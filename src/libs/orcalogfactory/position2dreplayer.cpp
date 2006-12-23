@@ -21,8 +21,7 @@ int Position2dReplayer::_counter = 0;
 Position2dReplayer::Position2dReplayer( const std::string      &format,
                                         const std::string      &filename,
                                         const orcaice::Context &context )
-    : orcalog::Replayer("Position2d", format, filename, context),
-      data_(new orca::Position2dData)
+    : orcalog::Replayer("Position2d", format, filename, context)
 {
     // check that we support this format
     if ( format_!="ice" ) //&& format_!="ascii" )
@@ -50,7 +49,7 @@ Position2dReplayer::initInterfaces()
     orcaice::createInterfaceWithString( context_, obj, interfaceName_ );
 }
 
-orca::Position2dDataPtr 
+orca::Position2dData
 Position2dReplayer::getData(const Ice::Current& current) const
 {
     if ( dataPipe_.isEmpty() )
@@ -58,21 +57,21 @@ Position2dReplayer::getData(const Ice::Current& current) const
         throw orca::DataNotExistException( "logplayer buffer is empty, probably because we are not replaying yet" );
     }
 
-    orca::Position2dDataPtr data;
+    orca::Position2dData data;
     dataPipe_.get( data );
 
     return data;
 }
 
 
-::orca::Position2dGeometryPtr 
+::orca::Position2dGeometry
 Position2dReplayer::getGeometry(const ::Ice::Current& ) const
 {
     if ( position2dGeometryBuffer_.isEmpty() )
     {
         throw orca::DataNotExistException( "logplayer buffer is empty, probably because we are not replaying yet" );
     }
-    orca::Position2dGeometryPtr geometry;
+    orca::Position2dGeometry geometry;
     position2dGeometryBuffer_.get( geometry );
     return geometry;
 }
@@ -96,7 +95,7 @@ Position2dReplayer::unsubscribe(const ::orca::Position2dConsumerPrx &subscriber,
 void 
 Position2dReplayer::initConfigs()
 {
-    orca::Position2dGeometryPtr geometry = new orca::Position2dGeometry;
+    orca::Position2dGeometry geometry;
 
     orcalog::IceReadHelper helper( context_.communicator(), file_ );
     ice_readPosition2dGeometry( helper.stream_, geometry );

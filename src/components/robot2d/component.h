@@ -17,8 +17,8 @@
 #include <orca/platform2d.h>
 
 // data pipes
-#include <orcaice/ptrproxy.h>
-#include <orcaice/ptrnotify.h>
+#include <orcaice/proxy.h>
+#include <orcaice/notify.h>
 
 namespace robot2d
 {
@@ -47,14 +47,14 @@ private:
     // INTERFACES BETWEEN NETWORK AND HARDWARE HANDLERS
     //
     // hardware->network
-    orcaice::PtrProxy<orca::Position2dDataPtr> position2dPipe_;
+    orcaice::Proxy<orca::Position2dData> position2dPipe_;
     // hardware->network
-    orcaice::PtrProxy<orca::Platform2dConfigPtr> currentConfigPipe_;
+    orcaice::Proxy<orca::Platform2dConfig> currentConfigPipe_;
 
     // network->hardware
-    orcaice::PtrNotify<orca::Velocity2dCommandPtr> commandPipe_;
+    orcaice::Notify<orca::Velocity2dCommand> commandPipe_;
     // network->hardware
-    orcaice::PtrProxy<orca::Platform2dConfigPtr> setConfigPipe_;
+    orcaice::Proxy<orca::Platform2dConfig> setConfigPipe_;
 };
 
 } // namespace

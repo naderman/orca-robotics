@@ -73,11 +73,6 @@ Component::start()
                                                              pos2dPrx,
                                                              "Odometry" );
 
-//     posConsumer_ = new orcaice::BufferedConsumerI<orca::Position2dConsumer,orca::Position2dDataPtr>;
-//     Ice::ObjectPtr consumerPtr = posConsumer_;
-//     orca::Position2dConsumerPrx consumerPrx =
-//         orcaice::createConsumerInterface<Position2dConsumerPrx>( context(), consumerPtr );
-
     // create a callback object to recieve scans
     Ice::ObjectPtr consumer = new Position2dConsumerI( posPipe_ );
     orca::Position2dConsumerPrx consumerPrx =

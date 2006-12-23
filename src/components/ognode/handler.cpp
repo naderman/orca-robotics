@@ -16,7 +16,7 @@ using namespace std;
 using namespace ognode;
 
 Handler::Handler(OgMapI& OgMapInterface,
-                orcaice::PtrBuffer<orca::OgFusionDataPtr> &OgFusionDataBuffer,
+                orcaice::Buffer<orca::OgFusionData>& OgFusionDataBuffer,
                 orcaogmap::OgMap& localMap,
                 const orcaice::Context & context)
     : ogMapInterface_(OgMapInterface),
@@ -32,9 +32,8 @@ Handler::~Handler(){
 void
 Handler::run()
 {
-
-    orca::OgFusionDataPtr data = new orca::OgFusionData;
-    orca::OgMapDataPtr map = new orca::OgMapData;
+    orca::OgFusionData data;
+    orca::OgMapData map;
     
     while ( isActive() )
     {
@@ -50,13 +49,13 @@ Handler::run()
                 }
             }
                 
-            //cout << "got an object with " << data->observation.size() << " cells\n";
-            for(unsigned int i=0;i<data->observation.size();i++)
+            //cout << "got an object with " << data.observation.size() << " cells\n";
+            for(unsigned int i=0;i<data.observation.size();i++)
             {
-                ogfusion::add(localMap_,data->observation[i]);
+                ogfusion::add(localMap_,data.observation[i]);
             }
             convert(localMap_,map);
-                    map->timeStamp=data->timeStamp;
+                    map.timeStamp=data.timeStamp;
                     ogMapInterface_.localSetData(map);
                         
         } // try

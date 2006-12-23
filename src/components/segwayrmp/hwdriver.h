@@ -38,11 +38,11 @@ public:
 //     virtual int disable()=0;
 
     // Blocking read. Returns 0 on success. Does not throw.
-    virtual int read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 
+    virtual int read( orca::Position2dData& position2d, orca::Position3dData& position3d, 
                       orca::PowerData &power, std::string &status )=0;
 
     // Writes velocity command. Returns 0 on success. Does not throw.
-    virtual int write( const orca::Velocity2dCommandPtr & command )=0;
+    virtual int write( const orca::Velocity2dCommand& command )=0;
 
     // For debugging, convert to string as much of internal state as possible
     virtual std::string toString() { return std::string(""); };

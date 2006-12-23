@@ -17,13 +17,12 @@ using namespace orcaice;
 
 namespace localnav {
 
-PathMaintainer::PathMaintainer( orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe,
+PathMaintainer::PathMaintainer( orcaice::Proxy<orca::PathFollower2dData> &pathPipe,
                                 orcaice::Proxy<bool>                           &newPathArrivedPipe,
                                 orcaice::Proxy<orca::Time>                     &activationPipe,
                                 orcaice::Proxy<int>                            &wpIndexPipe,
                                 const orcaice::Context & context)
-    : path_(new orca::PathFollower2dData),
-      wpIndex_(-1),
+    : wpIndex_(-1),
       wpIndexChanged_(false),
       pathPipe_(pathPipe),
       newPathArrivedPipe_(newPathArrivedPipe),
@@ -36,20 +35,20 @@ PathMaintainer::PathMaintainer( orcaice::PtrProxy<orca::PathFollower2dDataPtr> &
 const orca::Waypoint2d &
 PathMaintainer::currentWaypoint() const
 {
-    assert( wpIndex_ >= 0 && wpIndex_ <= (int) (path_->path.size()) );
-    return path_->path[wpIndex_];
+    assert( wpIndex_ >= 0 && wpIndex_ <= (int) (path_.path.size()) );
+    return path_.path[wpIndex_];
 }
 
 void
-PathMaintainer::checkPathOut( const orca::PathFollower2dDataPtr &pathData )
+PathMaintainer::checkPathOut( const orca::PathFollower2dData& pathData )
 {
     std::stringstream ss;
     bool normal=true;
     const float epsLinear     = 1e-3;
     const float epsRotational = 1.0*M_PI/180.0;
-    for ( unsigned int i=0; i < pathData->path.size(); i++ )
+    for ( unsigned int i=0; i < pathData.path.size(); i++ )
     {
-        const orca::Waypoint2d &wp = pathData->path[i];
+        const orca::Waypoint2d &wp = pathData.path[i];
 
         if ( wp.distanceTolerance < epsLinear )
         {
@@ -107,7 +106,7 @@ PathMaintainer::checkForNewPath( orca::PathFollower2dConsumerPrx &pathConsumer )
             context_.tracer()->debug( "PathMaintainer: activating.", 1 );
             activationPipe_.get(pathStartTime_);
             wpIndex_ = 0;
-            if ( path_->path.size() == 0 )
+            if ( path_.path.size() == 0 )
             {
                 context_.tracer()->debug( "Path was empty.  Stopping.", 1 );
                 wpIndex_ = -1;
@@ -141,14 +140,14 @@ PathMaintainer::incrementWpIndex()
 {
     wpIndexChanged_ = true;
     wpIndex_++;
-    if ( wpIndex_ >= (int) path_->path.size() )
+    if ( wpIndex_ >= (int) path_.path.size() )
     {
         wpIndex_ = -1;
     }
 }
 
 void
-PathMaintainer::informWorldOfNewPath( orca::PathFollower2dConsumerPrx pathConsumer, orca::PathFollower2dDataPtr &path )
+PathMaintainer::informWorldOfNewPath( orca::PathFollower2dConsumerPrx pathConsumer, orca::PathFollower2dData& path )
 {
     pathConsumer->setData( path );
 }

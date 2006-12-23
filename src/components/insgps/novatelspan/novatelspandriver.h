@@ -83,10 +83,10 @@ public:
     //
     
     // Read from the gpsBuffer where the driver is storing all incoming gps messages
-    virtual void readGps( orca::GpsDataPtr& data, int timeoutMs=2000 );
-    virtual void readGpsTime( orca::GpsTimeDataPtr &data, int timeoutMs=2000 );
-    virtual void readImu(orca::ImuDataPtr& data, int timeoutMs=2000 );
-    virtual void readPosition3d(orca::Position3dDataPtr& data, int timeoutMs=2000 );
+    virtual void readGps( orca::GpsData& data, int timeoutMs=2000 );
+    virtual void readGpsTime( orca::GpsTimeData& data, int timeoutMs=2000 );
+    virtual void readImu(orca::ImuData& data, int timeoutMs=2000 );
+    virtual void readPosition3d(orca::Position3dData& data, int timeoutMs=2000 );
     
     virtual void shutdown();
        
@@ -131,9 +131,9 @@ private:
     unsigned long pos_type_;
 
     // the driver will put the latest data into this queue buffer of depth 100
-    orcaice::PtrBuffer<orca::GpsDataPtr> gpsDataBuffer_;
-    orcaice::PtrBuffer<orca::ImuDataPtr> imuDataBuffer_;
-    orcaice::PtrBuffer<orca::Position3dDataPtr> position3dDataBuffer_;
+    orcaice::Buffer<orca::GpsData> gpsDataBuffer_;
+    orcaice::Buffer<orca::ImuData> imuDataBuffer_;
+    orcaice::Buffer<orca::Position3dData> position3dDataBuffer_;
         
     // Qhere the latest and greatest of each log is stored.
     // The trailing B's indicate binary messages

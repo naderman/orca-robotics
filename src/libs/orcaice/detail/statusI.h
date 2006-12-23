@@ -35,7 +35,7 @@ public:
 
     // orca::Status interface
 
-    virtual ::orca::StatusDataPtr getData(const ::Ice::Current& ) const;
+    virtual ::orca::StatusData getData(const ::Ice::Current& ) const;
     
     virtual void subscribe(const ::orca::StatusConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 

@@ -33,7 +33,7 @@ public:
 private:
     Handler *handler_;
 
-    orcaice::PtrBuffer<orca::OgFusionDataPtr> OgFusionDataBuffer_;
+    orcaice::Buffer<orca::OgFusionData> OgFusionDataBuffer_;
     Ice::ObjectPtr ogFusionObjPtr_;
     Ice::ObjectPtr ogMapObjPtr_;
     orcaogmap::OgMap localMap_;

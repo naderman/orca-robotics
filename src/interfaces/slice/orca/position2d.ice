@@ -26,8 +26,10 @@ module orca
 // define messages first
 
 //! Position2d data structure
-class Position2dData extends OrcaObject
+struct Position2dData
 {
+    //! Time when data was measured.
+    Time timeStamp;
     //! Robot pose in global CS according to odometry.
     Frame2d pose;
     //! Translational and angular velocities in the robot CS.
@@ -39,8 +41,10 @@ class Position2dData extends OrcaObject
 };
 
 //! Position2d geometry data structure
-class Position2dGeometry extends OrcaObject
+struct Position2dGeometry
 {
+    //! Time when data was measured.
+    Time timeStamp;
     //! Pose of the robot base, in the robot CS
     Frame2d offset;
     //! Dimensions of the base

@@ -25,7 +25,7 @@ Driver::Driver( const Config& cfg, const orcaice::Context& context )
     
     
 int
-Driver::initData( orca::CameraDataPtr &data ) const
+Driver::initData( orca::CameraData& data ) const
 {
     if ( !config_.validate() )
     {
@@ -38,13 +38,13 @@ Driver::initData( orca::CameraDataPtr &data ) const
     else
     {
         // resize the object to the correct image size
-        data->image.resize( config_.imageSize );
+        data.image.resize( config_.imageSize );
         
         // Transfer config info to object info
-        data->imageWidth = config_.imageWidth;
-        data->imageHeight = config_.imageHeight;
-        data->format = config_.format;
-        data->compression = config_.compression;
+        data.imageWidth = config_.imageWidth;
+        data.imageHeight = config_.imageHeight;
+        data.format = config_.format;
+        data.compression = config_.compression;
 
         return 0;
     }

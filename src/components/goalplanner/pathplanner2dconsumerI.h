@@ -22,13 +22,13 @@ namespace goalplanner
 class PathPlanner2dConsumerI : public orca::PathPlanner2dConsumer
 {
 public:
-    PathPlanner2dConsumerI(orcaice::PtrProxy<orca::PathPlanner2dDataPtr> &pathBuffer);
+    PathPlanner2dConsumerI(orcaice::Proxy<orca::PathPlanner2dData> &pathBuffer);
 
     // remote call
-    virtual void setData(const ::orca::PathPlanner2dDataPtr&, const ::Ice::Current& = ::Ice::Current());
+    virtual void setData(const ::orca::PathPlanner2dData&, const ::Ice::Current& = ::Ice::Current());
 
 private:
-    orcaice::PtrProxy<orca::PathPlanner2dDataPtr> &pathBuffer_;
+    orcaice::Proxy<orca::PathPlanner2dData> &pathBuffer_;
 };
 
 } // namespace

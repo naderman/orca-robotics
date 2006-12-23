@@ -26,8 +26,10 @@ module orca
 // define messages first
 
 //! Position3d data structure
-class Position3dData extends OrcaObject
+struct Position3dData
 {
+    //! Time when data was measured.
+    Time timeStamp;
     //! Robot pose in global CS according to odometry.
     Frame3d pose;
     //! Translational and angular velocities in the robot CS.
@@ -39,8 +41,10 @@ class Position3dData extends OrcaObject
 };
 
 //! Position3d description data structure
-class Position3dDescription extends OrcaObject
+struct Position3dDescription
 {
+    //! Time when data was measured.
+    Time timeStamp;
     //! Pose of the robot base, in the robot CS
     Frame3d offset;
     //! Dimensions of the base

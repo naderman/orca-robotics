@@ -27,7 +27,9 @@ module orca
 //! A single particle
 struct SingleParticle2d
 {
+    //! pose
     Frame2d pose;
+    //! weight
     float   weight;
 };
 
@@ -37,8 +39,9 @@ sequence<SingleParticle2d>  Particle2dSequence;
 /*!
     Particle2d data structure
 */
-class Particle2dData extends OrcaObject
+struct Particle2dData
 {
+    //! particles
     Particle2dSequence particles;
 };
 
@@ -47,6 +50,7 @@ class Particle2dData extends OrcaObject
 */
 interface Particle2dConsumer
 {
+    //! set data
     void setData( Particle2dData obj );
 };
 

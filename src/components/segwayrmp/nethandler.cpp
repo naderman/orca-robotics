@@ -27,12 +27,12 @@ using namespace orca;
 using namespace segwayrmp;
 
 NetHandler::NetHandler(
-                 orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
-                 orcaice::PtrProxy<orca::Position3dDataPtr>    & position3dPipe,
-                 orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
+                 orcaice::Proxy<orca::Position2dData>    & position2dPipe,
+                 orcaice::Proxy<orca::Position3dData>    & position3dPipe,
+                 orcaice::Notify<orca::Velocity2dCommand>& commandPipe,
                  orcaice::Proxy<orca::PowerData>         & powerPipe,
-                 orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
-                 orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
+                 orcaice::Proxy<orca::Platform2dConfig>  & setConfigPipe,
+                 orcaice::Proxy<orca::Platform2dConfig>  & currentConfigPipe,
                  const orcaice::Context                        & context )
       : position2dPipe_(position2dPipe),
         position3dPipe_(position3dPipe),
@@ -40,9 +40,6 @@ NetHandler::NetHandler(
         powerPipe_(powerPipe),
         setConfigPipe_(setConfigPipe),
         currentConfigPipe_(currentConfigPipe),
-        position2dData_(new Position2dData),
-        position3dData_(new Position3dData),
-        commandData_(new Velocity2dCommand),
         context_(context)
 {
     init();

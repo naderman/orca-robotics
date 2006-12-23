@@ -13,14 +13,14 @@
 
 using namespace std;
 
-Localise2dConsumerI::Localise2dConsumerI(orcaice::PtrProxy<orca::Localise2dDataPtr> &localise2dDataBuffer)
-    :localise2dDataBuffer_(localise2dDataBuffer)
+Localise2dConsumerI::Localise2dConsumerI(orcaice::Proxy<orca::Localise2dData>& localise2dDataPipe)
+    :localise2dDataPipe_(localise2dDataPipe)
 {
 }
 
 void
-Localise2dConsumerI::setData(const orca::Localise2dDataPtr& data, const Ice::Current&)
+Localise2dConsumerI::setData(const orca::Localise2dData& data, const Ice::Current&)
 {
     //cout << "TRACE(localise2dconsumerI.cpp): Just received new localise2d data" << endl;
-    localise2dDataBuffer_.set(data);
+    localise2dDataPipe_.set(data);
 }

@@ -44,7 +44,7 @@ CpuProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
 int 
 CpuProbe::loadGetInfo()
 {
-    orca::CpuInfoPtr data;
+    orca::CpuInfo data;
     
     try
     {
@@ -63,7 +63,7 @@ CpuProbe::loadGetInfo()
 int 
 CpuProbe::loadGetData()
 {
-    orca::CpuDataPtr data;
+    orca::CpuData data;
     
     try
     {

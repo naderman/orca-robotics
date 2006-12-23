@@ -18,7 +18,7 @@ using namespace orca;
 
 namespace laser2d {
 
-LaserScanner2dI::LaserScanner2dI( const orca::RangeScanner2dDescriptionPtr & descr,
+LaserScanner2dI::LaserScanner2dI( const orca::RangeScanner2dDescription& descr,
                                   const std::string             &ifaceTag,
                                   const orcaice::Context        &context )
     : descr_(descr),
@@ -101,7 +101,7 @@ LaserScanner2dI::getData(const Ice::Current& current) const
 }
 
 // served out the data to the client (it was stored here earlier by the driver)
-orca::RangeScanner2dDescriptionPtr 
+orca::RangeScanner2dDescription
 LaserScanner2dI::getDescription(const Ice::Current& current) const
 {
     context_.tracer()->debug( "getDescription()", 5 );

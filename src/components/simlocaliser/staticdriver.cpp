@@ -20,26 +20,25 @@ using namespace orca;
 using namespace simlocaliser;
 
 StaticDriver::StaticDriver( const orca::Frame2d & pose )
-    : location2d_(new orca::Localise2dData)
 {
-    location2d_->hypotheses.resize(1);
-    location2d_->hypotheses[0].weight = 1.0;
+    location2d_.hypotheses.resize(1);
+    location2d_.hypotheses[0].weight = 1.0;
     
-    location2d_->hypotheses[0].mean = pose;
+    location2d_.hypotheses[0].mean = pose;
 
     // should this also be configurable?
-    location2d_->hypotheses[0].cov.xx   = 0.01;
-    location2d_->hypotheses[0].cov.yy   = 0.01;
-    location2d_->hypotheses[0].cov.tt   = 0.01*M_PI/180.0;
-    location2d_->hypotheses[0].cov.xy   = 0.0;
-    location2d_->hypotheses[0].cov.xt   = 0.0;
-    location2d_->hypotheses[0].cov.yt   = 0.0;
+    location2d_.hypotheses[0].cov.xx   = 0.01;
+    location2d_.hypotheses[0].cov.yy   = 0.01;
+    location2d_.hypotheses[0].cov.tt   = 0.01*M_PI/180.0;
+    location2d_.hypotheses[0].cov.xy   = 0.0;
+    location2d_.hypotheses[0].cov.xt   = 0.0;
+    location2d_.hypotheses[0].cov.yt   = 0.0;
 }
 
 int
-StaticDriver::read( orca::Localise2dDataPtr & localise2d )
+StaticDriver::read( orca::Localise2dData& localise2d )
 {
-    orcaice::setToNow( location2d_->timeStamp );
+    orcaice::setToNow( location2d_.timeStamp );
 
     // it's ok just to copy smart pointers because we never modify on our side.
     localise2d = location2d_;

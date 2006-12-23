@@ -21,13 +21,13 @@ namespace orcaimage{
 
 #ifdef OPENCV_FOUND
     // This function has not been tested very well
-    void cvtToRgb( IplImage* dest, IplImage* bayerSrc, const orca::CameraDataPtr& src );
+    void cvtToRgb( IplImage* dest, IplImage* bayerSrc, const orca::CameraData& src );
     
     // Often use this function for converting to bgr image format used in opencv
     // TODO: this should only have one IplImage but imaghandler.cpp has been setup so that the bayer 
     // IplImage is differnet to the colour IplImage... is there a way to fix this?
     // Should this function be overloaded so that only one IplImage is an argument?
-    void cvtToBgr( IplImage* dest, IplImage* bayerSrc, const orca::CameraDataPtr& src );
+    void cvtToBgr( IplImage* dest, IplImage* bayerSrc, const orca::CameraData& src );
 #endif
     
 } // namespace

@@ -47,7 +47,7 @@ HomeProbe::loadGetInterfaces( orcacm::OperationData & data )
 {
 //     cout<<"Calling operation orca::Home::getInterfaces()..."<<endl;
 
-    orca::HomeDataPtr result;
+    orca::HomeData result;
     orcacm::ResultHeader res;
     
     try

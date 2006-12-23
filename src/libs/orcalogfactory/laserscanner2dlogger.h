@@ -36,7 +36,7 @@ class LaserScanner2dLogger : public orca::RangeScanner2dConsumer, public orcalog
 
     private:
         // utility
-        void writeDescription( const orca::RangeScanner2dDescriptionPtr & obj );
+        void writeDescription( const orca::RangeScanner2dDescription& obj );
 };
 
 } // namespace

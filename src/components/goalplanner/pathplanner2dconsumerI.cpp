@@ -17,13 +17,13 @@ using namespace std;
 using namespace orca;
 using namespace goalplanner;
 
-PathPlanner2dConsumerI::PathPlanner2dConsumerI(orcaice::PtrProxy<orca::PathPlanner2dDataPtr> &pathBuffer)
+PathPlanner2dConsumerI::PathPlanner2dConsumerI(orcaice::Proxy<orca::PathPlanner2dData> &pathBuffer)
     : pathBuffer_(pathBuffer)
 {
 }
 
 void
-PathPlanner2dConsumerI::setData(const ::orca::PathPlanner2dDataPtr& data, const ::Ice::Current&)
+PathPlanner2dConsumerI::setData(const ::orca::PathPlanner2dData& data, const ::Ice::Current&)
 {
     cout << "INFO(pathplanner2dconsumerI.cpp): Received results: " << endl;
     cout << orcaice::toVerboseString(data) << endl;

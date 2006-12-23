@@ -18,7 +18,7 @@ using namespace orcaice;
 
 namespace localnav {
 
-PathFollower2dI::PathFollower2dI( orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe,
+PathFollower2dI::PathFollower2dI( orcaice::Proxy<orca::PathFollower2dData> &pathPipe,
                                   orcaice::Proxy<bool>                           &newPathArrivedPipe,
                                   orcaice::Proxy<orca::Time>                     &activationPipe,
                                   orcaice::Proxy<int>                            &wpIndexPipe,
@@ -40,14 +40,14 @@ PathFollower2dI::PathFollower2dI( orcaice::PtrProxy<orca::PathFollower2dDataPtr>
     enabledPipe_.set( true );
 }
 
-orca::PathFollower2dDataPtr
+orca::PathFollower2dData
 PathFollower2dI::getData( const ::Ice::Current& ) const
 {
     cout<<"TRACE(pathfollower2dI.cpp): getData()" << endl;
-    orca::PathFollower2dDataPtr data;
+    orca::PathFollower2dData data;
     if ( pathPipe_.isEmpty() )
     {
-        data = new orca::PathFollower2dData;
+        // alexm: is it ok to return an empty structure?
         return data;
     }
     pathPipe_.get( data );
@@ -55,7 +55,7 @@ PathFollower2dI::getData( const ::Ice::Current& ) const
 }
 
 void
-PathFollower2dI::setData( const ::orca::PathFollower2dDataPtr &data, bool activateImmediately, const ::Ice::Current& )
+PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateImmediately, const ::Ice::Current& )
 {
     // Sanity check
     std::string insanityReason;

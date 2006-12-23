@@ -32,7 +32,7 @@ class PathPlannerTaskAnswerConsumer : public orca::PathPlanner2dConsumer
 {
     public:
 
-        virtual void setData(const ::orca::PathPlanner2dDataPtr& data, const ::Ice::Current& = ::Ice::Current());
+        virtual void setData(const ::orca::PathPlanner2dData& data, const ::Ice::Current& = ::Ice::Current());
         orcaice::Proxy<QString> msgBuffer_;
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -119,7 +119,6 @@ private:
 //
 class PathPlanner2dElement : public orcaqgui::IceStormElement<PathPainter,
                              orca::PathPlanner2dData,
-                             orca::PathPlanner2dDataPtr,
                              orca::PathPlanner2dPrx,
                              orca::PathPlanner2dConsumer,
                              orca::PathPlanner2dConsumerPrx>

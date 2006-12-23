@@ -50,7 +50,7 @@ CameraProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
 int 
 CameraProbe::loadGetData()
 {
-    orca::CameraDataPtr data;
+    orca::CameraData data;
     
     try
     {
@@ -69,7 +69,7 @@ CameraProbe::loadGetData()
 int 
 CameraProbe::loadGetDescription()
 {
-    orca::CameraDescriptionPtr data;
+    orca::CameraDescription data;
     
     try
     {

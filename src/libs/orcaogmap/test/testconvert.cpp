@@ -40,7 +40,7 @@ int main( int argc, char **argv )
     cout << "Loaded map with number of cells (" << internalMap.numCellsX() << "," << internalMap.numCellsY() << ")" << endl;
     
     // convert to a Slice-defined ogmap
-    orca::OgMapDataPtr sliceMap = new orca::OgMapData;
+    orca::OgMapData sliceMap;
     orcaogmap::convert( internalMap, sliceMap );
     
     // convert back

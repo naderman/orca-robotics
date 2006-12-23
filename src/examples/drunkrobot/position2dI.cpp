@@ -14,8 +14,8 @@
 using namespace std;
 using namespace drunk; 
 
-Position2dI::Position2dI( orcaice::PtrBuffer<orca::Position2dDataPtr> &posBuffer, 
-                          orca::Position2dGeometryPtr &geomBuffer, 
+Position2dI::Position2dI( orcaice::Buffer<orca::Position2dData> &posBuffer, 
+                          orca::Position2dGeometry &geomBuffer, 
                           const IceStorm::TopicPrx &topic) :
     posBuffer_(posBuffer), 
     geomBuffer_(geomBuffer), 
@@ -25,13 +25,13 @@ Position2dI::Position2dI( orcaice::PtrBuffer<orca::Position2dDataPtr> &posBuffer
 }
 	
 // served out the data to the client (it was stored here by the driver at the last read)
-orca::Position2dDataPtr 
+orca::Position2dData
 Position2dI::getData(const Ice::Current& current) const
 {
     cout << "Sending data back" << endl;
 
     // create a null pointer. data will be cloned into it.
-    orca::Position2dDataPtr data;
+    orca::Position2dData data;
 
     posBuffer_.get( data );
    
@@ -39,7 +39,7 @@ Position2dI::getData(const Ice::Current& current) const
 
 }
 
-orca::Position2dGeometryPtr 
+orca::Position2dGeometry
 Position2dI::getGeometry(const Ice::Current& current) const
 {
     std::cout << "Sending the geometry we were initialised with" << std::endl;

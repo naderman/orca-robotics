@@ -18,7 +18,7 @@ using namespace orca;
 
 namespace imageserver {
 
-CameraI::CameraI( const orca::CameraDescriptionPtr & descr,
+CameraI::CameraI( const orca::CameraDescription& descr,
                   const std::string                &ifaceTag,
                   const orcaice::Context           & context )
     : descr_(descr),
@@ -33,7 +33,7 @@ CameraI::CameraI( const orca::CameraDescriptionPtr & descr,
         ( context_, consumerPrx_, ifaceTag_ );
 }
 
-orca::CameraDataPtr 
+orca::CameraData
 CameraI::getData(const Ice::Current& current) const
 {
     context_.tracer()->debug( "getData()", 5 );
@@ -45,14 +45,14 @@ CameraI::getData(const Ice::Current& current) const
     }
 
     // create a null pointer. data will be cloned into it.
-    orca::CameraDataPtr data;
+    orca::CameraData data;
     dataPipe_.get( data );
 
     return data;
 }
 
 // served out the data to the client (it was stored here earlier by the driver)
-orca::CameraDescriptionPtr 
+orca::CameraDescription
 CameraI::getDescription(const Ice::Current& current) const
 {
     context_.tracer()->debug( "getDescription()", 5 );
@@ -90,7 +90,7 @@ CameraI::unsubscribe(const ::orca::CameraConsumerPrx &subscriber, const ::Ice::C
 }
 
 void
-CameraI::localSetData( const ::orca::CameraDataPtr data )
+CameraI::localSetData( const ::orca::CameraData& data )
 {
     dataPipe_.push( data );
 

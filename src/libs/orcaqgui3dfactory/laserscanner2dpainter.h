@@ -31,7 +31,7 @@ class LaserScanner2dPainter
                     float  brightReturnWidth=0.2 );
     ~LaserScanner2dPainter();
 
-    void setDescription( const orca::RangeScanner2dDescriptionPtr &descr );
+    void setDescription( const orca::RangeScanner2dDescription& descr );
     void setData( const orca::RangeScanner2dDataPtr &scan );
     
     void paint( QGLWidget *p );
@@ -46,7 +46,7 @@ class LaserScanner2dPainter
   private:
 
     orca::LaserScanner2dDataPtr data_;
-    orca::RangeScanner2dDescriptionPtr description_;
+    orca::RangeScanner2dDescription description_;
 
     bool isDisplayScan_;
     // bool isDisplayWalls_;

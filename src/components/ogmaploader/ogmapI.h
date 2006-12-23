@@ -28,14 +28,12 @@ class OgMapI : public orca::OgMap
 {
 public:
 
-    OgMapI( orca::OgMapDataPtr  theMap,
+    OgMapI( orca::OgMapData&  theMap,
             const std::string  &tag,
             const orcaice::Context & context );
 
     // Remote calls:
-
-    // Hand out data to people
-    orca::OgMapDataPtr getData(const Ice::Current&) const;
+    orca::OgMapData getData(const Ice::Current&) const;
 
     virtual void subscribe(const ::orca::OgMapConsumerPrx&,
                            const Ice::Current&);
@@ -50,7 +48,7 @@ private:
     // The interface to which we'll publish
     orca::OgMapConsumerPrx         consumerPrx_;
 
-    orca::OgMapDataPtr theMap_;
+    orca::OgMapData& theMap_;
 
     orcaice::Context context_;
 };

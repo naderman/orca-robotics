@@ -29,7 +29,7 @@ class MultipleOgMapPainter
     bool paintThisLayer( int z ) const { return z==Z_OG_MAP; }
 
     // Give the PixmapPainter the data relevant for painting
-    void setData( const orca::OgMapDataPtr & data0, const orca::OgMapDataPtr & data1 );
+    void setData( const orca::OgMapData& data0, const orca::OgMapData& data1 );
     
     void toggleDisplayMap() { pixmapPainter_->toggleDisplayMap(); };
     

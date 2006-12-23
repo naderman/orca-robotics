@@ -35,9 +35,9 @@ private:
     MainLoop *mainLoop_;
 
     // Now the buffers that go to the ICE interface:
-    orcaice::PtrBuffer<orca::Position2dDataPtr> posBuffer_; 
+    orcaice::Buffer<orca::Position2dData> posBuffer_; 
 
-    orca::Position2dGeometryPtr geom_; 
+    orca::Position2dGeometry geom_; 
 
     // This is used to set up our interface 
     Ice::ObjectPtr position2dObj_;

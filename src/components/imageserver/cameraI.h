@@ -30,7 +30,7 @@ namespace imageserver {
 class CameraI : public virtual orca::Camera
 {
 public:
-    CameraI( const orca::CameraDescriptionPtr & descr,
+    CameraI( const orca::CameraDescription& descr,
              const std::string                &ifaceTag,
              const orcaice::Context           & context );
 
@@ -38,9 +38,9 @@ public:
     // From orca object
     //
 
-    virtual ::orca::CameraDataPtr     getData(const ::Ice::Current& ) const;
+    virtual ::orca::CameraData getData(const ::Ice::Current& ) const;
 
-    virtual ::orca::CameraDescriptionPtr   getDescription(const ::Ice::Current& ) const;
+    virtual ::orca::CameraDescription getDescription(const ::Ice::Current& ) const;
 
     virtual void subscribe(const ::orca::CameraConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
@@ -50,14 +50,14 @@ public:
     //
     // Local calls:
     //
-    void localSetData( const ::orca::CameraDataPtr data );
+    void localSetData( const ::orca::CameraData& data );
 
 private:
 
     // the driver will put the latest data into this buffer
-    orcaice::PtrBuffer<orca::CameraDataPtr>          dataPipe_;
+    orcaice::Buffer<orca::CameraData>          dataPipe_;
 
-    orca::CameraDescriptionPtr  descr_;
+    orca::CameraDescription  descr_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx             topicPrx_;

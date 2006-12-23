@@ -29,20 +29,18 @@ using namespace orca;
 using namespace segwayrmp;
 
 HwHandler::HwHandler(
-                 orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
-                 orcaice::PtrProxy<orca::Position3dDataPtr>    & position3dPipe,
-                 orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
+                 orcaice::Proxy<orca::Position2dData>    & position2dPipe,
+                 orcaice::Proxy<orca::Position3dData>    & position3dPipe,
+                 orcaice::Notify<orca::Velocity2dCommand>& commandPipe,
                  orcaice::Proxy<orca::PowerData>         & powerPipe,
-                 orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
-                 orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
+                 orcaice::Proxy<orca::Platform2dConfig>  & setConfigPipe,
+                 orcaice::Proxy<orca::Platform2dConfig>  & currentConfigPipe,
                  const orcaice::Context                        & context )
       : position2dPipe_(position2dPipe),
         position3dPipe_(position3dPipe),
         powerPipe_(powerPipe),
         setConfigPipe_(setConfigPipe),
         currentConfigPipe_(currentConfigPipe),
-        position2dData_(new Position2dData),
-        position3dData_(new Position3dData),
         driver_(0),
         context_(context)
 {
@@ -250,9 +248,12 @@ HwHandler::run()
 // Here we handle command arriving through Platform2d interface.
 //
 void
-HwHandler::handleData( const orca::Velocity2dCommandPtr & obj )
+HwHandler::handleData( const orca::Velocity2dCommand & origObj )
 {
     //cout<<"handling: "<<orcaice::toString(obj)<<endl;
+
+    // make a copy so we can apply limits
+    orca::Velocity2dCommand obj = origObj;
 
     // if we know we can't write, don't try
     bool writeOk = false;
@@ -277,13 +278,13 @@ HwHandler::handleData( const orca::Velocity2dCommandPtr & obj )
     //
     // apply max limits
     //
-    if ( fabs(obj->motion.v.x) > config_.maxSpeed ) {
-        obj->motion.v.x =
-                (obj->motion.v.x / fabs(obj->motion.v.x)) * config_.maxSpeed;
+    if ( fabs(obj.motion.v.x) > config_.maxSpeed ) {
+        obj.motion.v.x =
+                (obj.motion.v.x / fabs(obj.motion.v.x)) * config_.maxSpeed;
     }
-    if ( fabs(obj->motion.w) > config_.maxTurnrate ) {
-        obj->motion.w =
-                (obj->motion.w / fabs(obj->motion.w)) * config_.maxTurnrate;
+    if ( fabs(obj.motion.w) > config_.maxTurnrate ) {
+        obj.motion.w =
+                (obj.motion.w / fabs(obj.motion.w)) * config_.maxTurnrate;
     }
 
     //

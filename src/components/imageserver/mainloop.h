@@ -56,7 +56,7 @@ private:
     // Loops until activated
     void activate();
 
-    void readData( orca::CameraDataPtr & data );
+    void readData( orca::CameraData& data );
 
 };
 

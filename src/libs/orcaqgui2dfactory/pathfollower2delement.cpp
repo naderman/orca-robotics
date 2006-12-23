@@ -26,7 +26,7 @@ namespace orcaqgui {
 ////////////////////////////////////////////////////////////////////////////////
 
 void
-PathUpdateConsumer::setData( const orca::PathFollower2dDataPtr &newPath, const ::Ice::Current& )
+PathUpdateConsumer::setData( const orca::PathFollower2dData& newPath, const ::Ice::Current& )
 {
     pathPipe_.set( newPath );
 }
@@ -178,7 +178,7 @@ PathFollower2dElement::update()
     
     if ( pathUpdateConsumer_->pathPipe_.isNewData() )
     {
-        orca::PathFollower2dDataPtr newPath;
+        orca::PathFollower2dData newPath;
         pathUpdateConsumer_->pathPipe_.get( newPath );
         painter_.setData( newPath );
     }
@@ -317,7 +317,7 @@ PathFollower2dElement::stop()
 {
     cout<<"TRACE(PathFollower2dElement): stop()" << endl;
     humanManager_->showStatusMsg(Information,"Received STOP signal");
-    PathFollower2dDataPtr dummyPath = new PathFollower2dData;
+    PathFollower2dData dummyPath;
     const bool activateNow = false;
     try
     {

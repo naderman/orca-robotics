@@ -40,8 +40,11 @@ range readings included.  Scans proceed counterclockwise about the sensor
 sequence<float> RangeSequence;
 
 //! Device description
-class RangeScanner2dDescription extends OrcaObject
+struct RangeScanner2dDescription
 {
+    //! Time when description was generated.
+    Time timeStamp;
+
     //! Minimum range [m]
     double minRange;
 

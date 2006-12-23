@@ -30,16 +30,16 @@ public:
     virtual int disable();
 
     // Blocks till new data is available
-    virtual int read( orca::Velocity2dCommandPtr &data );
+    virtual int read( orca::Velocity2dCommand& data );
 
     // from DisplayHandler
     virtual void displayEvent( const Event e );
-    virtual void displayCommand( const orca::Velocity2dCommandPtr & command,
+    virtual void displayCommand( const orca::Velocity2dCommand& command,
                                  const bool vx=false, const bool vy=false, const bool w=false );
 
 private:
 
-    orca::Velocity2dCommandPtr command_;
+    orca::Velocity2dCommand command_;
 
     Config config_;
 

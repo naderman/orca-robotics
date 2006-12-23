@@ -128,12 +128,12 @@ void
 MainLoop::run()
 {
     
-    PathFollower2dDataPtr incomingPath = new PathFollower2dData;
-    Localise2dDataPtr localiseData = new Localise2dData;
+    PathFollower2dData incomingPath;
+    Localise2dData localiseData;
     
-    PathPlanner2dTaskPtr taskPtr = new PathPlanner2dTask;
+    PathPlanner2dTask task;
     PathPlanner2dConsumerPrx callbackPrx;
-    PathPlanner2dDataPtr computedPath = new PathPlanner2dData;
+    PathPlanner2dData computedPath;
     
     Waypoint2d wp;
     orcaice::setInit( wp );
@@ -164,14 +164,14 @@ MainLoop::run()
                 localise2dExceptionBuffer_.set( localiseData );
                 if (ret==0)
                 {
-                    if ( localiseData->hypotheses.size() == 1 ) break;
+                    if ( localiseData.hypotheses.size() == 1 ) break;
                     
                     context_.tracer()->warning("More than one localisation hypotheses. Can't handle this. Waiting for single hypothesis...");
                 }
             }
                 
             // we're guaranteed to have only 1 hypothesis
-            wp.target = localiseData->hypotheses[0].mean;
+            wp.target = localiseData.hypotheses[0].mean;
             // hardcode uncertainties for the waypoint we start from
             // should we use the uncertainty estimate of the localiser instead?
             wp.distanceTolerance = 5.0; 
@@ -179,9 +179,9 @@ MainLoop::run()
             wp.maxApproachSpeed = 5.0;
             wp.maxApproachTurnrate = (float)DEG2RAD(2e+6); 
             
-    //         cout << "Convariance is: " << localiseData->hypotheses[0].cov.xx << " " 
-    //                 << localiseData->hypotheses[0].cov.xy << " " 
-    //                 << localiseData->hypotheses[0].cov.yy << " " 
+    //         cout << "Convariance is: " << localiseData.hypotheses[0].cov.xx << " " 
+    //                 << localiseData.hypotheses[0].cov.xy << " " 
+    //                 << localiseData.hypotheses[0].cov.yy << " " 
     //                 << endl;
     
     //         double a, b, th;
@@ -191,15 +191,15 @@ MainLoop::run()
             
             // put together a task for the pathplanner
             // add the position of the robot as the first waypoint in the path
-            incomingPath->path.insert( incomingPath->path.begin(), 1, wp );
+            incomingPath.path.insert( incomingPath.path.begin(), 1, wp );
             cout << "DEBUG(mainloop.cpp): Incoming path is " << endl << orcaice::toVerboseString( incomingPath );
-            taskPtr->coarsePath = incomingPath->path;
-            taskPtr->prx = taskPrx_;
+            task.coarsePath = incomingPath.path;
+            task.prx = taskPrx_;
             
             // send task to pathplanner
             context_.tracer()->debug("Sending task to pathplanner");
             try {
-                pathplanner2dPrx_->setTask( taskPtr );
+                pathplanner2dPrx_->setTask( task );
             }
             catch (orca::RequiredInterfaceFailedException &e)
             {
@@ -225,15 +225,15 @@ MainLoop::run()
             }
             
             // check result
-            if ( computedPath->result!= PathOk )
+            if ( computedPath.result!= PathOk )
             {
                 context_.tracer()->warning("Pathplanner could not compute path. Give me another goal");
             }
             else
             {
                 // send out result to localnav, assemble packet first
-                PathFollower2dDataPtr outgoingPath = new PathFollower2dData;
-                outgoingPath->path = computedPath->path;
+                PathFollower2dData outgoingPath;
+                outgoingPath.path = computedPath.path;
                 context_.tracer()->debug("Sending out the resulting path to localnav.");
                 try {
                     // get what's currently in the activation pipe

@@ -46,9 +46,9 @@ public:
     // Blocks till timout expires, returns number of messages read, -1 if failure
     virtual int read();
     // Fetch latest GPS data. return -1 if unavailable
-    virtual int getData(orca::GpsDataPtr &data );
+    virtual int getData(orca::GpsData& data );
     // Fetch latest GPS Time information. return -1 if unavailable
-    virtual int getTimeData(orca::GpsTimeDataPtr &data );
+    virtual int getTimeData(orca::GpsTimeData& data );
 
 private:
 

@@ -17,10 +17,10 @@ using namespace orca;
 using namespace orcaice;
 using namespace segwayrmp;
 
-Platform2dI::Platform2dI( orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
-                          orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
-                          orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
-                          orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
+Platform2dI::Platform2dI( orcaice::Proxy<orca::Position2dData>    & position2dPipe,
+                          orcaice::Notify<orca::Velocity2dCommand>& commandPipe,
+                          orcaice::Proxy<orca::Platform2dConfig>  & setConfigPipe,
+                          orcaice::Proxy<orca::Platform2dConfig>  & currentConfigPipe,
                           const IceStorm::TopicPrx                      & topic )
     : position2dPipe_(position2dPipe),
       commandPipe_(commandPipe),
@@ -31,13 +31,13 @@ Platform2dI::Platform2dI( orcaice::PtrProxy<orca::Position2dDataPtr>    & positi
 }
 
 // served out the data to the client (it was stored here by the driver at the last read)
-orca::Position2dDataPtr
+orca::Position2dData
 Platform2dI::getData(const Ice::Current& current) const
 {
     //std::cout << "Sending data back" << std::endl;
 
     // create a null pointer. data will be cloned into it.
-    Position2dDataPtr data;
+    Position2dData data;
 
     try
     {
@@ -52,14 +52,13 @@ Platform2dI::getData(const Ice::Current& current) const
     return data;
 }
 
-orca::Position2dGeometryPtr
+orca::Position2dGeometry
 Platform2dI::getGeometry(const Ice::Current& current) const
 {
-    //std::cout << "Pretending to send geometry back" << std::endl;
+    throw orca::DataNotExistException( "not implemented." );
 
     // @todo implement
-    Position2dGeometryPtr geometry = new Position2dGeometry;
-
+    Position2dGeometry geometry;
     return geometry;
 }
 
@@ -80,25 +79,25 @@ Platform2dI::unsubscribe(const ::orca::Position2dConsumerPrx& subscriber, const 
 
 // Store incoming command in a proxy, it will be handled by the driver at the next opportunity.
 void
-Platform2dI::setCommand(const ::orca::Velocity2dCommandPtr& command, const ::Ice::Current& )
+Platform2dI::setCommand(const ::orca::Velocity2dCommand& command, const ::Ice::Current& )
 {
     // this is executed directly to hardware and may throw an orca::HardwareException
     commandPipe_.set( command );
 }
 
-orca::Platform2dConfigPtr
+orca::Platform2dConfig
 Platform2dI::getConfig(const ::Ice::Current& ) const
 {
     //std::cout << "Sending config back" << std::endl;
 
-    Platform2dConfigPtr config;
+    Platform2dConfig config;
     currentConfigPipe_.get( config );
 
     return config;
 }
 
 void
-Platform2dI::setConfig(const ::orca::Platform2dConfigPtr& config, const ::Ice::Current& )
+Platform2dI::setConfig(const ::orca::Platform2dConfig& config, const ::Ice::Current& )
 {
     //cout<<"TRACE(laser_i.cpp): Config set." << endl;
     setConfigPipe_.set( config );

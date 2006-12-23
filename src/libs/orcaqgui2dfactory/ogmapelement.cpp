@@ -22,7 +22,6 @@ OgMapElement::OgMapElement( const orcaice::Context  &context,
                             IHumanManager* humanManager )
     : IceStormElement<OgMapPainter,
                       orca::OgMapData,
-                      orca::OgMapDataPtr,
                       orca::OgMapPrx,
                       orca::OgMapConsumer,
                       orca::OgMapConsumerPrx>(context, proxyString, painter_, -1 ),

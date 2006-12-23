@@ -16,7 +16,7 @@ using namespace orca;
 using namespace orcaice;
 using namespace ognode;
 
-OgMapI::OgMapI( orca::OgMapDataPtr  theMap,
+OgMapI::OgMapI( const orca::OgMapData& theMap,
                 const std::string  &tag,
                 const orcaice::Context & context )
     : context_(context)
@@ -29,7 +29,7 @@ OgMapI::OgMapI( orca::OgMapDataPtr  theMap,
     ogMapDataBuffer_.push( theMap );
 }
 
-OgMapDataPtr
+OgMapData
 OgMapI::getData(const Ice::Current& current) const
 {
     std::cout << "getData()" << std::endl;
@@ -37,13 +37,13 @@ OgMapI::getData(const Ice::Current& current) const
     if ( ogMapDataBuffer_.isEmpty() )
 	throw orca::DataNotExistException("No Map");
 
-    orca::OgMapDataPtr data;
+    orca::OgMapData data;
     ogMapDataBuffer_.get(data);
     return data;
 }
 
 void
-OgMapI::localSetData(OgMapDataPtr data)
+OgMapI::localSetData( const OgMapData& data )
 {
     // Stick it in the buffer so pullers can get it
     ogMapDataBuffer_.push( data );

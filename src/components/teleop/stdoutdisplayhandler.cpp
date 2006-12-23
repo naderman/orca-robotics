@@ -39,7 +39,7 @@ StdoutDisplayHandler::displayEvent( const Event e )
 }
 
 void 
-StdoutDisplayHandler::displayCommand( const orca::Velocity2dCommandPtr & command,
+StdoutDisplayHandler::displayCommand( const orca::Velocity2dCommand& command,
                                  const bool vx, const bool vy, const bool w )
 {
     cout<<"\n"<<orcaice::toString( command );

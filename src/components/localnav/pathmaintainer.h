@@ -28,7 +28,7 @@ class PathMaintainer
 
 public: 
 
-    PathMaintainer( orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe,
+    PathMaintainer( orcaice::Proxy<orca::PathFollower2dData> &pathPipe,
                     orcaice::Proxy<bool>                           &newPathArrivedPipe,
                     orcaice::Proxy<orca::Time>                     &activationPipe,
                     orcaice::Proxy<int>                            &wpIndexPipe,
@@ -57,15 +57,15 @@ private:
     // How long since path activation
     double secSinceActivation() const;
     
-    void informWorldOfNewPath( orca::PathFollower2dConsumerPrx pathConsumer, orca::PathFollower2dDataPtr &path );
+    void informWorldOfNewPath( orca::PathFollower2dConsumerPrx pathConsumer, orca::PathFollower2dData& path );
     void informWorldOfNewWpIndex( orca::PathFollower2dConsumerPrx pathConsumer, int newIndex );
 
     // Issue warnings if the path is screwy in some way
-    void checkPathOut( const orca::PathFollower2dDataPtr &pathData );
+    void checkPathOut( const orca::PathFollower2dData& pathData );
 
     // Keep a local copy of the path, so we don't have to mess with the buffer every 
     // time the nav manager wants to look at it.
-    orca::PathFollower2dDataPtr path_;
+    orca::PathFollower2dData path_;
     
     // The index of the next waypoint being seeked.
     int wpIndex_;
@@ -76,7 +76,7 @@ private:
     // The timing of the entire path is relative to this
     orca::Time pathStartTime_;
 
-    orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe_;
+    orcaice::Proxy<orca::PathFollower2dData> &pathPipe_;
     orcaice::Proxy<bool>                           &newPathArrivedPipe_;
     orcaice::Proxy<orca::Time>                     &activationPipe_;
     orcaice::Proxy<int>                            &wpIndexPipe_;

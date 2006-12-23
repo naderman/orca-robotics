@@ -19,13 +19,10 @@ HomeI::HomeI( const orca::ComponentData & compData, const Ice::PropertyDict & pr
 {
     // start the up-time clock
     startTime_ = IceUtil::Time::now();
-
-    // don't forget to creat the object first
-    homeData_ = new orca::HomeData;
     
     // component data is static, so this time stamp will never change.
-    homeData_->timeStamp = orcaice::toOrcaTime( startTime_ );
-    homeData_->comp = compData;
+    homeData_.timeStamp = orcaice::toOrcaTime( startTime_ );
+    homeData_.comp = compData;
 
     // debug
     /*
@@ -37,14 +34,14 @@ HomeI::HomeI( const orca::ComponentData & compData, const Ice::PropertyDict & pr
     */
 }
 
-orca::HomeDataPtr 
+orca::HomeData
 HomeI::getInterfaces(const ::Ice::Current& ) const
 {
     //std::cout << "Sending data back" << std::endl;
 
     IceUtil::Time timeUp = IceUtil::Time::now() - startTime_;
     // we only return the number of seconds
-    homeData_->timeUp = (int)timeUp.toSeconds();
+    homeData_.timeUp = (int)timeUp.toSeconds();
 
     return homeData_;
 }

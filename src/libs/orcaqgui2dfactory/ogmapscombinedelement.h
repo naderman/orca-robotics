@@ -41,7 +41,11 @@ public:
 
 private:
     orcaice::Context context_;
-    std::vector<IceStormListener<orca::OgMapData,orca::OgMapDataPtr,orca::OgMapPrx,orca::OgMapConsumer,orca::OgMapConsumerPrx>* > listeners_;
+    std::vector<IceStormListener<
+            orca::OgMapData,
+            orca::OgMapPrx,
+            orca::OgMapConsumer,
+            orca::OgMapConsumerPrx>* > listeners_;
     MultipleOgMapPainter painter_;
     bool isConnected_;
 };

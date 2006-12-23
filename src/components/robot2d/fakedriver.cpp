@@ -45,7 +45,7 @@ int FakeDriver::disable()
     return 0;
 }
 
-int FakeDriver::read( orca::Position2dDataPtr &position2d, std::string & status )
+int FakeDriver::read( orca::Position2dData& position2d, std::string& status )
 {
     cout<<"TRACE(fakedriver.cpp): Generating fake info for robot2d..." << endl;
     orcaice::setSane( position2d );
@@ -57,10 +57,10 @@ int FakeDriver::read( orca::Position2dDataPtr &position2d, std::string & status 
     return 0;
 }
 
-int FakeDriver::write( const orca::Velocity2dCommandPtr & command )
+int FakeDriver::write( const orca::Velocity2dCommand& command )
 {
     // debug: simulated failure
-    if ( command->motion.v.x < 2.0 ) {
+    if ( command.motion.v.x < 2.0 ) {
         cout<<"wrote: "<<orcaice::toString(command)<<endl;
         return 0;
     }

@@ -24,17 +24,12 @@ namespace pathplanner
 //
 class AlgoDriver 
 {
-
 public:
-
     virtual ~AlgoDriver() {};
     
     // Computes the path
-    virtual void computePath(   const orca::PathPlanner2dTaskPtr  & taskPtr,
-                                const orca::PathPlanner2dDataPtr  & pathDataPtr ) = 0;
-
-protected:
-
+    virtual void computePath( const orca::PathPlanner2dTask& task,
+                              orca::PathPlanner2dData& path ) = 0;
 };
 
 } // namespace

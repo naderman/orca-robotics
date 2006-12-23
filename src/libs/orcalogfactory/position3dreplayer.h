@@ -15,7 +15,7 @@
 #include <orca/position3d.h>
 #include <orcalog/replayer.h>
 
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/buffer.h>
 
 namespace orcalogfactory
 {
@@ -31,9 +31,9 @@ public:
     
     // from Orca object
 
-    virtual ::orca::Position3dDataPtr     getData(const ::Ice::Current& ) const;
+    virtual ::orca::Position3dData getData(const ::Ice::Current& ) const;
 
-    virtual ::orca::Position3dDescriptionPtr getDescription(const ::Ice::Current& ) const;
+    virtual ::orca::Position3dDescription getDescription(const ::Ice::Current& ) const;
 
     virtual void subscribe(const ::orca::Position3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
@@ -44,10 +44,10 @@ public:
     virtual void replayData( int index, bool isTest=false );
 
 private:
-    orcaice::PtrBuffer<orca::Position3dDataPtr> dataPipe_;
-    orcaice::PtrBuffer<orca::Position3dDescriptionPtr> position3dDescriptionBuffer_;
+    orcaice::Buffer<orca::Position3dData> dataPipe_;
+    orcaice::Buffer<orca::Position3dDescription> position3dDescriptionBuffer_;
     
-    orca::Position3dDataPtr data_;
+    orca::Position3dData data_;
     orca::Position3dConsumerPrx publisher_;
     IceStorm::TopicPrx topic_;
 

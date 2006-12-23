@@ -25,40 +25,40 @@ namespace orcaimage{
 #ifdef OPENCV_FOUND
 
 void 
-cvtToRgb( IplImage* dest, IplImage* bayerSrc, const orca::CameraDataPtr& src )
+cvtToRgb( IplImage* dest, IplImage* bayerSrc, const orca::CameraData& src )
 {
-    switch( src->format )
+    switch( src.format )
     {
         case orca::ImageFormatModeRgb:
-            memcpy( dest->imageData, &src->image[0], src->image.size() );
+            memcpy( dest->imageData, &src.image[0], src.image.size() );
             break;
         case orca::ImageFormatModeYuv422:
         case orca::ImageFormatModeBgr:
         default:
             cout<<"ERROR(colourconversions.cpp): Don't know how to convert from image mode " 
-                    << orcaimage::formatName( src->format ) << "." << endl;
+                    << orcaimage::formatName( src.format ) << "." << endl;
             exit(1);
     }
 }
 
 void 
-cvtToBgr( IplImage* dest, IplImage* bayerSrc, const orca::CameraDataPtr& src )
+cvtToBgr( IplImage* dest, IplImage* bayerSrc, const orca::CameraData& src )
 {
-    switch( src->format )
+    switch( src.format )
     {
         case orca::ImageFormatModeBgr:
-            memcpy( dest->imageData, &src->image[0], src->image.size() );
+            memcpy( dest->imageData, &src.image[0], src.image.size() );
             break;
         case orca::ImageFormatModeYuv422:
         // function comes from coriander
-            uyvy2bgr( (unsigned char *) (&src->image[0]),
+            uyvy2bgr( (unsigned char *) (&src.image[0]),
                        (unsigned char *) (dest->imageData), 
-                       src->imageWidth*src->imageHeight );
+                       src.imageWidth*src.imageHeight );
             break;
         case orca::ImageFormatModeRgb:
-            rgb2bgr( (unsigned char *) (&src->image[0]),
+            rgb2bgr( (unsigned char *) (&src.image[0]),
                       (unsigned char *) (dest->imageData), 
-                      src->imageWidth*src->imageHeight );
+                      src.imageWidth*src.imageHeight );
             break;
         // check if the image is bayer encoded
         case orca::ImageFormatBayerBg:
@@ -67,10 +67,10 @@ cvtToBgr( IplImage* dest, IplImage* bayerSrc, const orca::CameraDataPtr& src )
         case orca::ImageFormatBayerGr:
         #ifdef OPENCV_FOUND
              // copy the data from the camera object into the opencv structure
-            memcpy( bayerSrc->imageData, &src->image[0], src->image.size() );
+            memcpy( bayerSrc->imageData, &src.image[0], src.image.size() );
             
             // decode and convert to colour using opencv functions
-            switch( src->format )
+            switch( src.format )
             {
                 case orca::ImageFormatBayerBg:
                     cvCvtColor( bayerSrc, dest, CV_BayerBG2BGR );
@@ -96,14 +96,14 @@ cvtToBgr( IplImage* dest, IplImage* bayerSrc, const orca::CameraDataPtr& src )
                 // For now just load into an IplImage struct
                 TriclopsInput triclopsInput;
                 
-                if ( src->format == orca::ImageFormatDigiclopsStereo )
+                if ( src.format == orca::ImageFormatDigiclopsStereo )
                 {
-                        triclopsInput.nrows = src->imageHeight;
-                        triclopsInput.ncols = src->imageWidth;
+                        triclopsInput.nrows = src.imageHeight;
+                        triclopsInput.ncols = src.imageWidth;
                 }                   
                 else
                 {
-                    cout << "ERROR(coloutconversions.cpp) Digiclops format: " << orcaimage::formatName( src->format ) << " has not been implemented yet" << endl;
+                    cout << "ERROR(coloutconversions.cpp) Digiclops format: " << orcaimage::formatName( src.format ) << " has not been implemented yet" << endl;
                     exit(1);              
                 }
                                                       
@@ -120,9 +120,9 @@ cvtToBgr( IplImage* dest, IplImage* bayerSrc, const orca::CameraDataPtr& src )
                 blue.resize(imageSize);
 
                 // the R,G, and B values are stored in separate arrays
-                memcpy(&red[0], &src->image[0], imageSize );
-                memcpy(&green[0], &src->image[0+imageSize], imageSize );
-                memcpy(&blue[0], &src->image[0+2*imageSize], imageSize );
+                memcpy(&red[0], &src.image[0], imageSize );
+                memcpy(&green[0], &src.image[0+imageSize], imageSize );
+                memcpy(&blue[0], &src.image[0+2*imageSize], imageSize );
 
                 // TODO: can we copy directly into the triclopsInput?
                 triclopsInput.u.rgb.red = &red[0];
@@ -139,7 +139,7 @@ cvtToBgr( IplImage* dest, IplImage* bayerSrc, const orca::CameraDataPtr& src )
                 // channel. eg. the top camera is the blue channel,
                 // left camera=red channel, etc. However opencv
                 // requires the rgb data to be interleaved:
-                for( int i = 0; i < 3*src->imageHeight*src->imageWidth; i += 3 )
+                for( int i = 0; i < 3*src.imageHeight*src.imageWidth; i += 3 )
                 {
                     dest->imageData[i] = red[i/3];
                     dest->imageData[i+1] = green[i/3];
@@ -151,17 +151,17 @@ cvtToBgr( IplImage* dest, IplImage* bayerSrc, const orca::CameraDataPtr& src )
 
         case orca::ImageFormatModeGray:
                 // do nothing      
-                memcpy( dest->imageData, &src->image[0], src->image.size() );
+                memcpy( dest->imageData, &src.image[0], src.image.size() );
                 break;            
         
         case orca::ImageFormatModeNfi:
                 cout << "WARNING(colourconversions.cpp): Assuming image mode " 
-                        << orcaimage::formatName( src->format ) << " is in BGR format." << endl;
-                memcpy( dest->imageData, &src->image[0], src->image.size() );
+                        << orcaimage::formatName( src.format ) << " is in BGR format." << endl;
+                memcpy( dest->imageData, &src.image[0], src.image.size() );
                 break;
         default:
             cout << "ERROR(colourconversions.cpp): Don't know how to convert from image mode " 
-                    << orcaimage::formatName( src->format ) << "." << endl;
+                    << orcaimage::formatName( src.format ) << "." << endl;
             exit(1);
     }
 }

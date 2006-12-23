@@ -32,11 +32,11 @@ class Position3dLogger : public orca::Position3dConsumer, public orcalog::Logger
         virtual void init();
 
         // from *Consumer
-        virtual void setData(const orca::Position3dDataPtr& data, const Ice::Current&);
+        virtual void setData(const orca::Position3dData& data, const Ice::Current&);
 
     private:
         // utility
-        void writeDescriptionToFile( const orca::Position3dDescriptionPtr & obj );
+        void writeDescriptionToFile( const orca::Position3dDescription& obj );
 };
 
 }

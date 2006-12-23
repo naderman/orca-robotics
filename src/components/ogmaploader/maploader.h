@@ -16,7 +16,7 @@
 
 namespace ogmaploader {
 
-void loadMapFromFile( const orcaice::Context & context, orca::OgMapDataPtr &map );
+void loadMapFromFile( const orcaice::Context & context, orca::OgMapData& map );
 
 }
 

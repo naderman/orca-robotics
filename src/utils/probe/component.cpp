@@ -118,8 +118,15 @@ Component::start()
     // which driver to load?
     std::string driverName = orcaice::getPropertyWithDefault( props, prefix+"Driver", "iostream" );
 
-    // generic interface to the user interface
-    orcaprobe::BrowserDriver* browserDriver = 0;
+    //
+    // EVENT QUEUES
+    //
+    orcaice::EventQueuePtr netQueue_ = new orcaice::EventQueue();    
+    orcaice::EventQueuePtr usrQueue_ = new orcaice::EventQueue();  
+
+    BrowserHandler browserHandler( netQueue_, usrQueue_, factories_, context() );
+    browserHandler.start();
+
     // generic interface to the display interface
     orcaprobe::DisplayDriver* displayDriver = 0;
     
@@ -127,7 +134,7 @@ Component::start()
     {
 #ifdef HAVE_QT_DRIVER        
         tracer()->info( "Loading Qt driver");
-        displayDriver = new DisplayQtDriver( supportedInterfaces );
+        displayDriver = new DisplayQtDriver( usrQueue_, netQueue_, supportedInterfaces );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver type 'qt' because it was not compiled." );
 #endif
@@ -135,7 +142,7 @@ Component::start()
     else if ( driverName == "iostream" ) 
     {
         tracer()->info( "Loading iostream driver");
-        displayDriver = new IostreamDriver( supportedInterfaces );
+        displayDriver = new IostreamDriver( usrQueue_, netQueue_, supportedInterfaces );
     }
     else {
         std::string errorStr = "Unknown driver type." + driverName + " Cannot talk to hardware.";
@@ -143,17 +150,11 @@ Component::start()
         throw orcaice::HardwareException( ERROR_INFO, errorStr );
     }
 
-    BrowserHandler browserHandler( *displayDriver, factories_, context() );
-    browserDriver = &browserHandler;
-    browserHandler.start();
-
     // for Qt driver, this will not return
-    displayDriver->enable( browserDriver );
+    displayDriver->enable();
 
     // normally ctrl-c handler does this, now we have to because MainBubble keeps the thread 
     context().communicator()->shutdown();
-
-    // the rest is handled by the application/service
 }
 
 void 

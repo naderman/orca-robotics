@@ -27,7 +27,7 @@ class Localise2dPainter
     // The default color is the color when the robot is not selected.
     Localise2dPainter( bool beginDisplayHistory );
 
-    void setData( orca::Localise2dDataPtr data );
+    void setData( const orca::Localise2dData& data );
 
     void paint( QPainter *p, int z );
     bool paintThisLayer(int z) const {return z==Z_POSE || z==Z_POSE-2;}
@@ -43,7 +43,7 @@ class Localise2dPainter
 
     void paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &hypothesis );
 
-    orca::Localise2dDataPtr data_;
+    orca::Localise2dData data_;
 
     QColor basicColor_;
     QColor currentColor_;

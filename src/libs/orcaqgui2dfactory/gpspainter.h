@@ -29,7 +29,7 @@ class GpsPainter
     GpsPainter( const QColor & colour=Qt::blue, const bool showHistory=true );
     //GpsPainter();
 
-    void setData( orca::GpsMapGridDataPtr data );
+    void setData( const orca::GpsMapGridData& data );
 
     void paint( QPainter *p, int z );
     bool paintThisLayer( int z ) const {return z==Z_POSE || z==Z_POSE-2;}
@@ -41,7 +41,7 @@ class GpsPainter
 
   private:
 
-    orca::GpsMapGridDataPtr data_;
+    orca::GpsMapGridData data_;
 
     QColor basicColour_;
     QColor currentColour_;
@@ -53,7 +53,6 @@ class GpsPainter
     double x_;
     double y_;
     int heading_;
-
 };
 
 }

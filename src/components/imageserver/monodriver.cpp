@@ -112,7 +112,7 @@ MonoDriver::init()
 }
 
 int 
-MonoDriver::read( orca::CameraDataPtr &data )
+MonoDriver::read( orca::CameraData& data )
 {
     cout<<"TRACE(monodriver.cpp): Grabbing camera data..." << endl;
     
@@ -157,11 +157,11 @@ MonoDriver::read( orca::CameraDataPtr &data )
 
         // set the time stamp as soon as we get the image from the imagegrabber.
         // this is inexact... is there a better way?
-        orcaice::setToNow( data->timeStamp );
+        orcaice::setToNow( data.timeStamp );
 
 
         // size of the image (data->image.size()) was defined in mainloop.cpp
-        memcpy( &data->image[0], rawImage, data->image.size() );
+        memcpy( &data.image[0], rawImage, data.image.size() );
 
         return 0;
     }

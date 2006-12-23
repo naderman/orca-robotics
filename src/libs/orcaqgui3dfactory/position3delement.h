@@ -11,7 +11,7 @@
 #ifndef ORCAGUI3D_POSITION3D_ELEMENT_H
 #define ORCAGUI3D_POSITION3D_ELEMENT_H
 
-#include <orcaqgui3d/icestormelement.h>
+#include <orcaqgui3d/icestormelement3d.h>
 #include <orcaqgui3dfactory/position3dpainter.h>
 #include <orcaqgui3d/iknowsplatformposition.h>
 
@@ -21,9 +21,8 @@ namespace orcaqgui3d {
 //! @author Alex Brooks
 //!
 class Position3dElement
-    : public IceStormElement<Position3dPainter,
+    : public IceStormElement3d<Position3dPainter,
                                orca::Position3dData,
-                               orca::Position3dDataPtr,
                                orca::Position3dPrx,
                                orca::Position3dConsumer,
                                orca::Position3dConsumerPrx>,
@@ -35,9 +34,8 @@ public:
     Position3dElement( const orcaice::Context  &context,
                        const std::string       &proxyString,
                        int                      timeoutMs=5000 )
-        : IceStormElement<Position3dPainter,
+        : IceStormElement3d<Position3dPainter,
                             orca::Position3dData,
-                            orca::Position3dDataPtr,
                             orca::Position3dPrx,
                             orca::Position3dConsumer,
                             orca::Position3dConsumerPrx>(context, proxyString, painter_, timeoutMs ),

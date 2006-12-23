@@ -14,6 +14,7 @@
 #include <orcaice/ptrbuffer.h>
 #include <orcaice/ptrproxy.h>
 #include <orcaice/bufferedconsumerI.h>
+#include <orcaice/ptrbufferedconsumerI.h>
 #include <orca/rangescanner2d.h>
 #include <orca/platform2d.h>
 #include <orca/localise2d.h>
@@ -51,9 +52,9 @@ private:
     orca::PathFollower2dConsumerPrx pathPublisher_;
 
     // Get observations, pose, and odometric velocity
-    orcaice::BufferedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr> *obsConsumer_;
-    orcaice::BufferedConsumerI<orca::Localise2dConsumer,orca::Localise2dDataPtr>     *locConsumer_;
-    orcaice::BufferedConsumerI<orca::Position2dConsumer,orca::Position2dDataPtr>     *odomConsumer_;
+    orcaice::PtrBufferedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr> *obsConsumer_;
+    orcaice::BufferedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>     *locConsumer_;
+    orcaice::BufferedConsumerI<orca::Position2dConsumer,orca::Position2dData>     *odomConsumer_;
 
     // Give commands
     orca::Platform2dPrx *platform2dPrx_;
@@ -72,7 +73,7 @@ private:
 
     // The path we're currently following.  
     // PathFollower2dI puts data in when it arrives, and gets data out when queried by the world.
-    orcaice::PtrProxy<orca::PathFollower2dDataPtr> pathPipe_;
+    orcaice::Proxy<orca::PathFollower2dData> pathPipe_;
 
     // Used by PathFollower2dI to inform of new paths from the world
     orcaice::Proxy<bool>                           newPathArrivedPipe_;

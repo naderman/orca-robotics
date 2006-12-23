@@ -46,8 +46,10 @@ sequence<BinaryDeviceData> BinaryDevicesData;
 /*!
     @brief Information about the binary devices of a robot.
 */
-class BinarySwitchData extends OrcaObject
+struct BinarySwitchData
 {
+    //! Time when data was measured.
+    Time timeStamp;
     //! Binary devices
     BinaryDevicesData devices;
 };

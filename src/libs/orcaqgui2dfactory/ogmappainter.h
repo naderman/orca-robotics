@@ -40,7 +40,7 @@ class OgMapPainter
     bool paintThisLayer( int z ) const { return z==Z_OG_MAP; }
 
     // Give the PixmapPainter the data relevant for painting
-    void setData( const orca::OgMapDataPtr & data );
+    void setData( const orca::OgMapData& data );
     
     void clear() {};
     void toggleDisplayMap() { pixmapPainter_->toggleDisplayMap(); };
@@ -49,7 +49,7 @@ class OgMapPainter
     
   private:
       
-    orca::OgMapDataPtr data_;
+    orca::OgMapData data_;
     PixmapPainter *pixmapPainter_;
     ImageFileType checkFileExtension( QString &fe, IHumanManager *humanManager );
 };

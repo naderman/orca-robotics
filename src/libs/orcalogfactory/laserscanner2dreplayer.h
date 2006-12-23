@@ -32,7 +32,7 @@ public:
 
     virtual ::orca::RangeScanner2dDataPtr     getData(const ::Ice::Current& ) const;
 
-    virtual ::orca::RangeScanner2dDescriptionPtr getDescription(const ::Ice::Current& ) const;
+    virtual ::orca::RangeScanner2dDescription getDescription(const ::Ice::Current& ) const;
     
     virtual void subscribe(const ::orca::RangeScanner2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
@@ -44,7 +44,7 @@ public:
 
 private:
     orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> dataPipe_;
-    orcaice::PtrBuffer<orca::RangeScanner2dDescriptionPtr> laserDescriptionBuffer_;
+    orcaice::Buffer<orca::RangeScanner2dDescription> laserDescriptionBuffer_;
     
     orca::LaserScanner2dDataPtr data_;
     orca::RangeScanner2dConsumerPrx publisher_;

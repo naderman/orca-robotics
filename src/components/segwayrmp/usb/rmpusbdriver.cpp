@@ -81,10 +81,10 @@ RmpUsbDriver::enable()
         // segway is physically connected; try to configure
 
         // first, tell it to stand still.
-        orca::Velocity2dCommandPtr zero = new orca::Velocity2dCommand;
-        zero->motion.v.x = 0.0;
-        zero->motion.v.y = 0.0;
-        zero->motion.w = 0.0;
+        orca::Velocity2dCommand zero;
+        zero.motion.v.x = 0.0;
+        zero.motion.v.y = 0.0;
+        zero.motion.w = 0.0;
         write( zero  );
         
         // try reading from it
@@ -156,7 +156,7 @@ RmpUsbDriver::enable()
 // }
 
 int
-RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d, 
+RmpUsbDriver::read( orca::Position2dData& position2d, orca::Position3dData& position3d, 
                     orca::PowerData &power, std::string & status )
 {
     try {
@@ -195,7 +195,7 @@ RmpUsbDriver::read( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr
 }
 
 int
-RmpUsbDriver::write( const orca::Velocity2dCommandPtr & command )
+RmpUsbDriver::write( const orca::Velocity2dCommand& command )
 {
     try {
         makeMotionCommandPacket( &pkt_, command );
@@ -318,64 +318,64 @@ RmpUsbDriver::integrateMotion()
 }
 
 void
-RmpUsbDriver::updateData( orca::Position2dDataPtr &position2d, orca::Position3dDataPtr &position3d,
+RmpUsbDriver::updateData( orca::Position2dData& position2d, orca::Position3dData& position3d,
                           orca::PowerData &power, Status & status )
 {
     // set all time stamps right away
-    orcaice::setToNow( position2d->timeStamp );
-    orcaice::setToNow( position3d->timeStamp );
+    orcaice::setToNow( position2d.timeStamp );
+    orcaice::setToNow( position3d.timeStamp );
     orcaice::setToNow( power.timeStamp );
 
     // POSITION2D
     //
     // for odometry, use integrated values
-    position2d->pose.p.x    = odomX_;
-    position2d->pose.p.y    = odomY_;
-    position2d->pose.o      = odomYaw_;
+    position2d.pose.p.x    = odomX_;
+    position2d.pose.p.y    = odomY_;
+    position2d.pose.o      = odomYaw_;
 
     // for current rates, use instanteneous values
     // combine left and right wheel velocity to get forward velocity
     // change from counts/sec into meters/sec
-    position2d->motion.v.x =
+    position2d.motion.v.x =
             ((double)frame_.left_dot+(double)frame_.right_dot) /
              RMP_COUNT_PER_M_PER_S / 2.0;
 
     // no side speeds for this bot
-    position2d->motion.v.y = 0.0;
+    position2d.motion.v.y = 0.0;
 
     // from counts/sec into deg/sec.  also, take the additive
     // inverse, since the RMP reports clockwise angular velocity as positive.
-    position2d->motion.w = -(double)frame_.yaw_dot / RMP_COUNT_PER_RAD_PER_S;
+    position2d.motion.w = -(double)frame_.yaw_dot / RMP_COUNT_PER_RAD_PER_S;
 
     // @todo stall from currents?
-    position2d->stalled = false;
+    position2d.stalled = false;
 
     // POSITION3D
     //
     // for odometry, use integrated values
-    position3d->pose.p.x    = odomX_;
-    position3d->pose.p.y    = odomY_;
+    position3d.pose.p.x    = odomX_;
+    position3d.pose.p.y    = odomY_;
     // Player got it right: "this robot doesn't fly"
-    position3d->pose.p.z    = 0.0;
+    position3d.pose.p.z    = 0.0;
 
-    position3d->pose.o.r    = frame_.roll;
-    position3d->pose.o.p    = frame_.pitch;
-    position3d->pose.o.y    = odomYaw_;
+    position3d.pose.o.r    = frame_.roll;
+    position3d.pose.o.p    = frame_.pitch;
+    position3d.pose.o.y    = odomYaw_;
 
     // forward speed is the same as for the 2D interface
-    position3d->motion.v.x = position2d->motion.v.x;
+    position3d.motion.v.x = position2d.motion.v.x;
     // no side speeds for this 'bot
-    position3d->motion.v.y = 0.0;
+    position3d.motion.v.y = 0.0;
     // no jumps for this 'bot
-    position3d->motion.v.z = 0.0;
+    position3d.motion.v.z = 0.0;
 
     // note the correspondence between pitch and roll rate and the 
     // axes around which the rotation happens.
-    position3d->motion.w.x = frame_.roll_dot;
-    position3d->motion.w.y = frame_.pitch_dot;
+    position3d.motion.w.x = frame_.roll_dot;
+    position3d.motion.w.y = frame_.pitch_dot;
     // from counts/sec into deg/sec.  also, take the additive
     // inverse, since the RMP reports clockwise angular velocity as positive.
-    position3d->motion.w.z = -(double)frame_.yaw_dot / RMP_COUNT_PER_RAD_PER_S;
+    position3d.motion.w.z = -(double)frame_.yaw_dot / RMP_COUNT_PER_RAD_PER_S;
 
 
     // POWER
@@ -582,14 +582,14 @@ RmpUsbDriver::enableBalanceMode( bool enable )
  *  Takes an Orca command object and turns it into CAN packets for the RMP
  */
 void
-RmpUsbDriver::makeMotionCommandPacket( CanPacket* pkt, const Velocity2dCommandPtr & command )
+RmpUsbDriver::makeMotionCommandPacket( CanPacket* pkt, const Velocity2dCommand& command )
 {
     pkt->id = RMP_CAN_ID_COMMAND;
     // velocity command does not change any other values
     pkt->PutSlot(2, (uint16_t)RMP_CMD_NONE);
 
     // translational RMP command
-    int16_t trans = (int16_t) rint(command->motion.v.x * RMP_COUNT_PER_M_PER_S);
+    int16_t trans = (int16_t) rint(command.motion.v.x * RMP_COUNT_PER_M_PER_S);
     // check for command limits
     if(trans > RMP_MAX_TRANS_VEL_COUNT) {
         trans = RMP_MAX_TRANS_VEL_COUNT;
@@ -599,7 +599,7 @@ RmpUsbDriver::makeMotionCommandPacket( CanPacket* pkt, const Velocity2dCommandPt
     }
 
     // rotational RMP command
-    int16_t rot = (int16_t) rint(command->motion.w * RMP_COUNT_PER_RAD_PER_S);
+    int16_t rot = (int16_t) rint(command.motion.w * RMP_COUNT_PER_RAD_PER_S);
     // check for command limits
     if(rot > RMP_MAX_ROT_VEL_COUNT) {
         rot = RMP_MAX_ROT_VEL_COUNT;

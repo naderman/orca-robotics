@@ -49,10 +49,10 @@ GpsHandler::run()
 
     try 
     {
-	GpsDescriptionPtr descr_ = gpsObj_.localGetDescription();
-        GpsDataPtr gpsData = new GpsData;
-        GpsMapGridDataPtr gpsMapGridData = new GpsMapGridData;
-        GpsTimeDataPtr gpsTimeData = new GpsTimeData;
+	GpsDescription descr_ = gpsObj_.localGetDescription();
+        GpsData gpsData;
+        GpsMapGridData gpsMapGridData;
+        GpsTimeData gpsTimeData;
 
         //
         // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
@@ -81,32 +81,32 @@ GpsHandler::run()
 
 		    if(hwDriver_->getData(gpsData)==0){
                         int zone;
-			zone=mgaMapgrid_.getGridCoords(gpsData->latitude, gpsData->longitude,
-						      gpsMapGridData->easting,gpsMapGridData->northing);
-			gpsMapGridData->zone=zone;
+			zone=mgaMapgrid_.getGridCoords(gpsData.latitude, gpsData.longitude,
+						      gpsMapGridData.easting,gpsMapGridData.northing);
+			gpsMapGridData.zone=zone;
                         //copy across all the other stuff
-                        gpsMapGridData->utcTime=gpsData->utcTime;
-			gpsMapGridData->altitude=gpsData->altitude;
+                        gpsMapGridData.utcTime=gpsData.utcTime;
+			gpsMapGridData.altitude=gpsData.altitude;
 
-			gpsMapGridData->heading=gpsData->heading;
-			gpsMapGridData->speed=gpsData->speed;
-			gpsMapGridData->climbRate=gpsData->climbRate;
-			gpsMapGridData->positionType=gpsData->positionType;
+			gpsMapGridData.heading=gpsData.heading;
+			gpsMapGridData.speed=gpsData.speed;
+			gpsMapGridData.climbRate=gpsData.climbRate;
+			gpsMapGridData.positionType=gpsData.positionType;
 
 			gpsObj_.localSetData(gpsData);
 
 			//correct for local frame
 			CartesianPoint p;
                         //copy out point
-			p.x=gpsMapGridData->easting;
-			p.y=gpsMapGridData->northing;
-			p.z=gpsMapGridData->altitude;
+			p.x=gpsMapGridData.easting;
+			p.y=gpsMapGridData.northing;
+			p.z=gpsMapGridData.altitude;
                         //convert
-			p=convertToFrame3d(descr_->offset,p);
+			p=convertToFrame3d(descr_.offset,p);
                         // reset object
-			gpsMapGridData->easting=p.x;
-			gpsMapGridData->northing=p.y;
-			gpsMapGridData->altitude=p.z;
+			gpsMapGridData.easting=p.x;
+			gpsMapGridData.northing=p.y;
+			gpsMapGridData.altitude=p.z;
 
                         gpsObj_.localSetMapGridData(gpsMapGridData);
 

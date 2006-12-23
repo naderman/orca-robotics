@@ -26,11 +26,11 @@ SkeletonGraphicsI::SkeletonGraphicsI( const orcaice::Context & context, const st
         ( context_, consumerPrx_, tag );
 }
 
-QGraphics2dDataPtr
+QGraphics2dData
 SkeletonGraphicsI::getData(const Ice::Current& current) const
 {
     // create a null pointer. data will be cloned into it.
-    orca::QGraphics2dDataPtr data;
+    orca::QGraphics2dData data;
 
     // we don't need to pop the data here because we don't block on it.
     // we always want to have the latest copy in there
@@ -172,13 +172,13 @@ SkeletonGraphicsI::localSetSkel( const orcaogmap::OgMap           &ogMap,
     p.end();
 
     // Then stick it in the orca object
-    orca::QGraphics2dDataPtr data = new QGraphics2dData;
+    orca::QGraphics2dData data;
 
-    data->z = 4;
-    data->isInGlobalCS = true;
+    data.z = 4;
+    data.isInGlobalCS = true;
 
-    data->qpicture.resize( qpic.size() );
-    memcpy( &(data->qpicture[0]), qpic.data(), qpic.size() );
+    data.qpicture.resize( qpic.size() );
+    memcpy( &(data.qpicture[0]), qpic.data(), qpic.size() );
 
     // Stick it in the buffer
     dataBuffer_.push( data );

@@ -30,7 +30,7 @@ namespace laser2d {
 class LaserScanner2dI : public virtual orca::LaserScanner2d
 {
 public:
-    LaserScanner2dI( const orca::RangeScanner2dDescriptionPtr & descr,
+    LaserScanner2dI( const orca::RangeScanner2dDescription& descr,
                      const std::string              &ifaceTag,
                      const orcaice::Context         &context );
 
@@ -40,7 +40,7 @@ public:
 
     virtual ::orca::RangeScanner2dDataPtr     getData(const ::Ice::Current& ) const;
 
-    virtual ::orca::RangeScanner2dDescriptionPtr   getDescription(const ::Ice::Current& ) const;
+    virtual ::orca::RangeScanner2dDescription   getDescription(const ::Ice::Current& ) const;
 
     virtual void subscribe(const ::orca::RangeScanner2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
@@ -57,7 +57,7 @@ private:
     // the driver will put the latest data into this buffer
     orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> dataBuffer_;
 
-    orca::RangeScanner2dDescriptionPtr  descr_;
+    orca::RangeScanner2dDescription  descr_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx             topicPrx_;

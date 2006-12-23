@@ -126,12 +126,13 @@ SkeletonDriver::setGraphics( SkeletonGraphicsI* skelGraphicsI )
 #endif
 
 void 
-SkeletonDriver::computePath( const orca::PathPlanner2dTaskPtr &taskPtr,
-                             const orca::PathPlanner2dDataPtr &pathDataPtr )
+SkeletonDriver::computePath( const orca::PathPlanner2dTask& task,
+                             orca::PathPlanner2dData& pathData )
 {
+/*
     // for each waypoint in the coarse path:
-    orca::Path2d &coarsePath = taskPtr->coarsePath;
-    orca::Waypoint2d *startWp = &(taskPtr->coarsePath[0]);
+    orca::Path2d &coarsePath = task.coarsePath;
+    orca::Waypoint2d *startWp = &(task.coarsePath[0]);
     
     for (unsigned int i=1; i<coarsePath.size(); i++)
     {
@@ -169,14 +170,15 @@ SkeletonDriver::computePath( const orca::PathPlanner2dTaskPtr &taskPtr,
         addWaypointParameters( wpParaVector, startWp, goalWp, pathSegment.size() );
         // ===============================================================
         
-        // ===== Append to the pathDataPtr which contains the entire path  ========
+        // ===== Append to the pathData which contains the entire path  ========
         orcapathplan::Result result = orcapathplan::PathOk;
-        orcapathplan::convert( ogMap_, pathSegment, wpParaVector, result, pathDataPtr );
+        orcapathplan::convert( ogMap_, pathSegment, wpParaVector, result, pathData );
         // ========================================================================
         
         // set last goal cell as new start cell
         startWp = goalWp;
     }
+*/
 }
 
 void

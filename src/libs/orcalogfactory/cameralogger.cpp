@@ -96,7 +96,7 @@ CameraLogger::init()
     orcaice::connectToInterfaceWithTag<orca::CameraPrx>( context_, objectPrx, interfaceTag_ );
     
     // get description. should do try/catch
-    orca::CameraDescriptionPtr obj = objectPrx->getDescription();
+    orca::CameraDescription obj = objectPrx->getDescription();
     writeDescription( obj );
 
     // consumer
@@ -108,10 +108,10 @@ CameraLogger::init()
 }
 
 void 
-CameraLogger::setData(const orca::CameraDataPtr& data, const Ice::Current&)
+CameraLogger::setData(const orca::CameraData& data, const Ice::Current&)
 {
     // Write reference to master file
-    appendMasterFile( data->timeStamp.seconds, data->timeStamp.useconds );
+    appendMasterFile( data.timeStamp.seconds, data.timeStamp.useconds );
 
     if ( format_ == "ice" )
     {
@@ -131,7 +131,12 @@ CameraLogger::setData(const orca::CameraDataPtr& data, const Ice::Current&)
         helper.write( file_ );
 
         // the image itself is saved as jpeg into a separate file
-        writeCameraDataAsJpeg( data, filename.str() );
+// ##########################################
+//
+// alexm: 'data' cannot be const because we are changing it's format
+//
+//         writeCameraDataAsJpeg( data, filename.str() );
+// ##########################################
     }
     else
     {
@@ -141,7 +146,7 @@ CameraLogger::setData(const orca::CameraDataPtr& data, const Ice::Current&)
 }
 
 void 
-CameraLogger::writeDescription( const orca::CameraDescriptionPtr & obj )
+CameraLogger::writeDescription( const orca::CameraDescription& obj )
 {
     context_.tracer()->debug( "Writing description to file", 5 );
     
@@ -164,32 +169,32 @@ CameraLogger::writeDescription( const orca::CameraDescriptionPtr & obj )
 // Note: need to do our own marshalling as we don't want the whole object in the personal file
 void 
 CameraLogger::orca_writeCameraData( Ice::OutputStreamPtr outStreamPtr, 
-        const orca::CameraDataPtr data, const std::string & filename )
+        const orca::CameraData& data, const std::string & filename )
 {
-    outStreamPtr->writeInt(data->imageWidth);
-    outStreamPtr->writeInt(data->imageHeight);
-    outStreamPtr->writeInt(data->format);
-    outStreamPtr->writeInt(data->compression);
-    outStreamPtr->writeDouble(orcaice::timeAsDouble(data->timeStamp));
+    outStreamPtr->writeInt(data.imageWidth);
+    outStreamPtr->writeInt(data.imageHeight);
+    outStreamPtr->writeInt(data.format);
+    outStreamPtr->writeInt(data.compression);
+    outStreamPtr->writeDouble(orcaice::timeAsDouble(data.timeStamp));
     outStreamPtr->writeString( filename );
 }    
 
 // Write image to file after compressing to jpeg format using opencv
 void 
-CameraLogger::writeCameraDataAsJpeg( const orca::CameraDataPtr data, const std::string & filename )
+CameraLogger::writeCameraDataAsJpeg( orca::CameraData& data, const std::string & filename )
 {
 #ifdef OPENCV_FOUND
     IplImage* cvImage_ = 0;
     
     if ( dataCounter_ == 1 )
     {    
-        nChannels_ = orcaimage::numChannels( data->format );
+        nChannels_ = orcaimage::numChannels( data.format );
         
         // setup opencv image
-        cvImage_  = cvCreateImage( cvSize( data->imageWidth, data->imageHeight ),  8, nChannels_ );
+        cvImage_  = cvCreateImage( cvSize( data.imageWidth, data.imageHeight ),  8, nChannels_ );
     }
     
-    // cout << "Image Format: " << orcaimage::formatName( data->format ) << endl;
+    // cout << "Image Format: " << orcaimage::formatName( data.format ) << endl;
     
     // copy image in orca object into opencv struct
     // and make sure the image is BGR format before compression
@@ -197,11 +202,11 @@ CameraLogger::writeCameraDataAsJpeg( const orca::CameraDataPtr data, const std::
     if ( nChannels_ == 3 )
     {       
         orcaimage::cvtToBgr( cvImage_, cvImage_, data );
-        data->format = orca::ImageFormatModeBgr;
+        data.format = orca::ImageFormatModeBgr;
     }
     else
     {
-        memcpy( cvImage_->imageData, &data->image[0], data->image.size() );
+        memcpy( cvImage_->imageData, &data.image[0], data.image.size() );
     }                     
     
     // Save image to file

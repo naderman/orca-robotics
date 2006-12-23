@@ -565,7 +565,7 @@ NovatelSpanInsGpsDriver::disable()
 }
 
 void
-NovatelSpanInsGpsDriver::readGps( orca::GpsDataPtr& data, int timeoutMs )
+NovatelSpanInsGpsDriver::readGps( orca::GpsData& data, int timeoutMs )
 {
     
     // blocking read with timeout. Also deletes the front element from the buffer
@@ -592,15 +592,13 @@ NovatelSpanInsGpsDriver::readGps( orca::GpsDataPtr& data, int timeoutMs )
 }
 
 void
-NovatelSpanInsGpsDriver::readGpsTime( orca::GpsTimeDataPtr& data, int timeoutMs )
+NovatelSpanInsGpsDriver::readGpsTime( orca::GpsTimeData& data, int timeoutMs )
 {
-
-    return;
-    
+    return;   
 }
 
 void
-NovatelSpanInsGpsDriver::readImu( orca::ImuDataPtr& data, int timeoutMs )
+NovatelSpanInsGpsDriver::readImu( orca::ImuData& data, int timeoutMs )
 {
     // blocking read with timeout. Also deletes the front element from the buffer
     int ret = imuDataBuffer_.getAndPopNext( data, timeoutMs );
@@ -622,11 +620,10 @@ NovatelSpanInsGpsDriver::readImu( orca::ImuDataPtr& data, int timeoutMs )
     }
     
     return;
-
 }
     
 void
-NovatelSpanInsGpsDriver::readPosition3d( orca::Position3dDataPtr& data, int timeoutMs )
+NovatelSpanInsGpsDriver::readPosition3d( orca::Position3dData& data, int timeoutMs )
 {
     // blocking read with timeout. Also deletes the front element from the buffer
     int ret = position3dDataBuffer_.getAndPopNext( data, timeoutMs );
@@ -654,13 +651,7 @@ void
 NovatelSpanInsGpsDriver::run()
 {
     try
-    {
-
-        // objects for copying data from driver
-        gpsData_ = new orca::GpsData;
-        imuData_ = new orca::ImuData;
-        position3dData_ = new orca::Position3dData;
-    
+    {    
         // We can't block in this loop -- have to keep it rolling so
         // that isActive() is always checked.
         while ( isActive() )
@@ -856,8 +847,8 @@ NovatelSpanInsGpsDriver::populateData( int id )
             // printf("got BESTGPSPOS\n");
             memcpy( &BESTGPSPOS_, &serial_data_.raw_message, sizeof(BESTGPSPOS_) );
 
-            gpsData_->positionType = BESTGPSPOS_.data.pos_type;
-            if( gpsData_->positionType==0 )
+            gpsData_.positionType = BESTGPSPOS_.data.pos_type;
+            if( gpsData_.positionType==0 )
             {
                 // newGpsData_ = false;
                 cout << "TRACE(novatelspandriver.cpp): Position not yet available" << endl;
@@ -866,17 +857,17 @@ NovatelSpanInsGpsDriver::populateData( int id )
 
             //Set time
             // gettimeofday(&position_.time,NULL);
-            gpsData_->timeStamp = orcaice::toOrcaTime (timeOfRead_);
+            gpsData_.timeStamp = orcaice::toOrcaTime (timeOfRead_);
 
             // TODO: made up the zone here... need to read the real zone         
             int zone = 0;
 
             // double lat = BESTGPSPOS_.data.latitude;
-            gpsData_->latitude = BESTGPSPOS_.data.latitude;
+            gpsData_.latitude = BESTGPSPOS_.data.latitude;
             // double lng = BESTGPSPOS_.data.longitude;
-            gpsData_->longitude = BESTGPSPOS_.data.longitude;
+            gpsData_.longitude = BESTGPSPOS_.data.longitude;
             // position_.down = -BESTGPSPOS_.data.height;
-            gpsData_->altitude = BESTGPSPOS_.data.height;
+            gpsData_.altitude = BESTGPSPOS_.data.height;
                 
             // depends on the number of satellites... not sure how to include this in
             // the gps interface       
@@ -902,34 +893,34 @@ NovatelSpanInsGpsDriver::populateData( int id )
             // printf("got INSPVASB\n");
             memcpy( &INSPVA_, &serial_data_.raw_message, sizeof(INSPVA_) );
 
-            position3dData_->timeStamp = orcaice::toOrcaTime (timeOfRead_);
+            position3dData_.timeStamp = orcaice::toOrcaTime (timeOfRead_);
 
             // cout << "lattitude and longitude: " << INSPVA_.data.latitude << " " << INSPVA_.data.longitude << endl;
             
             int zone;
             LatLon2MGA(INSPVA_.data.latitude, INSPVA_.data.longitude,
-                       position3dData_->pose.p.x, position3dData_->pose.p.y, zone);
+                       position3dData_.pose.p.x, position3dData_.pose.p.y, zone);
 
-            // cout << "MGA x and y: " << position3dData_->pose.p.x << " " << position3dData_->pose.p.y << endl;
+            // cout << "MGA x and y: " << position3dData_.pose.p.x << " " << position3dData_.pose.p.y << endl;
 
 
             // TODO: do we have to convert pva data into local coordinate frame? 
             // load the pva data into the position3d object       
-            // position3dData_->pose.p.x = INSPVA_.data.latitude;
-            // position3dData_->pose.p.y = INSPVA_.data.longitude;
-            position3dData_->pose.p.z = -INSPVA_.data.height;
+            // position3dData_.pose.p.x = INSPVA_.data.latitude;
+            // position3dData_.pose.p.y = INSPVA_.data.longitude;
+            position3dData_.pose.p.z = -INSPVA_.data.height;
        
             //velocities
-            position3dData_->motion.v.x = INSPVA_.data.north_vel;
-            position3dData_->motion.v.y = INSPVA_.data.east_vel;
+            position3dData_.motion.v.x = INSPVA_.data.north_vel;
+            position3dData_.motion.v.y = INSPVA_.data.east_vel;
             // down = -up
-            position3dData_->motion.v.z = -INSPVA_.data.up_vel;
+            position3dData_.motion.v.z = -INSPVA_.data.up_vel;
             
             //attitude
-            position3dData_->pose.o.r = INSPVA_.data.roll/180*M_PI;
-            position3dData_->pose.o.p = INSPVA_.data.pitch/180*M_PI;
+            position3dData_.pose.o.r = INSPVA_.data.roll/180*M_PI;
+            position3dData_.pose.o.p = INSPVA_.data.pitch/180*M_PI;
             // yaw is LH rule
-            position3dData_->pose.o.y = INSPVA_.data.yaw/180*M_PI;
+            position3dData_.pose.o.y = INSPVA_.data.yaw/180*M_PI;
             
             //Set time
             // TODO: add this in if needed       
@@ -952,13 +943,13 @@ NovatelSpanInsGpsDriver::populateData( int id )
 
             // Note scale factors and axis translation
             // TODO: are these gyro values correct?
-            imuData_->gyro.x = -novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.y_gyro;
-            imuData_->gyro.y = novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.x_gyro;
-            imuData_->gyro.z = -novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.z_gyro;
+            imuData_.gyro.x = -novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.y_gyro;
+            imuData_.gyro.y = novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.x_gyro;
+            imuData_.gyro.z = -novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.z_gyro;
             
-            imuData_->accel.x = novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.y_accel;
-            imuData_->accel.y = -novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.x_accel;
-            imuData_->accel.z = novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.z_accel;
+            imuData_.accel.x = novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.y_accel;
+            imuData_.accel.y = -novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.x_accel;
+            imuData_.accel.z = novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.z_accel;
             
             // TODO: add this if needed       
             //Set time

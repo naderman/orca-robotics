@@ -17,13 +17,12 @@ using namespace std;
 using namespace orca;
 using namespace insgps;
 
-ImuI::ImuI( ImuDescriptionPtr   descr,
+ImuI::ImuI( const orca::ImuDescription& descr,
             Driver*      hwDriver,
             const orcaice::Context & context )
     : InsGpsI(context),
       descr_(descr),
       hwDriver_(hwDriver),
-      imuData_(new ImuData),
       context_(context)
 {
     //
@@ -53,7 +52,7 @@ ImuI::publish()
 //
 
 void
-ImuI::read( ::orca::ImuDataPtr& data )
+ImuI::read( ::orca::ImuData& data )
 {
     hwDriver_->readImu( data );
 }         
@@ -63,13 +62,13 @@ ImuI::read( ::orca::ImuDataPtr& data )
 // remote calls
 //
 
-orca::ImuDataPtr
+orca::ImuData
 ImuI::getData(const Ice::Current& current) const
 {
     std::cout << "getData()" << std::endl;
 
     // create a null pointer. data will be cloned into it.
-    orca::ImuDataPtr data;
+    orca::ImuData data;
     // we don't need to pop the data here because we don't block on it.
     if ( imuDataBuffer_.isEmpty() )
     {
@@ -83,14 +82,14 @@ ImuI::getData(const Ice::Current& current) const
 }
 
 // Get Imu Geometry
-::orca::ImuDescriptionPtr
+::orca::ImuDescription
 ImuI::getDescription(const ::Ice::Current& ) const
 {
     std::cout << "getConfig()" << std::endl;
     return descr_;
 }
 
-::orca::ImuDescriptionPtr
+::orca::ImuDescription
 ImuI::localGetDescription() const
 {
     return descr_;
@@ -115,7 +114,7 @@ ImuI::unsubscribe(const ::orca::ImuConsumerPrx &subscriber, const ::Ice::Current
 
 // Set raw IMU Data
 void
-ImuI::localSetData( ::orca::ImuDataPtr data )
+ImuI::localSetData( const ::orca::ImuData& data )
 {
     // Stick it in the buffer so pullers can get it
     imuDataBuffer_.push( data );
@@ -132,4 +131,3 @@ ImuI::localSetData( ::orca::ImuDataPtr data )
         context_.tracer()->warning( "Failed push to IceStorm." );
     }
 }
-

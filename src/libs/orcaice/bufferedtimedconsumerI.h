@@ -18,13 +18,13 @@ namespace orcaice
 {
 
 //!
-//! \brief Useful for receiving data from a stream, sticking it in a buffer, and noting the time
+//! @brief Useful for receiving data from a stream, sticking it in a buffer, and noting the time
 //! since an object was last received.
 //!
 //! @author Alex Brooks
 //!
-template< class ConsumerType, class DataPtrType >
-class BufferedTimedConsumerI : public orcaice::BufferedConsumerI<ConsumerType,DataPtrType>
+template< class ConsumerType, class DataType >
+class BufferedTimedConsumerI : public orcaice::BufferedConsumerI<ConsumerType,DataType>
 {
 public:
 
@@ -34,7 +34,7 @@ public:
     void resetTimer() { return timer_.restart(); }
 
 private:
-    virtual void handleData( const DataPtrType & data )
+    virtual void handleData( const DataType & data )
     {
         timer_.restart();
     };

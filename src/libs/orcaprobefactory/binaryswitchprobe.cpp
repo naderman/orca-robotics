@@ -53,7 +53,7 @@ BinarySwitchProbe::loadOperationEvent( const int index, orcacm::OperationData & 
 int 
 BinarySwitchProbe::loadGetData()
 {
-    orca::BinarySwitchDataPtr data;
+    orca::BinarySwitchData data;
     
     try
     {
@@ -73,7 +73,7 @@ int
 BinarySwitchProbe::loadSetState()
 {
     // first get a list of devices
-    orca::BinarySwitchDataPtr data;
+    orca::BinarySwitchData data;
     
     try
     {
@@ -92,8 +92,8 @@ BinarySwitchProbe::loadSetState()
     }
 
     cout << "Select device from the list:"<<endl;
-    for ( unsigned int i=0; i<data->devices.size(); ++i ) {
-        cout<<i<<"\t"<<data->devices[i].name<<endl;
+    for ( unsigned int i=0; i<data.devices.size(); ++i ) {
+        cout<<i<<"\t"<<data.devices[i].name<<endl;
     }
     cout << "==>";
 

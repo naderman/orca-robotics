@@ -41,22 +41,22 @@
 class GpsI : public orca::Gps
 {
 public:
-    GpsI(orca::GpsDescriptionPtr descr,
-         const orcaice::Context & context);
+    GpsI( const orca::GpsDescription& descr,
+          const orcaice::Context & context);
 
     // remote calls:
 
     // Get GPS Data
-    virtual ::orca::GpsDataPtr     getData(const ::Ice::Current& ) const;
+    virtual ::orca::GpsData getData(const ::Ice::Current& ) const;
 
     // Get GPS Time Data
-    virtual ::orca::GpsTimeDataPtr getTimeData(const ::Ice::Current& ) const;
+    virtual ::orca::GpsTimeData getTimeData(const ::Ice::Current& ) const;
 
     // Get GPS Map Grid Data
-    virtual ::orca::GpsMapGridDataPtr getMapGridData(const ::Ice::Current& ) const;
+    virtual ::orca::GpsMapGridData getMapGridData(const ::Ice::Current& ) const;
 
     // Get Gps Geometry
-    virtual ::orca::GpsDescriptionPtr getDescription(const ::Ice::Current& ) const;
+    virtual ::orca::GpsDescription getDescription(const ::Ice::Current& ) const;
 
     // Subscribe people
     virtual void subscribe(const ::orca::GpsConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
@@ -77,25 +77,25 @@ public:
     virtual void unsubscribeForMapGrid(const ::orca::GpsMapGridConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
     // Set GPS Data
-    void localSetData( ::orca::GpsDataPtr data );
+    void localSetData( const ::orca::GpsData& data );
 
     // Set GPS Time Data
-    void localSetTimeData( ::orca::GpsTimeDataPtr data );
+    void localSetTimeData( const ::orca::GpsTimeData& data );
 
     // Set GPS Map Grid Data
-    void localSetMapGridData( ::orca::GpsMapGridDataPtr data );
+    void localSetMapGridData( const ::orca::GpsMapGridData& data );
 
     // Get Gps Geometry
-    orca::GpsDescriptionPtr localGetDescription() const;
+    orca::GpsDescription localGetDescription() const;
 
 private:
 
     // the driver will put the latest data into this buffer
-    orcaice::PtrBuffer<orca::GpsDataPtr> gpsDataBuffer_;
+    orcaice::Buffer<orca::GpsData> gpsDataBuffer_;
     // the handler will put the latest data into this buffer
-    orcaice::PtrBuffer<orca::GpsMapGridDataPtr> gpsMapGridDataBuffer_;
+    orcaice::Buffer<orca::GpsMapGridData> gpsMapGridDataBuffer_;
     // the driver will put the latest data into this buffer
-    orcaice::PtrBuffer<orca::GpsTimeDataPtr> gpsTimeDataBuffer_;
+    orcaice::Buffer<orca::GpsTimeData> gpsTimeDataBuffer_;
 
     //publishers
     orca::GpsConsumerPrx gpsPublisher_;
@@ -107,7 +107,7 @@ private:
     IceStorm::TopicPrx topicMapGridPrx_;
     IceStorm::TopicPrx topicTimePrx_;
 
-    orca::GpsDescriptionPtr descr_;
+    orca::GpsDescription descr_;
 
     orcaice::Context context_;
 };

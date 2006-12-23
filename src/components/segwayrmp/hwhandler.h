@@ -13,8 +13,7 @@
 
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
-#include <orcaice/ptrproxy.h>
-#include <orcaice/ptrnotify.h>
+#include <orcaice/notify.h>
 #include <orcaice/proxy.h>
 #include <orcaice/timer.h>
 
@@ -28,24 +27,24 @@ namespace segwayrmp
 {
 
 // Note: this thing self-destructs when run() returns.
-class HwHandler : public orcaice::Thread, public orcaice::NotifyHandler<orca::Velocity2dCommandPtr>
+class HwHandler : public orcaice::Thread, public orcaice::NotifyHandler<orca::Velocity2dCommand>
 {
 public:
 
-    HwHandler( orcaice::PtrProxy<orca::Position2dDataPtr>     & position2dPipe,
-               orcaice::PtrProxy<orca::Position3dDataPtr>     & position3dPipe,
-               orcaice::PtrNotify<orca::Velocity2dCommandPtr> & commandPipe,
+    HwHandler( orcaice::Proxy<orca::Position2dData>     & position2dPipe,
+               orcaice::Proxy<orca::Position3dData>     & position3dPipe,
+               orcaice::Notify<orca::Velocity2dCommand> & commandPipe,
                orcaice::Proxy<orca::PowerData>          & powerPipe,
-               orcaice::PtrProxy<orca::Platform2dConfigPtr>   & setConfigPipe,
-               orcaice::PtrProxy<orca::Platform2dConfigPtr>   & currentConfigPipe,
-               const orcaice::Context                         & context );
+               orcaice::Proxy<orca::Platform2dConfig>   & setConfigPipe,
+               orcaice::Proxy<orca::Platform2dConfig>   & currentConfigPipe,
+               const orcaice::Context                   & context );
     virtual ~HwHandler();
 
     // from Thread
     virtual void run();
 
     // from PtrNotifyHandler
-    virtual void handleData( const orca::Velocity2dCommandPtr & obj );
+    virtual void handleData( const orca::Velocity2dCommand & obj );
 
 private:
 
@@ -53,15 +52,15 @@ private:
     void enableDriver();
 
     // network/hardware interface
-    orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe_;
-    orcaice::PtrProxy<orca::Position3dDataPtr>    & position3dPipe_;
+    orcaice::Proxy<orca::Position2dData>    & position2dPipe_;
+    orcaice::Proxy<orca::Position3dData>    & position3dPipe_;
     orcaice::Proxy<orca::PowerData>         & powerPipe_;
-    orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe_;
-    orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe_;
+    orcaice::Proxy<orca::Platform2dConfig>  & setConfigPipe_;
+    orcaice::Proxy<orca::Platform2dConfig>  & currentConfigPipe_;
 
     // Internal data storage
-    orca::Position2dDataPtr position2dData_;
-    orca::Position3dDataPtr position3dData_;
+    orca::Position2dData position2dData_;
+    orca::Position3dData position3dData_;
     orca::PowerData powerData_;
 
     // generic interface to the hardware

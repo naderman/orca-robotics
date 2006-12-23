@@ -27,8 +27,7 @@ int CameraReplayer::_counter = 0;
 CameraReplayer::CameraReplayer( const std::string      &format,
                                 const std::string      &filename,
                                 const orcaice::Context &context )
-    : orcalog::Replayer("Camera", format, filename, context),
-      data_(new orca::CameraData)
+    : orcalog::Replayer("Camera", format, filename, context)
 {
 #ifndef OPENCV_FOUND
     // check that we support this format
@@ -80,7 +79,7 @@ CameraReplayer::initInterfaces()
 }
 
 // served out the data to the client (it was stored here by the driver at the last read)
-orca::CameraDataPtr 
+orca::CameraData
 CameraReplayer::getData(const Ice::Current& current) const
 {
 //    std::cout << "Sending data back" << std::endl;
@@ -92,14 +91,14 @@ CameraReplayer::getData(const Ice::Current& current) const
     }
 
     // create a null pointer. data will be cloned into it.
-    orca::CameraDataPtr data;
+    orca::CameraData data;
     dataPipe_.get( data );
 
     return data;
 }
 
 
-orca::CameraDescriptionPtr 
+orca::CameraDescription
 CameraReplayer::getDescription(const Ice::Current& current) const
 {    
 //     std::cout << "Sending config back" << std::endl;
@@ -108,7 +107,7 @@ CameraReplayer::getDescription(const Ice::Current& current) const
     {
         throw orca::DataNotExistException( "logplayer buffer is empty, probably because we are not replaying yet" );
     }
-    orca::CameraDescriptionPtr obj;
+    orca::CameraDescription obj;
     descrPipe_.get( obj );
     return obj;
 }
@@ -133,7 +132,7 @@ CameraReplayer::unsubscribe(const ::orca::CameraConsumerPrx &subscriber, const :
 void 
 CameraReplayer::loadHeaderIce()
 {
-    orca::CameraDescriptionPtr obj = new orca::CameraDescription;
+    orca::CameraDescription obj;
 
     orcalog::IceReadHelper helper( context_.communicator(), file_ );
     ice_readCameraDescription( helper.stream_, obj );
@@ -231,28 +230,28 @@ CameraReplayer::orca_readCameraData( Ice::InputStreamPtr iceInputStreamPtr, int 
 {
     // User defined demarshalling as we can't use the ice demarshalling as it expects the actual
     // image to be in the object whereas the image has been saved separately by the logger
-    data_->imageWidth = iceInputStreamPtr->readInt();
-    data_->imageHeight = iceInputStreamPtr->readInt();
-    data_->format = (orca::ImageFormat)iceInputStreamPtr->readInt();
-    data_->compression = (orca::ImageCompression)iceInputStreamPtr->readInt();
+    data_.imageWidth = iceInputStreamPtr->readInt();
+    data_.imageHeight = iceInputStreamPtr->readInt();
+    data_.format = (orca::ImageFormat)iceInputStreamPtr->readInt();
+    data_.compression = (orca::ImageCompression)iceInputStreamPtr->readInt();
     double t = iceInputStreamPtr->readDouble();
-    data_->timeStamp = orcaice::toOrcaTime( t );
+    data_.timeStamp = orcaice::toOrcaTime( t );
     std::string fname = iceInputStreamPtr->readString();
     
     #ifdef OPENCV_FOUND
         if (index == 1)
         {    
             // only setup the opencv struct on the first loop
-            nChannels_ = orcaimage::numChannels( data_->format );
+            nChannels_ = orcaimage::numChannels( data_.format );
         }
         // load compressed image into opencv struct
         cvImage_ = cvLoadImage( fname.c_str(), -1);
         
         // resize object buffer to fit image
-        int imageSize = (int)ceil( nChannels_ * data_->imageHeight * data_->imageWidth );
-        data_->image.resize( imageSize );
+        int imageSize = (int)ceil( nChannels_ * data_.imageHeight * data_.imageWidth );
+        data_.image.resize( imageSize );
         
         // load image from opencv struct to orca object
-        memcpy( &data_->image[0], cvImage_->imageData, data_->image.size() );
+        memcpy( &data_.image[0], cvImage_->imageData, data_.image.size() );
     #endif
 }       

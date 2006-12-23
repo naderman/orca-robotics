@@ -113,29 +113,29 @@ Component::start()
     // SENSOR DESCRIPTION
     //
 
-    orca::RangeScanner2dDescriptionPtr descr = new orca::RangeScanner2dDescription;
-    descr->timeStamp = orcaice::getNow();
+    orca::RangeScanner2dDescription descr;
+    descr.timeStamp = orcaice::getNow();
 
     // transfer internal sensor configs
-    descr->minRange        = cfg.minRange;
-    descr->maxRange        = cfg.maxRange;
-    descr->fieldOfView     = cfg.fieldOfView;
-    descr->startAngle      = cfg.startAngle;
-    descr->numberOfSamples = cfg.numberOfSamples;
+    descr.minRange        = cfg.minRange;
+    descr.maxRange        = cfg.maxRange;
+    descr.fieldOfView     = cfg.fieldOfView;
+    descr.startAngle      = cfg.startAngle;
+    descr.numberOfSamples = cfg.numberOfSamples;
 
     // offset from the robot coordinate system
-    orcaice::setInit( descr->offset );
-    descr->offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr->offset );
+    orcaice::setInit( descr.offset );
+    descr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr.offset );
 
     // consider the special case of the sensor mounted level (pitch=0) but upside-down (roll=180)
     bool compensateRoll;
-    if ( NEAR(descr->offset.o.r,M_PI,0.001) && descr->offset.o.p==0.0 ) {
+    if ( NEAR(descr.offset.o.r,M_PI,0.001) && descr.offset.o.p==0.0 ) {
         // the offset is appropriate, now check the user preference (default is TRUE)
         compensateRoll = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"AllowRollCompensation", 1 );
 
         if ( compensateRoll ) {
             // now remove the roll angle, we'll compensate for it internally
-            descr->offset.o.r = 0.0;
+            descr.offset.o.r = 0.0;
             tracer()->info( "the driver will compensate for upside-down mounted sensor" );
         }
     }
@@ -145,8 +145,8 @@ Component::start()
     }
 
     // size info should really be stored in the driver
-    orcaice::setInit( descr->size );
-    descr->size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr->size );
+    orcaice::setInit( descr.size );
+    descr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr.size );
 
     //
     // EXTERNAL PROVIDED INTERFACE: LaserScanner2d

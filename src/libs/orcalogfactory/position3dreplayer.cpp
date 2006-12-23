@@ -21,8 +21,7 @@ int Position3dReplayer::_counter = 0;
 Position3dReplayer::Position3dReplayer( const std::string      &format,
                               const std::string      &filename,
                               const orcaice::Context &context )
-    : orcalog::Replayer("Position3d", format, filename, context),
-      data_(new orca::Position3dData)
+    : orcalog::Replayer("Position3d", format, filename, context)
 {
     // check that we support this format
     if ( format_!="ice" ) //&& format_!="ascii" )
@@ -52,7 +51,7 @@ Position3dReplayer::initInterfaces()
 }
 
 // served out the data to the client (it was stored here by the driver at the last read)
-orca::Position3dDataPtr 
+orca::Position3dData
 Position3dReplayer::getData(const Ice::Current& current) const
 {
 //    std::cout << "Sending data back" << std::endl;
@@ -64,13 +63,13 @@ Position3dReplayer::getData(const Ice::Current& current) const
     }
 
     // create a null pointer. data will be cloned into it.
-    orca::Position3dDataPtr data;
+    orca::Position3dData data;
     dataPipe_.get( data );
 
     return data;
 }
 
-::orca::Position3dDescriptionPtr
+::orca::Position3dDescription
 Position3dReplayer::getDescription(const ::Ice::Current& ) const
 {
 //    std::cout << "Sending description back" << std::endl;
@@ -79,7 +78,7 @@ Position3dReplayer::getDescription(const ::Ice::Current& ) const
     {
         throw orca::DataNotExistException( "logplayer buffer is empty, probably because we are not replaying yet" );
     }
-    orca::Position3dDescriptionPtr descr;
+    orca::Position3dDescription descr;
     position3dDescriptionBuffer_.get( descr );
     return descr;
 }
@@ -139,7 +138,7 @@ Position3dReplayer::initConfigs()
 void 
 Position3dReplayer::loadHeaderIce()
 {
-    orca::Position3dDescriptionPtr descr = new orca::Position3dDescription;
+    orca::Position3dDescription descr;
 
     orcalog::IceReadHelper helper( context_.communicator(), file_ );
     ice_readPosition3dDescription( helper.stream_, descr );

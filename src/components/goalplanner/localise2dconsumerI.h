@@ -19,11 +19,11 @@ class Localise2dConsumerI : public orca::Localise2dConsumer
 {
     
 public:
-    Localise2dConsumerI(orcaice::PtrProxy<orca::Localise2dDataPtr> &localise2dDataBuffer);
-    virtual void setData(const orca::Localise2dDataPtr& data, const Ice::Current&);
+    Localise2dConsumerI(orcaice::Proxy<orca::Localise2dData>& localise2dDataPipe);
+    virtual void setData(const orca::Localise2dData& data, const Ice::Current&);
 
 private:
-    orcaice::PtrProxy<orca::Localise2dDataPtr> &localise2dDataBuffer_;
+    orcaice::Proxy<orca::Localise2dData>& localise2dDataPipe_;
 };
 
 #endif

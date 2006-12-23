@@ -16,10 +16,10 @@
 namespace orcaogmap {
     
     //! Converts an OgMap from a Slice-defined representation to an internal one
-    void convert( const orca::OgMapDataPtr & input, orcaogmap::OgMap   & output );
+    void convert( const orca::OgMapData & input, orcaogmap::OgMap   & output );
     
     //! Converts an OgMap from an internal to a Slice-defined representation
-    void convert( const orcaogmap::OgMap & input, orca::OgMapDataPtr & output );
+    void convert( const orcaogmap::OgMap & input, orca::OgMapData & output );
     
     //! Converts an OgMap from the internal representation to a one-dimensional double array (rows first, left to right, bottom to top).
     //! Important: the caller is responsible to reserve enough memory for the output array.

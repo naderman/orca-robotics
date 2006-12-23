@@ -270,14 +270,14 @@ PathFollowerInput::PathFollowerInput( WaypointSettings *wpSettings )
 {
 }
 
-orca::PathFollower2dDataPtr 
+orca::PathFollower2dData
 PathFollowerInput::getPath() const
 {
     int size = wpSettings_->numberOfLoops * waypoints_.size();
 //     cout << "DEBUG(pathinput.cpp): size is " << size << endl;
     
-    orca::PathFollower2dDataPtr pathData = new orca::PathFollower2dData;
-    pathData->path.resize( size );
+    orca::PathFollower2dData pathData;
+    pathData.path.resize( size );
     int counter = -1;
     
     const float timeOffset = times_[waypoints_.size()-1];
@@ -297,28 +297,28 @@ PathFollowerInput::getPath() const
                 headingTolerance = headingTolerance - 360.0;
             }
     
-            pathData->path[counter].target.p.x = waypoints_[i].x();
-            pathData->path[counter].target.p.y = waypoints_[i].y();
-            pathData->path[counter].target.o = heading/180.0 * M_PI;
-            pathData->path[counter].distanceTolerance = distTolerances_[i];
-            pathData->path[counter].headingTolerance = (float)headingTolerance/180.0*M_PI;      
-            pathData->path[counter].timeTarget = orcaice::toOrcaTime( times_[i] + k*timeOffset );
+            pathData.path[counter].target.p.x = waypoints_[i].x();
+            pathData.path[counter].target.p.y = waypoints_[i].y();
+            pathData.path[counter].target.o = heading/180.0 * M_PI;
+            pathData.path[counter].distanceTolerance = distTolerances_[i];
+            pathData.path[counter].headingTolerance = (float)headingTolerance/180.0*M_PI;      
+            pathData.path[counter].timeTarget = orcaice::toOrcaTime( times_[i] + k*timeOffset );
                 
-            pathData->path[counter].maxApproachSpeed = maxSpeeds_[i];
-            pathData->path[counter].maxApproachTurnrate = (float)maxTurnrates_[i]/180.0*M_PI;
+            pathData.path[counter].maxApproachSpeed = maxSpeeds_[i];
+            pathData.path[counter].maxApproachTurnrate = (float)maxTurnrates_[i]/180.0*M_PI;
         }
     }
 
     return pathData;
 }
 
-orca::PathPlanner2dTaskPtr
+orca::PathPlanner2dTask
 PathPlannerInput::getTask() const
 {
     int size = waypoints_.size();
         
-    orca::PathPlanner2dTaskPtr task = new orca::PathPlanner2dTask;
-    task->coarsePath.resize( size );
+    orca::PathPlanner2dTask task;
+    task.coarsePath.resize( size );
         
     for (int i=0; i<size; i++)
     {
@@ -341,7 +341,7 @@ PathPlannerInput::getTask() const
         wp.maxApproachSpeed = maxSpeeds_[i];
         wp.maxApproachTurnrate = (float)maxTurnrates_[i]/180.0*M_PI;
             
-        task->coarsePath[i] = wp;
+        task.coarsePath[i] = wp;
     }
     return task;
 }

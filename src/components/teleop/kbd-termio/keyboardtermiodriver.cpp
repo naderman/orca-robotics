@@ -25,10 +25,9 @@ KeyboardTermioDriver::KeyboardTermioDriver( const InputDriver::Config &cfg ) :
         config_(cfg)
 {
     // init internal data storage
-    command_ = new Velocity2dCommand;
-    command_->motion.v.x = 0.0;
-    command_->motion.v.y = 0.0;
-    command_->motion.w = 0.0;
+    command_.motion.v.x = 0.0;
+    command_.motion.v.y = 0.0;
+    command_.motion.w = 0.0;
 
     // one key stroke changes commands by these values
     deltaSpeed_ = 0.05;     // [m/s]
@@ -75,7 +74,7 @@ int KeyboardTermioDriver::disable()
 }
 
 // read next command from the keyboard
-int KeyboardTermioDriver::read( orca::Velocity2dCommandPtr &data )
+int KeyboardTermioDriver::read( orca::Velocity2dCommand& data )
 {
     // storage for loop variables
     char c;
@@ -85,9 +84,9 @@ int KeyboardTermioDriver::read( orca::Velocity2dCommandPtr &data )
     // (as apposed the member function KeyboardTermioDriver::read() )
     if( ::read(kfd_, &c, 1) < 0 )
     {
-        command_->motion.v.x = 0.0;
-        command_->motion.v.y = 0.0;
-        command_->motion.w = 0.0;
+        command_.motion.v.x = 0.0;
+        command_.motion.v.y = 0.0;
+        command_.motion.w = 0.0;
 
         string errString = "failed to read from keyboard";
         throw orcaice::HardwareException( ERROR_INFO, errString );
@@ -96,22 +95,22 @@ int KeyboardTermioDriver::read( orca::Velocity2dCommandPtr &data )
     switch( c )
     {
         case KEYCODE_i:
-            command_->motion.v.x += deltaSpeed_;
+            command_.motion.v.x += deltaSpeed_;
             break;
         case KEYCODE_k:
-            command_->motion.v.x -= deltaSpeed_;
+            command_.motion.v.x -= deltaSpeed_;
             break;
         case KEYCODE_o:
-            command_->motion.v.x = 0.0;
+            command_.motion.v.x = 0.0;
             break;
         case KEYCODE_j:
-            command_->motion.w += deltaTurnrate_;
+            command_.motion.w += deltaTurnrate_;
             break;
         case KEYCODE_l:
-            command_->motion.w -= deltaTurnrate_;
+            command_.motion.w -= deltaTurnrate_;
             break;
         case KEYCODE_u:
-            command_->motion.w = 0.0;
+            command_.motion.w = 0.0;
             break;
         case KEYCODE_q:
             //speed *= 1.1;
@@ -135,28 +134,28 @@ int KeyboardTermioDriver::read( orca::Velocity2dCommandPtr &data )
             break;
         default:
             // any other key sends 'stop' command
-            command_->motion.v.x = 0.0;
-            command_->motion.v.y = 0.0;
-            command_->motion.w = 0.0;
+            command_.motion.v.x = 0.0;
+            command_.motion.v.y = 0.0;
+            command_.motion.w = 0.0;
     }
 
     // apply max limits 
-    if ( fabs(command_->motion.v.x) > config_.maxSpeed ) {
-        command_->motion.v.x =
-                (command_->motion.v.x / fabs(command_->motion.v.x)) * config_.maxSpeed;
+    if ( fabs(command_.motion.v.x) > config_.maxSpeed ) {
+        command_.motion.v.x =
+                (command_.motion.v.x / fabs(command_.motion.v.x)) * config_.maxSpeed;
     }
-    if ( fabs(command_->motion.w) > config_.maxTurnrate ) {
-        command_->motion.w =
-                (command_->motion.w / fabs(command_->motion.w)) * config_.maxTurnrate;
+    if ( fabs(command_.motion.w) > config_.maxTurnrate ) {
+        command_.motion.w =
+                (command_.motion.w / fabs(command_.motion.w)) * config_.maxTurnrate;
     }
 
     // return updated command
     // ice_clone() doesn't work for some reason
-    //data = command_->ice_clone();
-    //data->timeStamp = ?;
-    data->motion.v.x = command_->motion.v.x;
-    data->motion.v.y = command_->motion.v.y;
-    data->motion.w = command_->motion.w;
+    //data = command_.ice_clone();
+    //data.timeStamp = ?;
+    data.motion.v.x = command_.motion.v.x;
+    data.motion.v.y = command_.motion.v.y;
+    data.motion.w = command_.motion.w;
 
     return 0;
 }

@@ -116,10 +116,10 @@ public:
     
     // Read the latest data, return -1 if unavailable
     // Blocks with timeout, also quietly deletes the element that is read
-    virtual void readGps( orca::GpsDataPtr& data, int timeoutMs=2000 ) = 0;
-    virtual void readGpsTime( orca::GpsTimeDataPtr& data, int timeoutMs=2000 ) = 0;
-    virtual void readImu( orca::ImuDataPtr& data, int timeoutMs=2000 ) = 0;
-    virtual void readPosition3d( orca::Position3dDataPtr& data, int timeoutMs=2000 ) = 0;
+    virtual void readGps( orca::GpsData& data, int timeoutMs=2000 ) = 0;
+    virtual void readGpsTime( orca::GpsTimeData& data, int timeoutMs=2000 ) = 0;
+    virtual void readImu( orca::ImuData& data, int timeoutMs=2000 ) = 0;
+    virtual void readPosition3d( orca::Position3dData& data, int timeoutMs=2000 ) = 0;
 
     // mechanism to get error messages etc back from driver.
     virtual const std::string &infoMessages() { return infoMessages_; };
@@ -148,10 +148,10 @@ protected:
     Pps pps_;
     GpsPosition position_;
     
-    orca::GpsDataPtr gpsData_;
+    orca::GpsData gpsData_;
     orca::GpsTimeData gpsTimeData_;
-    orca::ImuDataPtr imuData_;
-    orca::Position3dDataPtr position3dData_;
+    orca::ImuData imuData_;
+    orca::Position3dData position3dData_;
 
     std::string infoMessages_;
     

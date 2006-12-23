@@ -111,31 +111,31 @@ Handler::init()
     }
     
     // Get the configuration
-    RangeScanner2dDescriptionPtr descr = rangeScannerPrx_->getDescription();
+    RangeScanner2dDescription descr = rangeScannerPrx_->getDescription();
     cout << orcaice::toString(descr) << endl;
 
-    sensorConfig.rangeMax = descr->maxRange;
-    sensorConfig.angleIncrement = descr->fieldOfView/(descr->numberOfSamples+1);
+    sensorConfig.rangeMax = descr.maxRange;
+    sensorConfig.angleIncrement = descr.fieldOfView/(descr.numberOfSamples+1);
 
     // create a callback object to recieve scans
     Ice::ObjectPtr consumer = new RangeScanner2dConsumerI(rangeScannerDataBuffer_);
     rangeScannerConsumerPrx_ =
             orcaice::createConsumerInterface<orca::RangeScanner2dConsumerPrx>( context_, consumer );
 
-    OgFusionConfigPtr ogFusionConfig = ogFusionPrx_->getConfig();
+    OgFusionConfig ogFusionConfig = ogFusionPrx_->getConfig();
 
     ogfusion::MapConfig mapConfig;
 
     // read map info from config
-    mapConfig.mapSizeX = ogFusionConfig->numCellsX;
-    mapConfig.mapSizeY = ogFusionConfig->numCellsY;
-    mapConfig.mapResX = ogFusionConfig->metresPerCellX;
-    mapConfig.mapResY = ogFusionConfig->metresPerCellY;
-    mapConfig.mapOriginX = ogFusionConfig->origin.p.x;
-    mapConfig.mapOriginY = ogFusionConfig->origin.p.y;
-    mapConfig.mapOrientation = ogFusionConfig->origin.o;
+    mapConfig.mapSizeX = ogFusionConfig.numCellsX;
+    mapConfig.mapSizeY = ogFusionConfig.numCellsY;
+    mapConfig.mapResX = ogFusionConfig.metresPerCellX;
+    mapConfig.mapResY = ogFusionConfig.metresPerCellY;
+    mapConfig.mapOriginX = ogFusionConfig.origin.p.x;
+    mapConfig.mapOriginY = ogFusionConfig.origin.p.y;
+    mapConfig.mapOrientation = ogFusionConfig.origin.o;
 
-    if(ogFusionConfig->origin.o != 0.0){
+    if(ogFusionConfig.origin.o != 0.0){
         std::string errString = "Laser2Og currently only support axis aligned OgMaps";
         context_.tracer()->error( errString );
         throw orcaice::Exception( ERROR_INFO, errString );
@@ -170,8 +170,8 @@ Handler::run()
 {
 
 	RangeScanner2dDataPtr rangeScan = new RangeScanner2dData;
-	Localise2dDataPtr pose = new Localise2dData;
-	OgFusionDataPtr obs = new OgFusionData;
+	Localise2dData pose;
+	OgFusionData obs;
 
     //
     // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
@@ -204,9 +204,9 @@ Handler::run()
                 throw;
             }
     
-            laser2Og_->process(*pose,*rangeScan);
-            laser2Og_->getObs(obs->observation);
-            obs->timeStamp = rangeScan->timeStamp;
+            laser2Og_->process(pose,*rangeScan);
+            laser2Og_->getObs(obs.observation);
+            obs.timeStamp = rangeScan->timeStamp;
             
             //send out OgFusionData
             ogFusionPrx_->setData(obs);

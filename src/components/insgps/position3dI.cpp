@@ -17,13 +17,12 @@ using namespace std;
 using namespace orca;
 using namespace insgps;
 
-Position3dI::Position3dI( Position3dDescriptionPtr  descr,
+Position3dI::Position3dI( const Position3dDescription&  descr,
                           Driver*                   hwDriver,
                           const orcaice::Context & context )
     :   InsGpsI(context),
         descr_(descr),
         hwDriver_(hwDriver),
-        position3dData_(new Position3dData),
         context_(context)
 {
     //
@@ -54,7 +53,7 @@ Position3dI::publish()
 //
 
 void
-Position3dI::read( ::orca::Position3dDataPtr& data )
+Position3dI::read( ::orca::Position3dData& data )
 {
     hwDriver_->readPosition3d( data );
 }         
@@ -64,13 +63,11 @@ Position3dI::read( ::orca::Position3dDataPtr& data )
 // remote calls
 //
 
-orca::Position3dDataPtr
+orca::Position3dData
 Position3dI::getData(const Ice::Current& current) const
 {
-    std::cout << "getData()" << std::endl;
-
-    // create a null pointer. data will be cloned into it.
-    orca::Position3dDataPtr data;
+//     std::cout << "getData()" << std::endl;
+    orca::Position3dData data;
     // we don't need to pop the data here because we don't block on it.
     if ( position3dDataBuffer_.isEmpty() )
     {
@@ -79,12 +76,11 @@ Position3dI::getData(const Ice::Current& current) const
     }else{
         position3dDataBuffer_.get( data );
     }
-
     return data;
 }
 
 
-::orca::Position3dDescriptionPtr
+::orca::Position3dDescription
 Position3dI::getDescription(const ::Ice::Current& ) const
 {
     std::cout << "getDescription()" << std::endl;
@@ -110,7 +106,7 @@ Position3dI::unsubscribe(const ::orca::Position3dConsumerPrx &subscriber, const 
 
 // Set pva IMU Data
 void
-Position3dI::localSetData( ::orca::Position3dDataPtr data )
+Position3dI::localSetData( const ::orca::Position3dData& data )
 {
     // Stick it in the buffer so pullers can get it
     position3dDataBuffer_.push( data );

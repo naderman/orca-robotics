@@ -34,15 +34,15 @@ namespace orcaplayer
 //@{
 
 //! Converts position data to orca::Position2dData.
-void convert( const PlayerCc::Position2dProxy & proxy, orca::Position2dDataPtr & obj );
+void convert( const PlayerCc::Position2dProxy & proxy, orca::Position2dData& obj );
 
 //! Converts player position3d data to orca::Position3dData.
-void convert( const PlayerCc::Position3dProxy & proxy, orca::Position3dDataPtr & obj );
+void convert( const PlayerCc::Position3dProxy & proxy, orca::Position3dData& obj );
 
 //! Converts laser data to orca::LaserScanner2dData. If convertHeaders is FALSE, only the data
 //! (ranges, intensities) are processed and the header information (fieldOfView, maxRange, etc.) 
 //! is left untouched.
-void convert( const PlayerCc::LaserProxy & proxy, orca::LaserScanner2dDataPtr & obj, bool convertHeaders=true );
+void convert( const PlayerCc::LaserProxy & proxy, orca::LaserScanner2dDataPtr& obj, bool convertHeaders=true );
 
 //! Converts laser configuration to values of orca::RangeScanner2dConfig.
 void convert( const PlayerCc::LaserProxy & proxy, 
@@ -50,8 +50,8 @@ void convert( const PlayerCc::LaserProxy & proxy,
 
 //! Converts Stage simulated position data to orca::Localise2dData.
 //! @note Access functions in SimulationProxy are not const.
-void convert( PlayerCc::SimulationProxy & proxy, orca::Localise2dDataPtr & obj, const std::string & id );
-//void convert( const PlayerCc::SimulationProxy & proxy, orca::Localise2dDataPtr & obj, const std::string & id );
+void convert( PlayerCc::SimulationProxy & proxy, orca::Localise2dData& obj, const std::string & id );
+//void convert( const PlayerCc::SimulationProxy & proxy, orca::Localise2dData& obj, const std::string & id );
 
 //@}
 
@@ -59,9 +59,9 @@ void convert( PlayerCc::SimulationProxy & proxy, orca::Localise2dDataPtr & obj, 
  *  @name Orca to Player Conversion Functions
  */
 //@{
-void convert( const orca::Position2dDataPtr & obj, PlayerCc::Position2dProxy & proxy );
+void convert( const orca::Position2dData& obj, PlayerCc::Position2dProxy & proxy );
 
-void convert( const orca::LaserScanner2dDataPtr & obj, PlayerCc::LaserProxy & proxy );
+void convert( const orca::LaserScanner2dDataPtr& obj, PlayerCc::LaserProxy & proxy );
 //@}
 
 } // namespace

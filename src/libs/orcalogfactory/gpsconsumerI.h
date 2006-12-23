@@ -24,7 +24,7 @@ class GpsConsumerI : public orca::GpsConsumer
         GpsConsumerI ( GpsLogger *logger )
             :logger_(logger)
         {};
-        virtual void setData(const orca::GpsDataPtr& data, const Ice::Current&);
+        virtual void setData(const orca::GpsData& data, const Ice::Current&);
         
     private:
         GpsLogger *logger_;
@@ -37,7 +37,7 @@ class GpsTimeConsumerI : public orca::GpsTimeConsumer
         GpsTimeConsumerI ( GpsLogger *logger )
             :logger_(logger)
         {};
-        virtual void setData(const orca::GpsTimeDataPtr& data, const Ice::Current&);
+        virtual void setData(const orca::GpsTimeData& data, const Ice::Current&);
         
     private:
         GpsLogger *logger_;
@@ -50,7 +50,7 @@ class GpsMapGridConsumerI : public orca::GpsMapGridConsumer
         GpsMapGridConsumerI ( GpsLogger *logger )
             :logger_(logger)
         {};
-        virtual void setData(const orca::GpsMapGridDataPtr& data, const Ice::Current&);
+        virtual void setData(const orca::GpsMapGridData& data, const Ice::Current&);
         
     private:
         GpsLogger *logger_;
@@ -58,4 +58,5 @@ class GpsMapGridConsumerI : public orca::GpsMapGridConsumer
 };
 
 }
+
 #endif

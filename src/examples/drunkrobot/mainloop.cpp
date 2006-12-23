@@ -15,7 +15,7 @@
 using namespace std;
 using namespace drunk; 
 
-MainLoop::MainLoop( orcaice::PtrBuffer<orca::Position2dDataPtr> &posBuffer,
+MainLoop::MainLoop( orcaice::Buffer<orca::Position2dData> &posBuffer,
                     const orca::Position2dConsumerPrx &position2dConsumer):
     posBuffer_(posBuffer), 
     position2dConsumer_(position2dConsumer)
@@ -36,7 +36,7 @@ MainLoop::run(){
     {
 
         // Generate a random position every time stemp. 
-        orca::Position2dDataPtr currentPos = new orca::Position2dData;
+        orca::Position2dData currentPos;
         orcaice::setSane(currentPos); // Function from libOrcaIce that provides reasonable random values.
 
         cout << "Message: " << msgCount ++ << " Position is: " << orcaice::toString(currentPos) << endl; 

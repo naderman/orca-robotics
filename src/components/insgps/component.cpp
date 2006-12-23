@@ -29,7 +29,7 @@ Component::Component()
       gpsHandler_(0),         
       imuHandler_(0),
       position3dHandler_(0)
-      {
+{
 }
 
 Component::~Component()
@@ -120,39 +120,39 @@ Component::start()
     // SENSOR DESCRIPTION
     //
 
-    orca::GpsDescriptionPtr gpsDescr = new orca::GpsDescription;
-    gpsDescr->timeStamp = orcaice::getNow();
+    orca::GpsDescription gpsDescr;
+    gpsDescr.timeStamp = orcaice::getNow();
 
-    orca::ImuDescriptionPtr imuDescr = new orca::ImuDescription;
-    imuDescr->timeStamp = orcaice::getNow();
+    orca::ImuDescription imuDescr;
+    imuDescr.timeStamp = orcaice::getNow();
     
-    orca::Position3dDescriptionPtr position3dDescr = new orca::Position3dDescription;
-    position3dDescr->timeStamp = orcaice::getNow();
+    orca::Position3dDescription position3dDescr;
+    position3dDescr.timeStamp = orcaice::getNow();
 
     //
     // transfer internal sensor configs
     //
     
     // offset from global coordinate system
-    orcaice::setInit( gpsDescr->offset );
-    gpsDescr->offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Gps.Offset", gpsDescr->offset );
+    orcaice::setInit( gpsDescr.offset );
+    gpsDescr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Gps.Offset", gpsDescr.offset );
 
-    orcaice::setInit( gpsDescr->size );
-    gpsDescr->size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Gps.Size", gpsDescr->size );
+    orcaice::setInit( gpsDescr.size );
+    gpsDescr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Gps.Size", gpsDescr.size );
     
     // offset from robot coordinate system
-    orcaice::setInit( imuDescr->offset );
-    imuDescr->offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Imu.Offset", imuDescr->offset );
+    orcaice::setInit( imuDescr.offset );
+    imuDescr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Imu.Offset", imuDescr.offset );
    
-    orcaice::setInit( imuDescr->size );
-    imuDescr->size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Imu.Size", imuDescr->size );
+    orcaice::setInit( imuDescr.size );
+    imuDescr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Imu.Size", imuDescr.size );
 
     // offset from robot coordinate system
-    orcaice::setInit( position3dDescr->offset );
-    position3dDescr->offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Position3d.Offset", position3dDescr->offset );
+    orcaice::setInit( position3dDescr.offset );
+    position3dDescr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Position3d.Offset", position3dDescr.offset );
    
-    orcaice::setInit( position3dDescr->size );
-    position3dDescr->size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Position3d.Size", imuDescr->size );
+    orcaice::setInit( position3dDescr.size );
+    position3dDescr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Position3d.Size", imuDescr.size );
     
     // wait until we have a fix before publishing etc.
     /*

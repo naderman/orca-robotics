@@ -41,8 +41,8 @@ public:
                     bool   useSparseSkeleton );
     ~SkeletonDriver();
     
-    virtual void computePath( const orca::PathPlanner2dTaskPtr &taskPtr,
-                              const orca::PathPlanner2dDataPtr &pathDataPtr );
+    virtual void computePath( const orca::PathPlanner2dTask& taskPtr,
+                              orca::PathPlanner2dData& pathDataPtr );
     #ifdef QT4_FOUND
     void setGraphics( SkeletonGraphicsI* skelGraphicsI );
     #endif

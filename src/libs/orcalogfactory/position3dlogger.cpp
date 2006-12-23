@@ -50,8 +50,8 @@ Position3dLogger::init()
     orcaice::connectToInterfaceWithTag<orca::Position3dPrx>( context_, objectPrx, interfaceTag_ );
     
     // Config and geometry
-    orca::Position3dDescriptionPtr descriptionPtr = objectPrx->getDescription();
-    writeDescriptionToFile( descriptionPtr );
+    orca::Position3dDescription descr = objectPrx->getDescription();
+    writeDescriptionToFile( descr );
 
     // consumer
     Ice::ObjectPtr consumer = this;
@@ -63,10 +63,10 @@ Position3dLogger::init()
 }
 
 void 
-Position3dLogger::setData(const orca::Position3dDataPtr& data, const Ice::Current&)
+Position3dLogger::setData(const orca::Position3dData& data, const Ice::Current&)
 {
     // Write reference to master file
-    appendMasterFile( data->timeStamp.seconds, data->timeStamp.useconds );
+    appendMasterFile( data.timeStamp.seconds, data.timeStamp.useconds );
         
     if ( format_ == "ice" )
     {
@@ -87,7 +87,7 @@ Position3dLogger::setData(const orca::Position3dDataPtr& data, const Ice::Curren
 }
 
 void 
-Position3dLogger::writeDescriptionToFile( const orca::Position3dDescriptionPtr & obj )
+Position3dLogger::writeDescriptionToFile( const orca::Position3dDescription& obj )
 {
     context_.tracer()->print( "Writing description to file" );
     
@@ -108,4 +108,3 @@ Position3dLogger::writeDescriptionToFile( const orca::Position3dDescriptionPtr &
         throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: unknown log format: "+format_ );
     }
 } 
-

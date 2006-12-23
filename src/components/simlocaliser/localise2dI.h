@@ -24,13 +24,13 @@ class Localise2dI : public orca::Localise2d
 {
 public:
     Localise2dI( const IceStorm::TopicPrx &localiseTopic,
-                 orcaice::PtrBuffer<orca::Localise2dDataPtr> & locBuffer );
+                 orcaice::Buffer<orca::Localise2dData> & locBuffer );
 
     // remote calls:
 
-    virtual ::orca::Localise2dDataPtr getData(const ::Ice::Current& ) const;
+    virtual ::orca::Localise2dData getData(const ::Ice::Current& ) const;
 
-    virtual ::orca::Localise2dDataPtr getDataAtTime(const orca::Time&, const ::Ice::Current& ) const;
+    virtual ::orca::Localise2dData getDataAtTime(const orca::Time&, const ::Ice::Current& ) const;
 
     virtual void subscribe(const ::orca::Localise2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
@@ -39,7 +39,7 @@ public:
 private:
 
     const IceStorm::TopicPrx localiseTopic_;
-    orcaice::PtrBuffer<orca::Localise2dDataPtr> &locBuffer_;
+    orcaice::Buffer<orca::Localise2dData> &locBuffer_;
 };
 
 } // namespace

@@ -62,10 +62,10 @@ public:
     // Reimplement this in derived drivers if something
     // non-standard is required.
     // returns: 0 = success, non-zero = failure
-    virtual int initData( orca::CameraDataPtr& data ) const;
+    virtual int initData( orca::CameraData& data ) const;
 
     // Blocks till new data is available
-    virtual int read( orca::CameraDataPtr& data )=0;
+    virtual int read( orca::CameraData& data )=0;
 
     // TODO: Should also have getData here as we don't always want all info from the read
 

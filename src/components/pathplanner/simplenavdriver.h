@@ -31,8 +31,8 @@ public:
     ~SimpleNavDriver();
     
     // Computes the path
-    virtual void computePath(   const orca::PathPlanner2dTaskPtr  & taskPtr,
-                                const orca::PathPlanner2dDataPtr  & pathDataPtr );
+    virtual void computePath( const orca::PathPlanner2dTask& task,
+                              orca::PathPlanner2dData& path );
 private:
     
     orcaogmap::OgMap ogMap_;

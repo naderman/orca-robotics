@@ -41,7 +41,7 @@ LocalNavManager::~LocalNavManager()
 }
 
 void 
-LocalNavManager::setCurrentGoal( const orca::Localise2dDataPtr localiseData )
+LocalNavManager::setCurrentGoal( const orca::Localise2dData& localiseData )
 {
     orca::Waypoint2d    currentWaypoint;
 
@@ -82,21 +82,21 @@ LocalNavManager::setCurrentGoal( const orca::Localise2dDataPtr localiseData )
 
 void
 LocalNavManager::getCommand( const orca::RangeScanner2dDataPtr  rangeData, 
-                             const orca::Localise2dDataPtr    localiseData, 
-                             const orca::Position2dDataPtr    odomData, 
-                             orca::Velocity2dCommandPtr      &cmd )
+                             const orca::Localise2dData&    localiseData, 
+                             const orca::Position2dData&    odomData, 
+                             orca::Velocity2dCommand&       cmd )
 {
     setCurrentGoal( localiseData );
 
-    driverState_ = localNavDriver_.getCommand( odomData->stalled,
-                                               odomData->motion,
+    driverState_ = localNavDriver_.getCommand( odomData.stalled,
+                                               odomData.motion,
                                                rangeData,
                                                cmd );
 
     // For big debug levels, give feedback through tracer.
     {
         std::stringstream ss;
-        ss << "LocalNavManager: Setting command: " << cmd;
+        ss << "LocalNavManager: Setting command: " << orcaice::toString(cmd);
         context_.tracer()->debug( ss.str(), 5 );
     }
     {
@@ -108,13 +108,17 @@ LocalNavManager::getCommand( const orca::RangeScanner2dDataPtr  rangeData,
 }
 
 bool
-LocalNavManager::setGoalSpecifics( const orca::Localise2dDataPtr  localiseData,
-                                   const orca::Waypoint2d        &currentWaypoint,
-                                   GoalWatcher                   &goalWatcher )
+LocalNavManager::setGoalSpecifics( const orca::Localise2dData&  localiseData,
+                                   const orca::Waypoint2d&      currentWaypoint,
+                                   GoalWatcher&                 goalWatcher )
 {
     // 1: work out the max-likelihood pose of the robot
-    const orca::Pose2dHypothesis &h = orcaice::mlHypothesis( localiseData );
-    
+// ################ alexm: disalbed to make it compile
+//     const orca::Pose2dHypothesis &h = orcaice::mlHypothesis( localiseData );
+// ################ this is a hack to make it compile 
+    orca::Pose2dHypothesis h;
+// ##################
+
     // 2: work out the location of the goal in robot-centric coordinates
     orcanavutil::Offset goal( currentWaypoint.target.p.x, currentWaypoint.target.p.y, currentWaypoint.target.o );
     orcanavutil::subtractInitialOffset( goal.x,

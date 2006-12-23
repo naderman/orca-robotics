@@ -31,16 +31,16 @@ class Position2dI : public orca::Position2d
 {
 public:
 
-    Position2dI( orcaice::PtrBuffer<orca::Position2dDataPtr> &posBuffer, 
-                 orca::Position2dGeometryPtr &geomBuffer, 
+    Position2dI( orcaice::Buffer<orca::Position2dData> &posBuffer, 
+                 orca::Position2dGeometry &geomBuffer, 
                  const IceStorm::TopicPrx &topic);
     //
     // implement remote operation defined in the interface
     //
 
-    virtual ::orca::Position2dDataPtr getData(const ::Ice::Current& ) const;
+    virtual ::orca::Position2dData getData(const ::Ice::Current& ) const;
 
-    virtual ::orca::Position2dGeometryPtr getGeometry(const ::Ice::Current& ) const;
+    virtual ::orca::Position2dGeometry getGeometry(const ::Ice::Current& ) const;
 
     virtual void subscribe(const ::orca::Position2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
@@ -49,10 +49,10 @@ public:
 private:
 
     // the driver will put the latest data into this proxy
-    orcaice::PtrBuffer<orca::Position2dDataPtr> &posBuffer_;
+    orcaice::Buffer<orca::Position2dData> &posBuffer_;
     
     // the driver will use this member to return geometry when requested. 
-    orca::Position2dGeometryPtr& geomBuffer_; 
+    orca::Position2dGeometry& geomBuffer_; 
 
     // This is used to set up the topic for us to push information. 
     IceStorm::TopicPrx topic_;

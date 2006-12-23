@@ -46,32 +46,31 @@ Particle2dPainter::clear()
     currentColour_ = kaputColour_;
 }
 
-void Particle2dPainter::setData( Particle2dDataPtr particleData )
+void 
+Particle2dPainter::setData( const Particle2dData& particleData )
 {
     // cout<<"TRACE(particle2dpainter.cpp): setData()" << endl;
 
     // how long to draw the particles?
     const double pLength = 0.1;
 
-    Particle2dSequence &particles = particleData->particles;
-
-//        cout<<"TRACE(particle2dpainter.cpp): numParticles: " << particles.size() << endl;
+//        cout<<"TRACE(particle2dpainter.cpp): numParticles: " << particleData.particles.size() << endl;
 
     // set local storage
-    qParticles_.resize( particles.size() );
-    weights_.resize( particles.size() );
+    qParticles_.resize( particleData.particles.size() );
+    weights_.resize( particleData.particles.size() );
 
     if ( qParticles_.size() > 0 )
     {
         maxWeight_ = -1.0;
-        for ( unsigned int i=0; i<particles.size(); ++i )
+        for ( unsigned int i=0; i<particleData.particles.size(); ++i )
         {
-            double x       = particles[i].pose.p.x;
-            double y       = particles[i].pose.p.y;
-            double heading = particles[i].pose.o;
+            double x       = particleData.particles[i].pose.p.x;
+            double y       = particleData.particles[i].pose.p.y;
+            double heading = particleData.particles[i].pose.o;
 
             qParticles_[i] = QLineF( x, y, x+cos(heading)*pLength, y+sin(heading)*pLength );
-            weights_[i] = particles[i].weight;
+            weights_[i] = particleData.particles[i].weight;
             assert( weights_[i] >= 0.0 );
             if ( weights_[i] > maxWeight_ )
                 maxWeight_ = weights_[i];

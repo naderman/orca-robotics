@@ -26,8 +26,11 @@ module orca
 // define messages first
 
 //! Gps config structure
-class GpsDescription extends OrcaObject
+struct GpsDescription
 {
+    //! Time (according to the computer clock) when data was measured.
+    Time timeStamp;
+
     //! Offset of the sensor w.r.t to the global coordinate system.
     Frame3d offset; 
 
@@ -36,18 +39,22 @@ class GpsDescription extends OrcaObject
 };
 
 //! Gps time structure - for time sync
-class GpsTimeData extends OrcaObject
+struct GpsTimeData
 {
-    // UTC time
+    //! Time (according to the computer clock) when data was measured.
+    Time timeStamp;
+    //! UTC time
     TimeOfDay utcTime;
     // UTC date
     Date utcDate;
 };
 
 //! Gps data structure
-class GpsMapGridData extends OrcaObject
+struct GpsMapGridData
 {
-    // UTC time
+    //! Time (according to the computer clock) when data was measured.
+    Time timeStamp;
+    //! UTC time
     TimeOfDay utcTime;
 
     // GPS position
@@ -61,7 +68,7 @@ class GpsMapGridData extends OrcaObject
     double altitude;
     
     // Velocities
-    // heading/track/course (Degrees)
+    //! heading/track/course (Degrees)
     double heading; 
     //! horizontal speed (Metres/second)
     double speed;
@@ -74,9 +81,11 @@ class GpsMapGridData extends OrcaObject
 
 
 //! Gps data structure
-class GpsData extends OrcaObject
+struct GpsData
 {
-    // UTC time
+    //! Time (according to the computer clock) when data was measured.
+    Time timeStamp;
+    //! UTC time
     TimeOfDay utcTime;
  
     // GPS position
@@ -88,7 +97,7 @@ class GpsData extends OrcaObject
     double altitude;
     
     // Velocities
-    // heading/track/course (Degrees)
+    //! heading/track/course (Degrees)
     double heading; 
     //! horizontal speed (Metres/second)
     double speed;

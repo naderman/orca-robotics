@@ -25,17 +25,15 @@ using namespace orca;
 using namespace robot2d;
 
 NetHandler::NetHandler(
-                 orcaice::PtrProxy<orca::Position2dDataPtr>    & position2dPipe,
-                 orcaice::PtrNotify<orca::Velocity2dCommandPtr>& commandPipe,
-                 orcaice::PtrProxy<orca::Platform2dConfigPtr>  & setConfigPipe,
-                 orcaice::PtrProxy<orca::Platform2dConfigPtr>  & currentConfigPipe,
+                 orcaice::Proxy<orca::Position2dData>    & position2dPipe,
+                 orcaice::Notify<orca::Velocity2dCommand>& commandPipe,
+                 orcaice::Proxy<orca::Platform2dConfig>  & setConfigPipe,
+                 orcaice::Proxy<orca::Platform2dConfig>  & currentConfigPipe,
                  const orcaice::Context                        & context )
       : position2dPipe_(position2dPipe),
         commandPipe_(commandPipe),
         setConfigPipe_(setConfigPipe),
         currentConfigPipe_(currentConfigPipe),
-        position2dData_(new Position2dData),
-        commandData_(new Velocity2dCommand),
         context_(context)
 {
     init();

@@ -34,17 +34,17 @@ JoystickDriver::JoystickDriver( const InputDriver::Config &cfg ) :
         config_(cfg)
 {
     // init internal data storage
-    command_ = new Velocity2dCommand;
-    command_->motion.v.x = 0.0;
-    command_->motion.v.y = 0.0;
-    command_->motion.w = 0.0;
+    command_.motion.v.x = 0.0;
+    command_.motion.v.y = 0.0;
+    command_.motion.w = 0.0;
 }
 
 JoystickDriver::~JoystickDriver()
 {
 }
 
-int JoystickDriver::findUSBJoystick( char *joystickDevice )
+int 
+JoystickDriver::findUSBJoystick( char *joystickDevice )
 {
     char device[256];
     int  maxEvdev = 10;
@@ -126,7 +126,8 @@ int JoystickDriver::findUSBJoystick( char *joystickDevice )
     }
 }
 
-int JoystickDriver::enable()
+int 
+JoystickDriver::enable()
 {
     char joystickDevice[256];
     int ret;
@@ -174,14 +175,16 @@ int JoystickDriver::enable()
     return 0;
 }
 
-int JoystickDriver::disable()
+int 
+JoystickDriver::disable()
 {
     close( jfd_ );
     return 0;
 }
 
 // read next command from the joystick
-int JoystickDriver::read( orca::Velocity2dCommandPtr &data )
+int 
+JoystickDriver::read( orca::Velocity2dCommand& data )
 {
     struct input_event event;
 
@@ -193,9 +196,9 @@ int JoystickDriver::read( orca::Velocity2dCommandPtr &data )
         // check if read failed, and if so was it due to disconnection?
         if ( errno == ENODEV ) {
             // set the robot speed and turn rate to zero
-            command_->motion.v.x = 0.0;
-            command_->motion.v.y = 0.0;
-            command_->motion.w = 0.0;
+            command_.motion.v.x = 0.0;
+            command_.motion.v.y = 0.0;
+            command_.motion.w = 0.0;
 
             string errString = "failed to read from joystick";
             throw orcaice::HardwareException( ERROR_INFO, errString );
@@ -219,36 +222,36 @@ int JoystickDriver::read( orca::Velocity2dCommandPtr &data )
                 {
                     // set the robot velocity
 
-                    command_->motion.v.x = ( AXIS_OFFSET - (double)event.value )
+                    command_.motion.v.x = ( AXIS_OFFSET - (double)event.value )
                                                 * config_.maxSpeed/AXIS_OFFSET;
     
                     // Square the speed, so it's more sensitive in the centre
-                    bool neg = ( command_->motion.v.x < 0 );
-                    command_->motion.v.x = ((command_->motion.v.x/config_.maxSpeed)
-                            *(command_->motion.v.x/config_.maxSpeed))*config_.maxSpeed;
+                    bool neg = ( command_.motion.v.x < 0 );
+                    command_.motion.v.x = ((command_.motion.v.x/config_.maxSpeed)
+                            *(command_.motion.v.x/config_.maxSpeed))*config_.maxSpeed;
                     if ( neg ) {
-                        command_->motion.v.x *= -1;
+                        command_.motion.v.x *= -1;
                     }
-                    //cout << "y:\tvalue = " << event.value << "\tspeed = " << command_->motion.v.x << endl;
-                    //cout << "speed = " << command_->motion.v.x << "\tturn rate = " << command_->motion.w << endl;
+                    //cout << "y:\tvalue = " << event.value << "\tspeed = " << command_.motion.v.x << endl;
+                    //cout << "speed = " << command_.motion.v.x << "\tturn rate = " << command_.motion.w << endl;
                     break;
                 }
                 // SIDE-TO-SIDE
                 case ABS_X:
                 {
                     // set the robot turn rate
-                    command_->motion.w = ( AXIS_OFFSET-(double)event.value )
+                    command_.motion.w = ( AXIS_OFFSET-(double)event.value )
                                                 * config_.maxTurnrate/AXIS_OFFSET;               
     
                     // Square the turnrate, so it's more sensitive in the centre
-                    bool neg = ( command_->motion.w < 0 );
-                    command_->motion.w = ((command_->motion.w/config_.maxTurnrate)
-                            *(command_->motion.w/config_.maxTurnrate))*config_.maxTurnrate;
+                    bool neg = ( command_.motion.w < 0 );
+                    command_.motion.w = ((command_.motion.w/config_.maxTurnrate)
+                            *(command_.motion.w/config_.maxTurnrate))*config_.maxTurnrate;
                     if ( neg ) {
-                        command_->motion.w *= -1;
+                        command_.motion.w *= -1;
                     }
-                    //cout << "x:\tvalue = " << event.value << "\tspeed = " << command_->motion.w << endl;
-                    //cout << "speed = " << command_->motion.v.x << "\tturn rate = " << command_->motion.w << endl;               
+                    //cout << "x:\tvalue = " << event.value << "\tspeed = " << command_.motion.w << endl;
+                    //cout << "speed = " << command_.motion.v.x << "\tturn rate = " << command_.motion.w << endl;               
                     break;
                 }
             } // code switch
@@ -256,22 +259,22 @@ int JoystickDriver::read( orca::Velocity2dCommandPtr &data )
     } // type switch
 
     // apply max limits
-    if ( fabs(command_->motion.v.x) > config_.maxSpeed ) {
-        command_->motion.v.x =
-                (command_->motion.v.x / fabs(command_->motion.v.x)) * config_.maxSpeed;
+    if ( fabs(command_.motion.v.x) > config_.maxSpeed ) {
+        command_.motion.v.x =
+                (command_.motion.v.x / fabs(command_.motion.v.x)) * config_.maxSpeed;
     }
-    if ( fabs(command_->motion.w) > config_.maxTurnrate ) {
-        command_->motion.w =
-                (command_->motion.w / fabs(command_->motion.w)) * config_.maxTurnrate;
+    if ( fabs(command_.motion.w) > config_.maxTurnrate ) {
+        command_.motion.w =
+                (command_.motion.w / fabs(command_.motion.w)) * config_.maxTurnrate;
     }
 
     // return updated command
     // ice_clone() doesn't work for some reason
-    //data = command_->ice_clone();
-    //data->timeStamp = ?;
-    data->motion.v.x = command_->motion.v.x;
-    data->motion.v.y = command_->motion.v.y;
-    data->motion.w = command_->motion.w;
+    //data = command_.ice_clone();
+    //data.timeStamp = ?;
+    data.motion.v.x = command_.motion.v.x;
+    data.motion.v.y = command_.motion.v.y;
+    data.motion.w = command_.motion.w;
 
     return 0;
 }

@@ -41,8 +41,8 @@ public:
 
     MainLoop( LocalNavManager                               &localNavManager,
               orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> &obsBuffer,
-              orcaice::PtrBuffer<orca::Localise2dDataPtr>   &locBuffer,
-              orcaice::PtrBuffer<orca::Position2dDataPtr>   &odomBuffer,
+              orcaice::Buffer<orca::Localise2dData>&        locBuffer,
+              orcaice::Buffer<orca::Position2dData>&        odomBuffer,
               orcaice::Proxy<bool>                          &enabledPipe,
               orca::Platform2dPrx                           &platform2dPrx,
               PathMaintainer                                &pathMaintainer,
@@ -59,16 +59,16 @@ private:
     void ensureBuffersNotEmpty();
 
     // Set the command to 'stop'
-    void getStopCommand( orca::Velocity2dCommandPtr cmd );
+    void getStopCommand( orca::Velocity2dCommand& cmd );
 
     // See if we need to follow a new path, plus
     // see if we should update the world on our progress.
-    void checkWithOutsideWorld( PathMaintainer &pathMaintainer );
+    void checkWithOutsideWorld( PathMaintainer& pathMaintainer );
 
     // Returns true if the timestamps differ by more than a threshold.
     bool areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData,
-                             const orca::Localise2dDataPtr   &localiseData,
-                             const orca::Position2dDataPtr   &odomData,
+                             const orca::Localise2dData&        localiseData,
+                             const orca::Position2dData&        odomData,
                              double                           threshold );
 
     void maybeSendHeartbeat();
@@ -78,17 +78,17 @@ private:
 
     // Incoming observations and pose info
     orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> &obsBuffer_;
-    orcaice::PtrBuffer<orca::Localise2dDataPtr>   &locBuffer_;
-    orcaice::PtrBuffer<orca::Position2dDataPtr>   &odomBuffer_;
+    orcaice::Buffer<orca::Localise2dData>   &locBuffer_;
+    orcaice::Buffer<orca::Position2dData>   &odomBuffer_;
 
     // Allows external enable/disable
     orcaice::Proxy<bool> &enabledPipe_;
 
     // data types
-    orca::Localise2dDataPtr      localiseData_;
-    orca::Position2dDataPtr      odomData_;
+    orca::Localise2dData      localiseData_;
+    orca::Position2dData      odomData_;
     orca::RangeScanner2dDataPtr    rangeData_;
-    orca::Velocity2dCommandPtr   velocityCmd_;
+    orca::Velocity2dCommand   velocityCmd_;
 
     // Outgoing commands
     orca::Platform2dPrx &platform2dPrx_;

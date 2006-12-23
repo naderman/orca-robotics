@@ -15,12 +15,12 @@
 
 using namespace std;
 
-Position2dConsumerI::Position2dConsumerI( orcaice::PtrBuffer<orca::Position2dDataPtr> & pipe )
+Position2dConsumerI::Position2dConsumerI( orcaice::Buffer<orca::Position2dData> & pipe )
     : pipe_(pipe)
 {
 }
 
-void Position2dConsumerI::setData(const orca::Position2dDataPtr& data, const Ice::Current&)
+void Position2dConsumerI::setData(const orca::Position2dData& data, const Ice::Current&)
 {
 //     cout<<"pub : "<<data<<endl;
     pipe_.push( data );

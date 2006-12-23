@@ -62,18 +62,18 @@ Component::start()
     localMap_.fill(orcaogmap::CELL_UNKNOWN);
 
     // duplicate map config for OgFusion Interface
-    OgFusionConfigPtr ogFusionConfig = new OgFusionConfig;
-    ogFusionConfig->origin.p.x=mapConfig.mapOriginX;
-    ogFusionConfig->origin.p.y=mapConfig.mapOriginY;
-    ogFusionConfig->origin.o=mapConfig.mapOrientation;
-    ogFusionConfig->numCellsX=mapConfig.mapSizeX;
-    ogFusionConfig->numCellsY=mapConfig.mapSizeY;
-    ogFusionConfig->metresPerCellX=mapConfig.mapResX;
-    ogFusionConfig->metresPerCellY=mapConfig.mapResY;
+    OgFusionConfig ogFusionConfig;
+    ogFusionConfig.origin.p.x=mapConfig.mapOriginX;
+    ogFusionConfig.origin.p.y=mapConfig.mapOriginY;
+    ogFusionConfig.origin.o=mapConfig.mapOrientation;
+    ogFusionConfig.numCellsX=mapConfig.mapSizeX;
+    ogFusionConfig.numCellsY=mapConfig.mapSizeY;
+    ogFusionConfig.metresPerCellX=mapConfig.mapResX;
+    ogFusionConfig.metresPerCellY=mapConfig.mapResY;
 
     // create an initial map to pass to OgMapI
-    OgMapDataPtr map = new OgMapData;
-    convert(localMap_,map);
+    OgMapData map;
+    convert( localMap_, map );
 
     // create a callback object to recieve requests
     ogFusionObjPtr_ = new OgFusionI(ogFusionConfig, OgFusionDataBuffer_);

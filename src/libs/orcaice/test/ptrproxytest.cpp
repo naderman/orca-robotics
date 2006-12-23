@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-#include <orca/position2d.h>
+#include <orca/rangescanner2d.h>
 #include <orcaice/ptrproxy.h>
 #include <orcaobj/orcaobj.h>
 
@@ -18,10 +18,10 @@ using namespace std;
 
 int main(int argc, char * argv[])
 {
-    orcaice::PtrProxy<orca::Position2dDataPtr> proxy;
-    orca::Position2dDataPtr data = new orca::Position2dData;
+    orcaice::PtrProxy<orca::RangeScanner2dDataPtr> proxy;
+    orca::RangeScanner2dDataPtr data = new orca::RangeScanner2dData;
     orcaice::setSane( data );
-    orca::Position2dDataPtr copy = new orca::Position2dData;
+    orca::RangeScanner2dDataPtr copy = new orca::RangeScanner2dData;
 
     cout<<"testing get() ... ";
     // call get on an empty stomach
@@ -74,9 +74,10 @@ int main(int argc, char * argv[])
     // apparently structure have operator== but classes don't
     // (on the other hand, classes have default constructors but structures don't)
     if ( data->timeStamp != copy->timeStamp
-         || data->pose != copy->pose
-         || data->motion != copy->motion
-         || data->stalled != copy->stalled )
+         || data->maxRange != copy->maxRange
+         || data->maxRange != copy->maxRange
+         || data->fieldOfView != copy->fieldOfView
+         || data->ranges != copy->ranges )
     {
         cout<<"failed. expecting an exact copy of the data."<<endl;
         cout<<"\tin\t"<<orcaice::toString(data->timeStamp)<<" "<<data<<endl;

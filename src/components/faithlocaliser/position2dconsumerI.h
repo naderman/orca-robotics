@@ -19,11 +19,11 @@
 class Position2dConsumerI : public orca::Position2dConsumer
 {
     public:
-        Position2dConsumerI( orcaice::PtrBuffer<orca::Position2dDataPtr> & pipe );
-        virtual void setData(const orca::Position2dDataPtr& data, const Ice::Current&);
+        Position2dConsumerI( orcaice::Buffer<orca::Position2dData> & pipe );
+        virtual void setData(const orca::Position2dData& data, const Ice::Current&);
 
     private:
-        orcaice::PtrBuffer<orca::Position2dDataPtr> & pipe_;
+        orcaice::Buffer<orca::Position2dData> & pipe_;
 };
 
 #endif

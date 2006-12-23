@@ -17,17 +17,16 @@ using namespace orca;
 using namespace simlocaliser;
 
 Localise2dI::Localise2dI( const IceStorm::TopicPrx              &localiseTopic,
-                          orcaice::PtrBuffer<Localise2dDataPtr> &locBuffer )
+                          orcaice::Buffer<orca::Localise2dData> &locBuffer )
     : localiseTopic_(localiseTopic),
       locBuffer_(locBuffer)
 {
 }
 
-::orca::Localise2dDataPtr 
+::orca::Localise2dData
 Localise2dI::getData(const ::Ice::Current& ) const
 {
-    // create a null pointer. data will be cloned into it.
-    Localise2dDataPtr data;
+    Localise2dData data;
 
     // we don't need to pop the data here because we don't block on it.
     // we always want to have the latest copy in there
@@ -43,10 +42,24 @@ Localise2dI::getData(const ::Ice::Current& ) const
     return data;
 }
 
-::orca::Localise2dDataPtr
+// this implementation does not interpolate
+::orca::Localise2dData
 Localise2dI::getDataAtTime(const orca::Time&, const ::Ice::Current& ) const
 {
-    return NULL;
+    Localise2dData data;
+
+    // we don't need to pop the data here because we don't block on it.
+    // we always want to have the latest copy in there
+    try
+    {
+        locBuffer_.get( data );
+    }
+    catch ( const orcaice::Exception & e )
+    {
+        throw orca::DataNotExistException( "localisation buffer is not populated yet" );
+    }
+    
+    return data;
 }
 
 void 

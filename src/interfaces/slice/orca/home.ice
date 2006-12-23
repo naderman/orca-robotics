@@ -28,8 +28,11 @@ module orca
 /*!
     @brief Contains data on the component's interfaces.
 */
-class HomeData extends OrcaObject
+struct HomeData
 {    
+    //! Time when data was measured.
+    Time timeStamp;
+
     //! The Home interface itself is also included in this list of provided interfaces.
     ComponentData comp;
 

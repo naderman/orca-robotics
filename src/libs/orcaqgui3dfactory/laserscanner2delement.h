@@ -11,7 +11,7 @@
 #ifndef ORCAGUI3D_LASERSCANNER2D_ELEMENT_H
 #define ORCAGUI3D_LASERSCANNER2D_ELEMENT_H
 
-#include <orcaqgui3d/icestormelement.h>
+#include <orcaqgui3d/ptricestormelement3d.h>
 #include <orcaqgui3dfactory/laserscanner2dpainter.h>
 
 namespace orcaqgui3d {
@@ -22,7 +22,7 @@ namespace orcaqgui3d {
 //! @author Alex Brooks
 //!
 class LaserScanner2dElement
-    : public IceStormElement<LaserScanner2dPainter,
+    : public PtrIceStormElement3d<LaserScanner2dPainter,
                                orca::RangeScanner2dData,
                                orca::RangeScanner2dDataPtr,
                                orca::LaserScanner2dPrx,
@@ -36,7 +36,7 @@ public:
                     QColor                   outlineColor=QColor( 102,102,153, 255 ),
                     float                    outlineThickness=-1,
                     float                    brightReturnWidth=0.2 )
-        : IceStormElement<LaserScanner2dPainter,
+        : PtrIceStormElement3d<LaserScanner2dPainter,
                             orca::RangeScanner2dData,
                             orca::RangeScanner2dDataPtr,
                             orca::LaserScanner2dPrx,

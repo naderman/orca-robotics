@@ -18,9 +18,9 @@ using namespace orcaice;
 
 namespace goalplanner {
 
-PathFollower2dI::PathFollower2dI( orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe,
+PathFollower2dI::PathFollower2dI( orcaice::Proxy<orca::PathFollower2dData> &pathPipe,
                                   orcaice::Proxy<bool> &activationPipe,
-                                  orcaice::PtrProxy<orca::Localise2dDataPtr> &localiseDataBuffer,
+                                  orcaice::Proxy<orca::Localise2dData> &localiseDataBuffer,
                                   orca::PathFollower2dPrx localNavPrx,
                                   const IceStorm::TopicPrx & topicPrx )
     : pathPipe_(pathPipe),
@@ -32,14 +32,15 @@ PathFollower2dI::PathFollower2dI( orcaice::PtrProxy<orca::PathFollower2dDataPtr>
     assert ( topicPrx_ != 0 );
 }
 
-orca::PathFollower2dDataPtr
+orca::PathFollower2dData
 PathFollower2dI::getData( const ::Ice::Current& ) const
 {
     cout<<"TRACE(pathfollower2dI.cpp): getData()" << endl;
-    orca::PathFollower2dDataPtr data;
+    orca::PathFollower2dData data;
     if ( pathPipe_.isEmpty() )
     {
-        data = new orca::PathFollower2dData;
+        // alexm: why don't we throw an exception?
+        // check that the un-initialized struct produces the expected result.
         return data;
     }
     pathPipe_.get( data );
@@ -47,9 +48,9 @@ PathFollower2dI::getData( const ::Ice::Current& ) const
 }
 
 void
-PathFollower2dI::setData( const ::orca::PathFollower2dDataPtr &data, bool activateImmediately, const ::Ice::Current& )
+PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateImmediately, const ::Ice::Current& )
 {
-    cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << data << endl;
+    cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << orcaice::toString(data) << endl;
     cout<<"TRACE(pathfollower2dI.cpp): activateImmediately: " << activateImmediately << " .This flag will have no effect here!" << endl;
 
     // Sanity check
@@ -64,12 +65,12 @@ PathFollower2dI::setData( const ::orca::PathFollower2dDataPtr &data, bool activa
     activationPipe_.set( activateImmediately );
     
     // Check whether we are localized
-    Localise2dDataPtr localiseData = new Localise2dData;
+    Localise2dData localiseData;
     int ret = localiseDataBuffer_.getNext( localiseData, 1000 );
     cout << "localiseDataBuffer returns " << ret << endl;
     if (ret==0)
     {
-        if ( localiseData->hypotheses.size() != 1 )
+        if ( localiseData.hypotheses.size() != 1 )
         {
             throw orca::BusyException( "Multiple localization hypotheses. Will wait for a single hypothesis to execute your path");
         }

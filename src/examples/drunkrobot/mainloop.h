@@ -33,7 +33,7 @@ public:
     // The posData pointer tells us where to put the data
     // The Consumer is a proxy for IceStorm, we will use that to pass data to 
     // Ice storm. 
-    MainLoop(orcaice::PtrBuffer<orca::Position2dDataPtr> &posData,
+    MainLoop(orcaice::Buffer<orca::Position2dData> &posData,
                        const orca::Position2dConsumerPrx &position2dConsumer);
 
     ~MainLoop(); 
@@ -41,7 +41,7 @@ public:
     virtual void run();
 
 private: 
-    orcaice::PtrBuffer<orca::Position2dDataPtr>    & posBuffer_;
+    orcaice::Buffer<orca::Position2dData>    & posBuffer_;
 
     orca::Position2dConsumerPrx position2dConsumer_;
 };

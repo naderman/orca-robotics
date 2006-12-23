@@ -23,7 +23,7 @@ using namespace orca;
 using namespace simlocaliser;
 
 MainLoop::MainLoop( const Localise2dConsumerPrx                    localise2dConsumer,
-                    orcaice::PtrBuffer<Localise2dDataPtr>         &locBuffer,
+                    orcaice::Buffer<orca::Localise2dData>         &locBuffer,
                     const orcaice::Context & context )
     : localise2dConsumer_(localise2dConsumer),
       locBuffer_(locBuffer),
@@ -79,7 +79,7 @@ MainLoop::~MainLoop()
 void
 MainLoop::run()
 {
-    Localise2dDataPtr localiseData = new Localise2dData;
+    Localise2dData localiseData;
 
     // we are in a different thread now, catch all stray exceptions
     try

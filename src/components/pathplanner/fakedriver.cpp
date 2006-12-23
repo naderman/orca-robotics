@@ -19,19 +19,19 @@ using namespace std;
 using namespace pathplanner;
 
 void 
-FakeDriver::computePath( const orca::PathPlanner2dTaskPtr  & taskPtr,
-                         const orca::PathPlanner2dDataPtr  & pathDataPtr )
+FakeDriver::computePath( const orca::PathPlanner2dTask& task,
+                         orca::PathPlanner2dData& pathData )
 {
 
     orca::Waypoint2d wp;
-    pathDataPtr->path.resize(5);
+    pathData.path.resize(5);
     for ( int i=0; i < 5; i++ )
     {
-        pathDataPtr->path[i] = wp;
+        pathData.path[i] = wp;
     }
 
-    pathDataPtr->result = orca::PathOk;
-    cout << "Fake data: " << endl << pathDataPtr << endl<<endl;
-
+    pathData.result = orca::PathOk;
+    // alexm: not sure what the intention was, but toVerboseString() is the only one which exists
+    cout << "Fake data: " << endl << orcaice::toVerboseString(pathData) << endl<<endl;
 }
 

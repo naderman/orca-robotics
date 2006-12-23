@@ -40,7 +40,7 @@
 class Position3dI : public orca::Position3d, public insgps::InsGpsI
 {
 public:
-    Position3dI(orca::Position3dDescriptionPtr descr,
+    Position3dI(const orca::Position3dDescription& descr,
                 insgps::Driver*  hwDriver,
                 const orcaice::Context & context);
 
@@ -57,20 +57,20 @@ public:
     //
     
     // Get pva position3d Data
-    virtual ::orca::Position3dDataPtr     getData(const ::Ice::Current& ) const;
-    virtual ::orca::Position3dDescriptionPtr getDescription(const ::Ice::Current& ) const;
+    virtual ::orca::Position3dData getData(const ::Ice::Current& ) const;
+    virtual ::orca::Position3dDescription getDescription(const ::Ice::Current& ) const;
 
     // Subscribe and unsubscribe people
     virtual void subscribe(const ::orca::Position3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
     virtual void unsubscribe(const ::orca::Position3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
     // Set pos3d Data
-    void localSetData( ::orca::Position3dDataPtr data );
+    void localSetData( const ::orca::Position3dData& data );
     
 private:
 
     // the driver will put the latest pva data into this buffer
-    orcaice::PtrBuffer<orca::Position3dDataPtr> position3dDataBuffer_;
+    orcaice::Buffer<orca::Position3dData> position3dDataBuffer_;
 
     //publishers
     orca::Position3dConsumerPrx position3dPublisher_;
@@ -78,7 +78,7 @@ private:
     //topics
     IceStorm::TopicPrx topicPrx_;
 
-    orca::Position3dDescriptionPtr descr_;
+    orca::Position3dDescription descr_;
 
     //
     // handler stuff
@@ -87,10 +87,10 @@ private:
     // hardware driver   
     insgps::Driver* hwDriver_;
 
-    orca::Position3dDataPtr position3dData_;
+    orca::Position3dData position3dData_;
     
     // read from the hwDriver_'s buffer
-    void read( ::orca::Position3dDataPtr& );
+    void read( ::orca::Position3dData& );
     
     orcaice::Context context_;
 

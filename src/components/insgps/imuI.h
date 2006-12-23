@@ -50,7 +50,7 @@
 class ImuI : public orca::Imu, public insgps::InsGpsI
 {
 public:
-    ImuI(orca::ImuDescriptionPtr descr,
+    ImuI( const orca::ImuDescription& descr,
          insgps::Driver*  hwDriver,
          const orcaice::Context & context);
     
@@ -67,23 +67,23 @@ public:
     //
     
     // Get raw imu Data
-    virtual ::orca::ImuDataPtr     getData(const ::Ice::Current& ) const;
-    virtual ::orca::ImuDescriptionPtr getDescription(const ::Ice::Current& ) const;
+    virtual ::orca::ImuData getData(const ::Ice::Current& ) const;
+    virtual ::orca::ImuDescription getDescription(const ::Ice::Current& ) const;
 
     // Subscribe and unsubscribe people
     virtual void subscribe(const ::orca::ImuConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
     virtual void unsubscribe(const ::orca::ImuConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
     // Set raw imu Data
-    void localSetData( ::orca::ImuDataPtr data );
+    void localSetData( const ::orca::ImuData& data );
 
     // Get Imu Description
-    orca::ImuDescriptionPtr localGetDescription() const;
+    orca::ImuDescription localGetDescription() const;
 
 private:
 
     // the handler will put the latest raw data into this buffer
-    orcaice::PtrBuffer<orca::ImuDataPtr> imuDataBuffer_;
+    orcaice::Buffer<orca::ImuData> imuDataBuffer_;
     
     //publishers
     orca::ImuConsumerPrx imuPublisher_;
@@ -91,7 +91,7 @@ private:
     //topics
     IceStorm::TopicPrx topicPrx_;
 
-    orca::ImuDescriptionPtr descr_;
+    orca::ImuDescription descr_;
     
     //
     // handler stuff
@@ -100,10 +100,10 @@ private:
     // hardware driver
     insgps::Driver* hwDriver_;
 
-    orca::ImuDataPtr imuData_;
+    orca::ImuData imuData_;
    
     // read from the hwDriver_'s buffer
-    void read( ::orca::ImuDataPtr& );
+    void read( ::orca::ImuData& );
     
     orcaice::Context context_;
    

@@ -82,7 +82,7 @@ void attachGpsMapGrid( const orcaice::Context & context, const std::string & pro
     
     // create a callback object to recieve scans
 //     Ice::ObjectPtr consumer = new ConsumerIType;
-    Ice::ObjectPtr consumer = new orcaice::PrintingConsumerI<GpsMapGridConsumer,GpsMapGridDataPtr>;
+    Ice::ObjectPtr consumer = new orcaice::PrintingConsumerI<GpsMapGridConsumer,GpsMapGridData>;
 
     GpsMapGridConsumerPrx callbackPrx = orcaice::createConsumerInterface<GpsMapGridConsumerPrx>( context, consumer );
     //
@@ -170,7 +170,7 @@ void attachGpsTime( const orcaice::Context & context, const std::string & proxyS
 
     // create a callback object to recieve scans
 //     Ice::ObjectPtr consumer = new ConsumerIType;
-    Ice::ObjectPtr consumer = new orcaice::PrintingConsumerI<GpsTimeConsumer,GpsTimeDataPtr>;
+    Ice::ObjectPtr consumer = new orcaice::PrintingConsumerI<GpsTimeConsumer,GpsTimeData>;
 
     GpsTimeConsumerPrx callbackPrx = orcaice::createConsumerInterface<GpsTimeConsumerPrx>( context, consumer );
     //

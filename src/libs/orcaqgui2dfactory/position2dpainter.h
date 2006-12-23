@@ -34,7 +34,7 @@ class Position2dPainter
     Position2dPainter( const QColor & colour=Qt::blue, const bool showHistory=true );
     ~Position2dPainter();
     
-    void setData( const orca::Position2dDataPtr & posData );
+    void setData( const orca::Position2dData& posData );
     void paint( QPainter *painter, const int z );
     bool paintThisLayer(int z) const { return z==Z_POSE; }
     void clear();

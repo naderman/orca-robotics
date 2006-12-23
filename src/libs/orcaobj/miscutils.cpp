@@ -31,31 +31,31 @@ namespace orcaice
 {
 
 void 
-normalise( orca::Localise2dDataPtr &obj )
+normalise( orca::Localise2dData& obj )
 {
     float weightSum = 0.0;
-    for ( unsigned int i=0; i < obj->hypotheses.size(); i++ )
+    for ( unsigned int i=0; i < obj.hypotheses.size(); i++ )
     {
-        weightSum += obj->hypotheses[i].weight;
+        weightSum += obj.hypotheses[i].weight;
     }
     assert( weightSum > 0.0 );
 
-    for ( unsigned int i=0; i < obj->hypotheses.size(); i++ )
+    for ( unsigned int i=0; i < obj.hypotheses.size(); i++ )
     {
-        obj->hypotheses[i].weight /= weightSum;
+        obj.hypotheses[i].weight /= weightSum;
     }
 }
 
 orca::Pose2dHypothesis &
-mlHypothesis( const orca::Localise2dDataPtr &obj )
+mlHypothesis( orca::Localise2dData& obj )
 {
     float maxWeight = -1;
     int   mlI       = -1;
-    for ( unsigned int i=0; i < obj->hypotheses.size(); i++ )
+    for ( unsigned int i=0; i < obj.hypotheses.size(); i++ )
     {
-        if ( obj->hypotheses[i].weight > maxWeight )
+        if ( obj.hypotheses[i].weight > maxWeight )
         {
-            maxWeight = obj->hypotheses[i].weight;
+            maxWeight = obj.hypotheses[i].weight;
             mlI = i;
         }
     }
@@ -71,11 +71,11 @@ mlHypothesis( const orca::Localise2dDataPtr &obj )
         //throw orcaice::Exception( ERROR_INFO, ss.str() );
     }
 #endif
-    return obj->hypotheses[mlI];
+    return obj.hypotheses[mlI];
 }
 
 void 
-saveToFile(   const orca::FeatureMap2dDataPtr &fmap, FILE *f )
+saveToFile( const orca::FeatureMap2dDataPtr& fmap, FILE *f )
 {
     for ( unsigned int i=0; i < fmap->features.size(); i++ )
     {
@@ -236,13 +236,13 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
     f.close();
 }
 
-bool isSane( const orca::PathFollower2dDataPtr &pathData, std::string &reason )
+bool isSane( const orca::PathFollower2dData& pathData, std::string& reason )
 {
     std::stringstream ss;
     bool sane=true;
-    for ( unsigned int i=0; i < pathData->path.size(); i++ )
+    for ( unsigned int i=0; i < pathData.path.size(); i++ )
     {
-        const orca::Waypoint2d &wp = pathData->path[i];
+        const orca::Waypoint2d &wp = pathData.path[i];
 
         if ( wp.distanceTolerance < 0.0 )
         {

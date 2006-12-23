@@ -39,13 +39,12 @@ Position3dPainter::~Position3dPainter()
 void
 Position3dPainter::clear()
 {
-    data_ = new orca::Position3dData;
-    data_->pose.p.x = 0;
-    data_->pose.p.y = 0;
-    data_->pose.p.z = 0;
-    data_->pose.o.r = 0;
-    data_->pose.o.p = 0;
-    data_->pose.o.y = 0;
+    data_.pose.p.x = 0.0;
+    data_.pose.p.y = 0.0;
+    data_.pose.p.z = 0.0;
+    data_.pose.o.r = 0.0;
+    data_.pose.o.p = 0.0;
+    data_.pose.o.y = 0.0;
 }
 
 // void
@@ -55,7 +54,7 @@ Position3dPainter::clear()
 // }
 
 void
-Position3dPainter::setData( const orca::Position3dDataPtr & data )
+Position3dPainter::setData( const orca::Position3dData& data )
 {
     data_ = data;
 
@@ -66,7 +65,7 @@ Position3dPainter::setData( const orca::Position3dDataPtr & data )
 void
 Position3dPainter::paint( QGLWidget *p )
 {
-    if ( data_ == 0 ) return;
+//     if ( data_ == 0 ) return;
 
     cout<<"TRACE(position3dpainter.cpp): painting..." << endl;
 

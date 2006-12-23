@@ -40,6 +40,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Project wide
 
+- Interfaces
+    - Data objects in Orca interfaces no longer have to derive from ::orca::OrcaObject class. Most existing interfaces now use struct's. The following
+      interfaces still use classes RangeScanner2d, LaserScanner2d, FeatureMap2d.
 - Build system
     - New CMake macro BUILD_COMPONENT_SOURCES to simplify building both stand-alone component and an IceBox service. 
         Internally it builds a convenience library which cuts down compilation time in half.

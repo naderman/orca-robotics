@@ -24,14 +24,14 @@ class AStarDriver : public AlgoDriver
 {
 
 public:
-    AStarDriver( orcaogmap::OgMap &ogMap,
+    AStarDriver( orcaogmap::OgMap& ogMap,
                  double robotDiameterMetres,
                  double traversabilityThreshhold,
                  bool doPathOptimization );
    
     // Computes the path
-    virtual void computePath(   const orca::PathPlanner2dTaskPtr  & taskPtr,
-                                const orca::PathPlanner2dDataPtr  & pathDataPtr );
+    virtual void computePath( const orca::PathPlanner2dTask& taskPtr,
+                              orca::PathPlanner2dData& pathDataPtr );
 private:
 
 //     double robotDiameterMetres_;

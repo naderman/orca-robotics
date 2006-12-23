@@ -19,7 +19,7 @@ using namespace orca;
 namespace ogmaploader {
     
 int
-loadIceStream( const orcaice::Context & context, std::string filename, OgMapDataPtr &map )
+loadIceStream( const orcaice::Context & context, std::string filename, OgMapData& map )
 {
     std::ifstream *logFile = new std::ifstream( filename.c_str(), ios::binary|ios::in );
     if ( !logFile->is_open() )
@@ -57,7 +57,7 @@ loadIceStream( const orcaice::Context & context, std::string filename, OgMapData
 }
 
 void 
-loadMapFromFile( const orcaice::Context & context, orca::OgMapDataPtr &map )
+loadMapFromFile( const orcaice::Context & context, orca::OgMapData& map )
 {
     Ice::PropertiesPtr prop = context.properties();
     std::string prefix = context.tag();
@@ -84,24 +84,24 @@ loadMapFromFile( const orcaice::Context & context, orca::OgMapDataPtr &map )
         // Load a normal image format
         //
         bool negate = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Negate", true );
-        orcaogmapload::loadMap( filename.c_str(), negate, map->numCellsX, map->numCellsY, map->data );
+        orcaogmapload::loadMap( filename.c_str(), negate, map.numCellsX, map.numCellsY, map.data );
 
-        map->origin.p.x = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.X", 0.0 );
-        map->origin.p.y = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Y", 0.0 );
-        map->origin.o   = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Orientation", 0.0 ) * M_PI/180.0;
+        map.origin.p.x = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.X", 0.0 );
+        map.origin.p.y = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Y", 0.0 );
+        map.origin.o   = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Orientation", 0.0 ) * M_PI/180.0;
 
         // since we know that map size in pixels, we can calculate the cell size
         float worldSizeX = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.X", 20.0 );
         float worldSizeY = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.Y", 20.0 );
-        map->metresPerCellX = worldSizeX / (float)map->numCellsX;
-        map->metresPerCellY = worldSizeY / (float)map->numCellsY;
+        map.metresPerCellX = worldSizeX / (float)map.numCellsX;
+        map.metresPerCellY = worldSizeY / (float)map.numCellsY;
 
         // Make up a timestamp
-        map->timeStamp.seconds  = 0;
-        map->timeStamp.useconds = 0;
+        map.timeStamp.seconds  = 0;
+        map.timeStamp.useconds = 0;
         
         // Set type
-        map->mapType = orcaice::getPropertyAsIntWithDefault( prop, prefix+"MapType", orca::ogmaptype::OCCUPANCY );
+        map.mapType = orcaice::getPropertyAsIntWithDefault( prop, prefix+"MapType", orca::ogmaptype::OCCUPANCY );
     }
 }
 

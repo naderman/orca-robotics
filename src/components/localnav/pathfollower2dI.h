@@ -29,7 +29,7 @@ namespace localnav {
 class PathFollower2dI : public orca::PathFollower2d
 {
 public:
-    PathFollower2dI( orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe,
+    PathFollower2dI( orcaice::Proxy<orca::PathFollower2dData> &pathPipe,
                      orcaice::Proxy<bool>                           &newPathArrivedPipe,
                      orcaice::Proxy<orca::Time>                     &activationPipe,
                      orcaice::Proxy<int>                            &wpIndexPipe,
@@ -39,10 +39,10 @@ public:
     // remote calls:
 
     // Get the current path
-    virtual ::orca::PathFollower2dDataPtr getData(const ::Ice::Current& = ::Ice::Current()) const;
+    virtual ::orca::PathFollower2dData getData(const ::Ice::Current& = ::Ice::Current()) const;
 
     // Set a path
-    virtual void setData(const ::orca::PathFollower2dDataPtr &data, bool activateImmediately, const ::Ice::Current& = ::Ice::Current());
+    virtual void setData(const ::orca::PathFollower2dData& data, bool activateImmediately, const ::Ice::Current& = ::Ice::Current());
 
     virtual void activateNow(const ::Ice::Current& = ::Ice::Current());
     
@@ -62,7 +62,7 @@ public:
 private:
 
     // New paths from the outside world go in here
-    orcaice::PtrProxy<orca::PathFollower2dDataPtr> &pathPipe_;
+    orcaice::Proxy<orca::PathFollower2dData> &pathPipe_;
 
     // Let the component know that a new path has arrived
     orcaice::Proxy<bool>                           &newPathArrivedPipe_;

@@ -85,7 +85,7 @@ StageDriver::disable()
 
 
 int
-StageDriver::read( orca::Localise2dDataPtr & localise2d )
+StageDriver::read( orca::Localise2dData& localise2d )
 {
     if ( ! enabled_ ) {
         //cout << "ERROR(playerclientdriver.cpp): Can't read: not connected to Player/Stage yet." << endl;

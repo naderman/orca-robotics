@@ -18,9 +18,9 @@ using namespace orca;
 using namespace faithlocaliser;
 
 MainLoop::MainLoop( const Localise2dConsumerPrx                    localise2dConsumer,
-                    orcaice::PtrBuffer<orca::Position2dDataPtr>   &posBuffer,
-                    orcaice::PtrBuffer<Localise2dDataPtr>         &locBuffer,
-                    orcaice::PtrBuffer<Localise2dDataPtr>         &historyBuffer,
+                    orcaice::Buffer<orca::Position2dData>   &posBuffer,
+                    orcaice::Buffer<orca::Localise2dData>         &locBuffer,
+                    orcaice::Buffer<orca::Localise2dData>         &historyBuffer,
 		    double                                         stdDevPosition,
 		    double                                         stdDevHeading,
 		    const orcaice::Context & context)
@@ -43,8 +43,8 @@ MainLoop::~MainLoop()
 void
 MainLoop::run()
 {
-    Localise2dDataPtr localiseData = new Localise2dData;
-    Position2dDataPtr odomData     = new Position2dData;
+    Localise2dData localiseData;
+    Position2dData odomData;
 
     try 
     {
@@ -61,18 +61,18 @@ MainLoop::run()
             }
 
             // Copy the odometry
-            localiseData->timeStamp = odomData->timeStamp;
-            localiseData->hypotheses.resize(1);
-            localiseData->hypotheses[0].weight = 1.0;
-            localiseData->hypotheses[0].mean.p.x = odomData->pose.p.x;
-            localiseData->hypotheses[0].mean.p.y = odomData->pose.p.y;
-            localiseData->hypotheses[0].mean.o   = odomData->pose.o;
-            localiseData->hypotheses[0].cov.xx   = varPosition;
-            localiseData->hypotheses[0].cov.yy   = varPosition;
-            localiseData->hypotheses[0].cov.tt   = varHeading;
-            localiseData->hypotheses[0].cov.xy   = 0.0;
-            localiseData->hypotheses[0].cov.xt   = 0.0;
-            localiseData->hypotheses[0].cov.yt   = 0.0;
+            localiseData.timeStamp = odomData.timeStamp;
+            localiseData.hypotheses.resize(1);
+            localiseData.hypotheses[0].weight = 1.0;
+            localiseData.hypotheses[0].mean.p.x = odomData.pose.p.x;
+            localiseData.hypotheses[0].mean.p.y = odomData.pose.p.y;
+            localiseData.hypotheses[0].mean.o   = odomData.pose.o;
+            localiseData.hypotheses[0].cov.xx   = varPosition;
+            localiseData.hypotheses[0].cov.yy   = varPosition;
+            localiseData.hypotheses[0].cov.tt   = varHeading;
+            localiseData.hypotheses[0].cov.xy   = 0.0;
+            localiseData.hypotheses[0].cov.xt   = 0.0;
+            localiseData.hypotheses[0].cov.yt   = 0.0;
 
             context_.tracer()->debug( orcaice::toString(localiseData), 5 );
 
@@ -80,7 +80,7 @@ MainLoop::run()
             locBuffer_.push( localiseData );
 	    historyBuffer_.push( localiseData );
 
-	    Localise2dDataPtr Data0;
+	    Localise2dData Data0;
 
             /*cout << "contents of history\n";
             for(int i=0;i<historyBuffer_.size();i++){

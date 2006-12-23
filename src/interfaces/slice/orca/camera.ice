@@ -51,7 +51,10 @@ enum ImageCompression {
 };
 
 //! Camera configuration objectd
-class CameraDescription extends OrcaObject {
+struct CameraDescription {
+    //! Time when data was measured.
+    Time timeStamp;
+
     //! Image width [pixels]
     int   imageWidth; 
 
@@ -81,8 +84,11 @@ class CameraDescription extends OrcaObject {
 //!
 //! Camera data structure: an image
 //!
-class CameraData extends OrcaObject
+struct CameraData
 {
+    //! Time when data was measured.
+    Time timeStamp;
+
     //! Image width [pixels]
     int imageWidth;
 

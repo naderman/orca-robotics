@@ -30,9 +30,9 @@ namespace orcapathplan {
         float      maxApproachTurnrate;
     };
 
-    //! Converts the result code into the corresponding field of the Slice-defined data structure
-    void convert( const orcapathplan::Result        result,
-                  const orca::PathPlanner2dDataPtr &output );
+    //! Transfers the result code into the corresponding field of the Slice-defined data structure
+    void convert( orcapathplan::Result        result,
+                  orca::PathPlanner2dData& output );
 
     //! Converts a path (cell vector in cell coordinate system) and the result code
     //! into the Slice-defined PathPlanner2dDataPtr (world coordinate system). 
@@ -41,14 +41,14 @@ namespace orcapathplan {
     void convert( const orcaogmap::OgMap               &ogMap,
                   const Cell2DVector                   &input,
                   const orcapathplan::Result            result,
-                  const orca::PathPlanner2dDataPtr     &output );
+                  orca::PathPlanner2dData     &output );
     
     //! As above, but also sets the remaining waypoint parameters
     void convert( const orcaogmap::OgMap               &ogMap,
                   const Cell2DVector                   &input,
                   const std::vector<WaypointParameter> &wpPara,
-                  const orcapathplan::Result            result,
-                  const orca::PathPlanner2dDataPtr     &output );
+                  orcapathplan::Result            result,
+                  orca::PathPlanner2dData     &output );
 
 }
 #endif

@@ -19,13 +19,15 @@
 using namespace std;
 using namespace probe;
 
-BrowserHandler::BrowserHandler( orcaprobe::DisplayDriver & display,
+BrowserHandler::BrowserHandler( const orcaice::EventQueuePtr & myQueue, 
+                                const orcaice::EventQueuePtr & otherQueue, 
                                 std::vector<orcaprobe::Factory*> &factories,
-                                const orcaice::Context & context )
-    : factories_(factories),
-      display_(display),
-      ifaceProbe_(0),
-      context_(context)
+                                const orcaice::Context & context ) :
+    myQueue_(myQueue),
+    otherQueue_(otherQueue),
+    factories_(factories),
+    ifaceProbe_(0),
+    context_(context)
 {
     eventPipe_.configure( 10 );
 }
@@ -34,31 +36,6 @@ BrowserHandler::~BrowserHandler()
 {
     delete ifaceProbe_;
 }
-
-void
-BrowserHandler::chooseActivate()
-{
-    eventPipe_.push( ActivateEvent );
-}
-
-void 
-BrowserHandler::chooseReload()
-{
-    eventPipe_.push( ReloadEvent );
-}
-
-void 
-BrowserHandler::chooseUp()
-{
-    eventPipe_.push( UpEvent );
-}
-
-void 
-BrowserHandler::chooseTop()
-{
-    eventPipe_.push( TopEvent );
-}
-
 void 
 BrowserHandler::choosePick( int pick )
 {
@@ -73,59 +50,53 @@ BrowserHandler::chooseFilter( const std::string & filter )
     eventPipe_.push( FilterEvent );
 }
 
-void
-BrowserHandler::chooseDeactivate()
-{
-    eventPipe_.push( DeactivateEvent );
-}
-
 void 
 BrowserHandler::run()
 {
-    BrowserEvent event;
+    orcaice::EventPtr eventPtr;
+    int timeoutMs = 500;
     
     while ( isActive() )
     {
-//         cout<<"BrowserHandler: waiting for an event..."<<endl;
         try {
-            eventPipe_.getAndPop( event );
-        }
-        catch ( const orcaice::Exception & e ) {
-            eventPipe_.getAndPopNext( event );
+            // block with timeout on my events (change in verbosity)
+            ret = myQueue_->timedGet( eventPtr, timeoutMs );
         }
 
-        switch ( event )
+        switch ( eventPtr->type() )
         {
         // approx in order of call frequency
-        case PickEvent :
+        case PickEventType :
 //             cout<<"pick event"<<endl;
+            PickEventPtr pickEventPtr = PickEvent::checkedCast( eventPtr );
+            pick_ = pickEventPtr->pick_;
             pick();
             break;
-        case UpEvent :
+        case UpEventType :
             //cout<<"up event"<<endl;
             up();
             break;
-        case TopEvent :
+        case TopEventType :
             //cout<<"up event"<<endl;
             top();
             break;
-        case ReloadEvent :
+        case ReloadEventType :
 //             cout<<"reload event"<<endl;
             reload();
             break;
-        case FilterEvent :
+        case FilterEventType :
             //cout<<"filter event"<<endl;
             filterRegistry();
             break;
-        case ActivateEvent :
+        case ActivateEventType :
             //cout<<"load event"<<endl;
             activate();
             break;
-        case FaultEvent :
+        case FaultEventType :
             //cout<<"fault event"<<endl;
             fault();
             break;
-        case DeactivateEvent :
+        case DeactivateEventType :
             //cout<<"stop event"<<endl;
             deactivate();
             break;

@@ -17,7 +17,7 @@ using namespace std;
 
 namespace ogmaploader {
 
-void fakeLoadMap( orca::OgMapDataPtr theMap )
+void fakeLoadMap( orca::OgMapData& theMap )
 {
     orcaice::setSane( theMap );
 }

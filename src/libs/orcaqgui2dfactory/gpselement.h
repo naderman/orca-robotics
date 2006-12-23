@@ -94,10 +94,9 @@ namespace orcaqgui
 
             double timeoutMs_;
 
-            orca::GpsMapGridDataPtr  gpsMapGridData_;
+            orca::GpsMapGridData gpsMapGridData_;
             
             IceStormListener<orca::GpsMapGridData,
-                            orca::GpsMapGridDataPtr,
                             orca::GpsPrx,
                             orca::GpsMapGridConsumer,
                             orca::GpsMapGridConsumerPrx,
