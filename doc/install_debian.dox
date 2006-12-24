@@ -16,6 +16,16 @@
 
 These are detailed instructions for installing Orca on Debian Linux. They are known to work for a system using Debian \b Testing distribution. See @ref orca_doc_getting for general guidelines.
 
+@section orca_doc_installdebian_ubuntu Ubuntu\Kubuntu
+
+These instructions are also applicable for Ubuntu/Kubuntu 6.10 (Edgy). For Ubuntu/Kubuntu 6.06 (Dapper) you will need to install CMake and Ice separatley. The default version of CMake on Ubuntu/Kubuntu 6.06 is 2.2.3. You will need to download a compatible version of <a href="http://www.cmake.org/HTML/Download.html">cmake</a>. Version 2.4.3 of cmake has been tested on Ubuntu 6.06. Please see the bottom of this page for instructions on how to build @ref orca_doc_installdebian_icefromsource. 
+
+@section orca_doc_installdebian_buildessential Build Essential
+
+@verbatim
+# apt-get install build-essential
+@endverbatim
+
 @section orca_doc_installdebian_cmake CMake
 
 Minimum version required 2.4-patch 2 (latest tested: 2.4-patch 4).
@@ -23,8 +33,6 @@ Minimum version required 2.4-patch 2 (latest tested: 2.4-patch 4).
 @verbatim
 # apt-get install cmake
 @endverbatim
-
-The default version of cmake on Ubuntu/Kubuntu 6.06 is 2.2.3. You will need to download a compatible version of <a href="http://www.cmake.org/HTML/Download.html">cmake</a>. Version 2.4.3 of cmake has been tested on Ubuntu 6.06.
 
 @section orca_doc_installdebian_ice Ice
 
@@ -162,27 +170,34 @@ $ player [STAGE_SRC]/worlds/simple.cfg
 
 @section orca_doc_installdebian_gazebo Gazebo
 
-<a href="http://playerstage.sourceforge.net/" target="_blank">Gazebo</a> is part of the Player/Stage project. It is an open-source 3D multiple robot simulator with dynamics. These notes were tested with Player 2.0.0 and 2.0.2, Gazebo 0.6.0-rc1 (CVS version of Gazebo on 25/08/06), and Open Dynamics Engine 0.6. Note that Gazebo's documentation is not very well maintained at the moment and it has a number of bugs which are not always trivial to fix. Please see the Gazebo <a href="http://sourceforge.net/mailarchive/forum.php?forum=playerstage-gazebo" target="_blank">mailing list</a> and Gazebo manual pages for more help.
+<a href="http://playerstage.sourceforge.net/" target="_blank">Gazebo</a> is part of the Player/Stage project. It is an open-source 3D multiple robot simulator with dynamics. These notes were tested with Player 2.0.3, Gazebo 0.7.0, and Open Dynamics Engine 0.7. Note that Gazebo's documentation is not very well maintained at the moment and it has a number of bugs which are not always trivial to fix. Please see the Gazebo <a href="http://sourceforge.net/mailarchive/forum.php?forum=playerstage-gazebo" target="_blank">mailing list</a> and Gazebo manual pages for more help.
 
 Make sure that you have installed @ref orca_doc_installdebian_player Player/Stage first. 
 
 Start with Gazebo/ODE dependencies.
 @verbatim
-# apt-get install swig python-wxtools libxml2-dev libglu1-mesa-dev libglut3-dev autoconf automake1.9 python2.4-dev libtool
+# apt-get install swig python-wxtools libxml2-dev libglu1-mesa-dev libglut3-dev autoconf automake1.9 python2.4-dev libtool 
 @endverbatim
 Note that there may be a few other dependencies which aren't included here.
 
-You will also have to download and compile <a href="http://ode.org/" target="_blank">Open Dynamics Engine</a> which is Gazebo's physics engine. It is recommended to use the latest snapshot (tested: 060223). 
+You will also have to download and compile <a href="http://ode.org/" target="_blank">Open Dynamics Engine</a> which is Gazebo's physics engine. It is recommended to use the latest release (tested with 0.7). Since Gazebo expects libode.so to be in a different location than the standard install, a symbolic link will need to be created.
 @verbatim
-$ tar xvzf ode-<version>.tgz
+$ unzip ode-src-<versoin>.zip
 $ cd ode-<version>
 $ sh autogen.sh (if you are using a snapshot version)
-$ ./configure --with-double-precision --with-opcode
+$ ./configure --with-double-precision --enable-release
 $ make
 # make install
+# ln -s /usr/local/lib/libode.so /usr/lib/libode.so
 @endverbatim
 
-Get the CVS version of Gazebo (see <a href="http://sourceforge.net/cvs/?group_id=42445" target="_blank">Player CVS</a> and <a href="http://playerstage.sourceforge.net/index.php?src=faq" target="_blank">Player FAQ</a> for more information). The CVS module is called @c gazebo). 
+There are a few optional components for Gazebo. It is recommended to install these, in order to get full Gazebo functionality.
+
+@verbatim
+# apt-get install lib3ds-dev proj libgdal1-1.3.1-dev
+@endverbatim
+
+Get the latest release of <a href="http://playerstage.sourceforge.net/gazebo/gazebo.html" target="_blank">Gazebo</a> (tested with 0.7.0).
 
 Tell gazebo where to find player stuff.
 
@@ -190,17 +205,25 @@ Tell gazebo where to find player stuff.
 $ export PKG_CONFIG_PATH=/opt/player-[VERSION]/lib/pkgconfig/:$PKG_CONFIG_PATH
 @endverbatim
 
-Run automake tools (automake version>=1.6, autconf version>=2.53), compile, and install.
+Run automake tools (automake version>=1.6, autconf version>=2.53), compile, and install. It is recommended to install Gazebo in the /opt directory.
 @verbatim
-$ cd gazebo
+$ tar zxvf gazebo-<version>.tar.gz
+$ cd gazebo-<version>
 $ ./bootstrap
-$ ./configure
+$ ./configure --prefix=/opt/gazebo-<version>
 $ make
 # make install
 @endverbatim
 
-Tips for the compilation:
-- The linker doesn't find @c -lgazebo at the end of the compilation because it looks at the installation directory rather than local. If you just do @c make @c install it will copy it there and link correctly. You should use the standard installation directory for this to work out of the box.
+Append the following to your @c .bashrc file
+
+@verbatim
+export GAZEBO_HOME=/opt/gazebo-<version>
+export PATH=$GAZEBO_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$GAZEBO_HOME/lib:$LD_LIBRARY_PATH
+export PYTHONPATH=$GAZEBO_HOME/lib/python2.4/site-packages/:$PYTHONPATH
+export CPATH=$GAZEBO_HOME/include:$CPATH
+@endverbatim
 
 For a quick start:
 @verbatim
