@@ -58,6 +58,7 @@ Description
 
 - @c InsGps.Config.Gps.Offset (Frame3d) [m,m,m, deg,deg,deg]
     - Gps coordinates of the origin of the local coordinate system.
+    - Format: x y z roll pitch yaw (space separated)
     - Default: [0.0 0.0 0.0  0.0 0.0 0.0]
 
 - @c InsGps.Config.Gps.Size (Size3d) [m,m,m]
@@ -66,18 +67,22 @@ Description
 
 - @c InsGps.Config.Imu.Offset (Frame3d) [m,m,m, deg,deg,deg]
     - Imu offset from the platform's local coordinate system.
+    - Format: x y z roll pitch yaw (space separated)
     - Default: [0.0 0.0 0.0  0.0 0.0 0.0]
 
 - @c InsGps.Config.Imu.Size (Size3d) [m,m,m]
-    - Length, width, and height of the IMU.
+    - Physical dimensions of the IMU device.
+    - Format: length width height (space separated)
     - Default: [0.0 0.0 0.0]
 
 - @c InsGps.Config.Position3d.Offset (Frame3d) [m,m,m, deg,deg,deg]
     - Position3d sensor offset from the platform's local coordinate system. This is normally the same as the IMU
+    - Format: x y z roll pitch yaw (space separated)
     - Default: [0.0 0.0 0.0  0.0 0.0 0.0]
 
 - @c InsGps.Config.Position3d.Size (Size3d) [m,m,m]
-    - Length, width, and height of the Positoin3d sensor. This is normally the same as the IMU
+    - Physical dimensions of the Positoin3d sensor. This is normally the same as the IMU
+    - Format: length width height (space separated)
     - Default: [0.0 0.0 0.0]
 
 Serial
@@ -98,10 +103,12 @@ An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ director
 
 - @c InsGps.Config.NovatelSpan.ImuAntennaOffset (CartesianPoint) [m,m,m]
     - Imu/Gps antenna offset
+    - Format: x y z (space separated)
     - Default: [0.0 0.0 0.0]
 
 - @c InsGps.Config.NovatelSpan.ImuAntennaOffsetUncertainty (CartesianPoint) [m,m,m]
     - Imu/Gps antenna offset uncertainty
+    - @b alexm: are these std. deviations?
     - Default: [0.0 0.0 0.0]
     
         

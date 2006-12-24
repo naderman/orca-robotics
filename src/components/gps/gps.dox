@@ -76,10 +76,12 @@ Geometry
 
 - @c Gps.Config.Offset (Frame3d) [m,m,m, deg,deg,deg]
     - GPS coordinates of the local coordinate system origin.
+    - Format: x y z roll pitch yaw (space separated)
     - Default: [0.0 0.0 0.0  0.0 0.0 0.0]
 
 - @c Gps.Config.Size (Size3d) [m,m,m]
-    - Size of the GPS sensor
+    - Physical dimensions of the GPS device.
+    - Format: length width height (space separated)
     - Default: [0.0 0.0 0.0]
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
