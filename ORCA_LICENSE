@@ -31,6 +31,7 @@ src
         gps                                LGPL
         imageserver                        LGPL
         imageviewer                        LGPL
+        insgps                             LGPL
         laser2d                            LGPL
             playerclient                    GPL
             sickcarmen                      GPL
@@ -38,14 +39,10 @@ src
         laserfeatureextractor              LGPL
         lasermon                           LGPL
         localnav                           LGPL
-        logger                             LGPL
-        logplayer                          LGPL
         noisyrobot2d                       LGPL
         ogmaploader                         GPL
         ognode                             LGPL
         orcamon                            LGPL
-        orcaview                            GPL
-        orcaview3d                          GPL
         pathplanner                        LGPL
         position2dmon                      LGPL
         robot2d                            LGPL
@@ -54,6 +51,7 @@ src
             usb                             GPL
         simlocaliser                       LGPL
         teleop                             LGPL
+        tracermon                          LGPL
     examples
         *                                  LGPL
     interfaces
@@ -97,10 +95,14 @@ src
         cleanregistry                      LGPL
         deftools                           LGPL
         iceping                            LGPL
+        logger                             LGPL
+        logplayer                          LGPL
         orcasmc                            LGPL
+        orcaview2d                          GPL
+        orcaview3d                          GPL
         probe                              LGPL
-            iostream                       LGPL
-            qt                              GPL
+            term-iostream                  LGPL
+            gui-qt                          GPL
         registrylist                       LGPL
         registryview                        GPL
 -------------------------------------------------------------
