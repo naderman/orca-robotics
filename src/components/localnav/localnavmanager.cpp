@@ -113,11 +113,7 @@ LocalNavManager::setGoalSpecifics( const orca::Localise2dData&  localiseData,
                                    GoalWatcher&                 goalWatcher )
 {
     // 1: work out the max-likelihood pose of the robot
-// ################ alexm: disalbed to make it compile
-//     const orca::Pose2dHypothesis &h = orcaice::mlHypothesis( localiseData );
-// ################ this is a hack to make it compile 
-    orca::Pose2dHypothesis h;
-// ##################
+    const orca::Pose2dHypothesis &h = orcaice::mlHypothesis( localiseData );
 
     // 2: work out the location of the goal in robot-centric coordinates
     orcanavutil::Offset goal( currentWaypoint.target.p.x, currentWaypoint.target.p.y, currentWaypoint.target.o );

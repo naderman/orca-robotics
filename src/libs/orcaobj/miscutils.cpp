@@ -46,8 +46,8 @@ normalise( orca::Localise2dData& obj )
     }
 }
 
-orca::Pose2dHypothesis &
-mlHypothesis( orca::Localise2dData& obj )
+const orca::Pose2dHypothesis &
+mlHypothesis( const orca::Localise2dData& obj )
 {
     float maxWeight = -1;
     int   mlI       = -1;

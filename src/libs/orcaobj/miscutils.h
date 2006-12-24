@@ -33,7 +33,7 @@ void normalise( orca::Localise2dData& obj );
 //!
 //! Returns the @b reference to max-likelihood hypothesis.
 //!
-orca::Pose2dHypothesis& mlHypothesis( orca::Localise2dData& obj );
+const orca::Pose2dHypothesis& mlHypothesis( const orca::Localise2dData& obj );
 
 //!
 //! If there's something wrong with the pathData objects, returns false

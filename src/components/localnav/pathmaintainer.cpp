@@ -18,10 +18,10 @@ using namespace orcaice;
 namespace localnav {
 
 PathMaintainer::PathMaintainer( orcaice::Proxy<orca::PathFollower2dData> &pathPipe,
-                                orcaice::Proxy<bool>                           &newPathArrivedPipe,
-                                orcaice::Proxy<orca::Time>                     &activationPipe,
-                                orcaice::Proxy<int>                            &wpIndexPipe,
-                                const orcaice::Context & context)
+                                orcaice::Proxy<bool>                     &newPathArrivedPipe,
+                                orcaice::Proxy<orca::Time>               &activationPipe,
+                                orcaice::Proxy<int>                      &wpIndexPipe,
+                                const orcaice::Context                   &context)
     : wpIndex_(-1),
       wpIndexChanged_(false),
       pathPipe_(pathPipe),

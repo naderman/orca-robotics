@@ -47,8 +47,7 @@ PathFollower2dI::getData( const ::Ice::Current& ) const
     orca::PathFollower2dData data;
     if ( pathPipe_.isEmpty() )
     {
-        // alexm: is it ok to return an empty structure?
-        return data;
+        throw orca::DataNotExistException( "No path has been set" );
     }
     pathPipe_.get( data );
     return data;

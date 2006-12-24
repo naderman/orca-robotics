@@ -100,7 +100,8 @@ interface PathFollower2dConsumer
  */
 interface PathFollower2d
 {
-    //! Returns the path currently being followed
+    //! Returns the path currently being followed, or throws DataNotExistException
+    //! if none has been set.
     nonmutating PathFollower2dData      getData();
             
     //! Loads the follower with a path to follow.

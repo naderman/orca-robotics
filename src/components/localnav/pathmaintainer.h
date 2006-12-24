@@ -29,10 +29,10 @@ class PathMaintainer
 public: 
 
     PathMaintainer( orcaice::Proxy<orca::PathFollower2dData> &pathPipe,
-                    orcaice::Proxy<bool>                           &newPathArrivedPipe,
-                    orcaice::Proxy<orca::Time>                     &activationPipe,
-                    orcaice::Proxy<int>                            &wpIndexPipe,
-                    const orcaice::Context & context );
+                    orcaice::Proxy<bool>                     &newPathArrivedPipe,
+                    orcaice::Proxy<orca::Time>               &activationPipe,
+                    orcaice::Proxy<int>                      &wpIndexPipe,
+                    const orcaice::Context                   &context );
 
     //
     // Functions for the LocalNavManager
@@ -77,9 +77,9 @@ private:
     orca::Time pathStartTime_;
 
     orcaice::Proxy<orca::PathFollower2dData> &pathPipe_;
-    orcaice::Proxy<bool>                           &newPathArrivedPipe_;
-    orcaice::Proxy<orca::Time>                     &activationPipe_;
-    orcaice::Proxy<int>                            &wpIndexPipe_;
+    orcaice::Proxy<bool>                     &newPathArrivedPipe_;
+    orcaice::Proxy<orca::Time>               &activationPipe_;
+    orcaice::Proxy<int>                      &wpIndexPipe_;
 
     orcaice::Context context_;
 };
