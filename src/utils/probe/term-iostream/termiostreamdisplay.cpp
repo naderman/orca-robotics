@@ -88,7 +88,9 @@ TermIostreamDisplay::enable( orcaprobe::BrowserDriver* browser )
     orcaice::EventPtr event;
     int timeoutMs = 500;
 
-    // this will not return
+    //
+    // Main loop (will not return)
+    //
     for (;;)
     {
         if ( !events_->timedGet( event, timeoutMs ) ) {

@@ -33,7 +33,7 @@ class NetworkActivityChangedEvent : public orcaice::Event
 {
 public:
     NetworkActivityChangedEvent( bool isActive )
-        : Event( EventType(NetworkActivityChanged) ),
+        : Event( NetworkActivityChanged ),
           isActive_(isActive) {};
 
     bool isActive_;
@@ -44,7 +44,7 @@ class FocusChangedEvent : public orcaice::Event
 {
 public:
     FocusChangedEvent( orcaprobe::DisplayDriver::FocusType focus )
-        : Event( EventType(FocusChanged) ),
+        : Event( FocusChanged ),
           focus_(focus)  {};
 
     orcaprobe::DisplayDriver::FocusType focus_;
@@ -55,7 +55,7 @@ class RegistryDataChangedEvent : public orcaice::Event
 {
 public:
     RegistryDataChangedEvent( const orcacm::RegistryHierarchicalData1 & data )
-        : Event( EventType(RegistryDataChanged) ),
+        : Event( RegistryDataChanged ),
           data_(data) {};
 
     orcacm::RegistryHierarchicalData1 data_;
@@ -66,7 +66,7 @@ class PlatformDataChangedEvent : public orcaice::Event
 {
 public:
     PlatformDataChangedEvent( const orcacm::RegistryHierarchicalData2 & data )
-        : Event( EventType(PlatformDataChanged) ),
+        : Event( PlatformDataChanged ),
           data_(data) {};
 
     orcacm::RegistryHierarchicalData2 data_;
@@ -77,7 +77,7 @@ class ComponentDataChangedEvent : public orcaice::Event
 {
 public:
     ComponentDataChangedEvent( const orcacm::ComponentData & data )
-        : Event( EventType(ComponentDataChanged) ),
+        : Event( ComponentDataChanged ),
           data_(data) {};
 
     orcacm::ComponentData data_;
@@ -88,7 +88,7 @@ class InterfaceDataChangedEvent : public orcaice::Event
 {
 public:
     InterfaceDataChangedEvent( const orcacm::InterfaceData & data )
-        : Event( EventType(InterfaceDataChanged) ),
+        : Event( InterfaceDataChanged ),
           data_(data) {};
 
     orcacm::InterfaceData data_;
@@ -100,7 +100,7 @@ class OperationDataChangedEvent : public orcaice::Event
 {
 public:
     OperationDataChangedEvent( const orcacm::OperationData & data )
-        : Event( EventType(OperationDataChanged) ),
+        : Event( OperationDataChanged ),
           data_(data) {};
 
     orcacm::OperationData data_;
