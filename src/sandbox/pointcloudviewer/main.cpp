@@ -4,17 +4,21 @@
 #include <QApplication>
 #include <QMainWindow>
 
-using namespace orca; 
+using namespace pcviewer; 
 using namespace std; 
-int main(int argc, char **argv){
+
+int main(int argc, char **argv)
+{
   QApplication a( argc, argv );
   //glutInit(&argc,argv); 
 
   std::string endpoint = "default -h localhost -p 10101 -z"; 
   PointCloudConsumerI *pcci = new PointCloudConsumerI(endpoint); 
   pcci->init(argc, argv); 
-  PointCloudPtr pc = pcci->getPointCloud(); 
-  cout << "Got new pointcloud. Has a total of " << pc->points.size() << " xyz values " << endl;
+
+  orca::PointCloudData pc = pcci->getPointCloud(); 
+  cout << "Got new pointcloud. Has a total of " << pc.points.size() << " xyz values " << endl;
+
   QMainWindow *mw = new QMainWindow();
   PointCloudViewer pcv(NULL); 
   pcv.setPointCloud(pc); 

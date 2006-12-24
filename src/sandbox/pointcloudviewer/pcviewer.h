@@ -22,7 +22,7 @@ Q_OBJECT
 	void focusInEvent(QFocusEvent *fe); 
 	void focusOutEvent(QFocusEvent *fe); 
 	QImage captureMap(); 
-	void setPointCloud(orca::PointCloudPtr pointCloud); 
+	void setPointCloud( const orca::PointCloudData& pointCloud ); 
   private: 
         void loadFakeOgMap(); 
 	void renderPointCloud();
@@ -49,7 +49,7 @@ Q_OBJECT
 	bool freshPC; 
         bool freshOG; 
 	float pointSize; 
-        orca::OgMapDataPtr ogMap; 
+        orca::OgMapData ogMap; 
 };
    
 #endif

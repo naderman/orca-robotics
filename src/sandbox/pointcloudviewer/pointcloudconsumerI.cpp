@@ -1,19 +1,20 @@
 #include "pointcloudconsumerI.h"
 #include <Ice/Ice.h>
 
-using namespace orca;
+using namespace pcviwere;
 using namespace std; 
 
 PointCloudConsumerI::PointCloudConsumerI(std::string in_endpoint){
   endpoint = in_endpoint;
 }
 
-void PointCloudConsumerI::setData(const ::orca::PointCloudPtr&,
-			 const Ice::Current&){
+void 
+PointCloudConsumerI::setData(const ::orca::PointCloudData&, const Ice::Current&){
   // Does nothing for now 
 }
 
-void PointCloudConsumerI::init(int argc, char **argv){
+void 
+PointCloudConsumerI::init(int argc, char **argv){
     cerr << "PointCloudConsumer started with " << endpoint.c_str() << endl;
     Ice::CommunicatorPtr ic;
     ic = Ice::initialize(argc, argv);
@@ -41,7 +42,8 @@ void PointCloudConsumerI::init(int argc, char **argv){
     }
 }
 
-PointCloudPtr PointCloudConsumerI::getPointCloud(){
+orca::PointCloud 
+PointCloudConsumerI::getPointCloud(){
   return pcpPrx->getPointCloud(); 
 }
 

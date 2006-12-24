@@ -328,7 +328,7 @@ void PointCloudViewer::renderOgMap()
 
 }
 
-void PointCloudViewer::setPointCloud(PointCloudPtr pointCloud)
+void PointCloudViewer::setPointCloud(const orca::PointCloudData& pointCloud)
 {
   cloud = pointCloud;
   freshPC = true;

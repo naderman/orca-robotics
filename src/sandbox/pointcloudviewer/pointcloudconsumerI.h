@@ -3,22 +3,21 @@
 
 #include <orca/pointcloud.h>
 
-namespace orca
+namespace pcviewer
 {
 
-class PointCloudConsumerI : virtual public PointCloudConsumer
+class PointCloudConsumerI : virtual public orca::PointCloudConsumer
 {
 public:
 
-  virtual void setData(const ::orca::PointCloudPtr&,
-			 const Ice::Current&);
+  virtual void setData(const ::orca::PointCloudData&, const Ice::Current&);
   PointCloudConsumerI(std::string endpoint);
 
-  PointCloudPtr getPointCloud(); 
+  orca::PointCloudData getPointCloud(); 
   void init(int argc, char **argv);
 private: 
   std::string endpoint;
-  orca::PointCloudProducerPrx pcpPrx;
+  orca::PointCloudPrx pcpPrx;
   orca::PointCloudConsumerPrx myPrx;
   Ice::ObjectAdapterPtr adapter;
 };
