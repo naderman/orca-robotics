@@ -11,7 +11,7 @@
 /*!
 
 @page orca_doc_tute_gazebo Using Orca with Player/Gazebo simulator
-@note Reviewed for release 2.1.0, Player 2.0.2, and Gazebo 0.6.0.
+@note Reviewed for release 2.1.0, Player 2.0.3, and Gazebo 0.7.0.
 
 @section started Getting started
 Before reading this document, you should familiarise yourself with: 
@@ -56,11 +56,13 @@ rendering: [GLX offscreen] direct [no] RGBA [5 6 5 0] depth [16]
    Current serial number in output stream:  36
 @endverbatim 
 
-Although the Gazebo mailing lists suggests that changing the renderMethod tag to @c glx in @c example.world (the file you just copied to the @c tutegazebo directory)     
+For more information about OpenGL rendering methods see the <a href="http://playerstage.sourceforge.net/doc/Gazebo-manual-0.5-html/gazebo_opengl.html">Gazebo documentation</a>. It is suggested to try all rendering methods to see which gives the best results because it is highly dependent on the video card, video card driver and xserver.
+
+Select the most appropriate rendering method by changing the renderMethod tag in @c example.world (the file you just copied to the @c tutegazebo directory). For example, to select GLX rendering use the following tag:    
 @verbatim
 <renderMethod>glx</renderMethod>
 @endverbatim
-problems may still occur. It was found that by commenting the following lines out that both gazebo and wxgazebo could be run without errors.
+If you are still having problems, it was found that by commenting the following lines out that both gazebo and wxgazebo could be run without errors.
 @verbatim
 <!-- <model:SonyVID30>
    <id>camera1</id>
