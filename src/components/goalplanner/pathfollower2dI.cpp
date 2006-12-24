@@ -39,9 +39,7 @@ PathFollower2dI::getData( const ::Ice::Current& ) const
     orca::PathFollower2dData data;
     if ( pathPipe_.isEmpty() )
     {
-        // alexm: why don't we throw an exception?
-        // check that the un-initialized struct produces the expected result.
-        return data;
+        throw orca::DataNotExistException( "No path has been set" );
     }
     pathPipe_.get( data );
     return data;
