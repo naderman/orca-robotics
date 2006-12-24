@@ -28,17 +28,32 @@ using namespace std;
 using namespace orca;
 using namespace tracermon;
 
-UserHandler::UserHandler( const orcaice::EventQueuePtr & myQueue, 
-                          const orcaice::EventQueuePtr & otherQueue, 
-                          const orcaice::Context & context )
-    : myQueue_(myQueue),
-      otherQueue_(otherQueue),
-      context_(context)
+UserHandler::UserHandler( const orcaice::Context & context ) :
+    events_(new orcaice::EventQueue),
+    context_(context)
 {
 }
 
 UserHandler::~UserHandler()
 {
+}
+
+void 
+UserHandler::enable( Network* network )
+{
+    assert( network || "pointer to network must be non-zero" );
+    if ( !network ) {
+        cout<<"null network pointer. exitting..."<<endl;
+        exit(1);
+    }
+    network_ = network;
+}
+
+void 
+UserHandler::newTraceMessage( const orca::TracerData & data )
+{
+    orcaice::EventPtr e = new NewTraceMessageEvent( data );
+    events_->add( e );
 }
 
 // read commands from the keyboard. Launced in a separate thread.
@@ -49,28 +64,35 @@ UserHandler::run()
     try
     {
     
-    orcaice::EventPtr eventPtr = 0;
+    orcaice::EventPtr event;
     int timeoutMs = 500;
-    int ret = 0;
     
     //
     // Main loop
     //
-//     cout<<"UserHandler: entering main loop"<<endl;
     while ( isActive() )
     {
-        eventPtr = new orcaice::Event( 0 );
-
-        // block with timeout on user events (change in verbosity)
-        ret = myQueue_->timedGet( eventPtr, timeoutMs );
-
-        if ( ret ) {
-            // process the event
-//             cout<<"UserHandler: received event "<<eventPtr->type()<<endl;
+        if ( !events_->timedGet( event, timeoutMs ) ) {
+            continue;
         }
-        else {
-//             cout<<"UserHandler: timed out"<<endl;
+
+        switch ( event->type() )
+        {
+        // approx in order of call frequency
+        case NewTraceMessage : {
+            //cout<<"focus changed event"<<endl;
+            NewTraceMessageEventPtr e = NewTraceMessageEventPtr::dynamicCast( event );
+            if ( !e ) {
+                cout<<"failed to cast event to FocusChanged"<<endl;
+                break;
+            }
+            cout<<e->data_.message<<endl;
+        }        
+        default : {
+            cout<<"unknown display event "<<event->type()<<". Ignoring..."<<endl;
+            break;
         }
+        } // switch
     } // end of main loop
 
     cout<<"UserHandler: exited main loop"<<endl;

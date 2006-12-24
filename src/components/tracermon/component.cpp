@@ -34,27 +34,23 @@ void
 Component::start()
 {
     // this may throw, but may as well quit right then
-    activate();
-
-    //
-    // EVENT QUEUES
-    //
-    netQueue_ = new orcaice::EventQueue();    
-    usrQueue_ = new orcaice::EventQueue();    
+    activate();  
 
     //
     // USER & DISPLAY
     //
     // the constructor may throw, we'll let the application shut us down
-    usrHandler_ = new UserHandler( usrQueue_, netQueue_, context() );
-    usrHandler_->start();
+    usrHandler_ = new UserHandler( context() );
     
     //
     // NETWORK
     //
     // the constructor may throw, we'll let the application shut us down
-    netHandler_ = new NetworkHandler( netQueue_, usrQueue_, context() );
+    netHandler_ = new NetworkHandler( (User*)usrHandler_, context() );
     netHandler_->start();
+
+    usrHandler_->enable( (Network*)netHandler_ );
+    usrHandler_->start();
     
     // the rest is handled by the application/service
 }

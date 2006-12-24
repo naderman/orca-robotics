@@ -12,6 +12,7 @@
 #define ORCA2_TRACERMON_EVENTS_H
 
 #include <orcaice/eventqueue.h>
+#include <orca/tracer.h>
 
 namespace tracermon
 {
@@ -24,15 +25,35 @@ enum EventType
     NewTraceMessage
 };
 
+class VerbosityLevelsChangedEvent : public orcaice::Event
+{
+public:
+    VerbosityLevelsChangedEvent( int error, int warn, int info, int debug ) :
+        Event( VerbosityLevelsChanged ),
+        error_(error),
+        warn_(warn),
+        info_(info),
+        debug_(debug) {};
+
+    int error_;
+    int warn_;
+    int info_;
+    int debug_;
+};
+typedef IceUtil::Handle<VerbosityLevelsChangedEvent> VerbosityLevelsChangedEventPtr;
+
+
 class NewTraceMessageEvent : public orcaice::Event
 {
 public:
-    NewTraceMessageEvent( const orca::TracerData & data )
-        : Event( EventType(NewTraceMessage) ),
-          data_(data)  {};
+    NewTraceMessageEvent( const orca::TracerData & data ) :
+        Event( NewTraceMessage ),
+        data_(data)  {};
 
     orca::TracerData data_;
 };
+typedef IceUtil::Handle<NewTraceMessageEvent> NewTraceMessageEventPtr;
+
 
 } // namespace
 

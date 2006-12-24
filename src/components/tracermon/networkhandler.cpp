@@ -19,18 +19,24 @@ using namespace std;
 using namespace orca;
 using namespace tracermon;
 
-NetworkHandler::NetworkHandler( const orcaice::EventQueuePtr & myQueue, 
-                                const orcaice::EventQueuePtr & otherQueue, 
-                                const orcaice::Context & context )
-    : myQueue_(myQueue),
-      otherQueue_(otherQueue),
-      context_(context)
+NetworkHandler::NetworkHandler( User* user,
+                                const orcaice::Context & context ) :
+    user_(user),
+    events_(new orcaice::EventQueue),
+    context_(context)
 {
 }
 
 NetworkHandler::~NetworkHandler()
 {
     cout<<"NetworkHandler distructor"<<endl;
+}
+
+void 
+NetworkHandler::setVerbosityLevel( int error, int warn, int info, int debug )
+{
+    orcaice::EventPtr e = new VerbosityLevelsChangedEvent( error, warn, info, debug );
+    events_->add( e );
 }
 
 void
@@ -92,62 +98,31 @@ NetworkHandler::run()
         }
     }
 
-    orcaice::EventPtr eventPtr;
+    orcaice::EventPtr event;
     int timeoutMs = 500;
-    bool ret = false;
 
     //
     // Main loop
     //
     while ( isActive() )
     {
-        // block with timeout on my events (change in verbosity)
-        ret = myQueue_->timedGet( eventPtr, timeoutMs );
-
-        if ( ret ) {
-            // process the event
-//             cout<<"NetworkHandler: received event "<<eventPtr->type()<<endl;
-        }
-        else {
-//             cout<<"NetworkHandler: timed out"<<endl;
+        if ( !events_->timedGet( event, timeoutMs ) ) {
+            continue;
         }
 
-        //
-        // Sending motion command (probably over the network)
-        //
-        try {
-//             tracerPrx->setVerbosity( command );
-        }
-        catch ( const Ice::ConnectionRefusedException & e ) {
-            // note: cannot throw one of our exceptions from here
-            // because we are running in our own thread
-            // so do nothing, just keep trying (it will check for active next time around)
-            // todo: should probably try to reconnect instead
-//             displayHandler_->displayEvent( DisplayHandler::FailedToSendCommand );
-            //cout<<"!"<<flush;
-        }
-        catch ( const Ice::TimeoutException & e ) {
-//             displayHandler_->displayEvent( DisplayHandler::FailedToSendCommand );
-            //cout<<"x"<<flush;
-            // keep trying
-        }
-        catch ( const orca::HardwareFailedException & e ) {
-            std::stringstream ss;
-            ss << "networkhandler.cpp::run: Caught HardwareFailedException: " << e.what << endl; 
-            context_.tracer()->warning( ss.str() );
-            // keep trying
-        }
-        catch ( const Ice::UnknownException & e ) {
-            std::stringstream ss;
-            ss << "networkhandler.cpp::run: Caught UnknownException: " << e << endl; 
-            context_.tracer()->warning( ss.str() );
-            // keep trying
-        }
-        catch ( const Ice::CommunicatorDestroyedException & e )
+        switch ( event->type() )
         {
-            // it's ok, we are probably shutting down
-            cout<<"Communicator has passed away. No worries."<<endl;
+        // approx in order of call frequency
+        case VerbosityLevelsChanged : {
+//             cout<<"verb event"<<endl;
+            VerbosityLevelsChangedEventPtr e = VerbosityLevelsChangedEventPtr::dynamicCast( event );
+            setRemoteVerbosity();
+            break;
         }
+        default : {
+            cout<<"unknown network event "<<event->type()<<". Ignoring..."<<endl;
+        }
+        } // switch
     } // end of main loop
 
     cout<<"NetworkHandler: exited main loop"<<endl;
@@ -198,6 +173,44 @@ NetworkHandler::run()
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
     context_.tracer()->debug( "NetworkHandler: stopped.",5 );
+}
+
+void 
+NetworkHandler::setRemoteVerbosity()
+{
+//         try {
+// //             tracerPrx->setVerbosity( command );
+//         }
+//         catch ( const Ice::ConnectionRefusedException & e ) {
+//             // note: cannot throw one of our exceptions from here
+//             // because we are running in our own thread
+//             // so do nothing, just keep trying (it will check for active next time around)
+//             // todo: should probably try to reconnect instead
+// //             displayHandler_->displayEvent( DisplayHandler::FailedToSendCommand );
+//             //cout<<"!"<<flush;
+//         }
+//         catch ( const Ice::TimeoutException & e ) {
+// //             displayHandler_->displayEvent( DisplayHandler::FailedToSendCommand );
+//             //cout<<"x"<<flush;
+//             // keep trying
+//         }
+//         catch ( const orca::HardwareFailedException & e ) {
+//             std::stringstream ss;
+//             ss << "networkhandler.cpp::run: Caught HardwareFailedException: " << e.what << endl; 
+//             context_.tracer()->warning( ss.str() );
+//             // keep trying
+//         }
+//         catch ( const Ice::UnknownException & e ) {
+//             std::stringstream ss;
+//             ss << "networkhandler.cpp::run: Caught UnknownException: " << e << endl; 
+//             context_.tracer()->warning( ss.str() );
+//             // keep trying
+//         }
+//         catch ( const Ice::CommunicatorDestroyedException & e )
+//         {
+//             // it's ok, we are probably shutting down
+//             cout<<"Communicator has passed away. No worries."<<endl;
+//         }
 }
 
 // void 

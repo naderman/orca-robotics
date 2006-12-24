@@ -14,31 +14,37 @@
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
 #include <orcaice/eventqueue.h>
+#include "user.h"
+#include "network.h"
 
 namespace tracermon
 {
 
-class NetworkHandler : public orcaice::Thread //, public orca::TracerConsumer
+class NetworkHandler : public orcaice::Thread, public Network //, public orca::TracerConsumer
 {
 public:
 
-    NetworkHandler( const orcaice::EventQueuePtr & myQueue, 
-                    const orcaice::EventQueuePtr & otherQueue, 
+    NetworkHandler( User* user,
                     const orcaice::Context & context );
     virtual ~NetworkHandler();
 
     // from thread
     virtual void run();
+    
+    // from Network
+    virtual void setVerbosityLevel( int error, int warn=-1, int info=-1, int debug=-1 );
 
     // from consumer
 //     virtual void setData(const orca::TracerData& data, const Ice::Current&);
 
 private:
 
-    orcaice::EventQueuePtr myQueue_;
-    orcaice::EventQueuePtr otherQueue_;
+    User* user_;
+    orcaice::EventQueuePtr events_;
 
     orcaice::Context context_;
+
+    void setRemoteVerbosity();
 
 };
 
