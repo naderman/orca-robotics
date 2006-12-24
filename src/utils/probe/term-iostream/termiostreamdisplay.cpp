@@ -25,8 +25,42 @@ const std::string upPrompt    = " u\tup";
 const std::string topPrompt   = " U\ttop";
 const std::string reloadPromp = " r\treload";
 const std::string quitPrompt  = " q\tquit";
-const std::string divider     = "---------------------------------------------";
+const std::string divider0    = "=======================================================";
+const std::string divider1    = "-------------------------------------------------------";
 
+void topMenu( const std::string& header, const std::string& itemname, const std::string& options )
+{
+    cout<<"\n\n\n\n\n";
+    cout<<endl<<divider0<<endl;
+    cout<<header<<endl;
+    cout<<divider1<<endl;
+    cout<<"Select "<<itemname<<" from the list:"<<endl;
+    // options come with their own new line
+    cout<<options;
+    cout<<divider1<<endl;
+//     cout<<upPrompt<<endl;
+//     cout<<topPrompt<<endl;
+    cout<<reloadPromp<<endl;
+    cout<<quitPrompt<<endl;
+    cout<<divider0<<endl;
+};
+
+void stdMenu( const std::string& header, const std::string& itemname, const std::string& options )
+{
+    cout<<"\n\n\n\n\n";
+    cout<<endl<<divider0<<endl;
+    cout<<header<<endl;
+    cout<<divider1<<endl;
+    cout<<"Select "<<itemname<<" from the list:"<<endl;
+    // options come with their own new line
+    cout<<options;
+    cout<<divider1<<endl;
+    cout<<upPrompt<<endl;
+    cout<<topPrompt<<endl;
+    cout<<reloadPromp<<endl;
+    cout<<quitPrompt<<endl;
+    cout<<divider0<<endl;
+};
 
 TermIostreamDisplay::TermIostreamDisplay( const std::vector<std::string> & supportedInterfaces )
     : supportedInterfaces_(supportedInterfaces),
@@ -206,11 +240,10 @@ TermIostreamDisplay::printNetworkActivity( bool isActive )
 void 
 TermIostreamDisplay::printRegistryData( const orcacm::RegistryHierarchicalData1& data )
 {
-    cout<<endl<<divider<<endl;
-    cout<<"Registry : "<<data.locatorString<<endl;
-    cout<<divider<<endl;
-    cout<<"Select a numbered platform from the list:"<<endl;
+    stringstream ssHeader;
+    ssHeader << "Registry : "<<data.locatorString;
     
+    stringstream ssOptions;
     // we must use the index of the option list so that the handler understands us
     for ( unsigned int i=0; i<data.platforms.size(); ++i ) 
     {
@@ -220,7 +253,7 @@ TermIostreamDisplay::printRegistryData( const orcacm::RegistryHierarchicalData1&
 //         {
             // now filter on reachability
 //             if ( data.homes[i].isReachable ) {
-                cout<<setw(2)<<i<<"\t"<< data.platforms[i].name <<endl;
+                ssOptions << setw(2)<<i<<"\t"<< data.platforms[i].name <<endl;
 //             }
 //             else {
 //                 cout<<"\t"<< adapt <<endl;
@@ -228,12 +261,8 @@ TermIostreamDisplay::printRegistryData( const orcacm::RegistryHierarchicalData1&
 // 
 //         }
     }
-    // other options
-    cout<<divider<<endl;
-    cout<<reloadPromp<<endl;
-//     cout<<"f\tFilter"<<endl;
-    cout<<quitPrompt<<endl;
-    cout<<divider<<endl;
+
+    topMenu( ssHeader.str(), "a platform", ssOptions.str() );
     
     // wait for input
     while (1)
@@ -282,11 +311,10 @@ TermIostreamDisplay::printRegistryData( const orcacm::RegistryHierarchicalData1&
 void 
 TermIostreamDisplay::printPlatformData( const orcacm::RegistryHierarchicalData2& data )
 {
-    cout<<endl<<divider<<endl;
-    cout<<"Platform : "<<data.platform.name<<endl;
-    cout<<divider<<endl;
-    cout<<"Select a numbered component from the list:"<<endl;
+    stringstream ssHeader;
+    ssHeader << "Platform : "<<data.platform.name;
     
+    stringstream ssOptions;
     // we must use the index of the option so that the handler understands us
     for ( unsigned int i=0; i<data.homes.size(); ++i ) 
     {
@@ -296,15 +324,15 @@ TermIostreamDisplay::printPlatformData( const orcacm::RegistryHierarchicalData2&
 //         {
             // now filter on reachability
             if ( data.homes[i].isReachable ) {
-                cout<<setw(2)<<i<<"\t"<< adapt <<endl;
+                ssOptions << setw(2)<<i<<"\t"<< adapt <<endl;
             }
             else {
-                cout<<"\t"<< adapt <<endl;
+                ssOptions << "\t"<< adapt <<endl;
             }
 //         }
     }
-    // other options
-    menu();
+
+    stdMenu( ssHeader.str(), "a component", ssOptions.str() );
     
     // wait for input
     while (1)
@@ -347,76 +375,73 @@ TermIostreamDisplay::printPlatformData( const orcacm::RegistryHierarchicalData2&
 void 
 TermIostreamDisplay::printComponentData( const orcacm::ComponentData& data )
 {
-    cout<<endl<<divider<<endl;
-    cout<<"Component : "<<orcaice::toString( data.name )<<endl;
-    cout<<divider<<endl;
-    cout<<"Select a numbered interface from the list:"<<endl;
+    stringstream ssHeader;
+    ssHeader << "Component : "<<orcaice::toString( data.name );
 
+    stringstream ssOptions;
     for ( unsigned int i=0; i<data.provides.size(); ++i ) 
     {
+        // put a number for all interfaces because ice_ping() is always supported.
         // we must use the index of the option so that the handler understands us
+        ssOptions << setw(2)<<i;
+        
+        bool isSupported = false;
         for ( unsigned int j=0; j<supportedInterfaces_.size(); ++j )
         {
             // is this interface in the list of supported interfaces?
             if ( supportedInterfaces_[j] == data.provides[i].id ) {
-                // if it's supported, print out a number for feedback.
-                cout<<setw(2)<<i;
+                isSupported = true;
                 break;
             }
         } // supported interfaces
 
-        cout<<setw(32)<<data.provides[i].name<<"\t"<<data.provides[i].id<<endl;
+        if ( isSupported ) {
+            // if it's supported, print out a secret sign
+            ssOptions << " *  ";
+        }
+        else {
+            ssOptions << "    ";
+        }
+        ssOptions.setf( ios::left, ios::adjustfield );
+        ssOptions << setw(32)<<data.provides[i].name<<"\t"<<data.provides[i].id<<endl;
+        ssOptions.setf( ios::right, ios::adjustfield );
     } // provided interfaces
 
-    menu();
+    stdMenu( ssHeader.str(), "an interface", ssOptions.str() );
     getUserInput();
 }
 
 void 
 TermIostreamDisplay::printInterfaceData( const orcacm::InterfaceData& data )
 {
-    cout<<endl<<divider<<endl;
-    cout<<"Interface : "<<orcaice::toString( data.name )<<" of type "<<data.id<<endl;
-    cout<<divider<<endl;
-    cout<<"Select an operation from the list:"<<endl;
+    stringstream ssHeader;
+    ssHeader << "Interface : "<<orcaice::toString( data.name )<<" of type "<<data.id;
 
+    stringstream ssOptions;
     for ( unsigned int i=0; i<data.operations.size(); ++i ) {
         //if ( comps[i].isReachable ) {
-            cout<<setw(2)<<i<<"\t"<<data.operations[i].name<<endl;
+            ssOptions<<setw(2)<<i<<"\t"<<data.operations[i].name<<endl;
         //}
     }
 
-    menu();
+    stdMenu( ssHeader.str(), "an operation", ssOptions.str() );
     getUserInput();
-
 }
 
 void 
 TermIostreamDisplay::printOperationData( const orcacm::OperationData& data )
 {
-    cout<<endl<<divider<<endl;
-    cout<<"Operation : "<<data.parentId<<"::"<<data.name<<endl;
-    cout<<divider<<endl;
-    for ( unsigned int i=0; i<data.results.size(); ++i ) {
-        cout<<data.results[i].name<<":"<<endl;
-        cout<<data.results[i].text<<endl;
-    }
-    cout<<divider<<endl;
-    cout<<"Select an action from the list:"<<endl;
-    
-    menu();
-    getUserInput();
-}
+    stringstream ssHeader;
+    ssHeader << "Operation : "<<data.parentId<<"::"<<data.name<<endl;
 
-void
-TermIostreamDisplay::menu()
-{
-    cout<<divider<<endl;
-    cout<<upPrompt<<endl;
-    cout<<topPrompt<<endl;
-    cout<<reloadPromp<<endl;
-    cout<<quitPrompt<<endl;
-    cout<<divider<<endl;
+    stringstream ssOptions;
+    for ( unsigned int i=0; i<data.results.size(); ++i ) {
+        ssOptions << data.results[i].name<<":"<<endl;
+        ssOptions << data.results[i].text<<endl;
+    }
+    
+    stdMenu( ssHeader.str(), "an action", ssOptions.str() );
+    getUserInput();
 }
 
 void 

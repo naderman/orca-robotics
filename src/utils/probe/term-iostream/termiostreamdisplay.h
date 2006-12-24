@@ -64,7 +64,6 @@ private:
     void printOperationData( const orcacm::OperationData& );
 
     // utilities
-    void menu();
     void getUserInput();
 
 };

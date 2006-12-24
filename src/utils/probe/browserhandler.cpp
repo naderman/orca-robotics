@@ -238,9 +238,11 @@ BrowserHandler::loadInterface()
     //cout<<"unloading interface"<<endl;
     if ( ifaceProbe_ ) {
         delete ifaceProbe_;
+        ifaceProbe_ = 0;
     }
-
-//     cout<<"loading interface data for "<<componentData_.provides[pick_].name<<endl;
+    
+//     cout<<"DEBUG: will load interface "<<pick_<<"/"<<componentData_.provides.size()<<endl;
+//     cout<<"DEBUG: loading interface data for "<<componentData_.provides[pick_].name<<endl;
     lastInterfacePick_ = pick_;
 
     interfaceData_.locatorString = componentData_.locatorString;
@@ -262,14 +264,9 @@ BrowserHandler::loadInterface()
 
     }
 
+    // if specific probe was not found in the factories, load generic probe
     if ( ifaceProbe_==0 ) {
-        // load generic interface
         ifaceProbe_ = new orcaprobe::InterfaceProbe( interfaceData_.name, display_, context_ );
-
-//         cout<<"Unsupported interface: '"<<interfaceData_.id<<"'. Sending fault event."<<endl;
-//         // alexm: here we are not synch'd with Qt driver!
-//         eventPipe_.push( FaultEvent );
-        return;
     }
     
     // local call
