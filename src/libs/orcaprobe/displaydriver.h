@@ -23,6 +23,16 @@ class DisplayDriver
 
 public:
 
+    enum FocusType
+    {
+        RegistryFocus=0,
+        PlatformFocus,
+        ComponentFocus,
+        InterfaceFocus,
+        OperationFocus,
+        ResultFocus
+    };
+
     virtual ~DisplayDriver() {};
 
     // need a separate enable function because the Qt driver does not return
@@ -40,17 +50,7 @@ public:
     
     virtual void setOperationData( const orcacm::OperationData & data )=0;
 
-    virtual void showRegistry()=0;
-
-    virtual void showPlatform()=0;
-    
-    virtual void showComponent()=0;
-    
-    virtual void showInterface()=0;
-    
-    virtual void showOperation()=0;
-
-    virtual void showResult()=0;
+    virtual void setFocus( FocusType focus )=0;
 };
 
 } // namespace
