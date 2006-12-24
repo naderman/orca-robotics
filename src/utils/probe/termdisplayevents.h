@@ -1,0 +1,114 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+#ifndef ORCA2_PROBE_TERM_DISPLAY_EVENTS_H
+#define ORCA2_PROBE_TERM_DISPLAY_EVENTS_H
+
+#include <orcaice/eventqueue.h>
+#include <orcaprobe/displaydriver.h> // for focus types
+#include <orcacm/types.h>
+
+namespace probe
+{
+
+enum EventType  
+{      
+    NetworkActivityChanged=0,
+    FocusChanged,
+    RegistryDataChanged,
+    PlatformDataChanged,
+    ComponentDataChanged,
+    InterfaceDataChanged,
+    OperationDataChanged
+};
+
+class NetworkActivityChangedEvent : public orcaice::Event
+{
+public:
+    NetworkActivityChangedEvent( bool isActive )
+        : Event( EventType(NetworkActivityChanged) ),
+          isActive_(isActive) {};
+
+    bool isActive_;
+};
+typedef IceUtil::Handle<NetworkActivityChangedEvent> NetworkActivityChangedEventPtr;
+
+class FocusChangedEvent : public orcaice::Event
+{
+public:
+    FocusChangedEvent( orcaprobe::DisplayDriver::FocusType focus )
+        : Event( EventType(FocusChanged) ),
+          focus_(focus)  {};
+
+    orcaprobe::DisplayDriver::FocusType focus_;
+};
+typedef IceUtil::Handle<FocusChangedEvent> FocusChangedEventPtr;
+
+class RegistryDataChangedEvent : public orcaice::Event
+{
+public:
+    RegistryDataChangedEvent( const orcacm::RegistryHierarchicalData1 & data )
+        : Event( EventType(RegistryDataChanged) ),
+          data_(data) {};
+
+    orcacm::RegistryHierarchicalData1 data_;
+};
+typedef IceUtil::Handle<RegistryDataChangedEvent> RegistryDataChangedEventPtr;
+
+class PlatformDataChangedEvent : public orcaice::Event
+{
+public:
+    PlatformDataChangedEvent( const orcacm::RegistryHierarchicalData2 & data )
+        : Event( EventType(PlatformDataChanged) ),
+          data_(data) {};
+
+    orcacm::RegistryHierarchicalData2 data_;
+};
+typedef IceUtil::Handle<PlatformDataChangedEvent> PlatformDataChangedEventPtr;
+
+class ComponentDataChangedEvent : public orcaice::Event
+{
+public:
+    ComponentDataChangedEvent( const orcacm::ComponentData & data )
+        : Event( EventType(ComponentDataChanged) ),
+          data_(data) {};
+
+    orcacm::ComponentData data_;
+};
+typedef IceUtil::Handle<ComponentDataChangedEvent> ComponentDataChangedEventPtr;
+
+class InterfaceDataChangedEvent : public orcaice::Event
+{
+public:
+    InterfaceDataChangedEvent( const orcacm::InterfaceData & data )
+        : Event( EventType(InterfaceDataChanged) ),
+          data_(data) {};
+
+    orcacm::InterfaceData data_;
+};
+typedef IceUtil::Handle<InterfaceDataChangedEvent> InterfaceDataChangedEventPtr;
+
+
+class OperationDataChangedEvent : public orcaice::Event
+{
+public:
+    OperationDataChangedEvent( const orcacm::OperationData & data )
+        : Event( EventType(OperationDataChanged) ),
+          data_(data) {};
+
+    orcacm::OperationData data_;
+};
+typedef IceUtil::Handle<OperationDataChangedEvent> OperationDataChangedEventPtr;
+
+
+
+} // namespace
+
+#endif

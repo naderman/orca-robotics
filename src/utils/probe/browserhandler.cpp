@@ -15,94 +15,140 @@
 #include <IceGrid/Admin.h>
 
 #include "browserhandler.h"
+#include "browserevents.h"
 
 using namespace std;
 using namespace probe;
 
-BrowserHandler::BrowserHandler( const orcaice::EventQueuePtr & myQueue, 
-                                const orcaice::EventQueuePtr & otherQueue, 
+BrowserHandler::BrowserHandler( orcaprobe::DisplayDriver & display,
                                 std::vector<orcaprobe::Factory*> &factories,
-                                const orcaice::Context & context ) :
-    myQueue_(myQueue),
-    otherQueue_(otherQueue),
-    factories_(factories),
-    ifaceProbe_(0),
-    context_(context)
+                                const orcaice::Context & context )
+    : factories_(factories),
+      display_(display),
+      events_(new orcaice::EventQueue),
+      ifaceProbe_(0),
+      context_(context)
 {
-    eventPipe_.configure( 10 );
 }
 
 BrowserHandler::~BrowserHandler()
 {
     delete ifaceProbe_;
 }
+
+void
+BrowserHandler::chooseActivate()
+{
+//     cout<<"chooseActivate"<<endl;
+    orcaice::EventPtr e = new probe::ActivateEvent;
+    events_->add( e );
+}
+
+void 
+BrowserHandler::chooseReload()
+{
+    orcaice::EventPtr e = new probe::ReloadEvent;
+    events_->add( e );
+}
+
+void 
+BrowserHandler::chooseUp()
+{
+    orcaice::EventPtr e = new probe::UpEvent;
+    events_->add( e );
+}
+
+void 
+BrowserHandler::chooseTop()
+{
+    orcaice::EventPtr e = new probe::TopEvent;
+    events_->add( e );
+}
+
 void 
 BrowserHandler::choosePick( int pick )
 {
-    pick_ = pick;
-    eventPipe_.push( PickEvent );
+//     cout<<"choosePick() pick="<<pick<<endl;
+    orcaice::EventPtr e = new probe::PickEvent( pick );
+    events_->add( e );
 }
 
 void 
 BrowserHandler::chooseFilter( const std::string & filter )
 {
-    filter_ = filter;
-    eventPipe_.push( FilterEvent );
+    orcaice::EventPtr e = new probe::FilterEvent; // FilterEvent( filter_ );
+    events_->add( e );
+}
+
+void
+BrowserHandler::chooseDeactivate()
+{
+    orcaice::EventPtr e = new probe::DeactivateEvent;
+    events_->add( e );
 }
 
 void 
 BrowserHandler::run()
 {
-    orcaice::EventPtr eventPtr;
+    orcaice::EventPtr event;
     int timeoutMs = 500;
     
     while ( isActive() )
     {
-        try {
-            // block with timeout on my events (change in verbosity)
-            ret = myQueue_->timedGet( eventPtr, timeoutMs );
+        if ( !events_->timedGet( event, timeoutMs ) ) {
+            continue;
         }
 
-        switch ( eventPtr->type() )
+        switch ( event->type() )
         {
         // approx in order of call frequency
-        case PickEventType :
+        case Pick : {
 //             cout<<"pick event"<<endl;
-            PickEventPtr pickEventPtr = PickEvent::checkedCast( eventPtr );
-            pick_ = pickEventPtr->pick_;
+            PickEventPtr e = PickEventPtr::dynamicCast( event );
+            pick_ = e->pick_;
             pick();
             break;
-        case UpEventType :
+        }
+        case Up : {
             //cout<<"up event"<<endl;
             up();
             break;
-        case TopEventType :
+        }
+        case Top : {
             //cout<<"up event"<<endl;
             top();
             break;
-        case ReloadEventType :
+        }
+        case Reload : {
 //             cout<<"reload event"<<endl;
             reload();
             break;
-        case FilterEventType :
+        }
+        case Filter : {
             //cout<<"filter event"<<endl;
             filterRegistry();
             break;
-        case ActivateEventType :
-            //cout<<"load event"<<endl;
+        }
+        case Activate : {
+            cout<<"activate event"<<endl;
             activate();
             break;
-        case FaultEventType :
+        }
+        case Fault : {
             //cout<<"fault event"<<endl;
             fault();
             break;
-        case DeactivateEventType :
+        }
+        case Deactivate : {
             //cout<<"stop event"<<endl;
             deactivate();
             break;
-        default :
-            cout<<"unknown event "<<event<<". Ignoring..."<<endl;
-            eventPipe_.push( FaultEvent );
+        }
+        default : {
+            cout<<"unknown browser event "<<event->type()<<". Ignoring..."<<endl;
+            orcaice::EventPtr e = new probe::FaultEvent;
+            events_->add( e );
+        }
         } // switch
     } // while
 }
@@ -110,7 +156,7 @@ BrowserHandler::run()
 void 
 BrowserHandler::loadRegistry()
 {
-    //cout<<"loading registry data for :"<<context_.communicator()->getDefaultLocator()->ice_toString()<<endl;
+    cout<<"loading registry data for :"<<context_.communicator()->getDefaultLocator()->ice_toString()<<endl;
     
     //
     // remote call!
@@ -130,7 +176,7 @@ BrowserHandler::loadRegistry()
 void 
 BrowserHandler::showRegistry()
 {
-    display_.showRegistry();
+    display_.setFocus( orcaprobe::DisplayDriver::RegistryFocus );
 }
 
 void 
@@ -156,13 +202,13 @@ BrowserHandler::loadPlatform()
 void 
 BrowserHandler::showPlatform()
 {
-    display_.showPlatform();
+    display_.setFocus( orcaprobe::DisplayDriver::PlatformFocus );
 }
 
 void 
 BrowserHandler::loadComponent()
 {
-    cout<<"loading component data for pick="<<pick_<<endl; //orcaice::toString(platformData_.homes[pick_].name)<<endl;
+//     cout<<"loading component data for "<<endl; //<<orcaice::toString(platformData_.homes[pick_].name)<<endl;
     lastComponentPick_ = pick_;
     
     //
@@ -175,14 +221,14 @@ BrowserHandler::loadComponent()
     // todo: this is a bit ugly
     componentData_.locatorString = platformData_.locatorString;
 
-    cout<<"DEBUG: got a list of "<<componentData_.provides.size()<<" provided interfaces for "<<orcaice::toString(componentData_.name)<<endl;
+//     cout<<"DEBUG: got a list of "<<componentData_.provides.size()<<" provided interfaces for "<<orcaice::toString(componentData_.name)<<endl;
     display_.setComponentData( componentData_ );
 }
 
 void 
 BrowserHandler::showComponent()
 {
-    display_.showComponent();
+    display_.setFocus( orcaprobe::DisplayDriver::ComponentFocus );
 }
 
 void 
@@ -229,14 +275,13 @@ BrowserHandler::loadInterface()
     // local call
     interfaceData_.operations = ifaceProbe_->operations();
 
-    cout<<"DEBUG: BrowserHandler is calling setInterfaceData()"<<endl;
     display_.setInterfaceData( interfaceData_ );
 }
 
 void 
 BrowserHandler::showInterface()
 {
-    display_.showInterface();
+    display_.setFocus( orcaprobe::DisplayDriver::InterfaceFocus );
 }
 
 void 
@@ -250,7 +295,8 @@ BrowserHandler::loadOperation()
     //
     display_.showNetworkActivity( true );
     if ( ifaceProbe_->loadOperation( pick_, operationData_ ) ) {
-        eventPipe_.push( FaultEvent );
+        orcaice::EventPtr e = new probe::FaultEvent;
+        events_->add( e );
     }
     display_.showNetworkActivity( false );
 
@@ -263,7 +309,7 @@ BrowserHandler::loadOperation()
 void 
 BrowserHandler::showOperation()
 {
-    display_.showOperation();
+    display_.setFocus( orcaprobe::DisplayDriver::OperationFocus );
 }
 
 void 

@@ -9,12 +9,12 @@ IF ( BUILD_PROBE )
     SET ( IOSTREAM_FOUND 1 )
     
     OPTIONAL_SUB_LIBRARY( 
-        "IoStream driver for Probe"
-        iostream
-        OrcaProbeIostream
-        PROBE_IOSTREAM_LIBS
+        "terminal display driver for Probe using iostreams"
+        term-iostream
+        OrcaProbeTermIostream
+        PROBE_TERM_IOSTREAM_LIBS
         IOSTREAM_FOUND
-        HAVE_IOSTREAM_DRIVER
+        HAVE_TERM_IOSTREAM_DRIVER
         )
 
     # Qt driver
@@ -22,19 +22,21 @@ IF ( BUILD_PROBE )
         SET ( QT4_OK 1 )
         INCLUDE_DIRECTORIES( ${QT_INCLUDES} )
     ENDIF ( QT4_FOUND ) 
+
     OPTIONAL_SUB_LIBRARY( 
-        "Qt driver for Probe"
-        qt
-        OrcaProbeQt
-        PROBE_QT_LIBS
+        "GUI display driver for Probe using Qt"
+        gui-qt
+        OrcaProbeGuiQt
+        PROBE_GUI_QT_LIBS
         QT4_OK
-        HAVE_QT_DRIVER
+        HAVE_GUI_QT_DRIVER
         OrcaQt OrcaQCompModel ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
 
     FILE( GLOB SRCS *.cpp )
     
     GLOBAL_ADD_EXECUTABLE( probe ${SRCS} )
-    TARGET_LINK_LIBRARIES( probe OrcaCompModel IceGrid OrcaProbe OrcaDynamicLoad ${PROBE_IOSTREAM_LIBS} ${PROBE_QT_LIBS} )
+    TARGET_LINK_LIBRARIES( probe OrcaCompModel IceGrid OrcaProbe OrcaDynamicLoad 
+            ${PROBE_TERM_IOSTREAM_LIBS} ${PROBE_GUI_QT_LIBS} )
 
     GENERATE_CONFIG_FILE( probe.def )
 

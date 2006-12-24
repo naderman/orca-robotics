@@ -15,8 +15,14 @@
 #include <orcaice/eventqueue.h>
 #include <orcaice/context.h>
 #include <orcacm/types.h>
+#include <orcaprobe/browserdriver.h>
 
 #include "browserfsm.h"
+
+namespace orcaprobe
+{
+    class DisplayDriver;
+}
 
 namespace probe
 {
@@ -24,15 +30,23 @@ namespace probe
 class ProbeFactory;
 class InterfaceProbe;
 
-class BrowserHandler : public orcaice::Thread, public BrowserFsm
+class BrowserHandler : public orcaprobe::BrowserDriver, public orcaice::Thread, public BrowserFsm
 {
 
 public:
-    BrowserHandler( const orcaice::EventQueuePtr & myQueue, 
-                    const orcaice::EventQueuePtr & otherQueue, 
+    BrowserHandler( orcaprobe::DisplayDriver & display,
                     std::vector<orcaprobe::Factory*> &factories,
                     const orcaice::Context & context );
     virtual ~BrowserHandler();
+
+    // from BrowserDriver
+    virtual void chooseActivate();
+    virtual void chooseReload();
+    virtual void chooseUp();
+    virtual void chooseTop();
+    virtual void choosePick( int );
+    virtual void chooseFilter( const std::string & );
+    virtual void chooseDeactivate();
 
 private:
 
@@ -59,11 +73,14 @@ private:
     
     virtual void quit();
 
-    orcaice::EventQueuePtr myQueue_;
-    orcaice::EventQueuePtr otherQueue_;
     std::vector<orcaprobe::Factory*> &factories_;
 
+    orcaprobe::DisplayDriver & display_;
+
+    orcaice::EventQueuePtr events_;
+ 
     orcaprobe::InterfaceProbe* ifaceProbe_;
+
     orcaice::Context context_;
 
     // user's last choice

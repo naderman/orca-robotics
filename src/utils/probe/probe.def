@@ -1,8 +1,8 @@
 DefaultComponentTag=Probe
 
 # configuration
-Config.Driver.Comment=Options are { 'iostream', 'qt' }
-Config.Driver.Default=iostream
+Config.Driver.Comment=Options are { 'term-iostream', 'gui-qt' }
+Config.Driver.Default=term-iostream
 
 # Config Parameters
 Config.FactoryLibNames.Default=libOrcaProbeFactory.so

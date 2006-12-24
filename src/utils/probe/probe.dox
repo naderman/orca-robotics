@@ -49,8 +49,8 @@ Supported interfaces:
 
 - @c Probe.Config.Driver (string)
     - Type of display driver
-    - Valid values: { 'iostream', 'qt' }
-    - Default: 'iostream'
+    - Valid values: { 'term-iostream', 'gui-qt' }
+    - Default: 'term-iostream'
 
 - @c Probe.Config.FactoryLibNames (string)
     - A space-separated list of libraries containing slave factories.
@@ -77,9 +77,9 @@ q       Quit
 ==>  
 @endverbatim
 
-@section orca_probe_qt Basic display driver to terminal window.
+@section orca_probe_qt GUI driver using Qt
 
-A GUI driver which emulates the 'column view' of the MacOS X Finder. This driver is still under development.
+A GUI driver which emulates the 'column view' of the MacOS X Finder.
 
 @par Authors
 
