@@ -42,12 +42,7 @@ Localise2dPainter::setData( const orca::Localise2dData& data )
     if ( isDisplayHistory_ ) {
         if ( data.hypotheses.size() > 0 )
         {
-// ########################################
-// alexm: cannot call non-const mlHypothesis function
-//             Pose2dHypothesis &h = orcaice::mlHypothesis( data );
-// hack to make it compile
-            Pose2dHypothesis h;
-// ########################################
+            const Pose2dHypothesis &h = orcaice::mlHypothesis( data );
             history_.addPoint( h.mean.p.x, h.mean.p.y );
         }
         else
