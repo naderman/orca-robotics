@@ -21,11 +21,14 @@
 namespace orcaice
 {
 
+//! Generic event which can be added to the EventQueue.
 class Event : public IceUtil::Shared
 {
 public:
+    //! Constructor requires event type.
     Event( int type ) : type_(type) {};
 
+    //! Returns event type.
     int type() const { return type_; };
 private:
     int type_;
@@ -34,16 +37,28 @@ private:
 typedef IceUtil::Handle<Event> EventPtr;
 
 
+/*!
+    Thread-safe event queue.
+*/
 class EventQueue : public IceUtil::Shared, public IceUtil::Monitor<IceUtil::Mutex>
 {
 public:
+    //! Add event to the queue.
     void add( const EventPtr & e );
-    bool timedGet( EventPtr & e, int timeoutMs=-1 );
+
+    //! Get event from the queue. If the queue is empty
+    //! this call blocks indefinitely until an event is added.
+    void get( EventPtr & e );
+
+    //! Get event from the queue with timeout. 
+    //! Returns TRUE if event was received, FALSE if timeout occured.
+    bool timedGet( EventPtr & e, int timeoutMs );
+
+    //! Number of event in the queue
+    int size() const;
 
 private:
     std::list<EventPtr> events_;
-
-    void get( EventPtr & e );
 };
 
 typedef IceUtil::Handle<EventQueue> EventQueuePtr;

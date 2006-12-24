@@ -11,7 +11,7 @@
 #ifndef ORCAICE_PROXIED_CONSUMER_I_H
 #define ORCAICE_PROXIED_CONSUMER_I_H
 
-#include <orcaice/ptrproxy.h>
+#include <orcaice/proxy.h>
 
 namespace orcaice
 {
@@ -23,30 +23,32 @@ namespace orcaice
  *
  *  Relies on the fact that the Consumer objects have only one operation
  *  to implement and it's called setData().
+ *
+ *  @see PtrProxiedConsumerI
  */
-template<class ConsumerType, class ObjectPtrType>
+template<class ConsumerType, class ObjectType>
 class ProxiedConsumerI : public ConsumerType
 {
 public:
 
     virtual ~ProxiedConsumerI() {};
     
-    virtual void setData( const ObjectPtrType& data, const Ice::Current& );
+    virtual void setData( const ObjectType& data, const Ice::Current& );
 
     // proxy_ is public so that guielements can access it directly
-    orcaice::PtrProxy<ObjectPtrType> proxy_;
+    orcaice::Proxy<ObjectType> proxy_;
 
 protected:
 
     //! You can derive from this class and do something when an object is received.
     //! (besides sticking it into the proxy). This adds the functionality of orcaice::PtrNotify.
     //! The default implementation does nothing.
-    virtual void handleData( const ObjectPtrType & obj ) {};
+    virtual void handleData( const ObjectType & obj ) {};
 };
 
-template<class ConsumerType, class ObjectPtrType>
+template<class ConsumerType, class ObjectType>
 void
-ProxiedConsumerI<ConsumerType,ObjectPtrType>::setData( const ObjectPtrType& data, const Ice::Current& )
+ProxiedConsumerI<ConsumerType,ObjectType>::setData( const ObjectType& data, const Ice::Current& )
 {
     // stick data into the internal proxy
     proxy_.set( data );

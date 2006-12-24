@@ -21,37 +21,9 @@ EventQueue::add( const EventPtr & e )
 {
     Lock sync(*this);
     events_.push_back( e );
-    cout<<"queue length : "<<events_.size()<<endl;
+//     cout<<"queue length : "<<events_.size()<<endl;
 
-    // notify (ourselves)
     notify();
-}
-
-bool
-EventQueue::timedGet( EventPtr & e, int timeoutMs )
-{
-    if ( timeoutMs<0 ) {
-        get( e );
-        return true;
-    }    
-
-    bool ret = false;
-    IceUtil::Time wakeupTime = IceUtil::Time::now() + 
-                               IceUtil::Time::milliSeconds( timeoutMs );
-
-    Lock sync(*this);
-
-    while( events_.empty() && IceUtil::Time::now()<wakeupTime )
-    {
-        ret = timedWait( wakeupTime - IceUtil::Time::now() );
-    }
-
-    if ( ret ) {
-        // got something
-        e = events_.front();
-        events_.pop_front();
-    }
-    return ret;
 }
 
 void
@@ -67,4 +39,34 @@ EventQueue::get( EventPtr & e )
     // got something
     e = events_.front();
     events_.pop_front();
+}
+
+bool
+EventQueue::timedGet( EventPtr & e, int timeoutMs )
+{
+    IceUtil::Time wakeupTime = IceUtil::Time::now() + 
+                               IceUtil::Time::milliSeconds( timeoutMs );
+
+    Lock sync(*this);
+
+    while( events_.empty() && IceUtil::Time::now()<wakeupTime )
+    {
+        timedWait( wakeupTime - IceUtil::Time::now() );
+    }
+
+    if ( !events_.empty() ) {
+        // got something
+        e = events_.front();
+        events_.pop_front();
+        return true;
+    }
+    return false;
+}
+
+int
+EventQueue::size() const
+{
+    Lock sync(*this);
+
+    return events_.size();
 }
