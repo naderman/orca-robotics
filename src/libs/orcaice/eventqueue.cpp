@@ -16,12 +16,22 @@
 using namespace std;
 using namespace orcaice;
 
+
+EventQueue::EventQueue( bool traceAddEvents, bool traceGetEvents ) :
+    traceAddEvents_(traceAddEvents),
+    traceGetEvents_(traceGetEvents)
+{
+}
+
 void
 EventQueue::add( const EventPtr & e )
 {
     Lock sync(*this);
     events_.push_back( e );
-//     cout<<"queue length : "<<events_.size()<<endl;
+
+    if ( traceAddEvents_ ) {
+        cout<<"EventQueue::add() added event type="<<e->type()<<endl;
+    }
 
     notify();
 }
@@ -36,9 +46,12 @@ EventQueue::get( EventPtr & e )
         wait();
     }
 
-    // got something
     e = events_.front();
     events_.pop_front();
+
+    if ( traceGetEvents_ ) {
+        cout<<"EventQueue::get() got event type="<<e->type()<<endl;
+    }
 }
 
 bool
@@ -58,6 +71,10 @@ EventQueue::timedGet( EventPtr & e, int timeoutMs )
         // got something
         e = events_.front();
         events_.pop_front();
+
+        if ( traceGetEvents_ ) {
+            cout<<"EventQueue::get() got event type="<<e->type()<<endl;
+        }
         return true;
     }
     return false;

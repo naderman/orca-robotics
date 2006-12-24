@@ -52,6 +52,10 @@ int main(int argc, char * argv[])
     orcaice::EventPtr eout;
     // if something is wrong here, it will block forever
     q->get( eout );
+    if ( eout->type() != 99 ) {
+        cout<<"failed"<<endl<<"expect type=99, got="<<eout->type()<<endl;
+        exit(EXIT_FAILURE);
+    }
     TestEventPtr teout = TestEventPtr::dynamicCast( eout );
     if ( teout->d_ != 1969.0 ) {
         cout<<"failed"<<endl<<"expect value=1969, got="<<teout->d_<<endl;

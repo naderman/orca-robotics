@@ -43,6 +43,9 @@ typedef IceUtil::Handle<Event> EventPtr;
 class EventQueue : public IceUtil::Shared, public IceUtil::Monitor<IceUtil::Mutex>
 {
 public:
+    //! Set tracing flags to TRUE to print messages to standard output.
+    EventQueue( bool traceAddEvents=false, bool traceGetEvents=false );
+
     //! Add event to the queue.
     void add( const EventPtr & e );
 
@@ -59,6 +62,8 @@ public:
 
 private:
     std::list<EventPtr> events_;
+    bool traceAddEvents_;
+    bool traceGetEvents_;
 };
 
 typedef IceUtil::Handle<EventQueue> EventQueuePtr;
