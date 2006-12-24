@@ -180,7 +180,7 @@ Start with Gazebo/ODE dependencies.
 @endverbatim
 Note that there may be a few other dependencies which aren't included here.
 
-You will also have to download and compile <a href="http://ode.org/" target="_blank">Open Dynamics Engine</a> which is Gazebo's physics engine. It is recommended to use the latest release (tested with 0.7). Since Gazebo expects libode.so to be in a different location than the standard install, a symbolic link will need to be created.
+You will also have to download and compile <a href="http://ode.org/" target="_blank">Open Dynamics Engine</a> which is Gazebo's physics engine. It is recommended to use the latest release (tested with 0.7). Since Gazebo expects @c libode.so to be in a different location than the standard install, a symbolic link will need to be created.
 @verbatim
 $ unzip ode-src-<versoin>.zip
 $ cd ode-<version>
