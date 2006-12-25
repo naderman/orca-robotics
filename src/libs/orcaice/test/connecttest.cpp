@@ -35,9 +35,7 @@ public:
 void 
 TestComponent::start()
 {
-    orca::ComponentData compData;
-    compData.name = context().name();
-    Ice::ObjectPtr homeObj = new orcaice::HomeI( compData, properties()->getPropertiesForPrefix("") );
+    Ice::ObjectPtr homeObj = new orcaice::HomeI( interfaceFlag(), context() );
     
     cout<<"testing createInterfaceWithString() ... ";
     try {

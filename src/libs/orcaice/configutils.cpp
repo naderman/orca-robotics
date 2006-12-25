@@ -146,6 +146,53 @@ getRequiredTags( const Context & context )
     return getFieldsForPrefix( context, prefix );
 }
 
+orca::ComponentData
+getComponentData( const Context & context )
+{
+    orca::ComponentData compData;
+    compData.name = context.name();
+
+    Ice::PropertyDict providesProps =
+        context.properties()->getPropertiesForPrefix(context.tag()+".Provides");
+    orca::ProvidedInterface provided;
+    for ( Ice::PropertyDict::iterator i=providesProps.begin(); i!=providesProps.end(); ++i ) {
+        provided.name = i->second;
+        provided.id = "unknown";
+        compData.provides.push_back( provided );
+    }
+
+    // special cases: add standard interfaces (depending on startup flags)
+    // first, add the Home interface itself 
+//     std::string homeIdentity = "orca." + context.name().platform + "." + context.name().component + "/Home";
+//     provided.name = homeIdentity;
+//     provided.id = "::orca::Home";
+//     compData.provides.push_back( provided );
+// 
+//     if ( interfaceFlag_ & TracerInterface ) {
+//         provided.name = "tracer";
+//         provided.id = "::orca::Tracer";
+//         compData.provides.push_back( provided );
+//     }
+// 
+//     if ( interfaceFlag_ & StatusInterface ) {
+//         provided.name = "status";
+//         provided.id = "::orca::Status";
+//         compData.provides.push_back( provided );
+//     }
+
+    // NOTE: this will not work if the config file uses long notation for req. interfaces
+    Ice::PropertyDict requiresProps =
+        context.properties()->getPropertiesForPrefix(context.tag()+".Requires");
+    orca::RequiredInterface required;
+    for ( Ice::PropertyDict::iterator i=requiresProps.begin(); i!=requiresProps.end(); ++i ) {
+        required.name = orcaice::toInterfaceName( i->second );
+        required.id = "unknown";
+        compData.requires.push_back( required );
+    }
+
+    return compData;
+}
+
 // THESE FUNCTIONS WERE OBSOLETED TO REDUCE THE SIZE OF THE API
 
 /*

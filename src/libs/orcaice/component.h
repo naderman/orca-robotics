@@ -91,7 +91,7 @@ friend class Context;
 public:
     //! Takes the text tag with which to identify it in the config files. The @e flag
     //! specifies what standard interfaces to initialize.
-    Component( const std::string &tag, ComponentInterfaceFlag flag=AllStandardInterfaces );
+    Component( const std::string& tag, ComponentInterfaceFlag flag=AllStandardInterfaces );
     virtual ~Component() {};
 
     //! This function is called by the component's container (Application or Service).
@@ -127,52 +127,57 @@ protected:
     //!context().tracer()->info("Everything is OK");
     //!MainLoop myloop( context() );
     //! @endverbatim
-    Context & context() { return context_; };
+    const Context& context() const { return context_; };
 
-    //! Convenience shortcut to component's tag used in configuration files.
+    //! Convenience shortcut to component's tag. Often used when parsing configuration files.
     //! Same result as context().tag().
-    std::string tag() const { return context_.tag_; };
-    //! Convenience shortcut to component's tracer.
+    const std::string& tag() const { return context_.tag_; };
+    //! Convenience shortcut to component's local tracer API.
     //! Same result as context().tracer().
     Tracer* tracer() const { return context_.tracer_; };
-    //! Convenience shortcut to component's tracer.
-    //! Same result as context().tracer().
+    //! Convenience shortcut to component's local status API.
+    //! Same result as context().status().
     Status* status() const { return context_.status_; };
+    //! Convenience shortcut to component's local home API.
+    //! Same result as context().home().
+    Home* home() const { return context_.home_; };
     //! Convenience shortcut to component's configuration properties.
     //! Same result as context().properties().
     Ice::PropertiesPtr properties() const { return context_.properties(); };
 
+    //! Describe which standard interfaces this component will provide.
+    ComponentInterfaceFlag interfaceFlag() const { return interfaceFlag_; };
+
 private:
 
     // Not implemented; prevents accidental use.
-    Component( const Component & );
-    Component& operator= ( const Component & );
+    Component( const Component& );
+    Component& operator= ( const Component& );
 
     // One of the container classes (Application or Service) will
     // call this function before calling start().
     // This is the reason for them to be friends.
-    void init( const orca::FQComponentName & name,
+    void init( const orca::FQComponentName& name,
                 const bool isApp,
-                const Ice::ObjectAdapterPtr & adapter );
+                const Ice::ObjectAdapterPtr& adapter );
 
     // Only Service should need to use this when the IceBox tells it
     // what the actual tag is.
-    void setTag( const std::string & t ) { context_.tag_ = t; };
+    void setTag( const std::string& t ) { context_.tag_ = t; };
 
-    //Context
+    // Component's context
     Context context_;
 
     // Save init flags
     ComponentInterfaceFlag interfaceFlag_;
 
-    // create standard Home interface which implements Orca Component Model
-    void initHome();
-
-    // Initialized Orca custom Tracer -- an object to handle local and remote tracing
+    // initialize component services
+    orcaice::Home*   initHome();
     orcaice::Tracer* initTracer();
     orcaice::Status* initStatus();
 
     // keep the smart pointer so it's not destroyed with the adapter
+    // (i think we only need to do it with tracer)
     Ice::ObjectPtr tracerObj_;
     Ice::ObjectPtr statusObj_;
 };

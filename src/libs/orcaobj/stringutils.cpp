@@ -166,6 +166,12 @@ toInterfaceName( const std::string& s )
     return fqIName;
 }
 
+std::string 
+toHomeIdentity( const orca::FQComponentName & fqCName )
+{
+    return "orca." + fqCName.platform + "." + fqCName.component + "/Home";
+}
+
 orca::FQTopicName 
 toStatusTopic( const orca::FQComponentName& fqCName )
 {

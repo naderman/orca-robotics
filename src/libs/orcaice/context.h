@@ -14,6 +14,7 @@
 #include <Ice/Ice.h>
 
 #include <orca/ocm.h>
+#include <orcaice/home.h>
 #include <orcaice/tracer.h>
 #include <orcaice/status.h>
 
@@ -30,10 +31,10 @@ class Component;
  *  hardware handlers from the class derived from Component.
  *
  *  A note on thread safety. None of access functions are thread-safe. However, all
- *  smart pointer types are themselves thread-safe. This means that once a copy of
- *  of Context is created, it is safe to use it from different threads.
- *
- *  Pass context by value and store a copy, e.g. a class definition would look like this:
+ *  object which are referenced (with pointers and smart pointers) are themselves thread-safe. 
+ *  
+ *  This means that once a copy of of Context is created, it is safe to use it from different threads.
+ *  Pass context by const reference and store a copy, e.g. a class definition would look like this:
 @verbatim
 class MyClass
 {
@@ -53,33 +54,37 @@ public:
     Context();
 
     //! Component's tag used in configuration files.
-    std::string            tag() const { return tag_; };
+    const std::string&     tag() const { return tag_; };
+
     //! Component's fully-qualified name given to the Registry.
-    orca::FQComponentName  name() const { return name_; };
-    //! @brief Is the component executed inside and application or a service?
+    const orca::FQComponentName& name() const { return name_; };
+
+    //! @brief Is this component executed inside and application or a service?
     //! Returns TRUE if this instance of the Component is used in a stand-alone application.
-    //! Otherwise, returns FALSE, meaning that it's used in a IceBox service.
+    //! Otherwise, returns FALSE, meaning that it's used inside an IceBox service.
     bool                   isApplication() const { return isApplication_; };
+
     //! Returns smart pointer to the component's communicator.
     Ice::CommunicatorPtr   communicator() const { return communicator_; };
+
     //! Returns smart pointer to the component's adapter.
     Ice::ObjectAdapterPtr  adapter() const { return adapter_; };
-    //! Returns smart pointer to the component's properties.
+
+    //! Conveniance function which returns smart pointer to the component's properties.
+    //! Same as calling communicator()->getProperties()
     Ice::PropertiesPtr     properties() const { return communicator_->getProperties(); };
+
+    //! Access to setting home information.
+    orcaice::Home*         home() const { return home_; };
     //! Access tracing functions.
     orcaice::Tracer*       tracer() const { return tracer_; };
     //! Access status functions.
     orcaice::Status*       status() const { return status_; };
-    //! Access logging functions through standard Ice::Logger interface.
-    //! Use @ref tracer instead.
-    Ice::LoggerPtr         logger() const { return communicator_->getLogger(); };
 
-    //! Convenience function which calls Component::activate.
+
+    //! Calls Component::activate(). This function is useful when component (adapter)
+    //! activation must be delayed until after something is initialized in the child thread.
     void activate();
-
-    // Component itself
-    // This function may be removed in the future.
-    // orcaice::Component*    component() const;
 
 private:
 
@@ -98,6 +103,7 @@ private:
     // need this pointer to call activate()
     Component*             component_; 
 
+    orcaice::Home*         home_;
     orcaice::Tracer*       tracer_;
     orcaice::Status*       status_;
 };

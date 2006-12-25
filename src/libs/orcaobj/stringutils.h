@@ -84,6 +84,9 @@ orca::FQComponentName toComponentName( const std::string& s );
 //! absent.
 orca::FQInterfaceName toInterfaceName( const std::string& s );
 
+//! Based on the component name, returns the default identity of Home interface.
+std::string toHomeIdentity( const orca::FQComponentName & fqCName );
+
 //! Based on the component name, returns the default topic name for Status interface.
 orca::FQTopicName toStatusTopic( const orca::FQComponentName & fqCName );
 

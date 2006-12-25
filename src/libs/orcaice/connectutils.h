@@ -53,7 +53,7 @@ void createInterfaceWithString( const Context       & context,
  * Convenience function, behaves like @ref createInterfaceWithString but the proxy information
  * is looked up in the @p context properties based on the @p interfaceTag.
  *
- * Throws ConfigFileException if the interface name cannot be read for some reason.
+ * Throws ConfigFileException if the interface name cannot be read from the config file for some reason.
  */
 void createInterfaceWithTag( const Context      & context,
                             Ice::ObjectPtr      & object,

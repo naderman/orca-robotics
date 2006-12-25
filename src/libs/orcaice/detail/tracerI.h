@@ -24,8 +24,6 @@ namespace detail
 
 class SysLogger;
 
-// implem notes:
-//   - The local API of this class could also be defined as a local interface in Slice.
 class TracerI : public virtual orca::Tracer, public virtual orcaice::Tracer
 {
 public:

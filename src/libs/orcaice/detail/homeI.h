@@ -11,27 +11,35 @@
 #ifndef ORCAICE_HOME_I_H
 #define ORCAICE_HOME_I_H
 
-#include <Ice/Ice.h>
+// #include <Ice/Ice.h>
 #include <IceUtil/Time.h>
+#include <IceUtil/Mutex.h>
 
-// include provided interfaces
 #include <orca/home.h>
+#include "../home.h"
+#include "../component.h" // for ComponentInterfaceFlag
+#include "../context.h"
 
 namespace orcaice
 {
 
 // An implementation of the (remote) Home interface.
-// Contains no local public API.
-class HomeI : public virtual orca::Home
+class HomeI : public virtual orca::Home, public virtual orcaice::Home
 {
 public:
-    HomeI( const orca::ComponentData & compData, const Ice::PropertyDict & props );
+    HomeI( ComponentInterfaceFlag flag, const orcaice::Context& context );
 
+    // orca::Home interface
     virtual orca::HomeData getInterfaces(const ::Ice::Current& ) const;
 
     virtual int getTimeUp(const ::Ice::Current& ) const;
     
     virtual orca::ComponentProperties getProperties(const ::Ice::Current& ) const;
+
+    // orcaice::Home interface
+    virtual void addProvidedInterface( const orca::ProvidedInterface& iface );
+
+    virtual void addRequiredInterface( const orca::RequiredInterface& iface );
 
 private:
     // we update the timeUp field every time getInterfaces() is called.
@@ -42,6 +50,9 @@ private:
     // start time is initialized in the constructor. the component's up time
     // is counted from here.
     IceUtil::Time startTime_;
+
+    // We may have multiple threads talking to us
+    IceUtil::Mutex mutex_;
 };
 
 } // namespace

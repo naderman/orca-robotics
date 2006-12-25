@@ -23,6 +23,7 @@ createInterfaceWithString( const Context      & context,
 {
     try
     {
+        // register object with the adapter
         context.adapter()->add( object, context.communicator()->stringToIdentity(proxyString) );
     }
     catch ( const Ice::AlreadyRegisteredException &e )
@@ -32,7 +33,12 @@ createInterfaceWithString( const Context      & context,
         throw orcaice::Exception( ERROR_INFO, ss.str() );
     }
 
-    // @todo Record which servant we created as a provided interface so that Home can report this.
+    // locally register this interface with Home interface 
+    orca::ProvidedInterface iface;
+    iface.name = proxyString;
+    // is this a local call? is there a better way?
+    iface.id   = object->ice_id();
+    context.home()->addProvidedInterface( iface );
 }
 
 void
@@ -40,7 +46,18 @@ createInterfaceWithTag( const Context      & context,
                         Ice::ObjectPtr     & object,
                         const std::string  & ifaceTag )
 {
-    context.adapter()->add( object, context.communicator()->stringToIdentity( getProvidedInterface(context,ifaceTag).iface ) );
+    // look up naming information in the properties
+    orca::FQInterfaceName fqIName = getProvidedInterface( context, ifaceTag );
+
+    // register object with the adapter
+    context.adapter()->add( object, context.communicator()->stringToIdentity( fqIName.iface ) );
+
+    // locally register this interface with Home interface 
+    orca::ProvidedInterface iface;
+    iface.name = fqIName.iface;
+    // is this a local call? is there a better way?
+    iface.id   = object->ice_id();
+    context.home()->addProvidedInterface( iface );
 }
 
 IceStorm::TopicPrx 

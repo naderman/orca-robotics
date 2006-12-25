@@ -13,9 +13,11 @@
 
 namespace orcaice {
 
-Context::Context()
-    : component_(0),
-      tracer_(0)
+Context::Context() :
+    component_(0),
+    home_(0),
+    tracer_(0),
+    status_(0)
 {
 }
 

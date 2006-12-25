@@ -1,0 +1,37 @@
+/*
+ * Orca Project: Components for robotics 
+             http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+#ifndef ORCAICE_HOME_H
+#define ORCAICE_HOME_H
+
+namespace orcaice
+{
+
+/*!
+@brief Local API to component information.
+ *
+ */
+// implem notes:
+//   - The local API of this class could also be defined as a local interface in Slice.
+class Home
+{
+public:
+    virtual ~Home() {}; 
+    
+    //! Adds provided interface to dynamic component information
+    virtual void addProvidedInterface( const orca::ProvidedInterface& iface ) = 0;
+
+    //! Adds required interface to dynamic component information
+    virtual void addRequiredInterface( const orca::RequiredInterface& iface ) = 0;
+};
+
+} // namespace
+
+#endif
