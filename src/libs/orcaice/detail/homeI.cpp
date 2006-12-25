@@ -16,6 +16,8 @@ using namespace orcaice;
 
 HomeI::HomeI( ComponentInterfaceFlag flag, const orcaice::Context& context )
 {
+    IceUtil::Mutex::Lock lock(mutex_);
+
     // start the up-time clock
     startTime_ = IceUtil::Time::now();
 
@@ -49,6 +51,7 @@ orca::HomeData
 HomeI::getInterfaces(const ::Ice::Current& ) const
 {
     //std::cout << "Sending data back" << std::endl;
+    IceUtil::Mutex::Lock lock(mutex_);
 
     IceUtil::Time timeUp = IceUtil::Time::now() - startTime_;
     // we only return the number of seconds
@@ -60,6 +63,8 @@ HomeI::getInterfaces(const ::Ice::Current& ) const
 int
 HomeI::getTimeUp(const ::Ice::Current& ) const
 {
+    IceUtil::Mutex::Lock lock(mutex_);
+
     IceUtil::Time timeUp = IceUtil::Time::now() - startTime_;
     // we only return the number of seconds
     return (int)timeUp.toSeconds();
@@ -69,6 +74,7 @@ orca::ComponentProperties
 HomeI::getProperties(const ::Ice::Current& ) const
 {
     //std::cout << "Sending data back" << std::endl;
+    IceUtil::Mutex::Lock lock(mutex_);
 
     return properties_;
 }
@@ -76,6 +82,8 @@ HomeI::getProperties(const ::Ice::Current& ) const
 void
 HomeI::addProvidedInterface( const orca::ProvidedInterface& iface ) 
 {
+    IceUtil::Mutex::Lock lock(mutex_);
+
     homeData_.comp.provides.push_back( iface );
     orcaice::setToNow( homeData_.timeStamp );
 }
@@ -83,6 +91,20 @@ HomeI::addProvidedInterface( const orca::ProvidedInterface& iface )
 void 
 HomeI::addRequiredInterface( const orca::RequiredInterface& iface )
 {
+    IceUtil::Mutex::Lock lock(mutex_);
+
     homeData_.comp.requires.push_back( iface );
     orcaice::setToNow( homeData_.timeStamp );
+}
+
+void 
+HomeI::removeProvidedInterface( const std::string& name )
+{
+    IceUtil::Mutex::Lock lock(mutex_);
+}
+
+void 
+HomeI::removeRequiredInterface( const std::string& name )
+{
+    IceUtil::Mutex::Lock lock(mutex_);
 }

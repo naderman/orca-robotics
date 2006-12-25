@@ -31,15 +31,14 @@ public:
 
     // orca::Home interface
     virtual orca::HomeData getInterfaces(const ::Ice::Current& ) const;
-
     virtual int getTimeUp(const ::Ice::Current& ) const;
-    
     virtual orca::ComponentProperties getProperties(const ::Ice::Current& ) const;
 
     // orcaice::Home interface
     virtual void addProvidedInterface( const orca::ProvidedInterface& iface );
-
     virtual void addRequiredInterface( const orca::RequiredInterface& iface );
+    virtual void removeProvidedInterface( const std::string& name );
+    virtual void removeRequiredInterface( const std::string& name );
 
 private:
     // we update the timeUp field every time getInterfaces() is called.

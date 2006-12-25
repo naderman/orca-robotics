@@ -24,6 +24,10 @@ public:
     virtual void addProvidedInterface( const orca::ProvidedInterface& iface ){};
 
     virtual void addRequiredInterface( const orca::RequiredInterface& iface ){};
+
+    virtual void removeProvidedInterface( const std::string& name ) {};
+
+    virtual void removeRequiredInterface( const std::string& name ) {};
 };
 
 } // namespace

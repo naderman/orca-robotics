@@ -37,5 +37,3 @@ GpsMapGridConsumerI::setData(const orca::GpsMapGridData& data, const Ice::Curren
     cout << "INFO(gpsconsumerI.cpp): Received GPS mapgrid data. Telling gpsSlave to log it" << endl << endl;
     logger_->localSetData( data );
 }
-
-    

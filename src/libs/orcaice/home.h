@@ -30,6 +30,12 @@ public:
 
     //! Adds required interface to dynamic component information
     virtual void addRequiredInterface( const orca::RequiredInterface& iface ) = 0;
+
+    //! Removes provided interface from dynamic component information
+    virtual void removeProvidedInterface( const std::string& name ) = 0;
+
+    //! Removes required interface from dynamic component information
+    virtual void removeRequiredInterface( const std::string& name ) = 0;
 };
 
 } // namespace
