@@ -41,6 +41,7 @@ void
 OgMapPainter::setData( const orca::OgMapData& data )
 {
 //     cout << orcaice::toVerboseString(data);
+    // alexm: why do we save this big mother?
     data_ = data;
 
     if ( data.origin.o != 0.0 ) {

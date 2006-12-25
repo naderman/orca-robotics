@@ -1,4 +1,4 @@
-OPTION( BUILD_POINT_CLOUD_VIEWER "Try to build point cloud viewer" ON )
+OPTION( BUILD_POINT_CLOUD_VIEWER "Try to build point cloud viewer" OFF )
 
 IF ( BUILD_POINT_CLOUD_VIEWER  )
     IF ( QT4_FOUND )
