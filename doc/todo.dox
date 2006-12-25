@@ -85,6 +85,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - libOrcaIce
     - an overhaul of tracing and status facilities. (alex m.)
     - added EventQueue class using events defined as Ice smart pointers. (alex m.)
+    - implementation of Home interface now returns dynamic information about component's interfaces. 
+      Works for automatically when using std connect utilities, an option exist for custom Home data 
+      manipulation. (alex m.)
 - libOrcaProbeFactory (alex m.)
     - added support for Status and Tracer interfaces
 
