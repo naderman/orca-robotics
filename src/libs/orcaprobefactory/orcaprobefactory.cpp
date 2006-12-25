@@ -16,6 +16,7 @@
 #include "cpuprobe.h"
 #include "homeprobe.h"
 #include "laserscanner2dprobe.h"
+#include "position3dprobe.h"
 #include "powerprobe.h"
 #include "statusprobe.h"
 #include "tracerprobe.h"
@@ -33,7 +34,7 @@ OrcaProbeFactory::OrcaProbeFactory()
 //     addSupportedType("::orca::Localise2d");
 //     addSupportedType("::orca::PolarFeature2d");
 //     addSupportedType("::orca::Position2d");
-//     addSupportedType("::orca::Position3d");
+    addSupportedType("::orca::Position3d");
     addSupportedType("::orca::Power");
     addSupportedType("::orca::Status");
     addSupportedType("::orca::Tracer");
@@ -61,6 +62,9 @@ OrcaProbeFactory::create( const std::string           & interfaceType,
     }
     else if ( interfaceType == "::orca::LaserScanner2d" ) {
         probe = new LaserScanner2dProbe( name, display, context );
+    }
+    else if ( interfaceType == "::orca::Position3d" ) {
+        probe = new Position3dProbe( name, display, context );
     }
     else if ( interfaceType == "::orca::Power" ) {
         probe = new PowerProbe( name, display, context );
