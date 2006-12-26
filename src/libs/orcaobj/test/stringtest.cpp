@@ -94,7 +94,7 @@ int main(int argc, char * argv[])
         std::string s = orcaice::toString( in );
         int ret = orcaice::toFrame2d( s, out );
         // angled must be compared approximately
-        if ( ret || in.p.x != out.p.x || in.p.y != out.p.y || !NEAR(in.o,out.o,0.001) ) {
+        if ( ret || !NEAR(in.p.x,out.p.x,1E-6) || !NEAR(in.p.y,out.p.y,1E-6) || !NEAR(in.o,out.o,1E-3) ) {
             cout<<"failed ("<<ret<<")"<<endl
                 <<"in ="<<orcaice::toString(in)<<endl
                 <<"str="<<s<<endl
@@ -111,8 +111,8 @@ int main(int argc, char * argv[])
         std::string s = orcaice::toString( in );
         int ret = orcaice::toFrame3d( s, out );
         // angled must be compared approximately
-        if ( ret || in.p.x != out.p.x || in.p.y != out.p.y || in.p.z != out.p.z
-                 || !NEAR(in.o.r,out.o.r,0.001) || !NEAR(in.o.p,out.o.p,0.001) || !NEAR(in.o.y,out.o.y,0.001) ) {
+        if ( ret || !NEAR(in.p.x,out.p.x,1E-6) || !NEAR(in.p.y,out.p.y,1E-6) || !NEAR(in.p.z,out.p.z,1E-6)
+                 || !NEAR(in.o.r,out.o.r,1E-3) || !NEAR(in.o.p,out.o.p,1E-3) || !NEAR(in.o.y,out.o.y,1E-3) ) {
             cout<<"failed ("<<ret<<")"<<endl
                 <<"in ="<<orcaice::toString(in)<<endl
                 <<"str="<<s<<endl

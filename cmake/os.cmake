@@ -35,8 +35,8 @@ IF ( OS_QNX )
 #   SET( OS_INCLUDE_DIRECTORIES /usr/local/include )
 #   SET( OS_LINK_DIRECTORIES    /usr/local/lib /opt/lib )
 #   SET( OS_LINK_LIBRARIES      iconv m )
-#   ADD_DEFINITIONS( -shared )
-#  SET( OS_DEFINITIONS         -shared )
+#   SET( OS_DEFINITIONS         -shared )
+    ADD_DEFINITIONS( -shared -fexceptions )
 ENDIF ( OS_QNX )
 
 
