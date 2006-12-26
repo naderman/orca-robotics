@@ -26,6 +26,7 @@
 @defgroup matlab Matlab
 
 @defgroup linux Linux
+@defgroup qnx QNX
 @defgroup win Windows
 */
 

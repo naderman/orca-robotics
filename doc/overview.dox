@@ -50,7 +50,8 @@ We can think of several scenarios which lead to different usage patterns:
 @par OS support
 
 - full Linux support
-- interfaces, core utilities and some components compile in Windows XP.
+- interfaces and most of source code compile in QNX.
+- interfaces, core libraries and utilities, and some components compile in Windows XP.
 - experimental builds in MacOS-X
 
 The basic tools we use are cross-platform, so in principle Orca can be deployed as widely as CMake/Ice combination.

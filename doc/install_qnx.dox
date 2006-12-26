@@ -10,7 +10,7 @@
 
 /*!
 
-@page orca_doc_installqnx Installing Orca on Debian Linux
+@page orca_doc_installqnx Installing Orca on QNX Neutrino
 
 @note NOT FINISHED!
 
@@ -105,14 +105,14 @@ $ QCC -A libdb_cxx-4.5S.a .libs/*.o
 
 Now Ice itself. 
 
-- Download 
-    - source from  <a href="http://www.zeroc.com/download.html">download page</a>.
-    - patch
-- Patch
+- Get source
+    - get source from  <a href="http://www.zeroc.com/download.html">download page</a>.
+    - get patch
+    - apply the patch
 @verbatim
 $ patch
 @endverbatim
-    - Compile and install
+- Compile and install
 @verbatim
 $ make
 $ make test (optional, but in this case highly recommended)
