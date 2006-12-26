@@ -70,8 +70,10 @@ int main(int argc, char * argv[])
     cout<<"testing getPropertyAsDouble() ... ";
     double retDouble;
     ret = orcaice::getPropertyAsDouble( props, "Double.Good", retDouble );
-    if ( ret!=0 || retDouble!=99.9 ) {
-        cout<<"failed"<<endl<<"\texisting key with double: ret="<<ret<<"; value="<<retDouble<<endl;
+    if ( ret!=0 || !NEAR(retDouble,99.9, 1E-6) ) {
+        cout<<"failed"<<endl
+        	<<"\texisting key with double: ret="<<ret<<"; value="<<retDouble<<endl
+        	<<"return test="<<(int)(ret==0)<<" value test="<<(int)(retDouble==99.9)<<endl;
         return EXIT_FAILURE;
     }
     ret = orcaice::getPropertyAsDouble( props, "NotExist", retDouble );
@@ -88,12 +90,12 @@ int main(int argc, char * argv[])
     
     cout<<"testing getPropertyAsDoubleWithDefault() ... ";
     retDouble = orcaice::getPropertyAsDoubleWithDefault( props, "Double.Good", 1e6 );
-    if ( retDouble!=99.9 ) {
+    if ( !NEAR(retDouble,99.9, 1E-6) ) {
         cout<<"failed"<<endl<<"\texisting key with default double: ret="<<retDouble<<endl;
         return EXIT_FAILURE;
     }
     retDouble = orcaice::getPropertyAsDoubleWithDefault( props, "NotExist", 1e6 );
-    if ( retDouble!=1e6 ) {
+    if (  !NEAR(retDouble,1E6, 1E-6) ) {
         cout<<"failed"<<endl<<"\tnon-existing key with default double: ret="<<retDouble<<endl;
         return EXIT_FAILURE;
     }
