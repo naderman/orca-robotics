@@ -1,0 +1,318 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@page orca_doc_installqnx Installing Orca on Debian Linux
+
+@note NOT FINISHED!
+
+@note Reviewed for release 2.1.2.
+
+These are detailed instructions for installing Orca on QNX Neutrino Real Time OS. They are known to work with OS version 6.3 SP3. See @ref orca_doc_getting for general guidelines.
+
+@section orca_doc_installqnx_os OS and Utilities
+
+QNX standard installation includes a minimum set of UNIX utilities. If you are going to be doing some develepment in QNX it helps if you add some basics. Get the the 3rd party package CD, run the Installer (click on Launch in low-left corner) and install the following:
+- GNU bash
+- GNU libtool
+- GNU man
+- GNU patch
+- GNU pkgconfig
+- GNU Text Utils
+- OpenSSH
+
+Set up environment variables by adding this to $HOME/.profile
+
+@verbatim
+export CXX=QCC
+export CC=qcc
+export CXXFLAGS="-V3.3.5,gcc_ntox86_cpp"
+export CFLAGS="-V3.3.5,gcc_ntox86"
+export LDFLAGS="-lang-c++ -lm"
+export CVS_RSH=ssh
+@endverbatim
+
+Standard shell is ksh. If you prefer to use bash, you can, it is installed in /opt/bin. But the environment does not seem to be setup automatically. These environment variables must be defined for you to be able to compile stuff.
+
+@verbatim
+export PATH=$PATH:/opt/X11R6/bin:/usr/X11R6/bin:/usr/local/bin:/opt/bin:/usr/qnx630/host/qnx6/x86/usr/bin:\
+/usr/qnx630/host/qnx6/x86/usr/sbin:/usr/qnx630/host/qnx6/x86/sbin:/usr/qnx630/host/qnx6/x86/bin:\
+/usr/qnx630/host/qnx6/x86/usr/photon/appbuilde
+export QNX_HOST=/usr/qnx630/host/qnx6/x86
+export QNX_TARGET=/usr/qnx630/target/qnx6
+@endverbatim
+
+@section orca_doc_installqnx_cmake CMake
+
+Minimum version required 2.4-patch 2 (latest tested: 2.4-patch 5).
+
+@verbatim
+$ tar -xzf cmake-2.4.5.tar.gz
+$ ./bootstrap
+$ make
+# make install
+@endverbatim
+
+@section orca_doc_installqnx_ice Ice
+
+Minimum version required 3.1.0 (latest tested: 3.1.1).
+
+No packages exist, we have to be build from source. Following the instructions below will install Ice to the default location @c /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
+
+First, install Ice dependencies. You can download the ThirdPartySources archive from ZeroC but they tend to be a bit out of date. Below we point out where newer versions are required.
+
+- @b libexpat. The version distributed by ZeroC is 1.95.8 and it does not build. We got v.2.0.0 from http://expat.sourceforge.net/.
+
+@verbatim
+$ tar -xzf expat-2.0.0.tar.gz
+$ ./configure --prefix=/opt/expat-2.0.0
+$ make
+# make install
+# ln -s /opt/expat-2.0.0 /opt/expat
+@endverbatim
+
+- @b libbzip2. The version which comes ZeroC is 1.0.3, it worked fine.
+
+@verbatim
+$ tar -xzf bzip2-1.0.3.tar.gz
+$ make
+# make install PREFIX=/opt/bzip2-1.0.3
+# ln -s /opt/bzip2-1.0.3 /opt/bzip2
+@endverbatim
+
+- @b Berkley DB. This one is fun. This DB officially supports QNX but it didn't work out of the box. Ice requires v.4.3 and distributes v.4.3.29. I couldn't link Ice dynamically to it no matter what I tried, with this version and later ones 4.4.20 and 4.5.20. It compiled but at run time puked after complaining about "Unknown symbols" (11 of them). At the end I managed to get Ice working when linked statically to libdb_cxx. But because the db symbols are used in libFreeze.so, the db library has to be special: static but with PIC option enabled.
+
+@verbatim
+$ tar -xzf db-4.5.20.NC.tar.gz
+$ cd build_unix
+$ ../dist/configure --enable-cxx --prefix=/opt/db-4.5.20
+$ make
+$ QCC -A libdb_cxx-4.5S.a .libs/*.o
+# make install
+# cp libdb_cxx-4.5S.a /opt/db-4.5.20/.
+# ln -s /opt/db-4.5.20 /opt/db
+@endverbatim
+
+- @b libOpenSSL. I tried both a binary package v.0.9.7 and building v.0.9.8 (requires Perl5) with only limited success (some tests failed). I didn't try hard to fix it because I don't need SSL.
+
+Now Ice itself. 
+
+- Download 
+    - source from  <a href="http://www.zeroc.com/download.html">download page</a>.
+    - patch
+- Patch
+@verbatim
+$ patch
+@endverbatim
+    - Compile and install
+@verbatim
+$ make
+$ make test (optional, but in this case highly recommended)
+# make install
+@endverbatim
+
+Make sure that the Ice binaries and executables are in the path. You may want to add this snippet to your @c ~/.bashrc file (don't forget to replace [VERSION]).
+@verbatim
+export ICE_HOME=/opt/Ice-[VERSION]
+export PATH=$ICE_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$ICE_HOME/lib:$LD_LIBRARY_PATH
+@endverbatim
+
+@section orca_doc_installqnx_orca Orca
+
+Build and install Orca2 distribution.
+    - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive.
+    - The default installation directory is  @c /opt/orca-[VERSION], where [VERSION] is the Orca version. You can customized this by setting ORCA2_INSTALL environment variable (e.g. 'export ORCA2_INSTALL=~/orca2').
+    - Configure using @c cmake . (note the dot after cmake)
+    - Compile, and install. If you've changed your mind about the installation directory, you can change it using @c ccmake tool ('$ ccmake .').
+@verbatim
+$ tar -zxf orca2-x.x.x.tar.gz
+$ cd orca2
+$ cmake .
+$ make
+# make install
+# ldconfig
+@endverbatim
+
+Make sure that the binaries and executables are in the path. You may want to add a snippet to your @c ~/.bashrc file similar to the one below. Replace [VERSION] with the version of Orca you've just installed. Change the directory if you've modified the default install directory. Notice that the environment variable for the Orca installation to use (ORCA2_HOME) is different from the one which specifies where to install Orca (ORCA2_INSTALL). This allows multiple Orca installations on the same machine.
+@verbatim
+export ORCA2_HOME=/opt/orca-[VERSION]
+export PATH=$ORCA2_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$ORCA2_HOME/lib:$LD_LIBRARY_PATH
+@endverbatim
+
+These environment variables are optional but you may as well put them into your @c ~/.bashrc file now so that you have easy access to them later.
+@verbatim
+# uncomment to change the default location of Orca installation
+# export ORCA2_INSTALL=/opt/orca-[VERSION]
+# uncomment to change the default location of the Orca global config file
+# export ORCA2_CONFIG=$HOME/.orcarc
+@endverbatim
+
+You are finished.
+
+<hr>
+
+@b NOTE: Software below is strictly optional. To ensure that Orca knows about these new packages you will have to rerun cmake and make in Orca once the new packages have been installed. You will also have to remove the cmake cache before rerunning cmake.
+@verbatim
+$ cd [ORCA2_SOURCE]
+$ rm CMakeCache.txt
+$ cmake .
+$ make
+# make install
+@endverbatim
+
+@section orca_doc_installqnx_doxygen Doxygen
+
+Doxygen is a tool to produce documentation from source code. It can be easily installed as a package. The standard version can build all Orca documentation except for the Slice interfaces and objects. You may also want to install the @c graphviz package which contains the @c dot utility used by @c doxygen to generate diagrams.
+@verbatim
+# apt-get install doxygen graphviz
+@endverbatim
+
+@section orca_doc_installqnx_qt Qt
+
+Qt is a cross-platform GUI framework. Minimum version required 4.1.0 (latest tested: 4.2.1)
+
+@verbatim
+# apt-get install libqt4-dev qt4-doc qt4-dev-tools
+@endverbatim
+
+
+@section orca_doc_installqnx_pkgconfig PkgConfig
+
+Some components require @c pkg-config utility to check for dependencies
+
+@verbatim
+# apt-get install pkg-config
+@endverbatim
+
+
+@section orca_doc_installqnx_player Player/Stage
+
+<a href="http://playerstage.sourceforge.net/" target="_blank">Player/Stage</a> is an open-source device server and simulator. These notes were tested with Player 2.0.3 and Stage 2.0.3. 
+
+Start with Player/Stage dependencies.
+
+@verbatim
+# apt-get install libglib2.0-dev libgtk2.0-dev libltdl3-dev
+@endverbatim
+
+Download and unpack player and stage distros. We recommend installing both player and stage to some place other than the default @c /usr/local/ because the different versions quickly become unmanagable.
+
+@verbatim
+$ cd player-[VERSION]
+$ ./configure --prefix=/opt/player-[VERSION]
+$ make
+# make install
+@endverbatim
+
+If you get an error like this
+@verbatim
+make[3]: *** No rule to make target `../libplayercore/libplayererror.la', needed by `libplayercore.la'.  Stop.
+@endverbatim
+try compiling one job a time:
+@verbatim
+$ make -j1
+@endverbatim
+
+Now compile Stage. Tell pkgconfig how to find player stuff.
+
+@verbatim
+$ export PKG_CONFIG_PATH=/opt/player-[VERSION]/lib/pkgconfig/:$PKG_CONFIG_PATH
+$ cd stage-[VERSION]
+$ ./configure --prefix=/opt/stage-[VERSION]
+$ make
+# make install
+@endverbatim
+
+Append the following to your @c .bashrc file
+
+@verbatim
+export PLAYER_HOME=/opt/player-[VERSION]
+export PATH=$PLAYER_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$PLAYER_HOME/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=$PLAYER_HOME/lib/pkgconfig/:$PKG_CONFIG_PATH
+
+export STAGE_HOME=/opt/stage-[VERSION]
+export LD_LIBRARY_PATH=$STAGE_HOME/lib:$LD_LIBRARY_PATH
+@endverbatim
+
+For a quick start:
+@verbatim
+$ player [STAGE_SRC]/worlds/simple.cfg
+@endverbatim
+
+@section orca_doc_installqnx_gazebo Gazebo
+
+<a href="http://playerstage.sourceforge.net/" target="_blank">Gazebo</a> is part of the Player/Stage project. It is an open-source 3D multiple robot simulator with dynamics. These notes were tested with Player 2.0.3, Gazebo 0.7.0, and Open Dynamics Engine 0.7. Note that Gazebo's documentation is not very well maintained at the moment and it has a number of bugs which are not always trivial to fix. Please see the Gazebo <a href="http://sourceforge.net/mailarchive/forum.php?forum=playerstage-gazebo" target="_blank">mailing list</a> and Gazebo manual pages for more help.
+
+Make sure that you have installed @ref orca_doc_installqnx_player Player/Stage first. 
+
+Start with Gazebo/ODE dependencies.
+@verbatim
+# apt-get install swig python-wxtools libxml2-dev libglu1-mesa-dev libglut3-dev autoconf automake1.9 python2.4-dev libtool 
+@endverbatim
+Note that there may be a few other dependencies which aren't included here.
+
+You will also have to download and compile <a href="http://ode.org/" target="_blank">Open Dynamics Engine</a> which is Gazebo's physics engine. It is recommended to use the latest release (tested with 0.7). Since Gazebo expects @c libode.so to be in a different location than the standard install, a symbolic link will need to be created.
+@verbatim
+$ unzip ode-src-<versoin>.zip
+$ cd ode-<version>
+$ sh autogen.sh (if you are using a snapshot version)
+$ ./configure --with-double-precision --enable-release
+$ make
+# make install
+# ln -s /usr/local/lib/libode.so /usr/lib/libode.so
+@endverbatim
+
+There are a few optional components for Gazebo. It is recommended to install these, in order to get full Gazebo functionality.
+
+@verbatim
+# apt-get install lib3ds-dev proj libgdal1-1.3.1-dev
+@endverbatim
+
+Get the latest release of <a href="http://playerstage.sourceforge.net/gazebo/gazebo.html" target="_blank">Gazebo</a> (tested with 0.7.0).
+
+Tell gazebo where to find player stuff.
+
+@verbatim
+$ export PKG_CONFIG_PATH=/opt/player-[VERSION]/lib/pkgconfig/:$PKG_CONFIG_PATH
+@endverbatim
+
+Run automake tools (automake version>=1.6, autconf version>=2.53), compile, and install. It is recommended to install Gazebo in the /opt directory.
+@verbatim
+$ tar zxvf gazebo-<version>.tar.gz
+$ cd gazebo-<version>
+$ ./bootstrap
+$ ./configure --prefix=/opt/gazebo-<version>
+$ make
+# make install
+@endverbatim
+
+Append the following to your @c .bashrc file
+
+@verbatim
+export GAZEBO_HOME=/opt/gazebo-<version>
+export PATH=$GAZEBO_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$GAZEBO_HOME/lib:$LD_LIBRARY_PATH
+export PYTHONPATH=$GAZEBO_HOME/lib/python2.4/site-packages/:$PYTHONPATH
+export CPATH=$GAZEBO_HOME/include:$CPATH
+@endverbatim
+
+For a quick start:
+@verbatim
+$ wxgazebo [GAZEBO_SRC]/worlds/example.world
+@endverbatim
+
+If you get an error, please proceed to @ref orca_doc_tute_gazebo. You might also want to consult the Gazebo mailing lists and manuals for additional help.
+
+
+*/
