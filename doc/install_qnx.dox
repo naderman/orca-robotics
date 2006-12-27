@@ -12,8 +12,6 @@
 
 @page orca_doc_installqnx Installing Orca on QNX Neutrino
 
-@note NOT FINISHED!
-
 @note Reviewed for release 2.1.2.
 
 These are detailed instructions for installing Orca on QNX Neutrino Real Time OS. They are known to work with OS version 6.3 SP3. See @ref orca_doc_getting for general guidelines.
