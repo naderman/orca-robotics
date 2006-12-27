@@ -65,7 +65,7 @@ $ make
 
 Minimum version required 3.1.0 (latest tested: 3.1.1).
 
-No packages exist, we have to be build from source. Following the instructions below will install Ice to the default location @c /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
+No packages exist, so we have to build from source. Following the instructions below will install Ice to the default location @c /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
 
 First, install Ice dependencies. You can download the ThirdPartySources archive from ZeroC but they tend to be a bit out of date. Below we point out where newer versions are required.
 
@@ -88,7 +88,7 @@ $ make
 # ln -s /opt/bzip2-1.0.3 /opt/bzip2
 @endverbatim
 
-- @b Berkley DB. This one is fun. This DB officially supports QNX but it didn't work out of the box. Ice requires v.4.3 and distributes v.4.3.29. I couldn't link Ice dynamically to it no matter what I tried, with this version and later ones 4.4.20 and 4.5.20. It compiled but at run time puked after complaining about "Unknown symbols" (11 of them). At the end I managed to get Ice working when linked statically to libdb_cxx. But because the db symbols are used in libFreeze.so, the db library has to be special: static but with PIC option enabled.
+- @b Berkley @b DB. This one is fun. This DB officially supports QNX but it didn't work out of the box. Ice requires v.4.3 and distributes v.4.3.29. I couldn't link Ice dynamically to it no matter what I tried, with this version and later ones 4.4.20 and 4.5.20. It compiled but at run time puked after complaining about "Unknown symbols" (11 of them). At the end I managed to get Ice working when linked statically to libdb_cxx. But because the db symbols are used in libFreeze.so, the db library has to be special: static but with PIC option enabled.
 
 @verbatim
 $ tar -xzf db-4.5.20.NC.tar.gz
@@ -106,8 +106,8 @@ $ QCC -A libdb_cxx-4.5S.a .libs/*.o
 Now Ice itself. 
 
 - Get source
-    - get source from  <a href="http://www.zeroc.com/download.html">download page</a>.
-    - get patch (it was generated with "diff -NEaur Ice-3.1.1 Ice-3.1.1-qnx > ice311qnx.patch")
+    - get source from  http://www.zeroc.com/download.html
+    - get the patch from http://zeroc.com/vbulletin/showthread.php?t=2884
     - apply the patch, but @b NOT in QNX. The @c patch that comes with QNX does not seem to work. So I built and applied the patch in Linux and then transferred the patched source to QNX.
 @verbatim
 $ tar -xzf Ice-3.1.1.tar.gz
