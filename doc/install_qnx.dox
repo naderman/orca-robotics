@@ -107,11 +107,14 @@ Now Ice itself.
 
 - Get source
     - get source from  <a href="http://www.zeroc.com/download.html">download page</a>.
-    - get patch
-    - apply the patch
+    - get patch (it was generated with "diff -NEaur Ice-3.1.1 Ice-3.1.1-qnx > ice311qnx.patch")
+    - apply the patch, but @b NOT in QNX. The @c patch that comes with QNX does not seem to work. So I built and applied the patch in Linux and then transferred the patched source to QNX.
 @verbatim
-$ patch
+$ tar -xzf Ice-3.1.1.tar.gz
+$ cd Ice-3.1.1
+$ patch -p1 < ../ice311qnx.patch 
 @endverbatim
+
 - Compile and install
 @verbatim
 $ make

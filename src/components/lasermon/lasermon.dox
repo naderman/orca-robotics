@@ -14,9 +14,10 @@
 @ingroup apps
 @ingroup cpp
 @ingroup linux
+@ingroup qnx
 @ingroup win
 @defgroup orca_component_lasermon LaserMon
-@brief A simple component that prints laser ranges
+@brief A simple monitoring component that prints laser ranges to display
 
 @par Provides
 
