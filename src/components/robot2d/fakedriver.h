@@ -12,6 +12,7 @@
 #define ORCA2_SEGWAY_RMP_FAKE_DRIVER_H
 
 #include "hwdriver.h"
+#include <orcaice/context.h>
 
 namespace robot2d
 {
@@ -23,7 +24,7 @@ class FakeDriver : public HwDriver
 {
 public:
 
-    FakeDriver();
+    FakeDriver( const orcaice::Context& context );
     virtual ~FakeDriver();
 
     virtual int enable();
@@ -34,6 +35,8 @@ public:
 
     virtual int write( const orca::Velocity2dCommand& command );
 
+private:
+    orcaice::Context context_;
 };
 
 } // namespace

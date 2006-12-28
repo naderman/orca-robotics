@@ -18,7 +18,8 @@ using namespace std;
 using namespace orca;
 using namespace robot2d;
 
-FakeDriver::FakeDriver()
+FakeDriver::FakeDriver( const orcaice::Context& context ) :
+    context_(context)
 {
 }
 
@@ -29,25 +30,25 @@ FakeDriver::~FakeDriver()
 
 int FakeDriver::enable()
 {
-    cout<<"FakeDriver is enabled"<<endl;
+    context_.tracer()->info( "FakeDriver is enabled" );
     return 0;
 }
 
 int FakeDriver::repair()
 {
-    cout<<"FakeDriver is repaired"<<endl;
+    context_.tracer()->info( "FakeDriver is repaired" );
     return 0;
 }
 
 int FakeDriver::disable()
 {
-    cout<<"FakeDriver is disabled"<<endl;
+    context_.tracer()->info( "FakeDriver is disabled" );
     return 0;
 }
 
 int FakeDriver::read( orca::Position2dData& position2d, std::string& status )
 {
-    cout<<"TRACE(fakedriver.cpp): Generating fake info for robot2d..." << endl;
+    context_.tracer()->info( "Generating fake info for robot2d..." );
     orcaice::setSane( position2d );
 
     // slow it down a bit
@@ -61,7 +62,7 @@ int FakeDriver::write( const orca::Velocity2dCommand& command )
 {
     // debug: simulated failure
     if ( command.motion.v.x < 2.0 ) {
-        cout<<"wrote: "<<orcaice::toString(command)<<endl;
+        context_.tracer()->info( "Wrote: "+orcaice::toString(command) );
         return 0;
     }
     else {

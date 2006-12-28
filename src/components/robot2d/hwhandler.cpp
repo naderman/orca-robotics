@@ -85,7 +85,7 @@ HwHandler::init()
     else if ( driverName == "fake" )
     {
         context_.tracer()->debug( "loading Fake driver",3);
-        driver_ = new FakeDriver;
+        driver_ = new FakeDriver( context_ );
     }
     else {
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
