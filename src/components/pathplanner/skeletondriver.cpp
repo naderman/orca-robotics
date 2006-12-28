@@ -54,7 +54,7 @@ SkeletonDriver::SkeletonDriver( orcaogmap::OgMap &ogMap,
         }
         catch ( orcapathplan::Exception &e )
         {
-            std::stringstream ss;
+            stringstream ss;
             ss << "Error trying to construct a skeletonpathplanner";
             throw orcapathplan::Exception( ss.str() );
         } 
@@ -72,14 +72,15 @@ SkeletonDriver::SkeletonDriver( orcaogmap::OgMap &ogMap,
         }
         catch( orcapathplan::Exception &e )
         {
-            std::stringstream ss;
+            stringstream ss;
             ss << "Error trying to construct a sparseskeletonpathplanner";
             throw orcapathplan::Exception( ss.str() );
         }  
         catch ( Ice::MemoryLimitException &e )
         {
-            cout<<"TRACE(skeletondriver.cpp): Caught: " << e << endl;
-            cout<<"TRACE(skeletondriver.cpp): This means the dense skel is too big to send out." << endl;
+            stringstream ss;
+            ss<<"Caught: " << e << " .This means the dense skel is too big to send out." << endl;
+            throw orcapathplan::Exception( ss.str() );
         }
     }
     cout<<"TRACE(skeletondriver.cpp): Creating skeleton took " << watch.elapsedSeconds() << "s" << endl;
@@ -129,14 +130,14 @@ void
 SkeletonDriver::computePath( const orca::PathPlanner2dTask& task,
                              orca::PathPlanner2dData& pathData )
 {
-/*
-    // for each waypoint in the coarse path:
-    orca::Path2d &coarsePath = task.coarsePath;
-    orca::Waypoint2d *startWp = &(task.coarsePath[0]);
+    // get the first waypoint from the coarse path and save as startWp
+    const orca::Path2d &coarsePath = task.coarsePath;
+    const orca::Waypoint2d *startWp = &(task.coarsePath[0]);
     
+    // for each waypoint in the coarse path
     for (unsigned int i=1; i<coarsePath.size(); i++)
     {
-        orca::Waypoint2d *goalWp = &(coarsePath[i]);
+        const orca::Waypoint2d *goalWp = &(coarsePath[i]);
         orcapathplan::Cell2DVector pathSegment;
 
         orcamisc::CpuStopwatch watch(true);
@@ -178,13 +179,12 @@ SkeletonDriver::computePath( const orca::PathPlanner2dTask& task,
         // set last goal cell as new start cell
         startWp = goalWp;
     }
-*/
 }
 
 void
 SkeletonDriver::addWaypointParameters(  vector<WaypointParameter> &wpParaVector, 
-                                        orca::Waypoint2d *startWp, 
-                                        orca::Waypoint2d *goalWp, 
+                                        const orca::Waypoint2d *startWp, 
+                                        const orca::Waypoint2d *goalWp, 
                                         int numSegments )
 {
         WaypointParameter wpPara;

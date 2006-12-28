@@ -30,8 +30,8 @@ public:
                  bool doPathOptimization );
    
     // Computes the path
-    virtual void computePath( const orca::PathPlanner2dTask& taskPtr,
-                              orca::PathPlanner2dData& pathDataPtr );
+    virtual void computePath( const orca::PathPlanner2dTask& task,
+                              orca::PathPlanner2dData& pathData );
 private:
 
 //     double robotDiameterMetres_;

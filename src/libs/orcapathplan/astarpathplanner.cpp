@@ -45,7 +45,7 @@ AStarPathPlanner::AStarPathPlanner( const orcaogmap::OgMap ogMap,
     // instantiate AStar class
     const bool allowDiagonal = true;
     const double obstacleWeight = 254.0 * traversabilityThreshhold_;
-    assert( ogMap_.metresPerCellX() == ogMap_.metresPerCellY() );
+    assert( ogMap_.metresPerCellX() == ogMap_.metresPerCellY() && "AstarDriver currently works for square worlds only" );
     aStar_ = new AStar( ogMapDoubles, ogMap_.numCellsX(), ogMap_.numCellsY(), ogMap_.metresPerCellX(), allowDiagonal, obstacleWeight );     
 }
 

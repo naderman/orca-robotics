@@ -41,8 +41,8 @@ public:
                     bool   useSparseSkeleton );
     ~SkeletonDriver();
     
-    virtual void computePath( const orca::PathPlanner2dTask& taskPtr,
-                              orca::PathPlanner2dData& pathDataPtr );
+    virtual void computePath( const orca::PathPlanner2dTask& task,
+                              orca::PathPlanner2dData& pathData );
     #ifdef QT4_FOUND
     void setGraphics( SkeletonGraphicsI* skelGraphicsI );
     #endif
@@ -59,8 +59,8 @@ private:
     bool   useSparseSkeleton_; 
     
     void addWaypointParameters( std::vector<orcapathplan::WaypointParameter> &wpParaVector, 
-                                orca::Waypoint2d                             *startWp, 
-                                orca::Waypoint2d                             *goalWp, 
+                                const orca::Waypoint2d                       *startWp, 
+                                const orca::Waypoint2d                       *goalWp, 
                                 int                                           numSegments );
 };
 

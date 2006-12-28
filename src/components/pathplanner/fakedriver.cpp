@@ -31,7 +31,5 @@ FakeDriver::computePath( const orca::PathPlanner2dTask& task,
     }
 
     pathData.result = orca::PathOk;
-    // alexm: not sure what the intention was, but toVerboseString() is the only one which exists
-    cout << "Fake data: " << endl << orcaice::toVerboseString(pathData) << endl<<endl;
 }
 

@@ -41,14 +41,13 @@ SimpleNavDriver::~SimpleNavDriver()
 void SimpleNavDriver::computePath( const orca::PathPlanner2dTask& task,
                                    orca::PathPlanner2dData& pathData )
 {
-/*
     // for each waypoint in the coarse path:
-    orca::Path2d& coarsePath = task.coarsePath;
-    orca::Waypoint2d *startWp = &(task.coarsePath[0]);
+    const orca::Path2d& coarsePath = task.coarsePath;
+    const orca::Waypoint2d *startWp = &(task.coarsePath[0]);
     
     for (unsigned int i=1; i<coarsePath.size(); i++)
     {
-        orca::Waypoint2d *goalWp = &(coarsePath[i]);
+        const orca::Waypoint2d *goalWp = &(coarsePath[i]);
         orcapathplan::Cell2DVector pathSegment;
 
         orcamisc::CpuStopwatch watch(true);
@@ -91,7 +90,6 @@ void SimpleNavDriver::computePath( const orca::PathPlanner2dTask& task,
         // set last goal cell as new start cell
         startWp = goalWp;
     }
-*/
 }
 
 }

@@ -291,6 +291,7 @@ AlgoHandler::run()
             // ======= send result (including error code) ===============
             //
             context_.tracer()->info("sending off the resulting path");
+            context_.tracer()->debug(orcaice::toVerboseString(pathData),5);
     
             // There are three methods to let other components know about the computed path:
             // 1. using the proxy
