@@ -84,11 +84,12 @@ convert( const orcaogmap::OgMap  &ogMap,
 }
 
 void 
-convert( const orcaogmap::OgMap                      &ogMap,
-                const Cell2DVector                   &input,
-                const std::vector<WaypointParameter> &wpPara,
-                orcapathplan::Result                  result,
-                orca::PathPlanner2dData              &output )
+convert( const orcaogmap::OgMap               &ogMap,
+         const Cell2DVector                   &input,
+         const std::vector<WaypointParameter> &wpPara,
+         orcapathplan::Result                  result,
+         orca::PathPlanner2dData              &output,
+         double                                firstHeading)
 {
     convert( result, output );
     
@@ -119,7 +120,7 @@ convert( const orcaogmap::OgMap                      &ogMap,
     {
         if (i==0) 
         {
-            output.path[i].target.o = 0.0;
+            output.path[i].target.o = firstHeading;
         } 
         else 
         {

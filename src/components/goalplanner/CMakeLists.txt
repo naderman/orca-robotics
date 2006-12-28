@@ -10,11 +10,11 @@ IF ( BUILD_GOAL_PLANNER )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( goalplanner main )
-    TARGET_LINK_LIBRARIES( goalplanner GoalPlannerSources )
+    TARGET_LINK_LIBRARIES( goalplanner GoalPlannerSources OrcaMisc )
     
     # build IceBox service
     GLOBAL_ADD_LIBRARY( OrcaGoalPlanner SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaGoalPlanner GoalPlannerSources )
+    TARGET_LINK_LIBRARIES( OrcaGoalPlanner GoalPlannerSources OrcaMisc )
     
     GENERATE_CONFIG_FILE( goalplanner.def )
 

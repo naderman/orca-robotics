@@ -9,6 +9,7 @@
  */
  
 #include <orcaice/orcaice.h>
+#include <orcamisc/cov2d.h>
 #include "mainloop.h"
 #include "pathfollower2dI.h"
 #include "localise2dconsumerI.h"
@@ -17,6 +18,44 @@
 using namespace std;
 using namespace orca;
 using namespace goalplanner;
+
+// ======== NON-MEMBER FUNCTION ======================
+void computeFirstWaypoint( const Localise2dData &localiseData, Waypoint2d &wp)
+{
+    
+    cout << "TRACE(mainloop.cpp): Localised frame is: " 
+            << localiseData.hypotheses[0].mean.p.x << " " 
+            << localiseData.hypotheses[0].mean.p.y << " " 
+            << localiseData.hypotheses[0].mean.o << endl; 
+    
+    cout << "TRACE(mainloop.cpp): Localised covariance values are: " 
+            << localiseData.hypotheses[0].cov.xx << " " 
+            << localiseData.hypotheses[0].cov.xy << " " 
+            << localiseData.hypotheses[0].cov.yy << " " 
+            << localiseData.hypotheses[0].cov.tt << " " 
+            << endl;
+
+    // take the mean of the hypotheses as the waypoint
+    wp.target = localiseData.hypotheses[0].mean;
+    // add heading tolerance from uncertainty
+    wp.headingTolerance = sqrt(localiseData.hypotheses[0].cov.tt);
+    
+    // hardcode approach values
+    wp.maxApproachSpeed = 2e+6;
+    wp.maxApproachTurnrate = (float)DEG2RAD(2e+6); 
+    
+    // add distance tolerance
+    double a, b, th;
+    orcamisc::Cov2d cov(localiseData.hypotheses[0].cov.xx, 
+                        localiseData.hypotheses[0].cov.xy, 
+                        localiseData.hypotheses[0].cov.yy);
+    cov.ellipse( a, b, th );
+    cout << "TRACE(mainloop.cpp): a,b,th: " << a << "," << b << "," << th << endl;
+    
+    // take the larger of the two and multiply to get 3 sigma (cov.ellipse gives us 2 sigma)
+    wp.distanceTolerance = a > b ? a/2.0*3.0 : b/2.0*3.0;
+}
+// =======================================================
 
 MainLoop::MainLoop( const orcaice::Context & context )
     : incomingPathI_(0),
@@ -148,7 +187,6 @@ MainLoop::run()
             context_.tracer()->info("Waiting for a goal path");
             while( isActive() )
             {
-//                 cout << "get wp index from localnav: " << localNavPrx_->getWaypointIndex() << endl;
                 // get wp index from localnav and publish to the world while we're waiting for a new goal
                 pathPublisher_->setWaypointIndex( localNavPrx_->getWaypointIndex() );
                 int ret = incomingPathBuffer_.getNext( incomingPath, 500 );
@@ -171,33 +209,19 @@ MainLoop::run()
             }
                 
             // we're guaranteed to have only 1 hypothesis
-            wp.target = localiseData.hypotheses[0].mean;
-            // hardcode uncertainties for the waypoint we start from
-            // should we use the uncertainty estimate of the localiser instead?
-            wp.distanceTolerance = 5.0; 
-            wp.headingTolerance = (float)DEG2RAD(45);      
-            wp.maxApproachSpeed = 5.0;
-            wp.maxApproachTurnrate = (float)DEG2RAD(2e+6); 
-            
-    //         cout << "Convariance is: " << localiseData.hypotheses[0].cov.xx << " " 
-    //                 << localiseData.hypotheses[0].cov.xy << " " 
-    //                 << localiseData.hypotheses[0].cov.yy << " " 
-    //                 << endl;
-    
-    //         double a, b, th;
-    //         Cov2d cov(hypotheses[0].cov.xx, hypotheses[0].cov.xy, hypotheses[0].cov.yy);
-    //         cov.ellipse( a, b, th );
-    
+            // compute tolerances for the first waypoint based on where I think I am
+            computeFirstWaypoint(localiseData, wp);
             
             // put together a task for the pathplanner
             // add the position of the robot as the first waypoint in the path
             incomingPath.path.insert( incomingPath.path.begin(), 1, wp );
-            cout << "DEBUG(mainloop.cpp): Incoming path is " << endl << orcaice::toVerboseString( incomingPath );
             task.coarsePath = incomingPath.path;
             task.prx = taskPrx_;
             
             // send task to pathplanner
-            context_.tracer()->debug("Sending task to pathplanner");
+            stringstream ss;
+            ss << "Sending task to pathplanner: " << orcaice::toVerboseString( task );
+            context_.tracer()->debug(ss.str());
             try {
                 pathplanner2dPrx_->setTask( task );
             }
@@ -299,5 +323,5 @@ MainLoop::run()
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
 }
-    
+
 

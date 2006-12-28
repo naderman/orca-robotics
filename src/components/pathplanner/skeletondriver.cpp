@@ -173,7 +173,7 @@ SkeletonDriver::computePath( const orca::PathPlanner2dTask& task,
         
         // ===== Append to the pathData which contains the entire path  ========
         orcapathplan::Result result = orcapathplan::PathOk;
-        orcapathplan::convert( ogMap_, pathSegment, wpParaVector, result, pathData );
+        orcapathplan::convert( ogMap_, pathSegment, wpParaVector, result, pathData, startWp->target.o );
         // ========================================================================
         
         // set last goal cell as new start cell
@@ -181,6 +181,11 @@ SkeletonDriver::computePath( const orca::PathPlanner2dTask& task,
     }
 }
 
+// This function has the following policy for adding waypoint parameters to the path consisting
+// of a start point, intermediate points and an end point:
+// (1) Start and end points use their settings as given
+// (2) Intermediate points use the settings of the endpoint
+// (3) The time to reach intermediate points is divided linearly between start and end point times
 void
 SkeletonDriver::addWaypointParameters(  vector<WaypointParameter> &wpParaVector, 
                                         const orca::Waypoint2d *startWp, 
@@ -188,10 +193,6 @@ SkeletonDriver::addWaypointParameters(  vector<WaypointParameter> &wpParaVector,
                                         int numSegments )
 {
         WaypointParameter wpPara;
-        
-        wpPara.distanceTolerance = goalWp->distanceTolerance;
-        wpPara.maxApproachSpeed = goalWp->maxApproachSpeed;
-        wpPara.maxApproachTurnrate = goalWp->maxApproachTurnrate;
         double secondsTilGoal = orcaice::timeDiffAsDouble(goalWp->timeTarget, startWp->timeTarget);
         assert( secondsTilGoal >= 0 && "Timestamp difference between goal and start is negative" );
         double deltaSec = secondsTilGoal/(double)numSegments;
@@ -200,11 +201,17 @@ SkeletonDriver::addWaypointParameters(  vector<WaypointParameter> &wpParaVector,
         {
             if (i==0) 
             {
-                wpPara.timeTarget = toOrcaTime( timeAsDouble( startWp->timeTarget ) + deltaSec );
-                wpPara.headingTolerance = DEG2RAD( 180 );
+                wpPara.distanceTolerance = startWp->distanceTolerance;
+                wpPara.maxApproachSpeed = startWp->maxApproachSpeed;
+                wpPara.maxApproachTurnrate = startWp->maxApproachTurnrate;
+                wpPara.timeTarget = toOrcaTime( timeAsDouble( startWp->timeTarget ) );
+                wpPara.headingTolerance = startWp->headingTolerance;
             } 
             else 
-            {                        
+            {
+                wpPara.distanceTolerance = goalWp->distanceTolerance;
+                wpPara.maxApproachSpeed = goalWp->maxApproachSpeed;
+                wpPara.maxApproachTurnrate = goalWp->maxApproachTurnrate;                        
                 wpPara.timeTarget = toOrcaTime( timeAsDouble( wpParaVector[i-1].timeTarget ) + deltaSec );
                 wpPara.headingTolerance = goalWp->headingTolerance;
             }

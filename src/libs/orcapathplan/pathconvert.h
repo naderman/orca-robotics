@@ -43,12 +43,15 @@ namespace orcapathplan {
                   const orcapathplan::Result   result,
                   orca::PathPlanner2dData     &output );
     
-    //! As above, but also sets the remaining waypoint parameters
+    //! As above. Additionaly, it sets heading values in the direction of two connected waypoints.
+    //! The first waypoint's heading can be specified optionally (0.0 by default).
+    //! Furthermore, the remaining waypoint parameters in wpParam are added.
     void convert( const orcaogmap::OgMap               &ogMap,
                   const Cell2DVector                   &input,
                   const std::vector<WaypointParameter> &wpPara,
                   orcapathplan::Result                  result,
-                  orca::PathPlanner2dData              &output );
+                  orca::PathPlanner2dData              &output,
+                  double                                firstHeading = 0.0 );
 
 }
 #endif
