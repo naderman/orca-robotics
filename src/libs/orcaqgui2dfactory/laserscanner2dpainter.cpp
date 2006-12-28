@@ -91,9 +91,6 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
 
     data_ = scan;
 
-    // debug
-    //std::cout << data_ << std::endl;
-
     bearingStart_ = data_->startAngle;
 
     QPointF point;

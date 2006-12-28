@@ -24,6 +24,7 @@ using namespace orca;
 using namespace orcaqgui;
 
 QGraphics2dPainter::QGraphics2dPainter()
+    : isDataAvailable_(false)
 {
 }
 
@@ -36,19 +37,18 @@ QGraphics2dPainter::clear()
 {
     data_.qpicture.clear();
     qPicture_.setData( 0, 0 );
+    isDataAvailable_ = false;
 }
 
 
 void
 QGraphics2dPainter::setData( const orca::QGraphics2dData& data )
 {
-//     if ( data == 0 )
-//         throw orcaqgui::Exception( "QGraphics2dPainter::setData(): data was NULL" );
-
     if ( data.z < 1 || data.z > 12 )
         throw orcaqgui::Exception( "QGraphics2dPainter::setData(): invalid z" );
 
     data_ = data;
+    isDataAvailable_ = true;
 
     qPicture_.setData( (char*)(&(data_.qpicture[0])), data_.qpicture.size() );
 }
@@ -56,7 +56,7 @@ QGraphics2dPainter::setData( const orca::QGraphics2dData& data )
 bool
 QGraphics2dPainter::paintThisLayer(int z) const
 {
-//     if ( data_ == 0 ) return false;
+    if ( !isDataAvailable_ ) return false;
     if ( z != data_.z ) return false;
     if ( data_.qpicture.size() == 0 ) return false;
     return true;
@@ -65,7 +65,7 @@ QGraphics2dPainter::paintThisLayer(int z) const
 void
 QGraphics2dPainter::paint( QPainter *painter, int z )
 {
-//     if ( data_==0 ) return;
+    if ( !isDataAvailable_ ) return;
     if ( z != data_.z ) return;
     if ( data_.qpicture.size() == 0 ) return;
 

@@ -44,6 +44,7 @@ class Localise2dPainter
     void paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &hypothesis );
 
     orca::Localise2dData data_;
+    bool isDataAvailable_;
 
     QColor basicColor_;
     QColor currentColor_;

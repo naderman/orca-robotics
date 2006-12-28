@@ -47,6 +47,7 @@ class Position2dPainter
     double x_;
     double y_;
     int heading_;
+    bool isDataAvailable_;
     
     bool isInFocus_;
 

@@ -20,7 +20,8 @@ using namespace std;
 using namespace orcaqgui;
 
 GpsPainter::GpsPainter(const QColor & colour, const bool showHistory)
-    : basicColour_(colour),
+    : isDataAvailable_(false),
+      basicColour_(colour),
       isDisplayHistory_(showHistory)
 {
 }
@@ -28,24 +29,20 @@ GpsPainter::GpsPainter(const QColor & colour, const bool showHistory)
 void
 GpsPainter::clear()
 {
+    isDataAvailable_ = false;
 }
 
 void 
 GpsPainter::setData( const orca::GpsMapGridData& data )
-{
-//     if ( data == 0 )
-//     {
-//         cout << "TRACE(gpspainter.cpp): data is 0" << endl;
-//         return;
-//     }
-    
-    data_ = data;
+{    
+//     data_ = data;
 
     cout<<"TRACE(gpspainter.cpp): got data: " << orcaice::toString(data) << endl;
     // set local storage
     x_ = data.easting;
     y_ = data.northing;
     heading_ = (int)floor( RAD2DEG( data.heading ) );
+    isDataAvailable_ = true;
 
     // should we keep history even if not displaying?
     if ( isDisplayHistory_ ) {
@@ -58,7 +55,7 @@ GpsPainter::setData( const orca::GpsMapGridData& data )
 
 void GpsPainter::paint( QPainter *painter, int z )
 {
-//     if ( data_ == 0 ) return;
+    if ( !isDataAvailable_ ) return;
     
     if ( z == orcaqgui::Z_POSE-2 && isDisplayHistory_ ) {
         history_.paint( painter, currentColour_ );

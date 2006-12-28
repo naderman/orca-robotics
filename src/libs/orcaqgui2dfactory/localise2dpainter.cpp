@@ -20,7 +20,8 @@ using namespace std;
 using namespace orcaqgui;
 
 Localise2dPainter::Localise2dPainter( bool beginDisplayHistory )
-    : basicColor_(Qt::blue),
+    : isDataAvailable_(false),
+      basicColor_(Qt::blue),
       isDisplayHistory_(beginDisplayHistory),
       isDisplayMultiHypothesis_(true)
 {
@@ -29,12 +30,14 @@ Localise2dPainter::Localise2dPainter( bool beginDisplayHistory )
 void
 Localise2dPainter::clear()
 {
+    isDataAvailable_ = false;
 }
 
 void 
 Localise2dPainter::setData( const orca::Localise2dData& data )
 {    
     data_ = data;
+    isDataAvailable_ = true;
 
 //    cout<<"TRACE(localise2dpainter.cpp): got data: " << orcaice::toString(data) << endl;
 
@@ -96,7 +99,7 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
 void 
 Localise2dPainter::paint( QPainter *painter, int z )
 {
-//     if ( data_ == 0 ) return;
+    if ( !isDataAvailable_ ) return;
     
     if ( z == orcaqgui::Z_POSE-2 && isDisplayHistory_ ) {
         history_.paint( painter, currentColor_ );

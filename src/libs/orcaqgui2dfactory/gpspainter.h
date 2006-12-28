@@ -41,7 +41,8 @@ class GpsPainter
 
   private:
 
-    orca::GpsMapGridData data_;
+//     orca::GpsMapGridData data_;
+    bool isDataAvailable_;
 
     QColor basicColour_;
     QColor currentColour_;

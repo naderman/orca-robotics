@@ -42,7 +42,8 @@ class QGraphics2dPainter
 
   private:
 
-    orca::QGraphics2dData data_;    
+    orca::QGraphics2dData data_; 
+    bool isDataAvailable_;   
     QPicture qPicture_;
 };
 

@@ -24,6 +24,7 @@ Position2dPainter::Position2dPainter( const QColor &basicColour, const bool disp
     : x_(0.0),
       y_(0.0),
       heading_(0),
+      isDataAvailable_(false),
       isInFocus_(true),
       basicColour_(basicColour),
       isDisplayHistory_(displayHistory)
@@ -40,19 +41,20 @@ Position2dPainter::clear()
     x_ = 0.0;
     y_ = 0.0;
     heading_ = 0;
+    isDataAvailable_ = false;
 }
 
 void
 Position2dPainter::setData( const orca::Position2dData& data )
 {
-//     if ( data==0 ) return;
-
     // set local storage
     x_ = data.pose.p.x;
     y_ = data.pose.p.y;
     heading_ = (int)floor( RAD2DEG( data.pose.o ) );
     //std::cout << "Position2dPainter: x,y: " << x_<< ", " << y_ <<std::endl;
 
+    isDataAvailable_ = true;
+    
     // should we keep history even if not displaying?
     if ( isDisplayHistory_ ) {
         history_.addPoint( x_, y_ );
@@ -67,11 +69,7 @@ Position2dPainter::setData( const orca::Position2dData& data )
 
 void Position2dPainter::paint( QPainter* p, const int z )
 {
-//     if ( z == orcaqgui::Z_POSE-1 ) 
-//     {
-//         paintOrigin( p, currentColour_ );
-//         history_.paint( p, currentColour_ );
-//     }
+    if ( !isDataAvailable_ ) return;
     
     if ( z == orcaqgui::Z_POSE )
     {
