@@ -47,7 +47,6 @@ OgMapData
 OgMapI::getData(const Ice::Current& current) const
 {
 //     std::cout << "getData()" << std::endl;
-    
     return theMap_;
 }
 

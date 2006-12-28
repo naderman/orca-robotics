@@ -48,7 +48,7 @@ private:
     // The interface to which we'll publish
     orca::OgMapConsumerPrx         consumerPrx_;
 
-    orca::OgMapData& theMap_;
+    orca::OgMapData theMap_;
 
     orcaice::Context context_;
 };
