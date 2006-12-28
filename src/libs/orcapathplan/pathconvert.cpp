@@ -60,10 +60,10 @@ isDoubleWaypoint( const orca::PathPlanner2dData &path, float worldX, float world
 }
 
 void 
-convert( const orcaogmap::OgMap               &ogMap,
-        const Cell2DVector                   &input,
-        orcapathplan::Result            result,
-        orca::PathPlanner2dData     &output )
+convert( const orcaogmap::OgMap  &ogMap,
+         const Cell2DVector      &input,
+         orcapathplan::Result     result,
+         orca::PathPlanner2dData &output )
 {
     convert( result, output );
 
@@ -84,11 +84,11 @@ convert( const orcaogmap::OgMap               &ogMap,
 }
 
 void 
-convert( const orcaogmap::OgMap               &ogMap,
+convert( const orcaogmap::OgMap                      &ogMap,
                 const Cell2DVector                   &input,
                 const std::vector<WaypointParameter> &wpPara,
-                orcapathplan::Result            result,
-                orca::PathPlanner2dData     &output )
+                orcapathplan::Result                  result,
+                orca::PathPlanner2dData              &output )
 {
     convert( result, output );
     
