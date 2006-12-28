@@ -133,6 +133,7 @@ SkeletonDriver::computePath( const orca::PathPlanner2dTask& task,
     // get the first waypoint from the coarse path and save as startWp
     const orca::Path2d &coarsePath = task.coarsePath;
     const orca::Waypoint2d *startWp = &(task.coarsePath[0]);
+    const double firstHeading = startWp->target.o;
     
     // for each waypoint in the coarse path
     for (unsigned int i=1; i<coarsePath.size(); i++)
@@ -173,7 +174,7 @@ SkeletonDriver::computePath( const orca::PathPlanner2dTask& task,
         
         // ===== Append to the pathData which contains the entire path  ========
         orcapathplan::Result result = orcapathplan::PathOk;
-        orcapathplan::convert( ogMap_, pathSegment, wpParaVector, result, pathData, startWp->target.o );
+        orcapathplan::convert( ogMap_, pathSegment, wpParaVector, result, pathData, firstHeading );
         // ========================================================================
         
         // set last goal cell as new start cell

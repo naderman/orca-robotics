@@ -23,17 +23,17 @@ using namespace goalplanner;
 void computeFirstWaypoint( const Localise2dData &localiseData, Waypoint2d &wp)
 {
     
-    cout << "TRACE(mainloop.cpp): Localised frame is: " 
-            << localiseData.hypotheses[0].mean.p.x << " " 
-            << localiseData.hypotheses[0].mean.p.y << " " 
-            << localiseData.hypotheses[0].mean.o << endl; 
-    
-    cout << "TRACE(mainloop.cpp): Localised covariance values are: " 
-            << localiseData.hypotheses[0].cov.xx << " " 
-            << localiseData.hypotheses[0].cov.xy << " " 
-            << localiseData.hypotheses[0].cov.yy << " " 
-            << localiseData.hypotheses[0].cov.tt << " " 
-            << endl;
+//     cout << "TRACE(mainloop.cpp): Localised frame is: " 
+//             << localiseData.hypotheses[0].mean.p.x << " " 
+//             << localiseData.hypotheses[0].mean.p.y << " " 
+//             << localiseData.hypotheses[0].mean.o << endl; 
+//     
+//     cout << "TRACE(mainloop.cpp): Localised covariance values are: " 
+//             << localiseData.hypotheses[0].cov.xx << " " 
+//             << localiseData.hypotheses[0].cov.xy << " " 
+//             << localiseData.hypotheses[0].cov.yy << " " 
+//             << localiseData.hypotheses[0].cov.tt << " " 
+//             << endl;
 
     // take the mean of the hypotheses as the waypoint
     wp.target = localiseData.hypotheses[0].mean;
@@ -50,10 +50,10 @@ void computeFirstWaypoint( const Localise2dData &localiseData, Waypoint2d &wp)
                         localiseData.hypotheses[0].cov.xy, 
                         localiseData.hypotheses[0].cov.yy);
     cov.ellipse( a, b, th );
-    cout << "TRACE(mainloop.cpp): a,b,th: " << a << "," << b << "," << th << endl;
+//     cout << "TRACE(mainloop.cpp): a,b,th: " << a << "," << b << "," << th << endl;
     
     // take the larger of the two and multiply to get 3 sigma (cov.ellipse gives us 2 sigma)
-    wp.distanceTolerance = a > b ? a/2.0*3.0 : b/2.0*3.0;
+    wp.distanceTolerance = a > b ? (a/2.0*3.0) : (b/2.0*3.0);
 }
 // =======================================================
 
