@@ -76,7 +76,6 @@ Position3dLogger::setData(const orca::Position3dData& data, const Ice::Current&)
     }
     else if ( format_ == "ascii" )
     {
-        // (*file_) << "TODO: Implement streaming Position3dDataPtr" << endl;
         (*file_) << orcalog::toLogString(data) << endl;
     }
     else
@@ -99,7 +98,7 @@ Position3dLogger::writeDescriptionToFile( const orca::Position3dDescription& obj
     }
     else if ( format_ == "ascii" )
     {
-        (*file_) << "Implement streaming Position3dDescriptionPtr" << endl;
+        (*file_) << "Implement streaming Position3dDescription" << endl;
 //         (*file_) << orcaice::toString(obj) << endl;
     }
     else

@@ -33,23 +33,10 @@ public:
     virtual void computePath( const orca::PathPlanner2dTask& task,
                               orca::PathPlanner2dData& pathData );
 private:
-
-//     double robotDiameterMetres_;
-//     double traversabilityThreshhold_;
-//     bool doPathOptimization_;
     
     orcaogmap::OgMap ogMap_;
     orcapathplan::IPathPlanner2d  *pathPlanner_;
     
-//     orca::Path2d coarsePath_;
-// 
-//     bool areAllWaypointsInMap( const orca::PathPlanner2dDataPtr  & pathDataPtr );
-// 
-//     // Converts startWp from world to cell coordinate system
-//     orcapathplan::Cell2D getStartCell();
-// 
-//     // Converts goal cell i from world to cell coordinate system
-//     orcapathplan::Cell2D getGoalCell( unsigned int i);
 
 };
 

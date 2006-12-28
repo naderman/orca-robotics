@@ -76,7 +76,7 @@ void OgMapsCombinedElement::update()
         return;
     }
 
-//     OgMapDataPtr data;
+//     OgMapData data;
 //     for (unsigned int i=0; i<listeners_.size(); i++)
 //     {
 //         // get data from the buffer

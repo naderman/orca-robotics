@@ -112,7 +112,7 @@ MultipleOgMapPainter::setData( const orca::OgMapData& data0, const orca::OgMapDa
 }
 
 // void
-// MultipleOgMapPainter::setData( const orca::OgMapDataPtr & data0, const orca::OgMapDataPtr & data1 )
+// MultipleOgMapPainter::setData( const orca::OgMapData & data0, const orca::OgMapData & data1 )
 // {
 // 
 // //     cout << orcaice::toVerboseString(data);

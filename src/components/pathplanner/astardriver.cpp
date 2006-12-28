@@ -77,9 +77,9 @@ void AStarDriver::computePath( const orca::PathPlanner2dTask& task,
 //         addWaypointParameters( wpParaVector, startWp, goalWp, pathSegment.size() );
 //         // ===============================================================
         
-        // ===== Append to the pathDataPtr which contains the entire path  ========
+        // ===== Append to the pathData which contains the entire path  ========
         orcapathplan::Result result = orcapathplan::PathOk;
-//         orcapathplan::convert( ogMap_, pathSegment, wpParaVector, result, pathDataPtr );
+//         orcapathplan::convert( ogMap_, pathSegment, wpParaVector, result, pathData );
         orcapathplan::convert( ogMap_, pathSegment, result, pathData );
         // ========================================================================
         

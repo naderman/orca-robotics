@@ -86,7 +86,6 @@ Localise2dLogger::setData(const orca::Localise2dData& data, const Ice::Current&)
     }
     else if ( format_ == "ascii" )
     {
-        // (*file_) << "TODO: Implement streaming Localise2dDataPtr" << endl;
         (*file_) << orcalog::toLogString(data) << endl;
     }
     else

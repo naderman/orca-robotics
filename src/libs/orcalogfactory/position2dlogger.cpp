@@ -76,7 +76,6 @@ Position2dLogger::setData(const orca::Position2dData& data, const Ice::Current&)
     }
     else if ( format_ == "ascii" )
     {
-        // (*file_) << "TODO: Implement streaming Position2dDataPtr" << endl;
         (*file_) << orcalog::toLogString(data) << endl;
     }
     else
@@ -99,7 +98,7 @@ Position2dLogger::writeConfigToFile( const orca::Position2dGeometry& obj )
     }
     else if ( format_ == "ascii" )
     {
-        (*file_) << "Implement streaming Position2dGeometryPtr" << endl;
+        (*file_) << "Implement streaming Position2dGeometry" << endl;
 //         (*file_) << orcaice::toString(obj) << endl;
     }
     else
