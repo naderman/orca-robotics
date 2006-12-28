@@ -5,7 +5,7 @@ IF ( NOT OS_WIN )
     FILE( GLOB SRCS *.cpp )
 
     GLOBAL_ADD_LIBRARY( OrcaNavUtil SHARED ${SRCS} )
-
+    TARGET_LINK_LIBRARIES( OrcaNavUtil )
     INSTALL_FILES( /include/orcanavutil .*\\.h$ )
     
     IF ( BUILD_TESTS )
