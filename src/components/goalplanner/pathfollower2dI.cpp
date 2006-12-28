@@ -49,7 +49,7 @@ void
 PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateImmediately, const ::Ice::Current& )
 {
     cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << orcaice::toString(data) << endl;
-    cout<<"TRACE(pathfollower2dI.cpp): activateImmediately: " << activateImmediately << " .This flag will have no effect here!" << endl;
+    cout<<"TRACE(pathfollower2dI.cpp): activateImmediately: " << activateImmediately << endl;
 
     // Sanity check
     std::string insanityReason;
@@ -65,9 +65,11 @@ PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateI
     // Check whether we are localized
     Localise2dData localiseData;
     int ret = localiseDataBuffer_.getNext( localiseData, 1000 );
-    cout << "localiseDataBuffer returns " << ret << endl;
+
+    // we are localized
     if (ret==0)
     {
+        // do we have multiple hypotheses?
         if ( localiseData.hypotheses.size() != 1 )
         {
             throw orca::BusyException( "Multiple localization hypotheses. Will wait for a single hypothesis to execute your path");
@@ -78,41 +80,37 @@ PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateI
 void
 PathFollower2dI::activateNow( const ::Ice::Current& )
 {
-    cout << "Received activateNow signal. Will pass on to localnav." << endl;
+    cout << "TRACE(pathfollower2dI.cpp):activateNow: passing on to localnav." << endl;
     localNavPrx_->activateNow(); 
 }
 
 int
 PathFollower2dI::getWaypointIndex( const ::Ice::Current& ) const
 {
-    cout << "getWaypointIndex called. passing request on to localnav" << endl;
+    cout << "TRACE(pathfollower2dI.cpp): getWaypointIndex: passing request on to localnav" << endl;
     return localNavPrx_->getWaypointIndex(); 
-//     cout<<"TRACE(pathfollower2dI.cpp): TODO: implement me." << endl;
-//     return -1;
 }
 
 void 
 PathFollower2dI::setEnabled( bool enabled, const ::Ice::Current& )
 {
-    cout << "setEnabled called. passing request on to localnav" << endl;
+    cout << "TRACE(pathfollower2dI.cpp):setEnabled: passing request on to localnav" << endl;
     localNavPrx_->setEnabled(enabled); 
-//     cout<<"TRACE(pathfollower2dI.cpp): TODO: implement me." << endl;
 }
+
 bool 
 PathFollower2dI::enabled(const ::Ice::Current&) const
 {
-    cout << "enabled called. passing request on to localnav" << endl;
+    cout << "TRACE(pathfollower2dI.cpp):enabled: passing request on to localnav" << endl;
     return localNavPrx_->enabled();
-//     cout<<"TRACE(pathfollower2dI.cpp): TODO: implement me." << endl;
-//     return true;
 }
 
 void
 PathFollower2dI::subscribe( const ::orca::PathFollower2dConsumerPrx& subscriber, const ::Ice::Current& )
 {
-    cout<<"subscribe()"<<endl;
+    cout<<"TRACE(pathfollower2dI.cpp): subscribe()"<<endl;
     assert ( topicPrx_ != 0 );
-    cout<<"TRACE(pathfollower2dI.cpp): topicPrx_: " << topicPrx_->ice_toString() << endl;
+//     cout<<"TRACE(pathfollower2dI.cpp): topicPrx_: " << topicPrx_->ice_toString() << endl;
     IceStorm::QoS qos;
     topicPrx_->subscribe( qos, subscriber );
 }
@@ -120,8 +118,8 @@ PathFollower2dI::subscribe( const ::orca::PathFollower2dConsumerPrx& subscriber,
 void
 PathFollower2dI::unsubscribe( const ::orca::PathFollower2dConsumerPrx& subscriber, const ::Ice::Current& )
 {
+    cout<<"TRACE(pathfollower2dI.cpp): unsubscribe()"<<endl;    
     assert ( topicPrx_ != 0 );
-    cout<<"unsubscribe()"<<endl;
     topicPrx_->unsubscribe( subscriber );
 }
 

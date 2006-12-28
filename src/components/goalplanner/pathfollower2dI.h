@@ -67,6 +67,7 @@ private:
     // Localise data buffer required to throw an exception if we're not localized and someone gives us a path from the outside
     orcaice::Proxy<orca::Localise2dData> &localiseDataBuffer_;
     
+    // because goalplanner is acting like a transparent proxy to localnav, we need to pass on requests to localnav and thus need a remote object
     orca::PathFollower2dPrx localNavPrx_;
     
     const IceStorm::TopicPrx topicPrx_;
