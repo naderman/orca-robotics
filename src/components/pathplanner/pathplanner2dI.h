@@ -48,6 +48,7 @@ private:
 
     // The topic to which we'll publish
     IceStorm::TopicPrx topicPrx_;
+    
     // The interface to which we'll publish
     orca::PathPlanner2dConsumerPrx  consumerPrx_;
 

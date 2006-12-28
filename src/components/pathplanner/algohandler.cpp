@@ -263,9 +263,7 @@ AlgoHandler::run()
             catch ( orcapathplan::Exception &e )
             {
                 std::stringstream ss;
-                // TODO: display task.
-                ss << "Couldn't compute path: " // << orcaice::toString(task)
-                << endl << "Problem was: " << e.what();
+                ss << "Couldn't compute path: " << orcaice::toVerboseString(task) << endl << "Problem was: " << e.what();
                 context_.tracer()->error( ss.str() );
                 
                 switch( e.type() )

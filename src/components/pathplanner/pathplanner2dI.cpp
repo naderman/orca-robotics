@@ -41,23 +41,14 @@ PathPlanner2dI::setTask(const ::orca::PathPlanner2dTask& task, const ::Ice::Curr
 
     return 0;
     
-//     //TODO: This can be implemented differently: the return value should be the number of tasks in a queue.
-//     // For now, we only allow one task (proxy instead of buffer) and overwriting the current task is not allowed.
-//     if ( pathPlannerTaskProxy_.isEmpty() )
-//     {
-//         pathPlannerTaskProxy_.set( task );
-//         return 0;
-//     }
-//     else
-//     {
-//         return 1;
-//     }
+    //TODO: This can be implemented differently: the return value should be the number of tasks in a queue.
+    // For now, we only allow one task (proxy instead of buffer) and overwrite the task if a new one comes in.
 }
 
 orca::PathPlanner2dData
 PathPlanner2dI::getData(const Ice::Current& current ) const 
 {
-    std::cout << "getData()" << std::endl;
+//     cout << "TRACE(pathplanner2dI.cpp): getData()" << endl;
 
     // we don't need to pop the data here because we don't block on it.
     if ( pathPlannerDataProxy_.isEmpty() )
@@ -65,7 +56,6 @@ PathPlanner2dI::getData(const Ice::Current& current ) const
         throw orca::DataNotExistException( "try again later." );
     }
 
-    // create a null pointer. data will be cloned into it.
     PathPlanner2dData data;
     pathPlannerDataProxy_.get( data );
 
@@ -90,19 +80,17 @@ PathPlanner2dI::localSetData( const PathPlanner2dData& data )
     }
 }
 
-// Subscribe people
 void 
 PathPlanner2dI::subscribe(const PathPlanner2dConsumerPrx &subscriber, const ::Ice::Current&)
 {
-//     cout<<"subscribe()"<<endl;
+//     cout<<"TRACE(pathplanner2dI.cpp): subscribe()"<<endl;
     IceStorm::QoS qos;
     topicPrx_->subscribe( qos, subscriber );
 }
 
-// Unsubscribe people
 void 
 PathPlanner2dI::unsubscribe(const PathPlanner2dConsumerPrx &subscriber, const ::Ice::Current&)
 {
-    cout<<"unsubscribe()"<<endl;
+//     cout<<"TRACE(pathplanner2dI.cpp): unsubscribe()"<<endl;
     topicPrx_->unsubscribe( subscriber );
 }
