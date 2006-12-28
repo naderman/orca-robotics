@@ -218,7 +218,9 @@ void
 TracerI::subscribe(const ::orca::TracerConsumerPrx& subscriber, const ::Ice::Current&)
 {
     if ( !topic_ ) {
-        throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
+        if ( !connectToIceStorm() ) {
+            throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
+        }
     }
     
     //cout<<"subscription request"<<endl;
@@ -229,12 +231,10 @@ TracerI::subscribe(const ::orca::TracerConsumerPrx& subscriber, const ::Ice::Cur
 void
 TracerI::unsubscribe(const ::orca::TracerConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    if ( !topic_ ) {
-        return;
-    }
-    
     //cout<<"unsubscription request"<<endl;
-    topic_->unsubscribe( subscriber );
+    if ( topic_ ) {
+        topic_->unsubscribe( subscriber );
+    }
 }
 
 void
