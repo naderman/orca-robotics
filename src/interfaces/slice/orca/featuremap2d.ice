@@ -138,7 +138,8 @@ interface FeatureMap2d
      *
      * @see unsubscribe
      */
-    void subscribe( FeatureMap2dConsumer *subscriber );
+    void subscribe( FeatureMap2dConsumer *subscriber )
+            throws SubscriptionFailedException;
 
     /*!
      * Unsubscribe an existing @p subscriber. The case when the @p subscriber is not subscribed

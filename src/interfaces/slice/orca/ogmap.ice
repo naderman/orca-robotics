@@ -135,7 +135,8 @@ interface OgMap
      *
      * @see unsubscribe
      */
-    void subscribe( OgMapConsumer *subscriber );
+    void subscribe( OgMapConsumer *subscriber )
+            throws SubscriptionFailedException;
     
     /*!
      * Unsubscribe an existing @p subscriber. The case when the @p subscriber is not subscribed

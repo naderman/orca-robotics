@@ -95,7 +95,8 @@ interface Ptz
      * @see unsubscribe
      *
      */
-    void subscribe( PtzConsumer *subscriber );
+    void subscribe( PtzConsumer *subscriber )
+            throws SubscriptionFailedException;
 
     // this is what IceStorm's subscribe function looks like.
     //void subscribe(QoS theQoS, Object* subscriber);

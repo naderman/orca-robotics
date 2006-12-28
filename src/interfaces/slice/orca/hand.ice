@@ -138,7 +138,8 @@ interface HandProducer
      * @see unsubscribe
      *
      */
-    void subscribe( HandConsumer *subscriber );
+    void subscribe( HandConsumer *subscriber )
+            throws SubscriptionFailedException;
 
     // this is what IceStorm's subscribe function looks like.
     //void subscribe(QoS theQoS, Object* subscriber);

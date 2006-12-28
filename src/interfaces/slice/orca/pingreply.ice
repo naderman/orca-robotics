@@ -36,7 +36,7 @@ interface Pinger
 */
 interface Replier
 {
-    //! Specifies the Pinger proxy, only required for tests with ping1.
+    //! Specifies the Pinger proxy, only required for tests with ping1().
     idempotent void setPinger( Pinger* server );
 
     //! Sends data one way and expects it to be returned using callback operation

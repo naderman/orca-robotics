@@ -73,7 +73,8 @@ interface Tracer
      *
      * @see unsubscribe
      */
-    void subscribe( TracerConsumer* subscriber );
+    void subscribe( TracerConsumer* subscriber )
+            throws SubscriptionFailedException;
     
     /*!
      * Unsubscribe an existing subscriber.

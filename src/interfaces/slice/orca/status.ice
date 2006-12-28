@@ -44,8 +44,6 @@ struct StatusData
  *
  * Data consumer interface (needed only for the push pattern).
  *
- * In Orca-1 terms, this the Consumer side of the ClientPush interface.
- *
  */
 interface StatusConsumer
 {
@@ -70,10 +68,8 @@ interface Status
      *
      * @see unsubscribe
      */
-    void subscribe( StatusConsumer* subscriber );
-    
-    // for reference, this is what IceStorm's subscribe function looks like.
-    //void subscribe(QoS theQoS, Object* subscriber);
+    void subscribe( StatusConsumer* subscriber )
+            throws SubscriptionFailedException;
     
     /*!
      * Unsubscribe the given [subscriber].

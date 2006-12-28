@@ -135,7 +135,8 @@ interface PolarFeature2d
      *
      * @see unsubscribe
      */
-    void subscribe( PolarFeature2dConsumer *subscriber );
+    void subscribe( PolarFeature2dConsumer *subscriber )
+            throws SubscriptionFailedException;
     
     /*!
      * Unsubscribe the given @p subscriber.
