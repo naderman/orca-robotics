@@ -13,7 +13,6 @@
 
 #include <stdlib.h>
 #include <ctype.h>
-#include <curses.h>
 
 #include "keyboardncursesdriver.h"
 #include "asciichar.h"
@@ -41,7 +40,8 @@ KeyboardNcurcesDriver::~KeyboardNcurcesDriver()
 {
 }
 
-int KeyboardNcurcesDriver::enable()
+int 
+KeyboardNcurcesDriver::enable()
 {
    // int ch;
 
@@ -93,7 +93,8 @@ int KeyboardNcurcesDriver::enable()
     return 0;
 }
 
-int KeyboardNcurcesDriver::disable()
+int 
+KeyboardNcurcesDriver::disable()
 {
     //  Clean up after ourselves
     delwin(mainwin_);
