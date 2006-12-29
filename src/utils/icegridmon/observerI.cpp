@@ -78,7 +78,9 @@ NodeObserverI::updateAdapter(const ::std::string& node,
 				      const ::IceGrid::AdapterDynamicInfo& updatedInfo,
 				      const Ice::Current& current)
 {
-    context_.tracer()->info( "Updated adapter id="+updatedInfo.id );
+    stringstream ss;
+    ss << "Updated adapter id="<<updatedInfo.id<<" endpnts#="<<updatedInfo.proxy->ice_getEndpoints().size();
+    context_.tracer()->info( ss.str() );
 }
 
 RegistryObserverI::RegistryObserverI( const orcaice::Context & context ) :
