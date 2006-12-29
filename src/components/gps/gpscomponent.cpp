@@ -114,14 +114,15 @@ GpsComponent::start()
     // SENSOR DESCRIPTION   
     //
     
-    orca::GpsDescription descr;
-    descr.timeStamp = orcaice::getNow();
+    descr_.timeStamp = orcaice::getNow();
 
-    orcaice::setInit( descr.offset );
-    descr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr.offset );
+    orcaice::setInit( descr_.offset );
+    descr_.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr_.offset );
 
-    orcaice::setInit( descr.size );
-    descr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr.size );
+    orcaice::setInit( descr_.size );
+    descr_.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr_.size );
+
+    cout << orcaice::toString( descr_ ) << endl;
 
     // hwDriver_->enable();
 
