@@ -115,7 +115,6 @@ void OgMapsCombinedElement::actionOnConnection()
 //             OgMapPrx prx;
 //             cout<< "TRACE(actionOnConnection.cpp): connect to interface " << listeners_[i]->interfaceName() << endl;
 //             orcaice::connectToInterfaceWithString( context_, prx, listeners_[i]->interfaceName() );
-// //             fuse( prx->getData() );
 //         }
 //         cout << "painter_->setData" << endl;
 //         painter_.setData( totalMap_ );

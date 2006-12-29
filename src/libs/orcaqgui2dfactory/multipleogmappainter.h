@@ -35,6 +35,7 @@ class MultipleOgMapPainter
     
   private:
     PixmapPainter *pixmapPainter_;
+    QImage *lookupTable_;
 
 };
 
