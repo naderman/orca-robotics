@@ -90,6 +90,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
       manipulation. (alex m.)
 - libOrcaProbeFactory (alex m.)
     - added support for Status and Tracer interfaces
+- libOrcaDef (alex m.)
+    - removed Home object registration from XML descriptor. It's done programatically from libOrcaIce.
 
 @section orca_doc_history_211 Changes in Release 2.1.1
 
