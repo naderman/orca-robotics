@@ -290,22 +290,18 @@ toXmlText( const ComponentDef &def )
         <<"name=\""<<cfg.fqname.platform<<"/"<<cfg.fqname.component<<"\" "
         <<"endpoints=\""<<def.endpoints<<"\" "
         <<"register-process=\"true\" "
-        <<"id=\""<<cfg.fqname.platform<<"/"<<cfg.fqname.component<<"\">" << endl;
+        <<"id=\""<<cfg.fqname.platform<<"/"<<cfg.fqname.component<<"\"/>" << endl;
 
-    // Provided interfaces are NOT well known objects
-//     for ( unsigned int i=0; i < def.provided.size(); ++i ) {
-//         ss <<tab<<tab<<tab<<tab<<tab
-//             <<"<object "
-//             <<"identity=\""<<cfg.provided[i].name<<"\" "
-//             << "type=\""<<def.provided[i].type<<"\"/>" << endl;
-//     }
+    // We can register Home as a well known objects easily from here
+    // but we do it programatically from libOrcaIce so it's done the same way with and 
+    // without IceGrid
     // Well-known objects
-    ss <<tab<<tab<<tab<<tab<<tab
-        <<"<object "
-        <<"identity=\""<<cfg.fqname.platform<<"."<<cfg.fqname.component<<".home\" "
-        << "type=\"::orca::Home\"/>" << endl;
-
-    ss <<tab<<tab<<tab<<tab<<"</adapter>" << endl;
+//     ss <<tab<<tab<<tab<<tab<<tab
+//         <<"<object "
+//         <<"identity=\"orca."<<cfg.fqname.platform<<"."<<cfg.fqname.component<<"/Home\" "
+//         << "type=\"::orca::Home\"/>" << endl;
+// 
+//     ss <<tab<<tab<<tab<<tab<<"</adapter>" << endl;
 
     // special parameters
     ss <<tab<<tab<<tab<<tab<<"<!-- Component properties -->" << endl;
@@ -398,15 +394,17 @@ toXmlTemplateText( const ComponentDef &def )
         <<"name=\"${platform}/"<<cfg.fqname.component<<"\" "
         <<"endpoints=\""<<def.endpoints<<"\" "
         <<"register-process=\"true\" "
-        <<"id=\"${platform}/"<<cfg.fqname.component<<"\">" << endl;
+        <<"id=\"${platform}/"<<cfg.fqname.component<<"\"/>" << endl;
 
-    // Well-known objects
-    ss <<tab<<tab<<tab<<tab<<tab
-        <<"<object "
-        <<"identity=\"${platform}."<<cfg.fqname.component<<".home\" "
-        << "type=\"::orca::Home\"/>" << endl;
-
-    ss <<tab<<tab<<tab<<tab<<"</adapter>" << endl;
+    // We can register Home as a well known objects easily from here
+    // but we do it programatically from libOrcaIce so it's done the same way with and 
+    // without IceGrid
+//     ss <<tab<<tab<<tab<<tab<<tab
+//         <<"<object "
+//         <<"identity=\"${platform}."<<cfg.fqname.component<<".home\" "
+//         << "type=\"::orca::Home\"/>" << endl;
+// 
+//     ss <<tab<<tab<<tab<<tab<<"</adapter>" << endl;
 
     // special parameters
     ss <<tab<<tab<<tab<<tab<<"<!-- Component properties -->" << endl;
