@@ -238,6 +238,25 @@ HwHandler::run()
 
     } // while
 
+    // exited main loop
+
+    // log run statistics
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag() + ".Config.";
+    bool logStats = orcaice::getPropertyAsIntWithDefault( prop, prefix+"LogStats", 1 );
+    if ( logStats ) {
+        string statsFilename = orcaice::getPropertyWithDefault( prop, prefix+"LogStatsFilename", "segwayrmp-stats.txt" );
+        std::ofstream file( statsFilename.c_str() );
+        if ( !file.is_open() ) {
+            context_.tracer()->error( "Stats were not written. Could not create file " + statsFilename );
+        }
+        // get stats
+        int distanceTravelled = 0;
+        driver_->get( distanceTravelled );
+        file << context_.status()->startTime().toString() << " " << distanceTravelled << endl;
+        context_.tracer()->info( "Wrote stats to file " + statsFilename );
+    }
+
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
     context_.tracer()->debug( "exiting HwHandler thread...",5);

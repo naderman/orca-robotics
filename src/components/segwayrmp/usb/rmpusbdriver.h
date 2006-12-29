@@ -38,6 +38,8 @@ public:
 
     virtual int write( const orca::Velocity2dCommand& command );
 
+    virtual int get( int& distanceTravelled );
+
     virtual std::string toString();
 
 private:

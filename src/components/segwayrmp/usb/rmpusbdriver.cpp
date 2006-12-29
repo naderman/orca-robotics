@@ -213,6 +213,13 @@ RmpUsbDriver::write( const orca::Velocity2dCommand& command )
     }
 }
 
+int 
+RmpUsbDriver::get( int& distanceTravelled )
+{
+    distanceTravelled = frame_.foreaft;
+    return 0;
+}
+
 std::string
 RmpUsbDriver::toString()
 {

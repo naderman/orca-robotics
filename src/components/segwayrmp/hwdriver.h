@@ -44,6 +44,9 @@ public:
     // Writes velocity command. Returns 0 on success. Does not throw.
     virtual int write( const orca::Velocity2dCommand& command )=0;
 
+    // Non-blocking read of secondary data. Returns 0 on success.
+    virtual int get( int& distanceTravelled ) { return 0; };
+
     // For debugging, convert to string as much of internal state as possible
     virtual std::string toString() { return std::string(""); };
 

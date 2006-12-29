@@ -78,6 +78,14 @@
         - t>0 : send approximately every t seconds
     - Default: 60.0
 
+- @c SegwayRmp.Config.LogStats (bool)
+    - Log statistics about the run before shutting down. Currently logs run time and distance travelled. The filename is determined by LogStatsFilename property.
+    - Default: 1
+
+- @c SegwayRmp.Config.LogStatsFilename (string)
+    - Name of the log file to which run statistics are saved (if LogStats is set to 1).
+    - Default: 'segwayrmp-stats.txt'
+
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
 @par Dependancies
