@@ -327,28 +327,14 @@ WorldView::mouseReleaseEvent( QMouseEvent* e )
     QPointF mouseUpPnt = e->pos();
 
     if ( e->button() == Qt::LeftButton )          // left button released
-    {
-//         const double MOVE_RADIUS_PIXEL = 10.0;
-
-//         QPointF diff(mouseDownPnt_ - mouseUpPnt);
-//         double dist = sqrt(diff.x()*diff.x() + diff.y()*diff.y());
-//         //cout << "TRACE(worldview.cpp): Diff is " << diff.x() << " " << diff.y() << endl;
-//         //cout << "TRACE(worldview.cpp): dist is " << dist << endl;
-
-//         if (dist>MOVE_RADIUS_PIXEL)
-//         { // move canvas
-//             moveView( mouseUpPnt - mouseDownPnt_ );
-//         }
-  
+    {  
         // select component
-        const double SELECTED_RADIUS_M = 0.6;
-        QMatrix wmInv = wm_.inverted();
-        QString platform = nearestComponent( wmInv.map(mouseDownPnt_), SELECTED_RADIUS_M );
+        const double SELECTED_RADIUS_PIXEL = 20.0;
+        QString platform = nearestComponent( mouseDownPnt_, SELECTED_RADIUS_PIXEL);
         //cout << "TRACE(worldview.cpp): nearestComponent is: " << platform.toStdString() << endl;
         // alert others
         if ( platform != "" ) 
         {
-            cout << "Platform focus changed" << endl;
             mainWin_->changePlatformFocusFromView( platform );
         }
     } 
@@ -384,16 +370,15 @@ bool WorldView::event(QEvent *event)
     if (event->type() == QEvent::ToolTip) 
     {
         QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
-        const double SELECTED_RADIUS_M = 0.6;
-        QMatrix wmInv = wm_.inverted();
-        QString platform = nearestComponent( wmInv.map(mouseMovePnt_), SELECTED_RADIUS_M );
+        const double SELECTED_RADIUS_PIXEL = 20.0;
+        QString platform = nearestComponent( mouseMovePnt_, SELECTED_RADIUS_PIXEL );
         if (platform!="") QToolTip::showText(helpEvent->globalPos(), platform);
     }
     return QWidget::event(event);
 }
 
 QString 
-WorldView::nearestComponent( const QPointF& pclick, const double & radius )
+WorldView::nearestComponent( const QPointF& pclick, const double & pixelRadius )
 {
     const QList<GuiElement*> &elements = model_->elements();
     
@@ -409,54 +394,21 @@ WorldView::nearestComponent( const QPointF& pclick, const double & radius )
             // We know that really it's a GuiElement2d...
             const GuiElement2d *elem2d = dynamic_cast<const GuiElement2d*>(elements[i]);
             assert( elem2d != NULL );
-            QPointF delta = pclick - elem2d->pos();
+            QPointF delta = pclick - wm_.map(elem2d->pos());
             double dist = sqrt( pow(delta.x(),2.0) + pow(delta.y(),2.0) ) ;
-            if ( dist<radius ) return elements[i]->platform();
+            if ( dist<pixelRadius ) return elements[i]->platform();
         }
     }
     
     // if user clicked around the origin (0,0) we switch to a global view (all platforms in focus)
-    double dist = sqrt( pow(pclick.x(),2.0) + pow(pclick.y(),2.0) );
+    QPointF delta = pclick - wm_.map(QPointF());
+    double dist = sqrt( pow(delta.x(),2.0) + pow(delta.y(),2.0) );
 //     cout << "Click pos: x: " << pclick.x() << " y: " << pclick.y() << " dist: " << dist << endl;
-    if (dist<radius) return "global";
+    if (dist<pixelRadius) return "global";
     
     // neither a platform nor (0,0) was close to where the user clicked
     return "";
 }
-
-// QString 
-// WorldView::nearestComponent( const QPointF& pclick, const double & radius )
-// {
-//     const QList<GuiElementModel::InterfaceNode*> &elements = model_->elements();
-//     
-//     for ( int i=0; i<elements.size(); ++i )
-//     {
-//         // only certain types are real 'platform elements' 
-//         const GuiElement *elem = elements[i]->element;
-//         const IKnowsPlatformPosition2d* platformElem = dynamic_cast<const IKnowsPlatformPosition2d*>(elem);
-//         if ( platformElem != NULL )
-//         {
-//             //cout << "Platform pos: x: " << elements_[i]->element->pos().x() << " y: " << elements_[i]->element->pos().y() << endl;
-//             //cout << "Click pos: x: " << pclick.x() << " y: " << pclick.y() << endl;
-// 
-//             // We know that really it's a GuiElement2d...
-//             const GuiElement2d *elem2d = dynamic_cast<const GuiElement2d*>(elem);
-//             assert( elem2d != NULL );
-//             QPointF delta = pclick - elem2d->pos();
-//             double dist = sqrt( pow(delta.x(),2.0) + pow(delta.y(),2.0) ) ;
-//             if ( dist<radius ) return elements[i]->platform;
-//         }
-//     }
-//     
-//     // if user clicked around the origin (0,0) we switch to a global view (all platforms in focus)
-//     double dist = sqrt( pow(pclick.x(),2.0) + pow(pclick.y(),2.0) );
-// //     cout << "Click pos: x: " << pclick.x() << " y: " << pclick.y() << " dist: " << dist << endl;
-//     if (dist<radius) return "global";
-//     
-//     // neither a platform nor (0,0) was close to where the user clicked
-//     return "";
-// }
-
 
 
 void 

@@ -56,7 +56,9 @@ private:
     MainWindow *mainWin_;
 
     void paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFramePlatformLocalised );
-    QString nearestComponent( const QPointF& pclick, const double & radius );
+    
+    // finds the nearest platform to the click, pclick and pixelRadius are in window CS
+    QString nearestComponent( const QPointF& pclick, const double & pixelRadius );
 
     // Returns true if the platform which owns the coordinate system is localised
     // or if "global" owns the coordinate system 
