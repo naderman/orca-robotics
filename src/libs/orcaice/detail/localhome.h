@@ -15,6 +15,8 @@
 
 namespace orcaice
 {
+namespace detail
+{
 
 class LocalHome : public Home
 {
@@ -30,6 +32,7 @@ public:
     virtual void removeRequiredInterface( const std::string& name ) {};
 };
 
+} // namespace
 } // namespace
 
 #endif

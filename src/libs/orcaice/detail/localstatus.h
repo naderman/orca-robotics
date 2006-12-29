@@ -15,23 +15,35 @@
 
 namespace orcaice
 {
+namespace detail
+{
 
-class LocalStatus : public Status
+class LocalStatus : public orcaice::Status
 {
 public:
-    
+    LocalStatus();
     virtual ~LocalStatus() {};
+    
+    // from orcaice::Status
 
-    // Routing is determined by HeartbeatToXxx parameter.
     virtual void heartbeat( const std::string &message, int level=1 ) {};
     
-    // Routing is determined by StatusToXxx parameter.
     virtual void status( const std::string &message, bool force=false ) {};
     
-    // Returns current status.
     virtual std::string status() const { return "LocalStatus is not implemented"; };
+
+    virtual IceUtil::Time startTime() const { return startTime_; };
+
+private:
+
+    // Not implemented; prevents accidental use.
+    LocalStatus( const LocalStatus & );
+    LocalStatus& operator= ( const LocalStatus & );
+
+    IceUtil::Time startTime_;
 };
 
+} // namespace
 } // namespace
 
 #endif

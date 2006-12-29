@@ -25,14 +25,17 @@ public:
     
     virtual ~Status() {};
 
-    // Routing is determined by HeartbeatToXxx parameter.
+    //! Routing is determined by HeartbeatToXxx parameter.
     virtual void heartbeat( const std::string &message, int level=1 ) = 0;
     
-    // Routing is determined by StatusToXxx parameter.
+    //! Routing is determined by StatusToXxx parameter.
     virtual void status( const std::string &message, bool force=false ) =0 ;
     
-    // Returns current status.
+    //! Returns current status.
     virtual std::string status() const = 0;
+
+    //! The time when the component was activated
+    virtual IceUtil::Time startTime() const = 0;
 };
 
 

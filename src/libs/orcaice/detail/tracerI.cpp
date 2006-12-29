@@ -18,88 +18,19 @@ using namespace std;
 using namespace orcaice::detail;
 
 TracerI::TracerI( const orcaice::Context & context )
-          : context_(context),
+          : LocalTracer(context),
             topic_(0),
-            publisher_(0),
-            file_(NULL),
-            sysLogger_(NULL)
+            publisher_(0)
 {
-    prefix_ = orcaice::toString(context.name()) + ": ";
-    parseConfigFile();
-        
     // do we need IceStorm topic?
     if ( config_.verbosity[AnyTrace][ToNetwork] ) {
         connectToIceStorm();
-    }
-
-    // do we need output file?
-    if ( config_.verbosity[AnyTrace][ToFile] ) {
-        string filename = context_.properties()->getProperty("Orca.Tracer.Filename");
-        file_ = new ofstream( filename.c_str() );
-        if ( !file_->is_open() ) {
-            initTracerError( "Could not create file " + filename );
-        }
-        else {
-            initTracerPrint("Created output file.");
-        }
-    }
-    
-    // do we need a syslogger?
-    if ( config_.verbosity[AnyTrace][ToLog] ) {
-        sysLogger_ = new orcaice::detail::SysLogger(context);
-        initTracerPrint("Created syslogger.");
     }
 }
 
 TracerI::~TracerI()
 {
-    if ( sysLogger_ ) delete sysLogger_;
-    if ( file_ ) {
-        file_->close();
-        delete file_;
-    }
 }
-
-void
-TracerI::parseConfigFile()
-{
-    // get properties for our component
-    Ice::PropertiesPtr props = context_.properties();
-
-    // set tracer configuration parameters
-    // defaults were already set on all tracer properties
-    
-    // destination (defaults are zeros)
-    config_.verbosity[TracerI::InfoTrace][TracerI::ToDisplay]     = props->getPropertyAsInt("Orca.Tracer.InfoToDisplay");
-    config_.verbosity[TracerI::InfoTrace][TracerI::ToNetwork]     = props->getPropertyAsInt("Orca.Tracer.InfoToNetwork");
-    config_.verbosity[TracerI::InfoTrace][TracerI::ToLog]         = props->getPropertyAsInt("Orca.Tracer.InfoToLog");
-    config_.verbosity[TracerI::InfoTrace][TracerI::ToFile]        = props->getPropertyAsInt("Orca.Tracer.InfoToFile");
-
-    config_.verbosity[TracerI::WarningTrace][TracerI::ToDisplay]  = props->getPropertyAsInt("Orca.Tracer.WarningToDisplay");
-    config_.verbosity[TracerI::WarningTrace][TracerI::ToNetwork]  = props->getPropertyAsInt("Orca.Tracer.WarningToNetwork");
-    config_.verbosity[TracerI::WarningTrace][TracerI::ToLog]      = props->getPropertyAsInt("Orca.Tracer.WarningToLog");
-    config_.verbosity[TracerI::WarningTrace][TracerI::ToFile]     = props->getPropertyAsInt("Orca.Tracer.WarningToFile");
-
-    config_.verbosity[TracerI::ErrorTrace][TracerI::ToDisplay]    = props->getPropertyAsInt("Orca.Tracer.ErrorToDisplay");
-    config_.verbosity[TracerI::ErrorTrace][TracerI::ToNetwork]    = props->getPropertyAsInt("Orca.Tracer.ErrorToNetwork");
-    config_.verbosity[TracerI::ErrorTrace][TracerI::ToLog]        = props->getPropertyAsInt("Orca.Tracer.ErrorToLog");
-    config_.verbosity[TracerI::ErrorTrace][TracerI::ToFile]       = props->getPropertyAsInt("Orca.Tracer.ErrorToFile");
-
-    config_.verbosity[TracerI::DebugTrace][TracerI::ToDisplay]    = props->getPropertyAsInt("Orca.Tracer.DebugToDisplay");
-    config_.verbosity[TracerI::DebugTrace][TracerI::ToNetwork]    = props->getPropertyAsInt("Orca.Tracer.DebugToNetwork");
-    config_.verbosity[TracerI::DebugTrace][TracerI::ToLog]        = props->getPropertyAsInt("Orca.Tracer.DebugToLog");
-    config_.verbosity[TracerI::DebugTrace][TracerI::ToFile]       = props->getPropertyAsInt("Orca.Tracer.DebugToFile");
-
-    // pre-calculate marginals: accross trace types
-    recalcMarginals();
-
-    // filtering
-    config_.ignoreRepeatedWarnings = props->getPropertyAsInt( "Orca.Tracer.IgnoreRepeatedWarnings" );
-    config_.ignoreRepeatedErrors   = props->getPropertyAsInt( "Orca.Tracer.IgnoreRepeatedErrors" );
-    // format
-    config_.addTimestamp           = props->getPropertyAsInt( "Orca.Tracer.Timestamp" );
-}
-
 
 void
 TracerI::icestormConnectFailed( const orca::FQTopicName &fqTName,
@@ -238,95 +169,43 @@ TracerI::unsubscribe(const ::orca::TracerConsumerPrx& subscriber, const ::Ice::C
 }
 
 void
-TracerI::print( const std::string &message )
-{
-    IceUtil::Mutex::Lock lock(mutex_);
-    cout<<message<<endl;
-}
-
-void
 TracerI::info( const std::string &message, int level )
 {
-    if ( config_.verbosity[InfoTrace][ToDisplay] >= level ) {
-        toDisplay( "info", message, level );
-    }
+    LocalTracer::info( message, level );
+
     if ( config_.verbosity[InfoTrace][ToNetwork] >= level ) {
         toNetwork( "info", message, level );
     }
-    if ( config_.verbosity[InfoTrace][ToFile] >= level ) {
-        toFile( "info", message, level );
-    }   
-    if ( config_.verbosity[InfoTrace][ToLog] >= level ) {
-        sysLogger_->logInfo( message );
-    }   
 }
 
 void
 TracerI::warning( const std::string &message, int level )
 {
-    if ( config_.verbosity[WarningTrace][ToDisplay] >= level ) {
-        toDisplay( "warn", message, level );
-    }
+    LocalTracer::warning( message, level );
+
     if ( config_.verbosity[WarningTrace][ToNetwork] >= level ) {
         toNetwork( "warn", message, level );
-    }
-    if ( config_.verbosity[WarningTrace][ToFile] >= level ) {
-        toFile( "warn", message, level );
-    }
-    if ( config_.verbosity[WarningTrace][ToLog] >= level ) {
-        sysLogger_->logWarning( message );
     }
 }
     
 void
 TracerI::error( const std::string &message, int level )
 {
-    if ( config_.verbosity[ErrorTrace][ToDisplay] >= level ) {
-        toDisplay( "error", message, level );
-    }
+    LocalTracer::error( message, level );
+
     if ( config_.verbosity[ErrorTrace][ToNetwork] >= level ) {
         toNetwork( "error", message, level );
-    }
-    if ( config_.verbosity[ErrorTrace][ToFile] >= level ) {
-        toFile( "error", message, level );
-    }
-    if ( config_.verbosity[ErrorTrace][ToLog] >= level ) {
-        sysLogger_->logError( message );
     }
 }
 
 void
 TracerI::debug( const std::string &message, int level )
 {
-    if ( config_.verbosity[DebugTrace][ToDisplay] >= level ) {
-        toDisplay( "debug", message, level );
-    }
+    LocalTracer::debug( message, level );
+
     if ( config_.verbosity[DebugTrace][ToNetwork] >= level ) {
         toNetwork( "debug", message, level );
     }
-    if ( config_.verbosity[DebugTrace][ToFile] >= level ) {
-        toFile( "debug", message, level );
-    }
-    if ( config_.verbosity[DebugTrace][ToLog] >= level ) {
-        sysLogger_->logDebug( message );
-    }
-}
-
-int 
-TracerI::verbosity( TraceType traceType, DestinationType destType ) const
-{
-    return 1;
-}
-
-void
-TracerI::toDisplay( const std::string& category, const std::string& message, int level )
-{
-    string output;
-    assembleMessage(category, message, level, output);
-    
-    // get a lock so that messages coming from different threads don't interfere with each other
-    IceUtil::Mutex::Lock lock(mutex_);
-    cout << output << endl;
 }
 
 void
@@ -375,58 +254,5 @@ TracerI::toNetwork( const std::string& category, const std::string& message, int
 
         // If IceStorm just re-started for some reason, we want to try to re-connect
         connectToIceStorm();
-    }
-}
-
-void
-TracerI::toFile( const std::string& category, const std::string& message, int level )
-{
-    string output;
-    assembleMessage(category, message, level, output);
-    
-    // get a lock so that messages coming from different threads don't interfere with each other
-    IceUtil::Mutex::Lock lock(mutex_);
-    (*file_) << output << endl;
-}
-
-void
-TracerI::assembleMessage( const std::string& category, const std::string& message, int level, std::string& s )
-{
-    s = "[ ";
-    if(config_.addTimestamp)
-    {
-        s += IceUtil::Time::now().toString() + " ";
-    }
-    s += prefix_;
-    // todo: would be nice to show level here, e.g. debug3:
-    // but seems like an overkill to deal with osstreams
-    s += " " + category + ": ";
-    s += message + " ]";
-
-    // replace line breaks with spaces
-    string::size_type idx = 0;
-    while((idx = s.find("\n", idx)) != string::npos)
-    {
-        s.insert(idx + 1, "  ");
-        ++idx;
-    }
-}
-
-void
-TracerI::recalcMarginals()
-{
-    // pre-calculate marginals: accross trace types
-    for ( int i=0; i<TracerI::AnyTrace; ++i ) {
-        config_.verbosity[i][TracerI::ToAny] = 0;
-        for ( int j=0; j<TracerI::ToAny-1; ++j ) {
-            config_.verbosity[i][TracerI::ToAny] = MAX ( config_.verbosity[i][TracerI::ToAny], config_.verbosity[i][j] );
-        }
-    }
-    // pre-calculate marginals: accross destination types
-    for ( int j=0; j<TracerI::ToAny; ++j ) {
-        config_.verbosity[TracerI::AnyTrace][j] = 0;
-        for ( int i=0; i<TracerI::AnyTrace; ++i ) {
-            config_.verbosity[TracerI::AnyTrace][j] = MAX ( config_.verbosity[TracerI::AnyTrace][j], config_.verbosity[i][j] );
-        }
     }
 }

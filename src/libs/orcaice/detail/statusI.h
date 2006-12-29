@@ -12,7 +12,7 @@
 #define ORCAICE_STATUS_I_H
 
 #include <orca/status.h>
-#include "../status.h"
+#include "localstatus.h"
 
 #include <IceStorm/IceStorm.h>
 #include <IceUtil/Mutex.h>
@@ -25,7 +25,7 @@ namespace detail
 class SysLogger;
 
 // An implementation of the (remote) Status interface.
-class StatusI : public virtual orca::Status, public virtual orcaice::Status
+class StatusI : public virtual orca::Status, public LocalStatus
 {
 public:
     

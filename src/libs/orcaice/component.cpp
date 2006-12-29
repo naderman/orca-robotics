@@ -21,7 +21,9 @@
 #include "localstatus.h"
 #include "statusI.h"
 
+#include "localtracer.h"
 #include "tracerI.h"
+
 #include "privateutils.h"
 
 #include "component.h"
@@ -59,11 +61,10 @@ Component::init( const orca::FQComponentName& name,
 Tracer*
 Component::initTracer()
 {
-    if ( !(interfaceFlag_ & TracerInterface) ) {
-//         return new LocalTracer;
-    }
-
     orcaice::initTracerPrint( tag()+": Initializing application trace handler...");
+    if ( !(interfaceFlag_ & TracerInterface) ) {
+        return new orcaice::detail::LocalTracer( context_ );
+    }
         
     // this is a bit tricky. we need
     // 1. a smart pointer which derives from Object (or ObjectPtr itself) to add to adapter
@@ -93,12 +94,12 @@ Component::initTracer()
 Status*
 Component::initStatus()
 {
+    orcaice::initTracerPrint( tag()+": Initializing application status handler ...");
+
     if ( !(interfaceFlag_ & StatusInterface) ) {
-        return new LocalStatus;
+        return new orcaice::detail::LocalStatus;
     }
 
-    orcaice::initTracerPrint( tag()+": Initializing application status handler ...");
-        
     // this is a bit tricky. we need
     // 1. a smart pointer which derives from Object (or ObjectPtr itself) to add to adapter
     // 2. a smart pointer which derives from Tracer to save in context
@@ -129,7 +130,7 @@ Component::initHome()
 {
     if ( !(interfaceFlag_ & HomeInterface) ) {
         // local object only
-        return new LocalHome;
+        return new orcaice::detail::LocalHome;
     }
         
     // PROVIDED INTERFACE: Home

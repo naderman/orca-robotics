@@ -12,7 +12,7 @@
 #define ORCAICE_TRACER_I_H
 
 #include <orca/tracer.h>
-#include "../tracer.h"
+#include "localtracer.h"
 
 #include <IceStorm/IceStorm.h>
 #include <IceUtil/Mutex.h>
@@ -22,9 +22,7 @@ namespace orcaice
 namespace detail
 {
 
-class SysLogger;
-
-class TracerI : public virtual orca::Tracer, public virtual orcaice::Tracer
+class TracerI : public virtual orca::Tracer, public LocalTracer
 {
 public:
     TracerI( const orcaice::Context & context );
@@ -40,8 +38,7 @@ public:
     virtual void unsubscribe(const ::orca::TracerConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
     // orcaice::Tracer interface
-    
-    virtual void print( const std::string &message );
+    // reimplement from LocalTracer because we are adding toNetwork() option
 
     virtual void info( const std::string &message, int level=1 );
     
@@ -51,20 +48,11 @@ public:
 
     virtual void debug( const std::string &message, int level=1 );
 
-    virtual int verbosity( TraceType traceType, DestinationType destType ) const;
-
 private:
 
     // Not implemented; prevents accidental use.
     TracerI( const TracerI & );
     TracerI& operator= ( const TracerI & );
-
-    TracerI::Config  config_;
-    orcaice::Context context_;
-    std::string prefix_;
-
-    // custom outgoing commands
-    void toDisplay( const std::string& category, const std::string& message, int level );
 
     // to network
     void toNetwork( const std::string& category, const std::string& message, int level );
@@ -74,24 +62,6 @@ private:
     void icestormConnectFailed( const orca::FQTopicName &fqTName,
                                 orca::TracerConsumerPrx &publisher,
                                 bool isStatusTopicRequired );
-
-    // to file
-    void toFile( const std::string& category, const std::string& message, int level );
-    std::ofstream *file_;
-
-    // to log
-    SysLogger *sysLogger_;
-
-    std::string prevWarning_;
-    std::string prevError_;
-
-    // We only have one communicator but may have multiple threads.
-    IceUtil::Mutex mutex_;
-    
-    // utilities
-    void parseConfigFile();
-    void assembleMessage( const std::string& category, const std::string& message, int level, std::string& s );
-    void recalcMarginals();
 };
 
 } // namespace
