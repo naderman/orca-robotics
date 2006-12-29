@@ -382,29 +382,38 @@ WorldView::nearestComponent( const QPointF& pclick, const double & pixelRadius )
 {
     const QList<GuiElement*> &elements = model_->elements();
     
+    // potential candidates are stored with distance/platformName key/value pairs
+    QMap<double,QString> candidates;
+    
+    QPointF delta;
+    double dist;
+    
     for ( int i=0; i<elements.size(); ++i )
     {
         // only certain types are real 'platform elements' 
         const IKnowsPlatformPosition2d* platformElem = dynamic_cast<const IKnowsPlatformPosition2d*>(elements[i]);
         if ( platformElem != NULL )
         {
-            //cout << "Platform pos: x: " << elements_[i]->element->pos().x() << " y: " << elements_[i]->element->pos().y() << endl;
-            //cout << "Click pos: x: " << pclick.x() << " y: " << pclick.y() << endl;
-
             // We know that really it's a GuiElement2d...
             const GuiElement2d *elem2d = dynamic_cast<const GuiElement2d*>(elements[i]);
             assert( elem2d != NULL );
-            QPointF delta = pclick - wm_.map(elem2d->pos());
-            double dist = sqrt( pow(delta.x(),2.0) + pow(delta.y(),2.0) ) ;
-            if ( dist<pixelRadius ) return elements[i]->platform();
+            delta = pclick - wm_.map(elem2d->pos());
+            dist = sqrt( pow(delta.x(),2.0) + pow(delta.y(),2.0) ) ;
+            if ( dist<pixelRadius ) candidates[dist] = elements[i]->platform();        
         }
     }
     
     // if user clicked around the origin (0,0) we switch to a global view (all platforms in focus)
-    QPointF delta = pclick - wm_.map(QPointF());
-    double dist = sqrt( pow(delta.x(),2.0) + pow(delta.y(),2.0) );
-//     cout << "Click pos: x: " << pclick.x() << " y: " << pclick.y() << " dist: " << dist << endl;
-    if (dist<pixelRadius) return "global";
+    delta = pclick - wm_.map(QPointF());
+    dist = sqrt( pow(delta.x(),2.0) + pow(delta.y(),2.0) );
+    if (dist<pixelRadius) candidates[dist] = "global";
+    
+    // return the closest candidate, ie the one with the lowest key (QMaps are sorted by key)
+    if (!candidates.isEmpty())
+    {
+        QMap<double,QString>::const_iterator i = candidates.constBegin();
+        return i.value();
+    }
     
     // neither a platform nor (0,0) was close to where the user clicked
     return "";
