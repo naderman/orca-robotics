@@ -362,32 +362,32 @@ GuiElementModel::updateGuiElements()
             }
             catch ( Ice::Exception &e )
             {
-                ss<<"TRACE(guielementmodel.h): Caught some ice exception during update of ";
-//                   <<elements_[i]->id.toStdString()<<": " << e << std::endl;
+                ss<<"TRACE(guielementmodel.cpp): Caught some ice exception during update of "
+                <<elements_[i]->details().toStdString()<<": " << e << std::endl;
                 humanManager_->showStatusMsg(orcaqgui::Warning,ss.str().c_str());
             }
             catch ( std::exception &e )
             {
-                ss<<"TRACE(guielementmodel.h): Caught some std exception during update of ";
-//                   <<elements_[i]->id.toStdString()<<": " << e.what() << std::endl;
+                ss<<"TRACE(guielementmodel.cpp): Caught some std exception during update of "
+                <<elements_[i]->details().toStdString()<<": " << e.what() << std::endl;
                 humanManager_->showStatusMsg(orcaqgui::Warning,ss.str().c_str());
             }
             catch ( std::string &e )
             {
-                ss<<"TRACE(guielementmodel.h): Caught std::string during update of ";
-//                   <<elements_[i]->id.toStdString()<<": " << e << std::endl;
+                ss<<"TRACE(guielementmodel.cpp): Caught std::string during update of "
+                   <<elements_[i]->details().toStdString()<<": " << e << std::endl;
                 humanManager_->showStatusMsg(orcaqgui::Warning,ss.str().c_str());
             }
             catch ( char *e )
             {
-                ss<<"TRACE(guielementmodel.h): Caught char * during update of ";
-//                   <<elements_[i]->id.toStdString()<<": " << e << std::endl;
+                ss<<"TRACE(guielementmodel.cpp): Caught char * during update of "
+                   <<elements_[i]->details().toStdString()<<": " << e << std::endl;
                 humanManager_->showStatusMsg(orcaqgui::Warning,ss.str().c_str());
             }
             catch ( ... )
             {
-                ss<<"TRACE(guielementmodel.h): Caught some other exception during update of ";
-//                   <<elements_[i]->id.toStdString()<<": " << std::endl;
+                ss<<"TRACE(guielementmodel.cppp): Caught some other exception during update of "
+                   <<elements_[i]->details().toStdString()<<": " << std::endl;
                 humanManager_->showStatusMsg(orcaqgui::Warning,ss.str().c_str());
             }
         }

@@ -21,7 +21,7 @@
 namespace orcaice
 {
 /*!
- *  @name Miscillaneous Object Manipulation Functions
+ *  @name Miscellaneous Object Manipulation Functions
  */
 //@{
 
@@ -30,9 +30,12 @@ namespace orcaice
 //! It is an error to give this function a MoG with all zero weights.
 void normalise( orca::Localise2dData& obj );
 
-//!
+//! Calculates the angle increment for a range scan.
+//! This is in a special function because it's easy to forget the '+1'
+inline double calcAngleIncrement( double fieldOfView, int numReturns )
+{ return fieldOfView / double(numReturns+1); }
+
 //! Returns the @b reference to max-likelihood hypothesis.
-//!
 const orca::Pose2dHypothesis& mlHypothesis( const orca::Localise2dData& obj );
 
 //!
