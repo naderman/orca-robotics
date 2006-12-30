@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef MULTIPLE_OGMAP_PAINTER_H
-#define MULTIPLE_OGMAP_PAINTER_H
+#ifndef OGMAPS_COMBINED_PAINTER_H
+#define OGMAPS_COMBINED_PAINTER_H
 
 #include <orca/ogmap.h>
 #include <orcaqgui2d/definitions2d.h>
@@ -19,11 +19,13 @@
 namespace orcaqgui
 {
 
-class MultipleOgMapPainter
+// A painter which can overlay several (at the moment two) OgMaps
+// Author: Tobias Kaupp
+class OgMapsCombinedPainter
 {
   public:
-    MultipleOgMapPainter();
-    ~MultipleOgMapPainter();
+    OgMapsCombinedPainter( const orcaice::Context  &context );
+    ~OgMapsCombinedPainter();
 
     void paint( QPainter *p, int z );
     bool paintThisLayer( int z ) const { return z==Z_OG_MAP; }

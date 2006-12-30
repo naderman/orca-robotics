@@ -7,12 +7,11 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-
-#include "ogmapscombinedelement.h"
-#include <orcaogmap/orcaogmap.h>
 #include <iostream>
 #include <QFileDialog>
+#include <orcaogmap/orcaogmap.h>
 #include <orcaqgui/exceptions.h>
+#include "ogmapscombinedelement.h"
 
 using namespace std;
 using namespace orca;
@@ -38,6 +37,8 @@ OgMapsCombinedElement::OgMapsCombinedElement( const orcaice::Context  &context,
                                              OgMapConsumerPrx>(context, proxyStrList[i].toStdString());
         listeners_.push_back(listener);
     }
+    
+    painter_ = new OgMapsCombinedPainter( context );
 }
 
 bool OgMapsCombinedElement::needToUpdate()
@@ -75,7 +76,13 @@ void OgMapsCombinedElement::update()
     if ( !needToUpdate() ) {
         return;
     }
-
+    
+    OgMapData data0;
+    listeners_[0]->buffer().getAndPop( data0 );
+    OgMapData data1;
+    listeners_[1]->buffer().getAndPop( data1 );
+    
+//     // for more than two ogMaps:
 //     OgMapData data;
 //     for (unsigned int i=0; i<listeners_.size(); i++)
 //     {
@@ -83,13 +90,8 @@ void OgMapsCombinedElement::update()
 //         listeners_[i]->buffer().getAndPop( data );
 //     }
     
-    OgMapData data0;
-    listeners_[0]->buffer().getAndPop( data0 );
-    OgMapData data1;
-    listeners_[1]->buffer().getAndPop( data1 );
-    
     // transfer data into painter
-    painter_.setData( data0, data1 );
+    painter_->setData( data0, data1 );
 }
 
 
@@ -107,9 +109,9 @@ void OgMapsCombinedElement::actionOnConnection()
         orcaice::connectToInterfaceWithString( context_, prx, listeners_[1]->interfaceName() );
         OgMapData data1 = prx->getData(); 
         
-        painter_.setData( data0, data1 );
+        painter_->setData( data0, data1 );
         
-            
+//         // for more than two ogMaps:            
 //         for (unsigned int i=0; i<listeners_.size(); i++)
 //         {
 //             OgMapPrx prx;
@@ -152,7 +154,7 @@ OgMapsCombinedElement::execute( int action )
     {
         case 0 :
         {
-            painter_.toggleDisplayMap();
+            painter_->toggleDisplayMap();
             break;
         }
         default:

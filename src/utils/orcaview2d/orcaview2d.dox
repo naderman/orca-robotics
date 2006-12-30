@@ -176,6 +176,13 @@ These are the default waypoint settings that can be changed in the menu later. C
     - origin of the gui coordinate system in northing/easting/height coordinates
     - Default: 0.0 0.0 0.0
     
+- @c OrcaView.Config.OgMapsCombined.LookupTableFileName (string)
+    - Lookup table for fusing colors of two ogMaps in form of an image with size 256x256. 
+    - Useful to display a combination of an og map and a hazard map.
+    - X-axis represents hazard from high to low, y-axis represents occupancy from high to low.
+    - You can generate your own lookup table (in any Qt-readable image format) or take the one provided with the distribution (in src/libs/orcaqgui2dfactory/) which is:
+    - Default: ogHazardLookupTable.png
+    
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory. 
 
 Note: If several interfaces of the same type are to be connected, just number the tags. Consider a system with two robots, @c bigrobot has two lasers and @c smallrobot has one laser. You wanna display all of them in one GUI. The configuration file would look something like this:

@@ -42,6 +42,7 @@ Config.ScreenCapture.SidePad.Default = 2
 Config.ScreenCapture.BottomPad.Default = 2
 Config.ScreenCapture.CaptureTimerInterval.Default = 1000
 Config.Gps.Origin.Default=0.0 0.0 0.0
+Config.OgMapsCombined.LookupTableFileName.Default= ogHazardLookupTable.png
 
 # external configuration options
 Config.Ice.Override.ConnectTimeout.Default=150

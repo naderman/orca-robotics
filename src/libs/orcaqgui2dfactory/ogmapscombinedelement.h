@@ -15,10 +15,13 @@
 #include <orcaqgui/icestormlistener.h>
 #include <orcaqgui2d/guielement2d.h>
 #include <orcaqgui2dfactory/connectutils.h>
-#include <orcaqgui2dfactory/multipleogmappainter.h>
+#include <orcaqgui2dfactory/ogmapscombinedpainter.h>
 
 namespace orcaqgui {
     
+// A GuiElement which can combine several (at the moment two) ogmaps
+// Subscribes to several (at the moment two) OgMap interfaces
+// Author: Tobias Kaupp
 class OgMapsCombinedElement : public GuiElement2d
 {
 
@@ -30,9 +33,9 @@ public:
     void update();
     bool needToUpdate();
     void paint( QPainter *p, int z ) 
-        { painter_.paint( p, z ); };
+        { painter_->paint( p, z ); };
     bool paintThisLayer( int z ) const
-        { return painter_.paintThisLayer(z); }
+        { return painter_->paintThisLayer(z); }
     
     virtual bool isInGlobalCS() { return true; }
     virtual void actionOnConnection();
@@ -46,7 +49,7 @@ private:
             orca::OgMapPrx,
             orca::OgMapConsumer,
             orca::OgMapConsumerPrx>* > listeners_;
-    MultipleOgMapPainter painter_;
+    OgMapsCombinedPainter* painter_;
     bool isConnected_;
 };
 
