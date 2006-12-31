@@ -88,6 +88,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - implementation of Home interface now returns dynamic information about component's interfaces. 
       Works for automatically when using std connect utilities, an option exist for custom Home data 
       manipulation. (alex m.)
+    - made 'component started' trace optional with Orca.PrintComponentStarted property. This is to be
+      nice to nonstandard display drivers, e.g. those using ncurses.
 - libOrcaProbeFactory (alex m.)
     - added support for Status and Tracer interfaces
 - libOrcaDef (alex m.)
