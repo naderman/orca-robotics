@@ -87,6 +87,10 @@ Behavior of libOrcaIce functions and classes can be influenced by setting severa
     - Print out all properties passed to the component? Includes hardwired defaults, global settings, properties from the component configuration file, and command line options.
     - Default: 0
 
+- @c Orca.PrintComponentStarted (bool)
+    - If this property is set to TRUE, a statement is printed to standard output when component initializationi is complete.
+    - Default: 0
+
 - @c Orca.RequireRegistry (bool)
     - When component activates it tries to register its adapter with the Registry. If it cannot connect (e.g. Registy is not running) it gets an exception. When indirect binding (using names) is used this makes a component with provided interfaces useless because nobody can connect to it. In this case requiring registry makes sense and the component should exit at this point. There are cases however when you may want to ignore this and continue with the startup.
     - Default: 1

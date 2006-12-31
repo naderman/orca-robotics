@@ -192,7 +192,9 @@ Service::start( const ::std::string        & name,
     try
     {
         component_->start();
-        initTracerPrint( component_->tag()+": Component started" );
+        if ( communicator->getProperties()->getPropertyAsInt( "Orca.PrintComponentStarted" ) ) {
+            initTracerPrint( component_->tag()+": Component started" );
+        }
     }
     catch ( Ice::Exception & e )
     {

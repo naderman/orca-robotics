@@ -97,7 +97,9 @@ public:
         //! a particular destination.
         AnyTrace,
         //! Number of trace types
-        NumberOfTraceTypes
+        NumberOfTraceTypes,
+        //! Other (not used by orcaice tracers)
+        OtherTrace
     };
 
     //! Types of destinations for traced information.
@@ -154,6 +156,36 @@ public:
     //! usage.
     virtual int verbosity( TraceType traceType, DestinationType destType ) const = 0;
 
+    static std::string toString( Tracer::TraceType type )
+    {
+        switch ( type ) 
+        {
+        case Tracer::InfoTrace :
+            return "info";
+        case Tracer::WarningTrace :
+            return "warn";
+        case Tracer::ErrorTrace :
+            return "error";
+        case Tracer::DebugTrace :
+            return "debug";
+        default :
+            return "other";
+        }
+    };
+
+    static Tracer::TraceType toTraceType( const std::string& category )
+    {
+        if ( category=="info" )
+            return Tracer::InfoTrace;
+        else if ( category=="warn" )
+            return Tracer::WarningTrace;
+        else if ( category=="error" )
+            return Tracer::ErrorTrace;
+        else if ( category=="debug" )
+            return Tracer::DebugTrace;
+        else
+            return Tracer::OtherTrace;
+    };
 };
 
 } // namespace

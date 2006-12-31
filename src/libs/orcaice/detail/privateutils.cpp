@@ -106,6 +106,7 @@ setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag
 
     // orca properties
     tempProperties->setProperty( "Orca.PrintProperties",       "0" );
+    tempProperties->setProperty( "Orca.PrintComponentStarted", "0" );
     tempProperties->setProperty( "Orca.RequireRegistry",       "1" );
 
     // @todo This is a big assumption.

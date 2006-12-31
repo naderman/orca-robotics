@@ -169,7 +169,11 @@ Application::run( int argc, char* argv[] )
     {
         component_.start();
         // for the components which hug the thread, eg. Qt-based, this will be printed at shutdown
-        initTracerPrint( component_.tag()+": Component started" );
+        // this is optional because after the comp is started we can't assume that dumping to cout 
+        // will produce the desired result (e.g. if ncurses are used)
+        if ( communicator()->getProperties()->getPropertyAsInt( "Orca.PrintComponentStarted" ) ) {
+            initTracerPrint( component_.tag()+": Component started" );
+        }
     }
     catch ( const orcaice::Exception & e )
     {
