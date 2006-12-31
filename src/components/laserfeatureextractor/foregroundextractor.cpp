@@ -52,7 +52,8 @@ void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserD
 {
     assert( laserMaxRange_ > 0.0 );
 
-    double angleIncrement = laserData->fieldOfView / (double)(laserData->ranges.size()+1);
+    double angleIncrement = orcaice::calcAngleIncrement( laserData->fieldOfView,
+                                                         laserData->ranges.size() );
     std::vector<orca_polefinder::positionRB> poles;
     double startAngleFromDodge = DEG2RAD( 2.0 );
 

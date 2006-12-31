@@ -21,7 +21,7 @@ namespace laserfeatures {
 
 static double laserScanBearing( const orca::RangeScanner2dDataPtr & scan, const int i )
 {
-    double angleIncrement = scan->fieldOfView / double(scan->ranges.size()+1);
+    double angleIncrement = orcaice::calcAngleIncrement( scan->fieldOfView, scan->ranges.size() );
     return (scan->startAngle + angleIncrement*i);
 }
 

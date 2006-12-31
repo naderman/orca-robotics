@@ -23,7 +23,9 @@ class ReflectorExtractor : public IExtractor
 
 public: 
 
-    ReflectorExtractor( const orcaice::Context & context, double laserMaxRange, int numReturns );
+    ReflectorExtractor( const orcaice::Context &context,
+                        double laserMaxRange,
+                        int numReturns );
 
     // Adds laser features to the 'features' data structure
     void addFeatures( const orca::LaserScanner2dDataPtr    &laserData,

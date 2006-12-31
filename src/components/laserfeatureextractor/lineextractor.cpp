@@ -64,7 +64,8 @@ void LineExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
 {
 //     cout<<"TRACE(lineextractor.cpp): ------------------- addFeatures() --------------------" << endl;
 
-    double angleIncrement = laserData->fieldOfView / (double)(laserData->ranges.size()+1);
+    double angleIncrement = orcaice::calcAngleIncrement( laserData->fieldOfView, 
+                                                         laserData->ranges.size() );
     
     std::vector<Section> sections;
 
