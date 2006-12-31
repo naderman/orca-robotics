@@ -68,6 +68,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New libraries
 
+- orcaifaceimpl
+  - Optional convenience library providing default implementations of some Orca interfaces (Alex B.)
+
 @par Updated interfaces
 
 @par Updated components
