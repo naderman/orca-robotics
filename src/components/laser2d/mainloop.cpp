@@ -19,11 +19,11 @@ using namespace orca;
 
 namespace laser2d {
 
-MainLoop::MainLoop( LaserScanner2dI        &laserObj,
+MainLoop::MainLoop( orcaifaceimpl::LaserScanner2dI &laserInterface,
                     Driver                 *hwDriver,
                     bool                    compensateRoll,
                     const orcaice::Context &context )
-    : laserObj_(laserObj),
+    : laserInterface_(laserInterface),
       hwDriver_(hwDriver),
       compensateRoll_(compensateRoll),
       context_(context)
@@ -41,7 +41,7 @@ MainLoop::activate()
     {
         try {
             context_.activate();
-            break;
+            return;
         }
         catch ( orcaice::Exception & e )
         {
@@ -60,6 +60,28 @@ MainLoop::activate()
             context_.tracer()->warning( "MainLoop::activate(): caught unknown exception." );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+    }
+}
+
+void
+MainLoop::establishInterface()
+{
+    while ( isActive() )
+    {
+        try {
+            laserInterface_.initInterface();
+            context_.tracer()->debug( "Activated Laser interface" );
+            return;
+        }
+        catch ( orcaice::Exception &e )
+        {
+            context_.tracer()->warning( std::string("MainLoop::establishInterface(): ") + e.what() );
+        }
+        catch ( ... )
+        {
+            context_.tracer()->warning( "MainLoop::establishInterface(): caught unknown exception." );
+        }
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 }
 
@@ -111,7 +133,7 @@ MainLoop::readData( orca::LaserScanner2dDataPtr & data )
         std::reverse( data->intensities.begin(), data->intensities.end() );
     }
 
-    laserObj_.localSetData( data );
+    laserInterface_.localSetAndSend( data );
 
     return 0;
 }
@@ -124,6 +146,7 @@ MainLoop::run()
 
     // Catches all its exceptions.
     activate();
+    establishInterface();
 
     hwDriver_->init();
 

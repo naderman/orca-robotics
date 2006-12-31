@@ -612,6 +612,17 @@ toString( const orca::Position2dData& obj )
     return s.str();
 }
 
+std::string
+toString( const orca::Twist2d &t )
+{
+    std::ostringstream s;
+    s << " Twist2d: (v.x,v.y,w): ("
+      << t.v.x << ", "
+      << t.v.y << ", "
+      << t.w*180.0/M_PI << "deg)";
+    return s.str();
+}
+
 std::string 
 toString( const orca::Position3dData& obj )
 {

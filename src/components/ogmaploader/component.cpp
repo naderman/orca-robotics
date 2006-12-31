@@ -13,9 +13,6 @@
 #include "fakemaploader.h"
 #include "maploader.h"
 
-// implementations of Ice objects
-#include "ogmapI.h"
-
 using namespace std;
 using namespace orca;
 
@@ -66,9 +63,10 @@ Component::start()
     //
     // EXTERNAL PROVIDED INTERFACES
     //
-    // create servant for direct connections
-    ogMapObj_ = new OgMapI( theMap, "OgMap", context() );
-    orcaice::createInterfaceWithTag( context(), ogMapObj_, "OgMap" );
+
+    ogMapInterface_ = new orcaifaceimpl::OgMapI( "OgMap", context() );
+    ogMapInterface_->localSetAndSend( theMap );
+    ogMapInterface_->initInterface();
 
     ////////////////////////////////////////////////////////////////////////////////
 

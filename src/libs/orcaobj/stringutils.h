@@ -200,6 +200,8 @@ std::string toString( const orca::FeatureMap2dDataPtr& );
 //! Converts to string
 std::string toString( const orca::Position2dData& );
 //! Converts to string
+std::string toString( const orca::Twist2d& );
+//! Converts to string
 std::string toString( const orca::Position3dData& );
 //! Converts to string
 std::string toString( const orca::Position3dDescription& );

@@ -47,15 +47,21 @@ IF ( BUILD_LASER2D )
 
     # build common sources into a convenience library
     BUILD_COMPONENT_SOURCES( Laser2dSources )
-    
+
+    SET( DEP_LIBS
+      Laser2dSources
+      ${PLAYERCLIENT_LIBS}
+      ${SICKCARMEN_LIBS}
+      OrcaIfaceImpl )
+
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( laser2d main )
-    TARGET_LINK_LIBRARIES( laser2d Laser2dSources ${PLAYERCLIENT_LIBS} ${SICKCARMEN_LIBS} )
+    TARGET_LINK_LIBRARIES( laser2d ${DEP_LIBS} )
     
     IF ( NOT OS_WIN )
         # build IceBox service
         GLOBAL_ADD_LIBRARY( OrcaLaser2d SHARED service )
-        TARGET_LINK_LIBRARIES( OrcaLaser2d Laser2dSources ${PLAYERCLIENT_LIBS} ${SICKCARMEN_LIBS} )
+        TARGET_LINK_LIBRARIES( OrcaLaser2d ${DEP_LIBS} )
     ENDIF ( NOT OS_WIN )
 
     GENERATE_CONFIG_FILE( laser2d.def )

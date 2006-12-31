@@ -17,22 +17,20 @@
 #include <orca/laserscanner2d.h>
 
 // utilities
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/ptrproxy.h>
 #include <orcaice/context.h>
 
-namespace laser2d {
+namespace orcaifaceimpl {
 
-//
-// Implements the Laser interface: Handles all our remote calls.
-//
-// The component interacts with this thing through the (thread-safe) buffers.
-//
+//!
+//! Implements the Localise2d interface: Handles remote calls.
+//!
 class LaserScanner2dI : public virtual orca::LaserScanner2d
 {
 public:
-    LaserScanner2dI( const orca::RangeScanner2dDescription& descr,
-                     const std::string              &ifaceTag,
-                     const orcaice::Context         &context );
+    LaserScanner2dI( const orca::RangeScanner2dDescription &descr,
+                     const std::string                     &ifaceTag,
+                     const orcaice::Context                &context );
 
     //
     // Remote calls:
@@ -40,7 +38,7 @@ public:
 
     virtual ::orca::RangeScanner2dDataPtr     getData(const ::Ice::Current& ) const;
 
-    virtual ::orca::RangeScanner2dDescription   getDescription(const ::Ice::Current& ) const;
+    virtual ::orca::RangeScanner2dDescription getDescription(const ::Ice::Current& ) const;
 
     virtual void subscribe(const ::orca::RangeScanner2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
@@ -50,22 +48,27 @@ public:
     //
     // Local calls:
     //
-    void localSetData( const ::orca::LaserScanner2dDataPtr data );
+
+    // may throw orcaice::Exceptions
+    void initInterface();
+    // A local call which sets the data reported by the interface, 
+    // and sends it through IceStorm
+    void localSetAndSend( const ::orca::LaserScanner2dDataPtr &data );
 
 private:
 
-    // the driver will put the latest data into this buffer
-    orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> dataBuffer_;
+    // Holds the latest data
+    orcaice::PtrProxy<orca::LaserScanner2dDataPtr> dataProxy_;
 
-    orca::RangeScanner2dDescription  descr_;
+    orca::RangeScanner2dDescription descr_;
 
     // The topic to which we'll publish
-    IceStorm::TopicPrx             topicPrx_;
+    IceStorm::TopicPrx              topicPrx_;
     // The interface to which we'll publish
-    orca::RangeScanner2dConsumerPrx  consumerPrx_;
+    orca::RangeScanner2dConsumerPrx consumerPrx_;
 
-    std::string                    ifaceTag_;
-    orcaice::Context               context_;
+    std::string                     ifaceTag_;
+    orcaice::Context                context_;
 };
 
 } // namespace

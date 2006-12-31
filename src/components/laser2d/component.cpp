@@ -12,9 +12,6 @@
 #include "component.h"
 #include "mainloop.h"
 
-// implementations of Ice objects
-#include "laserscanner2dI.h"
-
 // Various bits of hardware we can drive
 #include "driver.h"
 #include "fakedriver.h"
@@ -149,23 +146,16 @@ Component::start()
     descr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr.size );
 
     //
-    // EXTERNAL PROVIDED INTERFACE: LaserScanner2d
+    // EXTERNAL PROVIDED INTERFACE
     //
 
-    // create servant for direct connections
-    // need the derived pointer to call custom functions
-    LaserScanner2dI *laserScanner2dI = new LaserScanner2dI( descr, "LaserScanner2d", context() );
-    // to register with the adapter, it's enough to have a generic pointer
-    laserObj_ = laserScanner2dI;
-    // this may throw but it's better if it kills us.
-    orcaice::createInterfaceWithTag( context(), laserObj_, "LaserScanner2d" );
-
+    laserInterface_ = new orcaifaceimpl::LaserScanner2dI( descr, "LaserScanner2d", context() );
 
     //
     // MAIN DRIVER LOOP
     //
 
-    mainLoop_ = new MainLoop( *laserScanner2dI,
+    mainLoop_ = new MainLoop( *laserInterface_,
                                hwDriver_,
                                compensateRoll,
                                context() );

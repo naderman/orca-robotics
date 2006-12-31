@@ -12,8 +12,9 @@
 #include <QPainter>
 
 #include <orcaqgui/ihumanmanager.h>
-
+#include <orcaice/orcaice.h>
 #include "ogmappainter.h"
+#include <orcaqgui/exceptions.h>
 
 using namespace orcaqgui;
 using namespace std;
@@ -44,9 +45,11 @@ OgMapPainter::setData( const orca::OgMapData& data )
     // alexm: why do we save this big mother?
     data_ = data;
 
-    if ( data.origin.o != 0.0 ) {
-        cout << "ERROR(ogmappainter.cpp): Don't know how to display a non-axis-aligned map." << endl;
-        return;
+    if ( data.origin.o != 0.0 ) 
+    {
+        stringstream ss;
+        ss << "OgMapPainter: Don't know how to display non-axis-aligned map: " << orcaice::toString( data );
+        throw Exception( ss.str() );
     }
     
     // assemble information to give to pixmapPainter

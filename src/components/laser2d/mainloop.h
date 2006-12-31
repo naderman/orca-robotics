@@ -12,9 +12,8 @@
 
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
-
+#include <orcaifaceimpl/laserscanner2dI.h>
 #include <orca/laserscanner2d.h>
-#include "laserscanner2dI.h"
 #include "driver.h"
 
 namespace laser2d {
@@ -29,7 +28,7 @@ class MainLoop : public orcaice::Thread
 
 public:
 
-    MainLoop( LaserScanner2dI        &laserObj,
+    MainLoop( orcaifaceimpl::LaserScanner2dI &laserInterface,
               Driver                 *hwDriver,
               bool                    compensateRoll,
               const orcaice::Context &context );
@@ -41,12 +40,14 @@ private:
 
     // Loops until activated
     void activate();
+    // Loops until established
+    void establishInterface();
 
     // Returns zero on succcess
     int readData( orca::LaserScanner2dDataPtr & data );
 
     // The laser object
-    LaserScanner2dI &laserObj_;
+    orcaifaceimpl::LaserScanner2dI &laserInterface_;
 
     // Generic driver for the hardware
     Driver *hwDriver_;

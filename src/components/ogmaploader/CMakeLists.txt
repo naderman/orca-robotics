@@ -20,14 +20,21 @@ IF ( REALLY_BUILD_OGMAPLOADER )
     
     # build common sources into a convenience library
     BUILD_COMPONENT_SOURCES( OgMapLoaderSources )
+
+    SET( DEP_LIBS
+      OgMapLoaderSources
+      OrcaOgMapLoad 
+      ${QT_QTGUI_LIBRARY} 
+      ${QT_QTCORE_LIBRARY}
+      OrcaIfaceImpl )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( ogmaploader main )
-    TARGET_LINK_LIBRARIES( ogmaploader OgMapLoaderSources OrcaOgMapLoad ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
+    TARGET_LINK_LIBRARIES( ogmaploader ${DEP_LIBS} )
     
     # build IceBox service
     GLOBAL_ADD_LIBRARY( OrcaOgMapLoader SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaOgMapLoader OgMapLoaderSources OrcaOgMapLoad ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
+    TARGET_LINK_LIBRARIES( OrcaOgMapLoader ${DEP_LIBS} )
 
     GENERATE_CONFIG_FILE( ogmaploader.def )
 

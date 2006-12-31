@@ -13,6 +13,7 @@
 
 #include <orca/laserscanner2d.h>
 #include <orcaice/component.h>
+#include <orcaifaceimpl/laserscanner2dI.h>
 
 namespace laser2d {
 
@@ -36,7 +37,7 @@ private:
     // need to store it as a member variable, even though the adapter will keep it alive
     // when the adapter dies on ctrl-c, this object would be destroyed trying to use the smart
     // pointer results in seg fault.
-    Ice::ObjectPtr laserObj_;
+    orcaifaceimpl::LaserScanner2dI *laserInterface_;
     
     //
     // HARDWARE INTERFACES
