@@ -65,8 +65,8 @@ Component::start()
     //
 
     ogMapInterface_ = new orcaifaceimpl::OgMapI( "OgMap", context() );
-    ogMapInterface_->localSetAndSend( theMap );
     ogMapInterface_->initInterface();
+    ogMapInterface_->localSetAndSend( theMap );
 
     ////////////////////////////////////////////////////////////////////////////////
 
