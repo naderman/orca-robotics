@@ -46,4 +46,5 @@ SET( SLICE_SOURCE_FILES
     imu.ice
     pointcloud.ice
     tracer.ice
+    wifi.ice
 )
