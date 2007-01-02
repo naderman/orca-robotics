@@ -33,7 +33,7 @@ void normalise( orca::Localise2dData& obj );
 //! Calculates the angle increment for a range scan.
 //! This is in a special function because it's easy to forget the '+1'
 inline double calcAngleIncrement( double fieldOfView, int numReturns )
-{ return fieldOfView / double(numReturns+1); }
+{ return fieldOfView / double(numReturns-1); }
 
 //! Returns the @b reference to max-likelihood hypothesis.
 const orca::Pose2dHypothesis& mlHypothesis( const orca::Localise2dData& obj );
