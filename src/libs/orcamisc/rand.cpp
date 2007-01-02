@@ -27,30 +27,36 @@ normalRand( float mean, float std )
    return x1 * std + mean;
 }
 
-float 
-randNum( float minVal, float maxVal )
+double
+randNum( double minVal, double maxVal )
 {
     assert( maxVal > minVal );
+    if ( !(maxVal > minVal) )
+    {
+        std::stringstream ss;
+        ss << "randNum: expected a range, got minVal="<<minVal<<", maxVal="<<maxVal;
+        throw( ss.str() );
+    }
 
     // RAND_MAX/(RAND_MAX+1) == 1.0 due to numerical accuracy.
     // Make sure this doesn't happen.
     while ( true )
     {
-        float range = maxVal-minVal;
-        float r = (float)((rand() / (RAND_MAX + 1.0)));
+        double range = maxVal-minVal;
+        double r = (rand() / (RAND_MAX + 1.0));
 
-        float ret = (r*range) + minVal;
+        double ret = (r*range) + minVal;
         if ( ret != maxVal )
             return ret;
     }
 }
 
-float 
-randNumInclusive( float minVal, float maxVal )
+double 
+randNumInclusive( double minVal, double maxVal )
 {
     assert( maxVal >= minVal );
-    float range = maxVal-minVal;
-    float r = (float)((rand() / ((float)RAND_MAX)));
+    double range = maxVal-minVal;
+    double r = (rand() / ((double)RAND_MAX));
 
     return (r*range) + minVal;
 }
