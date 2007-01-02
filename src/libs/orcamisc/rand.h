@@ -12,30 +12,30 @@
 namespace orcamisc {
 
     // Fuck you, windows.
-    // const float INV_SQRT_TWO_PI = 1/sqrt(2*M_PI);
-    const float INV_SQRT_TWO_PI = (float)(1.0/std::sqrt(2*3.14159265358979));
+    // const double INV_SQRT_TWO_PI = 1/sqrt(2*M_PI);
+    const double INV_SQRT_TWO_PI = (double)(1.0/std::sqrt(2*3.14159265358979));
 
     //! Returns the height of a 1D gaussian at 'dist' from the mean
-    inline float G( float dist, float sd )
-    { return (float)( (INV_SQRT_TWO_PI/sd) * std::exp( -(dist*dist)/(2.0*sd*sd) ) ); }
+    inline double G( double dist, double sd )
+    { return (double)( (INV_SQRT_TWO_PI/sd) * std::exp( -(dist*dist)/(2.0*sd*sd) ) ); }
 
     //! Returns the height of a 1D gaussian at 'dist' from the mean
-    inline float GCov( float dist, float cov )
-    { return (float)( (INV_SQRT_TWO_PI/std::sqrt(cov)) * std::exp( -(dist*dist)/(2.0*cov) ) ); }
+    inline double GCov( double dist, double cov )
+    { return (double)( (INV_SQRT_TWO_PI/std::sqrt(cov)) * std::exp( -(dist*dist)/(2.0*cov) ) ); }
 
     //! The value of the two-dimensional axis-aligned gaussian with covariance xx,xy,yy,
     //! at the point 'diffs'.
-    inline float multiG( float xDiff, float yDiff, float xx, float yy )
+    inline double multiG( double xDiff, double yDiff, double xx, double yy )
     { return G(xDiff,std::sqrt(xx)) * G(yDiff,std::sqrt(yy)); }
 
     //! Normally-distributed random number
-    float normalRand( float mean, float std );
+    double normalRand( double mean, double std );
 
     //! returns a random number in the range [minVal,maxVal)
-    float randNum( float minVal, float maxVal );
+    double randNum( double minVal, double maxVal );
 
     //! returns a random number in the range [minVal,maxVal]
-    float randNumInclusive( float minVal, float maxVal );
+    double randNumInclusive( double minVal, double maxVal );
 }
 
 #endif

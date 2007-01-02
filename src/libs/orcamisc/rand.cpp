@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <iostream>
+#include <sstream>
 
 using namespace std; // for math functions in QNX
 
@@ -10,14 +11,14 @@ using namespace std; // for math functions in QNX
 
 namespace orcamisc {
 
-float
-normalRand( float mean, float std ) 
+double
+normalRand( double mean, double std ) 
 {
-   float x1, x2, w;
+   double x1, x2, w;
    do
    {
-      x1 = 2.0f * (float)rand( )/RAND_MAX - 1.0f;
-      x2 = 2.0f * (float)rand( )/RAND_MAX - 1.0f;
+      x1 = 2.0f * (double)rand( )/RAND_MAX - 1.0f;
+      x2 = 2.0f * (double)rand( )/RAND_MAX - 1.0f;
       w = x1*x1 + x2*x2;
    }
    while (w >= 1.0f || w < 1E-30);
