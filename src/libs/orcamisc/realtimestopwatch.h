@@ -1,3 +1,12 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
 #ifndef ORCAMISC_REALTIMESTOPWATCH_H
 #define ORCAMISC_REALTIMESTOPWATCH_H
 
@@ -13,6 +22,8 @@ namespace orcamisc {
 //! The 'start' and 'stop' buttons do the obvious thing.
 //! 'startWithoutReset' starts the clock ticking _without_ resetting first.
 //! 'reset' resets and stops the clock.
+//!
+//! Doesn't work under Windows.
 //!
 //! @sa CpuStopwatch
 //!
