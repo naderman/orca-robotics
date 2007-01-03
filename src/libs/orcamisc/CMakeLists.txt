@@ -15,3 +15,7 @@ ELSE(NOT OS_WIN)
 ENDIF(NOT OS_WIN)
 
 INSTALL_FILES( /include/orcamisc .*\\.h$ )
+
+IF ( BUILD_TESTS )
+  ADD_SUBDIRECTORY( test )
+ENDIF ( BUILD_TESTS )
