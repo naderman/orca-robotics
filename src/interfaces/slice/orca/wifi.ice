@@ -33,6 +33,36 @@ module orca
 //     //! Unparsed string with some wifi information, e.g. output of uname in Linux.
 //     string info;
 // };
+    
+module linkquality
+{
+    /** link quality is in dBm */
+    const int DBM       = 1;
+    /** link quality is relative */
+    const int RELATIVE  = 2;
+    /** link quality is unknown */
+    const int UNKNOWN   = 3;
+};
+
+module opmode
+{
+    /** unknown operating mode */
+    const int UNKNOWN        = 0;
+    /** driver decides the mode */
+    const int AUTO           = 1;
+    /** ad hoc mode */
+    const int ADHOC          = 2;
+    /** infrastructure mode (multi cell network, roaming) */
+    const int INFRASTRUCTURE = 3;
+    /** access point, master mode */
+    const int MASTER         = 4;
+    /** repeater mode */
+    const int REPEAT         = 5;
+    /** secondary/backup repeater */
+    const int SECONDREPEATER = 6;
+};
+
+
 
 /*!
  *  @brief Describes the data per wireless link.
@@ -41,16 +71,11 @@ module orca
 struct WifiLink
 {
   /** MAC address. */
-  int macCount;
   string macAddress;
   /** IP address. */
-  int ipCount;
   string ipAddress;
   /** ESSID. */
-  int essidCount;
   string essid;
-  /** Mode (master, adhoc, etc). */
-  int mode;
   /** Frequency [MHz]. */
   int frequency;
   /** Encryted?. */
@@ -73,8 +98,6 @@ struct WifiData
 {
     //! Time when data was measured.
     Time timeStamp;
-    /** length of said list */
-    int numLinks;
     /** A list of links */
     WifiLinks wirelessLinks;
     /** mysterious throughput calculated by driver */
