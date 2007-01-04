@@ -23,33 +23,33 @@ module orca
     @{
 */
     
-//! Link quality units, currently not used
-module linkquality
+//! Interpretation of link quality
+module linkqualitytype
 {
-    /** link quality is in dBm */
+    //! link quality type is unknown
+    const int UNKNOWN   = 0;
+    //! link quality is in dBm
     const int DBM       = 1;
-    /** link quality is relative */
+    //! link quality is relative
     const int RELATIVE  = 2;
-    /** link quality is unknown */
-    const int UNKNOWN   = 3;
 };
 
-//! Operation modes, currently not used
+//! Operation modes
 module opmode
 {
-    /** unknown operating mode */
+    //! unknown operating mode
     const int UNKNOWN        = 0;
-    /** driver decides the mode */
+    //! driver decides the mode
     const int AUTO           = 1;
-    /** ad hoc mode */
+    //! ad hoc mode
     const int ADHOC          = 2;
-    /** infrastructure mode (multi cell network, roaming) */
+    //! infrastructure mode (multi cell network, roaming)
     const int INFRASTRUCTURE = 3;
-    /** access point, master mode */
+    //! access point, master mode
     const int MASTER         = 4;
-    /** repeater mode */
+    //! repeater mode
     const int REPEAT         = 5;
-    /** secondary/backup repeater */
+    //! secondary/backup repeater
     const int SECONDREPEATER = 6;
 };
 
@@ -58,7 +58,8 @@ module opmode
 /*!
  *  @brief Contains information per wireless interface, e.g. eth1.
  * 
- *  All values are driver specific. This data structure resembles information from /proc/net/wireless.
+ *  All values are driver specific. This data structure resembles information from /proc/net/wireless
+ *  plus some information obtained from the kernel.
  *  Read man-page of iwconfig for detailed documentation of all fields.
  * 
  */
@@ -86,6 +87,25 @@ struct WifiInterface
     int numInvalidMisc;
     //! Missed beacon: number of periodic beacons from cell/access point we have missed
     int numMissedBeacons;
+    
+    //! Operating mode (see above)
+    int mode;
+    //! Bitrate
+    int bitrate;
+    //! Access point MAC address
+    string accessPoint;
+    
+    //! Throughput (TODO: what does it mean? unit?)
+    int throughPut;
+    //! How to interpret the link quality (see above)
+    int linkQualityType;
+    //! Maximum link quality
+    int maxLinkQuality;
+    //! Maximum signal level
+    int maxSignalLevel;
+    //! Maximum noise level
+    int maxNoiseLevel;
+    
 };
 
 //! A data structure which keeps individual wifi interfaces
