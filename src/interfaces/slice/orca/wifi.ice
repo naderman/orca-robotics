@@ -18,22 +18,12 @@ module orca
 /*!
     @ingroup interfaces
     @defgroup orca_interface_wifi Wifi
-    @brief Wireless signal data
+    @brief Wireless interfaces information
 
     @{
 */
-
-/*!
-    @brief Wireless signal information
-*/
-// struct WifiInfo
-// {
-//     //! Time when info was compiled.
-//     Time timeStamp;
-//     //! Unparsed string with some wifi information, e.g. output of uname in Linux.
-//     string info;
-// };
     
+//! Link quality units, currently not used
 module linkquality
 {
     /** link quality is in dBm */
@@ -44,6 +34,7 @@ module linkquality
     const int UNKNOWN   = 3;
 };
 
+//! Operation modes, currently not used
 module opmode
 {
     /** unknown operating mode */
@@ -65,31 +56,40 @@ module opmode
 
 
 /*!
- *  @brief Describes the data per wireless link.
+ *  @brief Contains information per wireless interface, e.g. eth1.
+ * 
+ *  All values are driver specific. This data structure resembles information from /proc/net/wireless.
+ *  Read man-page of iwconfig for detailed documentation of all fields.
  * 
  */
-struct WifiLink
+struct WifiInterface
 {
-  /** MAC address. */
-  string macAddress;
-  /** IP address. */
-  string ipAddress;
-  /** ESSID. */
-  string essid;
-  /** Frequency [MHz]. */
-  int frequency;
-  /** Encryted?. */
-  int encrypt;
-  /** Link quality */
-  int linkQuality;
-  /** Link level */
-  int linkLevel;
-  /** Link noise */
-  int linkNoise;
+    //! Interface name, e.g. eth1
+    string interfaceName;
+    //! Status (device-dependent)
+    int status;
+    //! Link quality
+    int linkQuality;
+    //! Signal level
+    int signalLevel;
+    //! Noise level
+    int noiseLevel;
+    //! Rx invalid nwid: number of packets received with a different NWID or ESSID.
+    int numInvalidNwid;
+    //! Rx invalid crypt: number of packets hardware was unable to decrypt
+    int numInvalidCrypt;
+    //! Rx invalid frag: number of packets not properly reassembled
+    int numInvalidFrag;
+    //! Tx excessive retries: number of packets hardware failed to deliver
+    int numRetries;
+    //! Invalid misc: other lost packets
+    int numInvalidMisc;
+    //! Missed beacon: number of periodic beacons from cell/access point we have missed
+    int numMissedBeacons;
 };
 
-//! A data structure which keeps individual wifi links
-sequence<WifiLink> WifiLinks;
+//! A data structure which keeps individual wifi interfaces
+sequence<WifiInterface> WifiInterfaces;
 
 /*!
     @brief Wireless signal data
@@ -98,24 +98,8 @@ struct WifiData
 {
     //! Time when data was measured.
     Time timeStamp;
-    /** A list of links */
-    WifiLinks wirelessLinks;
-    /** mysterious throughput calculated by driver */
-    int throughput;
-    /** current bitrate of device */
-    int bitrate;
-    /** operating mode of device */
-    int mode;
-    /** Indicates type of link quality info we have */
-    int linkQualityType;
-    /** Maximum value for quality */
-    int maxLinkQuality;
-    /** Maximum value for level */
-    int maxLinkLevel;
-    /** Maximum value for noise. */
-    int maxNoiseLevel;
-    /** MAC address of current access point/cell */
-    string accessPointMacAddress;
+    //! A sequence of wireless interfaces
+    WifiInterfaces interfaces;
 };
 
 /*!
@@ -130,9 +114,6 @@ interface WifiConsumer
 //! Interface to Wifi information.
 interface Wifi
 {
-    //! Get general Wifi information.
-//     nonmutating CpuInfo getInfo();
-
     //! Get current Wifi data. Raises DataNotExistException if data is not available.
     nonmutating WifiData getData()
         throws DataNotExistException;
