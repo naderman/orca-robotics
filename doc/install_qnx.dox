@@ -25,6 +25,7 @@ QNX standard installation includes a minimum set of UNIX utilities. If you are g
 - GNU pkgconfig
 - GNU Text Utils
 - OpenSSH
+- Perl
 - Python
 
 Set up environment variables by adding this to $HOME/.profile
@@ -71,16 +72,18 @@ First, install Ice dependencies. You can download the ThirdPartySources archive 
 
 @verbatim
 $ tar -xzf expat-2.0.0.tar.gz
+$ cd expat-2.0.0
 $ ./configure --prefix=/opt/expat-2.0.0
 $ make
 # make install
 # ln -s /opt/expat-2.0.0 /opt/expat
 @endverbatim
 
-- @b libbzip2. The version which comes ZeroC is 1.0.3, it worked fine.
+- @b libbzip2. The version which comes from ZeroC is 1.0.3, it worked fine.
 
 @verbatim
 $ tar -xzf bzip2-1.0.3.tar.gz
+$ cd bzip2-1.0.3
 $ make
 # make install PREFIX=/opt/bzip2-1.0.3
 # ln -s /opt/bzip2-1.0.3 /opt/bzip2
@@ -90,7 +93,7 @@ $ make
 
 @verbatim
 $ tar -xzf db-4.5.20.NC.tar.gz
-$ cd build_unix
+$ cd db-4.5.20.NC/build_unix
 $ ../dist/configure --enable-cxx --prefix=/opt/db-4.5.20
 $ make
 $ QCC -A libdb_cxx-4.5S.a .libs/*.o
@@ -99,7 +102,16 @@ $ QCC -A libdb_cxx-4.5S.a .libs/*.o
 # ln -s /opt/db-4.5.20 /opt/db
 @endverbatim
 
-- @b libOpenSSL. I tried both a binary package v.0.9.7 and building v.0.9.8 (requires Perl5) with only limited success (some tests failed). I didn't try hard to fix it because I don't need SSL.
+- @b libOpenSSL. Build v.0.9.8 from source (requires Perl5). The binary package of 0.9.7 on the 3rd party CD didn't work. At the end some tests in IceSSL failed. I didn't try hard to fix it because I don't need SSL.
+
+@verbatim
+$ tar -xzf openssl-0.9.8b.tar.gz
+$ cd openssl-0.9.8b
+$ ./config --prefix=/opt/openssl-0.9.8b
+$ make
+# make install
+# ln -s /opt/openssl-0.9.8b /opt/openssl
+@endverbatim
 
 Now Ice itself. 
 
@@ -116,10 +128,10 @@ $ patch -p1 < ../ice311qnx.patch.txt
 - Configure
     - Edit [ICE-SRC]/config/Make.rules file. If you followed these installation instructions, simply uncomment the lines corresponding to BZIP2_HOME, DB_HOME, and EXPAT_HOME. Remove the question marks.
 @verbatim
-BZIP2_HOME			= /opt/bzip2
-DB_HOME				= /opt/db
-EXPAT_HOME		= /opt/expat
-OPENSSL_HOME    = /opt
+BZIP2_HOME      = /opt/bzip2
+DB_HOME	        = /opt/db
+EXPAT_HOME      = /opt/expat
+OPENSSL_HOME    = /opt/openssl
 @endverbatim
 
 - Compile and install.  Tests are optional, but in this case they are highly recommended.
@@ -127,7 +139,7 @@ OPENSSL_HOME    = /opt
 @verbatim
 $ make
 @endverbatim
-    - towards the end you'll get an error. You'll have to manually modify the auto-generated files. Add "#include <ctype.h>" to these two files:    
+        - towards the end you'll get an error. You'll have to manually modify the auto-generated files. Add "#include <ctype.h>" to these two files:    
 		- [ICE-SRC]/demo/Freeze/phonebook/NameIndex.cpp
 		- [ICE-SRC]/demo/Freeze/bench/BenchTypes.cpp
 	- continue compilation
