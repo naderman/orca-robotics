@@ -11,6 +11,8 @@
 #include <iostream>
 #include <assert.h>
 #include <sys/resource.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 namespace orcamisc {
 
@@ -37,3 +39,4 @@ CpuStopwatch::getTimeNow( struct timeval &now ) const
 }
 
 }
+
