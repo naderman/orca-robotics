@@ -20,6 +20,8 @@ SET( SLICE_SOURCE_FILES
     binaryindicator.ice
     binaryswitch.ice
     cpu.ice
+    drivebicycle.ice
+    drivedifferential.ice
     gps.ice
     home.ice
     rangescanner2d.ice
@@ -36,6 +38,7 @@ SET( SLICE_SOURCE_FILES
     status.ice
     ptz.ice 
     hand.ice
+    odometry2d.ice
     ogpatch.ice 
     localise2d.ice
     particle2d.ice
@@ -46,5 +49,6 @@ SET( SLICE_SOURCE_FILES
     imu.ice
     pointcloud.ice
     tracer.ice
+    velocitycontrol2d.ice
     wifi.ice
 )
