@@ -55,16 +55,22 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - Tracer
     - Remote access to component's traces, e.g. errors, warning, etc. Separated from the existing Status interface. 
+- DriveBicycle
+- DriveDifferential
+- Odometry2d
+    - Replaces Position2d which is now obsolete.
+- VelocityControl2d
+    - Replaces Platform2d which is now obsolete.
 
 @par New components
 
 - TracerMon (alex m.)
     - Connects to Tracer interface of a component and displays all trace statements.
 
-- IceGridMon (alex m.)
-    - Connects to the registry and installs itself as the Registry and Node Observer. Then all registry and node events are traced locally or remotely.
-
 @par New utilities
+
+- IceGridMon (alex m.)
+    - Connects to the registry and installs itself as the Registry and Node Observer. Then all registry and node events are traced locally or re
 
 @par New libraries
 
@@ -72,6 +78,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Optional convenience library providing default implementations of some Orca interfaces (Alex B.)
 
 @par Updated interfaces
+
+- Platform2d
+    - Obsolete. Use VelocityControl2d in new code.
+- Position2d
+    - Obsolete. Use Odometry2d in new code.
 
 @par Updated components
 
