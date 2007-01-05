@@ -1,3 +1,13 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
 #ifndef ORCA_IFACE_IMPL_UTIL_H
 #define ORCA_IFACE_IMPL_UTIL_H
 
@@ -6,6 +16,11 @@
 
 namespace orcaifaceimpl {
 
+    /*!
+        Tries to push to IceStorm. If fails tries to reconnect to IceStorm once. If reconnects
+        successfully, pushes the data, if not, ignores the problem until the next time. 
+        Catches all exceptions. 
+    */
     template<class ConsumerPrxType,
              class DataType>
     void

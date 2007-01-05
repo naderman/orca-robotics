@@ -46,7 +46,7 @@ For more information read the chapter on Slice in the Ice Manual <a href="http:/
 
 @par Adding support for you interface
 
-Optionally, consider creating tool plug-ins for your new interface. The following tools have a plug-in structure:
+Optionally, consider adding support for you interface in libraries and utilities. Library libOrcaObjects has many functions specialized for data objects, e.g. toString() and setSane(). The following tools have a plug-in structure:
     - @ref orca_util_orcaview2d
     - @ref orca_util_orcaview3d
     - @ref orca_component_logger
