@@ -16,11 +16,8 @@
 
 #include <orcaobj/initutils.h>
 #include <orcaobj/timeutils.h>
+#include <orcaobj/mathdefs.h>
 
-// M_PI is not defined after including cmath for the MS visual studio compiler?
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
 // Random doubles and integers
 #define RDOUBLE (rand()*M_PI)
 #define RINT    (rand())
@@ -32,7 +29,7 @@ namespace orcaice
 {
 
 void
-setInit( orca::Frame2d & obj )
+setInit( orca::Frame2d& obj )
 {
     obj.p.x = 0.0;
     obj.p.y = 0.0;
@@ -40,7 +37,7 @@ setInit( orca::Frame2d & obj )
 }
 
 void
-setInit( orca::Frame3d & obj )
+setInit( orca::Frame3d& obj )
 {
     obj.p.x = 0.0;
     obj.p.y = 0.0;
@@ -51,14 +48,22 @@ setInit( orca::Frame3d & obj )
 }
 
 void
-setInit( orca::Size2d & obj )
+setInit( orca::Twist2d& obj )
+{
+    obj.v.x = 0.0;
+    obj.v.y = 0.0;
+    obj.w   = 0.0;
+}
+
+void
+setInit( orca::Size2d& obj )
 {
     obj.l = 0.0;
     obj.w = 0.0;
 }
 
 void
-setInit( orca::Size3d & obj )
+setInit( orca::Size3d& obj )
 {
     obj.l = 0.0;
     obj.w = 0.0;
@@ -66,7 +71,7 @@ setInit( orca::Size3d & obj )
 }
 
 void
-setInit( orca::CartesianPoint & obj )
+setInit( orca::CartesianPoint& obj )
 {
     obj.x = 0.0;
     obj.y = 0.0;
@@ -74,14 +79,14 @@ setInit( orca::CartesianPoint & obj )
 }
 
 void
-setInit( orca::Time & obj )
+setInit( orca::Time& obj )
 {
     obj.seconds = 0;
     obj.useconds = 0;
 }
 
 void
-setInit( orca::Position2dData & obj )
+setInit( orca::Position2dData& obj )
 {
     orca::Time t;
     setInit( t );
@@ -106,13 +111,13 @@ setInit( orca::Waypoint2d & wp )
 }
 
 void 
-setSane( orca::Time & obj )
+setSane( orca::Time& obj )
 {
     obj = toOrcaTime( IceUtil::Time::now() );
 }
 
 void 
-setSane( orca::TimeOfDay & obj )
+setSane( orca::TimeOfDay& obj )
 {
     obj = toOrcaTimeOfDay( IceUtil::Time::now() );
 
@@ -122,7 +127,7 @@ setSane( orca::TimeOfDay & obj )
 }
 
 void 
-setSane( orca::Date & obj )
+setSane( orca::Date& obj )
 {
     obj = toOrcaDate( IceUtil::Time::now() );
 
@@ -132,48 +137,82 @@ setSane( orca::Date & obj )
 }
 
 void 
-setSane( orca::CartesianPoint2d & obj )
+setSane( orca::CartesianPoint2d& obj )
 {
-    obj.x = double(RINT%100000)/1000.0;
-    obj.y = double(RINT%100000)/1000.0;
+    obj.x = double(RINT%100000)/1000.0 - 50.0;
+    obj.y = double(RINT%100000)/1000.0 - 50.0;
 }
 
 void 
-setSane( orca::CartesianPoint & obj )
+setSane( orca::CartesianPoint& obj )
 {
-    obj.x = double(RINT%100000)/1000.0;
-    obj.y = double(RINT%100000)/1000.0;
-    obj.z = double(RINT%100000)/1000.0;
+    obj.x = double(RINT%100000)/1000.0 - 50.0;
+    obj.y = double(RINT%100000)/1000.0 - 50.0;
+    obj.z = double(RINT%100000)/1000.0 - 50.0;
 }
 
 void 
-setSane( orca::Frame2d & obj )
+setSane( orca::CartesianVelocity2d& obj )
 {
-    obj.p.x = double(RINT%100000)/1000.0;
-    obj.p.y = double(RINT%100000)/1000.0;
-    obj.o   = double(RINT%100000)/1000.0;
+    obj.x = double(RINT%100000)/1000.0 - 50.0;
+    obj.y = double(RINT%100000)/1000.0 - 50.0;
 }
 
 void 
-setSane( orca::Frame3d & obj )
+setSane( orca::CartesianVelocity& obj )
 {
-    obj.p.x = double(RINT%100000)/1000.0;
-    obj.p.y = double(RINT%100000)/1000.0;
-    obj.p.z = double(RINT%100000)/1000.0;
-    obj.o.r = double(RINT%100000)/1000.0;
-    obj.o.p = double(RINT%100000)/1000.0;
-    obj.o.y = double(RINT%100000)/1000.0;
+    obj.x = double(RINT%100000)/1000.0 - 50.0;
+    obj.y = double(RINT%100000)/1000.0 - 50.0;
+    obj.z = double(RINT%100000)/1000.0 - 50.0;
 }
 
 void 
-setSane( orca::Size2d & obj )
+setSane( orca::AngularVelocity& obj )
+{
+    obj.x = double(RINT%100000)/1000.0 - 50.0;
+    obj.y = double(RINT%100000)/1000.0 - 50.0;
+    obj.z = double(RINT%100000)/1000.0 - 50.0;
+}
+
+void 
+setSane( orca::Frame2d& obj )
+{
+    setSane( obj.p );
+    obj.o   = double(RINT%100000)/1000.0 - 50.0;
+}
+
+void 
+setSane( orca::Frame3d& obj )
+{
+    setSane( obj.p );
+    obj.o.r = double(RINT%100000)/1000.0 - 50.0;
+    obj.o.p = double(RINT%100000)/1000.0 - 50.0;
+    obj.o.y = double(RINT%100000)/1000.0 - 50.0;
+}
+
+void 
+setSane( orca::Twist2d& obj )
+{
+    setSane( obj.v );
+    obj.w   = double(RINT%100000)/1000.0 - 50.0;
+}
+
+void 
+setSane( orca::Twist& obj )
+{
+    setSane( obj.v );
+    setSane( obj.w );
+}
+
+void 
+setSane( orca::Size2d& obj )
 {
     obj.l = double(RINT%100000)/1000.0;
     obj.w = double(RINT%100000)/1000.0;
 }
 
 void 
-setSane( orca::Size3d & obj )
+setSane( orca::Size3d& obj )
 {
     obj.l = double(RINT%100000)/1000.0;
     obj.w = double(RINT%100000)/1000.0;
@@ -181,37 +220,41 @@ setSane( orca::Size3d & obj )
 }
 
 void 
-setSane( orca::Position2dData & obj )
+setSane( orca::Odometry2dData& obj )
 {
     orca::Time t;
     setSane( t );
     obj.timeStamp = t;
 
     setSane( obj.pose );
-    obj.motion.v.x = double(RINT%100000)/1000.0;
-    obj.motion.v.y = double(RINT%100000)/1000.0;
-    obj.motion.w = double(RINT%100000)/1000.0;
+    setSane( obj.motion );
+}
+
+void 
+setSane( orca::Position2dData& obj )
+{
+    orca::Time t;
+    setSane( t );
+    obj.timeStamp = t;
+
+    setSane( obj.pose );
+    setSane( obj.motion );
     obj.stalled=false;
 }
 
 void 
-setSane( orca::Position3dData & obj )
+setSane( orca::Position3dData& obj )
 {
     orca::Time t;
     setSane( t );
     obj.timeStamp = t;
 
     setSane( obj.pose );
-    obj.motion.v.x = double(RINT%100000)/1000.0;
-    obj.motion.v.y = double(RINT%100000)/1000.0;
-    obj.motion.v.z = double(RINT%100000)/1000.0;
-    obj.motion.w.x = double(RINT%100000)/1000.0;
-    obj.motion.w.y = double(RINT%100000)/1000.0;
-    obj.motion.w.z = double(RINT%100000)/1000.0;
+    setSane( obj.motion );
 }
 
 void 
-setSane( orca::GpsData & obj )
+setSane( orca::GpsData& obj )
 {
     orca::Time t;
     setSane( t );
@@ -234,7 +277,7 @@ setSane( orca::GpsData & obj )
 
 
 void 
-setSane( orca::GpsTimeData & obj )
+setSane( orca::GpsTimeData& obj )
 {
     orca::Time t;
     setSane( t );
@@ -246,7 +289,7 @@ setSane( orca::GpsTimeData & obj )
 
 
 void 
-setSane( orca::GpsMapGridData & obj )
+setSane( orca::GpsMapGridData& obj )
 {
     orca::Time t;
     setSane( t );
@@ -267,7 +310,7 @@ setSane( orca::GpsMapGridData & obj )
 }
 
 void 
-setSane( orca::PowerData & obj, int count )
+setSane( orca::PowerData& obj, int count )
 {
     orca::Time t;
     setSane( t );
@@ -289,7 +332,7 @@ setSane( orca::PowerData & obj, int count )
 }
 
 void 
-setSane( orca::Velocity2dCommand & obj )
+setSane( orca::Velocity2dCommand& obj )
 {
     orca::Time t;
     setSane( t );
@@ -301,7 +344,14 @@ setSane( orca::Velocity2dCommand & obj )
 }
 
 void 
-setSane( const orca::RangeScanner2dDataPtr & obj, int numberOfSamples )
+setSane( orca::DriveBicycleData& obj )
+{
+    obj.speed = double(RINT%100000)/1000.0 - 30.0;
+    obj.steerAngle = DEG2RAD( double(RINT%100000)/1000.0 - 50.0 );
+}
+
+void 
+setSane( const orca::RangeScanner2dDataPtr& obj, int numberOfSamples )
 {
     orca::Time t;
     setSane( t );
@@ -317,7 +367,7 @@ setSane( const orca::RangeScanner2dDataPtr & obj, int numberOfSamples )
 }
 
 void 
-setSane( const orca::LaserScanner2dDataPtr & obj, int numberOfSamples )
+setSane( const orca::LaserScanner2dDataPtr& obj, int numberOfSamples )
 {
     orca::Time t;
     setSane( t );
@@ -334,7 +384,7 @@ setSane( const orca::LaserScanner2dDataPtr & obj, int numberOfSamples )
 }
 
 void 
-setSane( orca::OgMapData & obj, int width, int height )
+setSane( orca::OgMapData& obj, int width, int height )
 {
     orca::Time t;
     setSane( t );
@@ -350,7 +400,7 @@ setSane( orca::OgMapData & obj, int width, int height )
 }
 
 void 
-setSane( orca::CameraData & obj, int width, int height )
+setSane( orca::CameraData& obj, int width, int height )
 {
     orca::Time t;
     setSane( t );

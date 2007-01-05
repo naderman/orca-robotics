@@ -527,6 +527,15 @@ toString( const orca::CpuData& obj )
 }
 
 std::string 
+toString( const orca::DriveBicycleData& obj )
+{
+    std::ostringstream s;
+    s  << " DriveBicycleData: speed=" << obj.speed <<"m";
+    s << " steerAngle=" << RAD2DEG(obj.steerAngle) <<"deg";
+    return s.str();
+}
+
+std::string 
 toString( const orca::GpsDescription& obj )
 {
     std::ostringstream s;

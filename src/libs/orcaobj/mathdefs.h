@@ -99,6 +99,13 @@ inline void NORMALISE_ANGLE( float &theta )
 //! Maximum of two numbers
 #define MAX(x, y)        (((x) > (y)) ? (x) : (y))
 #endif
+#ifndef APPLY_LIMITS
+//! Limits x to an interval between min_x and max_x.
+//! x must be a variable which can be assigned a value;
+//! Compares using less_than and greater_than.
+#define APPLY_LIMITS(max_x, x, min_x) \
+        if((x)>(max_x)) x=(max_x); if((x)<(min_x)) x=(min_x);
+#endif
 #ifndef NORM2
 //! Norm of a 2D vector
 #define NORM2(x, y)      (sqrt((x)*(x)+(y)*(y)))
