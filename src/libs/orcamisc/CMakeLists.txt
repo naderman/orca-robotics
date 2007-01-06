@@ -19,6 +19,10 @@ ELSE(NOT OS_WIN)
     "${CMAKE_CURRENT_SOURCE_DIR}/cpustopwatch.cpp" )
 ENDIF(NOT OS_WIN)
 
+IF( OS_QNX )
+    TARGET_LINK_LIBRARIES ( OrcaMisc m )
+ENDIF( OS_QNX )
+
 INSTALL_FILES( /include/orcamisc .*\\.h$ )
 
 IF ( BUILD_TESTS )
