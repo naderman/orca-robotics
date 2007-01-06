@@ -61,7 +61,7 @@ int main(int argc, char * argv[])
         orcaice::setSane( in );
         std::string s = orcaice::toString( in );
         int ret = orcaice::toCartesianPoint2d( s, out );
-        if ( ret || in != out ) {
+        if ( ret || !NEAR(in.x,out.x,1E-6) || !NEAR(in.y,out.y,1E-6) ) {
             cout<<"failed ("<<ret<<")"<<endl
                 <<"in ="<<orcaice::toString(in)<<endl
                 <<"str="<<s<<endl
@@ -77,7 +77,7 @@ int main(int argc, char * argv[])
         orcaice::setSane( in );
         std::string s = orcaice::toString( in );
         int ret = orcaice::toCartesianPoint( s, out );
-        if ( ret || in != out ) {
+        if ( ret || !NEAR(in.x,out.x,1E-6) || !NEAR(in.y,out.y,1E-6) || !NEAR(in.z,out.z,1E-6) ) {
             cout<<"failed ("<<ret<<")"<<endl
                 <<"in ="<<orcaice::toString(in)<<endl
                 <<"str="<<s<<endl
@@ -128,7 +128,7 @@ int main(int argc, char * argv[])
         orcaice::setSane( in );
         std::string s = orcaice::toString( in );
         int ret = orcaice::toSize2d( s, out );
-        if ( ret || in != out ) {
+        if ( ret || !NEAR(in.l,out.l,1E-6) || !NEAR(in.w,out.w,1E-6) ) {
             cout<<"failed ("<<ret<<")"<<endl
                 <<"in ="<<orcaice::toString(in)<<endl
                 <<"str="<<s<<endl
@@ -144,7 +144,7 @@ int main(int argc, char * argv[])
         orcaice::setSane( in );
         std::string s = orcaice::toString( in );
         int ret = orcaice::toSize3d( s, out );
-        if ( ret || in != out ) {
+        if ( ret || !NEAR(in.l,out.l,1E-6) || !NEAR(in.w,out.w,1E-6) || !NEAR(in.h,out.h,1E-6) ) {
             cout<<"failed ("<<ret<<")"<<endl
                 <<"in ="<<orcaice::toString(in)<<endl
                 <<"str="<<s<<endl
@@ -161,7 +161,7 @@ int main(int argc, char * argv[])
         in.useconds = 15;
         std::string s = orcaice::toStringDuration( in );
         int ret = orcaice::toTimeDuration( s, out );
-        if ( ret || in != out ) {
+        if ( ret || !NEAR(in.seconds,out.seconds,1E-6) || !NEAR(in.useconds,out.useconds,1E-6) ) {
             cout<<"failed ("<<ret<<")"<<endl
                 <<"in ="<<in.seconds<<" "<<in.useconds<<endl
                 <<"str="<<s<<endl
