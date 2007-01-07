@@ -15,9 +15,9 @@
 #include <unistd.h>
 // #include<sys/neutrino.h>
 
-#include "basics2.h"
-#include "timelib.h"
-#include "seriallib.h"
+#include "sickdefines.h"
+#include "time.h"
+#include "serial.h"
 #include "laser.h"
 
 // #define LASER_TIME_OFF   5000

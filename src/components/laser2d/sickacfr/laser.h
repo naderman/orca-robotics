@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-#include "basics2.h"
+#include "sickdefines.h"
 
 struct Laser
 {
