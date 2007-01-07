@@ -7,6 +7,10 @@ IF ( BUILD_LASER2D )
     
     INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/components/laser2d )
 
+    #
+    # Linux Drivers
+    #
+    
     SET( WE_CAN_BUILD_SICK_CARMEN_DRIVER 0 )
     SET( WE_CAN_BUILD_PLAYERCLIENT_DRIVER 0 )
     IF ( OS_LINUX )
@@ -43,6 +47,29 @@ IF ( BUILD_LASER2D )
         HAVE_CARMEN_DRIVER
     )
 
+    #
+    # QNX Drivers
+    #
+
+    SET( WE_CAN_BUILD_SICK_ACFR_DRIVER 0 )
+    IF ( OS_QNX )
+        # Has no outside dependencies, so we can always build it
+        SET( WE_CAN_BUILD_SICK_ACFR_DRIVER 1 )
+    ENDIF ( OS_QNX )
+
+    OPTIONAL_SUB_LIBRARY(
+        "SICK Acfr driver for Laser2d"
+        sickacfr
+        OrcaLaser2dSickAcfr
+        SICKACFR_LIBS
+        WE_CAN_BUILD_SICK_ACFR_DRIVER
+        HAVE_ACFR_DRIVER
+    )
+
+    #
+    # General stuff for all drivers
+    #
+
     ADD_SUBDIRECTORY ( sickutil )
 
     # build common sources into a convenience library
@@ -52,6 +79,7 @@ IF ( BUILD_LASER2D )
       Laser2dSources
       ${PLAYERCLIENT_LIBS}
       ${SICKCARMEN_LIBS}
+      ${SICKACFR_LIBS}
       OrcaIfaceImpl )
 
     # build stand-alone component  
