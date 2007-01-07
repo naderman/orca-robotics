@@ -29,16 +29,16 @@ struct DriveBicycleDescription
     double wheelBase;    
 
     //! Maximum forward speed [m/s]
-    double maxSpeed;
+    double maxSpeedForward;
 
     //! Maximum reverse speed [m/s]
-    double maxReverseSpeed;
+    double maxSpeedReverse;
 
-    //! Minimum steer angle [rad]
-    double minSteerAngle;
+    //! Maximum steer angle to the left [rad]
+    double maxSteerAngleLeft;
 
-    //! Maximum steer angle [rad]
-    double maxSteerAngle;
+    //! Maximum steer angle to the right [rad]
+    double maxSteerAngleRight;
 };
 
 //! Bicycle steering velocity command.

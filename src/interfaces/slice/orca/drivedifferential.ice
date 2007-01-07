@@ -26,19 +26,19 @@ module orca
 struct DriveDifferentialDescription
 {
     //! Distance between the wheels [m]
-    double track;    
+    double trackWidth;    
 
     //! Maximum left side speed [m/s]
-    double maxLeftSpeed;
+    double maxSpeedForwardLeft;
 
     //! Maximum right side speed [m/s]
-    double maxRightSpeed;
+    double maxSpeedForwardRight;
 
     //! Maximum left side reverse speed [m/s]
-    double maxLeftReverseSpeed;
+    double maxSpeedReverseLeft;
 
     //! Maximum right side reverse speed [m/s]
-    double maxRightReverseSpeed;
+    double maxSpeedReverseRight;
 
     //! Maximum speed differential [m/s]
     //! Maximum difference between speeds of the left and right sides.
@@ -50,10 +50,10 @@ struct DriveDifferentialDescription
 struct DriveDifferentialData
 {
     //! Left side speed [m/s]
-    double leftSpeed;
+    double speedLeft;
 
     //! Right side speed [m/s]
-    double rightSpeed;
+    double speedRight;
 };
 
 /*!
