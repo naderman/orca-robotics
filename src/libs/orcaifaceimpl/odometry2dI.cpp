@@ -19,11 +19,9 @@ using namespace std;
 namespace orcaifaceimpl {
 
 Odometry2dI::Odometry2dI( const orca::Odometry2dDescription& descr,
-                          double publishInterval,
                           const std::string& ifaceTag,
                           const orcaice::Context& context ) :
     descr_(descr),
-    publishInterval_(publishInterval),
     tag_(ifaceTag),
     context_(context)
 {
@@ -92,23 +90,25 @@ Odometry2dI::unsubscribe(const ::orca::Odometry2dConsumerPrx& subscriber, const 
 }
 
 void
+Odometry2dI::localSet( const orca::Odometry2dData& data )
+{
+    dataProxy_.set( data );
+}
+
+void
 Odometry2dI::localSetAndSend( const orca::Odometry2dData& data )
 {
-    //cout<<"TRACE(localise2dI.cpp): localSetData: " << orcaice::toString(data) << endl;
+//     cout<<"TRACE(Odometry2dI.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
 
     dataProxy_.set( data );
-    
-    if ( publishTimer_.elapsed().toSecondsDouble()>=publishInterval_ ) {
-        // Try to push to IceStorm.
-        tryPushToIceStormWithReconnect<orca::Odometry2dConsumerPrx,orca::Odometry2dData>
-            ( context_,
-            consumerPrx_,
-            data,
-            topicPrx_,
-            tag_ );
 
-        publishTimer_.restart();
-    }
+    // Try to push to IceStorm.
+    tryPushToIceStormWithReconnect<orca::Odometry2dConsumerPrx,orca::Odometry2dData>
+        ( context_,
+        consumerPrx_,
+        data,
+        topicPrx_,
+        tag_ );
 }
 
 } // namespace

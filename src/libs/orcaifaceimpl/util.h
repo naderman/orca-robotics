@@ -13,6 +13,7 @@
 
 #include <orcaice/context.h>
 #include <sstream>
+#include <iostream>
 
 namespace orcaifaceimpl {
 
@@ -30,6 +31,11 @@ namespace orcaifaceimpl {
                                     IceStorm::TopicPrx &topicPrx,
                                     const std::string  &ifaceTag )
     {
+        // check that communicator still exists
+        if ( !context.communicator() ) {
+            return;
+        }
+    
         try {
             consumerPrx->setData( data );
         }

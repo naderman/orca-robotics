@@ -16,7 +16,6 @@
 
 // utilities
 #include <orcaice/proxy.h>
-#include <orcaice/timer.h>
 #include <orcaice/context.h>
 
 namespace orcaifaceimpl {
@@ -29,7 +28,6 @@ class Odometry2dI : public orca::Odometry2d
 public:
     //! Set publishInterval to zero if you want every measurement to be pushed to IceStorm.
     Odometry2dI( const orca::Odometry2dDescription& descr,
-                 double publishInterval,
                  const std::string& ifaceTag, 
                  const orcaice::Context& context );
     virtual ~Odometry2dI();
@@ -64,6 +62,9 @@ while ( isActive() ) {
     */
     void initInterface();
 
+    //! A local call which sets the data reported by the interface
+    void localSet( const orca::Odometry2dData& data );
+
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
     void localSetAndSend( const orca::Odometry2dData& data );
@@ -76,12 +77,11 @@ private:
     orca::Odometry2dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;
 
-    orcaice::Timer publishTimer_;
-    double         publishInterval_;
-
     const std::string              tag_;
     orcaice::Context               context_;
 };
+
+typedef IceUtil::Handle<Odometry2dI> Odometry2dIPtr;
 
 }
 
