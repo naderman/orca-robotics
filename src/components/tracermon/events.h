@@ -31,7 +31,7 @@ enum EventType
     NewTraceMessage,
     NewLocalTrace
 };
-
+/*
 enum VerbosityType
 {
     ErrorType,
@@ -40,7 +40,7 @@ enum VerbosityType
     DebugType,
     NumberOfVerbosityTypes
 };
-
+*/
 class VerbosityLevelsChangedEvent : public orcaice::Event
 {
 public:

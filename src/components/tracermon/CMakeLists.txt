@@ -23,6 +23,8 @@ IF ( BUILD_TRACERMON )
         termutil
     )
 
+# curses exist in QNX but apparently don't support assume_default_colors() is not supported
+IF ( OS_LINUX )
     # keyboard driver with libncurses
     OPTIONAL_SUB_LIBRARY(
         "Terminal Ncurses driver for TracerMon"
@@ -33,6 +35,7 @@ IF ( BUILD_TRACERMON )
         HAVE_TERM_NCURSES_DRIVER
         termutil ncurses form
     )
+ENDIF ( OS_LINUX )
 
     FILE( GLOB SRCS *.cpp )
 
