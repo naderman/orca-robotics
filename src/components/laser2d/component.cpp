@@ -18,6 +18,9 @@
 #ifdef HAVE_CARMEN_DRIVER
 #  include "sickcarmen/sickcarmendriver.h"
 #endif
+#ifdef HAVE_ACFR_DRIVER
+#  include "sickacfr/sickacfrdriver.h"
+#endif
 #ifdef HAVE_PLAYERCLIENT_DRIVER
 #  include "playerclient/playerclientdriver.h"
 #endif
@@ -81,6 +84,15 @@ Component::start()
         hwDriver_ = new SickCarmenDriver( cfg, context() );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'sickcarmen' because it wasn't built!" );
+#endif
+    }
+    else if ( driverName == "sickacfr" )
+    {
+#ifdef HAVE_ACFR_DRIVER
+        context().tracer()->debug( "loading 'sickacfr' driver",3);
+        hwDriver_ = new SickAcfrDriver( cfg, context() );
+#else
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'sickacfr' because it wasn't built!" );
 #endif
     }
     else if ( driverName == "playerclient" )
