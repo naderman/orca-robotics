@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -31,9 +31,9 @@ int main( int argc, char **argv )
             int s2i = sub2ind( c, sx, sy );
             Cell2D i2s = ind2sub( s2i, sx, sy );
             int andback = sub2ind( i2s, sx, sy );
-            cout<<"TRACE(testconversions.cpp): Cell:    " << Cell2D(x,y) << endl;
-            cout<<"TRACE(testconversions.cpp): s2i:     " << s2i << endl;
-            cout<<"TRACE(testconversions.cpp): i2s:     " << i2s << endl;
+            cout<<"TRACE(testconversions.cpp): Cell:  " << Cell2D(x,y) << endl;
+            cout<<"TRACE(testconversions.cpp): s2i:   " << s2i << endl;
+            cout<<"TRACE(testconversions.cpp): i2s:   " << i2s << endl;
             cout<<"TRACE(testconversions.cpp): andback: " << andback << endl;       
     
             if ( (c != i2s) || ( s2i != andback ) ) 

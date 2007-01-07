@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -150,7 +150,7 @@ KEY_KEY_F            = 0x46,  // F key
 00089                 KEY_KEY_X            = 0x58,  // X key
 00090                 KEY_KEY_Y            = 0x59,  // Y key
 00091                 KEY_KEY_Z            = 0x5A,  // Z key
-00092                 KEY_LWIN             = 0x5B,  // Left Windows key (Microsoft® Natural® keyboard)
+00092                 KEY_LWIN             = 0x5B,  // Left Windows key (Microsoft Natural keyboard)
 00093                 KEY_RWIN             = 0x5C,  // Right Windows key (Natural keyboard)
 00094                 KEY_APPS             = 0x5D,  //Applications key (Natural keyboard)
 00095                 KEY_SLEEP            = 0x5F,  // Computer Sleep key
