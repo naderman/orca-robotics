@@ -1,11 +1,21 @@
-// Jose Guivant, Ben Upcroft
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2006 Jose Guivant, Ben Upcroft
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
 
 #ifndef ORCA2_LASER2D_SICK_ACFR_LASER_H
 #define ORCA2_LASER2D_SICK_ACFR_LASER_H
 
-#include "basics2.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-namespace laser2d {
+#include "basics2.h"
 
 struct Laser
 {
@@ -39,7 +49,6 @@ struct Laser
 	int FlagBye ;
 };	
 
-
 void* IniLaserInstance(unsigned int n, int speed0, int speed2, int init, int serialPort)
 ;
 
@@ -62,7 +71,10 @@ struct sic_packet		// laser packet
 	xuint16 Status ;
 };
 
-} // namespace
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif
 

@@ -186,7 +186,7 @@ static void parse_SICK_LASER(struct sic_packet *pxxx,unsigned char *string,struc
         //to avoid sending to net at high freq (75hz...)      
 		if (dt>=pxl->DtMinTx)			
 		{	
-		    // printf("--->timestamp = %d\n",pxl->sp->timestamp ) ;
+		    printf("--->timestamp = %d\n",pxl->sp->timestamp ) ;
 
 			/* HERE IS THE LASER FRAME --> DO SOMETHING with IT.
 

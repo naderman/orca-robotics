@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -138,7 +138,8 @@ SickAcfrDriver::init( )
     // tell the laser to start sending data
     //
     // int ret = IniLaserInstance(1,9600,38400,1, 1);   //lsr2  , 38Kbps  , /dev/ser1);
-    IniLaserInstance(1,9600,38400,1, 1);   //lsr2  , 38Kbps  , /dev/ser1);
+    IniLaserInstance(1,9600,38400,1, 1);   //lsr1  , 38Kbps  , /dev/ser1);
+
 /*    if ( ret == 0 )
     {
         context_.tracer()->info( "connect succeeded." );

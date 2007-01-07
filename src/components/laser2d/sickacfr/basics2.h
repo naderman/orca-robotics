@@ -1,8 +1,6 @@
 #ifndef ORCA2_LASER2D_SICK_ACFR_BASICS_H
 #define ORCA2_LASER2D_SICK_ACFR_BASICS_H
 
-namespace laser2d {
-
 typedef  void*(*FunciThread)(void* )  ;
 
 
@@ -63,8 +61,5 @@ extern char *GivemeStrEntry(char *head) ;
 //#include "..\includeL\SequenceSrvc.h"
 #include "seriallib.h" 
 //#include "..\includeL\serial_libZ.h" 
-
-} // namespace
-
 
 #endif
