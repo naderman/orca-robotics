@@ -96,7 +96,6 @@ public:
 public slots:
     void savePathAs();
     void savePath();
-    void loadPathFromFile();
     void waypointSettingsDialog();
     void waypointModeSelected();
     void send();

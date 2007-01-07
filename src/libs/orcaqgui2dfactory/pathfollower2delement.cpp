@@ -53,8 +53,8 @@ PathfollowerButtons::PathfollowerButtons( QObject *parent, IHumanManager *humanM
     QPixmap sendIcon(send_xpm);
     QPixmap cancelIcon(cancel_xpm);
 
-    QAction* fileOpenPath = new QAction(openIcon, QString(proxyString.c_str()) + "\n" + "Open PathFollower Path File", this );
-    connect(fileOpenPath, SIGNAL(activated()), parent, SLOT(loadPathFromFile()));
+//     QAction* fileOpenPath = new QAction(openIcon, QString(proxyString.c_str()) + "\n" + "Open PathFollower Path File", this );
+//     connect(fileOpenPath, SIGNAL(activated()), parent, SLOT(loadPathFromFile()));
     QAction* fileSavePathAs = new QAction(saveAsPathIcon, QString(proxyString.c_str()) + "\n" + "Save PathFollower Path As", this );
     connect(fileSavePathAs, SIGNAL(activated()), parent, SLOT(savePathAs()));
     QAction* fileSavePath = new QAction(savePathIcon, QString(proxyString.c_str()) + "\n" + "Save PathFollower Path", this );
@@ -74,7 +74,7 @@ PathfollowerButtons::PathfollowerButtons( QObject *parent, IHumanManager *humanM
     QAction* hiStop = new QAction(stopIcon, QString(proxyString.c_str()) + "\n" + "&PathFollower Stop All Robots", this);
     connect( hiStop, SIGNAL(activated()), parent, SLOT(stop()) ); 
 
-    humanManager->fileMenu()->addAction(fileOpenPath);
+//     humanManager->fileMenu()->addAction(fileOpenPath);
     humanManager->fileMenu()->addAction(fileSavePathAs);
     humanManager->fileMenu()->addAction(fileSavePath);
 
@@ -248,8 +248,7 @@ PathFollower2dElement::contextMenu()
         s << "Enable interface";
     }
     
-    s << "Load path..."
-      << "Save path as..."
+    s << "Save path as..."
       << "Save path";
     return s;
 }
@@ -279,13 +278,9 @@ PathFollower2dElement::execute( int action )
     }
     else if ( action == 4 )
     {
-        pathHI_.loadPathFromFile();
-    }
-    else if ( action == 5 )
-    {
         pathHI_.savePathAs();
     }
-    else if ( action == 6 )
+    else if ( action == 5 )
     {
         pathHI_.savePath();
     }
@@ -541,26 +536,6 @@ PathFollowerHI::lostMode()
     pathInput_ = NULL;
     buttons_->setWpButton( false );
     gotMode_ = false;
-}
-
-void 
-PathFollowerHI::loadPathFromFile()
-{
-    QString fileName = QFileDialog::getOpenFileName(
-            0,
-            "Choose a path file to open", 
-            pathFileName_,
-            "*.txt");
-
-    if (!fileName.isEmpty())
-    {
-        waypointModeSelected();
-        if ( !gotMode_ )
-            return;
-        pathInput_->loadDataFromFile( &fileName );
-        pathFileName_ = fileName;
-        pathFileSet_ = true;
-    }
 }
 
 void 

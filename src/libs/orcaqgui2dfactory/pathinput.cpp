@@ -32,7 +32,21 @@ using namespace std;
 
 namespace orcaqgui {
     
-const int NUM_COLUMNS = 8;
+enum ColumnDataType {
+    AbsoluteTime = 0,
+    WaitingTime,
+    Velocity,
+    Behaviour,
+    WaypointX,
+    WaypointY,
+    Heading,
+    DistanceTolerance,
+    HeadingTolerance,
+    MaxApproachSpeed,
+    MaxApproachTurnRate,
+    NumColumns
+};
+
 
 float straightLineDist( QPointF line )
 {
@@ -41,24 +55,33 @@ float straightLineDist( QPointF line )
 
 WpWidget::WpWidget( PathInput *pathInput,
                     QPolygonF *waypoints, 
-                    QVector<float> *times, 
-                    QVector<float> *waitingTimes)
+                    QVector<int> *headings,
+                    QVector<float> *times,
+                    QVector<float> *waitingTimes,
+                    QVector<float> *distTolerances,
+                    QVector<int> *headingTolerances,
+                    QVector<float> *maxSpeeds,
+                    QVector<int> *maxTurnrates)
     : pathInput_(pathInput),
       pathFileSet_(false),
       pathFileName_("/tmp")
 {
-    wpTable_ = new WpTable( this, pathInput, waypoints, times, waitingTimes );
+    wpTable_ = new WpTable( this, pathInput, waypoints, headings, times, waitingTimes, distTolerances, headingTolerances, maxSpeeds, maxTurnrates );
     QPushButton *generatePath = new QPushButton(tr("Generate Full Path"), this);
     QPushButton *savePath = new QPushButton(tr("Save Path"), this);
+    QPushButton *loadPath = new QPushButton(tr("Load Path"), this);
     
     QObject::connect(generatePath,SIGNAL(clicked()),pathInput,SLOT(generateFullPath()));
     QObject::connect(savePath,SIGNAL(clicked()),this,SLOT(savePath()));
+    QObject::connect(loadPath,SIGNAL(clicked()),this,SLOT(loadPath()));
     
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(wpTable_);
     layout->addWidget(generatePath);
     layout->addWidget(savePath);
+    layout->addWidget(loadPath);
     setLayout(layout);
+    this->show();
 }
 
 void WpWidget::refreshTable()
@@ -95,20 +118,54 @@ WpWidget::savePath()
         pathInput_->savePath( pathFileName_ );
     }
 }
+
+void 
+WpWidget::loadPath()
+{
+    QString fileName = QFileDialog::getOpenFileName(
+            0,
+            "Choose a path file to open", 
+            pathFileName_,
+            "*.txt");
+
+    if (!fileName.isEmpty())
+    {
+        pathInput_->loadPath( &fileName );
+        pathFileName_ = fileName;
+        pathFileSet_ = true;
+    }
+}
     
 WpTable::WpTable( QWidget *parent,
                  PathInput *pathInput,
                  QPolygonF *waypoints, 
-                 QVector<float> *times, 
-                 QVector<float> *waitingTimes)
+                 QVector<int> *headings,
+                 QVector<float> *times,
+                 QVector<float> *waitingTimes,
+                 QVector<float> *distTolerances,
+                 QVector<int> *headingTolerances,
+                 QVector<float> *maxSpeeds,
+                 QVector<int> *maxTurnrates )
     : QTableWidget( parent ),
       pathInput_(pathInput),
       waypoints_(waypoints),
+      headings_(headings),
       times_(times),
       waitingTimes_(waitingTimes),
+      distTolerances_(distTolerances),
+      headingTolerances_(headingTolerances),
+      maxSpeeds_(maxSpeeds),
+      maxTurnrates_(maxTurnrates),
       isLocked_(true)
 { 
-    setColumnCount(NUM_COLUMNS);
+    setColumnCount(NumColumns);
+        
+    QStringList columnHeaders;
+    columnHeaders << "Abs. time [s]" << "Waiting time [s]" << "Velocity [m/s]" << "Behaviour"
+                  << "Wp x [m]" << "Wp y [m]" << "Heading [deg]" << "Dist. tol. [m]" << "Head. tol. [deg]" 
+                  << "Max App. Speed [m/s]" << "Max App. Turnrate [deg/s]";
+    setHorizontalHeaderLabels( columnHeaders );
+    
     QObject::connect(this,SIGNAL(cellChanged(int,int)),this,SLOT(updateDataStorage(int,int)));
     QObject::connect(this,SIGNAL(cellClicked(int,int)),pathInput,SLOT(setWaypointFocus(int,int)));
 }
@@ -119,7 +176,7 @@ void WpTable::refreshTable()
     isLocked_ = true;
     
     int size = waypoints_->size();
-    clear();
+    clearContents();
     setRowCount(size);
     
     QString str;
@@ -129,25 +186,45 @@ void WpTable::refreshTable()
     
     for (int row=0; row<size; row++)
     {
-        str.setNum(waypoints_->at(row).x(),'g',4);
-        item = new QTableWidgetItem(str);
-        setItem(row, 0, item);
-        
-        str.setNum(waypoints_->at(row).y(),'g',4);
-        item = new QTableWidgetItem(str);
-        setItem(row, 1, item);
-        
         str.setNum(times_->at(row),'g',4);
         item = new QTableWidgetItem(str);
-        setItem(row, 2, item);
+        setItem(row, AbsoluteTime, item);
         
         str.setNum(waitingTimes_->at(row),'g',4);
         item = new QTableWidgetItem(str);
-        setItem(row, 3, item);
+        setItem(row, WaitingTime, item);
         
         str.setNum(velocities_[row],'g',4);
         item = new QTableWidgetItem(str);
-        setItem(row, 4, item);
+        setItem(row, Velocity, item);
+        
+        str.setNum(waypoints_->at(row).x(),'g',4);
+        item = new QTableWidgetItem(str);
+        setItem(row, WaypointX, item);
+        
+        str.setNum(waypoints_->at(row).y(),'g',4);
+        item = new QTableWidgetItem(str);
+        setItem(row, WaypointY, item);
+        
+        str.setNum(headings_->at(row)/16);
+        item = new QTableWidgetItem(str);
+        setItem(row, Heading, item);
+        
+        str.setNum(distTolerances_->at(row),'g',4);
+        item = new QTableWidgetItem(str);
+        setItem(row, DistanceTolerance, item);
+        
+        str.setNum(headingTolerances_->at(row)/16);
+        item = new QTableWidgetItem(str);
+        setItem(row, HeadingTolerance, item);
+        
+        str.setNum(maxSpeeds_->at(row),'g',4);
+        item = new QTableWidgetItem(str);
+        setItem(row, MaxApproachSpeed, item);
+        
+        str.setNum(maxTurnrates_->at(row));
+        item = new QTableWidgetItem(str);
+        setItem(row, MaxApproachTurnRate, item);
     }
     
     isLocked_ = false;
@@ -173,26 +250,14 @@ void WpTable::updateDataStorage(int row, int column)
     
     switch (column)
     {
-        case 0: 
-        {       
-            QPointF *data = waypoints_->data();
-            data[row].setX( item->text().toDouble() );
-            break;
-        }
-        case 1: 
-        {       
-            QPointF *data = waypoints_->data();
-            data[row].setY( item->text().toDouble() );
-            break;
-        }
-        case 2: 
+        case AbsoluteTime: 
         {       
             float *data = times_->data();
             data[row] = item->text().toDouble();
             refreshTable();
             break;
         }
-        case 3: 
+        case WaitingTime: 
         {       
             float waitingTime =  item->text().toDouble();
             float *data = waitingTimes_->data();
@@ -206,7 +271,7 @@ void WpTable::updateDataStorage(int row, int column)
             refreshTable();
             break;
         }
-        case 4: 
+        case Velocity: 
         {       
             // first row is not editable
             if (row==0) break;
@@ -217,6 +282,48 @@ void WpTable::updateDataStorage(int row, int column)
             float deltaS = straightLineDist( waypoints_->at(row) - waypoints_->at(row-1) );
             data[row] = deltaS/velocity + (data[row-1] + waitingTimes_->at(row-1));
             refreshTable();
+            break;
+        }
+        case WaypointX: 
+        {       
+            QPointF *data = waypoints_->data();
+            data[row].setX( item->text().toDouble() );
+            break;
+        }
+        case WaypointY: 
+        {       
+            QPointF *data = waypoints_->data();
+            data[row].setY( item->text().toDouble() );
+            break;
+        }
+        case Heading: 
+        {       
+            int *data = headings_->data();
+            data[row] = item->text().toInt()*16;
+            break;
+        }
+        case DistanceTolerance: 
+        {       
+            float *data = distTolerances_->data();
+            data[row] = item->text().toDouble();
+            break;
+        }
+        case HeadingTolerance: 
+        {       
+            int *data = headingTolerances_->data();
+            data[row] = item->text().toInt()*16;
+            break;
+        }
+        case MaxApproachSpeed: 
+        {       
+            float *data = maxSpeeds_->data();
+            data[row] = item->text().toDouble();
+            break;
+        }
+        case MaxApproachTurnRate: 
+        {       
+            int *data = maxTurnrates_->data();
+            data[row] = item->text().toInt();
             break;
         }
         default: 
@@ -233,9 +340,14 @@ PathInput::PathInput( WaypointSettings *wpSettings )
       waypointInFocus_(-99)
 {   
     wpWidget_ = new WpWidget( this,
-                            &waypoints_, 
-                            &times_, 
-                            &waitingTimes_ );
+                            &waypoints_,
+                            &headings_, 
+                            &times_,
+                            &waitingTimes_,
+                            &distTolerances_,
+                            &headingTolerances_,
+                            &maxSpeeds_,
+                            &maxTurnrates_ );
 }
 
 
@@ -542,6 +654,28 @@ PathInput::savePath( const QString &fileName, IHumanManager *humanManager ) cons
         humanManager->showStatusMsg(Information, "Path successfully saved to " + fileName );
 }
 
+void PathInput::loadPath( QString* fileName )
+{    
+    resizeData(0);
+    
+    QFile file(*fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+    
+    QTextStream in(&file);
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        waypoints_.append( QPointF(line.section(' ',0,0).toFloat(),line.section(' ',1,1).toFloat()) );
+        headings_.append( line.section(' ',2,2).toInt() );
+        times_.append( line.section(' ',3,3).toFloat() );
+        distTolerances_.append( line.section(' ',4,4).toFloat() );
+        headingTolerances_.append( line.section(' ',5,5).toInt() );
+        maxSpeeds_.append( line.section(' ',6,6).toFloat() );
+        maxTurnrates_.append( line.section(' ',7,7).toInt() );
+    }
+    wpWidget_->refreshTable();
+}
+
 PathFollowerInput::PathFollowerInput( WaypointSettings *wpSettings )
     : PathInput(wpSettings)
 {
@@ -623,26 +757,26 @@ PathPlannerInput::getTask() const
     return task;
 }
 
-void PathFollowerInput::loadDataFromFile( QString* fileName )
-{    
-    resizeData(0);
-    
-    QFile file(*fileName);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return;
-    
-    QTextStream in(&file);
-    while (!in.atEnd()) {
-        QString line = in.readLine();
-        waypoints_.append( QPointF(line.section(' ',0,0).toFloat(),line.section(' ',1,1).toFloat()) );
-        headings_.append( line.section(' ',2,2).toInt() );
-        times_.append( line.section(' ',3,3).toFloat() );
-        distTolerances_.append( line.section(' ',4,4).toFloat() );
-        headingTolerances_.append( line.section(' ',5,5).toInt() );
-        maxSpeeds_.append( line.section(' ',6,6).toFloat() );
-        maxTurnrates_.append( line.section(' ',7,7).toInt() );
-    }
-}
+// void PathFollowerInput::loadDataFromFile( QString* fileName )
+// {    
+//     resizeData(0);
+//     
+//     QFile file(*fileName);
+//     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+//         return;
+//     
+//     QTextStream in(&file);
+//     while (!in.atEnd()) {
+//         QString line = in.readLine();
+//         waypoints_.append( QPointF(line.section(' ',0,0).toFloat(),line.section(' ',1,1).toFloat()) );
+//         headings_.append( line.section(' ',2,2).toInt() );
+//         times_.append( line.section(' ',3,3).toFloat() );
+//         distTolerances_.append( line.section(' ',4,4).toFloat() );
+//         headingTolerances_.append( line.section(' ',5,5).toInt() );
+//         maxSpeeds_.append( line.section(' ',6,6).toFloat() );
+//         maxTurnrates_.append( line.section(' ',7,7).toInt() );
+//     }
+// }
 
 
 //////////////////////////////////////////////////////////////////////
