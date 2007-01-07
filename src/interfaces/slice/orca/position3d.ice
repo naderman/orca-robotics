@@ -19,7 +19,8 @@ module orca
 /*!
     @ingroup interfaces
     @defgroup orca_interface_position3d Position3d
-    @brief Odometry of 3D mobile robots.
+    @brief Odometry of 3D mobile robots. @b OBSOLETE!
+    @note OBSOLETE! Use orca::Odometry3d interface instead.
     @{
 */
 

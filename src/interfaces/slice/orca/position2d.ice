@@ -19,7 +19,8 @@ module orca
 /*!
     @ingroup interfaces
     @defgroup orca_interface_position2d Position2d
-    @brief Odometry of planar mobile robots.
+    @brief Odometry of planar mobile robots. @b OBSOLETE!
+    @note OBSOLETE! Use orca::Odometry2d interface instead.
     @{
 */
 

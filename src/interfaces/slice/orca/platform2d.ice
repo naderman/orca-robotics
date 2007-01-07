@@ -19,7 +19,8 @@ module orca
 /*!
     @ingroup interfaces
     @defgroup orca_interface_platform2d Platform2d
-    @brief Active robotic platform
+    @brief Active robotic platform. @b OBSOLETE!
+    @note OBSOLETE! Use orca::VelocityControl2d interface instead.
     @{
 */
 
