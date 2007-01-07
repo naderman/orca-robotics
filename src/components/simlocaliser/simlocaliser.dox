@@ -15,6 +15,7 @@
 @ingroup services
 @ingroup cpp
 @ingroup linux
+@ingroup qnx
 @defgroup orca_component_simlocaliser SimLocaliser
 @brief Produces simulated localisation.
 

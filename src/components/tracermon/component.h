@@ -17,6 +17,9 @@
 namespace tracermon
 {
 
+class NetworkHandler;
+class UserHandler;
+
 class Component : public orcaice::Component
 {
 public:

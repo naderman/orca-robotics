@@ -14,6 +14,7 @@
 @ingroup services
 @ingroup cpp
 @ingroup linux
+@ingroup qnx
 @defgroup orca_component_robot2d Robot2d
 @brief Controls a 2-D mobile robot.
 

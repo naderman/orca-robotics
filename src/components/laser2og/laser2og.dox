@@ -13,6 +13,7 @@
 @ingroup services
 @ingroup cpp
 @ingroup linux
+@ingroup qnx
 @defgroup orca_component_laser2og Laser2Og
 @brief Generates Occupancy Grid cell likelihoods from raw range scans.
 

@@ -14,6 +14,7 @@
 @ingroup services
 @ingroup cpp
 @ingroup linux
+@ingroup qnx
 @defgroup orca_component_segwayrmp SegwayRmp
 @brief Controls Segway RMP: a two-wheeled balancing robot.
 

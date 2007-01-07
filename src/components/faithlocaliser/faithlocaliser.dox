@@ -15,6 +15,7 @@
 @ingroup services
 @ingroup cpp
 @ingroup linux
+@ingroup qnx
 @defgroup orca_component_faithlocaliser FaithLocaliser
 @brief A simple component that produces localisation info from odometry
 

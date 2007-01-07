@@ -13,6 +13,7 @@
 @ingroup apps
 @ingroup cpp
 @ingroup linux
+@ingroup qnx
 @defgroup orca_component_tracermon TracerMon
 @brief Connects to Tracer interface and displays messages on screen.
 

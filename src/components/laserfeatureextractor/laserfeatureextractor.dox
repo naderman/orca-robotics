@@ -14,6 +14,7 @@
 @ingroup services
 @ingroup cpp
 @ingroup linux
+@ingroup qnx
 @defgroup orca_component_laserfeatureextractor LaserFeatureExtractor
 
 @brief Extracts interesting features from laser scans

@@ -15,6 +15,8 @@
 @ingroup services
 @ingroup cpp
 @ingroup linux
+@ingroup qnx
+@ingroup win
 @defgroup orca_component_goalplanner GoalPlanner
 @brief Plans a path from where you are now to a goal
  

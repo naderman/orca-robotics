@@ -15,6 +15,7 @@
 @ingroup services
 @ingroup cpp
 @ingroup linux
+@ingroup qnx
 @defgroup orca_component_pathplanner PathPlanner
 @brief Computes a path in a 2D occupancy grid map. 
 
