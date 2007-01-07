@@ -320,6 +320,27 @@ getPropertyAsFrame3dWithDefault( const Ice::PropertiesPtr & prop, const ::std::s
 }
 
 int
+getPropertyAsSize2d( const Ice::PropertiesPtr & prop, const ::std::string& key, orca::Size2d & value )
+{
+    std::string stringVal;
+    if ( getProperty( prop, key, stringVal ) )
+        return -1;
+    else
+        return toSize2d( stringVal, value );
+    return 0;
+}
+
+orca::Size2d
+getPropertyAsSize3dWithDefault( const Ice::PropertiesPtr & prop, const ::std::string& key, const orca::Size2d & defaultValue )
+{
+    orca::Size2d value;
+    if ( getPropertyAsSize2d( prop, key, value ) )
+        return defaultValue;
+    else
+        return value;
+}
+
+int
 getPropertyAsSize3d( const Ice::PropertiesPtr & prop, const ::std::string& key, orca::Size3d & value )
 {
     std::string stringVal;
@@ -329,7 +350,6 @@ getPropertyAsSize3d( const Ice::PropertiesPtr & prop, const ::std::string& key, 
         return toSize3d( stringVal, value );
     return 0;
 }
-
 
 orca::Size3d
 getPropertyAsSize3dWithDefault( const Ice::PropertiesPtr & prop, const ::std::string& key, const orca::Size3d & defaultValue )

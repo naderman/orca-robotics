@@ -101,6 +101,9 @@ int getPropertyAsFrame2d( const Ice::PropertiesPtr &, const ::std::string& key, 
 //! be: x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]. 
 //! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
 int getPropertyAsFrame3d( const Ice::PropertiesPtr &, const ::std::string& key, orca::Frame3d &value );
+//! Parses the value into a Size2d object assuming empty space delimeters.
+//! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
+int getPropertyAsSize2d( const Ice::PropertiesPtr &, const ::std::string& key, orca::Size2d &value );
 //! Parses the value into a Size3d object assuming empty space delimeters.
 //! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
 int getPropertyAsSize3d( const Ice::PropertiesPtr &, const ::std::string& key, orca::Size3d &value );
@@ -123,6 +126,8 @@ Ice::StringSeq getPropertyAsStringSeqWithDefault( const Ice::PropertiesPtr &, co
 orca::Frame2d getPropertyAsFrame2dWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::Frame2d &defaultValue );
 //! Returns the default value if key is not found or cannot be converted to a Frame3d.
 orca::Frame3d getPropertyAsFrame3dWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::Frame3d &defaultValue );
+//! Returns the default value if key is not found or cannot be converted to a Size3d.
+orca::Size3d getPropertyAsSize2dWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::Size2d &defaultValue );
 //! Returns the default value if key is not found or cannot be converted to a Size3d.
 orca::Size3d getPropertyAsSize3dWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::Size3d &defaultValue );
 //! Returns the default value if key is not found or cannot be converted to a CartesianPoint.
