@@ -25,6 +25,8 @@
 #include <QDialog>
 #include <QFile>
 #include <QTextStream>
+#include <QVBoxLayout>
+#include <QFileDialog>
 
 using namespace std;
 
@@ -36,12 +38,71 @@ float straightLineDist( QPointF line )
 {
     return sqrt(line.x()*line.x() + line.y()*line.y());
 }
+
+WpWidget::WpWidget( PathInput *pathInput,
+                    QPolygonF *waypoints, 
+                    QVector<float> *times, 
+                    QVector<float> *waitingTimes)
+    : pathInput_(pathInput),
+      pathFileSet_(false),
+      pathFileName_("/tmp")
+{
+    wpTable_ = new WpTable( this, pathInput, waypoints, times, waitingTimes );
+    QPushButton *generatePath = new QPushButton(tr("Generate Full Path"), this);
+    QPushButton *savePath = new QPushButton(tr("Save Path"), this);
     
-WpTable::WpTable(PathInput *parent,
+    QObject::connect(generatePath,SIGNAL(clicked()),pathInput,SLOT(generateFullPath()));
+    QObject::connect(savePath,SIGNAL(clicked()),this,SLOT(savePath()));
+    
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget(wpTable_);
+    layout->addWidget(generatePath);
+    layout->addWidget(savePath);
+    setLayout(layout);
+}
+
+void WpWidget::refreshTable()
+{
+    wpTable_->refreshTable();    
+}
+
+void 
+WpWidget::savePathAs()
+{
+    QString fileName = QFileDialog::getSaveFileName(
+            0,
+            "Choose a filename to save under",
+            pathFileName_,
+            "*.txt");
+    
+    if (!fileName.isEmpty())
+    {
+        pathInput_->savePath( fileName );
+        pathFileName_ = fileName;
+        pathFileSet_ = true;
+    }
+}
+
+void 
+WpWidget::savePath()
+{
+    if (!pathFileSet_)
+    {   
+        savePathAs();
+    }
+    else
+    {
+        pathInput_->savePath( pathFileName_ );
+    }
+}
+    
+WpTable::WpTable( QWidget *parent,
+                 PathInput *pathInput,
                  QPolygonF *waypoints, 
                  QVector<float> *times, 
                  QVector<float> *waitingTimes)
-    : parent_(parent),
+    : QTableWidget( parent ),
+      pathInput_(pathInput),
       waypoints_(waypoints),
       times_(times),
       waitingTimes_(waitingTimes),
@@ -49,7 +110,7 @@ WpTable::WpTable(PathInput *parent,
 { 
     setColumnCount(NUM_COLUMNS);
     QObject::connect(this,SIGNAL(cellChanged(int,int)),this,SLOT(updateDataStorage(int,int)));
-    QObject::connect(this,SIGNAL(cellClicked(int,int)),parent,SLOT(setWaypointFocus(int,int)));
+    QObject::connect(this,SIGNAL(cellClicked(int,int)),pathInput,SLOT(setWaypointFocus(int,int)));
 }
 
 
@@ -147,6 +208,8 @@ void WpTable::updateDataStorage(int row, int column)
         }
         case 4: 
         {       
+            // first row is not editable
+            if (row==0) break;
             float velocity =  item->text().toDouble();
             velocities_[row] = velocity;
             // update time to get to here
@@ -168,8 +231,8 @@ void WpTable::updateDataStorage(int row, int column)
 PathInput::PathInput( WaypointSettings *wpSettings )
     : wpSettings_(wpSettings),
       waypointInFocus_(-99)
-{
-    wpTable_ = new WpTable( this,
+{   
+    wpWidget_ = new WpWidget( this,
                             &waypoints_, 
                             &times_, 
                             &waitingTimes_ );
@@ -178,7 +241,7 @@ PathInput::PathInput( WaypointSettings *wpSettings )
 
 PathInput::~PathInput() 
 { 
-    delete wpTable_; 
+    delete wpWidget_; 
 }  
 
 
@@ -284,8 +347,10 @@ void PathInput::processReleaseEvent( QMouseEvent* e)
     {
         changeWpParameters( waypoint );    
     }
-    if (wpTable_->isHidden()) wpTable_->show();
-    wpTable_->refreshTable();
+    
+    if (wpWidget_->isHidden()) 
+        wpWidget_->show();
+    wpWidget_->refreshTable();
 }
 
 void PathInput::processDoubleClickEvent( QMouseEvent* e)
@@ -413,6 +478,29 @@ void PathInput::changeWpParameters( QPointF p1 )
 
 }
 
+void PathInput::generateFullPath()
+{    
+    //using the waiting time, we produce additional waypoints
+    for (int i=0; i<waypoints_.size(); i++)
+    {
+        if (waitingTimes_[i] != 0.0)
+        {
+            waypoints_.insert(i+1, waypoints_[i]);
+            headings_.insert(i+1, headings_[i]);
+            times_.insert(i+1, times_[i]+waitingTimes_[i]);
+            distTolerances_.insert(i+1, distTolerances_[i]);
+            headingTolerances_.insert(i+1, headingTolerances_[i]);
+            maxSpeeds_.insert(i+1, maxSpeeds_[i]);
+            maxTurnrates_.insert(i+1, maxTurnrates_[i]);
+            
+            // set the waitingTimes to 0
+            waitingTimes_[i] = 0.0;
+            waitingTimes_.insert(i+1, 0.0);
+        }
+    }
+    wpWidget_->refreshTable();
+}
+
 void 
 PathInput::savePath( const QString &fileName, IHumanManager *humanManager ) const
 {
@@ -420,7 +508,8 @@ PathInput::savePath( const QString &fileName, IHumanManager *humanManager ) cons
     
     if (size==0)
     {
-        humanManager->showBoxMsg(Warning, "Path has no waypoints. File will be empty!");
+        if (humanManager!=0)
+            humanManager->showBoxMsg(Warning, "Path has no waypoints. File will be empty!");
     }
     
     QFile file(fileName);
@@ -430,6 +519,7 @@ PathInput::savePath( const QString &fileName, IHumanManager *humanManager ) cons
         return;
     }
     
+    // for loops we need to know the timestamp of the last waypoint
     const float timeOffset = times_[waypoints_.size()-1];
 
     QTextStream out(&file);
@@ -448,7 +538,8 @@ PathInput::savePath( const QString &fileName, IHumanManager *humanManager ) cons
     }
     
     file.close();
-    humanManager->showStatusMsg(Information, "Path successfully saved to " + fileName );
+    if (humanManager!=0)
+        humanManager->showStatusMsg(Information, "Path successfully saved to " + fileName );
 }
 
 PathFollowerInput::PathFollowerInput( WaypointSettings *wpSettings )

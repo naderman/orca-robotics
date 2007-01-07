@@ -24,6 +24,7 @@ namespace orcaqgui {
 class OrcaGuiUserEvent;
 class IHumanManager;
 class PathInput;
+class WpTable;
 
 // all units are SI units
 class WaypointSettings
@@ -40,12 +41,37 @@ class WaypointSettings
             int numberOfLoops;
 };
 
+class WpWidget : public QWidget
+{
+    Q_OBJECT
+    
+    public:
+        WpWidget( PathInput *pathInput,
+                 QPolygonF *waypoints, 
+                 QVector<float> *times, 
+                 QVector<float> *waitingTimes);
+        ~WpWidget() {};
+        void refreshTable();
+    
+    private:
+        PathInput *pathInput_;
+        WpTable *wpTable_;
+        bool pathFileSet_;
+        QString pathFileName_;
+    
+    private slots:
+        void savePathAs();
+        void savePath();
+    
+};
+
 class WpTable : public QTableWidget
 {
     Q_OBJECT
             
     public:
-        WpTable( PathInput *parent,
+        WpTable( QWidget *parent,
+                 PathInput *pathInput,
                  QPolygonF *waypoints, 
                  QVector<float> *times, 
                  QVector<float> *waitingTimes);
@@ -53,7 +79,7 @@ class WpTable : public QTableWidget
         void refreshTable();
         
     private:
-        PathInput *parent_;
+        PathInput *pathInput_;
         QPolygonF *waypoints_;
         QVector<float> *times_;
         QVector<float> *waitingTimes_;
@@ -88,7 +114,7 @@ class PathInput : public QObject
         
         virtual void updateWpSettings( WaypointSettings* wpSettings );
         
-        virtual void savePath( const QString &fileName, IHumanManager *humanManager ) const;
+        virtual void savePath( const QString &fileName, IHumanManager *humanManager = 0 ) const;
         
     protected:    
         WaypointSettings *wpSettings_;
@@ -117,11 +143,12 @@ class PathInput : public QObject
         QPointF mouseMovePnt_;
         QPointF doubleClick_;
         
-        WpTable *wpTable_;
+        WpWidget *wpWidget_;
         int waypointInFocus_;
         
     public slots:
         void setWaypointFocus(int row, int column);
+        void generateFullPath();
         
 };
 

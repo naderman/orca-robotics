@@ -381,7 +381,7 @@ PathFollowerHI::PathFollowerHI( PathFollower2dElement *pfElement,
       proxyString_( proxyString ),
       humanManager_(humanManager),
       painter_(painter),
-      pathFileName_("/home"),
+      pathFileName_("/tmp"),
       pathFileSet_(false),
       wpSettings_(wpSettings),
       activateImmediately_(activateImmediately),
@@ -575,6 +575,7 @@ PathFollowerHI::savePathAs()
     if (!fileName.isEmpty())
     {
         painter_.savePath( fileName, humanManager_ );
+        pathFileName_ = fileName;
         pathFileSet_ = true;
     }
 }
