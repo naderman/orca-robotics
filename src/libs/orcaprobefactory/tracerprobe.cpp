@@ -24,7 +24,8 @@ TracerProbe::TracerProbe( const orca::FQInterfaceName & name, orcaprobe::Display
 {
     id_ = "::orca::Tracer";
 
-    addOperation( "setVerbosity",   "idempotent void setVerbosity( int error, int warn, int info, int debug );" );
+    addOperation( "getVerbosity",   "nonmutating TracerVerbosityConfig getVerbosity();" );
+    addOperation( "setVerbosity",   "idempotent void setVerbosity( TracerVerbosityConfig verbosity )" );
     addOperation( "subscribe",      "void subscribe( StatusConsumer *subscriber )" );
     addOperation( "unsubscribe",    "idempotent void unsubscribe( StatusConsumer *subscriber )" );
 }
@@ -35,13 +36,48 @@ TracerProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
     switch ( index )
     {
     case orcaprobe::UserIndex :
-        return loadSetVerbosity( data );
+        return loadGetVerbosity( data );
     case orcaprobe::UserIndex+1 :
-        return loadSubscribe( data );
+        return loadSetVerbosity( data );
     case orcaprobe::UserIndex+2 :
+        return loadSubscribe( data );
+    case orcaprobe::UserIndex+3 :
         return loadUnsubscribe( data );
     }
     return 1;
+}
+
+int 
+TracerProbe::loadGetVerbosity( orcacm::OperationData & data )
+{
+    orca::TracerVerbosityConfig result;
+    orcacm::ResultHeader res;
+    
+    try
+    {
+        orca::TracerPrx derivedPrx = orca::TracerPrx::checkedCast(prx_);
+        result = derivedPrx->getVerbosity();
+    }
+    catch( const Ice::Exception & e )
+    {
+        stringstream ss;
+        ss << e;
+        res.name = "exception";
+        res.text = ss.str();
+        data.results.push_back( res );
+        return 1;
+    }
+
+//     cout<<orcaice::toString(result)<<endl;
+    res.name = "verbosity";
+    stringstream ss; 
+    ss  <<"error="<<result.error<<endl
+        <<"warn="<<result.warning<<endl
+        <<"info="<<result.info<<endl
+        <<"debug="<<result.debug;
+    res.text = ss.str();
+    data.results.push_back( res );
+    return 0;
 }
 
 int 

@@ -32,6 +32,7 @@ public:
     
 private:
 
+    int loadGetVerbosity( orcacm::OperationData & data );
     int loadSetVerbosity( orcacm::OperationData & data );
     int loadSubscribe( orcacm::OperationData & data );
     int loadUnsubscribe( orcacm::OperationData & data );
