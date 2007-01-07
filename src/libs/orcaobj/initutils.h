@@ -36,16 +36,18 @@ namespace orcaice
  *  @name Object Initialization Functions
  */
 //@{
-//! Sets all fields to zero.
-void setInit( orca::Frame2d& );
-//! Sets all fields to zero.
-void setInit( orca::Frame3d& );
-//! Sets all fields to zero.
-void setInit( orca::Twist2d& );
-//! Sets all fields to zero.
-void setInit( orca::Size2d& );
-//! Sets all fields to zero.
-void setInit( orca::Size3d& );
+//! Sets all fields to specified values
+void setInit( orca::Frame2d&, double x=0.0, double y=0.0, double orient=0.0 );
+//! Sets all fields to specified values
+void setInit( orca::Frame3d&, double x=0.0, double y=0.0, double z=0.0, double pitch=0.0, double roll=0.0, double yaw=0.0 );
+//! Sets all fields to specified values
+void setInit( orca::Twist2d&, double vx=0.0, double vy=0.0, double w=0.0 );
+//! Sets all fields to specified values
+void setInit( orca::Twist&, double vx=0.0, double vy=0.0, double vz=0.0, double wx=0.0, double wy=0.0, double wz=0.0 );
+//! Sets all fields to specified values
+void setInit( orca::Size2d&, double l=0.0, double w=0.0 );
+//! Sets all fields to specified values
+void setInit( orca::Size3d&, double l=0.0, double w=0.0, double h=0.0 );
 //! Sets all fields to zero.
 void setInit( orca::CartesianPoint& );
 //! Sets all fields to zero.

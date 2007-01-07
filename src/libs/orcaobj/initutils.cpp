@@ -29,45 +29,56 @@ namespace orcaice
 {
 
 void
-setInit( orca::Frame2d& obj )
+setInit( orca::Frame2d& obj, double x, double y, double orient )
 {
-    obj.p.x = 0.0;
-    obj.p.y = 0.0;
-    obj.o   = 0.0;
+    obj.p.x = x;
+    obj.p.y = y;
+    obj.o   = orient;
 }
 
 void
-setInit( orca::Frame3d& obj )
+setInit( orca::Frame3d& obj, double x, double y, double z, double pitch, double roll, double yaw )
 {
-    obj.p.x = 0.0;
-    obj.p.y = 0.0;
-    obj.p.z = 0.0;
-    obj.o.p = 0.0;
-    obj.o.r = 0.0;
-    obj.o.y = 0.0;
+    obj.p.x = x;
+    obj.p.y = y;
+    obj.p.z = z;
+    obj.o.p = pitch;
+    obj.o.r = roll;
+    obj.o.y = yaw;
 }
 
 void
-setInit( orca::Twist2d& obj )
+setInit( orca::Twist2d& obj, double vx, double vy, double w )
 {
-    obj.v.x = 0.0;
-    obj.v.y = 0.0;
-    obj.w   = 0.0;
+    obj.v.x = vx;
+    obj.v.y = vy;
+    obj.w   = w;
 }
 
 void
-setInit( orca::Size2d& obj )
+setInit( orca::Twist& obj, double vx, double vy, double vz, double wx, double wy, double wz )
 {
-    obj.l = 0.0;
-    obj.w = 0.0;
+    obj.v.x = vx;
+    obj.v.y = vy;
+    obj.v.z = vz;
+    obj.w.x = wx;
+    obj.w.y = wy;
+    obj.w.z = wz;
 }
 
 void
-setInit( orca::Size3d& obj )
+setInit( orca::Size2d& obj, double l, double w )
 {
-    obj.l = 0.0;
-    obj.w = 0.0;
-    obj.h = 0.0;
+    obj.l = l;
+    obj.w = w;
+}
+
+void
+setInit( orca::Size3d& obj, double l, double w, double h )
+{
+    obj.l = l;
+    obj.w = w;
+    obj.h = h;
 }
 
 void

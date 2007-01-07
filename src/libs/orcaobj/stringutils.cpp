@@ -606,6 +606,22 @@ toString( const orca::GpsTimeData&  obj )
 }
 
 std::string 
+toString( const orca::Odometry2dData& obj )
+{
+    std::ostringstream s;
+    s << toString(obj.timeStamp)
+        << " Odometry2d (x,y,a(deg), vx,vy,w(deg/s)) : ("
+        << obj.pose.p.x << ","
+        << obj.pose.p.y << ","
+        << RAD2DEG(obj.pose.o) << ", "
+        << obj.motion.v.x << ","
+        << obj.motion.v.y << ","
+        << RAD2DEG(obj.motion.w) << ")";
+
+    return s.str();
+}
+
+std::string 
 toString( const orca::Position2dData& obj )
 {
     std::ostringstream s;
