@@ -8,21 +8,34 @@
  *
  */
 
-#ifndef ORCA2_TRACERMON_TRACERCONSUMER_I_H
-#define ORCA2_TRACERMON_TRACERCONSUMER_I_H
+#ifndef ORCA2_TRACERMON_TRACER_CONSUMER_I_H
+#define ORCA2_TRACERMON_TRACER_CONSUMER_I_H
 
-#include <iostream>
+// #include <iostream>
 
 #include <orca/tracer.h>
-#include <orcaice/orcaice.h>
+// #include <orcaice/orcaice.h>
+#include "user.h"
+
+namespace tracermon
+{
 
 class TracerConsumerI : public orca::TracerConsumer
 {
-    public:
-        virtual void setData(const orca::TracerData& data, const Ice::Current&)
-        {
-            std::cout << orcaice::toString( data ) << std::endl;
-        }
+public:
+    TracerConsumerI( User& user ) :
+        user_(user) {};
+
+    virtual void setData(const orca::TracerData& data, const Ice::Current&)
+    {
+//         std::cout << orcaice::toString( data ) << std::endl;
+        user_.newTraceMessage( data );
+    }
+
+private:
+    User& user_;
 };
+
+} // namespace
 
 #endif

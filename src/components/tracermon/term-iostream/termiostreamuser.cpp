@@ -8,38 +8,32 @@
  *
  */
 
+#include <iostream>
 #include <orcaice/orcaice.h>
 
-#include "userhandler.h"
-
-// "drivers"
-#ifdef HAVE_KEYBOARD_TERMIO_DRIVER
-    #include "kbd-termio/keyboardtermiodriver.h"
-#endif
-#ifdef HAVE_KEYBOARD_NCURSES_DRIVER
-    #include "kbd-ncurses/keyboardncursesdriver.h"
-#endif
-#ifdef HAVE_JOYSTICK_DRIVER
-    #include "joystick/joystickdriver.h"
-#endif
-// #include "fakedriver.h"
+#include "termiostreamuser.h"
+// super-dodgy but can't make cmake recongnize included dir's properly
+#include "../termutil/termutils.h"
+#include "../events.h"
 
 using namespace std;
 using namespace orca;
-using namespace tracermon;
 
-UserHandler::UserHandler( const orcaice::Context & context ) :
+namespace tracermon
+{
+
+TermIostreamUser::TermIostreamUser( const orcaice::Context & context ) :
     events_(new orcaice::EventQueue),
     context_(context)
 {
 }
 
-UserHandler::~UserHandler()
+TermIostreamUser::~TermIostreamUser()
 {
 }
 
 void 
-UserHandler::enable( Network* network )
+TermIostreamUser::enable( Network* network )
 {
     assert( network || "pointer to network must be non-zero" );
     if ( !network ) {
@@ -50,15 +44,26 @@ UserHandler::enable( Network* network )
 }
 
 void 
-UserHandler::newTraceMessage( const orca::TracerData & data )
+TermIostreamUser::newTraceMessage( const orca::TracerData & data )
 {
     orcaice::EventPtr e = new NewTraceMessageEvent( data );
     events_->add( e );
 }
 
+void 
+TermIostreamUser::newVerbosityLevel( int error, int warn, int info, int debug ) 
+{
+}
+
+void 
+TermIostreamUser::newLocalTrace( const std::string& msg )
+{
+    cout<<"TRACE: "<<msg<<endl;
+}
+
 // read commands from the keyboard. Launced in a separate thread.
 void
-UserHandler::run()
+TermIostreamUser::run()
 {
     // we are in a different thread now, catch all stray exceptions
     try
@@ -83,10 +88,11 @@ UserHandler::run()
             //cout<<"focus changed event"<<endl;
             NewTraceMessageEventPtr e = NewTraceMessageEventPtr::dynamicCast( event );
             if ( !e ) {
-                cout<<"failed to cast event to FocusChanged"<<endl;
+                cout<<"failed to cast event to NewTraceMessage"<<endl;
                 break;
             }
-            cout<<e->data_.message<<endl;
+            cout<<tracermon::toString(e->data_)<<endl;
+            break;
         }        
         default : {
             cout<<"unknown display event "<<event->type()<<". Ignoring..."<<endl;
@@ -95,7 +101,7 @@ UserHandler::run()
         } // switch
     } // end of main loop
 
-    cout<<"UserHandler: exited main loop"<<endl;
+    cout<<"TermIostreamUser: exited main loop"<<endl;
 
     // reset the hardware
 //     if ( driver_->disable() ) {
@@ -111,5 +117,7 @@ UserHandler::run()
 
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
-    context_.tracer()->debug( "UserHandler: stopped.",5 );
+    context_.tracer()->debug( "TermIostreamUser: stopped.",5 );
 }
+
+} // namespace

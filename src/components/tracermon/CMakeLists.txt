@@ -7,41 +7,37 @@ IF ( BUILD_TRACERMON )
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
-#     # keyboard driver with termio
-#     OPTIONAL_SUB_LIBRARY(
-#         "KeyboardTermio driver for Teleop"
-#         kbd-termio
-#         OrcaTeleopKeyboardTermio
-#         KBD_TERMIO_LIBS
-#         HAVE_TERMIO_H
-#         HAVE_KEYBOARD_TERMIO_DRIVER
-#     )
-# 
-#     # keyboard driver with libncurses
-#     OPTIONAL_SUB_LIBRARY(
-#         "KeyboardNcurses driver for Teleop"
-#         kbd-ncurses
-#         OrcaTeleopKeyboardNcurses
-#         KBD_NCURSES_LIBS
-#         CURSES_FOUND
-#         HAVE_KEYBOARD_NCURSES_DRIVER
-#         ncurses
-#     )
-#     
-#     # joystick driver
-#     OPTIONAL_SUB_LIBRARY(
-#         "Joystick driver for Teleop"
-#         joystick
-#         OrcaTeleopJoystick
-#         JOY_LIBS
-#         HAVE_LINUX_INPUT_H
-#         HAVE_JOYSTICK_DRIVER
-#     )
+    INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/components/tracermon )
+
+    ADD_SUBDIRECTORY( termutil )
+
+    # keyboard driver with iostream
+    SET ( ALL_FOUND 1 )
+    OPTIONAL_SUB_LIBRARY(
+        "Terminal Iostream driver for TracerMon"
+        term-iostream
+        OrcaTracerMonTermIostream
+        TERM_IOSTREAM_LIBS
+        ALL_FOUND
+        HAVE_TERM_IOSTREAM_DRIVER
+        termutil
+    )
+
+    # keyboard driver with libncurses
+    OPTIONAL_SUB_LIBRARY(
+        "Terminal Ncurses driver for TracerMon"
+        term-ncurses
+        OrcaTracerMonTermNcurses
+        TERM_NCURSES_LIBS
+        CURSES_FOUND
+        HAVE_TERM_NCURSES_DRIVER
+        termutil ncurses form
+    )
 
     FILE( GLOB SRCS *.cpp )
 
     GLOBAL_ADD_EXECUTABLE( tracermon ${SRCS} )
-    TARGET_LINK_LIBRARIES( tracermon ) #${JOY_LIBS} ${KBD_TERMIO_LIBS} ${KBD_NCURSES_LIBS} )
+    TARGET_LINK_LIBRARIES( tracermon ${TERM_IOSTREAM_LIBS} ${TERM_NCURSES_LIBS} )
 
     GENERATE_CONFIG_FILE( tracermon.def )
 

@@ -12,12 +12,10 @@
 #define ORCA2_TRACERMON_COMPONENT_H
 
 #include <orcaice/component.h>
+#include <orcaice/thread.h>
 
 namespace tracermon
 {
-
-class NetworkHandler;
-class UserHandler;
 
 class Component : public orcaice::Component
 {
@@ -32,8 +30,8 @@ public:
 
 private:
 
-    NetworkHandler* netHandler_;
-    UserHandler* usrHandler_;
+    orcaice::Thread* netHandler_;
+    orcaice::Thread* usrHandler_;
 };
 
 } // namespace

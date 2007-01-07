@@ -5,8 +5,8 @@ Requires.Tracer.Type=Tracer
 Requires.Tracer.DefaultProxy=tracer@local/laser2d
 
 # configuration
-Config.Driver.Comment=valid Drivers are { term-std }
-Config.Driver.Default=term-std
+Config.Driver.Comment=valid Drivers are { 'term-iostream', 'term-ncurses' }
+Config.Driver.Default=term-iostream
 Config.InfoVerbosity.Default=10
 Config.WarningVerbosity.Default=10
 Config.ErrorVerbosity.Default=10

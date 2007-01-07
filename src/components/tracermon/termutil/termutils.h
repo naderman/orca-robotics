@@ -8,20 +8,15 @@
  *
  */
 
-#ifndef ORCA2_TRACERMON_NETWORK_INTERFACE_H
-#define ORCA2_TRACERMON_NETWORK_INTERFACE_H
+#ifndef ORCA2_TRACERMON_TERM_UTILS_H
+#define ORCA2_TRACERMON_TERM_UTILS_H
+
+#include <orca/tracer.h>
 
 namespace tracermon
 {
 
-class Network
-{
-public:
-    virtual ~Network() {};
-
-    // Set level=-1 to keep it unchanged.
-    virtual void setVerbosityLevel( int error, int warn, int info, int debug ) = 0;
-};
+std::string toString( const orca::TracerData& data );
 
 } // namespace
 

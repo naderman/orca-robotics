@@ -11,8 +11,6 @@
 #ifndef ORCA2_TRACERMON_USER_INTERFACE_H
 #define ORCA2_TRACERMON_USER_INTERFACE_H
 
-#include "events.h"
-
 namespace tracermon
 {
 
@@ -25,7 +23,17 @@ public:
 
     virtual void enable( Network* network )=0;
 
+    virtual void previousField() = 0;
+    virtual void nextField() = 0;
+    virtual void valueUp() = 0;
+    virtual void valueDown() = 0;
+    virtual void action() = 0;
+
     virtual void newTraceMessage( const orca::TracerData & data ) = 0;
+
+    virtual void newVerbosityLevel( int error, int warn, int info, int debug ) = 0;
+
+    virtual void newLocalTrace( const std::string& msg ) = 0;
 
 };
 

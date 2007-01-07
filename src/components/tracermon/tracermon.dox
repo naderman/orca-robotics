@@ -75,6 +75,8 @@ Provides no user input. Connects to the specified Tracer interface, sets the par
 
 @section orca_component_tracermon_term_ncurses Terminal Driver using libncurses
 
+Developer resources: http://en.wikipedia.org/wiki/Ncurses
+
 @par Authors
 
 Alex Makarenko    

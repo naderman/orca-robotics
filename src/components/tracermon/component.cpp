@@ -9,10 +9,15 @@
  */
 
 #include <iostream>
+#include <orcaice/orcaice.h>
 
 #include "component.h"
 #include "networkhandler.h"
-#include "userhandler.h"
+
+#include "term-iostream/termiostreamuser.h"
+#ifdef HAVE_TERM_NCURSES_DRIVER   
+#include "term-ncurses/termncursesuser.h"
+#endif
 
 using namespace std;
 using namespace tracermon;
@@ -33,6 +38,12 @@ Component::~Component()
 void
 Component::start()
 {
+    Ice::PropertiesPtr props = properties();
+    std::string prefix = tag()+".Config.";
+
+    // which driver to load?
+    std::string driverName = orcaice::getPropertyWithDefault( props, prefix+"Driver", "term-iostream" );
+
     // this may throw, but may as well quit right then
     activate();  
 
@@ -40,16 +51,43 @@ Component::start()
     // USER & DISPLAY
     //
     // the constructor may throw, we'll let the application shut us down
-    usrHandler_ = new UserHandler( context() );
+    User* userDriver = 0;
+
+    if ( driverName == "term-ncurses" ) 
+    {
+#ifdef HAVE_TERM_NCURSES_DRIVER        
+        tracer()->info( "Loading terminal ncurses driver");
+        TermNcursesUser* user = new TermNcursesUser( context() );
+        usrHandler_ = (orcaice::Thread*)user;
+        userDriver = (User*)user;
+#else
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver type 'term-ncurses' because it was not compiled." );
+#endif
+    }
+    else if ( driverName == "term-iostream" ) 
+    {
+        tracer()->info( "Loading terminal iostream driver");
+        TermIostreamUser* userHandler = new TermIostreamUser( context() );
+        usrHandler_ = (orcaice::Thread*)userHandler;
+        userDriver = (User*)userHandler;
+    }
+    else {
+        std::string errorStr = "Unknown driver type." + driverName + " Cannot talk to hardware.";
+        tracer()->error( errorStr);
+        throw orcaice::HardwareException( ERROR_INFO, errorStr );
+    }
     
     //
     // NETWORK
     //
     // the constructor may throw, we'll let the application shut us down
-    netHandler_ = new NetworkHandler( (User*)usrHandler_, context() );
+    NetworkHandler* networkHandler = new NetworkHandler( userDriver, context() );
+    netHandler_ = (orcaice::Thread*)networkHandler;
+    Network* netDriver = (Network*)networkHandler;
     netHandler_->start();
 
-    usrHandler_->enable( (Network*)netHandler_ );
+    // important: must use 
+    userDriver->enable( netDriver );
     usrHandler_->start();
     
     // the rest is handled by the application/service
@@ -62,10 +100,10 @@ Component::stop()
 
     // userHandler_ is blocked on user input
     // the only way for it to realize that we want to stop is to give it some keyboard input.
-    tracer()->info( "Component is quitting but the UserHandler is blocked waiting for user input.");
-    tracer()->print( "************************************************" );
-    tracer()->print( "Press any key or shake the joystick to continue." );
-    tracer()->print( "************************************************" );
+//     tracer()->info( "Component is quitting but the UserHandler is blocked waiting for user input.");
+//     tracer()->print( "************************************************" );
+//     tracer()->print( "Press any key or shake the joystick to continue." );
+//     tracer()->print( "************************************************" );
     
     orcaice::Thread::stopAndJoin( usrHandler_ );
 }

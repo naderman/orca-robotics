@@ -8,24 +8,24 @@
  *
  */
 
-#ifndef ORCA2_TRACERMON_USER_HANDLER_H
-#define ORCA2_TRACERMON_USER_HANDLER_H
+#ifndef ORCA2_TRACERMON_TERM_IOSTREAM_USER_H
+#define ORCA2_TRACERMON_TERM_IOSTREAM_USER_H
 
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
 #include <orcaice/eventqueue.h>
-#include "user.h"
-#include "network.h"
+#include "../user.h"
+#include "../network.h"
 
 namespace tracermon
 {
 
-class UserHandler : public orcaice::Thread, public User
+class TermIostreamUser : public orcaice::Thread, public User
 {
 public:
 
-    UserHandler( const orcaice::Context & context );
-    virtual ~UserHandler();
+    TermIostreamUser( const orcaice::Context & context );
+    virtual ~TermIostreamUser();
 
     // from Thread
     virtual void run();
@@ -33,14 +33,24 @@ public:
     // from User
     virtual void enable( Network* network );
 
+    // no inputs for this driver
+    virtual void previousField() {};
+    virtual void nextField() {};
+    virtual void valueUp() {};
+    virtual void valueDown() {};
+    virtual void action() {};
+
     virtual void newTraceMessage( const orca::TracerData & data );
+
+    virtual void newVerbosityLevel( int error, int warn, int info, int debug );
+
+    virtual void newLocalTrace( const std::string& msg );
     
 private:
 
     Network* network_;
     orcaice::EventQueuePtr events_;
    
-
     orcaice::Context context_;
 };
 

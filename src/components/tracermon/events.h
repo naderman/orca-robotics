@@ -19,10 +19,26 @@ namespace tracermon
 
 enum EventType  
 {
-    // user
+    // user & network
     VerbosityLevelsChanged=0,
+    FocusChanged,
+    NextField,
+    PreviousField,
+    ValueUp,
+    ValueDown,
+    Action,
     // network
-    NewTraceMessage
+    NewTraceMessage,
+    NewLocalTrace
+};
+
+enum VerbosityType
+{
+    ErrorType,
+    WarningType,
+    InfoType,
+    DebugType,
+    NumberOfVerbosityTypes
 };
 
 class VerbosityLevelsChangedEvent : public orcaice::Event
@@ -42,6 +58,16 @@ public:
 };
 typedef IceUtil::Handle<VerbosityLevelsChangedEvent> VerbosityLevelsChangedEventPtr;
 
+class FocusChangedEvent : public orcaice::Event
+{
+public:
+    FocusChangedEvent( int focus ) :
+        Event( FocusChanged ),
+        focus_(focus) {};
+
+    int focus_;
+};
+typedef IceUtil::Handle<FocusChangedEvent> FocusChangedEventPtr;
 
 class NewTraceMessageEvent : public orcaice::Event
 {
@@ -54,6 +80,51 @@ public:
 };
 typedef IceUtil::Handle<NewTraceMessageEvent> NewTraceMessageEventPtr;
 
+class NewLocalTraceEvent : public orcaice::Event
+{
+public:
+    NewLocalTraceEvent( const std::string& msg ) :
+        Event( NewLocalTrace ),
+        msg_(msg)  {};
+
+    std::string msg_;
+};
+typedef IceUtil::Handle<NewLocalTraceEvent> NewLocalTraceEventPtr;
+
+class PreviousFieldEvent : public orcaice::Event
+{
+public:
+    PreviousFieldEvent() :
+        Event( PreviousField ) {};
+};
+
+class NextFieldEvent : public orcaice::Event
+{
+public:
+    NextFieldEvent() :
+        Event( NextField ) {};
+};
+
+class ValueUpEvent : public orcaice::Event
+{
+public:
+    ValueUpEvent() :
+        Event( ValueUp ) {};
+};
+
+class ValueDownEvent : public orcaice::Event
+{
+public:
+    ValueDownEvent() :
+        Event( ValueDown ) {};
+};
+
+class ActionEvent : public orcaice::Event
+{
+public:
+    ActionEvent() :
+        Event( Action ) {};
+};
 
 } // namespace
 
