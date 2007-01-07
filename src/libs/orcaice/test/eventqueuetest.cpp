@@ -28,6 +28,31 @@ public:
 };
 typedef IceUtil::Handle<TestEvent> TestEventPtr;
 
+class ExtCaller : public orcaice::Thread
+{
+public:
+    ExtCaller( orcaice::EventQueuePtr q ) :
+        q_(q) {};
+
+    // from thread
+    virtual void run()
+    {
+        while ( isActive() )
+        {
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+cout<<"thread ok"<<endl;
+        }
+    };
+
+    void callMeBack()
+    {
+        orcaice::EventPtr e = new TestEvent( 1109 );
+        q_->add( e );
+    };
+private:
+    orcaice::EventQueuePtr q_;
+};
+
 int main(int argc, char * argv[])
 {
     cout<<"testing size() with empty queue... ";
@@ -89,6 +114,36 @@ int main(int argc, char * argv[])
         cout<<"failed"<<endl<<"expect size=0, size="<<q->size()<<endl;
         exit(EXIT_FAILURE);
     }
+    cout<<"ok"<<endl;
+
+
+    cout<<"testing add() and get() and add() ... ";
+    e = new TestEvent( 2006.0 );
+    q->add( e );
+
+    // if something is wrong here, it will block forever
+    q->timedGet( eout, 10 );
+
+    e = new TestEvent( 2007.0 );
+    q->add( e );
+    if ( q->size() != 1 ) {
+        cout<<"failed"<<endl<<"expect size=1, size="<<q->size()<<endl;
+        exit(EXIT_FAILURE);
+    }
+    cout<<"ok"<<endl;
+
+
+    cout<<"testing external caller ... ";
+    ExtCaller* extCaller = new ExtCaller( q );
+    extCaller->start();
+    extCaller->callMeBack();
+    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+    extCaller->callMeBack();
+    if ( q->size() != 3 ) {
+        cout<<"failed"<<endl<<"expect size=1, size="<<q->size()<<endl;
+        exit(EXIT_FAILURE);
+    }
+    orcaice::Thread::stopAndJoin( extCaller );
     cout<<"ok"<<endl;
 
     // TODO: test get and timedGet() with empty queue. requires another thread

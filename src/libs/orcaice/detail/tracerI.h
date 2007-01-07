@@ -30,8 +30,9 @@ public:
 
     // orca::Tracer interface
 
-    virtual void setVerbosity( ::Ice::Int error, ::Ice::Int warn, ::Ice::Int info, ::Ice::Int debug, 
-                                const ::Ice::Current& = ::Ice::Current());
+    virtual ::orca::TracerVerbosityConfig getVerbosity( const ::Ice::Current& = ::Ice::Current()) const;
+
+    virtual void setVerbosity( const ::orca::TracerVerbosityConfig&, const ::Ice::Current& = ::Ice::Current());
 
     virtual void subscribe(const ::orca::TracerConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 

@@ -107,20 +107,33 @@ TracerI::connectToIceStorm()
     return publisher_ != 0;
 }
 
-void 
-TracerI::setVerbosity( ::Ice::Int error, ::Ice::Int warn, ::Ice::Int info, ::Ice::Int debug,  const ::Ice::Current& )
+::orca::TracerVerbosityConfig 
+TracerI::getVerbosity( const ::Ice::Current& ) const
 {
-    if ( info > -1 ) {
-        config_.verbosity[TracerI::InfoTrace][TracerI::ToNetwork]     = info;
+    ::orca::TracerVerbosityConfig config;
+
+    config.info = config_.verbosity[TracerI::InfoTrace][TracerI::ToNetwork];
+    config.warning = config_.verbosity[TracerI::WarningTrace][TracerI::ToNetwork];
+    config.error = config_.verbosity[TracerI::ErrorTrace][TracerI::ToNetwork];
+    config.debug = config_.verbosity[TracerI::DebugTrace][TracerI::ToNetwork];
+
+    return config;
+}
+
+void 
+TracerI::setVerbosity( const ::orca::TracerVerbosityConfig& config,  const ::Ice::Current& )
+{
+    if ( config.info > -1 ) {
+        config_.verbosity[TracerI::InfoTrace][TracerI::ToNetwork]     = config.info;
     }
-    if ( warn > -1 ) {
-        config_.verbosity[TracerI::WarningTrace][TracerI::ToNetwork]  = warn;
+    if ( config.warning > -1 ) {
+        config_.verbosity[TracerI::WarningTrace][TracerI::ToNetwork]  = config.warning;
     }
-    if ( error > -1 ) {
-        config_.verbosity[TracerI::ErrorTrace][TracerI::ToNetwork]    = error;
+    if ( config.error > -1 ) {
+        config_.verbosity[TracerI::ErrorTrace][TracerI::ToNetwork]    = config.error;
     }
-    if ( debug > -1 ) {
-        config_.verbosity[TracerI::DebugTrace][TracerI::ToNetwork]    = debug;
+    if ( config.debug > -1 ) {
+        config_.verbosity[TracerI::DebugTrace][TracerI::ToNetwork]    = config.debug;
     }
 
     stringstream ss;

@@ -58,13 +58,35 @@ interface TracerConsumer
 };
 
 /*!
+    @brief Verbosity levels for different trace types.
+
+    When setting desired verbosity level, any value can be set to -1 to leave the current value unchanged.
+*/
+struct TracerVerbosityConfig
+{   
+    //! Verbosity level for error traces.
+    int error;
+
+    //! Verbosity level for warning traces.
+    int warning;
+
+    //! Verbosity level for information traces.
+    int info;
+
+    //! Verbosity level for debug traces.
+    int debug;
+};
+
+/*!
  *  @brief Routes different types of information to different destinations.
  */
 interface Tracer
 {
+    //! Get current verbosity level for traces transmitted over the network.
+    nonmutating TracerVerbosityConfig getVerbosity();
+
     //! Set verbosity level for traces transmitted over the network.
-    //! Set to -1 to leave unchanged.
-    idempotent void setVerbosity( int error, int warn, int info, int debug );
+    idempotent void setVerbosity( TracerVerbosityConfig verbosity );
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The
