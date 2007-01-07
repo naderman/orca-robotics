@@ -8,6 +8,7 @@ IF ( NOT OS_WIN AND QT4_FOUND )
     
     SET( MOC_HEADERS
         pathfollower2delement.h
+        pathinput.h
         pathplanner2delement.h
     )
 

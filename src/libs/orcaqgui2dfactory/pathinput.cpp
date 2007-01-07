@@ -29,10 +29,162 @@
 using namespace std;
 
 namespace orcaqgui {
+    
+const int NUM_COLUMNS = 8;
 
-PathInput::PathInput( WaypointSettings *wpSettings )
-    : wpSettings_(wpSettings)
+float straightLineDist( QPointF line )
 {
+    return sqrt(line.x()*line.x() + line.y()*line.y());
+}
+    
+WpTable::WpTable(PathInput *parent,
+                 QPolygonF *waypoints, 
+                 QVector<float> *times, 
+                 QVector<float> *waitingTimes)
+    : parent_(parent),
+      waypoints_(waypoints),
+      times_(times),
+      waitingTimes_(waitingTimes),
+      isLocked_(true)
+{ 
+    setColumnCount(NUM_COLUMNS);
+    QObject::connect(this,SIGNAL(cellChanged(int,int)),this,SLOT(updateDataStorage(int,int)));
+    QObject::connect(this,SIGNAL(cellClicked(int,int)),parent,SLOT(setWaypointFocus(int,int)));
+}
+
+
+void WpTable::refreshTable()
+{
+    isLocked_ = true;
+    
+    int size = waypoints_->size();
+    clear();
+    setRowCount(size);
+    
+    QString str;
+    QTableWidgetItem *item;
+    
+    computeVelocities();
+    
+    for (int row=0; row<size; row++)
+    {
+        str.setNum(waypoints_->at(row).x(),'g',4);
+        item = new QTableWidgetItem(str);
+        setItem(row, 0, item);
+        
+        str.setNum(waypoints_->at(row).y(),'g',4);
+        item = new QTableWidgetItem(str);
+        setItem(row, 1, item);
+        
+        str.setNum(times_->at(row),'g',4);
+        item = new QTableWidgetItem(str);
+        setItem(row, 2, item);
+        
+        str.setNum(waitingTimes_->at(row),'g',4);
+        item = new QTableWidgetItem(str);
+        setItem(row, 3, item);
+        
+        str.setNum(velocities_[row],'g',4);
+        item = new QTableWidgetItem(str);
+        setItem(row, 4, item);
+    }
+    
+    isLocked_ = false;
+}
+
+void WpTable::computeVelocities()
+{
+    velocities_.resize(1);
+    velocities_[0] = 0.0;
+    for (int i=1; i<waypoints_->size(); i++)
+    {
+        float deltaS = straightLineDist( waypoints_->at(i) - waypoints_->at(i-1));
+        float deltaT = times_->at(i) - (times_->at(i-1) + waitingTimes_->at(i-1));
+        velocities_.push_back(deltaS/deltaT);
+    }
+}
+
+void WpTable::updateDataStorage(int row, int column)
+{
+    if (isLocked_) return;
+    
+    QTableWidgetItem *item = this->item(row,column);
+    
+    switch (column)
+    {
+        case 0: 
+        {       
+            QPointF *data = waypoints_->data();
+            data[row].setX( item->text().toDouble() );
+            break;
+        }
+        case 1: 
+        {       
+            QPointF *data = waypoints_->data();
+            data[row].setY( item->text().toDouble() );
+            break;
+        }
+        case 2: 
+        {       
+            float *data = times_->data();
+            data[row] = item->text().toDouble();
+            refreshTable();
+            break;
+        }
+        case 3: 
+        {       
+            float waitingTime =  item->text().toDouble();
+            float *data = waitingTimes_->data();
+            data[row] = waitingTime;
+            // update all subsequent times
+            data = times_->data();
+            for (int i=row+1; i<rowCount(); i++)
+            {
+                data[i] = data[i] + waitingTime;    
+            }
+            refreshTable();
+            break;
+        }
+        case 4: 
+        {       
+            float velocity =  item->text().toDouble();
+            velocities_[row] = velocity;
+            // update time to get to here
+            float *data = times_->data();
+            float deltaS = straightLineDist( waypoints_->at(row) - waypoints_->at(row-1) );
+            data[row] = deltaS/velocity + (data[row-1] + waitingTimes_->at(row-1));
+            refreshTable();
+            break;
+        }
+        default: 
+        {
+            cout << "WpTable:: This column is currently not supported!" << endl;
+        }
+    }
+        
+    
+}
+    
+PathInput::PathInput( WaypointSettings *wpSettings )
+    : wpSettings_(wpSettings),
+      waypointInFocus_(-99)
+{
+    wpTable_ = new WpTable( this,
+                            &waypoints_, 
+                            &times_, 
+                            &waitingTimes_ );
+}
+
+
+PathInput::~PathInput() 
+{ 
+    delete wpTable_; 
+}  
+
+
+void PathInput::setWaypointFocus(int row, int column)
+{
+    waypointInFocus_ = row;    
 }
 
 void
@@ -44,6 +196,8 @@ PathInput::resizeData( int index )
     headingTolerances_.resize( index );
     maxSpeeds_.resize( index );
     maxTurnrates_.resize( index );
+    times_.resize( index );
+    waitingTimes_.resize( index );
 }
 
 
@@ -55,11 +209,14 @@ void PathInput::paint( QPainter *p )
     if ( waypoints_.isEmpty() ) return;
     
     const float PATH_WIDTH = 0.05;
-    QColor color;
+    
+    QColor fillColor;
+    QColor drawColor;
+    
     if (useTransparency_) {
-        color = getTransparentVersion(Qt::green);
+        fillColor = getTransparentVersion(Qt::green);
     } else {
-        color=Qt::green;
+        fillColor=Qt::green;
     }
     
     for ( int i=0; i<waypoints_.size(); i++)
@@ -67,9 +224,15 @@ void PathInput::paint( QPainter *p )
         p->save();
         p->translate( waypoints_[i].x(), waypoints_[i].y() );    // move to point
 
+        if (i==waypointInFocus_) {
+            drawColor = Qt::black;
+        } else {
+            drawColor = fillColor;
+        }
+        
         paintWaypoint( p, 
-                       color,
-                       color, 
+                       fillColor,
+                       drawColor, 
                        headings_[i],
                        distTolerances_[i], 
                        headingTolerances_[i] );
@@ -80,7 +243,7 @@ void PathInput::paint( QPainter *p )
     // draw connections between them
     if ( waypoints_.size()>1 )
     {
-        p->setPen( QPen( color, PATH_WIDTH ) );
+        p->setPen( QPen( fillColor, PATH_WIDTH ) );
         p->setBrush ( Qt::NoBrush );
 
         for ( int i=1; i<waypoints_.size(); ++i)
@@ -121,6 +284,8 @@ void PathInput::processReleaseEvent( QMouseEvent* e)
     {
         changeWpParameters( waypoint );    
     }
+    if (wpTable_->isHidden()) wpTable_->show();
+    wpTable_->refreshTable();
 }
 
 void PathInput::processDoubleClickEvent( QMouseEvent* e)
@@ -144,9 +309,13 @@ void PathInput::addWaypoint (QPointF wp)
     {   // first waypoint is special
         headings_.append( 0 );
         headingTolerances_.append( 180*16 );
+        times_.append( wpSettings_->timePeriod );
     }
     else 
     {
+        // times
+        times_.append( wpSettings_->timePeriod + times_[numWaypoints-1] + waitingTimes_[numWaypoints-1] );
+        // heading    
         QPointF diff = waypoints_[numWaypoints] - waypoints_[numWaypoints - 1];
         int tmpHeading =(int)floor( atan2(diff.y(),diff.x() )/M_PI*180.0 );
         if (tmpHeading < 0) tmpHeading = tmpHeading + 360;
@@ -159,7 +328,7 @@ void PathInput::addWaypoint (QPointF wp)
         }
     }
     
-    times_.append( wpSettings_->timePeriod * (numWaypoints+1) );
+    waitingTimes_.append( 0.0 );
     distTolerances_.append( wpSettings_->distanceTolerance );
     maxSpeeds_.append( wpSettings_->maxApproachSpeed );
     maxTurnrates_.append( wpSettings_->maxApproachTurnrate );
@@ -180,6 +349,7 @@ void PathInput::removeWaypoint( QPointF p1 )
         // delete the last element
         resizeData( lastIndex );
     }
+    
 }
 
 void PathInput::changeWpParameters( QPointF p1 )
@@ -201,10 +371,15 @@ void PathInput::changeWpParameters( QPointF p1 )
             Ui::WaypointDialog ui;
             ui.setupUi(myDialog);
             
+            // save waiting time
+            float waitingTimeBefore = waitingTimes_[i];
+            cout << "Waiting time before: " << waitingTimeBefore << endl;
+            
             ui.xSpin->setValue( waypoints_[i].x() );
             ui.ySpin->setValue( waypoints_[i].y() );
             ui.headingSpin->setValue( headings_[i]/16 );
             ui.timeSpin->setValue( times_[i] );
+            ui.waitingTimeSpin->setValue( waitingTimes_[i] );
             ui.distanceTolSpin->setValue( distTolerances_[i] );
             ui.headingTolSpin->setValue( headingTolerances_[i]/16 );
             ui.maxSpeedSpin->setValue( maxSpeeds_[i] );
@@ -217,10 +392,21 @@ void PathInput::changeWpParameters( QPointF p1 )
             waypoints_[i].setY( ui.ySpin->value() );
             headings_[i] = ui.headingSpin->value()*16;
             times_[i] = ui.timeSpin->value();
+            waitingTimes_[i] = ui.waitingTimeSpin->value();
             distTolerances_[i] = ui.distanceTolSpin->value();
             headingTolerances_[i] = ui.headingTolSpin->value()*16;
             maxSpeeds_[i] = ui.maxSpeedSpin->value();
             maxTurnrates_[i] = ui.maxTurnrateSpin->value();
+            
+            // if waiting time has changed we need to update all subsequent times
+            cout << "Waiting time after: " << waitingTimes_[i] << endl;
+            cout << "Difference is: " << (waitingTimes_[i]-waitingTimeBefore) << endl;
+            if ( (waitingTimes_[i]-waitingTimeBefore)<1e-5 || (i==waypoints_.size()-1)) return;
+            cout << "Didn't return" << endl;
+            for (int k=i+1; k<waypoints_.size(); k++)
+            {
+                times_[k] = times_[k] + waitingTimes_[i];
+            }
             
         }
     }

@@ -17,11 +17,13 @@
 #include <QMatrix>
 #include <QVector>
 #include <QMouseEvent>
+#include <QTableWidget>
 
 namespace orcaqgui {
 
 class OrcaGuiUserEvent;
 class IHumanManager;
+class PathInput;
 
 // all units are SI units
 class WaypointSettings
@@ -38,11 +40,43 @@ class WaypointSettings
             int numberOfLoops;
 };
 
-class PathInput
+class WpTable : public QTableWidget
+{
+    Q_OBJECT
+            
+    public:
+        WpTable( PathInput *parent,
+                 QPolygonF *waypoints, 
+                 QVector<float> *times, 
+                 QVector<float> *waitingTimes);
+        ~WpTable() {};
+        void refreshTable();
+        
+    private:
+        PathInput *parent_;
+        QPolygonF *waypoints_;
+        QVector<float> *times_;
+        QVector<float> *waitingTimes_;
+        
+        QVector<float> velocities_;
+        
+        void computeVelocities();
+        
+        // lock up the cellUpdate signal: it should only be emitted if the user changes cell entries
+        // not if we programmatically change them
+        bool isLocked_;
+    
+    private slots:
+        void updateDataStorage(int row, int column);
+};
+
+class PathInput : public QObject
 { 
+    Q_OBJECT
+            
     public:
         PathInput( WaypointSettings *wpSettings );
-        virtual ~PathInput() {};  
+        virtual ~PathInput();  
      
         virtual void paint( QPainter *painter );
         virtual void setTransparency( bool useTransparency ) { useTransparency_=useTransparency; };
@@ -56,7 +90,6 @@ class PathInput
         
         virtual void savePath( const QString &fileName, IHumanManager *humanManager ) const;
         
-
     protected:    
         WaypointSettings *wpSettings_;
         QMatrix wmInv_; // win2mm matrix
@@ -76,11 +109,20 @@ class PathInput
         
         QVector<float> maxSpeeds_;           // max speed in m/s
         QVector<int> maxTurnrates_;          // max turnrate in deg/s
+        
+        QVector<float> waitingTimes_;        // how long to wait at this waypoint
 
         QPointF mouseDownPnt_;
         QPointF mouseUpPnt_;
         QPointF mouseMovePnt_;
         QPointF doubleClick_;
+        
+        WpTable *wpTable_;
+        int waypointInFocus_;
+        
+    public slots:
+        void setWaypointFocus(int row, int column);
+        
 };
 
 class PathFollowerInput : public PathInput
