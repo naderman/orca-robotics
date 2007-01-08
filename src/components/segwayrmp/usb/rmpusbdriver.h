@@ -30,15 +30,14 @@ public:
     virtual ~RmpUsbDriver();
 
     virtual int enable();
-//     virtual int repair();
-//     virtual int disable();
 
-    virtual int read( orca::Position2dData& position2d, orca::Position3dData& position3d, 
-                      orca::PowerData &power, std::string & status );
+    virtual int disable() { return 0; };
 
-    virtual int write( const orca::Velocity2dCommand& command );
+    virtual int read( SegwayRmpData& data, std::string &status );
 
-    virtual int get( int& distanceTravelled );
+    virtual int write( const SegwayRmpCommand& command );
+
+    virtual int get( SegwayRmpStats& stats );
 
     virtual std::string toString();
 
@@ -105,11 +104,10 @@ private:
 
     void readFrame();
     void integrateMotion();
-    void updateData( orca::Position2dData &position2d, orca::Position3dData &position3d,
-                     orca::PowerData &power, Status & status );
+    void updateData( SegwayRmpData& data, Status & status );
 
     // helper to take a player command and turn it into a CAN command packet
-    void makeMotionCommandPacket( CanPacket* pkt, const orca::Velocity2dCommand & command );
+    void makeMotionCommandPacket( CanPacket* pkt, const SegwayRmpCommand& command );
     void makeStatusCommandPacket( CanPacket* pkt, uint16_t commandId, uint16_t value );
     void makeShutdownCommandPacket( CanPacket* pkt );
 

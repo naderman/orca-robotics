@@ -21,10 +21,12 @@
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_platform2d [SegwayRmp.Provides.Platform2d]
-- @ref orca_interface_position3d [SegwayRmp.Provides.Position3d]
+- @ref orca_interface_odometry2d [SegwayRmp.Provides.Odometry2d]
+- @ref orca_interface_odometry3d [SegwayRmp.Provides.Odometry3d]
+- @ref orca_interface_velocitycontrol2d [SegwayRmp.Provides.VelocityControl2d]
 - @ref orca_interface_power [SegwayRmp.Provides.Power]
 - @ref orca_interface_status
+- @ref orca_interface_tracer
 
 @par Requires
 
@@ -55,7 +57,7 @@
     - Valid values: positive
     - Default: 1.0
     
-- @c SegwayRmp.Config.MaxTurnrate (double) [deg/s]
+- @c SegwayRmp.Config.MaxTurnRate (double) [deg/s]
     - Maximum allowed turnrate
     - Valid values: positive
     - Default: 60.0

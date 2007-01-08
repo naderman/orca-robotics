@@ -11,97 +11,34 @@
 #include <iostream>
 #include <sstream>
 
+#include <orcaice/orcaice.h>
 #include "nethandler.h"
-#include <IceUtil/Time.h>
-#include <IceStorm/IceStorm.h>
 
 // implementations of Ice objects
-#include "platform2dI.h"
-#include "position3dI.h"
-#include "powerI.h"
-
-#include <orcaice/orcaice.h>
+#include <orcaifaceimpl/odometry2dI.h>
+#include <orcaifaceimpl/odometry3dI.h>
+#include <orcaifaceimpl/powerI.h>
+#include "velocitycontrol2dI.h"
 
 using namespace std;
-using namespace orca;
 using namespace segwayrmp;
 
 NetHandler::NetHandler(
-                 orcaice::Proxy<orca::Position2dData>    & position2dPipe,
-                 orcaice::Proxy<orca::Position3dData>    & position3dPipe,
-                 orcaice::Notify<orca::Velocity2dCommand>& commandPipe,
-                 orcaice::Proxy<orca::PowerData>         & powerPipe,
-                 orcaice::Proxy<orca::Platform2dConfig>  & setConfigPipe,
-                 orcaice::Proxy<orca::Platform2dConfig>  & currentConfigPipe,
-                 const orcaice::Context                        & context )
-      : position2dPipe_(position2dPipe),
-        position3dPipe_(position3dPipe),
-        commandPipe_(commandPipe),
-        powerPipe_(powerPipe),
-        setConfigPipe_(setConfigPipe),
-        currentConfigPipe_(currentConfigPipe),
-        context_(context)
+                 orcaice::Proxy<orca::Odometry2dData>&      odometry2dPipe,
+                 orcaice::Proxy<orca::Odometry3dData>&      odometry3dPipe,
+                 orcaice::Notify<orca::VelocityControl2dData>&  commandPipe,
+                 orcaice::Proxy<orca::PowerData>&           powerPipe,
+                 const orcaice::Context&                    context ) :
+    odometry2dPipe_(odometry2dPipe),
+    odometry3dPipe_(odometry3dPipe),
+    commandPipe_(commandPipe),
+    powerPipe_(powerPipe),
+    context_(context)
 {
-    init();
 }
 
 NetHandler::~NetHandler()
 {
-}
-
-void
-NetHandler::init()
-{
-    //
-    // Read settings
-    //
-    std::string prefix = context_.tag() + ".Config.";
-    
-    position2dPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            prefix+"Position2dPublishInterval", -1 );
-    position3dPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            prefix+"Position3dPublishInterval", -1 );
-    powerPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            prefix+"PowerPublishInterval", 20.0 );
-    statusPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            prefix+"StatusPublishInterval", 60.0 );
-
-    // PROVIDED: Platform2d
-    // Find IceStorm Topic to which we'll publish.
-    // NetworkException will kill it, that's what we want.
-    IceStorm::TopicPrx platfTopicPrx = orcaice::connectToTopicWithTag<Position2dConsumerPrx>
-                ( context_, position2dPublisher_, "Platform2d" );
-
-    // create servant for direct connections and tell adapter about it
-    // don't need to store it as a member variable, adapter will keep it alive
-    Ice::ObjectPtr platform2dObj = new Platform2dI( position2dPipe_, commandPipe_,
-                                      setConfigPipe_, currentConfigPipe_, platfTopicPrx );
-    // two possible exceptions will kill it here, that's what we want
-    orcaice::createInterfaceWithTag( context_, platform2dObj, "Platform2d" );
-
-    // PROVIDED: Position3d
-    // Find IceStorm Topic to which we'll publish.
-    // NetworkException will kill it, that's what we want.
-    IceStorm::TopicPrx pos3dTopicPrx = orcaice::connectToTopicWithTag<Position3dConsumerPrx>
-                ( context_, position3dPublisher_, "Position3d" );
-
-    // create servant for direct connections and tell adapter about it
-    // don't need to store it as a member variable, adapter will keep it alive
-    Ice::ObjectPtr position3dObj = new Position3dI( position3dPipe_, pos3dTopicPrx );
-    // two possible exceptions will kill it here, that's what we want
-    orcaice::createInterfaceWithTag( context_, position3dObj, "Position3d" );
-
-    // PROVIDED INTERFACE: Power
-    // Find IceStorm ConsumerProxy to push out data
-    IceStorm::TopicPrx powerTopicPrx = orcaice::connectToTopicWithTag<PowerConsumerPrx>
-                ( context_, powerPublisher_, "Power" );
-    
-    // create servant for direct connections and tell adapter about it
-    Ice::ObjectPtr powerObj = new PowerI( powerPipe_, powerTopicPrx );
-    orcaice::createInterfaceWithTag( context_, powerObj, "Power" );
-    
-    // all cool, assume we can send and receive
-    context_.tracer()->debug("network enabled",5);
 }
 
 void
@@ -110,15 +47,10 @@ NetHandler::run()
     try // this is once per run try/catch: waiting for the communicator to be destroyed
     {
 
-    int position2dReadTimeout = 1000; // [ms]
-    orcaice::Timer pushTimer;
-
     while ( isActive() )
     {
         try {
-            cout<<"activating..."<<endl;
             context_.activate();
-            cout<<"activated."<<endl;
             break;
         }
         catch ( orcaice::NetworkException & e )
@@ -139,61 +71,177 @@ NetHandler::run()
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
-    
+
+    std::string prefix = context_.tag() + ".Config.";
+
+    //
+    // PROVIDED: VelocityControl2d
+    //
+    orca::VelocityControl2dDescription velocityControl2dDescr;
+
+    velocityControl2dDescr.maxVelocities.v.x = 
+            orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"MaxSpeed", 1.0 );
+    velocityControl2dDescr.maxVelocities.v.y = 0.0;
+    velocityControl2dDescr.maxVelocities.w = 
+            orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"MaxTurnRate", 45.0 );
+
+    // create servant for direct connections and tell adapter about it
+    // don't need to store it as a member variable, adapter will keep it alive
+    Ice::ObjectPtr velocityControl2dI = new VelocityControl2dI( velocityControl2dDescr, commandPipe_ );
+
+    // two possible exceptions will kill it here, that's what we want
+    orcaice::createInterfaceWithTag( context_, velocityControl2dI, "VelocityControl2d" );
+
+    //
+    // PROVIDED: Odometry2d
+    //
+    orca::Odometry2dDescription odometry2dDescr;
+
+    orcaice::setInit( odometry2dDescr.offset );
+    orcaice::getPropertyAsFrame2d( context_.properties(), prefix+"Offset", odometry2dDescr.offset );
+    orcaice::setInit( odometry2dDescr.size, 1.0, 1.0 );
+    orcaice::getPropertyAsSize2d( context_.properties(), prefix+"Size", odometry2dDescr.size );
+
+    orcaifaceimpl::Odometry2dIPtr odometry2dI = 
+            new orcaifaceimpl::Odometry2dI( odometry2dDescr, "Odometry2d", context_ );
+
+
+    while ( isActive() ) {
+        try {
+            odometry2dI->initInterface();
+            context_.tracer()->debug( "odometry 2d interface initialized",2);
+            break;
+        }
+        catch ( const orcaice::NetworkException& e ) {
+            context_.tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        }
+        catch ( const Ice::Exception& e ) {
+            context_.tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        }
+    }
+
+    //
+    // PROVIDED: Odometry3d
+    //
+    orca::Odometry3dDescription odometry3dDescr;
+
+    orcaice::setInit( odometry3dDescr.offset );
+    orcaice::getPropertyAsFrame3d( context_.properties(), prefix+"Offset", odometry3dDescr.offset );
+    orcaice::setInit( odometry3dDescr.size, 1.0, 1.0, 2.0 );
+    orcaice::getPropertyAsSize3d( context_.properties(), prefix+"Size", odometry3dDescr.size );
+
+    orcaifaceimpl::Odometry3dIPtr odometry3dI = 
+            new orcaifaceimpl::Odometry3dI( odometry3dDescr, "Odometry3d", context_ );
+
+
+    while ( isActive() ) {
+        try {
+            odometry3dI->initInterface();
+            context_.tracer()->debug( "odometry 3d interface initialized",2);
+            break;
+        }
+        catch ( const orcaice::NetworkException& e ) {
+            context_.tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        }
+        catch ( const Ice::Exception& e ) {
+            context_.tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        }
+    }
+
+    //
+    // PROVIDED: Power
+    //
+
+    orcaifaceimpl::PowerIPtr powerI = new orcaifaceimpl::PowerI( "Power", context_ );
+
+
+    while ( isActive() ) {
+        try {
+            powerI->initInterface();
+            context_.tracer()->debug( "power interface initialized",2);
+            break;
+        }
+        catch ( const orcaice::NetworkException& e ) {
+            context_.tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        }
+        catch ( const Ice::Exception& e ) {
+            context_.tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        }
+    }
+
+
+    orca::Odometry2dData odometry2dData;
+    orca::Odometry3dData odometry3dData;
+    orca::PowerData powerData;
+
+    orcaice::Timer odometry2dPublishTimer;
+    orcaice::Timer odometry3dPublishTimer;
+    orcaice::Timer powerPublishTimer;
+
+    double odometry2dPublishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
+            prefix+"Position2dPublishInterval", -1 );
+    double odometry3dPublishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
+            prefix+"Position3dPublishInterval", -1 );
+    double powerPublishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
+            prefix+"PowerPublishInterval", 20.0 );
+    double statusPublishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
+            prefix+"StatusPublishInterval", 60.0 );
+
+    const int odometryReadTimeout = 500; // [ms]
+
+    //
+    // Main loop
+    //
     while( isActive() )
     {
-        // block on the most frequent data source: position
-        int ret = position2dPipe_.getNext( position2dData_, position2dReadTimeout );
-        
-        // it's time to publish if we publish every data point or enough time has elapsed
-        bool isTimeToPublishPosition2d = position2dPublishInterval_ < 0
-                || position2dPublishTimer_.elapsed().toSecondsDouble()>position2dPublishInterval_;
-        if ( ret == 0 && isTimeToPublishPosition2d )
-        {
-//debug
-//cout<<"push: " << pushTimer.elapsed().toMilliSecondsDouble()<<endl;
-//pushTimer.restart();
+//         context_.tracer()->debug( "net handler loop spinning ",1);
 
-            // managed to read new data and it's time to publish
-            try
-            {
-                position2dPublisher_->setData( position2dData_ );
-                position2dPublishTimer_.restart();
-            }
-                catch ( const Ice::ConnectionRefusedException & e )
-            {
-                context_.tracer()->warning("lost connection to IceStorm");
-                // now what?
-            }
+        // block on the most frequent data source: odometry
+        if ( odometry2dPipe_.getNext( odometry2dData, odometryReadTimeout ) ) {
+//             context_.tracer()->debug( "Net loop timed out", 1);
+            continue;
+        }
+
+        // check that we were not told to terminate while we were sleeping
+        // otherwise, we'll get segfault (there's probably a way to prevent this inside the library)
+        if ( isActive() && odometry2dPublishTimer.elapsed().toSecondsDouble()>=odometry2dPublishInterval ) {
+            odometry2dI->localSetAndSend( odometry2dData );
+            odometry2dPublishTimer.restart();
+        } 
+        else {
+            odometry2dI->localSet( odometry2dData );
         }
 
         // now send less frequent updates
         try
         {
-            if ( position3dPublishInterval_<0 ||
-                        position3dPublishTimer_.elapsed().toSecondsDouble()>position3dPublishInterval_ ) {
-                // also check if the data is new
-                if ( position3dPipe_.isNewData() ) {
-                    position3dPipe_.get( position3dData_ );
-                    position3dPublisher_->setData( position3dData_ );
-                    position3dPublishTimer_.restart();
+            if ( isActive() && odometry3dPipe_.isNewData() ) 
+            {
+                if ( odometry3dPublishTimer.elapsed().toSecondsDouble()>=odometry3dPublishInterval ) {
+                    odometry3dPipe_.get( odometry3dData );
+                    odometry3dI->localSetAndSend( odometry3dData );
+                    odometry3dPublishTimer.restart();
+                }
+                else {
+                    odometry3dI->localSet( odometry3dData );
                 }
             }
-            if ( powerPublishInterval_<0 ||
-                        powerPublishTimer_.elapsed().toSecondsDouble()>powerPublishInterval_ ) {
-                // also check if the data is new
-                if ( powerPipe_.isNewData() ) {
-                    powerPipe_.get( powerData_ );
-                    powerPublisher_->setData( powerData_ );
-                    powerPublishTimer_.restart();
+            if ( isActive() && powerPipe_.isNewData() ) 
+            {
+                if ( powerPublishTimer.elapsed().toSecondsDouble()>=powerPublishInterval ) {
+                    powerPipe_.get( powerData );
+                    powerI->localSetAndSend( powerData );
+                    powerPublishTimer.restart();
                 }
-            }
-            // todo: the logic of this needs revisiting
-            if ( statusPublishInterval_<0 ||
-                        statusPublishTimer_.elapsed().toSecondsDouble()>statusPublishInterval_ ) {
-                //cout<<"sending heartbeat"<<endl;
-                context_.status()->heartbeat( context_.status()->status() );
-                statusPublishTimer_.restart();
+                else {
+                    powerI->localSet( powerData );
+                }
             }
         }
         catch ( const Ice::ConnectionRefusedException & e )
@@ -201,49 +249,16 @@ NetHandler::run()
             context_.tracer()->warning("lost connection to IceStorm");
             // now what?
         }
-            
-    } // while
+    } // main loop
     
     }
     catch ( const Ice::CommunicatorDestroyedException & e )
     {
+        context_.tracer()->debug( "net handler cought CommunicatorDestroyedException",1);        
         // it's ok, we must be quitting.
     }
 
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
-    context_.tracer()->debug( "exiting NetHandler thread...",5);
-}
-
-void
-NetHandler::send()
-{
-    // push data to IceStorm
-    try
-    {
-        if ( position2dPublishTimer_.elapsed().toSecondsDouble()>position2dPublishInterval_ ) {
-            // check that there's new data
-            position2dPipe_.get( position2dData_ );
-            position2dPublisher_->setData( position2dData_ );
-            position2dPublishTimer_.restart();
-        }
-        if ( powerPublishTimer_.elapsed().toSecondsDouble()>powerPublishInterval_ ) {
-            powerPipe_.get( powerData_ );
-            powerPublisher_->setData( powerData_ );
-            powerPublishTimer_.restart();
-        }
-        if ( statusPublishTimer_.elapsed().toSecondsDouble()>statusPublishInterval_ ) {
-            //cout<<"sending heartbeat"<<endl;
-            context_.status()->heartbeat("status OK");
-            statusPublishTimer_.restart();
-        }
-    }
-    catch ( const Ice::ConnectionRefusedException & e )
-    {
-        context_.tracer()->warning("lost connection to IceStorm");
-    }
-    catch ( const Ice::CommunicatorDestroyedException & e )
-    {
-        // it's ok, the communicator may already be destroyed
-    }
+    context_.tracer()->debug( "exiting NetHandler thread...",2);
 }

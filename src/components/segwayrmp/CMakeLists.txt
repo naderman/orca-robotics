@@ -16,10 +16,7 @@ IF ( BUILD_SEGWAYRMP )
         HAVE_USB_DRIVER
         ftd2xx usb )
 
-# CMake problem: these should be in the subdir, but they have no effect there for some reason
-INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
-LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
-ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
+    LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
     
     OPTIONAL_SUB_LIBRARY(
         "Player client driver for SegwayRmp"
@@ -40,11 +37,11 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( segwayrmp main )
-    TARGET_LINK_LIBRARIES( segwayrmp SegwayRmpSources ${SEGWAY_RMP_USB_LIBS} ${PLAYERCLIENT_LIBS} )
+    TARGET_LINK_LIBRARIES( segwayrmp SegwayRmpSources OrcaIfaceImpl ${SEGWAY_RMP_USB_LIBS} ${PLAYERCLIENT_LIBS} )
     
     # build IceBox service
     GLOBAL_ADD_LIBRARY( OrcaSegwayRmp SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaSegwayRmp SegwayRmpSources ${SEGWAY_RMP_USB_LIBS} ${PLAYERCLIENT_LIBS} )
+    TARGET_LINK_LIBRARIES( OrcaSegwayRmp SegwayRmpSources OrcaIfaceImpl ${SEGWAY_RMP_USB_LIBS} ${PLAYERCLIENT_LIBS} )
     
     GENERATE_CONFIG_FILE( segwayrmp.def )
 

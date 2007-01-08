@@ -25,24 +25,75 @@
 #endif
 
 using namespace std;
-using namespace orca;
 using namespace segwayrmp;
 
+void 
+HwHandler::convert( const HwDriver::SegwayRmpData& internal, orca::Odometry2dData& network )
+{
+    network.timeStamp.seconds = internal.seconds;
+    network.timeStamp.useconds = internal.useconds;
+
+    network.pose.p.x = internal.x;
+    network.pose.p.y = internal.y;
+    network.pose.o = internal.yaw;
+    
+    network.motion.v.x = internal.vx;
+    network.motion.v.y = 0.0;
+    network.motion.w = internal.dyaw;
+}
+
+void 
+HwHandler::convert( const HwDriver::SegwayRmpData& internal, orca::Odometry3dData& network )
+{
+    network.timeStamp.seconds = internal.seconds;
+    network.timeStamp.useconds = internal.useconds;
+
+    network.pose.p.x = internal.x;
+    network.pose.p.y = internal.y;
+    network.pose.p.z = 0.0;
+
+    network.pose.o.r = internal.roll;
+    network.pose.o.p = internal.pitch;
+    network.pose.o.y = internal.yaw;
+    
+    network.motion.v.x = internal.vx;
+    network.motion.v.y = 0.0;
+    network.motion.v.z = 0.0;
+
+    network.motion.w.x = internal.droll;
+    network.motion.w.y = internal.dpitch;
+    network.motion.w.z = internal.dyaw;
+}
+
+void 
+HwHandler::convert( const HwDriver::SegwayRmpData& internal, orca::PowerData& network )
+{
+    network.timeStamp.seconds = internal.seconds;
+    network.timeStamp.useconds = internal.useconds;
+
+    network.batteries[0].voltage = internal.mainvolt;
+    network.batteries[1].voltage = internal.mainvolt;
+    network.batteries[2].voltage = internal.uivolt;
+}
+
+void 
+HwHandler::convert( const orca::VelocityControl2dData& network, HwDriver::SegwayRmpCommand& internal )
+{
+    internal.vx = network.motion.v.x;
+    internal.w = network.motion.w;
+}
+
 HwHandler::HwHandler(
-                 orcaice::Proxy<orca::Position2dData>    & position2dPipe,
-                 orcaice::Proxy<orca::Position3dData>    & position3dPipe,
-                 orcaice::Notify<orca::Velocity2dCommand>& commandPipe,
-                 orcaice::Proxy<orca::PowerData>         & powerPipe,
-                 orcaice::Proxy<orca::Platform2dConfig>  & setConfigPipe,
-                 orcaice::Proxy<orca::Platform2dConfig>  & currentConfigPipe,
-                 const orcaice::Context                        & context )
-      : position2dPipe_(position2dPipe),
-        position3dPipe_(position3dPipe),
-        powerPipe_(powerPipe),
-        setConfigPipe_(setConfigPipe),
-        currentConfigPipe_(currentConfigPipe),
-        driver_(0),
-        context_(context)
+                 orcaice::Proxy<orca::Odometry2dData>& odometry2dPipe,
+                 orcaice::Proxy<orca::Odometry3dData>& odometry3dPipe,
+                 orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
+                 orcaice::Proxy<orca::PowerData>& powerPipe,
+                 const orcaice::Context& context ) :
+    odometry2dPipe_(odometry2dPipe),
+    odometry3dPipe_(odometry3dPipe),
+    powerPipe_(powerPipe),
+    driver_(0),
+    context_(context)
 {
     // we'll handle incoming messages
     commandPipe.setNotifyHandler( this );
@@ -50,30 +101,6 @@ HwHandler::HwHandler(
     // unsure about isOk until we enable the driver
     isOkProxy_.set( false );
 
-    // set up data structure for 3 batteries
-    // @todo Should this be done by the driver?
-//     BatteryData bd;
-//     for ( int i=0; i<3; ++i ) {
-//         powerData_.batteries.push_back( bd );
-//     }
-    powerData_.batteries.resize(3);
-    powerData_.batteries[0].name = "main-front";
-    powerData_.batteries[1].name = "main-rear";
-    powerData_.batteries[2].name = "ui";
-
-    // this is the last place we can throw exceptions from.
-    // after this the thread will be launched
-    init();
-}
-
-HwHandler::~HwHandler()
-{
-    delete driver_;
-}
-
-void
-HwHandler::init()
-{
     //
     // Read settings
     //
@@ -81,7 +108,7 @@ HwHandler::init()
     std::string prefix = context_.tag() + ".Config.";
     
     config_.maxSpeed = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxSpeed", 1.0 );
-    config_.maxTurnrate = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
+    config_.maxTurnrate = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxTurnRate", 40.0 )*DEG2RAD_RATIO;
     config_.isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableMotion", 1 );   
 
     // based on the config parameter, create the right driver
@@ -108,7 +135,7 @@ HwHandler::init()
     else if ( driverName == "fake" )
     {
         context_.tracer()->debug( "loading 'fake' driver",3);
-        driver_ = new FakeDriver;
+        driver_ = new FakeDriver( context_ );
     }
     else {
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
@@ -118,6 +145,11 @@ HwHandler::init()
     }
 
     context_.tracer()->debug("driver instantiated",5);
+}
+
+HwHandler::~HwHandler()
+{
+    delete driver_;
 }
 
 void
@@ -140,7 +172,21 @@ HwHandler::run()
 {
     std::string driverStatus = "";
     std::string currDriverStatus = "";
-            
+
+    HwDriver::SegwayRmpData segwayRmpData;
+    orca::Odometry2dData odometry2dData;
+    orca::Odometry3dData odometry3dData;
+    orca::PowerData powerData;
+
+    // set up data structure for 3 batteries
+    powerData.batteries.resize(3);
+    powerData.batteries[0].name = "main-front";
+    powerData.batteries[1].name = "main-rear";
+    powerData.batteries[2].name = "ui";
+
+    //
+    // Main loop
+    //
     while( isActive() )
     {
         try 
@@ -166,14 +212,19 @@ HwHandler::run()
             //
             // Read data from the hardware
             //
-            int readStatus = driver_->read( position2dData_, position3dData_, powerData_, currDriverStatus );
+            int readStatus = driver_->read( segwayRmpData, currDriverStatus );
     
             if ( readStatus==0 ) 
             {
-                // Stick it in the buffer so pullers can get it
-                position2dPipe_.set( position2dData_ );
-                position3dPipe_.set( position3dData_ );
-                powerPipe_.set( powerData_ );
+                // convert internal to network format
+                convert( segwayRmpData, odometry2dData );
+                convert( segwayRmpData, odometry3dData );
+                convert( segwayRmpData, powerData );
+
+                // Stick it in the proxies so pullers can get it
+                odometry2dPipe_.set( odometry2dData );
+                odometry3dPipe_.set( odometry3dData );
+                powerPipe_.set( powerData );
                 
                 if ( driverStatus != currDriverStatus ) {
                     context_.status()->status( currDriverStatus );
@@ -191,16 +242,6 @@ HwHandler::run()
         {
             stringstream ss;
             ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-            context_.tracer()->error( ss.str() );
-            if ( context_.isApplication() ) {
-                context_.tracer()->info( "this is an stand-alone component. Quitting...");
-                context_.communicator()->destroy();
-            }
-        }
-        catch ( const orcaice::Exception & e )
-        {
-            stringstream ss;
-            ss << "unexpected (local?) orcaice exception: " << e.what();
             context_.tracer()->error( ss.str() );
             if ( context_.isApplication() ) {
                 context_.tracer()->info( "this is an stand-alone component. Quitting...");
@@ -240,6 +281,14 @@ HwHandler::run()
 
     // exited main loop
 
+    // reset the hardware
+    if ( driver_->disable() ) {
+        context_.tracer()->warning("failed to disable driver");
+    }
+    else {
+        context_.tracer()->debug("driver disabled",5);
+    }
+
     // log run statistics
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
@@ -251,9 +300,9 @@ HwHandler::run()
             context_.tracer()->error( "Stats were not written. Could not create file " + statsFilename );
         }
         // get stats
-        int distanceTravelled = 0;
-        driver_->get( distanceTravelled );
-        file << context_.status()->startTime().toString() << " " << distanceTravelled << endl;
+        HwDriver::SegwayRmpStats stats;
+        driver_->get( stats );
+        file << context_.status()->startTime().toString() << " " << stats.distanceTravelled << endl;
         context_.tracer()->info( "Wrote stats to file " + statsFilename );
     }
 
@@ -267,12 +316,12 @@ HwHandler::run()
 // Here we handle command arriving through Platform2d interface.
 //
 void
-HwHandler::handleData( const orca::Velocity2dCommand & origObj )
+HwHandler::handleData( const orca::VelocityControl2dData & origObj )
 {
     //cout<<"handling: "<<orcaice::toString(obj)<<endl;
 
     // make a copy so we can apply limits
-    orca::Velocity2dCommand obj = origObj;
+    orca::VelocityControl2dData obj = origObj;
 
     // if we know we can't write, don't try
     bool writeOk = false;
@@ -306,10 +355,14 @@ HwHandler::handleData( const orca::Velocity2dCommand & origObj )
                 (obj.motion.w / fabs(obj.motion.w)) * config_.maxTurnrate;
     }
 
+    // convert from network to internal format
+    HwDriver::SegwayRmpCommand segwayRmpCommand;
+    convert( obj, segwayRmpCommand );
+
     //
     // write to hardware
     //
-    if( driver_->write( obj ) != 0 ) 
+    if( driver_->write( segwayRmpCommand ) != 0 ) 
     {
         std::string errorStr = "failed to write command data to hardware.";
         context_.tracer()->error( errorStr );

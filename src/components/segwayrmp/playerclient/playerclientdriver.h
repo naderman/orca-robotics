@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ROBOT_PLAYER_CLIENT_DRIVER_H
-#define ORCA2_ROBOT_PLAYER_CLIENT_DRIVER_H
+#ifndef ORCA2_SEGWAY_RMP_PLAYER_CLIENT_DRIVER_H
+#define ORCA2_SEGWAY_RMP_PLAYER_CLIENT_DRIVER_H
 
 #include "../hwdriver.h"
 #include "playerclientdriverconfig.h"
@@ -18,7 +18,7 @@
 namespace PlayerCc
 {
 class PlayerClient;
-class Position2dProxy;
+// class Position2dProxy;
 class Position3dProxy;
 class PowerProxy;
 }
@@ -37,18 +37,17 @@ public:
     // returns: 0 = success, non-zero = failure
     virtual int enable();
 
-    virtual int read( orca::Position2dData& position2d, orca::Position3dData& position3d, 
-                      orca::PowerData &power, std::string & status );
+    virtual int disable();
 
-    virtual int write( const orca::Velocity2dCommand& command );
+    virtual int read( SegwayRmpData& data, std::string &status );
+
+    virtual int write( const SegwayRmpCommand& command );
 
 private:
 
-    int disable();
-
     bool enabled_;
     PlayerCc::PlayerClient *robot_;
-    PlayerCc::Position2dProxy *positionProxy_;
+//     PlayerCc::Position2dProxy *positionProxy_;
     PlayerCc::Position3dProxy *position3dProxy_;
     PlayerCc::PowerProxy *powerProxy_;
 

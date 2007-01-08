@@ -1,11 +1,14 @@
 DefaultComponentTag=SegwayRmp
 
 # Provided Interfaces
-Provides.Platform2d.Type=Platform2d
-Provides.Platform2d.DefaultName=platform2d
+Provides.Odometry2d.Type=Odometry2d
+Provides.Odometry2d.DefaultName=odometry2d
 
-Provides.Position3d.Type=Position3d
-Provides.Position3d.DefaultName=position3d
+Provides.Odometry3d.Type=Odometry3d
+Provides.Odometry3d.DefaultName=odometry3d
+
+Provides.VelocityControl2d.Type=VelocityControl2d
+Provides.VelocityControl2d.DefaultName=velocitycontrol2d
 
 Provides.Power.Type=Power
 Provides.Power.DefaultName=power
@@ -21,11 +24,13 @@ Config.LogStatsFilename.Default=segwayrmp-stats.txt
 
 # Common to all drivers
 Config.MaxSpeed.Default=1.0
-Config.MaxTurnrate.Default=60.0
-Config.Position2dPublishInterval.Default=0.1
-Config.Position3dPublishInterval.Default=0.1
+Config.MaxTurnRate.Default=60.0
+Config.Odometry2dPublishInterval.Default=0.1
+Config.Odometry3dPublishInterval.Default=0.1
 Config.PowerPublishInterval.Default=20.0
-Config.StatusPublishInterval.Default=60.0
+
+Config.Offset.Default=0.0 0.0 0.0  0.0 0.0 0.0
+Config.Size.Default=1.0 1.0 2.0
 
 # SegwayRmpUsb driver only
 Config.SegwayRmpUsb.GainSchedule.Default=normal

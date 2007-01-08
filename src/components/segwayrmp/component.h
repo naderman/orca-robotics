@@ -14,8 +14,9 @@
 #include <orcaice/component.h>
 
 // external interface definitions
-#include <orca/platform2d.h>
-#include <orca/position3d.h>
+#include <orca/odometry2d.h>
+#include <orca/velocitycontrol2d.h>
+#include <orca/odometry3d.h>
 #include <orca/power.h>
 
 // data pipes
@@ -49,17 +50,12 @@ private:
     // INTERFACES BETWEEN NETWORK AND HARDWARE HANDLERS
     //
     // hardware->network
-    orcaice::Proxy<orca::Position2dData> position2dPipe_;
-    orcaice::Proxy<orca::Position3dData> position3dPipe_;
-    // hardware->network
+    orcaice::Proxy<orca::Odometry2dData> odometry2dPipe_;
+    orcaice::Proxy<orca::Odometry3dData> odometry3dPipe_;
     orcaice::Proxy<orca::PowerData> powerPipe_;
-    // hardware->network
-    orcaice::Proxy<orca::Platform2dConfig> currentConfigPipe_;
 
     // network->hardware
-    orcaice::Notify<orca::Velocity2dCommand> commandPipe_;
-    // network->hardware
-    orcaice::Proxy<orca::Platform2dConfig> setConfigPipe_;
+    orcaice::Notify<orca::VelocityControl2dData> commandPipe_;
 };
 
 } // namespace

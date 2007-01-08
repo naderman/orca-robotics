@@ -12,6 +12,7 @@
 #define ORCA2_SEGWAY_RMP_FAKE_DRIVER_H
 
 #include "hwdriver.h"
+#include <orcaice/context.h>
 
 namespace segwayrmp
 {
@@ -23,18 +24,20 @@ class FakeDriver : public HwDriver
 {
 public:
 
-    FakeDriver();
+    FakeDriver( const orcaice::Context& context );
+
     virtual ~FakeDriver();
 
     virtual int enable();
-//     virtual int repair();
-//     virtual int disable();
 
-    virtual int read( orca::Position2dData& position2d, orca::Position3dData& position3d, 
-                      orca::PowerData &power, std::string & status );
+    virtual int disable();
 
-    virtual int write( const orca::Velocity2dCommand& command );
+    virtual int read( SegwayRmpData& data, std::string &status );
 
+    virtual int write( const SegwayRmpCommand& command );
+
+private:
+    orcaice::Context context_;
 };
 
 } // namespace

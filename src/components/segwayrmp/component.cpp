@@ -41,8 +41,7 @@ Component::start()
     // Network handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    netHandler_ = new NetHandler( position2dPipe_, position3dPipe_, commandPipe_, powerPipe_,
-                                setConfigPipe_, currentConfigPipe_, context() );
+    netHandler_ = new NetHandler( odometry2dPipe_, odometry3dPipe_, commandPipe_, powerPipe_, context() );
     // this thread will try to activate and register the adapter
     netHandler_->start();
 
@@ -50,8 +49,7 @@ Component::start()
     // Hardware handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    hwHandler_ = new HwHandler( position2dPipe_, position3dPipe_, commandPipe_, powerPipe_,
-                                setConfigPipe_, currentConfigPipe_, context() );
+    hwHandler_ = new HwHandler( odometry2dPipe_, odometry3dPipe_, commandPipe_, powerPipe_, context() );
     hwHandler_->start();
 
     // the rest is handled by the application/service
@@ -60,8 +58,8 @@ Component::start()
 void
 Component::stop()
 {
-    tracer()->debug( "stopping component", 5 );
+    tracer()->debug( "stopping component", 2 );
     orcaice::Thread::stopAndJoin( netHandler_ );
     orcaice::Thread::stopAndJoin( hwHandler_ );
-    tracer()->info( "stopped component", 5 );
+    tracer()->info( "stopped component", 2 );
 }
