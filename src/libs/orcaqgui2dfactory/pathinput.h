@@ -55,9 +55,11 @@ class WpWidget : public QWidget
                     QVector<float> *distTolerances,
                     QVector<int> *headingTolerances,
                     QVector<float> *maxSpeeds,
-                    QVector<int> *maxTurnrates);
+                    QVector<int> *maxTurnrates,
+                    QVector<QString> *behaviours );
         ~WpWidget() {};
         void refreshTable();
+        QString getBehaviour( int row );
     
     private:
         PathInput *pathInput_;
@@ -86,9 +88,11 @@ class WpTable : public QTableWidget
                  QVector<float> *distTolerances,
                  QVector<int> *headingTolerances,
                  QVector<float> *maxSpeeds,
-                 QVector<int> *maxTurnrates );
+                 QVector<int> *maxTurnrates,
+                 QVector<QString> *behaviours);
         ~WpTable() {};
         void refreshTable();
+        QString getBehaviour( int row );
         
     private:
         PathInput *pathInput_;
@@ -102,6 +106,7 @@ class WpTable : public QTableWidget
         QVector<int> *headingTolerances_;
         QVector<float> *maxSpeeds_;
         QVector<int> *maxTurnrates_;
+        QVector<QString> *behaviours_;
         
         // this one is only local
         QVector<float> velocities_;
@@ -114,6 +119,7 @@ class WpTable : public QTableWidget
     
     private slots:
         void updateDataStorage(int row, int column);
+        void test(int i);
 };
 
 class PathInput : public QObject
@@ -158,7 +164,8 @@ class PathInput : public QObject
         QVector<int>   headingTolerances_;   // heading tolerances in 1/16 deg from 0 to 360*16
         QVector<float> maxSpeeds_;           // max speed in m/s
         QVector<int> maxTurnrates_;          // max turnrate in deg/s
-        QVector<float> waitingTimes_;        // how long to wait at this waypoint
+        QVector<float> waitingTimes_;        // how long to wait at this waypoint, filled in by wpWidget
+        QVector<QString> behaviours_;             // what behaviour to show while waiting, filled in by wpWidget
 
         QPointF mouseDownPnt_;
         QPointF mouseUpPnt_;
@@ -171,6 +178,13 @@ class PathInput : public QObject
     public slots:
         void setWaypointFocus(int row, int column);
         void generateFullPath();
+        
+    private:
+        void expandPath( int index, int numInsert);
+        void expandPathStationary( int index );
+        void expandPathLeftRight( int index );
+        void expandPathRightLeft( int index );
+        void expandPathTurn360( int index );
         
 };
 
