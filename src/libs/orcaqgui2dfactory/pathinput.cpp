@@ -8,25 +8,23 @@
  *
  */
  
-#include <orcaqgui2d/paintutils.h>
-
-#include <orcaqgui2dfactory/pathinput.h>
-#include <orcaqgui2dfactory/waypointdialog.h>
-#include <orcaobj/orcaobj.h>
 #include <iostream>
 #include <cmath>
-#include <assert.h>
+ 
 #include <orcaice/orcaice.h>
 #include <orcaqgui/ihumanmanager.h>
+#include <orcaqgui2d/paintutils.h>
+#include <orcaqgui2dfactory/waypointdialog.h>
 
 #include <QPainter>
 #include <QString>
-#include <QMouseEvent>
 #include <QDialog>
 #include <QFile>
 #include <QTextStream>
 #include <QVBoxLayout>
 #include <QFileDialog>
+
+#include "pathinput.h"
 
 using namespace std;
 
@@ -340,8 +338,9 @@ void WpTable::updateDataStorage(int row, int column)
     
 }
     
-PathInput::PathInput( WaypointSettings *wpSettings )
+PathInput::PathInput( WaypointSettings *wpSettings, IHumanManager *humanManager )
     : wpSettings_(wpSettings),
+      humanManager_(humanManager),      
       waypointInFocus_(-99)
 {   
     wpWidget_ = new WpWidget( this,
@@ -603,11 +602,14 @@ void PathInput::changeWpParameters( QPointF p1 )
 
 void PathInput::generateFullPath()
 {    
+    bool hasListExpanded = false;
+            
     //using the waiting time, we produce additional waypoints
     for (int i=0; i<waypoints_.size(); i++)
     {
         if (waitingTimes_[i] != 0.0)
         {
+            hasListExpanded = true;
             waypoints_.insert(i+1, waypoints_[i]);
             headings_.insert(i+1, headings_[i]);
             times_.insert(i+1, times_[i]+waitingTimes_[i]);
@@ -621,24 +623,27 @@ void PathInput::generateFullPath()
             waitingTimes_.insert(i+1, 0.0);
         }
     }
-    wpWidget_->refreshTable();
+    if (hasListExpanded) {
+        wpWidget_->refreshTable();
+    } else {
+        humanManager_->showStatusMsg(Warning, "No waiting times, no list expansion");
+    }
 }
 
 void 
-PathInput::savePath( const QString &fileName, IHumanManager *humanManager ) const
+PathInput::savePath( const QString &fileName ) const
 {
     int size=wpSettings_->numberOfLoops * waypoints_.size();
     
     if (size==0)
     {
-        if (humanManager!=0)
-            humanManager->showBoxMsg(Warning, "Path has no waypoints. File will be empty!");
+        humanManager_->showBoxMsg(Warning, "Path has no waypoints. File will be empty!");
     }
     
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        humanManager->showBoxMsg(Error, "Cannot create file " + fileName );
+        humanManager_->showBoxMsg(Error, "Cannot create file " + fileName );
         return;
     }
     
@@ -661,8 +666,7 @@ PathInput::savePath( const QString &fileName, IHumanManager *humanManager ) cons
     }
     
     file.close();
-    if (humanManager!=0)
-        humanManager->showStatusMsg(Information, "Path successfully saved to " + fileName );
+    humanManager_->showStatusMsg(Information, "Path successfully saved to " + fileName );
 }
 
 void PathInput::loadPath( QString* fileName )
@@ -671,7 +675,10 @@ void PathInput::loadPath( QString* fileName )
     
     QFile file(*fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        humanManager_->showStatusMsg(Error, "Problem opening file " + *fileName );
         return;
+    }
     
     QTextStream in(&file);
     while (!in.atEnd()) {
@@ -679,17 +686,14 @@ void PathInput::loadPath( QString* fileName )
         waypoints_.append( QPointF(line.section(' ',0,0).toFloat(),line.section(' ',1,1).toFloat()) );
         headings_.append( line.section(' ',2,2).toInt() );
         times_.append( line.section(' ',3,3).toFloat() );
+        waitingTimes_.append( 0.0 );
         distTolerances_.append( line.section(' ',4,4).toFloat() );
         headingTolerances_.append( line.section(' ',5,5).toInt() );
         maxSpeeds_.append( line.section(' ',6,6).toFloat() );
         maxTurnrates_.append( line.section(' ',7,7).toInt() );
     }
+    humanManager_->showStatusMsg(Information, "Successfully loaded file " + *fileName );
     wpWidget_->refreshTable();
-}
-
-PathFollowerInput::PathFollowerInput( WaypointSettings *wpSettings )
-    : PathInput(wpSettings)
-{
 }
 
 orca::PathFollower2dData
@@ -767,27 +771,6 @@ PathPlannerInput::getTask() const
     }
     return task;
 }
-
-// void PathFollowerInput::loadDataFromFile( QString* fileName )
-// {    
-//     resizeData(0);
-//     
-//     QFile file(*fileName);
-//     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-//         return;
-//     
-//     QTextStream in(&file);
-//     while (!in.atEnd()) {
-//         QString line = in.readLine();
-//         waypoints_.append( QPointF(line.section(' ',0,0).toFloat(),line.section(' ',1,1).toFloat()) );
-//         headings_.append( line.section(' ',2,2).toInt() );
-//         times_.append( line.section(' ',3,3).toFloat() );
-//         distTolerances_.append( line.section(' ',4,4).toFloat() );
-//         headingTolerances_.append( line.section(' ',5,5).toInt() );
-//         maxSpeeds_.append( line.section(' ',6,6).toFloat() );
-//         maxTurnrates_.append( line.section(' ',7,7).toInt() );
-//     }
-// }
 
 
 //////////////////////////////////////////////////////////////////////

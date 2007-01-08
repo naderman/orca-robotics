@@ -340,7 +340,7 @@ PathFollower2dElement::sendPath( const PathFollowerInput &pathInput, bool activa
         char buffer [5];
         sprintf(buffer,"%05d",numPathDumps_++);
         QString filename = dumpPath_ + "/pathdump" + QString(buffer) + ".txt";
-        pathHI_.savePath( filename, humanManager_ );
+        pathHI_.savePath( filename );
     }
     catch ( const orca::BusyException &e )
     {
@@ -456,7 +456,7 @@ PathFollowerHI::waypointModeSelected()
         return;
     }
 
-    pathInput_ = new PathFollowerInput( &wpSettings_ );
+    pathInput_ = new PathFollowerInput( &wpSettings_, humanManager_ );
     pathInput_->setTransparency( useTransparency_ );
     buttons_->setWpButton( true );    
 }

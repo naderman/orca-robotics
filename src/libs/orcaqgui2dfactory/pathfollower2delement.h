@@ -88,9 +88,9 @@ public:
     void setTransparency( bool useTransparency ); 
     
     // to dump the user (green) path to /tmp
-    void savePath( const QString &fileName, IHumanManager *humanManager ) const
+    void savePath( const QString &fileName ) const
     {
-        pathInput_->savePath( fileName, humanManager );
+        pathInput_->savePath( fileName );
     }
 
 public slots:

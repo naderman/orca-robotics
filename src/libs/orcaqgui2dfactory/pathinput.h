@@ -19,9 +19,9 @@
 #include <QMouseEvent>
 #include <QTableWidget>
 
+
 namespace orcaqgui {
 
-class OrcaGuiUserEvent;
 class IHumanManager;
 class PathInput;
 class WpTable;
@@ -121,7 +121,7 @@ class PathInput : public QObject
     Q_OBJECT
             
     public:
-        PathInput( WaypointSettings *wpSettings );
+        PathInput( WaypointSettings *wpSettings, IHumanManager *humanManager );
         virtual ~PathInput();  
      
         virtual void paint( QPainter *painter );
@@ -134,11 +134,12 @@ class PathInput : public QObject
         
         virtual void updateWpSettings( WaypointSettings* wpSettings );
         
-        virtual void savePath( const QString &fileName, IHumanManager *humanManager = 0 ) const;
+        virtual void savePath( const QString &fileName ) const;
         virtual void loadPath( QString* fileName ); 
         
     protected:    
         WaypointSettings *wpSettings_;
+        IHumanManager *humanManager_;
         QMatrix wmInv_; // win2mm matrix
         
         bool useTransparency_;
@@ -176,7 +177,9 @@ class PathInput : public QObject
 class PathFollowerInput : public PathInput
 { 
     public:
-        PathFollowerInput( WaypointSettings *wpSettings );
+        PathFollowerInput( WaypointSettings *wpSettings, IHumanManager *humanManager )
+            : PathInput( wpSettings, humanManager )
+        {};
         virtual ~PathFollowerInput() {};  
 
         orca::PathFollower2dData getPath() const;
@@ -185,8 +188,8 @@ class PathFollowerInput : public PathInput
 class PathPlannerInput : public PathInput
 { 
 public:
-    PathPlannerInput( WaypointSettings *wpSettings )
-        :PathInput( wpSettings )
+    PathPlannerInput( WaypointSettings *wpSettings, IHumanManager *humanManager )
+        :PathInput( wpSettings, humanManager )
         {};
     
     virtual ~PathPlannerInput() {};  
