@@ -11,6 +11,46 @@ OdometryDifferentiator::addOdom( const orca::Position2dData& odom, Offset &delta
 {
     if ( !prevOdomInitialised_ )
     {
+        prevPos_.pose.p.x = odom.pose.p.x;
+        prevPos_.pose.p.y = odom.pose.p.y;
+        prevPos_.pose.o = odom.pose.o;
+
+        delta.x     = 0.0;
+        delta.y     = 0.0;
+        delta.theta = 0.0;
+
+        prevOdomInitialised_ = true;
+//         cout<<"TRACE(odometrydifferentiator.cpp): Initialising prevPos_" << endl;
+        return;
+    }
+
+    // Calculate the offset that this new odometry info represents
+    orcanavutil::subtractInitialOffset( odom.pose.p.x,
+                                        odom.pose.p.y,
+                                        odom.pose.o,
+                                        prevPos_.pose.p.x,
+                                        prevPos_.pose.p.y,
+                                        prevPos_.pose.o,
+                                        delta.x,
+                                        delta.y,
+                                        delta.theta );
+
+    orcanavutil::normaliseAngle( delta.theta );
+
+//     cout<<"TRACE(odometrydifferentiator.cpp): prevOdom: " << prevPos_.pose << endl;
+//     cout<<"TRACE(odometrydifferentiator.cpp):     odom: " << odom.pose << endl;
+//     cout<<"TRACE(odometrydifferentiator.cpp): delta   : " << delta << endl;
+    
+    prevPos_.pose.p.x = odom.pose.p.x;
+    prevPos_.pose.p.y = odom.pose.p.y;
+    prevPos_.pose.o   = odom.pose.o;
+}
+
+void
+OdometryDifferentiator::addOdom( const orca::Odometry2dData& odom, Offset &delta )
+{
+    if ( !prevOdomInitialised_ )
+    {
         prevOdom_.pose.p.x = odom.pose.p.x;
         prevOdom_.pose.p.y = odom.pose.p.y;
         prevOdom_.pose.o = odom.pose.o;
