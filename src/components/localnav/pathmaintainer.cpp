@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -9,6 +9,7 @@
  */
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include "pathfollower2dI.h"
 
 #include "pathmaintainer.h"
 
@@ -17,17 +18,11 @@ using namespace orcaice;
 
 namespace localnav {
 
-PathMaintainer::PathMaintainer( orcaice::Proxy<orca::PathFollower2dData> &pathPipe,
-                                orcaice::Proxy<bool>                     &newPathArrivedPipe,
-                                orcaice::Proxy<orca::Time>               &activationPipe,
-                                orcaice::Proxy<int>                      &wpIndexPipe,
-                                const orcaice::Context                   &context)
+PathMaintainer::PathMaintainer( PathFollower2dI            &pathFollowerInterface,
+                                const orcaice::Context     &context)
     : wpIndex_(-1),
       wpIndexChanged_(false),
-      pathPipe_(pathPipe),
-      newPathArrivedPipe_(newPathArrivedPipe),
-      activationPipe_(activationPipe),
-      wpIndexPipe_(wpIndexPipe),
+      pathFollowerInterface_(pathFollowerInterface),
       context_(context)
 {
 }
@@ -86,25 +81,27 @@ PathMaintainer::checkPathOut( const orca::PathFollower2dData& pathData )
 void
 PathMaintainer::checkForNewPath( orca::PathFollower2dConsumerPrx &pathConsumer )
 {
-    if ( newPathArrivedPipe_.isNewData() || activationPipe_.isNewData() )
+    if ( pathFollowerInterface_.newPathArrivedProxy().isNewData() || 
+         pathFollowerInterface_.activationProxy().isNewData() )
     {
         // Load the path if it's there
-        if ( newPathArrivedPipe_.isNewData() )
+        if ( pathFollowerInterface_.newPathArrivedProxy().isNewData() )
         {
+            // Clear the newPathArrivedProxy
             bool dummy;
-            newPathArrivedPipe_.get(dummy);
-            pathPipe_.get( path_ );
-            informWorldOfNewPath( pathConsumer, path_ );
+            pathFollowerInterface_.newPathArrivedProxy().get(dummy);
+            pathFollowerInterface_.pathProxy().get( path_ );
+            pathFollowerInterface_.localSetData( path_ ); //informs consumers
 
             // Issue warnings if the path is screwy
             checkPathOut( path_ );
         }
 
         // Have we been told to start?
-        if ( activationPipe_.isNewData() )
+        if ( pathFollowerInterface_.activationProxy().isNewData() )
         {
             context_.tracer()->debug( "PathMaintainer: activating.", 1 );
-            activationPipe_.get(pathStartTime_);
+            pathFollowerInterface_.activationProxy().get(pathStartTime_);
             wpIndex_ = 0;
             if ( path_.path.size() == 0 )
             {
@@ -130,9 +127,8 @@ PathMaintainer::checkForWpIndexChange( orca::PathFollower2dConsumerPrx &pathCons
 {
     if ( wpIndexChanged_ )
     {
-        wpIndexPipe_.set( true );
+        pathFollowerInterface_.localSetWaypointIndex( wpIndex_ );
     }
-    informWorldOfNewWpIndex( pathConsumer, wpIndex_ );
 }
 
 void  
@@ -144,19 +140,6 @@ PathMaintainer::incrementWpIndex()
     {
         wpIndex_ = -1;
     }
-}
-
-void
-PathMaintainer::informWorldOfNewPath( orca::PathFollower2dConsumerPrx pathConsumer, orca::PathFollower2dData& path )
-{
-    pathConsumer->setData( path );
-}
-
-void
-PathMaintainer::informWorldOfNewWpIndex( orca::PathFollower2dConsumerPrx pathConsumer, int newIndex )
-{
-    pathConsumer->setWaypointIndex( newIndex );
-    wpIndexPipe_.set( newIndex );
 }
 
 double

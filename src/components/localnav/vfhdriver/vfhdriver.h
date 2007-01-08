@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -10,10 +10,10 @@
 #ifndef VFHDRIVER_H
 #define VFHDRIVER_H
 
-#include <localnavdriver.h>
+#include <idriver.h>
 #include <orcaice/context.h>
 #include <orcaice/timer.h>
-#include <goalwatcher.h>
+#include <goal.h>
 #include <vfhdriver/vfh_algorithm.h>
 
 namespace vfh {
@@ -26,31 +26,32 @@ namespace vfh {
 //
 // @author Alex Brooks
 //
-class VfhDriver : public localnav::LocalNavDriver
+class VfhDriver : public localnav::IDriver
 {
 
 public: 
 
-    VfhDriver( const localnav::GoalWatcher &goalWatcher,
-               const orcaice::Context & context );
+    VfhDriver( const orcaice::Context & context );
     virtual ~VfhDriver();
 
-    virtual void setLocalNavParameters( localnav::LocalNavParameters params );
-
     // Goal location is in robot's coordinate frame
-    virtual LocalNavDriver::DriverState getCommand( bool  stalled,
+    virtual IDriver::DriverState getCommand( bool  stalled,
                                                     const orca::Twist2d &currentVelocity,
                                                     const orca::RangeScanner2dDataPtr obs,
+                                                    const localnav::Goal               &goal,
+                                                    const localnav::LocalNavParameters &navParams,
                                                     orca::Velocity2dCommand& cmd );
 
 private: 
 
+    void setLocalNavParameters( const localnav::LocalNavParameters &params );
+
     // Functions for setting commands
     void setToZero(         orca::Velocity2dCommand& cmd );
     void setToEscape(       orca::Velocity2dCommand& cmd, const orca::RangeScanner2dDataPtr &obs );
-    void setTurnToGoal(     orca::Velocity2dCommand& cmd, const localnav::GoalWatcher &goalWatcher );
+    void setTurnToGoal(     orca::Velocity2dCommand& cmd, const localnav::Goal &goal );
     void setToApproachGoal( orca::Velocity2dCommand& cmd,
-                            const localnav::GoalWatcher     &goalWatcher, 
+                            const localnav::Goal     &goal, 
                             const orca::Twist2d             &currentVelocity,
                             const orca::RangeScanner2dDataPtr &obs );
     
@@ -81,7 +82,7 @@ private:
     localnav::LocalNavParameters localNavParameters_;
 
     // Current state of the algorithm
-    localnav::LocalNavDriver::DriverState currentState_;
+    localnav::IDriver::DriverState currentState_;
 
     // Previous command
     orca::Velocity2dCommand prevCmd_;

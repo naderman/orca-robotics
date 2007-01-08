@@ -14,18 +14,30 @@ IF ( BUILD_LOCALNAV )
       ${PROJECT_SOURCE_DIR}/src/components/localnav
       )
 
+    ADD_SUBDIRECTORY( testsim )
+
     # build common sources into a convenience library
     BUILD_COMPONENT_SOURCES( LocalNavSources )
     
+    SET( DEP_LIBS
+      LocalNavSources
+      OrcaLocalNavTestSim
+      OrcaLocalNavVfh
+      OrcaNavUtil )
+
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( localnav main )
-    TARGET_LINK_LIBRARIES( localnav LocalNavSources OrcaLocalNavVfh OrcaNavUtil )
+    TARGET_LINK_LIBRARIES( localnav ${DEP_LIBS} )
     
     # build IceBox service
     GLOBAL_ADD_LIBRARY( OrcaLocalNav SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaLocalNav LocalNavSources OrcaLocalNavVfh OrcaNavUtil )
+    TARGET_LINK_LIBRARIES( OrcaLocalNav ${DEP_LIBS} )
 
     GENERATE_CONFIG_FILE( localnav.def )
+
+    IF ( BUILD_TESTS )
+      ADD_TEST( LocalNavVfhTest localnav --Orca.Config=${PROJECT_BINARY_DIR}/src/components/localnav/localnav.cfg --LocalNav.Config.Driver=testvfhdriver --LocalNav.Config.Vfh.MaxSpeed=2.0 --LocalNav.Config.Test.BatchMode=1 )
+    ENDIF ( BUILD_TESTS )
 
 ENDIF ( BUILD_LOCALNAV )
 ENDIF ( OS_LINUX )

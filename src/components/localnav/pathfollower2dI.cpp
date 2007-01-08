@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -18,38 +18,42 @@ using namespace orcaice;
 
 namespace localnav {
 
-PathFollower2dI::PathFollower2dI( orcaice::Proxy<orca::PathFollower2dData> &pathPipe,
-                                  orcaice::Proxy<bool>                           &newPathArrivedPipe,
-                                  orcaice::Proxy<orca::Time>                     &activationPipe,
-                                  orcaice::Proxy<int>                            &wpIndexPipe,
-                                  orcaice::Proxy<bool>                           &enabledPipe,
-                                  const IceStorm::TopicPrx & topicPrx )
-    : pathPipe_(pathPipe),
-      newPathArrivedPipe_(newPathArrivedPipe),
-      activationPipe_(activationPipe),
-      wpIndexPipe_(wpIndexPipe),
-      enabledPipe_(enabledPipe),
-      topicPrx_(topicPrx)
+PathFollower2dI::PathFollower2dI( const std::string              &ifaceTag,
+                                  const orcaice::Context         &context ) 
+    : ifaceTag_(ifaceTag),
+      context_(context)
 {
-    assert ( topicPrx_ != 0 );
-
     // We're inactive on initialization
-    wpIndexPipe_.set( -1 );
+    wpIndexProxy_.set( -1 );
 
     // But enabled
-    enabledPipe_.set( true );
+    enabledProxy_.set( true );
+}
+
+void
+PathFollower2dI::initInterface()
+{
+    // Find IceStorm Topic to which we'll publish
+    if ( !topicPrx_ )
+    {
+        topicPrx_ = orcaice::connectToTopicWithTag<orca::PathFollower2dConsumerPrx>
+            ( context_, consumerPrx_, ifaceTag_ );
+    }
+
+    // Register with the adapter
+    Ice::ObjectPtr obj = this;
+    orcaice::createInterfaceWithTag( context_, obj, ifaceTag_ );
 }
 
 orca::PathFollower2dData
 PathFollower2dI::getData( const ::Ice::Current& ) const
 {
-    cout<<"TRACE(pathfollower2dI.cpp): getData()" << endl;
     orca::PathFollower2dData data;
-    if ( pathPipe_.isEmpty() )
+    if ( pathProxy_.isEmpty() )
     {
         throw orca::DataNotExistException( "No path has been set" );
     }
-    pathPipe_.get( data );
+    pathProxy_.get( data );
     return data;
 }
 
@@ -66,37 +70,37 @@ PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateI
 
     // cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << data << endl;
     cout<<"TRACE(pathfollower2dI.cpp): activateImmediately: " << activateImmediately << endl;
-    pathPipe_.set( data );
-    newPathArrivedPipe_.set( true );
+    pathProxy_.set( data );
+    newPathArrivedProxy_.set( true );
     if ( activateImmediately )
-        activationPipe_.set( orcaice::getNow() );
+        activationProxy_.set( orcaice::getNow() );
 }
 
 void
 PathFollower2dI::activateNow( const ::Ice::Current& )
 {
     cout << "TRACE(pathfollower2dI.cpp): activateNow called" << endl;
-    activationPipe_.set( orcaice::getNow() );
+    activationProxy_.set( orcaice::getNow() );
 }
 
 int
 PathFollower2dI::getWaypointIndex( const ::Ice::Current& ) const
 {
     int ret;
-    wpIndexPipe_.get( ret );
+    wpIndexProxy_.get( ret );
     return ret;
 }
 
 void 
 PathFollower2dI::setEnabled( bool enabled, const ::Ice::Current& )
 {
-    enabledPipe_.set( enabled );
+    enabledProxy_.set( enabled );
 }
 bool 
 PathFollower2dI::enabled(const ::Ice::Current&) const
 {
     bool enabled;
-    enabledPipe_.get( enabled );
+    enabledProxy_.get( enabled );
     return enabled;
 }
 
@@ -116,6 +120,88 @@ PathFollower2dI::unsubscribe( const ::orca::PathFollower2dConsumerPrx& subscribe
     assert ( topicPrx_ != 0 );
     cout<<"unsubscribe()"<<endl;
     topicPrx_->unsubscribe( subscriber );
+}
+
+void 
+PathFollower2dI::localSetWaypointIndex( int index )
+{
+    wpIndexProxy_.set( index );
+    try {
+        consumerPrx_->setWaypointIndex( index );
+    }
+    catch ( Ice::Exception &e )
+    {
+        // This could happen if IceStorm dies.
+        // If we're running in an IceBox and the IceBox is shutting down, 
+        // this is expected (our co-located IceStorm is obviously going down).
+        context_.tracer()->warning( "PathFollower2dI: Failed push to IceStorm." );
+
+        // If IceStorm just re-started for some reason though, we want to try to re-connect
+        try
+        {
+            context_.tracer()->print( "Re-connecting to IceStorm..." );
+            topicPrx_ = orcaice::connectToTopicWithTag<orca::PathFollower2dConsumerPrx>
+                ( context_, consumerPrx_, ifaceTag_ );
+            context_.tracer()->print( "PathFollower2dI: Re-connected to IceStorm." );
+
+            // try again to push that bit of info
+            consumerPrx_->setWaypointIndex( index );
+        }
+        catch ( ... )
+        {
+            // ignore it -- we'll try again next push.
+            context_.tracer()->print( "PathFollower2dI: Re-connection to IceStorm failed." );
+        }
+    }
+    catch ( ... )
+    {
+        context_.tracer()->warning( "PathFollower2dI: Failed push to IceStorm: unknown exception" );
+    }
+}
+
+void 
+PathFollower2dI::localSetData( const orca::PathFollower2dData &path )
+{
+    pathProxy_.set( path );
+    try {
+        consumerPrx_->setData( path );
+    }
+    catch ( Ice::Exception &e )
+    {
+        // This could happen if IceStorm dies.
+        // If we're running in an IceBox and the IceBox is shutting down, 
+        // this is expected (our co-located IceStorm is obviously going down).
+        context_.tracer()->warning( "PathFollower2dI: Failed push to IceStorm." );
+
+        // If IceStorm just re-started for some reason though, we want to try to re-connect
+        try
+        {
+            context_.tracer()->print( "Re-connecting to IceStorm..." );
+            topicPrx_ = orcaice::connectToTopicWithTag<orca::PathFollower2dConsumerPrx>
+                ( context_, consumerPrx_, ifaceTag_ );
+            context_.tracer()->print( "PathFollower2dI: Re-connected to IceStorm." );
+
+            // try again to push that bit of info
+            consumerPrx_->setData( path );
+        }
+        catch ( ... )
+        {
+            // ignore it -- we'll try again next push.
+            context_.tracer()->print( "PathFollower2dI: Re-connection to IceStorm failed." );
+        }
+    }
+    catch ( ... )
+    {
+        context_.tracer()->warning( "PathFollower2dI: Failed push to IceStorm: unknown exception" );
+    }
+}
+
+bool
+PathFollower2dI::localIsEnabled() const
+{
+    bool enabled;
+    enabledProxy_.get( enabled );
+    return enabled;
 }
 
 }

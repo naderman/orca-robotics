@@ -350,8 +350,6 @@ int VFH_Algorithm::Init()
     }
   }
 
-  gettimeofday( &last_update_time, 0 );
-
   // Print_Cells_Sector();
 
   return(1);
@@ -433,19 +431,8 @@ int VFH_Algorithm::Update_VFH( double laser_ranges[REQUIRED_NUM_RANGES][2],
       current_pos_speed = last_chosen_speed;
   // printf("Update_VFH: current_pos_speed = %d\n",current_pos_speed);
 
-
-  // Work out how much time has elapsed since the last update,
-  // so we know how much to increase speed by, given MAX_ACCELERATION.
-  timeval now;
-  timeval diff;
-  double  diffSeconds;
-  gettimeofday( &now, 0 );
-  
-  TIMESUB( &now, &last_update_time, &diff );
-  diffSeconds = diff.tv_sec + ( (double)diff.tv_usec / 1000000 );
-
-  last_update_time.tv_sec = now.tv_sec;
-  last_update_time.tv_usec = now.tv_usec;
+  // Assume an update rate of 10Hz
+  double diffSeconds = 0.1;
 
   if ( Build_Primary_Polar_Histogram(laser_ranges,current_pos_speed) == 0)
   {
@@ -479,24 +466,14 @@ int VFH_Algorithm::Update_VFH( double laser_ranges[REQUIRED_NUM_RANGES][2],
   }
 
 //  printf("Picked Angle: %f\n", Picked_Angle);
+//  printf("Max Acceleration: %d mm/s\n", MAX_ACCELERATION);
 
   //
   // OK, so now we've chosen a direction.  Time to choose a speed.
   //
 
   // How much can we change our speed by?
-  int speed_incr;
-  if ( (diffSeconds > 0.3) || (diffSeconds < 0) )
-  {
-      // Either this is the first time we've been updated, or something's a bit screwy and
-      // update hasn't been called for a while.  Don't want a sudden burst of acceleration,
-      // so better to just pick a small value this time, calculate properly next time.
-      speed_incr = 10;
-  }
-  else
-  {
-      speed_incr = (int) (MAX_ACCELERATION * diffSeconds);
-  }
+  int speed_incr = (int) (MAX_ACCELERATION * diffSeconds);
 
   if ( Cant_Turn_To_Goal() )
   {
@@ -516,7 +493,6 @@ int VFH_Algorithm::Update_VFH( double laser_ranges[REQUIRED_NUM_RANGES][2],
       printf("chosen_speed:               %f m/s\n",chosen_speed/1000.0);
       printf("last_chosen_speed:          %f m/s\n",last_chosen_speed/1000.0);
       printf("speed_incr:                 %f m/s\n",speed_incr/1000.0);
-      printf("diffSeconds:                %f \n", diffSeconds);
   }
 
   // Set the chosen_turnrate, and possibly modify the chosen_speed
@@ -562,7 +538,13 @@ bool VFH_Algorithm::Cant_Turn_To_Goal()
     dist_between_centres = hypotf( goal_x - this->Blocked_Circle_Radius, goal_y );
     if ( dist_between_centres+this->Goal_Distance_Tolerance < this->Blocked_Circle_Radius )
     {
-//        printf("Goal close & right\n");
+        if ( VERBOSITY > 3 )
+        {
+            printf("Goal close & right\n");
+            printf("dist_between_centres: %f\n",dist_between_centres);
+            printf("Goal_Distance_Tolerance: %f\n", this->Goal_Distance_Tolerance);
+            printf("Blocked_Circle_Radius: %f\n", this->Blocked_Circle_Radius);
+        }
         return true;
     }
 
@@ -570,7 +552,8 @@ bool VFH_Algorithm::Cant_Turn_To_Goal()
     dist_between_centres = hypotf( -goal_x - this->Blocked_Circle_Radius, goal_y );
     if ( dist_between_centres+this->Goal_Distance_Tolerance < this->Blocked_Circle_Radius )
     {
-//        printf("Goal close & left.\n");
+        if ( VERBOSITY > 3 )
+            printf("Goal close & left.\n");
         return true;
     }
 
@@ -891,7 +874,10 @@ printf("%d: %f\n", x, this->laser_ranges[x][0]);
           assert( y < (int)(Cell_Dist[x].size()) );
           assert( (int)rint(Cell_Direction[x][y] * 2.0) < REQUIRED_NUM_RANGES );
           const double distToCellCentre = Cell_Dist[x][y] + CELL_WIDTH / 2.0;
-          const double laserRange = laser_ranges[(int)rint(Cell_Direction[x][y] * 2.0)][0];
+          int rangeI = (int)rint(Cell_Direction[x][y] * 2.0);
+          if ( rangeI < 0 ) rangeI = 0;
+          else if ( rangeI >= REQUIRED_NUM_RANGES ) rangeI = REQUIRED_NUM_RANGES;
+          const double laserRange = laser_ranges[rangeI][0];
 
           if ( distToCellCentre > laserRange )
           {

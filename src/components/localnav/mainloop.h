@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -14,7 +14,7 @@
 #include <orca/localise2d.h>
 #include <orca/rangescanner2d.h>
 #include <orcaice/context.h>
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/ptrproxy.h>
 #include <orcaice/thread.h>
 #include <orcaice/heartbeater.h>
 #include <orcaice/proxy.h>
@@ -25,6 +25,7 @@ namespace localnav {
 
 class PathMaintainer;
 class PathFollower2dI;
+class Simulator;
 
 //
 // @brief the main executing loop of this component.
@@ -39,24 +40,39 @@ class MainLoop : public orcaice::Thread
 
 public: 
 
-    MainLoop( LocalNavManager                               &localNavManager,
-              orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> &obsBuffer,
-              orcaice::Buffer<orca::Localise2dData>&        locBuffer,
-              orcaice::Buffer<orca::Position2dData>&        odomBuffer,
-              orcaice::Proxy<bool>                          &enabledPipe,
-              orca::Platform2dPrx                           &platform2dPrx,
-              PathMaintainer                                &pathMaintainer,
-              orca::PathFollower2dConsumerPrx               &pathPublisher,
-              const orcaice::Context & context );
+    // This version interacts with the real world
+    MainLoop( LocalNavManager                                &localNavManager,
+              orcaice::PtrProxy<orca::RangeScanner2dDataPtr> &obsProxy,
+              orcaice::Proxy<orca::Localise2dData>           &locProxy,
+              orcaice::Proxy<orca::Position2dData>           &odomProxy,
+              PathFollower2dI                                &pathFollowerInterface,
+              orca::Platform2dPrx                            &platform2dPrx,
+              PathMaintainer                                 &pathMaintainer,
+              orca::PathFollower2dConsumerPrx                &pathPublisher,
+              const orcaice::Context                         &context );
+
+    // This version is for simulator-based testing.
+    MainLoop( LocalNavManager                                &localNavManager,
+              orcaice::PtrProxy<orca::RangeScanner2dDataPtr> &obsProxy,
+              orcaice::Proxy<orca::Localise2dData>           &locProxy,
+              orcaice::Proxy<orca::Position2dData>           &odomProxy,
+              PathFollower2dI                                &pathFollowerInterface,
+              Simulator                                      &testSimulator,
+              PathMaintainer                                 &pathMaintainer,
+              orca::PathFollower2dConsumerPrx                &pathPublisher,
+              const orcaice::Context                         &context );
+
     ~MainLoop();
 
     virtual void run();
 
 private: 
 
+    void initInterfaces();
+
     // Make sure all our sources of info are OK, and that there's something
     // in all our buffers
-    void ensureBuffersNotEmpty();
+    void ensureProxiesNotEmpty();
 
     // Set the command to 'stop'
     void getStopCommand( orca::Velocity2dCommand& cmd );
@@ -77,21 +93,24 @@ private:
     LocalNavManager &localNavManager_;
 
     // Incoming observations and pose info
-    orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> &obsBuffer_;
-    orcaice::Buffer<orca::Localise2dData>   &locBuffer_;
-    orcaice::Buffer<orca::Position2dData>   &odomBuffer_;
+    orcaice::PtrProxy<orca::RangeScanner2dDataPtr> &obsProxy_;
+    orcaice::Proxy<orca::Localise2dData>   &locProxy_;
+    orcaice::Proxy<orca::Position2dData>   &odomProxy_;
 
-    // Allows external enable/disable
-    orcaice::Proxy<bool> &enabledPipe_;
+    PathFollower2dI                  &pathFollowerInterface_;
 
     // data types
-    orca::Localise2dData      localiseData_;
-    orca::Position2dData      odomData_;
+    orca::Localise2dData           localiseData_;
+    orca::Position2dData           odomData_;
     orca::RangeScanner2dDataPtr    rangeData_;
-    orca::Velocity2dCommand   velocityCmd_;
+    orca::Velocity2dCommand        velocityCmd_;
 
-    // Outgoing commands
-    orca::Platform2dPrx &platform2dPrx_;
+    // Outgoing commands: live version
+    orca::Platform2dPrx            platform2dPrx_;
+    // Outgoing commands: test version
+    Simulator                     *testSimulator_;
+
+    bool testMode_;
 
     // Keeps track of the path we're following
     PathMaintainer  &pathMaintainer_;

@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -158,9 +158,6 @@ private:
     double ang_eps;
 
     float *Last_Binary_Hist;
-
-    // Keep track of last update, so we can monitor acceleration
-    timeval last_update_time;
 
     int last_chosen_speed;
 };

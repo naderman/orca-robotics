@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -14,6 +14,7 @@
 #include "mainloop.h"
 #include "pathmaintainer.h"
 #include "pathfollower2dI.h"
+#include "testsim/simulator.h"
 
 using namespace std;
 using namespace orca;
@@ -21,27 +22,50 @@ using namespace orcaice;
 
 namespace localnav {
 
-MainLoop::MainLoop( LocalNavManager                               &localNavManager,
-                    orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> &obsBuffer,
-                    orcaice::Buffer<orca::Localise2dData>   &locBuffer,
-                    orcaice::Buffer<orca::Position2dData>   &odomBuffer,
-                    orcaice::Proxy<bool>                          &enabledPipe,
-                    orca::Platform2dPrx                           &platform2dPrx,
-                    PathMaintainer                                &pathMaintainer,
-                    orca::PathFollower2dConsumerPrx               &pathPublisher,
-                    const orcaice::Context & context )
+MainLoop::MainLoop( LocalNavManager                                &localNavManager,
+                    orcaice::PtrProxy<orca::RangeScanner2dDataPtr> &obsProxy,
+                    orcaice::Proxy<orca::Localise2dData>           &locProxy,
+                    orcaice::Proxy<orca::Position2dData>           &odomProxy,
+                    PathFollower2dI                                &pathFollowerInterface,
+                    orca::Platform2dPrx                            &platform2dPrx,
+                    PathMaintainer                                 &pathMaintainer,
+                    orca::PathFollower2dConsumerPrx                &pathPublisher,
+                    const orcaice::Context                         &context )
     : localNavManager_(localNavManager),
-      obsBuffer_(obsBuffer),
-      locBuffer_(locBuffer),
-      odomBuffer_(odomBuffer),
-      enabledPipe_(enabledPipe),
+      obsProxy_(obsProxy),
+      locProxy_(locProxy),
+      odomProxy_(odomProxy),
+      pathFollowerInterface_(pathFollowerInterface),
       platform2dPrx_(platform2dPrx),
+      testMode_(false),
       pathMaintainer_(pathMaintainer),
       pathPublisher_(pathPublisher),
       heartbeater_(context),
       context_(context)
 {
-    rangeData_    = new orca::RangeScanner2dData;
+}
+
+MainLoop::MainLoop( LocalNavManager                                &localNavManager,
+                    orcaice::PtrProxy<orca::RangeScanner2dDataPtr> &obsProxy,
+                    orcaice::Proxy<orca::Localise2dData>           &locProxy,
+                    orcaice::Proxy<orca::Position2dData>           &odomProxy,
+                    PathFollower2dI                                &pathFollowerInterface,
+                    Simulator                                      &testSimulator,
+                    PathMaintainer                                 &pathMaintainer,
+                    orca::PathFollower2dConsumerPrx                &pathPublisher,
+                    const orcaice::Context                         &context )
+    : localNavManager_(localNavManager),
+      obsProxy_(obsProxy),
+      locProxy_(locProxy),
+      odomProxy_(odomProxy),
+      pathFollowerInterface_(pathFollowerInterface),
+      testSimulator_(&testSimulator),
+      testMode_(true),
+      pathMaintainer_(pathMaintainer),
+      pathPublisher_(pathPublisher),
+      heartbeater_(context),
+      context_(context)
+{
 }
 
 MainLoop::~MainLoop()
@@ -49,22 +73,36 @@ MainLoop::~MainLoop()
 }
 
 void
-MainLoop::ensureBuffersNotEmpty()
+MainLoop::ensureProxiesNotEmpty()
 {
-    // Ensure that there's something in our buffers
+    // Ensure that there's something in our proxys
     while ( isActive() )
     {
-        int ret = 0;
-        ret = ret || obsBuffer_.getNext(  rangeData_,    1000 );
-        ret = ret || locBuffer_.getNext(  localiseData_, 1000 );
-        ret = ret || odomBuffer_.getNext( odomData_,     1000 );
+        bool empty = 
+            obsProxy_.isEmpty() ||
+            locProxy_.isEmpty() || 
+            odomProxy_.isEmpty();
 
-        if ( ret == 0 )
-            break;
-        else 
+        if ( empty )
         {
             context_.tracer()->warning( "Still waiting for intial data to arrive..." );
+            sleep(1);
         }
+        else
+            return;
+            
+
+//         int ret = 0;
+//         ret = ret || obsProxy_.getNext(  rangeData_,    1000 );
+//         ret = ret || locProxy_.getNext(  localiseData_, 1000 );
+//         ret = ret || odomProxy_.getNext( odomData_,     1000 );
+
+//         if ( ret == 0 )
+//             break;
+//         else 
+//         {
+//             context_.tracer()->warning( "Still waiting for intial data to arrive..." );
+//         }
     }
 }
 
@@ -77,11 +115,35 @@ MainLoop::getStopCommand( orca::Velocity2dCommand& cmd )
 }
 
 void
+MainLoop::initInterfaces()
+{
+    while ( isActive() )
+    {
+        try {
+            pathFollowerInterface_.initInterface();
+            return;
+        }
+        catch ( orcaice::Exception &e )
+        {
+            stringstream ss;
+            ss << "MainLoop: Failed to initialise PathFollower2d interface: " << e.what();
+            context_.tracer()->warning( ss.str() );
+            if ( testMode_ )
+            {
+                context_.tracer()->warning( "Continuing regardless..." );
+                return;
+            }
+        }
+    }
+}
+
+void
 MainLoop::run()
 {
     const int TIMEOUT_MS = 1000;
 
-    ensureBuffersNotEmpty();
+    initInterfaces();
+    ensureProxiesNotEmpty();
 
     try 
     {
@@ -90,12 +152,10 @@ MainLoop::run()
             //cout<<"============================================="<<endl;
 
             // The rangeScanner provides the 'clock' which is the trigger for this loop
-            int sensorRet = obsBuffer_.getAndPopNext( rangeData_, TIMEOUT_MS );
+            int sensorRet = obsProxy_.getNext( rangeData_, TIMEOUT_MS );
 
             // Before we do anything, check whether we're enabled.
-            bool isEnabled;
-            enabledPipe_.get( isEnabled );
-            if ( !isEnabled )
+            if ( !pathFollowerInterface_.localIsEnabled() )
             {
                 context_.tracer()->debug( "Doing nothing because disabled" );
                 continue;
@@ -110,8 +170,8 @@ MainLoop::run()
             }
             else
             {
-                locBuffer_.get( localiseData_ );
-                odomBuffer_.get( odomData_ );
+                locProxy_.get( localiseData_ );
+                odomProxy_.get( odomData_ );
 
                 const double THRESHOLD = 1.0; // seconds
                 if ( areTimestampsDodgy( rangeData_, localiseData_, odomData_, THRESHOLD ) )
@@ -128,6 +188,11 @@ MainLoop::run()
                 else
                 {
                     velocityCmd_.timeStamp = rangeData_->timeStamp;
+
+//                     cout<<"TRACE(mainloop.cpp): localNavManager_.getCommand:"<<endl
+//                         <<"    localiseData: " << orcaice::toString(localiseData_) << endl
+//                         <<"    odomData: " << orcaice::toString(odomData_) << endl;
+
                     localNavManager_.getCommand( rangeData_,
                                                  localiseData_,
                                                  odomData_,
@@ -137,7 +202,10 @@ MainLoop::run()
             
             // Send the command to the platform
             try {
-                platform2dPrx_->setCommand( velocityCmd_ );
+                if ( testMode_ )
+                    testSimulator_->setCommand( velocityCmd_ );
+                else
+                    platform2dPrx_->setCommand( velocityCmd_ );
             }
             catch ( orca::HardwareFailedException &e )
             {

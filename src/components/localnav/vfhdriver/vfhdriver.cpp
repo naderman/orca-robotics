@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -23,11 +23,9 @@ namespace vfh {
 // need definition (in case its not inlined)
 const double VfhDriver::escapeTimeMs_;
 	
-VfhDriver::VfhDriver( const GoalWatcher        &goalWatcher,
-                      const orcaice::Context & context )
-    : LocalNavDriver(goalWatcher),
-      stallRatio_(0.0),
-      currentState_(LocalNavDriver::STATE_GOAL_REACHED),
+VfhDriver::VfhDriver( const orcaice::Context & context )
+    : stallRatio_(0.0),
+      currentState_(IDriver::STATE_GOAL_REACHED),
       context_(context)
 {
     // Configure and instantiate the core vfh algorithm
@@ -56,7 +54,7 @@ VfhDriver::~VfhDriver()
 }
 
 void 
-VfhDriver::setLocalNavParameters( LocalNavParameters params )
+VfhDriver::setLocalNavParameters( const LocalNavParameters &params )
 {
     stringstream ssParams;
     ssParams << "VFH: Setting params: " << params;
@@ -80,9 +78,9 @@ VfhDriver::setLocalNavParameters( LocalNavParameters params )
         localNavParameters_.maxTurnrate = vfhConfig_.absoluteMaxTurnrate;
 
         stringstream ss;
-        ss << "VFH: requested maxTurnrate ("<<params.maxTurnrate
-           <<") faster than its configured maximum ("<<vfhConfig_.absoluteMaxTurnrate
-           <<").  Thresholding.";
+        ss << "VFH: requested maxTurnrate ("<<params.maxTurnrate*180.0/M_PI
+           <<"deg) faster than its configured maximum ("<<vfhConfig_.absoluteMaxTurnrate*180.0/M_PI
+           <<"deg).  Thresholding.";
         context_.tracer()->debug( ss.str(), 1 );
     }
 
@@ -94,38 +92,42 @@ VfhDriver::setLocalNavParameters( LocalNavParameters params )
 }
 
 // Goal location is in robot's coordinate frame
-LocalNavDriver::DriverState
+IDriver::DriverState
 VfhDriver::getCommand( bool  stalled,
                        const orca::Twist2d &currentVelocity,
                        const orca::RangeScanner2dDataPtr obs,
+                       const Goal                        &goal,
+                       const LocalNavParameters          &navParams,
                        orca::Velocity2dCommand& cmd )
 {
+    setLocalNavParameters( navParams );
+
     //
     // Four distinct cases
     //
-    if ( goalWatcher_.goalReached() )
+    if ( goalReached( goal ) )
     {
         // Stop us
         setToZero( cmd );
-        currentState_ = LocalNavDriver::STATE_GOAL_REACHED;
+        currentState_ = IDriver::STATE_GOAL_REACHED;
     }
     else if ( shouldEscape( stalled ) )
     {
         // VFH isn't winning...  Have to try some escape manouvres
         setToEscape( cmd, obs );
-        currentState_ = LocalNavDriver::STATE_ESCAPING;
+        currentState_ = IDriver::STATE_ESCAPING;
     }
-    else if ( goalWatcher_.translationalGoalReached() )
+    else if ( translationalGoalReached( goal ) )
     {
         // Turn in place
-        setTurnToGoal( cmd, goalWatcher_ );
-        currentState_ = LocalNavDriver::STATE_TURNING_AT_GOAL;
+        setTurnToGoal( cmd, goal );
+        currentState_ = IDriver::STATE_TURNING_AT_GOAL;
     }
     else
     {
         // Head for the goal
-        setToApproachGoal( cmd, goalWatcher_, currentVelocity, obs );
-        currentState_ = LocalNavDriver::STATE_MOVING_TO_GOAL;
+        setToApproachGoal( cmd, goal, currentVelocity, obs );
+        currentState_ = IDriver::STATE_MOVING_TO_GOAL;
     }
 
     stringstream ss;
@@ -154,7 +156,7 @@ VfhDriver::shouldEscape( bool stalled )
 
     // If we're in the middle of an escape, continue
     // Otherwise check the stall ratio.
-    if ( currentState_ == LocalNavDriver::STATE_ESCAPING &&
+    if ( currentState_ == IDriver::STATE_ESCAPING &&
          escapeTimer_.elapsedMs() < escapeTimeMs_ )
     {
         return true;
@@ -177,7 +179,7 @@ VfhDriver::setToZero( orca::Velocity2dCommand& cmd )
 void
 VfhDriver::setToEscape( orca::Velocity2dCommand& cmd, const orca::RangeScanner2dDataPtr &obs )
 {
-    if ( currentState_ != LocalNavDriver::STATE_ESCAPING ||
+    if ( currentState_ != IDriver::STATE_ESCAPING ||
          escapeTimer_.elapsedMs() > escapeTimeMs_ )
     {
         // Choose a new random escape command
@@ -203,15 +205,15 @@ VfhDriver::setToEscape( orca::Velocity2dCommand& cmd, const orca::RangeScanner2d
 }
 
 void
-VfhDriver::setTurnToGoal( orca::Velocity2dCommand& cmd, const GoalWatcher &goalWatcher )
+VfhDriver::setTurnToGoal( orca::Velocity2dCommand& cmd, const Goal &goal )
 {
     cmd.motion.v.x = 0.0;
     cmd.motion.v.y = 0.0;
 
     float posNeg = 1.0;
-    if ( goalWatcher.headingDifference() < 0.0 ) posNeg = -1.0;
+    if ( goal.theta < 0.0 ) posNeg = -1.0;
 
-    if ( currentState_ != LocalNavDriver::STATE_TURNING_AT_GOAL )
+    if ( currentState_ != IDriver::STATE_TURNING_AT_GOAL )
     {
         // Just got here: turn hard.
         cmd.motion.w = posNeg * localNavParameters_.maxTurnrate;
@@ -291,7 +293,7 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
 
 void
 VfhDriver::setToApproachGoal( orca::Velocity2dCommand& cmd,
-                              const GoalWatcher &goalWatcher, 
+                              const Goal &goal, 
                               const orca::Twist2d &currentVelocity,
                               const orca::RangeScanner2dDataPtr &obs )
 {
@@ -301,14 +303,14 @@ VfhDriver::setToApproachGoal( orca::Velocity2dCommand& cmd,
     int currentSpeed    = (int) (currentVelocity.v.x * 1000.0);
 
     // goalDirection in [0,360), where 90 is straight ahead
-    float goalDirection = (goalWatcher_.goalDirection()*180/M_PI)+90.0;
+    float goalDirection = (directionToGoal(goal)*180/M_PI)+90.0;
     if ( goalDirection < 0.0 ) goalDirection += 360.0;
 
     // distance in mm
-    float goalDistance = goalWatcher_.goalDistance() * 1000.0;
+    float goalDistance = distanceToGoal(goal) * 1000.0;
 
     // tolerance in mm
-    float goalDistanceTolerance = goalWatcher_.goalDistanceTolerance() * 1000.0;
+    float goalDistanceTolerance = goal.distanceTolerance * 1000.0;
 
     copyLaserScan( obs, playerLaserScan_ );
 

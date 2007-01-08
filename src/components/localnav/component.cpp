@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -9,11 +9,11 @@
  */
 #include "component.h"
 #include "mainloop.h"
-#include "localnavdriver.h"
+#include "idriver.h"
 #include "localnavmanager.h"
 #include "vfhdriver/vfhdriver.h"
 #include "pathmaintainer.h"
-#include "pathfollower2dI.h"
+#include "testsim/testsim.h"
 
 #include <orcaice/orcaice.h>
 
@@ -23,17 +23,26 @@ using namespace orca;
 namespace localnav {
 
 Component::Component()
-    : orcaice::Component( "LocalNav" )
+    : orcaice::Component( "LocalNav" ),
+      platform2dPrx_(NULL),
+      testSimulator_(NULL),
+      driver_(NULL),
+      localNavManager_(NULL),
+      pathMaintainer_(NULL),
+      mainLoop_(NULL),
+      pathFollowerInterface_(NULL)
 {
 }
 
 Component::~Component()
 {
-    if ( platform2dPrx_ != NULL )   delete platform2dPrx_;
-    if ( localNavDriver_ != NULL )  delete localNavDriver_;
-    if ( localNavManager_ != NULL ) delete localNavManager_;
-    if ( pathMaintainer_ != NULL )  delete pathMaintainer_;
-    if ( mainLoop_ != NULL )        delete mainLoop_;
+    if ( platform2dPrx_ != NULL )         delete platform2dPrx_;
+    if ( driver_ != NULL )                delete driver_;
+    if ( localNavManager_ != NULL )       delete localNavManager_;
+    if ( pathMaintainer_ != NULL )        delete pathMaintainer_;
+    if ( mainLoop_ != NULL )              delete mainLoop_;
+    if ( testSimulator_ != NULL )         delete testSimulator_;
+    if ( pathFollowerInterface_ != NULL ) delete pathFollowerInterface_;
 }
 
 void
@@ -48,49 +57,44 @@ Component::start()
     std::string prefix = tag();
     prefix += ".Config.";
 
-    std::string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "vfhdriver" );
+    bool testMode = false;
 
-//     if ( driverName == "test" )
-//     {
-//         cout<<"TRACE(localnavcomponent.cpp): Instantiating test driver" << endl;
-//         LocalNavParams initialNavParams;
-//         localNavDriver_ = new VfhDriver( initialNavParams );
-//     }
+    std::string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "vfhdriver" );
     if ( driverName == "vfhdriver" )
     {
-        // Find IceStorm Topic to which we'll publish
-        IceStorm::TopicPrx topicPrx = orcaice::connectToTopicWithTag<PathFollower2dConsumerPrx>
-            ( context(), pathPublisher_, "PathFollower2d" );
+        driver_  = new vfh::VfhDriver( context() );
+    }
+    else if ( driverName == "testvfhdriver" )
+    {
+        testMode = true;
+        driver_  = new vfh::VfhDriver( context() );
+    }
+    else
+    {
+        std::string errString = "Unknown driver type: "+driverName;
+        throw orcaice::Exception( ERROR_INFO, errString );
+    }
 
+    //
+    // Create our provided interface
+    //
+    pathFollowerInterface_ = new PathFollower2dI( "PathFollower2d", context() );
+
+    //
+    // Connect to required interfaces
+    //
+
+    if ( !testMode )
+    {
         // connect to the platform
         platform2dPrx_ = new orca::Platform2dPrx;
         orcaice::connectToInterfaceWithTag<Platform2dPrx>( context(), *platform2dPrx_, "Platform2d" );
         context().tracer()->debug("connected to a 'Platform2d' interface",5);
 
         // Instantiate everything
-        obsConsumer_  = new orcaice::PtrBufferedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>;
-        locConsumer_  = new orcaice::BufferedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>;
-        odomConsumer_ = new orcaice::BufferedConsumerI<orca::Position2dConsumer,orca::Position2dData>;
-
-        pathMaintainer_ = new PathMaintainer(pathPipe_,
-                                             newPathArrivedPipe_,
-                                             activationPipe_,
-                                             wpIndexPipe_,
-                                             context());
-
-        cout<<"TRACE(component.cpp): Initialising driver" << endl;
-        localNavDriver_  = new vfh::VfhDriver( sharedGoalWatcher_, context() );
-        cout<<"TRACE(component.cpp): Finished initialising driver." << endl;
-        localNavManager_ = new LocalNavManager( *localNavDriver_, sharedGoalWatcher_, *pathMaintainer_, context() );
-        mainLoop_        = new MainLoop( *localNavManager_,
-                                          obsConsumer_->buffer_,
-                                          locConsumer_->buffer_,
-                                          odomConsumer_->buffer_,
-                                          enabledPipe_,
-                                         *platform2dPrx_,
-                                         *pathMaintainer_,
-                                          pathPublisher_,
-                                          context() );
+        obsConsumer_  = new orcaice::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>;
+        locConsumer_  = new orcaice::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>;
+        odomConsumer_ = new orcaice::ProxiedConsumerI<orca::Position2dConsumer,orca::Position2dData>;
 
         // subscribe for information from platform
         RangeScanner2dPrx obsPrx;
@@ -113,24 +117,50 @@ Component::start()
         obsPrx->subscribe(  obsConsumerPrx );
         locPrx->subscribe(  locConsumerPrx );
         odomPrx->subscribe( odomConsumerPrx );
-
-        // create servant for direct connections
-        // don't need to store it as a member variable, adapter will keep it alive
-        Ice::ObjectPtr pathFollower2dObj = new PathFollower2dI( pathPipe_,
-                                                                newPathArrivedPipe_,
-                                                                activationPipe_,
-                                                                wpIndexPipe_,
-                                                                enabledPipe_,
-                                                                topicPrx );
-        orcaice::createInterfaceWithTag( context(), pathFollower2dObj, "PathFollower2d" );
     }
     else
     {
-        std::string errString = "Unknown driver type: "+driverName;
-        throw orcaice::Exception( ERROR_INFO, errString );
+        orca::PathFollower2dData testPath;
+        getTestPath( testPath );
+        pathFollowerInterface_->setData( testPath, true );
+        testSimulator_ = new Simulator( context(), testPath );
     }
 
     ////////////////////////////////////////////////////////////////////////////////
+
+    //
+    // Instantiate the guys who do the work
+    //
+
+    pathMaintainer_ = new PathMaintainer(*pathFollowerInterface_,
+                                         context());
+
+    localNavManager_ = new LocalNavManager( *driver_, *pathMaintainer_, context() );
+
+    if ( !testMode )
+    {
+        mainLoop_ = new MainLoop( *localNavManager_,
+                                  obsConsumer_->proxy_,
+                                  locConsumer_->proxy_,
+                                  odomConsumer_->proxy_,
+                                  *pathFollowerInterface_,
+                                  *platform2dPrx_,
+                                  *pathMaintainer_,
+                                  pathPublisher_,
+                                  context() );
+    }
+    else
+    {
+        mainLoop_ = new MainLoop( *localNavManager_,
+                                  testSimulator_->obsProxy_,
+                                  testSimulator_->locProxy_,
+                                  testSimulator_->odomProxy_,
+                                  *pathFollowerInterface_,
+                                  *testSimulator_,
+                                  *pathMaintainer_,
+                                  pathPublisher_,
+                                  context() );
+    }
 
     //
     // ENABLE NETWORK CONNECTIONS
