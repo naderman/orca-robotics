@@ -91,7 +91,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - FeatureMapLoader
     - Added error tracing (alex m.)
-- Robot2d
+- Robot2d and SegwayRmp
     - Now using new interfaces Odometry2d and VelocityControl2d. (alex m.)
 - Teleop
     - Support for configurable display, input, and network drivers. (alex m.)
@@ -113,6 +113,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
       manipulation. (alex m.)
     - made 'component started' trace optional with Orca.PrintComponentStarted property. This is to be
       nice to nonstandard display drivers, e.g. those using ncurses.
+- libOrcaLogFactory (alex m.)
+    - added support for Odemetry2d/3d interfaces
 - libOrcaProbeFactory (alex m.)
     - added support for Status and Tracer interfaces
 - libOrcaDef (alex m.)

@@ -190,8 +190,8 @@ NetHandler::run()
             prefix+"Position3dPublishInterval", -1 );
     double powerPublishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             prefix+"PowerPublishInterval", 20.0 );
-    double statusPublishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            prefix+"StatusPublishInterval", 60.0 );
+//     double statusPublishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
+//             prefix+"StatusPublishInterval", 60.0 );
 
     const int odometryReadTimeout = 500; // [ms]
 
