@@ -37,9 +37,9 @@ public:
     virtual int repair();
     virtual int disable();
 
-    virtual int read( orca::Position2dData& position2d, std::string & status );
+    virtual int read( Robot2dData& data, std::string & status );
 
-    virtual int write( const orca::Velocity2dCommand& position2d );
+    virtual int write( const Robot2dCommand& command );
 
 private:
 

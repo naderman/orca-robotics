@@ -22,20 +22,39 @@
 #endif
 
 using namespace std;
-using namespace orca;
 using namespace robot2d;
 
+
+void 
+HwHandler::convert( const HwDriver::Robot2dData& internal, orca::Odometry2dData& network )
+{
+    network.timeStamp.seconds = internal.seconds;
+    network.timeStamp.useconds = internal.useconds;
+
+    network.pose.p.x = internal.x;
+    network.pose.p.y = internal.y;
+    network.pose.o = internal.o;
+    
+    network.motion.v.x = internal.vx;
+    network.motion.v.y = internal.vy;
+    network.motion.w = internal.w;
+}
+
+void 
+HwHandler::convert( const orca::VelocityControl2dData& network, HwDriver::Robot2dCommand& internal )
+{
+    internal.vx = network.motion.v.x;
+    internal.vy = network.motion.v.y;
+    internal.w = network.motion.w;
+}
+
 HwHandler::HwHandler(
-                 orcaice::Proxy<orca::Position2dData>    & position2dPipe,
-                 orcaice::Notify<orca::Velocity2dCommand>& commandPipe,
-                 orcaice::Proxy<orca::Platform2dConfig>  & setConfigPipe,
-                 orcaice::Proxy<orca::Platform2dConfig>  & currentConfigPipe,
-                 const orcaice::Context                        & context )
-      : position2dPipe_(position2dPipe),
-        setConfigPipe_(setConfigPipe),
-        currentConfigPipe_(currentConfigPipe),
-        driver_(0),
-        context_(context)
+                 orcaice::Buffer<orca::Odometry2dData>& odometryPipe,
+                 orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
+                 const orcaice::Context& context ) :
+    odometryPipe_(odometryPipe),
+    driver_(0),
+    context_(context)
 {
     // we'll handle incoming messages
     commandPipe.setNotifyHandler( this );
@@ -43,19 +62,6 @@ HwHandler::HwHandler(
     // unsure about write status until we enable the driver
     writeStatusPipe_.set( false );
 
-    // this is the last place we can throw exceptions from.
-    // after this the thread will be launched
-    init();
-}
-
-HwHandler::~HwHandler()
-{
-    delete driver_;
-}
-
-void
-HwHandler::init()
-{
     //
     // Read settings
     //
@@ -97,6 +103,11 @@ HwHandler::init()
     context_.tracer()->debug("driver instantiated",5);
 }
 
+HwHandler::~HwHandler()
+{
+    delete driver_;
+}
+
 void
 HwHandler::run()
 {
@@ -124,6 +135,8 @@ HwHandler::run()
     
     int readStatus = -1;
     bool writeStatus = false;
+    HwDriver::Robot2dData robot2dData;
+    orca::Odometry2dData odometry2dData;
 
     //
     // This is the main loop
@@ -146,12 +159,15 @@ HwHandler::run()
         // Read data from the hardware
         //
         // readTimer_.restart();
-        readStatus = driver_->read( position2dData_, currDriverStatus );
+        readStatus = driver_->read( robot2dData, currDriverStatus );
         // cout<<"read: " << readTimer_.elapsed().toMilliSecondsDouble()<<endl;
     
         if ( readStatus==0 ) {
+            // convert internal to network format
+            convert( robot2dData, odometry2dData );
+        
             // Stick it in the buffer so pullers can get it
-            position2dPipe_.set( position2dData_ );
+            odometryPipe_.push( odometry2dData );
 
             if ( driverStatus != currDriverStatus ) {
                 context_.status()->status( currDriverStatus );
@@ -160,12 +176,6 @@ HwHandler::run()
         } else {
             context_.tracer()->error("failed to read data from Segway hardware. Repairing....");
             driver_->repair();
-        }
-
-        // Have any configuration requests arrived?
-        if ( !setConfigPipe_.isNewData() )
-        {
-            // set configs
         }
         
     } // while
@@ -244,12 +254,12 @@ HwHandler::run()
 // Here we handle command arriving through Platform2d interface.
 //
 void
-HwHandler::handleData( const orca::Velocity2dCommand& origObj )
+HwHandler::handleData( const orca::VelocityControl2dData& origObj )
 {
     //cout<<"handling: "<<orcaice::toString(obj)<<endl;
     
     // make a copy so we can apply limits
-    orca::Velocity2dCommand obj = origObj;
+    orca::VelocityControl2dData obj = origObj;
 
 /*
     // if we know we can't write, don't try again
@@ -285,10 +295,13 @@ HwHandler::handleData( const orca::Velocity2dCommand& origObj )
                 (obj.motion.w / fabs(obj.motion.w)) * config_.maxTurnrate;
     }
 
+    // convert from network to internal format
+    HwDriver::Robot2dCommand robot2dCommand;
+    convert( obj, robot2dCommand );
     //
     // write to hardware
     //
-    if( driver_->write( obj ) == 0 ) {
+    if( driver_->write( robot2dCommand ) == 0 ) {
         writeStatusPipe_.set( true );
     }
     else {

@@ -1,21 +1,29 @@
 DefaultComponentTag=Robot2d
 
 # Provided Interfaces
-Provides.Platform2d.Type=Platform2d
-Provides.Platform2d.DefaultName=platform2d
+Provides.Odometry2d.Type=Odometry2d
+Provides.Odometry2d.DefaultName=odometry2d
+
+Provides.VelocityControl2d.Type=VelocityControl2d
+Provides.VelocityControl2d.DefaultName=velocitycontrol2d
 
 # Required Interfaces
 
 # Config Parameters
-Config.Driver.Comment=Options are { 'playerclient', 'fake' }
-Config.Driver.Default=playerclient
-Config.EnableMotion.Default=1
 
 # Common to all drivers
+Config.Driver.Comment=Options are { 'playerclient', 'fake' }
+Config.Driver.Default=playerclient
+
 Config.MaxSpeed.Default=1.0
-Config.MaxTurnrate.Default=60.0
+Config.MaxSideSpeed.Default=1.0
+Config.MaxTurnRate.Default=60.0
 Config.Position2dPublishInterval.Default=0.1
 Config.StatusPublishInterval.Default=60.0
+Config.EnableMotion.Default=1
+
+Config.Offset.Default=0.0 0.0 0.0
+Config.Size.Default=2.0 1.0
 
 # PlayerClient driver only
 Config.PlayerClient.Host.Default=localhost

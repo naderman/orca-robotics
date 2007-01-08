@@ -11,66 +11,30 @@
 #include <iostream>
 #include <sstream>
 
+#include <orcaice/orcaice.h>
 #include "nethandler.h"
-#include <IceUtil/Time.h>
-#include <IceStorm/IceStorm.h>
 
 // implementations of Ice objects
-#include "platform2dI.h"
+#include <orcaifaceimpl/odometry2dI.h>
+#include "velocitycontrol2dI.h"
 
-#include <orcaice/orcaice.h>
 
 using namespace std;
 using namespace orca;
 using namespace robot2d;
 
 NetHandler::NetHandler(
-                 orcaice::Proxy<orca::Position2dData>    & position2dPipe,
-                 orcaice::Notify<orca::Velocity2dCommand>& commandPipe,
-                 orcaice::Proxy<orca::Platform2dConfig>  & setConfigPipe,
-                 orcaice::Proxy<orca::Platform2dConfig>  & currentConfigPipe,
-                 const orcaice::Context                        & context )
-      : position2dPipe_(position2dPipe),
-        commandPipe_(commandPipe),
-        setConfigPipe_(setConfigPipe),
-        currentConfigPipe_(currentConfigPipe),
-        context_(context)
+                 orcaice::Buffer<orca::Odometry2dData>& odometryPipe,
+                 orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
+                 const orcaice::Context& context ) :
+    odometryPipe_(odometryPipe),
+    commandPipe_(commandPipe),
+    context_(context)
 {
-    init();
 }
 
 NetHandler::~NetHandler()
 {
-}
-
-void
-NetHandler::init()
-{
-    //
-    // Read settings
-    //
-    std::string prefix = context_.tag() + ".Config.";
-    
-    position2dPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            prefix+"Position2dPublishInterval", -1 );
-    statusPublishInterval_ = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            prefix+"StatusPublishInterval", 60.0 );
-
-    // PROVIDED: Platform2d
-    // Find IceStorm Topic to which we'll publish.
-    // NetworkException will kill it, that's what we want.
-    IceStorm::TopicPrx platfTopicPrx = orcaice::connectToTopicWithTag<Position2dConsumerPrx>
-                ( context_, position2dPublisher_, "Platform2d" );
-
-    // create servant for direct connections and tell adapter about it
-    // don't need to store it as a member variable, adapter will keep it alive
-    Ice::ObjectPtr platform2dObj = new Platform2dI( position2dPipe_, commandPipe_,
-                                      setConfigPipe_, currentConfigPipe_, platfTopicPrx );
-    // two possible exceptions will kill it here, that's what we want
-    orcaice::createInterfaceWithTag( context_, platform2dObj, "Platform2d" );
-    
-    // all cool, assume we can send and receive
-    context_.tracer()->debug("network enabled",5);
 }
 
 void
@@ -79,15 +43,10 @@ NetHandler::run()
     try // this is once per run try/catch: waiting for the communicator to be destroyed
     {
 
-    int position2dReadTimeout = 1000; // [ms]
-    orcaice::Timer pushTimer;
-
     while ( isActive() )
     {
         try {
-            cout<<"activating..."<<endl;
             context_.activate();
-            cout<<"activated."<<endl;
             break;
         }
         catch ( orcaice::NetworkException & e )
@@ -109,87 +68,96 @@ NetHandler::run()
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
     
+    std::string prefix = context_.tag() + ".Config.";
+
+    //
+    // PROVIDED: VelocityControl2d
+    //
+    orca::VelocityControl2dDescription velocityControl2dDescr;
+
+    velocityControl2dDescr.maxVelocities.v.x = 
+            orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"MaxSpeed", 1.0 );
+    velocityControl2dDescr.maxVelocities.v.y = 
+            orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"MaxSideSpeed", 1.0 );
+    velocityControl2dDescr.maxVelocities.w = 
+            orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"MaxTurnRate", 45.0 );
+
+    // create servant for direct connections and tell adapter about it
+    // don't need to store it as a member variable, adapter will keep it alive
+    Ice::ObjectPtr velocityControl2dI = new VelocityControl2dI( velocityControl2dDescr, commandPipe_ );
+
+    // two possible exceptions will kill it here, that's what we want
+    orcaice::createInterfaceWithTag( context_, velocityControl2dI, "VelocityControl2d" );
+
+
+    //
+    // PROVIDED: Odometry2d
+    //
+    orca::Odometry2dDescription odometry2dDescr;
+
+    orcaice::setInit( odometry2dDescr.offset );
+    orcaice::getPropertyAsFrame2d( context_.properties(), prefix+"Offset", odometry2dDescr.offset );
+    orcaice::setInit( odometry2dDescr.size, 2.0, 1.0 );
+    orcaice::getPropertyAsSize2d( context_.properties(), prefix+"Size", odometry2dDescr.size );
+
+    orcaifaceimpl::Odometry2dIPtr odometry2dI = 
+            new orcaifaceimpl::Odometry2dI( odometry2dDescr, "Odometry2d", context_ );
+
+
+    while ( isActive() ) {
+        try {
+            odometry2dI->initInterface();
+            context_.tracer()->debug( "odometry interface initialized",2);
+            break;
+        }
+        catch ( const orcaice::NetworkException& e ) {
+            context_.tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        }
+        catch ( const Ice::Exception& e ) {
+            context_.tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        }
+    }
+
+    orca::Odometry2dData odometry2dData;
+    const int odometryReadTimeout = 500; // [ms]
+    orcaice::Timer publishTimer;
+    double publishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
+            prefix+"Odometry2dPublishInterval", 0 );
+
+    //
+    // Main loop
+    //
     while( isActive() )
     {
+//         context_.tracer()->debug( "net handler loop spinning ",1);
+
         // block on the most frequent data source: position
-        int ret = position2dPipe_.getNext( position2dData_, position2dReadTimeout );
-        
-        // it's time to publish if we publish every data point or enough time has elapsed
-        bool isTimeToPublishPosition2d = position2dPublishInterval_ < 0
-                || position2dPublishTimer_.elapsed().toSecondsDouble()>position2dPublishInterval_;
-        if ( ret == 0 && isTimeToPublishPosition2d )
-        {
-//debug
-//cout<<"push: " << pushTimer.elapsed().toMilliSecondsDouble()<<endl;
-//pushTimer.restart();
-
-            // managed to read new data and it's time to publish
-            try
-            {
-                position2dPublisher_->setData( position2dData_ );
-                position2dPublishTimer_.restart();
-            }
-                catch ( const Ice::ConnectionRefusedException & e )
-            {
-                context_.tracer()->warning("lost connection to IceStorm");
-                // now what?
-            }
+        if ( odometryPipe_.getAndPopNext( odometry2dData, odometryReadTimeout ) ) {
+//             context_.tracer()->debug( "Net loop timed out", 1);
+            continue;
         }
 
-        // now send less frequent updates
-        try
-        {
-            // todo: the logic of this needs revisiting
-            if ( statusPublishInterval_<0 ||
-                        statusPublishTimer_.elapsed().toSecondsDouble()>statusPublishInterval_ ) {
-                //cout<<"sending heartbeat"<<endl;
-                context_.status()->heartbeat( context_.status()->status() );
-                statusPublishTimer_.restart();
-            }
+        // check that we were not told to terminate while we were sleeping
+        // otherwise, we'll get segfault (there's probably a way to prevent this inside the library)
+        if ( isActive() && publishTimer.elapsed().toSecondsDouble()>=publishInterval ) {
+            odometry2dI->localSetAndSend( odometry2dData );
+            publishTimer.restart();
+        } 
+        else {
+            odometry2dI->localSet( odometry2dData );
         }
-        catch ( const Ice::ConnectionRefusedException & e )
-        {
-            context_.tracer()->warning("lost connection to IceStorm");
-            // now what?
-        }
-            
-    } // while
+    } // main loop
     
     }
     catch ( const Ice::CommunicatorDestroyedException & e )
     {
+        context_.tracer()->debug( "net handler cought CommunicatorDestroyedException",1);        
         // it's ok, we must be quitting.
     }
 
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
-    context_.tracer()->debug( "exiting NetHandler thread...",5);
-}
-
-void
-NetHandler::send()
-{
-    // push data to IceStorm
-    try
-    {
-        if ( position2dPublishTimer_.elapsed().toSecondsDouble()>position2dPublishInterval_ ) {
-            // check that there's new data
-            position2dPipe_.get( position2dData_ );
-            position2dPublisher_->setData( position2dData_ );
-            position2dPublishTimer_.restart();
-        }
-        if ( statusPublishTimer_.elapsed().toSecondsDouble()>statusPublishInterval_ ) {
-            //cout<<"sending heartbeat"<<endl;
-            context_.status()->heartbeat("status OK");
-            statusPublishTimer_.restart();
-        }
-    }
-    catch ( const Ice::ConnectionRefusedException & e )
-    {
-        context_.tracer()->warning("lost connection to IceStorm");
-    }
-    catch ( const Ice::CommunicatorDestroyedException & e )
-    {
-        // it's ok, the communicator may already be destroyed
-    }
+    context_.tracer()->debug( "exiting NetHandler thread...",1);
 }

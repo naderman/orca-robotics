@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_SEGWAY_RMP_SERVICE_H
-#define ORCA2_SEGWAY_RMP_SERVICE_H
+#ifndef ORCA2_ROBOT2D_SERVICE_H
+#define ORCA2_ROBOT2D_SERVICE_H
 
 #include <orcaice/service.h>
 

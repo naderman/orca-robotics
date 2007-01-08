@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_SEGWAY_RMP_FAKE_DRIVER_H
-#define ORCA2_SEGWAY_RMP_FAKE_DRIVER_H
+#ifndef ORCA2_ROBOT2D_FAKE_DRIVER_H
+#define ORCA2_ROBOT2D_FAKE_DRIVER_H
 
 #include "hwdriver.h"
 #include <orcaice/context.h>
@@ -31,9 +31,9 @@ public:
     virtual int repair();
     virtual int disable();
 
-    virtual int read( orca::Position2dData& position2d, std::string & status );
+    virtual int read( Robot2dData& data, std::string & status );
 
-    virtual int write( const orca::Velocity2dCommand& command );
+    virtual int write( const Robot2dCommand& command );
 
 private:
     orcaice::Context context_;

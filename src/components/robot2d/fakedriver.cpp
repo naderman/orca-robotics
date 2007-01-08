@@ -15,7 +15,6 @@
 #include <orcaice/orcaice.h>
 
 using namespace std;
-using namespace orca;
 using namespace robot2d;
 
 FakeDriver::FakeDriver( const orcaice::Context& context ) :
@@ -28,28 +27,41 @@ FakeDriver::~FakeDriver()
     cout<<"FakeDriver~FakeDriver"<<endl;
 }
 
-int FakeDriver::enable()
+int 
+FakeDriver::enable()
 {
     context_.tracer()->info( "FakeDriver is enabled" );
     return 0;
 }
 
-int FakeDriver::repair()
+int 
+FakeDriver::repair()
 {
     context_.tracer()->info( "FakeDriver is repaired" );
     return 0;
 }
 
-int FakeDriver::disable()
+int 
+FakeDriver::disable()
 {
     context_.tracer()->info( "FakeDriver is disabled" );
     return 0;
 }
 
-int FakeDriver::read( orca::Position2dData& position2d, std::string& status )
+int 
+FakeDriver::read( Robot2dData& data, std::string& status )
 {
     context_.tracer()->info( "Generating fake info for robot2d..." );
-    orcaice::setSane( position2d );
+
+    orca::Time t = orcaice::toOrcaTime( IceUtil::Time::now() );
+    data.seconds = t.seconds;
+    data.useconds = t.useconds;
+    data.x = double(rand()%100000)/1000.0 - 50.0;
+    data.y = double(rand()%100000)/1000.0 - 50.0;
+    data.o = double(rand()%100000)/1000.0 - 50.0;
+    data.vx = double(rand()%100000)/1000.0 - 50.0;
+    data.vy = double(rand()%100000)/1000.0 - 50.0;
+    data.w = double(rand()%100000)/1000.0 - 50.0;
 
     // slow it down a bit
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
@@ -58,11 +70,17 @@ int FakeDriver::read( orca::Position2dData& position2d, std::string& status )
     return 0;
 }
 
-int FakeDriver::write( const orca::Velocity2dCommand& command )
+int 
+FakeDriver::write( const Robot2dCommand& command )
 {
     // debug: simulated failure
-    if ( command.motion.v.x < 2.0 ) {
-        context_.tracer()->info( "Wrote: "+orcaice::toString(command) );
+    if ( command.vx < 2.0 ) {
+        stringstream ss;
+        ss << "Wrote: VelocityControl2d (vx,vy,w(deg/s)) : ("
+            << command.vx << ", "
+            << command.vy << ", "
+            << RAD2DEG(command.w) << ")";
+        context_.tracer()->info( ss.str() );
         return 0;
     }
     else {

@@ -8,10 +8,8 @@
  *
  */
 
-#ifndef ORCA2_SEGWAY_RMP_HARDWARE_DRIVER_H
-#define ORCA2_SEGWAY_RMP_HARDWARE_DRIVER_H
-
-#include <orca/platform2d.h>
+#ifndef ORCA2_ROBOT2D_HARDWARE_DRIVER_H
+#define ORCA2_ROBOT2D_HARDWARE_DRIVER_H
 
 namespace robot2d
 {
@@ -24,6 +22,26 @@ class HwDriver
 {
 
 public:
+
+    struct Robot2dData
+    {
+        int seconds;
+        int useconds;
+        double x;
+        double y;
+        double o;
+        double vx;
+        double vy;
+        double w;
+    };
+
+    struct Robot2dCommand
+    {
+        double vx;
+        double vy;
+        double w;
+    };
+
     virtual ~HwDriver() {};
     
     // Returns 0 on success. Does not throw.
@@ -36,10 +54,10 @@ public:
     virtual int disable()=0;
 
     // Blocking read. Returns 0 on success. Does not throw.
-    virtual int read( orca::Position2dData &position2d, std::string &status )=0;
+    virtual int read( Robot2dData& data, std::string& status )=0;
 
     // Writes velocity command. Returns 0 on success. Does not throw.
-    virtual int write( const orca::Velocity2dCommand & command )=0;
+    virtual int write( const Robot2dCommand& command )=0;
 
     // For debugging, convert to string as much of internal state as possible
     virtual std::string toString() { return std::string(""); };

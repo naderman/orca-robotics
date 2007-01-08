@@ -8,18 +8,16 @@
  *
  */
 
-#ifndef ORCA2_RMP_NETWORK_HANDLER_H
-#define ORCA2_RMP_NETWORK_HANDLER_H
+#ifndef ORCA2_ROBOT2D_NETWORK_HANDLER_H
+#define ORCA2_ROBOT2D_NETWORK_HANDLER_H
 
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
-#include <orcaice/proxy.h>
+#include <orcaice/buffer.h>
 #include <orcaice/notify.h>
-#include <orcaice/timer.h>
 
-//#include "netfsm.h"
-
-#include <orca/platform2d.h>
+#include <orca/odometry2d.h>
+#include <orca/velocitycontrol2d.h>
 
 namespace robot2d
 {
@@ -30,51 +28,22 @@ class NetHandler : public orcaice::Thread
 {
 public:
 
-    NetHandler( orcaice::Proxy<orca::Position2dData>     & position2dPipe,
-                 orcaice::Notify<orca::Velocity2dCommand>& commandPipe,
-                 orcaice::Proxy<orca::Platform2dConfig>  & setConfigPipe,
-                 orcaice::Proxy<orca::Platform2dConfig>  & currentConfigPipe,
-                 const orcaice::Context                        & context );
+    NetHandler( orcaice::Buffer<orca::Odometry2dData>& odometryPipe,
+                 orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
+                 const orcaice::Context& context );
     virtual ~NetHandler();
 
     // from Thread
     virtual void run();
 
-    // from HwFsm
-    void send();
-//     virtual void sleep();
-//     virtual void repair();
-
 private:
 
-    void init();
-    
-    //
-    // EXTERNAL INTERFACES
-    //
-    orca::Position2dConsumerPrx position2dPublisher_;
-
     // network/hardware interface
-    orcaice::Proxy<orca::Position2dData>    & position2dPipe_;
-    orcaice::Notify<orca::Velocity2dCommand>& commandPipe_;
-    orcaice::Proxy<orca::Platform2dConfig>  & setConfigPipe_;
-    orcaice::Proxy<orca::Platform2dConfig>  & currentConfigPipe_;
-
-    // Internal data storage
-    orca::Position2dData position2dData_;
-    orca::Velocity2dCommand commandData_;
+    orcaice::Buffer<orca::Odometry2dData>& odometryPipe_;
+    orcaice::Notify<orca::VelocityControl2dData>& commandPipe_;
 
     // component current context
     orcaice::Context context_;
-
-    // timers for publishing to icestorm
-    orcaice::Timer position2dPublishTimer_;
-    orcaice::Timer statusPublishTimer_;
-
-    // publish intervals
-    double position2dPublishInterval_;
-    double statusPublishInterval_;
-
 };
 
 } // namespace

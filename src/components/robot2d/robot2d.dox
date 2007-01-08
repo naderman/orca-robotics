@@ -21,8 +21,10 @@
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_platform2d [Robot2d.Provides.Platform2d]
+- @ref orca_interface_odometry2d [Robot2d.Provides.Odometry2d]
+- @ref orca_interface_velocitycontrol2d [Robot2d.Provides.VelocityControl2d]
 - @ref orca_interface_status
+- @ref orca_interface_tracer
 
 @par Requires
 
@@ -48,12 +50,17 @@
     - Default: 1
     
 - @c Robot2d.Config.MaxSpeed (double) [m/s]
-    - Maximum allowed forward speed
+    - Maximum allowed forward speed. Maximum reverse speed is assumed to be the same.
     - Valid values: positive
     - Default: 1.0
     
-- @c Robot2d.Config.MaxTurnrate (double) [deg/s]
-    - Maximum allowed turnrate
+- @c Robot2d.Config.MaxSideSpeed (double) [m/s]
+    - Maximum allowed side speed. Left/right limits are assumed to be symetric.
+    - Valid values: positive
+    - Default: 1.0
+
+- @c Robot2d.Config.MaxTurnRate (double) [deg/s]
+    - Maximum allowed turnrate. Left/right turn limits are assumed to be symetric.
     - Valid values: positive
     - Default: 60.0
     
@@ -63,12 +70,6 @@
         - t<0 : send every new data point
         - t>0 : send approximately every t seconds
     - Default: 0.1 (10Hz)
-
-- @c Robot2d.Config.StatusPublishInterval (double) [s]
-    - How often to send status information to the IceStorm server
-    - Valid values:
-        - t>0 : send approximately every t seconds
-    - Default: 60.0
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 

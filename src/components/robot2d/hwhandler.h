@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_RMP_HARDWARE_HANDLER_H
-#define ORCA2_RMP_HARDWARE_HANDLER_H
+#ifndef ORCA2_ROBOT2D_HARDWARE_HANDLER_H
+#define ORCA2_ROBOT2D_HARDWARE_HANDLER_H
 
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
@@ -19,43 +19,34 @@
 
 #include "hwdriver.h"
 
-#include <orca/platform2d.h>
+#include <orca/odometry2d.h>
+#include <orca/velocitycontrol2d.h>
 
 namespace robot2d
 {
 
-// Note: this thing self-destructs when run() returns.
-class HwHandler : public orcaice::Thread, public orcaice::NotifyHandler<orca::Velocity2dCommand>
+class HwHandler : public orcaice::Thread, public orcaice::NotifyHandler<orca::VelocityControl2dData>
 {
 public:
 
-    HwHandler( orcaice::Proxy<orca::Position2dData>     & position2dPipe,
-               orcaice::Notify<orca::Velocity2dCommand> & commandPipe,
-               orcaice::Proxy<orca::Platform2dConfig>   & setConfigPipe,
-               orcaice::Proxy<orca::Platform2dConfig>   & currentConfigPipe,
-               const orcaice::Context                         & context );
+    HwHandler( orcaice::Buffer<orca::Odometry2dData>& odometryPipe,
+               orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
+               const orcaice::Context& context );
     virtual ~HwHandler();
 
     // from Thread
     virtual void run();
 
     // from PtrNotifyHandler
-    virtual void handleData( const orca::Velocity2dCommand & obj );
+    virtual void handleData( const orca::VelocityControl2dData & obj );
 
 private:
 
     // network/hardware interface
-    orcaice::Proxy<orca::Position2dData>    & position2dPipe_;
-    orcaice::Proxy<orca::Platform2dConfig>  & setConfigPipe_;
-    orcaice::Proxy<orca::Platform2dConfig>  & currentConfigPipe_;
-
-    // Internal data storage
-    orca::Position2dData position2dData_;
+    orcaice::Buffer<orca::Odometry2dData>& odometryPipe_;
 
     // generic interface to the hardware
     HwDriver* driver_;
-
-    void init();
 
     struct Config
     {
@@ -74,6 +65,10 @@ private:
     // debug
     orcaice::Timer readTimer_;
     orcaice::Timer writeTimer_;
+
+    // utilities
+    static void convert( const HwDriver::Robot2dData& internal, orca::Odometry2dData& network );
+    static void convert( const orca::VelocityControl2dData& network, HwDriver::Robot2dCommand& internal );
 
 };
 

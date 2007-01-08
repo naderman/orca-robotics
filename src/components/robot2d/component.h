@@ -8,16 +8,17 @@
  *
  */
 
-#ifndef ORCA2_SEGWAY_RMP_COMPONENT_H
-#define ORCA2_SEGWAY_RMP_COMPONENT_H
+#ifndef ORCA2_ROBOT2D_COMPONENT_H
+#define ORCA2_ROBOT2D_COMPONENT_H
 
 #include <orcaice/component.h>
 
 // external interface definitions
-#include <orca/platform2d.h>
+#include <orca/odometry2d.h>
+#include <orca/velocitycontrol2d.h>
 
 // data pipes
-#include <orcaice/proxy.h>
+#include <orcaice/buffer.h>
 #include <orcaice/notify.h>
 
 namespace robot2d
@@ -47,14 +48,10 @@ private:
     // INTERFACES BETWEEN NETWORK AND HARDWARE HANDLERS
     //
     // hardware->network
-    orcaice::Proxy<orca::Position2dData> position2dPipe_;
-    // hardware->network
-    orcaice::Proxy<orca::Platform2dConfig> currentConfigPipe_;
+    orcaice::Buffer<orca::Odometry2dData> odometryPipe_;
 
     // network->hardware
-    orcaice::Notify<orca::Velocity2dCommand> commandPipe_;
-    // network->hardware
-    orcaice::Proxy<orca::Platform2dConfig> setConfigPipe_;
+    orcaice::Notify<orca::VelocityControl2dData> commandPipe_;
 };
 
 } // namespace

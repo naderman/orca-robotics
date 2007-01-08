@@ -12,8 +12,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
-//#include <orcaice/orcaice.h>
-#include <orcaplayer/orcaplayer.h>
+#include <orcaice/orcaice.h>
+// #include <orcaplayer/orcaplayer.h>
 #include <libplayerc++/playerc++.h>
 #include <IceUtil/Thread.h>     // for sleep()
 
@@ -91,7 +91,7 @@ PlayerClientDriver::disable()
 
 
 int
-PlayerClientDriver::read( orca::Position2dData& position2d, std::string & status )
+PlayerClientDriver::read( Robot2dData& data, std::string & status )
 {
     if ( ! enabled_ ) {
         //cout << "ERROR(playerclientdriver.cpp): Can't read: not connected to Player/Stage yet." << endl;
@@ -111,7 +111,19 @@ PlayerClientDriver::read( orca::Position2dData& position2d, std::string & status
         return -1;
     }
     
-    orcaplayer::convert( *positionProxy_, position2d );
+//     orcaplayer::convert( *positionProxy_, position2d );
+
+    orca::Time t = orcaice::toOrcaTime( positionProxy_->GetDataTime() );
+    data.seconds = t.seconds;
+    data.useconds = t.useconds;
+
+    data.x = positionProxy_->GetXPos();
+    data.y = positionProxy_->GetYPos();
+    data.o = positionProxy_->GetYaw();
+    
+    data.vx = positionProxy_->GetXSpeed();
+    data.vy = positionProxy_->GetYSpeed();
+    data.w = positionProxy_->GetYawSpeed();
 
     status = "playing=1";
 
@@ -119,12 +131,12 @@ PlayerClientDriver::read( orca::Position2dData& position2d, std::string & status
 }
 
 int
-PlayerClientDriver::write( const orca::Velocity2dCommand& position2d )
+PlayerClientDriver::write( const Robot2dCommand& command )
 {
     // this version of Player client takes speed command in  [m, m, rad/s]
     try
     {
-        positionProxy_->SetSpeed( position2d.motion.v.x, position2d.motion.v.y, position2d.motion.w );
+        positionProxy_->SetSpeed( command.vx, command.vy, command.w );
     }
     catch ( const PlayerCc::PlayerError & e )
     {
