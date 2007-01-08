@@ -215,7 +215,7 @@ struct Moment
     double z;
 };
 //! Spatial velocity: ordered couple (V,W) of two vectors
-struct Twist
+struct Twist3d
 {
     //! Linear velocity
     CartesianVelocity v;

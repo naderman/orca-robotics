@@ -1,0 +1,59 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+/*!
+
+@ingroup libs
+@defgroup orca_library_orcaifaceimpl libOrcaIfaceImpl
+@brief Basic implimentation of common interfaces.
+
+Optional convenience library providing basic implementations of some Orca interfaces.
+
+@section orca_library_orcaifaceimpl_overview Overview
+
+An example .def file, which shows the .def format, is shown below:
+@include test/def_test_input.def
+
+For a full list of functions and classes see @ref orcaifaceimpl.
+
+Header file:
+@verbatim
+#include <orcaifaceimpl/orcaifaceimpl.h>
+@endverbatim
+
+@section orca_library_orcaifaceimpl_usage Usage
+
+The function initInterface() may throw orcaice::Exceptions. When calling from within a thread, you should set up a loop:
+@verbatim
+while ( isActive() ) {
+    try {
+        obj->initInterface();
+    }
+    catch ( const Ice::Exception& e ) {
+        // give feedback
+        context_.tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+    }
+}
+@endverbatim
+
+@par Responsible Developer
+Alex Brooks
+  
+*/
+
+/*!
+@namespace orcaifaceimpl
+@brief Basic implimentation of common interfaces.
+
+This namespace is part of a library which provides basic implementations of common Orca interfaces.
+
+@see @ref orca_library_orcaifaceimpl 
+*/
+

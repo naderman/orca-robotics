@@ -79,6 +79,7 @@ DriveBicycleDriver::repeatCommand()
 void 
 DriveBicycleDriver::processNewCommandIncrement(int longitudinal, int transverse, int angle )
 {
+cout<<"DEBUG: DriveBicycleDriver::processNewCommandIncrement"<<endl;
     if ( longitudinal ) {
         command_.speed += longitudinal*deltaSpeed_;
         command_.speed = MIN( command_.speed, maxSpeed_ );

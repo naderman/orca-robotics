@@ -49,6 +49,23 @@ public:
 };
 typedef IceUtil::Handle<SentNewVelocityCommandEvent> SentNewVelocityCommandEventPtr;
 
+class SentNewBicycleCommandEvent : public orcaice::Event
+{
+public:
+    SentNewBicycleCommandEvent( double speed, double steerAngle, bool speedLimit, bool steerAngleLimit ) :
+        Event( SentNewBicycleCommand ),
+        speed_(speed),
+        steerAngle_(steerAngle),
+        speedLimit_(speedLimit),
+        steerAngleLimit_(steerAngleLimit) {};
+
+    double speed_;
+    double steerAngle_;
+    bool speedLimit_;
+    bool steerAngleLimit_;
+};
+typedef IceUtil::Handle<SentNewBicycleCommandEvent> SentNewBicycleCommandEventPtr;
+
 class SentRepeatCommandEvent : public orcaice::Event
 {
 public:

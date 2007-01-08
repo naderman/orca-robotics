@@ -56,7 +56,7 @@ setInit( orca::Twist2d& obj, double vx, double vy, double w )
 }
 
 void
-setInit( orca::Twist& obj, double vx, double vy, double vz, double wx, double wy, double wz )
+setInit( orca::Twist3d& obj, double vx, double vy, double vz, double wx, double wy, double wz )
 {
     obj.v.x = vx;
     obj.v.y = vy;
@@ -209,7 +209,7 @@ setSane( orca::Twist2d& obj )
 }
 
 void 
-setSane( orca::Twist& obj )
+setSane( orca::Twist3d& obj )
 {
     setSane( obj.v );
     setSane( obj.w );

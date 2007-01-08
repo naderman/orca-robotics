@@ -76,7 +76,7 @@ FakeDriver::write( const Robot2dCommand& command )
     // debug: simulated failure
     if ( command.vx < 2.0 ) {
         stringstream ss;
-        ss << "Wrote: VelocityControl2d (vx,vy,w(deg/s)) : ("
+        ss << "Wrote: Robot2dCommand (vx,vy,w(deg/s)) : ("
             << command.vx << ", "
             << command.vy << ", "
             << RAD2DEG(command.w) << ")";

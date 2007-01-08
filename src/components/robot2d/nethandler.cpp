@@ -133,7 +133,7 @@ NetHandler::run()
     {
 //         context_.tracer()->debug( "net handler loop spinning ",1);
 
-        // block on the most frequent data source: position
+        // block on the most frequent data source: odometry
         if ( odometryPipe_.getAndPopNext( odometry2dData, odometryReadTimeout ) ) {
 //             context_.tracer()->debug( "Net loop timed out", 1);
             continue;

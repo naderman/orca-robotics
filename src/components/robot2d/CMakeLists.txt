@@ -7,10 +7,7 @@ IF ( BUILD_ROBOT2D )
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
-    # CMake problem: these should be in the subdir, but they have no effect there for some reason
-    INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
     LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
-    ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
     
     OPTIONAL_SUB_LIBRARY(
         "Player client driver for Robot2d"

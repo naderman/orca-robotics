@@ -15,8 +15,8 @@
 #include <orcaice/orcaice.h>
 
 #include "hwhandler.h"
-#include "fakedriver.h"
 // hardware drivers
+#include "fakedriver.h"
 #ifdef HAVE_PLAYERCLIENT_DRIVER
     #include "playerclient/playerclientdriver.h"
 #endif
@@ -69,6 +69,8 @@ HwHandler::HwHandler(
     
     config_.maxSpeed = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             prefix+"MaxSpeed", 1.0 );
+    config_.maxSideSpeed = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
+            prefix+"MaxSideSpeed", 1.0 );
     config_.maxTurnrate = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             prefix+"MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
     config_.isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( context_.properties(),
@@ -198,16 +200,6 @@ HwHandler::run()
     {
         stringstream ss;
         ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( const orcaice::Exception & e )
-    {
-        stringstream ss;
-        ss << "unexpected (local?) orcaice exception: " << e.what();
         context_.tracer()->error( ss.str() );
         if ( context_.isApplication() ) {
             context_.tracer()->info( "this is an stand-alone component. Quitting...");

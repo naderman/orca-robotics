@@ -12,7 +12,7 @@
 #define ORCA2_ROBOT2D_VELOCITYCONTROL2D_I_H
 
 #include <orca/velocitycontrol2d.h>
-#include <orcaice/ptrnotify.h>
+#include <orcaice/notify.h>
 
 namespace robot2d
 {

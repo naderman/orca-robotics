@@ -43,7 +43,7 @@ void setInit( orca::Frame3d&, double x=0.0, double y=0.0, double z=0.0, double p
 //! Sets all fields to specified values
 void setInit( orca::Twist2d&, double vx=0.0, double vy=0.0, double w=0.0 );
 //! Sets all fields to specified values
-void setInit( orca::Twist&, double vx=0.0, double vy=0.0, double vz=0.0, double wx=0.0, double wy=0.0, double wz=0.0 );
+void setInit( orca::Twist3d&, double vx=0.0, double vy=0.0, double vz=0.0, double wx=0.0, double wy=0.0, double wz=0.0 );
 //! Sets all fields to specified values
 void setInit( orca::Size2d&, double l=0.0, double w=0.0 );
 //! Sets all fields to specified values

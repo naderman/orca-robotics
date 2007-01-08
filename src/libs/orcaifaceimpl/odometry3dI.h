@@ -8,10 +8,10 @@
  *
  */
 
-#ifndef ORCA2_ODOMETRY2D_I_H
-#define ORCA2_ODOMETRY2D_I_H
+#ifndef ORCA2_ODOMETRY3D_I_H
+#define ORCA2_ODOMETRY3D_I_H
 
-#include <orca/odometry2d.h>
+#include <orca/odometry3d.h>
 #include <IceStorm/IceStorm.h>
 
 // utilities
@@ -21,26 +21,26 @@
 namespace orcaifaceimpl {
 
 //!
-//! Implements the orca::Odometry2d interface: Handles remote calls.
+//! Implements the orca::Odometry3d interface: Handles remote calls.
 //!
-class Odometry2dI : public orca::Odometry2d
+class Odometry3dI : public orca::Odometry3d
 {
 public:
     //! constructor
-    Odometry2dI( const orca::Odometry2dDescription& descr,
+    Odometry3dI( const orca::Odometry3dDescription& descr,
                  const std::string& ifaceTag, 
                  const orcaice::Context& context );
-    virtual ~Odometry2dI();
+    virtual ~Odometry3dI();
 
     // remote interface
 
-    virtual ::orca::Odometry2dData getData(const ::Ice::Current& ) const;
+    virtual ::orca::Odometry3dData getData(const ::Ice::Current& ) const;
 
-    virtual ::orca::Odometry2dDescription getDescription(const ::Ice::Current& ) const;
+    virtual ::orca::Odometry3dDescription getDescription(const ::Ice::Current& ) const;
 
-    virtual void subscribe(const ::orca::Odometry2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    virtual void subscribe(const ::orca::Odometry3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
-    virtual void unsubscribe(const ::orca::Odometry2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    virtual void unsubscribe(const ::orca::Odometry3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
 
     // local interface:
@@ -49,25 +49,25 @@ public:
     void initInterface();
 
     //! A local call which sets the data reported by the interface
-    void localSet( const orca::Odometry2dData& data );
+    void localSet( const orca::Odometry3dData& data );
 
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
-    void localSetAndSend( const orca::Odometry2dData& data );
+    void localSetAndSend( const orca::Odometry3dData& data );
 
 private:
 
-    orca::Odometry2dDescription     descr_;
-    orcaice::Proxy<orca::Odometry2dData> dataProxy_;
+    orca::Odometry3dDescription     descr_;
+    orcaice::Proxy<orca::Odometry3dData> dataProxy_;
 
-    orca::Odometry2dConsumerPrx    consumerPrx_;
+    orca::Odometry3dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;
 
     const std::string              tag_;
     orcaice::Context               context_;
 };
 
-typedef IceUtil::Handle<Odometry2dI> Odometry2dIPtr;
+typedef IceUtil::Handle<Odometry3dI> Odometry3dIPtr;
 
 }
 

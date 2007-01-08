@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ODOMETRY_2D_INTERFACE_ICE
-#define ORCA2_ODOMETRY_2D_INTERFACE_ICE
+#ifndef ORCA2_ODOMETRY_3D_INTERFACE_ICE
+#define ORCA2_ODOMETRY_3D_INTERFACE_ICE
 
 #include <orca/orca.ice>
 #include <orca/bros1.ice>
@@ -18,58 +18,58 @@ module orca
 {
 /*!
     @ingroup interfaces
-    @defgroup orca_interface_odometry2d Odometry2d
-    @brief Odometry of planar mobile robots.
+    @defgroup orca_interface_odometry3d Odometry3d
+    @brief Odometry of mobile robots operating in 3D space.
     @{
 */
 
-//! Odometry2d data structure
-struct Odometry2dData
+//! Odometric data structure
+struct Odometry3dData
 {
     //! Time when data was measured.
     Time timeStamp;
 
     //! Integrated odometry. The coordinate system has its origin at the point
     //! where the component was initialized.
-    Frame2d pose;
+    Frame3d pose;
 
     //! Instantanious translational and angular velocities in the vehicle CS.
     //! This means that Vx is forward speed and Vy is side speed
     //! (possible only for some platforms).
-    Twist2d motion;
+    Twist3d motion;
 };
 
 //! Static description of the mobile platform associated with this odometric device.
-struct Odometry2dDescription
+struct Odometry3dDescription
 {
     //! Pose of the mobile base in the vehicle coordinate system.
-    Frame2d offset;
+    Frame3d offset;
 
     //! Dimensions of the mobile base.
-    Size2d size;
+    Size3d size;
 };
 
 
 //! Data consumer interface.
-interface Odometry2dConsumer
+interface Odometry3dConsumer
 {
     //! Transmits the data to the consumer.
-    void setData( Odometry2dData obj );
+    void setData( Odometry3dData obj );
 };
 
 /*!
-    @brief Access to odometry of 2d mobile robotic bases.
+    @brief Access to odometry of mobile robotic bases.
 */
-interface Odometry2d
+interface Odometry3d
 {
     //! Returns the latest data.
     //! May raise DataNotExistException if the requested information is not available.
     //! May raise HardwareFailedException if there is some problem with hardware.
-    nonmutating Odometry2dData getData()
+    nonmutating Odometry3dData getData()
             throws DataNotExistException, HardwareFailedException;
     
     //! Returns description         
-    nonmutating Odometry2dDescription getDescription();
+    nonmutating Odometry3dDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.
@@ -79,7 +79,7 @@ interface Odometry2d
      *
      * @see unsubscribe
      */
-    void subscribe( Odometry2dConsumer* subscriber )
+    void subscribe( Odometry3dConsumer* subscriber )
             throws SubscriptionFailedException;
 
     /*!
@@ -88,7 +88,7 @@ interface Odometry2d
      *
      * @see subscribe
      */
-    idempotent void unsubscribe( Odometry2dConsumer* subscriber );
+    idempotent void unsubscribe( Odometry3dConsumer* subscriber );
 };
 
 

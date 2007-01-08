@@ -50,6 +50,8 @@ void
 TermDisplayHandler::sentNewBicycleCommand( 
                 double speed, double steerAngle, bool speedLimit, bool steerAngleLimit )
 {
+    orcaice::EventPtr e = new SentNewBicycleCommandEvent( speed, steerAngle, speedLimit, steerAngleLimit );
+    events_->add( e );
 }
 
 void 
@@ -108,6 +110,18 @@ TermDisplayHandler::run()
             if ( e->vxLimit_ ) ss<<"Vx LIMITED. ";
             if ( e->vyLimit_ ) ss<<"Vy LIMITED. ";
             if ( e->wLimit_ ) ss<<"W LIMITED. ";
+            ss<<endl;
+
+            driver_->show( ss.str() );
+            break;
+        }
+        case SentNewBicycleCommand : {
+            SentNewBicycleCommandEventPtr e = SentNewBicycleCommandEventPtr::dynamicCast( event );
+
+            stringstream ss;
+            ss<<"\nBicycleCommand command (speed[m],ster[deg]) : ("<<e->speed_<<", "<<RAD2DEG(e->steerAngle_) << ") ";
+            if ( e->speedLimit_ ) ss<<"V LIMITED. ";
+            if ( e->steerAngleLimit_ ) ss<<"Steer LIMITED. ";
             ss<<endl;
 
             driver_->show( ss.str() );

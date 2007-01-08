@@ -39,6 +39,7 @@ SET( SLICE_SOURCE_FILES
     ptz.ice 
     hand.ice
     odometry2d.ice
+    odometry3d.ice
     ogpatch.ice 
     localise2d.ice
     particle2d.ice

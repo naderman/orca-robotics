@@ -38,7 +38,7 @@ struct Position3dData
     //! vertical speed. Rate of change of angular position is designated by
     //! the axis around which the rotation happens. So, roll rate is Wx, 
     //! pitch rate is Wy, and yaw rate is Wz.
-    Twist motion;
+    Twist3d motion;
 };
 
 //! Position3d description data structure

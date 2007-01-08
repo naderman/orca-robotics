@@ -52,6 +52,7 @@ private:
     {
         bool isMotionEnabled;
         double maxSpeed;
+        double maxSideSpeed;
         double maxTurnrate;
     };
     Config config_;
