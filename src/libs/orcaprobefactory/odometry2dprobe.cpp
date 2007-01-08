@@ -13,16 +13,16 @@
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
 
-#include "position3dprobe.h"
+#include "odometry2dprobe.h"
 
 using namespace std;
 using namespace orcaprobefactory;
 
-Position3dProbe::Position3dProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver & display,
+Odometry2dProbe::Odometry2dProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver & display,
                                 const orcaice::Context & context )
     : InterfaceProbe(name,display,context)
 {
-    id_ = "::orca::Position3d";
+    id_ = "::orca::Odometry2d";
     
     addOperation( "getDescription" );
     addOperation( "getData" );
@@ -31,7 +31,7 @@ Position3dProbe::Position3dProbe( const orca::FQInterfaceName & name, orcaprobe:
 }
     
 int 
-Position3dProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
+Odometry2dProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
 {
     switch ( index )
     {
@@ -48,14 +48,14 @@ Position3dProbe::loadOperationEvent( const int index, orcacm::OperationData & da
 }
 
 int 
-Position3dProbe::loadGetData( orcacm::OperationData & data )
+Odometry2dProbe::loadGetData( orcacm::OperationData & data )
 {
-    orca::Position3dData result;
+    orca::Odometry2dData result;
     orcacm::ResultHeader res;
     
     try
     {
-        orca::Position3dPrx derivedPrx = orca::Position3dPrx::checkedCast(prx_);
+        orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
         result = derivedPrx->getData();
     }
     catch( const orca::DataNotExistException & e )
@@ -81,27 +81,40 @@ Position3dProbe::loadGetData( orcacm::OperationData & data )
 }
 
 int 
-Position3dProbe::loadGetDescription( orcacm::OperationData & data )
+Odometry2dProbe::loadGetDescription( orcacm::OperationData & data )
 {
+    orca::Odometry2dDescription result;
     orcacm::ResultHeader res;
-    res.name = "outcome";
-    res.text = "operation not implemented";
+
+    try
+    {
+        orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
+        result = derivedPrx->getDescription();
+    }
+    catch( const Ice::Exception & e )
+    {
+        cout<<"ice exception: "<<e<<endl;
+        return 1;
+    }
+
+    res.name = "data";
+    res.text = orcaice::toString(result);
     data.results.push_back( res );
     return 0;
 }
 
 int 
-Position3dProbe::loadSubscribe( orcacm::OperationData & data )
+Odometry2dProbe::loadSubscribe( orcacm::OperationData & data )
 {
     Ice::ObjectPtr consumer = this;
-    orca::Position3dConsumerPrx callbackPrx =
-            orcaice::createConsumerInterface<orca::Position3dConsumerPrx>( context_, consumer );
+    orca::Odometry2dConsumerPrx callbackPrx =
+            orcaice::createConsumerInterface<orca::Odometry2dConsumerPrx>( context_, consumer );
 
     orcacm::ResultHeader res;
 
     try
     {
-        orca::Position3dPrx derivedPrx = orca::Position3dPrx::checkedCast(prx_);
+        orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
         derivedPrx->subscribe( callbackPrx );
     }
     catch( const Ice::Exception & e )
@@ -121,14 +134,14 @@ Position3dProbe::loadSubscribe( orcacm::OperationData & data )
 }
 
 int 
-Position3dProbe::loadUnsubscribe( orcacm::OperationData & data )
+Odometry2dProbe::loadUnsubscribe( orcacm::OperationData & data )
 {
 //     try
 //     {
-//         orca::Position3dPrx derivedPrx = orca::Position3dPrx::checkedCast(prx_);
+//         orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
 // //         cout<<"unsub  "<<Ice::identityToString( consumerPrx_->ice_getIdentity() )<<endl;
 //         
-//         orca::Position3dConsumerPrx powerConsumerPrx = orca::Position3dConsumerPrx::uncheckedCast(consumerPrx_);
+//         orca::Odometry2dConsumerPrx powerConsumerPrx = orca::Odometry2dConsumerPrx::uncheckedCast(consumerPrx_);
 // //         cout<<"unsub  "<<Ice::identityToString( powerConsumerPrx->ice_getIdentity() )<<endl;
 //         derivedPrx->unsubscribe( powerConsumerPrx );
 //     }
@@ -146,7 +159,7 @@ Position3dProbe::loadUnsubscribe( orcacm::OperationData & data )
 }
 
 void 
-Position3dProbe::setData(const orca::Position3dData & data, const Ice::Current&)
+Odometry2dProbe::setData(const orca::Odometry2dData & data, const Ice::Current&)
 {
     std::cout << orcaice::toString(data) << std::endl;
 };

@@ -19,6 +19,8 @@
 #include "laserscanner2dlogger.h"
 #include "localise2dlogger.h"
 #include "polarfeature2dlogger.h"
+#include "odometry2dlogger.h"
+#include "odometry3dlogger.h"
 #include "position2dlogger.h"
 #include "position3dlogger.h"
 #include "powerlogger.h"
@@ -36,6 +38,8 @@ DefaultLogFactory::DefaultLogFactory()
     addSupportedType("Gps");
     addSupportedType("LaserScanner2d");
     addSupportedType("Localise2d");
+    addSupportedType("Odometry2d");
+    addSupportedType("Odometry3d");
     addSupportedType("PolarFeature2d");
     addSupportedType("Position2d");
     addSupportedType("Position3d");
@@ -71,6 +75,14 @@ DefaultLogFactory::create( const std::string      &interfaceType,
     else if (interfaceType == "Localise2d")
     {
         logger = new Localise2dLogger( master, typeSuffix, format, filenamePrefix, context );
+    }
+    else if (interfaceType == "Odometry2d")
+    {
+        logger = new Odometry2dLogger( master, typeSuffix, format, filenamePrefix, context );
+    }
+    else if (interfaceType == "Odometry3d")
+    {
+        logger = new Odometry3dLogger( master, typeSuffix, format, filenamePrefix, context );
     }
     else if (interfaceType == "PolarFeature2d")
     {

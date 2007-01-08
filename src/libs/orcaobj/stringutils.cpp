@@ -622,6 +622,67 @@ toString( const orca::Odometry2dData& obj )
 }
 
 std::string 
+toString( const orca::Odometry3dData& obj )
+{
+    std::ostringstream s;
+    s << toString(obj.timeStamp)
+    << "Position (x,y,z): "
+    << obj.pose.p.x << ","
+    << obj.pose.p.y << ","
+    << obj.pose.p.z << "\n"
+    << "Attitude r,p,y(deg): "     
+    << RAD2DEG(obj.pose.o.r) << ", "
+    << RAD2DEG(obj.pose.o.p) << ", "
+    << RAD2DEG(obj.pose.o.y) << "\n"
+    << "Velocity vx,vy,vz:"     
+    << obj.motion.v.x << ","
+    << obj.motion.v.y << ","
+    << obj.motion.v.z << "\n"
+    << "Angular Velocity wx,wy,wz(deg/s): "     
+    << RAD2DEG(obj.motion.w.x) << ","
+    << RAD2DEG(obj.motion.w.y) << ","
+    << RAD2DEG(obj.motion.w.z);
+
+    return s.str();
+}
+
+std::string 
+toString( const orca::Odometry2dDescription& obj )
+{
+    std::ostringstream s;
+    s << "Offset x,y(m): "
+    << obj.offset.p.x << ","
+    << obj.offset.p.y << "\n"
+    << "Attitude yaw(deg): "     
+    << RAD2DEG(obj.offset.o) << "\n"
+    << "Size l,w(m):"     
+    << obj.size.l << ","
+    << obj.size.w;
+
+    return s.str();
+}
+
+std::string 
+toString( const orca::Odometry3dDescription& obj )
+{
+    std::ostringstream s;
+    s << "Offset x,y,z(m): "
+    << obj.offset.p.x << ","
+    << obj.offset.p.y << ","
+    << obj.offset.p.z << ", \n"
+    << "Attitude r,p,y(deg): "     
+    << RAD2DEG(obj.offset.o.r) << ", "
+    << RAD2DEG(obj.offset.o.p) << ", "
+    << RAD2DEG(obj.offset.o.y) << ", \n"
+    << "Size l,w,h(m):"     
+    << obj.size.l << ","
+    << obj.size.w << ","
+    << obj.size.h;
+
+    return s.str();
+}
+
+std::string 
 toString( const orca::Position2dData& obj )
 {
     std::ostringstream s;

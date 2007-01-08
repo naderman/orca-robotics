@@ -22,6 +22,7 @@
 #include <orca/home.h>
 #include <orca/imu.h>
 #include <orca/odometry2d.h>
+#include <orca/odometry3d.h>
 #include <orca/laserscanner2d.h>
 #include <orca/position2d.h>
 #include <orca/position3d.h>
@@ -188,6 +189,12 @@ std::string toString( const orca::ImuDescription& );
 std::string toString( const orca::ImuData& );
 //! Converts to string
 std::string toString( const orca::Odometry2dData& );
+//! Converts to string
+std::string toString( const orca::Odometry3dData& );
+//! Converts to string
+std::string toString( const orca::Odometry2dDescription& );
+//! Converts to string
+std::string toString( const orca::Odometry3dDescription& );
 //! Converts to string. Parameter skip control verbosity. 
 //! No ranges are displayed if skip=-1 (default). All ranges are displayed
 //! if skip=0 (none are skipped), every second is displayed if skip=1
