@@ -97,6 +97,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Support for configurable display, input, and network drivers. (alex m.)
     - Added support for VelocityControl2d and DriveBicycle interfaces.
     - General source overhaul. Using orcaice::EventQueue's.
+- LocalNav
+    - General cleanup, plus made to respect timings in paths. (Alex B.)
 
 @par Updated utilities
 
