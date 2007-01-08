@@ -23,6 +23,7 @@
 #include <QTextStream>
 #include <QVBoxLayout>
 #include <QFileDialog>
+#include <QComboBox>
 
 #include "pathinput.h"
 
@@ -201,6 +202,13 @@ void WpTable::refreshTable()
         item = new QTableWidgetItem(str);
         setItem(row, Velocity, item);
         
+        QComboBox *combo = new QComboBox(this);
+        QStringList strList;
+        strList << "Stationary" << "LeftRight" << "RightLeft" << "Turn360";
+        combo->addItems(strList);
+        if (waitingTimes_->at(row)==0.0) combo->setEnabled(false);
+        setCellWidget(row, Behaviour, combo);
+        
         str.setNum(waypoints_->at(row).x(),'g',4);
         item = new QTableWidgetItem(str);
         setItem(row, WaypointX, item);
@@ -263,6 +271,11 @@ void WpTable::updateDataStorage(int row, int column)
         case WaitingTime: 
         {       
             float waitingTime =  item->text().toDouble();
+            if (waitingTime>0.0) {
+                cellWidget(row,Behaviour)->setEnabled(true);
+            } else {
+                cellWidget(row,Behaviour)->setEnabled(false);
+            }
             float *data = waitingTimes_->data();
             data[row] = waitingTime;
             // update all subsequent times
