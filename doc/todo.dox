@@ -81,14 +81,22 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Updated interfaces
 
 - Platform2d
-    - Obsolete. Use VelocityControl2d in new code.
+    - Obsolete. Use VelocityControl2d or DriveBicycle in new code.
 - Position2d
     - Obsolete. Use Odometry2d in new code.
+- Position3d
+    - Obsolete. Use Odometry3d in new code.
 
 @par Updated components
 
 - FeatureMapLoader
-    - added error tracing (alex m.)
+    - Added error tracing (alex m.)
+- Robot2d
+    - Now using new interfaces Odometry2d and VelocityControl2d. (alex m.)
+- Teleop
+    - Support for configurable display, input, and network drivers. (alex m.)
+    - Added support for VelocityControl2d and DriveBicycle interfaces.
+    - General source overhaul. Using orcaice::EventQueue's.
 
 @par Updated utilities
 
