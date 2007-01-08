@@ -49,15 +49,38 @@ createInterfaceWithTag( const Context      & context,
     // look up naming information in the properties
     orca::FQInterfaceName fqIName = getProvidedInterface( context, ifaceTag );
 
-    // register object with the adapter
-    context.adapter()->add( object, context.communicator()->stringToIdentity( fqIName.iface ) );
+    createInterfaceWithString( context, object, fqIName.iface );
+}
 
-    // locally register this interface with Home interface 
-    orca::ProvidedInterface iface;
-    iface.name = fqIName.iface;
-    // is this a local call? is there a better way?
-    iface.id   = object->ice_id();
-    context.home()->addProvidedInterface( iface );
+std::string 
+getInterfaceIdWithString( const Context& context, const std::string& proxyString )
+{
+    Ice::ObjectPrx prx = context.communicator()->stringToProxy(proxyString);
+
+    // check with the server that the one we found is of the right type
+    // the check operation is remote and may fail (see sec.6.11.2)
+    try {
+        return prx->ice_id();
+    }
+    // typically we get ConnectionRefusedException, but it may be ObjectNotExistException
+    catch ( Ice::LocalException &e )
+    {
+        // Give some feedback as to why shit isn't working
+        std::stringstream ss;
+        ss << "Failed to lookup ID of '" << proxyString << "': "<<e;
+        initTracerWarning( context, ss.str(), 2 );
+        throw orcaice::NetworkException( ERROR_INFO, ss.str() );
+    }
+}
+
+std::string 
+getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag )
+{
+    // this may throw ConfigFileException, we don't catch it, let the user catch it at the component level
+    std::string proxyString = orcaice::getRequiredInterfaceAsString( context, interfaceTag );
+
+    // now that we have the stingified proxy, use the function above.
+    return getInterfaceIdWithString( context, proxyString );
 }
 
 IceStorm::TopicPrx 

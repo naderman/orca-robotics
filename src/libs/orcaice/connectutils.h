@@ -149,6 +149,14 @@ connectToInterfaceWithTag( const Context       & context,
     connectToInterfaceWithString( context, proxy, proxyString );
 }
 
+//! Tries to connect the interface described in the config file and gets its ID.
+//! Throws NetworkException if the interface is unreachable.
+std::string getInterfaceIdWithString( const Context& context, const std::string& proxyString );
+
+//! Tries to connect the interface described in the config file and gets its ID.
+//! Throws NetworkException if the interface is unreachable.
+std::string getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag );
+
 // FUNCTIONS WITHOUT DOXYGEN TAGS ARE UTILITY FUNCTIONS
 // THEY ARE PUBLICLY AVAILABLE BUT ARE NOT ADVERTIZED THROUGH DOXYGEN
 
