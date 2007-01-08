@@ -25,9 +25,9 @@ namespace localnav {
 MainLoop::MainLoop( LocalNavManager                                &localNavManager,
                     orcaice::PtrProxy<orca::RangeScanner2dDataPtr> &obsProxy,
                     orcaice::Proxy<orca::Localise2dData>           &locProxy,
-                    orcaice::Proxy<orca::Position2dData>           &odomProxy,
+                    orcaice::Proxy<orca::Odometry2dData>           &odomProxy,
                     PathFollower2dI                                &pathFollowerInterface,
-                    orca::Platform2dPrx                            &platform2dPrx,
+                    orca::VelocityControl2dPrx                     &velControl2dPrx,
                     PathMaintainer                                 &pathMaintainer,
                     orca::PathFollower2dConsumerPrx                &pathPublisher,
                     const orcaice::Context                         &context )
@@ -36,7 +36,7 @@ MainLoop::MainLoop( LocalNavManager                                &localNavMana
       locProxy_(locProxy),
       odomProxy_(odomProxy),
       pathFollowerInterface_(pathFollowerInterface),
-      platform2dPrx_(platform2dPrx),
+      velControl2dPrx_(velControl2dPrx),
       testMode_(false),
       pathMaintainer_(pathMaintainer),
       pathPublisher_(pathPublisher),
@@ -48,7 +48,7 @@ MainLoop::MainLoop( LocalNavManager                                &localNavMana
 MainLoop::MainLoop( LocalNavManager                                &localNavManager,
                     orcaice::PtrProxy<orca::RangeScanner2dDataPtr> &obsProxy,
                     orcaice::Proxy<orca::Localise2dData>           &locProxy,
-                    orcaice::Proxy<orca::Position2dData>           &odomProxy,
+                    orcaice::Proxy<orca::Odometry2dData>           &odomProxy,
                     PathFollower2dI                                &pathFollowerInterface,
                     Simulator                                      &testSimulator,
                     PathMaintainer                                 &pathMaintainer,
@@ -107,7 +107,7 @@ MainLoop::ensureProxiesNotEmpty()
 }
 
 void 
-MainLoop::getStopCommand( orca::Velocity2dCommand& cmd )
+MainLoop::getStopCommand( orca::VelocityControl2dData& cmd )
 {
     cmd.motion.v.x = 0.0;
     cmd.motion.v.y = 0.0;
@@ -187,7 +187,7 @@ MainLoop::run()
                 }
                 else
                 {
-                    velocityCmd_.timeStamp = rangeData_->timeStamp;
+//                    velocityCmd_.timeStamp = rangeData_->timeStamp;
 
 //                     cout<<"TRACE(mainloop.cpp): localNavManager_.getCommand:"<<endl
 //                         <<"    localiseData: " << orcaice::toString(localiseData_) << endl
@@ -205,7 +205,7 @@ MainLoop::run()
                 if ( testMode_ )
                     testSimulator_->setCommand( velocityCmd_ );
                 else
-                    platform2dPrx_->setCommand( velocityCmd_ );
+                    velControl2dPrx_->setCommand( velocityCmd_ );
             }
             catch ( orca::HardwareFailedException &e )
             {
@@ -283,7 +283,7 @@ MainLoop::checkWithOutsideWorld( PathMaintainer &pathMaintainer )
 bool
 MainLoop::areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData, 
                               const orca::Localise2dData&       localiseData, 
-                              const orca::Position2dData&       odomData,
+                              const orca::Odometry2dData&       odomData,
                               double                           threshold )
 {
     if ( fabs( orcaice::timeDiffAsDouble( rangeData->timeStamp, localiseData.timeStamp ) ) >= threshold )

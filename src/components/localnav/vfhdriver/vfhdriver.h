@@ -39,17 +39,17 @@ public:
                                                     const orca::Twist2d &currentVelocity,
                                                     const orca::RangeScanner2dDataPtr obs,
                                                     const localnav::Goal               &goal,
-                                                    orca::Velocity2dCommand& cmd );
+                                                    orca::VelocityControl2dData& cmd );
 
 private: 
 
     void setSpeedConstraints( float maxSpeed, float maxTurnrate );
 
     // Functions for setting commands
-    void setToZero(         orca::Velocity2dCommand& cmd );
-    void setToEscape(       orca::Velocity2dCommand& cmd, const orca::RangeScanner2dDataPtr &obs );
-    void setTurnToGoal(     orca::Velocity2dCommand& cmd, const localnav::Goal &goal );
-    void setToApproachGoal( orca::Velocity2dCommand& cmd,
+    void setToZero(         orca::VelocityControl2dData& cmd );
+    void setToEscape(       orca::VelocityControl2dData& cmd, const orca::RangeScanner2dDataPtr &obs );
+    void setTurnToGoal(     orca::VelocityControl2dData& cmd, const localnav::Goal &goal );
+    void setToApproachGoal( orca::VelocityControl2dData& cmd,
                             const localnav::Goal     &goal, 
                             const orca::Twist2d             &currentVelocity,
                             const orca::RangeScanner2dDataPtr &obs );
@@ -85,7 +85,7 @@ private:
     localnav::IDriver::DriverState currentState_;
 
     // Previous command
-    orca::Velocity2dCommand prevCmd_;
+    orca::VelocityControl2dData prevCmd_;
 
     // Configuration from file
     VfhAlgorithmConfig vfhConfig_;

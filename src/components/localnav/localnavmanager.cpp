@@ -186,8 +186,8 @@ getMLPose( const orca::Localise2dData &localiseData )
 void
 LocalNavManager::getCommand( const orca::RangeScanner2dDataPtr  rangeData, 
                              const orca::Localise2dData&    localiseData, 
-                             const orca::Position2dData&    odomData, 
-                             orca::Velocity2dCommand&       cmd )
+                             const orca::Odometry2dData&    odomData, 
+                             orca::VelocityControl2dData&   cmd )
 {
     orcanavutil::Pose  pose = getMLPose( localiseData );
     Goal               currentGoal;
@@ -208,7 +208,8 @@ LocalNavManager::getCommand( const orca::RangeScanner2dDataPtr  rangeData,
     else
     {
         constrainMaxSpeeds( currentGoal, context_ );
-        driverState_ = driver_.getCommand( odomData.stalled,
+        bool obsoleteStall=false;
+        driverState_ = driver_.getCommand( obsoleteStall,
                                            odomData.motion,
                                            rangeData,
                                            currentGoal,

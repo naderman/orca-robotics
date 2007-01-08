@@ -35,6 +35,7 @@
 #include <orca/pathfollower2d.h>
 #include <orca/pathplanner2d.h>
 #include <orca/tracer.h>
+#include <orca/velocitycontrol2d.h>
 
 namespace orcaice
 {
@@ -219,6 +220,8 @@ std::string toString( const orca::PowerData& );
 std::string toString( const orca::StatusData& );
 //! Converts to string
 std::string toString( const orca::Velocity2dCommand& );
+//! Converts to string
+std::string toString( const orca::VelocityControl2dData& );
 //! Converts to string
 std::string toString( const orca::TracerData& );
 //! Converts to string

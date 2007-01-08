@@ -27,7 +27,8 @@
 
 - @ref orca_interface_rangescanner2d [LocalNav.Requires.Observations]
 - @ref orca_interface_localise2d [LocalNav.Requires.Localisation]
-- @ref orca_interface_platform2d [LocalNav.Requires.Platform2d]
+- @ref orca_interface_velocitycontrol2d [LocalNav.Requires.VelocityControl2d]
+- @ref orca_interface_odometry2d [LocalNav.Requires.Odometry2d]
 
 @image html localnav.png
 

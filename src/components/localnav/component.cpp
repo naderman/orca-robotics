@@ -24,7 +24,7 @@ namespace localnav {
 
 Component::Component()
     : orcaice::Component( "LocalNav" ),
-      platform2dPrx_(NULL),
+      velocityControl2dPrx_(NULL),
       testSimulator_(NULL),
       driver_(NULL),
       localNavManager_(NULL),
@@ -36,7 +36,7 @@ Component::Component()
 
 Component::~Component()
 {
-    if ( platform2dPrx_ != NULL )         delete platform2dPrx_;
+    if ( velocityControl2dPrx_ != NULL )         delete velocityControl2dPrx_;
     if ( driver_ != NULL )                delete driver_;
     if ( localNavManager_ != NULL )       delete localNavManager_;
     if ( pathMaintainer_ != NULL )        delete pathMaintainer_;
@@ -87,22 +87,22 @@ Component::start()
     if ( !testMode )
     {
         // connect to the platform
-        platform2dPrx_ = new orca::Platform2dPrx;
-        orcaice::connectToInterfaceWithTag<Platform2dPrx>( context(), *platform2dPrx_, "Platform2d" );
-        context().tracer()->debug("connected to a 'Platform2d' interface",5);
+        velocityControl2dPrx_ = new orca::VelocityControl2dPrx;
+        orcaice::connectToInterfaceWithTag<VelocityControl2dPrx>( context(), *velocityControl2dPrx_, "VelocityControl2d" );
+        context().tracer()->debug("connected to a 'VelocityControl2d' interface",5);
 
         // Instantiate everything
         obsConsumer_  = new orcaice::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>;
         locConsumer_  = new orcaice::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>;
-        odomConsumer_ = new orcaice::ProxiedConsumerI<orca::Position2dConsumer,orca::Position2dData>;
+        odomConsumer_ = new orcaice::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>;
 
         // subscribe for information from platform
         RangeScanner2dPrx obsPrx;
         Localise2dPrx   locPrx;
-        Position2dPrx   odomPrx;
+        Odometry2dPrx   odomPrx;
         orcaice::connectToInterfaceWithTag<orca::RangeScanner2dPrx>( context(), obsPrx, "Observations" );
         orcaice::connectToInterfaceWithTag<orca::Localise2dPrx>( context(), locPrx, "Localisation" );
-        orcaice::connectToInterfaceWithTag<orca::Position2dPrx>( context(), odomPrx, "Platform2d" );
+        orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context(), odomPrx, "Odometry2d" );
 
         Ice::ObjectPtr obsConsumerPtr = obsConsumer_;
         orca::RangeScanner2dConsumerPrx obsConsumerPrx =
@@ -111,8 +111,8 @@ Component::start()
         orca::Localise2dConsumerPrx locConsumerPrx =
             orcaice::createConsumerInterface<Localise2dConsumerPrx>( context(), locConsumerPtr );
         Ice::ObjectPtr odomConsumerPtr = odomConsumer_;
-        orca::Position2dConsumerPrx odomConsumerPrx =
-            orcaice::createConsumerInterface<Position2dConsumerPrx>( context(), odomConsumerPtr );
+        orca::Odometry2dConsumerPrx odomConsumerPrx =
+            orcaice::createConsumerInterface<Odometry2dConsumerPrx>( context(), odomConsumerPtr );
 
         obsPrx->subscribe(  obsConsumerPrx );
         locPrx->subscribe(  locConsumerPrx );
@@ -144,7 +144,7 @@ Component::start()
                                   locConsumer_->proxy_,
                                   odomConsumer_->proxy_,
                                   *pathFollowerInterface_,
-                                  *platform2dPrx_,
+                                  *velocityControl2dPrx_,
                                   *pathMaintainer_,
                                   pathPublisher_,
                                   context() );

@@ -89,7 +89,7 @@ VfhDriver::getCommand( bool  stalled,
                        const orca::Twist2d &currentVelocity,
                        const orca::RangeScanner2dDataPtr obs,
                        const Goal                        &goal,
-                       orca::Velocity2dCommand& cmd )
+                       orca::VelocityControl2dData& cmd )
 {
     setSpeedConstraints( goal.maxSpeed, goal.maxTurnrate );
 
@@ -160,7 +160,7 @@ VfhDriver::shouldEscape( bool stalled )
 }
 
 void
-VfhDriver::setToZero( orca::Velocity2dCommand& cmd )
+VfhDriver::setToZero( orca::VelocityControl2dData& cmd )
 {
     cmd.motion.v.x = 0.0;
     cmd.motion.v.y = 0.0;
@@ -168,7 +168,7 @@ VfhDriver::setToZero( orca::Velocity2dCommand& cmd )
 }
 
 void
-VfhDriver::setToEscape( orca::Velocity2dCommand& cmd, const orca::RangeScanner2dDataPtr &obs )
+VfhDriver::setToEscape( orca::VelocityControl2dData& cmd, const orca::RangeScanner2dDataPtr &obs )
 {
     if ( currentState_ != IDriver::STATE_ESCAPING ||
          escapeTimer_.elapsedMs() > escapeTimeMs_ )
@@ -196,7 +196,7 @@ VfhDriver::setToEscape( orca::Velocity2dCommand& cmd, const orca::RangeScanner2d
 }
 
 void
-VfhDriver::setTurnToGoal( orca::Velocity2dCommand& cmd, const Goal &goal )
+VfhDriver::setTurnToGoal( orca::VelocityControl2dData& cmd, const Goal &goal )
 {
     cmd.motion.v.x = 0.0;
     cmd.motion.v.y = 0.0;
@@ -283,7 +283,7 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
 }
 
 void
-VfhDriver::setToApproachGoal( orca::Velocity2dCommand& cmd,
+VfhDriver::setToApproachGoal( orca::VelocityControl2dData& cmd,
                               const Goal &goal, 
                               const orca::Twist2d &currentVelocity,
                               const orca::RangeScanner2dDataPtr &obs )

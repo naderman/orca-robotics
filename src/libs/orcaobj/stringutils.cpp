@@ -732,6 +732,18 @@ toString( const orca::Velocity2dCommand& obj )
 }
 
 std::string 
+toString( const orca::VelocityControl2dData& obj )
+{
+    std::ostringstream s;
+    s <<   "VelocityControl2dData (vx,vy,w(deg/s)) : ("
+            << obj.motion.v.x << ", "
+            << obj.motion.v.y << ", "
+            << RAD2DEG(obj.motion.w) << ")";
+
+    return s.str();
+}
+
+std::string 
 toString( const orca::HomeData& obj )
 {
     std::ostringstream s;

@@ -13,7 +13,7 @@
 #include <orcaice/context.h>
 #include <orcaice/ptrbuffer.h>
 #include <orca/localise2d.h>
-#include <orca/platform2d.h>
+#include <orca/velocitycontrol2d.h>
 #include <orca/rangescanner2d.h>
 #include <orca/pathfollower2d.h>
 #include <orcanavutil/orcanavutil.h>
@@ -45,8 +45,8 @@ public:
     // in Localise2d.
     void getCommand( const orca::RangeScanner2dDataPtr  rangeData,
                      const orca::Localise2dData&        localiseData,
-                     const orca::Position2dData&        odomData,
-                     orca::Velocity2dCommand&           cmd );
+                     const orca::Odometry2dData&        odomData,
+                     orca::VelocityControl2dData&       cmd );
 
     std::string getHeartbeatMessage();
 

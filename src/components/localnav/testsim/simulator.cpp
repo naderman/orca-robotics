@@ -72,7 +72,7 @@ Simulator::Simulator( const orcaice::Context &context,
     setupInterfaces();
 
     // give an initial stationary command
-    orca::Velocity2dCommand cmd;
+    orca::VelocityControl2dData cmd;
     cmd.motion.v.x = velLin_;
     cmd.motion.v.y = 0;
     cmd.motion.w   = velRot_;
@@ -191,25 +191,24 @@ Simulator::fillPipes()
     locProxy_.set(locData);
     localiseInterface_->localSetAndSend(locData);
 
-    orca::Position2dData posData;
+    orca::Odometry2dData posData;
     posData.pose.p.x   = 0.0;
     posData.pose.p.y   = 0.0;
     posData.pose.o     = 0.0;
     posData.motion.v.x = velLin_;
     posData.motion.v.y = 0.0;
     posData.motion.w   = velRot_;
-    posData.stalled    = false;
     posData.timeStamp  = ts;
 
     odomProxy_.set( posData );
 }
 
 void 
-Simulator::setCommand( orca::Velocity2dCommand &cmd )
+Simulator::setCommand( orca::VelocityControl2dData &cmd )
 {
     cout<<"TRACE(simulator.cpp): iteration " << iterationNum_ << ": pose_: " << pose_ << endl;
 
-    cmd.timeStamp = scan_->timeStamp;
+//     cmd.timeStamp = scan_->timeStamp;
     cout<<"TRACE(simulator.cpp): received cmd: " << orcaice::toString(cmd) << endl;
     
     if ( !batchMode_ )

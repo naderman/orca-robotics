@@ -10,7 +10,7 @@
 #ifndef LOCALNAVDRIVER_H
 #define LOCALNAVDRIVER_H
 
-#include <orca/platform2d.h>
+#include <orca/velocitycontrol2d.h>
 #include <orca/rangescanner2d.h>
 
 namespace localnav {
@@ -54,7 +54,7 @@ public:
                                     const orca::Twist2d               &currentVelocity,
                                     const orca::RangeScanner2dDataPtr  obs,
                                     const Goal                        &goal,
-                                    orca::Velocity2dCommand           &cmd ) = 0;
+                                    orca::VelocityControl2dData        &cmd ) = 0;
 
 protected: 
 

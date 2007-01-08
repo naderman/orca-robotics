@@ -10,7 +10,7 @@
 #ifndef MAINLOOP_H
 #define MAINLOOP_H
 
-#include <orca/platform2d.h>
+#include <orca/velocitycontrol2d.h>
 #include <orca/localise2d.h>
 #include <orca/rangescanner2d.h>
 #include <orcaice/context.h>
@@ -44,9 +44,9 @@ public:
     MainLoop( LocalNavManager                                &localNavManager,
               orcaice::PtrProxy<orca::RangeScanner2dDataPtr> &obsProxy,
               orcaice::Proxy<orca::Localise2dData>           &locProxy,
-              orcaice::Proxy<orca::Position2dData>           &odomProxy,
+              orcaice::Proxy<orca::Odometry2dData>           &odomProxy,
               PathFollower2dI                                &pathFollowerInterface,
-              orca::Platform2dPrx                            &platform2dPrx,
+              orca::VelocityControl2dPrx                     &velControl2dPrx,
               PathMaintainer                                 &pathMaintainer,
               orca::PathFollower2dConsumerPrx                &pathPublisher,
               const orcaice::Context                         &context );
@@ -55,7 +55,7 @@ public:
     MainLoop( LocalNavManager                                &localNavManager,
               orcaice::PtrProxy<orca::RangeScanner2dDataPtr> &obsProxy,
               orcaice::Proxy<orca::Localise2dData>           &locProxy,
-              orcaice::Proxy<orca::Position2dData>           &odomProxy,
+              orcaice::Proxy<orca::Odometry2dData>           &odomProxy,
               PathFollower2dI                                &pathFollowerInterface,
               Simulator                                      &testSimulator,
               PathMaintainer                                 &pathMaintainer,
@@ -75,7 +75,7 @@ private:
     void ensureProxiesNotEmpty();
 
     // Set the command to 'stop'
-    void getStopCommand( orca::Velocity2dCommand& cmd );
+    void getStopCommand( orca::VelocityControl2dData& cmd );
 
     // See if we need to follow a new path, plus
     // see if we should update the world on our progress.
@@ -84,8 +84,8 @@ private:
     // Returns true if the timestamps differ by more than a threshold.
     bool areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData,
                              const orca::Localise2dData&        localiseData,
-                             const orca::Position2dData&        odomData,
-                             double                           threshold );
+                             const orca::Odometry2dData&        odomData,
+                             double                             threshold );
 
     void maybeSendHeartbeat();
 
@@ -95,18 +95,18 @@ private:
     // Incoming observations and pose info
     orcaice::PtrProxy<orca::RangeScanner2dDataPtr> &obsProxy_;
     orcaice::Proxy<orca::Localise2dData>   &locProxy_;
-    orcaice::Proxy<orca::Position2dData>   &odomProxy_;
+    orcaice::Proxy<orca::Odometry2dData>   &odomProxy_;
 
     PathFollower2dI                  &pathFollowerInterface_;
 
     // data types
     orca::Localise2dData           localiseData_;
-    orca::Position2dData           odomData_;
+    orca::Odometry2dData           odomData_;
     orca::RangeScanner2dDataPtr    rangeData_;
-    orca::Velocity2dCommand        velocityCmd_;
+    orca::VelocityControl2dData    velocityCmd_;
 
     // Outgoing commands: live version
-    orca::Platform2dPrx            platform2dPrx_;
+    orca::VelocityControl2dPrx     velControl2dPrx_;
     // Outgoing commands: test version
     Simulator                     *testSimulator_;
 

@@ -15,7 +15,8 @@
 #include <orcaice/proxiedconsumerI.h>
 #include <orcaice/ptrproxiedconsumerI.h>
 #include <orca/rangescanner2d.h>
-#include <orca/platform2d.h>
+#include <orca/velocitycontrol2d.h>
+#include <orca/odometry2d.h>
 #include <orca/localise2d.h>
 #include <orca/pathfollower2d.h>
 #include "pathfollower2dI.h"
@@ -54,10 +55,10 @@ private:
     // Get observations, pose, and odometric velocity
     orcaice::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr> *obsConsumer_;
     orcaice::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>     *locConsumer_;
-    orcaice::ProxiedConsumerI<orca::Position2dConsumer,orca::Position2dData>     *odomConsumer_;
+    orcaice::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>     *odomConsumer_;
 
     // Give commands
-    orca::Platform2dPrx *platform2dPrx_;
+    orca::VelocityControl2dPrx *velocityControl2dPrx_;
 
     // Simulator for test mode
     Simulator           *testSimulator_;

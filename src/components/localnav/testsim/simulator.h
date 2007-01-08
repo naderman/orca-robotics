@@ -6,7 +6,8 @@
 #include <orcaifaceimpl/laserscanner2dI.h>
 #include <orcaifaceimpl/localise2dI.h>
 #include <orcaifaceimpl/ogmapI.h>
-#include <orca/platform2d.h>
+#include <orca/velocitycontrol2d.h>
+#include <orca/odometry2d.h>
 #include <orcaice/ptrproxy.h>
 #include <orcaice/proxy.h>
 #include <orcaice/context.h>
@@ -27,13 +28,13 @@ public:
     ~Simulator();
 
     // This is the trigger to advance the simulator one step.
-    void setCommand( orca::Velocity2dCommand &cmd );
+    void setCommand( orca::VelocityControl2dData &cmd );
 
     // These can be given out to others: the simulator 
     // will put new data in them on each step.
     orcaice::PtrProxy<orca::RangeScanner2dDataPtr> obsProxy_;
     orcaice::Proxy<orca::Localise2dData>           locProxy_;
-    orcaice::Proxy<orca::Position2dData>           odomProxy_;
+    orcaice::Proxy<orca::Odometry2dData>           odomProxy_;
 
     void printState();
 
