@@ -21,8 +21,8 @@ namespace geom2d {
         double &y() { return y_; }
 
         // convert to polar
-        double range() const { return hypotf(y_,x_); }
-        double bearing() const { return atan2(y_,x_); }
+        double range() const { return std::hypotf(y_,x_); }
+        double bearing() const { return std::atan2(y_,x_); }
 
         std::string toString()   const;
         std::string toStringXY() const;
@@ -46,8 +46,8 @@ namespace geom2d {
         double &bearing() { return b_; }
 
         // convert to cartesian
-        double x() const { return r_*cos(b_); }
-        double y() const { return r_*sin(b_); }
+        double x() const { return r_*std::cos(b_); }
+        double y() const { return r_*std::sin(b_); }
 
         std::string toString()   const;
         std::string toStringXY() const;
@@ -59,9 +59,9 @@ namespace geom2d {
 
     // Distance between points
     inline double dist( const Point &p1, const Point &p2 )
-    { return hypotf(p1.y()-p2.y(),p1.x()-p2.x()); }
+    { return std::hypotf(p1.y()-p2.y(),p1.x()-p2.x()); }
     inline double dist( const PolarPoint &p1, const PolarPoint &p2 )
-    { return hypotf(p1.y()-p2.y(),p1.x()-p2.x()); }
+    { return std::hypotf(p1.y()-p2.y(),p1.x()-p2.x()); }
 
     // Rotate points about the origin
     // in place
