@@ -14,7 +14,7 @@ IF ( BUILD_LOCALNAV )
       ${PROJECT_SOURCE_DIR}/src/components/localnav
       )
 
-#    ADD_SUBDIRECTORY( testsim )
+    ADD_SUBDIRECTORY( testsim )
 
     # build common sources into a convenience library
     BUILD_COMPONENT_SOURCES( LocalNavSources )
