@@ -18,27 +18,24 @@
 namespace teleop
 {
 
+class Network;
+
 class KeyboardTermioDriver : public InputDriver
 {
 public:
 
-    KeyboardTermioDriver( const InputDriver::Config &cfg );
+    KeyboardTermioDriver( Network* network );
     virtual ~KeyboardTermioDriver();
 
     virtual int enable();
     virtual int disable();
 
-    // Blocks till new data is available
-    virtual int read( orca::Velocity2dCommand& data );
+    // Blocks untill new data is available
+    virtual int read();
 
 private:
 
-    orca::Velocity2dCommand command_;
-
-    Config config_;
-
-    double deltaSpeed_;     // [m/s]
-    double deltaTurnrate_;  // [rad/sec]
+    Network* network_;
 
     void keyboardHelp();
 

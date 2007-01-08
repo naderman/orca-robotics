@@ -8,24 +8,17 @@
  *
  */
 
-#ifndef ORCA2_TELEOP_INPUT_DRIVER_H
-#define ORCA2_TELEOP_INPUT_DRIVER_H
+#ifndef ORCA2_TELEOP_TERMINAL_DISPLAY_DRIVER_H
+#define ORCA2_TELEOP_TERMINAL_DISPLAY_DRIVER_H
 
 namespace teleop
 {
 
-/*
-
-@brief Abstract interface class for human teleoperation input.
-
-@author Alex Makarenko
-
-*/
-class InputDriver
+class TermDisplayDriver
 {
 
 public:
-    virtual ~InputDriver() {};
+    virtual ~TermDisplayDriver() {};
     
     // Returns 0 on success. Does not throw.
     virtual int enable()=0;
@@ -33,8 +26,8 @@ public:
     // Returns 0 on success. Does not throw.
     virtual int disable()=0;
 
-    // Blocking read. Returns 0 on success. Does not throw.
-    virtual int read()=0;
+    virtual void show( const std::string& s ) = 0;
+
 };
 
 } // namespace

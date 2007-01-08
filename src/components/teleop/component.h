@@ -13,14 +13,12 @@
 
 #include <orcaice/component.h>
 
-#include <orcaice/buffer.h>
-#include <orca/platform2d.h>
-
 namespace teleop
 {
 
 class NetworkHandler;
-class UserHandler;
+class TermDisplayHandler;
+class InputHandler;
 
 class Component : public orcaice::Component
 {
@@ -34,15 +32,9 @@ public:
     virtual void stop();
 
 private:
-    // network-hardware interface
-    // the driver will put the latest data into this proxy
-    orcaice::Buffer<orca::Velocity2dCommand> commandPipe_;
-
-    // network loop
     NetworkHandler* networkHandler_;
-
-    // hardware
-    UserHandler* userHandler_;
+    TermDisplayHandler* displayHandler_;
+    InputHandler* inputHandler_;
 };
 
 } // namespace

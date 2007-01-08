@@ -9,36 +9,28 @@
  */
 
 #include <iostream>
-#include <orcaice/proputils.h>
+#include <orcaice/orcaice.h>
 #include <orcaobj/mathdefs.h>
-#include <orcaice/exceptions.h>
 
 #include "keyboardtermiodriver.h"
 #include "asciichar.h"
+#include "../network.h"
 
 using namespace std;
-using namespace orca;
 using namespace teleop;
 
 
-KeyboardTermioDriver::KeyboardTermioDriver( const InputDriver::Config &cfg ) :
-        config_(cfg)
+KeyboardTermioDriver::KeyboardTermioDriver( Network* network ) :
+    network_(network)
 {
-    // init internal data storage
-    command_.motion.v.x = 0.0;
-    command_.motion.v.y = 0.0;
-    command_.motion.w = 0.0;
-
-    // one key stroke changes commands by these values
-    deltaSpeed_ = 0.05;     // [m/s]
-    deltaTurnrate_ = DEG2RAD(2.0);  // [rad/sec]
 }
 
 KeyboardTermioDriver::~KeyboardTermioDriver()
 {
 }
 
-int KeyboardTermioDriver::enable()
+int 
+KeyboardTermioDriver::enable()
 {
     kfd_ = 0;
 
@@ -64,7 +56,8 @@ int KeyboardTermioDriver::enable()
     return 0;
 }
 
-int KeyboardTermioDriver::disable()
+int 
+KeyboardTermioDriver::disable()
 {
     // revert to normal input mode
     ioctl( kfd_, TCSETA, &cooked_ );
@@ -74,7 +67,8 @@ int KeyboardTermioDriver::disable()
 }
 
 // read next command from the keyboard
-int KeyboardTermioDriver::read( orca::Velocity2dCommand& data )
+int 
+KeyboardTermioDriver::read()
 {
     // storage for loop variables
     char c;
@@ -84,9 +78,7 @@ int KeyboardTermioDriver::read( orca::Velocity2dCommand& data )
     // (as apposed the member function KeyboardTermioDriver::read() )
     if( ::read(kfd_, &c, 1) < 0 )
     {
-        command_.motion.v.x = 0.0;
-        command_.motion.v.y = 0.0;
-        command_.motion.w = 0.0;
+        network_->newRelativeCommand( 0.0, 0.0, 0.0 );
 
         string errString = "failed to read from keyboard";
         throw orcaice::HardwareException( ERROR_INFO, errString );
@@ -95,22 +87,22 @@ int KeyboardTermioDriver::read( orca::Velocity2dCommand& data )
     switch( c )
     {
         case KEYCODE_i:
-            command_.motion.v.x += deltaSpeed_;
+            network_->newCommandIncrement( +1, 0, 0 );
             break;
         case KEYCODE_k:
-            command_.motion.v.x -= deltaSpeed_;
+            network_->newCommandIncrement( -1, 0, 0 );
             break;
         case KEYCODE_o:
-            command_.motion.v.x = 0.0;
+            network_->newRelativeCommand( 0.0, TELEOP_COMMAND_UNCHANGED, TELEOP_COMMAND_UNCHANGED );
             break;
         case KEYCODE_j:
-            command_.motion.w += deltaTurnrate_;
+            network_->newCommandIncrement( 0, 0, +1 );
             break;
         case KEYCODE_l:
-            command_.motion.w -= deltaTurnrate_;
+            network_->newCommandIncrement( 0, 0, -1 );
             break;
         case KEYCODE_u:
-            command_.motion.w = 0.0;
+            network_->newRelativeCommand( TELEOP_COMMAND_UNCHANGED, TELEOP_COMMAND_UNCHANGED, 0.0 );
             break;
         case KEYCODE_q:
             //speed *= 1.1;
@@ -134,34 +126,15 @@ int KeyboardTermioDriver::read( orca::Velocity2dCommand& data )
             break;
         default:
             // any other key sends 'stop' command
-            command_.motion.v.x = 0.0;
-            command_.motion.v.y = 0.0;
-            command_.motion.w = 0.0;
+            network_->newRelativeCommand( 0.0, 0.0, 0.0 );
     }
-
-    // apply max limits 
-    if ( fabs(command_.motion.v.x) > config_.maxSpeed ) {
-        command_.motion.v.x =
-                (command_.motion.v.x / fabs(command_.motion.v.x)) * config_.maxSpeed;
-    }
-    if ( fabs(command_.motion.w) > config_.maxTurnrate ) {
-        command_.motion.w =
-                (command_.motion.w / fabs(command_.motion.w)) * config_.maxTurnrate;
-    }
-
-    // return updated command
-    // ice_clone() doesn't work for some reason
-    //data = command_.ice_clone();
-    //data.timeStamp = ?;
-    data.motion.v.x = command_.motion.v.x;
-    data.motion.v.y = command_.motion.v.y;
-    data.motion.w = command_.motion.w;
 
     return 0;
 }
 
 
-void KeyboardTermioDriver::keyboardHelp()
+void 
+KeyboardTermioDriver::keyboardHelp()
 {
     puts("-----------------------------------------");
     puts("Moving around:");

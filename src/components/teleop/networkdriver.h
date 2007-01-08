@@ -8,33 +8,29 @@
  *
  */
 
-#ifndef ORCA2_TELEOP_INPUT_DRIVER_H
-#define ORCA2_TELEOP_INPUT_DRIVER_H
+#ifndef ORCA2_TELEOP_NETWORK_DRIVER_H
+#define ORCA2_TELEOP_NETWORK_DRIVER_H
 
 namespace teleop
 {
 
-/*
-
-@brief Abstract interface class for human teleoperation input.
-
-@author Alex Makarenko
-
-*/
-class InputDriver
+class NetworkDriver
 {
 
 public:
-    virtual ~InputDriver() {};
+    virtual ~NetworkDriver() {};
     
     // Returns 0 on success. Does not throw.
-    virtual int enable()=0;
+    virtual int enable() = 0;
     
     // Returns 0 on success. Does not throw.
-    virtual int disable()=0;
+    virtual int disable() = 0;
 
-    // Blocking read. Returns 0 on success. Does not throw.
-    virtual int read()=0;
+    virtual void repeatCommand() = 0;
+
+    virtual void processNewCommandIncrement( int longitudinal, int transverse, int angle ) = 0;
+
+    virtual void processNewRelativeCommand( double longitudinal, double transverse, double angle ) = 0;
 };
 
 } // namespace

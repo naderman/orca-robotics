@@ -13,33 +13,39 @@
 
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/eventqueue.h>
 
-#include <orca/platform2d.h>
+#include "network.h"
 
 namespace teleop
 {
 
-class DisplayHandler;
+class Display;
+class NetworkDriver;
 
-class NetworkHandler : public orcaice::Thread
+class NetworkHandler : public orcaice::Thread, public Network
 {
 public:
 
-    NetworkHandler( orcaice::Buffer<orca::Velocity2dCommand> *commandBuffer,
-                    DisplayHandler* displayHandler, const orcaice::Context & context );
-    ~NetworkHandler();
+    NetworkHandler( Display* display, const orcaice::Context& context );
+    virtual ~NetworkHandler();
 
-    void setupConfigs( const Ice::PropertiesPtr & properties );
-
+    // from Thread
     virtual void run();
+
+    // from Network
+    virtual void newCommandIncrement( int longitudinal, int transverse, int angle );
+
+    virtual void newRelativeCommand( double longitudinal, double transverse, double angle );
+
 
 private:
 
-    // network/driver interface
-    orcaice::Buffer<orca::Velocity2dCommand>* commandBuffer_;
+    orcaice::EventQueuePtr events_;
 
-    DisplayHandler* displayHandler_;
+    Display* display_;
+
+    NetworkDriver* driver_;
 
     // component current context
     orcaice::Context context_;

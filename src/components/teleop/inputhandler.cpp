@@ -11,43 +11,32 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 
-#include "networkhandler.h"
-#include "display.h"
-#include "events.h"
-#include "velocitycontroldriver.h"
+#include "inputhandler.h"
+#include "network.h"
+#ifdef HAVE_KEYBOARD_TERMIO_DRIVER
+    #include "kbd-termio/keyboardtermiodriver.h"
+#endif
+#ifdef HAVE_JOYSTICK_DRIVER
+    #include "joystick/joystickdriver.h"
+#endif
 
 using namespace std;
 using namespace teleop;
 
-NetworkHandler::NetworkHandler( Display* display, const orcaice::Context& context ) :
-    events_(new orcaice::EventQueue),
-    display_(display),
+InputHandler::InputHandler( Network* network, const orcaice::Context& context ) :
+    network_(network),
+    driver_(0),
     context_(context)
 {
 }
 
-NetworkHandler::~NetworkHandler()
+InputHandler::~InputHandler()
 {
-}
-
-void 
-NetworkHandler::newCommandIncrement( int longitudinal, int transverse, int angle )
-{
-// cout<<"DEBUG: got command incresment : "<<longitudinal<<" "<<transverse<<" "<<angle<<endl;
-    orcaice::EventPtr e = new NewCommandIncrementEvent( longitudinal, transverse, angle );
-    events_->add( e );
-}
-
-void 
-NetworkHandler::newRelativeCommand( double longitudinal, double transverse, double angle )
-{
-// cout<<"DEBUG: got relative command : "<<longitudinal<<"% "<<transverse<<"% "<<angle<<"%"<<endl;
-    orcaice::EventPtr e = new NewRelativeCommandEvent( longitudinal, transverse, angle );
-    events_->add( e );
+    delete driver_;
 }
 
 void
-NetworkHandler::run()
+InputHandler::run()
 {
     // we are in a different thread now, catch all stray exceptions
     try
@@ -59,11 +48,29 @@ NetworkHandler::run()
     std::string prefix = context_.tag() + ".Config.";
 
     // based on the config parameter, create the right driver
-    string driverName = orcaice::getPropertyWithDefault( prop, prefix+"NetworkDriver", "vel-control" );
-    if ( driverName == "vel-control" )
+    string driverName = orcaice::getPropertyWithDefault( prop, prefix+"InputDriver", "keyboard" );
+    if ( driverName == "keyboard" )
     {
+#ifdef HAVE_KEYBOARD_TERMIO_DRIVER
         context_.tracer()->info("loading 'keyboard' driver");
-        driver_ = new VelocityControl2dDriver( display_, context_ );
+        driver_ = new KeyboardTermioDriver( network_ );
+#else
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'keyboard' because it was not built!" );
+#endif
+    }
+    else if ( driverName == "joystick" )
+    {
+#ifdef HAVE_JOYSTICK_DRIVER
+        context_.tracer()->info("loading 'joystick' driver");
+        
+        std::string joystickPrefix = prefix + "Joystick.";
+        config_.joystickDevice = orcaice::getPropertyWithDefault( prop,
+                joystickPrefix+"Device", "auto" );
+        driver_ = new JoystickDriver( config_ );
+        displayHandler_ = new StdoutDisplayHandler();
+#else
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'joystick' because it was not built!" );
+#endif
     }
     else {
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
@@ -74,7 +81,7 @@ NetworkHandler::run()
 
     // don't forget to enable the driver, but check isActive() to see if we should quit
     while ( driver_->enable() && isActive() ) {
-        context_.tracer()->warning("Failed to enable network driver. Will try again in 2 seconds.");
+        context_.tracer()->warning("Failed to enable input driver. Will try again in 2 seconds.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
@@ -82,45 +89,21 @@ NetworkHandler::run()
     if ( !isActive() ) {
         return;
     }
-    context_.tracer()->debug("Network driver enabled",2);
+    context_.tracer()->debug("Input driver enabled",2);
 
-
-    orcaice::EventPtr event;    
-    int timeoutMs = (int)floor(1000.0 * orcaice::getPropertyAsDoubleWithDefault(
-            context_.properties(), prefix+"RepeatInterval", 0.2 ) );
     //
     // Main loop
     //
     while ( isActive() )
     {
-        if ( !events_->timedGet( event, timeoutMs ) ) {
-            driver_->repeatCommand();
-            continue;
-        }
-
-        switch ( event->type() )
-        {
-        // approx in order of call frequency
-        case NewCommandIncrement : {
-            //cout<<"focus changed event"<<endl;
-            NewCommandIncrementEventPtr e = NewCommandIncrementEventPtr::dynamicCast( event );
-            if ( !e ) break;
-            driver_->processNewCommandIncrement( e->longitudinal_, e->transverse_, e->angle_ );
-            break;
-        }        
-        case NewRelativeCommand : {
-            //cout<<"focus changed event"<<endl;
-            NewRelativeCommandEventPtr e = NewRelativeCommandEventPtr::dynamicCast( event );
-            if ( !e ) break;
-            driver_->processNewRelativeCommand( e->longitudinal_, e->transverse_, e->angle_ );
-            break;
-        }        
-        default : {
-            cout<<"unknown network event "<<event->type()<<". Ignoring..."<<endl;
-            break;
-        }
-        } // switch
+        driver_->read();
     } // end of main loop
+
+    // reset the hardware
+    if ( driver_->disable() ) {
+        context_.tracer()->warning("Failed to disable input driver");
+    }
+    context_.tracer()->debug("Input driver disabled",2);
 
     //
     // unexpected exceptions
@@ -130,16 +113,6 @@ NetworkHandler::run()
     {
         stringstream ss;
         ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( const orcaice::Exception & e )
-    {
-        stringstream ss;
-        ss << "unexpected (local?) orcaice exception: " << e.what();
         context_.tracer()->error( ss.str() );
         if ( context_.isApplication() ) {
             context_.tracer()->info( "this is an stand-alone component. Quitting...");
@@ -160,7 +133,7 @@ NetworkHandler::run()
     {
         // once caught this beast in here, don't know who threw it 'St9bad_alloc'
         stringstream ss;
-        ss << "unexpected std exception: " << e.what();
+        ss << "unexpected std exception (possibly OrcaIce): " << e.what();
         context_.tracer()->error( ss.str() );
         if ( context_.isApplication() ) {
             context_.tracer()->info( "this is an stand-alone component. Quitting...");
@@ -178,5 +151,5 @@ NetworkHandler::run()
     
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
-    context_.tracer()->debug( "NetworkHandler: stopped.",5 );
+    context_.tracer()->debug( "InputHandler: stopped.",5 );
 }

@@ -8,33 +8,25 @@
  *
  */
 
-#ifndef ORCA2_TELEOP_INPUT_DRIVER_H
-#define ORCA2_TELEOP_INPUT_DRIVER_H
+#ifndef ORCA2_TELEOP_IOSTREAM_DISPLAY_DRIVER_H
+#define ORCA2_TELEOP_IOSTREAM_DISPLAY_DRIVER_H
+
+#include "termdisplaydriver.h"
 
 namespace teleop
 {
 
-/*
-
-@brief Abstract interface class for human teleoperation input.
-
-@author Alex Makarenko
-
-*/
-class InputDriver
+class IostreamDisplayDriver : public TermDisplayDriver
 {
-
 public:
-    virtual ~InputDriver() {};
-    
-    // Returns 0 on success. Does not throw.
-    virtual int enable()=0;
-    
-    // Returns 0 on success. Does not throw.
-    virtual int disable()=0;
 
-    // Blocking read. Returns 0 on success. Does not throw.
-    virtual int read()=0;
+    // Returns 0 on success. Does not throw.
+    virtual int enable();
+    
+    // Returns 0 on success. Does not throw.
+    virtual int disable();
+
+    virtual void show( const std::string& s );
 };
 
 } // namespace

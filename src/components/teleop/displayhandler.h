@@ -11,28 +11,41 @@
 #ifndef ORCA2_TELEOP_DISPLAY_HANDLER_H
 #define ORCA2_TELEOP_DISPLAY_HANDLER_H
 
-#include <orca/platform2d.h>
+#include <orcaice/thread.h>
+#include <orcaice/context.h>
+
+#include "inputdriver.h"
 
 namespace teleop
 {
 
-class DisplayHandler
+class DisplayHandler : public orcaice::Thread, public Display
 {
 public:
 
-    enum Event
-    {
-        SentNewCommand,
-        SentRepeatCommand,
-        FailedToSendCommand
-    };
+    DisplayHandler( const orcaice::Context& context );
+    virtual ~DisplayHandler();
 
-    virtual ~DisplayHandler() {};
+    virtual void run();
 
-    virtual void displayEvent( const Event e )=0;
+    DisplayHandler* displayHandler() { return displayHandler_; };
     
-    virtual void displayCommand( const orca::Velocity2dCommand& command,
-                                 const bool vx=false, const bool vy=false, const bool w=false )=0;
+private:
+
+    // network/driver interface
+    orcaice::Buffer<orca::Velocity2dCommand> *commandPipe_;
+
+    // generic interface to input hardware
+    InputDriver* driver_;
+
+    InputDriver::Config config_;
+
+    DisplayHandler* displayHandler_;
+    
+    void init();
+
+    // component current context
+    orcaice::Context context_;
 };
 
 } // namespace
