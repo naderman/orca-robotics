@@ -15,7 +15,7 @@
 #include <orcaice/bufferedconsumerI.h>
 
 #include <orca/localise2d.h>
-#include <orca/position2d.h>
+#include <orca/odometry2d.h>
 
 namespace faithlocaliser
 {
@@ -46,7 +46,7 @@ private:
     orcaice::Buffer<orca::Localise2dData> historyBuffer_;
 
     // REQUIRED INTERFACE
-    orcaice::Buffer<orca::Position2dData> posPipe_;
+    orcaice::Buffer<orca::Odometry2dData> posPipe_;
 
 };
 

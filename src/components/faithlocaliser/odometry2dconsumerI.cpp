@@ -11,17 +11,16 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 
-#include "position2dconsumerI.h"
+#include "odometry2dconsumerI.h"
 
 using namespace std;
 
-Position2dConsumerI::Position2dConsumerI( orcaice::Buffer<orca::Position2dData> & pipe )
+Odometry2dConsumerI::Odometry2dConsumerI( orcaice::Buffer<orca::Odometry2dData> & pipe )
     : pipe_(pipe)
 {
 }
 
-void Position2dConsumerI::setData(const orca::Position2dData& data, const Ice::Current&)
+void Odometry2dConsumerI::setData(const orca::Odometry2dData& data, const Ice::Current&)
 {
-//     cout<<"pub : "<<data<<endl;
     pipe_.push( data );
 }

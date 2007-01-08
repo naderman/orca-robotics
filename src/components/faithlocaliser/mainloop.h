@@ -25,13 +25,13 @@ class MainLoop : public orcaice::Thread
 
 public:
 
-    MainLoop( const orca::Localise2dConsumerPrx                localise2dConsumer,
-              orcaice::Buffer<orca::Position2dData>     &posBuffer,
- 	      orcaice::Buffer<orca::Localise2dData>     &locBuffer,
-	      orcaice::Buffer<orca::Localise2dData>     &historyBuffer,
-	      double                                           stdDevPosition,
-              double                                           stdDevHeading,
-	      const orcaice::Context & context
+    MainLoop( const orca::Localise2dConsumerPrx          localise2dConsumer,
+              orcaice::Buffer<orca::Odometry2dData>     &odoBuffer,
+ 	          orcaice::Buffer<orca::Localise2dData>     &locBuffer,
+              orcaice::Buffer<orca::Localise2dData>     &historyBuffer,
+              double                                     stdDevPosition,
+              double                                     stdDevHeading,
+	          const orcaice::Context                    & context
 	    );
     ~MainLoop();
 
@@ -43,7 +43,7 @@ private:
     const orca::Localise2dConsumerPrx  localise2dConsumer_;
 
     // incoming
-    orcaice::Buffer<orca::Position2dData> &posBuffer_;
+    orcaice::Buffer<orca::Odometry2dData> &odoBuffer_;
     
     // outgoing
     orcaice::Buffer<orca::Localise2dData> &locBuffer_;

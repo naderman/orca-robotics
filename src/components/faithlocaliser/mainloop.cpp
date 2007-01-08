@@ -17,16 +17,16 @@ using namespace std;
 using namespace orca;
 using namespace faithlocaliser;
 
-MainLoop::MainLoop( const Localise2dConsumerPrx                    localise2dConsumer,
-                    orcaice::Buffer<orca::Position2dData>   &posBuffer,
-                    orcaice::Buffer<orca::Localise2dData>         &locBuffer,
-                    orcaice::Buffer<orca::Localise2dData>         &historyBuffer,
-		    double                                         stdDevPosition,
-		    double                                         stdDevHeading,
-		    const orcaice::Context & context)
+MainLoop::MainLoop( const orca::Localise2dConsumerPrx    localise2dConsumer,
+              orcaice::Buffer<orca::Odometry2dData>     &odoBuffer,
+              orcaice::Buffer<orca::Localise2dData>     &locBuffer,
+              orcaice::Buffer<orca::Localise2dData>     &historyBuffer,
+              double                                     stdDevPosition,
+              double                                     stdDevHeading,
+              const orcaice::Context                    & context )
 
     : localise2dConsumer_(localise2dConsumer),
-      posBuffer_(posBuffer),
+      odoBuffer_(odoBuffer),
       locBuffer_(locBuffer),
       historyBuffer_(historyBuffer),
       context_(context),
@@ -44,18 +44,19 @@ void
 MainLoop::run()
 {
     Localise2dData localiseData;
-    Position2dData odomData;
+    Odometry2dData odomData;
 
     try 
     {
 	double varPosition = stdDevPosition_*stdDevPosition_;
-        double varHeading = (stdDevHeading_*M_PI/180.0)*(stdDevHeading_*M_PI/180.0);
+    double varHeading = (stdDevHeading_*M_PI/180.0)*(stdDevHeading_*M_PI/180.0);
+    
         while ( isActive() )
         {
             // cout<<"============================================="<<endl;
 
             // Get odometry info, time out every so often to check if we are cancelled
-            if ( posBuffer_.getAndPopNext( odomData, 200 ) != 0 ) {
+            if ( odoBuffer_.getAndPopNext( odomData, 200 ) != 0 ) {
                 // no new value
                 continue;
             }
@@ -78,9 +79,9 @@ MainLoop::run()
 
             // Stick the new data in the buffer
             locBuffer_.push( localiseData );
-	    historyBuffer_.push( localiseData );
+	        historyBuffer_.push( localiseData );
 
-	    Localise2dData Data0;
+	        Localise2dData Data0;
 
             /*cout << "contents of history\n";
             for(int i=0;i<historyBuffer_.size();i++){

@@ -27,7 +27,7 @@
 
 @par Requires
 
-- @ref orca_interface_position2d [FaithLocaliser.Requires.Odometry]
+- @ref orca_interface_odometry2d [FaithLocaliser.Requires.Odometry2d]
 
 @image html faithlocaliser.png
 

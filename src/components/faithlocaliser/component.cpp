@@ -13,7 +13,7 @@
 #include "mainloop.h"
 // implementations of Ice objects
 #include "localise2dI.h"
-#include "position2dconsumerI.h"
+#include "odometry2dconsumerI.h"
 
 using namespace std;
 using namespace orca;
@@ -68,15 +68,15 @@ Component::start()
     //
     // EXTERNAL REQUIRED INTERFACES
     //
-    Position2dPrx pos2dPrx;
-    orcaice::connectToInterfaceWithTag<orca::Position2dPrx>( context(),
-                                                             pos2dPrx,
-                                                             "Odometry" );
+    Odometry2dPrx odo2dPrx;
+    orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context(),
+                                                             odo2dPrx,
+                                                             "Odometry2d" );
 
     // create a callback object to recieve scans
-    Ice::ObjectPtr consumer = new Position2dConsumerI( posPipe_ );
-    orca::Position2dConsumerPrx consumerPrx =
-        orcaice::createConsumerInterface<orca::Position2dConsumerPrx>( context(), consumer );
+    Ice::ObjectPtr consumer = new Odometry2dConsumerI( posPipe_ );
+    orca::Odometry2dConsumerPrx consumerPrx =
+        orcaice::createConsumerInterface<orca::Odometry2dConsumerPrx>( context(), consumer );
 
     //
     // Subscribe for data
@@ -87,7 +87,7 @@ Component::start()
     {
         try
         {
-            pos2dPrx->subscribe( consumerPrx );
+            odo2dPrx->subscribe( consumerPrx );
             break;
         }
         catch ( const orca::SubscriptionFailedException & e )
@@ -103,7 +103,7 @@ Component::start()
 
     mainLoop_ = new MainLoop(localise2dPublisher_,
                              posPipe_,
-			     locBuffer_,
+			                 locBuffer_,
                              historyBuffer_,
                              StdDevPosition,
                              StdDevHeading,

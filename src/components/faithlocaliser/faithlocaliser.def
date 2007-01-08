@@ -6,8 +6,8 @@ Provides.Localise2d.DefaultName=localise2d
 
 # Required Interfaces
 
-Requires.Odometry.Type=Position2d
-Requires.Odometry.DefaultProxy=platform2d@local/robot2d
+Requires.Odometry2d.Type=Odometry2d
+Requires.Odometry2d.DefaultProxy=odometry2d@local/robot2d
 
 # configuration
 # Std deviation in position (Metres)
