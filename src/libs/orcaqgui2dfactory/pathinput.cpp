@@ -66,6 +66,7 @@ WpWidget::WpWidget( PathInput *pathInput,
       pathFileSet_(false),
       pathFileName_("/tmp")
 {
+    setWindowTitle("List of Waypoints");
     wpTable_ = new WpTable( this, pathInput, waypoints, headings, times, waitingTimes, distTolerances, headingTolerances, maxSpeeds, maxTurnrates );
     QPushButton *generatePath = new QPushButton(tr("Generate Full Path"), this);
     QPushButton *savePath = new QPushButton(tr("Save Path"), this);
@@ -75,12 +76,16 @@ WpWidget::WpWidget( PathInput *pathInput,
     QObject::connect(savePath,SIGNAL(clicked()),this,SLOT(savePath()));
     QObject::connect(loadPath,SIGNAL(clicked()),this,SLOT(loadPath()));
     
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(wpTable_);
-    layout->addWidget(generatePath);
-    layout->addWidget(savePath);
-    layout->addWidget(loadPath);
-    setLayout(layout);
+    QVBoxLayout *globalLayout = new QVBoxLayout;
+    globalLayout->addWidget(wpTable_);
+    
+    QHBoxLayout *hLayout = new QHBoxLayout;
+    hLayout->addWidget(generatePath);
+    hLayout->addWidget(savePath);
+    hLayout->addWidget(loadPath);
+    globalLayout->addLayout(hLayout);
+    
+    setLayout(globalLayout);
     this->show();
 }
 
@@ -685,7 +690,7 @@ orca::PathFollower2dData
 PathFollowerInput::getPath() const
 {
     int size = wpSettings_->numberOfLoops * waypoints_.size();
-//     cout << "DEBUG(pathinput.cpp): size is " << size << endl;
+    cout << "DEBUG(pathinput.cpp): getPath: size of waypoints is " << size << endl;
     
     orca::PathFollower2dData pathData;
     pathData.path.resize( size );
