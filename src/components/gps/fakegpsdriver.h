@@ -16,7 +16,7 @@
 #include "gpsdriver.h"
 
 //
-// Bogus laser driver, useful for testing the rest of the component.
+// Bogus gps driver, useful for testing the rest of the component.
 //
 class FakeGpsDriver : public GpsDriver
 {

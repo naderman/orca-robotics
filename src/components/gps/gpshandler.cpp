@@ -39,7 +39,7 @@ GpsHandler::run()
 
     try 
     {
-	GpsDescription descr_ = gpsObj_.localGetDescription();
+        GpsDescription descr_ = gpsObj_.localGetDescription();
         GpsData gpsData;
         GpsMapGridData gpsMapGridData;
         GpsTimeData gpsTimeData;
@@ -63,47 +63,51 @@ GpsHandler::run()
                     hwDriver_->disable();
 		}
 
-		if( hwDriver_->hasFix() ){
+		if( hwDriver_->hasFix() )
+        {
 		    // GPS data tends to come in bursts in 1 second intervals
 		    // hwDriver_->read() will return after emptying serial buffer
 		    // this should provide a nice 1s loop frequency
-                    // may need to be adjusted for fancier GPSes
+            // may need to be adjusted for fancier GPSes
 
-		    if(hwDriver_->getData(gpsData)==0){
-                        int zone;
-			zone=mgaMapgrid_.getGridCoords(gpsData.latitude, gpsData.longitude,
-						      gpsMapGridData.easting,gpsMapGridData.northing);
-			gpsMapGridData.zone=zone;
-                        //copy across all the other stuff
-                        gpsMapGridData.utcTime=gpsData.utcTime;
-			gpsMapGridData.altitude=gpsData.altitude;
-
-			gpsMapGridData.heading=gpsData.heading;
-			gpsMapGridData.speed=gpsData.speed;
-			gpsMapGridData.climbRate=gpsData.climbRate;
-			gpsMapGridData.positionType=gpsData.positionType;
-
-			gpsObj_.localSetData(gpsData);
-
-			//correct for local frame
-			CartesianPoint p;
-                        //copy out point
-			p.x=gpsMapGridData.easting;
-			p.y=gpsMapGridData.northing;
-			p.z=gpsMapGridData.altitude;
-                        //convert
-			p=convertToFrame3d(descr_.offset,p);
-                        // reset object
-			gpsMapGridData.easting=p.x;
-			gpsMapGridData.northing=p.y;
-			gpsMapGridData.altitude=p.z;
-
-                        gpsObj_.localSetMapGridData(gpsMapGridData);
+		    if(hwDriver_->getData(gpsData)==0)
+            {
+                int zone;
+                zone=mgaMapgrid_.getGridCoords( gpsData.latitude, gpsData.longitude,
+                                                gpsMapGridData.easting,gpsMapGridData.northing);
+                gpsMapGridData.zone=zone;
+                //copy across all the other stuff
+                gpsMapGridData.timeStamp=gpsData.timeStamp;
+                gpsMapGridData.utcTime=gpsData.utcTime;
+                gpsMapGridData.altitude=gpsData.altitude;
+    
+                gpsMapGridData.heading=gpsData.heading;
+                gpsMapGridData.speed=gpsData.speed;
+                gpsMapGridData.climbRate=gpsData.climbRate;
+                gpsMapGridData.positionType=gpsData.positionType;
+    
+                gpsObj_.localSetData(gpsData);
+    
+                //correct for local frame
+                CartesianPoint p;
+                //copy out point
+                p.x=gpsMapGridData.easting;
+                p.y=gpsMapGridData.northing;
+                p.z=gpsMapGridData.altitude;
+                //convert
+                p=convertToFrame3d(descr_.offset,p);
+                // reset object
+                gpsMapGridData.easting=p.x;
+                gpsMapGridData.northing=p.y;
+                gpsMapGridData.altitude=p.z;
+    
+                gpsObj_.localSetMapGridData(gpsMapGridData);
 
 		    }
 
-		    if(hwDriver_->getTimeData(gpsTimeData)==0){
-                      gpsObj_.localSetTimeData(gpsTimeData);
+		    if(hwDriver_->getTimeData(gpsTimeData)==0)
+            {
+                gpsObj_.localSetTimeData(gpsTimeData);
 		    }
 
 		}

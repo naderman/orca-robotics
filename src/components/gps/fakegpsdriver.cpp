@@ -39,8 +39,13 @@ FakeGpsDriver::read()
     GpsData_.satellites = 6;
     GpsData_.positionType = 1;
     GpsData_.geoidalSeparation = 10;
-
     newGpsData_ = true;
+    
+    newGpsTime_ = false;
+    orcaice::setToNow( GpsTimeData_.timeStamp );
+    orcaice::setSane( GpsTimeData_.utcTime );
+    orcaice::setSane( GpsTimeData_.utcDate );
+    newGpsTime_ = true;
     
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     return 0;
