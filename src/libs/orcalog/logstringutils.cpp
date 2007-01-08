@@ -164,6 +164,50 @@ toLogString( const orca::Position3dData& obj )
     return s.str();
 }
 
+std::string 
+toLogString( const orca::Odometry2dData& obj )
+{
+    std::stringstream s;
+    
+    // timestamp on the first line
+    s << toLogString(obj.timeStamp) << " \n";
+
+    // x,y position, orientation(deg), and respective velocities
+    s << obj.pose.p.x << " " 
+      << obj.pose.p.y << " "
+      << RAD2DEG(obj.pose.o) << " "
+      << obj.motion.v.x << " "
+      << obj.motion.v.y << " "
+      << RAD2DEG(obj.motion.w) << "\n";
+
+    return s.str();
+}
+
+std::string 
+toLogString( const orca::Odometry3dData& obj )
+{
+    std::stringstream s;
+    
+    // timestamp on the first line
+    s << toLogString(obj.timeStamp) << " \n";
+
+    // x,y,z position, roll,pitch,yaw(deg), and respective velocities on the second line
+    s << obj.pose.p.x << " " 
+      << obj.pose.p.y << " "
+      << obj.pose.p.z << " "
+      << RAD2DEG(obj.pose.o.r) << " "
+      << RAD2DEG(obj.pose.o.p) << " "
+      << RAD2DEG(obj.pose.o.y) << " \n"
+      << obj.motion.v.x << " "
+      << obj.motion.v.y << " "
+      << obj.motion.v.z << " "
+      << RAD2DEG(obj.motion.w.x) << " "
+      << RAD2DEG(obj.motion.w.y) << " "
+      << RAD2DEG(obj.motion.w.z) << " \n";
+
+    return s.str();
+}
+
 // std::string 
 // toLogString( const orca::PolarFeature2dData& obj )
 // {

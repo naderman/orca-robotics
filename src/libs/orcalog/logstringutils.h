@@ -21,6 +21,8 @@
 #include <orca/home.h>
 #include <orca/imu.h>
 #include <orca/laserscanner2d.h>
+#include <orca/odometry2d.h>
+#include <orca/odometry3d.h>
 #include <orca/position2d.h>
 #include <orca/position3d.h>
 #include <orca/localise2d.h>
@@ -51,6 +53,10 @@ std::string toLogString( const orca::PathPlanner2dData& );
 std::string toLogString( const orca::PathPlanner2dTask& );
 // //! Prints out polarfeature2d data to text which is easy to parse
 // std::string toLogString( const orca::PolarFeature2dData& );
+//! Prints out position2d data to text which is easy to parse
+std::string toLogString( const orca::Odometry2dData& );
+//! Prints out position3d data to text which is easy to parse
+std::string toLogString( const orca::Odometry3dData& );
 //! Prints out position2d data to text which is easy to parse
 std::string toLogString( const orca::Position2dData& );
 //! Prints out position3d data to text which is easy to parse

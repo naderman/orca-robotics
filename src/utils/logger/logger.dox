@@ -21,6 +21,7 @@
 
 - @ref orca_interface_home
 - @ref orca_interface_status
+- @ref orca_interface_tracer
 
 @par Requires
 
@@ -30,8 +31,10 @@
 - @ref orca_interface_laserscanner2d [Logger.Requires.LaserX]
 - @ref orca_interface_localise2d [Logger.Requires.Localise2dX]
 - @ref orca_interface_polarfeature2d [Logger.Requires.PolarFeature2dX]
-- @ref orca_interface_position2d [Logger.Requires.Position2dX]
-- @ref orca_interface_position3d [Logger.Requires.Position3dX]
+- @ref orca_interface_odometry2d [Logger.Requires.Odometry2dX]
+- @ref orca_interface_odometry3d [Logger.Requires.Odometry3dX]
+- @ref orca_interface_position2d [Logger.Requires.Position2dX] @b OBSOLETE
+- @ref orca_interface_position3d [Logger.Requires.Position3dX] @b OBSOLETE
 - @ref orca_interface_power [Logger.Requires.PowerX]
 
 @image html logger.png
