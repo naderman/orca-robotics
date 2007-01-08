@@ -68,7 +68,7 @@ PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateI
         throw orca::MalformedParametersException( insanityReason );
     }
 
-    // cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << data << endl;
+    cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << orcaice::toVerboseString(data) << endl;
     cout<<"TRACE(pathfollower2dI.cpp): activateImmediately: " << activateImmediately << endl;
     pathProxy_.set( data );
     newPathArrivedProxy_.set( true );

@@ -486,18 +486,24 @@ void PathInput::addWaypoint (QPointF wp)
     
     waypoints_.append( wp );
      
-    // by default, the heading is aligned with the line between the two last waypoints
     if (numWaypoints==0)
     {   // first waypoint is special
         headings_.append( 0 );
         headingTolerances_.append( 180*16 );
-        times_.append( wpSettings_->timePeriod );
+        times_.append( 0.0 );
     }
     else 
     {
-        // times
-        times_.append( wpSettings_->timePeriod + times_[numWaypoints-1] + waitingTimes_[numWaypoints-1] );
-        // heading    
+        // times: dependent on spacing mode
+        float timeDelta;
+        if( wpSettings_->spacingProperty=="Time" ) {
+            timeDelta = wpSettings_->spacingValue;
+        } else {
+            timeDelta = straightLineDist( waypoints_[numWaypoints]-waypoints_[numWaypoints-1] ) / (wpSettings_->spacingValue);
+        }
+        times_.append( timeDelta + times_[numWaypoints-1] + waitingTimes_[numWaypoints-1] );
+        
+        // heading: aligned with the line between the two last waypoints
         QPointF diff = waypoints_[numWaypoints] - waypoints_[numWaypoints - 1];
         int tmpHeading =(int)floor( atan2(diff.y(),diff.x() )/M_PI*180.0 );
         if (tmpHeading < 0) tmpHeading = tmpHeading + 360;
@@ -790,14 +796,17 @@ WaypointSettings
 readWaypointSettings( const Ice::PropertiesPtr & props, const std::string & tag )
 {
     std::string prefix = tag + ".Config.Waypoints.";
-    
-    float timePeriod = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"TimePeriod", 5.0 );
+
+    Ice::StringSeq strIn; strIn.push_back("Velocity"); Ice::StringSeq strOut;
+    strOut = orcaice::getPropertyAsStringSeqWithDefault( props, prefix+"SpacingProperty", strIn );
+    std::string spacingProperty = strOut[0];
+    float spacingValue = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"SpacingValue", 1.0 );
     float distanceTolerance = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"DistanceTolerance", 1.0 );
     int headingTolerance = orcaice::getPropertyAsIntWithDefault( props, prefix+"HeadingTolerance", 90 );
     float maxApproachSpeed = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"MaxApproachSpeed", 2e6 );
     int maxApproachTurnrate = orcaice::getPropertyAsIntWithDefault( props, prefix+"MaxApproachTurnRate", 6000000 );
     int numberOfLoops = orcaice::getPropertyAsIntWithDefault( props, prefix+"NumberOfLoops", 1 );
-    WaypointSettings wpSettings(timePeriod, distanceTolerance, headingTolerance, maxApproachSpeed, maxApproachTurnrate, numberOfLoops);
+    WaypointSettings wpSettings(spacingProperty, spacingValue, distanceTolerance, headingTolerance, maxApproachSpeed, maxApproachTurnrate, numberOfLoops);
     return wpSettings;
 }
 

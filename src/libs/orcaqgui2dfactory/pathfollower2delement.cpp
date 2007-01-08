@@ -421,7 +421,9 @@ void PathFollowerHI::waypointSettingsDialog()
     ui.setupUi(myDialog);
     
     ui.numLoopsSpin->setValue( wpSettings_.numberOfLoops);
-    ui.timePeriodSpin->setValue( wpSettings_.timePeriod );
+    int index = ui.spacingPropertyCombo->findText( QString(wpSettings_.spacingProperty.c_str()) );
+    ui.spacingPropertyCombo->setCurrentIndex( index );
+    ui.spacingValueSpin->setValue( wpSettings_.spacingValue );
     ui.distanceSpin->setValue( wpSettings_.distanceTolerance );
     ui.headingSpin->setValue( wpSettings_.headingTolerance );
     ui.maxSpeedSpin->setValue( wpSettings_.maxApproachSpeed );
@@ -431,7 +433,8 @@ void PathFollowerHI::waypointSettingsDialog()
     if (ret==QDialog::Rejected) return;
     
     wpSettings_.numberOfLoops = ui.numLoopsSpin->value();
-    wpSettings_.timePeriod = ui.timePeriodSpin->value();
+    wpSettings_.spacingProperty = ui.spacingPropertyCombo->currentText().toStdString();
+    wpSettings_.spacingValue = ui.spacingValueSpin->value();
     wpSettings_.distanceTolerance = ui.distanceSpin->value(); 
     wpSettings_.headingTolerance = ui.headingSpin->value();
     wpSettings_.maxApproachSpeed = ui.maxSpeedSpin->value();

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'waypointdialog.ui'
 **
-** Created: Sun Jan 7 13:47:49 2007
+** Created: Mon Jan 8 16:07:20 2007
 **      by: Qt User Interface Compiler version 4.2.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -17,46 +17,50 @@
 #include <QtGui/QDialog>
 #include <QtGui/QDoubleSpinBox>
 #include <QtGui/QGridLayout>
+#include <QtGui/QHBoxLayout>
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
 #include <QtGui/QSpacerItem>
 #include <QtGui/QSpinBox>
+#include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
 
 class Ui_WaypointDialog
 {
 public:
     QWidget *widget;
-    QGridLayout *gridLayout;
-    QLabel *waitingTimeLabel;
-    QLabel *maxSpeedLabel;
-    QSpinBox *headingSpin;
-    QPushButton *cancelButton;
-    QSpacerItem *spacerItem;
-    QDoubleSpinBox *waitingTimeSpin;
-    QSpacerItem *spacerItem1;
-    QSpinBox *maxTurnrateSpin;
-    QLabel *yLabel;
-    QLabel *xLabel;
-    QPushButton *okButton;
-    QDoubleSpinBox *xSpin;
-    QSpacerItem *spacerItem2;
-    QSpinBox *headingTolSpin;
-    QSpacerItem *spacerItem3;
-    QLabel *timeLabel;
+    QVBoxLayout *vboxLayout;
     QLabel *label;
-    QLabel *maxTurnrateLabel;
-    QDoubleSpinBox *timeSpin;
-    QLabel *distanceTolLabel;
-    QSpacerItem *spacerItem4;
+    QGridLayout *gridLayout;
     QLabel *headingLabel;
-    QSpacerItem *spacerItem5;
-    QLabel *headingTolLabel;
-    QSpacerItem *spacerItem6;
+    QDoubleSpinBox *xSpin;
+    QLabel *xLabel;
     QDoubleSpinBox *ySpin;
-    QSpacerItem *spacerItem7;
+    QSpinBox *headingSpin;
+    QLabel *yLabel;
+    QSpacerItem *spacerItem;
+    QGridLayout *gridLayout1;
+    QLabel *timeLabel;
+    QDoubleSpinBox *waitingTimeSpin;
+    QLabel *waitingTimeLabel;
+    QDoubleSpinBox *timeSpin;
+    QSpacerItem *spacerItem1;
+    QGridLayout *gridLayout2;
+    QSpinBox *headingTolSpin;
+    QLabel *headingTolLabel;
+    QLabel *distanceTolLabel;
     QDoubleSpinBox *distanceTolSpin;
+    QSpacerItem *spacerItem2;
+    QGridLayout *gridLayout3;
+    QLabel *maxTurnrateLabel;
     QDoubleSpinBox *maxSpeedSpin;
+    QSpinBox *maxTurnrateSpin;
+    QLabel *maxSpeedLabel;
+    QSpacerItem *spacerItem3;
+    QHBoxLayout *hboxLayout;
+    QSpacerItem *spacerItem4;
+    QPushButton *okButton;
+    QPushButton *cancelButton;
 
     void setupUi(QDialog *WaypointDialog)
     {
@@ -68,20 +72,47 @@ public:
     WaypointDialog->setSizePolicy(sizePolicy);
     widget = new QWidget(WaypointDialog);
     widget->setObjectName(QString::fromUtf8("widget"));
-    widget->setGeometry(QRect(1, 20, 299, 384));
-    gridLayout = new QGridLayout(widget);
+    widget->setGeometry(QRect(0, 21, 248, 362));
+    vboxLayout = new QVBoxLayout(widget);
+    vboxLayout->setSpacing(6);
+    vboxLayout->setMargin(0);
+    vboxLayout->setObjectName(QString::fromUtf8("vboxLayout"));
+    label = new QLabel(widget);
+    label->setObjectName(QString::fromUtf8("label"));
+
+    vboxLayout->addWidget(label);
+
+    gridLayout = new QGridLayout();
     gridLayout->setSpacing(6);
     gridLayout->setMargin(0);
     gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-    waitingTimeLabel = new QLabel(widget);
-    waitingTimeLabel->setObjectName(QString::fromUtf8("waitingTimeLabel"));
+    headingLabel = new QLabel(widget);
+    headingLabel->setObjectName(QString::fromUtf8("headingLabel"));
 
-    gridLayout->addWidget(waitingTimeLabel, 4, 5, 2, 1);
+    gridLayout->addWidget(headingLabel, 0, 2, 1, 1);
 
-    maxSpeedLabel = new QLabel(widget);
-    maxSpeedLabel->setObjectName(QString::fromUtf8("maxSpeedLabel"));
+    xSpin = new QDoubleSpinBox(widget);
+    xSpin->setObjectName(QString::fromUtf8("xSpin"));
+    xSpin->setMaximum(10000);
+    xSpin->setMinimum(-10000);
+    xSpin->setSingleStep(0.2);
+    xSpin->setValue(2);
 
-    gridLayout->addWidget(maxSpeedLabel, 11, 0, 1, 3);
+    gridLayout->addWidget(xSpin, 1, 0, 1, 1);
+
+    xLabel = new QLabel(widget);
+    xLabel->setObjectName(QString::fromUtf8("xLabel"));
+
+    gridLayout->addWidget(xLabel, 0, 0, 1, 1);
+
+    ySpin = new QDoubleSpinBox(widget);
+    ySpin->setObjectName(QString::fromUtf8("ySpin"));
+    ySpin->setMaximum(10000);
+    ySpin->setMinimum(-10000);
+    ySpin->setSingleStep(0.2);
+    ySpin->setValue(0);
+
+    gridLayout->addWidget(ySpin, 1, 1, 1, 1);
 
     headingSpin = new QSpinBox(widget);
     headingSpin->setObjectName(QString::fromUtf8("headingSpin"));
@@ -89,16 +120,28 @@ public:
     headingSpin->setSingleStep(1);
     headingSpin->setValue(90);
 
-    gridLayout->addWidget(headingSpin, 2, 3, 1, 3);
+    gridLayout->addWidget(headingSpin, 1, 2, 1, 1);
 
-    cancelButton = new QPushButton(widget);
-    cancelButton->setObjectName(QString::fromUtf8("cancelButton"));
+    yLabel = new QLabel(widget);
+    yLabel->setObjectName(QString::fromUtf8("yLabel"));
 
-    gridLayout->addWidget(cancelButton, 14, 5, 1, 1);
+    gridLayout->addWidget(yLabel, 0, 1, 1, 1);
 
-    spacerItem = new QSpacerItem(101, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-    gridLayout->addItem(spacerItem, 9, 1, 1, 4);
+    vboxLayout->addLayout(gridLayout);
+
+    spacerItem = new QSpacerItem(221, 21, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+    vboxLayout->addItem(spacerItem);
+
+    gridLayout1 = new QGridLayout();
+    gridLayout1->setSpacing(6);
+    gridLayout1->setMargin(0);
+    gridLayout1->setObjectName(QString::fromUtf8("gridLayout1"));
+    timeLabel = new QLabel(widget);
+    timeLabel->setObjectName(QString::fromUtf8("timeLabel"));
+
+    gridLayout1->addWidget(timeLabel, 0, 0, 1, 1);
 
     waitingTimeSpin = new QDoubleSpinBox(widget);
     waitingTimeSpin->setObjectName(QString::fromUtf8("waitingTimeSpin"));
@@ -108,74 +151,12 @@ public:
     waitingTimeSpin->setSingleStep(0.5);
     waitingTimeSpin->setValue(5);
 
-    gridLayout->addWidget(waitingTimeSpin, 6, 4, 1, 2);
+    gridLayout1->addWidget(waitingTimeSpin, 1, 1, 1, 1);
 
-    spacerItem1 = new QSpacerItem(231, 21, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    waitingTimeLabel = new QLabel(widget);
+    waitingTimeLabel->setObjectName(QString::fromUtf8("waitingTimeLabel"));
 
-    gridLayout->addItem(spacerItem1, 10, 0, 1, 6);
-
-    maxTurnrateSpin = new QSpinBox(widget);
-    maxTurnrateSpin->setObjectName(QString::fromUtf8("maxTurnrateSpin"));
-    maxTurnrateSpin->setMaximum(2000000);
-    maxTurnrateSpin->setSingleStep(1);
-    maxTurnrateSpin->setValue(5);
-
-    gridLayout->addWidget(maxTurnrateSpin, 12, 5, 1, 1);
-
-    yLabel = new QLabel(widget);
-    yLabel->setObjectName(QString::fromUtf8("yLabel"));
-
-    gridLayout->addWidget(yLabel, 1, 1, 1, 2);
-
-    xLabel = new QLabel(widget);
-    xLabel->setObjectName(QString::fromUtf8("xLabel"));
-
-    gridLayout->addWidget(xLabel, 1, 0, 1, 1);
-
-    okButton = new QPushButton(widget);
-    okButton->setObjectName(QString::fromUtf8("okButton"));
-
-    gridLayout->addWidget(okButton, 14, 2, 1, 3);
-
-    xSpin = new QDoubleSpinBox(widget);
-    xSpin->setObjectName(QString::fromUtf8("xSpin"));
-    xSpin->setMaximum(10000);
-    xSpin->setMinimum(-10000);
-    xSpin->setSingleStep(0.2);
-    xSpin->setValue(2);
-
-    gridLayout->addWidget(xSpin, 2, 0, 1, 1);
-
-    spacerItem2 = new QSpacerItem(81, 31, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-    gridLayout->addItem(spacerItem2, 14, 0, 1, 2);
-
-    headingTolSpin = new QSpinBox(widget);
-    headingTolSpin->setObjectName(QString::fromUtf8("headingTolSpin"));
-    headingTolSpin->setMaximum(180);
-    headingTolSpin->setSingleStep(5);
-    headingTolSpin->setValue(90);
-
-    gridLayout->addWidget(headingTolSpin, 9, 5, 1, 1);
-
-    spacerItem3 = new QSpacerItem(91, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-    gridLayout->addItem(spacerItem3, 12, 1, 1, 3);
-
-    timeLabel = new QLabel(widget);
-    timeLabel->setObjectName(QString::fromUtf8("timeLabel"));
-
-    gridLayout->addWidget(timeLabel, 4, 0, 2, 3);
-
-    label = new QLabel(widget);
-    label->setObjectName(QString::fromUtf8("label"));
-
-    gridLayout->addWidget(label, 0, 0, 1, 6);
-
-    maxTurnrateLabel = new QLabel(widget);
-    maxTurnrateLabel->setObjectName(QString::fromUtf8("maxTurnrateLabel"));
-
-    gridLayout->addWidget(maxTurnrateLabel, 11, 3, 1, 3);
+    gridLayout1->addWidget(waitingTimeLabel, 0, 1, 1, 1);
 
     timeSpin = new QDoubleSpinBox(widget);
     timeSpin->setObjectName(QString::fromUtf8("timeSpin"));
@@ -185,47 +166,36 @@ public:
     timeSpin->setSingleStep(0.5);
     timeSpin->setValue(5);
 
-    gridLayout->addWidget(timeSpin, 6, 0, 1, 1);
+    gridLayout1->addWidget(timeSpin, 1, 0, 1, 1);
 
-    distanceTolLabel = new QLabel(widget);
-    distanceTolLabel->setObjectName(QString::fromUtf8("distanceTolLabel"));
 
-    gridLayout->addWidget(distanceTolLabel, 8, 0, 1, 3);
+    vboxLayout->addLayout(gridLayout1);
 
-    spacerItem4 = new QSpacerItem(231, 21, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    spacerItem1 = new QSpacerItem(171, 21, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-    gridLayout->addItem(spacerItem4, 13, 0, 1, 6);
+    vboxLayout->addItem(spacerItem1);
 
-    headingLabel = new QLabel(widget);
-    headingLabel->setObjectName(QString::fromUtf8("headingLabel"));
+    gridLayout2 = new QGridLayout();
+    gridLayout2->setSpacing(6);
+    gridLayout2->setMargin(0);
+    gridLayout2->setObjectName(QString::fromUtf8("gridLayout2"));
+    headingTolSpin = new QSpinBox(widget);
+    headingTolSpin->setObjectName(QString::fromUtf8("headingTolSpin"));
+    headingTolSpin->setMaximum(180);
+    headingTolSpin->setSingleStep(5);
+    headingTolSpin->setValue(90);
 
-    gridLayout->addWidget(headingLabel, 1, 3, 1, 3);
-
-    spacerItem5 = new QSpacerItem(241, 21, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-    gridLayout->addItem(spacerItem5, 7, 0, 1, 6);
+    gridLayout2->addWidget(headingTolSpin, 1, 1, 1, 1);
 
     headingTolLabel = new QLabel(widget);
     headingTolLabel->setObjectName(QString::fromUtf8("headingTolLabel"));
 
-    gridLayout->addWidget(headingTolLabel, 8, 3, 1, 3);
+    gridLayout2->addWidget(headingTolLabel, 0, 1, 1, 1);
 
-    spacerItem6 = new QSpacerItem(241, 21, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    distanceTolLabel = new QLabel(widget);
+    distanceTolLabel->setObjectName(QString::fromUtf8("distanceTolLabel"));
 
-    gridLayout->addItem(spacerItem6, 3, 0, 1, 6);
-
-    ySpin = new QDoubleSpinBox(widget);
-    ySpin->setObjectName(QString::fromUtf8("ySpin"));
-    ySpin->setMaximum(10000);
-    ySpin->setMinimum(-10000);
-    ySpin->setSingleStep(0.2);
-    ySpin->setValue(0);
-
-    gridLayout->addWidget(ySpin, 2, 1, 1, 2);
-
-    spacerItem7 = new QSpacerItem(91, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-    gridLayout->addItem(spacerItem7, 5, 1, 2, 3);
+    gridLayout2->addWidget(distanceTolLabel, 0, 0, 1, 1);
 
     distanceTolSpin = new QDoubleSpinBox(widget);
     distanceTolSpin->setObjectName(QString::fromUtf8("distanceTolSpin"));
@@ -233,7 +203,23 @@ public:
     distanceTolSpin->setSingleStep(0.2);
     distanceTolSpin->setValue(2);
 
-    gridLayout->addWidget(distanceTolSpin, 9, 0, 1, 1);
+    gridLayout2->addWidget(distanceTolSpin, 1, 0, 1, 1);
+
+
+    vboxLayout->addLayout(gridLayout2);
+
+    spacerItem2 = new QSpacerItem(211, 21, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+    vboxLayout->addItem(spacerItem2);
+
+    gridLayout3 = new QGridLayout();
+    gridLayout3->setSpacing(6);
+    gridLayout3->setMargin(0);
+    gridLayout3->setObjectName(QString::fromUtf8("gridLayout3"));
+    maxTurnrateLabel = new QLabel(widget);
+    maxTurnrateLabel->setObjectName(QString::fromUtf8("maxTurnrateLabel"));
+
+    gridLayout3->addWidget(maxTurnrateLabel, 0, 1, 1, 1);
 
     maxSpeedSpin = new QDoubleSpinBox(widget);
     maxSpeedSpin->setObjectName(QString::fromUtf8("maxSpeedSpin"));
@@ -241,12 +227,53 @@ public:
     maxSpeedSpin->setSingleStep(0.2);
     maxSpeedSpin->setValue(0);
 
-    gridLayout->addWidget(maxSpeedSpin, 12, 0, 1, 1);
+    gridLayout3->addWidget(maxSpeedSpin, 1, 0, 1, 1);
+
+    maxTurnrateSpin = new QSpinBox(widget);
+    maxTurnrateSpin->setObjectName(QString::fromUtf8("maxTurnrateSpin"));
+    maxTurnrateSpin->setMaximum(2000000);
+    maxTurnrateSpin->setSingleStep(1);
+    maxTurnrateSpin->setValue(5);
+
+    gridLayout3->addWidget(maxTurnrateSpin, 1, 1, 1, 1);
+
+    maxSpeedLabel = new QLabel(widget);
+    maxSpeedLabel->setObjectName(QString::fromUtf8("maxSpeedLabel"));
+
+    gridLayout3->addWidget(maxSpeedLabel, 0, 0, 1, 1);
+
+
+    vboxLayout->addLayout(gridLayout3);
+
+    spacerItem3 = new QSpacerItem(171, 21, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+    vboxLayout->addItem(spacerItem3);
+
+    hboxLayout = new QHBoxLayout();
+    hboxLayout->setSpacing(6);
+    hboxLayout->setMargin(0);
+    hboxLayout->setObjectName(QString::fromUtf8("hboxLayout"));
+    spacerItem4 = new QSpacerItem(41, 31, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+    hboxLayout->addItem(spacerItem4);
+
+    okButton = new QPushButton(widget);
+    okButton->setObjectName(QString::fromUtf8("okButton"));
+
+    hboxLayout->addWidget(okButton);
+
+    cancelButton = new QPushButton(widget);
+    cancelButton->setObjectName(QString::fromUtf8("cancelButton"));
+
+    hboxLayout->addWidget(cancelButton);
+
+
+    vboxLayout->addLayout(hboxLayout);
 
 
     retranslateUi(WaypointDialog);
 
-    QSize size(348, 471);
+    QSize size(260, 405);
     size = size.expandedTo(WaypointDialog->minimumSizeHint());
     WaypointDialog->resize(size);
 
@@ -259,18 +286,18 @@ public:
     void retranslateUi(QDialog *WaypointDialog)
     {
     WaypointDialog->setWindowTitle(QApplication::translate("WaypointDialog", "Waypoint Paramters", 0, QApplication::UnicodeUTF8));
-    waitingTimeLabel->setText(QApplication::translate("WaypointDialog", "waiting time [s]:", 0, QApplication::UnicodeUTF8));
-    maxSpeedLabel->setText(QApplication::translate("WaypointDialog", "Maximum speed [m/s]:", 0, QApplication::UnicodeUTF8));
-    cancelButton->setText(QApplication::translate("WaypointDialog", "Cancel", 0, QApplication::UnicodeUTF8));
-    yLabel->setText(QApplication::translate("WaypointDialog", "y [m]:", 0, QApplication::UnicodeUTF8));
-    xLabel->setText(QApplication::translate("WaypointDialog", "x [m]:", 0, QApplication::UnicodeUTF8));
-    okButton->setText(QApplication::translate("WaypointDialog", "OK", 0, QApplication::UnicodeUTF8));
-    timeLabel->setText(QApplication::translate("WaypointDialog", "time to reach [s]:", 0, QApplication::UnicodeUTF8));
     label->setText(QApplication::translate("WaypointDialog", "<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">Waypoint Parameters</span></p></body></html>", 0, QApplication::UnicodeUTF8));
-    maxTurnrateLabel->setText(QApplication::translate("WaypointDialog", "Maximum turnrate [deg/s]:", 0, QApplication::UnicodeUTF8));
-    distanceTolLabel->setText(QApplication::translate("WaypointDialog", "Distance tolerance [m]:", 0, QApplication::UnicodeUTF8));
     headingLabel->setText(QApplication::translate("WaypointDialog", "heading [deg]:", 0, QApplication::UnicodeUTF8));
+    xLabel->setText(QApplication::translate("WaypointDialog", "x [m]:", 0, QApplication::UnicodeUTF8));
+    yLabel->setText(QApplication::translate("WaypointDialog", "y [m]:", 0, QApplication::UnicodeUTF8));
+    timeLabel->setText(QApplication::translate("WaypointDialog", "time to reach [s]:", 0, QApplication::UnicodeUTF8));
+    waitingTimeLabel->setText(QApplication::translate("WaypointDialog", "waiting time [s]:", 0, QApplication::UnicodeUTF8));
     headingTolLabel->setText(QApplication::translate("WaypointDialog", "Heading tol. (+/-)  [deg]:", 0, QApplication::UnicodeUTF8));
+    distanceTolLabel->setText(QApplication::translate("WaypointDialog", "Distance tolerance [m]:", 0, QApplication::UnicodeUTF8));
+    maxTurnrateLabel->setText(QApplication::translate("WaypointDialog", "Maximum turnrate [deg/s]:", 0, QApplication::UnicodeUTF8));
+    maxSpeedLabel->setText(QApplication::translate("WaypointDialog", "Maximum speed [m/s]:", 0, QApplication::UnicodeUTF8));
+    okButton->setText(QApplication::translate("WaypointDialog", "OK", 0, QApplication::UnicodeUTF8));
+    cancelButton->setText(QApplication::translate("WaypointDialog", "Cancel", 0, QApplication::UnicodeUTF8));
     Q_UNUSED(WaypointDialog);
     } // retranslateUi
 

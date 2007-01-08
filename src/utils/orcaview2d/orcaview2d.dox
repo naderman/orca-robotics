@@ -144,6 +144,16 @@ These are the default waypoint settings that can be changed in the menu later. C
     - for pathfollower2d: specified path can be repeated NumberOfLoops times
     - Default: 1
     
+- @c OrcaView.Config.Waypoints.SpacingProperty (string)
+    - property that determines the time deltas of subsequent waypoints
+    - Valid values: {'Time','Velocity'}, corresponding values are specified using @c SpacingValue (see below)
+    - Time: time deltas are specified directly in sec; Velocity: time deltas are calculated based on a straight-line distance given the velocity
+    - Default: Velocity
+    
+- @c OrcaView.Config.Waypoints.SpacingValue (double) [s] or [m/s]
+    - value is interpreted according to the setting of @c SpacingProperty (see above)
+    - Default: 1.0
+    
 - @c OrcaView.Config.Waypoints.TimePeriod (double)
     - time interval between waypoints (in sec) i.e. if the first waypoint is set so that you need to reach it "now", the second waypoint will be set to reach at "now + 5", third waypoint at "now + 10", etc.
     - Default: 5.0

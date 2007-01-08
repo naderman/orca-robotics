@@ -30,10 +30,11 @@ class WpTable;
 class WaypointSettings
 {
     public:
-        WaypointSettings(float a, float b, int c, float d, int e, int f):
-            timePeriod(a), distanceTolerance(b), headingTolerance(c), maxApproachSpeed(d), maxApproachTurnrate(e), numberOfLoops(f)
+        WaypointSettings(std::string a, float b, float c, int d, float e, int f, int g):
+            spacingProperty(a), spacingValue(b), distanceTolerance(c), headingTolerance(d), maxApproachSpeed(e), maxApproachTurnrate(f), numberOfLoops(g)
             {}
-            float timePeriod;
+            std::string spacingProperty;
+            float spacingValue;
             float distanceTolerance;
             int headingTolerance;
             float maxApproachSpeed;
