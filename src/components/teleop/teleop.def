@@ -1,26 +1,23 @@
 DefaultComponentTag=Teleop
 
 # interfaces
-Requires.Platform2d.Type=Platform2d
-Requires.Platform2d.DefaultProxy=platform2d@local/robot2d
-Requires.VelocityControl2d.Type=VelocityControl2d
-Requires.VelocityControl2d.DefaultProxy=velocitycontrol2d@local/robot2d
-Requires.DriveBicycle.Type=DriveBicycle
-Requires.DriveBicycle.DefaultProxy=drivebicycle@local/car
+Requires.Generic.Type=VelocityControl2d
+Requires.Generic.DefaultProxy=platform2d@local/robot2d
+Requires.Generic.DefaultProxy=drivebicycle@local/car
+Requires.Generic.DefaultProxy=velocitycontrol2d@local/robot2d
 
 # configuration
 Config.RepeatInterval.Default=0.2
 
-Config.InputDriver.Comment=valid drivers are { keyboard, joystick, fake }
-Config.InputDriver.Default=keyboard
-Config.Joystick.Device.Default=auto
-
 Config.DisplayDriver.Comment=valid drivers are { term-iostream, term-ncurses }
 Config.DisplayDriver.Default=term-iostream
 
-Config.NetworkDriver.Comment=valid drivers are { vel-control, drive-bicycle }
-Config.NetworkDriver.Default=vel-control
-Config.VelControl.MaxSpeed.Default=1.0
-Config.VelControl.MaxTurnrate.Default=40.0
+Config.InputDriver.Comment=valid drivers are { keyboard, joystick }
+Config.InputDriver.Default=keyboard
+Config.Joystick.Device.Default=auto
+
+Config.VelocityControl2d.MaxSpeed.Default=1.0
+Config.VelocityControl2d.MaxSideSpeed.Default=1.0
+Config.VelocityControl2d.MaxTurnrate.Default=40.0
 Config.DriveBicycle.MaxSpeed.Default=1.0
 Config.DriveBicycle.MaxSteerAngle.Default=45.0

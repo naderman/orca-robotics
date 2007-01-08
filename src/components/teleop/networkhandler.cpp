@@ -15,6 +15,8 @@
 #include "display.h"
 #include "events.h"
 #include "velocitycontroldriver.h"
+#include "drivebicycledriver.h"
+#include "platform2ddriver.h"
 
 using namespace std;
 using namespace teleop;
@@ -58,17 +60,39 @@ NetworkHandler::run()
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
-    // based on the config parameter, create the right driver
-    string driverName = orcaice::getPropertyWithDefault( prop, prefix+"NetworkDriver", "vel-control" );
-    if ( driverName == "vel-control" )
+    std::string ifaceId;
+    while ( isActive() )
     {
-        context_.tracer()->info("loading 'keyboard' driver");
+        try {
+            ifaceId = getInterfaceIdWithTag( context_, "Generic" );
+            break;
+        }
+        catch ( const orcaice::NetworkException& e ) {
+            context_.tracer()->warning("Will try again in 2 seconds.");
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        }
+    }
+
+    // based on the ID of the interface, create the right network driver
+    if ( ifaceId == "::orca::VelocityControl2d" )
+    {
+        context_.tracer()->info("loading 'VelocityControl2d' driver");
         driver_ = new VelocityControl2dDriver( display_, context_ );
     }
+    else if ( ifaceId == "::orca::DriveBicycle" )
+    {
+        context_.tracer()->info("loading 'DriveBicycle' driver");
+        driver_ = new DriveBicycleDriver( display_, context_ );
+    }
+    else if ( ifaceId == "::orca::Platform2d" )
+    {
+        context_.tracer()->info("loading 'Platform2d' driver");
+        driver_ = new Platform2dDriver( display_, context_ );
+    }
     else {
-        string errorStr = "Unknown driver type. Cannot talk to hardware.";
-        context_.tracer()->error( errorStr);
-        context_.tracer()->info( "Valid driver values are {'keyboard', 'joystick'}" );
+        string errorStr = "Unsupported interface ID="+ifaceId;
+        context_.tracer()->error( errorStr); 
+        context_.tracer()->info( "Valid driver values are {'VelocityControl2d', 'DriveBicycle', 'Platform2d'}" );
         throw orcaice::Exception( ERROR_INFO, errorStr );
     }    
 

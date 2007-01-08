@@ -9,7 +9,7 @@
  */
 
 #include <orcaice/orcaice.h>
-#include "velocitycontroldriver.h"
+#include "platform2ddriver.h"
 #include "display.h"
 #include "network.h"
 
@@ -18,7 +18,7 @@
 using namespace std;
 using namespace teleop;
 
-VelocityControl2dDriver::VelocityControl2dDriver( Display* display, const orcaice::Context& context ) :
+Platform2dDriver::Platform2dDriver( Display* display, const orcaice::Context& context ) :
     display_(display),
     context_(context)
 {
@@ -34,16 +34,16 @@ VelocityControl2dDriver::VelocityControl2dDriver( Display* display, const orcaic
     maxTurnrate_ = DEG2RAD(40.0);  // [rad/sec]
 }
 
-VelocityControl2dDriver::~VelocityControl2dDriver() 
+Platform2dDriver::~Platform2dDriver() 
 {
 }
     
 int 
-VelocityControl2dDriver::enable()
+Platform2dDriver::enable()
 {
     try
     {
-        orcaice::connectToInterfaceWithTag<orca::VelocityControl2dPrx>( context_, prx_, "Generic" );
+        orcaice::connectToInterfaceWithTag<orca::Platform2dPrx>( context_, prx_, "Generic" );
     }
     // includes common ex's: ConnectionRefusedException, ConnectTimeoutException
     catch ( const Ice::LocalException & e )
@@ -55,13 +55,13 @@ VelocityControl2dDriver::enable()
 }
     
 int 
-VelocityControl2dDriver::disable()
+Platform2dDriver::disable()
 {
     return 0;
 }
 
 void 
-VelocityControl2dDriver::repeatCommand()
+Platform2dDriver::repeatCommand()
 {
     try 
     {
@@ -79,7 +79,7 @@ VelocityControl2dDriver::repeatCommand()
 }
 
 void 
-VelocityControl2dDriver::processNewCommandIncrement(int longitudinal, int transverse, int angle )
+Platform2dDriver::processNewCommandIncrement(int longitudinal, int transverse, int angle )
 {
     if ( longitudinal ) {
         command_.motion.v.x += longitudinal*deltaSpeed_;
@@ -110,7 +110,7 @@ VelocityControl2dDriver::processNewCommandIncrement(int longitudinal, int transv
 }
 
 void 
-VelocityControl2dDriver::processNewRelativeCommand( double longitudinal, double transverse, double angle )
+Platform2dDriver::processNewRelativeCommand( double longitudinal, double transverse, double angle )
 {
     if ( longitudinal != TELEOP_COMMAND_UNCHANGED ) {
         command_.motion.v.x = longitudinal*maxSpeed_;
