@@ -52,16 +52,21 @@ public:
 
 private: 
 
-    // Returns true if we reached the last wp
-    bool setCurrentGoalAndParams( const orca::Localise2dData  &localiseData,
-                                  Goal                        &goal,
-                                  LocalNavParameters          &navParams );
+    
+    // Returns true iff a waypoint is active
+    bool getCurrentGoal( const orcanavutil::Pose &pose,
+                         Goal &currentGoal );
 
-    // Work out how fast to go, given the time constraints
-    void setNavParams( const Goal             &goal,
-                       const orca::Waypoint2d &wp,
-                       const PathMaintainer   &pathMaintainer,
-                       LocalNavParameters     &navParams );
+//     // Returns true if we reached the last wp
+//     bool setCurrentGoalAndParams( const orca::Localise2dData  &localiseData,
+//                                   Goal                        &goal,
+//                                   LocalNavParameters          &navParams );
+
+//     // Work out how fast to go, given the time constraints
+//     void setNavParams( const Goal             &goal,
+//                        const orca::Waypoint2d &wp,
+//                        const PathMaintainer   &pathMaintainer,
+//                        LocalNavParameters     &navParams );
 
     // The driver itself
     IDriver   &driver_;

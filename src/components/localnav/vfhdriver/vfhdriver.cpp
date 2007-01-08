@@ -54,41 +54,33 @@ VfhDriver::~VfhDriver()
 }
 
 void 
-VfhDriver::setLocalNavParameters( const LocalNavParameters &params )
+VfhDriver::setSpeedConstraints( float maxSpeed, float maxTurnrate )
 {
-    stringstream ssParams;
-    ssParams << "VFH: Setting params: " << params;
-    context_.tracer()->debug( ssParams.str(), 5 );
-
-    localNavParameters_ = params;
+    maxSpeed_ = maxSpeed;
+    maxTurnrate_ = maxTurnrate;
 
     // Check that this doesn't exceed any of our hard-coded maximums
-    if ( params.maxSpeed > vfhConfig_.maxSpeed )
+    if ( maxSpeed_ > vfhConfig_.maxSpeed )
     {
-        localNavParameters_.maxSpeed = vfhConfig_.maxSpeed;
-
         stringstream ss;
         ss << "VFH: requested maxSpeed ("
-           <<params.maxSpeed<<") faster than its configured maximum ("<<vfhConfig_.maxSpeed
+           <<maxSpeed_<<") faster than its configured maximum ("<<vfhConfig_.maxSpeed
            <<").  Thresholding.";
         context_.tracer()->debug( ss.str(), 1 );
+        maxSpeed_ = vfhConfig_.maxSpeed;
     }
-    if ( params.maxTurnrate > vfhConfig_.maxTurnrate1ms )
+    if ( maxTurnrate_ > vfhConfig_.maxTurnrate1ms )
     {
-        localNavParameters_.maxTurnrate = vfhConfig_.absoluteMaxTurnrate;
-
         stringstream ss;
-        ss << "VFH: requested maxTurnrate ("<<params.maxTurnrate*180.0/M_PI
+        ss << "VFH: requested maxTurnrate ("<<maxTurnrate*180.0/M_PI
            <<"deg) faster than its configured maximum ("<<vfhConfig_.absoluteMaxTurnrate*180.0/M_PI
            <<"deg).  Thresholding.";
         context_.tracer()->debug( ss.str(), 1 );
+        maxTurnrate_ = vfhConfig_.absoluteMaxTurnrate;
     }
 
-    assert( localNavParameters_.maxSpeed >= 0.0 );
-    assert( localNavParameters_.maxTurnrate >= 0.0 );
-
-    vfhAlgorithm_->SetCurrentMaxSpeed( (int) (localNavParameters_.maxSpeed*1000.0) );
-    vfhAlgorithm_->SetTurnrateThreshold( (int) (localNavParameters_.maxTurnrate*180.0/M_PI) );
+    vfhAlgorithm_->SetCurrentMaxSpeed( (int) (maxSpeed_*1000.0) );
+    vfhAlgorithm_->SetTurnrateThreshold( (int) (maxTurnrate_*180.0/M_PI) );
 }
 
 // Goal location is in robot's coordinate frame
@@ -97,15 +89,14 @@ VfhDriver::getCommand( bool  stalled,
                        const orca::Twist2d &currentVelocity,
                        const orca::RangeScanner2dDataPtr obs,
                        const Goal                        &goal,
-                       const LocalNavParameters          &navParams,
                        orca::Velocity2dCommand& cmd )
 {
-    setLocalNavParameters( navParams );
+    setSpeedConstraints( goal.maxSpeed, goal.maxTurnrate );
 
     //
     // Four distinct cases
     //
-    if ( goalReached( goal ) )
+    if ( goalPosReached( goal ) )
     {
         // Stop us
         setToZero( cmd );
@@ -117,7 +108,7 @@ VfhDriver::getCommand( bool  stalled,
         setToEscape( cmd, obs );
         currentState_ = IDriver::STATE_ESCAPING;
     }
-    else if ( translationalGoalReached( goal ) )
+    else if ( translationalGoalPosReached( goal ) )
     {
         // Turn in place
         setTurnToGoal( cmd, goal );
@@ -183,12 +174,12 @@ VfhDriver::setToEscape( orca::Velocity2dCommand& cmd, const orca::RangeScanner2d
          escapeTimer_.elapsedMs() > escapeTimeMs_ )
     {
         // Choose a new random escape command
-        float escapeSpeed       = ((2.0*(float)rand()/(float)RAND_MAX)-1.0) * localNavParameters_.maxSpeed;
+        float escapeSpeed       = ((2.0*(float)rand()/(float)RAND_MAX)-1.0) * maxSpeed_;
         float maxEscapeTurnrate = vfhAlgorithm_->GetMaxTurnrate((int)(cmd.motion.v.x*1000.0)) * M_PI/180.0;
         float escapeTurnrate    = ((2.0*(float)rand()/(float)RAND_MAX)-1.0) * maxEscapeTurnrate;
 
         cout<<"TRACE(vfhdriver.cpp): escapeSpeed: " << escapeSpeed << endl;
-        cout<<"TRACE(vfhdriver.cpp): max is: " << localNavParameters_.maxSpeed << endl;
+        cout<<"TRACE(vfhdriver.cpp): max is: " << maxSpeed_ << endl;
         cmd.motion.v.x = escapeSpeed;
         cmd.motion.v.y = 0.0;
         cmd.motion.w   = escapeTurnrate;
@@ -216,7 +207,7 @@ VfhDriver::setTurnToGoal( orca::Velocity2dCommand& cmd, const Goal &goal )
     if ( currentState_ != IDriver::STATE_TURNING_AT_GOAL )
     {
         // Just got here: turn hard.
-        cmd.motion.w = posNeg * localNavParameters_.maxTurnrate;
+        cmd.motion.w = posNeg * maxTurnrate_;
     }
     else
     {

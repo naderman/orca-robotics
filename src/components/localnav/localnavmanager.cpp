@@ -14,6 +14,7 @@
 #include "idriver.h"
 #include "goal.h"
 #include "pathmaintainer.h"
+#include <orcanavutil/pose.h>
 
 using namespace std;
 using namespace orcaice;
@@ -24,12 +25,175 @@ namespace localnav {
 //                    Non-Member  Functions
 //////////////////////////////////////////////////////////////////////
 
-float requiredTimeToWpAtMaxSpeed( const Goal             &goal,
-                                  const orca::Waypoint2d &wp, 
-                                  LocalNavParameters     &navParams )
+// float requiredTimeToWpAtMaxSpeed( const Goal             &goal,
+//                                   const orca::Waypoint2d &wp, 
+//                                   LocalNavParameters     &navParams )
+// {
+//     assert ( wp.maxApproachSpeed    >= 0.0 );
+//     assert ( wp.maxApproachTurnrate >= 0.0 );
+//     const double FOREVER        = 1e9;
+//     const double LINEAR_EPS     = 1e-5; 
+//     const double ROTATIONAL_EPS = 1e-5*M_PI/180.0; 
+
+//     // The goal covers some area (and range of angles).  How far to the border?
+//     float distanceToBorder = MAX( 0.0, hypotf(goal.y,goal.x) - goal.distanceTolerance );
+//     float angleToBorder    = MAX( 0.0, fabs(goal.theta) - goal.headingTolerance );
+
+//     // work out how long it would take at max speed
+//     float translationTime, rotationTime;
+//     if ( distanceToBorder == 0.0 )
+//         translationTime = 0.0;
+//     else
+//     {
+//         if ( wp.maxApproachSpeed < LINEAR_EPS )
+//         {
+//             navParams.maxSpeed    = wp.maxApproachSpeed;
+//             navParams.maxTurnrate = wp.maxApproachTurnrate;
+//             return FOREVER;
+//         }
+//         else
+//             translationTime = distanceToBorder / wp.maxApproachSpeed;
+//     }
+//     if ( angleToBorder == 0.0 )
+//          rotationTime = 0.0;
+//     else
+//     {
+//         if ( wp.maxApproachTurnrate < ROTATIONAL_EPS )
+//         {
+//             navParams.maxSpeed    = wp.maxApproachSpeed;
+//             navParams.maxTurnrate = wp.maxApproachTurnrate;
+//             return FOREVER;
+//         }
+//         else
+//             rotationTime = angleToBorder / wp.maxApproachTurnrate;
+//     }
+//     float requiredTimeAtMaxSpeed = translationTime + rotationTime;
+//     if ( !(requiredTimeAtMaxSpeed >= 0.0) )
+//     {
+//         cout << "ERROR(localnavmanager.cpp): requiredTimeAtMaxSpeed: " << requiredTimeAtMaxSpeed << endl;
+//         cout<<"TRACE(localnavmanager.cpp): translationTime: " << translationTime << endl;
+//         cout<<"TRACE(localnavmanager.cpp): rotationTime: " << rotationTime << endl;
+//     }
+//     assert( requiredTimeAtMaxSpeed >= 0.0 );
+    
+//     return requiredTimeAtMaxSpeed;
+// }
+
+// //
+// // Returns number of seconds behind schedule
+// //
+// double
+// setMaxSpeeds( const Goal             &goal,
+//               const orca::Waypoint2d &wp, 
+//               double                  secToNextWp, 
+//               LocalNavParameters     &navParams,
+//               orcaice::Context       &context )
+// {
+//     double secondsBehindSchedule;
+//     double requiredTimeAtMaxSpeed = requiredTimeToWpAtMaxSpeed( goal, wp, navParams );
+
+//     // Scale (with a factor in [0,1]) by how long we actually have
+//     double timeAllowed = secToNextWp;
+//     double scaleFactor = 1.0;
+//     if ( timeAllowed > requiredTimeAtMaxSpeed )
+//     {
+//         scaleFactor = requiredTimeAtMaxSpeed / timeAllowed;
+//         stringstream ss; ss << "We have " << timeAllowed 
+//                             << "s, but we could get there in " << requiredTimeAtMaxSpeed 
+//                             << "s if we put the foot down.  Scaling speeds with a factor of " << scaleFactor;
+//         context.tracer()->debug( ss.str(), 5 );
+//         secondsBehindSchedule = 0.0;
+//     }
+//     else
+//     {
+//         stringstream ss; ss << "We're running late! " << timeAllowed 
+//                             << "s allowed, but it would take " << requiredTimeAtMaxSpeed 
+//                             << "s at full speed.";
+//         context.tracer()->debug( ss.str(), 5 );
+//         secondsBehindSchedule = requiredTimeAtMaxSpeed - timeAllowed;
+//     }
+//     assert( scaleFactor <= 1.0 );
+//     navParams.maxSpeed    = wp.maxApproachSpeed    * scaleFactor;
+//     navParams.maxTurnrate = wp.maxApproachTurnrate * scaleFactor;
+
+//     return secondsBehindSchedule;
+// }
+// //
+// // Returns true if waypoint reached
+// //
+// bool
+// setCurrentGoalAndParamsFromWaypoint( const orca::Localise2dData& localiseData,
+//                                      const orca::Waypoint2d&     currentWaypoint,
+//                                      double                      secToNextWp,
+//                                      Goal&                       goal,
+//                                      LocalNavParameters&         navParams,
+//                                      double&                     secondsBehindSchedule,
+//                                      orcaice::Context&           context )
+// {
+//     // 1: work out the max-likelihood pose of the robot
+//     const orca::Pose2dHypothesis &h = orcaice::mlHypothesis( localiseData );
+
+//     // 2: work out the location of the goal in robot-centric coordinates
+//     orcanavutil::Offset goalPosInRCS( currentWaypoint.target.p.x,
+//                                       currentWaypoint.target.p.y,
+//                                       currentWaypoint.target.o );
+//     orcanavutil::subtractInitialOffset( goalPosInRCS.x,
+//                                         goalPosInRCS.y,
+//                                         goalPosInRCS.theta,
+//                                         h.mean.p.x,
+//                                         h.mean.p.y,
+//                                         h.mean.o );
+//     orcanavutil::normaliseAngle( goalPosInRCS.theta );
+
+//     goal.set( goalPosInRCS.x,
+//               goalPosInRCS.y,
+//               goalPosInRCS.theta,
+//               currentWaypoint.distanceTolerance,
+//               currentWaypoint.headingTolerance );
+//     stringstream ss;
+//     ss << "Goal in local coords: " << goal;
+//     context.tracer()->debug( ss.str(), 5 );
+
+//     if ( goalReached( goal ) )
+//     {
+//         // We're at the goal
+//         return true;
+//     }
+//     else
+//     {
+//         // We're not at the goal yet.
+
+//         // 3: work out how fast to go, given the time constraints
+//         secondsBehindSchedule = setMaxSpeeds( goal,
+//                                               currentWaypoint,
+//                                               secToNextWp,
+//                                               navParams,
+//                                               context );
+//         assert( navParams.maxSpeed >= 0.0 );
+//         assert( navParams.maxTurnrate >= 0.0 );
+//         return false;
+//     }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+float requiredTimeToWpAtMaxSpeed( const Goal &goal )
 {
-    assert ( wp.maxApproachSpeed    >= 0.0 );
-    assert ( wp.maxApproachTurnrate >= 0.0 );
+    assert ( goal.maxSpeed    >= 0.0 );
+    assert ( goal.maxTurnrate >= 0.0 );
+
     const double FOREVER        = 1e9;
     const double LINEAR_EPS     = 1e-5; 
     const double ROTATIONAL_EPS = 1e-5*M_PI/180.0; 
@@ -44,27 +208,23 @@ float requiredTimeToWpAtMaxSpeed( const Goal             &goal,
         translationTime = 0.0;
     else
     {
-        if ( wp.maxApproachSpeed < LINEAR_EPS )
+        if ( goal.maxSpeed < LINEAR_EPS )
         {
-            navParams.maxSpeed    = wp.maxApproachSpeed;
-            navParams.maxTurnrate = wp.maxApproachTurnrate;
             return FOREVER;
         }
         else
-            translationTime = distanceToBorder / wp.maxApproachSpeed;
+            translationTime = distanceToBorder / goal.maxSpeed;
     }
     if ( angleToBorder == 0.0 )
          rotationTime = 0.0;
     else
     {
-        if ( wp.maxApproachTurnrate < ROTATIONAL_EPS )
+        if ( goal.maxTurnrate < ROTATIONAL_EPS )
         {
-            navParams.maxSpeed    = wp.maxApproachSpeed;
-            navParams.maxTurnrate = wp.maxApproachTurnrate;
             return FOREVER;
         }
         else
-            rotationTime = angleToBorder / wp.maxApproachTurnrate;
+            rotationTime = angleToBorder / goal.maxTurnrate;
     }
     float requiredTimeAtMaxSpeed = translationTime + rotationTime;
     if ( !(requiredTimeAtMaxSpeed >= 0.0) )
@@ -75,29 +235,25 @@ float requiredTimeToWpAtMaxSpeed( const Goal             &goal,
     }
     assert( requiredTimeAtMaxSpeed >= 0.0 );
     
+    cout<<"TRACE(localnavmanager.cpp): goal is at: " << goal << endl;
+    cout<<"TRACE(localnavmanager.cpp): reqd time trans, rot = " << translationTime << ", " << rotationTime << endl;
+
     return requiredTimeAtMaxSpeed;
 }
 
-//
-// Returns number of seconds behind schedule
-//
-double
-setMaxSpeeds( const Goal             &goal,
-              const orca::Waypoint2d &wp, 
-              double                  secToNextWp, 
-              LocalNavParameters     &navParams,
-              orcaice::Context       &context )
+void
+constrainMaxSpeeds( Goal &goal,
+                    orcaice::Context &context )
 {
     double secondsBehindSchedule;
-    double requiredTimeAtMaxSpeed = requiredTimeToWpAtMaxSpeed( goal, wp, navParams );
+    double requiredTimeAtMaxSpeed = requiredTimeToWpAtMaxSpeed( goal );
 
     // Scale (with a factor in [0,1]) by how long we actually have
-    double timeAllowed = secToNextWp;
     double scaleFactor = 1.0;
-    if ( timeAllowed > requiredTimeAtMaxSpeed )
+    if ( goal.timeRemaining > requiredTimeAtMaxSpeed )
     {
-        scaleFactor = requiredTimeAtMaxSpeed / timeAllowed;
-        stringstream ss; ss << "We have " << timeAllowed 
+        scaleFactor = requiredTimeAtMaxSpeed / goal.timeRemaining;
+        stringstream ss; ss << "We have " << goal.timeRemaining 
                             << "s, but we could get there in " << requiredTimeAtMaxSpeed 
                             << "s if we put the foot down.  Scaling speeds with a factor of " << scaleFactor;
         context.tracer()->debug( ss.str(), 5 );
@@ -105,73 +261,15 @@ setMaxSpeeds( const Goal             &goal,
     }
     else
     {
-        stringstream ss; ss << "We're running late! " << timeAllowed 
+        stringstream ss; ss << "We're running late! " << goal.timeRemaining
                             << "s allowed, but it would take " << requiredTimeAtMaxSpeed 
                             << "s at full speed.";
         context.tracer()->debug( ss.str(), 5 );
-        secondsBehindSchedule = requiredTimeAtMaxSpeed - timeAllowed;
+        secondsBehindSchedule = requiredTimeAtMaxSpeed - goal.timeRemaining;
     }
     assert( scaleFactor <= 1.0 );
-    navParams.maxSpeed    = wp.maxApproachSpeed    * scaleFactor;
-    navParams.maxTurnrate = wp.maxApproachTurnrate * scaleFactor;
-
-    return secondsBehindSchedule;
-}
-//
-// Returns true if waypoint reached
-//
-bool
-setCurrentGoalAndParamsFromWaypoint( const orca::Localise2dData& localiseData,
-                                     const orca::Waypoint2d&     currentWaypoint,
-                                     double                      secToNextWp,
-                                     Goal&                       goal,
-                                     LocalNavParameters&         navParams,
-                                     double&                     secondsBehindSchedule,
-                                     orcaice::Context&           context )
-{
-    // 1: work out the max-likelihood pose of the robot
-    const orca::Pose2dHypothesis &h = orcaice::mlHypothesis( localiseData );
-
-    // 2: work out the location of the goal in robot-centric coordinates
-    orcanavutil::Offset goalPosInRCS( currentWaypoint.target.p.x,
-                                      currentWaypoint.target.p.y,
-                                      currentWaypoint.target.o );
-    orcanavutil::subtractInitialOffset( goalPosInRCS.x,
-                                        goalPosInRCS.y,
-                                        goalPosInRCS.theta,
-                                        h.mean.p.x,
-                                        h.mean.p.y,
-                                        h.mean.o );
-    orcanavutil::normaliseAngle( goalPosInRCS.theta );
-
-    goal.set( goalPosInRCS.x,
-              goalPosInRCS.y,
-              goalPosInRCS.theta,
-              currentWaypoint.distanceTolerance,
-              currentWaypoint.headingTolerance );
-    stringstream ss;
-    ss << "Goal in local coords: " << goal;
-    context.tracer()->debug( ss.str(), 5 );
-
-    if ( goalReached( goal ) )
-    {
-        // We're at the goal
-        return true;
-    }
-    else
-    {
-        // We're not at the goal yet.
-
-        // 3: work out how fast to go, given the time constraints
-        secondsBehindSchedule = setMaxSpeeds( goal,
-                                              currentWaypoint,
-                                              secToNextWp,
-                                              navParams,
-                                              context );
-        assert( navParams.maxSpeed >= 0.0 );
-        assert( navParams.maxTurnrate >= 0.0 );
-        return false;
-    }
+    goal.maxSpeed    *= scaleFactor;
+    goal.maxTurnrate *= scaleFactor;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -188,48 +286,111 @@ LocalNavManager::LocalNavManager( IDriver   &driver,
 {
 }
 
-//
-// Returns true if we reached the last wp
-//
-bool
-LocalNavManager::setCurrentGoalAndParams( const orca::Localise2dData &localiseData,
-                                          Goal                       &goal,
-                                          LocalNavParameters         &navParams )
-{
-    orca::Waypoint2d currentWaypoint;
+// //
+// // Returns true if we reached the last wp
+// //
+// bool
+// LocalNavManager::setCurrentGoalAndParams( const orca::Localise2dData &localiseData,
+//                                           Goal                       &goal,
+//                                           LocalNavParameters         &navParams )
+// {
+//     orca::Waypoint2d currentWaypoint;
 
+//     while ( true )
+//     {
+//         if ( !pathMaintainer_.isActive() )
+//         {
+//             goal.setNoGoal();
+//             navParams.setToNoGoal();
+//             return true;
+//         }
+
+//         // Get the current waypoint
+//         currentWaypoint = pathMaintainer_.currentWaypoint();
+
+//         // Set the goal and parameters in the robot's local coord-system
+//         bool wpReached = setCurrentGoalAndParamsFromWaypoint( localiseData,
+//                                                               currentWaypoint,
+//                                                               pathMaintainer_.secToNextWp(),
+//                                                               goal,
+//                                                               navParams,
+//                                                               secondsBehindSchedule_,
+//                                                               context_ );
+
+//         if ( wpReached )
+//         {
+//             pathMaintainer_.incrementWpIndex();
+//             // Return to the start of the loop, and peel off a new waypoint.
+//         }
+//         else
+//         {
+//             // Leave the goal & navParams as set.
+//             return false;
+//         }
+//     }
+// }
+
+void
+setGoalFromWaypoint( const orcanavutil::Pose &pose,
+                     const orca::Waypoint2d  &wp,
+                     double                   secToWp,
+                     Goal                    &goal )
+{
+    goal.set( wp.target.p.x,
+              wp.target.p.y,
+              wp.target.o,
+              wp.distanceTolerance,
+              wp.headingTolerance,
+              secToWp,
+              wp.maxApproachSpeed,
+              wp.maxApproachTurnrate );
+
+    // put the goal in robot's local coord system
+    orcanavutil::subtractInitialOffset( goal.x,
+                                        goal.y,
+                                        goal.theta,
+                                        pose.x(),
+                                        pose.y(),
+                                        pose.theta() );
+    NORMALISE_ANGLE( goal.theta );
+}
+
+// Returns true iff a waypoint is active
+bool
+LocalNavManager::getCurrentGoal( const orcanavutil::Pose &pose,
+                                 Goal &currentGoal )
+{
     while ( true )
     {
         if ( !pathMaintainer_.isActive() )
         {
-            goal.setNoGoal();
-            navParams.setToNoGoal();
-            return true;
+            return false;
         }
 
-        // Get the current waypoint
-        currentWaypoint = pathMaintainer_.currentWaypoint();
+        // Get the current goal
+        setGoalFromWaypoint( pose,
+                             pathMaintainer_.currentWaypoint(),
+                             pathMaintainer_.secToNextWp(),
+                             currentGoal );
 
-        // Set the goal and parameters in the robot's local coord-system
-        bool wpReached = setCurrentGoalAndParamsFromWaypoint( localiseData,
-                                                              currentWaypoint,
-                                                              pathMaintainer_.secToNextWp(),
-                                                              goal,
-                                                              navParams,
-                                                              secondsBehindSchedule_,
-                                                              context_ );
-
-        if ( wpReached )
+        if ( goalPosReached(currentGoal) && goalTimeReached(currentGoal) )
         {
             pathMaintainer_.incrementWpIndex();
             // Return to the start of the loop, and peel off a new waypoint.
         }
         else
         {
-            // Leave the goal & navParams as set.
-            return false;
+            // Leave the currentGoal as set
+            return true;
         }
-    }
+    }    
+}
+
+orcanavutil::Pose
+getMLPose( const orca::Localise2dData &localiseData )
+{
+    const orca::Pose2dHypothesis &h = orcaice::mlHypothesis( localiseData );
+    return orcanavutil::Pose( h.mean.p.x, h.mean.p.y, h.mean.o );
 }
 
 void
@@ -238,29 +399,29 @@ LocalNavManager::getCommand( const orca::RangeScanner2dDataPtr  rangeData,
                              const orca::Position2dData&    odomData, 
                              orca::Velocity2dCommand&       cmd )
 {
+    orcanavutil::Pose  pose = getMLPose( localiseData );
     Goal               currentGoal;
-    LocalNavParameters navParams;
 
-    bool lastWpReached = setCurrentGoalAndParams( localiseData, currentGoal, navParams );
-    if ( lastWpReached )
+    bool haveGoal = getCurrentGoal( pose, currentGoal );
+    if ( !haveGoal )
     {
         cmd.motion.v.x = 0;
         cmd.motion.v.y = 0;
         cmd.motion.w   = 0;
         {
             std::stringstream ss;
-            ss << "LocalNavManager: No path set.  giving command: " << orcaice::toString(cmd);
+            ss << "LocalNavManager: No active path.  giving command: " << orcaice::toString(cmd);
             context_.tracer()->debug( ss.str(), 5 );
         }
         return;
     }
     else
     {
+        constrainMaxSpeeds( currentGoal, context_ );
         driverState_ = driver_.getCommand( odomData.stalled,
                                            odomData.motion,
                                            rangeData,
                                            currentGoal,
-                                           navParams,
                                            cmd );
     }
     // For big debug levels, give feedback through tracer.

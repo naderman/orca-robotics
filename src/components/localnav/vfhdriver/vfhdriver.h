@@ -39,12 +39,11 @@ public:
                                                     const orca::Twist2d &currentVelocity,
                                                     const orca::RangeScanner2dDataPtr obs,
                                                     const localnav::Goal               &goal,
-                                                    const localnav::LocalNavParameters &navParams,
                                                     orca::Velocity2dCommand& cmd );
 
 private: 
 
-    void setLocalNavParameters( const localnav::LocalNavParameters &params );
+    void setSpeedConstraints( float maxSpeed, float maxTurnrate );
 
     // Functions for setting commands
     void setToZero(         orca::Velocity2dCommand& cmd );
@@ -71,15 +70,16 @@ private:
     // The '361' is what vfh_algorithm expects
     double playerLaserScan_[361][2];
 
+    // speed constraints
+    float maxSpeed_;
+    float maxTurnrate_;
+
     // An indicator of how much we've been stalling lately
     float stallRatio_;
 
     // Timing for escapes
     orcaice::Timer             escapeTimer_;
     static const double        escapeTimeMs_ = 1000.0;
-
-    // Navigation parameters
-    localnav::LocalNavParameters localNavParameters_;
 
     // Current state of the algorithm
     localnav::IDriver::DriverState currentState_;
