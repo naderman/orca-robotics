@@ -72,7 +72,7 @@ GpsReplayer::checkDescriptionFile()
 void 
 GpsReplayer::initInterfaces()
 {
-//     cout << "INFO(gpsreplayer.cpp): createInterface" << endl;
+    cout << "INFO(gpsreplayer.cpp): createInterface" << endl;
 
     topic_ = orcaice::connectToTopicWithString( context_, gpsConsumerPrx_, interfaceName_ );
     
@@ -94,7 +94,7 @@ GpsReplayer::initInterfaces()
 orca::GpsDescription
 GpsReplayer::getDescription(const ::Ice::Current& ) const
 {    
-//     cout << "INFO(gpsreplayer.cpp): getConfig " << endl;
+    cout << "INFO(gpsreplayer.cpp): getDescription " << endl;
     if ( gpsDescriptionBuffer_.isEmpty() )
     {
         throw orca::DataNotExistException( "logplayer buffer is empty, probably because we are not replaying yet" );
@@ -108,6 +108,8 @@ GpsReplayer::getDescription(const ::Ice::Current& ) const
 orca::GpsData
 GpsReplayer::getData(const Ice::Current& current) const
 {
+    
+    cout << "INFO(gpsreplayer.cpp): getData " << endl;
     // we don't need to pop the data here because we don't block on it.
     if ( gpsDataBuffer_.isEmpty() )
     {
@@ -124,6 +126,7 @@ GpsReplayer::getData(const Ice::Current& current) const
 orca::GpsTimeData
 GpsReplayer::getTimeData(const ::Ice::Current& current ) const
 {
+    cout << "INFO(gpsreplayer.cpp): getTimeData " << endl;
     // we don't need to pop the data here because we don't block on it.
     if ( gpsTimeDataBuffer_.isEmpty() )
     {
@@ -140,6 +143,7 @@ GpsReplayer::getTimeData(const ::Ice::Current& current ) const
 orca::GpsMapGridData
 GpsReplayer::getMapGridData(const ::Ice::Current& current ) const
 {
+    cout << "INFO(gpsreplayer.cpp): getMapGridData " << endl;
     // we don't need to pop the data here because we don't block on it.
     if ( gpsMapGridDataBuffer_.isEmpty() )
     {
@@ -199,7 +203,7 @@ GpsReplayer::unsubscribeForMapGrid(const ::orca::GpsMapGridConsumerPrx &subscrib
 }
 
 void 
-GpsReplayer::initDescriptions()
+GpsReplayer::initConfigs()
 {
     if (format_=="ice")
     {
