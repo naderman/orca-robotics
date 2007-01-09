@@ -55,8 +55,7 @@ class WpWidget : public QWidget
                     QVector<float> *distTolerances,
                     QVector<int> *headingTolerances,
                     QVector<float> *maxSpeeds,
-                    QVector<int> *maxTurnrates,
-                    QVector<QString> *behaviours );
+                    QVector<int> *maxTurnrates );
         ~WpWidget() {};
         void refreshTable();
         QString getBehaviour( int row );
@@ -88,8 +87,7 @@ class WpTable : public QTableWidget
                  QVector<float> *distTolerances,
                  QVector<int> *headingTolerances,
                  QVector<float> *maxSpeeds,
-                 QVector<int> *maxTurnrates,
-                 QVector<QString> *behaviours);
+                 QVector<int> *maxTurnrates);
         ~WpTable() {};
         void refreshTable();
         QString getBehaviour( int row );
@@ -106,7 +104,6 @@ class WpTable : public QTableWidget
         QVector<int> *headingTolerances_;
         QVector<float> *maxSpeeds_;
         QVector<int> *maxTurnrates_;
-        QVector<QString> *behaviours_;
         
         // this one is only local
         QVector<float> velocities_;
@@ -114,12 +111,11 @@ class WpTable : public QTableWidget
         void computeVelocities();
         
         // lock up the cellUpdate signal: it should only be emitted if the user changes cell entries
-        // not if we programmatically change them
+        // not if we programmatically change them (as in refreshTable)
         bool isLocked_;
     
     private slots:
         void updateDataStorage(int row, int column);
-        void test(int i);
 };
 
 class PathInput : public QObject
@@ -165,7 +161,6 @@ class PathInput : public QObject
         QVector<float> maxSpeeds_;           // max speed in m/s
         QVector<int> maxTurnrates_;          // max turnrate in deg/s
         QVector<float> waitingTimes_;        // how long to wait at this waypoint, filled in by wpWidget
-        QVector<QString> behaviours_;             // what behaviour to show while waiting, filled in by wpWidget
 
         QPointF mouseDownPnt_;
         QPointF mouseUpPnt_;
@@ -181,10 +176,10 @@ class PathInput : public QObject
         
     private:
         void expandPath( int index, int numInsert);
-        void expandPathStationary( int index );
-        void expandPathLeftRight( int index );
-        void expandPathRightLeft( int index );
-        void expandPathTurn360( int index );
+        int  expandPathStationary( int index );
+        int  expandPathLeftRight( int index );
+        int  expandPathRightLeft( int index );
+        int  expandPathTurn360( int index );
         
 };
 

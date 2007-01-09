@@ -60,14 +60,13 @@ WpWidget::WpWidget( PathInput *pathInput,
                     QVector<float> *distTolerances,
                     QVector<int> *headingTolerances,
                     QVector<float> *maxSpeeds,
-                    QVector<int> *maxTurnrates,
-                    QVector<QString> *behaviours)
+                    QVector<int> *maxTurnrates)
     : pathInput_(pathInput),
       pathFileSet_(false),
       pathFileName_("/tmp")
 {
     setWindowTitle("List of Waypoints");
-    wpTable_ = new WpTable( this, pathInput, waypoints, headings, times, waitingTimes, distTolerances, headingTolerances, maxSpeeds, maxTurnrates, behaviours );
+    wpTable_ = new WpTable( this, pathInput, waypoints, headings, times, waitingTimes, distTolerances, headingTolerances, maxSpeeds, maxTurnrates );
     QPushButton *generatePath = new QPushButton(tr("Generate Full Path"), this);
     QPushButton *savePath = new QPushButton(tr("Save Path"), this);
     QPushButton *loadPath = new QPushButton(tr("Load Path"), this);
@@ -155,8 +154,7 @@ WpTable::WpTable( QWidget *parent,
                  QVector<float> *distTolerances,
                  QVector<int> *headingTolerances,
                  QVector<float> *maxSpeeds,
-                 QVector<int> *maxTurnrates,
-                 QVector<QString> *behaviours )
+                 QVector<int> *maxTurnrates)
     : QTableWidget( parent ),
       pathInput_(pathInput),
       waypoints_(waypoints),
@@ -167,7 +165,6 @@ WpTable::WpTable( QWidget *parent,
       headingTolerances_(headingTolerances),
       maxSpeeds_(maxSpeeds),
       maxTurnrates_(maxTurnrates),
-      behaviours_(behaviours),
       isLocked_(true)
 { 
     setColumnCount(NumColumns);
@@ -182,18 +179,13 @@ WpTable::WpTable( QWidget *parent,
     QObject::connect(this,SIGNAL(cellClicked(int,int)),pathInput,SLOT(setWaypointFocus(int,int)));
 }
 
-void WpTable::test(int i)
-{
-    
-    cout << "Activated: " << i << endl;
-}
-
 void WpTable::refreshTable()
 {
     isLocked_ = true;
     
+    // set the row size to the current number of waypoints
+    // all entries will subsequently be overwritten, so we don't clear the contents
     int size = waypoints_->size();
-    clearContents();
     setRowCount(size);
     
     QString str;
@@ -214,18 +206,20 @@ void WpTable::refreshTable()
         str.setNum(velocities_[row],'g',4);
         item = new QTableWidgetItem(str);
         setItem(row, Velocity, item);
-        
-        QComboBox *combo = new QComboBox(this);
-        QStringList strList;
-        strList << "Stationary" << "LeftRight" << "RightLeft" << "Turn360";
-        combo->addItems(strList);
-        if (waitingTimes_->at(row)==0.0) { 
-            combo->setEnabled(false);
-        } else {
-            int ind = combo->findText( behaviours_->at(row) );
-            combo->setCurrentIndex( ind );
+             
+        // The behaviours are special: we don't keep a data storage for them.
+        // We'll read their contents whenever the full path is generated.
+        // Here, we check whether the combo already exists.
+        QComboBox *combo = dynamic_cast<QComboBox*>(cellWidget(row,Behaviour));
+        if (combo==NULL)
+        {
+            combo = new QComboBox(this);
+            QStringList strList;
+            strList << "Stationary" << "LeftRight" << "RightLeft" << "Turn360";
+            combo->addItems(strList);
+            setCellWidget(row, Behaviour, combo);
         }
-        setCellWidget(row, Behaviour, combo);
+        if (waitingTimes_->at(row)==0.0) combo->setEnabled(false);
         
         str.setNum(waypoints_->at(row).x(),'g',4);
         item = new QTableWidgetItem(str);
@@ -274,6 +268,11 @@ void WpTable::computeVelocities()
 QString WpTable::getBehaviour( int row )
 {
     QComboBox *combo = dynamic_cast<QComboBox*>(cellWidget(row,Behaviour));
+    if (combo==NULL)
+    {
+        cout << "ERROR(pathinput.cpp): Requested combo doesn't exist!" << endl;
+        return "";
+    }
     return combo->currentText();
 }
 
@@ -326,11 +325,9 @@ void WpTable::updateDataStorage(int row, int column)
         }
         case Behaviour:
         {
-            // This one is never called since the combo boxes only
-            QString *data = behaviours_->data();
-            QComboBox *combo = dynamic_cast<QComboBox*>(cellWidget(row,Behaviour));
-            data[row] = combo->currentText();
-            cout << "Behaviour, currentText: " << combo->currentText().toStdString() << endl;    
+            // This one is never called since there is not item emitting the cellChanged signal
+            // We don't keep a permanent data storage for behaviours, just read them when a full path is generated   
+            break;
         }
         case WaypointX: 
         {       
@@ -396,8 +393,7 @@ PathInput::PathInput( WaypointSettings *wpSettings, IHumanManager *humanManager 
                             &distTolerances_,
                             &headingTolerances_,
                             &maxSpeeds_,
-                            &maxTurnrates_,
-                            &behaviours_ );
+                            &maxTurnrates_ );
 }
 
 
@@ -423,7 +419,6 @@ PathInput::resizeData( int index )
     maxTurnrates_.resize( index );
     times_.resize( index );
     waitingTimes_.resize( index );
-    behaviours_.resize( index );
 }
 
 
@@ -566,7 +561,6 @@ void PathInput::addWaypoint (QPointF wp)
     maxSpeeds_.append( wpSettings_->maxApproachSpeed );
     maxTurnrates_.append( wpSettings_->maxApproachTurnrate );
     waitingTimes_.append( 0.0 );
-    behaviours_.append("Stationary");
 }
 
 void PathInput::removeWaypoint( QPointF p1 )
@@ -634,10 +628,7 @@ void PathInput::changeWpParameters( QPointF p1 )
             maxTurnrates_[i] = ui.maxTurnrateSpin->value();
             
             // if waiting time has changed we need to update all subsequent times
-            cout << "Waiting time after: " << waitingTimes_[i] << endl;
-            cout << "Difference is: " << (waitingTimes_[i]-waitingTimeBefore) << endl;
             if ( (waitingTimes_[i]-waitingTimeBefore)<1e-5 || (i==waypoints_.size()-1)) return;
-            cout << "Didn't return" << endl;
             for (int k=i+1; k<waypoints_.size(); k++)
             {
                 times_[k] = times_[k] + waitingTimes_[i];
@@ -664,14 +655,12 @@ void PathInput::expandPath( int index, int numInsert)
         times_.insert( index+i, times_[index] + i*epochTime );
     }
     
-    // reset
+    // reset waiting times
     waitingTimes_[index] = 0.0;
     waitingTimes_.insert(index+1, numInsert, 0.0);
-    behaviours_[index] = "Stationary";
-    behaviours_.insert(index+1, numInsert, "Stationary");
 }
     
-void PathInput::expandPathStationary(int index)
+int PathInput::expandPathStationary(int index)
 {
     const int numInsert=1;
     expandPath( index, numInsert );
@@ -679,22 +668,10 @@ void PathInput::expandPathStationary(int index)
     // heading
     headings_.insert(index+1, headings_[index]);
     
-//     waypoints_.insert(index+1, waypoints_[index]);
-//     headings_.insert(index+1, headings_[index]);
-//     times_.insert(index+1, times_[index]+waitingTimes_[index]);
-//     distTolerances_.insert(index+1, distTolerances_[index]);
-//     headingTolerances_.insert(index+1, headingTolerances_[index]);
-//     maxSpeeds_.insert(index+1, maxSpeeds_[index]);
-//     maxTurnrates_.insert(index+1, maxTurnrates_[index]);
-//     
-//     // reset
-//     waitingTimes_[index] = 0.0;
-//     waitingTimes_.insert(index+1, 0.0);
-//     behaviours_[index] = "Stationary";
-//     behaviours_.insert(index+1,"Stationary");
+    return numInsert;
 }
 
-void PathInput::expandPathLeftRight( int index )
+int PathInput::expandPathRightLeft( int index )
 {
     const int numInsert=3;
     expandPath( index, numInsert );
@@ -707,9 +684,11 @@ void PathInput::expandPathLeftRight( int index )
     if (heading >360*16) heading = heading - 360*16;
     headings_.insert(index+2, heading);
     headings_.insert(index+3, headings_[index]);
+    
+    return numInsert;
 }
 
-void PathInput::expandPathRightLeft( int index )
+int PathInput::expandPathLeftRight( int index )
 {
     const int numInsert=3;
     expandPath( index, numInsert );
@@ -722,9 +701,11 @@ void PathInput::expandPathRightLeft( int index )
     if (heading < 0) heading = heading + 360*16;
     headings_.insert(index+2, heading);
     headings_.insert(index+3, headings_[index]);
+    
+    return numInsert;
 }
 
-void PathInput::expandPathTurn360( int index )
+int PathInput::expandPathTurn360( int index )
 {
     const int numInsert=4;
     expandPath( index, numInsert );
@@ -738,46 +719,60 @@ void PathInput::expandPathTurn360( int index )
         headings_.insert(index+i, heading);
     }
     headings_.insert(index+4, headings_[index]);
+    
+    return numInsert;
 }
 
 
 void PathInput::generateFullPath()
-{    
-    bool hasListExpanded = false;
-            
-    // using the waiting time, we produce additional waypoints
-    // basically we're 'flattening' the list
+{                
+    // First: find all indices where we need to insert new waypoints   
+    vector<int> indices;
     for (int i=0; i<waypoints_.size(); i++)
     {
         if (waitingTimes_[i] != 0.0)
         {
-            hasListExpanded = true;
-            
-            QString behaviour = wpWidget_->getBehaviour( i );
-            
-            cout << "generatePath: Behaviour: " << behaviour.toStdString() << endl;
-            
-            if (behaviour=="Stationary") {
-                expandPathStationary(i);
-            } 
-            else if (behaviour=="LeftRight") {
-                expandPathLeftRight(i);
-            }
-            else if (behaviour=="RightLeft") {
-                expandPathRightLeft(i);
-            }
-            else if (behaviour=="Turn360") {
-                expandPathTurn360(i);
-            }
-            else {
-                cout << "Error(pathinput.cpp): Unknown behaviour: " << behaviour.toStdString() << endl;
-                break;
-            }
+            indices.push_back( i );
         }
     }
-    if (hasListExpanded) {
+    
+    // we have to keep track how many waypoints we inserted
+    int totalExpansion = 0;
+    
+    for (uint i=0; i<indices.size(); i++)
+    {
+        QString behaviour = wpWidget_->getBehaviour( indices[i] ); 
+        cout << "TRACE(pathinput.cpp): generatePath: Behaviour: " << behaviour.toStdString() << endl;
+        
+        int numExpand = 0;
+        
+        if (behaviour=="Stationary") {
+            numExpand = expandPathStationary(indices[i]+totalExpansion);
+        } 
+        else if (behaviour=="LeftRight") {
+            numExpand = expandPathLeftRight(indices[i]+totalExpansion);
+        }
+        else if (behaviour=="RightLeft") {
+            numExpand = expandPathRightLeft(indices[i]+totalExpansion);
+        }
+        else if (behaviour=="Turn360") {
+            numExpand = expandPathTurn360(indices[i]+totalExpansion);
+        }
+        else {
+            cout << "Error(pathinput.cpp): Unknown behaviour: " << behaviour.toStdString() << endl;
+            break;
+        }
+        
+        totalExpansion = totalExpansion + numExpand;
+    }
+    
+    if (indices.size()!=0) 
+    {
+        // This will flatten the table
         wpWidget_->refreshTable();
-    } else {
+    } 
+    else 
+    {
         humanManager_->showStatusMsg(Warning, "No waiting times, no list expansion");
     }
 }
@@ -843,7 +838,6 @@ void PathInput::loadPath( QString* fileName )
         maxSpeeds_.append( line.section(' ',6,6).toFloat() );
         maxTurnrates_.append( line.section(' ',7,7).toInt() );
         waitingTimes_.append( 0.0 );
-        behaviours_.append("");
     }
     humanManager_->showStatusMsg(Information, "Successfully loaded file " + *fileName );
     wpWidget_->refreshTable();
