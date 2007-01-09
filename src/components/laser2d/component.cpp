@@ -175,9 +175,10 @@ Component::start()
     mainLoop_->start();
 }
 
-void Component::stop()
+void 
+Component::stop()
 {
-    tracer()->info("stopping component...");
+    tracer()->debug("stopping component...",2);
     orcaice::Thread::stopAndJoin( mainLoop_ );
 }
 

@@ -77,6 +77,7 @@ LaserScanner2dI::subscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber, 
     }
     
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     try {
         topicPrx_->subscribe( qos, subscriber );
     }
@@ -95,6 +96,14 @@ LaserScanner2dI::unsubscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber
     context_.tracer()->debug( "LaserScanner2dI::unsubscribe()", 5 );
 
     topicPrx_->unsubscribe( subscriber );
+}
+
+void
+LaserScanner2dI::localSet( const ::orca::LaserScanner2dDataPtr &data )
+{
+    // cout << "LaserScanner2dI::set data: " << orcaice::toString( data ) << endl;
+    
+    dataProxy_.set( data );
 }
 
 void

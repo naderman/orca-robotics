@@ -106,25 +106,6 @@ MainLoop::readData( orca::LaserScanner2dDataPtr & data )
         return -1;
     }
 
-    // Check that the angleIncrement matches what we expect
-//     Driver::Config cfg;
-//     hwDriver_->getConfig( cfg );
-
-    // alexm: Config and LaserScanner2dData have this info in diff. forms
-//     if ( !NEAR(  cfg.angleIncrement, data->angleIncrement, 1e-5) )
-//     {
-//         cout << "ERROR(mainloop.cpp): angleIncrement of laser scan returned from driver does not match configured angleIncrement." << endl;
-//         cout << "ERROR(mainloop.cpp): config says: " << RAD2DEG(cfg->angleIncrement) << ",laser data says: " << RAD2DEG(data->angleIncrement) << endl; 
-//         cout << "ERROR(mainloop.cpp): If you're using the stage driver:" << endl;
-//         cout << "                       This happens because of a bug in stage where the simulated laser" << endl;
-//         cout << "                       can't be configured on-the-fly.  You have to manually ensure that" << endl;
-//         cout << "                       the sicklaser config and the stage laser config match." << endl;
-//         cout << "ERROR(mainloop.cpp): If you're using some other driver:" << endl;
-//         cout << "                       This shouldn't happen.  Something went wrong." << endl;
-//         assert( false ); exit(1);
-//     }
-//     assert( NEAR( cfg->angleIncrement, data->angleIncrement, 1e-5) );
-
     // flip the scan left-to-right if we are configured to do so
     if ( compensateRoll_ ) {
         // NOTE: instead of copying around, we should be able to simply change the
@@ -132,8 +113,6 @@ MainLoop::readData( orca::LaserScanner2dDataPtr & data )
         std::reverse( data->ranges.begin(), data->ranges.end() );
         std::reverse( data->intensities.begin(), data->intensities.end() );
     }
-
-    laserInterface_.localSetAndSend( data );
 
     return 0;
 }
@@ -158,7 +137,13 @@ MainLoop::run()
     {
         try 
         {
+            // this blocks until new data arrives
             int ret = readData( laserData );
+
+            // make sure we are not shutting down, otherwise we'll segfault while trying to send
+            if ( isActive() ) {
+                laserInterface_.localSetAndSend( laserData );
+            }
 
             if ( heartbeater.isHeartbeatTime() )
             {
