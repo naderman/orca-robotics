@@ -33,6 +33,7 @@
 #include <orca/featuremap2d.h>
 #include <orca/pathfollower2d.h>
 #include <orca/pathplanner2d.h>
+#include <orca/wifi.h>
 
 namespace orcalog
 {
@@ -61,6 +62,8 @@ std::string toLogString( const orca::Odometry3dData& );
 std::string toLogString( const orca::Position2dData& );
 //! Prints out position3d data to text which is easy to parse
 std::string toLogString( const orca::Position3dData& );
+//! Prints out wifi data to text which is easy to parse
+std::string toLogString( const orca::WifiData& obj );
 
 
 //! Prints out Power data to text which is easy to parse

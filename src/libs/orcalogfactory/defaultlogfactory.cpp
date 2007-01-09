@@ -24,6 +24,7 @@
 #include "position2dlogger.h"
 #include "position3dlogger.h"
 #include "powerlogger.h"
+#include "wifilogger.h"
 
 #include "defaultlogfactory.h"
 
@@ -44,6 +45,7 @@ DefaultLogFactory::DefaultLogFactory()
     addSupportedType("Position2d");
     addSupportedType("Position3d");
     addSupportedType("Power");
+    addSupportedType("Wifi");
 }
 
 orcalog::Logger* 
@@ -99,6 +101,10 @@ DefaultLogFactory::create( const std::string      &interfaceType,
     else if (interfaceType == "Power")
     {
         logger = new PowerLogger( master, typeSuffix, format, filenamePrefix, context );
+    }
+    else if (interfaceType == "Wifi")
+    {
+        logger = new WifiLogger( master, typeSuffix, format, filenamePrefix, context );
     }
     
     return logger;

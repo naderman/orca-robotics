@@ -319,4 +319,87 @@ fromLogString( std::stringstream& stream, orca::Time& obj )
     stream >> obj.seconds >> obj.useconds;
 }
 
+std::string 
+toLogString( const orca::WifiData& obj )
+{
+    std::stringstream s;
+//     
+//     // all floats are saved with decimal point and precision 4
+//     s << setiosflags (ios_base::showpoint) << setprecision(4);
+//     
+//     // timestamp on the first line
+//     s << orcaice::toString(obj.timeStamp) << " \n";
+// 
+//     // batteries
+//     s << obj.batteries.size() << "\n";
+//     for (uint i=0; i<obj.batteries.size(); i++)
+//     {
+//         s << obj.batteries[i].name << "\n" 
+//           << obj.batteries[i].voltage << " "
+//           << obj.batteries[i].percent << " "
+//           << obj.batteries[i].secRemaining << " " << "\n";
+//     }
+//     
+//     // temperature, current, flags
+//     s << obj.temperature << " ";
+//     s << obj.current << " ";
+//     s << obj.isLaserOn << " ";
+//     s << obj.isHitSensorOn << " ";
+//     s << obj.isActuator1On << " ";
+//     s << obj.isActuator2On << " ";
+//     s << obj.isShuttingDown << " " << "\n";
+//     
+//     // warnings
+//     s << obj.warningConditions.size() << "\n";
+//     for (uint i=0; i<obj.warningConditions.size(); i++)
+//     {
+//         s << obj.warningConditions[i] << "\n";    
+//     }
+//     
+//     // errors
+//     s << obj.errorConditions.size() << "\n";
+//     for (uint i=0; i<obj.errorConditions.size(); i++)
+//     {
+//         s << obj.errorConditions[i] << "\n";    
+//     }
+// 
+//     // CPU state
+//     s << obj.cpuState.user << " " << obj.cpuState.sys << " " << obj.cpuState.idle << "\n";
+// 
+//     // Network state
+//     s << obj.networkState.isNetworkUp << " " << obj.networkState.isRegistryUp << "\n"; 
+// 
+//     // snapshot
+//     s << obj.networkState.interfaceStats.size() << endl;
+//     for ( uint i=0; i < obj.networkState.interfaceStats.size(); i++ )
+//     {
+//         const orca::NetworkTrafficStats &t = obj.networkState.interfaceStats[i];
+//         s << t.interfaceName << endl;
+//         s << t.rxBytes << " "
+//           << t.rxPackets << " "
+//           << t.rxErrors << " "
+//           << t.rxDrop << " "
+//           << t.rxFifo << " "
+//           << t.rxFrames << " "
+//           << t.rxCompressed << " "
+//           << t.rxMulticast << " "
+//           << t.txBytes << " "
+//           << t.txPackets << " "
+//           << t.txErrors << " "
+//           << t.txDrop << " "
+//           << t.txFifo << " "
+//           << t.txColls << " "
+//           << t.txCarrier << " "
+//           << t.txCompressed << endl;
+//     
+//         // rates
+//         s << t.rxPacketsPerSec << " "
+//           << t.rxKbytesPerSec << " "
+//           << t.txPacketsPerSec << " " 
+//           << t.txKbytesPerSec << endl;
+//     }
+
+    return s.str();
+}
+
 } // namespace
