@@ -17,9 +17,6 @@ Optional convenience library providing basic implementations of some Orca interf
 
 @section orca_library_orcaifaceimpl_overview Overview
 
-An example .def file, which shows the .def format, is shown below:
-@include test/def_test_input.def
-
 For a full list of functions and classes see @ref orcaifaceimpl.
 
 Header file:
