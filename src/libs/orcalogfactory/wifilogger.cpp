@@ -82,7 +82,7 @@ WifiLogger::setData(const orca::WifiData& data, const Ice::Current&)
     }
     else if ( format_=="ascii" )
     {
-	   (*file_) << orcalog::toLogString(data) << endl;
+	   (*file_) << orcalog::toLogString(data);
     }
     else
     {
