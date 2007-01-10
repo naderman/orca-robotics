@@ -179,15 +179,20 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - it's possible to step through data objects one at a time by  settiing ReplayRate=0
 - LaserFeatureExtractor
     - Huge Overhaul, plus added line features (Alex B.)
-- Probe utility (Alex M.)
-    - using dynamically loaded factory libraries to allow use with satellite projects
-    - added a gui driver
-- OrcaView
-    - now supports guielements with multiple interfaces, see e.g. ogmapscombined (Tobias K.)
 - PathPlanner
     - fixed potential problem with skeleton (zeromap is now a map of ints) (Tobias K.)
 - GoalPlanner
     - throws remote exception if there are more than one localisation hypotheses (Tobias K.)
+
+@par Updated utilities
+
+- Probe utility (Alex M.)
+    - using dynamically loaded factory libraries to allow use with satellite projects
+    - added a gui driver using Qt
+- OrcaView2d
+    - now supports guielements with multiple interfaces, see e.g. ogmapscombined (Tobias K.)
+- CleanRegistry (Alex M.)
+    - now works with the Home interfaces registered as well-known-objects
 
 @par Updated libraries
 
