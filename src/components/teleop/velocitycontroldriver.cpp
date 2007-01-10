@@ -26,12 +26,18 @@ VelocityControl2dDriver::VelocityControl2dDriver( Display* display, const orcaic
     command_.motion.v.y = 0.0;
     command_.motion.w = 0.0;
 
-    // one key stroke changes commands by these values
-    deltaSpeed_ = 0.05;     // [m/s]
-    deltaTurnrate_ = DEG2RAD(2.0);  // [rad/sec]
 
-    maxSpeed_ = 1.0;     // [m/s]
-    maxTurnrate_ = DEG2RAD(40.0);  // [rad/sec]
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag() + ".Config.";
+
+
+    // one key stroke changes commands by these values
+    speedIncrement_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityControl2d.SpeedIncrement", 0.05 );
+    turnRateIncrement_ = DEG2RAD( orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityControl2d.TurnRateIncrement", 2.0 ) );
+
+    maxSpeed_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityControl2d.MaxSpeed", 1.0 );
+//     maxSideSpeed_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityControl2d.MaxSideSpeed", 1.0 );
+    maxTurnRate_ = DEG2RAD( orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityControl2d.MaxTurnRate", 40.0 ) );
 }
 
 VelocityControl2dDriver::~VelocityControl2dDriver() 
@@ -82,15 +88,15 @@ void
 VelocityControl2dDriver::processNewCommandIncrement(int longitudinal, int transverse, int angle )
 {
     if ( longitudinal ) {
-        command_.motion.v.x += longitudinal*deltaSpeed_;
+        command_.motion.v.x += longitudinal*speedIncrement_;
         command_.motion.v.x = MIN( command_.motion.v.x, maxSpeed_ );
         command_.motion.v.x = MAX( command_.motion.v.x, -maxSpeed_ );
     }
 
     if ( angle ) {
-        command_.motion.w += angle*deltaTurnrate_;
-        command_.motion.w = MIN( command_.motion.w, maxTurnrate_ );
-        command_.motion.w = MAX( command_.motion.w, -maxTurnrate_ );
+        command_.motion.w += angle*turnRateIncrement_;
+        command_.motion.w = MIN( command_.motion.w, maxTurnRate_ );
+        command_.motion.w = MAX( command_.motion.w, -maxTurnRate_ );
     }
 
     try 
@@ -98,7 +104,7 @@ VelocityControl2dDriver::processNewCommandIncrement(int longitudinal, int transv
         prx_->setCommand( command_ );
 
         display_->sentNewVelocityCommand( command_.motion.v.x, command_.motion.v.y, command_.motion.w,
-                (fabs(command_.motion.v.x)==maxSpeed_), false, (fabs(command_.motion.w)==maxTurnrate_) );
+                (fabs(command_.motion.v.x)==maxSpeed_), false, (fabs(command_.motion.w)==maxTurnRate_) );
     }
     catch ( const Ice::Exception& e )
     {
@@ -119,9 +125,9 @@ VelocityControl2dDriver::processNewRelativeCommand( double longitudinal, double 
     }
 
     if ( angle != TELEOP_COMMAND_UNCHANGED ) {
-        command_.motion.w = angle*maxTurnrate_;
-        command_.motion.w = MIN( command_.motion.w, maxTurnrate_ );
-        command_.motion.w = MAX( command_.motion.w, -maxTurnrate_ );
+        command_.motion.w = angle*maxTurnRate_;
+        command_.motion.w = MIN( command_.motion.w, maxTurnRate_ );
+        command_.motion.w = MAX( command_.motion.w, -maxTurnRate_ );
     }
 
     try 
@@ -129,7 +135,7 @@ VelocityControl2dDriver::processNewRelativeCommand( double longitudinal, double 
         prx_->setCommand( command_ );
 
         display_->sentNewVelocityCommand( command_.motion.v.x, command_.motion.v.y, command_.motion.w,
-                (fabs(command_.motion.v.x)==maxSpeed_), false, (fabs(command_.motion.w)==maxTurnrate_) );
+                (fabs(command_.motion.v.x)==maxSpeed_), false, (fabs(command_.motion.w)==maxTurnRate_) );
     }
     catch ( const Ice::Exception& e )
     {

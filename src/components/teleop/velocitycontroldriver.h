@@ -44,11 +44,11 @@ private:
     orca::VelocityControl2dPrx prx_;
     orca::VelocityControl2dData command_;
 
-    double deltaSpeed_;     // [m/s]
-    double deltaTurnrate_;  // [rad/sec]
+    double speedIncrement_;     // [m/s]
+    double turnRateIncrement_;  // [rad/sec]
 
     double maxSpeed_;     // [m/s]
-    double maxTurnrate_;  // [rad/sec]
+    double maxTurnRate_;  // [rad/sec]
 
     Display* display_;
     orcaice::Context context_;

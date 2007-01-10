@@ -18,6 +18,9 @@ Config.Joystick.Device.Default=auto
 
 Config.VelocityControl2d.MaxSpeed.Default=1.0
 Config.VelocityControl2d.MaxSideSpeed.Default=1.0
-Config.VelocityControl2d.MaxTurnrate.Default=40.0
+Config.VelocityControl2d.MaxTurnRate.Default=40.0
+Config.VelocityControl2d.SpeedIncrement.Default=0.05
+Config.VelocityControl2d.TurnRateIncrement.Default=2.0
+
 Config.DriveBicycle.MaxSpeed.Default=1.0
 Config.DriveBicycle.MaxSteerAngle.Default=45.0
