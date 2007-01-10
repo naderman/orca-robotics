@@ -116,7 +116,7 @@ Component::start()
     std::vector<std::string> supportedInterfaces = loadPluginLibraries( libNames );    
 
     // which driver to load?
-    std::string driverName = orcaice::getPropertyWithDefault( props, prefix+"Driver", "iostream" );
+    std::string driverName = orcaice::getPropertyWithDefault( props, prefix+"Driver", "term-iostream" );
 
     // generic interface to the user interface
     orcaprobe::BrowserDriver* browserDriver = 0;
