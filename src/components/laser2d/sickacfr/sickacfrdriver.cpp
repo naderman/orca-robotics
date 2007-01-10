@@ -22,7 +22,7 @@ namespace laser2d {
 
 SickAcfrDriver::SickAcfrDriver( const Config & cfg, const orcaice::Context & context )
     : Driver(cfg),
-      // laser_(0),
+      laser_(0),
       context_(context)
 {
     // read driver-specific properties
@@ -40,14 +40,14 @@ SickAcfrDriver::SickAcfrDriver( const Config & cfg, const orcaice::Context & con
 
 SickAcfrDriver::~SickAcfrDriver()
 {
-    // if ( laser_ ) delete laser_;
+    if ( laser_ ) delete laser_;
 }
 
-/*
+
 int
 SickAcfrDriver::setupParams( double maxRange, int numberOfSamples, int baudrate )
 {    
-    //
+/*    //
     // first convert from generic configs to SICK-specific ones
     //
 
@@ -102,17 +102,19 @@ SickAcfrDriver::setupParams( double maxRange, int numberOfSamples, int baudrate 
         //
         // Core object (re)initialisation
         //
-        // laser_ = new SickLaser( laserSettiings );
-    }
+ */
+        laser_ = new Laser();
+/*    }
     catch ( std::string &e )
     {
         infoMessages_ += "Error setting params: " + e;
         return -1;
     }
-    return 0;
+*/
+return 0;
+
 }
 
-*/
 
 int 
 SickAcfrDriver::init( )
@@ -123,12 +125,12 @@ SickAcfrDriver::init( )
     //
     // this talks to the laser and configures it
     //
-/*    if ( setupParams( config_.maxRange, config_.numberOfSamples, baudrate_ ) )
+    if ( setupParams( config_.maxRange, config_.numberOfSamples, baudrate_ ) )
     {
         context_.tracer()->error( "Failed to setup factory config parameters." );
         exit(1);
     }
-*/
+
  
 //    std::stringstream ss;
 //    ss << "Connecting to hardware with baudrate="<<baudrate_<<" device="<<device_<<" type="<<type_;
@@ -138,7 +140,7 @@ SickAcfrDriver::init( )
     // tell the laser to start sending data
     //
     // int ret = IniLaserInstance(1,9600,38400,1, 1);   //lsr2  , 38Kbps  , /dev/ser1);
-    IniLaserInstance(1,9600,38400,1, 1);   //lsr1  , 38Kbps  , /dev/ser1);
+    laser_->IniLaserInstance(1,9600,38400,1, 1);   //lsr1  , 38Kbps  , /dev/ser1);
 
 /*    if ( ret == 0 )
     {
@@ -158,6 +160,7 @@ SickAcfrDriver::init( )
 int 
 SickAcfrDriver::read( orca::LaserScanner2dDataPtr &data )
 {
+sleep(10);
 /*
     infoMessages_ = "";
 

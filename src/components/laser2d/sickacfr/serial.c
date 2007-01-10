@@ -116,7 +116,8 @@ void CloseSerialPortJEG(unsigned *H)
 static int NumOfOpenedSerials=0 ;
 
 int OpenSerialPortXJEG(char *name,int speed0, unsigned *H)
-{		
+{	
+	printf("speed0: %d\n",speed0);
 	int f_id=-1;
 	int u1,u2 ;
 	struct termios termio_p ;
@@ -183,7 +184,8 @@ int SerialReadJEG(unsigned H,uchar *buff,int lMin,int lMax,int TimeOut)
 
 int LastSerialSpeedDone ;
 int	ChangeSerialSpeedJEG(unsigned hh,int speed)
-{	int x ;
+{	
+	int x ;
 	unsigned speed2 ;
 	struct termios termio_p ;
 	struct SerialDefinition* ph = (struct SerialDefinition*)hh ;

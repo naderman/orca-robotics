@@ -11,8 +11,8 @@
 #ifndef ORCA2_LASER2D_SICK_ACFR_SICKDEFINES_H
 #define ORCA2_LASER2D_SICK_ACFR_SICKDEFINES_H
 
-typedef  void*(*FunciThread)(void* )  ;
-
+// a pointer to a function which has a void* argument and returns a void*
+typedef  void* (*FunciThread)(void* )  ;
 
 #define  uchar   unsigned char
 #define  uint16b unsigned short int

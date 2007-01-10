@@ -13,6 +13,8 @@
 #include <orcaice/context.h>
 #include <driver.h>
 
+#include "laser.h"
+
 // forward declaration of Carmen class
 // class sick_laser_t;
 
@@ -42,10 +44,10 @@ public:
 
 private: 
 
-   // int setupParams( double maxRange, int numberOfSamples, int baudrate );
+    int setupParams( double maxRange, int numberOfSamples, int baudrate );
 
     // core object
-    // SickLaser* laser_;
+    Laser* laser_;
 
     char *device_;
     // LMS or PMS
