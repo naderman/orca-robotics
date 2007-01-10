@@ -117,7 +117,6 @@ static int NumOfOpenedSerials=0 ;
 
 int OpenSerialPortXJEG(char *name,int speed0, unsigned *H)
 {	
-	printf("speed0: %d\n",speed0);
 	int f_id=-1;
 	int u1,u2 ;
 	struct termios termio_p ;

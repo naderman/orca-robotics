@@ -20,26 +20,6 @@
 #include "serial.h"
 #include "laser.h"
 
-// struct sic_packet FrameLsr1 ;
-//struct sic_packet FrameLsr2 ;
-//struct sic_packet FrameLsr3 ;
-//struct sic_packet FrameLsr4 ;
-//struct sic_packet FrameLsr5 ;
-//struct sic_packet FrameLsr6 ;
-//struct sic_packet FrameLsr7 ;
-
-
-//static struct LaserData XLsr1 = {&FrameLsr1,"Laser_1","LSR1",0,"lsr1.dat",0,NULL } ;
-//static struct LaserData XLsr2 = {&FrameLsr2,"Laser_2","LSR2",0,"lsr2.dat",0,NULL } ;
-//static struct LaserData XLsr3 = {&FrameLsr3,"Laser_3","LSR3",0,"lsr3.dat",0,NULL } ;
-//static struct LaserData XLsr4 = {&FrameLsr4,"Laser_4","LSR4",0,"lsr4.dat",0,NULL } ;
-//static struct LaserData XLsr5 = {&FrameLsr5,"Laser_5","LSR5",0,"lsr5.dat",0,NULL } ;
-//static struct LaserData XLsr6 = {&FrameLsr6,"Laser_6","LSR6",0,"lsr5.dat",0,NULL } ;
-//static struct LaserData XLsr7 = {&FrameLsr7,"Laser_7","LSR7",0,"lsr5.dat",0,NULL } ;
-
-//static struct LaserData *XLsrList[] = { &XLsr1,&XLsr2,&XLsr3,&XLsr4,&XLsr5,&XLsr6,&XLsr7 } ;
-// #define NumXLsrs (sizeof(XLsrList)/sizeof(XLsrList[0]) )
-// --------------------------------------
 
 static uint LaserSensibilityMode=0 ;
 // ...........................................................
@@ -61,15 +41,9 @@ Laser::~Laser()
 void* 
 Laser::IniLaserInstance(unsigned int n, int speed0, int speed2, int init, int serialPort)
 {
-    // struct LaserData *pxl ;
-    pxl = new LaserData;
-	// n--;
-    // if (n>=NumXLsrs)
-    // {
-    //     return(NULL);
-    // }
-    
-    //pxl = XLsrList[n] ;
+    // pointer to the struct which stores the laser params and data
+	pxl = new LaserData;
+
 	pxl->sp =  &FrameLsr1;
 	pxl->NameUnit = "Laser_1";
 	pxl->NameCB = "LSR1";
@@ -95,8 +69,8 @@ Laser::IniLaserInstance(unsigned int n, int speed0, int speed2, int init, int se
     return(pxl) ;
 }
 
-
-static void * XXX(Laser *pl)
+// use this to cast a function ptr c-style
+static void* castFnPtr(Laser *pl)
 {
 	pl->readSickLaserX(pl->pxl) ;
    return(NULL) ;
@@ -135,23 +109,21 @@ Laser::IniLSRXCode(int *pflag, struct LaserData *pxl)
 			goto chau ;
 		}
 		
-		{
-			FunciThread pf ; 
-		   pf = (FunciThread)XXX ; 
-		   a1 = pthread_create( &(pxl->tid), NULL, pf, this ) ;
-		}
 		//a1 = pthread_create( &(pxl->tid), NULL, (FunciThread)readSickLaserX, pxl ) ;
+   	    // hack to deal with casting a function pointer in C++
+		// TODO: cast this properly using c++ casts
+		FunciThread pf ; 
+   	    pf = (FunciThread)castFnPtr; 
+   	    a1 = pthread_create( &(pxl->tid), NULL, pf, this ) ;
 	
 	}
 		
 	if (a1<0)
     {
- 		// printf("thread [%s] failed\n");
         str = "thread [%s] failed\n";
     }
 	else
     {
-		// printf("thread [%s] OK\n");
         str = "thread [%s] OK\n";
     }
 	if (a1<0)
@@ -197,8 +169,6 @@ Laser::parse_SICK_LASER(struct sic_packet *pxxx,unsigned char *string,struct rec
 	xuint32 dt ;
 	crc2 = ExeCRC(string,730,POLYCRC);
 	crc1 = *((uint16b*)(string+730)) ;
-	
-	// std::cout << "pxl->speed: " << pxl->speed << std::endl;
 	
 	// can remove this later
     cxx++ ;
@@ -464,8 +434,6 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 	SerialWriteJEG(FComLsr, (unsigned char*)stringAskInfo1, sizeof(stringAskInfo1), &hkswrite);
 
 	readResponseInfo1(FComLsr);
-	//readResponseB(FComLsr);
-
 
 	// set mode to send data continuously
 	SerialWriteJEG(FComLsr, (unsigned char*)string5, STR5, &hkswrite);
@@ -482,7 +450,6 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 	
     delay(100);
 
-	//SerialFlushInput(FComLsr);
 }
 
 void 
@@ -595,7 +562,6 @@ Laser::readSickLaser(struct LaserData *pxl,int *pFlag)
 	}
 
 chau:
-	////CloseCBHK(&(pxl->rr_lsr));
 	unsigned int uintFComLsr = (unsigned int)(pxl->FComLsr);
     // CloseSerialPortJEG( &(pxl->FComLsr) );
     CloseSerialPortJEG( &(uintFComLsr) );
@@ -670,17 +636,6 @@ Laser::ReadRangeData2_U16(uint16b *pf)
     }
 }
 
-/*static void PushLHLaserFrame(struct LaserData *pg)
-{
-	//struct LaserComp LC;
-	if (pg->hLHistoric<0)
-    {
-        return ;
-    }
-	//PushRecordInLocalHistoryItem(pg->hLHistoric,pg->sp);
-	// YDNHTS  (you do not have this service) 
-}
-*/
 // EXAMPLE
 
 
