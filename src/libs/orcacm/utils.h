@@ -22,28 +22,10 @@ namespace orcacm
 //@{
 
 /*!
- *  OBSOLETE! This function does not work with Homes registered as well-known objects.
- *
- *  Attempts to ping the @ref orca_interface_home interface of the component
- *  whose stringified name is given as @p adapterId. Returns TRUE if successful.
+ *  Attempts to ping the well-known object with specified identity. Returns TRUE if successful.
  */
 bool
-pingComponent( const orcaice::Context & context, const std::string & adapterId );
-
-/*!
- *  Connects to IceGrid/Admin interface of the specified registry and gets the
- *  list of registered adapters. If connection fails for some reason,
- *  @p isReachable field of RegistryData is set to FALSE.
- *
- *  When using the default registry, you can obtain the @p locatorString like this:
- *  communicator()->getDefaultLocator()->ice_toString()
- *
- *  If @p tryToPing is TRUE (default), the function attempts to ping each
- *  registered adapter. Otherwise it doesn't and the @p isReachable field for
- *  each adapter is set to FALSE;
- */
-RegistryFlatData
-getRegistryData( const orcaice::Context & context, const std::string & locatorString, bool tryToPing=true );
+pingObject( const orcaice::Context& context, const std::string& objectId );
 
 /*!
  *  Connects to IceGrid/Query interface of the specified registry and gets the
@@ -58,7 +40,7 @@ getRegistryData( const orcaice::Context & context, const std::string & locatorSt
  *  each Home is set to TRUE;
  */
 RegistryHomeData
-getRegistryHomeData( const orcaice::Context & context, const std::string & locatorString, bool tryToPing=true );
+getRegistryHomeData( const orcaice::Context& context, const std::string& locatorString, bool tryToPing=true );
 
 /*!
  *  Connects to Home interface of the specified component and gets its
@@ -69,36 +51,36 @@ getRegistryHomeData( const orcaice::Context & context, const std::string & locat
  *  getComponentData( context, registryData.adapters[i].name )
  */
 ComponentData
-getComponentData( const orcaice::Context & context, const orca::FQComponentName & component );
+getComponentData( const orcaice::Context& context, const orca::FQComponentName& component );
 
 ComponentData
-getComponentHomeData( const orcaice::Context & context, const Ice::ObjectPrx & home );
+getComponentHomeData( const orcaice::Context& context, const Ice::ObjectPrx& home );
 
 /*!
  *  Convenience function, behaves like the one above.
  */
 ComponentData
-getComponentData( const orcaice::Context & context, const std::string & adapterId );
+getComponentData( const orcaice::Context& context, const std::string& adapterId );
 
 /*!
  *  Tries to connect to the specified interface and, if successful, gets its ID.
  *  If connection fails for some reason, the Object ID is set to "unknown".
  */
 ProvidesHeader
-getProvidesHeader( const orcaice::Context & context, const orca::FQInterfaceName & fqName );
+getProvidesHeader( const orcaice::Context& context, const orca::FQInterfaceName& fqName );
 
 /*!
  *  Tries to connect to the specified interface and, if successful, gets its ID.
  *  If connection fails for some reason, the Object ID is set to "unknown".
  */
 RequiresHeader
-getRequiresHeader( const orcaice::Context & context, const orca::FQInterfaceName & fqName );
+getRequiresHeader( const orcaice::Context& context, const orca::FQInterfaceName& fqName );
 
 RegistryHierarchicalData1
-home2hierarch1( const RegistryHomeData & registryHomeData );
+home2hierarch1( const RegistryHomeData& registryHomeData );
 
 RegistryHierarchicalData2
-home2hierarch2( const RegistryHomeData & registryHomeData, const PlatformHeader & platform, bool tryToPing=true );
+home2hierarch2( const RegistryHomeData& registryHomeData, const PlatformHeader& platform, bool tryToPing=true );
 
 //@}
 } // namespace

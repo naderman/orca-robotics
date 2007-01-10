@@ -22,13 +22,10 @@ namespace orcacm
 {
 
 bool
-pingComponent( const orcaice::Context & context, const std::string & adapterId )
+pingObject( const orcaice::Context& context, const std::string& objectId )
 {
     try {
-        Ice::ObjectPrx obj = context.communicator()->stringToProxy( "home@"+adapterId );
-
-        // debug
-        //std::cout<<"pinging "<<context_.communicator()->proxyToString( base )<<std::endl;
+        Ice::ObjectPrx obj = context.communicator()->stringToProxy( objectId );
         
         obj->ice_ping();
 
@@ -36,7 +33,7 @@ pingComponent( const orcaice::Context & context, const std::string & adapterId )
         //cout<<"Proxy\t\t[ "<<base->ice_toString()<<" ]"<<endl;
 
     }
-    catch( const Ice::Exception & )
+    catch( const Ice::Exception& )
     {
         return false;
     }
@@ -44,62 +41,8 @@ pingComponent( const orcaice::Context & context, const std::string & adapterId )
     return true;
 }
 
-RegistryFlatData
-getRegistryData( const orcaice::Context & context, const std::string & locatorString, bool tryToPing )
-{
-    RegistryFlatData data;
-    
-    data.locatorString = locatorString;
-    
-    Ice::ObjectPrx adminPrx = context.communicator()->stringToProxy(
-            orcamisc::stringToIceGridInstanceName(locatorString)+"/Admin");
-
-    Ice::StringSeq list;
-    try {
-        adminPrx->ice_ping();
-        data.address = orcamisc::connectionToRemoteAddress( adminPrx->ice_getConnection()->toString() );
-        data.isReachable = true;
-
-        std::ostringstream os;
-        os<<"Ping successful: "<<data.address;
-        context.tracer()->debug( os.str() );
-
-        IceGrid::AdminPrx admin = IceGrid::AdminPrx::checkedCast( adminPrx );
-        
-        //
-        // get adapter list
-        //
-        list = admin->getAllAdapterIds();
-    } 
-    catch ( const Ice::Exception & ) {
-        data.isReachable = false;
-        return data;
-    }
-
-    // add more information
-    ComponentHeader comp;
-    for ( unsigned int i=0; i<list.size(); ++i ) 
-    {
-        comp.name = orcaice::toComponentName( list[i] );
-        
-        // ping each component's Home interface, if requested
-        if ( tryToPing ) {
-            comp.isReachable = orcacm::pingComponent( context, list[i] );
-            comp.address = "not implemented";
-        }
-        
-        data.adapters.push_back( comp );
-    }
-
-    std::ostringstream os;
-    os<<"Retrieved list of "<<data.adapters.size()<<" adapters";
-    context.tracer()->debug( os.str() );
-
-    return data;
-}
-
 RegistryHomeData
-getRegistryHomeData( const orcaice::Context & context, const std::string & locatorString, bool tryToPing )
+getRegistryHomeData( const orcaice::Context& context, const std::string& locatorString, bool tryToPing )
 {
     RegistryHomeData data;
 
@@ -125,7 +68,7 @@ getRegistryHomeData( const orcaice::Context & context, const std::string & locat
         //
         list = query->findAllObjectsByType( "::orca::Home" );
     } 
-    catch ( const Ice::Exception & ) {
+    catch ( const Ice::Exception& ) {
         data.isReachable = false;
         return data;
     }
@@ -143,7 +86,7 @@ getRegistryHomeData( const orcaice::Context & context, const std::string & locat
             try {
                 home.proxy->ice_ping();
             }
-            catch( const Ice::Exception & )
+            catch( const Ice::Exception& )
             {
                 home.isReachable = false;
             }
@@ -157,13 +100,13 @@ getRegistryHomeData( const orcaice::Context & context, const std::string & locat
 }
 
 ComponentData
-getComponentData( const orcaice::Context & context, const std::string & adapterId )
+getComponentData( const orcaice::Context& context, const std::string& adapterId )
 {
     return getComponentData( context, orcaice::toComponentName( adapterId ) );
 }
 
 ComponentData
-getComponentData( const orcaice::Context & context, const orca::FQComponentName & component )
+getComponentData( const orcaice::Context& context, const orca::FQComponentName& component )
 {
     ComponentData data;
     data.name = component;
@@ -190,12 +133,12 @@ getComponentData( const orcaice::Context & context, const orca::FQComponentName 
             data.address = orcamisc::connectionToRemoteAddress( conn->toString() );
             //std::cout<<"remote address : ["<<homeData.address<<"]"<<std::endl;
         }
-        catch( const Ice::CollocationOptimizationException & )
+        catch( const Ice::CollocationOptimizationException& )
         {
             data.address = "collocated";
         }
     }
-    catch( const Ice::Exception & )
+    catch( const Ice::Exception& )
     {
         data.isReachable = false;
         data.timeUp = 0;
@@ -223,7 +166,7 @@ getComponentData( const orcaice::Context & context, const orca::FQComponentName 
 }
 
 ComponentData
-getComponentHomeData( const orcaice::Context & context, const Ice::ObjectPrx & ohome )
+getComponentHomeData( const orcaice::Context& context, const Ice::ObjectPrx& ohome )
 {
     ComponentData data;
     data.name = orcaice::toComponentName( ohome->ice_getAdapterId() );
@@ -251,12 +194,12 @@ getComponentHomeData( const orcaice::Context & context, const Ice::ObjectPrx & o
             data.address = orcamisc::connectionToRemoteAddress( conn->toString() );
             //std::cout<<"remote address : ["<<homeData.address<<"]"<<std::endl;
         }
-        catch( const Ice::CollocationOptimizationException & )
+        catch( const Ice::CollocationOptimizationException& )
         {
             data.address = "collocated";
         }
     }
-    catch( const Ice::Exception & )
+    catch( const Ice::Exception& )
     {
         data.isReachable = false;
         data.timeUp = 0;
@@ -289,7 +232,7 @@ getComponentHomeData( const orcaice::Context & context, const Ice::ObjectPrx & o
 }
 
 ProvidesHeader
-getProvidesHeader( const orcaice::Context & context, const orca::FQInterfaceName & fqName )
+getProvidesHeader( const orcaice::Context& context, const orca::FQInterfaceName& fqName )
 {
     ProvidesHeader header;
     header.name = fqName.iface;
@@ -301,14 +244,14 @@ getProvidesHeader( const orcaice::Context & context, const orca::FQInterfaceName
         header.id = obj->ice_id();
         header.isReachable = true;
     }
-    catch( const Ice::ObjectNotExistException & )
+    catch( const Ice::ObjectNotExistException& )
     {
         //cout<<e<<endl;
         //cout << "failed to reach "<< header.name << endl;
         header.id = "Ice::ObjectNotExistException";
         header.isReachable = false;
     }
-    catch( const Ice::Exception & e )
+    catch( const Ice::Exception& e )
     {
         cout<<e<<endl;
         cout << "failed to lookup ID for "<< header.name << endl;
@@ -320,7 +263,7 @@ getProvidesHeader( const orcaice::Context & context, const orca::FQInterfaceName
 }
 
 RequiresHeader
-getRequiresHeader( const orcaice::Context & context, const orca::FQInterfaceName & fqName )
+getRequiresHeader( const orcaice::Context& context, const orca::FQInterfaceName& fqName )
 {
     RequiresHeader header;
     header.name = fqName;
@@ -329,7 +272,7 @@ getRequiresHeader( const orcaice::Context & context, const orca::FQInterfaceName
         Ice::ObjectPrx obj = context.communicator()->stringToProxy( orcaice::toString(fqName) );
         header.id = obj->ice_id();
     }
-    catch( const Ice::Exception & )
+    catch( const Ice::Exception& )
     {
         cout << "failed to lookup ID for "<< orcaice::toString(header.name) << endl;
         header.id = "unknown";
@@ -338,7 +281,7 @@ getRequiresHeader( const orcaice::Context & context, const orca::FQInterfaceName
 }
 
 RegistryHierarchicalData1
-home2hierarch1( const RegistryHomeData & registryHomeData )
+home2hierarch1( const RegistryHomeData& registryHomeData )
 {
     RegistryHierarchicalData1 hierData;
     
@@ -374,7 +317,7 @@ home2hierarch1( const RegistryHomeData & registryHomeData )
 }
 
 RegistryHierarchicalData2
-home2hierarch2( const RegistryHomeData & registryHomeData, const PlatformHeader & platform, bool tryToPing )
+home2hierarch2( const RegistryHomeData& registryHomeData, const PlatformHeader& platform, bool tryToPing )
 {
     RegistryHierarchicalData2 hierData;
 
@@ -402,7 +345,7 @@ home2hierarch2( const RegistryHomeData & registryHomeData, const PlatformHeader 
                 try {
                     homeHeader.proxy->ice_ping();
                 }
-                catch( const Ice::Exception & )
+                catch( const Ice::Exception& )
                 {
                     homeHeader.isReachable = false;
                 }

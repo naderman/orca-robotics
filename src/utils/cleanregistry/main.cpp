@@ -28,64 +28,100 @@ public:
     // component interface
     virtual void start();
     virtual void stop() {};
+
+private:
+    void purgeObjects( const IceGrid::AdminPrx& admin );
+    void purgeAdapters( const IceGrid::AdminPrx& admin );
 };
 
 
-Component::Component()
-    : orcaice::Component( "CleanRegistry", orcaice::NoStandardInterfaces  )
+Component::Component() : 
+    orcaice::Component( "CleanRegistry", orcaice::NoStandardInterfaces  )
 {
 }
 
 void
-Component::start()
+Component::purgeObjects( const IceGrid::AdminPrx& admin )
 {
-    // we provide no interfaces, so we don't activate the adapter
-
-    //cout<<"default locator (refresh) :"<<context().communicator()->getDefaultLocator()->ice_toString()<<endl;
-    
     std::string locatorString = context().communicator()->getDefaultLocator()->ice_toString();
-    
-    Ice::ObjectPrx adminProxy = context().communicator()->stringToProxy(
-            orcamisc::stringToIceGridInstanceName(locatorString)+"/Admin");
-    
-    try
-    {
-        adminProxy->ice_ping();
-        std::string adminAddress = orcamisc::connectionToRemoteAddress( adminProxy->ice_getConnection()->toString() );
-        cout<<"Ping successful: "<<adminAddress<<endl;
-    }
-    catch ( const Ice::Exception & e )
-    {
+
+    orcacm::RegistryHomeData regData;
+    bool tryToPing = true;
+    regData = orcacm::getRegistryHomeData( context(), locatorString, tryToPing );
+
+    if ( !regData.isReachable ) {
+        context().tracer()->error( "Registry '"+locatorString+"' is unreachable" );
         // nothing else to do
         context().communicator()->shutdown();
     }
-    
-    IceGrid::AdminPrx admin = IceGrid::AdminPrx::checkedCast( adminProxy );
-    
-    //
-    // get adapter list
-    //
-    Ice::StringSeq list = admin->getAllAdapterIds();
-    cout<<"retrieved a list of "<<list.size()<<" adapters"<<endl;
 
-    orca::FQComponentName name;
+    cout<<"retrieved list of "<<regData.homes.size()<<" home objects"<<endl;
 
-    int reachCount = 0;
-    int cleanCount = 0;
+    int aliveCount = 0;
+    int deadCount = 0;
         
-    for ( unsigned int i=0; i<list.size(); ++i ) {
-        name = orcaice::toComponentName( list[i] );
-        
+    for ( unsigned int i=0; i<regData.homes.size(); ++i ) 
+    {    
         // ping each component's Home interface
-        if ( orcacm::pingComponent( context(), list[i] ) ) {
-            ++reachCount;
+        if ( regData.homes[i].isReachable ) {
+            ++aliveCount;
         }
-        // make sure it's an Orca component, it's platform name should be non-empty
-        else if ( !name.platform.empty() ) {
+        // make sure it's an Orca component, it's platform compName should be non-empty
+        else {
             try
             {
-                cout<<"about to remove adapter with ID '"<<list[i]<<"'"<<endl;
-                admin->removeAdapter( list[i] );
+                cout<<"about to remove Home object with ID '"<<regData.homes[i].proxy->ice_toString()<<"'"<<endl;
+                admin->removeObject( regData.homes[i].proxy->ice_getIdentity() );
+            }
+            catch ( const IceGrid::ObjectNotRegisteredException & e )
+            {
+                cout<<e<<endl;
+            }
+            catch ( const IceGrid::DeploymentException & e )
+            {
+                cout<<e<<endl;
+            }
+            
+            ++deadCount;
+        }
+    }
+    
+    cout<<"registered  : "<<regData.homes.size()<<endl;
+    cout<<"alive       : "<<aliveCount<<endl;
+    cout<<"removed     : "<<deadCount<<endl;
+}
+
+
+void
+Component::purgeAdapters( const IceGrid::AdminPrx& admin )
+{
+    //
+    // get adapter adaptList
+    //
+    Ice::StringSeq adaptList = admin->getAllAdapterIds();
+    cout<<"retrieved list of "<<adaptList.size()<<" adapters"<<endl;
+
+    orca::FQComponentName compName;
+    std::string homeIdentity;
+
+    int aliveCount = 0;
+    int deadCount = 0;
+        
+    for ( unsigned int i=0; i<adaptList.size(); ++i ) 
+    {
+        compName = orcaice::toComponentName( adaptList[i] );
+        homeIdentity = orcaice::toHomeIdentity( compName );
+        
+        // ping each component's Home interface
+        if ( orcacm::pingObject( context(), homeIdentity ) ) {
+            ++aliveCount;
+        }
+        // make sure it's an Orca component, it's platform compName should be non-empty
+        else if ( !compName.platform.empty() ) {
+            try
+            {
+                cout<<"about to remove adapter with ID '"<<adaptList[i]<<"'"<<endl;
+                admin->removeAdapter( adaptList[i] );
             }
             catch ( const IceGrid::AdapterNotExistException & e )
             {
@@ -96,17 +132,54 @@ Component::start()
                 cout<<e<<endl;
             }
             
-            ++cleanCount;
+            ++deadCount;
         }
         else {
-            cout<<"will not clean "<<name.component<<endl;
+            cout<<"will not clean "<<compName.component<<endl;
         }
     }
     
-    cout<<"registered  : "<<list.size()<<endl;
-    cout<<"active      : "<<reachCount<<endl;
-    cout<<"removed     : "<<cleanCount<<endl;
-    cout<<"non-Orca    : "<<list.size()-reachCount-cleanCount<<endl;
+    cout<<"registered  : "<<adaptList.size()<<endl;
+    cout<<"alive       : "<<aliveCount<<endl;
+    cout<<"removed     : "<<deadCount<<endl;
+    cout<<"non-Orca    : "<<adaptList.size()-aliveCount-deadCount<<endl;
+}
+
+void
+Component::start()
+{
+    // we provide no interfaces, so we don't activate the adapter
+    //cout<<"default locator (refresh) :"<<context().communicator()->getDefaultLocator()->ice_toString()<<endl;
+    
+    std::string locatorString = context().communicator()->getDefaultLocator()->ice_toString();
+
+    Ice::ObjectPrx adminProxy = context().communicator()->stringToProxy(
+            orcamisc::stringToIceGridInstanceName(locatorString)+"/Admin");
+
+    try
+    {
+        adminProxy->ice_ping();
+        std::string adminAddress = orcamisc::connectionToRemoteAddress( adminProxy->ice_getConnection()->toString() );
+        cout<<"Ping successful: "<<adminAddress<<endl;
+    }
+    catch ( const Ice::Exception & e )
+    {
+        context().tracer()->error( "Registry '"+locatorString+"' is unreachable" );
+        // nothing else to do
+        context().communicator()->shutdown();
+    }
+    
+    IceGrid::AdminPrx admin = IceGrid::AdminPrx::checkedCast( adminProxy );
+    
+    //
+    // Well-known objects
+    //
+    purgeObjects( admin );
+
+    //
+    // Adapters
+    //
+    purgeAdapters( admin );
 
     // we are done
     context().communicator()->shutdown();
