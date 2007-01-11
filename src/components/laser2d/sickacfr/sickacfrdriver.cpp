@@ -13,8 +13,6 @@
 
 #include "sickacfrdriver.h"
 #include "laser.h"
-// #include "sick.h"
-// #include "carmen_conversion.h"
 
 using namespace std;
 
@@ -24,6 +22,7 @@ SickAcfrDriver::SickAcfrDriver( const Config & cfg, const orcaice::Context & con
     : Driver(cfg),
       laser_(0),
       timeoutMs_(2000),
+      laserCount_(0),
 	  context_(context)
 {
     // read driver-specific properties
@@ -169,7 +168,7 @@ SickAcfrDriver::read( orca::LaserScanner2dDataPtr &data )
     // const  double LASER_STALL_TIMEOUT = 1.0; // seconds
     // const  int    POLL_PERIOD_US = 1000;
  
- // blocking read with timeout. Also deletes the front element from the buffer
+     // blocking read with timeout. Also deletes the front element from the buffer
     int ret = laser_->laserDataBuffer_.getAndPopNext( rawLaserData_, timeoutMs_ );
     if ( ret != 0 ) {
         // throw NovatelSpanException( "Timeout while waiting for GPS packet" );
@@ -177,19 +176,28 @@ SickAcfrDriver::read( orca::LaserScanner2dDataPtr &data )
     }
     else
     {      
-        context_.tracer()->debug( "TRACE(sickacfrdriver.cpp::read()): got laser data", 4 );
+        context_.tracer()->debug( "TRACE(sickacfrdriver.cpp::read()): got laser data", 6 );
 
         // cout << "gpsCount_: " << gpsCount_ << endl;
-        // if (gpsCount_ > 200 )
-        // {
+        if (laserCount_ > 100 )
+        {
             cout << "Laser Data Buffer is " << laser_->laserDataBuffer_.size()/100 << "% full" << endl;
-        //     gpsCount_ = 0;
-        // }
-        // gpsCount_++;
+             laserCount_ = 0;
+        }
+        laserCount_++;
     
+ 		// TODO: put in lib/orcaobh/timeutils.h/cpp
+    	//convert to microseconds
+		int usec = rawLaserData_.sp->timestamp/10;
+    	// convert to orca::Time
+    	int orcaSec = (int)( floor( (double)usec/1000000 ) );
+		int orcaUsec = ( usec - ( orcaSec * 1000000 ) );
+		data->timeStamp.seconds = orcaSec;
+		data->timeStamp.useconds = orcaUsec;
+	
     }
-    
-    return 0;
+
+   return 0;
 
 /*
 if ( laser_->timestamp == 0 )

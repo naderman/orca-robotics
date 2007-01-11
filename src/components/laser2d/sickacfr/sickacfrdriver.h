@@ -65,7 +65,9 @@ private:
 
 	int timeoutMs_;
     
-	orcaice::Context context_;
+    int laserCount_;
+
+    orcaice::Context context_;
 };
 
 } // namespace
