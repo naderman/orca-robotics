@@ -17,16 +17,16 @@ for i=1:15
 end
 
 % time stamp format
-s1 = '%2d%*1s%2d%*1s%2d %2d%*1s%2d%*1s%f';
+s1 = '%f %f';
 
 i=1;
 
 while 1
     % read time stamp
-    timeTmp = fscanf(fid, s1, 6);
+    timeTmp = fscanf(fid, s1, 2);
 
     % check if we have reached then of the file
-    if size(timeTmp,1) ~= 6
+    if size(timeTmp,1) ~= 2
         break;
     end
     
