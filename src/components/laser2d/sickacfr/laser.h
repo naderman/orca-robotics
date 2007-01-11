@@ -24,7 +24,7 @@ extern "C" {
 
 // sick laser packet
 struct sic_packet		// laser packet
-{	xuint32 timestamp;	// timestamp (in millisconds)
+{	xuint32 timestamp;	// timestamp (1 = 10 microseconds)
 	xuint16 cx ;
 	xuint16 range[RANGESIZE];	// range+intensity data
 	xuint16 BadCrcs ;			// (0 to 180 deg in 0.5 deg steps)
