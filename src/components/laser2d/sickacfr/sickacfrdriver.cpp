@@ -190,23 +190,22 @@ SickAcfrDriver::read( orca::LaserScanner2dDataPtr &data )
     	//convert to microseconds
 		int usec = rawLaserData_.sp->timestamp/10;
     	// convert to orca::Time
-    	int orcaSec = (int)( floor( (double)usec/1000000 ) );
-		int orcaUsec = ( usec - ( orcaSec * 1000000 ) );
-		data->timeStamp.seconds = orcaSec;
-		data->timeStamp.useconds = orcaUsec;
+    	data->timeStamp.seconds = (int)( floor( (double)usec/1000000 ) );
+		data->timeStamp.useconds = ( usec - (  data->timeStamp.seconds * 1000000 ) );
 
-	    data->ranges.resize( 1 );
-		data->intensities.resize( 1 );
+		// TODO: change the number of scans so that it is configurable
+	    data->ranges.resize( 361 );
+		data->intensities.resize( 361 );
 					            
 		//debug
 		//            cout<<"SickCarmenDriver::read"<<endl;
-		for ( int i=0; i < 1; i++ )
+		for ( int i=0; i < 361; i++ )
 		{
-			// alexm: dodgy hack in response to sudden shrinkage of the scan
-			// "/1000.0" was in the original
-			data->ranges[i]      = 50.0;
-			//data->ranges[i]      = laser_->range[i]/1000.0;
-			data->intensities[i] = 1;
+		    // mask off the corresponding bytes in the sicklaser structure
+			// first 13 bytes are range
+			data->ranges[i] = (rawLaserData_.sp->range[i]>>13) & 0x7;
+			// last 3 bytes are intensity
+			data->intensities[i] = rawLaserData_.sp->range[i] & 0x1FFF;
 		}
 	
     }
