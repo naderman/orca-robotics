@@ -1,11 +1,24 @@
 function [timeStamps wifiData] = parsewifidata( file )
-% parse file created by orca logger (ASCII)
-% output args
-%    timeStamp
-%    wifiData
+%
+% function [timeStamps wifiData] = parsewifidata( file )
+%
+% Parses a wifi log file created by the Orca logger (ascii).
+% Number of records is N. 
+%
+% Output arguments:
+%    timeStamp:     
+%       - array ( N x 2 ) 
+%       - each row is a Unix timestamp [sec usec]
+%    wifiData:      
+%       - struct with fields:   interface, status, linkQuality, signalLevel, noiseLevel,
+%                               numInvalidNwid, numInvalidCrypt, numInvalidFrag, 
+%                               numRetries, numInvalidMisc, numMissedBeacons, mode,
+%                               bitrate, accessPoint, throughPut, linkQualityType,
+%                               maxLinkQuality, maxSignalLevel, maxNoiseLevel
+%       - each field is a cell array of size ( N x numWirelessInterfaces )
 
 % time stamp format
-timeStampFormat = '%2d%*1s%2d%*1s%2d %2d%*1s%2d%*1s%f'; 
+timeStampFormat = '%f %f'; 
 wifiFormat ='%s %u %u %u %u %u %u %u %u %u %u %u %u %s %u %u %u %u %u';   
 
 fid = fopen( file );
@@ -18,23 +31,19 @@ i=1;
 while 1
 
     % read time stamp
-    timeTmp = fscanf(fid, timeStampFormat, 6)
+    timeTmp = fscanf(fid, timeStampFormat, 2);
     
     % check if we have reached the end of the file
-    if size(timeTmp,1) ~= 6
+    if size(timeTmp,1) ~= 2
         break;
     end
-    
-    % convert into Matlab timestamp format
+
     timeStamps(i,:) = timeTmp';
-    timeStamps(i,1) = timeTmp(3)+2000;
-    timeStamps(i,2) = timeTmp(1);
-    timeStamps(i,3) = timeTmp(2);
     
     % read number of interfaces
     numInterfaces = fscanf(fid, '%d');
     for k=1:numInterfaces
-        data = textscan(fid, wifiFormat, 1)
+        data = textscan(fid, wifiFormat, 1);
         wifiData.interface(i,k)         = data{1};
         wifiData.status(i,k)            = data{2};
         wifiData.linkQuality(i,k)       = data{3};
@@ -60,6 +69,8 @@ while 1
     i=i+1;
 
 end
+
+fclose(fid);
     
     
   

@@ -3,7 +3,7 @@ function [times, hypotheses] = parselocalise2ddata( file )
 %
 % parse laser data from orca logger (ASCII)
 % output args
-%    times =      Each row is a separate individual timestamp
+%    times =      Each row is a Unix timestamp [sec usec]
 %    hypotheses = Each cell represents hypotheses corresponding to
 %                 one timestamp.
 %                 Each cell is a matrix, where each each row
@@ -16,7 +16,7 @@ if ( fid == -1 )
 end
 
 % time stamp format
-formatTimestamp = '%2d%*1s%2d%*1s%2d %2d%*1s%2d%*1s%f';
+timeStampFormat = '%f %f';
 
 % hypothesis format
 formatHypothesis = '%f %f %f %f %f %f %f %f %f %f';
@@ -24,10 +24,10 @@ formatHypothesis = '%f %f %f %f %f %f %f %f %f %f';
 i=1;
 while true
     % read time stamp
-    timeTmp = fscanf(fid, formatTimestamp, 6);
+    timeTmp = fscanf(fid, timeStampFormat, 2);
 
     % check if we have reached then of the file
-    if size(timeTmp,1) ~= 6
+    if size(timeTmp,1) ~= 2
         break;
     end
     
