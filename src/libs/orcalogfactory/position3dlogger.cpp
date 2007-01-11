@@ -76,7 +76,7 @@ Position3dLogger::setData(const orca::Position3dData& data, const Ice::Current&)
     }
     else if ( format_ == "ascii" )
     {
-        (*file_) << orcalog::toLogString(data) << endl;
+        (*file_) << orcalog::toLogString(data);
     }
     else
     {

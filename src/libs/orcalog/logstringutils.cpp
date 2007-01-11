@@ -48,7 +48,8 @@ toLogString( const orca::Waypoint2d& obj )
       << obj.headingTolerance*180.0/M_PI << " "
       << toLogString(obj.timeTarget) << " " 
       << obj.maxApproachSpeed << " "
-      << obj.maxApproachTurnrate*180.0/M_PI;
+      << obj.maxApproachTurnrate*180.0/M_PI
+      << endl;
     return s.str();
 }
 
@@ -60,7 +61,8 @@ toLogString( const orca::CpuData& obj )
         << " " << obj.userLoad
         << " " << obj.systemLoad
         << " " << obj.idleLoad
-        << " " << obj.temperature;
+        << " " << obj.temperature
+        << endl;
     return s.str();
 }
 
@@ -250,6 +252,7 @@ toLogString( const orca::PowerData& obj )
     for ( unsigned int i=0; i < obj.batteries.size(); ++i ) {
         s << " " << obj.batteries[i].voltage << " " << obj.batteries[i].percent << " " << obj.batteries[i].secRemaining;
     }
+    s << endl;
     return s.str();
 }
 
