@@ -29,14 +29,11 @@ public:
     virtual ~Replayer();
 
     //! Opens data file and calls virtual functions initInterfaces() and
-    //! initConfigs(). The first one must be implemented in derived classes the
-    //! second one is optional.
+    //! initDescription(). Both must be implemented in derived classes.
     void init();
 
     //! Reads the specified data object from the log and sends it out.
     virtual void replayData( int index, bool isTest=false ) = 0;
-
-//     void 
 
     //! Returns interface type.
     std::string interfaceType() const { return interfaceType_; };
@@ -71,10 +68,13 @@ protected:
     //! Counts how many data objects we have loaded from the log file.
     int dataCounter_;
 
+    //! Initialize interfaces
     virtual void initInterfaces() = 0;
 
-    //! not all interfaces have config information
-    virtual void initConfigs() {};
+    //! Initialize interface description. 
+    //! Not all interfaces have a description 
+    //! but it's safer to make it fully virtual.
+    virtual void initDescription() = 0;
 
     //! Optional utility. The handle to file is in file_.
     //! You can open the file yourself if you want.

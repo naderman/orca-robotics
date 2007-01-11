@@ -60,7 +60,7 @@ private:
     orca::GpsMapGridData gpsMapGridData_;
     
     virtual void initInterfaces();
-    virtual void initConfigs();
+    virtual void initDescription();
 
     orca::GpsConsumerPrx gpsConsumerPrx_;
     orca::GpsTimeConsumerPrx gpsTimeConsumerPrx_;

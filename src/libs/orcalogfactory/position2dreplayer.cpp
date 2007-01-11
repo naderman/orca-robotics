@@ -93,7 +93,7 @@ Position2dReplayer::unsubscribe(const ::orca::Position2dConsumerPrx &subscriber,
 
 
 void 
-Position2dReplayer::initConfigs()
+Position2dReplayer::initDescription()
 {
     orca::Position2dGeometry geometry;
 

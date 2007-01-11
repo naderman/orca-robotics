@@ -52,8 +52,8 @@ Replayer::init()
     // this one is implemented in derived classes
     initInterfaces();
 
-    // this one is optionally implemented in derived classes
-    initConfigs();
+    // this one is implemented in derived classes
+    initDescription();
 }
 
 void

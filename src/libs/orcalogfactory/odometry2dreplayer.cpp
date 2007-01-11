@@ -87,7 +87,7 @@ Odometry2dReplayer::unsubscribe(const ::orca::Odometry2dConsumerPrx &subscriber,
 
 
 void 
-Odometry2dReplayer::initConfigs()
+Odometry2dReplayer::initDescription()
 {
     orcalog::IceReadHelper helper( context_.communicator(), file_ );
     ice_readOdometry2dDescription( helper.stream_, descr_ );

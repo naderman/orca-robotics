@@ -123,7 +123,7 @@ Position3dReplayer::replayData( int index, bool isTest )
 }
 
 void 
-Position3dReplayer::initConfigs()
+Position3dReplayer::initDescription()
 {
     if (format_=="ice")
     {

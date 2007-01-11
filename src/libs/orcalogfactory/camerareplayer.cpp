@@ -142,7 +142,7 @@ CameraReplayer::loadHeaderIce()
 }
 
 void 
-CameraReplayer::initConfigs()
+CameraReplayer::initDescription()
 {
     if (format_=="ice")
     {

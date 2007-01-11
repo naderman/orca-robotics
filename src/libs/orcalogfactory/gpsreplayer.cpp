@@ -203,7 +203,7 @@ GpsReplayer::unsubscribeForMapGrid(const ::orca::GpsMapGridConsumerPrx &subscrib
 }
 
 void 
-GpsReplayer::initConfigs()
+GpsReplayer::initDescription()
 {
     if (format_=="ice")
     {

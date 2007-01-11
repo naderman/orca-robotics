@@ -99,7 +99,7 @@ LaserScanner2dReplayer::initInterfaces()
 }
 
 void 
-LaserScanner2dReplayer::initConfigs()
+LaserScanner2dReplayer::initDescription()
 {
     if (format_=="ice")
     {

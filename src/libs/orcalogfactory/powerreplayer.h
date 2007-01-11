@@ -49,7 +49,7 @@ private:
 
     virtual void initInterfaces();
     // not needed for this interface
-//     virtual void initConfigs();
+    virtual void initDescription() {};
 
     // this is a counter of instaces of this type, used for registered interface name
     static int _counter;

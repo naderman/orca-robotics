@@ -51,7 +51,7 @@ private:
     IceStorm::TopicPrx topic_;
 
     virtual void initInterfaces();
-    virtual void initConfigs();
+    virtual void initDescription();
 
     // binary file protocol specifics
     void loadDataIce( int index );
