@@ -194,6 +194,20 @@ SickAcfrDriver::read( orca::LaserScanner2dDataPtr &data )
 		int orcaUsec = ( usec - ( orcaSec * 1000000 ) );
 		data->timeStamp.seconds = orcaSec;
 		data->timeStamp.useconds = orcaUsec;
+
+	    data->ranges.resize( 1 );
+		data->intensities.resize( 1 );
+					            
+		//debug
+		//            cout<<"SickCarmenDriver::read"<<endl;
+		for ( int i=0; i < 1; i++ )
+		{
+			// alexm: dodgy hack in response to sudden shrinkage of the scan
+			// "/1000.0" was in the original
+			data->ranges[i]      = 50.0;
+			//data->ranges[i]      = laser_->range[i]/1000.0;
+			data->intensities[i] = 1;
+		}
 	
     }
 
