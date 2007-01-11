@@ -23,7 +23,8 @@ namespace laser2d {
 SickAcfrDriver::SickAcfrDriver( const Config & cfg, const orcaice::Context & context )
     : Driver(cfg),
       laser_(0),
-      context_(context)
+      timeoutMs_(2000),
+	  context_(context)
 {
     // read driver-specific properties
     Ice::PropertiesPtr prop = context_.properties();
@@ -119,8 +120,8 @@ return 0;
 int 
 SickAcfrDriver::init( )
 {
-    firstRead_     = false;
-    laserStalled_  = false;
+    // firstRead_     = false;
+    // laserStalled_  = false;
 
     //
     // this talks to the laser and configures it
@@ -160,17 +161,38 @@ SickAcfrDriver::init( )
 int 
 SickAcfrDriver::read( orca::LaserScanner2dDataPtr &data )
 {
-sleep(10);
-/*
-    infoMessages_ = "";
+    // infoMessages_ = "";
 
     context_.tracer()->debug( "SickAcfrDriver::read()", 4 );
 
-    double currentTime;
-    const  double LASER_STALL_TIMEOUT = 1.0; // seconds
-    const  int    POLL_PERIOD_US = 1000;
+    // double currentTime;
+    // const  double LASER_STALL_TIMEOUT = 1.0; // seconds
+    // const  int    POLL_PERIOD_US = 1000;
+ 
+ // blocking read with timeout. Also deletes the front element from the buffer
+    int ret = laser_->laserDataBuffer_.getAndPopNext( rawLaserData_, timeoutMs_ );
+    if ( ret != 0 ) {
+        // throw NovatelSpanException( "Timeout while waiting for GPS packet" );
+        context_.tracer()->info( "TRACE(sickacfrdriver.cpp::read()): Timeout while waiting for laser packet" );
+    }
+    else
+    {      
+        context_.tracer()->debug( "TRACE(sickacfrdriver.cpp::read()): got laser data", 4 );
 
-    if ( laser_->timestamp == 0 )
+        // cout << "gpsCount_: " << gpsCount_ << endl;
+        // if (gpsCount_ > 200 )
+        // {
+            cout << "Laser Data Buffer is " << laser_->laserDataBuffer_.size()/100 << "% full" << endl;
+        //     gpsCount_ = 0;
+        // }
+        // gpsCount_++;
+    
+    }
+    
+    return 0;
+
+/*
+if ( laser_->timestamp == 0 )
     {
         // Haven't read anything yet
         laser_->timestamp = carmen_get_time_ms();
@@ -240,8 +262,7 @@ sleep(10);
             return 0;
         }
     }
-*/
-return 0;
+return 0; */
 }
 
 const std::string

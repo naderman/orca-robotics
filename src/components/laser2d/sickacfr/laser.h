@@ -11,6 +11,9 @@
 #ifndef ORCA2_LASER2D_SICK_ACFR_LASER_H
 #define ORCA2_LASER2D_SICK_ACFR_LASER_H
 
+// buffer for laser data
+#include <orcaice/buffer.h>
+ 
 #include "sickdefines.h"
 
 #ifdef __cplusplus
@@ -80,6 +83,8 @@ void* IniLaserInstance(unsigned int n, int speed0, int speed2, int init, int ser
 
 void* readSickLaserX(void *pxl);
 
+orcaice::Buffer<struct LaserData> laserDataBuffer_;
+
 private:
 
 // spawn a thread for receiving laser packets
@@ -107,6 +112,7 @@ uint16b ExeCRC(unsigned char *pf,int n,uint16b crc_poly);
 
 void ReadRangeData2_U16(uint16b *pf);
 
+ 
 };
 
 #endif

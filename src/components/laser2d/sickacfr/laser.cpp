@@ -27,6 +27,9 @@ static uint LaserSensibilityMode=0 ;
 Laser::Laser() 
 	: pxl(0)
 {
+    // configure the buffers so they have depth 100 and are of type queue
+    laserDataBuffer_.configure( 100 , orcaice::BufferTypeCircular );
+ 
 }
 
 Laser::~Laser() 
@@ -155,9 +158,6 @@ chau:
 // static uint16b ExeCRC(unsigned char *pf,int n,uint16b crc_poly);
 extern xuint32 ExternalCounter1;
 
-// temp variable to check we are in this method... can remove it later
-static int cxx ;
-
 // parse the incoming laser data and put into a buffer for publishing
 void 
 Laser::parse_SICK_LASER(struct sic_packet *pxxx,unsigned char *string,struct reco *rr_lsr,xuint32 timestamp,int *BadCrcs,struct LaserData *pxl)
@@ -169,10 +169,6 @@ Laser::parse_SICK_LASER(struct sic_packet *pxxx,unsigned char *string,struct rec
 	xuint32 dt ;
 	crc2 = ExeCRC(string,730,POLYCRC);
 	crc1 = *((uint16b*)(string+730)) ;
-	
-	// can remove this later
-    cxx++ ;
-    printf("--->[%d]\n",cxx) ;
 	
     if (crc1!=crc2)
     {
@@ -186,8 +182,9 @@ Laser::parse_SICK_LASER(struct sic_packet *pxxx,unsigned char *string,struct rec
 		pxxx->Status = string[729] ;
 		pxxx->cx = pxl->cx ;
         //
-        // laser data should be put into buffer for publishing here
+        // push the laser data into a buffer for the laser2d component to push to icestorm
         //
+        laserDataBuffer_.push( *pxl );
 
 		dt = timestamp - pxl->LastTxTime;
         //to avoid sending to net at high freq (75hz...)      

@@ -49,18 +49,23 @@ private:
     // core object
     Laser* laser_;
 
+    // struct for holding laser data and params
+	LaserData rawLaserData_;
+
     char *device_;
     // LMS or PMS
     char *type_; 
     int baudrate_;
 
-    orcaice::Context context_;
-
     char sickInfoMessage_[2000];
 
-    bool   firstRead_;
-    double lastStatsUpdateTime_;
-    bool   laserStalled_;
+    // bool   firstRead_;
+    // double lastStatsUpdateTime_;
+    // bool   laserStalled_;
+
+	int timeoutMs_;
+    
+	orcaice::Context context_;
 };
 
 } // namespace
