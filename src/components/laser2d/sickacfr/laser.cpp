@@ -186,7 +186,7 @@ Laser::parse_SICK_LASER(struct sic_packet *pxxx,unsigned char *string,struct rec
         //
         laserDataBuffer_.push( *pxl );
 
-		dt = timestamp - pxl->LastTxTime;
+        dt = timestamp - pxl->LastTxTime;
         //to avoid sending to net at high freq (75hz...)      
 		if (dt>=pxl->DtMinTx)			
 		{	

@@ -202,11 +202,13 @@ SickAcfrDriver::read( orca::LaserScanner2dDataPtr &data )
 		for ( int i=0; i < 361; i++ )
 		{
 		    // mask off the corresponding bytes in the sicklaser structure
-			// first 13 bytes are range
-			data->ranges[i] = (rawLaserData_.sp->range[i]>>13) & 0x7;
-			// last 3 bytes are intensity
-			data->intensities[i] = rawLaserData_.sp->range[i] & 0x1FFF;
-		}
+			// first 13 bits are range
+			data->intensities[i] = (rawLaserData_.sp->range[i]>>13) & 0x7;
+ 	  		// last 3 bits are intensity
+			data->ranges[i] = rawLaserData_.sp->range[i] & 0x1FFF;
+ 			// convert from cm to metres
+			data->ranges[i] = data->ranges[i]/100;
+    	}
 	
     }
 
