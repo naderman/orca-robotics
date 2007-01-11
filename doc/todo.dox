@@ -62,6 +62,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Replaces Position2d which is now obsolete.
 - VelocityControl2d
     - Replaces Platform2d which is now obsolete.
+- Wifi
+    - Reports wireless signal strength and other wireless network parameters (Tobias K.)
 
 @par New components
 
@@ -77,6 +79,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - orcaifaceimpl
   - Optional convenience library providing default implementations of some Orca interfaces (Alex B.)
+- orcawifi
+  - Library for getting wireless information in Linux (Tobias K.)
 
 @par Updated interfaces
 
@@ -99,11 +103,15 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - General source overhaul. Using orcaice::EventQueue's.
 - LocalNav
     - General cleanup, plus made to respect timings in paths. (Alex B.)
+    - Uses new interfaces Odometry2d and VelocityControl2d. (Tobias K.)
 
 @par Updated utilities
 
 - Probe (alex m.)
     - now using orcaice::EventQueue for cross-thread communication.
+- OrcaView2d (Tobias K.)
+    - interaction with pathfollower2d interface more sophisticated: 
+      paths can be specified as missions with associcated waiting times and behaviours
 
 @par Updated libraries
 
@@ -115,8 +123,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
       manipulation. (alex m.)
     - made 'component started' trace optional with Orca.PrintComponentStarted property. This is to be
       nice to nonstandard display drivers, e.g. those using ncurses.
-- libOrcaLogFactory (alex m.)
-    - added support for Odemetry2d/3d interfaces
+- libOrcaLogFactory
+    - added support for Odometry2d/3d interfaces (alex m.)
+    - added support for Wifi interface (Tobias K.)
 - libOrcaProbeFactory (alex m.)
     - added support for Status and Tracer interfaces
 - libOrcaDef (alex m.)

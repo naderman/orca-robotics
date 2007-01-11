@@ -34,3 +34,5 @@ ADD_SUBDIRECTORY ( orcaqgui3dfactory )
 ADD_SUBDIRECTORY ( orcaqt )
 ADD_SUBDIRECTORY ( orcaquml )
 ADD_SUBDIRECTORY ( orcaserial )
+ADD_SUBDIRECTORY ( orcawifi )
+
