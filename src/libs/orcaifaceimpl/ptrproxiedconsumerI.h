@@ -8,12 +8,12 @@
  *
  */
  
-#ifndef ORCAICE_PTR_PROXIED_CONSUMER_I_H
-#define ORCAICE_PTR_PROXIED_CONSUMER_I_H
+#ifndef ORCAIFACEIMPL_PTR_PROXIED_CONSUMER_I_H
+#define ORCAIFACEIMPL_PTR_PROXIED_CONSUMER_I_H
 
 #include <orcaice/ptrproxy.h>
 
-namespace orcaice
+namespace orcaifaceimpl
 {
 
 /*!

@@ -8,13 +8,13 @@
  *
  */
  
-#ifndef ORCAICE_PRINTING_CONSUMER_I_H
-#define ORCAICE_PRINTING_CONSUMER_I_H
+#ifndef ORCAIFACEIMPL_PRINTING_CONSUMER_I_H
+#define ORCAIFACEIMPL_PRINTING_CONSUMER_I_H
 
 #include <iostream>
 // #include <orcaobj/orcaobj.h>
 
-namespace orcaice
+namespace orcaifaceimpl
 {
 /*!
  *  @brief A convenience class for consumers with setData() operation.

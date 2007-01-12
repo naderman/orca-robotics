@@ -14,7 +14,7 @@
 #include <iostream>
 
 #include <orcaice/orcaice.h>
-#include <orcaice/printingconsumerI.h>
+#include <orcaifaceimpl/printingconsumerI.h>
 
 template<class ObjectPrxType, class ComsumerPrxType, class ConsumerType, class ObjectPtrType>
 void attach( const orcaice::Context & context, const std::string & proxyString )
@@ -78,7 +78,7 @@ void attach( const orcaice::Context & context, const std::string & proxyString )
 
     // create a callback object to recieve scans
 //     Ice::ObjectPtr consumer = new ConsumerIType;
-    Ice::ObjectPtr consumer = new orcaice::PrintingConsumerI<ConsumerType,ObjectPtrType>;
+    Ice::ObjectPtr consumer = new orcaifaceimpl::PrintingConsumerI<ConsumerType,ObjectPtrType>;
 
     ComsumerPrxType callbackPrx = orcaice::createConsumerInterface<ComsumerPrxType>( context, consumer );
     //

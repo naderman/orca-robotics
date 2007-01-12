@@ -8,13 +8,13 @@
  *
  */
 
-#ifndef ORCAICE_PTR_BUFFERED_TIMED_CONSUMER_H
-#define ORCAICE_PTR_BUFFERED_TIMED_CONSUMER_H
+#ifndef ORCAIFACEIMPL_BUFFERED_TIMED_CONSUMER_H
+#define ORCAIFACEIMPL_BUFFERED_TIMED_CONSUMER_H
 
-#include <orcaice/ptrbufferedconsumerI.h>
+#include <orcaifaceimpl/bufferedconsumerI.h>
 #include <orcaice/timer.h>
 
-namespace orcaice
+namespace orcaifaceimpl
 {
 
 //!
@@ -23,8 +23,8 @@ namespace orcaice
 //!
 //! @author Alex Brooks
 //!
-template< class ConsumerType, class DataPtrType >
-class PtrBufferedTimedConsumerI : public orcaice::PtrBufferedConsumerI<ConsumerType,DataPtrType>
+template< class ConsumerType, class DataType >
+class BufferedTimedConsumerI : public orcaifaceimpl::BufferedConsumerI<ConsumerType,DataType>
 {
 public:
 
@@ -34,7 +34,7 @@ public:
     void resetTimer() { return timer_.restart(); }
 
 private:
-    virtual void handleData( const DataPtrType & data )
+    virtual void handleData( const DataType & data )
     {
         timer_.restart();
     };

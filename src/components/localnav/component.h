@@ -7,18 +7,19 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef COMPONENT_H
-#define COMPONENT_H
 
-#include <orcaice/component.h>
-#include <orcaice/ptrproxy.h>
-#include <orcaice/proxiedconsumerI.h>
-#include <orcaice/ptrproxiedconsumerI.h>
+#ifndef ORCA2_LOCALNAV_COMPONENT_H
+#define ORCA2_LOCALNAV_COMPONENT_H
+
 #include <orca/rangescanner2d.h>
 #include <orca/velocitycontrol2d.h>
 #include <orca/odometry2d.h>
 #include <orca/localise2d.h>
 #include <orca/pathfollower2d.h>
+#include <orcaice/component.h>
+#include <orcaice/ptrproxy.h>
+#include <orcaifaceimpl/proxiedconsumerI.h>
+#include <orcaifaceimpl/ptrproxiedconsumerI.h>
 #include "pathfollower2dI.h"
 
 namespace localnav {
@@ -53,9 +54,9 @@ private:
     orca::PathFollower2dConsumerPrx pathPublisher_;
 
     // Get observations, pose, and odometric velocity
-    orcaice::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr> *obsConsumer_;
-    orcaice::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>     *locConsumer_;
-    orcaice::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>     *odomConsumer_;
+    orcaifaceimpl::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr> *obsConsumer_;
+    orcaifaceimpl::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>     *locConsumer_;
+    orcaifaceimpl::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>     *odomConsumer_;
 
     // Give commands
     orca::VelocityControl2dPrx *velocityControl2dPrx_;

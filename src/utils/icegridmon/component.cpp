@@ -9,6 +9,7 @@
  */
 
 #include <iostream>
+#include <sstream>
 
 #include <IceGrid/Registry.h>
 #include <IceGrid/Observer.h>
@@ -19,8 +20,6 @@
 #include "observerI.h"
 
 using namespace std;
-using namespace orca;
-using namespace orcaice;
 
 namespace icegridmon {
 
@@ -54,17 +53,21 @@ Component::start()
         context().communicator()->shutdown();
     }
 
+    int timeoutMs = 0;
     try
     {
         session_ = registry->createAdminSession( "horse", "shit" );
-        cout << "created session"<<endl;
+        timeoutMs = registry->getSessionTimeout();
+        
+        stringstream ss; ss<<"Created session (timeout="<<timeoutMs<<"ms";
+        tracer()->info( ss.str() );
     }
     catch(const IceGrid::PermissionDeniedException& ex)
     {
-        cout << "permission denied:\n" << ex.reason << endl;
+        tracer()->error( "Permission denied:\n" + ex.reason );
     }
 
-    keepAlive_ = new SessionKeepAliveThread( session_, registry->getSessionTimeout() / 2 );
+    keepAlive_ = new SessionKeepAliveThread( session_, timeoutMs/2, context() );
     keepAlive_->start();
 
     regObserver_ = new RegistryObserverI( context() );
@@ -78,7 +81,8 @@ Component::start()
     session_->setObservers( regObserverPrx, nodeObserverPrx );
 }
 
-void Component::stop()
+void 
+Component::stop()
 {
     //
     // Destroy the keepAlive_ thread and the sesion object otherwise

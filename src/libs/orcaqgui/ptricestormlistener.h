@@ -16,10 +16,10 @@
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
 
-#include <orcaice/ptrbufferedtimedconsumerI.h>
 #include <orcaice/connectutils.h>
 #include <orcaice/context.h>
 #include <orcaice/timer.h>
+#include <orcaifaceimpl/ptrbufferedtimedconsumerI.h>
 
 #include <orcaqgui/detail.h>
 
@@ -98,7 +98,7 @@ public:
           isSubscribed_(false)
         {
             // Register with the adapter
-            consumer_ = new orcaice::PtrBufferedTimedConsumerI<ConsumerType,DataPtrType>;
+            consumer_ = new orcaifaceimpl::PtrBufferedTimedConsumerI<ConsumerType,DataPtrType>;
             registerWithAdapter();
         }
 
@@ -142,7 +142,7 @@ public:
 private:
 
     DataPtrType                                                data_;
-    orcaice::PtrBufferedTimedConsumerI<ConsumerType,DataPtrType> *consumer_;
+    orcaifaceimpl::PtrBufferedTimedConsumerI<ConsumerType,DataPtrType> *consumer_;
 
     orcaice::Context  context_;
     std::string       proxyString_;

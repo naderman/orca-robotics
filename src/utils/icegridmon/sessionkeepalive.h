@@ -11,8 +11,8 @@
 #ifndef ORCA2_ICEGRIDMON_SESSIONI_KEEP_ALIVE_H
 #define ORCA2_ICEGRIDMON_SESSIONI_KEEP_ALIVE_H
 
-#include <Ice/Ice.h>
 #include <IceGrid/Registry.h>
+#include <orcaice/context.h>
 
 namespace icegridmon
 {
@@ -22,47 +22,19 @@ class SessionKeepAliveThread : public IceUtil::Thread, public IceUtil::Monitor<I
 {
 public:
 
-    SessionKeepAliveThread(const IceGrid::AdminSessionPrx& session, long timeoutSec ) :
-	session_(session),
-        timeout_(IceUtil::Time::seconds(timeoutSec)),
-        destroy_(false)
-    {
-    }
+    SessionKeepAliveThread(const IceGrid::AdminSessionPrx& session, 
+                        long timeoutSec, 
+                        const orcaice::Context& context );
 
-    virtual void
-    run()
-    {
-        Lock sync(*this);
-        while(!destroy_)
-        {
-            timedWait(timeout_);
-            if(destroy_)
-            {
-	        break;
-	    }
-            try
-            {
-                session_->keepAlive();
-            }
-            catch(const Ice::Exception&)
-            {
-		break;
-            }
-        }
-    }
+    virtual void run();
 
-    void
-    destroy()
-    {
-        Lock sync(*this);
-        destroy_ = true;
-        notify();
-    }
+    void destroy();
 
 private:
 
     IceGrid::AdminSessionPrx session_;
     const IceUtil::Time timeout_;
+    orcaice::Context context_;
     bool destroy_;
 };
 

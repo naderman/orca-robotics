@@ -8,12 +8,12 @@
  *
  */
  
-#ifndef ORCAICE_PROXIED_CONSUMER_I_H
-#define ORCAICE_PROXIED_CONSUMER_I_H
+#ifndef ORCAIFACEIMPL_PROXIED_CONSUMER_I_H
+#define ORCAIFACEIMPL_PROXIED_CONSUMER_I_H
 
 #include <orcaice/proxy.h>
 
-namespace orcaice
+namespace orcaifaceimpl
 {
 
 /*!

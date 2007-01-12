@@ -16,38 +16,38 @@ using namespace std;
 
 namespace icegridmon {
 
-NodeObserverI::NodeObserverI( const orcaice::Context & context ) :
+NodeObserverI::NodeObserverI( const orcaice::Context& context ) :
     context_(context)
 {
 }
 
 void
 NodeObserverI::init(const ::IceGrid::NodeDynamicInfoSeq& nodes,
-			     const Ice::Current& current)
+                    const Ice::Current& current)
 {
-    cout<<"Node observer initialized"<<endl;
+    context_.tracer()->debug( "Node observer initialized",2 );
 }
 
 void
 NodeObserverI::nodeUp(const ::IceGrid::NodeDynamicInfo& node,
-			       const Ice::Current& current)
+                        const Ice::Current& current)
 {
-    context_.tracer()->info( "Added application" );
+    context_.tracer()->info( "Node: added application" );
 }
 
 void
 NodeObserverI::nodeDown(const ::std::string& name,
-				 const Ice::Current& current)
+                        const Ice::Current& current)
 {
-    context_.tracer()->warning( "Node down "+name );
+    context_.tracer()->warning( "Node: node down "+name );
 }
 
 void
 NodeObserverI::updateServer(const ::std::string& node,
-				     const ::IceGrid::ServerDynamicInfo& updatedInfo,
-				     const Ice::Current& current)
+                            const ::IceGrid::ServerDynamicInfo& updatedInfo,
+                            const Ice::Current& current)
 {
-    string msg = "Updated server state=";
+    string msg = "Node: updated server state=";
     stringstream ss;
     ss << "id="<<updatedInfo.id << " pid="<<updatedInfo.pid << " enabled="<<(int)updatedInfo.enabled;
     switch ( updatedInfo.state ) {
@@ -75,99 +75,101 @@ NodeObserverI::updateServer(const ::std::string& node,
 
 void
 NodeObserverI::updateAdapter(const ::std::string& node,
-				      const ::IceGrid::AdapterDynamicInfo& updatedInfo,
-				      const Ice::Current& current)
+                            const ::IceGrid::AdapterDynamicInfo& updatedInfo,
+                            const Ice::Current& current)
 {
     stringstream ss;
-    ss << "Updated adapter id="<<updatedInfo.id<<" endpnts#="<<updatedInfo.proxy->ice_getEndpoints().size();
+    ss << "Node: updated adapter id="<<updatedInfo.id<<" endpnts#="<<updatedInfo.proxy->ice_getEndpoints().size();
     context_.tracer()->info( ss.str() );
 }
 
-RegistryObserverI::RegistryObserverI( const orcaice::Context & context ) :
+RegistryObserverI::RegistryObserverI( const orcaice::Context& context ) :
     context_(context)
 {
 }
 
 void
 RegistryObserverI::init(::Ice::Int serial,
-				 const ::IceGrid::ApplicationDescriptorSeq& applications,
-				 const ::IceGrid::AdapterInfoSeq& adpts,
-				 const ::IceGrid::ObjectInfoSeq& objects,
-				 const Ice::Current& current)
+                            const ::IceGrid::ApplicationDescriptorSeq& applications,
+                            const ::IceGrid::AdapterInfoSeq& adpts,
+                            const ::IceGrid::ObjectInfoSeq& objects,
+                            const Ice::Current& current)
 {
-    cout<<"Registry observer initialized with serial="<<serial<<endl;
+    stringstream ss;
+    ss<<"Registry observer initialized with serial="<<serial;
+    context_.tracer()->debug( ss.str(), 2 );
 }
 
 void
 RegistryObserverI::applicationAdded(::Ice::Int serial,
-					     const ::IceGrid::ApplicationDescriptor& desc,
-					     const Ice::Current& current)
+                                        const ::IceGrid::ApplicationDescriptor& desc,
+                                        const Ice::Current& current)
 {
-    context_.tracer()->info( "Added application " );
+    context_.tracer()->info( "Registry: added application " );
 }
 
 void
 RegistryObserverI::applicationRemoved(::Ice::Int serial,
-					       const ::std::string& name,
-					       const Ice::Current& current)
+                                        const ::std::string& name,
+                                        const Ice::Current& current)
 {
-    context_.tracer()->warning( "Removed application "+name );
+    context_.tracer()->warning( "Registry: removed application "+name );
 }
 
 void
 RegistryObserverI::applicationUpdated(::Ice::Int serial,
-					       const ::IceGrid::ApplicationUpdateDescriptor& desc,
-					       const Ice::Current& current)
+                                        const ::IceGrid::ApplicationUpdateDescriptor& desc,
+                                        const Ice::Current& current)
 {
-    context_.tracer()->info( "Updated application " );
+    context_.tracer()->info( "Registry: updated application " );
 }
 
 void
 RegistryObserverI::adapterAdded(::Ice::Int serial,
-					 const ::IceGrid::AdapterInfo& info,
-					 const Ice::Current& current)
+                                const ::IceGrid::AdapterInfo& info,
+                                const Ice::Current& current)
 {
-    context_.tracer()->info( "Added adapter id="+info.id );
+    context_.tracer()->info( "Registry: added adapter id="+info.id );
 }
 
 void
 RegistryObserverI::adapterUpdated(::Ice::Int serial,
-					   const ::IceGrid::AdapterInfo& info,
-					   const Ice::Current& current)
+                                    const ::IceGrid::AdapterInfo& info,
+                                    const Ice::Current& current)
 {
-    context_.tracer()->info( "Updated adapter id="+info.id );
+    context_.tracer()->info( "Registry: updated adapter id="+info.id );
 }
 
 void
 RegistryObserverI::adapterRemoved(::Ice::Int serial,
-					   const ::std::string& id,
-					   const Ice::Current& current)
+                                    const ::std::string& id,
+                                    const Ice::Current& current)
 {
-    context_.tracer()->warning( "Removed adapter id="+id );
+    context_.tracer()->warning( "Registry: removed adapter id="+id );
 }
 
 void
 RegistryObserverI::objectAdded(::Ice::Int serial,
-					const ::IceGrid::ObjectInfo& info,
-					const Ice::Current& current)
+                                const ::IceGrid::ObjectInfo& info,
+                                const Ice::Current& current)
 {
-    context_.tracer()->info( "Added object type="+info.type );
+    context_.tracer()->info( "Registry: added object type="+info.type );
 }
 
 void
 RegistryObserverI::objectUpdated(::Ice::Int serial,
-					  const ::IceGrid::ObjectInfo& info,
-					  const Ice::Current& current)
+                                const ::IceGrid::ObjectInfo& info,
+                                const Ice::Current& current)
 {
-    context_.tracer()->info( "Updated object type="+info.type );
+    context_.tracer()->info( "Registry: updated object type="+info.type );
 }
 
 void
 RegistryObserverI::objectRemoved(::Ice::Int serial,
-					  const ::Ice::Identity& id,
-					  const Ice::Current& current)
+                                const ::Ice::Identity& id,
+                                const Ice::Current& current)
 {
-    context_.tracer()->warning( "Removed object name="+id.name+ " cat="+id.category );
+    context_.tracer()->warning( "Registry: removed object name="+id.name+ " cat="+id.category );
 }
 
 } // namespace

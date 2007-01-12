@@ -11,8 +11,7 @@
 #define ORCA2_FAITH_LOCALISER_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orcaice/ptrbuffer.h>
-#include <orcaice/bufferedconsumerI.h>
+#include <orcaice/buffer.h>
 
 #include <orca/localise2d.h>
 #include <orca/odometry2d.h>

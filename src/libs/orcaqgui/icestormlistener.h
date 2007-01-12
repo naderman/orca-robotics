@@ -16,7 +16,7 @@
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
 
-#include <orcaice/bufferedtimedconsumerI.h>
+#include <orcaifaceimpl/bufferedtimedconsumerI.h>
 #include <orcaice/connectutils.h>
 #include <orcaice/context.h>
 #include <orcaice/timer.h>
@@ -51,7 +51,7 @@ public:
           isSubscribed_(false)
         {
             // Register with the adapter
-            consumer_ = new orcaice::BufferedTimedConsumerI<ConsumerType,DataType>;
+            consumer_ = new orcaifaceimpl::BufferedTimedConsumerI<ConsumerType,DataType>;
             registerWithAdapter();
         }
 
@@ -95,7 +95,7 @@ public:
 private:
 
     DataType                                                data_;
-    orcaice::BufferedTimedConsumerI<ConsumerType,DataType> *consumer_;
+    orcaifaceimpl::BufferedTimedConsumerI<ConsumerType,DataType> *consumer_;
 
     orcaice::Context  context_;
     std::string       proxyString_;

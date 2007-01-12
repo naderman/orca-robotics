@@ -92,9 +92,9 @@ Component::start()
         context().tracer()->debug("connected to a 'VelocityControl2d' interface",5);
 
         // Instantiate everything
-        obsConsumer_  = new orcaice::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>;
-        locConsumer_  = new orcaice::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>;
-        odomConsumer_ = new orcaice::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>;
+        obsConsumer_  = new orcaifaceimpl::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>;
+        locConsumer_  = new orcaifaceimpl::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>;
+        odomConsumer_ = new orcaifaceimpl::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>;
 
         // subscribe for information from platform
         RangeScanner2dPrx obsPrx;
