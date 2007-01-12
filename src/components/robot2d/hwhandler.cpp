@@ -172,7 +172,7 @@ HwHandler::run()
             odometryPipe_.push( odometry2dData );
 
             if ( driverStatus != currDriverStatus ) {
-                context_.status()->status( currDriverStatus );
+//                 context_.status()->status( currDriverStatus );
                 driverStatus = currDriverStatus;
             }
         } else {

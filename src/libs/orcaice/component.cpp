@@ -97,7 +97,7 @@ Component::initStatus()
     orcaice::initTracerPrint( tag()+": Initializing application status handler ...");
 
     if ( !(interfaceFlag_ & StatusInterface) ) {
-        return new orcaice::detail::LocalStatus;
+        return new orcaice::detail::LocalStatus( context_ );
     }
 
     // this is a bit tricky. we need

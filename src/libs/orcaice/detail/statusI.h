@@ -44,24 +44,13 @@ public:
 
     // orcaice::Status interface
 
-    // Routing is determined by HeartbeatToXxx parameter.
-    virtual void heartbeat( const std::string &message, int level=1 );
-    
-    // Routing is determined by StatusToXxx parameter.
-    virtual void status( const std::string &message, bool force=false );
-    
-    // Returns current status.
-    virtual std::string status() const;
+//     virtual void heartbeat( const std::string& subsystem );
+//     
+//     virtual void status( const std::string& subsystem, SubsystemStatusType type, const std::string& message );
+// 
+//     virtual IceUtil::Time startTime() const;
 
 private:
-
-//     Tracer::Config   config_;
-    orcaice::Context context_;
-    std::string prefix_;
-    // We only have one communicator but may have multiple threads.
-    IceUtil::Mutex mutex_;
-    std::string prevWarning_;
-    std::string prevError_;
 
     // Status stuff   
     IceStorm::TopicPrx topic_;
@@ -71,8 +60,8 @@ private:
                                 orca::StatusConsumerPrx &publisher,
                                 bool isStatusTopicRequired );
 
-    std::ofstream *file_;
-    detail::SysLogger *sysLogger_;
+    // utilities
+    static void convert( const LocalStatus::SubsystemsStatus& internal, orca::SubsystemsStatus& network );
 };
 
 

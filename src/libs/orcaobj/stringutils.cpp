@@ -907,7 +907,7 @@ toString( const orca::PowerData& obj )
 
     for ( unsigned int i=0; i < obj.batteries.size(); ++i )
     {
-        s << endl << "    [" 
+        s << endl << "[" 
           <<obj.batteries[i].name<<","
           <<obj.batteries[i].voltage<<"V,"
           <<obj.batteries[i].percent<<"%,"
@@ -920,10 +920,32 @@ std::string
 toString( const orca::StatusData& obj )
 {
     std::ostringstream s;
-    // this toString() function is defined in nameutils.h
-    s << toString( obj.name ) << ": "
-      << obj.category << ": "
-      << obj.message;
+    s << "Status for " << toString( obj.name )  << endl
+      << "time up = " << IceUtil::Time::seconds(obj.timeUp).toDuration() << endl
+      << "subsystems [" << obj.subsystems.size() << "] (name, status, msg, since beat) :";
+
+    string type;
+
+    for ( orca::SubsystemsStatus::const_iterator it=obj.subsystems.begin(); it!=obj.subsystems.end(); ++it ) 
+    {
+        switch ( it->second.type ) {
+        case orca::SubsystemStatusOk :
+            type = "OK";
+            break;
+        case orca::SubsystemStatusWarning :
+            type = "WARN";
+            break;
+        case orca::SubsystemStatusFault :
+            type = "FAULT";
+            break;
+        }
+
+        s << endl << "[" 
+          <<it->first<<", "
+          <<type<<", "
+          <<it->second.message<<", "
+          <<it->second.sinceHeartbeat*100.0<<"%]";
+    }
 
     return s.str();
 }

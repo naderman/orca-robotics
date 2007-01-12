@@ -25,7 +25,7 @@ class SysLogger;
 class LocalTracer : public orcaice::Tracer
 {
 public:
-    LocalTracer( const orcaice::Context & context );
+    LocalTracer( const orcaice::Context& context );
     virtual ~LocalTracer(); 
 
     // orcaice::Tracer interface
@@ -45,10 +45,10 @@ public:
 protected:
 
     // Not implemented; prevents accidental use.
-    LocalTracer( const LocalTracer & );
-    LocalTracer& operator= ( const LocalTracer & );
+    LocalTracer( const LocalTracer& );
+    LocalTracer& operator= ( const LocalTracer& );
 
-    LocalTracer::Config  config_;
+    Tracer::Config  config_;
     orcaice::Context context_;
     std::string prefix_;
 

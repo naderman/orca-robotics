@@ -17,10 +17,10 @@
 using namespace std;
 using namespace orcaice::detail;
 
-TracerI::TracerI( const orcaice::Context & context )
-          : LocalTracer(context),
-            topic_(0),
-            publisher_(0)
+TracerI::TracerI( const orcaice::Context & context ) :
+    LocalTracer(context),
+    topic_(0),
+    publisher_(0)
 {
     // do we need IceStorm topic?
     if ( config_.verbosity[AnyTrace][ToNetwork] ) {

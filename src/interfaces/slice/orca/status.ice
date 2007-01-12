@@ -22,28 +22,52 @@ module orca
     @{
 */
 
+enum SubsystemStatusType
+{
+    SubsystemStatusOk,
+    SubsystemStatusWarning,
+    SubsystemStatusFault
+};
+
+//! Status for a single subsystem of this component
+struct SubsystemStatus
+{
+    //! Machine-readable status description
+    SubsystemStatusType type;
+
+    //! Human-readable status description
+    string message;
+
+    //! Ratio of time since last heartbeat to maximum expected time between heartbeats.
+    //! For example, sinceHeartbeat=0.5 means that half of normally expected interval between heartbeats
+    //! has elapsed.
+    float sinceHeartbeat;
+};
+
+//! Status for all subsystems of this component
+dictionary<string,SubsystemStatus> SubsystemsStatus;
+
 /*!
     @brief Component status data.
 */
 struct StatusData
 {
-    //! Time when data was measured.
+    //! Time when status was recorded
     Time timeStamp;
-    //! The fully-qualified name of the interface.
+
+    //! The fully-qualified name of the component.
     FQComponentName name;
-    //! Message category, e.g. warning, error, etc.
-    string category;
-    //! Verbosity level, 1 being the lowest
-    int verbosity;
-    //! Status message from component.
-    string message;
+
+    //! Number of seconds since this component was activated.
+    int timeUp;
+
+    //! Status of component subsystems
+    SubsystemsStatus subsystems;
 };
 
 
 /*!
- *
- * Data consumer interface (needed only for the push pattern).
- *
+    Data consumer interface.
  */
 interface StatusConsumer
 {
@@ -52,12 +76,13 @@ interface StatusConsumer
 };
 
 /*!
- *  @brief Access to a robot's status subsystem
+    @brief Access to a robot's status subsystem
  */
 interface Status
 {
     //! Returns the latest status.
-    nonmutating StatusData getData();
+    nonmutating StatusData getData()
+        throws DataNotExistException;
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The

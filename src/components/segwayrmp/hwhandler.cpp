@@ -227,7 +227,7 @@ HwHandler::run()
                 powerPipe_.set( powerData );
                 
                 if ( driverStatus != currDriverStatus ) {
-                    context_.status()->status( currDriverStatus );
+//                     context_.status()->status( currDriverStatus );
                     driverStatus = currDriverStatus;
                 }
             } 

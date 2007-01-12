@@ -13,6 +13,9 @@
 
 #include "../status.h"
 
+#include <IceUtil/Mutex.h>
+#include <map>
+
 namespace orcaice
 {
 namespace detail
@@ -21,26 +24,42 @@ namespace detail
 class LocalStatus : public orcaice::Status
 {
 public:
-    LocalStatus();
+    LocalStatus( const orcaice::Context& context );
     virtual ~LocalStatus() {};
     
     // from orcaice::Status
 
-    virtual void heartbeat( const std::string &message, int level=1 ) {};
-    
-    virtual void status( const std::string &message, bool force=false ) {};
-    
-    virtual std::string status() const { return "LocalStatus is not implemented"; };
+    virtual void setHeartbeatInterval( const std::string& subsystem, double maxHeartbeatInterval );
 
-    virtual IceUtil::Time startTime() const { return startTime_; };
+    virtual void heartbeat( const std::string& subsystem );
+    
+    virtual void subsys( const std::string& subsystem, SubsystemStatusType type, const std::string& message );
 
-private:
+    virtual IceUtil::Time startTime() const;
+
+protected:
 
     // Not implemented; prevents accidental use.
     LocalStatus( const LocalStatus & );
     LocalStatus& operator= ( const LocalStatus & );
 
+    struct SubsystemStatus
+    {
+        SubsystemStatusType type;
+        std::string message;
+        IceUtil::Time lastHeartbeat;
+        double maxHeartbeatInterval;
+    };
+    typedef std::map<std::string,SubsystemStatus> SubsystemsStatus;
+
+    SubsystemsStatus subsystems_;
+
+    orcaice::Context context_;
+
     IceUtil::Time startTime_;
+
+    // We only have one communicator but may have multiple threads.
+    IceUtil::Mutex mutex_;
 };
 
 } // namespace

@@ -11,6 +11,8 @@
 #ifndef ORCAICE_STATUS_H
 #define ORCAICE_STATUS_H
 
+#include <IceUtil/Time.h>
+
 namespace orcaice
 {
 
@@ -22,19 +24,27 @@ namespace orcaice
 class Status
 {
 public:
+
+    enum SubsystemStatusType
+    {
+        Ok,
+        Warning,
+        Fault
+    };
     
     virtual ~Status() {};
 
-    //! Routing is determined by HeartbeatToXxx parameter.
-    virtual void heartbeat( const std::string &message, int level=1 ) = 0;
-    
-    //! Routing is determined by StatusToXxx parameter.
-    virtual void status( const std::string &message, bool force=false ) =0 ;
-    
-    //! Returns current status.
-    virtual std::string status() const = 0;
+    //! Set maximum expected interval between heartbeats. When time since last heartbeat exceeds this,
+    //! alarm is raised.
+    virtual void setHeartbeatInterval( const std::string& subsystem, double maxHeartbeatInterval ) = 0;
 
-    //! The time when the component was activated
+    //! Record heartbeat from a subsystem
+    virtual void heartbeat( const std::string& subsystem ) = 0;
+    
+    //! Set status information for a subsystem
+    virtual void subsys( const std::string& subsystem, SubsystemStatusType type, const std::string& message ) = 0 ;
+
+    //! The time when component was activated
     virtual IceUtil::Time startTime() const = 0;
 };
 
