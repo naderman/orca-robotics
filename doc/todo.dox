@@ -130,6 +130,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - added support for Status and Tracer interfaces
 - libOrcaDef (alex m.)
     - removed Home object registration from XML descriptor. It's done programatically from libOrcaIce.
+    - fixed bug in xml template generation which caused 60sec delay in component shutdown from within IceGrid.
 
 @section orca_doc_history_211 Changes in Release 2.1.1
 
