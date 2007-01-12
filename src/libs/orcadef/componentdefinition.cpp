@@ -391,7 +391,7 @@ toXmlTemplateText( const ComponentDef &def )
 
     ss <<tab<<tab<<tab<<tab
         <<"<adapter "
-        <<"name=\"${platform}/"<<cfg.fqname.component<<"\" "
+        <<"name=\""<<def.tag<<"\" "
         <<"endpoints=\""<<def.endpoints<<"\" "
         <<"register-process=\"true\" "
         <<"id=\"${platform}/"<<cfg.fqname.component<<"\"/>" << endl;
