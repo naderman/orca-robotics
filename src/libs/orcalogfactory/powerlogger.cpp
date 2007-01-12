@@ -74,7 +74,7 @@ PowerLogger::setData(const orca::PowerData & data, const Ice::Current&)
     else if ( format_ == "ascii" )
     {
 //         cout<<"writing line :"<<orcalog::toLogString(data)<<endl;
-        (*file_) << orcalog::toLogString(data);
+        (*file_) << orcalog::toLogString(data) << endl;
     }
     else
     {

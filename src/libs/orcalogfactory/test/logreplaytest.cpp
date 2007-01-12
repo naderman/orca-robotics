@@ -294,7 +294,6 @@ TestComponent::start()
     cout<<"*** Testing Power log/replay 'ascii' format ... "<<endl;
     {
         logMaster = new orcalog::LogMaster( "master.txt", context() );
-
         orcalogfactory::PowerLogger* logger = 
             new orcalogfactory::PowerLogger( logMaster, "0", "ascii", "", context() );
         orca::PowerData dataIn;
@@ -305,7 +304,7 @@ TestComponent::start()
             new orcalogfactory::PowerReplayer( "ascii", "power0.log", context() );
         replayer->replayData( 0, true );  
         orca::PowerData dataOut = replayer->getData( Ice::Current() );
-    
+        
         if ( dataIn.batteries.size() != dataOut.batteries.size()
                 || dataIn.batteries[0].voltage != dataOut.batteries[0].voltage ) {
             cout<<"failed"<<endl<<"object logged incorrectly"<<endl;

@@ -252,7 +252,6 @@ toLogString( const orca::PowerData& obj )
     for ( unsigned int i=0; i < obj.batteries.size(); ++i ) {
         s << " " << obj.batteries[i].voltage << " " << obj.batteries[i].percent << " " << obj.batteries[i].secRemaining;
     }
-    s << endl;
     return s.str();
 }
 
