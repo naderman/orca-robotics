@@ -56,7 +56,8 @@ struct LaserData
 	struct reco* rr_lsr;		   
 	int ignoredx,ignoredT,usedChars,FramesOK,BadCrcs;	//some stats
 	xuint32 TimeOuts;
-	int FComLsr;				// handle to serial device
+    // file descriptor for an opened serial device
+	int FComLsr;				
 	int timeStamp ;
 	pthread_t tid ;
 	// initial priority of this thread

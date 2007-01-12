@@ -15,6 +15,12 @@
 extern "C" {
 #endif
 
+// open the serial port
+//   name = name of the device (eg. "/dev/ser1")
+//   speed0 = baudrate to open at
+//   H = handle to the serial port
+int OpenSerialPortXJEG(char *name,int speed0, unsigned *H);
+ 
 // write the buffer to the serial port
 //   H = handle to the serial port
 //   buff = buffer
@@ -23,12 +29,6 @@ int SerialWriteJEG(unsigned H,uchar *buff,int L,int *nw);
 // close the serial port
 //   H = handle
 void CloseSerialPortJEG( unsigned *H) ;
-
-// open the serial port
-//   name = device
-//   speed0 = baudrate to open at
-//   H = handle to the serial port
-int OpenSerialPortXJEG(char *name,int speed0, unsigned *H);
 
 // read a number of bytes from the serial port
 //   h = handle to the serial port
