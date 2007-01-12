@@ -37,8 +37,6 @@ private:
 
     Network* network_;
 
-    void keyboardHelp();
-
     // obscure keyboard stuff
     int kfd_;
     struct termio cooked_;

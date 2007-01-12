@@ -8,38 +8,32 @@
  *
  */
 
-#ifndef ORCA2_TELEOP_JOYSTICK_DRIVER_H
-#define ORCA2_TELEOP_JOYSTICK_DRIVER_H
+#ifndef ORCA2_TELEOP_KEYBOARD_IOSTREAM_DRIVER_H
+#define ORCA2_TELEOP_KEYBOARD_IOSTREAM_DRIVER_H
 
-#include <orcaice/context.h>
-#include "../inputdriver.h"
+#include "inputdriver.h"
 
 namespace teleop
 {
 
 class Network;
 
-class JoystickDriver : public InputDriver
+class KeyboardIostreamDriver : public InputDriver
 {
 public:
 
-    JoystickDriver( Network* network, const orcaice::Context& context );
-    virtual ~JoystickDriver();
+    KeyboardIostreamDriver( Network* network );
+    virtual ~KeyboardIostreamDriver();
 
     virtual int enable();
     virtual int disable();
 
-    // Blocks till new data is available
+    // Blocks untill new data is available
     virtual int read();
 
 private:
 
     Network* network_;
-    orcaice::Context context_;
-
-    // obscure joystick stuff
-    int jfd_;
-
 };
 
 } // namespace

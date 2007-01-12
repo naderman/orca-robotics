@@ -20,6 +20,7 @@
 #include <linux/input.h>
 #include <string.h>
 #include <errno.h>
+#include <sstream>
 
 #include "evdevutil.h"
 
@@ -32,6 +33,87 @@
 
 namespace teleop
 {
+
+void 
+findUSBJoystick( std::string& joystickDevice )
+{
+    char device[256];
+    int  maxEvdev = 10;
+    bool supportsAbsoluteAxes;
+    bool isUSB;
+    bool foundDevice = false;
+    int ret;
+
+    //
+    // Search for a joystick
+    //
+    for ( int i=0; i < maxEvdev; ++i )
+    {
+        sprintf(device,"/dev/input/event%d",i);
+
+        // printInputType( device );
+        // printDeviceInfo( device );
+
+        ret = teleop::devSupportsAbsoluteAxes( device, supportsAbsoluteAxes );
+
+        if ( ret != 0 )
+        {
+            if ( ret == ENOENT )
+            {
+                // No such file or directory
+                if ( !foundDevice )
+                {
+                    std::stringstream ss;
+                    ss << "Failed to find a USB joystick. Searched up to and including /dev/input/event"<<i-1<<".";
+                    throw( ss.str() );
+                }
+                else
+                {
+                    // We can stop looking.
+                }
+                break;
+            }
+            else if ( ret == EACCES )
+            {
+                if ( !foundDevice )
+                {
+                    std::stringstream ss;
+                    ss << "WARNING: Permission to access " << device << " denied.";
+                    throw( ss.str() );
+                }
+                else
+                {
+                    // We don't really care, since we've already found a useable device.
+                }
+            }
+            continue;
+        }
+
+        ret = teleop::devIsUSB( device, isUSB );
+        if ( ret != 0 )
+        {
+            std::stringstream ss;
+            ss << "Failed to check USB status. This shouldn't happen.";
+            throw( ss.str() );
+        }
+
+        if ( supportsAbsoluteAxes && isUSB )
+        {
+            if ( foundDevice )
+            {
+
+                std::stringstream ss;
+                ss << "Found more than one USB device that supports absolute axes: " << joystickDevice << " and " << device;
+                throw( ss.str() );
+            }
+            else
+            {
+                joystickDevice = device;
+                foundDevice = true;
+            }
+        }
+    }
+}
 
 void
 printDeviceInfo( const char *dev )

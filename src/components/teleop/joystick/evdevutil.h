@@ -11,8 +11,13 @@
 #ifndef TELEOP_EVDEVUTIL_H
 #define TELEOP_EVDEVUTIL_H
 
+#include <string>
+
 namespace teleop
 {
+
+// Throws std::string with error when something goes wrong.
+void findUSBJoystick( std::string& joystickDevice );
 
 // Functions to help debug things.
 void printInputType( const char *dev );

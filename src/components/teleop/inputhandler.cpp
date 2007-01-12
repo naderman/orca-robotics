@@ -13,11 +13,12 @@
 
 #include "inputhandler.h"
 #include "network.h"
+#include "keyboardiostreamdriver.h"
 #ifdef HAVE_KEYBOARD_TERMIO_DRIVER
-    #include "kbd-termio/keyboardtermiodriver.h"
+#   include "kbd-termio/keyboardtermiodriver.h"
 #endif
 #ifdef HAVE_JOYSTICK_DRIVER
-    #include "joystick/joystickdriver.h"
+#   include "joystick/joystickdriver.h"
 #endif
 
 using namespace std;
@@ -55,19 +56,21 @@ InputHandler::run()
         context_.tracer()->info("loading 'keyboard' driver");
         driver_ = new KeyboardTermioDriver( network_ );
 #else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'keyboard' because it was not built!" );
+        context_.tracer()->info("loading simple 'keyboard' driver");
+        driver_ = new KeyboardIostreamDriver( network_ );
 #endif
+    }
+    // undocumented option to test the simple keyboard driver
+    else if ( driverName == "fake" )
+    {
+        context_.tracer()->info("loading simple 'keyboard' driver");
+        driver_ = new KeyboardIostreamDriver( network_ );
     }
     else if ( driverName == "joystick" )
     {
 #ifdef HAVE_JOYSTICK_DRIVER
         context_.tracer()->info("loading 'joystick' driver");
-        
-        std::string joystickPrefix = prefix + "Joystick.";
-        config_.joystickDevice = orcaice::getPropertyWithDefault( prop,
-                joystickPrefix+"Device", "auto" );
-        driver_ = new JoystickDriver( config_ );
-        displayHandler_ = new StdoutDisplayHandler();
+        driver_ = new JoystickDriver( network_, context_ );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'joystick' because it was not built!" );
 #endif
