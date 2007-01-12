@@ -51,10 +51,11 @@ export QNX_TARGET=/usr/qnx630/target/qnx6
 
 @section orca_doc_installqnx_cmake CMake
 
-Minimum version required 2.4-patch 2 (latest tested: 2.4-patch 5).
+Minimum version required 2.4-patch 2 (latest tested: 2.4-patch 6).
 
 @verbatim
-$ tar -xzf cmake-2.4.5.tar.gz
+$ tar -xzf cmake-[VERSION].tar.gz
+$ cd cmake-[VERSION]
 $ ./bootstrap
 $ make
 # make install
@@ -71,22 +72,22 @@ First, install Ice dependencies. You can download the ThirdPartySources archive 
 - @b libexpat. The version distributed by ZeroC is 1.95.8 and it does not build. We got v.2.0.0 from http://expat.sourceforge.net/.
 
 @verbatim
-$ tar -xzf expat-2.0.0.tar.gz
-$ cd expat-2.0.0
-$ ./configure --prefix=/opt/expat-2.0.0
+$ tar -xzf expat-[VERSION].tar.gz
+$ cd expat-[VERSION]
+$ ./configure --prefix=/opt/expat-[VERSION]
 $ make
 # make install
-# ln -s /opt/expat-2.0.0 /opt/expat
+# ln -s /opt/expat-[VERSION] /opt/expat
 @endverbatim
 
 - @b libbzip2. The version which comes from ZeroC is 1.0.3, it worked fine.
 
 @verbatim
-$ tar -xzf bzip2-1.0.3.tar.gz
-$ cd bzip2-1.0.3
+$ tar -xzf bzip2-[VERSION].tar.gz
+$ cd bzip2-[VERSION]
 $ make
-# make install PREFIX=/opt/bzip2-1.0.3
-# ln -s /opt/bzip2-1.0.3 /opt/bzip2
+# make install PREFIX=/opt/bzip2-[VERSION]
+# ln -s /opt/bzip2-[VERSION] /opt/bzip2
 @endverbatim
 
 - @b Berkley @b DB. This one is fun. This DB officially supports QNX but it didn't work out of the box. Ice requires v.4.3 and distributes v.4.3.29. I couldn't link Ice dynamically to it no matter what I tried, with this version and later ones 4.4.20 and 4.5.20. It compiled but at run time puked after complaining about "Unknown symbols" (11 of them). At the end I managed to get Ice working when linked statically to libdb_cxx. But because the db symbols are used in libFreeze.so, the db library has to be special: static but with PIC option enabled.
@@ -102,15 +103,15 @@ $ QCC -A libdb_cxx-4.5S.a .libs/*.o
 # ln -s /opt/db-4.5.20 /opt/db
 @endverbatim
 
-- @b libOpenSSL. Build v.0.9.8 from source (requires Perl5). The binary package of 0.9.7 on the 3rd party CD didn't work. At the end some tests in IceSSL failed. I didn't try hard to fix it because I don't need SSL.
+- @b libOpenSSL. Build v.0.9.8b from source (requires Perl5). The binary package of 0.9.7 on the 3rd party CD didn't work. At the end some tests in IceSSL failed. I didn't try hard to fix it because I don't need SSL.
 
 @verbatim
-$ tar -xzf openssl-0.9.8b.tar.gz
-$ cd openssl-0.9.8b
-$ ./config --prefix=/opt/openssl-0.9.8b
+$ tar -xzf openssl-[VERSION].tar.gz
+$ cd openssl-[VERSION]
+$ ./config --prefix=/opt/openssl-[VERSION]
 $ make
 # make install
-# ln -s /opt/openssl-0.9.8b /opt/openssl
+# ln -s /opt/openssl-[VERSION] /opt/openssl
 @endverbatim
 
 Now Ice itself. 
