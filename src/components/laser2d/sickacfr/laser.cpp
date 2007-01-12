@@ -57,13 +57,21 @@ Laser::IniLaserInstance(unsigned int n, int speed0, int speed2, int init, int se
 	pxl->MaxFileSize = 0;
 	pxl->rr_lsr = NULL;
 
-    pxl->FlagBye=1 ;
-        
-    pxl->priority2 = getprio( 0 ); ;
-    pxl->priority =  pxl->priority2+4 ;
-    pxl->speed = speed0 ;
-    pxl->speedB = speed2 ;
-    pxl->init = init ;
+	// flag which is checked by thread indicating whether it should stop
+    pxl->FlagBye=1;
+    
+	// get the priority of this thread
+    pxl->priority2 = getprio( 0 );
+	// use this in getprio() for dynamically increasing the priority of
+	// this thread by 4
+    pxl->priority =  pxl->priority2+4;
+    
+	// initial baudrate
+	pxl->speed = speed0 ;
+    // desired baudrate
+	pxl->speedB = speed2 ;
+    
+	pxl->init = init ;
     pxl->PublishFlag = 0xFF ;
         
     sprintf(pxl->NamePort,"/dev/ser%d",serialPort) ;
@@ -481,35 +489,43 @@ Laser::readSickLaser(struct LaserData *pxl,int *pFlag)
 
 		//here i should increase the priority
 		setprio(0,pxl->priority) ;
+
+        // check for incoming header character
 		xx = SerialWaitForCharXJEG(FComLsr,'\x02' ,T5segs,&ignoredx); // 5 segs timeout
 
+        // increment the no. of bytes ignored (this should be 0 after the first frame)
 		ignoredT+= ignoredx ;
 
-        // get timestamp (This function does not exist)
-        // this uses cpu clock and should be changed to OS clock
+        // timestamp the incoming char just in case it was a header character
 		// timestamp = (int)GetTimeUTE1();  // <--------- your clock function
-        orca::Time timeStamp = orcaice::getNow();
+		orca::Time timeStamp = orcaice::getNow();
         // std::cout << "orcaTimeStamp: " << orcaice::toString(orcaTimeStamp) << std::endl;
 
 		//here i should decrease the priority
 		//setprio(0,pxl->priority2) ;
 		if (xx >=0)
 		{
+	        // if the incoming byte was a header character
+
 			//*timestamp = GetTime();
 			pxl->timeStamp=timestamp ;
 
 			//hkSleep(1) ;
 			string[0] = '\x02' ; // it is not important, it is only to have it.
+            // check the next 3 bytes to confirm that the incoming bytes are really part of a laser frame
 			nnn = SerialReadJEG(FComLsr, (unsigned char*)string+1, 3, 3, T5segs);
 
 			// if next character in packet = 0x80
 			if ( (nnn==3) && (string[1] == '\x80'))
 			{
-                if (synch==0)
+                // if these bytes were part of the header continue reading
+
+				if (synch==0)
 				{
                     synch = 1; // then synchronised!
 				}
 				
+				// continue reading the rest of the laser frame
                 nnn = SerialReadJEG(FComLsr, (unsigned char*)string+4, 728, 728, T5segs);
 
 				//if ( (errorno != 728) ||((errorno == 728) && (string[731] != 0x02)))

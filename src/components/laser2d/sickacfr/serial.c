@@ -16,7 +16,6 @@
 #include <sys/modem.h>
 #include <sys/uio.h>
 #include <termios.h>
-//#include "limita.h"
 #include <errno.h>
 #include "sickdefines.h"
 #include "time.h"
@@ -61,9 +60,10 @@ struct serStats
 	int vfrdDisChar ;
 	struct SerialDefinition *ph ;
 };
+
 static struct serStats SSx[32];
-//#define GetpSserStats(x)	(SSx+hx[63&(unsigned)x])
 #define GetpSserStats(x)	(SSx+(31&(unsigned)x))
+
 //------------------------------------------------------------------------
 // -------------------------------------------------------------------------       				
 

@@ -24,8 +24,10 @@ extern "C" {
 #define RANGESIZE	361
 
 // sick laser packet
-struct sic_packet		// laser packet
-{	orca::Time timeStamp;	// timestamp (1 = 10 microseconds)
+struct sic_packet		
+{	
+	// stores timestamp after the first byte of the laser frame arrives
+	orca::Time timeStamp;
 	xuint16 cx ;
 	// range and intensity data
 	// hard coded for 0 to 180 deg in 0.5 deg steps
@@ -38,26 +40,38 @@ struct sic_packet		// laser packet
 
 // struct to hold laser data and parameters
 struct LaserData
-{
-    struct sic_packet *sp ;			//pointer to data buffer
-	char *NameUnit ;			// unit logical name
-	char *NameCB ;				// circular buffer name	(old)
+{   
+	// pointer to raw laser data 
+    struct sic_packet *sp ;		
+	// unit logical name 
+	char *NameUnit ;			
+	// circular buffer name	(old)
+	char *NameCB ;				
 	unsigned char code ;			
-	char *sufixFile ;			// name file in recorder service (old)
-	int MaxFileSize ;			// max file size in recorder service1 (old)
-	struct reco* rr_lsr;			// CB instance
+	// name file in recorder service (old)
+	char *sufixFile ;			
+	// max file size in recorder service1 (old)
+	int MaxFileSize ;			
+	// CB instance
+	struct reco* rr_lsr;		   
 	int ignoredx,ignoredT,usedChars,FramesOK,BadCrcs;	//some stats
 	xuint32 TimeOuts;
 	int FComLsr;				// handle to serial device
 	int timeStamp ;
 	pthread_t tid ;
-	int priority,priority2 ;		// priorities in stage1 and 2
+	// initial priority of this thread
+    int priority;
+	// dynamically adjust the thread to this priority 
+	int priority2;	   
 	pthread_t wdid;
 	struct threadData ThreadData ;
 	int active,saving,used ;
 	// FILE *FFileLsr ;
 	char NamePort[20] ;                    // name of serial :example  "/dev/ser1" ..etc
-	int speed,speedB ;
+	// initial baudrate
+	int speed;
+	// desired baudrate
+	int speedB ;
 	int init ;
 	int PublishFlag ;	               // setting for DB publishing
 	int hLHistoric;		               // handle to DB service : 1 QUEUE instance
@@ -67,6 +81,7 @@ struct LaserData
 	int IgnoredFramesB;
 	int cx ;
 	int CxReset,CxReset2 ;
+	// flag which is checked by thread indicating whether it should stop
 	int FlagBye ;
 };	
  
