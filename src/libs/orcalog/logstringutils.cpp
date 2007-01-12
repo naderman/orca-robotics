@@ -333,7 +333,7 @@ toLogString( const orca::WifiData& obj )
     s << obj.interfaces.size() << "\n";
      
     // all data in a single line
-    for (uint i=0; i<obj.interfaces.size(); i++)
+    for ( unsigned int i=0; i<obj.interfaces.size(); ++i )
     {
         const orca::WifiInterface &iface = obj.interfaces[i];
         
