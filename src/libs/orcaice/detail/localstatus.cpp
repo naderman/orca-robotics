@@ -38,9 +38,27 @@ LocalStatus::heartbeat( const std::string& subsystem )
 
     subsystems_[subsystem].lastHeartbeat = IceUtil::Time::now();
 }
+
+void 
+LocalStatus::ok( const std::string& subsystem, const std::string& message )
+{
+    subsystemStatus( subsystem, orcaice::Status::Ok, message );
+}
+
+void 
+LocalStatus::warning( const std::string& subsystem, const std::string& message )
+{
+    subsystemStatus( subsystem, orcaice::Status::Warning, message );
+}
+
+void 
+LocalStatus::fault( const std::string& subsystem, const std::string& message )
+{
+    subsystemStatus( subsystem, orcaice::Status::Fault, message );
+}
     
 void 
-LocalStatus::subsys( const std::string& subsystem, SubsystemStatusType type, const std::string& message )
+LocalStatus::subsystemStatus( const std::string& subsystem, SubsystemStatusType type, const std::string& message )
 {
     IceUtil::Mutex::Lock lock(mutex_);
 

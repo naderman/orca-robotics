@@ -95,6 +95,9 @@ HwHandler::HwHandler(
     driver_(0),
     context_(context)
 {
+    context_.status()->setHeartbeatInterval( "hardware", 10.0 );
+    context_.status()->ok( "hardware", "initializing" );
+
     // we'll handle incoming messages
     commandPipe.setNotifyHandler( this );
 
@@ -162,7 +165,8 @@ HwHandler::enableDriver()
             context_.tracer()->info( "Enable succeeded." );
             return;
         }
-        context_.tracer()->warning("failed to enable the driver; will try again in 2 seconds.");
+        context_.tracer()->warning( "failed to enable the driver; will try again in 2 seconds.");
+        context_.status()->warning( "hardware", "driver failed to enable" );
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 }
@@ -183,6 +187,9 @@ HwHandler::run()
     powerData.batteries[0].name = "main-front";
     powerData.batteries[1].name = "main-rear";
     powerData.batteries[2].name = "ui";
+
+    double heartbeatInterval = 2.0;
+    context_.status()->setHeartbeatInterval( "hardware", 2.0*heartbeatInterval );
 
     //
     // Main loop
@@ -227,15 +234,21 @@ HwHandler::run()
                 powerPipe_.set( powerData );
                 
                 if ( driverStatus != currDriverStatus ) {
-//                     context_.status()->status( currDriverStatus );
+                    context_.status()->ok( "hardware", currDriverStatus );
                     driverStatus = currDriverStatus;
                 }
             } 
             else 
             {
-                context_.tracer()->error("failed to read data from Segway hardware.");
+                context_.tracer()->error("failed to read data from Segway hardware.");                
+                if ( driverStatus != currDriverStatus ) {
+                    context_.status()->fault( "hardware", currDriverStatus );
+                    driverStatus = currDriverStatus;
+                }
                 isOkProxy_.set( false );
             }
+            // subsystem heartbeat
+            context_.status()->heartbeat( "hardware" );
 
         } // try
         catch ( const orca::OrcaException & e )

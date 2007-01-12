@@ -35,6 +35,8 @@ NetHandler::NetHandler(
     powerPipe_(powerPipe),
     context_(context)
 {
+    context_.status()->setHeartbeatInterval( "network", 100.0 );
+    context_.status()->ok( "network", "initializing" );
 }
 
 NetHandler::~NetHandler()
@@ -190,14 +192,14 @@ NetHandler::run()
             prefix+"Position3dPublishInterval", -1 );
     double powerPublishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             prefix+"PowerPublishInterval", 20.0 );
-//     double statusPublishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-//             prefix+"StatusPublishInterval", 60.0 );
 
     const int odometryReadTimeout = 500; // [ms]
+    context_.status()->setHeartbeatInterval( "network", 2.0*odometryReadTimeout );
 
     //
     // Main loop
     //
+    context_.status()->ok( "network", "running main loop" );
     while( isActive() )
     {
 //         context_.tracer()->debug( "net handler loop spinning ",1);
@@ -219,36 +221,30 @@ NetHandler::run()
         }
 
         // now send less frequent updates
-        try
+        if ( isActive() && odometry3dPipe_.isNewData() ) 
         {
-            if ( isActive() && odometry3dPipe_.isNewData() ) 
-            {
-                if ( odometry3dPublishTimer.elapsed().toSecondsDouble()>=odometry3dPublishInterval ) {
-                    odometry3dPipe_.get( odometry3dData );
-                    odometry3dI->localSetAndSend( odometry3dData );
-                    odometry3dPublishTimer.restart();
-                }
-                else {
-                    odometry3dI->localSet( odometry3dData );
-                }
+            if ( odometry3dPublishTimer.elapsed().toSecondsDouble()>=odometry3dPublishInterval ) {
+                odometry3dPipe_.get( odometry3dData );
+                odometry3dI->localSetAndSend( odometry3dData );
+                odometry3dPublishTimer.restart();
             }
-            if ( isActive() && powerPipe_.isNewData() ) 
-            {
-                if ( powerPublishTimer.elapsed().toSecondsDouble()>=powerPublishInterval ) {
-                    powerPipe_.get( powerData );
-                    powerI->localSetAndSend( powerData );
-                    powerPublishTimer.restart();
-                }
-                else {
-                    powerI->localSet( powerData );
-                }
+            else {
+                odometry3dI->localSet( odometry3dData );
             }
         }
-        catch ( const Ice::ConnectionRefusedException & e )
+        if ( isActive() && powerPipe_.isNewData() ) 
         {
-            context_.tracer()->warning("lost connection to IceStorm");
-            // now what?
+            if ( powerPublishTimer.elapsed().toSecondsDouble()>=powerPublishInterval ) {
+                powerPipe_.get( powerData );
+                powerI->localSetAndSend( powerData );
+                powerPublishTimer.restart();
+            }
+            else {
+                powerI->localSet( powerData );
+            }
         }
+        // subsystem heartbeat
+        context_.status()->heartbeat( "network" );
     } // main loop
     
     }

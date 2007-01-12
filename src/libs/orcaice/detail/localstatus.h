@@ -33,7 +33,11 @@ public:
 
     virtual void heartbeat( const std::string& subsystem );
     
-    virtual void subsys( const std::string& subsystem, SubsystemStatusType type, const std::string& message );
+    virtual void ok( const std::string& subsystem, const std::string& message );
+
+    virtual void warning( const std::string& subsystem, const std::string& message );
+
+    virtual void fault( const std::string& subsystem, const std::string& message );
 
     virtual IceUtil::Time startTime() const;
 
@@ -60,6 +64,9 @@ protected:
 
     // We only have one communicator but may have multiple threads.
     IceUtil::Mutex mutex_;
+
+    // utility
+    void subsystemStatus( const std::string& subsystem, SubsystemStatusType type, const std::string& message );
 };
 
 } // namespace

@@ -40,9 +40,15 @@ public:
 
     //! Record heartbeat from a subsystem
     virtual void heartbeat( const std::string& subsystem ) = 0;
-    
-    //! Set status information for a subsystem
-    virtual void subsys( const std::string& subsystem, SubsystemStatusType type, const std::string& message ) = 0 ;
+
+    //! Set subsystem status to OK
+    virtual void ok( const std::string& subsystem, const std::string& message ) = 0 ;
+
+    //! Set subsystem status to Warning
+    virtual void warning( const std::string& subsystem, const std::string& message ) = 0 ;
+
+    //! Set subsystem status to Fault
+    virtual void fault( const std::string& subsystem, const std::string& message ) = 0 ;
 
     //! The time when component was activated
     virtual IceUtil::Time startTime() const = 0;
