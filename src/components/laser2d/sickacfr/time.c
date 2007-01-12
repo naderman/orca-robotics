@@ -16,7 +16,8 @@
 //32 bits unsigned
 
 static xuint32 ttOffsetZZSecs=0,ttOffsetZZNanoSecs=0 ;
-static int UseTimeOffset=1 ;
+// Use a value of 0 for system time or 1 to start the clock at 0
+static int UseTimeOffset = 0;
 
 void IniGetTimeUTE1(void)
 {

@@ -29,7 +29,7 @@ SickAcfrDriver::SickAcfrDriver( const Config & cfg, const orcaice::Context & con
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.SickAcfr.";
 
-//    baudrate_ =  orcaice::getPropertyAsIntWithDefault( prop, prefix+"Baudrate", 38400 );
+    baudrate_ =  orcaice::getPropertyAsIntWithDefault( prop, prefix+"Baudrate", 38400 );
 
 //    std::string device = orcaice::getPropertyWithDefault( prop, prefix+"Device", "/dev/ser1" );
 //    device_ = strdup(device.c_str());
@@ -140,7 +140,7 @@ SickAcfrDriver::init( )
     // tell the laser to start sending data
     //
     // int ret = IniLaserInstance(1,9600,38400,1, 1);   //lsr2  , 38Kbps  , /dev/ser1);
-    laser_->IniLaserInstance(1,9600,38400,1, 1);   //lsr1  , 38Kbps  , /dev/ser1);
+    laser_->IniLaserInstance(1, 9600, baudrate_, 1, 1);   //lsr1  , 38Kbps  , /dev/ser1);
 
 /*    if ( ret == 0 )
     {
@@ -160,7 +160,7 @@ SickAcfrDriver::init( )
 int 
 SickAcfrDriver::read( orca::LaserScanner2dDataPtr &data )
 {
-    // infoMessages_ = "";
+    infoMessages_ = "";
 
     context_.tracer()->debug( "SickAcfrDriver::read()", 4 );
 
@@ -178,7 +178,6 @@ SickAcfrDriver::read( orca::LaserScanner2dDataPtr &data )
     {      
         context_.tracer()->debug( "TRACE(sickacfrdriver.cpp::read()): got laser data", 6 );
 
-        // cout << "gpsCount_: " << gpsCount_ << endl;
         if (laserCount_ > 100 )
         {
             cout << "Laser Data Buffer is " << laser_->laserDataBuffer_.size()/100 << "% full" << endl;
@@ -188,105 +187,39 @@ SickAcfrDriver::read( orca::LaserScanner2dDataPtr &data )
     
  		// TODO: put in lib/orcaobh/timeutils.h/cpp
     	//convert to microseconds
-		int usec = rawLaserData_.sp->timestamp/10;
-    	// convert to orca::Time
-    	data->timeStamp.seconds = (int)( floor( (double)usec/1000000 ) );
-		data->timeStamp.useconds = ( usec - (  data->timeStamp.seconds * 1000000 ) );
+		// int usec = rawLaserData_.sp->timeStamp*10;
+    	// cout << "usec: " << usec << endl;
+		// convert to orca::Time
+    	// data->timeStamp.seconds = (int)( floor( (double)usec/1000000 ) );
+		// data->timeStamp.useconds = ( usec - (  data->timeStamp.seconds * 1000000 ) );
+        data->timeStamp = rawLaserData_.sp->timeStamp;
 
 		// TODO: change the number of scans so that it is configurable
 	    data->ranges.resize( 361 );
 		data->intensities.resize( 361 );
 					            
-		//debug
-		//            cout<<"SickCarmenDriver::read"<<endl;
 		for ( int i=0; i < 361; i++ )
 		{
 		    // mask off the corresponding bytes in the sicklaser structure
-			// first 13 bits are range
+			// last 3 bits are intensity
 			data->intensities[i] = (rawLaserData_.sp->range[i]>>13) & 0x7;
- 	  		// last 3 bits are intensity
+ 	  		// first 13 bits are range
 			data->ranges[i] = rawLaserData_.sp->range[i] & 0x1FFF;
  			// convert from cm to metres
 			data->ranges[i] = data->ranges[i]/100;
-    	}
-	
-    }
 
-   return 0;
-
-/*
-if ( laser_->timestamp == 0 )
-    {
-        // Haven't read anything yet
-        laser_->timestamp = carmen_get_time_ms();
-    }
-
-    int i=0;
-
-    // Poll till we get new data, or the laser is screwed.
-    while ( true )
-    {
-        if ( (i++ % 1000) == 0 )
-            context_.tracer()->debug( "SickAcfrDriver: start of read while loop.", 5 );
-
-        usleep(POLL_PERIOD_US);
-
-        if ( firstRead_ ) {
-            lastStatsUpdateTime_ = carmen_get_time_ms();
-            firstRead_ = false;
-        }
-        currentTime = carmen_get_time_ms();
-
-        sick_handle_laser(laser_);
-        if ( strlen(sick_info()) != 0 ) {
-            infoMessages_ = string("sick_handle_laser: %s") + sick_info();
-        }
-
-        laserStalled_ = ( currentTime - laser_->timestamp > LASER_STALL_TIMEOUT );
-        if ( laserStalled_ )
-        {
-//             cout<<"TRACE(nativelaserdriver.cpp): returning on stall" << endl;
-            return -1;
-        }
-
-        if ( laser_->new_reading ) {
-            // set the time stamp right away
-            orcaice::setToNow( data->timeStamp );
-            
-            data->ranges.resize( laser_->numvalues );
-            data->intensities.resize( laser_->numvalues );
-            
-            //debug
-//            cout<<"SickAcfrDriver::read"<<endl;
-            for ( int i=0; i < laser_->numvalues; i++ )
-            {
-                // alexm: dodgy hack in response to sudden shrinkage of the scan
-                // "/1000.0" was in the original
-                data->ranges[i]      = laser_->range[i]/100.0;
-                //data->ranges[i]      = laser_->range[i]/1000.0;
-                data->intensities[i] = laser_->glare[i];
-
-                // debug
-//                cout<<data->ranges[i]<<" ";
-            }
-//            cout<<endl;
-            
-
-            // default settings
+			//default settings
             data->minRange     = config_.minRange;
             data->maxRange     = config_.maxRange;
             data->fieldOfView  = config_.fieldOfView;
             data->startAngle   = config_.startAngle;
-
-            // alexm: before laser iface change:
-//             data->startAngle     = -M_PI/2;
-//             data->angleIncrement = DEG2RAD(((laser_->settings.angle_resolution==RES_1_00_DEGREE)?1.0:((laser_->settings.angle_resolution==RES_0_50_DEGREE)?0.5:((laser_->settings.angle_resolution==RES_0_25_DEGREE)?0.25:0.0))));
-//             cout<<"TRACE(nativelaserdriver.cpp): read() ok." << endl;
-            return 0;
-        }
+       }
+	
     }
-return 0; */
+
+   return 0;
 }
+
 
 const std::string
 SickAcfrDriver::heartbeatMessage()

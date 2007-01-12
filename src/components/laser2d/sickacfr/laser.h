@@ -13,7 +13,8 @@
 
 // buffer for laser data
 #include <orcaice/buffer.h>
- 
+#include <orcaobj/timeutils.h>
+
 #include "sickdefines.h"
 
 #ifdef __cplusplus
@@ -24,7 +25,7 @@ extern "C" {
 
 // sick laser packet
 struct sic_packet		// laser packet
-{	xuint32 timestamp;	// timestamp (1 = 10 microseconds)
+{	orca::Time timeStamp;	// timestamp (1 = 10 microseconds)
 	xuint16 cx ;
 	// range and intensity data
 	// hard coded for 0 to 180 deg in 0.5 deg steps
@@ -61,7 +62,8 @@ struct LaserData
 	int PublishFlag ;	               // setting for DB publishing
 	int hLHistoric;		               // handle to DB service : 1 QUEUE instance
 	int simu ;			       // simulation mode?
-	xuint32 DtMinTx,LastTxTime;
+	xuint32 DtMinTx;
+    double LastTxTime;
 	int IgnoredFramesB;
 	int cx ;
 	int CxReset,CxReset2 ;
@@ -97,7 +99,7 @@ int IniLSRXCode(int* pflag, struct LaserData* pxl);
 void SetLaser(int FComLsr, struct LaserData* pg);
 
 // parse the incoming laser packet and push into a buffer for publishing
-void parse_SICK_LASER(struct sic_packet *pxxx,unsigned char *string,struct reco *rr_lsr,xuint32 timestamp,int *BadCrcs,struct LaserData *pxl);
+void parse_SICK_LASER(struct sic_packet *pxxx,unsigned char *string,struct reco *rr_lsr, orca::Time timeStamp, int *BadCrcs,struct LaserData *pxl);
 
 void PutCRCinStr(char *str,int size); 
 

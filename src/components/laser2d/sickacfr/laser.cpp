@@ -15,6 +15,8 @@
 #include <unistd.h>
 #include <iostream>
 
+#include <orcaobj/stringutils.h>
+
 #include "sickdefines.h"
 #include "time.h"
 #include "serial.h"
@@ -160,13 +162,13 @@ extern xuint32 ExternalCounter1;
 
 // parse the incoming laser data and put into a buffer for publishing
 void 
-Laser::parse_SICK_LASER(struct sic_packet *pxxx,unsigned char *string,struct reco *rr_lsr,xuint32 timestamp,int *BadCrcs,struct LaserData *pxl)
+Laser::parse_SICK_LASER(struct sic_packet *pxxx,unsigned char *string,struct reco *rr_lsr, orca::Time timeStamp, int *BadCrcs,struct LaserData *pxl)
 {
     unsigned short *p0 = (unsigned short *)(string+7) ;
 	unsigned i;
 	uint16b crc1,crc2 ; 
 	//struct sic_packet xxx;
-	xuint32 dt ;
+	// double dt ;
 	crc2 = ExeCRC(string,730,POLYCRC);
 	crc1 = *((uint16b*)(string+730)) ;
 	
@@ -176,7 +178,7 @@ Laser::parse_SICK_LASER(struct sic_packet *pxxx,unsigned char *string,struct rec
     }
 	else
 	{
-        pxxx->timestamp = timestamp;
+        pxxx->timeStamp = timeStamp;
 		pxl->cx++ ;
 		for (i=0;i<RANGESIZE;i++){	pxxx->range[i]=p0[i] ; }
 		pxxx->Status = string[729] ;
@@ -186,10 +188,10 @@ Laser::parse_SICK_LASER(struct sic_packet *pxxx,unsigned char *string,struct rec
         //
         laserDataBuffer_.push( *pxl );
 
-        dt = timestamp - pxl->LastTxTime;
+        // dt = orcaice::timeAsDouble(timeStamp) - pxl->LastTxTime;
         //to avoid sending to net at high freq (75hz...)      
-		if (dt>=pxl->DtMinTx)			
-		{	
+		// if (dt>=pxl->DtMinTx)			
+		// {	
 		    // printf("--->timestamp = %d\n",pxl->sp->timestamp ) ;
 
 			/* HERE IS THE LASER FRAME --> DO SOMETHING with IT.
@@ -204,12 +206,12 @@ Laser::parse_SICK_LASER(struct sic_packet *pxxx,unsigned char *string,struct rec
 		
 			*/
 
-			pxl->LastTxTime = timestamp;
-		}
-		else
-        {
-            pxl->IgnoredFramesB++;
-        }
+		   // pxl->LastTxTime = orcaice::timeAsDouble(timeStamp);
+		// }
+		// else
+        // {
+        //     pxl->IgnoredFramesB++;
+        // }
 	}
 }
 
@@ -485,7 +487,10 @@ Laser::readSickLaser(struct LaserData *pxl,int *pFlag)
 
         // get timestamp (This function does not exist)
         // this uses cpu clock and should be changed to OS clock
-		timestamp = (int)GetTimeUTE1();  // <--------- your clock function
+		// timestamp = (int)GetTimeUTE1();  // <--------- your clock function
+        orca::Time timeStamp = orcaice::getNow();
+        // std::cout << "orcaTimeStamp: " << orcaice::toString(orcaTimeStamp) << std::endl;
+
 		//here i should decrease the priority
 		//setprio(0,pxl->priority2) ;
 		if (xx >=0)
@@ -517,7 +522,7 @@ Laser::readSickLaser(struct LaserData *pxl,int *pFlag)
 				{
                     //ChecCRC(string
 					//parse_SICK_LASER((unsigned char*)string,rr_lsr,*timestamp,&BadCrcs);
-					parse_SICK_LASER(pxl->sp,(unsigned char*)string,rr_lsr,timestamp,&(pxl->BadCrcs),pxl);
+					parse_SICK_LASER( pxl->sp, (unsigned char*)string, rr_lsr,timeStamp, &(pxl->BadCrcs), pxl );
 					pxl->usedChars+=732 ;
 					pxl->FramesOK++ ;
 					//printf("--------- laser\n") ;
