@@ -10,6 +10,7 @@
  
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/mathdefs.h>
 
 #include "fakegpsdriver.h"
 
@@ -17,6 +18,7 @@ using namespace std;
 
 FakeGpsDriver::FakeGpsDriver()
 {
+    GpsData_.heading = 0.0;
 }
 
 FakeGpsDriver::~FakeGpsDriver()
@@ -33,7 +35,8 @@ FakeGpsDriver::read()
     GpsData_.latitude = -35.0;
     GpsData_.longitude = 149.0;
     GpsData_.altitude = 50;
-    GpsData_.heading = 0;
+    double heading = GpsData_.heading + DEG2RAD(10);
+    GpsData_.heading = heading; 
     GpsData_.speed = 0;
     GpsData_.climbRate = 0;
     GpsData_.satellites = 6;
