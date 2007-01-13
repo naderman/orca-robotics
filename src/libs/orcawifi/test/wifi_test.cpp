@@ -6,39 +6,49 @@ using namespace wifiutil;
 
 int main()
 {
-    try 
+    int numLoops = 0;
+            
+    while(true)
     {
-        cout << "Testing getting interface names" << endl;
-        vector<string> interfaceNames;
-        getInterfaceNames( interfaceNames );
-        for (uint i=0; i<interfaceNames.size(); i++)
+        try 
         {
-            cout << "Interface " << i << " : " << interfaceNames[i] << endl;
+            cout << "Testing getting interface names" << endl;
+            vector<string> interfaceNames;
+            getInterfaceNames( interfaceNames );
+            for (uint i=0; i<interfaceNames.size(); i++)
+            {
+                cout << "Interface " << i << " : " << interfaceNames[i] << endl;
+            }
+            cout << endl;
+            
+            cout << "Testing reading data from proc" << endl;
+            vector<ProcData> wifiData;
+            readFromProc( wifiData );
+            printData( wifiData );
+            cout << "Reading proc test successful!" << endl << endl;
+            
+            cout << "Testing reading config" << endl;
+            vector<WirelessConfig> configs;
+            readConfig( configs );
+            printConfig( configs );
+            cout << "Reading config test successful" << endl << endl;
+            
+            cout << "Testing reading data using ioctl" << endl;
+            vector<IoctlData> wifiDataIoctl;
+            readUsingIoctl( wifiDataIoctl );
+            printDataIoctl( wifiDataIoctl );
+            cout << "Reading ioctl test successful" << endl;
         }
-        cout << endl;
+        catch ( wifiutil::Exception &e )
+        {
+            cout << "Test failed! We've done " << numLoops << " loops. More info: " << e.what();
+//             sleep(5);
+            return -1;
+        }
         
-        cout << "Testing reading data from proc" << endl;
-        vector<ProcData> wifiData;
-        readFromProc( wifiData );
-        printData( wifiData );
-        cout << "Reading proc test successful!" << endl << endl;
-        
-        cout << "Testing reading config" << endl;
-        vector<WirelessConfig> configs;
-        readConfig( configs );
-        printConfig( configs );
-        cout << "Reading config test successful" << endl << endl;
-        
-        cout << "Testing reading data using ioctl" << endl;
-        vector<IoctlData> wifiDataIoctl;
-        readUsingIoctl( wifiDataIoctl );
-        printDataIoctl( wifiDataIoctl );
-        cout << "Reading ioctl test successful" << endl;
-    }
-    catch ( wifiutil::Exception &e )
-    {
-        cout << "Test failed! Reason:" << endl << e.what();
-        return -1;
+        numLoops++ ;
+//         if (numLoops==100) break;
+//         sleep (1);
     }
 
     cout << endl << "Test passed!" << endl;

@@ -20,10 +20,19 @@ void getInterfaceNames( vector<string> &interfaceNames )
     FILE *wifiInfoFile;
     char buf[128];
     
-    // get the wireless device from /proc/net/wireless
-    if ((wifiInfoFile = fopen("/proc/net/wireless", "r")) == NULL) {
-        throw Exception( "Error:\nCouldn't open /proc/net/wireless for reading.\n" );
-    }   
+    int numTries=0;
+    while(1)
+    {
+        // get the wireless device from /proc/net/wireless
+        if ((wifiInfoFile = fopen("/proc/net/wireless", "r")) == NULL) 
+        {
+            numTries++;
+            cout << "Warning: Couldn't open for reading. Tried " << numTries << " times." << endl;
+            if (numTries==5) throw Exception( "Error:\nCouldn't open /proc/net/wireless for reading.\n" );
+        } else {
+            break;
+        }
+    }
         
     // lets skip the header
     for (int i = 0; i < 3; i++) 
@@ -56,10 +65,20 @@ void readFromProc( vector<ProcData> &wifiData )
     ProcData data;
     char buf[128];
     
-    // get the wireless device from /proc/net/wireless
-    if ((wifiInfoFile = fopen("/proc/net/wireless", "r")) == NULL) {
-        throw Exception( "Error:\nCouldn't open /proc/net/wireless for reading.\n" );
-    }   
+    int numTries=0;
+    
+    while(1)
+    {
+        // get the wireless device from /proc/net/wireless
+        if ((wifiInfoFile = fopen("/proc/net/wireless", "r")) == NULL) 
+        {
+            numTries++;
+            cout << "Warning: Couldn't open for reading. Tried " << numTries << " times." << endl;
+            if (numTries==5) throw Exception( "Error:\nCouldn't open /proc/net/wireless for reading.\n" );
+        } else {
+            break;
+        }
+    }  
         
     // lets skip the header
     for (int i = 0; i < 3; i++) 
