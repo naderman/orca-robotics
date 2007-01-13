@@ -89,7 +89,7 @@ LogMaster::addLog( const std::string & filename,
 }
 
 void 
-LogMaster::addData( int seconds, int useconds, int id, int index )
+LogMaster::addData( int id, int index )
 {
     IceUtil::Mutex::Lock lock(mutex_);
 
@@ -106,7 +106,8 @@ LogMaster::addData( int seconds, int useconds, int id, int index )
     //
     // write to master file
     //
-    (*file_) << orcalog::dataLine( seconds, useconds, id, index ) << endl;
+    orca::Time now = orcaice::getNow();
+    (*file_) << orcalog::dataLine( now.seconds, now.useconds, id, index ) << endl;
 
     // count data objects
     ++dataCounter_;

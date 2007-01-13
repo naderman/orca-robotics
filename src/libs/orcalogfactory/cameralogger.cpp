@@ -111,7 +111,7 @@ void
 CameraLogger::setData(const orca::CameraData& data, const Ice::Current&)
 {
     // Write reference to master file
-    appendMasterFile( data.timeStamp.seconds, data.timeStamp.useconds );
+    appendMasterFile();
 
     if ( format_ == "ice" )
     {

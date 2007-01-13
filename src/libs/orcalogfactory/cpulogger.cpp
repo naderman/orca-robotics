@@ -62,7 +62,7 @@ void
 CpuLogger::setData(const orca::CpuData& data, const Ice::Current&)
 {
     // Write reference to master file
-    appendMasterFile( data.timeStamp.seconds, data.timeStamp.useconds );
+    appendMasterFile();
 
     if ( format_ == "ice" )
     {

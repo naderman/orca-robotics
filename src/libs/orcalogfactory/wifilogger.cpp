@@ -59,7 +59,7 @@ void
 WifiLogger::setData(const orca::WifiData& data, const Ice::Current&)
 {
     // Write a reference in the master file
-    appendMasterFile( data.timeStamp.seconds, data.timeStamp.useconds );
+    appendMasterFile();
     
     if ( format_=="ice" )
     {

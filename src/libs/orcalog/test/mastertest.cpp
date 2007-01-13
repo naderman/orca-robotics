@@ -51,14 +51,19 @@ void TestComponent::start()
     id = logMaster->addLog( "file1", "type1", "format1", "proxy1" );
     unsigned int logCount = id+1;
 
-    int s0=24, u0=555, l0=0, d0=0;
-    logMaster->addData( s0, u0, l0, d0 );
-    logMaster->addData( s0+1, 888000, 0, 1 );
-    logMaster->addData( s0+2, 888000, 0, 1 );
-    logMaster->addData( s0+3, 888000, 0, 1 );
-    int s1=28, u1=333, l1=1, d1=0;
-    logMaster->addData( s1, u1, l1, d1 );
-    logMaster->addData( s1+1, 333000, 1, 1 );
+    int l0=0, d0=0;
+    logMaster->addData( l0, d0 );
+    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+    logMaster->addData( 0, 1 );
+    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+    logMaster->addData( 0, 1 );
+    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+    logMaster->addData( 0, 1 );
+    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+    int l1=1, d1=0;
+    logMaster->addData( l1, d1 );
+    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+    logMaster->addData( 1, 1 );
     cout<<"ok"<<endl;
 
     cout<<"testing LogMaster() ... ";
@@ -84,30 +89,30 @@ void TestComponent::start()
         cout<<"failed: expected to find line, ret="<<ret<<endl;
         exit(EXIT_FAILURE);
     }
-    if ( s!=s0 || u!=u0 || l!=l0 || d!=d0 ) {
+    if ( l!=l0 || d!=d0 ) {
         cout<<"failed"<<endl<<"wrong data in first line"<<endl
-            <<"expected="<<s0<<","<<u0<<","<<l0<<","<<d0
-            <<"got="<<s<<","<<u<<","<<l<<","<<d<<endl;
+            <<"expected="<<l0<<","<<d0
+            <<"got="<<l<<","<<d<<endl;
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
     
     cout<<"testing FF getData() to good line ... ";
-    ret = playMaster->getData( s, u, l, d,  s1, u1 );
+    ret = playMaster->getData( s, u, l, d,  s+3, u+900000 );
     if ( ret ) {
         cout<<"failed: ret="<<ret<<endl;
         exit(EXIT_FAILURE);
     }
-    if ( s!=s1 || u!=u1 || l!=l1 || d!=d1 ) {
+    if ( l!=l1 || d!=d1 ) {
         cout<<"failed"<<endl<<"wrong data in sought line"<<endl
-            <<"expected="<<s1<<","<<u1<<","<<l1<<","<<d1
-            <<"got="<<s<<","<<u<<","<<l<<","<<d<<endl;
+            <<"expected="<<l1<<","<<d1
+            <<" got="<<l<<","<<d<<endl;
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
 
     cout<<"testing FF getData() to line which is after the end of log  ... ";
-    ret = playMaster->getData( s, u, l, d,  1000 );
+    ret = playMaster->getData( s, u, l, d,  s+1000 );
     if ( !ret ) {
         cout<<"failed: expected not to find line, ret="<<ret<<endl
             <<"got="<<s<<","<<u<<","<<l<<","<<d<<endl;
@@ -126,10 +131,10 @@ void TestComponent::start()
         cout<<"failed: expected to find line, ret="<<ret<<endl;
         exit(EXIT_FAILURE);
     }
-    if ( s!=s0 || u!=u0 || l!=l0 || d!=d0 ) {
+    if ( l!=l0 || d!=d0 ) {
         cout<<"failed"<<endl<<"wrong data in first line"<<endl
-            <<"expected="<<s0<<","<<u0<<","<<l0<<","<<d0
-            <<"got="<<s<<","<<u<<","<<l<<","<<d<<endl;
+            <<"expected="<<l0<<","<<d0
+            <<"got="<<l<<","<<d<<endl;
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;

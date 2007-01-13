@@ -100,9 +100,9 @@ protected:
     //! formats need to re-implement this function.
     virtual void createLogFile();
 
-    //! Calls Master::append(). Supplies the Logger ID and the updated object
+    //! Appends a record to the master file. Supplies the Logger ID and the data
     //! counter. Also prints out heartbeat message periodically.
-    void appendMasterFile( int seconds, int useconds );
+    void appendMasterFile();
 
 private:
 

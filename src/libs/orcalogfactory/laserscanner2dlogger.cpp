@@ -72,7 +72,7 @@ LaserScanner2dLogger::setData(const orca::RangeScanner2dDataPtr& rangedata, cons
     orca::LaserScanner2dDataPtr data =  orca::LaserScanner2dDataPtr::dynamicCast( rangedata );
 
     // Write reference to master file
-    appendMasterFile( data->timeStamp.seconds, data->timeStamp.useconds );
+    appendMasterFile();
     
     if ( format_ == "ice" )
     {

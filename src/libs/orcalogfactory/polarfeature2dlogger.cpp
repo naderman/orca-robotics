@@ -63,7 +63,7 @@ void
 PolarFeature2dLogger::setData(const orca::PolarFeature2dDataPtr& data, const Ice::Current&)
 {
     // Write reference to master file
-    appendMasterFile( data->timeStamp.seconds, data->timeStamp.useconds );
+    appendMasterFile();
     
     if ( format_ == "ice" )
     {

@@ -95,7 +95,7 @@ void
 GpsLogger::localSetData( const orca::GpsData& data )
 {
     // Write reference to master file
-    appendMasterFile( data.timeStamp.seconds, data.timeStamp.useconds );
+    appendMasterFile();
 
     orcalog::IceWriteHelper helper( context_.communicator() );
     ice_writeGpsData( helper.stream_, data );
@@ -107,7 +107,7 @@ void
 GpsLogger::localSetData( const orca::GpsTimeData& data )
 {
     // Write reference to master file
-    appendMasterFile( data.timeStamp.seconds, data.timeStamp.useconds );
+    appendMasterFile();
     
     orcalog::IceWriteHelper helper( context_.communicator() );
     ice_writeGpsTimeData( helper.stream_, data );
@@ -118,7 +118,7 @@ void
 GpsLogger::localSetData( const orca::GpsMapGridData& data )
 {
     // Write reference to master file
-    appendMasterFile( data.timeStamp.seconds, data.timeStamp.useconds );
+    appendMasterFile();
     
     orcalog::IceWriteHelper helper( context_.communicator() );
     ice_writeGpsMapGridData( helper.stream_, data );

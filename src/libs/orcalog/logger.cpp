@@ -107,7 +107,7 @@ Logger::createLogFile()
 }
 
 void
-Logger::appendMasterFile( int seconds, int useconds )
+Logger::appendMasterFile()
 {
     context_.tracer()->debug(interfaceTag_+"Logger: received object. Writing to file.", 10);
 
@@ -117,9 +117,9 @@ Logger::appendMasterFile( int seconds, int useconds )
     }
 
     //
-    // append master file, increment object counter before doing so.
+    // append master file, increment data counter
     //
-    master_->addData( seconds, useconds, id_, dataCounter_ );
+    master_->addData( id_, dataCounter_ );
     ++dataCounter_;
 
     // Let the user know that something's going on.

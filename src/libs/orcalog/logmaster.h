@@ -36,7 +36,7 @@ public:
                 const std::string & proxyString );
 
     //! Call this to write another data object.
-    void addData( int seconds, int useconds, int id, int index );
+    void addData( int id, int index );
 
 private:
     std::ofstream *file_;
