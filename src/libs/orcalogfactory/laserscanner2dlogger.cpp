@@ -82,7 +82,7 @@ LaserScanner2dLogger::setData(const orca::RangeScanner2dDataPtr& rangedata, cons
     }
     else if ( format_ == "ascii" )
     {
-        (*file_) << orcalog::toLogString(data);
+        (*file_) << orcalog::toLogString(data) << endl;
     }
     else
     {

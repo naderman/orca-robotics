@@ -88,7 +88,6 @@ toLogString( const orca::LaserScanner2dDataPtr& obj )
     {
 	   s << (float)obj->intensities[i] << " ";
     }
-    s << "\n";
 
     return s.str();
 }
@@ -107,7 +106,7 @@ toLogString( const orca::Position2dData& obj )
       << RAD2DEG(obj.pose.o) << " "
       << obj.motion.v.x << " "
       << obj.motion.v.y << " "
-      << RAD2DEG(obj.motion.w) << "\n";
+      << RAD2DEG(obj.motion.w);
 
     return s.str();
 }
@@ -136,7 +135,7 @@ toLogString( const orca::Localise2dData& obj )
           << h.cov.xt << " "
           << h.cov.yt << " "
           << h.cov.tt << " "
-          << h.weight << endl;
+          << h.weight;
     }
     return s.str();
 }
@@ -161,7 +160,7 @@ toLogString( const orca::Position3dData& obj )
       << obj.motion.v.z << " "
       << RAD2DEG(obj.motion.w.x) << " "
       << RAD2DEG(obj.motion.w.y) << " "
-      << RAD2DEG(obj.motion.w.z) << " \n";
+      << RAD2DEG(obj.motion.w.z);
 
     return s.str();
 }
@@ -180,7 +179,7 @@ toLogString( const orca::Odometry2dData& obj )
       << RAD2DEG(obj.pose.o) << " "
       << obj.motion.v.x << " "
       << obj.motion.v.y << " "
-      << RAD2DEG(obj.motion.w) << "\n";
+      << RAD2DEG(obj.motion.w);
 
     return s.str();
 }
@@ -205,7 +204,7 @@ toLogString( const orca::Odometry3dData& obj )
       << obj.motion.v.z << " "
       << RAD2DEG(obj.motion.w.x) << " "
       << RAD2DEG(obj.motion.w.y) << " "
-      << RAD2DEG(obj.motion.w.z) << " \n";
+      << RAD2DEG(obj.motion.w.z);
 
     return s.str();
 }
@@ -282,7 +281,6 @@ toLogString( const orca::PathPlanner2dTask& obj )
     {
         s << toLogString(obj.coarsePath[i]) << " ";
     }
-    s << "\n";
 
     return s.str();
 }
@@ -302,7 +300,6 @@ toLogString( const orca::PathPlanner2dData& obj )
     {
         s << toLogString(obj.path[i]) << " ";
     }
-    s << "\n";
 
     return s.str();
 }
@@ -316,6 +313,7 @@ toLogString( const orca::Time& obj )
     return s.str();
 }
 void 
+        
 fromLogString( std::stringstream& stream, orca::Time& obj )
 {
     stream >> obj.seconds >> obj.useconds;
@@ -355,7 +353,7 @@ toLogString( const orca::WifiData& obj )
           << iface.linkQualityType << " " 
           << iface.maxLinkQuality << " " 
           << iface.maxSignalLevel << " " 
-          << iface.maxNoiseLevel << " \n";
+          << iface.maxNoiseLevel << "\n";
     }
 
     return s.str();
