@@ -9,6 +9,7 @@
  */
 
 #include <iostream>
+#include <string>
 
 #include "iostreamdisplaydriver.h"
 
