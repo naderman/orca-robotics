@@ -37,39 +37,54 @@ const double THIN_LINE_THICKNESS = 0.05;
 namespace orcaqgui {
 
 PoseHistory::PoseHistory( double lineThickness )
-    : lineThickness_(lineThickness) {}
+    : lineThickness_(lineThickness),
+      totalPoints_(0)
+{}
     
 void
 PoseHistory::addPoint( const double x, const double y )
 {
-    if ( history_.isEmpty() ) {
-        history_.push_back( QPointF(x,y) );
-        return;
+    if ( histories_.isEmpty() )
+    {
+        QPolygonF history;
+        history.push_back( QPointF(x,y) );
+        totalPoints_++;
+        histories_.push_back( history );
     }
     
-    const QPointF last = history_.at( history_.size()-1 );
+    const QPointF last = histories_.last().last();
     double dist = hypotf( last.x()-x, last.y()-y );
     
-    if ( dist > _historyMinDistance )
+    if ( dist > _historyMaxDistance )
     {
-        history_.push_back( QPointF(x,y) );
-
-        if ( history_.size() >= _historyMaxLength ) {
-            history_.remove( 0,_historyMaxLength-_historyResetLength );
-        }
+        // start a new history
+        QPolygonF history;
+        history.push_back( QPointF(x,y) );
+        totalPoints_++;
+        histories_.push_back( history );
+    }
+    else
+    {
+        histories_.last().push_back( QPointF(x,y) );  
+        totalPoints_++;  
+    }
+    
+    if (totalPoints_>_historyMaxLength)
+    {
+        // take a point from the beginning off
+        histories_.first().remove( 0,1 );
+        if (histories_.first().size()==0)
+            histories_.remove( 0,1 );
     }
 }
 
 void
 PoseHistory::paint( QPainter *p, const QColor &colour )
 {
-    QColor historyColour = getTransparentVersion( colour );
-
-    // paint robot motion history
-    if ( history_.size() > 1 )
+    for (int i=0; i<histories_.size(); i++)
     {
-        p->setPen( QPen( historyColour, lineThickness_ ) );
-        p->drawPolyline( history_ );
+        p->setPen( QPen( colour, lineThickness_ ) );
+        p->drawPolyline( histories_[i] );
     }
 }
 

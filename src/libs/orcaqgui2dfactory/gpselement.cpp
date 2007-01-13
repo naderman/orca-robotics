@@ -45,7 +45,6 @@ GpsElement::getGpsProperties()
 
     orcaice::setInit( gpsOrigin_ );
     orcaice::getPropertyAsCartesianPoint( prop, prefix+"Gps.Origin", gpsOrigin_ );
-    return;
 }  
         
 bool
@@ -77,36 +76,30 @@ GpsElement::update()
 {
     if ( !needToUpdate() )
     {
-        cout << "TRACE(gpselement.cpp): buffer is empty" << endl;
+        return;
     }
 
+    orca::GpsMapGridData data;
+    
     if ( !gpsListener_.buffer().isEmpty() )
     {
         // cout << "TRACE(gpselement.cpp): buffer has object" << endl;
         if ( displayGps_ )
         {
-            gpsListener_.buffer().getAndPop( gpsMapGridData_ );
+            gpsListener_.buffer().getAndPop( data );
             // cout << "TRACE(gpselement.cpp): Just got data from buffer" << endl;
             // shift the coordinates by gpsOrigin coordinates so that orcaview starts at (0,0)
-            gpsMapGridData_.northing -= gpsOrigin_.x;
-            gpsMapGridData_.easting -= gpsOrigin_.y;
-            gpsPainter_.setData( gpsMapGridData_ );
+            data.northing -= gpsOrigin_.x;
+            data.easting -= gpsOrigin_.y;
+            gpsPainter_.setData( data.northing, 
+                                 data.easting,
+                                 data.heading );
         }
     }
-//     if ( !localiseListener_.buffer().isEmpty() )
-//     {
-//         localiseListener_.buffer().getAndPop( localiseData_ );
-//         localisePainter_.setData( localiseData_ );
-//     }
-//    std::cout<<"TRACE(gpselement.cpp): update(): pos: " << localiseData_ << std::endl;
-//    const Pose2dHypothesis &h = orcaice::mlHypothesis( localiseData_ );
-//     x_ = h.mean.p.x;
-//     y_ = h.mean.p.y;
-//     theta_ = h.mean.o;
 
-    x_ = gpsMapGridData_.northing;
-    y_ = gpsMapGridData_.easting;
-    theta_ = gpsMapGridData_.heading;
+    x_ = data.northing;
+    y_ = data.easting;
+    theta_ = data.heading;
     return; 
 }
 
@@ -126,9 +119,9 @@ GpsElement::execute( int action )
         case 0 :
             gpsPainter_.toggleDisplayHistory();
             break;
-//         case 1 :
-//             displayGps_ = !displayGps_;
-//             break;
+        case 1 :
+            displayGps_ = !displayGps_;
+            break;
         default:
             assert(false);
             break;

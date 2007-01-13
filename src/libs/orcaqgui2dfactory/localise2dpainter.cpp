@@ -82,7 +82,7 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
             ScopedSaver rotateSaver(p);
             p->rotate( RAD2DEG( mean.o ) );
             paintPlatformPose( p, 
-                               currentColor_,
+                               color,
                                weight );
         }
 

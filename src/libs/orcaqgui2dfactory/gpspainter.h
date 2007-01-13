@@ -11,7 +11,6 @@
 #define ORCAGUI_GPS_PAINTER_H
 
 #include <QColor>
-#include <orca/gps.h>
 #include <orcaqgui2d/definitions2d.h>
 
 #include <orcaqgui2d/paintutils.h>
@@ -27,21 +26,18 @@ class GpsPainter
   public:
     // The default color is the color when the robot is not selected.
     GpsPainter( const QColor & colour=Qt::blue, const bool showHistory=true );
-    //GpsPainter();
 
-    void setData( const orca::GpsMapGridData& data );
+    void setData( const float &x, const float &y, const float &heading );
 
     void paint( QPainter *p, int z );
     bool paintThisLayer( int z ) const {return z==Z_POSE || z==Z_POSE-2;}
     void clear();
-    void execute( int action );
     void setColour( QColor colour ) { basicColour_ = colour; }
 
     void toggleDisplayHistory() { isDisplayHistory_ = !isDisplayHistory_; }
 
   private:
 
-//     orca::GpsMapGridData data_;
     bool isDataAvailable_;
 
     QColor basicColour_;

@@ -60,7 +60,7 @@ namespace orcaqgui
                         const std::string       &interfaceTag,
                         int                      timeoutMs=60000 );
         
-        // inherited from guielement
+            // inherited from guielement
             void update();
             void paint( QPainter *p, int z )
             { 
@@ -75,7 +75,7 @@ namespace orcaqgui
 
             virtual bool isInGlobalCS() { return true; }
 
-        // Access to Gps coord.
+        // Access to Gps mapgrid data [m] [m] [rad]
         virtual float x() const { return x_; }
         virtual float y() const { return y_; }
         virtual float theta() const { return theta_; }
@@ -93,8 +93,6 @@ namespace orcaqgui
             GpsPainter gpsPainter_;
 
             double timeoutMs_;
-
-            orca::GpsMapGridData gpsMapGridData_;
             
             IceStormListener<orca::GpsMapGridData,
                             orca::GpsPrx,
@@ -107,11 +105,13 @@ namespace orcaqgui
             orca::CartesianPoint gpsOrigin_;         
             
             void getGpsProperties();
-            // orca::CartesianPoint gpsOrigin2_;
                     
             bool displayGps_;
-
-            float x_, y_, theta_;
+            
+            // in absolute coordinate system: [m] [m] [rad]
+            float x_;
+            float y_;
+            float theta_;
     };
 
 }

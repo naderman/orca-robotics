@@ -33,22 +33,15 @@ GpsPainter::clear()
 }
 
 void 
-GpsPainter::setData( const orca::GpsMapGridData& data )
+GpsPainter::setData( const float &x, const float &y, const float &heading )
 {    
-//     data_ = data;
-
-    cout<<"TRACE(gpspainter.cpp): got data: " << orcaice::toString(data) << endl;
     // set local storage
-    x_ = data.easting;
-    y_ = data.northing;
-    heading_ = (int)floor( RAD2DEG( data.heading ) );
+    x_ = x;
+    y_ = y;
+    heading_ = (int)floor( RAD2DEG( heading ) );
     isDataAvailable_ = true;
-
-    // should we keep history even if not displaying?
-    if ( isDisplayHistory_ ) {
-        // Pose2dHypothesis &h = orcaice::mlHypothesis( data );
-        history_.addPoint( x_, y_ );
-    }
+    
+    history_.addPoint( x, y );
 
     currentColour_ = basicColour_;
 }
@@ -70,52 +63,6 @@ void GpsPainter::paint( QPainter *painter, int z )
             orcaqgui::paintPlatformPose( painter, currentColour_ );
         }
         painter->restore();
-       
-//         for ( unsigned int i=0; i<data_->hypotheses.size(); ++i )
-//         {
-//             float weight = data_->hypotheses[i].weight;
-// 
-//             // Don't bother painting _really_ unlikely hypotheses
-//             if ( weight < 0.02 ) continue;
-// 
-//             Frame2d      &mean = data_->hypotheses[i].mean;
-//             Covariance2d &cov  = data_->hypotheses[i].cov;
-// 
-//             // Translate to where the hypothesis is at
-//             {
-//                 ScopedSaver translateSaver(p);
-//                 painter->translate( mean.p.x, mean.p.y );
-// 
-//                 QColor colour = getTransparentVersion( currentColour_, weight );
-// 
-//                 // Rotate to draw the platform correctly
-//                 {
-//                     ScopedSaver rotateSaver(p);
-//                     painter->rotate( RAD2DEG( mean.o ) );
-//                     paintPlatformPose( p, 
-//                                        colour );
-//                 }
-//
-//                paintUncertaintyInfo( p,
-//                                      colour,
-//                                      mean.o,
-//                                      cov.xx,
-//                                      cov.xy,
-//                                      cov.yy,
-//                                     cov.tt );
-//            }
-//        }
     }
 }
 
-void
-GpsPainter::execute( int action )
-{
-    switch ( action )
-    {
-    case 0 :
-        // toggle history
-        isDisplayHistory_ = !isDisplayHistory_;
-        break;
-    }
-}
