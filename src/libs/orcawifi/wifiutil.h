@@ -64,7 +64,7 @@ namespace wifiutil {
     //! One vector entry per interface (e.g. eth1, eth2)
     void readFromProc( std::vector<ProcData> &wifiData );
     
-    //! Prints wirelss proc data to the screen
+    //! Prints wireless proc data to the screen
     void printData( std::vector<ProcData> &wifiData );
     
     //! Reads wireless configuration information

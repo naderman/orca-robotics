@@ -39,7 +39,8 @@ void getInterfaceNames( vector<string> &interfaceNames )
     {    
         if (fgets(buf, sizeof(buf),wifiInfoFile) == NULL) {
             fclose(wifiInfoFile);
-            throw Exception( "Error:\nProblem when skipping the header lines. Probably no wireless interface module loaded.\n" );
+            cout << "Info(getInterfaceNames): No wireless interface available" << endl;
+            return;
         }
     }
     
@@ -74,7 +75,7 @@ void readFromProc( vector<ProcData> &wifiData )
         if ((wifiInfoFile = fopen("/proc/net/wireless", "r")) == NULL) 
         {
             numTries++;
-            cout << "Warning: Couldn't open for reading. Tried " << numTries << " times." << endl;
+            cout << "Warning(readFromProc): Couldn't open for reading. Tried " << numTries << " times." << endl;
             if (numTries==5) throw Exception( "Error:\nCouldn't open /proc/net/wireless for reading.\n" );
         } else {
             break;
@@ -86,7 +87,8 @@ void readFromProc( vector<ProcData> &wifiData )
     {    
         if (fgets(buf, sizeof(buf),wifiInfoFile) == NULL) {
             fclose(wifiInfoFile);
-            throw Exception( "Error:\nProblem when skipping the header lines. Probably no wireless interface module loaded.\n" );
+            cout << "Info(readFromProc): No wireless interface available" << endl;
+            return;
         }
     }
     
