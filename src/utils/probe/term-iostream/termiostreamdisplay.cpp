@@ -326,12 +326,17 @@ TermIostreamDisplay::printPlatformData( const orcacm::RegistryHierarchicalData2&
 //         {
             // now filter on reachability
             if ( data.homes[i].isReachable ) {
-                ssOptions << setw(2)<<i<<"\t"<< adapt <<endl;
+                ssOptions << setw(2)<<i<<"\t";
             }
             else {
-                ssOptions << "\t"<< adapt <<endl;
+                ssOptions << "\t";
             }
+            ssOptions << adapt << endl;
 //         }
+    }
+
+    if ( data.homes.empty() ) {
+        ssOptions << "[ No components were found ]" << endl;
     }
 
     stdMenu( ssHeader.str(), "a component", ssOptions.str() );
@@ -409,6 +414,10 @@ TermIostreamDisplay::printComponentData( const orcacm::ComponentData& data )
         ssOptions.setf( ios::right, ios::adjustfield );
     } // provided interfaces
 
+    if ( data.provides.empty() ) {
+        ssOptions << "[ No interfaces were found ]" << endl;
+    }
+
     stdMenu( ssHeader.str(), "an interface", ssOptions.str() );
     getUserInput();
 }
@@ -424,6 +433,10 @@ TermIostreamDisplay::printInterfaceData( const orcacm::InterfaceData& data )
         //if ( comps[i].isReachable ) {
             ssOptions<<setw(2)<<i<<"\t"<<data.operations[i].name<<endl;
         //}
+    }
+
+    if ( data.operations.empty() ) {
+        ssOptions << "[ No operations were found ]" << endl;
     }
 
     stdMenu( ssHeader.str(), "an operation", ssOptions.str() );
