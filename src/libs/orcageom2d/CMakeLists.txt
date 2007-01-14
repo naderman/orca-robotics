@@ -1,4 +1,4 @@
-IF ( NOT OS_QNX )
+# IF ( NOT OS_QNX )
 
     INCLUDE_DIRECTORIES(
     ${PROJECT_SOURCE_DIR}/src/libs
@@ -12,4 +12,4 @@ IF ( NOT OS_QNX )
     ADD_SUBDIRECTORY( test )
     ENDIF ( BUILD_TESTS )
  
-ENDIF ( NOT OS_QNX )
+# ENDIF ( NOT OS_QNX )
