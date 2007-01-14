@@ -42,15 +42,15 @@ int main()
         catch ( wifiutil::Exception &e )
         {
             cout << "Test failed! We've done " << numLoops << " loops. More info: " << e.what();
-//             sleep(5);
             return -1;
         }
         
         numLoops++ ;
-//         if (numLoops==100) break;
-//         sleep (1);
+        if (numLoops==2000) break;
     }
 
     cout << endl << "Test passed!" << endl;
     return 0;
 }
+
+

@@ -13,10 +13,9 @@ IF ( BUILD_ORCAWIFI )
   
   INSTALL_FILES( /include/orcawifi .*\\.h$ )
   
-#  IF ( BUILD_TESTS ) 
-# This test is only used to debug the library functions
+IF ( BUILD_TESTS ) 
     ADD_SUBDIRECTORY ( test )
-#  ENDIF ( BUILD_TESTS )
+ENDIF ( BUILD_TESTS )
 
 ENDIF ( BUILD_ORCAWIFI )
 

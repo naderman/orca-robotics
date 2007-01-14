@@ -27,7 +27,7 @@ void getInterfaceNames( vector<string> &interfaceNames )
         if ((wifiInfoFile = fopen("/proc/net/wireless", "r")) == NULL) 
         {
             numTries++;
-            cout << "Warning: Couldn't open for reading. Tried " << numTries << " times." << endl;
+            cout << "Warning(getInterfaceNames): Couldn't open for reading. Tried " << numTries << " times." << endl;
             if (numTries==5) throw Exception( "Error:\nCouldn't open /proc/net/wireless for reading.\n" );
         } else {
             break;
@@ -55,6 +55,7 @@ void getInterfaceNames( vector<string> &interfaceNames )
         if (fgets(buf, sizeof(buf),wifiInfoFile) == NULL) break;
     }
     
+    cout << "Closing wifiInfoFile" << endl;
     fclose( wifiInfoFile );
 }
 
@@ -268,6 +269,10 @@ int getBitrate( int socketFd, iwreq* iwRequest )
 
 void readConfig( vector<WirelessConfig> &wifiConfigs )
 {
+    // get a list of all current wireless interfaces
+    vector<string> interfaceNames;
+    getInterfaceNames(interfaceNames);  
+    
     struct iwreq* iwRequest = new struct iwreq;
     
     // this is the socket to use for wireless info
@@ -277,10 +282,6 @@ void readConfig( vector<WirelessConfig> &wifiConfigs )
         cout << "Didn't get a socket!" << endl;
         throw Exception( "Error:\nUnable to get a socket.\n" );
     }
-    
-    // get a list of all current wireless interfaces
-    vector<string> interfaceNames;
-    getInterfaceNames(interfaceNames);  
     
     WirelessConfig cfg;
     
@@ -305,6 +306,8 @@ void readConfig( vector<WirelessConfig> &wifiConfigs )
         
         wifiConfigs.push_back( cfg );
     }
+    
+    close(socketFd);
 }
 
 void readUsingIoctl( vector<IoctlData> &wifiDataIoctl )
@@ -387,6 +390,8 @@ void readUsingIoctl( vector<IoctlData> &wifiDataIoctl )
     
         wifiDataIoctl.push_back( data );
     }
+    
+    close(socketFd);
 }
 
 }
