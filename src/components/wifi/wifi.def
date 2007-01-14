@@ -1,0 +1,14 @@
+DefaultComponentTag=Wifi
+
+# Provided Interfaces
+Provides.Wifi.Type=Wifi
+Provides.Wifi.DefaultName=wifi
+
+# Required Interfaces
+
+# Config Parameters
+Config.Driver.Comment=Options are { 'hardware', 'fake' }
+Config.Driver.Default=hardware
+
+
+

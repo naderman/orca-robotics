@@ -39,8 +39,7 @@ void getInterfaceNames( vector<string> &interfaceNames )
     {    
         if (fgets(buf, sizeof(buf),wifiInfoFile) == NULL) {
             fclose(wifiInfoFile);
-            cout << "Info(getInterfaceNames): No wireless interface available" << endl;
-            return;
+            throw NoWirelessInterfaceException( "No wireless interface available\n" );
         }
     }
     
@@ -56,7 +55,6 @@ void getInterfaceNames( vector<string> &interfaceNames )
         if (fgets(buf, sizeof(buf),wifiInfoFile) == NULL) break;
     }
     
-    cout << "Closing wifiInfoFile" << endl;
     fclose( wifiInfoFile );
 }
 
@@ -87,8 +85,7 @@ void readFromProc( vector<ProcData> &wifiData )
     {    
         if (fgets(buf, sizeof(buf),wifiInfoFile) == NULL) {
             fclose(wifiInfoFile);
-            cout << "Info(readFromProc): No wireless interface available" << endl;
-            return;
+            throw NoWirelessInterfaceException( "No wireless interface available\n");
         }
     }
     

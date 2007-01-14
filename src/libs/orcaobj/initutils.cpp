@@ -122,6 +122,30 @@ setInit( orca::Waypoint2d & wp )
 }
 
 void 
+setInit( orca::WifiInterface &w )
+{
+    w.mode = 0;  
+    w.bitrate = 0;  
+    w.accessPoint = "00:00:00:00:00:00";  
+    w.interfaceName = "";  
+    w.status = 0;  
+    w.linkQuality = 0;  
+    w.signalLevel = 0;  
+    w.noiseLevel = 0;  
+    w.numInvalidNwid = 0;  
+    w.numInvalidCrypt = 0;  
+    w.numInvalidFrag = 0;  
+    w.numRetries = 0;  
+    w.numInvalidMisc = 0;  
+    w.numMissedBeacons = 0;  
+    w.throughPut = 0;
+    w.linkQualityType = 0;
+    w.maxLinkQuality = 0;
+    w.maxSignalLevel = 0;
+    w.maxNoiseLevel = 0;
+}
+
+void 
 setSane( orca::Time& obj )
 {
     obj = toOrcaTime( IceUtil::Time::now() );

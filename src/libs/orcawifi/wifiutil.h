@@ -6,6 +6,12 @@
 
 namespace wifiutil {
 
+    enum Result
+    {
+        NoWirelessInterface,
+        OtherError
+    };
+    
     class Exception : public std::exception
     {
     public:
@@ -18,10 +24,20 @@ namespace wifiutil {
         virtual ~Exception() throw() {}
 
         virtual const char* what() const throw() { return message_.c_str(); }
+        
+        virtual Result type() const { return OtherError; }
 
     protected:
 
         std::string  message_;
+    };
+    
+    class NoWirelessInterfaceException : public Exception
+    {  
+        public:
+            NoWirelessInterfaceException( const char * message )
+                : Exception( message ) {}
+            virtual Result type() const { return NoWirelessInterface; }        
     };
     
     struct ProcData

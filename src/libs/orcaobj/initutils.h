@@ -29,6 +29,7 @@
 #include <orca/featuremap2d.h>
 #include <orca/pathfollower2d.h>
 #include <orca/pathplanner2d.h>
+#include <orca/wifi.h>
 
 namespace orcaice
 {
@@ -56,6 +57,8 @@ void setInit( orca::Time& );
 void setInit( orca::Position2dData& );
 //! Sets all fields to zero
 void setInit( orca::Waypoint2d& );
+//! Sets all fields to zero
+void setInit( orca::WifiInterface &w );
 
 //! Set to randomized but sane values.
 void setSane( orca::CartesianPoint2d& );

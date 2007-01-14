@@ -41,8 +41,13 @@ int main()
         }
         catch ( wifiutil::Exception &e )
         {
-            cout << "Test failed! We've done " << numLoops << " loops. More info: " << e.what();
-            return -1;
+            if (e.type()==NoWirelessInterface) {
+                cout << "We don't have a wireless interface. Test will just pass" << endl;
+                return 0;
+            } else {
+                cout << "Test failed! We've done " << numLoops << " loops. More info: " << e.what();
+                return -1;
+            }
         }
         
         numLoops++ ;
