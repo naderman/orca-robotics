@@ -320,7 +320,12 @@ source config_list.sh
 
 print_config_list $files $dests $asroot
 
-echo "Proceed with installation? [Y/n]"
+if [ "$testMode" == "yes" ]; then
+    echo "Proceed with installation test? [Y/n]"
+else
+    echo "Proceed with installation? [Y/n]"
+fi
+
 read answer
 if [ "$answer" == "n" ]; then
     cd ..
