@@ -104,7 +104,9 @@ constrainMaxSpeeds( Goal &goal,
     }
     assert( scaleFactor <= 1.0 );
     goal.maxSpeed    *= scaleFactor;
-    goal.maxTurnrate *= scaleFactor;
+
+    // Don't constrain the maxTurnrate 
+    // goal.maxTurnrate *= scaleFactor;
 }
 
 //////////////////////////////////////////////////////////////////////
