@@ -37,7 +37,7 @@ PathUpdateConsumer::setWaypointIndex( int index, const ::Ice::Current& )
     indexPipe_.set( index );
 }
 
-void PathUpdateConsumer::setStartTime( const orca::Time& absoluteTime, double relativeTime, const ::Ice::Current& )
+void PathUpdateConsumer::setActivationTime( const orca::Time& absoluteTime, double relativeTime, const ::Ice::Current& )
 {
     cout << "Got a start time" << endl;
 }

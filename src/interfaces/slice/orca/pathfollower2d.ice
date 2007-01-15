@@ -79,11 +79,11 @@ interface PathFollower2dConsumer
     //!     On activation, it will call 'setWaypointIndex(0)'.
     idempotent void setWaypointIndex( int index );
     
-    //! Once the follower starts following a path it notifies consumers of the start time. 
+    //! Once the follower starts following a path it notifies consumers of the activation time. 
     //! It provides:
     //! - the absolute time (useful if clocks of provider and consumers are synchronized).
-    //! - the relative time (how many seconds ago did the follower start?).
-    idempotent void setStartTime( Time absoluteTime, double relativeTime );
+    //! - the relative time (how many seconds ago the follower started following).
+    idempotent void setActivationTime( Time absoluteTime, double relativeTime );
 
     //! When the follower is loaded with a new path, it transmits that path to
     //! all subscribers.
@@ -136,17 +136,17 @@ interface PathFollower2d
     //!     sets the absolute time when the follower started following the current path
     //! If the PathFollower is inactive:
     //!   - returns false and
-    //!     does not set the startTime
-    nonmutating bool getAbsoluteStartTime( out Time startTime );
+    //!     does not set the activationTime
+    nonmutating bool getAbsoluteActivationTime( out Time activationTime );
     
     //! If the PathFollower is active:
     //!   - returns true and
-    //!     sets secondsSinceStart to the number of seconds since
+    //!     sets secondsSinceActivation to the number of seconds since
     //!     the follower started following the current path
     //! If the PathFollower is inactive:
     //!   - returns false and
-    //!     does not set the startTime
-    nonmutating bool getRelativeStartTime( out double secondsSinceStart );
+    //!     does not set secondsSinceActivation
+    nonmutating bool getRelativeActivationTime( out double secondsSinceActivation );
 
     //! Disabling the PathFollower stops it from sending any commands to the 
     //! robot.  It says, "Take your hands off the wheel!".  No commands can
