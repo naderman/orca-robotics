@@ -29,6 +29,8 @@ Component::~Component()
 void
 Component::start()
 {
+    tracer()->debug( "Starting component", 2 );
+    
     //
     // ENABLE NETWORK CONNECTIONS
     //
@@ -39,23 +41,20 @@ Component::start()
     //
     // Hardware handling loop
     //
-    // the constructor may throw, we'll let the application shut us down
     mainloop_ = new MainLoop( context() );
     mainloop_->start();
+    
+    tracer()->debug( "Component started", 2 );
     
     // the rest is handled by the application/service
 
 }
 
 void Component::stop()
-{
-    if ( mainloop_ ) {
-        IceUtil::ThreadControl mainLoopControl = mainloop_->getThreadControl();
-        tracer()->debug("stopping mainloop", 5 );
-        mainloop_->stop();
-        tracer()->debug("joining mainloop", 5 );
-        mainLoopControl.join();
-    }
+{    
+    tracer()->debug( "Stopping component", 2 );
+    orcaice::Thread::stopAndJoin( mainloop_ );
+    tracer()->debug( "Component stopped", 2 );
 }
 
 }

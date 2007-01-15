@@ -88,12 +88,11 @@ void MainLoop::initDriver()
 void 
 MainLoop::run()
 {   
-    orca::WifiData data;
-    
     while ( isActive() )
     {
         try
         {
+            orca::WifiData data;
             driver_->read( data );
             
             context_.tracer()->debug("Got fresh wifi data from driver. Sending it out now." , 5);
