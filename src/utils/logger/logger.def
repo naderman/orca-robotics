@@ -27,6 +27,9 @@ Requires.Odometry3d0.DefaultProxy=odometry3d@local/imu
 Requires.Power0.Type=Power
 Requires.Power0.DefaultProxy=power@local/segwayrmp
 
+Requires.Wifi0.Type=Wifi
+Requires.Wifi0.DefaultProxy=wifi@local/wifi
+
 # Config Parameters
 Config.FilenameTimestamp.Default=1
 Config.FactoryLibNames.Default=libOrcaLogFactory.so
@@ -39,3 +42,4 @@ Config.PolarFeature2d0.Format.Default=ice
 Config.Odometry2d0.Format.Default=ice
 Config.Odometry3d0.Format.Default=ice
 Config.Power0.Format.Default=ice
+Config.Wifi0.Format.Default=ascii
