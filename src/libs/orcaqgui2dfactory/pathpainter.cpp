@@ -30,7 +30,8 @@ namespace orcaqgui {
 PathPainter::PathPainter()
     : wpIndex_(-1),
       color_(Qt::blue),
-      inFocus_(true)
+      inFocus_(true),
+      relativeStartTime_(NAN)
 //       haveAbsoluteTime_(false),
 //       haveRelativeTime_(false)
 {
@@ -64,17 +65,11 @@ void PathPainter::setData( const PathPlanner2dData& path )
     setDataLocal( path2d );
 }
 
-// void setAbsoluteStartTime( orca::Time& absoluteStartTime )
-// {
-//     haveAbsoluteTime_ = true;
-//     absoluteStartTime_ = absoluteStartTime;    
-// }
-// 
-// void setRelativeStartTime( double relativeStartTime )
-// {
-//     haveRelativeTime_ = true;
-//     relativeStartTime_ = relativeStartTime;
-// }
+void PathPainter::setRelativeStartTime( double relativeStartTime )
+{
+    //cout << "TRACE(pathpainter.cpp): new relative time: " << relativeStartTime << endl;
+    relativeStartTime_ = relativeStartTime;
+}
 
 void PathPainter::setDataLocal( Path2d & path )
 {
@@ -121,7 +116,7 @@ void PathPainter::setWpIndex( int index )
     wpIndex_ = index;
 }
 
-void PathPainter::paint( QPainter *painter, int z, double relativeStartTime )
+void PathPainter::paint( QPainter *painter, int z )
 {
     if ( !displayWaypoints_ ) return;
     
@@ -193,7 +188,7 @@ void PathPainter::paint( QPainter *painter, int z, double relativeStartTime )
         painter->restore();
     }
     
-    // draw connections between them
+    // ======== draw connections between waypoints =========
     if ( waypoints_.size()>1 )
     {
         painter->setPen( QPen( futureWpColor, PATH_WIDTH ) );
@@ -208,13 +203,14 @@ void PathPainter::paint( QPainter *painter, int z, double relativeStartTime )
         }
     }
     
-    // draw a point where it should be according to the plan
-    if (relativeStartTime==NAN) return;
+    // ====== draw a point where we should be according to the plan ========
+    if (relativeStartTime_==NAN) return;
     
-    int wpI=-1;
+    int wpI = -1;
+    // find the waypoint we should be going towards according to the plan
     for (int i=0; i<waypoints_.size(); i++)
     {
-        if (relativeStartTime < times_[i]) {
+        if (relativeStartTime_ < times_[i]) {
             wpI = i;
             break;
         }
@@ -224,21 +220,10 @@ void PathPainter::paint( QPainter *painter, int z, double relativeStartTime )
         return;
     }
     
-    cout << "Times: " << endl;
-    for (int i=0;i<times_.size(); i++)
-    {
-        cout << times_[i] << " ";
-    }
-    cout << endl;
-            
-    cout << "Wp index, wps.size,  relativeStartTime: " << wpI << ", " << waypoints_.size() << ", " << relativeStartTime << endl;
-    
-    float deltaTime = times_[wpI] - times_[wpI-1];
-    cout << "deltaTime: " << deltaTime << endl;
-    float ratio = (relativeStartTime-times_[wpI-1])/deltaTime;
-    cout << "ratio: " << ratio << endl;
-    
+    // ratio of how much we accomplished of the distance between the two current waypoints
+    float ratio = (relativeStartTime_-times_[wpI-1])/(times_[wpI] - times_[wpI-1]);
 
+    // compute position of sliding point
     QPointF diffPoints = waypoints_[wpI] - waypoints_[wpI-1];      
     float x = waypoints_[wpI-1].x() + ratio * diffPoints.x();
     float y = waypoints_[wpI-1].y() + ratio * diffPoints.y();
@@ -248,9 +233,8 @@ void PathPainter::paint( QPainter *painter, int z, double relativeStartTime )
     QColor c = Qt::blue;
     paintWaypoint( painter, c, c, 0, 0.3, 360*16 );
     painter->restore();
-    
-
 }
+
 
 int PathPainter::savePath( const QString fileName, IHumanManager *humanManager ) const
 {

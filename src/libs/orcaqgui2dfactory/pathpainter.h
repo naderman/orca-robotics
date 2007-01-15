@@ -37,9 +37,8 @@ class PathPainter
     void setData( const orca::PathFollower2dData& path );
     void setData( const orca::PathPlanner2dData& path );
     void setWpIndex( int index );
-//     void setAbsoluteStartTime( orca::Time& absoluteStartTime );
-//     void setRelativeStartTime( double relativeStartTime );
-    void paint( QPainter *p, int z, double relativeStartTime=-99.99 );
+    void setRelativeStartTime( double relativeStartTime );
+    void paint( QPainter *p, int z );
     bool paintThisLayer(int z) const { return z==Z_PATH; };
     void setTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
 
@@ -78,11 +77,7 @@ class PathPainter
     QColor color_;
     bool inFocus_;
     
-//     // start times
-//     orca::Time absoluteStartTime_;
-//     bool haveAbsoluteTime_;
-//     double relativeStartTime_;
-//     bool haveRelativeTime_;
+    double relativeStartTime_;
 
     void setDataLocal( orca::Path2d & path );
 };
