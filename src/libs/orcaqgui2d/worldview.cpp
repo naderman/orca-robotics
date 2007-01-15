@@ -187,7 +187,6 @@ WorldView::paintEvent( QPaintEvent* e )
 void
 WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFramePlatformLocalised )
 {
-//     const QList<GuiElementModel::InterfaceNode*> &elements = model_->elements();
     const QList<GuiElement*> &elements = model_->elements();
 
     for ( int i=0; i<elements.size(); ++i )
@@ -235,28 +234,28 @@ WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFrame
         }
         catch ( Ice::Exception &e )
         {
-            std::cout<<"TRACE(worldview.cpp): Caught some ice exception during painting of ";
-//                      <<elements[i]->id.toStdString()<<": " << e << std::endl;
+            std::cout<<"TRACE(worldview.cpp): Caught some ice exception during painting of "
+                     <<elements[i]->details().toStdString()<<": " << e << std::endl;
         }
         catch ( std::exception &e )
         {
-            std::cout<<"TRACE(worldview.cpp): Caught some std exception during painting of ";
-//                      <<elements[i]->id.toStdString()<<": " << e.what() << std::endl;
+            std::cout<<"TRACE(worldview.cpp): Caught some std exception during painting of "
+                    <<elements[i]->details().toStdString()<<": " << e.what() << std::endl;
         }
         catch ( std::string &e )
         {
-            std::cout<<"TRACE(worldview.cpp): Caught std::string during painting of ";
-//                      <<elements[i]->id.toStdString()<<": " << e << std::endl;
+            std::cout<<"TRACE(worldview.cpp): Caught std::string during painting of "
+                    <<elements[i]->details().toStdString()<<": " << e << std::endl;
         }
         catch ( char *e )
         {
-            std::cout<<"TRACE(worldview.cpp): Caught char * during painting of ";
-//                      <<elements[i]->id.toStdString()<<": " << e << std::endl;
+            std::cout<<"TRACE(worldview.cpp): Caught char * during painting of "
+                    <<elements[i]->details().toStdString()<<": " << e << std::endl;
         }
         catch ( ... )
         {
-            std::cout<<"TRACE(worldview.cpp): Caught some other exception during painting of ";
-//                      <<elements[i]->id.toStdString()<<": " << std::endl;
+            std::cout<<"TRACE(worldview.cpp): Caught some other exception during painting of "
+                    <<elements[i]->details().toStdString()<< std::endl;
         }
     }
 }
