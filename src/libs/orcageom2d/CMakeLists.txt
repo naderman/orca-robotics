@@ -7,6 +7,7 @@
     FILE( GLOB SRCS *.cpp )
     GLOBAL_ADD_LIBRARY( OrcaGeom2d SHARED ${SRCS} )
     INSTALL_TARGETS( /lib OrcaGeom2d )
+    INSTALL_FILES( /include/orcageom2d .*\\.h$ )
     
     IF ( BUILD_TESTS ) 
     ADD_SUBDIRECTORY( test )
