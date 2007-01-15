@@ -1,0 +1,1 @@
+scripts/sync$ ./sync_config.sh test/ test/hostfile
