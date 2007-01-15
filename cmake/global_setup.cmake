@@ -217,12 +217,8 @@ IF ( ORCA_MOTHERSHIP )
 ENDIF ( ORCA_MOTHERSHIP )
 
 
-###########################################################
-#                                                         #
-# Enable testing by including the Dart module             #
-# (must be done *before* entering source directories      #
-#                                                         #
-###########################################################
+# Enable testing by including the Dart module
+# (must be done *before* entering source directories )
 INCLUDE (${CMAKE_ROOT}/Modules/Dart.cmake)
 ENABLE_TESTING()
 
@@ -232,6 +228,9 @@ ENABLE_TESTING()
 #                                                         #
 ###########################################################
 ADD_SUBDIRECTORY ( src )
+
+# Some scripts need to be installed
+ADD_SUBDIRECTORY ( scripts )
 
 ###########################################################
 #                                                         #
