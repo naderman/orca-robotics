@@ -221,7 +221,7 @@ VfhDriver::setTurnToGoal( orca::VelocityControl2dData& cmd, const Goal &goal )
         if ( posNeg != prevPosNeg )
         {
             // Overshoot detected: slow down.
-            maxAllowedTurnrate = maxAllowedTurnrate / 2.0;
+            maxAllowedTurnrate = maxAllowedTurnrate * 0.9;
         }
 
         cmd.motion.w = posNeg*maxAllowedTurnrate;
