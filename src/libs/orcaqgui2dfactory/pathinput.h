@@ -175,7 +175,7 @@ class PathInput : public QObject
         void generateFullPath();
         
     private:
-        void expandPath( int index, int numInsert);
+        void expandPath( int index, int numInsert, int headingTolerance);
         int  expandPathStationary( int index );
         int  expandPathLeftRight( int index );
         int  expandPathRightLeft( int index );

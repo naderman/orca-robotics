@@ -399,7 +399,7 @@ PathInput::PathInput( WaypointSettings *wpSettings, IHumanManager *humanManager 
 
 PathInput::~PathInput() 
 { 
-    delete wpWidget_; 
+//     delete wpWidget_; 
 }  
 
 
@@ -639,14 +639,17 @@ void PathInput::changeWpParameters( QPointF p1 )
 
 }
 
-void PathInput::expandPath( int index, int numInsert)
+void PathInput::expandPath( int index, int numInsert, int headingTolerance)
 {
     // insert the same values numInsert times
     waypoints_.insert( index+1, numInsert, waypoints_[index]);
     distTolerances_.insert( index+1, numInsert, distTolerances_[index]);
-    headingTolerances_.insert( index+1, numInsert, headingTolerances_[index]);
     maxSpeeds_.insert( index+1, numInsert, maxSpeeds_[index]);
     maxTurnrates_.insert( index+1, numInsert, maxTurnrates_[index]);
+    
+    // heading tolerances
+    headingTolerances_[index] = headingTolerance;
+    headingTolerances_.insert( index+1, numInsert, headingTolerance);
     
     // times
     float epochTime = waitingTimes_[index]/numInsert;
@@ -662,8 +665,9 @@ void PathInput::expandPath( int index, int numInsert)
     
 int PathInput::expandPathStationary(int index)
 {
-    const int numInsert=1;
-    expandPath( index, numInsert );
+    const int numInsert = 1;
+    const int headingTolerance = headingTolerances_[index];
+    expandPath( index, numInsert, headingTolerance );
     
     // heading
     headings_.insert(index+1, headings_[index]);
@@ -674,16 +678,19 @@ int PathInput::expandPathStationary(int index)
 int PathInput::expandPathRightLeft( int index )
 {
     const int numInsert=3;
-    expandPath( index, numInsert );
+    const int headingTolerance=15*16;
+    expandPath( index, numInsert, headingTolerance );
     
     // headings
-    int heading = headings_[index]-90*16;
+    int heading = headings_[index]-80*16;
     if (heading < 0) heading = heading + 360*16;
     headings_.insert(index+1, heading);
-    heading = headings_[index]+90*16;
+    heading = headings_[index]+80*16;
     if (heading >360*16) heading = heading - 360*16;
     headings_.insert(index+2, heading);
     headings_.insert(index+3, headings_[index]);
+    
+
     
     return numInsert;
 }
@@ -691,13 +698,14 @@ int PathInput::expandPathRightLeft( int index )
 int PathInput::expandPathLeftRight( int index )
 {
     const int numInsert=3;
-    expandPath( index, numInsert );
+    const int headingTolerance=15*16;
+    expandPath( index, numInsert, headingTolerance );
     
     // headings
-    int heading = headings_[index]+90*16;
+    int heading = headings_[index]+80*16;
     if (heading >360*16) heading = heading - 360*16;
     headings_.insert(index+1, heading);
-    heading = headings_[index]-90*16;
+    heading = headings_[index]-80*16;
     if (heading < 0) heading = heading + 360*16;
     headings_.insert(index+2, heading);
     headings_.insert(index+3, headings_[index]);
@@ -708,7 +716,8 @@ int PathInput::expandPathLeftRight( int index )
 int PathInput::expandPathTurn360( int index )
 {
     const int numInsert=4;
-    expandPath( index, numInsert );
+    const int headingTolerance=15*16;
+    expandPath( index, numInsert, headingTolerance );
     
     // headings
     int heading = headings_[index];
