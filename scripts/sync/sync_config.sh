@@ -89,16 +89,20 @@ function force {
 
 # QNX does not have 'seq' so we have to do it manually
 # Usage:
-# simple_seq 1 5
-function simple_seq {
+# my_seq 1 5
+# echo $MY_SEQUENCE
+function my_seq {
     FROM=$1
     TO=$2
+    MY_SEQUENCE=""
     while [ $FROM -le $TO ]
     do
-    echo -n $FROM " "
-    (( FROM++ ))
+#         echo -n $FROM " "
+#         (( FROM++ ))
+        MY_SEQUENCE="$MY_SEQUENCE $FROM"
+        FROM=`expr $FROM + 1`
     done
-    echo ""
+#     echo ""
 }
 
 function check_config_list {
@@ -130,7 +134,8 @@ function check_config_list {
     filesMax=`expr ${#files[*]} - 1`
     # using our own script instead of standard 'seq' to make it work on QNX
 #     for i in `seq 0 $filesMax`; do
-    for i in simple_seq 0 $filesMax; do
+    my_seq 0 $filesMax
+    for i in $MY_SEQUENCE; do
 
         if [ -z "${files[$i]}" ] || [ -z "${dests[$i]}" ] || [ -z "${asroot[$i]}" ]; then
             echo "Not properly initialised: element $i:"
@@ -163,7 +168,9 @@ function print_config_list {
 
     echo "FILES TO INSTALL:"
     filesMax=`expr ${#files[*]} - 1`
-    for i in `seq 0 $filesMax`; do
+#     for i in `seq 0 $filesMax`; do
+    my_seq 0 $filesMax
+    for i in $MY_SEQUENCE; do
         if  [ "${asroot[$i]}" == "yes"  ]; then
             echo -e "  $i: ${files[$i]} \t -> ${dests[$i]} \t (as root)"
         else
@@ -237,7 +244,9 @@ function create_substitutions_file {
 
     # write out the new rules
     iMax=`expr ${#subsFrom[*]} - 1`
-    for i in `seq 0 $iMax`; do
+#     for i in `seq 0 $iMax`; do
+    my_seq 0 $iMax
+    for i in $MY_SEQUENCE; do
         #echo "${subsFrom[$i]} --> ${subsTo[$i]}"
         echo "s#${subsFrom[$i]}#${subsTo[$i]}#" >> $file
     done
@@ -277,7 +286,9 @@ function install_config_list {
     check_config_list $files $dests $asroot
 
     filesMax=`expr ${#files[*]} - 1`
-    for i in `seq 0 $filesMax`; do
+#     for i in `seq 0 $filesMax`; do    
+    my_seq 0 $filesMax
+    for i in $MY_SEQUENCE; do
 
         # Do we need to install as root?
         if [ "${asroot[$i]}" == "yes" ]; then
