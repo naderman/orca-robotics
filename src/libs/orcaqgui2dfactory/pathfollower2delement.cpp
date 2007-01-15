@@ -347,7 +347,7 @@ PathFollower2dElement::sendPath( const PathFollowerInput &pathInput, bool activa
         QString filename = dumpPath_ + "/pathdump" + QString(buffer) + ".txt";
         pathHI_.savePath( filename );
     }
-    catch ( const orca::BusyException &e )
+    catch ( const orca::OrcaException &e )
     {
         stringstream ss;
         ss << e.what;

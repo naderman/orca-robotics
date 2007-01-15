@@ -121,7 +121,7 @@ interface PathFollower2d
     //! The follower can therefore be stopped by calling setData(dummyPath,false).
     //!
     idempotent void setData( PathFollower2dData path, bool activateImmediately )
-        throws MalformedParametersException, BusyException;
+        throws MalformedParametersException, OrcaException;
 
     //! Start following the previously-loaded path.
     idempotent void activateNow();
@@ -130,13 +130,23 @@ interface PathFollower2d
     //!   - '-1'    : none (inactive)
     //!   - [0,n-1] : an index into the list of n waypoints.
     nonmutating int getWaypointIndex();
+
+    //! If the PathFollower is active:
+    //!   - returns true and
+    //!     sets the absolute time when the follower started following the current path
+    //! If the PathFollower is inactive:
+    //!   - returns false and
+    //!     does not set the startTime
+    nonmutating bool getAbsoluteStartTime( out Time startTime );
     
-    //! Returns the absolute time when the follower started following the current path
-    nonmutating Time getAbsoluteStartTime();
-    
-    //! Returns the relative time in number of seconds since
-    //! the follower started following the current path
-    nonmutating double getRelativeStartTime();
+    //! If the PathFollower is active:
+    //!   - returns true and
+    //!     sets secondsSinceStart to the number of seconds since
+    //!     the follower started following the current path
+    //! If the PathFollower is inactive:
+    //!   - returns false and
+    //!     does not set the startTime
+    nonmutating bool getRelativeStartTime( out double secondsSinceStart );
 
     //! Disabling the PathFollower stops it from sending any commands to the 
     //! robot.  It says, "Take your hands off the wheel!".  No commands can

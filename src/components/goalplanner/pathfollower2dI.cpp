@@ -72,7 +72,7 @@ PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateI
         // do we have multiple hypotheses?
         if ( localiseData.hypotheses.size() != 1 )
         {
-            throw orca::BusyException( "Multiple localization hypotheses. Will wait for a single hypothesis to execute your path");
+            throw orca::OrcaException( "Multiple localisation hypotheses.  Unable to determine start point.");
         }
     }
 }
@@ -91,20 +91,20 @@ PathFollower2dI::getWaypointIndex( const ::Ice::Current& ) const
     return localNavPrx_->getWaypointIndex(); 
 }
 
-::orca::Time 
-PathFollower2dI::getAbsoluteStartTime(const Ice::Current&) const
+bool
+PathFollower2dI::getAbsoluteStartTime(::orca::Time &startTime, const Ice::Current&) const
 {
     cout << "TRACE(pathfollower2dI.cpp): getAbsoluteStartTime: implement me" << endl;
     orca::Time t;
     setSane(t);
-    return t;
+    return false;
 }
     
-double 
-PathFollower2dI::getRelativeStartTime(const Ice::Current&) const
+bool 
+PathFollower2dI::getRelativeStartTime(double &secondsSinceStart, const Ice::Current&) const
 {
     cout << "TRACE(pathfollower2dI.cpp): getRelativeStartTime: implement me" << endl;
-    return 0.0;
+    return false;
 }
 
 void 

@@ -47,7 +47,7 @@ exception HardwareFailedException extends OrcaException {};
 //! Raised when the server fails to subscribe client for periodic updates.
 exception SubscriptionFailedException extends OrcaException {};
 
-//! Raised when the component is unable to process requests.
+//! Raised when the component is too busy to process requests.
 exception BusyException extends OrcaException {};
 
 //! Raised when a component failed to connect to a required interface
