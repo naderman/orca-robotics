@@ -63,12 +63,14 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - VelocityControl2d
     - Replaces Platform2d which is now obsolete.
 - Wifi
-    - Reports wireless signal strength and other wireless network parameters (Tobias K.)
+    - Access to wireless signal strength and other wireless network parameters (Tobias K.)
 
 @par New components
 
 - TracerMon (alex m.)
     - Connects to Tracer interface of a component and displays all trace statements.
+- Wifi (Tobias K.)
+    - Component that provides wifi information
 
 @par New utilities
 
