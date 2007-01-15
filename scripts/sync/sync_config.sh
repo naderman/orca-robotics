@@ -87,7 +87,19 @@ function force {
 
 }
 
-#!/bin/sh
+# QNX does not have 'seq' so we have to do it manually
+# Usage:
+# simple_seq 1 5
+function simple_seq {
+    FROM=$1
+    TO=$2
+    while [ $FROM -le $TO ]
+    do
+    echo -n $FROM " "
+    (( FROM++ ))
+    done
+    echo ""
+}
 
 function check_config_list {
 
@@ -116,7 +128,9 @@ function check_config_list {
     done
 
     filesMax=`expr ${#files[*]} - 1`
-    for i in `seq 0 $filesMax`; do
+    # using our own script instead of standard 'seq' to make it work on QNX
+#     for i in `seq 0 $filesMax`; do
+    for i in simple_seq 0 $filesMax; do
 
         if [ -z "${files[$i]}" ] || [ -z "${dests[$i]}" ] || [ -z "${asroot[$i]}" ]; then
             echo "Not properly initialised: element $i:"
