@@ -399,7 +399,7 @@ PathInput::PathInput( WaypointSettings *wpSettings, IHumanManager *humanManager 
 
 PathInput::~PathInput() 
 { 
-//     delete wpWidget_; 
+    delete wpWidget_; 
 }  
 
 

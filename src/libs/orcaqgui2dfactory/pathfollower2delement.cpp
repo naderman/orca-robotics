@@ -39,7 +39,9 @@ PathUpdateConsumer::setWaypointIndex( int index, const ::Ice::Current& )
 
 void PathUpdateConsumer::setActivationTime( const orca::Time& absoluteTime, double relativeTime, const ::Ice::Current& )
 {
-    cout << "Got a start time" << endl;
+    cout << "Got a new start time. Don't care." << endl;
+//     absoluteStartTimePipe_.set( absoluteTime );
+//     relativeStartTimePipe_.set( relativeTime );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -193,6 +195,18 @@ PathFollower2dElement::update()
         pathUpdateConsumer_->indexPipe_.get( index );
         painter_.setWpIndex( index );
     }
+//     if ( pathUpdateConsumer_->absoluteStartTimePipe_.isNewData() )
+//     {
+//         orca::Time absoluteStartTime;
+//         pathUpdateConsumer_->absoluteStartTimePipe_.get( absoluteStartTime );
+//         painter_.setAbsoluteStartTime( absoluteStartTime );
+//     }
+//     if ( pathUpdateConsumer_->relativeStartTimePipe_.isNewData() )
+//     {
+//         double relativeStartTime;
+//         pathUpdateConsumer_->relativeStartTimePipe_.get( relativeStartTime );
+//         painter_.setRelativeStartTime( relativeStartTime );
+//     }
 }
 
 void 
@@ -363,8 +377,26 @@ PathFollower2dElement::sendPath( const PathFollowerInput &pathInput, bool activa
 
 void 
 PathFollower2dElement::paint( QPainter *p, int z )
-{ 
-    painter_.paint( p, z );
+{
+    double secondsSinceActivation;
+    
+    try
+    {
+        if (pathFollower2dPrx_->getRelativeActivationTime( secondsSinceActivation )) {
+            painter_.paint( p, z, secondsSinceActivation );
+        } else {
+            humanManager_->showStatusMsg( Information, "Path not active" );
+            painter_.paint( p, z, NAN );
+        }
+    }
+    catch ( const orca::OrcaException &e )
+    {
+        stringstream ss;
+        ss << e.what;
+        humanManager_->showStatusMsg( Error, ss.str().c_str() );
+        painter_.paint( p, z, NAN );
+    }
+    
     pathHI_.paint( p );
 }
 

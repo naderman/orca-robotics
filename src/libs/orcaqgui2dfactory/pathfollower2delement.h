@@ -38,6 +38,8 @@ public:
 
     orcaice::Proxy<orca::PathFollower2dData> pathPipe_;
     orcaice::Proxy<int> indexPipe_;
+//     orcaice::Proxy<orca::Time> absoluteStartTimePipe_;
+//     orcaice::Proxy<double> relativeStartTimePipe_;
 };
 ////////////////////////////////////////////////////////////////////////////////
 

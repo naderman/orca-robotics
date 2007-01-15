@@ -37,7 +37,9 @@ class PathPainter
     void setData( const orca::PathFollower2dData& path );
     void setData( const orca::PathPlanner2dData& path );
     void setWpIndex( int index );
-    void paint( QPainter *p, int z );
+//     void setAbsoluteStartTime( orca::Time& absoluteStartTime );
+//     void setRelativeStartTime( double relativeStartTime );
+    void paint( QPainter *p, int z, double relativeStartTime=-99.99 );
     bool paintThisLayer(int z) const { return z==Z_PATH; };
     void setTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
 
@@ -65,6 +67,7 @@ class PathPainter
     QVector<float> maxSpeeds_;           // max speed in m/s
     QVector<int> maxTurnrates_;          // max turnrate in deg/s
 
+    // The index of the waypoint we're currently pursuing
     int wpIndex_;
 
     // toggle states
@@ -74,6 +77,12 @@ class PathPainter
     
     QColor color_;
     bool inFocus_;
+    
+//     // start times
+//     orca::Time absoluteStartTime_;
+//     bool haveAbsoluteTime_;
+//     double relativeStartTime_;
+//     bool haveRelativeTime_;
 
     void setDataLocal( orca::Path2d & path );
 };

@@ -31,6 +31,8 @@ PathPainter::PathPainter()
     : wpIndex_(-1),
       color_(Qt::blue),
       inFocus_(true)
+//       haveAbsoluteTime_(false),
+//       haveRelativeTime_(false)
 {
 }
 
@@ -61,6 +63,18 @@ void PathPainter::setData( const PathPlanner2dData& path )
     Path2d path2d = path.path;
     setDataLocal( path2d );
 }
+
+// void setAbsoluteStartTime( orca::Time& absoluteStartTime )
+// {
+//     haveAbsoluteTime_ = true;
+//     absoluteStartTime_ = absoluteStartTime;    
+// }
+// 
+// void setRelativeStartTime( double relativeStartTime )
+// {
+//     haveRelativeTime_ = true;
+//     relativeStartTime_ = relativeStartTime;
+// }
 
 void PathPainter::setDataLocal( Path2d & path )
 {
@@ -107,7 +121,7 @@ void PathPainter::setWpIndex( int index )
     wpIndex_ = index;
 }
 
-void PathPainter::paint( QPainter *painter, int z )
+void PathPainter::paint( QPainter *painter, int z, double relativeStartTime )
 {
     if ( !displayWaypoints_ ) return;
     
@@ -193,6 +207,48 @@ void PathPainter::paint( QPainter *painter, int z )
             if (i != 0) painter->drawLine(waypoints_[i],waypoints_[i-1]);
         }
     }
+    
+    // draw a point where it should be according to the plan
+    if (relativeStartTime==NAN) return;
+    
+    int wpI=-1;
+    for (int i=0; i<waypoints_.size(); i++)
+    {
+        if (relativeStartTime < times_[i]) {
+            wpI = i;
+            break;
+        }
+    }
+    if (wpI == -1) {
+        // we're at the goal
+        return;
+    }
+    
+    cout << "Times: " << endl;
+    for (int i=0;i<times_.size(); i++)
+    {
+        cout << times_[i] << " ";
+    }
+    cout << endl;
+            
+    cout << "Wp index, wps.size,  relativeStartTime: " << wpI << ", " << waypoints_.size() << ", " << relativeStartTime << endl;
+    
+    float deltaTime = times_[wpI] - times_[wpI-1];
+    cout << "deltaTime: " << deltaTime << endl;
+    float ratio = (relativeStartTime-times_[wpI-1])/deltaTime;
+    cout << "ratio: " << ratio << endl;
+    
+
+    QPointF diffPoints = waypoints_[wpI] - waypoints_[wpI-1];      
+    float x = waypoints_[wpI-1].x() + ratio * diffPoints.x();
+    float y = waypoints_[wpI-1].y() + ratio * diffPoints.y();
+    
+    painter->save();
+    painter->translate( x, y );
+    QColor c = Qt::blue;
+    paintWaypoint( painter, c, c, 0, 0.3, 360*16 );
+    painter->restore();
+    
 
 }
 
