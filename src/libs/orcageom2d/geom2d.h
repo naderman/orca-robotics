@@ -21,11 +21,7 @@ namespace geom2d {
         double &y() { return y_; }
 
         // convert to polar
-#ifdef __linux
-        double range() const { return hypotf(y_,x_); }
-#else
-        double range() const { return std::hypotf(y_,x_); }
-#endif
+        double range() const { return std::sqrt(y_*y_+x_*x_); }
         double bearing() const { return std::atan2(y_,x_); }
 
         std::string toString()   const;
@@ -62,17 +58,10 @@ namespace geom2d {
     };
 
     // Distance between points
-#ifdef __linux
     inline double dist( const Point &p1, const Point &p2 )
-    { return hypotf(p1.y()-p2.y(),p1.x()-p2.x()); }
+    { return std::sqrt((p1.y()-p2.y())*(p1.y()-p2.y())+(p1.x()-p2.x())*(p1.x()-p2.x())); }
     inline double dist( const PolarPoint &p1, const PolarPoint &p2 )
-    { return hypotf(p1.y()-p2.y(),p1.x()-p2.x()); }
-#else
-    inline double dist( const Point &p1, const Point &p2 )
-    { return std::hypotf(p1.y()-p2.y(),p1.x()-p2.x()); }
-    inline double dist( const PolarPoint &p1, const PolarPoint &p2 )
-    { return std::hypotf(p1.y()-p2.y(),p1.x()-p2.x()); }
-#endif
+    { return std::sqrt((p1.y()-p2.y())*(p1.y()-p2.y())+(p1.x()-p2.x())*(p1.x()-p2.x())); }
 
     // Rotate points about the origin
     // in place
