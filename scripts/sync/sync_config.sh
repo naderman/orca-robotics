@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 USAGE_ARGS="[-f(orce)|-t(est)] dir hostfile"
 nonInteractive=no
@@ -43,7 +43,7 @@ fi
 #
 myHostname=`hostname`
 IP=`cat $hostsFile | grep $myHostname | tail -1 | sed -e 's/ \+.*//'`
-if [ "$IP" == "" ]; then
+if [ -z $IP ]; then
     echo "$0: Bugger, couldn't work out my IP from $hostsFile..."
     exit 1
 fi
