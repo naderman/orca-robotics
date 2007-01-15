@@ -31,11 +31,9 @@ float requiredTimeToGoalAtMaxSpeed( const Goal &goal )
 
     const double FOREVER        = 1e9;
     const double LINEAR_EPS     = 1e-5; 
-    // const double ROTATIONAL_EPS = 1e-5*M_PI/180.0; 
 
     // The goal covers some area (and range of angles).  How far to the border?
     float distanceToBorder = MAX( 0.0, hypotf(goal.y,goal.x) - goal.distanceTolerance );
-    // float angleToBorder    = MAX( 0.0, fabs(goal.theta) - goal.headingTolerance );
 
     // work out how long it would take at max speed
     float translationTime, rotationTime;
@@ -50,23 +48,11 @@ float requiredTimeToGoalAtMaxSpeed( const Goal &goal )
         else
             translationTime = distanceToBorder / goal.maxSpeed;
     }
-//     if ( angleToBorder == 0.0 )
-//         rotationTime = 0.0;
-//     else
-//     {
-//         if ( goal.maxTurnrate < ROTATIONAL_EPS )
-//         {
-//             return FOREVER;
-//         }
-//         else
-//             rotationTime = angleToBorder / goal.maxTurnrate;
-//     }
     float requiredTimeAtMaxSpeed = translationTime; // + rotationTime;
     if ( !(requiredTimeAtMaxSpeed >= 0.0) )
     {
         cout << "ERROR(localnavmanager.cpp): requiredTimeAtMaxSpeed: " << requiredTimeAtMaxSpeed << endl;
         cout<<"TRACE(localnavmanager.cpp): translationTime: " << translationTime << endl;
-        // cout<<"TRACE(localnavmanager.cpp): rotationTime: " << rotationTime << endl;
     }
     assert( requiredTimeAtMaxSpeed >= 0.0 );
     
