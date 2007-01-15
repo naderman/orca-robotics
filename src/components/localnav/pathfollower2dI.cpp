@@ -94,15 +94,28 @@ PathFollower2dI::getWaypointIndex( const ::Ice::Current& ) const
 bool
 PathFollower2dI::getAbsoluteActivationTime(::orca::Time &time, const Ice::Current&) const
 {
-    cout << "TRACE(pathfollower2dI.cpp): getAbsoluteActivationTime: implement me" << endl;
-    return false;
+    if ( localIsEnabled() )
+    {
+        activationTimeProxy_.get( time );
+        return true;
+    }
+    else
+        return false;
 }
     
 bool
 PathFollower2dI::getRelativeActivationTime(double &secondsSinceActivation, const Ice::Current&) const
 {
-    cout << "TRACE(pathfollower2dI.cpp): getRelativeActivationTime: implement me" << endl;
-    return false;
+    if ( localIsEnabled() )
+    {
+        orca::Time time;
+        activationTimeProxy_.get( time );
+        secondsSinceActivation = orcaice::timeDiffAsDouble( orcaice::getNow(), time );
+        assert( secondsSinceActivation >= 0.0 );
+        return true;
+    }
+    else
+        return false;
 }
 
 void 

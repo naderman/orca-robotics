@@ -128,6 +128,11 @@ PathMaintainer::checkForWpIndexChange( orca::PathFollower2dConsumerPrx &pathCons
     if ( wpIndexChanged_ )
     {
         pathFollowerInterface_.localSetWaypointIndex( wpIndex_ );
+        if ( wpIndex_ == 0 )
+        {
+            // We must have just been activated
+            pathFollowerInterface_.localSetActivationTime( orcaice::getNow() );
+        }
     }
 }
 
