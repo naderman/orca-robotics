@@ -149,7 +149,9 @@ PathFollower2dI::getWaypointIndex( const ::Ice::Current& ) const
 bool
 PathFollower2dI::getAbsoluteActivationTime(::orca::Time &time, const Ice::Current&) const
 {
-    if ( localIsEnabled() )
+    int wpIndex;
+    wpIndexProxy_.get( wpIndex );
+    if ( wpIndex != -1 )
     {
         activationTimeProxy_.get( time );
         return true;
@@ -161,7 +163,9 @@ PathFollower2dI::getAbsoluteActivationTime(::orca::Time &time, const Ice::Curren
 bool
 PathFollower2dI::getRelativeActivationTime(double &secondsSinceActivation, const Ice::Current&) const
 {
-    if ( localIsEnabled() )
+    int wpIndex;
+    wpIndexProxy_.get( wpIndex );
+    if ( wpIndex != -1 )
     {
         orca::Time now, timeActivated;
         timeNowProxy_.get( now );
