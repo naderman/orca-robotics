@@ -4,6 +4,14 @@ DefaultComponentTag=LocalNav
 Provides.PathFollower2d.Type=PathFollower2d
 Provides.PathFollower2d.DefaultName=pathfollower2d
 
+# Provided for testing purposes only
+Provides.TestLaserScanner.Type=LaserScanner2dI
+Provides.TestLaserScanner.DefaultName=testlaserscanner
+Provides.TestLocalise.Type=Localise2d
+Provides.TestLocalise.DefaultName=testlocalise
+Provides.TestOgMap.Type=OgMap
+Provides.TestOgMap.DefaultName=testogmap
+
 # Required Interfaces
 
 Requires.VelocityControl2d.Type=VelocityControl2d

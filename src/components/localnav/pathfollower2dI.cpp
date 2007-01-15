@@ -28,6 +28,10 @@ PathFollower2dI::PathFollower2dI( const std::string              &ifaceTag,
 
     // But enabled
     enabledProxy_.set( true );
+
+    // Put some bogus data in the timeNowProxy_
+    orca::Time zeroTs; zeroTs.seconds=0; zeroTs.useconds=0;
+    timeNowProxy_.set( zeroTs );
 }
 
 void
@@ -89,7 +93,7 @@ PathFollower2dI::timeSinceActivate( const orca::Time &activationTime )
 void
 PathFollower2dI::activateNow( const ::Ice::Current& )
 {
-    cout << "TRACE(pathfollower2dI.cpp): activateNow called" << endl;
+    // cout << "TRACE(pathfollower2dI.cpp): activateNow called" << endl;
     orca::Time now;
     timeNowProxy_.get( now );
     activationTimeProxy_.set( now );
