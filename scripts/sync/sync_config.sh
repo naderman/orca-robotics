@@ -3,26 +3,26 @@
 USAGE_ARGS="[-f(orce)|-t(est)] dir hostfile"
 nonInteractive=no
 testMode=no
-if [ $# -gt 4 ]; then
+if [ $# -gt 3 ]; then
     echo "Usage: $0 $USAGE_ARGS"; exit 1
 fi
-if [ $# -eq 4 ]; then
+if [ $# -eq 3 ]; then
     if [ "$1" == "-f" ]; then
         nonInteractive=yes
     elif [ "$1" == "-t" ]; then
         testMode=yes
     else
-        echo "Usage: $0 $USAGE_ARGS"; exit 1
+        echo "Usage (>4): $0 $USAGE_ARGS"; exit 1
     fi
     srcDir="$2"
     hostsFile="$3"
 fi
-if [ $# -eq 3 ]; then
+if [ $# -eq 2 ]; then
     srcDir="$1"
     hostsFile="$2"
 fi
-if [ $# -lt 3 ]; then
-    echo "Usage: $0 $USAGE_ARGS"; exit 1
+if [ $# -lt 2 ]; then
+    echo "Usage ($#<3): $0 $USAGE_ARGS"; exit 1
 fi
 
 if ! [ -d $srcDir ]; then
