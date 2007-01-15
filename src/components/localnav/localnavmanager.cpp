@@ -105,7 +105,8 @@ constrainMaxSpeeds( Goal &goal,
     assert( scaleFactor <= 1.0 );
     goal.maxSpeed    *= scaleFactor;
 
-    // Don't constrain the maxTurnrate 
+    // Don't constrain the maxTurnrate by timeRemaining.
+    // Need to leave the driver with the freedom to swerve hard.
     // goal.maxTurnrate *= scaleFactor;
 }
 
