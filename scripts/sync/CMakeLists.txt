@@ -1,1 +1,1 @@
-INSTALL_FILES( /scripts/sync .*\\.sh$ )
+INSTALL_FILES( /scripts .*\\.sh$ )
