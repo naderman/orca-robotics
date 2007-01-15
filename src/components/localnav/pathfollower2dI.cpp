@@ -111,7 +111,6 @@ PathFollower2dI::getRelativeActivationTime(double &secondsSinceActivation, const
         orca::Time time;
         activationTimeProxy_.get( time );
         secondsSinceActivation = orcaice::timeDiffAsDouble( orcaice::getNow(), time );
-        assert( secondsSinceActivation >= 0.0 );
         return true;
     }
     else
