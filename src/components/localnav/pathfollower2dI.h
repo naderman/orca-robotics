@@ -66,6 +66,7 @@ public:
     void initInterface();
 
     void localSetActivationTime( const orca::Time &activationTime );
+    void localSetTimeNow( const orca::Time &now );
     void localSetWaypointIndex( int index );
     void localSetData( const orca::PathFollower2dData &path );
     bool localIsEnabled() const;
@@ -73,9 +74,12 @@ public:
     // local access to proxies
     orcaice::Proxy<orca::PathFollower2dData> &pathProxy()           { return pathProxy_; }
     orcaice::Proxy<bool>                     &newPathArrivedProxy() { return newPathArrivedProxy_; }
-    orcaice::Proxy<orca::Time>               &activationProxy()     { return activationProxy_; }
+    orcaice::Proxy<orca::Time>               &activationTimeProxy() { return activationTimeProxy_; }
+    orcaice::Proxy<bool>                     &activationArrivedProxy() { return activationArrivedProxy_; }
 
 private:
+
+    double timeSinceActivate( const orca::Time &activationTime );
 
     // New paths from the outside world go in here
     orcaice::Proxy<orca::PathFollower2dData>        pathProxy_;
@@ -84,11 +88,12 @@ private:
     orcaice::Proxy<bool>                            newPathArrivedProxy_;
 
     // Time of Activation from the outside world goes in here
-    orcaice::Proxy<orca::Time>                      activationProxy_;
+    orcaice::Proxy<bool>                            activationArrivedProxy_;
 
     // Progress info from the component goes in here
     orcaice::Proxy<int>                             wpIndexProxy_;
     orcaice::Proxy<orca::Time>                      activationTimeProxy_;
+    orcaice::Proxy<orca::Time>                      timeNowProxy_;
 
     // Allow external en/dis-able
     orcaice::Proxy<bool>                            enabledProxy_;

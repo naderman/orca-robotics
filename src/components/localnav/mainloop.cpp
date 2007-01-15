@@ -154,6 +154,10 @@ MainLoop::run()
             // The rangeScanner provides the 'clock' which is the trigger for this loop
             int sensorRet = obsProxy_.getNext( rangeData_, TIMEOUT_MS );
 
+            // Tell everyone what time it is, boyeee
+            pathFollowerInterface_.localSetTimeNow( rangeData_->timeStamp );
+            pathMaintainer_.setTimeNow( rangeData_->timeStamp );
+
             // Before we do anything, check whether we're enabled.
             if ( !pathFollowerInterface_.localIsEnabled() )
             {
@@ -187,8 +191,6 @@ MainLoop::run()
                 }
                 else
                 {
-//                    velocityCmd_.timeStamp = rangeData_->timeStamp;
-
 //                     cout<<"TRACE(mainloop.cpp): localNavManager_.getCommand:"<<endl
 //                         <<"    localiseData: " << orcaice::toString(localiseData_) << endl
 //                         <<"    odomData: " << orcaice::toString(odomData_) << endl;

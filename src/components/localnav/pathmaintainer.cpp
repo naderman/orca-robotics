@@ -82,7 +82,7 @@ void
 PathMaintainer::checkForNewPath( orca::PathFollower2dConsumerPrx &pathConsumer )
 {
     if ( pathFollowerInterface_.newPathArrivedProxy().isNewData() || 
-         pathFollowerInterface_.activationProxy().isNewData() )
+         pathFollowerInterface_.activationArrivedProxy().isNewData() )
     {
         // Load the path if it's there
         if ( pathFollowerInterface_.newPathArrivedProxy().isNewData() )
@@ -98,10 +98,12 @@ PathMaintainer::checkForNewPath( orca::PathFollower2dConsumerPrx &pathConsumer )
         }
 
         // Have we been told to start?
-        if ( pathFollowerInterface_.activationProxy().isNewData() )
+        if ( pathFollowerInterface_.activationArrivedProxy().isNewData() )
         {
             context_.tracer()->debug( "PathMaintainer: activating.", 1 );
-            pathFollowerInterface_.activationProxy().get(pathStartTime_);
+            bool dummy;
+            pathFollowerInterface_.activationArrivedProxy().get(dummy);
+            pathFollowerInterface_.activationTimeProxy().get(pathStartTime_);
             wpIndex_ = 0;
             if ( path_.path.size() == 0 )
             {
@@ -125,14 +127,14 @@ PathMaintainer::checkForNewPath( orca::PathFollower2dConsumerPrx &pathConsumer )
 void 
 PathMaintainer::checkForWpIndexChange( orca::PathFollower2dConsumerPrx &pathConsumer )
 {
-    if ( wpIndexChanged_ )
+    if ( wpIndexChanged_ && wpIndex_ != 0 )
     {
         pathFollowerInterface_.localSetWaypointIndex( wpIndex_ );
-        if ( wpIndex_ == 0 )
-        {
-            // We must have just been activated
-            pathFollowerInterface_.localSetActivationTime( orcaice::getNow() );
-        }
+//         if ( wpIndex_ == 0 )
+//         {
+//             // We must have just been activated
+//             pathFollowerInterface_.localSetActivationTime( orcaice::getNow() );
+//         }
     }
 }
 
@@ -156,10 +158,10 @@ PathMaintainer::secToNextWp() const
 double
 PathMaintainer::secSinceActivation() const
 {
-    // cout<<"TRACE(pathmaintainer.cpp): now:   " << orcaice::toString(orcaice::getNow()) << endl;
+    // cout<<"TRACE(pathmaintainer.cpp): now:   " << orcaice::toString(timeNow_) << endl;
     // cout<<"TRACE(pathmaintainer.cpp): start: " << orcaice::toString(pathStartTime_) << endl;
 
-    double diff = orcaice::timeDiffAsDouble( orcaice::getNow(), pathStartTime_ );
+    double diff = orcaice::timeDiffAsDouble( timeNow_, pathStartTime_ );
 
     // cout<<"TRACE(pathmaintainer.cpp): diff:  " << diff << endl;
 
