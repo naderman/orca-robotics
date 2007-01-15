@@ -78,10 +78,16 @@ interface PathFollower2dConsumer
     //!   - Suppose the follower has been loaded with a path but is inactive.  
     //!     On activation, it will call 'setWaypointIndex(0)'.
     idempotent void setWaypointIndex( int index );
+    
+    //! Once the follower starts following a path it notifies consumers of the start time. 
+    //! It provides:
+    //! - the absolute time (useful if clocks of provider and consumers are synchronized).
+    //! - the relative time (how many seconds ago did the follower start?).
+    idempotent void setStartTime( Time absoluteTime, double relativeTime );
 
     //! When the follower is loaded with a new path, it transmits that path to
     //! all subscribers.
-    void setData( PathFollower2dData data );
+    idempotent void setData( PathFollower2dData data );
 };
 
 /*!
@@ -102,7 +108,7 @@ interface PathFollower2d
 {
     //! Returns the path currently being followed, or throws DataNotExistException
     //! if none has been set.
-    nonmutating PathFollower2dData      getData();
+    nonmutating PathFollower2dData getData();
             
     //! Loads the follower with a path to follow.
     //! If 'activateImmediately' is false, the follower won't go anywhere
@@ -124,6 +130,13 @@ interface PathFollower2d
     //!   - '-1'    : none (inactive)
     //!   - [0,n-1] : an index into the list of n waypoints.
     nonmutating int getWaypointIndex();
+    
+    //! Returns the absolute time when the follower started following the current path
+    nonmutating Time getAbsoluteStartTime();
+    
+    //! Returns the relative time in number of seconds since
+    //! the follower started following the current path
+    nonmutating double getRelativeStartTime();
 
     //! Disabling the PathFollower stops it from sending any commands to the 
     //! robot.  It says, "Take your hands off the wheel!".  No commands can

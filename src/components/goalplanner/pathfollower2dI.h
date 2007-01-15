@@ -44,6 +44,11 @@ public:
     virtual void activateNow(const ::Ice::Current& = ::Ice::Current());
     
     virtual int  getWaypointIndex(const ::Ice::Current& = ::Ice::Current()) const;
+    
+    virtual ::orca::Time getAbsoluteStartTime(const Ice::Current&) const;
+    
+    virtual double getRelativeStartTime(const Ice::Current&) const;
+            
 
     virtual void setEnabled( bool enabled, const ::Ice::Current& = ::Ice::Current() );
     virtual bool enabled(const ::Ice::Current& = ::Ice::Current()) const;

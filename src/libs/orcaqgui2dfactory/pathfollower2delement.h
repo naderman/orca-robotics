@@ -34,6 +34,7 @@ public:
     
     void setData( const orca::PathFollower2dData& newPath, const ::Ice::Current& );
     void setWaypointIndex( int index, const ::Ice::Current& );
+    void setStartTime( const orca::Time& absoluteTime, double relativeTime, const ::Ice::Current& );
 
     orcaice::Proxy<orca::PathFollower2dData> pathPipe_;
     orcaice::Proxy<int> indexPipe_;

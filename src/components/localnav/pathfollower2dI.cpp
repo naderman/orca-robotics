@@ -91,6 +91,22 @@ PathFollower2dI::getWaypointIndex( const ::Ice::Current& ) const
     return ret;
 }
 
+::orca::Time 
+PathFollower2dI::getAbsoluteStartTime(const Ice::Current&) const
+{
+    cout << "TRACE(pathfollower2dI.cpp): getAbsoluteStartTime: implement me" << endl;
+    orca::Time t;
+    setSane(t);
+    return t;
+}
+    
+double 
+PathFollower2dI::getRelativeStartTime(const Ice::Current&) const
+{
+    cout << "TRACE(pathfollower2dI.cpp): getRelativeStartTime: implement me" << endl;
+    return 0.0;
+}
+
 void 
 PathFollower2dI::setEnabled( bool enabled, const ::Ice::Current& )
 {

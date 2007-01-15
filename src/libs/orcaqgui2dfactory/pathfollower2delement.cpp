@@ -37,6 +37,11 @@ PathUpdateConsumer::setWaypointIndex( int index, const ::Ice::Current& )
     indexPipe_.set( index );
 }
 
+void PathUpdateConsumer::setStartTime( const orca::Time& absoluteTime, double relativeTime, const ::Ice::Current& )
+{
+    cout << "Got a start time" << endl;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 PathfollowerButtons::PathfollowerButtons( QObject *parent, IHumanManager *humanManager, string proxyString)
