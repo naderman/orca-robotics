@@ -110,6 +110,14 @@ public:
 };
 typedef IceUtil::Handle<NewRelativeCommandEvent> NewRelativeCommandEventPtr;
 
+
+class TeleopEventQueueOptimizer : public orcaice::EventQueueOptimizer
+{
+public:
+    // this combine function adds the member variables of the two events
+    virtual bool combine( orcaice::EventPtr& existing, const orcaice::EventPtr& extra );
+};
+
 } // namespace
 
 #endif

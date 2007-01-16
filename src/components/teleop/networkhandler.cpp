@@ -26,6 +26,9 @@ NetworkHandler::NetworkHandler( Display* display, const orcaice::Context& contex
     display_(display),
     context_(context)
 {
+    // install event optimizer
+    orcaice::EventQueueOptimizerPtr opt = new TeleopEventQueueOptimizer;
+    events_->setOptimizer( opt );
 }
 
 NetworkHandler::~NetworkHandler()
@@ -37,7 +40,7 @@ NetworkHandler::newCommandIncrement( int longitudinal, int transverse, int angle
 {
 // cout<<"DEBUG: got command incresment : "<<longitudinal<<" "<<transverse<<" "<<angle<<endl;
     orcaice::EventPtr e = new NewCommandIncrementEvent( longitudinal, transverse, angle );
-    events_->add( e );
+    events_->optimizedAdd( e );
 }
 
 void 
@@ -45,7 +48,7 @@ NetworkHandler::newRelativeCommand( double longitudinal, double transverse, doub
 {
 // cout<<"DEBUG: got relative command : "<<longitudinal<<"% "<<transverse<<"% "<<angle<<"%"<<endl;
     orcaice::EventPtr e = new NewRelativeCommandEvent( longitudinal, transverse, angle );
-    events_->add( e );
+    events_->optimizedAdd( e );
 }
 
 void

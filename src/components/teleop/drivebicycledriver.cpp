@@ -110,6 +110,7 @@ cout<<"DEBUG: DriveBicycleDriver::processNewCommandIncrement"<<endl;
 void 
 DriveBicycleDriver::processNewRelativeCommand( double longitudinal, double transverse, double angle )
 {
+cout<<"DEBUG: DriveBicycleDriver::processNewRelativeCommand"<<endl;
     if ( longitudinal != TELEOP_COMMAND_UNCHANGED ) {
         command_.speed = longitudinal*maxSpeed_;
         command_.speed = MIN( command_.speed, maxSpeed_ );
