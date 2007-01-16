@@ -36,7 +36,7 @@ float requiredTimeToGoalAtMaxSpeed( const Goal &goal )
     float distanceToBorder = MAX( 0.0, hypotf(goal.y,goal.x) - goal.distanceTolerance );
 
     // work out how long it would take at max speed
-    float translationTime, rotationTime;
+    float translationTime;
     if ( distanceToBorder == 0.0 )
         translationTime = 0.0;
     else

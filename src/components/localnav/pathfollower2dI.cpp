@@ -102,10 +102,6 @@ PathFollower2dI::activateNow( const ::Ice::Current& )
 
     localSetWaypointIndex( 0 );
 
-    cout<<"TRACE(pathfollower2dI.cpp): activationTime: " << orcaice::toString(activationTime) << endl;
-    cout<<"TRACE(pathfollower2dI.cpp): now:            " << orcaice::toString(now) << endl;
-    cout<<"TRACE(pathfollower2dI.cpp): timeDiff:       " << timeSinceActivate(activationTime) << endl;
-
     // Try to push to IceStorm.
     try {
         consumerPrx_->setActivationTime( activationTime, 
