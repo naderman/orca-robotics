@@ -11,9 +11,18 @@
 #ifndef ORCA2_LASER2D_SICK_ACFR_SERIAL_H
 #define ORCA2_LASER2D_SICK_ACFR_SERIAL_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+// #ifdef __cplusplus
+// extern "C" {
+// #endif
+
+namespace laser2d {
+
+class Serial
+{
+public:
+
+Serial();
+~Serial();
 
 // open the serial port
 //   name = name of the device (eg. "/dev/ser1")
@@ -55,8 +64,22 @@ int CharsWaitingJEG( int port_fd );
 
 int SerialWaitForCharXJEG( int port_fd, uchar b ,int timeoutDs,int *ignoredChars ) ;
 
-#ifdef __cplusplus
-}
-#endif
+char* SpecifySerialPortString(unsigned np);
+
+private:
+
+int port_fd;
+
+int LastSerialSpeedDone;
+
+void InitSerialLib(int *pflagBye);
+
+};
+
+} // namespace
+
+// #ifdef __cplusplus
+// }
+// #endif
 
 #endif

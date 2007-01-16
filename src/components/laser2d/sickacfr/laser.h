@@ -16,6 +16,7 @@
 #include <orcaobj/timeutils.h>
 
 #include "sickdefines.h"
+#include "serial.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -134,6 +135,7 @@ uint16b ExeCRC(unsigned char *pf,int n,uint16b crc_poly);
 
 void ReadRangeData2_U16(uint16b *pf);
 
+laser2d::Serial* serial_;
  
 };
 

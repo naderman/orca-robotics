@@ -27,8 +27,11 @@ static uint LaserSensibilityMode=0 ;
 // ...........................................................
 
 Laser::Laser() 
-	: pxl(0)
+	: pxl(0),
+      serial_(0)
 {
+	serial_ = new laser2d::Serial();
+	
     // configure the buffers so they have depth 100 and are of type queue
     laserDataBuffer_.configure( 100 , orcaice::BufferTypeCircular );
  
@@ -37,6 +40,7 @@ Laser::Laser()
 Laser::~Laser() 
 {
 	delete pxl;
+	if( serial_ ) delete serial_;
 }
 
 //IniLaserInstance(3,9600,38400,1,11)
@@ -109,7 +113,7 @@ Laser::IniLSRXCode(int *pflag, struct LaserData *pxl)
 	// }
 	// else
 	// {
-		stc = openSerial( pxl->NamePort, pxl->speed, &( pxl->FComLsr ) ) ;
+		stc = serial_->openSerial( pxl->NamePort, pxl->speed, &( pxl->FComLsr ) ) ;
  
 		if (stc<=0)
 		{
@@ -151,7 +155,7 @@ chau:
 
 	if (pxl->FComLsr!=0)
 	{
-        CloseSerialPortJEG( &(pxl->FComLsr) );
+        serial_->CloseSerialPortJEG( &(pxl->FComLsr) );
     }
 
 	return(1) ;
@@ -242,7 +246,7 @@ Laser::readResponseInfo1(int FComLsr)
 	char s[220] ;
 	static char str[1000] ;
     int n,i,m=0,n0 ;
-	n = SerialReadJEG( FComLsr,  (unsigned char*)s, 200, 200, T5segs/10 );
+	n = serial_->SerialReadJEG( FComLsr,  (unsigned char*)s, 200, 200, T5segs/10 );
 	n0=n ;
 	if (n>6){	n=6 ; }
 	for (i=0;i<n;i++){	m=m+sprintf(str+m,"|%x|",0x00FF&(unsigned)s[i]) ; }
@@ -258,7 +262,7 @@ Laser::readResponseB(int FComLsr,struct LaserData *pg)
 	char s[1200] ;
     static char str[1000] ;
 	int n,i,m=0,n0 ;
-	n = SerialReadJEG( FComLsr,  (unsigned char *)s, 1000, 1000, T5segs/5 );
+	n = serial_->SerialReadJEG( FComLsr,  (unsigned char *)s, 1000, 1000, T5segs/5 );
 	n0=n ;
 	if (n>10)
 	{	
@@ -362,11 +366,11 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 	////PrintiEtc1("--- [%s]: being configured------ ",pg->NameUnit);	
 	
 	//fflush(FComLsr);
-	ChangeSerialSpeedJEG(FComLsr,pg->speed) ;
+	serial_->ChangeSerialSpeedJEG(FComLsr,pg->speed) ;
 	////PrintiEtc2("[%s]: serial at [%d]",pg->NameUnit,pg->speed);
 
 	// set to 'install' mode
-	SerialWriteJEG( FComLsr, (unsigned char*)string1, STR1, &hkswrite );
+	serial_->SerialWriteJEG( FComLsr, (unsigned char*)string1, STR1, &hkswrite );
 	
 	////PrintiEtc1("[%s]: Sent init string1",pg->NameUnit);
 	if (pg->speedB>100)
@@ -381,7 +385,7 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 	delay(100);
 
 	// set baud rate to 38400
-	SerialWriteJEG( FComLsr, (unsigned char*)string2b, STR2, &hkswrite);
+	serial_->SerialWriteJEG( FComLsr, (unsigned char*)string2b, STR2, &hkswrite);
               
 	////PrintiEtc2("[%s]: Sent init string2b, s[5]=[%x]",pg->NameUnit,(int)string2b[5]);
 	if (pg->speedB>100)
@@ -397,11 +401,11 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 
 	// ---------- at speed  pg->speed (usually 38400 or 115200b (->500000))
 	// change the port speed  to higher
-	ChangeSerialSpeedJEG(FComLsr,pg->speedB) ;
+	serial_->ChangeSerialSpeedJEG(FComLsr,pg->speedB) ;
 	////PrintiEtc2("[%s]: serial at [%d]baud",pg->NameUnit,pg->speedB);
 
 	// new
-	SerialWriteJEG(FComLsr, (unsigned char*)string1, STR1, &hkswrite);
+	serial_->SerialWriteJEG(FComLsr, (unsigned char*)string1, STR1, &hkswrite);
 	
 	////PrintiEtc1("[%s]: send init string1",pg->NameUnit);
 	if (pg->speedB>100)
@@ -418,7 +422,7 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 
 	// more initialisation
 	// laser configuration string
-	SerialWriteJEG(FComLsr, (unsigned char*)string4b, STR4, &hkswrite);
+	serial_->SerialWriteJEG(FComLsr, (unsigned char*)string4b, STR4, &hkswrite);
 	
 	////PrintiEtc1("[%s]: Sent init string4**",pg->NameUnit);
 	if (pg->speedB>100)
@@ -432,12 +436,12 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 
     delay(100);
 
-	SerialWriteJEG(FComLsr, (unsigned char*)stringAskInfo1, sizeof(stringAskInfo1), &hkswrite);
+	serial_->SerialWriteJEG(FComLsr, (unsigned char*)stringAskInfo1, sizeof(stringAskInfo1), &hkswrite);
 
 	readResponseInfo1(FComLsr);
 
 	// set mode to send data continuously
-	SerialWriteJEG(FComLsr, (unsigned char*)string5, STR5, &hkswrite);
+	serial_->SerialWriteJEG(FComLsr, (unsigned char*)string5, STR5, &hkswrite);
 
 	////PrintiEtc1("[%s]: Sent init string5**",pg->NameUnit);
 	if (pg->speedB>100)
@@ -485,7 +489,7 @@ Laser::readSickLaser(struct LaserData *pxl,int *pFlag)
 		setprio(0,pxl->priority) ;
 
         // check for incoming header character
-		xx = SerialWaitForCharXJEG(FComLsr,'\x02' ,T5segs,&ignoredx); // 5 segs timeout
+		xx = serial_->SerialWaitForCharXJEG(FComLsr,'\x02' ,T5segs,&ignoredx); // 5 segs timeout
 
         // increment the no. of bytes ignored (this should be 0 after the first frame)
 		ignoredT+= ignoredx ;
@@ -507,7 +511,7 @@ Laser::readSickLaser(struct LaserData *pxl,int *pFlag)
 			//hkSleep(1) ;
 			string[0] = '\x02' ; // it is not important, it is only to have it.
             // check the next 3 bytes to confirm that the incoming bytes are really part of a laser frame
-			nnn = SerialReadJEG(FComLsr, (unsigned char*)string+1, 3, 3, T5segs);
+			nnn = serial_->SerialReadJEG(FComLsr, (unsigned char*)string+1, 3, 3, T5segs);
 
 			// if next character in packet = 0x80
 			if ( (nnn==3) && (string[1] == '\x80'))
@@ -520,7 +524,7 @@ Laser::readSickLaser(struct LaserData *pxl,int *pFlag)
 				}
 				
 				// continue reading the rest of the laser frame
-                nnn = SerialReadJEG(FComLsr, (unsigned char*)string+4, 728, 728, T5segs);
+                nnn = serial_->SerialReadJEG(FComLsr, (unsigned char*)string+4, 728, 728, T5segs);
 
 				//if ( (errorno != 728) ||((errorno == 728) && (string[731] != 0x02)))
 				if  (nnn != 728)
@@ -574,7 +578,7 @@ Laser::readSickLaser(struct LaserData *pxl,int *pFlag)
 	}
 
 chau:
-    CloseSerialPortJEG( &(pxl->FComLsr) );
+    serial_->CloseSerialPortJEG( &(pxl->FComLsr) );
 	
 	pxl->active=0 ;
 	////PrintiEtc1("LaserData [%s] ends\n",pxl->NameUnit);

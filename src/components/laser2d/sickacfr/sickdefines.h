@@ -53,6 +53,6 @@ extern char *GivemeStrEntry(char *head) ;
 
 // ...........................................
 
-#include "serial.h" 
+// #include "serial.h" 
 
 #endif

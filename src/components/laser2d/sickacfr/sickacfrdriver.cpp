@@ -21,7 +21,7 @@ namespace laser2d {
 SickAcfrDriver::SickAcfrDriver( const Config & cfg, const orcaice::Context & context )
     : Driver(cfg),
       laser_(0),
-      timeoutMs_(2000),
+	  timeoutMs_(2000),
       laserCount_(0),
 	  context_(context)
 {
