@@ -68,7 +68,10 @@ NetworkHandler::run()
             break;
         }
         catch ( const orcaice::NetworkException& e ) {
-            context_.tracer()->warning("Will try again in 2 seconds.");
+            std::stringstream ss;
+            ss << "Failed to get interface with tag 'Generic': " << e.what() << endl;
+            ss << "Will try again in 2 seconds.";
+            context_.tracer()->warning(ss.str());
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         }
     }
