@@ -109,12 +109,7 @@ Laser::IniLSRXCode(int *pflag, struct LaserData *pxl)
 	// }
 	// else
 	// {
-	    std::cout << "pxl->FComLsr: " << pxl->FComLsr << std::endl;
-		// unsigned int uintFComLsr = (unsigned int)(pxl->FComLsr);
 		stc = openSerial( pxl->NamePort, pxl->speed, &( pxl->FComLsr ) ) ;
-		// stc = OpenSerialPortXJEG(pxl->NamePort,pxl->speed, &uintFComLsr ) ;
-		// pxl->FComLsr = (int)uintFComLsr;
- 	    std::cout << "pxl->FComLsr: " << pxl->FComLsr << std::endl;
  
 		if (stc<=0)
 		{
@@ -156,10 +151,7 @@ chau:
 
 	if (pxl->FComLsr!=0)
 	{
-		// unsigned int uintFComLsr = (unsigned int)(pxl->FComLsr);
         CloseSerialPortJEG( &(pxl->FComLsr) );
-        // CloseSerialPortJEG( &(uintFComLsr) );
-		// pxl->FComLsr = (int)uintFComLsr;
     }
 
 	return(1) ;
@@ -373,8 +365,6 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 	ChangeSerialSpeedJEG(FComLsr,pg->speed) ;
 	////PrintiEtc2("[%s]: serial at [%d]",pg->NameUnit,pg->speed);
 
-	printf(" 2 FComLasr:  %d \n", FComLsr);
-	
 	// set to 'install' mode
 	SerialWriteJEG( FComLsr, (unsigned char*)string1, STR1, &hkswrite );
 	
@@ -461,7 +451,6 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 	
     delay(100);
     
-	printf(" 3 FComLasr:  %d \n", FComLsr);
 }
 
 void 
@@ -585,10 +574,7 @@ Laser::readSickLaser(struct LaserData *pxl,int *pFlag)
 	}
 
 chau:
-	// unsigned int uintFComLsr = (unsigned int)(pxl->FComLsr);
     CloseSerialPortJEG( &(pxl->FComLsr) );
-    // CloseSerialPortJEG( &(uintFComLsr) );
-	// pxl->FComLsr = (int)uintFComLsr;
 	
 	pxl->active=0 ;
 	////PrintiEtc1("LaserData [%s] ends\n",pxl->NameUnit);
@@ -599,13 +585,12 @@ chau:
 void* 
 Laser::readSickLaserX(void *pxl0)
 {
-struct LaserData *pxl = (struct LaserData*)pxl0 ;
-printf("pxl->FComLsr = %d \n", pxl->FComLsr);
- struct threadData *p = &(pxl->ThreadData) ;
+	struct LaserData *pxl = (struct LaserData*)pxl0 ;
+ 	struct threadData *p = &(pxl->ThreadData) ;
 	setprio(0,pxl->priority2) ;
 	////PrintiEtcXX2("-> [%s] [prio=%d]\n",pxl->NameUnit,getprio( 0 ));	
 	readSickLaser(pxl,p->pflag) ;
-   return(NULL) ;
+   	return(NULL) ;
 }
 
 
