@@ -197,7 +197,7 @@ PathFollower2dElement::update()
     }
     
     // get the activation time
-    if (activationTimer_->elapsedSec()>0.5) 
+    if ( (activationTimer_->elapsedSec()>0.5) && isEnabled_) 
     {
         try
         {
@@ -239,6 +239,9 @@ PathFollower2dElement::doInitialSetup()
         orca::PathFollower2dConsumerPrx callbackPrx = 
                 orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( context_, pathFollowerObj );
         pathFollower2dPrx_->subscribe(callbackPrx);
+        
+        // check whether pathfollower is enabled
+        isEnabled_ = pathFollower2dPrx_->enabled();
     }
     catch ( ... )
     {
@@ -300,8 +303,8 @@ PathFollower2dElement::execute( int action )
     }
     else if ( action == 3 )
     {
-        isEnabled_ = !isEnabled_;
         pathFollower2dPrx_->setEnabled( !pathFollower2dPrx_->enabled() );
+        isEnabled_ = pathFollower2dPrx_->enabled();
     }
     else if ( action == 4 )
     {
