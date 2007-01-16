@@ -19,16 +19,17 @@ extern "C" {
 //   name = name of the device (eg. "/dev/ser1")
 //   speed0 = baudrate to open at
 //   H = handle to the serial port
-int OpenSerialPortXJEG(char *name,int speed0, unsigned *H);
- 
+// int OpenSerialPortXJEG(char *name,int speed0, unsigned *H);
+int openSerial( char *name, int baud, int* port_fd ); 
+
 // write the buffer to the serial port
 //   H = handle to the serial port
 //   buff = buffer
-int SerialWriteJEG(unsigned H,uchar *buff,int L,int *nw);
+int SerialWriteJEG( int port_fd, uchar *buff, int L, int *nw);
 
 // close the serial port
 //   H = handle
-void CloseSerialPortJEG( unsigned *H) ;
+void CloseSerialPortJEG( int* port_fd ) ;
 
 // read a number of bytes from the serial port
 //   h = handle to the serial port
@@ -36,7 +37,7 @@ void CloseSerialPortJEG( unsigned *H) ;
 //   lMin = minimum number of bytes to read
 //   lMax = maximum number of bytes to read
 //   TimeOut = timeout for reading from serial port
-int SerialReadJEG(unsigned h, uchar *buff, int lMin, int lMax, int TimeOut);
+int SerialReadJEG( int port_fd, uchar *buff, int lMin, int lMax, int TimeOut);
 
 // blocks until the next byte which matches "b" arrives
 //   h = handle to the serial port
@@ -45,13 +46,14 @@ int SerialReadJEG(unsigned h, uchar *buff, int lMin, int lMax, int TimeOut);
 //   ignoredChars = number of bytes ignored
 int SerialWaitForCharJEG(unsigned h, uchar b ,int timeoutDs,int *ignoredChars );
 
-int	ChangeSerialSpeedJEG(unsigned H,int speed);
+// int	ChangeSerialSpeedJEG(unsigned H,int speed);
+int	ChangeSerialSpeedJEG(int port_fd, int speed);
+  
+int SerialReadUntilCharXJEG( int port_fd, uchar *string, int Lmax,uchar b, int timeoutDs, int *ignoredChars);
 
-int SerialReadUntilCharXJEG(unsigned h,uchar *string,int Lmax,uchar b,int timeoutDs,int *ignoredChars);
+int CharsWaitingJEG( int port_fd );
 
-int CharsWaitingJEG(unsigned h);
-
-int SerialWaitForCharXJEG(unsigned h, uchar b ,int timeoutDs,int *ignoredChars ) ;
+int SerialWaitForCharXJEG( int port_fd, uchar b ,int timeoutDs,int *ignoredChars ) ;
 
 #ifdef __cplusplus
 }
