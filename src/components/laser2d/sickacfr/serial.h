@@ -11,9 +11,7 @@
 #ifndef ORCA2_LASER2D_SICK_ACFR_SERIAL_H
 #define ORCA2_LASER2D_SICK_ACFR_SERIAL_H
 
-// #ifdef __cplusplus
-// extern "C" {
-// #endif
+#include <termios.h> 
 
 namespace laser2d {
 
@@ -37,7 +35,7 @@ int openSerial( char *name );
 //   lMin = minimum number of bytes to read
 //   lMax = maximum number of bytes to read
 //   TimeOut = timeout for reading from serial port
-int SerialReadJEG( uchar *buff, int count, int TimeOut);
+int SerialReadJEG( uchar *buff, size_t count, int TimeOut);
  
 // write the buffer to the serial port
 //   H = handle to the serial port
@@ -55,8 +53,7 @@ void CloseSerialPortJEG() ;
 //   ignoredChars = number of bytes ignored
 int SerialWaitForCharJEG(unsigned h, uchar b ,int timeoutDs,int *ignoredChars );
 
-// int	ChangeSerialSpeedJEG(unsigned H,int speed);
-int	ChangeSerialSpeedJEG( int speed );
+int	ChangeSerialSpeedJEG( int baud );
   
 int SerialReadUntilCharXJEG( uchar *string, int Lmax,uchar b, int timeoutDs, int *ignoredChars);
 
@@ -64,22 +61,18 @@ int CharsWaitingJEG();
 
 int SerialWaitForCharXJEG( uchar b ,int timeoutDs,int *ignoredChars ) ;
 
-char* SpecifySerialPortString(unsigned np);
-
 private:
+
+struct termios ser_opts;
 
 int port_fd;
 
-int LastSerialSpeedDone;
+// int LastSerialSpeedDone;
 
-void InitSerialLib(int *pflagBye);
+// void InitSerialLib(int *pflagBye);
 
 };
 
 } // namespace
-
-// #ifdef __cplusplus
-// }
-// #endif
 
 #endif
