@@ -43,7 +43,7 @@ Serial::SpecifySerialPortString(unsigned np)
 }
 
 int 
-Serial::SerialWriteJEG( int port_fd, uchar *buff, int L, int *nw)
+Serial::SerialWriteJEG( uchar *buff, int L, int *nw)
 {	
 	ssize_t  n ;
 	
@@ -53,36 +53,36 @@ Serial::SerialWriteJEG( int port_fd, uchar *buff, int L, int *nw)
 }
 
 void 
-Serial::CloseSerialPortJEG( int* port_fd ) 
+Serial::CloseSerialPortJEG() 
 {	
 	if (port_fd >= 0)
 	{	
-		close( *port_fd ) ; 
+		close( port_fd ) ; 
 	}
 }
 
 int 
-Serial::openSerial(char* device, int baud, int* port_fd)
+Serial::openSerial(char* device, int baud )
 {
     // TODO: move port_fd to a private member when this is a c++ class
-	*port_fd = -1;
+	port_fd = -1;
 	int u1,u2;
 	struct termios ser_opts;
 
-	*port_fd = modem_open( device, baud ) ;
-	if( *port_fd < 0)
+	port_fd = modem_open( device, baud ) ;
+	if( port_fd < 0)
 	{  
         printf("ERROR(serial.c): Could not open serial device\n");
 		return 0; 
 	} 
 
-	u1 = tcgetattr( *port_fd, &ser_opts ) ;
+	u1 = tcgetattr( port_fd, &ser_opts ) ;
 	ser_opts.c_cflag = CS8|CREAD|HUPCL|CLOCAL ;  //|IHFLOW 
 	ser_opts.c_lflag =IEXTEN ;
 	ser_opts.c_oflag =0 ;
 	ser_opts.c_iflag = IGNBRK |  IGNPAR ;  //IGNCR |
 
-	u2 = tcsetattr( *port_fd, TCSANOW, &ser_opts ) ;
+	u2 = tcsetattr( port_fd, TCSANOW, &ser_opts ) ;
 
 	return 1 ;
 
@@ -90,7 +90,7 @@ Serial::openSerial(char* device, int baud, int* port_fd)
 
 
 int 
-Serial::SerialReadJEG(int port_fd, uchar *buff, int lMin, int lMax, int TimeOut)
+Serial::SerialReadJEG( uchar *buff, int lMin, int lMax, int TimeOut)
 {	
 	int n;
 	
@@ -102,7 +102,7 @@ Serial::SerialReadJEG(int port_fd, uchar *buff, int lMin, int lMax, int TimeOut)
 
 
 int	
-Serial::ChangeSerialSpeedJEG(int port_fd, int speed) 	
+Serial::ChangeSerialSpeedJEG( int speed ) 	
 {
 	int x ;
 	unsigned speed2 ;
@@ -143,7 +143,7 @@ Jose, 2005
 
 
 int 
-Serial::CharsWaitingJEG( int port_fd )
+Serial::CharsWaitingJEG()
 {	
 	return(tcischars(port_fd));	
 }
@@ -156,7 +156,7 @@ Serial::CharsWaitingJEG( int port_fd )
 
 // -------------------------------------------------------------------------       				
 int 
-Serial::SerialReadUntilCharXJEG( int port_fd, uchar *buff, int Lmax,uchar b, int timeoutDs, int *ignoredChars)
+Serial::SerialReadUntilCharXJEG( uchar *buff, int Lmax,uchar b, int timeoutDs, int *ignoredChars)
 {
 	struct termios termio;
 	int c ;
@@ -207,7 +207,7 @@ chau:
 
 
 int 
-Serial::SerialWaitForCharXJEG( int port_fd, uchar b ,int timeoutDs,int *ignoredChars )
+Serial::SerialWaitForCharXJEG( uchar b ,int timeoutDs,int *ignoredChars )
 {
 	struct termios termio;
 	int c,ichrs=0 ;
