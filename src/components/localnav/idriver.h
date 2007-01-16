@@ -46,9 +46,6 @@ public:
     IDriver() {};
     virtual ~IDriver() {};
 
-    // Tells the driver the time.
-    virtual void init( const orca::Time &time ) {};
-
     //
     // Sets cmd.
     // Returns the state of the algorithm, from the list above.

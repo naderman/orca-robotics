@@ -154,10 +154,6 @@ MainLoop::run()
             // The rangeScanner provides the 'clock' which is the trigger for this loop
             int sensorRet = obsProxy_.getNext( rangeData_, TIMEOUT_MS );
 
-            // Tell everyone what time it is, boyeee
-            pathFollowerInterface_.localSetTimeNow( rangeData_->timeStamp );
-            pathMaintainer_.setTimeNow( rangeData_->timeStamp );
-
             // Before we do anything, check whether we're enabled.
             if ( !pathFollowerInterface_.localIsEnabled() )
             {
@@ -174,6 +170,10 @@ MainLoop::run()
             }
             else
             {
+                // Tell everyone what time it is, boyeee
+                pathFollowerInterface_.localSetTimeNow( rangeData_->timeStamp );
+                pathMaintainer_.setTimeNow( rangeData_->timeStamp );
+
                 locProxy_.get( localiseData_ );
                 odomProxy_.get( odomData_ );
 
