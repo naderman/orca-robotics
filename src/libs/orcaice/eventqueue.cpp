@@ -24,6 +24,12 @@ EventQueue::EventQueue( bool traceAddEvents, bool traceGetEvents ) :
 }
 
 void
+EventQueue::setOptimizer( EventQueueOptimizerPtr optimizer )
+{
+    optimizer_ = optimizer;
+}
+
+void
 EventQueue::add( const EventPtr & e )
 {
     Lock sync(*this);
@@ -34,6 +40,23 @@ EventQueue::add( const EventPtr & e )
     }
 
     notify();
+}
+
+void
+EventQueue::optimizedAdd( const EventPtr & e )
+{
+    Lock sync(*this);
+
+    if ( !events_.size() || !optimizer_ || !optimizer_->combine( events_.back(), e ) ) 
+    {   
+        // comination did not happen for some reason, just add event to the queue
+        events_.push_back( e );
+
+        if ( traceAddEvents_ ) {
+            cout<<"EventQueue::addOptimized() added event type="<<e->type()<<" without optimization"<<endl;
+        }
+        notify();
+    }
 }
 
 void
@@ -78,6 +101,14 @@ EventQueue::timedGet( EventPtr & e, int timeoutMs )
         return true;
     }
     return false;
+}
+
+void
+EventQueue::clear()
+{
+    Lock sync(*this);
+
+    return events_.clear();
 }
 
 int

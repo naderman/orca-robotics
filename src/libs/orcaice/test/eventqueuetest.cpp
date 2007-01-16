@@ -14,6 +14,7 @@
 
 #include <orcaice/eventqueue.h>
 #include <orcaice/thread.h>
+#include <orcaobj/mathdefs.h>
 
 using namespace std;
 
@@ -27,6 +28,23 @@ public:
     double d_;
 };
 typedef IceUtil::Handle<TestEvent> TestEventPtr;
+
+class TestEventQueueOptimizer : public orcaice::EventQueueOptimizer
+{
+public:
+    // this combine function adds the member variables of the two events
+    virtual bool combine( orcaice::EventPtr& existing, const orcaice::EventPtr& extra ) 
+    { 
+        TestEventPtr eExisting = TestEventPtr::dynamicCast( existing );
+        TestEventPtr eExtra = TestEventPtr::dynamicCast( extra );
+        if ( !eExisting || !eExtra ) {
+            return false; 
+        }
+
+        eExisting->d_ += eExtra->d_;
+        return true;
+    };
+};
 
 class ExtCaller : public orcaice::Thread
 {
@@ -68,12 +86,22 @@ int main(int argc, char * argv[])
     q->add( e );
     q->add( e );
     if ( q->size() != 2 ) {
-        cout<<"failed"<<endl<<"expect size=1, size="<<q->size()<<endl;
+        cout<<"failed"<<endl<<"expect size=2, size="<<q->size()<<endl;
+        exit(EXIT_FAILURE);
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing clear()... ";
+    q->clear();
+    if ( q->size() != 0 ) {
+        cout<<"failed"<<endl<<"expect size=0, size="<<q->size()<<endl;
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
 
     cout<<"testing get() with non-empty queue ... ";
+    q->add( e );
+    q->add( e );
     orcaice::EventPtr eout;
     // if something is wrong here, it will block forever
     q->get( eout );
@@ -116,8 +144,44 @@ int main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
 
+    cout<<"testing optimizedAdd() with empty queue... ";
+    e = new TestEvent( 1.0 );
+    q->optimizedAdd( e );
+    if ( q->size() != 1 ) {
+        cout<<"failed"<<endl<<"expect size=1, size="<<q->size()<<endl;
+        exit(EXIT_FAILURE);
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing optimizedAdd() with non-empty queue and no optimizer ... ";
+    e = new TestEvent( 31.0 );
+    q->optimizedAdd( e );
+    if ( q->size() != 2 ) {
+        cout<<"failed"<<endl<<"expect size=1, size="<<q->size()<<endl;
+        exit(EXIT_FAILURE);
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing optimizedAdd() with non-empty queue ... ";
+    q->get( eout );
+    orcaice::EventQueueOptimizerPtr opt = new TestEventQueueOptimizer;
+    q->setOptimizer( opt );
+    e = new TestEvent( 37.0 );
+    q->optimizedAdd( e );
+    if ( q->size() != 1 ) {
+        cout<<"failed"<<endl<<"expect size=1, size="<<q->size()<<endl;
+        exit(EXIT_FAILURE);
+    }
+    q->get( eout );
+    teout = TestEventPtr::dynamicCast( eout );
+    if ( !NEAR( teout->d_, 68.0, 1E-6 ) ) {
+        cout<<"failed"<<endl<<"expect value=68.0, got="<<teout->d_<<endl;
+        exit(EXIT_FAILURE);
+    }
+    cout<<"ok"<<endl;
 
     cout<<"testing add() and get() and add() ... ";
+    q->clear();
     e = new TestEvent( 2006.0 );
     q->add( e );
 

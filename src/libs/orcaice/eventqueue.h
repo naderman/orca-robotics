@@ -30,12 +30,27 @@ public:
 
     //! Returns event type.
     int type() const { return type_; };
+
 private:
     int type_;
 };
 
 typedef IceUtil::Handle<Event> EventPtr;
 
+
+class EventQueueOptimizer : public IceUtil::Shared
+{
+public:
+    //! Combines this event with a new event
+    //! Returns TRUE if this combination is supported, FALSE otherwise.
+    //! Default implementation does not support any combinations.
+    //! If combination is supported and is successful, the returned value is TRUE,
+    //! all the information is transfered into the @p existing event and the 
+    //! @p extra event can be safely discarded.
+    virtual bool combine( EventPtr& existing, const EventPtr& extra ) { return false; };
+};
+
+typedef IceUtil::Handle<EventQueueOptimizer> EventQueueOptimizerPtr;
 
 /*!
     Thread-safe event queue.
@@ -46,22 +61,37 @@ public:
     //! Set tracing flags to TRUE to print messages to standard output.
     EventQueue( bool traceAddEvents=false, bool traceGetEvents=false );
 
+    void setOptimizer( EventQueueOptimizerPtr optimizer );
+
     //! Add event to the queue.
-    void add( const EventPtr & e );
+    void add( const EventPtr& e );
+
+    //! Add event to the queue but, before the event is added, the queue tries to
+    //! combine it with the last event already in the queue. This is done by calling 
+    //! cobmine() function of the queue's optimizer. The default optimizer does not
+    //! support any combinations. To implement combination(s) for your events, implement
+    //! your own optimizer by deriving from EventQueueOptimizer.
+    //! Calling this function when the event is empty or when the queue's optimizer is not set
+    //! or when the combine() operation fails for some reason is equivalent to calling add().
+    void optimizedAdd( const EventPtr& e );
 
     //! Get event from the queue. If the queue is empty
     //! this call blocks indefinitely until an event is added.
-    void get( EventPtr & e );
+    void get( EventPtr& e );
 
     //! Get event from the queue with timeout. 
     //! Returns TRUE if event was received, FALSE if timeout occured.
-    bool timedGet( EventPtr & e, int timeoutMs );
+    bool timedGet( EventPtr& e, int timeoutMs );
+
+    //! Discards all events.
+    void clear();
 
     //! Number of event in the queue
     int size() const;
 
 private:
     std::list<EventPtr> events_;
+    EventQueueOptimizerPtr optimizer_;
     bool traceAddEvents_;
     bool traceGetEvents_;
 };
