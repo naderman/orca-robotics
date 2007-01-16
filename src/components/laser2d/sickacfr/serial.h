@@ -29,8 +29,16 @@ Serial();
 //   speed0 = baudrate to open at
 //   H = handle to the serial port
 // int OpenSerialPortXJEG(char *name,int speed0, unsigned *H);
-int openSerial( char *name, int baud ); 
+int openSerial( char *name ); 
 
+// read a number of bytes from the serial port
+//   h = handle to the serial port
+//   buff = buffer to read into
+//   lMin = minimum number of bytes to read
+//   lMax = maximum number of bytes to read
+//   TimeOut = timeout for reading from serial port
+int SerialReadJEG( uchar *buff, int count, int TimeOut);
+ 
 // write the buffer to the serial port
 //   H = handle to the serial port
 //   buff = buffer
@@ -39,14 +47,6 @@ int SerialWriteJEG( uchar *buff, int L, int *nw);
 // close the serial port
 //   H = handle
 void CloseSerialPortJEG() ;
-
-// read a number of bytes from the serial port
-//   h = handle to the serial port
-//   buff = buffer to read into
-//   lMin = minimum number of bytes to read
-//   lMax = maximum number of bytes to read
-//   TimeOut = timeout for reading from serial port
-int SerialReadJEG( uchar *buff, int lMin, int lMax, int TimeOut);
 
 // blocks until the next byte which matches "b" arrives
 //   h = handle to the serial port

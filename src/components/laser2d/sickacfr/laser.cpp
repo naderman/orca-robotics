@@ -22,6 +22,8 @@
 #include "serial.h"
 #include "laser.h"
 
+//TODO: Get rid of FComLsr... it's not actually being used anymore
+
 
 static uint LaserSensibilityMode=0 ;
 // ...........................................................
@@ -106,14 +108,7 @@ Laser::IniLSRXCode(int *pflag, struct LaserData *pxl)
 	pxl->cx=0 ;
 	pxl->CxReset=pxl->CxReset2=0;
 
-	//PrintiNow;
-	// if (pxl->simu)
-	// {
-    //     pxl->FComLsr = 0 ;
-	// }
-	// else
-	// {
-		stc = serial_->openSerial( pxl->NamePort, pxl->speed ) ;
+		stc = serial_->openSerial( pxl->NamePort ) ;
  
 		if (stc<=0)
 		{
@@ -246,7 +241,7 @@ Laser::readResponseInfo1(int FComLsr)
 	char s[220] ;
 	static char str[1000] ;
     int n,i,m=0,n0 ;
-	n = serial_->SerialReadJEG( (unsigned char*)s, 200, 200, T5segs/10 );
+	n = serial_->SerialReadJEG( (unsigned char*)s, 200, T5segs/10 );
 	n0=n ;
 	if (n>6){	n=6 ; }
 	for (i=0;i<n;i++){	m=m+sprintf(str+m,"|%x|",0x00FF&(unsigned)s[i]) ; }
@@ -262,7 +257,7 @@ Laser::readResponseB(int FComLsr,struct LaserData *pg)
 	char s[1200] ;
     static char str[1000] ;
 	int n,i,m=0,n0 ;
-	n = serial_->SerialReadJEG( (unsigned char *)s, 1000, 1000, T5segs/5 );
+	n = serial_->SerialReadJEG( (unsigned char *)s, 1000, T5segs/5 );
 	n0=n ;
 	if (n>10)
 	{	
@@ -511,7 +506,7 @@ Laser::readSickLaser(struct LaserData *pxl,int *pFlag)
 			//hkSleep(1) ;
 			string[0] = '\x02' ; // it is not important, it is only to have it.
             // check the next 3 bytes to confirm that the incoming bytes are really part of a laser frame
-			nnn = serial_->SerialReadJEG( (unsigned char*)string+1, 3, 3, T5segs);
+			nnn = serial_->SerialReadJEG( (unsigned char*)string+1, 3, T5segs);
 
 			// if next character in packet = 0x80
 			if ( (nnn==3) && (string[1] == '\x80'))
@@ -524,7 +519,7 @@ Laser::readSickLaser(struct LaserData *pxl,int *pFlag)
 				}
 				
 				// continue reading the rest of the laser frame
-                nnn = serial_->SerialReadJEG( (unsigned char*)string+4, 728, 728, T5segs);
+                nnn = serial_->SerialReadJEG( (unsigned char*)string+4, 728, T5segs);
 
 				//if ( (errorno != 728) ||((errorno == 728) && (string[731] != 0x02)))
 				if  (nnn != 728)

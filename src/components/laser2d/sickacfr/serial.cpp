@@ -62,12 +62,13 @@ Serial::CloseSerialPortJEG()
 }
 
 int 
-Serial::openSerial(char* device, int baud )
+Serial::openSerial(char* device )
 {
     // TODO: move port_fd to a private member when this is a c++ class
 	port_fd = -1;
 	int u1,u2;
 	struct termios ser_opts;
+	int baud = 9600;
 
 	port_fd = modem_open( device, baud ) ;
 	if( port_fd < 0)
@@ -90,11 +91,11 @@ Serial::openSerial(char* device, int baud )
 
 
 int 
-Serial::SerialReadJEG( uchar *buff, int lMin, int lMax, int TimeOut)
+Serial::SerialReadJEG( uchar *buff, int count, int TimeOut)
 {	
 	int n;
 	
-	n = readcond(port_fd, buff, lMax, lMin, TimeOut, TimeOut);
+	n = readcond(port_fd, buff, count, count, TimeOut, TimeOut);
 	
 	return(n) ;
 }
