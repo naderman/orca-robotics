@@ -13,7 +13,7 @@
 
 #include <queue>
 #include <ftd2xx.h>
-#include <usbftdi/usbftdi.h>
+#include "usbftdi/usbftdi.h"
 #include "canpacket.h"
 
 namespace segwayrmp

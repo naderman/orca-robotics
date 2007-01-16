@@ -3,7 +3,7 @@
 
 #include <ftd2xx.h>
 #include <string>
-#include <usbftdi/exceptions.h>
+#include "exceptions.h"
 
 namespace usbftdi
 {
