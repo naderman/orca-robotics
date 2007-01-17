@@ -22,6 +22,18 @@
 
 namespace orcaice
 {
+namespace detail
+{
+    // Transfer a property from one property set to another
+    // returns 0 if it was transferred successfully
+    int transferProperty( Ice::PropertiesPtr &fromProperties, Ice::PropertiesPtr &toProperties,
+                            const std::string &fromKey, const std::string &toKey, bool force );
+
+    // Internal helper function.
+    // behaves like the function above. if key is missing, sets the toValue to defaultValue.
+    void transferPropertyWithDefault( Ice::PropertiesPtr &fromProperties, Ice::PropertiesPtr &toProperties,
+                        const std::string &fromKey, const std::string &toKey, const std::string &defaultValue, bool force );
+
     void parseOrcaCommandLineOptions( const Ice::StringSeq & args );
 
     void setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag );
@@ -48,6 +60,7 @@ namespace orcaice
 
     void printVersion();
     
+} // namespace
 } // namespace
 
 #endif

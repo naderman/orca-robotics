@@ -48,7 +48,7 @@ Service::start( const ::std::string        & name,
 //     cout<<args.size()<<" args :"<<orcaice::toString( args )<<endl;
 
     // print version information on the first line
-    orcaice::printVersion();
+    orcaice::detail::printVersion();
 
     // Unlike in Application, the component tag may change when used with Service. This is to 
     // allow multiple components of the same type to be placed inside the same IceBox. The
@@ -91,7 +91,7 @@ Service::start( const ::std::string        & name,
         else {
             initTracerPrint( component_->tag()+": Will try to load component properties from "+filename );
 
-            orcaice::setComponentProperties( properties, filename );
+            orcaice::detail::setComponentProperties( properties, filename );
         }
     }
     catch ( const orcaice::Exception &e )
@@ -132,7 +132,7 @@ Service::start( const ::std::string        & name,
             std::string filename = orcaice::getGlobalConfigFilename( args );
             initTracerPrint( component_->tag()+": Will try to load global properties from "+filename );
     
-            orcaice::setGlobalProperties( properties, filename );
+            orcaice::detail::setGlobalProperties( properties, filename );
         }
         catch ( const orcaice::Exception &e )
         {
@@ -143,7 +143,7 @@ Service::start( const ::std::string        & name,
 //             orcaice::printComponentProperties( properties, component_->tag() );
 
         // Level 1. apply Orca factory defaults
-        orcaice::setFactoryProperties( properties, component_->tag() );
+        orcaice::detail::setFactoryProperties( properties, component_->tag() );
         initTracerPrint( component_->tag()+": Set factory properties." );
             // debug
 //             initTracerPrint("after setFactoryProperties()");
@@ -166,12 +166,12 @@ Service::start( const ::std::string        & name,
     // now communicator exists. we can further parse properties, make sure all the info is
     // there and set some properties (notably AdapterID)
     orca::FQComponentName fqCompName =
-                orcaice::parseComponentProperties( communicator, component_->tag() );
+                orcaice::detail::parseComponentProperties( communicator, component_->tag() );
 
     // print all prop's now, after some stuff was added, e.g. Tag.AdapterId
     // note: is it possible that some of the prop's got stripped off by Ice::Application::main()? I don't think so.
     if ( properties->getPropertyAsInt( "Orca.PrintProperties" ) ) {
-        orcaice::printComponentProperties( properties, component_->tag() );
+        orcaice::detail::printComponentProperties( properties, component_->tag() );
     }
 
     // create the one-and-only component adapter

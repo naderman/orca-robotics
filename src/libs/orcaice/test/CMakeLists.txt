@@ -46,6 +46,10 @@ ADD_EXECUTABLE( proptest proptest.cpp )
 ADD_TEST( PropUtilsTest proptest )
 MESSAGE ( STATUS "Planning to Build Test      : PropUtilsTest [libOrcaIce]")
 
+ADD_EXECUTABLE( privateutilstest privateutilstest.cpp )
+ADD_TEST( PrivateUtilsTest privateutilstest )
+MESSAGE ( STATUS "Planning to Build Test      : PrivateUtilsTest [libOrcaIce]")
+
 ADD_EXECUTABLE( propfiletest propfiletest.cpp )
 ADD_TEST( PropFileTest propfiletest )
 MESSAGE ( STATUS "Planning to Build Test      : PropFileTest [libOrcaIce]")

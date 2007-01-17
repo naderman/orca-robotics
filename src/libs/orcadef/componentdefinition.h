@@ -90,6 +90,8 @@ struct ComponentDef
     std::string              tag;
     //! Default component endpoints
     std::string              endpoints;
+    //! Are endpoints non-standard
+    bool isSpecialEndpoints;
     //! Top-level comments
     std::vector<std::string> comments;
 

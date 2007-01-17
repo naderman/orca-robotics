@@ -99,7 +99,10 @@ toCfgText( const ComponentDef &def )
     ss << "# Component" << endl;
     ss << def.tag << ".Platform=" << cfg.fqname.platform << endl;
     ss << def.tag << ".Component=" << cfg.fqname.component << endl;
-    ss << def.tag << ".Endpoints=" << cfg.endpoints << endl;
+    // only print out endpoint info if special endpoints were specified
+    if ( def.isSpecialEndpoints ) {
+        ss << def.tag << ".Endpoints=" << cfg.endpoints << endl;
+    }
     ss << endl;
 
     //assert( def.provided.size()==cfg.provided.size() );
@@ -307,7 +310,9 @@ toXmlText( const ComponentDef &def )
     ss <<tab<<tab<<tab<<tab<<"<!-- Component properties -->" << endl;
     ss <<tab<<tab<<tab<<tab<<"<property name=\""<<def.tag<<".Platform\" value=\"local\"/>" << endl;
     ss <<tab<<tab<<tab<<tab<<"<property name=\""<<def.tag<<".Component\" value=\""<<cfg.fqname.component<<"\"/>" << endl;
-    ss <<tab<<tab<<tab<<tab<<"<property name=\""<<def.tag<<".Endpoints\" value=\""<<def.endpoints<<"\"/>" << endl;
+    if ( def.isSpecialEndpoints ) {
+        ss <<tab<<tab<<tab<<tab<<"<property name=\""<<def.tag<<".Endpoints\" value=\""<<def.endpoints<<"\"/>" << endl;
+    }
 
     // Provided Interfaces
     if ( def.provided.size()!=cfg.provided.size() ) {
@@ -410,7 +415,9 @@ toXmlTemplateText( const ComponentDef &def )
     ss <<tab<<tab<<tab<<tab<<"<!-- Component properties -->" << endl;
     ss <<tab<<tab<<tab<<tab<<"<property name=\""<<def.tag<<".Platform\" value=\"local\"/>" << endl;
     ss <<tab<<tab<<tab<<tab<<"<property name=\""<<def.tag<<".Component\" value=\""<<cfg.fqname.component<<"\"/>" << endl;
-    ss <<tab<<tab<<tab<<tab<<"<property name=\""<<def.tag<<".Endpoints\" value=\""<<def.endpoints<<"\"/>" << endl;
+    if ( def.isSpecialEndpoints ) {
+        ss <<tab<<tab<<tab<<tab<<"<property name=\""<<def.tag<<".Endpoints\" value=\""<<def.endpoints<<"\"/>" << endl;
+    }
 
     // Provided Interfaces
     if ( def.provided.size()!=cfg.provided.size() ) {

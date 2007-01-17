@@ -55,14 +55,14 @@ Application::main(int argc, char* argv[])
                   !args[i].compare( 0,9, "--version" ) )
         {
             // print out Ice and libOrcaIce versions.
-            orcaice::printVersion();
+            orcaice::detail::printVersion();
             // nothing to clean up yet
             exit(0);
         }
     }
 
     // print version information on the first line
-    orcaice::printVersion();
+    orcaice::detail::printVersion();
 
     Ice::InitializationData initData;
     // Note that we don't use the version which takes argumets so that the config file which may be
@@ -81,7 +81,7 @@ Application::main(int argc, char* argv[])
     initTracerPrint( component_.tag()+": Set command line properties" );
             // debug
 //             initTracerPrint("after parseCommandLineOptions()");
-//             orcaice::printComponentProperties( initData.properties, component_.tag() );
+//             orcaice::detail::printComponentProperties( initData.properties, component_.tag() );
 
     // Level 3. Now, apply properties from this component's config file (do not force!)
     try
@@ -94,7 +94,7 @@ Application::main(int argc, char* argv[])
         else {
             initTracerPrint( component_.tag()+": Will try to load component properties from "+filename );
 
-            orcaice::setComponentProperties( initData.properties, filename );
+            orcaice::detail::setComponentProperties( initData.properties, filename );
         }
     }
     catch ( const orcaice::Exception &e )
@@ -106,7 +106,7 @@ Application::main(int argc, char* argv[])
     }
             // debug
 //             initTracerPrint("after setComponentProperties()");
-//             orcaice::printComponentProperties( initData.properties, component_.tag() );
+//             orcaice::detail::printComponentProperties( initData.properties, component_.tag() );
 
     // Level 2. Now, apply properties from the global Orca config file
     try
@@ -114,22 +114,22 @@ Application::main(int argc, char* argv[])
         std::string filename = orcaice::getGlobalConfigFilename( args );
         initTracerPrint( component_.tag()+": Will try to load global properties from "+filename );
 
-        orcaice::setGlobalProperties( initData.properties, filename );
+        orcaice::detail::setGlobalProperties( initData.properties, filename );
     }
     catch ( const orcaice::Exception &e )
     {
         initTracerWarning( component_.tag()+": Failed to open global configuration file: "+e.what() );
     }
             // debug
-//             initTracerPrint("after setGlobalProperties()");
-//             orcaice::printComponentProperties( initData.properties, component_.tag() );
+            initTracerPrint("after setGlobalProperties()");
+            orcaice::detail::printComponentProperties( initData.properties, component_.tag() );
 
     // Level 1. apply Orca factory defaults
-    orcaice::setFactoryProperties( initData.properties, component_.tag() );
+    orcaice::detail::setFactoryProperties( initData.properties, component_.tag() );
     initTracerPrint( component_.tag()+": Set factory properties." );
             // debug
-//             initTracerPrint("after setFactoryProperties()");
-//             orcaice::printComponentProperties( initData.properties, component_.tag() );
+            initTracerPrint("after setFactoryProperties()");
+            orcaice::detail::printComponentProperties( initData.properties, component_.tag() );
 
     // now pass the startup options to Ice which will start the Communicator
     return IceApplication::main( argc, argv, initData );
@@ -141,12 +141,12 @@ Application::run( int argc, char* argv[] )
     // now communicator exists. we can further parse properties, make sure all the info is
     // there and set some properties (notably AdapterID)
     orca::FQComponentName fqCompName =
-                    orcaice::parseComponentProperties( communicator(), component_.tag() );
+                    orcaice::detail::parseComponentProperties( communicator(), component_.tag() );
 
     // print all prop's now, after some stuff was added, e.g. Tag.AdapterId
     // note: is it possible that some of the prop's got stripped off by Ice::Application::main()? I don't think so.
     if ( communicator()->getProperties()->getPropertyAsInt( "Orca.PrintProperties" ) ) {
-        orcaice::printComponentProperties( communicator()->getProperties(), component_.tag() );
+        orcaice::detail::printComponentProperties( communicator()->getProperties(), component_.tag() );
     }
 
     // create the one-and-only component adapter

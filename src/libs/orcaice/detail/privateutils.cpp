@@ -18,8 +18,9 @@ using namespace std;
 
 namespace orcaice
 {
+namespace detail
+{
 
-// Internal helper function.
 // Transfer a property from one property set to another
 // returns 0 if it was transferred successfully
 int
@@ -34,6 +35,8 @@ transferProperty( Ice::PropertiesPtr &fromProperties, Ice::PropertiesPtr &toProp
             // there's something already in the target properties, don't touch it.
             return 0;
         }
+        // debug
+//         cout<<"DEBUG: nothing in the 'to' field: value='"<<toValue<<"'"<<endl;
     }
 
     string fromValue = fromProperties->getProperty( fromKey );
@@ -91,7 +94,7 @@ parseOrcaCommandLineOptions( const Ice::StringSeq & args )
                   !args[i].compare( 0,9, "--version" ) )
         {
             // print out Ice and libOrcaIce versions.
-            orcaice::printVersion();
+            orcaice::detail::printVersion();
             // nothing to clean up yet
             exit(0);
         }
@@ -103,6 +106,16 @@ setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag
 {
     // Instantiate a separate property set
     Ice::PropertiesPtr tempProperties = Ice::createProperties();
+
+    // adapter properties: these two are required for everything to work but
+    // they are not present in the default config files. If you have to know what you
+    // can override these in the config files.
+    // we've already made sure that component and platform are filled in
+    orca::FQComponentName fqCName;
+    fqCName.platform = properties->getProperty(compTag+".Platform");
+    fqCName.component = properties->getProperty(compTag+".Component");
+    tempProperties->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
+    tempProperties->setProperty( compTag+".Endpoints", "tcp -t 5000" );
 
     // orca properties
     tempProperties->setProperty( "Orca.PrintProperties",       "0" );
@@ -266,9 +279,6 @@ parseComponentProperties( const Ice::CommunicatorPtr & communicator, const std::
         initTracerWarning( compTag+": Set platform name to hostname="+fqCName.platform );
     }
 
-    // combine platform and component names into adapter ID
-    properties->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
-
     initTracerPrint( compTag+": Will register component (adapter) as '"+orcaice::toString(fqCName)+"'" );
 
     return fqCName;
@@ -299,4 +309,5 @@ printVersion()
     initTracerPrint( os.str() );
 }
 
+} // namespace
 } // namespace

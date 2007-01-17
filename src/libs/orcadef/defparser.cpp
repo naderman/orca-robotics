@@ -121,7 +121,11 @@ DefParser::parse()
 
     // Component
     def_.tag = forceGetProperty( "DefaultComponentTag" );
+
+    // get endpoints and remember if they were provided or we are using defaults
     def_.endpoints = props_->getPropertyWithDefault( "DefaultComponentEndpoints", "tcp -t 5000" );
+    def_.isSpecialEndpoints = ( def_.endpoints != "tcp -t 5000" );
+
     getComponentComments();
 
     // Provided Interfaces
