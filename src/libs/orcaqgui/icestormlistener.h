@@ -72,10 +72,10 @@ public:
 
         // then resubscribe
         try {
-            Ice::ObjectPrx obj = context_.adapter()->addWithUUID( consumer_ );
-            Ice::ObjectPrx prx = context_.adapter()->createDirectProxy( obj->ice_getIdentity() );
-            callbackPrx_ = ConsumerPrxType::uncheckedCast( prx );
-            
+            Ice::ObjectPtr objPtr = consumer_;
+            callbackPrx_ = orcaice::createConsumerInterface<ConsumerPrxType>( context_,
+                                                                              objPtr );
+
             detail::subscribeListener<ProxyType,
                 ConsumerType,
                 ConsumerPrxType,
