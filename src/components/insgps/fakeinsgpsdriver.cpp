@@ -89,7 +89,7 @@ FakeInsGpsDriver::run()
 int 
 FakeInsGpsDriver::readMsgsFromHardware()
 {
-    cout<<"TRACE(fakeinsgpsdriver.cpp): Generating fake insgps data:" << endl;
+    context_.tracer()->debug("Generating fake insgps data",5);
    
     // imu data is sent at 100Hz
     orcaice::setToNow( imuData_.timeStamp );
