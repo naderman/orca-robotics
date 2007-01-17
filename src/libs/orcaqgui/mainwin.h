@@ -89,6 +89,7 @@ private slots:
 
     void changePlatformFocus(const QString&);
     void addPlatformToList(const QString&);
+    void removePlatformFromList(const QString&);
     
     // screen capture
     void toggleScreenCapture( bool capture );

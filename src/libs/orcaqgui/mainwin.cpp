@@ -121,7 +121,8 @@ void MainWindow::init( GuiElementModel                   *guiElemModel,
 
     win_->adjustSize();
     
-    QObject::connect( elemModel_, SIGNAL(newPlatform(const QString&)), this, SLOT(addPlatformToList(const QString&)) );
+    QObject::connect( elemModel_, SIGNAL(newPlatform(const QString&)), this, SLOT(addPlatformToList(const QString&)) );    
+    QObject::connect( elemModel_, SIGNAL(platformNeedsRemoval(const QString&)), this, SLOT(removePlatformFromList(const QString&)) );
 
     // View
     elemView_ = new GuiElementView(side_);
@@ -354,10 +355,18 @@ MainWindow::addPlatformToList(const QString& platform)
 {
     assert(platform!="");
 
-    cout<<"received newPlatform signal: " << platform.toStdString() << endl;
+    cout<<"TRACE(mainwin.cpp): received newPlatform signal: " << platform.toStdString() << endl;
     
     // if it gets here, the platform is a new one
     platformCombo_->addItem( platform );
+}
+
+void
+MainWindow::removePlatformFromList(const QString& platform)
+{
+    cout<<"TRACE(mainwin.cpp): received removePlatformFromList signal: " << platform.toStdString() << endl;
+    int index = platformCombo_->findText( platform );
+    platformCombo_->removeItem( index );    
 }
 
 

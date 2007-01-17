@@ -75,7 +75,8 @@ public:
     const QList<GuiElement*> elements() { return elements_; };
     
 signals:
-    void newPlatform(const QString&);
+    void newPlatform( const QString& );
+    void platformNeedsRemoval( const QString& );
 
 public slots:
     void removeAllGuiElements();
@@ -93,7 +94,7 @@ private:
     QString coordinateFramePlatform_;
     orcaice::Context context_;
     IHumanManager *humanManager_;
-    bool isNewPlatform( QString &platformName );
+    bool doesPlatformExist( QString &platformName );
     
     QColor generateRandomColor();
     QMap<QString, QColor> colorMap_;

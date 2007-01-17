@@ -130,6 +130,9 @@ GuiElementModel::removeRows( int row, int count, const QModelIndex & parent )
 {
     //cout<<"removing row "<<row<<endl;
     
+    // save the platform name
+    QString platform = elements_[row]->platform();
+    
     assert( row>-1 && row<elements_.size() && "row number must exist" );
     // too lazy to implement multi-row removal
     assert( count==1 && "only removal of one row at a time is implemented" );
@@ -145,7 +148,16 @@ GuiElementModel::removeRows( int row, int count, const QModelIndex & parent )
     // now remove the entry in the list
     elements_.removeAt( row );
     endRemoveRows();
-
+    
+    
+    // if the removed element was the last one on its platform, we need to tell
+    // mainwin, so it can remove it from the combo box
+    if (!doesPlatformExist(platform))
+    {
+        //cout << "platform needs removal" << endl;
+        emit platformNeedsRemoval(platform);
+    }
+    
     return true;
 }
 
@@ -194,8 +206,9 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
     // Set color for all elements on the platform
     //
     QColor platformColor;
-    if ( isNewPlatform( platform ) )
+    if ( !doesPlatformExist( platform ) )
     {
+        //cout << "new platform" << endl;
         // assign a new colour
         if ( colorCounter_>=colorVector_.size() ) {
             platformColor = generateRandomColor();
@@ -239,12 +252,9 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
     //
     // We need to tell the new element whether it's in focus or not
     //
-    if (platform == platformInFocus_ || platformInFocus_== "global" )
-    {
+    if (platform == platformInFocus_ || platformInFocus_== "global" ) {
         element->setFocus( true );
-    }
-    else 
-    {
+    } else  {
         element->setFocus( false );
     }
         
@@ -270,14 +280,15 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
         
 
 bool
-GuiElementModel::isNewPlatform( QString &platformName )
+GuiElementModel::doesPlatformExist( QString &platformName )
 {
     for ( int i=0; i<elements_.size(); ++i )
     {
-        if ( elements_[i]->platform() == platformName ) return false;
+        if ( elements_[i]->platform() == platformName ) return true;
     }
-    return true;    
+    return false;    
 }
+
 
 QColor
 GuiElementModel::generateRandomColor()
