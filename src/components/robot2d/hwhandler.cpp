@@ -72,7 +72,7 @@ HwHandler::HwHandler(
     config_.maxSideSpeed = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             prefix+"MaxSideSpeed", 1.0 );
     config_.maxTurnrate = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            prefix+"MaxTurnrate", 40.0 )*DEG2RAD_RATIO;
+            prefix+"MaxTurnRate", 60.0 )*DEG2RAD_RATIO;
     config_.isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( context_.properties(),
             prefix+"EnableMotion", 1 );   
 
