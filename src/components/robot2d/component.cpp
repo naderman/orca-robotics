@@ -8,13 +8,15 @@
  *
  */
 
-//#include <iostream> // debug
+#include <iostream>
 #include <orcaice/orcaice.h>
 
 #include "component.h"
 #include "nethandler.h"
 #include "hwhandler.h"
+#include <orcamisc/configutils.h>
 
+using namespace std;
 using namespace orca;
 using namespace robot2d;
 
@@ -35,11 +37,21 @@ Component::~Component()
 void
 Component::start()
 {
+    // 
+    // Read vehicle description
+    //
+    orca::VehicleDescription descr;
+    orcamisc::readVehicleDescription( context().properties(), context().tag()+".Config.", descr );
+    stringstream ss;
+    ss<<"TRACE(component.cpp): Read vehcile description from configuration: " 
+        << endl << orcaice::toString(descr) << endl;
+    context().tracer()->info( ss.str() );
+
     //
     // Network handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    netHandler_ = new NetHandler( odometryPipe_, commandPipe_, context() );
+    netHandler_ = new NetHandler( odometryPipe_, commandPipe_, descr, context() );
     // this thread will try to activate and register the adapter
     netHandler_->start();
 
@@ -47,7 +59,7 @@ Component::start()
     // Hardware handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    hwHandler_ = new HwHandler( odometryPipe_, commandPipe_, context() );
+    hwHandler_ = new HwHandler( odometryPipe_, commandPipe_, descr, context() );
     hwHandler_->start();
 
     // the rest is handled by the application/service

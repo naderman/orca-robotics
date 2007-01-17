@@ -36,7 +36,7 @@ class Odometry3dLogger : public orca::Odometry3dConsumer, public orcalog::Logger
         
     private:
         // utility
-        void writeDescriptionToFile( const orca::Odometry3dDescription& obj );
+        void writeDescriptionToFile( const orca::VehicleDescription& obj );
 };
 
 }

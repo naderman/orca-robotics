@@ -88,6 +88,7 @@ HwHandler::HwHandler(
                  orcaice::Proxy<orca::Odometry3dData>& odometry3dPipe,
                  orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
                  orcaice::Proxy<orca::PowerData>& powerPipe,
+                 const orca::VehicleDescription&               descr,
                  const orcaice::Context& context ) :
     odometry2dPipe_(odometry2dPipe),
     odometry3dPipe_(odometry3dPipe),
@@ -107,15 +108,21 @@ HwHandler::HwHandler(
     //
     // Read settings
     //
-    Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
-    
-    config_.maxSpeed = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxSpeed", 1.0 );
-    config_.maxTurnrate = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxTurnRate", 40.0 )*DEG2RAD_RATIO;
-    config_.isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableMotion", 1 );   
 
+    orca::VehicleControlVelocityDifferentialDescription *controlDescr =
+        dynamic_cast<orca::VehicleControlVelocityDifferentialDescription*>(&(*(descr.control)));
+    if ( controlDescr == NULL )
+        throw orcaice::Exception( ERROR_INFO, "Can only deal with differential drive vehicles." );
+    if ( controlDescr->maxForwardSpeed != controlDescr->maxReverseSpeed ) 
+        throw orcaice::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
+
+    config_.maxSpeed = controlDescr->maxForwardSpeed;
+    config_.maxTurnrate = controlDescr->maxTurnrate;
+    config_.isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( context_.properties(),
+                                                                          prefix+".EnableMotion", 1 );
     // based on the config parameter, create the right driver
-    string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "segwayrmpusb" );
+    string driverName = orcaice::getPropertyWithDefault( context_.properties(), prefix+"Driver", "segwayrmpusb" );
             
     if ( driverName == "segwayrmpusb" )
     {

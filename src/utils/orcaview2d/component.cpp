@@ -129,14 +129,14 @@ void Component::start()
 
     // main window for display
     orcaqgui::MainWindow gui( "OrcaView",
-                             &networkHandler,
-                             screenDumpParams,
-                             displayRefreshTime );
+                              &networkHandler,
+                              screenDumpParams,
+                              displayRefreshTime );
 
     // Qt model for handling elements and their display in each of the widgets
     orcaqgui::GuiElementModel guiElemModel( factories_,
-                                           context(),
-                                           &gui );
+                                            context(),
+                                            &gui );
 
     orcaqgui::PlatformCSFinder platformCSFinder;
 

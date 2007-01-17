@@ -15,14 +15,14 @@
 using namespace std;
 using namespace segwayrmp;
 
-VelocityControl2dI::VelocityControl2dI( const orca::VelocityControl2dDescription& descr, 
-                   orcaice::Notify<orca::VelocityControl2dData>& commandPipe )
+VelocityControl2dI::VelocityControl2dI( const orca::VehicleDescription& descr, 
+                                        orcaice::Notify<orca::VelocityControl2dData>& commandPipe )
     : descr_(descr),
       commandPipe_(commandPipe)
 {
 }
 
-orca::VelocityControl2dDescription
+orca::VehicleDescription
 VelocityControl2dI::getDescription(const Ice::Current& current) const
 {
     return descr_;

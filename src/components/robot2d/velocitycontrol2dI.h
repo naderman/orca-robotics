@@ -21,15 +21,15 @@ namespace robot2d
 class VelocityControl2dI : public orca::VelocityControl2d
 {
 public:
-    VelocityControl2dI( const orca::VelocityControl2dDescription& descr, 
-                 orcaice::Notify<orca::VelocityControl2dData>& commandsPipe );
+    VelocityControl2dI( const orca::VehicleDescription& descr, 
+                        orcaice::Notify<orca::VelocityControl2dData>& commandsPipe );
 
-    virtual ::orca::VelocityControl2dDescription getDescription(const ::Ice::Current& ) const;
+    virtual ::orca::VehicleDescription getDescription(const ::Ice::Current& ) const;
 
     virtual void setCommand(const ::orca::VelocityControl2dData&, const ::Ice::Current& );
 
 private:
-    orca::VelocityControl2dDescription descr_;
+    orca::VehicleDescription descr_;
 
     orcaice::Notify<orca::VelocityControl2dData> &commandPipe_;
 };

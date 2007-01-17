@@ -1,3 +1,5 @@
+INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
+
 INCLUDE_DIRECTORIES( 
   ${PROJECT_SOURCE_DIR} # for config.h
   ${PROJECT_SOURCE_DIR}/src/libs
@@ -19,6 +21,7 @@ ELSE(NOT OS_WIN)
     "${CMAKE_CURRENT_SOURCE_DIR}/cpustopwatch.cpp" )
 ENDIF(NOT OS_WIN)
 
+TARGET_LINK_LIBRARIES ( OrcaMisc OrcaIce OrcaObjects )
 IF( OS_QNX )
     TARGET_LINK_LIBRARIES ( OrcaMisc m )
 ENDIF( OS_QNX )

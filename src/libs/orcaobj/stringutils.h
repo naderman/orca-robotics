@@ -192,9 +192,11 @@ std::string toString( const orca::Odometry2dData& );
 //! Converts to string
 std::string toString( const orca::Odometry3dData& );
 //! Converts to string
-std::string toString( const orca::Odometry2dDescription& );
+std::string toString( const orca::VehicleDescription& );
 //! Converts to string
-std::string toString( const orca::Odometry3dDescription& );
+std::string toString( const orca::VehicleControlDescriptionPtr& );
+//! Converts to string
+std::string toString( const orca::VehicleGeometryDescriptionPtr& );
 //! Converts to string. Parameter skip control verbosity. 
 //! No ranges are displayed if skip=-1 (default). All ranges are displayed
 //! if skip=0 (none are skipped), every second is displayed if skip=1

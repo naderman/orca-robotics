@@ -31,11 +31,12 @@ class NetHandler : public orcaice::Thread
 {
 public:
 
-    NetHandler( orcaice::Proxy<orca::Odometry2dData>&       odometry2dPipe,
-                 orcaice::Proxy<orca::Odometry3dData>&      odometry3dPipe,
-                 orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
-                 orcaice::Proxy<orca::PowerData>&           powerPipe,
-                 const orcaice::Context&                    context );
+    NetHandler( orcaice::Proxy<orca::Odometry2dData>&         odometry2dPipe,
+                orcaice::Proxy<orca::Odometry3dData>&         odometry3dPipe,
+                orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
+                orcaice::Proxy<orca::PowerData>&              powerPipe,
+                const orca::VehicleDescription&               descr,
+                const orcaice::Context&                       context );
     virtual ~NetHandler();
 
     // from Thread
@@ -48,6 +49,8 @@ private:
     orcaice::Proxy<orca::Odometry3dData>&       odometry3dPipe_;
     orcaice::Notify<orca::VelocityControl2dData>& commandPipe_;
     orcaice::Proxy<orca::PowerData>&            powerPipe_;
+
+    orca::VehicleDescription                    descr_;
 
     // component current context
     orcaice::Context context_;

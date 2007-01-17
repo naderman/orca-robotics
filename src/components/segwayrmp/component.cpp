@@ -8,13 +8,16 @@
  *
  */
 
-//#include <iostream> // debug
+#include <iostream>
 #include <orcaice/orcaice.h>
 
 #include "component.h"
 #include "nethandler.h"
 #include "hwhandler.h"
+#include <orca/vehicledescription.h>
+#include <orcamisc/configutils.h>
 
+using namespace std;
 using namespace orca;
 using namespace segwayrmp;
 
@@ -37,11 +40,21 @@ Component::start()
 {
     tracer()->info( "Starting Component." );
 
+    // 
+    // Read vehicle description
+    //
+    orca::VehicleDescription descr;
+    orcamisc::readVehicleDescription( context().properties(), context().tag()+".Config.", descr );
+    stringstream ss;
+    ss<<"TRACE(component.cpp): Read vehcile description from configuration: " 
+        << endl << orcaice::toString(descr) << endl;
+    context().tracer()->info( ss.str() );
+
     //
     // Network handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    netHandler_ = new NetHandler( odometry2dPipe_, odometry3dPipe_, commandPipe_, powerPipe_, context() );
+    netHandler_ = new NetHandler( odometry2dPipe_, odometry3dPipe_, commandPipe_, powerPipe_, descr, context() );
     // this thread will try to activate and register the adapter
     netHandler_->start();
 
@@ -49,7 +62,7 @@ Component::start()
     // Hardware handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    hwHandler_ = new HwHandler( odometry2dPipe_, odometry3dPipe_, commandPipe_, powerPipe_, context() );
+    hwHandler_ = new HwHandler( odometry2dPipe_, odometry3dPipe_, commandPipe_, powerPipe_, descr, context() );
     hwHandler_->start();
 
     // the rest is handled by the application/service

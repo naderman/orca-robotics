@@ -39,38 +39,68 @@
 
 @par Configuration
 
-- @c Robot2d.Config.Driver (string)
+General Parameters:
+
+  - @c Robot2d.Config.Driver (string)
     - Type of hardware driver
     - Valid values: { 'playerclient', 'fake' }
     - Default: 'playerclient'
     
-- @c Robot2d.Config.EnableMotion (bool)
+  - @c Robot2d.Config.EnableMotion (bool)
     - Allow motion commands or not. Convinient for testing when you want to make sure that
       the platform will not move.
     - Default: 1
     
-- @c Robot2d.Config.MaxSpeed (double) [m/s]
-    - Maximum allowed forward speed. Maximum reverse speed is assumed to be the same.
-    - Valid values: positive
-    - Default: 1.0
-    
-- @c Robot2d.Config.MaxSideSpeed (double) [m/s]
-    - Maximum allowed side speed. Left/right limits are assumed to be symetric.
-    - Valid values: positive
-    - Default: 1.0
-
-- @c Robot2d.Config.MaxTurnRate (double) [deg/s]
-    - Maximum allowed turnrate. Left/right turn limits are assumed to be symetric.
-    - Valid values: positive
-    - Default: 60.0
-    
-- @c Robot2d.Config.Position2dPublishInterval (double) [s]
+  - @c Robot2d.Config.Position2dPublishInterval (double) [s]
     - How often to send position information to the IceStorm server
     - Valid values:
         - t<0 : send every new data point
         - t>0 : send approximately every t seconds
     - Default: 0.1 (10Hz)
 
+Parameters describing vehicle (see orca::VehicleDescription for details)
+
+  - @c Robot2d.Config.VehicleDescription.Control.Type (string)
+    - valid values: 'VelocityDifferential'
+    - Default: 'VelocityDifferential'
+
+  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxForwardSpeed (m/s)
+    - Default: 1.0
+  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxReverseSpeed (m/s)
+    - valid values: must be same as forward speed.
+    - Default: 1.0
+  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxTurnrate (deg/s)
+    - Absolute max turnrate (assumed max turnrate at 0m/s)
+    - Default: 45.0
+  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxTurnrate1ms (deg/s)
+    - Max turnrate at 1m/s.  This param and MaxTurnrate together define a linear model,
+      giving the max turnrate at any speed.
+    - Default: 45.0
+  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxForwardAcceleration (m/s/s)
+    - Default: 1.0
+  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxReverseAcceleration (m/s/s)
+    - Default: 1.0
+  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxRotationalAcceleration (deg/s/s)
+    - Default: 45.0
+  - @c Robot2d.Config.VehicleDescription.PlatformToVehicleTransform (Frame3d) [m, deg]
+    - Position of the vehicle's local coord system with respect to the platform's local coord system.
+    - Format: x y z roll pitch yaw (space separated)
+    - Default: 0.0 0.0 0.0  0.0 0.0 0.0
+  - @c Robot2d.Config.VehicleDescription.Geometry.Type (string)
+    - valid values: 'Cylindrical'
+    - Default: 'Cylindrical'
+  - @c Robot2d.Config.VehicleDescription.Geometry.Cylindrical.Radius (m)
+    - Radius of the vehicle's bounding cylinder
+    - Default: 0.25
+  - @c Robot2d.Config.VehicleDescription.Geometry.Cylindrical.Height (m)
+    - Height of the vehicle's bounding cylinder
+    - Default: 1.0
+  - @c Robot2d.Config.VehicleDescription.Geometry.Cylindrical.VehicleToGeometryTransform (Frame3d) [m, deg]
+    - Position of the cylinder centre with respect to the vehicle's local coord system.
+      (cylinder extends in +/- z direction from here)
+    - Format: x y z roll pitch yaw (space separated)
+    - Default: 0.0 0.0 0.0  0.0 0.0 0.0
+  
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
 @par Dependancies

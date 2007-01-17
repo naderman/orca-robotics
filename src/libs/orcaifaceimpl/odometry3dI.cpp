@@ -18,7 +18,7 @@ using namespace std;
 
 namespace orcaifaceimpl {
 
-Odometry3dI::Odometry3dI( const orca::Odometry3dDescription& descr,
+Odometry3dI::Odometry3dI( const orca::VehicleDescription& descr,
                           const std::string& ifaceTag,
                           const orcaice::Context& context ) :
     descr_(descr),
@@ -60,7 +60,7 @@ Odometry3dI::getData(const ::Ice::Current& ) const
     return data;
 }
 
-::orca::Odometry3dDescription
+::orca::VehicleDescription
 Odometry3dI::getDescription(const ::Ice::Current& ) const
 {
     return descr_;

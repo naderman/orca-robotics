@@ -51,6 +51,7 @@ HwHandler::convert( const orca::VelocityControl2dData& network, HwDriver::Robot2
 HwHandler::HwHandler(
                  orcaice::Buffer<orca::Odometry2dData>& odometryPipe,
                  orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
+                 const orca::VehicleDescription &descr,
                  const orcaice::Context& context ) :
     odometryPipe_(odometryPipe),
     driver_(0),
@@ -63,18 +64,22 @@ HwHandler::HwHandler(
     writeStatusPipe_.set( false );
 
     //
-    // Read settings
+    // configure settings
     //
     std::string prefix = context_.tag() + ".Config.";
-    
-    config_.maxSpeed = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            prefix+"MaxSpeed", 1.0 );
-    config_.maxSideSpeed = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            prefix+"MaxSideSpeed", 1.0 );
-    config_.maxTurnrate = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            prefix+"MaxTurnRate", 60.0 )*DEG2RAD_RATIO;
+
+    orca::VehicleControlVelocityDifferentialDescription *controlDescr =
+        dynamic_cast<orca::VehicleControlVelocityDifferentialDescription*>(&(*(descr.control)));
+    if ( controlDescr == NULL )
+        throw orcaice::Exception( ERROR_INFO, "Can only deal with differential drive vehicles." );
+    if ( controlDescr->maxForwardSpeed != controlDescr->maxReverseSpeed ) 
+        throw orcaice::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
+
+    config_.maxSpeed = controlDescr->maxForwardSpeed;
+    config_.maxSideSpeed = 0.0;
+    config_.maxTurnrate = controlDescr->maxTurnrate;
     config_.isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( context_.properties(),
-            prefix+"EnableMotion", 1 );   
+                                                                          prefix+".EnableMotion", 1 );
 
     // based on the config parameter, create the right driver
     string driverName = orcaice::getPropertyWithDefault( context_.properties(),

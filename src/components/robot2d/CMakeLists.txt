@@ -26,13 +26,16 @@ IF ( BUILD_ROBOT2D )
     # build common sources into a convenience library
     BUILD_COMPONENT_SOURCES( Robot2dSources )
     
+    SET( DEP_LIBS
+      Robot2dSources OrcaIfaceImpl OrcaMisc ${PLAYERCLIENT_LIBS} )
+
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( robot2d main )
-    TARGET_LINK_LIBRARIES( robot2d Robot2dSources OrcaIfaceImpl ${PLAYERCLIENT_LIBS} )
+    TARGET_LINK_LIBRARIES( robot2d ${DEP_LIBS} )
     
     # build IceBox service
     GLOBAL_ADD_LIBRARY( OrcaRobot2d SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaRobot2d Robot2dSources OrcaIfaceImpl ${PLAYERCLIENT_LIBS} )
+    TARGET_LINK_LIBRARIES( OrcaRobot2d ${DEP_LIBS} )
     
     GENERATE_CONFIG_FILE( robot2d.def )
 

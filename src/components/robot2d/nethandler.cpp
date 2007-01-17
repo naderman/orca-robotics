@@ -18,7 +18,6 @@
 #include <orcaifaceimpl/odometry2dI.h>
 #include "velocitycontrol2dI.h"
 
-
 using namespace std;
 using namespace orca;
 using namespace robot2d;
@@ -26,9 +25,11 @@ using namespace robot2d;
 NetHandler::NetHandler(
                  orcaice::Buffer<orca::Odometry2dData>& odometryPipe,
                  orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
+                 const orca::VehicleDescription &descr,
                  const orcaice::Context& context ) :
     odometryPipe_(odometryPipe),
     commandPipe_(commandPipe),
+    descr_(descr),
     context_(context)
 {
 }
@@ -69,22 +70,15 @@ NetHandler::run()
     }
     
     std::string prefix = context_.tag() + ".Config.";
-
+    Ice::PropertiesPtr prop = context_.properties();
+    
     //
     // PROVIDED: VelocityControl2d
     //
-    orca::VelocityControl2dDescription velocityControl2dDescr;
-
-    velocityControl2dDescr.maxVelocities.v.x = 
-            orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"MaxSpeed", 1.0 );
-    velocityControl2dDescr.maxVelocities.v.y = 
-            orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"MaxSideSpeed", 1.0 );
-    velocityControl2dDescr.maxVelocities.w = 
-            orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"MaxTurnRate", 45.0 );
 
     // create servant for direct connections and tell adapter about it
     // don't need to store it as a member variable, adapter will keep it alive
-    Ice::ObjectPtr velocityControl2dI = new VelocityControl2dI( velocityControl2dDescr, commandPipe_ );
+    Ice::ObjectPtr velocityControl2dI = new VelocityControl2dI( descr_, commandPipe_ );
 
     // two possible exceptions will kill it here, that's what we want
     orcaice::createInterfaceWithTag( context_, velocityControl2dI, "VelocityControl2d" );
@@ -93,15 +87,8 @@ NetHandler::run()
     //
     // PROVIDED: Odometry2d
     //
-    orca::Odometry2dDescription odometry2dDescr;
-
-    orcaice::setInit( odometry2dDescr.offset );
-    orcaice::getPropertyAsFrame2d( context_.properties(), prefix+"Offset", odometry2dDescr.offset );
-    orcaice::setInit( odometry2dDescr.size, 2.0, 1.0 );
-    orcaice::getPropertyAsSize2d( context_.properties(), prefix+"Size", odometry2dDescr.size );
-
     orcaifaceimpl::Odometry2dIPtr odometry2dI = 
-            new orcaifaceimpl::Odometry2dI( odometry2dDescr, "Odometry2d", context_ );
+            new orcaifaceimpl::Odometry2dI( descr_, "Odometry2d", context_ );
 
 
     while ( isActive() ) {

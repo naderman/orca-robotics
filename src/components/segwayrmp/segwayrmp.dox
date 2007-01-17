@@ -42,52 +42,87 @@
 
 @par Configuration
 
-- @c SegwayRmp.Config.Driver (string)
+General Parameters:
+
+  - @c SegwayRmp.Config.Driver (string)
     - Type of hardware driver
     - Valid values: { 'segwayrmpusb', 'playerclient', 'fake' }
     - Default: 'segwayrmpusb'
     
-- @c SegwayRmp.Config.EnableMotion (bool)
+  - @c SegwayRmp.Config.EnableMotion (bool)
     - Allow motion commands or not. Convinient for testing when you want to make sure that
       the platform will not move.
     - Default: 1
     
-- @c SegwayRmp.Config.MaxSpeed (double) [m/s]
-    - Maximum allowed forward speed
-    - Valid values: positive
-    - Default: 1.0
-    
-- @c SegwayRmp.Config.MaxTurnRate (double) [deg/s]
-    - Maximum allowed turnrate
-    - Valid values: positive
-    - Default: 60.0
-    
-- @c SegwayRmp.Config.Position2dPublishInterval (double) [s]
+  - @c SegwayRmp.Config.Position2dPublishInterval (double) [s]
     - How often to send position information to the IceStorm server
     - Valid values:
         - t<0 : send every new data point
         - t>0 : send approximately every t seconds
     - Default: 0.1 (10Hz)
 
-- @c SegwayRmp.Config.PowerPublishInterval (double) [s]
+  - @c SegwayRmp.Config.PowerPublishInterval (double) [s]
     - How often to send power information to the IceStorm server
     - Valid values:
         - t>0 : send approximately every t seconds
     - Default: 20.0
 
-- @c SegwayRmp.Config.StatusPublishInterval (double) [s]
+  - @c SegwayRmp.Config.StatusPublishInterval (double) [s]
     - How often to send status information to the IceStorm server
     - Valid values:
         - t>0 : send approximately every t seconds
     - Default: 60.0
 
-- @c SegwayRmp.Config.LogStats (bool)
+  - @c SegwayRmp.Config.LogStats (bool)
     - Log statistics about the run before shutting down. Currently logs run time and distance travelled. The filename is determined by LogStatsFilename property.
     - Default: 1
 
-- @c SegwayRmp.Config.LogStatsFilename (string)
+  - @c SegwayRmp.Config.LogStatsFilename (string)
     - Name of the log file to which run statistics are saved (if LogStats is set to 1).
     - Default: 'segwayrmp-stats.txt'
+
+Parameters describing vehicle (see orca::VehicleDescription for details)
+
+  - @c SegwayRmp.Config.VehicleDescription.Control.Type (string)
+    - valid values: 'VelocityDifferential'
+    - Default: 'VelocityDifferential'
+
+  - @c SegwayRmp.Config.VehicleDescription.Control.VelocityDifferential.MaxForwardSpeed (m/s)
+    - Default: 1.0
+  - @c SegwayRmp.Config.VehicleDescription.Control.VelocityDifferential.MaxReverseSpeed (m/s)
+    - valid values: must be same as forward speed.
+    - Default: 1.0
+  - @c SegwayRmp.Config.VehicleDescription.Control.VelocityDifferential.MaxTurnrate (deg/s)
+    - Absolute max turnrate (assumed max turnrate at 0m/s)
+    - Default: 45.0
+  - @c SegwayRmp.Config.VehicleDescription.Control.VelocityDifferential.MaxTurnrate1ms (deg/s)
+    - Max turnrate at 1m/s.  This param and MaxTurnrate together define a linear model,
+      giving the max turnrate at any speed.
+    - Default: 45.0
+  - @c SegwayRmp.Config.VehicleDescription.Control.VelocityDifferential.MaxForwardAcceleration (m/s/s)
+    - Default: 1.0
+  - @c SegwayRmp.Config.VehicleDescription.Control.VelocityDifferential.MaxReverseAcceleration (m/s/s)
+    - Default: 1.0
+  - @c SegwayRmp.Config.VehicleDescription.Control.VelocityDifferential.MaxRotationalAcceleration (deg/s/s)
+    - Default: 45.0
+  - @c SegwayRmp.Config.VehicleDescription.PlatformToVehicleTransform (Frame3d) [m, deg]
+    - Position of the vehicle's local coord system with respect to the platform's local coord system.
+    - Format: x y z roll pitch yaw (space separated)
+    - Default: 0.0 0.0 0.0  0.0 0.0 0.0
+  - @c SegwayRmp.Config.VehicleDescription.Geometry.Type (string)
+    - valid values: 'Cylindrical'
+    - Default: 'Cylindrical'
+  - @c SegwayRmp.Config.VehicleDescription.Geometry.Cylindrical.Radius (m)
+    - Radius of the vehicle's bounding cylinder
+    - Default: 0.25
+  - @c SegwayRmp.Config.VehicleDescription.Geometry.Cylindrical.Height (m)
+    - Height of the vehicle's bounding cylinder
+    - Default: 1.0
+  - @c SegwayRmp.Config.VehicleDescription.Geometry.Cylindrical.VehicleToGeometryTransform (Frame3d) [m, deg]
+    - Position of the cylinder centre with respect to the vehicle's local coord system.
+      (cylinder extends in +/- z direction from here)
+    - Format: x y z roll pitch yaw (space separated)
+    - Default: 0.0 0.0 0.0  0.0 0.0 0.0
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 

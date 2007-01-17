@@ -50,8 +50,7 @@ Odometry2dLogger::init()
     orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, objectPrx, interfaceTag_ );
     
     // Config and geometry
-    orca::Odometry2dDescription descr = objectPrx->getDescription();
-    writeDescriptionToFile( descr );
+    writeDescriptionToFile( objectPrx->getDescription() );
 
     // consumer
     Ice::ObjectPtr consumer = this;
@@ -86,19 +85,19 @@ Odometry2dLogger::setData(const orca::Odometry2dData& data, const Ice::Current&)
 }
 
 void 
-Odometry2dLogger::writeDescriptionToFile( const orca::Odometry2dDescription& obj )
+Odometry2dLogger::writeDescriptionToFile( const orca::VehicleDescription& obj )
 {
     context_.tracer()->print( "Writing description to file" );
     
     if ( format_ == "ice" )
     {
         orcalog::IceWriteHelper helper( context_.communicator() );
-        ice_writeOdometry2dDescription( helper.stream_, obj );
+        ice_writeVehicleDescription( helper.stream_, obj );
         helper.write( file_ ); 
     }
     else if ( format_ == "ascii" )
     {
-        (*file_) << "Implement streaming Odometry2dDescription" << endl;
+        (*file_) << "Implement streaming VehicleDescription" << endl;
 //         (*file_) << orcaice::toString(obj) << endl;
     }
     else

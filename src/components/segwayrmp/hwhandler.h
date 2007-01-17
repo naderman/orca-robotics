@@ -36,6 +36,7 @@ public:
                orcaice::Proxy<orca::Odometry3dData>& odometry3dPipe,
                orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
                orcaice::Proxy<orca::PowerData>& powerPipe,
+                const orca::VehicleDescription&               descr,
                const orcaice::Context& context );
     virtual ~HwHandler();
 

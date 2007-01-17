@@ -28,11 +28,13 @@ NetHandler::NetHandler(
                  orcaice::Proxy<orca::Odometry3dData>&      odometry3dPipe,
                  orcaice::Notify<orca::VelocityControl2dData>&  commandPipe,
                  orcaice::Proxy<orca::PowerData>&           powerPipe,
+                 const orca::VehicleDescription&               descr,
                  const orcaice::Context&                    context ) :
     odometry2dPipe_(odometry2dPipe),
     odometry3dPipe_(odometry3dPipe),
     commandPipe_(commandPipe),
     powerPipe_(powerPipe),
+    descr_(descr),
     context_(context)
 {
     context_.status()->setHeartbeatInterval( "network", 100.0 );
@@ -75,21 +77,15 @@ NetHandler::run()
     }
 
     std::string prefix = context_.tag() + ".Config.";
+    Ice::PropertiesPtr prop = context_.properties();
 
     //
     // PROVIDED: VelocityControl2d
     //
-    orca::VelocityControl2dDescription velocityControl2dDescr;
-
-    velocityControl2dDescr.maxVelocities.v.x = 
-            orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"MaxSpeed", 1.0 );
-    velocityControl2dDescr.maxVelocities.v.y = 0.0;
-    velocityControl2dDescr.maxVelocities.w = 
-            orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"MaxTurnRate", 45.0 );
 
     // create servant for direct connections and tell adapter about it
     // don't need to store it as a member variable, adapter will keep it alive
-    Ice::ObjectPtr velocityControl2dI = new VelocityControl2dI( velocityControl2dDescr, commandPipe_ );
+    Ice::ObjectPtr velocityControl2dI = new VelocityControl2dI( descr_, commandPipe_ );
 
     // two possible exceptions will kill it here, that's what we want
     orcaice::createInterfaceWithTag( context_, velocityControl2dI, "VelocityControl2d" );
@@ -97,15 +93,8 @@ NetHandler::run()
     //
     // PROVIDED: Odometry2d
     //
-    orca::Odometry2dDescription odometry2dDescr;
-
-    orcaice::setInit( odometry2dDescr.offset );
-    orcaice::getPropertyAsFrame2d( context_.properties(), prefix+"Offset", odometry2dDescr.offset );
-    orcaice::setInit( odometry2dDescr.size, 1.0, 1.0 );
-    orcaice::getPropertyAsSize2d( context_.properties(), prefix+"Size", odometry2dDescr.size );
-
     orcaifaceimpl::Odometry2dIPtr odometry2dI = 
-            new orcaifaceimpl::Odometry2dI( odometry2dDescr, "Odometry2d", context_ );
+            new orcaifaceimpl::Odometry2dI( descr_, "Odometry2d", context_ );
 
 
     while ( isActive() ) {
@@ -127,15 +116,8 @@ NetHandler::run()
     //
     // PROVIDED: Odometry3d
     //
-    orca::Odometry3dDescription odometry3dDescr;
-
-    orcaice::setInit( odometry3dDescr.offset );
-    orcaice::getPropertyAsFrame3d( context_.properties(), prefix+"Offset", odometry3dDescr.offset );
-    orcaice::setInit( odometry3dDescr.size, 1.0, 1.0, 2.0 );
-    orcaice::getPropertyAsSize3d( context_.properties(), prefix+"Size", odometry3dDescr.size );
-
     orcaifaceimpl::Odometry3dIPtr odometry3dI = 
-            new orcaifaceimpl::Odometry3dI( odometry3dDescr, "Odometry3d", context_ );
+            new orcaifaceimpl::Odometry3dI( descr_, "Odometry3d", context_ );
 
 
     while ( isActive() ) {

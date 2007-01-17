@@ -13,6 +13,7 @@
 
 #include <orca/orca.ice>
 #include <orca/bros1.ice>
+#include <orca/vehicledescription.ice>
 
 module orca
 {
@@ -39,17 +40,6 @@ struct Odometry3dData
     Twist3d motion;
 };
 
-//! Static description of the mobile platform associated with this odometric device.
-struct Odometry3dDescription
-{
-    //! Pose of the mobile base in the vehicle coordinate system.
-    Frame3d offset;
-
-    //! Dimensions of the mobile base.
-    Size3d size;
-};
-
-
 //! Data consumer interface.
 interface Odometry3dConsumer
 {
@@ -69,7 +59,7 @@ interface Odometry3d
             throws DataNotExistException, HardwareFailedException;
     
     //! Returns description         
-    nonmutating Odometry3dDescription getDescription();
+    nonmutating VehicleDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.

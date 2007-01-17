@@ -32,7 +32,7 @@ public:
 
     virtual ::orca::Odometry2dData getData(const ::Ice::Current& ) const;
 
-    virtual ::orca::Odometry2dDescription getDescription(const ::Ice::Current& ) const;
+    virtual ::orca::VehicleDescription getDescription(const ::Ice::Current& ) const;
     
     virtual void subscribe(const ::orca::Odometry2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
@@ -46,7 +46,7 @@ private:
     orcaice::Buffer<orca::Odometry2dData> dataPipe_;
     
     orca::Odometry2dData data_;
-    orca::Odometry2dDescription descr_;
+    orca::VehicleDescription descr_;
     orca::Odometry2dConsumerPrx publisher_;
     IceStorm::TopicPrx topic_;
 

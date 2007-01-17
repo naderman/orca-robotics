@@ -83,7 +83,7 @@ Odometry3dProbe::loadGetData( orcacm::OperationData & data )
 int 
 Odometry3dProbe::loadGetDescription( orcacm::OperationData & data )
 {
-    orca::Odometry3dDescription result;
+    orca::VehicleDescription result;
     orcacm::ResultHeader res;
 
     try

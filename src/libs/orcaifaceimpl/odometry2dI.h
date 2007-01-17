@@ -27,7 +27,7 @@ class Odometry2dI : public orca::Odometry2d
 {
 public:
     //! constructor
-    Odometry2dI( const orca::Odometry2dDescription& descr,
+    Odometry2dI( const orca::VehicleDescription& descr,
                  const std::string& ifaceTag, 
                  const orcaice::Context& context );
     virtual ~Odometry2dI();
@@ -36,7 +36,7 @@ public:
 
     virtual ::orca::Odometry2dData getData(const ::Ice::Current& ) const;
 
-    virtual ::orca::Odometry2dDescription getDescription(const ::Ice::Current& ) const;
+    virtual ::orca::VehicleDescription getDescription(const ::Ice::Current& ) const;
 
     virtual void subscribe(const ::orca::Odometry2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
@@ -57,7 +57,7 @@ public:
 
 private:
 
-    orca::Odometry2dDescription     descr_;
+    orca::VehicleDescription     descr_;
     orcaice::Proxy<orca::Odometry2dData> dataProxy_;
 
     orca::Odometry2dConsumerPrx    consumerPrx_;

@@ -64,7 +64,7 @@ Odometry3dReplayer::getData(const Ice::Current& current) const
 }
 
 
-::orca::Odometry3dDescription
+::orca::VehicleDescription
 Odometry3dReplayer::getDescription(const ::Ice::Current& ) const
 {
     return descr_;
@@ -90,7 +90,7 @@ void
 Odometry3dReplayer::initDescription()
 {
     orcalog::IceReadHelper helper( context_.communicator(), file_ );
-    ice_readOdometry3dDescription( helper.stream_, descr_ );
+    ice_readVehicleDescription( helper.stream_, descr_ );
     helper.read();
 }
 

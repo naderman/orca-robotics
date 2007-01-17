@@ -50,6 +50,7 @@ SET( SLICE_SOURCE_FILES
     imu.ice
     pointcloud.ice
     tracer.ice
+    vehicledescription.ice
     velocitycontrol2d.ice
     wifi.ice
 )

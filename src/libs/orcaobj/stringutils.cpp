@@ -647,38 +647,81 @@ toString( const orca::Odometry3dData& obj )
 }
 
 std::string 
-toString( const orca::Odometry2dDescription& obj )
+toString( const orca::VehicleDescription& obj )
 {
     std::ostringstream s;
-    s << "Offset x,y(m): "
-    << obj.offset.p.x << ","
-    << obj.offset.p.y << "\n"
-    << "Attitude yaw(deg): "     
-    << RAD2DEG(obj.offset.o) << "\n"
-    << "Size l,w(m):"     
-    << obj.size.l << ","
-    << obj.size.w;
-
+    s << "VehicleDescription: " << endl
+      << "  " << toString(obj.control) << endl
+      << "  platformToVehicleTransform: " << toString(obj.platformToVehicleTransform) << endl
+      << toString(obj.geometry);
     return s.str();
 }
 
-std::string 
-toString( const orca::Odometry3dDescription& obj )
+std::string toString( const orca::VehicleControlDescriptionPtr& obj )
 {
-    std::ostringstream s;
-    s << "Offset x,y,z(m): "
-    << obj.offset.p.x << ","
-    << obj.offset.p.y << ","
-    << obj.offset.p.z << ", \n"
-    << "Attitude r,p,y(deg): "     
-    << RAD2DEG(obj.offset.o.r) << ", "
-    << RAD2DEG(obj.offset.o.p) << ", "
-    << RAD2DEG(obj.offset.o.y) << ", \n"
-    << "Size l,w,h(m):"     
-    << obj.size.l << ","
-    << obj.size.w << ","
-    << obj.size.h;
+    if ( obj == 0 )
+        throw( "VehicleControlDescriptionPtr was zero!" );
 
+    std::ostringstream s;
+    s << "VehicleControlDescription: "
+      << "type=";
+    if ( obj->type == orca::VehicleControlVelocityDifferential )
+        s << "VehicleControlVelocityDifferential";
+    else if ( obj->type == orca::VehicleControlVelocityBicycle )
+        s << "VehicleControlVelocityBicycle";
+    else if ( obj->type == orca::VehicleControlVelocitySynchro )
+        s << "VehicleControlVelocitySynchro";
+    else if ( obj->type == orca::VehicleControlVelocityAckerman )
+        s << "VehicleControlVelocityAckerman";
+    else if ( obj->type == orca::VehicleControlOther )
+        s << "VehicleControlOther";
+    else
+        s << "Unknown!!";
+
+    if ( obj->ice_isA( "::orca::VehicleControlVelocityDifferentialDescription" ) )
+    {
+        const orca::VehicleControlVelocityDifferentialDescription& v = 
+            dynamic_cast<const orca::VehicleControlVelocityDifferentialDescription&>(*obj);
+        
+        s << endl << "VehicleControlVelocityDifferentialDescription: " << endl
+          << "     maxForwardSpeed:           " << v.maxForwardSpeed                    << "m/s"   << endl
+          << "     maxReverseSpeed:           " << v.maxReverseSpeed                    << "m/s"   << endl
+          << "     maxTurnrate:               " << RAD2DEG(v.maxTurnrate)               << "deg/s" << endl
+          << "     maxTurnrate1ms:            " << RAD2DEG(v.maxTurnrate1ms)            << "deg/s" << endl
+          << "     maxForwardAcceleration:    " << v.maxForwardAcceleration             << "m/s"   << endl
+          << "     maxReverseAcceleration:    " << v.maxReverseAcceleration             << "m/s"   << endl
+          << "     maxRotationalAcceleration: " << RAD2DEG(v.maxRotationalAcceleration) << "deg/s";
+    }
+    return s.str();
+}
+
+std::string toString( const orca::VehicleGeometryDescriptionPtr& obj )
+{
+    if ( obj == 0 )
+        throw( "VehicleControlDescriptionPtr was zero!" );
+
+    std::ostringstream s;
+    s << "VehicleGeometryDescription: "
+      << "type=";
+    if ( obj->type == orca::VehicleGeometryCuboid )
+        s << "VehicleGeometryCuboid";
+    else if ( obj->type == orca::VehicleGeometryCylindrical )
+        s << "VehicleGeometryCylindrical";
+    else if ( obj->type == orca::VehicleGeometryOther )
+        s << "VehicleGeometryOther";
+    else
+        s << "Unknown!!";
+
+    if ( obj->ice_isA( "::orca::VehicleGeometryCylindricalDescription" ) )
+    {
+        const orca::VehicleGeometryCylindricalDescription& v =
+            dynamic_cast<const orca::VehicleGeometryCylindricalDescription&>(*obj);
+
+        s << endl << "VehicleGeometryCylindricalDescription: " << endl
+          << "  radius: " << v.radius << "m" << endl
+          << "  height: " << v.height << "m" << endl
+          << "  vehicleToGeometryTransform: " << toString(v.vehicleToGeometryTransform);
+    }
     return s.str();
 }
 

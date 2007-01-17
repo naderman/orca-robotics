@@ -21,6 +21,7 @@
 
 #include <orca/odometry2d.h>
 #include <orca/velocitycontrol2d.h>
+#include <orca/vehicledescription.h>
 
 namespace robot2d
 {
@@ -31,6 +32,7 @@ public:
 
     HwHandler( orcaice::Buffer<orca::Odometry2dData>& odometryPipe,
                orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
+               const orca::VehicleDescription &descr,
                const orcaice::Context& context );
     virtual ~HwHandler();
 

@@ -34,14 +34,17 @@ IF ( BUILD_SEGWAYRMP )
 
     # build common sources into a convenience library
     BUILD_COMPONENT_SOURCES( SegwayRmpSources )
+
+    SET( DEP_LIBS
+      SegwayRmpSources OrcaMisc OrcaIfaceImpl ${SEGWAY_RMP_USB_LIBS} ${PLAYERCLIENT_LIBS} )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( segwayrmp main )
-    TARGET_LINK_LIBRARIES( segwayrmp SegwayRmpSources OrcaIfaceImpl ${SEGWAY_RMP_USB_LIBS} ${PLAYERCLIENT_LIBS} )
+    TARGET_LINK_LIBRARIES( segwayrmp ${DEP_LIBS} )
     
     # build IceBox service
     GLOBAL_ADD_LIBRARY( OrcaSegwayRmp SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaSegwayRmp SegwayRmpSources OrcaIfaceImpl ${SEGWAY_RMP_USB_LIBS} ${PLAYERCLIENT_LIBS} )
+    TARGET_LINK_LIBRARIES( OrcaSegwayRmp ${DEP_LIBS} )
     
     GENERATE_CONFIG_FILE( segwayrmp.def )
 
