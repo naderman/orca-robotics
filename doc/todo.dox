@@ -62,6 +62,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Replaces Position2d which is now obsolete.
 - VelocityControl2d
     - Replaces Platform2d which is now obsolete.
+- VehicleDescription
+    - Describes physical geometry and dynamic constraints of vehicles (Alex B.)
 - Wifi
     - Access to wireless signal strength and other wireless network parameters (Tobias K.)
 
