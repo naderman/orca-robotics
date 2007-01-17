@@ -72,23 +72,11 @@ GpsLogger::init()
 }
 
 void 
-GpsLogger::writeDescriptionToFile( const orca::GpsDescription& descr )
+GpsLogger::writeDescriptionToFile( const orca::GpsDescription& obj )
 {
-
-    context_.tracer()->print( "Writing configuration to file" );
-  
-//     cout << "TRACE(gpsslave.cpp): GpsConfig before: " << config << endl;
-    vector<Ice::Byte> byteData;
-    Ice::OutputStreamPtr outStreamDescriptionPtr = Ice::createOutputStream( context_.communicator() );
-    ice_writeGpsDescription(outStreamDescriptionPtr, descr);
-    outStreamDescriptionPtr->writePendingObjects();
-    outStreamDescriptionPtr->finished( byteData );
-    size_t length = byteData.size();
-    file_->write( (char*)&length, sizeof(size_t) );
-    file_->flush();
-    file_->write( (char*)&byteData[0], length);
-    file_->flush();      
-//     cout << "TRACE(gpsslave.cpp): Length of CONFIG byteData before: " << byteData.size() << endl;
+    orcalog::IceWriteHelper helper( context_.communicator() );
+    ice_writeGpsDescription( helper.stream_, obj );
+    helper.write( file_ );  
 }
 
 void 
