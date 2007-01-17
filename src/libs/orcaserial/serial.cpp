@@ -15,6 +15,7 @@
 #include <fcntl.h>
 #include <unistd.h>    // read and write to ports
 #include <string.h>
+#include <iostream>
 #include "serial.h"
 
 #include <config.h>
@@ -24,6 +25,10 @@
 #endif
 // Ensure we have strnlen
 #include <orcaportability/strnlen.h>
+
+#ifdef __QNX__
+#include <sys/modem.h>
+#endif
 
 using namespace std;
 
@@ -47,6 +52,8 @@ Serial::~Serial()
         ::close(port_fd);
     }
 }
+
+#ifdef __linux
 
 int 
 Serial::baud(int baud)
@@ -358,5 +365,124 @@ Serial::drain()
         return 0;
     }
 }
+
+#endif
+
+#ifdef __QNX__
+
+int 
+Serial::baud(int baud)
+{
+    int ret;
+	int c;
+
+	ret = cfsetispeed( &ser_opts, (speed_t) baud );
+	if ( ret<0 )
+	{	
+		return(-1) ; 
+	}
+	
+	ret = cfsetospeed( &ser_opts, (speed_t) baud );
+	if ( ret<0 )
+	{	
+		return(-1) ; 
+	}
+	
+    ret = tcsetattr( port_fd, TCSANOW, &ser_opts ) ; 
+
+    tcgetattr( port_fd, &ser_opts ) ;
+ 
+ 	c = (int)cfgetospeed( &ser_opts ) ;
+   
+	return(ret) ;
+}
+
+// flags are not used here
+int 
+Serial::open(const char* device, const int flags)
+{
+	int ret;
+	int baud = 9600;
+ 
+    // argument to modem_open requires a non_const pointer
+	port_fd = modem_open( const_cast<char*>(device), baud ) ;
+	if( port_fd < 0)
+	{  
+        printf("ERROR(serial.c): Could not open serial device\n");
+		return 0; 
+	} 
+
+	ret = tcgetattr( port_fd, &ser_opts ) ;
+	
+	ser_opts.c_cflag = CS8|CREAD|HUPCL|CLOCAL ;  //|IHFLOW 
+	ser_opts.c_lflag =IEXTEN ;
+	ser_opts.c_oflag =0 ;
+	ser_opts.c_iflag = IGNBRK |  IGNPAR ;  //IGNCR |
+
+	ret = tcsetattr( port_fd, TCSANOW, &ser_opts ) ;
+
+	return 1 ;
+}
+
+
+int 
+Serial::read(void *buf, size_t count)
+{
+}
+
+int 
+Serial::read_line(void *buf, size_t count, char termchar)
+{
+}
+
+int 
+Serial::read_full(void *buf, size_t count)
+{
+    int timeOut = to_sec * 10 + to_usec/100000;
+	
+	int n = readcond(port_fd, buf, count, count, timeOut, timeOut);
+	
+	return(n) ;
+}
+
+int 
+Serial::data_avail()
+{	
+	return( tcischars(port_fd) );	 
+}
+
+int 
+Serial::data_avail_wait()
+{
+}
+
+int 
+Serial::write(const void *buf, size_t count)
+{
+    ssize_t n;
+	
+	n = ::write( port_fd, buf, count );	
+	// *nw = n ;
+	return(n) ;
+}
+
+int 
+Serial::write(const char *str, size_t maxlen)
+{
+}
+
+int 
+Serial::flush()
+{
+}
+
+int 
+Serial::drain()
+{
+}
+
+
+#endif
+
 
 } // namespace

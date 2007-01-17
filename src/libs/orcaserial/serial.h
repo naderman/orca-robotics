@@ -74,6 +74,8 @@ public:
     //! If any of the functions above produced an error, you can see it with this call.
     std::string last_error() const { return lastError_; }
 
+    int fileDescriptor() { return port_fd; }
+
 private:
     struct termios ser_opts;
     int port_fd;

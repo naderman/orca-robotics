@@ -1,5 +1,3 @@
-IF ( OS_LINUX )
-
   INCLUDE_DIRECTORIES( 
     ${PROJECT_BINARY_DIR}
     ${PROJECT_SOURCE_DIR}/src/libs
@@ -11,4 +9,3 @@ IF ( OS_LINUX )
 
   INSTALL_FILES( /include/orcaserial .*\\.h$ )
 
-ENDIF ( OS_LINUX )
