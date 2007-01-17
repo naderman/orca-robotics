@@ -359,4 +359,19 @@ toLogString( const orca::WifiData& obj )
     return s.str();
 }
 
+std::string 
+toLogString( const orca::ImuData& obj )
+{
+    std::stringstream s;
+    
+    s << toLogString(obj.timeStamp) << " "
+      << obj.accel.x << " "
+      << obj.accel.y << " "
+      << obj.gyro.x << " "
+      << obj.gyro.y << " "
+      << obj.gyro.z;
+    
+    return s.str();
+}
+
 } // namespace

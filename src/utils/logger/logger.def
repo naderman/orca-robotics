@@ -12,6 +12,9 @@ Requires.Cpu0.DefaultProxy=cpu@local/roverhw
 Requires.Gps0.Type=Gps
 Requires.Gps0.DefaultProxy=gps@local/gps
 
+Requires.Imu0.Type=Imu
+Requires.Imu0.DefaultProxy=imu@local/insgps
+
 Requires.LaserScanner2d0.Type=LaserScanner2d
 Requires.LaserScanner2d0.DefaultProxy=laserscanner2d@local/laser2d
 
@@ -37,6 +40,7 @@ Config.FactoryLibNames.Default=libOrcaLogFactory.so
 Config.Camera0.Format.Default=ice
 Config.Cpu0.Format.Default=ice
 Config.Gps0.Format.Default=ice
+Config.Imu0.Format.Default=ascii
 Config.LaserScanner2d0.Format.Default=ice
 Config.PolarFeature2d0.Format.Default=ice
 Config.Odometry2d0.Format.Default=ice

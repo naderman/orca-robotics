@@ -112,8 +112,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Probe (alex m.)
     - now using orcaice::EventQueue for cross-thread communication.
 - OrcaView2d (Tobias K.)
-    - interaction with pathfollower2d interface more sophisticated: 
-      paths can be specified as missions with associcated waiting times and behaviours
+    - Interaction with pathfollower2d interface more sophisticated: 
+       - paths can be specified as missions with associcated waiting times and behaviours
+       - timing is displayed online by an "olympic marker"
 
 @par Updated libraries
 
@@ -128,6 +129,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - libOrcaLogFactory
     - added support for Odometry2d/3d interfaces (alex m.)
     - added support for Wifi interface (Tobias K.)
+    - added support for Imu interface (Tobias K.)
 - libOrcaProbeFactory (alex m.)
     - added support for Status and Tracer interfaces
 - libOrcaDef (alex m.)
