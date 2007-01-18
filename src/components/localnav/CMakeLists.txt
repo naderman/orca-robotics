@@ -39,7 +39,7 @@ IF ( BUILD_LOCALNAV )
     GENERATE_CONFIG_FILE( localnav.def )
 
     IF ( BUILD_TESTS )
-      ADD_TEST( LocalNavVfhTest localnav --Orca.Config=${PROJECT_BINARY_DIR}/src/components/localnav/localnav.cfg --LocalNav.Config.Driver=testvfhdriver --LocalNav.Config.Vfh.MaxSpeed=2.0 --LocalNav.Config.Test.BatchMode=1 )
+      ADD_TEST( LocalNavVfhTest localnav --Orca.Config=${PROJECT_BINARY_DIR}/src/components/localnav/localnav.cfg --LocalNav.Config.TestMode=1 --LocalNav.Config.Vfh.MaxSpeed=2.0 --LocalNav.Config.Test.BatchMode=1 )
 
     ENDIF ( BUILD_TESTS )
 
