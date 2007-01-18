@@ -32,8 +32,6 @@ PathPainter::PathPainter()
       color_(Qt::blue),
       inFocus_(true),
       relativeStartTime_(NAN)
-//       haveAbsoluteTime_(false),
-//       haveRelativeTime_(false)
 {
 }
 
@@ -177,14 +175,27 @@ void PathPainter::paint( QPainter *painter, int z )
  
         painter->save();
         painter->translate( waypoints_[i].x(), waypoints_[i].y() );    // move to point
-
         paintWaypoint( painter, 
                        fillColor,
                        drawColor, 
                        headings_[i],
                        distTolerances_[i], 
                        headingTolerances_[i] );
-
+        painter->restore();
+    }
+    
+    // ===== draw the waypoint in focus again, to be able to see the edge =======
+    if (wpIndex_!=-1)
+    {
+        painter->save();
+        painter->translate( waypoints_[wpIndex_].x(), waypoints_[wpIndex_].y() );    // move to point
+        drawColor = Qt::black;
+        paintWaypoint( painter, 
+                        currentWpColor,
+                        drawColor, 
+                        headings_[wpIndex_],
+                        distTolerances_[wpIndex_], 
+                        headingTolerances_[wpIndex_] );
         painter->restore();
     }
     

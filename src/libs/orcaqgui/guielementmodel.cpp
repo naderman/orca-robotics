@@ -231,7 +231,8 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
     if (element==NULL)
     {
         //cout << "TRACE(guielementmodel.cpp): Interface not supported." << endl;
-        humanManager_->showBoxMsg(orcaqgui::Warning, "Interface is not supported by the GUI");
+        stringstream ss;
+        humanManager_->showBoxMsg(orcaqgui::Warning, "Interface " + proxyStrList.join(" ") + " is not supported by the GUI");
         delete element;
         return;   
     }

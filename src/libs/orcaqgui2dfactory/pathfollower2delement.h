@@ -190,11 +190,12 @@ private:
     // toggle states
     bool displayWaypoints_;
     bool displayPastWaypoints_;
-    bool isEnabled_;
     bool currentTransparency_;
     
     // Handles human interface
     PathFollowerHI pathHI_;
+    
+    bool isFollowerEnabled();
     
 };
 

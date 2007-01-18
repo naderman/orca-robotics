@@ -128,7 +128,6 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
       numPathDumps_(0),
       displayWaypoints_(true),
       displayPastWaypoints_(true),
-      isEnabled_(true),
       currentTransparency_(false),
       pathHI_( this,
                proxyString,
@@ -197,7 +196,8 @@ PathFollower2dElement::update()
     }
     
     // get the activation time
-    if ( (activationTimer_->elapsedSec()>0.5) && isEnabled_) 
+    bool isEnabled = isFollowerEnabled();
+    if ( (activationTimer_->elapsedSec()>0.5) && isEnabled) 
     {
         try
         {
@@ -213,8 +213,37 @@ PathFollower2dElement::update()
             ss << e.what;
             humanManager_->showStatusMsg( Error, ss.str().c_str() );
         }
+        catch ( const Ice::Exception &e )
+        {
+            stringstream ss;
+            ss << "While trying to get activation time: " << endl << e;
+            humanManager_->showStatusMsg( Error, ss.str().c_str() );
+        }
         activationTimer_->restart();
     }
+}
+
+bool 
+PathFollower2dElement::isFollowerEnabled()
+{
+    bool isEnabled = false;
+    try
+    {
+        isEnabled = pathFollower2dPrx_->enabled();
+    }
+    catch ( const orca::OrcaException &e )
+    {
+        stringstream ss;
+        ss << e.what;
+        humanManager_->showStatusMsg( Error, ss.str().c_str() );
+    }
+    catch ( const Ice::Exception &e )
+    {
+        stringstream ss;
+        ss << "While trying to get enable status: " << endl << e;
+        humanManager_->showStatusMsg( Error, ss.str().c_str() );
+    }
+    return isEnabled;
 }
 
 void 
@@ -239,9 +268,6 @@ PathFollower2dElement::doInitialSetup()
         orca::PathFollower2dConsumerPrx callbackPrx = 
                 orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( context_, pathFollowerObj );
         pathFollower2dPrx_->subscribe(callbackPrx);
-        
-        // check whether pathfollower is enabled
-        isEnabled_ = pathFollower2dPrx_->enabled();
     }
     catch ( ... )
     {
@@ -272,7 +298,8 @@ PathFollower2dElement::contextMenu()
     } else {
         s << "Switch transparency ON";
     }
-    if (isEnabled_) {
+    bool isEnabled = isFollowerEnabled();
+    if (isEnabled) {
         s << "Disable interface";
     } else {
         s << "Enable interface";
@@ -304,7 +331,14 @@ PathFollower2dElement::execute( int action )
     else if ( action == 3 )
     {
         pathFollower2dPrx_->setEnabled( !pathFollower2dPrx_->enabled() );
-        isEnabled_ = pathFollower2dPrx_->enabled();
+        bool isEnabled = isFollowerEnabled();
+        QString str;
+        if (isEnabled) {
+            str = "Pathfollower is ENABLED now.";
+        } else {
+            str = "Pathfollower is DISABLED now.";
+        }
+        humanManager_->showStatusMsg(Information,str);
     }
     else if ( action == 4 )
     {
