@@ -927,7 +927,7 @@ toString( const orca::LaserScanner2dDataPtr & obj, int skip )
 {
     std::ostringstream s;
     s << toString(obj->timeStamp)
-      << " LaserData [" << obj->ranges.size() << " elements]";
+      << " LaserData [" << obj->ranges.size() << " elements]" << endl;
 
     s << "minRange=" << obj->minRange << "m" << endl;
     s << "maxRange=" << obj->maxRange << "m" << endl;
