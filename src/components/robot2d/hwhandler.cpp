@@ -68,10 +68,11 @@ HwHandler::HwHandler(
     //
     std::string prefix = context_.tag() + ".Config.";
 
-    orca::VehicleControlVelocityDifferentialDescription *controlDescr =
-        dynamic_cast<orca::VehicleControlVelocityDifferentialDescription*>(&(*(descr.control)));
-    if ( controlDescr == NULL )
-        throw orcaice::Exception( ERROR_INFO, "Can only deal with differential drive vehicles." );
+    // we support only one type of vehicle control
+    orca::VehicleControlVelocityDifferentialDescriptionPtr controlDescr = 
+            orca::VehicleControlVelocityDifferentialDescriptionPtr::dynamicCast( descr.control );
+    if ( !controlDescr )
+        throw orcaice::Exception( ERROR_INFO, "Can only handle vehicles with differential drive." );
     if ( controlDescr->maxForwardSpeed != controlDescr->maxReverseSpeed ) 
         throw orcaice::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
 
