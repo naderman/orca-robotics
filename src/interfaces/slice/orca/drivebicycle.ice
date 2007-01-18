@@ -12,6 +12,7 @@
 #define ORCA2_DRIVE_BICYCLE_INTERFACE_ICE
 
 #include <orca/orca.ice>
+#include <orca/vehicledescription.ice>
 
 module orca
 {
@@ -21,25 +22,6 @@ module orca
     @brief Controls a mobile robot with bicycle steering.
     @{
 */
-
-//! Description of differential steering mechanism
-struct DriveBicycleDescription
-{
-    //! Distance between the front and rear wheels [m]
-    double wheelBase;    
-
-    //! Maximum forward speed [m/s]
-    double maxSpeedForward;
-
-    //! Maximum reverse speed [m/s]
-    double maxSpeedReverse;
-
-    //! Maximum steer angle to the left [rad]
-    double maxSteerAngleLeft;
-
-    //! Maximum steer angle to the right [rad]
-    double maxSteerAngleRight;
-};
 
 //! Bicycle steering velocity command.
 struct DriveBicycleData
@@ -56,8 +38,8 @@ struct DriveBicycleData
 */
 interface DriveBicycle
 {
-    //! Get description
-    nonmutating DriveBicycleDescription getDescription();
+    //! Get vehicle description
+    nonmutating VehicleDescription getDescription();
 
     //! Set velocity command
     idempotent void setCommand( DriveBicycleData data )

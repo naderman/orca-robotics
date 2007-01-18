@@ -657,7 +657,8 @@ toString( const orca::VehicleDescription& obj )
     return s.str();
 }
 
-std::string toString( const orca::VehicleControlDescriptionPtr& obj )
+std::string 
+toString( const orca::VehicleControlDescriptionPtr& obj )
 {
     if ( obj == 0 )
         throw( "VehicleControlDescriptionPtr was zero!" );
@@ -680,22 +681,39 @@ std::string toString( const orca::VehicleControlDescriptionPtr& obj )
 
     if ( obj->ice_isA( "::orca::VehicleControlVelocityDifferentialDescription" ) )
     {
-        const orca::VehicleControlVelocityDifferentialDescription& v = 
-            dynamic_cast<const orca::VehicleControlVelocityDifferentialDescription&>(*obj);
-        
-        s << endl << "VehicleControlVelocityDifferentialDescription: " << endl
-          << "     maxForwardSpeed:           " << v.maxForwardSpeed                    << "m/s"   << endl
-          << "     maxReverseSpeed:           " << v.maxReverseSpeed                    << "m/s"   << endl
-          << "     maxTurnrate:               " << RAD2DEG(v.maxTurnrate)               << "deg/s" << endl
-          << "     maxTurnrate1ms:            " << RAD2DEG(v.maxTurnrate1ms)            << "deg/s" << endl
-          << "     maxForwardAcceleration:    " << v.maxForwardAcceleration             << "m/s"   << endl
-          << "     maxReverseAcceleration:    " << v.maxReverseAcceleration             << "m/s"   << endl
-          << "     maxRotationalAcceleration: " << RAD2DEG(v.maxRotationalAcceleration) << "deg/s";
+        orca::VehicleControlVelocityDifferentialDescriptionPtr v = orca::VehicleControlVelocityDifferentialDescriptionPtr::dynamicCast( obj );
+        if ( v )
+        {
+            s << endl << "VehicleControlVelocityDifferentialDescription: " << endl
+            << "     maxForwardSpeed:           " << v->maxForwardSpeed                    << "m/s"   << endl
+            << "     maxReverseSpeed:           " << v->maxReverseSpeed                    << "m/s"   << endl
+            << "     maxTurnrate:               " << RAD2DEG(v->maxTurnrate)               << "deg/s" << endl
+            << "     maxTurnrate1ms:            " << RAD2DEG(v->maxTurnrate1ms)            << "deg/s" << endl
+            << "     maxForwardAcceleration:    " << v->maxForwardAcceleration             << "m/s/s" << endl
+            << "     maxReverseAcceleration:    " << v->maxReverseAcceleration             << "m/s/s" << endl
+            << "     maxRotationalAcceleration: " << RAD2DEG(v->maxRotationalAcceleration) << "deg/s/s";
+        }
+    }
+    else if ( obj->ice_isA( "::orca::VehicleControlVelocityBicycleDescription" ) )
+    {
+        orca::VehicleControlVelocityBicycleDescriptionPtr v = orca::VehicleControlVelocityBicycleDescriptionPtr::dynamicCast( obj );
+        if ( v )
+        {        
+            s << endl << "VehicleControlVelocityBicycleDescription: " << endl
+            << "     maxForwardSpeed:           " << v->maxForwardSpeed                    << "m/s"   << endl
+            << "     maxReverseSpeed:           " << v->maxReverseSpeed                    << "m/s"   << endl
+            << "     maxSteerAngle:             " << RAD2DEG(v->maxSteerAngle)             << "deg" << endl
+            << "     maxSteerAngleAtMaxSpeed:   " << RAD2DEG(v->maxSteerAngleAtMaxSpeed)   << "deg" << endl
+            << "     maxForwardAcceleration:    " << v->maxForwardAcceleration             << "m/s"   << endl
+            << "     maxReverseAcceleration:    " << v->maxReverseAcceleration             << "m/s"   << endl
+            << "     maxSteerAngleRate:         " << RAD2DEG(v->maxSteerAngleRate)         << "deg/s";
+        }
     }
     return s.str();
 }
 
-std::string toString( const orca::VehicleGeometryDescriptionPtr& obj )
+std::string 
+toString( const orca::VehicleGeometryDescriptionPtr& obj )
 {
     if ( obj == 0 )
         throw( "VehicleControlDescriptionPtr was zero!" );
@@ -714,13 +732,26 @@ std::string toString( const orca::VehicleGeometryDescriptionPtr& obj )
 
     if ( obj->ice_isA( "::orca::VehicleGeometryCylindricalDescription" ) )
     {
-        const orca::VehicleGeometryCylindricalDescription& v =
-            dynamic_cast<const orca::VehicleGeometryCylindricalDescription&>(*obj);
-
-        s << endl << "VehicleGeometryCylindricalDescription: " << endl
-          << "  radius: " << v.radius << "m" << endl
-          << "  height: " << v.height << "m" << endl
-          << "  vehicleToGeometryTransform: " << toString(v.vehicleToGeometryTransform);
+        orca::VehicleGeometryCylindricalDescriptionPtr v = orca::VehicleGeometryCylindricalDescriptionPtr::dynamicCast( obj );
+        if ( v )
+        { 
+            s << endl << "VehicleGeometryCylindricalDescription: " << endl
+            << "  radius: " << v->radius << "m" << endl
+            << "  height: " << v->height << "m" << endl
+            << "  vehicleToGeometryTransform: " << toString(v->vehicleToGeometryTransform);
+        }
+    }
+    else if ( obj->ice_isA( "::orca::VehicleGeometryCuboidDescription" ) )
+    {
+        orca::VehicleGeometryCuboidDescriptionPtr v = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( obj );
+        if ( v )
+        { 
+            s << endl << "VehicleGeometryCuboidDescription: " << endl
+            << "  length: " << v->size.l << "m" << endl
+            << "  width:  " << v->size.w << "m" << endl
+            << "  height: " << v->size.h << "m" << endl
+            << "  vehicleToGeometryTransform: " << toString(v->vehicleToGeometryTransform);
+        }
     }
     return s.str();
 }
@@ -745,7 +776,7 @@ std::string
 toString( const orca::Twist2d &t )
 {
     std::ostringstream s;
-    s << " Twist2d: (v.x,v.y,w): ("
+    s << " Twist2d: (v->x,v->y,w): ("
       << t.v.x << ", "
       << t.v.y << ", "
       << t.w*180.0/M_PI << "deg)";

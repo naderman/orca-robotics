@@ -22,12 +22,6 @@ namespace orcamisc {
  */
 //@{
 
-//! Performs some basic sanity checks, and
-//! throws orcaice::ConfigFileException if something is wrong.
-void 
-checkVehicleControlVelocityDifferentialDescription( 
-    const orca::VehicleControlVelocityDifferentialDescription &d );
-
 //! Read in a VehicleDescription struct from a config file.
 //! The properties are expected to be laid out like the struct is.
 //!
@@ -39,6 +33,15 @@ void readVehicleDescription( Ice::PropertiesPtr prop,
                              const std::string &prefix,
                              orca::VehicleDescription &d );
 
+//! Performs some basic sanity checks, and
+//! throws orcaice::ConfigFileException if something is wrong.
+void  checkVehicleControlVelocityDifferentialDescription( 
+    const orca::VehicleControlVelocityDifferentialDescription &d );
+
+//! Performs some basic sanity checks, and
+//! throws orcaice::ConfigFileException if something is wrong.
+void  checkVehicleControlVelocityBicycleDescription( 
+    const orca::VehicleControlVelocityBicycleDescription &d );
 //@}
 
 }

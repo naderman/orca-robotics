@@ -56,24 +56,49 @@ class VehicleControlDescription
 //! Static description of a Velocity-controlled Differential-Drive vehicle.
 class VehicleControlVelocityDifferentialDescription extends VehicleControlDescription
 {
-    //! Maximum in-plane forward speed.
+    //! Maximum in-plane forward speed [m/s]
     double maxForwardSpeed;
-    //! Maximum in-plane reverse speed. 
+    //! Maximum in-plane reverse speed [m/s]
     double maxReverseSpeed;
-    //! Maximum in-plane turnrate (assumes equal max turnrate in either direction).
+    //! Maximum in-plane turnrate [rad/s] (assumes equal max turnrate in either direction).
     double maxTurnrate;
 
     //! Maximum turnrate when moving at 1m/s.
     //! Since maxTurnrate is defined for 0m/s, these two parameters define a linear
-    //! model for turnrate as a function of speed.
+    //! model for turnrate constraints as a function of speed.
     double maxTurnrate1ms;
 
-    //! Maximum forward acceleration in m/s/s
+    //! Maximum forward acceleration [m/s/s]
     double maxForwardAcceleration;
-    //! Maximum reverse acceleration in m/s/s
+    //! Maximum reverse acceleration [m/s/s]
     double maxReverseAcceleration;
-    //! Maximum rotational acceleration in rad/s/s (assumes equal max acceleration in either direction)
+    //! Maximum rotational acceleration [rad/s/s] (assumes equal in either direction)
     double maxRotationalAcceleration;
+};
+
+//! Static description of a Velocity-controlled Bicycle-Drive vehicle.
+class VehicleControlVelocityBicycleDescription extends VehicleControlDescription
+{
+    //! Maximum in-plane forward speed [m/s]
+    double maxForwardSpeed;
+    //! Maximum in-plane reverse speed [m/s]
+    double maxReverseSpeed;
+    //! Maximum steering angle [rad] when stationary.
+    //! Assumes equal in either direction.
+    double maxSteerAngle;
+
+    //! Maximum steering angle when moving at maximum speed.
+    //! Since maxSteerAngle is defined for 0m/s, these two parameters define a linear
+    //! model for steering angle constraints as a function of speed.
+    //! Assumes equal in either direction.
+    double maxSteerAngleAtMaxSpeed;
+
+    //! Maximum forward acceleration [m/s/s]
+    double maxForwardAcceleration;
+    //! Maximum reverse acceleration [m/s/s]
+    double maxReverseAcceleration;
+    //! Maximum rate of change of steering angle [rad/s] (assumes equal in either direction)
+    double maxSteerAngleRate;
 };
 
 //! A set of of possible vehicle geometry descriptions
@@ -100,10 +125,29 @@ class VehicleGeometryDescription
 //! bounding cylinder.
 class VehicleGeometryCylindricalDescription extends VehicleGeometryDescription
 {
-    //! Radius of the cylinder
+    //! Radius of the cylinder [m]
     double radius;
-    //! Height of the cylinder
+    //! Height of the cylinder [m]
     double height;
+
+    //!
+    //! The transformation:
+    //! - from: the platform coordinate system,
+    //! - to:   the coordinate system about which the vehicle geometry extends.
+    //!
+    //! The cylinder is assumed to be centred on the vehicle coordinate system,
+    //! extruded in the z-direction 
+    //! (so a slice through the vehicle-CS x-y plane is circular).
+    //!
+    Frame3d vehicleToGeometryTransform;
+};
+
+//! Geometry description for a vehicle which can be described by a simple
+//! bounding cuboid.
+class VehicleGeometryCuboidDescription extends VehicleGeometryDescription
+{
+    //! Size in 3 dimensions.
+    Size3d size;
 
     //!
     //! The transformation:
