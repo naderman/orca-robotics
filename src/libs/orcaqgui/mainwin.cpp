@@ -135,7 +135,7 @@ void MainWindow::init( GuiElementModel                   *guiElemModel,
     elemModel_->setView( elemView_ );
     
     QObject::connect( regView_,SIGNAL(newSelection( const QList<QStringList> & )),
-             elemModel_,SLOT(createGuiElement( const QList<QStringList> & )) );
+                      elemModel_,SLOT(createGuiElement( const QList<QStringList> & )) );
 
     regTimer_ = new QTimer( this );
     QObject::connect( regTimer_,SIGNAL(timeout()), this,SLOT(refreshRegistryView()) );

@@ -38,16 +38,15 @@ void RegSelectView::contextMenuEvent( QContextMenuEvent* e )
     // only react interfaces
     if ( currentIndex().data( orcaqcm::OcmModel::TypeRole) == "Interface" )
     {
-        if ( currentIndex().data() == "::orca::Platform2d" ) {
-            menu.addAction("Add to Project as OdometryPainter", this, SLOT(addElement()) );
-        }
-        else {
-            menu.addAction("Add to Project", this, SLOT(addElement()) );
-        }
-        menu.addSeparator();
+        menu.addAction("Add to Project", this, SLOT(addElement()) );
     }
     
-//     menu.addAction("&Properties" );
+    // react to platforms
+    if ( currentIndex().data( orcaqcm::OcmModel::TypeRole) == "Platform" )
+    {
+        menu.addAction("Add all supported interfaces", this, SLOT(addAllPlatformInterfaces()) );
+    }
+    
     menu.exec( e->globalPos() );
 }
 
@@ -80,7 +79,34 @@ void RegSelectView::addElement()
         interfacesInfo << interfaceInfo;
     }
     emit newSelection( interfacesInfo );
-    
+}
+
+void RegSelectView::addAllPlatformInterfaces()
+{
+    for (int i=0; i<selectionModel()->selectedRows().size(); i++)
+    {
+        QString platform = selectionModel()->selectedRows()[i].data().toString();
+        cout<<"INFO(regselectview.cpp): addAllInterfaces of platform: " << platform.toStdString() << endl;
+        
+        orcaqcm::OcmModel* ocmModel = (orcaqcm::OcmModel*)model();
+        QStringList registries;
+        QStringList platforms;
+        QStringList components;
+        QStringList interfaces;
+        QStringList ids;
+        // lookup interface information in the model
+        ocmModel->interfacesOnPlatform( selectionModel()->selectedRows()[i], registries, platforms, components, interfaces, ids );
+        
+        for (int i=0; i<interfaces.size(); i++)
+        {
+            cout << "Interface: " << interfaces[i].toStdString() << endl;
+            QList<QStringList> interfacesInfo;
+            QStringList interfaceInfo;
+            interfaceInfo << registries[i] << platforms[i] << components[i] << interfaces[i] << ids[i];
+            interfacesInfo << interfaceInfo;
+            emit newSelection( interfacesInfo );
+        }
+    }
 }
 
 void RegSelectView::addRegistry()

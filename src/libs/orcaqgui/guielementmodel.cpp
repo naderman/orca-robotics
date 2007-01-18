@@ -175,7 +175,6 @@ GuiElementModel::instantiateFromFactories( const QStringList &ids, const QColor 
     return NULL;
 }
 
-
 void 
 GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
 {
@@ -208,7 +207,7 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
     QColor platformColor;
     if ( !doesPlatformExist( platform ) )
     {
-        //cout << "new platform" << endl;
+        cout << "new platform: " << platform.toStdString() << endl;
         // assign a new colour
         if ( colorCounter_>=colorVector_.size() ) {
             platformColor = generateRandomColor();
@@ -232,8 +231,10 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
     {
         //cout << "TRACE(guielementmodel.cpp): Interface not supported." << endl;
         stringstream ss;
-        humanManager_->showBoxMsg(orcaqgui::Warning, "Interface " + proxyStrList.join(" ") + " is not supported by the GUI");
+        humanManager_->showStatusMsg(orcaqgui::Warning, "Interface " + proxyStrList.join(" ") + " is not supported by the GUI");
         delete element;
+        if (!doesPlatformExist( platform ) ) 
+            emit platformNeedsRemoval(platform);
         return;   
     }
     

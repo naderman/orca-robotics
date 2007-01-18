@@ -126,6 +126,13 @@ public:
     int interfaceData( const QModelIndex& ind,
                        QString & registry, QString & platform, QString & component,
                        QString & interface, QString & id );
+    
+    //! Custom function for getting information about interfaces on a platform.
+    //! Returns 0 if the data was retrieved properly or 1 if something went wrong, e.g.
+    //! the index does not point to a PlatformType.
+    int interfacesOnPlatform( const QModelIndex& ind,
+                              QStringList & registries, QStringList & platforms, QStringList & components,
+                              QStringList & interfaces, QStringList & ids );
 
     // OBSOLETE OcmModel specific API
 
