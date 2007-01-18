@@ -325,13 +325,13 @@ Simulator::getVehicleDescription() const
     orca::VehicleControlVelocityDifferentialDescription *c 
         = new orca::VehicleControlVelocityDifferentialDescription;
     c->type    = orca::VehicleControlVelocityDifferential;
-    c->maxForwardSpeed = 1.0;
-    c->maxReverseSpeed = 1.0;
-    c->maxTurnrate     = 90.0;
-    c->maxTurnrateAtMaxSpeed  = 90.0;
+    c->maxForwardSpeed = 2.0;
+    c->maxReverseSpeed = 2.0;
+    c->maxTurnrate     = DEG2RAD(90.0);
+    c->maxTurnrateAtMaxSpeed  = DEG2RAD(90.0);
     c->maxForwardAcceleration = 1.0;
     c->maxReverseAcceleration = 1.0;
-    c->maxRotationalAcceleration = 1.0;
+    c->maxRotationalAcceleration = DEG2RAD(90.0);
     orcamisc::checkVehicleControlVelocityDifferentialDescription( *c );
     d.control = c;
 

@@ -3,5 +3,6 @@
 
 #include <localnavutil/goal.h>
 #include <localnavutil/velocity.h>
+#include <localnavutil/util.h>
 
 #endif
