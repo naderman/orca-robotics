@@ -69,31 +69,41 @@ readVehicleDescription( Ice::PropertiesPtr prop, const std::string &prefix, orca
         throw orcaice::ConfigFileException( ERROR_INFO, ss.str() );
     }
 
-    string key = vprefix+"PlatformToVehicleTransform";
-    int ret = orcaice::getPropertyAsFrame3d( prop, key, descr.platformToVehicleTransform );
-    if ( ret != 0 )
-    {
-        stringstream ss; ss << "Failed to read config param: " << key;
-        throw orcaice::ConfigFileException( ERROR_INFO, ss.str() );
-    }
+    orcaice::setInit( descr.platformToVehicleTransform );
+    descr.platformToVehicleTransform = orcaice::getPropertyAsFrame3dWithDefault( 
+                prop, vprefix+"PlatformToVehicleTransform", descr.platformToVehicleTransform );
 
     std::string geometryType = orcaice::getPropertyWithDefault( prop, vprefix+"Geometry.Type", "Cylindrical" );
     if ( geometryType == "Cylindrical" )
     {
         std::string gprefix = vprefix+"Geometry.Cylindrical.";
 
-        orca::VehicleGeometryCylindricalDescription *g = new orca::VehicleGeometryCylindricalDescription;
+        orca::VehicleGeometryCylindricalDescriptionPtr g = new orca::VehicleGeometryCylindricalDescription;
         g->type = orca::VehicleGeometryCylindrical;
 
         g->radius = orcaice::getPropertyAsDoubleWithDefault( prop, gprefix+"Radius", 0.25 );
         g->height = orcaice::getPropertyAsDoubleWithDefault( prop, gprefix+"Height", 1.0 );
-        ret = orcaice::getPropertyAsFrame3d( prop, key, g->vehicleToGeometryTransform );
-        key = gprefix+"VehicleToGeometryTransform";
-        if ( ret != 0 )
-        {
-            stringstream ss; ss << "Failed to read config param: " << key;
-            throw orcaice::ConfigFileException( ERROR_INFO, ss.str() );
-        }
+
+        orcaice::setInit( g->vehicleToGeometryTransform );
+        g->vehicleToGeometryTransform = orcaice::getPropertyAsFrame3dWithDefault( 
+                    prop, gprefix+"VehicleToGeometryTransform", g->vehicleToGeometryTransform );
+
+        descr.geometry = g;
+    }
+    else if ( geometryType == "Cuboid" )
+    {
+        std::string gprefix = vprefix+"Geometry.Cuboid.";
+
+        orca::VehicleGeometryCuboidDescriptionPtr g = new orca::VehicleGeometryCuboidDescription;
+        g->type = orca::VehicleGeometryCuboid;
+
+        orcaice::setInit( g->size );
+        g->size = orcaice::getPropertyAsSize3dWithDefault( prop, gprefix+"Size", g->size );
+
+        orcaice::setInit( g->vehicleToGeometryTransform );
+        g->vehicleToGeometryTransform = orcaice::getPropertyAsFrame3dWithDefault( 
+                    prop, gprefix+"VehicleToGeometryTransform", g->vehicleToGeometryTransform );
+
         descr.geometry = g;
     }
     else
