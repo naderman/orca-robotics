@@ -181,6 +181,8 @@ void
 PathFollower2dI::setEnabled( bool enabled, const ::Ice::Current& )
 {
     enabledProxy_.set( enabled );
+    // let the consumers know that the enabled state changed
+    consumerPrx_->setEnabledState( enabled );
 }
 bool 
 PathFollower2dI::enabled(const ::Ice::Current&) const

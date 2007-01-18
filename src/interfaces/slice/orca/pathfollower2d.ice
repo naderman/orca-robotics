@@ -88,6 +88,9 @@ interface PathFollower2dConsumer
     //! When the follower is loaded with a new path, it transmits that path to
     //! all subscribers.
     idempotent void setData( PathFollower2dData data );
+    
+    //! When the follower's enabled-state changes, it tells all subscribers about it
+    idempotent void setEnabledState( bool enabledState );
 };
 
 /*!

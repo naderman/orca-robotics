@@ -27,7 +27,7 @@ class IHumanManager;
 
 ////////////////////////////////////////////////////////////////////////////////
 // The consumer object. We need this here because PathFollower2dElement cannot inherit from IceStormElement.
-// Reason is that PathFollower2dConsumer has a non-standard purely virtual member function setWaypointIndex.
+// Reason is that PathFollower2dConsumer has several non-standard purely virtual member functions.
 class PathUpdateConsumer : public orca::PathFollower2dConsumer
 {
 public:
@@ -35,9 +35,11 @@ public:
     void setData( const orca::PathFollower2dData& newPath, const ::Ice::Current& );
     void setWaypointIndex( int index, const ::Ice::Current& );
     void setActivationTime( const orca::Time& absoluteTime, double relativeTime, const ::Ice::Current& );
+    void setEnabledState( bool enabledState, const ::Ice::Current& );
 
     orcaice::Proxy<orca::PathFollower2dData> pathPipe_;
     orcaice::Proxy<int> indexPipe_;
+    orcaice::Proxy<bool> enabledPipe_;
 };
 ////////////////////////////////////////////////////////////////////////////////
 

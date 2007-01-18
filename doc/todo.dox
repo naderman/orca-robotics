@@ -29,8 +29,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @section orca_doc_todo_todo To-Do List for Next Release
 
-- OrcaView
-  - Make sure changing focus still works.
 - RegistryView
     - fix stale display of components
 - libOrcaIce
@@ -88,6 +86,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated interfaces
 
+- PathFollower2d (Tobias K.)
+    - Added get and set methods for activation time and enabled-state.
 - Platform2d
     - Obsolete. Use VelocityControl2d or DriveBicycle in new code.
 - Position2d

@@ -42,6 +42,11 @@ void PathUpdateConsumer::setActivationTime( const orca::Time& absoluteTime, doub
     cout << "Got a new start time. I don't use it!" << endl;
 }
 
+void PathUpdateConsumer::setEnabledState( bool enabledState, const ::Ice::Current& )
+{
+    enabledPipe_.set( enabledState );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 PathfollowerButtons::PathfollowerButtons( QObject *parent, IHumanManager *humanManager, string proxyString)
@@ -226,23 +231,8 @@ PathFollower2dElement::update()
 bool 
 PathFollower2dElement::isFollowerEnabled()
 {
-    bool isEnabled = false;
-    try
-    {
-        isEnabled = pathFollower2dPrx_->enabled();
-    }
-    catch ( const orca::OrcaException &e )
-    {
-        stringstream ss;
-        ss << e.what;
-        humanManager_->showStatusMsg( Error, ss.str().c_str() );
-    }
-    catch ( const Ice::Exception &e )
-    {
-        stringstream ss;
-        ss << "While trying to get enable status: " << endl << e;
-        humanManager_->showStatusMsg( Error, ss.str().c_str() );
-    }
+    bool isEnabled;
+    pathUpdateConsumer_->enabledPipe_.get( isEnabled );
     return isEnabled;
 }
 
@@ -268,6 +258,10 @@ PathFollower2dElement::doInitialSetup()
         orca::PathFollower2dConsumerPrx callbackPrx = 
                 orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( context_, pathFollowerObj );
         pathFollower2dPrx_->subscribe(callbackPrx);
+    
+        // get the enabled state and set our pipe
+        bool isEnabled = pathFollower2dPrx_->enabled();
+        pathUpdateConsumer_->enabledPipe_.set( isEnabled );
     }
     catch ( ... )
     {
