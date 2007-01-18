@@ -12,6 +12,7 @@
 
 #include <string>
 #include <orcaice/context.h>
+#include <orca/vehicledescription.h>
 
 namespace vfh {
 
@@ -73,6 +74,10 @@ std::ostream &operator<<( std::ostream &s, const VfhAlgorithmConfig &c );
 
 void readFromProperties( orcaice::Context context, VfhAlgorithmConfig &c );
 
+// Throws char*'s if something is wrong
+// (eg configured values exceed vehicle's capabilities)
+void setFromVehicleDescr( const orca::VehicleDescription &descr,
+                          VfhAlgorithmConfig &c );
 }
 
 #endif

@@ -23,7 +23,6 @@ namespace localnav {
 
 Component::Component()
     : orcaice::Component( "LocalNav" ),
-      velocityControl2dPrx_(NULL),
       testSimulator_(NULL),
       localNavManager_(NULL),
       pathMaintainer_(NULL),
@@ -36,7 +35,6 @@ Component::Component()
 
 Component::~Component()
 {
-    if ( velocityControl2dPrx_ != NULL )  delete velocityControl2dPrx_;
     if ( localNavManager_ != NULL )       delete localNavManager_;
     if ( pathMaintainer_ != NULL )        delete pathMaintainer_;
     if ( mainLoop_ != NULL )              delete mainLoop_;
@@ -72,12 +70,11 @@ Component::start()
     if ( !testMode )
     {
         // connect to the controller
-        velocityControl2dPrx_ = new orca::VelocityControl2dPrx;
-        orcaice::connectToInterfaceWithTag<VelocityControl2dPrx>( context(), *velocityControl2dPrx_, "VelocityControl2d" );
+        orcaice::connectToInterfaceWithTag<VelocityControl2dPrx>( context(), velocityControl2dPrx_, "VelocityControl2d" );
         context().tracer()->debug("connected to a 'VelocityControl2d' interface",5);
 
         // Get the vehicle description
-        // descr = velocityControl2dPrx_->getDescription();
+        descr = velocityControl2dPrx_->getDescription();
 
         // Instantiate everything
         obsConsumer_  = new orcaifaceimpl::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>;
@@ -115,6 +112,10 @@ Component::start()
         descr = testSimulator_->getVehicleDescription();
     }
 
+    stringstream descrStream;
+    descrStream << "Working with the following vehicle: " << orcaice::toString(descr);
+    context().tracer()->info( descrStream.str() );
+
     ////////////////////////////////////////////////////////////////////////////////
 
     //
@@ -130,7 +131,7 @@ Component::start()
             orcadynamicload::dynamicallyLoadClass<localnav::DriverFactory,DriverFactoryMakerFunc>
             ( *driverLib_, "createDriverFactory" );
 
-        driver_ = driverFactory->createDriver( context() ); // , descr );
+        driver_ = driverFactory->createDriver( context(), descr );
         delete driverFactory;
     }
     catch (orcadynamicload::DynamicLoadException &e)
@@ -166,7 +167,7 @@ Component::start()
                                   locConsumer_->proxy_,
                                   odomConsumer_->proxy_,
                                   *pathFollowerInterface_,
-                                  *velocityControl2dPrx_,
+                                  velocityControl2dPrx_,
                                   *pathMaintainer_,
                                   pathPublisher_,
                                   context() );

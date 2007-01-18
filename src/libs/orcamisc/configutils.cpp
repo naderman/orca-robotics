@@ -17,6 +17,23 @@ using namespace std;
 namespace orcamisc {
 
 void
+readVehicleControlVelocityDifferentialDescription( Ice::PropertiesPtr prop,
+                                                   const std::string &prefix,
+                                                   orca::VehicleControlVelocityDifferentialDescription &c )
+{
+    std::string cprefix = prefix + "Control.VelocityDifferential.";
+    c.type = orca::VehicleControlVelocityDifferential;
+    c.maxForwardSpeed = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxForwardSpeed", 1.0 );
+    c.maxReverseSpeed = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxReverseSpeed", 1.0 );
+    c.maxTurnrate     = DEG2RAD(orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxTurnrate", 60.0 ));
+    c.maxTurnrateAtMaxSpeed  = DEG2RAD(orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxTurnrateAtMaxSpeed", 60.0 ));
+    c.maxForwardAcceleration = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxForwardAcceleration", 1.0 );
+    c.maxReverseAcceleration = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxReverseAcceleration", 1.0 );
+    c.maxRotationalAcceleration = DEG2RAD(orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxRotationalAcceleration", 60.0 ));
+    checkVehicleControlVelocityDifferentialDescription( c );
+}
+
+void
 readVehicleDescription( Ice::PropertiesPtr prop, const std::string &prefix, orca::VehicleDescription &descr )
 {
     std::string vprefix = prefix + "VehicleDescription.";
@@ -24,20 +41,8 @@ readVehicleDescription( Ice::PropertiesPtr prop, const std::string &prefix, orca
     std::string controlType = orcaice::getPropertyWithDefault( prop, vprefix+"Control.Type", "VelocityDifferential" );
     if ( controlType == "VelocityDifferential" )
     {
-        std::string cprefix = vprefix + "Control.VelocityDifferential.";
-
         orca::VehicleControlVelocityDifferentialDescription *c = new orca::VehicleControlVelocityDifferentialDescription;
-        c->type = orca::VehicleControlVelocityDifferential;
-
-        c->maxForwardSpeed = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxForwardSpeed", 1.0 );
-        c->maxReverseSpeed = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxReverseSpeed", 1.0 );
-        c->maxTurnrate     = DEG2RAD(orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxTurnrate", 45.0 ));
-        c->maxTurnrate1ms  = DEG2RAD(orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxTurnrate1ms", 45.0 ));
-        c->maxForwardAcceleration = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxForwardAcceleration", 1.0 );
-        c->maxReverseAcceleration = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxReverseAcceleration", 1.0 );
-        c->maxRotationalAcceleration = DEG2RAD(orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxRotationalAcceleration", 45.0 ));
-        checkVehicleControlVelocityDifferentialDescription( *c );
-
+        readVehicleControlVelocityDifferentialDescription( prop, vprefix, *c );
         descr.control = c;
     }
     else if ( controlType == "VelocityBicycle" )
@@ -110,7 +115,7 @@ checkVehicleControlVelocityDifferentialDescription(
     if ( d.maxForwardSpeed < 0.0 ||
          d.maxReverseSpeed < 0.0 ||
          d.maxTurnrate < 0.0 ||
-         d.maxTurnrate1ms < 0.0 ||
+         d.maxTurnrateAtMaxSpeed < 0.0 ||
          d.maxForwardAcceleration < 0.0 ||
          d.maxReverseAcceleration < 0.0 ||
          d.maxRotationalAcceleration < 0.0 )
@@ -118,16 +123,9 @@ checkVehicleControlVelocityDifferentialDescription(
         throw orcaice::ConfigFileException( ERROR_INFO, "Negative speed or velocity found in orca::VehicleControlVelocityDifferentialDescription" );
     }
 
-    if ( d.maxTurnrate < d.maxTurnrate1ms )
+    if ( d.maxTurnrate < d.maxTurnrateAtMaxSpeed )
     {
         throw orcaice::ConfigFileException( ERROR_INFO, "orca::VehicleControlVelocityDifferentialDescription specifies max turnrate at 1m/s greater that max turnrate at 0m/s" );
-    }
-
-    double slope = d.maxTurnrate - d.maxTurnrate1ms;
-    if ( d.maxTurnrate - slope * d.maxForwardSpeed < 0.0 ||
-         d.maxTurnrate - slope * d.maxReverseSpeed < 0.0 )
-    {
-        throw orcaice::ConfigFileException( ERROR_INFO, "orca::VehicleControlVelocityDifferentialDescription allows negative maxTurnrate for some speeds." );
     }
 }
 

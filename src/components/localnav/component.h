@@ -60,7 +60,7 @@ private:
     orcaifaceimpl::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>     *odomConsumer_;
 
     // Give commands
-    orca::VelocityControl2dPrx *velocityControl2dPrx_;
+    orca::VelocityControl2dPrx velocityControl2dPrx_;
 
     // Simulator for test mode
     Simulator           *testSimulator_;

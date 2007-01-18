@@ -89,9 +89,6 @@ within reasonable safe limits.
 
     Some important configuration parameters:
 
-- @c LocalNav.Config.RobotRadius (double) [m]
-    - max radius of the (assumed circular) robot.
-
 - @c LocalNav.Config.SafetyDist0ms (double) [m]
     - the distance the robot should keep from obstacles when travelling at 0 m/s.
 

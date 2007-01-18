@@ -71,11 +71,11 @@ Parameters describing vehicle (see orca::VehicleDescription for details)
     - Default: 1.0
   - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxTurnrate (deg/s)
     - Absolute max turnrate (assumed max turnrate at 0m/s)
-    - Default: 45.0
-  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxTurnrate1ms (deg/s)
-    - Max turnrate at 1m/s.  This param and MaxTurnrate together define a linear model,
+    - Default: 60.0
+  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxTurnrateAtMaxSpeed (deg/s)
+    - This param and MaxTurnrate together define a linear model,
       giving the max turnrate at any speed.
-    - Default: 45.0
+    - Default: 60.0
   - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxForwardAcceleration (m/s/s)
     - Default: 1.0
   - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxReverseAcceleration (m/s/s)

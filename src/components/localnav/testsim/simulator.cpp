@@ -4,6 +4,7 @@
 #include <orcaice/orcaice.h>
 #include <orcapathplan/pathplanutils.h>
 #include <orcamisc/configutils.h>
+#include <localnavutil/brosutil.h>
 
 using namespace std;
 
@@ -93,12 +94,7 @@ Simulator::setupInterfaces()
     desc.fieldOfView = M_PI;
     desc.startAngle = -M_PI/2.0;
     desc.numberOfSamples = 181;
-    desc.offset.p.x = 0;
-    desc.offset.p.y = 0;
-    desc.offset.p.z = 0;
-    desc.offset.o.r = 0;
-    desc.offset.o.p = 0;
-    desc.offset.o.y = 0;
+    setToZero( desc.offset );
     desc.size.l = 0.1;
     desc.size.w = 0.1;
     desc.size.h = 0.1;
@@ -332,19 +328,14 @@ Simulator::getVehicleDescription() const
     c->maxForwardSpeed = 1.0;
     c->maxReverseSpeed = 1.0;
     c->maxTurnrate     = 90.0;
-    c->maxTurnrate1ms  = 90.0;
+    c->maxTurnrateAtMaxSpeed  = 90.0;
     c->maxForwardAcceleration = 1.0;
     c->maxReverseAcceleration = 1.0;
     c->maxRotationalAcceleration = 1.0;
     orcamisc::checkVehicleControlVelocityDifferentialDescription( *c );
     d.control = c;
 
-    d.platformToVehicleTransform.p.x = 0;
-    d.platformToVehicleTransform.p.y = 0;
-    d.platformToVehicleTransform.p.z = 0;
-    d.platformToVehicleTransform.o.r = 0;
-    d.platformToVehicleTransform.o.p = 0;
-    d.platformToVehicleTransform.o.y = 0;
+    setToZero( d.platformToVehicleTransform );
 
     orca::VehicleGeometryCylindricalDescription *g
         = new orca::VehicleGeometryCylindricalDescription;
@@ -352,12 +343,7 @@ Simulator::getVehicleDescription() const
     g->radius = 0.3;
     g->height = 2.0;
 
-    g->vehicleToGeometryTransform.p.x = 0;
-    g->vehicleToGeometryTransform.p.y = 0;
-    g->vehicleToGeometryTransform.p.z = 0;
-    g->vehicleToGeometryTransform.o.r = 0;
-    g->vehicleToGeometryTransform.o.p = 0;
-    g->vehicleToGeometryTransform.o.y = 0;
+    setToZero( g->vehicleToGeometryTransform );
     d.geometry = g;
 
     return d;

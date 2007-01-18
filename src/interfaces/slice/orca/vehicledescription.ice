@@ -63,10 +63,10 @@ class VehicleControlVelocityDifferentialDescription extends VehicleControlDescri
     //! Maximum in-plane turnrate [rad/s] (assumes equal max turnrate in either direction).
     double maxTurnrate;
 
-    //! Maximum turnrate when moving at 1m/s.
+    //! Maximum turnrate when moving at max speed
     //! Since maxTurnrate is defined for 0m/s, these two parameters define a linear
     //! model for turnrate constraints as a function of speed.
-    double maxTurnrate1ms;
+    double maxTurnrateAtMaxSpeed;
 
     //! Maximum forward acceleration [m/s/s]
     double maxForwardAcceleration;

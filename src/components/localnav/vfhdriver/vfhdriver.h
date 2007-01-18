@@ -45,7 +45,8 @@ public:
 
     ////////////////////////////////////////////////////////////
 
-    VfhDriver( const orcaice::Context & context );
+    VfhDriver( const orcaice::Context &context,
+               const orca::VehicleDescription &descr );
     virtual ~VfhDriver();
 
     // Goal location is in robot's coordinate frame
@@ -116,9 +117,10 @@ std::ostream &operator<<( std::ostream &s, VfhDriver::DriverState state );
 class VfhDriverFactory : public localnav::DriverFactory
 {
 public:
-    localnav::IDriver *createDriver( const orcaice::Context &context ) const
+    localnav::IDriver *createDriver( const orcaice::Context &context,
+                                     const orca::VehicleDescription &descr ) const
         {
-            return new VfhDriver( context );
+            return new VfhDriver( context, descr );
         }
 };
 

@@ -10,6 +10,7 @@
 #include "vfh_algorithmconfig.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <localnavutil/brosutil.h>
 
 using namespace std;
 
@@ -85,8 +86,6 @@ VfhAlgorithmConfig::checkSanity( std::string &warnings, std::string &errors )
 
 std::ostream &operator<<( std::ostream &s, const VfhAlgorithmConfig &c )
 {
-    cout<<"TRACE(vfh_algorithmconfig.cpp): TODO: get RobotRadius direct from the robot." << endl;
-
     s << "VfhAlgorithm Properties:     " << endl;
     s << "\tCellSize:                  " << c.cellSize                  << endl
       << "\tgridWidthInCells:          " << c.gridWidthInCells          << endl
@@ -121,7 +120,7 @@ void readFromProperties( orcaice::Context context, VfhAlgorithmConfig &c )
     c.cellSize                  = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"CellSize", 0.1 );
     c.gridWidthInCells          = orcaice::getPropertyAsIntWithDefault(    prop, prefix+"GridWidthInCells", 61 );
     c.sectorAngle               = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"SectorAngle", 5.0 )*M_PI/180.0;
-    c.robotRadius               = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"RobotRadius", 0.3 );
+    // c.robotRadius               = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"RobotRadius", 0.3 );
     c.safetyDist0ms             = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"SafetyDist0ms", 0.1 );
     c.safetyDist1ms             = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"SafetyDist1ms", 0.1 );
     c.maxSpeed                  = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxSpeed", 0.2 );
@@ -138,6 +137,36 @@ void readFromProperties( orcaice::Context context, VfhAlgorithmConfig &c )
     c.obsCutoff1ms              = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"ObsCutoff1ms", 2e6 );
     c.weightDesiredDir          = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"WeightDesiredDir", 5.0 );
     c.weightCurrentDir          = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"WeightCurrentDir", 3.0 );
+}
+
+void setFromVehicleDescr( const orca::VehicleDescription &descr,
+                          VfhAlgorithmConfig &c )
+{
+    const orca::VehicleControlVelocityDifferentialDescription *dc 
+        = dynamic_cast<const orca::VehicleControlVelocityDifferentialDescription*>( &(*(descr.control)) );
+    if ( dc == NULL )
+        throw( "VFH: Only know how to deal with velocity-controlled differential drive vehicles." );
+
+    if ( c.maxSpeed > dc->maxForwardSpeed )
+        throw( "VFH: configured max speed is faster than vehicle's capabilities!" );
+
+    if ( c.absoluteMaxTurnrate > dc->maxTurnrate )
+        throw( "VFH: configured max turnrate is faster than vehicle's capabilities!" );
+
+    if ( c.maxAcceleration > dc->maxForwardAcceleration )
+        throw( "VFH: configured max acceleration is faster than vehicle's capabilities!" );
+
+    const orca::VehicleGeometryCylindricalDescription *dg
+        = dynamic_cast<const orca::VehicleGeometryCylindricalDescription*>( &(*(descr.geometry)) );
+    if ( dg == NULL )
+        throw( "VFH: Only know how to deal with cylindrical vehicles." );
+
+    c.robotRadius = dg->radius;
+
+    if ( !localnav::isZero( descr.platformToVehicleTransform ) )
+        throw( "VFH: Can only deal with zero platformToVehicleTransform" );
+    if ( !localnav::isZero( dg->vehicleToGeometryTransform ) )
+        throw( "VFH: Can only deal with zero vehicleToGeometryTransform" );
 }
 
 }

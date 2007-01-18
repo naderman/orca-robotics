@@ -23,7 +23,8 @@ namespace vfh {
 // need definition (in case its not inlined)
 const double VfhDriver::escapeTimeMs_;
 	
-VfhDriver::VfhDriver( const orcaice::Context & context )
+VfhDriver::VfhDriver( const orcaice::Context & context,
+                      const orca::VehicleDescription &descr )
     : stallRatio_(0.0),
       currentState_(STATE_GOAL_REACHED),
       heartbeater_(context),
@@ -31,6 +32,8 @@ VfhDriver::VfhDriver( const orcaice::Context & context )
 {
     // Configure and instantiate the core vfh algorithm
     readFromProperties( context, vfhConfig_ );
+    setFromVehicleDescr( descr, vfhConfig_ );
+
     cout<<"TRACE(vfhdriver.cpp): Instantiating VFH with: " << vfhConfig_ << endl;
     std::string warnings, errors;
     if ( vfhConfig_.checkSanity(warnings,errors) != 0 )

@@ -13,6 +13,7 @@
 #include <orca/velocitycontrol2d.h>
 #include <orca/rangescanner2d.h>
 #include <orcaice/context.h>
+#include <orca/vehicledescription.h>
 
 namespace localnav {
 
@@ -41,7 +42,7 @@ public:
                              const orca::Twist2d               &currentVelocity,
                              const orca::RangeScanner2dDataPtr  obs,
                              const Goal                        &goal,
-                             orca::VelocityControl2dData        &cmd ) = 0;
+                             orca::VelocityControl2dData       &cmd ) = 0;
 
 protected: 
 
@@ -51,7 +52,8 @@ protected:
 class DriverFactory {
 public:
     virtual ~DriverFactory() {};
-    virtual IDriver *createDriver( const orcaice::Context &context ) const=0;
+    virtual IDriver *createDriver( const orcaice::Context &context,
+                                   const orca::VehicleDescription &descr ) const=0;
 };
 
 } // namespace

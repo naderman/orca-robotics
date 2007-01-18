@@ -34,7 +34,6 @@ Config.TestMode.Default=0
 Config.Vfh.CellSize.Default=0.1
 Config.Vfh.GridWidthInCells.Default=61
 Config.Vfh.SectorAngle.Default=5
-Config.Vfh.RobotRadius.Default=0.3
 Config.Vfh.SafetyDist0ms.Default=0.1
 Config.Vfh.SafetyDist1ms.Default=0.1
 Config.Vfh.MaxSpeed.Default=0.2
