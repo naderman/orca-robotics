@@ -22,6 +22,12 @@ namespace orcamisc {
  */
 //@{
 
+//! Performs some basic sanity checks, and
+//! throws orcaice::ConfigFileException if something is wrong.
+void 
+checkVehicleControlVelocityDifferentialDescription( 
+    const orca::VehicleControlVelocityDifferentialDescription &d );
+
 //! Read in a VehicleDescription struct from a config file.
 //! The properties are expected to be laid out like the struct is.
 //!
