@@ -140,7 +140,7 @@ SickAcfrDriver::init( )
     // tell the laser to start sending data
     //
     // int ret = IniLaserInstance(1,9600,38400,1, 1);   //lsr2  , 38Kbps  , /dev/ser1);
-    laser_->IniLaserInstance(1, 9600, baudrate_, 1, 1);   //lsr1  , 38Kbps  , /dev/ser1);
+    laser_->IniLaserInstance( 1, 9600, baudrate_, 1, 2 );   //lsr1  , 38Kbps  , /dev/ser1);
 
 /*    if ( ret == 0 )
     {

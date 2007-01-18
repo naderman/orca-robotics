@@ -42,8 +42,25 @@ Laser::Laser()
 
 Laser::~Laser() 
 {
-	delete pxl;
-	if( serial_ ) delete serial_;
+   // wait until the thread has stopped
+   if ( pthread_cancel( pxl->tid ) == EOK)
+   {
+		// wait until the thread has joined
+		if ( pthread_join(pxl->tid, 0) == EOK )
+		{
+   			 delete pxl;
+		}
+		else
+		{
+			std::cout << "TRACE(laser.cpp): laser data thread did not join properly in Laser destructor" << std::endl;
+		}
+   }
+   else
+   {   
+   		std::cout << "TRACE(laser.cpp): laser data thread did not cancel properly in Laser destructor" << std::endl;
+   }
+
+   if( serial_ ) delete serial_;
 }
 
 //IniLaserInstance(3,9600,38400,1,11)
@@ -340,7 +357,7 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 	char string4b[200] ;
 	char string2b[200] ;
 
-	int hkswrite;
+	// int hkswrite;
 	
 	memcpy(string4b,string4x,1+sizeof(string4x)) ;
 	memcpy(string2b,string2x,1+sizeof(string2x)) ;

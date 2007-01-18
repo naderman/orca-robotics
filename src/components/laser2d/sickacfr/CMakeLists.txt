@@ -1,4 +1,4 @@
-SET( SICK_CORE_SRCS laser time )
+SET( SICK_CORE_SRCS laser )
 
 ADD_LIBRARY( OrcaLaser2dSickAcfr SHARED ${SICK_CORE_SRCS} sickacfrdriver )
 TARGET_LINK_LIBRARIES( OrcaLaser2dSickAcfr sickutil OrcaSerial )
