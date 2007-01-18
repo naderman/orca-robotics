@@ -68,13 +68,16 @@ Component::start()
     //
     // Connect to required interfaces
     //
-
+    orca::VehicleDescription descr;
     if ( !testMode )
     {
-        // connect to the platform
+        // connect to the controller
         velocityControl2dPrx_ = new orca::VelocityControl2dPrx;
         orcaice::connectToInterfaceWithTag<VelocityControl2dPrx>( context(), *velocityControl2dPrx_, "VelocityControl2d" );
         context().tracer()->debug("connected to a 'VelocityControl2d' interface",5);
+
+        // Get the vehicle description
+        // descr = velocityControl2dPrx_->getDescription();
 
         // Instantiate everything
         obsConsumer_  = new orcaifaceimpl::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>;
@@ -109,6 +112,7 @@ Component::start()
         getTestPath( testPath );
         pathFollowerInterface_->setData( testPath, true );
         testSimulator_ = new Simulator( context(), testPath );
+        descr = testSimulator_->getVehicleDescription();
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -125,7 +129,8 @@ Component::start()
         DriverFactory *driverFactory = 
             orcadynamicload::dynamicallyLoadClass<localnav::DriverFactory,DriverFactoryMakerFunc>
             ( *driverLib_, "createDriverFactory" );
-        driver_ = driverFactory->createDriver( context() );
+
+        driver_ = driverFactory->createDriver( context() ); // , descr );
         delete driverFactory;
     }
     catch (orcadynamicload::DynamicLoadException &e)

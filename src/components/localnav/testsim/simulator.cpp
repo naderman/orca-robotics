@@ -3,6 +3,7 @@
 #include <orcageom2d/geom2d.h>
 #include <orcaice/orcaice.h>
 #include <orcapathplan/pathplanutils.h>
+#include <orcamisc/configutils.h>
 
 using namespace std;
 
@@ -318,6 +319,48 @@ Simulator::getRanges()
         double actualRange = hypotf( actualEnd.y()-start.y(), actualEnd.x()-start.x() );
         scan_->ranges[i] = actualRange;
     }
+}
+
+orca::VehicleDescription 
+Simulator::getVehicleDescription() const
+{
+    orca::VehicleDescription d;
+
+    orca::VehicleControlVelocityDifferentialDescription *c 
+        = new orca::VehicleControlVelocityDifferentialDescription;
+    c->type    = orca::VehicleControlVelocityDifferential;
+    c->maxForwardSpeed = 1.0;
+    c->maxReverseSpeed = 1.0;
+    c->maxTurnrate     = 90.0;
+    c->maxTurnrate1ms  = 90.0;
+    c->maxForwardAcceleration = 1.0;
+    c->maxReverseAcceleration = 1.0;
+    c->maxRotationalAcceleration = 1.0;
+    orcamisc::checkVehicleControlVelocityDifferentialDescription( *c );
+    d.control = c;
+
+    d.platformToVehicleTransform.p.x = 0;
+    d.platformToVehicleTransform.p.y = 0;
+    d.platformToVehicleTransform.p.z = 0;
+    d.platformToVehicleTransform.o.r = 0;
+    d.platformToVehicleTransform.o.p = 0;
+    d.platformToVehicleTransform.o.y = 0;
+
+    orca::VehicleGeometryCylindricalDescription *g
+        = new orca::VehicleGeometryCylindricalDescription;
+    g->type = orca::VehicleGeometryCylindrical;
+    g->radius = 0.3;
+    g->height = 2.0;
+
+    g->vehicleToGeometryTransform.p.x = 0;
+    g->vehicleToGeometryTransform.p.y = 0;
+    g->vehicleToGeometryTransform.p.z = 0;
+    g->vehicleToGeometryTransform.o.r = 0;
+    g->vehicleToGeometryTransform.o.p = 0;
+    g->vehicleToGeometryTransform.o.y = 0;
+    d.geometry = g;
+
+    return d;
 }
 
 void

@@ -38,6 +38,8 @@ public:
 
     void printState();
 
+    orca::VehicleDescription getVehicleDescription() const;
+    
 private: 
 
     void setupMap();

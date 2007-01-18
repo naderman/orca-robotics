@@ -39,8 +39,11 @@ IF ( BUILD_LOCALNAV )
     GENERATE_CONFIG_FILE( localnav.def )
 
     IF ( BUILD_TESTS )
-      ADD_TEST( LocalNavVfhTest localnav --Orca.Config=${PROJECT_BINARY_DIR}/src/components/localnav/localnav.cfg --LocalNav.Config.TestMode=1 --LocalNav.Config.Vfh.MaxSpeed=2.0 --LocalNav.Config.Test.BatchMode=1 )
-
+      #
+      # AlexB: The /lib/ld-linux stuff is a bit of magic to make Linux
+      # find the vfh library so it can be dynamically loaded.
+      #
+      ADD_TEST( LocalNavVfhTest /lib/ld-linux.so.2 --library-path vfhdriver:$ENV{LD_LIBRARY_PATH} localnav --Orca.Config=${PROJECT_BINARY_DIR}/src/components/localnav/localnav.cfg --LocalNav.Config.TestMode=1 --LocalNav.Config.Vfh.MaxSpeed=2.0 --LocalNav.Config.Test.BatchMode=1 )
     ENDIF ( BUILD_TESTS )
 
 ENDIF ( BUILD_LOCALNAV )
