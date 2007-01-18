@@ -40,7 +40,6 @@ MainLoop::MainLoop( LocalNavManager                                &localNavMana
       testMode_(false),
       pathMaintainer_(pathMaintainer),
       pathPublisher_(pathPublisher),
-      heartbeater_(context),
       context_(context)
 {
 }
@@ -63,7 +62,6 @@ MainLoop::MainLoop( LocalNavManager                                &localNavMana
       testMode_(true),
       pathMaintainer_(pathMaintainer),
       pathPublisher_(pathPublisher),
-      heartbeater_(context),
       context_(context)
 {
 }
@@ -223,7 +221,6 @@ MainLoop::run()
             }
             
             checkWithOutsideWorld( pathMaintainer_ );
-            maybeSendHeartbeat();
         }
     }
     catch ( Ice::CommunicatorDestroyedException &e )
@@ -294,18 +291,6 @@ MainLoop::areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData,
         return true;
 
     return false;
-}
-
-void
-MainLoop::maybeSendHeartbeat()
-{
-    if ( heartbeater_.isHeartbeatTime() )
-    {
-        // construct the heartbeat message
-        stringstream ss;
-        ss << "MainLoop is running." << endl
-           << localNavManager_.getHeartbeatMessage();
-    }
 }
 
 }

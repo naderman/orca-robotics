@@ -10,11 +10,12 @@
 #ifndef VFHDRIVER_H
 #define VFHDRIVER_H
 
-#include <idriver.h>
+#include <localnavutil/idriver.h>
 #include <orcaice/context.h>
 #include <orcaice/timer.h>
-#include <goal.h>
+#include <localnavutil/goal.h>
 #include <vfhdriver/vfh_algorithm.h>
+#include <orcaice/heartbeater.h>
 
 namespace vfh {
 
@@ -31,15 +32,28 @@ class VfhDriver : public localnav::IDriver
 
 public: 
 
+    ////////////////////////////////////////////////////////////
+
+    // Constants 
+    enum DriverState 
+    {
+        STATE_GOAL_REACHED,
+        STATE_TURNING_AT_GOAL,
+        STATE_ESCAPING,
+        STATE_MOVING_TO_GOAL
+    };
+
+    ////////////////////////////////////////////////////////////
+
     VfhDriver( const orcaice::Context & context );
     virtual ~VfhDriver();
 
     // Goal location is in robot's coordinate frame
-    virtual IDriver::DriverState getCommand( bool  stalled,
-                                                    const orca::Twist2d &currentVelocity,
-                                                    const orca::RangeScanner2dDataPtr obs,
-                                                    const localnav::Goal               &goal,
-                                                    orca::VelocityControl2dData& cmd );
+    virtual void getCommand( bool  stalled,
+                             const orca::Twist2d &currentVelocity,
+                             const orca::RangeScanner2dDataPtr obs,
+                             const localnav::Goal               &goal,
+                             orca::VelocityControl2dData& cmd );
 
 private: 
 
@@ -60,6 +74,8 @@ private:
 
     // Copy to Player units
     void copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLaserScan[361][2] );
+
+    void maybeSendHeartbeat();
 
     // Class to handle the internal VFH algorithm
     // (like maintaining histograms etc).
@@ -82,7 +98,7 @@ private:
     static const double        escapeTimeMs_ = 1000.0;
 
     // Current state of the algorithm
-    localnav::IDriver::DriverState currentState_;
+    DriverState currentState_;
 
     // Previous command
     orca::VelocityControl2dData prevCmd_;
@@ -90,9 +106,27 @@ private:
     // Configuration from file
     VfhAlgorithmConfig vfhConfig_;
 
+    orcaice::Heartbeater heartbeater_;
+
     orcaice::Context context_;
 };
+std::ostream &operator<<( std::ostream &s, VfhDriver::DriverState state );
 
+// Used for dynamically loading driver
+class VfhDriverFactory : public localnav::DriverFactory
+{
+public:
+    localnav::IDriver *createDriver( const orcaice::Context &context ) const
+        {
+            return new VfhDriver( context );
+        }
+};
+
+} // namespace
+
+// Used for dynamically loading driver
+extern "C" {
+    localnav::DriverFactory *createDriverFactory();
 }
 
 #endif

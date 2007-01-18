@@ -17,7 +17,8 @@
 #include <orca/rangescanner2d.h>
 #include <orca/pathfollower2d.h>
 #include <orcanavutil/orcanavutil.h>
-#include "idriver.h"
+#include <localnavutil/idriver.h>
+#include <orcaice/heartbeater.h>
 
 namespace localnav {
 
@@ -48,10 +49,9 @@ public:
                      const orca::Odometry2dData&        odomData,
                      orca::VelocityControl2dData&       cmd );
 
-    std::string getHeartbeatMessage();
-
 private: 
 
+    void maybeSendHeartbeat();
     
     // Returns true iff a waypoint is active
     bool getCurrentGoal( const orcanavutil::Pose &pose,
@@ -67,9 +67,9 @@ private:
     orca::Waypoint2d  currentWaypoint_;
 
     // Maintain these for heartbeat messages
-    double                      secondsBehindSchedule_;
-    IDriver::DriverState driverState_;
+    double            secondsBehindSchedule_;
 
+    orcaice::Heartbeater heartbeater_;
     orcaice::Context  context_;
 };
 

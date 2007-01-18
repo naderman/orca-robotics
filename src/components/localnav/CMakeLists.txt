@@ -15,14 +15,17 @@ IF ( BUILD_LOCALNAV )
       )
 
     ADD_SUBDIRECTORY( testsim )
+    ADD_SUBDIRECTORY( localnavutil )
 
     # build common sources into a convenience library
     BUILD_COMPONENT_SOURCES( LocalNavSources )
     
     SET( DEP_LIBS
       LocalNavSources
+      # OrcaLocalNavVfh
+      OrcaLocalNavUtil
+      OrcaDynamicLoad
       OrcaLocalNavTestSim
-      OrcaLocalNavVfh
       OrcaNavUtil )
 
     # build stand-alone component  
@@ -37,6 +40,7 @@ IF ( BUILD_LOCALNAV )
 
     IF ( BUILD_TESTS )
       ADD_TEST( LocalNavVfhTest localnav --Orca.Config=${PROJECT_BINARY_DIR}/src/components/localnav/localnav.cfg --LocalNav.Config.Driver=testvfhdriver --LocalNav.Config.Vfh.MaxSpeed=2.0 --LocalNav.Config.Test.BatchMode=1 )
+
     ENDIF ( BUILD_TESTS )
 
 ENDIF ( BUILD_LOCALNAV )

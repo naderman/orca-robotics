@@ -27,8 +27,10 @@ Requires.Observations.Type=RangeScanner2d
 Requires.Observations.DefaultProxy=laserscanner2d@local/laser2d
 
 # Config Parameters
-Config.Driver.Default=vfhdriver
+Config.DriverLib.Default=libOrcaLocalNavVfh.so
+Config.TestMode.Default=0
 
+# Vfh Parameters
 Config.Vfh.CellSize.Default=0.1
 Config.Vfh.GridWidthInCells.Default=61
 Config.Vfh.SectorAngle.Default=5

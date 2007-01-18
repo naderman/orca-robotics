@@ -30,7 +30,7 @@ class Component : public orcaice::Component
 {
 public:
 
-    Component( const std::string & compName );
+    Component( const std::string &compName );
     virtual ~Component();
 
     // component interface
@@ -45,11 +45,11 @@ private:
     std::vector<orcalog::Logger*> loggers_;
 
     // utilities
-    void loadPluginLibraries( const std::string & factoryLibNames );
-    void createLogger( const std::string    &interfaceType, 
-                   const std::string  &interfaceTypeSuffix,
-                   const std::string  &format,
-                   const std::string  &filenamePrefix );
+    void loadPluginLibraries( const std::string &factoryLibNames );
+    void createLogger( const std::string  &interfaceType, 
+                       const std::string  &interfaceTypeSuffix,
+                       const std::string  &format,
+                       const std::string  &filenamePrefix );
 };
 
 }

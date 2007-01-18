@@ -21,6 +21,7 @@
 #include <orcaifaceimpl/proxiedconsumerI.h>
 #include <orcaifaceimpl/ptrproxiedconsumerI.h>
 #include "pathfollower2dI.h"
+#include <orcadynamicload/dynamicload.h>
 
 namespace localnav {
 
@@ -64,13 +65,15 @@ private:
     // Simulator for test mode
     Simulator           *testSimulator_;
 
-    //
-    // ALGORITHM INTERFACES
-    //
-    IDriver         *driver_;
+    // Non-driver-specific coordination stuff
     LocalNavManager *localNavManager_;
     PathMaintainer  *pathMaintainer_;
     MainLoop        *mainLoop_;
+
+    // The algorithm itself
+    IDriver                                   *driver_;
+    // And the library that provides it
+    orcadynamicload::DynamicallyLoadedLibrary *driverLib_;
 
     // External interface
     PathFollower2dI                         *pathFollowerInterface_;

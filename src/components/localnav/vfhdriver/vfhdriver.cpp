@@ -25,7 +25,8 @@ const double VfhDriver::escapeTimeMs_;
 	
 VfhDriver::VfhDriver( const orcaice::Context & context )
     : stallRatio_(0.0),
-      currentState_(IDriver::STATE_GOAL_REACHED),
+      currentState_(STATE_GOAL_REACHED),
+      heartbeater_(context),
       context_(context)
 {
     // Configure and instantiate the core vfh algorithm
@@ -84,13 +85,14 @@ VfhDriver::setSpeedConstraints( float maxSpeed, float maxTurnrate )
 }
 
 // Goal location is in robot's coordinate frame
-IDriver::DriverState
+void
 VfhDriver::getCommand( bool  stalled,
                        const orca::Twist2d &currentVelocity,
                        const orca::RangeScanner2dDataPtr obs,
                        const Goal                        &goal,
                        orca::VelocityControl2dData& cmd )
 {
+    maybeSendHeartbeat();
     setSpeedConstraints( goal.maxSpeed, goal.maxTurnrate );
 
     //
@@ -100,25 +102,25 @@ VfhDriver::getCommand( bool  stalled,
     {
         // Stop us
         setToZero( cmd );
-        currentState_ = IDriver::STATE_GOAL_REACHED;
+        currentState_ = STATE_GOAL_REACHED;
     }
     else if ( shouldEscape( stalled ) )
     {
         // VFH isn't winning...  Have to try some escape manouvres
         setToEscape( cmd, obs );
-        currentState_ = IDriver::STATE_ESCAPING;
+        currentState_ = STATE_ESCAPING;
     }
     else if ( translationalGoalPosReached( goal ) )
     {
         // Turn in place
         setTurnToGoal( cmd, goal );
-        currentState_ = IDriver::STATE_TURNING_AT_GOAL;
+        currentState_ = STATE_TURNING_AT_GOAL;
     }
     else
     {
         // Head for the goal
         setToApproachGoal( cmd, goal, currentVelocity, obs );
-        currentState_ = IDriver::STATE_MOVING_TO_GOAL;
+        currentState_ = STATE_MOVING_TO_GOAL;
     }
 
     stringstream ss;
@@ -128,8 +130,6 @@ VfhDriver::getCommand( bool  stalled,
     prevCmd_.motion.v.x = cmd.motion.v.x;
     prevCmd_.motion.v.y = cmd.motion.v.y;
     prevCmd_.motion.w   = cmd.motion.w;
-
-    return currentState_;
 }
 
 bool
@@ -147,7 +147,7 @@ VfhDriver::shouldEscape( bool stalled )
 
     // If we're in the middle of an escape, continue
     // Otherwise check the stall ratio.
-    if ( currentState_ == IDriver::STATE_ESCAPING &&
+    if ( currentState_ == STATE_ESCAPING &&
          escapeTimer_.elapsedMs() < escapeTimeMs_ )
     {
         return true;
@@ -170,7 +170,7 @@ VfhDriver::setToZero( orca::VelocityControl2dData& cmd )
 void
 VfhDriver::setToEscape( orca::VelocityControl2dData& cmd, const orca::RangeScanner2dDataPtr &obs )
 {
-    if ( currentState_ != IDriver::STATE_ESCAPING ||
+    if ( currentState_ != STATE_ESCAPING ||
          escapeTimer_.elapsedMs() > escapeTimeMs_ )
     {
         // Choose a new random escape command
@@ -204,7 +204,7 @@ VfhDriver::setTurnToGoal( orca::VelocityControl2dData& cmd, const Goal &goal )
     float posNeg = 1.0;
     if ( goal.theta < 0.0 ) posNeg = -1.0;
 
-    if ( currentState_ != IDriver::STATE_TURNING_AT_GOAL )
+    if ( currentState_ != STATE_TURNING_AT_GOAL )
     {
         // Just got here: turn hard.
         cmd.motion.w = posNeg * maxTurnrate_;
@@ -325,4 +325,55 @@ VfhDriver::setToApproachGoal( orca::VelocityControl2dData& cmd,
     cmd.motion.w   = chosenTurnrate*M_PI/180.0;
 }
 
+
+void
+VfhDriver::maybeSendHeartbeat()
+{
+    if ( !heartbeater_.isHeartbeatTime() )
+        return;
+
+    // construct the heartbeat message
+    stringstream ss;
+    ss << "VfhDriver: Current state: " << currentState_;
+    heartbeater_.beat( ss.str() );
+}
+
+std::ostream &operator<<( std::ostream &s, VfhDriver::DriverState state )
+{
+    switch (state)
+    {
+    case VfhDriver::STATE_GOAL_REACHED:
+    {
+        s << "GOAL_REACHED";
+        break;
+    }
+    case VfhDriver::STATE_TURNING_AT_GOAL:
+    {
+        s << "TURNING_AT_GOAL";
+        break;
+    }
+    case VfhDriver::STATE_ESCAPING:
+    {
+        s << "ESCAPING";
+        break;
+    }
+    case VfhDriver::STATE_MOVING_TO_GOAL:
+    {
+        s << "MOVING_TO_GOAL";
+        break;
+    }
+    default:
+    {
+        s << "Error: Unknown state";
+        break;
+    }        
+    }
+    return s;
+}
+
+}
+
+extern "C" {
+    localnav::DriverFactory *createDriverFactory()
+    { return new vfh::VfhDriverFactory; }
 }

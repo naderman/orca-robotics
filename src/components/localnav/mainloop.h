@@ -16,7 +16,6 @@
 #include <orcaice/context.h>
 #include <orcaice/ptrproxy.h>
 #include <orcaice/thread.h>
-#include <orcaice/heartbeater.h>
 #include <orcaice/proxy.h>
 
 #include <localnavmanager.h>
@@ -87,8 +86,6 @@ private:
                              const orca::Odometry2dData&        odomData,
                              double                             threshold );
 
-    void maybeSendHeartbeat();
-
     // The class that does the navigating
     LocalNavManager &localNavManager_;
 
@@ -117,8 +114,6 @@ private:
 
     // The object to publish path updates to
     orca::PathFollower2dConsumerPrx              &pathPublisher_;
-
-    orcaice::Heartbeater heartbeater_;
 
     orcaice::Context context_;
 };

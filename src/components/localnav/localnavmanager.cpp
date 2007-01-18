@@ -11,8 +11,8 @@
 #include <orcaice/orcaice.h>
 
 #include "localnavmanager.h"
-#include "idriver.h"
-#include "goal.h"
+#include <localnavutil/idriver.h>
+#include <localnavutil/goal.h>
 #include "pathmaintainer.h"
 #include <orcanavutil/pose.h>
 
@@ -105,7 +105,7 @@ LocalNavManager::LocalNavManager( IDriver   &driver,
     : driver_(driver),
       pathMaintainer_(pathMaintainer),
       secondsBehindSchedule_(0),
-      driverState_(IDriver::STATE_GOAL_REACHED),
+      heartbeater_(context),
       context_(context)
 {
 }
@@ -178,6 +178,7 @@ LocalNavManager::getCommand( const orca::RangeScanner2dDataPtr  rangeData,
                              const orca::Odometry2dData&    odomData, 
                              orca::VelocityControl2dData&   cmd )
 {
+    maybeSendHeartbeat();
     orcanavutil::Pose  pose = getMLPose( localiseData );
     Goal               currentGoal;
 
@@ -198,11 +199,11 @@ LocalNavManager::getCommand( const orca::RangeScanner2dDataPtr  rangeData,
     {
         constrainMaxSpeeds( currentGoal, context_ );
         bool obsoleteStall=false;
-        driverState_ = driver_.getCommand( obsoleteStall,
-                                           odomData.motion,
-                                           rangeData,
-                                           currentGoal,
-                                           cmd );
+        driver_.getCommand( obsoleteStall,
+                            odomData.motion,
+                            rangeData,
+                            currentGoal,
+                            cmd );
     }
     // For big debug levels, give feedback through tracer.
     {
@@ -210,23 +211,18 @@ LocalNavManager::getCommand( const orca::RangeScanner2dDataPtr  rangeData,
         ss << "LocalNavManager: Setting command: " << orcaice::toString(cmd);
         context_.tracer()->debug( ss.str(), 5 );
     }
-    {
-        std::stringstream ss;
-        ss << "LocalNavManager: Driver State: " << driverState_;
-        context_.tracer()->debug( ss.str(), 2 );
-    }
-    // TODO: we could maybe do something useful based on the driver's state...
 }
 
-std::string 
-LocalNavManager::getHeartbeatMessage()
+void
+LocalNavManager::maybeSendHeartbeat()
 {
+    if ( !heartbeater_.isHeartbeatTime() )
+        return;
+
     stringstream ss;
-    ss << endl;
-    ss << "    DriverState: " << driverState_ << endl;
-    if ( driverState_ != IDriver::STATE_GOAL_REACHED )
+    if ( pathMaintainer_.isActive() )
     {
-        ss << "    Timing: ";
+        ss << "Seeking goal.  Timing: ";
         if ( secondsBehindSchedule_ > 0.0 )
         {
             ss << "on schedule.";
@@ -236,7 +232,11 @@ LocalNavManager::getHeartbeatMessage()
             ss << "running " << secondsBehindSchedule_ << "s behind schedule.";
         }
     }
-    return ss.str();
+    else
+    {
+        ss << "No active goal.";
+    }
+    heartbeater_.beat( ss.str() );
 }
 
 }

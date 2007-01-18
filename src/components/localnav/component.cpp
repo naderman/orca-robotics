@@ -9,9 +9,8 @@
  */
 #include "component.h"
 #include "mainloop.h"
-#include "idriver.h"
+#include <localnavutil/idriver.h>
 #include "localnavmanager.h"
-#include "vfhdriver/vfhdriver.h"
 #include "pathmaintainer.h"
 #include "testsim/testsim.h"
 
@@ -26,22 +25,24 @@ Component::Component()
     : orcaice::Component( "LocalNav" ),
       velocityControl2dPrx_(NULL),
       testSimulator_(NULL),
-      driver_(NULL),
       localNavManager_(NULL),
       pathMaintainer_(NULL),
       mainLoop_(NULL),
+      driver_(NULL),
+      driverLib_(NULL),
       pathFollowerInterface_(NULL)
 {
 }
 
 Component::~Component()
 {
-    if ( velocityControl2dPrx_ != NULL )         delete velocityControl2dPrx_;
-    if ( driver_ != NULL )                delete driver_;
+    if ( velocityControl2dPrx_ != NULL )  delete velocityControl2dPrx_;
     if ( localNavManager_ != NULL )       delete localNavManager_;
     if ( pathMaintainer_ != NULL )        delete pathMaintainer_;
     if ( mainLoop_ != NULL )              delete mainLoop_;
     if ( testSimulator_ != NULL )         delete testSimulator_;
+    if ( driver_ != NULL )                delete driver_;
+    if ( driverLib_ != NULL )             delete driverLib_;
     if ( pathFollowerInterface_ != NULL ) delete pathFollowerInterface_;
 }
 
@@ -57,23 +58,7 @@ Component::start()
     std::string prefix = tag();
     prefix += ".Config.";
 
-    bool testMode = false;
-
-    std::string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "vfhdriver" );
-    if ( driverName == "vfhdriver" )
-    {
-        driver_  = new vfh::VfhDriver( context() );
-    }
-    else if ( driverName == "testvfhdriver" )
-    {
-        testMode = true;
-        driver_  = new vfh::VfhDriver( context() );
-    }
-    else
-    {
-        std::string errString = "Unknown driver type: "+driverName;
-        throw orcaice::Exception( ERROR_INFO, errString );
-    }
+    bool testMode = orcaice::getPropertyAsIntWithDefault( prop, prefix+"TestMode", 0 );
 
     //
     // Create our provided interface
@@ -131,6 +116,38 @@ Component::start()
     //
     // Instantiate the guys who do the work
     //
+
+    std::string driverLibName = 
+        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libOrcaLocalNavVfh.so" );
+    try {
+        // Dynamically load the driver from its library
+        driverLib_ = new orcadynamicload::DynamicallyLoadedLibrary(driverLibName);
+        DriverFactory *driverFactory = 
+            orcadynamicload::dynamicallyLoadClass<localnav::DriverFactory,DriverFactoryMakerFunc>
+            ( *driverLib_, "createDriverFactory" );
+        driver_ = driverFactory->createDriver( context() );
+        delete driverFactory;
+    }
+    catch (orcadynamicload::DynamicLoadException &e)
+    {
+        context().tracer()->error( e.what() );
+        throw;
+    }
+    
+//     if ( driverName == "vfhdriver" )
+//     {
+//         driver_  = new vfh::VfhDriver( context() );
+//     }
+//     else if ( driverName == "testvfhdriver" )
+//     {
+//         testMode = true;
+//         driver_  = new vfh::VfhDriver( context() );
+//     }
+//     else
+//     {
+//         std::string errString = "Unknown driver type: "+driverName;
+//         throw orcaice::Exception( ERROR_INFO, errString );
+//     }
 
     pathMaintainer_ = new PathMaintainer(*pathFollowerInterface_,
                                          context());
