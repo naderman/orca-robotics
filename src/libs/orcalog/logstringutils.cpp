@@ -367,6 +367,7 @@ toLogString( const orca::ImuData& obj )
     s << toLogString(obj.timeStamp) << " "
       << obj.accel.x << " "
       << obj.accel.y << " "
+      << obj.accel.z << " "
       << obj.gyro.x << " "
       << obj.gyro.y << " "
       << obj.gyro.z;
