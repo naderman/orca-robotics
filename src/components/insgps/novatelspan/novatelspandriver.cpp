@@ -941,15 +941,19 @@ NovatelSpanInsGpsDriver::populateData( int id )
             // printf("got RAWIMUSB\n");
             memcpy(&RAWIMU_, &serial_data_.raw_message, sizeof(RAWIMU_) );
 
-            // Note scale factors and axis translation
-            // TODO: are these gyro values correct?
-            imuData_.gyro.x = -novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.y_gyro;
-            imuData_.gyro.y = novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.x_gyro;
-            imuData_.gyro.z = -novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.z_gyro;
+            imuData_.timeStamp = orcaice::toOrcaTime (timeOfRead_);
             
-            imuData_.accel.x = novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.y_accel;
-            imuData_.accel.y = -novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.x_accel;
-            imuData_.accel.z = novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.z_accel;
+	    // Note scale factors and axis translation
+            // TODO: are these gyro values correct?
+	    double dt = 0.01;
+	    // Divide by dt to get the correct units for the IMU data
+            imuData_.gyro.x = -novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.y_gyro/dt;
+            imuData_.gyro.y = novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.x_gyro/dt;
+            imuData_.gyro.z = -novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.z_gyro/dt;
+            
+            imuData_.accel.x = novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.y_accel/dt;
+            imuData_.accel.y = -novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.x_accel/dt;
+            imuData_.accel.z = novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.z_accel/dt;
             
             // TODO: add this if needed       
             //Set time
