@@ -12,11 +12,11 @@
 
 @page orca_doc_publications Publications
 
-This page lists publications dealing specifically with Orca design. You may also want to take a look at <a href="http://wiki2.cas.edu.au/orca/index.php/Orca:publications">the list of papers on the Orca Wiki</a> which describe experiments and projects using Orca in their implementations. Feel free to add your own publications to that list.
+This page lists publications dealing specifically with Orca design. You may also want to take a look at <a href="http://wiki2.cas.edu.au/orca/index.php/Orca:publications">the papers on the Orca Wiki</a> (login/pass: orca/orca) which describe experiments and projects using Orca in their implementations. Feel free to add your own publications to that list.
 
 @section orca_doc_publications_orca2 Orca-2
 
-- A. Makarenko, A. Brooks, T. Kaupp. <a href="http://www.cas.edu.au/content.php/237.html?publicationid=341">Orca: Components for Robotics.</a> IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2006) Workshop on Robotic Standardization (Accepted).
+- A. Makarenko, A. Brooks, T. Kaupp. <a href="http://www.cas.edu.au/content.php/237.html?publicationid=341">Orca: Components for Robotics.</a> IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2006). Workshop on Robotic Standardization.
 
 - A. Brooks, T. Kaupp, A. Makarenko, S. Williams, and A. Oreback. <a href="http://www.cas.edu.au/content.php/237.html?publicationid=340">Orca: a component model and repository.</a> In D. Brugali, editor, Principles and Practice of Software Development in Robotics. Springer, 2006 (In Press).
 
