@@ -24,3 +24,5 @@ Config.VelocityControl2d.TurnRateIncrement.Default=2.0
 
 Config.DriveBicycle.MaxSpeed.Default=1.0
 Config.DriveBicycle.MaxSteerAngle.Default=45.0
+Config.DriveBicycle.SpeedIncrement.Default=0.05
+Config.DriveBicycle.SteerAngleIncrement.Default=5.0

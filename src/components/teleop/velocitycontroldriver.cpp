@@ -26,18 +26,16 @@ VelocityControl2dDriver::VelocityControl2dDriver( Display* display, const orcaic
     command_.motion.v.y = 0.0;
     command_.motion.w = 0.0;
 
-
     Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag() + ".Config.";
-
+    std::string prefix = context_.tag() + ".Config.VelocityControl2d.";
 
     // one key stroke changes commands by these values
-    speedIncrement_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityControl2d.SpeedIncrement", 0.05 );
-    turnRateIncrement_ = DEG2RAD( orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityControl2d.TurnRateIncrement", 2.0 ) );
+    speedIncrement_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"SpeedIncrement", 0.05 );
+    turnRateIncrement_ = DEG2RAD( orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"TurnRateIncrement", 2.0 ) );
 
-    maxSpeed_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityControl2d.MaxSpeed", 1.0 );
+    maxSpeed_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxSpeed", 1.0 );
 //     maxSideSpeed_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityControl2d.MaxSideSpeed", 1.0 );
-    maxTurnRate_ = DEG2RAD( orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityControl2d.MaxTurnRate", 40.0 ) );
+    maxTurnRate_ = DEG2RAD( orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxTurnRate", 40.0 ) );
 }
 
 VelocityControl2dDriver::~VelocityControl2dDriver() 

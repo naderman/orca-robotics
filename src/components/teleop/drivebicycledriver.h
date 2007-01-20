@@ -44,8 +44,8 @@ private:
     orca::DriveBicyclePrx prx_;
     orca::DriveBicycleData command_;
 
-    double deltaSpeed_;     // [m/s]
-    double deltaSteerAngle_;  // [rad]
+    double speedIncrement_;     // [m/s]
+    double steerAngleIncrement_;  // [rad]
 
     double maxSpeed_;     // [m/s]
     double maxSteerAngle_;  // [rad/sec]

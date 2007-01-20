@@ -25,12 +25,15 @@ DriveBicycleDriver::DriveBicycleDriver( Display* display, const orcaice::Context
     command_.speed = 0.0;
     command_.steerAngle = 0.0;
 
-    // one key stroke changes commands by these values
-    deltaSpeed_ = 0.05;     // [m/s]
-    deltaSteerAngle_ = DEG2RAD(2.0);  // [rad/sec]
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag() + ".Config.DriveBicycle.";
 
-    maxSpeed_ = 1.0;     // [m/s]
-    maxSteerAngle_ = DEG2RAD(40.0);  // [rad/sec]
+    // one key stroke changes commands by these values
+    speedIncrement_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"SpeedIncrement", 0.05 );
+    steerAngleIncrement_ = DEG2RAD( orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"SteerAngleIncrement", 5.0 ) );
+
+    maxSpeed_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxSpeed", 1.0 );
+    maxSteerAngle_ = DEG2RAD( orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxSteerAngle", 40.0 ) );
 }
 
 DriveBicycleDriver::~DriveBicycleDriver() 
@@ -81,13 +84,13 @@ DriveBicycleDriver::processNewCommandIncrement(int longitudinal, int transverse,
 {
 cout<<"DEBUG: DriveBicycleDriver::processNewCommandIncrement"<<endl;
     if ( longitudinal ) {
-        command_.speed += longitudinal*deltaSpeed_;
+        command_.speed += longitudinal*speedIncrement_;
         command_.speed = MIN( command_.speed, maxSpeed_ );
         command_.speed = MAX( command_.speed, -maxSpeed_ );
     }
 
     if ( angle ) {
-        command_.steerAngle += angle*deltaSteerAngle_;
+        command_.steerAngle += angle*steerAngleIncrement_;
         command_.steerAngle = MIN( command_.steerAngle, maxSteerAngle_ );
         command_.steerAngle = MAX( command_.steerAngle, -maxSteerAngle_ );
     }
