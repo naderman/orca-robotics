@@ -28,6 +28,7 @@
 
 #ifdef __QNX__
 #include <sys/modem.h>
+#include <time.h>
 #endif
 
 using namespace std;
@@ -438,11 +439,71 @@ Serial::read_line(void *buf, size_t count, char termchar)
 int 
 Serial::read_full(void *buf, size_t count)
 {
-    int timeOut = to_sec * 10 + to_usec/100000;
+    // these timeouts and elapsedTime do not have to be accurate so can just
+	// use ints
+	int timeOut = to_sec + to_usec/1000000;
+	// cout << "timeout: " << timeOut << endl;
+
+	// total time elapsed while trying to read from serial device
+	int elapsedTime;
+
+	// total number of bytes read 
+	int got = 0;
+    
+	// number of bytes read in one readcond() function call 
+	int ret = 0;
 	
-	int n = readcond(port_fd, buf, count, count, timeOut, timeOut);
+    // maximum number of bytes to read in one readcond() function call
+	int max = 15;
+
+	// number of bytes in each chunk that "count" is split into
+    int countChunk;
 	
-	return(n) ;
+    // total bytes left to read
+	int bytesLeft;
+	
+    struct timespec tStart;
+    struct timespec tEnd;
+ 
+	clock_gettime( CLOCK_MONOTONIC, &tStart );
+
+	while (got < count)
+	{
+ 	    // offset to the start of the buffer
+		char* offset=(char*)buf+got;
+    
+        // We need to read in small chunks for certain serial managers.
+		// This is a little more inefficient than reading all bytes at once 
+		
+        bytesLeft = count-got;
+		
+		if ( bytesLeft>max )
+		{
+		    countChunk = max; 
+		}
+		else
+		{
+			countChunk = bytesLeft;
+		}
+		
+		ret = ::readcond(port_fd, (void*)offset, countChunk, countChunk, timeOut, timeOut );
+		// cout << "Read " << ret << " bytes out of " << count  << " bytes" << endl;
+		got += ret;
+
+ 		clock_gettime( CLOCK_MONOTONIC, &tEnd );
+        // cout << "TIMEOUT: " << tEnd.tv_sec-tStart.tv_sec << endl;
+		elapsedTime = tEnd.tv_sec-tStart.tv_sec + (tEnd.tv_nsec-tStart.tv_nsec)/1000000000; 
+		
+		if ( elapsedTime > timeOut*5 )
+		{
+			break;
+		}
+		
+	}
+	
+	//int n = readcond(port_fd, buf, count, count, timeOut, timeOut);
+	
+	return(got) ;
 }
 
 int 
