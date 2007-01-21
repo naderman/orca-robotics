@@ -47,7 +47,7 @@ Simulator::Simulator( const orcaice::Context &context,
 
     setupMap();
     grownOgMap_ = ogMap_;
-    cout<<"TRACE(simulator.cpp): TODO: proper robotRadius" << endl;
+
     const double ROBOT_RADIUS = 0.3;
     orcapathplan::growObstaclesOgMap( grownOgMap_,
                                       0.5,
