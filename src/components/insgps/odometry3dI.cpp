@@ -11,13 +11,13 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 
-#include "position3dI.h"
+#include "odometry3dI.h"
 
 using namespace std;
 using namespace orca;
 using namespace insgps;
 
-Position3dI::Position3dI( const Position3dDescription&  descr,
+Odometry3dI::Odometry3dI( const VehicleDescription&  descr,
                           Driver*                   hwDriver,
                           const orcaice::Context & context )
     :   InsGpsI(context),
@@ -26,24 +26,24 @@ Position3dI::Position3dI( const Position3dDescription&  descr,
         context_(context)
 {
     //
-    // EXTERNAL PROVIDED INTERFACE: Position3d
+    // EXTERNAL PROVIDED INTERFACE: Odometry3d
     //
     // Find IceStorm Topic to which we'll publish
     // the main topic is 'name/*@platform/component'
-    topicPrx_ = orcaice::connectToTopicWithTag<Position3dConsumerPrx>
-            ( context_, position3dPublisher_, "Position3d" );
+    topicPrx_ = orcaice::connectToTopicWithTag<Odometry3dConsumerPrx>
+            ( context_, odometry3dPublisher_, "Odometry3d" );
 }
 
 void
-Position3dI::publish()
+Odometry3dI::publish()
 {
    
     // blocking read with timeout (2000ms by default)
-    // get position3d
-    read( position3dData_ );
+    // get odometry3d
+    read( odometry3dData_ );
     
     // send the data to icestorm and to a buffer for direct connections
-    localSetData( position3dData_ );
+    localSetData( odometry3dData_ );
             
     return;
 }
@@ -53,9 +53,9 @@ Position3dI::publish()
 //
 
 void
-Position3dI::read( ::orca::Position3dData& data )
+Odometry3dI::read( ::orca::Odometry3dData& data )
 {
-    hwDriver_->readPosition3d( data );
+    hwDriver_->readOdometry3d( data );
 }         
 
 
@@ -63,25 +63,25 @@ Position3dI::read( ::orca::Position3dData& data )
 // remote calls
 //
 
-orca::Position3dData
-Position3dI::getData(const Ice::Current& current) const
+orca::Odometry3dData
+Odometry3dI::getData(const Ice::Current& current) const
 {
 //     std::cout << "getData()" << std::endl;
-    orca::Position3dData data;
+    orca::Odometry3dData data;
     // we don't need to pop the data here because we don't block on it.
-    if ( position3dDataBuffer_.isEmpty() )
+    if ( odometry3dDataBuffer_.isEmpty() )
     {
-        cout << "ERROR(position3dI.cpp): getData() was called when no data had been generated!!" << endl;
-        throw orca::DataNotExistException( "Position3d proxy is not populated yet" );
+        cout << "ERROR(odometry3dI.cpp): getData() was called when no data had been generated!!" << endl;
+        throw orca::DataNotExistException( "Odometry3d proxy is not populated yet" );
     }else{
-        position3dDataBuffer_.get( data );
+        odometry3dDataBuffer_.get( data );
     }
     return data;
 }
 
 
-::orca::Position3dDescription
-Position3dI::getDescription(const ::Ice::Current& ) const
+::orca::VehicleDescription
+Odometry3dI::getDescription(const ::Ice::Current& ) const
 {
     std::cout << "getDescription()" << std::endl;
     return descr_;
@@ -89,7 +89,7 @@ Position3dI::getDescription(const ::Ice::Current& ) const
 
 // Subscribe people
 void 
-Position3dI::subscribe(const ::orca::Position3dConsumerPrx &subscriber, const ::Ice::Current&)
+Odometry3dI::subscribe(const ::orca::Odometry3dConsumerPrx &subscriber, const ::Ice::Current&)
 {
     cout << "subscribe()" << endl;
     IceStorm::QoS qos;
@@ -98,22 +98,22 @@ Position3dI::subscribe(const ::orca::Position3dConsumerPrx &subscriber, const ::
 
 // Unsubscribe people
 void 
-Position3dI::unsubscribe(const ::orca::Position3dConsumerPrx &subscriber, const ::Ice::Current&)
+Odometry3dI::unsubscribe(const ::orca::Odometry3dConsumerPrx &subscriber, const ::Ice::Current&)
 {
-    cout << "unsubscribe() Position3d" << endl;
+    cout << "unsubscribe() Odometry3d" << endl;
     topicPrx_->unsubscribe( subscriber );
 }
 
 // Set pva IMU Data
 void
-Position3dI::localSetData( const ::orca::Position3dData& data )
+Odometry3dI::localSetData( const ::orca::Odometry3dData& data )
 {
     // Stick it in the buffer so pullers can get it
-    position3dDataBuffer_.push( data );
+    odometry3dDataBuffer_.push( data );
 
     try {
         // push it to IceStorm
-        position3dPublisher_->setData( data );
+        odometry3dPublisher_->setData( data );
     }
     catch ( Ice::ConnectionRefusedException &e )
     {

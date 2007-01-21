@@ -8,13 +8,13 @@
  *
  */
 
-#ifndef ORCA2_INSGPS_POSITION3DI_H
-#define ORCA2_INSGPS_POSITION3DI_H
+#ifndef ORCA2_INSGPS_ODOMETRY3DI_H
+#define ORCA2_INSGPS_ODOMETRY3DI_H
 
 #include <IceStorm/IceStorm.h>
 
 // include provided interfaces
-#include <orca/position3d.h>
+#include <orca/odometry3d.h>
 
 // for context()
 #include <orcaice/orcaice.h>
@@ -29,23 +29,23 @@
 #include "insgpsi.h"
 
 //
-// Implements the Position3d interface:
-//     - Reads the position3d messages provided by the driver and publishes them
+// Implements the Odometry3d interface:
+//     - Reads the odometry3d messages provided by the driver and publishes them
 //     - Handles all our remote calls.
 //
 // The component interacts with hardware and the outside
 // world through the handler and (thread-safe) buffers.
 //
 
-class Position3dI : public orca::Position3d, public insgps::InsGpsI
+class Odometry3dI : public orca::Odometry3d, public insgps::InsGpsI
 {
 public:
-    Position3dI(const orca::Position3dDescription& descr,
+    Odometry3dI(const orca::VehicleDescription& descr,
                 insgps::Driver*  hwDriver,
                 const orcaice::Context & context);
 
     //
-    // position3d message handler functions
+    // odometry3d message handler functions
     //
      
     // the handler calls this function which reads from the hwDriver_'s  buffers
@@ -56,29 +56,29 @@ public:
     // remote calls:
     //
     
-    // Get pva position3d Data
-    virtual ::orca::Position3dData getData(const ::Ice::Current& ) const;
-    virtual ::orca::Position3dDescription getDescription(const ::Ice::Current& ) const;
+    // Get pva odometry3d Data
+    virtual ::orca::Odometry3dData getData(const ::Ice::Current& ) const;
+    virtual ::orca::VehicleDescription getDescription(const ::Ice::Current& ) const;
 
     // Subscribe and unsubscribe people
-    virtual void subscribe(const ::orca::Position3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
-    virtual void unsubscribe(const ::orca::Position3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    virtual void subscribe(const ::orca::Odometry3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    virtual void unsubscribe(const ::orca::Odometry3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
     // Set pos3d Data
-    void localSetData( const ::orca::Position3dData& data );
+    void localSetData( const ::orca::Odometry3dData& data );
     
 private:
 
     // the driver will put the latest pva data into this buffer
-    orcaice::Buffer<orca::Position3dData> position3dDataBuffer_;
+    orcaice::Buffer<orca::Odometry3dData> odometry3dDataBuffer_;
 
     //publishers
-    orca::Position3dConsumerPrx position3dPublisher_;
+    orca::Odometry3dConsumerPrx odometry3dPublisher_;
 
     //topics
     IceStorm::TopicPrx topicPrx_;
 
-    orca::Position3dDescription descr_;
+    orca::VehicleDescription descr_;
 
     //
     // handler stuff
@@ -87,10 +87,10 @@ private:
     // hardware driver   
     insgps::Driver* hwDriver_;
 
-    orca::Position3dData position3dData_;
+    orca::Odometry3dData odometry3dData_;
     
     // read from the hwDriver_'s buffer
-    void read( ::orca::Position3dData& );
+    void read( ::orca::Odometry3dData& );
     
     orcaice::Context context_;
 
