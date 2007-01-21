@@ -28,14 +28,14 @@ Component::Component()
       hwDriver_(0),
       gpsHandler_(0),         
       imuHandler_(0),
-      position3dHandler_(0)
+      odometry3dHandler_(0)
 {
 }
 
 Component::~Component()
 {
-    // do not delete the gpsObj_, imuObj_, or position3dObj_ as they are smart pointers and self destruct
-    // do not delete gpsHandler_, imuHandler_, or position3dHandler_, or the hwDriver_
+    // do not delete the gpsObj_, imuObj_, or odometry3dObj_ as they are smart pointers and self destruct
+    // do not delete gpsHandler_, imuHandler_, or odometry3dHandler_, or the hwDriver_
     // as they are orcaice::Threads and self-destruct.
 }
 
@@ -126,8 +126,8 @@ Component::start()
     orca::ImuDescription imuDescr;
     imuDescr.timeStamp = orcaice::getNow();
     
-    orca::Position3dDescription position3dDescr;
-    position3dDescr.timeStamp = orcaice::getNow();
+    orca::VehicleDescription vehicleDescr;
+    // vehicleDescr.timeStamp = orcaice::getNow();
 
     //
     // transfer internal sensor configs
@@ -148,11 +148,11 @@ Component::start()
     imuDescr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Imu.Size", imuDescr.size );
 
     // offset from robot coordinate system
-    orcaice::setInit( position3dDescr.offset );
-    position3dDescr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Position3d.Offset", position3dDescr.offset );
+    // orcaice::setInit( vehicleDescr.offset );
+    // vehicleDescr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Odometry3d.Offset", vehicleDescr.offset );
    
-    orcaice::setInit( position3dDescr.size );
-    position3dDescr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Position3d.Size", imuDescr.size );
+    // orcaice::setInit( vehicleDescr.size );
+    // vehicleDescr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Odometry3d.Size", imuDescr.size );
     
     // wait until we have a fix before publishing etc.
     /*
@@ -174,17 +174,17 @@ Component::start()
     // These objects contain all the functions for publishing data to the outside world
     gpsObj_ = new GpsI( gpsDescr, hwDriver_, context() );
     imuObj_ = new ImuI( imuDescr, hwDriver_, context() );
-    position3dObj_ = new Position3dI( position3dDescr, hwDriver_, context() );
+    odometry3dObj_ = new Odometry3dI( vehicleDescr, hwDriver_, context() );
 
     // create smart pointers for each of the objects   
     gpsObjPtr_ = gpsObj_;
     imuObjPtr_ = imuObj_;
-    position3dObjPtr_ = position3dObj_;
+    odometry3dObjPtr_ = odometry3dObj_;
 
     // register each of the objects so that remote calls know that these things exist   
     orcaice::createInterfaceWithTag( context(), gpsObjPtr_, "Gps" );
     orcaice::createInterfaceWithTag( context(), imuObjPtr_, "Imu" );
-    orcaice::createInterfaceWithTag( context(), position3dObjPtr_, "Position3d" );
+    orcaice::createInterfaceWithTag( context(), odometry3dObjPtr_, "Odometry3d" );
 
     ////////////////////////////////////////////////////////////////////////////////
 
@@ -210,14 +210,14 @@ Component::start()
                                 hwDriver_,
                                 context() );
     
-    position3dHandler_ = new Handler( *position3dObj_,
+    odometry3dHandler_ = new Handler( *odometry3dObj_,
                                 hwDriver_,
                                 context() );
 
     // now that each of the objects have been registered, start their handlers
     gpsHandler_->start();
     imuHandler_->start();
-    position3dHandler_->start();
+    odometry3dHandler_->start();
 
 }
 
@@ -228,7 +228,7 @@ void Component::stop()
     tracer()->debug( "stopping handlers", 5 );
     orcaice::Thread::stopAndJoin( gpsHandler_ );
     orcaice::Thread::stopAndJoin( imuHandler_ );
-    orcaice::Thread::stopAndJoin( position3dHandler_ );   
+    orcaice::Thread::stopAndJoin( odometry3dHandler_ );   
     // tracer()->debug( "stopped handlers", 5 );
 
     tracer()->debug( "stopping driver", 5 );

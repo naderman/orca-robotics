@@ -15,13 +15,13 @@
 #include <orcaice/ptrbuffer.h>
 #include <orca/bros1.h>
 #include <orca/imu.h>
-#include <orca/position3d.h>
+#include <orca/odometry3d.h>
 #include <orca/gps.h>
 
 // implementations of Ice objects
 #include "gpsI.h"
 #include "imuI.h"
-#include "position3dI.h"
+#include "odometry3dI.h"
 
 namespace insgps{
 
@@ -45,11 +45,11 @@ private:
     //
     GpsI* gpsObj_;
     ImuI* imuObj_;
-    Position3dI* position3dObj_;
+    Odometry3dI* odometry3dObj_;
 
     Ice::ObjectPtr gpsObjPtr_;
     Ice::ObjectPtr imuObjPtr_;
-    Ice::ObjectPtr position3dObjPtr_;
+    Ice::ObjectPtr odometry3dObjPtr_;
 
     //
     // HARDWARE INTERFACES
@@ -61,7 +61,7 @@ private:
     // handlers for the interfaces
     Handler* gpsHandler_;
     Handler* imuHandler_;
-    Handler* position3dHandler_;
+    Handler* odometry3dHandler_;
 };
 
 } //namespace

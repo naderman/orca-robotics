@@ -4,8 +4,8 @@ DefaultComponentTag=InsGps
 Provides.Imu.Type=::orca::Imu
 Provides.Imu.DefaultName=imu
 
-Provides.Position3d.Type=::orca::Position3d
-Provides.Position3d.DefaultName=position3d
+Provides.Odometry3d.Type=::orca::Odometry3d
+Provides.Odometry3d.DefaultName=odometry3d
 
 Provides.Gps.Type=::orca::Gps
 Provides.Gps.DefaultName=gps
@@ -30,11 +30,11 @@ Config.Imu.Size.Default=0.0 0.0 0.0
 Config.Imu.Offset.Comment=Offset of the IMU from the platform coord system x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
 Config.Imu.Offset.Default=0.0 0.0 0.0 0.0 0.0 0.0
 
-Config.Position3d.Size.Comment=IMU sensor size x[m] y[m] z[m]
-Config.Position3d.Size.Default=0.0 0.0 0.0
+Config.Odometry3d.Size.Comment=IMU sensor size x[m] y[m] z[m]
+Config.Odometry3d.Size.Default=0.0 0.0 0.0
 
-Config.Position3d.Offset.Comment=Offset of the position sensor from the platform coord system x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
-Config.Position3d.Offset.Default=0.0 0.0 0.0 0.0 0.0 0.0
+Config.Odometry3d.Offset.Comment=Offset of the position sensor from the platform coord system x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
+Config.Odometry3d.Offset.Default=0.0 0.0 0.0 0.0 0.0 0.0
 
 Config.Device.Default=/dev/ttyS0
 Config.Baud.Default=4800

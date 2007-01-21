@@ -15,7 +15,7 @@
 #include <orcaice/thread.h>
 
 #include <orca/imu.h>
-#include <orca/position3d.h>
+#include <orca/odometry3d.h>
 #include <orca/gps.h>
 #include <string>
 
@@ -86,8 +86,8 @@ public:
         orca::Frame3d imuOffset;
         orca::Size3d imuSize;                  
         
-        orca::Frame3d position3dOffset;
-        orca::Size3d position3dSize;
+        orca::Frame3d odometry3dOffset;
+        orca::Size3d odometry3dSize;
     };
    
     Driver( const Config& cfg, const orcaice::Context& context ) : config_(cfg) {};
@@ -119,7 +119,7 @@ public:
     virtual void readGps( orca::GpsData& data, int timeoutMs=2000 ) = 0;
     virtual void readGpsTime( orca::GpsTimeData& data, int timeoutMs=2000 ) = 0;
     virtual void readImu( orca::ImuData& data, int timeoutMs=2000 ) = 0;
-    virtual void readPosition3d( orca::Position3dData& data, int timeoutMs=2000 ) = 0;
+    virtual void readOdometry3d( orca::Odometry3dData& data, int timeoutMs=2000 ) = 0;
 
     // mechanism to get error messages etc back from driver.
     virtual const std::string &infoMessages() { return infoMessages_; };
@@ -138,7 +138,7 @@ protected:
     // set to false by call to getData()
     // bool newImuData_;
     // do we have PVA info yet
-    // bool newPosition3dData_;
+    // bool newOdometry3dData_;
     // do we have GPS position yet
     // bool newGpsData_;
     // do we have pps yet?
@@ -151,7 +151,7 @@ protected:
     orca::GpsData gpsData_;
     orca::GpsTimeData gpsTimeData_;
     orca::ImuData imuData_;
-    orca::Position3dData position3dData_;
+    orca::Odometry3dData odometry3dData_;
 
     std::string infoMessages_;
     

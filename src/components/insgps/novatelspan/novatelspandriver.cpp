@@ -41,10 +41,10 @@ NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device
       enabled_( false ),
       gpsCount_(0),
       imuCount_(0),
-      position3dCount_(0),
+      odometry3dCount_(0),
       //      gpsData_(0),
 //      imuData_(0),
-//      position3dData_(0),
+//      odometry3dData_(0),
       context_(context)
 {
     serial_ = new Serial();
@@ -70,7 +70,7 @@ NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device
     // configure the buffers so they have depth 100 and are of type queue
     gpsDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
     imuDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
-    position3dDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
+    odometry3dDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
    
 }
 
@@ -623,24 +623,24 @@ NovatelSpanInsGpsDriver::readImu( orca::ImuData& data, int timeoutMs )
 }
     
 void
-NovatelSpanInsGpsDriver::readPosition3d( orca::Position3dData& data, int timeoutMs )
+NovatelSpanInsGpsDriver::readOdometry3d( orca::Odometry3dData& data, int timeoutMs )
 {
     // blocking read with timeout. Also deletes the front element from the buffer
-    int ret = position3dDataBuffer_.getAndPopNext( data, timeoutMs );
+    int ret = odometry3dDataBuffer_.getAndPopNext( data, timeoutMs );
     if ( ret != 0 ) {
-        // throw NovatelSpanException( "Timeout while waiting for Position3d packet" );
-        context_.tracer()->info( "TRACE(novatelspandriver::readPosition3d()): Timeout while waiting for Position3d packet" );
+        // throw NovatelSpanException( "Timeout while waiting for Odometry3d packet" );
+        context_.tracer()->info( "TRACE(novatelspandriver::readOdometry3d()): Timeout while waiting for Odometry3d packet" );
     }
     else
     {   
-        context_.tracer()->debug( "TRACE(novatelspandriver::readPosition3d()): got position3d data", 6 );
+        context_.tracer()->debug( "TRACE(novatelspandriver::readOdometry3d()): got odometry3d data", 6 );
         
-        if (position3dCount_ > 200 )
+        if (odometry3dCount_ > 200 )
         {
-            cout << "Position3d Data Buffer is " << position3dDataBuffer_.size()/100 << "% full" << endl;
-            position3dCount_ = 0;
+            cout << "Odometry3d Data Buffer is " << odometry3dDataBuffer_.size()/100 << "% full" << endl;
+            odometry3dCount_ = 0;
         }
-        position3dCount_++;
+        odometry3dCount_++;
     
     }
     
@@ -893,34 +893,34 @@ NovatelSpanInsGpsDriver::populateData( int id )
             // printf("got INSPVASB\n");
             memcpy( &INSPVA_, &serial_data_.raw_message, sizeof(INSPVA_) );
 
-            position3dData_.timeStamp = orcaice::toOrcaTime (timeOfRead_);
+            odometry3dData_.timeStamp = orcaice::toOrcaTime (timeOfRead_);
 
             // cout << "lattitude and longitude: " << INSPVA_.data.latitude << " " << INSPVA_.data.longitude << endl;
             
             int zone;
             LatLon2MGA(INSPVA_.data.latitude, INSPVA_.data.longitude,
-                       position3dData_.pose.p.x, position3dData_.pose.p.y, zone);
+                       odometry3dData_.pose.p.x, odometry3dData_.pose.p.y, zone);
 
-            // cout << "MGA x and y: " << position3dData_.pose.p.x << " " << position3dData_.pose.p.y << endl;
+            // cout << "MGA x and y: " << odometry3dData_.pose.p.x << " " << odometry3dData_.pose.p.y << endl;
 
 
             // TODO: do we have to convert pva data into local coordinate frame? 
-            // load the pva data into the position3d object       
-            // position3dData_.pose.p.x = INSPVA_.data.latitude;
-            // position3dData_.pose.p.y = INSPVA_.data.longitude;
-            position3dData_.pose.p.z = -INSPVA_.data.height;
+            // load the pva data into the odometry3d object       
+            // odometry3dData_.pose.p.x = INSPVA_.data.latitude;
+            // odometry3dData_.pose.p.y = INSPVA_.data.longitude;
+            odometry3dData_.pose.p.z = -INSPVA_.data.height;
        
             //velocities
-            position3dData_.motion.v.x = INSPVA_.data.north_vel;
-            position3dData_.motion.v.y = INSPVA_.data.east_vel;
+            odometry3dData_.motion.v.x = INSPVA_.data.north_vel;
+            odometry3dData_.motion.v.y = INSPVA_.data.east_vel;
             // down = -up
-            position3dData_.motion.v.z = -INSPVA_.data.up_vel;
+            odometry3dData_.motion.v.z = -INSPVA_.data.up_vel;
             
             //attitude
-            position3dData_.pose.o.r = INSPVA_.data.roll/180*M_PI;
-            position3dData_.pose.o.p = INSPVA_.data.pitch/180*M_PI;
+            odometry3dData_.pose.o.r = INSPVA_.data.roll/180*M_PI;
+            odometry3dData_.pose.o.p = INSPVA_.data.pitch/180*M_PI;
             // yaw is LH rule
-            position3dData_.pose.o.y = INSPVA_.data.yaw/180*M_PI;
+            odometry3dData_.pose.o.y = INSPVA_.data.yaw/180*M_PI;
             
             //Set time
             // TODO: add this in if needed       
@@ -929,9 +929,9 @@ NovatelSpanInsGpsDriver::populateData( int id )
 //                             &pva_time);
 
             // set flag
-            // newPosition3dData_ = true;       
+            // newOdometry3dData_ = true;       
             
-            position3dDataBuffer_.push( position3dData_ );
+            odometry3dDataBuffer_.push( odometry3dData_ );
             
             return 0;       
             break;

@@ -86,7 +86,7 @@ public:
     virtual void readGps( orca::GpsData& data, int timeoutMs=2000 );
     virtual void readGpsTime( orca::GpsTimeData& data, int timeoutMs=2000 );
     virtual void readImu(orca::ImuData& data, int timeoutMs=2000 );
-    virtual void readPosition3d(orca::Position3dData& data, int timeoutMs=2000 );
+    virtual void readOdometry3d(orca::Odometry3dData& data, int timeoutMs=2000 );
     
     virtual void shutdown();
        
@@ -133,7 +133,7 @@ private:
     // the driver will put the latest data into this queue buffer of depth 100
     orcaice::Buffer<orca::GpsData> gpsDataBuffer_;
     orcaice::Buffer<orca::ImuData> imuDataBuffer_;
-    orcaice::Buffer<orca::Position3dData> position3dDataBuffer_;
+    orcaice::Buffer<orca::Odometry3dData> odometry3dDataBuffer_;
         
     // Qhere the latest and greatest of each log is stored.
     // The trailing B's indicate binary messages
@@ -148,7 +148,7 @@ private:
 
     int gpsCount_;
     int imuCount_;
-    int position3dCount_;
+    int odometry3dCount_;
 
     orcaice::Context context_;
 

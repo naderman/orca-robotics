@@ -22,7 +22,8 @@
 
 - @ref orca_interface_home
 - @ref orca_interface_imu
-- @ref orca_interface_position3d
+- @ref orca_interface_odometry3d
+- @ref orca_interface_gps
 - @ref orca_interface_status
 
 @par Requires
@@ -75,12 +76,12 @@ Description
     - Format: length width height (space separated)
     - Default: [0.0 0.0 0.0]
 
-- @c InsGps.Config.Position3d.Offset (Frame3d) [m,m,m, deg,deg,deg]
-    - Position3d sensor offset from the platform's local coordinate system. This is normally the same as the IMU
+- @c InsGps.Config.Odometry3d.Offset (Frame3d) [m,m,m, deg,deg,deg]
+    - Odometry3d sensor offset from the platform's local coordinate system. This is normally the same as the IMU
     - Format: x y z roll pitch yaw (space separated)
     - Default: [0.0 0.0 0.0  0.0 0.0 0.0]
 
-- @c InsGps.Config.Position3d.Size (Size3d) [m,m,m]
+- @c InsGps.Config.Odometry3d.Size (Size3d) [m,m,m]
     - Physical dimensions of the Positoin3d sensor. This is normally the same as the IMU
     - Format: length width height (space separated)
     - Default: [0.0 0.0 0.0]

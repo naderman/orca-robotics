@@ -48,26 +48,26 @@ Driver::Config::toString() const
     ss << imuOffset.o.r << ",";
     ss << imuOffset.o.p << ",";
     ss << imuOffset.o.y << "\n";
-    ss << "position3dOffset (x,y,z,r,p,y)= \n";
-    ss << "\t " << position3dOffset.p.x << ",";
-    ss << position3dOffset.p.y << ",";
-    ss << position3dOffset.p.z << ",";
-    ss << position3dOffset.o.r << ",";
-    ss << position3dOffset.o.p << ",";
-    ss << position3dOffset.o.y << "\n";
+    ss << "odometry3dOffset (x,y,z,r,p,y)= \n";
+    ss << "\t " << odometry3dOffset.p.x << ",";
+    ss << odometry3dOffset.p.y << ",";
+    ss << odometry3dOffset.p.z << ",";
+    ss << odometry3dOffset.o.r << ",";
+    ss << odometry3dOffset.o.p << ",";
+    ss << odometry3dOffset.o.y << "\n";
     return ss.str();
 }
 
 bool 
 Driver::Config::operator==( const Driver::Config & other )
 {
-    return (gpsOffset==other.gpsOffset && gpsSize==other.gpsSize && imuOffset==other.imuOffset && imuSize==other.imuSize && position3dOffset==other.position3dOffset && position3dSize==other.position3dSize );
+    return (gpsOffset==other.gpsOffset && gpsSize==other.gpsSize && imuOffset==other.imuOffset && imuSize==other.imuSize && odometry3dOffset==other.odometry3dOffset && odometry3dSize==other.odometry3dSize );
 }
 
 bool 
 Driver::Config::operator!=( const Driver::Config & other )
 {
-    return (gpsOffset!=other.gpsOffset && gpsSize!=other.gpsSize && imuOffset!=other.imuOffset && imuSize!=other.imuSize && position3dOffset!=other.position3dOffset && position3dSize!=other.position3dSize);
+    return (gpsOffset!=other.gpsOffset && gpsSize!=other.gpsSize && imuOffset!=other.imuOffset && imuSize!=other.imuSize && odometry3dOffset!=other.odometry3dOffset && odometry3dSize!=other.odometry3dSize);
 }
 
 } // namespace

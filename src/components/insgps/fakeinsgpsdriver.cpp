@@ -27,7 +27,7 @@ FakeInsGpsDriver::FakeInsGpsDriver( const Config&           cfg,
     // configure the buffers so they have size 100 and are of type queue
     gpsDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
     imuDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
-    position3dDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
+    odometry3dDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
     
     context_.tracer()->info( "Initializing fake insgps driver with config: "+config_.toString() );
 }
@@ -123,27 +123,27 @@ FakeInsGpsDriver::readMsgsFromHardware()
         gpsDataBuffer_.push( gpsData_ );
 
         // create fake pva data
-        orcaice::setToNow( position3dData_.timeStamp );
+        orcaice::setToNow( odometry3dData_.timeStamp );
 
         // position
-        position3dData_.pose.p.x = -2 + ((numReads_%20)*0.2);
-        position3dData_.pose.p.y = 2;
-        position3dData_.pose.p.z = 3;
+        odometry3dData_.pose.p.x = -2 + ((numReads_%20)*0.2);
+        odometry3dData_.pose.p.y = 2;
+        odometry3dData_.pose.p.z = 3;
 
         // attitude
-        position3dData_.pose.o.r = 4;
-        position3dData_.pose.o.p = 5;
-        position3dData_.pose.o.y = (-180 + numReads_*5 % 360)*M_PI/180.0;
+        odometry3dData_.pose.o.r = 4;
+        odometry3dData_.pose.o.p = 5;
+        odometry3dData_.pose.o.y = (-180 + numReads_*5 % 360)*M_PI/180.0;
 
         // velocity
-        position3dData_.motion.v.x = 7;
-        position3dData_.motion.v.y = 8;
-        position3dData_.motion.v.z = 9;
-        position3dData_.motion.w.x = 10;
-        position3dData_.motion.w.y = 11;
-        position3dData_.motion.w.z = 12;
+        odometry3dData_.motion.v.x = 7;
+        odometry3dData_.motion.v.y = 8;
+        odometry3dData_.motion.v.z = 9;
+        odometry3dData_.motion.w.x = 10;
+        odometry3dData_.motion.w.y = 11;
+        odometry3dData_.motion.w.z = 12;
 
-        position3dDataBuffer_.push( position3dData_ );
+        odometry3dDataBuffer_.push( odometry3dData_ );
         
         // reset the counter      
         count_ = 0;
@@ -202,15 +202,15 @@ FakeInsGpsDriver::readImu(orca::ImuData& data, int timeoutMs )
 }
 
 void
-FakeInsGpsDriver::readPosition3d(orca::Position3dData& data, int timeoutMs )
+FakeInsGpsDriver::readOdometry3d(orca::Odometry3dData& data, int timeoutMs )
 {
     // blocking read with timeout. Also deletes the front element from the buffer
-    int ret = position3dDataBuffer_.getAndPopNext( data, timeoutMs );
+    int ret = odometry3dDataBuffer_.getAndPopNext( data, timeoutMs );
     if ( ret != 0 ) {
         throw FakeInsGpsException( "Timeout while waiting for Imu packet" );
     }
    
-    cout << "Position3d Data Buffer has " << position3dDataBuffer_.size() << " elements" << endl;
+    cout << "Odometry3d Data Buffer has " << odometry3dDataBuffer_.size() << " elements" << endl;
     
     return;
 }

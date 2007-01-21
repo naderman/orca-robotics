@@ -21,8 +21,8 @@
 #include "insgpsi.h"
 
 //
-// Handler for InsGps interfaces which include Gps, Imu, and Position3d:
-//     - Reads the gps, imu, and position3d messages provided by the driver and publishes them
+// Handler for InsGps interfaces which include Gps, Imu, and Odometry3d:
+//     - Reads the gps, imu, and odometry3d messages provided by the driver and publishes them
 //
 // The component interacts with the driver and interfaces through (thread-safe) buffers.
 //
