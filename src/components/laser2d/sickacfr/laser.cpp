@@ -130,8 +130,6 @@ Laser::IniLSRXCode(int *pflag, struct LaserData *pxl)
  
 		if (stc<=0)
 		{
-            //PrintiEtcXX2("*FAIL (serial not valid) [%s][%s]\n",pxl->NameUnit,pxl->NamePort) ;
-			//// <------ yo do not have this service
 			printf("FAIL: serial not valid");
 			goto chau ;
 		}
@@ -260,12 +258,25 @@ Laser::readResponseInfo1(int FComLsr)
 	static char str[1000] ;
     int n,i,m=0,n0 ;
 	
-	serial_->timeout( 0, 500000 );
+	serial_->timeout( 1, 0 );
 	// n = serial_->read_full( (unsigned char*)s, 200, T5segs/10 );
 	n = serial_->read_full( (unsigned char*)s, 200 ); 
-	n0=n ;
-	if (n>6){	n=6 ; }
-	for (i=0;i<n;i++){	m=m+sprintf(str+m,"|%x|",0x00FF&(unsigned)s[i]) ; }
+	if (n>6)
+	{	
+		n=6 ; 
+	}
+	  
+ 	else if( n<0 )
+	{
+ 		 std::cout << "ERROR(readResponseInfo1::laser.cpp): could not read laser's response" << std::endl;    	
+	}
+    
+	for (i=0;i<n;i++)
+	{	
+		m=m+sprintf(str+m,"|%x|",0x00FF&(unsigned)s[i]) ; 
+	}
+	
+	n0=n;
 	str[m]='*' ; str[m+1]=0 ; 
 	printf("**-->[%d]:%s,  [%s]\n",n0,str,s+6) ;
 
@@ -278,13 +289,18 @@ Laser::readResponseB(int FComLsr,struct LaserData *pg)
 	char s[1200] ;
     static char str[1000] ;
 	int n,i,m=0,n0 ;
- 	serial_->timeout( 0, 500000 );
+ 	serial_->timeout( 1, 0 );
 	n = serial_->read_full( (unsigned char *)s, 1000 );
-	n0=n ;
 	if (n>10)
 	{	
 		n=10 ; 
 	}
+	else if( n<0 )
+	{
+ 		 std::cout << "ERROR(readResponseB::laser.cpp): could not read laser's response" << std::endl;    	
+	}
+	
+	n0=n ;
 	
 	for (i=0;i<n;i++)
 	{
@@ -303,16 +319,6 @@ Laser::readResponseC(int FComLsr,struct LaserData *pg)
 void 
 Laser::readResponse(int FComLsr)
 {
-/*
-	char s[200] ;
-    static char str[1000] ;
-	int n,i,m ;
-	n=SerialReadJEG(FComLsr,s,100,100,T5segs/10);
-	if (n>30){	n=30 ; }
-	for (i=0;i<n;i++){	m=m+sprintf(str+m,"[%x]",0x00FF&(unsigned)s[i]) ; }
-	sprintf(str+m,"\n");
-	Printi(str) ;
-*/
 }
 
 
@@ -357,8 +363,6 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 	char string4b[200] ;
 	char string2b[200] ;
 
-	// int hkswrite;
-	
 	memcpy(string4b,string4x,1+sizeof(string4x)) ;
 	memcpy(string2b,string2x,1+sizeof(string2x)) ;
 
@@ -383,7 +387,11 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 	////PrintiEtc1("--- [%s]: being configured------ ",pg->NameUnit);	
 	
 	//fflush(FComLsr);
-	serial_->baud( pg->speed );
+	if( serial_->baud( pg->speed ) < 0 )
+	{
+		 std::cout << "ERROR(laser.cpp): baudrate could not be set" << std::endl;
+	}
+
 	////PrintiEtc2("[%s]: serial at [%d]",pg->NameUnit,pg->speed);
 
 	// set to 'install' mode
@@ -420,8 +428,11 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 
 	// ---------- at speed  pg->speed (usually 38400 or 115200b (->500000))
 	// change the port speed  to higher
-	serial_->baud( pg->speedB ) ;
-	////PrintiEtc2("[%s]: serial at [%d]baud",pg->NameUnit,pg->speedB);
+	if ( serial_->baud( pg->speedB ) < 0 )
+ 	{
+		 std::cout << "ERROR(laser.cpp): operating baudrate could not be set" << std::endl;
+	}
+    ////PrintiEtc2("[%s]: serial at [%d]baud",pg->NameUnit,pg->speedB);
 
 	// new
 	serial_->write( (unsigned char*)string1, STR1 );
