@@ -121,15 +121,15 @@ Application::main(int argc, char* argv[])
         initTracerWarning( component_.tag()+": Failed to open global configuration file: "+e.what() );
     }
             // debug
-            initTracerPrint("after setGlobalProperties()");
-            orcaice::detail::printComponentProperties( initData.properties, component_.tag() );
+//             initTracerPrint("after setGlobalProperties()");
+//             orcaice::detail::printComponentProperties( initData.properties, component_.tag() );
 
     // Level 1. apply Orca factory defaults
     orcaice::detail::setFactoryProperties( initData.properties, component_.tag() );
     initTracerPrint( component_.tag()+": Set factory properties." );
             // debug
-            initTracerPrint("after setFactoryProperties()");
-            orcaice::detail::printComponentProperties( initData.properties, component_.tag() );
+//             initTracerPrint("after setFactoryProperties()");
+//             orcaice::detail::printComponentProperties( initData.properties, component_.tag() );
 
     // now pass the startup options to Ice which will start the Communicator
     return IceApplication::main( argc, argv, initData );
