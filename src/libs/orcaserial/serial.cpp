@@ -502,19 +502,47 @@ Serial::read_full(void *buf, size_t count)
 	}
 	
 	//int n = readcond(port_fd, buf, count, count, timeOut, timeOut);
-	
+	// cout << "got: " << got << endl;
 	return(got) ;
 }
 
 int 
 Serial::data_avail()
 {	
-	return( tcischars(port_fd) );	 
+    int ret,n_read;
+    ret = ioctl(port_fd,FIONREAD,&n_read);
+
+    if( ret==-1 )
+	{
+        perror( "Serial:data_avail()" );
+        lastError_ = string("Serial::data_avail(): ")+strerror(errno);
+        return -1;
+    }
+    return n_read;
+
+// return( tcischars(port_fd) );	 
 }
 
 int 
 Serial::data_avail_wait()
 {
+    fd_set rfds;
+    struct timeval tv;
+    FD_ZERO(&rfds);
+    FD_SET(port_fd, &rfds);
+    tv.tv_sec = to_sec;
+    tv.tv_usec = to_usec;
+    int selval = select(port_fd+1, &rfds, NULL, NULL, &tv);
+    if(selval==0){
+        //printf("select timed out no data\n");
+        return 0;
+    }
+    if(selval<0){
+        //perror("select()");
+        lastError_ = string("Serial::data_avail_wait(): select(): ")+strerror(errno);
+        return -1;
+    }
+    return data_avail();
 }
 
 int 
