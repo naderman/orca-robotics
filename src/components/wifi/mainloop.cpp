@@ -95,7 +95,8 @@ MainLoop::run()
             orca::WifiData data;
             driver_->read( data );
             
-            context_.tracer()->debug("Got fresh wifi data from driver. Sending it out now." , 5);
+            context_.tracer()->debug("Got new wifi data from driver. Sending it out now.", 3);
+            context_.tracer()->debug(orcaice::toString( data ), 5);
                     
             wifiInterface_->localSetAndSend( data );
             

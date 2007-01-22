@@ -1169,6 +1169,45 @@ toString( const orca::Waypoint2d &obj )
     return s.str();
 }
 
+
+std::string 
+toString( const orca::WifiData &obj )
+{
+    std::ostringstream s;
+    // first line: timestamp
+    s << toString(obj.timeStamp) << " WifiData [" << obj.interfaces.size() << " interfaces]: " << endl;
+    
+    for ( unsigned int i=0; i<obj.interfaces.size(); ++i )
+    {
+        const orca::WifiInterface &iface = obj.interfaces[i];
+        
+        s << "name: " << iface.interfaceName 
+          << ", status: " << iface.status 
+          << ", link quality: " <<  iface.linkQuality 
+          << ", signal level: " << iface.signalLevel 
+          << ", noise level: " << iface.signalLevel << "\n"; 
+        
+        s << "numInvalidNwid: " << iface.numInvalidNwid
+          << ", numInvalidCrypt: " << iface.numInvalidCrypt
+          << ", numInvalidFrag: " << iface.numInvalidFrag
+          << ", numRetries: " << iface.numRetries
+          << ", numInvalidMisc: " << iface.numInvalidMisc
+          << ", numMissedBeacons: " << iface.numMissedBeacons << "\n";
+          
+        s << "mode: " << iface.mode 
+          << ", bitrate: " << iface.bitrate 
+          << ", accessPoint: " << iface.accessPoint 
+          << ", throughPut: " << iface.throughPut 
+          << ", linkQualityType: " << iface.linkQualityType << "\n";
+        
+        s << "maxLinkQuality: " << iface.maxLinkQuality 
+          << ", maxSignalLevel: " << iface.maxSignalLevel 
+          << ", maxNoiseLevel: " << iface.maxNoiseLevel << "\n\n";
+    }
+            
+    return s.str();
+}
+
 std::string 
 toString( const orca::FeatureMap2dDataPtr &obj )
 {

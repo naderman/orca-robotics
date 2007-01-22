@@ -37,6 +37,7 @@
 #include <orca/pathplanner2d.h>
 #include <orca/tracer.h>
 #include <orca/velocitycontrol2d.h>
+#include <orca/wifi.h>
 
 namespace orcaice
 {
@@ -239,6 +240,9 @@ std::string toString( const orca::OgMapData& );
 std::string toString( const orca::PathFollower2dData& );
 //! Converts to string
 std::string toString( const orca::Waypoint2d& );
+//! Converts to string
+std::string toString( const orca::WifiData& );
+
 //std::string toString( const orca::PathPlanner2dData& );
 //std::string toString( const orca::PathPlanner2dTask& );
 
