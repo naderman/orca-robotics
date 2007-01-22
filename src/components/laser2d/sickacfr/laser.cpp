@@ -68,7 +68,7 @@ Laser::~Laser()
 
 // initialise the laser
 void* 
-Laser::IniLaserInstance(unsigned int n, int speed0, int speed2, int init, int serialPort)
+Laser::IniLaserInstance(unsigned int n, int speed0, int speed2, int init, char* serialPort)
 {
     // pointer to the struct which stores the laser params and data
 	pxl = new LaserData;
@@ -98,8 +98,9 @@ Laser::IniLaserInstance(unsigned int n, int speed0, int speed2, int init, int se
 	pxl->init = init ;
     pxl->PublishFlag = 0xFF ;
         
-    sprintf(pxl->NamePort,"/dev/ser%d",serialPort) ;
-    
+    //sprintf(pxl->NamePort,"/dev/ser%d",serialPort) ;
+    sprintf( pxl->NamePort, serialPort ) ;
+	
     IniLSRXCode(&pxl->FlagBye,pxl) ;
         
     printf("**init [%s]ser={[%s][%d]}p={[%d][%d]}speed=[%d][%d]\n",pxl->NameUnit,pxl->NamePort,pxl->FComLsr,pxl->priority,pxl->priority2,pxl->speed,pxl->speedB) ;
@@ -195,7 +196,10 @@ Laser::parse_SICK_LASER(struct sic_packet *pxxx,unsigned char *string,struct rec
     }
 	else
 	{
-        pxxx->timeStamp = timeStamp;
+
+		pxxx->timeStamp = timeStamp;
+		
+		std::cout << "TimeStamp: " << orcaice::toString( timeStamp ) << std::endl;
 		pxl->cx++ ;
 		for (i=0;i<RANGESIZE;i++){	pxxx->range[i]=p0[i] ; }
 		pxxx->Status = string[729] ;
@@ -572,7 +576,7 @@ Laser::readSickLaser(struct LaserData *pxl,int *pFlag)
 					parse_SICK_LASER( pxl->sp, (unsigned char*)string, rr_lsr,timeStamp, &(pxl->BadCrcs), pxl );
 					pxl->usedChars+=732 ;
 					pxl->FramesOK++ ;
-					//printf("--------- laser\n") ;
+					// printf("--------- laser\n") ;
 				}
 			}
 			else

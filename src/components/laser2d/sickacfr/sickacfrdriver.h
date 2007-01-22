@@ -52,9 +52,9 @@ private:
     // struct for holding laser data and params
 	LaserData rawLaserData_;
 
-    char *device_;
+    char* device_;
     // LMS or PMS
-    char *type_; 
+    char* type_; 
     int baudrate_;
 
     char sickInfoMessage_[2000];

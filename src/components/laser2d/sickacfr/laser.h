@@ -102,8 +102,9 @@ struct sic_packet FrameLsr1 ;
 struct LaserData* pxl;
 
 // initialise a laser 
-void* IniLaserInstance(unsigned int n, int speed0, int speed2, int init, int serialPort);
-
+// void* IniLaserInstance(unsigned int n, int speed0, int speed2, int init, int serialPort);
+void* IniLaserInstance(unsigned int n, int speed0, int speed2, int init, char* serialPort);
+   
 void* readSickLaserX(void *pxl);
 
 orcaice::Buffer<struct LaserData> laserDataBuffer_;

@@ -31,8 +31,8 @@ SickAcfrDriver::SickAcfrDriver( const Config & cfg, const orcaice::Context & con
 
     baudrate_ =  orcaice::getPropertyAsIntWithDefault( prop, prefix+"Baudrate", 38400 );
 
-//    std::string device = orcaice::getPropertyWithDefault( prop, prefix+"Device", "/dev/ser1" );
-//    device_ = strdup(device.c_str());
+    std::string device = orcaice::getPropertyWithDefault( prop, prefix+"Device", "/dev/ser1" );
+    device_ = strdup(device.c_str());
 
 //    std::string laserType = orcaice::getPropertyWithDefault( prop, prefix+"LaserType", "LMS" );
 //    type_ = strdup(laserType.c_str());
@@ -140,7 +140,7 @@ SickAcfrDriver::init( )
     // tell the laser to start sending data
     //
     // int ret = IniLaserInstance(1,9600,38400,1, 1);   //lsr2  , 38Kbps  , /dev/ser1);
-    laser_->IniLaserInstance( 1, 9600, baudrate_, 1, 2 );   //lsr1  , 38Kbps  , /dev/ser1);
+    laser_->IniLaserInstance( 1, 9600, baudrate_, 1, device_ );   //lsr1  , 38Kbps  , /dev/ser1);
 
 /*    if ( ret == 0 )
     {
