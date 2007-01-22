@@ -29,6 +29,11 @@ Config.SickCarmen.LaserType.Default=LMS
 Config.SickCarmen.Baudrate.Comment=Valid values: { 9600, 19200, 38400, 500000 }
 Config.SickCarmen.Baudrate.Default=38400
 
+Config.SickAcfr.Device.Default=/dev/ser1
+# Config.SickAcfr.LaserType.Default=LMS
+Config.SickAcfr.Baudrate.Comment=Valid values: { 9600, 19200, 38400, 500000 }
+Config.SickAcfr.Baudrate.Default=38400
+ 
 Config.PlayerClient.Host.Default=localhost
 Config.PlayerClient.Port.Default=6665
 Config.PlayerClient.Device.Default=0
