@@ -185,9 +185,10 @@ void PathPainter::paint( QPainter *painter, int z )
     }
     
     // ===== draw the waypoint in focus again, to be able to see the edge =======
-    if (wpIndex_!=-1)
+    if ( (wpIndex_!=-1) && (waypoints_.size()>0) )
     {
         painter->save();
+
         painter->translate( waypoints_[wpIndex_].x(), waypoints_[wpIndex_].y() );    // move to point
         drawColor = Qt::black;
         paintWaypoint( painter, 
