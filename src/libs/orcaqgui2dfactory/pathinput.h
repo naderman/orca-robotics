@@ -123,7 +123,7 @@ class PathInput : public QObject
     Q_OBJECT
             
     public:
-        PathInput( WaypointSettings *wpSettings, IHumanManager *humanManager );
+        PathInput( QObject *parent, WaypointSettings *wpSettings, IHumanManager *humanManager );
         virtual ~PathInput();  
      
         virtual void paint( QPainter *painter );
@@ -174,6 +174,10 @@ class PathInput : public QObject
         void setWaypointFocus(int row, int column);
         void generateFullPath();
         
+    signals:
+        void sendPathClicked();
+        void cancelPathClicked();
+        
     private:
         void expandPath( int index, int numInsert, int headingTolerance);
         int  expandPathStationary( int index );
@@ -186,8 +190,8 @@ class PathInput : public QObject
 class PathFollowerInput : public PathInput
 { 
     public:
-        PathFollowerInput( WaypointSettings *wpSettings, IHumanManager *humanManager )
-            : PathInput( wpSettings, humanManager )
+        PathFollowerInput( QObject *parent, WaypointSettings *wpSettings, IHumanManager *humanManager )
+            : PathInput( parent, wpSettings, humanManager )
         {};
         virtual ~PathFollowerInput() {};  
 
@@ -197,8 +201,8 @@ class PathFollowerInput : public PathInput
 class PathPlannerInput : public PathInput
 { 
 public:
-    PathPlannerInput( WaypointSettings *wpSettings, IHumanManager *humanManager )
-        :PathInput( wpSettings, humanManager )
+    PathPlannerInput( QObject *parent, WaypointSettings *wpSettings, IHumanManager *humanManager )
+        :PathInput( parent, wpSettings, humanManager )
         {};
     
     virtual ~PathPlannerInput() {};  

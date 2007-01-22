@@ -514,7 +514,7 @@ PathFollowerHI::waypointModeSelected()
         return;
     }
 
-    pathInput_ = new PathFollowerInput( &wpSettings_, humanManager_ );
+    pathInput_ = new PathFollowerInput( this, &wpSettings_, humanManager_ );
     pathInput_->setTransparency( useTransparency_ );
     buttons_->setWpButton( true );    
 }

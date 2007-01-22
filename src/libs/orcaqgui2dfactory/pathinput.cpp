@@ -13,6 +13,7 @@
  
 #include <orcaice/orcaice.h>
 #include <orcaqgui/ihumanmanager.h>
+#include <orcaqgui/guiicons.h>
 #include <orcaqgui2d/paintutils.h>
 #include <orcaqgui2dfactory/waypointdialog.h>
 
@@ -65,26 +66,42 @@ WpWidget::WpWidget( PathInput *pathInput,
       pathFileSet_(false),
       pathFileName_("/tmp")
 {
+    // icons
+    QPixmap sendIcon(send_xpm);
+    QPixmap openIcon(fileopen_xpm);
+    QPixmap savePathIcon(filesave_path_xpm);
+    QPixmap goIcon(go_xpm);
+    QPixmap stopIcon(stop_xpm);
+    QPixmap cancelIcon(cancel_xpm);
+    
     setWindowTitle("List of Waypoints");
     wpTable_ = new WpTable( this, pathInput, waypoints, headings, times, waitingTimes, distTolerances, headingTolerances, maxSpeeds, maxTurnrates );
-    QPushButton *generatePath = new QPushButton(tr("Generate Full Path"), this);
-    QPushButton *savePath = new QPushButton(tr("Save Path"), this);
-    QPushButton *loadPath = new QPushButton(tr("Load Path"), this);
     
+    QPushButton *generatePath = new QPushButton(tr("Generate Full Path"), this);
+    QPushButton *savePath = new QPushButton(savePathIcon, tr("Save Path"), this);
+    QPushButton *loadPath = new QPushButton(openIcon, tr("Load Path"), this);
     QObject::connect(generatePath,SIGNAL(clicked()),pathInput,SLOT(generateFullPath()));
     QObject::connect(savePath,SIGNAL(clicked()),this,SLOT(savePath()));
     QObject::connect(loadPath,SIGNAL(clicked()),this,SLOT(loadPath()));
+    
+    QPushButton *sendPath = new QPushButton(sendIcon, tr("Send Path"), this);
+    QPushButton *cancelPath = new QPushButton(cancelIcon, tr("Cancel Path"), this);
+    QObject::connect(sendPath,SIGNAL(clicked()),pathInput,SIGNAL(sendPathClicked()));
+    QObject::connect(cancelPath,SIGNAL(clicked()),pathInput,SIGNAL(cancelPathClicked()));
     
     QVBoxLayout *globalLayout = new QVBoxLayout;
     globalLayout->addWidget(wpTable_);
     
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->addWidget(generatePath);
-    hLayout->addWidget(savePath);
     hLayout->addWidget(loadPath);
+    hLayout->addWidget(savePath);
+    hLayout->addWidget(sendPath);
+    hLayout->addWidget(cancelPath);
     globalLayout->addLayout(hLayout);
     
     setLayout(globalLayout);
+    this->setMinimumWidth(800);
     this->show();
 }
 
@@ -380,7 +397,7 @@ void WpTable::updateDataStorage(int row, int column)
     
 }
     
-PathInput::PathInput( WaypointSettings *wpSettings, IHumanManager *humanManager )
+PathInput::PathInput( QObject *parent, WaypointSettings *wpSettings, IHumanManager *humanManager )
     : wpSettings_(wpSettings),
       humanManager_(humanManager),      
       waypointInFocus_(-99)
@@ -394,6 +411,9 @@ PathInput::PathInput( WaypointSettings *wpSettings, IHumanManager *humanManager 
                             &headingTolerances_,
                             &maxSpeeds_,
                             &maxTurnrates_ );
+    
+    QObject::connect(this,SIGNAL(sendPathClicked()),parent,SLOT(send()));
+    QObject::connect(this,SIGNAL(cancelPathClicked()),parent,SLOT(cancel()));
 }
 
 

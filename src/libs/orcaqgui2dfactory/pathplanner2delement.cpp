@@ -337,7 +337,7 @@ PathPlannerHI::waypointModeSelected()
         return;
     }
 
-    pathInput_ = new PathPlannerInput( &wpSettings_, humanManager_ );
+    pathInput_ = new PathPlannerInput( this, &wpSettings_, humanManager_ );
     pathInput_->setTransparency( useTransparency_ );
     buttons_->setWpButton( true );   
 }
