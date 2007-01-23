@@ -49,6 +49,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Defined new CMake variables to establish the local OS: OS_LINUX, OS_QNX, OS_WIN.
 - Documentation
     - Expanded docco on how to add interfaces and souce code to the project ( orca-robotics.sf.net/orca_doc_devguide.html )
+- Dependencies
+    - libOpenCV can now be installed into an arbitrary location (alex m)
 
 @par New interfaces
 
