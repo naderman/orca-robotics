@@ -11,27 +11,25 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaifaceimpl/util.h>
-#include "laserscanner2dI.h"
+#include "polarfeature2dI.h"
 
 using namespace std;
 using namespace orca;
 
 namespace orcaifaceimpl {
 
-LaserScanner2dI::LaserScanner2dI( const orca::RangeScanner2dDescription& descr,
-                                  const std::string             &ifaceTag,
+PolarFeature2dI::PolarFeature2dI( const std::string             &ifaceTag,
                                   const orcaice::Context        &context )
-    : descr_(descr),
-      ifaceTag_(ifaceTag),
+    : ifaceTag_(ifaceTag),
       context_(context)
 {
 }
 
 void
-LaserScanner2dI::initInterface()
+PolarFeature2dI::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithTag<orca::RangeScanner2dConsumerPrx>
+    topicPrx_ = orcaice::connectToTopicWithTag<orca::PolarFeature2dConsumerPrx>
         ( context_, consumerPrx_, ifaceTag_ );
 
     // Register with the adapter
@@ -39,10 +37,10 @@ LaserScanner2dI::initInterface()
     orcaice::createInterfaceWithTag( context_, obj, ifaceTag_ );
 }
 
-orca::RangeScanner2dDataPtr 
-LaserScanner2dI::getData(const Ice::Current& current) const
+orca::PolarFeature2dDataPtr 
+PolarFeature2dI::getData(const Ice::Current& current) const
 {
-    context_.tracer()->debug( "LaserScanner2dI::getData()", 5 );
+    context_.tracer()->debug( "PolarFeature2dI::getData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
@@ -52,25 +50,17 @@ LaserScanner2dI::getData(const Ice::Current& current) const
     }
 
     // create a null pointer. data will be cloned into it.
-    orca::LaserScanner2dDataPtr data;
+    orca::PolarFeature2dDataPtr data;
     dataProxy_.get( data );
 
     return data;
 }
 
-// serve out the data to the client (it was stored here earlier by the driver)
-orca::RangeScanner2dDescription
-LaserScanner2dI::getDescription(const Ice::Current& current) const
-{
-    context_.tracer()->debug( "LaserScanner2dI::getDescription()", 5 );
-    return descr_;
-}
-
 // Subscribe people
 void 
-LaserScanner2dI::subscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber, const ::Ice::Current&)
+PolarFeature2dI::subscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber, const ::Ice::Current&)
 {
-    context_.tracer()->debug( "LaserScanner2dI::subscribe()", 5 );
+    context_.tracer()->debug( "PolarFeature2dI::subscribe()", 5 );
 
     if ( topicPrx_==0 ) {
         throw orca::SubscriptionFailedException( "null topic proxy." );
@@ -83,7 +73,7 @@ LaserScanner2dI::subscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber, 
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
-        ss <<"LaserScanner2dI::subscribe::failed to subscribe: "<< e << endl;
+        ss <<"PolarFeature2dI::subscribe::failed to subscribe: "<< e << endl;
         context_.tracer()->warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
@@ -91,37 +81,37 @@ LaserScanner2dI::subscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber, 
 
 // Unsubscribe people
 void 
-LaserScanner2dI::unsubscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber, const ::Ice::Current&)
+PolarFeature2dI::unsubscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber, const ::Ice::Current&)
 {
-    context_.tracer()->debug( "LaserScanner2dI::unsubscribe()", 5 );
+    context_.tracer()->debug( "PolarFeature2dI::unsubscribe()", 5 );
 
     topicPrx_->unsubscribe( subscriber );
 }
 
 void
-LaserScanner2dI::localSet( const ::orca::LaserScanner2dDataPtr &data )
+PolarFeature2dI::localSet( const ::orca::PolarFeature2dDataPtr &data )
 {
-    // cout << "LaserScanner2dI::set data: " << orcaice::toString( data ) << endl;
+    // cout << "PolarFeature2dI::set data: " << orcaice::toString( data ) << endl;
     
     dataProxy_.set( data );
 }
 
 void
-LaserScanner2dI::localSetAndSend( const ::orca::LaserScanner2dDataPtr &data )
+PolarFeature2dI::localSetAndSend( const ::orca::PolarFeature2dDataPtr &data )
 {
     if ( context_.tracer()->verbosity( orcaice::Tracer::DebugTrace, orcaice::Tracer::ToAny ) >= 5 )
     {
         stringstream ss;
-        ss << "LaserScanner2dI: Sending data: " << orcaice::toString(data);
+        ss << "PolarFeature2dI: Sending data: " << orcaice::toString(data);
         context_.tracer()->debug( ss.str(), 5 );
     }
 
-    // cout << "LaserScanner2dI::set data: " << orcaice::toString( data ) << endl;
+    // cout << "PolarFeature2dI::set data: " << orcaice::toString( data ) << endl;
     
     dataProxy_.set( data );
 
     // Try to push to IceStorm
-    tryPushToIceStormWithReconnect<RangeScanner2dConsumerPrx,LaserScanner2dDataPtr>( context_,
+    tryPushToIceStormWithReconnect<PolarFeature2dConsumerPrx,PolarFeature2dDataPtr>( context_,
                                                                                      consumerPrx_,
                                                                                      data,
                                                                                      topicPrx_,
