@@ -41,12 +41,6 @@ private:
     // External interface: polar features
     orcaifaceimpl::PolarFeature2dI *featureInterface_;
 
-//     orca::PolarFeature2dConsumerPrx polarFeaturePublisher_;
-//     orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> laserDataBuffer_;
-//     orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> polarFeaturesDataBuffer_;
-
-    
-
     MainLoop *mainLoop_;
 };
 

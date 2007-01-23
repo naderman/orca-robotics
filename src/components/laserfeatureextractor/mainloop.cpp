@@ -26,8 +26,6 @@ MainLoop::MainLoop( orcaifaceimpl::PolarFeature2dI &featureInterface,
                     const orcaice::Context &context )
     : driver_(NULL),
       featureInterface_(featureInterface),
-//       laserDataProxy_(laserDataProxy),
-//       polarFeaturesDataProxy_(polarFeaturesDataProxy),
       context_(context)
 {
     sensorOffset_.p.x=0;

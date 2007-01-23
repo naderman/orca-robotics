@@ -32,12 +32,6 @@ public:
     MainLoop( orcaifaceimpl::PolarFeature2dI &featureInterface,
               const orcaice::Context &context );
 
-//         const orca::PolarFeature2dConsumerPrx &polarFeaturesConsumer,
-//         orca::LaserScanner2dPrx laserPrx,
-//         orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> &laserDataBuffer,
-//         orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
-//         const orcaice::Context & context );
-
     ~MainLoop();
 
     virtual void run();
