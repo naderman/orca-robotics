@@ -34,9 +34,10 @@ wp=get(gcf,'position'); set(gcf,'position', [wp(1:2) 750 600])
 % LOCAL HOST
 
 D1p= load(  'pingdata/samehost_ping.dat' );  % ping
-D1oLL4= load( '~/sys/pings/200rc4/agave_agave_orca_101_025.dat' );  % orca2 Linux-Linux
 D1oLL= load( 'pingdata/samehost_lin.dat' );  % orca2 Linux-Linux
 D1oWW= load( 'pingdata/samehost_win.dat' );  % orca2 Win-Win
+D1burr = load( 'pingdata/burr_burr_lnxlnx.dat' );
+D1agav = load( 'pingdata/agave_agave_lnxlnx.dat' );
 
 % clean up data (updates the means)
 %  D1s = pingclean(D1s);
@@ -44,7 +45,7 @@ D1oWW= load( 'pingdata/samehost_win.dat' );  % orca2 Win-Win
 
 %  figure(11),clf
 subplot(132)
-h=pingplot( D1oLL,'b-s', D1p,'k--o' );
+h=pingplot( D1oLL,'b-s', D1p,'k--o', D1burr, 'g--o', D1agav, 'g-x' );
 %  h=pingplot( D1oLL,'b-s', D1oWW,'g-^', D1p,'k--o' );
 set(gca,'xscale','log')
 set(gca,'yscale','log')
