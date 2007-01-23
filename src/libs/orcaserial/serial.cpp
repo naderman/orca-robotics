@@ -429,11 +429,13 @@ Serial::open(const char* device, const int flags)
 int 
 Serial::read(void *buf, size_t count)
 {
+	cout << "WARNING(serial.cpp::read()): NOT IMPLEMENTED YET" << endl;
 }
 
 int 
 Serial::read_line(void *buf, size_t count, char termchar)
 {
+   cout << "WARNING(serial.cpp::read_line()): NOT IMPLEMENTED YET" << endl;
 }
 
 int 
@@ -548,26 +550,44 @@ Serial::data_avail_wait()
 int 
 Serial::write(const void *buf, size_t count)
 {
-    ssize_t n;
+    ssize_t put;
 	
-	n = ::write( port_fd, buf, count );	
+	put = ::write( port_fd, buf, count );	
 	// *nw = n ;
-	return(n) ;
+    if ( put < 0 )
+        lastError_ = string("Serial::write(): ")+strerror(errno);
+    return put ;
 }
 
 int 
 Serial::write(const char *str, size_t maxlen)
 {
+    int toput=strnlen(str, maxlen);
+    int put;
+    put = ::write(port_fd, str, toput);
+    if ( put < 0 )
+        lastError_ = string("Serial::write(): ")+strerror(errno);
+    return put;
 }
 
 int 
 Serial::flush()
 {
+	return(tcflush(port_fd,TCIOFLUSH)); 
 }
 
 int 
 Serial::drain()
 {
+    // wait till all output sent
+    if(tcdrain(port_fd)){
+        perror("Serial::drain():tcdrain()");
+        lastError_ = string("Serial::drain():tcdrain(): ")+strerror(errno);
+        return -1;
+    }
+    else{
+        return 0;
+    }
 }
 
 
