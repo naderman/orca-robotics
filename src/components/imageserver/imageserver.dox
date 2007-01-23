@@ -88,6 +88,8 @@ Other examples for @c imageserver, @c imageviewer, @c logger, @c logplayer can b
 
 @par Dependencies
 
+To use FireWire cameras (IEEE 1394) you need to install libdc1394. See @ref orca_component_imageserver_firewire.
+
 See @ref orca_camera_monoopencv_dependencies and @ref orca_camera_digiclops_dependencies for individual driver requirements. 
 
 <br>

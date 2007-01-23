@@ -11,8 +11,8 @@
 #ifndef ORCA2_IMAGEVIEWER_MAINLOOP_H
 #define ORCA2_IMAGEVIEWER_MAINLOOP_H
 
-#include <opencv/highgui.h>
-#include <opencv/cv.h>
+#include <highgui.h>
+#include <cv.h>
 
 #include <orca/camera.h>
 #include <orcaice/thread.h>

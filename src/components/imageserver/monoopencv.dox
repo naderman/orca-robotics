@@ -12,7 +12,8 @@
 @page orca_camera_monoopencv Monocular OpenCv Camera driver
 
 Drives real camera hardware, directly connected to the computer. Uses
-<a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank">Opencv-0.9.9</a>. See Dependencies below.
+<a href="http://opencvlibrary.sourceforge.net" target="_blank">Opencv library</a>. 
+See Dependencies below.
 
 A firewire camera or usb camera can be used. The opencv implementation
 automatically finds the type of camera. If you have any troubles with not being able to grab images with a firewire camera, it may be the dc1394 libraries playing up. Try typing @c sudo @c renew_1394 at a prompt and trying the running the component again. Also you could check that <a href="http://damien.douxchamps.net/ieee1394/coriander/index.php">coriander</a> works. 
@@ -21,10 +22,23 @@ automatically finds the type of camera. If you have any troubles with not being 
 
 @section orca_camera_monoopencv_dependencies Monocular Camera Opencv Dependencies
 
-The @ref orca_camera_monoopencv requires that <a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank">Opencv-0.9.9</a> is installed.
+Requires <a href="http://opencvlibrary.sourceforge.net" target="_blank">Opencv library</a>. Latest tested version 1.0.0.
 
-Recent compilation problems with opencv have been discovered due to python-dev and swig packages not being checked for by autoconf. If you are using Debian, please install the python2.3-dev package and the swig package. For other operating systems, please check that you have the headers for python installed in a standard system directory.
+@note Recent compilation problems with opencv have been discovered due to python-dev and swig packages not being checked for by autoconf. If you are using Debian, please install the python2.3-dev package and the swig package. For other operating systems, please check that you have the headers for python installed in a standard system directory.
 
+@verbatim
+$ tar -xzf opencv-[VERSION].tar.gz
+$ cd opencv-[VERSION]
+$ ./configure --prefix=/opt/opencv-[VERSION]
+$ make
+# sudo make install
+# ln -s /opt/opencv-[VERSION] /opt/opencv
+@endverbatim
+
+Add the following to your @c .bashrc file
+@verbatim
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/opt/opencv/lib/pkgconfig
+@endverbatim
 
 
 */

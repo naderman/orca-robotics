@@ -19,8 +19,8 @@
 #include "cameralogger.h"
 
 #ifdef OPENCV_FOUND
-    #include <opencv/cv.h>
-    #include <opencv/highgui.h>
+    #include <cv.h>
+    #include <highgui.h>
 #endif
 
 using namespace std;

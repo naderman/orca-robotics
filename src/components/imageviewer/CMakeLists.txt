@@ -12,8 +12,8 @@ IF ( NOT OS_WIN AND BUILD_IMAGE_VIEWER )
       ADD_DEFINITIONS( -DOPENCV_IMPLEMENTATION )
 
       IF( OPENCV_FOUND )
-        MESSAGE( STATUS "    Using new opencv (>= 0.9.9)" )
         INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )
+        LINK_DIRECTORIES( ${OPENCV_LINK_DIRS} )
         ADD_DEFINITIONS( -DOPENCV_FOUND )
 
         IF ( TRICLOPS_FOUND )
@@ -21,19 +21,19 @@ IF ( NOT OS_WIN AND BUILD_IMAGE_VIEWER )
         ELSE ( TRICLOPS_FOUND )
           MESSAGE( STATUS "    The Triclops libraries have not been found - you will not be able to view images from a digiclops camera")
         ENDIF ( TRICLOPS_FOUND )
+    
+        # build common sources into a convenience library
+        BUILD_COMPONENT_SOURCES( ImageViewerSources )
 
-        # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-        # SET( COMMON_SRCS cameraconsumerI component imagehandler colourconversions conversions  imageutils)
-        SET( COMMON_SRCS cameraconsumerI component mainloop )
-
-        GLOBAL_ADD_EXECUTABLE( imageviewer main ${COMMON_SRCS} )
-
-        # build an IceBox service
-        GLOBAL_ADD_LIBRARY( OrcaImageViewer SHARED service ${COMMON_SRCS} )
-
-        # link libraries
-        TARGET_LINK_LIBRARIES( imageviewer ${OPENCV_LIBS} OrcaImage)
-        TARGET_LINK_LIBRARIES( OrcaImageViewer ${OPENCV_LIBS} OrcaImage)
+        SET ( DEP_LIBS ImageViewerSources ${OPENCV_LIBS} OrcaImage ) 
+        
+        # build stand-alone component  
+        GLOBAL_ADD_EXECUTABLE( imageviewer main )
+        TARGET_LINK_LIBRARIES( imageviewer ${DEP_LIBS} )
+        
+        # build IceBox service
+        GLOBAL_ADD_LIBRARY( OrcaImageViewer SHARED service )
+        TARGET_LINK_LIBRARIES( OrcaImageViewer ${DEP_LIBS} )
 
         GENERATE_CONFIG_FILE( imageviewer.def )
 

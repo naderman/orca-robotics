@@ -17,7 +17,7 @@
 #include <orcalog/replayer.h>
 
 #ifdef OPENCV_FOUND
-    #include <opencv/cv.h>
+    #include <cv.h>
 #endif
 
 namespace orcalogfactory

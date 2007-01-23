@@ -17,8 +17,8 @@
 
 // #include "imagegrabber/cvgrabber.h"
 // #include "imagegrabber/digiclopsgrabber.h"
-// #include <opencv/highgui.h>
-// #include <opencv/cv.h>
+// #include <highgui.h>
+// #include <cv.h>
 
 namespace imageserver {
 

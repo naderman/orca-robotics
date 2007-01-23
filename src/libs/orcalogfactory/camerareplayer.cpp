@@ -16,7 +16,7 @@
 #include "camerareplayer.h"
 
 #ifdef OPENCV_FOUND
-    #include <opencv/highgui.h>
+    #include <highgui.h>
 #endif
 
 using namespace std;

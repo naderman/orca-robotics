@@ -16,11 +16,10 @@ Note that some of this help has been taken from <a href="http://damien.douxchamp
 
 @b Requirements: It is recommended that you have a linux kernel 2.6.11 or higher. You should enable 1394 support and select raw1394, ohci1394 (or pcilynx, depending on your card) and video1394 modules (for DMA, only works with OHCI cards). 
 
-To do this for a Debian based system type at a prompt:
+To do this for a Debian-based system (including Ubuntu), install this package:
 
 @verbatim
-$ apt-get install libdc1394-13
-$ apt-get install libdc1394-13-dev
+# apt-get install libdc1394-13-dev
 @endverbatim
 
 Then attach your firewire camera and ensure that the raw1394, ohci1394, and video1394 modules have been loaded by typing:
@@ -35,9 +34,9 @@ If they have been loaded, you're almost there. If they're not loaded, try loadin
 $ sudo modprobe <module>1394 
 @endverbatim
 
-The following applies to systems without udev (which dynamically loads devices). If you have udev you will not have to do this.
+The following applies to systems without udev (which dynamically loads devices). If you have udev you will @b not have to do this.
 
-We then have to create two devices (if they haven't been created already): raw1394 and video1394. raw1394 has major 171 and minor 0, while video1394 had major 171 and minor 16. If you use several interface cards you need one video1394 device per card. The standard way to do this is to create a video1394 directory (instead of a device), and create the first device (171,16), second device (171,17),... in that directory. The names for these devices is usually simply 0,1,2,...
+We then have to create two devices (if they haven't been created already): raw1394 and video1394. raw1394 has major 171 and minor 0, while video1394 has major 171 and minor 16. If you use several interface cards you need one video1394 device per card. The standard way to do this is to create a video1394 directory (instead of a device), and create the first device (171,16), second device (171,17),... in that directory. The names for these devices is usually simply 0,1,2,...
 
 To create the 1394 devices type:
 

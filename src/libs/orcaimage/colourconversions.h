@@ -12,7 +12,7 @@
 #define ORCA2_IMAGE_COLOURCONVERSIONS_H
 
 #ifdef OPENCV_FOUND
-    #include <opencv/cv.h>
+    #include <cv.h>
 #endif
 
 #include <orca/camera.h>
