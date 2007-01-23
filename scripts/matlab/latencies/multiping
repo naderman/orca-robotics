@@ -1,0 +1,63 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]; then
+    echo "host: $1"
+    echo "USAGE: $0 <host> [count=3] [minexp=5] [maxexp=16] [interval=1] [filename="pingresults.txt"]"
+    exit 1
+else
+    HOST=$1
+fi
+
+if [ $# -lt 2 ]; then
+    COUNT=3
+else
+    COUNT=$2
+fi
+
+if [ $# -lt 3 ]; then
+    MINEXP=4    # 2**4=16
+else
+    MINEXP=$3
+fi
+
+if [ $# -lt 4 ]; then
+    MAXEXP=16   # 2**12=4096
+else
+    MAXEXP=$4
+    # max ping size is 65507, which is close to 2**16, we'll adjust it later
+    if [ MAXEXP -gt 16 ]; then
+        MAXEXP=16
+    fi
+fi
+
+if [ $# -lt 5 ]; then
+    INTERVAL=1
+else
+    INTERVAL=$5
+fi
+
+if [ $# -lt 6 ]; then
+    FILENAME=pingresults.txt
+else
+    FILENAME=$6
+fi
+
+# delete file contents
+echo "" 1>$FILENAME
+
+for ((e=MINEXP; e <= MAXEXP; e++))  # Double parentheses, and "MAXEXP" with no "$".
+do
+    # packet size is the power of 2
+    PACKETSIZE=$((2 ** e))
+    if [ $e -eq 16 ]; then
+        # this is maximum packet size in Linux
+        PACKETSIZE=65507
+    fi
+    # payload size (subtract header)
+    PAYLOADSIZE=`expr $PACKETSIZE - 8`
+
+    echo "size $PACKETSIZE bytes" 1>>$FILENAME
+
+    echo; echo "ping $HOST -c $COUNT -s $PAYLOADSIZE -i $INTERVAL -q"
+    ping $HOST -c $COUNT -s $PAYLOADSIZE -i $INTERVAL -q 1>>$FILENAME
+done          
