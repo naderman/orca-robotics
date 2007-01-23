@@ -160,6 +160,7 @@ NovatelSpanInsGpsDriver::init()
     std::string responseString;
     std::string responseOk;
     responseOk = "\r\n<OK";
+	int count = 0;
 
     //
     // send initialisation commands to the Novatel   
@@ -167,14 +168,14 @@ NovatelSpanInsGpsDriver::init()
     
     while ( responseString != responseOk )
     {
-        // just in case something is running... stops the novatel logging any messages
-        serial_->flush();
-        put = serial_->write( "unlogall\r\n" );
-        //printf("put %d bytes\n",put);
-        serial_->drain();
-        
-        // Read the serial device to check response ( "<OK" is 3 bytes long )
-        // Note that the response is in abbreviated ASCII format so only need to check for "<OK"
+      // just in case something is running... stops the novatel logging any messages
+      serial_->flush();
+      put = serial_->write( "unlogall\r\n" );
+      //printf("put %d bytes\n",put);
+      serial_->drain();
+       
+      // Read the serial device to check response ( "<OK" is 3 bytes long )
+      // Note that the response is in abbreviated ASCII format so only need to check for "<OK"
         if ( serial_->read_full( response, 13 ) < 0 )
         {
             cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
@@ -184,7 +185,8 @@ NovatelSpanInsGpsDriver::init()
         {
             responseString = response;
             responseString.resize(5);
-        }
+        	cout << "responseString: " << responseString << endl;
+		}
 
         if ( responseString != responseOk )
         {
@@ -207,7 +209,13 @@ NovatelSpanInsGpsDriver::init()
             cout << "INFO: response was ok: " << responseString << endl;
         }
 
-            
+        count++;
+		if ( count > 3 )
+		{
+		     cout << "ERROR(novatelspandriver::init()):Could not initialise driver" << endl;
+		exit(1);
+		}
+			
     } // end of while
         
     // tell the novatel what serial port the imu is attached to (com3 = aux)
@@ -218,7 +226,7 @@ NovatelSpanInsGpsDriver::init()
     if ( serial_->read_full( response, 13 ) < 0 )
     {
         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-        return -1;
+    //     return -1;
     }
     else
     {
@@ -229,7 +237,7 @@ NovatelSpanInsGpsDriver::init()
     if ( responseString != responseOk )
     {
         cout << "WARNING(novatelspandriver.cpp): Response to 'interfacemode' returned error: " << responseString << endl;
-        return -1;
+    //     return -1;
     }
    
     
@@ -248,7 +256,7 @@ NovatelSpanInsGpsDriver::init()
     if ( serial_->read_full( response, 13 ) < 0 )
     {
         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-        return -1;
+    //     return -1;
     }
     else
     {
@@ -259,7 +267,7 @@ NovatelSpanInsGpsDriver::init()
     if ( responseString != responseOk )
     {
         cout << "WARNING(novatelspandriver.cpp): Response to 'posave' returned error: " << responseString << endl;
-        return -1;
+    //     return -1;
     }
    
 
@@ -272,7 +280,7 @@ NovatelSpanInsGpsDriver::init()
     if ( serial_->read_full( response, 13 ) < 0 )
     {
         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-        return -1;
+    //     return -1;
     }
     else
     {
@@ -283,7 +291,7 @@ NovatelSpanInsGpsDriver::init()
     if ( responseString != responseOk )
     {
         cout << "WARNING(novatelspandriver.cpp): Response to 'fix' returned error: " << responseString << endl;
-        return -1;
+    //     return -1;
     }
 
     // imu/gps antenna offset
@@ -304,7 +312,7 @@ NovatelSpanInsGpsDriver::init()
     if ( serial_->read_full( response, 13 ) < 0 )
     {
         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-        return -1;
+    //     return -1;
     }
     else
     {
@@ -315,7 +323,7 @@ NovatelSpanInsGpsDriver::init()
     if ( responseString != responseOk )
     {
         cout << "WARNING(novatelspandriver.cpp): Response to 'setimutype' returned error: " << responseString << endl;
-        return -1;
+    //     return -1;
     }
 
     // select the geodetic datum for operation of the receiver (wgs84 = default)
@@ -326,7 +334,7 @@ NovatelSpanInsGpsDriver::init()
     if ( serial_->read_full( response, 13 ) < 0 )
     {
         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-        return -1;
+    //     return -1;
     }
     else
     {
@@ -337,7 +345,7 @@ NovatelSpanInsGpsDriver::init()
     if ( responseString != responseOk )
     {
         cout << "WARNING(novatelspandriver.cpp): Response to 'datum' returned error: " << responseString << endl;
-        return -1;
+    //     return -1;
     }
    
     // This command provides a method for controlling the polarity and rate of the PPS output
