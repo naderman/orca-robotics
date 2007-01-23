@@ -42,8 +42,12 @@ namespace orcalog
  */
 //@{
 
-//! Prints out laser data to text which is easy to parse
+//! Prints out cpu data to text which is easy to parse
 std::string toLogString( const orca::CpuData& );
+//! Prints out gps data to text which is easy to parse
+std::string toLogString( const orca::GpsData& );
+//! Prints out gps mapgrid data to text which is easy to parse
+std::string toLogString( const orca::GpsMapGridData& );
 //! Prints out laser data to text which is easy to parse
 std::string toLogString( const orca::LaserScanner2dDataPtr& );
 //! Prints out localise2d data to text which is easy to parse

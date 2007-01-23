@@ -32,7 +32,7 @@ GpsLogger::GpsLogger( orcalog::LogMaster *master,
              context )
 {
     // check that we support this format
-    if ( format_!="ice" ) //&& format_!="ascii" )
+    if ( (format_!="ice") && (format_!="ascii") )
     {
         context_.tracer()->warning( interfaceType_+"Logger: unknown log format: "+format_ );
         throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: unknown log format: "+format_ );
@@ -108,7 +108,19 @@ GpsLogger::localSetData( const orca::GpsMapGridData& data )
     // Write reference to master file
     appendMasterFile();
     
-    orcalog::IceWriteHelper helper( context_.communicator() );
-    ice_writeGpsMapGridData( helper.stream_, data );
-    helper.write( file_, 2 );
+    if ( format_=="ice" )
+    {
+        orcalog::IceWriteHelper helper( context_.communicator() );
+        ice_writeGpsMapGridData( helper.stream_, data );
+        helper.write( file_, 2 );
+    }
+    else if ( format_=="ascii" )
+    {
+        (*file_) << orcalog::toLogString(data) << endl;   
+    }
+    else
+    {
+        context_.tracer()->warning( interfaceType_+"Logger: unknown log format: "+format_ );
+        throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: unknown log format: "+format_ );
+    }
 }

@@ -67,6 +67,46 @@ toLogString( const orca::CpuData& obj )
 }
 
 std::string 
+toLogString( const orca::GpsData& obj )
+{
+    std::ostringstream s;
+    s << toLogString(obj.timeStamp) << " "
+      << obj.utcTime.hours << " "
+      << obj.utcTime.minutes << " "
+      << obj.utcTime.seconds << " "
+      << obj.latitude << " "
+      << obj.longitude << " "
+      << obj.altitude << " "
+      << obj.heading << " "
+      << obj.speed << " "
+      << obj.climbRate << " "
+      << obj.satellites << " "
+      << obj.positionType << " "
+      << obj.geoidalSeparation;
+    return s.str();
+}
+
+std::string 
+toLogString( const orca::GpsMapGridData& obj )
+{
+    std::ostringstream s;
+    s << toLogString(obj.timeStamp) << " "
+      << obj.utcTime.hours << " "
+      << obj.utcTime.minutes << " "
+      << obj.utcTime.seconds << " "
+      << obj.northing << " "
+      << obj.easting << " "
+      << obj.altitude << " "
+      << obj.heading << " "
+      << obj.speed << " "
+      << obj.climbRate << " "
+      << obj.zone << " "
+      << obj.positionType;
+    return s.str();
+}
+
+
+std::string 
 toLogString( const orca::LaserScanner2dDataPtr& obj )
 {
     std::stringstream s;
