@@ -12,11 +12,11 @@ IF ( BUILD_LASERFEATUREEXTRACTOR )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( laserfeatureextractor main )
-    TARGET_LINK_LIBRARIES( laserfeatureextractor LaserFeatureExtractorSources )
+    TARGET_LINK_LIBRARIES( laserfeatureextractor LaserFeatureExtractorSources OrcaIfaceImpl )
     
     # build IceBox service
     GLOBAL_ADD_LIBRARY( OrcaLaserFeatureExtractor SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaLaserFeatureExtractor LaserFeatureExtractorSources )
+    TARGET_LINK_LIBRARIES( OrcaLaserFeatureExtractor LaserFeatureExtractorSources OrcaIfaceImpl )
 
     GENERATE_CONFIG_FILE( laserfeatureextractor.def )
 

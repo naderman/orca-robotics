@@ -18,7 +18,6 @@
 
 // interface implementations
 #include "laserconsumerI.h"
-#include "polarfeature2dI.h"
 
 using namespace std;
 using namespace orca;
@@ -26,6 +25,7 @@ using namespace laserfeatures;
 
 Component::Component()
     : orcaice::Component( "LaserFeatureExtractor" ),
+      featureInterface_(0),
       mainLoop_(0)
 {
 }
@@ -40,74 +40,80 @@ Component::~Component()
 void Component::start()
 {
     context().tracer()->info( "Starting component..." );
-    //
-    // PROVIDED: PolarFeatures
-    //
-    // find IceStorm publisher
-    // NetworkException will kill it, that's what we want.
-    IceStorm::TopicPrx topicPrx = orcaice::connectToTopicWithTag<PolarFeature2dConsumerPrx>
-                                        ( context(), polarFeaturePublisher_, "PolarFeature2d" );
-    // create servant for direct connections and tell adapter about it
-    Ice::ObjectPtr polarFeatureObj = new PolarFeature2dI( polarFeaturesDataBuffer_, topicPrx );
-    // two possible exceptions will kill it here, that's what we want
-    orcaice::createInterfaceWithTag( context(), polarFeatureObj, "PolarFeature2d" );
 
+//     //
+//     // PROVIDED: PolarFeatures
+//     //
+//     // find IceStorm publisher
+//     // NetworkException will kill it, that's what we want.
+//     IceStorm::TopicPrx topicPrx = orcaice::connectToTopicWithTag<PolarFeature2dConsumerPrx>
+//                                         ( context(), polarFeaturePublisher_, "PolarFeature2d" );
+//     // create servant for direct connections and tell adapter about it
+//     Ice::ObjectPtr polarFeatureObj = new PolarFeature2dI( polarFeaturesDataBuffer_, topicPrx );
+//     // two possible exceptions will kill it here, that's what we want
+//     orcaice::createInterfaceWithTag( context(), polarFeatureObj, "PolarFeature2d" );
 
-    // REQUIRED : Laser
-    orca::LaserScanner2dPrx laserPrx;
-    while (true) // ( isActive() )
-    {
-        try
-        {
-            orcaice::connectToInterfaceWithTag<LaserScanner2dPrx>( context(), laserPrx, "Laser" );
-            context().tracer()->debug("connected to a 'Laser' interface",5);
-            break;
-        }
-        // includes common ex's: ConnectionRefusedException, ConnectTimeoutException
-        catch ( const Ice::LocalException & e )
-        {
-            context().tracer()->info("failed to connect to a remote interface. Will try again after 2 seconds.");
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-        }
-    }
+//     // REQUIRED : Laser
+//     orca::LaserScanner2dPrx laserPrx;
+//     while (true) // ( isActive() )
+//     {
+//         try
+//         {
+//             orcaice::connectToInterfaceWithTag<LaserScanner2dPrx>( context(), laserPrx, "Laser" );
+//             context().tracer()->debug("connected to a 'Laser' interface",5);
+//             break;
+//         }
+//         // includes common ex's: ConnectionRefusedException, ConnectTimeoutException
+//         catch ( const Ice::LocalException & e )
+//         {
+//             context().tracer()->info("failed to connect to a remote interface. Will try again after 2 seconds.");
+//             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+//         }
+//     }
 
-    // create a callback object to recieve scans
-    Ice::ObjectPtr consumer = new LaserConsumerI( laserDataBuffer_ );
-    orca::RangeScanner2dConsumerPrx callbackPrx =
-        orcaice::createConsumerInterface<orca::RangeScanner2dConsumerPrx>( context(), consumer );
+//     // create a callback object to recieve scans
+//     Ice::ObjectPtr consumer = new LaserConsumerI( laserDataBuffer_ );
+//     orca::RangeScanner2dConsumerPrx callbackPrx =
+//         orcaice::createConsumerInterface<orca::RangeScanner2dConsumerPrx>( context(), consumer );
     
+    //
+    // Instantiate External Interface
+    //
+    featureInterface_ = new orcaifaceimpl::PolarFeature2dI( "PolarFeature2d", context() );
+
     //
     // ENABLE NETWORK CONNECTIONS
     //
     // this may throw, but may as well quit right then
     activate();
 
-    //
-    // Subscribe for data
-    //
-    while (true) // ( isActive() )
-    {
-        try
-        {
-            laserPrx->subscribe( callbackPrx );
-            break;
-        }
-        catch ( const orca::SubscriptionFailedException & e )
-        {
-            tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
-        }
-    }
+//     //
+//     // Subscribe for data
+//     //
+//     while (true) // ( isActive() )
+//     {
+//         try
+//         {
+//             laserPrx->subscribe( callbackPrx );
+//             break;
+//         }
+//         catch ( const orca::SubscriptionFailedException & e )
+//         {
+//             tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+//             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+//         }
+//     }
     
-    // the constructor may throw, we'll let the application shut us down
-    mainLoop_ = new MainLoop( polarFeaturePublisher_,
-                              laserPrx,
-                              laserDataBuffer_,
-                              polarFeaturesDataBuffer_,
+    mainLoop_ = new MainLoop( *featureInterface_,
                               context() );
+
+//                               polarFeaturePublisher_,
+//                               laserPrx,
+//                               laserDataBuffer_,
+//                               polarFeaturesDataBuffer_,
+//                               context() );
+
     mainLoop_->start();
-    
-    // the rest is handled by the application/service
 }
 
 void Component::stop()

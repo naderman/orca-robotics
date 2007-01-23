@@ -13,7 +13,7 @@
 #define ORCA_LASER_CONSUMER_I_H
 
 #include <orca/laserscanner2d.h>
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/ptrproxy.h>
 
 namespace laserfeatures
 {
@@ -21,12 +21,12 @@ namespace laserfeatures
 class LaserConsumerI : public orca::RangeScanner2dConsumer
 {
     public:
-        LaserConsumerI ( orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> &laserDataBuffer );
+        LaserConsumerI ( orcaice::PtrProxy<orca::LaserScanner2dDataPtr> &laserDataProxy );
         
         virtual void setData(const orca::RangeScanner2dDataPtr& data, const Ice::Current&);
         
     private:
-        orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> &laserDataBuffer_;
+        orcaice::PtrProxy<orca::LaserScanner2dDataPtr> &laserDataProxy_;
 };
 
 } // namespace

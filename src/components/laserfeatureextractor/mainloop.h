@@ -13,11 +13,12 @@
 #define ORCA2_FEATURE_EXTRACTOR_MAIN_LOOP_H
 
 #include <orcaice/thread.h>
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/ptrproxy.h>
 #include <orcaice/context.h>
 
 #include <orca/polarfeature2d.h>
 #include <orca/laserscanner2d.h>
+#include <orcaifaceimpl/polarfeature2dI.h>
 
 namespace laserfeatures
 {
@@ -28,22 +29,36 @@ class MainLoop : public orcaice::Thread
 {
 public:
 
-    MainLoop( const orca::PolarFeature2dConsumerPrx &polarFeaturesConsumer,
-                    orca::LaserScanner2dPrx laserPrx,
-                    orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> &laserDataBuffer,
-                    orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
-                    const orcaice::Context & context );
+    MainLoop( orcaifaceimpl::PolarFeature2dI &featureInterface,
+              const orcaice::Context &context );
+
+//         const orca::PolarFeature2dConsumerPrx &polarFeaturesConsumer,
+//         orca::LaserScanner2dPrx laserPrx,
+//         orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> &laserDataBuffer,
+//         orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer,
+//         const orcaice::Context & context );
+
     ~MainLoop();
 
     virtual void run();
 
 private:
+
+    void connectToLaser();
+    void getLaserDescription();
+    void initInterface();
+    void initDriver();
     
+    // This component is 2D-centric: can only handle certain orientations.
+    bool sensorOffsetOK( const orca::Frame3d & offset );
+
+    void convertToRobotCS( const orca::PolarFeature2dDataPtr & featuresPtr );
+
     // generic algorithm
     AlgorithmDriver* driver_;
     
-    // IceStorm consumer
-    const orca::PolarFeature2dConsumerPrx &polarFeaturesConsumer_; 
+    // Our external interface
+    orcaifaceimpl::PolarFeature2dI &featureInterface_;
     
     // Laser proxy
     orca::LaserScanner2dPrx laserPrx_;
@@ -54,17 +69,9 @@ private:
     // Description of laser details
     orca::RangeScanner2dDescription laserDescr_;
 
-    // This component is 2D-centric: can only handle certain orientations.
-    bool sensorOffsetOK( const orca::Frame3d & offset );
-
-    void initDriver();
-
-    // buffers
-    orcaice::PtrBuffer<orca::LaserScanner2dDataPtr> &laserDataBuffer_;
-    orcaice::PtrBuffer<orca::PolarFeature2dDataPtr> &polarFeaturesDataBuffer_;
+    // Proxy for incoming scans
+    orcaice::PtrProxy<orca::LaserScanner2dDataPtr> laserDataProxy_;
     
-    void convertToRobotCS( const orca::PolarFeature2dDataPtr & featuresPtr );
-
     orcaice::Context context_;
 
 };
