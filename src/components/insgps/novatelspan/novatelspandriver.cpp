@@ -86,43 +86,157 @@ NovatelSpanInsGpsDriver::~NovatelSpanInsGpsDriver()
 int
 NovatelSpanInsGpsDriver::reset()
 {
-    cout << "NovatelSpanInsGps: resetting Novatel Span InsGps driver\n";
+    int put;
+    char response[13];
+    char trash[256];
+    std::string responseString;
+    std::string responseOk;
+    responseOk = "\r\n<OK";
+    int count = 0;
+ 
+	cout << "NovatelSpanInsGps: resetting Novatel Span InsGps driver\n";
 
-//     serial_->flush();
-//     const char *reset_string = "$PASHS,RST\r\n";
-//     serial_->write(reset_string, strlen(reset_string));
-//     char sdata[256];
-//     int ret;
-//     sleep(2);
-// 
-//     bool reset_ok=false;
-// 
-//     // do this multiple times just in case it is already spitting out data
-//     do{
-//         ret=serial_->read_line(sdata,256,'\n');
-// 
-//         if(ret>0){
-//             // stick a terminating char in to print
-//             //sdata[ret]=0;
-//             //printf("got %d bytes:%s\n",ret,sdata);
-// 	    if(strncmp(sdata,"$PASHR,ACK*3D",13)==0){
-//                 reset_ok=true;
-//             }
-//         }
-//     }while(ret>0);
-// 
-//     if(reset_ok==false){
-// 	cout << "AshtechGps: ERROR: AshTech GPS failed to reset\n";
-//         cout << "AshtechGps: Disabling Ashtech GPS driver\n";
-//         enabled_ = false;
-//         return -1;
-//     }
-// 
-//     // but of course we still have to wait a little longer grrrr....
-//     sleep(2);
-// 
-//     cout << "AshtechGps: AshTech GPS reset sucessfully\n";
-    return 0;
+	serial_->flush();
+
+    std::vector<int> baudrates;
+	baudrates.resize(12);
+	baudrates[0] = 300 ;
+ 	baudrates[1] = 600 ;
+  	baudrates[2] = 900 ;
+   	baudrates[3] = 1200 ;
+    baudrates[4] = 2400 ;
+ 	baudrates[5] = 4800 ;
+  	baudrates[6] = 9600 ;
+   	baudrates[7] = 19200 ;
+  	baudrates[8] = 38400 ;
+   	baudrates[9] = 57600 ;
+   	baudrates[10] = 115200 ;
+   	baudrates[11] = 230400 ;
+ 
+	// try all baud rates and reset the device
+    for ( int i=0; i<12; i++ )
+	{
+		if( serial_->baud( baudrates[i] )==-1 )
+		{
+			cout << "NovatelSpanInsGps: ERROR: Failed to set baud rate.\n";
+        	std::string errString = "Failed to set baud rate.";
+        	throw orcaice::Exception( ERROR_INFO, errString );
+    	}
+		else
+		{
+ 			serial_->flush();
+       		put = serial_->write( "freset command\r\n" );
+			// cout << put << " bytes were written at " << baudrates[i] << "baudrate" << endl;
+    	    serial_->drain();
+		    IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(250));
+        
+}
+    }
+	
+   // Change the baudrate of the serial port to 9600 which is the default
+	// for the device after it has been reset.
+	if( serial_->baud( 9600 )==-1 ){
+	cout << "NovatelSpanInsGps: ERROR: Failed to set baud rate.\n";
+        std::string errString = "Failed to set baud rate.";
+        throw orcaice::Exception( ERROR_INFO, errString );
+    }
+	else
+	{
+     	while ( responseString != responseOk )
+    	{
+       		serial_->flush();
+      		put = serial_->write( "unlogall\r\n" );
+      		//printf("put %d bytes\n",put);
+      		serial_->drain();
+
+ 		// Read the serial device to check response ( "<OK" is 3 bytes long )
+      	// Note that the response is in abbreviated ASCII format so only need to check for "<OK"
+        if ( serial_->read_full( response, 13 ) < 0 )
+        {
+            cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
+            return -1;
+        }
+        else
+        {
+            responseString = response;
+            responseString.resize(5);
+        	cout << "responseString: " << responseString << endl;
+		}
+
+        if ( responseString != responseOk )
+        {
+            cout << "WARNING(novatelspandriver.cpp): Response to 'unlogall' returned error " << endl;
+            cout << "\t We will continue trying to stop all messages so that we can reset the device" << endl;
+            
+            // check how much data is left in the input buffer and throw it away
+            int unreadBytes = serial_->data_avail_wait();
+            // cout << "unreadBytes: " << unreadBytes << endl;
+            if (unreadBytes < 256 )
+            {            
+                serial_->read_full( trash, unreadBytes );
+
+            }
+
+            IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(250));
+        }
+        else
+        {
+            cout << "INFO: response was ok: " << responseString << endl;
+        }
+        
+		count++;
+		if (count > 3 )
+		{
+		    cout << "ERROR(novatelspandriver::init()):Could not initialise driver" << endl;
+		exit(1);
+    
+		}
+		} // end of while
+
+		// set the device to the requested baud rate 
+		put = serial_->write( "com com1 115200 n 8 1 n off on\r\n" );
+  		// Read the serial device to check response ( "<OK" is 3 bytes long )
+      	// Note that the response is in abbreviated ASCII format so only need to check for "<OK"
+        if ( serial_->read_full( response, 13 ) < 0 )
+        {
+            cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
+            return -1;
+        }
+        else
+        {
+            responseString = response;
+            responseString.resize(5);
+        	cout << "responseString: " << responseString << endl;
+		}
+
+        if ( responseString != responseOk )
+        {
+            cout << "WARNING(novatelspandriver.cpp): Response to 'com' returned error " << endl;
+           
+            // check how much data is left in the input buffer and throw it away
+            int unreadBytes = serial_->data_avail_wait();
+            // cout << "unreadBytes: " << unreadBytes << endl;
+            if (unreadBytes < 256 )
+            {            
+                serial_->read_full( trash, unreadBytes );
+            }
+
+            IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(250));
+        }
+        else
+        {
+            cout << "INFO: response was ok: " << responseString << endl;
+        }
+    }
+
+    // set the port to the requested baudrate
+	if( serial_->baud( 115200 )==-1 ){
+	cout << "NovatelSpanInsGps: ERROR: Failed to set baud rate.\n";
+        std::string errString = "Failed to set baud rate.";
+        throw orcaice::Exception( ERROR_INFO, errString );
+    }
+    
+   return 0;
 }
 
 void
@@ -148,6 +262,7 @@ NovatelSpanInsGpsDriver::init()
     // start the orcaice::thread for this driver
     // start();
 
+	reset();
 
     if ( enabled_ )
         return 0;
@@ -226,7 +341,7 @@ NovatelSpanInsGpsDriver::init()
     if ( serial_->read_full( response, 13 ) < 0 )
     {
         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-    //     return -1;
+        return -1;
     }
     else
     {
@@ -237,7 +352,7 @@ NovatelSpanInsGpsDriver::init()
     if ( responseString != responseOk )
     {
         cout << "WARNING(novatelspandriver.cpp): Response to 'interfacemode' returned error: " << responseString << endl;
-    //     return -1;
+        return -1;
     }
    
     
@@ -256,7 +371,7 @@ NovatelSpanInsGpsDriver::init()
     if ( serial_->read_full( response, 13 ) < 0 )
     {
         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-    //     return -1;
+        return -1;
     }
     else
     {
@@ -267,7 +382,7 @@ NovatelSpanInsGpsDriver::init()
     if ( responseString != responseOk )
     {
         cout << "WARNING(novatelspandriver.cpp): Response to 'posave' returned error: " << responseString << endl;
-    //     return -1;
+       return -1;
     }
    
 
@@ -280,7 +395,7 @@ NovatelSpanInsGpsDriver::init()
     if ( serial_->read_full( response, 13 ) < 0 )
     {
         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-    //     return -1;
+        return -1;
     }
     else
     {
@@ -291,7 +406,7 @@ NovatelSpanInsGpsDriver::init()
     if ( responseString != responseOk )
     {
         cout << "WARNING(novatelspandriver.cpp): Response to 'fix' returned error: " << responseString << endl;
-    //     return -1;
+        return -1;
     }
 
     // imu/gps antenna offset
@@ -312,7 +427,7 @@ NovatelSpanInsGpsDriver::init()
     if ( serial_->read_full( response, 13 ) < 0 )
     {
         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-    //     return -1;
+        return -1;
     }
     else
     {
@@ -323,7 +438,7 @@ NovatelSpanInsGpsDriver::init()
     if ( responseString != responseOk )
     {
         cout << "WARNING(novatelspandriver.cpp): Response to 'setimutype' returned error: " << responseString << endl;
-    //     return -1;
+        return -1;
     }
 
     // select the geodetic datum for operation of the receiver (wgs84 = default)
@@ -334,7 +449,7 @@ NovatelSpanInsGpsDriver::init()
     if ( serial_->read_full( response, 13 ) < 0 )
     {
         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-    //     return -1;
+        return -1;
     }
     else
     {
@@ -345,7 +460,7 @@ NovatelSpanInsGpsDriver::init()
     if ( responseString != responseOk )
     {
         cout << "WARNING(novatelspandriver.cpp): Response to 'datum' returned error: " << responseString << endl;
-    //     return -1;
+        return -1;
     }
    
     // This command provides a method for controlling the polarity and rate of the PPS output
