@@ -74,9 +74,12 @@ GpsLogger::init()
 void 
 GpsLogger::writeDescriptionToFile( const orca::GpsDescription& obj )
 {
-    orcalog::IceWriteHelper helper( context_.communicator() );
-    ice_writeGpsDescription( helper.stream_, obj );
-    helper.write( file_ );  
+    if ( format_=="ice" )
+    {
+        orcalog::IceWriteHelper helper( context_.communicator() );
+        ice_writeGpsDescription( helper.stream_, obj );
+        helper.write( file_ );  
+    }
 }
 
 void 
@@ -84,10 +87,12 @@ GpsLogger::localSetData( const orca::GpsData& data )
 {
     // Write reference to master file
     appendMasterFile();
-
-    orcalog::IceWriteHelper helper( context_.communicator() );
-    ice_writeGpsData( helper.stream_, data );
-    helper.write( file_, 0 );
+    if ( format_=="ice" )
+    {
+        orcalog::IceWriteHelper helper( context_.communicator() );
+        ice_writeGpsData( helper.stream_, data );
+        helper.write( file_, 0 );
+    }
 }
 
 
@@ -97,9 +102,12 @@ GpsLogger::localSetData( const orca::GpsTimeData& data )
     // Write reference to master file
     appendMasterFile();
     
-    orcalog::IceWriteHelper helper( context_.communicator() );
-    ice_writeGpsTimeData( helper.stream_, data );
-    helper.write( file_, 1 );
+    if ( format_=="ice" )
+    {
+        orcalog::IceWriteHelper helper( context_.communicator() );
+        ice_writeGpsTimeData( helper.stream_, data );
+        helper.write( file_, 1 );
+    }
 }
 
 void 
@@ -117,10 +125,5 @@ GpsLogger::localSetData( const orca::GpsMapGridData& data )
     else if ( format_=="ascii" )
     {
         (*file_) << orcalog::toLogString(data) << endl;   
-    }
-    else
-    {
-        context_.tracer()->warning( interfaceType_+"Logger: unknown log format: "+format_ );
-        throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: unknown log format: "+format_ );
     }
 }
