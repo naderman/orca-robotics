@@ -119,7 +119,7 @@ automatically finds the type of camera.
 
 @par Dependencies
 
-Requires <a href="http://opencvlibrary.sf.net" target="_blank">Opencv library</a>. Latest tested version 1.0.0.
+Requires <a href="http://opencvlibrary.sf.net" target="_blank">OpenCV library</a>. Latest tested version 1.0.0.
 
 @note Recent compilation problems with opencv have been discovered due to python-dev and swig packages not being checked for by autoconf. If you are using Debian, please install the python2.3-dev package and the swig package. For other operating systems, please check that you have the headers for python installed in a standard system directory.
 

@@ -43,9 +43,15 @@ An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ director
 
 @par Dependencies
 
-Requires that <a href="http://opencvlibrary.sourceforge.net/#head-02b4549cdc57cb10f8250a7ae860d5f21a6eae78" target="_blank">Opencv-0.9.7</a>  is installed.
+Requires <a href="http://opencvlibrary.sf.net" target="_blank">OpenCV library</a>. Latest tested version 1.0.0. For our installation instructions, see @ref orca_component_imageserver_monoopencv.
+
+This component uses libOpenCV to display images. Before compiling libOpenCV, make sure GTK++ is installed. In Debian, install this package:
+@verbatim
+# apt-get install libgtk2.0-dev
+@endverbatim
 
 @par Authors
+
 Ben Upcroft
 
 */
