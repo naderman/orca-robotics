@@ -11,11 +11,9 @@
 #define ORCA2_IMAGESERVER_MAIN_LOOP_H
 
 #include <orcaice/thread.h>
-#include <orcaice/ptrbuffer.h>
 #include <orcaice/context.h>
+#include <orcaifaceimpl/cameraI.h>
 
-#include <orca/camera.h>
-#include "cameraI.h"
 #include "driver.h"
 #include "imagegrabber/imagegrabber.h"
 
@@ -32,10 +30,10 @@ class MainLoop : public orcaice::Thread
 
 public:
 
-    MainLoop( CameraI              &cameraObj,
-              Driver*              hwDriver,
-              ImageGrabber*        imageGrabber,
-              const orcaice::Context &context );
+    MainLoop( orcaifaceimpl::CameraI&   cameraObj,
+              Driver*                   hwDriver,
+              ImageGrabber*             imageGrabber,
+              const orcaice::Context&   context );
 
     ~MainLoop();
 
@@ -44,7 +42,7 @@ public:
 private:
 
     // The camera object
-    CameraI &cameraObj_;
+    orcaifaceimpl::CameraI& cameraObj_;
 
     // Generic driver for the hardware
     Driver *hwDriver_;
@@ -55,8 +53,10 @@ private:
 
     // Loops until activated
     void activate();
+    // Loops until established
+    void establishInterface();
 
-    void readData( orca::CameraData& data );
+    int readData( orca::CameraData& data );
 
 };
 

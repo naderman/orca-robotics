@@ -18,14 +18,14 @@ using namespace orca;
 
 namespace imageserver {
 
-MainLoop::MainLoop( CameraI&                cameraObj,
+MainLoop::MainLoop( orcaifaceimpl::CameraI& cameraObj,
                     Driver*                 hwDriver,
                     ImageGrabber*           imageGrabber,
-                    const orcaice::Context& context )
-    : cameraObj_(cameraObj),
-      hwDriver_(hwDriver),
-      imageGrabber_(imageGrabber),
-      context_(context)
+                    const orcaice::Context& context ) :
+    cameraObj_(cameraObj),
+    hwDriver_(hwDriver),
+    imageGrabber_(imageGrabber),
+    context_(context)
 {
 }
 
@@ -63,6 +63,28 @@ MainLoop::activate()
 }
 
 void
+MainLoop::establishInterface()
+{
+    while ( isActive() )
+    {
+        try {
+            cameraObj_.initInterface();
+            context_.tracer()->debug( "Activated Laser interface" );
+            return;
+        }
+        catch ( orcaice::Exception &e )
+        {
+            context_.tracer()->warning( std::string("MainLoop::establishInterface(): ") + e.what() );
+        }
+        catch ( ... )
+        {
+            context_.tracer()->warning( "MainLoop::establishInterface(): caught unknown exception." );
+        }
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+    }
+}
+
+int
 MainLoop::readData( orca::CameraData& data )
 {
      context_.tracer()->debug( "Reading data...", 8 );
@@ -78,12 +100,15 @@ MainLoop::readData( orca::CameraData& data )
         hwDriver_->init();
 
         // copy config parameters into object fields
-        hwDriver_->initData( data );
-
-        return;
+        int ret = hwDriver_->initData( data );
+        if ( ret == 0 )
+            context_.tracer()->info( "Re-Initialisation succeeded." );
+        else
+            context_.tracer()->info( "Re-Initialisation failed." );
+        return -1;
     }
 
-    cameraObj_.localSetData( data );
+    return 0;
 }
 
 void
@@ -101,6 +126,7 @@ MainLoop::run()
 
         // Catches all its exceptions.
         activate();
+        establishInterface();
 
         //
         // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
@@ -110,8 +136,12 @@ MainLoop::run()
         {
             try
             {
-                readData( cameraData );
+                int ret = readData( cameraData );
 
+                // make sure we are not shutting down, otherwise we'll segfault while trying to send
+                if ( isActive() ) {
+                    cameraObj_.localSetAndSend( cameraData );
+                }
 
                 if ( heartbeater.isHeartbeatTime() )
                 {

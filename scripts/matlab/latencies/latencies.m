@@ -7,18 +7,20 @@ IS_PRINT = 0;
 xmech_lab = {'orca', 'ping', 'iceping' };
 %  route_lab = { 'coffee->coffee', 'answer->question', 'coffee->thistle',  'coffee->question (wireless)' };
 xscale = [1e-2 1e3];
-yscale = [9e-3 3e2]; % [8e-3 8e3];
+yscale = [5e-3 3e2]; % [8e-3 8e3];
 
 figure(1),clf, orient tall, hold on
 
 % ICEBOX
 
-D0o= load(  'pingdata/icebox_lin.dat' );  % RC4
+D0o= load(  'pingdata/icebox_lin.dat' );
+D0agav= load(  'pingdata/icebox_lnx_agave.dat' );
+D0burr= load(  'pingdata/icebox_lnx_burrito.dat' );
 %D0p= load(  '212/coffee_icebox_ice_101_1.dat' );  % ice ping
 
 %figure(10),clf
 subplot(131)
-h=pingplot( D0o, 'b-s' );
+h=pingplot( D0o, 'b-s', D0burr, 'g-o', D0agav, 'g--x' );
 set(gca,'xscale','log')
 set(gca,'yscale','log')
 xlim(xscale)
@@ -36,6 +38,9 @@ wp=get(gcf,'position'); set(gcf,'position', [wp(1:2) 750 600])
 D1p= load(  'pingdata/samehost_ping.dat' );  % ping
 D1oLL= load( 'pingdata/samehost_lin.dat' );  % orca2 Linux-Linux
 D1oWW= load( 'pingdata/samehost_win.dat' );  % orca2 Win-Win
+
+D1pburr= load(  'pingdata/samehost_ping_burrito.dat' );  % ping
+D1pagav= load(  'pingdata/samehost_ping_agave.dat' );  % ping
 D1burr = load( 'pingdata/burr_burr_lnxlnx.dat' );
 D1agav = load( 'pingdata/agave_agave_lnxlnx.dat' );
 
@@ -45,7 +50,7 @@ D1agav = load( 'pingdata/agave_agave_lnxlnx.dat' );
 
 %  figure(11),clf
 subplot(132)
-h=pingplot( D1oLL,'b-s', D1p,'k--o', D1burr, 'g--o', D1agav, 'g-x' );
+h=pingplot( D1oLL,'b-s', D1p,'k--o', D1pburr,'r-o', D1pagav,'r--x', D1burr, 'g-o', D1agav, 'g--x' );
 %  h=pingplot( D1oLL,'b-s', D1oWW,'g-^', D1p,'k--o' );
 set(gca,'xscale','log')
 set(gca,'yscale','log')
@@ -61,15 +66,18 @@ wp=get(gcf,'position'); set(gcf,'position', [wp(1:2) 750 600])
 
 % WIRED TO ANOTHER HOST
 
-D2p= load( 'pingdata/twohosts_ping.dat' );  % struct
+D2p= load( 'pingdata/twohosts_ping.dat' );
+D2pLW100= load( 'pingdata/twohosts_ping_lnxqnx_100mb.dat' );
+D2pLW1000= load( 'pingdata/twohosts_ping_lnxqnx_1000mb.dat' );
 D2oLL= load( 'pingdata/twohosts_linlin.dat' );  % RC4
 D2oLW= load( 'pingdata/twohosts_linwin.dat' );  % orca2
 D2oWW= load( 'pingdata/twohosts_winwin.dat' );  % orca2
-
+D2oLQ100= load( 'pingdata/twohosts_lnxqnx_100mb.dat' );
+D2oLQ1000= load( 'pingdata/twohosts_lnxqnx_1000mb.dat' );
 
 %  figure(12),clf
 subplot(133)
-h=pingplot( D2oLL,'b-s', D2p,'k--o' );
+h=pingplot( D2oLL,'b-s', D2p,'k--o', D2pLW100,'r--x', D2pLW1000,'r-o', D2oLQ100,'g-o', D2oLQ1000,'m-o' );
 %  h=pingplot( D2oLL,'b-s', D2oWW,'g-^', D2oLW,'m-d', D2p,'k--o' );
 set(gca,'xscale','log')
 set(gca,'yscale','log')

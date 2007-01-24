@@ -67,7 +67,7 @@ IF ( BUILD_IMAGE_SERVER )
     ENDIF ( V4L_FOUND OR 1394_FOUND )
     
     LINK_DIRECTORIES( imagegrabber )
-    SET( DEP_LIBS OrcaImage )
+    SET( DEP_LIBS OrcaImage OrcaIfaceImpl )
     
     IF ( OPENCV_FOUND )
         INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )

@@ -13,7 +13,7 @@
 #include "mainloop.h"
 
 // implementations of Ice objects
-#include "cameraI.h"
+#include <orcaifaceimpl/cameraI.h>
 
 // Various bits of hardware we can drive
 #include "fakedriver.h"
@@ -197,7 +197,7 @@ Component::start()
     //
 
     // create servant for direct connections
-    CameraI* cameraI = new CameraI( descr, "Camera", context() );
+    orcaifaceimpl::CameraI* cameraI = new orcaifaceimpl::CameraI( descr, "Camera", context() );
     // to register with the adapter, it's enough to have a generic pointer
     cameraObjPtr_ = cameraI;
     // this may throw but it's better if it kills us.

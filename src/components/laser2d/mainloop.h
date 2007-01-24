@@ -13,7 +13,6 @@
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/laserscanner2dI.h>
-#include <orca/laserscanner2d.h>
 #include "driver.h"
 
 namespace laser2d {
