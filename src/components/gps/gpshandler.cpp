@@ -79,6 +79,7 @@ GpsHandler::run()
     
                     if(hwDriver_->getData(gpsData)==0)
                     {
+                        context_.tracer()->debug("We have new gpsData", 3);
                         int zone;
                         zone=mgaMapgrid_.getGridCoords( gpsData.latitude, gpsData.longitude,
                                                         gpsMapGridData.easting,gpsMapGridData.northing);
@@ -109,19 +110,18 @@ GpsHandler::run()
                         gpsMapGridData.altitude=p.z;
                     
                         gpsObj_.localSetMapGridData(gpsMapGridData);
+                        
+                        context_.tracer()->debug( orcaice::toString( gpsData ), 5 );
+                        context_.tracer()->debug( orcaice::toString( gpsMapGridData ), 5 );
                     
                     }
     
                     if(hwDriver_->getTimeData(gpsTimeData)==0)
                     {
+                        context_.tracer()->debug("We have new timeData", 3);
                         gpsObj_.localSetTimeData(gpsTimeData);
+//                         context_.tracer()->debug( orcaice::toString( gpsTimeData ), 5 );
                     }
-                    
-                    // display the data
-                    context_.tracer()->debug( orcaice::toString( gpsData ), 5 );
-                    context_.tracer()->debug( orcaice::toString( gpsMapGridData ), 5 );
-                    context_.tracer()->debug( orcaice::toString( gpsTimeData ), 5 );
-                    
                 }
             }
             else
