@@ -1,4 +1,4 @@
-IF ( OS_LINUX )
+IF ( OS_LINUX OR OS_QNX )
 
 OPTION( BUILD_INSGPS "Try to build InsGps component" ON )
 
@@ -38,4 +38,4 @@ IF ( BUILD_INSGPS )
     GENERATE_CONFIG_FILE( insgps.def )
 
 ENDIF ( BUILD_INSGPS )
-ENDIF ( OS_LINUX )
+ENDIF ( OS_LINUX OR OS_QNX )
