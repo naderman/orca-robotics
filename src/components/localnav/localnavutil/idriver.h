@@ -35,13 +35,23 @@ public:
     IDriver() {};
     virtual ~IDriver() {};
 
+    // The number of waypoints we look into the future (and therefore
+    // expect to be provided with)
+    virtual int waypointHorizon() { return 1; }
+
+    // Driver sets everything up, and is told what time it is
+    virtual void init( const orca::Time &time )=0;
+
+    // Call this when you finish the path.
+    virtual void reset()=0;
+
     //
     // Sets cmd.
     //
     virtual void getCommand( bool                               stalled,
                              const orca::Twist2d               &currentVelocity,
                              const orca::RangeScanner2dDataPtr  obs,
-                             const Goal                        &goal,
+                             const std::vector<Goal>           &goals,
                              orca::VelocityControl2dData       &cmd ) = 0;
 
 protected: 

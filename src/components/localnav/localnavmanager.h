@@ -42,15 +42,13 @@ public:
                      PathMaintainer         &pathMaintainer,
                      const orcaice::Context &context );
 
-#if 0
     // Driver sets everything up, and is told what time it is
     void init( const orca::Time &time )
-        { driver.init( time ); }
+        { driver_.init( time ); }
 
     // Call this when you finish the path.
     void reset()
-        { driver.reset(); }
-#endif
+        { driver_.reset(); }
 
     // The odometry is required for the velocity, which isn't contained
     // in Localise2d.
@@ -61,11 +59,11 @@ public:
 
 private: 
 
-    void maybeSendHeartbeat();
+    void maybeSendHeartbeat( bool haveGoal );
     
-    // Returns true iff a waypoint is active
-    bool getCurrentGoal( const orcanavutil::Pose &pose,
-                         Goal &currentGoal );
+//     // Returns true iff a waypoint is active
+//     bool getCurrentGoal( const orcanavutil::Pose &pose,
+//                          Goal &currentGoal );
 
     // The driver itself
     IDriver   &driver_;
@@ -74,7 +72,8 @@ private:
     // It's updated asynchronously by the outside world.
     PathMaintainer   &pathMaintainer_;
 
-    orca::Waypoint2d  currentWaypoint_;
+    // Goals are in our local coordinate system
+    std::vector<Goal> currentGoals_;
 
     // Maintain these for heartbeat messages
     double            secondsBehindSchedule_;

@@ -361,6 +361,8 @@ void
 MainLoop::run()
 {
     setup();
+    driver_->init( clock_.time() );
+    driver_->reset();
 
     const int TIMEOUT_MS = 1000;
 

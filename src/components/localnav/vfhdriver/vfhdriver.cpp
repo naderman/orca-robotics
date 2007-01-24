@@ -89,12 +89,15 @@ VfhDriver::setSpeedConstraints( float maxSpeed, float maxTurnrate )
 
 // Goal location is in robot's coordinate frame
 void
-VfhDriver::getCommand( bool  stalled,
-                       const orca::Twist2d &currentVelocity,
-                       const orca::RangeScanner2dDataPtr obs,
-                       const Goal                        &goal,
-                       orca::VelocityControl2dData& cmd )
+VfhDriver::getCommand( bool                               stalled,
+                       const orca::Twist2d               &currentVelocity,
+                       const orca::RangeScanner2dDataPtr  obs,
+                       const std::vector<Goal>           &goals,
+                       orca::VelocityControl2dData&       cmd )
 {
+    // Just deal with the current goal
+    Goal goal = goals[0];
+
     maybeSendHeartbeat();
     setSpeedConstraints( goal.maxSpeed, goal.maxTurnrate );
 

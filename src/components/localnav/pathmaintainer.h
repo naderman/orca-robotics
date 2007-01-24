@@ -13,6 +13,8 @@
 #include <orca/pathfollower2d.h>
 #include <orcaice/ptrproxy.h>
 #include <orcaice/context.h>
+#include <orcanavutil/pose.h>
+#include <localnavutil/goal.h>
 
 namespace localnav {
 
@@ -39,9 +41,18 @@ public:
     // Functions for the LocalNavManager
     //
 
-    const orca::Waypoint2d &currentWaypoint() const;
-    bool  isActive() { return wpIndex_ != -1; }
-    void  incrementWpIndex();
+    // Gets a list of up to maxNumGoals goals, the first
+    // of which being the one currently sought, given that the robot
+    // is at 'pose'.
+    //
+    // Goals are in robot's local coordinate system.
+    // 
+    void getActiveGoals( std::vector<Goal> &goals,
+                         int maxNumGoals,
+                         const orcanavutil::Pose &pose );
+
+//     const orca::Waypoint2d &currentWaypoint() const;
+//     bool  isActive() { return wpIndex_ != -1; }
 
     //
     // Functions called by MainLoop, to trigger comms with outside world
@@ -50,10 +61,14 @@ public:
     void checkForNewPath();
     void checkForWpIndexChange();
 
-    // Return the remaining time (in seconds) before we have to be at the next waypoint
-    double secToNextWp() const;
+//     // Return the remaining time (in seconds) before we have to be at the next waypoint
+//     double secToNextWp() const;
     
 private: 
+
+    bool waypointReached( const orca::Waypoint2d &wp,
+                          const orcanavutil::Pose &pose );
+    void  incrementWpIndex();
 
     // How long since path activation
     double secSinceActivation() const;

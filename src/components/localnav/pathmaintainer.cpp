@@ -10,7 +10,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include "pathfollower2dI.h"
-
+#include <orcanavutil/orcanavutil.h>
 #include "pathmaintainer.h"
 
 using namespace std;
@@ -29,12 +29,12 @@ PathMaintainer::PathMaintainer( PathFollower2dI        &pathFollowerInterface,
 {
 }
 
-const orca::Waypoint2d &
-PathMaintainer::currentWaypoint() const
-{
-    assert( wpIndex_ >= 0 && wpIndex_ <= (int) (path_.path.size()) );
-    return path_.path[wpIndex_];
-}
+// const orca::Waypoint2d &
+// PathMaintainer::currentWaypoint() const
+// {
+//     assert( wpIndex_ >= 0 && wpIndex_ <= (int) (path_.path.size()) );
+//     return path_.path[wpIndex_];
+// }
 
 void
 PathMaintainer::checkPathOut( const orca::PathFollower2dData& pathData )
@@ -140,6 +140,77 @@ PathMaintainer::checkForWpIndexChange()
     }
 }
 
+bool 
+PathMaintainer::waypointReached( const orca::Waypoint2d &wp,
+                                 const orcanavutil::Pose &pose )
+{
+    double distanceToWp = hypotf( pose.y()-wp.target.p.y,
+                                  pose.x()-wp.target.p.x );
+    if ( distanceToWp > wp.distanceTolerance )
+        return false;
+
+    double headingDiff = pose.theta()-wp.target.o;
+    NORMALISE_ANGLE( headingDiff );
+    if ( fabs(headingDiff) > wp.headingTolerance )
+        return false;
+
+    double timeToTarget = orcaice::timeDiffAsDouble( wp.timeTarget, clock_.time() );
+    if ( timeToTarget > 0 )
+        return false;
+
+    return true;
+}
+
+void
+convert( const orca::Waypoint2d &wp,
+         Goal &goal,
+         const orcanavutil::Pose &pose,
+         double secSinceActivation )
+{
+    double secToWp = orcaice::timeAsDouble(wp.timeTarget) - secSinceActivation;
+    
+    goal.set( wp.target.p.x,
+              wp.target.p.y,
+              wp.target.o,
+              wp.distanceTolerance,
+              wp.headingTolerance,
+              secToWp,
+              wp.maxApproachSpeed,
+              wp.maxApproachTurnrate );
+
+    // put the goal in robot's local coord system
+    orcanavutil::subtractInitialOffset( goal.x,
+                                        goal.y,
+                                        goal.theta,
+                                        pose.x(),
+                                        pose.y(),
+                                        pose.theta() );
+    NORMALISE_ANGLE( goal.theta );
+}
+
+void
+PathMaintainer::getActiveGoals( std::vector<Goal> &goals,
+                                int maxNumWaypoints,
+                                const orcanavutil::Pose &pose )
+{
+    goals.resize(0);
+    if ( wpIndex_ == -1 ) return;
+
+    // Peel off waypoints if they're reached
+    while ( waypointReached( path_.path[wpIndex_], pose ) )
+        incrementWpIndex();
+
+    int wpI=0;
+    for ( uint pI=wpIndex_;
+          pI < path_.path.size() && wpI < maxNumWaypoints;
+          pI++, wpI++ )
+    {
+        Goal goal;
+        convert( path_.path[pI], goal, pose, secSinceActivation() );
+        goals.push_back( goal );
+    }
+}
+
 void  
 PathMaintainer::incrementWpIndex()
 {
@@ -151,11 +222,11 @@ PathMaintainer::incrementWpIndex()
     }
 }
 
-double
-PathMaintainer::secToNextWp() const
-{
-    return orcaice::timeAsDouble(currentWaypoint().timeTarget) - secSinceActivation();
-}
+// double
+// PathMaintainer::secToNextWp() const
+// {
+//     return orcaice::timeAsDouble(currentWaypoint().timeTarget) - secSinceActivation();
+// }
 
 double
 PathMaintainer::secSinceActivation() const

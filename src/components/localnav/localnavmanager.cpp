@@ -24,10 +24,10 @@ namespace localnav {
 //////////////////////////////////////////////////////////////////////
 //                    Non-Member  Functions
 //////////////////////////////////////////////////////////////////////
+
 float requiredTimeToGoalAtMaxSpeed( const Goal &goal )
 {
     assert ( goal.maxSpeed    >= 0.0 );
-    // assert ( goal.maxTurnrate >= 0.0 );
 
     const double FOREVER        = 1e9;
     const double LINEAR_EPS     = 1e-5; 
@@ -55,10 +55,6 @@ float requiredTimeToGoalAtMaxSpeed( const Goal &goal )
         cout<<"TRACE(localnavmanager.cpp): translationTime: " << translationTime << endl;
     }
     assert( requiredTimeAtMaxSpeed >= 0.0 );
-    
-//     cout<<"TRACE(localnavmanager.cpp): goal is at: " << goal << endl;
-//     cout<<"TRACE(localnavmanager.cpp): reqd time trans, rot = " << translationTime << ", " << rotationTime << endl;
-
     return requiredTimeAtMaxSpeed;
 }
 
@@ -135,35 +131,35 @@ setGoalFromWaypoint( const orcanavutil::Pose &pose,
 }
 
 // Returns true iff a waypoint is active
-bool
-LocalNavManager::getCurrentGoal( const orcanavutil::Pose &pose,
-                                 Goal &currentGoal )
-{
-    while ( true )
-    {
-        if ( !pathMaintainer_.isActive() )
-        {
-            return false;
-        }
+// bool
+// LocalNavManager::getCurrentGoal( const orcanavutil::Pose &pose,
+//                                  Goal &currentGoal )
+// {
+//     while ( true )
+//     {
+//         if ( !pathMaintainer_.isActive() )
+//         {
+//             return false;
+//         }
 
-        // Get the current goal
-        setGoalFromWaypoint( pose,
-                             pathMaintainer_.currentWaypoint(),
-                             pathMaintainer_.secToNextWp(),
-                             currentGoal );
+//         // Get the current goal
+//         setGoalFromWaypoint( pose,
+//                              pathMaintainer_.currentWaypoint(),
+//                              pathMaintainer_.secToNextWp(),
+//                              currentGoal );
 
-        if ( goalPosReached(currentGoal) && goalTimeReached(currentGoal) )
-        {
-            pathMaintainer_.incrementWpIndex();
-            // Return to the start of the loop, and peel off a new waypoint.
-        }
-        else
-        {
-            // Leave the currentGoal as set
-            return true;
-        }
-    }    
-}
+//         if ( goalPosReached(currentGoal) && goalTimeReached(currentGoal) )
+//         {
+//             pathMaintainer_.incrementWpIndex();
+//             // Return to the start of the loop, and peel off a new waypoint.
+//         }
+//         else
+//         {
+//             // Leave the currentGoal as set
+//             return true;
+//         }
+//     }    
+// }
 
 orcanavutil::Pose
 getMLPose( const orca::Localise2dData &localiseData )
@@ -178,13 +174,17 @@ LocalNavManager::getCommand( const orca::RangeScanner2dDataPtr  rangeData,
                              const orca::Odometry2dData&    odomData, 
                              orca::VelocityControl2dData&   cmd )
 {
-    maybeSendHeartbeat();
     orcanavutil::Pose  pose = getMLPose( localiseData );
-    Goal               currentGoal;
 
-    bool haveGoal = getCurrentGoal( pose, currentGoal );
+    pathMaintainer_.getActiveGoals( currentGoals_,
+                                    driver_.waypointHorizon(),
+                                    pose );
+
+    bool haveGoal = currentGoals_.size() > 0;
+    maybeSendHeartbeat( haveGoal );
     if ( !haveGoal )
     {
+        driver_.reset();
         cmd.motion.v.x = 0;
         cmd.motion.v.y = 0;
         cmd.motion.w   = 0;
@@ -197,12 +197,12 @@ LocalNavManager::getCommand( const orca::RangeScanner2dDataPtr  rangeData,
     }
     else
     {
-        constrainMaxSpeeds( currentGoal, context_ );
+        constrainMaxSpeeds( currentGoals_[0], context_ );
         bool obsoleteStall=false;
         driver_.getCommand( obsoleteStall,
                             odomData.motion,
                             rangeData,
-                            currentGoal,
+                            currentGoals_,
                             cmd );
     }
     // For big debug levels, give feedback through tracer.
@@ -214,13 +214,13 @@ LocalNavManager::getCommand( const orca::RangeScanner2dDataPtr  rangeData,
 }
 
 void
-LocalNavManager::maybeSendHeartbeat()
+LocalNavManager::maybeSendHeartbeat( bool haveGoal )
 {
     if ( !heartbeater_.isHeartbeatTime() )
         return;
 
     stringstream ss;
-    if ( pathMaintainer_.isActive() )
+    if ( haveGoal )
     {
         ss << "Seeking goal.  Timing: ";
         if ( secondsBehindSchedule_ > 0.0 )
