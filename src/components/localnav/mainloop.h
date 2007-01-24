@@ -17,8 +17,11 @@
 #include <orcaice/ptrproxy.h>
 #include <orcaice/thread.h>
 #include <orcaice/proxy.h>
-
+#include <orcaifaceimpl/ptrproxiedconsumerI.h>
+#include <orcaifaceimpl/proxiedconsumerI.h>
 #include <localnavmanager.h>
+#include <idriver.h>
+#include <clock.h>
 
 namespace localnav {
 
@@ -40,25 +43,14 @@ class MainLoop : public orcaice::Thread
 public: 
 
     // This version interacts with the real world
-    MainLoop( LocalNavManager                                &localNavManager,
-              orcaice::PtrProxy<orca::RangeScanner2dDataPtr> &obsProxy,
-              orcaice::Proxy<orca::Localise2dData>           &locProxy,
-              orcaice::Proxy<orca::Odometry2dData>           &odomProxy,
+    MainLoop( DriverFactory                                  &driverFactory,
               PathFollower2dI                                &pathFollowerInterface,
-              orca::VelocityControl2dPrx                     &velControl2dPrx,
-              PathMaintainer                                 &pathMaintainer,
-              orca::PathFollower2dConsumerPrx                &pathPublisher,
               const orcaice::Context                         &context );
 
     // This version is for simulator-based testing.
-    MainLoop( LocalNavManager                                &localNavManager,
-              orcaice::PtrProxy<orca::RangeScanner2dDataPtr> &obsProxy,
-              orcaice::Proxy<orca::Localise2dData>           &locProxy,
-              orcaice::Proxy<orca::Odometry2dData>           &odomProxy,
+    MainLoop( DriverFactory                                  &driverFactory,
               PathFollower2dI                                &pathFollowerInterface,
               Simulator                                      &testSimulator,
-              PathMaintainer                                 &pathMaintainer,
-              orca::PathFollower2dConsumerPrx                &pathPublisher,
               const orcaice::Context                         &context );
 
     ~MainLoop();
@@ -67,7 +59,12 @@ public:
 
 private: 
 
+    void setup();
     void initInterfaces();
+    void connectToController();
+    void subscribeForOdometry();
+    void subscribeForLocalisation();
+    void subscribeForObservations();
 
     // Make sure all our sources of info are OK, and that there's something
     // in all our buffers
@@ -78,7 +75,7 @@ private:
 
     // See if we need to follow a new path, plus
     // see if we should update the world on our progress.
-    void checkWithOutsideWorld( PathMaintainer& pathMaintainer );
+    void checkWithOutsideWorld();
 
     // Returns true if the timestamps differ by more than a threshold.
     bool areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData,
@@ -87,12 +84,26 @@ private:
                              double                             threshold );
 
     // The class that does the navigating
-    LocalNavManager &localNavManager_;
+    LocalNavManager *localNavManager_;
+
+    // Keeps track of the path we're following
+    PathMaintainer  *pathMaintainer_;
+
+    // Using this driver
+    IDriver *driver_;
+
+    // Loaded with this
+    DriverFactory &driverFactory_;
 
     // Incoming observations and pose info
-    orcaice::PtrProxy<orca::RangeScanner2dDataPtr> &obsProxy_;
-    orcaice::Proxy<orca::Localise2dData>   &locProxy_;
-    orcaice::Proxy<orca::Odometry2dData>   &odomProxy_;
+    // Get observations, pose, and odometric velocity
+    orcaifaceimpl::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr> *obsConsumer_;
+    orcaifaceimpl::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>     *locConsumer_;
+    orcaifaceimpl::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>     *odomConsumer_;
+
+    orcaice::PtrProxy<orca::RangeScanner2dDataPtr> *obsProxy_;
+    orcaice::Proxy<orca::Localise2dData>           *locProxy_;
+    orcaice::Proxy<orca::Odometry2dData>           *odomProxy_;
 
     PathFollower2dI                  &pathFollowerInterface_;
 
@@ -107,13 +118,12 @@ private:
     // Outgoing commands: test version
     Simulator                     *testSimulator_;
 
+    // A global time reference
+    Clock *clock_;
+
+    orca::VehicleDescription descr_;
+
     bool testMode_;
-
-    // Keeps track of the path we're following
-    PathMaintainer  &pathMaintainer_;
-
-    // The object to publish path updates to
-    orca::PathFollower2dConsumerPrx              &pathPublisher_;
 
     orcaice::Context context_;
 };

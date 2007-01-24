@@ -45,8 +45,8 @@ public:
     // Functions called by MainLoop, to trigger comms with outside world
     //
 
-    void checkForNewPath( orca::PathFollower2dConsumerPrx &pathConsumer );
-    void checkForWpIndexChange( orca::PathFollower2dConsumerPrx &pathConsumer );
+    void checkForNewPath();
+    void checkForWpIndexChange();
 
     // Return the remaining time (in seconds) before we have to be at the next waypoint
     double secToNextWp() const;

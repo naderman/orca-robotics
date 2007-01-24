@@ -18,18 +18,15 @@
 #include <orca/pathfollower2d.h>
 #include <orcaice/component.h>
 #include <orcaice/ptrproxy.h>
-#include <orcaifaceimpl/proxiedconsumerI.h>
-#include <orcaifaceimpl/ptrproxiedconsumerI.h>
 #include "pathfollower2dI.h"
 #include <orcadynamicload/dynamicload.h>
+#include "clock.h"
 
 namespace localnav {
 
 class IDriver;
 class MainLoop;
-class IDriver;
-class LocalNavManager;
-class PathMaintainer;
+class DriverFactory;
 class Simulator;
 
 //
@@ -51,27 +48,13 @@ private:
     // EXTERNAL INTERFACE
     //
 
-    // The guy to whom we'll publish
-    orca::PathFollower2dConsumerPrx pathPublisher_;
-
-    // Get observations, pose, and odometric velocity
-    orcaifaceimpl::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr> *obsConsumer_;
-    orcaifaceimpl::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>     *locConsumer_;
-    orcaifaceimpl::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>     *odomConsumer_;
-
-    // Give commands
-    orca::VelocityControl2dPrx velocityControl2dPrx_;
-
     // Simulator for test mode
     Simulator           *testSimulator_;
 
-    // Non-driver-specific coordination stuff
-    LocalNavManager *localNavManager_;
-    PathMaintainer  *pathMaintainer_;
-    MainLoop        *mainLoop_;
+    MainLoop            *mainLoop_;
 
-    // The algorithm itself
-    IDriver                                   *driver_;
+    // A factory to instantiate the driver
+    DriverFactory   *driverFactory_;
     // And the library that provides it
     orcadynamicload::DynamicallyLoadedLibrary *driverLib_;
 

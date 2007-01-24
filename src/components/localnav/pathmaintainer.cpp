@@ -79,7 +79,7 @@ PathMaintainer::checkPathOut( const orca::PathFollower2dData& pathData )
 }
 
 void
-PathMaintainer::checkForNewPath( orca::PathFollower2dConsumerPrx &pathConsumer )
+PathMaintainer::checkForNewPath()
 {
     if ( pathFollowerInterface_.newPathArrivedProxy().isNewData() || 
          pathFollowerInterface_.activationArrivedProxy().isNewData() )
@@ -125,7 +125,7 @@ PathMaintainer::checkForNewPath( orca::PathFollower2dConsumerPrx &pathConsumer )
 }
 
 void 
-PathMaintainer::checkForWpIndexChange( orca::PathFollower2dConsumerPrx &pathConsumer )
+PathMaintainer::checkForWpIndexChange()
 {
     if ( wpIndexChanged_ && wpIndex_ != 0 )
     {
