@@ -139,6 +139,9 @@ export LD_LIBRARY_PATH=#OPENCV_HOME/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/opt/opencv/lib/pkgconfig
 @endverbatim
 
+Troubleshooting. 
+- If you get a message about libtool unable to install something "to a directory not ending in /usr/local/lib", this probably means that you arem mixing configuration with and without a prefix. Just run "make clean" and reconfigure.
+- If you get an error with `__stack_chk_fail_local', it's a probably a problem with g++-4.1. Recompile with g++-4.0.
 
 @section orca_component_imageserver_digiclops Trinocular Digiclops Camera driver
 
