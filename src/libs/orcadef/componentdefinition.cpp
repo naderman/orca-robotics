@@ -284,14 +284,15 @@ toXmlText( const ComponentDef &def )
 
     ss <<tab<<tab<<tab
         <<"<server "
-        <<"id=\""<<cfg.fqname.component<<"Component\" "
+        <<"id=\""<<cfg.fqname.platform<<"."<<cfg.fqname.component<<"\" "
         <<"exe=\""<<cfg.fqname.component<<"\" "
         <<"activation=\"on-demand\">" << endl;
 
     ss <<tab<<tab<<tab<<tab
         <<"<adapter "
         <<"name=\""<<def.tag<<"\" "
-        <<"endpoints=\""<<def.endpoints<<"\" "
+        // it's enough to state special endpoints under the adapter name below
+//         <<"endpoints=\""<<def.endpoints<<"\" "
         <<"register-process=\"true\" "
         <<"id=\""<<cfg.fqname.platform<<"/"<<cfg.fqname.component<<"\"/>" << endl;
 
@@ -307,7 +308,7 @@ toXmlText( const ComponentDef &def )
 //     ss <<tab<<tab<<tab<<tab<<"</adapter>" << endl;
 
     // special parameters
-    ss <<tab<<tab<<tab<<tab<<"<!-- Component properties -->" << endl;
+//     ss <<tab<<tab<<tab<<tab<<"<!-- Component properties -->" << endl;
     ss <<tab<<tab<<tab<<tab<<"<property name=\""<<def.tag<<".Platform\" value=\"local\"/>" << endl;
     ss <<tab<<tab<<tab<<tab<<"<property name=\""<<def.tag<<".Component\" value=\""<<cfg.fqname.component<<"\"/>" << endl;
     if ( def.isSpecialEndpoints ) {
@@ -318,7 +319,7 @@ toXmlText( const ComponentDef &def )
     if ( def.provided.size()!=cfg.provided.size() ) {
         throw ParseException( ERROR_INFO, "Number of provided interfaces in def and cfg sturctures do not match." );
     }
-    ss <<tab<<tab<<tab<<tab<<"<!-- Provided interfaces -->" << endl;
+//     ss <<tab<<tab<<tab<<tab<<"<!-- Provided interfaces -->" << endl;
     for ( unsigned int i=0; i < cfg.provided.size(); ++i ) {
         ss <<tab<<tab<<tab<<tab
             <<"<property "
@@ -330,7 +331,7 @@ toXmlText( const ComponentDef &def )
     if ( def.required.size()!=cfg.required.size() ) {
         throw ParseException( ERROR_INFO, "Number of required interfaces in def and cfg sturctures do not match." );
     }
-    ss <<tab<<tab<<tab<<tab<<"<!-- Required interfaces -->" << endl;
+//     ss <<tab<<tab<<tab<<tab<<"<!-- Required interfaces -->" << endl;
     for ( unsigned int i=0; i < cfg.required.size(); ++i )
     {
         ss <<tab<<tab<<tab<<tab
@@ -340,7 +341,7 @@ toXmlText( const ComponentDef &def )
     }
 
     // component configs
-    ss <<tab<<tab<<tab<<tab<<"<!-- Component configuration parameters -->" << endl;
+//     ss <<tab<<tab<<tab<<tab<<"<!-- Component configuration parameters -->" << endl;
     for ( unsigned int i=0; i < def.configs.size(); ++i ) {
         ss <<tab<<tab<<tab<<tab
             <<"<property "
@@ -397,7 +398,8 @@ toXmlTemplateText( const ComponentDef &def )
     ss <<tab<<tab<<tab<<tab
         <<"<adapter "
         <<"name=\""<<def.tag<<"\" "
-        <<"endpoints=\""<<def.endpoints<<"\" "
+        // it's enough to state special endpoints under the adapter name below
+//         <<"endpoints=\""<<def.endpoints<<"\" "
         <<"register-process=\"true\" "
         <<"id=\"${platform}/"<<cfg.fqname.component<<"\"/>" << endl;
 
@@ -412,7 +414,7 @@ toXmlTemplateText( const ComponentDef &def )
 //     ss <<tab<<tab<<tab<<tab<<"</adapter>" << endl;
 
     // special parameters
-    ss <<tab<<tab<<tab<<tab<<"<!-- Component properties -->" << endl;
+//     ss <<tab<<tab<<tab<<tab<<"<!-- Component properties -->" << endl;
     ss <<tab<<tab<<tab<<tab<<"<property name=\""<<def.tag<<".Platform\" value=\"local\"/>" << endl;
     ss <<tab<<tab<<tab<<tab<<"<property name=\""<<def.tag<<".Component\" value=\""<<cfg.fqname.component<<"\"/>" << endl;
     if ( def.isSpecialEndpoints ) {
@@ -423,7 +425,7 @@ toXmlTemplateText( const ComponentDef &def )
     if ( def.provided.size()!=cfg.provided.size() ) {
         throw ParseException( ERROR_INFO, "Number of provided interfaces in def and cfg sturctures do not match." );
     }
-    ss <<tab<<tab<<tab<<tab<<"<!-- Provided interfaces -->" << endl;
+//     ss <<tab<<tab<<tab<<tab<<"<!-- Provided interfaces -->" << endl;
     for ( unsigned int i=0; i < cfg.provided.size(); ++i ) {
         ss <<tab<<tab<<tab<<tab
             <<"<property "
@@ -435,7 +437,7 @@ toXmlTemplateText( const ComponentDef &def )
     if ( def.required.size()!=cfg.required.size() ) {
         throw ParseException( ERROR_INFO, "Number of required interfaces in def and cfg sturctures do not match." );
     }
-    ss <<tab<<tab<<tab<<tab<<"<!-- Required interfaces -->" << endl;
+//     ss <<tab<<tab<<tab<<tab<<"<!-- Required interfaces -->" << endl;
     for ( unsigned int i=0; i < cfg.required.size(); ++i )
     {
         ss <<tab<<tab<<tab<<tab
@@ -445,7 +447,7 @@ toXmlTemplateText( const ComponentDef &def )
     }
 
     // component configs
-    ss <<tab<<tab<<tab<<tab<<"<!-- Component configuration parameters -->" << endl;
+//     ss <<tab<<tab<<tab<<tab<<"<!-- Component configuration parameters -->" << endl;
     for ( unsigned int i=0; i < def.configs.size(); ++i ) {
         ss <<tab<<tab<<tab<<tab
             <<"<property "
