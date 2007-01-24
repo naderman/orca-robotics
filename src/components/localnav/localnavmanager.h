@@ -38,16 +38,26 @@ class LocalNavManager
 
 public: 
 
-    LocalNavManager( IDriver   &driver,
-                     PathMaintainer   &pathMaintainer,
-                     const orcaice::Context & context );
+    LocalNavManager( IDriver                &driver,
+                     PathMaintainer         &pathMaintainer,
+                     const orcaice::Context &context );
+
+#if 0
+    // Driver sets everything up, and is told what time it is
+    void init( const orca::Time &time )
+        { driver.init( time ); }
+
+    // Call this when you finish the path.
+    void reset()
+        { driver.reset(); }
+#endif
 
     // The odometry is required for the velocity, which isn't contained
     // in Localise2d.
-    void getCommand( const orca::RangeScanner2dDataPtr  rangeData,
-                     const orca::Localise2dData&        localiseData,
-                     const orca::Odometry2dData&        odomData,
-                     orca::VelocityControl2dData&       cmd );
+    void getCommand( const orca::RangeScanner2dDataPtr rangeData,
+                     const orca::Localise2dData&       localiseData,
+                     const orca::Odometry2dData&       odomData,
+                     orca::VelocityControl2dData&      cmd );
 
 private: 
 

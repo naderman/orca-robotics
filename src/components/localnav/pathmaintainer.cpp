@@ -18,11 +18,13 @@ using namespace orcaice;
 
 namespace localnav {
 
-PathMaintainer::PathMaintainer( PathFollower2dI            &pathFollowerInterface,
-                                const orcaice::Context     &context)
+PathMaintainer::PathMaintainer( PathFollower2dI        &pathFollowerInterface,
+                                const Clock            &clock,
+                                const orcaice::Context &context)
     : wpIndex_(-1),
       wpIndexChanged_(false),
       pathFollowerInterface_(pathFollowerInterface),
+      clock_(clock),
       context_(context)
 {
 }
@@ -161,7 +163,7 @@ PathMaintainer::secSinceActivation() const
     // cout<<"TRACE(pathmaintainer.cpp): now:   " << orcaice::toString(timeNow_) << endl;
     // cout<<"TRACE(pathmaintainer.cpp): start: " << orcaice::toString(pathStartTime_) << endl;
 
-    double diff = orcaice::timeDiffAsDouble( timeNow_, pathStartTime_ );
+    double diff = orcaice::timeDiffAsDouble( clock_.time(), pathStartTime_ );
 
     // cout<<"TRACE(pathmaintainer.cpp): diff:  " << diff << endl;
 

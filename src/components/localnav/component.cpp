@@ -26,8 +26,11 @@ Component::Component()
       testSimulator_(NULL),
       mainLoop_(NULL),
       driverLib_(NULL),
+      clock_(NULL),
       pathFollowerInterface_(NULL)
 {
+    orca::Time t; t.seconds=0; t.useconds=0;
+    clock_ = new Clock( t );
 }
 
 Component::~Component()
@@ -36,6 +39,7 @@ Component::~Component()
     if ( testSimulator_  )         delete testSimulator_;
     if ( driverLib_  )             delete driverLib_;
     if ( pathFollowerInterface_  ) delete pathFollowerInterface_;
+    if ( clock_ )                  delete clock_;
     if ( driverFactory_ )          delete driverFactory_;
 }
 
@@ -57,7 +61,7 @@ Component::start()
     //
     // Create our provided interface
     //
-    pathFollowerInterface_ = new PathFollower2dI( "PathFollower2d", context() );
+    pathFollowerInterface_ = new PathFollower2dI( "PathFollower2d", *clock_, context() );
 
     //
     // Connect to required interfaces
@@ -133,12 +137,14 @@ Component::start()
     if ( !testMode )
     {
         mainLoop_ = new MainLoop( *driverFactory_,
+                                  *clock_,
                                   *pathFollowerInterface_,
                                   context() );
     }
     else
     {
         mainLoop_ = new MainLoop( *driverFactory_,
+                                  *clock_,
                                   *pathFollowerInterface_,
                                   *testSimulator_,
                                   context() );

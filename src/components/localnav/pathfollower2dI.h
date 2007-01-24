@@ -20,6 +20,7 @@
 #include <orca/pathfollower2d.h>
 
 #include "pathmaintainer.h"
+#include "clock.h"
 
 namespace localnav {
 
@@ -30,6 +31,7 @@ class PathFollower2dI : public orca::PathFollower2d
 {
 public:
     PathFollower2dI( const std::string              &ifaceTag,
+                     const Clock                    &clock,
                      const orcaice::Context         &context );
 
     // remote calls:
@@ -66,7 +68,6 @@ public:
     void initInterface();
 
     void localSetActivationTime( const orca::Time &activationTime );
-    void localSetTimeNow( const orca::Time &now );
     void localSetWaypointIndex( int index );
     void localSetData( const orca::PathFollower2dData &path );
     bool localIsEnabled() const;
@@ -93,7 +94,6 @@ private:
     // Progress info from the component goes in here
     orcaice::Proxy<int>                             wpIndexProxy_;
     orcaice::Proxy<orca::Time>                      activationTimeProxy_;
-    orcaice::Proxy<orca::Time>                      timeNowProxy_;
 
     // Allow external en/dis-able
     orcaice::Proxy<bool>                            enabledProxy_;
@@ -102,6 +102,8 @@ private:
     IceStorm::TopicPrx             topicPrx_;
     // The interface to which we'll publish
     orca::PathFollower2dConsumerPrx  consumerPrx_;
+
+    const Clock &clock_;
 
     std::string                    ifaceTag_;
     orcaice::Context               context_;

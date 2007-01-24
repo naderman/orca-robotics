@@ -17,6 +17,7 @@
 namespace localnav {
 
 class PathFollower2dI;
+class Clock;
 
 //
 // @author Alex Brooks
@@ -31,6 +32,7 @@ class PathMaintainer
 public: 
 
     PathMaintainer( PathFollower2dI            &pathFollowerInterface,
+                    const Clock                &clock,
                     const orcaice::Context     &context );
 
     //
@@ -51,8 +53,6 @@ public:
     // Return the remaining time (in seconds) before we have to be at the next waypoint
     double secToNextWp() const;
     
-    void setTimeNow( const orca::Time &now ) { timeNow_ = now; }
-
 private: 
 
     // How long since path activation
@@ -77,7 +77,7 @@ private:
     PathFollower2dI &pathFollowerInterface_;
 
     // The global time
-    orca::Time timeNow_;
+    const Clock &clock_;
 
     orcaice::Context context_;
 };

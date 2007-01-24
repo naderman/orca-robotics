@@ -58,6 +58,9 @@ private:
     // And the library that provides it
     orcadynamicload::DynamicallyLoadedLibrary *driverLib_;
 
+    // The global time
+    Clock *clock_;
+
     // External interface
     PathFollower2dI                         *pathFollowerInterface_;
 };

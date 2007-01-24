@@ -20,7 +20,7 @@
 #include <orcaifaceimpl/ptrproxiedconsumerI.h>
 #include <orcaifaceimpl/proxiedconsumerI.h>
 #include <localnavmanager.h>
-#include <idriver.h>
+#include <localnavutil/idriver.h>
 #include <clock.h>
 
 namespace localnav {
@@ -43,15 +43,17 @@ class MainLoop : public orcaice::Thread
 public: 
 
     // This version interacts with the real world
-    MainLoop( DriverFactory                                  &driverFactory,
-              PathFollower2dI                                &pathFollowerInterface,
-              const orcaice::Context                         &context );
+    MainLoop( DriverFactory          &driverFactory,
+              Clock                  &clock,
+              PathFollower2dI        &pathFollowerInterface,
+              const orcaice::Context &context );
 
     // This version is for simulator-based testing.
-    MainLoop( DriverFactory                                  &driverFactory,
-              PathFollower2dI                                &pathFollowerInterface,
-              Simulator                                      &testSimulator,
-              const orcaice::Context                         &context );
+    MainLoop( DriverFactory          &driverFactory,
+              Clock                  &clock,
+              PathFollower2dI        &pathFollowerInterface,
+              Simulator              &testSimulator,
+              const orcaice::Context &context );
 
     ~MainLoop();
 
@@ -119,7 +121,7 @@ private:
     Simulator                     *testSimulator_;
 
     // A global time reference
-    Clock *clock_;
+    Clock &clock_;
 
     orca::VehicleDescription descr_;
 

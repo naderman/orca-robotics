@@ -22,9 +22,10 @@ using namespace orcaice;
 
 namespace localnav {
 
-MainLoop::MainLoop( DriverFactory                                  &driverFactory,
-                    PathFollower2dI                                &pathFollowerInterface,
-                    const orcaice::Context                         &context )
+MainLoop::MainLoop( DriverFactory          &driverFactory,
+                    Clock                  &clock,
+                    PathFollower2dI        &pathFollowerInterface,
+                    const orcaice::Context &context )
     : localNavManager_(NULL),
       pathMaintainer_(NULL),
       driver_(NULL),
@@ -36,16 +37,17 @@ MainLoop::MainLoop( DriverFactory                                  &driverFactor
       locProxy_(NULL),
       odomProxy_(NULL),
       pathFollowerInterface_(pathFollowerInterface),
-      clock_(NULL),
+      clock_(clock),
       testMode_(false),
       context_(context)
 {
 }
 
-MainLoop::MainLoop( DriverFactory                                  &driverFactory,
-                    PathFollower2dI                                &pathFollowerInterface,
-                    Simulator                                      &testSimulator,
-                    const orcaice::Context                         &context )
+MainLoop::MainLoop( DriverFactory          &driverFactory,
+                    Clock                  &clock,
+                    PathFollower2dI        &pathFollowerInterface,
+                    Simulator              &testSimulator,
+                    const orcaice::Context &context )
     : localNavManager_(NULL),
       pathMaintainer_(NULL),
       driver_(NULL),
@@ -58,7 +60,7 @@ MainLoop::MainLoop( DriverFactory                                  &driverFactor
       odomProxy_(NULL),
       pathFollowerInterface_(pathFollowerInterface),
       testSimulator_(&testSimulator),
-      clock_(NULL),
+      clock_(clock),
       testMode_(true),
       context_(context)
 {
@@ -72,7 +74,6 @@ MainLoop::~MainLoop()
     if ( localNavManager_ ) delete localNavManager_;
     if ( pathMaintainer_ ) delete pathMaintainer_;
     if ( driver_ ) delete driver_;
-    if ( clock_ ) delete clock_;
 }
 
 void
@@ -319,9 +320,6 @@ MainLoop::subscribeForObservations()
 void
 MainLoop::setup()
 {
-    orca::Time t; t.seconds=0; t.useconds=0;
-    clock_ = new Clock( t );
-
     if ( !testMode_ )
     {
         connectToController();
@@ -352,7 +350,7 @@ MainLoop::setup()
     context_.tracer()->info( descrStream.str() );
 
     driver_ = driverFactory_.createDriver( context_, descr_ );
-    pathMaintainer_ = new PathMaintainer( pathFollowerInterface_, context_ );
+    pathMaintainer_ = new PathMaintainer( pathFollowerInterface_, clock_, context_ );
     localNavManager_ = new LocalNavManager( *driver_, *pathMaintainer_, context_ );
 
     initInterfaces();
@@ -392,8 +390,7 @@ MainLoop::run()
             else
             {
                 // Tell everyone what time it is, boyeee
-                pathFollowerInterface_.localSetTimeNow( rangeData_->timeStamp );
-                pathMaintainer_->setTimeNow( rangeData_->timeStamp );
+                clock_.setTime( rangeData_->timeStamp );
 
                 locProxy_->get( localiseData_ );
                 odomProxy_->get( odomData_ );

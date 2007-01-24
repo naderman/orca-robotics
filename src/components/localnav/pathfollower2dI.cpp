@@ -18,9 +18,11 @@ using namespace orcaice;
 
 namespace localnav {
 
-PathFollower2dI::PathFollower2dI( const std::string              &ifaceTag,
-                                  const orcaice::Context         &context ) 
-    : ifaceTag_(ifaceTag),
+PathFollower2dI::PathFollower2dI( const std::string      &ifaceTag,
+                                  const Clock            &clock,
+                                  const orcaice::Context &context ) 
+    : clock_(clock),
+      ifaceTag_(ifaceTag),
       context_(context)
 {
     // We're inactive on initialization
@@ -28,10 +30,6 @@ PathFollower2dI::PathFollower2dI( const std::string              &ifaceTag,
 
     // But enabled
     enabledProxy_.set( true );
-
-    // Put some bogus data in the timeNowProxy_
-    orca::Time zeroTs; zeroTs.seconds=0; zeroTs.useconds=0;
-    timeNowProxy_.set( zeroTs );
 }
 
 void
@@ -83,10 +81,7 @@ PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateI
 double
 PathFollower2dI::timeSinceActivate( const orca::Time &activationTime )
 {
-    orca::Time now;
-    timeNowProxy_.get( now );
-
-    double timeSince = orcaice::timeDiffAsDouble( now, activationTime );
+    double timeSince = orcaice::timeDiffAsDouble( clock_.time(), activationTime );
     return timeSince;
 }
 
@@ -94,18 +89,16 @@ void
 PathFollower2dI::activateNow( const ::Ice::Current& )
 {
     // cout << "TRACE(pathfollower2dI.cpp): activateNow called" << endl;
-    orca::Time now;
-    timeNowProxy_.get( now );
+    orca::Time now = clock_.time();
     activationTimeProxy_.set( now );
     activationArrivedProxy_.set( true );
-    orca::Time activationTime = now;
 
     localSetWaypointIndex( 0 );
 
     // Try to push to IceStorm.
     try {
-        consumerPrx_->setActivationTime( activationTime, 
-                                         timeSinceActivate(activationTime) );
+        consumerPrx_->setActivationTime( now,
+                                         timeSinceActivate(now) );
     }
     catch ( Ice::Exception &e )
     {
@@ -123,8 +116,8 @@ PathFollower2dI::activateNow( const ::Ice::Current& )
             context_.tracer()->print( "PathFollower2dI: Re-connected to IceStorm." );
 
             // try again to push that bit of info
-            consumerPrx_->setActivationTime( activationTime, 
-                                             timeSinceActivate(activationTime) );
+            consumerPrx_->setActivationTime( now,
+                                             timeSinceActivate(now) );
         }
         catch ( ... )
         {
@@ -167,10 +160,9 @@ PathFollower2dI::getRelativeActivationTime(double &secondsSinceActivation, const
     wpIndexProxy_.get( wpIndex );
     if ( wpIndex != -1 )
     {
-        orca::Time now, timeActivated;
-        timeNowProxy_.get( now );
+        orca::Time timeActivated;
         activationTimeProxy_.get( timeActivated );
-        secondsSinceActivation = orcaice::timeDiffAsDouble( now, timeActivated );
+        secondsSinceActivation = orcaice::timeDiffAsDouble( clock_.time(), timeActivated );
         return true;
     }
     else
@@ -290,12 +282,6 @@ PathFollower2dI::localSetWaypointIndex( int index )
 //         context_.tracer()->warning( "PathFollower2dI: Failed push to IceStorm: unknown exception" );
 //     }
 // }
-
-void 
-PathFollower2dI::localSetTimeNow( const orca::Time &now )
-{
-    timeNowProxy_.set( now );
-}
 
 void 
 PathFollower2dI::localSetData( const orca::PathFollower2dData &path )
