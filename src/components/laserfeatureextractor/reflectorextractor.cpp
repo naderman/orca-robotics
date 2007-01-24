@@ -90,6 +90,7 @@ ReflectorExtractor::addFeatures( const orca::LaserScanner2dDataPtr    &laserData
                                  orca::PolarFeature2dDataPtr &features )
 {
 //     cout<<"TRACE(reflectorextractor.cpp): addFeatures()" << endl;
+    assert( laserData != 0 );
     assert( laserMaxRange_ > 0.0 );
 
     // Are we currently trying to put a cluster together?

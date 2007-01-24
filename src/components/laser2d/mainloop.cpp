@@ -141,7 +141,7 @@ MainLoop::run()
             int ret = readData( laserData );
 
             // make sure we are not shutting down, otherwise we'll segfault while trying to send
-            if ( isActive() ) {
+            if ( ret == 0 && isActive() ) {
                 laserInterface_.localSetAndSend( laserData );
             }
 

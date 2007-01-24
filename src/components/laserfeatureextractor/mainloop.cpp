@@ -227,8 +227,8 @@ void MainLoop::run()
                     continue;
                 }
                 
-                // cout << "INFO(algorithmhandler.cpp): Getting laserData of size "
-                //      << laserData->ranges.size() << " from proxy" << endl << endl;
+                //cout << "INFO(algorithmhandler.cpp): Got laserData of size "
+                //     << laserData->ranges.size() << " from proxy" << endl << endl;
 
                 //
                 // execute algorithm to compute features

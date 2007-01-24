@@ -191,16 +191,18 @@ user_->newLocalTrace( "subscribing..." );
 void 
 NetworkHandler::setRemoteVerbosity( int error, int warn, int info, int debug )
 {
+    stringstream ss; ss<<"trying to set verbosity with ["<<error<<","<<warn<<","<<info<<","<<debug<<"]";
+    user_->newLocalTrace( ss.str() );
+
+    orca::TracerVerbosityConfig config;
+    config.error = error;
+    config.warning = warn;
+    config.info = info;
+    config.debug = debug;
+
     while ( isActive() ) {
         try
         {
-stringstream ss; ss<<"trying to set verbosity with ["<<error<<","<<warn<<","<<info<<","<<debug<<"]";
-user_->newLocalTrace( ss.str() );
-            orca::TracerVerbosityConfig config;
-            config.error = error;
-            config.warning = warn;
-            config.info = info;
-            config.debug = debug;
             tracerPrx_->setVerbosity( config );
 
             // give feedback to the user
