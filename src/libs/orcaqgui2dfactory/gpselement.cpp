@@ -84,23 +84,26 @@ GpsElement::update()
     if ( !gpsListener_.buffer().isEmpty() )
     {
         // cout << "TRACE(gpselement.cpp): buffer has object" << endl;
-        if ( displayGps_ )
-        {
+
             gpsListener_.buffer().getAndPop( data );
             // cout << "TRACE(gpselement.cpp): Just got data from buffer" << endl;
             // shift the coordinates by gpsOrigin coordinates so that orcaview starts at (0,0)
-            data.northing -= gpsOrigin_.x;
-            data.easting -= gpsOrigin_.y;
-            gpsPainter_.setData( data.northing, 
-                                 data.easting,
-                                 data.heading );
-        }
-    }
-
-    x_ = data.northing;
-    y_ = data.easting;
-    theta_ = data.heading;
-    return; 
+//             x_ = gpsOrigin_.x - data.northing;
+//             y_ = gpsOrigin_.y - data.easting;
+            
+//             x_ = data.northing - gpsOrigin_.x;
+//             y_ = data.easting - gpsOrigin_.y;
+            
+            x_ = data.easting - gpsOrigin_.y;
+            y_ = data.northing - gpsOrigin_.x;
+            
+            theta_ = data.heading;
+            
+            if ( displayGps_ )
+            {
+                gpsPainter_.setData( x_, y_, theta_ );
+            }
+    } 
 }
 
 QStringList

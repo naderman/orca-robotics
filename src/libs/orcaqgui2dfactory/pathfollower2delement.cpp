@@ -130,7 +130,6 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
       context_(context),
       humanManager_(humanManager),
       firstTime_(true),
-      numPathDumps_(0),
       displayWaypoints_(true),
       displayPastWaypoints_(true),
       currentTransparency_(false),
@@ -139,15 +138,14 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
                humanManager,
                painter_,
                readWaypointSettings( context_.properties(), context_.tag() ),
-               readActivateImmediately( context_.properties(), context_.tag() ) )
+               readActivateImmediately( context_.properties(), context_.tag() ),
+               readDumpPath( context_.properties(), context_.tag() ) )
 {
     cout<<"TRACE(pathfollower2delement.cpp): Instantiating w/ proxyString '" << proxyString << "'" << endl;
     
     painter_.initialize( displayWaypoints_, displayPastWaypoints_, currentTransparency_);
     
     pathUpdateConsumer_ = new PathUpdateConsumer;
-    
-    getDumpPath();
 
     timer_ = new orcaice::Timer;
     activationTimer_ = new orcaice::Timer;
@@ -156,17 +154,6 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
 
 PathFollower2dElement::~PathFollower2dElement()
 {
-}
-
-void
-PathFollower2dElement::getDumpPath()
-{
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag();
-    prefix += ".Config.";
-    Ice::StringSeq strIn; strIn.push_back("/tmp"); Ice::StringSeq strOut;
-    strOut = orcaice::getPropertyAsStringSeqWithDefault( prop, prefix+"General.DumpPath", strIn );
-    dumpPath_ = QString(strOut[0].c_str());
 }
 
 void
@@ -390,15 +377,16 @@ PathFollower2dElement::sendPath( const PathFollowerInput &pathInput, bool activa
     cout<<"TRACE(PathFollower2dElement): sendPath()" << endl;
     try
     {
-        pathFollower2dPrx_->setData( pathInput.getPath(), activateImmediately );
+        orca::PathFollower2dData data;
+        bool isOk = pathInput.getPath( data );
+        if (isOk) {
+            pathFollower2dPrx_->setData( data, activateImmediately );
+        } else {
+            humanManager_->showStatusMsg( Warning, "No path to send!" );
+            return;
+        }
         if (!activateImmediately) 
-            humanManager_->showStatusMsg( Information, "Path needs to be activated by pressing the Go buttion." );
-        
-        // save path to file automatically
-        char buffer [5];
-        sprintf(buffer,"%05d",numPathDumps_++);
-        QString filename = dumpPath_ + "/pathdump" + QString(buffer) + ".txt";
-        pathHI_.savePath( filename );
+            humanManager_->showStatusMsg( Information, "Path needs to be activated by pressing the Go button." );
     }
     catch ( const orca::OrcaException &e )
     {
@@ -429,7 +417,8 @@ PathFollowerHI::PathFollowerHI( PathFollower2dElement *pfElement,
                                 IHumanManager *humanManager, 
                                 PathPainter &painter,
                                 WaypointSettings wpSettings,
-                                bool activateImmediately )
+                                bool activateImmediately,
+                                QString dumpPath )
     : pfElement_(pfElement),
       proxyString_( proxyString ),
       humanManager_(humanManager),
@@ -439,7 +428,10 @@ PathFollowerHI::PathFollowerHI( PathFollower2dElement *pfElement,
       wpSettings_(wpSettings),
       activateImmediately_(activateImmediately),
       pathInput_(NULL),
-      gotMode_(false)
+      gotMode_(false),
+      dumpPath_(dumpPath),
+      numPathDumps_(0),
+      lastSavedPathFile_("")
 {
     buttons_ = new PathfollowerButtons( this, humanManager, proxyString );
 }
@@ -514,7 +506,7 @@ PathFollowerHI::waypointModeSelected()
         return;
     }
 
-    pathInput_ = new PathFollowerInput( this, &wpSettings_, humanManager_ );
+    pathInput_ = new PathFollowerInput( this, &wpSettings_, humanManager_, lastSavedPathFile_ );
     pathInput_->setTransparency( useTransparency_ );
     buttons_->setWpButton( true );    
 }
@@ -531,10 +523,24 @@ void
 PathFollowerHI::send()
 {
     cout<<"TRACE(PathFollowerHI): send()" << endl;
-    if ( pathInput_ != NULL )
-        pfElement_->sendPath( *pathInput_, activateImmediately_ );
+    
+    if (pathInput_==NULL) {
+        humanManager_->showBoxMsg( Warning, "Not in path input mode!" );
+        return;
+    }
+        
+    // save path to file automatically
+    char buffer [5];
+    sprintf(buffer,"%05d",numPathDumps_++);
+    QString filename = dumpPath_ + "/pathdump" + QString(buffer) + ".txt";
+    pathInput_->savePath( filename );
+    lastSavedPathFile_ = filename;
+    
+    pfElement_->sendPath( *pathInput_, activateImmediately_ );
+    
     cancel();
 }
+
 void 
 PathFollowerHI::cancel()
 {

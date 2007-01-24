@@ -123,7 +123,7 @@ class PathInput : public QObject
     Q_OBJECT
             
     public:
-        PathInput( QObject *parent, WaypointSettings *wpSettings, IHumanManager *humanManager );
+        PathInput( QObject *parent, WaypointSettings *wpSettings, IHumanManager *humanManager, QString lastSavedPathFile="" );
         virtual ~PathInput();  
      
         virtual void paint( QPainter *painter );
@@ -136,8 +136,8 @@ class PathInput : public QObject
         
         virtual void updateWpSettings( WaypointSettings* wpSettings );
         
-        virtual void savePath( const QString &fileName ) const;
-        virtual void loadPath( QString* fileName ); 
+        virtual void savePath( const QString &fileName );
+        virtual void loadPath( const QString &fileName ); 
         
     protected:    
         WaypointSettings *wpSettings_;
@@ -170,9 +170,12 @@ class PathInput : public QObject
         WpWidget *wpWidget_;
         int waypointInFocus_;
         
+        QString lastSavedPathFile_;
+        
     public slots:
         void setWaypointFocus(int row, int column);
         void generateFullPath();
+        void loadPreviousPath();
         
     signals:
         void sendPathClicked();
@@ -190,12 +193,12 @@ class PathInput : public QObject
 class PathFollowerInput : public PathInput
 { 
     public:
-        PathFollowerInput( QObject *parent, WaypointSettings *wpSettings, IHumanManager *humanManager )
-            : PathInput( parent, wpSettings, humanManager )
+        PathFollowerInput( QObject *parent, WaypointSettings *wpSettings, IHumanManager *humanManager, QString lastSavedPathFile )
+            : PathInput( parent, wpSettings, humanManager, lastSavedPathFile )
         {};
         virtual ~PathFollowerInput() {};  
 
-        orca::PathFollower2dData getPath() const;
+        bool getPath( orca::PathFollower2dData &pathData ) const;
 };
 
 class PathPlannerInput : public PathInput
@@ -213,6 +216,8 @@ public:
 WaypointSettings readWaypointSettings( const Ice::PropertiesPtr & props, const std::string & tag );
 
 bool readActivateImmediately( const Ice::PropertiesPtr & props, const std::string & tag );
+
+QString readDumpPath( const Ice::PropertiesPtr & props, const std::string & tag );
 
 } // namespace
 

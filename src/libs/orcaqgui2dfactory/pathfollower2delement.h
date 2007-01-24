@@ -76,7 +76,8 @@ public:
                     IHumanManager *humanManager,
                     PathPainter &painter,
                     WaypointSettings wpSettings,
-                    bool activateImmediately );
+                    bool activateImmediately,
+                    QString dumpPath );
     ~PathFollowerHI();
 
     void lostMode();
@@ -130,6 +131,10 @@ private:
     bool gotMode_;
     
     bool useTransparency_;
+    
+    QString dumpPath_;
+    int numPathDumps_;
+    QString lastSavedPathFile_;
 };
 
 // We need to inherit from GuiElement2d, not from IceStormElement. Reason is that PathFollower2dConsumer has a non-standard purely virtual member function setWaypointIndex. Disadvantage is that we have to subscribe ourselves.
@@ -184,10 +189,6 @@ private:
     bool firstTime_;
     orcaice::Timer *timer_;
     orcaice::Timer *activationTimer_;
-    
-    void getDumpPath();
-    QString dumpPath_;
-    int numPathDumps_;
     
     // toggle states
     bool displayWaypoints_;

@@ -80,9 +80,11 @@ WpWidget::WpWidget( PathInput *pathInput,
     QPushButton *generatePath = new QPushButton(tr("Generate Full Path"), this);
     QPushButton *savePath = new QPushButton(savePathIcon, tr("Save Path"), this);
     QPushButton *loadPath = new QPushButton(openIcon, tr("Load Path"), this);
+    QPushButton *loadPreviousPath = new QPushButton(openIcon, tr("Load Previous Path"), this);
     QObject::connect(generatePath,SIGNAL(clicked()),pathInput,SLOT(generateFullPath()));
     QObject::connect(savePath,SIGNAL(clicked()),this,SLOT(savePath()));
     QObject::connect(loadPath,SIGNAL(clicked()),this,SLOT(loadPath()));
+    QObject::connect(loadPreviousPath,SIGNAL(clicked()),pathInput,SLOT(loadPreviousPath()));
     
     QPushButton *sendPath = new QPushButton(sendIcon, tr("Send Path"), this);
     QPushButton *cancelPath = new QPushButton(cancelIcon, tr("Cancel Path"), this);
@@ -95,6 +97,7 @@ WpWidget::WpWidget( PathInput *pathInput,
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->addWidget(generatePath);
     hLayout->addWidget(loadPath);
+    hLayout->addWidget(loadPreviousPath);
     hLayout->addWidget(savePath);
     hLayout->addWidget(sendPath);
     hLayout->addWidget(cancelPath);
@@ -156,7 +159,7 @@ WpWidget::loadPath()
 
     if (!fileName.isEmpty())
     {
-        pathInput_->loadPath( &fileName );
+        pathInput_->loadPath( fileName );
         pathFileName_ = fileName;
         pathFileSet_ = true;
     }
@@ -397,10 +400,11 @@ void WpTable::updateDataStorage(int row, int column)
     
 }
     
-PathInput::PathInput( QObject *parent, WaypointSettings *wpSettings, IHumanManager *humanManager )
+PathInput::PathInput( QObject *parent, WaypointSettings *wpSettings, IHumanManager *humanManager, QString lastSavedPathFile )
     : wpSettings_(wpSettings),
       humanManager_(humanManager),      
-      waypointInFocus_(-99)
+      waypointInFocus_(-99),
+      lastSavedPathFile_(lastSavedPathFile)
 {   
     wpWidget_ = new WpWidget( this,
                             &waypoints_,
@@ -807,13 +811,14 @@ void PathInput::generateFullPath()
 }
 
 void 
-PathInput::savePath( const QString &fileName ) const
+PathInput::savePath( const QString &fileName )
 {
     int size=wpSettings_->numberOfLoops * waypoints_.size();
     
     if (size==0)
     {
-        humanManager_->showBoxMsg(Warning, "Path has no waypoints. File will be empty!");
+        humanManager_->showBoxMsg(Warning, "Path has no waypoints!");
+        return;
     }
     
     QFile file(fileName);
@@ -822,6 +827,8 @@ PathInput::savePath( const QString &fileName ) const
         humanManager_->showBoxMsg(Error, "Cannot create file " + fileName );
         return;
     }
+    
+    lastSavedPathFile_ = fileName;
     
     // for loops we need to know the timestamp of the last waypoint
     const float timeOffset = times_[waypoints_.size()-1];
@@ -845,14 +852,24 @@ PathInput::savePath( const QString &fileName ) const
     humanManager_->showStatusMsg(Information, "Path successfully saved to " + fileName );
 }
 
-void PathInput::loadPath( QString* fileName )
+void PathInput::loadPreviousPath()
+{
+    if (lastSavedPathFile_!="") {
+        loadPath( lastSavedPathFile_ );    
+    } else {
+        humanManager_->showStatusMsg(Warning, "No path saved yet!" ); 
+    }
+    
+}
+
+void PathInput::loadPath( const QString& fileName )
 {    
     resizeData(0);
     
-    QFile file(*fileName);
+    QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        humanManager_->showStatusMsg(Error, "Problem opening file " + *fileName );
+        humanManager_->showStatusMsg(Error, "Problem opening file " + fileName );
         return;
     }
     
@@ -868,17 +885,17 @@ void PathInput::loadPath( QString* fileName )
         maxTurnrates_.append( line.section(' ',7,7).toInt() );
         waitingTimes_.append( 0.0 );
     }
-    humanManager_->showStatusMsg(Information, "Successfully loaded file " + *fileName );
+    humanManager_->showStatusMsg(Information, "Successfully loaded file " + fileName );
     wpWidget_->refreshTable();
 }
 
-orca::PathFollower2dData
-PathFollowerInput::getPath() const
-{
+bool
+PathFollowerInput::getPath( orca::PathFollower2dData &pathData ) const
+{    
     int size = wpSettings_->numberOfLoops * waypoints_.size();
     cout << "DEBUG(pathinput.cpp): getPath: size of waypoints is " << size << endl;
+    if (size==0) return false;
     
-    orca::PathFollower2dData pathData;
     pathData.path.resize( size );
     int counter = -1;
     
@@ -910,8 +927,7 @@ PathFollowerInput::getPath() const
             pathData.path[counter].maxApproachTurnrate = (float)maxTurnrates_[i]/180.0*M_PI;
         }
     }
-
-    return pathData;
+    return true;
 }
 
 orca::PathPlanner2dTask
@@ -974,6 +990,13 @@ readActivateImmediately( const Ice::PropertiesPtr & props, const std::string & t
 {
     std::string prefix = tag + ".Config.PathFollower2d.";
     return orcaice::getPropertyAsIntWithDefault( props, prefix+"ActivatePathImmediately", 1 );
+}
+
+QString readDumpPath( const Ice::PropertiesPtr & props, const std::string & tag )
+{
+    Ice::StringSeq strIn; strIn.push_back("/tmp"); Ice::StringSeq strOut;
+    strOut = orcaice::getPropertyAsStringSeqWithDefault( props, tag+".Config.General.DumpPath", strIn );
+    return QString(strOut[0].c_str());
 }
 
 
