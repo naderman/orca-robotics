@@ -16,7 +16,6 @@
 #include "cameraI.h"
 
 // Various bits of hardware we can drive
-#include "driver.h"
 #include "fakedriver.h"
 #include "monodriver.h"
 
@@ -36,11 +35,11 @@ namespace imageserver {
 using namespace std;
 using namespace orca;
 
-Component::Component()
-    : orcaice::Component( "ImageServer" ),
-      mainLoop_(0),
-      hwDriver_(0),
-      imageGrabber_(0)
+Component::Component() : 
+    orcaice::Component( "ImageServer" ),
+    mainLoop_(0),
+    hwDriver_(0),
+    imageGrabber_(0)
 {
 }
 

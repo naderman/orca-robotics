@@ -13,13 +13,9 @@ Config.Format.Default=ModeNfi
 Config.CameraIndex.Default=0
 Config.ImageWidth.Default=0
 Config.ImageHeight.Default=0
-Config.FrameRate.Default=1
+Config.FrameRate.Default=0.0
 
-Config.Offset.p.x.Default=0
-Config.Offset.p.y.Default=0
-Config.Offset.p.z.Default=0
-Config.Offset.p.o.r.Default=0
-Config.Offset.p.o.p.Default=0
-Config.Offset.p.o.y.Default=0
+Config.Offset.Comment=x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
+Config.Offset.Default=0.0 0.0 0.0  0.0 0.0 0.0
 
 # Config.Camera.ImageGrabberConfigFile.Default=fw.cfg

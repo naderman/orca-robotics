@@ -12,11 +12,7 @@
 #define ORCA2_IMAGESERVER_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orcaice/ptrbuffer.h>
-
 #include "imagegrabber/imagegrabber.h"
-
-#include <orca/camera.h>
 
 namespace imageserver {
 
