@@ -80,8 +80,8 @@ IF ( BUILD_IMAGE_SERVER )
         SET( DEP_LIBS ${DEP_LIBS} ${OPENCV_LIBS} digiclops triclops OrcaImageGrabber )
     ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND )
     
-    # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-    SET( COMMON_SRCS cameraI component conversions mainloop ${DRIVER_SRCS} ${MONO_DRIVER_SRCS} )
+    # cannot use standard macro, because some driver files are optional
+    SET( COMMON_SRCS component conversions mainloop ${DRIVER_SRCS} ${MONO_DRIVER_SRCS} )
     
     GLOBAL_ADD_EXECUTABLE( imageserver main ${COMMON_SRCS} )
     
