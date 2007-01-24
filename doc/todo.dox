@@ -111,6 +111,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - General cleanup, plus made to respect timings in paths. (Alex B.)
     - Uses new interfaces Odometry2d and VelocityControl2d. (Tobias K.)
     - Use vehicle details obtained using VehicleDescription (Alex B.)
+- ImageServer
+    - Cleaned up code and documentation. Using standard interface implementation (alex m.)
 
 @par Updated utilities
 

@@ -9,12 +9,13 @@
  */
 
 #include <iostream>
+#include <sstream>
 #include <orcaice/orcaice.h>
 #include <orcaice/heartbeater.h>
 
 #include "mainloop.h"
 
-using namespace orca;
+using namespace std;
 
 namespace imageserver {
 
@@ -117,7 +118,7 @@ MainLoop::run()
     try
     {   
     
-        CameraData cameraData;
+        orca::CameraData cameraData;
         // Copy config parameters into static object fields
         // Only need to do this once
         hwDriver_->initData( cameraData );
@@ -145,7 +146,12 @@ MainLoop::run()
 
                 if ( heartbeater.isHeartbeatTime() )
                 {
-                    heartbeater.beat( hwDriver_->heartbeatMessage() );
+                    stringstream ss;
+                    if ( ret == 0 )
+                        ss << "Camera enabled. ";
+                    else
+                        ss << "Camera having problems.";
+                    heartbeater.beat( ss.str() + hwDriver_->heartbeatMessage() );
                 }
 
             } // end of try

@@ -11,6 +11,7 @@
 #ifndef ORCAIFACEIMPL_ORCAIFACEIMPL_H
 #define ORCAIFACEIMPL_ORCAIFACEIMPL_H
 
+#include <orcaifaceimpl/cameraI.h>
 #include <orcaifaceimpl/laserscanner2dI.h>
 #include <orcaifaceimpl/localise2dI.h>
 #include <orcaifaceimpl/odometry2dI.h>
