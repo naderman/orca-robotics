@@ -227,8 +227,17 @@ void MainLoop::run()
                     continue;
                 }
                 
-                //cout << "INFO(algorithmhandler.cpp): Got laserData of size "
-                //     << laserData->ranges.size() << " from proxy" << endl << endl;
+                if ( (int)(laserData->ranges.size()) != laserDescr_.numberOfSamples )
+                {
+                    stringstream ss;
+                    ss << "Got laser scan: expected " << laserDescr_.numberOfSamples
+                       << " returns, got " << laserData->ranges.size();
+                    context_.tracer()->error( ss.str() );
+                    return;
+                }
+
+                // cout << "INFO(algorithmhandler.cpp): Getting laserData of size "
+                //      << laserData->ranges.size() << " from proxy" << endl << endl;
 
                 //
                 // execute algorithm to compute features
