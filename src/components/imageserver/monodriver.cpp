@@ -114,7 +114,7 @@ MonoDriver::init()
 int 
 MonoDriver::read( orca::CameraData& data )
 {
-    cout<<"TRACE(monodriver.cpp): Grabbing camera data..." << endl;
+    context_.tracer()->debug( "Grabbing camera data...",8 );
     
     //grab the image and load it into the orca object
     char* rawImage = imageGrabber_->queryFrame();

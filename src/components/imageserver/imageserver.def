@@ -9,6 +9,7 @@ Provides.Camera.DefaultName=camera
 # Config Parameters
 Config.Driver.Comment=Valid values: { 'monoopencv', 'fake', 'digiclops' }
 Config.Driver.Default=fake
+Config.Format.Comment=Valid values: { "BayerBg", "BayerGb", "BayerRg", "BayerGr" }
 Config.Format.Default=ModeNfi
 Config.CameraIndex.Default=0
 Config.ImageWidth.Default=0

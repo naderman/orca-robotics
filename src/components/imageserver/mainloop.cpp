@@ -70,7 +70,7 @@ MainLoop::establishInterface()
     {
         try {
             cameraObj_.initInterface();
-            context_.tracer()->debug( "Activated Laser interface" );
+            context_.tracer()->debug( "Activated Laser interface",2 );
             return;
         }
         catch ( orcaice::Exception &e )
@@ -81,7 +81,7 @@ MainLoop::establishInterface()
         {
             context_.tracer()->warning( "MainLoop::establishInterface(): caught unknown exception." );
         }
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 }
 
