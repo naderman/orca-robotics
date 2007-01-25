@@ -51,6 +51,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Expanded docco on how to add interfaces and souce code to the project ( orca-robotics.sf.net/orca_doc_devguide.html )
 - Dependencies
     - libOpenCV can now be installed into an arbitrary location (alex m)
+- Global code changes
+    - changed all IceStorm subscriptions to 'twoway' to reduce risk of keeping subscriptions after consumers go down.
+
 
 @par New interfaces
 
