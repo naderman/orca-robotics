@@ -68,6 +68,7 @@ OgMapI::subscribe(const ::OgMapConsumerPrx& subscriber,
 {
     cout<<"subscribe()"<<endl;
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     topicPrx_->subscribe( qos, subscriber );
 }
 

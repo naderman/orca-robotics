@@ -63,6 +63,7 @@ PowerI::subscribe(const ::orca::PowerConsumerPrx& subscriber, const ::Ice::Curre
 {
     context_.tracer()->debug( "PowerI::subscribe()", 5 );
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     try {
         topicPrx_->subscribe( qos, subscriber );
     }

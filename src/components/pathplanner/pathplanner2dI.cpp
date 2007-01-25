@@ -85,6 +85,7 @@ PathPlanner2dI::subscribe(const PathPlanner2dConsumerPrx &subscriber, const ::Ic
 {
 //     cout<<"TRACE(pathplanner2dI.cpp): subscribe()"<<endl;
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     topicPrx_->subscribe( qos, subscriber );
 }
 

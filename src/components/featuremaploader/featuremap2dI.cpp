@@ -61,6 +61,7 @@ FeatureMap2dI::subscribe(const ::FeatureMap2dConsumerPrx& subscriber,
 {
     cout<<"TRACE(featuremap2dI.cpp): subscribe()" << endl;
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     topicPrx_->subscribe( qos, subscriber );
 }
 

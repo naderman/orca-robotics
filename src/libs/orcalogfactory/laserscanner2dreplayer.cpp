@@ -78,6 +78,7 @@ LaserScanner2dReplayer::subscribe(const ::orca::RangeScanner2dConsumerPrx &subsc
 {
 //    cout<<"INFO(laserreplayer.cpp): subscription request"<<endl;
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     topic_->subscribe( qos, subscriber );
 }
 

@@ -268,6 +268,7 @@ subscribeToIceStormTopicWithName( const Context & context,
     }
 
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     topicPrx->subscribe( qos, callbackPrx );
 }
 */

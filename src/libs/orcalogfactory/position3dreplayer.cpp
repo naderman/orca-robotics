@@ -88,6 +88,7 @@ Position3dReplayer::subscribe(const ::orca::Position3dConsumerPrx &subscriber, c
 {
 //    cout<<"INFO(position3dreplayer.cpp): subscription request"<<endl;
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     topic_->subscribe( qos, subscriber );
 }
 

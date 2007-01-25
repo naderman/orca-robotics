@@ -158,6 +158,7 @@ StatusI::subscribe(const ::orca::StatusConsumerPrx& subscriber, const ::Ice::Cur
     
     //cout<<"subscription request"<<endl;
     IceStorm::QoS qos;    
+    qos["reliability"] = "twoway";
     topic_->subscribe( qos, subscriber );
 }
 

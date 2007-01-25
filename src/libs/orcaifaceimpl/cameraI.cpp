@@ -71,6 +71,7 @@ CameraI::subscribe(const ::orca::CameraConsumerPrx& subscriber, const ::Ice::Cur
 {
     context_.tracer()->debug( "CameraI::subscribe()", 5 );
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     try {
         topicPrx_->subscribe( qos, subscriber );
     }

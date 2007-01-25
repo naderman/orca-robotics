@@ -160,8 +160,9 @@ GpsReplayer::getMapGridData(const ::Ice::Current& current ) const
 void 
 GpsReplayer::subscribe(const ::orca::GpsConsumerPrx &subscriber, const ::Ice::Current&)
 {
-   cout<<"INFO(gpsreplayer.cpp): subscribe"<<endl;
+    cout<<"INFO(gpsreplayer.cpp): subscribe"<<endl;
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     topic_->subscribe( qos, subscriber );
 }
 
@@ -177,6 +178,7 @@ GpsReplayer::subscribeForTime(const ::orca::GpsTimeConsumerPrx &subscriber, cons
 {
     cout << "INFO(gpsreplayer.cpp): subscribeForTime()" << endl;
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     topicTimePrx_->subscribe( qos, subscriber );
 }
 
@@ -192,6 +194,7 @@ GpsReplayer::subscribeForMapGrid(const ::orca::GpsMapGridConsumerPrx &subscriber
 {
     cout << "INFO(gpsreplayer.cpp): subscribeForMapGrid()" << endl;
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     topicMapGridPrx_->subscribe( qos, subscriber );
 }
 

@@ -117,6 +117,7 @@ CameraReplayer::subscribe(const ::orca::CameraConsumerPrx &subscriber, const ::I
 {
 //    cout<<"INFO(camerareplayer.cpp): subscription request"<<endl;
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     topic_->subscribe( qos, subscriber );
 }
 

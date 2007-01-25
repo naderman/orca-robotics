@@ -118,6 +118,7 @@ GpsI::subscribe(const ::orca::GpsConsumerPrx &subscriber, const ::Ice::Current&)
 {
     cout << "subscribe()" << endl;
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     topicPrx_->subscribe( qos, subscriber );
 }
 
@@ -135,6 +136,7 @@ GpsI::subscribeForTime(const ::orca::GpsTimeConsumerPrx &subscriber, const ::Ice
 {
     cout << "subscribeForTime()" << endl;
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     topicTimePrx_->subscribe( qos, subscriber );
 }
 
@@ -152,6 +154,7 @@ GpsI::subscribeForMapGrid(const ::orca::GpsMapGridConsumerPrx &subscriber, const
 {
     cout << "subscribeForMapGrid()" << endl;
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     topicMapGridPrx_->subscribe( qos, subscriber );
 }
 

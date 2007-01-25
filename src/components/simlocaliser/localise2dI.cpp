@@ -67,6 +67,7 @@ Localise2dI::subscribe(const ::orca::Localise2dConsumerPrx& subscriber, const ::
 {
     cout<<"subscribe()"<<endl;
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     localiseTopic_->subscribe( qos, subscriber );
 }
 

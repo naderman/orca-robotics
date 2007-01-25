@@ -81,6 +81,7 @@ void
 Position2dReplayer::subscribe(const ::orca::Position2dConsumerPrx &subscriber, const ::Ice::Current&)
 {
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     topic_->subscribe( qos, subscriber );
 }
 

@@ -71,6 +71,7 @@ Odometry3dI::subscribe(const ::orca::Odometry3dConsumerPrx& subscriber, const ::
 {
     context_.tracer()->debug( "Odometry3dI::subscribe()", 5 );
     IceStorm::QoS qos;
+    qos["reliability"] = "twoway";
     try {
         topicPrx_->subscribe( qos, subscriber );
     }
