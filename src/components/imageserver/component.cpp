@@ -120,14 +120,14 @@ Component::start()
 
     if ( driverName == "fake" )
     {
-        context().tracer()->debug( "loading 'fake' driver",3);
+        context().tracer()->debug( "Loading 'fake' driver",3);
         hwDriver_ = new FakeDriver( desiredCfg, context() );
         imageGrabber_ = 0;
     }
     else if ( driverName == "monoopencv" )
     {
 #ifdef OPENCV_FOUND
-        context().tracer()->debug( "loading 'monoopencv' driver",3);
+        context().tracer()->debug( "Loading 'monoopencv' driver",3);
         // Use opencv implementation for a monocular camera...
 
         // Initialize Opencv ImageGrabber
@@ -141,7 +141,7 @@ Component::start()
     else if ( driverName == "digiclops" )
     {
 #ifdef DIGICLOPS_AND_TRICLOPS_FOUND
-        context().tracer()->debug( "loading 'digiclops' driver",3);
+        context().tracer()->debug( "Loading 'digiclops' driver",3);
         // Use digiclops/triclops implementation for a digiclops camera...
 
         // Initialize digiclops ImageGrabber

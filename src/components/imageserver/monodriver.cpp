@@ -25,11 +25,10 @@ using namespace std;
 
 namespace imageserver {
 
-MonoDriver::MonoDriver( ImageGrabber* imageGrabber, 
-                        const Config& cfg, const orcaice::Context& context )
-    : Driver(cfg, context),
-      imageGrabber_(imageGrabber),
-      context_(context)   
+MonoDriver::MonoDriver( ImageGrabber* imageGrabber, const Config& cfg, const orcaice::Context& context ) : 
+    Driver(cfg, context),
+    imageGrabber_(imageGrabber),
+    context_(context)   
 {
 }
 
@@ -70,7 +69,6 @@ MonoDriver::init()
                 context_.tracer()->error( errString );
                 // this will kill this component
                 throw orcaice::Exception( ERROR_INFO, errString );
-                // exit(1);
             }
         }
     }
