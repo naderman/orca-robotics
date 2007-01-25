@@ -26,6 +26,7 @@ SET( SLICE_SOURCE_FILES
     home.ice
     rangescanner2d.ice
     laserscanner2d.ice
+    log.ice
     ogfusion.ice
     ogmap.ice
     pathplanner2d.ice
