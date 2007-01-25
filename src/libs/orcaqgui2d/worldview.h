@@ -77,8 +77,6 @@ private:
 
     QPoint prevDragPos_;
     
-    QPainter *painter_;
-    
     bool antiAliasing_;
       
 };

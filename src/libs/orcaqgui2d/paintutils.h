@@ -31,7 +31,7 @@ class PoseHistory
 {
 public:
 
-    PoseHistory( double lineThickness=0.20 );
+    PoseHistory( double lineThickness=2.0 );
 
     // Add a point (units: metres)
     void addPoint( const double x, const double y );
@@ -41,7 +41,7 @@ public:
 private:
 
     QVector<QPolygonF> histories_;
-    double lineThickness_;
+    double lineThickness_;          // in pixel
     int totalPoints_;
 
     ////////////////////////////////////////
@@ -53,7 +53,7 @@ private:
     static const double _historyMaxDistance = 8.0;
 
     // Limit on the size of the history array
-    static const int _historyMaxLength = 100;
+    static const int _historyMaxLength = 1000;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -81,26 +81,33 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // Nota Bene: All of these function draw whatever they're gonna draw _AT_THE_ORIGIN_!!
 //            If you want them somewhere else, pre-rotate/translate the painter.
+// Tobi: all functions that have the m2win matrix as an argument can't get it from the painter
+//       because the painter is usually rotated before the function call. 
+//       It is used to draw in pixel size rather than in meters. Useful for iconic
+//       views, e.g. platform positions.
 
 //! Paint crosshairs
+//! Warning: Don't rotate painter before calling this function
 void paintOrigin( QPainter *p, QColor colour );
 
-//! Paint a robot icon
-void paintPlatformPose( QPainter *p, QColor colour, float transparencyMultiplier=1.0 );
+//! Paint a robot icon, painted with fixed pixel sizes, independent of zoom configuration.
+//! m2win is the worldmatrix BEFORE any painter rotation
+void paintPlatformPose( QMatrix &m2win, QPainter *p, QColor colour, float transparencyMultiplier=1.0 );
 
 //!
 //! Paints an ellipse for the position uncertainty, plus
 //! a little wedge for the heading uncertainty, by calling
 //! 'paintUncertaintyInfo' and 'paintCovarianceEllipse'
-//!
-void paintUncertaintyInfo( QPainter *p, QColor colour, float thetaMean, float pxx, float pxy, float pyy, float ptt );
+//! m2win is the worldmatrix BEFORE any painter rotation.
+void paintUncertaintyInfo( QMatrix &m2win, QPainter *p, QColor colour, float thetaMean, float pxx, float pxy, float pyy, float ptt );
 
 //! Paints a little wedge representing rotational uncertainty
-void paintUncertaintyWedge( QPainter *p, QColor colour, float thetaMean, float ptt );
+//! m2win is the worldmatrix BEFORE any painter rotation
+void paintUncertaintyWedge( QMatrix &m2win, QPainter *p, QColor colour, float thetaMean, float ptt );
 
 //! Paints 2-sigma ellipse for the position uncertainty
-void paintCovarianceEllipse( QPainter *p, QColor colour, float pxx, float pxy, float pyy );
-
+//! m2win is the worldmatrix BEFORE any painter rotation
+void paintCovarianceEllipse( QMatrix &m2win, QPainter *p, QColor colour, float pxx, float pxy, float pyy );
 
 //! Get a more transparent version of the given colour
 //! transparencyMultiplier=1.0 gives the same colour.

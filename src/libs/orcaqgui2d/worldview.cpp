@@ -159,7 +159,7 @@ WorldView::transformToPlatformOwningCS( QPainter *p )
     
     if ( platformCsMatrix != QMatrix() ) {
         bool combine = true;
-        p->setMatrix( platformCsMatrix, combine );
+        p->setWorldMatrix( platformCsMatrix, combine );
     }
     
     return flag;
@@ -173,7 +173,7 @@ WorldView::paintEvent( QPaintEvent* e )
     painter.setRenderHint(QPainter::Antialiasing,antiAliasing_);
 
     // set world matrix
-    painter.setMatrix( wm_ );
+    painter.setWorldMatrix( wm_ );
 
     bool isCoordinateFramePlatformLocalised = transformToPlatformOwningCS( &painter );
 

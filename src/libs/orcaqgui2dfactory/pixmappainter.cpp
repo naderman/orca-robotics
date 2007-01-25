@@ -77,7 +77,7 @@ PixmapPainter::paint( QPainter *painter )
     // check that the window size has not changed
     bool dirty = false;
     dirty = dirty || updateWindowSize( QSize(painter->device()->width(), painter->device()->height()) );
-    dirty = dirty || updateWorldMatrix( painter->matrix() );
+    dirty = dirty || updateWorldMatrix( painter->worldMatrix() );
     
     if ( dirty ) {
         rescale();

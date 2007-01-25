@@ -56,11 +56,12 @@ void GpsPainter::paint( QPainter *painter, int z )
     
     if ( z == orcaqgui::Z_POSE ) 
     {
+        QMatrix m2win = painter->worldMatrix();
         painter->save();
         {
             painter->translate( x_, y_ );
             painter->rotate( heading_ );
-            orcaqgui::paintPlatformPose( painter, currentColour_ );
+            orcaqgui::paintPlatformPose( m2win, painter, currentColour_ );
         }
         painter->restore();
     }

@@ -93,7 +93,9 @@ FeatureMap2dPainter::paintPointFeature( QPainter *painter,
         {
             //cout<<"TRACE(featuremap2dpainter.cpp): painting: " << f.c.xx << ","<<f.c.xy<<","<<f.c.yy << endl;
 
-            paintCovarianceEllipse( painter,
+            QMatrix m2win = painter->worldMatrix();
+            paintCovarianceEllipse( m2win,
+                                    painter,
                                     featureColour(f.type),
                                     f.c.xx,
                                     f.c.xy,
@@ -162,6 +164,7 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
         
         if ( displayUncertainty_ )
         {
+            QMatrix m2win = painter->worldMatrix();
             painter->save();
             {
                 // The direction from start point to end point.
@@ -179,7 +182,7 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
                                             uncertaintyLength, halfLineLength ) );
 
                 // alpha uncertainty: a wedge on the back (non-visible) side of the line
-                paintUncertaintyWedge( painter, featureColour(f.type), 0.0, f.c.yy );
+                paintUncertaintyWedge( m2win, painter, featureColour(f.type), 0.0, f.c.yy );
             }
             painter->restore();
         }

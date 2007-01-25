@@ -77,16 +77,20 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
             color = currentColor_;
         }
 
-        // Rotate to draw the platform correctly
+        // Need to get the world matrix before we rotate
+        QMatrix m2win = p->worldMatrix();
         {
+            // Rotate to draw the platform correctly
             ScopedSaver rotateSaver(p);
             p->rotate( RAD2DEG( mean.o ) );
-            paintPlatformPose( p, 
+            paintPlatformPose( m2win,
+                               p, 
                                color,
                                weight );
         }
 
-        paintUncertaintyInfo( p,
+        paintUncertaintyInfo( m2win,
+                              p,
                               color,
                               mean.o,
                               cov.xx,

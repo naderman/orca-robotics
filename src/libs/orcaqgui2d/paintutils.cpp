@@ -21,16 +21,16 @@ using namespace std;
 
 // STATIC VARIABLES
 
-// Robot size [m]
-const double FRAME_LENGTH = 0.220;
-const double FRAME_WIDTH = 0.190;
+// Robot size [pixel]
+const double FRAME_LENGTH = 10.0;
+const double FRAME_WIDTH = 8.0;
 
 // How much uncertainty to draw
 const int N_SIGMA = 3;
 const int N_LENGTH = 3;
 
-// How thick to paint thin lines? [m]
-const double THIN_LINE_THICKNESS = 0.05;
+// Thickness of lines [pixel]
+const double THIN_LINE_THICKNESS = 2.0;
     
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -81,9 +81,11 @@ PoseHistory::addPoint( const double x, const double y )
 void
 PoseHistory::paint( QPainter *p, const QColor &colour )
 {
+    QMatrix m = p->worldMatrix();
+
     for (int i=0; i<histories_.size(); i++)
     {
-        p->setPen( QPen( colour, lineThickness_ ) );
+        p->setPen( QPen( colour, lineThickness_/m.m11() ) );
         p->drawPolyline( histories_[i] );
     }
 }
@@ -93,23 +95,25 @@ paintOrigin( QPainter *p, QColor colour )
 {
     p->save();
     
+    QMatrix m = p->worldMatrix();  // this is m2win matrix
+    const double radius  = 6.0/m.m11(); 
+    const double cross = 12.0/m.m11();
+    const double lineThickness = THIN_LINE_THICKNESS/m.m11();
+    
     p->setBrush( QBrush() );
-    p->setPen( QPen( colour, THIN_LINE_THICKNESS ) );
+    p->setPen( QPen( colour, lineThickness ) );
 
     // display origin
-    const double radius  = 0.300;    // [m]
-    const double cross = 0.500;      // [m]
     p->drawEllipse( QRectF(-radius,-radius, 2.0*radius, 2.0*radius) );
     p->drawLine( QPointF(0.0,0.0), QPointF(cross,0.0) );
     p->drawLine( QPointF(0.0,0.0), QPointF(0.0,cross) );
     
     p->setFont( QFont("Helvetica [Cronyx]", 12) );
     
-    QMatrix m = p->matrix();  // this is m2win matrix
     QPointF xlabel = QPointF(cross,0.0) * m;       // x-label position in window cs
     QPointF ylabel = QPointF(0.0,cross) * m;       // y-label position in window cs
 
-    p->setMatrix( QMatrix() );
+    p->setWorldMatrix( QMatrix() );
     
     p->drawText( xlabel, "x" );
     p->drawText( ylabel, "y" );
@@ -118,45 +122,54 @@ paintOrigin( QPainter *p, QColor colour )
 }
 
 void
-paintPlatformPose( QPainter *p, QColor colour, float transparencyMultiplier )
+paintPlatformPose( QMatrix &m2win, QPainter *p, QColor colour, float transparencyMultiplier )
 {
+    const double length = FRAME_LENGTH/m2win.m11();
+    const double width =  FRAME_WIDTH/m2win.m11();
+    const double lineThickness = THIN_LINE_THICKNESS/m2win.m11();
+    
     // paint body
-    p->setBrush( getTransparentVersion(colour) );
+    p->setBrush( colour );
     // The outline
-    p->setPen( QPen( getTransparentVersion(Qt::black), THIN_LINE_THICKNESS ) );
-    p->drawRect( QRectF( -FRAME_LENGTH, -FRAME_WIDTH, 2.0*FRAME_LENGTH,2.0*FRAME_WIDTH) ); // top,left, width,height
+    p->setPen( QPen( Qt::black, lineThickness ) );
+    
+    p->drawRect( QRectF( -length, -width, 2.0*length,2.0*width) ); // top,left, width,height
 
-//    p->setPen( Qt::white );
-    p->drawLine( QPointF(0.0,0.0), QPointF(FRAME_LENGTH,FRAME_WIDTH) );
-    p->drawLine( QPointF(0.0,0.0), QPointF(FRAME_LENGTH,-FRAME_WIDTH) );
+    p->drawLine( QPointF(0.0,0.0), QPointF(length,width) );
+    p->drawLine( QPointF(0.0,0.0), QPointF(length,-width) );
 }
 
 void
-paintUncertaintyInfo( QPainter *p, QColor colour, float thetaMean, float pxx, float pxy, float pyy, float ptt )
+paintUncertaintyInfo( QMatrix &m2win, QPainter *p, QColor colour, float thetaMean, float pxx, float pxy, float pyy, float ptt )
 {
-    paintUncertaintyWedge( p, colour, thetaMean, ptt );
-    paintCovarianceEllipse( p, colour, pxx, pxy, pyy );
+    paintUncertaintyWedge( m2win, p, colour, thetaMean, ptt );
+    paintCovarianceEllipse( m2win, p, colour, pxx, pxy, pyy );
 }
 
 void
-paintUncertaintyWedge( QPainter *p, QColor colour, float thetaMean, float ptt )
+paintUncertaintyWedge( QMatrix &m2win, QPainter *p, QColor colour, float thetaMean, float ptt )
 {
+    const double length = FRAME_LENGTH/m2win.m11();
+    const double lineThickness = THIN_LINE_THICKNESS/m2win.m11();
+    
     p->save();
     {
         p->rotate( RAD2DEG(thetaMean) );
-        p->setPen( QPen(colour, THIN_LINE_THICKNESS) );
+        p->setPen( QPen(colour, lineThickness) );
         p->setBrush( Qt::NoBrush );
         int pTheta = (int) (ptt * (180.0/M_PI));
-        p->drawPie( QRectF(-N_LENGTH*FRAME_LENGTH,-N_LENGTH*FRAME_LENGTH,
-                    2.0*N_LENGTH*FRAME_LENGTH,2.0*N_LENGTH*FRAME_LENGTH),
+        p->drawPie( QRectF(-N_LENGTH*length,-N_LENGTH*length,
+                    2.0*N_LENGTH*length,2.0*N_LENGTH*length),
                     -N_SIGMA*pTheta*16, 2*N_SIGMA*pTheta*16 );
     }
     p->restore();
 }
 
 void
-paintCovarianceEllipse( QPainter *p, QColor colour, float pxx, float pxy, float pyy )
+paintCovarianceEllipse( QMatrix &m2win, QPainter *p, QColor colour, float pxx, float pxy, float pyy )
 {
+    const double lineThickness = THIN_LINE_THICKNESS/m2win.m11();
+    
     // Quick checks first (note that this is a necessary but not
     // sufficient condition for positive-definiteness)
     if ( pxx < 0.0 ||
@@ -188,7 +201,7 @@ paintCovarianceEllipse( QPainter *p, QColor colour, float pxx, float pxy, float 
     p->save();
     {
         p->rotate( psiDeg );
-        p->setPen( QPen( colour, THIN_LINE_THICKNESS ) );
+        p->setPen( QPen( colour, lineThickness ) );
         p->setBrush( Qt::NoBrush );
         p->drawEllipse( QRectF( -N_SIGMA*a,
                                 -N_SIGMA*b,
@@ -223,8 +236,6 @@ void paintWaypoint( QPainter *p,
                       2*distanceTolerance,
                       2*distanceTolerance) );       // draws circle as tolerances
     p -> setBrush( fillColor );
-//    const float diam = 0.05;
-//    p -> drawEllipse( QRectF( -diam,-diam, 2*diam+1, 2*diam+1) );                 // draws small circle at waypoint
     int a = -(targetHeading-headingTolerance);
     int alen = -2*headingTolerance;
     // !!!!!!!!!! WARNING!!!!!!!!!!!!!!!!!!!!

@@ -11,12 +11,6 @@
 #ifndef ORCA2_ORCAQGUI_IPERMANENT_ELEMENT_H
 #define ORCA2_ORCAQGUI_IPERMANENT_ELEMENT_H
 
-// #include <string>
-// #include <assert.h>
-// #include <QString>
-// #include <QColor>
-// #include <QPointF>
-// #include <QMouseEvent>
 
 namespace orcaqgui
 {

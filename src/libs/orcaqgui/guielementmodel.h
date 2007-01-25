@@ -18,8 +18,6 @@
 #include <orcaice/context.h>
 #include <orcaqgui/guielement.h>
 
-class QPainter;
-
 namespace orcaqgui
 {
 
