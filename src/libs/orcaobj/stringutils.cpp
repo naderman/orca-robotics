@@ -441,17 +441,17 @@ toString( const orca::Time& obj )
 std::string 
 toString( const orca::TimeOfDay& obj )
 {
-    char c[64];
-    sprintf(c,"%02d:%02d:%06.3f", obj.hours, obj.minutes, obj.seconds);
-    return std::string(c);
+    std::ostringstream s;
+    s << "TimeOfDay(h,m,s): " << obj.hours << ", " << obj.minutes << ", " << obj.seconds;
+    return s.str();
 }
 
 std::string 
 toString( const orca::Date& obj )
 {
-    char c[64];
-    sprintf(c,"%04d/%02d/%02d", obj.year, obj.month, obj.day);
-    return std::string(c);
+    std::ostringstream s;
+    s << "Date(y,m,d): " << obj.year << ", " << obj.month << ", " << obj.day;
+    return s.str();
 }
 
 std::string 
