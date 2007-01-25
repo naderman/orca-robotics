@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ICE_THREAD_H
-#define ORCA2_ICE_THREAD_H
+#ifndef ORCA2_ORCAICE_THREAD_H
+#define ORCA2_ORCAICE_THREAD_H
 
 #include <IceUtil/Thread.h>
 #include <IceUtil/Mutex.h>
@@ -49,7 +49,7 @@ class Thread : public IceUtil::Thread
 {
 public:
 
-    Thread(): isActive_(true) {};
+    Thread();
 
     //! Lets the tread know that it's time to exit. Thread-safe, so it can be called
     //! from inside or outside this thread.

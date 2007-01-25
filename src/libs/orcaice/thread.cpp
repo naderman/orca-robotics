@@ -14,6 +14,11 @@
 
 using namespace orcaice;
 
+Thread::Thread() : 
+    isActive_(true) 
+{
+}
+
 void Thread::stopAndJoin( orcaice::Thread* thread )
 {
     if ( thread ) {
