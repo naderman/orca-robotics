@@ -76,12 +76,23 @@ GpsComponent::start()
     {
         std::string device = orcaice::getPropertyWithDefault( prop, prefix+"Device", "/dev/ttyS0" );
         int baud = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Baud", 4800 );
-
         hwDriver_ = new AshtechGpsDriver( device.c_str(), baud);
     }
     else if ( driverName == "fake" )
     {
-        hwDriver_ = new FakeGpsDriver;
+        std::vector<double> latitudes, longitudes;
+        for(unsigned int i=0; ; i++)
+        {
+            stringstream* ss = new stringstream;
+            *ss << i;
+            double latitude, longitude;
+            if ( (orcaice::getPropertyAsDouble( prop, prefix+"FakeDriver.Latitude" + ss->str(), latitude )) ||
+                 (orcaice::getPropertyAsDouble( prop, prefix+"FakeDriver.Longitude" + ss->str(), longitude )) )
+            break;
+            latitudes.push_back(latitude);
+            longitudes.push_back(longitude);
+        }
+        hwDriver_ = new FakeGpsDriver(latitudes,longitudes);
     }
     else
     {

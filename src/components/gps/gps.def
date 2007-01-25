@@ -21,3 +21,8 @@ Config.Offset.Default=0.0 0.0 0.0  0.0 0.0 0.0
 
 Config.Device.Default=/dev/ttyS0
 Config.Baud.Default=4800
+
+Config.FakeDriver.Latitude0.Comment=FakeDriver can be used to spit out known locations
+Config.FakeDriver.Latitude0.Default=-35;
+Config.FakeDriver.Longitude0.Default=150;
+

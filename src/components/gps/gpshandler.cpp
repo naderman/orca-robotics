@@ -120,7 +120,7 @@ GpsHandler::run()
                     {
                         context_.tracer()->debug("We have new timeData", 3);
                         gpsObj_.localSetTimeData(gpsTimeData);
-//                         context_.tracer()->debug( orcaice::toString( gpsTimeData ), 5 );
+                        context_.tracer()->debug( orcaice::toString( gpsTimeData ), 5 );
                     }
                 }
             }

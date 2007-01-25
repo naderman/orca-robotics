@@ -23,7 +23,7 @@ class FakeGpsDriver : public GpsDriver
 
 public:
 
-    FakeGpsDriver();
+    FakeGpsDriver(std::vector<double> &latitudes, std::vector<double> &longitudes);
     virtual ~FakeGpsDriver();
 
     virtual int reset(){return 0;};
@@ -44,6 +44,10 @@ public:
 private:
 
     bool isEnabled_;
+    std::vector<double> latitudes_;
+    std::vector<double> longitudes_;
+    unsigned int numReads_;
+    unsigned int dataRecord_;
 };
 
 #endif

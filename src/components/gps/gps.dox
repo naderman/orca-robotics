@@ -33,7 +33,7 @@
 @par Drivers
 
 - @b ashtech @ref gps_ashtech
-- @b fake Useful for testing or if you don't have hardware or a simulator.
+- @b fake @ref gps_fake Useful for testing or if you don't have hardware or a simulator.
 
 @par Operation
 
@@ -89,9 +89,25 @@ Uses AshTech serial impementation.
 - @c Gps.Config.Ashtech.Baud (int)
     - Baud rate
     - Default: 4800
+    
+@section gps_fake AshTech driver
+The fake driver can be used to spit out GPS coordinates which can be specified in the config file.
+This is useful to test the displaying of GPS positions in a GUI for example. The configured positions 
+are served in a ring-like fashion, i.e. 0,1,2,3,0,1,2,...
+
+@par Extra configuration
+
+- @c Gps.Config.FakeDriver.Latitude<X> (double)
+  - Latitude of GPS coordinate <X> (starting with 0)
+  - Default: -35.0
+
+- @c Gps.Config.FakeDriver.Longitude<X> (double)
+  - Latitude of GPS coordinate <X> (starting with 0)
+  - Default: 150.0
 
 @par Authors
-Matthew Ridley
+Matthew Ridley,
+Tobias Kaupp
 
 */
 
