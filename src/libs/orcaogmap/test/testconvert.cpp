@@ -11,7 +11,7 @@
 #undef NDEBUG
 
 #include <iostream>
-#include <orcaogmapload/maploadutil.h>
+#include <orcamapload/ogmaploadutil.h>
 #include <orcaogmap/orcaogmap.h>
 #include <orca/ogmap.h>
 

@@ -10,7 +10,7 @@ MESSAGE( STATUS "Planning to Build Test      : OrcaOgMapRayTrace [libOrcaOgMap]"
 IF ( QT4_FOUND )
 
   ADD_EXECUTABLE( testconvert testconvert.cpp )
-  TARGET_LINK_LIBRARIES( testconvert OrcaOgMap OrcaOgMapLoad )
+  TARGET_LINK_LIBRARIES( testconvert OrcaOgMap OrcaMapLoad )
   ADD_TEST( OrcaOgMapConversion testconvert ${CMAKE_CURRENT_SOURCE_DIR}/testmap.png )
   MESSAGE( STATUS "Planning to Build Test      : OrcaOgMapConversion [libOrcaOgMap]")
 

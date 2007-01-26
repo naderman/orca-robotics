@@ -69,15 +69,15 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - VehicleDescription
     - Describes physical geometry and dynamic constraints of vehicles (Alex B.)
 - Wifi
-    - Access to wireless signal strength and other wireless network parameters (Tobias K.)
+    - Access to wireless signal strength and other wireless network parameters (Tobi)
 - PixMap
-    - Access to a pixmap representation of the world, e.g. background image (Tobias K.)
+    - Access to a pixmap representation of the world, e.g. background image (Tobi)
 
 @par New components
 
 - TracerMon (alex m.)
     - Connects to Tracer interface of a component and displays all trace statements.
-- Wifi (Tobias K.)
+- Wifi (Tobi)
     - Component that provides wifi information
 
 @par New utilities
@@ -90,13 +90,13 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - orcaifaceimpl
   - Optional convenience library providing default implementations of some Orca interfaces (Alex B.)
 - orcawifi
-  - Library for getting wireless information in Linux (Tobias K.)
+  - Library for getting wireless information in Linux (Tobi)
 
 @par Updated interfaces
 
-- Wifi, OgMap (Tobias K.)
+- Wifi, OgMap (Tobi)
     - enums instead of const int for types
-- PathFollower2d (Tobias K.)
+- PathFollower2d (Tobi)
     - Added get and set methods for activation time and enabled-state.
 - Platform2d
     - Obsolete. Use VelocityControl2d or DriveBicycle in new code.
@@ -117,18 +117,18 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - General source overhaul. Using orcaice::EventQueue's.
 - LocalNav
     - General cleanup, plus made to respect timings in paths. (Alex B.)
-    - Uses new interfaces Odometry2d and VelocityControl2d. (Tobias K.)
+    - Uses new interfaces Odometry2d and VelocityControl2d. (Tobi)
     - Use vehicle details obtained using VehicleDescription (Alex B.)
 - ImageServer
     - Cleaned up code and documentation. Using standard interface implementation (alex m.)
 - Gps 
-    - FakeDriver can spit out configured coordinates, useful for debugging (Tobias K.)
+    - FakeDriver can spit out configured coordinates, useful for debugging (Tobi)
 
 @par Updated utilities
 
 - Probe (alex m.)
     - now using orcaice::EventQueue for cross-thread communication.
-- OrcaView2d (Tobias K.)
+- OrcaView2d (Tobi)
     - Interaction with pathfollower2d interface more sophisticated: 
        - paths can be specified as missions with associcated waiting times and behaviours
        - timing is displayed online by an "olympic marker"
@@ -145,13 +145,16 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
       nice to nonstandard display drivers, e.g. those using ncurses.
 - libOrcaLogFactory
     - added support for Odometry2d/3d interfaces (alex m.)
-    - added support for Wifi interface (Tobias K.)
-    - added support for Imu interface (Tobias K.)
+    - added support for Wifi interface (Tobi)
+    - added support for Imu interface (Tobi)
 - libOrcaProbeFactory (alex m.)
     - added support for Status and Tracer interfaces
 - libOrcaDef (alex m.)
     - removed Home object registration from XML descriptor. It's done programatically from libOrcaIce.
     - fixed bug in xml template generation which caused 60sec delay in component shutdown from within IceGrid.
+- libOrcaOgMapLoad (Tobi)
+    - renamed to libOrcaMapLoad
+    - added functionality to load pixmaps
 
 @section orca_doc_history_211 Changes in Release 2.1.1
 
@@ -198,7 +201,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
         is really there. (Alex B.)
     - Allowed different feature representations using inheritence (Alex B.)
 - OgMap interface
-    - added a user-defined type, useful to determine the type of certainty grid map, e.g. hazard, ogmap, motion etc. (Tobias K.)
+    - added a user-defined type, useful to determine the type of certainty grid map, e.g. hazard, ogmap, motion etc. (Tobi)
 
 @par Updated components
 
@@ -211,9 +214,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - LaserFeatureExtractor
     - Huge Overhaul, plus added line features (Alex B.)
 - PathPlanner
-    - fixed potential problem with skeleton (zeromap is now a map of ints) (Tobias K.)
+    - fixed potential problem with skeleton (zeromap is now a map of ints) (Tobi)
 - GoalPlanner
-    - throws remote exception if there are more than one localisation hypotheses (Tobias K.)
+    - throws remote exception if there are more than one localisation hypotheses (Tobi)
 
 @par Updated utilities
 
@@ -221,7 +224,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - using dynamically loaded factory libraries to allow use with satellite projects
     - added a gui driver using Qt
 - OrcaView2d
-    - now supports guielements with multiple interfaces, see e.g. ogmapscombined (Tobias K.)
+    - now supports guielements with multiple interfaces, see e.g. ogmapscombined (Tobi)
 - CleanRegistry (Alex M.)
     - now works with the Home interfaces registered as well-known-objects
 
@@ -288,8 +291,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Significant overhaul of internal structure to comply with changes in the interface. (Alex M.)
 - Logger/LogPlayer components, and new libOrcaLog library
     - major code clean-up to simplify addition of new interfaces (Alex M.)
-    - master file protocol has changed, logger writes metadata (Tobias K.)
-    - new feature: logplayer can do endless loops (Tobias K.)
+    - master file protocol has changed, logger writes metadata (Tobi)
+    - new feature: logplayer can do endless loops (Tobi)
     - timestamp in log filenames is optional (Alex M.)
     - added support for Power interface (Alex M.)
     - Added support for plug-in loggers, via dynamic library loading (Alex B.)

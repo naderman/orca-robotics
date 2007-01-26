@@ -1,6 +1,6 @@
 #include <iostream>
 using namespace std;
-#include <orcaogmapload/maploadutil.h>
+#include <orcamapload/ogmaploadutil.h>
 #include <orcaogmap/orcaogmap.h>
 #include <orcapathplan/orcapathplan.h>
 using namespace orcapathplan;

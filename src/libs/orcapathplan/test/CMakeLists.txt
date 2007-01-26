@@ -10,7 +10,7 @@ MESSAGE( STATUS "Planning to Build Test      : OrcaPathPlanConversion [libOrcaPa
 IF ( QT4_FOUND )
 
   ADD_EXECUTABLE( testpathplan testpathplan.cpp )
-  TARGET_LINK_LIBRARIES( testpathplan OrcaPathPlan OrcaOgMapLoad )
+  TARGET_LINK_LIBRARIES( testpathplan OrcaPathPlan OrcaMapLoad )
   ADD_TEST( OrcaPathPlan testpathplan ${CMAKE_CURRENT_SOURCE_DIR}/testmap.png )
   MESSAGE( STATUS "Planning to Build Test      : OrcaPathPlan [libOrcaPathPlan]")
 

@@ -11,7 +11,7 @@
 #include <orcaice/orcaice.h>
 #include <fstream>
 
-#include <orcaogmapload/maploadutil.h>
+#include <orcamapload/ogmaploadutil.h>
 
 using namespace std;
 using namespace orca;

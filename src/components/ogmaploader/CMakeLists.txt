@@ -23,7 +23,7 @@ IF ( REALLY_BUILD_OGMAPLOADER )
 
     SET( DEP_LIBS
       OgMapLoaderSources
-      OrcaOgMapLoad 
+      OrcaMapLoad 
       ${QT_QTGUI_LIBRARY} 
       ${QT_QTCORE_LIBRARY}
       OrcaIfaceImpl )
