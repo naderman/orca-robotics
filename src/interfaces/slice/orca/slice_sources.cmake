@@ -31,6 +31,7 @@ SET( SLICE_SOURCE_FILES
     ogmap.ice
     pathplanner2d.ice
     pingreply.ice
+    pixmap.ice
     position2d.ice
     position3d.ice
     platform2d.ice

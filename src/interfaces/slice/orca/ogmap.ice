@@ -17,14 +17,11 @@
 module orca
 {
     
-module ogmaptype
+enum OgMapType
 {
-    //! Map represents occupancy
-    const int OCCUPANCY = 0;
-    //! Map represents hazards
-    const int HAZARD    = 1;
-    //! Map represents motion
-    const int MOTION    = 2;    
+    OgMapOccupancy,
+    OgMapHazard,
+    OgMapMotion    
 };
 
 /*!
@@ -98,9 +95,9 @@ struct OgMapData
     //!   i.e. 0 = unoccupied, 254 = occupied and 127 = unknown. 
     ByteSequence data;
     
-    //! User-defined type of certainty grid map.
+    //! Type of certainty grid map (see above)
     //! Useful to distinguish between occupancy, motion, hazard maps etc.
-    int mapType;
+    OgMapType mapType;
 };
 
 module ogmapvalues

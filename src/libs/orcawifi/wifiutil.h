@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 
+// only for modes/linkqualitytype enums
+#include <orca/wifi.h>
+
 namespace wifiutil {
 
     enum Result
@@ -58,7 +61,7 @@ namespace wifiutil {
     struct WirelessConfig
     {
         std::string interfaceName;
-        int mode;
+        orca::OperationMode mode;
         int bitrate;
         std::string accessPoint;
     };
@@ -67,7 +70,7 @@ namespace wifiutil {
     {
         std::string interfaceName;
         int throughPut;
-        int linkQualityType;
+        orca::LinkQualityType linkType;
         int linkQuality;
         int signalLevel;
         int noiseLevel;

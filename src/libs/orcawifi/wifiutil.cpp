@@ -5,9 +5,6 @@
 
 #include <iostream>
 
-// only for modes/linkqualitytype enums
-#include <orca/wifi.h>
-
 #include "wifiutil.h"
 
 using namespace std;
@@ -187,7 +184,7 @@ void printDataIoctl( vector<IoctlData> &wifiDataIoctl )
         const IoctlData &d = wifiDataIoctl[i]; 
         cout << "Interface name:     " << d.interfaceName << endl;
         cout << "Throughput:         " << d.throughPut << endl;
-        cout << "Link quality type:  " << d.linkQualityType << endl;
+        cout << "Link quality type:  " << d.linkType << endl;
         cout << "Link quality:       " << d.linkQuality << endl;
         cout << "Max link quality:   " << d.maxLinkQuality << endl;
         cout << "Signal level:       " << d.signalLevel << endl;
@@ -210,34 +207,34 @@ char* convertMacHex(char *buf, unsigned char *data)
 }
 
 
-int getMode( int socketFd, iwreq* iwRequest )
+orca::OperationMode getMode( int socketFd, iwreq* iwRequest )
 {
-    int mode;
+    orca::OperationMode mode;
     
     if (ioctl(socketFd, SIOCGIWMODE, iwRequest) < 0)
         throw Exception( "Error:\nIoctl for mode failed.\n" );
         
     switch(iwRequest->u.mode) {
         case IW_MODE_AUTO:
-            mode = opmode::AUTO;
+            mode = OperationModeAuto;
             break;
         case IW_MODE_ADHOC:
-            mode = opmode::ADHOC;
+            mode = OperationModeAdhoc;
             break;
         case IW_MODE_INFRA:
-            mode = opmode::INFRASTRUCTURE;
+            mode = OperationModeInfrastructure;
             break;
         case IW_MODE_MASTER:
-            mode = opmode::MASTER;
+            mode = OperationModeMaster;
             break;
         case IW_MODE_REPEAT:
-            mode = opmode::REPEAT;
+            mode = OperationModeRepeat;
             break;
         case IW_MODE_SECOND:
-            mode = opmode::SECONDREPEATER;
+            mode = OperationModeSecondRepeater;
             break;
         default:
-            mode = opmode::UNKNOWN;
+            mode = OperationModeUnknown;
     }    
     return mode;
 }
@@ -365,14 +362,14 @@ void readUsingIoctl( vector<IoctlData> &wifiDataIoctl )
             data.throughPut = iwRange->throughput;
             if (qual->level != 0) {
                 if (qual->level > iwRange->max_qual.level) {
-                    data.linkQualityType = linkqualitytype::DBM;
+                    data.linkType = orca::LinkQualityTypeDbm;
                 } else {
-                    data.linkQualityType = linkqualitytype::RELATIVE;
+                    data.linkType = orca::LinkQualityTypeRelative;
                 }
             }
             else
             {
-                data.linkQualityType = linkqualitytype::UNKNOWN;
+                data.linkType = orca::LinkQualityTypeUnknown;
             }
         
             data.linkQuality = qual->qual;

@@ -53,8 +53,8 @@ OgMapsCombinedPainter::setData( const orca::OgMapData& data0, const orca::OgMapD
     assert( data0.numCellsY == data1.numCellsY );
     assert( data0.metresPerCellX == data1.metresPerCellX );
     assert( data0.metresPerCellY == data1.metresPerCellY );
-    assert( (data0.mapType==ogmaptype::OCCUPANCY || data0.mapType==ogmaptype::HAZARD)
-             && (data1.mapType==ogmaptype::OCCUPANCY  || data1.mapType==ogmaptype::HAZARD) );
+    assert( (data0.mapType==orca::OgMapOccupancy || data0.mapType==orca::OgMapHazard)
+             && (data1.mapType==orca::OgMapOccupancy  || data1.mapType==orca::OgMapHazard) );
     
     if ( data0.origin.o != 0.0 ) {
         cout << "ERROR(ogmapscombinedpainter.cpp): Don't know how to display a non-axis-aligned map." << endl;
@@ -63,7 +63,7 @@ OgMapsCombinedPainter::setData( const orca::OgMapData& data0, const orca::OgMapD
     
     const orca::OgMapData *occMap;
     const orca::OgMapData *hazMap;
-    if (data0.mapType==ogmaptype::OCCUPANCY)
+    if (data0.mapType==orca::OgMapOccupancy)
     {
         occMap = &data0;
         hazMap = &data1;

@@ -92,7 +92,7 @@ void fillIn( const vector<wifiutil::IoctlData> &ioctlData,
         }
         
         w.throughPut = ioctlData[i].throughPut;
-        w.linkQualityType = ioctlData[i].linkQualityType;
+        w.linkType = ioctlData[i].linkType;
         w.linkQuality = ioctlData[i].linkQuality;
         w.signalLevel = ioctlData[i].signalLevel;
         w.noiseLevel = ioctlData[i].noiseLevel;

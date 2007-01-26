@@ -1198,7 +1198,7 @@ toString( const orca::WifiData &obj )
           << ", bitrate: " << iface.bitrate 
           << ", accessPoint: " << iface.accessPoint 
           << ", throughPut: " << iface.throughPut 
-          << ", linkQualityType: " << iface.linkQualityType << "\n";
+          << ", linkQualityType: " << iface.linkType << "\n";
         
         s << "maxLinkQuality: " << iface.maxLinkQuality 
           << ", maxSignalLevel: " << iface.maxSignalLevel 

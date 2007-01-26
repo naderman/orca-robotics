@@ -45,7 +45,7 @@ struct GpsTimeData
     Time timeStamp;
     //! UTC time
     TimeOfDay utcTime;
-    // UTC date
+    //! UTC date
     Date utcDate;
 };
 

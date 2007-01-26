@@ -24,33 +24,33 @@ module orca
 */
     
 //! Interpretation of link quality
-module linkqualitytype
+enum LinkQualityType
 {
     //! link quality type is unknown
-    const int UNKNOWN   = 0;
+    LinkQualityTypeUnknown,
     //! link quality is in dBm
-    const int DBM       = 1;
+    LinkQualityTypeDbm,
     //! link quality is relative
-    const int RELATIVE  = 2;
+    LinkQualityTypeRelative
 };
 
 //! Operation modes
-module opmode
+enum OperationMode
 {
     //! unknown operating mode
-    const int UNKNOWN        = 0;
+    OperationModeUnknown,
     //! driver decides the mode
-    const int AUTO           = 1;
+    OperationModeAuto,
     //! ad hoc mode
-    const int ADHOC          = 2;
+    OperationModeAdhoc,
     //! infrastructure mode (multi cell network, roaming)
-    const int INFRASTRUCTURE = 3;
+    OperationModeInfrastructure,
     //! access point, master mode
-    const int MASTER         = 4;
+    OperationModeMaster,
     //! repeater mode
-    const int REPEAT         = 5;
+    OperationModeRepeat,
     //! secondary/backup repeater
-    const int SECONDREPEATER = 6;
+    OperationModeSecondRepeater
 };
 
 
@@ -89,7 +89,7 @@ struct WifiInterface
     int numMissedBeacons;
     
     //! Operating mode (see above)
-    int mode;
+    OperationMode mode;
     //! Bitrate
     int bitrate;
     //! Access point MAC address
@@ -98,7 +98,7 @@ struct WifiInterface
     //! Throughput (TODO: what does it mean? unit?)
     int throughPut;
     //! How to interpret the link quality (see above)
-    int linkQualityType;
+    LinkQualityType linkType;
     //! Maximum link quality
     int maxLinkQuality;
     //! Maximum signal level

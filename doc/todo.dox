@@ -70,6 +70,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Describes physical geometry and dynamic constraints of vehicles (Alex B.)
 - Wifi
     - Access to wireless signal strength and other wireless network parameters (Tobias K.)
+- PixMap
+    - Access to a pixmap representation of the world, e.g. background image (Tobias K.)
 
 @par New components
 
@@ -92,6 +94,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated interfaces
 
+- Wifi, OgMap (Tobias K.)
+    - enums instead of const int for types
 - PathFollower2d (Tobias K.)
     - Added get and set methods for activation time and enabled-state.
 - Platform2d
@@ -117,6 +121,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Use vehicle details obtained using VehicleDescription (Alex B.)
 - ImageServer
     - Cleaned up code and documentation. Using standard interface implementation (alex m.)
+- Gps 
+    - FakeDriver can spit out configured coordinates, useful for debugging (Tobias K.)
 
 @par Updated utilities
 

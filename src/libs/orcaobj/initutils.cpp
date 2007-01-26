@@ -124,7 +124,7 @@ setInit( orca::Waypoint2d & wp )
 void 
 setInit( orca::WifiInterface &w )
 {
-    w.mode = 0;  
+    w.mode = orca::OperationModeUnknown;  
     w.bitrate = 0;  
     w.accessPoint = "00:00:00:00:00:00";  
     w.interfaceName = "";  
@@ -139,7 +139,7 @@ setInit( orca::WifiInterface &w )
     w.numInvalidMisc = 0;  
     w.numMissedBeacons = 0;  
     w.throughPut = 0;
-    w.linkQualityType = 0;
+    w.linkType = orca::LinkQualityTypeUnknown;
     w.maxLinkQuality = 0;
     w.maxSignalLevel = 0;
     w.maxNoiseLevel = 0;
@@ -431,7 +431,7 @@ setSane( orca::OgMapData& obj, int width, int height )
     obj.metresPerCellX = 1.0;
     obj.metresPerCellY = 1.0;
     obj.data.resize( 640*480, char(88) );
-    obj.mapType = orca::ogmaptype::OCCUPANCY;
+    obj.mapType = orca::OgMapOccupancy;
 }
 
 void 

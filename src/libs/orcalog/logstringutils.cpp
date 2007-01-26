@@ -390,7 +390,7 @@ toLogString( const orca::WifiData& obj )
           << iface.bitrate << " " 
           << iface.accessPoint << " " 
           << iface.throughPut << " " 
-          << iface.linkQualityType << " " 
+          << iface.linkType << " " 
           << iface.maxLinkQuality << " " 
           << iface.maxSignalLevel << " " 
           << iface.maxNoiseLevel << "\n";
