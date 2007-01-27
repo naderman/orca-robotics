@@ -40,9 +40,6 @@ Supportes file types are:
 
 - most image formats
     - anything qt can load: @c .png @c .bmp @c .jpg @c .jpeg @c .ppm @c .xbm @c .xpm
-- ICE stream files 
-    - file extension: @c .bin
-    - these files can be generated using @ref orca_util_orcaview2d
 
 Clients who wish to receive the map should call getData(). This component will only ever issue one update to subscribers: on initialisation.
 
@@ -57,21 +54,7 @@ Clients who wish to receive the map should call getData(). This component will o
     - The name (and path) of the image to load
     - Default: "mapfile.png"
 
-- @c PixMapLoader.Config.Negate (bool)
-    - Whether increasing pixel value represents increasing occupancy probability
-    - Valid Values:
-            - 0: black is occupied, white is empty
-            - 1: white is occupied, black is empty
-    - Default: 0
-    
-- @c PixMapLoader.MapType (int)
-    - Used to determine what the served ogMap represents
-    - Values: 0:occupancy, 1:hazard, 2:motion, user-defined integers can be assigned
-    - Default: 0
-
-Map Geometry (see @ref orca_interface_pixmap for a detailed explanation)
-
-Note: These parameters have @b no effect on maps loaded from ICE stream files. Those files contain all relevant information already.
+Map Geometry (see @ref orca_interface_ogmap for a detailed explanation)
 
 World Size (float,float) [m]
 - @c PixMapLoader.Config.Size.X
@@ -81,6 +64,18 @@ Map Origin (float,float,float) [m,m,deg]
 - @c PixMapLoader.Config.Origin.X
 - @c PixMapLoader.Config.Origin.Y
 - @c PixMapLoader.Config.Origin.Orientation
+
+Ice might throw the following exception:
+@verbatim
+IceUtil::Thread::run(): uncaught exception: TcpTransceiver.cpp:217: Ice::ConnectionLostException:
+connection lost: recv() returned zero
+@endverbatim
+Ice has a default maximum object size that can be communicated between components of 1024 bytes. If the pixmap exceeds this limit you must add in the following extra configuration line to @b both the @c pixmaploader.cfg and @c icebox_icestorm.cfg files:
+@verbatim
+...
+Ice.MessageSizeMax=3000
+@endverbatim
+Remember also to add this line to all configuration files of pixmap clients, e.g. @ref orca_util_orcaview2d.
 
 @section deps Dependancies
 

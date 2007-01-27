@@ -44,8 +44,8 @@ PixMapBackgroundPainter::setData( const orca::PixMapData& data )
     if ( data.origin.o != 0.0 ) 
     {
         stringstream ss;
-        ss << "PixMapBackgroundPainter: Don't know how to display non-axis-aligned map: ";
-//            << orcaice::toString( data );
+        ss << "PixMapBackgroundPainter: Don't know how to display non-axis-aligned map: "
+           << orcaice::toString( data );
         throw Exception( ss.str() );
     }
     

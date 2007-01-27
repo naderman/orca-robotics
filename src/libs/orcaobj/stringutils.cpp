@@ -1150,6 +1150,19 @@ toString( const orca::OgMapData& obj )
 }
 
 std::string 
+toString( const orca::PixMapData& obj )
+{
+    std::ostringstream s;
+    s << toString(obj.timeStamp)
+      << " PixMap: \n"
+      << "origin:        [" << obj.origin.p.x << ", " << obj.origin.p.y << ", " << obj.origin.o*180.0/M_PI << "]\n"
+      << "numCells:      [" << obj.numCellsX << ", " << obj.numCellsY << "]\n"
+      << "metresPerCell: [" << obj.metresPerCellX << ", " << obj.metresPerCellY << "]\n";
+
+    return s.str();
+}
+
+std::string 
 toString( const orca::PathFollower2dData& obj )
 {
     std::ostringstream s;

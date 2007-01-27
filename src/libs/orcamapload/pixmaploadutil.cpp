@@ -45,10 +45,10 @@ namespace orcapixmapload {
                 orca::Pixel pix;
                 QColor pixColor = qImage.pixel( i, j );
                 
-                pix.r = pixColor.red();
-                pix.g = pixColor.green();
-                pix.b = pixColor.blue();
-    
+                pix.r = (unsigned char)pixColor.red();
+                pix.g = (unsigned char)pixColor.green();
+                pix.b = (unsigned char)pixColor.blue();
+                       
                 int xi = i;
                 int yi = numCellsY-1-j;
                 int index = numCellsX*(yi) + xi;

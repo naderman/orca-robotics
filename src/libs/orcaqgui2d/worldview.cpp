@@ -178,7 +178,7 @@ WorldView::paintEvent( QPaintEvent* e )
     bool isCoordinateFramePlatformLocalised = transformToPlatformOwningCS( &painter );
 
     // simple z-buffering, higher-z items obscure (are in front of) lower-z items (just like QCanvas)
-    for ( int z=orcaqgui::Z_BACKGROUND; z<=orcaqgui::Z_FOREGROUND; z+=1 )
+    for ( int z=orcaqgui::Z_BACKGROUND; z<=orcaqgui::Z_FOREGROUND; z++ )
     {
         paintAllGuiElements(&painter,z,isCoordinateFramePlatformLocalised);
     }

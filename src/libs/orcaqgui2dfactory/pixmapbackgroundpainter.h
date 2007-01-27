@@ -29,7 +29,7 @@ class PixMapBackgroundPainter
     ~PixMapBackgroundPainter();
 
     void paint( QPainter *p, int z );
-    bool paintThisLayer( int z ) const { return z==Z_OG_MAP; }
+    bool paintThisLayer( int z ) const { return z==Z_BACKGROUND; }
 
     // Give the PixmapPainter the data relevant for painting
     void setData( const orca::PixMapData& data );

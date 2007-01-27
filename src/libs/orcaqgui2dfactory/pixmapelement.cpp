@@ -35,7 +35,7 @@ QStringList
 PixMapElement::contextMenu()
 {
     QStringList s;
-    s<<"Toggle Map"<<"Save OG Map"<<"Save OG Map As";
+    s<<"Toggle Map"<<"Save PixMap"<<"Save PixMap As";
     return s;
 }
 

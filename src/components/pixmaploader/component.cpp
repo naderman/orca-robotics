@@ -53,7 +53,7 @@ Component::start()
     else if ( driverName == "file" )
     {
         loadMapFromFile(theMap);
-//         cout<<"TRACE(component.cpp): Loaded map: " << orcaice::toString(theMap) << endl;
+        cout<<"TRACE(component.cpp): Loaded map: " << orcaice::toString(theMap) << endl;
     }
     else
     {
