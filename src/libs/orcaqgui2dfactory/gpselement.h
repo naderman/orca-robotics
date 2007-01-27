@@ -47,7 +47,9 @@ namespace orcaqgui
     ////////////////////////////////////////////////////////////////////////////////
     
     
-    // GpsElement connects to gps interface, passed info to gpsPainter
+    // GpsElement connects to gps interface, passes info to gpsPainter
+    // This element is special because it uses non-standard subscriptions: 'subscribeForMapGrid'
+    // That's why we can't inherit from IceStormElement, we rather use the IceStormListener directly
     class GpsElement : public GuiElement2d, public IKnowsPlatformPosition2d
     {
         

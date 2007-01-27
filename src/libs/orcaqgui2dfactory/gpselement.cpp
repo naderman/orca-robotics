@@ -29,7 +29,6 @@ GpsElement::GpsElement( const orcaice::Context  &context,
       context_(context),
       displayGps_(true)
 {
-    cout<<"TRACE(gpselement.cpp): WARNING: connecting in constructor!" << endl;
     gpsListener_.connect();
     
     // get gps specific properties from the cfg file   
@@ -53,18 +52,16 @@ GpsElement::needToUpdate()
     if ( !gpsListener_.buffer().isEmpty() )
     {
         // An object has arrived in one of the buffers.  We need to update.
-        // cout << "TRACE(gpselement.cpp): An object has arrived in the buffer" << endl;
         return true;
     }
-
-    // cout << "timeoutMs_: " << timeoutMs_ << endl;
     
     // The buffer is empty.  How long since we last received something?
-    if ( gpsListener_.msSinceReceipt() >= timeoutMs_ ) 
+    if ( timeoutMs_ != -1 && gpsListener_.msSinceReceipt() >= timeoutMs_ ) 
     {
         cout << "TRACE(gpselement.cpp): Timing out..." << endl;
-        gpsPainter_.clear();
         cout << "TRACE(gpselement.cpp): Haven't received anything in gpselement for " << gpsListener_.msSinceReceipt()  << "ms" << endl;
+        gpsPainter_.clear();
+        gpsListener_.resetTimer();
         gpsListener_.connect();
 
     }
