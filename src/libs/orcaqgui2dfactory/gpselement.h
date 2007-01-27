@@ -108,7 +108,7 @@ namespace orcaqgui
                     
             bool displayGps_;
             
-            // in absolute coordinate system: [m] [m] [rad]
+            // in GUI's absolute coordinate system: [m] [m] [rad]
             float x_;
             float y_;
             float theta_;

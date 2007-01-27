@@ -184,7 +184,7 @@ These are the default waypoint settings that can be changed in the menu later. C
     - Default: 1
     
 - @c OrcaView.Config.Gps.Origin (orca::CartesianPoint)
-    - origin of the gui coordinate system in northing/easting/height coordinates
+    - origin of the gui coordinate system in easting/northing/height coordinates
     - Default: 0.0 0.0 0.0
     
 - @c OrcaView.Config.OgMapsCombined.LookupTableFileName (string)

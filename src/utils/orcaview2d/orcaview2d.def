@@ -45,6 +45,7 @@ Config.ScreenCapture.TopPad.Default = 25
 Config.ScreenCapture.SidePad.Default = 2
 Config.ScreenCapture.BottomPad.Default = 2
 Config.ScreenCapture.CaptureTimerInterval.Default = 1000
+Config.Gps.Origin.Comment=easting/northing/height
 Config.Gps.Origin.Default=0.0 0.0 0.0
 Config.OgMapsCombined.LookupTableFileName.Default= ogHazardLookupTable.png
 

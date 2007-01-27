@@ -83,26 +83,17 @@ GpsElement::update()
     
     if ( !gpsListener_.buffer().isEmpty() )
     {
-        // cout << "TRACE(gpselement.cpp): buffer has object" << endl;
-
-            gpsListener_.buffer().getAndPop( data );
-            // cout << "TRACE(gpselement.cpp): Just got data from buffer" << endl;
-            // shift the coordinates by gpsOrigin coordinates so that orcaview starts at (0,0)
-//             x_ = gpsOrigin_.x - data.northing;
-//             y_ = gpsOrigin_.y - data.easting;
-            
-//             x_ = data.northing - gpsOrigin_.x;
-//             y_ = data.easting - gpsOrigin_.y;
-            
-            x_ = data.easting - gpsOrigin_.y;
-            y_ = data.northing - gpsOrigin_.x;
-            
-            theta_ = data.heading;
-            
-            if ( displayGps_ )
-            {
-                gpsPainter_.setData( x_, y_, theta_ );
-            }
+        gpsListener_.buffer().getAndPop( data );
+        
+        x_ = data.easting - gpsOrigin_.x;
+        y_ = data.northing - gpsOrigin_.y;
+        
+        theta_ = data.heading;
+        
+        if ( displayGps_ )
+        {
+            gpsPainter_.setData( x_, y_, theta_ );
+        }
     } 
 }
 
