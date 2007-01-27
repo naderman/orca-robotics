@@ -47,10 +47,7 @@ namespace orcaqgui
     ////////////////////////////////////////////////////////////////////////////////
     
     
-    /*!
-    \brief GpsElement connects to gps interface, passed info to gpsPainter
-    \author Ben Upcroft
-     */
+    // GpsElement connects to gps interface, passed info to gpsPainter
     class GpsElement : public GuiElement2d, public IKnowsPlatformPosition2d
     {
         
@@ -72,17 +69,18 @@ namespace orcaqgui
                 if ( !displayGps_ ) return false;
                 return gpsPainter_.paintThisLayer(z);
             }
-
+        
             virtual bool isInGlobalCS() { return true; }
 
-        // Access to Gps mapgrid data [m] [m] [rad]
-        virtual float x() const { return x_; }
-        virtual float y() const { return y_; }
-        virtual float theta() const { return theta_; }
-        virtual int platformKnowledgeReliability() const { return 5; }
-
-        virtual QStringList contextMenu();
-        virtual void execute( int action );
+            // Access to coordinates in GUI coordinate system [m] [m] [rad]
+            virtual float x() const { return x_; }
+            virtual float y() const { return y_; }
+            virtual float theta() const { return theta_; }
+            virtual int platformKnowledgeReliability() const { return 7; }
+    
+            virtual QStringList contextMenu();
+            virtual void execute( int action );
+            virtual QPointF pos() const { return QPointF(x_,y_); };
 
         private:
 
@@ -108,7 +106,7 @@ namespace orcaqgui
                     
             bool displayGps_;
             
-            // in GUI's absolute coordinate system: [m] [m] [rad]
+            // in GUI's coordinate system: [m] [m] [rad]
             float x_;
             float y_;
             float theta_;

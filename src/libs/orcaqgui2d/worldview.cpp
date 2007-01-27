@@ -393,11 +393,15 @@ WorldView::nearestComponent( const QPointF& pclick, const double & pixelRadius )
         const IKnowsPlatformPosition2d* platformElem = dynamic_cast<const IKnowsPlatformPosition2d*>(elements[i]);
         if ( platformElem != NULL )
         {
+            //cout << "TRACE(worldview.cpp): We have a platform element" << endl;
             // We know that really it's a GuiElement2d...
             const GuiElement2d *elem2d = dynamic_cast<const GuiElement2d*>(elements[i]);
             assert( elem2d != NULL );
+            //cout << "TRACE(worldview.cpp): pClick is " << pclick.x() << " " << pclick.y() << endl;
+            //cout << "TRACE(worldview.cpp): elem2d->pos() is " << elem2d->pos().x() << " " << elem2d->pos().y() << endl;
+            //cout << "TRACE(worldview.cpp): elem2d->pos() transformed is " << wm_.map(elem2d->pos()).x() << " " << wm_.map(elem2d->pos()).y() << endl;
             delta = pclick - wm_.map(elem2d->pos());
-            dist = sqrt( pow(delta.x(),2.0) + pow(delta.y(),2.0) ) ;
+            dist = sqrt( pow(delta.x(),2.0) + pow(delta.y(),2.0) );
             if ( dist<pixelRadius ) candidates[dist] = elements[i]->platform();        
         }
     }
