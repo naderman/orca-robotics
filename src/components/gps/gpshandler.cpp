@@ -57,6 +57,7 @@ GpsHandler::run()
             if ( hwDriver_->isEnabled() )
             {
                 // Read from the GPS
+                context_.tracer()->debug("Trying to read from driver now", 3);
                 int ret = hwDriver_->read();
                 if ( ret == -1 )
                 {

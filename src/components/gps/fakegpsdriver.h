@@ -32,7 +32,7 @@ public:
     virtual int disable() { isEnabled_=false; return 0; };
 
     virtual bool isEnabled() { return isEnabled_; };
-    virtual bool hasFix() { return true; };
+    virtual bool hasFix();
 
     // Blocks till timout expires, returns number of messages read, -1 if failure
     virtual int read();
@@ -48,6 +48,8 @@ private:
     std::vector<double> longitudes_;
     unsigned int numReads_;
     unsigned int dataRecord_;
+    int fixCounter_;
+    
 };
 
 #endif

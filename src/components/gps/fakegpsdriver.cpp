@@ -20,7 +20,8 @@ FakeGpsDriver::FakeGpsDriver(std::vector<double> &latitudes, std::vector<double>
     : latitudes_(latitudes),
       longitudes_(longitudes),
       numReads_(0),
-      dataRecord_(0)
+      dataRecord_(0),
+      fixCounter_(0)
 {
     cout << "sizes: " << latitudes.size() << " " << longitudes.size() << endl;
 }
@@ -30,10 +31,21 @@ FakeGpsDriver::~FakeGpsDriver()
     disable();
 }
 
+bool 
+FakeGpsDriver::hasFix() 
+{ 
+    fixCounter_++;
+    if (fixCounter_>=5) {
+        return true;
+    } else {
+        return false; 
+    }
+}
+
 int 
 FakeGpsDriver::read()
 {
-    cout<<"TRACE(fakelaserdriver.cpp): Generating fake gps data..." << endl;
+//     cout<<"TRACE(fakelaserdriver.cpp): Generating fake gps data..." << endl;
     
     newGpsData_ = false;
     orcaice::setToNow( GpsData_.timeStamp );

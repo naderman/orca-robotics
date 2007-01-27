@@ -104,6 +104,9 @@ are served in a ring-like fashion, i.e. 0,1,2,3,0,1,2,...
 - @c Gps.Config.FakeDriver.Longitude<X> (double)
   - Latitude of GPS coordinate <X> (starting with 0)
   - Default: 150.0
+  
+Another feature for debugging is that the fakedriver 'pretends' not to have a fix for the first
+five timesteps. Useful for testing whether clients catch remote exceptions.
 
 @par Authors
 Matthew Ridley,
