@@ -79,11 +79,11 @@ public:
     QString platform() { return platform_; };
     void setPlatform( QString platform ) { platform_ = platform; };
     
-    //! Access and set functions for details string displayed in table, e.g. ogmap@hemp/ogmaploader 
+    //! Access and set functions for details string displayed in table, e.g. ::orca::OgMap
     QString details() { return details_; };
     void setDetails( QString details ) { details_ = details; };
     
-    //! Access and set functions for name string displayed in table, e.g. ::orca::OgMap
+    //! Access and set functions for name string displayed in table, e.g. ogmap@hemp/ogmaploader
     QString name() { return name_; };
     void setName( QString name ) { name_ = name; };
     

@@ -175,9 +175,23 @@ GuiElementModel::instantiateFromFactories( const QStringList &ids, const QColor 
     return NULL;
 }
 
+bool
+GuiElementModel::doesInterfaceExist( const QStringList& proxyStrList, int numElements )
+{
+    //cout << "proxyStrList.join " << proxyStrList.join(" ").toStdString() << endl;
+    
+    for ( int i=0; i<elements_.size(); i++)
+    {
+        cout << "element name: " << elements_[i]->name().toStdString() << endl;
+        if ( elements_[i]->name() == proxyStrList.join(" ") + " " ) return true;
+    }
+    
+    return false;     
+}
+
 void 
 GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
-{
+{    
     // get interface data out of stringlist
     QStringList ids;
     QStringList proxyStrList;
@@ -191,6 +205,12 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
         cout << "proxylist: " << (info[3]+"@"+info[1]+"/"+info[2]).toStdString() << endl;
         platformStrList << info[1];
         cout << "platform: " << info[1].toStdString() << endl;
+    }
+    
+    bool haveThisInt = doesInterfaceExist( proxyStrList, interfacesInfo.size() );
+    if (haveThisInt) {
+        humanManager_->showStatusMsg(Warning,"Interface " + proxyStrList.join(" ") + " exists already. Not connecting again!");
+        return;
     }
     
     // set platform name: if they disagree, set to global

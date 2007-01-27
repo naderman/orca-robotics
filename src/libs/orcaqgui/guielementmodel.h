@@ -93,6 +93,7 @@ private:
     orcaice::Context context_;
     IHumanManager *humanManager_;
     bool doesPlatformExist( QString &platformName );
+    bool doesInterfaceExist( const QStringList& proxyStrList, int numElements );
     
     QColor generateRandomColor();
     QMap<QString, QColor> colorMap_;
