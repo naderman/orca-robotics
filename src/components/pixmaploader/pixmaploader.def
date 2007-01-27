@@ -2,7 +2,7 @@ DefaultComponentTag=PixMapLoader
 
 # Provided Interfaces
 Provides.PixMap.Type=PixMap
-Provides.PixMap.DefaultName=ogmap
+Provides.PixMap.DefaultName=pixmap
 
 # Required Interfaces
 

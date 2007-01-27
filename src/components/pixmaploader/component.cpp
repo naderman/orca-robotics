@@ -86,14 +86,28 @@ void Component::stop()
     // Nothing to do, since we don't have our own thread.
 }
 
-void Component::loadMapFromFile(orca::PixMapData &theMap)
+void Component::loadMapFromFile(orca::PixMapData &map)
 {
     Ice::PropertiesPtr prop = properties();
     std::string prefix = tag();
     prefix += ".Config.";
 
     std::string filename = orcaice::getPropertyWithDefault( prop, prefix+"MapFileName", "mapfilename" );  
-    orcapixmapload::loadMap( filename.c_str(), theMap.numCellsX, theMap.numCellsY, theMap.rgbPixels );
+    orcapixmapload::loadMap( filename.c_str(), map.numCellsX, map.numCellsY, map.rgbPixels );
+    
+    map.origin.p.x = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.X", 0.0 );
+    map.origin.p.y = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Y", 0.0 );
+    map.origin.o   = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Orientation", 0.0 ) * M_PI/180.0;
+
+    // since we know that map size in pixels, we can calculate the cell size
+    float worldSizeX = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.X", 20.0 );
+    float worldSizeY = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.Y", 20.0 );
+    map.metresPerCellX = worldSizeX / (float)map.numCellsX;
+    map.metresPerCellY = worldSizeY / (float)map.numCellsY;
+
+    // Make up a timestamp
+    map.timeStamp.seconds  = 0;
+    map.timeStamp.useconds = 0;
     
 }
 

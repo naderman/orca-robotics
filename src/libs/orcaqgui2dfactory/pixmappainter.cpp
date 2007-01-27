@@ -194,10 +194,8 @@ PixmapPainter::toggleDisplayMap()
 }
 
 int 
-PixmapPainter::saveMap( const QString fileName, IHumanManager *humanManager )
-{
-    QString fileExtension = fileName.section('.',-1,-1);
-    
+PixmapPainter::saveMap( const QString &fileName, const QString &fileExtension, IHumanManager *humanManager )
+{   
     // We have to mirror the map first
     QMatrix matrix(1.0, 0.0, 0.0, -1.0, 0.0, 0.0);
 

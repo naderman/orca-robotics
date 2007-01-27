@@ -58,7 +58,7 @@ class PixmapPainter
     void paint( QPainter *p );
 
     void toggleDisplayMap();
-    int saveMap( const QString fileName, IHumanManager *humanManager );
+    int saveMap( const QString &fileName, const QString &fileExtension, IHumanManager *humanManager );
     
   private:
     

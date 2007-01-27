@@ -29,6 +29,7 @@
 - @ref orca_interface_particle2d [OrcaView.Requires.Particle2d]
 - @ref orca_interface_pathfollower2d [OrcaView.Requires.PathFollower2d]
 - @ref orca_interface_pathplanner2d [OrcaView.Requires.PathPlanner2d]
+- @ref orca_interface_pixmap [OrcaView.Requires.PixMap]
 - @ref orca_interface_polarfeature2d [OrcaView.Requires.PolarFeature2d]
 
 @image html orcaview.png

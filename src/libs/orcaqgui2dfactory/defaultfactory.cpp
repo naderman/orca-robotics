@@ -17,6 +17,7 @@
 #include <orcaqgui2dfactory/pathplanner2delement.h>
 #include <orcaqgui2dfactory/gpselement.h>
 #include <orcaqgui2dfactory/ogmapscombinedelement.h>
+#include <orcaqgui2dfactory/pixmapelement.h>
 
 #include "defaultfactory.h"
 #include <orcaqgui/ihumanmanager.h>
@@ -37,6 +38,7 @@ DefaultFactory::DefaultFactory()
     addSupportedType(QStringList("::orca::PathPlanner2d"));
     addSupportedType(QStringList("::orca::FeatureMap2d"));
     addSupportedType(QStringList("::orca::Particle2d"));
+    addSupportedType(QStringList("::orca::PixMap"));
     addSupportedType(QStringList("::orca::Gps"));
     addSupportedType(QStringList("::orca::QGraphics2d"));
     
@@ -86,6 +88,10 @@ DefaultFactory::create( const orcaice::Context           &context,
         else if ( interfaceId == "::orca::PathPlanner2d" ) {
             cout<<"creating PathPlanner2d element with proxyString "<<proxyString.toStdString()<<endl;
             elem = new orcaqgui::PathPlanner2dElement( context, proxyString.toStdString(), humanManager );
+        }
+        else if ( interfaceId == "::orca::PixMap" ) {
+            cout<<"creating PixMap element with proxyString "<<proxyString.toStdString()<<endl;
+            elem = new orcaqgui::PixMapElement( context, proxyString.toStdString(), humanManager );
         }
         else if ( interfaceId == "::orca::FeatureMap2d" ) {
             cout<<"creating FeatureMap2d element with proxyString "<<proxyString.toStdString()<<endl;

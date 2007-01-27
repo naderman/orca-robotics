@@ -79,6 +79,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Connects to Tracer interface of a component and displays all trace statements.
 - Wifi (Tobi)
     - Component that provides wifi information
+- PixMapLoader (Tobi)
+    - Loads and provides a pixmap
 
 @par New utilities
 

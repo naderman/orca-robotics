@@ -20,6 +20,9 @@ Requires.PathFollower2d.DefaultProxy=pathfollower2d@local/localnav
 Requires.PathPlanner2d.Type=PathPlanner2d
 Requires.PathPlanner2d.DefaultProxy=pathplanner2d@local/pathplanner
 
+Requires.PixMap.Type=PixMap
+Requires.PixMap.DefaultProxy=pixmap@local/pixmaploader
+
 Requires.FeatureMap2d.Type=FeatureMap2d
 Requires.FeatureMap2d.DefaultProxy=featuremap2d@local/featuremaploader
 

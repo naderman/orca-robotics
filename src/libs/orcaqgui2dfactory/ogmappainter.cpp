@@ -105,7 +105,7 @@ OgMapPainter::saveMap( const orcaice::Context & context, const QString fileName,
     }
     else if ( type == BITMAP )
     {
-        pixmapPainter_->saveMap( fileName, humanManager );
+        pixmapPainter_->saveMap( fileName, fileExtension, humanManager );
     }
     else if ( type == ICE_STREAM )
     {
