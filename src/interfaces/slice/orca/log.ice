@@ -25,13 +25,26 @@ Remotely connect to the logging component to check and control logging progress.
     @{
 */
 
+//! 
+enum LogState
+{
+    LogStarted,
+    LogStopped,
+    LogPaused
+};
+
 /*!
     @brief Information about the status of the logging process.
+
+All data is meaningless if the current log state is LogStopped.
 */
 struct LogData
 {
     //! Time when data was collected.
     Time timeStamp;
+
+    //! The state of the logger.
+    LogState state;
 
     //! Amount of data logged so far [bytes]
     int logSize;
@@ -53,11 +66,25 @@ struct LogData
 //! Interface to a device with a binary state.
 interface Log
 {
+    //! Returns log status
     nonmutating LogData getData()
         throws DataNotExistException;
 
     //! Starts new data set.
-    void startNewLog();
+    //! If a data set is already started, does nothing.
+    idempotent void start();
+
+    //! Stops current data set.
+    //! If no data set exists, does nothing.
+    idempotent void stop();
+    
+    //! Temporarily stops logging data.
+    //! If data is already paused, does nothing.
+    idempotent void pause();
+
+    //! Starts logging data into current data set.
+    //! If data is not paused, does nothing.
+    idempotent void unpause();
 };
 
 /*! @} */

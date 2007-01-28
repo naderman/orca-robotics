@@ -18,6 +18,20 @@
 
 using namespace std;
 
+class TestLogger : public orcalog::Logger
+{
+public:
+    TestLogger( orcalog::LogMaster *master,
+            const std::string &interfaceType, 
+            const std::string &interfaceTag,
+            const std::string &format,
+            const std::string &filename,
+            const orcaice::Context & context ) :
+        orcalog::Logger( master, interfaceType, interfaceTag, format, filename, context ) {};
+    virtual ~TestLogger() {};
+    virtual void init() {};
+};
+
 class TestComponent : public orcaice::Component
 {
 public:
@@ -45,11 +59,12 @@ void TestComponent::start()
     string masterFilename = "testmaster.txt";
     // create logMaster file
     orcalog::LogMaster* logMaster = new orcalog::LogMaster( masterFilename.c_str(), context() );
+    // fake properties
+    context().properties()->setProperty(  "MasterTest.Requires.Tag0.Proxy", "bullshit" );
+    context().properties()->setProperty(  "MasterTest.Requires.Tag1.Proxy", "horseshit" );
     // add a few logs
-    int id;
-    id = logMaster->addLog( "file0", "type0", "format0", "proxy0" );
-    id = logMaster->addLog( "file1", "type1", "format1", "proxy1" );
-    unsigned int logCount = id+1;
+    new TestLogger( logMaster, "type0", "Tag0", "format0", "file0", context() );
+    new TestLogger( logMaster, "type1", "Tag1", "format1", "file1", context() );
 
     int l0=0, d0=0;
     logMaster->addData( l0, d0 );
@@ -75,8 +90,8 @@ void TestComponent::start()
     std::vector<std::string> formats;
     // this may throw and it will kill us
     playMaster->getLogs( filenames, interfaceTypes, formats );
-    if ( filenames.size() != logCount ) {
-        cout<<"failed"<<endl<<"log count expected="<<logCount<<" got="<<filenames.size()<<endl;
+    if ( filenames.size() != (unsigned int)logMaster->loggerCount() ) {
+        cout<<"failed"<<endl<<"log count expected="<<logMaster->loggerCount()<<" got="<<filenames.size()<<endl;
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;

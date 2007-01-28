@@ -15,8 +15,6 @@
 #include "component.h"
 
 using namespace std;
-using namespace orca;
-using namespace orcaice;
 
 namespace logger {
 
@@ -30,9 +28,9 @@ orcalog::LogFactory* loadLogFactory( orcadynamicload::DynamicallyLoadedLibrary &
     return f;
 }
 
-Component::Component( const std::string & compName )
-    : orcaice::Component( compName ),
-      master_(0)
+Component::Component( const std::string & compName ) : 
+    orcaice::Component( compName ),
+    master_(0)
 {
 }
 
@@ -101,7 +99,7 @@ Component::createLogger( const std::string  &interfaceType,
         }
 
 //         context().tracer()->debug( "creating logger type="+interfaceType+" sfx="+interfaceTypeSuffix+" fmt="+format+" prfx="+filenamePrefix, 5);
-        orcalog::Logger* s = logFactories_[i]->create( 
+        orcalog::Logger* logger = logFactories_[i]->create( 
                 interfaceType, 
                 interfaceTypeSuffix,
                 format,
@@ -109,8 +107,7 @@ Component::createLogger( const std::string  &interfaceType,
                 filenamePrefix,
                 context() );
 
-        if ( s ) { 
-            loggers_.push_back( s );
+        if ( logger ) { 
             return;
         }
         else {
@@ -192,22 +189,23 @@ Component::start()
         //
         createLogger( interfaceType, interfaceTypeSuffix, format, filenamePrefix );
     }
-    
-    // initialize and subscribe all interfaces 
-    for ( unsigned int i=0; i<loggers_.size(); i++)
-    {
-        loggers_[i]->init();
-    }
 
     // doesn't make sense to continue if no loggers were created
-    if ( loggers_.empty() )
+    if ( master_->loggerCount() == 0 )
     {
         context().tracer()->warning("No loggers were created. Quitting.");
         context().communicator()->shutdown();
-    }    
+    }
+
+
+    // initialize and subscribe all interfaces 
+//     if ( autoStart ) {
+        master_->start();    
+//     }
 }
 
-void Component::stop()
+void 
+Component::stop()
 {
 //     context().tracer()->debug("Stopping logger component", 5 );
     // there are no threads to stop, we are done

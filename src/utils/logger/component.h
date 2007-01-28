@@ -11,7 +11,6 @@
 #ifndef ORCA2_LOGGER_COMPONENT_H
 #define ORCA2_LOGGER_COMPONENT_H
 
-#include <vector>
 #include <string>
 #include <orcaice/component.h>
 #include <orcadynamicload/dynamicload.h>
@@ -19,7 +18,6 @@
 namespace orcalog
 {
     class LogMaster;
-    class Logger;
     class LogFactory;
 }
 
@@ -42,7 +40,6 @@ private:
     std::vector<orcadynamicload::DynamicallyLoadedLibrary*> libraries_;
 
     orcalog::LogMaster *master_;
-    std::vector<orcalog::Logger*> loggers_;
 
     // utilities
     void loadPluginLibraries( const std::string &factoryLibNames );

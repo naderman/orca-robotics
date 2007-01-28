@@ -34,6 +34,8 @@ Requires.Wifi0.Type=Wifi
 Requires.Wifi0.DefaultProxy=wifi@local/wifi
 
 # Config Parameters
+Config.Driver.Comment=Valid values: {'auto', 'local', 'remote'}
+Config.Driver.Default=auto
 Config.FilenameTimestamp.Default=1
 Config.FactoryLibNames.Default=libOrcaLogFactory.so
 

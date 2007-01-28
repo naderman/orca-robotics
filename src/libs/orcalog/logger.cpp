@@ -39,7 +39,7 @@ Logger::Logger( LogMaster *master,
     std::string proxyString = orcaice::getRequiredInterfaceAsString( context_, interfaceTag_ );
 
     // record our slave ID
-    id_ = master_->addLog( filename_, interfaceType_, format_, proxyString );
+    id_ = master_->addLog( this, filename_, interfaceType_, format_, proxyString );
 
     //
     // create log file. Derived classes may re-implement this function to modify

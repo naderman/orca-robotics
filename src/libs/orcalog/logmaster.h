@@ -17,29 +17,48 @@
 namespace orcalog
 {
 
+class Logger;
+
 /*!
     All public operations are thread safe.
 */
 class LogMaster
 {
 public:
-    LogMaster( const std::string & filename, const orcaice::Context & context );
+    LogMaster( const std::string& filename, const orcaice::Context& context );
     ~LogMaster();
+
+    //! Initializes loggers and starts logging data.
+    void start();
+
+    //! Stops logging and closes all log files.
+    void stop();
+
+    //! Temporariliy stops logging data without closing the data set.
+    void pause();
+
+    //! Resumes logging data.
+    void unpause();
+
+    //! Returns number of registered loggers.
+    int loggerCount() const;
 
     //! Loggers register themselves.
     //! Returns a unique ID used by loggers later to identify themselves.
     //! Raises orcalog::Exception if the logger cannot be registered, e.g.
     //! because logging has already started.
-    int addLog( const std::string & filename,
-                const std::string & interfaceType,
-                const std::string & encodingType,
-                const std::string & proxyString );
+    int addLog( Logger* logger,
+                const std::string& filename,
+                const std::string& interfaceType,
+                const std::string& encodingType,
+                const std::string& proxyString );
 
     //! Call this to write another data object.
     void addData( int id, int index );
 
 private:
-    std::ofstream *file_;
+    std::ofstream* file_;
+    std::vector<Logger*> loggers_;
 
     // use this to assign unique ID's to loggers.
     int logCounter_;

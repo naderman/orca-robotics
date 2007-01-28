@@ -15,6 +15,7 @@
 #include <orcaice/orcaice.h>
 #include <orcalog/exceptions.h>
 #include "logmaster.h"
+#include "logger.h"
 #include "utils.h"
 
 using namespace std;
@@ -58,14 +59,53 @@ LogMaster::~LogMaster()
         file_->close();
         delete file_;
     }
+
+    // important: do not delete loggers because most of them derive from 
+    // Ice smart pointers and self-destruct. Deleting them here will result
+    // in seg fault.
+}
+
+void 
+LogMaster::start()
+{
+    for ( unsigned int i=0; i<loggers_.size(); i++)
+    {
+        loggers_[i]->init();
+    }
+}
+
+void 
+LogMaster::stop()
+{
+}
+
+void 
+LogMaster::pause()
+{
+}
+
+void 
+LogMaster::unpause()
+{
+}
+
+int 
+LogMaster::loggerCount() const
+{
+    IceUtil::Mutex::Lock lock(mutex_);
+
+    return loggers_.size();
 }
 
 int
-LogMaster::addLog( const std::string & filename, 
+LogMaster::addLog( Logger* logger,
+                    const std::string & filename, 
                     const std::string & interfaceType,
                     const std::string & format,
                     const std::string & proxyString )
 {
+    assert( logger && "zero logger pointer" );
+
     context_.tracer()->debug( 
         "adding log: file="+filename+" id="+interfaceType+" fmt="+format+" prx="+proxyString, 5 );
 
@@ -75,6 +115,9 @@ LogMaster::addLog( const std::string & filename,
         context_.tracer()->warning("Can't register after started appending!");
         throw orcalog::Exception( ERROR_INFO, "Can't register after started appending!" );
     }
+
+    // keep pointer to control this logger in the future
+    loggers_.push_back( logger );
 
     // this is just a comment 
     (*file_) << "# " << proxyString << endl;
