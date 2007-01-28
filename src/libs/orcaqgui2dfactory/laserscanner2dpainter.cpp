@@ -35,7 +35,8 @@ LaserScanner2dPainter::LaserScanner2dPainter( QColor outlineColor,
       outlineColor_(outlineColor),
       outlineThickness_(outlineThickness),
       brightReturnWidth_(brightReturnWidth),
-      isUpsideDown_(false)
+      isUpsideDown_(false),
+      isNotHorizontal_(false)
 {
     fillColor_ = QColor(204,204,255,127);
 }
@@ -61,8 +62,9 @@ LaserScanner2dPainter::setOffset( orca::Frame3d &offset )
     // is a laser mounted horizontally, either right-way-up or upside-down
     if ( !( offset.o.r == 0.0 || NEAR( offset.o.r,M_PI,0.01 ) ) )
     {
+        isNotHorizontal_ = true;
         stringstream ss;
-        ss << "LaserScanner2dPainter::setGeometry(): Can only deal with (possibly-flipped) horizontal lasers.  Geom was: " << orcaice::toString(offset);
+        ss << "LaserScanner2dPainter::setOffset(): Can only properly deal with (possibly-flipped) horizontal lasers.  Offset: " << orcaice::toString(offset);
         throw orcaqgui::Exception( ss.str() );
     }
 
@@ -73,8 +75,9 @@ LaserScanner2dPainter::setOffset( orca::Frame3d &offset )
     // Don't really know how to deal with non-zero values here...
     if ( ( offset.p.z != 0.0 ) || ( offset.o.p != 0.0 ) )
     {
+        isNotHorizontal_ = true;
         stringstream ss;
-        ss << "LaserScanner2dPainter::setGeometry(): Don't know how to deal with non-zero z or pitch.  Geom was: " << orcaice::toString(offset);
+        ss << "LaserScanner2dPainter::setOffset(): Cannot properly deal with non-zero z or pitch.  Offset: " << orcaice::toString(offset);
         throw orcaqgui::Exception( ss.str() );
     }
 }

@@ -36,7 +36,16 @@ LaserScanner2dElement::getLaserInfo()
     RangeScanner2dDescription descr;
     descr = laserPrx->getDescription();
 
-    painter_.setOffset( descr.offset );
+    // we may get an exception if the laser is not mounted horizontal
+    // we display a warning but paint it anyway.
+    try
+    {
+        painter_.setOffset( descr.offset );
+    }
+    catch ( const orcaqgui::Exception& e )
+    {
+        context_.tracer()->warning( e.what() );
+    }
     painter_.setLaserMaxRange( descr.maxRange );
 }
 
