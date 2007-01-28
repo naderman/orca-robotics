@@ -107,6 +107,18 @@ setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag
     // Instantiate a separate property set
     Ice::PropertiesPtr tempProperties = Ice::createProperties();
 
+    // modify Ice defaults
+//     tempProperties->setProperty( "Ice.Trace.Network",          "0" );
+//     tempProperties->setProperty( "Ice.Trace.Protocol",         "0" );
+//     tempProperties->setProperty( "Ice.Warn.Connections",       "0" );
+//     tempProperties->setProperty( "Ice.PrintAdapterReady",      "1" );
+//     tempProperties->setProperty( "Ice.Logger.Timestamp",       "1" );
+
+    // the default assumes that there's an IceStorm server running on our host at
+    // the specified port. This default can be over-written by specifying
+    // --IceStorm.TopicManager.Proxy property.
+    tempProperties->setProperty( "IceStorm.TopicManager.Proxy", "IceStorm/TopicManager:default -p 10000" );
+
     // adapter properties: these two are required for everything to work but
     // they are not present in the default config files. If you have to know what you
     // can override these in the config files.
@@ -121,21 +133,6 @@ setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag
     tempProperties->setProperty( "Orca.PrintProperties",       "0" );
     tempProperties->setProperty( "Orca.PrintComponentStarted", "0" );
     tempProperties->setProperty( "Orca.RequireRegistry",       "1" );
-
-    // @todo This is a big assumption.
-    // the default assumes that there's an IceStorm server running on our host at
-    // the specified port. This does not preclude us from actually running several
-    // servers, but the events published to the other servers will not be available
-    // to subscribers using this default configuration.
-    tempProperties->setProperty( "IceStorm.TopicManager.Proxy", "IceStorm/TopicManager:default -p 10000" );
-
-    // modify Ice defaults
-//     tempProperties->setProperty( "Ice.Trace.Network",          "0" );
-//     tempProperties->setProperty( "Ice.Trace.Protocol",         "0" );
-//     tempProperties->setProperty( "Ice.Warn.Connections",       "0" );
-//     tempProperties->setProperty( "Ice.PrintAdapterReady",      "1" );
-//     tempProperties->setProperty( "Ice.Logger.Timestamp",       "1" );
-
 
     // all tracer tempProperties have default values
     tempProperties->setProperty( "Orca.Tracer.RequireIceStorm",    "0" );

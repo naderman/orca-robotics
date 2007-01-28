@@ -81,6 +81,17 @@ There's no corresponding function in libOrcaIce because, normally, you call the 
 
 @section config Configuration
 
+The following properties are assigned defaults unless they are configured explicitely:
+
+- @c IceStorm.TopicManager.Proxy (string)
+    - Default: "IceStorm/TopicManager:default -p 10000"
+
+- @c [ComponentTag].AdapterId (string)
+    - Default: "[platform name]/[component name]"
+
+- @c [ComponentTag].Endpoints (string)
+    - Default: "tcp -t 5000"
+
 Behavior of libOrcaIce functions and classes can be influenced by setting several configuration parameters.
 
 - @c Orca.PrintProperties (bool)
