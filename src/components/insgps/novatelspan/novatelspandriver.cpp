@@ -23,29 +23,27 @@
 #include <assert.h>
 #include <string.h>
 
-// enumerated BufferType's
-#include <orcaice/common.h>
-
 using namespace std;
 using namespace orca;
 using namespace orcaserial;
 
-namespace insgps{
+namespace insgps
+{
 
 NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device,
                                                   int                     baud,
                                                   const Config&           cfg,
-                                                  const orcaice::Context& context )
-    : Driver(cfg, context),
-      serial_(0),
-      enabled_( false ),
-      gpsCount_(0),
-      imuCount_(0),
-      odometry3dCount_(0),
-      //      gpsData_(0),
-//      imuData_(0),
-//      odometry3dData_(0),
-      context_(context)
+                                                  const orcaice::Context& context ) : 
+    Driver(cfg, context),
+    serial_(0),
+    enabled_( false ),
+    gpsCount_(0),
+    imuCount_(0),
+    odometry3dCount_(0),
+//     gpsData_(0),
+//     imuData_(0),
+//     odometry3dData_(0),
+    context_(context)
 {
     serial_ = new Serial();
     
@@ -94,108 +92,107 @@ NovatelSpanInsGpsDriver::reset()
     responseOk = "\r\n<OK";
     int count = 0;
  
-	cout << "NovatelSpanInsGps: resetting Novatel Span InsGps driver\n";
+    context_.tracer()->debug( "NovatelSpanInsGps: resetting Novatel Span InsGps driver", 2 );
 
-	serial_->flush();
+    serial_->flush();
 
     std::vector<int> baudrates;
-	baudrates.resize(12);
-	baudrates[0] = 300 ;
- 	baudrates[1] = 600 ;
-  	baudrates[2] = 900 ;
-   	baudrates[3] = 1200 ;
+    baudrates.resize(12);
+    baudrates[0] = 300 ;
+    baudrates[1] = 600 ;
+    baudrates[2] = 900 ;
+    baudrates[3] = 1200 ;
     baudrates[4] = 2400 ;
- 	baudrates[5] = 4800 ;
-  	baudrates[6] = 9600 ;
-   	baudrates[7] = 19200 ;
-  	baudrates[8] = 38400 ;
-   	baudrates[9] = 57600 ;
-   	baudrates[10] = 115200 ;
-   	baudrates[11] = 230400 ;
+    baudrates[5] = 4800 ;
+    baudrates[6] = 9600 ;
+    baudrates[7] = 19200 ;
+    baudrates[8] = 38400 ;
+    baudrates[9] = 57600 ;
+    baudrates[10] = 115200 ;
+    baudrates[11] = 230400 ;
  
-	// try all baud rates and reset the device
+    // try all baud rates and reset the device
     for ( int i=0; i<12; i++ )
-	{
-		if( serial_->baud( baudrates[i] )==-1 )
-		{
-			cout << "NovatelSpanInsGps: ERROR: Failed to set baud rate.\n";
-        	std::string errString = "Failed to set baud rate.";
-        	throw orcaice::Exception( ERROR_INFO, errString );
-    	}
-		else
-		{
- 			serial_->flush();
-       		put = serial_->write( "freset command\r\n" );
-			// cout << put << " bytes were written at " << baudrates[i] << "baudrate" << endl;
-    	    serial_->drain();
-		    IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(250));
-        
-}
+    {
+        if( serial_->baud( baudrates[i] )==-1 )
+        {
+            std::string errString = "Failed to set baud rate.";
+            context_.tracer()->error( errString );
+            throw orcaice::Exception( ERROR_INFO, errString );
+        }
+        else
+        {
+            serial_->flush();
+            put = serial_->write( "freset command\r\n" );
+            // cout << put << " bytes were written at " << baudrates[i] << "baudrate" << endl;
+            serial_->drain();
+            IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(250));
+        }
     }
 	
    // Change the baudrate of the serial port to 9600 which is the default
 	// for the device after it has been reset.
-	if( serial_->baud( 9600 )==-1 ){
-	cout << "NovatelSpanInsGps: ERROR: Failed to set baud rate.\n";
+    if( serial_->baud( 9600 )==-1 )
+    {
         std::string errString = "Failed to set baud rate.";
+        context_.tracer()->error( errString );
         throw orcaice::Exception( ERROR_INFO, errString );
     }
-	else
-	{
-     	while ( responseString != responseOk )
-    	{
-       		serial_->flush();
-      		put = serial_->write( "unlogall\r\n" );
-      		//printf("put %d bytes\n",put);
-      		serial_->drain();
-
- 		// Read the serial device to check response ( "<OK" is 3 bytes long )
-      	// Note that the response is in abbreviated ASCII format so only need to check for "<OK"
-        if ( serial_->read_full( response, 13 ) < 0 )
+    else
+    {
+        while ( responseString != responseOk )
         {
-            cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-            return -1;
-        }
-        else
-        {
-            responseString = response;
-            responseString.resize(5);
-        	cout << "responseString: " << responseString << endl;
-		}
+            serial_->flush();
+            put = serial_->write( "unlogall\r\n" );
+            //printf("put %d bytes\n",put);
+            serial_->drain();
 
-        if ( responseString != responseOk )
-        {
-            cout << "WARNING(novatelspandriver.cpp): Response to 'unlogall' returned error " << endl;
-            cout << "\t We will continue trying to stop all messages so that we can reset the device" << endl;
-            
-            // check how much data is left in the input buffer and throw it away
-            int unreadBytes = serial_->data_avail_wait();
-            // cout << "unreadBytes: " << unreadBytes << endl;
-            if (unreadBytes < 256 )
-            {            
-                serial_->read_full( trash, unreadBytes );
-
+            // Read the serial device to check response ( "<OK" is 3 bytes long )
+            // Note that the response is in abbreviated ASCII format so only need to check for "<OK"
+            if ( serial_->read_full( response, 13 ) < 0 )
+            {
+                cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
+                return -1;
+            }
+            else
+            {
+                responseString = response;
+                responseString.resize(5);
+                cout << "responseString: " << responseString << endl;
             }
 
-            IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(250));
-        }
-        else
-        {
-            cout << "INFO: response was ok: " << responseString << endl;
-        }
-        
-		count++;
-		if (count > 3 )
-		{
-		    cout << "ERROR(novatelspandriver::init()):Could not initialise driver" << endl;
-		exit(1);
+            if ( responseString != responseOk )
+            {
+                cout << "WARNING(novatelspandriver.cpp): Response to 'unlogall' returned error " << endl;
+                cout << "\t We will continue trying to stop all messages so that we can reset the device" << endl;
+                
+                // check how much data is left in the input buffer and throw it away
+                int unreadBytes = serial_->data_avail_wait();
+                // cout << "unreadBytes: " << unreadBytes << endl;
+                if (unreadBytes < 256 )
+                {            
+                    serial_->read_full( trash, unreadBytes );
     
-		}
-		} // end of while
+                }
+    
+                IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(250));
+            }
+            else
+            {
+                cout << "INFO: response was ok: " << responseString << endl;
+            }
+        
+            count++;
+            if (count > 3 )
+            {
+                cout << "ERROR(novatelspandriver::init()):Could not initialise driver" << endl;
+                exit(1);
+            }
+        } // end of while
 
-		// set the device to the requested baud rate 
-		put = serial_->write( "com com1 115200 n 8 1 n off on\r\n" );
-  		// Read the serial device to check response ( "<OK" is 3 bytes long )
+        // set the device to the requested baud rate 
+        put = serial_->write( "com com1 115200 n 8 1 n off on\r\n" );
+        // Read the serial device to check response ( "<OK" is 3 bytes long )
       	// Note that the response is in abbreviated ASCII format so only need to check for "<OK"
         if ( serial_->read_full( response, 13 ) < 0 )
         {
@@ -206,8 +203,8 @@ NovatelSpanInsGpsDriver::reset()
         {
             responseString = response;
             responseString.resize(5);
-        	cout << "responseString: " << responseString << endl;
-		}
+            cout << "responseString: " << responseString << endl;
+        }
 
         if ( responseString != responseOk )
         {
@@ -695,11 +692,11 @@ NovatelSpanInsGpsDriver::readGps( orca::GpsData& data, int timeoutMs )
     int ret = gpsDataBuffer_.getAndPopNext( data, timeoutMs );
     if ( ret != 0 ) {
         // throw NovatelSpanException( "Timeout while waiting for GPS packet" );
-        context_.tracer()->info( "TRACE(novatelspandriver::readGps()): Timeout while waiting for GPS packet" );
+        context_.tracer()->debug( "novatelspandriver::readGps(): Timeout while waiting for GPS packet", 6 );
     }
     else
     {      
-        context_.tracer()->debug( "TRACE(novatelspandriver::readGps()): got gps data", 6 );
+        context_.tracer()->debug( "novatelspandriver::readGps(): got gps data", 6 );
 
         // cout << "gpsCount_: " << gpsCount_ << endl;
         if (gpsCount_ > 200 )
@@ -727,11 +724,11 @@ NovatelSpanInsGpsDriver::readImu( orca::ImuData& data, int timeoutMs )
     int ret = imuDataBuffer_.getAndPopNext( data, timeoutMs );
     if ( ret != 0 ) {
 //        throw NovatelSpanException( "Timeout while waiting for IMU packet" );
-        context_.tracer()->info( "TRACE(novatelspandriver::readImu()): Timeout while waiting for IMU packet" );
+        context_.tracer()->debug( "novatelspandriver::readImu(): Timeout while waiting for IMU packet", 6 );
     }
     else
     {
-        context_.tracer()->debug( "TRACE(novatelspandriver::readImu()): got imu data", 6 );
+        context_.tracer()->debug( "novatelspandriver::readImu(): got imu data", 6 );
     
         if (imuCount_ > 1000 )
         {
@@ -752,11 +749,11 @@ NovatelSpanInsGpsDriver::readOdometry3d( orca::Odometry3dData& data, int timeout
     int ret = odometry3dDataBuffer_.getAndPopNext( data, timeoutMs );
     if ( ret != 0 ) {
         // throw NovatelSpanException( "Timeout while waiting for Odometry3d packet" );
-        context_.tracer()->info( "TRACE(novatelspandriver::readOdometry3d()): Timeout while waiting for Odometry3d packet" );
+        context_.tracer()->debug( "novatelspandriver::readOdometry3d()): Timeout while waiting for Odometry3d packet", 6 );
     }
     else
     {   
-        context_.tracer()->debug( "TRACE(novatelspandriver::readOdometry3d()): got odometry3d data", 6 );
+        context_.tracer()->debug( "novatelspandriver::readOdometry3d()): got odometry3d data", 6 );
         
         if (odometry3dCount_ > 200 )
         {
@@ -870,7 +867,7 @@ NovatelSpanInsGpsDriver::readMsgsFromHardware()
     {
         if( errno != EAGAIN )
         {
-	        cout << "NovatelSpanInsGps: ERROR: Error reading from InsGps:" << strerror(errno) << " -- shutting down." << endl;
+            cout << "NovatelSpanInsGps: ERROR: Error reading from InsGps:" << strerror(errno) << " -- shutting down." << endl;
             enabled_ = false;
             return -1;
         }
@@ -974,7 +971,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
             if( gpsData_.positionType==0 )
             {
                 // newGpsData_ = false;
-                cout << "TRACE(novatelspandriver.cpp): Position not yet available" << endl;
+                context_.tracer()->debug( "Position not yet available", 8 );
                 return -1;
             }
 

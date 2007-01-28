@@ -11,24 +11,23 @@
 #include <orcaice/orcaice.h>
 
 #include "component.h"
-
-// Various bits of hardware we can drive
-#include "driver.h"
-#include "fakeinsgpsdriver.h"
-#include "novatelspan/novatelspandriver.h"
 #include "handler.h"
 
+// Various bits of hardware we can drive
+#include "fakeinsgpsdriver.h"
+#include "novatelspan/novatelspandriver.h"
+
 using namespace std;
-using namespace orca;
 
-namespace insgps{
+namespace insgps
+{
 
-Component::Component()
-    : orcaice::Component( "InsGps" ),
-      hwDriver_(0),
-      gpsHandler_(0),         
-      imuHandler_(0),
-      odometry3dHandler_(0)
+Component::Component() :
+    orcaice::Component( "InsGps" ),
+    hwDriver_(0),
+    gpsHandler_(0),         
+    imuHandler_(0),
+    odometry3dHandler_(0)
 {
 }
 
@@ -47,8 +46,7 @@ Component::start()
     //
 
     Ice::PropertiesPtr prop = properties();
-    std::string prefix = tag();
-    prefix += ".Config.";
+    std::string prefix = tag() + ".Config.";
 
     //
     // DRIVER CONFIGURATION
@@ -71,12 +69,7 @@ Component::start()
         errString += prefix + "Driver'";
         throw orcaice::Exception( ERROR_INFO, errString );
     }
-
-    //
-    // HARDWARE INTERFACES
-    //
-
-    
+ 
     if ( driverName == "novatelspan" )
     {
         std::string device = orcaice::getPropertyWithDefault( prop, prefix+"Device", "/dev/ttyS0" );
@@ -200,7 +193,7 @@ Component::start()
     // It checks if the corresponding message is available. If it is, the message is popped
     // from the buffer and published to the outside world.
     
-    context().tracer()->debug( "entering handlers_...", 5 );
+    context().tracer()->debug( "entering handlers_...", 2 );
 
     gpsHandler_ = new Handler( *gpsObj_,
                                hwDriver_,
@@ -221,21 +214,22 @@ Component::start()
 
 }
 
-void Component::stop()
+void 
+Component::stop()
 {
-    tracer()->debug( "stopping component", 5 );
+    tracer()->debug( "stopping component", 2 );
 
-    tracer()->debug( "stopping handlers", 5 );
+    tracer()->debug( "stopping handlers", 2 );
     orcaice::Thread::stopAndJoin( gpsHandler_ );
     orcaice::Thread::stopAndJoin( imuHandler_ );
     orcaice::Thread::stopAndJoin( odometry3dHandler_ );   
-    // tracer()->debug( "stopped handlers", 5 );
+    // tracer()->debug( "stopped handlers", 2 );
 
-    tracer()->debug( "stopping driver", 5 );
+    tracer()->debug( "stopping driver", 2 );
     orcaice::Thread::stopAndJoin( hwDriver_ );
-    // tracer()->debug( "stopped driver", 5 );
+    // tracer()->debug( "stopped driver", 2 );
     
-    tracer()->debug( "stopped component", 5 );
+    tracer()->debug( "stopped component", 2 );
 }
 
 } //namespace

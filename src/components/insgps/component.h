@@ -12,18 +12,13 @@
 #define ORCA2_INSGPS_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orcaice/ptrbuffer.h>
-#include <orca/bros1.h>
-#include <orca/imu.h>
-#include <orca/odometry3d.h>
-#include <orca/gps.h>
 
-// implementations of Ice objects
 #include "gpsI.h"
 #include "imuI.h"
 #include "odometry3dI.h"
 
-namespace insgps{
+namespace insgps
+{
 
 class Handler;
 class Driver;

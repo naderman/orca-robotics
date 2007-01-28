@@ -22,7 +22,8 @@
 
 static const ::std::string __orca__insgps_default_heartbeat_msg = "";
 
-namespace insgps{
+namespace insgps
+{
 
 /*
 
