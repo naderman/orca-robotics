@@ -115,40 +115,29 @@ JoystickDriver::read()
                 // FORWARD-AND-BACK
                 case ABS_Y:  
                 {
-                    // Square the speed, so it's more sensitive in the centre
-//                     bool neg = ( command_.motion.v.x < 0 );
-//                     command_.motion.v.x = ((command_.motion.v.x/config_.maxSpeed)
-//                             *(command_.motion.v.x/config_.maxSpeed))*config_.maxSpeed;
-//                     if ( neg ) {
-//                         command_.motion.v.x *= -1;
-//                     }
+                    double speed = 1.0-(double)event.value/AXIS_OFFSET;
+                    
+                    // apply square curve, so it's more sensitive in the centre
+                    double sign = speed>0.0 ? 1.0 : -1.0;
+                    speed = sign * speed * speed;
 
-                    network_->newRelativeCommand( 
-                                1.0-(double)event.value/AXIS_OFFSET, 
-                                TELEOP_COMMAND_UNCHANGED, 
-                                TELEOP_COMMAND_UNCHANGED );
+                    network_->newRelativeCommand( speed, TELEOP_COMMAND_UNCHANGED, TELEOP_COMMAND_UNCHANGED );
 
-                    //cout << "y:\tvalue = " << event.value << "\tspeed = " << command_.motion.v.x << endl;
-                    //cout << "speed = " << command_.motion.v.x << "\tturn rate = " << command_.motion.w << endl;
+                    cout << endl<<"DEBUG: joystick y="<<event.value<<" speed="<<speed<<endl;
                     break;
                 }
                 // SIDE-TO-SIDE
                 case ABS_X:
                 {     
-                    // Square the turnrate, so it's more sensitive in the centre
-//                     bool neg = ( command_.motion.w < 0 );
-//                     command_.motion.w = ((command_.motion.w/config_.maxTurnrate)
-//                             *(command_.motion.w/config_.maxTurnrate))*config_.maxTurnrate;
-//                     if ( neg ) {
-//                         command_.motion.w *= -1;
-//                     }
+                    double steer = 1.0-(double)event.value/AXIS_OFFSET;
+                    
+                    // apply square curve, so it's more sensitive in the centre
+                    double sign = steer>0.0 ? 1.0 : -1.0;
+                    steer = sign * steer * steer;
 
-                    network_->newRelativeCommand( 
-                                TELEOP_COMMAND_UNCHANGED,
-                                TELEOP_COMMAND_UNCHANGED,
-                                1.0-(double)event.value/AXIS_OFFSET );
-                    //cout << "x:\tvalue = " << event.value << "\tspeed = " << command_.motion.w << endl;
-                    //cout << "speed = " << command_.motion.v.x << "\tturn rate = " << command_.motion.w << endl;               
+                    network_->newRelativeCommand( TELEOP_COMMAND_UNCHANGED, TELEOP_COMMAND_UNCHANGED, steer );
+
+                    cout << endl<<"DEBUG: joystick x="<<event.value<<" steer="<<steer<<endl;              
                     break;
                 }
             } // code switch

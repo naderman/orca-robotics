@@ -11,6 +11,17 @@
 #ifndef ORCA2_ASCII_CHARACTERS_H
 #define ORCA2_ASCII_CHARACTERS_H
 
+// numerals
+#define KEYCODE_0 0x30
+#define KEYCODE_1 0x31
+#define KEYCODE_2 0x32
+#define KEYCODE_3 0x33
+#define KEYCODE_4 0x34
+#define KEYCODE_5 0x35
+#define KEYCODE_6 0x36
+#define KEYCODE_7 0x37
+#define KEYCODE_8 0x38
+#define KEYCODE_9 0x39
 // lower CASE
 #define KEYCODE_a 0x61
 #define KEYCODE_b 0x62

@@ -24,7 +24,7 @@ class KeyboardTermioDriver : public InputDriver
 {
 public:
 
-    KeyboardTermioDriver( Network* network );
+    KeyboardTermioDriver( Network* network, bool enableStepInputs );
     virtual ~KeyboardTermioDriver();
 
     virtual int enable();
@@ -36,6 +36,7 @@ public:
 private:
 
     Network* network_;
+    bool enableStepInputs_;
 
     // obscure keyboard stuff
     int kfd_;

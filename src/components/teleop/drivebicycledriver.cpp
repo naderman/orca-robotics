@@ -82,7 +82,7 @@ DriveBicycleDriver::repeatCommand()
 void 
 DriveBicycleDriver::processNewCommandIncrement(int longitudinal, int transverse, int angle )
 {
-cout<<"DEBUG: DriveBicycleDriver::processNewCommandIncrement"<<endl;
+// cout<<"DEBUG: DriveBicycleDriver::processNewCommandIncrement"<<endl;
     if ( longitudinal ) {
         command_.speed += longitudinal*speedIncrement_;
         command_.speed = MIN( command_.speed, maxSpeed_ );
@@ -113,7 +113,7 @@ cout<<"DEBUG: DriveBicycleDriver::processNewCommandIncrement"<<endl;
 void 
 DriveBicycleDriver::processNewRelativeCommand( double longitudinal, double transverse, double angle )
 {
-cout<<"DEBUG: DriveBicycleDriver::processNewRelativeCommand"<<endl;
+// cout<<"DEBUG: DriveBicycleDriver::processNewRelativeCommand"<<endl;
     if ( longitudinal != TELEOP_COMMAND_UNCHANGED ) {
         command_.speed = longitudinal*maxSpeed_;
         command_.speed = MIN( command_.speed, maxSpeed_ );
@@ -126,6 +126,7 @@ cout<<"DEBUG: DriveBicycleDriver::processNewRelativeCommand"<<endl;
         command_.steerAngle = MAX( command_.steerAngle, -maxSteerAngle_ );
     }
 
+// cout<<"DEBUG: DriveBicycleDriver::processNewRelativeCommand: sending command : speed="<<command_.speed<<" steer="<<command_.steerAngle<<endl;
     try 
     {
         prx_->setCommand( command_ );
@@ -135,6 +136,7 @@ cout<<"DEBUG: DriveBicycleDriver::processNewRelativeCommand"<<endl;
     }
     catch ( const Ice::Exception& e )
     {
+        cout<<"ERROR: "<<e<<endl;
         command_.speed = 0.0;
         command_.steerAngle = 0.0;
         display_->failedToSendCommand();

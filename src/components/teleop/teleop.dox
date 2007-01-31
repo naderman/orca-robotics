@@ -24,25 +24,30 @@ This component connects to a robot base and issues motion commands according to 
 - @ref orca_interface_home
 - @ref orca_interface_status
 
-@par Requires
+@par Requires (one of)
 
+- @ref orca_interface_velocitycontrol2d
+- @ref orca_interface_driverbicycle
 - @ref orca_interface_platform2d
 
 @image html teleop.png
 
-@par Drivers
+@par Input Drivers
 
-- @b kbd-termio @ref orca_teleop_keyboard_termio
-- @b kbd-ncurses @ref orca_teleop_keyboard_ncurses
+- @b keyboard @ref orca_teleop_keyboard
 - @b joystick @ref orca_teleop_joystick
-- @b fake Useful for testing or if you don't have hardware or a simulator.
 
 @par Configuration
 
-- @c Teleop.Config.Driver (string)
+- @c Teleop.Config.DisplayDriver (string)
     - Which input driver to use
-    - Valid values: { "kbd-termio", "kbd-ncurses", "joystick", "fake" }
-    - Default: "kbd-termio"
+    - Valid values: { "term-iostream", "kbd-ncurses" }
+    - Default: "term-iostream"
+
+- @c Teleop.Config.InputDriver (string)
+    - Which input driver to use
+    - Valid values: { "keyboard, "joystick" }
+    - Default: "keyboard"
 
 - @c Teleop.Config.MaxSpeed (float) [m/s]
     - The maximum absolute linear speed which the component will allow
@@ -66,7 +71,7 @@ An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ director
 
 None for the component. See driver sections below for individual driver dependencies.
 
-@section orca_teleop_keyboard_termio Keyboard Driver using termio.h
+@section orca_teleop_keyboard Keyboard Driver using termio.h
 
 Motion commands are issued by pressing keyboard keys.
 - i : increment speed
@@ -77,9 +82,12 @@ Motion commands are issued by pressing keyboard keys.
 - o : stop movement (but still turn)
 - anything else : stop
 
-@section orca_teleop_keyboard_ncurses Keyboard Driver using libncurses
+@par Additional Configuration
 
-@b experimental.
+- @c Teleop.Keyboard.StepInputs (bool)
+    - If set to 1, excepts numeric commands which are interpreted as step changes in speed. For example,
+      pressing 1 results in step to 10% of maximum speed, 2 to 20%, 9 to 90%, and 0 to 100%.
+    - Default: 0
 
 @section orca_teleop_joystick Joystick Driver
 

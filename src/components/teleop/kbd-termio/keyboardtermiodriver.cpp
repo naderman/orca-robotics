@@ -36,8 +36,9 @@ void keyboardHelp()
     puts("-----------------------------------------");
 };
 
-KeyboardTermioDriver::KeyboardTermioDriver( Network* network ) :
-    network_(network)
+KeyboardTermioDriver::KeyboardTermioDriver( Network* network, bool enableStepInputs ) :
+    network_(network),
+    enableStepInputs_(enableStepInputs)
 {
 }
 
@@ -120,25 +121,45 @@ KeyboardTermioDriver::read()
         case KEYCODE_u:
             network_->newRelativeCommand( TELEOP_COMMAND_UNCHANGED, TELEOP_COMMAND_UNCHANGED, 0.0 );
             break;
-        case KEYCODE_q:
-            //speed *= 1.1;
-            //turn *= 1.1;
+        case KEYCODE_1:
+            if ( enableStepInputs_ )
+                network_->newRelativeCommand( 0.1, 0.0, 0.0 );
             break;
-        case KEYCODE_z:
-            //speed *= 0.9;
-            //turn *= 0.9;
+        case KEYCODE_2:
+            if ( enableStepInputs_ )
+                network_->newRelativeCommand( 0.2, 0.0, 0.0 );
             break;
-        case KEYCODE_w:
-            //speed *= 1.1;
+        case KEYCODE_3:
+            if ( enableStepInputs_ )
+                network_->newRelativeCommand( 0.3, 0.0, 0.0 );
             break;
-        case KEYCODE_x:
-            //speed *= 0.9;
+        case KEYCODE_4:
+            if ( enableStepInputs_ )
+                network_->newRelativeCommand( 0.4, 0.0, 0.0 );
             break;
-        case KEYCODE_e:
-            //turn *= 1.1;
+        case KEYCODE_5:
+            if ( enableStepInputs_ )
+                network_->newRelativeCommand( 0.5, 0.0, 0.0 );
             break;
-        case KEYCODE_c:
-            //turn *= 0.9;
+        case KEYCODE_6:
+            if ( enableStepInputs_ )
+                network_->newRelativeCommand( 0.6, 0.0, 0.0 );
+            break;
+        case KEYCODE_7:
+            if ( enableStepInputs_ )
+                network_->newRelativeCommand( 0.7, 0.0, 0.0 );
+            break;
+        case KEYCODE_8:
+            if ( enableStepInputs_ )
+                network_->newRelativeCommand( 0.8, 0.0, 0.0 );
+            break;
+        case KEYCODE_9:
+            if ( enableStepInputs_ )
+                network_->newRelativeCommand( 0.9, 0.0, 0.0 );
+            break;
+        case KEYCODE_0:
+            if ( enableStepInputs_ )
+                network_->newRelativeCommand( 1.0, 0.0, 0.0 );
             break;
         default:
             // any other key sends 'stop' command

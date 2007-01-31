@@ -53,8 +53,13 @@ InputHandler::run()
     if ( driverName == "keyboard" )
     {
 #ifdef HAVE_KEYBOARD_TERMIO_DRIVER
-        context_.tracer()->info("loading 'keyboard' driver");
-        driver_ = new KeyboardTermioDriver( network_ );
+        context_.tracer()->info("Loading 'keyboard' driver");
+        // read driver-specific configs
+        bool enableStepInputs = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Keyboard.StepInputs", 0 );
+        if ( enableStepInputs ) {
+            context_.tracer()->info( "Step inputs are enabled" );
+        }
+        driver_ = new KeyboardTermioDriver( network_, enableStepInputs );
 #else
         context_.tracer()->info("loading simple 'keyboard' driver");
         driver_ = new KeyboardIostreamDriver( network_ );
@@ -63,7 +68,7 @@ InputHandler::run()
     // undocumented option to test the simple keyboard driver
     else if ( driverName == "fake" )
     {
-        context_.tracer()->info("loading simple 'keyboard' driver");
+        context_.tracer()->info("Loading simple 'keyboard' driver");
         driver_ = new KeyboardIostreamDriver( network_ );
     }
     else if ( driverName == "joystick" )
