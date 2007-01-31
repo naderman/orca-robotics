@@ -113,10 +113,13 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Added error tracing (alex m.)
 - Robot2d and SegwayRmp
     - Now using new interfaces Odometry2d and VelocityControl2d. (alex m.)
-- Teleop
-    - Support for configurable display, input, and network drivers. (alex m.)
+- Teleop (alex m.)
+    - Support for configurable display, input, and network drivers.
     - Added support for VelocityControl2d and DriveBicycle interfaces.
     - General source overhaul. Using orcaice::EventQueue's.
+    - added a 'secret' feature to send step inputs 10%,20%...100% of max speed
+      with one key stroke. it's disabled by default. 
+    - joystick driver applies a quadratic curve to the input
 - LocalNav
     - General cleanup, plus made to respect timings in paths. (Alex B.)
     - Uses new interfaces Odometry2d and VelocityControl2d. (Tobi)
