@@ -27,6 +27,15 @@ FakeDriver::computePath( const orca::PathPlanner2dTask& task,
     pathData.path.resize(5);
     for ( int i=0; i < 5; i++ )
     {
+        wp.maxApproachTurnrate = i;
+        wp.maxApproachSpeed    = i;
+        wp.timeTarget.seconds  = i;
+        wp.timeTarget.useconds = i;
+        wp.headingTolerance    = i;
+        wp.distanceTolerance   = i;
+        wp.target.p.x          = i;
+        wp.target.p.y          = i;
+        wp.target.o            = i;
         pathData.path[i] = wp;
     }
 
