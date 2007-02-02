@@ -12,27 +12,35 @@
 
 @page orca_doc_performance Performance of Orca Components
 
-@note Reviewed for release 2.0.0.
+@note Reviewed for release 2.2.0.
 
 Performance of a distributed system can be measured in variety of ways. For comprehensive performance tests of Ice itself, see this <a href="http://zeroc.com/performance/index.html" target="_blank">Ice vs CORBA comparison</a> done by ZeroC. 
 
-The tests we perform are slightly different and reflect the typical usage we see of our components: frequent transfer of small to medium size messages. As a first step, we provide some numbers on round trip time (RTT) for sending several types of Orca objects. The plots below show average RTT for sending 100 objects  with an interval of 0.25s. Vertical bars show min and max values. Ping results are shown for comparison. 
+The tests we perform are slightly different and reflect the typical usage of our components: frequent transfer of small to medium size messages. Here we provide some numbers on round trip time (RTT) for sending messages of various sizes. The plots below show average RTT for sending 100 objects  with an interval of 0.25s. Vertical bars show min and max values. Ping results are shown for comparison. 
 
-@image html perf_rtt_all.jpg
+@image html perf_rtt_all.png
 
 @par Hardware
 
-Intra-host communication: 2.0GHz laptop with Debian Linux (2.6 kernel). Power supply was plugged in. Host-to-Host communication: two laptops as above with 100Mb wired Ethernet.
+- Computers: rack-mounted servers with Intel DG965RY motherboards, with 2-core 2.13GHz Intel Core-2 Duo 6400. 
+- Network: 1000Mb/s Ethernet using a LinkSys switch.
 
 @par Software
 
-Ice v.3.0.1. Compiled with default options.
+Operating System. 
+- Linux: Kubuntu 6.10. Kernel 2.6.17-10. 
+- QNX: Neutrino 6.2.3.
 
-Orca v.2.0.0. Compiled compiled with CMAKE_BUILD_TYPE=Release (translates to -O3 for gcc). Test components @ref orca_test_pinger and @ref orca_test_replier.
+Ice v.3.1.1
+- Compiled with default options.
+
+Orca v.2.2.0
+- Compiled compiled with CMAKE_BUILD_TYPE=Release (translates to -O3 for gcc). 
+- Test components @ref orca_test_pinger and @ref orca_test_replier.
 
 @par Objects
 
-The following objects are transmitted: Position2dData, LaserData, OgMapData, CameraData. All objects are generated using orcaice::setSane( ObjectType & ) function. The size of the byte stream after serialization is @b estimated using Ice::OutputStream. The actual number of bytes on the wire is slighly higher.
+We transmit orca::PingReplyData which contains a single integer and a variable-length sequence of doubles. We use doubles to make Ice work a bit harder during marshalling/demarshalling. Presumably, a sequence of bytes can be copied all at once, whereas doubles must be converted according to endiness. (This is just a theory and should be verified). The length of the sequence of double is varied from 1 to 10e6. The size of the byte stream after serialization is @b estimated using sizeof() function. This is the size of the payload. The actual number of bytes on the wire is slighly higher due to Ice protocol overhead.
 
 @par Procedure
 
