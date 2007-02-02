@@ -63,10 +63,10 @@ Sorca = [ ...
 % COMP: cd src; sloccount components/ libs/ MINUS sloccount libs/orcaice/ libs/orcaq* libs/orcalog* libs/orcaprobe*
 % UTIL: cd src; sloccount utils libs/orcaq* libs/orcalog* libs/orcaprobe*
 2006    12  17  0   Sice311 5615-1784+1240  60241-25885     24644;  % 2.1.1
-2007    1   20  1   Sice320 6156-1903+1240  66427-28310     27387   % 2.1.2
+2007    2    2  1   Sice311 6225-2011+1671  70376-29436     28519   % 2.2.0
 ];
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
-    '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.1.0', '2.1.1', '2.1.2' }';
+    '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.1.0', '2.1.1', '2.2.0' }';
 
 % add a dummy release just for display
 Sorca(end+1,:) = Sorca(end,:);
