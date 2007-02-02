@@ -24,7 +24,7 @@ TEMPLATE
 
 @page orca_doc_todo Changes since Last Release and To-Do List
 
-Developers: as you make substantial changes in the code (add features, fix bugs, etc.), add an item in the section on changes. When the next version is released, this list will be cut-and-pasted into the release notes.
+Developers: as you make substantial changes in the code (add features, fix bugs, etc.), add an item in the section on changes. When the next version is released, this list will be copied into the release notes.
 
 
 @section orca_doc_todo_todo To-Do List for Next Release
