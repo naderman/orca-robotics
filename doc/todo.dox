@@ -139,6 +139,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
        - timing is displayed online by an "olympic marker"
     - All interfaces on a given platform can be connected.
     - Prohibit connecting the identical interface twice.
+    - Changed some guielements to be displayed in iconic view, ie independent on zoom configuration.
 
 @par Updated libraries
 
