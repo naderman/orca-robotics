@@ -25,7 +25,7 @@ Remotely connect to the logging component to check and control logging progress.
     @{
 */
 
-//! 
+//! States of the logging process
 enum LogState
 {
     LogStarted,
@@ -63,7 +63,7 @@ struct LogData
     Time timeLeft;
 };
 
-//! Interface to a device with a binary state.
+//! Interface to the loggiing process.
 interface Log
 {
     //! Returns log status
@@ -82,7 +82,7 @@ interface Log
     //! If data is already paused, does nothing.
     idempotent void pause();
 
-    //! Starts logging data into current data set.
+    //! Resumes logging data into current data set.
     //! If data is not paused, does nothing.
     idempotent void unpause();
 };

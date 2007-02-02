@@ -19,38 +19,39 @@ SET( SLICE_SOURCE_FILES
 #interfaces
     binaryindicator.ice
     binaryswitch.ice
+    camera.ice
     cpu.ice
     drivebicycle.ice
     drivedifferential.ice
+    featuremap2d.ice
     gps.ice
+    hand.ice
     home.ice
-    rangescanner2d.ice
-    laserscanner2d.ice
+    imu.ice
+    localise2d.ice
     log.ice
+    odometry2d.ice
+    odometry3d.ice
     ogfusion.ice
     ogmap.ice
+    ogpatch.ice 
+    particle2d.ice
+    pathfollower2d.ice
     pathplanner2d.ice
     pingreply.ice
     pixmap.ice
+    pointcloud.ice
     position2d.ice
     position3d.ice
     platform2d.ice
     polarfeature2d.ice
     power.ice
-    status.ice
     ptz.ice 
-    hand.ice
-    odometry2d.ice
-    odometry3d.ice
-    ogpatch.ice 
-    localise2d.ice
-    particle2d.ice
-    pathfollower2d.ice
-    featuremap2d.ice
-    camera.ice
     qgraphics2d.ice
-    imu.ice
-    pointcloud.ice
+    rangescanner2d.ice
+    laserscanner2d.ice
+    replay.ice
+    status.ice
     tracer.ice
     vehicledescription.ice
     velocitycontrol2d.ice
