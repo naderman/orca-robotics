@@ -45,7 +45,10 @@ The registry view displays all currently existing "adapters" (interface@host/pla
 This table lists the interfaces which are currently connected to the GUI. Connected interfaces are represented by so-called GUI element (see orcagui::GuiElement). Two mechanisms exist to create GUI elements which subscribe to Orca interfaces:
 
 -# by specifying required interfaces in the @c .cfg file
--# by interactively adding them using the registry view. Right-click and select "Add to project". It is possible to select several interfaces by holding down the Ctrl or Shift key. Several interfaces can form a single GuiElement, see e.g. OgMapsCombined which subscribes to two occupancy grid map interfaces and displays both of them as one element.
+-# by interactively adding them using the registry view. Different modes exist:
+    - Single interface: right-click on an interface and select "Add to project". If the interface is supported, it will be added, otherwise an error message will appear.
+    - Multiple interfaces: several interfaces can form a single GuiElement (see e.g. OgMapsCombined which subscribes to two occupancy grid map interfaces and displays both of them as one element). Hold down the @c Ctrl or @c Shift key to select multiple interfaces.
+    - All platform interfaces: right-click on a platform and select "Add all supported interfaces". It goes through the list and tries to connect all of them. The non-supported ones will trigger error messages in the status bar.
 
 Right-clicking on elements in the elements view brings up configuration/interaction options. Interfaces can also be removed interactively this way.
  
@@ -56,7 +59,7 @@ The world view is usually a global coordinate system but it can also be centered
 
 @par Plugin libraries
 In order to instantiate GuiElements, OrcaView dynamically loads libraries
-containing GuiElement factories.  See the Logger.Config.General.FactoryLibNames
+containing GuiElement factories.  See the @c Logger.Config.General.FactoryLibNames
 config parameter for how to add new factories.  This plug-in
 architecture allows custom GuiElements to be added without modifying the
 main source code.
@@ -88,6 +91,8 @@ The following interactions are currently implemented. Note that they work on a p
 Supported file formats are:
     - binary ICE stream file ( extension @c .bin ). The advantage is that this file contains all information of the OgMap including origin, resolution etc.
     - bitmaps: one pixel per cell (extensions: <i>.bmp .jpg .jpeg .png .ppm .xbm .xpm</i> ). The advantage is that these files can be processed.
+    
+- <b>Save PixMap:</b> once subscribed to a @ref orca_interface_pixmap interface, you can save the displayed pixmap to different file formats which are determined via the file extension you specify in the dialog. The saved files can be loaded later by the @ref orca_component_pixmaploader. Supported file formats are bitmaps (see above).
 
 Sometimes, it is desirable to interact with many elements at the same time, e.g. to stop all robots. These type of interactions are implemented using keyboard shortcuts. Currently, we have:
 

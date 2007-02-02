@@ -47,13 +47,12 @@ Component::start()
     std::string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "fake" );
     if ( driverName == "fake" )
     {
-        cout<<"TRACE(component.cpp): Instantiating fake driver. Not implemented yet." << endl;
-//         fakeLoadMap( theMap );
+        cout<<"TRACE(component.cpp): Instantiating fake driver." << endl;
+        orcaice::setSane( theMap );
     }
     else if ( driverName == "file" )
     {
         loadMapFromFile(theMap);
-        cout<<"TRACE(component.cpp): Loaded map: " << orcaice::toString(theMap) << endl;
     }
     else
     {
@@ -61,6 +60,8 @@ Component::start()
         throw orcaice::Exception( ERROR_INFO, errString );
     }
 
+    cout<<"TRACE(component.cpp): Loaded map: " << orcaice::toString(theMap) << endl;
+    
     //
     // EXTERNAL PROVIDED INTERFACES
     //

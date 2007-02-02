@@ -427,12 +427,30 @@ setSane( orca::OgMapData& obj, int width, int height )
 
     obj.numCellsX = width;
     obj.numCellsY = height;
-    setSane( obj.origin );
+    setInit( obj.origin );
     obj.metresPerCellX = 1.0;
     obj.metresPerCellY = 1.0;
-    obj.data.resize( 640*480, char(88) );
+    obj.data.resize( width*height, char(88) );
     obj.mapType = orca::OgMapOccupancy;
 }
+
+void 
+setSane( orca::PixMapData& obj, int width, int height )
+{
+    orca::Time t;
+    setSane( t );
+    obj.timeStamp = t;
+
+    obj.numCellsX = width;
+    obj.numCellsY = height;
+    setInit( obj.origin );
+    obj.metresPerCellX = 1.0;
+    obj.metresPerCellY = 1.0;
+    orca::Pixel p;
+    p.r=255; p.g=0; p.b=0;
+    obj.rgbPixels.resize( width*height, p );
+}
+
 
 void 
 setSane( orca::CameraData& obj, int width, int height )

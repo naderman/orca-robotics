@@ -30,6 +30,7 @@
 #include <orca/pathfollower2d.h>
 #include <orca/pathplanner2d.h>
 #include <orca/wifi.h>
+#include <orca/pixmap.h>
 
 namespace orcaice
 {
@@ -103,6 +104,8 @@ void setSane( const orca::LaserScanner2dDataPtr&, int numberOfSamples=361 );
 void setSane( orca::Odometry2dData& );
 //! Set to randomized but sane values.
 void setSane( orca::OgMapData&, int width=640, int height=480 );
+//! Set to randomized but sane values.
+void setSane( orca::PixMapData&, int width=640, int height=480 );
 //! Set to randomized but sane values.
 void setSane( orca::Position2dData& );
 //! Set to randomized but sane values.
