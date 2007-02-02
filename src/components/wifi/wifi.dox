@@ -30,6 +30,8 @@ Wifi is a component that accesses the wireless interfaces on a host and gets the
 
 None.
 
+@image html wifi.png
+
 @par Configuration
 
 - @c Wifi.Config.Driver (string)

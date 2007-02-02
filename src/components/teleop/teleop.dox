@@ -22,13 +22,12 @@ This component connects to a robot base and issues motion commands according to 
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_status
 
 @par Requires (one of)
 
-- @ref orca_interface_velocitycontrol2d
-- @ref orca_interface_driverbicycle
-- @ref orca_interface_platform2d
+- @ref orca_interface_velocitycontrol2d [Teleop.Requires.Generic]
+- @ref orca_interface_drivebicycle [Teleop.Requires.Generic]
+- @ref orca_interface_platform2d [Teleop.Requires.Generic]
 
 @image html teleop.png
 
@@ -41,21 +40,13 @@ This component connects to a robot base and issues motion commands according to 
 
 - @c Teleop.Config.DisplayDriver (string)
     - Which input driver to use
-    - Valid values: { "term-iostream", "kbd-ncurses" }
+    - Valid values: { "term-iostream", "term-ncurses" }
     - Default: "term-iostream"
 
 - @c Teleop.Config.InputDriver (string)
     - Which input driver to use
     - Valid values: { "keyboard, "joystick" }
     - Default: "keyboard"
-
-- @c Teleop.Config.MaxSpeed (float) [m/s]
-    - The maximum absolute linear speed which the component will allow
-    - Default: 1.0
-
-- @c Teleop.Config.MaxTurnrate (float) [deg/s]
-    - The maximum absolute rotational speed which the component will allow
-    - Default: 40.0
 
 - @c Teleop.Config.RepeatInterval (float) [s]
     - Time interval before a repeat command is sent in the absence of a new command.
@@ -73,11 +64,11 @@ None for the component. See driver sections below for individual driver dependen
 
 @section orca_teleop_keyboard Keyboard Driver using termio.h
 
-Motion commands are issued by pressing keyboard keys.
-- i : increment speed
-- k : decrement speed
-- j : increment turnrate (positive to the left)
-- l : decrement turnrate (positive to the left)
+Motion commands are issued by pressing keyboard keys. The meaning of "forward motion" and "turn" are interpreted differently depending on which interface we are connected to (see Output drivers below)
+- i : increment "forward motion"
+- k : decrement "forward motion"
+- j : increment "turn"
+- l : decrement "turn"
 - u : stop turn
 - o : stop movement (but still turn)
 - anything else : stop
@@ -91,11 +82,11 @@ Motion commands are issued by pressing keyboard keys.
 
 @section orca_teleop_joystick Joystick Driver
 
-Motion commands are issued by moving the joystick
-- forward     : set forward speed
-- backward    : set backward speed
-- left        : set turnrate to the left
-- right       : set turnrate to the right
+Motion commands are issued by moving the joystick. The meaning of "forward motion" and "turn" are interpreted differently depending on which interface we are connected to (see Output drivers below)
+- forward     : set "forward motion"
+- backward    : set "forward motion"
+- left        : set left "turn"
+- right       : set right "turn"
     
 @par Additional Configuration
 
@@ -130,8 +121,59 @@ $ cat /proc/bus/input/devices
 - There are some problems with USB1.0 joysticks and older kernels.
     If your USB system hangs, try upgrading.  Kernel 2.6.12 seems to be OK.
 
+@section orca_teleop_velocitycontrol2d Output driver for VelocityControl2d interface
+
+Connects to a VelocityControl2d interface. "Forward motion" is translated to speed. "Turn" is translated to turnrate.
+
+@par Additional Configuration
+
+
+- @c Teleop.Config.VelocityControl2d.MaxSpeed (double) [m/s]
+    - The maximum absolute linear speed which the component will send out
+    - Default: 1.0
+
+- @c Teleop.Config.VelocityControl2d.MaxSideSpeed (double) [m/s]
+    - The maximum absolute linear side speed which the component will send out
+    - Default: 1.0
+
+- @c Teleop.Config.VelocityControl2d.MaxTurnRate (double) [deg/s]
+    - The maximum absolute rotational speed which the component will send out
+    - Default: 40.0
+
+- @c Teleop.Config.VelocityControl2d.SpeedIncrement (double) [m/s]
+    - For input devices which allow command increments (keyboard), by how much the speed will change for each input.
+    - Default: 0.05
+
+- @c Teleop.Config.VelocityControl2d.TurnRateIncrement (double) [deg/s]
+    - For input devices which allow command increments (keyboard), by how much the turn rate will change for each input.
+    - Default: 2.0
+
+@section orca_teleop_velocitycontrol2d Output driver for DriveBicycle interface
+
+Connects to a DriveBicycle interface. "Forward motion" is translated to speed. "Turn" is translated to steer angle.
+
+@par Additional Configuration
+
+
+- @c Teleop.Config.DriveBicycle.MaxSpeed (double) [m/s]
+    - The maximum absolute linear speed which the component will send out
+    - Default: 1.0
+
+- @c Teleop.Config.DriveBicycle.MaxSteerAngle (double) [deg]
+    - The maximum absolute steer angle which the component will send out
+    - Default: 45.0
+
+- @c Teleop.Config.DriveBicycle.SpeedIncrement (double) [m/s]
+    - For input devices which allow command increments (keyboard), by how much the speed will change for each input.
+    - Default: 0.05
+
+- @c Teleop.Config.DriveBicycle.SteerAngleIncrement (double) [deg]
+    - For input devices which allow command increments (keyboard), by how much the steer angle will change for each input.
+    - Default: 5.0
 
 @section internal Internal Structure
+
+@note This diagram is obsolete!
     
 @image html teleop_whitebox.png
 

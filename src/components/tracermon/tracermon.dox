@@ -27,7 +27,7 @@ Connects to Tracer interface and displays messages on screen.
 
 - @ref orca_interface_tracer
 
-@image html tracer.png
+@image html tracermon.png
 
 @par Drivers
 
