@@ -175,7 +175,7 @@ toLogString( const orca::Localise2dData& obj )
           << h.cov.xt << " "
           << h.cov.yt << " "
           << h.cov.tt << " "
-          << h.weight;
+          << h.weight << "\n";
     }
     return s.str();
 }
