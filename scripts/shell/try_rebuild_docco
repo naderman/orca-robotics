@@ -30,7 +30,7 @@ fi
 #
 # Exit if nothing changed
 #
-if [ $did_update == 0 ]; then
+if [ $did_update -eq 0 ]; then
     echo "No need to rebuild docs -- nothing changed."
     exit 0;
 fi
