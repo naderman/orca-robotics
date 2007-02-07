@@ -23,7 +23,7 @@
 using namespace std;
 using namespace orcaview3d;
 
-static const char *DEFAULT_FACTORY_LIB_NAME="libOrcaGui3dFactory.so";
+static const char *DEFAULT_FACTORY_LIB_NAME="libOrcaQGui3dFactory.so";
 
 orcaqgui::GuiElementFactory* loadFactory( orcadynamicload::DynamicallyLoadedLibrary &lib )
 {

@@ -9,7 +9,7 @@ Requires.Position3d.Type=Position3d
 Requires.Position3d.DefaultProxy=position3d@local/insgps
 
 # Config Parameters
-Config.General.FactoryLibNames.Default=libOrcaQGui2dFactory.so
+Config.General.FactoryLibNames.Default=libOrcaQGui3dFactory.so
 Config.General.DisplayRefreshTime.Default=200
 Config.General.DumpPath.Default = /tmp
 Config.ScreenCapture.TopPad.Default = 25
