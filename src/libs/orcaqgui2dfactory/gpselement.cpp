@@ -32,12 +32,6 @@ GpsElement::GpsElement( const orcaice::Context  &context,
     gpsListener_.connect();
     
     // get gps specific properties from the cfg file   
-    getGpsProperties();   
-}
-
-void
-GpsElement::getGpsProperties()
-{
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag();
     prefix += ".Config.";

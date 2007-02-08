@@ -27,92 +27,91 @@ class QPainter;
 namespace orcaqgui
 {
 
-    ////////////////////////////////////////////////////////////////////////////////
-    
-    class GpsSubscriptionMaker {
-        public:
-            GpsSubscriptionMaker( orca::GpsPrx proxy, orca::GpsMapGridConsumerPrx callbackPrx )
-            { 
-                proxy->subscribeForMapGrid( callbackPrx );
-            }
-    };
-    class GpsUnSubscriptionMaker {
-        public:
-            GpsUnSubscriptionMaker( orca::GpsPrx proxy, orca::GpsMapGridConsumerPrx callbackPrx )
-            { 
-                proxy->subscribeForMapGrid( callbackPrx );
-            }
-    };
-    
-    ////////////////////////////////////////////////////////////////////////////////
-    
-    
-    // GpsElement connects to gps interface, passes info to gpsPainter
-    // This element is special because it uses non-standard subscriptions: 'subscribeForMapGrid'
-    // That's why we can't inherit from IceStormElement, we rather use the IceStormListener directly
-    class GpsElement : public GuiElement2d, public IKnowsPlatformPosition2d
+class GpsSubscriptionMaker 
+{
+public:
+    GpsSubscriptionMaker( orca::GpsPrx proxy, orca::GpsMapGridConsumerPrx callbackPrx )
+    { 
+        proxy->subscribeForMapGrid( callbackPrx );
+    }
+};
+
+class GpsUnSubscriptionMaker 
+{
+public:
+    GpsUnSubscriptionMaker( orca::GpsPrx proxy, orca::GpsMapGridConsumerPrx callbackPrx )
+    { 
+        proxy->subscribeForMapGrid( callbackPrx );
+    }
+};
+
+
+// GpsElement connects to gps interface, passes info to gpsPainter
+// This element is special because it uses non-standard subscriptions: 'subscribeForMapGrid'
+// That's why we can't inherit from IceStormElement, we rather use the IceStormListener directly
+class GpsElement : public GuiElement2d, public IKnowsPlatformPosition2d
+{    
+public:
+
+    GpsElement( const orcaice::Context  &context,
+                const std::string       &interfaceTag,
+                int                      timeoutMs=60000 );
+
+    // inherited from GuiElement
+    virtual bool isInGlobalCS() { return true; }
+    virtual QStringList contextMenu();
+    virtual void execute( int action );
+
+    // inherited from GuiElement2d
+    void update();
+    void paint( QPainter *p, int z )
+    { 
+        if ( displayGps_ )
+            gpsPainter_.paint( p, z );
+    }
+    bool paintThisLayer( int z ) const
     {
-        
-        public:
-        
-            GpsElement( const orcaice::Context  &context,
-                        const std::string       &interfaceTag,
-                        int                      timeoutMs=60000 );
-        
-            // inherited from guielement
-            void update();
-            void paint( QPainter *p, int z )
-            { 
-                if ( displayGps_ )
-                    gpsPainter_.paint( p, z );
-            }
-            bool paintThisLayer( int z ) const
-            {
-                if ( !displayGps_ ) return false;
-                return gpsPainter_.paintThisLayer(z);
-            }
-        
-            virtual bool isInGlobalCS() { return true; }
+        if ( !displayGps_ ) return false;
+        return gpsPainter_.paintThisLayer(z);
+    }
+    virtual QPointF pos() const { return QPointF(x_,y_); };
 
-            // Access to coordinates in GUI coordinate system [m] [m] [rad]
-            virtual float x() const { return x_; }
-            virtual float y() const { return y_; }
-            virtual float theta() const { return theta_; }
-            virtual int platformKnowledgeReliability() const { return 7; }
+    // inherited from IKnowsPlatformPosition2d
+    // Access to coordinates in GUI coordinate system [m] [m] [rad]
+    virtual float x() const { return x_; }
+    virtual float y() const { return y_; }
+    virtual float theta() const { return theta_; }
+    virtual int platformKnowledgeReliability() const { return 7; }
+
+
+private:
+    std::string interfaceName_;
+
+    GpsPainter gpsPainter_;
+
+    double timeoutMs_;
     
-            virtual QStringList contextMenu();
-            virtual void execute( int action );
-            virtual QPointF pos() const { return QPointF(x_,y_); };
+    IceStormListener<orca::GpsMapGridData,
+                    orca::GpsPrx,
+                    orca::GpsMapGridConsumer,
+                    orca::GpsMapGridConsumerPrx,
+                    GpsSubscriptionMaker,
+                    GpsUnSubscriptionMaker> gpsListener_;
 
-        private:
+    orcaice::Context context_;      
+    
+    // display options and settings
+    bool displayGps_;
+    orca::CartesianPoint gpsOrigin_;   
+    
+    // in GUI's coordinate system: [m] [m] [rad]
+    float x_;
+    float y_;
+    float theta_;
 
-            bool needToUpdate();
-
-            std::string interfaceName_;
-
-            GpsPainter gpsPainter_;
-
-            double timeoutMs_;
-            
-            IceStormListener<orca::GpsMapGridData,
-                            orca::GpsPrx,
-                            orca::GpsMapGridConsumer,
-                            orca::GpsMapGridConsumerPrx,
-                            GpsSubscriptionMaker,
-                            GpsUnSubscriptionMaker> gpsListener_;
-
-            orcaice::Context context_;
-            orca::CartesianPoint gpsOrigin_;         
-            
-            void getGpsProperties();
-                    
-            bool displayGps_;
-            
-            // in GUI's coordinate system: [m] [m] [rad]
-            float x_;
-            float y_;
-            float theta_;
-    };
+    // utilities
+    bool needToUpdate();
+};
 
 }
 
