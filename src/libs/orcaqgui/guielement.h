@@ -27,8 +27,6 @@ namespace orcaqgui
  *
  * GuiElement is a basic unit which knows how to paint itself and stores its data.
  * The GuielementModel holds a list of these GuiElements and periodically paints and updates them.
- *
- * @author Tobias Kaupp, Alex Brooks
 */
 class GuiElement
 {                                 
@@ -41,24 +39,27 @@ public:
     
     virtual ~GuiElement() {};
 
-    //! Determines whether the element should be painted in the global coordinate system
+    //! Determines whether the element should be painted in the global coordinate system.
+    //! If returns FALSE, we will search for a localization element on the same platform.
     virtual bool isInGlobalCS()=0;
 
     //! Update is called periodically. All processing different from paint can be done here
     virtual void update () {};
 
+    //! Optional function to populate the menu list on right-click. 
+    //! Default implementation does nothing.
     virtual QStringList contextMenu() { return QStringList(); };
     
+    //! Optional callback function which will be called when one of the context menu items
+    //! is selected. Default implementation does nothing.
     virtual void execute( int action ) {};
     
     //! Set the colour of the element.
-    //! Note: this sets the general
-    //!       colour scheme, not necessarily the colour of the entire
-    //!       element.
-    //!       In fact, the guiElement is free to ignore this colour.
+    //! This sets the general colour scheme, not necessarily the colour of the entire
+    //! element. In fact, the guiElement is free to ignore this colour.
     virtual void setColor( QColor color ) {};
 
-    //! Set focus of element 
+    //! Optional function to set focus of element. Default implementation does nothing.
     //! Focus determines how the element is painted (color or gray) 
     //! and whether users can interact with it (buttons or no buttons)
     virtual void setFocus( bool inFocus ) {};
@@ -87,10 +88,10 @@ public:
     QString name() { return name_; };
     void setName( QString name ) { name_ = name; };
     
-    private:
-        QString platform_;
-        QString details_;
-        QString name_;
+private:
+    QString platform_;
+    QString details_;
+    QString name_;
     
 };
 

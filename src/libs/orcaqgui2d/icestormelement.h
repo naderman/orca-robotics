@@ -18,9 +18,6 @@
 
 #include <orcaqgui2d/guielement2d.h>
 
-// forward declarations
-class QPainter;
-
 namespace orcaqgui {
 
 /*!

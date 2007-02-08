@@ -11,6 +11,7 @@
 #include <cmath>
 
 #include <QPainter>
+#include <QColor>
 #include <orcaobj/orcaobj.h>
 
 #include "gpspainter.h"

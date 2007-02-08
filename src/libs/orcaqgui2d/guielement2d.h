@@ -1,8 +1,9 @@
 #ifndef GUIELEMENT2D_H
 #define GUIELEMENT2D_H
 
-#include <QPainter>
 #include <orcaqgui/guielement.h>
+
+class QPainter;
 
 namespace orcaqgui {
 

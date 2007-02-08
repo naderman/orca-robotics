@@ -10,13 +10,13 @@
 #ifndef ORCAGUI_GPS_PAINTER_H
 #define ORCAGUI_GPS_PAINTER_H
 
-#include <QColor>
 #include <orcaqgui2d/definitions2d.h>
 
 #include <orcaqgui2d/paintutils.h>
 
 // forward declarations
 class QPainter;
+class QColor;
 
 namespace orcaqgui
 {
