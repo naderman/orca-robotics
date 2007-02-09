@@ -27,6 +27,7 @@
 // Include various painter types
 #include <orcaqgui2dfactory/laserscanner2dpainter.h>
 #include <orcaqgui2dfactory/localise2dpainter.h>
+#include <orcaqgui2dfactory/localise3dpainter.h>
 #include <orcaqgui2dfactory/particle2dpainter.h>
 #include <orcaqgui2dfactory/polarfeature2dpainter.h>
 #include <orcaqgui2dfactory/qgraphics2dpainter.h>
@@ -114,7 +115,6 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-
 class Localise2dElement
     : public IceStormElement<Localise2dPainter,
                              orca::Localise2dData,
@@ -172,6 +172,63 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 
+
+class Localise3dElement
+    : public IceStormElement<Localise3dPainter,
+                             orca::Localise3dData,
+                             orca::Localise3dPrx,
+                             orca::Localise3dConsumer,
+                             orca::Localise3dConsumerPrx>,
+      public IKnowsPlatformPosition2d
+{
+public:
+    Localise3dElement( const orcaice::Context  &context,
+                       const std::string       &proxyString,
+                       bool                     beginDisplayHistory=false,
+                       int                      timeoutMs=60000 )
+        : IceStormElement<Localise3dPainter,
+                            orca::Localise3dData,
+                            orca::Localise3dPrx,
+                            orca::Localise3dConsumer,
+                            orca::Localise3dConsumerPrx>(context, proxyString, painter_, timeoutMs ),
+          painter_( beginDisplayHistory )
+        {};
+
+    virtual bool isInGlobalCS() { return true; }
+    virtual void actionOnConnection()
+    {
+        paintInitialData<orca::Localise3dPrx, Localise3dPainter>
+            ( context_, listener_.interfaceName(), painter_ );
+    }
+    virtual QStringList contextMenu();
+    virtual void execute( int action );
+    
+    virtual void setColor( QColor color ) { painter_.setColor(color); }
+    virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); };
+    virtual void setTransparency( bool useTransparency ) { painter_.setTransparency( useTransparency ); };
+
+    // Need a special update function to set (x,y,theta)
+    // The Localise3dElement needs this because it's special kind of GuiElement:
+    //   A platform has a position in the world and various other things are
+    //   drawn with respect to that position.
+    virtual void update();
+
+    // Access to ML estimate.
+    virtual float x() const { return x_; }
+    virtual float y() const { return y_; }
+    virtual float theta() const { return theta_; }
+    virtual int platformKnowledgeReliability() const { return 7; }
+    virtual QPointF pos() const { return QPointF(x_,y_); };
+
+private:
+    Localise3dPainter painter_;
+
+    float x_;
+    float y_;
+    float theta_;
+};
+
+///////////////////////////////////////////////////////////////////////////////
 
 class Particle2dElement
     : public IceStormElement<Particle2dPainter,

@@ -29,6 +29,7 @@ SET( SLICE_SOURCE_FILES
     home.ice
     imu.ice
     localise2d.ice
+    localise3d.ice
     log.ice
     odometry2d.ice
     odometry3d.ice

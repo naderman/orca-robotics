@@ -125,4 +125,75 @@ Localise2dElement::execute( int action )
     }
 }
 
+void
+Localise3dElement::update()
+{
+    // standard update as in IceStormElement
+    if ( !IceStormElement<Localise3dPainter,
+            orca::Localise3dData,
+            orca::Localise3dPrx,
+            orca::Localise3dConsumer,
+            orca::Localise3dConsumerPrx>::needToUpdate() )
+        return;
+
+    assert( !listener_.buffer().isEmpty() );
+    
+    listener_.buffer().getAndPop( data_ );
+    
+    // first error-check.
+    if ( data_.hypotheses.size() == 0 )
+    {
+        std::stringstream ss;
+        ss << "Localise3dElement::update(): Interface " << listener_.interfaceName() << ": Localise3dData had zero hypotheses";
+        throw orcaqgui::Exception( ss.str() );
+    }
+
+    // convert localise3d object to localise2d so localise2dpainter knows how to handle it
+    orca::Localise2dData data2d;
+    data2d.hypotheses.resize(1);
+    data2d.hypotheses[0].mean.p.x = data_.hypotheses[0].mean.p.x;
+    data2d.hypotheses[0].mean.p.y = data_.hypotheses[0].mean.p.y;
+    data2d.hypotheses[0].mean.o = data_.hypotheses[0].mean.o.y;
+
+    painter_.setData( data2d );
+
+    // custom update
+    const orca::Pose2dHypothesis &h = orcaice::mlHypothesis( data2d );
+    x_ = h.mean.p.x;
+    y_ = h.mean.p.y;
+    theta_ = h.mean.o;
+}
+
+QStringList
+Localise3dElement::contextMenu()
+{
+    QStringList s;
+    s<<"Toggle History"<<"Toggle Multi-Hypothesis";
+    return s;
+}
+
+void
+Localise3dElement::execute( int action )
+{
+    switch ( action )
+    {
+    case 0 :
+    {
+        painter_.toggleDisplayHistory();
+        break;
+    }
+    case 1 :
+    {
+        painter_.toggleMultiHypothesis();
+        break;
+    }
+    default:
+    {
+        throw orcaqgui::Exception( "execute(): What the hell? bad action." );
+        break;
+    }
+    }
+}
+
+
 }

@@ -32,6 +32,7 @@ DefaultFactory::DefaultFactory()
     addSupportedType(QStringList("::local::Grid"));
     addSupportedType(QStringList("::orca::LaserScanner2d"));
     addSupportedType(QStringList("::orca::Localise2d"));
+    addSupportedType(QStringList("::orca::Localise3d"));
     addSupportedType(QStringList("::orca::OgMap"));
     addSupportedType(QStringList("::orca::PolarFeature2d"));
     addSupportedType(QStringList("::orca::PathFollower2d"));
@@ -72,6 +73,10 @@ DefaultFactory::create( const orcaice::Context           &context,
         else if ( interfaceId == "::orca::Localise2d" ) {
             cout<<"creating Localise2d element"<<endl;
             elem = new orcaqgui::Localise2dElement( context, proxyString.toStdString() );
+        }
+        else if ( interfaceId == "::orca::Localise3d" ) {
+            cout<<"creating Localise3d element"<<endl;
+            elem = new orcaqgui::Localise3dElement( context, proxyString.toStdString() );
         }
         else if ( interfaceId == "::orca::OgMap" ) {
             cout<<"creating OgMap element"<<endl;
