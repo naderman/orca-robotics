@@ -58,7 +58,7 @@ struct PowerData
 */
 interface PowerConsumer
 {
-    //! ServerPush_Consumer interface
+    //! Sends data to the consumer
     void setData( PowerData obj );
 };
 
@@ -82,7 +82,7 @@ interface Power
      * @see unsubscribe
      */
     void subscribe( PowerConsumer* subscriber )
-            throws ConfigurationNotExistException;
+            throws SubscriptionFailedException;
 
     /*!
      * Unsubscribe the given [subscriber].
