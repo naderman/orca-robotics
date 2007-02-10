@@ -14,6 +14,7 @@
 
 #include <orcanavutil/mapgrid.h>
 
+
 using namespace std;
 
 #define USAGE_ARGS "<latitude> <longitude>"
@@ -39,10 +40,8 @@ int main( int argc, char **argv )
         exit(1);
     }
     
-    
-    
-    cout.precision(10);
-    cout    << "Latitude:\t" << latitude << endl
+    cout    << setiosflags(ios::fixed) << setprecision(3)
+            << "Latitude:\t" << latitude << endl
             << "Longitude:\t" << longitude << endl
             << "Easting:\t" << easting << endl
             << "Northing:\t" << northing << endl;
