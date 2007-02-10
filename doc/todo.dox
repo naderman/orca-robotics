@@ -44,12 +44,20 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Remote interface to a log playing process.
 
 @par New components
+
 @par New utilities
+- mgaconversion (Tobi)
+    - contains tools to convert from latitude/longitude to MGA
+
 @par New libraries
 @par Updated interfaces
 @par Updated components
 @par Updated utilities
+
 @par Updated libraries
+- OrcaNavUtil (Tobi)
+    - added MGA/latitude/longitude functions
+
 @par Removed
 
 
