@@ -39,6 +39,8 @@ int main( int argc, char **argv )
         exit(1);
     }
     
+    
+    
     cout.precision(10);
     cout    << "Latitude:\t" << latitude << endl
             << "Longitude:\t" << longitude << endl

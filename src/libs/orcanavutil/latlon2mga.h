@@ -8,10 +8,10 @@
  *
  */
 
-#ifndef ORCA2_NOVATELSPAN_INSGPS_LATLON2MGA_H
-#define ORCA2_NOVATELSPAN_INSGPS_LATLON2MGA_H
+#ifndef LATLON2MGA_H
+#define LATLON2MGA_H
 
-namespace insgps{
+namespace orcanavutil{
     
 // enumeration of geod models
     enum EGeodModel { GM_UNDEFINED=-1, GM_WGS84 =0, GM_GDA94, GM_WGS72, GM_AGD84, GM_NSWC_9Z2, GM_Clarke, GM_NoOptions, GM_GRS80=GM_GDA94, GM_ANS=GM_AGD84 };

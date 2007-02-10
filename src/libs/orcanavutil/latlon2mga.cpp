@@ -20,7 +20,7 @@ using std::pow;
 
 #include "latlon2mga.h"
 
-namespace insgps{
+namespace orcanavutil{
 
 // LatLon_2_MGA convert (lat,lon) in degrees to (Northing, Easting) in meters
 void LatLon2MGA(const double& lat, const double& lon, double& Northing, double& Easting, int& Zone, EGeodModel geodmodel) {

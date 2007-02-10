@@ -939,7 +939,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
             // cout << "lattitude and longitude: " << INSPVA_.data.latitude << " " << INSPVA_.data.longitude << endl;
             
             int zone;
-            LatLon2MGA(INSPVA_.data.latitude, INSPVA_.data.longitude,
+            orcanavutil::LatLon2MGA(INSPVA_.data.latitude, INSPVA_.data.longitude,
                        localise3dData_.hypotheses[0].mean.p.x, localise3dData_.hypotheses[0].mean.p.y, zone);
             localise3dData_.hypotheses[0].mean.p.z = -INSPVA_.data.height;
 
