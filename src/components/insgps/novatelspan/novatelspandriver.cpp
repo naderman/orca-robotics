@@ -59,7 +59,7 @@ NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device
         throw orcaice::Exception( ERROR_INFO, errString );
     }
     // set to 1 second timeout
-    serial_->timeout( 1,0 );
+    serial_->timeout( 1, 0 );
     // hasFix_       = false;
     // havePps_      = false;
     // havePosition_ = false;
@@ -98,23 +98,24 @@ NovatelSpanInsGpsDriver::reset()
     serial_->flush();
 
     std::vector<int> baudrates;
-    baudrates.resize(12);
+    baudrates.resize(11);
     baudrates[0] = 300 ;
     baudrates[1] = 600 ;
-    baudrates[2] = 900 ;
-    baudrates[3] = 1200 ;
-    baudrates[4] = 2400 ;
-    baudrates[5] = 4800 ;
-    baudrates[6] = 9600 ;
-    baudrates[7] = 19200 ;
-    baudrates[8] = 38400 ;
-    baudrates[9] = 57600 ;
-    baudrates[10] = 115200 ;
-    baudrates[11] = 230400 ;
+    // baudrates[2] = 900 ;
+    baudrates[2] = 1200 ;
+    baudrates[3] = 2400 ;
+    baudrates[4] = 4800 ;
+    baudrates[5] = 9600 ;
+    baudrates[6] = 19200 ;
+    baudrates[7] = 38400 ;
+    baudrates[8] = 57600 ;
+    baudrates[9] = 115200 ;
+    baudrates[10] = 230400 ;
  
     // try all baud rates and reset the device
-    for ( int i=0; i<12; i++ )
+    for ( int i=0; i<11; i++ )
     {
+        std::cout << "i = " << i << std::endl;
         if( serial_->baud( baudrates[i] )==-1 )
         {
             std::string errString = "Failed to set baud rate.";
@@ -131,8 +132,8 @@ NovatelSpanInsGpsDriver::reset()
         }
     }
 	
-   // Change the baudrate of the serial port to 9600 which is the default
-	// for the device after it has been reset.
+    // Change the baudrate of the serial port to 9600 which is the default
+    // for the device after it has been reset.
     if( serial_->baud( 9600 )==-1 )
     {
         std::string errString = "Failed to set baud rate.";
@@ -145,15 +146,21 @@ NovatelSpanInsGpsDriver::reset()
         {
             serial_->flush();
             put = serial_->write( "unlogall\r\n" );
-            //printf("put %d bytes\n",put);
+            // printf("put %d bytes\n",put);
             serial_->drain();
 
+            int got = serial_->data_avail();
+            std::cout << "got = " << got << std::endl;
             // Read the serial device to check response ( "<OK" is 3 bytes long )
             // Note that the response is in abbreviated ASCII format so only need to check for "<OK"
-            if ( serial_->read_full( response, 13 ) < 0 )
+            // if ( serial_->read_full( response, 13 ) < 0 )
+            if ( serial_->read_full( response, got ) < 0 )
             {
-                cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-                return -1;
+               std::string errString = "Error reading from serial device.";
+                context_.tracer()->error( errString );
+                throw orcaice::Exception( ERROR_INFO, errString );
+                // cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
+                // return -1;
             }
             else
             {
@@ -260,7 +267,7 @@ NovatelSpanInsGpsDriver::init()
     // start the orcaice::thread for this driver
     // start();
 
-	reset();
+    // reset();
 
     if ( enabled_ )
         return 0;

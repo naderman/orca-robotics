@@ -27,6 +27,7 @@
 #include <orca/position2d.h>
 #include <orca/position3d.h>
 #include <orca/localise2d.h>
+#include <orca/localise3d.h>
 #include <orca/pixmap.h>
 #include <orca/platform2d.h>
 #include <orca/power.h>
@@ -225,6 +226,8 @@ std::string toString( const orca::Position3dData& );
 std::string toString( const orca::Position3dDescription& );
 //! Converts to string
 std::string toString( const orca::Localise2dData& );
+//! Converts to string
+std::string toString( const orca::Localise3dData& );
 //! Converts to string
 std::string toString( const orca::PowerData& );
 //! Converts to string
