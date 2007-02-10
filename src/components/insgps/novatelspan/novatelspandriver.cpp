@@ -927,6 +927,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
             if ( localise3dData_.hypotheses.size() == 0 )
             {
                 localise3dData_.hypotheses.resize(1);
+                localise3dData_.hypotheses[0].weight = 1;
             }
             // cout << "lattitude and longitude: " << INSPVA_.data.latitude << " " << INSPVA_.data.longitude << endl;
             
@@ -979,6 +980,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
 	    if ( localise3dData_.hypotheses.size() == 0 )
 	    {
 		localise3dData_.hypotheses.resize(1);
+                localise3dData_.hypotheses[0].weight = 1;
 	    }
 
 	    // don't need to store the whole matrix as it is symmetric

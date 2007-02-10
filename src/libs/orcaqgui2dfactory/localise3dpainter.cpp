@@ -34,7 +34,7 @@ Localise3dPainter::clear()
 }
 
 void 
-Localise3dPainter::setData( const orca::Localise2dData& data )
+Localise3dPainter::setData( const orca::Localise3dData& data )
 {    
     data_ = data;
     isDataAvailable_ = true;
@@ -45,25 +45,25 @@ Localise3dPainter::setData( const orca::Localise2dData& data )
     if ( isDisplayHistory_ ) {
         if ( data.hypotheses.size() > 0 )
         {
-            const Pose2dHypothesis &h = orcaice::mlHypothesis( data );
+            const Pose3dHypothesis &h = orcaice::mlHypothesis( data );
             history_.addPoint( h.mean.p.x, h.mean.p.y );
         }
         else
-            throw orcaqgui::Exception( "Localise3dPainter::setData(): Localise2dData had zero hypotheses" );
+            throw orcaqgui::Exception( "Localise3dPainter::setData(): Localise3dData had zero hypotheses" );
     }
 
 }
 
 void 
-Localise3dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &hypothesis )
+Localise3dPainter::paintHypothesis( QPainter* p, const orca::Pose3dHypothesis &hypothesis )
 {
     float weight = hypothesis.weight;
 
     // Don't bother painting _really_ unlikely hypotheses
     // if ( weight < 0.02 ) continue;
 
-    const Frame2d      &mean = hypothesis.mean;
-    const Covariance2d &cov  = hypothesis.cov;
+    const Frame3d      &mean = hypothesis.mean;
+    const Covariance3d &cov  = hypothesis.cov;
 
     // Translate to where the hypothesis is at
     {
@@ -82,7 +82,7 @@ Localise3dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
         {
             // Rotate to draw the platform correctly
             ScopedSaver rotateSaver(p);
-            p->rotate( RAD2DEG( mean.o ) );
+            p->rotate( RAD2DEG( mean.o.y ) );
             paintPlatformPose( m2win,
                                p, 
                                color,
@@ -92,11 +92,11 @@ Localise3dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
         paintUncertaintyInfo( m2win,
                               p,
                               color,
-                              mean.o,
+                              mean.o.y,
                               cov.xx,
                               cov.xy,
                               cov.yy,
-                              cov.tt );
+                              cov.aa );
     }
 }
 

@@ -13,6 +13,7 @@
 
 #include <orca/featuremap2d.h>
 #include <orca/localise2d.h>
+#include <orca/localise3d.h>
 #include <orca/ogmap.h>
 #include <orca/pathfollower2d.h>
 
@@ -37,6 +38,7 @@ inline double calcAngleIncrement( double fieldOfView, int numReturns )
 
 //! Returns the @b reference to max-likelihood hypothesis.
 const orca::Pose2dHypothesis& mlHypothesis( const orca::Localise2dData& obj );
+const orca::Pose3dHypothesis& mlHypothesis( const orca::Localise3dData& obj );
 
 //!
 //! If there's something wrong with the pathData objects, returns false

@@ -150,6 +150,7 @@ FakeInsGpsDriver::readMsgsFromHardware()
         orcaice::setToNow( localise3dData_.timeStamp );
 
         localise3dData_.hypotheses.resize(1);
+        localise3dData_.hypotheses[0].weight = 1;
         // position
         localise3dData_.hypotheses[0].mean.p.x = -2 + ((numReads_%20)*0.2);
         localise3dData_.hypotheses[0].mean.p.y = 2;

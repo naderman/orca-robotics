@@ -12,7 +12,6 @@
 
 #include <QColor>
 #include <orcaqgui2d/definitions2d.h>
-#include <orca/localise2d.h>
 #include <orca/localise3d.h>
 #include <orcaqgui2d/paintutils.h>
 
@@ -28,12 +27,7 @@ class Localise3dPainter
     // The default color is the color when the robot is not selected.
     Localise3dPainter( bool beginDisplayHistory );
 
-    void setData( const orca::Localise2dData& data );
-    // Hack so the icestormelement update() function is happy.
-    // The update() requires the painter.setData() function to be the 
-    // the same type of data that is incoming. We overload the update() to 
-    // get around this.
-    void setData( const orca::Localise3dData& data ){ return; };
+    void setData( const orca::Localise3dData& data );
 
     void paint( QPainter *p, int z );
     bool paintThisLayer(int z) const {return z==Z_POSE || z==Z_POSE-2;}
@@ -47,9 +41,9 @@ class Localise3dPainter
 
   private:
 
-    void paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &hypothesis );
+    void paintHypothesis( QPainter* p, const orca::Pose3dHypothesis &hypothesis );
 
-    orca::Localise2dData data_;
+    orca::Localise3dData data_;
     bool isDataAvailable_;
 
     QColor basicColor_;

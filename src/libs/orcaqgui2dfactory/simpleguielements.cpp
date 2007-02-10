@@ -148,20 +148,20 @@ Localise3dElement::update()
         throw orcaqgui::Exception( ss.str() );
     }
 
-    // convert localise3d object to localise2d so localise2dpainter knows how to handle it
-    orca::Localise2dData data2d;
-    data2d.hypotheses.resize(1);
-    data2d.hypotheses[0].mean.p.x = data_.hypotheses[0].mean.p.x;
-    data2d.hypotheses[0].mean.p.y = data_.hypotheses[0].mean.p.y;
-    data2d.hypotheses[0].mean.o = data_.hypotheses[0].mean.o.y;
+//     // convert localise3d object to localise2d so localise2dpainter knows how to handle it
+//     orca::Localise2dData data2d;
+//     data2d.hypotheses.resize(1);
+//     data2d.hypotheses[0].mean.p.x = data_.hypotheses[0].mean.p.x;
+//     data2d.hypotheses[0].mean.p.y = data_.hypotheses[0].mean.p.y;
+//     data2d.hypotheses[0].mean.o = data_.hypotheses[0].mean.o.y;
 
-    painter_.setData( data2d );
+    painter_.setData( data_ );
 
     // custom update
-    const orca::Pose2dHypothesis &h = orcaice::mlHypothesis( data2d );
+    const orca::Pose3dHypothesis &h = orcaice::mlHypothesis( data_ );
     x_ = h.mean.p.x;
     y_ = h.mean.p.y;
-    theta_ = h.mean.o;
+    theta_ = h.mean.o.y;
 }
 
 QStringList

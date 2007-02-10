@@ -74,6 +74,34 @@ mlHypothesis( const orca::Localise2dData& obj )
     return obj.hypotheses[mlI];
 }
 
+const orca::Pose3dHypothesis &
+mlHypothesis( const orca::Localise3dData& obj )
+{
+    float maxWeight = -1;
+    int   mlI       = -1;
+    for ( unsigned int i=0; i < obj.hypotheses.size(); i++ )
+    {
+        if ( obj.hypotheses[i].weight > maxWeight )
+        {
+            maxWeight = obj.hypotheses[i].weight;
+            mlI = i;
+        }
+    }
+#ifndef NDEBUG
+    if ( mlI < 0 )
+    {
+        std::stringstream ss;
+        ss << "Dodgy Localise3dDataPtr: " << orcaice::toString(obj);
+        cout << "ERROR(miscutils.cpp): " << ss.str() << endl;
+        assert( false && "dodgy Localise3dDataPtr" );
+        exit(1);
+        // TODO: throw an exception here...
+        //throw orcaice::Exception( ERROR_INFO, ss.str() );
+    }
+#endif
+    return obj.hypotheses[mlI];
+}
+
 void 
 saveToFile( const orca::FeatureMap2dDataPtr& fmap, FILE *f )
 {
