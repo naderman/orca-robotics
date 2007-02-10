@@ -16,6 +16,7 @@
 
 #include <orca/imu.h>
 #include <orca/odometry3d.h>
+#include <orca/localise3d.h>
 #include <orca/gps.h>
 #include <string>
 
@@ -121,6 +122,7 @@ public:
     virtual void readGpsTime( orca::GpsTimeData& data, int timeoutMs=2000 ) = 0;
     virtual void readImu( orca::ImuData& data, int timeoutMs=2000 ) = 0;
     virtual void readOdometry3d( orca::Odometry3dData& data, int timeoutMs=2000 ) = 0;
+    virtual void readLocalise3d( orca::Localise3dData& data, int timeoutMs=2000 ) = 0;
 
     // mechanism to get error messages etc back from driver.
     virtual const std::string &infoMessages() { return infoMessages_; };
@@ -135,17 +137,6 @@ public:
     virtual void shutdown()=0;
 
 protected:
-    // do we have raw imu data yet?
-    // set to false by call to getData()
-    // bool newImuData_;
-    // do we have PVA info yet
-    // bool newOdometry3dData_;
-    // do we have GPS position yet
-    // bool newGpsData_;
-    // do we have pps yet?
-    // set to false by call to getTimeData()
-    // bool newGpsTime_;
-    
     Pps pps_;
     GpsPosition position_;
     
@@ -153,6 +144,7 @@ protected:
     orca::GpsTimeData gpsTimeData_;
     orca::ImuData imuData_;
     orca::Odometry3dData odometry3dData_;
+    orca::Localise3dData localise3dData_;
 
     std::string infoMessages_;
     

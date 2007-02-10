@@ -49,6 +49,7 @@ public:
     virtual void readGpsTime(orca::GpsTimeData& data, int timeoutMs=2000 );
     virtual void readImu(orca::ImuData& data, int timeoutMs=2000 );
     virtual void readOdometry3d(orca::Odometry3dData& data, int timeoutMs=2000 );
+    virtual void readLocalise3d(orca::Localise3dData& data, int timeoutMs=2000 );
     
     virtual void shutdown();
 
@@ -58,6 +59,7 @@ private:
     orcaice::Buffer<orca::GpsData> gpsDataBuffer_;
     orcaice::Buffer<orca::ImuData> imuDataBuffer_;
     orcaice::Buffer<orca::Odometry3dData> odometry3dDataBuffer_;
+    orcaice::Buffer<orca::Localise3dData> localise3dDataBuffer_;
 
     // Blocks till timout expires, returns number of messages read, -1 if failure
     virtual int readMsgsFromHardware();

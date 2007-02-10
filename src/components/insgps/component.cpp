@@ -168,16 +168,19 @@ Component::start()
     gpsObj_ = new GpsI( gpsDescr, hwDriver_, context() );
     imuObj_ = new ImuI( imuDescr, hwDriver_, context() );
     odometry3dObj_ = new Odometry3dI( vehicleDescr, hwDriver_, context() );
+    localise3dObj_ = new Localise3dI( vehicleDescr, hwDriver_, context() );
 
     // create smart pointers for each of the objects   
     gpsObjPtr_ = gpsObj_;
     imuObjPtr_ = imuObj_;
     odometry3dObjPtr_ = odometry3dObj_;
+    localise3dObjPtr_ = localise3dObj_;
 
     // register each of the objects so that remote calls know that these things exist   
     orcaice::createInterfaceWithTag( context(), gpsObjPtr_, "Gps" );
     orcaice::createInterfaceWithTag( context(), imuObjPtr_, "Imu" );
     orcaice::createInterfaceWithTag( context(), odometry3dObjPtr_, "Odometry3d" );
+    orcaice::createInterfaceWithTag( context(), localise3dObjPtr_, "Localise3d" );
 
     ////////////////////////////////////////////////////////////////////////////////
 
@@ -207,10 +210,15 @@ Component::start()
                                 hwDriver_,
                                 context() );
 
+    localise3dHandler_ = new Handler( *localise3dObj_,
+                                hwDriver_,
+                                context() );
+
     // now that each of the objects have been registered, start their handlers
     gpsHandler_->start();
     imuHandler_->start();
     odometry3dHandler_->start();
+    localise3dHandler_->start();
 
 }
 
@@ -223,6 +231,7 @@ Component::stop()
     orcaice::Thread::stopAndJoin( gpsHandler_ );
     orcaice::Thread::stopAndJoin( imuHandler_ );
     orcaice::Thread::stopAndJoin( odometry3dHandler_ );   
+    orcaice::Thread::stopAndJoin( localise3dHandler_ );   
     // tracer()->debug( "stopped handlers", 2 );
 
     tracer()->debug( "stopping driver", 2 );

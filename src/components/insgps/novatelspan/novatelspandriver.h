@@ -86,7 +86,10 @@ public:
     virtual void readGps( orca::GpsData& data, int timeoutMs=2000 );
     virtual void readGpsTime( orca::GpsTimeData& data, int timeoutMs=2000 );
     virtual void readImu(orca::ImuData& data, int timeoutMs=2000 );
+    // Note that this driver only provides localise3d and not odometry3d.
+    // This is here to keep the main driver happy as it is pure virtual
     virtual void readOdometry3d(orca::Odometry3dData& data, int timeoutMs=2000 );
+    virtual void readLocalise3d(orca::Localise3dData& data, int timeoutMs=2000 );
     
     virtual void shutdown();
        
@@ -134,6 +137,7 @@ private:
     orcaice::Buffer<orca::GpsData> gpsDataBuffer_;
     orcaice::Buffer<orca::ImuData> imuDataBuffer_;
     orcaice::Buffer<orca::Odometry3dData> odometry3dDataBuffer_;
+    orcaice::Buffer<orca::Localise3dData> localise3dDataBuffer_;
         
     // Qhere the latest and greatest of each log is stored.
     // The trailing B's indicate binary messages
@@ -148,7 +152,7 @@ private:
 
     int gpsCount_;
     int imuCount_;
-    int odometry3dCount_;
+    int localise3dCount_;
 
     orcaice::Context context_;
 

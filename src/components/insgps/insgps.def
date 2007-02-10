@@ -7,6 +7,9 @@ Provides.Imu.DefaultName=imu
 Provides.Odometry3d.Type=::orca::Odometry3d
 Provides.Odometry3d.DefaultName=odometry3d
 
+Provides.Localise3d.Type=::orca::Localise3d
+Provides.Localise3d.DefaultName=localise3d
+
 Provides.Gps.Type=::orca::Gps
 Provides.Gps.DefaultName=gps
 

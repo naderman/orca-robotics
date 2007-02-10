@@ -16,6 +16,7 @@
 #include "gpsI.h"
 #include "imuI.h"
 #include "odometry3dI.h"
+#include "localise3dI.h"
 
 namespace insgps
 {
@@ -41,10 +42,12 @@ private:
     GpsI* gpsObj_;
     ImuI* imuObj_;
     Odometry3dI* odometry3dObj_;
+    Localise3dI* localise3dObj_;
 
     Ice::ObjectPtr gpsObjPtr_;
     Ice::ObjectPtr imuObjPtr_;
     Ice::ObjectPtr odometry3dObjPtr_;
+    Ice::ObjectPtr localise3dObjPtr_;
 
     //
     // HARDWARE INTERFACES
@@ -57,6 +60,7 @@ private:
     Handler* gpsHandler_;
     Handler* imuHandler_;
     Handler* odometry3dHandler_;
+    Handler* localise3dHandler_;
 };
 
 } //namespace

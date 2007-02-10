@@ -39,10 +39,10 @@ NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device
     enabled_( false ),
     gpsCount_(0),
     imuCount_(0),
-    odometry3dCount_(0),
+    localise3dCount_(0),
 //     gpsData_(0),
 //     imuData_(0),
-//     odometry3dData_(0),
+//     localise3dData_(0),
     context_(context)
 {
     serial_ = new Serial();
@@ -68,7 +68,8 @@ NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device
     // configure the buffers so they have depth 100 and are of type queue
     gpsDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
     imuDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
-    odometry3dDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
+    odometry3dDataBuffer_.configure( 1 , orcaice::BufferTypeQueue );
+    localise3dDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
    
 }
 
@@ -467,24 +468,6 @@ NovatelSpanInsGpsDriver::init()
     // receiver status
     put = serial_->write( "log rxstatusb ontime 1.0\r\n" );
     
-//      // Read the serial device to check response ( "<OK" is 3 bytes long )
-//     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
-//     if ( serial_->read_full( response, 13 ) < 0 )
-//     {
-//         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-//         return -1;
-//     }
-//     else
-//     {
-//         responseString = response;
-//         responseString.resize(5);
-//     }
-// 
-//     if ( responseString != responseOk )
-//     {
-//         cout << "WARNING(novatelspandriver.cpp): Response to 'setimutype' returned error: " << responseString << endl;
-//         return -1;
-//     }
     
     // PPS pulse will be triggered before this arrives
     
@@ -492,117 +475,22 @@ NovatelSpanInsGpsDriver::init()
     put = serial_->write( "log timeb ontime 1.0\r\n" );
 //      put = serial_->write("log timesyncb ontime 1.0\r\n");
         
-//          // Read the serial device to check response ( "<OK" is 3 bytes long )
-//     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
-//     if ( serial_->read_full( response, 13 ) < 0 )
-//     {
-//         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-//         return -1;
-//     }
-//     else
-//     {
-//         responseString = response;
-//         responseString.resize(5);
-//     }
-// 
-//     if ( responseString != responseOk )
-//     {
-//         cout << "WARNING(novatelspandriver.cpp): Response to 'log timeb' returned error: " << responseString << endl;
-//         return -1;
-//     }
-    
     // IMU message
     
     // gps position without ins
     // put = serial_->write( "log bestgpsposb ontime 1.0\r\n" );
     put = serial_->write( "log bestgpsposb ontime 0.05\r\n" );
         
-//          // Read the serial device to check response ( "<OK" is 3 bytes long )
-//     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
-//     if ( serial_->read_full( response, 13 ) < 0 )
-//     {
-//         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-//         return -1;
-//     }
-//     else
-//     {
-//         responseString = response;
-//         responseString.resize(5);
-//     }
-// 
-//     if ( responseString != responseOk )
-//     {
-//         cout << "WARNING(novatelspandriver.cpp): Response to 'log bestgpsposb' returned error: " << responseString << endl;
-//         return -1;
-//     }
-
     //short IMU messages
     // pva data in wgs84 coordinates
     put = serial_->write( "log inspvasb ontime 0.01\r\n" );
     
-//      // Read the serial device to check response ( "<OK" is 3 bytes long )
-//     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
-//     if ( serial_->read_full( response, 13 ) < 0 )
-//     {
-//         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-//         return -1;
-//     }
-//     else
-//     {
-//         responseString = response;
-//         responseString.resize(5);
-//     }
-// 
-//     if ( responseString != responseOk )
-//     {
-//         cout << "WARNING(novatelspandriver.cpp): Response to 'log inspvasb' returned error: " << responseString << endl;
-//         return -1;
-//     }
-    
     // raw accelerometer and gyro data
     put = serial_->write( "log rawimusb onnew\r\n" );
     
-//          // Read the serial device to check response ( "<OK" is 3 bytes long )
-//     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
-//     if ( serial_->read_full( response, 13 ) < 0 )
-//     {
-//         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-//         return -1;
-//     }
-//     else
-//     {
-//         responseString = response;
-//         responseString.resize(5);
-//     }
-// 
-//     if ( responseString != responseOk )
-//     {
-//         cout << "WARNING(novatelspandriver.cpp): Response to 'log rawimusb' returned error: " << responseString << endl;
-//         return -1;
-//     }
-
     // pva covariances
     put = serial_->write( "log inscovsb onchanged\r\n" );
      
-//     // Read the serial device to check response ( "<OK" is 3 bytes long )
-//     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
-//     if ( serial_->read_full( response, 13 ) < 0 )
-//     {
-//         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-//         return -1;
-//     }
-//     else
-//     {
-//         responseString = response;
-//         responseString.resize(5);
-//     }
-// 
-//     if ( responseString != responseOk )
-//     {
-//         cout << "WARNING(novatelspandriver.cpp): Response to 'log inscovsb' returned error: " << responseString << endl;
-//         return -1;
-//     }
-
     start();
     enabled_ = true;
 
@@ -745,6 +633,9 @@ NovatelSpanInsGpsDriver::readImu( orca::ImuData& data, int timeoutMs )
 void
 NovatelSpanInsGpsDriver::readOdometry3d( orca::Odometry3dData& data, int timeoutMs )
 {
+    // Note that this driver only provides localise3d and not odometry3d.
+    // This is here to keep the main driver happy as it is pure virtual
+
     // blocking read with timeout. Also deletes the front element from the buffer
     int ret = odometry3dDataBuffer_.getAndPopNext( data, timeoutMs );
     if ( ret != 0 ) {
@@ -754,13 +645,30 @@ NovatelSpanInsGpsDriver::readOdometry3d( orca::Odometry3dData& data, int timeout
     else
     {   
         context_.tracer()->debug( "novatelspandriver::readOdometry3d()): got odometry3d data", 6 );
+    }
+    
+    return;
+}
+
+void
+NovatelSpanInsGpsDriver::readLocalise3d( orca::Localise3dData& data, int timeoutMs )
+{
+    // blocking read with timeout. Also deletes the front element from the buffer
+    int ret = localise3dDataBuffer_.getAndPopNext( data, timeoutMs );
+    if ( ret != 0 ) {
+        // throw NovatelSpanException( "Timeout while waiting for Localise3d packet" );
+        context_.tracer()->debug( "novatelspandriver::readLocalise3d()): Timeout while waiting for Localise3d packet", 6 );
+    }
+    else
+    {   
+        context_.tracer()->debug( "novatelspandriver::readLocalise3d()): got localise3d data", 6 );
         
-        if (odometry3dCount_ > 200 )
+        if (localise3dCount_ > 200 )
         {
-            cout << "Odometry3d Data Buffer is " << odometry3dDataBuffer_.size()/100 << "% full" << endl;
-            odometry3dCount_ = 0;
+            cout << "Localise3d Data Buffer is " << localise3dDataBuffer_.size()/100 << "% full" << endl;
+            localise3dCount_ = 0;
         }
-        odometry3dCount_++;
+        localise3dCount_++;
     
     }
     
@@ -1013,34 +921,34 @@ NovatelSpanInsGpsDriver::populateData( int id )
             // printf("got INSPVASB\n");
             memcpy( &INSPVA_, &serial_data_.raw_message, sizeof(INSPVA_) );
 
-            odometry3dData_.timeStamp = orcaice::toOrcaTime (timeOfRead_);
+            localise3dData_.timeStamp = orcaice::toOrcaTime (timeOfRead_);
 
+            // load the pva data into the localise3d object       
+            if ( localise3dData_.hypotheses.size() == 0 )
+            {
+                localise3dData_.hypotheses.resize(1);
+            }
             // cout << "lattitude and longitude: " << INSPVA_.data.latitude << " " << INSPVA_.data.longitude << endl;
             
             int zone;
             LatLon2MGA(INSPVA_.data.latitude, INSPVA_.data.longitude,
-                       odometry3dData_.pose.p.x, odometry3dData_.pose.p.y, zone);
+                       localise3dData_.hypotheses[0].mean.p.x, localise3dData_.hypotheses[0].mean.p.y, zone);
+            localise3dData_.hypotheses[0].mean.p.z = -INSPVA_.data.height;
 
-            // cout << "MGA x and y: " << odometry3dData_.pose.p.x << " " << odometry3dData_.pose.p.y << endl;
-
-
-            // TODO: do we have to convert pva data into local coordinate frame? 
-            // load the pva data into the odometry3d object       
-            // odometry3dData_.pose.p.x = INSPVA_.data.latitude;
-            // odometry3dData_.pose.p.y = INSPVA_.data.longitude;
-            odometry3dData_.pose.p.z = -INSPVA_.data.height;
+            // cout << "MGA x and y: " << localise3dData_.pose.p.x << " " << localise3dData_.pose.p.y << endl;
        
-            //velocities
-            odometry3dData_.motion.v.x = INSPVA_.data.north_vel;
-            odometry3dData_.motion.v.y = INSPVA_.data.east_vel;
+            // TODO: Might want to put velocities into odometry
+            // velocities
+            // localise3dData_.motion.v.x = INSPVA_.data.north_vel;
+            // localise3dData_.motion.v.y = INSPVA_.data.east_vel;
             // down = -up
-            odometry3dData_.motion.v.z = -INSPVA_.data.up_vel;
+            // localise3dData_.motion.v.z = -INSPVA_.data.up_vel;
             
             //attitude
-            odometry3dData_.pose.o.r = INSPVA_.data.roll/180*M_PI;
-            odometry3dData_.pose.o.p = INSPVA_.data.pitch/180*M_PI;
+            localise3dData_.hypotheses[0].mean.o.r = INSPVA_.data.roll/180*M_PI;
+            localise3dData_.hypotheses[0].mean.o.p = INSPVA_.data.pitch/180*M_PI;
             // yaw is LH rule
-            odometry3dData_.pose.o.y = INSPVA_.data.yaw/180*M_PI;
+            localise3dData_.hypotheses[0].mean.o.y = INSPVA_.data.yaw/180*M_PI;
             
             //Set time
             // TODO: add this in if needed       
@@ -1048,13 +956,73 @@ NovatelSpanInsGpsDriver::populateData( int id )
 //                             INSPVA_.data.seconds,
 //                             &pva_time);
 
-            // set flag
-            // newOdometry3dData_ = true;       
-            
-            odometry3dDataBuffer_.push( odometry3dData_ );
+            localise3dDataBuffer_.push( localise3dData_ );
             
             return 0;       
             break;
+        }
+        case novatel::INSCOVSB_LOG_TYPE:
+        {
+           // printf("got INSCOVSB\n");
+           memcpy( &INSCOV_, &serial_data_.raw_message, sizeof(INSCOV_) );
+
+//             P_(1,1)=INSCOV_.data.vel_cov[0];
+//             P_(3,1)=INSCOV_.data.vel_cov[1];
+//             P_(5,1)=INSCOV_.data.vel_cov[2];
+//             P_(1,3)=INSCOV_.data.vel_cov[3];
+//             P_(3,3)=INSCOV_.data.vel_cov[4];
+//             P_(5,3)=INSCOV_.data.vel_cov[5];
+//             P_(1,5)=INSCOV_.data.vel_cov[6];
+//             P_(3,5)=INSCOV_.data.vel_cov[7];
+//             P_(5,5)=INSCOV_.data.vel_cov[8];
+
+	    if ( localise3dData_.hypotheses.size() == 0 )
+	    {
+		localise3dData_.hypotheses.resize(1);
+	    }
+
+	    // don't need to store the whole matrix as it is symmetric
+	    localise3dData_.hypotheses[0].cov.xx = INSCOV_.data.pos_cov[0];
+	    localise3dData_.hypotheses[0].cov.xy = INSCOV_.data.pos_cov[1];
+	    localise3dData_.hypotheses[0].cov.xz = INSCOV_.data.pos_cov[2];
+	    // localise3dData_.hypotheses[0].cov.yx = INSCOV_.data.pos_cov[3];
+	    localise3dData_.hypotheses[0].cov.yy = INSCOV_.data.pos_cov[4];
+	    localise3dData_.hypotheses[0].cov.yz = INSCOV_.data.pos_cov[5];
+	    // localise3dData_.hypotheses[0].cov.zx = INSCOV_.data.pos_cov[6];
+	    // localise3dData_.hypotheses[0].cov.zy = INSCOV_.data.pos_cov[7];
+	    localise3dData_.hypotheses[0].cov.zz = INSCOV_.data.pos_cov[8];
+	
+	    // the novatel messages do not consider correlations between angular and linear motion
+	    localise3dData_.hypotheses[0].cov.xr = 0;
+	    localise3dData_.hypotheses[0].cov.xp = 0;
+	    localise3dData_.hypotheses[0].cov.xa = 0;
+	    localise3dData_.hypotheses[0].cov.yr = 0;
+	    localise3dData_.hypotheses[0].cov.yp = 0;
+	    localise3dData_.hypotheses[0].cov.ya = 0;
+	    localise3dData_.hypotheses[0].cov.zr = 0;
+	    localise3dData_.hypotheses[0].cov.zp = 0;
+	    localise3dData_.hypotheses[0].cov.za = 0;
+	
+	    // attitude covariance is in degrees squared
+	    const double deg2radcov = 1.0*M_PI*M_PI/(180*180);
+	    localise3dData_.hypotheses[0].cov.rr  = deg2radcov*INSCOV_.data.att_cov[0];
+	    localise3dData_.hypotheses[0].cov.rp  = deg2radcov*INSCOV_.data.att_cov[1];
+	    localise3dData_.hypotheses[0].cov.ra  = deg2radcov*INSCOV_.data.att_cov[2];
+	    // localise3dData_.hypotheses[0].cov.pr  = deg2radcov*INSCOV_.data.att_cov[3];
+	    localise3dData_.hypotheses[0].cov.pp  = deg2radcov*INSCOV_.data.att_cov[4];
+	    localise3dData_.hypotheses[0].cov.pa  = deg2radcov*INSCOV_.data.att_cov[5];
+	    // localise3dData_.hypotheses[0].cov.ar  = deg2radcov*INSCOV_.data.att_cov[6];
+	    // localise3dData_.hypotheses[0].cov.ap  = deg2radcov*INSCOV_.data.att_cov[7];
+	    localise3dData_.hypotheses[0].cov.aa  = deg2radcov*INSCOV_.data.att_cov[8];
+
+//             //Set Time
+//             mkutctime(INSCOV_.data.week,
+//                       INSCOV_.data.seconds,
+//                       &cov_time);
+//             // set flag
+//             have_cov=true;
+           return 0;
+             break;
         }
         case novatel::RAWIMUSB_LOG_TYPE:
         {
@@ -1088,52 +1056,6 @@ NovatelSpanInsGpsDriver::populateData( int id )
                 
             return 0;       
             break;
-        }
-        case novatel::INSCOVSB_LOG_TYPE:
-        {
-           // printf("got INSCOVSB\n");
-           memcpy( &INSCOV_, &serial_data_.raw_message, sizeof(INSCOV_) );
-// 
-//             P_(0,0)=INSCOV_.data.pos_cov[0];
-//             P_(2,0)=INSCOV_.data.pos_cov[1];
-//             P_(4,0)=INSCOV_.data.pos_cov[2];
-//             P_(0,2)=INSCOV_.data.pos_cov[3];
-//             P_(2,2)=INSCOV_.data.pos_cov[4];
-//             P_(4,2)=INSCOV_.data.pos_cov[5];
-//             P_(0,4)=INSCOV_.data.pos_cov[6];
-//             P_(2,4)=INSCOV_.data.pos_cov[7];
-//             P_(4,4)=INSCOV_.data.pos_cov[8];
-// 
-//             P_(1,1)=INSCOV_.data.vel_cov[0];
-//             P_(3,1)=INSCOV_.data.vel_cov[1];
-//             P_(5,1)=INSCOV_.data.vel_cov[2];
-//             P_(1,3)=INSCOV_.data.vel_cov[3];
-//             P_(3,3)=INSCOV_.data.vel_cov[4];
-//             P_(5,3)=INSCOV_.data.vel_cov[5];
-//             P_(1,5)=INSCOV_.data.vel_cov[6];
-//             P_(3,5)=INSCOV_.data.vel_cov[7];
-//             P_(5,5)=INSCOV_.data.vel_cov[8];
-// 
-//             // attitude covariance is in degrees squared
-//             const double deg2radcov = 1.0*M_PI*M_PI/(180*180);
-//             P_(6,6)  = deg2radcov*INSCOV_.data.att_cov[0];
-//             P_(8,6)  = deg2radcov*INSCOV_.data.att_cov[1];
-//             P_(10,6) = deg2radcov*INSCOV_.data.att_cov[2];
-//             P_(6,8)  = deg2radcov*INSCOV_.data.att_cov[3];
-//             P_(8,8)  = deg2radcov*INSCOV_.data.att_cov[4];
-//             P_(10,8) = deg2radcov*INSCOV_.data.att_cov[5];
-//             P_(6,10) = deg2radcov*INSCOV_.data.att_cov[6];
-//             P_(8,10) = deg2radcov*INSCOV_.data.att_cov[7];
-//             P_(10,10)= deg2radcov*INSCOV_.data.att_cov[8];
-// 
-//             //Set Time
-//             mkutctime(INSCOV_.data.week,
-//                       INSCOV_.data.seconds,
-//                       &cov_time);
-//             // set flag
-//             have_cov=true;
-           return 0;
-             break;
         }
         default:
         {

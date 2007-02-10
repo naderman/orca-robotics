@@ -28,6 +28,7 @@ FakeInsGpsDriver::FakeInsGpsDriver( const Config&           cfg,
     gpsDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
     imuDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
     odometry3dDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
+    localise3dDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
     
     context_.tracer()->info( "Initializing fake insgps driver with config: "+config_.toString() );
 }
@@ -145,6 +146,47 @@ FakeInsGpsDriver::readMsgsFromHardware()
 
         odometry3dDataBuffer_.push( odometry3dData_ );
         
+        // create fake pva data
+        orcaice::setToNow( localise3dData_.timeStamp );
+
+        localise3dData_.hypotheses.resize(1);
+        // position
+        localise3dData_.hypotheses[0].mean.p.x = -2 + ((numReads_%20)*0.2);
+        localise3dData_.hypotheses[0].mean.p.y = 2;
+        localise3dData_.hypotheses[0].mean.p.z = 3;
+
+        // attitude
+        localise3dData_.hypotheses[0].mean.o.r = 4;
+        localise3dData_.hypotheses[0].mean.o.p = 5;
+        localise3dData_.hypotheses[0].mean.o.y = (-180 + numReads_*5 % 360)*M_PI/180.0;
+
+        // covariances
+        localise3dData_.hypotheses[0].cov.xx = 1;
+        localise3dData_.hypotheses[0].cov.xy = 0;
+        localise3dData_.hypotheses[0].cov.xz = 0;
+        localise3dData_.hypotheses[0].cov.yy = 1;
+        localise3dData_.hypotheses[0].cov.yz = 0;
+        localise3dData_.hypotheses[0].cov.zz = 1;
+
+        localise3dData_.hypotheses[0].cov.xr = 0;
+        localise3dData_.hypotheses[0].cov.xp = 0;
+        localise3dData_.hypotheses[0].cov.xa = 0;
+        localise3dData_.hypotheses[0].cov.yr = 0;
+        localise3dData_.hypotheses[0].cov.yp = 0;
+        localise3dData_.hypotheses[0].cov.ya = 0;
+        localise3dData_.hypotheses[0].cov.zr = 0;
+        localise3dData_.hypotheses[0].cov.zp = 0;
+        localise3dData_.hypotheses[0].cov.za = 0;
+
+        localise3dData_.hypotheses[0].cov.rr = 1;
+        localise3dData_.hypotheses[0].cov.rp = 0;
+        localise3dData_.hypotheses[0].cov.ra = 0;
+        localise3dData_.hypotheses[0].cov.pp = 1;
+        localise3dData_.hypotheses[0].cov.pa = 0;
+        localise3dData_.hypotheses[0].cov.aa = 1;
+
+        localise3dDataBuffer_.push( localise3dData_ );
+
         // reset the counter      
         count_ = 0;
     }
@@ -214,6 +256,21 @@ FakeInsGpsDriver::readOdometry3d(orca::Odometry3dData& data, int timeoutMs )
     
     return;
 }
+
+void
+FakeInsGpsDriver::readLocalise3d(orca::Localise3dData& data, int timeoutMs )
+{
+    // blocking read with timeout. Also deletes the front element from the buffer
+    int ret = localise3dDataBuffer_.getAndPopNext( data, timeoutMs );
+    if ( ret != 0 ) {
+        throw FakeInsGpsException( "Timeout while waiting for Imu packet" );
+    }
+   
+    cout << "Localise3d Data Buffer has " << localise3dDataBuffer_.size() << " elements" << endl;
+    
+    return;
+}
+
 
 void
 FakeInsGpsDriver::shutdown()
