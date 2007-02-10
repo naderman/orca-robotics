@@ -8,7 +8,7 @@
  *
  */
 
-#include "localise2dI.h"
+#include "localise3dI.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include "util.h"
@@ -17,7 +17,7 @@ using namespace std;
 
 namespace orcaifaceimpl {
 
-Localise2dI::Localise2dI( const std::string &ifaceTag,
+Localise3dI::Localise3dI( const std::string &ifaceTag,
                           const orcaice::Context &context ) :
     ifaceTag_(ifaceTag),
     context_(context)
@@ -25,10 +25,10 @@ Localise2dI::Localise2dI( const std::string &ifaceTag,
 }
 
 void
-Localise2dI::initInterface()
+Localise3dI::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithTag<orca::Localise2dConsumerPrx>
+    topicPrx_ = orcaice::connectToTopicWithTag<orca::Localise3dConsumerPrx>
         ( context_, consumerPrx_, ifaceTag_ );
 
     // Register with the adapter
@@ -36,10 +36,10 @@ Localise2dI::initInterface()
     orcaice::createInterfaceWithTag( context_, obj, ifaceTag_ );
 }
 
-::orca::Localise2dData 
-Localise2dI::getData(const ::Ice::Current& ) const
+::orca::Localise3dData 
+Localise3dI::getData(const ::Ice::Current& ) const
 {
-    context_.tracer()->debug( "Localise2dI::getData()", 5 );
+    context_.tracer()->debug( "Localise3dI::getData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
@@ -48,15 +48,15 @@ Localise2dI::getData(const ::Ice::Current& ) const
         throw orca::DataNotExistException( ss.str() );
     }
 
-    orca::Localise2dData data;
+    orca::Localise3dData data;
     dataProxy_.get( data );
     return data;
 }
 
 void 
-Localise2dI::subscribe(const ::orca::Localise2dConsumerPrx& subscriber, const ::Ice::Current&)
+Localise3dI::subscribe(const ::orca::Localise3dConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    context_.tracer()->debug( "Localise2dI::subscribe()", 5 );
+    context_.tracer()->debug( "Localise3dI::subscribe()", 5 );
     IceStorm::QoS qos;
     qos["reliability"] = "twoway";
     try {
@@ -64,28 +64,28 @@ Localise2dI::subscribe(const ::orca::Localise2dConsumerPrx& subscriber, const ::
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
-        ss <<"Localise2dI::subscribe: failed to subscribe: "<< e << endl;
+        ss <<"Localise3dI::subscribe: failed to subscribe: "<< e << endl;
         context_.tracer()->warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
 
 void 
-Localise2dI::unsubscribe(const ::orca::Localise2dConsumerPrx& subscriber, const ::Ice::Current&)
+Localise3dI::unsubscribe(const ::orca::Localise3dConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    context_.tracer()->debug( "Localise2dI::unsubscribe()", 5 );
+    context_.tracer()->debug( "Localise3dI::unsubscribe()", 5 );
     topicPrx_->unsubscribe( subscriber );
 }
 
 void
-Localise2dI::localSetAndSend( const orca::Localise2dData &data )
+Localise3dI::localSetAndSend( const orca::Localise3dData &data )
 {
     //cout<<"TRACE(localise2dI.cpp): localSetData: " << orcaice::toString(data) << endl;
 
     dataProxy_.set( data );
     
     // Try to push to IceStorm.
-    tryPushToIceStormWithReconnect<orca::Localise2dConsumerPrx,orca::Localise2dData>
+    tryPushToIceStormWithReconnect<orca::Localise3dConsumerPrx,orca::Localise3dData>
         ( context_,
           consumerPrx_,
           data,

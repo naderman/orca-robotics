@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ODOMETRY3D_I_H
-#define ORCA2_ODOMETRY3D_I_H
+#ifndef ORCA2_ORCAIFACEIMPL_ODOMETRY3D_I_H
+#define ORCA2_ORCAIFACEIMPL_ODOMETRY3D_I_H
 
 #include <orca/odometry3d.h>
 #include <IceStorm/IceStorm.h>

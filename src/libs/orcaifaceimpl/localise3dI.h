@@ -8,10 +8,10 @@
  *
  */
 
-#ifndef ORCA2_ORCAIFACEIMPL_LOCALISE2D_I_H
-#define ORCA2_ORCAIFACEIMPL_LOCALISE2D_I_H
+#ifndef ORCA2_ORCAIFACEIMPL_LOCALISE3D_I_H
+#define ORCA2_ORCAIFACEIMPL_LOCALISE3D_I_H
 
-#include <orca/localise2d.h>
+#include <orca/localise3d.h>
 #include <IceStorm/IceStorm.h>
 
 // utilities
@@ -21,24 +21,24 @@
 namespace orcaifaceimpl {
 
 //!
-//! Implements the Localise2d interface: Handles remote calls.
+//! Implements the Localise3d interface: Handles remote calls.
 //!
-class Localise2dI : public orca::Localise2d
+class Localise3dI : public orca::Localise3d
 {
 public:
-    Localise2dI( const std::string &ifaceTag,
+    Localise3dI( const std::string &ifaceTag,
                  const orcaice::Context &context );
 
     // remote calls:
 
-    virtual ::orca::Localise2dData getData(const ::Ice::Current& ) const;
+    virtual ::orca::Localise3dData getData(const ::Ice::Current& ) const;
 
-    virtual void subscribe(const ::orca::Localise2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    virtual void subscribe(const ::orca::Localise3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
-    virtual void unsubscribe(const ::orca::Localise2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    virtual void unsubscribe(const ::orca::Localise3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
     // Note: could do smoothing/interpolation here...
-    virtual orca::Localise2dData getDataAtTime(const orca::Time&, const Ice::Current& c) const
+    virtual orca::Localise3dData getDataAtTime(const orca::Time&, const Ice::Current& c) const
         { return getData(c); }
 
     // Local calls:
@@ -47,13 +47,13 @@ public:
     void initInterface();
     // A local call which sets the data reported by the interface, 
     // and sends it through IceStorm
-    void localSetAndSend( const orca::Localise2dData &data );
+    void localSetAndSend( const orca::Localise3dData &data );
 
 private:
 
-    orcaice::Proxy<orca::Localise2dData> dataProxy_;
+    orcaice::Proxy<orca::Localise3dData> dataProxy_;
 
-    orca::Localise2dConsumerPrx    consumerPrx_;
+    orca::Localise3dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;
 
     const std::string              ifaceTag_;
