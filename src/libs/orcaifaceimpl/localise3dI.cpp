@@ -78,6 +78,14 @@ Localise3dI::unsubscribe(const ::orca::Localise3dConsumerPrx& subscriber, const 
 }
 
 void
+Localise3dI::localSet( const orca::Localise3dData &data )
+{
+    //cout<<"TRACE(localise2dI.cpp): localSetData: " << orcaice::toString(data) << endl;
+
+    dataProxy_.set( data );
+}
+
+void
 Localise3dI::localSetAndSend( const orca::Localise3dData &data )
 {
     //cout<<"TRACE(localise2dI.cpp): localSetData: " << orcaice::toString(data) << endl;

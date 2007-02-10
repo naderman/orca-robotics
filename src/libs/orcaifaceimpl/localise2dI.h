@@ -43,10 +43,14 @@ public:
 
     // Local calls:
 
-    // may throw orcaice::Exceptions
+    //! may throw orcaice::Exceptions
     void initInterface();
-    // A local call which sets the data reported by the interface, 
-    // and sends it through IceStorm
+
+    //! A local call which sets the data reported by the interface
+    void localSet( const orca::Localise2dData &data );
+
+    //! A local call which sets the data reported by the interface, 
+    //! and sends it through IceStorm
     void localSetAndSend( const orca::Localise2dData &data );
 
 private:
@@ -59,6 +63,7 @@ private:
     const std::string              ifaceTag_;
     orcaice::Context               context_;
 };
+typedef IceUtil::Handle<Localise2dI> Localise2dIPtr;
 
 } // namespace
 
