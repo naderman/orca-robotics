@@ -9,8 +9,8 @@
  */
 
 #include <orcaice/orcaice.h>
+#include <orcanavutil/latlon2mga.h>
 #include "novatelspandriver.h"
-#include "latlon2mga.h"
 #include "timeval.h"
 
 // log types
