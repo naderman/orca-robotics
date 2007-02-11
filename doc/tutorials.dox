@@ -15,6 +15,7 @@
 @section orca_doc_tutorials_composition System composition
 
 - @ref orca_doc_quickstart
+- @ref orca_doc_quickstart_explained
 - @ref orca_doc_tute_icebox
 - @ref orca_doc_tute_direct
 - @ref orca_doc_tute_stage

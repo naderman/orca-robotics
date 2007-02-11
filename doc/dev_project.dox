@@ -74,4 +74,12 @@ module tractor
 
 This enough to get you started. Now you can commit your new project to your own CVS server and start writing code: add your own components, libraries, and interfaces.
 
+@par Tips for maintaining your project
+
+- Tag versions. If this is an internal project, then you probably don't realease distributions. It's still useful to have a history of working code. It's easy to add a tag when Orca version changes and you made sure that your project compiles with the new version. Here's an example of tagging for version Orca v.2.2.0.
+@verbatim
+$ cvs tag -f orca-220
+@endverbatim
+
+
 */

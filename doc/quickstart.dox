@@ -12,9 +12,14 @@
 
 @page orca_doc_quickstart Quick-Start Guide
 
-@note Reviewed for release 2.1.0.
+@note Reviewed for release 2.3.0.
 
 This page describes how to get a quick demonstration up and running with your new Orca install. Before you begin, make sure that you've installed Orca (see @ref orca_doc_getting ).
+
+The system which we will assemble is shown in the diagram below. It consists of two infrastructure applications (IceGrid Registry and IceStorm) and two Orca components (Laser2d and LaserMon).
+
+@image html quickstart.png
+
 
 @section orca_doc_quickstart_startup Starting Up the Infrastructure
 
@@ -101,6 +106,6 @@ If something does not work, check out the FAQ on <a href="http://wiki2.cas.edu.a
 
 @section orca_doc_quickstart_next What's Next
 
-If everything works, check out more @ref orca_doc_tutorials.
+If everything works, read @ref orca_doc_quickstart_explained "more in-depth explanations or what is actually happening here"  or check out other @ref orca_doc_tutorials.
 
 */

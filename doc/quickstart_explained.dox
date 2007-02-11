@@ -1,0 +1,38 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@page orca_doc_quickstart_explained Quick-Start Explained
+
+@note Reviewed for release 2.3.0.
+
+This page explains what actually happens when you run the @ref orca_doc_quickstart.
+
+To make it more interesting we'll start the 2nd LaserMon and a new console window. Note that the config file we use implicitely is the same, lasermon.cfg.
+
+@verbatim
+$ cd ~/sys/quickstart
+$ lasermon
+@endverbatim
+
+The resulting system looks like this.
+
+@image html quickstart2.png
+
+The next diagram shows the actual data flow in our system. The Laser2d component sends ("publishes") laser scans to the IceStorm event service which then distributes them to the subscribers, in this case the two LaserMon components.
+
+@image html quickstart2_dataflow.png
+
+@section orca_doc_quickstart_next What's Next
+
+If everything works, check out more @ref orca_doc_tutorials.
+
+*/
