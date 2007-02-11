@@ -366,9 +366,9 @@ MainLoop::run()
 
     const int TIMEOUT_MS = 1000;
 
-    try 
+    while ( isActive() )
     {
-        while ( isActive() )
+        try 
         {
             //cout<<"============================================="<<endl;
 
@@ -443,45 +443,46 @@ MainLoop::run()
             }
             
             checkWithOutsideWorld();
+
         }
-    }
-    catch ( Ice::CommunicatorDestroyedException &e )
-    {
-        // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-        // somewhere in mainLoop.
-        //
-        // Could probably handle it better for an Application by stopping the component on Ctrl-C
-        // before shutting down communicator.
-    }
-    catch ( std::exception &e )
-    {
-        std::stringstream ss;
-        ss << "mainloop.cpp: caught std::exception: " << e.what();
-        context_.tracer()->error( ss.str() );
-    }
-    catch ( std::string &e )
-    {
-        std::stringstream ss;
-        ss << "mainloop.cpp: caught std::string: " << e;
-        context_.tracer()->error( ss.str() );
-    }
-    catch ( char *e )
-    {
-        std::stringstream ss;
-        ss << "mainloop.cpp: caught char*: " << e;
-        context_.tracer()->error( ss.str() );
-    }
-    catch ( Ice::Exception &e )
-    {
-        std::stringstream ss;
-        ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e;
-        context_.tracer()->error( ss.str() );
-    }
-    catch ( ... )
-    {
-        std::stringstream ss;
-        ss << "ERROR(mainloop.cpp): Caught unexpected unknown exception.";
-        context_.tracer()->error( ss.str() );
+        catch ( Ice::CommunicatorDestroyedException &e )
+        {
+            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
+            // somewhere in mainLoop.
+            //
+            // Could probably handle it better for an Application by stopping the component on Ctrl-C
+            // before shutting down communicator.
+        }
+        catch ( std::exception &e )
+        {
+            std::stringstream ss;
+            ss << "mainloop.cpp: caught std::exception: " << e.what();
+            context_.tracer()->error( ss.str() );
+        }
+        catch ( std::string &e )
+        {
+            std::stringstream ss;
+            ss << "mainloop.cpp: caught std::string: " << e;
+            context_.tracer()->error( ss.str() );
+        }
+        catch ( char *e )
+        {
+            std::stringstream ss;
+            ss << "mainloop.cpp: caught char*: " << e;
+            context_.tracer()->error( ss.str() );
+        }
+        catch ( Ice::Exception &e )
+        {
+            std::stringstream ss;
+            ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e;
+            context_.tracer()->error( ss.str() );
+        }
+        catch ( ... )
+        {
+            std::stringstream ss;
+            ss << "ERROR(mainloop.cpp): Caught unexpected unknown exception.";
+            context_.tracer()->error( ss.str() );
+        }
     }
     
     // wait for the component to realize that we are quitting and tell us to stop.
