@@ -18,6 +18,7 @@
 #include <orcaqgui2dfactory/gpselement.h>
 #include <orcaqgui2dfactory/ogmapscombinedelement.h>
 #include <orcaqgui2dfactory/pixmapelement.h>
+#include <orcaqgui2dfactory/wifielement.h>
 
 #include "defaultfactory.h"
 #include <orcaqgui/ihumanmanager.h>
@@ -42,6 +43,7 @@ DefaultFactory::DefaultFactory()
     addSupportedType(QStringList("::orca::PixMap"));
     addSupportedType(QStringList("::orca::Gps"));
     addSupportedType(QStringList("::orca::QGraphics2d"));
+    addSupportedType(QStringList("::orca::Wifi"));
     
     // multiple interfaces in one element
     QStringList ogMapList = (QStringList() << "::orca::OgMap" << "::orca::OgMap");
@@ -113,6 +115,10 @@ DefaultFactory::create( const orcaice::Context           &context,
         else if ( interfaceId == "::orca::QGraphics2d" ) {
             cout<<"creating QGraphics2d element with proxyString "<<proxyString.toStdString()<<endl;
             elem = new orcaqgui::QGraphics2dElement( context, proxyString.toStdString() );
+        }
+        else if ( interfaceId == "::orca::Wifi" ) {
+            cout<<"creating Wifi element with proxyString "<<proxyString.toStdString()<<endl;
+            elem = new orcaqgui::WifiElement( context, proxyString.toStdString() );
         }
         else
         {

@@ -31,6 +31,7 @@
 - @ref orca_interface_pathplanner2d [OrcaView.Requires.PathPlanner2d]
 - @ref orca_interface_pixmap [OrcaView.Requires.PixMap]
 - @ref orca_interface_polarfeature2d [OrcaView.Requires.PolarFeature2d]
+- @ref orca_interface_wifi [OrcaView.Requires.Wifi]
 
 @image html orcaview.png
 

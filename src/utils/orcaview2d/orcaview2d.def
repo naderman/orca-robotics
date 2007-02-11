@@ -29,6 +29,9 @@ Requires.FeatureMap2d.DefaultProxy=featuremap2d@local/featuremaploader
 Requires.OgMap.Type=OgMap
 Requires.OgMap.DefaultProxy=ogmap@local/ogmaploader
 
+Requires.Wifi.Type=Wifi
+Requires.Wifi.DefaultProxy=wifi@local/wifi
+
 # Config Parameters
 Config.General.FactoryLibNames.Default=libOrcaQGui2dFactory.so
 Config.General.DisplayRefreshTime.Default=200
