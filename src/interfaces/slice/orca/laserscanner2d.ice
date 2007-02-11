@@ -53,8 +53,8 @@ class LaserScanner2dData extends RangeScanner2dData
 /*!
     @brief Single-origin scanning range sensor
 
-    An implementaion of this interface is understood to return LaserData instead of
-    RangeScannerData when implementing getData operation inherited from @ref orca_interface_rangescanner2d.
+    An implementaion of this interface is understood to return LaserScanner2dData instead of
+    RangeScanner2dData when implementing getData operation inherited from @ref orca_interface_rangescanner2d.
  */
 interface LaserScanner2d extends RangeScanner2d
 {
