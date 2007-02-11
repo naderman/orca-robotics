@@ -121,6 +121,9 @@ HwHandler::HwHandler(
     config_.maxTurnrate = controlDescr->maxTurnrate;
     config_.isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( context_.properties(),
                                                                           prefix+".EnableMotion", 1 );
+    config_.provideOdometry3d = (bool)orcaice::getPropertyAsIntWithDefault( context_.properties(),
+                                                                            prefix+".ProvideOdometry3d", 1 );
+
     // based on the config parameter, create the right driver
     string driverName = orcaice::getPropertyWithDefault( context_.properties(), prefix+"Driver", "segwayrmpusb" );
             
@@ -230,14 +233,19 @@ HwHandler::run()
     
             if ( readStatus==0 ) 
             {
-                // convert internal to network format
+                // convert internal to network format, and
+                // stick it in the proxies so pullers can get it
+                
                 convert( segwayRmpData, odometry2dData );
-                convert( segwayRmpData, odometry3dData );
-                convert( segwayRmpData, powerData );
-
-                // Stick it in the proxies so pullers can get it
                 odometry2dPipe_.set( odometry2dData );
-                odometry3dPipe_.set( odometry3dData );
+
+                if ( config_.provideOdometry3d )
+                {
+                    convert( segwayRmpData, odometry3dData );
+                    odometry3dPipe_.set( odometry3dData );
+                }
+
+                convert( segwayRmpData, powerData );
                 powerPipe_.set( powerData );
                 
                 if ( driverStatus != currDriverStatus ) {

@@ -61,9 +61,10 @@ private:
 
     struct Config
     {
-        bool isMotionEnabled;
+        bool   isMotionEnabled;
         double maxSpeed;
         double maxTurnrate;
+        bool   provideOdometry3d;
     };
     Config config_;
 
