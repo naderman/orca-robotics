@@ -169,9 +169,9 @@ NetHandler::run()
     orcaice::Timer powerPublishTimer;
 
     double odometry2dPublishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            prefix+"Position2dPublishInterval", -1 );
+            prefix+"Odometry2dPublishInterval", 0.1 );
     double odometry3dPublishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            prefix+"Position3dPublishInterval", -1 );
+            prefix+"Odometry3dPublishInterval", 0.1 );
     double powerPublishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
             prefix+"PowerPublishInterval", 20.0 );
 

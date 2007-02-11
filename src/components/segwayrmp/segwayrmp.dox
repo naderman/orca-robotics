@@ -54,8 +54,15 @@ General Parameters:
       the platform will not move.
     - Default: 1
     
-  - @c SegwayRmp.Config.Position2dPublishInterval (double) [s]
-    - How often to send position information to the IceStorm server
+  - @c SegwayRmp.Config.Odometry2dPublishInterval (double) [s]
+    - How often to send 2D odometry information to the IceStorm server
+    - Valid values:
+        - t<0 : send every new data point
+        - t>0 : send approximately every t seconds
+    - Default: 0.1 (10Hz)
+
+  - @c SegwayRmp.Config.Odometry3dPublishInterval (double) [s]
+    - How often to send 3D odometry information to the IceStorm server
     - Valid values:
         - t<0 : send every new data point
         - t>0 : send approximately every t seconds
