@@ -51,7 +51,7 @@ void setInit( orca::Size2d&, double l=0.0, double w=0.0 );
 //! Sets all fields to specified values
 void setInit( orca::Size3d&, double l=0.0, double w=0.0, double h=0.0 );
 //! Sets all fields to zero.
-void setInit( orca::CartesianPoint& );
+void setInit( orca::CartesianPoint&, double x=0.0, double y=0.0, double z=0.0 );
 //! Sets all fields to zero.
 void setInit( orca::Time& );
 //! Sets all fields to zero and stalled to FALSE.

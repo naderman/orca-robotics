@@ -82,11 +82,11 @@ setInit( orca::Size3d& obj, double l, double w, double h )
 }
 
 void
-setInit( orca::CartesianPoint& obj )
+setInit( orca::CartesianPoint& obj, double x, double y, double z )
 {
-    obj.x = 0.0;
-    obj.y = 0.0;
-    obj.z = 0.0;
+    obj.x = x;
+    obj.y = y;
+    obj.z = z;
 }
 
 void
