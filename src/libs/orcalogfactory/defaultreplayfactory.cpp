@@ -14,9 +14,11 @@
 #include "camerareplayer.h"
 #include "gpsreplayer.h"
 #include "laserscanner2dreplayer.h"
-#include "position2dreplayer.h"
-#include "position3dreplayer.h"
+//#include "position2dreplayer.h"
+//#include "position3dreplayer.h"
 #include "powerreplayer.h"
+#include "odometry2dreplayer.h"
+#include "odometry3dreplayer.h"
 
 #include "defaultreplayfactory.h"
 
@@ -31,8 +33,10 @@ DefaultReplayFactory::DefaultReplayFactory()
     addSupportedType("LaserScanner2d");
 //     addSupportedType("Localise2d");
 //     addSupportedType("PolarFeature2d");
-    addSupportedType("Position2d");
-    addSupportedType("Position3d");
+//    addSupportedType("Position2d");
+//    addSupportedType("Position3d");
+    addSupportedType("Odometry2d");
+    addSupportedType("Odometry3d");
     addSupportedType("Power");
 }
 
@@ -59,13 +63,21 @@ DefaultReplayFactory::create(
     {
         replayer = new LaserScanner2dReplayer( format, filename, context );
     }
-    else if ( interfaceType == "Position2d" )
+//     else if ( interfaceType == "Position2d" )
+//     {
+//         replayer = new Position2dReplayer( format, filename, context );
+//     }
+//     else if ( interfaceType == "Position3d" )
+//     {
+//         replayer = new Position3dReplayer( format, filename, context );
+//     }
+    else if ( interfaceType == "Odometry2d" )
     {
-        replayer = new Position2dReplayer( format, filename, context );
+        replayer = new Odometry2dReplayer( format, filename, context );
     }
-    else if ( interfaceType == "Position3d" )
+    else if ( interfaceType == "Odometry3d" )
     {
-        replayer = new Position3dReplayer( format, filename, context );
+        replayer = new Odometry3dReplayer( format, filename, context );
     }
     else if ( interfaceType == "Power" )
     {
