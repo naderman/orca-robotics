@@ -58,11 +58,16 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - fixed bug with wrong max number of options (alex m)
 
 @par Updated utilities
+- Orcaview2d
+    - supports wifi now (Tobi)
 
 @par Updated libraries
 
 - OrcaNavUtil (Tobi)
     - added MGA/latitude/longitude functions
+- orcalogfactory (Tobi)
+    - fixed GPS replay bug
+    - added wifi for replaying
 
 @par Removed
 

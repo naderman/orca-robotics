@@ -13,8 +13,6 @@
 #include <qpainter.h>
 
 #include "wifipainter.h"
-// #include <orcaqgui2d/paintutils.h>
-// #include <orcaobj/mathdefs.h>
 
 using namespace orca; 
 using namespace std;
@@ -38,8 +36,6 @@ WifiPainter::clear()
 void 
 WifiPainter::setData( const WifiData& wifiData )
 {
-    
-    
 }
 
 void WifiPainter::paint( QPainter *painter, int z )

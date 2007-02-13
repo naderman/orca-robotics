@@ -17,19 +17,27 @@
 #include <orcaqgui2dfactory/wifipainter.h>
 
 class QProgressBar;
+class QLCDNumber;
+class QLabel;
 
 namespace orcaqgui {
 
+// Widget to display wifi data, number of interfaces is fixed
+// after the first data is received
+// Author: Tobias Kaupp
 class WifiWidget : public QWidget
 {
     public:
-        WifiWidget() {};
+        WifiWidget( unsigned int numInterfaces );
         ~WifiWidget() {};
         void refresh( orca::WifiData &data );
         
     private:
         QVector<QProgressBar*> progressBars_;
-        void setupDisplay( unsigned int numInterfaces );
+        QVector<QLCDNumber*> lcds_;
+        QVector<QLabel*> interfaceLabels_;
+        void setupDisplay();
+        unsigned int numInterfaces_;
         
     
 };
@@ -49,12 +57,8 @@ public:
     ~WifiElement();
 
     virtual bool isInGlobalCS() { return true; };
-    virtual void actionOnConnection()
-    {
-//         paintInitialData<orca::WifiPrx, WifiPainter>
-//             ( context_, listener_.interfaceName(), painter_ );
-    };
     virtual void update();
+    virtual void actionOnConnection() {};
     virtual void setColor( QColor color ) { painter_.setColor(color); };
     virtual void setTransparency( bool useTransparency ) { painter_.setTransparency( useTransparency ); };
 

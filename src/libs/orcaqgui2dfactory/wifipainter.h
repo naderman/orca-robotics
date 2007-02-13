@@ -19,7 +19,7 @@ class QPainter;
 
 namespace orcaqgui {
 
-
+// Not painting anything into the view at the moment
 class WifiPainter
 {
   

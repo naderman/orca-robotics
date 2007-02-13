@@ -8,79 +8,87 @@
  *
  */
  
+#include <iostream>
 #include <QVector>
 #include <QLabel>
 #include <QProgressBar> 
+#include <QLCDNumber>
 #include <QVBoxLayout>
 
 #include "wifielement.h"
 
+using namespace std;
 using namespace orca;
 using namespace orcaqgui;
+
+WifiWidget::WifiWidget( unsigned int numInterfaces )
+    : numInterfaces_(numInterfaces)
+{
+    setupDisplay();
+    setMinimumWidth(200);
+    setMinimumHeight(150);
+}
 
 void
 WifiWidget::refresh( WifiData &data )
 {
-    unsigned int numInterfaces = data.interfaces.size();
-    setupDisplay( numInterfaces );
+    for (int i=0; i<interfaceLabels_.size(); i++) 
+    {
+        interfaceLabels_[i]->setText("<b>" + QString(data.interfaces[i].interfaceName.c_str()) + "</b>");
+    }
     
-    //update the progress bar data
-    for (unsigned int i=0; i<2*numInterfaces; i+=2)
+    for (unsigned int i=0; i<numInterfaces_; i++)
     {
         WifiInterface &wifiInt = data.interfaces[i];
         if (wifiInt.linkType!=LinkQualityTypeDbm) {
-            progressBars_[i]->setEnabled(false);
+            lcds_[i]->display("Err");
         } else {
-            progressBars_[i]->setMinimum(0);
-            progressBars_[i]->setMaximum(wifiInt.maxSignalLevel);
-            progressBars_[i]->setValue(wifiInt.signalLevel);
+            lcds_[i]->display(wifiInt.signalLevel);
         }
         
-        progressBars_[i+1]->setMinimum(0);
-        progressBars_[i+1]->setMaximum(wifiInt.maxLinkQuality);
-        progressBars_[i+1]->setValue(wifiInt.linkQuality);
+        progressBars_[i]->setMinimum(0);
+        progressBars_[i]->setMaximum(wifiInt.maxLinkQuality);
+        progressBars_[i]->setValue(wifiInt.linkQuality);
     }
     
 }
 
-void WifiWidget::setupDisplay( unsigned int numInterfaces)
+void WifiWidget::setupDisplay()
 {
-    delete this->layout();
+    QGridLayout *globalLayout = new QGridLayout;
     
-    QVBoxLayout *globalLayout = new QVBoxLayout;
-    
-    for (unsigned int i=0; i<numInterfaces; i++)
+    for (unsigned int i=0; i<numInterfaces_; i++)
     {
-        QHBoxLayout *hLayout1 = new QHBoxLayout;
-        QProgressBar *barSignalLevel = new QProgressBar;
-        progressBars_.push_back(barSignalLevel);
-        QLabel *signalLabel = new QLabel("signal level: ");
-        hLayout1->addWidget( signalLabel );
-        hLayout1->addWidget( barSignalLevel );
-        globalLayout->addLayout(hLayout1);
+        QLabel *interfaceLabel = new QLabel;
+        globalLayout->addWidget(interfaceLabel,3*i,0);
+        interfaceLabels_.push_back( interfaceLabel );
         
-        QHBoxLayout *hLayout2 = new QHBoxLayout;
+        QLCDNumber *lcdSignalLevel = new QLCDNumber;
+        lcdSignalLevel->setSegmentStyle(QLCDNumber::Filled);
+        lcds_.push_back(lcdSignalLevel);
+        QLabel *signalLabel = new QLabel("Signal level (dbm): ");
+        globalLayout->addWidget( signalLabel,3*i+1,0);
+        globalLayout->addWidget( lcdSignalLevel,3*i+1,1);
+    
         QProgressBar *barLinkQuality = new QProgressBar;
         progressBars_.push_back(barLinkQuality);
-        QLabel *linkLabel = new QLabel("link quality level: ");
-        hLayout2->addWidget( linkLabel );
-        hLayout2->addWidget( barLinkQuality );
-        globalLayout->addLayout(hLayout2);
+        QLabel *linkLabel = new QLabel("Link quality level: ");
+        globalLayout->addWidget( linkLabel,3*i+2,0);
+        globalLayout->addWidget( barLinkQuality,3*i+2,1);
     }
     setLayout(globalLayout);
-    this->show();
 }
 
 WifiElement::WifiElement( const orcaice::Context  &context,
                           const std::string       &proxyString,
                           int                      timeoutMs)
     : IceStormElement<WifiPainter,
-                            orca::WifiData,
-                            orca::WifiPrx,
-                            orca::WifiConsumer,
-                            orca::WifiConsumerPrx>(context, proxyString, painter_, timeoutMs )
+                      orca::WifiData,
+                      orca::WifiPrx,
+                      orca::WifiConsumer,
+                      orca::WifiConsumerPrx>(context, proxyString, painter_, timeoutMs ),
+        wifiWidget_(0)
 {
-    wifiWidget_ = new WifiWidget();
 }
 
 WifiElement::~WifiElement()
@@ -105,7 +113,14 @@ WifiElement::update()
 
     // transfer data into painter
     painter_.setData( data );
+    
+    if (wifiWidget_==0) {
+        wifiWidget_ = new WifiWidget( data.interfaces.size() );
+    }
     wifiWidget_->refresh( data );
+    if (wifiWidget_->isHidden()) {
+        wifiWidget_->show();
+    }
 }
 
 
