@@ -58,6 +58,11 @@ GpsHandler::run()
             {
                 // Read from the GPS
                 context_.tracer()->debug("Trying to read from driver now", 3);
+                
+                // GPS data tends to come in bursts in 1 second intervals
+                // hwDriver_->read() will return after emptying serial buffer
+                // this should provide a nice 1s loop frequency
+                // may need to be adjusted for fancier GPSes                
                 int ret = hwDriver_->read();
                 if ( ret == -1 )
                 {
@@ -72,15 +77,14 @@ GpsHandler::run()
                 else
                 {
                     context_.tracer()->debug("We have a GPS fix", 3);
-                    
-                    // GPS data tends to come in bursts in 1 second intervals
-                    // hwDriver_->read() will return after emptying serial buffer
-                    // this should provide a nice 1s loop frequency
-                    // may need to be adjusted for fancier GPSes
-    
+                        
                     if(hwDriver_->getData(gpsData)==0)
                     {
-                        context_.tracer()->debug("We have new gpsData", 3);
+                        // publish it
+                        context_.tracer()->debug("We have new gpsData. Publishing gpsData.", 3);
+                        context_.tracer()->debug("Publishing gpsData.", 3);
+                        gpsObj_.localSetData(gpsData);
+                        
                         int zone;
                         zone=mgaMapgrid_.getGridCoords( gpsData.latitude, gpsData.longitude,
                                                         gpsMapGridData.easting,gpsMapGridData.northing);
@@ -95,8 +99,6 @@ GpsHandler::run()
                         gpsMapGridData.climbRate=gpsData.climbRate;
                         gpsMapGridData.positionType=gpsData.positionType;
                     
-                        gpsObj_.localSetData(gpsData);
-                    
                         //correct for local frame
                         CartesianPoint p;
                         //copy out point
@@ -110,6 +112,7 @@ GpsHandler::run()
                         gpsMapGridData.northing=p.y;
                         gpsMapGridData.altitude=p.z;
                     
+                        context_.tracer()->debug("Publishing gpsMapGridData.", 3);
                         gpsObj_.localSetMapGridData(gpsMapGridData);
                         
                         context_.tracer()->debug( orcaice::toString( gpsData ), 5 );
@@ -119,7 +122,7 @@ GpsHandler::run()
     
                     if(hwDriver_->getTimeData(gpsTimeData)==0)
                     {
-                        context_.tracer()->debug("We have new timeData", 3);
+                        context_.tracer()->debug("We have new timeData. Publishing gpsTimeData.", 3);
                         gpsObj_.localSetTimeData(gpsTimeData);
                         context_.tracer()->debug( orcaice::toString( gpsTimeData ), 5 );
                     }

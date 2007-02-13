@@ -20,6 +20,7 @@ using namespace orca;
 using namespace goalplanner;
 
 // ======== NON-MEMBER FUNCTION ======================
+// computes waypoint to start from based on localisation hypotheses
 void computeFirstWaypoint( const Localise2dData &localiseData, Waypoint2d &wp)
 {
     
