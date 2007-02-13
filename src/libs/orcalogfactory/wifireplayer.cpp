@@ -96,17 +96,7 @@ WifiReplayer::replayData( int index, bool isTest )
     }
     else if (format_=="ascii")
     {   
-        while ( !file_->eof() && index != (dataCounter_) )
-        {
-            std::string line;
-            std::getline( *file_, line );
-//             cout<<"parsing line :"<<line<<endl;
-    
-            std::stringstream ss( line );
-            orcalog::fromLogString( ss, data_ );
-    
-            dataCounter_++;
-        }
+        context_.tracer()->warning( "Ascii replaying not implemented" );
     }
     else
     {
