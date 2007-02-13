@@ -14,11 +14,11 @@
 #include "camerareplayer.h"
 #include "gpsreplayer.h"
 #include "laserscanner2dreplayer.h"
-//#include "position2dreplayer.h"
-//#include "position3dreplayer.h"
 #include "powerreplayer.h"
 #include "odometry2dreplayer.h"
 #include "odometry3dreplayer.h"
+#include "wifireplayer.h"
+
 
 #include "defaultreplayfactory.h"
 
@@ -28,16 +28,12 @@ using namespace orcalogfactory;
 DefaultReplayFactory::DefaultReplayFactory()
 {
     addSupportedType("Camera");
-//     addSupportedType("Cpu");
     addSupportedType("Gps");
     addSupportedType("LaserScanner2d");
-//     addSupportedType("Localise2d");
-//     addSupportedType("PolarFeature2d");
-//    addSupportedType("Position2d");
-//    addSupportedType("Position3d");
     addSupportedType("Odometry2d");
     addSupportedType("Odometry3d");
     addSupportedType("Power");
+    addSupportedType("Wifi");
 }
 
 orcalog::Replayer* 
@@ -59,18 +55,10 @@ DefaultReplayFactory::create(
     {
         replayer = new GpsReplayer( format, filename, context );
     }
-    if ( interfaceType == "LaserScanner2d" )
+    else if ( interfaceType == "LaserScanner2d" )
     {
         replayer = new LaserScanner2dReplayer( format, filename, context );
     }
-//     else if ( interfaceType == "Position2d" )
-//     {
-//         replayer = new Position2dReplayer( format, filename, context );
-//     }
-//     else if ( interfaceType == "Position3d" )
-//     {
-//         replayer = new Position3dReplayer( format, filename, context );
-//     }
     else if ( interfaceType == "Odometry2d" )
     {
         replayer = new Odometry2dReplayer( format, filename, context );
@@ -82,6 +70,10 @@ DefaultReplayFactory::create(
     else if ( interfaceType == "Power" )
     {
         replayer = new PowerReplayer( format, filename, context );
+    }
+    else if ( interfaceType == "Wifi" )
+    {
+        replayer = new WifiReplayer( format, filename, context );
     }
     
     return replayer;

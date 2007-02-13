@@ -399,6 +399,60 @@ toLogString( const orca::WifiData& obj )
     return s.str();
 }
 
+void 
+fromLogString( std::stringstream& stream, orca::WifiData& obj )
+{
+    fromLogString( stream, obj.timeStamp );
+
+    unsigned int size;
+    stream >> size;
+
+    obj.interfaces.resize(size);
+    for ( unsigned int i=0; i < size; ++i ) 
+    {
+        int mode, linkType;
+        
+        stream  >> obj.interfaces[i].interfaceName
+                >> obj.interfaces[i].status
+                >> obj.interfaces[i].linkQuality 
+                >> obj.interfaces[i].signalLevel
+                >> obj.interfaces[i].noiseLevel
+                >> obj.interfaces[i].numInvalidNwid
+                >> obj.interfaces[i].numInvalidCrypt
+                >> obj.interfaces[i].numInvalidFrag
+                >> obj.interfaces[i].numRetries
+                >> obj.interfaces[i].numInvalidMisc
+                >> obj.interfaces[i].numMissedBeacons
+                >> mode
+                >> obj.interfaces[i].bitrate
+                >> obj.interfaces[i].accessPoint 
+                >> obj.interfaces[i].throughPut
+                >> linkType
+                >> obj.interfaces[i].maxLinkQuality 
+                >> obj.interfaces[i].maxSignalLevel
+                >> obj.interfaces[i].maxNoiseLevel;
+           
+        switch (mode)
+        {
+            case 0: obj.interfaces[i].mode = orca::OperationModeUnknown; break;
+            case 1: obj.interfaces[i].mode = orca::OperationModeAuto; break;
+            case 2: obj.interfaces[i].mode = orca::OperationModeAdhoc; break;
+            case 3: obj.interfaces[i].mode = orca::OperationModeInfrastructure; break;
+            case 4: obj.interfaces[i].mode = orca::OperationModeMaster; break;
+            case 5: obj.interfaces[i].mode = orca::OperationModeRepeat; break;
+            case 6: obj.interfaces[i].mode = orca::OperationModeSecondRepeater; break;
+        }
+        
+        switch (linkType)
+        {
+            case 0: obj.interfaces[i].linkType = orca::LinkQualityTypeUnknown; break;
+            case 1: obj.interfaces[i].linkType = orca::LinkQualityTypeDbm; break;
+            case 2: obj.interfaces[i].linkType = orca::LinkQualityTypeRelative; break;
+        }
+        
+    }
+}
+
 std::string 
 toLogString( const orca::ImuData& obj )
 {

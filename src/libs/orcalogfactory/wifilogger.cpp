@@ -25,7 +25,7 @@ WifiLogger::WifiLogger( orcalog::LogMaster *master,
                               const std::string & filenamePrefix,
                               const orcaice::Context & context )
     : orcalog::Logger( master, 
-                      "::orca::Wifi",
+                      "Wifi",
                       "Wifi"+typeSuffix,
                       format,
                       filenamePrefix+"wifi"+typeSuffix+".log",

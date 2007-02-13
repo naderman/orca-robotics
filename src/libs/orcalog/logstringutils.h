@@ -66,8 +66,6 @@ std::string toLogString( const orca::Odometry3dData& );
 std::string toLogString( const orca::Position2dData& );
 //! Prints out position3d data to text which is easy to parse
 std::string toLogString( const orca::Position3dData& );
-//! Prints out wifi data to text which is easy to parse
-std::string toLogString( const orca::WifiData& obj );
 //! Prints out imu data to text which is easy to parse
 std::string toLogString( const orca::ImuData& obj );
 
@@ -76,6 +74,11 @@ std::string toLogString( const orca::ImuData& obj );
 std::string toLogString( const orca::PowerData& );
 //! Parses a line of ASCII log. Throws orcalog::ParseException on error.
 void fromLogString( std::stringstream& stream, orca::PowerData& );
+
+//! Prints out wifi data to text which is easy to parse
+std::string toLogString( const orca::WifiData& obj );
+//! Parses ASCII log. Throws orcalog::ParseException on error.
+void fromLogString( std::stringstream& stream, orca::WifiData& obj );
 
 //! Returns string in simple format "sec usec" 
 std::string toLogString( const orca::Time& );
