@@ -46,15 +46,21 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New components
 
 @par New utilities
+
 - mgaconversion (Tobi)
     - contains tools to convert from latitude/longitude to MGA
 
 @par New libraries
 @par Updated interfaces
 @par Updated components
+
+- Probe
+    - fixed bug with wrong max number of options (alex m)
+
 @par Updated utilities
 
 @par Updated libraries
+
 - OrcaNavUtil (Tobi)
     - added MGA/latitude/longitude functions
 
