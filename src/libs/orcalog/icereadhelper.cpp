@@ -23,7 +23,7 @@ IceReadHelper::IceReadHelper( const Ice::CommunicatorPtr & comm, std::ifstream *
     file->read( (char*)&id_, sizeof(char) );
 
     size_t length;
-    file->read( (char*)&length, sizeof(length) );
+    file->read( (char*)&length, sizeof(size_t) );
 
     if ( length==0 ) {
         throw orcalog::FileException( ERROR_INFO, "attempt to read object of size 0" );
