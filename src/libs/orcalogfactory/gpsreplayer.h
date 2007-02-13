@@ -78,7 +78,7 @@ private:
     int retSize_;
     int retOffset_;
 
-    short id_;
+    char id_;
     mgaMapgrid mgaMapgrid_;
     
     // alexm: why this?

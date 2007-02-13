@@ -270,35 +270,18 @@ void
 GpsReplayer::loadHeaderIce()
 {
     orca::GpsDescription localDescription;
-
-    std::vector<Ice::Byte> byteData;
-    size_t length;
-    file_->read( (char*)&length, sizeof(length) );
-    checkFile();
-    byteData.resize( length );
-    file_->read( (char*)&byteData[0], length );
-    checkFile();
-       
-    Ice::InputStreamPtr iceInputStreamPtr = Ice::createInputStream( context_.communicator(), byteData );
     
-    if ( !byteData.empty() )
-    {
-        ice_readGpsDescription( iceInputStreamPtr, localDescription );
-        iceInputStreamPtr -> readPendingObjects();
-        ostringstream stream;
-        stream << "Result of readGpsDescription: " << orcaice::toString(localDescription);
-        context_.tracer()->print( stream.str() );
-    }
+    orcalog::IceReadHelper helper( context_.communicator(), file_ );
+    ice_readGpsDescription( helper.stream_, localDescription );
+    helper.read();
 
     // if there was no geometry specified in the cfg file, take logged geometry
-    if (retSize_!=0)
-    {
+    if (retSize_!=0) {
         descr_.size= localDescription.size;
     }
 
     // if there was no origin specified in the cfg file, take logged origin
-    if (retOffset_!=0)
-    {
+    if (retOffset_!=0) {
         descr_.offset= localDescription.offset;
     }
 
@@ -309,16 +292,17 @@ void
 GpsReplayer::loadDataIce( int index )
 {
     while (index != (dataCounter_) )
-    {
+    {        
         orcalog::IceReadHelper helper( context_.communicator(), file_ );
         id_ = helper.id();
-        if ( id_ == 0 ) {
+        
+        if ( id_ == (char)0 ) {
             ice_readGpsData( helper.stream_, gpsData_ );
         }
-        else if ( id_ == 1 ) {
+        else if ( id_ == (char)1 ) {
             ice_readGpsTimeData( helper.stream_, gpsTimeData_ );
         }
-        else if ( id_ == 2 ) {
+        else if ( id_ == (char)2 ) {
             ice_readGpsMapGridData( helper.stream_, gpsMapGridData_ );
         }
         else {
