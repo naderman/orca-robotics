@@ -23,7 +23,6 @@ module orca
     @{
 */
 
-// define messages first
 
 //! Gps config structure
 struct GpsDescription
@@ -31,51 +30,50 @@ struct GpsDescription
     //! Time (according to the computer clock) when data was measured.
     Time timeStamp;
 
-    //! Offset of the sensor w.r.t to the global coordinate system.
+    //! Offset of the gps antenna with respect to the robot,
+    //! in the robot local coordinate system.
     Frame3d offset; 
 
-    //! Dimensions of the sensor
-    Size3d  size;
+    //! Dimensions of the gps antenna.
+    Size3d size;
 };
 
-//! Gps time structure - for time sync
+//! Gps time structure
 struct GpsTimeData
 {
     //! Time (according to the computer clock) when data was measured.
     Time timeStamp;
-    //! UTC time
+    //! UTC time (according to GPS device), reference is Greenwich.
     TimeOfDay utcTime;
-    //! UTC date
+    //! UTC date (according to GPS device)
     Date utcDate;
 };
 
-//! Gps data structure
+//! Gps Map Grid Australia (MGA) data structure
 struct GpsMapGridData
 {
     //! Time (according to the computer clock) when data was measured.
     Time timeStamp;
-    //! UTC time
+    //! UTC time (according to GPS device), reference is Greenwich.
     TimeOfDay utcTime;
 
-    // GPS position
-    //! Our current zone
+    //! Our current MGA zone
     int zone;
-    //! Northing (Metres)
+    //! Northing (metres)
     double northing;
-    //! Easting (Metres)
+    //! Easting (metres)
     double easting;
-    //! Altitude (Metres above Ellipsoid)
+    //! Altitude (metres above ellipsoid)
     double altitude;
     
-    // Velocities
-    //! heading/track/course (Degrees)
+    //! Heading/track/course (degrees)
     double heading; 
-    //! horizontal speed (Metres/second)
+    //! Horizontal velocity (metres/second)
     double speed;
-    //! vertical velocity (Metres/second)
+    //! Vertical velocity (metres/second)
     double climbRate;
     
-    //! Position Type (Bad (0), Ugly (1), Good (2))
+    //! Position type (Bad (0), Ugly (1), Good (2))
     int positionType;
 };
 
@@ -85,39 +83,35 @@ struct GpsData
 {
     //! Time (according to the computer clock) when data was measured.
     Time timeStamp;
-    //! UTC time
+    //! UTC time (according to GPS device), reference is Greenwich.
     TimeOfDay utcTime;
  
-    // GPS position
-    //! Latitude (Degrees)
+    //! Latitude (degrees)
     double latitude;
-    //! Longitude (Degrees)
+    //! Longitude (degrees)
     double longitude;
-    //! Altitude (Metres above Ellipsoid)
+    //! Altitude (metres above ellipsoid)
     double altitude;
     
-    // Velocities
-    //! heading/track/course (Degrees)
+    //! Heading/track/course (degrees)
     double heading; 
-    //! horizontal speed (Metres/second)
+    //! Horizontal velocity (metres/second)
     double speed;
-    //! vertical velocity (Metres/second)
+    //! Vertical velocity (metres/second)
     double climbRate;
     
     //! Number of satellites
     int satellites;
-    //! Position Type (Bad (0), Ugly (1), Good (2))
+    //! Position type (Bad (0), Ugly (1), Good (2))
     int positionType;
-    //! Geoidal Separation (Metres)
+    //! Geoidal Separation (metres)
     double geoidalSeparation;    
 };
 
 
 /*!
  *
- * Data consumer interface (needed only for the push pattern).
- *
- * In Orca-1 terms, this the Consumer side of the ClientPush interface.
+ * Data consumer interface
  *
  */
 interface GpsConsumer
@@ -146,8 +140,7 @@ interface GpsTimeConsumer
 */
 interface Gps
 {
-    //! Returns the latest data.
-    //! @note In Orca1 this would be called ClientPull_Supplier interface.
+    //! Returns the latest data
     nonmutating GpsData getData()
             throws HardwareFailedException;
 
@@ -159,6 +152,7 @@ interface Gps
     nonmutating GpsMapGridData getMapGridData()
             throws HardwareFailedException;
 
+    //! Return the gps description
     nonmutating GpsDescription getDescription();
 
     /*!
