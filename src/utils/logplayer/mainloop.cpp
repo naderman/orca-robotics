@@ -84,9 +84,16 @@ MainLoop::run()
     }
 
     stringstream ss;
-    ss<<"Initializing "<<replayers_.size()<<" replayers.";
+    ss<<"MainLoop: Initializing "<<replayers_.size()<<" replayers.";
     context_.tracer()->debug( ss.str() );
-    for ( unsigned int i=0; i<replayers_.size(); ++i ) {
+    for ( unsigned int i=0; i<replayers_.size(); ++i ) 
+    {
+        stringstream ssReplayer;
+        ssReplayer << "  "<<i<<": type="<<replayers_[i]->interfaceType()<<": "<<replayers_[i]->interfaceName();
+        context_.tracer()->debug(ssReplayer.str());
+    }
+    for ( unsigned int i=0; i<replayers_.size(); ++i ) 
+    {
         replayers_[i]->init();
     }
 
@@ -161,15 +168,19 @@ MainLoop::run()
     while( isActive() )
     {
         // read a line and act appropriately
-        if ( master_->getData( seconds, useconds, id, index ) ) {
-            // end of file
+        if ( master_->getData( seconds, useconds, id, index ) ) 
+        {
+            // end of file 
+            context_.tracer()->debug( "MainLoop: found EOF" );
             break;
         }   
         nextLogTime = IceUtil::Time::seconds(seconds)+IceUtil::Time::microSeconds(useconds);
         
         // check end time (negative end time means play to the end)
-        if ( endTime>IceUtil::Time() && nextLogTime>=endTime ) {
+        if ( endTime>IceUtil::Time() && nextLogTime>=endTime ) 
+        {
             // reached specified end time
+            context_.tracer()->debug( "MainLoop: Reached specified end time" );
             break;
         }
 
@@ -206,7 +217,16 @@ MainLoop::run()
         // Now send it out
         //
         try {
-            replayers_[id]->replayData( index );
+            if ( id >= (int)(replayers_.size()) )
+            {
+                stringstream ss;
+                ss << "Found unknown replayer ID: " << id << ".  Ignoring.";
+                context_.tracer()->warning( ss.str() );
+            }
+            else
+            {
+                replayers_[id]->replayData( index );
+            }
         } 
         catch ( const std::exception & e) {
             ostringstream ss;

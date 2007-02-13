@@ -19,6 +19,7 @@
 #include "odometry2dprobe.h"
 #include "odometry3dprobe.h"
 #include "position3dprobe.h"
+#include "gpsprobe.h"
 #include "powerprobe.h"
 #include "statusprobe.h"
 #include "tracerprobe.h"
@@ -30,7 +31,7 @@ OrcaProbeFactory::OrcaProbeFactory()
     addSupportedType("::orca::BinarySwitch");
     addSupportedType("::orca::Camera");
     addSupportedType("::orca::Cpu");
-//     addSupportedType("::orca::Gps");
+    addSupportedType("::orca::Gps");
     addSupportedType("::orca::Home");
     addSupportedType("::orca::LaserScanner2d");
 //     addSupportedType("::orca::Localise2d");
@@ -60,6 +61,9 @@ OrcaProbeFactory::create( const std::string           & interfaceType,
     }
     else if ( interfaceType == "::orca::Cpu" ) {
         probe = new CpuProbe( name, display, context );
+    }
+    else if ( interfaceType == "::orca::Gps" ) {
+        probe = new GpsProbe( name, display, context );
     }
     else if ( interfaceType == "::orca::Home" ) {
         probe = new HomeProbe( name, display, context );

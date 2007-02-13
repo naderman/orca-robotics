@@ -38,6 +38,9 @@ GpsElement::GpsElement( const orcaice::Context  &context,
 
     orcaice::setInit( gpsOrigin_ );
     orcaice::getPropertyAsCartesianPoint( prop, prefix+"Gps.Origin", gpsOrigin_ );
+
+    stringstream ss; ss << "GpsElement: GPS Origin: " << orcaice::toString( gpsOrigin_ );
+    context_.tracer()->info( ss.str() );
 }  
         
 bool
@@ -84,6 +87,18 @@ GpsElement::update()
         if ( displayGps_ )
         {
             gpsPainter_.setData( x_, y_, theta_ );
+        }
+
+        int verbosity = context_.tracer()->verbosity( orcaice::Tracer::DebugTrace,
+                                                      orcaice::Tracer::ToAny );
+        if ( verbosity >=5 )
+        {
+            stringstream ss;
+            ss << "GpsElement: " << endl
+               << "  data:       " << orcaice::toString( data ) << endl
+               << "  gpsOrigin_: " << orcaice::toString( gpsOrigin_ ) << endl
+               << "  x_,y_:      " << x_ << ", " << y_;
+            context_.tracer()->debug( ss.str(), 5 );
         }
     } 
 }

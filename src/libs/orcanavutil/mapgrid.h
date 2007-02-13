@@ -9,6 +9,7 @@
  */
 #ifndef _MAPGRID_H_
 #define _MAPGRID_H_
+
 /*!
  Base class for Map Grid conversions
 
