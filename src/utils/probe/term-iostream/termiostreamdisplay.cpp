@@ -367,10 +367,16 @@ TermIostreamDisplay::printPlatformData( const orcacm::RegistryHierarchicalData2&
             break;
         }
         else if ( userInput[0]>='0' && userInput[0]<='9' ) {
-            int selection = atoi( userInput.c_str() );
+            unsigned int selection = atoi( userInput.c_str() );
             //cout<<"you picked "<<selection<<endl;
-
-            browser_->choosePick( selection );
+            //check
+            if ( selection>=0 && selection<data.homes.size() ) {
+                browser_->choosePick( selection );
+                break;
+            }
+            else {
+                cout<<"invalid numeric selection: '"<<selection<<"'. try again"<<endl;
+            }
             break;
         }
         else {
@@ -419,7 +425,7 @@ TermIostreamDisplay::printComponentData( const orcacm::ComponentData& data )
     }
 
     stdMenu( ssHeader.str(), "an interface", ssOptions.str() );
-    getUserInput();
+    getUserInput( data.provides.size() );
 }
 
 void 
@@ -440,7 +446,7 @@ TermIostreamDisplay::printInterfaceData( const orcacm::InterfaceData& data )
     }
 
     stdMenu( ssHeader.str(), "an operation", ssOptions.str() );
-    getUserInput();
+    getUserInput( data.operations.size() );
 }
 
 void 
@@ -456,11 +462,11 @@ TermIostreamDisplay::printOperationData( const orcacm::OperationData& data )
     }
     
     stdMenu( ssHeader.str(), "an action", ssOptions.str() );
-    getUserInput();
+    getUserInput( data.results.size() );
 }
 
 void 
-TermIostreamDisplay::getUserInput()
+TermIostreamDisplay::getUserInput( unsigned int optionCount )
 {
     while (1)
     {
@@ -495,7 +501,7 @@ TermIostreamDisplay::getUserInput()
             unsigned int selection = atoi( userInput.c_str() );
             //cout<<"you picked "<<selection<<endl;
             //check
-            if ( selection>=0 && selection<componentData_.provides.size() ) {
+            if ( selection>=0 && selection<optionCount ) {
                 browser_->choosePick( selection );
                 break;
             }

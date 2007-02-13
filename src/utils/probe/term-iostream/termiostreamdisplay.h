@@ -64,7 +64,7 @@ private:
     void printOperationData( const orcacm::OperationData& );
 
     // utilities
-    void getUserInput();
+    void getUserInput( unsigned int optionCount );
 
 };
 
