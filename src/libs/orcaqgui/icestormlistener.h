@@ -91,6 +91,8 @@ public:
     double msSinceReceipt() const { return consumer_->msSinceReceipt(); }
     void   resetTimer() { consumer_->resetTimer(); }
     std::string interfaceName() const { return proxyString_; };
+    
+    const ProxyType& proxy() { return proxy_; };
 
 private:
 
