@@ -61,7 +61,8 @@ WpWidget::WpWidget( PathInput *pathInput,
                     QVector<float> *distTolerances,
                     QVector<int> *headingTolerances,
                     QVector<float> *maxSpeeds,
-                    QVector<int> *maxTurnrates)
+                    QVector<int> *maxTurnrates,
+                    int numberOfLoopsConfig )
     : pathInput_(pathInput),
       pathFileSet_(false),
       pathFileName_("/tmp")
@@ -91,6 +92,9 @@ WpWidget::WpWidget( PathInput *pathInput,
     QObject::connect(sendPath,SIGNAL(clicked()),pathInput,SIGNAL(sendPathClicked()));
     QObject::connect(cancelPath,SIGNAL(clicked()),pathInput,SIGNAL(cancelPathClicked()));
     
+    numLoopsSpin_ = new QSpinBox(this);
+    numLoopsSpin_->setValue(numberOfLoopsConfig);
+    
     QVBoxLayout *globalLayout = new QVBoxLayout;
     globalLayout->addWidget(wpTable_);
     
@@ -102,6 +106,13 @@ WpWidget::WpWidget( PathInput *pathInput,
     hLayout->addWidget(sendPath);
     hLayout->addWidget(cancelPath);
     globalLayout->addLayout(hLayout);
+    
+    QHBoxLayout *hLayout2 = new QHBoxLayout;
+    QLabel *label = new QLabel("<b>Number of loops:</b>");
+    hLayout2->addWidget(label);
+    hLayout2->addWidget(numLoopsSpin_);
+    hLayout2->addStretch();
+    globalLayout->addLayout(hLayout2);
     
     setLayout(globalLayout);
     this->setMinimumWidth(800);
@@ -414,7 +425,8 @@ PathInput::PathInput( QObject *parent, WaypointSettings *wpSettings, IHumanManag
                             &distTolerances_,
                             &headingTolerances_,
                             &maxSpeeds_,
-                            &maxTurnrates_ );
+                            &maxTurnrates_,
+                            wpSettings_->numberOfLoops);
     
     QObject::connect(this,SIGNAL(sendPathClicked()),parent,SLOT(send()));
     QObject::connect(this,SIGNAL(cancelPathClicked()),parent,SLOT(cancel()));
@@ -813,7 +825,7 @@ void PathInput::generateFullPath()
 void 
 PathInput::savePath( const QString &fileName )
 {
-    int size=wpSettings_->numberOfLoops * waypoints_.size();
+    int size=wpWidget_->numberOfLoops() * waypoints_.size();
     
     if (size==0)
     {
@@ -834,7 +846,7 @@ PathInput::savePath( const QString &fileName )
     const float timeOffset = times_[waypoints_.size()-1];
 
     QTextStream out(&file);
-    for (int k=0; k<wpSettings_->numberOfLoops; k++)
+    for (int k=0; k<wpWidget_->numberOfLoops(); k++)
     {
         for (int i=0; i<waypoints_.size(); i++)
         {
@@ -892,7 +904,7 @@ void PathInput::loadPath( const QString& fileName )
 bool
 PathFollowerInput::getPath( orca::PathFollower2dData &pathData ) const
 {    
-    int size = wpSettings_->numberOfLoops * waypoints_.size();
+    int size = wpWidget_->numberOfLoops() * waypoints_.size();
     cout << "DEBUG(pathinput.cpp): getPath: size of waypoints is " << size << endl;
     if (size==0) return false;
     
@@ -901,7 +913,7 @@ PathFollowerInput::getPath( orca::PathFollower2dData &pathData ) const
     
     const float timeOffset = times_[waypoints_.size()-1];
     
-    for (int k=0; k<wpSettings_->numberOfLoops; k++)
+    for (int k=0; k<wpWidget_->numberOfLoops(); k++)
     {
         for (int i=0; i<waypoints_.size(); i++)
         {

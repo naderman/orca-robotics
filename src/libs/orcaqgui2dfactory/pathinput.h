@@ -11,13 +11,15 @@
 #ifndef ORCA2_PATH_INPUT_H
 #define ORCA2_PATH_INPUT_H
 
-#include <orca/pathfollower2d.h>
-#include <orca/pathplanner2d.h>
-#include <orcaice/context.h>
 #include <QMatrix>
 #include <QVector>
 #include <QMouseEvent>
 #include <QTableWidget>
+#include <QSpinBox>
+
+#include <orca/pathfollower2d.h>
+#include <orca/pathplanner2d.h>
+#include <orcaice/context.h>
 
 
 namespace orcaqgui {
@@ -55,16 +57,19 @@ class WpWidget : public QWidget
                     QVector<float> *distTolerances,
                     QVector<int> *headingTolerances,
                     QVector<float> *maxSpeeds,
-                    QVector<int> *maxTurnrates );
+                    QVector<int> *maxTurnrates,
+                    int numberOfLoopsConfig);
         ~WpWidget() {};
         void refreshTable();
         QString getBehaviour( int row );
+        int numberOfLoops() { return numLoopsSpin_->value(); };
     
     private:
         PathInput *pathInput_;
         WpTable *wpTable_;
         bool pathFileSet_;
         QString pathFileName_;
+        QSpinBox *numLoopsSpin_;
     
     private slots:
         void savePathAs();

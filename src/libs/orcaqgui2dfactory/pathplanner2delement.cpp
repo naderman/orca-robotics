@@ -302,7 +302,6 @@ void PathPlannerHI::waypointSettingsDialog()
     Ui::WpTolerancesDialog ui;
     ui.setupUi(myDialog);
     
-    ui.numLoopsSpin->setEnabled( false );
     int index = ui.spacingPropertyCombo->findText( QString(wpSettings_.spacingProperty.c_str()) );
     ui.spacingPropertyCombo->setCurrentIndex( index );
     ui.spacingValueSpin->setValue( wpSettings_.spacingValue );
