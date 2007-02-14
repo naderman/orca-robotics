@@ -16,7 +16,7 @@
 // A collection of small utility functions for doing
 // navigation-related things.
 //
-// @author Alex Brooks
+// @author Alex Brooks, Tobias Kaupp
 //
 
 namespace orcanavutil {
@@ -91,6 +91,19 @@ namespace orcanavutil {
                                 double &resultX,
                                 double &resultY,
                                 double &resultTheta );
+    
+    //! Transforms a point (xIn,yIn) in one coordinate system
+    //! to a point (xOut,yOut) in another coordinate system
+    //! using the offset between the two coordinate systems
+    //! (translation: offsetX/Y, rotation:offsetT)
+    void transformPoint2d( double  xIn, 
+                           double  yIn,
+                           double  offsetX,
+                           double  offsetY,
+                           double  offsetT,
+                           double &xOut,
+                           double &yOut);
+                           
 }
 
 #endif

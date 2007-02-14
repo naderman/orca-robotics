@@ -137,4 +137,16 @@ namespace orcanavutil {
 
         resultTheta = totalOffsetTheta - initialOffsetTheta;
     }
+    
+    void transformPoint2d(  double  xIn, 
+                            double  yIn,
+                            double  offsetX,
+                            double  offsetY,
+                            double  offsetT,
+                            double &xOut,
+                            double &yOut )
+    {
+        xOut = cos(offsetT) * xIn - sin(offsetT) * yIn + offsetX;
+        yOut = cos(offsetT) * yIn + sin(offsetT) * xIn + offsetY;
+    }    
 }
