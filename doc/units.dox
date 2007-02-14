@@ -12,7 +12,9 @@
 
 @page orca_doc_units Orca Units and Coordinate Systems
 
-@note Reviewed for release 2.0.0.
+@note Reviewed for release 2.3.0.
+
+@section orca_doc_units_units Units
 
 @par Inter-Component Communication
 
@@ -21,7 +23,7 @@ System of Units</a>).
 
 @par Component Configuration
 
-All component configuration is done in S.I. units with one \b exception: angular quantities are configured in degrees rather than radians, because humans generally think better in degrees.
+All component configuration is done in S.I. units with one \b exception: angular quantities are configured in degrees rather than radians, because humans generally think better in degrees. This also applies to angular rates, accelerations, etc.
 
 @par Component Code
 
@@ -33,29 +35,36 @@ quantities).
 
 All quantities are displayed in S.I. units with one \b exception: angular quantities are displayed in degrees rather than radians, because humans generally think better in degrees.
     
-@par Coordinate Systems
+@section orca_doc_units_coord Coordinate Frames
 
 All angles are defined from -pi to pi, NOT 0 to 2pi.
 
-There are two kinds of coordinate frames: frames that are
-rooted in a global map, and a platform's local coordinate frame.
+@par Inidvidual Coordinate Frames
 
-For worlds where the curvature of the earth is not important,
-the global coordinate axes are defined as follows:
+There are two kinds of coordinate frames (CF): frames that are rooted in a global map, and a platform's local coordinate frame.
 
-@image html global_frame.png
+@image html coord_frames.png
 
-Angles are defined anti-clockwise from the x-axis, with zero
-degrees along the x-axis.  The y-axis is at +90 degrees.  The
-z-axis points up.
+A global cartesian coordinate frame is shown on the left. Angles are defined anti-clockwise from the x-axis, with zero degrees along the x-axis.  The y-axis is at +90 degrees. The z-axis points up.
 
-A local frame is defined as follows:
+A local cartesian coordinate frame is shown on the right.  The x-axis extends forward from a platform or a sensor, with the y-axis out to the left. The z-axis points up.  Zero degrees is directly in front, with angles increasing to the left and decreasing to the right.
 
-@image html local_frame.png
+@par Coordinate Frames in a System
 
-A robot or sensor looks down the x-axis, with the y-axis out
-to its left.  The z-axis points up.  Zero degrees is directly in
-front, with angles increasing to the left and decreasing to the
-right.
+Commonly, a system with even one platform must consider several coordinate frames: GPS coordinates are in one, coordinates according to a local map are in another, laser returns are in a third one. Multiple platforms add to the complexity. For various reasons (mapping, display) you may need to bring data from different CF's together.
+
+@image html coord_frames_sys.png
+
+When running a system, one must choose an arbitrary CF to be "global", in a sense that all other ones will refer to it. In practice, it is often convenient to pick one existing CF to be global instead of defining an entirely new one.
+
+Examples of frames:
+- a local projection of GPS coordinates, e.g. MGA94 used in Australia.
+- a locally-built map, e.g. feature map, occupancy grid map, etc.
+- a image of Earth surface.
+- GUI frame used to diplay a portion of the environment
+
+The figure above also illustrates two types of robotic sensors:
+- sensors which make observations in the sensor CF, e.g. laser scanners, sonars, cameras, inertial measurement units, WiFi receivers, etc., and
+- sensors which make observations in non-local CF, e.g. GPS receivers.
 
 */
