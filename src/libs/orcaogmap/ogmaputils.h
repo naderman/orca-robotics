@@ -29,7 +29,7 @@ namespace orcaogmap {
 
     struct Frame2d
     {
-        //! Point of origin
+        //! Point of offset
         CartesianPoint2d p;
         //! Orientation angle [rad]
         float o;
@@ -67,10 +67,10 @@ namespace orcaogmap {
         //! Returns the size of the world, in metres, along the y-axis
         float worldSizeY() const { return numCellsY_*metresPerCellY_; };
 
-        //! Set the origin (global coordinates of the bottom-left corner of the bottom-left cell)
-        Frame2d & origin() { return origin_; };
-        //! Get the origin (global coordinates of the bottom-left corner of the bottom-left cell)
-        const Frame2d & origin() const { return origin_; };
+        //! Set the offset (global coordinates of the bottom-left corner of the bottom-left cell)
+        Frame2d & offset() { return offset_; };
+        //! Get the offset (global coordinates of the bottom-left corner of the bottom-left cell)
+        const Frame2d & offset() const { return offset_; };
         
         //! Set the size of each cell, in the x dimension
         void setMetresPerCellX( float mx ) { metresPerCellX_ = mx; };
@@ -122,14 +122,14 @@ namespace orcaogmap {
         //! (no bounds checking is performed)       
         unsigned char &worldCell( float worldX, float worldY )
         { 
-            assert( origin_.o == 0.0 );
+            assert( offset_.o == 0.0 );
             return gridCell( worldToIndexX(worldX), worldToIndexY(worldY) ); 
         }
         //! Get a cell, indexed by world coords
         //! (no bounds checking is performed)
         const unsigned char &worldCell( float worldX, float worldY ) const
         { 
-            assert( origin_.o == 0.0 );
+            assert( offset_.o == 0.0 );
             return gridCell( worldToIndexX(worldX), worldToIndexY(worldY) ); 
         }
 
@@ -141,9 +141,9 @@ namespace orcaogmap {
            
         //! translate a world coord to a map coord
         int worldToIndexX( float worldX ) const
-        { assert(origin_.o==0.0); return (int) std::floor( (worldX-origin_.p.x)/metresPerCellX_ ); }
+        { assert(offset_.o==0.0); return (int) std::floor( (worldX-offset_.p.x)/metresPerCellX_ ); }
         int worldToIndexY( float worldY ) const
-        { assert(origin_.o==0.0); return (int) std::floor( (worldY-origin_.p.y)/metresPerCellY_ ); }
+        { assert(offset_.o==0.0); return (int) std::floor( (worldY-offset_.p.y)/metresPerCellY_ ); }
     
         //! Change the size of the map
         void reallocate( int numCellsX, int numCellsY );
@@ -154,11 +154,11 @@ namespace orcaogmap {
         //! Are the world coordinates within the map?
         bool coordsWithinMap( float worldX, float worldY ) const
         { 
-            assert( origin_.o == 0.0 );
-            return ( worldX >= origin_.p.x &&
-                     worldY >= origin_.p.y &&
-                     worldX <  origin_.p.x+numCellsX()*metresPerCellX() &&
-                     worldY <  origin_.p.y+numCellsY()*metresPerCellY() );
+            assert( offset_.o == 0.0 );
+            return ( worldX >= offset_.p.x &&
+                     worldY >= offset_.p.y &&
+                     worldX <  offset_.p.x+numCellsX()*metresPerCellX() &&
+                     worldY <  offset_.p.y+numCellsY()*metresPerCellY() );
         }
 
         //! Is the grid cell within the map?
@@ -173,7 +173,7 @@ namespace orcaogmap {
     private:
 
         //! The global coordinates of the bottom-left corner of the bottom-left cell
-        Frame2d origin_;
+        Frame2d offset_;
     
         //! The size of each cell, in the x dimension
         float metresPerCellX_;
@@ -202,7 +202,7 @@ namespace orcaogmap {
     
     //! Overlays two OgMaps, i.e. their occupancy values are bitwise or'd. 
     //! Resulting map is stored in 'master'.
-    //! Assumes that all map parameters (origin, resolution, number of cells) are the same.
+    //! Assumes that all map parameters (offset, resolution, number of cells) are the same.
     void overlay( OgMap &master, const OgMap &slave ); 
 
     //! Convert an occupancy grid map to text

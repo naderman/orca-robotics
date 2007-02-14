@@ -105,17 +105,17 @@ PixmapPainter::updateWorldMatrix( const QMatrix & m )
     QMatrix M = map2win_;
     //cout<<"m2win_: " << M.m11()<<","<<M.m12()<<","<<M.m21()<<","<<M.m22()<<", "<<M.dx()<<","<<M.dy()<<endl;
 
-    // and translate to the origin of the map [m]
+    // and translate to the offset of the map [m]
     // remove scale and translation
     double s = sqrt( map2win_.m11()*map2win_.m11() + map2win_.m12()*map2win_.m12() );
     QMatrix rot( map2win_.m11()/s, map2win_.m12()/s, -map2win_.m21()/s, -map2win_.m22()/s, 0.0, 0.0);
     M = rot;
     //cout<<"rotation only: " << M.m11()<<","<<M.m12()<<","<<M.m21()<<","<<M.m22()<<", "<<M.dx()<<","<<M.dy()<<endl;
     
-    QPointF origin = rot.map( data_.origin );
-    //cout<<"origin in meters: "<<data_.origin.x()<<","<<data_.origin.y()<<" rotated :"<<origin.x()<<","<<origin.y()<<endl;
+    QPointF offset = rot.map( data_.offset );
+    //cout<<"offset in meters: "<<data_.offset.x()<<","<<data_.offset.y()<<" rotated :"<<offset.x()<<","<<offset.y()<<endl;
     
-    map2win_.translate( origin.x(), origin.y() );
+    map2win_.translate( offset.x(), offset.y() );
     M = map2win_;
     //cout<<"translated: " << M.m11()<<","<<M.m12()<<","<<M.m21()<<","<<M.m22()<<", "<<M.dx()<<","<<M.dy()<<endl;
 

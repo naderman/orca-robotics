@@ -62,11 +62,10 @@ GpsReplayer::checkDescriptionFile()
     string prefix = context_.tag() + ".Config.Gps.";
    
     // initialize 
-    orcaice::setInit( descr_.size );
     orcaice::setInit( descr_.offset );
+    orcaice::setInit( descr_.antennaOffset );
 
-    retSize_ = orcaice::getPropertyAsSize3d( context_.properties(), prefix+"Size", descr_.size );
-    retOffset_ = orcaice::getPropertyAsFrame3d( context_.properties(), prefix+"Offset", descr_.offset );
+    haveConfigOffset_ = orcaice::getPropertyAsFrame2d( context_.properties(), prefix+"Offset", descr_.offset );
 }
 
 void 
@@ -275,13 +274,13 @@ GpsReplayer::loadHeaderIce()
     ice_readGpsDescription( helper.stream_, localDescription );
     helper.read();
 
-    // if there was no geometry specified in the cfg file, take logged geometry
-    if (retSize_!=0) {
-        descr_.size= localDescription.size;
+    // if there was no offset specified in the cfg file, take logged offset
+    if (haveConfigOffset_!=0) {
+        descr_.offset= localDescription.offset;
     }
-
-    // if there was no origin specified in the cfg file, take logged origin
-    if (retOffset_!=0) {
+    
+    // if there was no antenna offset specified in the cfg file, take logged antenna offset
+    if (haveConfigOffset_!=0) {
         descr_.offset= localDescription.offset;
     }
 

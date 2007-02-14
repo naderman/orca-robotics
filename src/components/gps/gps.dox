@@ -64,15 +64,15 @@ without a fix ever having been achieved.
 
 Geometry
 
-- @c Gps.Config.Offset (Frame3d) [m,m,m, deg,deg,deg]
-    - GPS coordinates of the local coordinate system origin.
-    - Format: x y z roll pitch yaw (space separated)
-    - Default: [0.0 0.0 0.0  0.0 0.0 0.0]
-
-- @c Gps.Config.Size (Size3d) [m,m,m]
-    - Physical dimensions of the GPS device.
-    - Format: length width height (space separated)
+- @c Gps.Config.Offset (Frame2d) [m,m,deg]
+    - Offset of the GPS antenna from the (arbitrarily defined) global coordinate system.
+    - Format: x y orientation (space separated).
     - Default: [0.0 0.0 0.0]
+    
+- @c Gps.Config.AntennaOffset (Frame3d) [m,m,m,deg,deg,deg]
+    - Offset of the GPS antenna from the vehicle's coordinate system.
+    - Format: x y z roll pitch yaw (space separated)
+    - Default: [0.0 0.0 0.0 0.0 0.0 0.0]
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 

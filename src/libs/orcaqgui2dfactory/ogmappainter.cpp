@@ -46,7 +46,7 @@ OgMapPainter::setData( const orca::OgMapData& data )
     // tobi: to be able to save to binary file (see below)
     data_ = data;
 
-    if ( data.origin.o != 0.0 ) 
+    if ( data.offset.o != 0.0 ) 
     {
         stringstream ss;
         ss << "OgMapPainter: Don't know how to display non-axis-aligned map: " << orcaice::toString( data );
@@ -57,7 +57,7 @@ OgMapPainter::setData( const orca::OgMapData& data )
     PixmapData pixmapData;
     pixmapData.cellSize = QSizeF(data.metresPerCellX,data.metresPerCellY);
     pixmapData.mapSizePix = QSize(data.numCellsX,data.numCellsY);
-    pixmapData.origin = QPointF(data.origin.p.x,data.origin.p.y);
+    pixmapData.offset = QPointF(data.offset.p.x,data.offset.p.y);
     
     for (int i=0; i<(data.numCellsX*data.numCellsY); i++)
     {

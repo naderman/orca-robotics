@@ -20,18 +20,18 @@ namespace orcaogmap {
 
 float OgMap::worldXCoord( int gridX ) const
 {
-    return float(origin_.p.x + (gridX+0.5)*metresPerCellX_);
+    return float(offset_.p.x + (gridX+0.5)*metresPerCellX_);
 }
         
 float OgMap::worldYCoord( int gridY ) const
 {
-    return float(origin_.p.y + (gridY+0.5)*metresPerCellY_);
+    return float(offset_.p.y + (gridY+0.5)*metresPerCellY_);
 }
 
 void OgMap::getWorldCoords( int gridX, int gridY, float &worldX, float &worldY ) const
 {
     // Todo: handle non-zero orientation.
-    assert(origin_.o == 0.0 );
+    assert(offset_.o == 0.0 );
 
     worldX = worldXCoord( gridX );
     worldY = worldYCoord( gridY );
@@ -132,8 +132,8 @@ void fuse( OgMap &master, const OgMap &update, unsigned char newCells )
     // Check assumptions
     assert( master.metresPerCellX() == update.metresPerCellX() );
     assert( master.metresPerCellY() == update.metresPerCellY() );
-    assert( master.origin().o == 0.0 );
-    assert( update.origin().o == 0.0 );
+    assert( master.offset().o == 0.0 );
+    assert( update.offset().o == 0.0 );
     if ( master.numCellsX() == 0 && master.numCellsY() == 0 )
     {
         master = update;
@@ -141,8 +141,8 @@ void fuse( OgMap &master, const OgMap &update, unsigned char newCells )
     }
 
     //determine the number of cells the lower right corner of the tile is offset (in the -ve x and y directions) w.r.t the current map
-    int offsetX = (int) floor( (master.origin().p.x - update.origin().p.x) / master.metresPerCellX() + 0.5 );
-    int offsetY = (int) floor( (master.origin().p.y - update.origin().p.y) / master.metresPerCellY() + 0.5 );
+    int offsetX = (int) floor( (master.offset().p.x - update.offset().p.x) / master.metresPerCellX() + 0.5 );
+    int offsetY = (int) floor( (master.offset().p.y - update.offset().p.y) / master.metresPerCellY() + 0.5 );
 
     //extend in NegX ?
     int dNegX = 0;
@@ -150,9 +150,9 @@ void fuse( OgMap &master, const OgMap &update, unsigned char newCells )
     {
         dNegX = offsetX;
 
-        // setup new origin_
-        master.origin().p.x = master.origin().p.x - dNegX * master.metresPerCellX();
-        //cout<<"  extending in neg X dir: offsetX="<<offsetX<<", dNegX="<<dNegX<<", originX_"<<originX_<<endl;
+        // setup new offset_
+        master.offset().p.x = master.offset().p.x - dNegX * master.metresPerCellX();
+        //cout<<"  extending in neg X dir: offsetX="<<offsetX<<", dNegX="<<dNegX<<", offsetX_"<<offsetX_<<endl;
     }
 
     //extend in PosX
@@ -169,9 +169,9 @@ void fuse( OgMap &master, const OgMap &update, unsigned char newCells )
     {
         dNegY = offsetY;
 
-        // setup new origin_
-        master.origin().p.y = master.origin().p.y - dNegY * master.metresPerCellY();
-        //cout<<"  extending in neg Y dir: offsetY="<<offsetY<<", dNegY="<<dNegY<<", originY_"<<originY_<<endl;
+        // setup new offset_
+        master.offset().p.y = master.offset().p.y - dNegY * master.metresPerCellY();
+        //cout<<"  extending in neg Y dir: offsetY="<<offsetY<<", dNegY="<<dNegY<<", offsetY_"<<offsetY_<<endl;
     }
 
     //extend in PosY
@@ -263,9 +263,9 @@ void overlay( OgMap &master, const OgMap &slave )
     assert( master.metresPerCellY() == slave.metresPerCellY() );    
     assert( master.numCellsX() == slave.numCellsX() );
     assert( master.numCellsY() == slave.numCellsY() );
-    assert( master.origin().p.x == slave.origin().p.x );
-    assert( master.origin().p.y == slave.origin().p.y );
-    assert( master.origin().o == slave.origin().o );    
+    assert( master.offset().p.x == slave.offset().p.x );
+    assert( master.offset().p.y == slave.offset().p.y );
+    assert( master.offset().o == slave.offset().o );    
 
     for (int x=0; x<master.numCellsX(); x++)
     {
@@ -296,7 +296,7 @@ std::string toString(const Frame2d &f)
 std::ostream &operator<<( std::ostream &s, const orcaogmap::OgMap &o )
 {
     s << " OgMap: \n"
-      << "\torigin:        [" << o.origin().p.x << ", " << o.origin().p.y << ", " << o.origin().o*180.0/M_PI << "]\n"
+      << "\toffset:        [" << o.offset().p.x << ", " << o.offset().p.y << ", " << o.offset().o*180.0/M_PI << "]\n"
       << "\tnumCells:      [" << o.numCellsX() << ", " << o.numCellsY() << "]\n"
       << "\tmetresPerCell: [" << o.metresPerCellX() << ", " << o.metresPerCellY() << "]\n";
 

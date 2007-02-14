@@ -66,9 +66,9 @@ loadMap( const std::string &filename,
 void loadMap( const std::string &filename,
               orcaogmap::OgMap  &ogMap,
               bool               negate,
-              float              originX,
-              float              originY,
-              float              originTheta,
+              float              offsetX,
+              float              offsetY,
+              float              offsetTheta,
               float              metresPerCellX,
               float              metresPerCellY )
 {
@@ -84,9 +84,9 @@ void loadMap( const std::string &filename,
     ogMap.reallocate( numCellsX, numCellsY );
     memcpy( ogMap.data(), &(cells[0]), numCellsX*numCellsY*sizeof(unsigned char) );
     
-    ogMap.origin().p.x = originX;
-    ogMap.origin().p.y = originY;
-    ogMap.origin().o   = originTheta;
+    ogMap.offset().p.x = offsetX;
+    ogMap.offset().p.y = offsetY;
+    ogMap.offset().o   = offsetTheta;
 
     ogMap.setMetresPerCellX( metresPerCellX );
     ogMap.setMetresPerCellY( metresPerCellY );

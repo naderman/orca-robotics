@@ -29,13 +29,18 @@ struct GpsDescription
 {
     //! Time (according to the computer clock) when data was measured.
     Time timeStamp;
+    
+    //! Transformation from global (arbitrarily defined) coordinate system (CS) to
+    //! the GPS MapGrid CS.
+    //! Example: if the global CS is placed in the center of your test site at a
+    //! point with GPS coordinates (Xgps,Ygps) and the Y axis points North-West,
+    //! then the GPS offset is (-Xgps, -Ygps, 45).
+    Frame2d offset;
 
-    //! Offset of the gps antenna with respect to the robot,
-    //! in the robot local coordinate system.
-    Frame3d offset; 
-
-    //! Dimensions of the gps antenna.
-    Size3d size;
+    //! Specifies location of the GPS antenna with respect to the vehicles's
+    //! coordinate system. Note that the angles are meaningful only if D-GPS
+    //! is used.
+    Frame3d antennaOffset;
 };
 
 //! Gps time structure

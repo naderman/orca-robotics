@@ -48,9 +48,9 @@ namespace orcaogmapload {
     void loadMap( const std::string &filename,
                   orcaogmap::OgMap  &ogMap,
                   bool               negate,
-                  float              originX,
-                  float              originY,
-                  float              originTheta,
+                  float              offsetX,
+                  float              offsetY,
+                  float              offsetTheta,
                   float              metresPerCellX,
                   float              metresPerCellY  );
 }

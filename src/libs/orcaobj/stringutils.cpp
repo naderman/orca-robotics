@@ -541,15 +541,15 @@ toString( const orca::GpsDescription& obj )
     std::ostringstream s;
     s << toString(obj.timeStamp)
         << " GpsDescription: \n"
-        << "size.l                " << obj.size.l << "m\n"
-        << "size.w                " << obj.size.w << "m\n"
-        << "size.h                " << obj.size.h << "m\n"
-        << "offset.point.x            " << obj.offset.p.x << "m\n"
-        << "offset.point.y            " << obj.offset.p.y << "m\n"
-        << "offset.point.z            " << obj.offset.p.z << "m\n"
-        << "offset.orientation.roll   " << RAD2DEG(obj.offset.o.r) << "deg\n"
-        << "offset.orientation.pitch  " << RAD2DEG(obj.offset.o.p) << "deg\n"
-        << "offset.orientation.yaw    " << RAD2DEG(obj.offset.o.y) << "deg\n";
+        << "offset.point.x                   " << obj.offset.p.x << "m\n"
+        << "offset.point.y                   " << obj.offset.p.y << "m\n"
+        << "offset.point.o                   " << RAD2DEG(obj.offset.o) << "deg\n"
+        << "antennaOffset.point.x            " << obj.antennaOffset.p.x << "m\n"
+        << "antennaOffset.point.y            " << obj.antennaOffset.p.y << "m\n"
+        << "antennaOffset.point.z            " << obj.antennaOffset.p.z << "m\n"
+        << "antennaOffset.orientation.roll   " << RAD2DEG(obj.antennaOffset.o.r) << "deg\n"
+        << "antennaOffset.orientation.pitch  " << RAD2DEG(obj.antennaOffset.o.p) << "deg\n"
+        << "antennaOffset.orientation.yaw    " << RAD2DEG(obj.antennaOffset.o.y) << "deg\n";
     return s.str();
 }
 
@@ -1184,7 +1184,7 @@ toString( const orca::OgMapData& obj )
     std::ostringstream s;
     s << toString(obj.timeStamp)
       << " OgMap: \n"
-      << "origin:        [" << obj.origin.p.x << ", " << obj.origin.p.y << ", " << obj.origin.o*180.0/M_PI << "]\n"
+      << "offset:        [" << obj.offset.p.x << ", " << obj.offset.p.y << ", " << obj.offset.o*180.0/M_PI << "]\n"
       << "numCells:      [" << obj.numCellsX << ", " << obj.numCellsY << "]\n"
       << "metresPerCell: [" << obj.metresPerCellX << ", " << obj.metresPerCellY << "]\n";
 
@@ -1197,7 +1197,7 @@ toString( const orca::PixMapData& obj )
     std::ostringstream s;
     s << toString(obj.timeStamp)
       << " PixMap: \n"
-      << "origin:        [" << obj.origin.p.x << ", " << obj.origin.p.y << ", " << obj.origin.o*180.0/M_PI << "]\n"
+      << "offset:        [" << obj.offset.p.x << ", " << obj.offset.p.y << ", " << obj.offset.o*180.0/M_PI << "]\n"
       << "numCells:      [" << obj.numCellsX << ", " << obj.numCellsY << "]\n"
       << "metresPerCell: [" << obj.metresPerCellX << ", " << obj.metresPerCellY << "]\n";
 

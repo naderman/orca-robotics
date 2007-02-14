@@ -126,12 +126,11 @@ Component::start()
     // transfer internal sensor configs
     //
     
-    // offset from global coordinate system
     orcaice::setInit( gpsDescr.offset );
-    gpsDescr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Gps.Offset", gpsDescr.offset );
+    gpsDescr.offset = orcaice::getPropertyAsFrame2dWithDefault( prop, prefix+"Offset", gpsDescr.offset );
 
-    orcaice::setInit( gpsDescr.size );
-    gpsDescr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Gps.Size", gpsDescr.size );
+    orcaice::setInit( gpsDescr.antennaOffset );
+    gpsDescr.antennaOffset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"AntennaOffset", gpsDescr.antennaOffset );
     
     // offset from robot coordinate system
     orcaice::setInit( imuDescr.offset );

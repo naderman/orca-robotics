@@ -54,18 +54,18 @@ Component::start()
 
     // setup local map
     localMap_.reallocate(mapConfig.mapSizeX, mapConfig.mapSizeY);
-    localMap_.origin().p.x=mapConfig.mapOriginX;
-    localMap_.origin().p.y=mapConfig.mapOriginY;
-    localMap_.origin().o=mapConfig.mapOrientation;
+    localMap_.offset().p.x=mapConfig.mapOriginX;
+    localMap_.offset().p.y=mapConfig.mapOriginY;
+    localMap_.offset().o=mapConfig.mapOrientation;
     localMap_.setMetresPerCellX(mapConfig.mapResX);
     localMap_.setMetresPerCellY(mapConfig.mapResY);
     localMap_.fill(orcaogmap::CELL_UNKNOWN);
 
     // duplicate map config for OgFusion Interface
     OgFusionConfig ogFusionConfig;
-    ogFusionConfig.origin.p.x=mapConfig.mapOriginX;
-    ogFusionConfig.origin.p.y=mapConfig.mapOriginY;
-    ogFusionConfig.origin.o=mapConfig.mapOrientation;
+    ogFusionConfig.offset.p.x=mapConfig.mapOriginX;
+    ogFusionConfig.offset.p.y=mapConfig.mapOriginY;
+    ogFusionConfig.offset.o=mapConfig.mapOrientation;
     ogFusionConfig.numCellsX=mapConfig.mapSizeX;
     ogFusionConfig.numCellsY=mapConfig.mapSizeY;
     ogFusionConfig.metresPerCellX=mapConfig.mapResX;

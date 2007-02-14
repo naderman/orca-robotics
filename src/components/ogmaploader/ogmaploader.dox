@@ -77,19 +77,20 @@ World Size (float,float) [m]
 - @c OgMapLoader.Config.Size.X
 - @c OgMapLoader.Config.Size.Y
 
-Map Origin (float,float,float) [m,m,deg]
-- @c OgMapLoader.Config.Origin.X
-- @c OgMapLoader.Config.Origin.Y
-- @c OgMapLoader.Config.Origin.Orientation
+Map Origin with respect to the (arbitrarily defined) global coordinate system (float,float,float) [m,m,deg]
+- @c OgMapLoader.Config.Offset.X
+- @c OgMapLoader.Config.Offset.Y
+- @c OgMapLoader.Config.Offset.Orientation
 
-For example, these configuration settings work for the Player's famous @c cave world:
+For example, these configuration settings work for the Player's famous @c cave world. 
+We define the global coordinate system's origin to be in the centre of the map.
 @verbatim
 OgMapLoader.Config.Driver=file
 OgMapLoader.Config.MapFileName=cave.png
 OgMapLoader.Config.Negate=0
-OgMapLoader.Config.Origin.Orientation=0.0
-OgMapLoader.Config.Origin.X=-8.0
-OgMapLoader.Config.Origin.Y=-8.0
+OgMapLoader.Config.Offset.Orientation=0.0
+OgMapLoader.Config.Offset.X=-8.0
+OgMapLoader.Config.Offset.Y=-8.0
 OgMapLoader.Config.Size.X=16.0
 OgMapLoader.Config.Size.Y=16.0
 @endverbatim

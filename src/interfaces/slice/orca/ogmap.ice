@@ -61,14 +61,14 @@ be fused to create a larger occupancy-grid map.
  y-axis   |                 |         .       |  |              |              |                 |
    ^      |                 |         . indY  |  |sizeY         |              |                 |
    |      |                 |         .       |  |              |              |                 |
-   |----->|                 |         .       |  |    sizeY     |              |----> index      |
+   |      |                 |         .       |  |    sizeY     |              |----> index      |
    |  oX  |                 |         .       |<-|------------->|              |---------------->|
-   |      |_________________|         0       |__v______________|              |_________________|
-   |         ^                                
-   |         | oY     world                           indX                   index: 0 -> sizeX * sizeY - 1
-   |_________|_____>  x-axis                  0 - - - - - - -> numCellsX-1
+   |----->|_________________|         0       |__v______________|              |_________________|
+   |      ^                                  
+   |      | oY       world                             indX                   index: 0 -> sizeX * sizeY - 1
+   |______|_____>    x-axis                    0 - - - - - - -> numCellsX-1
 
-   (oX = origin.p.x, oY = origin.p.y)
+   (oX = offset.p.x, oY = offset.p.y)
 
    (note: in (1), the map is aligned with the world axes.  This need not be the case.)
    </pre>
@@ -80,8 +80,15 @@ struct OgMapData
     //! Time when data was measured.
     Time timeStamp;
 
-    //! The global coordinates of the bottom-left corner of the bottom-left cell
-    Frame2d      origin;
+    //! Transformation from the global (arbitrarily defined) coordinate system 
+    //! (CS) to the CS of the OG map. The OG map CS is 
+    //! defined as as follows:
+    //! - origin at the bottom-left corner
+    //! - X axis along the bottom edge to the right
+    //! - Y axis along the left edge up
+    //! Example: if the global CS starts in the middle of a OG map and there are
+    //! no rotations, then the OG map offset is (-width/2, -height/2, 0).
+    Frame2d offset;
     //! The number of cells along the x axis
     int numCellsX;
     //! The number of cells along the y axis

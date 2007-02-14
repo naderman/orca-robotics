@@ -36,6 +36,8 @@ Requires.Wifi.DefaultProxy=wifi@local/wifi
 Config.General.FactoryLibNames.Default=libOrcaQGui2dFactory.so
 Config.General.DisplayRefreshTime.Default=200
 Config.General.DumpPath.Default = /tmp
+Config.General.Offset.Comment=Offset (x,y,orientation) of Gui origin from global CS
+Config.General.Offset.Default=0.0 0.0 0.0
 Config.Waypoints.SpacingProperty.Default=Velocity
 Config.Waypoints.SpacingValue.Default=1.0
 Config.Waypoints.DistanceTolerance.Default=1.0
@@ -47,8 +49,6 @@ Config.ScreenCapture.TopPad.Default = 25
 Config.ScreenCapture.SidePad.Default = 2
 Config.ScreenCapture.BottomPad.Default = 2
 Config.ScreenCapture.CaptureTimerInterval.Default = 1000
-Config.Gps.Origin.Comment=easting/northing/height
-Config.Gps.Origin.Default=0.0 0.0 0.0
 Config.OgMapsCombined.LookupTableFileName.Default= ogHazardLookupTable.png
 
 # external configuration options

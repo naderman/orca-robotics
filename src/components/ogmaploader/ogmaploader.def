@@ -15,9 +15,9 @@ Config.Driver.Comment= 0:occupancy, 1:hazard, 2:motion
 Config.MapType.Default=0
 
 # Geometry Config
-Config.Origin.X.Default=0.0
-Config.Origin.Y.Default=0.0
-Config.Origin.Orientation.Default=0.0
+Config.Offset.X.Default=0.0
+Config.Offset.Y.Default=0.0
+Config.Offset.Orientation.Default=0.0
 Config.Size.X.Default=20.0
 Config.Size.Y.Default=20.0
 

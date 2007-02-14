@@ -37,9 +37,9 @@ Simulator::Simulator( const orcaice::Context &context,
 
     cout<<"TRACE(simulator.cpp): batchMode_: " << batchMode_ << endl;
 
-    ogMap_.origin().p.x = -WORLD_SIZE/2.0;
-    ogMap_.origin().p.y = -WORLD_SIZE/2.0;
-    ogMap_.origin().o   = 0.0;
+    ogMap_.offset().p.x = -WORLD_SIZE/2.0;
+    ogMap_.offset().p.y = -WORLD_SIZE/2.0;
+    ogMap_.offset().o   = 0.0;
     
     ogMap_.setMetresPerCellX( 0.1 );
     ogMap_.setMetresPerCellY( 0.1 );

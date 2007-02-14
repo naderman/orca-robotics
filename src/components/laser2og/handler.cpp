@@ -131,11 +131,11 @@ Handler::init()
     mapConfig.mapSizeY = ogFusionConfig.numCellsY;
     mapConfig.mapResX = ogFusionConfig.metresPerCellX;
     mapConfig.mapResY = ogFusionConfig.metresPerCellY;
-    mapConfig.mapOriginX = ogFusionConfig.origin.p.x;
-    mapConfig.mapOriginY = ogFusionConfig.origin.p.y;
-    mapConfig.mapOrientation = ogFusionConfig.origin.o;
+    mapConfig.mapOriginX = ogFusionConfig.offset.p.x;
+    mapConfig.mapOriginY = ogFusionConfig.offset.p.y;
+    mapConfig.mapOrientation = ogFusionConfig.offset.o;
 
-    if(ogFusionConfig.origin.o != 0.0){
+    if(ogFusionConfig.offset.o != 0.0){
         std::string errString = "Laser2Og currently only support axis aligned OgMaps";
         context_.tracer()->error( errString );
         throw orcaice::Exception( ERROR_INFO, errString );

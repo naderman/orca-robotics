@@ -434,7 +434,7 @@ setSane( orca::OgMapData& obj, int width, int height )
 
     obj.numCellsX = width;
     obj.numCellsY = height;
-    setInit( obj.origin );
+    setInit( obj.offset );
     obj.metresPerCellX = 1.0;
     obj.metresPerCellY = 1.0;
     obj.data.resize( width*height, char(88) );
@@ -450,7 +450,7 @@ setSane( orca::PixMapData& obj, int width, int height )
 
     obj.numCellsX = width;
     obj.numCellsY = height;
-    setInit( obj.origin );
+    setInit( obj.offset );
     obj.metresPerCellX = 1.0;
     obj.metresPerCellY = 1.0;
     orca::Pixel p;

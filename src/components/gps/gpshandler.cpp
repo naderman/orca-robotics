@@ -106,7 +106,7 @@ GpsHandler::run()
                         p.y=gpsMapGridData.northing;
                         p.z=gpsMapGridData.altitude;
                         //convert
-                        p=convertToFrame3d(descr_.offset,p);
+                        p=convertToFrame3d(descr_.antennaOffset,p);
                         // reset object
                         gpsMapGridData.easting=p.x;
                         gpsMapGridData.northing=p.y;

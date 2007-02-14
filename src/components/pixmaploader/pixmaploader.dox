@@ -60,10 +60,10 @@ World Size (float,float) [m]
 - @c PixMapLoader.Config.Size.X
 - @c PixMapLoader.Config.Size.Y
 
-Map Origin (float,float,float) [m,m,deg]
-- @c PixMapLoader.Config.Origin.X
-- @c PixMapLoader.Config.Origin.Y
-- @c PixMapLoader.Config.Origin.Orientation
+Map Origin with respect to the (arbitrarily defined) global coordinate system (float,float,float) [m,m,deg]
+- @c PixMapLoader.Config.Offset.X
+- @c PixMapLoader.Config.Offset.Y
+- @c PixMapLoader.Config.Offset.Orientation
 
 Ice might throw the following exception:
 @verbatim

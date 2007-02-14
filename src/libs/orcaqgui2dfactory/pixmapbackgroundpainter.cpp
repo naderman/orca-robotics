@@ -41,7 +41,7 @@ PixMapBackgroundPainter::paint( QPainter *p, int z )
 void
 PixMapBackgroundPainter::setData( const orca::PixMapData& data )
 {
-    if ( data.origin.o != 0.0 ) 
+    if ( data.offset.o != 0.0 ) 
     {
         stringstream ss;
         ss << "PixMapBackgroundPainter: Don't know how to display non-axis-aligned map: "
@@ -53,7 +53,7 @@ PixMapBackgroundPainter::setData( const orca::PixMapData& data )
     PixmapData pixmapData;
     pixmapData.cellSize = QSizeF(data.metresPerCellX,data.metresPerCellY);
     pixmapData.mapSizePix = QSize(data.numCellsX,data.numCellsY);
-    pixmapData.origin = QPointF(data.origin.p.x,data.origin.p.y);
+    pixmapData.offset = QPointF(data.offset.p.x,data.offset.p.y);
     
     for (int i=0; i<(data.numCellsX*data.numCellsY); i++)
     {

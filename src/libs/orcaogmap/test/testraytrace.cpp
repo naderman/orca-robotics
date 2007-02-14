@@ -42,7 +42,7 @@ public:
 void testBasic( std::ostream &s )
 {
     orcaogmap::OgMap theMap;
-    theMap.origin().o = 0;
+    theMap.offset().o = 0;
     theMap.reallocate( 20, 20 );
     theMap.fill( 0 );
 
@@ -66,7 +66,7 @@ void testBasic( std::ostream &s )
 void testBorders( std::ostream &s )
 {
     orcaogmap::OgMap theMap;
-    theMap.origin().o = 0;
+    theMap.offset().o = 0;
     theMap.reallocate( 20, 20 );
     theMap.fill( 0 );
 
@@ -94,7 +94,7 @@ void testBorders( std::ostream &s )
 void testLos()
 {
     orcaogmap::OgMap theMap;
-    theMap.origin().o = 0;
+    theMap.offset().o = 0;
     theMap.reallocate( 20, 20 );
     theMap.fill( 0 );
 

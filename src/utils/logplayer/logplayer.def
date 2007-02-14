@@ -16,8 +16,3 @@ Config.EndTime.Comment=Negative to play to the end
 Config.EndTime.Default=-1.0
 
 # Interface-specific config
-Config.Gps.Geometry.Comment = x[m] y[m] z[m]
-Config.Gps.Geometry.Default = 0.0 0.0 0.0
-
-Config.Gps.Origin.Comment = x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
-Config.Gps.Origin.Default = 0.0 0.0 0.0 0.0 0.0 0.0

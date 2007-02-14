@@ -86,9 +86,9 @@ loadMapFromFile( const orcaice::Context & context, orca::OgMapData& map )
         bool negate = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Negate", true );
         orcaogmapload::loadMap( filename.c_str(), negate, map.numCellsX, map.numCellsY, map.data );
 
-        map.origin.p.x = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.X", 0.0 );
-        map.origin.p.y = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Y", 0.0 );
-        map.origin.o   = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Origin.Orientation", 0.0 ) * M_PI/180.0;
+        map.offset.p.x = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Offset.X", 0.0 );
+        map.offset.p.y = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Offset.Y", 0.0 );
+        map.offset.o   = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Offset.Orientation", 0.0 ) * M_PI/180.0;
 
         // since we know that map size in pixels, we can calculate the cell size
         float worldSizeX = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.X", 20.0 );

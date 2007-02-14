@@ -16,7 +16,6 @@
 #include <orcalog/replayer.h>
 
 #include <orcaice/ptrbuffer.h>
-// #include <orcalogplayer/josepackets.h>
 #include <orcanavutil/mapgrid.h>
 
 namespace orcalogfactory
@@ -75,8 +74,8 @@ private:
     void loadHeaderIce();
 
     void checkDescriptionFile();
-    int retSize_;
-    int retOffset_;
+    int haveConfigOffset_;
+    int haveConfigAntennaOffset_;
 
     char id_;
     mgaMapgrid mgaMapgrid_;

@@ -28,8 +28,8 @@ struct PixmapData
     // Pixmap size in number of cells
     QSize mapSizePix;
     
-    // Origin of the bottomleft corner of the pixmap
-    QPointF origin;
+    // Offset wrt the global coordinate system
+    QPointF offset;
     
     // Three color channels as a flat representation of the pixels:
     // vectorIndex = y*mapSizePix.width()+x
