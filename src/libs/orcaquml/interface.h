@@ -128,9 +128,9 @@ protected:
     Component* parent_;
 
     // Hook into the model
-    InterfaceGeom &geom_;
     orcadef::InterfaceDef  &def_;
     orcadef::InterfaceCfg  &cfg_;
+    InterfaceGeom &geom_;
 
     QList<Link*> inLinks_;
     QList<Link*> outLinks_;

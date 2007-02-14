@@ -195,7 +195,7 @@ Component::hasInterface( const QString &name,
 //             }
 //         }
 //     }
-//     return false;
+    return false;
 }
 
 void 
@@ -356,7 +356,6 @@ Component::setColor()
 void 
 Component::placeInterfaceAuto()
 {
-    Interface *p;
     // spread all interfaces evenly
     int n = provided_.count() + required_.count();
 //     cout<<"auto-placing "<<n<<" interfaces"<<endl;

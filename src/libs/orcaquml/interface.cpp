@@ -79,6 +79,7 @@ Interface::boundingRect() const
     case OrientRight :
         return QRectF( 0.0, -_bubbleRadius, _stemSize+2.0*_bubbleRadius, 2.0*_bubbleRadius );
     }
+    return QRectF();
 }
 
 void 
@@ -148,6 +149,7 @@ Interface::bubblePos() const
     case OrientRight :
         return QPointF( _stemSize + _bubbleRadius, 0.0 );
     }   
+    return QPointF();
 }
 
 /*!
