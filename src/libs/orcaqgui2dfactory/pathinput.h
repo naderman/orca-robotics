@@ -32,8 +32,8 @@ class WpTable;
 class WaypointSettings
 {
     public:
-        WaypointSettings(std::string a, float b, float c, int d, float e, int f, int g):
-            spacingProperty(a), spacingValue(b), distanceTolerance(c), headingTolerance(d), maxApproachSpeed(e), maxApproachTurnrate(f), numberOfLoops(g)
+        WaypointSettings(std::string a, float b, float c, int d, float e, int f):
+            spacingProperty(a), spacingValue(b), distanceTolerance(c), headingTolerance(d), maxApproachSpeed(e), maxApproachTurnrate(f)
             {}
             std::string spacingProperty;
             float spacingValue;
@@ -41,7 +41,6 @@ class WaypointSettings
             int headingTolerance;
             float maxApproachSpeed;
             int maxApproachTurnrate;
-            int numberOfLoops;
 };
 
 class WpWidget : public QWidget
@@ -57,8 +56,7 @@ class WpWidget : public QWidget
                     QVector<float> *distTolerances,
                     QVector<int> *headingTolerances,
                     QVector<float> *maxSpeeds,
-                    QVector<int> *maxTurnrates,
-                    int numberOfLoopsConfig);
+                    QVector<int> *maxTurnrates );
         ~WpWidget() {};
         void refreshTable();
         QString getBehaviour( int row );
@@ -176,6 +174,8 @@ class PathInput : public QObject
         int waypointInFocus_;
         
         QString lastSavedPathFile_;
+        
+        float secondsToCompleteLoop() const;
         
     public slots:
         void setWaypointFocus(int row, int column);

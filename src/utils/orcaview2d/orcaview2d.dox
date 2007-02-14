@@ -147,10 +147,6 @@ These are the default waypoint settings that can be changed in the menu later. C
     - maximum approach turn rate to waypoint
     - Default: 2000000
     
-- @c OrcaView.Config.Waypoints.NumberOfLoops (int)
-    - for pathfollower2d: specified path can be repeated NumberOfLoops times
-    - Default: 1
-    
 - @c OrcaView.Config.Waypoints.SpacingProperty (string)
     - property that determines the time deltas of subsequent waypoints
     - Valid values: {'Time','Velocity'}, corresponding values are specified using @c SpacingValue (see below)

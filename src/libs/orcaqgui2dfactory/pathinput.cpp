@@ -61,8 +61,7 @@ WpWidget::WpWidget( PathInput *pathInput,
                     QVector<float> *distTolerances,
                     QVector<int> *headingTolerances,
                     QVector<float> *maxSpeeds,
-                    QVector<int> *maxTurnrates,
-                    int numberOfLoopsConfig )
+                    QVector<int> *maxTurnrates )
     : pathInput_(pathInput),
       pathFileSet_(false),
       pathFileName_("/tmp")
@@ -93,7 +92,8 @@ WpWidget::WpWidget( PathInput *pathInput,
     QObject::connect(cancelPath,SIGNAL(clicked()),pathInput,SIGNAL(cancelPathClicked()));
     
     numLoopsSpin_ = new QSpinBox(this);
-    numLoopsSpin_->setValue(numberOfLoopsConfig);
+    numLoopsSpin_->setMinimum(1);
+    numLoopsSpin_->setValue(1);
     
     QVBoxLayout *globalLayout = new QVBoxLayout;
     globalLayout->addWidget(wpTable_);
@@ -425,8 +425,7 @@ PathInput::PathInput( QObject *parent, WaypointSettings *wpSettings, IHumanManag
                             &distTolerances_,
                             &headingTolerances_,
                             &maxSpeeds_,
-                            &maxTurnrates_,
-                            wpSettings_->numberOfLoops);
+                            &maxTurnrates_);
     
     QObject::connect(this,SIGNAL(sendPathClicked()),parent,SLOT(send()));
     QObject::connect(this,SIGNAL(cancelPathClicked()),parent,SLOT(cancel()));
@@ -842,8 +841,8 @@ PathInput::savePath( const QString &fileName )
     
     lastSavedPathFile_ = fileName;
     
-    // for loops we need to know the timestamp of the last waypoint
-    const float timeOffset = times_[waypoints_.size()-1];
+    // offset time if we have several loops
+    const float timeOffset = times_.last() + secondsToCompleteLoop();
 
     QTextStream out(&file);
     for (int k=0; k<wpWidget_->numberOfLoops(); k++)
@@ -864,6 +863,19 @@ PathInput::savePath( const QString &fileName )
     humanManager_->showStatusMsg(Information, "Path successfully saved to " + fileName );
 }
 
+float
+PathInput::secondsToCompleteLoop() const
+{
+    // time from last waypoint to first waypoint to complete the loop
+    float timeToCompleteLoop;
+    if( wpSettings_->spacingProperty=="Time" ) {
+        timeToCompleteLoop = wpSettings_->spacingValue;
+    } else {
+        timeToCompleteLoop = straightLineDist( waypoints_.last()-waypoints_.first() ) / (wpSettings_->spacingValue);
+    }
+    return timeToCompleteLoop;
+}
+    
 void PathInput::loadPreviousPath()
 {
     if (lastSavedPathFile_!="") {
@@ -911,7 +923,8 @@ PathFollowerInput::getPath( orca::PathFollower2dData &pathData ) const
     pathData.path.resize( size );
     int counter = -1;
     
-    const float timeOffset = times_[waypoints_.size()-1];
+    // offset time if we have several loops
+    const float timeOffset = times_.last() + secondsToCompleteLoop();
     
     for (int k=0; k<wpWidget_->numberOfLoops(); k++)
     {
@@ -992,8 +1005,7 @@ readWaypointSettings( const Ice::PropertiesPtr & props, const std::string & tag 
     int headingTolerance = orcaice::getPropertyAsIntWithDefault( props, prefix+"HeadingTolerance", 90 );
     float maxApproachSpeed = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"MaxApproachSpeed", 2e6 );
     int maxApproachTurnrate = orcaice::getPropertyAsIntWithDefault( props, prefix+"MaxApproachTurnRate", 6000000 );
-    int numberOfLoops = orcaice::getPropertyAsIntWithDefault( props, prefix+"NumberOfLoops", 1 );
-    WaypointSettings wpSettings(spacingProperty, spacingValue, distanceTolerance, headingTolerance, maxApproachSpeed, maxApproachTurnrate, numberOfLoops);
+    WaypointSettings wpSettings(spacingProperty, spacingValue, distanceTolerance, headingTolerance, maxApproachSpeed, maxApproachTurnrate);
     return wpSettings;
 }
 
