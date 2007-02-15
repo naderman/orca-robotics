@@ -27,8 +27,6 @@ class QPainter;
 namespace orcaqgui
 {
 
-class IHumanManager;
-
 class GpsSubscriptionMaker 
 {
 public:
@@ -57,7 +55,6 @@ public:
 
     GpsElement( const orcaice::Context  &context,
                 const std::string       &interfaceTag,
-                IHumanManager           *humanManager,
                 int                      timeoutMs=60000 );
 
     // inherited from GuiElement
@@ -81,44 +78,39 @@ public:
 
     // inherited from IKnowsPlatformPosition2d
     // Access to coordinates in GUI coordinate system [m] [m] [rad]
-    virtual double x() const { return x_; }
-    virtual double y() const { return y_; }
-    virtual double theta() const { return theta_; }
+    virtual float x() const { return x_; }
+    virtual float y() const { return y_; }
+    virtual float theta() const { return theta_; }
     virtual int platformKnowledgeReliability() const { return 7; }
 
 
 private:
-    
-    IceStormListener<orca::GpsMapGridData,
-                orca::GpsPrx,
-                orca::GpsMapGridConsumer,
-                orca::GpsMapGridConsumerPrx,
-                GpsSubscriptionMaker,
-                GpsUnSubscriptionMaker> gpsListener_; 
-                    
-    orcaice::Context context_; 
-    IHumanManager *humanManager_;
+    std::string interfaceName_;
+
+    GpsPainter gpsPainter_;
+
     double timeoutMs_;
     
-    bool isConnected_;
-    bool gotDescription_;
+    IceStormListener<orca::GpsMapGridData,
+                    orca::GpsPrx,
+                    orca::GpsMapGridConsumer,
+                    orca::GpsMapGridConsumerPrx,
+                    GpsSubscriptionMaker,
+                    GpsUnSubscriptionMaker> gpsListener_;
+
+    orcaice::Context context_;      
     
     // display options and settings
-    bool displayGps_; 
-    
-    GpsPainter gpsPainter_;
-    
-    // Gps CS offset from global
-    orca::Frame2d gpsOff_;
+    bool displayGps_;
+    orca::CartesianPoint gpsOrigin_;   
     
     // in GUI's coordinate system: [m] [m] [rad]
-    double x_;
-    double y_;
-    double theta_;
+    float x_;
+    float y_;
+    float theta_;
 
     // utilities
     bool needToUpdate();
-    void actionOnConnection();
 };
 
 }

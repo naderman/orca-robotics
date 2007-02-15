@@ -20,7 +20,6 @@ FeatureMap2dElement::FeatureMap2dElement( const orcaice::Context  &context,
       featureMapFileName_("/home"),
       featureMapFileNameSet_(false)
 {
-    painter_.setGuiOffset( xGuiOff_, yGuiOff_, thetaGuiOff_);
 }
 
 QStringList

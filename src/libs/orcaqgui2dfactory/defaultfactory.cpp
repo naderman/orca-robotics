@@ -74,7 +74,7 @@ DefaultFactory::create( const orcaice::Context           &context,
         }
         else if ( interfaceId == "::orca::Localise2d" ) {
             cout<<"creating Localise2d element"<<endl;
-            elem = new orcaqgui::Localise2dElement( context, proxyString.toStdString(), humanManager );
+            elem = new orcaqgui::Localise2dElement( context, proxyString.toStdString() );
         }
         else if ( interfaceId == "::orca::Localise3d" ) {
             cout<<"creating Localise3d element"<<endl;
@@ -110,7 +110,7 @@ DefaultFactory::create( const orcaice::Context           &context,
         }
         else if ( interfaceId == "::orca::Gps" ) {
             cout<<"creating Gps element with proxyString "<<proxyString.toStdString()<<endl;
-            elem = new orcaqgui::GpsElement( context, proxyString.toStdString(), humanManager );
+            elem = new orcaqgui::GpsElement( context, proxyString.toStdString() );
         }
         else if ( interfaceId == "::orca::QGraphics2d" ) {
             cout<<"creating QGraphics2d element with proxyString "<<proxyString.toStdString()<<endl;

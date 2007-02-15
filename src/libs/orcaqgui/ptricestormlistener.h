@@ -83,7 +83,7 @@ public:
             detail::subscribeListener<ProxyType,
                 ConsumerType,
                 ConsumerPrxType,
-                SubscriptionMakerType>( context_, proxyString_, consumer_, callbackPrx_, proxy_ );
+                SubscriptionMakerType>( context_, proxyString_, consumer_, callbackPrx_ );
             isSubscribed_ = true;
             return 0;
         }
@@ -124,7 +124,7 @@ private:
                     detail::unSubscribeListener<ProxyType,
                         ConsumerType,
                         ConsumerPrxType,
-                        UnSubscriptionMakerType>( context_, proxyString_, consumer_, callbackPrx_, proxy_ );
+                        UnSubscriptionMakerType>( context_, proxyString_, consumer_, callbackPrx_ );
 
                     // remove consumer from the list of active servants
                     context_.adapter()->remove( callbackPrx_->ice_getIdentity() );

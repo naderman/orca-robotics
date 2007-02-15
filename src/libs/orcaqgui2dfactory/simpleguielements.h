@@ -18,11 +18,6 @@
 #include <QPointF>
 #include <QObject>
 
-// for setInit()
-#include <orcaobj/orcaobj.h>
-// for getPropertyAsCartesianPoint
-#include <orcaice/orcaice.h>
-
 #include <orcaqgui2d/ptricestormelement.h>
 #include <orcaqgui2d/icestormelement.h>
 #include <orcaqgui/ihumanmanager.h>
@@ -44,8 +39,6 @@
 
 namespace orcaqgui
 {
-    
-class IHumanManager;
 
 class PolarFeature2dElement
     : public PtrIceStormElement<PolarFeature2dPainter,
@@ -134,7 +127,6 @@ class Localise2dElement
 public:
     Localise2dElement( const orcaice::Context  &context,
                        const std::string       &proxyString,
-                       IHumanManager           *humanManager,
                        bool                     beginDisplayHistory=false,
                        int                      timeoutMs=60000 )
         : IceStormElement<Localise2dPainter,
@@ -142,14 +134,15 @@ public:
                             orca::Localise2dPrx,
                             orca::Localise2dConsumer,
                             orca::Localise2dConsumerPrx>(context, proxyString, painter_, timeoutMs ),
-          humanManager_(humanManager),
-          painter_( beginDisplayHistory ),
-          gotDescription_(false)
-        {
-        };
+          painter_( beginDisplayHistory )
+        {};
 
     virtual bool isInGlobalCS() { return true; }
-    virtual void actionOnConnection();
+    virtual void actionOnConnection()
+    {
+        paintInitialData<orca::Localise2dPrx, Localise2dPainter>
+            ( context_, listener_.interfaceName(), painter_ );
+    }
     virtual QStringList contextMenu();
     virtual void execute( int action );
     
@@ -164,21 +157,18 @@ public:
     virtual void update();
 
     // Access to ML estimate.
-    virtual double x() const { return x_; }
-    virtual double y() const { return y_; }
-    virtual double theta() const { return theta_; }
+    virtual float x() const { return x_; }
+    virtual float y() const { return y_; }
+    virtual float theta() const { return theta_; }
     virtual int platformKnowledgeReliability() const { return 7; }
     virtual QPointF pos() const { return QPointF(x_,y_); };
 
 private:
-    IHumanManager *humanManager_;
     Localise2dPainter painter_;
-    bool gotDescription_;
-    orca::Frame2d localiseOff_;
 
-    double x_;
-    double y_;
-    double theta_;
+    float x_;
+    float y_;
+    float theta_;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -203,15 +193,7 @@ public:
                             orca::Localise3dConsumer,
                             orca::Localise3dConsumerPrx>(context, proxyString, painter_, timeoutMs ),
           painter_( beginDisplayHistory )
-{
-    // get gps origin properties from the cfg file   
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag();
-    prefix += ".Config.";
-
-    orcaice::setInit( origin_ );
-    orcaice::getPropertyAsCartesianPoint( prop, prefix+"Gps.Origin", origin_ );
-};
+        {};
 
     virtual bool isInGlobalCS() { return true; }
     virtual void actionOnConnection()
@@ -233,23 +215,18 @@ public:
     virtual void update();
 
     // Access to ML estimate.
-    virtual double x() const { return x_; }
-    virtual double y() const { return y_; }
-    virtual double theta() const { return theta_; }
+    virtual float x() const { return x_; }
+    virtual float y() const { return y_; }
+    virtual float theta() const { return theta_; }
     virtual int platformKnowledgeReliability() const { return 7; }
     virtual QPointF pos() const { return QPointF(x_,y_); };
 
 private:
     Localise3dPainter painter_;
 
-    // Platform coords for localisation elements.
-    // Used for elements attached to a platform 
-    double x_;
-    double y_;
-    double theta_;
-
-    orca::CartesianPoint origin_;   
-
+    float x_;
+    float y_;
+    float theta_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -24,10 +24,9 @@ public:
     // all purport to know the position.
     virtual int platformKnowledgeReliability() const=0;
 
-    // coordinates in GUI CS
-    virtual double x() const=0;
-    virtual double y() const=0;
-    virtual double theta() const=0;
+    virtual float x() const=0;
+    virtual float y() const=0;
+    virtual float theta() const=0;
 
 private: 
 

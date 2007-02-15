@@ -191,10 +191,8 @@ GuiElementModel::doesInterfaceExist( const QStringList& proxyStrList, int numEle
 
 void 
 GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
-{   
-    // 
-    // Get interface data out of stringlist
-    //
+{    
+    // get interface data out of stringlist
     QStringList ids;
     QStringList proxyStrList;
     QStringList platformStrList;
@@ -215,10 +213,7 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
         return;
     }
     
-    //
-    // Set platform name: if we have multiple multiple interfaces and 
-    //                    they disagree on the platform name, then set to global
-    //
+    // set platform name: if they disagree, set to global
     QString platform = platformStrList[0];
     for (int i=1; i<platformStrList.size(); i++)
     {   
@@ -263,9 +258,7 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
         return;   
     }
     
-    //
-    // Set properties of guielement
-    //
+    // set properties of guielement
     element->setTransparency( currentTransparency_ );
     element->setPlatform( platform );
     QString details = "";
@@ -279,18 +272,7 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
     element->setName(name);
     
     //
-    // Set GUI offset in the 2d plane
-    //
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag();
-    prefix += ".Config.General.Offset";
-    orca::Frame2d guiCsOffset;
-    orcaice::setInit( guiCsOffset );
-    orcaice::getPropertyAsFrame2d( prop, prefix, guiCsOffset );
-    element->setGuiCsOffset( guiCsOffset.p.x, guiCsOffset.p.y, guiCsOffset.o );
-    
-    //
-    // Set focus of guielement
+    // We need to tell the new element whether it's in focus or not
     //
     if (platform == platformInFocus_ || platformInFocus_== "global" ) {
         element->setFocus( true );
@@ -298,9 +280,6 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
         element->setFocus( false );
     }
         
-    //
-    // Finally, stick the new element into the view
-    //
     int ii = elements_.indexOf( element );
     if ( ii==-1 ) {    
         ii = elements_.size();

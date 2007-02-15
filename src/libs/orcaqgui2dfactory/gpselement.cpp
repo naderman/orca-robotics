@@ -9,14 +9,11 @@
  */
 
 #include <iostream>
-
 #include <QPainter>
 #include <QString>
 
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-
-#include <orcaqgui/ihumanmanager.h>
 
 #include "gpselement.h"
 
@@ -26,38 +23,25 @@ using namespace orcaqgui;
 
 GpsElement::GpsElement( const orcaice::Context  &context,
                         const std::string       &interfaceTag,
-                        IHumanManager           *humanManager,
-                        int                      timeoutMs )
-    : gpsListener_(context,interfaceTag),
+                        int                     timeoutMs )
+    : timeoutMs_(timeoutMs),
+      gpsListener_(context,interfaceTag),
       context_(context),
-      humanManager_(humanManager),
-      timeoutMs_(timeoutMs),
-      isConnected_(false),
-      gotDescription_(false),
       displayGps_(true)
 {
-}  
+    gpsListener_.connect();
+    
+    // get gps specific properties from the cfg file   
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag();
+    prefix += ".Config.";
 
-void
-GpsElement::actionOnConnection()
-{
-    if (!isConnected_) return;
-    
-    try
-    {
-        const orca::GpsPrx& prx = gpsListener_.proxy();
-        orca::GpsDescription descr = prx->getDescription();
-        gpsOff_ = descr.offset;
-    }
-    catch ( ... )
-    {
-        humanManager_->showStatusMsg(Warning, "Problem getting description from GPS interface. Will try again later.");
-        return;
-    }
-    
-    humanManager_->showStatusMsg(Information, "Got GPS description");
-    gotDescription_ = true;    
-}
+    orcaice::setInit( gpsOrigin_ );
+    orcaice::getPropertyAsCartesianPoint( prop, prefix+"Gps.Origin", gpsOrigin_ );
+
+    stringstream ss; ss << "GpsElement: GPS Origin: " << orcaice::toString( gpsOrigin_ );
+    context_.tracer()->info( ss.str() );
+}  
         
 bool
 GpsElement::needToUpdate()
@@ -68,16 +52,6 @@ GpsElement::needToUpdate()
         return true;
     }
     
-    if ( !isConnected_ )
-    {
-        if ( gpsListener_.connect() == 0 )
-        {
-            actionOnConnection();
-            isConnected_ = true;
-        }
-        return false;
-    }
-    
     // The buffer is empty.  How long since we last received something?
     if ( timeoutMs_ != -1 && gpsListener_.msSinceReceipt() >= timeoutMs_ ) 
     {
@@ -85,7 +59,7 @@ GpsElement::needToUpdate()
         cout << "TRACE(gpselement.cpp): Haven't received anything in gpselement for " << gpsListener_.msSinceReceipt()  << "ms" << endl;
         gpsPainter_.clear();
         gpsListener_.resetTimer();
-        if ( gpsListener_.connect() == 0 ) actionOnConnection();
+        gpsListener_.connect();
 
     }
     return false;
@@ -94,7 +68,7 @@ GpsElement::needToUpdate()
 void
 GpsElement::update()
 {
-    if ( !needToUpdate() || !gotDescription_ )
+    if ( !needToUpdate() )
     {
         return;
     }
@@ -105,19 +79,10 @@ GpsElement::update()
     {
         gpsListener_.buffer().getAndPop( data );
         
-        transformToGuiCs( data.easting, 
-                         data.northing, 
-                         data.heading,
-                         gpsOff_.p.x, 
-                         gpsOff_.p.y, 
-                         gpsOff_.o, 
-                         x_, 
-                         y_,
-                         theta_ );
+        x_ = data.easting - gpsOrigin_.x;
+        y_ = data.northing - gpsOrigin_.y;
         
-        cout << "data.easting,northing,heading: " << data.easting << " " << data.northing << " " << RAD2DEG(data.heading) << endl;
-        cout << "gpsOff(x,y,o): " << gpsOff_.p.x << " " << gpsOff_.p.y << " " << RAD2DEG(gpsOff_.o) << endl;
-        cout << "gui(x,y,theta): " << x_ << " " << y_ << " " << RAD2DEG(theta_) << endl << endl;
+        theta_ = data.heading;
         
         if ( displayGps_ )
         {
@@ -131,7 +96,7 @@ GpsElement::update()
             stringstream ss;
             ss << "GpsElement: " << endl
                << "  data:       " << orcaice::toString( data ) << endl
-//                << "  gpsOrigin_: " << orcaice::toString( gpsOrigin_ ) << endl
+               << "  gpsOrigin_: " << orcaice::toString( gpsOrigin_ ) << endl
                << "  x_,y_:      " << x_ << ", " << y_;
             context_.tracer()->debug( ss.str(), 5 );
         }
