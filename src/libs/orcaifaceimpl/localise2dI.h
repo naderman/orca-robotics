@@ -27,6 +27,7 @@ class Localise2dI : public orca::Localise2d
 {
 public:
     Localise2dI( const std::string &ifaceTag,
+                 const orca::Localise2dDescription &descr,
                  const orcaice::Context &context );
 
     // remote calls:
@@ -40,6 +41,9 @@ public:
     // Note: could do smoothing/interpolation here...
     virtual orca::Localise2dData getDataAtTime(const orca::Time&, const Ice::Current& c) const
         { return getData(c); }
+
+    virtual orca::Localise2dDescription getDescription(const Ice::Current& c) const
+        { return description_; }
 
     // Local calls:
 
@@ -60,8 +64,9 @@ private:
     orca::Localise2dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;
 
-    const std::string              ifaceTag_;
-    orcaice::Context               context_;
+    const std::string                 ifaceTag_;
+    const orca::Localise2dDescription description_;
+    orcaice::Context                  context_;
 };
 typedef IceUtil::Handle<Localise2dI> Localise2dIPtr;
 

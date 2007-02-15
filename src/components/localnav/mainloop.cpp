@@ -234,16 +234,28 @@ MainLoop::subscribeForLocalisation()
     {
         try {
             orcaice::connectToInterfaceWithTag<orca::Localise2dPrx>( context_, locPrx, "Localisation" );
+            orca::Frame2d offset = locPrx->getDescription().offset;
+            if ( offset.p.x != 0 || offset.p.y != 0 || offset.o != 0 )
+            {
+                stringstream ss;
+                ss << "Handler: Can only handle localisers with zero offset.  Found: " << orcaice::toString(offset);
+                throw ss.str();
+            }
             break;
         }
         catch( std::exception &e )
         {
-            stringstream ss; ss << "Error while connecting to odometry: " << e.what();
+            stringstream ss; ss << "Error while connecting to localise2d: " << e.what();
             context_.tracer()->error( ss.str() );
         }
         catch( Ice::Exception &e )
         {
-            stringstream ss; ss << "Error while connecting to odometry: " << e;
+            stringstream ss; ss << "Error while connecting to localise2d: " << e;
+            context_.tracer()->error( ss.str() );
+        }
+        catch( std::string &e )
+        {
+            stringstream ss; ss << "Error while connecting to localise2d: " << e;
             context_.tracer()->error( ss.str() );
         }
         sleep(2);
@@ -254,17 +266,17 @@ MainLoop::subscribeForLocalisation()
     while ( isActive() )
     {
         try {
-            locPrx->subscribe(  locConsumerPrx );
+            locPrx->subscribe( locConsumerPrx );
             break;
         }
         catch( std::exception &e )
         {
-            stringstream ss; ss << "Error while subscribing to odometry: " << e.what();
+            stringstream ss; ss << "Error while subscribing to localise2d: " << e.what();
             context_.tracer()->error( ss.str() );
         }
         catch( Ice::Exception &e )
         {
-            stringstream ss; ss << "Error while subscribing to odometry: " << e;
+            stringstream ss; ss << "Error while subscribing to localise2d: " << e;
             context_.tracer()->error( ss.str() );
         }
         sleep(2);

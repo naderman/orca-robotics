@@ -18,8 +18,10 @@ using namespace std;
 namespace orcaifaceimpl {
 
 Localise2dI::Localise2dI( const std::string &ifaceTag,
+                          const orca::Localise2dDescription &descr,
                           const orcaice::Context &context ) :
     ifaceTag_(ifaceTag),
+    description_(descr),
     context_(context)
 {
 }

@@ -81,6 +81,13 @@ MainLoop::initNetwork()
         try
         {
             orcaice::connectToInterfaceWithTag<orca::Localise2dPrx>( context_, localise2dPrx_, "Localise2d" );
+            orca::Frame2d offset = localise2dPrx_->getDescription().offset;
+            if ( offset.p.x != 0 || offset.p.y != 0 || offset.o != 0 )
+            {
+                stringstream ss;
+                ss << "Handler: Can only handle localisers with zero offset.  Found: " << orcaice::toString(offset);
+                throw ss.str();
+            }
             break;
         }
         catch ( const orcaice::NetworkException & )

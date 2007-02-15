@@ -33,6 +33,8 @@ public:
 
     virtual ::orca::Localise2dData getDataAtTime(const orca::Time&, const Ice::Current&) const;
 
+    virtual ::orca::Localise2dDescription getDescription(const ::Ice::Current& ) const;
+
     virtual void subscribe(const ::orca::Localise2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
     virtual void unsubscribe(const ::orca::Localise2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
@@ -42,7 +44,7 @@ private:
     const IceStorm::TopicPrx localiseTopic_;
     orcaice::Buffer<orca::Localise2dData> &locBuffer_;
     orcaice::Buffer<orca::Localise2dData> &historyBuffer_;
-
+    orca::Localise2dDescription description_;
 };
 
 } // namespace
