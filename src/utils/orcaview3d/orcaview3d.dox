@@ -42,6 +42,11 @@ On Debian:
 # apt-get install libglut3-dev lib3ds-dev
 @endverbatim
 
+For OpenGL utilities, install this Debian package:
+@verbatim
+# apt-get install mesa-utils
+@endverbatim
+
 @section authors Authors
 Ben Upcroft, Alex Brooks, Tobias Kaupp, Alexei Makarenko
 
