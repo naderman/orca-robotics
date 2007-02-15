@@ -34,13 +34,17 @@ Driver::Config::toString() const
 {
     std::stringstream ss;
     ss << "InsGps driver config: \n";
-    ss << "gpsOffset (x,y,z,r,p,y)= \n";
+    ss << "gpsOffset (x,y,o)= \n";
     ss << "\t " << gpsOffset.p.x << ",";
     ss << gpsOffset.p.y << ",";
-    ss << gpsOffset.p.z << ",";
-    ss << gpsOffset.o.r << ",";
-    ss << gpsOffset.o.p << ",";
-    ss << gpsOffset.o.y << "\n";
+    ss << gpsOffset.o << "\n";
+    ss << "gpsAntennaOffset (x,y,z,r,p,y)= \n";
+    ss << "\t " << gpsAntennaOffset.p.x << ",";
+    ss << gpsAntennaOffset.p.y << ",";
+    ss << gpsAntennaOffset.p.z << ",";
+    ss << gpsAntennaOffset.o.r << ",";
+    ss << gpsAntennaOffset.o.p << ",";
+    ss << gpsAntennaOffset.o.y << "\n";
     ss << "imuOffset (x,y,z,r,p,y)= \n";
     ss << "\t " << imuOffset.p.x << ",";
     ss << imuOffset.p.y << ",";
@@ -48,26 +52,32 @@ Driver::Config::toString() const
     ss << imuOffset.o.r << ",";
     ss << imuOffset.o.p << ",";
     ss << imuOffset.o.y << "\n";
-    ss << "odometry3dOffset (x,y,z,r,p,y)= \n";
-    ss << "\t " << odometry3dOffset.p.x << ",";
-    ss << odometry3dOffset.p.y << ",";
-    ss << odometry3dOffset.p.z << ",";
-    ss << odometry3dOffset.o.r << ",";
-    ss << odometry3dOffset.o.p << ",";
-    ss << odometry3dOffset.o.y << "\n";
+    ss << "imuFlipped = \n";
+    ss << "\t " << imuFlipped << "\n";
+    ss << "imuSize (x,y,z) = \n";
+    ss << "\t " << imuSize.l << ",";
+    ss << imuSize.w << ",";
+    ss << imuSize.h << "\n";
+    ss << "vehiclePlatformToVehicleTransform (x,y,z,r,p,y)= \n";
+    ss << "\t " << vehiclePlatformToVehicleTransform.p.x << ",";
+    ss << vehiclePlatformToVehicleTransform.p.y << ",";
+    ss << vehiclePlatformToVehicleTransform.p.z << ",";
+    ss << vehiclePlatformToVehicleTransform.o.r << ",";
+    ss << vehiclePlatformToVehicleTransform.o.p << ",";
+    ss << vehiclePlatformToVehicleTransform.o.y << "\n";
     return ss.str();
 }
 
 bool 
 Driver::Config::operator==( const Driver::Config & other )
 {
-    return (gpsOffset==other.gpsOffset && gpsSize==other.gpsSize && imuOffset==other.imuOffset && imuSize==other.imuSize && odometry3dOffset==other.odometry3dOffset && odometry3dSize==other.odometry3dSize );
+    return (gpsOffset==other.gpsOffset && gpsAntennaOffset==other.gpsAntennaOffset && imuOffset==other.imuOffset && imuFlipped==other.imuFlipped && imuSize==other.imuSize && vehiclePlatformToVehicleTransform==other.vehiclePlatformToVehicleTransform );
 }
 
 bool 
 Driver::Config::operator!=( const Driver::Config & other )
 {
-    return (gpsOffset!=other.gpsOffset && gpsSize!=other.gpsSize && imuOffset!=other.imuOffset && imuSize!=other.imuSize && odometry3dOffset!=other.odometry3dOffset && odometry3dSize!=other.odometry3dSize);
+    return (gpsOffset!=other.gpsOffset && gpsAntennaOffset!=other.gpsAntennaOffset && imuOffset!=other.imuOffset && imuFlipped!=other.imuFlipped && imuSize!=other.imuSize && vehiclePlatformToVehicleTransform!=other.vehiclePlatformToVehicleTransform );
 }
 
 } // namespace

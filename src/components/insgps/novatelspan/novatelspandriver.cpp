@@ -271,8 +271,7 @@ NovatelSpanInsGpsDriver::init()
     // the type of imu being used
     put = serial_->write( "setimutype imu_hg1700_ag17\r\n" );
 
-    bool imuFlipped = true;
-    if ( imuFlipped )
+    if ( config_.imuFlipped )
     {
            // This assumes the imu's y-axis is pointing forwards
            // and was flipped by rotating 180 deg about the y axis.

@@ -82,14 +82,14 @@ public:
         bool operator==( const Config & other );
         bool operator!=( const Config & other );
         
-        orca::Frame3d gpsOffset;
-        orca::Size3d gpsSize;
+        orca::Frame2d gpsOffset;
+        orca::Frame3d gpsAntennaOffset;
               
         orca::Frame3d imuOffset;
+	bool imuFlipped;
         orca::Size3d imuSize;                  
         
-        orca::Frame3d odometry3dOffset;
-        orca::Size3d odometry3dSize;
+	orca::Frame3d vehiclePlatformToVehicleTransform;
     };
    
     Driver( const Config& cfg, const orcaice::Context& context ) : config_(cfg) {};

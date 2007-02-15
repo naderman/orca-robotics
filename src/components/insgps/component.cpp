@@ -57,6 +57,42 @@ Component::start()
     // read config options
     Driver::Config desiredCfg;
 
+    // Transformation from global (arbitrarily defined) coordinate system (CS) to
+    // the GPS MapGrid CS.
+    orcaice::setInit( desiredCfg.gpsOffset );
+    desiredCfg.gpsOffset = orcaice::getPropertyAsFrame2dWithDefault( prop, prefix+"Gps.Offset", desiredCfg.gpsOffset );
+
+    // Specifies location of the GPS antenna with respect to the vehicles's
+    // coordinate system. 
+    // Note that this is different from the Novatel.ImuToGpsAntennaOffset which is the lever arm between
+    // the imu and antenna, not vehicle and antenna.
+    orcaice::setInit( desiredCfg.gpsAntennaOffset );
+    desiredCfg.gpsAntennaOffset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Gps.AntennaOffset", desiredCfg.gpsAntennaOffset );
+    
+    // offset of the imu with respect to the robot's local coordinate system
+    orcaice::setInit( desiredCfg.imuOffset );
+    desiredCfg.imuOffset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Imu.Offset", desiredCfg.imuOffset );
+   
+    // consider the special case of the sensor mounted level (pitch=0) but upside-down (roll=180)
+    desiredCfg.imuFlipped = false;
+    if ( NEAR(desiredCfg.imuOffset.o.r, M_PI, 0.001) && desiredCfg.imuOffset.o.p==0.0 && desiredCfg.imuOffset.o.y==0.0 ) 
+    {
+            // the offset is appropriate
+            desiredCfg.imuFlipped = true;
+            // now remove the roll angle, we'll compensate for it internally
+            desiredCfg.imuOffset.o.r = 0.0;
+            tracer()->info( "the driver will compensate for upside-down mounted sensor" );
+    }
+
+    orcaice::setInit( desiredCfg.imuSize );
+    desiredCfg.imuSize = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Imu.Size", desiredCfg.imuSize );
+
+    // Transformation:
+    // - from: the platform's coordinate system (eg. origin at the GPS antenna),
+    // - to:   the coordinate system of the vehicle (eg. rear axle of the vehicle).
+    orcaice::setInit( desiredCfg.vehiclePlatformToVehicleTransform );
+    desiredCfg.vehiclePlatformToVehicleTransform = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Vehicle.PlatformToVehicleTransform", desiredCfg.vehiclePlatformToVehicleTransform );
+   
     if ( !desiredCfg.validate() ) {
         tracer()->error( "Failed to validate insgps configuration. "+desiredCfg.toString() );
         // this will kill this component
@@ -126,32 +162,12 @@ Component::start()
     // transfer internal sensor configs
     //
     
-    // Transformation from global (arbitrarily defined) coordinate system (CS) to
-    // the GPS MapGrid CS.
-    orcaice::setInit( gpsDescr.offset );
-    gpsDescr.offset = orcaice::getPropertyAsFrame2dWithDefault( prop, prefix+"Offset", gpsDescr.offset );
-
-    // Specifies location of the GPS antenna with respect to the vehicles's
-    // coordinate system. 
-    orcaice::setInit( gpsDescr.antennaOffset );
-    gpsDescr.antennaOffset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"AntennaOffset", gpsDescr.antennaOffset );
-    
-    // offset of the imu with respect to the robot's local coordinate system
-    orcaice::setInit( imuDescr.offset );
-    imuDescr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Imu.Offset", imuDescr.offset );
+    gpsDescr.offset = actualCfg.gpsOffset;
+    gpsDescr.antennaOffset = actualCfg.gpsAntennaOffset;
+    imuDescr.offset = actualCfg.imuOffset;
+    imuDescr.size = actualCfg.imuSize;
+    vehicleDescr.platformToVehicleTransform = actualCfg.vehiclePlatformToVehicleTransform;
    
-    orcaice::setInit( imuDescr.size );
-    imuDescr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Imu.Size", imuDescr.size );
-
-    // Transformation:
-    // - from: the platform's coordinate system (eg. origin at the GPS antenna),
-    // - to:   the coordinate system of the vehicle (eg. rear axle of the vehicle).
-    orcaice::setInit( vehicleDescr.platformToVehicleTransform );
-    vehicleDescr.platformToVehicleTransform = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Vehicle.PlatformToVehicleTransform", vehicleDescr.platformToVehicleTransform );
-   
-    // A description of the physical size and shape of the vehicle.
-    // vehicleDescr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Odometry3d.Size", imuDescr.size );
-    
     // wait until we have a fix before publishing etc.
     /*
     do{

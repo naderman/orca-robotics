@@ -21,8 +21,8 @@ Config.Driver.Default=fake
 
 Config.StartEnabled.Default=1
 
-Config.Gps.Offset.Comment=Transformation from global (arbitrarily defined) coordinate system (CS) to the GPS MapGrid CS x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
-Config.Gps.Offset.Default=0.0 0.0 0.0 0.0 0.0 0.0
+Config.Gps.Offset.Comment=Transformation from global (arbitrarily defined) coordinate system (CS) to the GPS MapGrid CS x[m] y[m] yaw[deg]
+Config.Gps.Offset.Default=0.0 0.0 0.0
 
 Config.Gps.AntennaOffset.Comment=Specifies location of the GPS antenna with respect to the vehicles's coordinate system x[m] y[m] z[m]
 Config.Gps.AntennaOffset.Default=0.0 0.0 0.0
