@@ -13,10 +13,16 @@
 
 #include <string>
 #include <assert.h>
+#include <iostream>
+
 #include <QString>
 #include <QColor>
 #include <QPointF>
 #include <QMouseEvent>
+#include <QMatrix>
+
+#include <orcanavutil/orcanavutil.h>
+#include <orcaobj/mathdefs.h>
 
 namespace orcaqgui
 {
@@ -88,10 +94,49 @@ public:
     QString name() { return name_; };
     void setName( QString name ) { name_ = name; };
     
+    //! Sets the 2d offset of the Gui coordinate system wrt the (aribitrarily defined) global reference frame
+    void setGuiCsOffset( double x, double y, double theta ) 
+    { 
+        xGuiOff_=x; yGuiOff_=y; thetaGuiOff_=theta;
+        std::cout << "=============== x,y,theta: " << xGuiOff_ << " " << yGuiOff_ << " " << RAD2DEG(thetaGuiOff_) << std::endl;
+    };
+    
 private:
     QString platform_;
     QString details_;
     QString name_;
+    double xGuiOff_;
+    double yGuiOff_;
+    double thetaGuiOff_;
+    
+protected:
+    //! Transforms a pose from an element-specific, local CS 
+    //! (received from an interface) into the GUI CS.
+    //! Does 2 transformations: local-to-global CS, then global-to-GUI CS
+    inline void transformToGuiCs( double  xIn, 
+                                 double  yIn, 
+                                 double  thetaIn,
+                                 double  xOff, 
+                                 double  yOff, 
+                                 double  thetaOff, 
+                                 double &xOut, 
+                                 double &yOut,
+                                 double &thetaOut )
+    {
+        double xGlobal, yGlobal;
+        
+        orcanavutil::transformPoint2d( xIn, yIn, xOff, yOff, thetaOff, xGlobal, yGlobal);
+        orcanavutil::transformPoint2d( xGlobal, yGlobal, xGuiOff_, yGuiOff_, thetaGuiOff_, xOut, yOut );
+        
+        thetaOut = thetaIn + thetaOff + thetaGuiOff_;
+        orcanavutil::normaliseAngle(thetaOut);
+        
+        std::cout << "xIn, yIn:                      " << xIn << " " << yIn << std::endl;
+        std::cout << "xOff, yOff, thetaOff:          " << xOff << " " << yOff << " " << thetaOff << std::endl;
+        std::cout << "xGlobal, yGlobal:              " << xGlobal << " " << yGlobal << std::endl;
+        std::cout << "xGuiOff_, yGuiOff_,thetaGuiOff_" << xGuiOff_ << " " << yGuiOff_ << " " << thetaGuiOff_ << std::endl;
+        std::cout << "xOut, yOut, thetaOut:          " << xOut << " " << yOut << thetaOut << std::endl;
+    };
     
 };
 

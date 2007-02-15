@@ -54,7 +54,7 @@ struct GpsTimeData
     Date utcDate;
 };
 
-//! Gps Map Grid Australia (MGA) data structure
+//! Gps MapGrid data structure
 struct GpsMapGridData
 {
     //! Time (according to the computer clock) when data was measured.
@@ -62,7 +62,7 @@ struct GpsMapGridData
     //! UTC time (according to GPS device), reference is Greenwich.
     TimeOfDay utcTime;
 
-    //! Our current MGA zone
+    //! Our current zone
     int zone;
     //! Northing (metres)
     double northing;

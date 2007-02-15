@@ -110,7 +110,7 @@ DefaultFactory::create( const orcaice::Context           &context,
         }
         else if ( interfaceId == "::orca::Gps" ) {
             cout<<"creating Gps element with proxyString "<<proxyString.toStdString()<<endl;
-            elem = new orcaqgui::GpsElement( context, proxyString.toStdString() );
+            elem = new orcaqgui::GpsElement( context, proxyString.toStdString(), humanManager );
         }
         else if ( interfaceId == "::orca::QGraphics2d" ) {
             cout<<"creating QGraphics2d element with proxyString "<<proxyString.toStdString()<<endl;

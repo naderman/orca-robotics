@@ -27,6 +27,8 @@ class QPainter;
 namespace orcaqgui
 {
 
+class IHumanManager;
+
 class GpsSubscriptionMaker 
 {
 public:
@@ -55,6 +57,7 @@ public:
 
     GpsElement( const orcaice::Context  &context,
                 const std::string       &interfaceTag,
+                IHumanManager           *humanManager,
                 int                      timeoutMs=60000 );
 
     // inherited from GuiElement
@@ -85,32 +88,37 @@ public:
 
 
 private:
-    std::string interfaceName_;
-
-    GpsPainter gpsPainter_;
-
-    double timeoutMs_;
     
     IceStormListener<orca::GpsMapGridData,
-                    orca::GpsPrx,
-                    orca::GpsMapGridConsumer,
-                    orca::GpsMapGridConsumerPrx,
-                    GpsSubscriptionMaker,
-                    GpsUnSubscriptionMaker> gpsListener_;
-
-    orcaice::Context context_;      
+                orca::GpsPrx,
+                orca::GpsMapGridConsumer,
+                orca::GpsMapGridConsumerPrx,
+                GpsSubscriptionMaker,
+                GpsUnSubscriptionMaker> gpsListener_; 
+                    
+    orcaice::Context context_; 
+    IHumanManager *humanManager_;
+    double timeoutMs_;
+    
+    bool isConnected_;
+    bool gotDescription_;
     
     // display options and settings
-    bool displayGps_;
-    orca::CartesianPoint gpsOrigin_;   
+    bool displayGps_; 
+    
+    GpsPainter gpsPainter_;
+    
+    // Gps CS offset from global
+    orca::Frame2d gpsOff_;
     
     // in GUI's coordinate system: [m] [m] [rad]
-    float x_;
-    float y_;
-    float theta_;
+    double x_;
+    double y_;
+    double theta_;
 
     // utilities
     bool needToUpdate();
+    void actionOnConnection();
 };
 
 }

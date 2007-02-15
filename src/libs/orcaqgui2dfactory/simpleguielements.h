@@ -135,7 +135,10 @@ public:
                             orca::Localise2dConsumer,
                             orca::Localise2dConsumerPrx>(context, proxyString, painter_, timeoutMs ),
           painter_( beginDisplayHistory )
-        {};
+        {
+//             const orca::Localise2dPrx& prx = listener_.proxy();
+//             orca::Localise2dData data = prx->getData();
+        };
 
     virtual bool isInGlobalCS() { return true; }
     virtual void actionOnConnection()

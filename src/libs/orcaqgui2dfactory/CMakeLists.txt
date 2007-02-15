@@ -18,10 +18,10 @@ IF ( NOT OS_WIN AND QT4_FOUND )
     
     LINK_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs/qorcacm )
     TARGET_LINK_LIBRARIES ( OrcaQGui2dFactory
-      OrcaQCompModel 
-      OrcaQGui2d
-      OrcaQGui
-    )
+                            OrcaQCompModel 
+                            OrcaNavUtil
+                            OrcaQGui2d
+                            OrcaQGui )
     
 ELSE  ( NOT OS_WIN AND QT4_FOUND )
 

@@ -91,7 +91,7 @@ namespace orcanavutil {
                                 double &resultX,
                                 double &resultY,
                                 double &resultTheta );
-    
+       
     //! Transforms a point (xIn,yIn) in one coordinate system
     //! to a point (xOut,yOut) in another coordinate system
     //! using the offset between the two coordinate systems
@@ -103,7 +103,7 @@ namespace orcanavutil {
                            double  offsetT,
                            double &xOut,
                            double &yOut);
-                           
+            
 }
 
 #endif
