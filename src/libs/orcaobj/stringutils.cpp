@@ -1270,7 +1270,8 @@ toString( const orca::FeatureMap2dDataPtr &obj )
     assert( obj != 0 );
 
     s << toString(obj->timeStamp)
-      << " FeatureMap2d ["<<obj->features.size()<<" elements]: "<<endl;
+      << " FeatureMap2d ["<<obj->features.size()<<" elements]: "<<endl
+      << "  offset: " << orcaice::toString(obj->offset) << endl;
 
     for (unsigned int i=0; i < obj->features.size(); i++)
     {

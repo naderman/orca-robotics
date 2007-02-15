@@ -105,6 +105,8 @@ mlHypothesis( const orca::Localise3dData& obj )
 void 
 saveToFile( const orca::FeatureMap2dDataPtr& fmap, FILE *f )
 {
+    fprintf( f, "%f %f %f", fmap->offset.p.x, fmap->offset.p.y, fmap->offset.o );
+
     for ( unsigned int i=0; i < fmap->features.size(); i++ )
     {
         assert( fmap->features[i] != 0 );
@@ -153,6 +155,8 @@ saveToFile( const orca::FeatureMap2dDataPtr& fmap, FILE *f )
 void 
 loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
 {
+    assert( fmap != 0 );
+
     std::ifstream f;
     f.open( filename.c_str(), ifstream::in );
     if ( f.good() == false )
@@ -165,9 +169,11 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
     const int bufSize=10000;
     char buf[bufSize];
 
-    int line=1;
+    bool gotOffset=false;
+    int line=0;
     while ( true )
     {
+        line++;
         if ( f.eof() ) 
             break;
 
@@ -176,6 +182,19 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
         // ignore comments
         if ( buf[0] == '#' )
             continue;
+
+        if ( !gotOffset )
+        {
+            int numRead = sscanf( buf, "%lf %lf %lf", &(fmap->offset.p.x), &(fmap->offset.p.y), &(fmap->offset.o) );
+            if ( numRead != 3 )
+            {
+                stringstream ss; ss << "Malformed featuremap file!  Expected offset on first non-comment line, found:"<<endl<<buf;
+                f.close();
+                throw( ss.str() );
+            }
+            gotOffset=true;
+            continue;
+        }
 
         char typeAsString[bufSize];
         int ret = sscanf( buf, "%s ", typeAsString );
@@ -215,7 +234,6 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
             }
 
             fmap->features.push_back( feature );
-            line++;
             break;
         }
         case orca::feature::LINE:

@@ -113,6 +113,11 @@ sequence<Feature2d> Feature2dSequence;
 //! Data describing generic 2D features.
 class FeatureMap2dData extends OrcaObject
 {
+    //! Transformation from the global (arbitrarily defined) coordinate system 
+    //! (CS) to the CS of the map. 
+    //! All feature locations are reported in the map CS.
+    Frame2d offset;
+
     //! Features
     Feature2dSequence features;
 };
