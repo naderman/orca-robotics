@@ -208,7 +208,7 @@ FakeInsGpsDriver::readGps(orca::GpsData& data, int timeoutMs )
         throw FakeInsGpsException( "Timeout while waiting for GPS packet" );
     }
    
-    cout << "Gps Data Buffer has " << gpsDataBuffer_.size() << " elements" << endl;
+//     cout << "Gps Data Buffer has " << gpsDataBuffer_.size() << " elements" << endl;
     
     return;
     
@@ -239,7 +239,7 @@ FakeInsGpsDriver::readImu(orca::ImuData& data, int timeoutMs )
         throw FakeInsGpsException( "Timeout while waiting for Imu packet" );
     }
    
-    cout << "Imu Data Buffer has " << imuDataBuffer_.size() << " elements" << endl;
+//     cout << "Imu Data Buffer has " << imuDataBuffer_.size() << " elements" << endl;
     
     return;
 }
@@ -253,7 +253,7 @@ FakeInsGpsDriver::readOdometry3d(orca::Odometry3dData& data, int timeoutMs )
         throw FakeInsGpsException( "Timeout while waiting for Imu packet" );
     }
    
-    cout << "Odometry3d Data Buffer has " << odometry3dDataBuffer_.size() << " elements" << endl;
+//     cout << "Odometry3d Data Buffer has " << odometry3dDataBuffer_.size() << " elements" << endl;
     
     return;
 }
