@@ -16,6 +16,7 @@
 #include <orca/gps.h>
 #include <orca/imu.h>
 #include <orca/localise2d.h>
+#include <orca/localise3d.h>
 #include <orca/ogmap.h>
 #include <orca/featuremap2d.h>
 #include <orca/position2d.h>
@@ -105,6 +106,11 @@ void OrcaMonComponent::start()
     else if ( objId=="::orca::Localise2d" )
     {
         attach<Localise2dPrx,Localise2dConsumerPrx,Localise2dConsumer,Localise2dData>
+                ( context(), proxyString );
+    }
+    else if ( objId=="::orca::Localise3d" )
+    {
+        attach<Localise3dPrx,Localise3dConsumerPrx,Localise3dConsumer,Localise3dData>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::OgMap" )
