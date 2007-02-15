@@ -141,7 +141,7 @@ Component::start()
 
     // offset from robot coordinate system
     // orcaice::setInit( vehicleDescr.offset );
-    // vehicleDescr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Odometry3d.Offset", vehicleDescr.offset );
+    // vehicleDescr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Localise3d.Offset", vehicleDescr.offset );
    
     // orcaice::setInit( vehicleDescr.size );
     // vehicleDescr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Odometry3d.Size", imuDescr.size );
