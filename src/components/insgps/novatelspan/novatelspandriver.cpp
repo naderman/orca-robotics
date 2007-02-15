@@ -415,6 +415,7 @@ NovatelSpanInsGpsDriver::init()
            put = serial_->write( "setimuorientation 6\r\n" );
             cout << "setimuorientation" << endl;
            // angular offset from the vehicle to the imu body after the axis mapping above
+           // -90 as the yaw is LH rule 
            put = serial_->write( "vehiclebodyrotation 0 0 -90 0 0 0\r\n" );
             cout << "vbr" << endl;
     }
