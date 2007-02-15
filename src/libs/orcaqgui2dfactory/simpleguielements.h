@@ -44,6 +44,8 @@
 
 namespace orcaqgui
 {
+    
+class IHumanManager;
 
 class PolarFeature2dElement
     : public PtrIceStormElement<PolarFeature2dPainter,
@@ -132,6 +134,7 @@ class Localise2dElement
 public:
     Localise2dElement( const orcaice::Context  &context,
                        const std::string       &proxyString,
+                       IHumanManager           *humanManager,
                        bool                     beginDisplayHistory=false,
                        int                      timeoutMs=60000 )
         : IceStormElement<Localise2dPainter,
@@ -139,18 +142,14 @@ public:
                             orca::Localise2dPrx,
                             orca::Localise2dConsumer,
                             orca::Localise2dConsumerPrx>(context, proxyString, painter_, timeoutMs ),
-          painter_( beginDisplayHistory )
+          humanManager_(humanManager),
+          painter_( beginDisplayHistory ),
+          gotDescription_(false)
         {
-//             const orca::Localise2dPrx& prx = listener_.proxy();
-//             orca::Localise2dData data = prx->getData();
         };
 
     virtual bool isInGlobalCS() { return true; }
-    virtual void actionOnConnection()
-    {
-        paintInitialData<orca::Localise2dPrx, Localise2dPainter>
-            ( context_, listener_.interfaceName(), painter_ );
-    }
+    virtual void actionOnConnection();
     virtual QStringList contextMenu();
     virtual void execute( int action );
     
@@ -165,18 +164,21 @@ public:
     virtual void update();
 
     // Access to ML estimate.
-    virtual float x() const { return x_; }
-    virtual float y() const { return y_; }
-    virtual float theta() const { return theta_; }
+    virtual double x() const { return x_; }
+    virtual double y() const { return y_; }
+    virtual double theta() const { return theta_; }
     virtual int platformKnowledgeReliability() const { return 7; }
     virtual QPointF pos() const { return QPointF(x_,y_); };
 
 private:
+    IHumanManager *humanManager_;
     Localise2dPainter painter_;
+    bool gotDescription_;
+    orca::Frame2d localiseOff_;
 
-    float x_;
-    float y_;
-    float theta_;
+    double x_;
+    double y_;
+    double theta_;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -231,9 +233,9 @@ public:
     virtual void update();
 
     // Access to ML estimate.
-    virtual float x() const { return x_; }
-    virtual float y() const { return y_; }
-    virtual float theta() const { return theta_; }
+    virtual double x() const { return x_; }
+    virtual double y() const { return y_; }
+    virtual double theta() const { return theta_; }
     virtual int platformKnowledgeReliability() const { return 7; }
     virtual QPointF pos() const { return QPointF(x_,y_); };
 
@@ -242,9 +244,9 @@ private:
 
     // Platform coords for localisation elements.
     // Used for elements attached to a platform 
-    float x_;
-    float y_;
-    float theta_;
+    double x_;
+    double y_;
+    double theta_;
 
     orca::CartesianPoint origin_;   
 

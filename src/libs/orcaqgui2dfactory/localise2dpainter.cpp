@@ -34,6 +34,18 @@ Localise2dPainter::clear()
 }
 
 void 
+Localise2dPainter::setOffsets( double xLocOff, double yLocOff, double thetaLocOff,
+                               double xGuiOff, double yGuiOff, double thetaGuiOff )
+{
+    xLocOff_ = xLocOff;
+    yLocOff_ = yLocOff;
+    thetaLocOff_ = thetaLocOff;
+    xGuiOff_ = xGuiOff;
+    yGuiOff_ = yGuiOff;
+    thetaGuiOff_ = thetaGuiOff;
+}
+
+void 
 Localise2dPainter::setData( const orca::Localise2dData& data )
 {    
     data_ = data;
@@ -80,8 +92,19 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
         // Need to get the world matrix before we rotate
         QMatrix m2win = p->worldMatrix();
         {
+            // 
+            // CS transformations
+            //
+            // first: localise to global
+            p->translate(xLocOff_,yLocOff_);
+            p->rotate(thetaLocOff_);
+            // second: global to GUI
+            p->translate(xGuiOff_,yGuiOff_);
+            p->rotate(thetaGuiOff_);
+            
             // Rotate to draw the platform correctly
             ScopedSaver rotateSaver(p);
+            
             p->rotate( RAD2DEG( mean.o ) );
             paintPlatformPose( m2win,
                                p, 

@@ -66,6 +66,32 @@ PolarFeature2dElement::contextMenu()
 }
 
 void
+Localise2dElement::actionOnConnection()
+{
+    if (!isConnected_) return;
+    
+    try
+    {
+        const orca::Localise2dPrx& prx = listener_.proxy();
+        orca::Localise2dDescription descr = prx->getDescription();
+        localiseOff_ = descr.offset;
+        painter_.setOffsets( localiseOff_.p.x, localiseOff_.p.y, localiseOff_.o,
+                              xGuiOff_, yGuiOff_, thetaGuiOff_ );
+    }
+    catch ( ... )
+    {
+        humanManager_->showStatusMsg(Warning, "Problem getting description from Localise2d interface. Will try again later.");
+        return;
+    }
+    
+    humanManager_->showStatusMsg(Information, "Got Localise2d description");
+    gotDescription_ = true;    
+    
+    paintInitialData<orca::Localise2dPrx, Localise2dPainter>
+        ( context_, listener_.interfaceName(), painter_ );
+}
+
+void
 Localise2dElement::update()
 {
     // standard update as in IceStormElement
@@ -89,9 +115,15 @@ Localise2dElement::update()
         throw orcaqgui::Exception( ss.str() );
     }
     const orca::Pose2dHypothesis &h = orcaice::mlHypothesis( data_ );
-    x_ = h.mean.p.x;
-    y_ = h.mean.p.y;
-    theta_ = h.mean.o;
+    transformToGuiCs( h.mean.p.x, 
+                      h.mean.p.y, 
+                      h.mean.o,
+                      localiseOff_.p.x, 
+                      localiseOff_.p.y, 
+                      localiseOff_.o, 
+                      x_, 
+                      y_,
+                      theta_ );
 }
 
 QStringList

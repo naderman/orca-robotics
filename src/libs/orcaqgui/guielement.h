@@ -95,21 +95,18 @@ public:
     void setName( QString name ) { name_ = name; };
     
     //! Sets the 2d offset of the Gui coordinate system wrt the (aribitrarily defined) global reference frame
-    void setGuiCsOffset( double x, double y, double theta ) 
-    { 
-        xGuiOff_=x; yGuiOff_=y; thetaGuiOff_=theta;
-        std::cout << "=============== x,y,theta: " << xGuiOff_ << " " << yGuiOff_ << " " << RAD2DEG(thetaGuiOff_) << std::endl;
-    };
+    void setGuiCsOffset( double x, double y, double theta ) { xGuiOff_=x; yGuiOff_=y; thetaGuiOff_=theta; };
     
 private:
     QString platform_;
     QString details_;
     QString name_;
+    
+protected:
     double xGuiOff_;
     double yGuiOff_;
     double thetaGuiOff_;
     
-protected:
     //! Transforms a pose from an element-specific, local CS 
     //! (received from an interface) into the GUI CS.
     //! Does 2 transformations: local-to-global CS, then global-to-GUI CS

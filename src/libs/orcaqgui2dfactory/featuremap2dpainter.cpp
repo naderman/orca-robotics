@@ -31,6 +31,9 @@ namespace orcaqgui {
 
 FeatureMap2dPainter::FeatureMap2dPainter()
     : data_( NULL ),
+      xGuiOff_(0.0),
+      yGuiOff_(0.0),
+      thetaGuiOff_(0.0),
       displayFeatureNumbers_(true),
       displayUncertainty_(true)
 {
@@ -38,6 +41,14 @@ FeatureMap2dPainter::FeatureMap2dPainter()
 
 FeatureMap2dPainter::~FeatureMap2dPainter()
 {
+}
+
+void
+FeatureMap2dPainter::setGuiOffset(double xGuiOff, double yGuiOff, double thetaGuiOff)
+{
+    xGuiOff_ = xGuiOff;
+    yGuiOff_ = yGuiOff;
+    thetaGuiOff_ = thetaGuiOff;
 }
 
 void 
@@ -201,6 +212,18 @@ void FeatureMap2dPainter::paint( QPainter *painter, const int z )
     if ( z != orcaqgui::Z_SLAM_MAP ) return;
 
     if (data_ == 0) return;
+    
+    //
+    // CS transformations
+    //
+    painter->save();
+    // first: map to global
+    Frame2d &mapOffset = data_->offset;
+    painter->translate(mapOffset.p.x,mapOffset.p.y);
+    painter->rotate(mapOffset.o);
+    // second: global to GUI
+    painter->translate(xGuiOff_,yGuiOff_);
+    painter->rotate(thetaGuiOff_);
 
     QColor color;
 
@@ -228,6 +251,7 @@ void FeatureMap2dPainter::paint( QPainter *painter, const int z )
             paintPointFeature( painter, *f, i );
         }
     }
+    painter->restore();
 }
 
 int FeatureMap2dPainter::saveMap( const QString fileName, IHumanManager *humanManager ) const

@@ -74,7 +74,7 @@ DefaultFactory::create( const orcaice::Context           &context,
         }
         else if ( interfaceId == "::orca::Localise2d" ) {
             cout<<"creating Localise2d element"<<endl;
-            elem = new orcaqgui::Localise2dElement( context, proxyString.toStdString() );
+            elem = new orcaqgui::Localise2dElement( context, proxyString.toStdString(), humanManager );
         }
         else if ( interfaceId == "::orca::Localise3d" ) {
             cout<<"creating Localise3d element"<<endl;

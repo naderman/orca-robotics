@@ -36,8 +36,6 @@ GpsElement::GpsElement( const orcaice::Context  &context,
       gotDescription_(false),
       displayGps_(true)
 {
-    if (gpsListener_.connect() == 0) 
-        isConnected_=true;
 }  
 
 void
@@ -64,12 +62,6 @@ GpsElement::actionOnConnection()
 bool
 GpsElement::needToUpdate()
 {
-    if ( !gotDescription_ ) 
-    {
-        actionOnConnection();
-        return false;
-    }
-    
     if ( !gpsListener_.buffer().isEmpty() )
     {
         // An object has arrived in one of the buffers.  We need to update.
@@ -102,7 +94,7 @@ GpsElement::needToUpdate()
 void
 GpsElement::update()
 {
-    if ( !needToUpdate() )
+    if ( !needToUpdate() || !gotDescription_ )
     {
         return;
     }

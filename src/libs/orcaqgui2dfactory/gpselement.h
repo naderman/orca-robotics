@@ -81,9 +81,9 @@ public:
 
     // inherited from IKnowsPlatformPosition2d
     // Access to coordinates in GUI coordinate system [m] [m] [rad]
-    virtual float x() const { return x_; }
-    virtual float y() const { return y_; }
-    virtual float theta() const { return theta_; }
+    virtual double x() const { return x_; }
+    virtual double y() const { return y_; }
+    virtual double theta() const { return theta_; }
     virtual int platformKnowledgeReliability() const { return 7; }
 
 

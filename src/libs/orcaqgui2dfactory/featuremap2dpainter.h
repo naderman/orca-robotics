@@ -30,6 +30,7 @@ class FeatureMap2dPainter
     ~FeatureMap2dPainter();
 
     void setData( const orca::FeatureMap2dDataPtr &featureDataPtr );
+    void setGuiOffset(double xGuiOff, double yGuiOff, double thetaGuiOff);
     void paint( QPainter *p, int z );
     bool paintThisLayer(int z) const {return z==Z_SLAM_MAP;}
     void setTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
@@ -43,6 +44,12 @@ class FeatureMap2dPainter
 
   private:
 
+    orca::FeatureMap2dDataPtr data_;
+    
+    double xGuiOff_;
+    double yGuiOff_;
+    double thetaGuiOff_;
+    
     void paintPointFeature( QPainter *painter,
                             const orca::CartesianPointFeature2d &f,
                             int featureNum );
@@ -50,7 +57,6 @@ class FeatureMap2dPainter
                             const orca::CartesianLineFeature2d  &f,
                             int featureNum );
 
-    orca::FeatureMap2dDataPtr data_;
     bool useTransparency_;
     bool displayFeatureNumbers_;
     bool displayUncertainty_;
