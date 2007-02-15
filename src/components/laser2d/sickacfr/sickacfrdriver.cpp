@@ -162,7 +162,7 @@ SickAcfrDriver::read( orca::LaserScanner2dDataPtr &data )
 {
     infoMessages_ = "";
 
-    context_.tracer()->debug( "SickAcfrDriver::read()", 4 );
+    context_.tracer()->debug( "SickAcfrDriver::read()", 8 );
 
     // double currentTime;
     // const  double LASER_STALL_TIMEOUT = 1.0; // seconds
@@ -185,7 +185,7 @@ SickAcfrDriver::read( orca::LaserScanner2dDataPtr &data )
         }
         laserCount_++;
     
- 		// TODO: put in lib/orcaobh/timeutils.h/cpp
+ 		// TODO: put in lib/orcaobj/timeutils.h/cpp
     	//convert to microseconds
 		// int usec = rawLaserData_.sp->timeStamp*10;
     	// cout << "usec: " << usec << endl;

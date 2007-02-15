@@ -199,7 +199,7 @@ Laser::parse_SICK_LASER(struct sic_packet *pxxx,unsigned char *string,struct rec
 
 		pxxx->timeStamp = timeStamp;
 		
-		std::cout << "TimeStamp: " << orcaice::toString( timeStamp ) << std::endl;
+		//std::cout << "TimeStamp: " << orcaice::toString( timeStamp ) << std::endl;
 		pxl->cx++ ;
 		for (i=0;i<RANGESIZE;i++){	pxxx->range[i]=p0[i] ; }
 		pxxx->Status = string[729] ;
