@@ -4,14 +4,14 @@ DefaultComponentTag=InsGps
 Provides.Imu.Type=::orca::Imu
 Provides.Imu.DefaultName=imu
 
+Provides.Gps.Type=::orca::Gps
+Provides.Gps.DefaultName=gps
+
 Provides.Odometry3d.Type=::orca::Odometry3d
 Provides.Odometry3d.DefaultName=odometry3d
 
 Provides.Localise3d.Type=::orca::Localise3d
 Provides.Localise3d.DefaultName=localise3d
-
-Provides.Gps.Type=::orca::Gps
-Provides.Gps.DefaultName=gps
 
 # Required Interfaces
 
@@ -21,30 +21,28 @@ Config.Driver.Default=fake
 
 Config.StartEnabled.Default=1
 
-Config.Gps.Size.Comment=GPS sensor size x[m] y[m] z[m]
-Config.Gps.Size.Default=0.0 0.0 0.0
-
-Config.Gps.Offset.Comment=GPS position of the local coordinate system origin x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
+Config.Gps.Offset.Comment=Transformation from global (arbitrarily defined) coordinate system (CS) to the GPS MapGrid CS x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
 Config.Gps.Offset.Default=0.0 0.0 0.0 0.0 0.0 0.0
+
+Config.Gps.AntennaOffset.Comment=Specifies location of the GPS antenna with respect to the vehicles's coordinate system x[m] y[m] z[m]
+Config.Gps.AntennaOffset.Default=0.0 0.0 0.0
+
+Config.Imu.Offset.Comment=Offset of the IMU from the robot's local coord system x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
+Config.Imu.Offset.Default=0.0 0.0 0.0 0.0 0.0 0.0
 
 Config.Imu.Size.Comment=IMU sensor size x[m] y[m] z[m]
 Config.Imu.Size.Default=0.0 0.0 0.0
 
-Config.Imu.Offset.Comment=Offset of the IMU from the platform coord system x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
-Config.Imu.Offset.Default=0.0 0.0 0.0 0.0 0.0 0.0
+Config.Vehicle.PlatformToVehicleTransform.Comment=Transformation from the platform's coordinate system (eg. origin at the GPS antenna), to the coordinate system of the vehicle (eg. rear axle of the vehicle) x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
+Config.Vehicle.PlatformToVehicleTransform.Default=0.0 0.0 0.0 0.0 0.0 0.0
 
-Config.Odometry3d.Size.Comment=IMU sensor size x[m] y[m] z[m]
-Config.Odometry3d.Size.Default=0.0 0.0 0.0
-
-Config.Odometry3d.Offset.Comment=Offset of the position sensor from the platform coord system x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
-Config.Odometry3d.Offset.Default=0.0 0.0 0.0 0.0 0.0 0.0
-
+Config.Device.Comment=device used to communicate with the sensor/s eg. /dev/ttyS0 (for linux) or /dev/ser1 (for qnx)
 Config.Device.Default=/dev/ttyS0
-Config.Baud.Default=4800
+Config.Baud.Default=9600
 
-Config.ImuAntennaOffset.NovatelSpan.Comment=Offset of the gps antenna with respect to the IMU x[m] y[m] z[m]
-Config.ImuAntennaOffset.NovatelSpan.Default=0.0 0.0 0.0
+Config.Novatel.ImuToGpsAntennaOffset.Comment=Distance from the centre of the imu to the phase centre of the gps antenna Offset of the gps antenna with respect to the IMU x[m] y[m] z[m]
+Config.Novatel.ImuToGpsAntennaOffset.Default=0.0 0.0 0.0
       
-Config.ImuAntennaOffsetUncertainty.NovatelSpan.Comment=sigmaX[m] sigmaY[m] sigmaZ[m]
-Config.ImuAntennaOffsetUncertainty.NovatelSpan.Default=0.0 0.0 0.0
+Config.Novatel.ImuToGpsAntennaOffsetUncertainty.Comment=sigmaX[m] sigmaY[m] sigmaZ[m]
+Config.Novatel.ImuToGpsAntennaOffsetUncertainty.Default=0.0 0.0 0.0
         

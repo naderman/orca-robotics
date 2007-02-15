@@ -35,6 +35,7 @@ NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device
                                                   const Config&           cfg,
                                                   const orcaice::Context& context ) : 
     Driver(cfg, context),
+    baud_(baud),
     serial_(0),
     enabled_( false ),
     gpsCount_(0),
@@ -53,7 +54,7 @@ NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device
         std::string errString = "Failed to open serial device.";
         throw orcaice::Exception( ERROR_INFO, errString );
     }
-    if(serial_->baud(baud)==-1){
+    if(serial_->baud(baud_)==-1){
 	cout << "NovatelSpanInsGps: ERROR: Failed to set baud rate.\n";
         std::string errString = "Failed to set baud rate.";
         throw orcaice::Exception( ERROR_INFO, errString );
@@ -85,13 +86,13 @@ NovatelSpanInsGpsDriver::~NovatelSpanInsGpsDriver()
 int
 NovatelSpanInsGpsDriver::reset()
 {
-    int put;
-    char response[13];
-    char trash[256];
-    std::string responseString;
-    std::string responseOk;
-    responseOk = "\r\n<OK";
-    int count = 0;
+     int put;
+//     char response[13];
+//     char trash[256];
+//     std::string responseString;
+//     std::string responseOk;
+//     responseOk = "\r\n<OK";
+//     int count = 0;
  
     context_.tracer()->debug( "NovatelSpanInsGps: resetting Novatel Span InsGps driver", 2 );
 
@@ -132,9 +133,12 @@ NovatelSpanInsGpsDriver::reset()
         }
     }
 	
+    // TODO: After adding freset back in:
     // Change the baudrate of the serial port to 9600 which is the default
     // for the device after it has been reset.
-    if( serial_->baud( 115200 )==-1 )
+
+    // Change the baudrate of the serial port to the requested baudrate
+    if( serial_->baud( baud_ )==-1 )
     {
         std::string errString = "Failed to set baud rate.";
         context_.tracer()->error( errString );
@@ -200,50 +204,21 @@ NovatelSpanInsGpsDriver::reset()
 //             }
 //         } // end of while
 
-//        IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(1000));
         // set the device to the requested baud rate 
-        put = serial_->write( "com com1 115200 n 8 1 n off on\r\n" );
-        // Read the serial device to check response ( "<OK" is 3 bytes long )
-      	// Note that the response is in abbreviated ASCII format so only need to check for "<OK"
-//         if ( serial_->read_full( response, 13 ) < 0 )
-//         {
-//             cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-//             return -1;
-//         }
-//         else
-//         {
-//             responseString = response;
-//             responseString.resize(5);
-//             cout << "responseString: " << responseString << endl;
-//         }
-// 
-//         if ( responseString != responseOk )
-//         {
-//             cout << "WARNING(novatelspandriver.cpp): Response to 'com' returned error " << endl;
-//            
-//             // check how much data is left in the input buffer and throw it away
-//             int unreadBytes = serial_->data_avail_wait();
-//             // cout << "unreadBytes: " << unreadBytes << endl;
-//             if (unreadBytes < 256 )
-//             {            
-//                 serial_->read_full( trash, unreadBytes );
-//             }
-// 
-//            IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(1000));
-//         }
-//         else
-//         {
-//             cout << "INFO: response was ok: " << responseString << endl;
-//         }
+        // put = serial_->write( "com com1 115200 n 8 1 n off on\r\n" );
+        char str[256];
+        sprintf( str,"com com1 %d n 8 1 n off on\r\n", baud_ );
+        put = serial_->write( str );
+
     }
 
-    // set the port to the requested baudrate
-    if( serial_->baud( 115200 )==-1 )
-    { 
-	cout << "NovatelSpanInsGps: ERROR: Failed to set baud rate.\n";
-        std::string errString = "Failed to set baud rate.";
-        throw orcaice::Exception( ERROR_INFO, errString );
-    }
+//     // set the port to the requested baudrate
+//     if( serial_->baud( 115200 )==-1 )
+//     { 
+// 	cout << "NovatelSpanInsGps: ERROR: Failed to set baud rate.\n";
+//         std::string errString = "Failed to set baud rate.";
+//         throw orcaice::Exception( ERROR_INFO, errString );
+//     }
     
    return 0;
 }
@@ -269,139 +244,32 @@ NovatelSpanInsGpsDriver::enable()
 int
 NovatelSpanInsGpsDriver::init()
 {
-    // start the orcaice::thread for this driver
-    // start();
-
-    // reset();
-
     if ( enabled_ )
         return 0;
     
     cout << "NovatelSpanInsGps: Initialising Novatel Span InsGps driver\n";
 
-    int put;
-    char response[13];
-    char trash[256];
-    std::string responseString;
-    std::string responseOk;
-    responseOk = "\r\n<OK";
-	int count = 0;
-
     //
     // send initialisation commands to the Novatel   
     //
+
+    int put;
     
-//     while ( responseString != responseOk )
-//     {
-      // just in case something is running... stops the novatel logging any messages
-      // serial_->flush();
-      put = serial_->write( "unlogall\r\n" );
-      //printf("put %d bytes\n",put);
-      cout << "unlogall" << endl;
-      serial_->drain();
+    // just in case something is running... stops the novatel logging any messages
+    // serial_->flush();
+    put = serial_->write( "unlogall\r\n" );
+    //printf("put %d bytes\n",put);
+    serial_->drain();
        
-//       // Read the serial device to check response ( "<OK" is 3 bytes long )
-//       // Note that the response is in abbreviated ASCII format so only need to check for "<OK"
-//         if ( serial_->read_full( response, 13 ) < 0 )
-//         {
-//             cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-//             return -1;
-//         }
-//         else
-//         {
-//             responseString = response;
-//             responseString.resize(5);
-//         	cout << "responseString: " << responseString << endl;
-// 		}
-// 
-//         if ( responseString != responseOk )
-//         {
-//             cout << "WARNING(novatelspandriver.cpp): Response to 'unlogall' returned error " << endl;
-//             cout << "\t We will continue trying to stop all messages so that we can reset the device" << endl;
-//             
-//             // check how much data is left in the input buffer and throw it away
-//             int unreadBytes = serial_->data_avail_wait();
-//             // cout << "unreadBytes: " << unreadBytes << endl;
-//             if (unreadBytes < 256 )
-//             {            
-//                 serial_->read_full( trash, unreadBytes );
-// 
-//             }
-// 
-//             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-//         }
-//         else
-//         {
-//             cout << "INFO: response was ok: " << responseString << endl;
-//         }
-// 
-//         count++;
-// 		if ( count > 3 )
-// 		{
-// 		     cout << "ERROR(novatelspandriver::init()):Could not initialise driver" << endl;
-// 		exit(1);
-// 		}
-// 			
-//     } // end of while
-//         
-//     // tell the novatel what serial port the imu is attached to (com3 = aux)
-     put = serial_->write( "interfacemode com3 imu imu on\r\n" );
-     cout << "interfacemode" << endl;
-// 
-//      // Read the serial device to check response ( "<OK" is 3 bytes long )
-//     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
-//     if ( serial_->read_full( response, 13 ) < 0 )
-//     {
-//         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-//         return -1;
-//     }
-//     else
-//     {
-//         responseString = response;
-//         responseString.resize(5);
-//     }
-// 
-//     if ( responseString != responseOk )
-//     {
-//         cout << "WARNING(novatelspandriver.cpp): Response to 'interfacemode' returned error: " << responseString << endl;
-//         return -1;
-//     }
-   
-    
-    // for dgps
-    // put = serial_->write( "com com2 57600 n 8 1 n off on\r\n" ); // My Addition
-    // serial_->drain();
-    // put = serial_->write( "interfacemode com2 rtca none off\r\n" ); // My Addition
-    // serial_->drain();
-
-
-
     //
-    // IMU Sppecific settings
+    // IMU Specific settings
     //
+
+    // tell the novatel what serial port the imu is attached to (com3 = aux)
+    put = serial_->write( "interfacemode com3 imu imu on\r\n" );
 
     // the type of imu being used
     put = serial_->write( "setimutype imu_hg1700_ag17\r\n" );
-    cout << "setimutype" << endl;
-
-//      // Read the serial device to check response ( "<OK" is 3 bytes long )
-//     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
-//     if ( serial_->read_full( response, 13 ) < 0 )
-//     {
-//         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-//         return -1;
-//     }
-//     else
-//     {
-//         responseString = response;
-//         responseString.resize(5);
-//     }
-// 
-//     if ( responseString != responseOk )
-//     {
-//         cout << "WARNING(novatelspandriver.cpp): Response to 'setimutype' returned error: " << responseString << endl;
-//         return -1;
-//     }
 
     bool imuFlipped = true;
     if ( imuFlipped )
@@ -413,131 +281,55 @@ NovatelSpanInsGpsDriver::init()
 
            //  imu axis mapping: x = y, y = x, -z = z 
            put = serial_->write( "setimuorientation 6\r\n" );
-            cout << "setimuorientation" << endl;
+
            // angular offset from the vehicle to the imu body after the axis mapping above
            // -90 as the yaw is LH rule 
            put = serial_->write( "vehiclebodyrotation 0 0 -90 0 0 0\r\n" );
-            cout << "vbr" << endl;
     }
 
     // imu/gps antenna offset
-    getImuAntennaOffsetProperties();   
+    getImuToGpsAntennaOffset();   
     char str[256];
     sprintf( str,"setimutoantoffset %f %f %f %f %f %f\r\n",
-            imuAntennaOffset_.x, imuAntennaOffset_.y, imuAntennaOffset_.z, imuAntennaOffsetUncertainty_.x, imuAntennaOffsetUncertainty_.y, imuAntennaOffsetUncertainty_.z );
+            imuToGpsAntennaOffset_.x, imuToGpsAntennaOffset_.y, imuToGpsAntennaOffset_.z, imuToGpsAntennaOffsetUncertainty_.x, imuToGpsAntennaOffsetUncertainty_.y, imuToGpsAntennaOffsetUncertainty_.z );
     put = serial_->write( str );
-    // serial_->drain();
-    cout << "setimutoantoffset" << endl;
 
+    // for dgps
+    // put = serial_->write( "com com2 57600 n 8 1 n off on\r\n" ); // My Addition
+    // put = serial_->write( "interfacemode com2 rtca none off\r\n" ); // My Addition
 
-    // turn off posave as thi command implements position averaging for base stations.
+    // turn off posave as this command implements position averaging for base stations.
     put = serial_->write( "posave off\r\n" );
-    cout << "posave" << endl;
-
-//       // Read the serial device to check response ( "<OK" is 3 bytes long )
-//     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
-//     if ( serial_->read_full( response, 13 ) < 0 )
-//     {
-//         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-//         return -1;
-//     }
-//     else
-//     {
-//         responseString = response;
-//         responseString.resize(5);
-//     }
-// 
-//     if ( responseString != responseOk )
-//     {
-//         cout << "WARNING(novatelspandriver.cpp): Response to 'posave' returned error: " << responseString << endl;
-//        return -1;
-//     }
-   
-
 
     // make sure that fixposition has not been set
     put = serial_->write( "fix none\r\n" );
-    cout << "fix" << endl;
     
-//      // Read the serial device to check response ( "<OK" is 3 bytes long )
-//     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
-//     if ( serial_->read_full( response, 13 ) < 0 )
-//     {
-//         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-//         return -1;
-//     }
-//     else
-//     {
-//         responseString = response;
-//         responseString.resize(5);
-//     }
-// 
-//     if ( responseString != responseOk )
-//     {
-//         cout << "WARNING(novatelspandriver.cpp): Response to 'fix' returned error: " << responseString << endl;
-//         return -1;
-//     }
-
-
-//     // select the geodetic datum for operation of the receiver (wgs84 = default)
-     put = serial_->write( "datum wgs84\r\n" );
-     cout << "datum" << endl;
-
-// 
-//      // Read the serial device to check response ( "<OK" is 3 bytes long )
-//     // Note that the response is in abbreviated ASCII format so only need to check for "<OK"   
-//     if ( serial_->read_full( response, 13 ) < 0 )
-//     {
-//         cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-//         return -1;
-//     }
-//     else
-//     {
-//         responseString = response;
-//         responseString.resize(5);
-//     }
-// 
-//     if ( responseString != responseOk )
-//     {
-//         cout << "WARNING(novatelspandriver.cpp): Response to 'datum' returned error: " << responseString << endl;
-//         return -1;
-//     }
-   
-    // This command provides a method for controlling the polarity and rate of the PPS output
-    // put = serial_->write( "ppscontrol enable negative 1.0\r\n" );
-    // serial_->drain();
+    // select the geodetic datum for operation of the receiver (wgs84 = default)
+    put = serial_->write( "datum wgs84\r\n" );
 
     // receiver status
     put = serial_->write( "log rxstatusb ontime 1.0\r\n" );
-    cout << "rxstatus" << endl;
-
     
     // PPS pulse will be triggered before this arrives
     
     // time used to sync with the pps signal
-    put = serial_->write( "log timeb ontime 1.0\r\n" );
-    cout << "timeb" << endl;
-//      put = serial_->write("log timesyncb ontime 1.0\r\n");
+    // put = serial_->write( "log timeb ontime 1.0\r\n" );
+    // put = serial_->write("log timesyncb ontime 1.0\r\n");
         
     // IMU message
     
     // gps position without ins
-    // put = serial_->write( "log bestgpsposb ontime 1.0\r\n" );
     put = serial_->write( "log bestgpsposb ontime 0.05\r\n" );
-    cout << "bestgpsposb" << endl;
     
-    //short IMU messages
+    // short IMU messages
     // pva data in wgs84 coordinates
     put = serial_->write( "log inspvasb ontime 0.01\r\n" );
-    cout << "inspvasb" << endl;
 
     // raw accelerometer and gyro data
     put = serial_->write( "log rawimusb onnew\r\n" );
-    cout << "rawimu" << endl;
 
     // pva covariances
     put = serial_->write( "log inscovsb onchanged\r\n" );
-    cout << "inscov" << endl;
  
     start();
     enabled_ = true;
@@ -554,67 +346,14 @@ NovatelSpanInsGpsDriver::disable()
 
     cout << "NovatelSpanInsGps: Disabling Novatel Span InsGps driver\n";
  
-    // int put;
-    // put = serial_->write( "unlogall\r\n" );
     int put;
-    char response[13];
-    char trash[256];
-    std::string responseString;
-    std::string responseOk;
-    responseOk = "\r\n<OK";
 
-    //
-    // send initialisation commands to the Novatel   
-    //
-    
-//     while ( responseString != responseOk )
-//     {
-        // just in case something is running... stops the novatel logging any messages
-        serial_->flush();
-        put = serial_->write( "unlogall\r\n" );
-        //printf("put %d bytes\n",put);
-        serial_->drain();
+    // just in case something is running... stops the novatel logging any messages
+    serial_->flush();
+    put = serial_->write( "unlogall\r\n" );
+    //printf("put %d bytes\n",put);
+    serial_->drain();
         
-        // Read the serial device to check response ( "<OK" is 3 bytes long )
-        // Note that the response is in abbreviated ASCII format so only need to check for "<OK"
-//         if ( serial_->read_full( response, 13 ) < 0 )
-//         {
-//             cout << "ERROR(novatelspandriver.cpp): Error reading from serial device" << endl;
-//             return -1;
-//         }
-//         else
-//         {
-//             responseString = response;
-//             responseString.resize(5);
-//         }
-// 
-//         if ( responseString != responseOk )
-//         {
-//             cout << "WARNING(novatelspandriver.cpp): Response to 'unlogall' returned error " << endl;
-//             cout << "\t We will continue trying to stop all messages so that we can reset the device" << endl;
-//             
-//             // check how much data is left in the input buffer and throw it away
-//             int unreadBytes = serial_->data_avail_wait();
-//             // cout << "unreadBytes: " << unreadBytes << endl;
-//             if (unreadBytes < 256 )
-//             {
-//                 serial_->read_full( trash, unreadBytes );
-// 
-//             }
-// 
-//             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-//         }
-//         else
-//         {
-//             cout << "INFO: all messages were stopped " << endl;
-//         }
-//     } // end of while     
-
-    //force data to be sent
-    // serial_->drain();
-
-    // serial_->flush();
-    
     enabled_ = false;
 
     return 0;
@@ -1255,17 +994,17 @@ NovatelSpanInsGpsDriver::mkutctime(int week, double seconds, struct timeval* tv)
 }
 
 void
-NovatelSpanInsGpsDriver::getImuAntennaOffsetProperties()
+NovatelSpanInsGpsDriver::getImuToGpsAntennaOffset()
 {
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag();
     prefix += ".Config.Novatel.";
 
-    orcaice::setInit( imuAntennaOffset_ );
-    orcaice::getPropertyAsCartesianPoint( prop, prefix+"ImuAntennaOffset", imuAntennaOffset_ );
+    orcaice::setInit( imuToGpsAntennaOffset_ );
+    orcaice::getPropertyAsCartesianPoint( prop, prefix+"ImuToGpsAntennaOffset", imuToGpsAntennaOffset_ );
     
-    orcaice::setInit( imuAntennaOffsetUncertainty_ );
-    orcaice::getPropertyAsCartesianPoint( prop, prefix+"ImuAntennaOffsetUncertainty", imuAntennaOffsetUncertainty_ );
+    orcaice::setInit( imuToGpsAntennaOffsetUncertainty_ );
+    orcaice::getPropertyAsCartesianPoint( prop, prefix+"ImuToGpsAntennaOffsetUncertainty", imuToGpsAntennaOffsetUncertainty_ );
 
     return;
 }  

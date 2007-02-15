@@ -27,15 +27,17 @@ Component::Component() :
     hwDriver_(0),
     gpsHandler_(0),         
     imuHandler_(0),
-    odometry3dHandler_(0)
+    odometry3dHandler_(0),
+    localise3dHandler_(0)
 {
 }
 
 Component::~Component()
 {
-    // do not delete the gpsObj_, imuObj_, or odometry3dObj_ as they are smart pointers and self destruct
-    // do not delete gpsHandler_, imuHandler_, or odometry3dHandler_, or the hwDriver_
-    // as they are orcaice::Threads and self-destruct.
+    // Do not delete the gpsObj_, imuObj_, odometry3dObj_, or localise3dObj_
+    // as they are smart pointers and self destruct.
+    // Do not delete gpsHandler_, imuHandler_, odometry3dHandler_, localise3dHandler_, 
+    // or the hwDriver_ as they are orcaice::Threads and self-destruct.
 }
 
 void
@@ -55,7 +57,7 @@ Component::start()
     // read config options
     Driver::Config desiredCfg;
 
-     if ( !desiredCfg.validate() ) {
+    if ( !desiredCfg.validate() ) {
         tracer()->error( "Failed to validate insgps configuration. "+desiredCfg.toString() );
         // this will kill this component
         throw orcaice::Exception( ERROR_INFO, "Failed to validate insgps configuration" );
@@ -73,7 +75,6 @@ Component::start()
     if ( driverName == "novatelspan" )
     {
         std::string device = orcaice::getPropertyWithDefault( prop, prefix+"Device", "/dev/ttyS0" );
-        // TODO: need to set this at a baud rate of 230400
         int baud = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Baud", 115200 );
         hwDriver_ = new NovatelSpanInsGpsDriver( device.c_str(), baud, desiredCfg, context() );
     }
@@ -120,30 +121,35 @@ Component::start()
     imuDescr.timeStamp = orcaice::getNow();
     
     orca::VehicleDescription vehicleDescr;
-    // vehicleDescr.timeStamp = orcaice::getNow();
 
     //
     // transfer internal sensor configs
     //
     
+    // Transformation from global (arbitrarily defined) coordinate system (CS) to
+    // the GPS MapGrid CS.
     orcaice::setInit( gpsDescr.offset );
     gpsDescr.offset = orcaice::getPropertyAsFrame2dWithDefault( prop, prefix+"Offset", gpsDescr.offset );
 
+    // Specifies location of the GPS antenna with respect to the vehicles's
+    // coordinate system. 
     orcaice::setInit( gpsDescr.antennaOffset );
     gpsDescr.antennaOffset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"AntennaOffset", gpsDescr.antennaOffset );
     
-    // offset from robot coordinate system
+    // offset of the imu with respect to the robot's local coordinate system
     orcaice::setInit( imuDescr.offset );
     imuDescr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Imu.Offset", imuDescr.offset );
    
     orcaice::setInit( imuDescr.size );
     imuDescr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Imu.Size", imuDescr.size );
 
-    // offset from robot coordinate system
-    // orcaice::setInit( vehicleDescr.offset );
-    // vehicleDescr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Localise3d.Offset", vehicleDescr.offset );
+    // Transformation:
+    // - from: the platform's coordinate system (eg. origin at the GPS antenna),
+    // - to:   the coordinate system of the vehicle (eg. rear axle of the vehicle).
+    orcaice::setInit( vehicleDescr.platformToVehicleTransform );
+    vehicleDescr.platformToVehicleTransform = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Vehicle.PlatformToVehicleTransform", vehicleDescr.platformToVehicleTransform );
    
-    // orcaice::setInit( vehicleDescr.size );
+    // A description of the physical size and shape of the vehicle.
     // vehicleDescr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Odometry3d.Size", imuDescr.size );
     
     // wait until we have a fix before publishing etc.

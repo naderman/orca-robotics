@@ -115,10 +115,12 @@ private:
     int mkutctime(int week, double seconds, struct timeval* tv);
 
     // get the GPS Antenna and IMU offset from the .cfg file    
-    void getImuAntennaOffsetProperties();
-    orca::CartesianPoint imuAntennaOffset_;
-    orca::CartesianPoint imuAntennaOffsetUncertainty_;
+    void getImuToGpsAntennaOffset();
+    orca::CartesianPoint imuToGpsAntennaOffset_;
+    orca::CartesianPoint imuToGpsAntennaOffsetUncertainty_;
     
+    int baud_;
+
     // serial class for reading and writing to and from a serial device
     orcaserial::Serial* serial_;
     
@@ -139,7 +141,7 @@ private:
     orcaice::Buffer<orca::Odometry3dData> odometry3dDataBuffer_;
     orcaice::Buffer<orca::Localise3dData> localise3dDataBuffer_;
         
-    // Qhere the latest and greatest of each log is stored.
+    // Where the latest and greatest of each log is stored.
     // The trailing B's indicate binary messages
     // No trailing B means abbreviated ASCII message
     novatel::RXSTATUSB_LOG  RXSTATUS_;
