@@ -97,6 +97,9 @@ An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ director
 
 @section insgps_novatelspan Novatel Span system
 
+@par Hardware
+- tested with a Novatel ProPak G2-plus GPS receiver and a SPAN compatible Novatel AG17 enclosure which houses a Honeywell HG1700 IMU. 
+
 @par Extra configuration
 
 - @c InsGps.Config.Novatel.ImuToGpsAntennaOffset (CartesianPoint) [m,m,m]
