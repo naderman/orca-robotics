@@ -18,6 +18,11 @@
 #include <QPointF>
 #include <QObject>
 
+// for setInit()
+#include <orcaobj/orcaobj.h>
+// for getPropertyAsCartesianPoint
+#include <orcaice/orcaice.h>
+
 #include <orcaqgui2d/ptricestormelement.h>
 #include <orcaqgui2d/icestormelement.h>
 #include <orcaqgui/ihumanmanager.h>
@@ -196,7 +201,15 @@ public:
                             orca::Localise3dConsumer,
                             orca::Localise3dConsumerPrx>(context, proxyString, painter_, timeoutMs ),
           painter_( beginDisplayHistory )
-        {};
+{
+    // get gps origin properties from the cfg file   
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag();
+    prefix += ".Config.";
+
+    orcaice::setInit( origin_ );
+    orcaice::getPropertyAsCartesianPoint( prop, prefix+"Gps.Origin", origin_ );
+};
 
     virtual bool isInGlobalCS() { return true; }
     virtual void actionOnConnection()
@@ -227,9 +240,14 @@ public:
 private:
     Localise3dPainter painter_;
 
+    // Platform coords for localisation elements.
+    // Used for elements attached to a platform 
     float x_;
     float y_;
     float theta_;
+
+    orca::CartesianPoint origin_;   
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////
