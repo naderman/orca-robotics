@@ -125,6 +125,7 @@ private:
     orcaserial::Serial* serial_;
     
     bool enabled_;
+    // timestamp recorded after the first byte for accuracy
     IceUtil::Time timeOfRead_;
     
     // novatel binary messages
@@ -155,6 +156,12 @@ private:
     int gpsCount_;
     int imuCount_;
     int localise3dCount_;
+
+#ifdef __QNX__
+    // dynamically set priority of this thread in qnx
+    int threadPriorityLow_;
+    int threadPriorityHigh_;
+#endif
 
     orcaice::Context context_;
 

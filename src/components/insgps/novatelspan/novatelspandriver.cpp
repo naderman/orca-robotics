@@ -249,6 +249,14 @@ NovatelSpanInsGpsDriver::init()
     
     cout << "NovatelSpanInsGps: Initialising Novatel Span InsGps driver\n";
 
+#ifdef __QNX__
+    // get the priority of this thread
+    threadPriorityLow_ = getprio( 0 );
+    // use this in getprio() for dynamically increasing the priority of
+    // this thread by 4
+    threadPriorityHigh_ =  threadPriorityLow_ + 4;
+#endif
+
     //
     // send initialisation commands to the Novatel   
     //
@@ -375,7 +383,9 @@ NovatelSpanInsGpsDriver::readGps( orca::GpsData& data, int timeoutMs )
         // cout << "gpsCount_: " << gpsCount_ << endl;
         if (gpsCount_ > 200 )
         {
-            cout << "Gps Data Buffer is " << gpsDataBuffer_.size()/100 << "% full" << endl;
+            std::string str = "Gps Data Buffer is " + gpsDataBuffer_.size()/100;
+            str += "% full";
+            context_.tracer()->info( str, 6 );
             gpsCount_ = 0;
         }
         gpsCount_++;
@@ -388,6 +398,7 @@ NovatelSpanInsGpsDriver::readGps( orca::GpsData& data, int timeoutMs )
 void
 NovatelSpanInsGpsDriver::readGpsTime( orca::GpsTimeData& data, int timeoutMs )
 {
+    context_.tracer()->info( "novatelspandriver::readGpsTime(): GpsTime is not provided in this driver", 6 );
     return;   
 }
 
@@ -397,7 +408,7 @@ NovatelSpanInsGpsDriver::readImu( orca::ImuData& data, int timeoutMs )
     // blocking read with timeout. Also deletes the front element from the buffer
     int ret = imuDataBuffer_.getAndPopNext( data, timeoutMs );
     if ( ret != 0 ) {
-//        throw NovatelSpanException( "Timeout while waiting for IMU packet" );
+        // throw NovatelSpanException( "Timeout while waiting for IMU packet" );
         context_.tracer()->debug( "novatelspandriver::readImu(): Timeout while waiting for IMU packet", 6 );
     }
     else
@@ -406,7 +417,9 @@ NovatelSpanInsGpsDriver::readImu( orca::ImuData& data, int timeoutMs )
     
         if (imuCount_ > 1000 )
         {
-            cout << "Imu Data Buffer is " << imuDataBuffer_.size()/100 << "% full" << endl;
+            std::string str = "Imu Data Buffer is " + imuDataBuffer_.size()/100;
+            str += "% full";
+            context_.tracer()->info( str, 6 );
             imuCount_ = 0;
         }
         imuCount_++;
@@ -426,7 +439,7 @@ NovatelSpanInsGpsDriver::readOdometry3d( orca::Odometry3dData& data, int timeout
     int ret = odometry3dDataBuffer_.getAndPopNext( data, timeoutMs );
     if ( ret != 0 ) {
         // throw NovatelSpanException( "Timeout while waiting for Odometry3d packet" );
-        context_.tracer()->debug( "novatelspandriver::readOdometry3d()): Timeout while waiting for Odometry3d packet", 6 );
+        context_.tracer()->info( "novatelspandriver::readOdometry3d()): odometry3d is not provided by this driver", 6 );
     }
     else
     {   
@@ -451,7 +464,9 @@ NovatelSpanInsGpsDriver::readLocalise3d( orca::Localise3dData& data, int timeout
         
         if (localise3dCount_ > 200 )
         {
-            cout << "Localise3d Data Buffer is " << localise3dDataBuffer_.size()/100 << "% full" << endl;
+            std::string str = "Localise3d Data Buffer is " + localise3dDataBuffer_.size()/100;
+            str += "% full";
+            context_.tracer()->info( str, 6 );
             localise3dCount_ = 0;
         }
         localise3dCount_++;
@@ -535,7 +550,7 @@ NovatelSpanInsGpsDriver::readMsgsFromHardware()
 {
     if ( ! enabled_ )
     {
-	cout << "NovatelSpanInsGps: ERROR: Can't read: not enabled . Sleeping for 1 sec..." << endl;
+        context_.tracer()->info( "NovatelSpanInsGps: ERROR: Can't read: not enabled . Sleeping for 1 sec...", 6 );
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         return -1;
     }
@@ -545,9 +560,9 @@ NovatelSpanInsGpsDriver::readMsgsFromHardware()
         
     // read novatel binary messages
     ret = read_message( &serial_data_ );
-	// ret = serial_->read_line(serial_data_,1024,'\n');
+    // ret = serial_->read_line(serial_data_,1024,'\n');
 
-    timeOfRead_ = IceUtil::Time::now();
+    // timeOfRead_ = IceUtil::Time::now();
 
 	if( ret>0 )
     {
@@ -561,7 +576,11 @@ NovatelSpanInsGpsDriver::readMsgsFromHardware()
     {
         if( errno != EAGAIN )
         {
-            cout << "NovatelSpanInsGps: ERROR: Error reading from InsGps:" << strerror(errno) << " -- shutting down." << endl;
+            std::string errString = "Error reading from InsGps: ";
+            errString += strerror(errno);
+            errString += "--shutting down.";
+            throw orcaice::Exception( ERROR_INFO, errString );
+            // cout << "NovatelSpanInsGps: ERROR: Error reading from InsGps:" << strerror(errno) << " -- shutting down." << endl;
             enabled_ = false;
             return -1;
         }
@@ -608,7 +627,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
             memcpy( &TIME_, &serial_data_.raw_message, sizeof(TIME_ ) );
             if( !TIME_.data.bUtcStatus )
             {
-                printf("UTC time not available\n");
+                context_.tracer()->info( "UTC time not available", 8 );
                 break;
             }
             
@@ -671,7 +690,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
 
             //Set time
             // gettimeofday(&position_.time,NULL);
-            gpsData_.timeStamp = orcaice::toOrcaTime (timeOfRead_);
+            gpsData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
 
             // TODO: made up the zone here... need to read the real zone         
             int zone = 0;
@@ -707,7 +726,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
             // printf("got INSPVASB\n");
             memcpy( &INSPVA_, &serial_data_.raw_message, sizeof(INSPVA_) );
 
-            localise3dData_.timeStamp = orcaice::toOrcaTime (timeOfRead_);
+            localise3dData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
 
             // load the pva data into the localise3d object       
             if ( localise3dData_.hypotheses.size() == 0 )
@@ -818,7 +837,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
             // printf("got RAWIMUSB\n");
             memcpy(&RAWIMU_, &serial_data_.raw_message, sizeof(RAWIMU_) );
 
-            imuData_.timeStamp = orcaice::toOrcaTime (timeOfRead_);
+            imuData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
             
 	    // Note scale factors and axis translation
             // TODO: are these gyro values correct?
@@ -848,7 +867,9 @@ NovatelSpanInsGpsDriver::populateData( int id )
         }
         default:
         {
-            printf("message %d not yet servicable\n",id);
+            std::string str = "message " + id;
+            str += "not yet servicable";
+            context_.tracer()->info( str, 8 );
             return -1;
             break;
         }
@@ -867,6 +888,12 @@ int NovatelSpanInsGpsDriver::read_message( novatel_message* msg )
     int skip = -1;
     int got;
     
+#ifdef __QNX__    
+    // increase the thread priority when reading incoming messages
+    // so that the the timestamp is accurate
+    setprio( 0, threadPriorityHigh_ );
+#endif
+
     // read the first sync byte
     do{
         got = serial_->read_full( &msg->hdr.sop1, 1 );
@@ -880,6 +907,9 @@ int NovatelSpanInsGpsDriver::read_message( novatel_message* msg )
             skip++;
         }
     }while( msg->hdr.sop1 != 0xaa );
+
+    // get timestamp after the first byte for accuracy
+    timeOfRead_ = IceUtil::Time::now();
 
     if( skip>0 )
     {
@@ -957,9 +987,16 @@ int NovatelSpanInsGpsDriver::read_message( novatel_message* msg )
             break;
     }
 
+#ifdef __QNX__
+    // set the thread priority lower while we aren't reading anything
+    setprio( 0, threadPriorityLow_ );
+#endif
+    
+
     if(in_crc != crc)
     {
         fprintf( stderr,"CRC Error: 0x%lx, 0x%lx\n",in_crc,crc );
+        throw NovatelSpanException( "CRC Error" );
         return -1;
     }
     
