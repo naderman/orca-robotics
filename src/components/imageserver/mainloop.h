@@ -13,9 +13,9 @@
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/cameraI.h>
+#include <orcaimagegrabber/imagegrabber.h>
 
 #include "driver.h"
-#include "imagegrabber/imagegrabber.h"
 
 
 namespace imageserver {
@@ -32,7 +32,7 @@ public:
 
     MainLoop( orcaifaceimpl::CameraI&   cameraObj,
               Driver*                   hwDriver,
-              ImageGrabber*             imageGrabber,
+              orcaimage::ImageGrabber*  imageGrabber,
               const orcaice::Context&   context );
 
     ~MainLoop();
@@ -47,7 +47,7 @@ private:
     // Generic driver for the hardware
     Driver *hwDriver_;
 
-    ImageGrabber *imageGrabber_;
+    orcaimage::ImageGrabber *imageGrabber_;
 
     orcaice::Context context_;
 

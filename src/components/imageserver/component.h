@@ -12,7 +12,7 @@
 #define ORCA2_IMAGESERVER_COMPONENT_H
 
 #include <orcaice/component.h>
-#include "imagegrabber/imagegrabber.h"
+#include <orcaimagegrabber/imagegrabber.h>
 
 namespace imageserver {
 
@@ -37,7 +37,7 @@ private:
     // HARDWARE INTERFACES
     //
     Driver *hwDriver_;
-    ImageGrabber* imageGrabber_; 
+    orcaimage::ImageGrabber* imageGrabber_; 
 
     // Provided interface
     Ice::ObjectPtr cameraObjPtr_;

@@ -16,8 +16,8 @@
 //#include <triclops/pnmutils.h>
 
 // image mode conversions
-#include "conversions.h"
-
+#include <orcaimage/conversions.h>
+#include <orcaimage/imageutils.h>
 
 #include "monodriver.h"
 
@@ -25,7 +25,9 @@ using namespace std;
 
 namespace imageserver {
 
-MonoDriver::MonoDriver( ImageGrabber* imageGrabber, const Config& cfg, const orcaice::Context& context ) : 
+MonoDriver::MonoDriver( orcaimage::ImageGrabber* imageGrabber, 
+                        const Config& cfg, 
+                        const orcaice::Context& context ) : 
     Driver(cfg, context),
     imageGrabber_(imageGrabber),
     context_(context)   
@@ -58,9 +60,9 @@ MonoDriver::init()
         if ( (imageGrabber_->width() != config_.imageWidth) || (imageGrabber_->height() !=  config_.imageHeight) )
         {
             // check the mode
-            orca::ImageFormat mode = orcaImageMode( imageGrabber_->mode() );
+            orca::ImageFormat mode = orcaimage::orcaImageMode( imageGrabber_->mode() );
             // find the dc1394 specific mode
-            int dc1394Mode = dc1394ImageMode( mode, config_.imageWidth, config_.imageHeight );
+            int dc1394Mode = orcaimage::dc1394ImageMode( mode, config_.imageWidth, config_.imageHeight );
             if ( dc1394Mode > 0)
                 imageGrabber_->setMode( dc1394Mode );
             else
@@ -85,7 +87,7 @@ MonoDriver::init()
     else
     {
         // let the grabber figure out the format if no bayer encoding or not using a digiclops camera
-        config_.format = orcaImageMode( imageGrabber_->mode() );
+        config_.format = orcaimage::orcaImageMode( imageGrabber_->mode() );
     }
     
     // Setup the rest of camera config

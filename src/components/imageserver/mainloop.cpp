@@ -19,10 +19,10 @@ using namespace std;
 
 namespace imageserver {
 
-MainLoop::MainLoop( orcaifaceimpl::CameraI& cameraObj,
-                    Driver*                 hwDriver,
-                    ImageGrabber*           imageGrabber,
-                    const orcaice::Context& context ) :
+MainLoop::MainLoop( orcaifaceimpl::CameraI&  cameraObj,
+                    Driver*                  hwDriver,
+                    orcaimage::ImageGrabber* imageGrabber,
+                    const orcaice::Context&  context ) :
     cameraObj_(cameraObj),
     hwDriver_(hwDriver),
     imageGrabber_(imageGrabber),
@@ -70,7 +70,7 @@ MainLoop::establishInterface()
     {
         try {
             cameraObj_.initInterface();
-            context_.tracer()->debug( "Activated Laser interface",2 );
+            context_.tracer()->debug( "Activated Camera interface",2 );
             return;
         }
         catch ( orcaice::Exception &e )

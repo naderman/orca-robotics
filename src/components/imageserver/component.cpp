@@ -15,20 +15,19 @@
 // implementations of Ice objects
 #include <orcaifaceimpl/cameraI.h>
 
-// Various bits of hardware we can drive
-#include "fakedriver.h"
-#include "monodriver.h"
-
 // define flags for building drivers
 #include "configimageserver.h"
 
 #ifdef OPENCV_FOUND
-#   include "imagegrabber/cvgrabber.h"
+#   include <orcaimagegrabber/cvgrabber.h>
 #endif 
 #ifdef DIGICLOPS_AND_TRICLOPS_FOUND
-#   include "imagegrabber/digiclopsgrabber.h"
+#   include <orcaimagegrabber/digiclopsgrabber.h>
 #endif 
 
+// Various bits of hardware we can drive
+#include "fakedriver.h"
+#include "monodriver.h"
 
 namespace imageserver {
 
@@ -131,7 +130,7 @@ Component::start()
         // Use opencv implementation for a monocular camera...
 
         // Initialize Opencv ImageGrabber
-        imageGrabber_ = new CvGrabber( cameraIndex, context() );
+        imageGrabber_ = new orcaimage::CvGrabber( cameraIndex, context() );
 
         hwDriver_ = new MonoDriver( imageGrabber_, desiredCfg, context() );
 #else
@@ -145,7 +144,7 @@ Component::start()
         // Use digiclops/triclops implementation for a digiclops camera...
 
         // Initialize digiclops ImageGrabber
-        imageGrabber_ = new DigiclopsGrabber( context() );
+        imageGrabber_ = new orcaimage::DigiclopsGrabber( context() );
 
         hwDriver_ = new MonoDriver( imageGrabber_, desiredCfg, context() );
 #else
