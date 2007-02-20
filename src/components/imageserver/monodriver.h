@@ -12,8 +12,8 @@
 #define ORCA2_IMAGESERVER_MONO_DRIVER_H
 
 #include <orcaice/context.h>
+#include <orcaimagegrabber/imagegrabber.h>
 #include "driver.h"
-#include "imagegrabber/imagegrabber.h"
 
 // #include "imagegrabber/cvgrabber.h"
 // #include "imagegrabber/digiclopsgrabber.h"
@@ -30,7 +30,7 @@ class MonoDriver : public Driver
 
 public:
 
-    MonoDriver( ImageGrabber* imageGrabber, 
+    MonoDriver( orcaimage::ImageGrabber* imageGrabber, 
                 const Config & cfg, const orcaice::Context & context );
     virtual ~MonoDriver();
 
@@ -40,7 +40,7 @@ public:
     virtual int read( orca::CameraData& data );
 
 private:
-    ImageGrabber* imageGrabber_;
+    orcaimage::ImageGrabber* imageGrabber_;
 
     orcaice::Context context_;
 
