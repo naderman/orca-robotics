@@ -9,6 +9,7 @@
  */
 
 #include <fstream>
+#include <assert.h>
 #include <orcaice/orcaice.h>
 #include "logger.h"
 #include "logmaster.h"
@@ -103,6 +104,9 @@ Logger::createLogFile()
     }
     else if ( format_ == "ascii" ) {
         createAsciiFile();
+    }
+    else {
+        assert( true || "base class can only handle 'ice' and 'ascii' formats" );
     }
 }
 

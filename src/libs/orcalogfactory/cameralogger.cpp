@@ -67,6 +67,16 @@ CameraLogger::CameraLogger( orcalog::LogMaster *master,
         throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: unknown log format: "+format_ );
     }
 #endif
+
+    // alexm: hack! the idea was for this virtual function to be called from
+    // Logger::Logger() but at that point the derived class is not instantiated yet
+    // so the CameraLogger::createLogFile() is not executed.
+    // benu: createLogFile() is already called for "ice" so only need to call this here
+    // for "jpeg" 
+    if (format_ == "jpeg" )
+    {
+        createLogFile();
+    }
 }
 
 CameraLogger::~CameraLogger()
