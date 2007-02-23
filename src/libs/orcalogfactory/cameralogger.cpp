@@ -19,7 +19,7 @@
 #include "cameralogger.h"
 
 #ifdef OPENCV_FOUND
-    #include <cv.h>
+//    #include <cv.h>
     #include <highgui.h>
 #endif
 
@@ -60,6 +60,11 @@ CameraLogger::CameraLogger( orcalog::LogMaster *master,
 
 
 #ifdef OPENCV_FOUND
+    // Initialise the iplimage pointer to NULL.
+    // Note that we can't do this in the normal variable initialisation stage of the
+    // constructor since it needs OPENCV_FOUND to be defined
+    cvImage_ = 0;
+
     // check that we support this format
     if ( format_!="ice" && format_!="jpeg" )
     {
@@ -145,7 +150,7 @@ CameraLogger::setData(const orca::CameraData& data, const Ice::Current&)
 //
 // alexm: 'data' cannot be const because we are changing it's format
 //
-//         writeCameraDataAsJpeg( data, filename.str() );
+         writeCameraDataAsJpeg( data, filename.str() );
 // ##########################################
     }
     else
@@ -183,7 +188,15 @@ CameraLogger::orca_writeCameraData( Ice::OutputStreamPtr outStreamPtr,
 {
     outStreamPtr->writeInt(data.imageWidth);
     outStreamPtr->writeInt(data.imageHeight);
-    outStreamPtr->writeInt(data.format);
+    if ( format_ == "jpeg" )
+    {
+        // if we use opencv to compress to jpeg, the format must be BGR
+        outStreamPtr->writeInt(orca::ImageFormatModeBgr);
+    }
+    else
+    {
+        outStreamPtr->writeInt(data.format);
+    }
     outStreamPtr->writeInt(data.compression);
     outStreamPtr->writeDouble(orcaice::timeAsDouble(data.timeStamp));
     outStreamPtr->writeString( filename );
@@ -191,10 +204,11 @@ CameraLogger::orca_writeCameraData( Ice::OutputStreamPtr outStreamPtr,
 
 // Write image to file after compressing to jpeg format using opencv
 void 
-CameraLogger::writeCameraDataAsJpeg( orca::CameraData& data, const std::string & filename )
+CameraLogger::writeCameraDataAsJpeg( const orca::CameraData& data, const std::string & filename )
 {
 #ifdef OPENCV_FOUND
-    IplImage* cvImage_ = 0;
+//    IplImage* cvImage_ = 0;
+//      cvImage_ = 0;
     
     if ( dataCounter_ == 1 )
     {    
@@ -212,7 +226,7 @@ CameraLogger::writeCameraDataAsJpeg( orca::CameraData& data, const std::string &
     if ( nChannels_ == 3 )
     {       
         orcaimage::cvtToBgr( cvImage_, cvImage_, data );
-        data.format = orca::ImageFormatModeBgr;
+        // data.format = orca::ImageFormatModeBgr;
     }
     else
     {

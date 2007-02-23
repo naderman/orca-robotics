@@ -32,7 +32,10 @@ Replayer::Replayer( const std::string      &interfaceType,
     // open log file. Derived classes may re-implement this function to modify
     // the standard treatment of log formats.
     //
-    openLogFile();
+    // benu: can't call this here as the base class constructor is called first
+    // which implements the base class openLogFile() and not the derived class
+    // openLogFile()
+    // openLogFile();
 }
 
 Replayer::~Replayer()
@@ -47,7 +50,10 @@ void
 Replayer::init()
 {
     // instead of re-opening, we should rewind to top.
-//     openLogFile();
+    // benu: uncommented the openLogFile() here as the 
+    // openLogFile() from derived classes will called rather
+    // than when called in the constructor
+    openLogFile();
 
     // this one is implemented in derived classes
     initInterfaces();

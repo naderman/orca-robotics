@@ -41,9 +41,8 @@ public:
 
     virtual void unsubscribe(const ::orca::CameraConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
-    // from Replayer
-
     virtual void replayData( int index, bool isTest=false );
+
 
 private:
     orcaice::Buffer<orca::CameraData> dataPipe_;
@@ -73,6 +72,10 @@ private:
 
     // this is a counter of instaces of this type, used for registered interface name
     static int _counter;
+
+    // from Replayer
+    virtual void openLogFile();
+
 };
 
 } // namespace

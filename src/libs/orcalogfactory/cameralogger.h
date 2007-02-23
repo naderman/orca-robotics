@@ -15,6 +15,10 @@
 #include <orca/camera.h>
 #include <orcalog/logger.h>
 
+#ifdef OPENCV_FOUND
+    #include <cv.h>
+#endif
+
 namespace orcalogfactory
 {
 
@@ -45,12 +49,12 @@ private:
     void orca_writeCameraData( Ice::OutputStreamPtr outStreamPtr, const orca::CameraData& data, const std::string & filename );
 
     // alexm: 'data' cannot be const because we are changing it's format
-    void writeCameraDataAsJpeg( orca::CameraData& data, const std::string & filename );
+    void writeCameraDataAsJpeg( const orca::CameraData& data, const std::string & filename );
 
     // use opencv to convert to jpg
-//         #ifdef OPENCV_FOUND
-//             IplImage* cvImage_;
-//         #endif
+   #ifdef OPENCV_FOUND
+       IplImage* cvImage_;
+   #endif
     
     int nChannels_;
 };

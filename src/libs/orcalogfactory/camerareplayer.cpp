@@ -129,6 +129,23 @@ CameraReplayer::unsubscribe(const ::orca::CameraConsumerPrx &subscriber, const :
     topic_->unsubscribe( subscriber );
 }
 
+void
+CameraReplayer::openLogFile()
+{
+    context_.tracer()->debug( "Opening log file "+filename_,2 );
+
+    //
+    // open log file, may throw and it will kill us
+    //
+    if ( format_ == "ice" || format_ == "jpeg" )
+    {
+        openBinaryFile();
+    }
+    else
+    {
+        throw orcalog::FormatNotSupportedException( ERROR_INFO, "Unknown format: "+format_ );
+    }
+}
 
 void 
 CameraReplayer::loadHeaderIce()
@@ -145,13 +162,9 @@ CameraReplayer::loadHeaderIce()
 void 
 CameraReplayer::initDescription()
 {
-    if (format_=="ice")
+    if ( format_=="ice" || format_=="jpeg" )
     {
         loadHeaderIce();
-    }
-    else if (format_=="jpeg")
-    {
-//         readConfigFromFileJose();
     }
     else
     {
@@ -203,25 +216,38 @@ CameraReplayer::loadDataJpeg( int index )
 //     for (int i=0; i<index; i++)
     while (index != (dataCounter_) )
     {
-        std::vector<Ice::Byte> byteData;
+        char id;
+        file_->read( (char*)&id, sizeof(char) );
+
         size_t length;
-        file_->read( (char*)&length, sizeof(length) );
+        file_->read( (char*)&length, sizeof(size_t) );
+        // checkFile();
+
+	if ( length==0 ) {
+	    throw orcalog::FileException( ERROR_INFO, "attempt to read object of size 0" );
+	}
+    
         checkFile();
 
 //         cout << "TRACE(camerareplayer.cpp): before resize, length: " << length << endl;
+        std::vector<Ice::Byte> byteData;
         byteData.resize( length );
         file_->read( (char*)&byteData[0], length );
+
+	if ( byteData.empty() ) {
+	    throw orcalog::FileException( ERROR_INFO, "read object of size 0" );
+	}
+    
         checkFile();
 
 //         cout << "TRACE(cameraplayer.cpp): byteData, size: " << byteData.size() << endl;
         Ice::InputStreamPtr iceInputStreamPtr = Ice::createInputStream( context_.communicator(), byteData );
-        if ( !byteData.empty() )
-        {
-            // TODO: Make this so that it an option is read from the logged master file
-            // for reading back as an ice binary file or as separate images        
-            // ice_readCameraData( iceInputStreamPtr, data_ );
-            orca_readCameraData( iceInputStreamPtr, index );
-        }
+
+	// TODO: Make this so that it an option is read from the logged master file
+	// for reading back as an ice binary file or as separate images        
+	// ice_readCameraData( iceInputStreamPtr, data_ );
+	orca_readCameraData( iceInputStreamPtr, index );
+
         dataCounter_++;
     }
 }
@@ -240,7 +266,7 @@ CameraReplayer::orca_readCameraData( Ice::InputStreamPtr iceInputStreamPtr, int 
     std::string fname = iceInputStreamPtr->readString();
     
     #ifdef OPENCV_FOUND
-        if (index == 1)
+        if (index == 0)
         {    
             // only setup the opencv struct on the first loop
             nChannels_ = orcaimage::numChannels( data_.format );
