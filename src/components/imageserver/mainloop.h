@@ -13,7 +13,6 @@
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/cameraI.h>
-#include <orcaimagegrabber/imagegrabber.h>
 
 #include "driver.h"
 
@@ -45,8 +44,6 @@ private:
 
     // Generic driver for the hardware
     Driver *hwDriver_;
-
-    orcaimage::ImageGrabber *imageGrabber_;
 
     orcaice::Context context_;
 
