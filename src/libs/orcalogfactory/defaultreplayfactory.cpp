@@ -14,6 +14,7 @@
 #include "camerareplayer.h"
 #include "gpsreplayer.h"
 #include "laserscanner2dreplayer.h"
+#include "localise2dreplayer.h"
 #include "powerreplayer.h"
 #include "odometry2dreplayer.h"
 #include "odometry3dreplayer.h"
@@ -30,6 +31,7 @@ DefaultReplayFactory::DefaultReplayFactory()
     addSupportedType("Camera");
     addSupportedType("Gps");
     addSupportedType("LaserScanner2d");
+    addSupportedType("Localise2d");
     addSupportedType("Odometry2d");
     addSupportedType("Odometry3d");
     addSupportedType("Power");
@@ -58,6 +60,10 @@ DefaultReplayFactory::create(
     else if ( interfaceType == "LaserScanner2d" )
     {
         replayer = new LaserScanner2dReplayer( format, filename, context );
+    }
+    else if ( interfaceType == "Localise2d" )
+    {
+        replayer = new Localise2dReplayer( format, filename, context );
     }
     else if ( interfaceType == "Odometry2d" )
     {

@@ -30,9 +30,9 @@ MainLoop::MainLoop( DriverFactory          &driverFactory,
       pathMaintainer_(NULL),
       driver_(NULL),
       driverFactory_(driverFactory),
-      obsConsumer_(NULL),
-      locConsumer_(NULL),
-      odomConsumer_(NULL),
+      obsConsumer_(new orcaifaceimpl::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>),
+      locConsumer_(new orcaifaceimpl::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>),
+      odomConsumer_(new orcaifaceimpl::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>),
       obsProxy_(NULL),
       locProxy_(NULL),
       odomProxy_(NULL),
@@ -41,6 +41,14 @@ MainLoop::MainLoop( DriverFactory          &driverFactory,
       testMode_(false),
       context_(context)
 {
+    Ice::ObjectPtr odomConsumerPtr = odomConsumer_;
+    odomConsumerPrx_ = orcaice::createConsumerInterface<Odometry2dConsumerPrx>( context_, odomConsumerPtr );
+
+    Ice::ObjectPtr locConsumerPtr = locConsumer_;
+    locConsumerPrx_ = orcaice::createConsumerInterface<Localise2dConsumerPrx>( context_, locConsumerPtr );
+    
+    Ice::ObjectPtr obsConsumerPtr = obsConsumer_;
+    obsConsumerPrx_ = orcaice::createConsumerInterface<RangeScanner2dConsumerPrx>( context_, obsConsumerPtr );
 }
 
 MainLoop::MainLoop( DriverFactory          &driverFactory,
@@ -87,17 +95,18 @@ MainLoop::ensureProxiesNotEmpty()
         bool gotOdom = !odomProxy_->isEmpty();
 
 
-        if ( !( gotObs && gotLoc && gotOdom ) )
+        if ( gotObs && gotLoc && gotOdom )
+        {
+            context_.tracer()->info( "Received at least one data item from every provided interface." );
+            return;
+        }
+        else
         {
             stringstream ss;
             ss << "Still waiting for intial data to arrive.  gotObs="<<gotObs<<", gotLoc="<<gotLoc<<", gotOdom="<<gotOdom;
             context_.tracer()->warning( ss.str() );
             sleep(1);
         }
-        else
-            return;
-            
-        context_.tracer()->info( "Received at least one data item from every provided interface." );
     }
 }
 
@@ -162,7 +171,7 @@ MainLoop::connectToController()
         try 
         {
             // Get the vehicle description
-            descr_ = velControl2dPrx_->getDescription();
+            vehicleDescr_ = velControl2dPrx_->getDescription();
             break;
         }
         catch ( std::exception &e )
@@ -202,13 +211,10 @@ MainLoop::subscribeForOdometry()
         }
         sleep(2);
     }    
-    Ice::ObjectPtr odomConsumerPtr = odomConsumer_;
-    orca::Odometry2dConsumerPrx odomConsumerPrx =
-        orcaice::createConsumerInterface<Odometry2dConsumerPrx>( context_, odomConsumerPtr );
     while ( isActive() )
     {
         try {
-            odomPrx->subscribe( odomConsumerPrx );
+            odomPrx->subscribe( odomConsumerPrx_ );
             break;
         }
         catch( std::exception &e )
@@ -223,6 +229,7 @@ MainLoop::subscribeForOdometry()
         }
         sleep(2);
     }
+    context_.tracer()->info( "Subscribed for odometry" );
 }
 
 void
@@ -260,13 +267,10 @@ MainLoop::subscribeForLocalisation()
         }
         sleep(2);
     }    
-    Ice::ObjectPtr locConsumerPtr = locConsumer_;
-    orca::Localise2dConsumerPrx locConsumerPrx =
-        orcaice::createConsumerInterface<Localise2dConsumerPrx>( context_, locConsumerPtr );
     while ( isActive() )
     {
         try {
-            locPrx->subscribe( locConsumerPrx );
+            locPrx->subscribe( locConsumerPrx_ );
             break;
         }
         catch( std::exception &e )
@@ -281,6 +285,7 @@ MainLoop::subscribeForLocalisation()
         }
         sleep(2);
     }
+    context_.tracer()->info( "Subscribed for localisation" );
 }
 
 void
@@ -306,13 +311,10 @@ MainLoop::subscribeForObservations()
         }
         sleep(2);
     }    
-    Ice::ObjectPtr obsConsumerPtr = obsConsumer_;
-    orca::RangeScanner2dConsumerPrx obsConsumerPrx =
-        orcaice::createConsumerInterface<RangeScanner2dConsumerPrx>( context_, obsConsumerPtr );
     while ( isActive() )
     {
         try {
-            obsPrx->subscribe(  obsConsumerPrx );
+            obsPrx->subscribe(  obsConsumerPrx_ );
             break;
         }
         catch( std::exception &e )
@@ -327,6 +329,25 @@ MainLoop::subscribeForObservations()
         }
         sleep(2);
     }
+    while ( isActive() )
+    {
+        try {
+            scannerDescr_ = obsPrx->getDescription();
+            break;
+        }
+        catch( std::exception &e )
+        {
+            stringstream ss; ss << "Error while subscribing to laser: " << e.what();
+            context_.tracer()->error( ss.str() );
+        }
+        catch( Ice::Exception &e )
+        {
+            stringstream ss; ss << "Error while subscribing to laser: " << e;
+            context_.tracer()->error( ss.str() );
+        }
+        sleep(2);
+    }
+    context_.tracer()->info( "Subscribed for laser" );
 }
 
 void
@@ -336,13 +357,8 @@ MainLoop::setup()
     {
         connectToController();
 
-        odomConsumer_ = new orcaifaceimpl::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>;
         subscribeForOdometry();
-
-        locConsumer_  = new orcaifaceimpl::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>;
         subscribeForLocalisation();
-
-        obsConsumer_  = new orcaifaceimpl::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>;
         subscribeForObservations();
 
         obsProxy_  = &(obsConsumer_->proxy_);
@@ -351,22 +367,45 @@ MainLoop::setup()
     }
     else
     {
-        descr_ = testSimulator_->getVehicleDescription();
+        vehicleDescr_ = testSimulator_->getVehicleDescription();
         obsProxy_  = &(testSimulator_->obsProxy_);
         locProxy_  = &(testSimulator_->locProxy_);
         odomProxy_ = &(testSimulator_->odomProxy_);
     }
 
     stringstream descrStream;
-    descrStream << "Working with the following vehicle: " << orcaice::toString(descr_);
+    descrStream << "Working with the following vehicle: " << orcaice::toString(vehicleDescr_);
     context_.tracer()->info( descrStream.str() );
 
-    driver_ = driverFactory_.createDriver( context_, descr_ );
+    driver_ = driverFactory_.createDriver( context_, vehicleDescr_, scannerDescr_ );
     pathMaintainer_ = new PathMaintainer( pathFollowerInterface_, clock_, context_ );
     localNavManager_ = new LocalNavManager( *driver_, *pathMaintainer_, context_ );
 
     initInterfaces();
     ensureProxiesNotEmpty();
+}
+
+void
+MainLoop::sendCommandToPlatform( const orca::VelocityControl2dData& cmd )
+{
+    try {
+        if ( testMode_ )
+            testSimulator_->setCommand( cmd );
+        else
+            velControl2dPrx_->setCommand( cmd );
+    }
+    catch ( orca::HardwareFailedException &e )
+    {
+        stringstream ss;
+        ss << e.what;
+        context_.tracer()->warning( ss.str() );
+    }
+    catch ( const Ice::Exception &e )
+    {
+        stringstream ss;
+        ss << "While giving command to platform: " << e;
+        context_.tracer()->warning( ss.str() );
+    }    
 }
 
 void
@@ -378,6 +417,7 @@ MainLoop::run()
 
     const int TIMEOUT_MS = 1000;
 
+    orca::VelocityControl2dData velocityCmd;
     while ( isActive() )
     {
         try 
@@ -399,61 +439,44 @@ MainLoop::run()
                 stringstream ss;
                 ss << "Timeout waiting for range data: no data for " << TIMEOUT_MS << "ms.  Stopping.";
                 context_.tracer()->error( ss.str() );
-                getStopCommand( velocityCmd_ );
+                getStopCommand( velocityCmd );
+                sendCommandToPlatform( velocityCmd );
+                subscribeForObservations();
+                continue;
             }
-            else
+
+            // Tell everyone what time it is, boyeee
+            clock_.setTime( rangeData_->timeStamp );
+
+            locProxy_->get( localiseData_ );
+            odomProxy_->get( odomData_ );
+
+            const double THRESHOLD = 1.0; // seconds
+            if ( areTimestampsDodgy( rangeData_, localiseData_, odomData_, THRESHOLD ) )
             {
-                // Tell everyone what time it is, boyeee
-                clock_.setTime( rangeData_->timeStamp );
+                stringstream ss;
+                ss << "Timestamps are more than "<<THRESHOLD<<"sec apart: " << endl
+                   << "\t rangeData:    " << orcaice::toString(rangeData_->timeStamp) << endl
+                   << "\t localiseData: " << orcaice::toString(localiseData_.timeStamp) << endl
+                   << "\t odomData:     " << orcaice::toString(odomData_.timeStamp) << endl
+                   << "Maybe something is wrong: Stopping.";
+                context_.tracer()->error( ss.str() );
+                getStopCommand( velocityCmd );
+                sendCommandToPlatform( velocityCmd );
+                subscribeForOdometry();
+                subscribeForLocalisation();
+                continue;
+            }
 
-                locProxy_->get( localiseData_ );
-                odomProxy_->get( odomData_ );
-
-                const double THRESHOLD = 1.0; // seconds
-                if ( areTimestampsDodgy( rangeData_, localiseData_, odomData_, THRESHOLD ) )
-                {
-                    stringstream ss;
-                    ss << "Timestamps are more than "<<THRESHOLD<<"sec apart: " << endl
-                       << "\t rangeData:    " << orcaice::toString(rangeData_->timeStamp) << endl
-                       << "\t localiseData: " << orcaice::toString(localiseData_.timeStamp) << endl
-                       << "\t odomData:     " << orcaice::toString(odomData_.timeStamp) << endl
-                       << "Maybe something is wrong: Stopping.";
-                    context_.tracer()->error( ss.str() );
-                    getStopCommand( velocityCmd_ );
-                }
-                else
-                {
 //                     cout<<"TRACE(mainloop.cpp): localNavManager_.getCommand:"<<endl
 //                         <<"    localiseData: " << orcaice::toString(localiseData_) << endl
 //                         <<"    odomData: " << orcaice::toString(odomData_) << endl;
 
-                    localNavManager_->getCommand( rangeData_,
-                                                  localiseData_,
-                                                  odomData_,
-                                                  velocityCmd_ );
-                }
-            }
-            
-            // Send the command to the platform
-            try {
-                if ( testMode_ )
-                    testSimulator_->setCommand( velocityCmd_ );
-                else
-                    velControl2dPrx_->setCommand( velocityCmd_ );
-            }
-            catch ( orca::HardwareFailedException &e )
-            {
-                stringstream ss;
-                ss << e.what;
-                context_.tracer()->warning( ss.str() );
-            }
-            catch ( const Ice::Exception &e )
-            {
-                stringstream ss;
-                ss << "While giving command to platform: " << e;
-                context_.tracer()->warning( ss.str() );
-            }
-            
+            localNavManager_->getCommand( rangeData_,
+                                          localiseData_,
+                                          odomData_,
+                                          velocityCmd );
+            sendCommandToPlatform( velocityCmd );
             checkWithOutsideWorld();
 
         }

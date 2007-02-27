@@ -50,14 +50,6 @@ GpsComponent::start()
     prefix += ".Config.";
 
     bool startEnabled = orcaice::getPropertyAsIntWithDefault( prop, prefix+"StartEnabled", true );
-       
-    //
-    // DRIVER CONFIGURATION
-    //
-
-    // read config options
-    // GpsDriver::Config cfg;
-    // no configuration required here   
 
     //
     // HARDWARE INTERFACES   

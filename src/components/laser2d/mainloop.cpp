@@ -28,6 +28,8 @@ MainLoop::MainLoop( orcaifaceimpl::LaserScanner2dI &laserInterface,
       compensateRoll_(compensateRoll),
       context_(context)
 {
+    context_.status()->setHeartbeatInterval( "hardware", 10.0 );
+    context_.status()->ok( "hardware", "initializing" );
 }
 
 MainLoop::~MainLoop()
@@ -60,6 +62,7 @@ MainLoop::activate()
             context_.tracer()->warning( "MainLoop::activate(): caught unknown exception." );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        context_.status()->heartbeat( "hardware" );
     }
 }
 
@@ -81,7 +84,8 @@ MainLoop::establishInterface()
         {
             context_.tracer()->warning( "MainLoop::establishInterface(): caught unknown exception." );
         }
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        context_.status()->heartbeat( "hardware" );
     }
 }
 
@@ -128,6 +132,10 @@ MainLoop::run()
     establishInterface();
 
     hwDriver_->init();
+    context_.status()->setHeartbeatInterval( "hardware", 1.0 );
+
+    int prevReadResult = 0;
+    int currReadResult = 0;
 
     //
     // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
@@ -138,28 +146,47 @@ MainLoop::run()
         try 
         {
             // this blocks until new data arrives
-            int ret = readData( laserData );
+            currReadResult = readData( laserData );
 
             // make sure we are not shutting down, otherwise we'll segfault while trying to send
-            if ( ret == 0 && isActive() ) {
+            if ( currReadResult == 0 && isActive() ) {
                 laserInterface_.localSetAndSend( laserData );
             }
 
+            // old way to send heartbeats
             if ( heartbeater.isHeartbeatTime() )
             {
                 stringstream ss;
-                if ( ret == 0 )
+                if ( currReadResult == 0 ) {
                     ss << "Laser enabled. ";
-                else
+                }
+                else {
                     ss << "Laser having problems.";
+                }
                 heartbeater.beat( ss.str() + hwDriver_->heartbeatMessage() );
             }
+
+            // new way to send heartbeats
+            // status has changed
+            if ( currReadResult != prevReadResult ) {
+                if ( currReadResult==0 ) {
+                    context_.status()->ok( "hardware", "Laser enabled. "+hwDriver_->heartbeatMessage() );
+                }
+                else {
+                    context_.status()->fault( "hardware", "Laser having problems. "+hwDriver_->heartbeatMessage() );
+                }
+            }
+            // status has not changed
+            else {
+                context_.status()->heartbeat( "hardware" );
+            }
+            prevReadResult = currReadResult;
 
         } // end of try
         catch ( Ice::CommunicatorDestroyedException & )
         {
             // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-            // somewhere in mainLoop.
+            // somewhere in mainLoop. Eventually, component will tell us to stop.
         }
         catch ( Ice::Exception &e )
         {
@@ -183,7 +210,7 @@ MainLoop::run()
     } // end of while
 
     // Laser hardware will be shut down in the driver's destructor.
-    context_.tracer()->debug( "dropping out from run()", 5 );
+    context_.tracer()->debug( "dropping out from run()", 2 );
 }
 
 } // namespace

@@ -14,16 +14,11 @@
 #include <cmath>
 #include <orca/featuremap2d.h>
 #include <orcaice/orcaice.h>
+#include "scanutil.h"
 
 using namespace std;
 
 namespace laserfeatures {
-
-static double laserScanBearing( const orca::RangeScanner2dDataPtr & scan, const int i )
-{
-    double angleIncrement = orcaice::calcAngleIncrement( scan->fieldOfView, scan->ranges.size() );
-    return (scan->startAngle + angleIncrement*i);
-}
 
 ReflectorExtractor::ReflectorExtractor( const orcaice::Context & context, double laserMaxRange, int numReturns )
     : laserMaxRange_(laserMaxRange)

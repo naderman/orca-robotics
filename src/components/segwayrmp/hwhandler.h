@@ -31,12 +31,14 @@ namespace segwayrmp
 class HwHandler : public orcaice::Thread, public orcaice::NotifyHandler<orca::VelocityControl2dData>
 {
 public:
-
+        
+    // The VehicleDescription is non-const, so the handler (and driver)
+    // can update it with actual hardware limits.
     HwHandler( orcaice::Proxy<orca::Odometry2dData>& odometry2dPipe,
                orcaice::Proxy<orca::Odometry3dData>& odometry3dPipe,
                orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
                orcaice::Proxy<orca::PowerData>& powerPipe,
-                const orca::VehicleDescription&               descr,
+               orca::VehicleDescription&             descr,
                const orcaice::Context& context );
     virtual ~HwHandler();
 

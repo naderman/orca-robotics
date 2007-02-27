@@ -43,6 +43,17 @@ struct GpsDescription
     Frame3d antennaOffset;
 };
 
+//! Gps position types
+enum GpsPositionType {
+    //! Invalid or not available
+    GpsPositionTypeNotAvailable,
+    //! Autonomous position
+    //! (This is the normal case for non-differential GPS)
+    GpsPositionTypeAutonomous,
+    //! Differentially corrected
+    GpsPositionTypeDifferential
+};
+
 //! Gps time structure
 struct GpsTimeData
 {
@@ -71,15 +82,20 @@ struct GpsMapGridData
     //! Altitude (metres above ellipsoid)
     double altitude;
     
-    //! Heading/track/course (degrees)
+    //! Horizontal position error: one standard deviation (metres)
+    double horizontalPositionError;
+    //! Vertical position error: one standard deviation (metres)
+    double verticalPositionError;
+    
+    //! Heading/track/course with respect to true north (rad)
     double heading; 
     //! Horizontal velocity (metres/second)
     double speed;
     //! Vertical velocity (metres/second)
     double climbRate;
     
-    //! Position type (Bad (0), Ugly (1), Good (2))
-    int positionType;
+    //! Position type (see above)
+    GpsPositionType positionType;
 };
 
 
@@ -98,7 +114,12 @@ struct GpsData
     //! Altitude (metres above ellipsoid)
     double altitude;
     
-    //! Heading/track/course (degrees)
+    //! Horizontal position error: one standard deviation (metres)
+    double horizontalPositionError;
+    //! Vertical position error: one standard deviation (metres)
+    double verticalPositionError;
+    
+    //! Heading/track/course with respect to true north (rad)
     double heading; 
     //! Horizontal velocity (metres/second)
     double speed;
@@ -107,8 +128,8 @@ struct GpsData
     
     //! Number of satellites
     int satellites;
-    //! Position type (Bad (0), Ugly (1), Good (2))
-    int positionType;
+    //! Position type (see above)
+    GpsPositionType positionType;
     //! Geoidal Separation (metres)
     double geoidalSeparation;    
 };

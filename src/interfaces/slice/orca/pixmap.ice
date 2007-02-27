@@ -26,9 +26,10 @@ module orca
     The data is encoded as pixels with rgb values.
   
     @see @ref orca_interface_ogmap for coordinate system conventions.
+    @{
 */
 
-//! Represents a single pixel encoded as rgb
+//! Represents a single pixel encoded as Red-Green-Blue intensities.
 struct Pixel
 {
     byte r;
@@ -39,6 +40,7 @@ struct Pixel
 //! A sequence of pixels representing an image
 sequence<Pixel> Pixels;
 
+//! Data for PixMap interface
 struct PixMapData
 {
     //! Time when data was measured.

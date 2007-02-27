@@ -28,7 +28,7 @@ namespace orcaqgui {
 class WifiWidget : public QWidget
 {
     public:
-        WifiWidget( unsigned int numInterfaces );
+        WifiWidget( unsigned int numInterfaces, std::string proxyString );
         ~WifiWidget() {};
         void refresh( orca::WifiData &data );
         
@@ -53,7 +53,7 @@ class WifiElement
 public:
     WifiElement( const orcaice::Context  &context,
                  const std::string       &proxyString,
-                 int                      timeoutMs=60000 );
+                 int                      timeoutMs=3000 );
     ~WifiElement();
 
     virtual bool isInGlobalCS() { return true; };
@@ -65,6 +65,7 @@ public:
 private:
     WifiPainter painter_;
     WifiWidget *wifiWidget_;
+    std::string proxyString_;
 };
 
 }

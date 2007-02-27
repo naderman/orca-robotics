@@ -161,6 +161,7 @@ class VehicleGeometryCuboidDescription extends VehicleGeometryDescription
     Frame3d vehicleToGeometryTransform;
 };
 
+//! General description of a robotic vehicle.
 struct VehicleDescription
 {
     //! Description of the mechanism by which the vehicle can be controlled.

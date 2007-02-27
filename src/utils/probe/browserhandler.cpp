@@ -237,7 +237,9 @@ BrowserHandler::loadInterface()
     // special case: the interface is actually created every time, so here we try to delete it to avoid mem leak.
     //cout<<"unloading interface"<<endl;
     if ( ifaceProbe_ ) {
-        delete ifaceProbe_;
+        // most of our interfaces are now Ice smart pointers, can't delete them.
+        // but some of them are not and it's a problem
+//         delete ifaceProbe_;
         ifaceProbe_ = 0;
     }
     
@@ -292,8 +294,7 @@ BrowserHandler::loadOperation()
     //
     display_.showNetworkActivity( true );
     if ( ifaceProbe_->loadOperation( pick_, operationData_ ) ) {
-        orcaice::EventPtr e = new probe::FaultEvent;
-        events_->add( e );
+        events_->add( new probe::FaultEvent );
     }
     display_.showNetworkActivity( false );
 

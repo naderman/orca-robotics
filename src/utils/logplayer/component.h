@@ -32,7 +32,7 @@ class Component : public orcaice::Component
 {
 public:
 
-    Component( const std::string & compName );
+    Component( const std::string& compName );
     virtual ~Component();
 
     // component interface
@@ -50,10 +50,12 @@ private:
     std::vector<orcalog::Replayer*> replayers_;
     
     // utilities
-    void loadPluginLibraries( const std::string & factoryLibNames );
-    void createReplayer( const std::string    &interfaceType, 
-                   const std::string  &format,
-                   const std::string  &filename );
+    void loadPluginLibraries( const std::string& factoryLibNames );
+    void createReplayer( const std::string & interfaceType, 
+                   const std::string& format,
+                   const std::string& filename,
+                   bool               enabled,
+                   bool               require );
 };
 
 } // namespace

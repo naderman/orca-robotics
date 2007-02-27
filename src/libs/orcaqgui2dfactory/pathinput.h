@@ -93,6 +93,7 @@ class WpTable : public QTableWidget
                  QVector<int> *maxTurnrates);
         ~WpTable() {};
         void refreshTable();
+        void computeVelocities();
         QString getBehaviour( int row );
         
     private:
@@ -111,13 +112,12 @@ class WpTable : public QTableWidget
         // this one is only local
         QVector<float> velocities_;
         
-        void computeVelocities();
-        
         // lock up the cellUpdate signal: it should only be emitted if the user changes cell entries
         // not if we programmatically change them (as in refreshTable)
         bool isLocked_;
     
     private slots:
+        // called after user interaction
         void updateDataStorage(int row, int column);
 };
 

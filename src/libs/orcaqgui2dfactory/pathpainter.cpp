@@ -215,7 +215,7 @@ void PathPainter::paint( QPainter *painter, int z )
         }
     }
     
-    // ====== draw a point where we should be according to the plan ========
+    // ====== draw the olympic marker: shows where we should be according to the plan ========
     if (relativeStartTime_==NAN) return;
     
     int wpI = -1;
@@ -244,6 +244,20 @@ void PathPainter::paint( QPainter *painter, int z )
     painter->translate( x, y );
     QColor c = Qt::blue;
     paintWaypoint( painter, c, c, 0, 0.3, 360*16 );
+    
+    // drawing velocity values as text
+    painter->setFont( QFont("Helvetica [Cronyx]", 12) );
+    const double lineSpacing = painter->fontMetrics().lineSpacing();
+    const double offset = 0.4;
+    QMatrix m = painter->matrix();  // this is m2win matrix
+    QPointF labelPos = QPointF(offset,offset) * m;       // x-label position in window cs
+    painter->setMatrix( QMatrix() );
+    double velocity = sqrt( diffPoints.x()*diffPoints.x() + diffPoints.y()*diffPoints.y() ) / 
+                      (times_[wpI] - times_[wpI-1]);
+    painter->drawText( labelPos, "speed:" + QString::number( velocity, 'f', 2 ) + " m/s" );
+    labelPos.setY( labelPos.y() + lineSpacing );
+    painter->drawText( labelPos, "maxSpeed: " + QString::number( maxSpeeds_[wpI]) + " m/s" );
+    
     painter->restore();
 }
 

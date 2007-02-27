@@ -21,12 +21,13 @@ using namespace std;
 using namespace orca;
 using namespace orcaqgui;
 
-WifiWidget::WifiWidget( unsigned int numInterfaces )
+WifiWidget::WifiWidget( unsigned int numInterfaces, std::string proxyString )
     : numInterfaces_(numInterfaces)
 {
     setupDisplay();
     setMinimumWidth(200);
     setMinimumHeight(150);
+    setWindowTitle( QString(proxyString.c_str()) );
 }
 
 void
@@ -87,7 +88,8 @@ WifiElement::WifiElement( const orcaice::Context  &context,
                       orca::WifiPrx,
                       orca::WifiConsumer,
                       orca::WifiConsumerPrx>(context, proxyString, painter_, timeoutMs ),
-        wifiWidget_(0)
+        wifiWidget_(0),
+        proxyString_(proxyString)
 {
 }
 
@@ -115,7 +117,7 @@ WifiElement::update()
     painter_.setData( data );
     
     if (wifiWidget_==0) {
-        wifiWidget_ = new WifiWidget( data.interfaces.size() );
+        wifiWidget_ = new WifiWidget( data.interfaces.size(), proxyString_ );
     }
     wifiWidget_->refresh( data );
     if (wifiWidget_->isHidden()) {

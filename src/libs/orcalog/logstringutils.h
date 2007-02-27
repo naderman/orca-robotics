@@ -42,6 +42,8 @@ namespace orcalog
  */
 //@{
 
+//! Prints out waypoint2d to text which is easy to parse
+std::string toLogString( const orca::Waypoint2d& );
 //! Prints out cpu data to text which is easy to parse
 std::string toLogString( const orca::CpuData& );
 //! Prints out gps data to text which is easy to parse

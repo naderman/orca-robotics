@@ -17,28 +17,34 @@
 namespace orcaprobefactory
 {
 
-class GpsProbe : public orca::GpsConsumer, public orcaprobe::InterfaceProbe
+class GpsProbe : public orca::GpsMapGridConsumer, public orcaprobe::InterfaceProbe
 {
 
 public:
 
-    GpsProbe( const orca::FQInterfaceName & name,
-              orcaprobe::DisplayDriver & display,              
-              const orcaice::Context & context );
+    GpsProbe( const orca::FQInterfaceName& name,
+              orcaprobe::DisplayDriver& display,              
+              const orcaice::Context& context );
 
-    virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
+    virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
     
-    virtual void setData(const orca::GpsData & data, const Ice::Current&);
+    virtual void setData(const orca::GpsMapGridData& data, const Ice::Current&);
 
 private:
 
-    int loadGetDescription( orcacm::OperationData & data );
-    int loadGetData(        orcacm::OperationData & data );
-    int loadGetTimeData(    orcacm::OperationData & data );
-    int loadGetMapGridData( orcacm::OperationData & data );
-    int loadSubscribe(      orcacm::OperationData & data );
-    int loadUnsubscribe(    orcacm::OperationData & data );
+    int loadGetDescription( orcacm::OperationData& data );
+    int loadGetData(        orcacm::OperationData& data );
+    int loadGetTimeData(    orcacm::OperationData& data );
+    int loadGetMapGridData( orcacm::OperationData& data );
+    int loadSubscribe(      orcacm::OperationData& data );
+    int loadUnsubscribe(    orcacm::OperationData& data );
+    int loadSubscribeForMapGrid( orcacm::OperationData& data );
+    int loadUnsubscribeForMapGrid( orcacm::OperationData& data );
+    int loadSubscribeForTime( orcacm::OperationData& data );
+    int loadUnsubscribeForTime( orcacm::OperationData& data );
 
+    orca::GpsMapGridConsumerPrx callbackGpsMapGridPrx_;
+    orcacm::OperationData subscribeOperationData_;
 };
 
 } // namespace

@@ -18,8 +18,8 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-TracerProbe::TracerProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver & display,
-                                const orcaice::Context & context )
+TracerProbe::TracerProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+                                const orcaice::Context& context )
     : InterfaceProbe(name,display,context)
 {
     id_ = "::orca::Tracer";
@@ -28,10 +28,13 @@ TracerProbe::TracerProbe( const orca::FQInterfaceName & name, orcaprobe::Display
     addOperation( "setVerbosity",   "idempotent void setVerbosity( TracerVerbosityConfig verbosity )" );
     addOperation( "subscribe",      "void subscribe( StatusConsumer *subscriber )" );
     addOperation( "unsubscribe",    "idempotent void unsubscribe( StatusConsumer *subscriber )" );
+
+    Ice::ObjectPtr consumer = this;
+    callbackPrx_ = orcaice::createConsumerInterface<orca::TracerConsumerPrx>( context_, consumer );
 }
     
 int 
-TracerProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
+TracerProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 {    
     switch ( index )
     {
@@ -48,40 +51,31 @@ TracerProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
 }
 
 int 
-TracerProbe::loadGetVerbosity( orcacm::OperationData & data )
+TracerProbe::loadGetVerbosity( orcacm::OperationData& data )
 {
-    orca::TracerVerbosityConfig result;
-    orcacm::ResultHeader res;
-    
+    orca::TracerVerbosityConfig result;    
     try
     {
         orca::TracerPrx derivedPrx = orca::TracerPrx::checkedCast(prx_);
         result = derivedPrx->getVerbosity();
+        stringstream ss; 
+        ss  <<"error="<<result.error<<endl
+            <<"warn="<<result.warning<<endl
+            <<"info="<<result.info<<endl
+            <<"debug="<<result.debug;
+        orcaprobe::reportResult( data, "verbosity", ss.str() );
     }
-    catch( const Ice::Exception & e )
+    catch( const Ice::Exception& e )
     {
         stringstream ss;
-        ss << e;
-        res.name = "exception";
-        res.text = ss.str();
-        data.results.push_back( res );
-        return 1;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
     }
-
-//     cout<<orcaice::toString(result)<<endl;
-    res.name = "verbosity";
-    stringstream ss; 
-    ss  <<"error="<<result.error<<endl
-        <<"warn="<<result.warning<<endl
-        <<"info="<<result.info<<endl
-        <<"debug="<<result.debug;
-    res.text = ss.str();
-    data.results.push_back( res );
     return 0;
 }
 
 int 
-TracerProbe::loadSetVerbosity( orcacm::OperationData & data )
+TracerProbe::loadSetVerbosity( orcacm::OperationData& data )
 {
 //     orca::TracerData result;
     orcacm::ResultHeader res;
@@ -91,7 +85,7 @@ TracerProbe::loadSetVerbosity( orcacm::OperationData & data )
 //         orca::TracerPrx derivedPrx = orca::TracerPrx::checkedCast(prx_);
 //         result = derivedPrx->getData();
 //     }
-//     catch( const Ice::Exception & e )
+//     catch( const Ice::Exception& e )
 //     {
 //         stringstream ss;
 //         ss << e;
@@ -102,76 +96,57 @@ TracerProbe::loadSetVerbosity( orcacm::OperationData & data )
 //     }
 
 //     cout<<orcaice::toString(result)<<endl;
-    res.name = "outcome";
-    res.text = "not implemented"; //orcaice::toString(result);
-    data.results.push_back( res );
+    orcaprobe::reportNotImplemented( data );
     return 0;
 }
 
 int 
-TracerProbe::loadSubscribe( orcacm::OperationData & data )
+TracerProbe::loadSubscribe( orcacm::OperationData& data )
 {
     Ice::ObjectPtr consumer = this;
     orca::TracerConsumerPrx callbackPrx = 
             orcaice::createConsumerInterface<orca::TracerConsumerPrx>( context_, consumer );
-
-    orcacm::ResultHeader res;
-
     try
     {
         orca::TracerPrx derivedPrx = orca::TracerPrx::checkedCast(prx_);
         derivedPrx->subscribe( callbackPrx );
+        orcaprobe::reportSubscribed( data );
+
+        // save the op data structure so we can use it when the data arrives
+        subscribeOperationData_ = data;
     }
-    catch( const Ice::Exception & e )
+    catch( const Ice::Exception& e )
     {
         stringstream ss;
-        ss << e;
-        res.name = "exception";
-        res.text = ss.str();
-        data.results.push_back( res );
-        return 1;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
     }
-    
-    res.name = "outcome";
-    res.text = "Subscribed successfully";
-    data.results.push_back( res );
     return 0;
 }
 
 int 
-TracerProbe::loadUnsubscribe( orcacm::OperationData & data )
+TracerProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-//     try
-//     {
-//         orca::PowerPrx derivedPrx = orca::PowerPrx::checkedCast(prx_);
-// //         cout<<"unsub  "<<Ice::identityToString( consumerPrx_->ice_getIdentity() )<<endl;
-//         
-//         orca::PowerConsumerPrx powerConsumerPrx = orca::PowerConsumerPrx::uncheckedCast(consumerPrx_);
-// //         cout<<"unsub  "<<Ice::identityToString( powerConsumerPrx->ice_getIdentity() )<<endl;
-//         derivedPrx->unsubscribe( powerConsumerPrx );
-//     }
-//     catch( const Ice::Exception & e )
-//     {
-//         cout<<"caught "<<e<<endl;
-//         return 1;
-//     }
-    
+    try
+    {
+        orca::TracerPrx derivedPrx = orca::TracerPrx::checkedCast(prx_);
+        derivedPrx->unsubscribe( callbackPrx_ );
+        orcaprobe::reportUnsubscribed( data );
+    }
+    catch( const Ice::Exception& e )
+    {
+        stringstream ss;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
+    }
     return 0;
 }
 
 void 
 TracerProbe::setData(const orca::TracerData& result, const Ice::Current&)
 {
-    std::cout << orcaice::toString(result) << std::endl;
-
-    orcacm::OperationData data;
-    // this is the result for operation "subscribe" which has user index=2;
-    fillOperationData( orcaprobe::UserIndex+2, data );
-
-    orcacm::ResultHeader res;
-    res.name = "data";
-    res.text = orcaice::toString(result);
-    data.results.push_back( res );
-
-    display_.setOperationData( data );
-};
+//     std::cout << orcaice::toString(result) << std::endl;
+    subscribeOperationData_.results.clear();
+    orcaprobe::reportResult( subscribeOperationData_, "data", orcaice::toString(result) );
+    display_.setOperationData( subscribeOperationData_ );
+}

@@ -75,7 +75,7 @@ FakeGpsDriver::read()
     GpsData_.speed = 0;
     GpsData_.climbRate = 0;
     GpsData_.satellites = 6;
-    GpsData_.positionType = 1;
+    GpsData_.positionType = orca::GpsPositionTypeAutonomous;
     GpsData_.geoidalSeparation = 10;
     newGpsData_ = true;
     

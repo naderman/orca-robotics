@@ -121,6 +121,7 @@ WpWidget::WpWidget( PathInput *pathInput,
 
 void WpWidget::refreshTable()
 {
+    wpTable_->computeVelocities();
     wpTable_->refreshTable();    
 }
 
@@ -222,7 +223,7 @@ void WpTable::refreshTable()
     QString str;
     QTableWidgetItem *item;
     
-    computeVelocities();
+//     computeVelocities();
     
     for (int row=0; row<size; row++)
     {
@@ -296,6 +297,18 @@ void WpTable::computeVelocities()
     }
 }
 
+// void WpTable::computeAbsTimes()
+// {
+//     velocities_.resize(1);
+//     velocities_[0] = 0.0;
+//     for (int i=1; i<waypoints_->size(); i++)
+//     {
+//         float deltaS = straightLineDist( waypoints_->at(i) - waypoints_->at(i-1));
+//         float deltaT = times_->at(i) - (times_->at(i-1) + waitingTimes_->at(i-1));
+//         velocities_.push_back(deltaS/deltaT);
+//     }
+// }
+
 QString WpTable::getBehaviour( int row )
 {
     QComboBox *combo = dynamic_cast<QComboBox*>(cellWidget(row,Behaviour));
@@ -317,8 +330,20 @@ void WpTable::updateDataStorage(int row, int column)
     {
         case AbsoluteTime: 
         {       
+            // get a pointer to first element
             float *data = times_->data();
-            data[row] = item->text().toDouble();
+            
+            float currentTimeSec = data[row];
+            float newTimeSec = item->text().toDouble();
+            float deltaTime = newTimeSec-currentTimeSec;
+            
+            // set this row and all subsequent ones
+            data[row] = newTimeSec;
+            for (int i=row+1; i<rowCount(); i++)
+            {
+                data[i] = data[i] + deltaTime;
+            }
+            computeVelocities();
             refreshTable();
             break;
         }
@@ -347,10 +372,19 @@ void WpTable::updateDataStorage(int row, int column)
             if (row==0) break;
             float velocity =  item->text().toDouble();
             velocities_[row] = velocity;
+            
             // update time to get to here
             float *data = times_->data();
             float deltaS = straightLineDist( waypoints_->at(row) - waypoints_->at(row-1) );
-            data[row] = deltaS/velocity + (data[row-1] + waitingTimes_->at(row-1));
+            float oldTime = data[row];
+            float newTime = deltaS/velocity + (data[row-1] + waitingTimes_->at(row-1));
+            // set new absolute time in our row
+            data[row] = newTime;
+            //all subsequent times will be updated too
+            for (int i=row+1; i<rowCount(); i++)
+            {
+                data[i] = data[i] + (newTime-oldTime);    
+            }
             refreshTable();
             break;
         }
@@ -414,7 +448,7 @@ void WpTable::updateDataStorage(int row, int column)
 PathInput::PathInput( QObject *parent, WaypointSettings *wpSettings, IHumanManager *humanManager, QString lastSavedPathFile )
     : wpSettings_(wpSettings),
       humanManager_(humanManager),      
-      waypointInFocus_(-99),
+      waypointInFocus_(-1),
       lastSavedPathFile_(lastSavedPathFile)
 {   
     wpWidget_ = new WpWidget( this,
@@ -493,6 +527,22 @@ void PathInput::paint( QPainter *p )
                        distTolerances_[i], 
                        headingTolerances_[i] );
 
+        p->restore();
+    }
+    
+    // ===== draw the waypoint in focus again, to be able to see the edge =======
+    if ( (waypointInFocus_!=-1) && (waypoints_.size()>0) )
+    {
+        p->save();
+
+        p->translate( waypoints_[waypointInFocus_].x(), waypoints_[waypointInFocus_].y() );    // move to point
+        drawColor = Qt::black;
+        paintWaypoint( p, 
+                        fillColor,
+                        drawColor, 
+                        headings_[waypointInFocus_],
+                        distTolerances_[waypointInFocus_], 
+                        headingTolerances_[waypointInFocus_] );
         p->restore();
     }
     
@@ -712,38 +762,46 @@ int PathInput::expandPathStationary(int index)
 
 int PathInput::expandPathRightLeft( int index )
 {
-    const int numInsert=3;
+    const int numInsert=4;
     const int headingTolerance=15*16;
     expandPath( index, numInsert, headingTolerance );
     
     // headings
+    // right
     int heading = headings_[index]-80*16;
     if (heading < 0) heading = heading + 360*16;
     headings_.insert(index+1, heading);
+    // back to middle
+    headings_.insert(index+2, headings_[index]);
+    // left
     heading = headings_[index]+80*16;
     if (heading >360*16) heading = heading - 360*16;
-    headings_.insert(index+2, heading);
-    headings_.insert(index+3, headings_[index]);
-    
-
+    headings_.insert(index+3, heading);
+    // back to middle
+    headings_.insert(index+4, headings_[index]);
     
     return numInsert;
 }
 
 int PathInput::expandPathLeftRight( int index )
 {
-    const int numInsert=3;
+    const int numInsert=4;
     const int headingTolerance=15*16;
     expandPath( index, numInsert, headingTolerance );
     
     // headings
+    // left
     int heading = headings_[index]+80*16;
     if (heading >360*16) heading = heading - 360*16;
     headings_.insert(index+1, heading);
+    // back to middle
+    headings_.insert(index+2, headings_[index]);
+    // right
     heading = headings_[index]-80*16;
     if (heading < 0) heading = heading + 360*16;
-    headings_.insert(index+2, heading);
-    headings_.insert(index+3, headings_[index]);
+    headings_.insert(index+3, heading);
+    // back to middle
+    headings_.insert(index+4, headings_[index]);
     
     return numInsert;
 }

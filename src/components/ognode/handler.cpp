@@ -55,8 +55,8 @@ Handler::run()
                 ogfusion::add(localMap_,data.observation[i]);
             }
             convert(localMap_,map);
-                    map.timeStamp=data.timeStamp;
-                    ogMapInterface_.localSetData(map);
+            map.timeStamp=data.timeStamp;
+            ogMapInterface_.localSetData(map);
                         
         } // try
         catch ( const orca::OrcaException & e )

@@ -52,6 +52,7 @@ OgMapI::localSetData( const OgMapData& data )
     try {
         context_.tracer()->debug( "Pushing to IceStorm", 2 );
         consumerPrx_->setData( data );
+        context_.tracer()->debug( "Done Push to IceStorm", 3 );
     }
     catch ( Ice::ConnectionRefusedException &e )
     {

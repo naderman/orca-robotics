@@ -25,6 +25,20 @@ namespace localnav {
 //                    Non-Member  Functions
 //////////////////////////////////////////////////////////////////////
 
+bool localisationIsUncertain( const orca::Localise2dData &localiseData )
+{
+    // Some dodgy heuristics
+    if ( localiseData.hypotheses.size() > 2 )
+        return true;
+
+    const orca::Pose2dHypothesis h = orcaice::mlHypothesis( localiseData );
+    if ( h.cov.xx > 20 ||
+         h.cov.yy > 20 )
+        return true;
+
+    return false;
+}
+
 float requiredTimeToGoalAtMaxSpeed( const Goal &goal )
 {
     assert ( goal.maxSpeed    >= 0.0 );
@@ -105,30 +119,32 @@ LocalNavManager::LocalNavManager( IDriver   &driver,
       context_(context)
 {
 }
-void
-setGoalFromWaypoint( const orcanavutil::Pose &pose,
-                     const orca::Waypoint2d  &wp,
-                     double                   secToWp,
-                     Goal                    &goal )
-{
-    goal.set( wp.target.p.x,
-              wp.target.p.y,
-              wp.target.o,
-              wp.distanceTolerance,
-              wp.headingTolerance,
-              secToWp,
-              wp.maxApproachSpeed,
-              wp.maxApproachTurnrate );
+// void
+// setGoalFromWaypoint( const orcanavutil::Pose &pose,
+//                      const orca::Waypoint2d  &wp,
+//                      double                   secToWp,
+//                      Goal                    &goal )
+// {
+//     goal.set( wp.target.p.x,
+//               wp.target.p.y,
+//               wp.target.o,
+//               wp.distanceTolerance,
+//               wp.headingTolerance,
+//               secToWp,
+//               wp.maxApproachSpeed,
+//               wp.maxApproachTurnrate );
 
-    // put the goal in robot's local coord system
-    orcanavutil::subtractInitialOffset( goal.x,
-                                        goal.y,
-                                        goal.theta,
-                                        pose.x(),
-                                        pose.y(),
-                                        pose.theta() );
-    NORMALISE_ANGLE( goal.theta );
-}
+//     cout<<"TRACE(localnavmanager.cpp): Waypoint: " << orcaice::toString(wp) << " --> Goal: " << goal << endl;    
+
+//     // put the goal in robot's local coord system
+//     orcanavutil::subtractInitialOffset( goal.x,
+//                                         goal.y,
+//                                         goal.theta,
+//                                         pose.x(),
+//                                         pose.y(),
+//                                         pose.theta() );
+//     NORMALISE_ANGLE( goal.theta );
+// }
 
 // Returns true iff a waypoint is active
 // bool
@@ -199,7 +215,12 @@ LocalNavManager::getCommand( const orca::RangeScanner2dDataPtr  rangeData,
     {
         constrainMaxSpeeds( currentGoals_[0], context_ );
         bool obsoleteStall=false;
+        bool uncertainLocalisation = localisationIsUncertain( localiseData );
+        if ( uncertainLocalisation )
+            context_.tracer()->warning( "LocalNavManager: Localisation is uncertain..." );
+
         driver_.getCommand( obsoleteStall,
+                            uncertainLocalisation,
                             odomData.motion,
                             rangeData,
                             currentGoals_,

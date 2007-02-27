@@ -57,6 +57,7 @@ public:
 
     // Goal location is in robot's coordinate frame
     virtual void getCommand( bool                               stalled,
+                             bool                               localisationUncertain,
                              const orca::Twist2d               &currentVelocity,
                              const orca::RangeScanner2dDataPtr  obs,
                              const std::vector<localnav::Goal> &goals,
@@ -124,9 +125,10 @@ class VfhDriverFactory : public localnav::DriverFactory
 {
 public:
     localnav::IDriver *createDriver( const orcaice::Context &context,
-                                     const orca::VehicleDescription &descr ) const
+                                     const orca::VehicleDescription &vehicleDescr,
+                                     const orca::RangeScanner2dDescription &scannerDescr ) const
         {
-            return new VfhDriver( context, descr );
+            return new VfhDriver( context, vehicleDescr );
         }
 };
 

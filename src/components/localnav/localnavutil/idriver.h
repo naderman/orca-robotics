@@ -49,6 +49,7 @@ public:
     // Sets cmd.
     //
     virtual void getCommand( bool                               stalled,
+                             bool                               localisationUncertain,
                              const orca::Twist2d               &currentVelocity,
                              const orca::RangeScanner2dDataPtr  obs,
                              const std::vector<Goal>           &goals,
@@ -63,7 +64,8 @@ class DriverFactory {
 public:
     virtual ~DriverFactory() {};
     virtual IDriver *createDriver( const orcaice::Context &context,
-                                   const orca::VehicleDescription &descr ) const=0;
+                                   const orca::VehicleDescription &descr,
+                                   const orca::RangeScanner2dDescription &descr ) const=0;
 };
 
 } // namespace

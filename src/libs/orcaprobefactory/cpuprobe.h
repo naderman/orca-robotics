@@ -29,8 +29,8 @@ public:
     
 private:
 
-    int loadGetInfo();
-    int loadGetData();
+    int loadGetInfo( orcacm::OperationData& data );
+    int loadGetData( orcacm::OperationData& data );
 };
 
 } // namespace

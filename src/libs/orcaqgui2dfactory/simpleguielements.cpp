@@ -8,14 +8,8 @@
  *
  */
 
-#include <orcaice/orcaice.h>
-
+#include <orcaobj/miscutils.h>
 #include "simpleguielements.h"
-
-#include <QTranslator>
-#include <QMenu>
-#include <QMenuBar>
-#include <QMainWindow>
 
 using namespace std;
 using namespace orca;
@@ -63,66 +57,6 @@ PolarFeature2dElement::contextMenu()
     QStringList s;
     s<<"Toggle Laser Reflectors"<<"Toggle Corners";
     return s;
-}
-
-void
-Localise2dElement::update()
-{
-    // standard update as in IceStormElement
-    if ( !IceStormElement<Localise2dPainter,
-            orca::Localise2dData,
-            orca::Localise2dPrx,
-            orca::Localise2dConsumer,
-            orca::Localise2dConsumerPrx>::needToUpdate() )
-        return;
-
-    assert( !listener_.buffer().isEmpty() );
-    
-    listener_.buffer().getAndPop( data_ );
-    painter_.setData( data_ );
-
-    // custom update, but first error-check.
-    if ( data_.hypotheses.size() == 0 )
-    {
-        std::stringstream ss;
-        ss << "Localise2dElement::update(): Interface " << listener_.interfaceName() << ": Localise2dData had zero hypotheses";
-        throw orcaqgui::Exception( ss.str() );
-    }
-    const orca::Pose2dHypothesis &h = orcaice::mlHypothesis( data_ );
-    x_ = h.mean.p.x;
-    y_ = h.mean.p.y;
-    theta_ = h.mean.o;
-}
-
-QStringList
-Localise2dElement::contextMenu()
-{
-    QStringList s;
-    s<<"Toggle History"<<"Toggle Multi-Hypothesis";
-    return s;
-}
-
-void
-Localise2dElement::execute( int action )
-{
-    switch ( action )
-    {
-    case 0 :
-    {
-        painter_.toggleDisplayHistory();
-        break;
-    }
-    case 1 :
-    {
-        painter_.toggleMultiHypothesis();
-        break;
-    }
-    default:
-    {
-        throw orcaqgui::Exception( "execute(): What the hell? bad action." );
-        break;
-    }
-    }
 }
 
 void

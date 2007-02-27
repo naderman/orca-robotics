@@ -20,9 +20,9 @@ using namespace orca;
 using namespace std;
 using namespace orcaqgui;
 
-GpsPainter::GpsPainter(const QColor & colour, const bool showHistory)
+GpsPainter::GpsPainter(const QColor & color, const bool showHistory)
     : isDataAvailable_(false),
-      basicColour_(colour),
+      basicColor_(color),
       isDisplayHistory_(showHistory)
 {
 }
@@ -34,17 +34,20 @@ GpsPainter::clear()
 }
 
 void 
-GpsPainter::setData( const float &x, const float &y, const float &heading )
+GpsPainter::setData( const double &x, 
+                     const double &y, 
+                     const double &heading, 
+                     const double &horizontalError  )
 {    
     // set local storage
     x_ = x;
     y_ = y;
     heading_ = (int)floor( RAD2DEG( heading ) );
+    horizontalError_ = horizontalError;
+    
     isDataAvailable_ = true;
     
     history_.addPoint( x, y );
-
-    currentColour_ = basicColour_;
 }
 
 void GpsPainter::paint( QPainter *painter, int z )
@@ -52,7 +55,7 @@ void GpsPainter::paint( QPainter *painter, int z )
     if ( !isDataAvailable_ ) return;
     
     if ( z == orcaqgui::Z_POSE-2 && isDisplayHistory_ ) {
-        history_.paint( painter, currentColour_ );
+        history_.paint( painter, currentColor_ );
     }
     
     if ( z == orcaqgui::Z_POSE ) 
@@ -61,10 +64,23 @@ void GpsPainter::paint( QPainter *painter, int z )
         painter->save();
         {
             painter->translate( x_, y_ );
+            double covH = horizontalError_*horizontalError_;
             painter->rotate( heading_ );
-            orcaqgui::paintPlatformPose( m2win, painter, currentColour_ );
+            orcaqgui::paintPlatformPose( m2win, painter, currentColor_ );
+            if (covH > 0.0)
+                orcaqgui::paintCovarianceEllipse( m2win, painter, currentColor_, covH, 0.0, covH);
         }
         painter->restore();
     }
+}
+
+void GpsPainter::setFocus (bool inFocus )
+{    
+    if (!inFocus) {
+        currentColor_ = Qt::gray;
+    } else {
+        currentColor_ = basicColor_;
+    }  
+    
 }
 

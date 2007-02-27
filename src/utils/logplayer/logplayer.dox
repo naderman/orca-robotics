@@ -89,9 +89,13 @@ To distinguish between the different encoding types, the master file header cont
         - >1.0 : faster than real time.
     - Default: 1.0
 
+- @c LogPlayer.Config.RequireAll (bool)
+    - If set to 1, will not replay anything unless all interface/format pairs are supported. If set to 0, will replay whatever is possible.
+    - Default: 1
+
 @par Configuration for specific replayers
 
-- @c Gps.Config.Offset (Frame2d) [m,m,deg]
+- @c LogPlayer.Config.Gps.Offset (Frame2d) [m,m,deg]
     - Offset of the GPS antenna from the (arbitrarily defined) global coordinate system.
     - Format: x y orientation (space separated).
     - If this value is specified it takes precedence over logged values.

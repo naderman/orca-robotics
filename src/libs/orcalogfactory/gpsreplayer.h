@@ -53,7 +53,6 @@ private:
     orcaice::Buffer<orca::GpsTimeData> gpsTimeDataBuffer_;
     orcaice::Buffer<orca::GpsMapGridData> gpsMapGridDataBuffer_;
     
-    orca::GpsDescription descr_;
     orca::GpsData gpsData_;
     orca::GpsTimeData gpsTimeData_;
     orca::GpsMapGridData gpsMapGridData_;
@@ -72,10 +71,6 @@ private:
     // binary file protocol specifics
     void loadDataIce( int index );
     void loadHeaderIce();
-
-    void checkDescriptionFile();
-    int haveConfigOffset_;
-    int haveConfigAntennaOffset_;
 
     char id_;
     mgaMapgrid mgaMapgrid_;

@@ -31,7 +31,7 @@ module feature
     const int LASERREFLECTOR   = 0;
     //! Something like a pole or a tree.
     const int FOREGROUNDPOINT  = 1;
-    //! An opening in a wall.
+    //! An opening in a wall, represented by the mid-point of the opening.
     const int DOOR             = 2;
     //! The junction of two lines.
     const int CORNER           = 3;

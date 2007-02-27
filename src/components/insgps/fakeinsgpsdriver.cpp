@@ -118,7 +118,7 @@ FakeInsGpsDriver::readMsgsFromHardware()
         gpsData_.speed = 5;
         gpsData_.climbRate = 3;
         gpsData_.satellites = 6;
-        gpsData_.positionType = 1;
+        gpsData_.positionType = orca::GpsPositionTypeAutonomous;
         gpsData_.geoidalSeparation = 10;
 
         gpsDataBuffer_.push( gpsData_ );

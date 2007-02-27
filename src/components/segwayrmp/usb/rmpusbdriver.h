@@ -37,6 +37,9 @@ public:
 
     virtual int write( const SegwayRmpCommand& command );
 
+    virtual void applyHardwareLimits( double& forwardSpeed, double& reverseSpeed, 
+        double& turnrate, double& turnrateAtMaxSpeed );
+
     virtual int get( SegwayRmpStats& stats );
 
     virtual std::string toString();
@@ -74,6 +77,8 @@ private:
     void setOperationalMode( OperationalMode mode );
     void setGainSchedule( int sched );
     void enableBalanceMode( bool enable );
+
+    void applyScaling( const SegwayRmpCommand& original, SegwayRmpCommand &scaledCommand );
 
     // driver/hardware interface
     RmpUsbIoFtdi     *rmpusbio_;

@@ -56,7 +56,7 @@ Localise3dI::getData(const ::Ice::Current& ) const
 void 
 Localise3dI::subscribe(const ::orca::Localise3dConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    context_.tracer()->debug( "Localise3dI::subscribe()", 5 );
+    context_.tracer()->debug( "Localise3dI::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     IceStorm::QoS qos;
     qos["reliability"] = "twoway";
     try {
@@ -73,7 +73,7 @@ Localise3dI::subscribe(const ::orca::Localise3dConsumerPrx& subscriber, const ::
 void 
 Localise3dI::unsubscribe(const ::orca::Localise3dConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    context_.tracer()->debug( "Localise3dI::unsubscribe()", 5 );
+    context_.tracer()->debug( "Localise3dI::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 

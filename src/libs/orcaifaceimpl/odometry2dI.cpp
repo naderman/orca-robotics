@@ -69,7 +69,7 @@ Odometry2dI::getDescription(const ::Ice::Current& ) const
 void 
 Odometry2dI::subscribe(const ::orca::Odometry2dConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    context_.tracer()->debug( "Odometry2dI::subscribe()", 5 );
+    context_.tracer()->debug( "Odometry2dI::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     IceStorm::QoS qos;
     qos["reliability"] = "twoway";
     try {
@@ -86,7 +86,7 @@ Odometry2dI::subscribe(const ::orca::Odometry2dConsumerPrx& subscriber, const ::
 void 
 Odometry2dI::unsubscribe(const ::orca::Odometry2dConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    context_.tracer()->debug( "Odometry2dI::unsubscribe()", 5 );
+    context_.tracer()->debug( "Odometry2dI::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 

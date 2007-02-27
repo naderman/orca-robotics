@@ -39,7 +39,6 @@ public:
 
     orcaice::Proxy<orca::PathFollower2dData> pathPipe_;
     orcaice::Proxy<int> indexPipe_;
-    orcaice::Proxy<bool> enabledPipe_;
 };
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -179,6 +178,7 @@ private:
     bool doneInitialSetup_;
 
     PathUpdateConsumer *pathUpdateConsumer_;
+    orca::PathFollower2dConsumerPrx callbackPrx_;
     orca::PathFollower2dPrx pathFollower2dPrx_;
     std::string proxyString_;
 
@@ -195,10 +195,13 @@ private:
     bool displayPastWaypoints_;
     bool currentTransparency_;
     
+    bool isRemoteInterfaceSick_;
+    
     // Handles human interface
     PathFollowerHI pathHI_;
     
-    bool isFollowerEnabled();
+    // returns 0 if remote call works otherwise -1
+    int isFollowerEnabled( bool &isEnabled );
     
 };
 

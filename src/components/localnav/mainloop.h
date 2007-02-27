@@ -68,6 +68,8 @@ private:
     void subscribeForLocalisation();
     void subscribeForObservations();
 
+    void sendCommandToPlatform( const orca::VelocityControl2dData& cmd );
+
     // Make sure all our sources of info are OK, and that there's something
     // in all our buffers
     void ensureProxiesNotEmpty();
@@ -113,7 +115,6 @@ private:
     orca::Localise2dData           localiseData_;
     orca::Odometry2dData           odomData_;
     orca::RangeScanner2dDataPtr    rangeData_;
-    orca::VelocityControl2dData    velocityCmd_;
 
     // Outgoing commands: live version
     orca::VelocityControl2dPrx     velControl2dPrx_;
@@ -123,9 +124,15 @@ private:
     // A global time reference
     Clock &clock_;
 
-    orca::VehicleDescription descr_;
+    orca::VehicleDescription        vehicleDescr_;
+    orca::RangeScanner2dDescription scannerDescr_;
 
     bool testMode_;
+
+    // consumers
+    orca::Odometry2dConsumerPrx     odomConsumerPrx_;
+    orca::Localise2dConsumerPrx     locConsumerPrx_;
+    orca::RangeScanner2dConsumerPrx obsConsumerPrx_;
 
     orcaice::Context context_;
 };

@@ -28,7 +28,7 @@ public:
     ~Simulator();
 
     // This is the trigger to advance the simulator one step.
-    void setCommand( orca::VelocityControl2dData &cmd );
+    void setCommand( const orca::VelocityControl2dData &cmd );
 
     // These can be given out to others: the simulator 
     // will put new data in them on each step.

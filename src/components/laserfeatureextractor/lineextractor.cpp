@@ -17,11 +17,6 @@
 
 #include <orca/featuremap2d.h>
 
-//#define RANGE_DELTA     0.5    // 0.10    0.2
-//#define MIN_POINTS_IN_LINE   6    // 6      6
-//#define GROUND_MAX_POINTS_IN_LINE   20   // 360    25
-#define CORNER_BOUND     0.2    // 0.45    0.45
-#define POSSIBLE_BOUND    0.2    // ???    0.2
 #define REJECT_GROUND_OBSERVATIONS 1  // 0  1
 
 
@@ -32,7 +27,8 @@ namespace laserfeatures {
 LineExtractor::LineExtractor( const orcaice::Context & context, double laserMaxRange, bool extractLines, bool extractCorners )
     : laserMaxRange_( laserMaxRange ),
       extractLines_(extractLines),
-      extractCorners_(extractCorners)
+      extractCorners_(extractCorners),
+      context_(context)
 {
     assert( laserMaxRange_ > 0.0 );
     assert( extractLines_ || extractCorners_ );
@@ -44,19 +40,25 @@ LineExtractor::LineExtractor( const orcaice::Context & context, double laserMaxR
     breakDistThreshold_   = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"BreakDistThreshold", 0.2 );
     minPointsInLine_      = orcaice::getPropertyAsIntWithDefault( prop, prefix+"MinPointsInLine", 6 );
     minLineLength_        = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MinLineLength", 1.0 );
+    rejectLikelyGroundObservations_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"RejectLikelyGroundObservations", true );
+    linePFalsePositive_   = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PFalsePositive", 0.4 );
+    linePFalsePositivePossibleGround_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PFalsePositivePossibleGround", 0.55 );
+    linePTruePositive_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PTruePositive", 0.6 );
 
-    prefix = context.tag() + ".Config.";
-    prop = context.properties();
-    rangeSd_        = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"RangeSd", 0.2 );
-    bearingSd_      = (M_PI/180.0)*orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"BearingSd", 5.0 );
+    rangeSd_        = orcaice::getPropertyAsDoubleWithDefault( prop, "Config.RangeSd", 0.2 );
+    bearingSd_      = (M_PI/180.0)*orcaice::getPropertyAsDoubleWithDefault( prop, "Config.BearingSd", 5.0 );
 
-    cout<<"TRACE(lineextractor.cpp): Config:" << endl;
+    cout<<"TRACE(lineextractor.cpp): Line Extractor Config:" << endl;
     cout<<"TRACE(lineextractor.cpp):   ClusterMaxRangeDelta: "<<clusterMaxRangeDelta_ << endl;
     cout<<"TRACE(lineextractor.cpp):   BreakDistThreshold  : "<<breakDistThreshold_ << endl;
     cout<<"TRACE(lineextractor.cpp):   MinPointsInLine     : "<<minPointsInLine_ << endl;
     cout<<"TRACE(lineextractor.cpp):   MinLineLength       : "<<minLineLength_ << endl;
     cout<<"TRACE(lineextractor.cpp):   ExtractLines        : "<<extractLines_ << endl;
     cout<<"TRACE(lineextractor.cpp):   ExtractCorners      : "<<extractCorners_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   RejectLikelyGroundObservations: " << rejectLikelyGroundObservations_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   PFalsePositive                : " << linePFalsePositive_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   PFalsePositivePossibleGround  : " << linePFalsePositivePossibleGround_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   PTruePositive                 : " << linePTruePositive_ << endl;
 }
     
 void LineExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
@@ -234,10 +236,6 @@ void
 LineExtractor::addLines( const std::vector<Section> &sections, 
                          orca::PolarFeature2dDataPtr &features )
 {
-    const double P_FALSE_POSITIVE = 0.4;
-    const double P_FALSE_POSITIVE_POSSIBLE_GROUND = 0.55;
-    const double P_TRUE_POSITIVE  = 0.6;
-    
     std::vector<Section>::const_iterator i=sections.begin();
     std::vector<Section>::const_iterator prev = sections.begin();
     for ( i = sections.begin(), prev=sections.begin();
@@ -248,19 +246,20 @@ LineExtractor::addLines( const std::vector<Section> &sections,
              i->lineLength() < minLineLength_ )
             continue;
 
-        double pFalsePositive = P_FALSE_POSITIVE;
+        double pFalsePositive = linePFalsePositive_;
         if ( REJECT_GROUND_OBSERVATIONS )
         {
             // Look for lines with near-horizontal slope
-            if ( fabs( i->eigVectY() ) < 0.1 )
+            if ( rejectLikelyGroundObservations_ &&
+                 fabs( i->eigVectY() ) < 0.1 )
             {
-                // cout<<"TRACE(lineextractor.cpp): rejecting outright" << endl;
+                context_.tracer()->debug( "Rejecting likely ground observation", 3 );
                 continue;
             }
             if ( fabs( i->eigVectY() ) < 0.25 )
             {
                 // cout<<"TRACE(lineextractor.cpp): lowering prob" << endl;
-                pFalsePositive = P_FALSE_POSITIVE_POSSIBLE_GROUND;
+                pFalsePositive = linePFalsePositivePossibleGround_;
             }
         }
 
@@ -275,7 +274,7 @@ LineExtractor::addLines( const std::vector<Section> &sections,
         determineUncertainty( f->rhoSd, f->alphaSd, *i );
 
         f->pFalsePositive = pFalsePositive;
-        f->pTruePositive  = P_TRUE_POSITIVE;
+        f->pTruePositive  = linePTruePositive_;
         features->features.push_back( f );
 
         //
@@ -312,6 +311,7 @@ LineExtractor::addCorners( const std::vector<Section> &sections,
     const double P_FALSE_POSITIVE = 0.3;
     const double P_FALSE_POSITIVE_POSSIBLE_GROUND = 0.5;
     const double P_TRUE_POSITIVE  = 0.6;
+    const double CORNER_BOUND = 0.2;
 
     std::vector<Section>::const_iterator itr;
     std::vector<Section>::const_iterator next;
@@ -407,6 +407,8 @@ LineExtractor::addCorners( const std::vector<Section> &sections,
 // {
 // //  return false; // for now, we won't be looking for possible corners...
 
+//     const double POSSIBLE_BOUND = 0.2;
+//
 //     if (sections.size() <= 1) 
 //         return false;
 

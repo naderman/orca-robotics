@@ -17,9 +17,9 @@ using namespace std;
 
 namespace laser2d {
 
-FakeDriver::FakeDriver( const Config & cfg, const orcaice::Context & context )
-    : Driver(cfg),
-      context_(context)
+FakeDriver::FakeDriver( const Config & cfg, const orcaice::Context & context ) :
+    Driver(cfg),
+    context_(context)
 {
 }
 

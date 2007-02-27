@@ -16,6 +16,7 @@
 
 #include <orcalog/replaymaster.h>
 #include <orcalog/replayer.h>
+#include <orcalog/dummyreplayer.h>
 #include <orcalog/replayfactory.h>
 
 #include <orcalog/icereadhelper.h>

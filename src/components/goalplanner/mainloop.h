@@ -36,6 +36,9 @@ public:
 
 private:
     
+    void stopRobot();
+    void initNetwork();
+    
     // required interface to localiser
     orca::Localise2dPrx localise2dPrx_;
     
@@ -69,8 +72,6 @@ private:
     // PathFollower2dI needs to throw exception based on localisation data
     orcaice::Proxy<orca::Localise2dData> localise2dExceptionBuffer_;
     // ===========================================================================
-    
-    void initNetwork();
      
     orcaice::Context context_;
 

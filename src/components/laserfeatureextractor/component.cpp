@@ -33,9 +33,10 @@ Component::~Component()
 
 // warning: this function returns after it's done, all variable that need to be permanent must
 //          be declared as member variables.
-void Component::start()
+void 
+Component::start()
 {
-    context().tracer()->info( "Starting component..." );
+    context().tracer()->info( "Starting component...",2 );
 
     //
     // Instantiate External Interface
@@ -48,19 +49,13 @@ void Component::start()
     // this may throw, but may as well quit right then
     activate();
 
-    mainLoop_ = new MainLoop( *featureInterface_,
-                              context() );
+    mainLoop_ = new MainLoop( *featureInterface_, context() );
     mainLoop_->start();
 }
 
-void Component::stop()
+void 
+Component::stop()
 {
-    tracer()->info("stopping component...");
-    if ( mainLoop_ ) {
-        IceUtil::ThreadControl algoControl = mainLoop_->getThreadControl();
-        tracer()->debug("stopping algorithm handler", 5 );
-        mainLoop_->stop();
-        tracer()->debug("joining algorithm handler", 5 );
-        algoControl.join();
-    }
+    context().tracer()->debug("Stopping component", 2 );
+    orcaice::Thread::stopAndJoin( mainLoop_ );
 }

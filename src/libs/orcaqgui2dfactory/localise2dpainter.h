@@ -28,6 +28,7 @@ class Localise2dPainter
     Localise2dPainter( bool beginDisplayHistory );
 
     void setData( const orca::Localise2dData& data );
+    void setOffsets( double xOff, double yOff, double thetaOff );
 
     void paint( QPainter *p, int z );
     bool paintThisLayer(int z) const {return z==Z_POSE || z==Z_POSE-2;}
@@ -54,6 +55,9 @@ class Localise2dPainter
     PoseHistory history_;
 
     bool isDisplayMultiHypothesis_;
+    
+    // offsets
+    double xOff_, yOff_, thetaOff_;
 };
 
 }

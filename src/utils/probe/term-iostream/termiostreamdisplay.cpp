@@ -32,40 +32,40 @@ void topMenu( const std::string& header, const std::string& itemname, const std:
 {
     cout<<"\n\n\n\n\n";
     cout<<endl<<divider0<<endl;
-    cout<<header<<endl;
-    cout<<divider1<<endl;
-    cout<<"Select "<<itemname<<" from the list:"<<endl;
+    cout<<header<<"\n";
+    cout<<divider1<<"\n";
+    cout<<"Select "<<itemname<<" from the list:"<<"\n";
     // options come with their own new line
     cout<<options;
-    cout<<divider1<<endl;
-//     cout<<upPrompt<<endl;
-//     cout<<topPrompt<<endl;
-    cout<<reloadPromp<<endl;
-    cout<<quitPrompt<<endl;
-    cout<<divider0<<endl;
+    cout<<divider1<<"\n";
+//     cout<<upPrompt<<"\n";
+//     cout<<topPrompt<<"\n";
+    cout<<reloadPromp<<"\n";
+    cout<<quitPrompt<<"\n";
+    cout<<divider0<<"\n";
 };
 
 void stdMenu( const std::string& header, const std::string& itemname, const std::string& options )
 {
     cout<<"\n\n\n\n\n";
-    cout<<endl<<divider0<<endl;
-    cout<<header<<endl;
-    cout<<divider1<<endl;
-    cout<<"Select "<<itemname<<" from the list:"<<endl;
+    cout<<endl<<divider0<<"\n";
+    cout<<header<<"\n";
+    cout<<divider1<<"\n";
+    cout<<"Select "<<itemname<<" from the list:"<<"\n";
     // options come with their own new line
     cout<<options;
-    cout<<divider1<<endl;
-    cout<<upPrompt<<endl;
-    cout<<topPrompt<<endl;
-    cout<<reloadPromp<<endl;
-    cout<<quitPrompt<<endl;
-    cout<<divider0<<endl;
+    cout<<divider1<<"\n";
+    cout<<upPrompt<<"\n";
+    cout<<topPrompt<<"\n";
+    cout<<reloadPromp<<"\n";
+    cout<<quitPrompt<<"\n";
+    cout<<divider0<<"\n";
 };
 
-TermIostreamDisplay::TermIostreamDisplay( const std::vector<std::string> & supportedInterfaces )
-    : supportedInterfaces_(supportedInterfaces),
-      browser_(0),
-      events_(new orcaice::EventQueue)
+TermIostreamDisplay::TermIostreamDisplay( const std::vector<std::string> & supportedInterfaces ) : 
+    supportedInterfaces_(supportedInterfaces),
+    browser_(0),
+    events_(new orcaice::EventQueue)
 {
 }
 

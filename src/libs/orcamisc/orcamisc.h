@@ -13,6 +13,7 @@
 
 #ifndef WIN32
 #   include <orcamisc/cpustopwatch.h>
+#   include <orcamisc/realtimestopwatch.h>
 #   include <orcamisc/linuxtimeutils.h>
 #endif
 

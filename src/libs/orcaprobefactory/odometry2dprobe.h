@@ -22,19 +22,22 @@ class Odometry2dProbe : public orca::Odometry2dConsumer, public orcaprobe::Inter
 
 public:
 
-    Odometry2dProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver & display,
-                                const orcaice::Context & context );
+    Odometry2dProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+                                const orcaice::Context& context );
 
-    virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
+    virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
     
-    virtual void setData(const orca::Odometry2dData & data, const Ice::Current&);
+    virtual void setData(const orca::Odometry2dData& data, const Ice::Current&);
 
 private:
 
-    int loadGetDescription( orcacm::OperationData & data );
-    int loadGetData( orcacm::OperationData & data );
-    int loadSubscribe( orcacm::OperationData & data );
-    int loadUnsubscribe( orcacm::OperationData & data );
+    int loadGetDescription( orcacm::OperationData& data );
+    int loadGetData( orcacm::OperationData& data );
+    int loadSubscribe( orcacm::OperationData& data );
+    int loadUnsubscribe( orcacm::OperationData& data );
+
+    orca::Odometry2dConsumerPrx callbackPrx_;
+    orcacm::OperationData subscribeOperationData_;
 
 };
 

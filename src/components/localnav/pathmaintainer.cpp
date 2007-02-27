@@ -142,7 +142,8 @@ PathMaintainer::checkForWpIndexChange()
 
 bool 
 PathMaintainer::waypointReached( const orca::Waypoint2d &wp,
-                                 const orcanavutil::Pose &pose )
+                                 const orcanavutil::Pose &pose,
+                                 const double timeNow )
 {
     double distanceToWp = hypotf( pose.y()-wp.target.p.y,
                                   pose.x()-wp.target.p.x );
@@ -154,9 +155,14 @@ PathMaintainer::waypointReached( const orca::Waypoint2d &wp,
     if ( fabs(headingDiff) > wp.headingTolerance )
         return false;
 
-    double timeToTarget = orcaice::timeDiffAsDouble( wp.timeTarget, clock_.time() );
-    if ( timeToTarget > 0 )
+    double timeTarget = wp.timeTarget.seconds + wp.timeTarget.useconds*1e-6;
+    if ( timeNow < timeTarget )
+    {
+        stringstream ss;
+        ss << "PathMaintainer: Physically at waypoint, but have to wait " << timeTarget-timeNow << " seconds.";
+        context_.tracer()->debug( ss.str(), 2 );
         return false;
+    }
 
     return true;
 }
@@ -196,8 +202,11 @@ PathMaintainer::getActiveGoals( std::vector<Goal> &goals,
     goals.resize(0);
     if ( wpIndex_ == -1 ) return;
 
+    // Time now relative to start time
+    double timeNow = orcaice::timeDiffAsDouble( clock_.time(), pathStartTime_ );
+
     // Peel off waypoints if they're reached
-    while ( waypointReached( path_.path[wpIndex_], pose ) )
+    while ( waypointReached( path_.path[wpIndex_], pose, timeNow ) )
         incrementWpIndex();
 
     int wpI=0;

@@ -213,7 +213,7 @@ LocalTracer::recalcMarginals()
     // pre-calculate marginals: accross trace types
     for ( int i=0; i<LocalTracer::AnyTrace; ++i ) {
         config_.verbosity[i][LocalTracer::ToAny] = 0;
-        for ( int j=0; j<LocalTracer::ToAny-1; ++j ) {
+        for ( int j=0; j<LocalTracer::ToAny; ++j ) {
             config_.verbosity[i][LocalTracer::ToAny] = MAX ( config_.verbosity[i][LocalTracer::ToAny], config_.verbosity[i][j] );
         }
     }
@@ -222,6 +222,14 @@ LocalTracer::recalcMarginals()
         config_.verbosity[LocalTracer::AnyTrace][j] = 0;
         for ( int i=0; i<LocalTracer::AnyTrace; ++i ) {
             config_.verbosity[LocalTracer::AnyTrace][j] = MAX ( config_.verbosity[LocalTracer::AnyTrace][j], config_.verbosity[i][j] );
+        }
+    }
+    // pre-calculate total marginal: accross trace and destination types
+    config_.verbosity[LocalTracer::AnyTrace][LocalTracer::ToAny] = 0;
+    for ( int i=0; i<LocalTracer::AnyTrace; ++i ) {
+        for ( int j=0; j<LocalTracer::ToAny; ++j ) {
+            config_.verbosity[LocalTracer::AnyTrace][LocalTracer::ToAny] 
+                = MAX ( config_.verbosity[LocalTracer::AnyTrace][LocalTracer::ToAny], config_.verbosity[i][j] );
         }
     }
 }

@@ -27,6 +27,8 @@ class QPainter;
 namespace orcaqgui
 {
 
+class IHumanManager;
+
 class GpsSubscriptionMaker 
 {
 public:
@@ -55,12 +57,15 @@ public:
 
     GpsElement( const orcaice::Context  &context,
                 const std::string       &interfaceTag,
-                int                      timeoutMs=60000 );
+                IHumanManager           *humanManager,
+                int                      timeoutMs=3000 );
 
     // inherited from GuiElement
     virtual bool isInGlobalCS() { return true; }
     virtual QStringList contextMenu();
     virtual void execute( int action );
+    virtual void setColor( QColor color ) { gpsPainter_.setColor( color ); };
+    virtual void setFocus( bool inFocus ) { gpsPainter_.setFocus( inFocus ); };
 
     // inherited from GuiElement2d
     void update();
@@ -77,40 +82,45 @@ public:
     virtual QPointF pos() const { return QPointF(x_,y_); };
 
     // inherited from IKnowsPlatformPosition2d
-    // Access to coordinates in GUI coordinate system [m] [m] [rad]
-    virtual float x() const { return x_; }
-    virtual float y() const { return y_; }
-    virtual float theta() const { return theta_; }
-    virtual int platformKnowledgeReliability() const { return 7; }
+    // Access to coordinates in global coordinate system [m] [m] [rad]
+    virtual double x() const { return x_; }
+    virtual double y() const { return y_; }
+    virtual double theta() const { return theta_; }
+    virtual int platformKnowledgeReliability() const { return 4; }
 
 
 private:
-    std::string interfaceName_;
-
-    GpsPainter gpsPainter_;
-
-    double timeoutMs_;
     
     IceStormListener<orca::GpsMapGridData,
-                    orca::GpsPrx,
-                    orca::GpsMapGridConsumer,
-                    orca::GpsMapGridConsumerPrx,
-                    GpsSubscriptionMaker,
-                    GpsUnSubscriptionMaker> gpsListener_;
-
-    orcaice::Context context_;      
+                orca::GpsPrx,
+                orca::GpsMapGridConsumer,
+                orca::GpsMapGridConsumerPrx,
+                GpsSubscriptionMaker,
+                GpsUnSubscriptionMaker> gpsListener_; 
+                    
+    orcaice::Context context_; 
+    IHumanManager *humanManager_;
+    double timeoutMs_;
+    
+    bool isConnected_;
+    bool gotDescription_;
     
     // display options and settings
-    bool displayGps_;
-    orca::CartesianPoint gpsOrigin_;   
+    bool displayGps_; 
+    
+    GpsPainter gpsPainter_;
+    
+    // Gps CS offset from global
+    orca::Frame2d gpsOff_;
     
     // in GUI's coordinate system: [m] [m] [rad]
-    float x_;
-    float y_;
-    float theta_;
+    double x_;
+    double y_;
+    double theta_;
 
     // utilities
     bool needToUpdate();
+    void actionOnConnection();
 };
 
 }

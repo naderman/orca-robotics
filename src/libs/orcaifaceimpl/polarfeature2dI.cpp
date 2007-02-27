@@ -60,7 +60,7 @@ PolarFeature2dI::getData(const Ice::Current& current) const
 void 
 PolarFeature2dI::subscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber, const ::Ice::Current&)
 {
-    context_.tracer()->debug( "PolarFeature2dI::subscribe()", 5 );
+    context_.tracer()->debug( "PolarFeature2dI::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
 
     if ( topicPrx_==0 ) {
         throw orca::SubscriptionFailedException( "null topic proxy." );
@@ -83,7 +83,7 @@ PolarFeature2dI::subscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber, 
 void 
 PolarFeature2dI::unsubscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber, const ::Ice::Current&)
 {
-    context_.tracer()->debug( "PolarFeature2dI::unsubscribe()", 5 );
+    context_.tracer()->debug( "PolarFeature2dI::unsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
 
     topicPrx_->unsubscribe( subscriber );
 }

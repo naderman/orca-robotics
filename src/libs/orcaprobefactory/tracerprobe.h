@@ -22,21 +22,23 @@ class TracerProbe : public orca::TracerConsumer, public orcaprobe::InterfaceProb
 
 public:
 
-    TracerProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver & display,
-                                const orcaice::Context & context );
+    TracerProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+                                const orcaice::Context& context );
 
-    virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
+    virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
 
     // from consumer
     virtual void setData(const orca::TracerData& data, const Ice::Current&);
     
 private:
 
-    int loadGetVerbosity( orcacm::OperationData & data );
-    int loadSetVerbosity( orcacm::OperationData & data );
-    int loadSubscribe( orcacm::OperationData & data );
-    int loadUnsubscribe( orcacm::OperationData & data );
+    int loadGetVerbosity( orcacm::OperationData& data );
+    int loadSetVerbosity( orcacm::OperationData& data );
+    int loadSubscribe( orcacm::OperationData& data );
+    int loadUnsubscribe( orcacm::OperationData& data );
 
+    orca::TracerConsumerPrx callbackPrx_;
+    orcacm::OperationData subscribeOperationData_;
 };
 
 } // namespace

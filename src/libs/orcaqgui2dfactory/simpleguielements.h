@@ -11,10 +11,6 @@
 #ifndef ORCAGUI_SIMPLE_GUI_ELEMENTS_H
 #define ORCAGUI_SIMPLE_GUI_ELEMENTS_H
 
-// include defnition of Ice runtime
-#include <Ice/Ice.h>
-#include <IceStorm/IceStorm.h>
-
 #include <QPointF>
 #include <QObject>
 
@@ -51,7 +47,7 @@ class PolarFeature2dElement
 public:
     PolarFeature2dElement( const orcaice::Context  &context,
                            const std::string       &proxyString,
-                           int                      timeoutMs=60000 )
+                           int                      timeoutMs=3000 )
         : PtrIceStormElement<PolarFeature2dPainter,
                             orca::PolarFeature2dData,
                             orca::PolarFeature2dDataPtr,
@@ -88,7 +84,7 @@ class LaserScanner2dElement
 public:
     LaserScanner2dElement( const orcaice::Context  &context,
                   const std::string       &proxyString,
-                  int                      timeoutMs=60000,
+                  int                      timeoutMs=3000,
                   QColor                   outlineColor=QColor( 102,102,153, 255 ),
                   float                    outlineThickness=-1,
                   float                    brightReturnWidth=0.2 )
@@ -114,65 +110,6 @@ private:
     
 };
 
-////////////////////////////////////////////////////////////////////////////////
-
-class Localise2dElement
-    : public IceStormElement<Localise2dPainter,
-                             orca::Localise2dData,
-                             orca::Localise2dPrx,
-                             orca::Localise2dConsumer,
-                             orca::Localise2dConsumerPrx>,
-      public IKnowsPlatformPosition2d
-{
-public:
-    Localise2dElement( const orcaice::Context  &context,
-                       const std::string       &proxyString,
-                       bool                     beginDisplayHistory=false,
-                       int                      timeoutMs=60000 )
-        : IceStormElement<Localise2dPainter,
-                            orca::Localise2dData,
-                            orca::Localise2dPrx,
-                            orca::Localise2dConsumer,
-                            orca::Localise2dConsumerPrx>(context, proxyString, painter_, timeoutMs ),
-          painter_( beginDisplayHistory )
-        {};
-
-    virtual bool isInGlobalCS() { return true; }
-    virtual void actionOnConnection()
-    {
-        paintInitialData<orca::Localise2dPrx, Localise2dPainter>
-            ( context_, listener_.interfaceName(), painter_ );
-    }
-    virtual QStringList contextMenu();
-    virtual void execute( int action );
-    
-    virtual void setColor( QColor color ) { painter_.setColor(color); }
-    virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); };
-    virtual void setTransparency( bool useTransparency ) { painter_.setTransparency( useTransparency ); };
-
-    // Need a special update function to set (x,y,theta)
-    // The Localise2dElement needs this because it's special kind of GuiElement:
-    //   A platform has a position in the world and various other things are
-    //   drawn with respect to that position.
-    virtual void update();
-
-    // Access to ML estimate.
-    virtual float x() const { return x_; }
-    virtual float y() const { return y_; }
-    virtual float theta() const { return theta_; }
-    virtual int platformKnowledgeReliability() const { return 7; }
-    virtual QPointF pos() const { return QPointF(x_,y_); };
-
-private:
-    Localise2dPainter painter_;
-
-    float x_;
-    float y_;
-    float theta_;
-};
-
-////////////////////////////////////////////////////////////////////////////////
-
 
 class Localise3dElement
     : public IceStormElement<Localise3dPainter,
@@ -186,7 +123,7 @@ public:
     Localise3dElement( const orcaice::Context  &context,
                        const std::string       &proxyString,
                        bool                     beginDisplayHistory=false,
-                       int                      timeoutMs=60000 )
+                       int                      timeoutMs=3000 )
         : IceStormElement<Localise3dPainter,
                             orca::Localise3dData,
                             orca::Localise3dPrx,
@@ -215,18 +152,18 @@ public:
     virtual void update();
 
     // Access to ML estimate.
-    virtual float x() const { return x_; }
-    virtual float y() const { return y_; }
-    virtual float theta() const { return theta_; }
+    virtual double x() const { return x_; }
+    virtual double y() const { return y_; }
+    virtual double theta() const { return theta_; }
     virtual int platformKnowledgeReliability() const { return 7; }
     virtual QPointF pos() const { return QPointF(x_,y_); };
 
 private:
     Localise3dPainter painter_;
 
-    float x_;
-    float y_;
-    float theta_;
+    double x_;
+    double y_;
+    double theta_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -241,7 +178,7 @@ class Particle2dElement
 public:
     Particle2dElement( const orcaice::Context  &context,
                        const std::string       &proxyString,
-                       int                      timeoutMs=60000 )
+                       int                      timeoutMs=3000 )
         : IceStormElement<Particle2dPainter,
                             orca::Particle2dData,
                             orca::Particle2dPrx,

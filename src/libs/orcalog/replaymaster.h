@@ -23,13 +23,14 @@ namespace orcalog
 class ReplayMaster
 {
 public:
-    ReplayMaster( const std::string & filename, const orcaice::Context & context );
+    ReplayMaster( const std::string& filename, const orcaice::Context& context );
     ~ReplayMaster();
 
     //! Get info on all logs from the master file
-    void getLogs( std::vector<std::string> & filenames,
-                    std::vector<std::string> & interfaceTypes,
-                    std::vector<std::string> & formats );
+    void getLogs( std::vector<std::string>& filenames,
+                    std::vector<std::string>& interfaceTypes,
+                    std::vector<std::string>& formats,
+                    std::vector<bool>& enableds );
     
     //! Rewind to the start of the data log. Calling getData() afterwards will
     //! return the first data point. Returns 0 if data read sucessfully. Returns 
@@ -38,7 +39,7 @@ public:
 
     //! Read one line of data log. Returns 0 if data read sucessfully. Returns 
     //! 1 if end of file is reached.
-    int getData( int & seconds, int & useconds, int & id, int & index );
+    int getData( int& seconds, int& useconds, int& id, int& index );
 
     //! Steps through the data entries until the time stamp is equal to or is after
     //! the one specified. For example, data is logged every second and the last replayed
@@ -49,7 +50,7 @@ public:
     //! For example, calling seekData(..,,2,0) at t=3 will return the data at time t=4.
     //!
     //! Seeking time after the end of the log will result in fast forwarding to the end.
-    int getData( int & seconds, int & useconds, int & id, int & index, int seekSec, int secUsec=0 );
+    int getData( int& seconds, int& useconds, int& id, int& index, int seekSec, int secUsec=0 );
 
 
 private:

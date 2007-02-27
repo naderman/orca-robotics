@@ -92,18 +92,39 @@ main( int argc, char **argv )
     std::string filenameIn = "filenameIn";
     std::string interfaceTypeIn = "interfaceTypeIn";
     std::string formatIn = "formatIn";
+    bool enabledIn = true;
     std::string headerLineOut;
     std::string filenameOut;
     std::string interfaceTypeOut;
     std::string formatOut;
+    bool enabledOut;
     try {
-        headerLineOut = orcalog::headerLine( filenameIn, interfaceTypeIn, formatIn );
-        orcalog::parseHeaderLine( headerLineOut, filenameOut, interfaceTypeOut, formatOut );
-        if ( filenameIn != filenameOut || interfaceTypeIn != interfaceTypeOut || formatIn != formatOut ) {
+        headerLineOut = orcalog::headerLine( filenameIn, interfaceTypeIn, formatIn, enabledIn );
+        orcalog::parseHeaderLine( headerLineOut, filenameOut, interfaceTypeOut, formatOut, enabledOut );
+        if ( filenameIn != filenameOut || interfaceTypeIn != interfaceTypeOut 
+            || formatIn != formatOut || enabledIn != enabledOut ) {
             cout<<"failed"<<endl;
-            cout<<"\tIN  : file="<<filenameIn<<" type="<<interfaceTypeIn<<" fmt="<<formatIn<<endl;
+            cout<<"\tIN  : file="<<filenameIn<<" type="<<interfaceTypeIn<<" fmt="<<formatIn<<" on="<<(int)enabledIn<<endl;
             cout<<"\tOUT : string="<<headerLineOut<<endl;
-            cout<<"\tOUT : file="<<filenameOut<<" type="<<interfaceTypeOut<<" fmt="<<formatOut<<endl;
+            cout<<"\tOUT : file="<<filenameOut<<" type="<<interfaceTypeOut<<" fmt="<<formatOut<<" on="<<(int)enabledOut<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    catch ( orcalog::Exception & )
+    {
+        cout<<"failed"<<endl<<"should be able to write/parse this header."<<endl;
+        return EXIT_FAILURE;
+    }
+    enabledIn = false;
+    try {
+        headerLineOut = orcalog::headerLine( filenameIn, interfaceTypeIn, formatIn, enabledIn );
+        orcalog::parseHeaderLine( headerLineOut, filenameOut, interfaceTypeOut, formatOut, enabledOut );
+        if ( filenameIn != filenameOut || interfaceTypeIn != interfaceTypeOut 
+            || formatIn != formatOut || enabledIn != enabledOut ) {
+            cout<<"failed"<<endl;
+            cout<<"\tIN  : file="<<filenameIn<<" type="<<interfaceTypeIn<<" fmt="<<formatIn<<" on="<<(int)enabledIn<<endl;
+            cout<<"\tOUT : string="<<headerLineOut<<endl;
+            cout<<"\tOUT : file="<<filenameOut<<" type="<<interfaceTypeOut<<" fmt="<<formatOut<<" on="<<(int)enabledOut<<endl;
             exit(EXIT_FAILURE);
         }
     }

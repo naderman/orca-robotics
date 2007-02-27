@@ -35,8 +35,11 @@ public:
         { proxy->unsubscribe( callbackPrx ); }
 };
 
-// Subscribe/unsubscribe IceStormListeners
+//
+// ================ Definition =====================
+//
 
+// Subscribe/unsubscribe IceStormListeners
 template< class ProxyType,
             class ConsumerType,
             class ConsumerPrxType,
@@ -45,7 +48,8 @@ void
 subscribeListener( orcaice::Context      &context,
                     const std::string     &proxyString,
                     ConsumerType          *consumer,
-                    ConsumerPrxType       &callbackPrx );
+                    ConsumerPrxType       &callbackPrx,
+                    ProxyType             &proxy);
 
 template< class ProxyType,
             class ConsumerType,
@@ -55,8 +59,13 @@ void
 unSubscribeListener( orcaice::Context      &context,
                         const std::string     &proxyString,
                         ConsumerType          *consumer,
-                        ConsumerPrxType       &callbackPrx );
+                        ConsumerPrxType       &callbackPrx,
+                        ProxyType             &proxy);
 
+//
+// ================ Implementation =====================
+//
+            
 template< class ProxyType,
             class ConsumerType,
             class ConsumerPrxType,
@@ -65,11 +74,11 @@ void
 subscribeListener( orcaice::Context      &context,
                     const std::string     &proxyString,
                     ConsumerType          *consumer,
-                    ConsumerPrxType       &callbackPrx )
+                    ConsumerPrxType       &callbackPrx,
+                    ProxyType             &proxy )
 {
     try {
         // Connect to remote interface
-        ProxyType proxy;
         orcaice::connectToInterfaceWithString( context, proxy, proxyString );
 
         // Ask the remote object to subscribe us to the topic.
@@ -101,11 +110,11 @@ void
 unSubscribeListener( orcaice::Context      &context,
                         const std::string     &proxyString,
                         ConsumerType          *consumer,
-                        ConsumerPrxType       &callbackPrx )
+                        ConsumerPrxType       &callbackPrx,
+                        ProxyType             &proxy)
 {
     try {
         // Connect to remote object
-        ProxyType proxy;
         orcaice::connectToInterfaceWithString( context, proxy, proxyString );
 
         // Ask the remote object to unsubscribe us from the topic.
@@ -129,6 +138,108 @@ unSubscribeListener( orcaice::Context      &context,
         throw;
     }
 }
+
+// //
+// // ================ Definition =====================
+// //
+// 
+// // Subscribe/unsubscribe IceStormListeners
+// template< class ProxyType,
+//             class ConsumerType,
+//             class ConsumerPrxType,
+//             class SubscriptionMakerType >
+// void
+// subscribeListener( orcaice::Context      &context,
+//                     const std::string     &proxyString,
+//                     ConsumerType          *consumer,
+//                     ConsumerPrxType       &callbackPrx );
+// 
+// template< class ProxyType,
+//             class ConsumerType,
+//             class ConsumerPrxType,
+//             class UnSubscriptionMakerType >
+// void
+// unSubscribeListener( orcaice::Context      &context,
+//                         const std::string     &proxyString,
+//                         ConsumerType          *consumer,
+//                         ConsumerPrxType       &callbackPrx );
+// 
+// //
+// // ================ Implementation =====================
+// //
+//             
+// template< class ProxyType,
+//             class ConsumerType,
+//             class ConsumerPrxType,
+//             class SubscriptionMakerType >
+// void
+// subscribeListener( orcaice::Context      &context,
+//                     const std::string     &proxyString,
+//                     ConsumerType          *consumer,
+//                     ConsumerPrxType       &callbackPrx )
+// {
+//     try {
+//         // Connect to remote interface
+//         ProxyType proxy;
+//         orcaice::connectToInterfaceWithString( context, proxy, proxyString );
+// 
+//         // Ask the remote object to subscribe us to the topic.
+//         SubscriptionMakerType s( proxy, callbackPrx );
+//     }
+//     // Ignore all exceptions, and try again next time.
+//     catch ( Ice::ConnectionRefusedException &e ) {
+//         std::cout<<"TRACE(PtrIceStormListener::subscribeListener): Caught exception: " << e << std::endl;
+//         throw;
+//     }
+//     catch ( Ice::Exception &e ) {
+//         std::cout<<"TRACE(PtrIceStormListener::subscribeListener): Caught ice exception: " << e << std::endl;
+//         throw;
+//     }
+//     catch ( std::exception &e ) {
+//         std::cout<<"TRACE(PtrIceStormListener::subscribeListener): Caught std exception: " << e.what() << std::endl;
+//         throw;
+//     }
+//     catch ( ... ) {
+//         std::cout<<"TRACE(PtrIceStormListener::subscribeListener): Caught unknown exception." << std::endl;
+//         throw;
+//     }
+// }
+// template< class ProxyType,
+//             class ConsumerType,
+//             class ConsumerPrxType,
+//             class UnSubscriptionMakerType >
+// void
+// unSubscribeListener( orcaice::Context      &context,
+//                         const std::string     &proxyString,
+//                         ConsumerType          *consumer,
+//                         ConsumerPrxType       &callbackPrx )
+// {
+//     try {
+//         // Connect to remote object
+//         ProxyType proxy;
+//         orcaice::connectToInterfaceWithString( context, proxy, proxyString );
+// 
+//         // Ask the remote object to unsubscribe us from the topic.
+//         UnSubscriptionMakerType s( proxy, callbackPrx );
+//     }
+//     // Ignore all exceptions, and try again next time.
+//     catch ( Ice::ConnectionRefusedException &e ) {
+//         std::cout<<"TRACE(PtrIceStormListener::unSubscribeListener): Caught exception: " << e << std::endl;
+//         throw;
+//     }
+//     catch ( Ice::Exception &e ) {
+//         std::cout<<"TRACE(PtrIceStormListener::unSubscribeListener): Caught ice exception: " << e << std::endl;
+//         throw;
+//     }
+//     catch ( std::exception &e ) {
+//         std::cout<<"TRACE(PtrIceStormListener::unSubscribeListener): Caught std exception: " << e.what() << std::endl;
+//         throw;
+//     }
+//     catch ( ... ) {
+//         std::cout<<"TRACE(PtrIceStormListener::unSubscribeListener): Caught unknown exception." << std::endl;
+//         throw;
+//     }
+// }
 
 } // namespace
 } // namespace

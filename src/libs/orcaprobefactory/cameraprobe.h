@@ -22,17 +22,17 @@ class CameraProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    CameraProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver & display,
-                                const orcaice::Context & context );
+    CameraProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+                                const orcaice::Context& context );
 
-    virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
+    virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
     
 private:
 
-    int loadGetData();
-    int loadGetDescription();
-    int loadSubscribe();
-    int loadUnsubscribe();
+    int loadGetData( orcacm::OperationData& data );
+    int loadGetDescription( orcacm::OperationData& data );
+    int loadSubscribe( orcacm::OperationData& data );
+    int loadUnsubscribe( orcacm::OperationData& data );
 };
 
 } // namespace

@@ -25,14 +25,15 @@ class GpsPainter
 {
   public:
     // The default color is the color when the robot is not selected.
-    GpsPainter( const QColor & colour=Qt::blue, const bool showHistory=true );
+    GpsPainter( const QColor & color=Qt::blue, const bool showHistory=true );
 
-    void setData( const float &x, const float &y, const float &heading );
+    void setData( const double &x, const double &y, const double &heading, const double &horizontalError );
 
     void paint( QPainter *p, int z );
     bool paintThisLayer( int z ) const {return z==Z_POSE || z==Z_POSE-2;}
     void clear();
-    void setColour( QColor colour ) { basicColour_ = colour; }
+    void setColor( QColor color ) { basicColor_ = color; currentColor_ = color; };
+    void setFocus (bool inFocus );
 
     void toggleDisplayHistory() { isDisplayHistory_ = !isDisplayHistory_; }
 
@@ -40,8 +41,8 @@ class GpsPainter
 
     bool isDataAvailable_;
 
-    QColor basicColour_;
-    QColor currentColour_;
+    QColor basicColor_;
+    QColor currentColor_;
 
     bool isDisplayHistory_;
     PoseHistory history_;
@@ -50,6 +51,8 @@ class GpsPainter
     double x_;
     double y_;
     int heading_;
+    // corresponds to one standard deviation
+    double horizontalError_;
 };
 
 }

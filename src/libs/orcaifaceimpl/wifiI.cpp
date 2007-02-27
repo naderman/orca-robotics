@@ -48,7 +48,7 @@ void
 WifiI::subscribe(const ::orca::WifiConsumerPrx& subscriber,
 			const Ice::Current& current)
 {   
-    context_.tracer()->debug( "WifiI::subscribe()", 5 );
+    context_.tracer()->debug( "WifiI::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     IceStorm::QoS qos;
     qos["reliability"] = "twoway";
     try {
@@ -66,7 +66,7 @@ void
 WifiI::unsubscribe(const ::orca::WifiConsumerPrx& subscriber,
 			  const Ice::Current& current)
 {
-    context_.tracer()->debug( "WifiI::unsubscribe()", 5 );
+    context_.tracer()->debug( "WifiI::unsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 

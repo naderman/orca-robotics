@@ -81,23 +81,9 @@ Localise2dLogger::setData(const orca::Localise2dData& data, const Ice::Current&)
 
     if ( format_ == "ice" )
     {
-        // Write data to slave file
-        vector<Ice::Byte> byteData;
-        Ice::OutputStreamPtr outStreamPtr = Ice::createOutputStream( context_.communicator() );
-        ice_writeLocalise2dData(outStreamPtr, data);
-        outStreamPtr->writePendingObjects();
-        // this actually writes to data to the byte vector
-        outStreamPtr->finished(byteData);
-        
-        size_t length = byteData.size();
-        file_->write( (char*)&length, sizeof(size_t) );
-        file_->flush();
-        file_->write( (char*)&byteData[0], length);
-        file_->flush();
-        
-        ostringstream stream;
-        stream << "ByteDataSize: " << byteData.size();
-        context_.tracer()->debug( stream.str(), 8 );
+        orcalog::IceWriteHelper helper( context_.communicator() );
+        ice_writeLocalise2dData( helper.stream_, data );
+        helper.write( file_ );
     }
     else if ( format_ == "ascii" )
     {

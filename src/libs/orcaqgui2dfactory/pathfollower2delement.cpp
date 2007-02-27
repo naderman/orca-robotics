@@ -39,12 +39,12 @@ PathUpdateConsumer::setWaypointIndex( int index, const ::Ice::Current& )
 
 void PathUpdateConsumer::setActivationTime( const orca::Time& absoluteTime, double relativeTime, const ::Ice::Current& )
 {
-    cout << "Got a new start time. I don't use it!" << endl;
+    cout << "PathFollower2d: got a new activation time. Not used, we rely on getData calls." << endl;
 }
 
 void PathUpdateConsumer::setEnabledState( bool enabledState, const ::Ice::Current& )
 {
-    enabledPipe_.set( enabledState );
+    cout << "PathFollower2d: enable state changed. Not used, we rely on getData calls." << endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -133,6 +133,7 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
       displayWaypoints_(true),
       displayPastWaypoints_(true),
       currentTransparency_(false),
+      isRemoteInterfaceSick_(false),
       pathHI_( this,
                proxyString,
                humanManager,
@@ -188,7 +189,10 @@ PathFollower2dElement::update()
     }
     
     // get the activation time
-    bool isEnabled = isFollowerEnabled();
+    bool isEnabled;
+    int ret = isFollowerEnabled(isEnabled);
+    if (ret!=0) return;
+    
     if ( (activationTimer_->elapsedSec()>0.5) && isEnabled) 
     {
         try
@@ -215,12 +219,20 @@ PathFollower2dElement::update()
     }
 }
 
-bool 
-PathFollower2dElement::isFollowerEnabled()
+int 
+PathFollower2dElement::isFollowerEnabled( bool &isEnabled )
 {
-    bool isEnabled;
-    pathUpdateConsumer_->enabledPipe_.get( isEnabled );
-    return isEnabled;
+    try
+    {
+        isEnabled = pathFollower2dPrx_->enabled();
+        isRemoteInterfaceSick_ = false;
+        return 0;
+    }
+    catch ( ... )
+    {
+        humanManager_->showStatusMsg( Error, "Problem when trying to get enabled state" );
+        return -1;
+    }
 }
 
 void 
@@ -242,13 +254,10 @@ PathFollower2dElement::doInitialSetup()
     {
         orcaice::connectToInterfaceWithString( context_, pathFollower2dPrx_, proxyString_ );
         Ice::ObjectPtr pathFollowerObj = pathUpdateConsumer_;
-        orca::PathFollower2dConsumerPrx callbackPrx = 
-                orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( context_, pathFollowerObj );
-        pathFollower2dPrx_->subscribe(callbackPrx);
-    
-        // get the enabled state and set our pipe
-        bool isEnabled = pathFollower2dPrx_->enabled();
-        pathUpdateConsumer_->enabledPipe_.set( isEnabled );
+        
+        // subscribe
+        callbackPrx_ = orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( context_, pathFollowerObj );
+        pathFollower2dPrx_->subscribe(callbackPrx_);
     }
     catch ( ... )
     {
@@ -258,6 +267,22 @@ PathFollower2dElement::doInitialSetup()
     humanManager_->showStatusMsg(Information, "Connected to pathfollower interface successfully.");
     
     doneInitialSetup_ = true;
+    
+    try
+    {        
+        // get initial path and set pipe
+        PathFollower2dData data = pathFollower2dPrx_->getData();
+        pathUpdateConsumer_->pathPipe_.set( data );
+                
+        // get initial waypoint in focus and set pipe
+        int wpIndex = pathFollower2dPrx_->getWaypointIndex();
+        pathUpdateConsumer_->indexPipe_.set( wpIndex );
+    }
+    catch ( ... )
+    {
+        humanManager_->showStatusMsg(Warning, "PathFollower2d: Problem getting initial data.");
+    }
+    
 }
 
 QStringList
@@ -279,11 +304,17 @@ PathFollower2dElement::contextMenu()
     } else {
         s << "Switch transparency ON";
     }
-    bool isEnabled = isFollowerEnabled();
-    if (isEnabled) {
-        s << "Disable interface";
+    bool isEnabled;
+    int ret = isFollowerEnabled(isEnabled);
+    if (ret!=0) {
+        isRemoteInterfaceSick_=true;
+        s << "";
     } else {
-        s << "Enable interface";
+        if (isEnabled) {
+            s << "Disable interface";
+        } else {
+            s << "Enable interface";
+        }
     }
     
     s << "Save path as..."
@@ -311,13 +342,15 @@ PathFollower2dElement::execute( int action )
     }
     else if ( action == 3 )
     {
+        if (isRemoteInterfaceSick_) return;
         pathFollower2dPrx_->setEnabled( !pathFollower2dPrx_->enabled() );
-        bool isEnabled = isFollowerEnabled();
+        bool isEnabled;
+        isFollowerEnabled( isEnabled );
         QString str;
         if (isEnabled) {
-            str = "Pathfollower is ENABLED now.";
+            str = "Pathfollower reports it is ENABLED now.";
         } else {
-            str = "Pathfollower is DISABLED now.";
+            str = "Pathfollower reports it is DISABLED now.";
         }
         humanManager_->showStatusMsg(Information,str);
     }
@@ -358,7 +391,7 @@ PathFollower2dElement::stop()
     cout<<"TRACE(PathFollower2dElement): stop()" << endl;
     humanManager_->showStatusMsg(Information,"Received STOP signal");
     PathFollower2dData dummyPath;
-    const bool activateNow = false;
+    const bool activateNow = true;
     try
     {
         pathFollower2dPrx_->setData( dummyPath, activateNow );
@@ -375,8 +408,12 @@ void
 PathFollower2dElement::sendPath( const PathFollowerInput &pathInput, bool activateImmediately )
 {
     cout<<"TRACE(PathFollower2dElement): sendPath()" << endl;
+    
     try
     {
+        // it's possible that we were desubscribed before, let's resubscribe to make sure
+        pathFollower2dPrx_->subscribe(callbackPrx_);
+
         orca::PathFollower2dData data;
         bool isOk = pathInput.getPath( data );
         if (isOk) {
@@ -400,6 +437,7 @@ PathFollower2dElement::sendPath( const PathFollowerInput &pathInput, bool activa
         ss << "While trying to set pathfollowing data: " << endl << e;
         humanManager_->showStatusMsg( Error, ss.str().c_str() );
     }
+    
 }
 
 void 

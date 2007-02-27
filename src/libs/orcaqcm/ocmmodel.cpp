@@ -605,8 +605,8 @@ OcmModel::headerData(int section, Qt::Orientation orientation, int role) const
 
 int
 OcmModel::interfaceData( const QModelIndex& ind,
-                    QString & registry, QString & platform, QString & component,
-                    QString & interface, QString & id )
+                    QString& registry, QString& platform, QString& component,
+                    QString& interface, QString& id )
 {
     Node* n = static_cast<Node*>(ind.internalPointer());
     if ( n->type() != InterfaceType ) {
@@ -628,8 +628,8 @@ OcmModel::interfaceData( const QModelIndex& ind,
 
 int
 OcmModel::interfacesOnPlatform( const QModelIndex& ind,
-                    QStringList & registries, QStringList & platforms, QStringList & components,
-                    QStringList & interfaces, QStringList & ids )
+                    QStringList& registries, QStringList& platforms, QStringList& components,
+                    QStringList& interfaces, QStringList& ids )
 {
     Node* n = static_cast<Node*>(ind.internalPointer());
     if ( n->type() != PlatformType ) {
@@ -679,7 +679,7 @@ OcmModel::clear()
 }
 
 QModelIndex 
-OcmModel::registryIndex( const QString & registry, bool create )
+OcmModel::registryIndex( const QString& registry, bool create )
 {
     RegistryNode rn(registry);
     int ri = registries_.indexOf( rn );
@@ -699,7 +699,7 @@ OcmModel::registryIndex( const QString & registry, bool create )
 
 // Returns the model index of the registry with specified name.
 void
-OcmModel::setRegistry( const QString &registry, const QString & regAddress, bool connected )
+OcmModel::setRegistry( const QString &registry, const QString& regAddress, bool connected )
 {
     QModelIndex ind = registryIndex( registry, true );
 
@@ -713,12 +713,12 @@ OcmModel::setRegistry( const QString &registry, const QString & regAddress, bool
 }
 
 QModelIndex 
-OcmModel::platformIndex( const QString & registry, const QString &platform, bool create )
+OcmModel::platformIndex( const QString& registry, const QString &platform, bool create )
 {
     QModelIndex rindex = registryIndex( registry, false );
     // failed to find
     if ( !rindex.isValid() ) {
-        cout<<"failed to find registry "<<registry.toStdString()<<endl;
+        cout<<"DEBUG: failed to find registry '"<<registry.toStdString()<<"'"<<endl;
         return QModelIndex();
     }
     RegistryNode* rnode = static_cast<RegistryNode*>(rindex.internalPointer());
@@ -743,8 +743,8 @@ OcmModel::platformIndex( const QString & registry, const QString &platform, bool
 }
 
 void
-OcmModel::setPlatform( const QString & registry,
-                const QString & platform )
+OcmModel::setPlatform( const QString& registry,
+                const QString& platform )
 {
     QModelIndex ind = platformIndex( registry, platform, true );
 
@@ -757,14 +757,14 @@ OcmModel::setPlatform( const QString & registry,
 }
   
 QModelIndex 
-OcmModel::componentIndex( const QString & registry, const QString & platform, 
-                    const QString & component, bool create )
+OcmModel::componentIndex( const QString& registry, const QString& platform, 
+                    const QString& component, bool create )
 {
     // special case: can create platform because we have all the info
     QModelIndex pindex = platformIndex( registry, platform, true );
     // failed to find
     if ( !pindex.isValid() ) {
-        cout<<"DEBUG: failed to find platform "<<platform.toStdString()<<endl;
+        cout<<"DEBUG: failed to find platform '"<<platform.toStdString()<<"'"<<endl;
         return QModelIndex();
     }
     PlatformNode* pnode = static_cast<PlatformNode*>(pindex.internalPointer());
@@ -788,8 +788,8 @@ OcmModel::componentIndex( const QString & registry, const QString & platform,
 }
 
 void
-OcmModel::setComponent( const QString & registry, const QString & platform, 
-            const QString & component, const QString & compAddress, bool connected, int timeUp )
+OcmModel::setComponent( const QString& registry, const QString& platform, 
+            const QString& component, const QString& compAddress, bool connected, int timeUp )
 {
 //     cout<<"adding reg="<<registry.toStdString()<<" ptf="<<platform.toStdString()
 //         <<" cmp="<<component.toStdString()<<" caddr="<<compAddress.toStdString()
@@ -809,13 +809,13 @@ OcmModel::setComponent( const QString & registry, const QString & platform,
 }
 
 QModelIndex 
-OcmModel::interfaceIndex( const QString & registry, const QString & platform, const QString & component,
-                    const QString & interface, bool create )
+OcmModel::interfaceIndex( const QString& registry, const QString& platform, const QString& component,
+                    const QString& interface, bool create )
 {
     QModelIndex cindex = componentIndex( registry, platform, component );
     // failed to find
     if ( !cindex.isValid() ) {
-        cout<<"DEBUG: failed to find component "<<component.toStdString()<<endl;
+        cout<<"DEBUG: failed to find component '"<<component.toStdString()<<"'"<<endl;
         return QModelIndex();
     }
     ComponentNode* cnode = static_cast<ComponentNode*>(cindex.internalPointer());    
@@ -840,8 +840,8 @@ OcmModel::interfaceIndex( const QString & registry, const QString & platform, co
 }
 
 void
-OcmModel::setInterface( const QString & registry, const QString & platform, const QString & component, 
-            const QString & interface, const bool isProvided, const QString & ids, bool isEnabled )
+OcmModel::setInterface( const QString& registry, const QString& platform, const QString& component, 
+            const QString& interface, const bool isProvided, const QString& ids, bool isEnabled )
 {
     QModelIndex ind = interfaceIndex( registry, platform, component, interface, true );
 
@@ -860,13 +860,13 @@ OcmModel::setInterface( const QString & registry, const QString & platform, cons
 }
 
 QModelIndex 
-OcmModel::operationIndex( const QString & registry, const QString & platform, const QString & component, 
-                    const QString & interface, const QString & operation, bool create )
+OcmModel::operationIndex( const QString& registry, const QString& platform, const QString& component, 
+                    const QString& interface, const QString& operation, bool create )
 {
     QModelIndex iindex = interfaceIndex( registry, platform, component, interface );
     // failed to find
     if ( !iindex.isValid() ) {
-        cout<<"DEBUG: failed to find interface "<<interface.toStdString()<<endl;
+        cout<<"DEBUG: failed to find interface '"<<interface.toStdString()<<"'"<<endl;
         return QModelIndex();
     }
     InterfaceNode* inode = static_cast<InterfaceNode*>(iindex.internalPointer());    
@@ -890,8 +890,8 @@ OcmModel::operationIndex( const QString & registry, const QString & platform, co
 }
 
 void 
-OcmModel::setOperation( const QString & registry, const QString & platform, const QString & component, const QString & interface, 
-            const QString & operation, const QString & signature  )
+OcmModel::setOperation( const QString& registry, const QString& platform, const QString& component, const QString& interface, 
+            const QString& operation, const QString& signature  )
 {    
     QModelIndex ind = operationIndex( registry, platform, component, interface, operation, true );
 
@@ -903,14 +903,14 @@ OcmModel::setOperation( const QString & registry, const QString & platform, cons
 }
 
 QModelIndex 
-OcmModel::resultIndex( const QString & registry, const QString & platform, const QString & component, 
-                    const QString & interface, const QString & operation, 
-                    const QString & result, bool create )
+OcmModel::resultIndex( const QString& registry, const QString& platform, const QString& component, 
+                    const QString& interface, const QString& operation, 
+                    const QString& result, bool create )
 {
     QModelIndex oindex = operationIndex( registry, platform, component, interface, operation );
     // failed to find
     if ( !oindex.isValid() ) {
-        cout<<"DEBUG: failed to find operation "<<operation.toStdString()<<endl;
+        cout<<"DEBUG: failed to find operation '"<<operation.toStdString()<<"'"<<endl;
         cout<<"\treg="<<registry.toStdString()
             <<" ptfm="<<platform.toStdString()
             <<"\tcomp="<<component.toStdString()
@@ -939,8 +939,8 @@ OcmModel::resultIndex( const QString & registry, const QString & platform, const
 }
 
 void 
-OcmModel::setResult( const QString & registry, const QString & platform, const QString & component, const QString & interface, 
-            const QString & operation, const QString & result, const QString & text )
+OcmModel::setResult( const QString& registry, const QString& platform, const QString& component, const QString& interface, 
+            const QString& operation, const QString& result, const QString& text )
 {    
     QModelIndex ind = resultIndex( registry, platform, component, interface, operation, result, true );
 
@@ -955,8 +955,8 @@ OcmModel::setResult( const QString & registry, const QString & platform, const Q
 
 // Returns the index of the platform with specified name.
 QModelIndex
-OcmModel::setPlatformPrivate( const QString & registry, const QString & regAddress,
-                const QString & platform )
+OcmModel::setPlatformPrivate( const QString& registry, const QString& regAddress,
+                const QString& platform )
 {
     // this will find our registry or make a new one
     QModelIndex rindex = registryIndex( registry, true );
@@ -986,9 +986,9 @@ OcmModel::setPlatformPrivate( const QString & registry, const QString & regAddre
 }
 
 QModelIndex
-OcmModel::setComponentPrivate( const QString & registry, const QString & regAddress,
-                    const QString & platform, const QString & component,
-                    const QString & compAddress, bool connected, int timeUp )
+OcmModel::setComponentPrivate( const QString& registry, const QString& regAddress,
+                    const QString& platform, const QString& component,
+                    const QString& compAddress, bool connected, int timeUp )
 {
 //     cout<<"adding reg="<<registry.toStdString()<<" raddr="<<regAddress.toStdString()
 //         <<" ptf="<<platform.toStdString()<<" cmp="<<component.toStdString()
@@ -1025,10 +1025,10 @@ OcmModel::setComponentPrivate( const QString & registry, const QString & regAddr
 }
 
 QModelIndex
-OcmModel::setInterfacePrivate( const QString & registry, const QString & regAddress,
-                                const QString & platform, const QString & component, const QString & interface,
-                                const bool isProvided, const QString & address,
-                                const QString & ids, bool connected, int timeUp )
+OcmModel::setInterfacePrivate( const QString& registry, const QString& regAddress,
+                                const QString& platform, const QString& component, const QString& interface,
+                                const bool isProvided, const QString& address,
+                                const QString& ids, bool connected, int timeUp )
 {
     // this will find our platform and component or make new ones
     QModelIndex cindex = setComponentPrivate( registry, regAddress, platform, component, address, true, timeUp );

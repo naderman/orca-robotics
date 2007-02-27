@@ -88,6 +88,7 @@ private slots:
     void updateDisplayView();
 
     void changePlatformFocus(const QString&);
+    void changePlatformColor(const QString&);
     void addPlatformToList(const QString&);
     void removePlatformFromList(const QString&);
     
@@ -131,6 +132,7 @@ private:
     // platform focus box
     QToolBar* platformFocusToolbar_;
     QComboBox* platformCombo_;
+    QComboBox* colorCombo_;
     
     bool firstTime_;
     

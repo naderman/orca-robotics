@@ -36,6 +36,11 @@ GpsHandler::run()
 {
     const int TIME_BETWEEN_HEARTBEATS  = 10000;  // ms
     IceUtil::Time lastHeartbeatTime = IceUtil::Time::now();
+    
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string str = context_.tag() + ".Config.ReportIfNoFix";
+
+    bool reportIfNoFix = orcaice::getPropertyAsIntWithDefault( prop, str, true );
 
     try 
     {
@@ -50,19 +55,15 @@ GpsHandler::run()
         //
         while ( isActive() )
         {
-            //
-            // This 'if' block is what slows the loop down, by either reading from the GPS
-            // or sleeping.
-            //
+            
+            // Loop is driven by waiting time of 1/2 second at the bottom
+            
             if ( hwDriver_->isEnabled() )
             {
-                // Read from the GPS
                 context_.tracer()->debug("Trying to read from driver now", 3);
                 
-                // GPS data tends to come in bursts in 1 second intervals
-                // hwDriver_->read() will return after emptying serial buffer
-                // this should provide a nice 1s loop frequency
-                // may need to be adjusted for fancier GPSes                
+                // Read from hardware: parse all information in the serial buffer until empty
+                // as quickly as possible
                 int ret = hwDriver_->read();
                 if ( ret == -1 )
                 {
@@ -73,12 +74,22 @@ GpsHandler::run()
                 if ( !hwDriver_->hasFix() )
                 {
                     context_.tracer()->debug("No GPS fix", 3);
+                    if (reportIfNoFix) {
+                        context_.tracer()->debug("Reporting bogus values with positionType 0", 3);
+                        orcaice::setSane(gpsData);
+                        orcaice::setSane(gpsMapGridData);
+                        gpsData.positionType = orca::GpsPositionTypeNotAvailable;
+                        gpsMapGridData.positionType = orca::GpsPositionTypeNotAvailable;
+                        gpsObj_.localSetData(gpsData);
+                        gpsObj_.localSetMapGridData(gpsMapGridData);
+                    }
                 }
                 else
                 {
                     context_.tracer()->debug("We have a GPS fix", 3);
                         
-                    if(hwDriver_->getData(gpsData)==0)
+                    int ret = hwDriver_->getData(gpsData);
+                    if (ret==0)
                     {
                         // publish it
                         context_.tracer()->debug("We have new gpsData. Publishing gpsData.", 3);
@@ -93,6 +104,8 @@ GpsHandler::run()
                         gpsMapGridData.timeStamp=gpsData.timeStamp;
                         gpsMapGridData.utcTime=gpsData.utcTime;
                         gpsMapGridData.altitude=gpsData.altitude;
+                        gpsMapGridData.horizontalPositionError=gpsData.horizontalPositionError;
+                        gpsMapGridData.verticalPositionError=gpsData.verticalPositionError;
                     
                         gpsMapGridData.heading=gpsData.heading;
                         gpsMapGridData.speed=gpsData.speed;
@@ -127,6 +140,10 @@ GpsHandler::run()
                         context_.tracer()->debug( orcaice::toString( gpsTimeData ), 5 );
                     }
                 }
+                
+                // Tobi: this sleep drives the loop now
+                IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(500));
+                
             }
             else
             {

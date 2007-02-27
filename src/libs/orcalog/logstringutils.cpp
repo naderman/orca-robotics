@@ -9,6 +9,7 @@
  */
 
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <cmath>
 // M_PI is not defined after including cmath for the MS visual studio compiler?
@@ -42,13 +43,15 @@ namespace orcalog
 std::string 
 toLogString( const orca::Waypoint2d& obj )
 {
+    // waypoint angles are specified in 1/16 of a degree from the GUI.
+    // For consistentcy, log them from 0 to 360*16
     std::ostringstream s;
-    s << obj.target.p.x << " " << obj.target.p.y << " " << obj.target.o*180.0/M_PI << " " 
+    s << obj.target.p.x << " " << obj.target.p.y << " " << obj.target.o*16*180.0/M_PI << " " 
+      << obj.timeTarget.seconds + obj.timeTarget.useconds/1000000.0 << " " 
       << obj.distanceTolerance << " " 
-      << obj.headingTolerance*180.0/M_PI << " "
-      << toLogString(obj.timeTarget) << " " 
+      << obj.headingTolerance*16*180.0/M_PI << " "
       << obj.maxApproachSpeed << " "
-      << obj.maxApproachTurnrate*180.0/M_PI
+      << obj.maxApproachTurnrate*16*180.0/M_PI
       << endl;
     return s.str();
 }
@@ -69,19 +72,31 @@ toLogString( const orca::CpuData& obj )
 std::string 
 toLogString( const orca::GpsData& obj )
 {
+    int positionType = 0;
+    if (obj.positionType==orca::GpsPositionTypeNotAvailable) {
+        positionType = 0;
+    } else if (obj.positionType==orca::GpsPositionTypeAutonomous) {
+        positionType = 1;
+    } else if (obj.positionType==orca::GpsPositionTypeDifferential) {
+        positionType = 2;
+    }
+    
     std::ostringstream s;
     s << toLogString(obj.timeStamp) << " "
+      << setiosflags(ios::fixed) << setprecision(2)
       << obj.utcTime.hours << " "
       << obj.utcTime.minutes << " "
       << obj.utcTime.seconds << " "
       << obj.latitude << " "
       << obj.longitude << " "
       << obj.altitude << " "
+      << obj.horizontalPositionError<< " "
+      << obj.verticalPositionError << " "
       << obj.heading << " "
       << obj.speed << " "
       << obj.climbRate << " "
       << obj.satellites << " "
-      << obj.positionType << " "
+      << positionType << " "
       << obj.geoidalSeparation;
     return s.str();
 }
@@ -89,19 +104,31 @@ toLogString( const orca::GpsData& obj )
 std::string 
 toLogString( const orca::GpsMapGridData& obj )
 {
+    int positionType = 0;
+    if (obj.positionType==orca::GpsPositionTypeNotAvailable) {
+        positionType = 0;
+    } else if (obj.positionType==orca::GpsPositionTypeAutonomous) {
+        positionType = 1;
+    } else if (obj.positionType==orca::GpsPositionTypeDifferential) {
+        positionType = 2;
+    }
+    
     std::ostringstream s;
     s << toLogString(obj.timeStamp) << " "
+      << setiosflags(ios::fixed) << setprecision(2)
       << obj.utcTime.hours << " "
       << obj.utcTime.minutes << " "
       << obj.utcTime.seconds << " "
       << obj.northing << " "
       << obj.easting << " "
       << obj.altitude << " "
+      << obj.horizontalPositionError<< " "
+      << obj.verticalPositionError << " "
       << obj.heading << " "
       << obj.speed << " "
       << obj.climbRate << " "
       << obj.zone << " "
-      << obj.positionType;
+      << positionType;
     return s.str();
 }
 

@@ -330,8 +330,8 @@ MainWindow::customEvent( QEvent* e )
                 QString::fromStdString( de->data_.results[i].name ),
                 QString::fromStdString( de->data_.results[i].text ) );
 
-            cout<<"MainWindow: "<<de->data_.results[i].name<<":"<<endl;
-            cout<<de->data_.results[i].text<<endl;
+//             cout<<"MainWindow: "<<de->data_.results[i].name<<":"<<endl;
+//             cout<<de->data_.results[i].text<<endl;
         }
 
 //         cout<<model_->rowCount( ifaceView_->currentIndex() )<<" children"<<endl;

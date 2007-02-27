@@ -14,5 +14,6 @@ Config.BeginTime.Comment=Time format: DD:HH:MM:SS.uuuuuu
 Config.BeginTime.Default=0:0:0:0.0
 Config.EndTime.Comment=Negative to play to the end
 Config.EndTime.Default=-1.0
+Config.RequireAll.Default=1
 
 # Interface-specific config

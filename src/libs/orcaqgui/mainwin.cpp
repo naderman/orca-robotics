@@ -81,15 +81,29 @@ namespace orcaqgui
     // enable sorting
     //connect( regView_->header(),SIGNAL(sectionClicked(int)), model_,SLOT(sort(int)) );
     
-    // 
-    // Platform combo box
     //
+    // QVBoxLayout
+    //
+    // Platform combo box
+//     QHBoxLayout* platformBox = new QHBoxLayout(side_);
+//     platformCombo_ = new QComboBox;
+//     platformBox->addWidget( platformCombo_ );
+
     platformCombo_ = new QComboBox(side_);
     platformCombo_->setMinimumHeight(20);
     platformCombo_->setMaximumHeight(20);
     platformCombo_->setFont( QFont(platformCombo_->font().family(), 12, QFont::Bold) );
     connect(platformCombo_,SIGNAL(highlighted(const QString&)),this, SLOT(changePlatformFocus(const QString&)));
-
+    
+    //
+    // Color combo
+    //
+/*    colorCombo_ = new QComboBox(side_);
+    colorCombo_->setMinimumHeight(20);
+    colorCombo_->setMaximumHeight(20);
+    colorCombo_->setFont( QFont(colorCombo_->font().family(), 12, QFont::Bold) );
+    connect(colorCombo_,SIGNAL(highlighted(const QString&)),this, SLOT(changePlatformColor(const QString&)));
+  */  
     // setup all the menus/toolbars etc.
     setupInterface();
 
@@ -494,6 +508,12 @@ MainWindow::unsubscribeFromKey( QKeySequence key, QObject *parent )
             return;
         }
     }
+}
+
+
+void
+MainWindow::changePlatformColor(const QString&)
+{
 }
 
 }

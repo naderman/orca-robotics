@@ -124,6 +124,23 @@ Lines
     - Self-explanatory
     - Default: 1.0
 
+- @c LaserFeatureExtractor.Config.Lines.RejectLikelyGroundObservations (bool)
+    - Reject lines with near-zero slope
+      - This will be seen if you're leaning forward or moving up a hill
+    - Default: 1
+
+- @c LaserFeatureExtractor.Config.Lines.PFalsePositive (double)
+    - Probability of detecting a false-positive line
+    - Default: 0.4
+
+- @c LaserFeatureExtractor.Config.Lines.PFalsePositivePossibleGround (double)
+    - Probability of detecting a false possitive when observing a line with near-zero slope
+    - Default: 0.55
+
+- @c LaserFeatureExtractor.Config.Lines.PTruePositive (double)
+    - Probability of detecting a line when it's really there
+    - Default: 0.6
+
 Corners
 
 - @c LaserFeatureExtractor.Config.ExtractCorners (bool)
@@ -136,6 +153,22 @@ Doors
 
 - @c LaserFeatureExtractor.Config.ExtractDoors (bool)
     - Default: 0
+- @c LaserFeatureExtractor.Config.Doors.MinDoorWidth (double)
+    - Default: 0.9
+- @c LaserFeatureExtractor.Config.Doors.MaxDoorWidth (double)
+    - Default: 1.2
+- @c LaserFeatureExtractor.Config.Doors.MinDeltaRangeThruDoor (double)
+    - Default: 2.0
+- @c LaserFeatureExtractor.Config.Doors.RangeSd (double)
+    - Default: 0.3
+- @c LaserFeatureExtractor.Config.Doors.BearingSd (double)
+    - Default: 5.0
+- @c LaserFeatureExtractor.Config.Doors.MinReturnsThruDoor (int)
+    - Default: 3
+- @c LaserFeatureExtractor.Config.Doors.MinReturnsBesideDoor (int)
+    - Default: 2
+- @c LaserFeatureExtractor.Config.Doors.MaxDeltaRangeWallBesideDoor (double)
+    - Default: 0.3
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 

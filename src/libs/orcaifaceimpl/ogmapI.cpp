@@ -57,7 +57,7 @@ void
 OgMapI::subscribe(const ::OgMapConsumerPrx& subscriber,
                   const Ice::Current& current)
 {
-    context_.tracer()->debug( "OgMapI::subscribe()", 5 );
+    context_.tracer()->debug( "OgMapI::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     IceStorm::QoS qos;
     qos["reliability"] = "twoway";
     try {
@@ -75,7 +75,7 @@ void
 OgMapI::unsubscribe(const ::OgMapConsumerPrx& subscriber,
                     const Ice::Current& current)
 {
-    context_.tracer()->debug( "OgMapI::unsubscribe()", 5 );
+    context_.tracer()->debug( "OgMapI::unsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 

@@ -590,6 +590,19 @@ NovatelSpanInsGpsDriver::readMsgsFromHardware()
     return msgs;
 }
 
+orca::GpsPositionType
+convertPosType( uint novatelPosType )
+{
+    if ( novatelPosType == 0 )
+    {
+        return orca::GpsPositionTypeNotAvailable;
+    }
+    else
+    {
+        cout<<"TRACE(novatelspandriver.cpp): WARNING: using bogus positionType: Autonomous." << endl;
+        return orca::GpsPositionTypeAutonomous;
+    }
+}
 
 int
 NovatelSpanInsGpsDriver::populateData( int id )
@@ -680,7 +693,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
             // printf("got BESTGPSPOS\n");
             memcpy( &BESTGPSPOS_, &serial_data_.raw_message, sizeof(BESTGPSPOS_) );
 
-            gpsData_.positionType = BESTGPSPOS_.data.pos_type;
+            gpsData_.positionType = convertPosType(BESTGPSPOS_.data.pos_type);
             if( gpsData_.positionType==0 )
             {
                 // newGpsData_ = false;

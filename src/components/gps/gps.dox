@@ -61,6 +61,12 @@ without a fix ever having been achieved.
 - @c Gps.Config.StartEnabled (bool)
     - Enable the GPS on component initialisation?
     - Default: 1
+    
+- @c Gps.Config.ReportIfNoFix (bool)
+    - Report values if there is no GPS fix?
+        - 0: GPS doesn't provide any data when there is no fix
+        - 1: positionType is 0, all other values are bogus
+    - Default: 1    
 
 Geometry
 

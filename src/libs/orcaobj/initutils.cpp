@@ -307,12 +307,14 @@ setSane( orca::GpsData& obj )
     obj.latitude = double(RINT%90000)/1000.0;
     obj.longitude = double(RINT%360000)/1000.0;
     obj.altitude = double(RINT%90000)/1000.0;
+    obj.horizontalPositionError = double(RINT%90000)/1000.0;
+    obj.verticalPositionError = double(RINT%90000)/1000.0;
 
     obj.speed = double(RINT%1000000)/1000.0;
     obj.climbRate = double(RINT%1000000)/1000.0;
 
     obj.satellites = RINT%50;
-    obj.positionType = RINT%2;
+    obj.positionType = orca::GpsPositionTypeAutonomous;
 
     obj.geoidalSeparation = double(RINT%10000000)/1000.0;
 }
@@ -344,11 +346,13 @@ setSane( orca::GpsMapGridData& obj )
     obj.northing = double(RINT%800000)/1000.0;
     obj.easting = double(RINT%800000)/1000.0;
     obj.altitude = double(RINT%90000)/1000.0;
-
+    obj.horizontalPositionError = double(RINT%90000)/1000.0;
+    obj.verticalPositionError = double(RINT%90000)/1000.0;
+    
     obj.speed = double(RINT%1000000)/1000.0;
     obj.climbRate = double(RINT%1000000)/1000.0;
 
-    obj.positionType = RINT%2;
+    obj.positionType = orca::GpsPositionTypeAutonomous;
 }
 
 void 

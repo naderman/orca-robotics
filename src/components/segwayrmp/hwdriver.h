@@ -61,6 +61,11 @@ public:
     // Writes velocity command. Returns 0 on success. Does not throw.
     virtual int write( const SegwayRmpCommand& command )=0;
 
+    // Apply physical limits of this hardare.
+    // Base implementation does nothing.
+    virtual void applyHardwareLimits( double& forwardSpeed, double& reverseSpeed, 
+        double& turnrate, double& turnrateAtMaxSpeed ) {};
+
     // Non-blocking read of secondary data. Returns 0 on success.
     virtual int get( SegwayRmpStats& stats ) { return 0; };
 

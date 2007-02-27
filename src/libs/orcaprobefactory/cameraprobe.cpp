@@ -18,8 +18,8 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-CameraProbe::CameraProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver & display,
-                                const orcaice::Context & context )
+CameraProbe::CameraProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+                                const orcaice::Context& context )
     : InterfaceProbe(name,display,context)
 {
     id_ = "::orca::Camera";
@@ -31,102 +31,70 @@ CameraProbe::CameraProbe( const orca::FQInterfaceName & name, orcaprobe::Display
 }
     
 int 
-CameraProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
+CameraProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 {
     switch ( index )
     {
     case orcaprobe::UserIndex :
-        return loadGetData();
+        return loadGetData( data );
     case orcaprobe::UserIndex+1 :
-        return loadGetDescription();
+        return loadGetDescription( data );
     case orcaprobe::UserIndex+2 :
-        return loadSubscribe();
+        return loadSubscribe( data );
     case orcaprobe::UserIndex+3 :
-        return loadUnsubscribe();
+        return loadUnsubscribe( data );
     }
     return 1;
 }
 
 int 
-CameraProbe::loadGetData()
+CameraProbe::loadGetData( orcacm::OperationData& data )
 {
-    orca::CameraData data;
+    orca::CameraData result;
     
     try
     {
         orca::CameraPrx derivedPrx = orca::CameraPrx::checkedCast(prx_);
-        data = derivedPrx->getData();
+        result = derivedPrx->getData();
+        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
     }
-    catch( const Ice::Exception & e )
+    catch( const Ice::Exception& e )
     {
         return 1;
     }
 
-    cout<<orcaice::toString(data)<<endl;
     return 0;
 }
 
 int 
-CameraProbe::loadGetDescription()
+CameraProbe::loadGetDescription( orcacm::OperationData& data )
 {
-    orca::CameraDescription data;
+    orca::CameraDescription result;
     
     try
     {
         orca::CameraPrx derivedPrx = orca::CameraPrx::checkedCast(prx_);
-        data = derivedPrx->getDescription();
+        result = derivedPrx->getDescription();
+        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
     }
-    catch( const Ice::Exception & e )
+    catch( const Ice::Exception& e )
     {
         return 1;
     }
 
-    cout<<orcaice::toString(data)<<endl;
     return 0;
 }
 
 int 
-CameraProbe::loadSubscribe()
-{
-//     // create the consumer only when needed
-//     Ice::ObjectPtr consumer = new PowerConsumerI;
-//     orca::PowerConsumerPrx powerConsumerPrx =
-//             orcaice::createConsumerInterface<orca::PowerConsumerPrx>( context_, consumer );
-//     consumerPrx_ = powerConsumerPrx;
-//     //debug
-// //     cout<<"sub  "<<Ice::identityToString( powerConsumerPrx->ice_getIdentity() )<<endl;
-// //     cout<<"sub  "<<Ice::identityToString( consumerPrx_->ice_getIdentity() )<<endl;
-// 
-//     try
-//     {
-//         orca::PowerPrx derivedPrx = orca::PowerPrx::checkedCast(prx_);
-//         derivedPrx->subscribe( powerConsumerPrx );
-//     }
-//     catch( const Ice::Exception & e )
-//     {
-//         return 1;
-//     }
-    
+CameraProbe::loadSubscribe( orcacm::OperationData& data )
+{    
+    orcaprobe::reportNotImplemented( data );
     return 0;
 }
 
 int 
-CameraProbe::loadUnsubscribe()
-{
-//     try
-//     {
-//         orca::PowerPrx derivedPrx = orca::PowerPrx::checkedCast(prx_);
-// //         cout<<"unsub  "<<Ice::identityToString( consumerPrx_->ice_getIdentity() )<<endl;
-//         
-//         orca::PowerConsumerPrx powerConsumerPrx = orca::PowerConsumerPrx::uncheckedCast(consumerPrx_);
-// //         cout<<"unsub  "<<Ice::identityToString( powerConsumerPrx->ice_getIdentity() )<<endl;
-//         derivedPrx->unsubscribe( powerConsumerPrx );
-//     }
-//     catch( const Ice::Exception & e )
-//     {
-//         cout<<"caught "<<e<<endl;
-//         return 1;
-//     }
-    
+CameraProbe::loadUnsubscribe( orcacm::OperationData& data )
+{    
+    orcaprobe::reportNotImplemented( data );
     return 0;
 }

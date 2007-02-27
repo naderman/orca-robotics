@@ -22,19 +22,19 @@ class StatusProbe : public orca::StatusConsumer, public orcaprobe::InterfaceProb
 
 public:
 
-    StatusProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver & display,
-                                const orcaice::Context & context );
+    StatusProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+                                const orcaice::Context& context );
 
-    virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
+    virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
 
     // from consumer
     virtual void setData(const orca::StatusData& data, const Ice::Current&);
     
 private:
 
-    int loadGetData( orcacm::OperationData & data );
-    int loadSubscribe( orcacm::OperationData & data );
-    int loadUnsubscribe( orcacm::OperationData & data );
+    int loadGetData( orcacm::OperationData& data );
+    int loadSubscribe( orcacm::OperationData& data );
+    int loadUnsubscribe( orcacm::OperationData& data );
 
 };
 

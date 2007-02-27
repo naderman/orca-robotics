@@ -17,7 +17,7 @@
 using namespace std;
 
 void 
-orcalog::parseRequiredTag( const std::string & tag, std::string & type, std::string & suffix )
+orcalog::parseRequiredTag( const std::string& tag, std::string& type, std::string& suffix )
 {
     if ( tag.empty() ) {
         throw orcalog::Exception( ERROR_INFO, "empty interface tag" );
@@ -53,21 +53,25 @@ orcalog::parseRequiredTag( const std::string & tag, std::string & type, std::str
  }
 
 std::string 
-orcalog::headerLine( const std::string & filename, 
-                    const std::string & interfaceType, 
-                    const std::string & format )
+orcalog::headerLine( const std::string& filename, 
+                    const std::string&  interfaceType, 
+                    const std::string&  format,
+                    bool                enabled )
 {
-    return (filename + " " + interfaceType + " " + format);
+    stringstream ss;
+    ss << filename << " " << interfaceType << " " << format << " " << enabled;
+    return ss.str();
 }
 
 void 
-orcalog::parseHeaderLine( const std::string & line, 
-                        std::string & filename, 
-                        std::string & interfaceType, 
-                        std::string & format )
+orcalog::parseHeaderLine( const std::string& line, 
+                        std::string& filename, 
+                        std::string& interfaceType, 
+                        std::string& format,
+                        bool&        enabled )
 {
     stringstream ss( line );
-    ss >> filename >> interfaceType >> format;
+    ss >> filename >> interfaceType >> format >> enabled;
 }
 
 std::string 
@@ -77,7 +81,7 @@ orcalog::endOfHeader()
 }
 
 bool 
-orcalog::isEndOfHeader( const std::string & line )
+orcalog::isEndOfHeader( const std::string& line )
 {
     return ( line == "#data" );
 }
@@ -91,7 +95,7 @@ orcalog::dataLine( int seconds, int useconds, int id, int index )
 }
 
 void
-orcalog::parseDataLine( const std::string & line, int & seconds, int & useconds, int & id, int & index )
+orcalog::parseDataLine( const std::string& line, int& seconds, int& useconds, int& id, int& index )
 {
     if ( line.empty() ) {
         throw orcalog::Exception( ERROR_INFO, "data line string is empty." );
@@ -103,7 +107,7 @@ orcalog::parseDataLine( const std::string & line, int & seconds, int & useconds,
     {
         ss >> seconds >> useconds >> id >> index;
     }
-    catch ( const std::exception & )
+    catch ( const std::exception& )
     {
         throw orcalog::Exception( ERROR_INFO, "error parsing data line '"+line+"'." );
     }

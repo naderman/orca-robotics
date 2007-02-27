@@ -88,7 +88,7 @@ HwHandler::HwHandler(
                  orcaice::Proxy<orca::Odometry3dData>& odometry3dPipe,
                  orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
                  orcaice::Proxy<orca::PowerData>& powerPipe,
-                 const orca::VehicleDescription&               descr,
+                 orca::VehicleDescription&               descr,
                  const orcaice::Context& context ) :
     odometry2dPipe_(odometry2dPipe),
     odometry3dPipe_(odometry3dPipe),
@@ -157,7 +157,13 @@ HwHandler::HwHandler(
         throw orcaice::Exception( ERROR_INFO, errorStr );
     }
 
-    context_.tracer()->debug("driver instantiated",5);
+    // Apply physical limits of this hardare.
+    driver_->applyHardwareLimits( controlDescr->maxForwardSpeed, 
+                        controlDescr->maxReverseSpeed,
+                        controlDescr->maxTurnrate,
+                        controlDescr->maxTurnrateAtMaxSpeed );
+
+    context_.tracer()->debug("driver instantiated",3);
 }
 
 HwHandler::~HwHandler()

@@ -13,6 +13,7 @@
 #include <orcaqgui2dfactory/simpleguielements.h>
 #include <orcaqgui2dfactory/featuremap2delement.h>
 #include <orcaqgui2dfactory/ogmapelement.h>
+#include <orcaqgui2dfactory/localise2delement.h>
 #include <orcaqgui2dfactory/pathfollower2delement.h>
 #include <orcaqgui2dfactory/pathplanner2delement.h>
 #include <orcaqgui2dfactory/gpselement.h>
@@ -74,7 +75,7 @@ DefaultFactory::create( const orcaice::Context           &context,
         }
         else if ( interfaceId == "::orca::Localise2d" ) {
             cout<<"creating Localise2d element"<<endl;
-            elem = new orcaqgui::Localise2dElement( context, proxyString.toStdString() );
+            elem = new orcaqgui::Localise2dElement( context, proxyString.toStdString(), humanManager );
         }
         else if ( interfaceId == "::orca::Localise3d" ) {
             cout<<"creating Localise3d element"<<endl;
@@ -110,7 +111,7 @@ DefaultFactory::create( const orcaice::Context           &context,
         }
         else if ( interfaceId == "::orca::Gps" ) {
             cout<<"creating Gps element with proxyString "<<proxyString.toStdString()<<endl;
-            elem = new orcaqgui::GpsElement( context, proxyString.toStdString() );
+            elem = new orcaqgui::GpsElement( context, proxyString.toStdString(), humanManager );
         }
         else if ( interfaceId == "::orca::QGraphics2d" ) {
             cout<<"creating QGraphics2d element with proxyString "<<proxyString.toStdString()<<endl;

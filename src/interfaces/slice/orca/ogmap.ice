@@ -17,13 +17,6 @@
 module orca
 {
     
-enum OgMapType
-{
-    OgMapOccupancy,
-    OgMapHazard,
-    OgMapMotion    
-};
-
 /*!
     @ingroup  interfaces
     @defgroup orca_interface_ogmap OgMap
@@ -37,6 +30,14 @@ be fused to create a larger occupancy-grid map.
 @see @ref orca_library_orcaogmap
     @{
 */
+
+//! OG map type
+enum OgMapType
+{
+    OgMapOccupancy,
+    OgMapHazard,
+    OgMapMotion    
+};
 
 /*!
   Occupancy-grid representation of a portion of the world.

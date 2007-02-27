@@ -21,15 +21,15 @@ class HomeProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    HomeProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver & display,
-                                const orcaice::Context & context );
+    HomeProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+                                const orcaice::Context& context );
 
-    virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
+    virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
     
 private:
         
-    int loadGetInterfaces( orcacm::OperationData & data );
-    int loadGetProperties( orcacm::OperationData & data );
+    int loadGetInterfaces( orcacm::OperationData& data );
+    int loadGetProperties( orcacm::OperationData& data );
 
 };
 

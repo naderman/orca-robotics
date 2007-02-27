@@ -23,7 +23,10 @@ Localise2dPainter::Localise2dPainter( bool beginDisplayHistory )
     : isDataAvailable_(false),
       basicColor_(Qt::blue),
       isDisplayHistory_(beginDisplayHistory),
-      isDisplayMultiHypothesis_(true)
+      isDisplayMultiHypothesis_(true),
+      xOff_(0.0),
+      yOff_(0.0),
+      thetaOff_(0.0)
 {
 }
 
@@ -31,6 +34,14 @@ void
 Localise2dPainter::clear()
 {
     isDataAvailable_ = false;
+}
+
+void 
+Localise2dPainter::setOffsets( double xOff, double yOff, double thetaOff )
+{
+    xOff_ = xOff;
+    yOff_ = yOff;
+    thetaOff_ = thetaOff;
 }
 
 void 
@@ -68,6 +79,13 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
     // Translate to where the hypothesis is at
     {
         ScopedSaver translateSaver(p);
+        
+        // CS transformation: localise CS to global CS
+        // (they are usually the same)
+        p->translate(xOff_,yOff_);
+        p->rotate(thetaOff_);
+        
+        // translate to mean
         p->translate( mean.p.x, mean.p.y );
 
         QColor color;
@@ -79,9 +97,10 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
 
         // Need to get the world matrix before we rotate
         QMatrix m2win = p->worldMatrix();
-        {
+        {            
             // Rotate to draw the platform correctly
             ScopedSaver rotateSaver(p);
+            
             p->rotate( RAD2DEG( mean.o ) );
             paintPlatformPose( m2win,
                                p, 

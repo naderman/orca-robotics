@@ -192,11 +192,25 @@ RmpUsbDriver::read( SegwayRmpData& data, std::string & status )
     }
 }
 
+void
+RmpUsbDriver::applyScaling( const SegwayRmpCommand& original, SegwayRmpCommand &scaledCommand )
+{
+    scaledCommand.vx = original.vx / config_.maxVelocityScale;
+
+    // alexm: this needs to be debugged, it seems that the turnrate is not scaled the same
+    // way the forward velocidy is.
+//     scaledCommand.w  = original.w  / config_.maxTurnrateScale;
+    scaledCommand.w  = original.w;
+}
+
 int
 RmpUsbDriver::write( const SegwayRmpCommand& command )
 {
+    SegwayRmpCommand scaledCommand;
+    applyScaling( command, scaledCommand );
+
     try {
-        makeMotionCommandPacket( &pkt_, command );
+        makeMotionCommandPacket( &pkt_, scaledCommand );
 
         rmpusbio_->writePacket(&pkt_);
 
@@ -209,6 +223,30 @@ RmpUsbDriver::write( const SegwayRmpCommand& command )
         context_.tracer()->error( ss.str() );
         return -1;
     }
+}
+
+void 
+RmpUsbDriver::applyHardwareLimits( double& forwardSpeed, double& reverseSpeed, 
+                                   double& turnrate, double& turnrateAtMaxSpeed )
+{
+    double forwardSpeedLimit 
+            = config_.maxVelocityScale * (double)RMP_MAX_TRANS_VEL_COUNT / RMP_COUNT_PER_M_PER_S;
+    double reverseSpeedLimit = forwardSpeedLimit;
+    
+    // alexm: this needs to be debugged, it seems that the turnrate is not scaled the same
+    // way the forward velocidy is.
+//     double turnrateLimit
+//             = config_.maxTurnrateScale * (double)RMP_MAX_ROT_VEL_COUNT / RMP_COUNT_PER_RAD_PER_S;
+    double turnrateLimit
+            = (double)RMP_MAX_ROT_VEL_COUNT / RMP_COUNT_PER_RAD_PER_S;
+    // the easiest thing: set turnrate limit at max speed to be the same as at zero speed
+    double turnrateAtMaxSpeedLimit = turnrateLimit;
+
+    // limit software limits to physical limits
+    forwardSpeed = MIN( forwardSpeed, forwardSpeedLimit );
+    reverseSpeed = MIN( reverseSpeed, reverseSpeedLimit );
+    turnrate = MIN( turnrate, turnrateLimit );
+    turnrate = MIN( turnrateAtMaxSpeed, turnrateAtMaxSpeedLimit );
 }
 
 int 

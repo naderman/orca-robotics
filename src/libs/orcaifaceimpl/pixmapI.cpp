@@ -57,7 +57,7 @@ void
 PixMapI::subscribe(const ::PixMapConsumerPrx& subscriber,
                   const Ice::Current& current)
 {
-    context_.tracer()->debug( "PixMapI::subscribe()", 5 );
+    context_.tracer()->debug( "PixMapI::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     IceStorm::QoS qos;
     qos["reliability"] = "twoway";
     try {
@@ -75,7 +75,7 @@ void
 PixMapI::unsubscribe(const ::PixMapConsumerPrx& subscriber,
                     const Ice::Current& current)
 {
-    context_.tracer()->debug( "PixMapI::unsubscribe()", 5 );
+    context_.tracer()->debug( "PixMapI::unsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 

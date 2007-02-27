@@ -88,8 +88,9 @@ void TestComponent::start()
     std::vector<std::string> filenames;
     std::vector<std::string> interfaceTypes;
     std::vector<std::string> formats;
+    std::vector<bool> enableds;
     // this may throw and it will kill us
-    playMaster->getLogs( filenames, interfaceTypes, formats );
+    playMaster->getLogs( filenames, interfaceTypes, formats, enableds );
     if ( filenames.size() != (unsigned int)logMaster->loggerCount() ) {
         cout<<"failed"<<endl<<"log count expected="<<logMaster->loggerCount()<<" got="<<filenames.size()<<endl;
         exit(EXIT_FAILURE);

@@ -21,7 +21,7 @@ using namespace std;
 using namespace orcalog;
 
 
-ReplayMaster::ReplayMaster( const std::string &filename, const orcaice::Context & context )
+ReplayMaster::ReplayMaster( const std::string &filename, const orcaice::Context& context )
     : context_(context)
 {
     // create master file
@@ -46,9 +46,10 @@ ReplayMaster::~ReplayMaster()
 
 
 void
-ReplayMaster::getLogs( std::vector<std::string> & filenames,
-                        std::vector<std::string> & interfaceTypes,
-                        std::vector<std::string> & formats )
+ReplayMaster::getLogs( std::vector<std::string>& filenames,
+                        std::vector<std::string>& interfaceTypes,
+                        std::vector<std::string>& formats,
+                        std::vector<bool>& enableds )
 {
     filenames.clear();
     interfaceTypes.clear();
@@ -58,6 +59,7 @@ ReplayMaster::getLogs( std::vector<std::string> & filenames,
     std::string filename;
     std::string interfaceType;
     std::string format;
+    bool enabled;
     // todo: go to top of the file
 
     while ( std::getline( *file_, line ) ) {
@@ -71,7 +73,7 @@ ReplayMaster::getLogs( std::vector<std::string> & filenames,
             continue;
         }
         
-        orcalog::parseHeaderLine( line, filename, interfaceType, format );
+        orcalog::parseHeaderLine( line, filename, interfaceType, format, enabled );
 
         // add full path to the file name
         filename = dir_ + orcaice::pathDelimeter() + filename;
@@ -79,6 +81,7 @@ ReplayMaster::getLogs( std::vector<std::string> & filenames,
         filenames.push_back( filename );
         interfaceTypes.push_back( interfaceType );
         formats.push_back( format );
+        enableds.push_back( enabled );
 
         context_.tracer()->debug( "Parsed header: file="+filename+" type="+interfaceType+" fmt="+format, 5);
     }
@@ -105,7 +108,7 @@ ReplayMaster::seekDataStart()
 }
 
 int 
-ReplayMaster::getData( int & seconds, int & useconds, int & id, int & index )
+ReplayMaster::getData( int& seconds, int& useconds, int& id, int& index )
 {
     std::string line;
 
@@ -122,7 +125,7 @@ ReplayMaster::getData( int & seconds, int & useconds, int & id, int & index )
         {
             orcalog::parseDataLine( line, seconds, useconds, id, index );
         }
-        catch ( const orcalog::Exception & e )
+        catch ( const orcalog::Exception& e )
         {
             context_.tracer()->warning( "parsing error in master file line: '" + line + "'" );
             continue;
@@ -141,7 +144,7 @@ ReplayMaster::getData( int & seconds, int & useconds, int & id, int & index )
 }
 
 int 
-ReplayMaster::getData( int & seconds, int & useconds, int & id, int & index, int seekSec, int seekUsec )
+ReplayMaster::getData( int& seconds, int& useconds, int& id, int& index, int seekSec, int seekUsec )
 {
 //     cout<<"seeking "<<seekSec<<"s "<<seekUsec<<"us"<<endl;
     IceUtil::Time seekTime = 

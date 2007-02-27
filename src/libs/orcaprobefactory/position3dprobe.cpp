@@ -18,8 +18,8 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-Position3dProbe::Position3dProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver & display,
-                                const orcaice::Context & context )
+Position3dProbe::Position3dProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+                                const orcaice::Context& context )
     : InterfaceProbe(name,display,context)
 {
     id_ = "::orca::Position3d";
@@ -31,7 +31,7 @@ Position3dProbe::Position3dProbe( const orca::FQInterfaceName & name, orcaprobe:
 }
     
 int 
-Position3dProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
+Position3dProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 {
     switch ( index )
     {
@@ -48,7 +48,7 @@ Position3dProbe::loadOperationEvent( const int index, orcacm::OperationData & da
 }
 
 int 
-Position3dProbe::loadGetData( orcacm::OperationData & data )
+Position3dProbe::loadGetData( orcacm::OperationData& data )
 {
     orca::Position3dData result;
     orcacm::ResultHeader res;
@@ -58,95 +58,60 @@ Position3dProbe::loadGetData( orcacm::OperationData & data )
         orca::Position3dPrx derivedPrx = orca::Position3dPrx::checkedCast(prx_);
         result = derivedPrx->getData();
     }
-    catch( const orca::DataNotExistException & e )
+    catch( const orca::DataNotExistException& e )
     {
-        cout<<"data is not ready on the remote interface"<<endl;
-        return 1;
+        orcaprobe::reportException( data, "data is not ready on the remote interface" );
     }
-    catch( const orca::HardwareFailedException & e )
+    catch( const orca::HardwareFailedException& e )
     {
-        cout<<"remote hardware failure"<<endl;
-        return 1;
+        orcaprobe::reportException( data, "remote hardware failure" );
     }
-    catch( const Ice::Exception & e )
+    catch( const Ice::Exception& e )
     {
-        cout<<"ice exception: "<<e<<endl;
-        return 1;
+        stringstream ss;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
     }
-
-    res.name = "data";
-    res.text = orcaice::toString(result);
-    data.results.push_back( res );
     return 0;
 }
 
 int 
-Position3dProbe::loadGetDescription( orcacm::OperationData & data )
+Position3dProbe::loadGetDescription( orcacm::OperationData& data )
 {
-    orcacm::ResultHeader res;
-    res.name = "outcome";
-    res.text = "operation not implemented";
-    data.results.push_back( res );
+    orcaprobe::reportNotImplemented( data );
     return 0;
 }
 
 int 
-Position3dProbe::loadSubscribe( orcacm::OperationData & data )
+Position3dProbe::loadSubscribe( orcacm::OperationData& data )
 {
     Ice::ObjectPtr consumer = this;
     orca::Position3dConsumerPrx callbackPrx =
             orcaice::createConsumerInterface<orca::Position3dConsumerPrx>( context_, consumer );
-
-    orcacm::ResultHeader res;
-
     try
     {
         orca::Position3dPrx derivedPrx = orca::Position3dPrx::checkedCast(prx_);
         derivedPrx->subscribe( callbackPrx );
+        orcaprobe::reportSubscribed( data );
     }
-    catch( const Ice::Exception & e )
+    catch( const Ice::Exception& e )
     {
         stringstream ss;
-        ss << e;
-        res.name = "exception";
-        res.text = ss.str();
-        data.results.push_back( res );
-        return 1;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
     }
-    
-    res.name = "outcome";
-    res.text = "Subscribed successfully";
-    data.results.push_back( res );
     return 0;
 }
 
 int 
-Position3dProbe::loadUnsubscribe( orcacm::OperationData & data )
+Position3dProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-//     try
-//     {
-//         orca::Position3dPrx derivedPrx = orca::Position3dPrx::checkedCast(prx_);
-// //         cout<<"unsub  "<<Ice::identityToString( consumerPrx_->ice_getIdentity() )<<endl;
-//         
-//         orca::Position3dConsumerPrx powerConsumerPrx = orca::Position3dConsumerPrx::uncheckedCast(consumerPrx_);
-// //         cout<<"unsub  "<<Ice::identityToString( powerConsumerPrx->ice_getIdentity() )<<endl;
-//         derivedPrx->unsubscribe( powerConsumerPrx );
-//     }
-//     catch( const Ice::Exception & e )
-//     {
-//         cout<<"caught "<<e<<endl;
-//         return 1;
-//     }
-    
-    orcacm::ResultHeader res;
-    res.name = "outcome";
-    res.text = "operation not implemented";
-    data.results.push_back( res );
+    orcaprobe::reportNotImplemented( data );
     return 0;
 }
 
 void 
-Position3dProbe::setData(const orca::Position3dData & data, const Ice::Current&)
+Position3dProbe::setData(const orca::Position3dData& data, const Ice::Current&)
 {
     std::cout << orcaice::toString(data) << std::endl;
 };

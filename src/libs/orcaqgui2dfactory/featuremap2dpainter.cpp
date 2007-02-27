@@ -31,8 +31,8 @@ namespace orcaqgui {
 
 FeatureMap2dPainter::FeatureMap2dPainter()
     : data_( NULL ),
-      displayFeatureNumbers_(true),
-      displayUncertainty_(true)
+      displayFeatureNumbers_(false),
+      displayUncertainty_(false)
 {
 }
 
@@ -162,30 +162,36 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
         double midpointY = (f.start.y+f.end.y)/2.0;
         painter->translate( midpointX, midpointY );
         
-        if ( displayUncertainty_ )
+        QMatrix m2win = painter->worldMatrix();
+        painter->save();
         {
-            QMatrix m2win = painter->worldMatrix();
-            painter->save();
+            // The direction from start point to end point.
+            double angleStoE = atan2( f.end.y-f.start.y, f.end.x-f.start.x );
+
+            // Face perpendicular to the line, 90deg right of of StoE
+            painter->rotate( RAD2DEG(angleStoE) - 90 );
+
+            if ( displayUncertainty_ )
             {
-                // The direction from start point to end point.
-                double angleStoE = atan2( f.end.y-f.start.y, f.end.x-f.start.x );
-
-                // Face perpendicular to the line, 90deg right of of StoE
-                painter->rotate( RAD2DEG(angleStoE) - 90 );
-
                 // rho uncertainty: lines at the ends
                 double halfLineLength = hypotf( f.end.y-midpointY, f.end.x-midpointX );
                 double uncertaintyLength = 3*f.c.xx;
                 painter->drawLine( QLineF( -uncertaintyLength, -halfLineLength,
-                                            uncertaintyLength, -halfLineLength ) );
+                                           uncertaintyLength, -halfLineLength ) );
                 painter->drawLine( QLineF( -uncertaintyLength, halfLineLength,
-                                            uncertaintyLength, halfLineLength ) );
+                                           uncertaintyLength, halfLineLength ) );
 
                 // alpha uncertainty: a wedge on the back (non-visible) side of the line
                 paintUncertaintyWedge( m2win, painter, featureColour(f.type), 0.0, f.c.yy );
             }
-            painter->restore();
+            else
+            {
+                // A little line on the back (non-visible) side of the line
+                const double BACK_MARKER_LENGTH = 0.3;
+                painter->drawLine( QLineF( 0.0, 0.0, BACK_MARKER_LENGTH, 0.0 ) );
+            }
         }
+        painter->restore();
 
         // Numbers
         if ( displayFeatureNumbers_ )

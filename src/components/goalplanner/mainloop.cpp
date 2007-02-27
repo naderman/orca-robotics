@@ -171,6 +171,28 @@ MainLoop::initNetwork()
     orcaice::createInterfaceWithTag( context_, pathFollowerObj, "PathFollower2d" );
 }
 
+void MainLoop::stopRobot()
+{            
+    try 
+    {
+        context_.tracer()->debug("Stopping robot");
+        PathFollower2dData dummyPath;
+        bool activateNow = true;
+        localNavPrx_->setData( dummyPath, activateNow );
+
+        // consumers should see what I send to localnav for proxy functionality
+        pathPublisher_->setData( dummyPath );
+    }
+    catch ( Ice::NotRegisteredException & )
+    {
+        stringstream ss;
+        ss << "Problem setting data on pathfollower2d proxy";
+        context_.tracer()->warning( ss.str() );     
+        throw;
+    }
+}
+
+
 void 
 MainLoop::run()
 {
@@ -201,6 +223,13 @@ MainLoop::run()
                 if (ret==0) break;
             }
             
+            // special case 'stop': we received an empty path
+            if (incomingPath.path.size()==0) 
+            {
+                stopRobot();
+                continue;
+            }
+
             // wait for a valid localisation
             context_.tracer()->info("Waiting for single hypothesis localisation");
             while( isActive() )
@@ -263,8 +292,14 @@ MainLoop::run()
             }
             else
             {
+                assert( computedPath.path.size() > 0 );
+                
                 // send out result to localnav, assemble packet first
                 PathFollower2dData outgoingPath;
+                // get rid of first waypoint, it's the robot's location which is not needed
+                vector<orca::Waypoint2d>::iterator it = computedPath.path.begin();
+                computedPath.path.erase(it);
+                
                 outgoingPath.path = computedPath.path;
                 context_.tracer()->debug("Sending out the resulting path to localnav.");
                 try {
@@ -299,18 +334,21 @@ MainLoop::run()
             stringstream ss;
             ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
             context_.tracer()->error( ss.str() );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }
         catch ( const orcaice::Exception & e )
         {
             stringstream ss;
             ss << "unexpected (local?) orcaice exception: " << e.what();
             context_.tracer()->error( ss.str() );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }
         catch ( const Ice::Exception & e )
         {
             stringstream ss;
             ss << "unexpected Ice exception: " << e;
             context_.tracer()->error( ss.str() );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }
         catch ( const std::exception & e )
         {
@@ -318,10 +356,12 @@ MainLoop::run()
             stringstream ss;
             ss << "unexpected std exception: " << e.what();
             context_.tracer()->error( ss.str() );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }
         catch ( ... )
         {
             context_.tracer()->error( "unexpected exception from somewhere.");
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }
             
     } // end of big while loop

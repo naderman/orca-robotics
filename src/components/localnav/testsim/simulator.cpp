@@ -206,7 +206,7 @@ Simulator::fillPipes()
 }
 
 void 
-Simulator::setCommand( orca::VelocityControl2dData &cmd )
+Simulator::setCommand( const orca::VelocityControl2dData &cmd )
 {
     cout<<"TRACE(simulator.cpp): iteration " << iterationNum_ << ": pose_: " << pose_ << endl;
 

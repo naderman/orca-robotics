@@ -26,6 +26,7 @@ class GuiElement;
 class GuiElementFactory;
 class OrcaGuiUserEvent;
 class GuiElementView;
+class PlatformColor;
 
 class GuiElementModel : public QAbstractTableModel
 {
@@ -95,11 +96,7 @@ private:
     bool doesPlatformExist( QString &platformName );
     bool doesInterfaceExist( const QStringList& proxyStrList, int numElements );
     
-    QColor generateRandomColor();
-    QMap<QString, QColor> colorMap_;
-    unsigned int colorCounter_;
-    std::vector<QColor> colorVector_;
-    unsigned int seed_;
+    PlatformColor *platformColor_;
     
     QString platformInFocus_;
     GuiElementView* view_;

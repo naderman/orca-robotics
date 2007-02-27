@@ -43,8 +43,8 @@ LogMaster::LogMaster( const std::string &filename, const orcaice::Context & cont
     (*file_) << "# Orca version   : " << orcaice::orcaVersion() << endl;
     (*file_) << "# " << endl;
     (*file_) << "# == Interfaces / Logs Legend ==" << endl;
-    (*file_) << "# interface_name" << endl;
-    (*file_) << "# log_filename interface_type log_format" << endl;
+    (*file_) << "# [interface name]" << endl;
+    (*file_) << "# [log filename] [interface type] [log format] [replay enabled]" << endl;
     (*file_) << "# " << endl;
     (*file_) << "# == Interfaces / Logs ==" << endl;
 }
@@ -122,8 +122,9 @@ LogMaster::addLog( Logger* logger,
     // this is just a comment 
     (*file_) << "# " << proxyString << endl;
 
-    // this will be used replay this log back
-    (*file_) << orcalog::headerLine( filename, interfaceType, format ) << endl;
+    // this will be used replay this log back, we enable play back by default
+    bool enabled = true;
+    (*file_) << orcalog::headerLine( filename, interfaceType, format, enabled ) << endl;
 
     // increment unique logger id
     ++logCounter_;

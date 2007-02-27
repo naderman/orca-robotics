@@ -18,9 +18,9 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-GpsProbe::GpsProbe( const orca::FQInterfaceName & name,
-                    orcaprobe::DisplayDriver & display,
-                    const orcaice::Context & context )
+GpsProbe::GpsProbe( const orca::FQInterfaceName& name,
+                    orcaprobe::DisplayDriver& display,
+                    const orcaice::Context& context )
     : InterfaceProbe(name,display,context)
 {
     id_ = "::orca::Gps";
@@ -31,14 +31,18 @@ GpsProbe::GpsProbe( const orca::FQInterfaceName & name,
     addOperation( "getMapGridData" );
     addOperation( "subscribe" );
     addOperation( "unsubscribe" );
-//     addOperation( "subscribeForMapGrid" );
-//     addOperation( "unsubscribeForMapGrid" );
-//     addOperation( "subscribeForTime" );
-//     addOperation( "unsubscribeForTime" );
+    addOperation( "subscribeForMapGrid" );
+    addOperation( "unsubscribeForMapGrid" );
+    addOperation( "subscribeForTime" );
+    addOperation( "unsubscribeForTime" );
+
+    Ice::ObjectPtr consumer = this;
+    callbackGpsMapGridPrx_ =
+            orcaice::createConsumerInterface<orca::GpsMapGridConsumerPrx>( context_, consumer );
 }
     
 int 
-GpsProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
+GpsProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 {
     switch ( index )
     {
@@ -54,207 +58,206 @@ GpsProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
         return loadSubscribe( data );
     case orcaprobe::UserIndex+5 :
         return loadUnsubscribe( data );
-//     case orcaprobe::UserIndex+5 :
-//         return loadSubscribeForMapGrid( data );
-//     case orcaprobe::UserIndex+6 :
-//         return loadUnsubscribeForMapGrid( data );
-//     case orcaprobe::UserIndex+7 :
-//         return loadSubscribeForTime( data );
-//     case orcaprobe::UserIndex+8 :
-//         return loadUnsubscribeForTime( data );
+    case orcaprobe::UserIndex+6 :
+        return loadSubscribeForMapGrid( data );
+    case orcaprobe::UserIndex+7 :
+        return loadUnsubscribeForMapGrid( data );
+    case orcaprobe::UserIndex+8 :
+        return loadSubscribeForTime( data );
+    case orcaprobe::UserIndex+9 :
+        return loadUnsubscribeForTime( data );
     }
     return 1;
 }
 
 int 
-GpsProbe::loadGetDescription( orcacm::OperationData & data )
+GpsProbe::loadGetDescription( orcacm::OperationData& data )
 {
     orca::GpsDescription result;
-    orcacm::ResultHeader res;
     
     try
     {
         orca::GpsPrx derivedPrx = orca::GpsPrx::checkedCast(prx_);
         result = derivedPrx->getDescription();
+        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
     }
-    catch( const orca::DataNotExistException & e )
+    catch( const orca::DataNotExistException& e )
     {
-        cout<<"data is not ready on the remote interface"<<endl;
-        return 1;
+        orcaprobe::reportException( data, "data is not ready on the remote interface" );
     }
-    catch( const orca::HardwareFailedException & e )
+    catch( const orca::HardwareFailedException& e )
     {
-        cout<<"remote hardware failure"<<endl;
-        return 1;
+        orcaprobe::reportException( data, "remote hardware failure" );
     }
-    catch( const Ice::Exception & e )
+    catch( const Ice::Exception& e )
     {
-        cout<<"ice exception: "<<e<<endl;
-        return 1;
+        stringstream ss;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
     }
 
-    res.name = "data";
-    res.text = orcaice::toString(result);
-    data.results.push_back( res );
     return 0;
 }
 
 int 
-GpsProbe::loadGetData( orcacm::OperationData & data )
+GpsProbe::loadGetData( orcacm::OperationData& data )
 {
     orca::GpsData result;
-    orcacm::ResultHeader res;
     
     try
     {
         orca::GpsPrx derivedPrx = orca::GpsPrx::checkedCast(prx_);
         result = derivedPrx->getData();
+        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
     }
-    catch( const orca::DataNotExistException & e )
+    catch( const orca::DataNotExistException& e )
     {
-        cout<<"data is not ready on the remote interface"<<endl;
-        return 1;
+        orcaprobe::reportException( data, "data is not ready on the remote interface" );
     }
-    catch( const orca::HardwareFailedException & e )
+    catch( const orca::HardwareFailedException& e )
     {
-        cout<<"remote hardware failure"<<endl;
-        return 1;
+        orcaprobe::reportException( data, "remote hardware failure" );
     }
-    catch( const Ice::Exception & e )
+    catch( const Ice::Exception& e )
     {
-        cout<<"ice exception: "<<e<<endl;
-        return 1;
+        stringstream ss;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
     }
 
-    res.name = "data";
-    res.text = orcaice::toString(result);
-    data.results.push_back( res );
     return 0;
 }
 
 int 
-GpsProbe::loadGetTimeData( orcacm::OperationData & data )
+GpsProbe::loadGetTimeData( orcacm::OperationData& data )
 {
     orca::GpsTimeData result;
-    orcacm::ResultHeader res;
     
     try
     {
         orca::GpsPrx derivedPrx = orca::GpsPrx::checkedCast(prx_);
         result = derivedPrx->getTimeData();
+        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
     }
-    catch( const orca::DataNotExistException & e )
+    catch( const orca::DataNotExistException& e )
     {
-        cout<<"data is not ready on the remote interface"<<endl;
-        return 1;
+        orcaprobe::reportException( data, "data is not ready on the remote interface" );
     }
-    catch( const orca::HardwareFailedException & e )
+    catch( const orca::HardwareFailedException& e )
     {
-        cout<<"remote hardware failure"<<endl;
-        return 1;
+        orcaprobe::reportException( data, "remote hardware failure" );
     }
-    catch( const Ice::Exception & e )
+    catch( const Ice::Exception& e )
     {
-        cout<<"ice exception: "<<e<<endl;
-        return 1;
+        stringstream ss;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
     }
 
-    res.name = "data";
-    res.text = orcaice::toString(result);
-    data.results.push_back( res );
     return 0;
 }
 
 int 
-GpsProbe::loadGetMapGridData( orcacm::OperationData & data )
+GpsProbe::loadGetMapGridData( orcacm::OperationData& data )
 {
     orca::GpsMapGridData result;
-    orcacm::ResultHeader res;
     
     try
     {
         orca::GpsPrx derivedPrx = orca::GpsPrx::checkedCast(prx_);
         result = derivedPrx->getMapGridData();
+        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
     }
-    catch( const orca::DataNotExistException & e )
+    catch( const orca::DataNotExistException& e )
     {
-        cout<<"data is not ready on the remote interface"<<endl;
-        return 1;
+        orcaprobe::reportException( data, "data is not ready on the remote interface" );
     }
-    catch( const orca::HardwareFailedException & e )
+    catch( const orca::HardwareFailedException& e )
     {
-        cout<<"remote hardware failure"<<endl;
-        return 1;
+        orcaprobe::reportException( data, "remote hardware failure" );
     }
-    catch( const Ice::Exception & e )
+    catch( const Ice::Exception& e )
     {
-        cout<<"ice exception: "<<e<<endl;
-        return 1;
+        stringstream ss;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
     }
 
-    res.name = "data";
-    res.text = orcaice::toString(result);
-    data.results.push_back( res );
     return 0;
 }
 
 int 
-GpsProbe::loadSubscribe( orcacm::OperationData & data )
+GpsProbe::loadSubscribe( orcacm::OperationData& data )
 {
-    Ice::ObjectPtr consumer = this;
-    orca::GpsConsumerPrx callbackPrx =
-            orcaice::createConsumerInterface<orca::GpsConsumerPrx>( context_, consumer );
+    orcaprobe::reportNotImplemented( data );
+    return 0;
+}
 
-    orcacm::ResultHeader res;
+int 
+GpsProbe::loadUnsubscribe( orcacm::OperationData& data )
+{    
+    orcaprobe::reportNotImplemented( data );
+    return 0;
+}
 
+int 
+GpsProbe::loadSubscribeForMapGrid( orcacm::OperationData& data )
+{    
     try
     {
         orca::GpsPrx derivedPrx = orca::GpsPrx::checkedCast(prx_);
-        derivedPrx->subscribe( callbackPrx );
+        derivedPrx->subscribeForMapGrid( callbackGpsMapGridPrx_ );
+        orcaprobe::reportSubscribed( data );
+
+        // save the op data structure so we can use it when the data arrives
+        subscribeOperationData_ = data;
     }
-    catch( const Ice::Exception & e )
+    catch( const Ice::Exception& e )
     {
         stringstream ss;
-        ss << e;
-        res.name = "exception";
-        res.text = ss.str();
-        data.results.push_back( res );
-        return 1;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
     }
-    
-    res.name = "outcome";
-    res.text = "Subscribed successfully";
-    data.results.push_back( res );
     return 0;
 }
 
 int 
-GpsProbe::loadUnsubscribe( orcacm::OperationData & data )
-{
-//     try
-//     {
-//         orca::GpsPrx derivedPrx = orca::GpsPrx::checkedCast(prx_);
-// //         cout<<"unsub  "<<Ice::identityToString( consumerPrx_->ice_getIdentity() )<<endl;
-//         
-//         orca::GpsConsumerPrx powerConsumerPrx = orca::GpsConsumerPrx::uncheckedCast(consumerPrx_);
-// //         cout<<"unsub  "<<Ice::identityToString( powerConsumerPrx->ice_getIdentity() )<<endl;
-//         derivedPrx->unsubscribe( powerConsumerPrx );
-//     }
-//     catch( const Ice::Exception & e )
-//     {
-//         cout<<"caught "<<e<<endl;
-//         return 1;
-//     }
-    
-    orcacm::ResultHeader res;
-    res.name = "outcome";
-    res.text = "operation not implemented";
-    data.results.push_back( res );
+GpsProbe::loadUnsubscribeForMapGrid( orcacm::OperationData& data )
+{    
+    try
+    {
+        orca::GpsPrx derivedPrx = orca::GpsPrx::checkedCast(prx_);
+        derivedPrx->unsubscribeForMapGrid( callbackGpsMapGridPrx_ );
+        orcaprobe::reportUnsubscribed( data );
+    }
+    catch( const Ice::Exception& e )
+    {
+        stringstream ss;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
+    }
+    return 0;
+}
+
+int 
+GpsProbe::loadSubscribeForTime( orcacm::OperationData& data )
+{    
+    orcaprobe::reportNotImplemented( data );
+    return 0;
+}
+
+int 
+GpsProbe::loadUnsubscribeForTime( orcacm::OperationData& data )
+{    
+    orcaprobe::reportNotImplemented( data );
     return 0;
 }
 
 void 
-GpsProbe::setData(const orca::GpsData & data, const Ice::Current&)
-{
-    std::cout << orcaice::toString(data) << std::endl;
+GpsProbe::setData(const orca::GpsMapGridData& result, const Ice::Current&)
+{    
+    subscribeOperationData_.results.clear();
+    orcaprobe::reportResult( subscribeOperationData_, "data", orcaice::toString(result) );
+    display_.setOperationData( subscribeOperationData_ );
 };
+

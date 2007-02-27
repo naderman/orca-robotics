@@ -442,7 +442,7 @@ std::string
 toString( const orca::TimeOfDay& obj )
 {
     std::ostringstream s;
-    s << "TimeOfDay(h,m,s): " << obj.hours << ", " << obj.minutes << ", " << obj.seconds;
+    s << "TimeOfDay(h:m:s): " << obj.hours << ":" << obj.minutes << ":" << obj.seconds;
     return s.str();
 }
 
@@ -556,20 +556,33 @@ toString( const orca::GpsDescription& obj )
 std::string 
 toString( const orca::GpsData&  obj )
 {
+    int positionType = 0;
+    if (obj.positionType==orca::GpsPositionTypeNotAvailable) {
+        positionType = 0;
+    } else if (obj.positionType==orca::GpsPositionTypeAutonomous) {
+        positionType = 1;
+    } else if (obj.positionType==orca::GpsPositionTypeDifferential) {
+        positionType = 2;
+    }
+    
     std::ostringstream s;
-    s << toString(obj.timeStamp) 
-        << " UTC: " << toString(obj.utcTime) << endl
-	<< " Gps (latitude,longitude,altitude) : ("
+    s   << toString(obj.timeStamp) <<"\n"
+        << " UTC: " << toString(obj.utcTime) << "\n"
+        << " Gps (latitude,longitude,altitude) : ("
         << obj.latitude << ","
-	<< obj.longitude << ","
-	<< obj.altitude << ")" << endl
+        << obj.longitude << ","
+        << obj.altitude << ")" << "\n"
+        << " Gps (horizontalPositionError,verticalPositionError) : ("
+        << std::setprecision(6)
+        << obj.horizontalPositionError<< ","
+        << obj.verticalPositionError << "\n"
         << " Gps (heading,speed,climbrate) : ("
         << obj.heading << ","
-	<< obj.speed << ","
-	<< obj.climbRate << ")" << endl
+    	<< obj.speed << ","
+	    << obj.climbRate << ")" << "\n"
         << " Gps (satellites,positionType,geoidalSeparation) : ("
-	<< obj.satellites << ","
-	<< obj.positionType << ","
+	    << obj.satellites << ","
+	    << positionType << ","
         << obj.geoidalSeparation << ")";
 
     return s.str();
@@ -578,20 +591,34 @@ toString( const orca::GpsData&  obj )
 std::string 
 toString( const orca::GpsMapGridData& obj )
 {
+    int positionType = 0;
+    if (obj.positionType==orca::GpsPositionTypeNotAvailable) {
+        positionType = 0;
+    } else if (obj.positionType==orca::GpsPositionTypeAutonomous) {
+        positionType = 1;
+    } else if (obj.positionType==orca::GpsPositionTypeDifferential) {
+        positionType = 2;
+    }
+    
     std::ostringstream s;
-    s << toString(obj.timeStamp) 
-        << " UTC: " << toString(obj.utcTime) << endl
-	<< " Gps (northing,easting,altitude) : ("
+    s   << toString(obj.timeStamp) <<"\n"
+        << " UTC: " << toString(obj.utcTime) << "\n"
+        << " Gps (northing,easting,altitude) : ("
+        << std::setprecision(12)
         << obj.northing << ","
-	<< obj.easting << ","
-	<< obj.altitude << ")" << endl
+	    << obj.easting << ","
+	    << obj.altitude << ")" << "\n"
+        << " Gps (horizontalPositionError,verticalPositionError) : ("
+        << std::setprecision(6)
+        << obj.horizontalPositionError<< ","
+        << obj.verticalPositionError << "\n"
         << " Gps (heading,speed,climbrate) : ("
         << obj.heading << ","
-	<< obj.speed << ","
-	<< obj.climbRate << ")" << endl
-	<< " Gps (zone, positionType) : ("
+	    << obj.speed << ","
+	    << obj.climbRate << ")" << "\n"
+	    << " Gps (zone, positionType) : ("
         << obj.zone << ","
-	<< obj.positionType << ")";
+	    << positionType << ")";
 
     return s.str();
 }
@@ -600,7 +627,7 @@ std::string
 toString( const orca::GpsTimeData&  obj )
 {
     std::ostringstream s;
-    s << toString(obj.timeStamp) 
+    s << toString(obj.timeStamp) <<"\n"
       << " UTC: " << toString(obj.utcDate) << " " << toString(obj.utcTime);
     return s.str();
 }
@@ -850,6 +877,15 @@ toString( const orca::Localise2dData& obj )
           << h.cov.yt << ","
           << h.cov.tt*180.0/M_PI << "deg)" << endl;
     }
+    return s.str();
+}
+
+std::string 
+toString( const orca::Localise2dDescription& obj )
+{
+    std::ostringstream s;
+    s << toString(obj.timeStamp)
+      << "  offset: " << orcaice::toString(obj.offset) << endl;
     return s.str();
 }
 

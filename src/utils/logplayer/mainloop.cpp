@@ -314,5 +314,5 @@ MainLoop::run()
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
     
-    context_.tracer()->debug( "Exiting MainLoop thread", 5 );
+    context_.tracer()->debug( "Exiting MainLoop thread", 2 );
 }

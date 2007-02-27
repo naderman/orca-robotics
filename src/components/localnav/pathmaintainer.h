@@ -67,7 +67,8 @@ public:
 private: 
 
     bool waypointReached( const orca::Waypoint2d &wp,
-                          const orcanavutil::Pose &pose );
+                          const orcanavutil::Pose &pose,
+                          double timeNow );
     void  incrementWpIndex();
 
     // How long since path activation

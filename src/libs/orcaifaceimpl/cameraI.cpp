@@ -69,7 +69,7 @@ CameraI::getDescription(const ::Ice::Current& ) const
 void 
 CameraI::subscribe(const ::orca::CameraConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    context_.tracer()->debug( "CameraI::subscribe()", 5 );
+    context_.tracer()->debug( "CameraI::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     IceStorm::QoS qos;
     qos["reliability"] = "twoway";
     try {
@@ -86,7 +86,7 @@ CameraI::subscribe(const ::orca::CameraConsumerPrx& subscriber, const ::Ice::Cur
 void 
 CameraI::unsubscribe(const ::orca::CameraConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    context_.tracer()->debug( "CameraI::unsubscribe()", 5 );
+    context_.tracer()->debug( "CameraI::unsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 

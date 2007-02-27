@@ -17,6 +17,8 @@
 #include <orcaprobe/browserdriver.h>
 #include <orcaprobe/displaydriver.h>
 
+#include <orcaprobe/utils.h>
+
 // #include <orcaprobe/exceptions.h>
 
 #endif

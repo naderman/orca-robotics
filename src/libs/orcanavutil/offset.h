@@ -69,7 +69,7 @@ namespace orcanavutil {
 
     //!
     //! We have some path, defined by an offset.
-    //! This removes a chunk of it fron the front.
+    //! This removes a chunk of it from the front.
     //!
     void subtractInitialOffset( double &totalOffsetX,
                                 double &totalOffsetY,
@@ -80,7 +80,7 @@ namespace orcanavutil {
 
     //!
     //! We have some path, defined by an offset.
-    //! This removes a chunk of it fron the front.
+    //! This removes a chunk of it from the front.
     //!
     void subtractInitialOffset( double  totalOffsetX,
                                 double  totalOffsetY,

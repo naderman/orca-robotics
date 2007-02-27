@@ -7,7 +7,7 @@ Requires.Generic.DefaultProxy=drivebicycle@local/car
 Requires.Generic.DefaultProxy=velocitycontrol2d@local/robot2d
 
 # configuration
-Config.RepeatInterval.Default=0.2
+Config.RepeatInterval.Default=0.1
 
 Config.DisplayDriver.Comment=valid drivers are { term-iostream, term-ncurses }
 Config.DisplayDriver.Default=term-iostream

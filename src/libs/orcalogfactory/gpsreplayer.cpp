@@ -24,8 +24,6 @@ GpsReplayer::GpsReplayer( const std::string      &format,
                           const orcaice::Context &context )
     : orcalog::Replayer("Gps", format, filename, context)
 {
-    checkDescriptionFile();
-
     // check that we support this format
     if ( format_!="ice" ) //&& format_!="ascii" )
     {
@@ -56,23 +54,9 @@ GpsReplayer::getProvidedTopicLocal( const orcaice::Context & context, const std:
     return fqTName;
 }
 
-void
-GpsReplayer::checkDescriptionFile()
-{
-    string prefix = context_.tag() + ".Config.Gps.";
-   
-    // initialize 
-    orcaice::setInit( descr_.offset );
-    orcaice::setInit( descr_.antennaOffset );
-
-    haveConfigOffset_ = orcaice::getPropertyAsFrame2d( context_.properties(), prefix+"Offset", descr_.offset );
-}
-
 void 
 GpsReplayer::initInterfaces()
 {
-    cout << "INFO(gpsreplayer.cpp): createInterface" << endl;
-
     topic_ = orcaice::connectToTopicWithString( context_, gpsConsumerPrx_, interfaceName_ );
     
     string topicNameTime = orcaice::toString( 
@@ -216,7 +200,7 @@ GpsReplayer::initDescription()
         throw orcalog::FormatNotSupportedException( ERROR_INFO, "Unknown format: "+format_ );
     }
 
-    cout << "GpsDescription: " << orcaice::toString( descr_ ) << endl;
+//     cout << "GpsDescription: " << orcaice::toString( descr_ ) << endl;
 }
 
 void 
@@ -268,23 +252,29 @@ GpsReplayer::replayData( int index, bool isTest )
 void 
 GpsReplayer::loadHeaderIce()
 {
-    orca::GpsDescription localDescription;
+    orca::GpsDescription description;
     
     orcalog::IceReadHelper helper( context_.communicator(), file_ );
-    ice_readGpsDescription( helper.stream_, localDescription );
+    ice_readGpsDescription( helper.stream_, description );
     helper.read();
-
-    // if there was no offset specified in the cfg file, take logged offset
-    if (haveConfigOffset_!=0) {
-        descr_.offset= localDescription.offset;
-    }
     
-    // if there was no antenna offset specified in the cfg file, take logged antenna offset
-    if (haveConfigOffset_!=0) {
-        descr_.offset= localDescription.offset;
-    }
+    // if there are configuration parameters in the logplayer config file,
+    // they'll override the logged ones
+    string prefix = context_.tag() + ".Config.Gps.";
 
-    gpsDescriptionBuffer_.push( descr_ );
+    orca::Frame2d offset;
+    orca::Frame3d antennaOffset;
+    int ret;
+
+    ret = orcaice::getPropertyAsFrame2d( context_.properties(), prefix+"Offset", offset );
+    if (ret==0) description.offset = offset;
+    
+    ret = orcaice::getPropertyAsFrame3d( context_.properties(), prefix+"AntennaOffset", antennaOffset );
+    if (ret==0) description.antennaOffset = antennaOffset;
+    
+    cout << "INFO(gpsreplayer.cpp): GpsDescription: " << orcaice::toString( description ) << endl;
+    
+    gpsDescriptionBuffer_.push( description );
 }
 
 void 

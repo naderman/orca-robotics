@@ -18,8 +18,8 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-CpuProbe::CpuProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver & display,
-                                const orcaice::Context & context )
+CpuProbe::CpuProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+                                const orcaice::Context& context )
     : InterfaceProbe(name,display,context)
 {
     id_ = "::orca::Cpu";
@@ -29,52 +29,52 @@ CpuProbe::CpuProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver
 }
 
 int 
-CpuProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
+CpuProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 {
     switch ( index )
     {
     case orcaprobe::UserIndex :
-        return loadGetInfo();
+        return loadGetInfo( data );
     case orcaprobe::UserIndex+1 :
-        return loadGetData();
+        return loadGetData( data );
     }
     return 1;
 }
 
 int 
-CpuProbe::loadGetInfo()
+CpuProbe::loadGetInfo( orcacm::OperationData& data )
 {
-    orca::CpuInfo data;
-    
+    orca::CpuInfo result;
     try
     {
         orca::CpuPrx derivedPrx = orca::CpuPrx::checkedCast(prx_);
-        data = derivedPrx->getInfo();
+        result = derivedPrx->getInfo();
+        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
     }
-    catch( const Ice::Exception & e )
+    catch( const Ice::Exception& e )
     {
-        return 1;
+        stringstream ss;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
     }
-
-    cout<<orcaice::toString(data)<<endl;
     return 0;
 }
 
 int 
-CpuProbe::loadGetData()
+CpuProbe::loadGetData( orcacm::OperationData& data )
 {
-    orca::CpuData data;
-    
+    orca::CpuData result;
     try
     {
         orca::CpuPrx derivedPrx = orca::CpuPrx::checkedCast(prx_);
-        data = derivedPrx->getData();
+        result = derivedPrx->getData();
+        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
     }
-    catch( const Ice::Exception & e )
+    catch( const Ice::Exception& e )
     {
-        return 1;
+        stringstream ss;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
     }
-
-    cout<<orcaice::toString(data)<<endl;
     return 0;
 }

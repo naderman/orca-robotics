@@ -121,7 +121,6 @@ void paintWaypoint( QPainter *p,
                     float distanceTolerance, 
                     int headingTolerance );
 
-
 }
 
 #endif

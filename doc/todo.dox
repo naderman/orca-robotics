@@ -54,21 +54,29 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Updated interfaces
 @par Updated components
 
-- Probe
-    - fixed bug with wrong max number of options (alex m)
+- SegwayRmp
+    - Added hardware speed limits, set in hardware driver (alex m/b)
+    - the RmpUsb driver now corrects for segway's built in speed scaling factor, 
+so that segway will actually drive at the speed specified. (alex m/b)
 
 @par Updated utilities
+
 - Orcaview2d
     - supports wifi now (Tobi)
-
 - Probe
-  - Gps module added (Alex B)
+    - fixed bug with wrong max number of options (alex m)
+    - added support for Gps, Localise2d interfaces (alex b/m)
+- Logger
+    - optinally, tolerates unsupported inerface types and formats. also allows
+disabling replay. (alex m)
 
 @par Updated libraries
 
+- OrcaIce
+    - fixed bug with Tracer not calculating total verbosity (alex m)
 - OrcaNavUtil (Tobi)
     - added MGA/latitude/longitude functions
-- orcalogfactory (Tobi)
+- OrcaLogFactory (Tobi)
     - fixed GPS replay bug
     - added wifi for replaying
 

@@ -46,6 +46,15 @@ private:
     double rangeSd_;
     double bearingSd_;
 
+    // reject observations of lines with near-zero slope
+    bool rejectLikelyGroundObservations_;
+
+    double linePFalsePositive_;
+    double linePFalsePositivePossibleGround_;
+    double linePTruePositive_;
+
+    orcaice::Context context_;
+
     // Not used at the moment
     // bool extractPossibleCorners( const orca::PolarFeature2dDataPtr & featureDataPtr );
     

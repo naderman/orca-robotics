@@ -98,7 +98,9 @@ public:
         AnyTrace,
         //! Number of trace types
         NumberOfTraceTypes,
-        //! Other (not used by orcaice tracers)
+        //! Other 
+        //! (not used by orcaice tracers, so it's verbosity level is not stored in
+        //! our matrix, so it's safe to have it larger than NumberOfTraceTypes)
         OtherTrace
     };
 

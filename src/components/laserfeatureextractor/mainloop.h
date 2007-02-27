@@ -65,6 +65,12 @@ private:
 
     // Proxy for incoming scans
     orcaice::PtrProxy<orca::LaserScanner2dDataPtr> laserDataProxy_;
+
+    // If the driver's fake, don't need to make external conenctions.
+    bool fakeDriver_;
+
+    // Consumers
+    orca::RangeScanner2dConsumerPrx laserCallbackPrx_;
     
     orcaice::Context context_;
 

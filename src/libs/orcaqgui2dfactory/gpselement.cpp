@@ -9,11 +9,15 @@
  */
 
 #include <iostream>
+
 #include <QPainter>
 #include <QString>
 
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
+#include <orcanavutil/orcanavutil.h>
+
+#include <orcaqgui/ihumanmanager.h>
 
 #include "gpselement.h"
 
@@ -23,25 +27,41 @@ using namespace orcaqgui;
 
 GpsElement::GpsElement( const orcaice::Context  &context,
                         const std::string       &interfaceTag,
-                        int                     timeoutMs )
-    : timeoutMs_(timeoutMs),
-      gpsListener_(context,interfaceTag),
+                        IHumanManager           *humanManager,
+                        int                      timeoutMs )
+    : gpsListener_(context,interfaceTag),
       context_(context),
-      displayGps_(true)
+      humanManager_(humanManager),
+      timeoutMs_(timeoutMs),
+      isConnected_(false),
+      gotDescription_(false),
+      displayGps_(true),
+      x_(0.0),
+      y_(0.0),
+      theta_(0.0)
 {
-    gpsListener_.connect();
-    
-    // get gps specific properties from the cfg file   
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag();
-    prefix += ".Config.";
-
-    orcaice::setInit( gpsOrigin_ );
-    orcaice::getPropertyAsCartesianPoint( prop, prefix+"Gps.Origin", gpsOrigin_ );
-
-    stringstream ss; ss << "GpsElement: GPS Origin: " << orcaice::toString( gpsOrigin_ );
-    context_.tracer()->info( ss.str() );
 }  
+
+void
+GpsElement::actionOnConnection()
+{
+    if (!isConnected_) return;
+    
+    try
+    {
+        const orca::GpsPrx& prx = gpsListener_.proxy();
+        orca::GpsDescription descr = prx->getDescription();
+        gpsOff_ = descr.offset;
+    }
+    catch ( ... )
+    {
+        humanManager_->showStatusMsg(Warning, "Problem getting description from GPS interface. Will try again later.");
+        return;
+    }
+    
+    humanManager_->showStatusMsg(Information, "Got GPS description");
+    gotDescription_ = true;    
+}
         
 bool
 GpsElement::needToUpdate()
@@ -52,6 +72,16 @@ GpsElement::needToUpdate()
         return true;
     }
     
+    if ( !isConnected_ )
+    {
+        if ( gpsListener_.connect() == 0 )
+        {
+            isConnected_ = true;
+            actionOnConnection();
+        }
+        return false;
+    }
+    
     // The buffer is empty.  How long since we last received something?
     if ( timeoutMs_ != -1 && gpsListener_.msSinceReceipt() >= timeoutMs_ ) 
     {
@@ -59,7 +89,7 @@ GpsElement::needToUpdate()
         cout << "TRACE(gpselement.cpp): Haven't received anything in gpselement for " << gpsListener_.msSinceReceipt()  << "ms" << endl;
         gpsPainter_.clear();
         gpsListener_.resetTimer();
-        gpsListener_.connect();
+        if ( gpsListener_.connect() == 0 ) actionOnConnection();
 
     }
     return false;
@@ -68,7 +98,7 @@ GpsElement::needToUpdate()
 void
 GpsElement::update()
 {
-    if ( !needToUpdate() )
+    if ( !needToUpdate() || !gotDescription_ )
     {
         return;
     }
@@ -79,14 +109,12 @@ GpsElement::update()
     {
         gpsListener_.buffer().getAndPop( data );
         
-        x_ = data.easting - gpsOrigin_.x;
-        y_ = data.northing - gpsOrigin_.y;
-        
-        theta_ = data.heading;
+        orcanavutil::transformPoint2d( data.easting, data.northing, gpsOff_.p.x, gpsOff_.p.y, gpsOff_.o, x_, y_);
+        theta_ = gpsOff_.o - data.heading + DEG2RAD(90.0);
         
         if ( displayGps_ )
         {
-            gpsPainter_.setData( x_, y_, theta_ );
+            gpsPainter_.setData( x_, y_, theta_, data.horizontalPositionError );
         }
 
         int verbosity = context_.tracer()->verbosity( orcaice::Tracer::DebugTrace,
@@ -96,7 +124,7 @@ GpsElement::update()
             stringstream ss;
             ss << "GpsElement: " << endl
                << "  data:       " << orcaice::toString( data ) << endl
-               << "  gpsOrigin_: " << orcaice::toString( gpsOrigin_ ) << endl
+               << "  gpsOffset_: " << orcaice::toString( gpsOff_ ) << endl
                << "  x_,y_:      " << x_ << ", " << y_;
             context_.tracer()->debug( ss.str(), 5 );
         }

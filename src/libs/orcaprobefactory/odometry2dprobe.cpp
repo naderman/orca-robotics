@@ -18,9 +18,9 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-Odometry2dProbe::Odometry2dProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver & display,
-                                const orcaice::Context & context )
-    : InterfaceProbe(name,display,context)
+Odometry2dProbe::Odometry2dProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+                                const orcaice::Context& context ) :
+    InterfaceProbe(name,display,context)
 {
     id_ = "::orca::Odometry2d";
     
@@ -28,10 +28,13 @@ Odometry2dProbe::Odometry2dProbe( const orca::FQInterfaceName & name, orcaprobe:
     addOperation( "getData" );
     addOperation( "subscribe" );
     addOperation( "unsubscribe" );
+
+    Ice::ObjectPtr consumer = this;
+    callbackPrx_ = orcaice::createConsumerInterface<orca::Odometry2dConsumerPrx>( context_, consumer );
 }
     
 int 
-Odometry2dProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
+Odometry2dProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 {
     switch ( index )
     {
@@ -48,118 +51,99 @@ Odometry2dProbe::loadOperationEvent( const int index, orcacm::OperationData & da
 }
 
 int 
-Odometry2dProbe::loadGetData( orcacm::OperationData & data )
+Odometry2dProbe::loadGetData( orcacm::OperationData& data )
 {
-    orca::Odometry2dData result;
-    orcacm::ResultHeader res;
-    
+    orca::Odometry2dData result;    
     try
     {
         orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
         result = derivedPrx->getData();
+        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
     }
-    catch( const orca::DataNotExistException & e )
+    catch( const orca::DataNotExistException& e )
     {
-        cout<<"data is not ready on the remote interface"<<endl;
-        return 1;
+        orcaprobe::reportException( data, "data is not ready on the remote interface" );
     }
-    catch( const orca::HardwareFailedException & e )
+    catch( const orca::HardwareFailedException& e )
     {
-        cout<<"remote hardware failure"<<endl;
-        return 1;
+        orcaprobe::reportException( data, "remote hardware failure" );
     }
-    catch( const Ice::Exception & e )
+    catch( const Ice::Exception& e )
     {
-        cout<<"ice exception: "<<e<<endl;
-        return 1;
+        stringstream ss;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
     }
-
-    res.name = "data";
-    res.text = orcaice::toString(result);
-    data.results.push_back( res );
     return 0;
 }
 
 int 
-Odometry2dProbe::loadGetDescription( orcacm::OperationData & data )
+Odometry2dProbe::loadGetDescription( orcacm::OperationData& data )
 {
     orca::VehicleDescription result;
-    orcacm::ResultHeader res;
-
     try
     {
         orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
         result = derivedPrx->getDescription();
+        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
     }
-    catch( const Ice::Exception & e )
+    catch( const Ice::Exception& e )
     {
-        cout<<"ice exception: "<<e<<endl;
-        return 1;
+        stringstream ss;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
     }
-
-    res.name = "data";
-    res.text = orcaice::toString(result);
-    data.results.push_back( res );
     return 0;
 }
 
 int 
-Odometry2dProbe::loadSubscribe( orcacm::OperationData & data )
+Odometry2dProbe::loadSubscribe( orcacm::OperationData& data )
 {
-    Ice::ObjectPtr consumer = this;
-    orca::Odometry2dConsumerPrx callbackPrx =
-            orcaice::createConsumerInterface<orca::Odometry2dConsumerPrx>( context_, consumer );
-
-    orcacm::ResultHeader res;
+    cout<<"subscribing "<<callbackPrx_->ice_toString()<<endl;
 
     try
     {
         orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
-        derivedPrx->subscribe( callbackPrx );
+        derivedPrx->subscribe( callbackPrx_ );
+        orcaprobe::reportSubscribed( data );
+
+        // save the op data structure so we can use it when the data arrives
+        subscribeOperationData_ = data;
     }
-    catch( const Ice::Exception & e )
+    catch( const Ice::Exception& e )
     {
         stringstream ss;
-        ss << e;
-        res.name = "exception";
-        res.text = ss.str();
-        data.results.push_back( res );
-        return 1;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
     }
-    
-    res.name = "outcome";
-    res.text = "Subscribed successfully";
-    data.results.push_back( res );
     return 0;
 }
 
 int 
-Odometry2dProbe::loadUnsubscribe( orcacm::OperationData & data )
+Odometry2dProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-//     try
-//     {
-//         orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
-// //         cout<<"unsub  "<<Ice::identityToString( consumerPrx_->ice_getIdentity() )<<endl;
-//         
-//         orca::Odometry2dConsumerPrx powerConsumerPrx = orca::Odometry2dConsumerPrx::uncheckedCast(consumerPrx_);
-// //         cout<<"unsub  "<<Ice::identityToString( powerConsumerPrx->ice_getIdentity() )<<endl;
-//         derivedPrx->unsubscribe( powerConsumerPrx );
-//     }
-//     catch( const Ice::Exception & e )
-//     {
-//         cout<<"caught "<<e<<endl;
-//         return 1;
-//     }
-    
-    orcacm::ResultHeader res;
-    res.name = "outcome";
-    res.text = "operation not implemented";
-    data.results.push_back( res );
+    cout<<"unsubscribing "<<callbackPrx_->ice_toString()<<endl;
+
+    try
+    {
+        orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
+        derivedPrx->unsubscribe( callbackPrx_ );
+        orcaprobe::reportUnsubscribed( data );
+    }
+    catch( const Ice::Exception& e )
+    {
+        stringstream ss;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
+    }
     return 0;
 }
 
 void 
-Odometry2dProbe::setData(const orca::Odometry2dData & data, const Ice::Current&)
+Odometry2dProbe::setData(const orca::Odometry2dData& result, const Ice::Current&)
 {
-    std::cout << orcaice::toString(data) << std::endl;
+//     std::cout << orcaice::toString(result) << std::endl;
+    subscribeOperationData_.results.clear();
+    orcaprobe::reportResult( subscribeOperationData_, "data", orcaice::toString(result) );
+    display_.setOperationData( subscribeOperationData_ );
 };

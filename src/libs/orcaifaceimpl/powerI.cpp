@@ -61,7 +61,7 @@ PowerI::getData(const ::Ice::Current& ) const
 void 
 PowerI::subscribe(const ::orca::PowerConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    context_.tracer()->debug( "PowerI::subscribe()", 5 );
+    context_.tracer()->debug( "PowerI::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     IceStorm::QoS qos;
     qos["reliability"] = "twoway";
     try {
@@ -78,7 +78,7 @@ PowerI::subscribe(const ::orca::PowerConsumerPrx& subscriber, const ::Ice::Curre
 void 
 PowerI::unsubscribe(const ::orca::PowerConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    context_.tracer()->debug( "PowerI::unsubscribe()", 5 );
+    context_.tracer()->debug( "PowerI::unsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 

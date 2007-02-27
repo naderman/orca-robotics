@@ -17,6 +17,7 @@
 #include "guielementfactory.h"
 #include "guielementview.h"
 #include "ihumanmanager.h"
+#include "platformcolor.h"
 
 using namespace std;
 
@@ -30,25 +31,10 @@ GuiElementModel::GuiElementModel( const std::vector<orcaqgui::GuiElementFactory*
       factories_(factories),
       context_(context),
       humanManager_(messageDisplayer),
-      colorCounter_(0),
       view_(0),
       currentTransparency_(true)
-{
-    double timeInSec = orcaice::timeAsDouble( orcaice::getNow() );
-    seed_ = (unsigned int)floor(timeInSec);
-    
-    colorVector_.push_back(Qt::black);  // this one gets assigned to "global", no display
-    colorVector_.push_back(Qt::red);
-    colorVector_.push_back(Qt::blue);
-    colorVector_.push_back(Qt::cyan);
-    colorVector_.push_back(Qt::magenta);
-    colorVector_.push_back(Qt::darkYellow);    
-    colorVector_.push_back(Qt::darkRed);
-    colorVector_.push_back(Qt::darkBlue);
-    colorVector_.push_back(Qt::darkGreen);
-    colorVector_.push_back(Qt::darkCyan);
-    colorVector_.push_back(Qt::darkMagenta);
-    
+{    
+    platformColor_ = new PlatformColor;
     headers_ << "Name" << "Details";
     coordinateFramePlatform_ = "global";
     platformInFocus_ = "global";
@@ -227,24 +213,10 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
     QColor platformColor;
     if ( !doesPlatformExist( platform ) )
     {
-        cout << "new platform: " << platform.toStdString() << endl;
-        // assign a new colour
-        if ( colorCounter_>=colorVector_.size() ) {
-            platformColor = generateRandomColor();
-        } else {
-            platformColor = colorVector_[colorCounter_];
-            colorCounter_++;
-        }
-        // save for the future
-        colorMap_[platform] = platformColor;
-        //cout<<"TRACE(guielementmodel.cpp): emit newPlatform signal" << endl;
+        platformColor_->setNewPlatform( platform );
         emit ( newPlatform(platform) );
     }
-    else
-    {
-        // lookup in our map
-        platformColor = colorMap_[platform];
-    }
+    platformColor_->getColor( platform, platformColor );
     
     GuiElement* element = instantiateFromFactories( ids, platformColor, proxyStrList );
     if (element==NULL)
@@ -312,22 +284,6 @@ GuiElementModel::doesPlatformExist( QString &platformName )
 }
 
 
-QColor
-GuiElementModel::generateRandomColor()
-{    
-    seed_ = seed_ + 10;
-    srand(seed_);
-    
-    QColor colour;
-    int r = (int)floor( (double)rand()/((double)(RAND_MAX)+1.0)*256 );
-    int g = (int)floor( (double)rand()/((double)(RAND_MAX)+1.0)*256 );
-    int b = (int)floor( (double)rand()/((double)(RAND_MAX)+1.0)*256 );       
-    colour.setRgb(r,g,b);
-    //cout << "random color is: " << r << " " << g << " " << b << endl;
-    return colour;    
-}
-
-
 void 
 GuiElementModel::changePlatformFocus( const QString &platform )
 {
@@ -373,14 +329,27 @@ GuiElementModel::changePlatformFocus( const QString &platform )
 void
 GuiElementModel::removeAllGuiElements()
 {
+    QVector<int> indeces;
+    
+    // compile a list of indeces
     for ( int i=0; i<elements_.size(); ++i )
     {
         // don't delete the permanent elements e.g. grid
         IPermanentElement *permElement = dynamic_cast<IPermanentElement*>(elements_[i]);
         if ( permElement==NULL ) {
-            removeRows( i, 1, QModelIndex() );
+            indeces.push_back(i);
         }
     }
+    
+    // sort list
+    qSort(indeces);
+    
+    // remove rows from bottom to top
+    for ( int i=indeces.size()-1; i>=0; i--)
+    {
+        removeRows( indeces[i], 1, QModelIndex() );
+    }
+    
 }
 
 void

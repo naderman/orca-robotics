@@ -189,6 +189,7 @@ AlgoHandler::initDriver()
         
         #ifdef QT4_FOUND
         // QGraphics2d
+	context_.tracer()->info( "Instantiating QGraphics2d Interface" );
         SkeletonGraphicsI* graphicsI = new SkeletonGraphicsI( context_, "SkeletonGraphics" );
         Ice::ObjectPtr graphicsObj = graphicsI;
         orcaice::createInterfaceWithTag( context_, graphicsObj, "SkeletonGraphics" ); 
