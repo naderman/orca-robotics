@@ -45,10 +45,10 @@ ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND )
 
 IF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
     GLOBAL_ADD_LIBRARY( OrcaImageGrabber SHARED ${SRCS} )
-
     TARGET_LINK_LIBRARIES( OrcaImageGrabber ${OPENCV_LIBS} ${DIGICLOPS_LIBS} )
-
-    INSTALL_FILES( /include/orcaimagegrabber .*\\.h$ )
 ENDIF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
+
+# we want this file to install for fake drivers
+INSTALL_FILES( /include/orcaimagegrabber .*\\.h$ )
 
 ENDIF( OS_LINUX )

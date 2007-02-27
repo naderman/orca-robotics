@@ -203,7 +203,7 @@ Component::start()
     //
     // MAIN DRIVER LOOP
     //
-    mainLoop_ = new MainLoop( *cameraI, hwDriver_, imageGrabber_, context() );
+    mainLoop_ = new MainLoop( *cameraI, hwDriver_, context() );
     mainLoop_->start();
 }
 

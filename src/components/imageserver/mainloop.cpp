@@ -21,11 +21,9 @@ namespace imageserver {
 
 MainLoop::MainLoop( orcaifaceimpl::CameraI&  cameraObj,
                     Driver*                  hwDriver,
-                    orcaimage::ImageGrabber* imageGrabber,
                     const orcaice::Context&  context ) :
     cameraObj_(cameraObj),
     hwDriver_(hwDriver),
-    imageGrabber_(imageGrabber),
     context_(context)
 {
 }

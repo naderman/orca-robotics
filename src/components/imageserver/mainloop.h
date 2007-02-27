@@ -32,7 +32,6 @@ public:
 
     MainLoop( orcaifaceimpl::CameraI&   cameraObj,
               Driver*                   hwDriver,
-              orcaimage::ImageGrabber*  imageGrabber,
               const orcaice::Context&   context );
 
     ~MainLoop();
