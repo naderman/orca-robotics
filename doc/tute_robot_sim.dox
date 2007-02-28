@@ -113,15 +113,15 @@ $ ogmaploader
 @endverbatim
 
 @section view View the World
-To view the world and the robot we use @c orcaview. One line of the standard config file needs to be modified:
+To view the world and the robot we use @c orcaview2d. One line of the standard config file needs to be modified:
 @verbatim
 ...
-OrcaView.Requires.Localise2d.Proxy=localise2d@local/faithlocaliser
+OrcaView2d.Requires.Localise2d.Proxy=localise2d@local/faithlocaliser
 ...
 @endverbatim
 Start the GUI component
 @verbatim
-$ orcaview
+$ orcaview2d
 @endverbatim
 
 You should now see the the simple world from stage. If it is partially off the screen, drag it with the left mouse button so that you can view the full world. You should be able to see the robot and the laser scans.
