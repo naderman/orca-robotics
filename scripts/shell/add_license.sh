@@ -44,11 +44,11 @@ if ! [ -f $MY_LICENSE_FILE ]; then
 fi
 
 
-for file in `find $toplevel -name *.h`   \
-            `find $toplevel -name *.cpp` \
-            `find $toplevel -name *.c`   \
-            `find $toplevel -name *.ice` \
-            `find $toplevel -name *.dox`
+for file in `find $toplevel -name \*.h`   \
+            `find $toplevel -name \*.cpp` \
+            `find $toplevel -name \*.c`   \
+            `find $toplevel -name \*.ice` \
+            `find $toplevel -name \*.dox`
 do
 
     # Ignore ice-licensed files
