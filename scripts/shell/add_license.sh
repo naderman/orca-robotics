@@ -102,7 +102,7 @@ do
                     #exit 1
                     fi
 
-                    echo "Updating ORCA license in $file"
+                    echo "Updating license in $file"
                     if [ $FOR_REAL == "yes" ]; then
                         cat temp > $file
                     fi
