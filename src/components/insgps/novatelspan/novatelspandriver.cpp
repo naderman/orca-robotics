@@ -591,7 +591,7 @@ NovatelSpanInsGpsDriver::readMsgsFromHardware()
 }
 
 orca::GpsPositionType
-convertPosType( uint novatelPosType )
+convertPosType( unsigned int novatelPosType )
 {
     if ( novatelPosType == 0 )
     {
