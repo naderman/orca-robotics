@@ -9,7 +9,6 @@
 
 USAGE_ARGS="<top_directory> <license_file>"
 
-MY_LICENSE_FILE=license.txt
 UPDATE_MY_LICENSE=no
 REPLACE_GPL=no
 FOR_REAL=no
@@ -37,9 +36,9 @@ if ! [ -d $toplevel ]; then
     echo "Doesn't seem to be a directory: $toplevel"
     exit 1
 fi
-MY_LICENSE_FILE=$2
-if ! [ -f $MY_LICENSE_FILE ]; then
-    echo "Couldn't find license file: $MY_LICENSE_FILE"
+my_license_file=$2
+if ! [ -f $my_license_file ]; then
+    echo "Couldn't find license file: $my_license_file"
     exit 1
 fi
 
@@ -72,7 +71,7 @@ do
 
             if [ "$REPLACE_GPL" == "yes" ]; then
                 if `head $file --lines=$license_end_line | grep -q "$gpl_signature"`; then
-                    cat $MY_LICENSE_FILE > temp
+                    cat $my_license_file > temp
                     cat $file | tail --lines=`expr $total_num_lines - $license_end_line` >> temp
                     num_licenses=`grep -c "$license_search_string" temp`
                     # echo " -- num_licenses: $num_licenses"
@@ -94,7 +93,7 @@ do
             
             if [ "$UPDATE_MY_LICENSE" == "yes" ]; then
                 if `head $file --lines=$license_end_line | grep -q "$my_license_signature"`; then
-                    cat $MY_LICENSE_FILE > temp
+                    cat $my_license_file > temp
                     cat $file | tail --lines=`expr $total_num_lines - $license_end_line` >> temp
                     num_licenses=`grep -c "$license_search_string" temp`
                     # echo " -- num_licenses: $num_licenses"
@@ -118,7 +117,7 @@ do
              echo "==========================================="
              head $file
          fi
-         cat $MY_LICENSE_FILE > temp
+         cat $my_license_file > temp
          cat $file >> temp
          if [ $FOR_REAL == "yes" ]; then
              cat temp > $file
