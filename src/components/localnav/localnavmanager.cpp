@@ -119,63 +119,6 @@ LocalNavManager::LocalNavManager( IDriver   &driver,
       context_(context)
 {
 }
-// void
-// setGoalFromWaypoint( const orcanavutil::Pose &pose,
-//                      const orca::Waypoint2d  &wp,
-//                      double                   secToWp,
-//                      Goal                    &goal )
-// {
-//     goal.set( wp.target.p.x,
-//               wp.target.p.y,
-//               wp.target.o,
-//               wp.distanceTolerance,
-//               wp.headingTolerance,
-//               secToWp,
-//               wp.maxApproachSpeed,
-//               wp.maxApproachTurnrate );
-
-//     cout<<"TRACE(localnavmanager.cpp): Waypoint: " << orcaice::toString(wp) << " --> Goal: " << goal << endl;    
-
-//     // put the goal in robot's local coord system
-//     orcanavutil::subtractInitialOffset( goal.x,
-//                                         goal.y,
-//                                         goal.theta,
-//                                         pose.x(),
-//                                         pose.y(),
-//                                         pose.theta() );
-//     NORMALISE_ANGLE( goal.theta );
-// }
-
-// Returns true iff a waypoint is active
-// bool
-// LocalNavManager::getCurrentGoal( const orcanavutil::Pose &pose,
-//                                  Goal &currentGoal )
-// {
-//     while ( true )
-//     {
-//         if ( !pathMaintainer_.isActive() )
-//         {
-//             return false;
-//         }
-
-//         // Get the current goal
-//         setGoalFromWaypoint( pose,
-//                              pathMaintainer_.currentWaypoint(),
-//                              pathMaintainer_.secToNextWp(),
-//                              currentGoal );
-
-//         if ( goalPosReached(currentGoal) && goalTimeReached(currentGoal) )
-//         {
-//             pathMaintainer_.incrementWpIndex();
-//             // Return to the start of the loop, and peel off a new waypoint.
-//         }
-//         else
-//         {
-//             // Leave the currentGoal as set
-//             return true;
-//         }
-//     }    
-// }
 
 orcanavutil::Pose
 getMLPose( const orca::Localise2dData &localiseData )

@@ -61,10 +61,6 @@ private:
 
     void maybeSendHeartbeat( bool haveGoal );
     
-//     // Returns true iff a waypoint is active
-//     bool getCurrentGoal( const orcanavutil::Pose &pose,
-//                          Goal &currentGoal );
-
     // The driver itself
     IDriver   &driver_;
 
