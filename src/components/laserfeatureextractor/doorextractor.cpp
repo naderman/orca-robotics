@@ -69,7 +69,7 @@ DoorExtractor::findPossibleDoorJambs( const orca::LaserScanner2dDataPtr &data,
     // Look for discontinuities
     //
 
-    for ( uint i=1+minReturnsBesideDoor_; i < data->ranges.size()-1-minReturnsBesideDoor_; i++ )
+    for ( unsigned int i=1+minReturnsBesideDoor_; i < data->ranges.size()-1-minReturnsBesideDoor_; i++ )
     {
         double deltaRange = data->ranges[i] - data->ranges[i-1];
         if ( deltaRange > minDeltaRangeThruDoor_ )
@@ -77,7 +77,7 @@ DoorExtractor::findPossibleDoorJambs( const orca::LaserScanner2dDataPtr &data,
             // an increase in range: a possible start...
             // Step from back a bit up to the possible start, making sure the wall's OK.
             bool wallNextToDoorOK = true;
-            for ( uint j=i-1-minReturnsBesideDoor_; j < i-1; j++ )
+            for ( unsigned int j=i-1-minReturnsBesideDoor_; j < i-1; j++ )
             {
                 if ( fabs(data->ranges[j]-data->ranges[j+1]) > maxDeltaRangeWallBesideDoor_ )
                 {
@@ -93,7 +93,7 @@ DoorExtractor::findPossibleDoorJambs( const orca::LaserScanner2dDataPtr &data,
             // a decrease in range: a possible end...
             // Step forwards from the end, making sure the wall's OK.
             bool wallNextToDoorOK = true;
-            for ( uint j=i; j < i+minReturnsBesideDoor_; j++ )
+            for ( unsigned int j=i; j < i+minReturnsBesideDoor_; j++ )
             {
                 if ( fabs(data->ranges[j]-data->ranges[j+1]) > maxDeltaRangeWallBesideDoor_ )
                 {
@@ -118,12 +118,12 @@ DoorExtractor::findActualDoorJambs( const std::vector<DoorJamb> &possibleDoorSta
     //
 
     // For each door start
-    for ( uint i=0; i < possibleDoorStarts.size(); i++ )
+    for ( unsigned int i=0; i < possibleDoorStarts.size(); i++ )
     {
         const DoorJamb &start = possibleDoorStarts[i];
 
         // Try to match it with a door end
-        for ( uint j=0; j < possibleDoorEnds.size(); j++ )
+        for ( unsigned int j=0; j < possibleDoorEnds.size(); j++ )
         {
             const DoorJamb &end = possibleDoorEnds[j];
 
@@ -174,12 +174,12 @@ void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
     {
         stringstream ss;
         ss << "Possible door starts:" << endl;
-        for ( uint i=0; i < possibleDoorStarts.size(); i++ )
+        for ( unsigned int i=0; i < possibleDoorStarts.size(); i++ )
         {
             ss << "  " << possibleDoorStarts[i] << endl;
         }
         ss << "Possible door ends: " << endl;
-        for ( uint i=0; i < possibleDoorEnds.size(); i++ )
+        for ( unsigned int i=0; i < possibleDoorEnds.size(); i++ )
         {
             ss << "  " << possibleDoorEnds[i] << endl;
         }
@@ -193,12 +193,12 @@ void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
     {
         stringstream ss;
         ss << "Actual door starts:" << endl;
-        for ( uint i=0; i < actualDoorStarts.size(); i++ )
+        for ( unsigned int i=0; i < actualDoorStarts.size(); i++ )
         {
             ss << "  " << actualDoorStarts[i] << endl;
         }
         ss << "Actual door ends: " << endl;
-        for ( uint i=0; i < actualDoorEnds.size(); i++ )
+        for ( unsigned int i=0; i < actualDoorEnds.size(); i++ )
         {
             ss << "  " << actualDoorEnds[i] << endl;
         }
@@ -206,7 +206,7 @@ void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
     }
 
     assert( actualDoorStarts.size() == actualDoorEnds.size() );
-    for ( uint i=0; i < actualDoorStarts.size(); i++ )
+    for ( unsigned int i=0; i < actualDoorStarts.size(); i++ )
     {
         // Pick the mid-point
         orca::PointPolarFeature2dPtr p = new orca::PointPolarFeature2d;
