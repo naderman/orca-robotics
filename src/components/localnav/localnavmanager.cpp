@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -13,8 +13,8 @@
 #include "localnavmanager.h"
 #include <localnavutil/idriver.h>
 #include <localnavutil/goal.h>
-#include "pathmaintainer.h"
-#include <orcanavutil/pose.h>
+// #include "pathmaintainer.h"
+// #include <orcanavutil/pose.h>
 
 using namespace std;
 using namespace orcaice;
@@ -109,37 +109,22 @@ constrainMaxSpeeds( Goal &goal,
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-LocalNavManager::LocalNavManager( IDriver   &driver,
-                                  PathMaintainer   &pathMaintainer,
-                                  const orcaice::Context &context)
+LocalNavManager::LocalNavManager( IDriver&                driver,
+                                  const orcaice::Context& context)
     : driver_(driver),
-      pathMaintainer_(pathMaintainer),
       secondsBehindSchedule_(0),
       heartbeater_(context),
       context_(context)
 {
 }
 
-orcanavutil::Pose
-getMLPose( const orca::Localise2dData &localiseData )
+bool
+LocalNavManager::checkNextGoal( const orca::Localise2dData&        localiseData, 
+                                std::vector<Goal>&                 currentGoals,
+                                bool&                              uncertainLocalisation,
+                                orca::VelocityControl2dData&       cmd )
 {
-    const orca::Pose2dHypothesis &h = orcaice::mlHypothesis( localiseData );
-    return orcanavutil::Pose( h.mean.p.x, h.mean.p.y, h.mean.o );
-}
-
-void
-LocalNavManager::getCommand( const orca::RangeScanner2dDataPtr  rangeData, 
-                             const orca::Localise2dData&    localiseData, 
-                             const orca::Odometry2dData&    odomData, 
-                             orca::VelocityControl2dData&   cmd )
-{
-    orcanavutil::Pose  pose = getMLPose( localiseData );
-
-    pathMaintainer_.getActiveGoals( currentGoals_,
-                                    driver_.waypointHorizon(),
-                                    pose );
-
-    bool haveGoal = currentGoals_.size() > 0;
+    bool haveGoal = currentGoals.size() > 0;
     maybeSendHeartbeat( haveGoal );
     if ( !haveGoal )
     {
@@ -152,29 +137,23 @@ LocalNavManager::getCommand( const orca::RangeScanner2dDataPtr  rangeData,
             ss << "LocalNavManager: No active path.  giving command: " << orcaice::toString(cmd);
             context_.tracer()->debug( ss.str(), 5 );
         }
-        return;
     }
     else
     {
-        constrainMaxSpeeds( currentGoals_[0], context_ );
-        bool obsoleteStall=false;
+        constrainMaxSpeeds( currentGoals[0], context_ );
         bool uncertainLocalisation = localisationIsUncertain( localiseData );
         if ( uncertainLocalisation )
             context_.tracer()->warning( "LocalNavManager: Localisation is uncertain..." );
-
-        driver_.getCommand( obsoleteStall,
-                            uncertainLocalisation,
-                            odomData.motion,
-                            rangeData,
-                            currentGoals_,
-                            cmd );
     }
+    
     // For big debug levels, give feedback through tracer.
     {
         std::stringstream ss;
         ss << "LocalNavManager: Setting command: " << orcaice::toString(cmd);
         context_.tracer()->debug( ss.str(), 5 );
     }
+
+    return haveGoal;
 }
 
 void

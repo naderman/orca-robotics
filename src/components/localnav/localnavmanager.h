@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -24,7 +24,7 @@ namespace localnav {
 
 class LocalNavParameters;
 class Goal;
-class PathMaintainer;
+// class PathMaintainer;
 
 //
 // Takes goals and localisation info in the global reference frame.
@@ -39,7 +39,6 @@ class LocalNavManager
 public: 
 
     LocalNavManager( IDriver                &driver,
-                     PathMaintainer         &pathMaintainer,
                      const orcaice::Context &context );
 
     // Driver sets everything up, and is told what time it is
@@ -50,12 +49,12 @@ public:
     void reset()
         { driver_.reset(); }
 
-    // The odometry is required for the velocity, which isn't contained
-    // in Localise2d.
-    void getCommand( const orca::RangeScanner2dDataPtr rangeData,
-                     const orca::Localise2dData&       localiseData,
-                     const orca::Odometry2dData&       odomData,
-                     orca::VelocityControl2dData&      cmd );
+    // Check if there is a goal coming up.
+    // If there is no goal, stop the robot and reset the pathplanning driver
+    bool checkNextGoal( const orca::Localise2dData&       localiseData,
+                        std::vector<Goal>&                currentGoals,
+                        bool&                             uncertainLocalisation,
+                        orca::VelocityControl2dData&      cmd );
 
 private: 
 
@@ -63,13 +62,6 @@ private:
     
     // The driver itself
     IDriver   &driver_;
-
-    // This thing is responsible for keeping track of where we are in the path.
-    // It's updated asynchronously by the outside world.
-    PathMaintainer   &pathMaintainer_;
-
-    // Goals are in our local coordinate system
-    std::vector<Goal> currentGoals_;
 
     // Maintain these for heartbeat messages
     double            secondsBehindSchedule_;

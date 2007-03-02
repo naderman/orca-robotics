@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -10,11 +10,13 @@
 #include <iostream>
 #include <cmath>
 #include <orcaice/orcaice.h>
+#include <orcanavutil/pose.h>
 
 #include "mainloop.h"
 #include "pathmaintainer.h"
 #include "pathfollower2dI.h"
 #include "testsim/simulator.h"
+#include "localnavutil/pose.h"
 
 using namespace std;
 using namespace orca;
@@ -379,7 +381,7 @@ MainLoop::setup()
 
     driver_ = driverFactory_.createDriver( context_, vehicleDescr_, scannerDescr_ );
     pathMaintainer_ = new PathMaintainer( pathFollowerInterface_, clock_, context_ );
-    localNavManager_ = new LocalNavManager( *driver_, *pathMaintainer_, context_ );
+    localNavManager_ = new LocalNavManager( *driver_, context_ );
 
     initInterfaces();
     ensureProxiesNotEmpty();
@@ -417,7 +419,12 @@ MainLoop::run()
 
     const int TIMEOUT_MS = 1000;
 
+    std::vector<Goal> currentGoals;
+    bool obsoleteStall = false;
+    bool uncertainLocalisation;
     orca::VelocityControl2dData velocityCmd;
+    
+    
     while ( isActive() )
     {
         try 
@@ -472,10 +479,37 @@ MainLoop::run()
 //                         <<"    localiseData: " << orcaice::toString(localiseData_) << endl
 //                         <<"    odomData: " << orcaice::toString(odomData_) << endl;
 
-            localNavManager_->getCommand( rangeData_,
-                                          localiseData_,
-                                          odomData_,
-                                          velocityCmd );
+            // grab the maximum likely pose of the vehicle
+            orcanavutil::Pose pose = getMLPose( localiseData_ );
+
+            // pathMaintainer knows about the whole path in global coords and where
+            // we are in that path. So get the next set of (current) goals (in local 
+            // coord system) for the pathplanner.
+            pathMaintainer_->getActiveGoals( currentGoals,
+                                             driver_->waypointHorizon(),
+                                             pose );
+
+            // TODO: rename to goalTransformer
+            // Check if there is a goal. If not, set all commands to zero and reset the pathplanning driver.
+            bool haveGoal = localNavManager_->checkNextGoal( localiseData_,
+                                                             currentGoals,
+                                                             uncertainLocalisation,
+                                                             velocityCmd );
+
+            // if there is an active goal, get the pathplanner to work out the next set of actions
+            if ( haveGoal )
+            {
+                // The actual driver which determines the path and commands to send to the vehicle.
+                // The odometry is required for the velocity, which isn't contained
+                // in Localise2d.
+                driver_->getCommand( obsoleteStall,
+                                     uncertainLocalisation,
+                                     odomData_.motion,
+                                     rangeData_,
+                                     currentGoals,
+                                     velocityCmd );
+            }
+
             sendCommandToPlatform( velocityCmd );
             checkWithOutsideWorld();
 

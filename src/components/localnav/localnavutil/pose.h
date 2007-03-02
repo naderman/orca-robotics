@@ -6,6 +6,11 @@
 #include <iostream>
 #include <string>
 
+// for getMLPose()
+#include <orcanavutil/pose.h>
+#include <orca/localise2d.h>
+
+
 namespace localnav {
 
 //!
@@ -44,6 +49,9 @@ inline double distance( const geom2d::Point &point, const Pose &pose )
 { return distance( pose, point ); }
 
 std::ostream &operator<<( std::ostream &s, const Pose &p );
+
+orcanavutil::Pose getMLPose( const orca::Localise2dData &localiseData );
+
 
 }
 
