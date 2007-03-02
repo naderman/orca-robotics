@@ -152,7 +152,11 @@ Simulator::setupMap()
     ogMap_.fill( 0 );
 
     placeObstacle( ogMap_, 7, 4, 0.5 );
-
+    placeObstacle( ogMap_, -2, -4, 0.5 );
+    placeObstacle( ogMap_, -7, -4, 0.5 );
+    placeObstacle( ogMap_, -5, -9, 0.5 );
+    placeObstacle( ogMap_, 0, -3, 0.5 );
+    placeObstacle( ogMap_, -10, 0, 0.5 );
 }
 
 orca::Time
@@ -243,7 +247,7 @@ Simulator::checkProgress()
     iterationNum_++;
 
     const int MIN_NUM_ITERATIONS = 5;
-    const int MAX_NUM_ITERATIONS = 1000;
+    const int MAX_NUM_ITERATIONS = testPath_.path.size()*200;
 
     double distanceToGoal = hypotf( pose_.y()-testPath_.path.back().target.p.y,
                                     pose_.x()-testPath_.path.back().target.p.x );
