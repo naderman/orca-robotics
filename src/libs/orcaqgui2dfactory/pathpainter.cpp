@@ -231,6 +231,10 @@ void PathPainter::paint( QPainter *painter, int z )
         // we're at the goal
         return;
     }
+    if (wpI == 0) {
+        // we haven't started yet
+        return;
+    }
     
     // ratio of how much we accomplished of the distance between the two current waypoints
     float ratio = (relativeStartTime_-times_[wpI-1])/(times_[wpI] - times_[wpI-1]);
