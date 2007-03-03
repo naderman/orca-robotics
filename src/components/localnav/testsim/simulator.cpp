@@ -259,22 +259,22 @@ Simulator::checkProgress()
     double angleToGoal = pose_.theta()-testPath_.path.back().target.o;
     NORMALISE_ANGLE( angleToGoal );
     angleToGoal = fabs( angleToGoal );
-    bool goalReached = ( distanceToGoal <= testPath_.path.back().distanceTolerance &&
-                         angleToGoal <= testPath_.path.back().headingTolerance );
+    bool lastGoalReached = ( distanceToGoal <= testPath_.path.back().distanceTolerance &&
+                             angleToGoal <= testPath_.path.back().headingTolerance );
 
-    if ( iterationNum_ < MIN_NUM_ITERATIONS && goalReached )
+    if ( iterationNum_ < MIN_NUM_ITERATIONS && lastGoalReached )
     {
         cout << "ERROR(simulator.cpp): Huh? How did we reach the goal in only "<< iterationNum_ << " iterations??" << endl;
         exit(1);
     }
-    if ( iterationNum_ >= MAX_NUM_ITERATIONS && !goalReached )
+    if ( iterationNum_ >= MAX_NUM_ITERATIONS && !lastGoalReached )
     {
         cout << "ERROR(simulator.cpp): Failed: didn't reach the goal in " <<  iterationNum_ << " iterations." << endl;
         exit(1);        
     }
-    if ( goalReached )
+    if ( lastGoalReached )
     {
-        cout<<"TRACE(simulator.cpp): Goal reached.  Test passed." << endl;
+        cout<<"TRACE(simulator.cpp): Final Goal reached.  Test passed." << endl;
         exit(0);
     }
 

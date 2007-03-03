@@ -84,6 +84,15 @@ namespace localnav {
             wp.maxApproachTurnrate = orcamisc::randNum( 45*M_PI/180.0, 180*M_PI/180.0 );
             d.path.push_back( wp );            
         }
+
+        // The test pass/fail criterion is reaching the last goal.  So put it away from the others.
+        t+= 5;
+        wp.target.p.x   = -15;
+        wp.target.p.y   = -15;
+        wp.target.o     = 0;
+        wp.timeTarget.seconds  = t;
+        wp.timeTarget.useconds = 0;
+        d.path.push_back( wp );        
     }
 
 }
