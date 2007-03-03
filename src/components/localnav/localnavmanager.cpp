@@ -126,6 +126,11 @@ LocalNavManager::checkNextGoal( const orca::Localise2dData&        localiseData,
 {
     bool haveGoal = currentGoals.size() > 0;
     maybeSendHeartbeat( haveGoal );
+
+    uncertainLocalisation = localisationIsUncertain( localiseData );
+    if ( uncertainLocalisation )
+        context_.tracer()->warning( "LocalNavManager: Localisation is uncertain..." );
+
     if ( !haveGoal )
     {
         driver_.reset();
@@ -141,9 +146,6 @@ LocalNavManager::checkNextGoal( const orca::Localise2dData&        localiseData,
     else
     {
         constrainMaxSpeeds( currentGoals[0], context_ );
-        bool uncertainLocalisation = localisationIsUncertain( localiseData );
-        if ( uncertainLocalisation )
-            context_.tracer()->warning( "LocalNavManager: Localisation is uncertain..." );
     }
     
     // For big debug levels, give feedback through tracer.
