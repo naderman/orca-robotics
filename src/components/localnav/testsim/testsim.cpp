@@ -14,7 +14,7 @@ namespace localnav {
         int t=0;
 
         // These settings will be held constant unless otherwise specified.
-        wp.distanceTolerance = 1.0;
+        wp.distanceTolerance = 1.5;
         wp.headingTolerance  = M_PI/8.0;
         wp.maxApproachSpeed    = 3.0;
         wp.maxApproachTurnrate = 90*M_PI/180.0;
