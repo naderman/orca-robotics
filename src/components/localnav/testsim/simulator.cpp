@@ -14,6 +14,7 @@ namespace {
     const double WORLD_SIZE = 40.0;
     const double MAX_RANGE  = 80.0;
     const double DELTA_T    = 0.1;
+    const double ROBOT_RADIUS = 0.375;
 }
 
 Simulator::Simulator( const orcaice::Context &context,
@@ -41,17 +42,17 @@ Simulator::Simulator( const orcaice::Context &context,
     ogMap_.offset().p.y = -WORLD_SIZE/2.0;
     ogMap_.offset().o   = 0.0;
     
-    ogMap_.setMetresPerCellX( 0.1 );
-    ogMap_.setMetresPerCellY( 0.1 );
-    ogMap_.reallocate( (int)(WORLD_SIZE/0.1), (int)(WORLD_SIZE/0.1) );
+    const double CELL_SIZE = 0.1;
+    ogMap_.setMetresPerCellX( CELL_SIZE );
+    ogMap_.setMetresPerCellY( CELL_SIZE );
+    ogMap_.reallocate( (int)(WORLD_SIZE/CELL_SIZE), (int)(WORLD_SIZE/CELL_SIZE) );
 
     setupMap();
     grownOgMap_ = ogMap_;
 
-    const double ROBOT_RADIUS = 0.3;
     orcapathplan::growObstaclesOgMap( grownOgMap_,
                                       0.5,
-                                      (int)(ROBOT_RADIUS/0.1) );
+                                      (int)(ROBOT_RADIUS/CELL_SIZE) );
 
     // setup scan
     scan_->timeStamp.seconds  = 0;
@@ -153,6 +154,45 @@ placeObstacle( orcaogmap::OgMap &ogMap,
 }
 
 void
+placeRoom( orcaogmap::OgMap &ogMap )
+{
+    double centreX = -14, centreY = 14;
+    double widthX = 4, widthY = 4;
+    double doorWidth = 1.0;
+
+    // the corners in grid-coords
+    int blX, blY;
+    int tlX, tlY;
+    int trX, trY;
+    int brX, brY;
+    ogMap.getCellIndices( centreX-widthX/2, centreY-widthY/2, blX, blY );
+    ogMap.getCellIndices( centreX-widthX/2, centreY+widthY/2, tlX, tlY );
+    ogMap.getCellIndices( centreX+widthX/2, centreY-widthY/2, brX, brY );
+    ogMap.getCellIndices( centreX+widthX/2, centreY+widthY/2, trX, trY );
+
+    // side walls
+    for ( int yi=blY; yi <= tlY; yi++ )
+    {
+        ogMap.gridCell(blX,yi) = orcaogmap::CELL_OCCUPIED;
+        ogMap.gridCell(brX,yi) = orcaogmap::CELL_OCCUPIED;
+    }
+    // top & bottom walls
+    for ( int xi=blX; xi <= brX; xi++ )
+    {
+        ogMap.gridCell(xi,tlY) = orcaogmap::CELL_OCCUPIED;
+        ogMap.gridCell(xi,brY) = orcaogmap::CELL_OCCUPIED;
+    }
+
+    // clear a doorway
+    int doorLeftX, doorRightX, doorY;
+    ogMap.getCellIndices( centreX-doorWidth/2, centreY-widthY/2, doorLeftX, doorY );
+    ogMap.getCellIndices( centreX+doorWidth/2, centreY-widthY/2, doorRightX, doorY );
+
+    for ( int xi=doorLeftX; xi <= doorRightX; xi++ )
+        ogMap.gridCell(xi,doorY) = orcaogmap::CELL_EMPTY;
+}
+
+void
 Simulator::setupMap()
 {
     ogMap_.fill( 0 );
@@ -163,6 +203,8 @@ Simulator::setupMap()
     placeObstacle( ogMap_, -5, -9, 0.5 );
     placeObstacle( ogMap_, 0, -3, 0.5 );
     placeObstacle( ogMap_, -10, 0, 0.5 );
+
+    placeRoom( ogMap_ );
 }
 
 orca::Time
@@ -354,7 +396,7 @@ Simulator::getVehicleDescription() const
     orca::VehicleGeometryCylindricalDescription *g
         = new orca::VehicleGeometryCylindricalDescription;
     g->type = orca::VehicleGeometryCylindrical;
-    g->radius = 0.3;
+    g->radius = ROBOT_RADIUS;
     g->height = 2.0;
 
     setToZero( g->vehicleToGeometryTransform );

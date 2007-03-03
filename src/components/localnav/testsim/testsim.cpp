@@ -70,6 +70,40 @@ namespace localnav {
         wp.timeTarget.useconds = 0;
         d.path.push_back( wp );
 
+        // Try to get thru door
+        t+=3;
+        wp.target.p.x   = -14;
+        wp.target.p.y   = 10;
+        wp.target.o     = M_PI/2.0;
+        wp.timeTarget.seconds  = t;
+        wp.timeTarget.useconds = 0;
+        d.path.push_back( wp );
+
+        t+=3;
+        wp.target.p.x   = -14;
+        wp.target.p.y   = 14;
+        wp.target.o     = M_PI/2.0;
+        wp.timeTarget.seconds  = t;
+        wp.timeTarget.useconds = 0;
+        d.path.push_back( wp );
+        
+        // Then back out.
+        t+=3;
+        wp.target.p.x   = -14;
+        wp.target.p.y   = 14;
+        wp.target.o     = -M_PI/2.0;
+        wp.timeTarget.seconds  = t;
+        wp.timeTarget.useconds = 0;
+        d.path.push_back( wp );
+
+        t+=3;
+        wp.target.p.x   = -14;
+        wp.target.p.y   = 10;
+        wp.target.o     = -M_PI/2.0;
+        wp.timeTarget.seconds  = t;
+        wp.timeTarget.useconds = 0;
+        d.path.push_back( wp );
+
         // Now add a random marathon
         int numRandom=numWaypoints-d.path.size();
         for ( int i=0; i < numRandom; i++ )
