@@ -19,13 +19,14 @@
 #include <orcaice/proxy.h>
 #include <orcaifaceimpl/ptrproxiedconsumerI.h>
 #include <orcaifaceimpl/proxiedconsumerI.h>
-#include <localnavmanager.h>
+#include <orcalocalnav/localnavmanager.h>
+#include <orcalocalnav/pathmaintainer.h>
+#include <orcalocalnav/clock.h>
 #include <localnavutil/idriver.h>
-#include <clock.h>
 
 namespace localnav {
 
-class PathMaintainer;
+// class PathMaintainer;
 class PathFollower2dI;
 class Simulator;
 
@@ -43,17 +44,17 @@ class MainLoop : public orcaice::Thread
 public: 
 
     // This version interacts with the real world
-    MainLoop( DriverFactory          &driverFactory,
-              Clock                  &clock,
-              PathFollower2dI        &pathFollowerInterface,
-              const orcaice::Context &context );
+    MainLoop( DriverFactory                   &driverFactory,
+              orcalocalnav::Clock             &clock,
+              orcalocalnav::PathFollower2dI   &pathFollowerInterface,
+              const orcaice::Context          &context );
 
     // This version is for simulator-based testing.
-    MainLoop( DriverFactory          &driverFactory,
-              Clock                  &clock,
-              PathFollower2dI        &pathFollowerInterface,
-              Simulator              &testSimulator,
-              const orcaice::Context &context );
+    MainLoop( DriverFactory                   &driverFactory,
+              orcalocalnav::Clock             &clock,
+              orcalocalnav::PathFollower2dI   &pathFollowerInterface,
+              Simulator                       &testSimulator,
+              const orcaice::Context          &context );
 
     ~MainLoop();
 
@@ -88,10 +89,10 @@ private:
                              double                             threshold );
 
     // The class that does the navigating
-    LocalNavManager *localNavManager_;
+    orcalocalnav::LocalNavManager *localNavManager_;
 
     // Keeps track of the path we're following
-    PathMaintainer  *pathMaintainer_;
+    orcalocalnav::PathMaintainer  *pathMaintainer_;
 
     // Using this driver
     IDriver *driver_;
@@ -109,7 +110,7 @@ private:
     orcaice::Proxy<orca::Localise2dData>           *locProxy_;
     orcaice::Proxy<orca::Odometry2dData>           *odomProxy_;
 
-    PathFollower2dI                  &pathFollowerInterface_;
+    orcalocalnav::PathFollower2dI  &pathFollowerInterface_;
 
     // data types
     orca::Localise2dData           localiseData_;
@@ -122,7 +123,7 @@ private:
     Simulator                     *testSimulator_;
 
     // A global time reference
-    Clock &clock_;
+    orcalocalnav::Clock &clock_;
 
     orca::VehicleDescription        vehicleDescr_;
     orca::RangeScanner2dDescription scannerDescr_;

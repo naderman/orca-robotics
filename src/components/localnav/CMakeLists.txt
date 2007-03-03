@@ -11,8 +11,10 @@ IF ( BUILD_LOCALNAV )
     MESSAGE( STATUS "    VfhDriver for LocalNav - can be built" )
 
     INCLUDE_DIRECTORIES(
-      ${PROJECT_SOURCE_DIR}/src/components/localnav
-      )
+       ${PROJECT_SOURCE_DIR}/src/components/localnav
+       ${PROJECT_SOURCE_DIR}/src/libs/orcalocalnav
+       )
+      
 
     ADD_SUBDIRECTORY( testsim )
     ADD_SUBDIRECTORY( localnavutil )
@@ -23,6 +25,7 @@ IF ( BUILD_LOCALNAV )
     SET( DEP_LIBS
       LocalNavSources
       # OrcaLocalNavVfh
+      OrcaLocalNav
       OrcaLocalNavUtil
       OrcaDynamicLoad
       OrcaLocalNavTestSim
@@ -33,8 +36,9 @@ IF ( BUILD_LOCALNAV )
     TARGET_LINK_LIBRARIES( localnav ${DEP_LIBS} )
     
     # build IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaLocalNav SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaLocalNav ${DEP_LIBS} )
+    # Naming clashes with OrcaLocalNav library in src/libs
+    GLOBAL_ADD_LIBRARY( OrcaLocalNavComponent SHARED service )
+    TARGET_LINK_LIBRARIES( OrcaLocalNavComponent ${DEP_LIBS} )
 
     GENERATE_CONFIG_FILE( localnav.def )
 

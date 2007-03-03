@@ -18,9 +18,10 @@
 #include <orca/pathfollower2d.h>
 #include <orcaice/component.h>
 #include <orcaice/ptrproxy.h>
-#include "pathfollower2dI.h"
 #include <orcadynamicload/dynamicload.h>
-#include "clock.h"
+#include <orcalocalnav/pathfollower2dI.h>
+#include <orcalocalnav/clock.h>
+// #include <localnavutil/idriver.h>
 
 namespace localnav {
 
@@ -59,10 +60,10 @@ private:
     orcadynamicload::DynamicallyLoadedLibrary *driverLib_;
 
     // The global time
-    Clock *clock_;
+    orcalocalnav::Clock *clock_;
 
     // External interface
-    PathFollower2dI                         *pathFollowerInterface_;
+    orcalocalnav::PathFollower2dI *pathFollowerInterface_;
 };
 
 }

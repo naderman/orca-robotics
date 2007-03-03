@@ -11,23 +11,23 @@
 #include <cmath>
 #include <orcaice/orcaice.h>
 #include <orcanavutil/pose.h>
+#include <orcalocalnav/pathfollower2dI.h>
+#include <localnavutil/pose.h>
 
 #include "mainloop.h"
-#include "pathmaintainer.h"
-#include "pathfollower2dI.h"
 #include "testsim/simulator.h"
-#include "localnavutil/pose.h"
 
 using namespace std;
 using namespace orca;
 using namespace orcaice;
+using namespace orcalocalnav;
 
 namespace localnav {
 
-MainLoop::MainLoop( DriverFactory          &driverFactory,
-                    Clock                  &clock,
-                    PathFollower2dI        &pathFollowerInterface,
-                    const orcaice::Context &context )
+MainLoop::MainLoop( DriverFactory                    &driverFactory,
+                    orcalocalnav::Clock              &clock,
+                    orcalocalnav::PathFollower2dI    &pathFollowerInterface,
+                    const orcaice::Context           &context )
     : localNavManager_(NULL),
       pathMaintainer_(NULL),
       driver_(NULL),
@@ -53,11 +53,11 @@ MainLoop::MainLoop( DriverFactory          &driverFactory,
     obsConsumerPrx_ = orcaice::createConsumerInterface<RangeScanner2dConsumerPrx>( context_, obsConsumerPtr );
 }
 
-MainLoop::MainLoop( DriverFactory          &driverFactory,
-                    Clock                  &clock,
-                    PathFollower2dI        &pathFollowerInterface,
-                    Simulator              &testSimulator,
-                    const orcaice::Context &context )
+MainLoop::MainLoop( DriverFactory                   &driverFactory,
+                    orcalocalnav::Clock             &clock,
+                    orcalocalnav::PathFollower2dI   &pathFollowerInterface,
+                    Simulator                       &testSimulator,
+                    const orcaice::Context          &context )
     : localNavManager_(NULL),
       pathMaintainer_(NULL),
       driver_(NULL),
@@ -382,8 +382,9 @@ MainLoop::setup()
     context_.tracer()->info( descrStream.str() );
 
     driver_ = driverFactory_.createDriver( context_, vehicleDescr_, scannerDescr_ );
-    pathMaintainer_ = new PathMaintainer( pathFollowerInterface_, clock_, context_ );
-    localNavManager_ = new LocalNavManager( *driver_, context_ );
+    pathMaintainer_ = new orcalocalnav::PathMaintainer( pathFollowerInterface_, clock_, context_ );
+    // localNavManager_ = new orcalocalnav::LocalNavManager( *driver_, context_ );
+    localNavManager_ = new orcalocalnav::LocalNavManager( context_ );
 
     initInterfaces();
     ensureProxiesNotEmpty();
@@ -491,15 +492,19 @@ MainLoop::run()
                                              driver_->waypointHorizon(),
                                              pose );
 
-            // TODO: rename to goalTransformer
-            // Check if there is a goal. If not, set all commands to zero and reset the pathplanning driver.
+            // Check if there is a goal. If not, set all robot commands to zero
             bool haveGoal = localNavManager_->checkNextGoal( localiseData_,
                                                              currentGoals,
                                                              uncertainLocalisation,
                                                              velocityCmd );
 
-            // if there is an active goal, get the pathplanner to work out the next set of actions
-            if ( haveGoal )
+            // if there is no active goal, reset the path planning driver
+            // otherwise get the pathplanner to work out the next set of actions
+            if ( !haveGoal )
+            {
+                driver_->reset();
+            }
+            else
             {
                 // The actual driver which determines the path and commands to send to the vehicle.
                 // The odometry is required for the velocity, which isn't contained

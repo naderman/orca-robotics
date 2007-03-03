@@ -10,8 +10,8 @@
 #include "component.h"
 #include "mainloop.h"
 #include <localnavutil/idriver.h>
-#include "localnavmanager.h"
-#include "pathmaintainer.h"
+#include <orcalocalnav/localnavmanager.h>
+#include <orcalocalnav/pathmaintainer.h>
 #include "testsim/testsim.h"
 
 #include <orcaice/orcaice.h>
@@ -30,7 +30,7 @@ Component::Component()
       pathFollowerInterface_(NULL)
 {
     orca::Time t; t.seconds=0; t.useconds=0;
-    clock_ = new Clock( t );
+    clock_ = new orcalocalnav::Clock( t );
 }
 
 Component::~Component()
@@ -61,7 +61,7 @@ Component::start()
     //
     // Create our provided interface
     //
-    pathFollowerInterface_ = new PathFollower2dI( "PathFollower2d", *clock_, context() );
+    pathFollowerInterface_ = new orcalocalnav::PathFollower2dI( "PathFollower2d", *clock_, context() );
 
     //
     // Instantiate bogus info sources in test mode
@@ -89,7 +89,7 @@ Component::start()
         // Dynamically load the driver from its library
         driverLib_ = new orcadynamicload::DynamicallyLoadedLibrary(driverLibName);
         driverFactory_ = 
-            orcadynamicload::dynamicallyLoadClass<localnav::DriverFactory,DriverFactoryMakerFunc>
+            orcadynamicload::dynamicallyLoadClass<DriverFactory,DriverFactoryMakerFunc>
             ( *driverLib_, "createDriverFactory" );
     }
     catch (orcadynamicload::DynamicLoadException &e)
