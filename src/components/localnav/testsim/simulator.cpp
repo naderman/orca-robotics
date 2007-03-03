@@ -88,18 +88,24 @@ Simulator::~Simulator()
 void
 Simulator::setupInterfaces()
 {
-    orca::RangeScanner2dDescription desc;
-    desc.minRange = 0.0;
-    desc.maxRange = MAX_RANGE;
-    desc.fieldOfView = M_PI;
-    desc.startAngle = -M_PI/2.0;
-    desc.numberOfSamples = 181;
-    setToZero( desc.offset );
-    desc.size.l = 0.1;
-    desc.size.w = 0.1;
-    desc.size.h = 0.1;
+    scannerDescr_.minRange = 0.0;
+    scannerDescr_.maxRange = MAX_RANGE;
+    scannerDescr_.fieldOfView = M_PI;
+    scannerDescr_.startAngle = -M_PI/2.0;
+    scannerDescr_.numberOfSamples = 181;
+    setToZero( scannerDescr_.offset );
+    scannerDescr_.size.l = 0.1;
+    scannerDescr_.size.w = 0.1;
+    scannerDescr_.size.h = 0.1;
+    scannerDescr_.offset.p.x = 0;
+    scannerDescr_.offset.p.y = 0;
+    scannerDescr_.offset.p.z = 0;
+    scannerDescr_.offset.o.r = 0;
+    scannerDescr_.offset.o.p = 0;
+    scannerDescr_.offset.o.y = 0;
+    scannerDescr_.timeStamp = orcaice::getNow();
     
-    laserInterface_    = new orcaifaceimpl::LaserScanner2dI( desc, "TestLaserScanner", context_ );
+    laserInterface_    = new orcaifaceimpl::LaserScanner2dI( scannerDescr_, "TestLaserScanner", context_ );
     orca::Localise2dDescription descr;
     descr.timeStamp = orcaice::getNow();
     descr.offset.p.x = 0;
@@ -212,13 +218,12 @@ Simulator::fillPipes()
 void 
 Simulator::setCommand( const orca::VelocityControl2dData &cmd )
 {
-    cout<<"TRACE(simulator.cpp): iteration " << iterationNum_ << ": pose_: " << pose_ << endl;
-
 //     cmd.timeStamp = scan_->timeStamp;
-    cout<<"TRACE(simulator.cpp): received cmd: " << orcaice::toString(cmd) << endl;
     
     if ( !batchMode_ )
     {
+        cout<<"TRACE(simulator.cpp): iteration " << iterationNum_ << ": pose_: " << pose_ << endl;
+        cout<<"TRACE(simulator.cpp): received cmd: " << orcaice::toString(cmd) << endl;
         cout<<"TRACE(simulator.cpp): pose_: " << pose_ << endl;
         cout<<"TRACE(simulator.cpp): ============= hit return to continue ============" << endl;
         getchar();
@@ -247,7 +252,7 @@ Simulator::checkProgress()
     iterationNum_++;
 
     const int MIN_NUM_ITERATIONS = 5;
-    const int MAX_NUM_ITERATIONS = testPath_.path.size()*200;
+    const int MAX_NUM_ITERATIONS = testPath_.path.size()*400;
 
     double distanceToGoal = hypotf( pose_.y()-testPath_.path.back().target.p.y,
                                     pose_.x()-testPath_.path.back().target.p.x );
@@ -334,10 +339,10 @@ Simulator::getVehicleDescription() const
     orca::VehicleControlVelocityDifferentialDescription *c 
         = new orca::VehicleControlVelocityDifferentialDescription;
     c->type    = orca::VehicleControlVelocityDifferential;
-    c->maxForwardSpeed = 2.0;
-    c->maxReverseSpeed = 2.0;
-    c->maxTurnrate     = DEG2RAD(90.0);
-    c->maxTurnrateAtMaxSpeed  = DEG2RAD(90.0);
+    c->maxForwardSpeed = 20.0;
+    c->maxReverseSpeed = 20.0;
+    c->maxTurnrate     = DEG2RAD(990.0);
+    c->maxTurnrateAtMaxSpeed  = DEG2RAD(990.0);
     c->maxForwardAcceleration = 1.0;
     c->maxReverseAcceleration = 1.0;
     c->maxRotationalAcceleration = DEG2RAD(90.0);

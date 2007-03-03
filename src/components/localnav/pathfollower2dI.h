@@ -61,7 +61,6 @@ public:
     // Unsubscribe people
     virtual void unsubscribe(const ::orca::PathFollower2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
-
     //
     // Local calls
     //

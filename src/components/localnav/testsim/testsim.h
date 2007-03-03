@@ -6,7 +6,7 @@
 
 namespace localnav {
 
-    void getTestPath( orca::PathFollower2dData &d );
+    void getTestPath( orca::PathFollower2dData &d, int numWaypoints );
 
 }
 

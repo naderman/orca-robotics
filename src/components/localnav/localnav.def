@@ -5,7 +5,7 @@ Provides.PathFollower2d.Type=PathFollower2d
 Provides.PathFollower2d.DefaultName=pathfollower2d
 
 # Provided for testing purposes only
-Provides.TestLaserScanner.Type=LaserScanner2dI
+Provides.TestLaserScanner.Type=LaserScanner2d
 Provides.TestLaserScanner.DefaultName=testlaserscanner
 Provides.TestLocalise.Type=Localise2d
 Provides.TestLocalise.DefaultName=testlocalise
@@ -29,6 +29,8 @@ Requires.Observations.DefaultProxy=laserscanner2d@local/laser2d
 # Config Parameters
 Config.DriverLib.Default=libOrcaLocalNavVfh.so
 Config.TestMode.Default=0
+Config.Test.BatchMode.Default=0
+Config.Test.NumWaypoints.Default=10
 
 # Vfh Parameters
 Config.Vfh.CellSize.Default=0.1

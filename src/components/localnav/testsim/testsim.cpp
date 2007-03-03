@@ -7,7 +7,7 @@ using namespace std;
 
 namespace localnav {
 
-    void getTestPath( orca::PathFollower2dData &d )
+    void getTestPath( orca::PathFollower2dData &d, int numWaypoints )
     {
         d.timeStamp = orcaice::getNow();
         orca::Waypoint2d wp;
@@ -71,15 +71,17 @@ namespace localnav {
         d.path.push_back( wp );
 
         // Now add a random marathon
-        const uint NUM_RANDOM=20;
-        for ( uint i=0; i < NUM_RANDOM; i++ )
+        int numRandom=numWaypoints-d.path.size();
+        for ( int i=0; i < numRandom; i++ )
         {
-            t+=5;
+            t += (int) orcamisc::randNum(0,10);
             wp.target.p.x   = orcamisc::randNum(-10,10);
             wp.target.p.y   = orcamisc::randNum(-10,10);
             wp.target.o     = orcamisc::randNum(-M_PI,M_PI);
             wp.timeTarget.seconds  = t;
             wp.timeTarget.useconds = 0;
+            wp.maxApproachSpeed = orcamisc::randNum( 1.0, 5.0 );
+            wp.maxApproachTurnrate = orcamisc::randNum( 45*M_PI/180.0, 180*M_PI/180.0 );
             d.path.push_back( wp );            
         }
     }

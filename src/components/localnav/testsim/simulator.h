@@ -38,7 +38,9 @@ public:
 
     void printState();
 
-    orca::VehicleDescription getVehicleDescription() const;
+    orca::VehicleDescription        getVehicleDescription() const;
+    orca::RangeScanner2dDescription getRangeScanner2dDescription() const
+        { return scannerDescr_; }
     
 private: 
 
@@ -64,6 +66,7 @@ private:
     orcaifaceimpl::OgMapI          *ogMapInterface_;
 
     orca::LaserScanner2dDataPtr scan_;
+    orca::RangeScanner2dDescription scannerDescr_;
 
     orca::PathFollower2dData testPath_;
 

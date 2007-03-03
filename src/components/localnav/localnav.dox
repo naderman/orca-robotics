@@ -228,6 +228,35 @@ The Main pieces of LocalNav are:
  - LocalNavDriver: Receives goalpoints, speed parameters and sensor data from the LocalNavManager.  
                    Decides what actions to take.
 
+@section testing Testing
+
+Localnav has an internal simulator which can be used for automated
+testing.  When TestMode is enabled, LocalNav will use this internal
+simulator rather than hooking up to external sources of information.
+It will establish the following interfaces to provide external access
+to the state of the simulated world:
+
+- @ref orca_interface_laserscanner2d [LocalNav.Provides.TestLaserScanner]
+- @ref orca_interface_localise2d     [LocalNav.Provides.TestLocalise]
+- @ref orca_interface_ogmap          [LocalNav.Provides.TestOgMap]
+
+The following configuration parameters affect the behaviour of TestMode:
+
+- @c LocalNav.Config.TestMode (bool)
+    - Enables/Disables test mode
+    - Default: 0
+
+- @c LocalNav.Config.Test.BatchMode (bool)
+    - In non-batch-mode, the simulator will wait for a keypress before stepping forward.
+    - Default: 0
+
+- @c LocalNav.Config.Test.NumWaypoints (int)
+    - The size of the path to follow in simulation.
+      - The first few waypoints are deterministic, then a number of random waypoints
+        is added to create a path of the required size.
+    - Default: 10
+
+
 @par Authors
 
   - LocalNav: Alex Brooks

@@ -370,13 +370,15 @@ MainLoop::setup()
     else
     {
         vehicleDescr_ = testSimulator_->getVehicleDescription();
+        scannerDescr_ = testSimulator_->getRangeScanner2dDescription();
         obsProxy_  = &(testSimulator_->obsProxy_);
         locProxy_  = &(testSimulator_->locProxy_);
         odomProxy_ = &(testSimulator_->odomProxy_);
     }
 
     stringstream descrStream;
-    descrStream << "Working with the following vehicle: " << orcaice::toString(vehicleDescr_);
+    descrStream << "Working with the following vehicle: " << orcaice::toString(vehicleDescr_) << endl;
+    descrStream << "And the following range scanner: " << orcaice::toString(scannerDescr_) << endl;
     context_.tracer()->info( descrStream.str() );
 
     driver_ = driverFactory_.createDriver( context_, vehicleDescr_, scannerDescr_ );
@@ -479,7 +481,7 @@ MainLoop::run()
 //                         <<"    localiseData: " << orcaice::toString(localiseData_) << endl
 //                         <<"    odomData: " << orcaice::toString(odomData_) << endl;
 
-            // grab the maximum likely pose of the vehicle
+            // grab the maximum likelihood pose of the vehicle
             orcanavutil::Pose pose = getMLPose( localiseData_ );
 
             // pathMaintainer knows about the whole path in global coords and where

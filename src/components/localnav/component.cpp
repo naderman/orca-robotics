@@ -64,49 +64,14 @@ Component::start()
     pathFollowerInterface_ = new PathFollower2dI( "PathFollower2d", *clock_, context() );
 
     //
-    // Connect to required interfaces
+    // Instantiate bogus info sources in test mode
     //
-//    orca::VehicleDescription descr;
-    if ( !testMode )
+    if ( testMode )
     {
-//         // connect to the controller
-//         orcaice::connectToInterfaceWithTag<VelocityControl2dPrx>( context(), velocityControl2dPrx_, "VelocityControl2d" );
-//         context().tracer()->debug("connected to a 'VelocityControl2d' interface",5);
-
-//         // Get the vehicle description
-//         descr = velocityControl2dPrx_->getDescription();
-
-//         // Instantiate everything
-//         obsConsumer_  = new orcaifaceimpl::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>;
-//         locConsumer_  = new orcaifaceimpl::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>;
-//         odomConsumer_ = new orcaifaceimpl::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>;
-
-//         // subscribe for information from platform
-//         RangeScanner2dPrx obsPrx;
-//         Localise2dPrx   locPrx;
-//         Odometry2dPrx   odomPrx;
-//         orcaice::connectToInterfaceWithTag<orca::RangeScanner2dPrx>( context(), obsPrx, "Observations" );
-//         orcaice::connectToInterfaceWithTag<orca::Localise2dPrx>( context(), locPrx, "Localisation" );
-//         orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context(), odomPrx, "Odometry2d" );
-
-//         Ice::ObjectPtr obsConsumerPtr = obsConsumer_;
-//         orca::RangeScanner2dConsumerPrx obsConsumerPrx =
-//             orcaice::createConsumerInterface<RangeScanner2dConsumerPrx>( context(), obsConsumerPtr );
-//         Ice::ObjectPtr locConsumerPtr = locConsumer_;
-//         orca::Localise2dConsumerPrx locConsumerPrx =
-//             orcaice::createConsumerInterface<Localise2dConsumerPrx>( context(), locConsumerPtr );
-//         Ice::ObjectPtr odomConsumerPtr = odomConsumer_;
-//         orca::Odometry2dConsumerPrx odomConsumerPrx =
-//             orcaice::createConsumerInterface<Odometry2dConsumerPrx>( context(), odomConsumerPtr );
-
-//         obsPrx->subscribe(  obsConsumerPrx );
-//         locPrx->subscribe(  locConsumerPrx );
-//         odomPrx->subscribe( odomConsumerPrx );
-    }
-    else
-    {
+        int numWaypoints = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Test.NumWaypoints", 10 );
+        cout<<"TRACE(component.cpp): Using " << numWaypoints << " waypoints" << endl;
         orca::PathFollower2dData testPath;
-        getTestPath( testPath );
+        getTestPath( testPath, numWaypoints );
         pathFollowerInterface_->setData( testPath, true );
         testSimulator_ = new Simulator( context(), testPath );
     }
