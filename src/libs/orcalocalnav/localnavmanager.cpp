@@ -21,21 +21,7 @@ namespace orcalocalnav {
 //                    Non-Member  Functions
 //////////////////////////////////////////////////////////////////////
 
-// bool localisationIsUncertain( const orca::Localise2dData &localiseData )
-// {
-//     // Some dodgy heuristics
-//     if ( localiseData.hypotheses.size() > 2 )
-//         return true;
-// 
-//     const orca::Pose2dHypothesis h = orcaice::mlHypothesis( localiseData );
-//     if ( h.cov.xx > 20 ||
-//          h.cov.yy > 20 )
-//         return true;
-// 
-//     return false;
-// }
-
-float requiredTimeToGoalAtMaxSpeed( const localnav::Goal &goal )
+float requiredTimeToGoalAtMaxSpeed( const Goal &goal )
 {
     assert ( goal.maxSpeed    >= 0.0 );
 
@@ -69,7 +55,7 @@ float requiredTimeToGoalAtMaxSpeed( const localnav::Goal &goal )
 }
 
 void
-constrainMaxSpeeds( localnav::Goal &goal,
+constrainMaxSpeeds( Goal &goal,
                     orcaice::Context &context )
 {
     double secondsBehindSchedule;
@@ -113,7 +99,7 @@ LocalNavManager::LocalNavManager( const orcaice::Context& context)
 }
 
 bool
-LocalNavManager::checkNextGoal( std::vector<localnav::Goal>&       currentGoals,
+LocalNavManager::checkNextGoal( std::vector<Goal>&       currentGoals,
                                 orca::VelocityControl2dData&       cmd )
 {
     bool haveGoal = currentGoals.size() > 0;

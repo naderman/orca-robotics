@@ -15,10 +15,12 @@
 #include <orcaice/context.h>
 #include <orca/vehicledescription.h>
 
+#include <orcalocalnav/goal.h>
+
 namespace localnav {
 
 // fwd decl
-class Goal;
+// class Goal;
 
 //
 // @author Alex Brooks
@@ -48,12 +50,12 @@ public:
     //
     // Sets cmd.
     //
-    virtual void getCommand( bool                               stalled,
-                             bool                               localisationUncertain,
-                             const orca::Twist2d               &currentVelocity,
-                             const orca::RangeScanner2dDataPtr  obs,
-                             const std::vector<Goal>           &goals,
-                             orca::VelocityControl2dData       &cmd ) = 0;
+    virtual void getCommand( bool                                     stalled,
+                             bool                                     localisationUncertain,
+                             const orca::Twist2d                      &currentVelocity,
+                             const orca::RangeScanner2dDataPtr        obs,
+                             const std::vector<orcalocalnav::Goal>    &goals,
+                             orca::VelocityControl2dData              &cmd ) = 0;
 
 protected: 
 

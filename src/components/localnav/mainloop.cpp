@@ -423,7 +423,7 @@ MainLoop::run()
 
     const int TIMEOUT_MS = 1000;
 
-    std::vector<Goal> currentGoals;
+    std::vector<orcalocalnav::Goal> currentGoals;
     bool obsoleteStall = false;
     bool uncertainLocalisation;
     orca::VelocityControl2dData velocityCmd;

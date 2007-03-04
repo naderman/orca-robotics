@@ -89,15 +89,15 @@ VfhDriver::setSpeedConstraints( float maxSpeed, float maxTurnrate )
 
 // Goal location is in robot's coordinate frame
 void
-VfhDriver::getCommand( bool                               stalled,
-                       bool                               localisationUncertain,
-                       const orca::Twist2d               &currentVelocity,
-                       const orca::RangeScanner2dDataPtr  obs,
-                       const std::vector<Goal>           &goals,
-                       orca::VelocityControl2dData&       cmd )
+VfhDriver::getCommand( bool                                    stalled,
+                       bool                                    localisationUncertain,
+                       const orca::Twist2d                     &currentVelocity,
+                       const orca::RangeScanner2dDataPtr       obs,
+                       const std::vector<orcalocalnav::Goal>   &goals,
+                       orca::VelocityControl2dData&            cmd )
 {
     // Just deal with the current goal
-    Goal goal = goals[0];
+    orcalocalnav::Goal goal = goals[0];
 
     maybeSendHeartbeat();
     setSpeedConstraints( goal.maxSpeed, goal.maxTurnrate );
@@ -203,7 +203,7 @@ VfhDriver::setToEscape( orca::VelocityControl2dData& cmd, const orca::RangeScann
 }
 
 void
-VfhDriver::setTurnToGoal( orca::VelocityControl2dData& cmd, const Goal &goal )
+VfhDriver::setTurnToGoal( orca::VelocityControl2dData& cmd, const orcalocalnav::Goal &goal )
 {
     cmd.motion.v.x = 0.0;
     cmd.motion.v.y = 0.0;
@@ -291,7 +291,7 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
 
 void
 VfhDriver::setToApproachGoal( orca::VelocityControl2dData& cmd,
-                              const Goal &goal, 
+                              const orcalocalnav::Goal &goal, 
                               const orca::Twist2d &currentVelocity,
                               const orca::RangeScanner2dDataPtr &obs )
 {

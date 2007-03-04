@@ -169,7 +169,7 @@ PathMaintainer::waypointReached( const orca::Waypoint2d &wp,
 
 void
 convert( const orca::Waypoint2d  &wp,
-         localnav::Goal          &goal,
+         Goal                    &goal,
          const orcanavutil::Pose &pose,
          double                  secSinceActivation )
 {
@@ -195,7 +195,7 @@ convert( const orca::Waypoint2d  &wp,
 }
 
 void
-PathMaintainer::getActiveGoals( std::vector<localnav::Goal> &goals,
+PathMaintainer::getActiveGoals( std::vector<Goal> &goals,
                                 int maxNumWaypoints,
                                 const orcanavutil::Pose &pose )
 {
@@ -214,7 +214,7 @@ PathMaintainer::getActiveGoals( std::vector<localnav::Goal> &goals,
           pI < path_.path.size() && wpI < maxNumWaypoints;
           pI++, wpI++ )
     {
-        localnav::Goal goal;
+        Goal goal;
         convert( path_.path[pI], goal, pose, secSinceActivation() );
         goals.push_back( goal );
     }

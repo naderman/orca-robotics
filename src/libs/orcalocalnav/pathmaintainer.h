@@ -14,7 +14,7 @@
 #include <orcaice/ptrproxy.h>
 #include <orcaice/context.h>
 #include <orcanavutil/pose.h>
-#include <localnavutil/goal.h>
+#include "goal.h"
 
 namespace orcalocalnav {
 
@@ -47,7 +47,7 @@ public:
     //
     // Goals are in robot's local coordinate system.
     // 
-    void getActiveGoals( std::vector<localnav::Goal> &goals,
+    void getActiveGoals( std::vector<Goal> &goals,
                          int maxNumGoals,
                          const orcanavutil::Pose &pose );
 

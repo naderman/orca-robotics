@@ -13,7 +13,7 @@
 #include <localnavutil/idriver.h>
 #include <orcaice/context.h>
 #include <orcaice/timer.h>
-#include <localnavutil/goal.h>
+#include <orcalocalnav/goal.h>
 #include <vfhdriver/vfh_algorithm.h>
 #include <orcaice/heartbeater.h>
 
@@ -56,12 +56,12 @@ public:
     virtual void reset() {};
 
     // Goal location is in robot's coordinate frame
-    virtual void getCommand( bool                               stalled,
-                             bool                               localisationUncertain,
-                             const orca::Twist2d               &currentVelocity,
-                             const orca::RangeScanner2dDataPtr  obs,
-                             const std::vector<localnav::Goal> &goals,
-                             orca::VelocityControl2dData&       cmd );
+    virtual void getCommand( bool                                  stalled,
+                             bool                                  localisationUncertain,
+                             const orca::Twist2d                   &currentVelocity,
+                             const orca::RangeScanner2dDataPtr     obs,
+                             const std::vector<orcalocalnav::Goal> &goals,
+                             orca::VelocityControl2dData&          cmd );
 
 private: 
 
@@ -70,9 +70,9 @@ private:
     // Functions for setting commands
     void setToZero(         orca::VelocityControl2dData& cmd );
     void setToEscape(       orca::VelocityControl2dData& cmd, const orca::RangeScanner2dDataPtr &obs );
-    void setTurnToGoal(     orca::VelocityControl2dData& cmd, const localnav::Goal &goal );
+    void setTurnToGoal(     orca::VelocityControl2dData& cmd, const orcalocalnav::Goal &goal );
     void setToApproachGoal( orca::VelocityControl2dData& cmd,
-                            const localnav::Goal     &goal, 
+                            const orcalocalnav::Goal     &goal, 
                             const orca::Twist2d             &currentVelocity,
                             const orca::RangeScanner2dDataPtr &obs );
     

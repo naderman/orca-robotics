@@ -12,13 +12,13 @@
 
 #include <orcaice/context.h>
 #include <orcaice/ptrbuffer.h>
-#include <orca/localise2d.h>
 #include <orca/velocitycontrol2d.h>
 #include <orca/rangescanner2d.h>
 #include <orca/pathfollower2d.h>
 #include <orcanavutil/orcanavutil.h>
-#include <localnavutil/goal.h>
+// #include <localnavutil/goal.h>
 #include <orcaice/heartbeater.h>
+#include "goal.h"
 
 namespace orcalocalnav {
 
@@ -41,7 +41,7 @@ public:
 
     // Check if there is a goal coming up.
     // If there is no goal, stop the robot and reset the pathplanning driver
-    bool checkNextGoal( std::vector<localnav::Goal>&      currentGoals,
+    bool checkNextGoal( std::vector<Goal>&                currentGoals,
                         orca::VelocityControl2dData&      cmd );
 
 private: 
