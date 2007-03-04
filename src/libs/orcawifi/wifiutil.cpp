@@ -1,4 +1,6 @@
 #include <netinet/in.h>
+#include <linux/if.h>
+#include <linux/types.h>
 #include <linux/wireless.h>
 #include <sys/ioctl.h>
 #include <netinet/if_ether.h>
