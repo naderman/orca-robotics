@@ -1,4 +1,4 @@
-IF ( NOT OS_WIN )
+IF ( OS_LINUX )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
 
@@ -13,4 +13,4 @@ IF ( NOT OS_WIN )
     TARGET_LINK_LIBRARIES( OrcaLocalNavUtil )
     INSTALL_FILES( /include/orcalocalnav .*\\.h$ )
     
-ENDIF ( NOT OS_WIN )
+ENDIF ( OS_LINUX )
