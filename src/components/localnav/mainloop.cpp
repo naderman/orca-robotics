@@ -425,7 +425,6 @@ MainLoop::run()
 
     std::vector<orcalocalnav::Goal> currentGoals;
     bool obsoleteStall = false;
-    bool uncertainLocalisation;
     orca::VelocityControl2dData velocityCmd;
     
     
