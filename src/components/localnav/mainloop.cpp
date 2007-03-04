@@ -12,6 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcanavutil/pose.h>
 #include <orcalocalnav/pathfollower2dI.h>
+#include <orcalocalnav/localiseutil.h>
 #include <localnavutil/pose.h>
 
 #include "mainloop.h"
@@ -484,6 +485,10 @@ MainLoop::run()
 
             // grab the maximum likelihood pose of the vehicle
             orcanavutil::Pose pose = getMLPose( localiseData_ );
+            
+            bool uncertainLocalisation = orcalocalnav::localisationIsUncertain( localiseData_ );
+            if ( uncertainLocalisation )
+                context_.tracer()->warning( "LocalNavManager: Localisation is uncertain..." );
 
             // pathMaintainer knows about the whole path in global coords and where
             // we are in that path. So get the next set of (current) goals (in local 
@@ -493,9 +498,7 @@ MainLoop::run()
                                              pose );
 
             // Check if there is a goal. If not, set all robot commands to zero
-            bool haveGoal = localNavManager_->checkNextGoal( localiseData_,
-                                                             currentGoals,
-                                                             uncertainLocalisation,
+            bool haveGoal = localNavManager_->checkNextGoal( currentGoals,
                                                              velocityCmd );
 
             // if there is no active goal, reset the path planning driver
