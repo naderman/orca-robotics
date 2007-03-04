@@ -21,19 +21,19 @@ namespace orcalocalnav {
 //                    Non-Member  Functions
 //////////////////////////////////////////////////////////////////////
 
-bool localisationIsUncertain( const orca::Localise2dData &localiseData )
-{
-    // Some dodgy heuristics
-    if ( localiseData.hypotheses.size() > 2 )
-        return true;
-
-    const orca::Pose2dHypothesis h = orcaice::mlHypothesis( localiseData );
-    if ( h.cov.xx > 20 ||
-         h.cov.yy > 20 )
-        return true;
-
-    return false;
-}
+// bool localisationIsUncertain( const orca::Localise2dData &localiseData )
+// {
+//     // Some dodgy heuristics
+//     if ( localiseData.hypotheses.size() > 2 )
+//         return true;
+// 
+//     const orca::Pose2dHypothesis h = orcaice::mlHypothesis( localiseData );
+//     if ( h.cov.xx > 20 ||
+//          h.cov.yy > 20 )
+//         return true;
+// 
+//     return false;
+// }
 
 float requiredTimeToGoalAtMaxSpeed( const localnav::Goal &goal )
 {
@@ -113,17 +113,11 @@ LocalNavManager::LocalNavManager( const orcaice::Context& context)
 }
 
 bool
-LocalNavManager::checkNextGoal( const orca::Localise2dData&        localiseData, 
-                                std::vector<localnav::Goal>&       currentGoals,
-                                bool&                              uncertainLocalisation,
+LocalNavManager::checkNextGoal( std::vector<localnav::Goal>&       currentGoals,
                                 orca::VelocityControl2dData&       cmd )
 {
     bool haveGoal = currentGoals.size() > 0;
     maybeSendHeartbeat( haveGoal );
-    
-    uncertainLocalisation = localisationIsUncertain( localiseData );
-    if ( uncertainLocalisation )
-        context_.tracer()->warning( "LocalNavManager: Localisation is uncertain..." );
     
     if ( !haveGoal )
     {

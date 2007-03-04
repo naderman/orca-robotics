@@ -41,9 +41,7 @@ public:
 
     // Check if there is a goal coming up.
     // If there is no goal, stop the robot and reset the pathplanning driver
-    bool checkNextGoal( const orca::Localise2dData&       localiseData,
-                        std::vector<localnav::Goal>&      currentGoals,
-                        bool&                             uncertainLocalisation,
+    bool checkNextGoal( std::vector<localnav::Goal>&      currentGoals,
                         orca::VelocityControl2dData&      cmd );
 
 private: 
