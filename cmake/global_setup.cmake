@@ -61,7 +61,8 @@ SET( PROJECT_BINARY_DIR ${${PROJECT_NAME}_BINARY_DIR} )
 ###########################################################
 IF ( NOT CMAKE_BUILD_TYPE )
   IF ( NOT OS_WIN )
-    SET( CMAKE_BUILD_TYPE Release )
+    # For gcc, RelWithDebInfo gives '-O2 -g'
+    SET( CMAKE_BUILD_TYPE RelWithDebInfo )
   ELSE ( NOT OS_WIN )
     # windows... a temp hack: VCC does not seem to respect the cmake
     # setting and always defaults to debug, we have to match it here.
