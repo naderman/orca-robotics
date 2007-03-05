@@ -38,6 +38,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @section orca_doc_history_head Changes in CVS since Last Release
 
 @par Project wide
+
+- Compile Options
+  - Under Linux, build with debugging symbols by default (alex b)
+
 @par New interfaces
 
 - Replay
@@ -57,7 +61,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - SegwayRmp
     - Added hardware speed limits, set in hardware driver (alex m/b)
     - the RmpUsb driver now corrects for segway's built in speed scaling factor, 
-so that segway will actually drive at the speed specified. (alex m/b)
+      so that segway will actually drive at the speed specified. (alex m/b)
 
 @par Updated utilities
 
@@ -68,7 +72,7 @@ so that segway will actually drive at the speed specified. (alex m/b)
     - added support for Gps, Localise2d interfaces (alex b/m)
 - Logger
     - optinally, tolerates unsupported inerface types and formats. also allows
-disabling replay. (alex m)
+      disabling replay. (alex m)
 
 @par Updated libraries
 
