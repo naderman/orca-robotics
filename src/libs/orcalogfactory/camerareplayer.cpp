@@ -222,9 +222,9 @@ CameraReplayer::loadDataJpeg( int index )
         file_->read( (char*)&length, sizeof(size_t) );
         // checkFile();
 
-	if ( length==0 ) {
-	    throw orcalog::FileException( ERROR_INFO, "attempt to read object of size 0" );
-	}
+        if ( length==0 ) {
+            throw orcalog::FileException( ERROR_INFO, "attempt to read object of size 0" );
+        }
     
         checkFile();
 
@@ -233,9 +233,9 @@ CameraReplayer::loadDataJpeg( int index )
         byteData.resize( length );
         file_->read( (char*)&byteData[0], length );
 
-	if ( byteData.empty() ) {
-	    throw orcalog::FileException( ERROR_INFO, "read object of size 0" );
-	}
+        if ( byteData.empty() ) {
+            throw orcalog::FileException( ERROR_INFO, "read object of size 0" );
+        }
     
         checkFile();
 
@@ -269,11 +269,9 @@ CameraReplayer::orca_readCameraData( Ice::InputStreamPtr iceInputStreamPtr, int 
     std::string fname = iceInputStreamPtr->readString();
     
     #ifdef OPENCV_FOUND
-        if (index == 0)
-        {    
-            // only setup the opencv struct on the first loop
-            nChannels_ = orcaimage::numChannels( data_.format );
-        }
+    {
+        nChannels_ = orcaimage::numChannels( data_.format );
+
         // load compressed image into opencv struct
         cvImage_ = cvLoadImage( fname.c_str(), -1);
         
@@ -285,5 +283,6 @@ CameraReplayer::orca_readCameraData( Ice::InputStreamPtr iceInputStreamPtr, int 
         memcpy( &data_.image[0], cvImage_->imageData, data_.image.size() );
 
         cvReleaseImage( &cvImage_ );
+    }
     #endif
 }       
