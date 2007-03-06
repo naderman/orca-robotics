@@ -73,6 +73,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Logger
     - optinally, tolerates unsupported inerface types and formats. also allows
       disabling replay. (alex m)
+- LogPlayer
+    - CameraReplayer: fixed mem leak and bug to do with skipping images (Alen Alempijevic)
 
 @par Updated libraries
 
