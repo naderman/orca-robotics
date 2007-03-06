@@ -213,7 +213,6 @@ CameraReplayer::loadDataIce( int index )
 void 
 CameraReplayer::loadDataJpeg( int index )
 {
-//     for (int i=0; i<index; i++)
     while (index != (dataCounter_) )
     {
         char id;
@@ -240,13 +239,17 @@ CameraReplayer::loadDataJpeg( int index )
     
         checkFile();
 
-//         cout << "TRACE(cameraplayer.cpp): byteData, size: " << byteData.size() << endl;
-        Ice::InputStreamPtr iceInputStreamPtr = Ice::createInputStream( context_.communicator(), byteData );
+        // If we're skipping through many frames, just read the one we're interested in.
+        if ( dataCounter_ == (index-1) )
+        {
+            Ice::InputStreamPtr iceInputStreamPtr = Ice::createInputStream( context_.communicator(),
+                                                                            byteData );
 
-	// TODO: Make this so that it an option is read from the logged master file
-	// for reading back as an ice binary file or as separate images        
-	// ice_readCameraData( iceInputStreamPtr, data_ );
-	orca_readCameraData( iceInputStreamPtr, index );
+            // TODO: Make this so that it an option is read from the logged master file
+            // for reading back as an ice binary file or as separate images        
+            // ice_readCameraData( iceInputStreamPtr, data_ );
+            orca_readCameraData( iceInputStreamPtr, index );
+        }
 
         dataCounter_++;
     }
@@ -280,5 +283,7 @@ CameraReplayer::orca_readCameraData( Ice::InputStreamPtr iceInputStreamPtr, int 
         
         // load image from opencv struct to orca object
         memcpy( &data_.image[0], cvImage_->imageData, data_.image.size() );
+
+        cvReleaseImage( &cvImage_ );
     #endif
 }       
