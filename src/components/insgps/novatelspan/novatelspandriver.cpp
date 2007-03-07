@@ -153,7 +153,6 @@ NovatelSpanInsGpsDriver::reset()
         put = serial_->write( str );
     }
     
-    // cout << "baud_ = " << baud_ << endl;
 
 //     // set the port to the requested baudrate
 //     if( serial_->baud( 115200 )==-1 )
