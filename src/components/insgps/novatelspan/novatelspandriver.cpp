@@ -153,7 +153,7 @@ NovatelSpanInsGpsDriver::reset()
         put = serial_->write( str );
     }
     
-    cout << "baud_ = " << baud_ << endl;
+    // cout << "baud_ = " << baud_ << endl;
 
 //     // set the port to the requested baudrate
 //     if( serial_->baud( 115200 )==-1 )
@@ -269,12 +269,11 @@ NovatelSpanInsGpsDriver::init()
     // IMU message
     
     // gps position without ins
-    put = serial_->write( "log bestgpsposb ontime 1.0\r\n" );
-    cout << "wrote bestgpsposb" << endl;
+    // put = serial_->write( "log bestgpsposb ontime 1.0\r\n" );
     
     // short IMU messages
     // pva data in wgs84 coordinates
-    put = serial_->write( "log inspvasb ontime 0.05\r\n" );
+    put = serial_->write( "log inspvasb ontime 0.01\r\n" );
 
     // raw accelerometer and gyro data
     // put = serial_->write( "log rawimusb onnew\r\n" );
@@ -448,7 +447,7 @@ NovatelSpanInsGpsDriver::run()
                 {
                     // timeOfRead_ = IceUtil::Time::now();
                     retMsgs = readMsgsFromHardware();
-                    cout << "retMsgs: " << retMsgs << endl; 
+                    // cout << "retMsgs: " << retMsgs << endl; 
                 }
                 else
                 {
@@ -525,13 +524,13 @@ NovatelSpanInsGpsDriver::readMsgsFromHardware()
         
     // read novatel binary messages
     ret = read_message( &serial_data_ );
-    cout << "readMsgsFromHardware(): ret: " << ret << endl;
+    // cout << "readMsgsFromHardware(): ret: " << ret << endl;
     // ret = serial_->read_line(serial_data_,1024,'\n');
 
     if( ret>0 )
     {
     
-    cout << "id: " << ret << endl; 
+    // cout << "id: " << ret << endl; 
     if( populateData( ret ) == 0 )
         {
             msgs++;
@@ -705,8 +704,8 @@ NovatelSpanInsGpsDriver::populateData( int id )
             // printf("got INSPVASB\n");
             memcpy( &INSPVA_, &serial_data_.raw_message, sizeof(INSPVA_) );
 
-	    cout << "GPS time: " << INSPVA_.data.seconds << endl;
-           printf("%10.10f\n",INSPVA_.data.seconds); 
+	    // cout << "GPS time: " << INSPVA_.data.seconds << endl;
+        //    printf("%10.10f\n",INSPVA_.data.seconds); 
 	    localise3dData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
             cout << "timeOfRead_: " << orcaice::toString(localise3dData_.timeStamp) << endl; 
 
