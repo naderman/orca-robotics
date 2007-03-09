@@ -84,7 +84,8 @@ public slots:
 
 private:
 
-    GuiElement *instantiateFromFactories( const QStringList &ids, const QColor &platformColor, const QStringList &proxyStrList );
+    // returns true if supported by a factory otherwise false
+    bool instantiateFromFactories( GuiElement* &element, const QStringList &ids, const QColor &platformColor, const QStringList &proxyStrList );
 
     QList<GuiElement*> elements_;
     

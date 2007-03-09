@@ -147,18 +147,20 @@ GuiElementModel::removeRows( int row, int count, const QModelIndex & parent )
     return true;
 }
 
-GuiElement *
-GuiElementModel::instantiateFromFactories( const QStringList &ids, const QColor &platformColor, const QStringList &proxyStrList )
+bool
+GuiElementModel::instantiateFromFactories( GuiElement* &element, const QStringList &ids, const QColor &platformColor, const QStringList &proxyStrList )
 {
     for ( unsigned int i=0; i < factories_.size(); i++ )
     {
         // if this interface is not supported, skip this factory
         if ( !factories_[i]->isSupported( ids ) )
             continue;
-
-        return factories_[i]->create( context_, ids, proxyStrList, platformColor, humanManager_  );
+        
+        // if we get here the interface is supported
+        element = factories_[i]->create( context_, ids, proxyStrList, platformColor, humanManager_  );
+        return true; 
     }
-    return NULL;
+    return false;
 }
 
 bool
@@ -186,11 +188,11 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
     {
         QStringList info = interfacesInfo[i]; 
         ids << info[4];
-        cout << "ids: " << info[3].toStdString() << endl;
+        //cout << "ids: " << info[3].toStdString() << endl;
         proxyStrList << info[3]+"@"+info[1]+"/"+info[2];
-        cout << "proxylist: " << (info[3]+"@"+info[1]+"/"+info[2]).toStdString() << endl;
+        //cout << "proxylist: " << (info[3]+"@"+info[1]+"/"+info[2]).toStdString() << endl;
         platformStrList << info[1];
-        cout << "platform: " << info[1].toStdString() << endl;
+        //cout << "platform: " << info[1].toStdString() << endl;
     }
     
     bool haveThisInt = doesInterfaceExist( proxyStrList, interfacesInfo.size() );
@@ -218,12 +220,12 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
     }
     platformColor_->getColor( platform, platformColor );
     
-    GuiElement* element = instantiateFromFactories( ids, platformColor, proxyStrList );
-    if (element==NULL)
+    GuiElement* element = NULL;
+    bool isSupported = instantiateFromFactories( element, ids, platformColor, proxyStrList );
+    if (!isSupported || element==NULL)
     {
-        //cout << "TRACE(guielementmodel.cpp): Interface not supported." << endl;
-        stringstream ss;
-        humanManager_->showStatusMsg(orcaqgui::Warning, "Interface " + proxyStrList.join(" ") + " is not supported by the GUI");
+        if (!isSupported) humanManager_->showStatusMsg(orcaqgui::Warning, "Element " + proxyStrList.join(" ") + " is not supported by any factory");
+        if (element==NULL) humanManager_->showStatusMsg(orcaqgui::Warning, "Element " + proxyStrList.join(" ") + " returned from factory is NULL");
         delete element;
         if (!doesPlatformExist( platform ) ) 
             emit platformNeedsRemoval(platform);
@@ -255,7 +257,7 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
     int ii = elements_.indexOf( element );
     if ( ii==-1 ) {    
         ii = elements_.size();
-        cout<<"TRACE(guielementmodel.cpp): creating element "<<ii<<endl;
+        //cout<<"TRACE(guielementmodel.cpp): creating element "<<ii<<endl;
 
         //
         // stick new node into the list
