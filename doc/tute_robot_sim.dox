@@ -59,7 +59,7 @@ $ cp [ORCA_INSTALL]/cfg/robot2d.cfg ./
 $ cp [ORCA_INSTALL]/cfg/faithlocaliser.cfg ./
 $ cp [ORCA_INSTALL]/cfg/teleop.cfg ./
 $ cp [ORCA_INSTALL]/cfg/ogmaploader.cfg ./
-$ cp [ORCA_INSTALL]/cfg/orcaview.cfg ./
+$ cp [ORCA_INSTALL]/cfg/orcaview2d.cfg ./
 @endverbatim
 
 From here on in, each component will need a separate terminal. Another option is to put all components into an application server called IceBox which runs them in a single process. This is described in tutorial @ref orca_doc_tute_icebox.
@@ -78,7 +78,7 @@ Now run the Laser2d component.
 @verbatim
 $ laser2d
 @endverbatim
-Check the Stage world window: you should see the laser scan after the Laser2d component made the connection. A quick check to see whether it's working is to run lasermon (as described in @ref orca_doc_quickstart).
+Check the Stage world window: you should see the laser scan after the Laser2d component made the connection. Note that occasionally, Stage does not always show the scan. A quick check to see whether it's working is to run lasermon (as described in @ref orca_doc_quickstart).
 
 @section robot_control Robot driver
 
