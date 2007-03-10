@@ -44,7 +44,6 @@ Localise3dI::publish()
     
     // send the data to icestorm and to a buffer for direct connections
     localSetData( localise3dData_ );
-    cout << "localise3ddata has been sent" << endl;
             
     return;
 }
