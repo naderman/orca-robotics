@@ -196,7 +196,7 @@ NovatelSpanInsGpsDriver::init()
     threadPriorityLow_ = getprio( 0 );
     // use this in getprio() for dynamically increasing the priority of
     // this thread by 4
-    threadPriorityHigh_ =  threadPriorityLow_ + 14;
+    threadPriorityHigh_ =  threadPriorityLow_ + 18;
 #endif
 
     //

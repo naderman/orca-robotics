@@ -88,8 +88,9 @@ Laser::IniLaserInstance(unsigned int n, int speed0, int speed2, int init, char* 
     pxl->priority2 = getprio( 0 );
 	// use this in getprio() for dynamically increasing the priority of
 	// this thread by 4
-    pxl->priority =  pxl->priority2+4;
-    
+    // pxl->priority =  pxl->priority2+2;
+    pxl->priority = pxl->priority2;
+	
 	// initial baudrate
 	pxl->speed = speed0 ;
     // desired baudrate
@@ -535,7 +536,7 @@ Laser::readSickLaser(struct LaserData *pxl,int *pFlag)
         // std::cout << "orcaTimeStamp: " << orcaice::toString(orcaTimeStamp) << std::endl;
 
 		//here i should decrease the priority
-		//setprio(0,pxl->priority2) ;
+		setprio(0,pxl->priority2) ;
 		if (xx >=0)
 		{
 	        // if the incoming byte was a header character
@@ -631,7 +632,8 @@ Laser::readSickLaserX(void *pxl0)
 	setprio(0,pxl->priority2) ;
 	////PrintiEtcXX2("-> [%s] [prio=%d]\n",pxl->NameUnit,getprio( 0 ));	
 	readSickLaser(pxl,p->pflag) ;
-   	return(NULL) ;
+    setprio(0,pxl->priority);
+	return(NULL) ;
 }
 
 
