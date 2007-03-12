@@ -10,7 +10,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 
-#include "localnavmanager.h"
+#include "speedlimiter.h"
 
 using namespace std;
 using namespace orcaice;
@@ -47,18 +47,28 @@ float requiredTimeToGoalAtMaxSpeed( const Goal &goal )
     float requiredTimeAtMaxSpeed = translationTime; // + rotationTime;
     if ( !(requiredTimeAtMaxSpeed >= 0.0) )
     {
-        cout << "ERROR(localnavmanager.cpp): requiredTimeAtMaxSpeed: " << requiredTimeAtMaxSpeed << endl;
-        cout<<"TRACE(localnavmanager.cpp): translationTime: " << translationTime << endl;
+        cout << "ERROR(speedlimiter.cpp): requiredTimeAtMaxSpeed: " << requiredTimeAtMaxSpeed << endl;
+        cout<<"TRACE(speedlimiter.cpp): translationTime: " << translationTime << endl;
     }
     assert( requiredTimeAtMaxSpeed >= 0.0 );
     return requiredTimeAtMaxSpeed;
 }
 
-void
-constrainMaxSpeeds( Goal &goal,
-                    orcaice::Context &context )
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+SpeedLimiter::SpeedLimiter( const orcaice::Context& context)
+    : secondsBehindSchedule_(0),
+      heartbeater_(context),
+      context_(context)
 {
-    double secondsBehindSchedule;
+}
+
+void
+SpeedLimiter::constrainMaxSpeeds( Goal &goal )
+{
+    double secondsBehindSchedule_;
     double requiredTimeAtMaxSpeed = requiredTimeToGoalAtMaxSpeed( goal );
 
     // Scale (with a factor in [0,1]) by how long we actually have
@@ -69,16 +79,16 @@ constrainMaxSpeeds( Goal &goal,
         stringstream ss; ss << "We have " << goal.timeRemaining 
                             << "s, but we could get there in " << requiredTimeAtMaxSpeed 
                             << "s if we put the foot down.  Scaling speeds with a factor of " << scaleFactor;
-        context.tracer()->debug( ss.str(), 5 );
-        secondsBehindSchedule = 0.0;
+        context_.tracer()->debug( ss.str(), 5 );
+        secondsBehindSchedule_ = 0.0;
     }
     else
     {
         stringstream ss; ss << "We're running late! " << goal.timeRemaining
                             << "s allowed, but it would take " << requiredTimeAtMaxSpeed 
                             << "s at full speed.";
-        context.tracer()->debug( ss.str(), 5 );
-        secondsBehindSchedule = requiredTimeAtMaxSpeed - goal.timeRemaining;
+        context_.tracer()->debug( ss.str(), 5 );
+        secondsBehindSchedule_ = requiredTimeAtMaxSpeed - goal.timeRemaining;
     }
     assert( scaleFactor <= 1.0 );
     goal.maxSpeed    *= scaleFactor;
@@ -86,74 +96,41 @@ constrainMaxSpeeds( Goal &goal,
     // Don't constrain the maxTurnrate by timeRemaining.
     // Need to leave the driver with the freedom to swerve hard.
     // goal.maxTurnrate *= scaleFactor;
+
+    maybeSendHeartbeat();
+
 }
 
-//////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
-
-LocalNavManager::LocalNavManager( const orcaice::Context& context)
-    : secondsBehindSchedule_(0),
-      heartbeater_(context),
-      context_(context)
+void 
+SpeedLimiter::setToZero( orca::VelocityControl2dData&  cmd )
 {
-}
-
-bool
-LocalNavManager::checkNextGoal( std::vector<Goal>&       currentGoals,
-                                orca::VelocityControl2dData&       cmd )
-{
-    bool haveGoal = currentGoals.size() > 0;
-    maybeSendHeartbeat( haveGoal );
-    
-    if ( !haveGoal )
-    {
-        cmd.motion.v.x = 0;
-        cmd.motion.v.y = 0;
-        cmd.motion.w   = 0;
-        {
-            std::stringstream ss;
-            ss << "LocalNavManager: No active path.  giving command: " << orcaice::toString(cmd);
-            context_.tracer()->debug( ss.str(), 5 );
-        }
-    }
-    else
-    {
-        constrainMaxSpeeds( currentGoals[0], context_ );
-    }
-    
-    // For big debug levels, give feedback through tracer.
+    cmd.motion.v.x = 0;
+    cmd.motion.v.y = 0;
+    cmd.motion.w   = 0;
     {
         std::stringstream ss;
-        ss << "LocalNavManager: Setting command: " << orcaice::toString(cmd);
+        ss << "SpeedLimiter: Stopping the robot. Giving command: " << orcaice::toString(cmd);
         context_.tracer()->debug( ss.str(), 5 );
     }
-
-    return haveGoal;
 }
 
 void
-LocalNavManager::maybeSendHeartbeat( bool haveGoal )
+SpeedLimiter::maybeSendHeartbeat()
 {
     if ( !heartbeater_.isHeartbeatTime() )
         return;
 
     stringstream ss;
-    if ( haveGoal )
+    ss << "Seeking goal.  Timing: ";
+    if ( secondsBehindSchedule_ > 0.0 )
     {
-        ss << "Seeking goal.  Timing: ";
-        if ( secondsBehindSchedule_ > 0.0 )
-        {
-            ss << "on schedule.";
-        }
-        else
-        {
-            ss << "running " << secondsBehindSchedule_ << "s behind schedule.";
-        }
+        ss << "on schedule.";
     }
     else
     {
-        ss << "No active goal.";
+        ss << "running " << secondsBehindSchedule_ << "s behind schedule.";
     }
+    
     heartbeater_.beat( ss.str() );
 }
 

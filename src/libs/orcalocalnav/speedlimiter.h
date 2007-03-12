@@ -7,8 +7,8 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA_LOCALNAVMANAGER_H
-#define ORCA_LOCALNAVMANAGER_H
+#ifndef ORCA_SPEEDLIMITER_H
+#define ORCA_SPEEDLIMITER_H
 
 #include <orcaice/context.h>
 #include <orcaice/ptrbuffer.h>
@@ -16,7 +16,6 @@
 #include <orca/rangescanner2d.h>
 #include <orca/pathfollower2d.h>
 #include <orcanavutil/orcanavutil.h>
-// #include <localnavutil/goal.h>
 #include <orcaice/heartbeater.h>
 #include "goal.h"
 
@@ -26,30 +25,30 @@ class LocalNavParameters;
 class Goal;
 
 //
-// Takes goals and localisation info in the global reference frame.
-// Feeds information to the driver, all in the robot's local frame
-// of reference.
+// Constrains the speed according to the next set of current goals.
+// The goals are in the robot's local frame of reference.
 //
 // @author Alex Brooks
 //
-class LocalNavManager
+class SpeedLimiter
 {
 
 public: 
 
-    LocalNavManager( const orcaice::Context &context );
+    SpeedLimiter( const orcaice::Context &context );
 
-    // Check if there is a goal coming up.
-    // If there is no goal, stop the robot and reset the pathplanning driver
-    bool checkNextGoal( std::vector<Goal>&                currentGoals,
-                        orca::VelocityControl2dData&      cmd );
+    // constrain the max speeds for a particular goal
+    void constrainMaxSpeeds( Goal &goal );
+
+    // set all velocity commands to zero
+    void setToZero( orca::VelocityControl2dData&  cmd );
 
 private: 
 
-    void maybeSendHeartbeat( bool haveGoal );
+    void maybeSendHeartbeat();
     
     // Maintain these for heartbeat messages
-    double            secondsBehindSchedule_;
+    double  secondsBehindSchedule_;
 
     orcaice::Heartbeater heartbeater_;
     orcaice::Context  context_;

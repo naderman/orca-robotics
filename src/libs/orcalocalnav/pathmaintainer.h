@@ -47,7 +47,8 @@ public:
     //
     // Goals are in robot's local coordinate system.
     // 
-    void getActiveGoals( std::vector<Goal> &goals,
+    // returns FALSE if there are no active goals, and TRUE otherwise
+    bool getActiveGoals( std::vector<Goal> &goals,
                          int maxNumGoals,
                          const orcanavutil::Pose &pose );
 

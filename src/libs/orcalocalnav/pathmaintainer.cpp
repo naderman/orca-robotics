@@ -194,13 +194,13 @@ convert( const orca::Waypoint2d  &wp,
     NORMALISE_ANGLE( goal.theta );
 }
 
-void
+bool
 PathMaintainer::getActiveGoals( std::vector<Goal> &goals,
                                 int maxNumWaypoints,
                                 const orcanavutil::Pose &pose )
 {
     goals.resize(0);
-    if ( wpIndex_ == -1 ) return;
+    if ( wpIndex_ == -1 ) return false;
 
     // Time now relative to start time
     double timeNow = orcaice::timeDiffAsDouble( clock_.time(), pathStartTime_ );
@@ -218,6 +218,9 @@ PathMaintainer::getActiveGoals( std::vector<Goal> &goals,
         convert( path_.path[pI], goal, pose, secSinceActivation() );
         goals.push_back( goal );
     }
+    
+    bool haveGoal = goals.size() > 0;
+    return haveGoal;
 }
 
 void  
