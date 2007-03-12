@@ -506,6 +506,7 @@ MainLoop::run()
             {
                 // If we do have an active goal, limit the max speed for the current goal
                 // and get the pathplanner to work out the next set of actions
+                
                 speedLimiter_->constrainMaxSpeeds( currentGoals.at(0) );
                  
                  // For big debug levels, give feedback through tracer.
