@@ -19,7 +19,7 @@
 #include <orcaice/proxy.h>
 #include <orcaifaceimpl/ptrproxiedconsumerI.h>
 #include <orcaifaceimpl/proxiedconsumerI.h>
-#include <orcalocalnav/localnavmanager.h>
+#include <orcalocalnav/speedlimiter.h>
 #include <orcalocalnav/pathmaintainer.h>
 #include <orcalocalnav/clock.h>
 #include <localnavutil/idriver.h>
@@ -88,8 +88,8 @@ private:
                              const orca::Odometry2dData&        odomData,
                              double                             threshold );
 
-    // The class that does the navigating
-    orcalocalnav::LocalNavManager *localNavManager_;
+    // Constrains the max speed
+    orcalocalnav::SpeedLimiter *speedLimiter_;
 
     // Keeps track of the path we're following
     orcalocalnav::PathMaintainer  *pathMaintainer_;

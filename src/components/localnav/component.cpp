@@ -10,7 +10,7 @@
 #include "component.h"
 #include "mainloop.h"
 #include <localnavutil/idriver.h>
-#include <orcalocalnav/localnavmanager.h>
+// #include <orcalocalnav/speedlimiter.h>
 #include <orcalocalnav/pathmaintainer.h>
 #include "testsim/testsim.h"
 

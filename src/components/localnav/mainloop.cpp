@@ -29,7 +29,7 @@ MainLoop::MainLoop( DriverFactory                    &driverFactory,
                     orcalocalnav::Clock              &clock,
                     orcalocalnav::PathFollower2dI    &pathFollowerInterface,
                     const orcaice::Context           &context )
-    : localNavManager_(NULL),
+    : speedLimiter_(NULL),
       pathMaintainer_(NULL),
       driver_(NULL),
       driverFactory_(driverFactory),
@@ -59,7 +59,7 @@ MainLoop::MainLoop( DriverFactory                   &driverFactory,
                     orcalocalnav::PathFollower2dI   &pathFollowerInterface,
                     Simulator                       &testSimulator,
                     const orcaice::Context          &context )
-    : localNavManager_(NULL),
+    : speedLimiter_(NULL),
       pathMaintainer_(NULL),
       driver_(NULL),
       driverFactory_(driverFactory),
@@ -82,7 +82,7 @@ MainLoop::~MainLoop()
     if ( obsConsumer_ ) delete obsConsumer_;
     if ( odomConsumer_ ) delete odomConsumer_;
     if ( locConsumer_ ) delete locConsumer_;
-    if ( localNavManager_ ) delete localNavManager_;
+    if ( speedLimiter_ ) delete speedLimiter_;
     if ( pathMaintainer_ ) delete pathMaintainer_;
     if ( driver_ ) delete driver_;
 }
@@ -384,8 +384,7 @@ MainLoop::setup()
 
     driver_ = driverFactory_.createDriver( context_, vehicleDescr_, scannerDescr_ );
     pathMaintainer_ = new orcalocalnav::PathMaintainer( pathFollowerInterface_, clock_, context_ );
-    // localNavManager_ = new orcalocalnav::LocalNavManager( *driver_, context_ );
-    localNavManager_ = new orcalocalnav::LocalNavManager( context_ );
+    speedLimiter_ = new orcalocalnav::SpeedLimiter( context_ );
 
     initInterfaces();
     ensureProxiesNotEmpty();
@@ -478,36 +477,44 @@ MainLoop::run()
                 continue;
             }
 
-//                     cout<<"TRACE(mainloop.cpp): localNavManager_.getCommand:"<<endl
-//                         <<"    localiseData: " << orcaice::toString(localiseData_) << endl
-//                         <<"    odomData: " << orcaice::toString(odomData_) << endl;
-
             // grab the maximum likelihood pose of the vehicle
             orcanavutil::Pose pose = getMLPose( localiseData_ );
             
             bool uncertainLocalisation = orcalocalnav::localisationIsUncertain( localiseData_ );
             if ( uncertainLocalisation )
-                context_.tracer()->warning( "LocalNavManager: Localisation is uncertain..." );
+                context_.tracer()->warning( "MainLoop: Localisation is uncertain..." );
 
             // pathMaintainer knows about the whole path in global coords and where
-            // we are in that path.  So get the next set of (current) goals (in local 
-            // coord system) for the pathplanner.
-            pathMaintainer_->getActiveGoals( currentGoals,
-                                             driver_->waypointHorizon(),
-                                             pose );
+            // we are in that path. So get the next set of current goals in local 
+            // coord system for the pathplanner.
+            // Also return a flag indicating if we have an active goal
+            bool haveGoal = pathMaintainer_->getActiveGoals( currentGoals,
+                                                             driver_->waypointHorizon(),
+                                                             pose );
 
-            // Check if there is a goal. If not, set all robot commands to zero
-            bool haveGoal = localNavManager_->checkNextGoal( currentGoals,
-                                                             velocityCmd );
-
-            // if there is no active goal, reset the path planning driver
-            // otherwise get the pathplanner to work out the next set of actions
             if ( !haveGoal )
             {
+                //  If no goals are active, set all robot commands to zero and reset the path planning driver.
+                speedLimiter_->setToZero( velocityCmd );
                 driver_->reset();
+                
+                std::stringstream ss;
+                ss << "MainLoop: No active goal";
+                context_.tracer()->debug( ss.str(), 5 );
             }
             else
             {
+                // If we do have an active goal, limit the max speed for the current goal
+                // and get the pathplanner to work out the next set of actions
+                speedLimiter_->constrainMaxSpeeds( currentGoals.at(0) );
+                 
+                 // For big debug levels, give feedback through tracer.
+                {
+                    std::stringstream ss;
+                    ss << "MainLoop: Setting command: " << orcaice::toString( velocityCmd );
+                    context_.tracer()->debug( ss.str(), 5 );
+                }
+
                 // The actual driver which determines the path and commands to send to the vehicle.
                 // The odometry is required for the velocity, which isn't contained
                 // in Localise2d.
