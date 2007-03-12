@@ -286,6 +286,15 @@ Simulator::setCommand( const orca::VelocityControl2dData &cmd )
     checkProgress();
 }
 
+bool
+bordersFreeSpace( const orcaogmap::OgMap &ogMap, int x, int y )
+{
+    return ( ogMap.gridCell( x-1, y ) < orcaogmap::CELL_UNKNOWN ||
+             ogMap.gridCell( x+1, y ) < orcaogmap::CELL_UNKNOWN ||
+             ogMap.gridCell( x, y-1 ) < orcaogmap::CELL_UNKNOWN ||
+             ogMap.gridCell( x, y+1 ) < orcaogmap::CELL_UNKNOWN );
+}
+
 void
 Simulator::checkProgress()
 {
@@ -329,8 +338,16 @@ Simulator::checkProgress()
     }
     else if ( grownOgMap_.worldCell( pose_.x(), pose_.y() ) > orcaogmap::CELL_UNKNOWN )
     {
-        cout << "ERROR(simulator.cpp): Collision!!" << endl;
-        exit(1);
+        // Cell is occupied.  To be really, sure, make sure we're _inside_ an obstacle
+        // (discrectisation can screw with things, so give the controller the beenfit of the doubt).
+        int cellX, cellY;
+        grownOgMap_.getCellIndices( pose_.x(), pose_.y(), cellX, cellY );
+
+        if ( !bordersFreeSpace( grownOgMap_, pose_.x(), pose_.y() ) )
+        {
+            cout << "ERROR(simulator.cpp): Collision!!" << endl;
+            exit(1);
+        }
     }
 }
 
