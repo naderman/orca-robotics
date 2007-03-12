@@ -19,7 +19,6 @@ namespace localnav {
         wp.maxApproachSpeed    = 3.0;
         wp.maxApproachTurnrate = 90*M_PI/180.0;
 
-        
         // Turn on the spot first
         t+=3;
         wp.target.p.x   = 0;
@@ -109,8 +108,8 @@ namespace localnav {
         for ( int i=0; i < numRandom; i++ )
         {
             t += (int) orcamisc::randNum(0,10);
-            wp.target.p.x   = orcamisc::randNum(-10,10);
-            wp.target.p.y   = orcamisc::randNum(-10,10);
+            wp.target.p.x   = orcamisc::randNum(-10,20);
+            wp.target.p.y   = orcamisc::randNum(-20,10);
             wp.target.o     = orcamisc::randNum(-M_PI,M_PI);
             wp.timeTarget.seconds  = t;
             wp.timeTarget.useconds = 0;

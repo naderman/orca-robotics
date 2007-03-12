@@ -204,6 +204,11 @@ Simulator::setupMap()
     placeObstacle( ogMap_, 0, -3, 0.5 );
     placeObstacle( ogMap_, -10, 0, 0.5 );
 
+    placeObstacle( ogMap_, 12, -15, 0.5 );
+    placeObstacle( ogMap_, 14, -18, 0.5 );
+    placeObstacle( ogMap_, 16, -12, 0.5 );
+    placeObstacle( ogMap_, 18, -16, 0.5 );
+
     placeRoom( ogMap_ );
 }
 
