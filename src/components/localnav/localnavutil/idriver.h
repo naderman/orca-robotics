@@ -14,13 +14,11 @@
 #include <orca/rangescanner2d.h>
 #include <orcaice/context.h>
 #include <orca/vehicledescription.h>
+#include <orcanavutil/pose.h>
 
 #include <orcalocalnav/goal.h>
 
 namespace localnav {
-
-// fwd decl
-// class Goal;
 
 //
 // @author Alex Brooks
@@ -50,12 +48,16 @@ public:
     //
     // Sets cmd.
     //
-    virtual void getCommand( bool                                     stalled,
-                             bool                                     localisationUncertain,
-                             const orca::Twist2d                      &currentVelocity,
-                             const orca::RangeScanner2dDataPtr        obs,
-                             const std::vector<orcalocalnav::Goal>    &goals,
-                             orca::VelocityControl2dData              &cmd ) = 0;
+    // The pose is in a global coordinate frame, while the goals are
+    // in the local coordinate frame.
+    //
+    virtual void getCommand( bool                                   stalled,
+                             bool                                   localisationUncertain,
+                             const orcanavutil::Pose               &pose,
+                             const orca::Twist2d                   &currentVelocity,
+                             const orca::RangeScanner2dDataPtr      obs,
+                             const std::vector<orcalocalnav::Goal> &goals,
+                             orca::VelocityControl2dData           &cmd ) = 0;
 
 protected: 
 

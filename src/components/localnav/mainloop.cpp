@@ -490,7 +490,7 @@ MainLoop::run()
                 context_.tracer()->warning( "LocalNavManager: Localisation is uncertain..." );
 
             // pathMaintainer knows about the whole path in global coords and where
-            // we are in that path. So get the next set of (current) goals (in local 
+            // we are in that path.  So get the next set of (current) goals (in local 
             // coord system) for the pathplanner.
             pathMaintainer_->getActiveGoals( currentGoals,
                                              driver_->waypointHorizon(),
@@ -513,6 +513,7 @@ MainLoop::run()
                 // in Localise2d.
                 driver_->getCommand( obsoleteStall,
                                      uncertainLocalisation,
+                                     pose,
                                      odomData_.motion,
                                      rangeData_,
                                      currentGoals,
