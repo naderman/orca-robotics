@@ -703,11 +703,10 @@ NovatelSpanInsGpsDriver::populateData( int id )
             // printf("got INSPVASB\n");
             memcpy( &INSPVA_, &serial_data_.raw_message, sizeof(INSPVA_) );
 
-	    // cout << "GPS time: " << INSPVA_.data.seconds << endl;
-        //    printf("%10.10f\n",INSPVA_.data.seconds); 
-	    localise3dData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
-            cout << "timeOfRead_: " << orcaice::toString(localise3dData_.timeStamp) << endl; 
-
+	        // cout << "GPS time: " << INSPVA_.data.seconds << endl;
+            //    printf("%10.10f\n",INSPVA_.data.seconds); 
+	        localise3dData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
+                cout << "timeOfRead_: " << orcaice::toString(localise3dData_.timeStamp) << endl; 
 
             // load the pva data into the localise3d object       
             if ( localise3dData_.hypotheses.size() == 0 )
@@ -745,6 +744,8 @@ NovatelSpanInsGpsDriver::populateData( int id )
 //                             &pva_time);
 
             localise3dDataBuffer_.push( localise3dData_ );
+            
+            context_.tracer()->info( insStatusToString( INSPVA_.data.status ), 6 );
             
             return 0;       
             break;
@@ -972,6 +973,42 @@ int NovatelSpanInsGpsDriver::read_message( novatel_message* msg )
     //printf("got message, id=%d\n",id);
     return  id;
 }
+
+std::string
+NovatelSpanInsGpsDriver::insStatusToString( const int& status )
+{
+    std::string str;
+
+    switch( status )
+    {
+        case 0:
+            str = "Ins Status: Ins is inactive";
+            break;
+        case 1:
+            str = "Ins Status: Ins is aligning";
+            break;
+        case 2:
+            str = "Ins Status: Ins solution is bad";
+            break;
+        case 3:
+            str = "Ins Status: Ins solution is good";
+            break;
+        // 4 and 5 are reserved
+        case 6:
+            str = "Ins Status: Bad Ins Gps agreement";
+            break;
+        case 7:
+            str = "Ins Status: Ins alignment is complete but vehicle must perform maneuvers so that the attitude can converge";
+            break;
+        default:
+            str = "Ins Status: Unknown Ins Status";
+            break;
+     }
+    
+    return str;            
+
+}
+
 
 int
 NovatelSpanInsGpsDriver::mkutctime(int week, double seconds, struct timeval* tv)

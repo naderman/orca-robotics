@@ -109,6 +109,8 @@ private:
     // we know what type of message to parse   
     int read_message( novatel_message* msg ); 
     
+    std::string insStatusToString( const int& status );
+    
     // convert back and forth between UTC or local time (expressed as a date/time string)
     // and GPS time (expressed as a number of seconds since the beginning of the GPS epoch,
     // 6 January 1980 0:00 UTC).
