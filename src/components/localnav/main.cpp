@@ -17,6 +17,7 @@
 int main(int argc, char * argv[])
 {
     localnav::Component component;
-    orcaice::Application app( component );
+    bool useCtrlCHandler = false;
+    orcaice::Application app( component, useCtrlCHandler );
     return app.main(argc, argv);
 }

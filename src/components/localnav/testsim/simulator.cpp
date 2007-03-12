@@ -343,7 +343,7 @@ Simulator::checkProgress()
         int cellX, cellY;
         grownOgMap_.getCellIndices( pose_.x(), pose_.y(), cellX, cellY );
 
-        if ( !bordersFreeSpace( grownOgMap_, pose_.x(), pose_.y() ) )
+        if ( !bordersFreeSpace( grownOgMap_, cellX, cellY ) )
         {
             cout << "ERROR(simulator.cpp): Collision!!" << endl;
             exit(1);
