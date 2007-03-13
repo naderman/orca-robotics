@@ -12,6 +12,8 @@
 #include <iostream>
 #include <sstream>
 #include <cmath>
+#include <orca/velocitycontrol2d.h>
+
 
 using namespace std;
 
@@ -32,6 +34,14 @@ std::ostream &operator<<( std::ostream &s, const Velocity &v )
 std::ostream &operator<<( std::ostream &s, const Acceleration &v )
 {
     return s <<"["<<v.lin()<<"m/s/s, "<<v.rot()*180.0/M_PI<<"deg/s/s]";
+}
+
+void 
+setToZero( orca::VelocityControl2dData&  cmd )
+{
+    cmd.motion.v.x = 0;
+    cmd.motion.v.y = 0;
+    cmd.motion.w   = 0;
 }
 
 

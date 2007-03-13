@@ -101,19 +101,6 @@ SpeedLimiter::constrainMaxSpeeds( Goal &goal )
 
 }
 
-void 
-SpeedLimiter::setToZero( orca::VelocityControl2dData&  cmd )
-{
-    cmd.motion.v.x = 0;
-    cmd.motion.v.y = 0;
-    cmd.motion.w   = 0;
-    {
-        std::stringstream ss;
-        ss << "SpeedLimiter: Stopping the robot. Giving command: " << orcaice::toString(cmd);
-        context_.tracer()->debug( ss.str(), 5 );
-    }
-}
-
 void
 SpeedLimiter::maybeSendHeartbeat()
 {

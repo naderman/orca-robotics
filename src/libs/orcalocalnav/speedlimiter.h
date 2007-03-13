@@ -12,7 +12,6 @@
 
 #include <orcaice/context.h>
 #include <orcaice/ptrbuffer.h>
-#include <orca/velocitycontrol2d.h>
 #include <orca/rangescanner2d.h>
 #include <orca/pathfollower2d.h>
 #include <orcanavutil/orcanavutil.h>
@@ -25,8 +24,9 @@ class LocalNavParameters;
 class Goal;
 
 //
-// Constrains the speed according to the next set of current goals.
-// The goals are in the robot's local frame of reference.
+// Constrains the speed according to the next goal and the time
+// left remaining to reach that goal.
+// The goal is in the robot's local frame of reference.
 //
 // @author Alex Brooks
 //
@@ -39,9 +39,6 @@ public:
 
     // constrain the max speeds for a particular goal
     void constrainMaxSpeeds( Goal &goal );
-
-    // set all velocity commands to zero
-    void setToZero( orca::VelocityControl2dData&  cmd );
 
 private: 
 
