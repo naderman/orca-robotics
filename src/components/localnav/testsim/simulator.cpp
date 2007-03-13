@@ -74,7 +74,7 @@ Simulator::Simulator( const orcaice::Context &context,
     // setup interfaces
     setupInterfaces();
 
-    // give an initial stationary command
+    // give an initial command
     orca::VelocityControl2dData cmd;
     cmd.motion.v.x = velLin_;
     cmd.motion.v.y = 0;
@@ -215,7 +215,7 @@ Simulator::setupMap()
 orca::Time
 Simulator::now()
 {
-    double sec = iterationNum_*DELTA_T;
+    double sec = 1+iterationNum_*DELTA_T;
     double useconds = fmod( sec, 1.0 ) * 1e6;
 
     orca::Time t;

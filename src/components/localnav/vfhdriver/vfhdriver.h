@@ -52,9 +52,6 @@ public:
     // Driver sets everything up, and is told what time it is
     virtual void init( const orca::Time &time ) {};
 
-    // Call this when you finish the path.
-    virtual void reset() {};
-
     // Goal location is in robot's coordinate frame
     virtual void getCommand( bool                                   stalled,
                              bool                                   localisationUncertain,

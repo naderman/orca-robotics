@@ -375,6 +375,9 @@ MainLoop::setup()
         obsProxy_  = &(testSimulator_->obsProxy_);
         locProxy_  = &(testSimulator_->locProxy_);
         odomProxy_ = &(testSimulator_->odomProxy_);
+
+        // Send an initial command
+        // testSimulator_->setCommand( cmd );
     }
 
     stringstream descrStream;
@@ -418,7 +421,6 @@ MainLoop::run()
 {
     setup();
     driver_->init( clock_.time() );
-    driver_->reset();
 
     const int TIMEOUT_MS = 1000;
 
@@ -492,40 +494,29 @@ MainLoop::run()
                                                              driver_->waypointHorizon(),
                                                              pose );
 
-            if ( !haveGoal )
-            {
-                //  If no goals are active, set all robot commands to zero and reset the path planning driver.
-                speedLimiter_->setToZero( velocityCmd );
-                driver_->reset();
-                
-                std::stringstream ss;
-                ss << "MainLoop: No active goal";
-                context_.tracer()->debug( ss.str(), 5 );
-            }
-            else
+            if ( haveGoal )
             {
                 // If we do have an active goal, limit the max speed for the current goal
                 // and get the pathplanner to work out the next set of actions
-                
                 speedLimiter_->constrainMaxSpeeds( currentGoals.at(0) );
-                 
-                 // For big debug levels, give feedback through tracer.
-                {
-                    std::stringstream ss;
-                    ss << "MainLoop: Setting command: " << orcaice::toString( velocityCmd );
-                    context_.tracer()->debug( ss.str(), 5 );
-                }
-
-                // The actual driver which determines the path and commands to send to the vehicle.
-                // The odometry is required for the velocity, which isn't contained
-                // in Localise2d.
-                driver_->getCommand( obsoleteStall,
-                                     uncertainLocalisation,
-                                     pose,
-                                     odomData_.motion,
-                                     rangeData_,
-                                     currentGoals,
-                                     velocityCmd );
+            }     
+            
+            // The actual driver which determines the path and commands to send to the vehicle.
+            // The odometry is required for the velocity, which isn't contained
+            // in Localise2d.
+            driver_->getCommand( obsoleteStall,
+                                 uncertainLocalisation,
+                                 pose,
+                                 odomData_.motion,
+                                 rangeData_,
+                                 currentGoals,
+                                 velocityCmd );
+            
+            // For big debug levels, give feedback through tracer.
+            {
+                std::stringstream ss;
+                ss << "MainLoop: Setting command: " << orcaice::toString( velocityCmd );
+                context_.tracer()->debug( ss.str(), 5 );
             }
 
             sendCommandToPlatform( velocityCmd );
