@@ -12,7 +12,7 @@
 
 @page orca_doc_tute_icegrid Deploying components with the IceGrid Node
 
-@note Reviewed for release 2.1.0.
+@note Reviewed for release 2.2.0.
 
 In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now the Laser2d component will be deployed and activated with IceGrid Node. IceGrid is the location and activation service for Ice applications. For more information refer to the IceGrid Chapter of the Ice manual.
 
@@ -47,7 +47,16 @@ $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 
 @par The Server
 
-Edit the file @c laser2d.xml to change the value of @c Laser2d.Driver to "fake". Load the application described in @c laser2d.xml into the IceGrid Node using @c icegridadmin utility.
+Edit the file @c laser2d.xml to change the value of @c Laser2d.Driver to "fake". Also replace platform name 'local' to the hostname of you computer in the string for adapter ID. In the example below, the hostname is 'agave'. (This needs to be done because, unlike the Orca components, IceGrid will not resolve the string 'local' to the honstname).
+@verbatim
+...
+<adapter name="Laser2d" register-process="true" id="agave/laser2d"/>
+...
+<property name="Laser2d.Config.Driver" value="fake"/>
+...
+@endverbatim
+
+Load the application described in @c laser2d.xml into the IceGrid Node using @c icegridadmin utility.
 
 @verbatim
 $ icegridadmin --Ice.Default.Locator="IceGrid/Locator:default -p 12000" -e "application add 'laser2d.xml'"
@@ -69,7 +78,7 @@ $ icegridadmin --Ice.Default.Locator="IceGrid/Locator:default -p 12000" -e "appl
 
 @section orca_doc_tute_icegrid_next What's Next
 
-For an example of more running IceStorm through IceGrid, see @c [ORCA2-SRC]/scripts/ice/icestorm_laser.xml configuration file.
+For an example of running IceStorm through IceGrid, see @c [ORCA2-SRC]/scripts/ice/icestorm_laser.xml configuration file.
 
 If everything works, check out more @ref orca_doc_tutorials.
 
