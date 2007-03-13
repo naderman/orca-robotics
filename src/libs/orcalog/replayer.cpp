@@ -47,7 +47,7 @@ Replayer::~Replayer()
 }
     
 void 
-Replayer::init()
+Replayer::init( bool isTest )
 {
     // instead of re-opening, we should rewind to top.
     // benu: uncommented the openLogFile() here as the 
@@ -55,11 +55,13 @@ Replayer::init()
     // than when called in the constructor
     openLogFile();
 
-    // this one is implemented in derived classes
-    initInterfaces();
-
-    // this one is implemented in derived classes
-    initDescription();
+    if ( !isTest ) {
+        // this one is implemented in derived classes
+        initInterfaces();
+    
+        // this one is implemented in derived classes
+        initDescription();
+    }
 }
 
 void

@@ -52,6 +52,9 @@ private:
 void 
 TestComponent::start()
 {
+    try
+    {
+
     orcalog::LogMaster* logMaster = 0;
     
     cout<<"*** Testing Camera log/replay ... "<<endl;
@@ -73,7 +76,7 @@ TestComponent::start()
             cout<<"ok"<<endl;
         }
 
-        cout<<"Testing Camera logger with 'ice' format ... ";
+        cout<<"Testing Camera logger/replayer with 'ice' format ... ";
         orcalogfactory::CameraLogger* logger = 
             new orcalogfactory::CameraLogger( logMaster, "0", "ice", "", context() );
         orca::CameraData dataIn;
@@ -82,6 +85,7 @@ TestComponent::start()
     
         orcalogfactory::CameraReplayer* replayer = 
             new orcalogfactory::CameraReplayer( "ice", "camera0.log", context() );
+        replayer->init( true );
         replayer->replayData( 0, true );  
         orca::CameraData dataOut = replayer->getData( Ice::Current() );
     
@@ -136,9 +140,10 @@ TestComponent::start()
         logger->localSetData( mapDataIn );
         cout<<"ok"<<endl;
 
-        cout<<"Testing Gps logger with 'ice' format ... ";
+        cout<<"Testing Gps replayer with 'ice' format ... ";
         orcalogfactory::GpsReplayer* replayer = 
             new orcalogfactory::GpsReplayer( "ice", "gps0.log", context() );
+        replayer->init( true );
         replayer->replayData( 0, true );  
         orca::GpsData dataOut = replayer->getData( Ice::Current() );
 
@@ -188,11 +193,12 @@ TestComponent::start()
     
         orcalogfactory::LaserScanner2dReplayer* replayer = 
             new orcalogfactory::LaserScanner2dReplayer( "ice", "laserscanner2d0.log", context() );
+        replayer->init( true );
         replayer->replayData( 0, true );  
         orca::RangeScanner2dDataPtr rangeScanner2dDataOut;
         rangeScanner2dDataOut = replayer->getData( Ice::Current() );
-        orca::LaserScanner2dDataPtr dataOut = orca::LaserScanner2dDataPtr::dynamicCast(rangeScanner2dDataOut);
-    
+        orca::LaserScanner2dDataPtr dataOut = orca::LaserScanner2dDataPtr::dynamicCast(rangeScanner2dDataOut);    
+
         if ( dataIn->ranges[17] != dataOut->ranges[17] ) {
             cout<<"failed"<<endl<<"object logged incorrectly"<<endl;
             cout<<"\tIN : "<<orcaice::toString(dataIn)<<endl;
@@ -218,6 +224,7 @@ TestComponent::start()
     
         orcalogfactory::Position2dReplayer* replayer = 
             new orcalogfactory::Position2dReplayer( "ice", "position2d0.log", context() );
+        replayer->init( true );
         replayer->replayData( 0, true );  
         orca::Position2dData dataOut = replayer->getData( Ice::Current() );
     
@@ -246,6 +253,7 @@ TestComponent::start()
     
         orcalogfactory::Position3dReplayer* replayer = 
             new orcalogfactory::Position3dReplayer( "ice", "position3d0.log", context() );
+        replayer->init( true );
         replayer->replayData( 0, true );  
         orca::Position3dData dataOut = replayer->getData( Ice::Current() );
     
@@ -274,6 +282,7 @@ TestComponent::start()
     
         orcalogfactory::PowerReplayer* replayer = 
             new orcalogfactory::PowerReplayer( "ice", "power0.log", context() );
+        replayer->init( true );
         replayer->replayData( 0, true );  
         orca::PowerData dataOut = replayer->getData( Ice::Current() );
     
@@ -302,6 +311,7 @@ TestComponent::start()
     
         orcalogfactory::PowerReplayer* replayer = 
             new orcalogfactory::PowerReplayer( "ascii", "power0.log", context() );
+        replayer->init( true );
         replayer->replayData( 0, true );  
         orca::PowerData dataOut = replayer->getData( Ice::Current() );
         
@@ -318,6 +328,16 @@ TestComponent::start()
         delete logMaster;
     }
     cout<<"ok"<<endl;
+
+    }
+    catch ( const Ice::Exception& e ) {
+        cout<<e<<endl;
+        exit(EXIT_FAILURE);
+    }
+    catch ( const std::exception& e ) {
+        cout<<e.what()<<endl;
+        exit(EXIT_FAILURE);
+    }
     
     // NOTE: cannot call communicator()->destroy() from here
     // because they'll be caught by Ice::Application and show up as failed ctest.

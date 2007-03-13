@@ -30,7 +30,7 @@ public:
 
     //! Opens data file and calls virtual functions initInterfaces() and
     //! initDescription(). Both must be implemented in derived classes.
-    void init();
+    void init( bool isTest=false );
 
     //! Reads the specified data object from the log and sends it out.
     virtual void replayData( int index, bool isTest=false ) = 0;
