@@ -11,10 +11,6 @@
 #define ORCA_SPEEDLIMITER_H
 
 #include <orcaice/context.h>
-#include <orcaice/ptrbuffer.h>
-#include <orca/rangescanner2d.h>
-#include <orca/pathfollower2d.h>
-#include <orcanavutil/orcanavutil.h>
 #include <orcaice/heartbeater.h>
 #include "goal.h"
 
@@ -24,7 +20,7 @@ class LocalNavParameters;
 class Goal;
 
 //
-// Constrains the speed according to the next goal and the time
+// Constrains the speed according to the next goal taking into account the time
 // left remaining to reach that goal.
 // The goal is in the robot's local frame of reference.
 //
