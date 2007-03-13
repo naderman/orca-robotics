@@ -55,7 +55,7 @@ Note: The documentation on this web page matches the latest release. A web page 
 
 @section news News
 
-- 2-Feb-07  Orca2.2.0 is released (@ref orca_doc_history_220 "Release Notes").
+- 2-Feb-07  Orca2.2.0 is released. Support for QNX, many component updates. (@ref orca_doc_history_220 "Release Notes").
 - 17-Dec-06 Orca2.1.1 is released (@ref orca_doc_history_211 "Release Notes").
 - 22-Nov-06 Orca2.1.0 is released.  This contains some changes to interfaces (@ref orca_doc_history_210 "Release Notes").
 - 05-Oct-06 Orca2.0.2 is released.  This is mostly a maintenance release, with no major changes (@ref orca_doc_history_202 "Release Notes").
