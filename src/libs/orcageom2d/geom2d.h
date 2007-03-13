@@ -63,6 +63,12 @@ namespace geom2d {
     inline double dist( const PolarPoint &p1, const PolarPoint &p2 )
     { return std::sqrt((p1.y()-p2.y())*(p1.y()-p2.y())+(p1.x()-p2.x())*(p1.x()-p2.x())); }
 
+    // Squared distance between points
+    inline double distSq( const Point &p1, const Point &p2 )
+    { return ((p1.y()-p2.y())*(p1.y()-p2.y())+(p1.x()-p2.x())*(p1.x()-p2.x())); }
+    inline double distSq( const PolarPoint &p1, const PolarPoint &p2 )
+    { return ((p1.y()-p2.y())*(p1.y()-p2.y())+(p1.x()-p2.x())*(p1.x()-p2.x())); }
+
     // Rotate points about the origin
     // in place
     inline void rotate( Point &p, double theta )
