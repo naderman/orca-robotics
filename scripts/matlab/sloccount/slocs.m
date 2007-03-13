@@ -3,24 +3,32 @@ clear all
 
 % include/* except: include/{Freeze IceSSL IcePatch2}
 % src/{Ice Slice IceGrid icecpp IceStorm slice2cpp IceUtil IceBox IceXML}
-Sice212 = [
-(7842-1000) + (22093+18419+11499+10568+4392+4200+4252+567+316)
-];
-Sice301 = [
-(8164-1000) + (23018+19384+19169+10596+4479+4343+4308+622+319)
-];
+%  Sice212 = [
+%  (7842-1000) + (22093+18419+11499+10568+4392+4200+4252+567+316)
+%  ];
+%  Sice301 = [
+%  (8164-1000) + (23018+19384+19169+10596+4479+4343+4308+622+319)
+%  ];
 % same as above, but now also add Java:
 % src/{IceInternal Ice IceUtil IceBox}
-Sice310 = [
-(8810-1200) + (24275+20494+22689+10587+4569+4877+4770+667+319) + (13190+6915+1262+493)
-];
-Sice311 = [
-(8950-1275) + (24511+20505+22898+10590+4600+4884+4782+683+323) + (13266+6929+1262+504)
-];
-Sice320 = 1.02*Sice311;
+%  Sice310 = [
+%  (8810-1200) + (24275+20494+22689+10587+4569+4877+4770+667+319) + (13190+6915+1262+493)
+%  ];
+%  Sice311 = [
+%  (8950-1275) + (24511+20505+22898+10590+4600+4884+4782+683+323) + (13266+6929+1262+504)
+%  ];
+
+% it's much easier to count the whole of Ice (we use most of it anyway)
+% sloccount include/ src/
+% (this does not account for .ice files in [ice]/slice/* but it's a small fraction of total)
+Sice212 = 133523;
+Sice301 = 144513;
+Sice310 = 153243;
+Sice311 = 154145;
+Sice320 = 168251;
 
 % for comparison, ASN
-Sasn = 90433;
+%  Sasn = 90433;
 
 % indeces
 iyy=1;
@@ -63,10 +71,12 @@ Sorca = [ ...
 % COMP: cd src; sloccount components/ libs/ MINUS sloccount libs/orcaice/ libs/orcaq* libs/orcalog* libs/orcaprobe*
 % UTIL: cd src; sloccount utils libs/orcaq* libs/orcalog* libs/orcaprobe*
 2006    12  17  0   Sice311 5615-1784+1240  60241-25885     24644;  % 2.1.1
-2007    2    2  1   Sice311 6225-2011+1671  70376-29436     28519   % 2.2.0
+2007    2    2  1   Sice311 6225-2011+1671  70376-29436     28519;  % 2.2.0
+2007    4    2  1   Sice320 6232-2011+1671  72704-30907     30121   % 2.3.0
 ];
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
-    '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.1.0', '2.1.1', '2.2.0' }';
+    '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.1.0', '2.1.1', ...
+    '2.2.0', '2.3.0' }';
 
 % add a dummy release just for display
 Sorca(end+1,:) = Sorca(end,:);
@@ -104,7 +114,7 @@ Splayer = [
 ];
 Tplayer = datenum(Splayer(:,1),Splayer(:,2),Splayer(:,3));
 
-Smax = 135;
+Smax = 180;
 d0 = [Torca Torca]'; d0=d0(:); d0(1)=[];
 d1 = Smax-Sorca(:,isub)-Sorca(:,ibase); d1 = [d1 d1]'; d1=d1(:); d1(end)=[];
 d2 = Sorca(:,isub); d2 = [d2 d2]'; d2=d2(:); d2(end)=[];
@@ -151,7 +161,7 @@ set(hpt, 'color', .5*[1 1 1] )
 xlabel('Releases')
 title('http://orca-robotics.sf.net')
 
-ht=text(datenum(2003,7,1),-Smax+10, '*   generated using David A. Wheeler`s SLOCCount' );
+ht=text(datenum(2003,7,1),-Smax+15, '*   generated using David A. Wheeler`s SLOCCount' );
 set(ht,'fontsize',8)
 ht=text(datenum(2003,7,1),-Smax+5, '** see data in [ORCA2]/scripts/matlab/sloccount/slocs.m' );
 set(ht,'fontsize',8)
