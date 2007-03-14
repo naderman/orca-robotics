@@ -14,6 +14,7 @@
 #include <orcalocalnav/pathfollower2dI.h>
 #include <orcalocalnav/localiseutil.h>
 #include <localnavutil/pose.h>
+#include <orcamisc/realtimestopwatch.h>
 
 #include "mainloop.h"
 #include "testsim/simulator.h"
@@ -427,8 +428,7 @@ MainLoop::run()
     std::vector<orcalocalnav::Goal> currentGoals;
     bool obsoleteStall = false;
     orca::VelocityControl2dData velocityCmd;
-    
-    
+
     while ( isActive() )
     {
         try 
@@ -437,13 +437,6 @@ MainLoop::run()
 
             // The rangeScanner provides the 'clock' which is the trigger for this loop
             int sensorRet = obsProxy_->getNext( rangeData_, TIMEOUT_MS );
-
-            // Before we do anything, check whether we're enabled.
-            if ( !pathFollowerInterface_.localIsEnabled() )
-            {
-                context_.tracer()->debug( "Doing nothing because disabled" );
-                continue;
-            }
 
             if ( sensorRet != 0 )
             {
@@ -455,6 +448,9 @@ MainLoop::run()
                 subscribeForObservations();
                 continue;
             }
+            
+            // Time how long it takes us to make a decision and send the command
+            orcamisc::RealTimeStopwatch timer;
 
             // Tell everyone what time it is, boyeee
             clock_.setTime( rangeData_->timeStamp );
@@ -478,6 +474,14 @@ MainLoop::run()
                 subscribeForLocalisation();
                 continue;
             }
+
+//             stringstream ss;
+//             ss << "Timestamps: " << endl
+//                << "\t rangeData:    " << orcaice::toString(rangeData_->timeStamp) << endl
+//                << "\t localiseData: " << orcaice::toString(localiseData_.timeStamp) << endl
+//                << "\t odomData:     " << orcaice::toString(odomData_.timeStamp) << endl
+//                << "\t now:          " << orcaice::toString(orcaice::getNow());
+//             context_.tracer()->info( ss.str() );
 
             // grab the maximum likelihood pose of the vehicle
             orcanavutil::Pose pose = getMLPose( localiseData_ );
@@ -519,7 +523,21 @@ MainLoop::run()
                 context_.tracer()->debug( ss.str(), 5 );
             }
 
-            sendCommandToPlatform( velocityCmd );
+            // Only send the command if we're enabled.
+            if ( pathFollowerInterface_.localIsEnabled() )
+            {
+                sendCommandToPlatform( velocityCmd );
+            }
+            else
+            {
+                context_.tracer()->debug( "Doing nothing because disabled" );
+                continue;
+            }
+
+            std::stringstream timerSS;
+            timerSS << "MainLoop: time to make and send decision: " << timer.elapsedSeconds()*1000.0 << "ms";
+            context_.tracer()->info( timerSS.str() );
+
             checkWithOutsideWorld();
 
         }
