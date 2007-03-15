@@ -64,9 +64,11 @@ LaserMonComponent::start()
             orcaice::connectToInterfaceWithTag<orca::LaserScanner2dPrx>( context(), laserPrx, "LaserScanner2d" );
             break;
         }
-        catch ( const orcaice::NetworkException & )
+        catch ( const orcaice::NetworkException &e )
         {
-            tracer()->error( "Failed to connect to remote object. Will try again after 3 seconds." );
+            std::stringstream ss;
+            ss << "Failed to connect to remote object: "<<e.what()<<endl<<"Will try again after 3 seconds.";
+            tracer()->error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
         // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
@@ -94,29 +96,20 @@ LaserMonComponent::start()
             tracer()->print( orcaice::toString( laserPrx->getData() ) );
             break;
         }
-        catch ( const orca::DataNotExistException & )
+        catch ( const orca::DataNotExistException &e )
         {
-            tracer()->warning( "hardware failure reported when getting a scan." );
+            stringstream ss;
+            ss << "hardware failure reported when getting a scan: " << e.what;
+            tracer()->warning( ss.str() );
         }
-        catch ( const orca::HardwareFailedException & )
+        catch ( const orca::HardwareFailedException &e )
         {
-            tracer()->warning( "hardware failure reported when getting a scan." );
+            stringstream ss;
+            ss << "hardware failure reported when getting a scan: " << e.what;
+            tracer()->warning( ss.str() );
         }
     }
     
-    // Can also set the configuration like so:
-//     orca::RangeScanner2dConfigPtr cfg = new orca::RangeScanner2dConfig;
-//     cfg->rangeResolution = 9999;
-//     cfg->isEnabled = true;
-//     try
-//     {
-//         laserPrx->setConfig( cfg );
-//     }
-//     catch ( orca::ConfigurationNotExistException & e )
-//     {
-//         tracer()->warning( "failed to set configuration. Will subscribe anyway." );
-//     }
-
     // create a callback object to recieve scans
     Ice::ObjectPtr consumer = new RangeScanner2dConsumerI;
     orca::RangeScanner2dConsumerPrx callbackPrx =
@@ -134,9 +127,11 @@ LaserMonComponent::start()
             laserPrx->subscribe( callbackPrx );
             break;
         }
-        catch ( const orca::SubscriptionFailedException & )
+        catch ( const orca::SubscriptionFailedException &e )
         {
-            tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            stringstream ss;
+            ss << "failed to subscribe for data updates: "<<e.what<<endl<<"Will try again after 3 seconds.";
+            tracer()->error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }
