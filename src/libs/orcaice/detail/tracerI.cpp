@@ -74,6 +74,7 @@ TracerI::connectToIceStorm()
     // are we required to connect to status topic? (there's always default value for this property)
     bool isStatusTopicRequired = props->getPropertyAsInt( "Orca.Tracer.RequireIceStorm" );
 
+    // fqTName is something like "tracer/*@hostName/componentName"
     orca::FQTopicName fqTName = orcaice::toTracerTopic( context_.name() );
     initTracerPrint( prefix_+": Connecting to tracer topic "+orcaice::toString( fqTName ));
 

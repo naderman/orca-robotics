@@ -69,6 +69,8 @@ Error              10           0         0       0
 Debug               0           0         0       0
 @endverbatim
 
+For ToNetwork tracing, messages are sent to the topic 'tracer/\*@hostName/componentName'.
+
 A sample configuration file which sets all parameters to sensible defaults is shown here.
 
 @include libs/orcaice/orcarc
