@@ -52,7 +52,6 @@ NetworkTraceSender::connectToIceStorm()
 void
 NetworkTraceSender::sendToNetwork( const orca::TracerData &tracerData )
 {
-    cout<<"TRACE(networktracesender.cpp): sending to topic: " << topicName_ << endl;
     IceUtil::Mutex::Lock lock(mutex_);
     
     // send data

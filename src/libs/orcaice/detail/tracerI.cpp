@@ -254,15 +254,6 @@ TracerI::toNetwork( Tracer::TraceType traceType,
     tracerData.verbosity = level;
     tracerData.message = message;
 
-    cout<<"TRACE(tracerI.cpp): Got trace of category " << categoryToString(traceType) << endl;
-    cout<<"TRACE(tracerI.cpp): Got trace of category " << categoryToString(traceType) << endl;
-    cout<<"TRACE(tracerI.cpp): Got trace of category " << categoryToString(traceType) << endl;
-    cout<<"TRACE(tracerI.cpp): Got trace of category " << categoryToString(traceType) << endl;
-    cout<<"TRACE(tracerI.cpp): Got trace of category " << categoryToString(traceType) << endl;
-    cout<<"TRACE(tracerI.cpp): Got trace of category " << categoryToString(traceType) << endl;
-    cout<<"TRACE(tracerI.cpp): Got trace of category " << categoryToString(traceType) << endl;
-    cout<<"TRACE(tracerI.cpp): Got trace of category " << categoryToString(traceType) << endl;
-
     assert( componentTraceSender_ != NULL );
     componentTraceSender_->sendToNetwork( tracerData );
 
@@ -273,9 +264,6 @@ TracerI::toNetwork( Tracer::TraceType traceType,
     }
     else if ( traceType == Tracer::WarningTrace )
     {
-        cout<<"TRACE(tracerI.cpp): Sending to our guy." << endl;
-        cout<<"TRACE(tracerI.cpp): Sending to our guy." << endl;
-        cout<<"TRACE(tracerI.cpp): Sending to our guy." << endl;
         assert( platformWarningSender_ != NULL );
         platformWarningSender_->sendToNetwork( tracerData );
     }
