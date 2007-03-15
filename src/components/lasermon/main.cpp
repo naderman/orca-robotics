@@ -36,7 +36,7 @@ LaserMonComponent::LaserMonComponent()
 {
 }
 
-// NOTE: this function returns after it's done, all variable that need to be permanet must
+// NOTE: this function returns after it's done, all variable that need to be permanent must
 //       be declared as member variables.
 void
 LaserMonComponent::start()
