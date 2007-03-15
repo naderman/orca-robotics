@@ -24,7 +24,6 @@ class LaserMonComponent : public orcaice::Component
 {
 public:
     LaserMonComponent();
-    virtual ~LaserMonComponent();
 
     // component interface
     virtual void start();
@@ -34,10 +33,6 @@ public:
 
 LaserMonComponent::LaserMonComponent()
     : orcaice::Component( "LaserMon", orcaice::HomeInterface  )
-{
-}
-
-LaserMonComponent::~LaserMonComponent()
 {
 }
 
