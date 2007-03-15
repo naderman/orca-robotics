@@ -29,7 +29,7 @@ static bool _useCtrlCHandler = false;
 #include <IceUtil/StaticMutex.h>
 #include <IceUtil/CtrlCHandler.h>
 #include <IceUtil/Cond.h>
-#include <Ice/GC.h>
+#include <Ice/GCShared.h>
 #include <memory>
 
 using namespace std;
