@@ -39,7 +39,6 @@ LaserMonComponent::LaserMonComponent()
 
 LaserMonComponent::~LaserMonComponent()
 {
-    // do not delete inputLoop_!!! It derives from Ice::Thread and deletes itself.
 }
 
 // NOTE: this function returns after it's done, all variable that need to be permanet must
