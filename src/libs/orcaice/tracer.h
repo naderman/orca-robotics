@@ -14,70 +14,96 @@
 namespace orcaice
 {
 
-/*!
-@brief Local and remote tracing.
-
-Orca Tracer is similar to the Ice Logger interface. We call it Tracer because
-we use it to log trace statements, e.g. warnings, error messages, etc (not data).
-
-A single Tracer object is meant to be shared by all threads in the component so the
-implementation must be thread-safe.
-
-When the tracing message is cheap to generate, simply call one of the tracing functions. The routing to destinations will be performed internally.
-
-@verbatim
-Tracer* tracer = context().tracer();
-std::string s = "something is wrong";
-tracer->error( s );
-@endverbatim
-
-If the tracing message is a result of an expensive operation, you many want to perform the tracing test yourself and then call the tracing function. You may test verbosity for specific TraceType / DestinationType combinations or use summary fields AnyTrace and ToAny.
-
-@verbatim
-Tracer* tracer = context().tracer();
-if ( tracer->verbocity( orcaice::Tracer::ErrorTrace, orcaice::Tracer::ToAny ) ) {
-    std::string s = expensiveOperation();
-    tracer->error( s );
-}
-@endverbatim
-
-
-@par Tracer Configuration
-
-- @c  Orca.Tracer.RequireIceStorm (bool)
-    - orcaice::Component sets up a tracer and tries to connect to an
-      IceStorm server on the same host in order to publish component's
-      status messages. This parameter determines what happens if no server
-      is found. If set to 0, the startup continues with status messages not
-      published remotely. If set to 1, the application exits.
-    - Default: 0
-
-- @c  Orca.Tracer.Filename (string)
-    - The name of the output file to which trace statements are saved. Each component creates its own file. If you want several component to write trace files and they execute in the same directory you have to set this property to unique file names in the component config file.
-    - Default: "orca_component_trace.txt"
-    
-- @c  Orca.Tracer.Timestamp (bool)
-    - Print timestamp before all trace statements.
-    - Default: 1
-
-Enum orcaice::Tracer::TraceType defines types of traced information. Enum orcaice::Tracer::DestinationType defines possible tracer destinations are. Verbosity levels range from 0 (nothing) to 10 (everything). The built-in defaults as follows:
-@verbatim
-                ToDisplay   ToNetwork   ToLog   ToFile
-Info                1           0         0       0
-Warning             1           0         0       0
-Error              10           0         0       0
-Debug               0           0         0       0
-@endverbatim
-
-For ToNetwork tracing, messages are sent to the topic 'tracer/\*@platformName/componentName'.
-
-A sample configuration file which sets all parameters to sensible defaults is shown here.
-
-@include libs/orcaice/orcarc
- *
-@see Status
- *
- */
+//! 
+//! @brief Local and remote tracing.
+//! 
+//! Orca Tracer is similar to the Ice Logger interface. We call it Tracer because
+//! we use it to log trace statements, e.g. warnings, error messages, etc (not data).
+//! 
+//! A single Tracer object is meant to be shared by all threads in the component so the
+//! implementation must be thread-safe.
+//! 
+//! When the tracing message is cheap to generate, simply call one of the tracing functions.
+//! The routing to destinations will be performed internally.
+//! 
+//! @verbatim
+//! Tracer* tracer = context().tracer();
+//! std::string s = "something is wrong";
+//! tracer->error( s );
+//! @endverbatim
+//! 
+//! If the tracing message is a result of an expensive operation, you
+//! many want to perform the tracing test yourself and then call the
+//! tracing function. You may test verbosity for specific TraceType /
+//! DestinationType combinations or use summary fields AnyTrace and
+//! ToAny.
+//! 
+//! @verbatim
+//! Tracer* tracer = context().tracer();
+//! if ( tracer->verbocity( orcaice::Tracer::ErrorTrace, orcaice::Tracer::ToAny ) ) {
+//!     std::string s = expensiveOperation();
+//!     tracer->error( s );
+//! }
+//! @endverbatim
+//! 
+//! 
+//! @par Tracer Configuration
+//! 
+//! - @c  Orca.Tracer.RequireIceStorm (bool)
+//!     - orcaice::Component sets up a tracer and tries to connect to an
+//!       IceStorm server on the same host in order to publish component's
+//!       status messages. This parameter determines what happens if no server
+//!       is found. If set to 0, the startup continues with status messages not
+//!       published remotely. If set to 1, the application exits.
+//!     - Default: 0
+//! 
+//! - @c  Orca.Tracer.Filename (string)
+//!  - The name of the output file to which trace statements are
+//!    saved. Each component creates its own file. If you want several
+//!    component to write trace files and they execute in the same
+//!    directory you have to set this property to unique file names in the
+//!    component config file.
+//!     - Default: "orca_component_trace.txt"
+//!     
+//! - @c  Orca.Tracer.Timestamp (bool)
+//!     - Print timestamp before all trace statements.
+//!     - Default: 1
+//! 
+//! Enum orcaice::Tracer::TraceType defines types of traced information. Enum orcaice::Tracer::DestinationType defines possible tracer destinations are. Verbosity levels range from 0 (nothing) to 10 (everything). The built-in defaults as follows:
+//! @verbatim
+//!                 ToDisplay   ToNetwork   ToLog   ToFile
+//! Info                1           0         0       0
+//! Warning             1           0         0       0
+//! Error              10           0         0       0
+//! Debug               0           0         0       0
+//! @endverbatim
+//! 
+//! The Tracer interface allows components to subscribe for tracing with the following functions:
+//! - subscribeForComponentMessages
+//! - subscribeForPlatformInfoMessages
+//! - subscribeForPlatformWarningMessages
+//! - subscribeForPlatformErrorMessages
+//!
+//! The first will get all messages sent ToNetwork by this component.
+//! The last three will get all info/warning/error messages sent by components on this platform.
+//!
+//!
+//! For ToNetwork tracing, any messages are sent to the component's topic,
+//! something like: 'tracer/*@platformName/componentName'.
+//! 
+//! In addition, Tracer aggregates all ToNetwork info/warning/error messages for a
+//! platform, sending them to the following topics: 
+//!  - */info@platformName/*
+//!  - */warning@platformName/*
+//!  - */error@platformName/*
+//! 
+//! A sample configuration file which sets all parameters to sensible defaults is shown here.
+//! 
+//! @include libs/orcaice/orcarc
+//!  *
+//! @see Status
+//!
+//!
 // implem notes:
 //   - The local API of this class could also be defined as a local interface in Slice.
 class Tracer

@@ -8,13 +8,11 @@ namespace orcaice {
 namespace detail {
 
 NetworkTraceSender::NetworkTraceSender( const std::string &topicName,
-                                        bool isTracerTopicRequired,
                                         IceUtil::Mutex &mutex,
                                         const orcaice::Context &context )
     : topic_(0),
       publisher_(0),
       topicName_(topicName),
-      isTracerTopicRequired_(isTracerTopicRequired),
       mutex_(mutex),
       context_(context)
 {

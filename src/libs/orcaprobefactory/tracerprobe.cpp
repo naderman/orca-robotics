@@ -109,7 +109,7 @@ TracerProbe::loadSubscribe( orcacm::OperationData& data )
     try
     {
         orca::TracerPrx derivedPrx = orca::TracerPrx::checkedCast(prx_);
-        derivedPrx->subscribe( callbackPrx );
+        derivedPrx->subscribeForComponentMessages( callbackPrx );
         orcaprobe::reportSubscribed( data );
 
         // save the op data structure so we can use it when the data arrives
@@ -130,7 +130,7 @@ TracerProbe::loadUnsubscribe( orcacm::OperationData& data )
     try
     {
         orca::TracerPrx derivedPrx = orca::TracerPrx::checkedCast(prx_);
-        derivedPrx->unsubscribe( callbackPrx_ );
+        derivedPrx->unsubscribeForComponentMessages( callbackPrx_ );
         orcaprobe::reportUnsubscribed( data );
     }
     catch( const Ice::Exception& e )

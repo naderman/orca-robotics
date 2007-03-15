@@ -9,7 +9,11 @@
  */
  
 #include <IceStorm/IceStorm.h> // used in initTracer()
-#include <IceGrid/Admin.h>     // used in initHome() to register Home interface as a well-known object
+#ifdef ICE_32
+#include <IceGrid/Registry.h>  // used in initHome() to register Home interface as a well-known object
+#else
+#include <IceGrid/Admin.h>  // used in initHome() to register Home interface as a well-known object
+#endif
 #include <string>
 
 #include <orca/orca.h>
@@ -128,6 +132,63 @@ Component::initStatus()
 Home*
 Component::initHome()
 {
+#ifdef ICE_32
+    if ( !(interfaceFlag_ & HomeInterface) ) {
+        // local object only
+        return new orcaice::detail::LocalHome;
+    }
+        
+    //
+    // PROVIDED INTERFACE: Home
+    // Make Home a well-known object, by adding it to the registry
+    //
+
+    // Create the home interface
+    orcaice::HomeI* hobj = new orcaice::HomeI( interfaceFlag_, context_ );
+
+    // add the home interface to our adapter
+    Ice::ObjectPtr homeObj = hobj;
+    std::string homeIdentity = toHomeIdentity( context_.name() );
+    Ice::ObjectPrx homePrx = context_.adapter()->add( homeObj, context_.communicator()->stringToIdentity(homeIdentity) );
+
+    // add the home interface to the registry
+    std::string instanceName = properties()->getPropertyWithDefault( "IceGrid.InstanceName", "IceGrid" );
+    Ice::ObjectPrx base = context_.communicator()->stringToProxy( instanceName+"/Registry" );
+    try {
+        // Open an admin session with the registry
+        IceGrid::RegistryPrx registry = IceGrid::RegistryPrx::checkedCast(base);
+        // This assumes no access control
+        std::string username = "no-access-control-assumed";
+        std::string password = "no-access-control-assumed";
+        IceGrid::AdminSessionPrx adminSession = registry->createAdminSession( username, password );
+        std::cout<<"TRACE(component.cpp): Created session!!" << std::endl;
+
+        // use the adminSession to add our Home interface
+        IceGrid::AdminPrx admin = adminSession->getAdmin();
+        try {
+            admin->addObjectWithType( homePrx, "::orca::Home" );
+        }
+        catch ( const IceGrid::ObjectExistsException& ) {
+            admin->updateObject( homePrx );
+        }
+    }
+    catch ( Ice::Exception& e ) {
+        bool requireRegistry = properties()->getPropertyAsInt( "Orca.RequireRegistry" );
+        if ( requireRegistry ) {
+            std::stringstream ss;
+            ss << "Failed to register Home interface: "<<e<<".";
+            tracer()->error( ss.str()+std::string("  Check IceGrid Registry.") );
+            throw orcaice::NetworkException( ERROR_INFO, ss.str()+std::string("You may allow things to continue without registration by setting Orca.RequireRegistry=0.") );
+        }
+        else {
+            std::stringstream ss;
+            ss << "Failed to register Home interface: "<<e<<".";
+            tracer()->warning( ss.str() );
+            tracer()->info( "You may enforce registration by setting Orca.RequireRegistry=1." );
+        }
+    }
+    return (Home*)hobj;
+#else
     if ( !(interfaceFlag_ & HomeInterface) ) {
         // local object only
         return new orcaice::detail::LocalHome;
@@ -168,6 +229,7 @@ Component::initHome()
         }
     }
     return (Home*)hobj;
+#endif
 }
 
 void 

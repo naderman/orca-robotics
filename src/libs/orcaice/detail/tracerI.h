@@ -33,9 +33,31 @@ public:
 
     virtual void setVerbosity( const ::orca::TracerVerbosityConfig&, const ::Ice::Current& = ::Ice::Current());
 
-    virtual void subscribe(const ::orca::TracerConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
-
-    virtual void unsubscribe(const ::orca::TracerConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    // subscribe/unsubscribe functions.
+    virtual void subscribeForComponentMessages(const ::orca::TracerConsumerPrx &subscriber,
+                                               const ::Ice::Current& = ::Ice::Current())
+        { subscribe( componentTraceSender_, subscriber ); }
+    virtual void unsubscribeForComponentMessages(const ::orca::TracerConsumerPrx &subscriber,
+                                                 const ::Ice::Current& = ::Ice::Current())
+        { unsubscribe( componentTraceSender_, subscriber ); }
+    virtual void subscribeForPlatformInfoMessages(const ::orca::TracerConsumerPrx &subscriber,
+                                                  const ::Ice::Current& = ::Ice::Current())
+        { subscribe( platformInfoSender_, subscriber ); }
+    virtual void unsubscribeForPlatformInfoMessages(const ::orca::TracerConsumerPrx &subscriber,
+                                                    const ::Ice::Current& = ::Ice::Current())
+        { unsubscribe( componentTraceSender_, subscriber ); }
+    virtual void subscribeForPlatformWarningMessages(const ::orca::TracerConsumerPrx &subscriber,
+                                                     const ::Ice::Current& = ::Ice::Current())
+        { subscribe( platformInfoSender_, subscriber ); }
+    virtual void unsubscribeForPlatformWarningMessages(const ::orca::TracerConsumerPrx &subscriber,
+                                                       const ::Ice::Current& = ::Ice::Current())
+        { unsubscribe( componentTraceSender_, subscriber ); }
+    virtual void subscribeForPlatformErrorMessages(const ::orca::TracerConsumerPrx &subscriber,
+                                                   const ::Ice::Current& = ::Ice::Current())
+        { subscribe( platformInfoSender_, subscriber ); }
+    virtual void unsubscribeForPlatformErrorMessages(const ::orca::TracerConsumerPrx &subscriber,
+                                                     const ::Ice::Current& = ::Ice::Current())
+        { unsubscribe( componentTraceSender_, subscriber ); }
 
     // orcaice::Tracer interface
     // reimplement from LocalTracer because we are adding toNetwork() option
@@ -50,18 +72,29 @@ public:
 
 private:
 
+    void subscribe( NetworkTraceSender *sender, const ::orca::TracerConsumerPrx &subscriber );
+    void unsubscribe( NetworkTraceSender *sender, const ::orca::TracerConsumerPrx &subscriber );
+
     // Not implemented; prevents accidental use.
     TracerI( const TracerI & );
     TracerI& operator= ( const TracerI & );
 
     // to network
-    void toNetwork( const std::string& category, const std::string& message, int level );
+    void toNetwork( Tracer::TraceType traceType,
+                    const std::string& message,
+                    int level );
     void setupAndConnectNetworkSenders();
     void icestormConnectFailed( const std::string &topicName,
                                 bool isTracerTopicRequired );
+    std::string categoryToString( Tracer::TraceType category );
 
     // Responsible for sending messages to the component's tracer topic
     NetworkTraceSender *componentTraceSender_;
+
+    // Responsible for sending messages to the platform's info/warning/error topics
+    NetworkTraceSender *platformInfoSender_;
+    NetworkTraceSender *platformWarningSender_;
+    NetworkTraceSender *platformErrorSender_;
 
 };
 

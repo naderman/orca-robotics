@@ -23,7 +23,6 @@ class NetworkTraceSender
 public: 
 
     NetworkTraceSender( const std::string &topicName,
-                        bool isTracerTopicRequired,
                         IceUtil::Mutex &mutex,
                         const orcaice::Context &context );
 
@@ -42,7 +41,6 @@ private:
     orca::TracerConsumerPrx publisher_;
 
     std::string topicName_;
-    bool        isTracerTopicRequired_;
 
     // We only have one communicator but may have multiple threads.
     IceUtil::Mutex &mutex_;

@@ -97,7 +97,7 @@ user_->newLocalTrace( "subscribing..." );
         {
 //             tracerPrx_->setVerbosity( errorVerb, warnVerb, infoVerb, debugVerb );
 //             user_->newVerbosityLevel( errorVerb, warnVerb, infoVerb, debugVerb );
-            tracerPrx_->subscribe( callbackPrx );
+            tracerPrx_->subscribeForComponentMessages( callbackPrx );
             break;
         }
         catch ( const orca::SubscriptionFailedException& e )
