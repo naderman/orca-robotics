@@ -1,6 +1,6 @@
 IF( NOT OS_WIN )
 
-OPTION( BUILD_ICEGRIDMON "Try to build IceGridMon" ON )
+OPTION( BUILD_ICEGRIDMON "Try to build IceGridMon" OFF )
 
 IF( BUILD_ICEGRIDMON )
 

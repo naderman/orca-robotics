@@ -26,23 +26,23 @@ orcaprobe::reportResult( orcacm::OperationData& data, const std::string& type, c
 void 
 orcaprobe::reportException( orcacm::OperationData& data, const std::string& error )
 { 
-    reportResult( data, "exception", IceUtil::Time::now().toString()+" "+error ); 
+    reportResult( data, "exception", IceUtil::Time::now().toDateTime()+" "+error ); 
 }
 
 void 
 orcaprobe::reportSubscribed( orcacm::OperationData& data )
 { 
-    reportResult( data, "outcome", IceUtil::Time::now().toString()+" Subscribed successfully" ); 
+    reportResult( data, "outcome", IceUtil::Time::now().toDateTime()+" Subscribed successfully" ); 
 }
 
 void 
 orcaprobe::reportUnsubscribed( orcacm::OperationData& data )
 { 
-    reportResult( data, "outcome", IceUtil::Time::now().toString()+" Unsubscribed successfully" ); 
+    reportResult( data, "outcome", IceUtil::Time::now().toDateTime()+" Unsubscribed successfully" ); 
 }
 
 void 
 orcaprobe::reportNotImplemented( orcacm::OperationData& data )
 { 
-    reportResult( data, "outcome", IceUtil::Time::now().toString()+" Operation not implemented" ); 
+    reportResult( data, "outcome", IceUtil::Time::now().toDateTime()+" Operation not implemented" ); 
 }

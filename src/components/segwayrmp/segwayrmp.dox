@@ -212,6 +212,23 @@ You should see the following line in CMake output:
     - Valid values: [0.0 .. 1.0]
     - Default: 0.75
 
+@section orca_segwayrmp_can Kvaser CAN driver
+
+This driver is used to interface the the RMP using a Kvaser CAN card.
+Currently only the LAPCan II is tested.
+
+@par Dependencies
+
+Kvaser's linux SDK is required.  Download from www.kvaser.com.  Version 4.2 is tested.
+
+Note that Kvaser uses custom Makefiles, so building their SDK is a bitch.
+
+For debian:
+  - edit settings.mak:
+    - change: 'KERNEL_SOURCE_DIR=/usr/src/linux-`uname -r`' 
+    - to:     'KERNEL_SOURCE_DIR=/usr/src/linux-headers-`uname -r`'
+
+
 @section orca_segwayrmp_playerclient Player Client driver
 
 This driver wraps up a Player client. It requires a running Player server. The driver gets data from that server and converts it into Orca format.More information on Player/Stage.

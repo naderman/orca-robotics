@@ -190,7 +190,7 @@ LocalTracer::assembleMessage( const std::string& category, const std::string& me
     s = "[ ";
     if(config_.addTimestamp)
     {
-        s += IceUtil::Time::now().toString() + " ";
+        s += IceUtil::Time::now().toDateTime() + " ";
     }
     s += prefix_;
     // todo: would be nice to show level here, e.g. debug3:

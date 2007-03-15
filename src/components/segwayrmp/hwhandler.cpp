@@ -336,7 +336,7 @@ HwHandler::run()
         // get stats
         HwDriver::SegwayRmpStats stats;
         driver_->get( stats );
-        file << context_.status()->startTime().toString() << " " << stats.distanceTravelled << endl;
+        file << context_.status()->startTime().toDateTime() << " " << stats.distanceTravelled << endl;
         context_.tracer()->info( "Wrote stats to file " + statsFilename );
     }
 
