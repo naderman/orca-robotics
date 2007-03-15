@@ -24,7 +24,7 @@ TracerI::TracerI( const orcaice::Context & context ) :
     platformWarningSender_(NULL),
     platformErrorSender_(NULL)
 {
-    // do we need IceStorm topic?
+    // do we need IceStorm topics?
     if ( config_.verbosity[AnyTrace][ToNetwork] ) {
         setupAndConnectNetworkSenders();
     }
@@ -39,6 +39,24 @@ TracerI::~TracerI()
 }
 
 void
+TracerI::trySetupNetworkTraceSender( NetworkTraceSender *&sender,
+                                     std::string topic,
+                                     bool isTracerTopicRequired )
+{
+    if ( sender == NULL )
+    {
+        sender = new NetworkTraceSender( topic,
+                                         mutex_,
+                                         context_ );
+        if ( !sender->connectToIceStorm() )
+        {
+            icestormConnectFailed( topic, isTracerTopicRequired );
+            delete sender; sender = NULL;
+        }
+    }
+}
+
+void
 TracerI::setupAndConnectNetworkSenders()
 {
     // get properties for our component
@@ -49,39 +67,24 @@ TracerI::setupAndConnectNetworkSenders()
 
     // fqTName is something like "tracer/*@platformName/componentName"
     orca::FQTopicName fqTName = orcaice::toTracerTopic( context_.name() );
-    
-    componentTraceSender_ = new NetworkTraceSender( orcaice::toString(fqTName),
-                                                    mutex_,
-                                                    context_ );
-    if ( !componentTraceSender_->connectToIceStorm() )
-    {
-        icestormConnectFailed( orcaice::toString(fqTName), isTracerTopicRequired );
-        delete componentTraceSender_; componentTraceSender_ = NULL;
-    }
+    trySetupNetworkTraceSender( componentTraceSender_,
+                                orcaice::toString(fqTName),
+                                isTracerTopicRequired );
 
     std::string infoTopic = std::string("*/info@")+fqTName.platform+std::string("/*");
-    platformInfoSender_ = new NetworkTraceSender( infoTopic, mutex_, context_ );
-    if ( !platformInfoSender_->connectToIceStorm() )
-    {
-        icestormConnectFailed( orcaice::toString(fqTName), isTracerTopicRequired );
-        delete platformInfoSender_; platformInfoSender_ = NULL;
-    }
+    trySetupNetworkTraceSender( platformInfoSender_,
+                                infoTopic,
+                                isTracerTopicRequired );
 
     std::string warningTopic = std::string("*/warning@")+fqTName.platform+std::string("/*");
-    platformWarningSender_ = new NetworkTraceSender( warningTopic, mutex_, context_ );
-    if ( !platformWarningSender_->connectToIceStorm() )
-    {
-        icestormConnectFailed( orcaice::toString(fqTName), isTracerTopicRequired );
-        delete platformWarningSender_; platformWarningSender_ = NULL;
-    }
+    trySetupNetworkTraceSender( platformWarningSender_,
+                                warningTopic,
+                                isTracerTopicRequired );
 
     std::string errorTopic = std::string("*/error@")+fqTName.platform+std::string("/*");
-    platformErrorSender_ = new NetworkTraceSender( errorTopic, mutex_, context_ );
-    if ( !platformErrorSender_->connectToIceStorm() )
-    {
-        icestormConnectFailed( orcaice::toString(fqTName), isTracerTopicRequired );
-        delete platformErrorSender_; platformErrorSender_ = NULL;
-    }
+    trySetupNetworkTraceSender( platformErrorSender_,
+                                errorTopic,
+                                isTracerTopicRequired );
 }
 
 void
@@ -164,10 +167,13 @@ TracerI::setVerbosity( const ::orca::TracerVerbosityConfig& config,  const ::Ice
 }
 
 void
-TracerI::subscribe( NetworkTraceSender *sender, const ::orca::TracerConsumerPrx& subscriber )
+TracerI::subscribe( NetworkTraceSender *&sender, const ::orca::TracerConsumerPrx& subscriber )
 {
-    if ( !sender ) {
-        if ( !sender->connectToIceStorm() ) {
+    if ( !sender ) 
+    {
+        setupAndConnectNetworkSenders();
+        if ( !sender )
+        {
             throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
         }
     }
@@ -248,6 +254,15 @@ TracerI::toNetwork( Tracer::TraceType traceType,
     tracerData.verbosity = level;
     tracerData.message = message;
 
+    cout<<"TRACE(tracerI.cpp): Got trace of category " << categoryToString(traceType) << endl;
+    cout<<"TRACE(tracerI.cpp): Got trace of category " << categoryToString(traceType) << endl;
+    cout<<"TRACE(tracerI.cpp): Got trace of category " << categoryToString(traceType) << endl;
+    cout<<"TRACE(tracerI.cpp): Got trace of category " << categoryToString(traceType) << endl;
+    cout<<"TRACE(tracerI.cpp): Got trace of category " << categoryToString(traceType) << endl;
+    cout<<"TRACE(tracerI.cpp): Got trace of category " << categoryToString(traceType) << endl;
+    cout<<"TRACE(tracerI.cpp): Got trace of category " << categoryToString(traceType) << endl;
+    cout<<"TRACE(tracerI.cpp): Got trace of category " << categoryToString(traceType) << endl;
+
     assert( componentTraceSender_ != NULL );
     componentTraceSender_->sendToNetwork( tracerData );
 
@@ -258,6 +273,9 @@ TracerI::toNetwork( Tracer::TraceType traceType,
     }
     else if ( traceType == Tracer::WarningTrace )
     {
+        cout<<"TRACE(tracerI.cpp): Sending to our guy." << endl;
+        cout<<"TRACE(tracerI.cpp): Sending to our guy." << endl;
+        cout<<"TRACE(tracerI.cpp): Sending to our guy." << endl;
         assert( platformWarningSender_ != NULL );
         platformWarningSender_->sendToNetwork( tracerData );
     }

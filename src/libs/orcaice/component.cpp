@@ -161,7 +161,6 @@ Component::initHome()
         std::string username = "no-access-control-assumed";
         std::string password = "no-access-control-assumed";
         IceGrid::AdminSessionPrx adminSession = registry->createAdminSession( username, password );
-        std::cout<<"TRACE(component.cpp): Created session!!" << std::endl;
 
         // use the adminSession to add our Home interface
         IceGrid::AdminPrx admin = adminSession->getAdmin();

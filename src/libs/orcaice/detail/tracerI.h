@@ -45,19 +45,19 @@ public:
         { subscribe( platformInfoSender_, subscriber ); }
     virtual void unsubscribeForPlatformInfoMessages(const ::orca::TracerConsumerPrx &subscriber,
                                                     const ::Ice::Current& = ::Ice::Current())
-        { unsubscribe( componentTraceSender_, subscriber ); }
+        { unsubscribe( platformInfoSender_, subscriber ); }
     virtual void subscribeForPlatformWarningMessages(const ::orca::TracerConsumerPrx &subscriber,
                                                      const ::Ice::Current& = ::Ice::Current())
-        { subscribe( platformInfoSender_, subscriber ); }
+        { subscribe( platformWarningSender_, subscriber ); }
     virtual void unsubscribeForPlatformWarningMessages(const ::orca::TracerConsumerPrx &subscriber,
                                                        const ::Ice::Current& = ::Ice::Current())
-        { unsubscribe( componentTraceSender_, subscriber ); }
+        { unsubscribe( platformWarningSender_, subscriber ); }
     virtual void subscribeForPlatformErrorMessages(const ::orca::TracerConsumerPrx &subscriber,
                                                    const ::Ice::Current& = ::Ice::Current())
-        { subscribe( platformInfoSender_, subscriber ); }
+        { subscribe( platformErrorSender_, subscriber ); }
     virtual void unsubscribeForPlatformErrorMessages(const ::orca::TracerConsumerPrx &subscriber,
                                                      const ::Ice::Current& = ::Ice::Current())
-        { unsubscribe( componentTraceSender_, subscriber ); }
+        { unsubscribe( platformErrorSender_, subscriber ); }
 
     // orcaice::Tracer interface
     // reimplement from LocalTracer because we are adding toNetwork() option
@@ -72,7 +72,7 @@ public:
 
 private:
 
-    void subscribe( NetworkTraceSender *sender, const ::orca::TracerConsumerPrx &subscriber );
+    void subscribe( NetworkTraceSender *&sender, const ::orca::TracerConsumerPrx &subscriber );
     void unsubscribe( NetworkTraceSender *sender, const ::orca::TracerConsumerPrx &subscriber );
 
     // Not implemented; prevents accidental use.
@@ -84,6 +84,9 @@ private:
                     const std::string& message,
                     int level );
     void setupAndConnectNetworkSenders();
+    void trySetupNetworkTraceSender( NetworkTraceSender *&sender,
+                                     std::string topic,
+                                     bool isTracerTopicRequired );
     void icestormConnectFailed( const std::string &topicName,
                                 bool isTracerTopicRequired );
     std::string categoryToString( Tracer::TraceType category );
