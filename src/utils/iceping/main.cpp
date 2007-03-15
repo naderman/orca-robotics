@@ -13,6 +13,7 @@
 
 #include <Ice/Ice.h>
 #include <IceUtil/Time.h>
+#include <IceUtil/Thread.h>
 
 using namespace std;
 
