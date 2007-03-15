@@ -168,7 +168,7 @@ RmpUsbDriver::read( SegwayRmpData& data, std::string & status )
 
         // do a status check (before resetting the frame)
         if ( frame_.status_word1!=lastStatusWord1_ && frame_.status_word1!=lastStatusWord2_ ) {
-            cout<<"RmpUsbDriver: internal state change : "<<IceUtil::Time::now().toString()<<endl;
+            cout<<"RmpUsbDriver: internal state change : "<<IceUtil::Time::now().toDateTime()<<endl;
             cout<<toString()<<endl;
             lastStatusWord1_ = frame_.status_word1;
             lastStatusWord2_ = frame_.status_word2;
