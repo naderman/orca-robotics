@@ -41,6 +41,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - Compile Options
   - Under Linux, build with debugging symbols by default (alex b)
+  - Compatible with Ice v3.1 and Ice v3.2, but warnings are spewed out
+    for Ice v3.2 (alex b)
 
 @par New interfaces
 
@@ -56,6 +58,12 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New libraries
 @par Updated interfaces
+
+- Tracer
+  - Has functions to subscribe just for that componnent, or to all
+    info/warn/errors on a platform.  The orcaice::Tracer implementation
+    is updated accordingly (alex b)
+
 @par Updated components
 
 - SegwayRmp
