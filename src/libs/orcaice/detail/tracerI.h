@@ -60,10 +60,6 @@ private:
     void icestormConnectFailed( const std::string &topicName,
                                 bool isTracerTopicRequired );
 
-//     IceStorm::TopicPrx topic_;
-//     orca::TracerConsumerPrx publisher_;
-//     std::vector<NetworkTraceSender*> networkTraceSenders_;
-
     // Responsible for sending messages to the component's tracer topic
     NetworkTraceSender *componentTraceSender_;
 
