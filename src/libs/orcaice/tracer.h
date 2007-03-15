@@ -69,7 +69,7 @@ Error              10           0         0       0
 Debug               0           0         0       0
 @endverbatim
 
-For ToNetwork tracing, messages are sent to the topic 'tracer/\*@hostName/componentName'.
+For ToNetwork tracing, messages are sent to the topic 'tracer/\*@platformName/componentName'.
 
 A sample configuration file which sets all parameters to sensible defaults is shown here.
 

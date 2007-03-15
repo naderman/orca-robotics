@@ -19,28 +19,52 @@ using namespace orcaice::detail;
 
 TracerI::TracerI( const orcaice::Context & context ) :
     LocalTracer(context),
-    topic_(0),
-    publisher_(0)
+    componentTraceSender_(NULL)
 {
     // do we need IceStorm topic?
     if ( config_.verbosity[AnyTrace][ToNetwork] ) {
-        connectToIceStorm();
+        setupAndConnectNetworkSenders();
     }
 }
 
 TracerI::~TracerI()
 {
+    if ( componentTraceSender_ ) delete componentTraceSender_;
 }
 
 void
-TracerI::icestormConnectFailed( const orca::FQTopicName &fqTName,
-                                      orca::TracerConsumerPrx &publisher,
-                                      bool isStatusTopicRequired )
+TracerI::setupAndConnectNetworkSenders()
 {
-    if ( isStatusTopicRequired ) 
+    // get properties for our component
+    Ice::PropertiesPtr props = context_.properties();
+
+    // are we required to connect to status topic? (there's always default value for this property)
+    bool isTracerTopicRequired = props->getPropertyAsInt( "Orca.Tracer.RequireIceStorm" );
+
+    // fqTName is something like "tracer/*@platformName/componentName"
+    orca::FQTopicName fqTName = orcaice::toTracerTopic( context_.name() );
+    
+    componentTraceSender_ = new NetworkTraceSender( orcaice::toString(fqTName),
+                                                    isTracerTopicRequired,
+                                                    mutex_,
+                                                    context_ );
+    if ( !componentTraceSender_->connectToIceStorm() )
     {
-        std::string s = prefix_+": Failed to connect to an IceStorm status topic '"+
-            orcaice::toString( fqTName )+"'\n" +
+        icestormConnectFailed( orcaice::toString(fqTName),
+                               isTracerTopicRequired );
+        delete componentTraceSender_;
+        componentTraceSender_ = NULL;
+    }
+}
+
+void
+TracerI::icestormConnectFailed( const std::string &topicName,
+                                bool isTracerTopicRequired )
+{
+    if ( isTracerTopicRequired ) 
+    {
+        std::string s = prefix_+": Failed to connect to an IceStorm tracer topic '"+
+            topicName+"'\n" +
             "\tYou may allow to proceed by setting Orca.Tracer.RequireIceStorm=0.";
         initTracerError( s );
         // this should kill the app
@@ -48,7 +72,6 @@ TracerI::icestormConnectFailed( const orca::FQTopicName &fqTName,
     }
     else 
     {
-        publisher = 0;
         std::string s = prefix_+": Failed to connect to an IceStorm status topic\n";
         s += "\tAll trace messages will be local.\n";
         s += "\tYou may enforce connection by setting Orca.Tracer.RequireIceStorm=1.";
@@ -60,52 +83,6 @@ TracerI::icestormConnectFailed( const orca::FQTopicName &fqTName,
         }
         // move on
     }
-}
-
-bool
-TracerI::connectToIceStorm()
-{
-    topic_     = 0;
-    publisher_ = 0;
-
-    // get properties for our component
-    Ice::PropertiesPtr props = context_.properties();
-
-    // are we required to connect to status topic? (there's always default value for this property)
-    bool isStatusTopicRequired = props->getPropertyAsInt( "Orca.Tracer.RequireIceStorm" );
-
-    // fqTName is something like "tracer/*@hostName/componentName"
-    orca::FQTopicName fqTName = orcaice::toTracerTopic( context_.name() );
-    initTracerPrint( prefix_+": Connecting to tracer topic "+orcaice::toString( fqTName ));
-
-    try
-    {
-        topic_ = orcaice::connectToTopicWithString<orca::TracerConsumerPrx>(
-            context_, publisher_, orcaice::toString( fqTName ) );
-    }
-    catch ( const orcaice::Exception & e )
-    {
-        initTracerError( prefix_+": Caught exception while connecting to IceStorm: "+e.what() );
-        icestormConnectFailed( fqTName, publisher_, isStatusTopicRequired );
-    } // catch
-    catch ( Ice::Exception &e )
-    {
-        std::stringstream s;
-        s << prefix_ << ": Caught exception while connecting to IceStorm: " << e;
-        initTracerError( s.str() );
-        icestormConnectFailed( fqTName, publisher_, isStatusTopicRequired );
-    }
-    catch ( ... )
-    {
-        initTracerError( prefix_+": Caught unknown exception while connecting to IceStorm." );
-        icestormConnectFailed( fqTName, publisher_, isStatusTopicRequired );
-    }
-
-    if ( publisher_ ) {
-        initTracerPrint( prefix_+": Tracer connected to "+orcaice::toString(fqTName) );
-    }
-
-    return publisher_ != 0;
 }
 
 ::orca::TracerVerbosityConfig 
@@ -162,25 +139,22 @@ TracerI::setVerbosity( const ::orca::TracerVerbosityConfig& config,  const ::Ice
 void
 TracerI::subscribe(const ::orca::TracerConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    if ( !topic_ ) {
-        if ( !connectToIceStorm() ) {
+    if ( !componentTraceSender_ ) {
+        if ( !componentTraceSender_->connectToIceStorm() ) {
             throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
         }
     }
-    
+
     //cout<<"subscription request"<<endl;
-    IceStorm::QoS qos;    
-    qos["reliability"] = "twoway";
-    topic_->subscribe( qos, subscriber );
+    componentTraceSender_->subscribe( subscriber );
 }
 
 void
 TracerI::unsubscribe(const ::orca::TracerConsumerPrx& subscriber, const ::Ice::Current&)
 {
     //cout<<"unsubscription request"<<endl;
-    if ( topic_ ) {
-        topic_->unsubscribe( subscriber );
-    }
+    if ( componentTraceSender_ )
+        componentTraceSender_->unsubscribe( subscriber );
 }
 
 void
@@ -226,8 +200,6 @@ TracerI::debug( const std::string &message, int level )
 void
 TracerI::toNetwork( const std::string& category, const std::string& message, int level )
 {
-    IceUtil::Mutex::Lock lock(mutex_);
-
     orca::TracerData tracerData;
     orcaice::setToNow( tracerData.timeStamp );
     tracerData.name = context_.name();
@@ -235,39 +207,6 @@ TracerI::toNetwork( const std::string& category, const std::string& message, int
     tracerData.verbosity = level;
     tracerData.message = message;
 
-    
-    // send data
-    try
-    {
-        // This is very tricky, don't touch it if not sure
-        // see Connections Issue 5, Avoiding Deadlocks, Part II, File Listing I.
-        // If the lock is not released before the remote call, the program locks
-        // up on the first remote call. 
-        lock.release();
-        publisher_->setData( tracerData );
-        lock.acquire();
-        // end of tricky part.
-    }
-    catch ( const Ice::CommunicatorDestroyedException & ) // we are not using the exception
-    {
-        // it's ok, this is what happens on shutdown
-        cout<<prefix_<<"tracer: communicator appears to be dead. We must be shutting down."<<endl;
-        cout<<prefix_<<"tracer: unsent message: "<<orcaice::toString(tracerData)<<endl;
-    }
-    catch ( const Ice::Exception &e )
-    {
-        cout<<prefix_<<"tracer: Caught exception while tracing to topic: "<<e<<endl;
-        cout<<prefix_<<"tracer: unsent message: "<<orcaice::toString(tracerData)<<endl;
-
-        // If IceStorm just re-started for some reason, we want to try to re-connect
-        connectToIceStorm();
-    }
-    catch ( ... )
-    {
-        cout<<prefix_<<"tracer: Caught unknown while tracing to topic."<<endl;
-        cout<<prefix_<<"tracer: unsent message: "<<orcaice::toString(tracerData)<<endl;
-
-        // If IceStorm just re-started for some reason, we want to try to re-connect
-        connectToIceStorm();
-    }
+    assert( componentTraceSender_ != NULL );
+    componentTraceSender_->sendToNetwork( tracerData );
 }

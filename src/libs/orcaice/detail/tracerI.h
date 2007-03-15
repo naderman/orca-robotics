@@ -13,9 +13,8 @@
 
 #include <orca/tracer.h>
 #include "localtracer.h"
-
+#include "networktracesender.h"
 #include <IceStorm/IceStorm.h>
-#include <IceUtil/Mutex.h>
 
 namespace orcaice
 {
@@ -57,12 +56,17 @@ private:
 
     // to network
     void toNetwork( const std::string& category, const std::string& message, int level );
-    IceStorm::TopicPrx topic_;
-    orca::TracerConsumerPrx publisher_;
-    bool connectToIceStorm();
-    void icestormConnectFailed( const orca::FQTopicName &fqTName,
-                                orca::TracerConsumerPrx &publisher,
-                                bool isStatusTopicRequired );
+    void setupAndConnectNetworkSenders();
+    void icestormConnectFailed( const std::string &topicName,
+                                bool isTracerTopicRequired );
+
+//     IceStorm::TopicPrx topic_;
+//     orca::TracerConsumerPrx publisher_;
+//     std::vector<NetworkTraceSender*> networkTraceSenders_;
+
+    // Responsible for sending messages to the component's tracer topic
+    NetworkTraceSender *componentTraceSender_;
+
 };
 
 } // namespace
