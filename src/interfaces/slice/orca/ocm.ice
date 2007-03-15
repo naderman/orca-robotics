@@ -58,6 +58,8 @@ struct FQInterfaceName
     @brief Fully qualified Ice Storm topic name.
     The idea is that the same interface can publish to multiple topics corresponding
     different data streams.
+    When written as a string, this is formatted as:
+      - interface/topicName@platform/component
     @see FQInterfaceName, FQComponentName
 */
 struct FQTopicName
