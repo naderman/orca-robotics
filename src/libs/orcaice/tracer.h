@@ -69,7 +69,10 @@ namespace orcaice
 //!     - Print timestamp before all trace statements.
 //!     - Default: 1
 //! 
-//! Enum orcaice::Tracer::TraceType defines types of traced information. Enum orcaice::Tracer::DestinationType defines possible tracer destinations are. Verbosity levels range from 0 (nothing) to 10 (everything). The built-in defaults as follows:
+//! Enum orcaice::Tracer::TraceType defines types of traced
+//! information. Enum orcaice::Tracer::DestinationType defines possible
+//! tracer destinations are. Verbosity levels range from 0 (nothing) to
+//! 10 (everything). The built-in defaults as follows:
 //! @verbatim
 //!                 ToDisplay   ToNetwork   ToLog   ToFile
 //! Info                1           0         0       0

@@ -32,7 +32,7 @@ public:
 
 
 LaserMonComponent::LaserMonComponent()
-    : orcaice::Component( "LaserMon", orcaice::HomeInterface  )
+    : orcaice::Component( "LaserMon"  )
 {
 }
 

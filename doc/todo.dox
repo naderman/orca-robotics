@@ -55,6 +55,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - mgaconversion (Tobi)
     - contains tools to convert from latitude/longitude to MGA
+- sysmon (alex b)
+    - A tool to monitor info/warn/error messages for an entire system.
 
 @par New libraries
 @par Updated interfaces
@@ -79,10 +81,12 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - fixed bug with wrong max number of options (alex m)
     - added support for Gps, Localise2d interfaces (alex b/m)
 - Logger
-    - optinally, tolerates unsupported inerface types and formats. also allows
+    - optinally, tolerates unsupported interface types and formats. also allows
       disabling replay. (alex m)
 - LogPlayer
     - CameraReplayer: fixed mem leak and bug to do with skipping images (Alen Alempijevic)
+- IceGridMon
+    - Compatible with Ice v3.2 (alex b)
 
 @par Updated libraries
 
