@@ -18,7 +18,8 @@ using namespace icegridmon;
 
 
 MainLoop::MainLoop( const orcaice::Context &context )
-    : context_(context)
+    : context_(context),
+      timeoutSec_(0)
 {
     // Create all observers
     registryObserver_ = new RegistryObserverI( context_ );
@@ -166,7 +167,7 @@ MainLoop::run()
         // Keep it alive
         while ( isActive() )
         {
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(timeoutSec_));
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(timeoutSec_/2));
 
             try
             {
