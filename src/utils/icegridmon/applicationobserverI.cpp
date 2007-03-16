@@ -12,9 +12,9 @@ ApplicationObserverI::applicationInit( int serial,
                                        const Ice::Current& )
 {
     stringstream ss;
-    ss << "applicationInit:\n"
+    ss << "ApplicationObserverI::applicationInit:\n"
        << "  serial: " << serial << endl;
-    ss << "  applications: " << endl << toString(applications,4);
+    ss << "  applications: " << endl << toString(applications,"application",4);
     context_.tracer()->info( ss.str() );
 }
 
@@ -24,7 +24,7 @@ ApplicationObserverI::applicationAdded( int serial,
                                         const Ice::Current& )
 {
     stringstream ss;
-    ss << "applicationAdded:\n"
+    ss << "ApplicationObserverI::applicationAdded:\n"
        << "  serial: " << serial << endl
        << toString(desc,2);
     context_.tracer()->info( ss.str() );
@@ -36,7 +36,7 @@ ApplicationObserverI::applicationRemoved( int serial,
                                           const Ice::Current& )
 {
     stringstream ss;
-    ss << "applicationRemoved:\n"
+    ss << "ApplicationObserverI::applicationRemoved:\n"
        << "  serial: " << serial << endl
        << "  name:   " << name;
     context_.tracer()->info( ss.str() );
@@ -48,7 +48,7 @@ ApplicationObserverI::applicationUpdated( int serial,
                                           const Ice::Current& )
 {
     stringstream ss;
-    ss << "applicationUpdated:\n"
+    ss << "ApplicationObserverI::applicationUpdated:\n"
        << "  serial: " << serial << endl
        << toString(desc,2);
     context_.tracer()->info( ss.str() );

@@ -12,8 +12,8 @@ AdapterObserverI::adapterInit( const IceGrid::AdapterInfoSeq &adpts,
                                const Ice::Current& )
 {
     stringstream ss;
-    ss << "adapterInit:" << endl
-       << "  adapters: " << toString<IceGrid::AdapterInfoSeq>(adpts,4);
+    ss << "AdapterObserverI::adapterInit:" << endl
+       << "  adapters: " << toString<IceGrid::AdapterInfoSeq>(adpts,"adapter",4);
     context_.tracer()->info( ss.str() );
 }
 
@@ -22,7 +22,7 @@ AdapterObserverI::adapterAdded( const IceGrid::AdapterInfo &info,
                                 const Ice::Current& )
 {
     stringstream ss;
-    ss << "adapterAdded:\n"
+    ss << "AdapterObserverI::adapterAdded:\n"
        << toString(info,2);
     context_.tracer()->info( ss.str() );
 }
@@ -32,7 +32,7 @@ AdapterObserverI::adapterRemoved( const std::string &id,
                                   const Ice::Current& )
 {
     stringstream ss;
-    ss << "adapterRemoved\n"
+    ss << "AdapterObserverI::adapterRemoved\n"
        << "  id: " << id;
     context_.tracer()->info( ss.str() );
 }
@@ -42,7 +42,7 @@ AdapterObserverI::adapterUpdated( const IceGrid::AdapterInfo &info,
                                   const Ice::Current& )
 {
     stringstream ss;
-    ss << "adapterUpdated\n"
+    ss << "AdapterObserverI::adapterUpdated\n"
        << toString(info,2);
     context_.tracer()->info( ss.str() );
 }

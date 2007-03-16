@@ -12,8 +12,8 @@ ObjectObserverI::objectInit( const IceGrid::ObjectInfoSeq &objects,
                                const Ice::Current& )
 {
     stringstream ss;
-    ss << "objectInit:";
-    ss << "  objects:\n" << toString(objects);
+    ss << "ObjectObserverI::objectInit:";
+    ss << "  objects:\n" << toString(objects,"object",4);
     context_.tracer()->info( ss.str() );
 }
 
@@ -22,7 +22,7 @@ ObjectObserverI::objectAdded( const IceGrid::ObjectInfo &info,
                               const Ice::Current& )
 {
     stringstream ss;
-    ss << "objectAdded:\n"
+    ss << "ObjectObserverI::objectAdded:\n"
        << toString(info,2);
     context_.tracer()->info( ss.str() );
 }
@@ -32,7 +32,7 @@ ObjectObserverI::objectRemoved( const Ice::Identity &id,
                                 const Ice::Current& )
 {
     stringstream ss;
-    ss << "objectRemoved\n"
+    ss << "ObjectObserverI::objectRemoved\n"
        << "  id: " << endl
        << "    name:     " << id.name << endl
        << "    category: " << id.category;
@@ -44,7 +44,7 @@ ObjectObserverI::objectUpdated( const IceGrid::ObjectInfo &info,
                                 const Ice::Current& )
 {
     stringstream ss;
-    ss << "objectUpdated\n"
+    ss << "ObjectObserverI::objectUpdated\n"
        << toString(info,2);
     context_.tracer()->info( ss.str() );
 }

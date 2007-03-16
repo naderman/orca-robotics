@@ -110,9 +110,9 @@ std::string toString( const IceGrid::NodeDynamicInfo &n, int indent )
     stringstream ss;
     ss << ind << "info: " << endl << toString(n.info,indent+2) << endl
        << ind << "servers: " << endl
-       << toString<IceGrid::ServerDynamicInfoSeq>(n.servers,indent+2) << endl;
+       << toString<IceGrid::ServerDynamicInfoSeq>(n.servers,"server",indent+2) << endl;
     ss << ind << "adapters: " << endl
-       << toString<IceGrid::AdapterDynamicInfoSeq>(n.adapters,indent+2);
+       << toString<IceGrid::AdapterDynamicInfoSeq>(n.adapters,"adapter",indent+2);
     return ss.str();
 }
 
@@ -127,7 +127,7 @@ std::string toString( const Ice::StringSeq &s, int indent )
     string ind = makeIndent(indent);
 
     stringstream ss;
-    for ( uint i; i < s.size(); i++ )
+    for ( uint i=0; i < s.size(); i++ )
     {
         ss << ind << i << ": " << s[i] << endl;
     }

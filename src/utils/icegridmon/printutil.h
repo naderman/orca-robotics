@@ -27,7 +27,7 @@ std::string toString( const IceGrid::RegistryInfo &r, int indent=0 );
 
 
 template<typename Seq>
-std::string toString( const Seq &seq, int indent=0 )
+std::string toString( const Seq &seq, const std::string &descr, int indent=0 )
 {
     std::string ind = "";
     for ( int i=0; i < indent; i++ )
@@ -36,7 +36,9 @@ std::string toString( const Seq &seq, int indent=0 )
     std::stringstream ss;
     for ( uint i=0; i < seq.size(); i++ )
     {
-        ss << ind << i << ":" << std::endl << toString(seq[i],indent+2);
+        ss << ind << descr << " " << i << ":" << std::endl << toString(seq[i],indent+2);
+        if ( i != seq.size()-1 ) 
+            ss << std::endl;
     }
     return ss.str();
 }
