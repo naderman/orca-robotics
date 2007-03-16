@@ -112,14 +112,12 @@ MainLoop::tryCreateSession()
         return false;
     }
             
-    int timeoutSec = 0;
     try
     {
         session_ = registry->createAdminSession( "assume-no-access-control", "assume-no-access-control" );
-        timeoutSec = registry->getSessionTimeout();
-        timeout_ = IceUtil::Time::seconds(timeoutSec);
+        timeoutSec_ = registry->getSessionTimeout();
         
-        stringstream ss; ss<<"Created session (timeout="<<timeoutSec<<"s";
+        stringstream ss; ss<<"Created session (timeout="<<timeoutSec_<<"s";
         context_.tracer()->info( ss.str() );
     }
     catch( const std::exception& e)
@@ -168,7 +166,7 @@ MainLoop::run()
         // Keep it alive
         while ( isActive() )
         {
-            IceUtil::ThreadControl::sleep(timeout_);
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(timeoutSec_));
 
             try
             {

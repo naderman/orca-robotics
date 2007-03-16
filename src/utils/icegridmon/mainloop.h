@@ -40,7 +40,7 @@ private:
     bool tryCreateSession();
 
     IceGrid::AdminSessionPrx session_;
-    IceUtil::Time timeout_;
+    int timeoutSec_;
     orcaice::Context context_;
 
     // Observers
@@ -55,8 +55,6 @@ private:
     NodeObserverI                   *nodeObserver_;    
     IceGrid::NodeObserverPrx         nodeObserverPrx_;
 };
-
-//typedef IceUtil::Handle<MainLoop> MainLoopPtr;
 
 } // namespace
 
