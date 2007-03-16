@@ -15,15 +15,11 @@
 #include <string>
 #include <orcaice/component.h>
 #include <IceGrid/Session.h>
-#include "sessionkeepalive.h"
-#include "registryobserverI.h"
-#include "applicationobserverI.h"
-#include "adapterobserverI.h"
-#include "objectobserverI.h"
-#include "nodeobserverI.h"
 
 namespace icegridmon
 {
+
+class MainLoop;
 
 class Component : public orcaice::Component
 {
@@ -38,14 +34,7 @@ public:
 
 private:
 
-    SessionKeepAliveThreadPtr sessionKeepAlive_;
-    IceGrid::AdminSessionPrx  session_;
-
-    RegistryObserverI    *registryObserver_;
-    ApplicationObserverI *applicationObserver_;
-    AdapterObserverI     *adapterObserver_;
-    ObjectObserverI      *objectObserver_;
-    NodeObserverI        *nodeObserver_;
+    MainLoop *mainLoop_;
 };
 
 }
