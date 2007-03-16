@@ -29,11 +29,11 @@ IF ( BUILD_INSGPS )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( insgps main )
-    TARGET_LINK_LIBRARIES( insgps InsGpsSources ${NOVATELSPANINSGPS_LIBS} OrcaNavUtil )
+    TARGET_LINK_LIBRARIES( insgps InsGpsSources ${NOVATELSPANINSGPS_LIBS} OrcaGpsUtil )
     
     # build IceBox service
     GLOBAL_ADD_LIBRARY( OrcaInsGps SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaInsGps InsGpsSources ${NOVATELSPANINSGPS_LIBS} OrcaNavUtil )
+    TARGET_LINK_LIBRARIES( OrcaInsGps InsGpsSources ${NOVATELSPANINSGPS_LIBS} OrcaGpsUtil )
 
     GENERATE_CONFIG_FILE( insgps.def )
 

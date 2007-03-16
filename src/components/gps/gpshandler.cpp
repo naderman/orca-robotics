@@ -16,6 +16,7 @@
 using namespace std;
 using namespace orca;
 using namespace orcaice;
+using namespace orcagpsutil;
 
 GpsHandler::GpsHandler(GpsI              &gpsObj,
                        GpsDriver         *hwDriver,

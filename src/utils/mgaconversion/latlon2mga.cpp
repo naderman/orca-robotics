@@ -12,10 +12,10 @@
 #include <iomanip>
 #include <sstream>
 
-#include <orcanavutil/mapgrid.h>
-
+#include <orcagpsutil/mapgrid.h>
 
 using namespace std;
+using namespace orcagpsutil;
 
 #define USAGE_ARGS "<latitude> <longitude>"
 

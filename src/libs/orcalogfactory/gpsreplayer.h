@@ -16,7 +16,6 @@
 #include <orcalog/replayer.h>
 
 #include <orcaice/ptrbuffer.h>
-#include <orcanavutil/mapgrid.h>
 
 namespace orcalogfactory
 {
@@ -73,7 +72,6 @@ private:
     void loadHeaderIce();
 
     char id_;
-    mgaMapgrid mgaMapgrid_;
     
     // alexm: why this?
     orca::FQTopicName getProvidedTopicLocal( const orcaice::Context & context, const std::string &tag, const std::string & subtopic);

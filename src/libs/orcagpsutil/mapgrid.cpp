@@ -16,11 +16,13 @@
 
 #include "mapgrid.h"
 
+using namespace std; // for math functions in QNX
+
+namespace orcagpsutil {
+    
 const ellipsoid WGS84 = {6378137.0 , 298.257223563};
 const ellipsoid AGD84 = {6378160.0 , 298.25};
 const ellipsoid GRS80 = {6378137.0 , 298.257222101};
-
-using namespace std; // for math functions in QNX
 
 mapgrid::mapgrid()
 {
@@ -169,4 +171,6 @@ int mgaMapgrid::getZoneGridCoords(double latitude, double longitude, int zone,
     easting = nu*centralScaleFactor*(term1+term2+term3+term4)+falseEasting;
 
     return zone;
+}
+
 }

@@ -15,7 +15,7 @@
 #include <orcaice/thread.h>
 #include <orcaice/ptrbuffer.h>
 #include <orcaice/context.h>
-#include <orcanavutil/mapgrid.h>
+#include <orcagpsutil/mapgrid.h>
 
 #include "gpsdriver.h"
 #include "gpsI.h"
@@ -43,7 +43,7 @@ private:
     // Generic driver for the hardware
     GpsDriver *hwDriver_;
 
-    mgaMapgrid mgaMapgrid_;
+    orcagpsutil::mgaMapgrid mgaMapgrid_;
 
     orcaice::Context context_;
 };

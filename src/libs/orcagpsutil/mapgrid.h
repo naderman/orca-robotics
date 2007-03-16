@@ -26,6 +26,8 @@
 
  */
 
+namespace orcagpsutil {
+
 typedef struct ellipsoid{
     double semiMajorAxis;
     double inverseFlattening;
@@ -95,5 +97,7 @@ private:
     double  cmz1;
 
 };
+
+}
 
 #endif

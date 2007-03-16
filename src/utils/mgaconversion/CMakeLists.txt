@@ -10,7 +10,7 @@ INCLUDE_DIRECTORIES(
     ${PROJECT_SOURCE_DIR}/src/libs
     )
 LINK_DIRECTORIES( ${ICE_HOME}/lib )
-LINK_LIBRARIES( OrcaNavUtil )
+LINK_LIBRARIES( OrcaGpsUtil )
 
 GLOBAL_ADD_EXECUTABLE( latlon2mga latlon2mga.cpp )
 

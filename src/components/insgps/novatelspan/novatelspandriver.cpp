@@ -9,7 +9,7 @@
  */
 
 #include <orcaice/orcaice.h>
-#include <orcanavutil/latlon2mga.h>
+#include <orcagpsutil/latlon2mga.h>
 #include "novatelspandriver.h"
 #include "timeval.h"
 
@@ -26,6 +26,7 @@
 using namespace std;
 using namespace orca;
 using namespace orcaserial;
+using namespace orcagpsutil;
 
 namespace insgps
 {
@@ -717,7 +718,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
             // cout << "lattitude and longitude: " << INSPVA_.data.latitude << " " << INSPVA_.data.longitude << endl;
             
             int zone;
-            orcanavutil::LatLon2MGA(INSPVA_.data.latitude, INSPVA_.data.longitude,
+            LatLon2MGA(INSPVA_.data.latitude, INSPVA_.data.longitude,
                        localise3dData_.hypotheses[0].mean.p.y, localise3dData_.hypotheses[0].mean.p.x, zone);
             // localise3dData_.hypotheses[0].mean.p.z = -INSPVA_.data.height;
             localise3dData_.hypotheses[0].mean.p.z = INSPVA_.data.height;

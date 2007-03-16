@@ -12,8 +12,6 @@ IF ( BUILD_GPS )
       ${PROJECT_SOURCE_DIR}/src/components/gps
     )
 
-    ADD_SUBDIRECTORY ( nmeautil )
-
     # OPTIONAL_SUB_LIBRARY macro defined in component_rules.cmake
     SET( ASHTECHGPS_FOUND 1 )
     OPTIONAL_SUB_LIBRARY(
@@ -23,7 +21,8 @@ IF ( BUILD_GPS )
         ASHTECHGPS_LIBS
         ASHTECHGPS_FOUND
         HAVE_ASHTECHGPS_DRIVER
-        OrcaSerial nmeautil
+        OrcaSerial
+        OrcaGpsUtil
     )
 
     # build common sources into a convenience library
@@ -31,11 +30,11 @@ IF ( BUILD_GPS )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( gps main )
-    TARGET_LINK_LIBRARIES( gps GpsSources ${ASHTECHGPS_LIBS} OrcaNavUtil )
+    TARGET_LINK_LIBRARIES( gps GpsSources ${ASHTECHGPS_LIBS} )
     
     # build IceBox service
     GLOBAL_ADD_LIBRARY( OrcaGps SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaGps GpsSources ${ASHTECHGPS_LIBS} OrcaNavUtil )
+    TARGET_LINK_LIBRARIES( OrcaGps GpsSources ${ASHTECHGPS_LIBS} )
 
     GENERATE_CONFIG_FILE( gps.def )
 

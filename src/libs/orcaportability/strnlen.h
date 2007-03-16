@@ -11,7 +11,7 @@
 #define ORCA2_PORTABILITY_STRNLEN_H
 
 // this defines HAVE_STRNLEN
-#include <config.h>
+// #include <config.h>
 
 // eg. Solaris doesn't define strnlen in string.h, so define it here.
 #if !HAVE_STRNLEN
