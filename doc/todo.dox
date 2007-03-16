@@ -59,6 +59,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - A tool to monitor info/warn/error messages for an entire system.
 
 @par New libraries
+
+- orcagpsutil (Tobi)
+    - split up orcanavutil
+    - added nmea classes which were with the gps component before
+
 @par Updated interfaces
 
 - Tracer
