@@ -13,6 +13,7 @@
 
 #include <IceGrid/Registry.h>
 #include <orcaice/context.h>
+#include <IceUtil/Thread.h>
 
 namespace icegridmon
 {
@@ -22,9 +23,9 @@ class SessionKeepAliveThread : public IceUtil::Thread, public IceUtil::Monitor<I
 {
 public:
 
-    SessionKeepAliveThread(const IceGrid::AdminSessionPrx& session, 
-                        long timeoutSec, 
-                        const orcaice::Context& context );
+    SessionKeepAliveThread( const IceGrid::AdminSessionPrx &session, 
+                            long timeoutSec, 
+                            const orcaice::Context& context );
 
     virtual void run();
 

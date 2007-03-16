@@ -16,7 +16,11 @@
 #include <orcaice/component.h>
 #include <IceGrid/Session.h>
 #include "sessionkeepalive.h"
-
+#include "registryobserverI.h"
+#include "applicationobserverI.h"
+#include "adapterobserverI.h"
+#include "objectobserverI.h"
+#include "nodeobserverI.h"
 
 namespace icegridmon
 {
@@ -34,11 +38,14 @@ public:
 
 private:
 
-    SessionKeepAliveThreadPtr keepAlive_;
-    IceGrid::AdminSessionPrx session_;
+    SessionKeepAliveThreadPtr sessionKeepAlive_;
+    IceGrid::AdminSessionPrx  session_;
 
-    Ice::ObjectPtr regObserver_;
-    Ice::ObjectPtr nodeObserver_;
+    RegistryObserverI    *registryObserver_;
+    ApplicationObserverI *applicationObserver_;
+    AdapterObserverI     *adapterObserver_;
+    ObjectObserverI      *objectObserver_;
+    NodeObserverI        *nodeObserver_;
 };
 
 }

@@ -17,7 +17,6 @@
 #include <orcalog/orcalog.h>
 
 #include "component.h"
-#include "observerI.h"
 
 using namespace std;
 
@@ -45,7 +44,7 @@ Component::start()
     std::string instanceName = properties()->getPropertyWithDefault( "IceGrid.InstanceName", "IceGrid" );
 
     IceGrid::RegistryPrx registry = 
-	IceGrid::RegistryPrx::checkedCast( context().communicator()->stringToProxy(instanceName+"/Registry") );
+        IceGrid::RegistryPrx::checkedCast( context().communicator()->stringToProxy(instanceName+"/Registry") );
 
     if(!registry)
     {
@@ -56,7 +55,7 @@ Component::start()
     int timeoutMs = 0;
     try
     {
-        session_ = registry->createAdminSession( "horse", "shit" );
+        session_ = registry->createAdminSession( "assume-no-access-control", "assume-no-access-control" );
         timeoutMs = registry->getSessionTimeout();
         
         stringstream ss; ss<<"Created session (timeout="<<timeoutMs<<"ms";
@@ -65,32 +64,54 @@ Component::start()
     catch(const IceGrid::PermissionDeniedException& ex)
     {
         tracer()->error( "Permission denied:\n" + ex.reason );
+        throw;
     }
 
-    keepAlive_ = new SessionKeepAliveThread( session_, timeoutMs/2, context() );
-    keepAlive_->start();
+    sessionKeepAlive_ = new SessionKeepAliveThread( session_, timeoutMs/2, context() );
+    sessionKeepAlive_->start();
 
-    regObserver_ = new RegistryObserverI( context() );
+    registryObserver_ = new RegistryObserverI( context() );
+    Ice::ObjectPtr registryObj = registryObserver_;
+    IceGrid::RegistryObserverPrx registryObserverPrx =
+        orcaice::createConsumerInterface<IceGrid::RegistryObserverPrx> ( context(), registryObj );
+
+    applicationObserver_ = new ApplicationObserverI( context() );
+    Ice::ObjectPtr applicationObj = applicationObserver_;
+    IceGrid::ApplicationObserverPrx applicationObserverPrx =
+        orcaice::createConsumerInterface<IceGrid::ApplicationObserverPrx> ( context(), applicationObj );
+
+    adapterObserver_ = new AdapterObserverI( context() );
+    Ice::ObjectPtr adapterObj = adapterObserver_;
+    IceGrid::AdapterObserverPrx adapterObserverPrx =
+        orcaice::createConsumerInterface<IceGrid::AdapterObserverPrx> ( context(), adapterObj );
+
+    objectObserver_ = new ObjectObserverI( context() );
+    Ice::ObjectPtr objectObj = objectObserver_;
+    IceGrid::ObjectObserverPrx objectObserverPrx =
+        orcaice::createConsumerInterface<IceGrid::ObjectObserverPrx> ( context(), objectObj );
+
     nodeObserver_ = new NodeObserverI( context() );
-
-    IceGrid::RegistryObserverPrx regObserverPrx =
-        orcaice::createConsumerInterface<IceGrid::RegistryObserverPrx> ( context(), regObserver_ );
+    Ice::ObjectPtr nodeObj = nodeObserver_;
     IceGrid::NodeObserverPrx nodeObserverPrx =
-        orcaice::createConsumerInterface<IceGrid::NodeObserverPrx> ( context(), nodeObserver_ );
+        orcaice::createConsumerInterface<IceGrid::NodeObserverPrx> ( context(), nodeObj );
 
-    session_->setObservers( regObserverPrx, nodeObserverPrx );
+    session_->setObservers( registryObserverPrx, 
+                            nodeObserverPrx,
+                            applicationObserverPrx,
+                            adapterObserverPrx,
+                            objectObserverPrx );
 }
 
 void 
 Component::stop()
 {
     //
-    // Destroy the keepAlive_ thread and the sesion object otherwise
+    // Destroy the sessionKeepAlive_ thread and the sesion object otherwise
     // the session_ will be kept allocated until the timeout occurs.
     // Destroying the session_ will release all allocated objects.
     //
-    keepAlive_->destroy();
-    keepAlive_->getThreadControl().join();
+    sessionKeepAlive_->destroy();
+    sessionKeepAlive_->getThreadControl().join();
     session_->destroy();
 }
 

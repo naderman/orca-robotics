@@ -16,14 +16,13 @@ using namespace std;
 using namespace icegridmon;
 
 
-SessionKeepAliveThread::SessionKeepAliveThread(
-                const IceGrid::AdminSessionPrx& session, 
-                long timeoutSec, 
-                const orcaice::Context& context ) :
-    session_(session),
-    timeout_(IceUtil::Time::seconds(timeoutSec)),
-    context_(context),
-    destroy_(false)
+SessionKeepAliveThread::SessionKeepAliveThread( const IceGrid::AdminSessionPrx &session, 
+                                                long timeoutSec, 
+                                                const orcaice::Context &context )
+    : session_(session),
+      timeout_(IceUtil::Time::seconds(timeoutSec)),
+      context_(context),
+      destroy_(false)
 {
 }
 
@@ -33,13 +32,14 @@ SessionKeepAliveThread::run()
     Lock sync(*this);
     while(!destroy_)
     {
-        timedWait(timeout_);
+        timedWait(timeout_/10);
         if(destroy_)
         {
             break;
         }
         try
         {
+            cout<<"TRACE(sessionkeepalive.cpp): keepAlive()" << endl;
             session_->keepAlive();
 
 //             context_.tracer()->debug( "Keeping session alive", 6 );
