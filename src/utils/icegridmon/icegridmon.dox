@@ -29,11 +29,12 @@
 
 @par Operation
 
-Connects to the registry and installs itself as the Registry and Node Observer. Then all registry and node events are traced locally or remotely.
+Connects to the registry and installs a set of Observers.  Then all
+registry and node events can be traced locally or remotely.
 
 @section Authors
 
-- Alexei Makarenko
+- Alexei Makarenko, Alex Brooks
 
 */
 
