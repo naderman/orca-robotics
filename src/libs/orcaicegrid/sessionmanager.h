@@ -24,7 +24,7 @@ namespace orcaicegrid
 class SessionCreationCallback {
 public:
 
-    virtual ~SessionCreationCallback();
+    virtual ~SessionCreationCallback() {};
 
     // Returns: 
     // - true  = everything is OK
