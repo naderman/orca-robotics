@@ -15,11 +15,13 @@
 #include <string>
 #include <orcaice/component.h>
 #include <IceGrid/Session.h>
+#include <orcaicegrid/sessionmanager.h>
+#include "sessioncreationcallback.h"
 
 namespace icegridmon
 {
 
-class MainLoop;
+class SessionManagerStarter;
 
 class Component : public orcaice::Component
 {
@@ -34,7 +36,9 @@ public:
 
 private:
 
-    MainLoop *mainLoop_;
+    SessionCreationCallback     *sessionCreationCallback_;
+    orcaicegrid::SessionManager *sessionManager_;
+    SessionManagerStarter       *sessionManagerStarter_;
 };
 
 }

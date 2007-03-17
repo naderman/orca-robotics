@@ -1,47 +1,30 @@
-/*
- * Orca Project: Components for robotics 
- *               http://orca-robotics.sf.net/
- * Copyright (c) 2006-2007 Alexei Makarenko, Alex Brooks
- *
- * This copy of Orca is licensed to you under the terms described in the
- * ORCA_LICENSE file included in this distribution.
- *
- */
+#ifndef SESSIONCREATIONCALLBACK_H
+#define SESSIONCREATIONCALLBACK_H
 
-#ifndef ORCA2_ICEGRIDMON_MAINLOOP_H
-#define ORCA2_ICEGRIDMON_MAINLOOP_H
-
+#include <orcaicegrid/sessionmanager.h>
 #include <IceGrid/Registry.h>
 #include <orcaice/context.h>
-#include <orcaice/thread.h>
-
 #include "registryobserverI.h"
 #include "applicationobserverI.h"
 #include "adapterobserverI.h"
 #include "objectobserverI.h"
 #include "nodeobserverI.h"
 
-namespace icegridmon
+namespace icegridmon {
+
+//!
+//! @author Alex Brooks
+//!
+class SessionCreationCallback : public orcaicegrid::SessionCreationCallback
 {
 
-class MainLoop : public orcaice::Thread
-{
-public:
+public: 
 
-    MainLoop( const orcaice::Context& context );
+    SessionCreationCallback( const orcaice::Context &context );
 
-    virtual void run();
+    bool actionOnSessionCreation( IceGrid::AdminSessionPrx session );
 
-private:
-
-    // Loops until activated
-    void activate();
-
-    bool tryCreateSession();
-
-    IceGrid::AdminSessionPrx session_;
-    int timeoutSec_;
-    orcaice::Context context_;
+private: 
 
     // Observers
     RegistryObserverI               *registryObserver_;
@@ -54,8 +37,10 @@ private:
     IceGrid::ObjectObserverPrx       objectObserverPrx_;
     NodeObserverI                   *nodeObserver_;    
     IceGrid::NodeObserverPrx         nodeObserverPrx_;
+
+    orcaice::Context context_;
 };
 
-} // namespace
+}
 
 #endif

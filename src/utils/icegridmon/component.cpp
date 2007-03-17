@@ -16,35 +16,72 @@
 #include <orcaice/orcaice.h>
 #include <orcalog/orcalog.h>
 
-#include "mainloop.h"
+#include <orcamisc/activator.h>
+#include "sessioncreationcallback.h"
 #include "component.h"
 
 using namespace std;
 
 namespace icegridmon {
 
+
+//////////////////////////////////////////////////////////////////////
+
+//
+// This will get called post-activation.
+//
+// We need to fuck about like this because we don't have a thread in
+// which to perform setup, and we want to make sure we're activated
+// before registering observers.
+//
+class SessionManagerStarter : public orcamisc::PostActivationCallback
+{
+public:
+    SessionManagerStarter( orcaicegrid::SessionManager &sessionManager )
+        : sessionManager_(sessionManager) {}
+
+    void actionPostActivation()
+        { sessionManager_.start(); }
+
+private:
+
+    orcaicegrid::SessionManager &sessionManager_;
+};
+
+//////////////////////////////////////////////////////////////////////
+
 Component::Component( const std::string & compName )
     : orcaice::Component( compName ),
-      mainLoop_(0)
+      sessionCreationCallback_(0),
+      sessionManager_(0)
 {
 }
 
 Component::~Component()
 {
+    delete sessionCreationCallback_;
+    delete sessionManagerStarter_;
 }
 
 void 
 Component::start()
 {
-    mainLoop_ = new MainLoop( context() );
-    mainLoop_->start();
+    sessionCreationCallback_ = new SessionCreationCallback( context() );
+    sessionManager_ = new orcaicegrid::SessionManager( *sessionCreationCallback_, context() );
+    sessionManagerStarter_ = new SessionManagerStarter( *sessionManager_ );
+
+    // Don't have to keep track of the activator: it'll either:
+    // a) activate us, then start the sessionManager, or
+    // b) fail to activate us, and self-destruct at the end of the component's lifetime.
+    orcamisc::Activator *activator = new orcamisc::Activator( context(), sessionManagerStarter_ );
+    activator->start();
 }
 
 void 
 Component::stop()
 {
     tracer()->debug("stopping component...",2);
-    orcaice::Thread::stopAndJoin( mainLoop_ );
+    orcaice::Thread::stopAndJoin( sessionManager_ );
 }
 
 } // namespace
