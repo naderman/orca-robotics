@@ -15,6 +15,7 @@ namespace wifiutil {
         OtherError
     };
     
+    //! Exceptions for wifi access 
     class Exception : public std::exception
     {
     public:
@@ -43,6 +44,7 @@ namespace wifiutil {
             virtual Result type() const { return NoWirelessInterface; }        
     };
     
+    //! Wireless data structure for data obtainable from /etc/proc
     struct ProcData
     {
         std::string interfaceName;
@@ -58,6 +60,7 @@ namespace wifiutil {
         int numMissedBeacons;   
     };
     
+    //! Wireless config data structure
     struct WirelessConfig
     {
         std::string interfaceName;
@@ -66,6 +69,7 @@ namespace wifiutil {
         std::string accessPoint;
     };
     
+    //! Wireless data structure for ioctl-obtainable data
     struct IoctlData
     {
         std::string interfaceName;

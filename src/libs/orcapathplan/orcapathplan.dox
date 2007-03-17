@@ -12,14 +12,11 @@
 @defgroup orca_library_orcapathplan libOrcaPathplan
 @brief Library useful for path planning applications
 
-@section Development status
-Beta
-
 @section overview Overview
 
 This library contains an API to common path planning functionality in a 2D world. All path planning uses an occupancy grid representation of the world.
 
-The library consists of plain C-functions and a few a few helper classes. They can be used in a pathplanning component such as @ref orca_component_pathplanner.
+The library consists of plain C-functions and a few a few helper classes. For all classes and functions, refer to @ref orcapathplan. They can be used in a pathplanning component such as @ref orca_component_pathplanner.
 
 Header file:
 @verbatim
@@ -42,7 +39,17 @@ Here's a list of a few configuration parameters and their meaning. For more info
     - Flag which determines whether an optimized path should be computed @ref orca_pathplanner_pathoptimization
     - Valid values: 0 or 1
 
-@section Responsible Developer
+@section developer Responsible Developer
 Tobias Kaupp
   
+*/
+
+/*!
+@brief Library useful for path planning applications
+@namespace orcapathplan
+
+This namespace is part of a library which contains classes and functions for ogmap based pathplanning.
+
+@see @ref orca_library_orcapathplan
+
 */

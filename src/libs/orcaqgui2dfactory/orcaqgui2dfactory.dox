@@ -10,28 +10,18 @@
 /*!
 @ingroup libs
 @ingroup linux
-@defgroup orca_library_orcaqgui2d libOrcaQGui2d
-@brief Tools for building 2D Orca-compliant GUI's with Qt library.
+@defgroup orca_library_orcaqgui2dfactory libOrcaQGui2dFactory
+@brief Contains all the supported 2D Gui elements and corresponding painters
 
 @par Overview
 This library contains reusable elements to build a 2D Orca GUI component using the Qt library. 
 
 For a full list of functions and classes see @ref orcaqgui2d.
 
-@see @ref orca_library_orcaqgui, @ref orca_library_orcaqgui3d, @ref orca_library_orcaqgui2dfactory, @ref orca_library_orcaqgui3dfactory
+@see @ref orca_library_orcaqgui, @ref orca_library_orcaqgui2d, @ref orca_library_orcaqgui3d, @ref orca_library_orcaqgui3dfactory
 
 @par Authors
 
 Tobias Kaupp, Alex Brooks, Alex Makarenko
   
-*/
-
-/*!
-@brief libOrcaQGui2d provides tools for building 2D Orca-compliant GUI's with Qt library.
-@namespace orcaqgui2d
-
-This namespace is part of a library.
-
-@see @ref orca_library_orcaqgui2d
-
 */

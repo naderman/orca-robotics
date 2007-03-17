@@ -10,6 +10,17 @@
 #ifndef _MAPGRID_H_
 #define _MAPGRID_H_
 
+namespace orcagpsutil {
+
+typedef struct ellipsoid{
+    double semiMajorAxis;
+    double inverseFlattening;
+}ellipsoid;
+
+extern const ellipsoid WGS84;
+extern const ellipsoid AGD84;
+extern const ellipsoid GRS80;
+
 /*!
  Base class for Map Grid conversions
 
@@ -25,19 +36,6 @@
  http://www.deh.gov.au/erin/tools/mga2geo-gda.html
 
  */
-
-namespace orcagpsutil {
-
-typedef struct ellipsoid{
-    double semiMajorAxis;
-    double inverseFlattening;
-}ellipsoid;
-
-extern const ellipsoid WGS84;
-extern const ellipsoid AGD84;
-extern const ellipsoid GRS80;
-
-
 class mapgrid{
 public:
     mapgrid();

@@ -11,11 +11,8 @@
 @ingroup libs
 @defgroup orca_library_orcaogfusionutil libOrcaOgFusion
 @brief Occupancy Grid Fusion Util: Stuff useful for Occupancy grid operations.
-
-    @par Development status
-    Always ongoing.
     
-    @section overview Overview
+@section overview Overview
 
 Occupancy Grid Fusion Util: Stuff useful for Occupancy grid operations. Such 
 as the fusion of cells, and configuration of occupancy grid maps.

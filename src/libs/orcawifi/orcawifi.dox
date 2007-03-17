@@ -1,0 +1,33 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Mathew Ridley, Alex Brooks
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup libs
+@defgroup orca_library_orcawifi libOrcaWifi
+@brief Functions to access the wireless interface
+
+    @section overview Overview
+
+Functions and data structures useful to read information from the wireless interface such as signal strength.
+For a full list of functions and classes see @ref wifiutil.
+
+    @par Author
+    Tobias Kaupp
+  
+*/
+
+/*!
+@brief Functions to access the wireless interface
+@namespace wifiutil
+
+This namespace is part of a library which contains functions, classes and data structures for access to the wireless interface.
+
+@see @ref orca_library_orcawifi
+
+*/

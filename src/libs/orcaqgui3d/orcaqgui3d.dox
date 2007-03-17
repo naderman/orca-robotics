@@ -18,7 +18,7 @@ This library contains reusable elements to build a 3D Orca GUI component using t
 
 For a full list of functions and classes see @ref orcaqgui3d.
 
-@see @ref orca_library_orcaqgui, @ref orca_library_orcaqgui2d
+@see @ref orca_library_orcaqgui, @ref orca_library_orcaqgui2d, @ref orca_library_orcaqgui2dfactory, @ref orca_library_orcaqgui3dfactory
 
 @par Authors
 

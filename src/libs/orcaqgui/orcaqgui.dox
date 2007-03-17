@@ -16,10 +16,11 @@
 
 @par Overview
 
-This library contains reusable elements to build an Orca GUI component using the Qt library. Two other libraries specialize these definitions @ref orca_library_orcaqgui2d and 
-@ref orca_library_orcaqgui3d.
+This library contains reusable elements to build an Orca GUI component using the Qt library.
 
 For a full list of functions and classes see @ref orcaqgui.
+
+@see @ref orca_library_orcaqgui2d, @ref orca_library_orcaqgui3d, @ref orca_library_orcaqgui2dfactory, @ref orca_library_orcaqgui3dfactory
 
 @par Authors
 
@@ -31,7 +32,7 @@ Tobias Kaupp, Alex Brooks, Alex Makarenko
 @brief libOrcaQGui provides tools for building Orca-complient GUI's with Qt library.
 @namespace orcaqgui
 
-This namespace is part of a library.l
+This namespace is part of a library.
 
 @see @ref orca_library_orcaqgui
 

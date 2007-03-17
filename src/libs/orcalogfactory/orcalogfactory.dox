@@ -1,0 +1,34 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+/*!
+
+@ingroup libs
+@defgroup orca_library_orcalogfactory libOrcaLogFactory
+@brief A factory of all logging and replaying elements.
+
+@section overview Overview
+
+This library contains logging and replaying classes, one for each interface.
+For a full list of functions and classes see @ref orcalogfactory.
+
+@par Responsible Developer
+Alex Brooks, Alexei Makarenko, Tobias Kaupp
+  
+*/
+
+/*!
+@brief A factory of all logging and replaying elements.
+@namespace orcalogfactory
+
+This library contains logging and replaying classes, one for each interface.
+
+@see @ref orca_library_orcalogfactory
+
+*/
