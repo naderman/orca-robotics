@@ -18,8 +18,9 @@ using namespace icegridmon;
 
 
 MainLoop::MainLoop( const orcaice::Context &context )
-    : context_(context),
-      timeoutSec_(0)
+    : timeoutSec_(0),
+      context_(context)
+      
 {
     // Create all observers
     registryObserver_ = new RegistryObserverI( context_ );
