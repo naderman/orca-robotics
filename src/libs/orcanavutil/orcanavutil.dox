@@ -10,20 +10,22 @@
 /*!
 @ingroup libraries
 @defgroup orca_library_orcanavutil libOrcaNavUtil
-@brief Navigation Utility Functions
+@brief Mobile Robot Navigation Utility Functions
 
     @section overview Overview
 
-Provides some fairly simple functionality useful for mobile robot navigation.
+Provides some fairly simple functionality useful for mobile robot
+navigation: stuff like manipulation of poses, odometry, etc.
+
 For a full list of functions and classes see @ref orcanavutil.
 
     @par Responsible Developer
-    Alex Brooks, Tobias Kaupp, Matt Ridely
+    Alex Brooks, Tobias Kaupp
   
 */
 
 /*!
-@brief libOrcaNavUtil Navigation Utility Functions
+@brief libOrcaNavUtil Mobile Robot Navigation Utility Functions
 @namespace orcanavutil
 
 @see @ref orca_library_orcanavutil

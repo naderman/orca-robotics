@@ -61,8 +61,10 @@ enum ComponentInterfaceFlag {
 //!
 //!   3. Component::start()
 //!
-//!      - This is the place to launch threads from.
 //!      - start() is called immediately after init(), so the same things (eg context) are available.
+//!      - This is the place to launch threads from.
+//!        - Don't do anything that might loop forever in here, otherwise it won't be possible
+//!          to bring the component down cleanly.
 //!
 //! @par Component Destruction
 //!
