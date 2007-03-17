@@ -51,7 +51,7 @@ public:
 
     Thread();
 
-    //! Lets the tread know that it's time to exit. Thread-safe, so it can be called
+    //! Lets the thread know that it's time to exit. Thread-safe, so it can be called
     //! from inside or outside this thread.
     void stop();
 

@@ -101,6 +101,17 @@ class NetworkException : public orcaice::Exception
             : Exception( file, line, message ) {};
 };
 
+//! This exception is raised when you try to do something like activate the component
+//! while the component is in the process of deactivating
+class ComponentDeactivatingException : public orcaice::Exception
+{
+    public:
+        ComponentDeactivatingException(const char *file, const char *line, const char *message)
+            : Exception( file, line, message ) {};
+        ComponentDeactivatingException(const char *file, const char *line, const std::string &message)
+            : Exception( file, line, message ) {};
+};
+
 
 //! @brief This exception is raised if the required interface type does not match the proxy type.
 //!

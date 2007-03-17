@@ -262,6 +262,13 @@ Component::activate()
             tracer()->info( "You may enforce registration by setting Orca.RequireRegistry=1." );
         }
     }
+    catch( const Ice::ObjectAdapterDeactivatedException &e )
+    {
+        std::stringstream ss;
+        ss << "Failed to activate component because it's deactivating: " << e;
+        tracer()->warning( ss.str() );
+        throw orcaice::ComponentDeactivatingException( ERROR_INFO, ss.str() );
+    }
     catch( const Ice::Exception& e )
     {
         std::stringstream ss; ss<<"Failed to activate component: "<<e<<".  Check IceGrid Registry.";
