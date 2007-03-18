@@ -11,7 +11,7 @@
 #define RANGESCANNERSENSORDATA_H
 
 #include "isensordata.h"
-#include <orca/rangescanner.h>
+#include <orca/rangescanner2d.h>
 
 namespace localnav {
 
@@ -23,15 +23,16 @@ class RangeScannerSensorData : public ISensorData
 
 public: 
 
-    RangeScannerSensorData();
-    ~RangeScannerSensorData();
+    ~RangeScannerSensorData(){};
 
-    virtual const orca::Time &timeStamp() const()=0;
+    virtual const orca::Time &timeStamp() const{ return rangeData_->timeStamp; };
 
-    orca::RangeScanner2dDataPtr rangeData();
+    void setData( const orca::RangeScanner2dDataPtr rangeData ){ rangeData_ = rangeData; };
+    orca::RangeScanner2dDataPtr rangeData(){ return rangeData_; };
 
 private: 
 
+    orca::RangeScanner2dDataPtr rangeData_;
 
 };
 

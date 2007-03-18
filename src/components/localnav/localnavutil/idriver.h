@@ -18,6 +18,9 @@
 
 #include <orcalocalnav/goal.h>
 
+#include "../isensordata.h"
+#include "../isensordescription.h"
+
 namespace localnav {
 
 //
@@ -52,9 +55,16 @@ public:
                              bool                                   localisationUncertain,
                              const orcanavutil::Pose               &pose,
                              const orca::Twist2d                   &currentVelocity,
-                             const orca::RangeScanner2dDataPtr      obs,
+                             ISensorData                           *obs,
                              const std::vector<orcalocalnav::Goal> &goals,
                              orca::VelocityControl2dData           &cmd ) = 0;
+                             
+    // queries the driver for the required sensor model type
+    virtual std::string sensorModelType()=0;
+    
+    // tell the driver the sensor description
+    virtual void setSensorModelDescription( ISensorDescription* descr )=0;
+
 
 protected: 
 
@@ -65,8 +75,7 @@ class DriverFactory {
 public:
     virtual ~DriverFactory() {};
     virtual IDriver *createDriver( const orcaice::Context &context,
-                                   const orca::VehicleDescription &descr,
-                                   const orca::RangeScanner2dDescription &descr ) const=0;
+                                   const orca::VehicleDescription &descr ) const=0;
 };
 
 } // namespace

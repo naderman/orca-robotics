@@ -10,8 +10,14 @@
 #ifndef RANGESCANNERSENSORMODEL_H
 #define RANGESCANNERSENSORMODEL_H
 
+#include <orcaifaceimpl/ptrproxiedconsumerI.h>
+#include <orcaice/ptrproxy.h>
+#include <orca/rangescanner2d.h>
+
 #include "isensormodel.h"
 #include "isensordata.h"
+#include "rangescannersensordata.h"
+#include "rangescannersensordescription.h"
 
 namespace localnav {
 
@@ -23,16 +29,35 @@ class RangeScannerSensorModel : public ISensorModel
 
 public: 
 
-    RangeScannerSensorModel();
+    RangeScannerSensorModel( const orcaice::Context&    context );
     ~RangeScannerSensorModel();
 
     void subscribeForInfo();
 
-    ISensorData *getNext( int timeoutMs );
+    ISensorData* getNext( const int timeoutMs );
+
+    bool isProxyEmpty();
+    
+    ISensorDescription* description();
+
+    void setSimProxy( orcaice::PtrProxy<orca::RangeScanner2dDataPtr>*  obsProxy );
 
 private: 
 
+    orcaifaceimpl::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>* obsConsumer_;
+    
+    orcaice::PtrProxy<orca::RangeScanner2dDataPtr>* obsProxy_;
 
+    orca::RangeScanner2dConsumerPrx obsConsumerPrx_;
+
+    RangeScannerSensorDescription rangeScannerSensorDescription_;
+    RangeScannerSensorData rangeScannerSensorData_;
+
+    orca::RangeScanner2dDescription rangeDescr_;
+    
+
+
+    orcaice::Context context_;
 };
 
 }

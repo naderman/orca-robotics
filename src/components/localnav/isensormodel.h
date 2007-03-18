@@ -10,6 +10,9 @@
 #ifndef ISENSORMODEL_H
 #define ISENSORMODEL_H
 
+#include "isensordata.h"
+#include "isensordescription.h"
+
 namespace localnav {
 
 //!
@@ -20,14 +23,25 @@ class ISensorModel
 
 public: 
 
-    virtual ~ISensorModel();
+    virtual ~ISensorModel(){};
 
     virtual void subscribeForInfo()=0;
 
     // Allocates memory for ISensorData.
     // Returns NULL if there's a problem.
-    virtual ISensorData *getNext( int timeoutMs )=0;
+    virtual ISensorData* getNext( int timeoutMs )=0;
 
+    // Allocates memory for ISensorDescription.
+    // Returns NULL if there's a problem.
+    virtual ISensorDescription* description()=0;
+    
+    // returns true if the proxy is empty
+    virtual bool isProxyEmpty()=0;
+    
+    // this only works for range data at the moment.
+    //TODO: need to make it more general
+    virtual void setSimProxy( orcaice::PtrProxy<orca::RangeScanner2dDataPtr>*  obsProxy )=0;
+    
 private: 
 
 

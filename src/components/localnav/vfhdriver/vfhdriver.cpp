@@ -15,6 +15,9 @@
 #include "vfh_algorithm.h"
 #include "vfh_algorithmconfig.h"
 
+#include "../rangescannersensordata.h"
+#include "../rangescannersensordescription.h"
+
 using namespace localnav;
 using namespace std;
 
@@ -57,6 +60,26 @@ VfhDriver::~VfhDriver()
     if ( vfhAlgorithm_ ) delete vfhAlgorithm_;
 }
 
+std::string 
+VfhDriver::sensorModelType()
+{
+    std::string str = "range";
+    return str;
+}
+
+void 
+VfhDriver::setSensorModelDescription( ISensorDescription* descr ) 
+{ 
+    localnav::RangeScannerSensorDescription* scannerDescr = dynamic_cast<localnav::RangeScannerSensorDescription*>(descr);
+    // scannerDescr = *(descr.rangeDescr()); 
+    
+    stringstream descrStream;
+    descrStream << "Working with the following range scanner: " << orcaice::toString( scannerDescr->rangeDescr() ) << endl;
+    context_.tracer()->info( descrStream.str() );
+
+}
+
+
 void 
 VfhDriver::setSpeedConstraints( float maxSpeed, float maxTurnrate )
 {
@@ -93,10 +116,17 @@ VfhDriver::getCommand( bool                                   stalled,
                        bool                                   localisationUncertain,
                        const orcanavutil::Pose               &pose,
                        const orca::Twist2d                   &currentVelocity,
-                       const orca::RangeScanner2dDataPtr      obs,
+                       localnav::ISensorData                 *iSensorObs,
                        const std::vector<orcalocalnav::Goal> &goals,
                        orca::VelocityControl2dData           &cmd )
 {
+    localnav::RangeScannerSensorData* sensorObs = dynamic_cast<localnav::RangeScannerSensorData*>(iSensorObs);
+    if ( sensorObs==0 )
+    {
+        throw( std::string("vfhdriver.cpp: could not down cast to RangeScannerSensorData" ) );
+    }
+    orca::RangeScanner2dDataPtr obs = sensorObs->rangeData();
+    
     if ( goals.size() == 0 )
     {
         setToZero( cmd );

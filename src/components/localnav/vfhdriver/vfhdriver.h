@@ -17,6 +17,9 @@
 #include <vfhdriver/vfh_algorithm.h>
 #include <orcaice/heartbeater.h>
 
+#include "../isensordata.h"
+#include "../isensordescription.h"
+
 namespace vfh {
 
 //
@@ -57,9 +60,16 @@ public:
                              bool                                   localisationUncertain,
                              const orcanavutil::Pose               &pose,
                              const orca::Twist2d                   &currentVelocity,
-                             const orca::RangeScanner2dDataPtr      obs,
+                             localnav::ISensorData                 *obs,
                              const std::vector<orcalocalnav::Goal> &goals,
                              orca::VelocityControl2dData           &cmd );
+                             
+    // queries the driver for the required sensor model type
+    std::string sensorModelType();
+    
+    // tell the driver the sensor description
+    void setSensorModelDescription( localnav::ISensorDescription* descr );
+
 
 private: 
 
@@ -123,8 +133,9 @@ class VfhDriverFactory : public localnav::DriverFactory
 {
 public:
     localnav::IDriver *createDriver( const orcaice::Context &context,
-                                     const orca::VehicleDescription &vehicleDescr,
-                                     const orca::RangeScanner2dDescription &scannerDescr ) const
+                                     const orca::VehicleDescription &vehicleDescr ) const
+                                     // const orca::RangeScanner2dDescription &scannerDescr ) const
+                                     // const localnav::ISensorDescription& scannerDescr ) const
         {
             return new VfhDriver( context, vehicleDescr );
         }

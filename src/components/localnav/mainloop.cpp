@@ -18,6 +18,10 @@
 
 #include "mainloop.h"
 #include "testsim/simulator.h"
+#include "isensordata.h"
+#include "isensordescription.h"
+#include "rangescannersensormodel.h"
+#include "rangescannersensordata.h"
 
 using namespace std;
 using namespace orca;
@@ -34,13 +38,13 @@ MainLoop::MainLoop( DriverFactory                    &driverFactory,
       pathMaintainer_(NULL),
       driver_(NULL),
       driverFactory_(driverFactory),
-      obsConsumer_(new orcaifaceimpl::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>),
+      iSensorModel_(0),
       locConsumer_(new orcaifaceimpl::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>),
       odomConsumer_(new orcaifaceimpl::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>),
-      obsProxy_(NULL),
       locProxy_(NULL),
       odomProxy_(NULL),
       pathFollowerInterface_(pathFollowerInterface),
+      iSensorData_(0),
       clock_(clock),
       testMode_(false),
       context_(context)
@@ -51,8 +55,8 @@ MainLoop::MainLoop( DriverFactory                    &driverFactory,
     Ice::ObjectPtr locConsumerPtr = locConsumer_;
     locConsumerPrx_ = orcaice::createConsumerInterface<Localise2dConsumerPrx>( context_, locConsumerPtr );
     
-    Ice::ObjectPtr obsConsumerPtr = obsConsumer_;
-    obsConsumerPrx_ = orcaice::createConsumerInterface<RangeScanner2dConsumerPrx>( context_, obsConsumerPtr );
+    // the observation consumer is dependent on the type of
+    // observations the driver expects. So it is set up later in driver_->subscribeForInfo().
 }
 
 MainLoop::MainLoop( DriverFactory                   &driverFactory,
@@ -64,13 +68,13 @@ MainLoop::MainLoop( DriverFactory                   &driverFactory,
       pathMaintainer_(NULL),
       driver_(NULL),
       driverFactory_(driverFactory),
-      obsConsumer_(NULL),
+      iSensorModel_(0),
       locConsumer_(NULL),
       odomConsumer_(NULL),
-      obsProxy_(NULL),
       locProxy_(NULL),
       odomProxy_(NULL),
       pathFollowerInterface_(pathFollowerInterface),
+      iSensorData_(0),
       testSimulator_(&testSimulator),
       clock_(clock),
       testMode_(true),
@@ -80,7 +84,8 @@ MainLoop::MainLoop( DriverFactory                   &driverFactory,
 
 MainLoop::~MainLoop()
 {
-    if ( obsConsumer_ ) delete obsConsumer_;
+    if ( iSensorModel_ ) delete iSensorModel_;
+    if ( iSensorData_ ) delete iSensorData_;
     if ( odomConsumer_ ) delete odomConsumer_;
     if ( locConsumer_ ) delete locConsumer_;
     if ( speedLimiter_ ) delete speedLimiter_;
@@ -94,7 +99,7 @@ MainLoop::ensureProxiesNotEmpty()
     // Ensure that there's something in our proxys
     while ( isActive() )
     {
-        bool gotObs  = !obsProxy_->isEmpty();
+        bool gotObs  = !iSensorModel_->isProxyEmpty();
         bool gotLoc  = !locProxy_->isEmpty();
         bool gotOdom = !odomProxy_->isEmpty();
 
@@ -295,85 +300,98 @@ MainLoop::subscribeForLocalisation()
 void
 MainLoop::subscribeForObservations()
 {
-    RangeScanner2dPrx obsPrx;
-
     while ( isActive() )
     {
         try {
-            orcaice::connectToInterfaceWithTag<orca::RangeScanner2dPrx>( context_, obsPrx, "Observations" );
+            // this might be wrong. Originally the connectToInterface() and subsribe were in separate while loops
+            iSensorModel_->subscribeForInfo();
             break;
         }
         catch( std::exception &e )
         {
-            stringstream ss; ss << "Error while connecting to laser: " << e.what();
+            stringstream ss; ss << "Error while subscribing to sensor data: " << e.what();
             context_.tracer()->error( ss.str() );
         }
         catch( Ice::Exception &e )
         {
-            stringstream ss; ss << "Error while connecting to laser: " << e;
-            context_.tracer()->error( ss.str() );
-        }
-        sleep(2);
-    }    
-    while ( isActive() )
-    {
-        try {
-            obsPrx->subscribe(  obsConsumerPrx_ );
-            break;
-        }
-        catch( std::exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to laser: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
-        catch( Ice::Exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to laser: " << e;
+            stringstream ss; ss << "Error while subscribing to sensor data: " << e;
             context_.tracer()->error( ss.str() );
         }
         sleep(2);
     }
-    while ( isActive() )
-    {
-        try {
-            scannerDescr_ = obsPrx->getDescription();
-            break;
-        }
-        catch( std::exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to laser: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
-        catch( Ice::Exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to laser: " << e;
-            context_.tracer()->error( ss.str() );
-        }
-        sleep(2);
-    }
-    context_.tracer()->info( "Subscribed for laser" );
 }
+
 
 void
 MainLoop::setup()
 {
+    
+    //
+    // connect to the vehicle controller, get the vehicle description,
+    // and create the driver for the path planner
+    //
+    
     if ( !testMode_ )
     {
         connectToController();
+    }
+    else
+    {
+        vehicleDescr_ = testSimulator_->getVehicleDescription();
+    }
+        
+    driver_ = driverFactory_.createDriver( context_, vehicleDescr_ );
+    
+    stringstream descrStream;
+    descrStream << "Working with the following vehicle: " << orcaice::toString(vehicleDescr_) << endl;
+    context_.tracer()->info( descrStream.str() );
 
+    //
+    // instantiate the sensor model
+    //
+    
+    // query driver for the type of sensor model it requires
+    std::string sensorModel = driver_->sensorModelType();
+    
+    // set up the type of sensor model according to the driver's requirements
+    if( sensorModel == "range" )
+    {
+        iSensorModel_ = new RangeScannerSensorModel( context_ );
+        iSensorData_ = new RangeScannerSensorData();
+    }
+    else
+    {
+        stringstream ss;
+        ss << "MainLoop: Can only handle data of type range";
+        throw ss.str();
+    }
+
+
+    //
+    // set up all the interface subscriptions and tell the driver the sensor description
+    //
+    
+    if ( !testMode_ )
+    {
         subscribeForOdometry();
         subscribeForLocalisation();
         subscribeForObservations();
 
-        obsProxy_  = &(obsConsumer_->proxy_);
+        // tell the driver the sensor description
+        // TODO: check that I don't have to delete the pointer returned from description()
+        driver_->setSensorModelDescription( iSensorModel_->description() );
+        
+        // obsProxy_ is set up in subscribeForObservations()
         locProxy_  = &(locConsumer_->proxy_);
         odomProxy_ = &(odomConsumer_->proxy_);
     }
     else
     {
-        vehicleDescr_ = testSimulator_->getVehicleDescription();
-        scannerDescr_ = testSimulator_->getRangeScanner2dDescription();
-        obsProxy_  = &(testSimulator_->obsProxy_);
+        // TODO: check that I don't have to delete the pointer returned from description()
+        driver_->setSensorModelDescription( testSimulator_->rangeScanner2dDescription() );
+        
+        // TODO: setSimProxy() only works for range data... make general 
+        iSensorModel_->setSimProxy( &(testSimulator_->obsProxy_) );
         locProxy_  = &(testSimulator_->locProxy_);
         odomProxy_ = &(testSimulator_->odomProxy_);
 
@@ -381,12 +399,6 @@ MainLoop::setup()
         // testSimulator_->setCommand( cmd );
     }
 
-    stringstream descrStream;
-    descrStream << "Working with the following vehicle: " << orcaice::toString(vehicleDescr_) << endl;
-    descrStream << "And the following range scanner: " << orcaice::toString(scannerDescr_) << endl;
-    context_.tracer()->info( descrStream.str() );
-
-    driver_ = driverFactory_.createDriver( context_, vehicleDescr_, scannerDescr_ );
     pathMaintainer_ = new orcalocalnav::PathMaintainer( pathFollowerInterface_, clock_, context_ );
     speedLimiter_ = new orcalocalnav::SpeedLimiter( context_ );
 
@@ -435,17 +447,14 @@ MainLoop::run()
         {
             //cout<<"============================================="<<endl;
 
-            // The rangeScanner provides the 'clock' which is the trigger for this loop
-            int sensorRet = obsProxy_->getNext( rangeData_, TIMEOUT_MS );
-
-            if ( sensorRet != 0 )
+            // The incoming sensor data provides the 'clock' which is the trigger for this loop
+            iSensorData_ = iSensorModel_->getNext( TIMEOUT_MS );
+            if ( iSensorData_ == 0 )
             {
-                stringstream ss;
-                ss << "Timeout waiting for range data: no data for " << TIMEOUT_MS << "ms.  Stopping.";
-                context_.tracer()->error( ss.str() );
                 getStopCommand( velocityCmd );
                 sendCommandToPlatform( velocityCmd );
-                subscribeForObservations();
+                iSensorModel_->subscribeForInfo();
+                delete iSensorData_;
                 continue;
             }
             
@@ -453,17 +462,17 @@ MainLoop::run()
             orcamisc::RealTimeStopwatch timer;
 
             // Tell everyone what time it is, boyeee
-            clock_.setTime( rangeData_->timeStamp );
+            clock_.setTime( iSensorData_->timeStamp() );
 
             locProxy_->get( localiseData_ );
             odomProxy_->get( odomData_ );
 
             const double THRESHOLD = 1.0; // seconds
-            if ( areTimestampsDodgy( rangeData_, localiseData_, odomData_, THRESHOLD ) )
+            if ( areTimestampsDodgy( *iSensorData_, localiseData_, odomData_, THRESHOLD ) )
             {
                 stringstream ss;
                 ss << "Timestamps are more than "<<THRESHOLD<<"sec apart: " << endl
-                   << "\t rangeData:    " << orcaice::toString(rangeData_->timeStamp) << endl
+                   << "\t rangeData:    " << orcaice::toString(iSensorData_->timeStamp()) << endl
                    << "\t localiseData: " << orcaice::toString(localiseData_.timeStamp) << endl
                    << "\t odomData:     " << orcaice::toString(odomData_.timeStamp) << endl
                    << "Maybe something is wrong: Stopping.";
@@ -472,6 +481,7 @@ MainLoop::run()
                 sendCommandToPlatform( velocityCmd );
                 subscribeForOdometry();
                 subscribeForLocalisation();
+                delete iSensorData_;
                 continue;
             }
 
@@ -512,7 +522,7 @@ MainLoop::run()
                                  uncertainLocalisation,
                                  pose,
                                  odomData_.motion,
-                                 rangeData_,
+                                 iSensorData_,
                                  currentGoals,
                                  velocityCmd );
             
@@ -531,6 +541,7 @@ MainLoop::run()
             else
             {
                 context_.tracer()->debug( "Doing nothing because disabled" );
+                delete iSensorData_;
                 continue;
             }
 
@@ -598,14 +609,14 @@ MainLoop::checkWithOutsideWorld()
 }
 
 bool
-MainLoop::areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData, 
+MainLoop::areTimestampsDodgy( const ISensorData&                sensorData, 
                               const orca::Localise2dData&       localiseData, 
                               const orca::Odometry2dData&       odomData,
                               double                           threshold )
 {
-    if ( fabs( orcaice::timeDiffAsDouble( rangeData->timeStamp, localiseData.timeStamp ) ) >= threshold )
+    if ( fabs( orcaice::timeDiffAsDouble( sensorData.timeStamp(), localiseData.timeStamp ) ) >= threshold )
         return true;
-    if ( fabs( orcaice::timeDiffAsDouble( rangeData->timeStamp, odomData.timeStamp ) ) >= threshold )
+    if ( fabs( orcaice::timeDiffAsDouble( sensorData.timeStamp(), odomData.timeStamp ) ) >= threshold )
         return true;
 
     return false;

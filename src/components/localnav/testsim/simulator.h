@@ -13,6 +13,10 @@
 #include <orcaice/context.h>
 #include <orca/pathfollower2d.h>
 
+#include "../isensordescription.h"
+#include "../rangescannersensordescription.h"
+
+
 namespace localnav {
 
 //!
@@ -39,8 +43,11 @@ public:
     void printState();
 
     orca::VehicleDescription        getVehicleDescription() const;
-    orca::RangeScanner2dDescription getRangeScanner2dDescription() const
-        { return scannerDescr_; }
+    // orca::RangeScanner2dDescription getRangeScanner2dDescription() const
+    //     { return scannerDescr_; }
+    
+    // return the description upcasted to the base class
+    ISensorDescription* rangeScanner2dDescription();
     
 private: 
 
@@ -73,6 +80,8 @@ private:
     int iterationNum_;
 
     bool batchMode_;
+    
+    RangeScannerSensorDescription rangeScannerSensorDescription_;
 
     orcaice::Context context_;
 };

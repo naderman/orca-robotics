@@ -12,7 +12,6 @@
 
 #include <orca/velocitycontrol2d.h>
 #include <orca/localise2d.h>
-#include <orca/rangescanner2d.h>
 #include <orcaice/context.h>
 #include <orcaice/ptrproxy.h>
 #include <orcaice/thread.h>
@@ -24,9 +23,11 @@
 #include <orcalocalnav/clock.h>
 #include <localnavutil/idriver.h>
 
+#include "isensormodel.h"
+#include "isensordata.h"
+
 namespace localnav {
 
-// class PathMaintainer;
 class PathFollower2dI;
 class Simulator;
 
@@ -83,7 +84,7 @@ private:
     void checkWithOutsideWorld();
 
     // Returns true if the timestamps differ by more than a threshold.
-    bool areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData,
+    bool areTimestampsDodgy( const ISensorData&                 iSensorData,
                              const orca::Localise2dData&        localiseData,
                              const orca::Odometry2dData&        odomData,
                              double                             threshold );
@@ -100,22 +101,23 @@ private:
     // Loaded with this
     DriverFactory &driverFactory_;
 
+    // the type of sensor info we have for planning a path through the world
+    ISensorModel* iSensorModel_;
+    
     // Incoming observations and pose info
     // Get observations, pose, and odometric velocity
-    orcaifaceimpl::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr> *obsConsumer_;
     orcaifaceimpl::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>     *locConsumer_;
     orcaifaceimpl::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>     *odomConsumer_;
 
-    orcaice::PtrProxy<orca::RangeScanner2dDataPtr> *obsProxy_;
     orcaice::Proxy<orca::Localise2dData>           *locProxy_;
     orcaice::Proxy<orca::Odometry2dData>           *odomProxy_;
 
     orcalocalnav::PathFollower2dI  &pathFollowerInterface_;
 
     // data types
+    ISensorData*                    iSensorData_;
     orca::Localise2dData           localiseData_;
     orca::Odometry2dData           odomData_;
-    orca::RangeScanner2dDataPtr    rangeData_;
 
     // Outgoing commands: live version
     orca::VelocityControl2dPrx     velControl2dPrx_;
@@ -126,14 +128,12 @@ private:
     orcalocalnav::Clock &clock_;
 
     orca::VehicleDescription        vehicleDescr_;
-    orca::RangeScanner2dDescription scannerDescr_;
 
     bool testMode_;
 
     // consumers
     orca::Odometry2dConsumerPrx     odomConsumerPrx_;
     orca::Localise2dConsumerPrx     locConsumerPrx_;
-    orca::RangeScanner2dConsumerPrx obsConsumerPrx_;
 
     orcaice::Context context_;
 };

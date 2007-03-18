@@ -10,6 +10,8 @@
 #ifndef ISENSORDATA_H
 #define ISENSORDATA_H
 
+#include <orca/orca.h>
+
 namespace localnav {
 
 //!
@@ -20,9 +22,10 @@ class ISensorData
 
 public: 
 
-    virtual ~ISensorData();
+    virtual ~ISensorData(){};
 
-    virtual const orca::Time &timeStamp() const()=0;
+    virtual const orca::Time &timeStamp() const=0;
+    
 
 private: 
 
