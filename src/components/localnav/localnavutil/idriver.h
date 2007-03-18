@@ -18,8 +18,8 @@
 
 #include <orcalocalnav/goal.h>
 
-#include "../isensordata.h"
-#include "../isensordescription.h"
+#include <localnavutil/isensordata.h>
+#include <localnavutil/isensordescription.h>
 
 namespace localnav {
 

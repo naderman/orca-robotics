@@ -15,8 +15,8 @@
 #include "vfh_algorithm.h"
 #include "vfh_algorithmconfig.h"
 
-#include "../rangescannersensordata.h"
-#include "../rangescannersensordescription.h"
+#include <localnavutil/rangescannersensordata.h>
+#include <localnavutil/rangescannersensordescription.h>
 
 using namespace localnav;
 using namespace std;

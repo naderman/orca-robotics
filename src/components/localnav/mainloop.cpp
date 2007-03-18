@@ -15,13 +15,13 @@
 #include <orcalocalnav/localiseutil.h>
 #include <localnavutil/pose.h>
 #include <orcamisc/realtimestopwatch.h>
+#include <localnavutil/isensordata.h>
+#include <localnavutil/isensordescription.h>
+#include <localnavutil/rangescannersensordata.h>
 
 #include "mainloop.h"
 #include "testsim/simulator.h"
-#include "isensordata.h"
-#include "isensordescription.h"
 #include "rangescannersensormodel.h"
-#include "rangescannersensordata.h"
 
 using namespace std;
 using namespace orca;

@@ -14,10 +14,10 @@
 #include <orcaice/ptrproxy.h>
 #include <orca/rangescanner2d.h>
 
+#include <localnavutil/isensordata.h>
+#include <localnavutil/rangescannersensordata.h>
+#include <localnavutil/rangescannersensordescription.h>
 #include "isensormodel.h"
-#include "isensordata.h"
-#include "rangescannersensordata.h"
-#include "rangescannersensordescription.h"
 
 namespace localnav {
 

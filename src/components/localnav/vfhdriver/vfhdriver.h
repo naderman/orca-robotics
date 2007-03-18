@@ -17,8 +17,8 @@
 #include <vfhdriver/vfh_algorithm.h>
 #include <orcaice/heartbeater.h>
 
-#include "../isensordata.h"
-#include "../isensordescription.h"
+#include <localnavutil/isensordata.h>
+#include <localnavutil/isensordescription.h>
 
 namespace vfh {
 

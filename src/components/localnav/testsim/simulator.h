@@ -13,8 +13,8 @@
 #include <orcaice/context.h>
 #include <orca/pathfollower2d.h>
 
-#include "../isensordescription.h"
-#include "../rangescannersensordescription.h"
+#include <localnavutil/isensordescription.h>
+#include <localnavutil/rangescannersensordescription.h>
 
 
 namespace localnav {

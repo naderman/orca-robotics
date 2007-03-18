@@ -10,8 +10,8 @@
 #ifndef ISENSORMODEL_H
 #define ISENSORMODEL_H
 
-#include "isensordata.h"
-#include "isensordescription.h"
+#include <localnavutil/isensordata.h>
+#include <localnavutil/isensordescription.h>
 
 namespace localnav {
 

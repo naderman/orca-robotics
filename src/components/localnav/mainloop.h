@@ -22,9 +22,9 @@
 #include <orcalocalnav/pathmaintainer.h>
 #include <orcalocalnav/clock.h>
 #include <localnavutil/idriver.h>
+#include <localnavutil/isensordata.h>
 
 #include "isensormodel.h"
-#include "isensordata.h"
 
 namespace localnav {
 
