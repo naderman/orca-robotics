@@ -19,7 +19,7 @@
 
 using namespace std;
 using namespace orca;
-using namespace orcaqgui;
+using namespace orcaqgui2d;
 
 WifiWidget::WifiWidget( unsigned int numInterfaces, std::string proxyString )
     : numInterfaces_(numInterfaces)

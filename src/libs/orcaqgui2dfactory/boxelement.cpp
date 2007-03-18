@@ -12,7 +12,7 @@
 #include "boxelement.h"
 #include <orcaqgui2d/definitions2d.h>
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 BoxElement::BoxElement( QColor color, float centreX, float centreY, float width, float height )
     : color_(color),

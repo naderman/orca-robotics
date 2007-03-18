@@ -16,7 +16,7 @@
 using namespace std;
 using namespace orca;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 OgMapsCombinedElement::OgMapsCombinedElement( const orcaice::Context  &context,
                                               const QStringList       &proxyStrList)
@@ -30,8 +30,8 @@ OgMapsCombinedElement::OgMapsCombinedElement( const orcaice::Context  &context,
     for (int i=0; i<proxyStrList.size(); i++)
     {
         cout << "proxyString: " << proxyStrList[i].toStdString() << endl;
-        IceStormListener<OgMapData,OgMapPrx,OgMapConsumer,OgMapConsumerPrx>
-            *listener = new IceStormListener<OgMapData,
+        orcaqgui::IceStormListener<OgMapData,OgMapPrx,OgMapConsumer,OgMapConsumerPrx>
+            *listener = new orcaqgui::IceStormListener<OgMapData,
                                              OgMapPrx,
                                              OgMapConsumer,
                                              OgMapConsumerPrx>(context, proxyStrList[i].toStdString());

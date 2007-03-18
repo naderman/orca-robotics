@@ -32,8 +32,9 @@
 #include <orcaqgui2d/iknowsplatformposition2d.h>
 
 using namespace std;
+using namespace orcaqgui;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
     
 WorldView::WorldView( PlatformCSFinder* platformCSFinder,
                       GuiElementModel* model,
@@ -178,7 +179,7 @@ WorldView::paintEvent( QPaintEvent* e )
     bool isCoordinateFramePlatformLocalised = transformToPlatformOwningCS( &painter );
 
     // simple z-buffering, higher-z items obscure (are in front of) lower-z items (just like QCanvas)
-    for ( int z=orcaqgui::Z_BACKGROUND; z<=orcaqgui::Z_FOREGROUND; z++ )
+    for ( int z=Z_BACKGROUND; z<=Z_FOREGROUND; z++ )
     {
         paintAllGuiElements(&painter,z,isCoordinateFramePlatformLocalised);
     }

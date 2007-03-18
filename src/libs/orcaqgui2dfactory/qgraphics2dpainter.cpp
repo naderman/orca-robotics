@@ -21,7 +21,7 @@
 
 using namespace std;
 using namespace orca;
-using namespace orcaqgui;
+using namespace orcaqgui2d;
 
 QGraphics2dPainter::QGraphics2dPainter()
     : isDataAvailable_(false)

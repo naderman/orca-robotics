@@ -13,7 +13,7 @@
 
 #include "ogmapscombinedpainter.h"
 
-using namespace orcaqgui;
+using namespace orcaqgui2d;
 using namespace std;
 using namespace orca;
 

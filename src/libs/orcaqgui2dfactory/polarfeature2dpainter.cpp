@@ -19,8 +19,8 @@
 
 using namespace std;
 using namespace orca;
-
 using namespace orcaqgui;
+using namespace orcaqgui2d;
 
 namespace {
     const double BOX_WIDTH = 0.750;
@@ -61,7 +61,7 @@ drawPointFeature( QPainter *painter, const orca::PointPolarFeature2d &f )
         // Not sure of a better way to represent both pFalsePositive and pTruePositive
         // with just one number...
         double lineWidth = LINE_WIDTH_MAX*( f.pTruePositive-f.pFalsePositive );
-        painter->setPen( QPen( orcaqgui::featureColour(f.type),lineWidth) );
+        painter->setPen( QPen( featureColour(f.type),lineWidth) );
         painter->drawRect( QRectF( -BOX_WIDTH/2.0, -BOX_WIDTH/2.0, BOX_WIDTH, BOX_WIDTH) );
     }
     painter->restore();
@@ -73,7 +73,7 @@ drawLineFeature( QPainter *painter, const orca::LinePolarFeature2d &f )
     painter->save();
     {
         double lineWidth = LINE_WIDTH_MAX*( f.pTruePositive-f.pFalsePositive );
-        painter->setPen( QPen( orcaqgui::featureColour(f.type), lineWidth ) );
+        painter->setPen( QPen( featureColour(f.type), lineWidth ) );
 
         double x1 = f.start.r*cos(f.start.o);
         double y1 = f.start.r*sin(f.start.o);

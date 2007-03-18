@@ -18,7 +18,7 @@
 
 #include <orcaqgui2d/guielement2d.h>
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 /*!
   @brief Base class for gui elements that receive data from IceStorm.
@@ -28,7 +28,7 @@ namespace orcaqgui {
   @author Alex Brooks
 */
 template<class PainterType, class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
-class IceStormElement : public orcaqgui::GuiElement2d
+class IceStormElement : public orcaqgui2d::GuiElement2d
 {
   
 public:
@@ -68,7 +68,7 @@ protected:
     bool needToUpdate();
     
     //! Object to handle network communication, including subscription process
-    IceStormListener<DataType,
+    orcaqgui::IceStormListener<DataType,
                      ProxyType,
                      ConsumerType,
                      ConsumerPrxType> listener_;

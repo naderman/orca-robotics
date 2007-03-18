@@ -16,6 +16,7 @@
 #include "paintutils.h"
 
 using namespace std;
+using namespace orcaqgui;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -34,7 +35,7 @@ const double THIN_LINE_THICKNESS = 2.0;
     
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 PoseHistory::PoseHistory( double lineThickness )
     : lineThickness_(lineThickness),

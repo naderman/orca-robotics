@@ -19,9 +19,9 @@
 #include <orcaqgui2dfactory/pathpainter.h>
 #include <orcaqgui2dfactory/pathinput.h>
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
-class IHumanManager;
+class orcaqgui::IHumanManager;
 
 // There's two consumer objects: the first one for icestorm (pathplanner pushes out whatever it computed) which is part
 // of the base class IceStormElement.
@@ -47,7 +47,7 @@ class PathplannerButtons : public QObject
     Q_OBJECT
             
 public:
-    PathplannerButtons( QObject *parent, IHumanManager *humanManager, std::string proxyString);
+    PathplannerButtons( QObject *parent, orcaqgui::IHumanManager *humanManager, std::string proxyString);
     ~PathplannerButtons() 
     { 
         // Qt cleans up for us 
@@ -67,7 +67,7 @@ class PathPlannerHI  : public QObject
 public:
     PathPlannerHI( PathPlanner2dElement *ppElement,
                    std::string proxyString,
-                   IHumanManager *humanManager,
+                   orcaqgui::IHumanManager *humanManager,
                    PathPainter &painter,
                    WaypointSettings wpSettings );
     ~PathPlannerHI();
@@ -95,7 +95,7 @@ private:
 
     PathPlanner2dElement *ppElement_;
     std::string proxyString_;
-    IHumanManager *humanManager_;
+    orcaqgui::IHumanManager *humanManager_;
     PathPainter   &painter_;
 
     QString pathFileName_;
@@ -117,7 +117,7 @@ private:
 //
 // @author Tobias Kaupp
 //
-class PathPlanner2dElement : public orcaqgui::IceStormElement<PathPainter,
+class PathPlanner2dElement : public orcaqgui2d::IceStormElement<PathPainter,
                              orca::PathPlanner2dData,
                              orca::PathPlanner2dPrx,
                              orca::PathPlanner2dConsumer,
@@ -128,7 +128,7 @@ public:
 
     PathPlanner2dElement( const orcaice::Context & context,
                           const std::string &proxyString,
-                          IHumanManager* humanManager );
+                          orcaqgui::IHumanManager* humanManager );
     ~PathPlanner2dElement();
 
     void update();
@@ -164,7 +164,7 @@ private:
     
     orcaice::Context context_;
     std::string proxyString_;
-    IHumanManager *humanManager_;
+    orcaqgui::IHumanManager *humanManager_;
 
     bool displayWaypoints_;
     bool currentTransparency_;

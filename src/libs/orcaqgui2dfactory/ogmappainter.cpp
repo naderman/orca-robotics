@@ -17,6 +17,7 @@
 #include <orcaqgui/exceptions.h>
 
 using namespace orcaqgui;
+using namespace orcaqgui2d;
 using namespace std;
 
 
@@ -70,7 +71,7 @@ OgMapPainter::setData( const orca::OgMapData& data )
 }
 
 ImageFileType
-OgMapPainter::checkFileExtension( QString &fe, IHumanManager *humanManager )
+OgMapPainter::checkFileExtension( QString &fe, orcaqgui::IHumanManager *humanManager )
 {
     if ( fe.isEmpty() ) 
     {
@@ -94,7 +95,7 @@ OgMapPainter::checkFileExtension( QString &fe, IHumanManager *humanManager )
 }
 
 int 
-OgMapPainter::saveMap( const orcaice::Context & context, const QString fileName, IHumanManager *humanManager )
+OgMapPainter::saveMap( const orcaice::Context & context, const QString fileName, orcaqgui::IHumanManager *humanManager )
 {
     QString fileExtension = fileName.section('.',-1,-1);
     ImageFileType type = checkFileExtension( fileExtension, humanManager );

@@ -12,7 +12,6 @@
 #include <cmath>
  
 #include <orcaice/orcaice.h>
-#include <orcaqgui/ihumanmanager.h>
 #include <orcaqgui/guiicons.h>
 #include <orcaqgui2d/paintutils.h>
 #include <orcaqgui2dfactory/waypointdialog.h>
@@ -29,8 +28,9 @@
 #include "pathinput.h"
 
 using namespace std;
+using namespace orcaqgui;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
     
 enum ColumnDataType {
     AbsoluteTime = 0,
@@ -445,7 +445,7 @@ void WpTable::updateDataStorage(int row, int column)
     
 }
     
-PathInput::PathInput( QObject *parent, WaypointSettings *wpSettings, IHumanManager *humanManager, QString lastSavedPathFile )
+PathInput::PathInput( QObject *parent, WaypointSettings *wpSettings, orcaqgui::IHumanManager *humanManager, QString lastSavedPathFile )
     : wpSettings_(wpSettings),
       humanManager_(humanManager),      
       waypointInFocus_(-1),

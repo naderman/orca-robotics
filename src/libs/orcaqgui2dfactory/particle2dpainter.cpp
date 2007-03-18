@@ -19,7 +19,7 @@
 using namespace orca; 
 using namespace std;
 
-namespace orcaqgui
+namespace orcaqgui2d
 {
 
 Particle2dPainter::Particle2dPainter( int particlePenThickness )
@@ -84,7 +84,7 @@ Particle2dPainter::setData( const Particle2dData& particleData )
 
 void Particle2dPainter::paint( QPainter *painter, int z )
 {
-    if ( z != orcaqgui::Z_POSE-2 ) return;
+    if ( z != Z_POSE-2 ) return;
 
     painter->setPen( QPen( currentColour_ ) );
 

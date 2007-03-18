@@ -17,15 +17,15 @@
 
 #include <orcaice/orcaice.h>
 
-#include <orcaqgui/ihumanmanager.h>
 #include <orcaqgui2d/paintutils.h>
 
 #include "pathpainter.h"
 
 using namespace orca;
 using namespace std;
+using namespace orcaqgui;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 PathPainter::PathPainter()
     : wpIndex_(-1),
@@ -118,7 +118,7 @@ void PathPainter::paint( QPainter *painter, int z )
 {
     if ( !displayWaypoints_ ) return;
     
-    if ( z != orcaqgui::Z_PATH ) return;
+    if ( z != Z_PATH ) return;
 
     const float PATH_WIDTH = 0.05;
 

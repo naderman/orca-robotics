@@ -10,13 +10,12 @@
 
 #include <cmath>
 #include <QPainter>
-#include <orcaqgui/ihumanmanager.h>
 
 #include "pixmappainter.h"
 
 using namespace orcaqgui;
+using namespace orcaqgui2d;
 using namespace std;
-
 
 PixmapPainter::PixmapPainter()
     : isDisplayMap_(true),
@@ -194,7 +193,7 @@ PixmapPainter::toggleDisplayMap()
 }
 
 int 
-PixmapPainter::saveMap( const QString &fileName, const QString &fileExtension, IHumanManager *humanManager )
+PixmapPainter::saveMap( const QString &fileName, const QString &fileExtension, orcaqgui::IHumanManager *humanManager )
 {   
     // We have to mirror the map first
     QMatrix matrix(1.0, 0.0, 0.0, -1.0, 0.0, 0.0);

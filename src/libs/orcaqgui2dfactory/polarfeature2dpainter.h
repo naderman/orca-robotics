@@ -17,7 +17,7 @@
 class QPainter;
 
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 /*!
   \brief PolarFeature2dPainter paints polar feature

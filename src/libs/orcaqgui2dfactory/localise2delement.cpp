@@ -15,9 +15,10 @@
 
 using namespace std;
 using namespace orca;
+using namespace orcaqgui2d;
 using namespace orcaqgui;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 void
 Localise2dElement::actionOnConnection()

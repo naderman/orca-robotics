@@ -15,8 +15,9 @@
 #include <QPixmap>
 #include <QMatrix>
 
+#include <orcaqgui/ihumanmanager.h>
 
-namespace orcaqgui
+namespace orcaqgui2d
 {
     
 // Data structure containing drawing information
@@ -38,8 +39,6 @@ struct PixmapData
     std::vector<unsigned char> rgbG;
     std::vector<unsigned char> rgbB;
 };
-    
-class IHumanManager; 
 
 //! Class to paint pixmaps such as certainty grid maps and aerial maps.
 //! Don't inherit from it but rather use as a member variable (composition).
@@ -58,7 +57,7 @@ class PixmapPainter
     void paint( QPainter *p );
 
     void toggleDisplayMap();
-    int saveMap( const QString &fileName, const QString &fileExtension, IHumanManager *humanManager );
+    int saveMap( const QString &fileName, const QString &fileExtension, orcaqgui::IHumanManager *humanManager );
     
   private:
     

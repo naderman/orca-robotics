@@ -20,8 +20,11 @@
 class QPainter;
 
 namespace orcaqgui {
+    class orcaqgui::IHumanManager;
+}
+
+namespace orcaqgui2d {
     
-class IHumanManager;
     
 class FeatureMap2dPainter
 {
@@ -39,7 +42,7 @@ class FeatureMap2dPainter
     void toggleFeatureNumbers() { displayFeatureNumbers_ = !displayFeatureNumbers_; }
     void toggleUncertainty() { displayUncertainty_ = !displayUncertainty_; }
     
-    int saveMap( const QString fileName, IHumanManager *humanManager ) const;
+    int saveMap( const QString fileName, orcaqgui::IHumanManager *humanManager ) const;
 
   private:
 

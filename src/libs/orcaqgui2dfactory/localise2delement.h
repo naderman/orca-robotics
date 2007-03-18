@@ -22,7 +22,7 @@
 #include <orcaqgui2dfactory/connectutils.h>
 #include <orcaqgui2dfactory/localise2dpainter.h>
 
-namespace orcaqgui
+namespace orcaqgui2d
 {
 
 class Localise2dElement
@@ -36,7 +36,7 @@ class Localise2dElement
 public:
     Localise2dElement( const orcaice::Context  &context,
                        const std::string       &proxyString,
-                       IHumanManager           *humanManager,
+                       orcaqgui::IHumanManager *humanManager,
                        bool                     beginDisplayHistory=false,
                        int                      timeoutMs=3000 )
         : IceStormElement<Localise2dPainter,
@@ -73,7 +73,7 @@ public:
     virtual QPointF pos() const { return QPointF(x_,y_); };
 
 private:
-    IHumanManager *humanManager_;
+    orcaqgui::IHumanManager *humanManager_;
     Localise2dPainter painter_;
     bool gotDescription_;
     orca::Frame2d localiseOff_;

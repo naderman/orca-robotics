@@ -18,9 +18,9 @@
 #include <orcaqgui/guielementfactory.h>
 #include <QPainter>
 
-namespace orcaqgui
+namespace orcaqgui2d
 {
-    class IHumanManager;
+    class orcaqgui::IHumanManager;
     class GuiElement;
 
     //!

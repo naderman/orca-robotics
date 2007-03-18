@@ -33,7 +33,7 @@
 // A list of simple gui elements that listen to one icestorm topic, for one object type.
 //
 
-namespace orcaqgui
+namespace orcaqgui2d
 {
 
 class PolarFeature2dElement

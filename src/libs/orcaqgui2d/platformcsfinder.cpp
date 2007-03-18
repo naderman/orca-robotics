@@ -3,8 +3,9 @@
 #include "iknowsplatformposition2d.h"
 
 using namespace std;
+using namespace orcaqgui;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 bool 
 PlatformCSFinder::findPlatformCS( QList<GuiElement*>  elements,
@@ -23,8 +24,8 @@ PlatformCSFinder::findPlatformCS( QList<GuiElement*>  elements,
     {
         //cout<<endl<<elements_[i]->id.toStdString()<<" on "<<elements_[i]->platformatrix.toStdString();
 
-        orcaqgui::IKnowsPlatformPosition2d *posElem = 
-            dynamic_cast<orcaqgui::IKnowsPlatformPosition2d*>(elements[i]);
+        IKnowsPlatformPosition2d *posElem = 
+            dynamic_cast<IKnowsPlatformPosition2d*>(elements[i]);
         if ( posElem != NULL )
         {
             // Ignore if it's the wrong platform.

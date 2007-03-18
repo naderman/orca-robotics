@@ -6,7 +6,7 @@
 #include <orcaqgui2dfactory/featuremap2dpainter.h>
 #include <orcaqgui2dfactory/connectutils.h>
 
-namespace orcaqgui
+namespace orcaqgui2d
 {
 
 //!
@@ -25,7 +25,7 @@ public:
 
     FeatureMap2dElement( const orcaice::Context  &context,
                          const std::string       &proxyString,
-                         IHumanManager*           humanManager );
+                         orcaqgui::IHumanManager *humanManager );
 
     virtual bool isInGlobalCS() { return true; }
     virtual void actionOnConnection() 
@@ -43,7 +43,7 @@ public:
 
 private:
     FeatureMap2dPainter painter_;
-    IHumanManager *humanManager_;
+    orcaqgui::IHumanManager *humanManager_;
     QString featureMapFileName_;
     bool featureMapFileNameSet_;
 };

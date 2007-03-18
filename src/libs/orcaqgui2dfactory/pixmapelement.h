@@ -16,7 +16,7 @@
 #include <orcaqgui/ihumanmanager.h>
 #include <orcaqgui2dfactory/connectutils.h>
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 class PixMapElement
     : public IceStormElement<PixMapBackgroundPainter,
@@ -29,7 +29,7 @@ class PixMapElement
 public:
     PixMapElement( const orcaice::Context  &context,
                   const std::string       &proxyString,
-                  IHumanManager* humanManager );
+                  orcaqgui::IHumanManager* humanManager );
 
     virtual bool isInGlobalCS() { return true; }
     virtual void actionOnConnection() 
@@ -48,7 +48,7 @@ public:
 
 private:
     PixMapBackgroundPainter painter_;
-    IHumanManager *humanManager_;
+    orcaqgui::IHumanManager *humanManager_;
     QString mapFileName_;
     bool mapFileNameSet_;
 };

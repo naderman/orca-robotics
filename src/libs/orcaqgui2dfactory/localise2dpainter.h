@@ -18,7 +18,7 @@
 // forward declarations
 class QPainter;
 
-namespace orcaqgui
+namespace orcaqgui2d
 {
 
 class Localise2dPainter

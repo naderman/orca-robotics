@@ -18,7 +18,7 @@
 class QPainter;
 class QColor;
 
-namespace orcaqgui
+namespace orcaqgui2d
 {
 
 class GpsPainter

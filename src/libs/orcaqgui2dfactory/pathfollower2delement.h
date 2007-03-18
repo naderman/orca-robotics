@@ -21,9 +21,9 @@
 #include <orcaqgui2dfactory/pathpainter.h>
 #include <orcaqgui2dfactory/pathinput.h>
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
-class IHumanManager;
+class orcaqgui::IHumanManager;
 
 ////////////////////////////////////////////////////////////////////////////////
 // The consumer object. We need this here because PathFollower2dElement cannot inherit from IceStormElement.
@@ -50,14 +50,14 @@ class PathfollowerButtons : public QObject
     Q_OBJECT
             
 public:
-    PathfollowerButtons( QObject *parent, IHumanManager *humanManager, std::string proxyString);
+    PathfollowerButtons( QObject *parent, orcaqgui::IHumanManager *humanManager, std::string proxyString);
     ~PathfollowerButtons();
     
     void setWpButton( bool onOff );
 
 private:
     QAction *hiWaypoints_;
-    IHumanManager *humanManager_;
+    orcaqgui::IHumanManager *humanManager_;
 };
 //////////////////////////////////////////////////////////////////////////////
 
@@ -72,7 +72,7 @@ class PathFollowerHI  : public QObject
 public:
     PathFollowerHI( PathFollower2dElement *pfElement,
                     std::string proxyString,
-                    IHumanManager *humanManager,
+                    orcaqgui::IHumanManager *humanManager,
                     PathPainter &painter,
                     WaypointSettings wpSettings,
                     bool activateImmediately,
@@ -112,7 +112,7 @@ private:
 
     PathFollower2dElement *pfElement_;
     std::string proxyString_;
-    IHumanManager *humanManager_;
+    orcaqgui::IHumanManager *humanManager_;
     PathPainter   &painter_;
 
     QString pathFileName_;
@@ -144,7 +144,7 @@ public:
 
     PathFollower2dElement( const orcaice::Context & context,
                            const std::string &proxyString,
-                           IHumanManager *humanManager );
+                           orcaqgui::IHumanManager *humanManager );
     ~PathFollower2dElement();
 
     // inherited from guielement
@@ -184,7 +184,7 @@ private:
 
     orcaice::Context context_;
     
-    IHumanManager *humanManager_;
+    orcaqgui::IHumanManager *humanManager_;
     
     bool firstTime_;
     orcaice::Timer *timer_;

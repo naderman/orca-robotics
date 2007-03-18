@@ -18,8 +18,9 @@
 
 using namespace std;
 using namespace orca;
+using namespace orcaqgui;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 ////////////////////////////////////////////////////////////////////////////////
 void
@@ -43,7 +44,7 @@ PathPlannerTaskAnswerConsumer::setData(const ::orca::PathPlanner2dData& data, co
 }
 ////////////////////////////////////////////////////////////////////////////////
 
-PathplannerButtons::PathplannerButtons( QObject *parent, IHumanManager *humanManager, string proxyString)
+PathplannerButtons::PathplannerButtons( QObject *parent, orcaqgui::IHumanManager *humanManager, string proxyString)
 {
     QPixmap savePathIcon(filesave_path_xpm);
     QPixmap saveAsPathIcon(filesaveas_path_xpm);
@@ -95,7 +96,7 @@ PathplannerButtons::setWpButton( bool onOff )
 
 PathPlanner2dElement::PathPlanner2dElement( const orcaice::Context & context,
                                             const std::string &proxyString,
-                                            IHumanManager* humanManager )
+                                            orcaqgui::IHumanManager* humanManager )
     : IceStormElement<  PathPainter,
                         orca::PathPlanner2dData,
                         orca::PathPlanner2dPrx,
@@ -252,7 +253,7 @@ PathPlanner2dElement::setFocus( bool inFocus )
 
 PathPlannerHI::PathPlannerHI( PathPlanner2dElement *ppElement,
                               string proxyString,
-                              IHumanManager *humanManager, 
+                              orcaqgui::IHumanManager *humanManager, 
                               PathPainter &painter,
                               WaypointSettings wpSettings )
     : ppElement_(ppElement),

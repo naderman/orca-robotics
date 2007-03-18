@@ -24,10 +24,8 @@
 // forward declarations
 class QPainter;
 
-namespace orcaqgui
+namespace orcaqgui2d
 {
-
-class IHumanManager;
 
 class GpsSubscriptionMaker 
 {
@@ -57,7 +55,7 @@ public:
 
     GpsElement( const orcaice::Context  &context,
                 const std::string       &interfaceTag,
-                IHumanManager           *humanManager,
+                orcaqgui::IHumanManager *humanManager,
                 int                      timeoutMs=3000 );
 
     // inherited from GuiElement
@@ -91,7 +89,7 @@ public:
 
 private:
     
-    IceStormListener<orca::GpsMapGridData,
+    orcaqgui::IceStormListener<orca::GpsMapGridData,
                 orca::GpsPrx,
                 orca::GpsMapGridConsumer,
                 orca::GpsMapGridConsumerPrx,
@@ -99,7 +97,7 @@ private:
                 GpsUnSubscriptionMaker> gpsListener_; 
                     
     orcaice::Context context_; 
-    IHumanManager *humanManager_;
+    orcaqgui::IHumanManager *humanManager_;
     double timeoutMs_;
     
     bool isConnected_;

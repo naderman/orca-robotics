@@ -20,7 +20,7 @@ class QProgressBar;
 class QLCDNumber;
 class QLabel;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 // Widget to display wifi data, number of interfaces is fixed
 // after the first data is received

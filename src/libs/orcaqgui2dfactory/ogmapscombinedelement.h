@@ -17,7 +17,7 @@
 #include <orcaqgui2dfactory/connectutils.h>
 #include <orcaqgui2dfactory/ogmapscombinedpainter.h>
 
-namespace orcaqgui {
+namespace orcaqgui2d {
     
 // A GuiElement which can combine several (at the moment two) ogmaps
 // Subscribes to several (at the moment two) OgMap interfaces
@@ -44,7 +44,7 @@ public:
 
 private:
     orcaice::Context context_;
-    std::vector<IceStormListener<
+    std::vector<orcaqgui::IceStormListener<
             orca::OgMapData,
             orca::OgMapPrx,
             orca::OgMapConsumer,

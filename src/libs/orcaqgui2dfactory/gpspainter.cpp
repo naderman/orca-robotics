@@ -18,7 +18,7 @@
 
 using namespace orca; 
 using namespace std;
-using namespace orcaqgui;
+using namespace orcaqgui2d;
 
 GpsPainter::GpsPainter(const QColor & color, const bool showHistory)
     : isDataAvailable_(false),
@@ -54,11 +54,11 @@ void GpsPainter::paint( QPainter *painter, int z )
 {
     if ( !isDataAvailable_ ) return;
     
-    if ( z == orcaqgui::Z_POSE-2 && isDisplayHistory_ ) {
+    if ( z == Z_POSE-2 && isDisplayHistory_ ) {
         history_.paint( painter, currentColor_ );
     }
     
-    if ( z == orcaqgui::Z_POSE ) 
+    if ( z == Z_POSE ) 
     {
         QMatrix m2win = painter->worldMatrix();
         painter->save();
@@ -66,9 +66,9 @@ void GpsPainter::paint( QPainter *painter, int z )
             painter->translate( x_, y_ );
             double covH = horizontalError_*horizontalError_;
             painter->rotate( heading_ );
-            orcaqgui::paintPlatformPose( m2win, painter, currentColor_ );
+            paintPlatformPose( m2win, painter, currentColor_ );
             if (covH > 0.0)
-                orcaqgui::paintCovarianceEllipse( m2win, painter, currentColor_, covH, 0.0, covH);
+                paintCovarianceEllipse( m2win, painter, currentColor_, covH, 0.0, covH);
         }
         painter->restore();
     }

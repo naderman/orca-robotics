@@ -21,7 +21,7 @@
 // forward declarations
 class QPainter;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 /*!
   @brief Base class for gui elements that receive data from IceStorm.
@@ -31,7 +31,7 @@ namespace orcaqgui {
   @author Alex Brooks
 */
 template<class PainterType, class DataType, class DataPtrType, class ProxyType, class ConsumerType, class ConsumerPrxType>
-class PtrIceStormElement : public orcaqgui::GuiElement2d
+class PtrIceStormElement : public orcaqgui2d::GuiElement2d
 {
   
 public:
@@ -71,7 +71,7 @@ protected:
     bool needToUpdate();
     
     //! Object to handle network communication, including subscription process
-    PtrIceStormListener<DataType,
+    orcaqgui::PtrIceStormListener<DataType,
                      DataPtrType,
                      ProxyType,
                      ConsumerType,

@@ -15,7 +15,7 @@
 #include <QResizeEvent>
 #include <QMatrix>
 
-namespace orcaqgui
+namespace orcaqgui2d
 {
 
 /*!

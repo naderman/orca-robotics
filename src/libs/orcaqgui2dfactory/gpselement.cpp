@@ -23,11 +23,12 @@
 
 using namespace std;
 using namespace orca;
+using namespace orcaqgui2d;
 using namespace orcaqgui;
 
 GpsElement::GpsElement( const orcaice::Context  &context,
                         const std::string       &interfaceTag,
-                        IHumanManager           *humanManager,
+                        orcaqgui::IHumanManager *humanManager,
                         int                      timeoutMs )
     : gpsListener_(context,interfaceTag),
       context_(context),

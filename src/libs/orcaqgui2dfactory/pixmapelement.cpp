@@ -15,11 +15,11 @@
 
 using namespace std;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 PixMapElement::PixMapElement( const orcaice::Context  &context,
                             const std::string       &proxyString,
-                            IHumanManager* humanManager )
+                            orcaqgui::IHumanManager* humanManager )
     : IceStormElement<PixMapBackgroundPainter,
                       orca::PixMapData,
                       orca::PixMapPrx,

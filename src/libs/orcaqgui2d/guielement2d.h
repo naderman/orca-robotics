@@ -5,12 +5,12 @@
 
 class QPainter;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 //!
 //! @author Alex Brooks
 //!
-class GuiElement2d : public GuiElement
+class GuiElement2d : public orcaqgui::GuiElement
 {
 
 public: 

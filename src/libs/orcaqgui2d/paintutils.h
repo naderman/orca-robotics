@@ -21,7 +21,7 @@
 //
 // \author Alex Brooks
 //
-namespace orcaqgui
+namespace orcaqgui2d
 {
 
 //!

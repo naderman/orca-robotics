@@ -26,8 +26,9 @@
 using namespace std;
 using namespace orca;
 using namespace orcaice;
+using namespace orcaqgui;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 FeatureMap2dPainter::FeatureMap2dPainter()
     : data_( NULL ),
@@ -60,9 +61,9 @@ void
 paintFeatureNum( QPainter *painter, int featureType, int featureNum, bool useTransparency )
 {
     if ( useTransparency ) {
-        painter->setPen(getTransparentVersion(featureColour(featureType),0.3));
+        painter->setPen(getTransparentVersion(orcaqgui::featureColour(featureType),0.3));
     } else {
-        painter->setPen(featureColour(featureType));
+        painter->setPen(orcaqgui::featureColour(featureType));
     }
     painter->setFont( QFont("Helvetica [Cronyx]", 12) );
     const double offset = 0.3;
@@ -79,7 +80,7 @@ FeatureMap2dPainter::paintPointFeature( QPainter *painter,
 {
     // draw a little square on the mean, with weight proportional to pExists.
     const float boxWidth = 0.2;
-    QPen pen(featureColour(f.type));
+    QPen pen(orcaqgui::featureColour(f.type));
     double newWidth =  MAX(0.1, 0.1 * (f.pExists-0.2));
     pen.setWidthF( newWidth );
     painter->setPen( pen );
@@ -96,7 +97,7 @@ FeatureMap2dPainter::paintPointFeature( QPainter *painter,
             QMatrix m2win = painter->worldMatrix();
             paintCovarianceEllipse( m2win,
                                     painter,
-                                    featureColour(f.type),
+                                    orcaqgui::featureColour(f.type),
                                     f.c.xx,
                                     f.c.xy,
                                     f.c.yy );
@@ -115,7 +116,7 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
                                        int featureNum )
 {
     // draw the line
-    QPen pen(featureColour(f.type));
+    QPen pen(orcaqgui::featureColour(f.type));
     double newWidth =  MAX(0.1, 0.2 * (f.pExists-0.2));
     pen.setWidthF( newWidth );
     painter->setPen( pen );
@@ -182,7 +183,7 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
                                            uncertaintyLength, halfLineLength ) );
 
                 // alpha uncertainty: a wedge on the back (non-visible) side of the line
-                paintUncertaintyWedge( m2win, painter, featureColour(f.type), 0.0, f.c.yy );
+                paintUncertaintyWedge( m2win, painter, orcaqgui::featureColour(f.type), 0.0, f.c.yy );
             }
             else
             {
@@ -204,7 +205,7 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
 
 void FeatureMap2dPainter::paint( QPainter *painter, const int z )
 {
-    if ( z != orcaqgui::Z_SLAM_MAP ) return;
+    if ( z != orcaqgui2d::Z_SLAM_MAP ) return;
 
     if (data_ == 0) return;
 
@@ -236,7 +237,7 @@ void FeatureMap2dPainter::paint( QPainter *painter, const int z )
     }
 }
 
-int FeatureMap2dPainter::saveMap( const QString fileName, IHumanManager *humanManager ) const
+int FeatureMap2dPainter::saveMap( const QString fileName, orcaqgui::IHumanManager *humanManager ) const
 {
     cout << "INFO(featuremap2dpainter.cpp): saveMap, fileName is " << fileName.toStdString() << endl;
     

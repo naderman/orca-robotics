@@ -17,6 +17,7 @@
 #include "pixmapbackgroundpainter.h"
 
 using namespace orcaqgui;
+using namespace orcaqgui2d;
 using namespace std;
 
 
@@ -67,7 +68,7 @@ PixMapBackgroundPainter::setData( const orca::PixMapData& data )
 }
 
 bool
-PixMapBackgroundPainter::checkFileExtension( QString &fe, IHumanManager *humanManager )
+PixMapBackgroundPainter::checkFileExtension( QString &fe, orcaqgui::IHumanManager *humanManager )
 {
     if ( fe.isEmpty() ) 
     {
@@ -88,7 +89,7 @@ PixMapBackgroundPainter::checkFileExtension( QString &fe, IHumanManager *humanMa
 }
 
 int 
-PixMapBackgroundPainter::saveMap( const orcaice::Context & context, const QString fileName, IHumanManager *humanManager )
+PixMapBackgroundPainter::saveMap( const orcaice::Context & context, const QString fileName, orcaqgui::IHumanManager *humanManager )
 {
     QString fileExtension = fileName.section('.',-1,-1);
     bool isOk = checkFileExtension( fileExtension, humanManager );

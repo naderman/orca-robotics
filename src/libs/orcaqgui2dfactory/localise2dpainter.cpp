@@ -17,7 +17,7 @@
 
 using namespace orca; 
 using namespace std;
-using namespace orcaqgui;
+using namespace orcaqgui2d;
 
 Localise2dPainter::Localise2dPainter( bool beginDisplayHistory )
     : isDataAvailable_(false),
@@ -124,11 +124,11 @@ Localise2dPainter::paint( QPainter *painter, int z )
 {
     if ( !isDataAvailable_ ) return;
     
-    if ( z == orcaqgui::Z_POSE-2 && isDisplayHistory_ ) {
+    if ( z == Z_POSE-2 && isDisplayHistory_ ) {
         history_.paint( painter, currentColor_ );
     }
     
-    if ( z == orcaqgui::Z_POSE ) 
+    if ( z == Z_POSE ) 
     {
         if ( data_.hypotheses.size() != 0 )
         {

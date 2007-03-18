@@ -13,9 +13,9 @@
 
 using namespace std;
 using namespace orca;
-using namespace orcaqgui;
+using namespace orcaqgui2d;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 void
 LaserScanner2dElement::getLaserInfo()

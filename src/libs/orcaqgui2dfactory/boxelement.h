@@ -15,7 +15,7 @@
 #include <qcolor.h>
 #include <orcaqgui2d/definitions2d.h>
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 /*!
   \brief Draws a simple square on the map.

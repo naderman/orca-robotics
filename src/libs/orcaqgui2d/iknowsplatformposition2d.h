@@ -2,7 +2,7 @@
 #define IKNOWSPLATFORMPOSITION2D_H
 
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 //!
 //! @brief GUIs need to paint some things centred on a platform's position.

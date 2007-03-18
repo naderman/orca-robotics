@@ -16,11 +16,8 @@
 #include <orcaqgui2d/definitions2d.h>
 #include <orcaqgui2dfactory/pixmappainter.h>
 
-namespace orcaqgui
+namespace orcaqgui2d
 {
-    
-class IHumanManager;  
-
     
 typedef enum
 {
@@ -45,13 +42,13 @@ class OgMapPainter
     void clear() {};
     void toggleDisplayMap() { pixmapPainter_->toggleDisplayMap(); };
     
-    int saveMap( const orcaice::Context & context, const QString fileName, IHumanManager *humanManager );
+    int saveMap( const orcaice::Context & context, const QString fileName, orcaqgui::IHumanManager *humanManager );
     
   private:
       
     orca::OgMapData data_;
     PixmapPainter *pixmapPainter_;
-    ImageFileType checkFileExtension( QString &fe, IHumanManager *humanManager );
+    ImageFileType checkFileExtension( QString &fe, orcaqgui::IHumanManager *humanManager );
 };
 
 } // namespace

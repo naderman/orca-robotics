@@ -18,7 +18,7 @@
 #include "gridelement.h"
 
 using namespace std;
-using namespace orcaqgui;
+using namespace orcaqgui2d;
 
 GridElement::GridElement() :
         step_( 1.0 ),   // [m]
@@ -33,7 +33,7 @@ GridElement::paint( QPainter *painter, int z )
 {
     if ( z==Z_ORIGIN && isDisplayOrigin_ ) {
         //cout<<"painting origin"<<endl;
-        orcaqgui::paintOrigin( painter, Qt::blue );
+        paintOrigin( painter, Qt::blue );
         return;
     }
 

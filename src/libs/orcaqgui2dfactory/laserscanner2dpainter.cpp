@@ -21,7 +21,7 @@
 
 using namespace std;
 using namespace orca;
-using namespace orcaqgui;
+using namespace orcaqgui2d;
 
 LaserScanner2dPainter::LaserScanner2dPainter( QColor outlineColor,
                             float  outlineThickness,
@@ -121,7 +121,7 @@ void
 LaserScanner2dPainter::paint( QPainter *painter, int z )
 {
 //     cout << "LaserScanner2dPainter:paint: z,isDisplayScan_: " << z << " " << isDisplayScan_ << endl;
-    if ( z != orcaqgui::Z_LASER || !isDisplayScan_ ) return;
+    if ( z != Z_LASER || !isDisplayScan_ ) return;
     if ( qScan_.isEmpty() ) return;
 
     // debug

@@ -6,7 +6,7 @@
 #include <QString>
 #include <QList>
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 //!
 //! @brief Class to work out the coordinate-system of a platform.  
@@ -25,7 +25,7 @@ public:
     PlatformCSFinder() {};
 
     // returns false if it doesn't know.
-    bool findPlatformCS( const QList<GuiElement*> elements,
+    bool findPlatformCS( const QList<orcaqgui::GuiElement*> elements,
                          const QString                                &platform,
                          float                                        &x,
                          float                                        &y,

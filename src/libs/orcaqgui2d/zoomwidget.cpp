@@ -13,7 +13,7 @@
 
 #include "zoomwidget.h"
 
-using namespace orcaqgui;
+using namespace orcaqgui2d;
 
 ZoomWidget::ZoomWidget( QWidget* parent )
     : QWidget(parent)

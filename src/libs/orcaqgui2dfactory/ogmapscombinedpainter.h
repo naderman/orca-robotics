@@ -16,7 +16,7 @@
 #include <orcaqgui2dfactory/pixmappainter.h>
 
 
-namespace orcaqgui
+namespace orcaqgui2d
 {
 
 // A painter which can overlay several (at the moment two) OgMaps

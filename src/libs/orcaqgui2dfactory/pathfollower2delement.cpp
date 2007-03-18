@@ -20,8 +20,9 @@
 
 using namespace std;
 using namespace orca;
+using namespace orcaqgui;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -49,7 +50,7 @@ void PathUpdateConsumer::setEnabledState( bool enabledState, const ::Ice::Curren
 
 ////////////////////////////////////////////////////////////////////////////////
 
-PathfollowerButtons::PathfollowerButtons( QObject *parent, IHumanManager *humanManager, string proxyString)
+PathfollowerButtons::PathfollowerButtons( QObject *parent, orcaqgui::IHumanManager *humanManager, string proxyString)
     : humanManager_(humanManager)
 {
     QPixmap openIcon(fileopen_xpm);
@@ -124,7 +125,7 @@ PathfollowerButtons::setWpButton( bool onOff )
 
 PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
                                               const std::string &proxyString,
-                                              IHumanManager *humanManager)
+                                              orcaqgui::IHumanManager *humanManager)
     : doneInitialSetup_(false),
       proxyString_(proxyString),
       context_(context),
@@ -452,7 +453,7 @@ PathFollower2dElement::paint( QPainter *p, int z )
 
 PathFollowerHI::PathFollowerHI( PathFollower2dElement *pfElement,
                                 string proxyString,
-                                IHumanManager *humanManager, 
+                                orcaqgui::IHumanManager *humanManager, 
                                 PathPainter &painter,
                                 WaypointSettings wpSettings,
                                 bool activateImmediately,

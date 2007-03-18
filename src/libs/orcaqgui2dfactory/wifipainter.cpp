@@ -17,7 +17,7 @@
 using namespace orca; 
 using namespace std;
 
-namespace orcaqgui
+namespace orcaqgui2d
 {
 
 WifiPainter::WifiPainter()
@@ -40,7 +40,7 @@ WifiPainter::setData( const WifiData& wifiData )
 
 void WifiPainter::paint( QPainter *painter, int z )
 {
-    if ( z != orcaqgui::Z_FOREGROUND ) return;
+    if ( z != Z_FOREGROUND ) return;
 }
 
 } // namespace

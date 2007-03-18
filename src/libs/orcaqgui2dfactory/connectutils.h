@@ -5,7 +5,7 @@
 #include <string>
 #include <orcaqgui2dfactory/connectutils.h>
 
-namespace orcaqgui {
+namespace orcaqgui2d {
     
     template< class ProxyType,
               class PainterType >

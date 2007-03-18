@@ -20,7 +20,7 @@
             to change qgraphics2d also!
 */
 
-namespace orcaqgui
+namespace orcaqgui2d
 { 
 
 enum GuiZBufferLevels {

@@ -18,21 +18,24 @@
 #include <orcaqgui2d/zoomwidget.h>
 
 namespace orcaqgui {
+    class MainWindow;
+    class GuiElementModel;
+}
 
-class GuiElementModel;
+namespace orcaqgui2d {
+
 class HumanInput;
-class MainWindow;
 class PlatformCSFinder;
 class GuiQPainter;
 
-class WorldView : public orcaqgui::ZoomWidget
+class WorldView : public orcaqgui2d::ZoomWidget
 {
    Q_OBJECT
 public:
     WorldView( PlatformCSFinder* platformCSFinder,
-               GuiElementModel* model,
+               orcaqgui::GuiElementModel* model,
                QWidget* parent=0, 
-               MainWindow* mainWin=0 );
+               orcaqgui::MainWindow* mainWin=0 );
   ~WorldView();
   
 public slots:
@@ -51,9 +54,9 @@ private:
     PlatformCSFinder *platformCSFinder_;
           
     // model
-    GuiElementModel* model_;
+    orcaqgui::GuiElementModel* model_;
     
-    MainWindow *mainWin_;
+    orcaqgui::MainWindow *mainWin_;
 
     void paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFramePlatformLocalised );
     

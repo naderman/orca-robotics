@@ -27,7 +27,7 @@
 
 using namespace std;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 DefaultFactory::DefaultFactory()
 {
@@ -56,7 +56,7 @@ DefaultFactory::create( const orcaice::Context           &context,
                         const QStringList                &interfaceIds,
                         const QStringList                &proxyStrList,
                         QColor                            suggestedColor,
-                        IHumanManager                    *humanManager ) const
+                        orcaqgui::IHumanManager                    *humanManager ) const
 {
     orcaqgui::GuiElement *elem = NULL;
    
@@ -67,59 +67,59 @@ DefaultFactory::create( const orcaice::Context           &context,
     
         if ( interfaceId == "::local::Grid" ) {
             cout<<"creating Grid element"<<endl;
-            elem = new orcaqgui::GridElement();
+            elem = new orcaqgui2d::GridElement();
         }
         else if ( interfaceId == "::orca::LaserScanner2d" ) {
             cout<<"creating LaserScanner2d element"<<endl;
-                elem = new orcaqgui::LaserScanner2dElement( context, proxyString.toStdString() );
+                elem = new orcaqgui2d::LaserScanner2dElement( context, proxyString.toStdString() );
         }
         else if ( interfaceId == "::orca::Localise2d" ) {
             cout<<"creating Localise2d element"<<endl;
-            elem = new orcaqgui::Localise2dElement( context, proxyString.toStdString(), humanManager );
+            elem = new orcaqgui2d::Localise2dElement( context, proxyString.toStdString(), humanManager );
         }
         else if ( interfaceId == "::orca::Localise3d" ) {
             cout<<"creating Localise3d element"<<endl;
-            elem = new orcaqgui::Localise3dElement( context, proxyString.toStdString() );
+            elem = new orcaqgui2d::Localise3dElement( context, proxyString.toStdString() );
         }
         else if ( interfaceId == "::orca::OgMap" ) {
             cout<<"creating OgMap element"<<endl;
-            elem = new orcaqgui::OgMapElement( context, proxyString.toStdString(), humanManager );
+            elem = new orcaqgui2d::OgMapElement( context, proxyString.toStdString(), humanManager );
         }
         else if ( interfaceId == "::orca::PolarFeature2d" ) {
             cout<<"creating PolarFeature2d element"<<endl;
-            elem = new orcaqgui::PolarFeature2dElement( context, proxyString.toStdString() );
+            elem = new orcaqgui2d::PolarFeature2dElement( context, proxyString.toStdString() );
         }
         else if ( interfaceId == "::orca::PathFollower2d" ) {
             cout<<"creating PathFollower2d element with proxyString "<<proxyString.toStdString()<<endl;
-            elem = new orcaqgui::PathFollower2dElement( context, proxyString.toStdString(), humanManager );
+            elem = new orcaqgui2d::PathFollower2dElement( context, proxyString.toStdString(), humanManager );
         }
         else if ( interfaceId == "::orca::PathPlanner2d" ) {
             cout<<"creating PathPlanner2d element with proxyString "<<proxyString.toStdString()<<endl;
-            elem = new orcaqgui::PathPlanner2dElement( context, proxyString.toStdString(), humanManager );
+            elem = new orcaqgui2d::PathPlanner2dElement( context, proxyString.toStdString(), humanManager );
         }
         else if ( interfaceId == "::orca::PixMap" ) {
             cout<<"creating PixMap element with proxyString "<<proxyString.toStdString()<<endl;
-            elem = new orcaqgui::PixMapElement( context, proxyString.toStdString(), humanManager );
+            elem = new orcaqgui2d::PixMapElement( context, proxyString.toStdString(), humanManager );
         }
         else if ( interfaceId == "::orca::FeatureMap2d" ) {
             cout<<"creating FeatureMap2d element with proxyString "<<proxyString.toStdString()<<endl;
-            elem = new orcaqgui::FeatureMap2dElement( context, proxyString.toStdString(), humanManager );
+            elem = new orcaqgui2d::FeatureMap2dElement( context, proxyString.toStdString(), humanManager );
         }
         else if ( interfaceId == "::orca::Particle2d" ) {
             cout<<"creating Particle2d element with proxyString "<<proxyString.toStdString()<<endl;
-            elem = new orcaqgui::Particle2dElement( context, proxyString.toStdString() );
+            elem = new orcaqgui2d::Particle2dElement( context, proxyString.toStdString() );
         }
         else if ( interfaceId == "::orca::Gps" ) {
             cout<<"creating Gps element with proxyString "<<proxyString.toStdString()<<endl;
-            elem = new orcaqgui::GpsElement( context, proxyString.toStdString(), humanManager );
+            elem = new orcaqgui2d::GpsElement( context, proxyString.toStdString(), humanManager );
         }
         else if ( interfaceId == "::orca::QGraphics2d" ) {
             cout<<"creating QGraphics2d element with proxyString "<<proxyString.toStdString()<<endl;
-            elem = new orcaqgui::QGraphics2dElement( context, proxyString.toStdString() );
+            elem = new orcaqgui2d::QGraphics2dElement( context, proxyString.toStdString() );
         }
         else if ( interfaceId == "::orca::Wifi" ) {
             cout<<"creating Wifi element with proxyString "<<proxyString.toStdString()<<endl;
-            elem = new orcaqgui::WifiElement( context, proxyString.toStdString() );
+            elem = new orcaqgui2d::WifiElement( context, proxyString.toStdString() );
         }
         else
         {
@@ -133,7 +133,7 @@ DefaultFactory::create( const orcaice::Context           &context,
         
         if ( interfaceId == "::orca::OgMap::orca::OgMap" ) {
             cout<<"creating OgMapsCombined element"<<endl;
-            elem = new orcaqgui::OgMapsCombinedElement( context, proxyStrList );
+            elem = new orcaqgui2d::OgMapsCombinedElement( context, proxyStrList );
         }
         else
         {
@@ -157,5 +157,5 @@ DefaultFactory::create( const orcaice::Context           &context,
 
 orcaqgui::GuiElementFactory *createFactory()
 {
-    return new orcaqgui::DefaultFactory;
+    return new orcaqgui2d::DefaultFactory;
 }

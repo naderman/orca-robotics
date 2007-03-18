@@ -16,10 +16,10 @@
 #include <orcaqgui2d/definitions2d.h>
 #include <orcaqgui2dfactory/pixmappainter.h>
 
-namespace orcaqgui
+namespace orcaqgui2d
 {
     
-class IHumanManager;  
+class orcaqgui::IHumanManager;  
 
 class PixMapBackgroundPainter
 {
@@ -37,11 +37,11 @@ class PixMapBackgroundPainter
     void clear() {};
     void toggleDisplayMap() { pixmapPainter_->toggleDisplayMap(); };
     
-    int saveMap( const orcaice::Context & context, const QString fileName, IHumanManager *humanManager );
+    int saveMap( const orcaice::Context & context, const QString fileName, orcaqgui::IHumanManager *humanManager );
     
   private:
     PixmapPainter *pixmapPainter_;
-    bool checkFileExtension( QString &fe, IHumanManager *humanManager );
+    bool checkFileExtension( QString &fe, orcaqgui::IHumanManager *humanManager );
 };
 
 } // namespace

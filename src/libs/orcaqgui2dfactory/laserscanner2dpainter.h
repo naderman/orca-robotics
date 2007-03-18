@@ -19,7 +19,7 @@
 
 class QPainter;
 
-namespace orcaqgui
+namespace orcaqgui2d
 {
 
 /*!

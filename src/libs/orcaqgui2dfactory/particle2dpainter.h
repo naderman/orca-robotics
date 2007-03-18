@@ -19,7 +19,7 @@
 // forward declarations
 class QPainter;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 /*!
   \brief Particle2DPainter is used for displaying the particles from a Monte Carlo Localization component.

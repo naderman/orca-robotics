@@ -138,10 +138,10 @@ void Component::start()
                                             context(),
                                             &gui );
 
-    orcaqgui::PlatformCSFinder platformCSFinder;
+    orcaqgui2d::PlatformCSFinder platformCSFinder;
 
     // widget for viewing the actual world
-    orcaqgui::WorldView worldView( &platformCSFinder,
+    orcaqgui2d::WorldView worldView( &platformCSFinder,
                                   &guiElemModel,
                                   gui.displayViewParent(),
                                   &gui);

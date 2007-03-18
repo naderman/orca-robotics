@@ -5,11 +5,11 @@
 
 using namespace std;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 FeatureMap2dElement::FeatureMap2dElement( const orcaice::Context  &context,
                                           const std::string       &proxyString,
-                                          IHumanManager*           humanManager )
+                                          orcaqgui::IHumanManager *humanManager )
     : PtrIceStormElement<FeatureMap2dPainter,
                       orca::FeatureMap2dData,
                       orca::FeatureMap2dDataPtr,

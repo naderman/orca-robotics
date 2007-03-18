@@ -15,11 +15,11 @@
 
 using namespace std;
 
-namespace orcaqgui {
+namespace orcaqgui2d {
 
 OgMapElement::OgMapElement( const orcaice::Context  &context,
                             const std::string       &proxyString,
-                            IHumanManager* humanManager )
+                            orcaqgui::IHumanManager* humanManager )
     : IceStormElement<OgMapPainter,
                       orca::OgMapData,
                       orca::OgMapPrx,

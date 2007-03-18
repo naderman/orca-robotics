@@ -18,14 +18,13 @@
 
 #include <orca/pathfollower2d.h>
 #include <orca/pathplanner2d.h>
+#include <orcaqgui/ihumanmanager.h>
 #include <orcaqgui2d/definitions2d.h>
 
 // forward declarations
 class QPainter;
 
-namespace orcaqgui {
-
-class IHumanManager;
+namespace orcaqgui2d {
     
 class PathPainter
 {
@@ -49,7 +48,7 @@ class PathPainter
     void toggleDisplayWaypoints()
         { displayWaypoints_ = !displayWaypoints_; }
     
-    int savePath( const QString fileName, IHumanManager *humanManager ) const;
+    int savePath( const QString fileName, orcaqgui::IHumanManager *humanManager ) const;
     void setColor( QColor color ) { color_ = color; };
     void setFocus( bool inFocus ) { inFocus_  = inFocus; };
     
