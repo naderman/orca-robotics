@@ -60,18 +60,17 @@ VfhDriver::~VfhDriver()
     if ( vfhAlgorithm_ ) delete vfhAlgorithm_;
 }
 
-std::string 
+localnav::SensorModelType 
 VfhDriver::sensorModelType()
 {
-    std::string str = "range";
-    return str;
+    localnav::SensorModelType modelType = rangeModel;
+    return modelType;
 }
 
 void 
-VfhDriver::setSensorModelDescription( ISensorDescription* descr ) 
+VfhDriver::setSensorModelDescription( ISensorDescription& descr ) 
 { 
-    localnav::RangeScannerSensorDescription* scannerDescr = dynamic_cast<localnav::RangeScannerSensorDescription*>(descr);
-    // scannerDescr = *(descr.rangeDescr()); 
+    localnav::RangeScannerSensorDescription* scannerDescr = dynamic_cast<localnav::RangeScannerSensorDescription*>(&descr);
     
     stringstream descrStream;
     descrStream << "Working with the following range scanner: " << orcaice::toString( scannerDescr->rangeDescr() ) << endl;

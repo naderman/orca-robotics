@@ -14,10 +14,10 @@
 #include <orcaice/ptrproxy.h>
 #include <orca/rangescanner2d.h>
 
+#include <localnavutil/isensormodel.h>
 #include <localnavutil/isensordata.h>
 #include <localnavutil/rangescannersensordata.h>
 #include <localnavutil/rangescannersensordescription.h>
-#include "isensormodel.h"
 
 namespace localnav {
 
@@ -32,13 +32,16 @@ public:
     RangeScannerSensorModel( const orcaice::Context&    context );
     ~RangeScannerSensorModel();
 
-    void subscribeForInfo();
+    // returns 1 if successful, otherwise 0
+    int connectToInterface();
+    // returns 1 if successful, otherwise 0
+    int subscribe();
 
     ISensorData* getNext( const int timeoutMs );
 
     bool isProxyEmpty();
     
-    ISensorDescription* description();
+    ISensorDescription& description();
 
     void setSimProxy( orcaice::PtrProxy<orca::RangeScanner2dDataPtr>*  obsProxy );
 
@@ -47,6 +50,8 @@ private:
     orcaifaceimpl::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>* obsConsumer_;
     
     orcaice::PtrProxy<orca::RangeScanner2dDataPtr>* obsProxy_;
+    
+    orca::RangeScanner2dPrx obsPrx_;
 
     orca::RangeScanner2dConsumerPrx obsConsumerPrx_;
 

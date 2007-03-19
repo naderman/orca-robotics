@@ -38,13 +38,13 @@ MainLoop::MainLoop( DriverFactory                    &driverFactory,
       pathMaintainer_(NULL),
       driver_(NULL),
       driverFactory_(driverFactory),
-      iSensorModel_(0),
+      sensorModel_(0),
       locConsumer_(new orcaifaceimpl::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>),
       odomConsumer_(new orcaifaceimpl::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>),
       locProxy_(NULL),
       odomProxy_(NULL),
       pathFollowerInterface_(pathFollowerInterface),
-      iSensorData_(0),
+      sensorData_(0),
       clock_(clock),
       testMode_(false),
       context_(context)
@@ -68,13 +68,13 @@ MainLoop::MainLoop( DriverFactory                   &driverFactory,
       pathMaintainer_(NULL),
       driver_(NULL),
       driverFactory_(driverFactory),
-      iSensorModel_(0),
+      sensorModel_(0),
       locConsumer_(NULL),
       odomConsumer_(NULL),
       locProxy_(NULL),
       odomProxy_(NULL),
       pathFollowerInterface_(pathFollowerInterface),
-      iSensorData_(0),
+      sensorData_(0),
       testSimulator_(&testSimulator),
       clock_(clock),
       testMode_(true),
@@ -84,8 +84,8 @@ MainLoop::MainLoop( DriverFactory                   &driverFactory,
 
 MainLoop::~MainLoop()
 {
-    if ( iSensorModel_ ) delete iSensorModel_;
-    if ( iSensorData_ ) delete iSensorData_;
+    if ( sensorModel_ ) delete sensorModel_;
+    if ( sensorData_ ) delete sensorData_;
     if ( odomConsumer_ ) delete odomConsumer_;
     if ( locConsumer_ ) delete locConsumer_;
     if ( speedLimiter_ ) delete speedLimiter_;
@@ -99,7 +99,7 @@ MainLoop::ensureProxiesNotEmpty()
     // Ensure that there's something in our proxys
     while ( isActive() )
     {
-        bool gotObs  = !iSensorModel_->isProxyEmpty();
+        bool gotObs  = !sensorModel_->isProxyEmpty();
         bool gotLoc  = !locProxy_->isEmpty();
         bool gotOdom = !odomProxy_->isEmpty();
 
@@ -302,23 +302,28 @@ MainLoop::subscribeForObservations()
 {
     while ( isActive() )
     {
-        try {
-            // this might be wrong. Originally the connectToInterface() and subsribe were in separate while loops
-            iSensorModel_->subscribeForInfo();
+        if ( !sensorModel_->connectToInterface() )
+        {
+            sleep(2);
+        }
+        else
+        {
             break;
         }
-        catch( std::exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to sensor data: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
-        catch( Ice::Exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to sensor data: " << e;
-            context_.tracer()->error( ss.str() );
-        }
-        sleep(2);
     }
+
+    while ( isActive() )
+    {
+        if ( !sensorModel_->subscribe() )
+        {
+            sleep(2);
+        }
+        else
+        {
+            break;
+        }
+    }
+    context_.tracer()->info( "Subscribed for observations" );
 }
 
 
@@ -351,19 +356,19 @@ MainLoop::setup()
     //
     
     // query driver for the type of sensor model it requires
-    std::string sensorModel = driver_->sensorModelType();
+     SensorModelType modelType = driver_->sensorModelType();
     
     // set up the type of sensor model according to the driver's requirements
-    if( sensorModel == "range" )
+    if( modelType == rangeModel )
     {
-        iSensorModel_ = new RangeScannerSensorModel( context_ );
-        iSensorData_ = new RangeScannerSensorData();
+        sensorModel_ = new RangeScannerSensorModel( context_ );
+        sensorData_ = new RangeScannerSensorData();
     }
     else
     {
-        stringstream ss;
-        ss << "MainLoop: Can only handle data of type range";
-        throw ss.str();
+        context_.tracer()->error( "Mainloop.cpp: Unknown sensor model... exiting" );
+        assert( modelType==rangeModel );
+        exit(1);
     }
 
 
@@ -378,8 +383,7 @@ MainLoop::setup()
         subscribeForObservations();
 
         // tell the driver the sensor description
-        // TODO: check that I don't have to delete the pointer returned from description()
-        driver_->setSensorModelDescription( iSensorModel_->description() );
+        driver_->setSensorModelDescription( sensorModel_->description() );
         
         // obsProxy_ is set up in subscribeForObservations()
         locProxy_  = &(locConsumer_->proxy_);
@@ -387,11 +391,11 @@ MainLoop::setup()
     }
     else
     {
-        // TODO: check that I don't have to delete the pointer returned from description()
+        // tell the driver the simulated sensor description
         driver_->setSensorModelDescription( testSimulator_->rangeScanner2dDescription() );
         
         // TODO: setSimProxy() only works for range data... make general 
-        iSensorModel_->setSimProxy( &(testSimulator_->obsProxy_) );
+        sensorModel_->setSimProxy( &(testSimulator_->obsProxy_) );
         locProxy_  = &(testSimulator_->locProxy_);
         odomProxy_ = &(testSimulator_->odomProxy_);
 
@@ -448,13 +452,13 @@ MainLoop::run()
             //cout<<"============================================="<<endl;
 
             // The incoming sensor data provides the 'clock' which is the trigger for this loop
-            iSensorData_ = iSensorModel_->getNext( TIMEOUT_MS );
-            if ( iSensorData_ == 0 )
+            sensorData_ = sensorModel_->getNext( TIMEOUT_MS );
+            if ( sensorData_ == 0 )
             {
                 getStopCommand( velocityCmd );
                 sendCommandToPlatform( velocityCmd );
-                iSensorModel_->subscribeForInfo();
-                delete iSensorData_;
+                sensorModel_->subscribe();
+                delete sensorData_;
                 continue;
             }
             
@@ -462,17 +466,17 @@ MainLoop::run()
             orcamisc::RealTimeStopwatch timer;
 
             // Tell everyone what time it is, boyeee
-            clock_.setTime( iSensorData_->timeStamp() );
+            clock_.setTime( sensorData_->timeStamp() );
 
             locProxy_->get( localiseData_ );
             odomProxy_->get( odomData_ );
 
             const double THRESHOLD = 1.0; // seconds
-            if ( areTimestampsDodgy( *iSensorData_, localiseData_, odomData_, THRESHOLD ) )
+            if ( areTimestampsDodgy( *sensorData_, localiseData_, odomData_, THRESHOLD ) )
             {
                 stringstream ss;
                 ss << "Timestamps are more than "<<THRESHOLD<<"sec apart: " << endl
-                   << "\t rangeData:    " << orcaice::toString(iSensorData_->timeStamp()) << endl
+                   << "\t rangeData:    " << orcaice::toString(sensorData_->timeStamp()) << endl
                    << "\t localiseData: " << orcaice::toString(localiseData_.timeStamp) << endl
                    << "\t odomData:     " << orcaice::toString(odomData_.timeStamp) << endl
                    << "Maybe something is wrong: Stopping.";
@@ -481,7 +485,7 @@ MainLoop::run()
                 sendCommandToPlatform( velocityCmd );
                 subscribeForOdometry();
                 subscribeForLocalisation();
-                delete iSensorData_;
+                delete sensorData_;
                 continue;
             }
 
@@ -522,7 +526,7 @@ MainLoop::run()
                                  uncertainLocalisation,
                                  pose,
                                  odomData_.motion,
-                                 iSensorData_,
+                                 sensorData_,
                                  currentGoals,
                                  velocityCmd );
             
@@ -541,7 +545,7 @@ MainLoop::run()
             else
             {
                 context_.tracer()->debug( "Doing nothing because disabled" );
-                delete iSensorData_;
+                delete sensorData_;
                 continue;
             }
 

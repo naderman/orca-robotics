@@ -136,10 +136,10 @@ Simulator::setupInterfaces()
     } catch (...) {}
 }
 
-ISensorDescription* 
+ISensorDescription& 
 Simulator::rangeScanner2dDescription()
 {
-    return &rangeScannerSensorDescription_;
+    return rangeScannerSensorDescription_;
 }
 
 void

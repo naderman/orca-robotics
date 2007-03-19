@@ -43,11 +43,9 @@ public:
     void printState();
 
     orca::VehicleDescription        getVehicleDescription() const;
-    // orca::RangeScanner2dDescription getRangeScanner2dDescription() const
-    //     { return scannerDescr_; }
     
     // return the description upcasted to the base class
-    ISensorDescription* rangeScanner2dDescription();
+    ISensorDescription& rangeScanner2dDescription();
     
 private: 
 

@@ -17,6 +17,7 @@
 #include <vfhdriver/vfh_algorithm.h>
 #include <orcaice/heartbeater.h>
 
+#include <localnavutil/isensormodel.h>
 #include <localnavutil/isensordata.h>
 #include <localnavutil/isensordescription.h>
 
@@ -65,10 +66,10 @@ public:
                              orca::VelocityControl2dData           &cmd );
                              
     // queries the driver for the required sensor model type
-    std::string sensorModelType();
+    localnav::SensorModelType sensorModelType();
     
     // tell the driver the sensor description
-    void setSensorModelDescription( localnav::ISensorDescription* descr );
+    void setSensorModelDescription( localnav::ISensorDescription& descr );
 
 
 private: 

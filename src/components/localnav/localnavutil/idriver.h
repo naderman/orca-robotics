@@ -18,6 +18,7 @@
 
 #include <orcalocalnav/goal.h>
 
+#include <localnavutil/isensormodel.h>
 #include <localnavutil/isensordata.h>
 #include <localnavutil/isensordescription.h>
 
@@ -60,10 +61,10 @@ public:
                              orca::VelocityControl2dData           &cmd ) = 0;
                              
     // queries the driver for the required sensor model type
-    virtual std::string sensorModelType()=0;
+    virtual SensorModelType sensorModelType()=0;
     
     // tell the driver the sensor description
-    virtual void setSensorModelDescription( ISensorDescription* descr )=0;
+    virtual void setSensorModelDescription( ISensorDescription& descr )=0;
 
 
 protected: 

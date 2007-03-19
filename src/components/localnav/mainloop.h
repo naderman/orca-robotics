@@ -22,9 +22,9 @@
 #include <orcalocalnav/pathmaintainer.h>
 #include <orcalocalnav/clock.h>
 #include <localnavutil/idriver.h>
+#include <localnavutil/isensormodel.h>
 #include <localnavutil/isensordata.h>
 
-#include "isensormodel.h"
 
 namespace localnav {
 
@@ -84,7 +84,7 @@ private:
     void checkWithOutsideWorld();
 
     // Returns true if the timestamps differ by more than a threshold.
-    bool areTimestampsDodgy( const ISensorData&                 iSensorData,
+    bool areTimestampsDodgy( const ISensorData&                 sensorData,
                              const orca::Localise2dData&        localiseData,
                              const orca::Odometry2dData&        odomData,
                              double                             threshold );
@@ -102,7 +102,7 @@ private:
     DriverFactory &driverFactory_;
 
     // the type of sensor info we have for planning a path through the world
-    ISensorModel* iSensorModel_;
+    ISensorModel* sensorModel_;
     
     // Incoming observations and pose info
     // Get observations, pose, and odometric velocity
@@ -115,7 +115,7 @@ private:
     orcalocalnav::PathFollower2dI  &pathFollowerInterface_;
 
     // data types
-    ISensorData*                    iSensorData_;
+    ISensorData*                   sensorData_;
     orca::Localise2dData           localiseData_;
     orca::Odometry2dData           odomData_;
 
