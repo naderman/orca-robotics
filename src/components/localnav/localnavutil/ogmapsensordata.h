@@ -16,8 +16,10 @@
 namespace localnav {
 
 //!
-//! @author Alex Brooks
+//! @author Alex Brooks and Ben Upcroft
 //!
+
+//! Specific implementation of ISensorData for RangeScanner2dData
 class OgMapSensorData : public ISensorData
 {
 
@@ -25,9 +27,12 @@ public:
 
     ~OgMapSensorData(){};
 
+    //! get the OgMapData timestamp
     virtual const orca::Time &timeStamp() const{ return ogMapData_.timeStamp; };
 
+    //! Record the OgMapData in a member variable
     void setData( const orca::OgMapData ogMapData ){ ogMapData_ = ogMapData; };
+    //! Get the OgMapData
     orca::OgMapData ogMapData(){ return ogMapData_; };
 
 private: 

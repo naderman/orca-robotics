@@ -18,6 +18,8 @@ namespace localnav {
 //!
 //! @author Alex Brooks
 //!
+
+//! Specific implementation of ISensorDescription for RangeScanner2d. Note that
 class RangeScannerSensorDescription : public ISensorDescription
 {
 
@@ -25,7 +27,9 @@ public:
 
     ~RangeScannerSensorDescription(){};
 
+    //! record RangeScanner2dDescription in a member variable
     void setDescr( const orca::RangeScanner2dDescription rangeDescr ){ rangeDescr_ = rangeDescr; };
+    //! get the RangeScanner2dDescription
     orca::RangeScanner2dDescription rangeDescr(){ return rangeDescr_; };
 
 private: 

@@ -17,6 +17,12 @@ namespace localnav {
 //!
 //! @author Alex Brooks
 //!
+
+//! Abstract class for wrapping up sensor information data such as LaserScanner2dData and OgMapData.
+//! Pathplanning drivers are passed as an argument, data in this abstract form and must dynamic_cast
+//! the data into the required format.
+//!
+//! All sensor information data should inherit from this class.
 class ISensorData
 {
 
@@ -24,6 +30,9 @@ public:
 
     virtual ~ISensorData(){};
 
+    //! method for wrapping up access to the object's timestamp.
+    //! This is needed since RangeScanner2dData is in the form of a pointer whereas
+    //! OgMapData is not. Thus access to object members use different syntax.
     virtual const orca::Time &timeStamp() const=0;
     
 

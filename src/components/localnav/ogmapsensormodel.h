@@ -24,6 +24,8 @@ namespace localnav {
 //!
 //! @author Alex Brooks
 //!
+
+//! Specific implementation of ISensorModel for OgMap information
 class OgMapSensorModel : public ISensorModel
 {
 

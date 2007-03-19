@@ -18,6 +18,10 @@ namespace localnav {
 //!
 //! @author Alex Brooks
 //!
+
+//! Specific implementation of ISensorDescription for OgMaps. Note that
+//! OgMaps do not have a descriptions and thus this implementation is just a place
+//! holder when an ISensorDescription is required in localnav::MainLoop
 class OgMapSensorDescription : public ISensorDescription
 {
 

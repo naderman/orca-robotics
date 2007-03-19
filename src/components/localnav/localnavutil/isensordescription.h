@@ -17,6 +17,12 @@ namespace localnav {
 //!
 //! @author Ben Upcroft
 //!
+
+//! Abstract class for wrapping up sensor information descriptions such as LaserScanner2dDescription.
+//! Pathplanning drivers are passed as an argument, descriptions in this abstract form and must dynamic_cast
+//! the description into the required format.
+//!
+//! All sensor information descriptions should inherit from this class.
 class ISensorDescription
 {
 

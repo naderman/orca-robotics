@@ -22,6 +22,7 @@
 #include "mainloop.h"
 #include "testsim/simulator.h"
 #include "rangescannersensormodel.h"
+#include "ogmapsensormodel.h"
 
 using namespace std;
 using namespace orca;
@@ -364,13 +365,17 @@ MainLoop::setup()
         sensorModel_ = new RangeScannerSensorModel( context_ );
         sensorData_ = new RangeScannerSensorData();
     }
+    else if( modelType == ogMapModel )
+    {
+        sensorModel_ = new OgMapSensorModel( context_ );
+        sensorData_ = new OgMapSensorData();
+    }
     else
     {
         context_.tracer()->error( "Mainloop.cpp: Unknown sensor model... exiting" );
-        assert( modelType==rangeModel );
+        assert( modelType==rangeModel || modelType==ogMapModel );
         exit(1);
     }
-
 
     //
     // set up all the interface subscriptions and tell the driver the sensor description

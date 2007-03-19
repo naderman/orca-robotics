@@ -24,6 +24,8 @@ namespace localnav {
 //!
 //! @author Alex Brooks
 //!
+
+//! Specific implementation of ISensorModel for RangeScanner2d information
 class RangeScannerSensorModel : public ISensorModel
 {
 
@@ -59,8 +61,6 @@ private:
     RangeScannerSensorData rangeScannerSensorData_;
 
     orca::RangeScanner2dDescription rangeDescr_;
-    
-
 
     orcaice::Context context_;
 };
