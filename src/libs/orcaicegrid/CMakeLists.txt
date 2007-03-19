@@ -1,7 +1,13 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
+OPTION( BUILD_ORCAICEGRID "Try to build libOrcaIceGrid" OFF )
 
-FILE( GLOB SRCS *.cpp )
+IF ( BUILD_ORCAICEGRID )
 
-GLOBAL_ADD_LIBRARY( OrcaIceGrid SHARED ${SRCS} )
+  INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
 
-INSTALL_FILES( /include/orcaicegrid .*\\.h$ )
+  FILE( GLOB SRCS *.cpp )
+
+  GLOBAL_ADD_LIBRARY( OrcaIceGrid SHARED ${SRCS} )
+
+  INSTALL_FILES( /include/orcaicegrid .*\\.h$ )
+
+ENDIF ( BUILD_ORCAICEGRID )

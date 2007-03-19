@@ -3,7 +3,7 @@
 
 using namespace std;
 
-namespace icegridmon {
+namespace orcaicegrid {
 
 inline std::string makeIndent( int indent )
 {

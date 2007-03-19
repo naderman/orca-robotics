@@ -1,9 +1,10 @@
 #include "adapterobserverI.h"
 #include <iostream>
 #include <sstream>
-#include "printutil.h"
+#include <orcaicegrid/printutil.h>
 
 using namespace std;
+using namespace orcaicegrid;
 
 namespace icegridmon {
 

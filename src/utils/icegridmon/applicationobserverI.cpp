@@ -1,8 +1,9 @@
 #include "applicationobserverI.h"
 #include <iostream>
-#include "printutil.h"
+#include <orcaicegrid/printutil.h>
 
 using namespace std;
+using namespace orcaicegrid;
 
 namespace icegridmon {
 

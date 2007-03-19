@@ -5,7 +5,7 @@
 #include <IceGrid/Registry.h>
 #include <IceGrid/Observer.h>
 
-namespace icegridmon {
+namespace orcaicegrid {
 
 
 std::string toString( const IceGrid::AdapterInfo &a, int indent=0 );
