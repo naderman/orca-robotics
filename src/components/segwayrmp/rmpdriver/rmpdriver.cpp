@@ -12,13 +12,10 @@
 #include <sstream>
 #include <orcaice/orcaice.h>    // for time functions
 
-#include "rmpusbdriver.h"
+#include "rmpdriver.h"
 
-// USB IO implementation
-#include "rmpusbioftdi.h"
-
-// rmp/usb data structure
-#include "rmpusbdataframe.h"
+// rmp data structure
+#include "rmpdataframe.h"
 #include "rmpdefs.h"
 #include "canpacket.h"
 
@@ -30,8 +27,9 @@ namespace {
     const int DEBUG_LEVEL=5;
 }
 
-RmpUsbDriver::RmpUsbDriver( const orcaice::Context & context )
-    : rmpusbio_(NULL),
+RmpDriver::RmpDriver( const orcaice::Context & context,
+                      RmpIo &rmpIo )
+    : rmpIo_(rmpIo),
       context_(context),
       lastRawYaw_(0),
       lastRawForeaft_(0),
@@ -47,25 +45,19 @@ RmpUsbDriver::RmpUsbDriver( const orcaice::Context & context )
     cout<<config_<<endl;
 }
 
-RmpUsbDriver::~RmpUsbDriver()
+RmpDriver::~RmpDriver()
 {
-    cout<<"TRACE(rmpusbdriver.cpp): destructor()" << endl;
-    if ( rmpusbio_ ) delete rmpusbio_;
+    cout<<"TRACE(rmpdriver.cpp): destructor()" << endl;
 }
 
 int
-RmpUsbDriver::enable()
+RmpDriver::enable()
 {
-    if ( rmpusbio_ )
-    {
-        delete rmpusbio_;
-        rmpusbio_ = NULL;
-    }
+    rmpIo_.disable();
 
     // init device
     try {
-        assert( rmpusbio_==NULL );
-        rmpusbio_ = new RmpUsbIoFtdi( DEBUG_LEVEL );
+        rmpIo_.enable( DEBUG_LEVEL );
     }
     catch ( std::exception &e )
     {
@@ -76,7 +68,7 @@ RmpUsbDriver::enable()
     }
 
     try {
-        context_.tracer()->debug("RmpUsbDriver::enable(): connected to USB device.");
+        context_.tracer()->debug("RmpDriver::enable(): connected to RmpIo device.");
     
         // segway is physically connected; try to configure
 
@@ -90,11 +82,11 @@ RmpUsbDriver::enable()
         try {
             readFrame();
         }
-        catch ( Exception &e )
+        catch ( RmpException &e )
         {
             stringstream ss;
             ss << "Looks like the Segway is powered off.  Symptom is: " << endl << e.what();
-            throw Exception( ss.str() );
+            throw RmpException( ss.str() );
         }
         stringstream ssread;
         ssread << "Initial exploratory read says:"<<endl<<toString();
@@ -111,17 +103,16 @@ RmpUsbDriver::enable()
     catch ( std::exception &e )
     {
         stringstream ss;
-        ss << "RmpUsbDriver::enable() failed: " << e.what();
+        ss << "RmpDriver::enable() failed: " << e.what();
         context_.tracer()->warning( ss.str() );
-        delete rmpusbio_;
-        rmpusbio_ = NULL;
+        rmpIo_.disable();
         return 2;
     }
     return 0;
 }
 
 // int
-// RmpUsbDriver::repair()
+// RmpDriver::repair()
 // {
 //     context_.tracer()->debug( "Repairing..." );
 //     repairCounter_++;
@@ -134,7 +125,7 @@ RmpUsbDriver::enable()
 // //     catch ( std::exception &e )
 // //     {
 // //         stringstream ss;
-// //         ss << "RmpUsbDriver::repair(): Quick reset failed: " << e.what();
+// //         ss << "RmpDriver::repair(): Quick reset failed: " << e.what();
 // //         context_.tracer()->debug( ss.str() );
 // //     }
 
@@ -144,9 +135,9 @@ RmpUsbDriver::enable()
 // }
 
 // int
-// RmpUsbDriver::disable()
+// RmpDriver::disable()
 // {
-//     cout<<"RmpUsbDriver::disabling... ("<<repairCounter_<<" repairs so far)"<<endl;
+//     cout<<"RmpDriver::disabling... ("<<repairCounter_<<" repairs so far)"<<endl;
 //     assert( rmpusbio_ );
 //     delete rmpusbio_;
 //     rmpusbio_ = NULL;
@@ -155,7 +146,7 @@ RmpUsbDriver::enable()
 // }
 
 int
-RmpUsbDriver::read( SegwayRmpData& data, std::string & status )
+RmpDriver::read( SegwayRmpData& data, std::string & status )
 {
     try {
         //
@@ -163,12 +154,12 @@ RmpUsbDriver::read( SegwayRmpData& data, std::string & status )
         //
         readFrame();
     
-        RmpUsbDriver::Status rmpStatus;
+        RmpDriver::Status rmpStatus;
         updateData( data, rmpStatus );
 
         // do a status check (before resetting the frame)
         if ( frame_.status_word1!=lastStatusWord1_ && frame_.status_word1!=lastStatusWord2_ ) {
-            cout<<"RmpUsbDriver: internal state change : "<<IceUtil::Time::now().toDateTime()<<endl;
+            cout<<"RmpDriver: internal state change : "<<IceUtil::Time::now().toDateTime()<<endl;
             cout<<toString()<<endl;
             lastStatusWord1_ = frame_.status_word1;
             lastStatusWord2_ = frame_.status_word2;
@@ -186,14 +177,14 @@ RmpUsbDriver::read( SegwayRmpData& data, std::string & status )
     catch ( std::exception &e )
     {
         stringstream ss; 
-        ss << "RmpUsbDriver::read(): Error: " << e.what();
+        ss << "RmpDriver::read(): Error: " << e.what();
         context_.tracer()->error( ss.str() );
         return -1;
     }
 }
 
 void
-RmpUsbDriver::applyScaling( const SegwayRmpCommand& original, SegwayRmpCommand &scaledCommand )
+RmpDriver::applyScaling( const SegwayRmpCommand& original, SegwayRmpCommand &scaledCommand )
 {
     scaledCommand.vx = original.vx / config_.maxVelocityScale;
 
@@ -204,7 +195,7 @@ RmpUsbDriver::applyScaling( const SegwayRmpCommand& original, SegwayRmpCommand &
 }
 
 int
-RmpUsbDriver::write( const SegwayRmpCommand& command )
+RmpDriver::write( const SegwayRmpCommand& command )
 {
     SegwayRmpCommand scaledCommand;
     applyScaling( command, scaledCommand );
@@ -212,21 +203,21 @@ RmpUsbDriver::write( const SegwayRmpCommand& command )
     try {
         makeMotionCommandPacket( &pkt_, scaledCommand );
 
-        rmpusbio_->writePacket(&pkt_);
+        rmpIo_.writePacket(&pkt_);
 
         return 0;
     }
     catch ( std::exception &e )
     {
         stringstream ss;
-        ss << "RmpUsbDriver::write(): Error: " << e.what();
+        ss << "RmpDriver::write(): Error: " << e.what();
         context_.tracer()->error( ss.str() );
         return -1;
     }
 }
 
 void 
-RmpUsbDriver::applyHardwareLimits( double& forwardSpeed, double& reverseSpeed, 
+RmpDriver::applyHardwareLimits( double& forwardSpeed, double& reverseSpeed, 
                                    double& turnrate, double& turnrateAtMaxSpeed )
 {
     double forwardSpeedLimit 
@@ -250,22 +241,22 @@ RmpUsbDriver::applyHardwareLimits( double& forwardSpeed, double& reverseSpeed,
 }
 
 int 
-RmpUsbDriver::get( SegwayRmpStats& stats )
+RmpDriver::get( SegwayRmpStats& stats )
 {
     stats.distanceTravelled = frame_.foreaft;
     return 0;
 }
 
 std::string
-RmpUsbDriver::toString()
+RmpDriver::toString()
 {
     return frame_.toString();
 }
 
 void
-RmpUsbDriver::readFrame()
+RmpDriver::readFrame()
 {
-    RmpUsbIoFtdi::RmpUsbStatus status;
+    RmpIo::RmpIoStatus status;
     int canPacketsProcessed = 0;
     int dataFramesReopened = 0;
     int timeoutCount = 0;
@@ -277,9 +268,9 @@ RmpUsbDriver::readFrame()
     // get next packet from the packet buffer, will block until new packet arrives
     while( canPacketsProcessed < maxCanPacketsProcessed && timeoutCount < maxTimeoutCount )
     {
-        status = rmpusbio_->readPacket( &pkt_ );
+        status = rmpIo_.readPacket( &pkt_ );
 
-        if ( status == RmpUsbIoFtdi::NO_DATA ) {
+        if ( status == RmpIo::NO_DATA ) {
             // not sure what to do here. treat as an error? try again?
             ++timeoutCount;
             continue;
@@ -307,7 +298,7 @@ RmpUsbDriver::readFrame()
         {
             if ( frame_.isComplete() )
             {
-                //cout<<"RmpUsbDriver::readFrame: pkts:"<<canPacketsProcessed<<" re-opened: "<<dataFramesReopened<<endl;
+                //cout<<"RmpDriver::readFrame: pkts:"<<canPacketsProcessed<<" re-opened: "<<dataFramesReopened<<endl;
                 return;
             }
             else {
@@ -330,11 +321,11 @@ RmpUsbDriver::readFrame()
 
     // either processed too many packets or got too many timeouts without
     // getting a complete frame.
-    throw Exception( "RmpUsbDriver::readFrame(): either processed too many packets or got too many timeouts without getting a complete frame" );
+    throw RmpException( "RmpDriver::readFrame(): either processed too many packets or got too many timeouts without getting a complete frame" );
 }
 
 void
-RmpUsbDriver::integrateMotion()
+RmpDriver::integrateMotion()
 {
     // Get the new linear and angular encoder values and compute odometry.
     int deltaForeaftRaw = diff(lastRawForeaft_, frame_.foreaft, firstread_);
@@ -361,7 +352,7 @@ RmpUsbDriver::integrateMotion()
 }
 
 void
-RmpUsbDriver::updateData( SegwayRmpData& data, Status & status )
+RmpDriver::updateData( SegwayRmpData& data, Status & status )
 {
     // set all time stamps right away
     orca::Time t = orcaice::toOrcaTime( IceUtil::Time::now() );
@@ -435,22 +426,22 @@ RmpUsbDriver::updateData( SegwayRmpData& data, Status & status )
 }
 
 void
-RmpUsbDriver::resetAllIntegrators()
+RmpDriver::resetAllIntegrators()
 {
     makeStatusCommandPacket( &pkt_, RMP_CMD_RESET_INTEGRATORS, RMP_CAN_RESET_ALL );
 
     try {
-        rmpusbio_->writePacket(&pkt_);
+        rmpIo_.writePacket(&pkt_);
     }
     catch ( std::exception &e )
     {
-        stringstream ss; ss << "RmpUsbDriver::resetAllIntegrators(): " << e.what();
-        throw Exception( ss.str() );
+        stringstream ss; ss << "RmpDriver::resetAllIntegrators(): " << e.what();
+        throw RmpException( ss.str() );
     }
 }
 
 void
-RmpUsbDriver::setMaxVelocityScaleFactor( double scale )
+RmpDriver::setMaxVelocityScaleFactor( double scale )
 {
     assert( scale>=0.0);
     assert( scale<=1.0);
@@ -463,17 +454,17 @@ RmpUsbDriver::setMaxVelocityScaleFactor( double scale )
     makeStatusCommandPacket( &pkt_, RMP_CMD_SET_MAX_VELOCITY_SCALE, (uint16_t)ceil(scale*16.0) );
 
     try {
-        rmpusbio_->writePacket(&pkt_);
+        rmpIo_.writePacket(&pkt_);
     }
     catch ( std::exception &e )
     {
-        stringstream ss; ss << "RmpUsbDriver::setMaxVelocityScaleFactor(): " << e.what();
-        throw Exception( ss.str() );
+        stringstream ss; ss << "RmpDriver::setMaxVelocityScaleFactor(): " << e.what();
+        throw RmpException( ss.str() );
     }
 }
 
 void
-RmpUsbDriver::setMaxTurnrateScaleFactor( double scale )
+RmpDriver::setMaxTurnrateScaleFactor( double scale )
 {
     assert( scale>=0.0);
     assert( scale<=1.0);
@@ -486,17 +477,17 @@ RmpUsbDriver::setMaxTurnrateScaleFactor( double scale )
     makeStatusCommandPacket( &pkt_, RMP_CMD_SET_MAX_TURNRATE_SCALE, (uint16_t)ceil(scale*16.0) );
 
     try {
-        rmpusbio_->writePacket(&pkt_);
+        rmpIo_.writePacket(&pkt_);
     }
     catch ( std::exception &e )
     {
-        stringstream ss; ss << "RmpUsbDriver::setMaxTurnrateScaleFactor(): " << e.what();
-        throw Exception( ss.str() );
+        stringstream ss; ss << "RmpDriver::setMaxTurnrateScaleFactor(): " << e.what();
+        throw RmpException( ss.str() );
     }
 }
 
 void
-RmpUsbDriver::setMaxAccelerationScaleFactor( double scale )
+RmpDriver::setMaxAccelerationScaleFactor( double scale )
 {
     assert( scale>=0.0);
     assert( scale<=1.0);
@@ -509,17 +500,17 @@ RmpUsbDriver::setMaxAccelerationScaleFactor( double scale )
     makeStatusCommandPacket( &pkt_, RMP_CMD_SET_MAX_ACCELERATION_SCALE, (uint16_t)ceil(scale*16.0) );
 
     try {
-        rmpusbio_->writePacket(&pkt_);
+        rmpIo_.writePacket(&pkt_);
     }
     catch ( std::exception &e )
     {
-        stringstream ss; ss << "RmpUsbDriver::setMaxAccelerationScaleFactor(): " << e.what();
-        throw Exception( ss.str() );
+        stringstream ss; ss << "RmpDriver::setMaxAccelerationScaleFactor(): " << e.what();
+        throw RmpException( ss.str() );
     }
 }
 
 void
-RmpUsbDriver::setMaxCurrentLimitScaleFactor( double scale )
+RmpDriver::setMaxCurrentLimitScaleFactor( double scale )
 {
     assert( scale>=0.0);
     assert( scale<=1.0);
@@ -533,49 +524,49 @@ RmpUsbDriver::setMaxCurrentLimitScaleFactor( double scale )
     makeStatusCommandPacket( &pkt_, RMP_CMD_SET_CURRENT_LIMIT_SCALE, (uint16_t)ceil(scale*256.0) );
 
     try {
-        rmpusbio_->writePacket(&pkt_);
+        rmpIo_.writePacket(&pkt_);
     }
     catch ( std::exception &e )
     {
-        stringstream ss; ss << "RmpUsbDriver::setMaxCurrentLimitScaleFactor(): " << e.what();
-        throw Exception( ss.str() );
+        stringstream ss; ss << "RmpDriver::setMaxCurrentLimitScaleFactor(): " << e.what();
+        throw RmpException( ss.str() );
     }
 
 }
 
 void
-RmpUsbDriver::setOperationalMode( OperationalMode mode )
+RmpDriver::setOperationalMode( OperationalMode mode )
 {
     makeStatusCommandPacket( &pkt_, RMP_CMD_SET_OPERATIONAL_MODE, mode );
 
     try {
-        rmpusbio_->writePacket(&pkt_);
+        rmpIo_.writePacket(&pkt_);
     }
     catch ( std::exception &e )
     {
-        stringstream ss; ss << "RmpUsbDriver::setOperationalMode(): " << e.what();
-        throw Exception( ss.str() );
+        stringstream ss; ss << "RmpDriver::setOperationalMode(): " << e.what();
+        throw RmpException( ss.str() );
     }
 }
 
 void
-RmpUsbDriver::setGainSchedule( int sched )
+RmpDriver::setGainSchedule( int sched )
 {
     makeStatusCommandPacket( &pkt_, RMP_CMD_SET_GAIN_SCHEDULE, sched );
 
     try {
-        rmpusbio_->writePacket(&pkt_);
+        rmpIo_.writePacket(&pkt_);
     }
     catch ( std::exception &e )
     {
-        stringstream ss; ss << "RmpUsbDriver::setGainSchedule(): " << e.what();
-        throw Exception( ss.str() );
+        stringstream ss; ss << "RmpDriver::setGainSchedule(): " << e.what();
+        throw RmpException( ss.str() );
     }
 
 }
 
 void
-RmpUsbDriver::enableBalanceMode( bool enable )
+RmpDriver::enableBalanceMode( bool enable )
 {
     if ( enable ) {
         makeStatusCommandPacket( &pkt_, RMP_CMD_SET_BALANCE_MODE_LOCKOUT, BalanceAllowed );
@@ -585,12 +576,12 @@ RmpUsbDriver::enableBalanceMode( bool enable )
     }
     
     try {
-        rmpusbio_->writePacket(&pkt_);
+        rmpIo_.writePacket(&pkt_);
     }
     catch ( std::exception &e )
     {
-        stringstream ss; ss << "RmpUsbDriver::enableBalanceMode(): " << e.what();
-        throw Exception( ss.str() );
+        stringstream ss; ss << "RmpDriver::enableBalanceMode(): " << e.what();
+        throw RmpException( ss.str() );
     }
 }
 
@@ -598,7 +589,7 @@ RmpUsbDriver::enableBalanceMode( bool enable )
  *  Takes an Orca command object and turns it into CAN packets for the RMP
  */
 void
-RmpUsbDriver::makeMotionCommandPacket( CanPacket* pkt, const SegwayRmpCommand& command )
+RmpDriver::makeMotionCommandPacket( CanPacket* pkt, const SegwayRmpCommand& command )
 {
     pkt->id = RMP_CAN_ID_COMMAND;
     // velocity command does not change any other values
@@ -637,7 +628,7 @@ RmpUsbDriver::makeMotionCommandPacket( CanPacket* pkt, const SegwayRmpCommand& c
     Creates a status CAN packet from the given arguments
  */  
 void
-RmpUsbDriver::makeStatusCommandPacket( CanPacket* pkt, uint16_t commandId, uint16_t value )
+RmpDriver::makeStatusCommandPacket( CanPacket* pkt, uint16_t commandId, uint16_t value )
 {
     pkt->id = RMP_CAN_ID_COMMAND;
 
@@ -660,7 +651,7 @@ RmpUsbDriver::makeStatusCommandPacket( CanPacket* pkt, uint16_t commandId, uint1
 }
 
 void
-RmpUsbDriver::makeShutdownCommandPacket( CanPacket* pkt )
+RmpDriver::makeShutdownCommandPacket( CanPacket* pkt )
 {
     pkt->id = RMP_CAN_ID_SHUTDOWN;
 
@@ -670,7 +661,7 @@ RmpUsbDriver::makeShutdownCommandPacket( CanPacket* pkt )
 // Calculate the difference between two raw counter values, taking care
 // of rollover.
 int
-RmpUsbDriver::diff( uint32_t from, uint32_t to, bool first )
+RmpDriver::diff( uint32_t from, uint32_t to, bool first )
 {
     // if this is the first time, report no change
     if(first) {
@@ -699,7 +690,7 @@ RmpUsbDriver::diff( uint32_t from, uint32_t to, bool first )
 }
 
 void
-RmpUsbDriver::watchPacket( CanPacket* pkt, short int pktID )
+RmpDriver::watchPacket( CanPacket* pkt, short int pktID )
 {
     short slot0 = (short)pkt->GetSlot(0);
     short slot1 = (short)pkt->GetSlot(1);
@@ -756,7 +747,7 @@ RmpUsbDriver::watchPacket( CanPacket* pkt, short int pktID )
 }
 
 void
-RmpUsbDriver::watchDataStream( CanPacket* pkt )
+RmpDriver::watchDataStream( CanPacket* pkt )
 {
     static CanPacket priorPkt;
 

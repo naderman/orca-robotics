@@ -8,26 +8,27 @@
  *
  */
 
-#ifndef ORCA2_SEGWAY_RMP_USB_DRIVER_H
-#define ORCA2_SEGWAY_RMP_USB_DRIVER_H
+#ifndef ORCA2_SEGWAY_RMP_DRIVER_H
+#define ORCA2_SEGWAY_RMP_DRIVER_H
 
 #include "../hwdriver.h"
-#include "rmpusbdriverconfig.h"
-//#include "rmpusbioftdi.h"
-#include "rmpusbdataframe.h"
+#include "rmpdriverconfig.h"
+#include "rmpio.h"
+#include "rmpdataframe.h"
 #include "canpacket.h"
 
 namespace segwayrmp
 {
 
-class RmpUsbIoFtdi;
+class RmpIo;
 
-class RmpUsbDriver : public HwDriver
+class RmpDriver : public HwDriver
 {
 public:
 
-    RmpUsbDriver( const orcaice::Context & context );
-    virtual ~RmpUsbDriver();
+    RmpDriver( const orcaice::Context & context,
+               RmpIo &rmpIo );
+    virtual ~RmpDriver();
 
     virtual int enable();
 
@@ -81,13 +82,13 @@ private:
     void applyScaling( const SegwayRmpCommand& original, SegwayRmpCommand &scaledCommand );
 
     // driver/hardware interface
-    RmpUsbIoFtdi     *rmpusbio_;
-    RmpUsbDataFrame   frame_;
-    CanPacket         pkt_;
+    RmpIo         &rmpIo_;
+    RmpDataFrame   frame_;
+    CanPacket      pkt_;
 
     // configuration
     orcaice::Context context_;
-    RmpUsbDriverConfig config_;
+    RmpDriverConfig  config_;
 
     // last motion commands [segway counts]
     // used to load into status command

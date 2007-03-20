@@ -35,13 +35,25 @@ using namespace std;
 namespace segwayrmp {
 
 RmpUsbIoFtdi::RmpUsbIoFtdi( int debugLevel )
-    : charBuffer_(128),
+    : isEnabled_(false),
+      charBuffer_(128),
       charBufferBytes_(0),
-      usbFtdi_(NULL),
-      debugLevel_(debugLevel)
+      usbFtdi_(NULL)
 {
+}
+
+RmpUsbIoFtdi::~RmpUsbIoFtdi()
+{
+    disable();
+}
+
+RmpUsbIoFtdi::enable( int debugLevel )
+{
+    debugLevel_ = debugLevel;
     if ( debugLevel_ > 0 )
-        cout<<"TRACE(rmpusbioftdi.cpp): constructor()" << endl;
+        cout<<"TRACE(rmpusbioftdi.cpp): enable()" << endl;
+
+    if ( isEnabled_ ) return;
 
     try {
         usbFtdi_ = new usbftdi::UsbFtdi( SEGWAY_USB_VENDOR_ID,
@@ -57,15 +69,20 @@ RmpUsbIoFtdi::RmpUsbIoFtdi( int debugLevel )
     }
 
     if ( debugLevel_ > 0 )
-        cout<<"TRACE(rmpusbioftdi.cpp): constructor() succeeded" << endl;
+        cout<<"TRACE(rmpusbioftdi.cpp): enable() succeeded" << endl;    
+
+    isEnabled_ = true;
 }
 
-RmpUsbIoFtdi::~RmpUsbIoFtdi()
+RmpUsbIoFtdi::disable()
 {
     if ( debugLevel_ > 0 )
-        cout<<"TRACE(rmpusbioftdi.cpp): destructor()" << endl;
-
+        cout<<"TRACE(rmpusbioftdi.cpp): disable()" << endl;
+    if ( !isEnabled_ ) return;
+    
     if ( usbFtdi_ ) delete usbFtdi_;
+
+    isEnabled_ = false;
 }
 
 // void

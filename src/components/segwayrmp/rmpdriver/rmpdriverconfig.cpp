@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 
-#include "rmpusbdriverconfig.h"
+#include "rmpdriverconfig.h"
 #include "rmpdefs.h"
 
 using namespace std;
@@ -45,7 +45,7 @@ std::string gainScheduleAsString( int gainSchedule )
         return "error: bad gain schedule";
 }
 
-RmpUsbDriverConfig::RmpUsbDriverConfig()
+RmpDriverConfig::RmpDriverConfig()
 {
     gainSchedule            = 0;
     maxVelocityScale        = 0.75;
@@ -55,7 +55,7 @@ RmpUsbDriverConfig::RmpUsbDriverConfig()
 }
 
 int
-RmpUsbDriverConfig::checkSanity( std::string &warnings, std::string &errors )
+RmpDriverConfig::checkSanity( std::string &warnings, std::string &errors )
 {
     std::stringstream ssWarn, ssErr;
 
@@ -67,9 +67,9 @@ RmpUsbDriverConfig::checkSanity( std::string &warnings, std::string &errors )
 }
 
 std::ostream &
-segwayrmp::operator<<( std::ostream &s, const RmpUsbDriverConfig &c )
+segwayrmp::operator<<( std::ostream &s, const RmpDriverConfig &c )
 {
-    s << "RmpUsbDriver Configuration Parameters:     "                     <<endl
+    s << "RmpDriver Configuration Parameters:     "                     <<endl
       << "\tgainSchedule:              " << gainScheduleAsString(c.gainSchedule) <<endl
       << "\tmaxVelocityScale:          " << c.maxVelocityScale          <<endl
       << "\tmaxTurnrateScale:          " << c.maxTurnrateScale          <<endl
@@ -80,10 +80,10 @@ segwayrmp::operator<<( std::ostream &s, const RmpUsbDriverConfig &c )
 }
 
 void
-segwayrmp::readFromProperties( const orcaice::Context & context, RmpUsbDriverConfig & c )
+segwayrmp::readFromProperties( const orcaice::Context & context, RmpDriverConfig & c )
 {
     Ice::PropertiesPtr prop = context.properties();
-    std::string prefix = context.tag() + ".Config.SegwayRmpUsb.";
+    std::string prefix = context.tag() + ".Config.SegwayRmp.";
 
     std::string gainSchedule = orcaice::getPropertyWithDefault( prop, prefix+"GainSchedule", "normal" );
 
@@ -91,7 +91,7 @@ segwayrmp::readFromProperties( const orcaice::Context & context, RmpUsbDriverCon
 
     if ( c.gainSchedule == -1 )
     {
-        string errorStr = "SegwayRmpUsb driver: unknown gain schedule type '"+gainSchedule+"'. Cannot initialize.";
+        string errorStr = "SegwayRmp driver: unknown gain schedule type '"+gainSchedule+"'. Cannot initialize.";
         context.tracer()->error( errorStr);
         context.tracer()->info( "Valid gain schedule types are {'normal', 'tall', 'heavy'}" );
         throw orcaice::Exception( ERROR_INFO, errorStr );

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_SEGWAY_RMP_USB_DATA_FRAME_H
-#define ORCA2_SEGWAY_RMP_USB_DATA_FRAME_H
+#ifndef ORCA2_SEGWAY_RMP_DATA_FRAME_H
+#define ORCA2_SEGWAY_RMP_DATA_FRAME_H
 
 namespace segwayrmp
 {
@@ -17,10 +17,10 @@ namespace segwayrmp
 class CanPacket;
 
 // this holds all the RMP data it gives us
-class RmpUsbDataFrame
+class RmpDataFrame
 {
 public:
-    RmpUsbDataFrame();
+    RmpDataFrame();
 
     // Adds information from a packet
     void AddPacket(const CanPacket* pkt);

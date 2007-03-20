@@ -8,7 +8,7 @@
  *
  */
 
-#include "exceptions.h"
+#include "usbftdiexceptions.h"
 #include <iostream>
 #include <sstream>
 

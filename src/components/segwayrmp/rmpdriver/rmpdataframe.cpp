@@ -13,7 +13,7 @@
 #include <sstream>
 #include <iomanip>    // for setw
 
-#include "rmpusbdataframe.h"
+#include "rmpdataframe.h"
 
 #include "rmpdefs.h"
 #include "canpacket.h"
@@ -22,14 +22,14 @@ using namespace std;
 using namespace segwayrmp;
 
 // this holds all the RMP data it gives us
-RmpUsbDataFrame::RmpUsbDataFrame()
+RmpDataFrame::RmpDataFrame()
 {
     reset();
 
     kill_flag = false;
 }
 
-std::string RmpUsbDataFrame::toString()
+std::string RmpDataFrame::toString()
 {
     std::ostringstream os;
     statusCheck_ ? os<<setw(15)<<"status 1"<<dec<<setw(10)<<(int)status_word1<<hex<<setw(10)<<status_word1<<"\t\t"<< CuStatus1ToString()<<endl :os<<"status 1   \tDROPPED"<<endl;
@@ -64,7 +64,7 @@ std::string RmpUsbDataFrame::toString()
     return os.str();
 }
 
-std::string RmpUsbDataFrame::CuStatus1ToString()
+std::string RmpDataFrame::CuStatus1ToString()
 {
     std::string s;
     if ( status_word1 & WORD1_SAFETY_SHUTDOWN_1 ) s += std::string(WORD1_SAFETY_SHUTDOWN_1_STRING) + "; ";
@@ -87,7 +87,7 @@ std::string RmpUsbDataFrame::CuStatus1ToString()
     return s;
 }
 
-std::string RmpUsbDataFrame::CuStatus2ToString()
+std::string RmpDataFrame::CuStatus2ToString()
 {
     std::string s;
     if ( status_word2 & WORD2_FOREAFT_PITCH_ANGLE_LIMIT_A ) s += std::string(WORD2_FOREAFT_PITCH_ANGLE_LIMIT_A_STRING) + "; ";
@@ -110,18 +110,18 @@ std::string RmpUsbDataFrame::CuStatus2ToString()
     return s;
 }
 
-void RmpUsbDataFrame::reopen()
+void RmpDataFrame::reopen()
 {
     msgCheckList_[0] = false;
 }
 
-bool RmpUsbDataFrame::isClosed() const
+bool RmpDataFrame::isClosed() const
 {
     // The only thing that matters: did we receive MSG0?
     return msgCheckList_[0];
 }
 
-void RmpUsbDataFrame::reset()
+void RmpDataFrame::reset()
 {
     for ( int i=0; i<8; ++i ) {
         msgCheckList_[i] = false;
@@ -129,7 +129,7 @@ void RmpUsbDataFrame::reset()
     statusCheck_ = false;
 }
 
-bool RmpUsbDataFrame::isComplete() const
+bool RmpDataFrame::isComplete() const
 {
     bool complete = true;
     for ( int i=0; i<8; ++i ) {
@@ -139,9 +139,9 @@ bool RmpUsbDataFrame::isComplete() const
 }
 
 /*
- * Takes a CAN packet from the RMP and parses it into a RmpUsbDataFrame struct.
+ * Takes a CAN packet from the RMP and parses it into a RmpDataFrame struct.
  */
-void RmpUsbDataFrame::AddPacket(const CanPacket* pkt)
+void RmpDataFrame::AddPacket(const CanPacket* pkt)
 {
     switch(pkt->id)
     {

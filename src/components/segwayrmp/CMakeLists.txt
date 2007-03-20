@@ -1,23 +1,24 @@
 IF ( NOT OS_WIN )
 
-OPTION( BUILD_SEGWAYRMP "Try to build SegwayRmp component" ON )
+OPTION( BUILD_SEGWAYRMP "Try to build SegwayRmp component" OFF )
 
 IF ( BUILD_SEGWAYRMP )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
-   
-    OPTIONAL_SUB_LIBRARY(
-        "USB driver for Segway RMP line of platforms"
-        usb
-        OrcaSegwayRmpUsb
-        SEGWAY_RMP_USB_LIBS
-        FTD2XX_FOUND
-        HAVE_USB_DRIVER
-        ftd2xx usb )
 
-    LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
-    
+    ADD_SUBDIRECTORY( rmpdriver )
+
+#    OPTIONAL_SUB_LIBRARY(
+#        "USB driver for Segway RMP line of platforms"
+#        usb
+#        OrcaSegwayRmpUsb
+#        SEGWAY_RMP_USB_LIBS
+#        FTD2XX_FOUND
+#        HAVE_USB_DRIVER
+#        ftd2xx usb )
+
+    LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )    
     OPTIONAL_SUB_LIBRARY(
         "Player client driver for SegwayRmp"
         playerclient

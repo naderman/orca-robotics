@@ -13,37 +13,16 @@
 
 #include <queue>
 #include <ftd2xx.h>
-#include "usbftdi/usbftdi.h"
-#include "canpacket.h"
+#include <usb/usbftdi/usbftdi.h>
+#include <canpacket.h>
 
 namespace segwayrmp
 {
 
 //
-// Exceptions thrown around in segwayrmp.
-//
-class Exception : public std::exception
-{
-public:
-
-    Exception(const char *message)
-        : message_(message) {}
-    Exception(const std::string &message)
-        : message_(message) {}
-
-    virtual ~Exception() throw() {}
-
-    virtual const char* what() const throw() { return message_.c_str(); }
-
-protected:
-
-    std::string  message_;
-};
-
 //
 //
-//
-class RmpUsbIoFtdi
+class RmpUsbIoFtdi : public RmpIo
 {
 public:
 
@@ -53,8 +32,14 @@ public:
         NO_DATA         = 1,
     };
 
-    RmpUsbIoFtdi( int debugLevel=0 );
+    RmpUsbIoFtdi();
     ~RmpUsbIoFtdi();
+
+    // Initiate comms with the RMP.
+    virtual void enable( int debugLevel );
+
+    // Release all resources.
+    virtual void disable();
     
     // Returns OK if copied a packet, NO_DATA if not
     RmpUsbStatus readPacket( CanPacket* pkt );
@@ -65,6 +50,8 @@ private:
 
     // STORAGE
     
+    bool isEnabled_;
+
     // a char buffer to read USB stream into
     std::vector<unsigned char> charBuffer_;
     // have to remember how many char are left in the buffer

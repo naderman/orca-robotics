@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_SEGWAY_RMP_USB_DRIVER_CONFIG_H
-#define ORCA2_SEGWAY_RMP_USB_DRIVER_CONFIG_H
+#ifndef ORCA2_SEGWAY_RMP_DRIVER_CONFIG_H
+#define ORCA2_SEGWAY_RMP_DRIVER_CONFIG_H
 
 #include <string>
 #include <orcaice/context.h>
@@ -21,11 +21,11 @@ namespace segwayrmp
 // Convenience structure to hold all the config parameters.
 // All units are S.I.
 //
-class RmpUsbDriverConfig 
+class RmpDriverConfig 
 {
 public:
 
-    RmpUsbDriverConfig();
+    RmpDriverConfig();
 
     int gainSchedule;
     double maxVelocityScale;
@@ -37,9 +37,9 @@ public:
     int checkSanity( std::string &warnings, std::string &errors );
 };
 
-std::ostream &operator<<( std::ostream & s, const RmpUsbDriverConfig & c );
+std::ostream &operator<<( std::ostream & s, const RmpDriverConfig & c );
 
-void readFromProperties( const orcaice::Context & context, RmpUsbDriverConfig & c );
+void readFromProperties( const orcaice::Context & context, RmpDriverConfig & c );
 
 } // namespace
 
