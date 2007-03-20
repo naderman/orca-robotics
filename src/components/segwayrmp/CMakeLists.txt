@@ -8,6 +8,7 @@ IF ( BUILD_SEGWAYRMP )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
     INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} )
+    LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )    
 
     ADD_SUBDIRECTORY( rmpdriver )
 
@@ -29,7 +30,7 @@ IF ( BUILD_SEGWAYRMP )
       MESSAGE( "USB driver for Segway RMP line of platforms -- cannot be built" )
     ENDIF ( FTD2XX_FOUND )
 
-    LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )    
+    MESSAGE( "PLAYER_LINK_DIRS: ${PLAYER_LINK_DIRS}" )
     OPTIONAL_SUB_LIBRARY(
         "Player client driver for SegwayRmp"
         playerclient

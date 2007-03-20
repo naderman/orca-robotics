@@ -4,6 +4,12 @@ FILE( GLOB SRCS *.cpp )
 ADD_LIBRARY( OrcaSegwayRmpDriver SHARED ${SRCS} )
 INSTALL_TARGETS( /lib OrcaSegwayRmpDriver )
 
+
+#//**??** Duncan sort this out to do a proper conditional addition!
+IF ( DUNCAN_CAN_TEST )
+   ADD_SUBDIRECTORY ( can )
+ENDIF ( DUNCAN_CAN_TEST ) 
+
 IF ( FTD2XX_FOUND )
 
   ADD_SUBDIRECTORY( usb )
@@ -12,4 +18,3 @@ IF ( FTD2XX_FOUND )
 
 ENDIF ( FTD2XX_FOUND )
 
-#ADD_SUBDIRECTORY( peakcan )
