@@ -3,7 +3,6 @@ FILE( GLOB SRCS *.cpp )
 
 ADD_LIBRARY( OrcaSegwayRmpDriver SHARED ${SRCS} )
 INSTALL_TARGETS( /lib OrcaSegwayRmpDriver )
-#TARGET_LINK_LIBRARIES( OrcaSegwayRmpDriver )
 
 IF ( FTD2XX_FOUND )
 
