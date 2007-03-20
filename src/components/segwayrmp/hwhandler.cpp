@@ -17,8 +17,9 @@
 #include "hwhandler.h"
 #include "fakedriver.h"
 // segway rmp drivers
+#include "rmpdriver/rmpdriver.h"
 #ifdef HAVE_USB_DRIVER
-    #include "usb/rmpusbdriver.h"
+    #include "rmpdriver/usb/rmpusbioftdi.h"
 #endif
 #ifdef HAVE_PLAYERCLIENT_DRIVER
     #include "playerclient/playerclientdriver.h"
@@ -93,6 +94,7 @@ HwHandler::HwHandler(
     odometry2dPipe_(odometry2dPipe),
     odometry3dPipe_(odometry3dPipe),
     powerPipe_(powerPipe),
+    rmpIo_(0),
     driver_(0),
     context_(context)
 {
@@ -131,7 +133,8 @@ HwHandler::HwHandler(
     {
 #ifdef HAVE_USB_DRIVER
         context_.tracer()->debug( "loading 'segwayrmpusb' driver",3);
-        driver_ = new RmpUsbDriver( context_ );
+        rmpIo_  = new RmpUsbIoFtdi;
+        driver_ = new RmpDriver( context_, *rmpIo_ );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'usb' because it was not built!" );
 #endif
@@ -168,7 +171,8 @@ HwHandler::HwHandler(
 
 HwHandler::~HwHandler()
 {
-    delete driver_;
+    if ( rmpIo_ )  delete rmpIo_;
+    if ( driver_ ) delete driver_;
 }
 
 void

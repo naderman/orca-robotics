@@ -14,11 +14,12 @@
 #include <IceUtil/IceUtil.h>
 
 #include "rmpusbioftdi.h"
-#include "rmpusbdataframe.h"
-#include "rmpdefs.h"
-#include "canpacket.h"
+#include <rmpdriver/rmpdataframe.h>
+#include <rmpdriver/rmpdefs.h>
+#include <rmpdriver/canpacket.h>
+#include <rmpdriver/usb/usbftdi/usbftdi.h>
 
-// magic numbers
+// USB magic numbers
 #define SEGWAY_USB_VENDOR_ID                    0x0403
 #define SEGWAY_USB_PRODUCT_ID                   0xE729
 #define SEGWAY_USB_VENDOR_PRODUCT_ID            0x0403E729
@@ -34,7 +35,7 @@ using namespace std;
 
 namespace segwayrmp {
 
-RmpUsbIoFtdi::RmpUsbIoFtdi( int debugLevel )
+RmpUsbIoFtdi::RmpUsbIoFtdi()
     : isEnabled_(false),
       charBuffer_(128),
       charBufferBytes_(0),
@@ -47,6 +48,7 @@ RmpUsbIoFtdi::~RmpUsbIoFtdi()
     disable();
 }
 
+void
 RmpUsbIoFtdi::enable( int debugLevel )
 {
     debugLevel_ = debugLevel;
@@ -65,7 +67,7 @@ RmpUsbIoFtdi::enable( int debugLevel )
     {
         stringstream ss;
         ss << "RmpUsbIoFtdi::constructor(): Error: "<<e.what();
-        throw Exception( ss.str() );
+        throw RmpException( ss.str() );
     }
 
     if ( debugLevel_ > 0 )
@@ -74,6 +76,7 @@ RmpUsbIoFtdi::enable( int debugLevel )
     isEnabled_ = true;
 }
 
+void
 RmpUsbIoFtdi::disable()
 {
     if ( debugLevel_ > 0 )
@@ -127,13 +130,13 @@ RmpUsbIoFtdi::disable()
 //     }
 // }
 
-RmpUsbIoFtdi::RmpUsbStatus
+RmpIo::RmpIoStatus
 RmpUsbIoFtdi::readPacket(CanPacket* pkt)
 {
     assert( usbFtdi_ != 0 );
 
     try {
-        RmpUsbStatus status;
+        RmpIo::RmpIoStatus status;
 
         // First try non-blocking (maybe there's a packet there already)
         status = readPacketNonBlocking( pkt );
@@ -147,14 +150,14 @@ RmpUsbIoFtdi::readPacket(CanPacket* pkt)
     {
         stringstream ss;
         ss << "RmpUsbIoFtdi::readPacket(): Error: " << e.what();
-        throw Exception(ss.str());
+        throw RmpException(ss.str());
     }
 }
 
-RmpUsbIoFtdi::RmpUsbStatus
+RmpIo::RmpIoStatus
 RmpUsbIoFtdi::readPacketNonBlocking( CanPacket* pkt )
 {
-    RmpUsbStatus status;
+    RmpIo::RmpIoStatus status;
     
     // if there's already a packet in CAN packet buffer, just return it
     if ( !canBuffer_.empty() )
@@ -184,10 +187,10 @@ RmpUsbIoFtdi::readPacketNonBlocking( CanPacket* pkt )
     return NO_DATA;
 }
 
-RmpUsbIoFtdi::RmpUsbStatus
+RmpIo::RmpIoStatus
 RmpUsbIoFtdi::readPacketBlocking( CanPacket* pkt )
 {
-    RmpUsbStatus status;
+    RmpIo::RmpIoStatus status;
     
     // arbitrary parameter
     int blockCount = 5;
@@ -295,7 +298,7 @@ RmpUsbIoFtdi::writePacket( CanPacket *pkt )
             ss << endl << " --> The Segway is not writing to us.  Looks like it's powered off.";
         }
 
-        throw Exception( ss.str() );
+        throw RmpException( ss.str() );
     }    
 }
 
@@ -360,7 +363,7 @@ RmpUsbIoFtdi::getPacketFromCanBuffer(CanPacket *pkt)
 // - FTDI errors (FT_SetEventNotification)
 // - non-blocking usb2buffer errors (FT_GetQueueStatus, FT_Read )
 // - obscure pthread errors (we assert them)
-RmpUsbIoFtdi::RmpUsbStatus
+RmpIo::RmpIoStatus
 RmpUsbIoFtdi::readFromUsbToBufferBlocking()
 {
     int ret;
@@ -371,7 +374,7 @@ RmpUsbIoFtdi::readFromUsbToBufferBlocking()
     {
         stringstream ss;
         ss << "RmpUsbIoFtdi::readFromUsbToBufferBlocking(): Error: " << e.what();
-        throw Exception( ss.str() );
+        throw RmpException( ss.str() );
     }
     if ( ret == usbftdi::USBFTDI_OK )
     {
@@ -384,7 +387,7 @@ RmpUsbIoFtdi::readFromUsbToBufferBlocking()
     }
     else
     {
-        throw Exception( "RmpUsbIoFtdi::readFromUsbToBufferBlocking(): Unknown return type" );
+        throw RmpException( "RmpUsbIoFtdi::readFromUsbToBufferBlocking(): Unknown return type" );
     }
 }
 
@@ -394,7 +397,7 @@ RmpUsbIoFtdi::readFromUsbToBufferBlocking()
 // - try to read, nothing there
 // possible sources of erros:
 // - FTDI errors (FT_GetQueueStatus, FT_Read )
-RmpUsbIoFtdi::RmpUsbStatus
+RmpIo::RmpIoStatus
 RmpUsbIoFtdi::readFromUsbToBufferNonBlocking()
 {
     try {
@@ -421,7 +424,7 @@ RmpUsbIoFtdi::readFromUsbToBufferNonBlocking()
     {
         stringstream ss;
         ss << "RmpUsbIoFtdi::readFromUsbToBufferNonBlocking(): Error: " << e.what();
-        throw Exception(ss.str());
+        throw RmpException(ss.str());
     }
 }
 

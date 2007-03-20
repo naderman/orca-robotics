@@ -13,8 +13,12 @@
 
 #include <queue>
 #include <ftd2xx.h>
-#include <usb/usbftdi/usbftdi.h>
-#include <canpacket.h>
+#include <rmpdriver/canpacket.h>
+#include <rmpdriver/rmpio.h>
+
+namespace usbftdi {
+    class UsbFtdi;
+}
 
 namespace segwayrmp
 {
@@ -26,12 +30,6 @@ class RmpUsbIoFtdi : public RmpIo
 {
 public:
 
-    enum RmpUsbStatus
-    {
-        OK              = 0,
-        NO_DATA         = 1,
-    };
-
     RmpUsbIoFtdi();
     ~RmpUsbIoFtdi();
 
@@ -42,7 +40,7 @@ public:
     virtual void disable();
     
     // Returns OK if copied a packet, NO_DATA if not
-    RmpUsbStatus readPacket( CanPacket* pkt );
+    RmpIo::RmpIoStatus readPacket( CanPacket* pkt );
     
     void writePacket( CanPacket* pkt );
     
@@ -67,13 +65,13 @@ private:
     // Don't call this if the buffer's empty.
     void getPacketFromCanBuffer( CanPacket* pkt );
     
-    RmpUsbStatus readPacketNonBlocking( CanPacket* pkt );
-    RmpUsbStatus readPacketBlocking( CanPacket* pkt );
+    RmpIo::RmpIoStatus readPacketNonBlocking( CanPacket* pkt );
+    RmpIo::RmpIoStatus readPacketBlocking( CanPacket* pkt );
     // Not used but keep for reference
     //RmpUsbIoStatus readPacketPolling( CanPacket* pkt );
     
-    RmpUsbStatus readFromUsbToBufferNonBlocking();
-    RmpUsbStatus readFromUsbToBufferBlocking();
+    RmpIo::RmpIoStatus readFromUsbToBufferNonBlocking();
+    RmpIo::RmpIoStatus readFromUsbToBufferBlocking();
     void readFromBufferToQueue();
     
     int parseUsbToCan( CanPacket *pkt, unsigned char *bytes );

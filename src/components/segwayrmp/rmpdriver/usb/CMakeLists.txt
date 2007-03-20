@@ -1,6 +1,4 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
-
-INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/components/segwayrmp/rmpdriver )
+INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/components/segwayrmp )
 
 # Glob all source files
 FILE( GLOB SRCS *.cpp )

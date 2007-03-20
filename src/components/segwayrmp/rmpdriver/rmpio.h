@@ -43,13 +43,13 @@ public:
         NO_DATA         = 1,
     };
 
-    virtual ~RmpIo() {};
+    virtual ~RmpIo() {}
 
     // Initiate comms with the RMP.
-    virtual void enable( int debugLevel );
+    virtual void enable( int debugLevel )=0;
 
     // Release all resources.
-    virtual void disable();
+    virtual void disable()=0;
     
     // Returns OK if copied a packet, NO_DATA if not
     virtual RmpIoStatus readPacket( CanPacket* pkt )=0;

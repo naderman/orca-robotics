@@ -27,6 +27,8 @@
 namespace segwayrmp
 {
 
+class RmpIo;
+
 // Note: this thing self-destructs when run() returns.
 class HwHandler : public orcaice::Thread, public orcaice::NotifyHandler<orca::VelocityControl2dData>
 {
@@ -59,6 +61,7 @@ private:
     orcaice::Proxy<orca::PowerData>         & powerPipe_;
 
     // generic interface to the hardware
+    RmpIo*    rmpIo_;
     HwDriver* driver_;
 
     struct Config

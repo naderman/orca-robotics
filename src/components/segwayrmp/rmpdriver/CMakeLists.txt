@@ -5,13 +5,12 @@ ADD_LIBRARY( OrcaSegwayRmpDriver SHARED ${SRCS} )
 INSTALL_TARGETS( /lib OrcaSegwayRmpDriver )
 #TARGET_LINK_LIBRARIES( OrcaSegwayRmpDriver )
 
-OPTIONAL_SUB_LIBRARY(
-  "USB driver for Segway RMP line of platforms"
-  usb
-  OrcaSegwayRmpUsb
-  SEGWAY_RMP_USB_LIBS
-  FTD2XX_FOUND
-  HAVE_USB_DRIVER
-  ftd2xx usb )
+IF ( FTD2XX_FOUND )
+
+  ADD_SUBDIRECTORY( usb )
+  LINK_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR}/usb )
+  TARGET_LINK_LIBRARIES( OrcaSegwayRmpDriver OrcaSegwayRmpUsb ftd2xx usb )
+
+ENDIF ( FTD2XX_FOUND )
 
 #ADD_SUBDIRECTORY( peakcan )
