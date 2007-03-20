@@ -11,10 +11,6 @@ IF ( BUILD_SEGWAYRMP )
 
     ADD_SUBDIRECTORY( rmpdriver )
 
-    IF ( NOT HAVE_USB_DRIVER AND NOT HAVE_PLAYERCLIENT_DRIVER )
-        MESSAGE( STATUS "    WARNING: only default 'fake' driver can be built")
-    ENDIF ( NOT HAVE_USB_DRIVER AND NOT HAVE_PLAYERCLIENT_DRIVER )
-
     # build common sources into a convenience library
     BUILD_COMPONENT_SOURCES( SegwayRmpSources )
 
@@ -28,6 +24,7 @@ IF ( BUILD_SEGWAYRMP )
       MESSAGE( "USB driver for Segway RMP line of platforms -- can be built" )
       TARGET_LINK_LIBRARIES( segwayrmp OrcaSegwayRmpUsb )
       ADD_DEFINITIONS( -DHAVE_USB_DRIVER )
+      SET( HAVE_USB_DRIVER TRUE )
     ELSE ( FTD2XX_FOUND )
       MESSAGE( "USB driver for Segway RMP line of platforms -- cannot be built" )
     ENDIF ( FTD2XX_FOUND )
@@ -42,6 +39,10 @@ IF ( BUILD_SEGWAYRMP )
         HAVE_PLAYERCLIENT_DRIVER
         ${PLAYER_LIBS} OrcaPlayer
     )
+
+    IF ( NOT HAVE_USB_DRIVER AND NOT HAVE_PLAYERCLIENT_DRIVER )
+        MESSAGE( STATUS "    WARNING: only default 'fake' driver can be built")
+    ENDIF ( NOT HAVE_USB_DRIVER AND NOT HAVE_PLAYERCLIENT_DRIVER )
     
     SET( DEP_LIBS SegwayRmpSources 
       OrcaSegwayRmpDriver
