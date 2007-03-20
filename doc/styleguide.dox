@@ -47,7 +47,7 @@ CMyClass for a class or SMyStructure for a structure. It's unnecessary
 with type-safe languages and is very confusing if the type actually
 changes and the name doesn't.
 
-@par Varables
+@par Variables
 
 Variable names begin with low-case letter and each next word is
 capitalized.
@@ -187,7 +187,7 @@ In general, it's safest and most polite to refer to classes canonically in heade
 ...
 class MyClass
 {
-    std::vector&ltstd::string&gt names_; 
+    std::vector<std::string> names_; 
 }
 ...
 @endverbatim
@@ -200,7 +200,7 @@ using std;
 
 class MyClass
 {
-    vector&ltstring&gt names_; 
+    vector<string> names_; 
 }
 ...
 @endverbatim
@@ -248,13 +248,13 @@ myclass.h
 myclass.c
 @endverbatim
 
-@section sec Declarations
+@section declarations Declarations
 @par  Header Files
 
 As much as possible, keep \#includes out of header files as
 this can create large chains of dependencies that increase
 compile times. Ideally a header file for a class includes only
-the baseclass.hpp.
+the @c baseclass.h.
 
 Parameter lists in header files should always include the
 parameters' names:
@@ -311,7 +311,7 @@ char  *x;        // add comment
 char **a, *x;
 @endverbatim
 
-@section sec Documentation
+@section documentation Documentation
 
 @par Comments
 
@@ -342,7 +342,7 @@ directly from code.  For simple usage:
 
 @verbatim
 //! This comment will apear in the doxygen documentation
-/*! So will this one \*/
+/*! So will this one */
 function doSomething();
 
 // This one will only appear in the code
@@ -352,7 +352,7 @@ function doSomethingElse();
 
 See <a href="http://www.doxygen.org">the doxygen documentation</a> for more details.
 
-@section sec Cosmetic
+@section cosmetics Cosmetics
 
 @par Bracketting
 
