@@ -30,7 +30,6 @@ IF ( BUILD_SEGWAYRMP )
       MESSAGE( "USB driver for Segway RMP line of platforms -- cannot be built" )
     ENDIF ( FTD2XX_FOUND )
 
-    MESSAGE( "PLAYER_LINK_DIRS: ${PLAYER_LINK_DIRS}" )
     OPTIONAL_SUB_LIBRARY(
         "Player client driver for SegwayRmp"
         playerclient
