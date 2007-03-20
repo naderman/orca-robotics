@@ -23,7 +23,8 @@ INCLUDE (${ORCA_CMAKE_DIR}/FindPlayer2.cmake)
 # Look for libftd2xx.so (a high level USB library)
 INCLUDE (${ORCA_CMAKE_DIR}/FindFtd2xx.cmake)
 
-CHECK_INCLUDE_FILE_CXX( canlib.h CANLIB_FOUND )
+# Look for libpcan.so (the Peak CAN library)
+INCLUDE (${ORCA_CMAKE_DIR}/FindPeakCan.cmake)
 
 # Check for Qt
 INCLUDE (${CMAKE_ROOT}/Modules/FindQt4.cmake)
