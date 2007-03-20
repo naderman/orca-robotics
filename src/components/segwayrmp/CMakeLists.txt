@@ -1,4 +1,4 @@
-IF ( NOT OS_WIN )
+IF ( OS_LINUX )
 
 OPTION( BUILD_SEGWAYRMP "Try to build SegwayRmp component" ON )
 
@@ -57,4 +57,4 @@ IF ( BUILD_SEGWAYRMP )
     GENERATE_CONFIG_FILE( segwayrmp.def )
 
 ENDIF ( BUILD_SEGWAYRMP )
-ENDIF ( NOT OS_WIN )
+ENDIF ( OS_LINUX )
