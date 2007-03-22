@@ -155,6 +155,8 @@ MainLoop::initInterfaces()
 void
 MainLoop::connectToController()
 {
+    //TODO:  replace with generic base class IController() similarly to subscribeForObservations()
+    
     while ( isActive() )
     {
         try 
@@ -339,6 +341,7 @@ MainLoop::setup()
     
     if ( !testMode_ )
     {
+        //TODO:  controller_->connectToController()
         connectToController();
     }
     else
@@ -386,6 +389,7 @@ MainLoop::setup()
         subscribeForOdometry();
         subscribeForLocalisation();
         subscribeForObservations();
+        // TODO: controllerState_->subscribeToControllerState();
 
         // tell the driver the sensor description
         driver_->setSensorModelDescription( sensorModel_->description() );
@@ -463,7 +467,6 @@ MainLoop::run()
                 getStopCommand( velocityCmd );
                 sendCommandToPlatform( velocityCmd );
                 sensorModel_->subscribe();
-                delete sensorData_;
                 continue;
             }
             
@@ -490,7 +493,6 @@ MainLoop::run()
                 sendCommandToPlatform( velocityCmd );
                 subscribeForOdometry();
                 subscribeForLocalisation();
-                delete sensorData_;
                 continue;
             }
 
@@ -550,7 +552,6 @@ MainLoop::run()
             else
             {
                 context_.tracer()->debug( "Doing nothing because disabled" );
-                delete sensorData_;
                 continue;
             }
 
