@@ -34,7 +34,7 @@ struct DriveBicycleData
 };
 
 /*!
-    Controls a mobile robot with differential steering.
+    Controls a mobile robot with bicycle steering.
 */
 interface DriveBicycle
 {
