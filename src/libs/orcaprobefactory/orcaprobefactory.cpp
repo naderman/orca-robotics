@@ -14,6 +14,7 @@
 #include "binaryswitchprobe.h"
 #include "cameraprobe.h"
 #include "cpuprobe.h"
+#include "drivebicycleprobe.h"
 #include "homeprobe.h"
 #include "laserscanner2dprobe.h"
 #include "localise2dprobe.h"
@@ -32,6 +33,7 @@ OrcaProbeFactory::OrcaProbeFactory()
     addSupportedType("::orca::BinarySwitch");
     addSupportedType("::orca::Camera");
     addSupportedType("::orca::Cpu");
+    addSupportedType("::orca::DriveBicycle");
     addSupportedType("::orca::Gps");
     addSupportedType("::orca::Home");
     addSupportedType("::orca::LaserScanner2d");
@@ -62,6 +64,9 @@ OrcaProbeFactory::create( const std::string           & interfaceType,
     }
     else if ( interfaceType == "::orca::Cpu" ) {
         probe = new CpuProbe( name, display, context );
+    }
+    else if ( interfaceType == "::orca::DriveBicycle" ) {
+    probe = new DriveBicycleProbe( name, display, context );
     }
     else if ( interfaceType == "::orca::Gps" ) {
         probe = new GpsProbe( name, display, context );
