@@ -30,23 +30,33 @@ ComponentThread::~ComponentThread()
 void
 ComponentThread::run()
 {
-    while ( isActive() )
+    try {
+        while ( isActive() )
+        {
+            // AlexB: Hmmm, this seems to result in problems when Component calls stopAndJoin()...
+//             if ( registeredHome_ || !(interfaceFlag_ & HomeInterface) &&
+//                  !(interfaceFlag_ & StatusInterface) )
+//             {
+//                 // Nothing left for us to do!
+//                 context_.tracer()->debug( "ComponentThread: Nothing left to do, so quitting." );
+//                 return;
+//             }
+
+            if ( !registeredHome_ && (interfaceFlag_ & HomeInterface) )
+            {
+                registeredHome_ = tryRegisterHome();
+            }
+            if ( interfaceFlag_ & StatusInterface )
+                status_.process();
+
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+        }
+    }
+    catch ( std::exception &e )
     {
-        if ( registeredHome_ || !(interfaceFlag_ & HomeInterface) &&
-             !(interfaceFlag_ & StatusInterface) )
-        {
-            // Nothing left for us to do!
-            return;
-        }
-
-        if ( !registeredHome_ && (interfaceFlag_ & HomeInterface) )
-        {
-            registeredHome_ = tryRegisterHome();
-        }
-        if ( interfaceFlag_ & StatusInterface )
-            status_.process();
-
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+        stringstream ss;
+        ss << "ComponentThread: caught unexpected exception: " << e.what() <<".  This shouldn't happen.";
+        context_.tracer()->error( ss.str() );
     }
 }
 
