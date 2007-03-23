@@ -1,5 +1,5 @@
 /*
- * Orca Project: Components for robotics 
+ *Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -30,7 +30,7 @@ CanPacket::CanPacket()
     memset(msg,0,sizeof(msg));
 
     flags = canMSG_STD;
-    dlc = 8;
+    dlc = 8;                 //Data Length Code
 }
 
 uint16_t CanPacket::GetSlot(int s)  const

@@ -26,6 +26,10 @@ namespace segwayrmp
 class CanPacket
 {
 public:
+    enum{ 
+      CAN_DATA_SIZE=8
+    }canInfo;
+  
     CanPacket();
     
     uint16_t GetSlot(int s) const;
@@ -35,7 +39,7 @@ public:
     void PutByte(const int byte, const uint16_t val);
     
     long id;
-    uint8_t msg[8];
+    uint8_t msg[CAN_DATA_SIZE];
     uint32_t dlc;
     uint32_t flags;
 

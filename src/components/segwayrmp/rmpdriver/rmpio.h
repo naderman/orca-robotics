@@ -52,8 +52,7 @@ public:
     virtual void disable()=0;
     
     // Returns OK if copied a packet, NO_DATA if not
-    virtual RmpIoStatus readPacket( CanPacket* pkt )=0;
-    
+    virtual RmpIoStatus readPacket( CanPacket* pkt )=0;    
     virtual void writePacket( CanPacket* pkt )=0;
 
 private: 

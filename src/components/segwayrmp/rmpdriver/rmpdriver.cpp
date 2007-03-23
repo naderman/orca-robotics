@@ -324,6 +324,9 @@ RmpDriver::readFrame()
     throw RmpException( "RmpDriver::readFrame(): either processed too many packets or got too many timeouts without getting a complete frame" );
 }
 
+
+//**??** djlm... Do we know anything about changes in wheel diameters here?
+//**??** djlm what happens if the segway integrated values are reset or rollover?
 void
 RmpDriver::integrateMotion()
 {

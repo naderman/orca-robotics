@@ -5,7 +5,11 @@ ADD_LIBRARY( OrcaSegwayRmpDriver SHARED ${SRCS} )
 INSTALL_TARGETS( /lib OrcaSegwayRmpDriver )
 
 IF ( PEAKCAN_FOUND )
-   ADD_SUBDIRECTORY ( can )
+
+  ADD_SUBDIRECTORY ( can )
+  LINK_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR}/can )
+  TARGET_LINK_LIBRARIES( OrcaSegwayRmpDriver OrcaSegwayRmpCan pcan )
+
 ENDIF ( PEAKCAN_FOUND ) 
 
 IF ( FTD2XX_FOUND )
