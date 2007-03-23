@@ -88,18 +88,12 @@ LocalStatus::setSubsystemStatus( const std::string& subsystem,
     subsystems_[subsystem].type = type;
     subsystems_[subsystem].message = message;
     subsystems_[subsystem].lastHeartbeatTime = IceUtil::Time::now();
-
-    cout<<"TRACE(localstatus.cpp): heard from subsystem: " << subsystem << endl;
 }
 
 void 
 LocalStatus::process()
 {
     IceUtil::Mutex::Lock lock(mutex_);
-
-    cout<<"TRACE(localstatus.cpp): process()" << endl;
-    cout<<"TRACE(localstatus.cpp): process()" << endl;
-    cout<<"TRACE(localstatus.cpp): process()" << endl;
 
     IceUtil::Time now = IceUtil::Time::now();
     std::map<std::string,SubsystemStatus>::iterator it;
@@ -126,7 +120,6 @@ LocalStatus::process()
 
     if ( statusI_ != NULL )
     {
-        cout<<"TRACE(localstatus.cpp): publishing..." << endl;
         statusI_->localSetData( subsystems_ );
         lastPublishTime_ = now;
     }
