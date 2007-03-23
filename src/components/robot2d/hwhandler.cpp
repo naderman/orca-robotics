@@ -127,7 +127,7 @@ HwHandler::run()
     // Enable driver
     //
     while ( isActive() && driver_->enable() ) {
-        context_.tracer()->warning("failed to enable the driver; will try again in 2 seconds.");
+        context_.tracer()->warning("HwHandler: failed to enable the driver; will try again in 2 seconds.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 

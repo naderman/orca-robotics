@@ -22,11 +22,19 @@ module orca
     @{
 */
 
+//! Possible subsystem status values
 enum SubsystemStatusType
 {
+    //! Subsystem is initialising -- it's not exactly OK yet, but there's also no fault yet.
+    SubsystemStatusInitialising,
+    //! Subsystem is OK
     SubsystemStatusOk,
+    //! Subsystem has encountered an abnormal but non-fault condition
     SubsystemStatusWarning,
-    SubsystemStatusFault
+    //! Subsystem has declared a fault
+    SubsystemStatusFault,
+    //! Subsystem has not been heard from for an abnormally long time
+    SubsystemStatusStalled
 };
 
 //! Status for a single subsystem of this component

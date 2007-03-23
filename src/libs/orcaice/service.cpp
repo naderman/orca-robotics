@@ -220,6 +220,7 @@ Service::stop()
     if ( component_ )
     {
         initTracerPrint( component_->tag()+": Stopping service..." );
+        component_->finalise();
         component_->stop();
         initTracerPrint( component_->tag()+": Component stopped" );
     }

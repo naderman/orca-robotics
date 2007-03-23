@@ -32,8 +32,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - RegistryView
     - fix stale display of components
 - libOrcaIce
-    - resolve issue with direct connections withour the registry
+    - resolve issue with direct connections without the registry
     - Topic Tracer to attempt reconnections
+    - Orca.Tracer/Status.RequireIceStorm: does this still make sense?
 
 @section orca_doc_history_head Changes in CVS since Last Release
 
@@ -70,6 +71,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Has functions to subscribe just for that componnent, or to all
     info/warn/errors on a platform.  The orcaice::Tracer implementation
     is updated accordingly (alex b)
+- Status
+  - small changes to improve system monitoring.  
+    OrcaIce has been updated accordingly. (alex b)
 
 @par Updated components
 
@@ -97,6 +101,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - OrcaIce
     - fixed bug with Tracer not calculating total verbosity (alex m)
+    - added ComponentThread to handle transient failures to register Home interface
+      and manage Status (alex b)
 - OrcaNavUtil (Tobi)
     - added MGA/latitude/longitude functions
 - OrcaLogFactory (Tobi)

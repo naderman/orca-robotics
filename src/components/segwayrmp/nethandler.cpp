@@ -37,8 +37,8 @@ NetHandler::NetHandler(
     descr_(descr),
     context_(context)
 {
-    context_.status()->setHeartbeatInterval( "network", 100.0 );
-    context_.status()->ok( "network", "initializing" );
+    context_.status()->setMaxHeartbeatInterval( "network", 100.0 );
+    context_.status()->initialising( "network" );
 }
 
 NetHandler::~NetHandler()
@@ -176,7 +176,7 @@ NetHandler::run()
             prefix+"PowerPublishInterval", 20.0 );
 
     const int odometryReadTimeout = 500; // [ms]
-    context_.status()->setHeartbeatInterval( "network", 2.0*odometryReadTimeout );
+    context_.status()->setMaxHeartbeatInterval( "network", 2.0*odometryReadTimeout );
 
     //
     // Main loop

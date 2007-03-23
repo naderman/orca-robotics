@@ -52,8 +52,8 @@ namespace orcaice
 //! - @c  Orca.Tracer.RequireIceStorm (bool)
 //!     - orcaice::Component sets up a tracer and tries to connect to an
 //!       IceStorm server on the same host in order to publish component's
-//!       status messages. This parameter determines what happens if no server
-//!       is found. If set to 0, the startup continues with status messages not
+//!       trace messages. This parameter determines what happens if no server
+//!       is found. If set to 0, the startup continues with trace messages not
 //!       published remotely. If set to 1, the application exits.
 //!     - Default: 0
 //! 

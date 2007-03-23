@@ -39,6 +39,10 @@ namespace orcaifaceimpl {
         try {
             consumerPrx->setData( data );
         }
+        catch ( Ice::CommunicatorDestroyedException &e )
+        {
+            // If we see this, we're obviously shutting down.  Don't bitch about anything.
+        }
         catch ( Ice::Exception &e )
         {
             // This could happen if IceStorm dies.

@@ -161,13 +161,17 @@ Component::start()
     // EXTERNAL PROVIDED INTERFACE
     //
 
-    laserInterface_ = new orcaifaceimpl::LaserScanner2dI( descr, "LaserScanner2d", context() );
+    orcaifaceimpl::LaserScanner2dI *laserI = new orcaifaceimpl::LaserScanner2dI( descr,
+                                                                                 "LaserScanner2d",
+                                                                                 context() );
+    // laserInterface_ is a smart pointer, and will look after cleanup.
+    laserInterface_ = laserI;
 
     //
     // MAIN DRIVER LOOP
     //
 
-    mainLoop_ = new MainLoop( *laserInterface_,
+    mainLoop_ = new MainLoop( *laserI,
                                hwDriver_,
                                compensateRoll,
                                context() );
@@ -180,6 +184,7 @@ Component::stop()
 {
     tracer()->debug("stopping component...",2);
     orcaice::Thread::stopAndJoin( mainLoop_ );
+    tracer()->debug("component stopped.",2);
 }
 
 } // namespace

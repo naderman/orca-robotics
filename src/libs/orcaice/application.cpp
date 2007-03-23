@@ -194,6 +194,7 @@ Application::run( int argc, char* argv[] )
     communicator()->waitForShutdown();
     
     initTracerPrint( component_.tag()+": Communicator is destroyed. Stopping component" );
+    component_.finalise();
     component_.stop();
     initTracerPrint( component_.tag()+": Component stopped" );
 

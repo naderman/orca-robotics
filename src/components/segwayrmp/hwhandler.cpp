@@ -98,8 +98,8 @@ HwHandler::HwHandler(
     driver_(0),
     context_(context)
 {
-    context_.status()->setHeartbeatInterval( "hardware", 10.0 );
-    context_.status()->ok( "hardware", "initializing" );
+    context_.status()->setMaxHeartbeatInterval( "hardware", 10.0 );
+    context_.status()->initialising( "hardware" );
 
     // we'll handle incoming messages
     commandPipe.setNotifyHandler( this );
@@ -194,6 +194,8 @@ HwHandler::enableDriver()
 void
 HwHandler::run()
 {
+    IceUtil::Time startTime = IceUtil::Time::now();
+    
     std::string driverStatus = "";
     std::string currDriverStatus = "";
 
@@ -209,7 +211,7 @@ HwHandler::run()
     powerData.batteries[2].name = "ui";
 
     double heartbeatInterval = 2.0;
-    context_.status()->setHeartbeatInterval( "hardware", 2.0*heartbeatInterval );
+    context_.status()->setMaxHeartbeatInterval( "hardware", 2.0*heartbeatInterval );
 
     //
     // Main loop
@@ -340,7 +342,7 @@ HwHandler::run()
         // get stats
         HwDriver::SegwayRmpStats stats;
         driver_->get( stats );
-        file << context_.status()->startTime().toDateTime() << " " << stats.distanceTravelled << endl;
+        file << startTime.toDateTime() << " " << stats.distanceTravelled << endl;
         context_.tracer()->info( "Wrote stats to file " + statsFilename );
     }
 

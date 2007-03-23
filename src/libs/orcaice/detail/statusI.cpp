@@ -13,47 +13,35 @@
 
 #include "statusI.h"
 #include "syslogger.h"
+#include "../status.h"
 
 using namespace std;
 
 using namespace orcaice::detail;
 
-
-void 
-StatusI::convert( const LocalStatus::SubsystemsStatus& internal, orca::SubsystemsStatus& network )
+StatusI::StatusI( const orcaice::Context & context )
+    : topic_(0),
+      publisher_(0),
+      startTime_(IceUtil::Time::now()),
+      context_(context)
 {
-    IceUtil::Time t = IceUtil::Time::now();
-    IceUtil::Time dt;
-    
-    for ( LocalStatus::SubsystemsStatus::const_iterator it=internal.begin(); it!=internal.end(); ++it ) 
-    {
-        switch ( it->second.type ) {
-        case Status::Ok :
-            network[it->first].type = orca::SubsystemStatusOk;
-            break;
-        case Status::Warning :
-            network[it->first].type = orca::SubsystemStatusWarning;
-            break;
-        case Status::Fault :
-            network[it->first].type = orca::SubsystemStatusFault;
-            break;
-        }
-        network[it->first].message = it->second.message;
-        dt = t - it->second.lastHeartbeat;
-        network[it->first].sinceHeartbeat = dt.toSecondsDouble() / it->second.maxHeartbeatInterval;
-    }
-}
+    IceUtil::Mutex::Lock lock(mutex_);
 
-StatusI::StatusI( const orcaice::Context & context ) : 
-    LocalStatus(context),
-    topic_(0),
-    publisher_(0)
-{        
-    // do we need IceStorm topic?
-    bool needIceStorm = false;
-    if ( needIceStorm ) {
-        connectToIceStorm();
-    }
+    orca::FQTopicName fqTName = orcaice::toStatusTopic( context_.name() );
+    topicName_ = orcaice::toString( fqTName );
+
+        // get properties for our component
+    Ice::PropertiesPtr props = context_.properties();
+
+    // are we required to connect to status topic? (there's always default value for this property)
+    isStatusTopicRequired_ = props->getPropertyAsInt( "Orca.Tracer.RequireIceStorm" );
+
+    connectToIceStorm();
+
+    // init statusData
+    statusData_.timeStamp = orcaice::getNow();
+    statusData_.name = context_.name();
+    statusData_.timeUp  = 0;
 }
 
 StatusI::~StatusI()
@@ -61,15 +49,65 @@ StatusI::~StatusI()
 }
 
 void
-StatusI::icestormConnectFailed( const orca::FQTopicName &fqTName,
-                                      orca::StatusConsumerPrx &statusPublisher,
-                                      bool isStatusTopicRequired )
+StatusI::setStatusData( const std::map<std::string,LocalStatus::SubsystemStatus> &subsystemStatus )
+{
+    orcaice::setToNow( statusData_.timeStamp );
+
+    statusData_.name = context_.name();
+
+    IceUtil::Time timeUp = IceUtil::Time::now() - startTime_;
+    statusData_.timeUp = timeUp.toSeconds();
+
+    convert( subsystemStatus, statusData_.subsystems );
+}
+
+void 
+StatusI::localSetData( const std::map<std::string,LocalStatus::SubsystemStatus> &subsystemStatus )
+{
+    IceUtil::Mutex::Lock lock(mutex_);
+
+    setStatusData( subsystemStatus );
+    sendToIceStorm( statusData_ );
+}
+
+void
+StatusI::sendToIceStorm( const orca::StatusData &statusData )
+{
+    // send data
+    try
+    {
+        publisher_->setData( statusData );
+    }
+    catch ( const Ice::CommunicatorDestroyedException & ) // we are not using the exception
+    {
+        // it's ok, this is what happens on shutdown
+    }
+    catch ( const Ice::Exception &e )
+    {
+        cout<<orcaice::toString(context_.name())<<": status: Caught exception while sending status to topic: "<<e<<endl;
+
+        // If IceStorm just re-started for some reason, we want to try to re-connect
+        connectToIceStorm();
+    }
+    catch ( ... )
+    {
+        cout<<orcaice::toString(context_.name())<<": status: Caught unknown while sending status to topic."<<endl;
+
+        // If IceStorm just re-started for some reason, we want to try to re-connect
+        connectToIceStorm();
+    }
+}
+
+void
+StatusI::icestormConnectFailed( const std::string &topicName,
+                                orca::StatusConsumerPrx &statusPublisher,
+                                bool isStatusTopicRequired )
 {
     if ( isStatusTopicRequired ) 
     {
         std::string s = "Failed to connect to an IceStorm status topic '"+
-            orcaice::toString( fqTName )+"'\n" +
-            "\tYou may allow to proceed by setting Orca.Tracer.RequireIceStorm=0.";
+            topicName+"'\n" +
+            "\tYou may allow to proceed by setting Orca.Status.RequireIceStorm=0.";
         initTracerError( s );
         // this should kill the app
         exit(1);
@@ -79,7 +117,7 @@ StatusI::icestormConnectFailed( const orca::FQTopicName &fqTName,
         statusPublisher = 0;
         std::string s = "Failed to connect to an IceStorm status topic\n";
         s += "\tAll trace messages will be local.\n";
-        s += "\tYou may enforce connection by setting Orca.Tracer.RequireIceStorm=1.";
+        s += "\tYou may enforce connection by setting Orca.Status.RequireIceStorm=1.";
         initTracerWarning( s );
     }
 }
@@ -90,40 +128,31 @@ StatusI::connectToIceStorm()
     topic_     = 0;
     publisher_ = 0;
 
-    // get properties for our component
-    Ice::PropertiesPtr props = context_.properties();
-
-    // are we required to connect to status topic? (there's always default value for this property)
-    bool isStatusTopicRequired = props->getPropertyAsInt( "Orca.Tracer.RequireIceStorm" );
-
-    orca::FQTopicName fqTName = orcaice::toStatusTopic( context_.name() );
-    initTracerPrint( "Connecting to status topic "+orcaice::toString( fqTName ));
-
     try
     {
         topic_ = orcaice::connectToTopicWithString<orca::StatusConsumerPrx>(
-            context_, publisher_, orcaice::toString( fqTName ) );
+            context_, publisher_, topicName_ );
     }
     catch ( const orcaice::Exception & e )
     {
         initTracerError( std::string("Caught exception while connecting to IceStorm: ")+e.what() );
-        icestormConnectFailed( fqTName, publisher_, isStatusTopicRequired );
+        icestormConnectFailed( topicName_, publisher_, isStatusTopicRequired_ );
     } // catch
     catch ( Ice::Exception &e )
     {
         std::stringstream s;
         s << "Caught exception while connecting to IceStorm: " << e;
         initTracerError( s.str() );
-        icestormConnectFailed( fqTName, publisher_, isStatusTopicRequired );
+        icestormConnectFailed( topicName_, publisher_, isStatusTopicRequired_ );
     }
     catch ( ... )
     {
         initTracerError( "Caught unknown exception while connecting to IceStorm." );
-        icestormConnectFailed( fqTName, publisher_, isStatusTopicRequired );
+        icestormConnectFailed( topicName_, publisher_, isStatusTopicRequired_ );
     }
 
     if ( publisher_ ) {
-        initTracerPrint( "Tracer connected to "+orcaice::toString(fqTName) );
+        initTracerPrint( "Status connected to "+topicName_ );
     }
 
     return publisher_ != 0;
@@ -132,21 +161,13 @@ StatusI::connectToIceStorm()
 orca::StatusData
 StatusI::getData(const ::Ice::Current& ) const
 {
-    //std::cout << "Sending data back" << std::endl;
-
     IceUtil::Mutex::Lock lock(mutex_);
 
-    orca::StatusData status;
-    orcaice::setToNow( status.timeStamp );
-
-    status.name = context_.name();
-
+    // Just update the timeUp
     IceUtil::Time timeUp = IceUtil::Time::now() - startTime_;
-    status.timeUp = timeUp.toSeconds();
-
-    convert( subsystems_, status.subsystems );
+    statusData_.timeUp = timeUp.toSeconds();
     
-    return status;
+    return statusData_;
 }
 
 void
@@ -173,17 +194,38 @@ StatusI::unsubscribe(const ::orca::StatusConsumerPrx& subscriber, const ::Ice::C
     topic_->unsubscribe( subscriber );
 }
 
-// void 
-// StatusI::heartbeat( const std::string& subsystem )
-// {
-// }
-//     
-// void 
-// StatusI::status( const std::string& subsystem, SubsystemStatusType type, const std::string& message )
-// {
-// }
-// 
-// IceUtil::Time 
-// StatusI::startTime() const
-// {
-// }
+
+
+void StatusI::convert( const std::map<std::string,LocalStatus::SubsystemStatus> &internal,
+                       orca::SubsystemsStatus &network ) const
+{
+    IceUtil::Time t = IceUtil::Time::now();
+    IceUtil::Time dt;
+
+    std::map<std::string,LocalStatus::SubsystemStatus>::const_iterator it;
+    
+    for ( it=internal.begin(); it!=internal.end(); ++it ) 
+    {
+        switch ( it->second.type ) {
+        case orcaice::Status::Initialising :
+            network[it->first].type = orca::SubsystemStatusInitialising;
+            break;
+        case orcaice::Status::Ok :
+            network[it->first].type = orca::SubsystemStatusOk;
+            break;
+        case orcaice::Status::Warning :
+            network[it->first].type = orca::SubsystemStatusWarning;
+            break;
+        case orcaice::Status::Fault :
+            network[it->first].type = orca::SubsystemStatusFault;
+            break;
+        case orcaice::Status::Stalled :
+            network[it->first].type = orca::SubsystemStatusStalled;
+            break;
+        }
+        network[it->first].message = it->second.message;
+        dt = t - it->second.lastHeartbeatTime;
+        network[it->first].sinceHeartbeat = dt.toSecondsDouble() / it->second.maxHeartbeatInterval;
+    }
+}
+

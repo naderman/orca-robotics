@@ -1081,6 +1081,9 @@ toString( const orca::StatusData& obj )
     for ( orca::SubsystemsStatus::const_iterator it=obj.subsystems.begin(); it!=obj.subsystems.end(); ++it ) 
     {
         switch ( it->second.type ) {
+        case orca::SubsystemStatusInitialising :
+            type = "INITIALISING";
+            break;
         case orca::SubsystemStatusOk :
             type = "OK";
             break;
@@ -1089,6 +1092,9 @@ toString( const orca::StatusData& obj )
             break;
         case orca::SubsystemStatusFault :
             type = "FAULT";
+            break;
+        case orca::SubsystemStatusStalled :
+            type = "STALLED";
             break;
         }
 

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCAICE_LOCAL_STATUS_H
-#define ORCAICE_LOCAL_STATUS_H
+#ifndef ORCAICE_DETAIL_LOCAL_STATUS_H
+#define ORCAICE_DETAIL_LOCAL_STATUS_H
 
 #include "../status.h"
 
@@ -21,52 +21,72 @@ namespace orcaice
 namespace detail
 {
 
+class StatusI;
+
 class LocalStatus : public orcaice::Status
 {
 public:
-    LocalStatus( const orcaice::Context& context );
-    virtual ~LocalStatus() {};
+
+    //////////////////////////////////////////////////////////////////////
+    struct SubsystemStatus
+    {
+        SubsystemStatusType type;
+        std::string message;
+        IceUtil::Time lastHeartbeatTime;
+        double maxHeartbeatInterval;
+    };
+    //////////////////////////////////////////////////////////////////////
+
+    // If statusI is NULL, an orca::Status interface will not be established
+    LocalStatus( const orcaice::Context& context,
+                 StatusI *statusI );
+    virtual ~LocalStatus();
     
     // from orcaice::Status
 
-    virtual void setHeartbeatInterval( const std::string& subsystem, double maxHeartbeatInterval );
+    // Must be called before notifcations of the subsytem's status.
+    // Status will flag an error if the subsystem's status is not updated
+    // in more than maxHeartbeatInterval seconds.
+    virtual void setMaxHeartbeatInterval( const std::string& subsystem,
+                                          double maxHeartbeatIntervalSec );
 
     virtual void heartbeat( const std::string& subsystem );
     
-    virtual void ok( const std::string& subsystem, const std::string& message );
+    virtual void initialising( const std::string& subsystem, const std::string& message="" );
+
+    virtual void ok( const std::string& subsystem, const std::string& message="" );
 
     virtual void warning( const std::string& subsystem, const std::string& message );
 
     virtual void fault( const std::string& subsystem, const std::string& message );
 
-    virtual IceUtil::Time startTime() const;
-
-protected:
+private:
 
     // Not implemented; prevents accidental use.
     LocalStatus( const LocalStatus & );
     LocalStatus& operator= ( const LocalStatus & );
 
-    struct SubsystemStatus
-    {
-        SubsystemStatusType type;
-        std::string message;
-        IceUtil::Time lastHeartbeat;
-        double maxHeartbeatInterval;
-    };
-    typedef std::map<std::string,SubsystemStatus> SubsystemsStatus;
+    // utility
+    void setSubsystemStatus( const std::string& subsystem,
+                             SubsystemStatusType type,
+                             const std::string& message );
 
-    SubsystemsStatus subsystems_;
+    // inherited from Status
+    void process();
 
     orcaice::Context context_;
 
-    IceUtil::Time startTime_;
-
-    // We only have one communicator but may have multiple threads.
+    // We only have one communicator but may have multiple threads, have
+    // to protect ourself from simultaneous access
     IceUtil::Mutex mutex_;
 
-    // utility
-    void subsystemStatus( const std::string& subsystem, SubsystemStatusType type, const std::string& message );
+    std::map<std::string,SubsystemStatus> subsystems_;
+
+    StatusI *statusI_;
+
+    bool statusTouched_;
+    IceUtil::Time lastPublishTime_;
+    double publishPeriodSec_;
 };
 
 } // namespace

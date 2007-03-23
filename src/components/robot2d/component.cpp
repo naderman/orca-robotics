@@ -43,7 +43,7 @@ Component::start()
     orca::VehicleDescription descr;
     orcamisc::readVehicleDescription( context().properties(), context().tag()+".Config.", descr );
     stringstream ss;
-    ss<<"TRACE(component.cpp): Read vehcile description from configuration: " 
+    ss<<"TRACE(component.cpp): Read vehicle description from configuration: " 
         << endl << orcaice::toString(descr) << endl;
     context().tracer()->info( ss.str() );
 
@@ -68,8 +68,15 @@ Component::start()
 void
 Component::stop()
 {
-    tracer()->debug( "stopping component", 2 );
-    orcaice::Thread::stopAndJoin( netHandler_ );
-    orcaice::Thread::stopAndJoin( hwHandler_ );
-    tracer()->debug( "stopped component", 2 );
+    // Get all thread control objects
+    IceUtil::ThreadControl tcNet = netHandler_->getThreadControl();
+    IceUtil::ThreadControl tcHw  = hwHandler_->getThreadControl();
+
+    // Stop them all simultaneously
+    netHandler_->stop();
+    hwHandler_->stop();
+
+    // Wait for them all
+    tcNet.join();
+    tcHw.join();
 }

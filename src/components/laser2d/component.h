@@ -37,7 +37,7 @@ private:
     // need to store it as a member variable, even though the adapter will keep it alive
     // when the adapter dies on ctrl-c, this object would be destroyed trying to use the smart
     // pointer results in seg fault.
-    orcaifaceimpl::LaserScanner2dI *laserInterface_;
+    Ice::ObjectPtr laserInterface_;
     
     //
     // HARDWARE INTERFACES

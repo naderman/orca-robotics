@@ -16,6 +16,9 @@
 namespace orcaice
 {
 
+class ComponentThread;
+class Status;
+
 //! This enum type is used to describe which standard interfaces the component
 //! will provide.
 enum ComponentInterfaceFlag {
@@ -78,13 +81,14 @@ enum ComponentInterfaceFlag {
 //!
 //!     - The context and communicator are no longer available
 //!
-//! @author Alex Brooks
+//! @author Alex Brooks, Alexei Makarenko
 //!
 //! @sa Application, Service, Context
+//! @sa Tracer, Status
 //!
 class Component
 {
-// these are declared friends so they can call init() and tag()
+// these are declared friends so they can call init(), tag(), finalise()
 friend class Application;
 friend class Service;
 // this one needs to call activate().
@@ -94,7 +98,7 @@ public:
     //! Takes the text tag with which to identify it in the config files. The @e flag
     //! specifies what standard interfaces to initialize.
     Component( const std::string& tag, ComponentInterfaceFlag flag=AllStandardInterfaces );
-    virtual ~Component() {};
+    virtual ~Component();
 
     //! This function is called by the component's container (Application or Service).
     //! It should return immediately, possibly after launching a thread. GUI components
@@ -160,12 +164,20 @@ private:
     // call this function before calling start().
     // This is the reason for them to be friends.
     void init( const orca::FQComponentName& name,
-                const bool isApp,
-                const Ice::ObjectAdapterPtr& adapter );
+               const bool isApp,
+               const Ice::ObjectAdapterPtr& adapter );
+
+    // Cleans up resources prior to stop() being called.
+    void finalise();
 
     // Only Service should need to use this when the IceBox tells it
     // what the actual tag is.
     void setTag( const std::string& t ) { context_.tag_ = t; };
+
+    // initialize component services
+    orcaice::Home*   initHome();
+    orcaice::Tracer* initTracer();
+    orcaice::Status* initStatus();
 
     // Component's context
     Context context_;
@@ -173,15 +185,15 @@ private:
     // Save init flags
     ComponentInterfaceFlag interfaceFlag_;
 
-    // initialize component services
-    orcaice::Home*   initHome();
-    orcaice::Tracer* initTracer();
-    orcaice::Status* initStatus();
-
     // keep the smart pointer so it's not destroyed with the adapter
-    // (i think we only need to do it with tracer)
+    // (I think we only need to do it with tracer)
     Ice::ObjectPtr tracerObj_;
     Ice::ObjectPtr statusObj_;
+    Ice::ObjectPrx homePrx_;
+    Status *localStatus_;
+
+    // This thread allows us to do house-keeping stuff and manage Status.
+    ComponentThread *componentThread_;
 };
 
 } // end namespace

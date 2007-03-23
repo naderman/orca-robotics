@@ -44,104 +44,122 @@ NetHandler::run()
     try // this is once per run try/catch: waiting for the communicator to be destroyed
     {
 
-    while ( isActive() )
-    {
-        try {
-            context_.activate();
-            break;
-        }
-        catch ( orcaice::NetworkException & e )
+        while ( isActive() )
         {
-            std::stringstream ss;
-            ss << "nethandler::run: Caught NetworkException: " << e.what() << endl << "Will try again...";
-            context_.tracer()->warning( ss.str() );
+            try {
+                context_.activate();
+                break;
+            }
+            catch ( orcaice::NetworkException & e )
+            {
+                std::stringstream ss;
+                ss << "nethandler::run: Caught NetworkException: " << e.what() << endl << "Will try again...";
+                context_.tracer()->warning( ss.str() );
+            }
+            catch ( Ice::Exception & e )
+            {
+                std::stringstream ss;
+                ss << "nethandler::run: Caught Ice::Exception while activating: " << e << endl << "Will try again...";
+                context_.tracer()->warning( ss.str() );
+            }
+            catch ( ... )
+            {
+                cout << "Caught some other exception while activating." << endl;
+            }
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         }
-        catch ( Ice::Exception & e )
-        {
-            std::stringstream ss;
-            ss << "nethandler::run: Caught Ice::Exception while activating: " << e << endl << "Will try again...";
-            context_.tracer()->warning( ss.str() );
-        }
-        catch ( ... )
-        {
-            cout << "Caught some other exception while activating." << endl;
-        }
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-    }
     
-    std::string prefix = context_.tag() + ".Config.";
-    Ice::PropertiesPtr prop = context_.properties();
+        std::string prefix = context_.tag() + ".Config.";
+        Ice::PropertiesPtr prop = context_.properties();
     
-    //
-    // PROVIDED: VelocityControl2d
-    //
+        //
+        // PROVIDED: VelocityControl2d
+        //
 
-    // create servant for direct connections and tell adapter about it
-    // don't need to store it as a member variable, adapter will keep it alive
-    Ice::ObjectPtr velocityControl2dI = new VelocityControl2dI( descr_, commandPipe_ );
+        // create servant for direct connections and tell adapter about it
+        // don't need to store it as a member variable, adapter will keep it alive
+        Ice::ObjectPtr velocityControl2dI = new VelocityControl2dI( descr_, commandPipe_ );
 
-    // two possible exceptions will kill it here, that's what we want
-    orcaice::createInterfaceWithTag( context_, velocityControl2dI, "VelocityControl2d" );
+        // two possible exceptions will kill it here, that's what we want
+        orcaice::createInterfaceWithTag( context_, velocityControl2dI, "VelocityControl2d" );
 
 
-    //
-    // PROVIDED: Odometry2d
-    //
-    orcaifaceimpl::Odometry2dIPtr odometry2dI = 
+        //
+        // PROVIDED: Odometry2d
+        //
+        orcaifaceimpl::Odometry2dIPtr odometry2dI = 
             new orcaifaceimpl::Odometry2dI( descr_, "Odometry2d", context_ );
 
 
-    while ( isActive() ) {
-        try {
-            odometry2dI->initInterface();
-            context_.tracer()->debug( "odometry interface initialized",2);
-            break;
+        while ( isActive() ) {
+            try {
+                odometry2dI->initInterface();
+                context_.tracer()->debug( "odometry interface initialized",2);
+                break;
+            }
+            catch ( const orcaice::NetworkException& e ) {
+                context_.tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
+                IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+            }
+            catch ( const Ice::Exception& e ) {
+                context_.tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
+                IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+            }
         }
-        catch ( const orcaice::NetworkException& e ) {
-            context_.tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-        }
-        catch ( const Ice::Exception& e ) {
-            context_.tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-        }
-    }
 
-    orca::Odometry2dData odometry2dData;
-    const int odometryReadTimeout = 500; // [ms]
-    orcaice::Timer publishTimer;
-    double publishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-            prefix+"Odometry2dPublishInterval", 0 );
+        orca::Odometry2dData odometry2dData;
+        const int odometryReadTimeout = 500; // [ms]
+        orcaice::Timer publishTimer;
+        double publishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
+                                                                          prefix+"Odometry2dPublishInterval", 0 );
 
-    //
-    // Main loop
-    //
-    while( isActive() )
-    {
+        //
+        // Main loop
+        //
+        while( isActive() )
+        {
 //         context_.tracer()->debug( "net handler loop spinning ",1);
 
-        // block on the most frequent data source: odometry
-        if ( odometryPipe_.getAndPopNext( odometry2dData, odometryReadTimeout ) ) {
+            // block on the most frequent data source: odometry
+            if ( odometryPipe_.getAndPopNext( odometry2dData, odometryReadTimeout ) ) {
 //             context_.tracer()->debug( "Net loop timed out", 1);
-            continue;
-        }
+                continue;
+            }
 
-        // check that we were not told to terminate while we were sleeping
-        // otherwise, we'll get segfault (there's probably a way to prevent this inside the library)
-        if ( isActive() && publishTimer.elapsed().toSecondsDouble()>=publishInterval ) {
-            odometry2dI->localSetAndSend( odometry2dData );
-            publishTimer.restart();
-        } 
-        else {
-            odometry2dI->localSet( odometry2dData );
-        }
-    } // main loop
+            // check that we were not told to terminate while we were sleeping
+            // otherwise, we'll get segfault (there's probably a way to prevent this inside the library)
+            if ( isActive() && publishTimer.elapsed().toSecondsDouble()>=publishInterval ) {
+                odometry2dI->localSetAndSend( odometry2dData );
+                publishTimer.restart();
+            } 
+            else {
+                odometry2dI->localSet( odometry2dData );
+            }
+        } // main loop
     
     }
     catch ( const Ice::CommunicatorDestroyedException & e )
     {
         context_.tracer()->debug( "net handler cought CommunicatorDestroyedException",1);        
         // it's ok, we must be quitting.
+    }
+    catch ( Ice::Exception &e )
+    {
+        stringstream ss;
+        ss << "NetHandler: Caught unexpected exception: " << e;
+        context_.tracer()->error( ss.str() );
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss;
+        ss << "NetHandler: Caught unexpected exception: " << e.what();
+        context_.tracer()->error( ss.str() );
+    }
+    catch ( ... )
+    {
+        stringstream ss;
+        ss << "NetHandler: Caught unexpected unknown exception.";
+        context_.tracer()->error( ss.str() );
     }
 
     // wait for the component to realize that we are quitting and tell us to stop.

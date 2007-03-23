@@ -115,7 +115,6 @@ LaserScanner2dI::localSetAndSend( const ::orca::LaserScanner2dDataPtr &data )
         ss << "LaserScanner2dI: Sending data: " << orcaice::toString(data);
         context_.tracer()->debug( ss.str(), 5 );
     }
-
     // cout << "LaserScanner2dI::set data: " << orcaice::toString( data ) << endl;
     
     dataProxy_.set( data );

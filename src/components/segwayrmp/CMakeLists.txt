@@ -1,3 +1,4 @@
+
 IF ( OS_LINUX )
 
 OPTION( BUILD_SEGWAYRMP "Try to build SegwayRmp component" ON )

@@ -35,12 +35,16 @@ void attachGpsMapGrid( const orcaice::Context & context, const std::string & pro
         }
         catch ( const orcaice::TypeMismatchException & e )
         {
-            context.tracer()->error( "interface type mismatch. Quitting..." );
+            stringstream ss;
+            ss << "interface type mismatch: " << e.what() << ".  Quitting...";
+            context.tracer()->error( ss.str() );
             context.communicator()->destroy();
         }
         catch ( const orcaice::NetworkException & e )
         {
-            context.tracer()->error( "failed to connect. Will try again after 3 seconds." );
+            stringstream ss;
+            ss << "failed to connect: " << e.what() << ".  Will try again after 3 seconds.";
+            context.tracer()->error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
         // NOTE: if the user hits ctrl-C, we'll get CommunicatorDestroyedException
@@ -104,7 +108,9 @@ void attachGpsMapGrid( const orcaice::Context & context, const std::string & pro
         }
         catch ( const orca::SubscriptionFailedException & e )
         {
-            context.tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            stringstream ss;
+            ss << "failed to subscribe for data updates: " << e.what << ".  Will try again after 3 seconds.";
+            context.tracer()->error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
         --count;
@@ -126,12 +132,16 @@ void attachGpsTime( const orcaice::Context & context, const std::string & proxyS
         }
         catch ( const orcaice::TypeMismatchException & e )
         {
-            context.tracer()->error( "interface type mismatch. Quitting..." );
+            stringstream ss;
+            ss << "interface type mismatch: " << e.what() << ".  Quitting...";
+            context.tracer()->error( ss.str() );
             context.communicator()->destroy();
         }
         catch ( const orcaice::NetworkException & e )
         {
-            context.tracer()->error( "failed to connect. Will try again after 3 seconds." );
+            stringstream ss;
+            ss << "failed to connect: " << e.what() << ".  Will try again after 3 seconds.";
+            context.tracer()->error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
         // NOTE: if the user hits ctrl-C, we'll get CommunicatorDestroyedException
@@ -192,7 +202,9 @@ void attachGpsTime( const orcaice::Context & context, const std::string & proxyS
         }
         catch ( const orca::SubscriptionFailedException & e )
         {
-            context.tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            stringstream ss;
+            ss << "failed to subscribe: " << e.what << ".  Will try again after 3 seconds.";
+            context.tracer()->error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
         --count;

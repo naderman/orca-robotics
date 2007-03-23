@@ -9,11 +9,6 @@
  */
  
 #include <IceStorm/IceStorm.h> // used in initTracer()
-#ifdef ICE_32
-#include <IceGrid/Registry.h>  // used in initHome() to register Home interface as a well-known object
-#else
-#include <IceGrid/Admin.h>  // used in initHome() to register Home interface as a well-known object
-#endif
 #include <string>
 
 #include <orca/orca.h>
@@ -32,6 +27,8 @@
 
 #include "component.h"
 
+#include "detail/componentthread.h"
+
 // debug only
 #include <iostream>
 
@@ -39,9 +36,19 @@ namespace orcaice {
 
 
 Component::Component( const std::string& tag, ComponentInterfaceFlag flag )
-    : interfaceFlag_(flag)
+    : interfaceFlag_(flag),
+      componentThread_(0)
 {
     context_.tag_ = tag;
+}
+
+Component::~Component()
+{
+    if ( localStatus_ )
+    {
+        std::cout<<"TRACE(component.cpp): deleting localstatus" << std::endl;
+        delete localStatus_;
+    }    
 }
 
 void
@@ -60,7 +67,20 @@ Component::init( const orca::FQComponentName& name,
     context_.tracer_ = initTracer();
     context_.status_ = initStatus();
     context_.home_   = initHome();
+    componentThread_ = new ComponentThread( homePrx_, *(context_.status_), interfaceFlag_, context_ );
+    componentThread_->start();
 };
+
+void
+Component::finalise()
+{
+    if ( componentThread_ )
+    {
+        std::cout<<"TRACE(component.cpp): stopAndJoin()" << std::endl;
+
+        orcaice::Thread::stopAndJoin( componentThread_ );
+    }
+}
 
 Tracer*
 Component::initTracer()
@@ -100,8 +120,9 @@ Component::initStatus()
 {
     orcaice::initTracerPrint( tag()+": Initializing application status handler ...");
 
-    if ( !(interfaceFlag_ & StatusInterface) ) {
-        return new orcaice::detail::LocalStatus( context_ );
+    if ( !(interfaceFlag_ & StatusInterface) ) 
+    {
+        return new orcaice::detail::LocalStatus( context_, NULL );
     }
 
     // this is a bit tricky. we need
@@ -111,124 +132,41 @@ Component::initStatus()
     // but the smart pointer stuff is then included twice and reference counters get confused.
     // So first we use the pointer to orcaice::StatusTracerI, then change to Ice::ObjectPtr and Tracer*.
     orcaice::detail::StatusI* pobj = new orcaice::detail::StatusI( context_ );
-    Ice::ObjectPtr obj = pobj;
+    // a bit of a hack: keep a smart pointer so it's not destroyed with the adapter
+    statusObj_ = pobj;
+
     //TracerPtr trac = pobj;
     // have to revert to using plain pointers. Otherwise, we get segfault on shutdown when
     // trac tries to delete the object which already doesn't exist. Something wrong with ref counters.
-    Status* stat = (Status*)pobj;
-    
     //
     // add this object to the adapter and name it 'status'
     // 
-    context_.adapter()->add( obj, context_.communicator()->stringToIdentity("status") );
-    // a bit of a hack: keep a smart pointer so it's not destroyed with the adapter
-    statusObj_ = obj;
+    context_.adapter()->add( statusObj_, context_.communicator()->stringToIdentity("status") );
     
+    localStatus_ = new orcaice::detail::LocalStatus( context_, pobj );
+
     initTracerPrint( tag()+": Status initialized" );
 
-    return stat;
+    return localStatus_;
 }
 
 Home*
 Component::initHome()
 {
-#ifdef ICE_32
     if ( !(interfaceFlag_ & HomeInterface) ) {
         // local object only
         return new orcaice::detail::LocalHome;
     }
-        
-    //
-    // PROVIDED INTERFACE: Home
-    // Make Home a well-known object, by adding it to the registry
-    //
-
+    
     // Create the home interface
     orcaice::HomeI* hobj = new orcaice::HomeI( interfaceFlag_, context_ );
 
     // add the home interface to our adapter
     Ice::ObjectPtr homeObj = hobj;
     std::string homeIdentity = toHomeIdentity( context_.name() );
-    Ice::ObjectPrx homePrx = context_.adapter()->add( homeObj, context_.communicator()->stringToIdentity(homeIdentity) );
+    homePrx_ = context_.adapter()->add( homeObj, context_.communicator()->stringToIdentity(homeIdentity) );
 
-    // add the home interface to the registry
-    std::string instanceName = properties()->getPropertyWithDefault( "IceGrid.InstanceName", "IceGrid" );
-    Ice::ObjectPrx base = context_.communicator()->stringToProxy( instanceName+"/Registry" );
-    try {
-        // Open an admin session with the registry
-        IceGrid::RegistryPrx registry = IceGrid::RegistryPrx::checkedCast(base);
-        // This assumes no access control
-        std::string username = "no-access-control-assumed";
-        std::string password = "no-access-control-assumed";
-        IceGrid::AdminSessionPrx adminSession = registry->createAdminSession( username, password );
-
-        // use the adminSession to add our Home interface
-        IceGrid::AdminPrx admin = adminSession->getAdmin();
-        try {
-            admin->addObjectWithType( homePrx, "::orca::Home" );
-        }
-        catch ( const IceGrid::ObjectExistsException& ) {
-            admin->updateObject( homePrx );
-        }
-    }
-    catch ( Ice::Exception& e ) {
-        bool requireRegistry = properties()->getPropertyAsInt( "Orca.RequireRegistry" );
-        if ( requireRegistry ) {
-            std::stringstream ss;
-            ss << "Failed to register Home interface: "<<e<<".";
-            tracer()->error( ss.str()+std::string("  Check IceGrid Registry.") );
-            throw orcaice::NetworkException( ERROR_INFO, ss.str()+std::string("You may allow things to continue without registration by setting Orca.RequireRegistry=0.") );
-        }
-        else {
-            std::stringstream ss;
-            ss << "Failed to register Home interface: "<<e<<".";
-            tracer()->warning( ss.str() );
-            tracer()->info( "You may enforce registration by setting Orca.RequireRegistry=1." );
-        }
-    }
     return (Home*)hobj;
-#else
-    if ( !(interfaceFlag_ & HomeInterface) ) {
-        // local object only
-        return new orcaice::detail::LocalHome;
-    }
-        
-    // PROVIDED INTERFACE: Home
-    orcaice::HomeI* hobj = new orcaice::HomeI( interfaceFlag_, context_ );
-    Ice::ObjectPtr homeObj = hobj;
-
-    // make Home a well-known object
-    std::string homeIdentity = toHomeIdentity( context_.name() );
-    Ice::ObjectPrx homePrx =context_.adapter()->add( homeObj, context_.communicator()->stringToIdentity(homeIdentity) );
-
-    std::string instanceName = properties()->getPropertyWithDefault( "IceGrid.InstanceName", "IceGrid" );
-    Ice::ObjectPrx adminPrx = context_.communicator()->stringToProxy( instanceName+"/Admin" );
-    
-    IceGrid::AdminPrx admin;
-    try {
-        admin = IceGrid::AdminPrx::checkedCast( adminPrx );
-        admin->addObjectWithType( homePrx, "::orca::Home" );
-    } 
-    catch (const IceGrid::ObjectExistsException&) {
-        admin->updateObject( homePrx );
-    }
-    catch ( Ice::Exception& e ) {
-        bool requireRegistry = properties()->getPropertyAsInt( "Orca.RequireRegistry" );
-        if ( requireRegistry ) {
-            std::stringstream ss;
-            ss << "Failed to register Home interface: "<<e<<".";
-            tracer()->error( ss.str()+std::string("  Check IceGrid Registry.") );
-            throw orcaice::NetworkException( ERROR_INFO, ss.str()+std::string("You may allow things to continue without registration by setting Orca.RequireRegistry=0.") );
-        }
-        else {
-            std::stringstream ss;
-            ss << "Failed to register Home interface: "<<e<<".";
-            tracer()->warning( ss.str() );
-            tracer()->info( "You may enforce registration by setting Orca.RequireRegistry=1." );
-        }
-    }
-    return (Home*)hobj;
-#endif
 }
 
 void 

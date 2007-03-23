@@ -28,8 +28,8 @@ MainLoop::MainLoop( orcaifaceimpl::LaserScanner2dI &laserInterface,
       compensateRoll_(compensateRoll),
       context_(context)
 {
-    context_.status()->setHeartbeatInterval( "hardware", 10.0 );
-    context_.status()->ok( "hardware", "initializing" );
+    context_.status()->setMaxHeartbeatInterval( "hardware", 10.0 );
+    context_.status()->initialising( "hardware" );
 }
 
 MainLoop::~MainLoop()
@@ -132,9 +132,9 @@ MainLoop::run()
     establishInterface();
 
     hwDriver_->init();
-    context_.status()->setHeartbeatInterval( "hardware", 1.0 );
+    context_.status()->setMaxHeartbeatInterval( "hardware", 1.0 );
 
-    int prevReadResult = 0;
+//    int prevReadResult = 0;
     int currReadResult = 0;
 
     //
@@ -153,34 +153,48 @@ MainLoop::run()
                 laserInterface_.localSetAndSend( laserData );
             }
 
-            // old way to send heartbeats
-            if ( heartbeater.isHeartbeatTime() )
+            // Set subsystem status
+            if ( currReadResult == 0 )
             {
-                stringstream ss;
-                if ( currReadResult == 0 ) {
-                    ss << "Laser enabled. ";
-                }
-                else {
-                    ss << "Laser having problems.";
-                }
-                heartbeater.beat( ss.str() + hwDriver_->heartbeatMessage() );
+                context_.status()->ok( "hardware" );
+            }
+            else
+            {
+                context_.status()->fault( "hardware", hwDriver_->heartbeatMessage() );
             }
 
-            // new way to send heartbeats
-            // status has changed
-            if ( currReadResult != prevReadResult ) {
-                if ( currReadResult==0 ) {
-                    context_.status()->ok( "hardware", "Laser enabled. "+hwDriver_->heartbeatMessage() );
-                }
-                else {
-                    context_.status()->fault( "hardware", "Laser having problems. "+hwDriver_->heartbeatMessage() );
-                }
-            }
-            // status has not changed
-            else {
-                context_.status()->heartbeat( "hardware" );
-            }
-            prevReadResult = currReadResult;
+//             // old way to send heartbeats
+//             if ( heartbeater.isHeartbeatTime() )
+//             {
+//                 stringstream ss;
+//                 if ( currReadResult == 0 ) {
+//                     ss << "Laser enabled. ";
+//                 }
+//                 else {
+//                     ss << "Laser having problems.";
+//                 }
+//                 heartbeater.beat( ss.str() + hwDriver_->heartbeatMessage() );
+//             }
+
+//             // new way to send heartbeats
+//             // status has changed
+//             if ( currReadResult != prevReadResult ) {
+//                 if ( currReadResult==0 ) {
+//                     context_.status()->ok( "hardware", "Laser enabled. "+hwDriver_->heartbeatMessage() );
+//                 }
+//                 else {
+//                     context_.status()->fault( "hardware", "Laser having problems. "+hwDriver_->heartbeatMessage() );
+//                 }
+//             }
+//             // status has not changed
+//             else {
+//                 cout<<"TRACE(mainloop.cpp): setting status." << endl;
+//                 orcaice::Status *status = context_.status();
+//                 status->heartbeat( "hardware" );
+//                 //context_.status()->heartbeat( "hardware" );
+//                 cout<<"TRACE(mainloop.cpp): set status." << endl;
+//             }
+//             prevReadResult = currReadResult;
 
         } // end of try
         catch ( Ice::CommunicatorDestroyedException & )

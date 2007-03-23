@@ -12,63 +12,114 @@
 #include <orcaice/orcaice.h>
 
 #include "localstatus.h"
+#include "statusI.h"
 
 using namespace std;
 
 using namespace orcaice::detail;
 
-LocalStatus::LocalStatus( const orcaice::Context& context ) : 
-    context_(context)
+LocalStatus::LocalStatus( const orcaice::Context& context,
+                          StatusI *statusI )
+    : context_(context),
+      statusI_(statusI),
+      statusTouched_(false)
 {
-    startTime_ = IceUtil::Time::now();
+    publishPeriodSec_ = getPropertyAsDoubleWithDefault( context_.properties(), "Orca.Status.PublishPeriod", 30 );
+    lastPublishTime_ = IceUtil::Time::now();
+}
+
+LocalStatus::~LocalStatus()
+{
 }
 
 void 
-LocalStatus::setHeartbeatInterval( const std::string& subsystem, double maxHeartbeatInterval )
+LocalStatus::setMaxHeartbeatInterval( const std::string& subsystem,
+                                      double maxHeartbeatIntervalSec )
 {
     IceUtil::Mutex::Lock lock(mutex_);
-
-    subsystems_[subsystem].maxHeartbeatInterval = maxHeartbeatInterval;
+    subsystems_[subsystem].maxHeartbeatInterval = maxHeartbeatIntervalSec;
 }
 
 void 
 LocalStatus::heartbeat( const std::string& subsystem )
 {
     IceUtil::Mutex::Lock lock(mutex_);
+    subsystems_[subsystem].lastHeartbeatTime = IceUtil::Time::now();
+}
 
-    subsystems_[subsystem].lastHeartbeat = IceUtil::Time::now();
+void 
+LocalStatus::initialising( const std::string& subsystem, const std::string& message )
+{
+    setSubsystemStatus( subsystem, orcaice::Status::Initialising, message );
 }
 
 void 
 LocalStatus::ok( const std::string& subsystem, const std::string& message )
 {
-    subsystemStatus( subsystem, orcaice::Status::Ok, message );
+    setSubsystemStatus( subsystem, orcaice::Status::Ok, message );
 }
 
 void 
 LocalStatus::warning( const std::string& subsystem, const std::string& message )
 {
-    subsystemStatus( subsystem, orcaice::Status::Warning, message );
+    setSubsystemStatus( subsystem, orcaice::Status::Warning, message );
 }
 
 void 
 LocalStatus::fault( const std::string& subsystem, const std::string& message )
 {
-    subsystemStatus( subsystem, orcaice::Status::Fault, message );
+    setSubsystemStatus( subsystem, orcaice::Status::Fault, message );
 }
     
 void 
-LocalStatus::subsystemStatus( const std::string& subsystem, SubsystemStatusType type, const std::string& message )
+LocalStatus::setSubsystemStatus( const std::string& subsystem,
+                                 SubsystemStatusType type,
+                                 const std::string& message )
 {
     IceUtil::Mutex::Lock lock(mutex_);
 
-    subsystems_[subsystem].type = Status::Ok;
+    if ( !statusTouched_ )
+    {
+        statusTouched_ = ( type != subsystems_[subsystem].type ||
+                           message != subsystems_[subsystem].message );
+    }
+
+    subsystems_[subsystem].type = type;
     subsystems_[subsystem].message = message;
-    subsystems_[subsystem].lastHeartbeat = IceUtil::Time::now();
+    subsystems_[subsystem].lastHeartbeatTime = IceUtil::Time::now();
 }
 
-IceUtil::Time 
-LocalStatus::startTime() const
+void 
+LocalStatus::process()
 {
-    return startTime_;
+    IceUtil::Mutex::Lock lock(mutex_);
+
+    IceUtil::Time now = IceUtil::Time::now();
+    std::map<std::string,SubsystemStatus>::iterator it;
+    for ( it=subsystems_.begin(); it!=subsystems_.end(); ++it ) 
+    {
+        IceUtil::Time timeSinceLastHeartbeat = now-it->second.lastHeartbeatTime;
+        double secSinceLastHeartbeat = timeSinceLastHeartbeat.toSeconds();
+        if ( secSinceLastHeartbeat > it->second.maxHeartbeatInterval )
+        {
+            // Oops, this subsystem appears to be dead...
+            it->second.type = orcaice::Status::Stalled;
+            stringstream ss; 
+            ss << "Subsystem hasn't been heard from for "<<secSinceLastHeartbeat<<"s.";
+            it->second.message = ss.str();
+            statusTouched_ = true;
+        }
+    }
+
+    IceUtil::Time timeSinceLastPublish = now-lastPublishTime_;
+    bool isPublishTime = (timeSinceLastPublish.toSeconds() >= publishPeriodSec_);
+
+    if ( !statusTouched_ && !isPublishTime ) return;
+    statusTouched_ = false;
+
+    if ( statusI_ != NULL )
+    {
+        statusI_->localSetData( subsystems_ );
+        lastPublishTime_ = now;
+    }
 }
