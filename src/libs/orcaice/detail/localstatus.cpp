@@ -38,6 +38,7 @@ LocalStatus::setMaxHeartbeatInterval( const std::string& subsystem,
 {
     IceUtil::Mutex::Lock lock(mutex_);
     subsystems_[subsystem].maxHeartbeatInterval = maxHeartbeatIntervalSec;
+    subsystems_[subsystem].lastHeartbeatTime    = IceUtil::Time::now();
 }
 
 void 

@@ -32,15 +32,22 @@ ComponentThread::run()
 {
     while ( isActive() )
     {
+        if ( registeredHome_ || !(interfaceFlag_ & HomeInterface) &&
+             !(interfaceFlag_ & StatusInterface) )
+        {
+            // Nothing left for us to do!
+            return;
+        }
+
         if ( !registeredHome_ && (interfaceFlag_ & HomeInterface) )
         {
             registeredHome_ = tryRegisterHome();
         }
-        status_.process();
+        if ( interfaceFlag_ & StatusInterface )
+            status_.process();
 
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     }
-    cout<<"TRACE(componentthread.cpp): ComponentThread: dropping out of run()" << endl;
 }
 
 bool
