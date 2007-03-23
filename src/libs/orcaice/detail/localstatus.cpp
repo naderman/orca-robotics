@@ -97,6 +97,10 @@ LocalStatus::process()
 {
     IceUtil::Mutex::Lock lock(mutex_);
 
+    cout<<"TRACE(localstatus.cpp): process()" << endl;
+    cout<<"TRACE(localstatus.cpp): process()" << endl;
+    cout<<"TRACE(localstatus.cpp): process()" << endl;
+
     IceUtil::Time now = IceUtil::Time::now();
     std::map<std::string,SubsystemStatus>::iterator it;
     for ( it=subsystems_.begin(); it!=subsystems_.end(); ++it ) 
