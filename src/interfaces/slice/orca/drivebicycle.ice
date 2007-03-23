@@ -33,6 +33,14 @@ struct DriveBicycleData
     double speed;
 };
 
+//! Data consumer interface.
+interface DriveBicycleConsumer
+{
+    //! Transmits the data to the consumer.
+    void setData( DriveBicycleData obj );
+};
+
+
 /*!
     Controls a mobile robot with bicycle steering.
 */
@@ -41,9 +49,35 @@ interface DriveBicycle
     //! Get vehicle description
     nonmutating VehicleDescription getDescription();
 
+    //! Returns the latest data.
+    //! May raise DataNotExistException if the requested information is not available.
+    //! May raise HardwareFailedException if there is some problem with hardware.
+    nonmutating DriveBicycleData getData()
+            throws DataNotExistException, HardwareFailedException;
+    
     //! Set velocity command
     idempotent void setCommand( DriveBicycleData data )
             throws HardwareFailedException;    
+
+    /*!
+     * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.
+     * The implementation may choose to implement the push directly or use IceStorm.
+     * This choice is transparent to the subscriber. The case when the @p subscriber is already subscribed
+     * is quietly ignored.
+     *
+     * @see unsubscribe
+     */
+    void subscribe( DriveBicycleConsumer* subscriber )
+            throws SubscriptionFailedException;
+
+    /*!
+     * Unsubscribe an existing @p subscriber. The case when the @p subscriber is not subscribed
+     * is quietly ignored.
+     *
+     * @see subscribe
+     */
+    idempotent void unsubscribe( DriveBicycleConsumer* subscriber );
+
 };
 
 //! @}
