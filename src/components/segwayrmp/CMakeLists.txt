@@ -29,7 +29,16 @@ IF ( BUILD_SEGWAYRMP )
       SET( HAVE_USB_DRIVER TRUE )
     ELSE ( FTD2XX_FOUND )
       MESSAGE( "USB driver for Segway RMP line of platforms -- cannot be built" )
-    ENDIF ( FTD2XX_FOUND )
+    ENDIF ( FTD2XX_FOUND ) 
+
+    IF ( PEAKCAN_FOUND )
+      MESSAGE( "Peak CAN driver for Segway RMP line of platforms -- can be built" )
+      TARGET_LINK_LIBRARIES( segwayrmp OrcaSegwayRmpCan )
+      ADD_DEFINITIONS( -DHAVE_CAN_DRIVER )
+      SET( HAVE_CAN_DRIVER TRUE )
+    ELSE ( PEAKCAN_FOUND )
+      MESSAGE( "Peak CAN driver for Segway RMP line of platforms -- cannot be built" )
+    ENDIF ( PEAKCAN_FOUND )
 
     OPTIONAL_SUB_LIBRARY(
         "Player client driver for SegwayRmp"
@@ -41,9 +50,9 @@ IF ( BUILD_SEGWAYRMP )
         ${PLAYER_LIBS} OrcaPlayer
     )
 
-    IF ( NOT HAVE_USB_DRIVER AND NOT HAVE_PLAYERCLIENT_DRIVER )
+    IF ( NOT HAVE_USB_DRIVER AND NOT HAVE_CAN_DRIVER AND NOT HAVE_PLAYERCLIENT_DRIVER )
         MESSAGE( STATUS "    WARNING: only default 'fake' driver can be built")
-    ENDIF ( NOT HAVE_USB_DRIVER AND NOT HAVE_PLAYERCLIENT_DRIVER )
+    ENDIF ( NOT HAVE_USB_DRIVER AND NOT HAVE_CAN_DRIVER AND NOT HAVE_PLAYERCLIENT_DRIVER )
     
     SET( DEP_LIBS SegwayRmpSources 
       OrcaSegwayRmpDriver

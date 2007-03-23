@@ -11,7 +11,7 @@ INSTALL_TARGETS( /lib OrcaSegwayRmpCan )
 LINK_DIRECTORIES( /usr/lib/ ) 
 
 #Make sure that we link the libraries we need including the peak one!
-LINK_LIBRARIES( OrcaSegwayRmpCan libpcan.so )
+TARGET_LINK_LIBRARIES( OrcaSegwayRmpCan pcan )
 
 #Build the stand alone test app if needed!
 IF ( BUILD_TESTS )

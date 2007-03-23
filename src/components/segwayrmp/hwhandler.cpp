@@ -16,10 +16,14 @@
 
 #include "hwhandler.h"
 #include "fakedriver.h"
+
 // segway rmp drivers
 #include "rmpdriver/rmpdriver.h"
 #ifdef HAVE_USB_DRIVER
     #include "rmpdriver/usb/rmpusbioftdi.h"
+#endif
+#ifdef HAVE_CAN_DRIVER
+    #include "rmpdriver/can/peakcandriver.h"
 #endif
 #ifdef HAVE_PLAYERCLIENT_DRIVER
     #include "playerclient/playerclientdriver.h"
@@ -131,12 +135,24 @@ HwHandler::HwHandler(
             
     if ( driverName == "segwayrmpusb" )
     {
+
 #ifdef HAVE_USB_DRIVER
         context_.tracer()->debug( "loading 'segwayrmpusb' driver",3);
         rmpIo_  = new RmpUsbIoFtdi;
         driver_ = new RmpDriver( context_, *rmpIo_ );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'usb' because it was not built!" );
+#endif
+    
+    }
+    else if ( driverName == "segwayrmpcan" )
+    {
+#ifdef HAVE_CAN_DRIVER
+        context_.tracer()->debug( "loading 'peakcan' driver",3);
+        rmpIo_ = new PeakCanDriver ( context_ );
+        driver_ = new RmpDriver( context_, *rmpIo_ );
+#else
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'peakcan' because it was not built!" );
 #endif
     }
     else if ( driverName == "playerclient" )

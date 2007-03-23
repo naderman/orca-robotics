@@ -11,32 +11,37 @@
 #include <libpcan.h>  //stuff to access the peak can drivers
 
 #include <orcaice/context.h>
-#include "../dunc_can_test.h"
-#include "../../hwdriver.h"
+#include <rmpdriver/rmpio.h>
+#include <rmpdriver/canpacket.h>
+#include <rmpdriver/can/peakcandriver.h>
 
-using namespace orcacan;
+
+using namespace std;
+using namespace segwayrmp;
 
 int main(void){
-    int flags=0;
 
-    orcaice::Context can_context;
-    HwDriver::SegwayRmpData test_data;
-    std::string output_string;
-    HwDriver::SegwayRmpCommand test_command;
-
+  //**??** where should we be getting the context from?
+    orcaice::Context canContext;
+    segwayrmp::CanPacket dataPacket;
 
     //declare our Can Driver object
-    orcacan::PeakCanDriver test(can_context);
+    segwayrmp::PeakCanDriver test(canContext);
  
-    //a bogus command???
-    test.write(test_command);
+    //**??** a bogus command???
+    test.writePacket(&dataPacket);
     
     
     while(true){ //**??** how should this be escaped?
-      test.read(test_data,output_string);
+      //Keep trying to read data from the CAN interface
+      if ( test.readPacket(&dataPacket) == RmpIo::OK ){
+	cout<< dataPacket.toString() <<endl;
+      }else{
+	cout << "Unable to get data\n";
+      }
     }
-    return 0;
-
+      
+  return 0;
 
 }
 

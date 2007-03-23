@@ -1,0 +1,23 @@
+# Notes on the actual implementatation of the peak can library
+# libpcan as of version 6.0
+
+Calls to:
+LINUX_CAN_Read
+LINUX_CAN_Write
+CAN_VersionInfo
+
+These eventually trickle down to calls to ioctl and return parameter
+passed back by ioctl
+
+Notes from the man page for ioctl for a posix implementation
+" RETURN VALUE
+  On success, zero is returned.  On error, -1  is  returned,
+  and errno is set appropriately."
+
+However looking at the implementation in the driver code it looks like all the 
+calls return negative error values in the event of a problem. These are 
+set to what would have been errno. Zero equates to success
+
+
+
+

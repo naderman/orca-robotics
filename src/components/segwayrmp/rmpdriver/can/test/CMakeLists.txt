@@ -5,10 +5,10 @@ INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 FILE( GLOB SRCS *.cpp )
 
 #Now tell the system where to find the libraries we need to link
-LINK_DIRECTORIES( ${PROJECT_BINARY_DIR}/src/components/segwayrmp/peakcan/)
+LINK_DIRECTORIES( ${PROJECT_BINARY_DIR}/src/components/segwayrmp/rmpdriver/can/)
 
 #Tell the system to build a standalone app for us to use for testing
 ADD_EXECUTABLE( TestCanBin main.cpp )
 
 #The target needs to be linked with these libraries
-TARGET_LINK_LIBRARIES( TestCanBin OrcaSegwayRmpCan.so)
+TARGET_LINK_LIBRARIES( TestCanBin OrcaSegwayRmpDriver )
