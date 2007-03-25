@@ -19,6 +19,7 @@
 #include "imulogger.h"
 #include "laserscanner2dlogger.h"
 #include "localise2dlogger.h"
+#include "localise3dlogger.h"
 #include "polarfeature2dlogger.h"
 #include "odometry2dlogger.h"
 #include "odometry3dlogger.h"
@@ -41,6 +42,7 @@ DefaultLogFactory::DefaultLogFactory()
     addSupportedType("Imu");
     addSupportedType("LaserScanner2d");
     addSupportedType("Localise2d");
+    addSupportedType("Localise3d");
     addSupportedType("Odometry2d");
     addSupportedType("Odometry3d");
     addSupportedType("PolarFeature2d");
@@ -83,6 +85,10 @@ DefaultLogFactory::create( const std::string      &interfaceType,
     else if (interfaceType == "Localise2d")
     {
         logger = new Localise2dLogger( master, typeSuffix, format, filenamePrefix, context );
+    }
+    else if (interfaceType == "Localise3d")
+    {
+        logger = new Localise3dLogger( master, typeSuffix, format, filenamePrefix, context );
     }
     else if (interfaceType == "Odometry2d")
     {

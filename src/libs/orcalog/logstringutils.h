@@ -26,6 +26,7 @@
 #include <orca/position2d.h>
 #include <orca/position3d.h>
 #include <orca/localise2d.h>
+#include <orca/localise3d.h>
 #include <orca/platform2d.h>
 #include <orca/power.h>
 #include <orca/status.h>
@@ -54,6 +55,8 @@ std::string toLogString( const orca::GpsMapGridData& );
 std::string toLogString( const orca::LaserScanner2dDataPtr& );
 //! Prints out localise2d data to text which is easy to parse
 std::string toLogString( const orca::Localise2dData& );
+//! Prints out localise3d data to text which is easy to parse
+std::string toLogString( const orca::Localise3dData& );
 //! Prints out resulting fine path to text in a parsable format
 std::string toLogString( const orca::PathPlanner2dData& );
 //! Prints out task path (coarse) to text in a parsable format

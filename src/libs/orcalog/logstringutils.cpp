@@ -208,6 +208,53 @@ toLogString( const orca::Localise2dData& obj )
 }
 
 std::string 
+toLogString( const orca::Localise3dData& obj )
+{
+    std::stringstream s;
+    
+    // timestamp on the first line
+    s << toLogString(obj.timeStamp) << endl;
+
+    // number of hypotheses on a line
+    s << obj.hypotheses.size() << endl;
+
+    for ( unsigned int i=0; i < obj.hypotheses.size(); i++ )
+    {
+        const orca::Pose3dHypothesis &h = obj.hypotheses[i];
+
+        s << h.mean.p.x << " "
+          << h.mean.p.y << " "
+          << h.mean.p.z << " "
+          << RAD2DEG(h.mean.o.r) << " "
+          << RAD2DEG(h.mean.o.p) << " "
+          << RAD2DEG(h.mean.o.y) << " "
+          << h.cov.xx << " "
+          << h.cov.xy << " "
+          << h.cov.xz << " "
+          << h.cov.xr << " "
+          << h.cov.xp << " "
+          << h.cov.xa << " "
+          << h.cov.yy << " "
+          << h.cov.yz << " "
+          << h.cov.yr << " "
+          << h.cov.yp << " "
+          << h.cov.ya << " "
+          << h.cov.zz << " "
+          << h.cov.zr << " "
+          << h.cov.zp << " "
+          << h.cov.za << " "
+          << h.cov.rr << " "
+          << h.cov.rp << " "
+          << h.cov.ra << " "
+          << h.cov.pp << " "
+          << h.cov.pa << " "
+          << h.cov.aa << " "
+          << h.weight << "\n";
+    }
+    return s.str();
+}
+
+std::string 
 toLogString( const orca::Position3dData& obj )
 {
     std::stringstream s;
