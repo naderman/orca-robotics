@@ -82,6 +82,9 @@ Localise3dElement::update()
         throw orcaqgui::Exception( ss.str() );
     }
 
+    data_.hypotheses[0].mean.p.x -= origin_.x;
+    data_.hypotheses[0].mean.p.y -= origin_.y;
+
     painter_.setData( data_ );
 
     // custom update
