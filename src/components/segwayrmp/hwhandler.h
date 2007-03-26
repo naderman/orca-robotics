@@ -76,9 +76,26 @@ private:
     // component current context
     orcaice::Context context_;
 
-    // write status has to be protected to be accessed from both read and write threads
-    // true is good, false is bad.
-    orcaice::Proxy<bool> isOkProxy_;
+    // This structs stores fault information.  
+    class FaultInfo {
+    public:
+        FaultInfo( bool isError=false )
+            : isError_(isError) {}
+        FaultInfo( bool isError, std::string diagnostics )
+            : isError_(isError),
+              diagnostics_(diagnostics)
+            {}
+
+        bool isError() const { return isError_; }
+        const std::string &diagnostics() { return diagnostics_; }
+    private:
+        bool isError_;
+        std::string diagnostics_;
+    };
+    //
+    // Faults can be detected in either read or write threads: have to be careful.
+    //
+    orcaice::Proxy<FaultInfo> faultProxy_;
 
     // debug
     orcaice::Timer readTimer_;

@@ -113,8 +113,8 @@ HwHandler::HwHandler(
     // we'll handle incoming messages
     commandPipe.setNotifyHandler( this );
 
-    // unsure about isOk until we enable the driver
-    isOkProxy_.set( false );
+    // unsure about faults until we enable the driver
+    faultProxy_.set( FaultInfo( true, "Initialising" ) );
 
     //
     // Read settings
@@ -249,15 +249,14 @@ HwHandler::run()
             //
             // Make sure we're OK
             //
-            bool isOk;
-            isOkProxy_.get( isOk );
-            if ( !isOk ) 
+            FaultInfo faultInfo;
+            faultProxy_.get( faultInfo );
+            if ( faultInfo.isError() )
             {
                 enableDriver();
-                isOkProxy_.set( true );
 
                 // we enabled, so presume we're OK.
-                isOkProxy_.set( true );
+                faultProxy_.set( FaultInfo(false) );
 
                 // but make sure we're not shutting down.
                 if ( !isActive() )
@@ -298,7 +297,7 @@ HwHandler::run()
                 ss << "HwHandler: Failed to read: " << e.what();
                 context_.tracer()->error( ss.str() );
                 context_.status()->fault( SUBSYSTEM, ss.str() );
-                isOkProxy_.set( false );
+                faultProxy_.set( FaultInfo( true, ss.str() ) );
             }
 
         } // try
@@ -390,11 +389,12 @@ HwHandler::handleData( const orca::VelocityControl2dData & origObj )
     // make a copy so we can apply limits
     orca::VelocityControl2dData obj = origObj;
 
-    // if we know we can't write, don't try
-    bool writeOk = false;
-    isOkProxy_.get( writeOk );
-    if ( !writeOk ) {
-        return;
+    // if we know we can't write, don't try: inform remote component of problem
+    FaultInfo faultInfo;
+    faultProxy_.get( faultInfo );
+    if ( faultInfo.isError() )
+    {
+        throw orca::HardwareFailedException( faultInfo.diagnostics() );
     }
 
     // check that platform motion is enabled
@@ -407,7 +407,7 @@ HwHandler::handleData( const orca::VelocityControl2dData & origObj )
     writeTimer_.restart();
     // this will certainly be 'late' when we throw an exception below
     if ( msecs>300 ) {
-        cout<<"late: " << msecs <<endl;
+        cout<<"HwHandler: late: " << msecs <<endl;
     }
     
     //
@@ -438,7 +438,7 @@ HwHandler::handleData( const orca::VelocityControl2dData & origObj )
         ss << "HwHandler: Failed to write command to hardware: " << e.what();
         context_.tracer()->error( ss.str() );
         // set local state to failure
-        isOkProxy_.set( false );
+        faultProxy_.set( FaultInfo( true, ss.str() ) );
 
         // inform remote client of hardware failure
         throw orca::HardwareFailedException( ss.str() );
