@@ -224,7 +224,7 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
     bool isSupported = instantiateFromFactories( element, ids, platformColor, proxyStrList );
     if (!isSupported || element==NULL)
     {
-        if (!isSupported) humanManager_->showStatusMsg(orcaqgui::Warning, "Element " + proxyStrList.join(" ") + " is not supported by any factory");
+        if (!isSupported) humanManager_->showStatusMsg(orcaqgui::Warning, "Element " + proxyStrList.join(" ") + " is not supported by any factory. Needed id: " + ids.join(" "));
         if (element==NULL) humanManager_->showStatusMsg(orcaqgui::Warning, "Element " + proxyStrList.join(" ") + " returned from factory is NULL");
         delete element;
         if (!doesPlatformExist( platform ) ) 
