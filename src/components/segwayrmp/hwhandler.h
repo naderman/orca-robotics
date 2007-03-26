@@ -29,6 +29,9 @@ namespace segwayrmp
 
 class RmpIo;
 
+//
+// A thread that looks after the Segway hardware (ie HwDriver).
+//
 // Note: this thing self-destructs when run() returns.
 class HwHandler : public orcaice::Thread, public orcaice::NotifyHandler<orca::VelocityControl2dData>
 {
