@@ -23,8 +23,9 @@ namespace segwayrmp
 class RmpIo;
 
 //
-// Class that knows how to talk Segway's protocol.  Requires a
-// hardware interface implementation to be passed to the constructor.
+// An implementation of HwHandler that knows how to talk Segway's
+// protocol.  Requires a hardware interface implementation to be
+// passed to the constructor.
 //
 // All public member functions throw RmpExceptions on error conditions.
 //
