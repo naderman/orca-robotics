@@ -211,8 +211,8 @@ HwHandler::enableDriver()
         {
             stringstream ss;
             ss << "HwHandler::enableDriver(): Failed to enable: " << e.what();
-            context_.tracer()->warning( ss.str() );
-            context_.status()->warning( SUBSYSTEM, ss.str() );
+            context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
