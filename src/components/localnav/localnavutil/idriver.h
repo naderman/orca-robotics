@@ -71,6 +71,11 @@ public:
     virtual void setSensorModelDescription( ISensorDescription& descr )=0;
     // tell the driver the vehicle description
     virtual void setVehicleDescription( orca::VehicleDescription& descr )=0;
+    
+    // once all the sensor, control, and state info have been set up, 
+    // print out the configuration
+    virtual void printConfiguration()=0;
+
 
 protected: 
 

@@ -383,13 +383,6 @@ MainLoop::setup()
     }
         
     driver_->setVehicleDescription( vehicleDescr_ );
-    // TODO Jon--maybe we can remove this now, since the driver_ should have this text output?
-    stringstream descrStream;
-    descrStream << "Working with the following vehicle: " << orcaice::toString( vehicleDescr_ );
-    context_.tracer()->info( descrStream.str() );
-
-    
-    
 
     //
     // instantiate the sensor model
@@ -451,6 +444,8 @@ MainLoop::setup()
     pathMaintainer_ = new orcalocalnav::PathMaintainer( pathFollowerInterface_, clock_, context_ );
     speedLimiter_ = new orcalocalnav::SpeedLimiter( context_ );
 
+    driver_->printConfiguration();
+    
     initInterfaces();
     ensureProxiesNotEmpty();
 }

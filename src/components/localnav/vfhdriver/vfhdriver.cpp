@@ -29,7 +29,6 @@ namespace vfh {
 const double VfhDriver::escapeTimeMs_;
 	
 VfhDriver::VfhDriver( const orcaice::Context & context )
-//                       const orca::VehicleDescription &descr )
     : stallRatio_(0.0),
       currentState_(STATE_GOAL_REACHED),
       heartbeater_(context),
@@ -97,7 +96,12 @@ VfhDriver::setVehicleDescription( orca::VehicleDescription& descr )
   context_.tracer()->info( descrStream.str() );
 }
 
-
+void 
+VfhDriver::printConfiguration()
+{
+    // do nothing here since vfh sets up everything in the constructor and prints
+    // out the config using readFromProperties()
+}
 
 void 
 VfhDriver::setSpeedConstraints( float maxSpeed, float maxTurnrate )

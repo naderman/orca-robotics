@@ -83,7 +83,8 @@ public:
     
     // tell the driver the vehicle description
     virtual void setVehicleDescription( orca::VehicleDescription& descr );
-
+    
+    virtual void printConfiguration();
 
 private: 
 
