@@ -24,7 +24,10 @@
 #include <localnavutil/idriver.h>
 #include <localnavutil/isensormodel.h>
 #include <localnavutil/isensordata.h>
-
+#include <localnavutil/icontrol.h>
+#include <localnavutil/istate.h>
+#include <localnavutil/icontroldata.h>
+#include <localnavutil/istatedata.h>
 
 namespace localnav {
 
@@ -66,18 +69,22 @@ private:
     void setup();
     void initInterfaces();
     void connectToController();
-    void subscribeForOdometry();
     void subscribeForLocalisation();
     void subscribeForObservations();
+    void subscribeForState();
 
-    void sendCommandToPlatform( const orca::VelocityControl2dData& cmd );
+    void sendCommandToPlatform( const IControlData& cmd );
 
     // Make sure all our sources of info are OK, and that there's something
     // in all our buffers
     void ensureProxiesNotEmpty();
 
-    // Set the command to 'stop'
-    void getStopCommand( orca::VelocityControl2dData& cmd );
+    /// Set the command to 'stop'
+    /// This signature is modified, to allow us to pass in our current state, 
+    /// in case that informs us on a better way to issue a "stop" command 
+    /// (e.g., knowing our current velocity or steering angle in a bicycle)
+    /// We pass the currentState in as a pointer to allow passing NULL.
+    void getStopCommand( IControlData* cmd, IStateData* currentState );
 
     // See if we need to follow a new path, plus
     // see if we should update the world on our progress.
@@ -86,7 +93,7 @@ private:
     // Returns true if the timestamps differ by more than a threshold.
     bool areTimestampsDodgy( const ISensorData&                 sensorData,
                              const orca::Localise2dData&        localiseData,
-                             const orca::Odometry2dData&        odomData,
+                             const IStateData&                  stateData,
                              double                             threshold );
 
     // Constrains the max speed
@@ -104,23 +111,27 @@ private:
     // the type of sensor info we have for planning a path through the world
     ISensorModel* sensorModel_;
     
+    // the type of control we will be using
+    IControl* controlInterface_;
+    // includes state variables not available from odometry
+    IState* stateInterface_; 
+    
     // Incoming observations and pose info
     // Get observations, pose, and odometric velocity
     orcaifaceimpl::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>     *locConsumer_;
-    orcaifaceimpl::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>     *odomConsumer_;
 
     orcaice::Proxy<orca::Localise2dData>           *locProxy_;
-    orcaice::Proxy<orca::Odometry2dData>           *odomProxy_;
 
     orcalocalnav::PathFollower2dI  &pathFollowerInterface_;
 
     // data types
     ISensorData*                   sensorData_;
     orca::Localise2dData           localiseData_;
-    orca::Odometry2dData           odomData_;
 
     // Outgoing commands: live version
-    orca::VelocityControl2dPrx     velControl2dPrx_;
+    IControlData*                  cmd_;
+    // State data for controller
+    IStateData*                    state_;
     // Outgoing commands: test version
     Simulator                     *testSimulator_;
 

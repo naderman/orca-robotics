@@ -21,6 +21,11 @@
 #include <localnavutil/isensordata.h>
 #include <localnavutil/isensordescription.h>
 
+#include <localnavutil/icontrol.h>
+// #include <localnavutil/istate.h>
+// #include <localnavutil/icontroldata.h>
+// #include <localnavutil/icontroldescription.h>
+
 namespace vfh {
 
 //
@@ -49,8 +54,8 @@ public:
 
     ////////////////////////////////////////////////////////////
 
-    VfhDriver( const orcaice::Context &context,
-               const orca::VehicleDescription &descr );
+    VfhDriver( const orcaice::Context &context );
+    
     virtual ~VfhDriver();
 
     // Driver sets everything up, and is told what time it is
@@ -60,16 +65,24 @@ public:
     virtual void getCommand( bool                                   stalled,
                              bool                                   localisationUncertain,
                              const orcanavutil::Pose               &pose,
-                             const orca::Twist2d                   &currentVelocity,
-                             localnav::ISensorData                 *obs,
+                             const localnav::ISensorData           &obs,
                              const std::vector<orcalocalnav::Goal> &goals,
-                             orca::VelocityControl2dData           &cmd );
+                             const localnav::IStateData            &currentState,
+                             localnav::IControlData                &cmd
+                           );
                              
     // queries the driver for the required sensor model type
-    localnav::SensorModelType sensorModelType();
+    virtual localnav::SensorModelType sensorModelType();
     
     // tell the driver the sensor description
-    void setSensorModelDescription( localnav::ISensorDescription& descr );
+    virtual void setSensorModelDescription( localnav::ISensorDescription& descr );
+    
+    
+    // queries the driver for the required sensor model type
+    virtual localnav::ControlType controlType();
+    
+    // tell the driver the vehicle description
+    virtual void setVehicleDescription( orca::VehicleDescription& descr );
 
 
 private: 
@@ -133,12 +146,12 @@ std::ostream &operator<<( std::ostream &s, VfhDriver::DriverState state );
 class VfhDriverFactory : public localnav::DriverFactory
 {
 public:
-    localnav::IDriver *createDriver( const orcaice::Context &context,
-                                     const orca::VehicleDescription &vehicleDescr ) const
+    localnav::IDriver *createDriver( const orcaice::Context &context ) const
+//                                      const orca::VehicleDescription &vehicleDescr ) const
                                      // const orca::RangeScanner2dDescription &scannerDescr ) const
                                      // const localnav::ISensorDescription& scannerDescr ) const
         {
-            return new VfhDriver( context, vehicleDescr );
+            return new VfhDriver( context );
         }
 };
 

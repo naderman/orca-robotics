@@ -17,6 +17,8 @@
 
 #include <localnavutil/rangescannersensordata.h>
 #include <localnavutil/rangescannersensordescription.h>
+    
+#include <localnavutil/velocitycontrol2dcontrol.h>
 
 using namespace localnav;
 using namespace std;
@@ -26,8 +28,8 @@ namespace vfh {
 // need definition (in case its not inlined)
 const double VfhDriver::escapeTimeMs_;
 	
-VfhDriver::VfhDriver( const orcaice::Context & context,
-                      const orca::VehicleDescription &descr )
+VfhDriver::VfhDriver( const orcaice::Context & context )
+//                       const orca::VehicleDescription &descr )
     : stallRatio_(0.0),
       currentState_(STATE_GOAL_REACHED),
       heartbeater_(context),
@@ -35,7 +37,6 @@ VfhDriver::VfhDriver( const orcaice::Context & context,
 {
     // Configure and instantiate the core vfh algorithm
     readFromProperties( context, vfhConfig_ );
-    setFromVehicleDescr( descr, vfhConfig_ );
 
     cout<<"TRACE(vfhdriver.cpp): Instantiating VFH with: " << vfhConfig_ << endl;
     std::string warnings, errors;
@@ -78,6 +79,25 @@ VfhDriver::setSensorModelDescription( ISensorDescription& descr )
 
 }
 
+localnav::ControlType 
+VfhDriver::controlType()
+{
+  localnav::ControlType controlType = velocityControl2d;
+  return controlType;
+}
+    
+void 
+VfhDriver::setVehicleDescription( orca::VehicleDescription& descr )
+{
+  // this call to global function prototyped in vfh_algorithmconfig.h originally in 
+  // VfhDriver constructor, before descr removed from it to allow sophisticated drivers
+  setFromVehicleDescr( descr, vfhConfig_ );
+  stringstream descrStream;
+  descrStream << "Working with the following vehicle: " << orcaice::toString( descr ) << endl;
+  context_.tracer()->info( descrStream.str() );
+}
+
+
 
 void 
 VfhDriver::setSpeedConstraints( float maxSpeed, float maxTurnrate )
@@ -114,17 +134,35 @@ void
 VfhDriver::getCommand( bool                                   stalled,
                        bool                                   localisationUncertain,
                        const orcanavutil::Pose               &pose,
-                       const orca::Twist2d                   &currentVelocity,
-                       localnav::ISensorData                 *iSensorObs,
+                       const localnav::ISensorData           &iSensorObs,
                        const std::vector<orcalocalnav::Goal> &goals,
-                       orca::VelocityControl2dData           &cmd )
+                       const localnav::IStateData            &currentControlState,
+                       localnav::IControlData                &icmd
+                     )
 {
-    localnav::RangeScannerSensorData* sensorObs = dynamic_cast<localnav::RangeScannerSensorData*>(iSensorObs);
+    localnav::RangeScannerSensorData* sensorObs = dynamic_cast<localnav::RangeScannerSensorData*>(const_cast<localnav::ISensorData*>(&iSensorObs));
     if ( sensorObs==0 )
     {
         throw( std::string("vfhdriver.cpp: could not down cast to RangeScannerSensorData" ) );
     }
     orca::RangeScanner2dDataPtr obs = sensorObs->rangeData();
+    
+    // first, get back the normal version that VFH always used: VelocityControl2d
+    localnav::VelocityControl2dControlData *controlCmd = dynamic_cast<localnav::VelocityControl2dControlData*>(const_cast<localnav::IControlData*>(&icmd));
+    if( controlCmd == NULL )
+    {
+      throw( std::string("vfhdriver.cpp: could not downcast to localnav::VelocityControl2dControlData" ) );
+    }
+    orca::VelocityControl2dData cmd = controlCmd->velocityControl2dData();
+    
+    // now, we get back our 'regular' view of currentVelocity, as retrieved from currentControlState
+    localnav::VelocityControl2dStateData *vehicleState = dynamic_cast<localnav::VelocityControl2dStateData*>(const_cast<localnav::IStateData*>(&currentControlState));
+    if( vehicleState == NULL )
+    {
+      throw( std::string("vfhdriver.cpp: could not downcast state to localnav::VelocityControl2dStateData" ) );
+    }
+    orca::Odometry2dData state = vehicleState->velocityControl2dData();
+    orca::Twist2d currentVelocity = state.motion;
     
     if ( goals.size() == 0 )
     {
@@ -169,7 +207,10 @@ VfhDriver::getCommand( bool                                   stalled,
 
     stringstream ss;
     ss << "VFH: Setting command: " << orcaice::toString(cmd);
+    std::cout << ss.str( ) << std::endl;
     context_.tracer()->debug( ss.str(), 5 );
+    
+    controlCmd->setData( cmd );
 
     prevCmd_.motion.v.x = cmd.motion.v.x;
     prevCmd_.motion.v.y = cmd.motion.v.y;
@@ -206,9 +247,9 @@ VfhDriver::shouldEscape( bool stalled )
 void
 VfhDriver::setToZero( orca::VelocityControl2dData& cmd )
 {
-    cmd.motion.v.x = 0.0;
-    cmd.motion.v.y = 0.0;
-    cmd.motion.w   = 0.0;
+  cmd.motion.v.x = 0.0;
+  cmd.motion.v.y = 0.0;
+  cmd.motion.w = 0.0;
 }
 
 void

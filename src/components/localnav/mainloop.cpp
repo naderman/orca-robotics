@@ -17,12 +17,22 @@
 #include <orcamisc/realtimestopwatch.h>
 #include <localnavutil/isensordata.h>
 #include <localnavutil/isensordescription.h>
+#include <localnavutil/icontrol.h>
+#include <localnavutil/icontroldata.h>
+#include <localnavutil/istate.h>
+#include <localnavutil/istatedata.h>
 #include <localnavutil/rangescannersensordata.h>
 
 #include "mainloop.h"
 #include "testsim/simulator.h"
-#include "rangescannersensormodel.h"
-#include "ogmapsensormodel.h"
+#include <localnavutil/rangescannersensormodel.h>
+#include <localnavutil/ogmapsensormodel.h>
+#include <localnavutil/velocitycontrol2dcontrol.h>
+#include <localnavutil/velocitycontrol2dstate.h>
+#include <localnavutil/velocitycontrol2dstatedata.h>
+#include <localnavutil/drivebicyclecontrol.h>
+#include <localnavutil/drivebicyclestate.h>
+#include <localnavutil/drivebicyclestatedata.h>
 
 using namespace std;
 using namespace orca;
@@ -44,21 +54,21 @@ MainLoop::MainLoop( DriverFactory                    &driverFactory,
       driver_(NULL),
       driverFactory_(driverFactory),
       sensorModel_(0),
+      controlInterface_(NULL),
+      stateInterface_(NULL),
       locConsumer_(new orcaifaceimpl::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>),
-      odomConsumer_(new orcaifaceimpl::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>),
       locProxy_(NULL),
-      odomProxy_(NULL),
       pathFollowerInterface_(pathFollowerInterface),
       sensorData_(0),
+      cmd_(NULL),
+      state_(NULL),
       clock_(clock),
       testMode_(false),
       context_(context)
 {
+
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
     context_.status()->initialising( SUBSYSTEM );
-
-    Ice::ObjectPtr odomConsumerPtr = odomConsumer_;
-    odomConsumerPrx_ = orcaice::createConsumerInterface<Odometry2dConsumerPrx>( context_, odomConsumerPtr );
 
     Ice::ObjectPtr locConsumerPtr = locConsumer_;
     locConsumerPrx_ = orcaice::createConsumerInterface<Localise2dConsumerPrx>( context_, locConsumerPtr );
@@ -77,12 +87,14 @@ MainLoop::MainLoop( DriverFactory                   &driverFactory,
       driver_(NULL),
       driverFactory_(driverFactory),
       sensorModel_(0),
+      controlInterface_(NULL),
+      stateInterface_(NULL),
       locConsumer_(NULL),
-      odomConsumer_(NULL),
       locProxy_(NULL),
-      odomProxy_(NULL),
       pathFollowerInterface_(pathFollowerInterface),
       sensorData_(0),
+      cmd_(NULL),
+      state_(NULL),
       testSimulator_(&testSimulator),
       clock_(clock),
       testMode_(true),
@@ -96,10 +108,13 @@ MainLoop::~MainLoop()
 {
     if ( sensorModel_ ) delete sensorModel_;
     if ( sensorData_ ) delete sensorData_;
-    if ( odomConsumer_ ) delete odomConsumer_;
     if ( locConsumer_ ) delete locConsumer_;
     if ( speedLimiter_ ) delete speedLimiter_;
     if ( pathMaintainer_ ) delete pathMaintainer_;
+    if ( controlInterface_ ) delete controlInterface_;
+    if ( stateInterface_ ) delete stateInterface_;
+    if ( cmd_ ) delete cmd_;
+    if ( state_ ) delete state_;
     if ( driver_ ) delete driver_;
 }
 
@@ -111,10 +126,9 @@ MainLoop::ensureProxiesNotEmpty()
     {
         bool gotObs  = !sensorModel_->isProxyEmpty();
         bool gotLoc  = !locProxy_->isEmpty();
-        bool gotOdom = !odomProxy_->isEmpty();
+        bool gotState= !stateInterface_->isProxyEmpty();
 
-
-        if ( gotObs && gotLoc && gotOdom )
+        if ( gotObs && gotLoc && gotState )
         {
             context_.tracer()->info( "Received at least one data item from every provided interface." );
             return;
@@ -122,7 +136,7 @@ MainLoop::ensureProxiesNotEmpty()
         else
         {
             stringstream ss;
-            ss << "Still waiting for intial data to arrive.  gotObs="<<gotObs<<", gotLoc="<<gotLoc<<", gotOdom="<<gotOdom;
+            ss << "Still waiting for intial data to arrive.  gotObs="<<gotObs<<", gotLoc="<<gotLoc<<", gotState="<<gotState;
             context_.tracer()->warning( ss.str() );
             context_.status()->initialising( SUBSYSTEM, ss.str() );
             sleep(1);
@@ -130,12 +144,16 @@ MainLoop::ensureProxiesNotEmpty()
     }
 }
 
+/// we pass in the currentCommand as a pointer to allow passing NULL
 void 
-MainLoop::getStopCommand( orca::VelocityControl2dData& cmd )
+MainLoop::getStopCommand( IControlData* cmd, IStateData* currentState )
 {
-    cmd.motion.v.x = 0.0;
-    cmd.motion.v.y = 0.0;
-    cmd.motion.w   = 0.0;
+    if( cmd == NULL )
+    {
+        // now how did that happen?
+        throw orca::DataNotExistException( "Passed a NULL IControlData command to fill out with data!" );
+    }
+    cmd->setStopCommand( currentState );
 }
 
 void
@@ -166,97 +184,42 @@ MainLoop::initInterfaces()
 void
 MainLoop::connectToController()
 {
-    //TODO:  replace with generic base class IController() similarly to subscribeForObservations()
-    
-    while ( isActive() )
+  while ( isActive() )
+  {
+    if ( controlInterface_ == NULL )
     {
-        try 
-        {
-            // connect to the controller
-            orcaice::connectToInterfaceWithTag<VelocityControl2dPrx>( context_, velControl2dPrx_, "VelocityControl2d" );
-            context_.tracer()->debug("connected to a 'VelocityControl2d' interface",5);
-            break;
-        }
-        catch ( Ice::Exception &e )
-        {
-            stringstream ss; ss << "Error when connecting to VelocityControl2d interface: " << e;
-            context_.tracer()->error( ss.str() );
-        }
-        catch ( std::exception &e )
-        {
-            stringstream ss; ss << "Error when connecting to VelocityControl2d interface: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
-        context_.status()->initialising( SUBSYSTEM, "connectToController()" );
-        sleep(2);
+      throw orca::DataNotExistException( "ERROR: Control Interface has not been created yet..." );
     }
-    while ( isActive() )
+    if ( !controlInterface_->connectToInterface() )
     {
-        try 
-        {
-            // Get the vehicle description
-            vehicleDescr_ = velControl2dPrx_->getDescription();
-            break;
-        }
-        catch ( Ice::Exception &e )
-        {
-            stringstream ss; ss << "Error when connecting to VelocityControl2d interface: " << e;
-            context_.tracer()->error( ss.str() );
-        }
-        catch ( std::exception &e )
-        {
-            stringstream ss; ss << "Error when connecting to VelocityControl2d interface: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
-        context_.status()->initialising( SUBSYSTEM, "connectToController()" );
-        sleep(2);
+      sleep(2);
     }
-}
-
-void
-MainLoop::subscribeForOdometry()
-{
-    Odometry2dPrx   odomPrx;
-    
-    while ( isActive() )
+    else
     {
-        try {
-            orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odomPrx, "Odometry2d" );
-            break;
-        }
-        catch( Ice::Exception &e )
-        {
-            stringstream ss; ss << "Error while connecting to odometry: " << e;
-            context_.tracer()->error( ss.str() );
-        }
-        catch( std::exception &e )
-        {
-            stringstream ss; ss << "Error while connecting to odometry: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
-        context_.status()->heartbeat( SUBSYSTEM );
-        sleep(2);
-    }    
-    while ( isActive() )
-    {
-        try {
-            odomPrx->subscribe( odomConsumerPrx_ );
-            break;
-        }
-        catch( Ice::Exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to odometry: " << e;
-            context_.tracer()->error( ss.str() );
-        }
-        catch( std::exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to odometry: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
-        context_.status()->heartbeat( SUBSYSTEM );
-        sleep(2);
+      break;
     }
-    context_.tracer()->info( "Subscribed for odometry" );
+  }
+  // now get vehicle description
+  while ( isActive() )
+  {
+    try 
+    {
+      //  Get the vehicle description
+      vehicleDescr_ = controlInterface_->description();
+      break;
+    }
+    catch ( std::exception &e )
+    {
+      stringstream ss; ss << "Error when retrieving control model description: " << e.what();
+      context_.tracer()->error( ss.str() );
+    }
+    catch ( Ice::Exception &e )
+    {
+      stringstream ss; ss << "Error when retrieving control model description: " << e;
+      context_.tracer()->error( ss.str() );
+    }
+    sleep(2);
+  }
 }
 
 void
@@ -348,31 +311,85 @@ MainLoop::subscribeForObservations()
     context_.tracer()->info( "Subscribed for observations" );
 }
 
+void
+MainLoop::subscribeForState()
+{
+  while ( isActive() )
+  {
+    if ( !stateInterface_->connectToInterface() )
+    {
+      sleep(2);
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  while ( isActive() )
+  {
+    if ( !stateInterface_->subscribe() )
+    {
+      sleep(2);
+    }
+    else
+    {
+      break;
+    }
+  }
+  context_.tracer()->info( "Subscribed for VehicleState (i.e., odometry)" );
+}
+
 
 void
 MainLoop::setup()
 {
-    
+  driver_ = driverFactory_.createDriver( context_ );
+  
     //
-    // connect to the vehicle controller, get the vehicle description,
+    // connect to the vehicle control, get the vehicle description,
     // and create the driver for the path planner
     //
+  
+    // TODO Should incorporate this logic into a IControl factory for
+    // cleanliness's sake.
+    ControlType controlType = driver_->controlType( );
+    if( controlType == velocityControl2d )
+    {
+      controlInterface_ = new VelocityControl2dControl( context_ );
+      stateInterface_   = new VelocityControl2dState( context_ );
+      cmd_              = new VelocityControl2dControlData( );
+      state_            = new VelocityControl2dStateData( );
+    }
+    else if( controlType == driveBicycle )
+    {
+      controlInterface_ = new DriveBicycleControl( context_ );
+      stateInterface_   = new DriveBicycleState( context_ );
+      cmd_              = new DriveBicycleControlData( );
+      state_            = new DriveBicycleStateData( );
+    }
+    else
+    {
+      throw orca::OrcaException( "An appropriate controlType was not selected. You should choose between velocityControl2d and driveBicycle" );
+    }
     
     if ( !testMode_ )
     {
-        //TODO:  controller_->connectToController()
-        connectToController();
+        connectToController( );
     }
     else
     {
         vehicleDescr_ = testSimulator_->getVehicleDescription();
     }
         
-    driver_ = driverFactory_.createDriver( context_, vehicleDescr_ );
-    
+    driver_->setVehicleDescription( vehicleDescr_ );
+    // TODO Jon--maybe we can remove this now, since the driver_ should have this text output?
     stringstream descrStream;
-    descrStream << "Working with the following vehicle: " << orcaice::toString(vehicleDescr_) << endl;
+    descrStream << "Working with the following vehicle: " << orcaice::toString( vehicleDescr_ );
     context_.tracer()->info( descrStream.str() );
+
+    
+    
 
     //
     // instantiate the sensor model
@@ -405,17 +422,15 @@ MainLoop::setup()
     
     if ( !testMode_ )
     {
-        subscribeForOdometry();
         subscribeForLocalisation();
         subscribeForObservations();
-        // TODO: controllerState_->subscribeToControllerState();
-
+        subscribeForState();
         // tell the driver the sensor description
         driver_->setSensorModelDescription( sensorModel_->description() );
         
         // obsProxy_ is set up in subscribeForObservations()
         locProxy_  = &(locConsumer_->proxy_);
-        odomProxy_ = &(odomConsumer_->proxy_);
+        // odomProxy_ is setup in subscribeForState()
     }
     else
     {
@@ -425,10 +440,12 @@ MainLoop::setup()
         // TODO: setSimProxy() only works for range data... make general 
         sensorModel_->setSimProxy( &(testSimulator_->obsProxy_) );
         locProxy_  = &(testSimulator_->locProxy_);
-        odomProxy_ = &(testSimulator_->odomProxy_);
-
+        // TODO: setup odomProxy() for the simulator somehow through the state interface...
+        stateInterface_->setSimProxy( &(testSimulator_->odomProxy_) );
+        
         // Send an initial command
         // testSimulator_->setCommand( cmd );
+      std::cout << "delete me..." << std::endl;
     }
 
     pathMaintainer_ = new orcalocalnav::PathMaintainer( pathFollowerInterface_, clock_, context_ );
@@ -439,13 +456,26 @@ MainLoop::setup()
 }
 
 void
-MainLoop::sendCommandToPlatform( const orca::VelocityControl2dData& cmd )
+//     MainLoop::sendCommandToPlatform( const orca::VelocityControl2dData& cmd )
+MainLoop::sendCommandToPlatform( const IControlData& cmd )
 {
     try {
         if ( testMode_ )
-            testSimulator_->setCommand( cmd );
+        {
+          // TODO FIXME testSimulator only works for VelocityControl2d driver
+          localnav::VelocityControl2dControlData *cmdVelocityControl2d = 
+            dynamic_cast<localnav::VelocityControl2dControlData *>( const_cast<IControlData*>(&cmd) );
+          if( cmdVelocityControl2d == NULL )
+          {
+            throw orca::DataNotExistException("Test mode can only send commands using VelocityControl2d driver..." );
+          }
+          orca::VelocityControl2dData cmdData = cmdVelocityControl2d->velocityControl2dData();
+          testSimulator_->setCommand( cmdData );
+        }
         else
-            velControl2dPrx_->setCommand( cmd );
+        {
+            controlInterface_->setCommand( cmd );
+        }
     }
     catch ( orca::HardwareFailedException &e )
     {
@@ -473,7 +503,6 @@ MainLoop::run()
 
     std::vector<orcalocalnav::Goal> currentGoals;
     bool obsoleteStall = false;
-    orca::VelocityControl2dData velocityCmd;
 
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 2.0 );
 
@@ -482,14 +511,34 @@ MainLoop::run()
         try 
         {
             //cout<<"============================================="<<endl;
+            
+            // TODO: Ben - copy sensorModel_->getNext() for stateInterface_->getNext()
+            // IControlData &currentState = stateInterface_->getState( TIMEOUT_MS );
+            state_ = stateInterface_->getNext( TIMEOUT_MS );
+            if( state_ == NULL )
+            {
+              // yikes, something's wrong.
+                // we pass in our current state, in case that informs us on a better
+                // way to issue a "stop" command (e.g., knowing our current velocity
+                // or steering angle in a bicycle)
+                getStopCommand( cmd_ , state_ );
+                sendCommandToPlatform( *cmd_ );
+                // now we try again to subscribe?
+                stateInterface_->subscribe();
+                continue;
+            }
+            
 
             // The incoming sensor data provides the 'clock' which is the trigger for this loop
             sensorData_ = sensorModel_->getNext( TIMEOUT_MS );
             if ( sensorData_ == 0 )
             {
+                // we pass in our current state, in case that informs us on a better
+                // way to issue a "stop" command (e.g., knowing our current velocity
+                // or steering angle in a bicycle)
                 context_.status()->warning( SUBSYSTEM, "Failed to get sensor data" );
-                getStopCommand( velocityCmd );
-                sendCommandToPlatform( velocityCmd );
+                getStopCommand( cmd_ , state_ );
+                sendCommandToPlatform( *cmd_ );
                 sensorModel_->subscribe();
                 continue;
             }
@@ -501,22 +550,22 @@ MainLoop::run()
             clock_.setTime( sensorData_->timeStamp() );
 
             locProxy_->get( localiseData_ );
-            odomProxy_->get( odomData_ );
 
             const double THRESHOLD = 1.0; // seconds
-            if ( areTimestampsDodgy( *sensorData_, localiseData_, odomData_, THRESHOLD ) )
+            if ( areTimestampsDodgy( *sensorData_, localiseData_, *state_, THRESHOLD ) )
             {
                 stringstream ss;
                 ss << "Timestamps are more than "<<THRESHOLD<<"sec apart: " << endl
                    << "\t rangeData:    " << orcaice::toString(sensorData_->timeStamp()) << endl
                    << "\t localiseData: " << orcaice::toString(localiseData_.timeStamp) << endl
-                   << "\t odomData:     " << orcaice::toString(odomData_.timeStamp) << endl
+                   << "\t state:     " << orcaice::toString(state_->timeStamp()) << endl
                    << "Maybe something is wrong: Stopping.";
+                context_.tracer()->error( ss.str() );
                 context_.tracer()->warning( ss.str() );
                 context_.status()->warning( SUBSYSTEM, ss.str() );
-                getStopCommand( velocityCmd );
-                sendCommandToPlatform( velocityCmd );
-                subscribeForOdometry();
+                getStopCommand( cmd_ , state_ );
+                sendCommandToPlatform( *cmd_ );
+                subscribeForState();
                 subscribeForLocalisation();
                 continue;
             }
@@ -554,25 +603,27 @@ MainLoop::run()
             // The actual driver which determines the path and commands to send to the vehicle.
             // The odometry is required for the velocity, which isn't contained
             // in Localise2d.
+            // TODO: wrap up odom in currentState
             driver_->getCommand( obsoleteStall,
                                  uncertainLocalisation,
                                  pose,
-                                 odomData_.motion,
-                                 sensorData_,
+                                 *sensorData_,
                                  currentGoals,
-                                 velocityCmd );
+                                 *state_,
+                                 *cmd_ );
             
             // For big debug levels, give feedback through tracer.
             {
                 std::stringstream ss;
-                ss << "MainLoop: Setting command: " << orcaice::toString( velocityCmd );
-                context_.tracer()->debug( ss.str(), 5 );
+                ss <<  "MainLoop: Setting command: " << *cmd_ ;
+                // TODO: add orcaice::toString( const IControlData& ) method 
+                 context_.tracer()->debug( ss.str(), 5 );
             }
 
             // Only send the command if we're enabled.
             if ( pathFollowerInterface_.localIsEnabled() )
             {
-                sendCommandToPlatform( velocityCmd );
+                sendCommandToPlatform( *cmd_ );
             }
             else
             {
@@ -585,6 +636,13 @@ MainLoop::run()
             timerSS << "MainLoop: time to make and send decision: " << timer.elapsedSeconds()*1000.0 << "ms";
             context_.tracer()->info( timerSS.str() );
 
+            // TODO FIXME Jon--make sure Alex B. sees this and is happy. :)
+            // Because the cmd_ is now persistent, we can't count on the stack to create one
+            // with default constructor values anymore, so we issue a 'stop' command to our 
+            // persistent value here, in case anything goes wrong and we can't correct it
+            // before sending it on to the platform.
+            getStopCommand( cmd_, state_ );
+          
             checkWithOutsideWorld();
 
             if ( uncertainLocalisation )
@@ -656,12 +714,12 @@ MainLoop::checkWithOutsideWorld()
 bool
 MainLoop::areTimestampsDodgy( const ISensorData&                sensorData, 
                               const orca::Localise2dData&       localiseData, 
-                              const orca::Odometry2dData&       odomData,
+                              const IStateData&                 stateData,
                               double                           threshold )
 {
     if ( fabs( orcaice::timeDiffAsDouble( sensorData.timeStamp(), localiseData.timeStamp ) ) >= threshold )
         return true;
-    if ( fabs( orcaice::timeDiffAsDouble( sensorData.timeStamp(), odomData.timeStamp ) ) >= threshold )
+    if ( fabs( orcaice::timeDiffAsDouble( sensorData.timeStamp(), stateData.timeStamp() ) ) >= threshold )
         return true;
 
     return false;
