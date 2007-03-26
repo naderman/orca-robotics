@@ -22,6 +22,10 @@
 #include <orca/odometry3d.h>
 #include <orca/power.h>
 
+#include <orcaifaceimpl/odometry2dI.h>
+#include <orcaifaceimpl/odometry3dI.h>
+#include <orcaifaceimpl/powerI.h>
+
 namespace segwayrmp
 {
 
@@ -43,6 +47,16 @@ public:
     virtual void run();
 
 private:
+
+    void activate();
+    void initOdom2d();
+    void initOdom3d();
+    void initPower();
+
+    // external interfaces
+    orcaifaceimpl::Odometry2dIPtr odometry2dI_;
+    orcaifaceimpl::Odometry3dIPtr odometry3dI_;
+    orcaifaceimpl::PowerIPtr      powerI_;
 
     // network/hardware interface
     orcaice::Proxy<orca::Odometry2dData>&       odometry2dPipe_;
