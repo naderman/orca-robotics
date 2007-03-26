@@ -18,6 +18,10 @@ using namespace orca;
 using namespace orcaice;
 using namespace orcagpsutil;
 
+namespace {
+    const char *SUBSYSTEM = "gpshandler";
+}
+
 GpsHandler::GpsHandler(GpsI              &gpsObj,
                        GpsDriver         *hwDriver,
                        orcaice::Context  context,
@@ -26,6 +30,8 @@ GpsHandler::GpsHandler(GpsI              &gpsObj,
       hwDriver_(hwDriver),
       context_(context)
 {
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
+    context_.status()->initialising( SUBSYSTEM );
 }
 
 GpsHandler::~GpsHandler()
@@ -42,6 +48,8 @@ GpsHandler::run()
     std::string str = context_.tag() + ".Config.ReportIfNoFix";
 
     bool reportIfNoFix = orcaice::getPropertyAsIntWithDefault( prop, str, true );
+
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 5.0 );    
 
     try 
     {
@@ -68,7 +76,9 @@ GpsHandler::run()
                 int ret = hwDriver_->read();
                 if ( ret == -1 )
                 {
-                    context_.tracer()->error( "Problem reading from GPS.  Shutting down hardware." );
+                    string err = "Problem reading from GPS.  Shutting down hardware.";
+                    context_.tracer()->error( err );
+                    context_.status()->fault( SUBSYSTEM, err );
                     hwDriver_->disable();
                 }
 
@@ -164,6 +174,8 @@ GpsHandler::run()
                 }
                 lastHeartbeatTime = IceUtil::Time::now();
             }
+            context_.status()->ok( SUBSYSTEM );
+
         } // end of while
     } // end of try
     catch ( Ice::CommunicatorDestroyedException &e )

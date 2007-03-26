@@ -20,11 +20,17 @@ using namespace std;
 using namespace orca;
 
 namespace wifi {
-    
+
+namespace {
+    const char *SUBSYSTEM = "mainloop";
+}
 
 MainLoop::MainLoop( const orcaice::Context & context )
     : context_(context)
 {
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
+    context_.status()->initialising( SUBSYSTEM );
+
     initNetwork();
     initDriver();
 }
@@ -46,13 +52,18 @@ MainLoop::initNetwork()
             break;
         }
         catch ( const orcaice::NetworkException& e ) {
-            context_.tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+            stringstream ss;
+            ss << "Failed to setup interface: " << e.what();
+            context_.tracer()->warning( ss.str() );
+            context_.status()->initialising( SUBSYSTEM, ss.str() );
         }
         catch ( const Ice::Exception& e ) {
-            context_.tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+            stringstream ss;
+            ss << "Failed to setup interface: " << e;
+            context_.tracer()->warning( ss.str() );
+            context_.status()->initialising( SUBSYSTEM, ss.str() );
         }
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
     
 }
@@ -88,6 +99,8 @@ void MainLoop::initDriver()
 void 
 MainLoop::run()
 {   
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
+
     while ( isActive() )
     {
         try
@@ -100,8 +113,8 @@ MainLoop::run()
                     
             wifiInterface_->localSetAndSend( data );
             
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-            
+            context_.status()->ok( SUBSYSTEM );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));            
         }
         catch ( const wifiutil::Exception & e )
         {
@@ -113,35 +126,41 @@ MainLoop::run()
                 ss << e.what();
             }
             context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
         }
         catch ( const orca::OrcaException & e )
         {
             stringstream ss;
             ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
             context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
         }
         catch ( const orcaice::Exception & e )
         {
             stringstream ss;
             ss << "unexpected (local?) orcaice exception: " << e.what();
             context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
         }
         catch ( const Ice::Exception & e )
         {
             stringstream ss;
             ss << "unexpected Ice exception: " << e;
             context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
         }
         catch ( const std::exception & e )
         {
-            // once caught this beast in here, don't know who threw it 'St9bad_alloc'
             stringstream ss;
             ss << "unexpected std exception: " << e.what();
             context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->error( "unexpected exception from somewhere.");
+            string err = "unexpected exception from somewhere.";
+            context_.tracer()->error( err );
+            context_.status()->fault( SUBSYSTEM, err );
         }
             
     } // end of big while loop
