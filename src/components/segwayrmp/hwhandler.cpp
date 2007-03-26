@@ -288,7 +288,12 @@ HwHandler::run()
 
                 // Update status
                 if ( stateChanged ) 
+                {
+                    stringstream ss;
+                    ss << "Saw state change: " << status;
+                    context_.tracer()->info( ss.str() );
                     context_.status()->ok( SUBSYSTEM, status );
+                }
                 else
                     context_.status()->heartbeat( SUBSYSTEM );
             }
