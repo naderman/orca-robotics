@@ -21,6 +21,8 @@
 #include <localnavutil/isensormodel.h>
 #include <localnavutil/isensordata.h>
 #include <localnavutil/isensordescription.h>
+#include <localnavutil/icontrol.h>
+#include <localnavutil/icontroldata.h>
 
 namespace localnav {
 
@@ -55,17 +57,20 @@ public:
     virtual void getCommand( bool                                   stalled,
                              bool                                   localisationUncertain,
                              const orcanavutil::Pose               &pose,
-                             const orca::Twist2d                   &currentVelocity,
-                             ISensorData                           *obs,
+                             const ISensorData                     &obs,
                              const std::vector<orcalocalnav::Goal> &goals,
-                             orca::VelocityControl2dData           &cmd ) = 0;
+                             const IStateData                      &state,
+                             IControlData                          &cmd ) = 0;
                              
     // queries the driver for the required sensor model type
     virtual SensorModelType sensorModelType()=0;
+    // queries the driver for the required control type
+    virtual ControlType controlType()=0;
     
     // tell the driver the sensor description
     virtual void setSensorModelDescription( ISensorDescription& descr )=0;
-
+    // tell the driver the vehicle description
+    virtual void setVehicleDescription( orca::VehicleDescription& descr )=0;
 
 protected: 
 
@@ -75,8 +80,8 @@ protected:
 class DriverFactory {
 public:
     virtual ~DriverFactory() {};
-    virtual IDriver *createDriver( const orcaice::Context &context,
-                                   const orca::VehicleDescription &descr ) const=0;
+    virtual IDriver *createDriver( const orcaice::Context &context ) const=0;
+                                   // const orca::VehicleDescription &descr ) const=0;
 };
 
 } // namespace
