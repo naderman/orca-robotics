@@ -22,12 +22,19 @@ using namespace std;
 using namespace orca;
 using namespace laserfeatures;
 
+namespace {
+    const char *SUBSYSTEM = "mainloop";
+}
+
 MainLoop::MainLoop( orcaifaceimpl::PolarFeature2dI &featureInterface,
                     const orcaice::Context &context )
     : driver_(NULL),
       featureInterface_(featureInterface),
       context_(context)
 {
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
+    context_.status()->initialising( SUBSYSTEM );
+
     sensorOffset_.p.x=0;
     sensorOffset_.p.y=0;
     sensorOffset_.p.z=0;
@@ -38,9 +45,7 @@ MainLoop::MainLoop( orcaifaceimpl::PolarFeature2dI &featureInterface,
     // create a callback object to recieve scans
     Ice::ObjectPtr consumer = new LaserConsumerI( laserDataProxy_ );
     laserCallbackPrx_ =
-        orcaice::createConsumerInterface<orca::RangeScanner2dConsumerPrx>( context_, consumer );
-
-    
+        orcaice::createConsumerInterface<orca::RangeScanner2dConsumerPrx>( context_, consumer );    
 }
 
 MainLoop::~MainLoop()
@@ -93,16 +98,16 @@ MainLoop::connectToLaser()
             context_.tracer()->debug("connected to a 'Laser' interface", 4 );
             break;
         }
-        catch ( const std::exception &e )
-        {
-            stringstream ss;
-            ss << "failed to connect to laser interface: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
         catch ( const Ice::Exception &e )
         {
             stringstream ss;
             ss << "failed to connect to laser interface: " << e;
+            context_.tracer()->error( ss.str() );
+        }
+        catch ( const std::exception &e )
+        {
+            stringstream ss;
+            ss << "failed to connect to laser interface: " << e.what();
             context_.tracer()->error( ss.str() );
         }
         catch ( ... )
@@ -120,22 +125,23 @@ MainLoop::connectToLaser()
             laserPrx_->subscribe( laserCallbackPrx_ );
             break;
         }
-        catch ( const std::exception &e )
-        {
-            stringstream ss;
-            ss << "failed to subscribe to laser: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
         catch ( const Ice::Exception &e )
         {
             stringstream ss;
             ss << "failed to subscribe to laser: " << e;
             context_.tracer()->error( ss.str() );
         }
+        catch ( const std::exception &e )
+        {
+            stringstream ss;
+            ss << "failed to subscribe to laser: " << e.what();
+            context_.tracer()->error( ss.str() );
+        }
         catch ( ... )
         {
             context_.tracer()->error( "Failed to subscribe to laser for unknown reason." );
         }
+        context_.status()->initialising( SUBSYSTEM, "connectToLaser()" );
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
@@ -158,22 +164,23 @@ MainLoop::getLaserDescription()
             if ( sensorOffsetOK( sensorOffset_ ) )
                 return;
         }
-        catch ( const std::exception &e )
-        {
-            stringstream ss;
-            ss << "failed to retreive laser description: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
         catch ( const Ice::Exception &e )
         {
             stringstream ss;
             ss << "failed to retreive laser description: " << e;
             context_.tracer()->error( ss.str() );
         }
+        catch ( const std::exception &e )
+        {
+            stringstream ss;
+            ss << "failed to retreive laser description: " << e.what();
+            context_.tracer()->error( ss.str() );
+        }
         catch ( ... )
         {
             context_.tracer()->error( "Failed to retreive laser description for unknown reason." );
         }
+        context_.status()->initialising( SUBSYSTEM, "getLaserDescription()" );
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 }
@@ -193,6 +200,7 @@ MainLoop::initInterface()
         {
             context_.tracer()->warning( std::string("MainLoop::initInterface(): ") + e.what() );
         }
+        context_.status()->initialising( SUBSYSTEM, "initInterface()" );
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 }
@@ -211,6 +219,7 @@ MainLoop::run()
     const int timeoutMs = 1000;
 
     context_.tracer()->debug( "Entering main loop.",2 );
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 2.0 );
 
     // Loop forever till we get shut down.
     while ( isActive() )
@@ -225,6 +234,7 @@ MainLoop::run()
                 stringstream ss;
                 ss << "Timed out (" << timeoutMs << "ms) waiting for laser data.  Reconnecting.";
                 context_.tracer()->warning( ss.str() );
+                context_.status()->warning( SUBSYSTEM, ss.str() );
                 connectToLaser();
                 continue;
             }
@@ -234,8 +244,9 @@ MainLoop::run()
                 stringstream ss;
                 ss << "Got laser scan: expected " << laserDescr_.numberOfSamples
                     << " returns, got " << laserData->ranges.size();
-                context_.tracer()->error( ss.str() );
-                return;
+                context_.tracer()->warning( ss.str() );
+                context_.status()->warning( SUBSYSTEM, ss.str() );
+                continue;
             }
 
             // cout << "INFO(algorithmhandler.cpp): Getting laserData of size "
@@ -253,6 +264,8 @@ MainLoop::run()
             featureData->timeStamp = laserData->timeStamp;
 
             featureInterface_.localSetAndSend( featureData );
+
+            context_.status()->ok( SUBSYSTEM );
         } // try
         catch ( const orca::OrcaException & e )
         {
