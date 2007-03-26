@@ -225,6 +225,7 @@ NetHandler::run()
             // block on the most frequent data source: odometry
             if ( odometry2dPipe_.getNext( odometry2dData, odometryReadTimeout ) ) {
 //             context_.tracer()->debug( "Net loop timed out", 1);
+                context_.status()->warning( SUBSYSTEM, "Hardware not supplying odometry." );
                 continue;
             }
 
