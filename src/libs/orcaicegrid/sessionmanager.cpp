@@ -45,6 +45,11 @@ SessionManager::tryCreateSession()
             return false;
         }
     }
+    catch ( const Ice::CommunicatorDestroyedException &e )
+    {
+        // This is OK, we're shutting down
+        return false;
+    }
     catch ( const Ice::Exception &e )
     {
         std::stringstream ss;

@@ -46,7 +46,6 @@ Component::~Component()
 {
     if ( localStatus_ )
     {
-        std::cout<<"TRACE(component.cpp): deleting localstatus" << std::endl;
         delete localStatus_;
     }    
 }
@@ -76,9 +75,9 @@ Component::finalise()
 {
     if ( componentThread_ )
     {
-        std::cout<<"TRACE(component.cpp): stopAndJoin()" << std::endl;
-
+        context_.tracer()->debug( "orcaice::Component: stopping ComponentThread....", 2 );
         orcaice::Thread::stopAndJoin( componentThread_ );
+        context_.tracer()->debug( "orcaice::Component: ComponentThread stopped.", 2 );
     }
 }
 
