@@ -9,10 +9,9 @@
  */
  
 #include <iostream>
-
 #include "fakedriver.h"
-
 #include <orcaice/orcaice.h>
+#include "rmpexception.h"
 
 using namespace std;
 using namespace segwayrmp;
@@ -27,21 +26,19 @@ FakeDriver::~FakeDriver()
     cout<<"FakeDriver~FakeDriver"<<endl;
 }
 
-int 
+void
 FakeDriver::enable()
 {
     cout<<"FakeDriver is enabled"<<endl;
-    return 0;
 }
 
-int 
+void
 FakeDriver::disable()
 {
     cout<<"FakeDriver is disabled"<<endl;
-    return 0;
 }
 
-int 
+bool
 FakeDriver::read( SegwayRmpData& data, std::string &status )
 {
     orca::Time t = orcaice::toOrcaTime( IceUtil::Time::now() );
@@ -63,22 +60,19 @@ FakeDriver::read( SegwayRmpData& data, std::string &status )
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
 
     status = "faking=1";
-    return 0;
+    return false;
 }
 
-int 
+void
 FakeDriver::write( const SegwayRmpCommand& command )
 {
     // debug: simulated failure
     if ( command.vx < 2.0 ) {
         stringstream ss;
-        ss << "Wrote: SegwayRmpCommand (vx,w(deg/s)) : ("
+        ss << "FakeDriver: Wrote: SegwayRmpCommand (vx,w(deg/s)) : ("
             << command.vx << ", "
             << RAD2DEG(command.w) << ")";
         context_.tracer()->info( ss.str() );
-        return 0;
-    }
-    else {
-        return 1;
+        throw RmpException( ss.str() );
     }
 }

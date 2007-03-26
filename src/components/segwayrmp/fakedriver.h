@@ -28,13 +28,13 @@ public:
 
     virtual ~FakeDriver();
 
-    virtual int enable();
+    virtual void enable();
 
-    virtual int disable();
+    virtual void disable();
 
-    virtual int read( SegwayRmpData& data, std::string &status );
+    virtual bool read( SegwayRmpData& data, std::string &status );
 
-    virtual int write( const SegwayRmpCommand& command );
+    virtual void write( const SegwayRmpCommand& command );
 
 private:
     orcaice::Context context_;

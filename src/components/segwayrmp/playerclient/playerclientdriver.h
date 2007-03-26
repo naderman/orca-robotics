@@ -31,17 +31,15 @@ class PlayerClientDriver : public HwDriver
 public:
 
     PlayerClientDriver( const orcaice::Context & context );
-    //PlayerClientDriver( const std::map<std::string,std::string> & props );
     virtual ~PlayerClientDriver();
 
-    // returns: 0 = success, non-zero = failure
-    virtual int enable();
+    virtual void enable();
 
-    virtual int disable();
+    virtual void disable();
 
-    virtual int read( SegwayRmpData& data, std::string &status );
+    virtual bool read( SegwayRmpData& data, std::string &status );
 
-    virtual int write( const SegwayRmpCommand& command );
+    virtual void write( const SegwayRmpCommand& command );
 
 private:
 

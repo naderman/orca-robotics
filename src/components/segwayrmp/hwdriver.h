@@ -14,6 +14,12 @@
 namespace segwayrmp
 {
 
+//
+// Abstract interface class for something that talks to the RMP
+// hardware (or a simulator).
+//
+// Member functions throw RmpExceptions on error conditions.
+//
 class HwDriver
 {
 
@@ -49,26 +55,20 @@ public:
 
     virtual ~HwDriver() {};
     
-    // Returns 0 on success. Does not throw.
-    virtual int enable()=0;
-
-    // Returns 0 on success. Does not throw.
-    virtual int disable()=0;
-
-    // Blocking read. Returns 0 on success. Does not throw.
-    virtual int read( SegwayRmpData& data, std::string &status )=0;
-
-    // Writes velocity command. Returns 0 on success. Does not throw.
-    virtual int write( const SegwayRmpCommand& command )=0;
-
+    virtual void enable()=0;
+    virtual void disable()=0;
+    // Blocking read.
+    // Returns: 
+    //   true:  important change in internal state occured.  Details are in 'status'.
+    //   false: no important change
+    virtual bool read( SegwayRmpData& data, std::string &status )=0;
+    // Writes velocity command.
+    virtual void write( const SegwayRmpCommand& command )=0;
     // Apply physical limits of this hardare.
-    // Base implementation does nothing.
     virtual void applyHardwareLimits( double& forwardSpeed, double& reverseSpeed, 
         double& turnrate, double& turnrateAtMaxSpeed ) {};
-
-    // Non-blocking read of secondary data. Returns 0 on success.
-    virtual int get( SegwayRmpStats& stats ) { return 0; };
-
+    // Non-blocking read of secondary data.
+    virtual void get( SegwayRmpStats& stats ) {};
     // For debugging, convert to string as much of internal state as possible
     virtual std::string toString() { return std::string(""); };
 

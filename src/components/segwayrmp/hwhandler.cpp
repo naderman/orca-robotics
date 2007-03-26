@@ -16,6 +16,7 @@
 
 #include "hwhandler.h"
 #include "fakedriver.h"
+#include "rmpexception.h"
 
 // segway rmp drivers
 #include "rmpdriver/rmpdriver.h"
@@ -31,6 +32,10 @@
 
 using namespace std;
 using namespace segwayrmp;
+
+namespace {
+    const char *SUBSYSTEM = "hardware";
+}
 
 void 
 HwHandler::convert( const HwDriver::SegwayRmpData& internal, orca::Odometry2dData& network )
@@ -102,8 +107,8 @@ HwHandler::HwHandler(
     driver_(0),
     context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( "hardware", 10.0 );
-    context_.status()->initialising( "hardware" );
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
+    context_.status()->initialising( SUBSYSTEM );
 
     // we'll handle incoming messages
     commandPipe.setNotifyHandler( this );
@@ -194,15 +199,21 @@ HwHandler::~HwHandler()
 void
 HwHandler::enableDriver()
 {
-    while ( isActive() ) {
-        context_.tracer()->info("(Re-)Enabling driver...");
-        if ( driver_->enable() == 0 ) 
-        {
+    while ( isActive() ) 
+    {
+        try {
+            context_.tracer()->info("(Re-)Enabling driver...");
+            driver_->enable();
             context_.tracer()->info( "Enable succeeded." );
             return;
         }
-        context_.tracer()->warning( "failed to enable the driver; will try again in 2 seconds.");
-        context_.status()->warning( "hardware", "driver failed to enable" );
+        catch ( RmpException &e )
+        {
+            stringstream ss;
+            ss << "HwHandler::enableDriver(): Failed to enable: " << e.what();
+            context_.tracer()->warning( ss.str() );
+            context_.status()->warning( SUBSYSTEM, ss.str() );
+        }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 }
@@ -226,8 +237,7 @@ HwHandler::run()
     powerData.batteries[1].name = "main-rear";
     powerData.batteries[2].name = "ui";
 
-    double heartbeatInterval = 2.0;
-    context_.status()->setMaxHeartbeatInterval( "hardware", 2.0*heartbeatInterval );
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 2.0 );
 
     //
     // Main loop
@@ -257,10 +267,10 @@ HwHandler::run()
             //
             // Read data from the hardware
             //
-            int readStatus = driver_->read( segwayRmpData, currDriverStatus );
-    
-            if ( readStatus==0 ) 
-            {
+            try {
+                std::string status;
+                bool stateChanged = driver_->read( segwayRmpData, status );
+
                 // convert internal to network format, and
                 // stick it in the proxies so pullers can get it
                 
@@ -275,23 +285,21 @@ HwHandler::run()
 
                 convert( segwayRmpData, powerData );
                 powerPipe_.set( powerData );
-                
-                if ( driverStatus != currDriverStatus ) {
-                    context_.status()->ok( "hardware", currDriverStatus );
-                    driverStatus = currDriverStatus;
-                }
-            } 
-            else 
+
+                // Update status
+                if ( stateChanged ) 
+                    context_.status()->ok( SUBSYSTEM, status );
+                else
+                    context_.status()->heartbeat( SUBSYSTEM );
+            }
+            catch ( RmpException &e )
             {
-                context_.tracer()->error("failed to read data from Segway hardware.");                
-                if ( driverStatus != currDriverStatus ) {
-                    context_.status()->fault( "hardware", currDriverStatus );
-                    driverStatus = currDriverStatus;
-                }
+                stringstream ss;
+                ss << "HwHandler: Failed to read: " << e.what();
+                context_.tracer()->error( ss.str() );
+                context_.status()->fault( SUBSYSTEM, ss.str() );
                 isOkProxy_.set( false );
             }
-            // subsystem heartbeat
-            context_.status()->heartbeat( "hardware" );
 
         } // try
         catch ( const orca::OrcaException & e )
@@ -338,11 +346,14 @@ HwHandler::run()
     // exited main loop
 
     // reset the hardware
-    if ( driver_->disable() ) {
-        context_.tracer()->warning("failed to disable driver");
+    try {
+        driver_->disable();
     }
-    else {
-        context_.tracer()->debug("driver disabled",5);
+    catch ( RmpException &e )
+    {
+        stringstream ss;
+        ss << "HwHandler: failed to disable driver: " << e.what();
+        context_.tracer()->warning( ss.str() );
     }
 
     // log run statistics
@@ -418,14 +429,18 @@ HwHandler::handleData( const orca::VelocityControl2dData & origObj )
     //
     // write to hardware
     //
-    if( driver_->write( segwayRmpCommand ) != 0 ) 
+    try {
+        driver_->write( segwayRmpCommand );
+    }
+    catch ( RmpException &e )
     {
-        std::string errorStr = "failed to write command data to hardware.";
-        context_.tracer()->error( errorStr );
+        stringstream ss;
+        ss << "HwHandler: Failed to write command to hardware: " << e.what();
+        context_.tracer()->error( ss.str() );
         // set local state to failure
         isOkProxy_.set( false );
 
         // inform remote client of hardware failure
-        throw orca::HardwareFailedException( errorStr );
+        throw orca::HardwareFailedException( ss.str() );
     }
 }

@@ -18,6 +18,7 @@
 #include "rmpdataframe.h"
 #include "rmpdefs.h"
 #include "canpacket.h"
+#include <rmpexception.h>
 
 using namespace std;
 using namespace orca;
@@ -45,12 +46,7 @@ RmpDriver::RmpDriver( const orcaice::Context & context,
     cout<<config_<<endl;
 }
 
-RmpDriver::~RmpDriver()
-{
-    cout<<"TRACE(rmpdriver.cpp): destructor()" << endl;
-}
-
-int
+void
 RmpDriver::enable()
 {
     rmpIo_.disable();
@@ -62,36 +58,36 @@ RmpDriver::enable()
     catch ( std::exception &e )
     {
         stringstream ss;
-        ss << "Looks like the Segway is not connected.  Symptom is: "<<endl<<e.what();
-        context_.tracer()->error(ss.str());
-        return -1;
+        ss << "RmpDriver: failed to enable.  Looks like the Segway is not connected.  Symptom is: "<<endl<<e.what();
+        throw RmpException( ss.str() );
     }
 
-    try {
-        context_.tracer()->debug("RmpDriver::enable(): connected to RmpIo device.");
+    context_.tracer()->debug("RmpDriver::enable(): connected to RmpIo device.");
     
-        // segway is physically connected; try to configure
+    // segway is physically connected; try to configure
 
-        // first, tell it to stand still.
-        SegwayRmpCommand zero;
-        zero.vx = 0.0;
-        zero.w = 0.0;
-        write( zero  );
+    // first, tell it to stand still.
+    SegwayRmpCommand zero;
+    zero.vx = 0.0;
+    zero.w = 0.0;
+    write( zero  );
         
-        // try reading from it
-        try {
-            readFrame();
-        }
-        catch ( RmpException &e )
-        {
-            stringstream ss;
-            ss << "Looks like the Segway is powered off.  Symptom is: " << endl << e.what();
-            throw RmpException( ss.str() );
-        }
-        stringstream ssread;
-        ssread << "Initial exploratory read says:"<<endl<<toString();
-        context_.tracer()->debug( ssread.str() );
+    // try reading from it
+    try {
+        readFrame();
+    }
+    catch ( RmpException &e )
+    {
+        stringstream ss;
+        ss << "RmpDriver: Looks like the Segway is powered off.  Symptom is: " << endl << e.what();
+        throw RmpException( ss.str() );
+    }
 
+    stringstream ssread;
+    ssread << "Initial exploratory read says:"<<endl<<toString();
+    context_.tracer()->debug( ssread.str() );
+
+    try {
         // Initialise everything
         resetAllIntegrators();
         setMaxVelocityScaleFactor( config_.maxVelocityScale );
@@ -104,35 +100,10 @@ RmpDriver::enable()
     {
         stringstream ss;
         ss << "RmpDriver::enable() failed: " << e.what();
-        context_.tracer()->warning( ss.str() );
         rmpIo_.disable();
-        return 2;
+        throw RmpException( ss.str() );
     }
-    return 0;
 }
-
-// int
-// RmpDriver::repair()
-// {
-//     context_.tracer()->debug( "Repairing..." );
-//     repairCounter_++;
-
-// //     try {
-// //         // try a quick reset
-// //         rmpusbio_->reset();
-// //         return 0;
-// //     }
-// //     catch ( std::exception &e )
-// //     {
-// //         stringstream ss;
-// //         ss << "RmpDriver::repair(): Quick reset failed: " << e.what();
-// //         context_.tracer()->debug( ss.str() );
-// //     }
-
-//     // Try to shutdown and init again.
-//     disable();
-//     return enable();
-// }
 
 // int
 // RmpDriver::disable()
@@ -145,9 +116,11 @@ RmpDriver::enable()
 //     return 0;
 // }
 
-int
-RmpDriver::read( SegwayRmpData& data, std::string & status )
+bool
+RmpDriver::read( SegwayRmpData &data, std::string &status )
 {
+    bool stateChanged = false;
+
     try {
         //
         // Read a full data frame
@@ -158,29 +131,33 @@ RmpDriver::read( SegwayRmpData& data, std::string & status )
         updateData( data, rmpStatus );
 
         // do a status check (before resetting the frame)
-        if ( frame_.status_word1!=lastStatusWord1_ && frame_.status_word1!=lastStatusWord2_ ) {
-            cout<<"RmpDriver: internal state change : "<<IceUtil::Time::now().toDateTime()<<endl;
-            cout<<toString()<<endl;
+        if ( frame_.status_word1 != lastStatusWord1_ || 
+             frame_.status_word1 != lastStatusWord2_ ) 
+        {
+            stringstream ss;
+            ss << "RmpDriver: internal state change : "<<IceUtil::Time::now().toDateTime()<<endl;
+            ss<<toString()<<endl;
             lastStatusWord1_ = frame_.status_word1;
             lastStatusWord2_ = frame_.status_word2;
+            status = ss.str();
+            stateChanged = true;
         }
 
         frame_.reset();
 
-        // update status (only change it when internal state changes?)
-        std::ostringstream os;
-        os << "State1="<<frame_.CuStatus1ToString()<<" State2="<<frame_.CuStatus2ToString();
-        status = os.str();
-
-        return 0;
+//         // update status (only change it when internal state changes?)
+//         std::ostringstream os;
+//         os << "State1="<<frame_.CuStatus1ToString()<<" State2="<<frame_.CuStatus2ToString();
+//         status = os.str();
     }
     catch ( std::exception &e )
     {
         stringstream ss; 
-        ss << "RmpDriver::read(): Error: " << e.what();
-        context_.tracer()->error( ss.str() );
-        return -1;
+        ss << "RmpDriver::read(): " << e.what();
+        throw RmpException( ss.str() );
     }
+
+    return stateChanged;
 }
 
 void
@@ -194,7 +171,7 @@ RmpDriver::applyScaling( const SegwayRmpCommand& original, SegwayRmpCommand &sca
     scaledCommand.w  = original.w;
 }
 
-int
+void
 RmpDriver::write( const SegwayRmpCommand& command )
 {
     SegwayRmpCommand scaledCommand;
@@ -204,21 +181,18 @@ RmpDriver::write( const SegwayRmpCommand& command )
         makeMotionCommandPacket( &pkt_, scaledCommand );
 
         rmpIo_.writePacket(&pkt_);
-
-        return 0;
     }
     catch ( std::exception &e )
     {
         stringstream ss;
-        ss << "RmpDriver::write(): Error: " << e.what();
-        context_.tracer()->error( ss.str() );
-        return -1;
+        ss << "RmpDriver::write(): " << e.what();
+        throw RmpException( ss.str() );
     }
 }
 
 void 
 RmpDriver::applyHardwareLimits( double& forwardSpeed, double& reverseSpeed, 
-                                   double& turnrate, double& turnrateAtMaxSpeed )
+                                double& turnrate, double& turnrateAtMaxSpeed )
 {
     double forwardSpeedLimit 
             = config_.maxVelocityScale * (double)RMP_MAX_TRANS_VEL_COUNT / RMP_COUNT_PER_M_PER_S;
@@ -240,11 +214,10 @@ RmpDriver::applyHardwareLimits( double& forwardSpeed, double& reverseSpeed,
     turnrate = MIN( turnrateAtMaxSpeed, turnrateAtMaxSpeedLimit );
 }
 
-int 
+void
 RmpDriver::get( SegwayRmpStats& stats )
 {
     stats.distanceTravelled = frame_.foreaft;
-    return 0;
 }
 
 std::string

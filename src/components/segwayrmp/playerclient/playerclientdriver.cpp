@@ -18,6 +18,7 @@
 #include <IceUtil/Thread.h>     // for sleep()
 
 #include "playerclientdriver.h"
+#include <rmpexception.h>
 
 using namespace std;
 using namespace segwayrmp;
@@ -44,10 +45,10 @@ PlayerClientDriver::~PlayerClientDriver()
     disable();
 }
 
-int
+void
 PlayerClientDriver::enable()
 {
-    if ( enabled_ ) return 0;
+    if ( enabled_ ) return;
 
     cout << "TRACE(playerclientdriver.cpp): PlayerClientDriver: Connecting to player on host "
          << config_.host << ", port " << config_.port << endl;
@@ -66,41 +67,34 @@ PlayerClientDriver::enable()
     }
     catch ( const PlayerCc::PlayerError & e )
     {
-        std::cerr << e << std::endl;
-        cout << "ERROR(playerclientdriver.cpp): player error" << endl;
+        stringstream ss;
+        ss << "PlayerClientDriver: " << e;
         disable();
-        return -1;
+        throw RmpException( ss.str() );
     }
 
     enabled_ = true;
-    return 0;
 }
 
-// int PlayerClientDriver::repair()
-// {
-//     disable();
-//     return enable();
-// }
-
-int
+void
 PlayerClientDriver::disable()
 {
-    if ( !enabled_ ) return 0;
+    if ( !enabled_ ) return;
 
 //     delete positionProxy_;
     delete position3dProxy_;
     delete powerProxy_;
     delete robot_;
     enabled_ = false;
-    return 0;
 }
 
-int
+bool
 PlayerClientDriver::read( SegwayRmpData& data, std::string &status )
 {
     if ( ! enabled_ ) {
-        //cout << "ERROR(playerclientdriver.cpp): Can't read: not connected to Player/Stage yet." << endl;
-        return -1;
+        stringstream ss;
+        ss << "PlayerClientDriver: Can't read: not connected to Player/Stage yet.";
+        throw RmpException( ss.str() );
     }
 
     // player throws exceptions on creation if we fail
@@ -110,10 +104,10 @@ PlayerClientDriver::read( SegwayRmpData& data, std::string &status )
     }
     catch ( const PlayerCc::PlayerError & e )
     {
-        std::cerr << e << std::endl;
-        cout << "ERROR(playerclientdriver.cpp): Error reading from robot." << endl;
+        stringstream ss;
+        ss << "PlayerClientDriver::read() Error reading from robot: " << e;
+        throw RmpException( ss.str() );
         enabled_ = false;
-        return -1;
     }
     
 //     orcaplayer::convert( *positionProxy_, position2d );
@@ -140,10 +134,10 @@ PlayerClientDriver::read( SegwayRmpData& data, std::string &status )
 
     status = "playing=1";
 
-    return 0;
+    return false;
 }
 
-int
+void
 PlayerClientDriver::write( const SegwayRmpCommand& command )
 {
     // this version of Player client takes speed command in  [m, m, rad/s]
@@ -153,9 +147,8 @@ PlayerClientDriver::write( const SegwayRmpCommand& command )
     }
     catch ( const PlayerCc::PlayerError & e )
     {
-        std::cerr << e << std::endl;
-        cout << "ERROR(playerclientdriver.cpp): Error writing to robot." << endl;
-        return -1;
+        stringstream ss;
+        ss << "PlayerClientDriver::write(): " << e;
+        throw RmpException( ss.str() );
     }
-    return 0;     
 }

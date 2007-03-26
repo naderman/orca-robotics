@@ -22,28 +22,41 @@ namespace segwayrmp
 
 class RmpIo;
 
+//
+// Class that knows how to talk Segway's protocol.  Requires a
+// hardware interface implementation to be passed to the constructor.
+//
+// All public member functions throw RmpExceptions on error conditions.
+//
 class RmpDriver : public HwDriver
 {
 public:
 
     RmpDriver( const orcaice::Context & context,
                RmpIo &rmpIo );
-    virtual ~RmpDriver();
 
-    virtual int enable();
+    // Inherited from HwDriver
+    virtual void enable();
 
-    virtual int disable() { return 0; };
+    // Inherited from HwDriver
+    // AlexB: What the fuck is this?
+    void disable() {}
 
-    virtual int read( SegwayRmpData& data, std::string &status );
+    // Inherited from HwDriver
+    bool read( SegwayRmpData& data, std::string &status );
 
-    virtual int write( const SegwayRmpCommand& command );
+    // Inherited from HwDriver
+    void write( const SegwayRmpCommand& command );
 
-    virtual void applyHardwareLimits( double& forwardSpeed, double& reverseSpeed, 
+    // Inherited from HwDriver
+    void applyHardwareLimits( double& forwardSpeed, double& reverseSpeed, 
         double& turnrate, double& turnrateAtMaxSpeed );
 
-    virtual int get( SegwayRmpStats& stats );
+    // Inherited from HwDriver
+    void get( SegwayRmpStats& stats );
 
-    virtual std::string toString();
+    // Inherited from HwDriver
+    std::string toString();
 
 private:
 
