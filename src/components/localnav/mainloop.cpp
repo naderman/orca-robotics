@@ -31,6 +31,10 @@ using namespace orcalocalnav;
 
 namespace localnav {
 
+namespace {
+    const char *SUBSYSTEM = "mainloop";
+}
+
 MainLoop::MainLoop( DriverFactory                    &driverFactory,
                     orcalocalnav::Clock              &clock,
                     orcalocalnav::PathFollower2dI    &pathFollowerInterface,
@@ -50,6 +54,9 @@ MainLoop::MainLoop( DriverFactory                    &driverFactory,
       testMode_(false),
       context_(context)
 {
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
+    context_.status()->initialising( SUBSYSTEM );
+
     Ice::ObjectPtr odomConsumerPtr = odomConsumer_;
     odomConsumerPrx_ = orcaice::createConsumerInterface<Odometry2dConsumerPrx>( context_, odomConsumerPtr );
 
@@ -81,6 +88,8 @@ MainLoop::MainLoop( DriverFactory                   &driverFactory,
       testMode_(true),
       context_(context)
 {
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
+    context_.status()->initialising( SUBSYSTEM );
 }
 
 MainLoop::~MainLoop()
@@ -115,6 +124,7 @@ MainLoop::ensureProxiesNotEmpty()
             stringstream ss;
             ss << "Still waiting for intial data to arrive.  gotObs="<<gotObs<<", gotLoc="<<gotLoc<<", gotOdom="<<gotOdom;
             context_.tracer()->warning( ss.str() );
+            context_.status()->initialising( SUBSYSTEM, ss.str() );
             sleep(1);
         }
     }
@@ -148,6 +158,7 @@ MainLoop::initInterfaces()
                 return;
             }
         }
+        context_.status()->initialising( SUBSYSTEM, "initInterfaces()" );
         sleep(2);
     }
 }
@@ -166,16 +177,17 @@ MainLoop::connectToController()
             context_.tracer()->debug("connected to a 'VelocityControl2d' interface",5);
             break;
         }
-        catch ( std::exception &e )
-        {
-            stringstream ss; ss << "Error when connecting to VelocityControl2d interface: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
         catch ( Ice::Exception &e )
         {
             stringstream ss; ss << "Error when connecting to VelocityControl2d interface: " << e;
             context_.tracer()->error( ss.str() );
         }
+        catch ( std::exception &e )
+        {
+            stringstream ss; ss << "Error when connecting to VelocityControl2d interface: " << e.what();
+            context_.tracer()->error( ss.str() );
+        }
+        context_.status()->initialising( SUBSYSTEM, "connectToController()" );
         sleep(2);
     }
     while ( isActive() )
@@ -186,16 +198,17 @@ MainLoop::connectToController()
             vehicleDescr_ = velControl2dPrx_->getDescription();
             break;
         }
-        catch ( std::exception &e )
-        {
-            stringstream ss; ss << "Error when connecting to VelocityControl2d interface: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
         catch ( Ice::Exception &e )
         {
             stringstream ss; ss << "Error when connecting to VelocityControl2d interface: " << e;
             context_.tracer()->error( ss.str() );
         }
+        catch ( std::exception &e )
+        {
+            stringstream ss; ss << "Error when connecting to VelocityControl2d interface: " << e.what();
+            context_.tracer()->error( ss.str() );
+        }
+        context_.status()->initialising( SUBSYSTEM, "connectToController()" );
         sleep(2);
     }
 }
@@ -211,16 +224,17 @@ MainLoop::subscribeForOdometry()
             orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odomPrx, "Odometry2d" );
             break;
         }
-        catch( std::exception &e )
-        {
-            stringstream ss; ss << "Error while connecting to odometry: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
         catch( Ice::Exception &e )
         {
             stringstream ss; ss << "Error while connecting to odometry: " << e;
             context_.tracer()->error( ss.str() );
         }
+        catch( std::exception &e )
+        {
+            stringstream ss; ss << "Error while connecting to odometry: " << e.what();
+            context_.tracer()->error( ss.str() );
+        }
+        context_.status()->heartbeat( SUBSYSTEM );
         sleep(2);
     }    
     while ( isActive() )
@@ -229,16 +243,17 @@ MainLoop::subscribeForOdometry()
             odomPrx->subscribe( odomConsumerPrx_ );
             break;
         }
-        catch( std::exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to odometry: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
         catch( Ice::Exception &e )
         {
             stringstream ss; ss << "Error while subscribing to odometry: " << e;
             context_.tracer()->error( ss.str() );
         }
+        catch( std::exception &e )
+        {
+            stringstream ss; ss << "Error while subscribing to odometry: " << e.what();
+            context_.tracer()->error( ss.str() );
+        }
+        context_.status()->heartbeat( SUBSYSTEM );
         sleep(2);
     }
     context_.tracer()->info( "Subscribed for odometry" );
@@ -262,14 +277,14 @@ MainLoop::subscribeForLocalisation()
             }
             break;
         }
-        catch( std::exception &e )
-        {
-            stringstream ss; ss << "Error while connecting to localise2d: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
         catch( Ice::Exception &e )
         {
             stringstream ss; ss << "Error while connecting to localise2d: " << e;
+            context_.tracer()->error( ss.str() );
+        }
+        catch( std::exception &e )
+        {
+            stringstream ss; ss << "Error while connecting to localise2d: " << e.what();
             context_.tracer()->error( ss.str() );
         }
         catch( std::string &e )
@@ -277,6 +292,7 @@ MainLoop::subscribeForLocalisation()
             stringstream ss; ss << "Error while connecting to localise2d: " << e;
             context_.tracer()->error( ss.str() );
         }
+        context_.status()->heartbeat( SUBSYSTEM );
         sleep(2);
     }    
     while ( isActive() )
@@ -285,16 +301,17 @@ MainLoop::subscribeForLocalisation()
             locPrx->subscribe( locConsumerPrx_ );
             break;
         }
-        catch( std::exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to localise2d: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
         catch( Ice::Exception &e )
         {
             stringstream ss; ss << "Error while subscribing to localise2d: " << e;
             context_.tracer()->error( ss.str() );
         }
+        catch( std::exception &e )
+        {
+            stringstream ss; ss << "Error while subscribing to localise2d: " << e.what();
+            context_.tracer()->error( ss.str() );
+        }
+        context_.status()->heartbeat( SUBSYSTEM );
         sleep(2);
     }
     context_.tracer()->info( "Subscribed for localisation" );
@@ -307,6 +324,7 @@ MainLoop::subscribeForObservations()
     {
         if ( !sensorModel_->connectToInterface() )
         {
+            context_.status()->heartbeat( SUBSYSTEM );
             sleep(2);
         }
         else
@@ -319,6 +337,7 @@ MainLoop::subscribeForObservations()
     {
         if ( !sensorModel_->subscribe() )
         {
+            context_.status()->heartbeat( SUBSYSTEM );
             sleep(2);
         }
         else
@@ -433,12 +452,14 @@ MainLoop::sendCommandToPlatform( const orca::VelocityControl2dData& cmd )
         stringstream ss;
         ss << e.what;
         context_.tracer()->warning( ss.str() );
+        context_.status()->warning( SUBSYSTEM, ss.str() );
     }
     catch ( const Ice::Exception &e )
     {
         stringstream ss;
         ss << "While giving command to platform: " << e;
         context_.tracer()->warning( ss.str() );
+        context_.status()->warning( SUBSYSTEM, ss.str() );
     }    
 }
 
@@ -454,6 +475,8 @@ MainLoop::run()
     bool obsoleteStall = false;
     orca::VelocityControl2dData velocityCmd;
 
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 2.0 );
+
     while ( isActive() )
     {
         try 
@@ -464,6 +487,7 @@ MainLoop::run()
             sensorData_ = sensorModel_->getNext( TIMEOUT_MS );
             if ( sensorData_ == 0 )
             {
+                context_.status()->warning( SUBSYSTEM, "Failed to get sensor data" );
                 getStopCommand( velocityCmd );
                 sendCommandToPlatform( velocityCmd );
                 sensorModel_->subscribe();
@@ -488,7 +512,8 @@ MainLoop::run()
                    << "\t localiseData: " << orcaice::toString(localiseData_.timeStamp) << endl
                    << "\t odomData:     " << orcaice::toString(odomData_.timeStamp) << endl
                    << "Maybe something is wrong: Stopping.";
-                context_.tracer()->error( ss.str() );
+                context_.tracer()->warning( ss.str() );
+                context_.status()->warning( SUBSYSTEM, ss.str() );
                 getStopCommand( velocityCmd );
                 sendCommandToPlatform( velocityCmd );
                 subscribeForOdometry();
@@ -552,6 +577,7 @@ MainLoop::run()
             else
             {
                 context_.tracer()->debug( "Doing nothing because disabled" );
+                context_.status()->ok( SUBSYSTEM );
                 continue;
             }
 
@@ -561,6 +587,10 @@ MainLoop::run()
 
             checkWithOutsideWorld();
 
+            if ( uncertainLocalisation )
+                context_.status()->warning( SUBSYSTEM, "Localisation is uncertain, but everything else is OK." );
+            else
+                context_.status()->ok( SUBSYSTEM );
         }
         catch ( Ice::CommunicatorDestroyedException &e )
         {
@@ -570,35 +600,40 @@ MainLoop::run()
             // Could probably handle it better for an Application by stopping the component on Ctrl-C
             // before shutting down communicator.
         }
+        catch ( Ice::Exception &e )
+        {
+            std::stringstream ss;
+            ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e;
+            context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
+        }
         catch ( std::exception &e )
         {
             std::stringstream ss;
             ss << "mainloop.cpp: caught std::exception: " << e.what();
             context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
         }
         catch ( std::string &e )
         {
             std::stringstream ss;
             ss << "mainloop.cpp: caught std::string: " << e;
             context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
         }
         catch ( char *e )
         {
             std::stringstream ss;
             ss << "mainloop.cpp: caught char*: " << e;
             context_.tracer()->error( ss.str() );
-        }
-        catch ( Ice::Exception &e )
-        {
-            std::stringstream ss;
-            ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
         }
         catch ( ... )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected unknown exception.";
             context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
         }
     }
     
