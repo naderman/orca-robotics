@@ -18,6 +18,7 @@
 #include <rmpdriver/rmpdefs.h>
 #include <rmpdriver/canpacket.h>
 #include <rmpdriver/usb/usbftdi/usbftdi.h>
+#include <rmpexception.h>
 
 // USB magic numbers
 #define SEGWAY_USB_VENDOR_ID                    0x0403
