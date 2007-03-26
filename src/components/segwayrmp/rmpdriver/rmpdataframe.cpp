@@ -32,8 +32,8 @@ RmpDataFrame::RmpDataFrame()
 std::string RmpDataFrame::toString()
 {
     std::ostringstream os;
-    statusCheck_ ? os<<setw(15)<<"status 1"<<dec<<setw(10)<<(int)status_word1<<hex<<setw(10)<<status_word1<<"\t\t"<< CuStatus1ToString()<<endl :os<<"status 1   \tDROPPED"<<endl;
-    statusCheck_ ? os<<setw(15)<<"status 2"<<dec<<setw(10)<<(int)status_word2<<hex<<setw(10)<<status_word2<<"\t\t"<< CuStatus2ToString()<<endl :os<<"status 2   \tDROPPED"<<endl;
+    statusCheck_ ? os<<setw(15)<<"status 1"<<dec<<setw(10)<<(int)status_word1<<hex<<setw(10)<<"0x"<<status_word1<<"\t\t"<< CuStatus1ToString()<<endl :os<<"status 1   \tDROPPED"<<endl;
+    statusCheck_ ? os<<setw(15)<<"status 2"<<dec<<setw(10)<<(int)status_word2<<hex<<setw(10)<<"0x"<<status_word2<<"\t\t"<< CuStatus2ToString()<<endl :os<<"status 2   \tDROPPED"<<endl;
     
     msgCheckList_[1] ? os<<setw(15)<<"pitch"<<dec<<setw(10)<<(int)pitch<<hex<<setw(10)<<pitch<<"\t\t"<<dec<<(float)pitch/RMP_COUNT_PER_DEG<<" deg"<<endl : os<<"pitch      \tDROPPED"<<endl;
     msgCheckList_[1] ? os<<setw(15)<<"pitch dot"<<dec<<setw(10)<<(int)pitch_dot<<hex<<setw(10)<<pitch_dot<<"\t\t"<<dec<<(float)pitch_dot/RMP_COUNT_PER_DEG_PER_S<<" deg/s"<<endl : os<<"pitch dot  \tDROPPED"<<endl;

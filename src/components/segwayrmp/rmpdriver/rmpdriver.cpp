@@ -137,6 +137,7 @@ RmpDriver::read( SegwayRmpData &data, std::string &status )
             stringstream ss;
             ss << "RmpDriver: internal state change : "<<IceUtil::Time::now().toDateTime()<<endl;
             ss<<toString()<<endl;
+            ss << "StatusWords: " << frame_.status_word1 << "  " << frame_.status_word2;
             lastStatusWord1_ = frame_.status_word1;
             lastStatusWord2_ = frame_.status_word2;
             status = ss.str();
