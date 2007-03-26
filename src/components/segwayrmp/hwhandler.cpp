@@ -237,7 +237,6 @@ HwHandler::run()
     powerData.batteries[1].name = "main-rear";
     powerData.batteries[2].name = "ui";
 
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 2.0 );
 
     //
     // Main loop
@@ -253,10 +252,12 @@ HwHandler::run()
             faultProxy_.get( faultInfo );
             if ( faultInfo.isError() )
             {
+                context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 5.0 );    
                 enableDriver();
 
                 // we enabled, so presume we're OK.
                 faultProxy_.set( FaultInfo(false) );
+                context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 2.0 );
 
                 // but make sure we're not shutting down.
                 if ( !isActive() )
