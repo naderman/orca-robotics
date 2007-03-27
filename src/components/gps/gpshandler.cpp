@@ -41,9 +41,6 @@ GpsHandler::~GpsHandler()
 void
 GpsHandler::run()
 {
-    const int TIME_BETWEEN_HEARTBEATS  = 10000;  // ms
-    IceUtil::Time lastHeartbeatTime = IceUtil::Time::now();
-    
     Ice::PropertiesPtr prop = context_.properties();
     std::string str = context_.tag() + ".Config.ReportIfNoFix";
 
@@ -160,19 +157,6 @@ GpsHandler::run()
             {
                 // Wait for someone to enable us
                 IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(100));
-            }
-
-            if ( (IceUtil::Time::now()-lastHeartbeatTime).toMilliSecondsDouble() >= TIME_BETWEEN_HEARTBEATS )
-            {
-                if ( hwDriver_->isEnabled() )
-                {
-                    context_.status()->heartbeat("Gps enabled. " + hwDriver_->heartbeatMessage() );
-                }
-                else
-                {
-                    context_.status()->heartbeat( "Gps disabled." );
-                }
-                lastHeartbeatTime = IceUtil::Time::now();
             }
             context_.status()->ok( SUBSYSTEM );
 
