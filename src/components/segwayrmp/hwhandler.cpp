@@ -154,11 +154,19 @@ HwHandler::HwHandler(
     {
 #ifdef HAVE_CAN_DRIVER
         context_.tracer()->debug( "loading 'peakcan' driver",3);
-        rmpIo_ = new PeakCanDriver ( context_ );
+        
+        //Get the port name that we are being asked to open
+        string portName;
+        if( orcaice::getProperty( context_.properties(), prefix+"SegwayRmpCan.PortName", portName ) !=0 ){
+            throw orcaice::Exception( ERROR_INFO, "HwHandler::HwHandler() Config.SegwayRmpCan.PortName not specified" );
+        }
+
+        rmpIo_ = new PeakCanDriver ( portName );
         driver_ = new RmpDriver( context_, *rmpIo_ );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'peakcan' because it was not built!" );
 #endif
+
     }
     else if ( driverName == "playerclient" )
     {

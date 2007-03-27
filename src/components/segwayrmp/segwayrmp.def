@@ -16,7 +16,7 @@ Provides.Power.DefaultName=power
 # Required Interfaces
 
 # Config Parameters
-Config.Driver.Comment=Options are { 'segwayrmpusb', 'playerclient', 'fake' }
+Config.Driver.Comment=Options are { 'segwayrmpcan', 'segwayrmpusb', 'playerclient', 'fake' }
 Config.Driver.Default=segwayrmpusb
 Config.EnableMotion.Default=1
 Config.LogStats.Default=1
@@ -42,12 +42,16 @@ Config.ProvideOdometry3d.Default=1
 Config.Odometry3dPublishInterval.Default=0.1
 Config.PowerPublishInterval.Default=20.0
 
-# SegwayRmpUsb driver only
-Config.SegwayRmpUsb.GainSchedule.Default=normal
-Config.SegwayRmpUsb.MaxVelocityScale.Default=0.75
-Config.SegwayRmpUsb.MaxTurnrateScale.Default=0.75
-Config.SegwayRmpUsb.MaxAccelerationScale.Default=0.75
-Config.SegwayRmpUsb.MaxCurrentLimitScale.Default=0.75
+Config.SegwayRmp.GainSchedule.Comment=SegwayRmpUsb And SegwayRmpCan drivers only
+Config.SegwayRmp.GainSchedule.Default=normal
+Config.SegwayRmp.MaxVelocityScale.Default=0.75
+Config.SegwayRmp.MaxTurnrateScale.Default=0.75
+Config.SegwayRmp.MaxAccelerationScale.Default=0.75
+Config.SegwayRmp.MaxCurrentLimitScale.Default=0.75
+
+#Tell the driver how to find the peak device that we are using!
+Config.SegwayRmpCan.PortName.Comment=The default peak CAN device we are going to use!
+Config.SegwayRmpCan.PortName.Default=/dev/pcan40
 
 # PlayerClient driver only
 Config.PlayerClient.Host.Default=localhost

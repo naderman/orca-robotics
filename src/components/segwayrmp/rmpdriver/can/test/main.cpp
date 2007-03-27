@@ -21,12 +21,13 @@ using namespace segwayrmp;
 
 int main(void){
 
-  //**??** where should we be getting the context from?
-    orcaice::Context canContext;
+
     segwayrmp::CanPacket dataPacket;
+    std::string portName("/dev/pcan40");
 
     //declare our Can Driver object
-    segwayrmp::PeakCanDriver test(canContext);
+    segwayrmp::PeakCanDriver test( portName );
+    test.enable(4);
  
     //**??** a bogus command???
     test.writePacket(&dataPacket);
@@ -34,11 +35,8 @@ int main(void){
     
     while(true){ //**??** how should this be escaped?
       //Keep trying to read data from the CAN interface
-      if ( test.readPacket(&dataPacket) == RmpIo::OK ){
-	cout<< dataPacket.toString() <<endl;
-      }else{
-	cout << "Unable to get data\n";
-      }
+      if ( test.readPacket(&dataPacket) == RmpIo::OK )
+        { cout<< dataPacket.toString() << endl; }
     }
       
   return 0;

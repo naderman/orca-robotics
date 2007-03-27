@@ -12,13 +12,18 @@
 
 #include "canpacket.h"
 
-// Copied this from <canlib.h>. I assume that it's portable across CAN
-// implementations.
+
+using namespace segwayrmp;
+
+
+// Copied this from <canlib.h>. 
+// This definition appears to be standard only for the FTDI USB to can
+// The peak driver uses a different value in the MSG_Type field to denote
+// a standard not extended message
 #ifndef canMSG_STD
   #define canMSG_STD              0x0002
 #endif
 
-using namespace segwayrmp;
 
 /*
     This code originates from Player/Stage project

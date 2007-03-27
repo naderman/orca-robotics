@@ -10,172 +10,214 @@
 #include <string.h>
 #include <iostream>
 
-#include <orcaice/context.h>
+
+#include <orcaice/orcaice.h>
 #include <libpcan.h>  //stuff to access the peak can drivers
 #include <pcan.h>
 
 #include <rmpdriver/canpacket.h>
 #include <rmpdriver/rmpio.h>
+#include <rmpexception.h>
 #include "peakcandriver.h"
 
 using namespace std;
 using namespace segwayrmp;
 
-//********************************************************
-PeakCanDriver::PeakCanDriver(const orcaice::Context & context ){
-    
-    char TextString[VERSIONSTRING_LEN];
-    
-    //**??** how do I generalise this????
+//**??** DO I need some form of MUTEX to lock the access to the port
+
+// ********************************************************
+PeakCanDriver::PeakCanDriver(const string & portName ){    
+
+   
     //open the CAN port and use as a chardev type end point
-    portHandle_ = LINUX_CAN_Open("/dev/pcan40",O_RDWR);
-    
+    portHandle_ = LINUX_CAN_Open(portName.c_str() ,O_RDWR);
+    isEnabled_ = false;    
  
-    //**??** what about throwing exceptions here ?????
-   if( portHandle_ ){
-        cout << "CAN port opened correctly\n";
-        
-        // get version info from the driver
-        if ( CAN_VersionInfo(portHandle_,TextString) == 0 ){
-            printf("Using Peak can driver:- version = %s\n", TextString);
-        }else{
-            printf("Peak can driver: failed to get version info\n");
-        }
+    if( ! portHandle_ ){
+        stringstream ss;
+        ss << "PeakCanDriver::constructor(): Error: "<<
+            "Unable to open the can port " << portName << endl;
+        throw RmpException( ss.str() );
+   }else{
+        cout << "Can port opened properly\n";
+        isEnabled_ = true;
+   }
 
-    }else{
-        cout<<"Failed to open CAN port correctly\n";
-    }
-
-    //**??** We should be setting the initalisation here
-    //CAN_Init()...
-    //What about CAN_MsgFilter???
 }
 
 
 
-//********************************************************
+// ********************************************************
 PeakCanDriver::~PeakCanDriver(){
     if(portHandle_){
       CAN_Close(portHandle_);  //close access to the PCMCIA port
       portHandle_ = NULL;      //clear the port handle
-        //**??** revist this. Is there more to do?
+      isEnabled_ = false;
     }
 }
 
 
-//*******************************************************
+// *******************************************************
+// Function to read a CAN packet from the card. Will
+// returns NO_DATA in the event of a timeout or a failed
+// read. Will wait for 10msec (=> 100Hz) for data before 
+// timing out
+
 RmpIo::RmpIoStatus 
 PeakCanDriver::readPacket( CanPacket* pkt ){
+    DWORD RetVal=0;
 
-    const int timeOutMicroSeconds=1000;
+    //Set the default timeout to 100Hz
+    const int timeOutMicroSeconds=10000;
 
-    //**??** is the assert the right choice of error?
-    assert ( portHandle_ != NULL );
+    assert ( isEnabled_ );
 
     RmpIo::RmpIoStatus status = NO_DATA;
 
     //Using data structs from pcan.h
     TPCANRdMsg canDataReceived;
      
-    if( LINUX_CAN_Read_Timeout(portHandle_, &canDataReceived, timeOutMicroSeconds ) == 0){
+    //Call the peak library code
+    RetVal = LINUX_CAN_Read_Timeout(portHandle_, &canDataReceived, timeOutMicroSeconds ); 
 
-        //**??** can we get rid of this step???
+    if ( RetVal == 0 ){
         convertPeakToCanPacket(pkt, &canDataReceived.Msg);
         status = OK;
-    }else{
-        //**??** error handling????
-        cout<<"Data Rx timed out\n";
+    }else{        
+        if( debugLevel_ > 0)
+        { printf("peakcandriver::readPacket(): Data Rx timed out, returned 0x%04x\n",RetVal); }  
         status = NO_DATA;
     }
   
-
     return status;
 }
 
 
 
-//***********************************************************************
+// ***********************************************************************
+// Attempt to write a packet to the CAN card
+// throws an Exception if the write fails.
+
 void PeakCanDriver::writePacket( CanPacket* pktToSend ){
     int RetVal = 0; 
 
-    //We are supposed to be able to write data at ~ 100Hz, allow a timeout of 50Hz by default
+    assert ( isEnabled_ );
+
+    //We are supposed to be able to write data at ~ 100Hz, allow a timeout equivalent to 
+    //50Hz by default
     const int timeOutMicroSeconds = 20000;  
     
-    //Used for error notification
-    stringstream ss;
-
-    //**??** is the throw the right choice of error? What if no listeners?
-    assert ( portHandle_ != NULL );
-
     //Using data structs from pcan.h
     TPCANMsg canDataToSend;
     
-    //**??** can we get rid of this step???
     //convert CanPacket to peak Can structure
     convertCanPacketToPeak( &canDataToSend, pktToSend );
 
     //Send to the peak device driver code
     RetVal = LINUX_CAN_Write_Timeout(portHandle_,  &canDataToSend, timeOutMicroSeconds);
+
     if( RetVal != 0){
         //The send data failed!
-        
-        //**??** sensible error handler ???
         stringstream ss;
-        ss << endl << " --> Attempting to write to the peak CAN card failed: Returned "<<RetVal <<endl;
+        ss << endl << " --> Attempted write data to CAN card failed: Call Returned "<< RetVal << endl;
         throw RmpException( ss.str() );
     }
 
 }
 
 
-//***********************************************************************
+// ***********************************************************************
+// Setup the connection to the CAN card, default baud rates etc.
 void 
 PeakCanDriver::enable( int debugLevel ){
-    debugLevel_ = debugLevel;
+    DWORD RetVal = 0;
 
+    stringstream ss;
+
+    char TextString[VERSIONSTRING_LEN];
+    debugLevel_ = debugLevel;
+    
+    isEnabled_ = false; //until we get told otherwise!
+    
     if(debugLevel_ > 0){
-        cout<<"TRACE(peakcandriver.cpp): enable()" << endl;
+        cout << "TRACE(peakcandriver.cpp): enable()" << endl;
+
+        // get version info from the driv
+        if ( CAN_VersionInfo(portHandle_,TextString) == 0 ){
+            cout << "Using Peak can driver:- version = " << TextString << endl ;
+        }else{
+            cout << "Peak can driver: failed to get version info\n";
+        }
+    }
+    
+    //Force the default initialisation state of the CAN card. This should happen anyway
+    //But let's be explicit about it. We are set to 500K baud and extended can message type...
+    //Note in reality we are only ever dealing with standard not extended message types, but the
+    //writes barf if we set ST message type here
+    RetVal = CAN_Init(portHandle_, CAN_BAUD_500K, CAN_INIT_TYPE_EX );
+    
+    if( RetVal != 0 ){
+        ss << endl << " --> Attempted initialisation of the CAN card failed: Call Returned "<< RetVal << endl;
+        throw RmpException( ss.str() );      
     }
 
-    //**??** finish me off!
+ 
+    //Potentially we could call the CAN_MsgFilter() from libpcan here to filter out some
+    //of the un-needed packets (ie heartbeat messages) at a low level. However I haven't
+    //been able to get this to work!
+   
+    isEnabled_ = true; 
+
     return;
-
-
-  
 }
 
-//************************************************************************
 
+
+// ************************************************************************
+// This function is just a place holder, and does very little 
 void 
 PeakCanDriver::disable( void ){
-  //**??** finish me off!
-    if(debugLevel_ > 0){
-        cout<<"TRACE(peakcandriver.cpp): disable()" << endl;
-    }
 
+    if(debugLevel_ > 0){
+        cout << "TRACE(peakcandriver.cpp): disable()" << endl;
+    }
+    
+    isEnabled_ = false;
     return;
 }
 
 
 
-//***********************************************************************
+// ***********************************************************************
 void 
 PeakCanDriver::convertCanPacketToPeak(TPCANMsg *peakCanOut, const CanPacket* pktIn ){
 
     peakCanOut->ID      =  pktIn->id;
-    peakCanOut->MSGTYPE =  pktIn->flags; //**??** Is this the correct translation????
-    peakCanOut->LEN     =  (uint8_t) pktIn->dlc;
-    memcpy(peakCanOut->DATA, pktIn->msg, CanPacket::CAN_DATA_SIZE);
+    peakCanOut->LEN     =  CanPacket::CAN_DATA_SIZE;
+    memcpy(peakCanOut->DATA, pktIn->msg, CanPacket::CAN_DATA_SIZE * sizeof (BYTE));
+
+    //Use the peak driver definition for a standard (not extended type message)
+    //Note that this does not match that used in the FDTI library (see below)
+    peakCanOut->MSGTYPE =  MSGTYPE_STANDARD; 
 
 }
 
-//***********************************************************************
+// ***********************************************************************
 void 
 PeakCanDriver::convertPeakToCanPacket(CanPacket* pktOut, const TPCANMsg *peakCanIn ){
 
     pktOut -> id      =  peakCanIn -> ID;
-    pktOut -> flags   =  peakCanIn -> MSGTYPE; //**??** Is this the correct translation????
-    pktOut -> dlc     =  peakCanIn -> LEN;
     memcpy(pktOut -> msg, peakCanIn -> DATA, CanPacket::CAN_DATA_SIZE * sizeof(BYTE));
 
+    //NOTE:- We do not change the value in the flags field. It seems the 
+    //different drivers peak / FDTI etc have different definitions of how a standard
+    //(not extended) can message is denoted.
+    
+    /* These two never need to change and are defined at initalisation
+      pktOut -> flags   =  pktOut -> flags; 
+      pktOut -> dlc     =  CAN_DATA_SIZE;
+    */
+
 }
+
+

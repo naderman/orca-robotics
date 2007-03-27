@@ -185,48 +185,76 @@ You should see the following line in CMake output:
     USB Driver for Segway RMP - can be built
 @endverbatim
 
-@par Extra configuration
+@par Extra configuration. Used for USB and CAN
 
-- @c SegwayRmp.Config.SegwayRmpUsb.GainSchedule (string)
+- @c SegwayRmp.Config.SegwayRmp.GainSchedule (string)
     - Choice of the gain schedule for the closed-loop controller in balanced mode
     - Valid values: { "normal", "tall", "heavy" }
     - Default: "normal"
 
-- @c SegwayRmp.Config.SegwayRmpUsb.MaxVelocityScale (double)
+- @c SegwayRmp.Config.SegwayRmp.MaxVelocityScale (double)
     - Scaling factor applied to forward velocity.
     - Valid values: [0.0 .. 1.0]
     - Default: 0.75
 
-- @c SegwayRmp.Config.SegwayRmpUsb.MaxTurnrateScale (double)
+- @c SegwayRmp.Config.SegwayRmp.MaxTurnrateScale (double)
     - Scaling factor applied to yaw rate.
     - Valid values: [0.0 .. 1.0]
     - Default: 0.75
 
-- @c SegwayRmp.Config.SegwayRmpUsb.MaxAccelerationScale (double)
+- @c SegwayRmp.Config.SegwayRmp.MaxAccelerationScale (double)
     - Scaling factor applied to forward velocity.
     - Valid values: [0.0 .. 1.0]
     - Default: 0.75
 
-- @c SegwayRmp.Config.SegwayRmpUsb.MaxCurrentLimitScale (double)
+- @c SegwayRmp.Config.SegwayRmp.MaxCurrentLimitScale (double)
     - Scaling factor applied to forward velocity.
     - Valid values: [0.0 .. 1.0]
     - Default: 0.75
 
-@section orca_segwayrmp_can Kvaser CAN driver
 
-This driver is used to interface the the RMP using a Kvaser CAN card.
-Currently only the LAPCan II is tested.
+@section Segway RMP CAN
 
-@par Dependencies
+This driver is written to interface with the PCMICA CAN card from
+peaksystems http://www.peak-system.com/. Please read the general description
+above for the USB driver as some of the information there is directly relevant.
+The drivers for the peak devices should be downloaded from the website above. Currently the code
+has been tested with driver version 6.0 on Debian / Ubuntu systems. Download the driver package
+*.tar.gz unzip and then follow the installation instructions in the installation sources. 
 
-Kvaser's linux SDK is required.  Download from www.kvaser.com.  Version 4.2 is tested.
+@verbatim
+    peak-system-drivers*/Documentation/Installation-en.pdf
+@endverbatim 
 
-Note that Kvaser uses custom Makefiles, so building their SDK is a bitch.
+This should
+work for PCMCIA, USB, PCI cards etc, though only the PCMCIA version has been tested!
 
-For debian:
-  - edit settings.mak:
-    - change: 'KERNEL_SOURCE_DIR=/usr/src/linux-`uname -r`' 
-    - to:     'KERNEL_SOURCE_DIR=/usr/src/linux-headers-`uname -r`'
+On at least one ubuntu installation it was necessary to make a couple of additional changes
+in order to run the installs.<br>
+<ol>
+<li>edit the default shell used in the "pcan_make_devices" script from #!/bin/sh to #!/bin/bash</li>
+<li>If your system has a split source installation </li>
+</ol>
+
+As usual, make sure that both Linux and CMake detect the changes
+@verbatim
+# ldconfig
+$ rm CMakeCache.txt
+$ cmake .
+@endverbatim
+
+You should see the following line in CMake output:
+@verbatim
+    CAN Driver for Segway RMP - can be built
+@endverbatim
+
+@par Extra configuration. Used for the peak CAN
+
+- @c SegwayRmp.Config.SegwayRmpCan.CardPort (string)
+    - Select the linux file that is the end point for communication with the peak can device
+    - Valid values: { "/dev/pcan*"  }
+    - Default: "/dev/pcan40"   &nbsp;&nbsp;The default is the first PCMCIA port
+
 
 
 @section orca_segwayrmp_playerclient Player Client driver
@@ -247,7 +275,7 @@ Requires that Player/Stage v.>=2.0 are installed and running. As Player itself, 
     - Constraints: >0
     - Default: 6665
     
-Naturally, both real hardware and Stage simulator are supported. Support is limited to what Player supports which is currently the original RMP with CAN I/O using Kvaser, Inc.'s CANLIB interface library. This library provides access to CAN cards made by Kvaser, such as the LAPcan II.
+Naturally, both real hardware and Stage simulator are supported. Support is limited to what Player supports which is currently the original RMP with CAN I/O using Peak systems driver and USB from FTDI
 
 @section internal Internal Structure
 
