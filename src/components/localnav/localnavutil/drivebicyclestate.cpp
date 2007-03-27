@@ -108,13 +108,13 @@ DriveBicycleState::getNext( const int timeoutMs )
   else
   {
     // See DriveBicycleStateData::getTimestamp() for more comments.
-    stringstream ss;
-    orca::Time timestamp=orcaice::getNow();
-    ss << "Although a timeout of " << timeoutMs << "[ms] was specified, we return data independent of that. ";
-    ss << "Any calls to this->stateData_.getTimestamp() will return the time at which this message was generated: " << orcaice::toString(timestamp);
+//     stringstream ss;
+//     orca::Time timestamp=orcaice::getNow();
+//     ss << "Although a timeout of " << timeoutMs << "[ms] was specified, we return data independent of that. ";
+//     ss << "Any calls to this->stateData_.getTimestamp() will return the time at which this message was generated: " << orcaice::toString(timestamp);
     stateData_.setData( stateData );
-    stateData_.setTimeStamp( timestamp );
-    context_.tracer()->warning( ss.str() );
+//     stateData_.setTimeStamp( timestamp );
+//     context_.tracer()->warning( ss.str() );
   }
   
   return dynamic_cast<IStateData*>(&stateData_);

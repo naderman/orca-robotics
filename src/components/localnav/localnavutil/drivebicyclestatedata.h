@@ -26,20 +26,23 @@ class DriveBicycleStateData : public IStateData
 
 public: 
   // FIXME: Alex did not have this in his sensordata version...should he have??
-  DriveBicycleStateData( ) : bicycleData_(), timestamp_() { }
+//   DriveBicycleStateData( ) : bicycleData_(), timestamp_() { }
+   DriveBicycleStateData( ) : bicycleData_() { }
   // FIXME: not declared virtual by Alex's code
   virtual ~DriveBicycleStateData(){};
   DriveBicycleStateData( const DriveBicycleStateData& that )
-    : bicycleData_(that.bicycleData_), timestamp_(that.timestamp_) { }
+//    : bicycleData_(that.bicycleData_), timestamp_(that.timestamp_) { }
+    : bicycleData_(that.bicycleData_) { }
   
   //! IMPORTANT NOTE: We return the timestamp value, at which the data was
   //! set using our interface, not the time at which that data was gathered. 
   //! A warning for this is generated when the data is fetched in the 
   //! @ref DriveBicycleState::getNext() method, but cannot be generated 
   //! here since we do not have any context to produce it.
-  virtual const orca::Time &timeStamp() const { return timestamp_; }
+//  virtual const orca::Time &timeStamp() const { return timestamp_; }
+    virtual const orca::Time &timeStamp() const { return bicycleData_.timeStamp; }
     
-  void setTimeStamp( const orca::Time& time ) { timestamp_=time; }
+  // void setTimeStamp( const orca::Time& time ) { timestamp_=time; }
   
   virtual std::string toString( ) const
   {
@@ -56,7 +59,7 @@ public:
 private: 
 
   orca::DriveBicycleData bicycleData_;
-  orca::Time timestamp_;
+  // orca::Time timestamp_;
 };
 
 }
