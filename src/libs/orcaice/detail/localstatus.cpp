@@ -79,15 +79,26 @@ LocalStatus::setSubsystemStatus( const std::string& subsystem,
 {
     IceUtil::Mutex::Lock lock(mutex_);
 
+    std::map<std::string,SubsystemStatus>::iterator it;
+    it = subsystems_.find( subsystem );
+
+    if ( it == subsystems_.end() )
+    {
+        stringstream ss;
+        ss << "LocalStatus: Haven't previously heard of subsystem '"<<subsystem<<"' -- ignoring.";
+        context_.tracer()->warning( ss.str() );
+        return;
+    }
+
     if ( !statusTouched_ )
     {
         statusTouched_ = ( type != subsystems_[subsystem].type ||
                            message != subsystems_[subsystem].message );
     }
 
-    subsystems_[subsystem].type = type;
-    subsystems_[subsystem].message = message;
-    subsystems_[subsystem].lastHeartbeatTime = IceUtil::Time::now();
+    it->second.type = type;
+    it->second.message = message;
+    it->second.lastHeartbeatTime = IceUtil::Time::now();
 }
 
 void 
