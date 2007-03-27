@@ -23,9 +23,12 @@ module orca
     @{
 */
 
-//! Bicycle steering velocity command.
+//! Bicycle steering/velocity command.
 struct DriveBicycleData
 {
+    //! Time when data was measured.
+    Time timeStamp;
+
     //! Angle of the steering wheel [rad]
     double steerAngle;
 

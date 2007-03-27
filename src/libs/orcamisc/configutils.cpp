@@ -34,6 +34,24 @@ readVehicleControlVelocityDifferentialDescription( Ice::PropertiesPtr prop,
 }
 
 void
+readVehicleControlVelocityBicycleDescription( Ice::PropertiesPtr prop,
+                                                   const std::string &prefix,
+                                                   orca::VehicleControlVelocityBicycleDescription &c )
+{
+    std::string cprefix = prefix + "Control.VelocityBicycle.";
+    c.type = orca::VehicleControlVelocityBicycle;
+    c.maxForwardSpeed = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxForwardSpeed", 1.0 );
+    c.maxReverseSpeed = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxReverseSpeed", 1.0 );
+    c.maxSteerAngle   = DEG2RAD(orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxSteerAngle", 45.0 ));
+    c.maxSteerAngleAtMaxSpeed  = DEG2RAD(orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxSteerAngleAtMaxSpeed", 10.0 ));
+    c.maxForwardAcceleration = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxForwardAcceleration", 1.0 );
+    c.maxReverseAcceleration = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxReverseAcceleration", 1.0 );
+    c.maxSteerAngleRate = DEG2RAD(orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxSteerAngleRate", 20.0 ));
+    checkVehicleControlVelocityBicycleDescription( c );
+
+}
+
+void
 readVehicleDescription( Ice::PropertiesPtr prop, const std::string &prefix, orca::VehicleDescription &descr )
 {
     std::string vprefix = prefix + "VehicleDescription.";
@@ -47,20 +65,8 @@ readVehicleDescription( Ice::PropertiesPtr prop, const std::string &prefix, orca
     }
     else if ( controlType == "VelocityBicycle" )
     {
-        std::string cprefix = vprefix + "Control.VelocityBicycle.";
-
         orca::VehicleControlVelocityBicycleDescription *c = new orca::VehicleControlVelocityBicycleDescription;
-        c->type = orca::VehicleControlVelocityBicycle;
-
-        c->maxForwardSpeed = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxForwardSpeed", 1.0 );
-        c->maxReverseSpeed = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxReverseSpeed", 1.0 );
-        c->maxSteerAngle   = DEG2RAD(orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxSteerAngle", 45.0 ));
-        c->maxSteerAngleAtMaxSpeed  = DEG2RAD(orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxSteerAngleAtMaxSpeed", 10.0 ));
-        c->maxForwardAcceleration = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxForwardAcceleration", 1.0 );
-        c->maxReverseAcceleration = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxReverseAcceleration", 1.0 );
-        c->maxSteerAngleRate = DEG2RAD(orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxSteerAngleRate", 20.0 ));
-        checkVehicleControlVelocityBicycleDescription( *c );
-
+        readVehicleControlVelocityBicycleDescription( prop, vprefix, *c );
         descr.control = c;
     }
     else

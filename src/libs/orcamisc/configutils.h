@@ -39,6 +39,12 @@ readVehicleControlVelocityDifferentialDescription( Ice::PropertiesPtr prop,
                                                    const std::string &prefix,
                                                    orca::VehicleControlVelocityDifferentialDescription &c );
 
+// The prefix will have '.Control.VelocityDifferential' appended to it before looking for properties.
+void
+readVehicleControlVelocityBicycleDescription( Ice::PropertiesPtr prop,
+                                              const std::string &prefix,
+                                              orca::VehicleControlVelocityBicycleDescription &c );
+
 //! Performs some basic sanity checks, and
 //! throws orcaice::ConfigFileException if something is wrong.
 void  checkVehicleControlVelocityDifferentialDescription( 
