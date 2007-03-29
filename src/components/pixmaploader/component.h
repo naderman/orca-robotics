@@ -12,7 +12,7 @@
 
 #include <orcaice/component.h>
 #include <orca/pixmap.h>
-#include <orcaifaceimpl/pixmapI.h>
+#include <orcaifaceimpl/pixmapiface.h>
 
 namespace pixmaploader {
 
@@ -34,7 +34,7 @@ private:
     //
     // EXTERNAL INTERFACE
     //
-    orcaifaceimpl::PixMapI *pixMapInterface_;
+    orcaifaceimpl::PixMapIfacePtr pixMapInterface_;
     
     void loadMapFromFile(orca::PixMapData &theMap);
 };

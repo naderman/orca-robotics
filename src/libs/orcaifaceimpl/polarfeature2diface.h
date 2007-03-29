@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_IFACEIMPL_POLARFEATURE2D_I_H
-#define ORCA2_IFACEIMPL_POLARFEATURE2D_I_H
+#ifndef ORCA2_IFACEIMPL_POLARFEATURE2D_IFACE_H
+#define ORCA2_IFACEIMPL_POLARFEATURE2D_IFACE_H
 
 #include <IceStorm/IceStorm.h>
 
@@ -25,21 +25,22 @@ namespace orcaifaceimpl {
 //!
 //! Implements the interface
 //!
-class PolarFeature2dI : public virtual orca::PolarFeature2d
+class PolarFeature2dIface : public IceUtil::Shared
 {
 public:
-    PolarFeature2dI( const std::string                     &ifaceTag,
-                     const orcaice::Context                &context );
+    PolarFeature2dIface( const std::string                     &ifaceTag,
+                         const orcaice::Context                &context );
+    ~PolarFeature2dIface();
 
     //
     // Remote calls:
     //
 
-    virtual ::orca::PolarFeature2dDataPtr     getData(const ::Ice::Current& ) const;
+    ::orca::PolarFeature2dDataPtr     getData() const;
 
-    virtual void subscribe(const ::orca::PolarFeature2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    void subscribe(const ::orca::PolarFeature2dConsumerPrx&);
 
-    virtual void unsubscribe(const ::orca::PolarFeature2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    void unsubscribe(const ::orca::PolarFeature2dConsumerPrx&);
 
 
     //
@@ -66,9 +67,13 @@ private:
     // The interface to which we'll publish
     orca::PolarFeature2dConsumerPrx consumerPrx_;
 
+    // Hang onto this so we can remove from the adapter and control when things get deleted
+    Ice::ObjectPtr          ptr_;
+
     std::string                     ifaceTag_;
     orcaice::Context                context_;
 };
+typedef IceUtil::Handle<PolarFeature2dIface> PolarFeature2dIfacePtr;
 
 } // namespace
 

@@ -19,25 +19,21 @@ namespace localnav {
 //!
 
 RangeScannerSensorModel::RangeScannerSensorModel( const orcaice::Context&    context )
-      : obsConsumer_(new orcaifaceimpl::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>),
-        obsProxy_(NULL),
-        context_(context)
+    : obsConsumer_(new orcaifaceimpl::proxiedRangeScanner2dConsumer(context)),
+      obsProxy_(NULL),
+      context_(context)
 {
 }
 
 RangeScannerSensorModel::~RangeScannerSensorModel()
 {
-    if ( obsConsumer_ ) delete obsConsumer_;
 }
 
 int 
 RangeScannerSensorModel::connectToInterface()
 {
-    Ice::ObjectPtr obsConsumerPtr = obsConsumer_;
-
     try {
-        obsConsumerPrx_ = orcaice::createConsumerInterface<orca::RangeScanner2dConsumerPrx>( context_, obsConsumerPtr );
-        obsProxy_  = &(obsConsumer_->proxy_);
+        obsProxy_ = &(obsConsumer_->proxy());
         
         orcaice::connectToInterfaceWithTag<orca::RangeScanner2dPrx>( context_, obsPrx_, "Observations" );
         
@@ -47,14 +43,14 @@ RangeScannerSensorModel::connectToInterface()
         
         return 1;
     }
-    catch( std::exception &e )
-    {
-        stringstream ss; ss << "Error while connecting to laser data: " << e.what();
-        context_.tracer()->error( ss.str() );
-    }
     catch( Ice::Exception &e )
     {
         stringstream ss; ss << "Error while connecting to laser data: " << e;
+        context_.tracer()->error( ss.str() );
+    }
+    catch( std::exception &e )
+    {
+        stringstream ss; ss << "Error while connecting to laser data: " << e.what();
         context_.tracer()->error( ss.str() );
     }
     return 0;
@@ -64,17 +60,17 @@ int
 RangeScannerSensorModel::subscribe()
 {
     try {
-        obsPrx_->subscribe(  obsConsumerPrx_ );
+        obsPrx_->subscribe(  obsConsumer_->consumerPrx() );
         return 1;
-    }
-    catch( std::exception &e )
-    {
-        stringstream ss; ss << "Error while subscribing to laser data: " << e.what();
-        context_.tracer()->error( ss.str() );
     }
     catch( Ice::Exception &e )
     {
         stringstream ss; ss << "Error while subscribing to laser data: " << e;
+        context_.tracer()->error( ss.str() );
+    }
+    catch( std::exception &e )
+    {
+        stringstream ss; ss << "Error while subscribing to laser data: " << e.what();
         context_.tracer()->error( ss.str() );
     }
     return 0;
@@ -115,7 +111,7 @@ RangeScannerSensorModel::isProxyEmpty()
 
     
 void
-RangeScannerSensorModel::setSimProxy( orcaice::PtrProxy<orca::RangeScanner2dDataPtr>*  obsProxy )
+RangeScannerSensorModel::setSimProxy( orcaice::Proxy<orca::RangeScanner2dDataPtr>*  obsProxy )
 {
     obsProxy_ = obsProxy;
 }

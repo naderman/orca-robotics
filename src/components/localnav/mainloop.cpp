@@ -56,7 +56,7 @@ MainLoop::MainLoop( DriverFactory                    &driverFactory,
       sensorModel_(0),
       controlInterface_(NULL),
       stateInterface_(NULL),
-      locConsumer_(new orcaifaceimpl::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>),
+      locConsumer_(new orcaifaceimpl::proxiedLocalise2dConsumer(context)),
       locProxy_(NULL),
       pathFollowerInterface_(pathFollowerInterface),
       sensorData_(0),
@@ -70,9 +70,6 @@ MainLoop::MainLoop( DriverFactory                    &driverFactory,
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
     context_.status()->initialising( SUBSYSTEM );
 
-    Ice::ObjectPtr locConsumerPtr = locConsumer_;
-    locConsumerPrx_ = orcaice::createConsumerInterface<Localise2dConsumerPrx>( context_, locConsumerPtr );
-    
     // the observation consumer is dependent on the type of
     // observations the driver expects. So it is set up later in driver_->subscribeForInfo().
 }
@@ -108,7 +105,6 @@ MainLoop::~MainLoop()
 {
     if ( sensorModel_ ) delete sensorModel_;
     if ( sensorData_ ) delete sensorData_;
-    if ( locConsumer_ ) delete locConsumer_;
     if ( speedLimiter_ ) delete speedLimiter_;
     if ( pathMaintainer_ ) delete pathMaintainer_;
     if ( controlInterface_ ) delete controlInterface_;
@@ -208,14 +204,14 @@ MainLoop::connectToController()
       vehicleDescr_ = controlInterface_->description();
       break;
     }
-    catch ( std::exception &e )
-    {
-      stringstream ss; ss << "Error when retrieving control model description: " << e.what();
-      context_.tracer()->error( ss.str() );
-    }
     catch ( Ice::Exception &e )
     {
       stringstream ss; ss << "Error when retrieving control model description: " << e;
+      context_.tracer()->error( ss.str() );
+    }
+    catch ( std::exception &e )
+    {
+      stringstream ss; ss << "Error when retrieving control model description: " << e.what();
       context_.tracer()->error( ss.str() );
     }
     sleep(2);
@@ -422,7 +418,7 @@ MainLoop::setup()
         driver_->setSensorModelDescription( sensorModel_->description() );
         
         // obsProxy_ is set up in subscribeForObservations()
-        locProxy_  = &(locConsumer_->proxy_);
+        locProxy_  = &(locConsumer_->proxy());
         // odomProxy_ is setup in subscribeForState()
     }
     else

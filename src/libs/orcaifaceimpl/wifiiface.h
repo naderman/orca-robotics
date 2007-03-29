@@ -1,5 +1,5 @@
-#ifndef ORCA_WIFI_I_H
-#define ORCA_WIFI_I_H
+#ifndef ORCA_WIFI_IFACE_H
+#define ORCA_WIFI_IFACE_H
 
 // include defnition of Ice runtime
 #include <Ice/Ice.h>
@@ -16,25 +16,24 @@ namespace orcaifaceimpl
 {
     
 //!
-//! Implements the WifiI interface: Handles remote calls.
+//! Implements the WifiIface interface: Handles remote calls.
 //!
-class WifiI : virtual public ::orca::Wifi
+class WifiIface : public IceUtil::Shared
 {
 public:
 
-    WifiI( const std::string       &ifaceTag, 
-           const orcaice::Context  &context );
+    WifiIface( const std::string       &ifaceTag, 
+               const orcaice::Context  &context );
+    ~WifiIface();
 
     // remote functions
 
-    virtual ::orca::WifiData getData(const Ice::Current&) const;
-
-    virtual void subscribe(const ::orca::WifiConsumerPrx&,
-               const Ice::Current&);
-
-    virtual void unsubscribe(const ::orca::WifiConsumerPrx&,
-                 const Ice::Current&);
-
+    ::orca::WifiData getData() const;
+    
+    void subscribe(const ::orca::WifiConsumerPrx&);
+    
+    void unsubscribe(const ::orca::WifiConsumerPrx& );
+    
     // local functions
     // may throw orcaice::Exceptions
     void initInterface();
@@ -49,9 +48,13 @@ private:
     orca::WifiConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx       topicPrx_;
 
+    // Hang onto this so we can remove from the adapter and control when things get deleted
+    Ice::ObjectPtr          ptr_;
+
     const std::string        ifaceTag_;
     orcaice::Context         context_;
 };
+typedef IceUtil::Handle<WifiIface> WifiIfacePtr;
 
 }
 

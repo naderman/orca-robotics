@@ -23,15 +23,14 @@ namespace localnav {
 
   DriveBicycleState::DriveBicycleState( const orcaice::Context&    context )
   : 
-    cmdConsumer_(new orcaifaceimpl::ProxiedConsumerI<orca::DriveBicycleConsumer,orca::DriveBicycleData>),
+    cmdConsumer_(new orcaifaceimpl::proxiedDriveBicycleConsumer(context)),
     cmdProxy_(NULL),
-  context_(context)
+    context_(context)
 {
 }
 
 DriveBicycleState::~DriveBicycleState()
 {
-  if ( cmdConsumer_ ) delete cmdConsumer_;
 }
 
 std::string DriveBicycleState::toString( ) const
@@ -47,23 +46,21 @@ int
 DriveBicycleState::connectToInterface()
 {
   int result = 0;
-  Ice::ObjectPtr cmdConsumerPtr = cmdConsumer_;
 
   try {
-    controlConsumerPrx_ = orcaice::createConsumerInterface<orca::DriveBicycleConsumerPrx>( context_, cmdConsumerPtr );
-    cmdProxy_  = &(cmdConsumer_->proxy_);
+    cmdProxy_  = &(cmdConsumer_->proxy());
     orcaice::connectToInterfaceWithTag<orca::DriveBicyclePrx>( context_, controlPrx_, "DriveBicycle" );
     context_.tracer()->debug("connected to a 'DriveBicycle' state interface",5);
     result=1;
   }
-  catch( std::exception &e )
-  {
-    stringstream ss; ss << "Error while connecting to state interface: " << e.what();
-    context_.tracer()->error( ss.str() );
-  }
   catch( Ice::Exception &e )
   {
     stringstream ss; ss << "Error while connecting to state interface: " << e;
+    context_.tracer()->error( ss.str() );
+  }
+  catch( std::exception &e )
+  {
+    stringstream ss; ss << "Error while connecting to state interface: " << e.what();
     context_.tracer()->error( ss.str() );
   }
   
@@ -75,17 +72,17 @@ DriveBicycleState::subscribe()
 {
     int result=0;
     try {
-      controlPrx_->subscribe(  controlConsumerPrx_ );
+      controlPrx_->subscribe(  cmdConsumer_->consumerPrx() );
       result=1;
-    }
-    catch( std::exception &e )
-    {
-      stringstream ss; ss << "Error while subscribing to state interface: " << e.what();
-      context_.tracer()->error( ss.str() );
     }
     catch( Ice::Exception &e )
     {
       stringstream ss; ss << "Error while subscribing to state interface: " << e;
+      context_.tracer()->error( ss.str() );
+    }
+    catch( std::exception &e )
+    {
+      stringstream ss; ss << "Error while subscribing to state interface: " << e.what();
       context_.tracer()->error( ss.str() );
     }
   

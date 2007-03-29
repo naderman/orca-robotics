@@ -249,14 +249,14 @@ Component::stop()
     tracer()->debug( "stopping component", 2 );
 
     tracer()->debug( "stopping handlers", 2 );
-    orcaice::Thread::stopAndJoin( gpsHandler_ );
-    orcaice::Thread::stopAndJoin( imuHandler_ );
-    orcaice::Thread::stopAndJoin( odometry3dHandler_ );   
-    orcaice::Thread::stopAndJoin( localise3dHandler_ );   
+    orcaice::stopAndJoin( gpsHandler_ );
+    orcaice::stopAndJoin( imuHandler_ );
+    orcaice::stopAndJoin( odometry3dHandler_ );   
+    orcaice::stopAndJoin( localise3dHandler_ );   
     // tracer()->debug( "stopped handlers", 2 );
 
     tracer()->debug( "stopping driver", 2 );
-    orcaice::Thread::stopAndJoin( hwDriver_ );
+    orcaice::stopAndJoin( hwDriver_ );
     // tracer()->debug( "stopped driver", 2 );
     
     tracer()->debug( "stopped component", 2 );

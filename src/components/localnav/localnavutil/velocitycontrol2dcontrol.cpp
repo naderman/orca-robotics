@@ -48,24 +48,21 @@ int
 VelocityControl2dControl::connectToInterface()
 {
   int result = 0;
-//     Ice::ObjectPtr cmdConsumerPtr = cmdConsumer_;
 
     try {
-/*      controlConsumerPrx_ = orcaice::createConsumerInterface<orca::VelocityControl2dConsumerPrx>( context_, cmdConsumerPtr );*/
-//       cmdProxy_  = &(cmdConsumer_->proxy_);
       orcaice::connectToInterfaceWithTag<orca::VelocityControl2dPrx>( context_, controlPrx_, "VelocityControl2d" );
       context_.tracer()->debug("connected to a 'VelocityControl2d' interface",5);
         
       result = 1;
     }
-    catch( std::exception &e )
-    {
-      stringstream ss; ss << "Error while connecting to control interface: " << e.what();
-      context_.tracer()->error( ss.str() );
-    }
     catch( Ice::Exception &e )
     {
       stringstream ss; ss << "Error while connecting to control interface: " << e;
+      context_.tracer()->error( ss.str() );
+    }
+    catch( std::exception &e )
+    {
+      stringstream ss; ss << "Error while connecting to control interface: " << e.what();
       context_.tracer()->error( ss.str() );
     }
     return result;

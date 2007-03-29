@@ -19,20 +19,6 @@ Thread::Thread() :
 {
 }
 
-void Thread::stopAndJoin( orcaice::Thread* thread )
-{
-    if ( thread ) {
-        // get the control object first
-        IceUtil::ThreadControl tc = thread->getThreadControl();
-        
-        // Tell the thread to stop
-        thread->stop();
-    
-        // Then wait for it
-        tc.join();
-    }
-}
-
 void Thread::stop()
 {
     IceUtil::Mutex::Lock lock(mutex_);
@@ -50,4 +36,32 @@ bool Thread::isActive()
 {
     IceUtil::Mutex::Lock lock(mutex_);
     return isActive_;
+}
+
+void orcaice::stopAndJoin( orcaice::Thread* thread )
+{
+    if ( thread ) {
+        // get the control object first
+        IceUtil::ThreadControl tc = thread->getThreadControl();
+        
+        // Tell the thread to stop
+        thread->stop();
+    
+        // Then wait for it
+        tc.join();
+    }
+}
+
+void orcaice::stopAndJoin( orcaice::ThreadPtr thread )
+{
+    if ( thread ) {
+        // get the control object first
+        IceUtil::ThreadControl tc = thread->getThreadControl();
+        
+        // Tell the thread to stop
+        thread->stop();
+    
+        // Then wait for it
+        tc.join();        
+    }
 }

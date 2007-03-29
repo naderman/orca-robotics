@@ -223,7 +223,7 @@ void
 Component::stop()
 {
     context().tracer()->debug("Stopping component", 2 );
-    orcaice::Thread::stopAndJoin( mainLoop_ );
+    orcaice::stopAndJoin( mainLoop_ );
 }
 
 } // namespace

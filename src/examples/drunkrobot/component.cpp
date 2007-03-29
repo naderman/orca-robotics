@@ -71,5 +71,5 @@ Component::stop()
 {
     cout<<"stopping loop"<<endl;
     // Tell the main loop to stop and wait for it to comply
-    orcaice::Thread::stopAndJoin( mainLoop_ );
+    orcaice::stopAndJoin( mainLoop_ );
 }

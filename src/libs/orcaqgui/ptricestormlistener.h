@@ -19,7 +19,7 @@
 #include <orcaice/connectutils.h>
 #include <orcaice/context.h>
 #include <orcaice/timer.h>
-#include <orcaifaceimpl/ptrbufferedtimedconsumerI.h>
+#include <orcaqgui/ptrbufferedtimedconsumerI.h>
 
 #include <orcaqgui/detail.h>
 
@@ -55,7 +55,7 @@ public:
           isSubscribed_(false)
         {
             // Register with the adapter
-            consumer_ = new orcaifaceimpl::PtrBufferedTimedConsumerI<ConsumerType,DataPtrType>;
+            consumer_ = new PtrBufferedTimedConsumerI<ConsumerType,DataPtrType>;
             registerWithAdapter();
         }
 
@@ -98,8 +98,8 @@ public:
 
 private:
 
-    DataPtrType                                                data_;
-    orcaifaceimpl::PtrBufferedTimedConsumerI<ConsumerType,DataPtrType> *consumer_;
+    DataPtrType                                          data_;
+    PtrBufferedTimedConsumerI<ConsumerType,DataPtrType> *consumer_;
 
     orcaice::Context  context_;
     std::string       proxyString_;

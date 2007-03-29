@@ -10,7 +10,6 @@
 #ifndef VELOCITYCONTROL2DCONTROL_H
 #define VELOCITYCONTROL2DCONTROL_H
 
-#include <orcaifaceimpl/proxiedconsumerI.h>
 #include <orcaice/proxy.h>
 #include <orca/drivebicycle.h>
 

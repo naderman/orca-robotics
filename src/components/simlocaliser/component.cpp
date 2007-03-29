@@ -66,5 +66,5 @@ Component::start()
 void
 Component::stop()
 {
-    orcaice::Thread::stopAndJoin( mainLoop_ );
+    orcaice::stopAndJoin( mainLoop_ );
 }

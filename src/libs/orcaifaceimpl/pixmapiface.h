@@ -7,15 +7,15 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef __ogmapI_h__
-#define __ogmapI_h__
+#ifndef __pixmapIface_h__
+#define __pixmapIface_h__
 
 // include defnition of Ice runtime
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
 
 // include provided interfaces
-#include <orca/ogmap.h>
+#include <orca/pixmap.h>
 
 #include <orcaice/proxy.h>
 #include <orcaice/context.h>
@@ -23,23 +23,22 @@
 namespace orcaifaceimpl {
 
 //!
-//! Implements the OgMap interface: Handles remote calls.
+//! Implements the PixMap interface: Handles remote calls.
 //!
-class OgMapI : public orca::OgMap
+class PixMapIface : public IceUtil::Shared
 {
 public:
 
-    OgMapI( const std::string      &ifaceTag,
-            const orcaice::Context &context );
+    PixMapIface( const std::string      &ifaceTag,
+             const orcaice::Context &context );
+    ~PixMapIface();
 
     // Remote calls:
-    orca::OgMapData getData(const Ice::Current&) const;
+    orca::PixMapData getData() const;
 
-    virtual void subscribe(const ::orca::OgMapConsumerPrx&,
-                           const Ice::Current&);
+    void subscribe(const ::orca::PixMapConsumerPrx&);
 
-    virtual void unsubscribe(const ::orca::OgMapConsumerPrx&,
-                             const Ice::Current&);
+    void unsubscribe(const ::orca::PixMapConsumerPrx&);
 
     // Local calls:
 
@@ -47,21 +46,25 @@ public:
     void initInterface();
     // A local call which sets the data reported by the interface, 
     // and sends it through IceStorm
-    void localSetAndSend( const ::orca::OgMapData &data );
+    void localSetAndSend( const ::orca::PixMapData &data );
 
 private:
 
     // Holds the latest data
-    orcaice::Proxy<orca::OgMapData> dataProxy_;
+    orcaice::Proxy<orca::PixMapData> dataProxy_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx             topicPrx_;
     // The interface to which we'll publish
-    orca::OgMapConsumerPrx         consumerPrx_;
+    orca::PixMapConsumerPrx         consumerPrx_;
+
+    // Hang onto this so we can remove from the adapter and control when things get deleted
+    Ice::ObjectPtr          ptr_;
 
     std::string ifaceTag_;
     orcaice::Context context_;
 };
+typedef IceUtil::Handle<PixMapIface> PixMapIfacePtr;
 
 }
 

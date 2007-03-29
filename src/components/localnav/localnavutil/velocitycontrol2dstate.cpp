@@ -23,17 +23,10 @@ namespace localnav {
 
   VelocityControl2dState::VelocityControl2dState( const orcaice::Context&    context )
   : 
-    odomConsumer_(new orcaifaceimpl::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>),
+    odomConsumer_(new orcaifaceimpl::proxiedOdometry2dConsumer(context)),
     odomProxy_(NULL),
     context_(context)
 {
-    Ice::ObjectPtr odomConsumerPtr = odomConsumer_;
-    odomConsumerPrx_ = orcaice::createConsumerInterface<orca::Odometry2dConsumerPrx>( context_, odomConsumerPtr );
-}
-
-VelocityControl2dState::~VelocityControl2dState()
-{
-    if ( odomConsumer_ ) delete odomConsumer_;
 }
 
 std::string VelocityControl2dState::toString( ) const
@@ -51,17 +44,17 @@ VelocityControl2dState::connectToInterface()
     int result = 0;
     try {
         orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odomPrx_, "Odometry2d" );
-        odomProxy_ =  &(odomConsumer_->proxy_);
+        odomProxy_ =  &(odomConsumer_->proxy());
         result = 1;
-    }
-    catch( std::exception &e )
-    {
-        stringstream ss; ss << "Error while connecting to VehicleState (i.e., odometry): " << e.what();
-        context_.tracer()->error( ss.str() );
     }
     catch( Ice::Exception &e )
     {
         stringstream ss; ss << "Error while connecting to VehicleState (i.e., odometry): " << e;
+        context_.tracer()->error( ss.str() );
+    }
+    catch( std::exception &e )
+    {
+        stringstream ss; ss << "Error while connecting to VehicleState (i.e., odometry): " << e.what();
         context_.tracer()->error( ss.str() );
     }
     return result;
@@ -72,17 +65,17 @@ VelocityControl2dState::subscribe()
 {
     int result=0;
     try {
-        odomPrx_->subscribe( odomConsumerPrx_ );
+        odomPrx_->subscribe( odomConsumer_->consumerPrx() );
         result=1;
-    }
-    catch( std::exception &e )
-    {
-        stringstream ss; ss << "Error while subscribing to VehicleState (i.e., odometry): " << e.what();
-        context_.tracer()->error( ss.str() );
     }
     catch( Ice::Exception &e )
     {
         stringstream ss; ss << "Error while subscribing to VehicleState (i.e., odometry): " << e;
+        context_.tracer()->error( ss.str() );
+    }
+    catch( std::exception &e )
+    {
+        stringstream ss; ss << "Error while subscribing to VehicleState (i.e., odometry): " << e.what();
         context_.tracer()->error( ss.str() );
     }
     return result;

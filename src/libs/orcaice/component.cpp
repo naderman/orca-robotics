@@ -76,7 +76,7 @@ Component::finalise()
     if ( componentThread_ )
     {
         context_.tracer()->debug( "orcaice::Component: stopping ComponentThread....", 2 );
-        orcaice::Thread::stopAndJoin( componentThread_ );
+        orcaice::stopAndJoin( componentThread_ );
         context_.tracer()->debug( "orcaice::Component: ComponentThread stopped.", 2 );
     }
 }

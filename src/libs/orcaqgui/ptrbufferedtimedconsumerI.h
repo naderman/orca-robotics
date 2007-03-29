@@ -11,10 +11,10 @@
 #ifndef ORCAIFACEIMPL_PTR_BUFFERED_TIMED_CONSUMER_H
 #define ORCAIFACEIMPL_PTR_BUFFERED_TIMED_CONSUMER_H
 
-#include <orcaifaceimpl/ptrbufferedconsumerI.h>
+#include <orcaqgui/ptrbufferedconsumerI.h>
 #include <orcaice/timer.h>
 
-namespace orcaifaceimpl
+namespace orcaqgui
 {
 
 //!
@@ -24,7 +24,7 @@ namespace orcaifaceimpl
 //! @author Alex Brooks
 //!
 template< class ConsumerType, class DataPtrType >
-class PtrBufferedTimedConsumerI : public orcaifaceimpl::PtrBufferedConsumerI<ConsumerType,DataPtrType>
+class PtrBufferedTimedConsumerI : public PtrBufferedConsumerI<ConsumerType,DataPtrType>
 {
 public:
 

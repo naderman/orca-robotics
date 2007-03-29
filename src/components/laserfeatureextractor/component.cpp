@@ -41,7 +41,7 @@ Component::start()
     //
     // Instantiate External Interface
     //
-    featureInterface_ = new orcaifaceimpl::PolarFeature2dI( "PolarFeature2d", context() );
+    featureInterface_ = new orcaifaceimpl::PolarFeature2dIface( "PolarFeature2d", context() );
 
     //
     // ENABLE NETWORK CONNECTIONS
@@ -57,5 +57,5 @@ void
 Component::stop()
 {
     context().tracer()->debug("Stopping component", 2 );
-    orcaice::Thread::stopAndJoin( mainLoop_ );
+    orcaice::stopAndJoin( mainLoop_ );
 }

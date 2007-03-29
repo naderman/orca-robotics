@@ -96,7 +96,7 @@ Component::start()
 void
 Component::stop()
 {
-    orcaice::Thread::stopAndJoin( netHandler_ );
+    orcaice::stopAndJoin( netHandler_ );
 
     // userHandler_ is blocked on user input
     // the only way for it to realize that we want to stop is to give it some keyboard input.
@@ -105,5 +105,5 @@ Component::stop()
 //     tracer()->print( "Press any key or shake the joystick to continue." );
 //     tracer()->print( "************************************************" );
     
-    orcaice::Thread::stopAndJoin( usrHandler_ );
+    orcaice::stopAndJoin( usrHandler_ );
 }

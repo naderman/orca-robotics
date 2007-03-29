@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAIFACEIMPL_LOCALISE3D_I_H
-#define ORCA2_ORCAIFACEIMPL_LOCALISE3D_I_H
+#ifndef ORCA2_ORCAIFACEIMPL_LOCALISE3D_IFACE_H
+#define ORCA2_ORCAIFACEIMPL_LOCALISE3D_IFACE_H
 
 #include <orca/localise3d.h>
 #include <IceStorm/IceStorm.h>
@@ -23,23 +23,24 @@ namespace orcaifaceimpl {
 //!
 //! Implements the Localise3d interface: Handles remote calls.
 //!
-class Localise3dI : public orca::Localise3d
+class Localise3dIface : public IceUtil::Shared
 {
 public:
-    Localise3dI( const std::string &ifaceTag,
-                 const orcaice::Context &context );
+    Localise3dIface( const std::string &ifaceTag,
+                     const orcaice::Context &context );
+    ~Localise3dIface();
 
     // remote calls:
 
-    virtual ::orca::Localise3dData getData(const ::Ice::Current& ) const;
+    ::orca::Localise3dData getData() const;
 
-    virtual void subscribe(const ::orca::Localise3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    void subscribe(const ::orca::Localise3dConsumerPrx&);
 
-    virtual void unsubscribe(const ::orca::Localise3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    void unsubscribe(const ::orca::Localise3dConsumerPrx&);
 
     // Note: could do smoothing/interpolation here...
-    virtual orca::Localise3dData getDataAtTime(const orca::Time&, const Ice::Current& c) const
-        { return getData(c); }
+    orca::Localise3dData getDataAtTime(const orca::Time&) const
+        { return getData(); }
 
     // Local calls:
 
@@ -60,10 +61,13 @@ private:
     orca::Localise3dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;
 
+    // Hang onto this so we can remove from the adapter and control when things get deleted
+    Ice::ObjectPtr          ptr_;
+
     const std::string              ifaceTag_;
     orcaice::Context               context_;
 };
-typedef IceUtil::Handle<Localise3dI> Localise3dIPtr;
+typedef IceUtil::Handle<Localise3dIface> Localise3dIfacePtr;
 
 } // namespace
 

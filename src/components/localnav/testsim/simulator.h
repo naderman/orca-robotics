@@ -3,9 +3,9 @@
 
 #include <orcaogmap/orcaogmap.h>
 #include <orcanavutil/orcanavutil.h>
-#include <orcaifaceimpl/laserscanner2dI.h>
-#include <orcaifaceimpl/localise2dI.h>
-#include <orcaifaceimpl/ogmapI.h>
+#include <orcaifaceimpl/laserscanner2diface.h>
+#include <orcaifaceimpl/localise2diface.h>
+#include <orcaifaceimpl/ogmapiface.h>
 #include <orca/velocitycontrol2d.h>
 #include <orca/odometry2d.h>
 #include <orcaice/ptrproxy.h>
@@ -66,9 +66,9 @@ private:
     double                 velLin_;
     double                 velRot_;
 
-    orcaifaceimpl::LaserScanner2dI *laserInterface_;
-    orcaifaceimpl::Localise2dI     *localiseInterface_;
-    orcaifaceimpl::OgMapI          *ogMapInterface_;
+    orcaifaceimpl::LaserScanner2dIface *laserInterface_;
+    orcaifaceimpl::Localise2dIface     *localiseInterface_;
+    orcaifaceimpl::OgMapIface          *ogMapInterface_;
 
     orca::LaserScanner2dDataPtr scan_;
     orca::RangeScanner2dDescription scannerDescr_;

@@ -10,7 +10,7 @@
 #ifndef VELOCITYCONTROL2DSTATE_H
 #define VELOCITYCONTROL2DSTATE_H
 
-#include <orcaifaceimpl/proxiedconsumerI.h>
+#include <orcaifaceimpl/consumertypes.h>
 #include <orcaice/proxy.h>
 #include <orca/drivebicycle.h>
 
@@ -33,7 +33,7 @@ public:
 
   VelocityControl2dState( const orcaice::Context&    context );
 
-  virtual ~VelocityControl2dState();
+  virtual ~VelocityControl2dState() {}
 
   // returns 1 if successful, otherwise 0
   virtual int connectToInterface();
@@ -57,11 +57,11 @@ public:
 
 private: 
 
-  orcaifaceimpl::ProxiedConsumerI<orca::Odometry2dConsumer,orca::Odometry2dData>     *odomConsumer_;
+  orcaifaceimpl::proxiedOdometry2dConsumerPtr odomConsumer_;
+
   orcaice::Proxy<orca::Odometry2dData>           *odomProxy_;
   orca::Odometry2dPrx            odomPrx_;
   orca::Odometry2dData           odomData_;
-  orca::Odometry2dConsumerPrx    odomConsumerPrx_;
     
   VelocityControl2dStateData state_;
 

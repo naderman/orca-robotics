@@ -61,5 +61,5 @@ void
 Component::stop()
 {
     tracer()->info("stopping component...");
-    orcaice::Thread::stopAndJoin( mainloop_ );
+    orcaice::stopAndJoin( mainloop_ );
 }

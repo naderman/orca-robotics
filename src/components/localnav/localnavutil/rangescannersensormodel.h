@@ -10,7 +10,7 @@
 #ifndef RANGESCANNERSENSORMODEL_H
 #define RANGESCANNERSENSORMODEL_H
 
-#include <orcaifaceimpl/ptrproxiedconsumerI.h>
+#include <orcaifaceimpl/consumertypes.h>
 #include <orcaice/ptrproxy.h>
 #include <orca/rangescanner2d.h>
 
@@ -45,17 +45,15 @@ public:
     
     ISensorDescription& description();
 
-    void setSimProxy( orcaice::PtrProxy<orca::RangeScanner2dDataPtr>*  obsProxy );
+    void setSimProxy( orcaice::Proxy<orca::RangeScanner2dDataPtr>*  obsProxy );
 
 private: 
 
-    orcaifaceimpl::PtrProxiedConsumerI<orca::RangeScanner2dConsumer,orca::RangeScanner2dDataPtr>* obsConsumer_;
+    orcaifaceimpl::proxiedRangeScanner2dConsumerPtr obsConsumer_;
     
-    orcaice::PtrProxy<orca::RangeScanner2dDataPtr>* obsProxy_;
+    orcaice::Proxy<orca::RangeScanner2dDataPtr>* obsProxy_;
     
     orca::RangeScanner2dPrx obsPrx_;
-
-    orca::RangeScanner2dConsumerPrx obsConsumerPrx_;
 
     RangeScannerSensorDescription rangeScannerSensorDescription_;
     RangeScannerSensorData rangeScannerSensorData_;

@@ -11,6 +11,8 @@
 #ifndef ORCAIFACEIMPL_ORCAIFACEIMPL_H
 #define ORCAIFACEIMPL_ORCAIFACEIMPL_H
 
+// AlexB: Do we really need this?
+#if 0
 #include <orcaifaceimpl/cameraI.h>
 #include <orcaifaceimpl/laserscanner2dI.h>
 #include <orcaifaceimpl/localise2dI.h>
@@ -18,5 +20,6 @@
 #include <orcaifaceimpl/odometry3dI.h>
 #include <orcaifaceimpl/ogmapI.h>
 #include <orcaifaceimpl/powerI.h>
- 
+#endif
+
 #endif

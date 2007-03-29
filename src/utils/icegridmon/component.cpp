@@ -81,7 +81,7 @@ void
 Component::stop()
 {
     tracer()->debug("stopping component...",2);
-    orcaice::Thread::stopAndJoin( sessionManager_ );
+    orcaice::stopAndJoin( sessionManager_ );
 }
 
 } // namespace

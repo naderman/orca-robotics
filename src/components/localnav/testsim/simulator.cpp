@@ -84,6 +84,9 @@ Simulator::Simulator( const orcaice::Context &context,
 
 Simulator::~Simulator()
 {
+    delete laserInterface_;
+    delete localiseInterface_;
+    delete ogMapInterface_;
 }
 
 void
@@ -109,14 +112,14 @@ Simulator::setupInterfaces()
     // record the description in the RangeScannerSensorDescription class
     rangeScannerSensorDescription_.setDescr( scannerDescr_ );
     
-    laserInterface_    = new orcaifaceimpl::LaserScanner2dI( scannerDescr_, "TestLaserScanner", context_ );
+    laserInterface_    = new orcaifaceimpl::LaserScanner2dIface( scannerDescr_, "TestLaserScanner", context_ );
     orca::Localise2dDescription descr;
     descr.timeStamp = orcaice::getNow();
     descr.offset.p.x = 0;
     descr.offset.p.y = 0;
     descr.offset.o   = 0;
-    localiseInterface_ = new orcaifaceimpl::Localise2dI( "TestLocalise", descr, context_ );
-    ogMapInterface_    = new orcaifaceimpl::OgMapI( "TestOgMap", context_ );
+    localiseInterface_ = new orcaifaceimpl::Localise2dIface( "TestLocalise", descr, context_ );
+    ogMapInterface_    = new orcaifaceimpl::OgMapIface( "TestOgMap", context_ );
 
     try {
         laserInterface_->initInterface();

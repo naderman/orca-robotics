@@ -57,7 +57,7 @@ TermNcursesUser::~TermNcursesUser()
     cout<< "************************************************" << endl;
     cout<< "Press any key to continue." << endl;
     cout<< "************************************************" << endl;
-    orcaice::Thread::stopAndJoin( inputHandler_ );
+    orcaice::stopAndJoin( inputHandler_ );
 }
 
 void 

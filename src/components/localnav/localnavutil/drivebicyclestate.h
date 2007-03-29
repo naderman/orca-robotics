@@ -10,7 +10,7 @@
 #ifndef DRIVEBICYCLESTATE_H
 #define DRIVEBICYCLESTATE_H
 
-#include <orcaifaceimpl/proxiedconsumerI.h>
+#include <orcaifaceimpl/consumertypes.h>
 #include <orcaice/proxy.h>
 #include <orca/drivebicycle.h>
 
@@ -60,10 +60,9 @@ public:
 private: 
 
   
-  orcaifaceimpl::ProxiedConsumerI<orca::DriveBicycleConsumer,orca::DriveBicycleData>* cmdConsumer_;
+  orcaifaceimpl::proxiedDriveBicycleConsumerPtr cmdConsumer_;
   orcaice::Proxy<orca::DriveBicycleData>* cmdProxy_;
   orca::DriveBicyclePrx controlPrx_;
-  orca::DriveBicycleConsumerPrx controlConsumerPrx_;
 
   DriveBicycleStateData stateData_;
 

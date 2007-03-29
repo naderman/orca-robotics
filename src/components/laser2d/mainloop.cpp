@@ -19,10 +19,10 @@ using namespace orca;
 
 namespace laser2d {
 
-MainLoop::MainLoop( orcaifaceimpl::LaserScanner2dI &laserInterface,
-                    Driver                 *hwDriver,
-                    bool                    compensateRoll,
-                    const orcaice::Context &context )
+MainLoop::MainLoop( orcaifaceimpl::LaserScanner2dIface &laserInterface,
+                    Driver                             *hwDriver,
+                    bool                                compensateRoll,
+                    const orcaice::Context             &context )
     : laserInterface_(laserInterface),
       hwDriver_(hwDriver),
       compensateRoll_(compensateRoll),

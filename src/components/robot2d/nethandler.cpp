@@ -15,7 +15,7 @@
 #include "nethandler.h"
 
 // implementations of Ice objects
-#include <orcaifaceimpl/odometry2dI.h>
+#include <orcaifaceimpl/odometry2diface.h>
 #include "velocitycontrol2dI.h"
 
 using namespace std;
@@ -87,8 +87,8 @@ NetHandler::run()
         //
         // PROVIDED: Odometry2d
         //
-        orcaifaceimpl::Odometry2dIPtr odometry2dI = 
-            new orcaifaceimpl::Odometry2dI( descr_, "Odometry2d", context_ );
+        orcaifaceimpl::Odometry2dIfacePtr odometry2dI = 
+            new orcaifaceimpl::Odometry2dIface( descr_, "Odometry2d", context_ );
 
 
         while ( isActive() ) {

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_LASER2D_LASERSCANNER2D_I_H
-#define ORCA2_LASER2D_LASERSCANNER2D_I_H
+#ifndef ORCA2_LASER2D_LASERSCANNER2D_IFACE_H
+#define ORCA2_LASER2D_LASERSCANNER2D_IFACE_H
 
 #include <IceStorm/IceStorm.h>
 
@@ -23,26 +23,28 @@
 namespace orcaifaceimpl {
 
 //!
-//! Implements the Localise2d interface: Handles remote calls.
+//! Sets up an implementation of the remote interface, and handles remote calls.
 //!
-class LaserScanner2dI : public virtual orca::LaserScanner2d
+class LaserScanner2dIface : public IceUtil::Shared
 {
 public:
-    LaserScanner2dI( const orca::RangeScanner2dDescription &descr,
-                     const std::string                     &ifaceTag,
-                     const orcaice::Context                &context );
+    LaserScanner2dIface( const orca::RangeScanner2dDescription &descr,
+                         const std::string                     &ifaceTag,
+                         const orcaice::Context                &context );
+
+    ~LaserScanner2dIface();
 
     //
     // Remote calls:
     //
 
-    virtual ::orca::RangeScanner2dDataPtr     getData(const ::Ice::Current& ) const;
+    ::orca::RangeScanner2dDataPtr     getData() const;
 
-    virtual ::orca::RangeScanner2dDescription getDescription(const ::Ice::Current& ) const;
+    ::orca::RangeScanner2dDescription getDescription() const;
 
-    virtual void subscribe(const ::orca::RangeScanner2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    void subscribe(const ::orca::RangeScanner2dConsumerPrx& );
 
-    virtual void unsubscribe(const ::orca::RangeScanner2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    void unsubscribe(const ::orca::RangeScanner2dConsumerPrx& );
 
 
     //
@@ -71,9 +73,13 @@ private:
     // The interface to which we'll publish
     orca::RangeScanner2dConsumerPrx consumerPrx_;
 
-    std::string                     ifaceTag_;
-    orcaice::Context                context_;
+    // Hang onto this so we can remove from the adapter and control when things get deleted
+    Ice::ObjectPtr          ptr_;
+
+    std::string        ifaceTag_;
+    orcaice::Context   context_;
 };
+typedef IceUtil::Handle<LaserScanner2dIface> LaserScanner2dIfacePtr;
 
 } // namespace
 

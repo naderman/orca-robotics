@@ -18,7 +18,8 @@
 
 #include <orca/polarfeature2d.h>
 #include <orca/laserscanner2d.h>
-#include <orcaifaceimpl/polarfeature2dI.h>
+#include <orcaifaceimpl/polarfeature2diface.h>
+#include <orcaifaceimpl/consumertypes.h>
 
 namespace laserfeatures
 {
@@ -29,7 +30,7 @@ class MainLoop : public orcaice::Thread
 {
 public:
 
-    MainLoop( orcaifaceimpl::PolarFeature2dI &featureInterface,
+    MainLoop( orcaifaceimpl::PolarFeature2dIface &featureInterface,
               const orcaice::Context &context );
 
     ~MainLoop();
@@ -52,7 +53,7 @@ private:
     AlgorithmDriver* driver_;
     
     // Our external interface
-    orcaifaceimpl::PolarFeature2dI &featureInterface_;
+    orcaifaceimpl::PolarFeature2dIface &featureInterface_;
     
     // Laser proxy
     orca::LaserScanner2dPrx laserPrx_;
@@ -63,15 +64,12 @@ private:
     // Description of laser details
     orca::RangeScanner2dDescription laserDescr_;
 
-    // Proxy for incoming scans
-    orcaice::PtrProxy<orca::LaserScanner2dDataPtr> laserDataProxy_;
-
     // If the driver's fake, don't need to make external conenctions.
     bool fakeDriver_;
 
     // Consumers
-    orca::RangeScanner2dConsumerPrx laserCallbackPrx_;
-    
+    orcaifaceimpl::proxiedRangeScanner2dConsumerPtr laserConsumer_;
+
     orcaice::Context context_;
 
 };

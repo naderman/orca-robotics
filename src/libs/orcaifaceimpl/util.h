@@ -12,8 +12,10 @@
 #define ORCA_IFACE_IMPL_UTIL_H
 
 #include <orcaice/context.h>
+#include <orcaice/connectutils.h>
 #include <sstream>
 #include <iostream>
+#include <IceStorm/IceStorm.h>
 
 namespace orcaifaceimpl {
 
@@ -70,6 +72,13 @@ namespace orcaifaceimpl {
         }
 
     }
+
+    // Remove the ptr from the adapter if possible.
+    // If not, fail silently.
+    void
+    tryRemovePtr( orcaice::Context &context,
+                  Ice::ObjectPtr &ptr );
+
 }
 
 #endif

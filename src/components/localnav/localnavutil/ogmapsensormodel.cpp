@@ -19,7 +19,7 @@ namespace localnav {
 //!
 
 OgMapSensorModel::OgMapSensorModel( const orcaice::Context&    context )
-      : obsConsumer_(new orcaifaceimpl::ProxiedConsumerI<orca::OgMapConsumer,orca::OgMapData>),
+      : obsConsumer_(new orcaifaceimpl::proxiedOgMapConsumer(context)),
         obsProxy_(NULL),
         context_(context)
 {
@@ -27,31 +27,27 @@ OgMapSensorModel::OgMapSensorModel( const orcaice::Context&    context )
 
 OgMapSensorModel::~OgMapSensorModel()
 {
-    if ( obsConsumer_ ) delete obsConsumer_;
 }
 
 
 int 
 OgMapSensorModel::connectToInterface()
 {
-    Ice::ObjectPtr obsConsumerPtr = obsConsumer_;
-
     try {
-        obsConsumerPrx_ = orcaice::createConsumerInterface<orca::OgMapConsumerPrx>( context_, obsConsumerPtr );
-        obsProxy_  = &(obsConsumer_->proxy_);
+        obsProxy_  = &(obsConsumer_->proxy());
         
         orcaice::connectToInterfaceWithTag<orca::OgMapPrx>( context_, obsPrx_, "Observations" );
         
         return 1;
     }
-    catch( std::exception &e )
-    {
-        stringstream ss; ss << "Error while connecting to ogmap data: " << e.what();
-        context_.tracer()->error( ss.str() );
-    }
     catch( Ice::Exception &e )
     {
         stringstream ss; ss << "Error while connecting to ogmap data: " << e;
+        context_.tracer()->error( ss.str() );
+    }
+    catch( std::exception &e )
+    {
+        stringstream ss; ss << "Error while connecting to ogmap data: " << e.what();
         context_.tracer()->error( ss.str() );
     }
     return 0;
@@ -61,17 +57,17 @@ int
 OgMapSensorModel::subscribe()
 {
     try {
-        obsPrx_->subscribe(  obsConsumerPrx_ );
+        obsPrx_->subscribe(  obsConsumer_->consumerPrx() );
         return 1;
-    }
-    catch( std::exception &e )
-    {
-        stringstream ss; ss << "Error while subscribing to ogMap data: " << e.what();
-        context_.tracer()->error( ss.str() );
     }
     catch( Ice::Exception &e )
     {
         stringstream ss; ss << "Error while subscribing to ogMap data: " << e;
+        context_.tracer()->error( ss.str() );
+    }
+    catch( std::exception &e )
+    {
+        stringstream ss; ss << "Error while subscribing to ogMap data: " << e.what();
         context_.tracer()->error( ss.str() );
     }
     return 0;

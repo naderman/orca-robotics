@@ -22,7 +22,7 @@ namespace localnav {
 
 DriveBicycleControl::DriveBicycleControl( const orcaice::Context&    context )
   : 
-    cmdConsumer_(new orcaifaceimpl::ProxiedConsumerI<orca::DriveBicycleConsumer,orca::DriveBicycleData>),
+    cmdConsumer_(new orcaifaceimpl::proxiedDriveBicycleConsumer(context)),
     cmdProxy_(NULL),
     context_(context)
 {
@@ -30,7 +30,6 @@ DriveBicycleControl::DriveBicycleControl( const orcaice::Context&    context )
 
 DriveBicycleControl::~DriveBicycleControl()
 {
-  if ( cmdConsumer_ ) delete cmdConsumer_;
 }
 
 std::string DriveBicycleControl::toString( ) const
@@ -45,25 +44,23 @@ std::string DriveBicycleControl::toString( ) const
 int 
 DriveBicycleControl::connectToInterface()
 {
-  int result = 0;
-     Ice::ObjectPtr cmdConsumerPtr = cmdConsumer_;
+    int result = 0;
 
     try {
-      cmdConsumerPrx_ = orcaice::createConsumerInterface<orca::DriveBicycleConsumerPrx>( context_, cmdConsumerPtr );
-      cmdProxy_  = &(cmdConsumer_->proxy_);
+      cmdProxy_  = &(cmdConsumer_->proxy());
       orcaice::connectToInterfaceWithTag<orca::DriveBicyclePrx>( context_, controlPrx_, "DriveBicycle" );
       context_.tracer()->debug("connected to a 'DriveBicycle' interface",5);
         
       result = 1;
     }
-    catch( std::exception &e )
-    {
-      stringstream ss; ss << "Error while connecting to control interface: " << e.what();
-      context_.tracer()->error( ss.str() );
-    }
     catch( Ice::Exception &e )
     {
       stringstream ss; ss << "Error while connecting to control interface: " << e;
+      context_.tracer()->error( ss.str() );
+    }
+    catch( std::exception &e )
+    {
+      stringstream ss; ss << "Error while connecting to control interface: " << e.what();
       context_.tracer()->error( ss.str() );
     }
     return result;
@@ -78,17 +75,17 @@ DriveBicycleControl::subscribe()
   return 0;*/
   
     try {
-      controlPrx_->subscribe(  cmdConsumerPrx_ );
+      controlPrx_->subscribe(  cmdConsumer_->consumerPrx() );
       return 1;
-    }
-    catch( std::exception &e )
-    {
-      stringstream ss; ss << "Error while subscribing to control interface: " << e.what();
-      context_.tracer()->error( ss.str() );
     }
     catch( Ice::Exception &e )
     {
       stringstream ss; ss << "Error while subscribing to control interface: " << e;
+      context_.tracer()->error( ss.str() );
+    }
+    catch( std::exception &e )
+    {
+      stringstream ss; ss << "Error while subscribing to control interface: " << e.what();
       context_.tracer()->error( ss.str() );
     }
     return 0;

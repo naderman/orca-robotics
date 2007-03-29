@@ -11,14 +11,47 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaifaceimpl/util.h>
-#include "laserscanner2dI.h"
+#include "laserscanner2diface.h"
 
 using namespace std;
 using namespace orca;
 
 namespace orcaifaceimpl {
 
-LaserScanner2dI::LaserScanner2dI( const orca::RangeScanner2dDescription& descr,
+//
+// This is the implementation of the slice-defined interface
+//
+class LaserScanner2dI : public virtual orca::LaserScanner2d
+{
+public:
+    LaserScanner2dI( LaserScanner2dIface &iface )
+        : iface_(iface) {}
+
+    //
+    // Remote calls:
+    //
+
+    virtual ::orca::RangeScanner2dDataPtr     getData(const ::Ice::Current& ) const
+        { return iface_.getData(); }
+
+    virtual ::orca::RangeScanner2dDescription getDescription(const ::Ice::Current& ) const
+        { return iface_.getDescription(); }
+
+    virtual void subscribe(const ::orca::RangeScanner2dConsumerPrx &consumer,
+                           const ::Ice::Current& = ::Ice::Current())
+        { iface_.subscribe( consumer ); }
+
+    virtual void unsubscribe(const ::orca::RangeScanner2dConsumerPrx& consumer,
+                             const ::Ice::Current& = ::Ice::Current())
+        { iface_.unsubscribe( consumer ); }
+
+private:
+    LaserScanner2dIface &iface_;
+};
+
+//////////////////////////////////////////////////////////////////////
+
+LaserScanner2dIface::LaserScanner2dIface( const orca::RangeScanner2dDescription& descr,
                                   const std::string             &ifaceTag,
                                   const orcaice::Context        &context )
     : descr_(descr),
@@ -27,22 +60,29 @@ LaserScanner2dI::LaserScanner2dI( const orca::RangeScanner2dDescription& descr,
 {
 }
 
+LaserScanner2dIface::~LaserScanner2dIface()
+{
+    tryRemovePtr( context_, ptr_ );
+}
+
 void
-LaserScanner2dI::initInterface()
+LaserScanner2dIface::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithTag<orca::RangeScanner2dConsumerPrx>
         ( context_, consumerPrx_, ifaceTag_ );
 
-    // Register with the adapter
-    Ice::ObjectPtr obj = this;
-    orcaice::createInterfaceWithTag( context_, obj, ifaceTag_ );
+    // Register with the adapter.
+    // We don't have to clean up the memory we're allocating here, because
+    // we're holding it in a smart pointer which will clean up when it's done.
+    ptr_ = new LaserScanner2dI( *this );
+    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_ );
 }
 
 orca::RangeScanner2dDataPtr 
-LaserScanner2dI::getData(const Ice::Current& current) const
+LaserScanner2dIface::getData() const
 {
-    context_.tracer()->debug( "LaserScanner2dI::getData()", 5 );
+    context_.tracer()->debug( "LaserScanner2dIface::getData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
@@ -60,17 +100,17 @@ LaserScanner2dI::getData(const Ice::Current& current) const
 
 // serve out the data to the client (it was stored here earlier by the driver)
 orca::RangeScanner2dDescription
-LaserScanner2dI::getDescription(const Ice::Current& current) const
+LaserScanner2dIface::getDescription() const
 {
-    context_.tracer()->debug( "LaserScanner2dI::getDescription()", 5 );
+    context_.tracer()->debug( "LaserScanner2dIface::getDescription()", 5 );
     return descr_;
 }
 
 // Subscribe people
 void 
-LaserScanner2dI::subscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber, const ::Ice::Current&)
+LaserScanner2dIface::subscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber)
 {
-    context_.tracer()->debug( "LaserScanner2dI::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "LaserScanner2dIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
 
     if ( topicPrx_==0 ) {
         throw orca::SubscriptionFailedException( "null topic proxy." );
@@ -83,7 +123,7 @@ LaserScanner2dI::subscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber, 
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
-        ss <<"LaserScanner2dI::subscribe::failed to subscribe: "<< e << endl;
+        ss <<"LaserScanner2dIface::subscribe::failed to subscribe: "<< e << endl;
         context_.tracer()->warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
@@ -91,31 +131,31 @@ LaserScanner2dI::subscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber, 
 
 // Unsubscribe people
 void 
-LaserScanner2dI::unsubscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber, const ::Ice::Current&)
+LaserScanner2dIface::unsubscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber)
 {
-    context_.tracer()->debug( "LaserScanner2dI::usubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "LaserScanner2dIface::usubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
 
     topicPrx_->unsubscribe( subscriber );
 }
 
 void
-LaserScanner2dI::localSet( const ::orca::LaserScanner2dDataPtr &data )
+LaserScanner2dIface::localSet( const ::orca::LaserScanner2dDataPtr &data )
 {
-    // cout << "LaserScanner2dI::set data: " << orcaice::toString( data ) << endl;
+    // cout << "LaserScanner2dIface::set data: " << orcaice::toString( data ) << endl;
     
     dataProxy_.set( data );
 }
 
 void
-LaserScanner2dI::localSetAndSend( const ::orca::LaserScanner2dDataPtr &data )
+LaserScanner2dIface::localSetAndSend( const ::orca::LaserScanner2dDataPtr &data )
 {
     if ( context_.tracer()->verbosity( orcaice::Tracer::DebugTrace, orcaice::Tracer::ToAny ) >= 5 )
     {
         stringstream ss;
-        ss << "LaserScanner2dI: Sending data: " << orcaice::toString(data);
+        ss << "LaserScanner2dIface: Sending data: " << orcaice::toString(data);
         context_.tracer()->debug( ss.str(), 5 );
     }
-    // cout << "LaserScanner2dI::set data: " << orcaice::toString( data ) << endl;
+    // cout << "LaserScanner2dIface::set data: " << orcaice::toString( data ) << endl;
     
     dataProxy_.set( data );
 

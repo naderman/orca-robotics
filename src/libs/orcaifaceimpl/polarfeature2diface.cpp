@@ -11,36 +11,75 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaifaceimpl/util.h>
-#include "polarfeature2dI.h"
+#include "polarfeature2diface.h"
 
 using namespace std;
 using namespace orca;
 
 namespace orcaifaceimpl {
 
-PolarFeature2dI::PolarFeature2dI( const std::string             &ifaceTag,
+//////////////////////////////////////////////////////////////////////
+
+//
+// This is the implementation of the slice-defined interface
+//
+class PolarFeature2dI : public virtual orca::PolarFeature2d
+{
+public:
+    PolarFeature2dI( PolarFeature2dIface &iface )
+        : iface_(iface) {}
+
+    //
+    // Remote calls:
+    //
+
+    virtual ::orca::PolarFeature2dDataPtr     getData(const ::Ice::Current& ) const
+        { return iface_.getData(); }
+
+    virtual void subscribe(const ::orca::PolarFeature2dConsumerPrx& consumer,
+                           const ::Ice::Current& = ::Ice::Current())
+        { iface_.subscribe( consumer ); }
+
+    virtual void unsubscribe(const ::orca::PolarFeature2dConsumerPrx& consumer,
+                             const ::Ice::Current& = ::Ice::Current())
+        { iface_.unsubscribe( consumer ); }
+
+private:
+    PolarFeature2dIface &iface_;
+};
+
+//////////////////////////////////////////////////////////////////////
+
+PolarFeature2dIface::PolarFeature2dIface( const std::string             &ifaceTag,
                                   const orcaice::Context        &context )
     : ifaceTag_(ifaceTag),
       context_(context)
 {
 }
 
+PolarFeature2dIface::~PolarFeature2dIface()
+{
+    tryRemovePtr( context_, ptr_ );
+}
+
 void
-PolarFeature2dI::initInterface()
+PolarFeature2dIface::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithTag<orca::PolarFeature2dConsumerPrx>
         ( context_, consumerPrx_, ifaceTag_ );
 
     // Register with the adapter
-    Ice::ObjectPtr obj = this;
-    orcaice::createInterfaceWithTag( context_, obj, ifaceTag_ );
+    // We don't have to clean up the memory we're allocating here, because
+    // we're holding it in a smart pointer which will clean up when it's done.
+    ptr_ = new PolarFeature2dI( *this );
+    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_ );
 }
 
 orca::PolarFeature2dDataPtr 
-PolarFeature2dI::getData(const Ice::Current& current) const
+PolarFeature2dIface::getData() const
 {
-    context_.tracer()->debug( "PolarFeature2dI::getData()", 5 );
+    context_.tracer()->debug( "PolarFeature2dIface::getData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
@@ -58,9 +97,9 @@ PolarFeature2dI::getData(const Ice::Current& current) const
 
 // Subscribe people
 void 
-PolarFeature2dI::subscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber, const ::Ice::Current&)
+PolarFeature2dIface::subscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber)
 {
-    context_.tracer()->debug( "PolarFeature2dI::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "PolarFeature2dIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
 
     if ( topicPrx_==0 ) {
         throw orca::SubscriptionFailedException( "null topic proxy." );
@@ -73,7 +112,7 @@ PolarFeature2dI::subscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber, 
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
-        ss <<"PolarFeature2dI::subscribe::failed to subscribe: "<< e << endl;
+        ss <<"PolarFeature2dIface::subscribe::failed to subscribe: "<< e << endl;
         context_.tracer()->warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
@@ -81,32 +120,32 @@ PolarFeature2dI::subscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber, 
 
 // Unsubscribe people
 void 
-PolarFeature2dI::unsubscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber, const ::Ice::Current&)
+PolarFeature2dIface::unsubscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber)
 {
-    context_.tracer()->debug( "PolarFeature2dI::unsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "PolarFeature2dIface::unsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
 
     topicPrx_->unsubscribe( subscriber );
 }
 
 void
-PolarFeature2dI::localSet( const ::orca::PolarFeature2dDataPtr &data )
+PolarFeature2dIface::localSet( const ::orca::PolarFeature2dDataPtr &data )
 {
-    // cout << "PolarFeature2dI::set data: " << orcaice::toString( data ) << endl;
+    // cout << "PolarFeature2dIface::set data: " << orcaice::toString( data ) << endl;
     
     dataProxy_.set( data );
 }
 
 void
-PolarFeature2dI::localSetAndSend( const ::orca::PolarFeature2dDataPtr &data )
+PolarFeature2dIface::localSetAndSend( const ::orca::PolarFeature2dDataPtr &data )
 {
     if ( context_.tracer()->verbosity( orcaice::Tracer::DebugTrace, orcaice::Tracer::ToAny ) >= 5 )
     {
         stringstream ss;
-        ss << "PolarFeature2dI: Sending data: " << orcaice::toString(data);
+        ss << "PolarFeature2dIface: Sending data: " << orcaice::toString(data);
         context_.tracer()->debug( ss.str(), 5 );
     }
 
-    // cout << "PolarFeature2dI::set data: " << orcaice::toString( data ) << endl;
+    // cout << "PolarFeature2dIface::set data: " << orcaice::toString( data ) << endl;
     
     dataProxy_.set( data );
 

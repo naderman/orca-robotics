@@ -277,7 +277,7 @@ void
 FakeInsGpsDriver::shutdown()
 {
     // context_.tracer()->debug( "stopping fake insgps driver", 5 );
-    // orcaice::Thread::stopAndJoin( this );
+    // orcaice::stopAndJoin( this );
     // context_.tracer()->debug( "stopped fake insgps driver", 5 );
 }               
 

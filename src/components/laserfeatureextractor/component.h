@@ -18,7 +18,7 @@
 // interface definitions
 #include <orca/laserscanner2d.h>
 #include <orca/polarfeature2d.h>
-#include <orcaifaceimpl/polarfeature2dI.h>
+#include <orcaifaceimpl/polarfeature2diface.h>
 
 namespace laserfeatures
 {
@@ -39,7 +39,7 @@ public:
 private:
 
     // External interface: polar features
-    orcaifaceimpl::PolarFeature2dI *featureInterface_;
+    orcaifaceimpl::PolarFeature2dIfacePtr featureInterface_;
 
     MainLoop *mainLoop_;
 };

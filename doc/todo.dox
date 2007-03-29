@@ -81,6 +81,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Added hardware speed limits, set in hardware driver (alex m/b)
     - the RmpUsb driver now corrects for segway's built in speed scaling factor, 
       so that segway will actually drive at the speed specified. (alex m/b)
+    - Overhaul of component, error reporting greatly improved (alex b)
 
 @par Updated utilities
 

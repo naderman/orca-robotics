@@ -19,9 +19,9 @@ using namespace std;
 
 namespace imageserver {
 
-MainLoop::MainLoop( orcaifaceimpl::CameraI&  cameraObj,
-                    Driver*                  hwDriver,
-                    const orcaice::Context&  context ) :
+MainLoop::MainLoop( orcaifaceimpl::CameraIface&  cameraObj,
+                    Driver*                      hwDriver,
+                    const orcaice::Context&      context ) :
     cameraObj_(cameraObj),
     hwDriver_(hwDriver),
     context_(context)

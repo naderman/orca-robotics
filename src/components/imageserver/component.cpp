@@ -12,9 +12,6 @@
 #include "component.h"
 #include "mainloop.h"
 
-// implementations of Ice objects
-#include <orcaifaceimpl/cameraI.h>
-
 // define flags for building drivers
 #include "configimageserver.h"
 
@@ -196,14 +193,12 @@ Component::start()
     //
 
     // create servant for direct connections
-    orcaifaceimpl::CameraI* cameraI = new orcaifaceimpl::CameraI( descr, "Camera", context() );
-    // to register with the adapter, it's enough to have a generic pointer
-    cameraObjPtr_ = cameraI;
+    cameraInterface_ = new orcaifaceimpl::CameraIface( descr, "Camera", context() );
 
     //
     // MAIN DRIVER LOOP
     //
-    mainLoop_ = new MainLoop( *cameraI, hwDriver_, context() );
+    mainLoop_ = new MainLoop( *cameraInterface_, hwDriver_, context() );
     mainLoop_->start();
 }
 
@@ -211,7 +206,7 @@ void
 Component::stop()
 {
     tracer()->debug("stopping component...",2);
-    orcaice::Thread::stopAndJoin( mainLoop_ );
+    orcaice::stopAndJoin( mainLoop_ );
 }
 
 } // namespace

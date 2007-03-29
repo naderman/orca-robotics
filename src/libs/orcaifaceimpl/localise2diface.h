@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAIFACEIMPL_LOCALISE2D_I_H
-#define ORCA2_ORCAIFACEIMPL_LOCALISE2D_I_H
+#ifndef ORCA2_ORCAIFACEIMPL_LOCALISE2D_IFACE_H
+#define ORCA2_ORCAIFACEIMPL_LOCALISE2D_IFACE_H
 
 #include <orca/localise2d.h>
 #include <IceStorm/IceStorm.h>
@@ -23,26 +23,27 @@ namespace orcaifaceimpl {
 //!
 //! Implements the Localise2d interface: Handles remote calls.
 //!
-class Localise2dI : public orca::Localise2d
+class Localise2dIface : public IceUtil::Shared
 {
 public:
-    Localise2dI( const std::string &ifaceTag,
-                 const orca::Localise2dDescription &descr,
-                 const orcaice::Context &context );
+    Localise2dIface( const std::string &ifaceTag,
+                     const orca::Localise2dDescription &descr,
+                     const orcaice::Context &context );
+    ~Localise2dIface();
 
     // remote calls:
 
-    virtual ::orca::Localise2dData getData(const ::Ice::Current& ) const;
+    ::orca::Localise2dData getData() const;
 
-    virtual void subscribe(const ::orca::Localise2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    void subscribe(const ::orca::Localise2dConsumerPrx& );
 
-    virtual void unsubscribe(const ::orca::Localise2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    void unsubscribe(const ::orca::Localise2dConsumerPrx& );
 
     // Note: could do smoothing/interpolation here...
-    virtual orca::Localise2dData getDataAtTime(const orca::Time&, const Ice::Current& c) const
-        { return getData(c); }
+    orca::Localise2dData getDataAtTime(const orca::Time&) const
+        { return getData(); }
 
-    virtual orca::Localise2dDescription getDescription(const Ice::Current& c) const
+    orca::Localise2dDescription getDescription() const
         { return description_; }
 
     // Local calls:
@@ -64,11 +65,14 @@ private:
     orca::Localise2dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;
 
+    // Hang onto this so we can remove from the adapter and control when things get deleted
+    Ice::ObjectPtr          ptr_;
+
     const std::string                 ifaceTag_;
     const orca::Localise2dDescription description_;
     orcaice::Context                  context_;
 };
-typedef IceUtil::Handle<Localise2dI> Localise2dIPtr;
+typedef IceUtil::Handle<Localise2dIface> Localise2dIfacePtr;
 
 } // namespace
 

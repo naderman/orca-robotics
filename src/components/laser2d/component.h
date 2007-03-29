@@ -13,11 +13,11 @@
 
 #include <orca/laserscanner2d.h>
 #include <orcaice/component.h>
-#include <orcaifaceimpl/laserscanner2dI.h>
+#include <orcaifaceimpl/laserscanner2diface.h>
+#include "mainloop.h"
 
 namespace laser2d {
 
-class MainLoop;
 class Driver;
 
 class Component : public orcaice::Component
@@ -32,15 +32,15 @@ public:
 
 private:
 
-    MainLoop *mainLoop_;
+    orcaice::ThreadPtr mainLoop_;
 
-    // need to store it as a member variable, even though the adapter will keep it alive
-    // when the adapter dies on ctrl-c, this object would be destroyed trying to use the smart
-    // pointer results in seg fault.
-    Ice::ObjectPtr laserInterface_;
+    //
+    // External Interface
+    //
+    orcaifaceimpl::LaserScanner2dIfacePtr laserInterface_;
     
     //
-    // HARDWARE INTERFACES
+    // Hardware Interface
     //
     Driver *hwDriver_;
 };

@@ -10,7 +10,6 @@
 
 #include <orcaice/orcaice.h>
 #include "component.h"
-#include "mainloop.h"
 
 // Various bits of hardware we can drive
 #include "driver.h"
@@ -33,7 +32,6 @@ using namespace orca;
 
 Component::Component()
     : orcaice::Component( "Laser2d" ),
-      mainLoop_(0),
       hwDriver_(0)
 {
 }
@@ -42,7 +40,7 @@ Component::~Component()
 {
     delete hwDriver_;
     
-    // do not delete mainLoop_!!! It derives from Ice::Thread and self-destructs.
+    // do not delete mainLoop_!!! It is held in a smart pointer and will self-destruct.
 }
 
 void
@@ -161,17 +159,15 @@ Component::start()
     // EXTERNAL PROVIDED INTERFACE
     //
 
-    orcaifaceimpl::LaserScanner2dI *laserI = new orcaifaceimpl::LaserScanner2dI( descr,
-                                                                                 "LaserScanner2d",
-                                                                                 context() );
-    // laserInterface_ is a smart pointer, and will look after cleanup.
-    laserInterface_ = laserI;
+    laserInterface_ = new orcaifaceimpl::LaserScanner2dIface( descr,
+                                                              "LaserScanner2d",
+                                                              context() );
 
     //
     // MAIN DRIVER LOOP
     //
 
-    mainLoop_ = new MainLoop( *laserI,
+    mainLoop_ = new MainLoop( *laserInterface_,
                                hwDriver_,
                                compensateRoll,
                                context() );
@@ -183,7 +179,7 @@ void
 Component::stop()
 {
     tracer()->debug("stopping component...",2);
-    orcaice::Thread::stopAndJoin( mainLoop_ );
+    orcaice::stopAndJoin( mainLoop_ );
     tracer()->debug("component stopped.",2);
 }
 

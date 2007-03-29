@@ -83,7 +83,7 @@ NetHandler::initOdom2d()
     // PROVIDED: Odometry2d
     //
     odometry2dI_ =
-        new orcaifaceimpl::Odometry2dI( descr_, "Odometry2d", context_ );
+        new orcaifaceimpl::Odometry2dIface( descr_, "Odometry2d", context_ );
 
     while ( isActive() ) {
         try {
@@ -114,7 +114,7 @@ NetHandler::initOdom3d()
     // PROVIDED: Odometry3d
     //
     odometry3dI_ = 
-        new orcaifaceimpl::Odometry3dI( descr_, "Odometry3d", context_ );
+        new orcaifaceimpl::Odometry3dIface( descr_, "Odometry3d", context_ );
 
 
     while ( isActive() ) {
@@ -145,7 +145,7 @@ NetHandler::initPower()
     //
     // PROVIDED: Power
     //
-    powerI_ = new orcaifaceimpl::PowerI( "Power", context_ );
+    powerI_ = new orcaifaceimpl::PowerIface( "Power", context_ );
 
 
     while ( isActive() ) {

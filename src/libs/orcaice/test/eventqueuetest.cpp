@@ -207,7 +207,7 @@ int main(int argc, char * argv[])
         cout<<"failed"<<endl<<"expect size=1, size="<<q->size()<<endl;
         exit(EXIT_FAILURE);
     }
-    orcaice::Thread::stopAndJoin( extCaller );
+    orcaice::stopAndJoin( extCaller );
     cout<<"ok"<<endl;
 
     // TODO: test get and timedGet() with empty queue. requires another thread

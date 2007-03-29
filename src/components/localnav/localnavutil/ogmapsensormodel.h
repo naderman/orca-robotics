@@ -10,7 +10,7 @@
 #ifndef OGMAPSENSORMODEL_H
 #define OGMAPSENSORMODEL_H
 
-#include <orcaifaceimpl/proxiedconsumerI.h>
+#include <orcaifaceimpl/consumertypes.h>
 #include <orcaice/proxy.h>
 #include <orca/ogmap.h>
 
@@ -49,13 +49,11 @@ public:
 
 private: 
 
-    orcaifaceimpl::ProxiedConsumerI<orca::OgMapConsumer,orca::OgMapData>* obsConsumer_;
+    orcaifaceimpl::proxiedOgMapConsumerPtr obsConsumer_;
     
     orcaice::Proxy<orca::OgMapData>* obsProxy_;
     
     orca::OgMapPrx obsPrx_;
-
-    orca::OgMapConsumerPrx obsConsumerPrx_;
 
     OgMapSensorDescription ogMapSensorDescription_;
     OgMapSensorData ogMapSensorData_;

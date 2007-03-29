@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_POWER_I_H
-#define ORCA2_POWER_I_H
+#ifndef ORCA2_POWER_IFACE_H
+#define ORCA2_POWER_IFACE_H
 
 #include <orca/power.h>
 #include <IceStorm/IceStorm.h>
@@ -23,21 +23,21 @@ namespace orcaifaceimpl {
 //!
 //! Implements the orca::Power interface: Handles remote calls.
 //!
-class PowerI : public orca::Power
+class PowerIface : public IceUtil::Shared
 {
 public:
     //! constructor
-    PowerI( const std::string& ifaceTag, 
+    PowerIface( const std::string& ifaceTag, 
             const orcaice::Context& context );
-    virtual ~PowerI();
+    ~PowerIface();
 
     // remote interface
 
-    virtual ::orca::PowerData getData(const ::Ice::Current& ) const;
+    ::orca::PowerData getData() const;
 
-    virtual void subscribe(const ::orca::PowerConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    void subscribe(const ::orca::PowerConsumerPrx&);
 
-    virtual void unsubscribe(const ::orca::PowerConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    void unsubscribe(const ::orca::PowerConsumerPrx&);
 
 
     // local interface:
@@ -59,11 +59,13 @@ private:
     orca::PowerConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;
 
+    // Hang onto this so we can remove from the adapter and control when things get deleted
+    Ice::ObjectPtr          ptr_;
+
     const std::string              tag_;
     orcaice::Context               context_;
 };
-
-typedef IceUtil::Handle<PowerI> PowerIPtr;
+typedef IceUtil::Handle<PowerIface> PowerIfacePtr;
 
 }
 

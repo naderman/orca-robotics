@@ -16,8 +16,7 @@
 #include <orcaice/ptrproxy.h>
 #include <orcaice/thread.h>
 #include <orcaice/proxy.h>
-#include <orcaifaceimpl/ptrproxiedconsumerI.h>
-#include <orcaifaceimpl/proxiedconsumerI.h>
+#include <orcaifaceimpl/consumertypes.h>
 #include <orcalocalnav/speedlimiter.h>
 #include <orcalocalnav/pathmaintainer.h>
 #include <orcalocalnav/clock.h>
@@ -118,7 +117,7 @@ private:
     
     // Incoming observations and pose info
     // Get observations, pose, and odometric velocity
-    orcaifaceimpl::ProxiedConsumerI<orca::Localise2dConsumer,orca::Localise2dData>     *locConsumer_;
+    orcaifaceimpl::proxiedLocalise2dConsumerPtr locConsumer_;
 
     orcaice::Proxy<orca::Localise2dData>           *locProxy_;
 

@@ -26,7 +26,7 @@ namespace {
     const char *SUBSYSTEM = "mainloop";
 }
 
-MainLoop::MainLoop( orcaifaceimpl::PolarFeature2dI &featureInterface,
+MainLoop::MainLoop( orcaifaceimpl::PolarFeature2dIface &featureInterface,
                     const orcaice::Context &context )
     : driver_(NULL),
       featureInterface_(featureInterface),
@@ -43,9 +43,7 @@ MainLoop::MainLoop( orcaifaceimpl::PolarFeature2dI &featureInterface,
     sensorOffset_.o.y=0;
 
     // create a callback object to recieve scans
-    Ice::ObjectPtr consumer = new LaserConsumerI( laserDataProxy_ );
-    laserCallbackPrx_ =
-        orcaice::createConsumerInterface<orca::RangeScanner2dConsumerPrx>( context_, consumer );    
+    laserConsumer_ = new orcaifaceimpl::proxiedRangeScanner2dConsumer( context_ );
 }
 
 MainLoop::~MainLoop()
@@ -122,7 +120,7 @@ MainLoop::connectToLaser()
         try
         {
             context_.tracer()->debug( "Subscribing to laser...", 3 );
-            laserPrx_->subscribe( laserCallbackPrx_ );
+            laserPrx_->subscribe( laserConsumer_->consumerPrx() );
             break;
         }
         catch ( const Ice::Exception &e )
@@ -212,8 +210,9 @@ MainLoop::run()
     initDriver();
 
     orca::PolarFeature2dDataPtr featureData = new orca::PolarFeature2dData;
-    // don't need to create this one, it will be cloned from the proxy
+
     orca::LaserScanner2dDataPtr laserData;
+    orca::RangeScanner2dDataPtr rangeData;
 
     // wake up every now and then to check if we are supposed to stop
     const int timeoutMs = 1000;
@@ -229,7 +228,7 @@ MainLoop::run()
             //
             // block on arrival of laser data
             //
-            int ret = laserDataProxy_.getNext ( laserData, timeoutMs );
+            int ret = laserConsumer_->proxy().getNext ( rangeData, timeoutMs );
             if ( ret != 0 ) {
                 stringstream ss;
                 ss << "Timed out (" << timeoutMs << "ms) waiting for laser data.  Reconnecting.";
@@ -238,6 +237,9 @@ MainLoop::run()
                 connectToLaser();
                 continue;
             }
+
+            // Assume that what we're really getting is laser data
+            laserData = orca::LaserScanner2dDataPtr::dynamicCast( rangeData );
             
             if ( (int)(laserData->ranges.size()) != laserDescr_.numberOfSamples )
             {
