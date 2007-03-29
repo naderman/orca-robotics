@@ -17,7 +17,7 @@
 
 namespace orcadynamicload {
 
-// Exceptions
+//! Exceptions
 class DynamicLoadException : public std::exception
 { 
     std::string  message_;
@@ -34,18 +34,18 @@ public:
 //////////////////////////////////////////////////////////////////////
 
 
-//
-// Class to encapsulate a dynamically-loaded library, so you can load
-// code at run-time.
-//
-// Note that you have to keep this thing in scope for as long as you
-// want to access code from it.
-//
+//!
+//! Class to encapsulate a dynamically-loaded library, so you can load
+//! code at run-time.
+//!
+//! Note that you have to keep this thing in scope for as long as you
+//! want to access code from it.
+//!
 class DynamicallyLoadedLibrary
 {
 public:
 
-    // Loads the lib, throws DynamicLoadExceptions on error.
+    //! Loads the lib, throws DynamicLoadExceptions on error.
     DynamicallyLoadedLibrary( const std::string &libName );
     ~DynamicallyLoadedLibrary();
 
@@ -62,18 +62,18 @@ private:
 //////////////////////////////////////////////////////////////////////
 
 
-//
-// Uses a function in the lib to load an instance of 'LoadedClass'.
-//
-// Assumes the library has a 'maker' function with the signature:
-//   extern "C" {
-//     LoadedClass *makerFunc();
-//   }
-//
-// The type of this function should be typedef'd to MakerFunc somewhere, as in:
-//   typedef LoadedClass *MakerFunc();
-// 
-//
+//!
+//! Uses a function in the lib to load an instance of 'LoadedClass'.
+//!
+//! Assumes the library has a 'maker' function with the signature:
+//!   extern "C" {
+//!     LoadedClass *makerFunc();
+//!   }
+//!
+//! The type of this function should be typedef'd to MakerFunc somewhere, as in:
+//!   typedef LoadedClass *MakerFunc();
+//! 
+//!
 template<class LoadedClass, typename MakerFunc>
 LoadedClass *dynamicallyLoadClass( DynamicallyLoadedLibrary &lib, const char *makerFuncName )
 {

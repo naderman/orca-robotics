@@ -1,0 +1,43 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+/*!
+
+@ingroup libs
+@defgroup orca_library_orcadynamicload libOrcaDynamicLoad
+@brief Dynamically loads C++ classes
+
+@par Development status
+Well tested. 
+
+@section overview Overview
+
+This is a very small library for dynamically loading C++ classes.
+
+For a full list of functions and classes see @ref orcadynamicload.
+
+Header file:
+@verbatim
+#include <orcadynamicload/dynamicload.h>
+@endverbatim
+
+@par Responsible Developer
+Alex Brooks
+  
+*/
+
+/*!
+@namespace orcadynamicload
+@brief Dynamically loads C++ classes
+
+This is a very small library for dynamically loading C++ classes.
+
+@see @ref orca_library_orcadef 
+*/
+
