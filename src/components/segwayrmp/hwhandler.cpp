@@ -303,7 +303,7 @@ HwHandler::run()
                     context_.status()->ok( SUBSYSTEM, status );
                 }
                 else
-                    context_.status()->heartbeat( SUBSYSTEM );
+                    context_.status()->ok( SUBSYSTEM );
             }
             catch ( RmpException &e )
             {
