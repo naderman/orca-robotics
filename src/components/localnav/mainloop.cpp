@@ -257,7 +257,7 @@ MainLoop::subscribeForLocalisation()
     while ( isActive() )
     {
         try {
-            locPrx->subscribe( locConsumerPrx_ );
+            locPrx->subscribe( locConsumer_->consumerPrx() );
             break;
         }
         catch( Ice::Exception &e )

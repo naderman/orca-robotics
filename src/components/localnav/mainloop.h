@@ -141,10 +141,6 @@ private:
 
     bool testMode_;
 
-    // consumers
-    orca::Odometry2dConsumerPrx     odomConsumerPrx_;
-    orca::Localise2dConsumerPrx     locConsumerPrx_;
-
     orcaice::Context context_;
 };
 
