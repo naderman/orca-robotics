@@ -625,7 +625,7 @@ MainLoop::run()
 
             std::stringstream timerSS;
             timerSS << "MainLoop: time to make and send decision: " << timer.elapsedSeconds()*1000.0 << "ms";
-            context_.tracer()->info( timerSS.str() );
+            context_.tracer()->debug( timerSS.str() );
 
             // TODO FIXME Jon--make sure Alex B. sees this and is happy. :)
             // Because the cmd_ is now persistent, we can't count on the stack to create one
