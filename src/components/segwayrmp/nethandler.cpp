@@ -225,7 +225,8 @@ NetHandler::run()
             // block on the most frequent data source: odometry
             if ( odometry2dPipe_.getNext( odometry2dData, odometryReadTimeout ) ) {
 //             context_.tracer()->debug( "Net loop timed out", 1);
-                context_.status()->warning( SUBSYSTEM, "Hardware not supplying odometry." );
+                // Don't flag this as an error -- it may happen during normal initialisation.
+                context_.status()->ok( SUBSYSTEM, "Net loop timed out" );
                 continue;
             }
 
@@ -277,18 +278,21 @@ NetHandler::run()
         stringstream ss;
         ss << "NetHandler: Caught unexpected exception: " << e;
         context_.tracer()->error( ss.str() );
+        context_.status()->fault( SUBSYSTEM, ss.str() );
     }
     catch ( std::exception &e )
     {
         stringstream ss;
         ss << "NetHandler: Caught unexpected exception: " << e.what();
         context_.tracer()->error( ss.str() );
+        context_.status()->fault( SUBSYSTEM, ss.str() );
     }
     catch ( ... )
     {
         stringstream ss;
         ss << "NetHandler: Caught unknown unexpected exception";
         context_.tracer()->error( ss.str() );
+        context_.status()->fault( SUBSYSTEM, ss.str() );
     }
 
     // wait for the component to realize that we are quitting and tell us to stop.
