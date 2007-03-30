@@ -301,8 +301,21 @@ HwHandler::run()
                     driver_->getStatus( status, isWarn, isFault );
                     stringstream ss;
                     ss << "Saw state change: " << status;
-                    context_.tracer()->info( ss.str() );
-                    context_.status()->ok( SUBSYSTEM, status );
+                    if ( isFault )
+                    {
+                        context_.tracer()->error( ss.str() );
+                        context_.status()->fault( SUBSYSTEM, status );
+                    }
+                    else if ( isWarn )
+                    {
+                        context_.tracer()->warning( ss.str() );
+                        context_.status()->warning( SUBSYSTEM, status );
+                    }
+                    else
+                    {
+                        context_.tracer()->info( ss.str() );
+                        context_.status()->ok( SUBSYSTEM, status );
+                    }
                 }
                 else
                     context_.status()->ok( SUBSYSTEM );
