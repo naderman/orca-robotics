@@ -33,14 +33,13 @@ ComponentThread::run()
     try {
         while ( isActive() )
         {
-            // AlexB: Hmmm, this seems to result in problems when Component calls stopAndJoin()...
-//             if ( registeredHome_ || !(interfaceFlag_ & HomeInterface) &&
-//                  !(interfaceFlag_ & StatusInterface) )
-//             {
-//                 // Nothing left for us to do!
-//                 context_.tracer()->debug( "ComponentThread: Nothing left to do, so quitting." );
-//                 return;
-//             }
+            if ( registeredHome_ || !(interfaceFlag_ & HomeInterface) &&
+                 !(interfaceFlag_ & StatusInterface) )
+            {
+                // Nothing left for us to do!
+                context_.tracer()->debug( "ComponentThread: Nothing left to do, so quitting." );
+                return;
+            }
 
             if ( !registeredHome_ && (interfaceFlag_ & HomeInterface) )
             {

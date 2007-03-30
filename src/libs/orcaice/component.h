@@ -12,11 +12,11 @@
 #define ORCAICE_COMPONENT_H
 
 #include <orcaice/context.h>
+#include <orcaice/thread.h>
 
 namespace orcaice
 {
 
-class ComponentThread;
 class Status;
 
 //! This enum type is used to describe which standard interfaces the component
@@ -193,7 +193,7 @@ private:
     Status *localStatus_;
 
     // This thread allows us to do house-keeping stuff and manage Status.
-    ComponentThread *componentThread_;
+    orcaice::ThreadPtr componentThread_;
 };
 
 } // end namespace

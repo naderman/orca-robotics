@@ -106,6 +106,12 @@ LocalStatus::process()
 {
     IceUtil::Mutex::Lock lock(mutex_);
 
+    if ( subsystems_.size() == 0 )
+    {
+        // No subsystems have been defined -- no status to report.
+        return;
+    }
+
     IceUtil::Time now = IceUtil::Time::now();
     std::map<std::string,SubsystemStatus>::iterator it;
     for ( it=subsystems_.begin(); it!=subsystems_.end(); ++it ) 
