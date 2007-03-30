@@ -7,9 +7,11 @@ INCLUDE_DIRECTORIES(
     ${ICE_HOME}/include
 )
 
+# Ice libraries installed in lib64 on 64-bit systems.  Is there a way to tell automatically?
 LINK_DIRECTORIES(
     ${PROJECT_BINARY_DIR}/src/interfaces/cpp/orca
     ${ICE_HOME}/lib
+    ${ICE_HOME}/lib64
 )
 
 #

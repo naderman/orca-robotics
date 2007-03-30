@@ -12,7 +12,8 @@ IF ( NOT DEFINED ICE_HOME )
 ENDIF ( NOT DEFINED ICE_HOME )
 
 IF ( NOT OS_WIN )
-    CHECK_INCLUDE_FILE_CXX( "Ice/Ice.h" ICE_WORKS "-I${ICE_HOME}/include -L${ICE_HOME}/lib -lIce -lIceUtil" )
+    # On 64-bit systems, Ice libraries are installed in lib64.  Is there a way to tell automatically?
+    CHECK_INCLUDE_FILE_CXX( "Ice/Ice.h" ICE_WORKS "-I${ICE_HOME}/include -L${ICE_HOME}/lib -L${ICE_HOME}/lib64 -lIce -lIceUtil" )
     IF ( ICE_WORKS )
         SET ( ICE_WORKS 1 )
     ELSE ( ICE_WORKS )
