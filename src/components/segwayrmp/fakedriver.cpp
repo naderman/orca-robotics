@@ -39,7 +39,7 @@ FakeDriver::disable()
 }
 
 bool
-FakeDriver::read( SegwayRmpData& data, std::string &status )
+FakeDriver::read( SegwayRmpData& data )
 {
     orca::Time t = orcaice::toOrcaTime( IceUtil::Time::now() );
     data.seconds = t.seconds;
@@ -59,7 +59,6 @@ FakeDriver::read( SegwayRmpData& data, std::string &status )
     // slow it down a bit
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
 
-    status = "faking=1";
     return false;
 }
 
@@ -75,4 +74,12 @@ FakeDriver::write( const SegwayRmpCommand& command )
         context_.tracer()->info( ss.str() );
         throw RmpException( ss.str() );
     }
+}
+
+void 
+FakeDriver::getStatus( std::string &status, bool &isWarn, bool &isFault )
+{
+    status="faking=1";
+    isWarn=0;
+    isFault=0;
 }

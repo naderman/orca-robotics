@@ -117,7 +117,7 @@ RmpDriver::enable()
 // }
 
 bool
-RmpDriver::read( SegwayRmpData &data, std::string &status )
+RmpDriver::read( SegwayRmpData &data )
 {
     bool stateChanged = false;
 
@@ -125,6 +125,7 @@ RmpDriver::read( SegwayRmpData &data, std::string &status )
         //
         // Read a full data frame
         //
+        frame_.reset();
         readFrame();
     
         RmpDriver::Status rmpStatus;
@@ -134,18 +135,12 @@ RmpDriver::read( SegwayRmpData &data, std::string &status )
         if ( frame_.status_word1 != lastStatusWord1_ || 
              frame_.status_word2 != lastStatusWord2_ ) 
         {
-            stringstream ss;
-            ss << "RmpDriver: internal state change : "<<IceUtil::Time::now().toDateTime()<<endl;
-            ss<<toString();
 //             ss << "StatusWords:     " << frame_.status_word1 << "  " << frame_.status_word2 << endl;
 //             ss << "lastStatusWords: " << lastStatusWord1_ << "  " << lastStatusWord2_ << endl;
             lastStatusWord1_ = frame_.status_word1;
             lastStatusWord2_ = frame_.status_word2;
-            status = ss.str();
             stateChanged = true;
         }
-
-        frame_.reset();
 
 //         // update status (only change it when internal state changes?)
 //         std::ostringstream os;
@@ -160,6 +155,17 @@ RmpDriver::read( SegwayRmpData &data, std::string &status )
     }
 
     return stateChanged;
+}
+
+void 
+RmpDriver::getStatus( std::string &status, bool &isWarn, bool &isFault )
+{
+    stringstream ss;
+    ss << "RmpDriver: internal state change : "<<IceUtil::Time::now().toDateTime()<<endl;
+    ss<<toString();
+    status = ss.str();
+    isWarn = frame_.isWarn();
+    isFault = frame_.isFault();
 }
 
 void

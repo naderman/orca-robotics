@@ -276,8 +276,7 @@ HwHandler::run()
             // Read data from the hardware
             //
             try {
-                std::string status;
-                bool stateChanged = driver_->read( segwayRmpData, status );
+                bool stateChanged = driver_->read( segwayRmpData );
 
                 // convert internal to network format, and
                 // stick it in the proxies so pullers can get it
@@ -297,6 +296,9 @@ HwHandler::run()
                 // Update status
                 if ( stateChanged ) 
                 {
+                    string status;
+                    bool isWarn, isFault;
+                    driver_->getStatus( status, isWarn, isFault );
                     stringstream ss;
                     ss << "Saw state change: " << status;
                     context_.tracer()->info( ss.str() );

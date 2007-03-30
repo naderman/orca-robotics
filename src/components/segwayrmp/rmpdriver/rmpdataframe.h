@@ -42,6 +42,11 @@ public:
     std::string CuStatus1ToString();
     std::string CuStatus2ToString();
 
+    // Is there a warning condition?
+    bool isWarn();
+    // Is there an error condition?
+    bool isFault();
+
     // Build ID
     int16_t    build_id;
     // Pitch Angle

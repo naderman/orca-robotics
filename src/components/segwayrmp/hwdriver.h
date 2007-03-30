@@ -59,9 +59,9 @@ public:
     virtual void disable()=0;
     // Blocking read.
     // Returns: 
-    //   true:  important change in internal state occured.  Details are in 'status'.
+    //   true:  important change in internal state occured (details can be read with getStatus).
     //   false: no important change
-    virtual bool read( SegwayRmpData& data, std::string &status )=0;
+    virtual bool read( SegwayRmpData& data )=0;
     // Writes velocity command.
     virtual void write( const SegwayRmpCommand& command )=0;
     // Apply physical limits of this hardare.
@@ -72,6 +72,13 @@ public:
     // For debugging, convert to string as much of internal state as possible
     virtual std::string toString() { return std::string(""); };
 
+    // Get information about the current status of the driver.
+    // the string 'status' is a human-readable description.
+    // Note that there are two ways for faults to be notified:
+    //  - This function tells of hardware faults reported normally by the hardware.
+    //  - Exceptions are thrown for non-recoverable faults, such as inability to
+    //    communicate with the hardware.
+    virtual void getStatus( std::string &status, bool &isWarn, bool &isFault )=0;
 };
 
 } // namespace

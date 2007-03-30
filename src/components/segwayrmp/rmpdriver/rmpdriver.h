@@ -44,7 +44,7 @@ public:
     void disable() {}
 
     // Inherited from HwDriver
-    bool read( SegwayRmpData& data, std::string &status );
+    bool read( SegwayRmpData& data );
 
     // Inherited from HwDriver
     void write( const SegwayRmpCommand& command );
@@ -58,6 +58,9 @@ public:
 
     // Inherited from HwDriver
     std::string toString();
+
+    // Inherited from HwDriver
+    void getStatus( std::string &status, bool &isWarn, bool &isFault );
 
 private:
 

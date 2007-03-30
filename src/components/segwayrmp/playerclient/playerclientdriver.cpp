@@ -89,7 +89,7 @@ PlayerClientDriver::disable()
 }
 
 bool
-PlayerClientDriver::read( SegwayRmpData& data, std::string &status )
+PlayerClientDriver::read( SegwayRmpData& data )
 {
     if ( ! enabled_ ) {
         stringstream ss;
@@ -132,8 +132,6 @@ PlayerClientDriver::read( SegwayRmpData& data, std::string &status )
 
     //orcaplayer::convert( *powerProxy_, power );
 
-    status = "playing=1";
-
     return false;
 }
 
@@ -151,4 +149,12 @@ PlayerClientDriver::write( const SegwayRmpCommand& command )
         ss << "PlayerClientDriver::write(): " << e;
         throw RmpException( ss.str() );
     }
+}
+
+void 
+PlayerClientDriver::getStatus( std::string &status, bool &isWarn, bool &isFault )
+{
+    status  = "playing=1";
+    isWarn  = false;
+    isFault = false;
 }

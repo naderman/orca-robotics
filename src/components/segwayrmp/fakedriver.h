@@ -32,9 +32,11 @@ public:
 
     virtual void disable();
 
-    virtual bool read( SegwayRmpData& data, std::string &status );
+    virtual bool read( SegwayRmpData& data );
 
     virtual void write( const SegwayRmpCommand& command );
+
+    virtual void getStatus( std::string &status, bool &isWarn, bool &isFault );
 
 private:
     orcaice::Context context_;
