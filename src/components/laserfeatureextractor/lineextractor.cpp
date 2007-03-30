@@ -263,19 +263,26 @@ LineExtractor::addLines( const std::vector<Section> &sections,
             }
         }
 
-        orca::LinePolarFeature2dPtr f = new orca::LinePolarFeature2d;
-        f->type = orca::feature::LINE;
+        if ( (*i).end().bearing() < (*i).start().bearing() )
+        {
+            std::stringstream ss;
+            ss << "LineExtractor: strange... endBearing < startBearing.  Endpoints are: " << (*i).start().toStringRB() << " and " << (*i).end().toStringRB();
+            context_.tracer()->debug( ss.str() );
+            continue;
+        }
 
-        f->start.r = (*i).start().range();
-        f->start.o = (*i).start().bearing();
-        f->end.r   = (*i).end().range();
-        f->end.o   = (*i).end().bearing();
+        orca::LinePolarFeature2dPtr newFeature = new orca::LinePolarFeature2d;
+        newFeature->type = orca::feature::LINE;
 
-        determineUncertainty( f->rhoSd, f->alphaSd, *i );
+        newFeature->start.r = (*i).start().range();
+        newFeature->start.o = (*i).start().bearing();
+        newFeature->end.r   = (*i).end().range();
+        newFeature->end.o   = (*i).end().bearing();
 
-        f->pFalsePositive = pFalsePositive;
-        f->pTruePositive  = linePTruePositive_;
-        features->features.push_back( f );
+        determineUncertainty( newFeature->rhoSd, newFeature->alphaSd, *i );
+
+        newFeature->pFalsePositive = pFalsePositive;
+        newFeature->pTruePositive  = linePTruePositive_;
 
         //
         // Determine visibility of endpoints.
@@ -296,11 +303,14 @@ LineExtractor::addLines( const std::vector<Section> &sections,
         const Section *prevPtr=NULL;
         if ( i != sections.begin() )
             prevPtr = &(*prev);
-        f->startSighted = isStartVisible( *i, alpha, prevPtr );
+        newFeature->startSighted = isStartVisible( *i, alpha, prevPtr );
         const Section *nextPtr=NULL;
         if ( i+1 != sections.end() )
             nextPtr = &(*(i+1));
-        f->endSighted   = isEndVisible( *i, alpha, nextPtr );
+        newFeature->endSighted   = isEndVisible( *i, alpha, nextPtr );
+
+        // Add it to the list
+        features->features.push_back( newFeature );
     }
 }
 
