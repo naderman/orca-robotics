@@ -30,14 +30,19 @@ ComponentThread::~ComponentThread()
 void
 ComponentThread::run()
 {
+    bool hasStatusInterface = (interfaceFlag_ & StatusInterface);
+    bool hasHomeInterface   = (interfaceFlag_ & HomeInterface);
+
     try {
         while ( isActive() )
         {
-            if ( registeredHome_ || !(interfaceFlag_ & HomeInterface) &&
-                 !(interfaceFlag_ & StatusInterface) )
+            bool needToRegisterHome = hasHomeInterface && !registeredHome_;
+            if ( !needToRegisterHome && !hasStatusInterface )
             {
                 // Nothing left for us to do!
-                context_.tracer()->debug( "ComponentThread: Nothing left to do, so quitting." );
+                stringstream ss;
+                ss << "ComponentThread: Nothing left to do, so quitting. hasStatusInterface: " << hasStatusInterface;
+                context_.tracer()->debug( ss.str() );
                 return;
             }
 
