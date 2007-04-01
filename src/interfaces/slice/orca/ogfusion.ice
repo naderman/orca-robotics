@@ -26,7 +26,7 @@ module orca
     for fusing them into an occupancy grid map.
 */
 
-//!
+//! Description of the OgFusion interface
 struct OgFusionConfig
 {
     //! Time when data was measured.
