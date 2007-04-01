@@ -31,7 +31,7 @@ Have to include things by name:
 
 /*!
 @brief Occupancy Grid Fusion Util: Stuff useful for Occupancy grid operations.
-@namespace orcaogfusion
+@namespace ogfusion
 
 @see @ref orca_library_orcaogfusionutil
 
