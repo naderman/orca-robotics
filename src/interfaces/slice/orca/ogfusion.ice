@@ -20,11 +20,13 @@ module orca
     @ingroup interfaces
     @defgroup orca_interface_ogfusion OgFusion
     @brief An occupancy grid fusion interface
+    @{
 
     An occupancy grid fusion interface which receives occupancy likelihoods per grid cell
     for fusing them into an occupancy grid map.
-
 */
+
+//!
 struct OgFusionConfig
 {
     //! Time when data was measured.
@@ -53,9 +55,12 @@ struct OgFusionConfig
 //! A basic structure for individual likelihoods per cell
 struct OgCellLikelihood
 {
-   int x;
-   int y;
-   float likelihood;
+    //! The x index of the cell
+    int x;
+    //! The y index of the cell
+    int y;
+    // The likelihood of occupancy
+    float likelihood;
 };
 
 //! A sequence of likelihoods forms an observation
@@ -87,7 +92,9 @@ interface OgFusion
     void setData(OgFusionData data);
 };
 
-/*! @} */
+/*! 
+    @} 
+*/
 }; // module
 
 #endif
