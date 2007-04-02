@@ -36,7 +36,7 @@ Minimum version required 2.4-patch 2 (latest tested: 2.4-patch 4).
 
 @section orca_doc_installdebian_ice Ice
 
-Minimum version required 3.1.0 (latest tested: 3.1.1).
+Minimum version required 3.1.0 (latest tested: 3.2.0).
 
 @note These instructions install Ice using a Debian package. In some cases you may still want to build Ice from source, see @ref orca_doc_installdebian_icefromsource for Debian-specific instructions.
 

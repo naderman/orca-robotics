@@ -109,6 +109,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - OrcaLogFactory (Tobi)
     - fixed GPS replay bug
     - added wifi for replaying
+- OrcaIfaceImpl
+    - Interface lifetimes are now independent of the adapter.
+      (This involved an API change). (alex b)
 
 @par Removed
 

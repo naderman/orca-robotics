@@ -66,7 +66,7 @@ You could also choose another directory instead of /usr/local
 
 @section orca_doc_installfedora_ice Downloading Ice
 
-Minimum version required 3.1.0 (latest tested: 3.1.0).
+Minimum version required 3.1.0 (latest tested: 3.2.0).
 
 ICE theoretically could be installed from the RPMs available on their web site. However,
 those RPMs are compiled against GCC 3, which does not play well with ORCA 2, so you have to
