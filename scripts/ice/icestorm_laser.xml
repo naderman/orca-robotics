@@ -42,7 +42,7 @@
         
         <service-template id="icestormTemplate">
             <parameter name="platform"/>
-            <service name="IceStorm" entry="IceStormService,31:createIceStorm">
+            <service name="IceStorm" entry="IceStormService,32:createIceStorm">
                 <adapter name="${platform}/${service}" register-process="false" endpoints="default"/>                
                 <property name="IceStorm.TopicManager.Endpoints" value="default -p 10000"/>
                 <property name="IceStorm.Publish.Endpoints" value="default"/>
