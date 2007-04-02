@@ -109,9 +109,6 @@ Simulator::setupInterfaces()
     scannerDescr_.offset.o.y = 0;
     scannerDescr_.timeStamp = orcaice::getNow();
     
-    // record the description in the RangeScannerSensorDescription class
-    rangeScannerSensorDescription_.setDescr( scannerDescr_ );
-    
     laserInterface_    = new orcaifaceimpl::LaserScanner2dIface( scannerDescr_, "TestLaserScanner", context_ );
     orca::Localise2dDescription descr;
     descr.timeStamp = orcaice::getNow();
@@ -137,12 +134,6 @@ Simulator::setupInterfaces()
         // cout<<"TRACE(simulator.cpp): map is: " << orcaice::toVerboseString(orcaOgMap) << endl;
 
     } catch (...) {}
-}
-
-ISensorDescription& 
-Simulator::rangeScanner2dDescription()
-{
-    return rangeScannerSensorDescription_;
 }
 
 void

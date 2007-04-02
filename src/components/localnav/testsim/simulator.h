@@ -13,10 +13,6 @@
 #include <orcaice/context.h>
 #include <orca/pathfollower2d.h>
 
-#include <localnavutil/isensordescription.h>
-#include <localnavutil/rangescannersensordescription.h>
-
-
 namespace localnav {
 
 //!
@@ -36,16 +32,16 @@ public:
 
     // These can be given out to others: the simulator 
     // will put new data in them on each step.
-    orcaice::PtrProxy<orca::RangeScanner2dDataPtr> obsProxy_;
-    orcaice::Proxy<orca::Localise2dData>           locProxy_;
-    orcaice::Proxy<orca::Odometry2dData>           odomProxy_;
+    orcaice::Proxy<orca::RangeScanner2dDataPtr> obsProxy_;
+    orcaice::Proxy<orca::Localise2dData>        locProxy_;
+    orcaice::Proxy<orca::Odometry2dData>        odomProxy_;
 
     void printState();
 
     orca::VehicleDescription        getVehicleDescription() const;
     
-    // return the description upcasted to the base class
-    ISensorDescription& rangeScanner2dDescription();
+    const orca::RangeScanner2dDescription& rangeScanner2dDescription() const
+        { return scannerDescr_; }
     
 private: 
 
@@ -70,7 +66,7 @@ private:
     orcaifaceimpl::Localise2dIface     *localiseInterface_;
     orcaifaceimpl::OgMapIface          *ogMapInterface_;
 
-    orca::LaserScanner2dDataPtr scan_;
+    orca::LaserScanner2dDataPtr     scan_;
     orca::RangeScanner2dDescription scannerDescr_;
 
     orca::PathFollower2dData testPath_;
@@ -79,8 +75,6 @@ private:
 
     bool batchMode_;
     
-    RangeScannerSensorDescription rangeScannerSensorDescription_;
-
     orcaice::Context context_;
 };
 
