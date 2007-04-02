@@ -17,7 +17,7 @@
 Occupancy Grid Fusion Util: Stuff useful for Occupancy grid operations. Such 
 as the fusion of cells, and configuration of occupancy grid maps.
 
-For a full list of functions and classes see @ref orcaogfusion
+For a full list of functions and classes see @ref ogfusion
 
 Have to include things by name:
 @verbatim
