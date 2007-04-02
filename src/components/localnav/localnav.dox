@@ -89,59 +89,59 @@ within reasonable safe limits.
 
     Some important configuration parameters:
 
-- @c LocalNav.Config.SafetyDist0ms (double) [m]
+- @c LocalNav.Config.Vfh.SafetyDist0ms (double) [m]
     - the distance the robot should keep from obstacles when travelling at 0 m/s.
 
-- @c LocalNav.Config.SafetyDist1ms (double) [m]
+- @c LocalNav.Config.Vfh.SafetyDist1ms (double) [m]
     - the distance the robot should keep from obstacles when travelling at 1 m/s.
 
-- @c LocalNav.Config.FreeSpaceCutoff0ms (double) [m]
+- @c LocalNav.Config.Vfh.FreeSpaceCutoff0ms (double) [m]
     - Controls how close the robot has to be to an
       obstacle to be afraid of it, when travelling at 0 m/s.  A small value makes 
       the robot cautious, a large value makes it brave.
 
-- @c LocalNav.Config.FreeSpaceCutoff0ms (double) [m]
+- @c LocalNav.Config.Vfh.FreeSpaceCutoff0ms (double) [m]
     - See FreeSpaceCutoff0ms.  The value used scales linearly with speed.
 
-- @c LocalNav.Config.ObsCutoff0ms (double) [m]
+- @c LocalNav.Config.Vfh.ObsCutoff0ms (double) [m]
     - Setting this differently to FreeSpaceCutoff0ms causes VFH to use some hysteresis
       in deciding what an obstacle is.  For laser range-finders, setting it to FreeSpaceCutoff0ms
       seems to work just fine.
 
-- @c LocalNav.Config.ObsCutoff1ms (double) [m]
+- @c LocalNav.Config.Vfh.ObsCutoff1ms (double) [m]
     - see ObsCutoff0ms
 
-- @c LocalNav.Config.WeightDesiredDir (double)
+- @c LocalNav.Config.Vfh.WeightDesiredDir (double)
     - To force it to commit, VFH is provided with a built-in tendency to stick to its
       previous course of action.  WeightDesiredDir and WeightCurrentDir determine the strength of this tendency.
 
-- @c LocalNav.Config.WeightCurrentDir (double)
+- @c LocalNav.Config.Vfh.WeightCurrentDir (double)
     - see WeightDesiredDir
 
-- @c LocalNav.Config.CellSize (double) [m]
+- @c LocalNav.Config.Vfh.CellSize (double) [m]
     - VFH builds a small local Occupancy Grid map for obstacle detection.  This controls the width
       of each occupancy grid cell.
 
-- @c LocalNav.Config.GridWidthInCells (int)
+- @c LocalNav.Config.Vfh.GridWidthInCells (int)
     - This parameter, together with CellSize, determine the size of the local
       occupancy grid.
 
-- @c LocalNav.Config.GridWidthInCells (int)
+- @c LocalNav.Config.Vfh.GridWidthInCells (int)
     - The number of bins in VFH's local histogram.
 
-- @c LocalNav.Config.MaxAcceleration (double) [m/s2]
+- @c LocalNav.Config.Vfh.MaxAcceleration (double) [m/s2]
     - maximum acceleration
 
-- @c LocalNav.Config.MaxTurnrate0ms (double) [deg/s]
+- @c LocalNav.Config.Vfh.MaxTurnrate0ms (double) [deg/s]
     - maximum turnrate at 0 m/s.
 
-- @c LocalNav.Config.MaxTurnrate1ms (double) [deg/s]
+- @c LocalNav.Config.Vfh.MaxTurnrate1ms (double) [deg/s]
     - maximum turnrate at 1m/s.
 
-- @c LocalNav.Config.AbsoluteMaxTurnrate (double) [deg/s]
+- @c LocalNav.Config.Vfh.AbsoluteMaxTurnrate (double) [deg/s]
     - this is for safety.  We'll never turn faster than this.
 
-- @c LocalNav.Config.MinTurnRadiusSafetyFactor (double)
+- @c LocalNav.Config.Vfh.MinTurnRadiusSafetyFactor (double)
     - MinTurnRadius is calculated for the current speed and max turnrate.  It is then multiplied by
       minTurnRadiusSafetyFactor, to account for side-slip while cornering quickly.
     - default 1.10
@@ -149,15 +149,15 @@ within reasonable safe limits.
     For the next three speed arguments: These are the absolute max values that VFH will use.
     Setting a path with a long time between waypoints will cause VFH to go slower.
 
-- @c LocalNav.Config.MaxSpeed (double) [m/s]
+- @c LocalNav.Config.Vfh.MaxSpeed (double) [m/s]
     - the robot's maximum speed -- it will never try to go faster than this.
 
-- @c LocalNav.Config.MaxSpeedNarrowOpening (double) [m/s]
+- @c LocalNav.Config.Vfh.MaxSpeedNarrowOpening (double) [m/s]
     - Max speed while travelling through a narrow opening 
       (defined as an opening of less than 80degrees).  This is
       thresholded if the max_speed is decreased at run-time.
 
-- @c LocalNav.Config.MaxSpeedWideOpening (double) [m/s]
+- @c LocalNav.Config.Vfh.MaxSpeedWideOpening (double) [m/s]
     - Max speed while travelling along the border of an obstacle,
       when the opening is greater than 80 degrees.  This is
       thresholded if the max_speed is decreased at run-time.
