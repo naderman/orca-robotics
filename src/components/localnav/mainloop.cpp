@@ -498,7 +498,7 @@ MainLoop::run()
                << "\t localiseData: " << orcaice::toString(localiseData_.timeStamp) << endl
                << "\t odomData:     " << orcaice::toString(odomData_.timeStamp) << endl
                << "\t now:          " << orcaice::toString(orcaice::getNow());
-            context_.tracer()->info( ss.str() );
+            context_.tracer()->debug( ss.str() );
 
             // grab the maximum likelihood pose of the vehicle
             orcanavutil::Pose pose = getMLPose( localiseData_ );
