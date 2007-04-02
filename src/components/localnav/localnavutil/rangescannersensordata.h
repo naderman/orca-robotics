@@ -33,7 +33,7 @@ public:
     //! Record the RangeScanner2dData in a member variable
     void setData( const orca::RangeScanner2dDataPtr rangeData ){ rangeData_ = rangeData; };
     //! Get the RangeScanner2dData
-    orca::RangeScanner2dDataPtr rangeData(){ return rangeData_; };
+    const orca::RangeScanner2dDataPtr &rangeData() const { return rangeData_; };
 
 private: 
 

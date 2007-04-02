@@ -487,7 +487,58 @@ MainLoop::sendCommandToPlatform( const IControlData& cmd )
 void
 MainLoop::run()
 {
-    setup();
+    try {
+        setup();
+    }
+    catch ( Ice::CommunicatorDestroyedException &e )
+    {
+        // This is OK: it means that the communicator shut down (eg via Ctrl-C)
+        // somewhere in mainLoop.
+        //
+        // Could probably handle it better for an Application by stopping the component on Ctrl-C
+        // before shutting down communicator.
+    }
+    catch ( Ice::Exception &e )
+    {
+        std::stringstream ss;
+        ss << "ERROR(mainloop.cpp): Caught unexpected exception during setup(): " << e;
+        context_.tracer()->error( ss.str() );
+        context_.status()->fault( SUBSYSTEM, ss.str() );
+        exit(1);
+    }
+    catch ( std::exception &e )
+    {
+        std::stringstream ss;
+        ss << "mainloop.cpp: caught std::exception during setup():" << e.what();
+        context_.tracer()->error( ss.str() );
+        context_.status()->fault( SUBSYSTEM, ss.str() );
+        exit(1);
+    }
+    catch ( std::string &e )
+    {
+        std::stringstream ss;
+        ss << "mainloop.cpp: caught std::string during setup(): " << e;
+        context_.tracer()->error( ss.str() );
+        context_.status()->fault( SUBSYSTEM, ss.str() );
+        exit(1);
+    }
+    catch ( char *e )
+    {
+        std::stringstream ss;
+        ss << "mainloop.cpp: caught char* during setup(): " << e;
+        context_.tracer()->error( ss.str() );
+        context_.status()->fault( SUBSYSTEM, ss.str() );
+        exit(1);
+    }
+    catch ( ... )
+    {
+        std::stringstream ss;
+        ss << "ERROR(mainloop.cpp): Caught unexpected unknown exception during setup().";
+        context_.tracer()->error( ss.str() );
+        context_.status()->fault( SUBSYSTEM, ss.str() );
+        exit(1);
+    }
+
     driver_->init( clock_.time() );
 
     const int TIMEOUT_MS = 1000;
