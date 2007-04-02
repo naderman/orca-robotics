@@ -492,13 +492,13 @@ MainLoop::run()
                 continue;
             }
 
-//             stringstream ss;
-//             ss << "Timestamps: " << endl
-//                << "\t rangeData:    " << orcaice::toString(rangeData_->timeStamp) << endl
-//                << "\t localiseData: " << orcaice::toString(localiseData_.timeStamp) << endl
-//                << "\t odomData:     " << orcaice::toString(odomData_.timeStamp) << endl
-//                << "\t now:          " << orcaice::toString(orcaice::getNow());
-//             context_.tracer()->info( ss.str() );
+            stringstream ss;
+            ss << "Timestamps: " << endl
+               << "\t rangeData:    " << orcaice::toString(rangeData_->timeStamp) << endl
+               << "\t localiseData: " << orcaice::toString(localiseData_.timeStamp) << endl
+               << "\t odomData:     " << orcaice::toString(odomData_.timeStamp) << endl
+               << "\t now:          " << orcaice::toString(orcaice::getNow());
+            context_.tracer()->info( ss.str() );
 
             // grab the maximum likelihood pose of the vehicle
             orcanavutil::Pose pose = getMLPose( localiseData_ );
