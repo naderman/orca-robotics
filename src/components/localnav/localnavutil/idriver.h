@@ -49,6 +49,7 @@ public:
     // in the local coordinate frame.
     //
     virtual void getCommand( bool                                   stalled,
+                             double                                 localisationLagSec,
                              bool                                   localisationUncertain,
                              const orcanavutil::Pose               &pose,
                              const orca::Twist2d                   &currentVelocity,

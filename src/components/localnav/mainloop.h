@@ -127,6 +127,11 @@ private:
     orca::VehicleDescription        vehicleDescr_;
     orca::RangeScanner2dDescription scannerDescr_;
 
+    // Are we using the same clock as the data sources?
+    bool   onSameClock_;
+    // By how much does our decision lag our localisation?
+    double localisationLagSec_;
+
     bool testMode_;
 
     orcaice::Context context_;
