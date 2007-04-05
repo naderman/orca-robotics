@@ -37,14 +37,49 @@ LocalStatus::setMaxHeartbeatInterval( const std::string& subsystem,
                                       double maxHeartbeatIntervalSec )
 {
     IceUtil::Mutex::Lock lock(mutex_);
-    subsystems_[subsystem].maxHeartbeatInterval = maxHeartbeatIntervalSec;
-    subsystems_[subsystem].lastHeartbeatTime    = IceUtil::Time::now();
+
+    std::map<std::string,SubsystemStatus>::iterator it;
+    it = subsystems_.find( subsystem );
+
+    if ( it == subsystems_.end() )
+    {
+        // Adding new subsytem
+        stringstream ss;
+        ss << "LocalStatus::setMaxHeartbeatInterval(): Adding new subsystem: '"<<subsystem<<"'";
+        context_.tracer()->debug( ss.str() );
+
+        SubsystemStatus newStatus;
+        newStatus.maxHeartbeatInterval = maxHeartbeatIntervalSec;
+        newStatus.lastHeartbeatTime    = IceUtil::Time::now();
+        newStatus.message = "";
+        newStatus.type = orcaice::Status::Initialising;
+        subsystems_[subsystem] = newStatus;        
+    }
+    else
+    {
+        // Modifying previously-registered subsytem
+        SubsystemStatus &status = it->second;
+        status.maxHeartbeatInterval = maxHeartbeatIntervalSec;
+        status.lastHeartbeatTime    = IceUtil::Time::now();
+    }
 }
 
 void 
 LocalStatus::heartbeat( const std::string& subsystem )
 {
     IceUtil::Mutex::Lock lock(mutex_);
+
+    std::map<std::string,SubsystemStatus>::iterator it;
+    it = subsystems_.find( subsystem );
+
+    if ( it == subsystems_.end() )
+    {
+        stringstream ss;
+        ss << "LocalStatus::heartbeat(): Haven't previously heard of subsystem '"<<subsystem<<"' -- ignoring.";
+        context_.tracer()->warning( ss.str() );
+        return;
+    }
+
     subsystems_[subsystem].lastHeartbeatTime = IceUtil::Time::now();
 }
 
