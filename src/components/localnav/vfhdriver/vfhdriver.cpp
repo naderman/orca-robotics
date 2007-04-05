@@ -94,6 +94,7 @@ VfhDriver::getCommand( bool                                   stalled,
                        bool                                   localisationUncertain,
                        const orcanavutil::Pose               &pose,
                        const orca::Twist2d                   &currentVelocity,
+                       const orca::Time                      &poseAndVelocityTime,
                        const orca::RangeScanner2dDataPtr      obs,
                        const std::vector<orcalocalnav::Goal> &goals,
                        orca::VelocityControl2dData           &cmd )

@@ -58,6 +58,7 @@ public:
                              bool                                   localisationUncertain,
                              const orcanavutil::Pose               &pose,
                              const orca::Twist2d                   &currentVelocity,
+                             const orca::Time                      &poseAndVelocityTime,
                              const orca::RangeScanner2dDataPtr      obs,
                              const std::vector<orcalocalnav::Goal> &goals,
                              orca::VelocityControl2dData           &cmd );
@@ -70,9 +71,9 @@ private:
     void setToZero(         orca::VelocityControl2dData& cmd );
     void setToEscape(       orca::VelocityControl2dData& cmd, const orca::RangeScanner2dDataPtr &obs );
     void setTurnToGoal(     orca::VelocityControl2dData& cmd, const orcalocalnav::Goal &goal );
-    void setToApproachGoal( orca::VelocityControl2dData& cmd,
-                            const orcalocalnav::Goal     &goal, 
-                            const orca::Twist2d             &currentVelocity,
+    void setToApproachGoal( orca::VelocityControl2dData       &cmd,
+                            const orcalocalnav::Goal          &goal, 
+                            const orca::Twist2d               &currentVelocity,
                             const orca::RangeScanner2dDataPtr &obs );
     
     // If we stall a lot, our sensors must have missed something.  

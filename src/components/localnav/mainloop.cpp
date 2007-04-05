@@ -112,6 +112,10 @@ MainLoop::ensureProxiesNotEmpty()
             sleep(1);
         }
     }
+    // Set the initial time
+    orca::RangeScanner2dDataPtr obs;
+    obsProxy_->get( obs );
+    clock_.setTime( obs->timeStamp );
 }
 
 void 
@@ -505,6 +509,13 @@ MainLoop::run()
                << "\t now:          " << orcaice::toString(now);
             context_.tracer()->debug( ss.str() );
 
+            if ( localiseData_.timeStamp != odomData_.timeStamp )
+            {
+                stringstream warnSS;
+                warnSS << "localiseData and odomData have different timestamps:" << endl << ss.str();
+                context_.tracer()->warning( warnSS.str() );
+            }
+
             // grab the maximum likelihood pose of the vehicle
             orcanavutil::Pose pose = getMLPose( localiseData_ );
             
@@ -535,6 +546,7 @@ MainLoop::run()
                                  uncertainLocalisation,
                                  pose,
                                  odomData_.motion,
+                                 localiseData_.timeStamp,
                                  rangeData_,
                                  currentGoals,
                                  velocityCmd );
@@ -567,12 +579,12 @@ MainLoop::run()
             {
                 double rangeLocalisationLag = orcaice::timeDiffAsDouble( now, localiseData_.timeStamp );
                 localisationLagSec_ += rangeLocalisationLag;
-                cout<<"TRACE(mainloop.cpp): rangeLocalisationLag: " << rangeLocalisationLag*1000.0 << "ms" << endl;
+                // cout<<"TRACE(mainloop.cpp): rangeLocalisationLag: " << rangeLocalisationLag*1000.0 << "ms" << endl;
             }
 
             stringstream sss;
             sss << "localisationLagSec_: " << localisationLagSec_*1000.0 << "ms";
-            context_.tracer()->info( sss.str() );
+            context_.tracer()->debug( sss.str() );
 
             checkWithOutsideWorld();
 
