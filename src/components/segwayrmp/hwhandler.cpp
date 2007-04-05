@@ -384,22 +384,24 @@ HwHandler::run()
         context_.tracer()->warning( ss.str() );
     }
 
-    // log run statistics
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag() + ".Config.";
-    bool logStats = orcaice::getPropertyAsIntWithDefault( prop, prefix+"LogStats", 1 );
-    if ( logStats ) {
-        string statsFilename = orcaice::getPropertyWithDefault( prop, prefix+"LogStatsFilename", "segwayrmp-stats.txt" );
-        std::ofstream file( statsFilename.c_str() );
-        if ( !file.is_open() ) {
-            context_.tracer()->error( "Stats were not written. Could not create file " + statsFilename );
-        }
-        // get stats
-        HwDriver::SegwayRmpStats stats;
-        driver_->get( stats );
-        file << startTime.toDateTime() << " " << stats.distanceTravelled << endl;
-        context_.tracer()->info( "Wrote stats to file " + statsFilename );
-    }
+// AlexB: This is not implemented, so I'm commenting it out.
+//     // log run statistics
+//     Ice::PropertiesPtr prop = context_.properties();
+//     std::string prefix = context_.tag() + ".Config.";
+//     bool logStats = orcaice::getPropertyAsIntWithDefault( prop, prefix+"LogStats", 1 );
+//     if ( logStats ) 
+//     {
+//         string statsFilename = orcaice::getPropertyWithDefault( prop, prefix+"LogStatsFilename", "segwayrmp-stats.txt" );
+//         std::ofstream file( statsFilename.c_str() );
+//         if ( !file.is_open() ) {
+//             context_.tracer()->error( "Stats were not written. Could not create file " + statsFilename );
+//         }
+//         // get stats
+//         HwDriver::SegwayRmpStats stats;
+//         driver_->get( stats );
+//         file << startTime.toDateTime() << " " << stats.distanceTravelled << endl;
+//         context_.tracer()->info( "Wrote stats to file " + statsFilename );
+//     }
 
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();

@@ -10,6 +10,7 @@ using namespace std;
 namespace usbftdi {
 
 UsbFtdi::UsbFtdi( DWORD iVID, DWORD iPID, const std::string &description, int debugLevel )
+    : debugLevel_(debugLevel)
 {
     // without this, the FTDI library will not find the device
     FT_SetVIDPID(iVID, iPID);   // use our VID and PID;

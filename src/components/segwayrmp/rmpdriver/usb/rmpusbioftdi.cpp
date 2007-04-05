@@ -40,7 +40,8 @@ RmpUsbIoFtdi::RmpUsbIoFtdi()
     : isEnabled_(false),
       charBuffer_(128),
       charBufferBytes_(0),
-      usbFtdi_(NULL)
+      usbFtdi_(NULL),
+      debugLevel_(0)
 {
 }
 
