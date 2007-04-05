@@ -56,6 +56,10 @@ ComponentThread::run()
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }
     }
+    catch ( Ice::CommunicatorDestroyedException &e )
+    {
+        // This is OK, we must be shutting down.
+    }
     catch ( std::exception &e )
     {
         stringstream ss;
