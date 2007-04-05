@@ -106,8 +106,8 @@ Parameters describing vehicle (see orca::VehicleDescription for details)
   - @c SegwayRmp.Config.VehicleDescription.Control.VelocityDifferential.MaxTurnrate (deg/s)
     - Absolute max turnrate (assumed max turnrate at 0m/s)
     - Default: 45.0
-  - @c SegwayRmp.Config.VehicleDescription.Control.VelocityDifferential.MaxTurnrate1ms (deg/s)
-    - Max turnrate at 1m/s.  This param and MaxTurnrate together define a linear model,
+  - @c SegwayRmp.Config.VehicleDescription.Control.VelocityDifferential.MaxTurnrateAtMaxSpeed (deg/s)
+    - Max turnrate at max speed.  This param and MaxTurnrate together define a linear model,
       giving the max turnrate at any speed.
     - Default: 45.0
   - @c SegwayRmp.Config.VehicleDescription.Control.VelocityDifferential.MaxForwardAcceleration (m/s/s)
