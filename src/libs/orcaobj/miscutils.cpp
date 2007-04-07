@@ -105,7 +105,7 @@ mlHypothesis( const orca::Localise3dData& obj )
 void 
 saveToFile( const orca::FeatureMap2dDataPtr& fmap, FILE *f )
 {
-    fprintf( f, "%f %f %f", fmap->offset.p.x, fmap->offset.p.y, fmap->offset.o );
+    fprintf( f, "%f %f %f\n", fmap->offset.p.x, fmap->offset.p.y, fmap->offset.o );
 
     for ( unsigned int i=0; i < fmap->features.size(); i++ )
     {
