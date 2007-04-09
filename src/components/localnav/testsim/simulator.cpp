@@ -27,8 +27,8 @@ Simulator::Simulator( const orcaice::Context &context,
 {
     // Set up pose
     pose_.x() = 0;
-//    pose_.y() = 0;
-    pose_.y() = -8;
+    pose_.y() = 0;
+//    pose_.y() = -8;
     pose_.theta() = 0;
 
     Ice::PropertiesPtr prop = context.properties();
@@ -202,7 +202,7 @@ Simulator::setupMap()
 {
     ogMap_.fill( 0 );
 
-#if 0
+//#if 0
     placeObstacle( ogMap_, 7, 4, 0.5 );
     placeObstacle( ogMap_, -2, -4, 0.5 );
     placeObstacle( ogMap_, -7, -4, 0.5 );
@@ -214,7 +214,7 @@ Simulator::setupMap()
     placeObstacle( ogMap_, 14, -18, 0.5 );
     placeObstacle( ogMap_, 16, -12, 0.5 );
     placeObstacle( ogMap_, 18, -16, 0.5 );
-#endif
+//#endif
 
     placeRoom( ogMap_ );
 }
