@@ -7,13 +7,16 @@ using namespace std;
 namespace orcanavutil {
 
 void
-OdometryDifferentiator::addOdom( const orca::Odometry2dData& odom, Offset &delta )
+OdometryDifferentiator::addOdom( double x,
+                                 double y,
+                                 double theta,
+                                 Offset &delta )
 {
     if ( !prevOdomInitialised_ )
     {
-        prevOdom_.pose.p.x = odom.pose.p.x;
-        prevOdom_.pose.p.y = odom.pose.p.y;
-        prevOdom_.pose.o = odom.pose.o;
+        prevX_     = x;
+        prevY_     = y;
+        prevTheta_ = theta;
 
         delta.x     = 0.0;
         delta.y     = 0.0;
@@ -25,25 +28,21 @@ OdometryDifferentiator::addOdom( const orca::Odometry2dData& odom, Offset &delta
     }
 
     // Calculate the offset that this new odometry info represents
-    orcanavutil::subtractInitialOffset( odom.pose.p.x,
-                                        odom.pose.p.y,
-                                        odom.pose.o,
-                                        prevOdom_.pose.p.x,
-                                        prevOdom_.pose.p.y,
-                                        prevOdom_.pose.o,
+    orcanavutil::subtractInitialOffset( x,
+                                        y,
+                                        theta,
+                                        prevX_,
+                                        prevY_,
+                                        prevTheta_,
                                         delta.x,
                                         delta.y,
                                         delta.theta );
 
     orcanavutil::normaliseAngle( delta.theta );
 
-//     cout<<"TRACE(odometrydifferentiator.cpp): prevOdom: " << prevOdom_.pose << endl;
-//     cout<<"TRACE(odometrydifferentiator.cpp):     odom: " << odom.pose << endl;
-//     cout<<"TRACE(odometrydifferentiator.cpp): delta   : " << delta << endl;
-    
-    prevOdom_.pose.p.x = odom.pose.p.x;
-    prevOdom_.pose.p.y = odom.pose.p.y;
-    prevOdom_.pose.o   = odom.pose.o;
+    prevX_     = x;
+    prevY_     = y;
+    prevTheta_ = theta;
 }
 
 }
