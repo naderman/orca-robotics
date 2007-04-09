@@ -1,3 +1,4 @@
+#if 0
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -54,3 +55,5 @@ class Position3dPainter
 } // namespace
 
 #endif
+#endif
+

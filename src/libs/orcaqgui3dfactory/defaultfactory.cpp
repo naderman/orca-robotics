@@ -14,7 +14,7 @@
 
 #include <orcaqgui3dfactory/gridelement.h>
 #include <orcaqgui3dfactory/laserscanner2delement.h>
-#include <orcaqgui3dfactory/position3delement.h>
+//#include <orcaqgui3dfactory/position3delement.h>
 
 #include "defaultfactory.h"
 
@@ -26,7 +26,7 @@ DefaultFactory::DefaultFactory()
 {
     addSupportedType(QStringList("::local::Grid"));
     addSupportedType(QStringList("::orca::LaserScanner2d"));
-    addSupportedType(QStringList("::orca::Position3d"));
+//    addSupportedType(QStringList("::orca::Position3d"));
 }
 
 
@@ -56,10 +56,10 @@ DefaultFactory::create( const orcaice::Context  &context,
         cout<<"creating LaserScanner2d element"<<endl;
         elem = new orcaqgui3d::LaserScanner2dElement( context, proxyString.toStdString() );
     }
-    else if ( interfaceId == "::orca::Position3d" ) {
-        cout<<"creating Position3d element"<<endl;
-        elem = new orcaqgui3d::Position3dElement( context, proxyString.toStdString() );
-    }
+//     else if ( interfaceId == "::orca::Position3d" ) {
+//         cout<<"creating Position3d element"<<endl;
+//         elem = new orcaqgui3d::Position3dElement( context, proxyString.toStdString() );
+//     }
     else
     {
         cout << "ERROR(guielementfactory.cpp): Don't know how to handle interfaceId '" << interfaceId.toStdString() << "'" << endl;

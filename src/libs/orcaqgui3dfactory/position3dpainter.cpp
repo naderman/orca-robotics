@@ -1,3 +1,4 @@
+#if 0
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -89,3 +90,4 @@ Position3dPainter::paint( QGLWidget *p )
     glEnd();
 #endif
 }
+#endif
