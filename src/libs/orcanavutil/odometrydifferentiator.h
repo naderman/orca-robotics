@@ -7,6 +7,8 @@
 namespace orcanavutil {
 
 //!
+//! @brief Feed in odometry, this will tell you what change each new bit of data represents.
+//!
 //! @author Alex Brooks
 //!
 class OdometryDifferentiator
