@@ -19,10 +19,7 @@
 #include <orca/home.h>
 #include <orca/laserscanner2d.h>
 #include <orca/odometry2d.h>
-#include <orca/position2d.h>
-#include <orca/position3d.h>
 #include <orca/localise2d.h>
-#include <orca/platform2d.h>
 #include <orca/power.h>
 #include <orca/status.h>
 #include <orca/polarfeature2d.h>
@@ -31,6 +28,7 @@
 #include <orca/pathplanner2d.h>
 #include <orca/wifi.h>
 #include <orca/pixmap.h>
+#include <orca/velocitycontrol2d.h>
 
 namespace orcaice
 {
@@ -56,8 +54,6 @@ void setInit( orca::CartesianPoint2d&, double x=0.0, double y=0.0 );
 void setInit( orca::CartesianPoint&, double x=0.0, double y=0.0, double z=0.0 );
 //! Sets all fields to zero.
 void setInit( orca::Time& );
-//! Sets all fields to zero and stalled to FALSE.
-void setInit( orca::Position2dData& );
 //! Sets all fields to zero
 void setInit( orca::Waypoint2d& );
 //! Sets all fields to zero
@@ -109,13 +105,7 @@ void setSane( orca::OgMapData&, int width=640, int height=480 );
 //! Set to randomized but sane values.
 void setSane( orca::PixMapData&, int width=640, int height=480 );
 //! Set to randomized but sane values.
-void setSane( orca::Position2dData& );
-//! Set to randomized but sane values.
-void setSane( orca::Position3dData& );
-//! Set to randomized but sane values.
 void setSane( orca::PowerData&, int count=2 );
-//! Set to randomized but sane values.
-void setSane( orca::Velocity2dCommand& );
 //@}
 
 //@}

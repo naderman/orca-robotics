@@ -20,7 +20,6 @@
 #include "localise2dprobe.h"
 #include "odometry2dprobe.h"
 #include "odometry3dprobe.h"
-#include "position3dprobe.h"
 #include "gpsprobe.h"
 #include "powerprobe.h"
 #include "statusprobe.h"
@@ -41,8 +40,6 @@ OrcaProbeFactory::OrcaProbeFactory()
 //     addSupportedType("::orca::PolarFeature2d");
     addSupportedType("::orca::Odometry2d");
     addSupportedType("::orca::Odometry3d");
-//     addSupportedType("::orca::Position2d");
-    addSupportedType("::orca::Position3d");
     addSupportedType("::orca::Power");
     addSupportedType("::orca::Status");
     addSupportedType("::orca::Tracer");
@@ -85,9 +82,6 @@ OrcaProbeFactory::create( const std::string           & interfaceType,
     }
     else if ( interfaceType == "::orca::Odometry3d" ) {
         probe = new Odometry3dProbe( name, display, context );
-    }
-    else if ( interfaceType == "::orca::Position3d" ) {
-        probe = new Position3dProbe( name, display, context );
     }
     else if ( interfaceType == "::orca::Power" ) {
         probe = new PowerProbe( name, display, context );

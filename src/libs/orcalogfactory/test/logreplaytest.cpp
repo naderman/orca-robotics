@@ -23,15 +23,11 @@
 #include "../laserscanner2dlogger.h"
 #include "../localise2dlogger.h"
 #include "../polarfeature2dlogger.h"
-#include "../position2dlogger.h"
-#include "../position3dlogger.h"
 #include "../powerlogger.h"
 
 #include "../camerareplayer.h"
 #include "../gpsreplayer.h"
 #include "../laserscanner2dreplayer.h"
-#include "../position2dreplayer.h"
-#include "../position3dreplayer.h"
 #include "../powerreplayer.h"
 
 using namespace std;
@@ -200,64 +196,6 @@ TestComponent::start()
         orca::LaserScanner2dDataPtr dataOut = orca::LaserScanner2dDataPtr::dynamicCast(rangeScanner2dDataOut);    
 
         if ( dataIn->ranges[17] != dataOut->ranges[17] ) {
-            cout<<"failed"<<endl<<"object logged incorrectly"<<endl;
-            cout<<"\tIN : "<<orcaice::toString(dataIn)<<endl;
-            cout<<"\tOUT: "<<orcaice::toString(dataOut)<<endl;
-            exit(EXIT_FAILURE);
-        }
-
-        delete logger;
-        delete replayer;     
-        delete logMaster;
-    }
-    cout<<"ok"<<endl;
-
-    cout<<"*** Testing Position2d log/replay ... "<<endl;
-    {
-        logMaster = new orcalog::LogMaster( "master.txt", context() );
-
-        orcalogfactory::Position2dLogger* logger = 
-            new orcalogfactory::Position2dLogger( logMaster, "0", "ice", "", context() );
-        orca::Position2dData dataIn;
-        orcaice::setSane( dataIn );
-        logger->setData( dataIn, Ice::Current() );
-    
-        orcalogfactory::Position2dReplayer* replayer = 
-            new orcalogfactory::Position2dReplayer( "ice", "position2d0.log", context() );
-        replayer->init( true );
-        replayer->replayData( 0, true );  
-        orca::Position2dData dataOut = replayer->getData( Ice::Current() );
-    
-        if ( dataIn.pose != dataOut.pose ) {
-            cout<<"failed"<<endl<<"object logged incorrectly"<<endl;
-            cout<<"\tIN : "<<orcaice::toString(dataIn)<<endl;
-            cout<<"\tOUT: "<<orcaice::toString(dataOut)<<endl;
-            exit(EXIT_FAILURE);
-        }
-
-        delete logger;
-        delete replayer;     
-        delete logMaster;
-    }
-    cout<<"ok"<<endl;
-
-    cout<<"*** Testing Position3d log/replay ... "<<endl;
-    {
-        logMaster = new orcalog::LogMaster( "master.txt", context() );
-
-        orcalogfactory::Position3dLogger* logger = 
-            new orcalogfactory::Position3dLogger( logMaster, "0", "ice", "", context() );
-        orca::Position3dData dataIn;
-        orcaice::setSane( dataIn );
-        logger->setData( dataIn, Ice::Current() );
-    
-        orcalogfactory::Position3dReplayer* replayer = 
-            new orcalogfactory::Position3dReplayer( "ice", "position3d0.log", context() );
-        replayer->init( true );
-        replayer->replayData( 0, true );  
-        orca::Position3dData dataOut = replayer->getData( Ice::Current() );
-    
-        if ( dataIn.pose != dataOut.pose ) {
             cout<<"failed"<<endl<<"object logged incorrectly"<<endl;
             cout<<"\tIN : "<<orcaice::toString(dataIn)<<endl;
             cout<<"\tOUT: "<<orcaice::toString(dataOut)<<endl;

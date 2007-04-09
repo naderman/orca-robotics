@@ -18,12 +18,6 @@ Requires.LaserScanner2d0.DefaultProxy=laserscanner2d@local/laser2d
 Requires.PolarFeature2d0.Type=PolarFeature2d
 Requires.PolarFeature2d0.DefaultProxy=polarfeature2d@local/laserfeatureextractor
 
-Requires.Position2d0.Type=Position2d
-Requires.Position2d0.DefaultProxy=platform2d@local/robot2d
-
-Requires.Position3d0.Type=Position3d
-Requires.Position3d0.DefaultProxy=position3d@local/imu
-
 Requires.Power0.Type=Power
 Requires.Power0.DefaultProxy=power@local/segwayrmp
 
@@ -36,6 +30,4 @@ Config.Cpu0.Format.Default=ice
 Config.Gps0.Format.Default=ice
 Config.LaserScanner2d0.Format.Default=ice
 Config.PolarFeature2d0.Format.Default=ice
-Config.Position2d0.Format.Default=ice
-Config.Position3d0.Format.Default=ice
 Config.Power0.Format.Default=ice

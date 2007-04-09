@@ -24,12 +24,9 @@
 #include <orca/odometry2d.h>
 #include <orca/odometry3d.h>
 #include <orca/laserscanner2d.h>
-#include <orca/position2d.h>
-#include <orca/position3d.h>
 #include <orca/localise2d.h>
 #include <orca/localise3d.h>
 #include <orca/pixmap.h>
-#include <orca/platform2d.h>
 #include <orca/power.h>
 #include <orca/status.h>
 #include <orca/tracer.h>
@@ -217,13 +214,7 @@ std::string toString( const orca::PolarFeature2dDataPtr& );
 //! Converts to string
 std::string toString( const orca::FeatureMap2dDataPtr& );
 //! Converts to string
-std::string toString( const orca::Position2dData& );
-//! Converts to string
 std::string toString( const orca::Twist2d& );
-//! Converts to string
-std::string toString( const orca::Position3dData& );
-//! Converts to string
-std::string toString( const orca::Position3dDescription& );
 //! Converts to string
 std::string toString( const orca::Localise2dData& );
 //! Converts to string
@@ -236,8 +227,6 @@ std::string toString( const orca::PowerData& );
 std::string toString( const orca::PixMapData& );
 //! Converts to string
 std::string toString( const orca::StatusData& );
-//! Converts to string
-std::string toString( const orca::Velocity2dCommand& );
 //! Converts to string
 std::string toString( const orca::VelocityControl2dData& );
 //! Converts to string
@@ -271,8 +260,6 @@ std::string toVerboseString( const orca::PathPlanner2dData& );
 std::string toVerboseString( const orca::PathPlanner2dTask& );
 //! Prints out imu raw data
 std::string toVerboseString( const orca::ImuData& );
-//! Prints out position3d data
-std::string toVerboseString( const orca::Position3dData& );
 
 // Prints out all the ranges
 // std::string toVerboseString( const orca::RangeScanner2dDataPtr & obj ) { return toString(obj,0); };

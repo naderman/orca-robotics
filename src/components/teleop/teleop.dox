@@ -27,7 +27,6 @@ This component connects to a robot base and issues motion commands according to 
 
 - @ref orca_interface_velocitycontrol2d [Teleop.Requires.Generic]
 - @ref orca_interface_drivebicycle [Teleop.Requires.Generic]
-- @ref orca_interface_platform2d [Teleop.Requires.Generic]
 
 @image html teleop.png
 

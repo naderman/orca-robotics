@@ -19,8 +19,6 @@
 #include <orca/localise3d.h>
 #include <orca/ogmap.h>
 #include <orca/featuremap2d.h>
-#include <orca/position2d.h>
-#include <orca/position3d.h>
 #include <orca/odometry2d.h>
 #include <orca/particle2d.h>
 #include <orca/power.h>
@@ -122,16 +120,6 @@ void OrcaMonComponent::start()
     else if ( objId=="::orca::FeatureMap2d" )
     {
         attach<FeatureMap2dPrx,FeatureMap2dConsumerPrx,FeatureMap2dConsumer,FeatureMap2dDataPtr>
-                ( context(), proxyString );
-    }
-    else if ( objId=="::orca::Platform2d" || objId=="::orca::Position2d" )
-    {
-        attach<Position2dPrx,Position2dConsumerPrx,Position2dConsumer,Position2dData>
-                ( context(), proxyString );
-    }
-    else if ( objId=="::orca::Position3d" )
-    {
-        attach<Position3dPrx,Position3dConsumerPrx,Position3dConsumer,Position3dData>
                 ( context(), proxyString );
     }
     else if ( objId=="::orca::Odometry2d" )

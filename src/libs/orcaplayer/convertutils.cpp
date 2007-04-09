@@ -48,45 +48,6 @@ convert( const PlayerCc::LaserProxy & proxy, orca::LaserScanner2dDataPtr& obj, b
 }
 
 void
-convert( const PlayerCc::Position2dProxy & proxy, orca::Position2dData& obj )
-{
-    obj.timeStamp = orcaice::toOrcaTime( proxy.GetDataTime() );
-
-    obj.pose.p.x = proxy.GetXPos();
-    obj.pose.p.y = proxy.GetYPos();
-    obj.pose.o = proxy.GetYaw();
-    
-    obj.motion.v.x = proxy.GetXSpeed();
-    obj.motion.v.y = proxy.GetYSpeed();
-    obj.motion.w = proxy.GetYawSpeed();
-
-    obj.stalled = proxy.GetStall();
-}
-
-void
-convert( const PlayerCc::Position3dProxy & proxy, orca::Position3dData& obj )
-{
-    obj.timeStamp = orcaice::toOrcaTime( proxy.GetDataTime() );
-
-    obj.pose.p.x = proxy.GetXPos();
-    obj.pose.p.y = proxy.GetYPos();
-    obj.pose.p.z = proxy.GetZPos();
-    obj.pose.o.r = proxy.GetRoll();
-    obj.pose.o.p = proxy.GetPitch();
-    obj.pose.o.y = proxy.GetYaw();
-    
-    obj.motion.v.x = proxy.GetXSpeed();
-    obj.motion.v.y = proxy.GetYSpeed();
-    obj.motion.v.z = proxy.GetZSpeed();
-    obj.motion.w.x = proxy.GetRollSpeed();
-    obj.motion.w.y = proxy.GetPitchSpeed();
-    obj.motion.w.z = proxy.GetYawSpeed();
-
-    // orca does not have this field.
-    //obj.stalled = proxy.GetStall();
-}
-
-void
 convert( const PlayerCc::LaserProxy & proxy, 
          double &maxRange, double &fieldOfView, double &startAngle, int &numberOfSamples )
 {
@@ -138,14 +99,6 @@ convert( PlayerCc::SimulationProxy & proxy, orca::Localise2dData& obj, const std
     obj.hypotheses[0].cov.xy   = 0.0;
     obj.hypotheses[0].cov.xt   = 0.0;
     obj.hypotheses[0].cov.yt   = 0.0;
-}
-
-void convert( const orca::Position2dData& obj, PlayerCc::Position2dProxy & proxy )
-{
-    cout<<"!!!!!!!!!!!! NOT IMPLEMENTED !!!!!!!!!!!!!!"<<endl;
-    cout<<" orcaplayer::convert( const orca::Position2dData& obj, PlayerCc::Position2dProxy & proxy )"<<endl;
-    cout<<"!!!!!!!!!!!! NOT IMPLEMENTED !!!!!!!!!!!!!!"<<endl;
-    throw "orcaplayer::convert(position data) is not implemented";
 }
 
 void convert( const orca::LaserScanner2dDataPtr& obj, PlayerCc::LaserProxy & proxy )

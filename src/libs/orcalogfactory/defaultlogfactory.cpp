@@ -23,8 +23,6 @@
 #include "polarfeature2dlogger.h"
 #include "odometry2dlogger.h"
 #include "odometry3dlogger.h"
-#include "position2dlogger.h"
-#include "position3dlogger.h"
 #include "powerlogger.h"
 #include "wifilogger.h"
 
@@ -46,8 +44,6 @@ DefaultLogFactory::DefaultLogFactory()
     addSupportedType("Odometry2d");
     addSupportedType("Odometry3d");
     addSupportedType("PolarFeature2d");
-    addSupportedType("Position2d");
-    addSupportedType("Position3d");
     addSupportedType("Power");
     addSupportedType("Wifi");
 }
@@ -101,14 +97,6 @@ DefaultLogFactory::create( const std::string      &interfaceType,
     else if (interfaceType == "PolarFeature2d")
     {
         logger = new PolarFeature2dLogger( master, typeSuffix, format, filenamePrefix, context );
-    }
-    else if (interfaceType == "Position2d")
-    {
-        logger = new Position2dLogger( master, typeSuffix, format, filenamePrefix, context );
-    }
-    else if (interfaceType == "Position3d")
-    {
-        logger = new Position3dLogger( master, typeSuffix, format, filenamePrefix, context );
     }
     else if (interfaceType == "Power")
     {

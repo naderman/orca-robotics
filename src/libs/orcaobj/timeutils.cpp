@@ -146,4 +146,24 @@ timeAsDouble( const orca::Time &t )
     return ((double)(t.seconds) + 1.0e-6 * (double)(t.useconds));
 }
 
+void add( orca::Time &t, double seconds )
+{
+    int numSeconds      = (int)seconds;
+    int numMicroSeconds = (int)( (seconds-numSeconds)*1e6 );
+
+    t = toOrcaTime( toIceTime(t) +
+                    IceUtil::Time::seconds(numSeconds) +
+                    IceUtil::Time::microSeconds(numMicroSeconds) );
+}
+void subtract( orca::Time &t, double seconds )
+{
+    int numSeconds      = (int)seconds;
+    int numMicroSeconds = (int)( (seconds-numSeconds)*1e6 );
+
+    t = toOrcaTime( toIceTime(t) -
+                    IceUtil::Time::seconds(numSeconds) -
+                    IceUtil::Time::microSeconds(numMicroSeconds) );    
+}
+
+
 } // namespace

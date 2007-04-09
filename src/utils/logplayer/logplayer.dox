@@ -23,8 +23,6 @@
 - @ref orca_interface_laserscanner2d [LogPlayer.Provides.LaserX]
 - @ref orca_interface_odometry2d [Logger.Provides.Odometry2dX]
 - @ref orca_interface_odometry3d [Logger.Provides.Odometry3dX]
-- @ref orca_interface_position2d [Logger.Provides.Position2dX] @b OBSOLETE
-- @ref orca_interface_position3d [Logger.Provides.Position3dX] @b OBSOLETE
 - @ref orca_interface_status
 - @ref orca_interface_tracer
 

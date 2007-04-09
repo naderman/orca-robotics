@@ -784,22 +784,6 @@ toString( const orca::VehicleGeometryDescriptionPtr& obj )
     return s.str();
 }
 
-std::string 
-toString( const orca::Position2dData& obj )
-{
-    std::ostringstream s;
-    s << toString(obj.timeStamp)
-        << " Position2d (x,y,a(deg), vx,vy,w(deg/s)) : ("
-        << obj.pose.p.x << ","
-        << obj.pose.p.y << ","
-        << RAD2DEG(obj.pose.o) << ", "
-        << obj.motion.v.x << ","
-        << obj.motion.v.y << ","
-        << RAD2DEG(obj.motion.w) << ")";
-
-    return s.str();
-}
-
 std::string
 toString( const orca::Twist2d &t )
 {
@@ -809,52 +793,6 @@ toString( const orca::Twist2d &t )
       << t.v.y << ", "
       << t.w*180.0/M_PI << "deg)";
     return s.str();
-}
-
-std::string 
-toString( const orca::Position3dData& obj )
-{
-    std::ostringstream s;
-    s << toString(obj.timeStamp)
-            << " \t Position (x,y,z): "
-            << obj.pose.p.x << ","
-            << obj.pose.p.y << ","
-            << obj.pose.p.z << ", \n"
-            << " \t Attitude r,p,y(deg): "     
-            << RAD2DEG(obj.pose.o.r) << ", "
-            << RAD2DEG(obj.pose.o.p) << ", "
-            << RAD2DEG(obj.pose.o.y) << ", \n"
-            << " \t Velocity vx,vy,vz:"     
-            << obj.motion.v.x << ","
-            << obj.motion.v.y << ","
-            << obj.motion.v.z << ", \n"
-            << " \t Angular Velocity wx,wy,wz(deg/s): "     
-            << RAD2DEG(obj.motion.w.x) << ","
-            << RAD2DEG(obj.motion.w.y) << ","
-            << RAD2DEG(obj.motion.w.z);
-
-    return s.str();
-}
-
-std::string 
-toString( const orca::Position3dDescription& obj )
-{
-    std::ostringstream s;
-    s << toString(obj.timeStamp)
-            << " \t Position (x,y,z): "
-            << obj.offset.p.x << ","
-            << obj.offset.p.y << ","
-            << obj.offset.p.z << ", \n"
-            << " \t Attitude r,p,y(deg): "     
-            << RAD2DEG(obj.offset.o.r) << ", "
-            << RAD2DEG(obj.offset.o.p) << ", "
-            << RAD2DEG(obj.offset.o.y) << ", \n"
-            << " \t Size l,w,h: "
-            << obj.size.l << ", "
-            << obj.size.w << ", "
-            << obj.size.h;
-    
-    return s.str();   
 }
 
 std::string 
@@ -929,19 +867,6 @@ toString( const orca::Localise3dData& obj )
           << h.cov.pa*180.0/M_PI << "deg, "
           << h.cov.aa*180.0/M_PI << "deg)" << endl;
     }
-    return s.str();
-}
-
-std::string 
-toString( const orca::Velocity2dCommand& obj )
-{
-    std::ostringstream s;
-    s << toString(obj.timeStamp)
-        << " Velocity2dCommand (vx,vy,w(deg/s)) : ("
-            << obj.motion.v.x << ", "
-            << obj.motion.v.y << ", "
-            << RAD2DEG(obj.motion.w) << ")";
-
     return s.str();
 }
 
@@ -1451,31 +1376,6 @@ toVerboseString( const orca::ImuData& obj )
         << obj.gyro.x << " "
         << obj.gyro.y << " "
         << obj.gyro.z << " ";
-
-    return s.str();
-}
-
-std::string 
-toVerboseString( const orca::Position3dData& obj )
-{
-    std::stringstream s;
-    s << toString(obj.timeStamp)
-            << " \t Position (x,y,z): "
-            << obj.pose.p.x << ","
-            << obj.pose.p.y << ","
-            << obj.pose.p.z << ", \n"
-            << " \t Attitude r,p,y(deg): "     
-            << RAD2DEG(obj.pose.o.r) << ", "
-            << RAD2DEG(obj.pose.o.p) << ", "
-            << RAD2DEG(obj.pose.o.y) << ", \n"
-            << " \t Velocity vx,vy,vz:"     
-            << obj.motion.v.x << ","
-            << obj.motion.v.y << ","
-            << obj.motion.v.z << ", \n"
-            << " \t Angular Velocity wx,wy,wz(deg/s): "     
-            << RAD2DEG(obj.motion.w.x) << ","
-            << RAD2DEG(obj.motion.w.y) << ","
-            << RAD2DEG(obj.motion.w.z);
 
     return s.str();
 }

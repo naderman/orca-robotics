@@ -33,6 +33,10 @@ orca::Time toOrcaTime( const IceUtil::Time & t );
 orca::Time toOrcaTime( double seconds );
 //! Converts an orca::Time to a double in seconds
 double timeAsDouble( const orca::Time &t );
+//! Adds the specified number of seconds to t
+void add( orca::Time &t, double seconds );
+//! Subtracts the specified number of seconds to t
+void subtract( orca::Time &t, double seconds );
 
 //! Converts from Ice standard time format to orca::TimeOfDay.
 //! Unlike IceUtil::Time::toDateTime(), we use UTC time and not local time.

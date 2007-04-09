@@ -162,8 +162,8 @@ Component::start()
     //
     // e.g. Tag.Requires.Laser0.Proxy, Tag.Requires.Laser1.Proxy, etc.
     //
-    // note: interface tags can NOT be arbitrary. this will only work if a Position2d
-    //       interface uses a tag Position2dXX.
+    // note: interface tags can NOT be arbitrary. this will only work if a Odometry2d
+    //       interface uses a tag Odometry2dXX.
     //
     std::vector<std::string> requiredTags = orcaice::getRequiredTags( context() );
     stringstream ss;

@@ -51,7 +51,7 @@ General Parameters:
       the platform will not move.
     - Default: 1
     
-  - @c Robot2d.Config.Position2dPublishInterval (double) [s]
+  - @c Robot2d.Config.Odometry2dPublishInterval (double) [s]
     - How often to send position information to the IceStorm server
     - Valid values:
         - t<0 : send every new data point

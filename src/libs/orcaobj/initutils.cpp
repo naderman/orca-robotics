@@ -103,20 +103,6 @@ setInit( orca::Time& obj )
     obj.useconds = 0;
 }
 
-void
-setInit( orca::Position2dData& obj )
-{
-    orca::Time t;
-    setInit( t );
-    obj.timeStamp = t;
-
-    setInit( obj.pose );
-    obj.motion.v.x = 0.0;
-    obj.motion.v.y = 0.0;
-    obj.motion.w = 0.0;
-    obj.stalled=false;
-}
-
 void 
 setInit( orca::Waypoint2d & wp )
 {
@@ -273,29 +259,6 @@ setSane( orca::Odometry2dData& obj )
 }
 
 void 
-setSane( orca::Position2dData& obj )
-{
-    orca::Time t;
-    setSane( t );
-    obj.timeStamp = t;
-
-    setSane( obj.pose );
-    setSane( obj.motion );
-    obj.stalled=false;
-}
-
-void 
-setSane( orca::Position3dData& obj )
-{
-    orca::Time t;
-    setSane( t );
-    obj.timeStamp = t;
-
-    setSane( obj.pose );
-    setSane( obj.motion );
-}
-
-void 
 setSane( orca::GpsData& obj )
 {
     orca::Time t;
@@ -375,18 +338,6 @@ setSane( orca::PowerData& obj, int count )
 
         obj.batteries.push_back( bd );
     }
-}
-
-void 
-setSane( orca::Velocity2dCommand& obj )
-{
-    orca::Time t;
-    setSane( t );
-    obj.timeStamp = t;
-
-    obj.motion.v.x = double(RINT%100000)/1000.0;
-    obj.motion.v.y = double(RINT%100000)/1000.0;
-    obj.motion.w = double(RINT%100000)/1000.0;
 }
 
 void 

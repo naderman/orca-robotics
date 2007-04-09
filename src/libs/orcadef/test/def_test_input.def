@@ -33,16 +33,16 @@ Provides.Platform2d.Type=::orca::Platform2d
 #   Requires.<InterfaceTag>.Type=<type>                     (REQUIRED)
 #   Requires.<InterfaceTag>.DefaultProxy=<name>:<endpoint>  (optional)
 
-Requires.Interface1.Type=Position2d
-Requires.Interface1.DefaultProxy=position2d:tcp -h localhost -p 15000
+Requires.Interface1.Type=Odometry2d
+Requires.Interface1.DefaultProxy=odometry2d:tcp -h localhost -p 15000
 
 #
 # Format 2 : Indirect Proxy
 #   Requires.<InterfaceTag>.Type=<type>                        (REQUIRED)
 #   Requires.<InterfaceTag>.DefaultProxy=<name>@<platf>/<comp> (optional)
 
-Requires.Interface2.Type=Position2d
-Requires.Interface2.DefaultProxy=position2d@local/position2d
+Requires.Interface2.Type=Odometry2d
+Requires.Interface2.DefaultProxy=odometry2d@local/odometry2d
 
 #
 # Config Parameters

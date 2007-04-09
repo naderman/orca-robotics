@@ -70,7 +70,7 @@ protected:
     //! By convention it is a sequential number.
     //! It is used to refer to the log files. E.g.
     //!    id_=0 Laser0
-    //!    id_=1 Position2d0
+    //!    id_=1 Odometry2d0
     int id_;
 
     //! Log filename.

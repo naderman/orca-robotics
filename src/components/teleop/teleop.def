@@ -2,7 +2,6 @@ DefaultComponentTag=Teleop
 
 # interfaces
 Requires.Generic.Type=VelocityControl2d
-Requires.Generic.DefaultProxy=platform2d@local/robot2d
 Requires.Generic.DefaultProxy=drivebicycle@local/car
 Requires.Generic.DefaultProxy=velocitycontrol2d@local/robot2d
 

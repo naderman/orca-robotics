@@ -42,9 +42,6 @@ SET( SLICE_SOURCE_FILES
     pingreply.ice
     pixmap.ice
     pointcloud.ice
-    position2d.ice
-    position3d.ice
-    platform2d.ice
     polarfeature2d.ice
     power.ice
     ptz.ice 

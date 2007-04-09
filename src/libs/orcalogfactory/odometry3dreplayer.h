@@ -12,7 +12,7 @@
 #define ORCA2_ORCALOGFACTORY_ODOMETRY3D_REPLAYER_H
 
 #include <IceStorm/IceStorm.h>
-#include <orca/position3d.h>
+#include <orca/odometry3d.h>
 #include <orcalog/replayer.h>
 
 #include <orcaice/buffer.h>

@@ -1,0 +1,12 @@
+DefaultComponentTag=Robot2dTester
+
+# Provided Interfaces
+
+# Required Interfaces
+Requires.Platform2d.Type=Platform2d
+Requires.Platform2d.DefaultProxy=platform2d@local/robot2d
+
+Requires.Power.Type=Power
+Requires.Power.DefaultProxy=power@local/robot2d
+
+# Config Parameters

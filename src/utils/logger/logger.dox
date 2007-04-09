@@ -33,8 +33,6 @@
 - @ref orca_interface_polarfeature2d [Logger.Requires.PolarFeature2dX]
 - @ref orca_interface_odometry2d [Logger.Requires.Odometry2dX]
 - @ref orca_interface_odometry3d [Logger.Requires.Odometry3dX]
-- @ref orca_interface_position2d [Logger.Requires.Position2dX] @b OBSOLETE
-- @ref orca_interface_position3d [Logger.Requires.Position3dX] @b OBSOLETE
 - @ref orca_interface_power [Logger.Requires.PowerX]
 
 @image html logger.png
@@ -76,7 +74,7 @@ To allow the setup of several interfaces of the same type in one logger, the int
 \verbatim
 Logger.Requires.Laser0.Proxy=laserscanner2d@alpha/laser2d
 Logger.Requires.Laser1.Proxy=laserscanner2d@bravo/laser2d
-Logger.Requires.Position2d0.Proxy=platform2d@local/segwayrmp
+Logger.Requires.Odometry2d0.Proxy=odometry2d@local/segwayrmp
 \endverbatim
 
 - @c Logger.Config.FactoryLibNames (string)
@@ -150,7 +148,7 @@ Subfiles contain the logged data. The Orca Logger supports two different encodin
 
 'ascii' is implemented for the following interfaces:
     - Laser
-    - Position2d
+    - Odometry
     - Localise2d
     - Position3d
     - PolarFeature2d

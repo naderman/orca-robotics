@@ -29,7 +29,7 @@ Config.VehicleDescription.Geometry.Cylindrical.Radius.Default=0.25
 Config.VehicleDescription.Geometry.Cylindrical.Height.Default=1.0
 Config.VehicleDescription.Geometry.Cylindrical.VehicleToGeometryTransform.Default=0.0 0.0 0.0  0.0 0.0 0.0
 
-Config.Position2dPublishInterval.Default=0.1
+Config.Odometry2dPublishInterval.Default=0.1
 Config.StatusPublishInterval.Default=60.0
 Config.EnableMotion.Default=1
 

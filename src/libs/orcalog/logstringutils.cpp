@@ -160,25 +160,6 @@ toLogString( const orca::LaserScanner2dDataPtr& obj )
 }
 
 std::string 
-toLogString( const orca::Position2dData& obj )
-{
-    std::stringstream s;
-    
-    // timestamp on the first line
-    s << toLogString(obj.timeStamp) << " \n";
-
-    // x,y position, orientation(deg), and respective velocities
-    s << obj.pose.p.x << " " 
-      << obj.pose.p.y << " "
-      << RAD2DEG(obj.pose.o) << " "
-      << obj.motion.v.x << " "
-      << obj.motion.v.y << " "
-      << RAD2DEG(obj.motion.w);
-
-    return s.str();
-}
-
-std::string 
 toLogString( const orca::Localise2dData& obj )
 {
     std::stringstream s;
@@ -251,31 +232,6 @@ toLogString( const orca::Localise3dData& obj )
           << h.cov.aa << " "
           << h.weight << "\n";
     }
-    return s.str();
-}
-
-std::string 
-toLogString( const orca::Position3dData& obj )
-{
-    std::stringstream s;
-    
-    // timestamp on the first line
-    s << toLogString(obj.timeStamp) << " \n";
-
-    // x,y,z position, roll,pitch,yaw(deg), and respective velocities on the second line
-    s << obj.pose.p.x << " " 
-      << obj.pose.p.y << " "
-      << obj.pose.p.z << " "
-      << RAD2DEG(obj.pose.o.r) << " "
-      << RAD2DEG(obj.pose.o.p) << " "
-      << RAD2DEG(obj.pose.o.y) << " \n"
-      << obj.motion.v.x << " "
-      << obj.motion.v.y << " "
-      << obj.motion.v.z << " "
-      << RAD2DEG(obj.motion.w.x) << " "
-      << RAD2DEG(obj.motion.w.y) << " "
-      << RAD2DEG(obj.motion.w.z);
-
     return s.str();
 }
 

@@ -15,7 +15,6 @@
 #include <orca/orca.ice>
 #include <orca/bros1.ice>
 #include <orca/stochastic.ice>
-#include <orca/position3d.ice>
 
 module orca
 {

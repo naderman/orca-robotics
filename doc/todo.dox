@@ -74,6 +74,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Status
   - small changes to improve system monitoring.  
     OrcaIce has been updated accordingly. (alex b)
+- Position2d/3d and Platform2d
+  - Removed these obsolete interfaces (alex b)
 
 @par Updated components
 
@@ -115,6 +117,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Removed
 
+- drunkrobot and robot2dtester
+  - moved to sandbox as unmaintained, an no longer compile after removal of position2d (alexb)
 
 @section orca_doc_history_220 Changes in Release 2.2.0
 

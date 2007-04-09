@@ -13,8 +13,6 @@
 
 // Orca objects
 #include <orca/laserscanner2d.h>
-#include <orca/position2d.h>
-#include <orca/position3d.h>
 #include <orca/localise2d.h>
 
 // Player proxies
@@ -32,12 +30,6 @@ namespace orcaplayer
  *  @name Player to Orca Conversion Functions
  */
 //@{
-
-//! Converts position data to orca::Position2dData.
-void convert( const PlayerCc::Position2dProxy & proxy, orca::Position2dData& obj );
-
-//! Converts player position3d data to orca::Position3dData.
-void convert( const PlayerCc::Position3dProxy & proxy, orca::Position3dData& obj );
 
 //! Converts laser data to orca::LaserScanner2dData. If convertHeaders is FALSE, only the data
 //! (ranges, intensities) are processed and the header information (fieldOfView, maxRange, etc.) 
@@ -59,8 +51,6 @@ void convert( PlayerCc::SimulationProxy & proxy, orca::Localise2dData& obj, cons
  *  @name Orca to Player Conversion Functions
  */
 //@{
-void convert( const orca::Position2dData& obj, PlayerCc::Position2dProxy & proxy );
-
 void convert( const orca::LaserScanner2dDataPtr& obj, PlayerCc::LaserProxy & proxy );
 //@}
 

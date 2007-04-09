@@ -16,7 +16,6 @@
 #include "events.h"
 #include "velocitycontroldriver.h"
 #include "drivebicycledriver.h"
-#include "platform2ddriver.h"
 
 using namespace std;
 using namespace teleop;
@@ -90,15 +89,10 @@ NetworkHandler::run()
         context_.tracer()->info("loading 'DriveBicycle' driver");
         driver_ = new DriveBicycleDriver( display_, context_ );
     }
-    else if ( ifaceId == "::orca::Platform2d" )
-    {
-        context_.tracer()->info("loading 'Platform2d' driver");
-        driver_ = new Platform2dDriver( display_, context_ );
-    }
     else {
         string errorStr = "Unsupported interface ID="+ifaceId;
         context_.tracer()->error( errorStr); 
-        context_.tracer()->info( "Valid driver values are {'VelocityControl2d', 'DriveBicycle', 'Platform2d'}" );
+        context_.tracer()->info( "Valid driver values are {'VelocityControl2d', 'DriveBicycle'}" );
         throw orcaice::Exception( ERROR_INFO, errorStr );
     }    
 
