@@ -27,8 +27,8 @@ Simulator::Simulator( const orcaice::Context &context,
 {
     // Set up pose
     pose_.x() = 0;
-    pose_.y() = 0;
-//    pose_.y() = -8;
+    // pose_.y() = 0;
+    pose_.y() = -8;
     pose_.theta() = 0;
 
     Ice::PropertiesPtr prop = context.properties();
