@@ -55,6 +55,7 @@ Note: The documentation on this web page matches the latest release. A web page 
 
 @section news News
 
+- 10-Apr-07 Orca2.3.0 is released. This release is compatible with Ice v3.2, and backwards-compatible with Ice v3.1.  It is anticipated that future releases will not be backwards-compatible with Ice v3.1.  Release 2.3.0 contains many component and utility updates, see @ref orca_doc_history_230 "Release Notes" for details.
 - 2-Feb-07  Orca2.2.0 is released. Support for QNX, many component updates. (@ref orca_doc_history_220 "Release Notes").
 - 17-Dec-06 Orca2.1.1 is released (@ref orca_doc_history_211 "Release Notes").
 - 22-Nov-06 Orca2.1.0 is released.  This contains some changes to interfaces (@ref orca_doc_history_210 "Release Notes").

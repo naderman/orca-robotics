@@ -36,7 +36,34 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Topic Tracer to attempt reconnections
     - Orca.Tracer/Status.RequireIceStorm: does this still make sense?
 
+
 @section orca_doc_history_head Changes in CVS since Last Release
+
+@par Project wide
+
+@par New interfaces
+
+@par New components
+
+@par New utilities
+
+@par New libraries
+
+@par Updated interfaces
+
+@par Updated components
+
+@par Updated utilities
+
+@par Updated libraries
+
+@par Removed
+
+
+
+
+
+@section orca_doc_history_230 Changes in Release 2.3.0
 
 @par Project wide
 
@@ -119,6 +146,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - drunkrobot and robot2dtester
   - moved to sandbox as unmaintained, an no longer compile after removal of position2d (alexb)
+
+
 
 @section orca_doc_history_220 Changes in Release 2.2.0
 
