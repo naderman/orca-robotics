@@ -576,8 +576,12 @@ void
 RmpDriver::makeMotionCommandPacket( CanPacket* pkt, const SegwayRmpCommand& command )
 {
     pkt->id = RMP_CAN_ID_COMMAND;
+
     // velocity command does not change any other values
     pkt->PutSlot(2, (uint16_t)RMP_CMD_NONE);
+
+    pkt->PutSlot(3, 0);
+
 
     // translational RMP command
     int16_t trans = (int16_t) rint(command.vx * RMP_COUNT_PER_M_PER_S);
@@ -606,6 +610,8 @@ RmpDriver::makeMotionCommandPacket( CanPacket* pkt, const SegwayRmpCommand& comm
     // save this last command
     lastTrans_ = trans;
     lastRot_ = rot;
+
+    
 }
 
 /*

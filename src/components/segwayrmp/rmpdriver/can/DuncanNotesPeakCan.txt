@@ -14,9 +14,11 @@ Notes from the man page for ioctl for a posix implementation
   On success, zero is returned.  On error, -1  is  returned,
   and errno is set appropriately."
 
-However looking at the implementation in the driver code it looks like all the 
-calls return negative error values in the event of a problem. These are 
-set to what would have been errno. Zero equates to success
+However looking at the implementation in the driver code it looks like all the
+functions that have DWORD return values return +ve error value in the event of a problem. 
+These are set to what would have been errno. Zero equates to success.
+
+
 
 
 

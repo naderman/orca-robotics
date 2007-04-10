@@ -31,14 +31,17 @@ IF ( BUILD_SEGWAYRMP )
       MESSAGE( "--     USB driver for Segway RMP line of platforms -- cannot be built" )
     ENDIF ( FTD2XX_FOUND )
 
-    IF ( PEAKCAN_FOUND )
+    OPTION( BUILD_PEAKCAN "Try to build the optional peak CAN drivers" OFF )
+    
+    IF ( PEAKCAN_FOUND AND BUILD_PEAKCAN )
       MESSAGE( "--    Peak CAN driver for Segway RMP line of platforms -- can be built" )
       TARGET_LINK_LIBRARIES( segwayrmp OrcaSegwayRmpCan )
       ADD_DEFINITIONS( -DHAVE_CAN_DRIVER )
       SET( HAVE_CAN_DRIVER TRUE )
-    ELSE ( PEAKCAN_FOUND )
+    ELSE ( PEAKCAN_FOUND AND BUILD_PEAKCAN )
       MESSAGE( "--    Peak CAN driver for Segway RMP line of platforms -- cannot be built" )
-    ENDIF ( PEAKCAN_FOUND )
+	SET ( BUILD_PEAKCAN FALSE ) 
+    ENDIF ( PEAKCAN_FOUND AND BUILD_PEAKCAN )
 
     OPTIONAL_SUB_LIBRARY(
         "Player client driver for SegwayRmp"
