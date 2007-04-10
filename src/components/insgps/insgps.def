@@ -45,4 +45,12 @@ Config.Novatel.ImuToGpsAntennaOffset.Default=0.0 0.0 0.0
       
 Config.Novatel.ImuToGpsAntennaOffsetUncertainty.Comment=sigmaX[m] sigmaY[m] sigmaZ[m]
 Config.Novatel.ImuToGpsAntennaOffsetUncertainty.Default=0.0 0.0 0.0
-        
+
+Config.Novatel.ImuOrientation.Comment=Constant that specifies the mounting orientation of the imu. Passed to the imu in the setimuorientation command. Constants defined in imu docs (6 means imu mounted upside-down).
+Config.Novatel.ImuOrientation.Default=0
+
+Config.Novatel.VehicleBodyRotation.Comment=Magic numbers that specify the imu mounting orientation relative to the vehicle. You would think these could be determined from Imu.Offset parameter, but we have not figured out the proper mapping yet. Passed to imu in the vehiclebodyrotation command.
+Config.Novatel.VehicleBodyRotation.Default=0 0 0
+
+Config.Novatel.VehicleBodyRotationUncertainty.Comment=Uncertainty in vehiclebodyrotation magic numbers
+Config.Novatel.VehicleBodyRotationUncertainty.Default=0 0 0

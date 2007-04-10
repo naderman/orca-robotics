@@ -52,8 +52,8 @@ Driver::Config::toString() const
     ss << imuOffset.o.r << ",";
     ss << imuOffset.o.p << ",";
     ss << imuOffset.o.y << "\n";
-    ss << "imuFlipped = \n";
-    ss << "\t " << imuFlipped << "\n";
+//    ss << "imuFlipped = \n";
+//    ss << "\t " << imuFlipped << "\n";
     ss << "imuSize (x,y,z) = \n";
     ss << "\t " << imuSize.l << ",";
     ss << imuSize.w << ",";
@@ -71,13 +71,13 @@ Driver::Config::toString() const
 bool 
 Driver::Config::operator==( const Driver::Config & other )
 {
-    return (gpsOffset==other.gpsOffset && gpsAntennaOffset==other.gpsAntennaOffset && imuOffset==other.imuOffset && imuFlipped==other.imuFlipped && imuSize==other.imuSize && vehiclePlatformToVehicleTransform==other.vehiclePlatformToVehicleTransform );
+    return (gpsOffset==other.gpsOffset && gpsAntennaOffset==other.gpsAntennaOffset && imuOffset==other.imuOffset && imuSize==other.imuSize && vehiclePlatformToVehicleTransform==other.vehiclePlatformToVehicleTransform );
 }
 
 bool 
 Driver::Config::operator!=( const Driver::Config & other )
 {
-    return (gpsOffset!=other.gpsOffset && gpsAntennaOffset!=other.gpsAntennaOffset && imuOffset!=other.imuOffset && imuFlipped!=other.imuFlipped && imuSize!=other.imuSize && vehiclePlatformToVehicleTransform!=other.vehiclePlatformToVehicleTransform );
+    return (gpsOffset!=other.gpsOffset && gpsAntennaOffset!=other.gpsAntennaOffset && imuOffset!=other.imuOffset && imuSize!=other.imuSize && vehiclePlatformToVehicleTransform!=other.vehiclePlatformToVehicleTransform );
 }
 
 } // namespace

@@ -222,27 +222,8 @@ NovatelSpanInsGpsDriver::init()
     // the type of imu being used
     put = serial_->write( "setimutype imu_hg1700_ag17\r\n" );
 
-    if ( config_.imuFlipped )
-    {
-           // This assumes the imu's y-axis is pointing forwards
-           // and was flipped by rotating 180 deg about the y axis.
-           // Thus, the resultant imu axes are: x pointing to the left, y pointing forwards,
-           // and z pointing down 
-
-           //  imu axis mapping: x = y, y = x, -z = z 
-           put = serial_->write( "setimuorientation 6\r\n" );
-
-           // angular offset from the vehicle to the imu body after the axis mapping above
-           // -90 as the yaw is LH rule 
-           put = serial_->write( "vehiclebodyrotation 0 0 -90 0 0 0\r\n" );
-    }
-
-    // imu/gps antenna offset
-    getImuToGpsAntennaOffset();   
-    char str[256];
-    sprintf( str,"setimutoantoffset %f %f %f %f %f %f\r\n",
-            imuToGpsAntennaOffset_.x, imuToGpsAntennaOffset_.y, imuToGpsAntennaOffset_.z, imuToGpsAntennaOffsetUncertainty_.x, imuToGpsAntennaOffsetUncertainty_.y, imuToGpsAntennaOffsetUncertainty_.z );
-    put = serial_->write( str );
+    // read and set the imu params (orientation of imu and offset to gps antenna)
+    setNovatelSpecificParams();
 
     // for dgps
     // put = serial_->write( "com com2 57600 n 8 1 n off on\r\n" ); // My Addition
@@ -1037,17 +1018,70 @@ NovatelSpanInsGpsDriver::mkutctime(int week, double seconds, struct timeval* tv)
 }
 
 void
-NovatelSpanInsGpsDriver::getImuToGpsAntennaOffset()
+NovatelSpanInsGpsDriver::setNovatelSpecificParams()
 {
+    ////////////////////////////////////////
+    // read our params from the config file
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag();
     prefix += ".Config.Novatel.";
 
-    orcaice::setInit( imuToGpsAntennaOffset_ );
-    orcaice::getPropertyAsCartesianPoint( prop, prefix+"ImuToGpsAntennaOffset", imuToGpsAntennaOffset_ );
+    // imu orientation constant
+    int imuOrientation = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ImuOrientation", 0 );
+
+    // vehicle to imu body rotation
+    orca::CartesianPoint imuVehicleBodyRotation;
+    orcaice::setInit( imuVehicleBodyRotation );
+    orcaice::getPropertyAsCartesianPoint( prop, prefix+"VehicleBodyRotation", imuVehicleBodyRotation);
     
-    orcaice::setInit( imuToGpsAntennaOffsetUncertainty_ );
-    orcaice::getPropertyAsCartesianPoint( prop, prefix+"ImuToGpsAntennaOffsetUncertainty", imuToGpsAntennaOffsetUncertainty_ );
+    // vehicle to imu body rotation uncertainty
+    orca::CartesianPoint imuVehicleBodyRotationUncertainty;
+    orcaice::setInit( imuVehicleBodyRotationUncertainty );
+    orcaice::getPropertyAsCartesianPoint( prop, prefix+"VehicleBodyRotationUncertainty",
+                                          imuVehicleBodyRotationUncertainty);
+
+    // imuToGpsAntennaOffset
+    orca::CartesianPoint imuToGpsAntennaOffset;
+    orcaice::setInit( imuToGpsAntennaOffset );
+    orcaice::getPropertyAsCartesianPoint( prop, prefix+"ImuToGpsAntennaOffset", imuToGpsAntennaOffset );
+    
+    // imuToGpsAntennaOffsetUncertainty
+    orca::CartesianPoint imuToGpsAntennaOffsetUncertainty;
+    orcaice::setInit( imuToGpsAntennaOffsetUncertainty );
+    orcaice::getPropertyAsCartesianPoint( prop, prefix+"ImuToGpsAntennaOffsetUncertainty",
+                                          imuToGpsAntennaOffsetUncertainty );
+
+
+    ////////////////////////////////////////
+    // now write them out to the hardware
+    char str[256];
+    int put;
+
+    //  this tells the imu where its z axis (up) is pointing. constants defined in manual.
+    //  with imu mounted upside down, constant is 6 and axes are remapped: x = y, y = x, -z = z 
+    sprintf( str,"setimuorientation %d\r\n", imuOrientation);
+    put = serial_->write( str );
+
+    // angular offset from the vehicle to the imu body. unclear how this relates to imu orientation command 
+    sprintf( str,"vehiclebodyrotation %f %f %f %f %f %f\r\n",
+                imuVehicleBodyRotation.x, 
+                imuVehicleBodyRotation.y, 
+                imuVehicleBodyRotation.z, 
+                imuToGpsAntennaOffsetUncertainty.x, 
+                imuToGpsAntennaOffsetUncertainty.y, 
+                imuToGpsAntennaOffsetUncertainty.z );
+    put = serial_->write( str );
+
+    // imu to gps antenna offset
+    sprintf( str,"setimutoantoffset %f %f %f %f %f %f\r\n",
+                imuToGpsAntennaOffset.x, 
+                imuToGpsAntennaOffset.y, 
+                imuToGpsAntennaOffset.z, 
+                imuToGpsAntennaOffsetUncertainty.x, 
+                imuToGpsAntennaOffsetUncertainty.y, 
+                imuToGpsAntennaOffsetUncertainty.z );
+    put = serial_->write( str );
+
 
     return;
 }  

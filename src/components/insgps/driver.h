@@ -86,7 +86,6 @@ public:
         orca::Frame3d gpsAntennaOffset;
               
         orca::Frame3d imuOffset;
-	bool imuFlipped;
         orca::Size3d imuSize;                  
         
 	orca::Frame3d vehiclePlatformToVehicleTransform;

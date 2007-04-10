@@ -72,17 +72,18 @@ Component::start()
     // offset of the imu with respect to the robot's local coordinate system
     orcaice::setInit( desiredCfg.imuOffset );
     desiredCfg.imuOffset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Imu.Offset", desiredCfg.imuOffset );
-   
+
+    /*** now read from config file -RF ***/ 
     // consider the special case of the sensor mounted level (pitch=0) but upside-down (roll=180)
-    desiredCfg.imuFlipped = false;
-    if ( NEAR(desiredCfg.imuOffset.o.r, M_PI, 0.001) && desiredCfg.imuOffset.o.p==0.0 && desiredCfg.imuOffset.o.y==0.0 ) 
-    {
-            // the offset is appropriate
-            desiredCfg.imuFlipped = true;
-            // now remove the roll angle, we'll compensate for it internally
-            desiredCfg.imuOffset.o.r = 0.0;
-            tracer()->info( "the driver will compensate for upside-down mounted sensor" );
-    }
+//     desiredCfg.imuFlipped = false;
+//     if ( NEAR(desiredCfg.imuOffset.o.r, M_PI, 0.001) && desiredCfg.imuOffset.o.p==0.0 && desiredCfg.imuOffset.o.y==0.0 ) 
+//     {
+//             // the offset is appropriate
+//             desiredCfg.imuFlipped = true;
+//             // now remove the roll angle, we'll compensate for it internally
+//             desiredCfg.imuOffset.o.r = 0.0;
+//             tracer()->info( "the driver will compensate for upside-down mounted sensor" );
+//     }
 
     orcaice::setInit( desiredCfg.imuSize );
     desiredCfg.imuSize = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Imu.Size", desiredCfg.imuSize );

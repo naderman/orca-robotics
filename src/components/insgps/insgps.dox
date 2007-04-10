@@ -1,4 +1,4 @@
-/*
+    /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2007 Ben Upcroft
@@ -114,8 +114,22 @@ An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ director
     - Imu/Gps antenna offset uncertainty
     - Format: (standard deviation in x) (std dev in y) (std dev in z) (space separated) 
     - Default: [0.0 0.0 0.0]
-    
-        
+  
+  @c InsGps.Config.Novatel.ImuOrientation (int)
+    - Imu mounting orientation
+    - Format: c (constant passed to imu in setimuorientation command -- see imu documentation) 
+    - Default: 0
+
+  @c InsGps.Config.Novatel.VehicleBodyRotation (CartesianPoint)
+    - Magic numbers that specify orientation of imu relative to the vehicle. We should eventually be able to determine this from imu offset parameter, but we haven't figured this out yet. Read as a CartesianPoint but it's really roll, pitch, yaw angles
+    - Format: roll pitch yaw (magic numbers -- see imu documentation for vehiclebodyrotation command)
+    - Default: [0 0 0]
+
+  @c InsGps.Config.Novatel.VehicleBodyRotationUncertainty (CartesianPoint)
+    - Uncertainty in vehiclebodyrotation command
+    - Format: (roll uncertainty) (pitch uncertainty) (yaw uncertainty)
+    - Default: [0 0 0] 
+
 @par Authors
 Ben Upcroft, Matthew Ridley
 

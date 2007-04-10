@@ -116,10 +116,11 @@ private:
     // 6 January 1980 0:00 UTC).
     int mkutctime(int week, double seconds, struct timeval* tv);
 
-    // get the GPS Antenna and IMU offset from the .cfg file    
-    void getImuToGpsAntennaOffset();
-    orca::CartesianPoint imuToGpsAntennaOffset_;
-    orca::CartesianPoint imuToGpsAntennaOffsetUncertainty_;
+    // read from config file and set the Novatel-specific params 
+    // (GPS Antenna to IMU offset, IMU orientation, vehicle to body rotation, etc. )
+    void setNovatelSpecificParams();
+    //orca::CartesianPoint imuToGpsAntennaOffset_;
+    //orca::CartesianPoint imuToGpsAntennaOffsetUncertainty_;
     
     int baud_;
 
