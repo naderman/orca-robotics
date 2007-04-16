@@ -20,6 +20,7 @@ namespace geom2d {
         double &x() { return x_; }
         double &y() { return y_; }
 
+
         // convert to polar
         double range() const { return std::sqrt(y_*y_+x_*x_); }
         double bearing() const { return std::atan2(y_,x_); }
@@ -68,6 +69,12 @@ namespace geom2d {
     { return ((p1.y()-p2.y())*(p1.y()-p2.y())+(p1.x()-p2.x())*(p1.x()-p2.x())); }
     inline double distSq( const PolarPoint &p1, const PolarPoint &p2 )
     { return ((p1.y()-p2.y())*(p1.y()-p2.y())+(p1.x()-p2.x())*(p1.x()-p2.x())); }
+
+    // equality
+    inline bool operator==( const Point &p1, const Point &p2 )
+    { return (p1.x()==p2.x()) && (p1.y()==p2.y()); }
+    inline bool operator!=( const Point &p1, const Point &p2 )
+    { return !(p1==p2); }
 
     // Rotate points about the origin
     // in place

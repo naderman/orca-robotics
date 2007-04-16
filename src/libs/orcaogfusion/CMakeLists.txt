@@ -5,6 +5,7 @@ IF ( NOT OS_WIN )
   FILE( GLOB SRCS *.cpp )
 
   GLOBAL_ADD_LIBRARY( OrcaOgFusion SHARED ${SRCS} )
+  TARGET_LINK_LIBRARIES( OrcaOgFusion OrcaOgMap OrcaMisc )
 
   INSTALL_FILES( /include/orcaogfusion .*\\.h$ )
 

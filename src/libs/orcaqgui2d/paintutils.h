@@ -43,17 +43,6 @@ private:
     QVector<QPolygonF> histories_;
     double lineThickness_;          // in pixel
     int totalPoints_;
-
-    ////////////////////////////////////////
-
-    // Minimum change required for the addition of a new point
-    static const double _historyMinDistance = 0.250;    
-    // Maximum change to qualify as a new point
-    // This is to prevent 'teleporting'
-    static const double _historyMaxDistance = 8.0;
-
-    // Limit on the size of the history array
-    static const int _historyMaxLength = 1000;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

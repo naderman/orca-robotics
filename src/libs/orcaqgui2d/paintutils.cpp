@@ -37,6 +37,18 @@ const double THIN_LINE_THICKNESS = 2.0;
 
 namespace orcaqgui2d {
 
+    namespace {
+
+        // Minimum change required for the addition of a new point
+        static const double POSE_HISTORY_MIN_DISTANCE = 0.250;    
+        // Maximum change to qualify as a new point
+        // This is to prevent 'teleporting'
+        static const double POSE_HISTORY_MAX_DISTANCE = 8.0;
+
+        // Limit on the size of the history array
+        static const int POSE_HISTORY_MAX_LENGTH = 1000;
+    }
+
 PoseHistory::PoseHistory( double lineThickness )
     : lineThickness_(lineThickness),
       totalPoints_(0)
@@ -56,7 +68,7 @@ PoseHistory::addPoint( const double x, const double y )
     const QPointF last = histories_.last().last();
     double dist = hypotf( last.x()-x, last.y()-y );
     
-    if ( dist > _historyMaxDistance )
+    if ( dist > POSE_HISTORY_MAX_DISTANCE )
     {
         // start a new history
         QPolygonF history;
@@ -70,7 +82,7 @@ PoseHistory::addPoint( const double x, const double y )
         totalPoints_++;  
     }
     
-    if (totalPoints_>_historyMaxLength)
+    if (totalPoints_>POSE_HISTORY_MAX_LENGTH)
     {
         // take a point from the beginning off
         histories_.first().remove( 0,1 );

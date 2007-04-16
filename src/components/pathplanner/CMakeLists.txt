@@ -32,16 +32,14 @@ IF ( BUILD_PATHPLANNER )
     
         # stand-alone component  
         GLOBAL_ADD_EXECUTABLE( pathplanner main ${COMMON_SRCS} ${QT_SRCS} )
-        # build an IceBox service
-        GLOBAL_ADD_LIBRARY( OrcaPathPlanner SHARED service ${COMMON_SRCS} )
-        TARGET_LINK_LIBRARIES( pathplanner OrcaOgMap OrcaPathPlan OrcaMisc )
     ELSE( QT4_FOUND )
         # stand-alone component  
         GLOBAL_ADD_EXECUTABLE( pathplanner main ${COMMON_SRCS} )
-        # build an IceBox service
-        GLOBAL_ADD_LIBRARY( OrcaPathPlanner SHARED service ${COMMON_SRCS} )
-        TARGET_LINK_LIBRARIES( pathplanner OrcaOgMap OrcaPathPlan OrcaMisc )
     ENDIF( QT4_FOUND )
+
+    # build an IceBox service
+    GLOBAL_ADD_LIBRARY( OrcaPathPlanner SHARED service ${COMMON_SRCS} )
+    TARGET_LINK_LIBRARIES( pathplanner OrcaOgMap OrcaMisc OrcaPathPlan )
     
     
     GENERATE_CONFIG_FILE( pathplanner.def )

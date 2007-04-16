@@ -69,7 +69,7 @@ namespace orcapathplan
     //! Checks whether the cell contains a nan value (returns TRUE if yes, otherwise FALSE). 
     //! If cell is outside map, FALSE is returned.
     inline bool containsNan( const FloatMap & navMap, const int x, const int y) 
-    { return ( isnan(element(navMap, x, y )) ); };
+    { return ( std::isnan(element(navMap, x, y )) ); };
     //! Convenience function, see above
     inline bool containsNan( const FloatMap & navMap, const Cell2D & c ) 
     { return containsNan(navMap,c.x(),c.y()); };

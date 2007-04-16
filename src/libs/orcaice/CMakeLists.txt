@@ -32,7 +32,16 @@ FILE( GLOB SRCS *.cpp )
 IF( NOT OS_WIN )
   GLOBAL_ADD_LIBRARY( OrcaIce SHARED ${SRCS} )
   TARGET_LINK_LIBRARIES( OrcaIce
-              OrcaIceDetail Ice IceUtil IceStorm IceBox IceGrid OrcaInterfaces )
+              OrcaIceDetail
+              Ice
+              IceUtil
+              IceStorm
+              IceBox
+              IceGrid
+              OrcaInterfaces
+              OrcaObjects
+              Glacier2 )
+
 ELSE ( NOT OS_WIN )
   # building shared libs is complicated in windows
   GLOBAL_ADD_LIBRARY( OrcaIce STATIC ${SRCS} )

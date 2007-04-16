@@ -57,7 +57,7 @@ main(int argc, char * argv[])
     cout<<"testing getGlobalConfigFilename() with HOME ... ";
     // make sure ORCA2_GLOBAL_CONFIG is not set
 #ifndef WIN32
-#ifdef __QNX__
+#if defined(__QNX__) || defined(__APPLE__)
 	// the QNX version of unsetenv() returns void
     unsetenv( "ORCA2_GLOBAL_CONFIG" );
 #else
@@ -99,7 +99,7 @@ main(int argc, char * argv[])
     cout<<"testing getGlobalConfigFilename() with empty input ... ";
 #ifndef WIN32
     // make sure HOME is not set
-#ifdef __QNX__
+#if defined(__QNX__) || defined(__APPLE__)
 	// the QNX version of unsetenv() returns void
     unsetenv( "HOME" );
 #else

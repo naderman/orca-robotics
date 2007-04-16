@@ -1,4 +1,4 @@
-IF ( NOT OS_WIN AND NOT OS_QNX )
+IF ( OS_LINUX )
 
 OPTION( BUILD_WIFI "Try to build Wifi component" ON )
 
@@ -26,4 +26,4 @@ IF ( BUILD_WIFI )
     GENERATE_CONFIG_FILE( wifi.def )
 
 ENDIF ( BUILD_WIFI )
-ENDIF ( NOT OS_WIN AND NOT OS_QNX  )
+ENDIF ( OS_LINUX )
