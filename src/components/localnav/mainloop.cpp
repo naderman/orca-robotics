@@ -509,12 +509,12 @@ MainLoop::run()
                << "\t now:          " << orcaice::toString(now);
             context_.tracer()->debug( ss.str() );
 
-            if ( localiseData_.timeStamp != odomData_.timeStamp )
-            {
-                stringstream warnSS;
-                warnSS << "localiseData and odomData have different timestamps:" << endl << ss.str();
-                context_.tracer()->warning( warnSS.str() );
-            }
+//             if ( localiseData_.timeStamp != odomData_.timeStamp )
+//             {
+//                 stringstream warnSS;
+//                 warnSS << "localiseData and odomData have different timestamps:" << endl << ss.str();
+//                 context_.tracer()->warning( warnSS.str() );
+//             }
 
             // grab the maximum likelihood pose of the vehicle
             orcanavutil::Pose pose = getMLPose( localiseData_ );
