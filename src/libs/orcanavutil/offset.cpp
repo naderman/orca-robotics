@@ -38,61 +38,52 @@ namespace orcanavutil {
     }
 
 
-    void addPoseOffset( double &poseX,
-                        double &poseY,
-                        double &poseT,
-                        double  offsetX,
-                        double  offsetY,
-                        double  offsetT,
-                        bool   normaliseHeading )
-    {
-        // Add x and y in the local coordinate frame
-        poseX += offsetX*cos(poseT) - offsetY*sin(poseT);
-        poseY += offsetX*sin(poseT) + offsetY*cos(poseT);
+//     void addPoseOffset( double &poseX,
+//                         double &poseY,
+//                         double &poseT,
+//                         double  offsetX,
+//                         double  offsetY,
+//                         double  offsetT,
+//                         bool   normaliseHeading )
+//     {
+//         // Add x and y in the local coordinate frame
+//         poseX += offsetX*cos(poseT) - offsetY*sin(poseT);
+//         poseY += offsetX*sin(poseT) + offsetY*cos(poseT);
 
-        // Add the heading change
-        poseT = poseT + offsetT;
+//         // Add the heading change
+//         poseT = poseT + offsetT;
 
-        if ( normaliseHeading )
-        {
-            // normalise to [-pi,pi).
-            normaliseAngle( poseT );
-        }
-    }
+//         if ( normaliseHeading )
+//         {
+//             // normalise to [-pi,pi).
+//             normaliseAngle( poseT );
+//         }
+//     }
 
-    void addPoseOffset( double  startX,
-                        double  startY,
-                        double  startT,
-                        double  offsetX,
-                        double  offsetY,
-                        double  offsetT,
-                        double &resultX,
-                        double &resultY,
-                        double &resultT,
-                        bool   normaliseHeading )
-    {
-        // Add x and y in the local coordinate frame
-        resultX = startX  +  offsetX*cos(startT) - offsetY*sin(startT);
-        resultY = startY  +  offsetX*sin(startT) + offsetY*cos(startT);
+//     void addPoseOffset( double  startX,
+//                         double  startY,
+//                         double  startT,
+//                         double  offsetX,
+//                         double  offsetY,
+//                         double  offsetT,
+//                         double &resultX,
+//                         double &resultY,
+//                         double &resultT,
+//                         bool   normaliseHeading )
+//     {
+//         // Add x and y in the local coordinate frame
+//         resultX = startX  +  offsetX*cos(startT) - offsetY*sin(startT);
+//         resultY = startY  +  offsetX*sin(startT) + offsetY*cos(startT);
 
-        // Add the heading change
-        resultT = startT + offsetT;
+//         // Add the heading change
+//         resultT = startT + offsetT;
 
-        if ( normaliseHeading )
-        {
-            // normalise to [-pi,pi).
-            normaliseAngle( resultT );
-        }
-    }
-
-    void normaliseAngle( double &angle )
-    {
-        // Normalise to [-pi,pi)
-        while ( angle >= M_PI )
-            angle -= 2*M_PI;
-        while ( angle < -M_PI )
-            angle += 2*M_PI;
-    }
+//         if ( normaliseHeading )
+//         {
+//             // normalise to [-pi,pi).
+//             normaliseAngle( resultT );
+//         }
+//     }
 
     void subtractInitialOffset( double &totalOffsetX,
                                 double &totalOffsetY,

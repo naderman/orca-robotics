@@ -11,6 +11,7 @@
 #define ORCA_NAV_UTIL_OFFSET__H
 
 #include <iostream>
+#include <orcaobj/mathdefs.h>
 
 //
 // A collection of small utility functions for doing
@@ -35,37 +36,67 @@ namespace orcanavutil {
     std::ostream &operator<<( std::ostream &s, const Offset &o );
     std::string toString( const Offset &o );
 
+    //! normalise to [-pi,pi).
+    //  use orcaobj/mathdefs version.
+    inline void normaliseAngle( double &angle )
+    { NORMALISE_ANGLE(angle); }
+
     //!
     //! Adds an offset (in local coordinates) onto a pose, modifying the pose.
     //!
     //! Adds the linear bit, then applies the rotation. 
     //!
-    void addPoseOffset( double &poseX,
-                        double &poseY,
-                        double &poseT,
-                        double offsetX,
-                        double offsetY,
-                        double offsetT,
-                        bool  normaliseHeading );
+    inline void addPoseOffset( double &poseX,
+                               double &poseY,
+                               double &poseT,
+                               double offsetX,
+                               double offsetY,
+                               double offsetT,
+                               bool  normaliseHeading )
+    {
+        // Add x and y in the local coordinate frame
+        poseX += offsetX*std::cos(poseT) - offsetY*std::sin(poseT);
+        poseY += offsetX*std::sin(poseT) + offsetY*std::cos(poseT);
+
+        // Add the heading change
+        poseT = poseT + offsetT;
+
+        if ( normaliseHeading )
+        {
+            // normalise to [-pi,pi).
+            normaliseAngle( poseT );
+        }
+    }
 
     //!
     //! Adds an offset (in local coordinates) onto a pose, producing a result
     //!
     //! Adds the linear bit, then applies the rotation. 
     //!
-    void addPoseOffset( double startX,
-                        double startY,
-                        double startT,
-                        double offsetX,
-                        double offsetY,
-                        double offsetT,
-                        double &resultX,
-                        double &resultY,
-                        double &resultT,
-                        bool   normaliseHeading );
+    inline void addPoseOffset( double startX,
+                               double startY,
+                               double startT,
+                               double offsetX,
+                               double offsetY,
+                               double offsetT,
+                               double &resultX,
+                               double &resultY,
+                               double &resultT,
+                               bool   normaliseHeading )
+    {
+        // Add x and y in the local coordinate frame
+        resultX = startX  +  offsetX*std::cos(startT) - offsetY*std::sin(startT);
+        resultY = startY  +  offsetX*std::sin(startT) + offsetY*std::cos(startT);
 
-    //! normalise to [-pi,pi).
-    void normaliseAngle( double &angle );
+        // Add the heading change
+        resultT = startT + offsetT;
+
+        if ( normaliseHeading )
+        {
+            // normalise to [-pi,pi).
+            normaliseAngle( resultT );
+        }
+    }
 
     //!
     //! We have some path, defined by an offset.
