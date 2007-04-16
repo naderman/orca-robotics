@@ -40,13 +40,13 @@ namespace orcaqgui2d {
     namespace {
 
         // Minimum change required for the addition of a new point
-        static const double POSE_HISTORY_MIN_DISTANCE = 0.250;    
+        const double POSE_HISTORY_MIN_DISTANCE = 0.250;    
         // Maximum change to qualify as a new point
         // This is to prevent 'teleporting'
-        static const double POSE_HISTORY_MAX_DISTANCE = 8.0;
+        const double POSE_HISTORY_MAX_DISTANCE = 8.0;
 
         // Limit on the size of the history array
-        static const int POSE_HISTORY_MAX_LENGTH = 1000;
+        const int POSE_HISTORY_MAX_LENGTH = 1000;
     }
 
 PoseHistory::PoseHistory( double lineThickness )
