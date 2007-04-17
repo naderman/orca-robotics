@@ -10,14 +10,14 @@
 
 #include <orcaice/application.h>
 
-#include "gpscomponent.h"
+#include "component.h"
 
 //
 // Build the component into a stand-alone application
 //
 int main(int argc, char * argv[])
 {
-    GpsComponent component;
+    gps::Component component;
     orcaice::Application app( component );
     return app.main(argc, argv);
 }

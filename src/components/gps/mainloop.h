@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_GPS_HANDLER_H
-#define ORCA2_GPS_HANDLER_H
+#ifndef ORCA2_GPS_MAINLOOP_H
+#define ORCA2_GPS_MAINLOOP_H
 
 #include <orca/gps.h>
 #include <orcaice/thread.h>
@@ -17,35 +17,39 @@
 #include <orcaice/context.h>
 #include <orcagpsutil/mapgrid.h>
 
-#include "gpsdriver.h"
+#include "driver.h"
 #include "gpsI.h"
 
+namespace gps {
+
 //
-// @brief the main handler of this GPS component.
+// @brief the main loop of this GPS component.
 //
 // Note: this thing self-destructs when run() returns.
 //
-class GpsHandler : public orcaice::Thread
+class MainLoop : public orcaice::Thread
 {
 
 public:
 
-    GpsHandler(GpsI             &gpsObj,
-	       GpsDriver        *hwDriver,
-	       orcaice::Context current,
-	       bool             startEnabled );
-    ~GpsHandler();
+    MainLoop(GpsI             &gpsObj,
+             Driver           *hwDriver,
+             orcaice::Context  current,
+             bool              startEnabled );
+    ~MainLoop();
 
     virtual void run();
 
 private:
     GpsI &gpsObj_;
     // Generic driver for the hardware
-    GpsDriver *hwDriver_;
+    Driver *hwDriver_;
 
     orcagpsutil::mgaMapgrid mgaMapgrid_;
 
     orcaice::Context context_;
 };
+
+}
 
 #endif

@@ -16,22 +16,24 @@
 #include <orca/bros1.h>
 #include <orca/gps.h>
 
-class GpsHandler;
-class GpsDriver;
+namespace gps {
 
-class GpsComponent : public orcaice::Component
+class MainLoop;
+class Driver;
+
+class Component : public orcaice::Component
 {
 public:
 
-    GpsComponent();
-    virtual ~GpsComponent();
+    Component();
+    virtual ~Component();
 
     virtual void start();
     virtual void stop();
 
 private:
 
-    GpsHandler *handler_;
+    MainLoop *mainLoop_;
     orca::GpsDescription descr_;
 
     //
@@ -42,7 +44,9 @@ private:
     //
     // HARDWARE INTERFACES
     //
-    GpsDriver *hwDriver_;
+    Driver *hwDriver_;
 };
+
+}
 
 #endif

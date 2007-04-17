@@ -16,6 +16,8 @@
 
 using namespace std;
 
+namespace gps {
+
 FakeGpsDriver::FakeGpsDriver(std::vector<double> &latitudes, std::vector<double> &longitudes)
     : latitudes_(latitudes),
       longitudes_(longitudes),
@@ -113,4 +115,6 @@ FakeGpsDriver::getTimeData( orca::GpsTimeData& data )
        return 0;
     }
     return -1;
+}
+
 }

@@ -9,7 +9,7 @@
  */
 
 #include "service.h"
-#include "gpscomponent.h"
+#include "component.h"
 
 using namespace std;
 using namespace gps;
@@ -26,5 +26,5 @@ extern "C"
 
 Service::Service()
 {
-    component_ = new GpsComponent;
+    component_ = new gps::Component;
 }

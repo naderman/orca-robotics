@@ -10,11 +10,11 @@
 
 #include <orcaice/orcaice.h>
 
-#include "gpscomponent.h"
-#include "gpshandler.h"
+#include "component.h"
+#include "mainloop.h"
 
 // Various bits of hardware we can drive
-#include "gpsdriver.h"
+#include "driver.h"
 #include "fakegpsdriver.h"
 #include "ashtech/ashtechdriver.h"
 
@@ -24,22 +24,24 @@
 using namespace std;
 using namespace orca;
 
-GpsComponent::GpsComponent()
+namespace gps {
+
+Component::Component()
     : orcaice::Component( "Gps" ),
-      handler_(0),
+      mainLoop_(0),
       hwDriver_(0)
 {
 
 }
 
-GpsComponent::~GpsComponent()
+Component::~Component()
 {
     delete hwDriver_;
-    // do not delete the handler_, it's a Thread and self-distructs.
+    // do not delete the mainLoop_, it's a Thread and self-distructs.
 }
 
 void
-GpsComponent::start()
+Component::start()
 {
     //
     // INITIAL CONFIGURATION
@@ -152,28 +154,30 @@ GpsComponent::start()
     //
     // MAIN DRIVER LOOP
     //
-    context().tracer()->debug( "entering handler_...",5 );
+    context().tracer()->debug( "entering mainLoop_...",5 );
 
-    handler_ = new GpsHandler(*gpsObj_,
+    mainLoop_ = new MainLoop(*gpsObj_,
                               hwDriver_,
                               context(),
                               startEnabled );
 
-    handler_->start();
+    mainLoop_->start();
 }
 
-void GpsComponent::stop()
+void Component::stop()
 {
     // Tell the main loop to stop
-    if(handler_!=NULL){
-        handler_->stop();
+    if(mainLoop_!=NULL){
+        mainLoop_->stop();
 
-        IceUtil::ThreadControl tc = handler_->getThreadControl();
+        IceUtil::ThreadControl tc = mainLoop_->getThreadControl();
 
         // Then wait for it
         tc.join();
 
         // When the ThreadControl object goes out of scope thread is also deleted
-        // how dumb ! in this case Thread is handler_...
+        // how dumb ! in this case Thread is mainLoop_...
     }
+}
+
 }

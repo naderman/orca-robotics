@@ -14,6 +14,7 @@
 #include <orca/gps.h>
 #include <string>
 
+namespace gps {
 
 static const ::std::string __orca__gps_default_heartbeat_msg = "";
 
@@ -29,13 +30,13 @@ This guy is _not_ guaranteed to be thread-safe!
 @author Matthew Ridley
 
 */
-class GpsDriver
+class Driver
 {
 
 public:
 
-    GpsDriver() {};
-    virtual ~GpsDriver() {};
+    Driver() {};
+    virtual ~Driver() {};
 
     virtual int reset()=0;
 
@@ -77,5 +78,7 @@ protected:
 private:
 
 };
+
+}
 
 #endif

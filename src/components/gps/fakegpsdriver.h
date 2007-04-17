@@ -13,12 +13,14 @@
 
 #include <iostream>
 
-#include "gpsdriver.h"
+#include "driver.h"
+
+namespace gps {
 
 //
 // Bogus gps driver, useful for testing the rest of the component.
 //
-class FakeGpsDriver : public GpsDriver
+class FakeGpsDriver : public Driver
 {
 
 public:
@@ -51,5 +53,7 @@ private:
     int fixCounter_;
     
 };
+
+}
 
 #endif

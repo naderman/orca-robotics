@@ -11,21 +11,23 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 
-#include "gpshandler.h"
+#include "mainloop.h"
 
 using namespace std;
 using namespace orca;
 using namespace orcaice;
 using namespace orcagpsutil;
 
+namespace gps {
+
 namespace {
-    const char *SUBSYSTEM = "gpshandler";
+    const char *SUBSYSTEM = "mainloop";
 }
 
-GpsHandler::GpsHandler(GpsI              &gpsObj,
-                       GpsDriver         *hwDriver,
-                       orcaice::Context  context,
-                       bool              startEnabled )
+MainLoop::MainLoop(GpsI              &gpsObj,
+                   Driver            *hwDriver,
+                   orcaice::Context  context,
+                   bool              startEnabled )
     : gpsObj_(gpsObj),
       hwDriver_(hwDriver),
       context_(context)
@@ -34,12 +36,12 @@ GpsHandler::GpsHandler(GpsI              &gpsObj,
     context_.status()->initialising( SUBSYSTEM );
 }
 
-GpsHandler::~GpsHandler()
+MainLoop::~MainLoop()
 {
 }
 
 void
-GpsHandler::run()
+MainLoop::run()
 {
     Ice::PropertiesPtr prop = context_.properties();
     std::string str = context_.tag() + ".Config.ReportIfNoFix";
@@ -173,4 +175,6 @@ GpsHandler::run()
     
     // GPS hardware will be shut down in the driver's destructor.
     context_.tracer()->debug( "dropping out from run()", 5 );
+}
+
 }
