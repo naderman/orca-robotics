@@ -207,7 +207,7 @@ GpsReplayer::initDescription()
     }
     else
     {
-        throw orcalog::FormatNotSupportedException( ERROR_INFO, "Unknown format: "+format_ );
+        throw orcalog::FormatNotSupportedException( ERROR_INFO, "GpsReplayer::initDescription(): Unknown format: "+format_ );
     }
 
 //     cout << "GpsDescription: " << orcaice::toString( descr_ ) << endl;
@@ -222,14 +222,14 @@ GpsReplayer::replayData( int index, bool isTest )
     {
         loadDataIce( index );
     }
-    if (format_=="ascii")
+    else if (format_=="ascii")
     {
         loadDataAscii( index );
         cout<<"TRACE(gpsreplayer.cpp): id_: " << id_ << endl;
     }
     else
     {
-        throw orcalog::FormatNotSupportedException( ERROR_INFO, "Unknown format: "+format_ );
+        throw orcalog::FormatNotSupportedException( ERROR_INFO, "GpsReplayer::replayData(): Unknown format: "+format_ );
     }
     
     // push to buffer for direct remote access
