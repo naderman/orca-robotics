@@ -120,7 +120,7 @@ Localise2dIface::subscribe(const ::orca::Localise2dConsumerPrx& subscriber)
 void 
 Localise2dIface::unsubscribe(const ::orca::Localise2dConsumerPrx& subscriber)
 {
-    context_.tracer()->debug( "Localise2dIface::subscribe(): unsubscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "Localise2dIface::unsubscribe(): unsubscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 

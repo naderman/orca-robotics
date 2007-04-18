@@ -19,14 +19,12 @@
 // all plug-ins
 #include "../cameralogger.h"
 #include "../cpulogger.h"
-#include "../gpslogger.h"
 #include "../laserscanner2dlogger.h"
 #include "../localise2dlogger.h"
 #include "../polarfeature2dlogger.h"
 #include "../powerlogger.h"
 
 #include "../camerareplayer.h"
-#include "../gpsreplayer.h"
 #include "../laserscanner2dreplayer.h"
 #include "../powerreplayer.h"
 
@@ -95,81 +93,6 @@ TestComponent::start()
             exit(EXIT_FAILURE);
         }
 
-        delete logger;
-        delete replayer;     
-        delete logMaster;
-    }
-    cout<<"ok"<<endl;
-
-    cout<<"*** Testing Gps log/replay ... "<<endl;
-    {
-        logMaster = new orcalog::LogMaster( "master.txt", context() );
-
-        cout<<"Testing Gps logger with bad format ... "<<endl;
-        try {
-            orcalogfactory::GpsLogger( logMaster, "0", "horseshit", "", context() );
-        }
-        catch ( const orcalog::FormatNotSupportedException & ) {
-            cout<<"ok"<<endl;
-        }
-        cout<<"Testing Gps replayer with bad format ... "<<endl;
-        try {
-            orcalogfactory::GpsReplayer( "horseshit", "gps0.log", context() );
-        }
-        catch ( const orcalog::FormatNotSupportedException & ) {
-            cout<<"ok"<<endl;
-        }
-
-        cout<<"Testing Gps logger with 'ice' format ... ";
-        orcalogfactory::GpsLogger* logger = 
-            new orcalogfactory::GpsLogger( logMaster, "0", "ice", "", context() );
-        orca::GpsData dataIn;
-        orcaice::setSane( dataIn );
-        logger->localSetData( dataIn );
-
-        orca::GpsTimeData timeDataIn;
-        orcaice::setSane( timeDataIn );
-        logger->localSetData( timeDataIn );
-    
-        orca::GpsMapGridData mapDataIn;
-        orcaice::setSane( mapDataIn );
-        logger->localSetData( mapDataIn );
-        cout<<"ok"<<endl;
-
-        cout<<"Testing Gps replayer with 'ice' format ... ";
-        orcalogfactory::GpsReplayer* replayer = 
-            new orcalogfactory::GpsReplayer( "ice", "gps0.log", context() );
-        replayer->init( true );
-        replayer->replayData( 0, true );  
-        orca::GpsData dataOut = replayer->getData( Ice::Current() );
-
-        replayer->replayData( 1, true );  
-        orca::GpsTimeData timeDataOut = replayer->getTimeData( Ice::Current() );
-    
-        replayer->replayData( 2, true );  
-        orca::GpsMapGridData mapDataOut = replayer->getMapGridData( Ice::Current() );
-
-        if ( dataIn.utcTime != dataOut.utcTime
-                || dataIn.altitude != dataOut.altitude ) {
-            cout<<"failed"<<endl<<"object logged incorrectly"<<endl;
-            cout<<"\tIN : "<<orcaice::toString(dataIn)<<endl;
-            cout<<"\tOUT: "<<orcaice::toString(dataOut)<<endl;
-            exit(EXIT_FAILURE);
-        }
-        if ( timeDataIn.utcTime != timeDataOut.utcTime
-                || timeDataIn.utcDate != timeDataOut.utcDate ) {
-            cout<<"failed"<<endl<<"object logged incorrectly"<<endl;
-            cout<<"\tIN : "<<orcaice::toString(timeDataIn)<<endl;
-            cout<<"\tOUT: "<<orcaice::toString(timeDataOut)<<endl;
-            exit(EXIT_FAILURE);
-        }
-        if ( mapDataIn.utcTime != mapDataOut.utcTime
-                || mapDataIn.speed != mapDataOut.speed ) {
-            cout<<"failed"<<endl<<"object logged incorrectly"<<endl;
-            cout<<"\tIN : "<<orcaice::toString(mapDataIn)<<endl;
-            cout<<"\tOUT: "<<orcaice::toString(mapDataOut)<<endl;
-            exit(EXIT_FAILURE);
-        }
         delete logger;
         delete replayer;     
         delete logMaster;

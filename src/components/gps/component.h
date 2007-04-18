@@ -15,10 +15,11 @@
 #include <orcaice/ptrbuffer.h>
 #include <orca/bros1.h>
 #include <orca/gps.h>
+#include "gpsinterfaces.h"
+#include <orcaice/thread.h>
 
 namespace gps {
 
-class MainLoop;
 class Driver;
 
 class Component : public orcaice::Component
@@ -33,13 +34,15 @@ public:
 
 private:
 
-    MainLoop *mainLoop_;
+    orcaice::ThreadPtr mainLoop_;
     orca::GpsDescription descr_;
 
     //
-    // EXTERNAL INTERFACE: Gps
+    // EXTERNAL INTERFACES
     //
-    Ice::ObjectPtr gpsObjPtr_;
+    GpsIfacePtr        gpsInterface_;
+    GpsMapGridIfacePtr gpsMapGridInterface_;
+    GpsTimeIfacePtr    gpsTimeInterface_;
 
     //
     // HARDWARE INTERFACES

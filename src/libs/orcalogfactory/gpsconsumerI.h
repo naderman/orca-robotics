@@ -31,31 +31,31 @@ class GpsConsumerI : public orca::GpsConsumer
     
 };
 
-class GpsTimeConsumerI : public orca::GpsTimeConsumer
-{
-    public:
-        GpsTimeConsumerI ( GpsLogger *logger )
-            :logger_(logger)
-        {};
-        virtual void setData(const orca::GpsTimeData& data, const Ice::Current&);
+// class GpsTimeConsumerI : public orca::GpsTimeConsumer
+// {
+//     public:
+//         GpsTimeConsumerI ( GpsLogger *logger )
+//             :logger_(logger)
+//         {};
+//         virtual void setData(const orca::GpsTimeData& data, const Ice::Current&);
         
-    private:
-        GpsLogger *logger_;
+//     private:
+//         GpsTimeLogger *logger_;
     
-};
+// };
 
-class GpsMapGridConsumerI : public orca::GpsMapGridConsumer
-{
-    public:
-        GpsMapGridConsumerI ( GpsLogger *logger )
-            :logger_(logger)
-        {};
-        virtual void setData(const orca::GpsMapGridData& data, const Ice::Current&);
+// class GpsMapGridConsumerI : public orca::GpsMapGridConsumer
+// {
+//     public:
+//         GpsMapGridConsumerI ( GpsLogger *logger )
+//             :logger_(logger)
+//         {};
+//         virtual void setData(const orca::GpsMapGridData& data, const Ice::Current&);
         
-    private:
-        GpsLogger *logger_;
+//     private:
+//         GpsMapGridLogger *logger_;
     
-};
+// };
 
 }
 

@@ -136,7 +136,6 @@ public:
                             orca::Localise3dConsumerPrx>(context, proxyString, painter_, timeoutMs ),
           painter_( beginDisplayHistory )
 {
-    // get gps origin properties from the cfg file   
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag();
     prefix += ".Config.";

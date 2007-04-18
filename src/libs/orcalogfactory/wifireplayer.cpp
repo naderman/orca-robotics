@@ -96,7 +96,7 @@ WifiReplayer::replayData( int index, bool isTest )
     }
     else if (format_=="ascii")
     {   
-        context_.tracer()->warning( "Ascii replaying not implemented" );
+        context_.tracer()->warning( "WifiReplayer: Ascii replaying not implemented" );
     }
     else
     {

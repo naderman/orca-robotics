@@ -589,6 +589,22 @@ toString( const orca::GpsData&  obj )
     return s.str();
 }
 
+std::string
+toString( const orca::GpsPositionType &p )
+{
+    switch ( p )
+    {
+    case orca::GpsPositionTypeNotAvailable:
+        return "GpsPositionTypeNotAvailable";
+    case orca::GpsPositionTypeAutonomous:
+        return "GpsPositionTypeAutonomous";
+    case orca::GpsPositionTypeDifferential:
+        return "GpsPositionTypeDifferential";
+    }
+    // assert( false && "Unknown GpsPositionType" );
+    return "??Unknown??";
+}
+
 std::string 
 toString( const orca::GpsMapGridData& obj )
 {
@@ -612,14 +628,14 @@ toString( const orca::GpsMapGridData& obj )
         << " Gps (horizontalPositionError,verticalPositionError) : ("
         << std::setprecision(6)
         << obj.horizontalPositionError<< ","
-        << obj.verticalPositionError << "\n"
+        << obj.verticalPositionError << ")\n"
         << " Gps (heading,speed,climbrate) : ("
-        << obj.heading << ","
+        << obj.heading*180.0/M_PI << "deg,"
 	    << obj.speed << ","
 	    << obj.climbRate << ")" << "\n"
 	    << " Gps (zone, positionType) : ("
         << obj.zone << ","
-	    << positionType << ")";
+	    << toString(obj.positionType) << ")";
 
     return s.str();
 }

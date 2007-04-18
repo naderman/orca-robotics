@@ -23,10 +23,10 @@ class GpsLogger : public orcalog::Logger
 {
     public:
         GpsLogger( orcalog::LogMaster *master, 
-                    const std::string & typeSuffix,
-                    const std::string & format,
-                    const std::string & filenamePrefix,
-                    const orcaice::Context & context );
+                   const std::string & typeSuffix,
+                   const std::string & format,
+                   const std::string & filenamePrefix,
+                   const orcaice::Context & context );
         virtual ~GpsLogger();
 
         // from Slave
@@ -34,8 +34,6 @@ class GpsLogger : public orcalog::Logger
 
         // these are called from consumers
         void localSetData( const orca::GpsData& data );
-        void localSetData( const orca::GpsTimeData& data );
-        void localSetData( const orca::GpsMapGridData& data );
         
     private:
         // utility
@@ -43,8 +41,6 @@ class GpsLogger : public orcalog::Logger
 
         // these are the actual consumer object, they must be members to stay alive
         Ice::ObjectPtr consumerGps_;
-        Ice::ObjectPtr consumerTime_;
-        Ice::ObjectPtr consumerMap_;
 };
 
 }

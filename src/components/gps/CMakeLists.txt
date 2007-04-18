@@ -30,11 +30,11 @@ IF ( BUILD_GPS )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( gps main )
-    TARGET_LINK_LIBRARIES( gps GpsSources ${ASHTECHGPS_LIBS} )
+    TARGET_LINK_LIBRARIES( gps OrcaIfaceImpl GpsSources ${ASHTECHGPS_LIBS} )
     
     # build IceBox service
     GLOBAL_ADD_LIBRARY( OrcaGps SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaGps GpsSources ${ASHTECHGPS_LIBS} )
+    TARGET_LINK_LIBRARIES( OrcaGps OrcaIfaceImpl GpsSources ${ASHTECHGPS_LIBS} )
 
     GENERATE_CONFIG_FILE( gps.def )
 

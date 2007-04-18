@@ -12,7 +12,6 @@
 
 // all plug-ins
 #include "camerareplayer.h"
-#include "gpsreplayer.h"
 #include "laserscanner2dreplayer.h"
 #include "localise2dreplayer.h"
 #include "localise3dreplayer.h"
@@ -30,7 +29,6 @@ using namespace orcalogfactory;
 DefaultReplayFactory::DefaultReplayFactory()
 {
     addSupportedType("Camera");
-    addSupportedType("Gps");
     addSupportedType("LaserScanner2d");
     addSupportedType("Localise2d");
     addSupportedType("Localise3d");
@@ -54,10 +52,6 @@ DefaultReplayFactory::create(
     if ( interfaceType == "Camera" )
     {
         replayer = new CameraReplayer( format, filename, context );
-    }
-    else if ( interfaceType == "Gps" )
-    {
-        replayer = new GpsReplayer( format, filename, context );
     }
     else if ( interfaceType == "LaserScanner2d" )
     {

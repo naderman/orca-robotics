@@ -28,7 +28,6 @@ namespace gps {
 
 Component::Component()
     : orcaice::Component( "Gps" ),
-      mainLoop_(0),
       hwDriver_(0)
 {
 
@@ -50,8 +49,6 @@ Component::start()
     Ice::PropertiesPtr prop = properties();
     std::string prefix = tag();
     prefix += ".Config.";
-
-    bool startEnabled = orcaice::getPropertyAsIntWithDefault( prop, prefix+"StartEnabled", true );
 
     //
     // HARDWARE INTERFACES   
@@ -117,32 +114,18 @@ Component::start()
     orcaice::setInit( descr_.antennaOffset );
     descr_.antennaOffset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"AntennaOffset", descr_.antennaOffset );
 
-    cout << orcaice::toString( descr_ ) << endl;
-
-    // hwDriver_->enable();
-
-    // wait until we have a fix before publishing etc.
-    /*
-    do{
-        ret=hwDriver_->read();
-        if(ret==-1){
-            std::string errString = "Failed to read from GPS.";
-            context().tracer()->error( errString );
-            throw orcaice::Exception( ERROR_INFO, errString );
-            return;
-        }
-        if(!isActive()){
-            return;
-        }
-    }while(!hwDriver_->hasFix());
-    */
+    stringstream ss;
+    ss << "Description: " << orcaice::toString( descr_ );
+    context().tracer()->debug( ss.str() );
 
     // create servant for direct connections
-    GpsI* gpsObj_ = new GpsI(descr_, context());
+    gpsInterface_        = new GpsIface(        "Gps", descr_, context() );
+    gpsMapGridInterface_ = new GpsMapGridIface( "GpsMapGrid", descr_, context() );
+    gpsTimeInterface_    = new GpsTimeIface(    "GpsTime", descr_, context() );
 
-    gpsObjPtr_ = gpsObj_;
-
-    orcaice::createInterfaceWithTag( context(), gpsObjPtr_, "Gps" );
+    gpsInterface_->initInterface();
+    gpsMapGridInterface_->initInterface();
+    gpsTimeInterface_->initInterface();
 
     ////////////////////////////////////////////////////////////////////////////////
 
@@ -156,28 +139,21 @@ Component::start()
     //
     context().tracer()->debug( "entering mainLoop_...",5 );
 
-    mainLoop_ = new MainLoop(*gpsObj_,
+    mainLoop_ = new MainLoop( gpsInterface_,
+                              gpsMapGridInterface_,
+                              gpsTimeInterface_,
                               hwDriver_,
-                              context(),
-                              startEnabled );
+                              descr_.antennaOffset,
+                              context() );
 
     mainLoop_->start();
 }
 
 void Component::stop()
 {
-    // Tell the main loop to stop
-    if(mainLoop_!=NULL){
-        mainLoop_->stop();
-
-        IceUtil::ThreadControl tc = mainLoop_->getThreadControl();
-
-        // Then wait for it
-        tc.join();
-
-        // When the ThreadControl object goes out of scope thread is also deleted
-        // how dumb ! in this case Thread is mainLoop_...
-    }
+    tracer()->debug("stopping component...",2);
+    orcaice::stopAndJoin( mainLoop_ );
+    tracer()->debug("component stopped.",2);
 }
 
 }

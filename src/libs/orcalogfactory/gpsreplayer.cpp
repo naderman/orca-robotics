@@ -59,17 +59,6 @@ GpsReplayer::initInterfaces()
 {
     topic_ = orcaice::connectToTopicWithString( context_, gpsConsumerPrx_, interfaceName_ );
     
-    string topicNameTime = orcaice::toString( 
-            getProvidedTopicLocal( context_, interfaceName_, "time" ) );
-    cout << "INFO(gpsreplayer.cpp): topicNameTime: " << topicNameTime << endl;
-    topicTimePrx_ = orcaice::connectToTopicWithString( context_, gpsTimeConsumerPrx_, topicNameTime );
-    
-    string topicNameGrid = orcaice::toString( 
-            getProvidedTopicLocal( context_, interfaceName_, "mapgrid" ) );
-    cout << "INFO(gpsreplayer.cpp): topicNameGrid: " << topicNameGrid << endl;
-    topicMapGridPrx_ = orcaice::connectToTopicWithString( context_, gpsMapGridConsumerPrx_, topicNameGrid );   
-      
-
     Ice::ObjectPtr obj = this;
     orcaice::createInterfaceWithString( context_, obj, interfaceName_ );
 }
@@ -106,40 +95,6 @@ GpsReplayer::getData(const Ice::Current& current) const
     return data;
 }
 
-orca::GpsTimeData
-GpsReplayer::getTimeData(const ::Ice::Current& current ) const
-{
-    cout << "INFO(gpsreplayer.cpp): getTimeData " << endl;
-    // we don't need to pop the data here because we don't block on it.
-    if ( gpsTimeDataBuffer_.isEmpty() )
-    {
-        throw orca::DataNotExistException( "logplayer buffer is empty, probably because we are not replaying yet" );
-    }
-
-    // create a null pointer. data will be cloned into it.
-    orca::GpsTimeData data;
-    gpsTimeDataBuffer_.get( data );
-
-    return data;
-}
-
-orca::GpsMapGridData
-GpsReplayer::getMapGridData(const ::Ice::Current& current ) const
-{
-    cout << "INFO(gpsreplayer.cpp): getMapGridData " << endl;
-    // we don't need to pop the data here because we don't block on it.
-    if ( gpsMapGridDataBuffer_.isEmpty() )
-    {
-        throw orca::DataNotExistException( "logplayer buffer is empty, probably because we are not replaying yet" );
-    }
-
-    // create a null pointer. data will be cloned into it.
-    orca::GpsMapGridData data;
-    gpsMapGridDataBuffer_.get( data );
-
-    return data;    
-}
-
 void 
 GpsReplayer::subscribe(const ::orca::GpsConsumerPrx &subscriber, const ::Ice::Current&)
 {
@@ -154,38 +109,6 @@ GpsReplayer::unsubscribe(const ::orca::GpsConsumerPrx &subscriber, const ::Ice::
 {
     cout<<"INFO(gpsreplayer.cpp): unsubscribe"<<endl;
     topic_->unsubscribe( subscriber );
-}
-
-void 
-GpsReplayer::subscribeForTime(const ::orca::GpsTimeConsumerPrx &subscriber, const ::Ice::Current&)
-{
-    cout << "INFO(gpsreplayer.cpp): subscribeForTime()" << endl;
-    IceStorm::QoS qos;
-    qos["reliability"] = "twoway";
-    topicTimePrx_->subscribe( qos, subscriber );
-}
-
-void 
-GpsReplayer::unsubscribeForTime(const ::orca::GpsTimeConsumerPrx &subscriber, const ::Ice::Current&)
-{
-    cout << "INFO(gpsreplayer.cpp): unsubscribeForTime()" << endl;
-    topicTimePrx_->unsubscribe( subscriber );
-}
-
-void 
-GpsReplayer::subscribeForMapGrid(const ::orca::GpsMapGridConsumerPrx &subscriber, const ::Ice::Current&)
-{
-    cout << "INFO(gpsreplayer.cpp): subscribeForMapGrid()" << endl;
-    IceStorm::QoS qos;
-    qos["reliability"] = "twoway";
-    topicMapGridPrx_->subscribe( qos, subscriber );
-}
-
-void 
-GpsReplayer::unsubscribeForMapGrid(const ::orca::GpsMapGridConsumerPrx &subscriber, const ::Ice::Current&)
-{
-    cout << "INFO(gpsreplayer.cpp): unsubscribeForMapGrid()" << endl;
-    topicMapGridPrx_->unsubscribe( subscriber );
 }
 
 void 
@@ -218,14 +141,14 @@ GpsReplayer::replayData( int index, bool isTest )
 {    
     checkIndex( index );
     
+    orca::GpsData gpsData;
     if (format_=="ice")
     {
-        loadDataIce( index );
+        loadDataIce( index, gpsData );
     }
     else if (format_=="ascii")
     {
-        loadDataAscii( index );
-        cout<<"TRACE(gpsreplayer.cpp): id_: " << id_ << endl;
+        loadDataAscii( index, gpsData );
     }
     else
     {
@@ -233,34 +156,12 @@ GpsReplayer::replayData( int index, bool isTest )
     }
     
     // push to buffer for direct remote access
-    if ( id_ == 0 )
-    {
-        gpsDataBuffer_.push( gpsData_ );
-    }
-    else if ( id_ == 1 )
-    {
-        gpsTimeDataBuffer_.push( gpsTimeData_ );
-    }
-    else if ( id_ == 2 )
-    {
-        gpsMapGridDataBuffer_.push( gpsMapGridData_ );
-    }
+    gpsDataBuffer_.push( gpsData );
 
     if ( !isTest ) 
     {
         // push to IceStorm
-        if ( id_ == 0 )
-        {
-            gpsConsumerPrx_->setData( gpsData_ );
-        }
-        else if ( id_ == 1 )
-        {
-            gpsTimeConsumerPrx_->setData( gpsTimeData_ );
-        }
-        else if ( id_ == 2 )
-        {
-            gpsMapGridConsumerPrx_->setData( gpsMapGridData_ );
-        }
+        gpsConsumerPrx_->setData( gpsData );
     }
 }
 
@@ -292,28 +193,13 @@ GpsReplayer::loadHeaderIce()
     gpsDescriptionBuffer_.push( description );
 }
 
-void 
-GpsReplayer::loadDataIce( int index )
+void
+GpsReplayer::loadDataIce( int index, orca::GpsData &gpsData )
 {
     while (index != (dataCounter_) )
     {        
         orcalog::IceReadHelper helper( context_.communicator(), file_ );
-        id_ = helper.id();
-        
-        if ( id_ == (char)0 ) {
-            ice_readGpsData( helper.stream_, gpsData_ );
-        }
-        else if ( id_ == (char)1 ) {
-            ice_readGpsTimeData( helper.stream_, gpsTimeData_ );
-        }
-        else if ( id_ == (char)2 ) {
-            ice_readGpsMapGridData( helper.stream_, gpsMapGridData_ );
-        }
-        else {
-            std::stringstream ss;
-            ss << "GpsReplayer: unrecognized object type '" << helper.id() << "'";
-            throw orcalog::Exception( ERROR_INFO, ss.str() );
-        }
+        ice_readGpsData( helper.stream_, gpsData );
         helper.read();
 
         dataCounter_++;
@@ -321,36 +207,15 @@ GpsReplayer::loadDataIce( int index )
 }
 
 void 
-GpsReplayer::loadDataAscii( int index )
+GpsReplayer::loadDataAscii( int index, orca::GpsData &gpsData )
 {
     while (index != (dataCounter_) )
     {
-        (*file_) >> id_;
-
         std::string line;
         std::getline( *file_, line );
         std::stringstream ss( line );
 
-        if ( id_ == '0' )
-        {
-            id_ = 0;
-            orcalog::fromLogString( ss, gpsData_ );
-            cout<<"TRACE(gpsreplayer.cpp): got gps data: " << orcaice::toString(gpsData_) << endl;
-        }
-        else if ( id_ == '1' ) {
-            id_ = 1;
-            orcalog::fromLogString( ss, gpsTimeData_ );
-        }
-        else if ( id_ == '2' ) {
-            id_ = 2;
-            orcalog::fromLogString( ss, gpsMapGridData_ );
-            cout<<"TRACE(gpsreplayer.cpp): got gpsMapGrid data: " << orcaice::toString(gpsMapGridData_) << endl;
-        }
-        else {
-            std::stringstream ss;
-            ss << "GpsReplayer: unrecognized object type '" << id_ << "'";
-            throw orcalog::Exception( ERROR_INFO, ss.str() );
-        }
+        orcalog::fromLogString( ss, gpsData );
 
         dataCounter_++;
     }

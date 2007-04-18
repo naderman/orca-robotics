@@ -51,6 +51,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated interfaces
 
+- Gps
+  - Split into separate interfaces (alex b)
+
 @par Updated components
 
 @par Updated utilities

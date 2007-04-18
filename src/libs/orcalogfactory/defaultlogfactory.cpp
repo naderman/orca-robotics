@@ -15,7 +15,6 @@
 // all plug-ins
 #include "cameralogger.h"
 #include "cpulogger.h"
-#include "gpslogger.h"
 #include "imulogger.h"
 #include "laserscanner2dlogger.h"
 #include "localise2dlogger.h"
@@ -36,7 +35,6 @@ DefaultLogFactory::DefaultLogFactory()
 {
     addSupportedType("Camera");
     addSupportedType("Cpu");
-    addSupportedType("Gps");
     addSupportedType("Imu");
     addSupportedType("LaserScanner2d");
     addSupportedType("Localise2d");
@@ -65,10 +63,6 @@ DefaultLogFactory::create( const std::string      &interfaceType,
     else if (interfaceType == "Cpu")
     {
         logger = new CpuLogger( master, typeSuffix, format, filenamePrefix, context );
-    }
-    else if (interfaceType == "Gps")
-    {
-        logger = new GpsLogger( master, typeSuffix, format, filenamePrefix, context );
     }
     else if (interfaceType == "Imu")
     {

@@ -507,7 +507,7 @@ MainLoop::run()
                << "\t localiseData: " << orcaice::toString(localiseData_.timeStamp) << endl
                << "\t odomData:     " << orcaice::toString(odomData_.timeStamp) << endl
                << "\t now:          " << orcaice::toString(now);
-            context_.tracer()->debug( ss.str() );
+            context_.tracer()->debug( ss.str(), 2 );
 
 //             if ( localiseData_.timeStamp != odomData_.timeStamp )
 //             {

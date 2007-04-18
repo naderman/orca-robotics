@@ -16,7 +16,6 @@
 #include <orcaqgui2dfactory/localise2delement.h>
 #include <orcaqgui2dfactory/pathfollower2delement.h>
 #include <orcaqgui2dfactory/pathplanner2delement.h>
-#include <orcaqgui2dfactory/gpselement.h>
 #include <orcaqgui2dfactory/ogmapscombinedelement.h>
 #include <orcaqgui2dfactory/pixmapelement.h>
 #include <orcaqgui2dfactory/wifielement.h>
@@ -42,7 +41,6 @@ DefaultFactory::DefaultFactory()
     addSupportedType(QStringList("::orca::FeatureMap2d"));
     addSupportedType(QStringList("::orca::Particle2d"));
     addSupportedType(QStringList("::orca::PixMap"));
-    addSupportedType(QStringList("::orca::Gps"));
     addSupportedType(QStringList("::orca::QGraphics2d"));
     addSupportedType(QStringList("::orca::Wifi"));
     
@@ -108,10 +106,6 @@ DefaultFactory::create( const orcaice::Context           &context,
         else if ( interfaceId == "::orca::Particle2d" ) {
             cout<<"creating Particle2d element with proxyString "<<proxyString.toStdString()<<endl;
             elem = new orcaqgui2d::Particle2dElement( context, proxyString.toStdString() );
-        }
-        else if ( interfaceId == "::orca::Gps" ) {
-            cout<<"creating Gps element with proxyString "<<proxyString.toStdString()<<endl;
-            elem = new orcaqgui2d::GpsElement( context, proxyString.toStdString(), humanManager );
         }
         else if ( interfaceId == "::orca::QGraphics2d" ) {
             cout<<"creating QGraphics2d element with proxyString "<<proxyString.toStdString()<<endl;

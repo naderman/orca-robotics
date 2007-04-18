@@ -18,7 +18,7 @@
 #include <orcagpsutil/mapgrid.h>
 
 #include "driver.h"
-#include "gpsI.h"
+#include "gpsinterfaces.h"
 
 namespace gps {
 
@@ -32,18 +32,26 @@ class MainLoop : public orcaice::Thread
 
 public:
 
-    MainLoop(GpsI             &gpsObj,
-             Driver           *hwDriver,
-             orcaice::Context  current,
-             bool              startEnabled );
+    MainLoop( GpsIfacePtr         &gpsInterface,
+              GpsMapGridIfacePtr  &gpsMapGridInterface,
+              GpsTimeIfacePtr     &gpsTimeInterface,
+              Driver              *hwDriver,
+              const orca::Frame3d &antennaOffset,
+              orcaice::Context     current );
     ~MainLoop();
 
     virtual void run();
 
 private:
-    GpsI &gpsObj_;
-    // Generic driver for the hardware
+
+    GpsIfacePtr        &gpsInterface_;
+    GpsMapGridIfacePtr &gpsMapGridInterface_;
+    GpsTimeIfacePtr    &gpsTimeInterface_;
+
+    // driver for the hardware
     Driver *hwDriver_;
+
+    orca::Frame3d antennaOffset_;
 
     orcagpsutil::mgaMapgrid mgaMapgrid_;
 

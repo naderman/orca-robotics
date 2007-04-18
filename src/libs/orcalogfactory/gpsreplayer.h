@@ -32,48 +32,30 @@ public:
 
     // Get Gps Data and config
     virtual ::orca::GpsData getData(const ::Ice::Current& ) const;    
-    virtual ::orca::GpsTimeData getTimeData(const ::Ice::Current& ) const;    
-    virtual ::orca::GpsMapGridData getMapGridData(const ::Ice::Current& ) const;
     virtual ::orca::GpsDescription getDescription(const ::Ice::Current& ) const;
 
     // Subscribes and unsubscribes
     virtual void subscribe(const ::orca::GpsConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
     virtual void unsubscribe(const ::orca::GpsConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
-    virtual void subscribeForTime(const ::orca::GpsTimeConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
-    virtual void unsubscribeForTime(const ::orca::GpsTimeConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
-    virtual void subscribeForMapGrid(const ::orca::GpsMapGridConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
-    virtual void unsubscribeForMapGrid(const ::orca::GpsMapGridConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
     virtual void replayData( int index, bool isTest=false );
 
 private:
     orcaice::Buffer<orca::GpsDescription> gpsDescriptionBuffer_;
     orcaice::Buffer<orca::GpsData> gpsDataBuffer_;
-    orcaice::Buffer<orca::GpsTimeData> gpsTimeDataBuffer_;
-    orcaice::Buffer<orca::GpsMapGridData> gpsMapGridDataBuffer_;
-    
-    orca::GpsData gpsData_;
-    orca::GpsTimeData gpsTimeData_;
-    orca::GpsMapGridData gpsMapGridData_;
     
     virtual void initInterfaces();
     virtual void initDescription();
 
     orca::GpsConsumerPrx gpsConsumerPrx_;
-    orca::GpsTimeConsumerPrx gpsTimeConsumerPrx_;
-    orca::GpsMapGridConsumerPrx gpsMapGridConsumerPrx_;
     
     IceStorm::TopicPrx topic_;
-    IceStorm::TopicPrx topicTimePrx_;
-    IceStorm::TopicPrx topicMapGridPrx_;
     
     // file protocol specifics
-    void loadDataIce( int index );
-    void loadDataAscii( int index );
+    void loadDataIce( int index, orca::GpsData &gpsData );
+    void loadDataAscii( int index, orca::GpsData &gpsData );
     void loadHeaderIce();
 
-    char id_;
-    
     // alexm: why this?
     orca::FQTopicName getProvidedTopicLocal( const orcaice::Context & context, const std::string &tag, const std::string & subtopic);
 

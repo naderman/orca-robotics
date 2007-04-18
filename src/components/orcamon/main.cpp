@@ -29,7 +29,6 @@
 
 #include "subscriber.h"
 //specialisations of subscriber
-#include "special.h"
 
 using namespace std;
 using namespace orca;
@@ -137,22 +136,30 @@ void OrcaMonComponent::start()
         attach<StatusPrx,StatusConsumerPrx,StatusConsumer,StatusData>
                 ( context(), proxyString );
     }
-    else if ( objId=="::orca::Particle2d" )
-    {
-        // Pretend it's just localise2d
-        attach<Localise2dPrx,Localise2dConsumerPrx,Localise2dConsumer,Localise2dData>
-                ( context(), proxyString );
-    }
+//     else if ( objId=="::orca::Particle2d" )
+//     {
+//         attach<Particle2dPrx,Particle2dConsumerPrx,Particle2dConsumer,Particle2dData>
+//                 ( context(), proxyString );
+//     }
     else if ( objId=="::orca::Gps" )
     {
-        cout<<"****************** Gps interface **************"<<endl;
-        //GPS has three object types and consumers
         attach<GpsPrx,GpsConsumerPrx,GpsConsumer,GpsData>
                 ( context(), proxyString );
-//         attach<GpsPrx,GpsMapGridConsumerPrx,GpsMapGridConsumer,GpsMapGridDataPtr>
-        attachGpsMapGrid( context(), proxyString );
-//         attach<GpsPrx,GpsTimeConsumerPrx,GpsTimeConsumer,GpsTimeDataPtr>
-        attachGpsTime( context(), proxyString );
+    }
+    else if ( objId=="::orca::GpsMapGrid" )
+    {
+        attach<GpsMapGridPrx,GpsMapGridConsumerPrx,GpsMapGridConsumer,GpsMapGridData>
+                ( context(), proxyString );
+    }
+    else if ( objId=="::orca::GpsTime" )
+    {
+        attach<GpsTimePrx,GpsTimeConsumerPrx,GpsTimeConsumer,GpsTimeData>
+                ( context(), proxyString );
+    }
+    else if ( objId=="::orca::GpsTime" )
+    {
+        attach<GpsPrx,GpsConsumerPrx,GpsConsumer,GpsData>
+                ( context(), proxyString );
     }
     else
     {

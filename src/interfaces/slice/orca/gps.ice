@@ -136,9 +136,7 @@ struct GpsData
 
 
 /*!
- *
  * Data consumer interface
- *
  */
 interface GpsConsumer
 {
@@ -170,14 +168,6 @@ interface Gps
     nonmutating GpsData getData()
             throws HardwareFailedException;
 
-    //! Return the latest timestamp information
-    nonmutating GpsTimeData getTimeData()
-            throws HardwareFailedException;
-
-    //! Return the latest map information
-    nonmutating GpsMapGridData getMapGridData()
-            throws HardwareFailedException;
-
     //! Return the gps description
     nonmutating GpsDescription getDescription();
 
@@ -193,10 +183,38 @@ interface Gps
     void subscribe( GpsConsumer* subscriber )
             throws SubscriptionFailedException;
 
-    void subscribeForMapGrid( GpsMapGridConsumer* subscriber )
-            throws SubscriptionFailedException;
+    // for reference, this is what IceStorm's subscribe function looks like.
+    //void subscribe(QoS theQoS, Object* subscriber);
 
-    void subscribeForTime( GpsTimeConsumer* subscriber )
+    /*!
+     * Unsubscribe the given [subscriber].
+     *
+     * @param subscriber The proxy of an existing subscriber.
+     *
+     * @see subscribe
+     */
+    idempotent void unsubscribe( GpsConsumer* subscriber );
+};
+
+interface GpsMapGrid
+{
+    //! Return the latest map information
+    nonmutating GpsMapGridData getData()
+            throws HardwareFailedException;
+
+    //! Return the gps description
+    nonmutating GpsDescription getDescription();
+
+    /*!
+     * Mimics IceStorm's subscribe() but without QoS, for now. The
+     * implementation may choose to implement the data push internally
+     * or use IceStorm. This choice is transparent to the subscriber.
+     *
+     * @param subscriber The subscriber's proxy.
+     *
+     * @see unsubscribe
+     */
+    void subscribe( GpsMapGridConsumer* subscriber )
             throws SubscriptionFailedException;
 
     // for reference, this is what IceStorm's subscribe function looks like.
@@ -209,11 +227,41 @@ interface Gps
      *
      * @see subscribe
      */
-    idempotent void unsubscribe( GpsConsumer* subscriber );
-    
-    idempotent void unsubscribeForMapGrid( GpsMapGridConsumer* subscriber );
-    
-    idempotent void unsubscribeForTime( GpsTimeConsumer* subscriber );
+    idempotent void unsubscribe( GpsMapGridConsumer* subscriber );
+};
+
+interface GpsTime
+{
+    //! Return the latest timestamp information
+    nonmutating GpsTimeData getData()
+            throws HardwareFailedException;
+
+    //! Return the gps description
+    nonmutating GpsDescription getDescription();
+
+    /*!
+     * Mimics IceStorm's subscribe() but without QoS, for now. The
+     * implementation may choose to implement the data push internally
+     * or use IceStorm. This choice is transparent to the subscriber.
+     *
+     * @param subscriber The subscriber's proxy.
+     *
+     * @see unsubscribe
+     */
+    void subscribe( GpsTimeConsumer* subscriber )
+            throws SubscriptionFailedException;
+
+    // for reference, this is what IceStorm's subscribe function looks like.
+    //void subscribe(QoS theQoS, Object* subscriber);
+
+    /*!
+     * Unsubscribe the given [subscriber].
+     *
+     * @param subscriber The proxy of an existing subscriber.
+     *
+     * @see subscribe
+     */
+    idempotent void unsubscribe( GpsTimeConsumer* subscriber );
 };
 
 

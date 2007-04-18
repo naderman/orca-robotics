@@ -20,10 +20,10 @@ using namespace orcalogfactory;
 
 
 GpsLogger::GpsLogger( orcalog::LogMaster *master, 
-                    const std::string & typeSuffix,
-                    const std::string & format,
-                    const std::string & filenamePrefix,
-                    const orcaice::Context & context )
+                      const std::string & typeSuffix,
+                      const std::string & format,
+                      const std::string & filenamePrefix,
+                      const orcaice::Context & context )
     : orcalog::Logger( master, 
              "Gps",
              "Gps"+typeSuffix,
@@ -59,16 +59,6 @@ GpsLogger::init()
     orca::GpsConsumerPrx callbackGpsPrx = 
         orcaice::createConsumerInterface<orca::GpsConsumerPrx>( context_, consumerGps_ );
     objectPrx->subscribe( callbackGpsPrx );
-
-    consumerTime_ = new GpsTimeConsumerI(this);
-    orca::GpsTimeConsumerPrx callbackTimePrx = 
-        orcaice::createConsumerInterface<orca::GpsTimeConsumerPrx>( context_, consumerTime_ );
-    objectPrx->subscribeForTime( callbackTimePrx );
-    
-    consumerMap_ = new GpsMapGridConsumerI(this);
-    orca::GpsMapGridConsumerPrx callbackMapPrx = 
-        orcaice::createConsumerInterface<orca::GpsMapGridConsumerPrx>( context_, consumerMap_ );
-    objectPrx->subscribeForMapGrid( callbackMapPrx );
 }
 
 void 
@@ -93,8 +83,6 @@ GpsLogger::writeDescriptionToFile( const orca::GpsDescription& obj )
 void 
 GpsLogger::localSetData( const orca::GpsData& data )
 {
-//    cout<<"TRACE(gpslogger.cpp): writing GpsData" << endl;
-
     // Write reference to master file
     appendMasterFile();
     if ( format_=="ice" )
@@ -105,47 +93,8 @@ GpsLogger::localSetData( const orca::GpsData& data )
     }
     else if ( format_ == "ascii" )
     {
-        (*file_) << "0 " << orcalog::toLogString(data) << endl;
+        (*file_) << orcalog::toLogString(data) << endl;
     }
-}
-
-
-void 
-GpsLogger::localSetData( const orca::GpsTimeData& data )
-{
-//    cout<<"TRACE(gpslogger.cpp): writing GpsTimeData" << endl;
-
-    // Write reference to master file
-    appendMasterFile();
-    
-    if ( format_=="ice" )
-    {
-        orcalog::IceWriteHelper helper( context_.communicator() );
-        ice_writeGpsTimeData( helper.stream_, data );
-        helper.write( file_, 1 );
-    }
-    else if ( format_=="ascii" )
-    {
-        (*file_) << "1 " << orcalog::toLogString(data) << endl;   
-    }
-}
-
-void 
-GpsLogger::localSetData( const orca::GpsMapGridData& data )
-{
-//    cout<<"TRACE(gpslogger.cpp): writing GpsMapGridData" << endl;
-
-    // Write reference to master file
-    appendMasterFile();
-    
-    if ( format_=="ice" )
-    {
-        orcalog::IceWriteHelper helper( context_.communicator() );
-        ice_writeGpsMapGridData( helper.stream_, data );
-        helper.write( file_, 2 );
-    }
-    else if ( format_=="ascii" )
-    {
-        (*file_) << "2 " << orcalog::toLogString(data) << endl;   
-    }
+    else
+        assert( false && "Unknown format." );
 }

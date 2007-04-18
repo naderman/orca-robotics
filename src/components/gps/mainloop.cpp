@@ -15,8 +15,6 @@
 
 using namespace std;
 using namespace orca;
-using namespace orcaice;
-using namespace orcagpsutil;
 
 namespace gps {
 
@@ -24,12 +22,59 @@ namespace {
     const char *SUBSYSTEM = "mainloop";
 }
 
-MainLoop::MainLoop(GpsI              &gpsObj,
-                   Driver            *hwDriver,
-                   orcaice::Context  context,
-                   bool              startEnabled )
-    : gpsObj_(gpsObj),
+namespace {
+
+    orca::GpsMapGridData convertToMapGrid( const orca::GpsData           &gpsData,
+                                           orcagpsutil::mgaMapgrid       &mgaMapgrid_,
+                                           const orca::Frame3d           &antennaOffset )
+    {
+        orca::GpsMapGridData gpsMapGridData;
+
+        int zone;
+        zone=mgaMapgrid_.getGridCoords( gpsData.latitude, gpsData.longitude,
+                                        gpsMapGridData.easting,gpsMapGridData.northing);
+        gpsMapGridData.zone=zone;
+        //copy across all the other stuff
+        gpsMapGridData.timeStamp=gpsData.timeStamp;
+        gpsMapGridData.utcTime=gpsData.utcTime;
+        gpsMapGridData.altitude=gpsData.altitude;
+        gpsMapGridData.horizontalPositionError=gpsData.horizontalPositionError;
+        gpsMapGridData.verticalPositionError=gpsData.verticalPositionError;
+                    
+        gpsMapGridData.heading=gpsData.heading;
+        gpsMapGridData.speed=gpsData.speed;
+        gpsMapGridData.climbRate=gpsData.climbRate;
+        gpsMapGridData.positionType=gpsData.positionType;
+                    
+        //correct for local frame
+        CartesianPoint p;
+        //copy out point
+        p.x=gpsMapGridData.easting;
+        p.y=gpsMapGridData.northing;
+        p.z=gpsMapGridData.altitude;
+        //convert
+        p=orcaice::convertToFrame3d(antennaOffset,p);
+        // reset object
+        gpsMapGridData.easting=p.x;
+        gpsMapGridData.northing=p.y;
+        gpsMapGridData.altitude=p.z;
+
+        return gpsMapGridData;
+    }
+
+}
+
+MainLoop::MainLoop( GpsIfacePtr         &gpsInterface,
+                    GpsMapGridIfacePtr  &gpsMapGridInterface,
+                    GpsTimeIfacePtr     &gpsTimeInterface,
+                    Driver              *hwDriver,
+                    const orca::Frame3d &antennaOffset,
+                    orcaice::Context     context )
+    : gpsInterface_(gpsInterface),
+      gpsMapGridInterface_(gpsMapGridInterface),
+      gpsTimeInterface_(gpsTimeInterface),
       hwDriver_(hwDriver),
+      antennaOffset_(antennaOffset),
       context_(context)
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
@@ -52,7 +97,6 @@ MainLoop::run()
 
     try 
     {
-        GpsDescription descr_ = gpsObj_.localGetDescription();
         GpsData gpsData;
         GpsMapGridData gpsMapGridData;
         GpsTimeData gpsTimeData;
@@ -90,8 +134,8 @@ MainLoop::run()
                         orcaice::setSane(gpsMapGridData);
                         gpsData.positionType = orca::GpsPositionTypeNotAvailable;
                         gpsMapGridData.positionType = orca::GpsPositionTypeNotAvailable;
-                        gpsObj_.localSetData(gpsData);
-                        gpsObj_.localSetMapGridData(gpsMapGridData);
+                        gpsInterface_->localSetAndSend(gpsData);
+                        gpsMapGridInterface_->localSetAndSend(gpsMapGridData);
                     }
                 }
                 else
@@ -104,39 +148,13 @@ MainLoop::run()
                         // publish it
                         context_.tracer()->debug("We have new gpsData. Publishing gpsData.", 3);
                         context_.tracer()->debug("Publishing gpsData.", 3);
-                        gpsObj_.localSetData(gpsData);
-                        
-                        int zone;
-                        zone=mgaMapgrid_.getGridCoords( gpsData.latitude, gpsData.longitude,
-                                                        gpsMapGridData.easting,gpsMapGridData.northing);
-                        gpsMapGridData.zone=zone;
-                        //copy across all the other stuff
-                        gpsMapGridData.timeStamp=gpsData.timeStamp;
-                        gpsMapGridData.utcTime=gpsData.utcTime;
-                        gpsMapGridData.altitude=gpsData.altitude;
-                        gpsMapGridData.horizontalPositionError=gpsData.horizontalPositionError;
-                        gpsMapGridData.verticalPositionError=gpsData.verticalPositionError;
-                    
-                        gpsMapGridData.heading=gpsData.heading;
-                        gpsMapGridData.speed=gpsData.speed;
-                        gpsMapGridData.climbRate=gpsData.climbRate;
-                        gpsMapGridData.positionType=gpsData.positionType;
-                    
-                        //correct for local frame
-                        CartesianPoint p;
-                        //copy out point
-                        p.x=gpsMapGridData.easting;
-                        p.y=gpsMapGridData.northing;
-                        p.z=gpsMapGridData.altitude;
-                        //convert
-                        p=convertToFrame3d(descr_.antennaOffset,p);
-                        // reset object
-                        gpsMapGridData.easting=p.x;
-                        gpsMapGridData.northing=p.y;
-                        gpsMapGridData.altitude=p.z;
-                    
+                        gpsInterface_->localSetAndSend(gpsData);
+
+                        // Convert to MapGrid
+                        gpsMapGridData = convertToMapGrid( gpsData, mgaMapgrid_, antennaOffset_ );
+
                         context_.tracer()->debug("Publishing gpsMapGridData.", 3);
-                        gpsObj_.localSetMapGridData(gpsMapGridData);
+                        gpsMapGridInterface_->localSetAndSend(gpsMapGridData);
                         
                         context_.tracer()->debug( orcaice::toString( gpsData ), 5 );
                         context_.tracer()->debug( orcaice::toString( gpsMapGridData ), 5 );
@@ -146,7 +164,7 @@ MainLoop::run()
                     if(hwDriver_->getTimeData(gpsTimeData)==0)
                     {
                         context_.tracer()->debug("We have new timeData. Publishing gpsTimeData.", 3);
-                        gpsObj_.localSetTimeData(gpsTimeData);
+                        gpsTimeInterface_->localSetAndSend(gpsTimeData);
                         context_.tracer()->debug( orcaice::toString( gpsTimeData ), 5 );
                     }
                 }
