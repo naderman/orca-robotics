@@ -1,2 +1,0 @@
-#cmakedefine DIGICLOPS_AND_TRICLOPS_FOUND
-#cmakedefine OPENCV_FOUND

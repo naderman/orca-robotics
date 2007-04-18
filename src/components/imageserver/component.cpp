@@ -13,12 +13,12 @@
 #include "mainloop.h"
 
 // define flags for building drivers
-#include "configimageserver.h"
+// #include "configimageserver.h"
 
-#ifdef OPENCV_FOUND
+#ifdef BUILD_OPENCV_GRABBER
 #   include <orcaimagegrabber/cvgrabber.h>
 #endif 
-#ifdef DIGICLOPS_AND_TRICLOPS_FOUND
+#ifdef BUILD_DIGICLOPS_GRABBER
 #   include <orcaimagegrabber/digiclopsgrabber.h>
 #endif 
 
@@ -122,7 +122,7 @@ Component::start()
     }
     else if ( driverName == "monoopencv" )
     {
-#ifdef OPENCV_FOUND
+#ifdef BUILD_OPENCV_GRABBER
         context().tracer()->debug( "Loading 'monoopencv' driver",3);
         // Use opencv implementation for a monocular camera...
 
@@ -132,11 +132,11 @@ Component::start()
         hwDriver_ = new MonoDriver( imageGrabber_, desiredCfg, context() );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'monoopencv' because it wasn't built!" );
-#endif // OPENCV_FOUND
+#endif // BUILD_OPENCV_GRABBER
     }
     else if ( driverName == "digiclops" )
     {
-#ifdef DIGICLOPS_AND_TRICLOPS_FOUND
+#ifdef BUILD_DIGICLOPS_GRABBER
         context().tracer()->debug( "Loading 'digiclops' driver",3);
         // Use digiclops/triclops implementation for a digiclops camera...
 
@@ -146,7 +146,7 @@ Component::start()
         hwDriver_ = new MonoDriver( imageGrabber_, desiredCfg, context() );
 #else
         throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'digiclops' because it wasn't built!" );
-#endif // DIGICLOPS_AND_TRICLOPS_FOUND
+#endif // BUILD_DIGICLOPS_GRABBER
     }
     else
     {

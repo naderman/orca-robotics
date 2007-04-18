@@ -8,7 +8,7 @@ IF ( BUILD_IMAGE_SERVER )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
     
     # automatically generate #ifdef's for component.cpp
-    CONFIGURE_FILE( configimageserver.h.cmake ${PROJECT_SOURCE_DIR}/src/components/imageserver/configimageserver.h )
+    # CONFIGURE_FILE( configimageserver.h.cmake ${PROJECT_SOURCE_DIR}/src/components/imageserver/configimageserver.h )
     
     # low level camera driver checks
     IF ( 1394_FOUND )
@@ -49,12 +49,14 @@ IF ( BUILD_IMAGE_SERVER )
     SET( DEP_LIBS OrcaImage OrcaIfaceImpl )
     
     IF ( OPENCV_FOUND )
+        ADD_DEFINITIONS( -DBUILD_OPENCV_GRABBER )
         INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )
         LINK_DIRECTORIES( ${OPENCV_LINK_DIRS} )
         SET( DEP_LIBS ${DEP_LIBS} ${OPENCV_LIBS} OrcaImageGrabber )
     ENDIF ( OPENCV_FOUND )
     
     IF ( DIGICLOPS_AND_TRICLOPS_FOUND )
+        ADD_DEFINITIONS( -DBUILD_DIGICLOPS_GRABBER )
         INCLUDE_DIRECTORIES( /usr/local/include/digiclops /usr/local/include/triclops)
         SET( DEP_LIBS ${DEP_LIBS} ${OPENCV_LIBS} digiclops triclops OrcaImageGrabber )
     ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND )
