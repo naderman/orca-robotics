@@ -40,6 +40,77 @@ using namespace std;
 namespace orcalog
 {
 
+namespace {
+//////////////////////////////////////////////////////////////////////
+// Generic utilities
+
+    // These guys just make the code below a little more readable.
+    inline void fromLogString( std::stringstream &s, int &i )
+    { s >> i; }
+    inline void fromLogString( std::stringstream &s, double &i )
+    { s >> i; }
+
+
+    std::string toLogString( const orca::CartesianPoint &o )
+    {
+        stringstream ss;
+        ss << o.x << " " << o.y << " " << o.z;
+        return ss.str();
+    }
+    void fromLogString( std::stringstream &s, orca::CartesianPoint &o )
+    {
+        s >> o.x >> o.y >> o.z;
+    }
+
+    std::string toLogString( const orca::OrientationE &o )
+    {
+        stringstream ss;
+        ss << o.r << " " << o.p << " " << o.y;
+        return ss.str();
+    }
+    void fromLogString( std::stringstream &s, orca::OrientationE &o )
+    {
+        s >> o.r >> o.p >> o.y;
+    }
+
+    std::string toLogString( const orca::Frame3d &o )
+    {
+        stringstream ss;
+        ss << toLogString(o.p) << " " << toLogString(o.o);
+        return ss.str();
+    }
+    void fromLogString( std::stringstream &s, orca::Frame3d &o )
+    {
+        fromLogString( s, o.p );
+        fromLogString( s, o.o );
+    }
+
+    std::string toLogString( const orca::CartesianPoint2d &o )
+    {
+        stringstream ss;
+        ss << o.x << " " << o.y;
+        return ss.str();
+    }
+    void fromLogString( std::stringstream &s, orca::CartesianPoint2d &o )
+    {
+        s >> o.x >> o.y;
+    }
+
+    std::string toLogString( const orca::Frame2d &o )
+    {
+        stringstream ss;
+        ss << toLogString(o.p) << " " << o.o;
+        return ss.str();
+    }
+    void fromLogString( std::stringstream &s, orca::Frame2d &o )
+    {
+        fromLogString( s, o.p );
+        s >> o.o;
+    }
+
+//////////////////////////////////////////////////////////////////////
+}
+
 std::string 
 toLogString( const orca::Waypoint2d& obj )
 {
@@ -69,17 +140,38 @@ toLogString( const orca::CpuData& obj )
     return s.str();
 }
 
+int convertToNumeric( orca::GpsPositionType p )
+{
+    if ( p == orca::GpsPositionTypeNotAvailable ) {
+        return 0;
+    } else if ( p == orca::GpsPositionTypeAutonomous ) {
+        return 1;
+    } else if ( p == orca::GpsPositionTypeDifferential ) {
+        return 2;
+    } else {
+        assert( false && "Unknown positionType" );
+        return -1;
+    }
+}
+
+orca::GpsPositionType convertFromNumeric( int p )
+{
+    if ( p == 0 ) {
+        return orca::GpsPositionTypeNotAvailable;
+    } else if ( p == 1 ) {
+        return orca::GpsPositionTypeAutonomous;
+    } else if ( p == 2 ) {
+        return orca::GpsPositionTypeDifferential;
+    } else {
+        assert( false && "Unknown positionType" );
+        return orca::GpsPositionTypeNotAvailable;
+    }
+}
+
 std::string 
 toLogString( const orca::GpsData& obj )
 {
-    int positionType = 0;
-    if (obj.positionType==orca::GpsPositionTypeNotAvailable) {
-        positionType = 0;
-    } else if (obj.positionType==orca::GpsPositionTypeAutonomous) {
-        positionType = 1;
-    } else if (obj.positionType==orca::GpsPositionTypeDifferential) {
-        positionType = 2;
-    }
+    int positionType = convertToNumeric( obj.positionType );
     
     std::ostringstream s;
     s << toLogString(obj.timeStamp) << " "
@@ -101,17 +193,59 @@ toLogString( const orca::GpsData& obj )
     return s.str();
 }
 
+void
+fromLogString( std::stringstream &s, orca::GpsData& obj )
+{
+    fromLogString( s, obj.timeStamp );
+    fromLogString( s, obj.utcTime.hours );
+    fromLogString( s, obj.utcTime.minutes );
+    fromLogString( s, obj.utcTime.seconds );
+    fromLogString( s, obj.latitude );
+    fromLogString( s, obj.longitude );
+    fromLogString( s, obj.altitude );
+    fromLogString( s, obj.horizontalPositionError );
+    fromLogString( s, obj.verticalPositionError );
+    fromLogString( s, obj.heading );
+    fromLogString( s, obj.speed );
+    fromLogString( s, obj.climbRate );
+    fromLogString( s, obj.satellites );
+    int numericPosType;
+    fromLogString( s, numericPosType );
+    obj.positionType = convertFromNumeric( numericPosType );
+    fromLogString( s, obj.geoidalSeparation );
+}
+
+std::string 
+toLogString( const orca::GpsTimeData& obj )
+{
+    std::ostringstream s;
+    s << toLogString(obj.timeStamp) << " "
+      << setiosflags(ios::fixed) << setprecision(2)
+      << obj.utcTime.hours << " "
+      << obj.utcTime.minutes << " "
+      << obj.utcTime.seconds << " "
+      << obj.utcDate.day << " "
+      << obj.utcDate.month << " "
+      << obj.utcDate.year;
+    return s.str();
+}
+
+void
+fromLogString( std::stringstream &s, orca::GpsTimeData& obj )
+{
+    fromLogString( s, obj.timeStamp );
+    fromLogString( s, obj.utcTime.hours );
+    fromLogString( s, obj.utcTime.minutes );
+    fromLogString( s, obj.utcTime.seconds );
+    fromLogString( s, obj.utcDate.day );
+    fromLogString( s, obj.utcDate.month );
+    fromLogString( s, obj.utcDate.year );
+}
+
 std::string 
 toLogString( const orca::GpsMapGridData& obj )
 {
-    int positionType = 0;
-    if (obj.positionType==orca::GpsPositionTypeNotAvailable) {
-        positionType = 0;
-    } else if (obj.positionType==orca::GpsPositionTypeAutonomous) {
-        positionType = 1;
-    } else if (obj.positionType==orca::GpsPositionTypeDifferential) {
-        positionType = 2;
-    }
+    int positionType = convertToNumeric( obj.positionType );
     
     std::ostringstream s;
     s << toLogString(obj.timeStamp) << " "
@@ -132,6 +266,26 @@ toLogString( const orca::GpsMapGridData& obj )
     return s.str();
 }
 
+void
+fromLogString( std::stringstream &s, orca::GpsMapGridData& obj )
+{
+    fromLogString( s, obj.timeStamp );
+    fromLogString( s, obj.utcTime.hours );
+    fromLogString( s, obj.utcTime.minutes );
+    fromLogString( s, obj.utcTime.seconds );
+    fromLogString( s, obj.northing );
+    fromLogString( s, obj.easting );
+    fromLogString( s, obj.altitude );
+    fromLogString( s, obj.horizontalPositionError );
+    fromLogString( s, obj.verticalPositionError );
+    fromLogString( s, obj.heading );
+    fromLogString( s, obj.speed );
+    fromLogString( s, obj.climbRate );
+    fromLogString( s, obj.zone );
+    int numericPosType;
+    fromLogString( s, numericPosType );
+    obj.positionType = convertFromNumeric( numericPosType );
+}
 
 std::string 
 toLogString( const orca::LaserScanner2dDataPtr& obj )
@@ -445,4 +599,24 @@ toLogString( const orca::ImuData& obj )
     return s.str();
 }
 
-} // namespace
+std::string 
+toLogString( const orca::GpsDescription& obj )
+{
+    std::ostringstream s;
+    s << toLogString(obj.timeStamp) << " "
+      << toLogString(obj.offset) << " "
+      << toLogString(obj.antennaOffset);
+    return s.str();
+}
+
+void 
+fromLogString( std::stringstream& s, orca::GpsDescription& obj )
+{
+    fromLogString( s, obj.timeStamp );
+    fromLogString( s, obj.offset );
+    fromLogString( s, obj.antennaOffset );
+}
+
+
+}
+

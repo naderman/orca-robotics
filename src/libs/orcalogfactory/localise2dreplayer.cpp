@@ -94,7 +94,7 @@ Localise2dReplayer::getData(const Ice::Current& current) const
 ::orca::Localise2dData
 Localise2dReplayer::getDataAtTime(const orca::Time&, const Ice::Current& current) const
 {
-    context_.tracer()->warning( "Not implemented yet. Just returning latest data!" );
+    context_.tracer()->warning( "Localise2dReplayer::getDataAtTime(): Not implemented yet. Just returning latest data!" );
     return getData( current );
 }
 

@@ -74,17 +74,27 @@ GpsLogger::init()
 void 
 GpsLogger::writeDescriptionToFile( const orca::GpsDescription& obj )
 {
+    context_.tracer()->print( "GpsLogger: Writing description to file" );
+
     if ( format_=="ice" )
     {
         orcalog::IceWriteHelper helper( context_.communicator() );
         ice_writeGpsDescription( helper.stream_, obj );
         helper.write( file_ );  
     }
+    else if ( format_=="ascii" )
+    {
+        (*file_) << orcalog::toLogString(obj) << endl;
+    }
+    else
+        assert( false && "unknown format" );
 }
 
 void 
 GpsLogger::localSetData( const orca::GpsData& data )
 {
+//    cout<<"TRACE(gpslogger.cpp): writing GpsData" << endl;
+
     // Write reference to master file
     appendMasterFile();
     if ( format_=="ice" )
@@ -93,12 +103,18 @@ GpsLogger::localSetData( const orca::GpsData& data )
         ice_writeGpsData( helper.stream_, data );
         helper.write( file_, 0 );
     }
+    else if ( format_ == "ascii" )
+    {
+        (*file_) << "0 " << orcalog::toLogString(data) << endl;
+    }
 }
 
 
 void 
 GpsLogger::localSetData( const orca::GpsTimeData& data )
 {
+//    cout<<"TRACE(gpslogger.cpp): writing GpsTimeData" << endl;
+
     // Write reference to master file
     appendMasterFile();
     
@@ -108,11 +124,17 @@ GpsLogger::localSetData( const orca::GpsTimeData& data )
         ice_writeGpsTimeData( helper.stream_, data );
         helper.write( file_, 1 );
     }
+    else if ( format_=="ascii" )
+    {
+        (*file_) << "1 " << orcalog::toLogString(data) << endl;   
+    }
 }
 
 void 
 GpsLogger::localSetData( const orca::GpsMapGridData& data )
 {
+//    cout<<"TRACE(gpslogger.cpp): writing GpsMapGridData" << endl;
+
     // Write reference to master file
     appendMasterFile();
     
@@ -124,6 +146,6 @@ GpsLogger::localSetData( const orca::GpsMapGridData& data )
     }
     else if ( format_=="ascii" )
     {
-        (*file_) << orcalog::toLogString(data) << endl;   
+        (*file_) << "2 " << orcalog::toLogString(data) << endl;   
     }
 }

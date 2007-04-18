@@ -25,7 +25,7 @@ GpsReplayer::GpsReplayer( const std::string      &format,
     : orcalog::Replayer("Gps", format, filename, context)
 {
     // check that we support this format
-    if ( format_!="ice" ) //&& format_!="ascii" )
+    if ( format_!="ice" && format_!="ascii" )
     {
         context_.tracer()->warning( interfaceType_+"Logger: unknown log format: "+format_ );
         throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: unknown log format: "+format_ );
@@ -195,6 +195,16 @@ GpsReplayer::initDescription()
     {
         loadHeaderIce();
     }
+    else if ( format_ == "ascii" )
+    {
+        orca::GpsDescription descr;
+        std::string line;
+        std::getline( *file_, line );
+        std::stringstream ss( line );
+        orcalog::fromLogString( ss, descr );
+        cout<<"TRACE(gpsreplayer.cpp): read description: " << orcaice::toString(descr) << endl;
+        gpsDescriptionBuffer_.push( descr );
+    }
     else
     {
         throw orcalog::FormatNotSupportedException( ERROR_INFO, "Unknown format: "+format_ );
@@ -211,6 +221,11 @@ GpsReplayer::replayData( int index, bool isTest )
     if (format_=="ice")
     {
         loadDataIce( index );
+    }
+    if (format_=="ascii")
+    {
+        loadDataAscii( index );
+        cout<<"TRACE(gpsreplayer.cpp): id_: " << id_ << endl;
     }
     else
     {
@@ -300,6 +315,42 @@ GpsReplayer::loadDataIce( int index )
             throw orcalog::Exception( ERROR_INFO, ss.str() );
         }
         helper.read();
+
+        dataCounter_++;
+    }
+}
+
+void 
+GpsReplayer::loadDataAscii( int index )
+{
+    while (index != (dataCounter_) )
+    {
+        (*file_) >> id_;
+
+        std::string line;
+        std::getline( *file_, line );
+        std::stringstream ss( line );
+
+        if ( id_ == '0' )
+        {
+            id_ = 0;
+            orcalog::fromLogString( ss, gpsData_ );
+            cout<<"TRACE(gpsreplayer.cpp): got gps data: " << orcaice::toString(gpsData_) << endl;
+        }
+        else if ( id_ == '1' ) {
+            id_ = 1;
+            orcalog::fromLogString( ss, gpsTimeData_ );
+        }
+        else if ( id_ == '2' ) {
+            id_ = 2;
+            orcalog::fromLogString( ss, gpsMapGridData_ );
+            cout<<"TRACE(gpsreplayer.cpp): got gpsMapGrid data: " << orcaice::toString(gpsMapGridData_) << endl;
+        }
+        else {
+            std::stringstream ss;
+            ss << "GpsReplayer: unrecognized object type '" << id_ << "'";
+            throw orcalog::Exception( ERROR_INFO, ss.str() );
+        }
 
         dataCounter_++;
     }

@@ -148,6 +148,41 @@ std::string toString( const IceGrid::StringStringDict &s, int indent )
     return ss.str();
 }
 
+std::string toString( const IceGrid::ServerDescriptor &s, int indent )
+{
+    string ind = makeIndent(indent);
+
+    stringstream ss;
+    ss << ind << "id:  " << s.id << endl
+       << ind << "exe: " << s.exe << endl
+       << ind << "(detailed ServerDescriptor info omitted)" << endl;
+
+    return ss.str();
+}
+
+std::string toString( const IceGrid::NodeDescriptor &n, int indent )
+{
+    string ind = makeIndent(indent);
+
+    stringstream ss;
+    ss << ind << "description: " << n.description << endl;
+    ss << ind << "variables:" << endl;
+    for ( std::map<string,string>::const_iterator it = n.variables.begin();
+          it != n.variables.end();
+          it++ )
+    {
+        ss << ind << "  " << it->first << ": " << it->second << endl;
+    }
+    ss << ind << "servers (size "<<n.servers.size()<<"):" << endl;
+    for ( uint i=0; i < n.servers.size(); i++ )
+    {
+        const IceGrid::ServerDescriptorPtr &s = n.servers[i];
+        ss << ind << toString( *s, indent+2 ) << endl;
+    }
+    ss << ind << "(detailed NodeDescriptor info omitted)" << endl;
+    return ss.str();
+}
+
 std::string toString( const IceGrid::ApplicationDescriptor &a, int indent )
 {
     string ind = makeIndent(indent);
@@ -155,7 +190,21 @@ std::string toString( const IceGrid::ApplicationDescriptor &a, int indent )
     stringstream ss;
     ss << ind << "name:        " << a.name << endl
        << ind << "description: " << a.description << endl
-       << ind << "(detailed app description omitted)";
+       << ind << "variables: " << endl;
+    for ( std::map<string,string>::const_iterator it = a.variables.begin();
+          it != a.variables.end();
+          it++ )
+    {
+        ss << ind << "  " << it->first << ": " << it->second << endl;
+    }
+    ss << ind << "nodes: " << endl;
+    for ( std::map<string,IceGrid::NodeDescriptor>::const_iterator it = a.nodes.begin();
+          it != a.nodes.end();
+          it++ )
+    {
+        ss << ind << "  " << it->first << ": "<< endl << toString(it->second,indent+2) << endl;
+    }
+    ss << ind << "(detailed app description omitted)";
     return ss.str();
 }
     

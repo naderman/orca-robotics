@@ -67,8 +67,9 @@ private:
     IceStorm::TopicPrx topicTimePrx_;
     IceStorm::TopicPrx topicMapGridPrx_;
     
-    // binary file protocol specifics
+    // file protocol specifics
     void loadDataIce( int index );
+    void loadDataAscii( int index );
     void loadHeaderIce();
 
     char id_;

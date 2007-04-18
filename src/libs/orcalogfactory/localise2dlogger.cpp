@@ -71,6 +71,11 @@ Localise2dLogger::writeDescriptionToFile( const orca::Localise2dDescription& obj
         ice_writeLocalise2dDescription( helper.stream_, obj );
         helper.write( file_ );  
     }
+    else
+    {
+        context_.tracer()->warning( interfaceType_+"Logger: format not supported: "+format_ );
+        throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: format not supported: "+format_ );
+    }
 }
 
 void 

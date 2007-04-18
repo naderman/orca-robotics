@@ -44,10 +44,22 @@ namespace orcalog
 std::string toLogString( const orca::Waypoint2d& );
 //! Prints out cpu data to text which is easy to parse
 std::string toLogString( const orca::CpuData& );
+
 //! Prints out gps data to text which is easy to parse
 std::string toLogString( const orca::GpsData& );
+//! Parses from ASCII log. Throws orcalog::ParseException on error.
+void fromLogString( std::stringstream& stream, orca::GpsData& );
+
 //! Prints out gps mapgrid data to text which is easy to parse
 std::string toLogString( const orca::GpsMapGridData& );
+//! Parses from ASCII log. Throws orcalog::ParseException on error.
+void fromLogString( std::stringstream& stream, orca::GpsMapGridData& );
+
+//! Prints out gps time data to text which is easy to parse
+std::string toLogString( const orca::GpsTimeData& );
+//! Parses from ASCII log. Throws orcalog::ParseException on error.
+void fromLogString( std::stringstream& stream, orca::GpsTimeData& );
+
 //! Prints out laser data to text which is easy to parse
 std::string toLogString( const orca::LaserScanner2dDataPtr& );
 //! Prints out localise2d data to text which is easy to parse
@@ -78,6 +90,11 @@ void fromLogString( std::stringstream& stream, orca::PowerData& );
 std::string toLogString( const orca::Time& );
 //! Parses a line of ASCII log. Throws orcalog::ParseException on error.
 void fromLogString( std::stringstream& stream, orca::Time& );
+
+//! Prints out gpsdescription to text which is easy to parse
+std::string toLogString( const orca::GpsDescription& );
+//! Parses from ASCII log. Throws orcalog::ParseException on error.
+void fromLogString( std::stringstream& stream, orca::GpsDescription& );
 //}
 
 
