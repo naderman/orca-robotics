@@ -50,32 +50,6 @@ Localise2dReplayer::initInterfaces()
     orcaice::createInterfaceWithString( context_, obj, interfaceName_ );
 }
 
-void 
-Localise2dReplayer::initDescription()
-{
-    orca::Localise2dDescription localDescription;
-    
-    orcalog::IceReadHelper helper( context_.communicator(), file_ );
-    ice_readLocalise2dDescription( helper.stream_, localDescription );
-    helper.read();
-
-    descriptionBuffer_.push( localDescription );
-}
-
-orca::Localise2dDescription
-Localise2dReplayer::getDescription(const Ice::Current& c) const
-{    
-    if ( descriptionBuffer_.isEmpty() )
-    {
-        throw orca::DataNotExistException( "logplayer buffer is empty, probably because we are not replaying yet" );
-    }
- 
-    orca::Localise2dDescription descr;
-    descriptionBuffer_.get( descr );
-    return descr;
-}
- 
-
 orca::Localise2dData
 Localise2dReplayer::getData(const Ice::Current& current) const
 {

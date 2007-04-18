@@ -46,9 +46,6 @@ public:
                                                const Ice::Current& c) const
         { return iface_.getDataAtTime( time ); }
 
-    virtual orca::Localise2dDescription getDescription(const Ice::Current& c) const
-        { return iface_.getDescription(); }
-
 private:
     Localise2dIface &iface_;
 };
@@ -56,10 +53,8 @@ private:
 //////////////////////////////////////////////////////////////////////
 
 Localise2dIface::Localise2dIface( const std::string &ifaceTag,
-                          const orca::Localise2dDescription &descr,
-                          const orcaice::Context &context ) :
+                                  const orcaice::Context &context ) :
     ifaceTag_(ifaceTag),
-    description_(descr),
     context_(context)
 {
 }

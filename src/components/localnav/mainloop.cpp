@@ -254,13 +254,6 @@ MainLoop::subscribeForLocalisation()
     {
         try {
             orcaice::connectToInterfaceWithTag<orca::Localise2dPrx>( context_, locPrx, "Localisation" );
-            orca::Frame2d offset = locPrx->getDescription().offset;
-            if ( offset.p.x != 0 || offset.p.y != 0 || offset.o != 0 )
-            {
-                stringstream ss;
-                ss << "Handler: Can only handle localisers with zero offset.  Found: " << orcaice::toString(offset);
-                throw ss.str();
-            }
             break;
         }
         catch( Ice::Exception &e )

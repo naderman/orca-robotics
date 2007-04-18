@@ -218,8 +218,6 @@ std::string toString( const orca::Twist2d& );
 //! Converts to string
 std::string toString( const orca::Localise2dData& );
 //! Converts to string
-std::string toString( const orca::Localise2dDescription& );
-//! Converts to string
 std::string toString( const orca::Localise3dData& );
 //! Converts to string
 std::string toString( const orca::PowerData& );

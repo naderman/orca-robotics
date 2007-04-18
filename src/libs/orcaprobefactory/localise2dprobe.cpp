@@ -24,7 +24,6 @@ Localise2dProbe::Localise2dProbe( const orca::FQInterfaceName& name, orcaprobe::
 {
     id_ = "::orca::Localise2d";
     
-    addOperation( "getDescription" );
     addOperation( "getData" );
     addOperation( "getDataAtTime" );
     addOperation( "subscribe" );
@@ -39,15 +38,13 @@ Localise2dProbe::loadOperationEvent( const int index, orcacm::OperationData& dat
 {
     switch ( index )
     {
-    case orcaprobe::UserIndex :
-        return loadGetDescription( data );
-    case orcaprobe::UserIndex+1 :
+    case orcaprobe::UserIndex+0 :
         return loadGetData( data );
-    case orcaprobe::UserIndex+2 :
+    case orcaprobe::UserIndex+1 :
         return loadGetDataAtTime( data );
-    case orcaprobe::UserIndex+3 :
+    case orcaprobe::UserIndex+2 :
         return loadSubscribe( data );
-    case orcaprobe::UserIndex+4 :
+    case orcaprobe::UserIndex+3 :
         return loadUnsubscribe( data );
     }
     return 1;
@@ -84,27 +81,6 @@ int
 Localise2dProbe::loadGetDataAtTime( orcacm::OperationData& data )
 {
     orcaprobe::reportNotImplemented( data );
-    return 0;
-}
-
-int 
-Localise2dProbe::loadGetDescription( orcacm::OperationData& data )
-{
-    orca::Localise2dDescription result;
-    orcacm::ResultHeader res;
-
-    try
-    {
-        orca::Localise2dPrx derivedPrx = orca::Localise2dPrx::checkedCast(prx_);
-        result = derivedPrx->getDescription();
-        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
     return 0;
 }
 

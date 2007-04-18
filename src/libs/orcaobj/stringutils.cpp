@@ -836,15 +836,6 @@ toString( const orca::Localise2dData& obj )
 }
 
 std::string 
-toString( const orca::Localise2dDescription& obj )
-{
-    std::ostringstream s;
-    s << toString(obj.timeStamp)
-      << "  offset: " << orcaice::toString(obj.offset) << endl;
-    return s.str();
-}
-
-std::string 
 toString( const orca::Localise3dData& obj )
 {
     std::ostringstream s;

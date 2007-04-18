@@ -25,22 +25,6 @@ Localise2dElement::actionOnConnection()
 {
     if (!isConnected_) return;
     
-    try
-    {
-        const orca::Localise2dPrx& prx = listener_.proxy();
-        orca::Localise2dDescription descr = prx->getDescription();
-        localiseOff_ = descr.offset;
-        painter_.setOffsets( localiseOff_.p.x, localiseOff_.p.y, localiseOff_.o );
-        cout << " offsets(x,y,theta): " << localiseOff_.p.x << " "
-                                        << localiseOff_.p.y << " "
-                                        << localiseOff_.o << endl;
-    }
-    catch ( ... )
-    {
-        humanManager_->showStatusMsg(Warning, "Problem getting description from Localise2d interface. Will try again later.");
-        return;
-    }
-    
     humanManager_->showStatusMsg(Information, "Got Localise2d description");
     gotDescription_ = true;    
     

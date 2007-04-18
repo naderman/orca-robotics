@@ -27,7 +27,6 @@ class Localise2dIface : public IceUtil::Shared
 {
 public:
     Localise2dIface( const std::string &ifaceTag,
-                     const orca::Localise2dDescription &descr,
                      const orcaice::Context &context );
     ~Localise2dIface();
 
@@ -42,9 +41,6 @@ public:
     // Note: could do smoothing/interpolation here...
     orca::Localise2dData getDataAtTime(const orca::Time&) const
         { return getData(); }
-
-    orca::Localise2dDescription getDescription() const
-        { return description_; }
 
     // Local calls:
 
@@ -69,7 +65,6 @@ private:
     Ice::ObjectPtr          ptr_;
 
     const std::string                 ifaceTag_;
-    const orca::Localise2dDescription description_;
     orcaice::Context                  context_;
 };
 typedef IceUtil::Handle<Localise2dIface> Localise2dIfacePtr;

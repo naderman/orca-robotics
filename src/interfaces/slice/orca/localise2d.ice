@@ -24,18 +24,6 @@ module orca
     @{
 */
 
-//! Descriptive information about the localiser
-struct Localise2dDescription
-{
-    //! Time when description was generated
-    Time timeStamp;
-
-    //! Transformation from global (arbitrarily defined) coordinate system (CS) to
-    //! the coordinate system in which the localiser reports its pose.
-    //! This will usually be (0,0,0).
-    Frame2d offset;
-};
-
 //! A Gaussian distribution over pose space
 struct Pose2dHypothesis 
 {
@@ -81,9 +69,6 @@ interface Localise2d
     //! Returns the data at a particular time based on the latest data.
     nonmutating Localise2dData getDataAtTime(Time timeStamp)
             throws DataNotExistException;
-
-    //! Return the description
-    nonmutating Localise2dDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.

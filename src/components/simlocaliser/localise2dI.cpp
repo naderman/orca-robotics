@@ -21,10 +21,6 @@ Localise2dI::Localise2dI( const IceStorm::TopicPrx              &localiseTopic,
     : localiseTopic_(localiseTopic),
       locBuffer_(locBuffer)
 {
-    description_.timeStamp = orcaice::getNow();
-    description_.offset.p.x = 0;
-    description_.offset.p.y = 0;
-    description_.offset.o   = 0;
 }
 
 ::orca::Localise2dData
@@ -64,12 +60,6 @@ Localise2dI::getDataAtTime(const orca::Time&, const ::Ice::Current& ) const
     }
     
     return data;
-}
-
-::orca::Localise2dDescription
-Localise2dI::getDescription(const ::Ice::Current& ) const
-{
-    return description_;
 }
 
 void 

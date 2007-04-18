@@ -17,6 +17,7 @@
 #include <orca/odometry2d.h>
 #include <orca/drivebicycle.h>
 #include <orca/ogmap.h>
+#include <orca/gps.h>
 
 namespace orcaifaceimpl
 {
@@ -49,6 +50,11 @@ typedef ProxiedConsumer<orca::OgMapConsumer,
                         orca::OgMapConsumerPrx,
                         orca::OgMapData>                   proxiedOgMapConsumer;
 typedef IceUtil::Handle<proxiedOgMapConsumer>              proxiedOgMapConsumerPtr;
+
+typedef ProxiedConsumer<orca::GpsConsumer,
+                        orca::GpsConsumerPrx,
+                        orca::GpsData>                     proxiedGpsConsumer;
+typedef IceUtil::Handle<proxiedGpsConsumer>                proxiedGpsConsumerPtr;
 
 
 } // namespace

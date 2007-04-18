@@ -49,10 +49,6 @@ Localise2dLogger::init()
     orca::Localise2dPrx objectPrx;
     orcaice::connectToInterfaceWithTag<orca::Localise2dPrx>( context_, objectPrx, interfaceTag_ );
     
-    // description
-    orca::Localise2dDescription descr = objectPrx->getDescription();
-    writeDescriptionToFile( descr );
-
     // consumer
     Ice::ObjectPtr consumer = this;
     orca::Localise2dConsumerPrx callbackPrx = 
@@ -60,22 +56,6 @@ Localise2dLogger::init()
 
     context_.tracer()->debug("Subscribing to IceStorm now.",5);
     objectPrx->subscribe( callbackPrx );
-}
-
-void 
-Localise2dLogger::writeDescriptionToFile( const orca::Localise2dDescription& obj )
-{
-    if ( format_=="ice" )
-    {
-        orcalog::IceWriteHelper helper( context_.communicator() );
-        ice_writeLocalise2dDescription( helper.stream_, obj );
-        helper.write( file_ );  
-    }
-    else
-    {
-        context_.tracer()->warning( interfaceType_+"Logger: format not supported: "+format_ );
-        throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: format not supported: "+format_ );
-    }
 }
 
 void 

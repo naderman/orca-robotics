@@ -36,9 +36,6 @@ class Localise2dLogger : public orca::Localise2dConsumer, public orcalog::Logger
 
     private:
 
-        // utility
-        void writeDescriptionToFile( const orca::Localise2dDescription& descr );
-    
 };
 
 }
