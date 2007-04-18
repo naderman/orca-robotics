@@ -101,7 +101,7 @@ PolarFeature2dLogger::setData(const orca::PolarFeature2dDataPtr& data, const Ice
 // void 
 // PolarFeature2dLogger::writeConfigToFile( RangeScanner2dConfigPtr polarFeature2dConfigPtr, orca::PolarFeature2dGeometryPtr polarFeature2dGeometryPtr )
 // {
-//     context_.tracer()->print( "Writing configuration to file" );
+//     context_.tracer()->print( "PolarFeature2dLogger: Writing configuration to file" );
 //     
 //     if (encodingType_=="ice")
 //     {

@@ -86,7 +86,7 @@ ImuLogger::setData(const orca::ImuData& data, const Ice::Current&)
 void 
 ImuLogger::writeDescription( const orca::ImuDescription& obj )
 {
-    context_.tracer()->debug( "Writing description to file", 5 );
+    context_.tracer()->debug( "ImuLogger: Writing description to file", 5 );
     
     if ( format_ == "ice" )
     {
@@ -96,7 +96,7 @@ ImuLogger::writeDescription( const orca::ImuDescription& obj )
     }
     else if ( format_ == "ascii" )
     {
-       context_.tracer()->warning( "Writing description to file in ascii not implemented" );
+       context_.tracer()->warning( "ImuLogger: Writing description to file in ascii not implemented" );
     }
     else
     {

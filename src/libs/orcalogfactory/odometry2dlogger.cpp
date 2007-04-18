@@ -87,7 +87,7 @@ Odometry2dLogger::setData(const orca::Odometry2dData& data, const Ice::Current&)
 void 
 Odometry2dLogger::writeDescriptionToFile( const orca::VehicleDescription& obj )
 {
-    context_.tracer()->print( "Writing description to file" );
+    context_.tracer()->print( "Odometry2dLogger: Writing description to file" );
     
     if ( format_ == "ice" )
     {

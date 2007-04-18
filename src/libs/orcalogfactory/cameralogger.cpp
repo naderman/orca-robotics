@@ -163,7 +163,7 @@ CameraLogger::setData(const orca::CameraData& data, const Ice::Current&)
 void 
 CameraLogger::writeDescription( const orca::CameraDescription& obj )
 {
-    context_.tracer()->debug( "Writing description to file", 5 );
+    context_.tracer()->debug( "CameraLogger: Writing description to file", 5 );
     
     if ( format_ == "ice" || format_ == "jpeg" )
     {

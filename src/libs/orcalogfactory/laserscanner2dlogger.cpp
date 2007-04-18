@@ -94,7 +94,7 @@ LaserScanner2dLogger::setData(const orca::RangeScanner2dDataPtr& rangedata, cons
 void 
 LaserScanner2dLogger::writeDescription( const orca::RangeScanner2dDescription& obj )
 {
-    context_.tracer()->debug( "Writing description to file", 5 );
+    context_.tracer()->debug( "LaserScanner2dLogger: Writing description to file", 5 );
     
     if ( format_ == "ice" )
     {
