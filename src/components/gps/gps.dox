@@ -22,6 +22,8 @@
 
 - @ref orca_interface_home
 - @ref orca_interface_gps [Gps.Provides.Gps]
+- GpsTime @ref orca_interface_gps [Gps.Provides.GpsTime]
+- GpsMapGrid @ref orca_interface_gps [Gps.Provides.GpsMapGrid]
 - @ref orca_interface_status
 
 @par Requires

@@ -4,6 +4,12 @@ DefaultComponentTag=Gps
 Provides.Gps.Type=Gps
 Provides.Gps.DefaultInterface=gps
 
+Provides.GpsTime.Type=GpsTime
+Provides.GpsTime.DefaultInterface=gpstime
+
+Provides.GpsMapGrid.Type=GpsMapGrid
+Provides.GpsMapGrid.DefaultInterface=gpsmapgrid
+
 # Required Interfaces
 
 # Config Parameters
