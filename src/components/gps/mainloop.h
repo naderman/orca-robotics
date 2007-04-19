@@ -15,7 +15,6 @@
 #include <orcaice/thread.h>
 #include <orcaice/ptrbuffer.h>
 #include <orcaice/context.h>
-#include <orcagpsutil/mapgrid.h>
 
 #include "driver.h"
 #include "gpsinterfaces.h"
@@ -52,8 +51,6 @@ private:
     Driver *hwDriver_;
 
     orca::Frame3d antennaOffset_;
-
-    orcagpsutil::mgaMapgrid mgaMapgrid_;
 
     orcaice::Context context_;
 };

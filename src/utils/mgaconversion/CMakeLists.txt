@@ -13,6 +13,7 @@ LINK_DIRECTORIES( ${ICE_HOME}/lib )
 LINK_LIBRARIES( OrcaGpsUtil )
 
 GLOBAL_ADD_EXECUTABLE( latlon2mga latlon2mga.cpp )
+GLOBAL_ADD_EXECUTABLE( mga2latlon mga2latlon.cpp )
 
 # there is unexplained compile failure in qnx when using ostream
 IF ( OS_LINUX )

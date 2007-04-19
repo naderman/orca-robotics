@@ -11,18 +11,19 @@
 #define SIMPLEDRIVER_H
 
 #include "driver.h"
+#include <orcaice/context.h>
 
 namespace gps2localise2d {
 
 //!
 //! @author Alex Brooks
 //!
-class SimpleDriver
+class SimpleDriver : public Driver
 {
 
 public: 
 
-    SimpleDriver();
+    SimpleDriver( const orca::GpsDescription &descr, const orcaice::Context &context );
     ~SimpleDriver();
 
     // Converts the GPS info into localise2d format.
@@ -31,6 +32,11 @@ public:
 
 private: 
 
+    // Offset from gps origin to global coord system
+    orca::Frame2d offset_;
+
+    orca::GpsDescription  descr_;
+    orcaice::Context      context_;
 
 };
 

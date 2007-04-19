@@ -93,9 +93,9 @@ GenericGpsProbe<ConsumerType,
         return loadGetDescription( data );
     case orcaprobe::UserIndex+1 :
         return loadGetData( data );
-    case orcaprobe::UserIndex+3 :
+    case orcaprobe::UserIndex+2 :
         return loadSubscribe( data );
-    case orcaprobe::UserIndex+4 :
+    case orcaprobe::UserIndex+3 :
         return loadUnsubscribe( data );
     }
     return 1;

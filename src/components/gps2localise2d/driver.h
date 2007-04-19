@@ -23,7 +23,7 @@ class Driver
 
 public: 
 
-    virtual ~Driver();
+    virtual ~Driver() {}
 
     // Converts the GPS info into localise2d format.
     // Returns 'false' if the conversion can't be done (eg because GPS doesn't have a fix).

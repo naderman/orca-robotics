@@ -10,6 +10,7 @@
  
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcagpsutil/latlon2mga.h>
 
 #include "mainloop.h"
 
@@ -25,19 +26,21 @@ namespace {
 namespace {
 
     orca::GpsMapGridData convertToMapGrid( const orca::GpsData           &gpsData,
-                                           orcagpsutil::mgaMapgrid       &mgaMapgrid_,
                                            const orca::Frame3d           &antennaOffset )
     {
         orca::GpsMapGridData gpsMapGridData;
 
-        int zone;
-        zone=mgaMapgrid_.getGridCoords( gpsData.latitude, gpsData.longitude,
-                                        gpsMapGridData.easting,gpsMapGridData.northing);
-        gpsMapGridData.zone=zone;
+        orcagpsutil::LatLon2MGA( gpsData.latitude, 
+                                 gpsData.longitude,
+                                 gpsMapGridData.northing,
+                                 gpsMapGridData.easting,
+                                 gpsMapGridData.zone);
+
         //copy across all the other stuff
         gpsMapGridData.timeStamp=gpsData.timeStamp;
         gpsMapGridData.utcTime=gpsData.utcTime;
         gpsMapGridData.altitude=gpsData.altitude;
+
         gpsMapGridData.horizontalPositionError=gpsData.horizontalPositionError;
         gpsMapGridData.verticalPositionError=gpsData.verticalPositionError;
                     
@@ -151,7 +154,7 @@ MainLoop::run()
                         gpsInterface_->localSetAndSend(gpsData);
 
                         // Convert to MapGrid
-                        gpsMapGridData = convertToMapGrid( gpsData, mgaMapgrid_, antennaOffset_ );
+                        gpsMapGridData = convertToMapGrid( gpsData, antennaOffset_ );
 
                         context_.tracer()->debug("Publishing gpsMapGridData.", 3);
                         gpsMapGridInterface_->localSetAndSend(gpsMapGridData);

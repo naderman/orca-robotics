@@ -12,7 +12,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include <orcagpsutil/mapgrid.h>
+#include <orcagpsutil/latlon2mga.h>
 
 using namespace std;
 using namespace orcagpsutil;
@@ -29,8 +29,8 @@ int main( int argc, char **argv )
     string inputFile = argv[1];
     string outputFile = argv[2];
     double longitude, latitude;
-    mgaMapgrid mgaGrid;
     double easting, northing;
+    int zone;
     
     ifstream in(inputFile.c_str());
     if (!in) {
@@ -46,11 +46,7 @@ int main( int argc, char **argv )
     while ( in >> latitude)
     {
         in >> longitude;
-        int ret = mgaGrid.getGridCoords( latitude, longitude, easting, northing );
-        if (ret==-1) {
-            cout << "Error: Can't convert. Wrong zone" << endl;
-            exit(1);
-        }
+        LatLon2MGA( latitude, longitude, northing, easting, zone );
         out << easting << " " << northing << "\n";
     }
     

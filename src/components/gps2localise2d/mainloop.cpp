@@ -60,7 +60,7 @@ MainLoop::initDriver()
         getGpsDescription();
 
         context_.tracer()->debug( "loading 'simple' driver",3);
-//        driver_ = new SimpleDriver( context_, gpsDescr_.antennaOffset );
+        driver_ = new SimpleDriver( gpsDescr_, context_ );
     }
     else
     {

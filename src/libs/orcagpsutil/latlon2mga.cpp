@@ -23,7 +23,12 @@ using std::pow;
 namespace orcagpsutil{
 
 // LatLon_2_MGA convert (lat,lon) in degrees to (Northing, Easting) in meters
-void LatLon2MGA(const double& lat, const double& lon, double& Northing, double& Easting, int& Zone, EGeodModel geodmodel) {
+void LatLon2MGA( double lat,
+                 double lon,
+                 double& Northing,
+                 double& Easting,
+                 int& Zone,
+                 EGeodModel geodmodel) {
 	const double Lon_WE_Z0 = -186.0;								// [], Longitude of western edge of zone zero
 	const double ZoneWidth = 6.0;									// [], inverse zone width
 	const double inv_ZoneWidth = 1.0/ZoneWidth;				// [1/], inverse zone width
@@ -176,7 +181,12 @@ void LatLon2MGA(const double& lat, const double& lon, double& Northing, double& 
 }
 
 // MGA_2_LatLon convert (Northing, Easting) in meters to (lat,lon) in degrees
-void MGA2LatLon(const double& Northing, const double& Easting, const int& Zone, double& lat, double& lon, EGeodModel geodmodel) {
+void MGA2LatLon( double Northing,
+                 double Easting,
+                 int Zone,
+                 double& lat,
+                 double& lon,
+                 EGeodModel geodmodel) {
 	const double Lon_WE_Z0 = -186.0;								// [], Longitude of western edge of zone zero
 	const double ZoneWidth = 6.0;									// [], inverse zone width
 //	const double inv_ZoneWidth = 1.0/ZoneWidth;				// [1/], inverse zone width

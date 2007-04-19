@@ -17,29 +17,26 @@
 using namespace std;
 using namespace orcagpsutil;
 
-#define USAGE_ARGS "<latitude> <longitude>"
+#define USAGE_ARGS "<northing> <easting> <zone>"
 
 int main( int argc, char **argv )
 {
-    if (argc<3) { 
+    if (argc<4) { 
         cout << "Usage: " << argv[0] << USAGE_ARGS << endl;
         exit(1);
     }
     
     stringstream ss;
-    double latitude, longitude;
-    ss << argv[1] << " " << argv[2];
-    ss >> latitude >> longitude;
-    
-    double easting, northing;
+    double northing, easting;
     int zone;
-    LatLon2MGA( latitude, longitude, northing, easting, zone );
+    ss << argv[1] << " " << argv[2] << " " << argv[3];
+    ss >> northing >> easting >> zone;
+    
+    double lat, lon;
+    MGA2LatLon( northing, easting, zone, lat, lon );
     
     cout    << setiosflags(ios::fixed) << setprecision(16)
-            << "Latitude:\t" << latitude << endl
-            << "Longitude:\t" << longitude << endl
-            << "Easting:\t" << easting << endl
-            << "Northing:\t" << northing << endl;
+            << lat << " " << lon << endl;
     
     return 0;
 }

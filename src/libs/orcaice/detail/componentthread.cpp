@@ -96,6 +96,10 @@ ComponentThread::tryRegisterHome()
             admin->updateObject( homePrx_ );
         }
     }
+    catch ( Ice::CommunicatorDestroyedException& e ) 
+    {
+        // Ignore -- we're shutting down.
+    }
     catch ( Ice::Exception& e ) 
     {
         bool requireRegistry = context_.properties()->getPropertyAsInt( "Orca.RequireRegistry" );
@@ -128,6 +132,10 @@ ComponentThread::tryRegisterHome()
     } 
     catch (const IceGrid::ObjectExistsException&) {
         admin->updateObject( homePrx_ );
+    }
+    catch ( Ice::CommunicatorDestroyedException& e ) 
+    {
+        // Ignore -- we're shutting down.
     }
     catch ( Ice::Exception& e ) {
         bool requireRegistry = context_.properties()->getPropertyAsInt( "Orca.RequireRegistry" );

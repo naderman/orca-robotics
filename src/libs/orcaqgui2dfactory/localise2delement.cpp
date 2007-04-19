@@ -25,9 +25,6 @@ Localise2dElement::actionOnConnection()
 {
     if (!isConnected_) return;
     
-    humanManager_->showStatusMsg(Information, "Got Localise2d description");
-    gotDescription_ = true;    
-    
     paintInitialData<orca::Localise2dPrx, Localise2dPainter>
         ( context_, listener_.interfaceName(), painter_ );
 }

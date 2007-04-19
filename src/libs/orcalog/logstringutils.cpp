@@ -175,12 +175,13 @@ toLogString( const orca::GpsData& obj )
     
     std::ostringstream s;
     s << toLogString(obj.timeStamp) << " "
-      << setiosflags(ios::fixed) << setprecision(2)
       << obj.utcTime.hours << " "
       << obj.utcTime.minutes << " "
       << obj.utcTime.seconds << " "
+      << setiosflags(ios::scientific) << setprecision(16)
       << obj.latitude << " "
       << obj.longitude << " "
+      << resetiosflags(ios::scientific)
       << obj.altitude << " "
       << obj.horizontalPositionError<< " "
       << obj.verticalPositionError << " "
@@ -220,7 +221,6 @@ toLogString( const orca::GpsTimeData& obj )
 {
     std::ostringstream s;
     s << toLogString(obj.timeStamp) << " "
-      << setiosflags(ios::fixed) << setprecision(2)
       << obj.utcTime.hours << " "
       << obj.utcTime.minutes << " "
       << obj.utcTime.seconds << " "
@@ -249,7 +249,6 @@ toLogString( const orca::GpsMapGridData& obj )
     
     std::ostringstream s;
     s << toLogString(obj.timeStamp) << " "
-      << setiosflags(ios::fixed) << setprecision(2)
       << obj.utcTime.hours << " "
       << obj.utcTime.minutes << " "
       << obj.utcTime.seconds << " "
