@@ -19,6 +19,7 @@
 #include "odometry2dreplayer.h"
 #include "odometry3dreplayer.h"
 #include "wifireplayer.h"
+#include "gpsreplayer.h"
 
 
 #include "defaultreplayfactory.h"
@@ -36,6 +37,7 @@ DefaultReplayFactory::DefaultReplayFactory()
     addSupportedType("Odometry3d");
     addSupportedType("Power");
     addSupportedType("Wifi");
+    addSupportedType("Gps");
 }
 
 orcalog::Replayer* 
@@ -80,6 +82,10 @@ DefaultReplayFactory::create(
     else if ( interfaceType == "Wifi" )
     {
         replayer = new WifiReplayer( format, filename, context );
+    }
+    else if ( interfaceType == "Gps" )
+    {
+        replayer = new GpsReplayer( format, filename, context );
     }
     
     return replayer;

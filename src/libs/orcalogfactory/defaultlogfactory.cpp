@@ -24,6 +24,7 @@
 #include "odometry3dlogger.h"
 #include "powerlogger.h"
 #include "wifilogger.h"
+#include "gpslogger.h"
 
 #include "defaultlogfactory.h"
 
@@ -44,6 +45,7 @@ DefaultLogFactory::DefaultLogFactory()
     addSupportedType("PolarFeature2d");
     addSupportedType("Power");
     addSupportedType("Wifi");
+    addSupportedType("Gps");
 }
 
 orcalog::Logger* 
@@ -99,6 +101,10 @@ DefaultLogFactory::create( const std::string      &interfaceType,
     else if (interfaceType == "Wifi")
     {
         logger = new WifiLogger( master, typeSuffix, format, filenamePrefix, context );
+    }
+    else if (interfaceType == "Gps")
+    {
+        logger = new GpsLogger( master, typeSuffix, format, filenamePrefix, context );
     }
     
     return logger;
