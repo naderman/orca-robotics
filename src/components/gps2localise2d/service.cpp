@@ -13,7 +13,6 @@
 #include "component.h"
 
 using namespace std;
-using namespace laserfeatures;
 
 extern "C"
 {
@@ -22,7 +21,7 @@ extern "C"
     //
     IceBox::Service* create( Ice::CommunicatorPtr communicator )
     {
-        return new laserfeatures::Service;
+        return new gps2localise2d::Service;
     }
 }
 

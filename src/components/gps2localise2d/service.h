@@ -14,7 +14,7 @@
 
 #include <orcaice/service.h>
 
-namespace laserfeatures
+namespace gps2localise2d
 {
 
 class Service : public orcaice::Service

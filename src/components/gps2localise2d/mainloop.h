@@ -29,7 +29,7 @@ class MainLoop : public orcaice::Thread
 {
 public:
 
-    MainLoop( orcaifaceimpl::Localise2dIface &featureInterface,
+    MainLoop( orcaifaceimpl::Localise2dIface &localiseInterface,
               const orcaice::Context &context );
 
     ~MainLoop();
