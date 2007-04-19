@@ -14,6 +14,8 @@
 // Orca objects
 #include <orca/laserscanner2d.h>
 #include <orca/localise2d.h>
+#include <orca/odometry3d.h>
+
 
 // Player proxies
 namespace PlayerCc
@@ -44,6 +46,10 @@ void convert( const PlayerCc::LaserProxy & proxy,
 //! @note Access functions in SimulationProxy are not const.
 void convert( PlayerCc::SimulationProxy & proxy, orca::Localise2dData& obj, const std::string & id );
 //void convert( const PlayerCc::SimulationProxy & proxy, orca::Localise2dData& obj, const std::string & id );
+
+//! Converts Gazebo simulated position3d data to orca::Odometry3dData.
+void convert( const PlayerCc::Position3dProxy & proxy, orca::Odometry3dData& obj );
+
 
 //@}
 

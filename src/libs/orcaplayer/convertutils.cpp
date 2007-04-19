@@ -33,7 +33,7 @@ convert( const PlayerCc::LaserProxy & proxy, orca::LaserScanner2dDataPtr& obj, b
 
     for ( unsigned int i = 0; i < proxy.GetCount(); ++i )
     {
-        obj->ranges[i]      = proxy.GetRange(i);
+        obj->ranges[i]      = proxy.GetRange(i)*10;
         // GetIntensity returns a double. is this a bug in player2?
         obj->intensities[i] = (int)floor( proxy.GetIntensity(i) );
     }
@@ -108,5 +108,29 @@ void convert( const orca::LaserScanner2dDataPtr& obj, PlayerCc::LaserProxy & pro
     cout<<"!!!!!!!!!!!! NOT IMPLEMENTED !!!!!!!!!!!!!!"<<endl;
     throw "orcaplayer::convert(laser data) is not implemented";
 }
+
+void
+convert( const PlayerCc::Position3dProxy & proxy, orca::Odometry3dData& obj )
+{
+    obj.timeStamp = orcaice::toOrcaTime( proxy.GetDataTime() );
+
+    obj.pose.p.x = proxy.GetXPos();
+    obj.pose.p.y = proxy.GetYPos();
+    obj.pose.p.z = proxy.GetZPos();
+    obj.pose.o.r = proxy.GetRoll();
+    obj.pose.o.p = proxy.GetPitch();
+    obj.pose.o.y = proxy.GetYaw();
+    
+    obj.motion.v.x = proxy.GetXSpeed();
+    obj.motion.v.y = proxy.GetYSpeed();
+    obj.motion.v.z = proxy.GetZSpeed();
+    obj.motion.w.x = proxy.GetRollSpeed();
+    obj.motion.w.y = proxy.GetPitchSpeed();
+    obj.motion.w.z = proxy.GetYawSpeed();
+
+    // orca does not have this field.
+    //obj.stalled = proxy.GetStall();
+}
+
 
 } // namespace
