@@ -1,0 +1,85 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Ben Upcroft
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup components
+@ingroup apps
+@ingroup services
+@ingroup cpp
+@ingroup linux
+@defgroup orca_component_imu Imu
+@brief A hardware abstraction component for IMU receivers
+
+@par Provides
+
+- @ref orca_interface_home
+- @ref orca_interface_imu [Imu.Provides.Imu]
+- @ref orca_interface_position3d [Imu.Provides.Position3d]
+- @ref orca_interface_status
+
+@par Requires
+
+- none
+
+@par Drivers
+
+- @b playerclientposition3d @ref imu_playerclientposition3d Useful for receiving 3d position information from Gazebo using Player as an intermediary
+- @b fake Useful for testing or if you don't have hardware or a simulator.
+
+This component encapsulates a IMU receiver.
+
+@par Features
+
+This component provides two interfaces. The first interface provides raw imu information that all physical units should output. The second interface is more for a complete Inertial Navigation System in which the position, velocity, and attitude (PVA) information is also output. Note that not all imu's will have the capability to do this.  
+
+@par Configuration
+
+- @c Imu.Config.Driver (string)
+    - Which hardware driver to use
+    - Valid values: { "playerclientposition3d", "fake" }
+    - Default: "fake"
+
+- @c Imu.Config.StartEnabled (bool)
+    - Enable the Imu on component initialisation?
+    - Default: 1
+
+- @c Imu.Config.Offset (Frame3d) [m,m,m, deg,deg,deg]
+    - IMU coordinates of the origin of the local coordinate system. 
+    - Format: x y z roll pitch yaw (space separated)
+    - Default: [0.0 0.0 0.0  0.0 0.0 0.0]
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
+@section imu_playerclientposition3d Playerclient position3d driver
+
+The imu component wraps a player client. Given a running Player server that provides position3d and Gazebo, the imu gets position3d data from that server and distributes it over Orca pipes. Note that since Gazebo does not provide imu simulation there is no imu interface providing raw data for this playerclient driver. Talks to a Player server (see the <a href="http://playerstage.sourceforge.net/" target="_blank">Player webpage</a>).
+
+@par Dependencies
+
+Requires that Player/Stage v.>=2.0, and Gazebo 0.6.0-rc1+ (cvs version) are installed and running. As Player/Stage/Gazebo itself, this driver is Linux only. See our notes on installing Player on the platform-dependent installation page, e.g. @ref orca_doc_installdebian_player.
+
+@par Extra configuration
+
+- @c Imu.Config.PlayerClient.Host (string)
+    - The host that Player (or Stage) is running on
+    - Default: "localhost"
+- @c Imu.Config.PlayerClient.Port (int)
+    - The port that PLayer (or Stage) is running on
+    - Default: 6665
+- @c Imu.Config.PlayerClient.Device (int)
+    - Device ID of the laser to which the driver will connect to
+    - Default: 0
+
+@par Authors
+
+Ben Upcroft, Matthew Ridley
+
+*/
+
