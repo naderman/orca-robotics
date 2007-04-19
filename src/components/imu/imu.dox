@@ -21,7 +21,7 @@
 
 - @ref orca_interface_home
 - @ref orca_interface_imu [Imu.Provides.Imu]
-- @ref orca_interface_position3d [Imu.Provides.Position3d]
+- @ref orca_interface_odometry3d [Imu.Provides.Odometry3d]
 - @ref orca_interface_status
 
 @par Requires
@@ -30,8 +30,9 @@
 
 @par Drivers
 
-- @b playerclientposition3d @ref imu_playerclientposition3d Useful for receiving 3d position information from Gazebo using Player as an intermediary
+- @b playerclientodometry3d @ref imu_playerclientodometry3d Useful for receiving 3d position information from Gazebo using Player as an intermediary
 - @b fake Useful for testing or if you don't have hardware or a simulator.
+- no real hardware is used in this component yet
 
 This component encapsulates a IMU receiver.
 
@@ -43,7 +44,7 @@ This component provides two interfaces. The first interface provides raw imu inf
 
 - @c Imu.Config.Driver (string)
     - Which hardware driver to use
-    - Valid values: { "playerclientposition3d", "fake" }
+    - Valid values: { "playerclientodometry3d", "fake" }
     - Default: "fake"
 
 - @c Imu.Config.StartEnabled (bool)
@@ -57,9 +58,9 @@ This component provides two interfaces. The first interface provides raw imu inf
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
-@section imu_playerclientposition3d Playerclient position3d driver
+@section imu_playerclientodometry3d Playerclient odometry3d driver
 
-The imu component wraps a player client. Given a running Player server that provides position3d and Gazebo, the imu gets position3d data from that server and distributes it over Orca pipes. Note that since Gazebo does not provide imu simulation there is no imu interface providing raw data for this playerclient driver. Talks to a Player server (see the <a href="http://playerstage.sourceforge.net/" target="_blank">Player webpage</a>).
+The imu component wraps a player client. Given a running Player server that provides position3d and Gazebo, the imu gets odometry3d data from that server and distributes it over Orca pipes. Note that since Gazebo does not provide imu simulation there is no imu interface providing raw data for this playerclient driver. Talks to a Player server (see the <a href="http://playerstage.sourceforge.net/" target="_blank">Player webpage</a>).
 
 @par Dependencies
 
