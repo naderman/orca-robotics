@@ -14,6 +14,8 @@
 
 using namespace std;
 
+namespace gps2localise2d {
+
 extern "C"
 {
     //
@@ -28,4 +30,6 @@ extern "C"
 Service::Service()
 {
     component_ = new gps2localise2d::Component;
+}
+
 }

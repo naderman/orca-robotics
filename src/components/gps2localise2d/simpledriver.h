@@ -36,6 +36,8 @@ private:
     orca::Frame2d offset_;
 
     orca::GpsDescription  descr_;
+    // Antenna offset as Frame2d.
+    orca::Frame2d         antennaTransform_;
     orcaice::Context      context_;
 
 };
