@@ -36,6 +36,11 @@ typedef ProxiedConsumer<orca::Localise2dConsumer,
                         orca::Localise2dData>              proxiedLocalise2dConsumer;
 typedef IceUtil::Handle<proxiedLocalise2dConsumer>         proxiedLocalise2dConsumerPtr;
 
+typedef ProxiedConsumer<orca::Odometry3dConsumer,
+                        orca::Odometry3dConsumerPrx,
+                        orca::Odometry3dData>              ProxiedOdometry3dConsumer;
+typedef IceUtil::Handle<ProxiedOdometry3dConsumer>         ProxiedOdometry3dConsumerPtr;
+
 typedef ProxiedConsumer<orca::Odometry2dConsumer,
                         orca::Odometry2dConsumerPrx,
                         orca::Odometry2dData>              proxiedOdometry2dConsumer;
