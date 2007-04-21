@@ -12,7 +12,7 @@
 
 @page orca_doc_installqnx Installing Orca on QNX Neutrino
 
-@note Reviewed for release 2.1.2.
+@note Reviewed for release 2.4.0.
 
 These are detailed instructions for installing Orca on QNX Neutrino Real Time OS. They are known to work with OS version 6.3 SP3. See @ref orca_doc_getting for general guidelines.
 
@@ -63,9 +63,9 @@ $ make
 
 @section orca_doc_installqnx_ice Ice
 
-Minimum version required 3.1.0 (latest tested: 3.1.1).
+Minimum version required 3.2.0 (latest tested: 3.2.0).
 
-No packages exist, so we have to build from source. Following the instructions below will install Ice to the default location @c /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
+Ice packages for QNX do not exist, so we have to build from source. Following the instructions below will install Ice to the default location @c /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
 
 First, install Ice dependencies. You can download the ThirdPartySources archive from ZeroC but they tend to be a bit out of date. Below we point out where newer versions are required.
 
@@ -121,9 +121,9 @@ Now Ice itself.
     - get the patch from http://zeroc.com/vbulletin/showthread.php?t=2884
     - apply the patch, but @b NOT in QNX. The @c patch that comes with QNX does not seem to work. So I built and applied the patch in Linux and then transferred the patched source to QNX.
 @verbatim
-$ tar -xzf Ice-3.1.1.tar.gz
-$ cd Ice-3.1.1
-$ patch -p1 < ../ice311qnx.patch.txt
+$ tar -xzf Ice-3.2.0.tar.gz
+$ cd Ice-3.2.0
+$ patch -p1 < ../ice320qnx.patch.txt
 @endverbatim
 
 - Configure
@@ -136,21 +136,16 @@ OPENSSL_HOME    = /opt/openssl
 @endverbatim
 
 - Compile and install.  Tests are optional, but in this case they are highly recommended.
-	- start compilation
-@verbatim
-$ make
-@endverbatim
-        - towards the end you'll get an error. You'll have to manually modify the auto-generated files. Add "#include <ctype.h>" to these two files:    
-		- [ICE-SRC]/demo/Freeze/phonebook/NameIndex.cpp
-		- [ICE-SRC]/demo/Freeze/bench/BenchTypes.cpp
-	- continue compilation
 @verbatim
 $ make
 $ make test
 # make install
 @endverbatim
+@note Compilation of the demo files is disabled. You can enable it by uncommenting the original line about SUBDIRS in the top-level Makefile. If you do try to compile the demo then towards the end of the compilation you'll get an error. You'll have to manually modify the auto-generated files. Add "#include <ctype.h>" to these two files:    
+        - [ICE-SRC]/demo/Freeze/phonebook/NameIndex.cpp
+        - [ICE-SRC]/demo/Freeze/bench/BenchTypes.cpp
 
-Make sure that the Ice binaries and executables are in the path. You may want to add this snippet to your @c ~/.profile file (don't forget to replace [VERSION]).
+- Make sure that the Ice binaries and executables are in the path. You may want to add this snippet to your @c ~/.profile file (don't forget to replace [VERSION]).
 @verbatim
 export ICE_HOME=/opt/Ice-[VERSION]
 export PATH=$ICE_HOME/bin:$PATH
