@@ -12,6 +12,7 @@
 #include <orcaice/orcaice.h>
 #include "mainloop.h"
 #include "simpledriver.h"
+#include "odometrybaseddriver.h"
 
 using namespace std;
 
@@ -30,15 +31,8 @@ MainLoop::MainLoop( orcaifaceimpl::Localise2dIface &localiseInterface,
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
     context_.status()->initialising( SUBSYSTEM );
 
-//     sensorOffset_.p.x=0;
-//     sensorOffset_.p.y=0;
-//     sensorOffset_.p.z=0;
-//     sensorOffset_.o.r=0;
-//     sensorOffset_.o.p=0;
-//     sensorOffset_.o.y=0;
-
     // create a callback object to recieve data
-    gpsConsumer_ = new orcaifaceimpl::proxiedGpsConsumer( context_ );
+    gpsConsumer_ = new orcaifaceimpl::ProxiedGpsConsumer( context_ );
 }
 
 MainLoop::~MainLoop()
@@ -61,6 +55,14 @@ MainLoop::initDriver()
 
         context_.tracer()->debug( "loading 'simple' driver",3);
         driver_ = new SimpleDriver( gpsDescr_, context_ );
+    }
+    else if ( driverName == "odometrybased" )
+    {
+        connectToGps();
+        getGpsDescription();
+
+        context_.tracer()->debug( "loading 'odometrybased' driver",3);
+        driver_ = new OdometryBasedDriver( gpsDescr_, context_ );
     }
     else
     {
@@ -131,7 +133,7 @@ MainLoop::connectToGps()
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
-    context_.tracer()->info( "Connected to gps." );
+    context_.tracer()->info( "Subscribed to gps." );
 }
 
 void 
@@ -201,7 +203,10 @@ MainLoop::run()
     orca::Localise2dData localiseData;
 
     // wake up every now and then to check if we are supposed to stop
-    const int timeoutMs = 1500;
+    const int timeoutMs = 1000;
+    // reconnect if we timeout this many times
+    const int reconnectFailTimes = 10;
+    int numTimeouts = 0;
 
     context_.tracer()->debug( "Entering main loop.",2 );
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
@@ -216,13 +221,17 @@ MainLoop::run()
             //
             int ret = gpsConsumer_->proxy().getNext ( gpsData, timeoutMs );
             if ( ret != 0 ) {
-                stringstream ss;
-                ss << "Timed out (" << timeoutMs << "ms) waiting for data.  Reconnecting.";
-                context_.tracer()->warning( ss.str() );
-                context_.status()->warning( SUBSYSTEM, ss.str() );
-                connectToGps();
+                if ( numTimeouts++ > reconnectFailTimes )
+                {
+                    stringstream ss;
+                    ss << "Timed out (" << timeoutMs << "ms) waiting for data.  Reconnecting.";
+                    context_.tracer()->warning( ss.str() );
+                    context_.status()->warning( SUBSYSTEM, ss.str() );
+                    connectToGps();
+                }
                 continue;
             }
+            numTimeouts = 0;
 
             //
             // execute algorithm to compute localisation

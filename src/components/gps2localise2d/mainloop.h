@@ -57,7 +57,7 @@ private:
     orca::GpsDescription gpsDescr_;
 
     // Consumers
-    orcaifaceimpl::proxiedGpsConsumerPtr gpsConsumer_;
+    orcaifaceimpl::ProxiedGpsConsumerPtr gpsConsumer_;
 
     orcaice::Context context_;
 };

@@ -178,10 +178,10 @@ toLogString( const orca::GpsData& obj )
       << obj.utcTime.hours << " "
       << obj.utcTime.minutes << " "
       << obj.utcTime.seconds << " "
-      << setiosflags(ios::scientific) << setprecision(16)
+      << setprecision(16)
       << obj.latitude << " "
       << obj.longitude << " "
-      << resetiosflags(ios::scientific)
+      << setprecision(4)
       << obj.altitude << " "
       << obj.horizontalPositionError<< " "
       << obj.verticalPositionError << " "

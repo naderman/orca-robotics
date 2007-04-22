@@ -23,13 +23,13 @@ namespace orcaifaceimpl {
 //!
 //! Implements the orca::Odometry2d interface: Handles remote calls.
 //!
-    class Odometry2dIface : public IceUtil::Shared
+class Odometry2dIface : public IceUtil::Shared
 {
 public:
     //! constructor
     Odometry2dIface( const orca::VehicleDescription& descr,
-                 const std::string& ifaceTag, 
-                 const orcaice::Context& context );
+                     const std::string& ifaceTag, 
+                     const orcaice::Context& context );
     ~Odometry2dIface();
 
     // remote interface

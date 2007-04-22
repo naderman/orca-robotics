@@ -101,9 +101,9 @@ private:
 
     // Incoming observations and pose info
     // Get observations, pose, and odometric velocity
-    orcaifaceimpl::proxiedRangeScanner2dConsumerPtr obsConsumer_;
-    orcaifaceimpl::proxiedLocalise2dConsumerPtr     locConsumer_;
-    orcaifaceimpl::proxiedOdometry2dConsumerPtr     odomConsumer_;
+    orcaifaceimpl::ProxiedRangeScanner2dConsumerPtr obsConsumer_;
+    orcaifaceimpl::ProxiedLocalise2dConsumerPtr     locConsumer_;
+    orcaifaceimpl::ProxiedOdometry2dConsumerPtr     odomConsumer_;
 
     orcaice::Proxy<orca::RangeScanner2dDataPtr> *obsProxy_;
     orcaice::Proxy<orca::Localise2dData>        *locProxy_;

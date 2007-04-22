@@ -138,7 +138,7 @@ GpsReplayer::initDescription()
 
 void 
 GpsReplayer::replayData( int index, bool isTest )
-{    
+{
     checkIndex( index );
     
     orca::GpsData gpsData;

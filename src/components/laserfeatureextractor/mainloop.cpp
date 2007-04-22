@@ -43,7 +43,7 @@ MainLoop::MainLoop( orcaifaceimpl::PolarFeature2dIface &featureInterface,
     sensorOffset_.o.y=0;
 
     // create a callback object to recieve scans
-    laserConsumer_ = new orcaifaceimpl::proxiedRangeScanner2dConsumer( context_ );
+    laserConsumer_ = new orcaifaceimpl::ProxiedRangeScanner2dConsumer( context_ );
 }
 
 MainLoop::~MainLoop()

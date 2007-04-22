@@ -10,7 +10,7 @@ IF ( OS_LINUX )
     FILE( GLOB SRCS *.cpp )
 
     GLOBAL_ADD_LIBRARY( OrcaLocalNav SHARED ${SRCS} )
-    TARGET_LINK_LIBRARIES( OrcaLocalNavUtil )
+    TARGET_LINK_LIBRARIES( OrcaLocalNav OrcaNavUtil )
     INSTALL_FILES( /include/orcalocalnav .*\\.h$ )
     
 ENDIF ( OS_LINUX )

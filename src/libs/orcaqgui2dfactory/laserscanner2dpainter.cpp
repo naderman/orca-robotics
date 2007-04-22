@@ -124,7 +124,7 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
     if ( z != Z_LASER || !isDisplayScan_ ) return;
     if ( qScan_.isEmpty() ) return;
 
-    // debug
+//     // debug
 //     cout<<"["<<qScan_.size()<<"] ";
 //     for ( int i=0; i<qScan_.size(); i+=10 ) {
 //         cout<<" ("<<qScan_[i].x()<<","<<qScan_[i].y()<<")";
@@ -220,6 +220,10 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
     
                 painter->save();
                 painter->translate( qScan_[i+1].x(), qScan_[i+1].y() );
+
+//                 cout<<"TRACE(laserscanner2dpainter.cpp): drawing ellipse:" << endl;
+//                 cout << " brightReturnWidth: " << brightReturnWidth_ << endl;
+
                 painter->drawEllipse( QRectF(-brightReturnWidth_/2.0,
                                        -brightReturnWidth_/2.0,
                                        brightReturnWidth_,

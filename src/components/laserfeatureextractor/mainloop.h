@@ -68,7 +68,7 @@ private:
     bool fakeDriver_;
 
     // Consumers
-    orcaifaceimpl::proxiedRangeScanner2dConsumerPtr laserConsumer_;
+    orcaifaceimpl::ProxiedRangeScanner2dConsumerPtr laserConsumer_;
 
     orcaice::Context context_;
 

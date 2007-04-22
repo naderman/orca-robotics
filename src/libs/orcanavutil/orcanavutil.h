@@ -12,5 +12,7 @@
 
 #include <orcanavutil/offset.h>
 #include <orcanavutil/pose.h>
+#include <orcanavutil/cov2d.h>
+#include <orcanavutil/cov3d.h>
 
 #endif
