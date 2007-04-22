@@ -138,6 +138,19 @@ setInit( orca::WifiInterface &w )
     w.maxNoiseLevel = 0;
 }
 
+void
+setInit( orca::Odometry2dData& obj )
+{
+    orca::Time t;
+    setInit( t );
+    obj.timeStamp = t;
+
+    setInit( obj.pose );
+    obj.motion.v.x = 0.0;
+    obj.motion.v.y = 0.0;
+    obj.motion.w = 0.0;
+}
+
 void 
 setSane( orca::Time& obj )
 {

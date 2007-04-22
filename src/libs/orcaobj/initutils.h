@@ -58,6 +58,9 @@ void setInit( orca::Time& );
 void setInit( orca::Waypoint2d& );
 //! Sets all fields to zero
 void setInit( orca::WifiInterface &w );
+//! Sets all fields to zero and stalled to FALSE.
+void setInit( orca::Odometry2dData& );
+
 
 //! Set to randomized but sane values.
 void setSane( orca::CartesianPoint2d& );
