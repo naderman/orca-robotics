@@ -45,6 +45,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New components
 
+- gps2localise2d (alexb)
 - Imu component has been moved from sandbox to the components directory (ben u)
 
 @par New utilities
@@ -56,9 +57,15 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Gps
   - Split into separate interfaces (alex b)
 
+- Localise2d
+  - Removed offset (alex b)
+
 @par Updated components
 
 @par Updated utilities
+
+- orcagpsutil
+  - big cleanup (alex b)
 
 @par Updated libraries
 
