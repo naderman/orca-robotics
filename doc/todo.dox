@@ -45,6 +45,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New components
 
+- Imu component has been moved from sandbox to the components directory (ben u)
+
 @par New utilities
 
 @par New libraries
