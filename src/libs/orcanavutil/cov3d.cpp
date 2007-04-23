@@ -22,32 +22,17 @@ std::ostream &operator<<( std::ostream &s,
 double 
 Cov3d::det()
 {
-    double ytSq = yt()*yt();
-    double xySq = xy()*xy();
-    double xtSq = xt()*xt();
-
-    return xx()*yy()*tt() - xx()*ytSq - xySq*tt() + 2*xy()*xt()*yt() - xtSq*yy();    
+    return orcanavutil::det( xx(), xy(), xt(), yy(), yt(), tt() );
 }
 
 Cov3d
 Cov3d::inverse()
 {
-    double d = det();
+    double ixx, ixy, ixt, iyy, iyt, itt;
+    invert( xx(), xy(), xt(), yy(), yt(), tt(),
+            ixx,  ixy,  ixt,  iyy,  iyt,  itt );
 
-    // [   (yy*tt-yt^2)/d, -(xy*tt-xt*yt)/d,  (xy*yt-xt*yy)/d]
-    // [ -(xy*tt-xt*yt)/d,   (xx*tt-xt^2)/d, -(xx*yt-xy*xt)/d]
-    // [  (xy*yt-xt*yy)/d, -(xx*yt-xy*xt)/d,   (xx*yy-xy^2)/d]
-
-    double ytSq = yt()*yt();
-    double xySq = xy()*xy();
-    double xtSq = xt()*xt();
-
-    return Cov3d( (yy()*tt()-ytSq)/d,
-                  -(xy()*tt()-xt()*yt())/d,
-                  (xy()*yt()-xt()*yy())/d,
-                  (xx()*tt()-xtSq)/d,
-                  -(xx()*yt()-xy()*xt())/d,
-                  (xx()*yy()-xySq)/d );
+    return Cov3d( ixx,  ixy,  ixt,  iyy,  iyt,  itt );
 }
 
 double
