@@ -699,19 +699,12 @@ NovatelSpanInsGpsDriver::populateData( int id )
             // cout << "lattitude and longitude: " << INSPVA_.data.latitude << " " << INSPVA_.data.longitude << endl;
             
             // int zone;
-#ifdef INSGPS_USE_MGA_COORDINATES
-            LatLon2MGA(INSPVA_.data.latitude, INSPVA_.data.longitude,
-                       localise3dData_.hypotheses[0].mean.p.y, localise3dData_.hypotheses[0].mean.p.x, zone);
-            // localise3dData_.hypotheses[0].mean.p.z = -INSPVA_.data.height;
-            localise3dData_.hypotheses[0].mean.p.z = INSPVA_.data.height;
-#else
             localise3dData_.hypotheses[0].mean.p.x = INSPVA_.data.longitude;
             localise3dData_.hypotheses[0].mean.p.y = INSPVA_.data.latitude;
             localise3dData_.hypotheses[0].mean.p.z = INSPVA_.data.height;
 
           // fixme comment this out!!
 //          #error // just to make sure that the #ifdef is working in CMake
-#endif
 
             // cout << "MGA x and y: " << localise3dData_.pose.p.x << " " << localise3dData_.pose.p.y << endl;
        
