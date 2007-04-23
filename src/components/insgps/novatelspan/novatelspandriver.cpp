@@ -273,7 +273,7 @@ NovatelSpanInsGpsDriver::init()
 
     // short IMU messages
     // pva data in wgs84 coordinates
-    enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"inspvasb", 0 );
+    enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"inspvasb", 1 );
     if(enableMsg){
         put = serial_->write( "log inspvasb ontime 0.01\r\n" );
     }
