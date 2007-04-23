@@ -234,34 +234,62 @@ NovatelSpanInsGpsDriver::init()
 
     // make sure that fixposition has not been set
     put = serial_->write( "fix none\r\n" );
-    
+
     // select the geodetic datum for operation of the receiver (wgs84 = default)
     put = serial_->write( "datum wgs84\r\n" );
 
+    /////////////////////////////////////////////////
+    // tell the receiver what kind of info it should spit out
+    /////////////////////////////////////////////////
+
+    ////////////////////////////////////////
+    // read log params from the config file
+    Ice::PropertiesPtr logProp = context_.properties();
+    std::string prefix = context_.tag();
+    prefix += ".Config.Novatel.LogEnable.";
+    int enableMsg;
+
     // receiver status
-    // put = serial_->write( "log rxstatusb ontime 1.0\r\n" );
-    
+    enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"rxstatusb", 0 );
+    if(enableMsg){
+        put = serial_->write( "log rxstatusb ontime 1.0\r\n" );
+    }
+
     // PPS pulse will be triggered before this arrives
-    
     // time used to sync with the pps signal
-    // put = serial_->write( "log timeb ontime 1.0\r\n" );
-    // put = serial_->write("log timesyncb ontime 1.0\r\n");
-        
+    enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"timesyncb", 0 );
+    if(enableMsg){
+        put = serial_->write( "log timeb ontime 1.0\r\n" );
+        put = serial_->write("log timesyncb ontime 1.0\r\n");
+    }
+
     // IMU message
-    
+
     // gps position without ins
-    // put = serial_->write( "log bestgpsposb ontime 1.0\r\n" );
-    
+    enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"bestgpsposb", 0 );
+    if(enableMsg){
+        put = serial_->write( "log bestgpsposb ontime 1.0\r\n" );
+    }
+
     // short IMU messages
     // pva data in wgs84 coordinates
-    put = serial_->write( "log inspvasb ontime 0.01\r\n" );
+    enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"inspvasb", 0 );
+    if(enableMsg){
+        put = serial_->write( "log inspvasb ontime 0.01\r\n" );
+    }
 
     // raw accelerometer and gyro data
-    // put = serial_->write( "log rawimusb onnew\r\n" );
+    enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"rawimusb", 0 );
+    if(enableMsg){
+        put = serial_->write( "log rawimusb onnew\r\n" );
+    }
 
     // pva covariances
-    // put = serial_->write( "log inscovsb onchanged\r\n" );
- 
+    enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"inscovsb", 0 );
+    if(enableMsg){
+        put = serial_->write( "log inscovsb onchanged\r\n" );
+    }
+
     start();
     enabled_ = true;
 
