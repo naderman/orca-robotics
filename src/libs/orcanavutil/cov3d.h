@@ -110,6 +110,23 @@ inline void invert( double xx,
     ttOut = (xx*yy-xySq)/d;
 }
 
+// Allow use outside of class.
+//! Calculates the height of a gaussian with this covariance matrix, centred on (0,0,0),
+//! evaluated at the point (x,y,t)
+inline double gauss( double xx,
+                     double xy,
+                     double xt,
+                     double yy,
+                     double yt,
+                     double tt,
+                     double x,
+                     double y,
+                     double t )
+{
+    Cov3d c( xx, xy, xt, yy, yt, tt );
+    return c.gauss( x, y, t );
+}
+
 }
 
 #endif
