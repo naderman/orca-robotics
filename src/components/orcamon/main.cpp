@@ -126,6 +126,11 @@ void OrcaMonComponent::start()
         attach<Odometry2dPrx,Odometry2dConsumerPrx,Odometry2dConsumer,Odometry2dData>
                 ( context(), proxyString );
     }
+    else if ( objId=="::orca::Odometry3d" )
+    {
+        attach<Odometry3dPrx,Odometry3dConsumerPrx,Odometry3dConsumer,Odometry3dData>
+                ( context(), proxyString );
+    }
 //     else if ( objId=="::orca::Power" )
 //     {
 //         attach<PowerPrx,PowerConsumerPrx,PowerConsumer,PowerDataPtr>
