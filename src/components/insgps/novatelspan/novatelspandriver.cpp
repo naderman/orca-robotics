@@ -709,6 +709,8 @@ NovatelSpanInsGpsDriver::populateData( int id )
             break;
         }
         case novatel::INSPVASB_LOG_TYPE:
+        //this gets stuffed into localise3d _and_ odometry3d; probably not the best way to go
+        //angular motion in odometry3d is _not_ populated
         {
             // printf("got INSPVASB\n");
             memcpy( &INSPVA_, &serial_data_.raw_message, sizeof(INSPVA_) );
@@ -716,6 +718,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
 	        // cout << "GPS time: " << INSPVA_.data.seconds << endl;
             //    printf("%10.10f\n",INSPVA_.data.seconds); 
 	        localise3dData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
+	        odometry3dData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
                 cout << "timeOfRead_: " << orcaice::toString(localise3dData_.timeStamp) << endl; 
 
             // load the pva data into the localise3d object       
@@ -731,6 +734,10 @@ NovatelSpanInsGpsDriver::populateData( int id )
             localise3dData_.hypotheses[0].mean.p.y = INSPVA_.data.latitude;
             localise3dData_.hypotheses[0].mean.p.z = INSPVA_.data.height;
 
+            odometry3dData_.pose.p.x = INSPVA_.data.longitude;
+            odometry3dData_.pose.p.y = INSPVA_.data.latitude;
+            odometry3dData_.pose.p.z = INSPVA_.data.height;
+
           // fixme comment this out!!
 //          #error // just to make sure that the #ifdef is working in CMake
 
@@ -738,17 +745,23 @@ NovatelSpanInsGpsDriver::populateData( int id )
        
             // TODO: Might want to put velocities into odometry
             // velocities
-            // localise3dData_.motion.v.x = INSPVA_.data.north_vel;
-            // localise3dData_.motion.v.y = INSPVA_.data.east_vel;
+            odometry3dData_.motion.v.x = INSPVA_.data.north_vel;
+            odometry3dData_.motion.v.y = INSPVA_.data.east_vel;
             // down = -up
-            // localise3dData_.motion.v.z = -INSPVA_.data.up_vel;
+            odometry3dData_.motion.v.z = -INSPVA_.data.up_vel;
             
             //attitude
             localise3dData_.hypotheses[0].mean.o.r = INSPVA_.data.roll/180*M_PI;
             localise3dData_.hypotheses[0].mean.o.p = INSPVA_.data.pitch/180*M_PI;
             // yaw is LH rule
             localise3dData_.hypotheses[0].mean.o.y = 2*M_PI - INSPVA_.data.yaw/180*M_PI;
-            
+
+            odometry3dData_.pose.o.r = INSPVA_.data.roll/180*M_PI;
+            odometry3dData_.pose.o.p = INSPVA_.data.pitch/180*M_PI;
+            // yaw is LH rule
+            odometry3dData_.pose.o.y = 2*M_PI - INSPVA_.data.yaw/180*M_PI;
+
+
             //Set time
             // TODO: add this in if needed       
 //             mkutctime(INSPVA_.data.week,
@@ -756,6 +769,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
 //                             &pva_time);
 
             localise3dDataBuffer_.push( localise3dData_ );
+            odometry3dDataBuffer_.push( odometry3dData_ );
             
             context_.tracer()->info( insStatusToString( INSPVA_.data.status ), 6 );
             
