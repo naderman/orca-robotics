@@ -239,6 +239,25 @@ NovatelSpanInsGpsDriver::init()
     put = serial_->write( "datum wgs84\r\n" );
 
     /////////////////////////////////////////////////
+    // turn special receiver modes on/off
+    /////////////////////////////////////////////////
+
+    ////////////////////////////////////////
+    // read mode params from the config file
+    Ice::PropertiesPtr modeProp = context_.properties();
+    std::string modePrefix = context_.tag();
+    modePrefix += ".Config.Novatel.Mode.";
+    int enableMode;
+
+    // turn SBAS on/off (essentially global DGPS)
+    enableMode = orcaice::getPropertyAsIntWithDefault( modeProp, modePrefix+"SBAS", 0 );
+    if(enableMode){
+        put = serial_->write( "SBASCONTROL ENABLE Auto 0 NONE\r\n");
+    }
+    else{
+        put = serial_->write( "SBASCONTROL DISABLE Auto 0 NONE\r\n");
+    }
+    /////////////////////////////////////////////////
     // tell the receiver what kind of info it should spit out
     /////////////////////////////////////////////////
 

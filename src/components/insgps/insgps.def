@@ -62,3 +62,5 @@ Config.Novatel.LogEnable.inspvasb.Default=1
 Config.Novatel.LogEnable.rawimusb.Default=0
 Config.Novatel.LogEnable.inscovsb.Default=0
 
+Config.Novatel.Mode.SBAS.Default=0
+
