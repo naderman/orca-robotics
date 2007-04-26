@@ -129,11 +129,11 @@ $ player example.cfg
 We'll now make Orca talk to Gazebo through Player. Firstly, copy a few standard component configuration files distributed with Orca.
 @verbatim
 $ cd ~/sys/tutestage
-$ cp [ORCA_INSTALL]/cfg/sicklaser.cfg ./
+$ cp [ORCA_INSTALL]/cfg/laser2d.cfg ./
 $ cp [ORCA_INSTALL]/cfg/robot2d.cfg ./
 $ cp [ORCA_INSTALL]/cfg/faithlocaliser.cfg ./
 $ cp [ORCA_INSTALL]/cfg/teleop.cfg ./
-$ cp [ORCA_INSTALL]/cfg/orcaview.cfg ./
+$ cp [ORCA_INSTALL]/cfg/orcaview2d.cfg ./
 @endverbatim
 
 From here on in, each component will need a separate terminal. In the tutorial @ref orca_doc_tute_icebox, you can learn how to put several components into an application server called IceBox so that you can run all these components from one process.
