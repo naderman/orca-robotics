@@ -20,13 +20,13 @@ std::ostream &operator<<( std::ostream &s,
 }
 
 double 
-Cov3d::det()
+Cov3d::det() const
 {
     return orcanavutil::det( xx(), xy(), xt(), yy(), yt(), tt() );
 }
 
 Cov3d
-Cov3d::inverse()
+Cov3d::inverse() const
 {
     double ixx, ixy, ixt, iyy, iyt, itt;
     invert( xx(), xy(), xt(), yy(), yt(), tt(),
@@ -36,7 +36,7 @@ Cov3d::inverse()
 }
 
 double
-Cov3d::gauss( double x, double y, double t )
+Cov3d::gauss( double x, double y, double t ) const
 {
     Cov3d i = inverse();
 

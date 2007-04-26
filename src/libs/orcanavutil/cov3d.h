@@ -54,12 +54,12 @@ public:
     double tt() const   { return mat_[PTT]; }
 
     //! determinant
-    double det();
-    Cov3d inverse();
+    double det() const;
+    Cov3d inverse() const;
 
     //! Height of a gaussian with this covariance matrix, centred on (0,0,0),
     //! evaluated at the point (x,y,t)
-    double gauss( double x, double y, double t );
+    double gauss( double x, double y, double t ) const;
 
 private: 
 
