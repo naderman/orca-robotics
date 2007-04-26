@@ -148,6 +148,12 @@ SessionManager::run()
                     // This is OK, we're shutting down.
                     break;
                 }
+                catch( const Ice::Exception& e )
+                {
+                    stringstream ss; ss<<"SessionManager: Failed to keep session alive: "<<e;
+                    context_.tracer()->warning( ss.str() );
+                    break;
+                }
                 catch( const std::exception& e )
                 {
                     stringstream ss; ss<<"SessionManager: Failed to keep session alive: "<<e.what();
