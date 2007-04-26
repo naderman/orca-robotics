@@ -456,7 +456,7 @@ Serial::read_full(void *buf, size_t count)
 	int ret = 0;
 	
     // maximum number of bytes to read in one readcond() function call
-	int max = 15;
+	int max = 1000;
 
 	// number of bytes in each chunk that "count" is split into
     int countChunk;
