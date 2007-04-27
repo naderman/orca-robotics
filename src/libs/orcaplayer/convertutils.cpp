@@ -33,7 +33,7 @@ convert( const PlayerCc::LaserProxy & proxy, orca::LaserScanner2dDataPtr& obj, b
 
     for ( unsigned int i = 0; i < proxy.GetCount(); ++i )
     {
-        obj->ranges[i]      = proxy.GetRange(i)*10;
+        obj->ranges[i]      = proxy.GetRange(i);
         // GetIntensity returns a double. is this a bug in player2?
         obj->intensities[i] = (int)floor( proxy.GetIntensity(i) );
     }
