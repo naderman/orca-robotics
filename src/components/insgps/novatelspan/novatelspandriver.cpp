@@ -558,8 +558,8 @@ NovatelSpanInsGpsDriver::readMsgsFromHardware()
     if( ret>0 )
     {
     
-    // cout << "id: " << ret << endl; 
-    if( populateData( ret ) == 0 )
+	// cout << "id: " << ret << endl; 
+	if( populateData( ret ) == 0 )
         {
             msgs++;
         }
@@ -738,7 +738,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
             //    printf("%10.10f\n",INSPVA_.data.seconds); 
 	        localise3dData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
 	        odometry3dData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
-                cout << "timeOfRead_: " << orcaice::toString(localise3dData_.timeStamp) << endl; 
+                //cout << "timeOfRead_: " << orcaice::toString(localise3dData_.timeStamp) << endl; 
 
             // load the pva data into the localise3d object       
             if ( localise3dData_.hypotheses.size() == 0 )
