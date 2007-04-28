@@ -97,7 +97,7 @@ interface OGPatchMapConsumer{
  
 
 interface OGPatchMapProvider {
-  nonmutating OGPatchMap getMap(); 
+  ["cpp:const"] idempotent OGPatchMap getMap(); 
   void subscribe(OGPatchMapConsumer *consumer); 
   idempotent void unsubscribe( OGPatchMapConsumer *subscriber );
 };

@@ -74,9 +74,7 @@ Odometry3dReplayer::getDescription(const ::Ice::Current& ) const
 void 
 Odometry3dReplayer::subscribe(const ::orca::Odometry3dConsumerPrx &subscriber, const ::Ice::Current&)
 {
-    IceStorm::QoS qos;
-    qos["reliability"] = "twoway";
-    topic_->subscribe( qos, subscriber );
+    topic_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
 }
 
 

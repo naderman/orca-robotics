@@ -83,7 +83,7 @@ struct TracerVerbosityConfig
 interface Tracer
 {
     //! Get current verbosity level for traces transmitted over the network.
-    nonmutating TracerVerbosityConfig getVerbosity();
+    ["cpp:const"] idempotent TracerVerbosityConfig getVerbosity();
 
     //! Set verbosity level for traces transmitted over the network.
     idempotent void setVerbosity( TracerVerbosityConfig verbosity );

@@ -1,3 +1,4 @@
+#if 0
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -103,4 +104,5 @@ private:
 };
 
 
+#endif
 #endif

@@ -94,10 +94,8 @@ void
 PixMapIface::subscribe(const ::PixMapConsumerPrx& subscriber )
 {
     context_.tracer()->debug( "PixMapIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
-    IceStorm::QoS qos;
-    qos["reliability"] = "twoway";
     try {
-        topicPrx_->subscribe( qos, subscriber );
+        topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;

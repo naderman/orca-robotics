@@ -165,11 +165,11 @@ interface GpsTimeConsumer
 interface Gps
 {
     //! Returns the latest data
-    nonmutating GpsData getData()
+    ["cpp:const"] idempotent GpsData getData()
             throws HardwareFailedException;
 
     //! Return the gps description
-    nonmutating GpsDescription getDescription();
+    ["cpp:const"] idempotent GpsDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The
@@ -199,11 +199,11 @@ interface Gps
 interface GpsMapGrid
 {
     //! Return the latest map information
-    nonmutating GpsMapGridData getData()
+    ["cpp:const"] idempotent GpsMapGridData getData()
             throws HardwareFailedException;
 
     //! Return the gps description
-    nonmutating GpsDescription getDescription();
+    ["cpp:const"] idempotent GpsDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The
@@ -233,11 +233,11 @@ interface GpsMapGrid
 interface GpsTime
 {
     //! Return the latest timestamp information
-    nonmutating GpsTimeData getData()
+    ["cpp:const"] idempotent GpsTimeData getData()
             throws HardwareFailedException;
 
     //! Return the gps description
-    nonmutating GpsDescription getDescription();
+    ["cpp:const"] idempotent GpsDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The

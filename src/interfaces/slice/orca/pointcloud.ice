@@ -92,11 +92,11 @@ interface PointCloud
 {
     //! Returns the latest data.
     //! May raise DataNotExistException if the requested information is not available.
-    nonmutating PointCloudData     getData()
+    ["cpp:const"] idempotent PointCloudData     getData()
             throws DataNotExistException; 
 
     //! Returns device description
-    nonmutating PointCloudDescription getDescription();  
+    ["cpp:const"] idempotent PointCloudDescription getDescription();  
 
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.

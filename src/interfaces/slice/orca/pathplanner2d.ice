@@ -82,7 +82,7 @@ interface PathPlanner2d
             throws BusyException, RequiredInterfaceFailedException;   
 
     //! Returns the computed path
-    nonmutating PathPlanner2dData getData();
+    ["cpp:const"] idempotent PathPlanner2dData getData();
 
     /*!
      *

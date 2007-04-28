@@ -75,9 +75,7 @@ Localise2dReplayer::getDataAtTime(const orca::Time&, const Ice::Current& current
 void 
 Localise2dReplayer::subscribe(const ::orca::Localise2dConsumerPrx &subscriber, const ::Ice::Current&)
 {
-    IceStorm::QoS qos;
-    qos["reliability"] = "twoway";
-    topic_->subscribe( qos, subscriber );
+    topic_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
 }
 
 void 

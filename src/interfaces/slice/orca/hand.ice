@@ -119,8 +119,8 @@ interface HandConsumer
 interface HandProducer
 {
     //! Functions for reading from the laser
-    nonmutating HandData      getData();
-    nonmutating HandConfig    getConfig();
+    ["cpp:const"] idempotent HandData      getData();
+    ["cpp:const"] idempotent HandConfig    getConfig();
 
 
     /*!

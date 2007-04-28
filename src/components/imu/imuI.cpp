@@ -69,9 +69,7 @@ void
 ImuI::subscribe(const ::orca::ImuConsumerPrx &subscriber, const ::Ice::Current&)
 {
     cout << "subscribe()" << endl;
-    IceStorm::QoS qos;
-    qos["reliability"] = "twoway";
-    topicPrx_->subscribe( qos, subscriber );
+    topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
 }
 
 // Unsubscribe people

@@ -113,11 +113,11 @@ interface RangeScanner2d
     //! May raise DataNotExistException if the requested information is not available.
     //! May raise HardwareFailedException if there is some problem with hardware.
     //! @note In Orca1 this would be called ClientPull_Supplier interface.
-    nonmutating RangeScanner2dData      getData()
+    ["cpp:const"] idempotent RangeScanner2dData      getData()
             throws DataNotExistException, HardwareFailedException;
             
     //! Returns device description.
-    nonmutating RangeScanner2dDescription getDescription();
+    ["cpp:const"] idempotent RangeScanner2dDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.

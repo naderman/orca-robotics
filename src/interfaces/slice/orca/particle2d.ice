@@ -60,7 +60,7 @@ interface Particle2dConsumer
 interface Particle2d
 {
     //! Returns the latest data.
-    nonmutating Particle2dData getData()
+    ["cpp:const"] idempotent Particle2dData getData()
             throws DataNotExistException;
 
     /*!

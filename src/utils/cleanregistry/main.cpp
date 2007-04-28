@@ -9,10 +9,10 @@
  */
 
 #include <iostream>
-#include <IceGrid/Admin.h>
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcamisc/orcamisc.h>  // for connectionToRemoteAddress()
+#include <IceGrid/Registry.h>
 
 #include <orcaice/application.h>
 #include <orcaice/component.h>
@@ -149,15 +149,27 @@ void
 Component::start()
 {
     // we provide no interfaces, so we don't activate the adapter
-    //cout<<"default locator (refresh) :"<<context().communicator()->getDefaultLocator()->ice_toString()<<endl;
+    cout<<"default locator (refresh) :"<<context().communicator()->getDefaultLocator()->ice_toString()<<endl;
     
     std::string locatorString = context().communicator()->getDefaultLocator()->ice_toString();
+    std::string instanceName = orcamisc::stringToIceGridInstanceName(locatorString);
 
-    Ice::ObjectPrx adminProxy = context().communicator()->stringToProxy(
-            orcamisc::stringToIceGridInstanceName(locatorString)+"/Admin");
+    Ice::ObjectPrx base = context().communicator()->stringToProxy( instanceName + "/Registry" );
+
+//     Ice::ObjectPrx adminProxy = context().communicator()->stringToProxy(
+//             orcamisc::stringToIceGridInstanceName(locatorString)+"/Admin");
+    IceGrid::AdminPrx adminProxy;
 
     try
     {
+        // Open an admin session with the registry
+        IceGrid::RegistryPrx registry = IceGrid::RegistryPrx::checkedCast(base);
+        // This assumes no access control
+        std::string username = "no-access-control-assumed";
+        std::string password = "no-access-control-assumed";
+        IceGrid::AdminSessionPrx adminSession = registry->createAdminSession( username, password );
+        
+        adminProxy = adminSession->getAdmin();
         adminProxy->ice_ping();
         std::string adminAddress = orcamisc::connectionToRemoteAddress( adminProxy->ice_getConnection()->toString() );
         cout<<"Ping successful: "<<adminAddress<<endl;
@@ -169,17 +181,17 @@ Component::start()
         context().communicator()->shutdown();
     }
     
-    IceGrid::AdminPrx admin = IceGrid::AdminPrx::checkedCast( adminProxy );
+//    IceGrid::AdminPrx admin = IceGrid::AdminPrx::checkedCast( adminProxy );
     
     //
     // Well-known objects
     //
-    purgeObjects( admin );
+    purgeObjects( adminProxy );
 
     //
     // Adapters
     //
-    purgeAdapters( admin );
+    purgeAdapters( adminProxy );
 
     // we are done
     context().communicator()->shutdown();

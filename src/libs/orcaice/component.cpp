@@ -37,6 +37,7 @@ namespace orcaice {
 
 Component::Component( const std::string& tag, ComponentInterfaceFlag flag )
     : interfaceFlag_(flag),
+      localStatus_(0),
       componentThread_(0)
 {
     context_.tag_ = tag;

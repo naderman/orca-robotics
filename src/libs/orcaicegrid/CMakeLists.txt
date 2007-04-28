@@ -1,4 +1,4 @@
-OPTION( BUILD_ORCAICEGRID "Try to build libOrcaIceGrid" OFF )
+OPTION( BUILD_ORCAICEGRID "Try to build libOrcaIceGrid" ON )
 
 IF ( BUILD_ORCAICEGRID )
 

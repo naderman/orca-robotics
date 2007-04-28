@@ -37,7 +37,7 @@ struct VelocityControl2dData
 interface VelocityControl2d
 {
     //! Returns description of the vehicle
-    nonmutating VehicleDescription getDescription();
+    ["cpp:const"] idempotent VehicleDescription getDescription();
 
     //! Set desired velocity command
     idempotent void setCommand( VelocityControl2dData data )

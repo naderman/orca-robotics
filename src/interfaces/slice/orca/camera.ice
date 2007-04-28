@@ -119,11 +119,11 @@ interface CameraConsumer
 interface Camera
 {
     //! Returns the latest data.
-    nonmutating CameraData      getData()
+    ["cpp:const"] idempotent CameraData      getData()
         throws HardwareFailedException;
             
     //! Returns the current configuration.
-    nonmutating CameraDescription getDescription();
+    ["cpp:const"] idempotent CameraDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.

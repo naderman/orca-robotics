@@ -105,10 +105,8 @@ PolarFeature2dIface::subscribe(const ::orca::PolarFeature2dConsumerPrx &subscrib
         throw orca::SubscriptionFailedException( "null topic proxy." );
     }
     
-    IceStorm::QoS qos;
-    qos["reliability"] = "twoway";
     try {
-        topicPrx_->subscribe( qos, subscriber );
+        topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;

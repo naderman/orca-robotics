@@ -84,7 +84,7 @@ interface PixMapConsumer
 interface PixMap
 {
     //! Returns the latest data.
-    nonmutating PixMapData getData()
+    ["cpp:const"] idempotent PixMapData getData()
             throws DataNotExistException;
 
     /*!

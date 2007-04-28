@@ -55,11 +55,11 @@ interface Odometry2d
     //! Returns the latest data.
     //! May raise DataNotExistException if the requested information is not available.
     //! May raise HardwareFailedException if there is some problem with hardware.
-    nonmutating Odometry2dData getData()
+    ["cpp:const"] idempotent Odometry2dData getData()
             throws DataNotExistException, HardwareFailedException;
     
     //! Returns description         
-    nonmutating VehicleDescription getDescription();
+    ["cpp:const"] idempotent VehicleDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.

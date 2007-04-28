@@ -58,7 +58,7 @@ struct BinarySwitchData
 interface BinarySwitch
 {
     //! Get current state. Raises DataNotExistException if data is not available.
-    nonmutating BinarySwitchData getData()
+    ["cpp:const"] idempotent BinarySwitchData getData()
         throws DataNotExistException, HardwareFailedException;
 
     //! Set current state

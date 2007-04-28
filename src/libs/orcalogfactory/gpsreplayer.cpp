@@ -99,9 +99,7 @@ void
 GpsReplayer::subscribe(const ::orca::GpsConsumerPrx &subscriber, const ::Ice::Current&)
 {
     cout<<"INFO(gpsreplayer.cpp): subscribe"<<endl;
-    IceStorm::QoS qos;
-    qos["reliability"] = "twoway";
-    topic_->subscribe( qos, subscriber );
+    topic_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
 }
 
 void 

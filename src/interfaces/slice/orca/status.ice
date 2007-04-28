@@ -89,7 +89,7 @@ interface StatusConsumer
 interface Status
 {
     //! Returns the latest status.
-    nonmutating StatusData getData()
+    ["cpp:const"] idempotent StatusData getData()
         throws DataNotExistException;
 
     /*!

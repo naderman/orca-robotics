@@ -54,7 +54,7 @@ struct ReplayData
 interface Replay
 {
     //! Returns replay status
-    nonmutating ReplayData getData()
+    ["cpp:const"] idempotent ReplayData getData()
         throws DataNotExistException;
 
     //! Starts replaying data set.

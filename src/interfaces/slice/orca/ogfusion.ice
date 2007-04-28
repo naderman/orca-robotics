@@ -86,7 +86,7 @@ struct OgFusionData
 interface OgFusion
 {
     //! retrieves map configuration etc.
-    nonmutating OgFusionConfig getConfig();
+    ["cpp:const"] idempotent OgFusionConfig getConfig();
     
     //! set an observation
     void setData(OgFusionData data);

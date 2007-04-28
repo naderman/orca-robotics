@@ -1,3 +1,4 @@
+#if 0
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -117,9 +118,7 @@ void
 GpsI::subscribe(const ::orca::GpsConsumerPrx &subscriber, const ::Ice::Current&)
 {
     cout << "subscribe()" << endl;
-    IceStorm::QoS qos;
-    qos["reliability"] = "twoway";
-    topicPrx_->subscribe( qos, subscriber );
+    topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
 }
 
 // Unsubscribe people
@@ -225,3 +224,4 @@ GpsI::localSetMapGridData( const ::orca::GpsMapGridData& data )
         context_.tracer()->warning( "Failed push to IceStorm." );
     }
 }
+#endif

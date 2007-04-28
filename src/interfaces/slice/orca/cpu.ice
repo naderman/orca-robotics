@@ -78,10 +78,10 @@ interface CpuConsumer
 interface Cpu
 {
     //! Get general CPU information.
-    nonmutating CpuInfo getInfo();
+    ["cpp:const"] idempotent CpuInfo getInfo();
 
     //! Get current CPU state. Raises DataNotExistException if data is not available.
-    nonmutating CpuData getData()
+    ["cpp:const"] idempotent CpuData getData()
         throws DataNotExistException;
 
     /*!

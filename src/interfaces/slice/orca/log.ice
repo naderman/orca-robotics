@@ -67,7 +67,7 @@ struct LogData
 interface Log
 {
     //! Returns log status
-    nonmutating LogData getData()
+    ["cpp:const"] idempotent LogData getData()
         throws DataNotExistException;
 
     //! Starts new data set.

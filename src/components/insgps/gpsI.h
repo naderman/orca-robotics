@@ -57,23 +57,15 @@ public:
     
     // Get GPS Data
     virtual ::orca::GpsData getData(const ::Ice::Current& ) const;
-    virtual ::orca::GpsTimeData getTimeData(const ::Ice::Current& ) const;
-    virtual ::orca::GpsMapGridData getMapGridData(const ::Ice::Current& ) const;
     
     virtual ::orca::GpsDescription getDescription(const ::Ice::Current& ) const;
 
     // Subscribe and unsubcribe people
     virtual void subscribe(const ::orca::GpsConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
     virtual void unsubscribe(const ::orca::GpsConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
-    virtual void subscribeForTime(const ::orca::GpsTimeConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
-    virtual void unsubscribeForTime(const ::orca::GpsTimeConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
-    virtual void subscribeForMapGrid(const ::orca::GpsMapGridConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
-    virtual void unsubscribeForMapGrid(const ::orca::GpsMapGridConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
     // Set GPS Data
     void localSetData( const ::orca::GpsData& data );
-    void localSetTimeData( const ::orca::GpsTimeData& data );
-    void localSetMapGridData( const ::orca::GpsMapGridData& data );
 
     // Get Gps Description
     orca::GpsDescription localGetDescription() const;
@@ -86,18 +78,12 @@ private:
 
     // the handler (this class) will put the latest data into this buffer
     orcaice::Buffer<orca::GpsData> gpsDataBuffer_;
-    orcaice::Buffer<orca::GpsMapGridData> gpsMapGridDataBuffer_;
-    orcaice::Buffer<orca::GpsTimeData> gpsTimeDataBuffer_;
 
     //publishers
     orca::GpsConsumerPrx gpsPublisher_;
-    orca::GpsMapGridConsumerPrx gpsMapGridPublisher_;
-    orca::GpsTimeConsumerPrx gpsTimePublisher_;
 
     //topics
     IceStorm::TopicPrx topicPrx_;
-    IceStorm::TopicPrx topicMapGridPrx_;
-    IceStorm::TopicPrx topicTimePrx_;
 
     orca::GpsDescription descr_;
 

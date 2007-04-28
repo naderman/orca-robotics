@@ -67,9 +67,7 @@ PowerReplayer::getData(const Ice::Current& current) const
 void 
 PowerReplayer::subscribe(const ::orca::PowerConsumerPrx &subscriber, const ::Ice::Current&)
 {
-    IceStorm::QoS qos;
-    qos["reliability"] = "twoway";
-    topic_->subscribe( qos, subscriber );
+    topic_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
 }
 
 void 

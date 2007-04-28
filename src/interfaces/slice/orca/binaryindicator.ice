@@ -31,7 +31,7 @@ devices.
 interface BinaryIndicator
 {
     //! Get current state
-    nonmutating bool getState();
+    ["cpp:const"] idempotent bool getState();
 
     //! Set current state
     idempotent void setState( bool state );

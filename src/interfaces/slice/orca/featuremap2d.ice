@@ -133,7 +133,7 @@ interface FeatureMap2dConsumer
 interface FeatureMap2d
 {
     //! Returns the latest data.
-    nonmutating FeatureMap2dData getData();
+    ["cpp:const"] idempotent FeatureMap2dData getData();
     
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.

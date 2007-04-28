@@ -49,13 +49,13 @@ dictionary<string,string> ComponentProperties;
 interface Home
 {
     //! Returns a list the component's interfaces.
-    nonmutating HomeData getInterfaces();
+    ["cpp:const"] idempotent HomeData getInterfaces();
 
     //! Returns the number of seconds since the start of the component.
-    nonmutating int getTimeUp();
+    ["cpp:const"] idempotent int getTimeUp();
     
     //! Returns all of this component's properties.
-    nonmutating ComponentProperties getProperties();
+    ["cpp:const"] idempotent ComponentProperties getProperties();
 };
 
 /*!

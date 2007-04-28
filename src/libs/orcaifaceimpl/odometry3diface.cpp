@@ -108,10 +108,8 @@ void
 Odometry3dIface::subscribe(const ::orca::Odometry3dConsumerPrx& subscriber )
 {
     context_.tracer()->debug( "Odometry3dIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
-    IceStorm::QoS qos;
-    qos["reliability"] = "twoway";
     try {
-        topicPrx_->subscribe( qos, subscriber );
+        topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;

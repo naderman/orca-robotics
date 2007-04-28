@@ -18,10 +18,10 @@ using namespace orca;
 using namespace faithlocaliser;
 using namespace orcaice;
 
-Localise2dI::Localise2dI( const IceStorm::TopicPrx              &localiseTopic,
+Localise2dI::Localise2dI( const IceStorm::TopicPrx              &topic,
                           orcaice::Buffer<orca::Localise2dData> &locBuffer,
                           orcaice::Buffer<orca::Localise2dData> &historyBuffer )
-    : localiseTopic_(localiseTopic),
+    : topic_(topic),
       locBuffer_(locBuffer),
       historyBuffer_(historyBuffer)
 {
@@ -147,15 +147,12 @@ Localise2dI::getDataAtTime(const orca::Time& timeStamp, const ::Ice::Current& ) 
 void 
 Localise2dI::subscribe(const ::orca::Localise2dConsumerPrx& subscriber, const ::Ice::Current&)
 {
-//     cout<<"subscribe()"<<endl;
-    IceStorm::QoS qos;
-    qos["reliability"] = "twoway";
-    localiseTopic_->subscribe( qos, subscriber );
+    topic_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
 }
 
 void 
 Localise2dI::unsubscribe(const ::orca::Localise2dConsumerPrx& subscriber, const ::Ice::Current&)
 {
 //     cout<<"unsubscribe()"<<endl;
-    localiseTopic_->unsubscribe( subscriber );
+    topic_->unsubscribe( subscriber );
 }

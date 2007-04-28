@@ -93,9 +93,7 @@ NetworkTraceSender::sendToNetwork( const orca::TracerData &tracerData )
 void 
 NetworkTraceSender::subscribe( const ::orca::TracerConsumerPrx& subscriber )
 {
-    IceStorm::QoS qos;    
-    qos["reliability"] = "twoway";
-    topic_->subscribe( qos, subscriber );
+    topic_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
 }
 void 
 NetworkTraceSender::unsubscribe( const ::orca::TracerConsumerPrx& subscriber )

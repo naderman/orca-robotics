@@ -63,9 +63,7 @@ Platform2dI::getGeometry(const Ice::Current& current) const
 void
 Platform2dI::subscribe(const ::orca::Position2dConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    IceStorm::QoS qos;
-    qos["reliability"] = "twoway";
-    topicPrx_->subscribe( qos, subscriber );
+
 }
 
 void

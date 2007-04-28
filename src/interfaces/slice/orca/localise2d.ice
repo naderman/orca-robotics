@@ -63,11 +63,11 @@ interface Localise2dConsumer
 interface Localise2d
 {
     //! Returns the latest data.
-    nonmutating Localise2dData getData()
+    ["cpp:const"] idempotent Localise2dData getData()
             throws DataNotExistException;
 
     //! Returns the data at a particular time based on the latest data.
-    nonmutating Localise2dData getDataAtTime(Time timeStamp)
+    ["cpp:const"] idempotent Localise2dData getDataAtTime(Time timeStamp)
             throws DataNotExistException;
 
     /*!

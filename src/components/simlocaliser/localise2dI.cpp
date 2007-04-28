@@ -16,9 +16,9 @@ using namespace std;
 using namespace orca;
 using namespace simlocaliser;
 
-Localise2dI::Localise2dI( const IceStorm::TopicPrx              &localiseTopic,
+Localise2dI::Localise2dI( const IceStorm::TopicPrx              &topic,
                           orcaice::Buffer<orca::Localise2dData> &locBuffer )
-    : localiseTopic_(localiseTopic),
+    : topic_(topic),
       locBuffer_(locBuffer)
 {
 }
@@ -66,14 +66,12 @@ void
 Localise2dI::subscribe(const ::orca::Localise2dConsumerPrx& subscriber, const ::Ice::Current&)
 {
     cout<<"subscribe()"<<endl;
-    IceStorm::QoS qos;
-    qos["reliability"] = "twoway";
-    localiseTopic_->subscribe( qos, subscriber );
+    topic_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
 }
 
 void 
 Localise2dI::unsubscribe(const ::orca::Localise2dConsumerPrx& subscriber, const ::Ice::Current&)
 {
     cout<<"unsubscribe()"<<endl;
-    localiseTopic_->unsubscribe( subscriber );
+    topic_->unsubscribe( subscriber );
 }

@@ -99,10 +99,8 @@ void
 Localise2dIface::subscribe(const ::orca::Localise2dConsumerPrx& subscriber)
 {
     context_.tracer()->debug( "Localise2dIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
-    IceStorm::QoS qos;
-    qos["reliability"] = "twoway";
     try {
-        topicPrx_->subscribe( qos, subscriber );
+        topicPrx_->subscribe( IceStorm::QoS(), subscriber->ice_twoway() );
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;

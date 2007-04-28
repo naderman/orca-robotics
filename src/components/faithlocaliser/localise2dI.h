@@ -23,7 +23,7 @@ namespace faithlocaliser
 class Localise2dI : public orca::Localise2d
 {
 public:
-    Localise2dI( const IceStorm::TopicPrx &localiseTopic,
+    Localise2dI( const IceStorm::TopicPrx &topic,
                  orcaice::Buffer<orca::Localise2dData> &posBuffer,
                  orcaice::Buffer<orca::Localise2dData> &historyBuffer );
 
@@ -39,7 +39,7 @@ public:
 
 private:
 
-    const IceStorm::TopicPrx localiseTopic_;
+    const IceStorm::TopicPrx topic_;
     orcaice::Buffer<orca::Localise2dData> &locBuffer_;
     orcaice::Buffer<orca::Localise2dData> &historyBuffer_;
 };

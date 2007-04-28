@@ -155,9 +155,7 @@ PathFollower2dI::subscribe( const ::orca::PathFollower2dConsumerPrx& subscriber,
     cout<<"TRACE(pathfollower2dI.cpp): subscribe()"<<endl;
     assert ( topicPrx_ != 0 );
 //     cout<<"TRACE(pathfollower2dI.cpp): topicPrx_: " << topicPrx_->ice_toString() << endl;
-    IceStorm::QoS qos;
-    qos["reliability"] = "twoway";
-    topicPrx_->subscribe( qos, subscriber );
+    topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
 }
 
 void

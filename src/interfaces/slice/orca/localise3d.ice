@@ -63,11 +63,11 @@ interface Localise3dConsumer
 interface Localise3d
 {
     //! Returns the latest data.
-    nonmutating Localise3dData getData()
+    ["cpp:const"] idempotent Localise3dData getData()
             throws DataNotExistException;
 
     //! Returns the data at a particular time
-    nonmutating Localise3dData getDataAtTime(Time timeStamp)
+    ["cpp:const"] idempotent Localise3dData getDataAtTime(Time timeStamp)
             throws DataNotExistException;
 
     /*!

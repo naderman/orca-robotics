@@ -76,9 +76,9 @@ interface PtzConsumer
 interface Ptz
 {
     //! Functions for reading from the laser
-    nonmutating PtzData      getData();
-    nonmutating PtzConfig    getConfig();
-    nonmutating PtzGeometry  getGeometry();
+    ["cpp:const"] idempotent PtzData      getData();
+    ["cpp:const"] idempotent PtzConfig    getConfig();
+    ["cpp:const"] idempotent PtzGeometry  getGeometry();
 
     /*!
      *

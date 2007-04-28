@@ -23,7 +23,7 @@ namespace simlocaliser
 class Localise2dI : public orca::Localise2d
 {
 public:
-    Localise2dI( const IceStorm::TopicPrx &localiseTopic,
+    Localise2dI( const IceStorm::TopicPrx &topic,
                  orcaice::Buffer<orca::Localise2dData> & locBuffer );
 
     // remote calls:
@@ -38,7 +38,7 @@ public:
 
 private:
 
-    const IceStorm::TopicPrx localiseTopic_;
+    const IceStorm::TopicPrx topic_;
     orcaice::Buffer<orca::Localise2dData> &locBuffer_;
 };
 

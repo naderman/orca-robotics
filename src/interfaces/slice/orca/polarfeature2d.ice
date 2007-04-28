@@ -123,7 +123,7 @@ interface PolarFeature2d
 {
     //! Returns the latest data.
     //! @note In Orca1 this would be called ClientPull_Supplier interface.
-    nonmutating PolarFeature2dData getData()
+    ["cpp:const"] idempotent PolarFeature2dData getData()
             throws DataNotExistException;
 
     /*!
