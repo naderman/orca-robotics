@@ -200,16 +200,22 @@ Component::start()
 
     // register each of the objects so that remote calls know that these things exist   
     orcaice::createInterfaceWithTag( context(), gpsObjPtr_, "Gps" );
+    context().tracer()->info("GPS registered",1);
     orcaice::createInterfaceWithTag( context(), imuObjPtr_, "Imu" );
+    context().tracer()->info("Imu registered",1);
     orcaice::createInterfaceWithTag( context(), odometry3dObjPtr_, "Odometry3d" );
+    context().tracer()->info("odometry3d registered",1);
     orcaice::createInterfaceWithTag( context(), localise3dObjPtr_, "Localise3d" );
+    context().tracer()->info("localise3d registered",1);
 
     ////////////////////////////////////////////////////////////////////////////////
 
     //
     // ENABLE NETWORK CONNECTIONS
     //
+    context().tracer()->debug( "activating..", 2 );
     activate();
+    context().tracer()->info("Network activated",1);
 
     //
     // HANDLERS
