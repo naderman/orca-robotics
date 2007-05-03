@@ -74,7 +74,7 @@ SessionManager::tryCreateSession()
             
     try
     {
-        session_ = registry->createAdminSession( "assume-no-access-control", "assume-no-access-control" );
+        session_ = registry->createAdminSession( "sessionmanager.cpp-assume-no-access-control", "sessionmanager.cpp-assume-no-access-control" );
         timeoutSec_ = registry->getSessionTimeout();
         stringstream ss; ss<<"SessionManager: Created session (timeout="<<timeoutSec_<<"s)";
         context_.tracer()->info( ss.str() );

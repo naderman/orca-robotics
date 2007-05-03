@@ -83,8 +83,8 @@ ComponentThread::tryRegisterHome()
         // Open an admin session with the registry
         IceGrid::RegistryPrx registry = IceGrid::RegistryPrx::checkedCast(base);
         // This assumes no access control
-        std::string username = "no-access-control-assumed";
-        std::string password = "no-access-control-assumed";
+        std::string username = "componentthread-no-access-control-assumed";
+        std::string password = "componentthread-no-access-control-assumed";
         IceGrid::AdminSessionPrx adminSession = registry->createAdminSession( username, password );
 
         // use the adminSession to add our Home interface
