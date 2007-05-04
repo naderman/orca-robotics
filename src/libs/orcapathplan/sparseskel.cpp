@@ -67,7 +67,8 @@ namespace {
 
 SparseSkel::SparseSkel( const orcaogmap::OgMap &ogMap,
                         double                  traversabilityThreshhold,
-                        const Cell2DVector     &skel )
+                        const Cell2DVector     &skel,
+                        const FloatMap         &costMap )
     : ogMap_(ogMap),
       traversabilityThreshhold_(traversabilityThreshhold)
 {
@@ -80,7 +81,7 @@ SparseSkel::SparseSkel( const orcaogmap::OgMap &ogMap,
     for ( unsigned int i=0; i < skel.size(); i++ )
         skelList.push_back( skel[i] );
 
-    build( skelList, wps );
+    build( skelList, wps, costMap );
 }
 
 SparseSkel::~SparseSkel()
@@ -104,7 +105,8 @@ SparseSkel::numNodes() const
 
 void 
 SparseSkel::build( Cell2DList                &skelList,
-                   Cell2DList                &wps )
+                   Cell2DList                &wps,
+                   const FloatMap            &costMap )
 {
     if ( wps.size() == 0 )
         throw orcapathplan::Exception( "SparseSkel: Couldn't find any wps!" );
@@ -121,7 +123,7 @@ SparseSkel::build( Cell2DList                &skelList,
         //
         // the ContiguousSparseSkel constructor removes its waypoints from wps.
         //
-        contiguousSkels_.push_back( new ContiguousSparseSkel( *this, wps, skelList ) );
+        contiguousSkels_.push_back( new ContiguousSparseSkel( *this, wps, skelList, costMap ) );
     }
 
 #ifndef NDEBUG
@@ -146,9 +148,10 @@ SparseSkel::build( Cell2DList                &skelList,
 //       (if it could end in >1 wps, that junction is itself a wp)
 //
 
-ContiguousSparseSkel::ContiguousSparseSkel( SparseSkel &parent,
-                                            Cell2DList &wps,
-                                            Cell2DList &skel )
+ContiguousSparseSkel::ContiguousSparseSkel( SparseSkel     &parent,
+                                            Cell2DList     &wps,
+                                            Cell2DList     &skel,
+                                            const FloatMap &costMap )
     : parent_(parent)
 {
     // check assumptions
