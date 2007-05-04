@@ -89,7 +89,6 @@ private:
     const orcaogmap::OgMap *planOgMap_;
 
     Cell2DVector skel_;
-    FloatMap     distGrid_;
     SparseSkel   *sparseSkel_;
     FloatMap     costMap_;
 

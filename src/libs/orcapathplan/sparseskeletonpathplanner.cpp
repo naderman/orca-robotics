@@ -35,13 +35,14 @@ SparseSkeletonPathPlanner::SparseSkeletonPathPlanner( const orcaogmap::OgMap &og
     // Build the dense skeleton
     //
 
+    FloatMap distGrid;
     bool success = computeSkeleton( ogMap_,
                                     skel_,
-                                    distGrid_,
+                                    distGrid,
                                     traversabilityThreshhold,
                                     robotDiameterMetres );
 
-    computeCostsFromDistGrid( distGrid_,
+    computeCostsFromDistGrid( distGrid,
                               costMap_,
                               ogMap_.metresPerCellX() );
 
@@ -72,7 +73,7 @@ SparseSkeletonPathPlanner::SparseSkeletonPathPlanner( const orcaogmap::OgMap &og
 
     // cout<<"TRACE(sparseskeletonpathplanner.cpp): planOgMap_: " << endl << orcaogmap::toText(*planOgMap_) << endl;
 
-    sparseSkel_ = new SparseSkel( (*planOgMap_), traversabilityThreshhold_, skel_, distGrid_ );
+    sparseSkel_ = new SparseSkel( (*planOgMap_), traversabilityThreshhold_, skel_ );
 }
 
 void 
@@ -287,28 +288,6 @@ SparseSkeletonPathPlanner::computePath( int           startX,
     
         orcamisc::CpuStopwatch watch;
         watch.start();
-
-//     //
-//     // 1. Connect cells to the dense skeleton
-//     //
-//     Cell2D startOnSkel;
-//     success = findClosestPointOnSkeleton( skel_,
-//                                           distGrid_,
-//                                           startCell,
-//                                           startOnSkel );
-//     if ( !success )
-//         throw orcapathplan::Exception( "Couldn't connect start cell to skel" );
-//     cout<<"TRACE(sparseskeletonpathplanner.cpp): connected startCell " << startCell << " to dense skel at " << startOnSkel << endl;
-
-//     Cell2D goalOnSkel;
-//     success = findClosestPointOnSkeleton( skel_,
-//                                           distGrid_,
-//                                           goalCell,
-//                                           goalOnSkel );
-//     if ( !success )
-//         throw orcapathplan::Exception( "Couldn't connect goal cell to skel" );
-
-//     cout<<"TRACE(sparseskeletonpathplanner.cpp): connected goalCell " << goalCell << " to dense skel at " << goalOnSkel << endl;
 
         //
         // 2. Connect cells to the sparse skeleton,

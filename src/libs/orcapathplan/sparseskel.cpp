@@ -19,7 +19,6 @@ namespace orcapathplan {
 namespace {
 
     void findWps( const Cell2DVector        &skel,
-                  const FloatMap            &distGrid,
                   Cell2DList                &wps )
     {
         // A non-wp is defined as a cell with 2 non-adjacent adjacencies.
@@ -68,25 +67,20 @@ namespace {
 
 SparseSkel::SparseSkel( const orcaogmap::OgMap &ogMap,
                         double                  traversabilityThreshhold,
-                        const Cell2DVector     &skel,
-                        const FloatMap         &distGrid )
+                        const Cell2DVector     &skel )
     : ogMap_(ogMap),
       traversabilityThreshhold_(traversabilityThreshhold)
 {
     Cell2DList wps;
 
-    findWps( skel,
-             distGrid,
-             wps );
+    findWps( skel, wps );
 
     // Convert skel from a vector to a list
     Cell2DList skelList;
     for ( unsigned int i=0; i < skel.size(); i++ )
         skelList.push_back( skel[i] );
 
-    build( skelList,
-           distGrid,
-           wps );
+    build( skelList, wps );
 }
 
 SparseSkel::~SparseSkel()
@@ -110,7 +104,6 @@ SparseSkel::numNodes() const
 
 void 
 SparseSkel::build( Cell2DList                &skelList,
-                   const FloatMap            &distGrid,
                    Cell2DList                &wps )
 {
     if ( wps.size() == 0 )
