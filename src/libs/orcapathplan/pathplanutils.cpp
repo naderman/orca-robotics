@@ -12,6 +12,7 @@
 #include "pathplanutils.h"
 #include "ipathplanner2d.h"
 #include <orcamisc/orcamisc.h>
+#include "costcalculator.h"
 
 // Distance to a 4-adjacent cell
 const float AC = 1.0;
@@ -320,6 +321,31 @@ bool losExists( const orcaogmap::OgMap &ogMap, double traversabilityThreshhold, 
     assert( ogMap.cellWithinMap( c2.x(), c2.y() ) );
     orcaogmap::OgLosTracer rayTracer( ogMap, (unsigned char)(traversabilityThreshhold*orcaogmap::CELL_OCCUPIED) );
     return rayTracer.isClearCells( c1.x(), c1.y(), c2.x(), c2.y() );
+}
+
+float oneWayCost( const Cell2D           &c1,
+                  const Cell2D           &c2,
+                  const FloatMap         &costMap )
+{
+    CostAccumulator accum( costMap );
+    CostCalculator costCalculator( accum );
+    costCalculator.trace( c1.x(), c1.y(), c2.x(), c2.y() );
+    
+    double cost = accum.totalCost();
+
+    // Assume we're tracing from centre-of-cell to centre-of-cell, so only count half the end-cells.
+    cost -= element( costMap, c1 )/2.0;
+    cost -= element( costMap, c2 )/2.0;
+
+    return cost;
+}
+
+float straightLineCost( const Cell2D           &c1,
+                        const Cell2D           &c2,
+                        const FloatMap         &costMap )
+{
+    // one-way cost may not be symmetric, so take the average of both ways.
+    return ( oneWayCost(c1,c2,costMap) + oneWayCost(c1,c2,costMap) ) / 2.0;
 }
 
 bool isIncluded( const Cell2DVector & C, const Cell2D & c )
@@ -1088,7 +1114,7 @@ void optimizePath( const OgMap        &ogMap,
                    const Cell2DVector &origPath,
                    Cell2DVector       &optimisedPath )
 {
-    cout<<"TRACE(pathplanutils.cpp): TODO: uses costs in optimizePath()" << endl;
+    cout<<"TRACE(pathplanutils.cpp): TODO: use costs in optimizePath()" << endl;
 
 
     OgLosTracer rayTracer( ogMap, (unsigned char)(traversabilityThreshhold*orcaogmap::CELL_OCCUPIED) );

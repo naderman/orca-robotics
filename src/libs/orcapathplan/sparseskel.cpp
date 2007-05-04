@@ -203,6 +203,9 @@ ContiguousSparseSkel::ContiguousSparseSkel( SparseSkel     &parent,
     assert( isSane() );
     optimise();
     assert( isSane() );
+
+    setArcCosts( costMap );
+    assert( isSane() );
 }
 
 ContiguousSparseSkel::~ContiguousSparseSkel()
@@ -284,8 +287,7 @@ ContiguousSparseSkel::merge( SparseSkelNode *slave, SparseSkelNode *master )
                 if ( !areLinked( considerNode, master ) )
                 {
                     // then link to master
-                    float cost = distance( considerNode->pos, master->pos );
-
+                    const float cost = -1;
                     considerNode->arcs[j]->toNode = master;
                     considerNode->arcs[j]->cost   = cost;
                     master->arcs.push_back( new SparseSkelArc( considerNode, cost ) );
@@ -391,22 +393,37 @@ ContiguousSparseSkel::optimise()
                     assert( false );
                 }
             }
-            for ( unsigned int k=0; k < (*i)->arcs.size(); k++ )
-            {
-                if ( (*i)->arcs[k]->cost <= 1.42 )
-                {
-                    // arc spans only one cell
-                    if ( canMerge( *i, (*i)->arcs[k]->toNode ) )
-                    {
-                        cout<<"TRACE(sparseskel.cpp): WARN: node " << (*i)->pos << "'s arc spans only one cell (to " << (*i)->arcs[k]->toNode->pos << ")" << endl;
-                        cout<<"TRACE(sparseskel.cpp): They can be merged, why weren't they?" << endl;
-                        assert( false );
-                    }
-                }
-            }
+//             for ( unsigned int k=0; k < (*i)->arcs.size(); k++ )
+//             {
+//                 if ( (*i)->arcs[k]->cost <= 1.42 )
+//                 {
+//                     // arc spans only one cell
+//                     if ( canMerge( *i, (*i)->arcs[k]->toNode ) )
+//                     {
+//                         cout<<"TRACE(sparseskel.cpp): WARN: node " << (*i)->pos << "'s arc spans only one cell (to " << (*i)->arcs[k]->toNode->pos << ")" << endl;
+//                         cout<<"TRACE(sparseskel.cpp): They can be merged, why weren't they?" << endl;
+//                         assert( false );
+//                     }
+//                 }
+//             }
         }        
     }    
 #endif
+}
+
+void
+ContiguousSparseSkel::setArcCosts( const FloatMap &costMap )
+{
+    cout<<"TRACE(sparseskel.cpp): setArcCosts()" << endl;
+    for ( uint i=0; i < nodes_.size(); i++ )
+    {
+        SparseSkelNode &node = *(nodes_[i]);
+        for ( uint j=0; j < node.arcs.size(); j++ )
+        {
+            SparseSkelArc &arc = *(node.arcs[j]);
+            arc.cost = straightLineCost( node.pos, arc.toNode->pos, costMap );
+        }
+    }
 }
 
 SparseSkelNode*
@@ -610,7 +627,7 @@ ContiguousSparseSkel::createArc( SparseSkelNode  *fromNode,
         return endNode;
     }
 
-    float cost = distance( fromNode->pos, neighbourNodePos );
+    float cost = -1;
 
     // See if this node already exists, and if so whether we're already linked.
     SparseSkelNode *toNode = findNode( neighbourNodePos );

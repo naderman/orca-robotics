@@ -46,7 +46,11 @@ namespace orcapathplan
                     double traversabilityThreshhold,
                     const Cell2D &c1,
                     const Cell2D &c2 );
-    
+
+    float straightLineCost( const Cell2D           &fromCell,
+                            const Cell2D           &toCell,
+                            const FloatMap         &costMap );
+
     //! Returns TRUE if c is in C otherwise false
     bool isIncluded( const Cell2DVector & C, const Cell2D & c );
     //! Returns TRUE if c is in C otherwise false

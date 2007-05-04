@@ -128,14 +128,11 @@ private:
 
     SparseSkelNode* findNode( const Cell2D &pos );
 
-//     bool selectCell( const Cell2D &fromCell,
-//                      Cell2D       &selected,
-//                      Cell2DList   &wps,
-//                      Cell2DList   &skel,
-//                      int          &i );
-
     // merge adjacent nodes.
     void optimise();
+
+    // prior to this, all costs are initialised to -1
+    void setArcCosts( const FloatMap &costMap );
 
     // return true if it's ok to merge.
     bool canMerge( SparseSkelNode *slave, SparseSkelNode *master );
