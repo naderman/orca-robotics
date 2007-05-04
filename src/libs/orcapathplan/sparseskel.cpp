@@ -16,48 +16,51 @@ using namespace std;
 
 namespace orcapathplan {
 
-void findWps( const FloatMap            &navMapSkel,
-              const Cell2DVector        &skel,
-              const FloatMap            &distGrid,
-              Cell2DList                &wps )
-{
-    // A non-wp is defined as a cell with 2 non-adjacent adjacencies.
-    // A wp is anything else.
+namespace {
 
-    // This could _definitely_ be optimised...
-    for ( unsigned int i=0; i < skel.size(); i++ )
+    void findWps( const Cell2DVector        &skel,
+                  const FloatMap            &distGrid,
+                  Cell2DList                &wps )
     {
-        std::vector<Cell2D> adjacencies;
-        for ( unsigned int j=0; j < skel.size(); j++ )
+        // A non-wp is defined as a cell with 2 non-adjacent adjacencies.
+        // A wp is anything else.
+
+        // This could _definitely_ be optimised...
+        for ( unsigned int i=0; i < skel.size(); i++ )
         {
-            if ( (isAdjacentN( skel[i], skel[j], 1 )) && (skel[i] != skel[j]) )
+            std::vector<Cell2D> adjacencies;
+            for ( unsigned int j=0; j < skel.size(); j++ )
             {
-                adjacencies.push_back( skel[j] );
+                if ( (isAdjacentN( skel[i], skel[j], 1 )) && (skel[i] != skel[j]) )
+                {
+                    adjacencies.push_back( skel[j] );
+                }
+            }
+            if ( adjacencies.size() == 2 &&
+                 !isAdjacentN( adjacencies[0], adjacencies[1], 1 ) )
+            {
+                // not a wp
+            }
+            else
+            {
+                wps.push_back( skel[i] );
             }
         }
-        if ( adjacencies.size() == 2 &&
-             !isAdjacentN( adjacencies[0], adjacencies[1], 1 ) )
-        {
-            // not a wp
-        }
-        else
-        {
-            wps.push_back( skel[i] );
-        }
     }
-}
 
-//
-// rayTracer isn't necessarily symmetric.
-// This tests both directions.
-//
-bool directLinkExists( const orcaogmap::OgMap &ogMap,
-                       double                  traversabilityThreshhold,
-                       const Cell2D           &p1,
-                       const Cell2D           &p2 )
-{
-    return ( losExists( ogMap, traversabilityThreshhold, p1, p2 ) &&
-             losExists( ogMap, traversabilityThreshhold, p2, p1 ) );
+    //
+    // rayTracer isn't necessarily symmetric.
+    // This tests both directions.
+    //
+    bool directLinkExists( const orcaogmap::OgMap &ogMap,
+                           double                  traversabilityThreshhold,
+                           const Cell2D           &p1,
+                           const Cell2D           &p2 )
+    {
+        return ( losExists( ogMap, traversabilityThreshhold, p1, p2 ) &&
+                 losExists( ogMap, traversabilityThreshhold, p2, p1 ) );
+    }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +68,6 @@ bool directLinkExists( const orcaogmap::OgMap &ogMap,
 
 SparseSkel::SparseSkel( const orcaogmap::OgMap &ogMap,
                         double                  traversabilityThreshhold,
-                        const FloatMap         &navMapSkel,
                         const Cell2DVector     &skel,
                         const FloatMap         &distGrid )
     : ogMap_(ogMap),
@@ -73,8 +75,7 @@ SparseSkel::SparseSkel( const orcaogmap::OgMap &ogMap,
 {
     Cell2DList wps;
 
-    findWps( navMapSkel,
-             skel,
+    findWps( skel,
              distGrid,
              wps );
 
@@ -83,8 +84,7 @@ SparseSkel::SparseSkel( const orcaogmap::OgMap &ogMap,
     for ( unsigned int i=0; i < skel.size(); i++ )
         skelList.push_back( skel[i] );
 
-    build( navMapSkel,
-           skelList,
+    build( skelList,
            distGrid,
            wps );
 }
@@ -109,8 +109,7 @@ SparseSkel::numNodes() const
 }
 
 void 
-SparseSkel::build( const FloatMap            &navMapSkel,
-                   Cell2DList                &skelList,
+SparseSkel::build( Cell2DList                &skelList,
                    const FloatMap            &distGrid,
                    Cell2DList                &wps )
 {
@@ -125,6 +124,10 @@ SparseSkel::build( const FloatMap            &navMapSkel,
         //{
         //    cout << "  " << *it << endl;
         //}
+
+        //
+        // the ContiguousSparseSkel constructor removes its waypoints from wps.
+        //
         contiguousSkels_.push_back( new ContiguousSparseSkel( *this, wps, skelList ) );
     }
 
@@ -243,7 +246,6 @@ bool
 ContiguousSparseSkel::canMerge( SparseSkelNode *slave, SparseSkelNode *master )
 {
     assert( master != slave );
-    // First test if it's ok
 
     // go through all the nodes
     for ( unsigned int i=0; i < nodes_.size(); i++ )
@@ -287,6 +289,7 @@ ContiguousSparseSkel::merge( SparseSkelNode *slave, SparseSkelNode *master )
                 {
                     // then link to master
                     float cost = distance( considerNode->pos, master->pos );
+
                     considerNode->arcs[j]->toNode = master;
                     considerNode->arcs[j]->cost   = cost;
                     master->arcs.push_back( new SparseSkelArc( considerNode, cost ) );

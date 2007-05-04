@@ -47,6 +47,8 @@ AStarPathPlanner::AStarPathPlanner( const orcaogmap::OgMap ogMap,
     const double obstacleWeight = 254.0 * traversabilityThreshhold_;
     assert( ogMap_.metresPerCellX() == ogMap_.metresPerCellY() && "AstarDriver currently works for square worlds only" );
     aStar_ = new AStar( ogMapDoubles, ogMap_.numCellsX(), ogMap_.numCellsY(), ogMap_.metresPerCellX(), allowDiagonal, obstacleWeight );     
+
+    computeUniformCosts( ogMap_, costMap_, traversabilityThreshhold_ );
 }
 
 void 
@@ -118,7 +120,7 @@ AStarPathPlanner::computePath( int          startX,
     {
         Cell2DVector waycells;      
         watch.start();
-        optimizePath( ogMap_, traversabilityThreshhold_, path, waycells );
+        optimizePath( ogMap_, costMap_, traversabilityThreshhold_, path, waycells );
         watch.stop();
         cout << "INFO(astardriver.cpp): optimizing the path took " << watch.elapsedSeconds() * 1000.0 << " ms " << endl;
         path = waycells;

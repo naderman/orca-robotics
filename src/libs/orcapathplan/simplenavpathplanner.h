@@ -46,6 +46,7 @@ private:
                       int           endY ) const;
 
     const orcaogmap::OgMap &ogMap_;
+    FloatMap costMap_;
 
     const double robotDiameterMetres_;
     const double traversabilityThreshhold_;

@@ -42,7 +42,6 @@ public:
                               Cell2DVector &path ) const;
 
     // Useful for debugging.
-    const FloatMap     &navMapSkel() const { return navMapSkel_; }
     const Cell2DVector &skeleton()   const { return skel_; }
     const FloatMap     &distGrid()   const { return distGrid_; }
 
@@ -55,7 +54,7 @@ private:
 
     const orcaogmap::OgMap &ogMap_;
 
-    FloatMap     navMapSkel_;
+    FloatMap     costMap_;
     Cell2DVector skel_;
     FloatMap     distGrid_;
 

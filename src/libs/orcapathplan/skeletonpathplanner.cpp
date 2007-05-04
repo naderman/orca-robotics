@@ -37,11 +37,15 @@ SkeletonPathPlanner::SkeletonPathPlanner( const orcaogmap::OgMap &ogMap,
 
     watch.start();
     bool success = computeSkeleton( ogMap_,
-                                    navMapSkel_,
                                     skel_,
                                     distGrid_,
                                     traversabilityThreshhold,
                                     robotDiameterMetres );
+
+    computeCostsFromDistGrid( distGrid_,
+                              costMap_,
+                              ogMap_.metresPerCellX() );
+
     watch.stop();
     cout << "TRACE(skeletonpathplanner.cpp): computeSkeleton took " << watch.elapsedSeconds() << "s" << endl;
     
@@ -85,12 +89,10 @@ SkeletonPathPlanner::computePath( int           startX,
     watch.start();
 
     Cell2DVector tempSkel = skel_;
-    FloatMap     navMap   = navMapSkel_;
 
     int robotDiameterInCells = orcapathplan::robotDiameterInCells( ogMap_, robotDiameterMetres_ );
     if ( !connectCell2Skeleton( tempSkel,
                                 startCell,
-                                navMap,
                                 distGrid_,
                                 robotDiameterInCells ) )
     {
@@ -103,7 +105,6 @@ SkeletonPathPlanner::computePath( int           startX,
     watch.start();
     if ( !connectCell2Skeleton( tempSkel,
                                 goalCell,
-                                navMap,
                                 distGrid_,
                                 robotDiameterInCells ) )
     {
@@ -115,7 +116,8 @@ SkeletonPathPlanner::computePath( int           startX,
 
     // Compute potential function U along the skeleton
     watch.start();
-    if( !computePotentialSkeleton( ogMap_, navMap, tempSkel, startCell ) )
+    FloatMap navMap;
+    if( !computePotentialSkeleton( ogMap_, costMap_, navMap, tempSkel, startCell ) )
     {
         throw orcapathplan::Exception( "Couldn't compute potential function along skeleton" );
     }
@@ -144,7 +146,7 @@ SkeletonPathPlanner::computePath( int           startX,
     {
         // separate full path into a optimized short path
         Cell2DVector waycells;    
-        optimizePath( ogMap_, traversabilityThreshhold_, path, waycells );
+        optimizePath( ogMap_, costMap_, traversabilityThreshhold_, path, waycells );
         path = waycells;
     }
 

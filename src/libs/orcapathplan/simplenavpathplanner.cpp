@@ -27,6 +27,8 @@ SimpleNavPathPlanner::SimpleNavPathPlanner( const orcaogmap::OgMap &ogMap,
 {
     assert( robotDiameterMetres >= 0.0 );
     assert( traversabilityThreshhold >= 0.0 );
+
+    computeUniformCosts( ogMap, costMap_, traversabilityThreshhold_ );
 }
 
 void 
@@ -97,7 +99,7 @@ SimpleNavPathPlanner::computePath( int          startX,
     if ( doPathOptimization_ )
     {
         Cell2DVector waycells;    
-        optimizePath( ogMap_, traversabilityThreshhold_, path, waycells );
+        optimizePath( ogMap_, costMap_, traversabilityThreshhold_, path, waycells );
         path = waycells;
     }
     //=========================================================

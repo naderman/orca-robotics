@@ -36,11 +36,15 @@ SparseSkeletonPathPlanner::SparseSkeletonPathPlanner( const orcaogmap::OgMap &og
     //
 
     bool success = computeSkeleton( ogMap_,
-                                    navMapSkel_,
                                     skel_,
                                     distGrid_,
                                     traversabilityThreshhold,
                                     robotDiameterMetres );
+
+    computeCostsFromDistGrid( distGrid_,
+                              costMap_,
+                              ogMap_.metresPerCellX() );
+
     watch.stop();
     cout << "TRACE(skeletonpathplanner.cpp): computeSkeleton took " << watch.elapsedSeconds() << "s" << endl;
     
@@ -68,7 +72,7 @@ SparseSkeletonPathPlanner::SparseSkeletonPathPlanner( const orcaogmap::OgMap &og
 
     // cout<<"TRACE(sparseskeletonpathplanner.cpp): planOgMap_: " << endl << orcaogmap::toText(*planOgMap_) << endl;
 
-    sparseSkel_ = new SparseSkel( (*planOgMap_), traversabilityThreshhold_, navMapSkel_, skel_, distGrid_ );
+    sparseSkel_ = new SparseSkel( (*planOgMap_), traversabilityThreshhold_, skel_, distGrid_ );
 }
 
 void 
@@ -261,7 +265,7 @@ void
 SparseSkeletonPathPlanner::optimisePath( Cell2DVector &path ) const
 {
     Cell2DVector optimisedPath;
-    orcapathplan::optimizePath( grownOgMap_, traversabilityThreshhold_, path, optimisedPath );
+    orcapathplan::optimizePath( grownOgMap_, costMap_, traversabilityThreshhold_, path, optimisedPath );
     path = optimisedPath;
 }
 

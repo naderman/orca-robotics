@@ -13,7 +13,9 @@
 #include "ipathplanner2d.h"
 #include <orcamisc/orcamisc.h>
 
+// Distance to a 4-adjacent cell
 const float AC = 1.0;
+// Distance to a diagonal 8-adjacent cell
 const float DC = 1.4142;
 
 using namespace std;
@@ -58,7 +60,7 @@ float element( const FloatMap &floatMap,  Cell2D c )
 { 
     return element( floatMap, c.x(), c.y() );
 }
-    
+
 int sub2ind( const int          &indX,
              const int          &indY,
              const unsigned int &sizeX,
@@ -244,12 +246,24 @@ bool isTraversableNeighbors( const OgMap &ogMap,
 inline bool isTraversableNeighbors( const orcaogmap::OgMap & ogMap, const Cell2D cell, const float traversabilityThreshhold )
 { return ( isTraversableNeighbors(ogMap,cell.x(),cell.y(),traversabilityThreshhold) ); } 
 
-// Checks whether cell is in a free space region. If not, attempts to move it into one of the numCells surrounding cells. 
+// Checks whether cell is in a free space region.
+// If 'checkForNan' is set, 'nan' means non-free.  Else '0' means non-free.
+// If not, attempts to move it into one of the numCells surrounding cells. 
 // If successful return TRUE, otherwise FALSE.
-bool validateCell( const FloatMap & navMap, Cell2D & c, int numCells )
+bool validateCell( const FloatMap & theMap, Cell2D & c, int numCells, bool checkForNan )
 {
+    {
+        bool isFree;
+        if ( checkForNan ) 
+            isFree = !containsNan( theMap, c );
+        else 
+            isFree = element( theMap, c ) != 0;
+        if( isFree ) return true;
 
-    if( !containsNan( navMap, c ) ) return true;
+        cout<<"TRACE(pathplanutils.cpp): validateCell(): !isFree." << endl;
+        cout<<"TRACE(pathplanutils.cpp): element(theMap,c): " << element(theMap,c) << endl;
+
+    }
 
     //cout<< "validateCell: ("<<c.x()<<","<<c.y()<<") is inside or too close to obstacle, trying too move it out..." << endl;
 
@@ -267,7 +281,12 @@ bool validateCell( const FloatMap & navMap, Cell2D & c, int numCells )
             for ( int k=0; k<4; k++ )
             {
                 q1 = adjacentCell(q, k);
-                if ( containsNan( navMap,q1 ) )
+
+                bool isFree;
+                if ( checkForNan ) isFree = !containsNan( theMap, c );
+                else isFree = element( theMap, c ) != 0;
+
+                if ( !isFree )
                 {
                     Lnext.push_back( q1 );
                 }
@@ -336,7 +355,11 @@ int robotDiameterInCells( const OgMap & ogMap, const double robotDiameterMetres 
 }
 
 bool
-calcSimpleNavigation( const OgMap & ogMap, FloatMap & navMap, Cell2D & startCell, const double traversabilityThreshhold, const double robotDiameterMetres )
+calcSimpleNavigation( const OgMap  &ogMap,
+                      FloatMap     &navMap,
+                      Cell2D       &startCell,
+                      const double  traversabilityThreshhold,
+                      const double  robotDiameterMetres )
 {
 
     if ( ogMap.numCellsX()==0 || ogMap.numCellsY()==0 ) {
@@ -380,7 +403,7 @@ calcSimpleNavigation( const OgMap & ogMap, FloatMap & navMap, Cell2D & startCell
     cout << "growObstaclesNavMap took " << watch.elapsedSeconds() << " s" << endl << endl;
 
     //check current cell is sane (and shift it slightly if it isn't)
-    if( !validateCell( navMap, startCell, robotDiameterInCells(ogMap, robotDiameterMetres) ) ) {
+    if( !validateCell( navMap, startCell, robotDiameterInCells(ogMap, robotDiameterMetres), true ) ) {
         cout << "ERROR(pathplanutils.cpp): calcSimpleNavigation: startCell not valid. Returning..." << endl;
         return false;
     }
@@ -565,31 +588,37 @@ void growObstaclesOgMap( OgMap        &ogMap,
 
 
 
-bool calcSkeletonNavigation( const orcaogmap::OgMap ogMap,
-                             FloatMap navMap,
-                             Cell2D startCell,
-                             const double traversabilityThreshhold,
-                             const double robotDiameterMetres )
+bool calcSkeletonNavigation( const orcaogmap::OgMap &ogMap,
+                             FloatMap               &navMap,
+                             Cell2D                 &startCell,
+                             const double            traversabilityThreshhold,
+                             const double            robotDiameterMetres )
 {
     Cell2DVector skel;
     FloatMap distGrid;
+    FloatMap costMap;
     
     // 1. Compute skeleton for this ogmap
     if ( !computeSkeleton( ogMap,
-                           navMap,
                            skel,
                            distGrid,
                            traversabilityThreshhold,
                            robotDiameterMetres ) ) return false;
 
     // 2. Connect start cell to skeleton 
-    if( !connectCell2Skeleton( skel, startCell, navMap, distGrid, robotDiameterInCells(ogMap, robotDiameterMetres) ) ) return false;
+    if( !connectCell2Skeleton( skel,
+                               startCell,
+                               distGrid,
+                               robotDiameterInCells(ogMap, robotDiameterMetres) ) ) return false;
 
-    // 3. Compute potential function U along the skeleton
-    if( !computePotentialSkeleton( ogMap, navMap, skel, startCell ) ) return false;
+    // 3. calculate costs
+    computeCostsFromDistGrid( distGrid, costMap, ogMap.metresPerCellX() );
 
-    // 4. Compute potential function U in the free space
-    computePotentialFreeSpace( ogMap, navMap, skel, traversabilityThreshhold );
+    // 4. Compute potential function U along the skeleton
+    if( !computePotentialSkeleton( ogMap, costMap, navMap, skel, startCell ) ) return false;
+
+    // 5. Compute potential function U in the free space
+    computePotentialFreeSpace( ogMap, costMap, navMap, skel, traversabilityThreshhold );
 
     return true;
 }
@@ -626,9 +655,46 @@ void makeOgMapBoundary( orcaogmap::OgMap ogMap )
     }
 }
 
+void
+computeCostsFromDistGrid( const FloatMap      &distGrid,
+                          FloatMap            &costMap,
+                          double               metresPerCell,
+                          const CostEvaluator &costEvaluator )
+{
+    // initialise the costMap
+    costMap.resize( distGrid.sizeX(), distGrid.sizeY() );
+    costMap.fill( NAN );
+
+    for ( uint xi = 0; xi < distGrid.sizeX(); xi++ )
+    {
+        for ( uint yi = 0; yi < distGrid.sizeY(); yi++ )
+        {
+            costMap.setElement( xi, yi, 
+                                costEvaluator.costAtDistFromObstacle( metresPerCell*element(distGrid,xi,yi) ) );
+        }
+    }
+}
+
+void computeUniformCosts( const orcaogmap::OgMap &ogMap,
+                          FloatMap               &costMap,
+                          double                  traversabilityThreshhold )
+{
+
+    costMap.resize( ogMap.numCellsX(), ogMap.numCellsY() );
+
+    for ( int x=0; x < ogMap.numCellsX(); x++ )
+    {
+        for ( int y=0; y < ogMap.numCellsY(); y++ )
+        {
+            if ( isTraversable( ogMap, x, y, traversabilityThreshhold ) )
+                costMap.setElement( x, y, 1 );
+            else
+                costMap.setElement( x, y, NAN );
+        }
+    }
+}
 
 bool computeSkeleton( const orcaogmap::OgMap &ogMap,
-                      FloatMap               &navMap,
                       Cell2DVector           &skel,
                       FloatMap               &distGrid,
                       double                  traversabilityThreshhold,
@@ -646,10 +712,6 @@ bool computeSkeleton( const orcaogmap::OgMap &ogMap,
     distGrid.resize( sx, sy );
     distGrid.fill( 0 );
 
-    // initialise the navMap
-    navMap.resize( sx, sy );
-    navMap.fill( NAN );
-    
     // take robot size into account
     const int ALPHA = 2 * MAX(robotDiameterCells/2,2);
 
@@ -670,9 +732,6 @@ bool computeSkeleton( const orcaogmap::OgMap &ogMap,
             {
                 // for every cell q in GCfree do U(q)=M (large number)
                 distGrid.setElement( i,j, M );
-                
-                // set the value grid to M - represents traversable and untouched
-                navMap.setElement( i,j, M );
             }
             // cell is occupied
             else 
@@ -692,7 +751,6 @@ bool computeSkeleton( const orcaogmap::OgMap &ogMap,
     //        At this point:
     //        - LCurr    : the list of all cells within an obstacle but bordering GCfree
     //        - distGrid : every cell in GCfree = M, every other cell = 0
-    //        - navMap   : every cell in GCfree = M, every other cell = nan
     //        - zeroMap  : every border cell (ie elements of LCurr): a unique ID
     //                     every other  cell: undefined
     //
@@ -700,8 +758,8 @@ bool computeSkeleton( const orcaogmap::OgMap &ogMap,
     //        - sets distGrid to the 4-distance to the nearest obstacle
     //        - sets zeroMap: each cell will contain the ID of the border point that originated 
     //                        the wave which first reached that cell.
-    //        - uses but doesn't modify navMap
     
+    assert( ogMap.metresPerCellX() == ogMap.metresPerCellY() && "Can't handle non-square map cells" );
 
     // FIND SKELETON
     // for i=0,1,..., until Li is empty
@@ -718,7 +776,7 @@ bool computeSkeleton( const orcaogmap::OgMap &ogMap,
                 q1 = adjacentCell(q, k);
 
                 // if q1 is traversable ...
-                if ( !containsNan( navMap, q1 ) )
+                if ( element( distGrid, q1 ) != 0 )
                 {
                     int val;
                     if ( element(distGrid, q1 )==M ) // i.e. traversable and untouched
@@ -790,7 +848,6 @@ findClosestPointOnSkeleton( const Cell2DVector   &skel,
 bool
 connectCell2Skeleton( Cell2DVector   &skel,
                       Cell2D         &cell,
-                      const FloatMap &navMap,
                       const FloatMap &distGrid,
                       int             robotDiameterCells )
 {
@@ -798,7 +855,7 @@ connectCell2Skeleton( Cell2DVector   &skel,
     Cell2DVector G;
 
     // check current cell is sane (and shift it slightly if it isn't)
-    if( !validateCell( navMap, cell, robotDiameterCells ) ) 
+    if( !validateCell( distGrid, cell, robotDiameterCells, false ) ) 
     {
         cout << "ERROR(pathplanutils.cpp, connectCell2Skeleton): cell is invalid" <<endl;
         return false;
@@ -822,7 +879,7 @@ connectCell2Skeleton( Cell2DVector   &skel,
             G.push_back( q );
 
             //cout<<"("<<q.x()<<","<<q.y()<<")"<<endl;
-            if ( ++count>navMap.sizeX() )
+            if ( ++count>distGrid.sizeX() )
             {
                 std::cout<<"ERROR(pathplanutils.cpp, connectCell2Skeleton): Can't reach skeleton from cell ("<<cell.x()<<","<<cell.y()<<") "<<"skeleton size:"<<skel.size()<<std::endl;
                 return false;
@@ -837,19 +894,22 @@ connectCell2Skeleton( Cell2DVector   &skel,
 }
 
 bool
-computePotentialSkeleton( const OgMap & ogMap, FloatMap & navMap, const Cell2DVector & skel, const Cell2D & startCell )
+computePotentialSkeleton( const OgMap        &ogMap,
+                          const FloatMap     &costMap,
+                          FloatMap           &navMap,
+                          const Cell2DVector &skel,
+                          const Cell2D       &startCell )
 {
-
-
-    // large number
-    const double M = 2.0 * ogMap.numCellsX() * ogMap.numCellsY();
-
     // startCell must be on the skeleton
     if( !isIncluded( skel, startCell ) ) 
     {
         cout << "ERROR(pathplanutils.cpp, skeleton2SkeletonUtil): Start cell does not lie on the skeleton" << endl;
         return false;   
     }
+
+    // initialise navMap
+    navMap.resize( ogMap.numCellsX(), ogMap.numCellsY() );
+    navMap.fill( NAN );
 
     // U(q_goal) = 0
     navMap.setElement( startCell, 0.0 );
@@ -882,14 +942,15 @@ computePotentialSkeleton( const OgMap & ogMap, FloatMap & navMap, const Cell2DVe
             // if cell is not part of the skeleton go back to beginning of for loop
             if ( !isIncluded( skel, q1 ) ) continue; 
 
-            // if the potential equals to the large number we need to update it
-            if ( element(navMap, q1 ) > M-1.0 ) // not sure if we can safely say ==M because of precision?
+            // if we haven't set the potential yet we need to
+            if ( containsNan(navMap, q1) )
             {
-                if ( k<4 ) {
-                    q1val = qval + AC;  // adjacent cells (0-3)
-                } else {
-                    q1val = qval + DC;  // diagonal cells (4-7)
-                }
+//                 if ( k<4 ) {
+//                     q1val = qval + AC;  // adjacent cells (0-3)
+//                 } else {
+//                     q1val = qval + DC;  // diagonal cells (4-7)
+//                 }
+                q1val = qval + element( costMap, q1 );
                 navMap.setElement( q1, q1val );
                 
                 bool hasInserted = false;
@@ -918,7 +979,11 @@ computePotentialSkeleton( const OgMap & ogMap, FloatMap & navMap, const Cell2DVe
     return true;
 }
 
-void computePotentialFreeSpace( const OgMap & ogMap, FloatMap & navMap, const Cell2DVector & skel, const double traversabilityThreshhold )
+void computePotentialFreeSpace( const OgMap        &ogMap,
+                                const FloatMap     &costMap,
+                                FloatMap           &navMap,
+                                const Cell2DVector &skel,
+                                const double        traversabilityThreshhold )
 {
     double M = 2.0 * ogMap.numCellsX() * ogMap.numCellsY();
 
@@ -943,7 +1008,7 @@ void computePotentialFreeSpace( const OgMap & ogMap, FloatMap & navMap, const Ce
                 {
                     if ( element(navMap, q1 ) == M  )
                     {
-                        navMap.setElement( q1, element(navMap, q ) +AC  );
+                        navMap.setElement( q1, element(navMap, q ) + element(costMap,q1) );
                         Lnext.push_back( q1 );
                     }
                 }
@@ -967,7 +1032,7 @@ Result calcPath( const OgMap    &ogMap,
     int robotDiameterCells = robotDiameterInCells( ogMap, robotDiameterMetres );
 
     //check if target position is sane
-    if( !validateCell( navMap, goalCell, robotDiameterCells ) )
+    if( !validateCell( navMap, goalCell, robotDiameterCells, true ) )
     {
         cout<<"ERROR(pathplanutils.cpp, calcPath): Goal cell is not valid"<<endl;
         return PathDestinationNotValid;
@@ -1018,10 +1083,14 @@ Result calcPath( const OgMap    &ogMap,
 
 
 void optimizePath( const OgMap        &ogMap,
+                   const FloatMap     &costMap,
                    double              traversabilityThreshhold,
                    const Cell2DVector &origPath,
                    Cell2DVector       &optimisedPath )
 {
+    cout<<"TRACE(pathplanutils.cpp): TODO: uses costs in optimizePath()" << endl;
+
+
     OgLosTracer rayTracer( ogMap, (unsigned char)(traversabilityThreshhold*orcaogmap::CELL_OCCUPIED) );
 
 #ifndef NDEBUG

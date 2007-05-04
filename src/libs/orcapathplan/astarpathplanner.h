@@ -45,8 +45,9 @@ private:
                       int           endX,
                       int           endY ) const;
 
-    orcaogmap::OgMap ogMap_;
+    orcaogmap::OgMap     ogMap_;
     orcapathplan::AStar* aStar_;
+    FloatMap             costMap_;
 
     const double robotDiameterMetres_;
     const double traversabilityThreshhold_;

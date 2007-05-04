@@ -125,9 +125,14 @@ namespace orcapathplan
     // Notes on parameters:
     //
     // - distGrid:
-    //   - for every OG cell, stores the distance to the nearest obstacle cell
+    //   - for every OG cell, stores the 4-distance to the nearest obstacle cell
+    //   - zero means 'obstacle in this cell'.
     //     - used in generating the skeleton
     //     - useful for connecting free space cells to the skeleton (just follow the gradient of distGrid until you hit the skeleton)
+    //
+    // - costMap: 
+    //   - stores the cost of moving through each cell
+    //   - 'NAN' represents infinite cost.
     //
     // - navMap: 
     //   - contains the potential at each OG cell
@@ -137,21 +142,18 @@ namespace orcapathplan
     // - skel:
     //   - A vector of cells which lie on the skeleton
     //
-    
+
     //! Computes the skeleton for a given OgMap. Returns false if skeleton can't be computed.
     //! Outputs (needn't be initialised before calling this function):
-    //!  - navMap
     //!  - skel
     //!  - distGrid
     bool computeSkeleton( const orcaogmap::OgMap &ogMap,
-                          FloatMap               &navMap,
                           Cell2DVector           &skel,
                           FloatMap               &distGrid,
                           double                  traversabilityThreshhold,
                           double                  robotDiameterMetres );
 
-    
-    //! Finds the point on the skeleton nearest to fromCell.
+    //! Finds the point on the skeleton nearest to fromCell, by surfing the gradient of distGrid.
     //! returns false on failure.
     bool findClosestPointOnSkeleton( const Cell2DVector   &skel,
                                      const FloatMap       &distGrid,
@@ -159,33 +161,60 @@ namespace orcapathplan
                                      Cell2D               &closestCell );
 
     //! Connects a cell to a given skeleton, by surfing the gradient of distGrid away from obstacles
+    //! Modifies skel to include the connection.
     bool connectCell2Skeleton( Cell2DVector   &skel,
                                Cell2D         &cell,
-                               const FloatMap &navMap,
                                const FloatMap &distGrid,
                                int             robotRadiusCells );
 
     //! Computes the potential function U along the skeleton
     bool computePotentialSkeleton( const orcaogmap::OgMap &ogMap,
+                                   const FloatMap         &costMap,
                                    FloatMap               &navMap,
                                    const Cell2DVector     &skel,
                                    const Cell2D           &startCell );
 
     //! Computes the potential function U in the free space (not on the skeleton)
     void computePotentialFreeSpace( const orcaogmap::OgMap &ogMap,
+                                    const FloatMap         &costMap,
                                     FloatMap               &navMap,
                                     const Cell2DVector     &skel,
                                     double                  traversabilityThreshhold );
-    
-    //! Convenience function that calls the last four functions sequentially 
+
+    //! Convenience function that calls the other functions sequentially 
     //! (algorithm as described by Latombe, SKELETON and NF2, ch.4.2.2, p.324).
     //! Returns false if unsuccessful.
-    bool calcSkeletonNavigation( orcaogmap::OgMap &ogMap,
-                                 FloatMap         &navMap,
-                                 Cell2D           &startCell,
-                                 double            traversabilityThreshhold,
-                                 double            robotDiameterMetres);
+    bool calcSkeletonNavigation( const orcaogmap::OgMap &ogMap,
+                                 FloatMap               &navMap,
+                                 Cell2D                 &startCell,
+                                 double                  traversabilityThreshhold,
+                                 double                  robotDiameterMetres);
+
+    // The costs in the navMap and costMap are set using something deriving from CostEvaluator.
+    class CostEvaluator {
+    public:
+        virtual ~CostEvaluator() {}
+        
+        // returns the cost of moving through a cell whose 4-distance to the nearest obstacle is distInMetres.
+        virtual double costAtDistFromObstacle( double distInMetres ) const=0;
+    };
+
+    class DefaultCostEvaluator : public CostEvaluator {
+    public:
+        double costAtDistFromObstacle( double distInMetres ) const
+            { if ( distInMetres > 0 ) return 1; else return NAN; }
+    };
     
+    //! Generate costs from distGrid
+    void computeCostsFromDistGrid( const FloatMap      &distGrid,
+                                   FloatMap            &costMap,
+                                   double               metresPerCell,
+                                   const CostEvaluator &costEvaluator=DefaultCostEvaluator() );
+
+    void computeUniformCosts( const orcaogmap::OgMap &ogMap,
+                              FloatMap               &costMap,
+                              double                  traversabilityThreshhold );
+
 // =========================================================================
 
 // ================= GENERAL PATHPLANNING FUNCTIONS ====================
@@ -208,6 +237,7 @@ namespace orcapathplan
     //! by considering cells other than just those in origPath.
     //!
     void optimizePath( const orcaogmap::OgMap &ogMap,
+                       const FloatMap         &costMap,
                        double                  traversabilityThreshhold,
                        const Cell2DVector     &origPath,
                        Cell2DVector           &optimisedPath );

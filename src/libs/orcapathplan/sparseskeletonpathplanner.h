@@ -88,10 +88,10 @@ private:
     // (a pointer:) The map that the sparse planner uses
     const orcaogmap::OgMap *planOgMap_;
 
-    FloatMap     navMapSkel_;
     Cell2DVector skel_;
     FloatMap     distGrid_;
     SparseSkel   *sparseSkel_;
+    FloatMap     costMap_;
 
     const double robotDiameterMetres_;
     const double traversabilityThreshhold_;
