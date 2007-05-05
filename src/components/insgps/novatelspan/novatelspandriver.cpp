@@ -239,25 +239,6 @@ NovatelSpanInsGpsDriver::init()
     put = serial_->write( "datum wgs84\r\n" );
 
     /////////////////////////////////////////////////
-    // turn special receiver modes on/off
-    /////////////////////////////////////////////////
-
-    ////////////////////////////////////////
-    // read mode params from the config file
-    Ice::PropertiesPtr modeProp = context_.properties();
-    std::string modePrefix = context_.tag();
-    modePrefix += ".Config.Novatel.Mode.";
-    int enableMode;
-
-    // turn SBAS on/off (essentially global DGPS)
-    enableMode = orcaice::getPropertyAsIntWithDefault( modeProp, modePrefix+"SBAS", 0 );
-    if(enableMode){
-        put = serial_->write( "SBASCONTROL ENABLE Auto 0 NONE\r\n");
-    }
-    else{
-        put = serial_->write( "SBASCONTROL DISABLE Auto 0 NONE\r\n");
-    }
-    /////////////////////////////////////////////////
     // tell the receiver what kind of info it should spit out
     /////////////////////////////////////////////////
 
@@ -309,6 +290,36 @@ NovatelSpanInsGpsDriver::init()
         put = serial_->write( "log inscovsb onchanged\r\n" );
     }
 
+    /////////////////////////////////////////////////
+    // turn special receiver modes on/off
+    /////////////////////////////////////////////////
+
+    ////////////////////////////////////////
+    // read mode params from the config file
+    Ice::PropertiesPtr modeProp = context_.properties();
+    std::string modePrefix = context_.tag();
+    modePrefix += ".Config.Novatel.Mode.";
+    int enableMode;
+
+    // turn SBAS on/off (essentially global DGPS)
+    enableMode = orcaice::getPropertyAsIntWithDefault( modeProp, modePrefix+"SBAS", 0 );
+    if(enableMode){
+        put = serial_->write( "SBASCONTROL ENABLE Auto 0 ZEROTOTWO\r\n");
+        //we try to use WAAS satellites even below the horizon
+        put = serial_->write( "WAASECUTOFF -5.0\r\n");
+    }
+    else{
+        put = serial_->write( "SBASCONTROL DISABLE Auto 0 NONE\r\n");
+    }
+    
+    //rtk
+    enableMode = orcaice::getPropertyAsIntWithDefault( modeProp, prefix+"rtk", 0 );
+    if(enableMode){
+        put = serial_->write( "com com2,57600,n,8,1,n,off,on\r\n" );
+        put = serial_->write( "interfacemode com2 rtca none\r\n" );
+    }
+
+
     start();
     enabled_ = true;
 
@@ -331,7 +342,7 @@ NovatelSpanInsGpsDriver::disable()
     put = serial_->write( "unlogall\r\n" );
     //printf("put %d bytes\n",put);
     serial_->drain();
-        
+
     enabled_ = false;
 
     return 0;
@@ -463,7 +474,7 @@ NovatelSpanInsGpsDriver::run()
                 #ifdef __QNX__
                     setprio( 0, threadPriorityHigh_ );
                 #endif
-                	
+
                 // Guaranteed not to block for long.
                 int ret = serial_->data_avail_wait();
                 // timeOfRead_ = IceUtil::Time::now();
@@ -481,7 +492,7 @@ NovatelSpanInsGpsDriver::run()
                 {
                      throw NovatelSpanException("Timed out while waiting for data: ");
                 }
-                    
+
                 #ifdef __QNX__
                     setprio( 0, threadPriorityLow_ );
                 #endif
@@ -502,7 +513,7 @@ NovatelSpanInsGpsDriver::run()
                 ss << "novatelspandriver::run(): Caught Ice::exception: " << e;
                 context_.tracer()->warning( ss.str() );
             }
-        
+
             catch ( ... )
             {
                 cout << "novatelspandriver::run(): Caught some other exception..." << endl;
@@ -533,8 +544,8 @@ NovatelSpanInsGpsDriver::run()
         ss << "ERROR(novatelspandriver::run()): Caught unexpected unknown exception.";
         context_.tracer()->error( ss.str() );
     }
-      
-}               
+
+}
 
 
 int
@@ -549,7 +560,7 @@ NovatelSpanInsGpsDriver::readMsgsFromHardware()
 
     int ret;
     int msgs = 0;
-        
+
     // read novatel binary messages
     ret = read_message( &serial_data_ );
     // cout << "readMsgsFromHardware(): ret: " << ret << endl;
@@ -557,9 +568,9 @@ NovatelSpanInsGpsDriver::readMsgsFromHardware()
 
     if( ret>0 )
     {
-    
-	// cout << "id: " << ret << endl; 
-	if( populateData( ret ) == 0 )
+
+    // cout << "id: " << ret << endl; 
+    if( populateData( ret ) == 0 )
         {
             msgs++;
         }
@@ -578,7 +589,7 @@ NovatelSpanInsGpsDriver::readMsgsFromHardware()
             return -1;
         }
     }
-    
+
     //return how many messages read
     return msgs;
 }
@@ -586,20 +597,52 @@ NovatelSpanInsGpsDriver::readMsgsFromHardware()
 orca::GpsPositionType
 convertPosType( unsigned int novatelPosType )
 {
+    //static int printCnt;
+    //if(printCnt++>=1){
+        //printCnt = 0;
+        switch(novatelPosType){
+            case 0: cout <<"GPS pos type: NONE" <<endl;break;
+            case 1: cout <<"GPS pos type: FIXEDPOS" <<endl;break;
+            case 2: cout <<"GPS pos type: FIXEDHEIGHT" <<endl;break;
+            case 4: cout <<"GPS pos type: FLOATCONV" <<endl;break;
+            case 5: cout <<"GPS pos type: WIDELANE" <<endl;break;
+            case 6: cout <<"GPS pos type: NARROWLANE" <<endl;break;
+            case 8: cout <<"GPS pos type: DOPPLER_VELOCITY" <<endl;break;
+            case 16: cout <<"GPS pos type: SINGLE" <<endl;break;
+            case 17: cout <<"GPS pos type: PSRDIFF" <<endl;break;
+            case 18: cout <<"GPS pos type: WAAS" <<endl;break;
+            case 19: cout <<"GPS pos type: PROPOGATED" <<endl;break;
+            case 20: cout <<"GPS pos type: OMNISTAR" <<endl;break;
+            case 32: cout <<"GPS pos type: L1_FLOAT" <<endl;break;
+            case 33: cout <<"GPS pos type: IONFREE_FLOAT" <<endl;break;
+            case 34: cout <<"GPS pos type: NARROW_FLOAT" <<endl;break;
+            case 48: cout <<"GPS pos type: L1_INT" <<endl;break;
+            case 49: cout <<"GPS pos type: WIDE_INT" <<endl;break;
+            case 50: cout <<"GPS pos type: NARROW_INT" <<endl;break;
+            case 51: cout <<"GPS pos type: RTK_DIRECT_INS" <<endl;break;
+            case 52: cout <<"GPS pos type: INS" <<endl;break;
+            case 53: cout <<"GPS pos type: INS_PSRSP" <<endl;break;
+            case 54: cout <<"GPS pos type: INS_PSRFLOAT" <<endl;break;
+            case 55: cout <<"GPS pos type: INS_RTKFLOAT" <<endl;break;
+            case 56: cout <<"GPS pos type: INS_RTKFIXED" <<endl;break;
+            case 64: cout <<"GPS pos type: OMNISTAR_HP" <<endl;break;
+            default: cout <<"GPS pos type: Unknown: "<<novatelPosType <<endl;break;
+        };
+    //};
     if ( novatelPosType == 0 )
     {
         return orca::GpsPositionTypeNotAvailable;
     }
     else
     {
-        cout<<"TRACE(novatelspandriver.cpp): WARNING: using bogus positionType: Autonomous." << endl;
+        //cout<<"TRACE(novatelspandriver.cpp): WARNING: using bogus positionType: Autonomous." << endl;
         return orca::GpsPositionTypeAutonomous;
     }
 }
 
 int
 NovatelSpanInsGpsDriver::populateData( int id )
-{    
+{
     switch(id)
     {
         case novatel::RXSTATUSB_LOG_TYPE:
@@ -618,7 +661,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
 //             printf( "timesync week = %lu, mseconds = %lu\n",
 //                    TIMESYNC_.data.week,
 //                    TIMESYNC_.data.mseconds );
-//             
+//
 //             struct timeval blah;
 //             mkutctime(TIMESYNC_.data.week,
 //                             ((double)TIMESYNC_.data.mseconds)/1000,
@@ -636,7 +679,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
                 context_.tracer()->info( "UTC time not available", 8 );
                 break;
             }
-            
+
             // retrieve all the offsets
             pps_.offset=TIME_.data.dGPSOffset;
             pps_.offset_std=TIME_.data.dOffsetStd;
@@ -648,7 +691,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
             gpsTimeData_.utcDate.day = TIME_.data.ucUtcDay;
             gpsTimeData_.utcDate.month = TIME_.data.ucUtcMonth-1;
             gpsTimeData_.utcDate.year = TIME_.data.lUtcYear-1900;
-            
+
             // calculate UTC time
             // struct tm broken_time;
             // broken_time.tm_sec=TIME_.data.lUtcMillisec/1000;
@@ -667,17 +710,17 @@ NovatelSpanInsGpsDriver::populateData( int id )
 //             {
 //                 fprintf(stderr,"mktime() failed\n");
 //             }
-//             
+//
 //             // adjust for timezone
 //             now.tv_sec- = timezone;
 //             now.tv_usec=1000*(TIME_.data.lUtcMillisec%1000);
-// 
+//
 //             // copy in
 //             pps_.time=now;
 
             // set flag
             // newGpsTime_ = true;       
-            
+
             return 0;       
             break;
         }
@@ -699,31 +742,49 @@ NovatelSpanInsGpsDriver::populateData( int id )
             gpsData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
 
             // TODO: made up the zone here... need to read the real zone         
-            int zone = 0;
-
+             int zone = 0;
+            position_.zone = zone;
             // double lat = BESTGPSPOS_.data.latitude;
             gpsData_.latitude = BESTGPSPOS_.data.latitude;
             // double lng = BESTGPSPOS_.data.longitude;
             gpsData_.longitude = BESTGPSPOS_.data.longitude;
             // position_.down = -BESTGPSPOS_.data.height;
             gpsData_.altitude = BESTGPSPOS_.data.height;
-                
+
             // depends on the number of satellites... not sure how to include this in
             // the gps interface       
             sol_status_ = BESTGPSPOS_.data.sol_status;
-            
+
+            // TODO: are the no. of obs the same as satellites?
+            gpsData_.satellites = BESTGPSPOS_.data.num_obs;
+
+            static int gpsStatusCnt;
+            if(gpsStatusCnt++>=5){
+                gpsStatusCnt = 0;
+                cout << "   Number of obs: " << (int)(BESTGPSPOS_.data.num_obs)
+                    <<" GPSL1: "
+                    <<(int)(BESTGPSPOS_.data.num_GPSL1)
+                    <<" L1: "
+                    <<(int)(BESTGPSPOS_.data.num_L1)
+                    <<" L2: "
+                    << (int)(BESTGPSPOS_.data.num_L2)
+                    << endl;
+                cout << "   Solution age: " << BESTGPSPOS_.data.sol_age <<  endl;
+                cout << "   Diff age: " << BESTGPSPOS_.data.diff_age <<  endl;
+            }
+
+
             //LatLon2MGA(lat,lng,
             //           position_.northing, position_.easting, zone);
-            
-            position_.zone = zone;
-            
+
+
             // set flag
             // newGpsData_ = true;
 
             // context_.tracer()->debug( "TRACE(novatelspandriver::populateData()): Pushing gps data to buffer", 5);
             gpsDataBuffer_.push( gpsData_ );
             // context_.tracer()->debug( "TRACE(novatelspandriver::populateData()): Pushed gps data to buffer", 5);
-            
+
             return 0;       
             break;
         }
@@ -747,8 +808,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
                 localise3dData_.hypotheses[0].weight = 1;
             }
             // cout << "lattitude and longitude: " << INSPVA_.data.latitude << " " << INSPVA_.data.longitude << endl;
-            
-            // int zone;
+
             localise3dData_.hypotheses[0].mean.p.x = INSPVA_.data.longitude;
             localise3dData_.hypotheses[0].mean.p.y = INSPVA_.data.latitude;
             localise3dData_.hypotheses[0].mean.p.z = INSPVA_.data.height;
@@ -761,14 +821,14 @@ NovatelSpanInsGpsDriver::populateData( int id )
 //          #error // just to make sure that the #ifdef is working in CMake
 
             // cout << "MGA x and y: " << localise3dData_.pose.p.x << " " << localise3dData_.pose.p.y << endl;
-       
+
             // TODO: Might want to put velocities into odometry
             // velocities
             odometry3dData_.motion.v.x = INSPVA_.data.north_vel;
             odometry3dData_.motion.v.y = INSPVA_.data.east_vel;
             // down = -up
             odometry3dData_.motion.v.z = -INSPVA_.data.up_vel;
-            
+
             //attitude
             localise3dData_.hypotheses[0].mean.o.r = INSPVA_.data.roll/180*M_PI;
             localise3dData_.hypotheses[0].mean.o.p = INSPVA_.data.pitch/180*M_PI;
@@ -790,7 +850,11 @@ NovatelSpanInsGpsDriver::populateData( int id )
             localise3dDataBuffer_.push( localise3dData_ );
             odometry3dDataBuffer_.push( odometry3dData_ );
             
-            context_.tracer()->info( insStatusToString( INSPVA_.data.status ), 6 );
+            static int insStatusCnt;
+            if(insStatusCnt++ >=100){
+                insStatusCnt = 0;
+                context_.tracer()->info( insStatusToString( INSPVA_.data.status ), 6 );
+            }
             
             return 0;       
             break;
