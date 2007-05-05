@@ -55,12 +55,13 @@ Config.Novatel.VehicleBodyRotation.Default=0 0 0
 Config.Novatel.VehicleBodyRotationUncertainty.Comment=Uncertainty in vehiclebodyrotation magic numbers
 Config.Novatel.VehicleBodyRotationUncertainty.Default=0 0 0
 
+Config.Novatel.LogEnable.bestgpsposb.Default=0
+Config.Novatel.LogEnable.inscovsb.Default=0
+Config.Novatel.LogEnable.inspvasb.Default=0
+Config.Novatel.LogEnable.rawimusb.Default=0
 Config.Novatel.LogEnable.rxstatusb.Default=0
 Config.Novatel.LogEnable.timesyncb.Default=0
-Config.Novatel.LogEnable.bestgpsposb.Default=0
-Config.Novatel.LogEnable.inspvasb.Default=1
-Config.Novatel.LogEnable.rawimusb.Default=0
-Config.Novatel.LogEnable.inscovsb.Default=0
 
+Config.Novatel.Mode.rtk.Default=0
 Config.Novatel.Mode.SBAS.Default=0
 
