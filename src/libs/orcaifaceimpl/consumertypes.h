@@ -13,7 +13,9 @@
 
 #include <orcaifaceimpl/proxiedconsumer.h>
 #include <orca/rangescanner2d.h>
+#include <orca/localise3d.h>
 #include <orca/localise2d.h>
+#include <orca/odometry3d.h>
 #include <orca/odometry2d.h>
 #include <orca/drivebicycle.h>
 #include <orca/ogmap.h>
@@ -30,6 +32,11 @@ typedef ProxiedConsumer<orca::RangeScanner2dConsumer,
                         orca::RangeScanner2dConsumerPrx,
                         orca::RangeScanner2dDataPtr>       ProxiedRangeScanner2dConsumer;
 typedef IceUtil::Handle<ProxiedRangeScanner2dConsumer>     ProxiedRangeScanner2dConsumerPtr;
+
+typedef ProxiedConsumer<orca::Localise3dConsumer,
+                        orca::Localise3dConsumerPrx,
+                        orca::Localise3dData>              ProxiedLocalise3dConsumer;
+typedef IceUtil::Handle<ProxiedLocalise3dConsumer>         ProxiedLocalise3dConsumerPtr;
 
 typedef ProxiedConsumer<orca::Localise2dConsumer,
                         orca::Localise2dConsumerPrx,
