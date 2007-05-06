@@ -48,7 +48,10 @@ MainLoop::MainLoop( DriverFactory                    &driverFactory,
       clock_(clock),
       localisationLagSec_(0),
       testMode_(false),
-      context_(context)
+      context_(context),
+      haveSubscribedToOdometry_(false),
+      haveSubscribedToLocalise2d_(false),
+      haveSubscribedToRangeScanner_(false)
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
     context_.status()->initialising( SUBSYSTEM );
@@ -74,7 +77,10 @@ MainLoop::MainLoop( DriverFactory                   &driverFactory,
       clock_(clock),
       localisationLagSec_(0),
       testMode_(true),
-      context_(context)
+      context_(context),
+      haveSubscribedToOdometry_(false),
+      haveSubscribedToLocalise2d_(false),
+      haveSubscribedToRangeScanner_(false)
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
     context_.status()->initialising( SUBSYSTEM );
@@ -202,6 +208,8 @@ MainLoop::connectToController()
 void
 MainLoop::subscribeForOdometry()
 {
+    if (haveSubscribedToOdometry_) return;
+    
     Odometry2dPrx   odomPrx;
     
     while ( isActive() )
@@ -243,11 +251,15 @@ MainLoop::subscribeForOdometry()
         sleep(2);
     }
     context_.tracer()->info( "Subscribed for odometry" );
+    haveSubscribedToOdometry_ = true;
 }
 
 void
 MainLoop::subscribeForLocalisation()
 {
+    
+    if (haveSubscribedToLocalise2d_) return;
+    
     Localise2dPrx   locPrx;
         
     while ( isActive() )
@@ -294,11 +306,14 @@ MainLoop::subscribeForLocalisation()
         sleep(2);
     }
     context_.tracer()->info( "Subscribed for localisation" );
+    haveSubscribedToLocalise2d_ = true;
 }
 
 void
 MainLoop::subscribeForObservations()
 {
+    if (haveSubscribedToRangeScanner_) return;
+    
     RangeScanner2dPrx obsPrx;
 
     while ( isActive() )
@@ -359,6 +374,7 @@ MainLoop::subscribeForObservations()
         sleep(2);
     }
     context_.tracer()->info( "Subscribed for laser" );
+    haveSubscribedToRangeScanner_ = true;
 }
 
 void
