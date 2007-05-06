@@ -43,6 +43,11 @@
 #define NAN (__builtin_nanf(""))
 #endif
 
+#ifndef INF
+//! Defines infinity
+#define INF (__builtin_inff())
+#endif
+
 /*****************************************************************************
  * CONVERSION MACROS
  *****************************************************************************/
