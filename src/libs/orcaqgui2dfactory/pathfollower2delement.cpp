@@ -413,7 +413,10 @@ PathFollower2dElement::sendPath( const PathFollowerInput &pathInput, bool activa
     try
     {
         // it's possible that we were desubscribed before, let's resubscribe to make sure
-        pathFollower2dPrx_->subscribe(callbackPrx_);
+        //
+        // using Ice3.2, we cannot resubscribe any more but the problem of getting desubscribed from IceStorm should have gone away.
+        // 
+//         pathFollower2dPrx_->subscribe(callbackPrx_);
 
         orca::PathFollower2dData data;
         bool isOk = pathInput.getPath( data );
