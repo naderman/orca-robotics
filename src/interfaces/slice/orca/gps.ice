@@ -160,7 +160,7 @@ interface GpsTimeConsumer
 };
 
 /*!
-    @brief Access to GPS data.
+    @brief Access to GpsData (raw data)
 */
 interface Gps
 {
@@ -196,6 +196,9 @@ interface Gps
     idempotent void unsubscribe( GpsConsumer* subscriber );
 };
 
+/*!
+    @brief Access to GpsMapGridData (northing, easting etc)
+*/
 interface GpsMapGrid
 {
     //! Return the latest map information
@@ -230,6 +233,9 @@ interface GpsMapGrid
     idempotent void unsubscribe( GpsMapGridConsumer* subscriber );
 };
 
+/*!
+    @brief Access to GpsTimeData (UTC)
+*/
 interface GpsTime
 {
     //! Return the latest timestamp information
