@@ -30,7 +30,6 @@ FakeGpsDriver::FakeGpsDriver(std::vector<double> &latitudes, std::vector<double>
 
 FakeGpsDriver::~FakeGpsDriver()
 {
-    disable();
 }
 
 bool 

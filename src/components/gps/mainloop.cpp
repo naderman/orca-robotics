@@ -88,6 +88,18 @@ MainLoop::~MainLoop()
 {
 }
 
+void 
+MainLoop::reportBogusValues( GpsData &gpsData, GpsMapGridData &gpsMapGridData, GpsTimeData &gpsTimeData)
+{
+    context_.tracer()->debug("Reporting bogus values with positionType 0", 3);
+    orcaice::setSane(gpsData);
+    orcaice::setSane(gpsMapGridData);
+    gpsData.positionType = orca::GpsPositionTypeNotAvailable;
+    gpsMapGridData.positionType = orca::GpsPositionTypeNotAvailable;
+    gpsInterface_->localSetAndSend(gpsData);
+    gpsMapGridInterface_->localSetAndSend(gpsMapGridData);
+}
+
 void
 MainLoop::run()
 {
@@ -111,76 +123,55 @@ MainLoop::run()
         while ( isActive() )
         {
             
-            // Loop is driven by waiting time of 1/2 second at the bottom
+            // Loop is driven by waiting time of 1/2 second
+            IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(500));
             
-            if ( hwDriver_->isEnabled() )
+            context_.tracer()->debug("Trying to read from driver now.", 3);
+            
+            // Read from hardware: parse all information in the serial buffer until empty
+            // as quickly as possible
+            while ( isActive() )
             {
-                context_.tracer()->debug("Trying to read from driver now", 3);
-                
-                // Read from hardware: parse all information in the serial buffer until empty
-                // as quickly as possible
                 int ret = hwDriver_->read();
-                if ( ret == -1 )
-                {
-                    string err = "Problem reading from GPS.  Shutting down hardware.";
-                    context_.tracer()->error( err );
-                    context_.status()->fault( SUBSYSTEM, err );
-                    hwDriver_->disable();
-                }
+                if (ret!=-1) break;
+                string err = "Problem reading from GPS. Trying to reinitialize.";
+                context_.tracer()->error( err );
+                context_.status()->fault( SUBSYSTEM, err );
+                hwDriver_->init();
+            }
+            context_.tracer()->debug("Read successfully from driver.", 3);
 
-                if ( !hwDriver_->hasFix() )
-                {
-                    context_.tracer()->debug("No GPS fix", 3);
-                    if (reportIfNoFix) {
-                        context_.tracer()->debug("Reporting bogus values with positionType 0", 3);
-                        orcaice::setSane(gpsData);
-                        orcaice::setSane(gpsMapGridData);
-                        gpsData.positionType = orca::GpsPositionTypeNotAvailable;
-                        gpsMapGridData.positionType = orca::GpsPositionTypeNotAvailable;
-                        gpsInterface_->localSetAndSend(gpsData);
-                        gpsMapGridInterface_->localSetAndSend(gpsMapGridData);
-                    }
-                }
-                else
-                {
-                    context_.tracer()->debug("We have a GPS fix", 3);
-                        
-                    int ret = hwDriver_->getData(gpsData);
-                    if (ret==0)
-                    {
-                        // publish it
-                        context_.tracer()->debug("We have new gpsData. Publishing gpsData.", 3);
-                        context_.tracer()->debug("Publishing gpsData.", 3);
-                        gpsInterface_->localSetAndSend(gpsData);
-
-                        // Convert to MapGrid
-                        gpsMapGridData = convertToMapGrid( gpsData, antennaOffset_ );
-
-                        context_.tracer()->debug("Publishing gpsMapGridData.", 3);
-                        gpsMapGridInterface_->localSetAndSend(gpsMapGridData);
-                        
-                        context_.tracer()->debug( orcaice::toString( gpsData ), 5 );
-                        context_.tracer()->debug( orcaice::toString( gpsMapGridData ), 5 );
-                    
-                    }
-    
-                    if(hwDriver_->getTimeData(gpsTimeData)==0)
-                    {
-                        context_.tracer()->debug("We have new timeData. Publishing gpsTimeData.", 3);
-                        gpsTimeInterface_->localSetAndSend(gpsTimeData);
-                        context_.tracer()->debug( orcaice::toString( gpsTimeData ), 5 );
-                    }
-                }
-                
-                // Tobi: this sleep drives the loop now
-                IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(500));
-                
+            if ( !hwDriver_->hasFix() )
+            {
+                context_.tracer()->debug("No GPS fix", 3);
+                if (reportIfNoFix) reportBogusValues(gpsData, gpsMapGridData, gpsTimeData);
             }
             else
             {
-                // Wait for someone to enable us
-                IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(100));
+                context_.tracer()->debug("We have a GPS fix", 3);
+                    
+                if (hwDriver_->getData(gpsData)==0)
+                {
+                    // Publish gpsData
+                    context_.tracer()->debug("Publishing gpsData.", 3);
+                    context_.tracer()->debug( orcaice::toString( gpsData ), 5 );
+                    gpsInterface_->localSetAndSend(gpsData);
+
+                    // Convert to MapGrid and publish
+                    gpsMapGridData = convertToMapGrid( gpsData, antennaOffset_ );
+                    context_.tracer()->debug("Publishing gpsMapGridData.", 3);
+                    context_.tracer()->debug( orcaice::toString( gpsMapGridData ), 5 );
+                    gpsMapGridInterface_->localSetAndSend(gpsMapGridData);
+                }
+
+                if(hwDriver_->getTimeData(gpsTimeData)==0)
+                {
+                    context_.tracer()->debug("Publishing gpsTimeData.", 3);
+                    context_.tracer()->debug( orcaice::toString( gpsTimeData ), 5 );
+                    gpsTimeInterface_->localSetAndSend(gpsTimeData);
+                }
             }
+                
             context_.status()->ok( SUBSYSTEM );
 
         } // end of while

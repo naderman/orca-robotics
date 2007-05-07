@@ -13,7 +13,6 @@
 #include "component.h"
 #include "mainloop.h"
 
-// Various bits of hardware we can drive
 #include "driver.h"
 #include "fakegpsdriver.h"
 #include "ashtech/ashtechdriver.h"
@@ -30,7 +29,6 @@ Component::Component()
     : orcaice::Component( "Gps" ),
       hwDriver_(0)
 {
-
 }
 
 Component::~Component()
@@ -58,7 +56,7 @@ Component::start()
     int ret = orcaice::getProperty( prop, prefix+"Driver", driverName );
     if ( ret != 0 )
     {
-        std::string errString = "Couldn't determine gps type.  Expected property '";
+        std::string errString = "Couldn't determine gps type. Expected property '";
         errString += prefix + "Driver'";
         throw orcaice::Exception( ERROR_INFO, errString );
     }
@@ -67,7 +65,7 @@ Component::start()
     {
         std::string device = orcaice::getPropertyWithDefault( prop, prefix+"Device", "/dev/ttyS0" );
         int baud = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Baud", 4800 );
-        hwDriver_ = new AshtechGpsDriver( device.c_str(), baud);
+        hwDriver_ = new AshtechGpsDriver( device.c_str(), baud, context() );
     }
     else if ( driverName == "fake" )
     {
@@ -93,14 +91,14 @@ Component::start()
         return;
     }
 
-    if(hwDriver_->reset()<0){
-        std::string errString = "Failed to reset GPS.";
+    // initialize driver
+    if(hwDriver_->init()<0)
+    {
+        std::string errString = "Failed to initialize GPS.";
         context().tracer()->error( errString );
         throw orcaice::Exception( ERROR_INFO, errString );
         return;
     }
-    
-    hwDriver_->enable();
 
     //
     // SENSOR DESCRIPTION   

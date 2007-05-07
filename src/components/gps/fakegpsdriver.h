@@ -28,12 +28,8 @@ public:
     FakeGpsDriver(std::vector<double> &latitudes, std::vector<double> &longitudes);
     virtual ~FakeGpsDriver();
 
-    virtual int reset(){return 0;};
+    virtual int init() { return 0; };
 
-    virtual int enable() { isEnabled_=true; return 0; };
-    virtual int disable() { isEnabled_=false; return 0; };
-
-    virtual bool isEnabled() { return isEnabled_; };
     virtual bool hasFix();
 
     // Blocks till timout expires, returns number of messages read, -1 if failure
@@ -45,7 +41,6 @@ public:
 
 private:
 
-    bool isEnabled_;
     std::vector<double> latitudes_;
     std::vector<double> longitudes_;
     unsigned int numReads_;

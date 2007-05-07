@@ -35,22 +35,29 @@ class Driver
 
 public:
 
-    Driver() {};
+    Driver()
+     : newGpsData_(false),
+       newGpsMapGridData_(false),
+       newGpsTime_(false),
+       hasFix_(false)
+    {};
+       
     virtual ~Driver() {};
 
-    virtual int reset()=0;
-
-    virtual int enable()=0;
-    virtual int disable()=0;
-
-    virtual bool isEnabled()=0;
-
-    virtual bool hasFix()=0;
+    // Initializes the device. If it's aleady initialized, then it
+    // quietly re-initializes it.
+    // returns: 0 = success, non-zero = failure
+    virtual int init()=0;
 
     // Blocks till timout expires, returns number of messages read, -1 if failure
     virtual int read()=0;
+    
+    // Returns true if we have a GPS fix otherwise false
+    virtual bool hasFix()=0;
+    
     // Fetch latest GPS data. return -1 if unavailable
     virtual int getData(orca::GpsData& data )=0;
+    
     // Fetch latest GPS Time information. return -1 if unavailable
     virtual int getTimeData(orca::GpsTimeData& data )=0;
 

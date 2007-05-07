@@ -47,12 +47,16 @@ private:
     GpsMapGridIfacePtr &gpsMapGridInterface_;
     GpsTimeIfacePtr    &gpsTimeInterface_;
 
-    // driver for the hardware
     Driver *hwDriver_;
 
     orca::Frame3d antennaOffset_;
 
     orcaice::Context context_;
+    
+    void reportBogusValues( orca::GpsData        &gpsData, 
+                            orca::GpsMapGridData &gpsMapGridData, 
+                            orca::GpsTimeData    &gpsTimeData );
+    
 };
 
 }
