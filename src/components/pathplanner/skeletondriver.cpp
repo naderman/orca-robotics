@@ -21,7 +21,6 @@
 
 using namespace std;
 using namespace orcapathplan;
-using namespace pathplanner;
 using namespace orcaice;
 
 namespace pathplanner {
@@ -30,7 +29,8 @@ SkeletonDriver::SkeletonDriver( orcaogmap::OgMap &ogMap,
                                 double robotDiameterMetres,
                                 double traversabilityThreshhold,
                                 bool   doPathOptimization,
-                                bool   useSparseSkeleton )
+                                bool   useSparseSkeleton,
+                                const CostEvaluator &costEvaluator )
     : ogMap_(ogMap),
       skelGraphicsI_(NULL),
       robotDiameterMetres_(robotDiameterMetres),
@@ -47,9 +47,10 @@ SkeletonDriver::SkeletonDriver( orcaogmap::OgMap &ogMap,
         try {
             orcapathplan::SkeletonPathPlanner *skelPathPlanner = 
                 new orcapathplan::SkeletonPathPlanner( ogMap_,
-                                                   robotDiameterMetres,
-                                                   traversabilityThreshhold,
-                                                   doPathOptimization );
+                                                       robotDiameterMetres,
+                                                       traversabilityThreshhold,
+                                                       doPathOptimization,
+                                                       costEvaluator );
             pathPlanner_ = skelPathPlanner;
         }
         catch ( orcapathplan::Exception &e )
@@ -65,9 +66,10 @@ SkeletonDriver::SkeletonDriver( orcaogmap::OgMap &ogMap,
         try {
             orcapathplan::SparseSkeletonPathPlanner *skelPathPlanner = 
                 new orcapathplan::SparseSkeletonPathPlanner( ogMap_,
-                                                            robotDiameterMetres,
-                                                            traversabilityThreshhold,
-                                                            doPathOptimization );
+                                                             robotDiameterMetres,
+                                                             traversabilityThreshhold,
+                                                             doPathOptimization,
+                                                             costEvaluator );
             pathPlanner_ = skelPathPlanner;
         }
         catch( orcapathplan::Exception &e )

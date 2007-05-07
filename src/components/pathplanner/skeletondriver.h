@@ -38,7 +38,8 @@ public:
                     double robotDiameterMetres,
                     double traversabilityThreshhold,
                     bool   doPathOptimization,
-                    bool   useSparseSkeleton );
+                    bool   useSparseSkeleton,
+                    const orcapathplan::CostEvaluator &costEvaluator );
     ~SkeletonDriver();
     
     virtual void computePath( const orca::PathPlanner2dTask& task,

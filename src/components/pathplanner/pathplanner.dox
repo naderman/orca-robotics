@@ -63,6 +63,20 @@ The pathplanner acts like a service receiving tasks from third parties and retur
     - Valid values: 0 or 1
     - Default: 0
 
+- @c PathPlanner.Config.Skeleton.Cost.DistanceThreshold (double)
+    - (For skeleton-based path-planning only):
+      - If a path causes the robot to clear an obstacle by less than
+        DistanceThreshold, the cost of that portion of the path is multiplied
+        by CostMultiplier.
+      - Default: 0.3
+
+- @c PathPlanner.Config.Skeleton.Cost.CostMultiplier (double)
+    - (For skeleton-based path-planning only):
+      - If a path causes the robot to clear an obstacle by less than
+        DistanceThreshold, the cost of that portion of the path is multiplied
+        by CostMultiplier.
+      - Default: 10
+
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
 @par Drivers

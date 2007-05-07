@@ -31,6 +31,33 @@ using namespace std;
 using namespace orca;
 using namespace pathplanner;
 
+namespace {
+
+    class DistBasedCostEvaluator : public orcapathplan::CostEvaluator {
+    public:
+        DistBasedCostEvaluator( double distanceThreshold,
+                                double costMultiplier )
+            : distanceThreshold_(distanceThreshold),
+              costMultiplier_(costMultiplier)
+            {}
+
+        double costAtDistFromObstacle( double distInMetres ) const
+            {
+                if ( distInMetres < 0 )
+                    return NAN;
+                else if ( distInMetres < distanceThreshold_ ) 
+                    return costMultiplier_; 
+                else 
+                    return 1;
+            }
+        
+    private:
+        double distanceThreshold_;
+        double costMultiplier_;
+    };
+
+}
+
 AlgoHandler::AlgoHandler( const orcaice::Context & context )
     : driver_(0),
       pathPlannerTaskProxy_(0),
@@ -43,6 +70,7 @@ AlgoHandler::AlgoHandler( const orcaice::Context & context )
 AlgoHandler::~AlgoHandler()
 {
     delete pathPlannerTaskProxy_;
+    if ( costEvaluator_ ) delete costEvaluator_;
 }
 
 void
@@ -171,13 +199,19 @@ AlgoHandler::initDriver()
     else if ( driverName == "skeletonnav" || driverName == "sparseskeletonnav" )
     {
         bool useSparseSkeleton = (driverName == "sparseskeletonnav");
-        
+
+        double distanceThreshold = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.Cost.DistanceThreshold", 0.3 );
+        double costMultiplier = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.Cost.CostMultiplier", 10 );
+
+        costEvaluator_ = new DistBasedCostEvaluator( distanceThreshold, costMultiplier );
+
         try {
             driver_ = new SkeletonDriver( ogMap,
-                                      robotDiameterMetres,
-                                      traversabilityThreshhold,
-                                      doPathOptimization,
-                                      useSparseSkeleton );
+                                          robotDiameterMetres,
+                                          traversabilityThreshhold,
+                                          doPathOptimization,
+                                          useSparseSkeleton,
+                                          *costEvaluator_ );
         }
         catch ( orcapathplan::Exception &e )
         {
@@ -189,7 +223,7 @@ AlgoHandler::initDriver()
         
         #ifdef QT4_FOUND
         // QGraphics2d
-	context_.tracer()->info( "Instantiating QGraphics2d Interface" );
+        context_.tracer()->info( "Instantiating QGraphics2d Interface" );
         SkeletonGraphicsI* graphicsI = new SkeletonGraphicsI( context_, "SkeletonGraphics" );
         Ice::ObjectPtr graphicsObj = graphicsI;
         orcaice::createInterfaceWithTag( context_, graphicsObj, "SkeletonGraphics" ); 
