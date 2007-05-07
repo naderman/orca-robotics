@@ -30,7 +30,8 @@ public:
     SkeletonPathPlanner( const orcaogmap::OgMap &ogMap,
                          double robotDiameterMetres,
                          double traversabilityThreshhold,
-                         bool   doPathOptimization );
+                         bool   doPathOptimization,
+                         const CostEvaluator &costEvaluator=DefaultCostEvaluator() );
 
     //!
     //! Warning: may throw 'orcapathplan::Exception's

@@ -19,7 +19,8 @@ namespace orcapathplan {
 SkeletonPathPlanner::SkeletonPathPlanner( const orcaogmap::OgMap &ogMap,
                                           double robotDiameterMetres,
                                           double traversabilityThreshhold,
-                                          bool   doPathOptimization )
+                                          bool   doPathOptimization,
+                                          const CostEvaluator &costEvaluator )
     : ogMap_(ogMap),
       robotDiameterMetres_(robotDiameterMetres),
       traversabilityThreshhold_(traversabilityThreshhold),
@@ -44,7 +45,8 @@ SkeletonPathPlanner::SkeletonPathPlanner( const orcaogmap::OgMap &ogMap,
 
     computeCostsFromDistGrid( distGrid_,
                               costMap_,
-                              ogMap_.metresPerCellX() );
+                              ogMap_.metresPerCellX(),
+                              costEvaluator );
 
     watch.stop();
     cout << "TRACE(skeletonpathplanner.cpp): computeSkeleton took " << watch.elapsedSeconds() << "s" << endl;
@@ -146,7 +148,7 @@ SkeletonPathPlanner::computePath( int           startX,
     {
         // separate full path into a optimized short path
         Cell2DVector waycells;    
-        optimizePath( ogMap_, costMap_, traversabilityThreshhold_, path, waycells );
+        optimizePath( ogMap_, traversabilityThreshhold_, path, waycells );
         path = waycells;
     }
 

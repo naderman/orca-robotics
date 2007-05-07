@@ -414,7 +414,6 @@ ContiguousSparseSkel::optimise()
 void
 ContiguousSparseSkel::setArcCosts( const FloatMap &costMap )
 {
-    cout<<"TRACE(sparseskel.cpp): setArcCosts()" << endl;
     for ( uint i=0; i < nodes_.size(); i++ )
     {
         SparseSkelNode &node = *(nodes_[i]);
@@ -422,6 +421,7 @@ ContiguousSparseSkel::setArcCosts( const FloatMap &costMap )
         {
             SparseSkelArc &arc = *(node.arcs[j]);
             arc.cost = straightLineCost( node.pos, arc.toNode->pos, costMap );
+//             cout<<"TRACE(sparseskel.cpp): arc.cost from " << node.pos << " to " << arc.toNode->pos << ": " << arc.cost << endl;
         }
     }
 }
@@ -915,16 +915,16 @@ void findShortestPath( const ContiguousSparseSkel        &cSkel,
               goal,
               cSkel.nodes() );
 
-    //cout<<"TRACE(sparseskel.cpp): ======= costs =======" << endl;
-    //cout<<"TRACE(sparseskel.cpp): goal at: " << toWorldString(goal->pos) << endl;
-    //for ( unsigned int i=0; i < cSkel.nodes().size(); i++ )
-    //{
-    //    cout << "  node at " << toWorldString(cSkel.nodes()[i]->pos) << ": " << cSkel.nodes()[i]->nodeCost*M_PER_CELL<<endl;
-    //    for ( unsigned int j=0; j < cSkel.nodes()[i]->arcs.size(); j++ )
-    //    {
-    //        cout << "    --> " << toWorldString(cSkel.nodes()[i]->arcs[j]->toNode->pos) << "[" << cSkel.nodes()[i]->arcs[j]->toNode->nodeCost*M_PER_CELL << "]" << endl;
-    //    }
-    //}
+//     cout<<"TRACE(sparseskel.cpp): ======= costs =======" << endl;
+//     cout<<"TRACE(sparseskel.cpp): goal at: " << toWorldString(goal->pos) << endl;
+//     for ( unsigned int i=0; i < cSkel.nodes().size(); i++ )
+//     {
+//        cout << "  node at " << toWorldString(cSkel.nodes()[i]->pos) << ": " << cSkel.nodes()[i]->nodeCost*M_PER_CELL<<endl;
+//        for ( unsigned int j=0; j < cSkel.nodes()[i]->arcs.size(); j++ )
+//        {
+//            cout << "    --> " << toWorldString(cSkel.nodes()[i]->arcs[j]->toNode->pos) << "[" << cSkel.nodes()[i]->arcs[j]->toNode->nodeCost*M_PER_CELL << "]" << endl;
+//        }
+//     }
 
     // now search backwards along the lowest-cost path
     path.resize(0);
@@ -938,7 +938,7 @@ void findShortestPath( const ContiguousSparseSkel        &cSkel,
         path.push_back( currentNode );
         if ( currentNode == start ) break;
 
-        //cout<<"  " << toWorldString(currentNode->pos) << " -->" <<endl;
+//         cout<<"  " << currentNode->pos << "(cost="<<currentNode->nodeCost << ") -->" <<endl;
 
         // select a new node
         const SparseSkelNode *nextNode = minCostNode( currentNode );

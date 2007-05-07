@@ -241,7 +241,6 @@ namespace orcapathplan
     //! by considering cells other than just those in origPath.
     //!
     void optimizePath( const orcaogmap::OgMap &ogMap,
-                       const FloatMap         &costMap,
                        double                  traversabilityThreshhold,
                        const Cell2DVector     &origPath,
                        Cell2DVector           &optimisedPath );

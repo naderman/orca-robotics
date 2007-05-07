@@ -31,7 +31,8 @@ public:
     SparseSkeletonPathPlanner( const orcaogmap::OgMap &ogMap,
                                double robotDiameterMetres,
                                double traversabilityThreshhold,
-                               bool   doPathOptimization );
+                               bool   doPathOptimization,
+                               const CostEvaluator &costEvaluator=DefaultCostEvaluator() );
 
     //!
     //! The cells in 'path' are guaranteed to be in line-of-sight of

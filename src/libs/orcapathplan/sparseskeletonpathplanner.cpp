@@ -18,7 +18,8 @@ namespace orcapathplan {
 SparseSkeletonPathPlanner::SparseSkeletonPathPlanner( const orcaogmap::OgMap &ogMap,
                                                       double robotDiameterMetres,
                                                       double traversabilityThreshhold,
-                                                      bool   doPathOptimization )
+                                                      bool   doPathOptimization,
+                                                      const CostEvaluator &costEvaluator )
     : ogMap_(ogMap),
       robotDiameterMetres_(robotDiameterMetres),
       traversabilityThreshhold_(traversabilityThreshhold),
@@ -55,7 +56,8 @@ SparseSkeletonPathPlanner::SparseSkeletonPathPlanner( const orcaogmap::OgMap &og
 
     computeCostsFromDistGrid( distGrid,
                               costMap_,
-                              grownOgMap_.metresPerCellX() );
+                              grownOgMap_.metresPerCellX(),
+                              costEvaluator );
 
     watch.stop();
     cout << "TRACE(skeletonpathplanner.cpp): computeSkeleton took " << watch.elapsedSeconds() << "s" << endl;
@@ -263,7 +265,7 @@ void
 SparseSkeletonPathPlanner::optimisePath( Cell2DVector &path ) const
 {
     Cell2DVector optimisedPath;
-    orcapathplan::optimizePath( grownOgMap_, costMap_, traversabilityThreshhold_, path, optimisedPath );
+    orcapathplan::optimizePath( grownOgMap_, traversabilityThreshhold_, path, optimisedPath );
     path = optimisedPath;
 }
 

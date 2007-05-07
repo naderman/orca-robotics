@@ -1109,14 +1109,10 @@ Result calcPath( const OgMap    &ogMap,
 
 
 void optimizePath( const OgMap        &ogMap,
-                   const FloatMap     &costMap,
                    double              traversabilityThreshhold,
                    const Cell2DVector &origPath,
                    Cell2DVector       &optimisedPath )
 {
-    cout<<"TRACE(pathplanutils.cpp): TODO: use costs in optimizePath()" << endl;
-
-
     OgLosTracer rayTracer( ogMap, (unsigned char)(traversabilityThreshhold*orcaogmap::CELL_OCCUPIED) );
 
 #ifndef NDEBUG
