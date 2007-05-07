@@ -30,9 +30,44 @@
 
 @par Operation
 
+Converts GPS data into Localise2d.  
+It does this by:
+  - converting from lat/lon to a map-grid representation (currently assumes MGA), then
+  - subtracting the offset between the map-grid origin and the coordinate system (this offset must be configured manually), then
+  - subtracting the offset from the GPS antenna to the platform's centre (this is read from the GPS component).
+
 @par Configuration
 
+- @c Gps2Localise2d.Config.Driver (string)
+    - valid values are { "simple" , "odometrybased" }
+    - 
+
+- @c Gps2Localise2d.Config.Offset (Frame2d) [m, deg]
+    - Position of the Localise2d rood. system's origin w/r/t the mapgrid origin.
+    - Format: x y z roll pitch yaw (space separated)
+    - Default: 0.0 0.0 0.0
+
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
+@section Drivers
+
+@par Simple
+
+Reports a single Gaussian, with the mean being the reported GPS
+position, and the x-y uncertainties being those reported by the GPS unit.
+Assumes that heading information is unreliable, so reports heading s.d. of 2*pi.
+
+@par OdomteryBased
+
+Just like "simple", but assumes that heading is calculated internal to
+the GPS unit by differentiating position.  Heading is therefore most
+reliable when the platform is travelling fast and in a straight line.
+Odomtery information is used to make a better guesstimate at the
+heading uncertainty.
+
+Requires:
+
+- @ref orca_interface_odometry2d [Gps2Localise2d.Requires.Odometry2d]
 
 @par Authors
 Alex Brooks

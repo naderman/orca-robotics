@@ -24,10 +24,6 @@ OdometryBasedDriver::OdometryBasedDriver( const orca::GpsDescription &descr,
       isSetup_(false),
       context_(context)
 {
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag();
-    prefix += ".Config.";
-
     odomConsumer_ = new orcaifaceimpl::ProxiedOdometry2dConsumer(context);
 
     prevTime_.seconds  = 0;
