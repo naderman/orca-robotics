@@ -24,3 +24,4 @@ Config.DoPathOptimization.Default=1
 
 Config.Skeleton.Cost.DistanceThreshold.Default=0.3
 Config.Skeleton.Cost.CostMultiplier.Default=10.0
+Config.Skeleton.ProvideGraphics.Default=1
