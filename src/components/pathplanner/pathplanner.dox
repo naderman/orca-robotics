@@ -77,6 +77,11 @@ The pathplanner acts like a service receiving tasks from third parties and retur
         by CostMultiplier.
       - Default: 10
 
+- @c PathPlanner.Config.Skeleton.ProvideGraphics (bool)
+    - (For skeleton-based path-planning only):
+      - If true, provide a QGraphics2d interface showing the skeleton.
+      - Default: 1
+
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
 @par Drivers

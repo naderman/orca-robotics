@@ -222,13 +222,17 @@ AlgoHandler::initDriver()
         }
         
         #ifdef QT4_FOUND
-        // QGraphics2d
-        context_.tracer()->info( "Instantiating QGraphics2d Interface" );
-        SkeletonGraphicsI* graphicsI = new SkeletonGraphicsI( context_, "SkeletonGraphics" );
-        Ice::ObjectPtr graphicsObj = graphicsI;
-        orcaice::createInterfaceWithTag( context_, graphicsObj, "SkeletonGraphics" ); 
-        SkeletonDriver *skelDriver = dynamic_cast<SkeletonDriver*>( driver_ );
-        skelDriver->setGraphics( graphicsI );
+        bool provideSkeletonGraphics = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.ProvideGraphics", 1 );
+        if ( provideSkeletonGraphics )
+        {
+            // QGraphics2d
+            context_.tracer()->info( "Instantiating QGraphics2d Interface" );
+            SkeletonGraphicsI* graphicsI = new SkeletonGraphicsI( context_, "SkeletonGraphics" );
+            Ice::ObjectPtr graphicsObj = graphicsI;
+            orcaice::createInterfaceWithTag( context_, graphicsObj, "SkeletonGraphics" ); 
+            SkeletonDriver *skelDriver = dynamic_cast<SkeletonDriver*>( driver_ );
+            skelDriver->setGraphics( graphicsI );
+        }
         #endif
         
     }
