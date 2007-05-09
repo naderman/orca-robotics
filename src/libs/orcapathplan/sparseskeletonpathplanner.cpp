@@ -36,7 +36,7 @@ SparseSkeletonPathPlanner::SparseSkeletonPathPlanner( const orcaogmap::OgMap &og
     // Build the dense skeleton
     //
     FloatMap distGrid;
-    bool success = computeSkeleton( grownOgMap_,
+    bool success = computeSkeleton( ogMap_,
                                     skel_,
                                     distGrid,
                                     traversabilityThreshhold,
@@ -44,7 +44,7 @@ SparseSkeletonPathPlanner::SparseSkeletonPathPlanner( const orcaogmap::OgMap &og
 
     computeCostsFromDistGrid( distGrid,
                               costMap_,
-                              grownOgMap_.metresPerCellX(),
+                              ogMap_.metresPerCellX(),
                               costEvaluator );
 
     watch.stop();
@@ -67,7 +67,7 @@ SparseSkeletonPathPlanner::SparseSkeletonPathPlanner( const orcaogmap::OgMap &og
 
     // Maybe a bit of a hack...
     // Grow by half the robot diameter - 1, to avoid the possibility of growing over the dense skeleton.
-    int robotDiameterCells = robotDiameterInCells( grownOgMap_, robotDiameterMetres );
+    int robotDiameterCells = robotDiameterInCells( ogMap_, robotDiameterMetres );
     growObstaclesOgMap( grownOgMap_, traversabilityThreshhold, robotDiameterCells/2-1 );
 
     planOgMap_ = &(grownOgMap_);
