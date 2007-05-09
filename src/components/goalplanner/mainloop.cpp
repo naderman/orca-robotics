@@ -19,6 +19,9 @@ using namespace std;
 using namespace orca;
 using namespace goalplanner;
 
+namespace {
+    const char *SUBSYSTEM = "mainloop";
+
 // ======== NON-MEMBER FUNCTION ======================
 // computes waypoint to start from based on localisation hypotheses
 void computeFirstWaypoint( const Localise2dData &localiseData, Waypoint2d &wp)
@@ -58,10 +61,14 @@ void computeFirstWaypoint( const Localise2dData &localiseData, Waypoint2d &wp)
 }
 // =======================================================
 
+}
+
 MainLoop::MainLoop( const orcaice::Context & context )
     : incomingPathI_(0),
       context_(context)
 {
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
+    context_.status()->initialising( SUBSYSTEM );
     initNetwork();
 }
 
@@ -83,13 +90,19 @@ MainLoop::initNetwork()
             orcaice::connectToInterfaceWithTag<orca::Localise2dPrx>( context_, localise2dPrx_, "Localise2d" );
             break;
         }
-        catch ( const orcaice::NetworkException & )
+        catch ( const Ice::Exception &e )
         {
-	    stringstream ss;
-	    ss << "Localise2d: failed to connect to remote object. Will try again after 3 seconds.";
+            stringstream ss;
+            ss << "Localise2d: failed to connect to Localise2d: " << e << ". Will try again after 3 seconds.";
             context_.tracer()->error( ss.str() );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
+        catch ( const std::exception &e )
+        {
+            stringstream ss;
+            ss << "Localise2d: failed to connect to Localise2d: " << e.what() << ". Will try again after 3 seconds.";
+            context_.tracer()->error( ss.str() );
+        }
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
     }
     
     //create a callback to receive localisation data
@@ -104,13 +117,14 @@ MainLoop::initNetwork()
             localise2dPrx_->subscribe( localiseConsumerPrx_ );
             break;
         }
-        catch ( const orca::SubscriptionFailedException & )
+        catch ( const Ice::Exception &e )
         {
-            context_.tracer()->error( "failed to subscribe for localise2d data updates. Will try again after 3 seconds." );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+            stringstream ss;
+            ss << "MainLoop: failed to subscribe for localise2d data updates: " << e << ". Will try again after 3 seconds.";
+            context_.tracer()->error( ss.str() );
         }
-    }
-    
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+    }    
     
     while( isActive() )
     {
@@ -119,11 +133,19 @@ MainLoop::initNetwork()
             orcaice::connectToInterfaceWithTag<orca::PathFollower2dPrx>( context_, localNavPrx_, "PathFollower2d" );
             break;
         }
-        catch ( const orcaice::NetworkException & )
+        catch ( const Ice::Exception &e )
         {
-            context_.tracer()->error( "failed to connect to remote pathfollower2d object. Will try again after 3 seconds." );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+            stringstream ss;
+            ss << "failed to connect to remote pathfollower2d object: " << e << ". Will try again after 3 seconds.";
+            context_.tracer()->error( ss.str() );
         }
+        catch ( const std::exception &e )
+        {
+            stringstream ss;
+            ss << "failed to connect to remote pathfollower2d object: " << e.what() << ". Will try again after 3 seconds.";
+            context_.tracer()->error( ss.str() );
+        }
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
     }
     
     while( isActive() )
@@ -133,11 +155,19 @@ MainLoop::initNetwork()
             orcaice::connectToInterfaceWithTag<orca::PathPlanner2dPrx>( context_, pathplanner2dPrx_, "PathPlanner2d" );
             break;
         }
-        catch ( const orcaice::NetworkException & )
+        catch ( const Ice::Exception &e )
         {
-            context_.tracer()->error( "failed to connect to remote pathplanner2d object. Will try again after 3 seconds." );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+            stringstream ss;
+            ss << "failed to connect to remote pathplanner2d object: " << e << ".  Will try again after 3 seconds.";
+            context_.tracer()->error( ss.str() );
         }
+        catch ( const std::exception &e )
+        {
+            stringstream ss;
+            ss << "failed to connect to remote pathplanner2d object: " << e.what() << ".  Will try again after 3 seconds.";
+            context_.tracer()->error( ss.str() );
+        }
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
     }
     
     Ice::ObjectPtr pathConsumer = new PathPlanner2dConsumerI( computedPathBuffer_ );
@@ -148,15 +178,9 @@ MainLoop::initNetwork()
     //
     
     // create the proxy/buffer for incoming path
-
-    IceStorm::TopicPrx topicPrx = orcaice::connectToTopicWithTag<PathFollower2dConsumerPrx>
-            ( context_, pathPublisher_, "PathFollower2d" );
-    
     incomingPathI_ = new PathFollower2dI( incomingPathBuffer_,
                                           activationBuffer_,
-                                          localise2dExceptionBuffer_,
-                                          localNavPrx_,
-                                          topicPrx );
+                                          localNavPrx_ );
     
     Ice::ObjectPtr pathFollowerObj = incomingPathI_;
 
@@ -172,14 +196,11 @@ void MainLoop::stopRobot()
         PathFollower2dData dummyPath;
         bool activateNow = true;
         localNavPrx_->setData( dummyPath, activateNow );
-
-        // consumers should see what I send to localnav for proxy functionality
-        pathPublisher_->setData( dummyPath );
     }
-    catch ( Ice::NotRegisteredException & )
+    catch ( const Ice::Exception &e )
     {
         stringstream ss;
-        ss << "Problem setting data on pathfollower2d proxy";
+        ss << "MainLoop: problem in stopRobot: " << e;
         context_.tracer()->warning( ss.str() );     
         throw;
     }
@@ -189,7 +210,6 @@ void MainLoop::stopRobot()
 void 
 MainLoop::run()
 {
-    
     PathFollower2dData incomingPath;
     Localise2dData localiseData;
     
@@ -200,19 +220,18 @@ MainLoop::run()
     Waypoint2d wp;
     orcaice::setInit( wp );
     
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
+
     // main loop
     while ( isActive() )
     {
-        
         try
         {
             // wait for a goal path
             context_.tracer()->info("Waiting for a goal path");
             while( isActive() )
             {
-                // get wp index from localnav and publish to the world while we're waiting for a new goal
-                pathPublisher_->setWaypointIndex( localNavPrx_->getWaypointIndex() );
-                int ret = incomingPathBuffer_.getNext( incomingPath, 500 );
+                int ret = incomingPathBuffer_.getNext( incomingPath, 1000 );
                 if (ret==0) break;
             }
             
@@ -228,8 +247,6 @@ MainLoop::run()
             while( isActive() )
             {
                 int ret = localiseDataBuffer_.getNext( localiseData, 1000 );
-                // store in special buffer, so PathFollower2dI can access it for throwing exceptions
-                localise2dExceptionBuffer_.set( localiseData );
                 if (ret==0)
                 {
                     if ( localiseData.hypotheses.size() == 1 ) break;
@@ -252,23 +269,7 @@ MainLoop::run()
             stringstream ss;
             ss << "Sending task to pathplanner: " << orcaice::toVerboseString( task );
             context_.tracer()->debug(ss.str());
-            try {
-                pathplanner2dPrx_->setTask( task );
-            }
-            catch (orca::RequiredInterfaceFailedException &e)
-            {
-                stringstream ss;
-                ss << e.what;
-                context_.tracer()->warning( ss.str() ); 
-                throw;   
-            }
-            catch (orca::BusyException &e)
-            {
-                stringstream ss;
-                ss << e.what;
-                context_.tracer()->warning( ss.str() );      
-                throw;
-            }
+            pathplanner2dPrx_->setTask( task );
             
             // block until path is computed
             context_.tracer()->debug("Waiting for pathplanner's answer");
@@ -306,10 +307,6 @@ MainLoop::run()
                     stringstream ss; ss << "Activation is " << activation;
                     context_.tracer()->debug(ss.str());
                     localNavPrx_->setData( outgoingPath, activation );
-
-                    // consumers should see what I send to localnav for proxy functionality
-                    pathPublisher_->setData( outgoingPath );
-                    pathPublisher_->setWaypointIndex( localNavPrx_->getWaypointIndex() );
                 }
                 catch ( Ice::NotRegisteredException & )
                 {

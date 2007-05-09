@@ -20,16 +20,11 @@ namespace goalplanner {
 
 PathFollower2dI::PathFollower2dI( orcaice::Proxy<orca::PathFollower2dData> &pathPipe,
                                   orcaice::Proxy<bool> &activationPipe,
-                                  orcaice::Proxy<orca::Localise2dData> &localiseDataBuffer,
-                                  orca::PathFollower2dPrx localNavPrx,
-                                  const IceStorm::TopicPrx & topicPrx )
+                                  orca::PathFollower2dPrx localNavPrx )
     : pathPipe_(pathPipe),
       activationPipe_(activationPipe),
-      localiseDataBuffer_(localiseDataBuffer),
-      localNavPrx_(localNavPrx),
-      topicPrx_(topicPrx)
+      localNavPrx_(localNavPrx)
 {
-    assert ( topicPrx_ != 0 );
 }
 
 orca::PathFollower2dData
@@ -61,20 +56,6 @@ PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateI
     // give the data to the buffer
     pathPipe_.set( data );
     activationPipe_.set( activateImmediately );
-    
-    // Check whether we are localized
-    Localise2dData localiseData;
-    int ret = localiseDataBuffer_.getNext( localiseData, 1000 );
-
-    // we are localized
-    if (ret==0)
-    {
-        // do we have multiple hypotheses?
-        if ( localiseData.hypotheses.size() != 1 )
-        {
-            throw orca::OrcaException( "Multiple localisation hypotheses.  Unable to determine start point.");
-        }
-    }
 }
 
 void
@@ -153,17 +134,14 @@ void
 PathFollower2dI::subscribe( const ::orca::PathFollower2dConsumerPrx& subscriber, const ::Ice::Current& )
 {
     cout<<"TRACE(pathfollower2dI.cpp): subscribe()"<<endl;
-    assert ( topicPrx_ != 0 );
-//     cout<<"TRACE(pathfollower2dI.cpp): topicPrx_: " << topicPrx_->ice_toString() << endl;
-    topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
+    return localNavPrx_->subscribe( subscriber );
 }
 
 void
 PathFollower2dI::unsubscribe( const ::orca::PathFollower2dConsumerPrx& subscriber, const ::Ice::Current& )
 {
     cout<<"TRACE(pathfollower2dI.cpp): unsubscribe()"<<endl;    
-    assert ( topicPrx_ != 0 );
-    topicPrx_->unsubscribe( subscriber );
+    return localNavPrx_->unsubscribe( subscriber );
 }
 
 }

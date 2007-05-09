@@ -62,15 +62,10 @@ private:
         
     // ========== provided pathfollower interface (incoming paths) ===============
     PathFollower2dI* incomingPathI_;
-    orca::PathFollower2dConsumerPrx pathPublisher_;
     
     orcaice::Proxy<orca::PathFollower2dData> incomingPathBuffer_;
     
     orcaice::Proxy<bool> activationBuffer_;
-    
-    // This buffer is used to communicate between the mainloop and PathFollower2dI
-    // PathFollower2dI needs to throw exception based on localisation data
-    orcaice::Proxy<orca::Localise2dData> localise2dExceptionBuffer_;
     // ===========================================================================
      
     orcaice::Context context_;

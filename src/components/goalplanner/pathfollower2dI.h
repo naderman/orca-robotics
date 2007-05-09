@@ -29,9 +29,7 @@ class PathFollower2dI : public orca::PathFollower2d
 public:
     PathFollower2dI( orcaice::Proxy<orca::PathFollower2dData> &pathPipe,
                      orcaice::Proxy<bool> &activationPipe,
-                     orcaice::Proxy<orca::Localise2dData> &localiseDataBuffer,
-                     orca::PathFollower2dPrx localNavPrx,
-                     const IceStorm::TopicPrx & topicPrx );
+                     orca::PathFollower2dPrx localNavPrx );
 
     // remote calls:
 
@@ -69,13 +67,8 @@ private:
     // Are we activated?
     orcaice::Proxy<bool> &activationPipe_;
     
-    // Localise data buffer required to throw an exception if we're not localized and someone gives us a path from the outside
-    orcaice::Proxy<orca::Localise2dData> &localiseDataBuffer_;
-    
     // because goalplanner is acting like a transparent proxy to localnav, we need to pass on requests to localnav and thus need a remote object
     orca::PathFollower2dPrx localNavPrx_;
-    
-    const IceStorm::TopicPrx topicPrx_;
 };
 
 }
