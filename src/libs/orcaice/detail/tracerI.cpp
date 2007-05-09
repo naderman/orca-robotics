@@ -177,6 +177,7 @@ TracerI::subscribe( NetworkTraceSender *&sender, const ::orca::TracerConsumerPrx
             throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
         }
     }
+    
     sender->subscribe( subscriber );
 }
 

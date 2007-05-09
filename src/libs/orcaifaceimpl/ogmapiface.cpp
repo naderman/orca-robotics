@@ -97,6 +97,11 @@ OgMapIface::subscribe(const ::OgMapConsumerPrx& subscriber )
     try {
         topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
+    catch ( const IceStorm::AlreadySubscribed & e ) {
+        std::stringstream ss;
+        ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
+        context_.tracer()->info( ss.str() );    
+    }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
         ss <<"OgMapIface::subscribe: failed to subscribe: "<< e << endl;

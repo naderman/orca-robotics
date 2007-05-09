@@ -177,8 +177,21 @@ StatusI::subscribe(const ::orca::StatusConsumerPrx& subscriber, const ::Ice::Cur
         throw orca::SubscriptionFailedException("Component does not have a topic to publish its status.");
     }
     
-    //cout<<"subscription request"<<endl;
-    topic_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
+    try {
+        //cout<<"subscription request"<<endl;
+        topic_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
+    }
+    catch ( const IceStorm::AlreadySubscribed & e ) {
+        std::stringstream ss;
+        ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
+        context_.tracer()->info( ss.str() );    
+    }
+    catch ( const Ice::Exception & e ) {
+        std::stringstream ss;
+        ss <<"Failed to subscribe: "<< e;
+        context_.tracer()->warning( ss.str() );
+        throw orca::SubscriptionFailedException( ss.str() );
+    }
 }
 
 void

@@ -190,7 +190,20 @@ PathFollower2dI::subscribe( const ::orca::PathFollower2dConsumerPrx& subscriber,
     cout<<"subscribe()"<<endl;
     assert ( topicPrx_ != 0 );
     cout<<"TRACE(pathfollower2dI.cpp): topicPrx_: " << topicPrx_->ice_toString() << endl;
-    topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
+    try {
+        topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
+    }
+    catch ( const IceStorm::AlreadySubscribed & e ) {
+        std::stringstream ss;
+        ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
+        context_.tracer()->info( ss.str() );    
+    }
+    catch ( const Ice::Exception & e ) {
+        std::stringstream ss;
+        ss <<"Odometry3dIface::subscribe: failed to subscribe: "<< e;
+        context_.tracer()->warning( ss.str() );
+        throw orca::SubscriptionFailedException( ss.str() );
+    }
 }
 
 void

@@ -100,7 +100,12 @@ Localise2dIface::subscribe(const ::orca::Localise2dConsumerPrx& subscriber)
 {
     context_.tracer()->debug( "Localise2dIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     try {
-        topicPrx_->subscribe( IceStorm::QoS(), subscriber->ice_twoway() );
+        topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
+    }
+    catch ( const IceStorm::AlreadySubscribed & e ) {
+        std::stringstream ss;
+        ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
+        context_.tracer()->info( ss.str() );    
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
