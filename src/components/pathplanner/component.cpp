@@ -28,6 +28,8 @@ Component::~Component()
 //       be declared as member variables.
 void Component::start()
 {
+    context().tracer()->info( "Component starting." );
+
     //
     // ENABLE NETWORK CONNECTIONS
     //
@@ -47,6 +49,7 @@ void Component::start()
 
 void Component::stop()
 {
+    context().tracer()->info( "Component stopping." );
     if ( algoHandler_ ) {
         IceUtil::ThreadControl algoControl = algoHandler_->getThreadControl();
         tracer()->debug("stopping algorithm handler", 5 );
