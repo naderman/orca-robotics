@@ -9,11 +9,11 @@
  */
  
 #include <orcaice/orcaice.h>
-#include <orcamisc/cov2d.h>
 #include "mainloop.h"
 #include "pathfollower2dI.h"
 #include "localise2dconsumerI.h"
 #include "pathplanner2dconsumerI.h"
+#include <orcaobj/miscutils.h>
 
 using namespace std;
 using namespace orca;
@@ -23,43 +23,30 @@ namespace {
     const char *SUBSYSTEM = "mainloop";
 
 // ======== NON-MEMBER FUNCTION ======================
-// computes waypoint to start from based on localisation hypotheses
-void computeFirstWaypoint( const Localise2dData &localiseData, Waypoint2d &wp)
+// Computes waypoint to start from
+// This is for the pathplanner's purposes, not the pathfollower.
+// So we don't care too much about tolerances and speeds.
+void computeFirstWaypointForPathPlanning( const orcanavutil::Pose &pose, Waypoint2d &wp )
 {
-    
-//     cout << "TRACE(mainloop.cpp): Localised frame is: " 
-//             << localiseData.hypotheses[0].mean.p.x << " " 
-//             << localiseData.hypotheses[0].mean.p.y << " " 
-//             << localiseData.hypotheses[0].mean.o << endl; 
-//     
-//     cout << "TRACE(mainloop.cpp): Localised covariance values are: " 
-//             << localiseData.hypotheses[0].cov.xx << " " 
-//             << localiseData.hypotheses[0].cov.xy << " " 
-//             << localiseData.hypotheses[0].cov.yy << " " 
-//             << localiseData.hypotheses[0].cov.tt << " " 
-//             << endl;
+    wp.target.p.x = pose.x();
+    wp.target.p.y = pose.y();
+    wp.target.o   = pose.theta();
 
-    // take the mean of the hypotheses as the waypoint
-    wp.target = localiseData.hypotheses[0].mean;
-    // add heading tolerance from uncertainty
-    wp.headingTolerance = sqrt(localiseData.hypotheses[0].cov.tt);
-    
-    // hardcode approach values
-    wp.maxApproachSpeed = 2e+6;
+    // add bogus tolerances and speeds
+    wp.distanceTolerance = 0.1;
+    wp.headingTolerance  = M_PI/2.0;
+    wp.timeTarget.seconds  = 0;
+    wp.timeTarget.useconds = 0;
+    wp.maxApproachSpeed    = 2e+6;
     wp.maxApproachTurnrate = (float)DEG2RAD(2e+6); 
-    
-    // add distance tolerance
-    double a, b, th;
-    orcamisc::Cov2d cov(localiseData.hypotheses[0].cov.xx, 
-                        localiseData.hypotheses[0].cov.xy, 
-                        localiseData.hypotheses[0].cov.yy);
-    cov.ellipse( a, b, th );
-//     cout << "TRACE(mainloop.cpp): a,b,th: " << a << "," << b << "," << th << endl;
-    
-    // take the larger of the two and multiply to get 3 sigma (cov.ellipse gives us 2 sigma)
-    wp.distanceTolerance = a > b ? (a/2.0*3.0) : (b/2.0*3.0);
 }
 // =======================================================
+
+orcanavutil::Pose mlPose( const orca::Localise2dData &localiseData )
+{
+    const orca::Pose2dHypothesis &mlHyp = orcaice::mlHypothesis( localiseData );
+    return orcanavutil::Pose( mlHyp.mean.p.x, mlHyp.mean.p.y, mlHyp.mean.o );
+}
 
 }
 
@@ -85,6 +72,7 @@ MainLoop::initNetwork()
 
     while( isActive() )
     {
+        context_.status()->initialising( SUBSYSTEM, "Connecting to Localise2d" );
         try
         {
             orcaice::connectToInterfaceWithTag<orca::Localise2dPrx>( context_, localise2dPrx_, "Localise2d" );
@@ -104,7 +92,7 @@ MainLoop::initNetwork()
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
     }
-    
+
     //create a callback to receive localisation data
     Ice::ObjectPtr consumer = new Localise2dConsumerI(localiseDataBuffer_);
     localiseConsumerPrx_ =
@@ -112,6 +100,7 @@ MainLoop::initNetwork()
 
     while ( isActive() )
     {
+        context_.status()->initialising( SUBSYSTEM, "Subscribing to Localise2d" );
         try
         {
             localise2dPrx_->subscribe( localiseConsumerPrx_ );
@@ -128,6 +117,16 @@ MainLoop::initNetwork()
     
     while( isActive() )
     {
+        context_.status()->initialising( SUBSYSTEM, "Waiting for Localise2d data" );
+        orca::Localise2dData data;
+        int ret = localiseDataBuffer_.getNext( data, 1000 );
+        if ( ret == 0 )
+            break;
+    }
+    
+    while( isActive() )
+    {
+        context_.status()->initialising( SUBSYSTEM, "Connecting to PathFollower2d" );
         try
         {
             orcaice::connectToInterfaceWithTag<orca::PathFollower2dPrx>( context_, localNavPrx_, "PathFollower2d" );
@@ -150,6 +149,7 @@ MainLoop::initNetwork()
     
     while( isActive() )
     {
+        context_.status()->initialising( SUBSYSTEM, "Connecting to PathPlanner2d" );
         try
         {
             orcaice::connectToInterfaceWithTag<orca::PathPlanner2dPrx>( context_, pathplanner2dPrx_, "PathPlanner2d" );
@@ -206,20 +206,79 @@ void MainLoop::stopRobot()
     }
 }
 
+void 
+MainLoop::computeAndSendPath( const orcanavutil::Pose &pose, const orca::PathFollower2dData &incomingPath )
+{
+    // put together a task for the pathplanner
+    // add the position of the robot as the first waypoint in the path
+    Waypoint2d wp;
+    computeFirstWaypointForPathPlanning(pose, wp);
+    PathPlanner2dTask task;
+    task.coarsePath = incomingPath.path;
+    task.coarsePath.insert( task.coarsePath.begin(), 1, wp );
+    task.prx = taskPrx_;
+
+    // send task to pathplanner
+    stringstream ssSend;
+    ssSend << "MainLoop: Sending task to pathplanner: " << orcaice::toVerboseString( task );
+    context_.tracer()->debug(ssSend.str());
+    pathplanner2dPrx_->setTask( task );
+            
+    // block until path is computed
+    context_.tracer()->debug("MainLoop: Waiting for pathplanner's answer");
+    PathPlanner2dData computedPath;
+    while( isActive() )
+    {
+        int ret = computedPathBuffer_.getNext( computedPath, 1000 );
+        if (ret==0) break;
+    }
+            
+    // check result
+    if ( computedPath.result!= PathOk )
+    {
+        context_.tracer()->warning("MainLoop: Pathplanner could not compute path -- ignoring");
+        return;
+    }
+
+    assert( computedPath.path.size() > 0 );
+
+    // send out result to localnav, assemble packet first
+    PathFollower2dData outgoingPath;
+    outgoingPath.path = computedPath.path;
+    // get rid of first waypoint, it's the robot's location which is not needed
+    vector<orca::Waypoint2d>::iterator it = outgoingPath.path.begin();
+    outgoingPath.path.erase(it);
+                
+    // Work out whether we're supposed to activate immediately
+    bool activation=0;
+    while( isActive() )
+    {
+        int ret = activationBuffer_.getNext( activation, 1000 );
+        if (ret==0) break;
+    }
+    stringstream ss; ss << "Activation is " << activation;
+    context_.tracer()->debug(ss.str());
+
+    // Send result to localNav
+    context_.tracer()->debug("MainLoop: Sending out the resulting path to localnav.");
+    try {
+        localNavPrx_->setData( outgoingPath, activation );
+    }
+    catch ( Ice::Exception &e )
+    {
+        stringstream ss;
+        ss << "MainLoop:: Problem setting data on pathfollower2d proxy: " << e;
+        context_.tracer()->warning( ss.str() );
+        throw;
+    }
+}
 
 void 
 MainLoop::run()
 {
     PathFollower2dData incomingPath;
     Localise2dData localiseData;
-    
-    PathPlanner2dTask task;
-    PathPlanner2dConsumerPrx callbackPrx;
-    PathPlanner2dData computedPath;
-    
-    Waypoint2d wp;
-    orcaice::setInit( wp );
-    
+
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
 
     // main loop
@@ -232,126 +291,49 @@ MainLoop::run()
             while( isActive() )
             {
                 int ret = incomingPathBuffer_.getNext( incomingPath, 1000 );
-                if (ret==0) break;
+                if (ret==0) 
+                    break;
+                else
+                {
+                    // Keep waiting, but let the world know we're alive
+                    context_.status()->ok( SUBSYSTEM );
+                }
             }
             
             // special case 'stop': we received an empty path
             if (incomingPath.path.size()==0) 
             {
                 stopRobot();
+                context_.status()->ok( SUBSYSTEM );
                 continue;
             }
 
-            // wait for a valid localisation
-            context_.tracer()->info("Waiting for single hypothesis localisation");
-            while( isActive() )
-            {
-                int ret = localiseDataBuffer_.getNext( localiseData, 1000 );
-                if (ret==0)
-                {
-                    if ( localiseData.hypotheses.size() == 1 ) break;
-                    
-                    context_.tracer()->warning("More than one localisation hypotheses. Can't handle this. Waiting for single hypothesis...");
-                }
-            }
-                
-            // we're guaranteed to have only 1 hypothesis
-            // compute tolerances for the first waypoint based on where I think I am
-            computeFirstWaypoint(localiseData, wp);
-            
-            // put together a task for the pathplanner
-            // add the position of the robot as the first waypoint in the path
-            incomingPath.path.insert( incomingPath.path.begin(), 1, wp );
-            task.coarsePath = incomingPath.path;
-            task.prx = taskPrx_;
-            
-            // send task to pathplanner
-            stringstream ss;
-            ss << "Sending task to pathplanner: " << orcaice::toVerboseString( task );
-            context_.tracer()->debug(ss.str());
-            pathplanner2dPrx_->setTask( task );
-            
-            // block until path is computed
-            context_.tracer()->debug("Waiting for pathplanner's answer");
-            while( isActive() )
-            {
-                int ret = computedPathBuffer_.getNext( computedPath, 1000 );
-                if (ret==0) break;
-            }
-            
-            // check result
-            if ( computedPath.result!= PathOk )
-            {
-                context_.tracer()->warning("Pathplanner could not compute path. Give me another goal");
-            }
-            else
-            {
-                assert( computedPath.path.size() > 0 );
-                
-                // send out result to localnav, assemble packet first
-                PathFollower2dData outgoingPath;
-                // get rid of first waypoint, it's the robot's location which is not needed
-                vector<orca::Waypoint2d>::iterator it = computedPath.path.begin();
-                computedPath.path.erase(it);
-                
-                outgoingPath.path = computedPath.path;
-                context_.tracer()->debug("Sending out the resulting path to localnav.");
-                try {
-                    // get what's currently in the activation pipe
-                    bool activation=0;
-                    while( isActive() )
-                    {
-                        int ret = activationBuffer_.getNext( activation, 1000 );
-                        if (ret==0) break;
-                    }
-                    stringstream ss; ss << "Activation is " << activation;
-                    context_.tracer()->debug(ss.str());
-                    localNavPrx_->setData( outgoingPath, activation );
-                }
-                catch ( Ice::NotRegisteredException & )
-                {
-                    stringstream ss;
-                    ss << "Problem setting data on pathfollower2d proxy";
-                    context_.tracer()->warning( ss.str() );     
-                    throw;
-                }
-    
-            }
-    
+            // TODO: what if localiseData is stale?
+            localiseDataBuffer_.get( localiseData );
+
+            computeAndSendPath( mlPose(localiseData), incomingPath );
+
+            context_.status()->ok( SUBSYSTEM );
+
         } // try
-        catch ( const orca::OrcaException & e )
-        {
-            stringstream ss;
-            ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-            context_.tracer()->error( ss.str() );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-        }
-        catch ( const orcaice::Exception & e )
-        {
-            stringstream ss;
-            ss << "unexpected (local?) orcaice exception: " << e.what();
-            context_.tracer()->error( ss.str() );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-        }
         catch ( const Ice::Exception & e )
         {
             stringstream ss;
-            ss << "unexpected Ice exception: " << e;
+            ss << "MainLoop:: Caught exception: " << e;
             context_.tracer()->error( ss.str() );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+            context_.status()->fault( SUBSYSTEM, ss.str() );
         }
         catch ( const std::exception & e )
         {
-            // once caught this beast in here, don't know who threw it 'St9bad_alloc'
             stringstream ss;
-            ss << "unexpected std exception: " << e.what();
+            ss << "MainLoop: Caught exception: " << e.what();
             context_.tracer()->error( ss.str() );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+            context_.status()->fault( SUBSYSTEM, ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->error( "unexpected exception from somewhere.");
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+            context_.tracer()->error( "MainLoop: caught unknown unexpected exception.");
+            context_.status()->fault( SUBSYSTEM, "MainLoop: caught unknown unexpected exception.");
         }
             
     } // end of big while loop

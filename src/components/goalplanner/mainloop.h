@@ -14,7 +14,7 @@
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
 #include <orcaice/ptrproxy.h>
- 
+#include <orcanavutil/pose.h> 
 #include <orca/localise2d.h>
 #include <orca/pathplanner2d.h>
 #include <orca/pathfollower2d.h>
@@ -38,7 +38,8 @@ private:
     
     void stopRobot();
     void initNetwork();
-    
+    void computeAndSendPath( const orcanavutil::Pose &pose, const orca::PathFollower2dData &incomingPath );
+
     // required interface to localiser
     orca::Localise2dPrx localise2dPrx_;
     
