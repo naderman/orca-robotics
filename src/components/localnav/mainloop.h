@@ -135,10 +135,6 @@ private:
     bool testMode_;
 
     orcaice::Context context_;
-    
-    bool haveSubscribedToOdometry_;
-    bool haveSubscribedToLocalise2d_;
-    bool haveSubscribedToRangeScanner_;
 };
 
 }
