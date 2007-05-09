@@ -32,21 +32,9 @@ SparseSkeletonPathPlanner::SparseSkeletonPathPlanner( const orcaogmap::OgMap &og
 
     watch.start();
 
-    // first grow obstacles
-    
-    grownOgMap_ = ogMap_;
-
-    int robotDiameterCells = robotDiameterInCells( grownOgMap_, robotDiameterMetres );
-    growObstaclesOgMap( grownOgMap_, traversabilityThreshhold, (int)(robotDiameterCells/2.0) );
-
-    planOgMap_ = &(grownOgMap_);
-
-    // cout<<"TRACE(sparseskeletonpathplanner.cpp): planOgMap_: " << endl << orcaogmap::toText(*planOgMap_) << endl;
-
     //
     // Build the dense skeleton
     //
-
     FloatMap distGrid;
     bool success = computeSkeleton( grownOgMap_,
                                     skel_,
@@ -72,6 +60,20 @@ SparseSkeletonPathPlanner::SparseSkeletonPathPlanner( const orcaogmap::OgMap &og
     //
     // convert to sparse skeleton
     //
+
+    // grow obstacles (wait till now because dense skeleton stuff takes robot size into account)
+
+    grownOgMap_ = ogMap_;
+
+    // Maybe a bit of a hack...
+    // Grow by half the robot diameter - 1, to avoid the possibility of growing over the dense skeleton.
+    int robotDiameterCells = robotDiameterInCells( grownOgMap_, robotDiameterMetres );
+    growObstaclesOgMap( grownOgMap_, traversabilityThreshhold, robotDiameterCells/2-1 );
+
+    planOgMap_ = &(grownOgMap_);
+
+    // cout<<"TRACE(sparseskeletonpathplanner.cpp): planOgMap_: " << endl << orcaogmap::toText(*planOgMap_) << endl;
+
     sparseSkel_ = new SparseSkel( (*planOgMap_), traversabilityThreshhold_, skel_, costMap_ );
 }
 
