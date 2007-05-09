@@ -17,9 +17,6 @@
 #include "fakegpsdriver.h"
 #include "ashtech/ashtechdriver.h"
 
-// implementations of Ice objects
-#include "gpsI.h"
-
 using namespace std;
 using namespace orca;
 
