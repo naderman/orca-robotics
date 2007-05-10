@@ -14,6 +14,7 @@
 #include "localise2dconsumerI.h"
 #include "pathplanner2dconsumerI.h"
 #include <orcaobj/miscutils.h>
+#include <orcaobj/stringutils.h>
 
 using namespace std;
 using namespace orca;
@@ -22,32 +23,50 @@ using namespace goalplanner;
 namespace {
     const char *SUBSYSTEM = "mainloop";
 
-// ======== NON-MEMBER FUNCTION ======================
-// Computes waypoint to start from
-// This is for the pathplanner's purposes, not the pathfollower.
-// So we don't care too much about tolerances and speeds.
-void computeFirstWaypointForPathPlanning( const orcanavutil::Pose &pose, Waypoint2d &wp )
-{
-    wp.target.p.x = pose.x();
-    wp.target.p.y = pose.y();
-    wp.target.o   = pose.theta();
+    // Exceptions thrown/caught internally.
+    // If isTemporary we'll hopefully be able to recover soon.
+    class GoalPlanException : public std::exception
+    { 
+    public:
+        GoalPlanException(const char *message, bool isTemporary)
+            : message_(message),
+              isTemporary_(isTemporary)
+            {}
+        GoalPlanException(const std::string &message, bool isTemporary)
+            : message_(message),
+              isTemporary_(isTemporary)
+            {}
+        ~GoalPlanException()throw(){}
+        virtual const char* what() const throw() { return message_.c_str(); }
+        bool isTemporary() const throw() { return isTemporary_; }
+    private:
+        std::string  message_;
+        bool isTemporary_;
+    };
 
-    // add bogus tolerances and speeds
-    wp.distanceTolerance = 0.1;
-    wp.headingTolerance  = M_PI/2.0;
-    wp.timeTarget.seconds  = 0;
-    wp.timeTarget.useconds = 0;
-    wp.maxApproachSpeed    = 2e+6;
-    wp.maxApproachTurnrate = (float)DEG2RAD(2e+6); 
-}
-// =======================================================
+    // Computes waypoint to start from
+    // This is for the pathplanner's purposes, not the pathfollower.
+    // So we don't care too much about tolerances and speeds.
+    void computeFirstWaypointForPathPlanning( const orcanavutil::Pose &pose, Waypoint2d &wp )
+    {
+        wp.target.p.x = pose.x();
+        wp.target.p.y = pose.y();
+        wp.target.o   = pose.theta();
 
-orcanavutil::Pose mlPose( const orca::Localise2dData &localiseData )
-{
-    const orca::Pose2dHypothesis &mlHyp = orcaice::mlHypothesis( localiseData );
-    return orcanavutil::Pose( mlHyp.mean.p.x, mlHyp.mean.p.y, mlHyp.mean.o );
-}
+        // add bogus tolerances and speeds
+        wp.distanceTolerance = 0.1;
+        wp.headingTolerance  = M_PI/2.0;
+        wp.timeTarget.seconds  = 0;
+        wp.timeTarget.useconds = 0;
+        wp.maxApproachSpeed    = 2e+6;
+        wp.maxApproachTurnrate = (float)DEG2RAD(2e+6); 
+    }
 
+    orcanavutil::Pose mlPose( const orca::Localise2dData &localiseData )
+    {
+        const orca::Pose2dHypothesis &mlHyp = orcaice::mlHypothesis( localiseData );
+        return orcanavutil::Pose( mlHyp.mean.p.x, mlHyp.mean.p.y, mlHyp.mean.o );
+    }
 }
 
 MainLoop::MainLoop( const orcaice::Context & context )
@@ -57,6 +76,10 @@ MainLoop::MainLoop( const orcaice::Context & context )
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
     context_.status()->initialising( SUBSYSTEM );
     initNetwork();
+
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag()+".Config.";
+    pathPlanTimeout_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PathPlanTimeout", 10.0 );
 }
 
 MainLoop::~MainLoop()
@@ -227,17 +250,20 @@ MainLoop::computeAndSendPath( const orcanavutil::Pose &pose, const orca::PathFol
     // block until path is computed
     context_.tracer()->debug("MainLoop: Waiting for pathplanner's answer");
     PathPlanner2dData computedPath;
-    while( isActive() )
+    int ret = computedPathBuffer_.getNext( computedPath, (int)(pathPlanTimeout_*1000.0) );
+    if ( ret != 0 )
     {
-        int ret = computedPathBuffer_.getNext( computedPath, 1000 );
-        if (ret==0) break;
+        stringstream ss;
+        ss << "Did not receive a reply from the PathPlanner, after waiting " << pathPlanTimeout_ << "s -- something must be wrong.";
+        throw( GoalPlanException( ss.str(), false ) );
     }
             
     // check result
     if ( computedPath.result!= PathOk )
     {
-        context_.tracer()->warning("MainLoop: Pathplanner could not compute path -- ignoring");
-        return;
+        stringstream ss;
+        ss << "MainLoop: PathPlanner could not compute.  Gave result " << orcaice::toString( computedPath.result );
+        throw( GoalPlanException( ss.str(), false ) );
     }
 
     assert( computedPath.path.size() > 0 );
@@ -251,11 +277,7 @@ MainLoop::computeAndSendPath( const orcanavutil::Pose &pose, const orca::PathFol
                 
     // Work out whether we're supposed to activate immediately
     bool activation=0;
-    while( isActive() )
-    {
-        int ret = activationBuffer_.getNext( activation, 1000 );
-        if (ret==0) break;
-    }
+    activationBuffer_.get( activation );
     stringstream ss; ss << "Activation is " << activation;
     context_.tracer()->debug(ss.str());
 
@@ -267,9 +289,8 @@ MainLoop::computeAndSendPath( const orcanavutil::Pose &pose, const orca::PathFol
     catch ( Ice::Exception &e )
     {
         stringstream ss;
-        ss << "MainLoop:: Problem setting data on pathfollower2d proxy: " << e;
-        context_.tracer()->warning( ss.str() );
-        throw;
+        ss << "MainLoop:: Problem calling setData() on pathfollower2d proxy: " << e;
+        throw( GoalPlanException( ss.str(), false ) );
     }
 }
 
@@ -316,6 +337,21 @@ MainLoop::run()
             context_.status()->ok( SUBSYSTEM );
 
         } // try
+        catch ( const GoalPlanException &e )
+        {
+            stringstream ss;
+            ss << "MainLoop:: Caught GoalPlanException: " << e.what();
+            if ( e.isTemporary() )
+            {
+                context_.tracer()->warning( ss.str() );
+                context_.status()->warning( SUBSYSTEM, ss.str() );
+            }
+            else
+            {
+                context_.tracer()->error( ss.str() );
+                context_.status()->fault( SUBSYSTEM, ss.str() );
+            }
+        }
         catch ( const Ice::Exception & e )
         {
             stringstream ss;

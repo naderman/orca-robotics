@@ -30,6 +30,7 @@ PathFollower2dI::PathFollower2dI( orcaice::Proxy<orca::PathFollower2dData> &path
 orca::PathFollower2dData
 PathFollower2dI::getData( const ::Ice::Current& ) const
 {
+#error fixme
     cout<<"TRACE(pathfollower2dI.cpp): getData()" << endl;
     orca::PathFollower2dData data;
     if ( pathPipe_.isEmpty() )

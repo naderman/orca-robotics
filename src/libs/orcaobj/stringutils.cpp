@@ -1338,13 +1338,31 @@ toVerboseString( const orca::PathFollower2dData& obj )
     return s.str();
 }
 
+std::string
+toString( const orca::PathPlanner2dResult &res )
+{
+    switch ( res )
+    {
+    case orca::PathOk:
+        return "PathOk";
+    case orca::PathStartNotValid:
+        return "PathStartNotValid";
+    case orca::PathDestinationNotValid:
+        return "PathDestinationNotValid";
+    case orca::PathDestinationUnreachable:
+        return "PathDestinationUnreachable";
+    case orca::OtherError:
+        return "OtherError";
+    }
+}
+
 std::string 
 toVerboseString( const orca::PathPlanner2dData& obj )
 {
     std::stringstream s;
 
     s << orcaice::toString(obj.timeStamp)
-      << " PathPlanner2dDataPtr [" << obj.path.size() << " waypoints. Result code: " << obj.result << " ]:" << endl;
+      << " PathPlanner2dDataPtr [" << obj.path.size() << " waypoints. Result code: " << toString(obj.result) << " ]:" << endl;
     for ( unsigned int i=0; i < obj.path.size(); i++ )
     {
         s << "  " << i << ":" << orcaice::toString(obj.path[i]) << endl;

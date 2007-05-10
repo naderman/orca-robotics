@@ -252,6 +252,8 @@ std::string toString( const orca::WifiData& );
 std::string toVerboseString( const orca::OgMapData& );
 //! Prints out each waypoint
 std::string toVerboseString( const orca::PathFollower2dData& );
+//! Result as human-readable string
+ std::string toString( const orca::PathPlanner2dResult &res );
 //! Prints out the path and result code
 std::string toVerboseString( const orca::PathPlanner2dData& );
 //! Prints out the coarse path given as a task
