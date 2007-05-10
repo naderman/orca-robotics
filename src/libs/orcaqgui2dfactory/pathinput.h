@@ -197,7 +197,10 @@ class PathInput : public QObject
 class PathFollowerInput : public PathInput
 { 
     public:
-        PathFollowerInput( QObject *parent, WaypointSettings *wpSettings, orcaqgui::IHumanManager *humanManager, QString lastSavedPathFile )
+        PathFollowerInput( QObject *parent,
+                           WaypointSettings *wpSettings,
+                           orcaqgui::IHumanManager *humanManager,
+                           QString lastSavedPathFile )
             : PathInput( parent, wpSettings, humanManager, lastSavedPathFile )
         {};
         virtual ~PathFollowerInput() {};  

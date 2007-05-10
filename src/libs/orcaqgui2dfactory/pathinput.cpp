@@ -995,9 +995,6 @@ PathFollowerInput::getPath( orca::PathFollower2dData &pathData ) const
                 heading = heading - 360.0;
             }
             float headingTolerance = headingTolerances_[i]/16;
-            if (headingTolerance>180.0) {
-                headingTolerance = headingTolerance - 360.0;
-            }
     
             pathData.path[counter].target.p.x = waypoints_[i].x();
             pathData.path[counter].target.p.y = waypoints_[i].y();

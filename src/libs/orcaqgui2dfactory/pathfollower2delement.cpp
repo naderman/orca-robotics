@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include <QFileDialog>
-
+#include <orcaobj/stringutils.h>
 #include <orcaqgui/ihumanmanager.h>
 #include <orcaqgui/guiicons.h>
 #include <orcaqgui2dfactory/wptolerancesdialog.h>
@@ -408,8 +408,6 @@ PathFollower2dElement::stop()
 void 
 PathFollower2dElement::sendPath( const PathFollowerInput &pathInput, bool activateImmediately )
 {
-    cout<<"TRACE(PathFollower2dElement): sendPath()" << endl;
-        
     try
     {
         // it's possible that we were desubscribed before, let's resubscribe to make sure
