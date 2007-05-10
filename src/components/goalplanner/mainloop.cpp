@@ -67,6 +67,22 @@ namespace {
         const orca::Pose2dHypothesis &mlHyp = orcaice::mlHypothesis( localiseData );
         return orcanavutil::Pose( mlHyp.mean.p.x, mlHyp.mean.p.y, mlHyp.mean.o );
     }
+
+    bool localisationIsUncertain( const orca::Localise2dData &localiseData )
+    {
+        if ( localiseData.hypotheses.size() > 1 )
+            return false;
+        
+        const orca::Pose2dHypothesis &h = localiseData.hypotheses[0];
+
+        const double LIN_THRESHOLD = 2.0;
+        const double ROT_THRESHOLD = M_PI;
+        
+        return
+            ( h.cov.xx > LIN_THRESHOLD ||
+              h.cov.yy > LIN_THRESHOLD ||
+              h.cov.tt > ROT_THRESHOLD );
+    }
 }
 
 MainLoop::MainLoop( const orcaice::Context & context )
@@ -265,7 +281,8 @@ MainLoop::computeAndSendPath( const orcanavutil::Pose &pose,
             {
                 stringstream ss;
                 ss << "Did not receive a reply from the PathPlanner, after waiting " << secWaited << "s -- something must be wrong.";
-                throw( GoalPlanException( ss.str(), false ) );
+                const bool isTemporary = false;
+                throw( GoalPlanException( ss.str(), isTemporary ) );
             }
         }
     }
@@ -275,7 +292,8 @@ MainLoop::computeAndSendPath( const orcanavutil::Pose &pose,
     {
         stringstream ss;
         ss << "MainLoop: PathPlanner could not compute.  Gave result " << orcaice::toString( computedPath.result );
-        throw( GoalPlanException( ss.str(), false ) );
+        const bool isTemporary = true;
+        throw( GoalPlanException( ss.str(), isTemporary ) );
     }
 
     assert( computedPath.path.size() > 0 );
@@ -303,7 +321,8 @@ MainLoop::computeAndSendPath( const orcanavutil::Pose &pose,
     {
         stringstream ss;
         ss << "MainLoop:: Problem calling setData() on pathfollower2d proxy: " << e;
-        throw( GoalPlanException( ss.str(), false ) );
+        const bool isTemporary = false;
+        throw( GoalPlanException( ss.str(), isTemporary ) );
     }
 }
 
@@ -311,7 +330,7 @@ void
 MainLoop::run()
 {
     PathFollower2dData incomingPath;
-    Localise2dData localiseData;
+    bool requestIsOutstanding = false;
 
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
 
@@ -320,22 +339,38 @@ MainLoop::run()
     {
         try
         {
-            // wait for a goal path
-            context_.tracer()->info("Waiting for a goal path");
-            while( isActive() )
+            // If we have an outstanding request, service it now
+            // (but check to see if we should over-write with a new one)
+            // Otherwise, wait for a new request.
+            if ( requestIsOutstanding )
             {
-                int ret = incomingPathBuffer_.getNext( incomingPath, 1000 );
-                if (ret==0) 
-                    break;
-                else
+                if ( !incomingPathBuffer_.isEmpty() )
                 {
-                    // Keep waiting, but let the world know we're alive
-                    context_.status()->ok( SUBSYSTEM );
+                    // Overwrite the unserviced request with the new one.
+                    incomingPathBuffer_.get( incomingPath );
+                }
+            }
+            else
+            {
+                context_.tracer()->info("Waiting for a goal path");
+                while( isActive() )
+                {
+                    int ret = incomingPathBuffer_.getNext( incomingPath, 1000 );
+                    if (ret==0)
+                    {
+                        requestIsOutstanding = true;
+                        break;
+                    }
+                    else
+                    {
+                        // Keep waiting, but let the world know we're alive
+                        context_.status()->ok( SUBSYSTEM );
+                    }
                 }
             }
 
             stringstream ssPath;
-            ssPath << "MainLoop: Received path: " << endl << orcaice::toVerboseString(incomingPath);
+            ssPath << "MainLoop: Requested path: " << endl << orcaice::toVerboseString(incomingPath);
             context_.tracer()->debug( ssPath.str() );
 
             // special case 'stop': we received an empty path
@@ -343,13 +378,27 @@ MainLoop::run()
             {
                 stopRobot();
                 context_.status()->ok( SUBSYSTEM );
+                requestIsOutstanding = false;
                 continue;
             }
 
             // TODO: what if localiseData is stale?
+            orca::Localise2dData localiseData;
             localiseDataBuffer_.get( localiseData );
 
             computeAndSendPath( mlPose(localiseData), incomingPath );
+
+            // We've only serviced the request properly if we're certain of our position.
+            // If we're not certain, keep trying till we become certain.
+            if ( localisationIsUncertain(localiseData) )
+            {
+                context_.tracer()->info( "MainLoop: path was sent but localisation was uncertain...  We'll try again soon." );
+            }
+            else
+            {
+                context_.tracer()->info( "MainLoop: localisation was OK -- request no longer outstanding." );
+                requestIsOutstanding = false;
+            }
 
             context_.status()->ok( SUBSYSTEM );
 
@@ -357,16 +406,21 @@ MainLoop::run()
         catch ( const GoalPlanException &e )
         {
             stringstream ss;
-            ss << "MainLoop:: Caught GoalPlanException: " << e.what();
             if ( e.isTemporary() )
             {
+                ss << "MainLoop:: Caught GoalPlanException: " << e.what() << ".  I reckon I can recover from this.";
                 context_.tracer()->warning( ss.str() );
                 context_.status()->warning( SUBSYSTEM, ss.str() );
+
+                // Slow the loop down a little before trying again.
+                IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
             }
             else
             {
+                ss << "MainLoop:: Caught GoalPlanException: " << e.what() << ".  Looks unrecoverable, I'm giving up.";
                 context_.tracer()->error( ss.str() );
                 context_.status()->fault( SUBSYSTEM, ss.str() );
+                requestIsOutstanding = false;
             }
         }
         catch ( const Ice::Exception & e )
@@ -375,6 +429,7 @@ MainLoop::run()
             ss << "MainLoop:: Caught exception: " << e;
             context_.tracer()->error( ss.str() );
             context_.status()->fault( SUBSYSTEM, ss.str() );
+            requestIsOutstanding = false;
         }
         catch ( const std::exception & e )
         {
@@ -382,11 +437,13 @@ MainLoop::run()
             ss << "MainLoop: Caught exception: " << e.what();
             context_.tracer()->error( ss.str() );
             context_.status()->fault( SUBSYSTEM, ss.str() );
+            requestIsOutstanding = false;
         }
         catch ( ... )
         {
             context_.tracer()->error( "MainLoop: caught unknown unexpected exception.");
             context_.status()->fault( SUBSYSTEM, "MainLoop: caught unknown unexpected exception.");
+            requestIsOutstanding = false;
         }
             
     } // end of big while loop
