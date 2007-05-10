@@ -461,6 +461,7 @@ MainLoop::run()
                 stringstream ss;
                 ss << "Timeout waiting for range data: no data for " << TIMEOUT_MS << "ms.  Stopping.";
                 context_.tracer()->error( ss.str() );
+                context_.status()->warning( SUBSYSTEM, ss.str() );
                 getStopCommand( velocityCmd );
                 sendCommandToPlatform( velocityCmd );
                 subscribeForObservations();
@@ -486,6 +487,7 @@ MainLoop::run()
                    << "\t odomData:     " << orcaice::toString(odomData_.timeStamp) << endl
                    << "Maybe something is wrong: Stopping.";
                 context_.tracer()->error( ss.str() );
+                context_.status()->warning( SUBSYSTEM, ss.str() );
                 getStopCommand( velocityCmd );
                 sendCommandToPlatform( velocityCmd );
                 subscribeForOdometry();
