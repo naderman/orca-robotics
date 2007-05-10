@@ -1362,7 +1362,7 @@ toVerboseString( const orca::PathPlanner2dData& obj )
 {
     std::stringstream s;
 
-    s << orcaice::toString(obj.timeStamp)
+    s << obj.timeStamp.seconds << "s:" << obj.timeStamp.useconds << "us"
       << " PathPlanner2dDataPtr [" << obj.path.size() << " waypoints. Result code: " << toString(obj.result) << " ]:" << endl;
     s << "Result description: " << obj.resultDescription << endl;
     for ( unsigned int i=0; i < obj.path.size(); i++ )
@@ -1378,7 +1378,7 @@ toVerboseString( const orca::PathPlanner2dTask& obj )
 {
     std::stringstream s;
 
-    s << orcaice::toString(obj.timeStamp)
+    s << obj.timeStamp.seconds << "s:" << obj.timeStamp.useconds << "us"
       << " PathPlanner2dTaskPtr [path contains "<< obj.coarsePath.size() << " waypoints]:" << endl;
     for ( unsigned int i=0; i < obj.coarsePath.size(); i++ )
     {
