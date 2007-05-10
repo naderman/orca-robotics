@@ -2,7 +2,7 @@
 # Edit this to match your configuration, then set a cron job
 # to run it regularly (with 'ctest -S <script_name>').
 #
-SET (DASHBOARD_ROOT "C:/orca/ctests/orca/orca2-nightly")
+SET (DASHBOARD_ROOT "C:/ctests/orca/orca-nightly")
 SET (CTEST_SOURCE_DIRECTORY "${DASHBOARD_ROOT}/orca2")
 SET (CTEST_BINARY_DIRECTORY "${DASHBOARD_ROOT}/build-vc80")
 
