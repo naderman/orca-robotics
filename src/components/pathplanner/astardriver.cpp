@@ -78,9 +78,9 @@ void AStarDriver::computePath( const orca::PathPlanner2dTask& task,
 //         // ===============================================================
         
         // ===== Append to the pathData which contains the entire path  ========
-        orcapathplan::Result result = orcapathplan::PathOk;
+//         orcapathplan::Result result = orcapathplan::PathOk;
 //         orcapathplan::convert( ogMap_, pathSegment, wpParaVector, result, pathData );
-        orcapathplan::convert( ogMap_, pathSegment, result, pathData );
+        orcapathplan::convert( ogMap_, pathSegment, pathData );
         // ========================================================================
         
         // set last goal cell as new start cell

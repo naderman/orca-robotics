@@ -34,10 +34,10 @@ convert( const orcapathplan::Result        result,
             output.result = orca::PathDestinationUnreachable;
             break;
         case OtherError:
-            output.result = orca::OtherError;
+            output.result = orca::PathOtherError;
             break;   
         default:
-            output.result = orca::OtherError;
+            output.result = orca::PathOtherError;
             break;
     }
 
@@ -62,11 +62,8 @@ isDoubleWaypoint( const orca::PathPlanner2dData &path, float worldX, float world
 void 
 convert( const orcaogmap::OgMap  &ogMap,
          const Cell2DVector      &input,
-         orcapathplan::Result     result,
          orca::PathPlanner2dData &output )
 {
-    convert( result, output );
-
     float worldX, worldY;
     orca::Waypoint2d wp;
     orcaice::setInit( wp );
@@ -87,11 +84,9 @@ void
 convert( const orcaogmap::OgMap               &ogMap,
          const Cell2DVector                   &input,
          const std::vector<WaypointParameter> &wpPara,
-         orcapathplan::Result                  result,
          orca::PathPlanner2dData              &output,
          double                                firstHeading)
 {
-    convert( result, output );
     
     float worldX, worldY;
     orca::Waypoint2d wp;

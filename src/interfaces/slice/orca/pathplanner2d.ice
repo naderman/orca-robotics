@@ -31,7 +31,7 @@ enum PathPlanner2dResult
     PathStartNotValid, 
     PathDestinationNotValid, 
     PathDestinationUnreachable,
-    OtherError
+    PathOtherError
 };
 
 //! Data structure for resulting path including error codes
@@ -39,10 +39,12 @@ struct PathPlanner2dData
 {
     //! Time when data was measured.
     Time timeStamp;
-    //! path
+    //! Path
     Path2d path;
-    //! result of path-planning
-    PathPlanner2dResult result;    
+    //! Result of path-planning
+    PathPlanner2dResult result;
+    //! Description of result (e.g. reason for failure)
+    string resultDescription;
 };
 
 /*!

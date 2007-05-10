@@ -297,26 +297,29 @@ AlgoHandler::run()
             {
                 context_.tracer()->info("telling driver to compute the path now");
                 driver_->computePath( task, pathData );
+                pathData.result = orca::PathOk;
+                pathData.resultDescription = "All good";
             }
             catch ( orcapathplan::Exception &e )
             {
                 std::stringstream ss;
                 ss << "Couldn't compute path: " << orcaice::toVerboseString(task) << endl << "Problem was: " << e.what();
                 context_.tracer()->error( ss.str() );
+                pathData.resultDescription = ss.str();
                 
                 switch( e.type() )
                 {
-                    case PathStartNotValid:             
-                        pathData.result = PathStartNotValid;
+                    case orcapathplan::PathStartNotValid:             
+                        pathData.result = orca::PathStartNotValid;
                         break;
-                    case PathDestinationNotValid:       
-                        pathData.result = PathDestinationNotValid;
+                    case orcapathplan::PathDestinationNotValid:       
+                        pathData.result = orca::PathDestinationNotValid;
                         break;
-                    case PathDestinationUnreachable:    
-                        pathData.result = PathDestinationUnreachable;
+                    case orcapathplan::PathDestinationUnreachable:    
+                        pathData.result = orca::PathDestinationUnreachable;
                         break;
-                    case OtherError:                    
-                        pathData.result = OtherError; 
+                    case orcapathplan::OtherError:                    
+                        pathData.result = orca::PathOtherError; 
                         break;
                     default : {}
                         // nothing

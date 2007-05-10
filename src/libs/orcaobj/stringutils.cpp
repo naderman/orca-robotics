@@ -1351,9 +1351,10 @@ toString( const orca::PathPlanner2dResult &res )
         return "PathDestinationNotValid";
     case orca::PathDestinationUnreachable:
         return "PathDestinationUnreachable";
-    case orca::OtherError:
-        return "OtherError";
+    case orca::PathOtherError:
+        return "PathOtherError";
     }
+    return "";
 }
 
 std::string 
@@ -1363,6 +1364,7 @@ toVerboseString( const orca::PathPlanner2dData& obj )
 
     s << orcaice::toString(obj.timeStamp)
       << " PathPlanner2dDataPtr [" << obj.path.size() << " waypoints. Result code: " << toString(obj.result) << " ]:" << endl;
+    s << "Result description: " << obj.resultDescription << endl;
     for ( unsigned int i=0; i < obj.path.size(); i++ )
     {
         s << "  " << i << ":" << orcaice::toString(obj.path[i]) << endl;

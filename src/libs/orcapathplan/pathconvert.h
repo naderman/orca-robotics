@@ -34,13 +34,12 @@ namespace orcapathplan {
     void convert( orcapathplan::Result     result,
                   orca::PathPlanner2dData &output );
 
-    //! Converts a path (cell vector in cell coordinate system) and the result code
+    //! Converts a path (cell vector in cell coordinate system)
     //! into the Slice-defined PathPlanner2dData (world coordinate system). 
     //! Will append input cells to the output path if output path already contains 
     //! entries. Note that not all entries are set by this function (e.g. tolerances)
     void convert( const orcaogmap::OgMap      &ogMap,
                   const Cell2DVector          &input,
-                  const orcapathplan::Result   result,
                   orca::PathPlanner2dData     &output );
     
     //! As above. Additionaly, it sets heading values in the direction of two connected waypoints.
@@ -49,7 +48,6 @@ namespace orcapathplan {
     void convert( const orcaogmap::OgMap               &ogMap,
                   const Cell2DVector                   &input,
                   const std::vector<WaypointParameter> &wpPara,
-                  orcapathplan::Result                  result,
                   orca::PathPlanner2dData              &output,
                   double                                firstHeading = 0.0 );
 
