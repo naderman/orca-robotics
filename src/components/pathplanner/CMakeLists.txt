@@ -11,32 +11,24 @@ IF ( BUILD_PATHPLANNER )
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
     
-    # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
-    SET( COMMON_SRCS
-            algohandler
-            component
-            fakedriver
-            genericdriver
-            skeletondriver
-            pathplanner2dI
-    )
-    
-    SET ( QT_SRCS skeletongraphicsI )
+    # build common sources into a convenience library
+    BUILD_COMPONENT_SOURCES( PathPlannerSources )
 
     IF ( QT4_FOUND )
         INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
         ADD_DEFINITIONS( -DQT4_FOUND )
-    
         # stand-alone component  
-        GLOBAL_ADD_EXECUTABLE( pathplanner main ${COMMON_SRCS} ${QT_SRCS} )
+        GLOBAL_ADD_EXECUTABLE( pathplanner main skeletongraphicsI )
     ELSE( QT4_FOUND )
         # stand-alone component  
-        GLOBAL_ADD_EXECUTABLE( pathplanner main ${COMMON_SRCS} )
+        GLOBAL_ADD_EXECUTABLE( pathplanner main  )
     ENDIF( QT4_FOUND )
+    
+    TARGET_LINK_LIBRARIES( pathplanner PathPlannerSources OrcaOgMap OrcaMisc OrcaPathPlan)
 
     # build an IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaPathPlanner SHARED service ${COMMON_SRCS} )
-    TARGET_LINK_LIBRARIES( pathplanner OrcaOgMap OrcaMisc OrcaPathPlan )
+    GLOBAL_ADD_LIBRARY( OrcaPathPlanner SHARED service )
+    TARGET_LINK_LIBRARIES( OrcaPathPlanner PathPlannerSources OrcaOgMap OrcaMisc OrcaPathPlan )
     
     GENERATE_CONFIG_FILE( pathplanner.def )
 
