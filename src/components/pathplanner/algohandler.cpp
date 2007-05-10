@@ -205,7 +205,8 @@ AlgoHandler::initDriver()
                                      ogMap_,
                                      robotDiameterMetres,
                                      traversabilityThreshhold,
-                                     doPathOptimization );
+                                     doPathOptimization,
+                                     context_ );
     }    
     else if ( driverName == "skeletonnav" || driverName == "sparseskeletonnav" )
     {

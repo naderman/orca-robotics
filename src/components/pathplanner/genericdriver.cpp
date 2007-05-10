@@ -17,16 +17,18 @@ using namespace orcaice;
 
 namespace pathplanner {
     
-GenericDriver::GenericDriver( orcapathplan::IPathPlanner2d      *pathPlanner,
-                              const orcaogmap::OgMap            &ogMap,
-                              double                             robotDiameterMetres,
-                              double                             traversabilityThreshhold,
-                              bool                               doPathOptimization )
+GenericDriver::GenericDriver( orcapathplan::IPathPlanner2d  *pathPlanner,
+                              const orcaogmap::OgMap        &ogMap,
+                              double                         robotDiameterMetres,
+                              double                         traversabilityThreshhold,
+                              bool                           doPathOptimization,
+                              const Context                 &context)
     : pathPlanner_(pathPlanner),
       ogMap_(ogMap),
       robotDiameterMetres_(robotDiameterMetres),
       traversabilityThreshhold_(traversabilityThreshhold),
-      doPathOptimization_(doPathOptimization)
+      doPathOptimization_(doPathOptimization),
+      context_(context)
       
 {
 }
@@ -75,7 +77,9 @@ GenericDriver::computePath( const orca::PathPlanner2dTask& task,
             
             throw orcapathplan::Exception( ss.str() );
         }
-        cout<<"TRACE(genericdriver.cpp): computing path segment took " << watch.elapsedSeconds() << "s" << endl;
+        stringstream ss;
+        ss << "Computing path segment took " << watch.elapsedSeconds() << "s";
+        context_.tracer()->debug(ss.str(),1);
 
         // ====== Set waypoint parameters ================================
         // ====== Different options could be implemented and chosen and runtime (via .cfg file)

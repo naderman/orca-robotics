@@ -11,6 +11,7 @@
 #define ORCA_PATHPLANNER_GENERICDRIVER_H
 
 #include "algodriver.h"
+#include <orcaice/orcaice.h>
 #include <orcapathplan/orcapathplan.h>
 #include <orcapathplan/ipathplanner2d.h>
 #include <orca/ogmap.h>
@@ -31,7 +32,8 @@ public:
                    const orcaogmap::OgMap       &ogMap,
                    double                        robotDiameterMetres,
                    double                        traversabilityThreshhold,
-                   bool                          doPathOptimization );
+                   bool                          doPathOptimization,
+                   const orcaice::Context       &context );
     
     ~GenericDriver();
     
@@ -51,6 +53,8 @@ private:
                                 const orca::Waypoint2d                       *goalWp, 
                                 int                                           numSegments,
                                 std::vector<orcapathplan::WaypointParameter> &wpParaVector );
+    
+    const orcaice::Context context_;
 };
 
 }

@@ -38,7 +38,7 @@ SkeletonDriver::SkeletonDriver( const orcaogmap::OgMap &ogMap,
       useSparseSkeleton_(useSparseSkeleton)
       
 {
-    cout<<"TRACE(skeletondriver.cpp): SkeletonDriver()" << endl;
+    context_.tracer()->debug("SkeletonDriver: constructor",3);
     
     orcamisc::CpuStopwatch watch(true);
     if ( !useSparseSkeleton )
@@ -84,13 +84,17 @@ SkeletonDriver::SkeletonDriver( const orcaogmap::OgMap &ogMap,
             throw orcapathplan::Exception( ss.str() );
         }
     }
-    cout<<"TRACE(skeletondriver.cpp): Creating skeleton took " << watch.elapsedSeconds() << "s" << endl;
     
+    stringstream ss;
+    ss << "Creating skeleton took " << watch.elapsedSeconds() << "s";
+    context_.tracer()->debug(ss.str(),1);
+        
     genericDriver_ = new GenericDriver( pathPlanner_,
                                         ogMap,
                                         robotDiameterMetres,
                                         traversabilityThreshhold,
-                                        doPathOptimization );
+                                        doPathOptimization,
+                                        context );
     
     #ifdef QT4_FOUND
     bool provideSkeletonGraphics = orcaice::getPropertyAsDoubleWithDefault( context.properties(), context.tag() + ".Config.Skeleton.ProvideGraphics", 1 );
