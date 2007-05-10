@@ -37,8 +37,8 @@ PathPlannerTaskAnswerConsumer::setData(const ::orca::PathPlanner2dData& data, co
         msg.append("Goal waypoint not valid");    
     else if (data.result==PathDestinationUnreachable) 
         msg.append("Destination unreachable");    
-    else if (data.result==OtherError) 
-        msg.append("Unknown");    
+    else if (data.result==PathOtherError) 
+        msg.append(QString(data.resultDescription.c_str()));    
 
     msgBuffer_.set(msg); 
 }
