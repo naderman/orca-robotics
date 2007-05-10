@@ -20,7 +20,7 @@
 
 #include <orcapathplan/cell2d.h>
 #include <orcapathplan/sparseskel.h>
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/proxy.h>
 #include <orcaice/context.h>
 #include <qpainter.h>
 #include <vector>
@@ -60,7 +60,7 @@ private:
                          const orcapathplan::SparseSkel   &skel,
                          QPainter                         &p );
     
-    orcaice::Buffer<orca::QGraphics2dData> dataBuffer_;
+    orcaice::Proxy<orca::QGraphics2dData> dataBuffer_;
 
     orca::QGraphics2dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx              topicPrx_;

@@ -29,8 +29,6 @@ SkeletonGraphicsI::SkeletonGraphicsI( const orcaice::Context & context, const st
 QGraphics2dData
 SkeletonGraphicsI::getData(const Ice::Current& current) const
 {
-    cout << "Tobi: getData is called, buffer.isEmpty returns: " << dataBuffer_.isEmpty() << endl;
-    
     // create a null pointer. data will be cloned into it.
     orca::QGraphics2dData data;
 
@@ -182,7 +180,7 @@ SkeletonGraphicsI::localSetSkel( const orcaogmap::OgMap           &ogMap,
     memcpy( &(data.qpicture[0]), qpic.data(), qpic.size() );
 
     // Stick it in the buffer
-    dataBuffer_.push( data );
+    dataBuffer_.set( data );
     
     // Then push to IceStorm.
     try {
@@ -195,8 +193,6 @@ SkeletonGraphicsI::localSetSkel( const orcaogmap::OgMap           &ogMap,
         // this is expected (our co-located IceStorm is obviously going down).
         context_.tracer()->warning( "Failed push to IceStorm." );
     }
-    
-    cout << "Tobi: end of localSetSkel: buffer.isEmpty returns: " << dataBuffer_.isEmpty() << endl;
 
 }
 
