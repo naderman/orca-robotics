@@ -17,6 +17,7 @@ IF ( BUILD_PATHPLANNER )
             astardriver
             component
             fakedriver
+            genericdriver
             simplenavdriver
             skeletondriver
             pathplanner2dI

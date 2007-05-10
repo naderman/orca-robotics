@@ -20,18 +20,19 @@
 namespace pathplanner {
 
 //
-// @author Alex Brooks
+// @author Alex Brooks, Tobias Kaupp
 //
 class GenericDriver : public AlgoDriver
 {
 
 public: 
 
-    GenericDriver( orcapathplan::IPathPlanner2d &pathPlanner,
+    GenericDriver( orcapathplan::IPathPlanner2d *pathPlanner,
                    const orcaogmap::OgMap       &ogMap,
                    double                        robotDiameterMetres,
                    double                        traversabilityThreshhold,
                    bool                          doPathOptimization );
+    
     ~GenericDriver();
     
     virtual void computePath( const orca::PathPlanner2dTask& task,
@@ -39,14 +40,14 @@ public:
 
 private: 
 
+    orcapathplan::IPathPlanner2d  *pathPlanner_;
     orcaogmap::OgMap               ogMap_;
-    orcapathplan::IPathPlanner2d  &pathPlanner_;
     
     double robotDiameterMetres_;
     double traversabilityThreshhold_;
     bool   doPathOptimization_;
     
-    void getWaypointParameters( const orca::Waypoint2d                       *startWp, 
+    void setWaypointParameters( const orca::Waypoint2d                       *startWp, 
                                 const orca::Waypoint2d                       *goalWp, 
                                 int                                           numSegments,
                                 std::vector<orcapathplan::WaypointParameter> &wpParaVector );

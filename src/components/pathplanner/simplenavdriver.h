@@ -12,6 +12,7 @@
 #define ORCA2_PATHPLANNER_SIMPLENAVDRIVER_H
 
 #include "algodriver.h"
+#include "genericdriver.h"
 
 #include <orcapathplan/ipathplanner2d.h>
 #include <orcaogmap/orcaogmap.h>
@@ -19,11 +20,14 @@
 namespace pathplanner
 {
     
+//
+// @author Tobias Kaupp
+//
 class SimpleNavDriver : public AlgoDriver 
 {
 
 public:
-    SimpleNavDriver( orcaogmap::OgMap &ogMap,
+    SimpleNavDriver( const orcaogmap::OgMap &ogMap,
                      double robotDiameterMetres,
                      double traversabilityThreshhold,
                      bool doPathOptimization );
@@ -34,9 +38,8 @@ public:
     virtual void computePath( const orca::PathPlanner2dTask& task,
                               orca::PathPlanner2dData& path );
 private:
-    
-    orcaogmap::OgMap ogMap_;
-    orcapathplan::IPathPlanner2d  *pathPlanner_;
+    orcapathplan::IPathPlanner2d *pathPlanner_;
+    GenericDriver                *genericDriver_;
 
 };
 

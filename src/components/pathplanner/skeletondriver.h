@@ -11,6 +11,8 @@
 #define ORCA_PATHPLANNER_SKELETONDRIVER_H
 
 #include "algodriver.h"
+#include "genericdriver.h"
+#include <orcaice/orcaice.h>
 #include <orcapathplan/orcapathplan.h>
 #include <orcapathplan/ipathplanner2d.h>
 #include <orca/ogmap.h>
@@ -30,35 +32,35 @@ class SkeletonDriver : public AlgoDriver
 
 public: 
 
-    SkeletonDriver( orcaogmap::OgMap &ogMap,
+    SkeletonDriver( const orcaogmap::OgMap &ogMap,
                     double robotDiameterMetres,
                     double traversabilityThreshhold,
                     bool   doPathOptimization,
                     bool   useSparseSkeleton,
-                    const orcapathplan::CostEvaluator &costEvaluator );
+                    const orcapathplan::CostEvaluator &costEvaluator,
+                    const orcaice::Context &context);
     ~SkeletonDriver();
     
     virtual void computePath( const orca::PathPlanner2dTask& task,
                               orca::PathPlanner2dData& pathData );
-    #ifdef QT4_FOUND
-    void setGraphics( SkeletonGraphicsI* skelGraphicsI );
-    #endif
 
 private: 
-
-    orcaogmap::OgMap               ogMap_;
-    SkeletonGraphicsI             *skelGraphicsI_;
-    orcapathplan::IPathPlanner2d  *pathPlanner_;
     
-    double robotDiameterMetres_;
-    double traversabilityThreshhold_;
-    bool   doPathOptimization_;
+    #ifdef QT4_FOUND
+    void setGraphics( const orcaogmap::OgMap &ogMap,
+                      double            robotDiameterMetres,
+                      double            traversabilityThreshhold,
+                      bool              doPathOptimization );
+    #endif
+    
+    orcapathplan::IPathPlanner2d *pathPlanner_;
+    GenericDriver                *genericDriver_;
+    SkeletonGraphicsI            *skelGraphicsI_;
+    
+    const orcaice::Context context_;
+
     bool   useSparseSkeleton_; 
     
-    void setWaypointParameters( const orca::Waypoint2d                       *startWp, 
-                                const orca::Waypoint2d                       *goalWp, 
-                                int                                           numSegments,
-                                std::vector<orcapathplan::WaypointParameter> &wpParaVector );
 };
 
 }

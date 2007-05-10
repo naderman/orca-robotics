@@ -44,6 +44,10 @@ private:
 
     orca::OgMapPrx ogMapPrx_;
     orca::OgMapPrx hazardMapPrx_;
+    
+    // we have to keep the ogmap as member variable,
+    // otherwise they get out of scope if we pass references around
+    orcaogmap::OgMap ogMap_;
 
     PathPlanner2dI* pathPlannerI_;
     orcaice::Proxy<orca::PathPlanner2dTask>* pathPlannerTaskProxy_;

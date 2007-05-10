@@ -140,7 +140,6 @@ AlgoHandler::initDriver()
 {
     // get the og map once    
     orca::OgMapData ogMapSlice;
-    orcaogmap::OgMap ogMap;
     try
     {
         ogMapSlice = ogMapPrx_->getData();
@@ -152,7 +151,7 @@ AlgoHandler::initDriver()
         context_.tracer()->warning( ss.str() );
     }
     // convert into internal representation
-    orcaogmap::convert(ogMapSlice,ogMap);
+    orcaogmap::convert(ogMapSlice,ogMap_);
     
     // hazard map is optional
     if (useHazardMap_)
@@ -172,7 +171,7 @@ AlgoHandler::initDriver()
         // convert into internal representation
         orcaogmap::convert(hazardMapSlice,hazardMap);
         // overlay the two maps, result is stored in ogMap
-        orcaogmap::overlay(ogMap,hazardMap);
+        orcaogmap::overlay(ogMap_,hazardMap);
     }
 
 
@@ -190,7 +189,7 @@ AlgoHandler::initDriver()
     context_.tracer()->debug( std::string("loading ")+driverName+" driver",3);
     if ( driverName == "simplenav" )
     {
-        driver_ = new SimpleNavDriver( ogMap,
+        driver_ = new SimpleNavDriver( ogMap_,
                                        robotDiameterMetres,
                                        traversabilityThreshhold,
                                        doPathOptimization );
@@ -205,12 +204,13 @@ AlgoHandler::initDriver()
         costEvaluator_ = new DistBasedCostEvaluator( distanceThreshold, costMultiplier );
 
         try {
-            driver_ = new SkeletonDriver( ogMap,
+            driver_ = new SkeletonDriver( ogMap_,
                                           robotDiameterMetres,
                                           traversabilityThreshhold,
                                           doPathOptimization,
                                           useSparseSkeleton,
-                                          *costEvaluator_ );
+                                          *costEvaluator_,
+                                          context_ );
         }
         catch ( orcapathplan::Exception &e )
         {
@@ -220,24 +220,10 @@ AlgoHandler::initDriver()
             throw orcapathplan::Exception( ss.str() );  // this will exit
         }
         
-        #ifdef QT4_FOUND
-        bool provideSkeletonGraphics = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.ProvideGraphics", 1 );
-        if ( provideSkeletonGraphics )
-        {
-            // QGraphics2d
-            context_.tracer()->info( "Instantiating QGraphics2d Interface" );
-            SkeletonGraphicsI* graphicsI = new SkeletonGraphicsI( context_, "SkeletonGraphics" );
-            Ice::ObjectPtr graphicsObj = graphicsI;
-            orcaice::createInterfaceWithTag( context_, graphicsObj, "SkeletonGraphics" ); 
-            SkeletonDriver *skelDriver = dynamic_cast<SkeletonDriver*>( driver_ );
-            skelDriver->setGraphics( graphicsI );
-        }
-        #endif
-        
     }
     else if ( driverName == "astar" )
     {
-        driver_ = new AStarDriver( ogMap,
+        driver_ = new AStarDriver( ogMap_,
                                    robotDiameterMetres,
                                    traversabilityThreshhold,
                                    doPathOptimization  );

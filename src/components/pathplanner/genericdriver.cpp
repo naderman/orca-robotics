@@ -17,8 +17,8 @@ using namespace orcaice;
 
 namespace pathplanner {
     
-GenericDriver::GenericDriver( orcapathplan::IPathPlanner2d      &pathPlanner,
-                              orcaogmap::OgMap                  &ogMap,
+GenericDriver::GenericDriver( orcapathplan::IPathPlanner2d      *pathPlanner,
+                              const orcaogmap::OgMap            &ogMap,
                               double                             robotDiameterMetres,
                               double                             traversabilityThreshhold,
                               bool                               doPathOptimization )

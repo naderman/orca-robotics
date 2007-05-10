@@ -12,6 +12,7 @@
 #define ORCA2_PATHPLANNER_ASTAR_ALGORITHM_DRIVER_H
 
 #include "algodriver.h"
+#include "genericdriver.h"
 
 #include <orcapathplan/ipathplanner2d.h>
 #include <orcaogmap/orcaogmap.h>
@@ -19,23 +20,27 @@
 
 namespace pathplanner
 {
-
+    
+//
+// @author Tobias Kaupp
+//
 class AStarDriver : public AlgoDriver 
 {
 
 public:
-    AStarDriver( orcaogmap::OgMap& ogMap,
+    AStarDriver( const orcaogmap::OgMap& ogMap,
                  double robotDiameterMetres,
                  double traversabilityThreshhold,
                  bool doPathOptimization );
-   
+    
+   ~AStarDriver();
+    
     // Computes the path
     virtual void computePath( const orca::PathPlanner2dTask& task,
                               orca::PathPlanner2dData& pathData );
 private:
-    
-    orcaogmap::OgMap ogMap_;
-    orcapathplan::IPathPlanner2d  *pathPlanner_;
+    orcapathplan::IPathPlanner2d *pathPlanner_;
+    GenericDriver                *genericDriver_;
     
 
 };
