@@ -39,6 +39,8 @@ void
 GenericDriver::computePath( const orca::PathPlanner2dTask& task,
                             orca::PathPlanner2dData& pathData )
 {
+    assert(task.coarsePath.size()!=0);
+    
     // get the first waypoint from the coarse path and save as startWp
     const orca::Path2d &coarsePath = task.coarsePath;
     const orca::Waypoint2d *startWp = &(task.coarsePath[0]);

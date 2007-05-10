@@ -268,17 +268,21 @@ AlgoHandler::run()
             //  ======== waiting for a task (blocking) =======
             //
             context_.tracer()->info("waiting for a new task");
+            bool haveTask=false;
             
             while ( isActive() )
             {
                 int ret = pathPlannerTaskProxy_->getNext( task, 1000 );
-                if ( ret!=0 ) {
-                    // context_.tracer()->info("waiting for a new task");      
-                } else {
+                if ( ret==0 ) {
+                    haveTask = true;
                     context_.tracer()->info("task arrived");  
                     break;
                 }
             }
+            
+            // the only way of getting out of the above loop without a task
+            // is if the user pressed Ctrl+C, ie we have to quit
+            if (!haveTask) break;
             
             //
             // ===== tell driver to compute the path ========
