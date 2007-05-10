@@ -122,7 +122,7 @@ LaserScanner2dIface::subscribe(const ::orca::RangeScanner2dConsumerPrx &subscrib
     catch ( const IceStorm::AlreadySubscribed & e ) {
         std::stringstream ss;
         ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
-        context_.tracer()->info( ss.str() );    
+        context_.tracer()->debug( ss.str(), 2 );    
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
