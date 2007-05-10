@@ -20,7 +20,7 @@
   <property name="windowTitle" >
    <string>Waypoint Paramters</string>
   </property>
-  <widget class="QWidget" name="" >
+  <widget class="QWidget" name="layoutWidget" >
    <property name="geometry" >
     <rect>
      <x>0</x>
@@ -218,13 +218,13 @@
       <item row="1" column="1" >
        <widget class="QSpinBox" name="headingTolSpin" >
         <property name="maximum" >
-         <number>180</number>
+         <number>360</number>
         </property>
         <property name="singleStep" >
          <number>5</number>
         </property>
         <property name="value" >
-         <number>90</number>
+         <number>180</number>
         </property>
        </widget>
       </item>

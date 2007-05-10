@@ -93,6 +93,7 @@ WpWidget::WpWidget( PathInput *pathInput,
     
     numLoopsSpin_ = new QSpinBox(this);
     numLoopsSpin_->setMinimum(1);
+    numLoopsSpin_->setMaximum(10000);
     numLoopsSpin_->setValue(1);
     
     QVBoxLayout *globalLayout = new QVBoxLayout;

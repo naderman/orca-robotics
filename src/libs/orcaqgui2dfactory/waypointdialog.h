@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading ui file 'waypointdialog.ui'
 **
-** Created: Mon Jan 8 16:07:20 2007
-**      by: Qt User Interface Compiler version 4.2.1
+** Created: Thu May 10 22:50:44 2007
+**      by: Qt User Interface Compiler version 4.2.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
 ********************************************************************************/
@@ -28,7 +28,7 @@
 class Ui_WaypointDialog
 {
 public:
-    QWidget *widget;
+    QWidget *layoutWidget;
     QVBoxLayout *vboxLayout;
     QLabel *label;
     QGridLayout *gridLayout;
@@ -70,14 +70,14 @@ public:
     sizePolicy.setVerticalStretch(0);
     sizePolicy.setHeightForWidth(WaypointDialog->sizePolicy().hasHeightForWidth());
     WaypointDialog->setSizePolicy(sizePolicy);
-    widget = new QWidget(WaypointDialog);
-    widget->setObjectName(QString::fromUtf8("widget"));
-    widget->setGeometry(QRect(0, 21, 248, 362));
-    vboxLayout = new QVBoxLayout(widget);
+    layoutWidget = new QWidget(WaypointDialog);
+    layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
+    layoutWidget->setGeometry(QRect(0, 21, 248, 362));
+    vboxLayout = new QVBoxLayout(layoutWidget);
     vboxLayout->setSpacing(6);
     vboxLayout->setMargin(0);
     vboxLayout->setObjectName(QString::fromUtf8("vboxLayout"));
-    label = new QLabel(widget);
+    label = new QLabel(layoutWidget);
     label->setObjectName(QString::fromUtf8("label"));
 
     vboxLayout->addWidget(label);
@@ -86,12 +86,12 @@ public:
     gridLayout->setSpacing(6);
     gridLayout->setMargin(0);
     gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-    headingLabel = new QLabel(widget);
+    headingLabel = new QLabel(layoutWidget);
     headingLabel->setObjectName(QString::fromUtf8("headingLabel"));
 
     gridLayout->addWidget(headingLabel, 0, 2, 1, 1);
 
-    xSpin = new QDoubleSpinBox(widget);
+    xSpin = new QDoubleSpinBox(layoutWidget);
     xSpin->setObjectName(QString::fromUtf8("xSpin"));
     xSpin->setMaximum(10000);
     xSpin->setMinimum(-10000);
@@ -100,12 +100,12 @@ public:
 
     gridLayout->addWidget(xSpin, 1, 0, 1, 1);
 
-    xLabel = new QLabel(widget);
+    xLabel = new QLabel(layoutWidget);
     xLabel->setObjectName(QString::fromUtf8("xLabel"));
 
     gridLayout->addWidget(xLabel, 0, 0, 1, 1);
 
-    ySpin = new QDoubleSpinBox(widget);
+    ySpin = new QDoubleSpinBox(layoutWidget);
     ySpin->setObjectName(QString::fromUtf8("ySpin"));
     ySpin->setMaximum(10000);
     ySpin->setMinimum(-10000);
@@ -114,7 +114,7 @@ public:
 
     gridLayout->addWidget(ySpin, 1, 1, 1, 1);
 
-    headingSpin = new QSpinBox(widget);
+    headingSpin = new QSpinBox(layoutWidget);
     headingSpin->setObjectName(QString::fromUtf8("headingSpin"));
     headingSpin->setMaximum(359);
     headingSpin->setSingleStep(1);
@@ -122,7 +122,7 @@ public:
 
     gridLayout->addWidget(headingSpin, 1, 2, 1, 1);
 
-    yLabel = new QLabel(widget);
+    yLabel = new QLabel(layoutWidget);
     yLabel->setObjectName(QString::fromUtf8("yLabel"));
 
     gridLayout->addWidget(yLabel, 0, 1, 1, 1);
@@ -138,12 +138,12 @@ public:
     gridLayout1->setSpacing(6);
     gridLayout1->setMargin(0);
     gridLayout1->setObjectName(QString::fromUtf8("gridLayout1"));
-    timeLabel = new QLabel(widget);
+    timeLabel = new QLabel(layoutWidget);
     timeLabel->setObjectName(QString::fromUtf8("timeLabel"));
 
     gridLayout1->addWidget(timeLabel, 0, 0, 1, 1);
 
-    waitingTimeSpin = new QDoubleSpinBox(widget);
+    waitingTimeSpin = new QDoubleSpinBox(layoutWidget);
     waitingTimeSpin->setObjectName(QString::fromUtf8("waitingTimeSpin"));
     waitingTimeSpin->setDecimals(1);
     waitingTimeSpin->setMaximum(10000);
@@ -153,12 +153,12 @@ public:
 
     gridLayout1->addWidget(waitingTimeSpin, 1, 1, 1, 1);
 
-    waitingTimeLabel = new QLabel(widget);
+    waitingTimeLabel = new QLabel(layoutWidget);
     waitingTimeLabel->setObjectName(QString::fromUtf8("waitingTimeLabel"));
 
     gridLayout1->addWidget(waitingTimeLabel, 0, 1, 1, 1);
 
-    timeSpin = new QDoubleSpinBox(widget);
+    timeSpin = new QDoubleSpinBox(layoutWidget);
     timeSpin->setObjectName(QString::fromUtf8("timeSpin"));
     timeSpin->setDecimals(1);
     timeSpin->setMaximum(10000);
@@ -179,25 +179,25 @@ public:
     gridLayout2->setSpacing(6);
     gridLayout2->setMargin(0);
     gridLayout2->setObjectName(QString::fromUtf8("gridLayout2"));
-    headingTolSpin = new QSpinBox(widget);
+    headingTolSpin = new QSpinBox(layoutWidget);
     headingTolSpin->setObjectName(QString::fromUtf8("headingTolSpin"));
-    headingTolSpin->setMaximum(180);
+    headingTolSpin->setMaximum(360);
     headingTolSpin->setSingleStep(5);
-    headingTolSpin->setValue(90);
+    headingTolSpin->setValue(180);
 
     gridLayout2->addWidget(headingTolSpin, 1, 1, 1, 1);
 
-    headingTolLabel = new QLabel(widget);
+    headingTolLabel = new QLabel(layoutWidget);
     headingTolLabel->setObjectName(QString::fromUtf8("headingTolLabel"));
 
     gridLayout2->addWidget(headingTolLabel, 0, 1, 1, 1);
 
-    distanceTolLabel = new QLabel(widget);
+    distanceTolLabel = new QLabel(layoutWidget);
     distanceTolLabel->setObjectName(QString::fromUtf8("distanceTolLabel"));
 
     gridLayout2->addWidget(distanceTolLabel, 0, 0, 1, 1);
 
-    distanceTolSpin = new QDoubleSpinBox(widget);
+    distanceTolSpin = new QDoubleSpinBox(layoutWidget);
     distanceTolSpin->setObjectName(QString::fromUtf8("distanceTolSpin"));
     distanceTolSpin->setMaximum(10);
     distanceTolSpin->setSingleStep(0.2);
@@ -216,12 +216,12 @@ public:
     gridLayout3->setSpacing(6);
     gridLayout3->setMargin(0);
     gridLayout3->setObjectName(QString::fromUtf8("gridLayout3"));
-    maxTurnrateLabel = new QLabel(widget);
+    maxTurnrateLabel = new QLabel(layoutWidget);
     maxTurnrateLabel->setObjectName(QString::fromUtf8("maxTurnrateLabel"));
 
     gridLayout3->addWidget(maxTurnrateLabel, 0, 1, 1, 1);
 
-    maxSpeedSpin = new QDoubleSpinBox(widget);
+    maxSpeedSpin = new QDoubleSpinBox(layoutWidget);
     maxSpeedSpin->setObjectName(QString::fromUtf8("maxSpeedSpin"));
     maxSpeedSpin->setMaximum(2e+06);
     maxSpeedSpin->setSingleStep(0.2);
@@ -229,7 +229,7 @@ public:
 
     gridLayout3->addWidget(maxSpeedSpin, 1, 0, 1, 1);
 
-    maxTurnrateSpin = new QSpinBox(widget);
+    maxTurnrateSpin = new QSpinBox(layoutWidget);
     maxTurnrateSpin->setObjectName(QString::fromUtf8("maxTurnrateSpin"));
     maxTurnrateSpin->setMaximum(2000000);
     maxTurnrateSpin->setSingleStep(1);
@@ -237,7 +237,7 @@ public:
 
     gridLayout3->addWidget(maxTurnrateSpin, 1, 1, 1, 1);
 
-    maxSpeedLabel = new QLabel(widget);
+    maxSpeedLabel = new QLabel(layoutWidget);
     maxSpeedLabel->setObjectName(QString::fromUtf8("maxSpeedLabel"));
 
     gridLayout3->addWidget(maxSpeedLabel, 0, 0, 1, 1);
@@ -257,12 +257,12 @@ public:
 
     hboxLayout->addItem(spacerItem4);
 
-    okButton = new QPushButton(widget);
+    okButton = new QPushButton(layoutWidget);
     okButton->setObjectName(QString::fromUtf8("okButton"));
 
     hboxLayout->addWidget(okButton);
 
-    cancelButton = new QPushButton(widget);
+    cancelButton = new QPushButton(layoutWidget);
     cancelButton->setObjectName(QString::fromUtf8("cancelButton"));
 
     hboxLayout->addWidget(cancelButton);

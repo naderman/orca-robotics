@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading ui file 'wptolerancesdialog.ui'
 **
-** Created: Wed Feb 14 11:00:29 2007
-**      by: Qt User Interface Compiler version 4.2.1
+** Created: Thu May 10 22:50:53 2007
+**      by: Qt User Interface Compiler version 4.2.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
 ********************************************************************************/
@@ -92,9 +92,9 @@ public:
 
     headingSpin = new QSpinBox(widget);
     headingSpin->setObjectName(QString::fromUtf8("headingSpin"));
-    headingSpin->setMaximum(180);
+    headingSpin->setMaximum(360);
     headingSpin->setSingleStep(5);
-    headingSpin->setValue(90);
+    headingSpin->setValue(180);
 
     gridLayout->addWidget(headingSpin, 5, 1, 1, 1);
 
