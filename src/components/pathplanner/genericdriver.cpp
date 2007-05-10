@@ -82,8 +82,7 @@ GenericDriver::computePath( const orca::PathPlanner2dTask& task,
         // ===============================================================
 
         // ===== Append to the pathData which contains the entire path  ========
-        orcapathplan::Result result = orcapathplan::PathOk;
-        orcapathplan::convert( ogMap_, pathSegment, wpParaVector, result, pathData, firstHeading );
+        orcapathplan::convert( ogMap_, pathSegment, wpParaVector, pathData, firstHeading );
         // ========================================================================
         
         // set last goal cell as new start cell
