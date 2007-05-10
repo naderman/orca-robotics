@@ -14,11 +14,9 @@ IF ( BUILD_PATHPLANNER )
     # Not sure how to find "all .cpp files except main.cpp", have to do it by hand
     SET( COMMON_SRCS
             algohandler
-            astardriver
             component
             fakedriver
             genericdriver
-            simplenavdriver
             skeletondriver
             pathplanner2dI
     )

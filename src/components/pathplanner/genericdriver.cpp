@@ -82,7 +82,6 @@ GenericDriver::computePath( const orca::PathPlanner2dTask& task,
         // ===============================================================
 
         // ===== Append to the pathData which contains the entire path  ========
-        orcapathplan::Result result = orcapathplan::PathOk;
         orcapathplan::convertAndAppend( ogMap_, pathSegment, wpParaVector, pathData, firstHeading );
         // ========================================================================
         

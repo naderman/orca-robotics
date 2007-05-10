@@ -15,8 +15,6 @@
 #include "algohandler.h"
 #include "pathplanner2dI.h"
 #include "fakedriver.h"
-#include "simplenavdriver.h"
-#include "astardriver.h"
 #include "skeletondriver.h"
 
 #include <orcaogmap/orcaogmap.h>
@@ -187,13 +185,28 @@ AlgoHandler::initDriver()
     // based on the config parameter, create the right driver
     string driverName = orcaice::getPropertyWithDefault( context_.properties(), prefix+"Driver", "simplenav" );
     context_.tracer()->debug( std::string("loading ")+driverName+" driver",3);
-    if ( driverName == "simplenav" )
+    
+    if ( driverName == "simplenav" || driverName == "astar")
     {
-        driver_ = new SimpleNavDriver( ogMap_,
-                                       robotDiameterMetres,
-                                       traversabilityThreshhold,
-                                       doPathOptimization );
-    }
+        orcapathplan::IPathPlanner2d *pathPlanner=NULL;
+        
+        if (driverName == "simplenav") {
+            pathPlanner = new orcapathplan::SimpleNavPathPlanner( ogMap_,
+                                                           robotDiameterMetres,
+                                                           traversabilityThreshhold,
+                                                           doPathOptimization );
+        } else if (driverName == "astar") {
+            pathPlanner = new orcapathplan::AStarPathPlanner( ogMap_,
+                                                           robotDiameterMetres,
+                                                           traversabilityThreshhold,
+                                                           doPathOptimization );
+        }
+        driver_ = new GenericDriver( pathPlanner,
+                                     ogMap_,
+                                     robotDiameterMetres,
+                                     traversabilityThreshhold,
+                                     doPathOptimization );
+    }    
     else if ( driverName == "skeletonnav" || driverName == "sparseskeletonnav" )
     {
         bool useSparseSkeleton = (driverName == "sparseskeletonnav");
@@ -220,13 +233,6 @@ AlgoHandler::initDriver()
             throw orcapathplan::Exception( ss.str() );  // this will exit
         }
         
-    }
-    else if ( driverName == "astar" )
-    {
-        driver_ = new AStarDriver( ogMap_,
-                                   robotDiameterMetres,
-                                   traversabilityThreshhold,
-                                   doPathOptimization  );
     }
     else if ( driverName == "fake" )
     {
