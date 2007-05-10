@@ -230,13 +230,15 @@ void MainLoop::stopRobot()
 }
 
 void 
-MainLoop::computeAndSendPath( const orcanavutil::Pose &pose, const orca::PathFollower2dData &incomingPath )
+MainLoop::computeAndSendPath( const orcanavutil::Pose &pose, 
+                              const orca::PathFollower2dData &incomingPath )
 {
     // put together a task for the pathplanner
     // add the position of the robot as the first waypoint in the path
     Waypoint2d wp;
     computeFirstWaypointForPathPlanning(pose, wp);
     PathPlanner2dTask task;
+    task.timeStamp  = incomingPath.timeStamp;
     task.coarsePath = incomingPath.path;
     task.coarsePath.insert( task.coarsePath.begin(), 1, wp );
     task.prx = taskPrx_;
@@ -250,12 +252,22 @@ MainLoop::computeAndSendPath( const orcanavutil::Pose &pose, const orca::PathFol
     // block until path is computed
     context_.tracer()->debug("MainLoop: Waiting for pathplanner's answer");
     PathPlanner2dData computedPath;
-    int ret = computedPathBuffer_.getNext( computedPath, (int)(pathPlanTimeout_*1000.0) );
-    if ( ret != 0 )
+    // (need a loop here so ctrlC works)
+    int secWaited=0;
+    while ( isActive() )
     {
-        stringstream ss;
-        ss << "Did not receive a reply from the PathPlanner, after waiting " << pathPlanTimeout_ << "s -- something must be wrong.";
-        throw( GoalPlanException( ss.str(), false ) );
+        int ret = computedPathBuffer_.getNext( computedPath, 1000 );
+        if ( ret == 0 )
+            break;
+        else
+        {
+            if ( ++secWaited > pathPlanTimeout_ )
+            {
+                stringstream ss;
+                ss << "Did not receive a reply from the PathPlanner, after waiting " << secWaited << "s -- something must be wrong.";
+                throw( GoalPlanException( ss.str(), false ) );
+            }
+        }
     }
             
     // check result
@@ -270,6 +282,7 @@ MainLoop::computeAndSendPath( const orcanavutil::Pose &pose, const orca::PathFol
 
     // send out result to localnav, assemble packet first
     PathFollower2dData outgoingPath;
+    outgoingPath.timeStamp = computedPath.timeStamp;
     outgoingPath.path = computedPath.path;
     // get rid of first waypoint, it's the robot's location which is not needed
     vector<orca::Waypoint2d>::iterator it = outgoingPath.path.begin();
@@ -320,7 +333,11 @@ MainLoop::run()
                     context_.status()->ok( SUBSYSTEM );
                 }
             }
-            
+
+            stringstream ssPath;
+            ssPath << "MainLoop: Received path: " << endl << orcaice::toVerboseString(incomingPath);
+            context_.tracer()->debug( ssPath.str() );
+
             // special case 'stop': we received an empty path
             if (incomingPath.path.size()==0) 
             {

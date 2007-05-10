@@ -38,6 +38,17 @@ The goalplanner plans a path from the current position of a robot to a global wo
 
 @par Operation
 
+GoalPlanner acts as a proxy for another PathFollower2d interface.  
+
+You send it a path, it will consult with a PathPlanner2d interface to
+add intermediate waypoints so that a local path planner can follow it.
+The detailed path will then be forwarded to the lower-level
+PathFollower2d.
+
+If you ask it what path was set, it'll give you the detailed path.  If
+you subscribe() to the interface, it'll actually subscribe you
+directly to the low-level PathFollower2d interface.
+
 The following happens in sequencential order in the mainloop:
 - Wait for a "task" path which someone (e.g. @ref orca_util_orcaview2d ) sends via the provided PathFollower2d interface.
 - Prepend the current position of the robot to the task path.
@@ -45,10 +56,13 @@ The following happens in sequencential order in the mainloop:
 - Send out resulting, fine-grained path through the required PathFollower2d interface.
 
 @par Configuration
-None.
+
+- @c GoalPlanner.Config.PathPlanTimeout (double)
+    - Flag an error if it takes longer than this many seconds for the path planner to return a result.
+    - Default: 10.0
 
 @par Authors
-Tobias Kaupp
+Tobias Kaupp, Alex Brooks
 
 */
 

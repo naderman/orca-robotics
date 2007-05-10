@@ -131,6 +131,8 @@ PathFollower2dProbe::setWaypointIndex( int index, const Ice::Current&)
     data.results.push_back( res );
 
     display_.setOperationData( data );
+
+    std::cout << "PathFollower2dProbe: setWaypointIndex(): " << index << std::endl;
 }
 void 
 PathFollower2dProbe::setActivationTime(const orca::Time &absoluteTime, double relativeTime, const Ice::Current&)
@@ -146,6 +148,8 @@ PathFollower2dProbe::setActivationTime(const orca::Time &absoluteTime, double re
     data.results.push_back( res );
 
     display_.setOperationData( data );
+
+    std::cout << "PathFollower2dProbe: setActivationTime(): rel: " << relativeTime << "s, abs: " << orcaice::toString( absoluteTime ) << std::endl;
 }
 void 
 PathFollower2dProbe::setEnabledState(bool enabledState, const Ice::Current&)
@@ -161,4 +165,6 @@ PathFollower2dProbe::setEnabledState(bool enabledState, const Ice::Current&)
     data.results.push_back( res );
 
     display_.setOperationData( data );
+
+    std::cout << "PathFollower2dProbe: setEnabledState(): " << enabledState << std::endl;
 }
