@@ -20,7 +20,7 @@ namespace pathplanner {
 
 SkeletonGraphicsI::SkeletonGraphicsI( const orcaice::Context & context, const std::string &tag )
     : context_(context)
-{
+{    
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithTag<QGraphics2dConsumerPrx>
         ( context_, consumerPrx_, tag );

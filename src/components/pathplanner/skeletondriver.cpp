@@ -102,7 +102,7 @@ SkeletonDriver::SkeletonDriver( const orcaogmap::OgMap &ogMap,
     {
         // QGraphics2d
         context.tracer()->info( "Instantiating QGraphics2d Interface" );
-        SkeletonGraphicsI* skelGraphicsI_ = new SkeletonGraphicsI( context, "SkeletonGraphics" );
+        skelGraphicsI_ = new SkeletonGraphicsI( context, "SkeletonGraphics" );
         Ice::ObjectPtr graphicsObj = skelGraphicsI_;
         orcaice::createInterfaceWithTag( context, graphicsObj, "SkeletonGraphics" ); 
         setGraphics(  ogMap, 
@@ -127,8 +127,7 @@ SkeletonDriver::setGraphics( const orcaogmap::OgMap &ogMap,
                              double            robotDiameterMetres,
                              double            traversabilityThreshhold,
                              bool              doPathOptimization )
-{
-    skelGraphicsI_ = new SkeletonGraphicsI( context_, "SkeletonGraphics" );                      
+{                   
     if ( !useSparseSkeleton_ )
     {
         orcapathplan::SkeletonPathPlanner *skelPathPlanner = dynamic_cast<orcapathplan::SkeletonPathPlanner*>( pathPlanner_ );

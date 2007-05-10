@@ -11,8 +11,19 @@ IF ( BUILD_PATHPLANNER )
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
     
-    # build common sources into a convenience library
-    BUILD_COMPONENT_SOURCES( PathPlannerSources )
+    # "common sources" are common to stand-alone component and IceStorm service 
+    # these include ALL .cpp files EXCEPT main.cpp and service.cpp
+    # Here, we also need to remove skeletongraphicsI 
+    FILE( GLOB COMMON_SRCS *.cpp )
+    LIST( REMOVE_ITEM COMMON_SRCS 
+        "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp" 
+        "${CMAKE_CURRENT_SOURCE_DIR}/service.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/skeletongraphicsI.cpp" )
+
+    # build common sources into a static "convenience" library
+    ADD_LIBRARY ( PathPlannerSources ${COMMON_SRCS} )
+    # special dependency on the generated files
+    ADD_DEPENDENCIES( PathPlannerSources OrcaInterfaces )
 
     IF ( QT4_FOUND )
         INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
