@@ -52,9 +52,6 @@ public:
                          int maxNumGoals,
                          const orcanavutil::Pose &pose );
 
-//     const orca::Waypoint2d &currentWaypoint() const;
-//     bool  isActive() { return wpIndex_ != -1; }
-
     //
     // Functions called by MainLoop, to trigger comms with outside world
     //
@@ -62,9 +59,6 @@ public:
     void checkForNewPath();
     void checkForWpIndexChange();
 
-//     // Return the remaining time (in seconds) before we have to be at the next waypoint
-//     double secToNextWp() const;
-    
 private: 
 
     bool waypointReached( const orca::Waypoint2d &wp,

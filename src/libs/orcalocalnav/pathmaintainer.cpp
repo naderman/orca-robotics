@@ -29,13 +29,6 @@ PathMaintainer::PathMaintainer( PathFollower2dI         &pathFollowerInterface,
 {
 }
 
-// const orca::Waypoint2d &
-// PathMaintainer::currentWaypoint() const
-// {
-//     assert( wpIndex_ >= 0 && wpIndex_ <= (int) (path_.path.size()) );
-//     return path_.path[wpIndex_];
-// }
-
 void
 PathMaintainer::checkPathOut( const orca::PathFollower2dData& pathData )
 {
@@ -129,14 +122,10 @@ PathMaintainer::checkForNewPath()
 void 
 PathMaintainer::checkForWpIndexChange()
 {
-    if ( wpIndexChanged_ && wpIndex_ != 0 )
+    if ( wpIndexChanged_ )
     {
         pathFollowerInterface_.localSetWaypointIndex( wpIndex_ );
-//         if ( wpIndex_ == 0 )
-//         {
-//             // We must have just been activated
-//             pathFollowerInterface_.localSetActivationTime( orcaice::getNow() );
-//         }
+        wpIndexChanged_ = false;
     }
 }
 
