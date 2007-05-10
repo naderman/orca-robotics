@@ -133,7 +133,12 @@ public:
     int interfacesOnPlatform( const QModelIndex& ind,
                               QStringList& registries, QStringList& platforms, QStringList& components,
                               QStringList& interfaces, QStringList& ids );
-
+    
+    //! As above but for interfaces of a component
+    int interfacesOnComponent( const QModelIndex& ind,
+                              QStringList& registries, QStringList& platforms, QStringList& components,
+                              QStringList& interfaces, QStringList& ids );
+    
     // OBSOLETE OcmModel specific API
 
     void setPlatform( const QString& registry, const QString& regAddress, const QString &platform )

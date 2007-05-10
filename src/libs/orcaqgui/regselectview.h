@@ -35,6 +35,7 @@ private slots:
     void addElement();
     void addRegistry();
     void addAllPlatformInterfaces();
+    void addAllComponentInterfaces();
     
 };
 

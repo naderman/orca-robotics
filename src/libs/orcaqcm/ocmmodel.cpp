@@ -666,6 +666,44 @@ OcmModel::interfacesOnPlatform( const QModelIndex& ind,
     return 0;
 }
 
+int
+OcmModel::interfacesOnComponent( const QModelIndex& ind,
+                    QStringList& registries, QStringList& platforms, QStringList& components,
+                    QStringList& interfaces, QStringList& ids )
+{
+    Node* n = static_cast<Node*>(ind.internalPointer());
+    if ( n->type() != ComponentType ) {
+        return 1;
+    }
+    
+    QString registry;
+    QString platform;
+    QString component;
+    QString interface;
+    QString id;
+    
+    ComponentNode* cn = (ComponentNode*)n;
+    component = cn->name;
+    PlatformNode* pn = cn->platform;
+    platform = pn->name;
+    RegistryNode* rn = pn->registry;
+    registry = rn->name;
+    
+    const QList<InterfaceNode> &iNodes = cn->interfaces;
+    for (int k=0; k<iNodes.size(); k++)
+    {
+        interface = iNodes[k].name;
+        id = iNodes[k].ids;
+        
+        registries.push_back(registry);
+        platforms.push_back(platform);
+        components.push_back(component);
+        interfaces.push_back(interface);
+        ids.push_back(id);
+    }
+    return 0;
+}
+
 void
 OcmModel::clear()
 {

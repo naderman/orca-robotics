@@ -47,6 +47,12 @@ void RegSelectView::contextMenuEvent( QContextMenuEvent* e )
         menu.addAction("Add all supported interfaces", this, SLOT(addAllPlatformInterfaces()) );
     }
     
+    // react to component
+    if ( currentIndex().data( orcaqcm::OcmModel::TypeRole) == "Component" )
+    {
+        menu.addAction("Add all supported interfaces", this, SLOT(addAllComponentInterfaces()) );
+    }
+    
     menu.exec( e->globalPos() );
 }
 
@@ -107,6 +113,35 @@ void RegSelectView::addAllPlatformInterfaces()
             emit newSelection( interfacesInfo );
         }
     }
+}
+
+void RegSelectView::addAllComponentInterfaces()
+{   
+    for (int i=0; i<selectionModel()->selectedRows().size(); i++)
+    {
+        QString component = selectionModel()->selectedRows()[i].data().toString();
+        cout<<"INFO(regselectview.cpp): addAllInterfaces of component: " << component.toStdString() << endl;
+        
+        orcaqcm::OcmModel* ocmModel = (orcaqcm::OcmModel*)model();
+        QStringList registries;
+        QStringList platforms;
+        QStringList components;
+        QStringList interfaces;
+        QStringList ids;
+        // lookup interface information in the model
+        ocmModel->interfacesOnComponent( selectionModel()->selectedRows()[i], registries, platforms, components, interfaces, ids );
+        
+        for (int i=0; i<interfaces.size(); i++)
+        {
+            cout << "Interface: " << interfaces[i].toStdString() << endl;
+            QList<QStringList> interfacesInfo;
+            QStringList interfaceInfo;
+            interfaceInfo << registries[i] << platforms[i] << components[i] << interfaces[i] << ids[i];
+            interfacesInfo << interfaceInfo;
+            emit newSelection( interfacesInfo );
+        }
+    }
+    
 }
 
 void RegSelectView::addRegistry()
