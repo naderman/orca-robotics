@@ -224,6 +224,7 @@ WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFrame
                         float x, y, theta;
                         if ( platformCSFinder_->findPlatformCS( model_->elements(), elements[i]->platform(), x, y, theta ) )
                         {
+                            // cout<<"TRACE(worldview.cpp): transforming painter by " << x << ", " << y << ", " << theta*180.0/M_PI << endl;
                             painter->translate( x, y );
                             painter->rotate( RAD2DEG(theta) );
                         }

@@ -204,7 +204,8 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
     }
 
     // draw bright rectangles for high intensity returns
-    if ( isDisplayReflectors_ ) {    
+    if ( isDisplayReflectors_ ) 
+    {
         QColor intensityColor;
         int greenness;
     
@@ -217,7 +218,7 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
                 intensityColor.setRgb( 0, greenness, 255 );
                 painter->setPen( QPen( intensityColor ) );
                 painter->setBrush( intensityColor );
-    
+
                 painter->save();
                 painter->translate( qScan_[i+1].x(), qScan_[i+1].y() );
 
@@ -225,9 +226,10 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
 //                 cout << " brightReturnWidth: " << brightReturnWidth_ << endl;
 
                 painter->drawEllipse( QRectF(-brightReturnWidth_/2.0,
-                                       -brightReturnWidth_/2.0,
-                                       brightReturnWidth_,
-                                       brightReturnWidth_) );
+                                             -brightReturnWidth_/2.0,
+                                             brightReturnWidth_,
+                                             brightReturnWidth_) );
+
                 painter->restore();
             }
         }

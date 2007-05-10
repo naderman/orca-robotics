@@ -45,7 +45,10 @@ public:
                             orca::Localise2dConsumer,
                             orca::Localise2dConsumerPrx>(context, proxyString, painter_, timeoutMs ),
           humanManager_(humanManager),
-          painter_( beginDisplayHistory )
+          painter_( beginDisplayHistory ),
+          x_(0),
+          y_(0),
+          theta_(0)
         {
         };
 
@@ -74,7 +77,6 @@ public:
 private:
     orcaqgui::IHumanManager *humanManager_;
     Localise2dPainter painter_;
-    orca::Frame2d localiseOff_;
 
     double x_;
     double y_;

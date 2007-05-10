@@ -48,6 +48,9 @@ PlatformCSFinder::findPlatformCS( QList<GuiElement*>  elements,
     x     = mostReliablePosElement->x();
     y     = mostReliablePosElement->y();
     theta = mostReliablePosElement->theta();
+
+//     cout<<"TRACE(platformcsfinder.cpp): x,y,theta: " << x<<", "<<y<<", "<<theta*180.0/3.14159265 << endl;
+
     return true;
 }
 

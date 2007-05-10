@@ -134,7 +134,10 @@ public:
                             orca::Localise3dPrx,
                             orca::Localise3dConsumer,
                             orca::Localise3dConsumerPrx>(context, proxyString, painter_, timeoutMs ),
-          painter_( beginDisplayHistory )
+          painter_( beginDisplayHistory ),
+          x_(0),
+          y_(0),
+          theta_(0)
 {
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag();

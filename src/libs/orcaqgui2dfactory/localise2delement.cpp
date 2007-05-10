@@ -9,7 +9,6 @@
  */
 
 
-#include <orcanavutil/offset.h>
 #include <orcaqgui/exceptions.h>
 #include "localise2delement.h"
 
@@ -54,8 +53,9 @@ Localise2dElement::update()
     }
     const orca::Pose2dHypothesis &h = orcaice::mlHypothesis( data_ );
     
-    orcanavutil::transformPoint2d( h.mean.p.x, h.mean.p.y, localiseOff_.p.x, localiseOff_.p.y, localiseOff_.o, x_, y_);
-    theta_ = h.mean.o + localiseOff_.o;
+    x_ = h.mean.p.x;
+    y_ = h.mean.p.y;
+    theta_ = h.mean.o;
 }
 
 QStringList
