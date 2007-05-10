@@ -21,7 +21,6 @@
 
 #include <orcaogmap/orcaogmap.h>
 
-#include "configpathplanner.h"
 #ifdef QT4_FOUND
     #include "skeletongraphicsI.h"
 #endif

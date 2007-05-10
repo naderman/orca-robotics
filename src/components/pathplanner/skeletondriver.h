@@ -17,10 +17,6 @@
 #include <orcaogmap/orcaogmap.h>
 #include <vector>
 
-// for QT4_FOUND
-#include "configpathplanner.h"
-
-
 namespace pathplanner {
 
 class SkeletonGraphicsI;
@@ -59,10 +55,10 @@ private:
     bool   doPathOptimization_;
     bool   useSparseSkeleton_; 
     
-    void addWaypointParameters( std::vector<orcapathplan::WaypointParameter> &wpParaVector, 
-                                const orca::Waypoint2d                       *startWp, 
+    void setWaypointParameters( const orca::Waypoint2d                       *startWp, 
                                 const orca::Waypoint2d                       *goalWp, 
-                                int                                           numSegments );
+                                int                                           numSegments,
+                                std::vector<orcapathplan::WaypointParameter> &wpParaVector );
 };
 
 }

@@ -8,9 +8,6 @@ ENDIF( NOT QT4_FOUND )
 
 IF ( BUILD_PATHPLANNER )
 
-    # automatically generate #ifdef's for component.cpp
-   CONFIGURE_FILE( configpathplanner.h.cmake ${PROJECT_SOURCE_DIR}/src/components/pathplanner/configpathplanner.h )
-
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
     
@@ -29,6 +26,7 @@ IF ( BUILD_PATHPLANNER )
 
     IF ( QT4_FOUND )
         INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
+        ADD_DEFINITIONS( -DQT4_FOUND )
     
         # stand-alone component  
         GLOBAL_ADD_EXECUTABLE( pathplanner main ${COMMON_SRCS} ${QT_SRCS} )
@@ -40,7 +38,6 @@ IF ( BUILD_PATHPLANNER )
     # build an IceBox service
     GLOBAL_ADD_LIBRARY( OrcaPathPlanner SHARED service ${COMMON_SRCS} )
     TARGET_LINK_LIBRARIES( pathplanner OrcaOgMap OrcaMisc OrcaPathPlan )
-    
     
     GENERATE_CONFIG_FILE( pathplanner.def )
 

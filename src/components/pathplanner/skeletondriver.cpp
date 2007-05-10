@@ -20,7 +20,6 @@
 #endif
 
 using namespace std;
-using namespace orcapathplan;
 using namespace orcaice;
 
 namespace pathplanner {
@@ -30,7 +29,7 @@ SkeletonDriver::SkeletonDriver( orcaogmap::OgMap &ogMap,
                                 double traversabilityThreshhold,
                                 bool   doPathOptimization,
                                 bool   useSparseSkeleton,
-                                const CostEvaluator &costEvaluator )
+                                const orcapathplan::CostEvaluator &costEvaluator )
     : ogMap_(ogMap),
       skelGraphicsI_(NULL),
       robotDiameterMetres_(robotDiameterMetres),
@@ -103,7 +102,7 @@ SkeletonDriver::setGraphics( SkeletonGraphicsI* skelGraphicsI )
     
     if ( !useSparseSkeleton_ )
     {
-        SkeletonPathPlanner *skelPathPlanner = dynamic_cast<SkeletonPathPlanner*>( pathPlanner_ );
+        orcapathplan::SkeletonPathPlanner *skelPathPlanner = dynamic_cast<orcapathplan::SkeletonPathPlanner*>( pathPlanner_ );
         skelGraphicsI_->localSetSkel( ogMap_, &(skelPathPlanner->skeleton()) );
     }
     else
@@ -120,7 +119,7 @@ SkeletonDriver::setGraphics( SkeletonGraphicsI* skelGraphicsI )
         }
         
         
-        SparseSkeletonPathPlanner *sparseSkelPathPlanner = dynamic_cast<SparseSkeletonPathPlanner*>( pathPlanner_ );
+        orcapathplan::SparseSkeletonPathPlanner *sparseSkelPathPlanner = dynamic_cast<orcapathplan::SparseSkeletonPathPlanner*>( pathPlanner_ );
         skelGraphicsI_->localSetSkel( ogMap_,
                                       &(sparseSkelPathPlanner->denseSkel()),
                                       &(sparseSkelPathPlanner->sparseSkel()) );
@@ -168,12 +167,12 @@ SkeletonDriver::computePath( const orca::PathPlanner2dTask& task,
         }
         cout<<"TRACE(skeletondriver.cpp): computing path segment took " << watch.elapsedSeconds() << "s" << endl;
 
-        // ====== Add waypoint parameters ================================
+        // ====== Set waypoint parameters ================================
         // ====== Different options could be implemented and chosen and runtime (via .cfg file)
-        vector<WaypointParameter> wpParaVector;
-        addWaypointParameters( wpParaVector, startWp, goalWp, pathSegment.size() );
+        vector<orcapathplan::WaypointParameter> wpParaVector;
+        setWaypointParameters( startWp, goalWp, pathSegment.size(), wpParaVector );
         // ===============================================================
-        
+
         // ===== Append to the pathData which contains the entire path  ========
         orcapathplan::Result result = orcapathplan::PathOk;
         orcapathplan::convert( ogMap_, pathSegment, wpParaVector, result, pathData, firstHeading );
@@ -190,36 +189,38 @@ SkeletonDriver::computePath( const orca::PathPlanner2dTask& task,
 // (2) Intermediate points use the settings of the endpoint
 // (3) The time to reach intermediate points is divided linearly between start and end point times
 void
-SkeletonDriver::addWaypointParameters(  vector<WaypointParameter> &wpParaVector, 
-                                        const orca::Waypoint2d *startWp, 
-                                        const orca::Waypoint2d *goalWp, 
-                                        int numSegments )
+SkeletonDriver::setWaypointParameters( const orca::Waypoint2d *startWp, 
+                                       const orca::Waypoint2d *goalWp, 
+                                       int numSegments,
+                                       vector<orcapathplan::WaypointParameter> &wpParaVector )
 {
-        WaypointParameter wpPara;
-        double secondsTilGoal = orcaice::timeDiffAsDouble(goalWp->timeTarget, startWp->timeTarget);
-        assert( secondsTilGoal >= 0 && "Timestamp difference between goal and start is negative" );
-        double deltaSec = secondsTilGoal/(double)numSegments;
+    wpParaVector.clear();
+
+    orcapathplan::WaypointParameter wpPara;
+    double secondsTilGoal = orcaice::timeDiffAsDouble(goalWp->timeTarget, startWp->timeTarget);
+    assert( secondsTilGoal >= 0 && "Timestamp difference between goal and start is negative" );
+    double deltaSec = secondsTilGoal/(double)numSegments;
             
-        for (int i=0; i<numSegments; i++)
+    for (int i=0; i<numSegments; i++)
+    {
+        if (i==0) 
         {
-            if (i==0) 
-            {
-                wpPara.distanceTolerance = startWp->distanceTolerance;
-                wpPara.maxApproachSpeed = startWp->maxApproachSpeed;
-                wpPara.maxApproachTurnrate = startWp->maxApproachTurnrate;
-                wpPara.timeTarget = toOrcaTime( timeAsDouble( startWp->timeTarget ) );
-                wpPara.headingTolerance = startWp->headingTolerance;
-            } 
-            else 
-            {
-                wpPara.distanceTolerance = goalWp->distanceTolerance;
-                wpPara.maxApproachSpeed = goalWp->maxApproachSpeed;
-                wpPara.maxApproachTurnrate = goalWp->maxApproachTurnrate;                        
-                wpPara.timeTarget = toOrcaTime( timeAsDouble( wpParaVector[i-1].timeTarget ) + deltaSec );
-                wpPara.headingTolerance = goalWp->headingTolerance;
-            }
-            wpParaVector.push_back( wpPara );
+            wpPara.distanceTolerance = startWp->distanceTolerance;
+            wpPara.maxApproachSpeed = startWp->maxApproachSpeed;
+            wpPara.maxApproachTurnrate = startWp->maxApproachTurnrate;
+            wpPara.timeTarget = toOrcaTime( timeAsDouble( startWp->timeTarget ) );
+            wpPara.headingTolerance = startWp->headingTolerance;
+        } 
+        else 
+        {
+            wpPara.distanceTolerance = goalWp->distanceTolerance;
+            wpPara.maxApproachSpeed = goalWp->maxApproachSpeed;
+            wpPara.maxApproachTurnrate = goalWp->maxApproachTurnrate;                        
+            wpPara.timeTarget = toOrcaTime( timeAsDouble( wpParaVector[i-1].timeTarget ) + deltaSec );
+            wpPara.headingTolerance = goalWp->headingTolerance;
         }
+        wpParaVector.push_back( wpPara );
+    }
 }
 
 }
