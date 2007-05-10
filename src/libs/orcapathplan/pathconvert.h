@@ -11,12 +11,10 @@
 #define ORCA2_PATH_CONVERT_H
 
 #include <vector>
-
+#include <string>
 #include <orca/pathplanner2d.h>
-
 #include <orcaogmap/orcaogmap.h>
-
-#include "orcapathplan.h"
+#include <orcapathplan/orcapathplan.h>
 
 
 namespace orcapathplan {
@@ -29,6 +27,7 @@ namespace orcapathplan {
         float      maxApproachSpeed;
         float      maxApproachTurnrate;
     };
+    std::string toString( const WaypointParameter &wp );
 
     //! Transfers the result code into the corresponding field of the Slice-defined data structure
     void convert( orcapathplan::Result     result,
@@ -38,18 +37,18 @@ namespace orcapathplan {
     //! into the Slice-defined PathPlanner2dData (world coordinate system). 
     //! Will append input cells to the output path if output path already contains 
     //! entries. Note that not all entries are set by this function (e.g. tolerances)
-    void convert( const orcaogmap::OgMap      &ogMap,
-                  const Cell2DVector          &input,
-                  orca::PathPlanner2dData     &output );
+    void convertAndAppend( const orcaogmap::OgMap      &ogMap,
+                           const Cell2DVector          &input,
+                           orca::PathPlanner2dData     &output );
     
     //! As above. Additionaly, it sets heading values in the direction of two connected waypoints.
     //! The first waypoint's heading can be specified optionally (0.0 by default).
     //! Furthermore, the remaining waypoint parameters in wpParam are added.
-    void convert( const orcaogmap::OgMap               &ogMap,
-                  const Cell2DVector                   &input,
-                  const std::vector<WaypointParameter> &wpPara,
-                  orca::PathPlanner2dData              &output,
-                  double                                firstHeading = 0.0 );
+    void convertAndAppend( const orcaogmap::OgMap               &ogMap,
+                           const Cell2DVector                   &input,
+                           const std::vector<WaypointParameter> &wpPara,
+                           orca::PathPlanner2dData              &output,
+                           double                                firstHeading = 0.0 );
 
 }
 #endif

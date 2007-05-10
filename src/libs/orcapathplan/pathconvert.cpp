@@ -10,10 +10,18 @@
 
 #include "pathconvert.h"
 #include <orcaice/orcaice.h>
+#include <sstream>
 
-using namespace std; // for math functions
+using namespace std;
 
 namespace orcapathplan {
+
+std::string toString( const WaypointParameter &wp )
+{
+    stringstream ss;
+    ss << "[dTol="<<wp.distanceTolerance<<", headTol="<<wp.headingTolerance*180.0/M_PI<<"deg, time="<<wp.timeTarget.seconds<<":"<<wp.timeTarget.useconds<<", maxAppSpeed="<<wp.maxApproachSpeed<<"m/s, maxAppTurn="<<wp.maxApproachTurnrate*180.0/M_PI<<"deg/s]";
+    return ss.str();
+}
 
 void 
 convert( const orcapathplan::Result        result,
@@ -60,9 +68,9 @@ isDoubleWaypoint( const orca::PathPlanner2dData &path, float worldX, float world
 }
 
 void 
-convert( const orcaogmap::OgMap  &ogMap,
-         const Cell2DVector      &input,
-         orca::PathPlanner2dData &output )
+convertAndAppend( const orcaogmap::OgMap  &ogMap,
+                  const Cell2DVector      &input,
+                  orca::PathPlanner2dData &output )
 {
     float worldX, worldY;
     orca::Waypoint2d wp;
@@ -81,11 +89,11 @@ convert( const orcaogmap::OgMap  &ogMap,
 }
 
 void 
-convert( const orcaogmap::OgMap               &ogMap,
-         const Cell2DVector                   &input,
-         const std::vector<WaypointParameter> &wpPara,
-         orca::PathPlanner2dData              &output,
-         double                                firstHeading)
+convertAndAppend( const orcaogmap::OgMap               &ogMap,
+                  const Cell2DVector                   &input,
+                  const std::vector<WaypointParameter> &wpPara,
+                  orca::PathPlanner2dData              &output,
+                  double                                firstHeading)
 {
     
     float worldX, worldY;

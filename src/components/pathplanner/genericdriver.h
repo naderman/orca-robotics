@@ -41,7 +41,7 @@ public:
 private: 
 
     orcapathplan::IPathPlanner2d  *pathPlanner_;
-    orcaogmap::OgMap              &ogMap_;
+    const orcaogmap::OgMap        &ogMap_;
     
     double robotDiameterMetres_;
     double traversabilityThreshhold_;

@@ -60,7 +60,6 @@ private:
     const orcaice::Context context_;
 
     bool   useSparseSkeleton_; 
-    
 };
 
 }
