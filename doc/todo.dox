@@ -62,12 +62,28 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated components
 
+- OrcaView2d:
+  - Fixed bug with uninitialised platform location (alex b)
+  - Fixed bug with waypoint heading tolerances being normalised (alex b)
+
+- PathPlanner:
+  - Big re-organisation (alex b, tobi)
+
+- GoalPlanner:
+  - Big overhaul (alex b)
+
 @par Updated utilities
+
+- Probe:
+  - Added PathFollower2d probe (alex b)
 
 - orcagpsutil
   - big cleanup (alex b)
 
 @par Updated libraries
+
+- orcapathplan:
+  - Allowed for non-uniform costs in skeleton path planning (alex b)
 
 @par Removed
 
