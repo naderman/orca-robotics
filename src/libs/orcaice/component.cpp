@@ -212,7 +212,7 @@ Component::activate()
     catch ( Ice::DNSException& e )
     {
         std::stringstream ss;
-        ss << "Error while activating Component: "<<e<<".  Check network.";
+        ss << "orcaice::Component: Error while activating Component: "<<e<<".  Check network.";
         tracer()->warning( ss.str() );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
@@ -221,27 +221,27 @@ Component::activate()
         bool requireRegistry = properties()->getPropertyAsInt( "Orca.RequireRegistry" );
         if ( requireRegistry ) {
             std::stringstream ss; 
-            ss<<"Error while activating Component: "<<e<<". Check IceGrid Registry.";
+            ss<<"orcaice::Component: Error while activating Component: "<<e<<". Check IceGrid Registry.";
             tracer()->error( ss.str() );
-            tracer()->info( "You may allow to continue by setting Orca.RequireRegistry=0." );
+            tracer()->info( "orcaice::Component: You may allow to continue by setting Orca.RequireRegistry=0." );
             throw orcaice::NetworkException( ERROR_INFO, ss.str() );
         }
         else {
-            std::stringstream ss; ss<<"Failed to register Component("<<e<<"), only direct connections will be possible.";
+            std::stringstream ss; ss<<"orcaice::Component: Failed to register Component("<<e<<"), only direct connections will be possible.";
             tracer()->warning( ss.str() );
-            tracer()->info( "You may enforce registration by setting Orca.RequireRegistry=1." );
+            tracer()->info( "orcaice::Component: You may enforce registration by setting Orca.RequireRegistry=1." );
         }
     }
     catch( const Ice::ObjectAdapterDeactivatedException &e )
     {
         std::stringstream ss;
-        ss << "Failed to activate component because it's deactivating: " << e;
+        ss << "orcaice::Component: Failed to activate component because it's deactivating: " << e;
         tracer()->warning( ss.str() );
         throw orcaice::ComponentDeactivatingException( ERROR_INFO, ss.str() );
     }
     catch( const Ice::Exception& e )
     {
-        std::stringstream ss; ss<<"Failed to activate component: "<<e<<".  Check IceGrid Registry.";
+        std::stringstream ss; ss<<"orcaice::Component: Failed to activate component: "<<e<<".  Check IceGrid Registry.";
         tracer()->warning( ss.str() );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
