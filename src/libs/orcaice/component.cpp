@@ -68,7 +68,39 @@ Component::init( const orca::FQComponentName& name,
     context_.status_ = initStatus();
     context_.home_   = initHome();
     componentThread_ = new ComponentThread( homePrx_, *(context_.status_), interfaceFlag_, context_ );
-    componentThread_->start();
+    try {
+        componentThread_->start();
+    }
+    catch ( const Ice::Exception &e )
+    {
+        std::stringstream ss; ss << "orcaice::Component::start(): caught exception: " << e;
+        context().tracer()->error( ss.str() );
+        throw;
+    }
+    catch ( const std::exception &e )
+    {
+        std::stringstream ss; ss << "orcaice::Component::start(): caught exception: " << e.what();
+        context().tracer()->error( ss.str() );
+        throw;
+    }
+    catch ( const std::string &e )
+    {
+        std::stringstream ss; ss << "orcaice::Component::start(): caught std::string: " << e;
+        context().tracer()->error( ss.str() );
+        throw;
+    }
+    catch ( const char* &e )
+    {
+        std::stringstream ss; ss << "orcaice::Component::start(): caught char*: " << e;
+        context().tracer()->error( ss.str() );
+        throw;
+    }
+    catch ( ... )
+    {
+        std::stringstream ss; ss << "orcaice::Component::start(): caught unknown exception.";
+        context().tracer()->error( ss.str() );
+        throw;
+    }
 };
 
 void
