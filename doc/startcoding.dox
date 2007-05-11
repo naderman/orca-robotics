@@ -1,0 +1,41 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@page orca_doc_start_code Guide to How Begin Development
+
+@note Reviewed for release 2.4.0.
+
+Whether you have big development plans or just want to see what is envolved in using Orca, you have to start by writing a single component. You can add a new component to the Orca source tree which downloaded or checked out from CVS but it is inconvinient (mostly because it is large, seems complicated, and can be slow to recompile). You can follow these instructions to set up your own Orca-based project and create the first component.
+
+@par Step 1. Create a separate project for yourself.
+
+Read: @ref orca_doc_devproj
+
+Make sure this generic project compiles. One component you already have: it's called @e somecomponent and it came with your @e Empty @e Project. (The source is in @c [EMPTY_PROJ_SRC]/src/components/somecomponent )
+
+This is not a very good example, however, because it just creates a couple of data structures.
+
+@par Step 3. Copy an existing component.
+
+Read these instructions first which tell you how to add any new code to your project. Concentrate on the parts which talk about adding a new @e component. 
+
+Read: @ref orca_doc_devadd_code
+
+Which component to copy? 
+- If you are developing something specific, then you probably want start with a component similar to what you have in mind. Try to find it in the Orca distribution. Ideally it would have interfaces similar to yours or a similar data flow. For example, if you are developing a server for a new robotic platform, then start with @ref orca_component_robot2d component. (The source is in @c [ORCA_SRC]/src/components/robot2d )
+- If you just want to evaluate Orca, then you probably want to write a simple generic component. We maintain a component called @ref orca_component_brick in the Orca source tree. We use it as a standard implementation to test IceGrid services but it's also a useful template to start playing with. (The source is in @c [ORCA_SRC]/src/tests/brick )
+
+Make sure the project compiles and the new component runs.
+
+@par Step 3. Modify the component to suit your needs.
+
+*/
