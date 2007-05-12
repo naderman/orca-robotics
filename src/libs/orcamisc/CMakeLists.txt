@@ -19,7 +19,9 @@ ELSE(NOT OS_WIN)
     "${CMAKE_CURRENT_SOURCE_DIR}/stopwatch.cpp" 
     "${CMAKE_CURRENT_SOURCE_DIR}/realtimestopwatch.cpp" 
     "${CMAKE_CURRENT_SOURCE_DIR}/cpustopwatch.cpp" )
+  MESSAGE( "ORCAMISC: SRCS: ${SRCS}" )
 ENDIF(NOT OS_WIN)
+  MESSAGE( "ORCAMISC: SRCS: ${SRCS}" )
 
 TARGET_LINK_LIBRARIES ( OrcaMisc OrcaIce OrcaObjects )
 IF( OS_QNX )
