@@ -46,16 +46,16 @@ public:
     // returns: 0 = success, non-zero = failure
     virtual int init()=0;
 
-    // Blocks till timout expires, returns number of messages read, -1 if failure
+    // Reads from GPS, blocks till timout expires, returns 0 if ok, -1 if failure
     virtual int read()=0;
     
     // Returns true if we have a GPS fix otherwise false
     virtual bool hasFix()=0;
     
-    // Fetch latest GPS data. return -1 if unavailable
+    // Fetches latest GpsData. Returns -1 if it there is no new data.
     virtual int getData(orca::GpsData& data )=0;
     
-    // Fetch latest GPS Time information. return -1 if unavailable
+    // Fetches latest GpsTimeData. Returns -1 if it there is no new data.
     virtual int getTimeData(orca::GpsTimeData& data )=0;
 
     // mechanism to get error messages etc back from driver.
