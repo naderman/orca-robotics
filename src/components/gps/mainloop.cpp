@@ -124,7 +124,7 @@ MainLoop::run()
         {
             
             // Loop is driven by waiting time of 1/2 second
-            IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(500));
+//             IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(500));
             
             context_.tracer()->debug("Trying to read from driver now.", 3);
             

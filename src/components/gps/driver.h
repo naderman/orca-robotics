@@ -22,12 +22,9 @@ static const ::std::string __orca__gps_default_heartbeat_msg = "";
 
 @brief Abstract class for a gps.
 
-All gpsi should implement this, making it simple
-to add support for different gpsi.
-
 This guy is _not_ guaranteed to be thread-safe!
 
-@author Matthew Ridley
+@author Matthew Ridley, Tobias Kaupp
 
 */
 class Driver
