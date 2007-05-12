@@ -95,7 +95,7 @@ createConsumerInterface( const Context  & context,
  *  Example: to connect to interface of type MyInterface, use
 @verbatim
 MyInterfacePrx myInterfacePrx;
-orcaice::connectToInterfaceWithTag<MyInterfacePrx>( context(), myInterfacePrx, "iface@platform/component" );
+orcaice::connectToInterfaceWithString<MyInterfacePrx>( context(), myInterfacePrx, "iface@platform/component" );
 @endverbatim
  */
 template<class ProxyType>
