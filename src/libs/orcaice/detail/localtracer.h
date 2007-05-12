@@ -11,7 +11,7 @@
 #ifndef ORCAICE_LOCAL_TRACER_H
 #define ORCAICE_LOCAL_TRACER_H
 
-#include "../tracer.h"
+#include <orcaice/tracer.h>
 
 #include <IceUtil/Mutex.h>
 

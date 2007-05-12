@@ -12,6 +12,7 @@
 #define ORCAICE_TRACER_I_H
 
 #include <orca/tracer.h>
+#include <orcaice/tracer.h>
 #include "localtracer.h"
 #include "networktracesender.h"
 #include <IceStorm/IceStorm.h>

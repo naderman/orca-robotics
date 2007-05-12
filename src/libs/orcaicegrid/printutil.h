@@ -34,7 +34,7 @@ std::string toString( const Seq &seq, const std::string &descr, int indent=0 )
         ind += " ";
 
     std::stringstream ss;
-    for ( uint i=0; i < seq.size(); i++ )
+    for ( unsigned int i=0; i < seq.size(); i++ )
     {
         ss << ind << descr << " " << i << ":" << std::endl << toString(seq[i],indent+2);
         if ( i != seq.size()-1 ) 
