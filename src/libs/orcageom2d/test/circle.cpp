@@ -66,7 +66,7 @@ int main()
     try {
         intersect = circleCircleIntersection( c1,r1, c2,r2, p,q );
         assert( false && "should throw" );
-    } catch ( std::string &s ) {}
+    } catch ( std::string & ) {}
 
 
     cout << endl << "Random Circles" << endl << endl;

@@ -45,7 +45,7 @@ SessionManager::tryCreateSession()
             return false;
         }
     }
-    catch ( const Ice::CommunicatorDestroyedException &e )
+    catch ( const Ice::CommunicatorDestroyedException & )
     {
         // This is OK, we're shutting down
         return false;

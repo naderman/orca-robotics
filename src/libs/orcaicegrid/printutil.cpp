@@ -116,7 +116,7 @@ std::string toString( const IceGrid::NodeDynamicInfo &n, int indent )
     return ss.str();
 }
 
-std::string longToDateTime( long time )
+std::string longToDateTime( Ice::Long time )
 {
     IceUtil::Time t = IceUtil::Time::seconds(time);
     return t.toDateTime();

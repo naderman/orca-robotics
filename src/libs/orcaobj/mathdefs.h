@@ -86,7 +86,7 @@ inline void NORMALISE_ANGLE( float &theta )
 {
     double thDouble = theta;
     NORMALISE_ANGLE( thDouble );
-    theta = thDouble;
+    theta = (float)thDouble;
 }
 
 /*****************************************************************************
