@@ -347,6 +347,7 @@ setSane( orca::PowerData& obj, int count )
         bd.name = ss.str();
         bd.voltage = float(double(RINT%100000)/1000.0);
         bd.percent = float(double(RINT%100000)/1000.0);
+        bd.isBatteryCharging = orca::ChargingNo;
         bd.secRemaining = float(double(RINT%1000000)/1000.0);
 
         obj.batteries.push_back( bd );

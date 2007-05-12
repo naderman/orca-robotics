@@ -988,15 +988,22 @@ toString( const orca::PowerData& obj )
 {
     std::ostringstream s;
     s << toString(obj.timeStamp)
-        << " Power ["<<obj.batteries.size()<<" batteries] (name,volt,%,sec) :";
+        << " Power ["<<obj.batteries.size()<<" batteries] (name,volt,%,isCharging,sec) :";
 
     for ( unsigned int i=0; i < obj.batteries.size(); ++i )
     {
         s << endl << "[" 
           <<obj.batteries[i].name<<","
           <<obj.batteries[i].voltage<<"V,"
-          <<obj.batteries[i].percent<<"%,"
-          <<obj.batteries[i].secRemaining<<"s]";
+          <<obj.batteries[i].percent<<"%,";
+        if (obj.batteries[i].isBatteryCharging==orca::ChargingYes) {
+            s << "Yes";
+        } else if (obj.batteries[i].isBatteryCharging==orca::ChargingNo) {
+            s << "No";
+        } else {
+            s << "Unknown";
+        }
+        s<<obj.batteries[i].secRemaining<<"s]";
     }
     return s.str();
 }

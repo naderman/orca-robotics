@@ -84,6 +84,10 @@ HwHandler::convert( const HwDriver::SegwayRmpData& internal, orca::PowerData& ne
     network.batteries[0].voltage = internal.mainvolt;
     network.batteries[1].voltage = internal.mainvolt;
     network.batteries[2].voltage = internal.uivolt;
+    
+    network.batteries[0].isBatteryCharging = orca::ChargingUnknown;
+    network.batteries[1].isBatteryCharging = orca::ChargingUnknown;
+    network.batteries[2].isBatteryCharging = orca::ChargingUnknown;
 }
 
 void 

@@ -461,9 +461,27 @@ toLogString( const orca::Odometry3dData& obj )
 //     return s.str();
 // }
 
-// logs only numeric data. all data on one line
-// the number of batteries usually does not change over time
-// format: sec usec voltage0 percent0 voltage1 percent1 ... voltageN percentN
+std::string
+toLogString( const orca::ChargingState &c )
+{
+    if (c==orca::ChargingYes) return "ChargingYes";
+    else if (c==orca::ChargingNo) return "ChargingNo";
+    
+    return "ChargingUnknown";
+}
+
+orca::ChargingState
+fromLogString( const std::string &str )
+{
+    if (str=="ChargingYes") return orca::ChargingYes;
+    else if (str=="ChargingNo") return orca::ChargingNo;
+    
+    return orca::ChargingUnknown;
+}
+
+// Logs only numeric data including an enum. All data is on one line.
+// The number of batteries usually does not change over time.
+// Format: sec usec voltage0 percent0 isBatteryCharging0 secRemaining0  ... voltageN percentN isBatteryChargingN secRemainingN
 std::string 
 toLogString( const orca::PowerData& obj )
 {
@@ -472,7 +490,10 @@ toLogString( const orca::PowerData& obj )
 
     s << " " << obj.batteries.size();
     for ( unsigned int i=0; i < obj.batteries.size(); ++i ) {
-        s << " " << obj.batteries[i].voltage << " " << obj.batteries[i].percent << " " << obj.batteries[i].secRemaining;
+        s << " " << obj.batteries[i].voltage << " " 
+                 << obj.batteries[i].percent << " " 
+                 << toLogString(obj.batteries[i].isBatteryCharging) << " "
+                 << obj.batteries[i].secRemaining;
     }
     return s.str();
 }
@@ -486,8 +507,15 @@ fromLogString( std::stringstream& stream, orca::PowerData& obj )
     stream >> size;
 
     obj.batteries.resize(size);
+    std::string str;
+    
     for ( unsigned int i=0; i < size; ++i ) {
-        stream >> obj.batteries[i].voltage >> obj.batteries[i].percent >> obj.batteries[i].secRemaining;
+        stream >> obj.batteries[i].voltage 
+               >> obj.batteries[i].percent
+               >> str
+               >> obj.batteries[i].secRemaining;
+        
+        obj.batteries[i].isBatteryCharging = fromLogString(str);
     }
 }
 

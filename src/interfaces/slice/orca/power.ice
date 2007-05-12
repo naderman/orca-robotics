@@ -22,6 +22,17 @@ module orca
     @{
 */
 
+//! Battery charging state
+enum ChargingState {
+    //! Battery is currently charging
+    ChargingYes,
+    //! Battery is currently discharging
+    ChargingNo,
+    //! Battery charge state is not known
+    ChargingUnknown
+};
+
+
 /*!
     Data for a single battery.
 */
@@ -33,8 +44,11 @@ struct BatteryData
     float voltage;
     //! Percent of full charge [%]
     float percent;
-    //! Battery life remaining when discharging [s].
-    //! Reports infinity when charging.
+    //! Battery charging state (see above)
+    ChargingState isBatteryCharging;
+    //! Battery life remaining when battery is decharging [s],
+    //! i.e. ChargingState is ChargingNo.
+    //! Undefined when ChargingState is different from ChargingNo.
     float secRemaining;
 };
 
