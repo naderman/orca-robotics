@@ -40,6 +40,7 @@ public:
 
     //! Reads a line of data up to @ref count bytes (including \0) terminated by termchar.
     //! Returns the number of bytes read, or -1 on error.
+    //! This is a blocking call with a timeout even if O_NONBLOCK was specified on open
     int read_line(void *buf, size_t count, char termchar);
 
     //! Returns the number of bytes available for reading (non-blocking).

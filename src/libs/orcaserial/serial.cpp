@@ -235,13 +235,14 @@ Serial::read_line(void *buf, size_t count, char termchar)
             lastchar=((char*)buf)[got-1];
             //((char*)buf)[got]=0;
             //printf("got %d bytes: %s\n",got,(char*)buf);
-        }else if(ret==-1&&errno==EAGAIN){  // we must be in non-blocking mode
+        }else if(ret==-1&&errno==EAGAIN){  // we must be in non-blocking mode, if timeout is set we will block (see below)
             fd_set rfds;
             struct timeval tv;
             FD_ZERO(&rfds);
             FD_SET(port_fd, &rfds);
             tv.tv_sec = to_sec;
             tv.tv_usec = to_usec;
+            // Tobi: this call blocks if a timeout is set
             int selval = select(port_fd+1, &rfds, NULL, NULL, &tv);
             if(selval==0){
                 //printf("select timed out no data\n");

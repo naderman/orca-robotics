@@ -124,7 +124,7 @@ MainLoop::run()
             {
                 // Read from hardware: blocking call with timeout, drives the loop
                 int ret = hwDriver_->read();
-                if (ret!=-1) break;
+                if (ret != -1) break;
                 string err = "Problem reading from GPS. Trying to reinitialize.";
                 context_.tracer()->error( err );
                 context_.status()->fault( SUBSYSTEM, err );
@@ -134,34 +134,34 @@ MainLoop::run()
 
             if ( !hwDriver_->hasFix() )
             {
-                context_.tracer()->debug("No GPS fix", 3);
+                context_.tracer()->debug("No GPS fix", 2);
                 if (reportIfNoFix) reportBogusValues(gpsData, gpsMapGridData, gpsTimeData);
             }
             else
             {
-                context_.tracer()->debug("We have a GPS fix", 3);
+                context_.tracer()->debug("We have a GPS fix", 2);
                     
                 if (hwDriver_->getData(gpsData)==0) {
                     // Publish gpsData
-                    context_.tracer()->debug("Publishing GpsData.", 3);
+                    context_.tracer()->debug("New GpsData: publishing now.", 3);
                     context_.tracer()->debug( orcaice::toString( gpsData ), 5 );
                     gpsInterface_->localSetAndSend(gpsData);
 
                     // Convert to MapGrid and publish
                     gpsMapGridData = convertToMapGrid( gpsData, antennaOffset_ );
-                    context_.tracer()->debug("Publishing GpsMapGridData.", 3);
+                    context_.tracer()->debug("New GpsMapGridData: publishing now.", 3);
                     context_.tracer()->debug( orcaice::toString( gpsMapGridData ), 5 );
                     gpsMapGridInterface_->localSetAndSend(gpsMapGridData);
                 } else {
-                    context_.tracer()->debug("No new GpsData available. Will not publish anything", 3);    
+                    context_.tracer()->debug("No new GpsData available.", 4);    
                 }
 
                 if(hwDriver_->getTimeData(gpsTimeData)==0) {
-                    context_.tracer()->debug("Publishing GpsTimeData.", 3);
+                    context_.tracer()->debug("New GpsTimeData: publishing now.", 3);
                     context_.tracer()->debug( orcaice::toString( gpsTimeData ), 5 );
                     gpsTimeInterface_->localSetAndSend(gpsTimeData);
                 } else {
-                    context_.tracer()->debug("No new GpsTimeData available. Will not publish anything", 3);    
+                    context_.tracer()->debug("No new GpsTimeData available.", 4);    
                 }
                     
             }
@@ -170,17 +170,31 @@ MainLoop::run()
 
         } // end of while
     } // end of try
-    catch ( Ice::CommunicatorDestroyedException &e )
+    catch ( const Ice::Exception & e )
     {
-        // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-        // somewhere in mainLoop.
+        stringstream ss;
+        ss << "MainLoop:: Caught exception: " << e;
+        context_.tracer()->error( ss.str() );
+        context_.status()->fault( SUBSYSTEM, ss.str() );
+    }
+    catch ( const std::exception & e )
+    {
+        stringstream ss;
+        ss << "MainLoop: Caught exception: " << e.what();
+        context_.tracer()->error( ss.str() );
+        context_.status()->fault( SUBSYSTEM, ss.str() );
+    }
+    catch ( ... )
+    {
+        context_.tracer()->error( "MainLoop: caught unknown unexpected exception.");
+        context_.status()->fault( SUBSYSTEM, "MainLoop: caught unknown unexpected exception.");
     }
 
-    // wait for the component to realize that we are quitting and tell us to stop.
-    waitForStop();
-    
     // GPS hardware will be shut down in the driver's destructor.
     context_.tracer()->debug( "dropping out from run()", 5 );
+    
+    // wait for the component to realize that we are quitting and tell us to stop.
+    waitForStop();
 }
 
 }
