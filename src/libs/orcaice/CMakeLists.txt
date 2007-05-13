@@ -19,7 +19,8 @@ IF ( NOT OS_WIN )
   ADD_DEFINITIONS( "-Wall -DORCA_VERSION=\\\"${PROJECT_VERSION}\\\"" )
 ELSE ( NOT OS_WIN )
   # windows: turn off deprication warnings  
-  ADD_DEFINITIONS( "-Wall -DORCA_VERSION=\"${PROJECT_VERSION}\" -D_CRT_SECURE_NO_DEPRECATE" )
+  # alexb: it seems that you also need to escape the quotes for windoze??
+  ADD_DEFINITIONS( "-Wall -DORCA_VERSION=\\\"${PROJECT_VERSION}\\\" -D_CRT_SECURE_NO_DEPRECATE" )
 ENDIF ( NOT OS_WIN )
 
 #
