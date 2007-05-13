@@ -7,7 +7,8 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef __WIN32__
+
+#if !defined( WIN32 )
 
 #include "stopwatch.h"
 #include <iostream>

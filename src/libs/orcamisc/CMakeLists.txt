@@ -14,6 +14,7 @@ ELSE(NOT OS_WIN)
   GLOBAL_ADD_LIBRARY( OrcaMisc STATIC ${SRCS} )
   # windows: turn off deprecation warnings  
   ADD_DEFINITIONS( "-Wall -D_CRT_SECURE_NO_DEPRECATE" )
+  #ADD_DEFINITIONS( -D__WIN32__ )
 ENDIF(NOT OS_WIN)
 
 TARGET_LINK_LIBRARIES ( OrcaMisc OrcaIce OrcaObjects )

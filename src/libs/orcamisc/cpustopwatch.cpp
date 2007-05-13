@@ -7,7 +7,7 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef __WIN32__
+#if !defined( WIN32 )
 
 #include "cpustopwatch.h"
 #include <iostream>
