@@ -127,7 +127,7 @@ std::string toString( const Ice::StringSeq &s, int indent )
     string ind = makeIndent(indent);
 
     stringstream ss;
-    for ( uint i=0; i < s.size(); i++ )
+    for ( unsigned int i=0; i < s.size(); i++ )
     {
         ss << ind << i << ": " << s[i] << endl;
     }
@@ -174,7 +174,7 @@ std::string toString( const IceGrid::NodeDescriptor &n, int indent )
         ss << ind << "  " << it->first << ": " << it->second << endl;
     }
     ss << ind << "servers (size "<<n.servers.size()<<"):" << endl;
-    for ( uint i=0; i < n.servers.size(); i++ )
+    for ( unsigned int i=0; i < n.servers.size(); i++ )
     {
         const IceGrid::ServerDescriptorPtr &s = n.servers[i];
         ss << ind << toString( *s, indent+2 ) << endl;
