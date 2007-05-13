@@ -7,6 +7,8 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
+#ifndef __WIN32__
+
 #include "cpustopwatch.h"
 #include <iostream>
 #include <assert.h>
@@ -40,3 +42,4 @@ CpuStopwatch::getTimeNow( struct timeval &now ) const
 
 }
 
+#endif

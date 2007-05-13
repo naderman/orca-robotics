@@ -7,6 +7,8 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
+#ifndef __WIN32__
+
 #include "stopwatch.h"
 #include <iostream>
 #include <assert.h>
@@ -99,3 +101,4 @@ Stopwatch::elapsedSeconds() const
 }
 
 }
+#endif

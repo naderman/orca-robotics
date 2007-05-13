@@ -7,6 +7,8 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
+#ifndef __WIN32__
+
 #include "realtimestopwatch.h"
 #include <sys/time.h>
 #include <time.h>
@@ -36,3 +38,4 @@ RealTimeStopwatch::getTimeNow( struct timeval &now ) const
 }
 
 }
+#endif
