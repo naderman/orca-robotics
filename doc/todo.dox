@@ -59,15 +59,23 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - Gps
   - Split into separate interfaces (alex b)
+  
+- Power
+  - added a new variable: ChargingState (tobi)
 
 - Localise2d
   - Removed offset (alex b)
 
 @par Updated components
 
+- Gps
+  - Big overhaul (tobi)
+
 - OrcaView2d:
   - Fixed bug with uninitialised platform location (alex b)
   - Fixed bug with waypoint heading tolerances being normalised (alex b)
+  - Changed range of entries for pathfollower parameters (tobi)
+  - Added feature: connect to all interfaces on given component (tobi)
 
 - PathPlanner:
   - Big re-organisation (alex b, tobi)
