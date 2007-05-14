@@ -17,7 +17,7 @@
 #include "guielementfactory.h"
 #include "guielementview.h"
 #include "ihumanmanager.h"
-#include "platformcolor.h"
+#include "stringtocolormap.h"
 
 using namespace std;
 
@@ -34,7 +34,7 @@ GuiElementModel::GuiElementModel( const std::vector<orcaqgui::GuiElementFactory*
       view_(0),
       currentTransparency_(true)
 {    
-    platformColor_ = new PlatformColor;
+    platformColors_ = new StringToColorMap;
     headers_ << "Name" << "Details";
     coordinateFramePlatform_ = "global";
     platformInFocus_ = "global";
@@ -215,10 +215,9 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
     QColor platformColor;
     if ( !doesPlatformExist( platform ) )
     {
-        platformColor_->setNewPlatform( platform );
         emit ( newPlatform(platform) );
     }
-    platformColor_->getColor( platform, platformColor );
+    platformColors_->getColor( platform, platformColor );
     
     GuiElement* element = NULL;
     bool isSupported = instantiateFromFactories( element, ids, platformColor, proxyStrList );

@@ -9,20 +9,20 @@
  */
 
 #include <orcaice/orcaice.h>
-#include "platformcolor.h"
+#include "stringtocolormap.h"
 
 using namespace std;
 
 namespace orcaqgui 
 {
     
-PlatformColor::PlatformColor() 
+StringToColorMap::StringToColorMap() 
     : colorCounter_(0)
 {
     double timeInSec = orcaice::timeAsDouble( orcaice::getNow() );
     seed_ = (unsigned int)floor(timeInSec);
     
-    colorVector_.push_back(Qt::black);  // this one gets assigned to "global", no display
+    colorVector_.push_back(Qt::black);
     colorVector_.push_back(Qt::red);
     colorVector_.push_back(Qt::blue);
     colorVector_.push_back(Qt::cyan);
@@ -36,33 +36,32 @@ PlatformColor::PlatformColor()
     
 }
 
-void 
-PlatformColor::setNewPlatform( QString &platform )
+void
+StringToColorMap::getColor( const QString &str, QColor &color )
 {
-    QColor platformColor;
-    // assign a new colour
-    if ( colorCounter_>=colorVector_.size() ) {
-        platformColor = generateRandomColor();
-    } else {
-        platformColor = colorVector_[colorCounter_];
-        colorCounter_++;
-    }
-    // save for the future
-    colorMap_[platform] = platformColor;
-    //cout<<"TRACE(guielementmodel.cpp): emit newPlatform signal" << endl;
-}    
+    std::map<QString,QColor>::iterator it = colorMap_.find( str );
 
-bool 
-PlatformColor::getColor( const QString &platform, QColor &color )
-{
-    if (colorMap_[platform]==QColor()) return false;
-    
-    color = colorMap_[platform];
-    return true;
+    if ( it == colorMap_.end() )
+    {
+        // Allocate a new color
+        if ( colorCounter_>=colorVector_.size() ) {
+            color = generateRandomColor();
+        } else {
+            color = colorVector_[colorCounter_];
+            colorCounter_++;
+        }
+        // save for the future
+        colorMap_[str] = color;
+    }
+    else
+    {
+        // find the old color
+        color = it->second;
+    }
 }
 
 QColor
-PlatformColor::generateRandomColor()
+StringToColorMap::generateRandomColor()
 {    
     seed_ = seed_ + 10;
     srand(seed_);

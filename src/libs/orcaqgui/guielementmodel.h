@@ -26,7 +26,7 @@ class GuiElement;
 class GuiElementFactory;
 class OrcaGuiUserEvent;
 class GuiElementView;
-class PlatformColor;
+class StringToColorMap;
 
 class GuiElementModel : public QAbstractTableModel
 {
@@ -97,7 +97,7 @@ private:
     bool doesPlatformExist( QString &platformName );
     bool doesInterfaceExist( const QStringList& proxyStrList, int numElements );
     
-    PlatformColor *platformColor_;
+    StringToColorMap *platformColors_;
     
     QString platformInFocus_;
     GuiElementView* view_;
