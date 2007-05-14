@@ -36,9 +36,11 @@ StringToColorMap::StringToColorMap()
     
 }
 
-void
-StringToColorMap::getColor( const QString &str, QColor &color )
+QColor
+StringToColorMap::getColor( const QString &str )
 {
+    QColor color;
+
     std::map<QString,QColor>::iterator it = colorMap_.find( str );
 
     if ( it == colorMap_.end() )
@@ -58,6 +60,8 @@ StringToColorMap::getColor( const QString &str, QColor &color )
         // find the old color
         color = it->second;
     }
+
+    return color;
 }
 
 QColor

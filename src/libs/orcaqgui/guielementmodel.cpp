@@ -212,12 +212,11 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
     // 
     // Set color for all elements on the platform
     //
-    QColor platformColor;
     if ( !doesPlatformExist( platform ) )
     {
         emit ( newPlatform(platform) );
     }
-    platformColors_->getColor( platform, platformColor );
+    QColor platformColor = platformColors_->getColor( platform );
     
     GuiElement* element = NULL;
     bool isSupported = instantiateFromFactories( element, ids, platformColor, proxyStrList );

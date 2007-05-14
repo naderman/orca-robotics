@@ -27,7 +27,7 @@ namespace orcaqgui
             ~StringToColorMap() {};
             
             // gets the color for a given string, allocating a new one if necessary
-            void getColor( const QString &str, QColor &color );
+            QColor getColor( const QString &str );
             
         private:
             
