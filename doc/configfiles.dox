@@ -12,9 +12,20 @@
 
 @page orca_doc_configfiles Orca Configuration Files
 
-@note Reviewed for release 2.0.0.
+@note Reviewed for release 2.4.0.
 
-@section orca_doc_configfiles_order Order of Loading
+This page describes everything you need to know about writing and using Orca config files.
+
+- @ref orca_doc_configfiles_order
+- @ref orca_doc_configfiles_format
+- @ref orca_doc_configfiles_write
+  - @ref orca_doc_configfiles_write_user
+  - @ref orca_doc_configfiles_write_developer
+- @ref orca_doc_configfiles_usage
+  - @ref orca_doc_configfiles_connection
+  - @ref orca_doc_configfiles_config
+
+@section orca_doc_configfiles_order Sources and Order of Loading
 
 Configuration parameters are loaded in this order, earlier sources overwritten by later once.
 
@@ -67,26 +78,27 @@ $ ls *.cfg
 mycomponent.cfg
 $ mycomponent
 @endverbatim
--# Command-line arguments
-
-For example, the following ways of starting a component are equivalent:
+-# Command-line arguments. For example, the following ways of starting a component are equivalent:
 @verbatim
 $ export ORCA2_GLOBAL_CONFIG=global.cfg
 $ mycomponent --Orca.Config=local.cfg --MyComponent.MaxSpeed=500
 @endverbatim
 @verbatim
-$ mycomponent --Orca.GlobalConfig=global.cfg --Orca.Config=local.cfg --MyComponent.MaxSpeed=500
+$ mycomponent --Orca.GlobalConfig=global.cfg --MyComponent.MaxSpeed=500 --Orca.Config=local.cfg
 @endverbatim
 
 @note To avoid unexpected interactions between Ice runtime and Orca libraries, do not define ICE_CONFIG environment variable.
 
 @section orca_doc_configfiles_format File Format
 
-Orca uses Ice utilities to parse configuration files. Config files are text files which list properties as key/value pairs. Keys and values are strings which are separated by an equal sign ('='). The key strings are optionally devided into subfields with periods (aka dots, '.'). The value strings can represent strings, integers, or floats. For example:
+Orca uses Ice utilities to parse configuration files. Therefore, we use the same format as the Ice configuration files. 
+
+Config files are text files which list properties as key/value pairs. Each key/value pair is placed on a new line. Keys and values are strings which are separated by an equal sign ('='). The key strings are @e optionally devided into subfields with periods (aka dots, '.'). The value strings can represent strings, integers, or floats. Boolean variables are by convention stored as {0,1}. Comments are marked with '#'. For example:
 
 @verbatim
 Parameter=1
 Parameter.Subfield="orca"
+# This line is ignored
 Parameter.Subfield.Whatever=123.4
 @endverbatim
 
@@ -94,77 +106,166 @@ For more information on Ice properties and configuration files, see chapter "Ice
 
 @section orca_doc_configfiles_write Writing Configuration Files
 
-Orca configuration files (file extention @c cfg) can be generated from component definition files (file extention @c def). This is the recommended method since writing configuration files by hand is error-prone. Here's the typical steps to generate @c mycomponent.cfg file:
--# write a @c mycomponent.def file (see @ref orca_library_orcadef for its format)
--# generate @c mycomponent.cfg file using the @c generatecfg utility:
+The configuration files are viewed slightly differently by the component user and the component developer.
+
+@subsection orca_doc_configfiles_write_user From the User's Perspective
+
+Typically, an Orca component has a definition file (file extention @c def) in the source tree and the configuration file (file extention @c cfg) is generated from it during compilation. The automatically generated @c cfg file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
+To use a @c cfg file in your system, make a copy of the auto-generated @c mycomponent.cfg file and customize it to fit the needs of your system.
+@verbatim
+$ mkdir -p ~/sys/mysystem; cd ~/sys/mysystem
+$ cp [ORCA-INSTALL-DIR]/cfg/somecomponent.cfg .
+$ vi somecomponent.cfg
+$ somecomponent somecomponent.cfg
+@endverbatim
+
+@subsection orca_doc_configfiles_write_developer From the Developer's Perspective
+
+Orca configuration files (file extention @c cfg) are typically generated from component definition files (file extention @c def). This is the recommended method becauses it reduces workload and minimizes chances of error. The format for definition files is documented within a dedicated library @ref orca_library_orcadef.
+
+The configuration file @c mycomponent.cfg file can be generated from the corresponding @c def file in two ways:
+ - manually at any time, using the @c generatecfg utility:
 @verbatim
 $ generatecfg component.def mycomponent.cfg
 @endverbatim
--# make a copy of the generated @c mycomponent.cfg file and customize it to fit the needs of your system.
-
-Typically, an Orca component has a @c def file in the source tree and the @c cfg file is generated during compilation. The hand-written @c def file is installed into [ORCA-INSTALL-DIR]/def/ directory. The automatically generated @c cfg file is installed into [ORCA-INSTALL-DIR]/cfg/ directory. The following line in the component's CMakeLists.txt file does the conversion:
-
+ - automatically during compilation, by including the following line in the component's CMakeLists.txt file
 @verbatim
 GENERATE_CONFIG_FILE( mycomponent.def )
 @endverbatim
 
+The hand-written @c def file is installed into [ORCA-INSTALL-DIR]/def/ directory. The auto-generated @c cfg file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
 @section orca_doc_configfiles_usage Usage
 
-Configuration files have three uses:
+Configuration files have two uses:
 
 - @ref orca_doc_configfiles_connection
 - @ref orca_doc_configfiles_config
-- Describing the component structure
 
 @subsection orca_doc_configfiles_connection Connecting Components
 
-A component usually has a single config file which may also set some Ice runtime parameters which start with 'Ice', 'IceStorm', etc. We prefix all component settings with a string which we call here 'ComponentTag'. There are two rules about this tag: a) it must be unique within one config file, and b) it has to match the string hardwired into the source code. Let's look at an example.
+First, we look at a component with provided interfaces (acting as a server).
 
 @verbatim
-ComponentTag.Platform=p1
-ComponentTag.Component=c1
-ComponentTag.Endpoints=e1
+COMP_TAG.Platform=p1
+COMP_TAG.Component=c1
+COMP_TAG.Endpoints=e1
 
 # Provided interfaces
-ComponentTag.Provides.InterfaceTag1.Name=i1
-ComponentTag.Provides.InterfaceTag2.Name=i2
+COMP_TAG.Provides.IFACE_TAG1.Name=i1
+COMP_TAG.Provides.IFACE_TAG2.Name=i2
 ...
 @endverbatim
 
-This component has two provided interfaces. When this component is initialized it registers them with the registry under the following names: \e i1\@p1/c1 and \e i2\@p1/c1. The implementation of ZeroC's IceGrid Registry requires that the interface name must be unique within an Orca component, and the combination of the platform and component names must be unique within the registy.
+The fragment above contains two kinds of @e tags:
 
-Default value for @c ComponentTag.Platform is "local". Default value for @c ComponentTag.Component is the value of ComponentTag converted to lower case..
+@b COMP_TAG (string)
+- All component settings are prefixed with a string which we call here 'COMP_TAG'. This is done to distinguish one component's setting from the other's and from other possible settings, e.g. Ice runtime parameters which start with 'Ice', 'IceStorm', etc.
+- Valid values: 
+    - all characters, except '.'
+    - must be unique within one config file
+    - has to match the string hard-wired into the component's source code.
+
+@b IFACE_TAG (string)
+- Settings for different interfaces are distinguished by using tags.
+- Valid values: 
+    - all characters, except '.'
+    - must be unique within one component's settings
+    - has to match the string hard-wired into the component's source code.
+
+Now we go through the @e keys of the fragment (the text on the left of the "=" sign):
+
+@b COMP_TAG.Platform (string)
+- Platform name. Used for registering with the registry. 
+- Valid values:
+    - all characters, except '@' and '/'
+    - combination with component name must be unique within the system
+- Default: "local"
+
+@b COMP_TAG.Component (string)
+- Component name. Used for registering with the registry. 
+- Valid values:
+    - all characters, except '@' and '/'
+    - combination with platform name must be unique within the system
+- Default: the value of COMP_TAG converted to lower case.
+
+@b COMP_TAG.Endpoints (string)
+- The communication endpoints at which the component will accept connections.
+- Valid values: 
+    - standard Ice endpoint specification. 
+    - to allow direct connections, host name and port number must be specified.
+- Default: "tcp -t 5000"
+
+@b COMP_TAG.Provides.IFACE_TAG.Name (string)
+- The interface name. Used for registering with the registry. 
+- Valid values:
+    - all characters, except '@' and '/'
+    - must be unique within an Orca component
+
+Orca defines the following naming rules:
+
+@e fully-qualified @e component @e name
+    - formed from platform and component names as follows: @c Platform/Component
+    - Example: \e "p1/c1". 
+    - Must be unique within the system. (If the same registry is used by multiple system, the combination must be unique across all systems involved.)
+
+@e fully-qualified @e interface @e name
+    - formed from platform, component, and interface names as follows: @c Interface\@Platform/Component
+    - Example: \e "i1\@p1/c1" and \e "i2\@p1/c1". 
+
+@e fully-qualified @e interface @e address
+    - formed from interface name and the component endpoint as follows: @c Interface:Endpoint
+    - Example: \e "i1:e1" and \e "i2:e1"
+    - am: does it work with multiple endpoints?
+
+Now lets look at configuring the second component which will connect to the first.
 
 @verbatim
-ComponentTag.Platform=p2
-ComponentTag.Component=c2
+COMP_TAG.Platform=p2
+COMP_TAG.Component=c2
 
 # Required interfaces
 
-# Direct binding by specifying the endpoint
-ComponentTag.Requires.InterfaceTag2.Proxy=i2:e2
+# Direct binding by specifying the address (endpoint)
+COMP_TAG.Requires.IFACE_TAG1.Proxy=i1:e1
 
-# Indirect binding through the Registry
-ComponentTag.Requires.InterfaceTag3.Proxy=i2@p2/c2
+# Indirect binding by looking up the address through the Registry
+COMP_TAG.Requires.IFACE_TAG2.Proxy=i2@p1/c1
 ...
 @endverbatim
 
-When the second component is initialized it looks up the interface it requires at the naming service under the name \e i1\@p1/c1. The registry returns the address of the first provided interface of the component above. Because we use a slash '/' as a separator, it cannot be used in platform and component names. The \@ character is also not permitted.
+As you can see, there are two options for connecting interfaces: 
 
+- direct connection
+    - Must specify a fully-qualified interface address.
+    - Example: @e "i1:e1"
+    - (The Registry is not used)
 
-@subsection orca_doc_configfiles_config Specifying Internal Configuration Parameters
+- indirect connection
+    - Must specify a fully-qualified interface name.
+    - Example: @e "i2@p1/c1"
+    - When the component is initialized, it contacts the Registry with the name of the required interface. The Registry returns the address of the 2nd provided interface of the component above.
 
-Components' internal behaviour usually needs to be configured at run time by setting certain parameters. A component developer should write a defintion file ('.def') which contains all possible parameters with their default values. The syntax in the generated config file ('.cfg') is:
+Of course, the same component may have provided and required interfaces. The order of declaring interfaces is not important.
+
+@subsection orca_doc_configfiles_config Specifying Component's Internal Configuration Parameters
+
+Components' internal behaviour usually needs to be configured at run time by setting certain parameters. The following syntax is used:
 
 @verbatim
-ComponentTag.Config.ParameterSet1.ParameterDouble=0.1
-ComponentTag.Config.ParameterSet1.ParameterBool=1
+COMP_TAG.Config.SET_TAG1.PARAM_TAG1=0.1
+COMP_TAG.Config.SET_TAG1.PARAM_TAG2=1
 ...
-ComponentTag.Config.ParameterSet2.ParameterInt=3
+COMP_TAG.Config.SET_TAG2.PARAM_TAG3=left
 ...
 @endverbatim
 
-The component developer is responsible for reading the parameters correctly. The code can contain hard-coded default values in case the config file does not specify them.
+The code looks up the value of the parameter by its full key, e.g. COMP_TAG.Config.SET_TAG1.PARAM_TAG1. Repeated keys are allowed, the later values replacing earlier ones.
+
+String used for set and parameter tags are arbitrary. Parameter sets and the depth of the hierarchy are completely optional.
+
+The code can contain hard-coded default values in case the config file omits them or leaves the value empty. The auto-generated config files should contain all parameters listed with the corresponding default values. The defaults should also be specified in component's documentation.
 
 @section more_info For More Information.
 

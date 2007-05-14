@@ -50,6 +50,7 @@ Our main goal is the continuing progress in robotic research and the robotic ind
 - Read an overview of Ice middleware: Ch. 2 of the Ice Manual <a href="http://www.zeroc.com/download.html#doc" target="_blank">[download]</a>
 - See a list of all available Orca components: @ref orca_doc_swmap
 - Start coding: @ref orca_doc_start_code (read this if you want to evaluate Orca)
+- Become an expert: @ref orca_doc_devguide
 
 Note: The documentation on this web page matches the latest release. A web page is also <a href="http://orca-robotics.sourceforge.net/cvs/">generated hourly</a> from the latest CVS version.
 
