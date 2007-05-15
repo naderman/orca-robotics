@@ -291,7 +291,7 @@ MainLoop::computeAndSendPath( const orcanavutil::Pose &pose,
     if ( computedPath.result!= PathOk )
     {
         stringstream ss;
-        ss << "MainLoop: PathPlanner could not compute.  Gave result " << orcaice::toString( computedPath.result );
+        ss << "MainLoop: PathPlanner could not compute.  Gave result " << orcaice::toString( computedPath.result )<<": "<<computedPath.resultDescription;
         const bool isTemporary = true;
         throw( GoalPlanException( ss.str(), isTemporary ) );
     }
