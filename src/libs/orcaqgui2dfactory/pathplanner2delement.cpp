@@ -38,7 +38,10 @@ PathPlannerTaskAnswerConsumer::setData(const ::orca::PathPlanner2dData& data, co
     else if (data.result==PathDestinationUnreachable) 
         msg.append("Destination unreachable");    
     else if (data.result==PathOtherError) 
-        msg.append(QString(data.resultDescription.c_str()));    
+        msg.append("OtherError");
+
+    msg.append( ": " );
+    msg.append( QString(data.resultDescription.c_str()) );
 
     msgBuffer_.set(msg); 
 }
