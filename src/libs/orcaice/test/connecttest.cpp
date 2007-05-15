@@ -113,11 +113,25 @@ TestComponent::start()
     }
     cout<<"ok"<<endl;
 
-    
-    cout<<"testing connectToInterfaceWithTag() ... ";
-    // try to connect R1 to non-existant interface
+    cout<<"testing connectToInterfaceWithTag() to good indirect ... ";
     try {
-        orcaice::connectToInterfaceWithTag<orca::HomePrx>( context(), homePrx, "R1" );
+        orcaice::connectToInterfaceWithTag<orca::HomePrx>( context(), homePrx, "IndirectGood" );
+        // ok
+    }
+    catch ( const orcaice::ConfigFileException & ) {
+        cout<<"failed"<<endl<<"should be able to read file"<<endl;
+        exit(EXIT_FAILURE);
+    }
+    catch ( const orcaice::NetworkException & e ) {
+        cout<<e.what()<<endl;
+        cout<<"failed"<<endl<<"should be able to connect"<<endl;
+        exit(EXIT_FAILURE);
+    }
+    cout<<"ok"<<endl;
+    
+    cout<<"testing connectToInterfaceWithTag() to indirect with bad comp name ... ";
+    try {
+        orcaice::connectToInterfaceWithTag<orca::HomePrx>( context(), homePrx, "IndirectBadCompName" );
         cout<<"failed"<<endl<<"should NOT be able to find this interface"<<endl;
         exit(EXIT_FAILURE);
     }
@@ -128,10 +142,26 @@ TestComponent::start()
     catch ( const orcaice::NetworkException & ) {
         // ok
     }
+    cout<<"ok"<<endl;
 
-    // try to connect R2 (indirect) back to P1
+    cout<<"testing connectToInterfaceWithTag() to indirect with bad iface name ... ";
     try {
-        orcaice::connectToInterfaceWithTag<orca::HomePrx>( context(), homePrx, "R2" );
+        orcaice::connectToInterfaceWithTag<orca::HomePrx>( context(), homePrx, "IndirectBadName" );
+        cout<<"failed"<<endl<<"should NOT be able to find this interface"<<endl;
+        exit(EXIT_FAILURE);
+    }
+    catch ( const orcaice::ConfigFileException & ) {
+        cout<<"failed"<<endl<<"should be able to read file"<<endl;
+        exit(EXIT_FAILURE);
+    }
+    catch ( const orcaice::NetworkException & ) {
+        // ok
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing connectToInterfaceWithTag() to good direct ... ";
+    try {
+        orcaice::connectToInterfaceWithTag<orca::HomePrx>( context(), homePrx, "DirectGood" );
         // ok
     }
     catch ( const orcaice::ConfigFileException & ) {
@@ -143,25 +173,41 @@ TestComponent::start()
         cout<<"failed"<<endl<<"should be able to connect"<<endl;
         exit(EXIT_FAILURE);
     }
+    cout<<"ok"<<endl;
 
-    // try to connect R3 (direct) back to P1
+    cout<<"testing connectToInterfaceWithTag() to direct with bad name ... ";
     try {
-        orcaice::connectToInterfaceWithTag<orca::HomePrx>( context(), homePrx, "R3" );
-        // ok
+        orcaice::connectToInterfaceWithTag<orca::HomePrx>( context(), homePrx, "DirectBadName" );
+        cout<<"failed"<<endl<<"should NOT be able to find this interface"<<endl;
+        exit(EXIT_FAILURE);
     }
     catch ( const orcaice::ConfigFileException & ) {
         cout<<"failed"<<endl<<"should be able to read file"<<endl;
         exit(EXIT_FAILURE);
     }
     catch ( const orcaice::NetworkException & e ) {
-        cout<<e.what()<<endl;
-        cout<<"failed"<<endl<<"should be able to connect"<<endl;
+        // ok
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing connectToInterfaceWithTag() to direct with bad endpoint ... ";
+    try {
+        orcaice::connectToInterfaceWithTag<orca::HomePrx>( context(), homePrx, "DirectBadEndpoint" );
+        cout<<"failed"<<endl<<"should NOT be able to find this interface"<<endl;
         exit(EXIT_FAILURE);
     }
+    catch ( const orcaice::ConfigFileException & ) {
+        cout<<"failed"<<endl<<"should be able to read file"<<endl;
+        exit(EXIT_FAILURE);
+    }
+    catch ( const orcaice::NetworkException & e ) {
+        // ok
+    }
+    cout<<"ok"<<endl;
 
-    // non-existant tag
+    cout<<"testing connectToInterfaceWithTag() with bad tag ... ";
     try {
-        orcaice::connectToInterfaceWithTag<orca::HomePrx>( context(), homePrx, "R100" );
+        orcaice::connectToInterfaceWithTag<orca::HomePrx>( context(), homePrx, "BadTag" );
         cout<<"failed"<<endl<<"should NOT be able to find this interface"<<endl;
         exit(EXIT_FAILURE);
     }

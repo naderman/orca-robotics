@@ -117,7 +117,7 @@ Component::finalise()
 Tracer*
 Component::initTracer()
 {
-    orcaice::initTracerPrint( tag()+": Initializing application trace handler...");
+    orcaice::initTracerInfo( tag()+": Initializing application trace handler...");
     if ( !(interfaceFlag_ & TracerInterface) ) {
         return new orcaice::detail::LocalTracer( context_ );
     }
@@ -143,14 +143,14 @@ Component::initTracer()
     // a bit of a hack: keep this smart pointer so it's not destroyed with the adapter
     tracerObj_ = obj;
     
-    initTracerPrint( tag()+": Tracer initialized" );
+    initTracerInfo( tag()+": Tracer initialized" );
     return trac;
 }
 
 Status*
 Component::initStatus()
 {
-    orcaice::initTracerPrint( tag()+": Initializing application status handler ...");
+    orcaice::initTracerInfo( tag()+": Initializing application status handler ...");
 
     if ( !(interfaceFlag_ & StatusInterface) ) 
     {
@@ -177,7 +177,7 @@ Component::initStatus()
     
     localStatus_ = new orcaice::detail::LocalStatus( context_, pobj );
 
-    initTracerPrint( tag()+": Status initialized" );
+    initTracerInfo( tag()+": Status initialized" );
 
     return localStatus_;
 }

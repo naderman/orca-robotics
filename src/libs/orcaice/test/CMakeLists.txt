@@ -104,7 +104,7 @@ MESSAGE ( STATUS "Planning to Build Test      : ServiceTest [libOrcaIce]")
 ADD_LIBRARY( ServicePropTest SHARED serviceproptest )
 # settings: FACT=0, GLOBAL=200, LOCAL=300, ARGS=400
 # test1000 = factory YES, global NO, local NO, args NO --> expect=FACT=0
-# NOTE: have to copy these files because, unlike with the application, here we cannot specify the location
+# NOTE: have to copy these files because, unlike with the application, here we CANNOT specify the location
 # of the global file on command line (command line args for individual services are hardwired 
 # into the icebox.cfg file)
 ADD_CUSTOM_COMMAND( TARGET ServicePropTest POST_BUILD COMMAND ${CMAKE_COMMAND} 

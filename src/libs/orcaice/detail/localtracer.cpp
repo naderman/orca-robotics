@@ -33,14 +33,14 @@ LocalTracer::LocalTracer( const orcaice::Context & context )
             initTracerError( "Could not create file " + filename );
         }
         else {
-            initTracerPrint("Created output file.");
+            initTracerInfo("Created output file.");
         }
     }
     
     // do we need a syslogger?
     if ( config_.verbosity[AnyTrace][ToLog] ) {
         sysLogger_ = new orcaice::detail::SysLogger(context);
-        initTracerPrint("Created syslogger.");
+        initTracerInfo("Created syslogger.");
     }
 }
 

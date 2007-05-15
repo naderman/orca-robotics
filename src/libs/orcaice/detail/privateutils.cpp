@@ -108,6 +108,10 @@ setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag
     Ice::PropertiesPtr tempProperties = Ice::createProperties();
 
     // modify Ice defaults
+    // Ice default is 1 and it always prints out warning because we attach our own 
+    // config parameters (e.g. Platform, Component, Config.XXX) to the tag of the
+    // Object Adapter.
+    tempProperties->setProperty( "Ice.Warn.UnknownProperties",    "0" );
 //     tempProperties->setProperty( "Ice.Trace.Network",          "0" );
 //     tempProperties->setProperty( "Ice.Trace.Protocol",         "0" );
 //     tempProperties->setProperty( "Ice.Warn.Connections",       "0" );
@@ -120,10 +124,10 @@ setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag
     tempProperties->setProperty( "IceStorm.TopicManager.Proxy", "IceStorm/TopicManager:default -p 10000" );
 
     // adapter properties: these two are required for everything to work but
-    // they are not present in the default config files. If you have to know what you
-    // can override these in the config files.
-    // we've already made sure that component and platform are filled in
+    // they are not present in the default config files. You can override these 
+    // in the config files.
     orca::FQComponentName fqCName;
+    // we've already made sure that component and platform are filled in
     fqCName.platform = properties->getProperty(compTag+".Platform");
     fqCName.component = properties->getProperty(compTag+".Component");
     tempProperties->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
@@ -153,8 +157,9 @@ setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag
     tempProperties->setProperty( "Orca.Tracer.DebugToNetwork",     "0" );
     tempProperties->setProperty( "Orca.Tracer.DebugToFile",        "0" );
     // filtering
-    tempProperties->setProperty( "Orca.Tracer.IgnoreRepeatedWarnings","0" );
-    tempProperties->setProperty( "Orca.Tracer.IgnoreRepeatedErrors",  "0" );
+    // these are not currently used.
+//     tempProperties->setProperty( "Orca.Tracer.IgnoreRepeatedWarnings","0" );
+//     tempProperties->setProperty( "Orca.Tracer.IgnoreRepeatedErrors",  "0" );
 
     // we are transfering prop's from lower to higher priority, this means that
     // if a property is already defined in the target property set, it is used and not the one from the source.
@@ -210,7 +215,7 @@ setComponentProperties( Ice::PropertiesPtr & properties, const std::string & fil
     }
 
     // debug
-//     initTracerPrint("loaded component properties from file:");
+//     initTracerInfo("loaded component properties from file:");
 //     orcaice::printComponentProperties( tempProperties, "Debug" );
 
     // we are transfering prop's from lower to higher priority, this means that
@@ -252,7 +257,7 @@ parseComponentProperties( const Ice::CommunicatorPtr & communicator, const std::
     // check that we have platform name, if missing set it to 'local'
     if ( fqCName.platform.empty() ) {
         string warnString = compTag + ": " + warnMissingPropertyWithDefault( compTag+".Platform", "local" );
-        initTracerWarning( warnString );
+        initTracerInfo( warnString );
         fqCName.platform = "local";
     }
     // check that we have component name, if missing set it to 'ComponentTag' converted to lower case
@@ -263,7 +268,7 @@ parseComponentProperties( const Ice::CommunicatorPtr & communicator, const std::
 //             throw orcaice::Exception( ERROR_INFO, errorString );
 //         }
         string warnString = compTag + ": " + warnMissingPropertyWithDefault( compTag+".Component", "<component tag>" );
-        initTracerWarning( warnString );
+        initTracerInfo( warnString );
         fqCName.component = orcaice::toLowerCase( compTag );
     }
 
@@ -273,10 +278,10 @@ parseComponentProperties( const Ice::CommunicatorPtr & communicator, const std::
         // update properties
         properties->setProperty( compTag+".Platform", fqCName.platform );
         properties->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
-        initTracerWarning( compTag+": Set platform name to hostname="+fqCName.platform );
+        initTracerInfo( compTag+": Replaced platform name 'local' with hostname '"+fqCName.platform+"'" );
     }
 
-    initTracerPrint( compTag+": Will register component (adapter) as '"+orcaice::toString(fqCName)+"'" );
+    initTracerInfo( compTag+": Will register component (adapter) as '"+orcaice::toString(fqCName)+"'" );
 
     return fqCName;
 }
@@ -289,13 +294,13 @@ printComponentProperties( const Ice::PropertiesPtr &properties, const std::strin
     std::ostringstream os;
     os << propSeq.size();
 
-    initTracerPrint( compTag+": All component properties ("+os.str()+")" );
-    initTracerPrint( "========================" );
+    initTracerInfo( compTag+": All component properties ("+os.str()+")" );
+    initTracerInfo( "========================" );
 
     for ( unsigned int i=0; i<propSeq.size(); ++i ) {
-        initTracerPrint( propSeq[i] );
+        initTracerInfo( propSeq[i] );
     }
-    initTracerPrint( "========================" );
+    initTracerInfo( "========================" );
 }
 
 void
@@ -303,7 +308,7 @@ printVersion()
 {
     std::ostringstream os;
     os << "Ice version: "<<ICE_STRING_VERSION<<" libOrcaIce version: "<<orcaice::orcaVersion();
-    initTracerPrint( os.str() );
+    initTracerInfo( os.str() );
 }
 
 } // namespace

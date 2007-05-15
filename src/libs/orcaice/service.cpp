@@ -54,7 +54,7 @@ Service::start( const ::std::string        & name,
     // allow multiple components of the same type to be placed inside the same IceBox. The
     // actual tag is given by to us by IceBox as 'name'.
     component_->setTag( name );
-    initTracerPrint("Reset component tag to "+name);
+    initTracerInfo("Reset component tag to "+name);
 
     // Unlike in Application, the args here do NOT include the executable name
 
@@ -66,7 +66,7 @@ Service::start( const ::std::string        & name,
     // exists and the pointer to it is given to us by the IceBox. So we just get a pointer
     // to the properties which also already exist.
     Ice::PropertiesPtr properties = communicator->getProperties();
-//             initTracerPrint("at the start");
+//             initTracerInfo("at the start");
 //             orcaice::printComponentProperties( properties, component_->tag() );
 
     // Level 4. Highest priority, apply properties from the command line arguments
@@ -74,35 +74,35 @@ Service::start( const ::std::string        & name,
     // note that something like --bullshit will be parsed to --bullshit=1
     // Note that this is a standard Ice function.
     properties->parseCommandLineOptions( "", args );
-    initTracerPrint( component_->tag()+": Set command line properties" );
+    initTracerInfo( component_->tag()+": Loaded command line properties" );
             // debug
-//             initTracerPrint("after parseCommandLineOptions()");
+//             initTracerInfo("after parseCommandLineOptions()");
 //             orcaice::printComponentProperties( properties, component_->tag() );
 
     // Level 3. Now, apply properties from this component's config file (do not force!)
     // Note that unlike in Application, it's possible that all required properties are given
     // in the icebox.cfg file and the component config file is not specified.
+    std::string servFilename;
     try
     {
-        std::string filename = orcaice::getServiceConfigFilename( args );
-        if ( filename.empty() ) {
-            initTracerPrint( component_->tag()+": "+warnMissingProperty("component properties file","Orca.Ice") );
+        servFilename = orcaice::getServiceConfigFilename( args );
+        if ( servFilename.empty() ) {
+            initTracerInfo( component_->tag()+": "+warnMissingProperty("component properties file","Orca.Ice") );
         }
         else {
-            initTracerPrint( component_->tag()+": Will try to load component properties from "+filename );
-
-            orcaice::detail::setComponentProperties( properties, filename );
+            orcaice::detail::setComponentProperties( properties, servFilename );
+            initTracerInfo( component_->tag()+": Loaded component properties from '"+servFilename+"'" );
         }
     }
     catch ( const orcaice::Exception &e )
     {
-        initTracerWarning( component_->tag()+": Failed to open component configuration file: "+e.what() );
+        initTracerWarning( component_->tag()+": Failed to open component config file : '"+servFilename+"'"+e.what() );
             // debug
-//         initTracerPrint( component_->tag()+": Application quitting. Orca out." );
+//         initTracerInfo( component_->tag()+": Application quitting. Orca out." );
 //         exit(1);
     }
             // debug
-//             initTracerPrint("after setComponentProperties()");
+//             initTracerInfo("after setComponentProperties()");
 //             orcaice::printComponentProperties( properties, component_->tag() );
 
 
@@ -115,38 +115,38 @@ Service::start( const ::std::string        & name,
     if ( !properties->getPropertyAsInt( component_->tag()+".UseSharedCommunicator" ) ) {
         applyFactoryAndGlobals = true;
         // debug
-        initTracerPrint( component_->tag()+": Will apply factory and global settings (private communicator).");
+        initTracerInfo( component_->tag()+": Will apply factory and global settings (private communicator).");
     }
     else if ( !_isSharedCommunicatorConfigured ) {
         applyFactoryAndGlobals = true;
         _isSharedCommunicatorConfigured = true;
         // debug
-        initTracerPrint( component_->tag()+": Will apply factory and global settings (shared communicator, 1st service).");
+        initTracerInfo( component_->tag()+": Will apply factory and global settings (shared communicator, 1st service).");
     }
 
     if ( applyFactoryAndGlobals ) 
     {
         // Level 2. Now, apply properties from the global Orca config file
+        std::string globFilename;  
         try
-        {
-            std::string filename = orcaice::getGlobalConfigFilename( args );
-            initTracerPrint( component_->tag()+": Will try to load global properties from "+filename );
-    
-            orcaice::detail::setGlobalProperties( properties, filename );
+        {  
+            globFilename = orcaice::getGlobalConfigFilename( args );  
+            orcaice::detail::setGlobalProperties( properties, globFilename );
+            initTracerInfo( component_->tag()+": Loaded global properties from '"+globFilename+"'" );
         }
         catch ( const orcaice::Exception &e )
         {
-            initTracerWarning( component_->tag()+": Failed to open global configuration file: "+e.what() );
+            initTracerWarning( component_->tag()+": Failed to open global config file: '"+globFilename+"'"+e.what() );
         }
             // debug
-//             initTracerPrint("after setGlobalProperties()");
+//             initTracerInfo("after setGlobalProperties()");
 //             orcaice::printComponentProperties( properties, component_->tag() );
 
         // Level 1. apply Orca factory defaults
         orcaice::detail::setFactoryProperties( properties, component_->tag() );
-        initTracerPrint( component_->tag()+": Set factory properties." );
+        initTracerInfo( component_->tag()+": Loaded factory default properties." );
             // debug
-//             initTracerPrint("after setFactoryProperties()");
+//             initTracerInfo("after setFactoryProperties()");
 //             orcaice::printComponentProperties( properties, component_->tag() );
 
 
@@ -160,7 +160,7 @@ Service::start( const ::std::string        & name,
 
             // debug
 //             Ice::LocatorPrx locator = communicator->getDefaultLocator();
-//             initTracerPrint( component_->tag()+": default locator: "+communicator->proxyToString( locator ) );
+//             initTracerInfo( component_->tag()+": default locator: "+communicator->proxyToString( locator ) );
     }
 
     // now communicator exists. we can further parse properties, make sure all the info is
@@ -176,14 +176,14 @@ Service::start( const ::std::string        & name,
 
     // create the one-and-only component adapter
     adapter_ = communicator->createObjectAdapter( component_->tag() );
-    initTracerPrint( component_->tag()+": Object adapter created" );
+    initTracerInfo( component_->tag()+": Object adapter created" );
 
     //
     // Give the component all the stuff it needs
     //
     bool isApp = false;
     component_->init( fqCompName, isApp, adapter_ );
-    initTracerPrint( component_->tag()+": Service initialized" );
+    initTracerInfo( component_->tag()+": Service initialized" );
 
     //
     // Start the component, catching OrcaIce exceptions.
@@ -193,7 +193,7 @@ Service::start( const ::std::string        & name,
     {
         component_->start();
         if ( communicator->getProperties()->getPropertyAsInt( "Orca.PrintComponentStarted" ) ) {
-            initTracerPrint( component_->tag()+": Component started" );
+            initTracerInfo( component_->tag()+": Component started" );
         }
     }
     catch ( Ice::Exception & e )
@@ -202,14 +202,14 @@ Service::start( const ::std::string        & name,
         std::cerr << e << std::endl;
 //         initTracerError( component_->tag()+": unexpected Ice exception from component. Stopping component..." );
 //         component_->stop();
-        initTracerPrint( component_->tag()+": Service quitting.." );
+        initTracerInfo( component_->tag()+": Service quitting.." );
     }
     catch ( orcaice::Exception & e )
     {
         initTracerError( component_->tag()+": Caught OrcaIce exception: "+e.what() );
 //         initTracerError( component_->tag()+": unexpected OrcaIce exception from component. Stopping component..." );
 //         component_->stop();
-        initTracerPrint( component_->tag()+": Service quitting.." );
+        initTracerInfo( component_->tag()+": Service quitting.." );
     }
 }
 
@@ -219,17 +219,17 @@ Service::stop()
 
     if ( component_ )
     {
-        initTracerPrint( component_->tag()+": Stopping service..." );
+        initTracerInfo( component_->tag()+": Stopping service..." );
         component_->finalise();
         component_->stop();
-        initTracerPrint( component_->tag()+": Component stopped" );
+        initTracerInfo( component_->tag()+": Component stopped" );
     }
 
     adapter_->waitForDeactivate();
-    initTracerPrint( component_->tag()+": Adapter deactivated" );
+    initTracerInfo( component_->tag()+": Adapter deactivated" );
 
     adapter_ = 0;
-    initTracerPrint( component_->tag()+": Service stopped." );
+    initTracerInfo( component_->tag()+": Service stopped." );
 }
 
 } // namespace

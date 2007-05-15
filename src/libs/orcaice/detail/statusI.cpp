@@ -152,7 +152,7 @@ StatusI::connectToIceStorm()
     }
 
     if ( publisher_ ) {
-        initTracerPrint( "Status connected to "+topicName_ );
+        initTracerInfo( context_.tag()+": Status connected to "+topicName_ );
     }
 
     return publisher_ != 0;

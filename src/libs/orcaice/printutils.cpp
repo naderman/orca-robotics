@@ -19,7 +19,7 @@ using namespace std;
 namespace orcaice
 {
 
-void initTracerPrint( const std::string & message )
+void initTracerInfo( const std::string & message )
 {
     cout<<"orca: "<<message<<endl;
 }
@@ -35,7 +35,7 @@ void initTracerError( const std::string & message )
 }
 
 
-void initTracerPrint( const orcaice::Context & context, const std::string & message, const int level )
+void initTracerInfo( const orcaice::Context & context, const std::string & message, const int level )
 {
     if ( context.tracer() )  {
         context.tracer()->info( message, level );

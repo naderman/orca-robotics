@@ -98,7 +98,7 @@ getProvidedTopic( const Context & context, const std::string &ifaceTag, const st
     fqTName.iface = getProvidedName( context, ifaceTag );
     fqTName.topic = subtopic;
 
-    initTracerPrint( context, "will publish to topic '"+orcaice::toString(fqTName)+"'",2 );
+    initTracerInfo( context, "will publish to topic '"+orcaice::toString(fqTName)+"'",2 );
     return fqTName;
 }
 
@@ -207,7 +207,7 @@ getRequiredTopic( const Context & context, const std::string &ifaceTag )
     fqTName.iface = fqIName.iface;
     fqTName.topic = "*";
 
-    initTracerPrint( context, "will subscribe to topic '"+orcaice::toString( fqTName )+"'",2 );
+    initTracerInfo( context, "will subscribe to topic '"+orcaice::toString( fqTName )+"'",2 );
     return fqTName;
 }
 

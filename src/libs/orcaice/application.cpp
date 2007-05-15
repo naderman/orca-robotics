@@ -47,7 +47,7 @@ Application::main(int argc, char* argv[])
         if ( !args[i].compare( 0,2, "-h" ) ||
              !args[i].compare( 0,6, "--help" ) )
         {
-            orcaice::initTracerPrint( component_.help() );
+            orcaice::initTracerInfo( component_.help() );
             // nothing to clean up yet
             exit(0);
         }
@@ -78,57 +78,56 @@ Application::main(int argc, char* argv[])
     // note that something like --bullshit will be parsed to --bullshit=1
     // Note that this is a standard Ice function.
     initData.properties->parseCommandLineOptions( "", args );
-    initTracerPrint( component_.tag()+": Set command line properties" );
+    initTracerInfo( component_.tag()+": Loaded command line properties" );
             // debug
-//             initTracerPrint("after parseCommandLineOptions()");
+//             initTracerInfo("after parseCommandLineOptions()");
 //             orcaice::detail::printComponentProperties( initData.properties, component_.tag() );
 
     // Level 3. Now, apply properties from this component's config file (do not force!)
+    std::string compFilename;
     try
     {
-        std::string filename = orcaice::getApplicationConfigFilename( args );
-
-        if ( filename.empty() ) {
-            initTracerPrint( component_.tag()+": "+warnMissingProperty("component properties file","Orca.Ice") );
+        compFilename = orcaice::getApplicationConfigFilename( args );
+        if ( compFilename.empty() ) {
+            initTracerInfo( component_.tag()+": "+warnMissingProperty("component properties file","Orca.Ice") );
         }
         else {
-            initTracerPrint( component_.tag()+": Will try to load component properties from "+filename );
-
-            orcaice::detail::setComponentProperties( initData.properties, filename );
+            orcaice::detail::setComponentProperties( initData.properties, compFilename );
+            initTracerInfo( component_.tag()+": Loaded component properties from '"+compFilename+"'" );
         }
     }
     catch ( const orcaice::Exception &e )
     {
-        initTracerWarning( component_.tag()+": Failed to open component configuration file:"+e.what() );
+        initTracerWarning( component_.tag()+": Failed to open component config file '"+compFilename+"':"+e.what() );
             // debug
-//         initTracerPrint( component_.tag()+": Application quitting. Orca out." );
+//         initTracerInfo( component_.tag()+": Application quitting. Orca out." );
 //         exit(1);
     }
             // debug
-//             initTracerPrint("after setComponentProperties()");
+//             initTracerInfo("after setComponentProperties()");
 //             orcaice::detail::printComponentProperties( initData.properties, component_.tag() );
 
     // Level 2. Now, apply properties from the global Orca config file
+    std::string globFilename;
     try
     {
-        std::string filename = orcaice::getGlobalConfigFilename( args );
-        initTracerPrint( component_.tag()+": Will try to load global properties from "+filename );
-
-        orcaice::detail::setGlobalProperties( initData.properties, filename );
+        globFilename = orcaice::getGlobalConfigFilename( args );
+        orcaice::detail::setGlobalProperties( initData.properties, globFilename );
+        initTracerInfo( component_.tag()+": Loaded global properties from '"+globFilename+"'" );
     }
     catch ( const orcaice::Exception &e )
     {
-        initTracerWarning( component_.tag()+": Failed to open global configuration file: "+e.what() );
+        initTracerWarning( component_.tag()+": Failed to open global config file '"+globFilename+"': "+e.what() );
     }
             // debug
-//             initTracerPrint("after setGlobalProperties()");
+//             initTracerInfo("after setGlobalProperties()");
 //             orcaice::detail::printComponentProperties( initData.properties, component_.tag() );
 
     // Level 1. apply Orca factory defaults
     orcaice::detail::setFactoryProperties( initData.properties, component_.tag() );
-    initTracerPrint( component_.tag()+": Set factory properties." );
+    initTracerInfo( component_.tag()+": Loaded factory default properties." );
             // debug
-//             initTracerPrint("after setFactoryProperties()");
+//             initTracerInfo("after setFactoryProperties()");
 //             orcaice::detail::printComponentProperties( initData.properties, component_.tag() );
 
     // now pass the startup options to Ice which will start the Communicator
@@ -151,7 +150,7 @@ Application::run( int argc, char* argv[] )
 
     // create the one-and-only component adapter
     adapter_ = communicator()->createObjectAdapter(component_.tag());
-    initTracerPrint( component_.tag()+": Object adapter created" );
+    initTracerInfo( component_.tag()+": Object adapter created" );
 
     //
     // Give the component all the stuff it needs to initialize
@@ -159,7 +158,7 @@ Application::run( int argc, char* argv[] )
     //
     bool isApp = true;
     component_.init( fqCompName, isApp, adapter_ );
-    initTracerPrint( component_.tag()+": Application initialized" );
+    initTracerInfo( component_.tag()+": Application initialized" );
 
     //
     // Start the component, catching OrcaIce exceptions.
@@ -172,7 +171,7 @@ Application::run( int argc, char* argv[] )
         // this is optional because after the comp is started we can't assume that dumping to cout 
         // will produce the desired result (e.g. if ncurses are used)
         if ( communicator()->getProperties()->getPropertyAsInt( "Orca.PrintComponentStarted" ) ) {
-            initTracerPrint( component_.tag()+": Component started" );
+            initTracerInfo( component_.tag()+": Component started" );
         }
     }
     catch ( const orcaice::Exception & e )
@@ -184,24 +183,24 @@ Application::run( int argc, char* argv[] )
         //      the threads which were not started yet. Tried in SegwayrRmp and didn't work.
 //         initTracerError( component_.tag()+": Unexpected exception from component. Stopping component..." );
 //         component_.stop();
-//         initTracerPrint( component_.tag()+": Component stopped" );
+//         initTracerInfo( component_.tag()+": Component stopped" );
         
-        initTracerPrint( component_.tag()+": Application quitting. Orca out." );
+        initTracerInfo( component_.tag()+": Application quitting. Orca out." );
         return 1;
     }
 
     // component started without a problem. now will wait for Ctrl-C from user or comm
     communicator()->waitForShutdown();
     
-    initTracerPrint( component_.tag()+": Communicator is destroyed. Stopping component" );
+    initTracerInfo( component_.tag()+": Communicator is destroyed. Stopping component" );
     component_.finalise();
     component_.stop();
-    initTracerPrint( component_.tag()+": Component stopped" );
+    initTracerInfo( component_.tag()+": Component stopped" );
 
     adapter_->waitForDeactivate();
-    initTracerPrint( component_.tag()+": Adapter deactivated" );
+    initTracerInfo( component_.tag()+": Adapter deactivated" );
 
-    initTracerPrint( component_.tag()+": Application quitting. Orca out." );
+    initTracerInfo( component_.tag()+": Application quitting. Orca out." );
 
     return 0;
 }

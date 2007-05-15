@@ -22,12 +22,12 @@
 namespace orcaice
 {
     // A uniform way to print messages before the standard tracer object is created.
-    void initTracerPrint( const std::string & message );
+    void initTracerInfo( const std::string & message );
     void initTracerWarning( const std::string & message );
     void initTracerError( const std::string & message );
 
     // Will try to use the Tracer, will print to screen if fails
-    void initTracerPrint( const orcaice::Context & context, const std::string & message, const int level=1 );
+    void initTracerInfo( const orcaice::Context & context, const std::string & message, const int level=1 );
     void initTracerWarning( const orcaice::Context & context, const std::string & message, const int level=1 );
     void initTracerError( const orcaice::Context & context, const std::string & message, const int level=1 );
 

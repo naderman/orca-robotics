@@ -6,16 +6,24 @@ Provides.P1.Type=PT1
 Provides.P1.DefaultName=p1
 
 # Required Interfaces
-Requires.R1.Type=RT1
-Requires.R1.DefaultProxy=r1@remote/random
+Requires.IndirectGood.Type=horseshit
+Requires.IndirectGood.DefaultProxy=p1@local/connecttest
 
-Requires.R2.Type=RT2
-Requires.R2.DefaultProxy=p1@local/connecttest
+Requires.IndirectBadCompName.Type=horseshit
+Requires.IndirectBadCompName.DefaultProxy=p1@remote/random
 
-Requires.R3.Type=RT3
-Requires.R3.DefaultProxy=p1:tcp -p 15000
+Requires.IndirectBadName.Type=horseshit
+Requires.IndirectBadName.DefaultProxy=bad@local/connecttest
+
+Requires.DirectGood.Type=horseshit
+Requires.DirectGood.DefaultProxy=p1:tcp -p 15000
+
+Requires.DirectBadName.Type=horseshit
+Requires.DirectBadName.DefaultProxy=bad:tcp -p 15000
+
+Requires.DirectBadEndpoint.Type=horseshit
+Requires.DirectBadEndpoint.DefaultProxy=p1:tcp -p 55000
 
 # Ensure timeouts
 Config.Ice.Override.ConnectTimeout.Default=150
 Config.Ice.Override.ConnectTimeout.External=1
-

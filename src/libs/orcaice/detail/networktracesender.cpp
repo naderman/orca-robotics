@@ -24,12 +24,12 @@ NetworkTraceSender::connectToIceStorm()
     topic_     = 0;
     publisher_ = 0;
 
-    initTracerPrint( orcaice::toString(context_.name())+": Connecting to tracer topic "+ topicName_ );
+    initTracerInfo( orcaice::toString(context_.name())+": Connecting to tracer topic "+ topicName_ );
     try
     {
         topic_ = orcaice::connectToTopicWithString<orca::TracerConsumerPrx>(
             context_, publisher_, topicName_ );
-        initTracerPrint( orcaice::toString(context_.name())+": Tracer connected to topic "+topicName_ );
+        initTracerInfo( orcaice::toString(context_.name())+": Tracer connected to topic "+topicName_ );
         return true;
     }
     catch ( const orcaice::Exception & e )

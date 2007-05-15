@@ -271,7 +271,7 @@ connectToTopicWithString( const Context     & context,
         // Give some feedback as to why this isn't working
         std::stringstream ss; ss<<"Error while connecting to IceStorm topic publisher '"<<topicName<<"': "<<e;
         initTracerError( context, ss.str(), 2 );
-        initTracerPrint( context, "hint: Is IceStorm running?", 5 );
+        initTracerInfo( context, "hint: Is IceStorm running?", 5 );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
     catch( const Ice::LocalException &e )
