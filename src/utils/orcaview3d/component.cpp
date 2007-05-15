@@ -90,7 +90,8 @@ readScreenDumpParams( const orcaice::Context &context,
     screenDumpParams.captureTimerInterval = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ScreenCapture.CaptureTimerInterval", 1000 );
 }
 
-void Component::start()
+void 
+Component::start()
 {
     //
     // INITIAL CONFIGURATION
@@ -158,7 +159,8 @@ void Component::start()
     // the rest is handled by the application/service
 }
 
-void Component::stop()
+void 
+Component::stop()
 {
-    tracer()->debug("stopping component",5);
+    tracer()->debug("Stopping component",1);
 }
