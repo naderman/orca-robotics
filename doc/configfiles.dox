@@ -247,7 +247,20 @@ As you can see, there are two options for connecting interfaces:
     - Example: @e "i2@p1/c1"
     - When the component is initialized, it contacts the Registry with the name of the required interface. The Registry returns the address of the 2nd provided interface of the component above.
 
-Of course, the same component may have provided and required interfaces. The order of declaring interfaces is not important.
+Of course, the same component may have provided and required interfaces. The order of declaring interfaces is not important. Here's a complete example for a component which has provided and required interfaces.
+@verbatim
+LocalNav.Platform=local
+LocalNav.Component=localnav
+
+# Provided Interfaces
+LocalNav.Provides.PathFollower2d.Name=pathfollower2d
+
+# Required Interfaces
+LocalNav.Requires.Localisation.Proxy=localise2d@local/faithlocaliser
+LocalNav.Requires.Odometry2d.Proxy=odometry2d@local/robot2d
+@endverbatim
+With COMP_TAG=LocalNav and component endpoints set to default. Provided interfaces: IFACE_TAG=PathFollower2d. Required interfaces: IFACE_TAG1=Localisation, IFACE_TAG2=Odometry2d. 
+
 
 @subsection orca_doc_configfiles_config Specifying Component's Internal Configuration Parameters
 
@@ -266,6 +279,15 @@ The code looks up the value of the parameter by its full key, e.g. COMP_TAG.Conf
 String used for set and parameter tags are arbitrary. Parameter sets and the depth of the hierarchy are completely optional.
 
 The code can contain hard-coded default values in case the config file omits them or leaves the value empty. The auto-generated config files should contain all parameters listed with the corresponding default values. The defaults should also be specified in component's documentation.
+
+Example:
+@verbatim
+LocalNav.Config.TestMode=0
+LocalNav.Config.Test.BatchMode=0
+LocalNav.Config.Test.NumWaypoints=10
+LocalNav.Config.Vfh.AbsoluteMaxTurnrate=60
+LocalNav.Config.Vfh.CellSize=0.1
+@endverbatim
 
 @section more_info For More Information.
 

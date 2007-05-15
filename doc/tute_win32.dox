@@ -14,7 +14,9 @@
 
 @note Reviewed for release 2.1.0.
 
-In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now now the LaserMon component will run on a Windows machine.
+In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now now the LaserMon component will run on a Windows machine. The system which we will assemble is shown in the diagram below.
+
+@image html quickstart.png
 
 @section orca_doc_tute_win32_startup Start Up the Infrastructure in Linux
 
@@ -24,7 +26,7 @@ Start the IceGrid Registry and the IceStorm server on a Linux machine just as be
 
 First, copy default configuration files for the Laser2d and LaserMon components.
 @verbatim
-$ cd ~/sys; mkdir tutedirect; cd tutedirect
+$ mkdir -p ~/sys/tutedirect; cd ~/sys/tutedirect
 $ cp [ORCA2-INSTALL]/cfg/laser2d.cfg .
 $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 @endverbatim

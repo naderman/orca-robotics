@@ -31,11 +31,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - RegistryView
     - fix stale display of components
-- libOrcaIce
-    - resolve issue with direct connections without the registry
-    - Topic Tracer to attempt reconnections
-    - Orca.Tracer/Status.RequireIceStorm: does this still make sense?
-
 
 @section orca_doc_history_head Changes in CVS since Last Release
 
@@ -98,6 +93,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - orcapathplan:
   - Allowed for non-uniform costs in skeleton path planning (alex b)
+
+- libOrcaIce
+  - direct connections work again (alex m)
 
 @par Removed
 

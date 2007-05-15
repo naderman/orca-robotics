@@ -12,43 +12,45 @@
 
 @page orca_doc_tute_direct Connecting components without the Registry
 
-@note Reviewed for release 2.1.0.
+@note Reviewed for release 2.4.0.
 
-In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now without running the IceGrid Registry.
+In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now without running the IceGrid Registry. The client will connect to the server using so called @e direct connection method. This is equivalent to reaching a web server without the Domain Name Service (by using an IP address instead of a URL). You may want to do this if you do not want to use the IceGrid Registry for some reason.
 
 @section orca_doc_tute_direct_startup Start Up the Infrastructure
 
 Start the IceStorm server but make sure that the IceGrid Registry is NOT running (See @ref orca_doc_quickstart for instructions).
 
-Modify the global configuration file ~/.orcarc to disable adapter registration.
+Modify the global configuration file ~/.orcarc to disable adapter registration (we comment out the line corresponding to the Locator info).
 @verbatim
 # Standard Ice Configuration for Orca
 #Ice.Default.Locator=IceGrid/Locator:default -p 12000
 IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 10000
-Ice.Override.Timeout=5000
 @endverbatim
 
 @section orca_doc_tute_direct_talk Connect Two Components
 
 First, copy default configuration files for the Laser2d and LaserMon components.
 @verbatim
-$ cd ~/sys; mkdir tutedirect; cd tutedirect
+$ mkdir -p ~/sys/tutedirect; cd ~/sys/tutedirect
 $ cp [ORCA2-INSTALL]/cfg/laser2d.cfg .
 $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 @endverbatim
 
 @par The Server
 
-Edit @c laser2d.cfg to configure the component to listen on a specific port (port 15000 in this case) instead of one assigned by the operating system. Change driver type from @e 'sickcarmen' to @e 'fake'. Also, tell the component to ignore the fact the registry is not there on activation by setting the @c Orca.ActivateRetryNumber property to zero. The config file should contain these lines:
+Edit @c laser2d.cfg file:
+- Change driver type from @e 'sickcarmen' to @e 'fake'.
+- Configure the @ref orca_component_laser2d component to accept connections on a specific port (we will use port 15000 in this tutorial) instead of a random one assigned by the operating system.  
+- Tell the component to ignore the fact the registry is not there on activation by setting the @c Orca.RequireRegistry property to zero. 
 
+The config file should now contain the following lines:
 @verbatim
 Laser2d.Endpoints=tcp -t 5000 -p 15000
 ...
 Laser2d.Config.Driver=fake
 ...
-Orca.ActivateRetryNumber=0
+Orca.RequireRegistry=0
 @endverbatim
-
 Start the server.
 
 @verbatim
@@ -57,21 +59,19 @@ $ laser2d
 
 @par The Client
 
-Start a new shell where we will run the client LaserMon. This time we have to tell it where to find the Laser interface instead of relying on the Registry to supply this information. As in the case of the server, we disable registry pinging on activation. This @c lasermon.cfg file should contain these lines:
-
+Start a new shell where we will run the client @ref orca_component_lasermon. This time we have to tell it explicitely where to find the LaserScanner2d interface instead of relying on the Registry to supply this information. As in the case of the server, we disable registry pinging on activation. This @c lasermon.cfg file should contain these lines:
 @verbatim
 LaserMon.Requires.Laser.Proxy=laser:tcp -p 15000
 ...
-Orca.ActivateRetryNumber=0
+Orca.RequireRegistry=0
 @endverbatim
-
 Start the client.
 
 @verbatim
 $ lasermon
 @endverbatim
 
-You should see the scans scroll by on the screen, just as in the @ref orca_doc_quickstart_startup tutorial.
+You should see the scans scroll by on the screen, just as in the @ref orca_doc_quickstart    tutorial.
 
 @section orca_doc_tute_direct_next What's Next
 

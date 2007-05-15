@@ -23,17 +23,16 @@ The system which we will assemble is shown in the diagram below. It consists of 
 
 @section orca_doc_quickstart_startup Starting Up the Infrastructure
 
-We'll be using sample configuration files which are distributed with Orca. As the general rule, you shouldn't work or run programs from the distribution. So we'll create a separate directory and copy config files into it.
+We'll be using sample configuration files which are distributed with Orca. As the general rule, you shouldn't work or run programs from the distribution. So we'll create separate directories for each project (or tutorial) and copy config files into it. Will put all of these directories into one place: a new directory we'll call @c sys in the home directory.
 @verbatim
-$ cd ~
-$ mkdir sys
+$ mkdir ~/sys
 @endverbatim
 
 @par IceGrid Registry
 
 The IceGrid Registry provides a Naming service: a mapping from logical interface names to physical addresses. It's currently the only way for components to find one another. We create a separate directory for it to run in, copy a sample config file, create the database directory and start it up.
 @verbatim
-$ cd ~/sys; mkdir icereg; cd icereg
+$ mkdir -p ~/sys/icereg; cd ~/sys/icereg
 $ cp [ORCA2-SRC]/scripts/ice/icegridregistry.cfg .
 $ mkdir db
 $ icegridregistry --Ice.Config=icegridregistry.cfg
@@ -48,7 +47,7 @@ it's probably a good idea to set this up so it's always running on a single mach
 
 IceStorm is an event service, used to decouple publishers from subscribers. Typically, there is one IceStorm service per host. We create a separate directory for it to run in, copy a sample config file, create the database directory and start it up.
 @verbatim
-$ cd ~/sys; mkdir icestorm; cd icestorm
+$ mkdir -p ~/sys/icestorm; cd ~/sys/icestorm
 $ cp [ORCA2-SRC]/scripts/ice/icebox_icestorm.cfg .
 $ mkdir stormdb
 $ icebox --Ice.Config=icebox_icestorm.cfg
@@ -62,16 +61,14 @@ Components in this tutorial use @c libOrcaIce, which looks up this information i
 @verbatim
 # Standard Ice Configuration for Orca
 Ice.Default.Locator=IceGrid/Locator:default -p 12000
-IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 10000
 @endverbatim
-(modify appropriately if this differs from your system setup)
-
+Note that only one piece of information is required: the address of the Registry. You can add other global default properties to this file.
 
 @section orca_doc_quickstart_talk Getting Two Components Talking
 
 Now will connect a fake laser component to a laser monitoring component. First, copy default configuration files for the Laser2d and LaserMon components.
 @verbatim
-$ cd ~/sys; mkdir quickstart; cd quickstart
+$ mkdir -p ~/sys/quickstart; cd ~/sys/quickstart
 $ cp [ORCA2-INSTALL]/cfg/laser2d.cfg .
 $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 @endverbatim
