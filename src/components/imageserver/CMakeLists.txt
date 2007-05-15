@@ -36,12 +36,12 @@ IF ( BUILD_IMAGE_SERVER )
             # ADD_SUBDIRECTORY( imagegrabber )
     
         ELSE ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
-            MESSAGE( STATUS "     Image grabbing libraries cannot be found... only the fake driver can be built." ) 
+            MESSAGE( STATUS "     Image grabbing libraries CANNOT be found... only the fake driver can be built." ) 
             MESSAGE( STATUS "     Please install opencv for monocular cameras and/or the digiclops libraries for the trinocular digiclops camera."  )
         ENDIF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
     
     ELSE ( V4L_FOUND OR 1394_FOUND )
-        MESSAGE( STATUS "     Image grabbing drivers cannot be found... only the fake driver can be built." ) 
+        MESSAGE( STATUS "     Image grabbing drivers CANNOT be found... only the fake driver can be built." ) 
         MESSAGE( STATUS "     Please install Video4Linux for usb cameras and/or libdc1394 for firewire cameras"  ) 
     ENDIF ( V4L_FOUND OR 1394_FOUND )
     
@@ -61,7 +61,7 @@ IF ( BUILD_IMAGE_SERVER )
         SET( DEP_LIBS ${DEP_LIBS} ${OPENCV_LIBS} digiclops triclops OrcaImageGrabber )
     ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND )
     
-    # cannot use standard macro, because some driver files are optional
+    # CANNOT use standard macro, because some driver files are optional
     SET( COMMON_SRCS component mainloop ${DRIVER_SRCS} ${MONO_DRIVER_SRCS} )
     
     GLOBAL_ADD_EXECUTABLE( imageserver main ${COMMON_SRCS} )

@@ -7,7 +7,7 @@
 INCLUDE( ${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake )
 
 IF ( NOT DEFINED ICE_HOME )
-    MESSAGE( STATUS "Testing Ice - cannot test because ICE_HOME is not defined." )
+    MESSAGE( STATUS "Testing Ice - CANNOT test because ICE_HOME is not defined." )
     SET( ICE_WORKS 0 )
 ENDIF ( NOT DEFINED ICE_HOME )
 
