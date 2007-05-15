@@ -11,9 +11,7 @@
 #ifndef ORCA2_FAITH_LOCALISER_LOCALISE2D_I_H
 #define ORCA2_FAITH_LOCALISER_LOCALISE2D_I_H
 
-#include <IceStorm/IceStorm.h>
 #include <orca/localise2d.h>
-
 #include <orcaice/ptrbuffer.h>
 
 namespace faithlocaliser
@@ -25,7 +23,8 @@ class Localise2dI : public orca::Localise2d
 public:
     Localise2dI( const IceStorm::TopicPrx &topic,
                  orcaice::Buffer<orca::Localise2dData> &posBuffer,
-                 orcaice::Buffer<orca::Localise2dData> &historyBuffer );
+                 orcaice::Buffer<orca::Localise2dData> &historyBuffer,
+                 const orcaice::Context                &context );
 
     // remote calls:
 
@@ -42,6 +41,7 @@ private:
     const IceStorm::TopicPrx topic_;
     orcaice::Buffer<orca::Localise2dData> &locBuffer_;
     orcaice::Buffer<orca::Localise2dData> &historyBuffer_;
+    orcaice::Context                       context_;
 };
 
 } // namespace
