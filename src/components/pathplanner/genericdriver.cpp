@@ -50,9 +50,17 @@ namespace {
             for ( int i=0; i < numSteps; i++ )
             {
                 cell = orcapathplan::surroundCell( cell, (int)(orcamisc::randNum(0,8)) );
-//                if ( 
+                if ( orcapathplan::isTraversable( ogMap, cell.x(), cell.y(), traversabilityThreshhold ) )
+                {
+                    float worldX, worldY;
+                    ogMap.getWorldCoords( cell.x(), cell.y(), worldX, worldY );
+                    wp.target.p.x = worldX;
+                    wp.target.p.y = worldY;
+                    return;
+                }
             }
         }
+        throw( orcapathplan::Exception( "Couldn't jiggle onto clear cell." ) );
     }
 
 }
