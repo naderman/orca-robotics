@@ -50,7 +50,7 @@ GpsReplayer::getProvidedTopicLocal( const orcaice::Context & context, const std:
     fqTName.iface = tag;
     fqTName.topic = subtopic;
 
-    initTracerPrint( context, "will publish to topic '"+orcaice::toString(fqTName)+"'",2 );
+    initTracerInfo( context, "will publish to topic '"+orcaice::toString(fqTName)+"'",2 );
     return fqTName;
 }
 
