@@ -83,6 +83,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated utilities
 
+- orcaifaceimpl
+  - servers catch AlreadySubscribed exceptions but don't pass them on to clients (tobi)
+  - enables clients to try to resubscribe as often as they want
+
 - Probe:
   - Added PathFollower2d probe (alex b)
 
