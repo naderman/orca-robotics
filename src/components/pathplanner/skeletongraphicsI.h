@@ -22,8 +22,8 @@
 #include <orcapathplan/sparseskel.h>
 #include <orcaice/proxy.h>
 #include <orcaice/context.h>
-#include <qpainter.h>
 #include <vector>
+#include <qpainter.h>
 
 namespace pathplanner
 {

@@ -24,47 +24,48 @@ class Exception : public std::exception
 {
 public:
 
-    Exception(const char *message)
-        : message_(message) {}
-    Exception(const std::string &message)
-        : message_(message) {}
-
+    Exception(const char *message, Result result=OtherError)
+        : message_(message),
+          result_(result)
+        {}
+    Exception(const std::string &message, Result result=OtherError)
+        : message_(message),
+          result_(result)
+        {}
     virtual ~Exception() throw() {}
 
     virtual const char* what() const throw() { return message_.c_str(); }
 
-    virtual Result type() const { return OtherError; }
+    Result type() const { return result_; }
     
 protected:
 
     std::string  message_;
+    Result       result_;
 };
 
 class PathStartNotValidException : public Exception
 {
     public:
         PathStartNotValidException(const char *message)
-            : Exception( message)
+            : Exception( message,PathStartNotValid )
         {}
-        virtual Result type() const { return PathStartNotValid; }
 };
 
 class PathDestinationNotValidException : public Exception
 {
     public:
         PathDestinationNotValidException(const char *message)
-            : Exception( message)
+            : Exception( message,PathDestinationNotValid )
         {}
-        virtual Result type() const { return PathDestinationNotValid; }
 };
 
 class PathDestinationUnreachableException : public Exception
 {
     public:
         PathDestinationUnreachableException(const char *message)
-            : Exception( message)
+            : Exception( message,PathDestinationUnreachable )
         {}
-        virtual Result type() const { return PathDestinationUnreachable; }
 };
 
 

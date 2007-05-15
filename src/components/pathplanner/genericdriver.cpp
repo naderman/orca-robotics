@@ -9,6 +9,7 @@
  */
 #include "genericdriver.h"
 #include <orcamisc/orcamisc.h>
+#include <orcamisc/rand.h>
 #include <orcaice/orcaice.h>
 #include <iostream>
 
@@ -16,7 +17,46 @@ using namespace std;
 using namespace orcaice;
 
 namespace pathplanner {
-    
+
+namespace {
+
+    bool isClear( double x,
+                  double y,
+                  const orcaogmap::OgMap &ogMap,
+                  double traversabilityThreshhold )
+    {
+        unsigned char val;
+        if( ogMap.tryWorldCell( x, y, val ) == true )
+        {
+            return ( val < (unsigned char) ((traversabilityThreshhold)*orcaogmap::CELL_OCCUPIED) );
+        }
+        return false;   
+    }
+
+    void jiggleOntoClearCell( orca::Waypoint2d &wp,
+                              const orcaogmap::OgMap &ogMap,
+                              double traversabilityThreshhold )
+    {
+        if ( isClear( wp.target.p.x, wp.target.p.y, ogMap, traversabilityThreshhold ) )
+            return;
+
+        for ( int numSteps=1; numSteps < 10000; numSteps *= 2 )
+        {
+            int x,y;
+            ogMap.getCellIndices( wp.target.p.x, wp.target.p.y, x, y );
+            orcapathplan::Cell2D cell(x,y);
+
+            // perform a random walk of numSteps steps.
+            for ( int i=0; i < numSteps; i++ )
+            {
+                cell = orcapathplan::surroundCell( cell, (int)(orcamisc::randNum(0,8)) );
+//                if ( 
+            }
+        }
+    }
+
+}
+
 GenericDriver::GenericDriver( orcapathplan::IPathPlanner2d  *pathPlanner,
                               const orcaogmap::OgMap        &ogMap,
                               double                         robotDiameterMetres,
@@ -37,21 +77,38 @@ GenericDriver::~GenericDriver()
 {
 }
 
+void
+GenericDriver::jiggleOntoClearCells( orca::Path2d &path )
+{
+    for ( uint i=0; i < path.size(); i++ )
+    {
+        jiggleOntoClearCell( path[i], ogMap_, traversabilityThreshhold_ );
+    }
+}
+
 void 
 GenericDriver::computePath( const orca::PathPlanner2dTask& task,
                             orca::PathPlanner2dData& pathData )
 {
     assert(task.coarsePath.size()!=0);
+
+    const orca::Path2d *coarsePath = &(task.coarsePath);
+    const bool jiggleWaypointsOntoClearCells_ = true;
+    if ( jiggleWaypointsOntoClearCells_ )
+    {
+        jiggledPath_ = task.coarsePath;
+        jiggleOntoClearCells( jiggledPath_ );
+        coarsePath = &(jiggledPath_);
+    }
     
     // get the first waypoint from the coarse path and save as startWp
-    const orca::Path2d &coarsePath = task.coarsePath;
-    const orca::Waypoint2d *startWp = &(task.coarsePath[0]);
+    const orca::Waypoint2d *startWp = &((*coarsePath)[0]);
     const double firstHeading = startWp->target.o;
     
     // for each waypoint in the coarse path
-    for (unsigned int i=1; i<coarsePath.size(); i++)
+    for (unsigned int i=1; i<coarsePath->size(); i++)
     {
-        const orca::Waypoint2d *goalWp = &(coarsePath[i]);
+        const orca::Waypoint2d *goalWp = &((*coarsePath)[i]);
         orcapathplan::Cell2DVector pathSegment;
 
         orcamisc::CpuStopwatch watch(true);
@@ -75,7 +132,7 @@ GenericDriver::computePath( const orca::PathPlanner2dTask& task,
                << e.what()
                << endl;
             
-            throw orcapathplan::Exception( ss.str() );
+            throw orcapathplan::Exception( ss.str(), e.type() );
         }
         stringstream ss;
         ss << "Computing path segment took " << watch.elapsedSeconds() << "s";

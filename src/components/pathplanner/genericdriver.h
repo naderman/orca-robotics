@@ -53,6 +53,10 @@ private:
                                 const orca::Waypoint2d                       *goalWp, 
                                 int                                           numSegments,
                                 std::vector<orcapathplan::WaypointParameter> &wpParaVector );
+
+    void jiggleOntoClearCells( orca::Path2d &path );
+
+    orca::Path2d jiggledPath_;
     
     const orcaice::Context context_;
 };

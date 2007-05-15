@@ -56,7 +56,7 @@ SkeletonDriver::SkeletonDriver( const orcaogmap::OgMap &ogMap,
         {
             stringstream ss;
             ss << "Error trying to construct a skeletonpathplanner";
-            throw orcapathplan::Exception( ss.str() );
+            throw orcapathplan::Exception( ss.str(), e.type() );
         } 
 
     }
@@ -75,7 +75,7 @@ SkeletonDriver::SkeletonDriver( const orcaogmap::OgMap &ogMap,
         {
             stringstream ss;
             ss << "Error trying to construct a sparseskeletonpathplanner";
-            throw orcapathplan::Exception( ss.str() );
+            throw orcapathplan::Exception( ss.str(), e.type() );
         }  
         catch ( Ice::MemoryLimitException &e )
         {
