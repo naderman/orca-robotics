@@ -502,7 +502,7 @@ MainLoop::run()
                << "\t localiseData: " << orcaice::toString(localiseData_.timeStamp) << endl
                << "\t odomData:     " << orcaice::toString(odomData_.timeStamp) << endl
                << "\t now:          " << orcaice::toString(now);
-            context_.tracer()->debug( ss.str(), 2 );
+            context_.tracer()->debug( ss.str(), 3 );
 
 //             if ( localiseData_.timeStamp != odomData_.timeStamp )
 //             {
@@ -567,7 +567,7 @@ MainLoop::run()
 
             std::stringstream timerSS;
             timerSS << "MainLoop: time to make and send decision: " << timer.elapsedSeconds()*1000.0 << "ms";
-            context_.tracer()->debug( timerSS.str() );
+            context_.tracer()->debug( timerSS.str(), 3 );
 
             localisationLagSec_ = timer.elapsedSeconds(); // decision time
             if ( onSameClock_ )
@@ -579,7 +579,7 @@ MainLoop::run()
 
             stringstream sss;
             sss << "localisationLagSec_: " << localisationLagSec_*1000.0 << "ms";
-            context_.tracer()->debug( sss.str() );
+            context_.tracer()->debug( sss.str(), 3 );
 
             checkWithOutsideWorld();
 
