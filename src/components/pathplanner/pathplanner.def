@@ -21,6 +21,7 @@ Config.UseHazardMap.Default=0
 Config.TraversabilityThreshhold.Default=0.3
 Config.RobotDiameterMetres.Default=0.8
 Config.DoPathOptimization.Default=1
+Config.JiggleWaypointsOntoClearCells.Default=1
 
 Config.Skeleton.Cost.DistanceThreshold.Default=0.3
 Config.Skeleton.Cost.CostMultiplier.Default=10.0

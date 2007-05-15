@@ -63,6 +63,11 @@ The pathplanner acts like a service receiving tasks from third parties and retur
     - Valid values: 0 or 1
     - Default: 0
 
+- @c PathPlanner.Config.JiggleWaypointsOntoClearCells (bool)
+    - If true, incoming paths will be fixed up by moving waypoints off of obstacles.
+    - Valid values: 0 or 1
+    - Default: 1
+
 - @c PathPlanner.Config.Skeleton.Cost.DistanceThreshold (double)
     - (For skeleton-based path-planning only):
       - If a path causes the robot to clear an obstacle by less than
