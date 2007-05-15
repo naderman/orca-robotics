@@ -86,20 +86,20 @@ SparseSkeletonPathPlanner::checkInputs( int           startX,
     unsigned char val;
 
     if( ogMap_.tryGridCell( startX, startY, val ) == false )
-        throw orcapathplan::Exception( "Start point was not within the map." );
+        throw orcapathplan::PathStartNotValidException( "Start point was not within the map." );
     if ( val > (unsigned char) ((traversabilityThreshhold_)*254.0) )
-        throw orcapathplan::Exception( "Start point was not traversable." );
+        throw orcapathplan::PathStartNotValidException( "Start point was not traversable." );
 
     if ( grownOgMap_.gridCell(startX,startY) > (unsigned char) ((traversabilityThreshhold_)*254.0) )
-        throw orcapathplan::Exception( "Robot can't fit on start point (too close to obstacle)." );
+        throw orcapathplan::PathStartNotValidException( "Robot can't fit on start point (too close to obstacle)." );
 
     if( ogMap_.tryGridCell( endX, endY, val ) == false )
-        throw orcapathplan::Exception( "End point was not within the map." );
+        throw orcapathplan::PathDestinationNotValidException( "End point was not within the map." );
     if ( val > (unsigned char) ((traversabilityThreshhold_)*254.0) )
-        throw orcapathplan::Exception( "End point was not traversable." );
+        throw orcapathplan::PathDestinationNotValidException( "End point was not traversable." );
 
     if ( grownOgMap_.gridCell(endX,endY) > (unsigned char) ((traversabilityThreshhold_)*254.0) )
-        throw orcapathplan::Exception( "Robot can't fit on end point (too close to obstacle)." );
+        throw orcapathplan::PathDestinationNotValidException( "Robot can't fit on end point (too close to obstacle)." );
 }
 
 bool isIncluded( const std::vector<SparseSkelNode*> &v, SparseSkelNode *n ) 
@@ -278,82 +278,72 @@ SparseSkeletonPathPlanner::computePath( int           startX,
                                         int           endY,
                                         Cell2DVector &path ) const
 {
-    try {
+    // cout << "=============== computePath =================" << endl;
 
-        // cout << "=============== computePath =================" << endl;
-
-        // First connect the endpoints to the dense skel
-        checkInputs( startX, startY, endX, endY );
-        Cell2D startCell( startX, startY );
-        Cell2D goalCell(  endX,   endY   );
+    // First connect the endpoints to the dense skel
+    checkInputs( startX, startY, endX, endY );
+    Cell2D startCell( startX, startY );
+    Cell2D goalCell(  endX,   endY   );
     
-        orcamisc::CpuStopwatch watch;
-        watch.start();
+    orcamisc::CpuStopwatch watch;
+    watch.start();
 
-        //
-        // 2. Connect cells to the sparse skeleton,
-        //    by finding the closest sparse node.
-        //
-        ContiguousSparseSkel *startContiguousSparseSkel;
-        ContiguousSparseSkel *goalContiguousSparseSkel;
-        SparseSkelNode *startNode;
-        SparseSkelNode *goalNode;
+    //
+    // 2. Connect cells to the sparse skeleton,
+    //    by finding the closest sparse node.
+    //
+    ContiguousSparseSkel *startContiguousSparseSkel;
+    ContiguousSparseSkel *goalContiguousSparseSkel;
+    SparseSkelNode *startNode;
+    SparseSkelNode *goalNode;
 
-        try {
-            connectCell2SparseSkel( startCell,
-                                    startContiguousSparseSkel,
-                                    startNode );
+    try {
+        connectCell2SparseSkel( startCell,
+                                startContiguousSparseSkel,
+                                startNode );
 
-            connectCell2SparseSkel( goalCell,
-                                    goalContiguousSparseSkel,
-                                    goalNode );
-        }
-        catch ( orcapathplan::Exception &e )
-        {
-            cout << "ERROR(sparseskeletonpathplanner.cpp): Caught exception: " << e.what() << endl;
-            cout << "ERROR(sparseskeletonpathplanner.cpp): while trying to connect start/goal to sparse skeleton." << endl;
-            cout << "ERROR(sparseskeletonpathplanner.cpp): I didn't think this could happen, but I couldn't guarantee it..." << endl;
-            cout << "ERROR(sparseskeletonpathplanner.cpp): Maybe we need to connect to the dense skeleton first." << endl;
-            throw;
-        }
-
-        if ( startContiguousSparseSkel != goalContiguousSparseSkel )
-            throw orcapathplan::Exception( "Start and end weren't connected by a contiguous skeleton." );
-
-        //
-        // 3. Plan along the sparse skeleton
-        //
-        std::vector<const SparseSkelNode*> nodePath;
-        planAlongSparseSkel( *startContiguousSparseSkel,
-                             *startNode, 
-                             *goalNode,
-                             nodePath );
-
-        //
-        // 4. Convert to the appropriate format
-        //
-        std::vector<Cell2D> startCells(1);
-        startCells[0] = startCell;
-        std::vector<Cell2D> goalCells(1);
-        goalCells[0] = goalCell;
-        convertToCellVector( startCells,
-                             goalCells,
-                             nodePath,
-                             path );
-
-        //
-        // 5. Optionally optimise the path
-        //
-        if ( doPathOptimization_ )
-            optimisePath( path );
+        connectCell2SparseSkel( goalCell,
+                                goalContiguousSparseSkel,
+                                goalNode );
     }
     catch ( orcapathplan::Exception &e )
     {
-        // Just add extra diagnostics and re-throw.
-        std::stringstream ss;
-        ss << "While planning from cell ("<<startX<<","<<startY<<") to ("<<endX<<","<<endY<<"): "<<e.what();
-        throw orcapathplan::Exception( ss.str() );
+        cout << "ERROR(sparseskeletonpathplanner.cpp): Caught exception: " << e.what() << endl;
+        cout << "ERROR(sparseskeletonpathplanner.cpp): while trying to connect start/goal to sparse skeleton." << endl;
+        cout << "ERROR(sparseskeletonpathplanner.cpp): I didn't think this could happen, but I couldn't guarantee it..." << endl;
+        cout << "ERROR(sparseskeletonpathplanner.cpp): Maybe we need to connect to the dense skeleton first." << endl;
+        throw;
     }
+
+    if ( startContiguousSparseSkel != goalContiguousSparseSkel )
+        throw orcapathplan::PathDestinationUnreachableException( "Start and end weren't connected by a contiguous skeleton." );
+
+    //
+    // 3. Plan along the sparse skeleton
+    //
+    std::vector<const SparseSkelNode*> nodePath;
+    planAlongSparseSkel( *startContiguousSparseSkel,
+                         *startNode, 
+                         *goalNode,
+                         nodePath );
+
+    //
+    // 4. Convert to the appropriate format
+    //
+    std::vector<Cell2D> startCells(1);
+    startCells[0] = startCell;
+    std::vector<Cell2D> goalCells(1);
+    goalCells[0] = goalCell;
+    convertToCellVector( startCells,
+                         goalCells,
+                         nodePath,
+                         path );
+
+    //
+    // 5. Optionally optimise the path
+    //
+    if ( doPathOptimization_ )
+        optimisePath( path );
 }
 
 

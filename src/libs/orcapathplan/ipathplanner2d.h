@@ -58,10 +58,10 @@ class PathDestinationNotValidException : public Exception
         virtual Result type() const { return PathDestinationNotValid; }
 };
 
-class PathDestinationUnreachabledException : public Exception
+class PathDestinationUnreachableException : public Exception
 {
     public:
-        PathDestinationUnreachabledException(const char *message)
+        PathDestinationUnreachableException(const char *message)
             : Exception( message)
         {}
         virtual Result type() const { return PathDestinationUnreachable; }

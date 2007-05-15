@@ -58,14 +58,14 @@ AStarPathPlanner::checkInputs( int          startX,
     unsigned char val;
 
     if( ogMap_.tryGridCell( startX, startY, val ) == false )
-        throw orcapathplan::Exception( "Start point was not within the map." );
+        throw orcapathplan::PathStartNotValidException( "Start point was not within the map." );
     if ( val > (unsigned char) ((traversabilityThreshhold_)*254.0) )
-        throw orcapathplan::Exception( "Start point was not traversable." );
+        throw orcapathplan::PathStartNotValidException( "Start point was not traversable." );
 
     if( ogMap_.tryGridCell( endX, endY, val ) == false )
-        throw orcapathplan::Exception( "End point was not within the map." );
+        throw orcapathplan::PathDestinationNotValidException( "End point was not within the map." );
     if ( val > (unsigned char) ((traversabilityThreshhold_)*254.0) )
-        throw orcapathplan::Exception( "End point was not traversable." );
+        throw orcapathplan::PathDestinationNotValidException( "End point was not traversable." );
 }
 
 void
@@ -90,7 +90,7 @@ AStarPathPlanner::computePath( int          startX,
     watch.start();
     if ( !aStar_->run() )
     {
-        throw orcapathplan::PathDestinationUnreachabledException( "Path could not be computed" );
+        throw orcapathplan::Exception( "Path could not be computed" );
     }
     watch.stop();
         
