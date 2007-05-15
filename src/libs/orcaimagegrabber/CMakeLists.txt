@@ -17,7 +17,7 @@ IF ( OPENCV_FOUND )
     SET( SRCS cvgrabber )
 
 ELSE ( OPENCV_FOUND )
-    MESSAGE( STATUS "    OpenCv Image Grabber (>= OpenCv version 0.9.9)  - cannot be built" )
+    MESSAGE( STATUS "    OpenCv Image Grabber (>= OpenCv version 0.9.9)  - CANNOT be built" )
 ENDIF ( OPENCV_FOUND )
 
 # digiclops image grabber library checks
@@ -32,7 +32,7 @@ IF ( DIGICLOPS_AND_TRICLOPS_FOUND )
     SET( SRCS ${SRCS} digiclopsgrabber )
 
 ELSE ( DIGICLOPS_AND_TRICLOPS_FOUND ) 
-    MESSAGE( STATUS "    The Digiclops Image Grabber - cannot be built" )
+    MESSAGE( STATUS "    The Digiclops Image Grabber - CANNOT be built" )
 ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND ) 
 
 
