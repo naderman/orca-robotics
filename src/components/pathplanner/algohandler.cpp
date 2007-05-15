@@ -181,6 +181,7 @@ AlgoHandler::initDriver()
     double traversabilityThreshhold = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"TraversabilityThreshhold", 0.3 );
     double robotDiameterMetres = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"RobotDiameterMetres", 0.8 );
     int doPathOptimization = orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"DoPathOptimization", 0 );
+    bool jiggleWaypointsOntoClearCells = orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"JiggleWaypointsOntoClearCells", true );
 
     // based on the config parameter, create the right driver
     string driverName = orcaice::getPropertyWithDefault( context_.properties(), prefix+"Driver", "simplenav" );
@@ -206,6 +207,7 @@ AlgoHandler::initDriver()
                                      robotDiameterMetres,
                                      traversabilityThreshhold,
                                      doPathOptimization,
+                                     jiggleWaypointsOntoClearCells,
                                      context_ );
     }    
     else if ( driverName == "skeletonnav" || driverName == "sparseskeletonnav" )
@@ -222,6 +224,7 @@ AlgoHandler::initDriver()
                                           robotDiameterMetres,
                                           traversabilityThreshhold,
                                           doPathOptimization,
+                                          jiggleWaypointsOntoClearCells,
                                           useSparseSkeleton,
                                           *costEvaluator_,
                                           context_ );

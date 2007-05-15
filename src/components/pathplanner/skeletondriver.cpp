@@ -28,6 +28,7 @@ SkeletonDriver::SkeletonDriver( const orcaogmap::OgMap &ogMap,
                                 double robotDiameterMetres,
                                 double traversabilityThreshhold,
                                 bool   doPathOptimization,
+                                bool   jiggleWaypointsOntoClearCells,
                                 bool   useSparseSkeleton,
                                 const orcapathplan::CostEvaluator &costEvaluator,
                                 const Context &context)
@@ -93,6 +94,7 @@ SkeletonDriver::SkeletonDriver( const orcaogmap::OgMap &ogMap,
                                         ogMap,
                                         robotDiameterMetres,
                                         traversabilityThreshhold,
+                                        jiggleWaypointsOntoClearCells,
                                         doPathOptimization,
                                         context );
     

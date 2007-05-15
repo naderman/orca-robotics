@@ -70,15 +70,24 @@ GenericDriver::GenericDriver( orcapathplan::IPathPlanner2d  *pathPlanner,
                               double                         robotDiameterMetres,
                               double                         traversabilityThreshhold,
                               bool                           doPathOptimization,
+                              bool                          jiggleWaypointsOntoClearCells,
                               const Context                 &context)
     : pathPlanner_(pathPlanner),
       ogMap_(ogMap),
       robotDiameterMetres_(robotDiameterMetres),
       traversabilityThreshhold_(traversabilityThreshhold),
       doPathOptimization_(doPathOptimization),
+      jiggleWaypointsOntoClearCells_(jiggleWaypointsOntoClearCells),
       context_(context)
       
 {
+    if ( jiggleWaypointsOntoClearCells_ )
+    {
+        grownOgMap_ = ogMap_;
+        orcapathplan::growObstaclesOgMap( grownOgMap_,
+                                          traversabilityThreshhold_,
+                                          robotDiameterMetres_ );
+    }
 }
 
 GenericDriver::~GenericDriver()
@@ -90,7 +99,7 @@ GenericDriver::jiggleOntoClearCells( orca::Path2d &path )
 {
     for ( uint i=0; i < path.size(); i++ )
     {
-        jiggleOntoClearCell( path[i], ogMap_, traversabilityThreshhold_ );
+        jiggleOntoClearCell( path[i], grownOgMap_, traversabilityThreshhold_ );
     }
 }
 
@@ -101,7 +110,6 @@ GenericDriver::computePath( const orca::PathPlanner2dTask& task,
     assert(task.coarsePath.size()!=0);
 
     const orca::Path2d *coarsePath = &(task.coarsePath);
-    const bool jiggleWaypointsOntoClearCells_ = true;
     if ( jiggleWaypointsOntoClearCells_ )
     {
         jiggledPath_ = task.coarsePath;

@@ -33,6 +33,7 @@ public:
                    double                        robotDiameterMetres,
                    double                        traversabilityThreshhold,
                    bool                          doPathOptimization,
+                   bool                          jiggleWaypointsOntoClearCells,
                    const orcaice::Context       &context );
     
     ~GenericDriver();
@@ -44,6 +45,7 @@ private:
 
     orcapathplan::IPathPlanner2d  *pathPlanner_;
     const orcaogmap::OgMap        &ogMap_;
+    orcaogmap::OgMap               grownOgMap_;
     
     double robotDiameterMetres_;
     double traversabilityThreshhold_;
@@ -58,6 +60,7 @@ private:
 
     orca::Path2d jiggledPath_;
     
+    bool jiggleWaypointsOntoClearCells_;
     const orcaice::Context context_;
 };
 

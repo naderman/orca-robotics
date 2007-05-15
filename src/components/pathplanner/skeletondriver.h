@@ -36,6 +36,7 @@ public:
                     double robotDiameterMetres,
                     double traversabilityThreshhold,
                     bool   doPathOptimization,
+                    bool   jiggleWaypointsOntoClearCells,
                     bool   useSparseSkeleton,
                     const orcapathplan::CostEvaluator &costEvaluator,
                     const orcaice::Context &context);
