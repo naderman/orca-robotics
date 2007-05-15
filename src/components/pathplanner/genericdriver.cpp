@@ -20,10 +20,10 @@ namespace pathplanner {
 
 namespace {
 
-    bool isClear( double x,
-                  double y,
-                  const orcaogmap::OgMap &ogMap,
-                  double traversabilityThreshhold )
+    bool isClearWorld( double x,
+                       double y,
+                       const orcaogmap::OgMap &ogMap,
+                       double traversabilityThreshhold )
     {
         unsigned char val;
         if( ogMap.tryWorldCell( x, y, val ) == true )
@@ -37,25 +37,27 @@ namespace {
                               const orcaogmap::OgMap &ogMap,
                               double traversabilityThreshhold )
     {
-        if ( isClear( wp.target.p.x, wp.target.p.y, ogMap, traversabilityThreshhold ) )
+        if ( isClearWorld( wp.target.p.x, wp.target.p.y, ogMap, traversabilityThreshhold ) )
             return;
 
         for ( int numSteps=1; numSteps < 10000; numSteps *= 2 )
         {
-            int x,y;
-            ogMap.getCellIndices( wp.target.p.x, wp.target.p.y, x, y );
-            orcapathplan::Cell2D cell(x,y);
+            int xCell,yCell;
+            ogMap.getCellIndices( wp.target.p.x, wp.target.p.y, xCell, yCell );
+            orcapathplan::Cell2D cell(xCell,yCell);
 
             // perform a random walk of numSteps steps.
             for ( int i=0; i < numSteps; i++ )
             {
                 cell = orcapathplan::surroundCell( cell, (int)(orcamisc::randNum(0,8)) );
+
                 if ( orcapathplan::isTraversable( ogMap, cell.x(), cell.y(), traversabilityThreshhold ) )
                 {
                     float worldX, worldY;
                     ogMap.getWorldCoords( cell.x(), cell.y(), worldX, worldY );
                     wp.target.p.x = worldX;
                     wp.target.p.y = worldY;
+                    assert( isClearWorld( wp.target.p.x, wp.target.p.y, ogMap, traversabilityThreshhold ) );
                     return;
                 }
             }
@@ -84,9 +86,10 @@ GenericDriver::GenericDriver( orcapathplan::IPathPlanner2d  *pathPlanner,
     if ( jiggleWaypointsOntoClearCells_ )
     {
         grownOgMap_ = ogMap_;
+        assert( ogMap_.metresPerCellX() == ogMap_.metresPerCellY() );
         orcapathplan::growObstaclesOgMap( grownOgMap_,
                                           traversabilityThreshhold_,
-                                          robotDiameterMetres_ );
+                                          (int)(robotDiameterMetres_/grownOgMap_.metresPerCellX()) );
     }
 }
 
