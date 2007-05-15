@@ -118,6 +118,8 @@ IF ( ${CMAKE_C_COMPILER} MATCHES gcc )
       #      (see: http://www.trl.ibm.com/projects/security/ssp/)
       # However for some reason this can result in the symbol '__stack_chk_fail_local' not being found.
       # So turn it off.
+      # Tobi: it looks like stack protection is off by default from version gcc 4.1.2, so we don't need this any more.
+      # Will keep it for now, it doesn't hurt.
       ADD_DEFINITIONS( -fno-stack-protector )
     ENDIF ( GCC_VERSION MATCHES ".*4\\.1.*" )
 
