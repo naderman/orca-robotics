@@ -32,9 +32,9 @@ PathPlannerTaskAnswerConsumer::setData(const ::orca::PathPlanner2dData& data, co
     QString msg("Pathplanner could not compute path!\nReason is: ");
     
     if (data.result==PathStartNotValid) 
-        msg.append("Start waypoint not valid");    
+        msg.append("Path Start not valid");    
     else if (data.result==PathDestinationNotValid) 
-        msg.append("Goal waypoint not valid");    
+        msg.append("Path Destination not valid");    
     else if (data.result==PathDestinationUnreachable) 
         msg.append("Destination unreachable");    
     else if (data.result==PathOtherError) 

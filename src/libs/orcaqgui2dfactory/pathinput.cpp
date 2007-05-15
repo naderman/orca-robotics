@@ -1027,9 +1027,10 @@ PathPlannerInput::getTask() const
             heading = heading - 360.0;
         }
         float headingTolerance = headingTolerances_[i]/16;
-        if (headingTolerance>180.0) {
-            headingTolerance = headingTolerance - 360.0;
-        }
+//  AlexB: why normalise tolerance?
+//         if (headingTolerance>180.0) {
+//             headingTolerance = headingTolerance - 360.0;
+//         }
         orca::Waypoint2d wp;
         wp.target.p.x = waypoints_[i].x();
         wp.target.p.y = waypoints_[i].y();
