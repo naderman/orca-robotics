@@ -14,15 +14,13 @@
 
 @note Reviewed for release 2.1.0 and Player/Stage 2.0.2.
 
-@section started Getting started
-Before reading this document, you should familiarise yourself with: 
-    - @ref orca_doc_getting : download, compile, install.
-    - @ref orca_doc_quickstart : The Orca2 quick start guide.
-    - Ch. 2 Ice Overview of the <a href="http://www.zeroc.com/download.html#doc" target="_blank">Ice manual</a>
+In this tutorial we will assemble a simple robotic system and connect it to the 2D Player/Stage simulator. The system diagram is shown below (IceGrid Registry and IceStorm are will be used but are not shown).
 
-- Note that you'll need <a href="http://playerstage.sourceforge.net/" target="_blank">Player/Stage</a> installed. Debian installation instructions are found here @ref orca_doc_installdebian. It's also useful to understand how Player/Stage work.
+@image html doc_tute_stage.png
 
-- You will also need QT for the GUI. Debian installation instructions are found here @ref orca_doc_installdebian_qt
+In this tutorial we will use components which require certain libraries.
+- Player/Stage to simulate the robotic platform and the laser scanner. Debian installation instructions are found here @ref orca_doc_installdebian. Some prior experience with Player/Stage would be helpful.
+- Qt for the GUI. Debian installation instructions are found here @ref orca_doc_installdebian_qt
 
 @section orca_doc_tute_stage_starting Starting Up
 
@@ -30,9 +28,7 @@ Start IceGrid Registry and IceStorm server as described in the @ref orca_doc_qui
 
 We'll be using sample configuration files which are distributed with Orca and Stage. As a general rule, you shouldn't work or run programs from the distribution. So we'll create a separate directory and copy config files into it. After going through the quickstart guide, you would have created a @c sys directory in which you keep your cfg files. Create a new directory for this tutorial and copy the required config files there.
 @verbatim
-$ cd ~/sys
-$ mkdir tutestage
-$ cd tutestage
+$ mkdir -p ~/sys/tutestage; cd ~/sys/tutestage
 $ cp -r [STAGE_SRC]/worlds ./
 @endverbatim
 
@@ -40,9 +36,9 @@ We'll make Stage report a global position in this simple world. To do this you n
 @verbatim
 define pioneer2dx position
 (
-...
-localization "gps"
-localization_origin [0 0 0]
+  ...
+  localization "gps"
+  localization_origin [0 0 0]
 )
 @endverbatim
 

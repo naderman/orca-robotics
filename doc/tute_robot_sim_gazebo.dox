@@ -13,14 +13,9 @@
 @page orca_doc_tute_gazebo Using Orca with Player/Gazebo simulator
 @note Reviewed for release 2.1.0, Player 2.0.3, and Gazebo 0.7.0.
 
-@section started Getting started
-Before reading this document, you should familiarise yourself with: 
-    - @ref orca_doc_getting : download, compile, install.
-    - @ref orca_doc_quickstart : The Orca2 quick start guide.
-    - Ch. 2 Ice Overview of the <a href="http://www.zeroc.com/download.html#doc" target="_blank">Ice manual</a>
-    - @ref orca_doc_tute_stage : The 2D Stage simulator is simpler to setup but has many similarities to the setup using Gazebo - a 3D simulator.
+In this tutorial we will assemble a simple robotic system and connect it to the 3D Player/Gazebo simulator. The system diagram is the same as in the this tutorial @ref orca_doc_tute_stage (with Stage replaced by Gazebo). It is recommended to do the Stage tutorial first because the simulator setup is simpler. Here we assume that you've done that and so all the prerequisites are already met.
 
-Note that you'll need <a href="http://playerstage.sourceforge.net/" target="_blank">Player/Gazebo</a> installed. Debian installation instructions are found here @ref orca_doc_installdebian_gazebo. It's also useful to understand how Player/Stage/Gazebo works. 
+Player/Gazebo must be installed before we begin. Debian installation instructions are found here @ref orca_doc_installdebian_gazebo. It's also useful to understand how Player/Stage/Gazebo works. 
 
 @section orca_doc_tute_gazebo_starting Starting Up
 
@@ -28,9 +23,7 @@ Start IceGrid Registry and IceStorm server as described in the @ref orca_doc_qui
 
 We'll be using sample configuration files which are distributed with Orca and Gazebo. As a general rule, you shouldn't work or run programs from the distribution. So we'll create a separate directory and copy config and world files into it. After going through the quickstart guide, you would have created a @c sys directory in which you keep your cfg files. Create a new directory for this tutorial and copy the required config and world files there.
 @verbatim
-$ cd ~/sys
-$ mkdir tutegazebo
-$ cd tutegazebo
+$ mkdir -p ~/sys/tutegazebo; cd ~/sys/tutegazebo
 $ cp [GAZEBO_SRC]/worlds ./
 @endverbatim
 
@@ -86,7 +79,7 @@ You can see the laser rays by clicking on the Controls (lefthand corner) of the 
 
 @section orca_doc_tute_gazebo_player Player as an Intermediary
 
-We will now use Player as an intermediary between Orca and Gazebo similarly to the tutorial @ref orca_doc_tute_stage when using Stage. 
+We will now use Player as an intermediary between Orca and Gazebo (this similar to how Orca works with Stage). 
 
 Copy the following lines into a new file called @c example.cfg and save it in the directory @c tutegazebo .
 @verbatim
@@ -128,7 +121,7 @@ $ player example.cfg
 @section orca_doc_tute_gazebo_orca Orca
 We'll now make Orca talk to Gazebo through Player. Firstly, copy a few standard component configuration files distributed with Orca.
 @verbatim
-$ cd ~/sys/tutestage
+$ cd ~/sys/tutegazebo
 $ cp [ORCA_INSTALL]/cfg/laser2d.cfg ./
 $ cp [ORCA_INSTALL]/cfg/robot2d.cfg ./
 $ cp [ORCA_INSTALL]/cfg/faithlocaliser.cfg ./
@@ -195,6 +188,5 @@ As the robot moves through the world, compare the display of the OrcaView and th
 @section orca_doc_tute_direct_next What's Next
 
 If everything works, check out more @ref orca_doc_tutorials.
-
 
 */

@@ -52,7 +52,7 @@ Our main goal is the continuing progress in robotic research and the robotic ind
 - Start coding: @ref orca_doc_start_code (read this if you want to evaluate Orca)
 - Become an expert: @ref orca_doc_devguide
 
-Note: The documentation on this web page matches the latest release. A web page is also <a href="http://orca-robotics.sourceforge.net/cvs/">generated hourly</a> from the latest CVS version.
+Note: The documentation on this web page matches the latest release. A web page is also <a href="http://orca-robotics.sourceforge.net/cvs/">generated every 30 min</a> from the latest CVS version.
 
 @section news News
 

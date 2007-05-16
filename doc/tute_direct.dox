@@ -14,7 +14,11 @@
 
 @note Reviewed for release 2.4.0.
 
-In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now without running the IceGrid Registry. The client will connect to the server using so called @e direct connection method. This is equivalent to reaching a web server without the Domain Name Service (by using an IP address instead of a URL). You may want to do this if you do not want to use the IceGrid Registry for some reason.
+In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now without running the IceGrid Registry. The system diagram is shown below.
+
+@image html doc_tute_direct.png
+
+The client will connect to the server using so called @e direct connection method. This is equivalent to reaching a web server without the Domain Name Service (by using an IP address instead of a URL). You may want to do this if you do not want to use the IceGrid Registry for some reason.
 
 @section orca_doc_tute_direct_startup Start Up the Infrastructure
 
