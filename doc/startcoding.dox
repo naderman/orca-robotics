@@ -20,11 +20,9 @@ Whether you have big development plans or just want to see what is envolved in u
 
 Read: @ref orca_doc_devproj
 
-Make sure this generic project compiles. One component you already have: it's called @e somecomponent and it came with your @e Empty @e Project. (The source is in @c [EMPTY_PROJ_SRC]/src/components/somecomponent )
+Make sure this generic project compiles. One component you already have: it's called @e somecomponent and it came with your @e Empty @e Project. (The source is in @c [EMPTY_PROJ_SRC]/src/components/somecomponent ). This is not a very good example, however, because it just creates a couple of data structures.
 
-This is not a very good example, however, because it just creates a couple of data structures.
-
-@par Step 3. Copy an existing component.
+@par Step 2. Copy an existing component.
 
 Read these instructions first which tell you how to add any new code to your project. Concentrate on the parts which talk about adding a new @e component. 
 
