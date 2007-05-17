@@ -15,7 +15,7 @@ int main()
             cout << "Testing getting interface names" << endl;
             vector<string> interfaceNames;
             getInterfaceNames( interfaceNames );
-            for (uint i=0; i<interfaceNames.size(); i++)
+            for (unsigned int i=0; i<interfaceNames.size(); i++)
             {
                 cout << "Interface " << i << " : " << interfaceNames[i] << endl;
             }

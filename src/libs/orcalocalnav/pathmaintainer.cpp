@@ -199,7 +199,7 @@ PathMaintainer::getActiveGoals( std::vector<Goal> &goals,
         incrementWpIndex();
 
     int wpI=0;
-    for ( uint pI=wpIndex_;
+    for ( unsigned int pI=wpIndex_;
           pI < path_.path.size() && wpI < maxNumWaypoints;
           pI++, wpI++ )
     {

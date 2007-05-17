@@ -842,7 +842,7 @@ void PathInput::generateFullPath()
     // we have to keep track how many waypoints we inserted
     int totalExpansion = 0;
     
-    for (uint i=0; i<indices.size(); i++)
+    for (unsigned int i=0; i<indices.size(); i++)
     {
         QString behaviour = wpWidget_->getBehaviour( indices[i] ); 
         cout << "TRACE(pathinput.cpp): generatePath: Behaviour: " << behaviour.toStdString() << endl;

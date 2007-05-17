@@ -414,10 +414,10 @@ ContiguousSparseSkel::optimise()
 void
 ContiguousSparseSkel::setArcCosts( const FloatMap &costMap )
 {
-    for ( uint i=0; i < nodes_.size(); i++ )
+    for ( unsigned int i=0; i < nodes_.size(); i++ )
     {
         SparseSkelNode &node = *(nodes_[i]);
-        for ( uint j=0; j < node.arcs.size(); j++ )
+        for ( unsigned int j=0; j < node.arcs.size(); j++ )
         {
             SparseSkelArc &arc = *(node.arcs[j]);
             arc.cost = straightLineCost( node.pos, arc.toNode->pos, costMap );
