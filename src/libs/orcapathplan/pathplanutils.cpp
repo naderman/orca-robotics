@@ -691,9 +691,9 @@ computeCostsFromDistGrid( const FloatMap      &distGrid,
     costMap.resize( distGrid.sizeX(), distGrid.sizeY() );
     costMap.fill( NAN );
 
-    for ( uint xi = 0; xi < distGrid.sizeX(); xi++ )
+    for ( unsigned int xi = 0; xi < distGrid.sizeX(); xi++ )
     {
-        for ( uint yi = 0; yi < distGrid.sizeY(); yi++ )
+        for ( unsigned int yi = 0; yi < distGrid.sizeY(); yi++ )
         {
             costMap.setElement( xi, yi, 
                                 costEvaluator.costAtDistFromObstacle( metresPerCell*element(distGrid,xi,yi) ) );
