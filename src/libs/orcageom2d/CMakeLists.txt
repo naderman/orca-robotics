@@ -5,7 +5,15 @@
     )
     
     FILE( GLOB SRCS *.cpp )
+    
+    IF ( NOT OS_WIN )
+		GLOBAL_ADD_LIBRARY( OrcaGeom2d SHARED ${SRCS} )
+	ELSE ( NOT OS_WIN )
+		GLOBAL_ADD_LIBRARY( OrcaGeom2d STATIC ${SRCS} )
+	ENDIF ( NOT OS_WIN )
+
     GLOBAL_ADD_LIBRARY( OrcaGeom2d SHARED ${SRCS} )
+    
     INSTALL_TARGETS( /lib OrcaGeom2d )
     INSTALL_FILES( /include/orcageom2d .*\\.h$ )
     

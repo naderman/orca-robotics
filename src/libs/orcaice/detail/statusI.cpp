@@ -56,7 +56,7 @@ StatusI::setStatusData( const std::map<std::string,LocalStatus::SubsystemStatus>
     statusData_.name = context_.name();
 
     IceUtil::Time timeUp = IceUtil::Time::now() - startTime_;
-    statusData_.timeUp = timeUp.toSeconds();
+    statusData_.timeUp = (Ice::Int)timeUp.toSeconds();
 
     convert( subsystemStatus, statusData_.subsystems );
 }
@@ -165,7 +165,7 @@ StatusI::getData(const ::Ice::Current& ) const
 
     // Just update the timeUp
     IceUtil::Time timeUp = IceUtil::Time::now() - startTime_;
-    statusData_.timeUp = timeUp.toSeconds();
+    statusData_.timeUp = (Ice::Int)timeUp.toSeconds();
     
     return statusData_;
 }
@@ -236,7 +236,7 @@ void StatusI::convert( const std::map<std::string,LocalStatus::SubsystemStatus> 
         }
         network[it->first].message = it->second.message;
         dt = t - it->second.lastHeartbeatTime;
-        network[it->first].sinceHeartbeat = dt.toSecondsDouble() / it->second.maxHeartbeatInterval;
+        network[it->first].sinceHeartbeat = (Ice::Float)(dt.toSecondsDouble() / it->second.maxHeartbeatInterval);
     }
 }
 

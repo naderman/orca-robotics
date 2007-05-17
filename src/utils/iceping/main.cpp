@@ -15,6 +15,10 @@
 #include <IceUtil/Time.h>
 #include <IceUtil/Thread.h>
 
+#ifdef WIN32
+    #include <string.h>
+#endif
+
 using namespace std;
 
 // note: do not use options [hpt] because they are used inside endpoint definition
@@ -281,7 +285,11 @@ main(int argc, char * argv[])
     
     for ( int i=0; i<argc2; ++i ) {
         argv2[i] = new char[args[i].size()+1];
+#ifndef WIN32
         strcpy( argv2[i], args[i].data() );
+#else
+        strcpy_s( argv2[i], args[i].data() );
+#endif
     }
 
     App app;

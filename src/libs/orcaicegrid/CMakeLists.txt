@@ -6,7 +6,11 @@ IF ( BUILD_ORCAICEGRID )
 
   FILE( GLOB SRCS *.cpp )
 
-  GLOBAL_ADD_LIBRARY( OrcaIceGrid SHARED ${SRCS} )
+  IF ( NOT OS_WIN )
+	GLOBAL_ADD_LIBRARY( OrcaIceGrid SHARED ${SRCS} )
+  ELSE ( NOT OS_WIN )
+	GLOBAL_ADD_LIBRARY( OrcaIceGrid STATIC ${SRCS} )
+  ENDIF ( NOT OS_WIN )
 
   INSTALL_FILES( /include/orcaicegrid .*\\.h$ )
 

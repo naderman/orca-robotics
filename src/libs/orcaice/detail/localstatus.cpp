@@ -152,7 +152,7 @@ LocalStatus::process()
     for ( it=subsystems_.begin(); it!=subsystems_.end(); ++it ) 
     {
         IceUtil::Time timeSinceLastHeartbeat = now-it->second.lastHeartbeatTime;
-        double secSinceLastHeartbeat = timeSinceLastHeartbeat.toSeconds();
+        double secSinceLastHeartbeat = (double)timeSinceLastHeartbeat.toSeconds();
         if ( secSinceLastHeartbeat > it->second.maxHeartbeatInterval )
         {
             // Oops, this subsystem appears to be dead...

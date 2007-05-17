@@ -14,7 +14,7 @@ tryRemovePtr( orcaice::Context &context,
     try {
         context.adapter()->remove( context.communicator()->stringToIdentity( ptr->ice_id() ) );
     }
-    catch ( Ice::ObjectAdapterDeactivatedException &e )
+    catch ( Ice::ObjectAdapterDeactivatedException & )
     {
         // This is OK, we're shutting down.
     }

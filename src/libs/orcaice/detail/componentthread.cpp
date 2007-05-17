@@ -56,7 +56,7 @@ ComponentThread::run()
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }
     }
-    catch ( Ice::CommunicatorDestroyedException &e )
+    catch ( Ice::CommunicatorDestroyedException & )
     {
         // This is OK, we must be shutting down.
     }
@@ -96,7 +96,7 @@ ComponentThread::tryRegisterHome()
             admin->updateObject( homePrx_ );
         }
     }
-    catch ( Ice::CommunicatorDestroyedException& e ) 
+    catch ( Ice::CommunicatorDestroyedException& ) 
     {
         // Ignore -- we're shutting down.
     }
