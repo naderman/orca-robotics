@@ -15,6 +15,10 @@
 // trying to solve a problem in win, round() is not found
 #ifdef WIN32
 #   include <math.h>
+inline double round( double d )
+{
+	return floor( d + 0.5 );
+}
 #else
 #   include <cmath>
 #endif
