@@ -185,7 +185,7 @@ TestComponent::start()
         cout<<"failed"<<endl<<"should be able to read file"<<endl;
         exit(EXIT_FAILURE);
     }
-    catch ( const orcaice::NetworkException & e ) {
+    catch ( const orcaice::NetworkException & ) {
         // ok
     }
     cout<<"ok"<<endl;
@@ -200,7 +200,7 @@ TestComponent::start()
         cout<<"failed"<<endl<<"should be able to read file"<<endl;
         exit(EXIT_FAILURE);
     }
-    catch ( const orcaice::NetworkException & e ) {
+    catch ( const orcaice::NetworkException & ) {
         // ok
     }
     cout<<"ok"<<endl;

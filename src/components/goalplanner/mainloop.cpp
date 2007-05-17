@@ -54,8 +54,8 @@ namespace {
         wp.target.o   = pose.theta();
 
         // add bogus tolerances and speeds
-        wp.distanceTolerance = 0.1;
-        wp.headingTolerance  = M_PI/2.0;
+        wp.distanceTolerance = (Ice::Float)0.1;
+        wp.headingTolerance  = (Ice::Float)(M_PI/2.0);
         wp.timeTarget.seconds  = 0;
         wp.timeTarget.useconds = 0;
         wp.maxApproachSpeed    = 2e+6;
