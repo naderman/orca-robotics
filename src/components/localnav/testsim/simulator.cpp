@@ -64,7 +64,7 @@ Simulator::Simulator( const orcaice::Context &context,
     scan_->startAngle  = -M_PI/2.0;
     scan_->ranges.resize(181);
     scan_->intensities.resize( scan_->ranges.size() );
-    for ( uint i=0; i < scan_->ranges.size(); i++ )
+    for ( unsigned int i=0; i < scan_->ranges.size(); i++ )
         scan_->intensities[i] = 0;
 
     // setup velocity.
@@ -376,7 +376,7 @@ Simulator::getRanges()
     double maxRange = scan_->maxRange;
     double angleIncrement = orcaice::calcAngleIncrement( scan_->fieldOfView,
                                                          scan_->ranges.size() );
-    for ( uint i=0; i < scan_->ranges.size(); i++ )
+    for ( unsigned int i=0; i < scan_->ranges.size(); i++ )
     {
         double angleRCS = scan_->startAngle + i*angleIncrement;
         double angleGCS = angleRCS + pose_.theta();

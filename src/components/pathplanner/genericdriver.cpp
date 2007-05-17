@@ -100,7 +100,7 @@ GenericDriver::~GenericDriver()
 void
 GenericDriver::jiggleOntoClearCells( orca::Path2d &path )
 {
-    for ( uint i=0; i < path.size(); i++ )
+    for ( unsigned int i=0; i < path.size(); i++ )
     {
         jiggleOntoClearCell( path[i], grownOgMap_, traversabilityThreshhold_ );
     }
