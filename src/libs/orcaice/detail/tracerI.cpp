@@ -194,7 +194,7 @@ TracerI::info( const std::string &message, int level )
     LocalTracer::info( message, level );
 
     if ( config_.verbosity[InfoTrace][ToNetwork] >= level ) {
-        toNetwork( Tracer::InfoTrace, message, level );
+		toNetwork( orcaice::Tracer::InfoTrace, message, level );
     }
 }
 
@@ -204,7 +204,7 @@ TracerI::warning( const std::string &message, int level )
     LocalTracer::warning( message, level );
 
     if ( config_.verbosity[WarningTrace][ToNetwork] >= level ) {
-        toNetwork( Tracer::WarningTrace, message, level );
+        toNetwork( orcaice::Tracer::WarningTrace, message, level );
     }
 }
     
@@ -214,7 +214,7 @@ TracerI::error( const std::string &message, int level )
     LocalTracer::error( message, level );
 
     if ( config_.verbosity[ErrorTrace][ToNetwork] >= level ) {
-        toNetwork( Tracer::ErrorTrace, message, level );
+        toNetwork( orcaice::Tracer::ErrorTrace, message, level );
     }
 }
 
@@ -224,27 +224,27 @@ TracerI::debug( const std::string &message, int level )
     LocalTracer::debug( message, level );
 
     if ( config_.verbosity[DebugTrace][ToNetwork] >= level ) {
-        toNetwork( Tracer::DebugTrace, message, level );
+        toNetwork( orcaice::Tracer::DebugTrace, message, level );
     }
 }
 
 std::string 
-TracerI::categoryToString( Tracer::TraceType category )
+TracerI::categoryToString( orcaice::Tracer::TraceType category )
 {
-    if ( category == Tracer::InfoTrace )
+    if ( category == orcaice::Tracer::InfoTrace )
         return "info";
-    else if ( category == Tracer::WarningTrace )
+    else if ( category == orcaice::Tracer::WarningTrace )
         return "warning";
-    else if ( category == Tracer::ErrorTrace )
+    else if ( category == orcaice::Tracer::ErrorTrace )
         return "error";
-    else if ( category == Tracer::DebugTrace )
+    else if ( category == orcaice::Tracer::DebugTrace )
         return "debug";
     else
         return "other";
 }
 
 void
-TracerI::toNetwork( Tracer::TraceType traceType,
+TracerI::toNetwork( orcaice::Tracer::TraceType traceType,
                     const std::string& message,
                     int level )
 {
@@ -258,17 +258,17 @@ TracerI::toNetwork( Tracer::TraceType traceType,
     assert( componentTraceSender_ != NULL );
     componentTraceSender_->sendToNetwork( tracerData );
 
-    if ( traceType == Tracer::InfoTrace )
+    if ( traceType == orcaice::Tracer::InfoTrace )
     {
         assert( platformInfoSender_ != NULL );
         platformInfoSender_->sendToNetwork( tracerData );
     }
-    else if ( traceType == Tracer::WarningTrace )
+    else if ( traceType == orcaice::Tracer::WarningTrace )
     {
         assert( platformWarningSender_ != NULL );
         platformWarningSender_->sendToNetwork( tracerData );
     }
-    else if ( traceType == Tracer::ErrorTrace )
+    else if ( traceType == orcaice::Tracer::ErrorTrace )
     {
         assert( platformErrorSender_ != NULL );
         platformErrorSender_->sendToNetwork( tracerData );

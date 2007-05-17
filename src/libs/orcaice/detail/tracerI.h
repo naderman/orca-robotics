@@ -81,7 +81,7 @@ private:
     TracerI& operator= ( const TracerI & );
 
     // to network
-    void toNetwork( Tracer::TraceType traceType,
+	void toNetwork( orcaice::Tracer::TraceType traceType,
                     const std::string& message,
                     int level );
     void setupAndConnectNetworkSenders();
@@ -90,7 +90,7 @@ private:
                                      bool isTracerTopicRequired );
     void icestormConnectFailed( const std::string &topicName,
                                 bool isTracerTopicRequired );
-    std::string categoryToString( Tracer::TraceType category );
+    std::string categoryToString( orcaice::Tracer::TraceType category );
 
     // Responsible for sending messages to the component's tracer topic
     NetworkTraceSender *componentTraceSender_;
