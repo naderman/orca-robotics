@@ -49,7 +49,7 @@ private:
 
     orca::GpsConsumerPrx gpsConsumerPrx_;
     
-    IceStorm::TopicPrx topic_;
+    IceStorm::TopicPrx topicPrx_;
     
     // file protocol specifics
     void loadDataIce( int index, orca::GpsData &gpsData );

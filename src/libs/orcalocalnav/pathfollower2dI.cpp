@@ -200,7 +200,7 @@ PathFollower2dI::subscribe( const ::orca::PathFollower2dConsumerPrx& subscriber,
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
-        ss <<"Odometry3dIface::subscribe: failed to subscribe: "<< e;
+        ss <<"subscribe: failed to subscribe: "<< e;
         context_.tracer()->warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }

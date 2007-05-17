@@ -51,7 +51,7 @@ private:
     
     orca::CameraData data_;
     orca::CameraConsumerPrx publisher_;
-    IceStorm::TopicPrx topic_;
+    IceStorm::TopicPrx topicPrx_;
 
     virtual void initInterfaces();
     virtual void initDescription();

@@ -40,7 +40,7 @@ namespace {
         if ( isClearWorld( wp.target.p.x, wp.target.p.y, ogMap, traversabilityThreshhold ) )
             return;
 
-        for ( int numSteps=1; numSteps < 10000; numSteps *= 2 )
+        for ( int numSteps=2; numSteps < 10000; numSteps = (int)(numSteps*1.5) )
         {
             int xCell,yCell;
             ogMap.getCellIndices( wp.target.p.x, wp.target.p.y, xCell, yCell );

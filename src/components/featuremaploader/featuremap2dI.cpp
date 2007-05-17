@@ -60,7 +60,20 @@ FeatureMap2dI::subscribe(const ::FeatureMap2dConsumerPrx& subscriber,
                          const Ice::Current& current)
 {
     cout<<"TRACE(featuremap2dI.cpp): subscribe()" << endl;
-    topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
+    try {
+        topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
+    }
+    catch ( const IceStorm::AlreadySubscribed & e ) {
+        std::stringstream ss;
+        ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
+        context_.tracer()->debug( ss.str(), 2 );    
+    }
+    catch ( const Ice::Exception & e ) {
+        std::stringstream ss;
+        ss <<"subscribe: failed to subscribe: "<< e << endl;
+        context_.tracer()->warning( ss.str() );
+        throw orca::SubscriptionFailedException( ss.str() );
+    }
 }
 
 void

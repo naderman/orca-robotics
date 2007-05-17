@@ -54,7 +54,10 @@ Component::start()
         ( context(), localise2dPublisher_, "Localise2d" );
     
     // create servant for direct connections
-    Ice::ObjectPtr localise2dObj_ = new Localise2dI( localiseTopicPrx, locBuffer_, historyBuffer_, context() );
+    Ice::ObjectPtr localise2dObj_ = new Localise2dI( localiseTopicPrx,
+                                                     locBuffer_,
+                                                     historyBuffer_,
+                                                     context() );
     orcaice::createInterfaceWithTag( context(), localise2dObj_, "Localise2d" );
 
     ////////////////////////////////////////////////////////////////////////////////

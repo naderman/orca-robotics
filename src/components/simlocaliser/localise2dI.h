@@ -13,7 +13,7 @@
 
 #include <IceStorm/IceStorm.h>
 #include <orca/localise2d.h>
-
+#include <orcaice/context.h>
 #include <orcaice/ptrbuffer.h>
 
 namespace simlocaliser
@@ -24,7 +24,8 @@ class Localise2dI : public orca::Localise2d
 {
 public:
     Localise2dI( const IceStorm::TopicPrx &topic,
-                 orcaice::Buffer<orca::Localise2dData> & locBuffer );
+                 orcaice::Buffer<orca::Localise2dData> & locBuffer,
+                 const orcaice::Context &context );
 
     // remote calls:
 
@@ -38,8 +39,10 @@ public:
 
 private:
 
-    const IceStorm::TopicPrx topic_;
+    const IceStorm::TopicPrx topicPrx_;
     orcaice::Buffer<orca::Localise2dData> &locBuffer_;
+    orcaice::Context context_;
+
 };
 
 } // namespace

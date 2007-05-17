@@ -37,7 +37,7 @@ public:
 
 private: 
 
-    IceStorm::TopicPrx topic_;
+    IceStorm::TopicPrx topicPrx_;
     orca::TracerConsumerPrx publisher_;
 
     std::string topicName_;

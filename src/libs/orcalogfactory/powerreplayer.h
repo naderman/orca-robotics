@@ -45,7 +45,7 @@ private:
     
     orca::PowerData data_;
     orca::PowerConsumerPrx publisher_;
-    IceStorm::TopicPrx topic_;
+    IceStorm::TopicPrx topicPrx_;
 
     virtual void initInterfaces();
     // not needed for this interface

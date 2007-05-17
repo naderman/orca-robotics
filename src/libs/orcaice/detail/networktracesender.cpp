@@ -10,7 +10,7 @@ namespace detail {
 NetworkTraceSender::NetworkTraceSender( const std::string &topicName,
                                         IceUtil::Mutex &mutex,
                                         const orcaice::Context &context )
-    : topic_(0),
+    : topicPrx_(0),
       publisher_(0),
       topicName_(topicName),
       mutex_(mutex),
@@ -21,13 +21,13 @@ NetworkTraceSender::NetworkTraceSender( const std::string &topicName,
 bool
 NetworkTraceSender::connectToIceStorm()
 {
-    topic_     = 0;
+    topicPrx_  = 0;
     publisher_ = 0;
 
     initTracerInfo( orcaice::toString(context_.name())+": Connecting to tracer topic "+ topicName_ );
     try
     {
-        topic_ = orcaice::connectToTopicWithString<orca::TracerConsumerPrx>(
+        topicPrx_ = orcaice::connectToTopicWithString<orca::TracerConsumerPrx>(
             context_, publisher_, topicName_ );
         initTracerInfo( orcaice::toString(context_.name())+": Tracer connected to topic "+topicName_ );
         return true;
@@ -93,12 +93,25 @@ NetworkTraceSender::sendToNetwork( const orca::TracerData &tracerData )
 void 
 NetworkTraceSender::subscribe( const ::orca::TracerConsumerPrx& subscriber )
 {
-    topic_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
+    try {
+        topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
+    }
+    catch ( const IceStorm::AlreadySubscribed & e ) {
+        std::stringstream ss;
+        ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
+        context_.tracer()->debug( ss.str(), 2 );    
+    }
+    catch ( const Ice::Exception & e ) {
+        std::stringstream ss;
+        ss <<"subscribe: failed to subscribe: "<< e << endl;
+        context_.tracer()->warning( ss.str() );
+        throw orca::SubscriptionFailedException( ss.str() );
+    }
 }
 void 
 NetworkTraceSender::unsubscribe( const ::orca::TracerConsumerPrx& subscriber )
 {
-    topic_->unsubscribe( subscriber );
+    topicPrx_->unsubscribe( subscriber );
 }
 
 }

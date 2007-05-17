@@ -45,7 +45,7 @@ private:
     
     orca::WifiData data_;
     orca::WifiConsumerPrx publisher_;
-    IceStorm::TopicPrx topic_;
+    IceStorm::TopicPrx topicPrx_;
 
     virtual void initInterfaces();
     // not needed for this interface

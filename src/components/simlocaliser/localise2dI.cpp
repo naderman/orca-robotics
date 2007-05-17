@@ -17,9 +17,11 @@ using namespace orca;
 using namespace simlocaliser;
 
 Localise2dI::Localise2dI( const IceStorm::TopicPrx              &topic,
-                          orcaice::Buffer<orca::Localise2dData> &locBuffer )
-    : topic_(topic),
-      locBuffer_(locBuffer)
+                          orcaice::Buffer<orca::Localise2dData> &locBuffer,
+                          const orcaice::Context &context )
+    : topicPrx_(topic),
+      locBuffer_(locBuffer),
+      context_(context)
 {
 }
 
@@ -66,12 +68,25 @@ void
 Localise2dI::subscribe(const ::orca::Localise2dConsumerPrx& subscriber, const ::Ice::Current&)
 {
     cout<<"subscribe()"<<endl;
-    topic_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
+    try {
+        topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
+    }
+    catch ( const IceStorm::AlreadySubscribed & e ) {
+        std::stringstream ss;
+        ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
+        context_.tracer()->debug( ss.str(), 2 );    
+    }
+    catch ( const Ice::Exception & e ) {
+        std::stringstream ss;
+        ss <<"subscribe: failed to subscribe: "<< e << endl;
+        context_.tracer()->warning( ss.str() );
+        throw orca::SubscriptionFailedException( ss.str() );
+    }
 }
 
 void 
 Localise2dI::unsubscribe(const ::orca::Localise2dConsumerPrx& subscriber, const ::Ice::Current&)
 {
     cout<<"unsubscribe()"<<endl;
-    topic_->unsubscribe( subscriber );
+    topicPrx_->unsubscribe( subscriber );
 }

@@ -47,7 +47,7 @@ private:
     
     orca::Localise2dData data_;
     orca::Localise2dConsumerPrx publisher_;
-    IceStorm::TopicPrx topic_;
+    IceStorm::TopicPrx topicPrx_;
 
     virtual void initInterfaces();
     virtual void initDescription() {};

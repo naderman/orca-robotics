@@ -43,7 +43,7 @@ Component::start()
     
     // create servant for direct connections
     // don't need to store it as a member variable, adapter will keep it alive
-    Ice::ObjectPtr localise2dObj = new Localise2dI( localiseTopicPrx, locBuffer_ );
+    Ice::ObjectPtr localise2dObj = new Localise2dI( localiseTopicPrx, locBuffer_, context() );
     
     // two possible exceptions will kill it here, that's what we want
     orcaice::createInterfaceWithTag( context(), localise2dObj, "Localise2d" );

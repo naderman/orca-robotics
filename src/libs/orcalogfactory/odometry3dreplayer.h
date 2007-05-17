@@ -48,7 +48,7 @@ private:
     orca::Odometry3dData data_;
     orca::VehicleDescription descr_;
     orca::Odometry3dConsumerPrx publisher_;
-    IceStorm::TopicPrx topic_;
+    IceStorm::TopicPrx topicPrx_;
 
     virtual void initInterfaces();
     virtual void initDescription();

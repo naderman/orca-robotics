@@ -44,7 +44,7 @@ PowerReplayer::~PowerReplayer()
 void 
 PowerReplayer::initInterfaces()
 {
-    topic_ = orcaice::connectToTopicWithString( context_, publisher_, interfaceName_ );
+    topicPrx_ = orcaice::connectToTopicWithString( context_, publisher_, interfaceName_ );
 
     Ice::ObjectPtr obj = this;
     orcaice::createInterfaceWithString( context_, obj, interfaceName_ );
@@ -67,13 +67,26 @@ PowerReplayer::getData(const Ice::Current& current) const
 void 
 PowerReplayer::subscribe(const ::orca::PowerConsumerPrx &subscriber, const ::Ice::Current&)
 {
-    topic_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
+    try {
+        topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
+    }
+    catch ( const IceStorm::AlreadySubscribed & e ) {
+        std::stringstream ss;
+        ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
+        context_.tracer()->debug( ss.str(), 2 );    
+    }
+    catch ( const Ice::Exception & e ) {
+        std::stringstream ss;
+        ss <<"subscribe: failed to subscribe: "<< e << endl;
+        context_.tracer()->warning( ss.str() );
+        throw orca::SubscriptionFailedException( ss.str() );
+    }
 }
 
 void 
 PowerReplayer::unsubscribe(const ::orca::PowerConsumerPrx &subscriber, const ::Ice::Current&)
 {
-    topic_->unsubscribe( subscriber );
+    topicPrx_->unsubscribe( subscriber );
 }
 
 void 

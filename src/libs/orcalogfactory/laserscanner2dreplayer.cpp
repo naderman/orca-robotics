@@ -76,22 +76,34 @@ LaserScanner2dReplayer::getDescription(const Ice::Current& current) const
 void 
 LaserScanner2dReplayer::subscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber, const ::Ice::Current&)
 {
-//    cout<<"INFO(laserreplayer.cpp): subscription request"<<endl;
-    topic_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
+    try {
+        topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
+    }
+    catch ( const IceStorm::AlreadySubscribed & e ) {
+        std::stringstream ss;
+        ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
+        context_.tracer()->debug( ss.str(), 2 );    
+    }
+    catch ( const Ice::Exception & e ) {
+        std::stringstream ss;
+        ss <<"subscribe: failed to subscribe: "<< e << endl;
+        context_.tracer()->warning( ss.str() );
+        throw orca::SubscriptionFailedException( ss.str() );
+    }
 }
 
 void 
 LaserScanner2dReplayer::unsubscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber, const ::Ice::Current&)
 {
 //    cout<<"INFO(laserreplayer.cpp): unsubscription request"<<endl;
-    topic_->unsubscribe( subscriber );
+    topicPrx_->unsubscribe( subscriber );
 }
 
 void 
 LaserScanner2dReplayer::initInterfaces()
 {
     // cout << "INFO(laserreplayer.cpp): createInterface: " << interfaceName_ << endl;    
-    topic_ = orcaice::connectToTopicWithString( context_, publisher_, interfaceName_ );
+    topicPrx_ = orcaice::connectToTopicWithString( context_, publisher_, interfaceName_ );
     
     Ice::ObjectPtr obj = this;
     orcaice::createInterfaceWithString( context_, obj, interfaceName_ );
