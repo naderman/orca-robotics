@@ -3,6 +3,11 @@
 #include <sstream>
 #include <assert.h>
 
+#ifdef WIN32
+	#define _USE_MATH_DEFINES
+	#include <math.h>
+#endif
+
 using namespace std;
 
 namespace geom2d {
