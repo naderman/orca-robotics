@@ -10,3 +10,8 @@ ADD_EXECUTABLE( testcov3d testcov3d.cpp )
 TARGET_LINK_LIBRARIES( testcov3d OrcaNavUtil )
 ADD_TEST( OrcaNavUtilCov3d testcov3d )
 MESSAGE( STATUS "Planning to Build Test      : OrcaNavUtilCov3d [libOrcaNavUtil]")
+
+ADD_EXECUTABLE( testchisq testchisq.cpp )
+TARGET_LINK_LIBRARIES( testchisq OrcaNavUtil )
+ADD_TEST( OrcaNavUtilChiSquare testchisq )
+MESSAGE( STATUS "Planning to Build Test      : OrcaNavUtilChiSquare [libOrcaNavUtil]")
