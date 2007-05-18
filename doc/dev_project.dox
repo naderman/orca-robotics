@@ -12,7 +12,7 @@
 
 @page orca_doc_devproj Starting Your Own Orca Project
 
-@note Reviewed for release 2.0.0.
+@note Reviewed for release 2.3.0.
 
 A common situation is that you want to experiment with some components without the hassle of
 committing them into the Orca SourceForge repository or want to work on a closed-source
@@ -27,7 +27,7 @@ might find it useful. Export CVS module 'empty-project'. Use the export CVS comm
 $ orcacvs export -r HEAD empty-project
 @endverbatim
 
-To cusomize the empty project a project called 'tractor' follow these steps:
+To customize the empty project a project called 'tractor' follow these steps:
 - Rename the directory 'empty-project' to 'tractor'
 - Edit the top level CMakeLists.txt file so it looks like this:
 @verbatim
@@ -70,9 +70,11 @@ module tractor
     tractor::SomeDataPtr someData = new tractor::SomeData;
 @endverbatim
 
+- If you're going to use CVS, it's a good idea to commit your project to your own CVS server at this point. All the current files are "raw" files which need to be added to CVS. If you commit later and used an in-source build, raw and generated files will be mixed.
+
 - Run cmake and compile.
 
-This enough to get you started. Now you can commit your new project to your own CVS server and start writing code: add your own components, libraries, and interfaces.
+This enough to get you started. Now you can start writing code: add your own components, libraries, and interfaces.
 
 @par Tips for maintaining your project
 
