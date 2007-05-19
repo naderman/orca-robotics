@@ -9,6 +9,4 @@ ELSE ( NOT OS_WIN )
 	GLOBAL_ADD_LIBRARY( OrcaIfaceImpl STATIC ${SRCS} )
 ENDIF ( NOT OS_WIN )
 
-GLOBAL_ADD_LIBRARY( OrcaIfaceImpl SHARED ${SRCS} )
-
 INSTALL_FILES( /include/orcaifaceimpl .*\\.h$ )
