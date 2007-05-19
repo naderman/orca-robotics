@@ -11,7 +11,6 @@
 #ifndef ORCAGUI_GUIELEMENTFACTORY_H
 #define ORCAGUI_GUIELEMENTFACTORY_H
 
-#include <QStringList>
 #include <QColor>
 #include <orcaice/context.h>
 #include <vector>
@@ -25,13 +24,10 @@ class GuiElement;
 //!     
 //! Intended as a base class for plug-in Gui Element factories.
 //!     
-//! NOTE: Inherited classes need to implement a setPainter() method for
-//! passing specific a painter pointer to elements when created.
-//! Factories that inherit from this class must downcast the painter
-//! to the correct type.
 
-// Author: Alex Brooks, Tobias Kaupp, Ben Upcroft
-//     
+//
+// Authors: Tobias Kaupp, Alex Brooks, Ben Upcroft
+//
 class GuiElementFactory
 {                                 
 public:
@@ -41,32 +37,41 @@ public:
     //! Returns a vector of all supported interface types.
     //! Use addSupportedType() to define a list of supported types during
     //! initialization.
-    std::vector<QStringList> supportedInterfaceIds() const;
+    std::vector<QString> supportedElementTypes() const;
 
     //! Returns TRUE if the specified list of interface types is supported by this factory.
     //! Use addSupportedType() to define a list of supported types during
     //! initialization.
-    bool isSupported( const QStringList &interfaceIds ) const;
+    bool isSupported( const QString &elementType ) const;
+    
+    //! Looks up the elementType corresponding to the ids coming back from the required interfaces
+    //! when connecting through clicking on the registry view.
+    //! Example: 'ids' ::orca::LaserScanner2d maps to 'elementType' LaserScanner2d
+    //! Needs to be augmented only for complicated elementTypes which have more than one interface.
+    //! Returns true if an elementType was found otherwise false.
+    virtual bool lookupElementType( const QStringList &ids, QString &elementType ) const = 0;
 
-    //
-    // The factory should set a colour with guiElement->setColor, possibly
-    // using the suggested color.
-    //
-    // returns a NULL pointer if something goes wrong
+    //! Creates a GuiElement using the elementType and elementDetails information.
+    //! The elementType must be in the list of supportedElementTypes_.
+    //! ElementDetails contains the connection details relevant to interfaces to be set up within the element.
+    //! ElementDetails is a list of strings that look like this: interface@platform/component
+    //! Returns a NULL pointer if something goes wrong
+    //! The factory should set a colour with guiElement->setColor, possibly
+    //! using the suggested color.
     virtual GuiElement* create( const orcaice::Context         &context,
-                                const QStringList              &interfaceId,
-                                const QStringList              &proxyStrList,
+                                const QString                  &elementType,
+                                const QStringList              &elementDetails,
                                 QColor                          suggestedColor,
-                                orcaqgui::IHumanManager  *msgDisplayer ) const = 0;
+                                orcaqgui::IHumanManager        *humanManager ) const = 0;
 
 protected:
 
-    //! Adds type to the list of supported interfaces.
-    void addSupportedType( const QStringList & interfaceType );
+    //! Adds type to the list of supported elements.
+    void addSupportedType( const QString & elementType );
 
 
 private:
-    std::vector<QStringList> supportedInterfaceIds_;
+    std::vector<QString> supportedElementTypes_;
     
 };
 

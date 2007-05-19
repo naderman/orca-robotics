@@ -175,7 +175,8 @@ private:
 
     PathPainter painter_;
 
-    bool doneInitialSetup_;
+    int connectToInterface();
+    bool isConnected_;
 
     PathUpdateConsumer *pathUpdateConsumer_;
     orca::PathFollower2dConsumerPrx callbackPrx_;

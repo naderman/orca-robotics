@@ -11,6 +11,7 @@
 #include <iostream>
 #include <orcaqgui/orcaguiuserevent.h>
 #include <orcaice/orcaice.h>
+#include <orcaice/sysutils.h>
 
 #include "ipermanentelement.h"
 #include "guielementmodel.h"
@@ -35,7 +36,7 @@ GuiElementModel::GuiElementModel( const std::vector<orcaqgui::GuiElementFactory*
       currentTransparency_(true)
 {    
     platformColors_ = new StringToColorMap;
-    headers_ << "Name" << "Details";
+    headers_ << "Type" << "Details";
     coordinateFramePlatform_ = "global";
     platformInFocus_ = "global";
 }
@@ -74,7 +75,7 @@ GuiElementModel::data(const QModelIndex &idx, int role) const
         switch ( idx.column() ) {
         case 0 :
         {
-            QString fqIName = elements_[idx.row()]->name();
+            QString fqIName = elements_[idx.row()]->type();
             return fqIName;
         }
         case 1 :
@@ -148,82 +149,126 @@ GuiElementModel::removeRows( int row, int count, const QModelIndex & parent )
 }
 
 bool
-GuiElementModel::instantiateFromFactories( GuiElement* &element, const QStringList &ids, const QColor &platformColor, const QStringList &proxyStrList )
+GuiElementModel::instantiateFromFactories( GuiElement* &element, const QString &elementType, const QColor &platformColor, const QStringList &elementDetails )
 {
     for ( unsigned int i=0; i < factories_.size(); i++ )
     {
         // if this interface is not supported, skip this factory
-        if ( !factories_[i]->isSupported( ids ) )
+        if ( !factories_[i]->isSupported( elementType ) )
             continue;
         
         // if we get here the interface is supported
-        element = factories_[i]->create( context_, ids, proxyStrList, platformColor, humanManager_  );
+        element = factories_[i]->create( context_, elementType, elementDetails, platformColor, humanManager_  );
         return true; 
     }
     return false;
 }
 
 bool
-GuiElementModel::doesInterfaceExist( const QStringList& proxyStrList, int numElements )
+GuiElementModel::doesElementExist( const QStringList& elementDetails, int numElements )
 {
     //cout << "proxyStrList.join " << proxyStrList.join(" ").toStdString() << endl;
     
     for ( int i=0; i<elements_.size(); i++)
     {
-        cout << "element name: " << elements_[i]->name().toStdString() << endl;
-        if ( elements_[i]->name() == proxyStrList.join(" ") + " " ) return true;
+        cout << "element name: " << elements_[i]->details().toStdString() << endl;
+        if ( elements_[i]->details() == elementDetails.join(" ") + " " ) return true;
     }
     
     return false;     
 }
 
 void 
-GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
+GuiElementModel::createGuiElementFromSelection( const QList<QStringList> & interfacesInfo )
 {    
     // get interface data out of stringlist
     QStringList ids;
-    QStringList proxyStrList;
-    QStringList platformStrList;
+    QStringList elementDetails;
     for (int i=0; i<interfacesInfo.size(); i++)
     {
         QStringList info = interfacesInfo[i]; 
         ids << info[4];
         //cout << "ids: " << info[3].toStdString() << endl;
-        proxyStrList << info[3]+"@"+info[1]+"/"+info[2];
+        elementDetails << info[3]+"@"+info[1]+"/"+info[2];
         //cout << "proxylist: " << (info[3]+"@"+info[1]+"/"+info[2]).toStdString() << endl;
-        platformStrList << info[1];
-        //cout << "platform: " << info[1].toStdString() << endl;
     }
     
-    bool haveThisInt = doesInterfaceExist( proxyStrList, interfacesInfo.size() );
-    if (haveThisInt) {
-        humanManager_->showStatusMsg(Warning,"Interface " + proxyStrList.join(" ") + " exists already. Not connecting again!");
+    //TOBI: this needs to be fixed for config files
+    bool haveThisElement = doesElementExist( elementDetails, interfacesInfo.size() );
+    if (haveThisElement) {
+        humanManager_->showStatusMsg(Warning,"Interface " + elementDetails.join(" ") + " exists already. Not connecting again!");
         return;
     }
     
-    // set platform name: if they disagree, set to global
-    QString platform = platformStrList[0];
+    QString elementType = lookupTypeFromFactories( ids );
+    if (elementType!="") {
+        createGuiElement( elementType, elementDetails );
+    } else {
+        humanManager_->showStatusMsg(Warning,"Looking up element type from factory resulted in nothing");
+    }
+}
+
+QString 
+GuiElementModel::lookupTypeFromFactories( QStringList &ids )
+{
+    QString elementType = "";
+    for ( unsigned int i=0; i < factories_.size(); i++ )
+    {
+        if ( !factories_[i]->lookupElementType( ids, elementType ) )
+            continue; 
+    } 
+    return elementType;
+}
+
+void 
+GuiElementModel::determinePlatform( QStringList &elementDetails,
+                                    QString     &platform )
+{
+    QStringList platformStrList;
+    for (int i=0; i<elementDetails.size(); i++)
+    {
+        QString str = elementDetails[i]; 
+        str = str.section('@',1,1);
+        str = str.section('/',0,0);
+        // replace local with our host name
+        if (str=="local") {
+            str = QString(orcaice::getHostname().c_str());
+            elementDetails[i].replace("@local", "@"+str);
+        }
+        platformStrList << str;
+    }
+    platform = platformStrList[0];
+    
+    // if we have several interfaces and they disagree on the platform,
+    // we set it to global
     for (int i=1; i<platformStrList.size(); i++)
     {   
         if (platformStrList[i] != platform)
             platform="global";
-    }        
+    }
     
-    // 
-    // Set color for all elements on the platform
-    //
+    // tell everybody we got a new platform
     if ( !doesPlatformExist( platform ) )
     {
         emit ( newPlatform(platform) );
     }
+}
+    
+void
+GuiElementModel::createGuiElement( const QString &elementType, 
+                                   QStringList   &elementDetails )
+{    
+    QString platform;
+    determinePlatform( elementDetails, platform );
     QColor platformColor = platformColors_->getColor( platform );
     
+    // instantiate element
     GuiElement* element = NULL;
-    bool isSupported = instantiateFromFactories( element, ids, platformColor, proxyStrList );
+    bool isSupported = instantiateFromFactories( element, elementType, platformColor, elementDetails );
     if (!isSupported || element==NULL)
     {
-        if (!isSupported) humanManager_->showStatusMsg(orcaqgui::Warning, "Element " + proxyStrList.join(" ") + " is not supported by any factory. Needed id: " + ids.join(" "));
-        if (element==NULL) humanManager_->showStatusMsg(orcaqgui::Warning, "Element " + proxyStrList.join(" ") + " returned from factory is NULL");
+        if (!isSupported) humanManager_->showStatusMsg(orcaqgui::Warning, "Element type " + elementType + " is not supported by any factory.");
+        if (element==NULL) humanManager_->showStatusMsg(orcaqgui::Warning, "Element " + elementDetails.join(" ") + " returned from factory is NULL");
         delete element;
         if (!doesPlatformExist( platform ) ) 
             emit platformNeedsRemoval(platform);
@@ -234,14 +279,12 @@ GuiElementModel::createGuiElement( const QList<QStringList> & interfacesInfo )
     element->setTransparency( currentTransparency_ );
     element->setPlatform( platform );
     QString details = "";
-    QString name = "";
-    for (int i=0; i<ids.size(); i++)
+    for (int i=0; i<elementDetails.size(); i++)
     {
-        details = details + ids[i] + " ";
-        name = name + proxyStrList[i] + " ";
+        details = details + elementDetails[i] + " ";
     }
     element->setDetails( details );
-    element->setName(name);
+    element->setName(elementType);
     
     //
     // We need to tell the new element whether it's in focus or not

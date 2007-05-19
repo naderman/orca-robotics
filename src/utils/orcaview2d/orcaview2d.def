@@ -1,37 +1,6 @@
 # component
 DefaultComponentTag=OrcaView2d
 
-# required interfaces
-Requires.Laser.Type=LaserScanner2d
-Requires.Laser.DefaultProxy=laserscanner2d@local/laser2d
-
-Requires.Localise2d.Type=Localise2d
-Requires.Localise2d.DefaultProxy=localise2d@local/localiser
-
-Requires.Particle2d.Type=Particle2d
-Requires.Particle2d.DefaultProxy=particle2d@local/localiser
-
-Requires.PolarFeature2d.Type=PolarFeature2d
-Requires.PolarFeature2d.DefaultProxy=polarfeature2d@local/laserfeatureextractor
-
-Requires.PathFollower2d.Type=PathFollower2d
-Requires.PathFollower2d.DefaultProxy=pathfollower2d@local/localnav
-
-Requires.PathPlanner2d.Type=PathPlanner2d
-Requires.PathPlanner2d.DefaultProxy=pathplanner2d@local/pathplanner
-
-Requires.PixMap.Type=PixMap
-Requires.PixMap.DefaultProxy=pixmap@local/pixmaploader
-
-Requires.FeatureMap2d.Type=FeatureMap2d
-Requires.FeatureMap2d.DefaultProxy=featuremap2d@local/featuremaploader
-
-Requires.OgMap.Type=OgMap
-Requires.OgMap.DefaultProxy=ogmap@local/ogmaploader
-
-Requires.Wifi.Type=Wifi
-Requires.Wifi.DefaultProxy=wifi@local/wifi
-
 # Config Parameters
 Config.General.FactoryLibNames.Default=libOrcaQGui2dFactory.so
 Config.General.DisplayRefreshTime.Default=200
@@ -48,6 +17,32 @@ Config.ScreenCapture.SidePad.Default = 2
 Config.ScreenCapture.BottomPad.Default = 2
 Config.ScreenCapture.CaptureTimerInterval.Default = 1000
 Config.OgMapsCombined.LookupTableFileName.Default= ogHazardLookupTable.png
+
+Config.Element0.Type.Default = Grid
+Config.Element1.Type.Default = LaserScanner2d
+Config.Element1.Detail.Default = laserscanner2d@local/laser2d
+Config.Element2.Type.Default = Localise2d
+Config.Element2.Detail.Default = localise2d@local/localiser
+Config.Element3.Type.Default = Particle2d
+Config.Element3.Detail.Default = particle2d@local/localiser
+Config.Element4.Type.Default = PolarFeature2d
+Config.Element4.Detail.Default = polarfeature2d@local/laserfeatureextractor
+Config.Element5.Type.Default = PathFollower2d
+Config.Element5.Detail.Default = pathfollower2d@local/localnav
+Config.Element6.Type.Default = PathPlanner2d
+Config.Element6.Detail.Default = pathplanner2d@local/pathplanner
+Config.Element7.Type.Default = PixMap
+Config.Element7.Detail.Default = pixmap@local/pixmaploader
+Config.Element8.Type.Default = FeatureMap2d
+Config.Element8.Detail.Default = featuremap2d@local/featuremaploader
+Config.Element9.Type.Default = OgMap
+Config.Element9.Detail.Default = ogmap@local/ogmaploader
+Config.Element10.Type.Default = Wifi
+Config.Element10.Detail.Default = wifi@local/wifi
+Config.Element11.Type.Default = Gps
+Config.Element11.Detail.Default = gps@local/gps
+Config.Element12.Type.Default = MultiOgMaps
+Config.Element12.Detail.Default = ogmap@local/ogmaploader hazardmap@local/ogmaploader2
 
 # external configuration options
 Config.Ice.Override.ConnectTimeout.Default=150

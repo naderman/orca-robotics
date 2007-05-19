@@ -11,12 +11,7 @@
 #ifndef ORCAGUI_DEFAULT_FACTORY_H
 #define ORCAGUI_DEFAULT_FACTORY_H
 
-#include <QString>
-
-#include <orca/orca.h>
-#include <orcaice/context.h>
 #include <orcaqgui/guielementfactory.h>
-#include <QPainter>
 
 namespace orcaqgui2d
 {
@@ -32,12 +27,13 @@ namespace orcaqgui2d
 
         DefaultFactory();
 
-        // returns a NULL pointer if something goes wrong
-        virtual orcaqgui::GuiElement* create(const orcaice::Context     &context,
-                                             const QStringList          &interfaceIds,
-                                             const QStringList          &proxyStrList,
-                                             QColor                      suggestedColor,
-                                             orcaqgui::IHumanManager    *humanManager ) const;
+        virtual orcaqgui::GuiElement* create( const orcaice::Context         &context,
+                                    const QString                  &elementType,
+                                    const QStringList              &elementDetails,
+                                    QColor                          suggestedColor,
+                                    orcaqgui::IHumanManager        *humanManager ) const;
+        
+        bool lookupElementType( const QStringList &ids, QString &elementType ) const;
 
     private:
         

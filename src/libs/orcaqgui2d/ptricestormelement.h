@@ -47,7 +47,12 @@ public:
           painter_(painter),
           timeoutMs_(timeoutMs),
           isConnected_(false)
-        {};
+        {
+            //try to connect once
+            if ( listener_.connect() != 0 ) {
+                throw orcaqgui::OrcaGuiException("Problem connecting to interface with proxyString " + proxyString);
+            }
+        };
 
     //! Can do special stuff on connection by inheriting and overloading this
     virtual void actionOnConnection()=0;

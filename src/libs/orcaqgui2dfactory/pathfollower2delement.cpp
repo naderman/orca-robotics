@@ -126,7 +126,7 @@ PathfollowerButtons::setWpButton( bool onOff )
 PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
                                               const std::string &proxyString,
                                               orcaqgui::IHumanManager *humanManager)
-    : doneInitialSetup_(false),
+    : isConnected_(false),
       proxyString_(proxyString),
       context_(context),
       humanManager_(humanManager),
@@ -149,6 +149,9 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
     
     pathUpdateConsumer_ = new PathUpdateConsumer;
 
+    if (connectToInterface()!=0) 
+        throw orcaqgui::OrcaGuiException("Problem connecting to interface with proxyString " + proxyString);
+    
     timer_ = new orcaice::Timer;
     activationTimer_ = new orcaice::Timer;
     activationTimer_->restart();
@@ -163,7 +166,7 @@ PathFollower2dElement::update()
 {
     // if initial setup is not done yet (no connection established)
     // then try to connect every 5 seconds
-    if ( !doneInitialSetup_ )
+    if ( !isConnected_ )
     {
         if (firstTime_) {
             doInitialSetup();
@@ -245,9 +248,11 @@ PathFollower2dElement::setTransparency( bool useTransparency )
     currentTransparency_ = useTransparency;
 }
 
-void
-PathFollower2dElement::doInitialSetup()
+int
+PathFollower2dElement::connectToInterface()
 {
+    if (isConnected_) return 0;
+    
     humanManager_->showStatusMsg(Information, "PathFollowerElement is trying to connect");
     
     // Here's what IceStormElement usually does for you if the GuiElement inherits from IceStormElement (see comments in .h file for more information)
@@ -263,11 +268,18 @@ PathFollower2dElement::doInitialSetup()
     catch ( ... )
     {
         humanManager_->showStatusMsg(Warning, "Problem connecting to pathfollower interface. Will try again later.");
-        return;
+        return -1;
     }
     humanManager_->showStatusMsg(Information, "Connected to pathfollower interface successfully.");
     
-    doneInitialSetup_ = true;
+    isConnected_ = true;
+    return 0;
+}
+
+void
+PathFollower2dElement::doInitialSetup()
+{
+    connectToInterface();
     
     try
     {        

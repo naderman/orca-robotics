@@ -149,7 +149,7 @@ void MainWindow::init( GuiElementModel                   *guiElemModel,
     elemModel_->setView( elemView_ );
     
     QObject::connect( regView_,SIGNAL(newSelection( const QList<QStringList> & )),
-                      elemModel_,SLOT(createGuiElement( const QList<QStringList> & )) );
+                      elemModel_,SLOT(createGuiElementFromSelection( const QList<QStringList> & )) );
 
     regTimer_ = new QTimer( this );
     QObject::connect( regTimer_,SIGNAL(timeout()), this,SLOT(refreshRegistryView()) );
@@ -176,49 +176,40 @@ void MainWindow::init( GuiElementModel                   *guiElemModel,
 void
 MainWindow::loadElementsFromConfigFile( const orcaice::Context & context )
 {
-    // default elements
-    QList<QStringList> list;
-    QStringList sl;
-    sl << "default" << "global" << "local" << "local" << "::local::Grid";
-    cout<<"adding grid..."<<endl;
-    list << sl;
-    elemModel_->createGuiElement( list );
-    elemModel_->setCoordinateFramePlatform( 0 );
-
-    // elements from the config file
-    std::vector<std::string> tags = orcaice::getRequiredTags( context );
-    cout << "TRACE(mainwin.cpp): Tags from config file: " << endl;
-    for (unsigned int i=0; i<tags.size(); i++)
+    // get properties from config file
+    string prefix = context.tag() + ".Config.Element";
+    int i=0;
+    QString elementType;
+    QStringList elementDetails;
+    
+    while(true)
     {
-        cout << tags[i] << endl;
-    }
-    orca::FQInterfaceName ifaceName;
-    orcacm::RequiresHeader ifaceHeader;
-    for ( unsigned int i=0; i<tags.size(); ++i ) {
-        // NOTE: only works with indirect proxies
-        ifaceName = orcaice::toInterfaceName( orcaice::getRequiredInterfaceAsString( context, tags[i] ) );
-
-        assert( !ifaceName.iface.empty() && !ifaceName.platform.empty() 
-                    && !ifaceName.component.empty() && "must be an indirect proxy" );
-
-        ifaceHeader = orcacm::getRequiresHeader( context, ifaceName );
-
-        if ( ifaceHeader.id == "unknown" ) {
-            //cout<<"failed to get interface ID"<<endl;
+        stringstream key;
+        key << prefix << i;
+        Ice::StringSeq strOut;
+        
+        //  Find elementType
+        int ret = orcaice::getPropertyAsStringSeq( context.properties(), key.str()+".Type", strOut );
+        if (ret!=0) break;
+        elementType = QString(strOut[0].c_str());
+        
+        //  Find elementDetails
+        ret = orcaice::getPropertyAsStringSeq( context.properties(), key.str()+".Detail", strOut );
+        elementDetails.clear();
+        if (ret!=0)
+        {
+            // no detail means special element with no interfaces like Grid
+            elementDetails.push_back("local@global/local");
         }
-        else {
-            cout<<"adding "<<ifaceHeader.id<<"..."<<endl;
-
-            sl.clear();
-            list.clear();
-            sl << "default"
-               << QString::fromStdString(ifaceHeader.name.platform)
-               << QString::fromStdString(ifaceHeader.name.component)
-               << QString::fromStdString(ifaceHeader.name.iface)
-               << QString::fromStdString(ifaceHeader.id);
-            list << sl;
-            elemModel_->createGuiElement( list );
+        else
+        {
+            for ( unsigned int k=0; k<strOut.size(); k++ )
+            {
+                elementDetails.push_back(QString(strOut[k].c_str()));
+            }
         }
+        elemModel_->createGuiElement( elementType, elementDetails );
+        i++;
     }
 }
 

@@ -20,6 +20,21 @@
 
 namespace orcaqgui
 {
+    
+class OrcaGuiException : public std::exception
+{ 
+public:
+    OrcaGuiException(const char *message)
+        : message_(message)
+        {}
+    OrcaGuiException(const std::string &message)
+        : message_(message)
+        {}
+    ~OrcaGuiException()throw(){}
+    virtual const char* what() const throw() { return message_.c_str(); }
+private:
+    std::string  message_;
+};
        
 /*!
  *
@@ -34,7 +49,7 @@ public:
     
     GuiElement() : platform_(""),
                    details_(""),
-                   name_("")
+                   type_("")
                    {};
     
     virtual ~GuiElement() {};
@@ -80,18 +95,18 @@ public:
     QString platform() { return platform_; };
     void setPlatform( QString platform ) { platform_ = platform; };
     
-    //! Access and set functions for details string displayed in table, e.g. ::orca::OgMap
+    //! Access and set functions for details string displayed in table, e.g. ogmap@hemp/ogmaploader
     QString details() { return details_; };
     void setDetails( QString details ) { details_ = details; };
     
-    //! Access and set functions for name string displayed in table, e.g. ogmap@hemp/ogmaploader
-    QString name() { return name_; };
-    void setName( QString name ) { name_ = name; };
+    //! Access and set functions for type string displayed in table, e.g. OgMap
+    QString type() { return type_; };
+    void setName( QString type ) { type_ = type; };
     
 private:
     QString platform_;
     QString details_;
-    QString name_;
+    QString type_;
     
 };
 

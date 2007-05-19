@@ -5,17 +5,17 @@ using namespace std;
 
 namespace orcaqgui {
 
-std::vector<QStringList> 
-GuiElementFactory::supportedInterfaceIds() const
+std::vector<QString> 
+GuiElementFactory::supportedElementTypes() const
 {
-    return supportedInterfaceIds_;
+    return supportedElementTypes_;
 }
 
 bool 
-GuiElementFactory::isSupported( const QStringList &interfaceIds ) const
+GuiElementFactory::isSupported( const QString &elementType ) const
 {
-    for ( unsigned int i=0; i<supportedInterfaceIds_.size(); ++i ) {
-        if ( supportedInterfaceIds_[i] == interfaceIds ) {
+    for ( unsigned int i=0; i<supportedElementTypes_.size(); ++i ) {
+        if ( supportedElementTypes_[i] == elementType ) {
             return true;
         }
     }
@@ -23,9 +23,9 @@ GuiElementFactory::isSupported( const QStringList &interfaceIds ) const
 }
 
 void
-GuiElementFactory::addSupportedType( const QStringList & interfaceType )
+GuiElementFactory::addSupportedType( const QString & elementType )
 {
-    supportedInterfaceIds_.push_back( interfaceType );
+    supportedElementTypes_.push_back( elementType );
 }
 
 

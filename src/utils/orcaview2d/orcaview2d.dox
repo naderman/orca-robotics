@@ -111,6 +111,10 @@ Here's a screenshot of the GUI connected to a few interfaces belonging to two pl
    
 @section configuration Configuration
 
+@par Elements and their interfaces
+
+GuiElements bla bla
+
 @par General Settings
 
 - @c OrcaView.Config.General.FactoryLibNames (string)

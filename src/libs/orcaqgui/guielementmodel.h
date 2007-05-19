@@ -73,19 +73,27 @@ public:
     
     const QList<GuiElement*> elements() { return elements_; };
     
+    void createGuiElement( const QString &elementType, QStringList &elementDetails );
+    
 signals:
     void newPlatform( const QString& );
     void platformNeedsRemoval( const QString& );
 
 public slots:
     void removeAllGuiElements();
-    void createGuiElement( const QList<QStringList> & );
+    void createGuiElementFromSelection( const QList<QStringList> & );
     void setTransparency(bool transparency);
 
 private:
 
     // returns true if supported by a factory otherwise false
-    bool instantiateFromFactories( GuiElement* &element, const QStringList &ids, const QColor &platformColor, const QStringList &proxyStrList );
+    bool instantiateFromFactories( GuiElement* &element, 
+                                   const QString &elementType, 
+                                   const QColor &platformColor, 
+                                   const QStringList &elementDetails );
+    
+    void determinePlatform( QStringList &elementDetails,
+                            QString     &platform );
 
     QList<GuiElement*> elements_;
     
@@ -95,13 +103,15 @@ private:
     orcaice::Context context_;
     IHumanManager *humanManager_;
     bool doesPlatformExist( QString &platformName );
-    bool doesInterfaceExist( const QStringList& proxyStrList, int numElements );
+    bool doesElementExist( const QStringList& elementDetails, int numElements );
     
     StringToColorMap *platformColors_;
     
     QString platformInFocus_;
     GuiElementView* view_;
     bool currentTransparency_;
+    
+    QString lookupTypeFromFactories( QStringList &ids );
 };
 
 
