@@ -22,17 +22,7 @@
 
 @par Requires
 
-- @ref orca_interface_featuremap2d [OrcaView.Requires.FeatureMap2d]
-- @ref orca_interface_gps [OrcaView.Requires.Gps]
-- @ref orca_interface_laserscanner2d [OrcaView.Requires.LaserScanner2d]
-- @ref orca_interface_localise2d [OrcaView.Requires.Localise2d]
-- @ref orca_interface_ogmap [OrcaView.Requires.OgMap]
-- @ref orca_interface_particle2d [OrcaView.Requires.Particle2d]
-- @ref orca_interface_pathfollower2d [OrcaView.Requires.PathFollower2d]
-- @ref orca_interface_pathplanner2d [OrcaView.Requires.PathPlanner2d]
-- @ref orca_interface_pixmap [OrcaView.Requires.PixMap]
-- @ref orca_interface_polarfeature2d [OrcaView.Requires.PolarFeature2d]
-- @ref orca_interface_wifi [OrcaView.Requires.Wifi]
+The way interfaces are configured is different for the GUI. See explanations below.
 
 @image html orcaview.png
 
@@ -44,18 +34,20 @@ Orcaview consists of three parts: the registry view (upper left), the element vi
 The registry view displays all currently existing "adapters" (interface@host/platform) in the Orca world by connecting to the central Icegrid registry. Pressing @c F5 triggers a request to the registry to update the view.
 
 @par Element view
-This table lists the interfaces which are currently connected to the GUI. Connected interfaces are represented by so-called GUI element (see orcagui::GuiElement). Two mechanisms exist to create GUI elements which subscribe to Orca interfaces:
+This table lists the GuiElements which are currently setup in the GUI. Each GuiElement has a "type" (e.g. LaserScanner2d) and "details" (e.g. laserscanner2d@hemp/laser2d). A GuiElement typically hooks up to a single required interface but there are other options: no interfaces (e.g. the GridElement), multiple required interfaces (e.g. OgMapsCombinedElement), and provided interfaces (no example in Orca at the moment).
 
--# by specifying required interfaces in the @c .cfg file
+Two mechanisms exist to add GuiElements:
+
+-# by specifying them in the @c .cfg file (see below)
 -# by interactively adding them using the registry view. Different modes exist:
     - Single interface: right-click on an interface and select "Add to project". If the interface is supported, it will be added, otherwise an error message will appear.
     - Multiple interfaces: several interfaces can form a single GuiElement (see e.g. OgMapsCombined which subscribes to two occupancy grid map interfaces and displays both of them as one element). Hold down the @c Ctrl or @c Shift key to select multiple interfaces.
-    - All platform interfaces: right-click on a platform and select "Add all supported interfaces". It goes through the list and tries to connect all of them. The non-supported ones will trigger error messages in the status bar.
+    - All platform interfaces: right-click on a platform or component and select "Add all supported interfaces". It goes through the list and tries to connect all of them. The non-supported ones will trigger error messages in the status bar.
 
-Right-clicking on elements in the elements view brings up configuration/interaction options. Interfaces can also be removed interactively this way.
+Right-clicking on elements in the elements view brings up configuration/interaction options. GuiElements can also be removed interactively this way.
  
  @par World view
- The world view shows the graphical representation of the GUI elements. Each GUI element is periodically updated, stores its own data, paints itself to the world view, adds buttons to the toolbar and entries to the menu. This modular design makes the GUI extensible ( see @ref extensibility ). 
+ The world view shows the graphical representation of the GuiElements. Each GuiElement is periodically updated, stores its own data, paints itself to the world view, adds buttons to the toolbar and entries to the menu. This modular design makes the GUI extensible ( see @ref extensibility ). 
 
 The world view is usually a global coordinate system but it can also be centered on a particular GUI element (e.g. a local view of a particular platform).
 
@@ -67,13 +59,13 @@ architecture allows custom GuiElements to be added without modifying the
 main source code.
 
 @section MRS Multi-robot systems
-When many platforms need to be displayed, the element view table grows quickly and you it's hard to figure out which GUI elements belong to which platform. For this situation, it is possible to filter the element view list on a per-platform basis. By selecting a particular platform in the combo box above the list, only interfaces belonging to that platform will be displayed. At the same time, all GUI elements belonging to that platform are displayed in their respective platform color (assigned at startup). All other GUI elements are grayed out. If everything needs to be displayed, choose the special "global" platform from the list.
+When many platforms need to be displayed, the element view table grows quickly and you it's hard to figure out which GuiElements belong to which platform. For this situation, it is possible to filter the element view list on a per-platform basis. By selecting a particular platform in the combo box above the list, only elements belonging to that platform will be displayed. At the same time, all GuiElements belonging to that platform are displayed in their respective platform color (assigned at startup). All other GuiElements are grayed out. If everything needs to be displayed, choose the special "global" platform from the list.
  
-A second way of putting a particular platform into focus, is to click on a localised representation of them in the world view (e.g. Localise2d or Gps of a robot). The combo box changes simultaneously. By hovering the mouse pointer above localised GUI elements, a tooltip with the platform name shows up. The origin of the world view (indicated by a cross) corresponds to the "global" platform (try clicking on it).
+A second way of putting a particular platform into focus, is to click on a localised representation of them in the world view (e.g. Localise2d or Gps of a robot). The combo box changes simultaneously. By hovering the mouse pointer above localised GuiElements, a tooltip with the platform name shows up. The origin of the world view (indicated by a cross) corresponds to the "global" platform (try clicking on it).
 
 @section user_input User input
  
-Apart from receiving information from the interfaces, users can also send data to them via their corresponding GUI elements. Each element adds its own buttons to the toolbar and entries into the menu. Right-clicking on the elements in the element view brings up some interaction options too. 
+Apart from receiving information from interfaces, users can also send data to them via their corresponding GuiElements. Each element adds its own buttons to the toolbar and entries into the menu. Right-clicking on the elements in the element view brings up some interaction options too. 
  
 The following interactions are currently implemented. Note that they work on a per-element basis:
 
@@ -102,7 +94,7 @@ Sometimes, it is desirable to interact with many elements at the same time, e.g.
 - Go for all PathFollower2dElementss: F12
 
 @section screenshot Screenshot
-Here's a screenshot of the GUI connected to a few interfaces belonging to two platforms. Robot "hemp" is in focus and thus its GUI elements are displayed in color: they are Laser, Localise2d, and PathPlanner2d. The other platform's GUI elements are grayed out.
+Here's a screenshot of the GUI connected to a few interfaces belonging to two platforms. Robot "hemp" is in focus and thus its GuiElements are displayed in color: they are Laser, Localise2d, and PathPlanner2d. The other platform's GuiElements are grayed out.
 
 @image html orcaview_screenshot.png
 
@@ -113,7 +105,20 @@ Here's a screenshot of the GUI connected to a few interfaces belonging to two pl
 
 @par Elements and their interfaces
 
-GuiElements bla bla
+GuiElements typically connect to one required interface but can also have zero or several. To be able to configure them, they have "type" and "details" configuration options. When the GUI starts up, it will go through the list of Elements and will try to set them up (which typically involves trying to connect to interfaces).
+
+- @c OrcaView.Config.ElementX.Type (string)
+     - GuiElement type
+     - X is a number (need to be consecutive)
+     - Supported types are: Grid, LaserScanner2d, Localise2d, Particle2d, PolarFeature2d, PathFollower2d, PathPlanner2d, PixMap, FeatureMap2d, OgMap, Wifi, Gps, MultiOgMaps
+     
+- @c OrcaView.Config.ElementX.Details (string)
+    - Network connection details
+    - X is a number (need to be consecutive)
+    - Details are dependent on the Type:
+        - no interfaces (e.g. Grid): not required
+        - one required interface (e.g. LaserScanner2d): interface@platform/component
+        - several required interfaces (e.g. MultiOgMaps): interface1@platform1/component1 ... interfaceN@platformN/componentN
 
 @par General Settings
 
@@ -204,19 +209,12 @@ These are the default: waypoint settings that can be changed in the menu later. 
     
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory. 
 
-Note: If several interfaces of the same type are to be connected, just number the tags. Consider a system with two robots, @c bigrobot has two lasers and @c smallrobot has one laser. You wanna display all of them in one GUI. The configuration file would look something like this:
-\verbatim
-OrcaView.Requires.Laser0.Proxy=laser0@bigrobot/sicklaser
-OrcaView.Requires.Laser1.Proxy=laser1@bigrobot/sicklaser
-OrcaView.Requires.Laser2.Proxy=laser@smallrobot/sicklaser
-\endverbatim
-
 @section extensibility Extensibility
 Orcaview is designed in a modular way to allow easy extensions. There are two options of how to paint items in the GUI:
 -# by implementing a new orcagui::GuiElement. This is the preferred method to paint data from provided interfaces.
 -# by using the "special" @ref orca_interface_qgraphics2d interface. This is the preferred method to paint data which doesn't directly belong to an interface (not included in the Slice interface definition) but is useful for debugging purposes etc.
 
-To see how the first option works, check out the orcagui::LaserElement. To see how the second option works, check out @ref orca_component_pathplanner which can display the skeleton for a grid-potential-based pathplanning algorithm.
+To see how the first option works, check out the orcagui::LaserScanner2dElement. To see how the second option works, check out @ref orca_component_pathplanner which can display the skeleton for a grid-potential-based pathplanning algorithm.
 
 @section authors Authors
 Tobias Kaupp, Alex Brooks, Alex Makarenko

@@ -70,6 +70,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Big overhaul (tobi)
 
 - OrcaView2d:
+  - Redesign of factories and how elements are configured (tobi)
   - Fixed bug with uninitialised platform location (alex b)
   - Fixed bug with waypoint heading tolerances being normalised (alex b)
   - Changed range of entries for pathfollower parameters (tobi)
