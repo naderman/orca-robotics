@@ -14,6 +14,7 @@
 #include <orcaobj/stringutils.h>
 #include <orcaqgui/ihumanmanager.h>
 #include <orcaqgui/guiicons.h>
+#include <orcaqgui/exceptions.h>
 #include <orcaqgui2dfactory/wptolerancesdialog.h>
 
 #include "pathfollower2delement.h"
@@ -150,7 +151,7 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
     pathUpdateConsumer_ = new PathUpdateConsumer;
 
     if (connectToInterface()!=0) 
-        throw orcaqgui::OrcaGuiException("Problem connecting to interface with proxyString " + proxyString);
+        throw orcaqgui::Exception("Problem connecting to interface with proxyString " + proxyString);
     
     timer_ = new orcaice::Timer;
     activationTimer_ = new orcaice::Timer;

@@ -10,6 +10,9 @@
  
 #include <iostream>
 
+#include <orcaqgui/exceptions.h>
+#include <orcaqgui/ihumanmanager.h>
+
 #include <orcaqgui2dfactory/gridelement.h>
 #include <orcaqgui2dfactory/simpleguielements.h>
 #include <orcaqgui2dfactory/featuremap2delement.h>
@@ -22,7 +25,6 @@
 #include <orcaqgui2dfactory/wifielement.h>
 
 #include "defaultfactory.h"
-#include <orcaqgui/ihumanmanager.h>
 
 using namespace std;
 
@@ -146,7 +148,7 @@ DefaultFactory::create( const orcaice::Context         &context,
         }
     
     } 
-    catch (orcaqgui::OrcaGuiException &e)
+    catch (orcaqgui::Exception &e)
     {
         cout << "Problem when trying to create element: " << e.what() << endl;
         delete elem;

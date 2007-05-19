@@ -20,21 +20,6 @@
 
 namespace orcaqgui
 {
-    
-class OrcaGuiException : public std::exception
-{ 
-public:
-    OrcaGuiException(const char *message)
-        : message_(message)
-        {}
-    OrcaGuiException(const std::string &message)
-        : message_(message)
-        {}
-    ~OrcaGuiException()throw(){}
-    virtual const char* what() const throw() { return message_.c_str(); }
-private:
-    std::string  message_;
-};
        
 /*!
  *

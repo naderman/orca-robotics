@@ -15,6 +15,7 @@
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
 #include <orcaqgui/icestormlistener.h>
+#include <orcaqgui/exceptions.h>
 
 #include <orcaqgui2d/guielement2d.h>
 
@@ -47,7 +48,7 @@ public:
         {            
             //try to connect once
             if ( listener_.connect() != 0 ) {
-                throw orcaqgui::OrcaGuiException("Problem connecting to interface with proxyString " + proxyString);
+                throw orcaqgui::Exception("Problem connecting to interface with proxyString " + proxyString);
             }
         };
 
