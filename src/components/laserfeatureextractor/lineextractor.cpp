@@ -135,8 +135,20 @@ LineExtractor::isStartVisible( const Section &section,
          prevSection->isNextCon() &&
          prevSection->lineLength() > minLineLength_ )
     {
-        //cout<<"TRACE(lineextractor.cpp): junction of two lines" << endl;
-        return true;
+        // cout<<"TRACE(lineextractor.cpp): junction of two lines" << endl;
+        // Find the angle between them
+        double d = prevSection->eigVectX()*prevSection->eigVectX()+prevSection->eigVectY()*prevSection->eigVectY();
+        double px = -prevSection->eigVectX()*prevSection->c() / d;
+        double py = -prevSection->eigVectY()*prevSection->c() / d;
+        double prevAlpha = atan2( py, px );
+        double meetAngle = alpha-prevAlpha;
+        NORMALISE_ANGLE(meetAngle);
+
+        if ( fabs(meetAngle) > 30.0*M_PI/180.0 )
+        {
+            // cout<<"TRACE(lineextractor.cpp): Junction of two lines meeting at a reasonable angle" << endl;
+            return true;
+        }
     }
 
     // Is it a free-standing line that we can see the end of?
@@ -177,8 +189,20 @@ LineExtractor::isEndVisible( const Section &section,
          section.isNextCon() &&
          nextSection->lineLength() > minLineLength_ )
     {
-        //cout<<"TRACE(lineextractor.cpp): junction of two lines" << endl;
-        return true;
+        // cout<<"TRACE(lineextractor.cpp): junction of two lines" << endl;
+        // Find the angle between them
+        double d = nextSection->eigVectX()*nextSection->eigVectX()+nextSection->eigVectY()*nextSection->eigVectY();
+        double px = -nextSection->eigVectX()*nextSection->c() / d;
+        double py = -nextSection->eigVectY()*nextSection->c() / d;
+        double nextAlpha = atan2( py, px );
+        double meetAngle = alpha-nextAlpha;
+        NORMALISE_ANGLE(meetAngle);
+
+        if ( fabs(meetAngle) > 30.0*M_PI/180.0 )
+        {
+            // cout<<"TRACE(lineextractor.cpp): Junction of two lines meeting at a reasonable angle" << endl;
+            return true;
+        }
     }
 
     // Is it a free-standing line that we can see the end of?
