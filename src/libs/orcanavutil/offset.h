@@ -127,13 +127,17 @@ namespace orcanavutil {
     //! to a point (xOut,yOut) in another coordinate system
     //! using the offset between the two coordinate systems
     //! (translation: offsetX/Y, rotation:offsetT)
-    void transformPoint2d( double  xIn, 
-                           double  yIn,
-                           double  offsetX,
-                           double  offsetY,
-                           double  offsetT,
-                           double &xOut,
-                           double &yOut);
+    inline void transformPoint2d(   double  xIn, 
+                                    double  yIn,
+                                    double  offsetX,
+                                    double  offsetY,
+                                    double  offsetT,
+                                    double &xOut,
+                                    double &yOut)
+    {
+        xOut =  cos(offsetT) * (xIn+offsetX) + sin(offsetT) * (yIn+offsetY);
+        yOut = -sin(offsetT) * (xIn+offsetX) + cos(offsetT) * (yIn+offsetY);
+    }  
 
     //! Transforms a point (x,y) in one coordinate system
     //! to a point (x,y) in another coordinate system
