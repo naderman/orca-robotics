@@ -135,8 +135,8 @@ namespace orcanavutil {
                                     double &xOut,
                                     double &yOut)
     {
-        xOut =  cos(offsetT) * (xIn+offsetX) + sin(offsetT) * (yIn+offsetY);
-        yOut = -sin(offsetT) * (xIn+offsetX) + cos(offsetT) * (yIn+offsetY);
+        xOut =  std::cos(offsetT) * (xIn+offsetX) + std::sin(offsetT) * (yIn+offsetY);
+        yOut = -std::sin(offsetT) * (xIn+offsetX) + std::cos(offsetT) * (yIn+offsetY);
     }  
 
     //! Transforms a point (x,y) in one coordinate system
