@@ -118,7 +118,9 @@ GuiElements typically connect to one required interface but can also have zero o
     - Details are dependent on the Type:
         - no interfaces (e.g. Grid): not required
         - one required interface (e.g. LaserScanner2d): interface@platform/component
-        - several required interfaces (e.g. MultiOgMaps): interface1@platform1/component1 ... interfaceN@platformN/componentN
+        - several required interfaces (e.g. MultiOgMaps): 
+          interface1@platform1/component1:interface2@platform2/component2: ... :interfaceN@platformN/componentN
+          Note that you need a colon as a delimiter.
 
 @par General Settings
 

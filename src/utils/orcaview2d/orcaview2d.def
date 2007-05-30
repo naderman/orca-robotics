@@ -42,7 +42,7 @@ Config.Element10.Detail.Default = wifi@local/wifi
 Config.Element11.Type.Default = Gps
 Config.Element11.Detail.Default = gps@local/gps
 Config.Element12.Type.Default = MultiOgMaps
-Config.Element12.Detail.Default = ogmap@local/ogmaploader hazardmap@local/ogmaploader2
+Config.Element12.Detail.Default = ogmap@local/ogmaploader:hazardmap@local/ogmaploader2
 
 # external configuration options
 Config.Ice.Override.ConnectTimeout.Default=150
