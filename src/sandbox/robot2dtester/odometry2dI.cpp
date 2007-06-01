@@ -19,28 +19,3 @@ Odometry2dConsumerI::setData(const ::orca::Odometry2dData& obj,
 {
     cout<<"sub :"<<orcaice::toString(obj)<<endl;
 }
-/*
-::orca::Odometry2dDataPtr
-orca::Odometry2dI::getData(const Ice::Current& current) const
-{
-    return 0;
-}
-
-::orca::Odometry2dGeometryPtr
-orca::Odometry2dI::getGeometry(const Ice::Current& current) const
-{
-    return 0;
-}
-
-void
-orca::Odometry2dI::subscribe(const ::orca::Odometry2dConsumerPrx& subscriber,
-			     const Ice::Current& current)
-{
-}
-
-void
-orca::Odometry2dI::unsubscribe(const ::orca::Odometry2dConsumerPrx& subscriber,
-			       const Ice::Current& current)
-{
-}
-*/

@@ -17,32 +17,32 @@
 #include "powerI.h"
 #include "odometry2dI.h"
 
-#include "testloop.h"
-
+#include "handler.h"
 
 using namespace std;
-// not declaring our own namespace because we don't intend to run as a service
+
+namespace robot2dtester
+{
 
 class Component : public orcaice::Component
 {
 public:
     Component();
-    // do not delete testLoop_!!! It derives from Ice::Thread and deletes itself.
     virtual ~Component() {};
 
-    // component interface
     virtual void start();
     virtual void stop();
 
 private:
 
-    TestLoop* testLoop_;
+    // main loop
+    Handler* handler_;
 };
 
 
-Component::Component()
-    : orcaice::Component( "Robot2dTester" ),
-      testLoop_(0)
+Component::Component() : 
+    orcaice::Component( "Robot2dTester" ),
+    handler_(0)
 {
 }
 
@@ -54,20 +54,18 @@ Component::start()
     //
     // PROVIDED : Position2dConsumer
     //
-    // create servant and tell adapter about it (let it make up a globally unique name)
-    Ice::ObjectPrx obj = context().adapter()->addWithUUID( new Position2dConsumerI );
-    // make a direct proxy
-    Ice::ObjectPrx prx = context().adapter()->createDirectProxy( obj->ice_getIdentity() );
-    orca::Position2dConsumerPrx position2dCallbackPrx = orca::Position2dConsumerPrx::uncheckedCast( prx );
+    // create a callback object to recieve scans
+    Ice::ObjectPtr odometry2dConsumer = new Odometry2dConsumerI;
+    orca::Odometry2dConsumerPrx odometry2dCallbackPrx =
+        orcaice::createConsumerInterface<orca::Odometry2dConsumerPrx>( context(), odometry2dConsumer );
 
     //
     // Required : Power
     //
-    // create servant and tell adapter about it (let it make up a globally unique name)
-    obj = context().adapter()->addWithUUID( new PowerConsumerI );
-    // make a direct proxy
-    prx = context().adapter()->createDirectProxy( obj->ice_getIdentity() );
-    orca::PowerConsumerPrx powerCallbackPrx = orca::PowerConsumerPrx::uncheckedCast( prx );
+    // create a callback object to recieve scans
+    Ice::ObjectPtr powerConsumer = new PowerConsumerI;
+    orca::PowerConsumerPrx powerCallbackPrx =
+        orcaice::createConsumerInterface<orca::PowerConsumerPrx>( context(), powerConsumer );
 
     //
     // ENABLE NETWORK CONNECTIONS
@@ -77,8 +75,8 @@ Component::start()
     //
     // MAIN DRIVER LOOP
     //
-    testLoop_ = new TestLoop( position2dCallbackPrx, powerCallbackPrx, context() );
-    testLoop_->start();
+    handler_ = new Handler( odometry2dCallbackPrx, powerCallbackPrx, context() );
+    handler_->start();
 
     // the rest is handled by the application/service
 }
@@ -86,17 +84,12 @@ Component::start()
 void
 Component::stop()
 {
-    // get a handle on the loop thread before it's stopped. This way we can join it even if it's already gone.
-    IceUtil::ThreadControl testControl = testLoop_->getThreadControl();
-
-    tracer()->print( "stopping loop" );
-    // Tell the main loop to stop
-    testLoop_->stop();
-
-    tracer()->print( "joining thread" );
-    // Then wait for it
-    testControl.join();
+    tracer()->debug( "Stopping component", 2 );
+    orcaice::stopAndJoin( handler_ );
+    tracer()->debug( "Component stopped", 2 );
 }
+
+} // namespace
 
 //
 // Build the component into a stand-alone application
@@ -104,7 +97,7 @@ Component::stop()
 int
 main(int argc, char * argv[])
 {
-    Component component;
+    robot2dtester::Component component;
     orcaice::Application app( component );
     return app.main(argc, argv);
 }

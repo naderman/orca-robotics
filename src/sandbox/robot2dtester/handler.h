@@ -8,10 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ROBOT2D_TESTMACHINE_TEST_LOOP_H
-#define ORCA2_ROBOT2D_TESTMACHINE_TEST_LOOP_H
-
-#include <Ice/Ice.h>
+#ifndef ORCA2_ROBOT2D_TESTMACHINE_HANDLER_H
+#define ORCA2_ROBOT2D_TESTMACHINE_HANDLER_H
 
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
@@ -19,32 +17,35 @@
 #include <orca/odometry2d.h>
 #include <orca/power.h>
 
+namespace robot2dtester
+{
 
-class TestLoop : public orcaice::Thread
+class Handler : public orcaice::Thread
 {
 public:
 
-    TestLoop( const orca::Odometry2dConsumerPrx, const orca::PowerConsumerPrx,
+    Handler( const orca::Odometry2dConsumerPrx, const orca::PowerConsumerPrx,
               const orcaice::Context & context );
-    ~TestLoop();
+    ~Handler();
 
     virtual void run();
 
 private:
 
-    void printEvents();
-    void connectToPos( orca::Platform2dPrx &platform2dPrx );
-    void connectToPower( orca::PowerPrx &powerPrx );
+    void connectToOdometry( orca::Odometry2dPrx& odometry2dPrx );
+    void connectToPower( orca::PowerPrx& powerPrx );
+
+        // local object to receive data
+    orca::Odometry2dConsumerPrx odometry2dCallbackPrx_;
+    orca::PowerConsumerPrx powerCallbackPrx_;
 
     // Keep track of all significant events
     std::vector<std::string> events_;
-    
-    // local object to receive data
-    orca::Odometry2dConsumerPrx odometry2dCallbackPrx_;
-    orca::PowerConsumerPrx powerCallbackPrx_;
+    void printEvents();
 
     // component current context
     orcaice::Context context_;
 };
 
+} // namespace
 #endif

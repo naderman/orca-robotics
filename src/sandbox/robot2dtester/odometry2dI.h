@@ -11,10 +11,7 @@
 #define __odometry2dI_h__
 
 #include <orca/odometry2d.h>
-/*
-namespace orca
-{
-*/
+
 class Odometry2dConsumerI : virtual public orca::Odometry2dConsumer
 {
 public:
@@ -22,22 +19,4 @@ public:
     virtual void setData(const ::orca::Odometry2dData&,
 			 const Ice::Current&);
 };
-/*
-class Odometry2dI : virtual public Odometry2d
-{
-public:
-
-    virtual ::orca::Odometry2dDataPtr getData(const Ice::Current&) const;
-
-    virtual ::orca::Odometry2dGeometryPtr getGeometry(const Ice::Current&) const;
-
-    virtual void subscribe(const ::orca::Odometry2dConsumerPrx&,
-			   const Ice::Current&);
-
-    virtual void unsubscribe(const ::orca::Odometry2dConsumerPrx&,
-			     const Ice::Current&);
-};
-
-}
-*/
 #endif
