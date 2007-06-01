@@ -1,6 +1,6 @@
-IF ( NOT OS_WIN AND BUILD_TESTS )
+IF ( NOT OS_WIN )
 
-OPTION( BUILD_ROBOT2D_TESTER "Try to build a Tester for SegwayRmp component" ON )
+OPTION( BUILD_ROBOT2D_TESTER "Try to build a Tester for SegwayRmp component" OFF )
 
 IF ( BUILD_ROBOT2D_TESTER )
 
@@ -15,5 +15,4 @@ IF ( BUILD_ROBOT2D_TESTER )
 
 ENDIF ( BUILD_ROBOT2D_TESTER )
 
-ENDIF ( NOT OS_WIN AND BUILD_TESTS )
-
+ENDIF ( NOT OS_WIN )

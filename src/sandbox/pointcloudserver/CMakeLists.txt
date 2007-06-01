@@ -1,4 +1,4 @@
-OPTION( BUILD_POINT_CLOUD_SERVER "Try to build point cloud server" ON )
+OPTION( BUILD_POINT_CLOUD_SERVER "Try to build point cloud server" OFF )
 
 IF ( BUILD_POINT_CLOUD_SERVER )
 

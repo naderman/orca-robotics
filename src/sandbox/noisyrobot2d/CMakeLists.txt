@@ -1,6 +1,6 @@
 IF ( NOT OS_WIN )
 
-OPTION( BUILD_NOISYROBOT2D "Try to build NoisyRobot2d component" ON )
+OPTION( BUILD_NOISYROBOT2D "Try to build NoisyRobot2d component" OFF )
 
 IF ( BUILD_NOISYROBOT2D )
 

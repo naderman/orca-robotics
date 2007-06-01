@@ -1,4 +1,4 @@
-OPTION( BUILD_DRUNK_ROBOT "Try to build Drunk Robot Example" ON )
+OPTION( BUILD_DRUNK_ROBOT "Try to build Drunk Robot Example" OFF )
 
 IF ( NOT OS_WIN AND BUILD_DRUNK_ROBOT )
 

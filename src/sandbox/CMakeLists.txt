@@ -1,6 +1,6 @@
 # A place for components and utilities which are experimental, untested,
-# undocumented, unmaintaned, or all of the above. The option BUILD_SANDBOX is OFF
-# by default.
+# undocumented, unmaintaned, or all of the above. 
+# The option BUILD_SANDBOX is OFF by default.
 
 MESSAGE ( STATUS "== SANDBOX ==" )
 
@@ -12,10 +12,10 @@ IF ( NOT OS_WIN AND BUILD_SANDBOX )
     ADD_SUBDIRECTORY ( gorca )
     ADD_SUBDIRECTORY ( netcam )
     ADD_SUBDIRECTORY ( reactivewalker )
-    # ADD_SUBDIRECTORY ( noisyrobot2d )
+    ADD_SUBDIRECTORY ( noisyrobot2d )
     ADD_SUBDIRECTORY ( pointcloudserver )
     ADD_SUBDIRECTORY ( pointcloudviewer ) 
-    # ADD_SUBDIRECTORY ( robot2dtester )
+    ADD_SUBDIRECTORY ( robot2dtester )
     
 ELSE ( NOT OS_WIN AND BUILD_SANDBOX )
 
