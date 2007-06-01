@@ -148,7 +148,13 @@ The @c segwayrmp driver provides control of a Segway RMP (Robotic Mobility Platf
 
 For safety, this Segway will stop (zero-out motion commands) if no new command has been received from the PC in the previous 400ms or so. This is done in Segway firmware and this component does not duplicate this functionality. Thus, if you want to continue moving at a constant velocity, you must continuously send your desired velocities to the Platform2d interface (@ref orca_component_teleop component does exactly that).
 
-The implementation of @ref orca_interface_position3d interface does not integrate robot's motion in the vertical direction. The altitude (z coordinate) of is always reported as 0.0. 
+When controlled through the USB port, the Segway implements an extra level of safety precaution which works as follows. On startup, the Segway black box checks for the presence of a host PC. If the host PC is absent, the Segway disables itself. All of this means that the following startup order must be followed:
+-# Host PC is powered up and the Segway USB cable is plugged in (give it enough time to activate USB)
+-# SegwayRMP is powered up.
+
+If for some reason you did it in the wrong order (e.g. the cable was unplugged), just power cycle the Segway.
+
+The implementation of @ref orca_interface_odometry3d interface does not integrate robot's motion in the vertical direction. The altitude (z coordinate) of is always reported as 0.0. 
 
 @par Dependancies
 
