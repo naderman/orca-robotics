@@ -2,6 +2,7 @@
 #define ORCANAVUTIL_COV2D_H
 
 #include <iostream>
+#include <assert.h>
 
 namespace orcanavutil {
 
@@ -25,6 +26,16 @@ public:
     double &xx() { return xx_; }
     double &xy() { return xy_; }
     double &yy() { return yy_; }
+
+    // access like a matrix
+    double m( int i, int j ) const
+        {
+            if      ( i==0 && j==0 ) return xx_;
+            else if ( i==0 && j==1 ) return xy_;
+            else if ( i==1 && j==0 ) return xy_;
+            else if ( i==1 && j==1 ) return yy_;
+            else { assert( false&&"bad index" ); return 0; }
+        }
 
 private: 
 

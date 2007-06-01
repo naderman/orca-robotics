@@ -2,6 +2,7 @@
 #define ORCANAVUTIL_COV3D_H
 
 #include <iostream>
+#include <assert.h>
 
 namespace orcanavutil {
 
@@ -60,6 +61,18 @@ public:
     //! Height of a gaussian with this covariance matrix, centred on (0,0,0),
     //! evaluated at the point (x,y,t)
     double gauss( double x, double y, double t ) const;
+
+    //! access like a matrix
+    double m( int i, int j ) const
+        {
+            if      ( i==0 && j==0 ) return xx();
+            else if ( i==0 && j==1 || i==1 && j==0 ) return xy();
+            else if ( i==0 && j==2 || i==2 && j==0 ) return xt();
+            else if ( i==1 && j==1 ) return yy();
+            else if ( i==1 && j==2 || i==2 && j==1 ) return yt();
+            else if ( i==2 && j==2 ) return tt();
+            else { assert( false&&"bad index" ); return 0; }
+        }
 
 private: 
 

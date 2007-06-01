@@ -4,11 +4,12 @@
 #include <cmath>
 #include <iostream>
 #include <string>
+#include <assert.h>
 
 namespace orcanavutil {
 
 //!
-//! @author 
+//! @author Alex Brooks
 //!
 class Pose
 {
@@ -28,6 +29,15 @@ public:
     double x()     const { return x_; }
     double y()     const { return y_; }
     double theta() const { return theta_; }
+
+    // Access like a vector
+    double v( int i ) const
+        { 
+            if      ( i==0 ) return x_;
+            else if ( i==1 ) return y_;
+            else if ( i==2 ) return theta_;
+            else { assert( false&&"bad index" ); return 0; }
+        }
 
     std::string toString() const;
 

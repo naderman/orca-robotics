@@ -122,9 +122,9 @@ namespace orcanavutil {
 
         // Then, rotate the remaining offset by -initialOffsetTheta
         resultX =   remainingOffsetX*cos(-initialOffsetTheta) 
-                       - remainingOffsetY*sin(-initialOffsetTheta);
+                  - remainingOffsetY*sin(-initialOffsetTheta);
         resultY =   remainingOffsetX*sin(-initialOffsetTheta) 
-                       + remainingOffsetY*cos(-initialOffsetTheta);
+                  + remainingOffsetY*cos(-initialOffsetTheta);
 
         resultTheta = totalOffsetTheta - initialOffsetTheta;
     }
