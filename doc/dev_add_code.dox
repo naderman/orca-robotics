@@ -12,37 +12,35 @@
 
 @page orca_doc_devadd_code Adding Souce Code to Orca2
 
-@note Reviewed for release 2.1.2
+@note Reviewed for release 2.4.0
 
 @see @ref orca_doc_devadd_iface
 
 @par What is what and where does it live?
 
 All source code is divided into 6 categories, each has a subdirectory in [ORCA2_SRC]/src
--# @e Components
+-# @e Components [components]
     - Well-tested and well-documented with staticly-defined provided and required interfaces
     - Can be stand-alone executables and/or IceBox services
--# @e Utilities
+-# @e Utilities [utils]
     - Utility applications. This is a broad category which currently includes 
-        - implementation of global services, e.g. logging
+        - implementation of global services, e.g. logging, visualization
         - debugging tools,
         - utilitiies used in the build process, etc.
--# @e Libraries
+-# @e Libraries [libs]
         - Code which is used by more than one component or utility is put into shared libraries.
--# @e Tests 
+-# @e Tests [tests]
         - Components and utilities whose sole purpose is to test reliability, performance, etc. of other components and the system as a whole.
--# @e Examples
+-# @e Examples [examples]
         - Components intended as examples for developers
--# @e Sandbox
+-# @e Sandbox [sandbox]
         - Experimental code. 
         - Compilation is turned off by default     
 
 @par Adding code to the build system
 
--# Create a new sub-directory in the appropriate place, e.g.
-    - @c [ORCA2_SRC]/src/components for components
-    - @c [ORCA2_SRC]/src/utils for utilitites
-    - @c [ORCA2_SRC]/src/libs for libraries
+-# Create a new sub-directory in the appropriate place (see above for options)
+    - e.g. @c [ORCA2_SRC]/src/components/mymodule for a new component
 -# Edit files
     - Start by copying the directory of a similar module.
     - Edit the CMake file @c CMakeLists.txt in the new directory
@@ -50,8 +48,8 @@ All source code is divided into 6 categories, each has a subdirectory in [ORCA2_
     - Edit the documentation file @c mymodule.dox
     - Modify the names of classes, namespaces, etc. using the name of your module
 -# Add an entry for the new directory to the build system.
-    - Edit file @c ../CMakeLists.txt, e.g.
-        - @c [ORCA2_SRC]/src/components/CMakeLists.txt for components
+    - Edit the file @c CMakeLists.txt in the directory @e containing your new module
+        - e.g. @c [ORCA2_SRC]/src/components/CMakeLists.txt for components
     - In alphabetical order, add a line "ADD_SUBDIRECTORY ( mymodule )"
 
 */
