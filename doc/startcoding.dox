@@ -30,7 +30,8 @@ Read: @ref orca_doc_devadd_code
 
 Which component to copy? 
 - If you are developing something specific, then you probably want start with a component similar to what you have in mind. Try to find it in the Orca distribution. Ideally it would have interfaces similar to yours or a similar data flow. For example, if you are developing a server for a new robotic platform, then start with @ref orca_component_robot2d component. (The source is in @c [ORCA_SRC]/src/components/robot2d )
-- If you just want to evaluate Orca, then you probably want to write a simple generic component. We maintain a component called @ref orca_component_brick in the Orca source tree. We use it as a standard implementation to test IceGrid services but it's also a useful template to start playing with. (The source is in @c [ORCA_SRC]/src/tests/brick )
+- If you just want to evaluate Orca, then you probably want to write a simple generic component. We maintain a component called @ref orca_component_brick in the Orca source tree. We use it as a standard implementation to test IceGrid services but it's also a useful template to start playing with. It does not setup or connect to any interfaces. (The source is in @c [ORCA_SRC]/src/tests/brick ).
+- Another simple option is @ref orca_component_lasermon. This is just a client for a single interface. (The source is in @c [ORCA_SRC]/src/components/lasermon ).
 
 Make sure the project compiles and the new component runs.
 
