@@ -96,6 +96,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated libraries
 
+- orcnavutil:
+  - Changed order of parameters in covpredict (alex b)
+
 - orcapathplan:
   - Allowed for non-uniform costs in skeleton path planning (alex b)
 

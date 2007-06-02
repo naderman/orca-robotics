@@ -195,7 +195,7 @@ class Particle2dElement
 public:
     Particle2dElement( const orcaice::Context  &context,
                        const std::string       &proxyString,
-                       int                      timeoutMs=3000 )
+                       int                      timeoutMs=60000 )
         : IceStormElement<Particle2dPainter,
                             orca::Particle2dData,
                             orca::Particle2dPrx,
