@@ -30,7 +30,7 @@ Example output:
 
 Here's an example which contains all types of entries.
 
-@include utils/orcadef/test/def_test_input.def
+@include libs/orcadef/test/def_test_input.def
 
 @author Alex Makarenko
 
