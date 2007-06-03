@@ -1,0 +1,89 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2007 Alexei Makarenko
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup examples
+@ingroup apps
+@ingroup cpp
+@ingroup linux
+@defgroup orca_component_orca2yarp Orca2Yarp
+@brief An example of using Orca and Yarp in the same component.
+
+@par Provides
+
+- @ref orca_interface_home
+- @ref orca_interface_status
+- @ref orca_interface_tracer
+
+@par Requires
+
+- @ref orca_interface_odometry2d
+
+@image html orca2yarp.png
+
+An Orca component which gets remote odometry information from another Orca component and publishes them through a Yarp port. This example also builds two Yarp-only executables: a server and a client, the code is taken from the Yarp project.
+
+This is a bare-bones example! No error checking is performed (on both Orca and Yarp sides). For examples of proper error checking and exception handling, see components in the repository.
+
+Compilation of this example is disabled by default because we don't check properly if Yarp is installed. To enable it, first install Yarp (see below), then use @c ccmake utility, scroll down to Orca2Yarp and hit enter to change @c OFF to @c ON. Recompile Orca and re-install.
+
+@par Prerequisites
+
+Requires Yarp installed. Tested with Yarp v. 2.1.4. We assume that Yarp is installed in @c /opt/yarp. We recommend to install Yarp into @C /opt/yarp-[VERSION] by editing the @c CMAKE_INSTALL_PREFIX variable with @c ccmake before installing. Then create a symbolic link.
+@verbatim
+# ln -s /opt/yarp-[VERSION] /opt/yarp
+@endverbatim
+Otherwise, you can modify the @c CMakeLists.txt file for this example to match your installation.
+
+@par Authors
+
+Alex Makarenko
+
+@section orca_component_orca2yarp_tute Tutorial
+
+Start by making sure that the basic Yarp example works. In three separate terminal windows start the naming service, the sender, and the receiver.
+@verbatim
+$ /opt/yarp/bin/yarp server
+$ yarp_simple_sender
+$ yarp_simple_receiver
+@endverbatim
+If everything works, kill the @c yarp_simple_sender, leave the other two apps running. If something doesn't work, consult with Yarp documentation.
+
+Start the IceGrid Registry as described in @ref orca_doc_quickstart. We will also need the IceStorm service, but we have to change its port number (we typically use port 10000 for IceStorm and Yarp uses it for their naming service). Start the IceStorm as described in @ref orca_doc_quickstart but with the following modified line in the @c icebox_icestorm.cfg file:
+@verbatim
+IceStorm.TopicManager.Endpoints=default -p 20000
+@endverbatim
+
+Now we create the tute directory and copy two pre-installed config files.
+@verbatim
+$ mkdir -p ~/sys/yarp; cd ~/sys/yarp
+$ cp [ORCA2-INSTALL]/cfg/robot2d.cfg .
+$ cp [ORCA2-INSTALL]/cfg/orca2yarp.cfg .
+@endverbatim
+
+Edit the @c robot2d.cfg file by changing the driver name to @e fake and appending a line about the non-standard IceStorm port.
+@verbatim
+Robot2d.Config.Driver=fake
+...
+IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 20000
+@endverbatim
+
+Start the Robot2d component.
+@verbatim
+$ robot2d robot2d.cfg
+@endverbatim
+
+Append the line about IceStorm port to the @c orca2yarp.cfg file. In a new terminal, start the Orca2Yarp example.
+@verbatim
+$ orca2yarp orca2yarp.cfg
+@endverbatim
+Look at the output of the @c yarp_simple_receiver. You should start seeing messages from @c Orca2Yarp containing (fake) odometry information.
+
+*/
