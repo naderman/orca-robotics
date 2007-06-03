@@ -38,7 +38,7 @@ public:
                        const std::string       &proxyString,
                        orcaqgui::IHumanManager *humanManager,
                        bool                     beginDisplayHistory=false,
-                       int                      timeoutMs=3000 )
+                       int                      timeoutMs=30000 )
         : IceStormElement<Localise2dPainter,
                             orca::Localise2dData,
                             orca::Localise2dPrx,

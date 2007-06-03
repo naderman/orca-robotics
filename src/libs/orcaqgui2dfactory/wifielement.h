@@ -53,7 +53,7 @@ class WifiElement
 public:
     WifiElement( const orcaice::Context  &context,
                  const std::string       &proxyString,
-                 int                      timeoutMs=3000 );
+                 int                      timeoutMs=30000 );
     ~WifiElement();
 
     virtual bool isInGlobalCS() { return true; };
