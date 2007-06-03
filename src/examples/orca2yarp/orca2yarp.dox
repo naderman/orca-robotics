@@ -48,6 +48,10 @@ Alex Makarenko
 
 @section orca_component_orca2yarp_tute Tutorial
 
+We will assemble a system shown below.
+
+@image html orca2yarp_system.png
+
 Start by making sure that the basic Yarp example works. In three separate terminal windows start the naming service, the sender, and the receiver.
 @verbatim
 $ /opt/yarp/bin/yarp server
