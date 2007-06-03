@@ -47,6 +47,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New libraries
 
+@par New examples
+
+- Orca2Yarp (alex m.)
+  - A component which connects to both Orca and Yarp systems.
+
 @par Updated interfaces
 
 @par Updated components
