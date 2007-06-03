@@ -27,12 +27,40 @@ TEMPLATE
 Developers: as you make substantial changes in the code (add features, fix bugs, etc.), add an item in the section on changes. When the next version is released, this list will be copied into the release notes.
 
 
+
 @section orca_doc_todo_todo To-Do List for Next Release
 
 - RegistryView
     - fix stale display of components
 
+
+
 @section orca_doc_history_head Changes in CVS since Last Release
+
+@par Project wide
+
+@par New interfaces
+
+@par New components
+
+@par New utilities
+
+@par New libraries
+
+@par Updated interfaces
+
+@par Updated components
+
+@par Updated utilities
+
+@par Updated libraries
+
+@par Removed
+
+
+
+
+@section orca_doc_history_240 Changes in Release 2.4.0
 
 @par Project wide
 
