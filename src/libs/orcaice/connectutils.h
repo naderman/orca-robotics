@@ -44,6 +44,11 @@ void getNetworkState( const Context  & context,
  *  (In Ice terms this will become the object identity.)
  *
  *  Throws orcaice::Exception if fails to register the new object.
+ *
+@verbatim
+Ice::ObjectPtr obj = new MyObjectI;
+orcaice::createInterfaceWithString( context(), obj, "coolname" );
+@endverbatim
  */
 void createInterfaceWithString( const Context       & context,
                                 Ice::ObjectPtr      & object,
@@ -54,6 +59,11 @@ void createInterfaceWithString( const Context       & context,
  * is looked up in the @p context properties based on the @p interfaceTag.
  *
  * Throws ConfigFileException if the interface name cannot be read from the config file for some reason.
+ *
+@verbatim
+Ice::ObjectPtr obj = new MyObjectI;
+orcaice::createInterfaceWithTag( context(), obj, "InterfaceTag" );
+@endverbatim
  */
 void createInterfaceWithTag( const Context      & context,
                             Ice::ObjectPtr      & object,
