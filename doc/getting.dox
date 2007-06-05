@@ -12,7 +12,7 @@
 
 @page orca_doc_getting Download and Install Orca
 
-@note Reviewed for release 2.0.0.
+@note Reviewed for release 2.4.0.
 
 @section depend Overview of dependencies
 
@@ -41,7 +41,7 @@ The instructions below are quite general, follow them if your platform/distribut
         - Minimum version required 2.4.2 (latest tested: 2.4.5)
         - Full instructions are available from the <a href="http://www.cmake.org/HTML/Download.html">download page</a>.
     -# Download and install Ice libraries.
-        - Minimum version required 3.1.0 (latest tested: 3.2.0)
+        - Minimum version required 3.2.0 (latest tested: 3.2.0)
         - Full instructions are available from the <a href="http://www.zeroc.com/download.html">download page</a>. Several binaries distributions exists, for others (e.g. Debian Linux) building from source is required.
         - For Ice v3.1, apply the patch mentioned here: <a href="http://www.zeroc.com/vbulletin/showthread.php?t=2499">IceGrid patch</a>.
     -# Download and install any optional dependencies you'd like. You skip this step and do it later.
