@@ -10,13 +10,8 @@
 
 #include <orcaice/application.h>
 #include <orcaice/component.h>
-
 #include <orcaice/orcaice.h>
-#include <iostream>
-
 #include "handler.h"
-
-using namespace std;
 
 namespace orca2yarp
 {
@@ -50,7 +45,7 @@ Component::start()
 void
 Component::stop()
 {
-    // nothing to do
+    orcaice::stopAndJoin( handler_ );
 }
 
 } // namespace
