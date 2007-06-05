@@ -43,7 +43,6 @@ The instructions below are quite general, follow them if your platform/distribut
     -# Download and install Ice libraries.
         - Minimum version required 3.2.0 (latest tested: 3.2.0)
         - Full instructions are available from the <a href="http://www.zeroc.com/download.html">download page</a>. Several binaries distributions exists, for others (e.g. Debian Linux) building from source is required.
-        - For Ice v3.1, apply the patch mentioned here: <a href="http://www.zeroc.com/vbulletin/showthread.php?t=2499">IceGrid patch</a>.
     -# Download and install any optional dependencies you'd like. You skip this step and do it later.
         - <a href="http://playerstage.sourceforge.net/" target="_blank">Player/Stage</a>, is required for some hardware support and for use of the Stage simulator (you probably want this).
             - For version requirements see individual component documentation.
