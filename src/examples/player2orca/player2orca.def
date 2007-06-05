@@ -1,0 +1,11 @@
+DefaultComponentTag=Player2Orca
+
+# Provided Interfaces
+Provides.Odometry2d.Type=Odometry2d
+Provides.Odometry2d.DefaultName=odometry2d
+
+# Required Interfaces
+
+# Config Parameters
+Config.Player.Host.Default=localhost
+Config.Player.Port.Default=6665

@@ -1,0 +1,76 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2007 Alexei Makarenko
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup examples
+@ingroup apps
+@ingroup cpp
+@ingroup linux
+@defgroup orca_component_player2orca Player2Orca
+@brief An example of using Orca and Player in the same component.
+
+@par Provides
+
+- @ref orca_interface_home
+- @ref orca_interface_odometry2d
+- @ref orca_interface_status
+- @ref orca_interface_tracer
+
+@par Requires
+
+- none
+
+@image html player2orca.png
+
+An Orca component which gets remote odometry information from the Player server and publishes it through an Orca @ref orca_interface_odometry2d interface.
+
+This is a bare-bones example! For clarity, no error checking is performed (on both Orca and Player sides). For examples of proper error checking and exception handling, see components in the repository. In particular, @ref orca_component_robot2d has a @e PlayerClient driver which performs a similar function.
+
+@par Prerequisites
+
+Requires Player installed. Tested with Player v. 2.0.4.
+
+@par Authors
+
+Alex Makarenko
+
+@section orca_component_player2orca_tute Tutorial
+
+We will assemble a system shown below.
+
+@image html player2orca_system.png
+
+Start IceGrid Registry and IceStorm server as described in the @ref orca_doc_quickstart
+
+Start the Player server as described in @ref orca_doc_tute_stage "Orca/Stage Tutorial".
+
+Now we create the tute directory and copy two pre-installed config files.
+@verbatim
+$ mkdir -p ~/sys/player; cd ~/sys/player
+$ cp [ORCA2-INSTALL]/cfg/player2orca.cfg .
+$ cp [ORCA2-INSTALL]/cfg/orcamon.cfg .
+@endverbatim
+
+Start the Player2Orca component (the standard config file will work)
+@verbatim
+$ player2orca player2orca.cfg
+@endverbatim
+
+Edit the @c orcamon.cfg config file to make it connect to the provided interface of the example.
+@verbatim
+OrcaMon.Requires.Generic.Proxy=odometry2d@local/player2orca
+@endverbatim
+Start the monitor
+@verbatim
+$ orcamon orcamon.cfg
+@endverbatim
+You should start seeing live odometry at about 10Hz. To see some change in the output, drag the red robot in the Stage window.
+
+*/
