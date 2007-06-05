@@ -27,27 +27,25 @@
 - @ref orca_interface_laserscanner2d [OrcaMon.Requires.Generic]
 - @ref orca_interface_localise2d [OrcaMon.Requires.Generic]
 - @ref orca_interface_ogmap [OrcaMon.Requires.Generic]
-- @ref orca_interface_position2d [OrcaMon.Requires.Generic]
+- @ref orca_interface_odometry2d [OrcaMon.Requires.Generic]
 - @ref orca_interface_power [OrcaMon.Requires.Generic]
 - @ref orca_interface_status [OrcaMon.Requires.Generic]
 
-@par Operation
-
 The type of the remote object is determined dynamically at the time of connection.
-
-The implementation relies on the fact that:
-
--# all supported interfaces have operations named @c getData and @c subscribe, and
--# all corresponding consumer interfaces have an operation named @c setData.
 
 @par Configuration
 None.
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
-
 @par Developer
 Alex Makarenko
 
-*/
+@par Implementation
 
+The implementation relies on the fact that:
+
+-# all supported interfaces have operations named @c getData and @c subscribe, and
+-# all corresponding consumer interfaces have an operation named @c setData.
+
+*/
