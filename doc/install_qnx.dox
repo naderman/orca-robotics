@@ -118,7 +118,7 @@ Now Ice itself.
 
 - Get source
     - get source from  http://www.zeroc.com/download.html
-    - get the patch from http://zeroc.com/vbulletin/showthread.php?t=2884
+    - get the patch from http://www.zeroc.com/forums/patches/3161-qnx-6-3-sp3-ice-3-2-0-a.html
     - apply the patch, but @b NOT in QNX. The @c patch that comes with QNX does not seem to work. So I built and applied the patch in Linux and then transferred the patched source to QNX.
 @verbatim
 $ tar -xzf Ice-3.2.0.tar.gz
