@@ -35,7 +35,7 @@ namespace orcaice {
         p.x=point.x;
         p.y=point.y*cos(angle)-point.z*sin(angle);
         p.z=point.y*sin(angle)+point.z*cos(angle);
-        return point;
+        return p;
     }
 
     // Rotate a 3d point by an angle about the Y axis
@@ -46,7 +46,7 @@ namespace orcaice {
         p.y=point.y;
         p.z=-point.x*sin(angle)+point.z*cos(angle);
 
-        return point;
+        return p;
     }
 
     // Rotate a 3d point by an angle about the Z axis
@@ -57,7 +57,7 @@ namespace orcaice {
         p.y=point.x*sin(angle)+point.y*cos(angle);
         p.z=point.z;
 
-        return point;
+        return p;
     }
 
     // Note: when rotating frames we use negative angles
@@ -96,10 +96,10 @@ namespace orcaice {
     {
         CartesianPoint2d p;
         // first rotate back to global frame
-        p=rotate2d(p,frame.o);
+        p=rotate2d(point,frame.o);
         // translate
-        p.x=point.x+frame.p.x;
-        p.y=point.y+frame.p.y;
+        p.x+=frame.p.x;
+        p.y+=frame.p.y;
         return p;
 
     }
@@ -109,13 +109,13 @@ namespace orcaice {
     {
         CartesianPoint p;
         // rotate yaw pitch roll
-        p=rotate3dZ(p,frame.o.y);
+        p=rotate3dZ(point,frame.o.y);
         p=rotate3dY(p,frame.o.p);
         p=rotate3dX(p,frame.o.r);
         // translate
-        p.x=point.x+frame.p.x;
-        p.y=point.y+frame.p.y;
-        p.z=point.z+frame.p.z;
+        p.x+=frame.p.x;
+        p.y+=frame.p.y;
+        p.z+=frame.p.z;
 
         return p;
     }
