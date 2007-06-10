@@ -17,7 +17,11 @@
 
 namespace orcalogfactory
 {
-
+/*!
+Supports two formats:
+- ice
+- ascii: see orcalog::toLogString( const orca::Localise2dData& obj ) for log format
+*/
 class Localise2dLogger : public orca::Localise2dConsumer, public orcalog::Logger
 {
     public:

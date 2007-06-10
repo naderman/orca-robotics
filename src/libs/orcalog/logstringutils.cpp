@@ -312,6 +312,19 @@ toLogString( const orca::LaserScanner2dDataPtr& obj )
     return s.str();
 }
 
+/*! 
+@brief Prints out localise2d data to text which is easy to parse.
+
+- line1: timestamp in seconds and microseconds of Unix time
+- line2: number of hypotheses (N)
+- line3: hypothesis 1: {means covariances weight}. For element order see below.
+- ...
+- line2+N: hypothesis N
+
+The state is written in this order: {x y yaw}
+The covariance matrix is written in this order, e.i. {xx xy yy xyaw yyaw yawyaw}
+Units: means are in [m], angles are in [deg].
+*/
 std::string 
 toLogString( const orca::Localise2dData& obj )
 {
@@ -341,6 +354,20 @@ toLogString( const orca::Localise2dData& obj )
     return s.str();
 }
 
+
+/*! 
+@brief Prints out localise3d data to text which is easy to parse.
+
+- line1: timestamp in seconds and microseconds of Unix time
+- line2: number of hypotheses (N)
+- line3: hypothesis 1: {means covariances weight}. For element order see below.
+- ...
+- line2+N: hypothesis N
+
+The state is written in this order: {x y z roll pitch yaw}
+The covariance matrix (its upper triangle) is written rows first, e.i. {xx xy xz xroll xpitch xyaw yy yz yroll...}
+Units: means are in [m], angles are in [deg].
+*/
 std::string 
 toLogString( const orca::Localise3dData& obj )
 {

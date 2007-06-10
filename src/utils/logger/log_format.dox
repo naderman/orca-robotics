@@ -1,0 +1,61 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+/*!
+@page orca_component_logger_log_format Orca log format
+
+@section logfile Logfile Format
+
+The logger writes a single master file containing all relevant information to replay the data using the @ref orca_component_logplayer.
+
+Example for a set of files (3 interfaces were logged on 04/08/06 at 15:33:21):
+\verbatim
+060804_153321_master.log
+060804_153321_laser0.log
+060804_153321_laser1.log
+060804_153321_camera0.log
+\endverbatim
+
+Detailed descriptions of master and subfiles are given next.
+
+@subsection master Master File
+
+Note: lines in the master file starting with '#+blank' are regarded as comments and skipped when playing back. The logger adds certain meta data like the Orca version as comments to the master file header.
+
+@par Header
+
+The header is expected at the beginning of the master file. It specifies all the subfiles (one per line). Each lines containes the following information:
+    - interface type ( e.g. ::orca::Laser, ::orca::Camera )
+    - encoding type ( see @ref subfiles )
+    - subfile name  (see @ref subfiles )
+    
+Example:
+\verbatim
+::orca::Laser ice 060804_153321_laser0.log
+::orca::Laser ice 060804_153321_laser1.log
+::orca::Camera ice 060804_153321_camera0.log
+\endverbatim
+
+@par Data
+
+The beginning of the data field (end of the header) is indicated by a special tag: '#data' (no blank between '#' and 'data'!). The data is represented by one object per line in the following format:
+    - timestamp (seconds)
+    - timestamp (microseconds)
+    - subfile number (reference to the the subfiles specified in the header)
+    - index (reference to the record number in the subfile)
+
+Example:
+\verbatim
+1154412007          971772              0           1
+1154412007          955644              2           1
+1154412008          22                  2           2
+1154412008          22356               1           1
+\endverbatim
+
+*/

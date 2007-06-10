@@ -18,6 +18,19 @@
 namespace orcalogfactory
 {
 
+/*!
+Supports two formats:
+- ice
+- ascii:
+    - The description of the laser is logged at the top of the file. 
+    - See orcalog::toLogString( const orca::LaserScanner2dDataPtr& obj ) for data log format.
+
+Typical log file sizes using 'ice' binary encoding:
+- 150 kB/min for 9600 baud (~1.5 readings/s)
+- 300 kB/min for 19200 baud (~3 readings/s)
+- 600 kB/min for 38400 baud (~6 readings/s)
+- 4.5 MB/min for 500000 baud (~37 readings/s)
+*/
 class LaserScanner2dLogger : public orca::RangeScanner2dConsumer, public orcalog::Logger
 {
     public:

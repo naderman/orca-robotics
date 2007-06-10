@@ -23,13 +23,14 @@
 - @ref orca_interface_status
 - @ref orca_interface_tracer
 
-@par Requires
+@par Requires (any number and combination of the following)
 
 - @ref orca_interface_camera [Logger.Requires.CameraX]
 - @ref orca_interface_cpu [Logger.Requires.CpuX]
 - @ref orca_interface_gps [Logger.Requires.GpsX]
-- @ref orca_interface_laserscanner2d [Logger.Requires.LaserX]
+- @ref orca_interface_laserscanner2d [Logger.Requires.LaserScanner2dX]
 - @ref orca_interface_localise2d [Logger.Requires.Localise2dX]
+- @ref orca_interface_localise3d [Logger.Requires.Localise3dX]
 - @ref orca_interface_polarfeature2d [Logger.Requires.PolarFeature2dX]
 - @ref orca_interface_odometry2d [Logger.Requires.Odometry2dX]
 - @ref orca_interface_odometry3d [Logger.Requires.Odometry3dX]
@@ -39,35 +40,17 @@
 
 @par Operation
 
-The logger logs data on a per-slice-interface basis, i.e. it can
+The logger logs data on a per-Slice-interface basis, i.e. it can
 connect to provided interfaces of components. For each interface
-defined in Orca2, the logger instantiates an <Interface>Slave class
+defined in Orca2, the logger instantiates an @c <Interface>Logger class
 that handles incoming data and writes them to one file each (e.g. for
-the Laser interface, the LaserSlave class writes data to
-laser0.log). Data is received by either using remote calls
-(e.g. getConfig() or getData()) or by subscribing to the interface. In
-the latter case, data is received through IceStorm.
-
-In order to instantiate slaves, logger dynamically loads libraries
-containing slave factories.  See the Logger.Config.FactoryLibNames
-config parameter for how to add new factories.  This plug-in
-architecture allows custom loggers to be added without modifying the
-main logger source code.
-
-The default slave factory can be extended with new interfaces, e.g. @c MyInterface by executing the following steps:
--# Create a @c MyInterfaceSlave class which inherits from @c Slave and handles the interface-specific logging (e.g. streaming the data to the file).
--# Add a few lines of code to [ORCA_SRC]/src/utils/orcalogfactory/defaultlogfactory.cpp
--# If logging to an 'ascii' file, update the @ref orca_component_logger_formats page (and if you want to parse the 'ascii' log file using Matlab, add a script called [ORCA_SRC]/scripts/matlab/logutils/parse<MyInterface>.m). 
--# Update this documentation page.
-
-To add a new plug-in slave factory, use orcalogfactory as an example.
-Compile the new factory into a .so, stick it somewhere in your
-LD_LIBRARY_PATH, and edit Logger.Config.FactoryLibNames to point to
-it.
+the @ref orca_interface_laserscanner2d interface, the LaserScanner2dLogger class writes data to
+laserscanner2d0.log). Data is received by either @e pulling data
+e.g. with getData() or by subscribing for data @e pushes e.g. with subscribe().
 
 @see @ref orca_component_logplayer
 
-@section configuration Configuration
+@par Configuration
 
 To allow the setup of several interfaces of the same type in one logger, the interface tags are numbered in the configuration file.  For example:
 
@@ -87,98 +70,61 @@ Logger.Requires.Odometry2d0.Proxy=odometry2d@local/segwayrmp
     - If set to one, creation timestamp is pre-pended to the filenames of the master and log files. Time stamp format is YYMMDD_HHMMSS, e.g. the default master file becomes 060804_153321_master.log. This is usful to avoid accidently overwriting the files when restarting the logger.
     - default: 1
 
-- @c Logger.Config.<interfaceType>+<number> (string)
+- @c Logger.Config.<interfaceType><number> (string)
     - specifies the encodingType (see @ref subfiles for more info)
     - valid values: {'ice', 'ascii', 'acfr'}
     - default: 'ice'
     - example: @c Logger.Config.Laser0=ascii
 
-@section logfile Logfile Format
+@par Logfile Format
 
-The logger writes a single master file containing all relevant information to replay the data using the @ref orca_component_logplayer.
-
-Example for a set of files (3 interfaces were logged on 04/08/06 at 15:33:21):
+The logger writes a single master file containing all relevant information to replay the data using the @ref orca_component_logplayer. Example for a set of files (3 interfaces were logged on 04/08/06 at 15:33:21):
 \verbatim
 060804_153321_master.log
-060804_153321_laser0.log
-060804_153321_laser1.log
+060804_153321_laserscanner0.log
+060804_153321_laserscanner1.log
 060804_153321_camera0.log
 \endverbatim
 
-Detailed descriptions of master and subfiles are given next.
-
-@subsection master Master File
-
-Note: lines in the master file starting with '#+blank' are regarded as comments and skipped when playing back. The logger adds certain meta data like the Orca version as comments to the master file header.
-
-@par Header
-
-The header is expected at the beginning of the master file. It specifies all the subfiles (one per line). Each lines containes the following information:
-    - interface type ( e.g. ::orca::Laser, ::orca::Camera )
-    - encoding type ( see @ref subfiles )
-    - subfile name  (see @ref subfiles )
-    
-Example:
-\verbatim
-::orca::Laser ice 060804_153321_laser0.log
-::orca::Laser ice 060804_153321_laser1.log
-::orca::Camera ice 060804_153321_camera0.log
-\endverbatim
-
-@par Data
-
-The beginning of the data field (end of the header) is indicated by a special tag: '#data' (no blank between '#' and 'data'!). The data is represented by one object per line in the following format:
-    - timestamp (seconds)
-    - timestamp (microseconds)
-    - subfile number (reference to the the subfiles specified in the header)
-    - index (reference to the record number in the subfile)
-
-Example:
-\verbatim
-1154412007          971772              0           1
-1154412007          955644              2           1
-1154412008          22                  2           2
-1154412008          22356               1           1
-\endverbatim
-
-
-@subsection subfiles Subfiles
+The first records in each subfile are configuration data, after that all records are "pure" data. Subfiles are named according to the interfaces you're logging and have a number attached in case you want to log the same interface type several times (e.g. when logging several lasers). Don't change the file names because they are also recorded in the corresponding master file.
 
 Subfiles contain the logged data. The Orca Logger supports two different encoding types {'ice', 'ascii'} which can be configured on a per-interface basis. 'ice' produces binary files which are generated by Slice's built-in streaming functionality. The disadvantage is that they are not human-readable. 'ascii' produces human-readable ascii files but the streaming functions need to be implemented manually which is error-prone. They are useful because they can be easily parsed (e.g. using Matlab).
 
-'ascii' is implemented for the following interfaces:
-    - Laser
-    - Odometry
-    - Localise2d
-    - Position3d
-    - PolarFeature2d
+Details are give on a separate page: @ref orca_component_logger_log_format
 
-The format for the 'ascii' log files can be found at @ref orca_component_logger_formats .
-To parse the 'ascii' log files in Matlab, you can use the files provided in [ORCA_SRC]/scripts/matlab/logutils/parse<interfaceType>data.m. For more details on these Matlab scripts type 
+@par Details for specific interfaces
+
+- orcalogfactory::LaserScanner2dLogger
+- orcalogfactory::Localise2dLogger
+- orcalogfactory::Localise3dLogger
+
+@par Parsing log files
+
+Log files in 'ice' format are not human-readable.
+
+To parse the 'ascii' log files in Matlab, you can use the files provided in [ORCA_SRC]/scripts/matlab/logutils/parse<interfaceType>data.m. Usage information is provided through matlab help:
 @verbatim
-help parse<interfaceType>data
+>> help parse<interfaceType>data
 @endverbatim
-in Matlab.
 
-Note that other encoding types are supported for replaying, see the @ref orca_component_logplayer.
-
-The first records in each subfile are configuration data, after that all records are "pure" data. Subfiles are named according to the interfaces you're logging and have a number attached in case you want to log the same interface type several times (e.g. when logging several lasers). Don't change the file names because they are also recorded in the corresponding master file.
-
-@subsection subfile_sizes Subfile sizes
-
-The file sizes vary with the type of data you're logging and data-specific configuration (e.g. image size, serial baud rates etc.). We give a list of what you can expect:
-
-@par 'ice' binary encoding:
-
-- Laser (see @ref orca_component_laser2d )
-  - 150 kB/min for 9600 baud (~1.5 readings/s)
-  - 300 kB/min for 19200 baud (~3 readings/s)
-  - 600 kB/min for 38400 baud (~6 readings/s)
-  - 4.5 MB/min for 500000 baud (~37 readings/s)
-
-@section Authors
+@par Authors
 - Tobias Kaupp, Alex Brooks, Alexei Makarenko
+
+@section orca_component_logger_plugins Writing custom loggers
+
+In order to instantiate interface loggers, the Logger utility dynamically loads libraries
+using logger factory.  New factories can be written for the interfaces which are not in the Orca distribution. This plug-in architecture allows custom loggers to be written outside of the Orca project.
+
+The default logger factory can be extended with new interfaces, e.g. @c MyInterface by executing the following steps:
+-# Create a @c MyInterfaceSlave class which inherits from @c Slave and handles the interface-specific logging (e.g. streaming the data to the file).
+-# Add a few lines of code to [ORCA_SRC]/src/utils/orcalogfactory/defaultlogfactory.cpp
+-# If logging to an 'ascii' file, update the @ref orca_component_logger_formats page (and if you want to parse the 'ascii' log file using Matlab, add a script called [ORCA_SRC]/scripts/matlab/logutils/parse<MyInterface>.m). 
+-# Update this documentation page.
+
+To add a new plug-in slave factory, use orcalogfactory as an example.
+Compile the new factory into a .so, stick it somewhere in your
+LD_LIBRARY_PATH, and edit Logger.Config.FactoryLibNames to point to
+it.
 
 
 */
-
