@@ -1,14 +1,23 @@
 function [times, hypotheses] = parselocalise3ddata( file )
-% function [times, hypotheses] = parselocalise3ddata( file )
+%PARSELOCALISE3DDATA
+% [TIMES, HYPOTHESES] = PARSELOCALISE3DDATA( file )
 %
 % parse laser data from orca logger (ASCII)
 % output args
-%    times =      Each row is a Unix timestamp [sec usec]
-%    hypotheses = Each cell represents hypotheses corresponding to
-%                 one timestamp.
-%                 Each cell is a matrix, where each each row
-%                 describes a hypothesis in the form:
-%                 [meanX,meanY,meanZ,meanR,meanP,meanY,Pxx,Pxy,Pxz,Pxr,Pxp,Pxa,Pyy,Pyz,Pyr,Pyp,Pya,Pzz,Pzr,Pzp,Pza,Prr,Prp,Pra,Ppp,Ppa,Paa,weight]
+% TIMES      Each row is a Unix timestamp [sec usec]
+% HYPOTHESES Each cell represents hypotheses corresponding to
+%            one timestamp.
+%            Each cell is a matrix, where each each row
+%            describes a hypothesis in the form:
+%   [meanX,meanY,meanZ,meanR,meanP,meanA,
+%    Pxx,Pxy,Pxz,Pxr,Pxp,Pxa,
+%        Pyy,Pyz,Pyr,Pyp,Pya,
+%            Pzz,Pzr,Pzp,Pza,
+%                Prr,Prp,Pra,
+%                    Ppp,Ppa,
+%                        Paa,weight]
+%   where X=x, Y=y, Z=z, R=roll, P=pitch, A=yaw
+%
 
 fid = fopen( file );
 if ( fid == -1 )
