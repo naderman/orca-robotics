@@ -30,6 +30,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @section orca_doc_todo_todo To-Do List for Next Release
 
+- libOrcaIce
+    - Should components quit when there's no registry and Orca.RequireRegistry=1?
+      Right now they seem to hang. Look into component thread.
+
 - RegistryView
     - fix stale display of components
 
