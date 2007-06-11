@@ -278,7 +278,9 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
     }
     else
     {
-        throw( std::string("VfhDriver: This scan size is not implemented.") );
+        stringstream ss;
+        ss << "VfhDriver: Scan size of " << obs->ranges.size() << " is not implemented";
+        throw( ss.str() );
     }
     if ( obs->startAngle - -90.0*M_PI/180.0 > EPS )
     {
