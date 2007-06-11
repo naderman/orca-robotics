@@ -18,6 +18,16 @@ function [times, hypotheses] = parselocalise3ddata( file )
 %                        Paa,weight]
 %   where X=x, Y=y, Z=z, R=roll, P=pitch, A=yaw
 %
+% Example:
+% [t,H]=parselocalise3ddata( 'filename.log' );
+% for i=(1:length(t))
+%    X(i,1:6) = H{i}(1:6);
+% end
+% figure(1),clf
+% plot(X(:,1),X(:,2),'b-', X(1,1),X(1,2),'bo')
+% axis equal
+% title( 'XY plot' )
+%
 
 fid = fopen( file );
 if ( fid == -1 )
