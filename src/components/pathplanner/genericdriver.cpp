@@ -180,7 +180,7 @@ GenericDriver::computePath( const orca::PathPlanner2dTask& task,
 void
 GenericDriver::setWaypointParameters( const orca::Waypoint2d *startWp, 
                                        const orca::Waypoint2d *goalWp, 
-                                       int numSegments,
+                                       int numWaypoints,
                                        vector<orcapathplan::WaypointParameter> &wpParaVector )
 {
     wpParaVector.clear();
@@ -188,9 +188,9 @@ GenericDriver::setWaypointParameters( const orca::Waypoint2d *startWp,
     orcapathplan::WaypointParameter wpPara;
     double secondsTilGoal = orcaice::timeDiffAsDouble(goalWp->timeTarget, startWp->timeTarget);
     assert( secondsTilGoal >= 0 && "Timestamp difference between goal and start is negative" );
-    double deltaSec = secondsTilGoal/(double)numSegments;
+    double deltaSec = secondsTilGoal/(double)(numWaypoints-1);
             
-    for (int i=0; i<numSegments; i++)
+    for (int i=0; i<numWaypoints; i++)
     {
         if (i==0) 
         {
