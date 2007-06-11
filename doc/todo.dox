@@ -65,6 +65,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated utilities
 
+- OrcaView2d (tobi)
+  - new config parameter: time to reach first waypoint
+  - goalplanner timing bug fixed, olympic marker displays properly
+
 @par Updated libraries
 
 @par Removed
