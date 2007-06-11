@@ -617,7 +617,7 @@ void PathInput::addWaypoint (QPointF wp)
     {   // first waypoint is special
         headings_.append( 0 );
         headingTolerances_.append( 180*16 );
-        times_.append( 0.0 );
+        times_.append( wpSettings_->timeFirstWaypoint );
     }
     else 
     {
@@ -1062,7 +1062,8 @@ readWaypointSettings( const Ice::PropertiesPtr & props, const std::string & tag 
     int headingTolerance = orcaice::getPropertyAsIntWithDefault( props, prefix+"HeadingTolerance", 90 );
     float maxApproachSpeed = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"MaxApproachSpeed", 2e6 );
     int maxApproachTurnrate = orcaice::getPropertyAsIntWithDefault( props, prefix+"MaxApproachTurnRate", 6000000 );
-    WaypointSettings wpSettings(spacingProperty, spacingValue, distanceTolerance, headingTolerance, maxApproachSpeed, maxApproachTurnrate);
+    float timeFirstWp = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"TimeFirstWaypoint", 10.0 );
+    WaypointSettings wpSettings(spacingProperty, spacingValue, distanceTolerance, headingTolerance, maxApproachSpeed, maxApproachTurnrate, timeFirstWp);
     return wpSettings;
 }
 

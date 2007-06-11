@@ -222,27 +222,38 @@ void PathPainter::paint( QPainter *painter, int z )
     // find the waypoint we should be going towards according to the plan
     for (int i=0; i<waypoints_.size(); i++)
     {
-        if (relativeStartTime_ < times_[i]) {
+        if (relativeStartTime_ <= times_[i]) {
             wpI = i;
             break;
         }
     }
+    
     if (wpI == -1) {
         // we're at the goal
         return;
     }
-    if (wpI == 0) {
-        // we haven't started yet
-        return;
-    }
     
-    // ratio of how much we accomplished of the distance between the two current waypoints
-    float ratio = (relativeStartTime_-times_[wpI-1])/(times_[wpI] - times_[wpI-1]);
-
-    // compute position of sliding point
-    QPointF diffPoints = waypoints_[wpI] - waypoints_[wpI-1];      
-    float x = waypoints_[wpI-1].x() + ratio * diffPoints.x();
-    float y = waypoints_[wpI-1].y() + ratio * diffPoints.y();
+    float x;
+    float y;
+    double velocity;
+    
+    if (wpI == 0) {
+        // we going for the very first waypoint: paint marker on top of it
+        x = waypoints_[0].x();
+        y = waypoints_[0].y();
+        velocity = 0.0;
+    }
+    else
+    {    
+        // ratio of how much we accomplished of the distance between the two current waypoints
+        float ratio = (relativeStartTime_-times_[wpI-1])/(times_[wpI] - times_[wpI-1]);
+    
+        // compute position of sliding point
+        QPointF diffPoints = waypoints_[wpI] - waypoints_[wpI-1];      
+        x = waypoints_[wpI-1].x() + ratio * diffPoints.x();
+        y = waypoints_[wpI-1].y() + ratio * diffPoints.y();
+        velocity = sqrt( diffPoints.x()*diffPoints.x() + diffPoints.y()*diffPoints.y() ) / (times_[wpI] - times_[wpI-1]);
+    }
     
     painter->save();
     painter->translate( x, y );
@@ -253,11 +264,10 @@ void PathPainter::paint( QPainter *painter, int z )
     painter->setFont( QFont("Helvetica [Cronyx]", 12) );
     const double lineSpacing = painter->fontMetrics().lineSpacing();
     const double offset = 0.4;
-    QMatrix m = painter->matrix();  // this is m2win matrix
+    QMatrix m = painter->matrix();                       // this is m2win matrix
     QPointF labelPos = QPointF(offset,offset) * m;       // x-label position in window cs
     painter->setMatrix( QMatrix() );
-    double velocity = sqrt( diffPoints.x()*diffPoints.x() + diffPoints.y()*diffPoints.y() ) / 
-                      (times_[wpI] - times_[wpI-1]);
+    
     painter->drawText( labelPos, "speed:" + QString::number( velocity, 'f', 2 ) + " m/s" );
     labelPos.setY( labelPos.y() + lineSpacing );
     painter->drawText( labelPos, "maxSpeed: " + QString::number( maxSpeeds_[wpI]) + " m/s" );

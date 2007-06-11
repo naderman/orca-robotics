@@ -174,9 +174,10 @@ These are the default: waypoint settings that can be changed in the menu later. 
     - value is interpreted according to the setting of @c SpacingProperty (see above)
     - default:: 1.0
     
-- @c OrcaView.Config.Waypoints.TimePeriod (double)
-    - time interval between waypoints (in sec) i.e. if the first waypoint is set so that you need to reach it "now", the second waypoint will be set to reach at "now + 5", third waypoint at "now + 10", etc.
-    - default:: 5.0
+- @c OrcaView.Config.Waypoints.TimeFirstWaypoint (double)
+    - time to reach very first waypoint
+    - from the second waypoint onwards: SpacingProperty and SpacingValue determine the time deltas
+    - default:: 10.0
 
 @par Screencapture settings
     

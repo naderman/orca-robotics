@@ -58,9 +58,6 @@ class PathPainter
     QVector<int>   headings_;            // in 1/16 deg from 0 to 360*16
     QVector<float> distTolerances_;      // distance tolerances in m
     QVector<int>   headingTolerances_;   // heading tolerances in 1/16 deg from 0 to 360*16
-    
-    // Currently there's no graphical representation of these values
-    // We need to store them because the painter also saves the data to files
     QVector<float> times_;               // number of seconds until arrival at waypoint
     QVector<float> maxSpeeds_;           // max speed in m/s
     QVector<int> maxTurnrates_;          // max turnrate in deg/s

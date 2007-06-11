@@ -528,6 +528,7 @@ void PathFollowerHI::waypointSettingsDialog()
     ui.headingSpin->setValue( wpSettings_.headingTolerance );
     ui.maxSpeedSpin->setValue( wpSettings_.maxApproachSpeed );
     ui.maxTurnrateSpin->setValue( wpSettings_.maxApproachTurnrate );
+    ui.timeFirstWpSpin->setValue( wpSettings_.timeFirstWaypoint );
     
     int ret = myDialog->exec();
     if (ret==QDialog::Rejected) return;
@@ -538,6 +539,7 @@ void PathFollowerHI::waypointSettingsDialog()
     wpSettings_.headingTolerance = ui.headingSpin->value();
     wpSettings_.maxApproachSpeed = ui.maxSpeedSpin->value();
     wpSettings_.maxApproachTurnrate = ui.maxTurnrateSpin->value();
+    wpSettings_.timeFirstWaypoint = ui.timeFirstWpSpin->value();
 
     if (pathInput_!=NULL)
         pathInput_->updateWpSettings( &wpSettings_ );
