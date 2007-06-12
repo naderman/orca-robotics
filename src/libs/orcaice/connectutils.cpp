@@ -207,27 +207,23 @@ getNetworkState( const Context  & context,
 
         isNetworkUp = true;
         isRegistryUp = true;
-        context.tracer()->debug( "all good",5 );
+        context.tracer()->debug( "orcaice::getNetworkState(): all good",5 );
     }
-    catch ( Ice::DNSException & )
+    catch( const Ice::Exception &e )
     {
         isNetworkUp = false;
         isRegistryUp = false;
-        context.tracer()->debug( "no DNS",5 );
+        std::stringstream ss;
+        ss << "orcaice::getNetworkState(): caught exception: " << e;
+        context.tracer()->debug( ss.str() ,5 );
     }
-    catch ( Ice::ConnectionRefusedException & )
-    {
-        isNetworkUp = true;
-        isRegistryUp = false;
-        context.tracer()->debug( "refused",5 );
-    }
-    catch( const Ice::Exception & e )
+    catch( const std::exception &e )
     {
         isNetworkUp = false;
         isRegistryUp = false;
-        std::cout<<e<<std::endl;
-        context.tracer()->debug( "who knows",5 );
-//         context.tracer()->warning( "Unexpected exception while checking network." );
+        std::stringstream ss;
+        ss << "orcaice::getNetworkState(): caught exception: " << e.what();
+        context.tracer()->debug( ss.str() ,5 );
     }
 }
 
