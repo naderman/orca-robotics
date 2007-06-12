@@ -23,6 +23,38 @@ std::string toString( const WaypointParameter &wp )
     return ss.str();
 }
 
+void setWpParameters( const WaypointParameter &para, orca::Waypoint2d &wp )
+{
+    wp.distanceTolerance = para.distanceTolerance;
+    wp.headingTolerance = para.headingTolerance;
+    wp.timeTarget = para.timeTarget;
+    wp.maxApproachSpeed = para.maxApproachSpeed;
+    wp.maxApproachTurnrate = para.maxApproachTurnrate;
+}
+
+void setHeading( orca::PathPlanner2dData &pathData, double firstHeading)
+{
+    for (unsigned int i=0; i<pathData.path.size(); i++ )
+    {
+        if (i==0) 
+        {
+            pathData.path[i].target.o = firstHeading;
+        } 
+        else 
+        {
+            float diffX =  pathData.path[i].target.p.x - pathData.path[i-1].target.p.x;
+            float diffY =  pathData.path[i].target.p.y - pathData.path[i-1].target.p.y;
+            float heading = atan2(diffY,diffX);
+            pathData.path[i].target.o = heading;
+            // correct past headings to the direction we're going
+            if (i>1)
+            {
+                pathData.path[i-1].target.o = heading;
+            }
+        } 
+    }
+}
+
 void 
 convert( const orcapathplan::Result        result,
          orca::PathPlanner2dData &output )
@@ -70,7 +102,8 @@ isDoubleWaypoint( const orca::PathPlanner2dData &path, float worldX, float world
 void 
 convertAndAppend( const orcaogmap::OgMap  &ogMap,
                   const Cell2DVector      &input,
-                  orca::PathPlanner2dData &output )
+                  orca::PathPlanner2dData &output,
+                  double                   firstHeading)
 {
     float worldX, worldY;
     orca::Waypoint2d wp;
@@ -86,7 +119,10 @@ convertAndAppend( const orcaogmap::OgMap  &ogMap,
         wp.target.p.y = worldY;
         output.path.push_back( wp );
     }
+    
+    setHeading( output, firstHeading );
 }
+        
 
 void 
 convertAndAppend( const orcaogmap::OgMap               &ogMap,
@@ -109,36 +145,23 @@ convertAndAppend( const orcaogmap::OgMap               &ogMap,
         
         wp.target.p.x = worldX;
         wp.target.p.y = worldY;
-
-        wp.distanceTolerance = wpPara[i].distanceTolerance;
-        wp.headingTolerance = wpPara[i].headingTolerance;
-        wp.timeTarget = wpPara[i].timeTarget;
-        wp.maxApproachSpeed = wpPara[i].maxApproachSpeed;
-        wp.maxApproachTurnrate = wpPara[i].maxApproachTurnrate;
+        setWpParameters( wpPara[i], wp );
         output.path.push_back( wp );
     }
     
-    // add headings, by default they're aligned with the connection between waypoints
-    for (unsigned int i=0; i<output.path.size(); i++ )
+    setHeading( output, firstHeading );
+}
+
+
+void setParameters( orca::PathPlanner2dData &pathData,
+                    const std::vector<WaypointParameter> &wpPara )
+{
+    assert( pathData.path.size() == wpPara.size() );
+    for (unsigned int i=0; i<pathData.path.size(); i++)
     {
-        if (i==0) 
-        {
-            output.path[i].target.o = firstHeading;
-        } 
-        else 
-        {
-            float diffX =  output.path[i].target.p.x -output.path[i-1].target.p.x;
-            float diffY =  output.path[i].target.p.y -output.path[i-1].target.p.y;
-            float heading = atan2(diffY,diffX);
-            output.path[i].target.o = heading;
-            // correct past headings to the direction we're going
-            if (i>1)
-            {
-                output.path[i-1].target.o = heading;
-            }
-        } 
+        orca::Waypoint2d &wp = pathData.path[i];
+        setWpParameters( wpPara[i], wp );
     }
-        
 }
 
 }

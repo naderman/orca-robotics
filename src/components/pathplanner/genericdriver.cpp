@@ -64,6 +64,13 @@ namespace {
         }
         throw( orcapathplan::Exception( "Couldn't jiggle onto clear cell." ) );
     }
+    
+    double straightLineDist( const orca::Waypoint2d *wp1, const orca::Waypoint2d *wp2 )
+    {
+        double dX = wp1->target.p.x - wp2->target.p.x;
+        double dY = wp1->target.p.y - wp2->target.p.y;
+        return sqrt( dX*dX + dY*dY );
+    }
 
 }
 
@@ -160,7 +167,7 @@ GenericDriver::computePath( const orca::PathPlanner2dTask& task,
         // ====== Set waypoint parameters ================================
         // ====== Different options could be implemented and chosen and runtime (via .cfg file)
         vector<orcapathplan::WaypointParameter> wpParaVector;
-        setWaypointParameters( startWp, goalWp, pathSegment.size(), wpParaVector );
+        setWaypointParameters( startWp, goalWp, pathSegment, ogMap_, wpParaVector );
         // ===============================================================
 
         // ===== Append to the pathData which contains the entire path  ========
@@ -176,21 +183,43 @@ GenericDriver::computePath( const orca::PathPlanner2dTask& task,
 // of a start point, intermediate points and an end point:
 // (1) Start and end points use their settings as given
 // (2) Intermediate points use the settings of the endpoint
-// (3) The time to reach intermediate points is divided linearly between start and end point times
+// (3) Timing: timeSegment = timeTotal/lengthTotal * lengthSegment where
+//        timeSegment:   time to travel current segment
+//        timeTotal:     total time to get from start to goal
+//        lengthTotal:   total length which is a sum of line lengths connecting all waypoints
+//        lengthSegment: line length of the current segment
 void
 GenericDriver::setWaypointParameters( const orca::Waypoint2d *startWp, 
                                        const orca::Waypoint2d *goalWp, 
-                                       int numWaypoints,
+                                       const orcapathplan::Cell2DVector &pathSegmentCells,
+                                       const orcaogmap::OgMap &ogMap,
                                        vector<orcapathplan::WaypointParameter> &wpParaVector )
 {
     wpParaVector.clear();
+    
+    // convert cell vector into slice data structure
+    // needed for distance calculations
+    orca::PathPlanner2dData pathSegmentSlice;
+    convertAndAppend( ogMap, pathSegmentCells, pathSegmentSlice );
+    
+    // compute the total length connecting all intermediate waypoints based on straight lines
+    // store segment lengths in a vector for later
+    assert( pathSegmentSlice.path.size()>1 );
+    double lengthTotal=0.0;
+    vector<double> lengthSegments;
+    for (unsigned int i=1; i<pathSegmentSlice.path.size(); i++)
+    {
+        double lengthSegment = straightLineDist(&pathSegmentSlice.path[i-1], &pathSegmentSlice.path[i] );
+        lengthSegments.push_back( lengthSegment );
+        lengthTotal = lengthTotal + lengthSegment;
+    }
+    double timeTotal = orcaice::timeDiffAsDouble(goalWp->timeTarget, startWp->timeTarget);
+    assert( timeTotal >= 0 && "Timestamp difference between goal and start is negative" );    
+    double timeLengthRatio = timeTotal/lengthTotal;
 
+    // add to waypoint parameters vector
     orcapathplan::WaypointParameter wpPara;
-    double secondsTilGoal = orcaice::timeDiffAsDouble(goalWp->timeTarget, startWp->timeTarget);
-    assert( secondsTilGoal >= 0 && "Timestamp difference between goal and start is negative" );
-    double deltaSec = secondsTilGoal/(double)(numWaypoints-1);
-            
-    for (int i=0; i<numWaypoints; i++)
+    for (unsigned int i=0; i<pathSegmentSlice.path.size(); i++)
     {
         if (i==0) 
         {
@@ -204,8 +233,9 @@ GenericDriver::setWaypointParameters( const orca::Waypoint2d *startWp,
         {
             wpPara.distanceTolerance = goalWp->distanceTolerance;
             wpPara.maxApproachSpeed = goalWp->maxApproachSpeed;
-            wpPara.maxApproachTurnrate = goalWp->maxApproachTurnrate;                        
-            wpPara.timeTarget = toOrcaTime( timeAsDouble( wpParaVector[i-1].timeTarget ) + deltaSec );
+            wpPara.maxApproachTurnrate = goalWp->maxApproachTurnrate;
+            // time for this segment is proportional to its length                        
+            wpPara.timeTarget = toOrcaTime( timeAsDouble(wpParaVector[i-1].timeTarget) + timeLengthRatio * lengthSegments[i-1] );
             wpPara.headingTolerance = goalWp->headingTolerance;
         }
         wpParaVector.push_back( wpPara );

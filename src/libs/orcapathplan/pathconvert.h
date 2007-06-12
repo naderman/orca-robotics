@@ -35,20 +35,25 @@ namespace orcapathplan {
 
     //! Converts a path (cell vector in cell coordinate system)
     //! into the Slice-defined PathPlanner2dData (world coordinate system). 
-    //! Will append input cells to the output path if output path already contains 
-    //! entries. Note that not all entries are set by this function (e.g. tolerances)
+    //! Heading values are set in the direction of two connected waypoints.
+    //! The first waypoint's heading can be specified optionally (0.0 by default).
+    //! Will append input cells to the output path if output path already contains entries. 
+    //! Note that parameters are *not* set.
     void convertAndAppend( const orcaogmap::OgMap      &ogMap,
                            const Cell2DVector          &input,
-                           orca::PathPlanner2dData     &output );
+                           orca::PathPlanner2dData     &output,
+                           double                       firstHeading = 0.0  );
     
-    //! As above. Additionaly, it sets heading values in the direction of two connected waypoints.
-    //! The first waypoint's heading can be specified optionally (0.0 by default).
-    //! Furthermore, the remaining waypoint parameters in wpParam are added.
+    //! As above but also adds parameters.
     void convertAndAppend( const orcaogmap::OgMap               &ogMap,
                            const Cell2DVector                   &input,
                            const std::vector<WaypointParameter> &wpPara,
                            orca::PathPlanner2dData              &output,
                            double                                firstHeading = 0.0 );
+    
+    //! Sets all parameters of pathData contained in vector wpPara
+    void setParameters( orca::PathPlanner2dData              &pathData,
+                        const std::vector<WaypointParameter> &wpPara );
 
 }
 #endif

@@ -63,12 +63,18 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated components
 
+- GoalPlanner (tobi)
+  - new config parameter: velocity to reach first waypoint
+  - figures out the timing to the first wp and changes subsequent times accordingly
+
+- PathPlanner (tobi)
+  - policy for adding timing to waypoints changed: distances are taken into account
+
 @par Updated utilities
 
 - Name change: sysmon -> systemtracermon (alex b)
 - OrcaView2d (tobi)
-  - new config parameter: time to reach first waypoint
-  - goalplanner timing bug fixed, olympic marker displays properly
+  - olympic marker displays properly
 
 @par Updated libraries
 

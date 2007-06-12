@@ -51,9 +51,10 @@ private:
     double traversabilityThreshhold_;
     bool   doPathOptimization_;
     
-    void setWaypointParameters( const orca::Waypoint2d                       *startWp, 
-                                const orca::Waypoint2d                       *goalWp, 
-                                int                                           numSegments,
+    void setWaypointParameters( const orca::Waypoint2d *startWp, 
+                                const orca::Waypoint2d *goalWp, 
+                                const orcapathplan::Cell2DVector &pathSegmentCells,
+                                const orcaogmap::OgMap &ogMap,
                                 std::vector<orcapathplan::WaypointParameter> &wpParaVector );
 
     void jiggleOntoClearCells( orca::Path2d &path );
