@@ -3,11 +3,19 @@
 
 MESSAGE ( STATUS "== EXAMPLES ==" )
 
-# when adding new directories, please maintain alphabetical order
-ADD_SUBDIRECTORY ( orca2yarp )
-ADD_SUBDIRECTORY ( player2orca )
-ADD_SUBDIRECTORY ( pureice )
-# much easier to check for java here, because the example is build as a separate project
-IF ( JAVA_FOUND AND BUILD_JAVA )
-    ADD_SUBDIRECTORY ( pureicej )
-ENDIF ( JAVA_FOUND AND BUILD_JAVA )
+IF ( BUILD_EXAMPLES )
+
+    # when adding new directories, please maintain alphabetical order
+    ADD_SUBDIRECTORY ( orca2yarp )
+    ADD_SUBDIRECTORY ( player2orca )
+    ADD_SUBDIRECTORY ( pureice )
+    # much easier to check for java here, because the example is build as a separate project
+    IF ( JAVA_FOUND AND BUILD_JAVA )
+        ADD_SUBDIRECTORY ( pureicej )
+    ENDIF ( JAVA_FOUND AND BUILD_JAVA )
+
+ELSE ( BUILD_EXAMPLES )
+
+    MESSAGE ( STATUS "Example compilation is disabled" )
+
+ENDIF ( BUILD_EXAMPLES )
