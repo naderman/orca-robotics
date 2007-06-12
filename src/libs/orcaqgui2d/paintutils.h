@@ -79,7 +79,7 @@ private:
 //! Warning: Don't rotate painter before calling this function
 void paintOrigin( QPainter *p, QColor colour );
 
-//! Paint a robot icon, painted with fixed pixel sizes, independent of zoom configuration.
+//! Paint a robot icon, painted with minimum pixel sizes, independent of zoom configuration.  Uses consts at the top of the file to specify if the origin of the robot is at the front, middle or rear of the robot, and to specify the size in metres of the robot.
 //! m2win is the worldmatrix BEFORE any painter rotation
 void paintPlatformPose( QMatrix &m2win, QPainter *p, QColor colour, float transparencyMultiplier=1.0 );
 

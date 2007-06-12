@@ -15,8 +15,11 @@ Config.Driver.Default=fake
 
 Config.StartEnabled.Default=1
 
-Config.Origin.Comment=x[m] y[m] z[m]  roll[deg] pitch[deg] yaw[deg]
-Config.Origin.Default=0.0 0.0 0.0  0.0 0.0 0.0
+Config.Offset.Comment=x[m] y[m] z[m]  roll[deg] pitch[deg] yaw[deg]
+Config.Offset.Default=0.0 0.0 0.0  0.0 0.0 0.0
+
+Config.frameOffset.Comment=x[m] y[m] z[m]
+Config.frameOffset.Default=0.0 0.0 0.0
 
 Config.Device.Default=/dev/ttyS0
 Config.Baud.Default=4800

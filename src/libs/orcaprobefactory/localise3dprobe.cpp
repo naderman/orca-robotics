@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2007 Ben Upcroft
+ * Copyright (c) 2004-2007 Alexei Makarenko
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -13,54 +13,50 @@
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
 
-#include "drivebicycleprobe.h"
+#include "localise3dprobe.h"
 
 using namespace std;
 using namespace orcaprobefactory;
 
-DriveBicycleProbe::DriveBicycleProbe( const orca::FQInterfaceName& name, 
-                                      orcaprobe::DisplayDriver& display,
-                                      const orcaice::Context& context ) :
-    InterfaceProbe(name,display,context)
+Localise3dProbe::Localise3dProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+                                const orcaice::Context& context )
+    : InterfaceProbe(name,display,context)
 {
-    id_ = "::orca::DriveBicycle";
+    id_ = "::orca::Localise3d";
     
-    addOperation( "getDescription" );
     addOperation( "getData" );
+    addOperation( "getDataAtTime" );
     addOperation( "subscribe" );
     addOperation( "unsubscribe" );
-    addOperation( "setData" );
 
     Ice::ObjectPtr consumer = this;
-    callbackPrx_ = orcaice::createConsumerInterface<orca::DriveBicycleConsumerPrx>( context_, consumer );
+    callbackPrx_ = orcaice::createConsumerInterface<orca::Localise3dConsumerPrx>( context_, consumer );
 }
     
 int 
-DriveBicycleProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
+Localise3dProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 {
     switch ( index )
     {
-    case orcaprobe::UserIndex :
-        return loadGetDescription( data );
-    case orcaprobe::UserIndex+1 :
+    case orcaprobe::UserIndex+0 :
         return loadGetData( data );
+    case orcaprobe::UserIndex+1 :
+        return loadGetDataAtTime( data );
     case orcaprobe::UserIndex+2 :
         return loadSubscribe( data );
     case orcaprobe::UserIndex+3 :
         return loadUnsubscribe( data );
-    case orcaprobe::UserIndex+4 :
-        return loadSetData( data );
     }
     return 1;
 }
 
 int 
-DriveBicycleProbe::loadGetData( orcacm::OperationData& data )
+Localise3dProbe::loadGetData( orcacm::OperationData& data )
 {
-    orca::DriveBicycleData result;    
+    orca::Localise3dData result;
     try
     {
-        orca::DriveBicyclePrx derivedPrx = orca::DriveBicyclePrx::checkedCast(prx_);
+        orca::Localise3dPrx derivedPrx = orca::Localise3dPrx::checkedCast(prx_);
         result = derivedPrx->getData();
         orcaprobe::reportResult( data, "data", orcaice::toString(result) );
     }
@@ -82,32 +78,18 @@ DriveBicycleProbe::loadGetData( orcacm::OperationData& data )
 }
 
 int 
-DriveBicycleProbe::loadGetDescription( orcacm::OperationData& data )
+Localise3dProbe::loadGetDataAtTime( orcacm::OperationData& data )
 {
-    orca::VehicleDescription result;
-    try
-    {
-        orca::DriveBicyclePrx derivedPrx = orca::DriveBicyclePrx::checkedCast(prx_);
-        result = derivedPrx->getDescription();
-        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orcaprobe::reportNotImplemented( data );
     return 0;
 }
 
 int 
-DriveBicycleProbe::loadSubscribe( orcacm::OperationData& data )
+Localise3dProbe::loadSubscribe( orcacm::OperationData& data )
 {
-    cout<<"subscribing "<<callbackPrx_->ice_toString()<<endl;
-
     try
     {
-        orca::DriveBicyclePrx derivedPrx = orca::DriveBicyclePrx::checkedCast(prx_);
+        orca::Localise3dPrx derivedPrx = orca::Localise3dPrx::checkedCast(prx_);
         derivedPrx->subscribe( callbackPrx_ );
         orcaprobe::reportSubscribed( data );
 
@@ -124,13 +106,11 @@ DriveBicycleProbe::loadSubscribe( orcacm::OperationData& data )
 }
 
 int 
-DriveBicycleProbe::loadUnsubscribe( orcacm::OperationData& data )
-{
-    cout<<"unsubscribing "<<callbackPrx_->ice_toString()<<endl;
-
+Localise3dProbe::loadUnsubscribe( orcacm::OperationData& data )
+{    
     try
     {
-        orca::DriveBicyclePrx derivedPrx = orca::DriveBicyclePrx::checkedCast(prx_);
+        orca::Localise3dPrx derivedPrx = orca::Localise3dPrx::checkedCast(prx_);
         derivedPrx->unsubscribe( callbackPrx_ );
         orcaprobe::reportUnsubscribed( data );
     }
@@ -143,17 +123,9 @@ DriveBicycleProbe::loadUnsubscribe( orcacm::OperationData& data )
     return 0;
 }
 
-int 
-DriveBicycleProbe::loadSetData( orcacm::OperationData& data )
+void 
+Localise3dProbe::setData(const orca::Localise3dData& result, const Ice::Current&)
 {
-    orcaprobe::reportNotImplemented( data );
-    return 0;
-}
-
-void
-DriveBicycleProbe::setData(const orca::DriveBicycleData& result, const Ice::Current&)
-{
-//     std::cout << orcaice::toString(result) << std::endl;
     subscribeOperationData_.results.clear();
     orcaprobe::reportResult( subscribeOperationData_, "data", orcaice::toString(result) );
     display_.setOperationData( subscribeOperationData_ );

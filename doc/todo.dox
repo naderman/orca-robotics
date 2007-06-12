@@ -61,6 +61,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated interfaces
 
+- DriveBicycle (alex m.)
+  - provides information on the current state of the actuators (speed and steer angle).
+
 @par Updated components
 
 - GoalPlanner (tobi)
@@ -70,6 +73,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - PathPlanner (tobi)
   - policy for adding timing to waypoints changed: distances are taken into account
 
+- Imu (ben u.)
+  - Added configurable offset between the IMU sensor and the platform.
+
 @par Updated utilities
 
 - Name change: sysmon -> systemtracermon (alex b)
@@ -78,7 +84,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated libraries
 
-- Bugfixes to 3D transformations in orcaobj/frameutils.cpp (Will Uther)
+- OrcaObjects
+  - Bugfixes to 3D transformations in orcaobj/frameutils.cpp (Will Uther)
 
 @par Removed
 

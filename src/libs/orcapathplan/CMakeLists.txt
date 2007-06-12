@@ -1,4 +1,4 @@
-IF ( NOT OS_WIN )
+IF ( OS_LINUX )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
 
@@ -14,4 +14,4 @@ IF ( NOT OS_WIN )
         ADD_SUBDIRECTORY( test )
     ENDIF( BUILD_TESTS )       
 
-ENDIF ( NOT OS_WIN )
+ENDIF ( OS_LINUX )

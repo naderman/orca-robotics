@@ -459,6 +459,36 @@ toLogString( const orca::Odometry3dData& obj )
     return s.str();
 }
 
+/*! 
+@brief Prints out DriveBicycleData to text which is easy to parse.
+
+One data structure per line.
+{time stamp} {reference command} {current control state}
+
+- time stamp
+    - (int) seconds
+    - (int) microseconds
+- reference command
+    - (double) speed [m/s]
+    - (double) steer angle [deg]
+- current control state
+    - (double) speed [m/s]
+    - (double) steer angle [deg]
+*/
+std::string 
+toLogString( const orca::DriveBicycleData& obj )
+{
+    std::stringstream s;
+    
+    s << toLogString(obj.timeStamp) << " "
+      << obj.referenceSpeed << " " 
+      << RAD2DEG(obj.referenceSteerAngle) << " "
+      << obj.currentSpeed << " " 
+      << RAD2DEG(obj.currentSteerAngle);
+
+    return s.str();
+}
+
 // std::string 
 // toLogString( const orca::PolarFeature2dData& obj )
 // {

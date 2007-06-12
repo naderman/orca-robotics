@@ -531,12 +531,24 @@ toString( const orca::CpuData& obj )
 }
 
 std::string 
+toString( const orca::DriveBicycleCommand& obj )
+{
+    std::ostringstream s;
+    s  << " DriveBicycleCommand: timeStamp=" << toString(obj.timeStamp) <<"s";
+    s  << " speed=" << obj.speed <<"m";
+    s << " steerAngle=" << RAD2DEG(obj.steerAngle) <<"deg";
+    return s.str();
+}
+
+std::string 
 toString( const orca::DriveBicycleData& obj )
 {
     std::ostringstream s;
     s  << " DriveBicycleData: timeStamp=" << toString(obj.timeStamp) <<"s";
-    s  << " speed=" << obj.speed <<"m";
-    s << " steerAngle=" << RAD2DEG(obj.steerAngle) <<"deg";
+    s  << " ref speed=" << obj.referenceSpeed <<"m";
+    s << " ref steerAngle=" << RAD2DEG(obj.referenceSteerAngle) <<"deg";
+    s  << " current speed=" << obj.currentSpeed <<"m";
+    s << " current steerAngle=" << RAD2DEG(obj.currentSteerAngle) <<"deg";
     return s.str();
 }
 

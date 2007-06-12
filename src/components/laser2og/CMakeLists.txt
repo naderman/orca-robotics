@@ -1,4 +1,4 @@
-IF ( NOT OS_WIN )
+IF ( OS_LINUX  )
 
 OPTION( BUILD_LASER2OG "Try to build Laser2Og" ON )
 
@@ -17,4 +17,5 @@ IF ( BUILD_LASER2OG )
     GENERATE_CONFIG_FILE( laser2og.def )
 
 ENDIF ( BUILD_LASER2OG )
-ENDIF ( NOT OS_WIN )
+ENDIF ( OS_LINUX )
+

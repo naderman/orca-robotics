@@ -12,6 +12,7 @@
 #define ORCA2_IMU_COMPONENT_H
 
 #include <orcaice/component.h>
+#include <orca/bros1.h>
 #include <orcaifaceimpl/odometry3diface.h>
 
 namespace imu {

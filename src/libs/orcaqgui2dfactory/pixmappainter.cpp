@@ -93,7 +93,7 @@ PixmapPainter::updateWorldMatrix( const QMatrix & m )
 {
     // don't waste time resizing to the same scale
     if ( m2win_ == m ) {
-        return false;
+        // return false;
     }
 //     cout << "TRACE(pixmappainter.cpp): updateWorldMatrix " << endl;
 

@@ -44,7 +44,7 @@ public:
     virtual orca::VehicleDescription getDescription( const Ice::Current& c ) const
         { return iface_.getDescription(); }
 
-    virtual void setCommand(const ::orca::DriveBicycleData& command, 
+    virtual void setCommand(const ::orca::DriveBicycleCommand& command, 
                             const ::Ice::Current& current )
         {  iface_.setCommand( command ); }
 
@@ -54,13 +54,14 @@ private:
 
 //////////////////////////////////////////////////////////////////////
 
-DriveBicycleIface::DriveBicycleIface( const std::string &ifaceTag,
-                                      orcaice::Proxy<orca::DriveBicycleData>& commandProxy,
-                                      const orca::VehicleDescription& descr,
-                                      const orcaice::Context &context ) :
-    ifaceTag_(ifaceTag),
-    commandProxy_(commandProxy),
+DriveBicycleIface::DriveBicycleIface( 
+            const orca::VehicleDescription& descr,
+            const std::string &ifaceTag,
+//             orcaice::Notify<orca::DriveBicycleCommand>& commandPipe,
+            const orcaice::Context &context ) :
     description_(descr),
+    ifaceTag_(ifaceTag),
+//     commandPipe_(commandPipe),
     context_(context)
 {
 }
@@ -89,7 +90,7 @@ DriveBicycleIface::getData() const
 {
     context_.tracer()->debug( "DriveBicycleIface::getData()", 5 );
 
-    if ( dataProxy_.isEmpty() )
+    if ( dataPipe_.isEmpty() )
     {
         std::stringstream ss;
         ss << "No data available! (ifaceTag="<<ifaceTag_<<")";
@@ -97,14 +98,16 @@ DriveBicycleIface::getData() const
     }
 
     orca::DriveBicycleData data;
-    dataProxy_.get( data );
+    dataPipe_.get( data );
     return data;
 }
 
 void
-DriveBicycleIface::setCommand(const ::orca::DriveBicycleData& command )
+DriveBicycleIface::setCommand(const ::orca::DriveBicycleCommand& command )
 {
-    commandProxy_.set( command );
+    if ( this->hasNotifyHandler() ) {
+        this->set( command );
+    }
 }
 
 void 
@@ -137,17 +140,17 @@ DriveBicycleIface::unsubscribe(const ::orca::DriveBicycleConsumerPrx& subscriber
 void
 DriveBicycleIface::localSet( const orca::DriveBicycleData &data )
 {
-    cout<<"TRACE(drivebicycleIface.cpp): localSet(): " << orcaice::toString(data) << endl;
+//     cout<<"TRACE(drivebicycleIface.cpp): localSet(): " << orcaice::toString(data) << endl;
 
-    dataProxy_.set( data );
+    dataPipe_.set( data );
 }
 
 void
 DriveBicycleIface::localSetAndSend( const orca::DriveBicycleData &data )
 {
-    cout<<"TRACE(drivebicycleiface.cpp): localSetAndSend(): " << orcaice::toString(data) << endl;
+//     cout<<"TRACE(drivebicycleiface.cpp): localSetAndSend(): " << orcaice::toString(data) << endl;
 
-    dataProxy_.set( data );
+    dataPipe_.set( data );
     
     // Try to push to IceStorm.
     tryPushToIceStormWithReconnect<orca::DriveBicycleConsumerPrx,orca::DriveBicycleData>

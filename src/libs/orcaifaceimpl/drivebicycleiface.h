@@ -17,6 +17,7 @@
 
 // utilities
 #include <orcaice/proxy.h>
+#include <orcaice/notify.h>
 #include <orcaice/context.h>
 
 namespace orcaifaceimpl {
@@ -24,12 +25,13 @@ namespace orcaifaceimpl {
 //!
 //! Implements the DriveBicycle interface: Handles remote calls.
 //!
-class DriveBicycleIface : public IceUtil::Shared
+class DriveBicycleIface : public IceUtil::Shared,
+                          public orcaice::Notify<orca::DriveBicycleCommand>
 {
 public:
-    DriveBicycleIface( const std::string &ifaceTag,
-                       orcaice::Proxy<orca::DriveBicycleData>& commandProxy,
-                       const orca::VehicleDescription& descr,
+    DriveBicycleIface( const orca::VehicleDescription& descr,
+                       const std::string &ifaceTag,
+//                        orcaice::Notify<orca::DriveBicycleCommand>& commandPipe,
                        const orcaice::Context &context );
     ~DriveBicycleIface();
 
@@ -44,7 +46,7 @@ public:
     orca::VehicleDescription getDescription() const
         { return description_; }
 
-    void setCommand( const ::orca::DriveBicycleData& );
+    void setCommand( const ::orca::DriveBicycleCommand& );
 
     // Local calls:
 
@@ -59,21 +61,22 @@ public:
     void localSetAndSend( const orca::DriveBicycleData &data );
 
 private:
-    
-    // outgoing data
-    orcaice::Proxy<orca::DriveBicycleData> dataProxy_;
 
-    orca::DriveBicycleConsumerPrx    consumerPrx_;
-    IceStorm::TopicPrx             topicPrx_;
+    const orca::VehicleDescription    description_;
+    const std::string                 ifaceTag_;
+    IceStorm::TopicPrx                topicPrx_;
+
+    // incoming data
+//     orcaice::Notify<orca::DriveBicycleCommand>& commandPipe_;
+    // outgoing data
+    orcaice::Proxy<orca::DriveBicycleData> dataPipe_;
+
+    orcaice::Context                  context_;
+
+    orca::DriveBicycleConsumerPrx     consumerPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
-
-    const std::string                 ifaceTag_;
-    // incoming data
-    orcaice::Proxy<orca::DriveBicycleData>& commandProxy_;
-    const orca::VehicleDescription    description_;
-    orcaice::Context                  context_;
 };
 typedef IceUtil::Handle<DriveBicycleIface> DriveBicycleIfacePtr;
 

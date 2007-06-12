@@ -1,3 +1,5 @@
+IF ( OS_LINUX )
+
 OPTION( BUILD_ORCAICEGRID "Try to build libOrcaIceGrid" ON )
 
 IF ( BUILD_ORCAICEGRID )
@@ -15,3 +17,6 @@ IF ( BUILD_ORCAICEGRID )
   INSTALL_FILES( /include/orcaicegrid .*\\.h$ )
 
 ENDIF ( BUILD_ORCAICEGRID )
+
+ENDIF ( OS_LINUX )
+

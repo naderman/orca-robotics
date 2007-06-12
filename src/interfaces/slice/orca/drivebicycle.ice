@@ -23,17 +23,41 @@ module orca
     @{
 */
 
-//! Bicycle steering/velocity command.
+//! Bicycle command: steering angle & velocity.
+struct DriveBicycleCommand
+{
+    //! Time when data was measured.
+    Time timeStamp;
+
+    //! Reference value for the angle of the steered wheel [rad].
+    //! This is the command currently executed by the vehicle.
+    double steerAngle;
+
+    //! Reference value for the forward speed of the driven wheel [m/s].
+    //! The value is negative when the vehicle is to move backwards.
+    double speed;
+};
+
+//! Bicycle data: commanded and actual steering angle & velocity.
 struct DriveBicycleData
 {
     //! Time when data was measured.
     Time timeStamp;
 
-    //! Angle of the steering wheel [rad]
-    double steerAngle;
+    //! Reference value for the angle of the steered wheel [rad].
+    //! This is the command currently executed by the vehicle.
+    double referenceSteerAngle;
 
-    //! Forward speed [m/s]. Negative for reverse.
-    double speed;
+    //! Reference value for the forward speed of the driven wheel [m/s].
+    //! The value is negative when the vehicle is to move backwards.
+    double referenceSpeed;
+
+    //! Current angle of the steered wheel [rad]
+    double currentSteerAngle;
+
+    //! Current forward speed of the driven wheel [m/s]. 
+    //! The value is negative when the vehicle moves backwards.
+    double currentSpeed;
 };
 
 //! Data consumer interface.
@@ -59,7 +83,7 @@ interface DriveBicycle
             throws DataNotExistException, HardwareFailedException;
     
     //! Set velocity command
-    idempotent void setCommand( DriveBicycleData data )
+    idempotent void setCommand( DriveBicycleCommand data )
             throws HardwareFailedException;    
 
     /*!

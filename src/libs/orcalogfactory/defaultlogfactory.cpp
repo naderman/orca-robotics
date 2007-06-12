@@ -12,9 +12,10 @@
 
 #include <orcalog/logmaster.h>
 
-// all plug-ins
+// all plug-insv
 #include "cameralogger.h"
 #include "cpulogger.h"
+#include "drivebicyclelogger.h"
 #include "imulogger.h"
 #include "laserscanner2dlogger.h"
 #include "localise2dlogger.h"
@@ -36,6 +37,7 @@ DefaultLogFactory::DefaultLogFactory()
 {
     addSupportedType("Camera");
     addSupportedType("Cpu");
+    addSupportedType("DriveBicycle");
     addSupportedType("Imu");
     addSupportedType("LaserScanner2d");
     addSupportedType("Localise2d");
@@ -65,6 +67,10 @@ DefaultLogFactory::create( const std::string      &interfaceType,
     else if (interfaceType == "Cpu")
     {
         logger = new CpuLogger( master, typeSuffix, format, filenamePrefix, context );
+    }
+    else if (interfaceType == "DriveBicycle")
+    {
+        logger = new DriveBicycleLogger( master, typeSuffix, format, filenamePrefix, context );
     }
     else if (interfaceType == "Imu")
     {

@@ -22,11 +22,13 @@ namespace imu {
 ImuHandler::ImuHandler(ImuI                            &imuObj,
                        orcaifaceimpl::Odometry3dIface  &odometry3dObj,
                        ImuDriver                       *hwDriver,
+                       orca::CartesianPoint            frameOffset,
                        orcaice::Context                context,
                        bool                            startEnabled )
     : imuObj_(imuObj),
       odometry3dObj_(odometry3dObj),
       hwDriver_(hwDriver),
+      frameOffset_(frameOffset),
       context_(context)
 {
 }
@@ -80,9 +82,22 @@ ImuHandler::run()
                 // get the pva data              
                 if( hwDriver_->getData( odometry3dData ) == 0 )
                 {
+		    // convert offset
+		    Frame3d newFrame = odometry3dData.pose;
+                    // cout << "CentrePos: " << toString(odometry3dData.pose.p) << endl;
+		    newFrame.p.x = newFrame.p.y = newFrame.p.z = 0.0;
+		    CartesianPoint localOffset = convertFromFrame3d(newFrame, frameOffset_);
+                    // cout << "localOffset: " << toString(localOffset) << endl;
+                    odometry3dData.pose.p.x += localOffset.x;
+                    odometry3dData.pose.p.y += localOffset.y;
+                    odometry3dData.pose.p.z += localOffset.z;
+
+                    // cout << "IMUPos: " << toString(odometry3dData.pose.p) << endl;
                     // raw imu data
                     odometry3dObj_.localSetAndSend( odometry3dData );
-                }
+                } else {
+		    // cerr << "No odomtry data :(" << endl;
+		}
             }
             else
             {

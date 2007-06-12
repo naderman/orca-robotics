@@ -16,6 +16,7 @@
 #include <orca/binaryswitch.h>
 #include <orca/camera.h>
 #include <orca/cpu.h>
+#include <orca/drivebicycle.h>
 #include <orca/gps.h>
 #include <orca/ogmap.h>
 #include <orca/home.h>
@@ -77,6 +78,7 @@ std::string toLogString( const orca::Odometry3dData& );
 std::string toLogString( const orca::ImuData& obj );
 //! Prints out wifi data to text which is easy to parse
 std::string toLogString( const orca::WifiData& obj );
+std::string toLogString( const orca::DriveBicycleData& );
 
 //! Prints out Power data to text which is easy to parse
 std::string toLogString( const orca::PowerData& );

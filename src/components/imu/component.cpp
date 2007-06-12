@@ -9,6 +9,7 @@
  */
 
 #include <orcaice/orcaice.h>
+#include <orcaice/proputils.h>
 
 #include "component.h"
 #include "imuhandler.h"
@@ -66,6 +67,11 @@ Component::start()
         errString += prefix + "Driver'";
         throw orcaice::Exception( ERROR_INFO, errString );
     }
+
+    orca::CartesianPoint defaultOffset;
+    defaultOffset.x = defaultOffset.y = defaultOffset.z = 0;
+    orca::CartesianPoint frameOffset = orcaice::getPropertyAsCartesianPointWithDefault(
+			prop, prefix+"frameOffset", defaultOffset);
 
     //
     // HARDWARE INTERFACES
@@ -177,6 +183,7 @@ Component::start()
     handler_ = new ImuHandler(*imuObj,
                               *odometry3dIface_,
                               hwDriver_,
+                              frameOffset,
                               context(),
                               startEnabled );
 

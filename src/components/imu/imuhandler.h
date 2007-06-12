@@ -12,6 +12,7 @@
 #define ORCA2_IMU_HANDLER_H
 
 #include <orca/imu.h>
+#include <orca/bros1.h>
 #include <orcaice/thread.h>
 #include <orcaice/ptrbuffer.h>
 #include <orcaice/context.h>
@@ -36,6 +37,7 @@ public:
     ImuHandler(ImuI                            &imuObj,
                orcaifaceimpl::Odometry3dIface  &odometry3dObj,
 	           ImuDriver                       *hwDriver,
+                   orca::CartesianPoint            frameOffset,
 	           orcaice::Context                current,
 	           bool                            startEnabled );
     ~ImuHandler();
@@ -47,6 +49,7 @@ private:
     orcaifaceimpl::Odometry3dIface& odometry3dObj_;
     // Generic driver for the hardware
     ImuDriver* hwDriver_;
+    const orca::CartesianPoint frameOffset_;
 
     // mgaMapgrid mgaMapgrid_;
 

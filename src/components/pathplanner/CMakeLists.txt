@@ -1,4 +1,4 @@
-IF ( NOT OS_WIN )
+IF ( OS_LINUX )
 
 OPTION( BUILD_PATHPLANNER "Try to build pathplanner" ON )
 
@@ -44,4 +44,4 @@ IF ( BUILD_PATHPLANNER )
     GENERATE_CONFIG_FILE( pathplanner.def )
 
 ENDIF ( BUILD_PATHPLANNER )
-ENDIF ( NOT OS_WIN )
+ENDIF ( OS_LINUX )

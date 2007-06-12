@@ -107,6 +107,21 @@ Application::main(int argc, char* argv[])
 //             initTracerInfo("after setComponentProperties()");
 //             orcaice::detail::printComponentProperties( initData.properties, component_.tag() );
 
+    //
+    // alexm: this is a quick hack on the DGC branch which needs to be done
+    //        properly in the HEAD later.
+    // Allow for the possibility that component config file may specify
+    // the name of the global config file.
+    //
+    std::string globalConfigValue;
+    bool isGlobalConfig = 
+        orcaice::getProperty( initData.properties, "Orca.GlobalConfig", globalConfigValue );
+    if ( !isGlobalConfig ) {
+        args.push_back( "--Orca.GlobalConfig="+globalConfigValue );
+        initTracerInfo( component_.tag()+": special case: comp. config file specifies global conf. file" );
+    }
+    // end of hack
+
     // Level 2. Now, apply properties from the global Orca config file
     std::string globFilename;
     try

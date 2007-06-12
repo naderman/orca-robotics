@@ -172,6 +172,8 @@ std::string toString( const orca::CpuInfo& );
 //! Converts to string
 std::string toString( const orca::CpuData& );
 //! Converts to string
+std::string toString( const orca::DriveBicycleCommand& );
+//! Converts to string
 std::string toString( const orca::DriveBicycleData& );
 //! Converts to string
 std::string toString( const orca::GpsDescription& );

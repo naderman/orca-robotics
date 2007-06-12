@@ -70,7 +70,7 @@ NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device
     // configure the buffers so they have depth 100 and are of type queue
     gpsDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
     imuDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
-    odometry3dDataBuffer_.configure( 1 , orcaice::BufferTypeQueue );
+    odometry3dDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
     localise3dDataBuffer_.configure( 200 , orcaice::BufferTypeQueue );
    
 }
@@ -189,7 +189,7 @@ NovatelSpanInsGpsDriver::init()
 {
     if ( enabled_ )
         return 0;
-    
+
     cout << "NovatelSpanInsGps: Initialising Novatel Span InsGps driver\n";
 
 #ifdef __QNX__
@@ -211,16 +211,14 @@ NovatelSpanInsGpsDriver::init()
     put = serial_->write( "unlogall\r\n" );
     //printf("put %d bytes\n",put);
     serial_->drain();
-       
+
     //
     // IMU Specific settings
     //
-
     // tell the novatel what serial port the imu is attached to (com3 = aux)
     put = serial_->write( "interfacemode com3 imu imu on\r\n" );
-
     // the type of imu being used
-    put = serial_->write( "setimutype imu_hg1700_ag17\r\n" );
+    put = serial_->write( "setimutype imu_hg1700_ag62\r\n" );
 
     // read and set the imu params (orientation of imu and offset to gps antenna)
     setNovatelSpecificParams();
@@ -249,6 +247,13 @@ NovatelSpanInsGpsDriver::init()
     prefix += ".Config.Novatel.LogEnable.";
     int enableMsg;
 
+    // raw accelerometer and gyro data
+    enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"rawimusb", 0 );
+    if(enableMsg){
+        cout << "requesting raw imu data!" << endl;
+        put = serial_->write( "log rawimusb onnew\r\n" );
+    }
+
     // receiver status
     enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"rxstatusb", 0 );
     if(enableMsg){
@@ -276,12 +281,6 @@ NovatelSpanInsGpsDriver::init()
     enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"inspvasb", 1 );
     if(enableMsg){
         put = serial_->write( "log inspvasb ontime 0.01\r\n" );
-    }
-
-    // raw accelerometer and gyro data
-    enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"rawimusb", 0 );
-    if(enableMsg){
-        put = serial_->write( "log rawimusb onnew\r\n" );
     }
 
     // pva covariances
@@ -315,7 +314,7 @@ NovatelSpanInsGpsDriver::init()
     //rtk
     enableMode = orcaice::getPropertyAsIntWithDefault( modeProp, prefix+"rtk", 0 );
     if(enableMode){
-        put = serial_->write( "com com2,57600,n,8,1,n,off,on\r\n" );
+        put = serial_->write( "com com2,9600,n,8,1,n,off,on\r\n" );
         put = serial_->write( "interfacemode com2 rtca none\r\n" );
     }
 
@@ -351,7 +350,7 @@ NovatelSpanInsGpsDriver::disable()
 void
 NovatelSpanInsGpsDriver::readGps( orca::GpsData& data, int timeoutMs )
 {
-    
+
     // blocking read with timeout. Also deletes the front element from the buffer
     int ret = gpsDataBuffer_.getAndPopNext( data, timeoutMs );
     if ( ret != 0 ) {
@@ -359,7 +358,7 @@ NovatelSpanInsGpsDriver::readGps( orca::GpsData& data, int timeoutMs )
         context_.tracer()->debug( "novatelspandriver::readGps(): Timeout while waiting for GPS packet", 6 );
     }
     else
-    {      
+    {
         context_.tracer()->debug( "novatelspandriver::readGps(): got gps data", 6 );
 
         // cout << "gpsCount_: " << gpsCount_ << endl;
@@ -371,9 +370,8 @@ NovatelSpanInsGpsDriver::readGps( orca::GpsData& data, int timeoutMs )
             gpsCount_ = 0;
         }
         gpsCount_++;
-    
     }
-    
+
     return;
 }
 
@@ -381,7 +379,7 @@ void
 NovatelSpanInsGpsDriver::readGpsTime( orca::GpsTimeData& data, int timeoutMs )
 {
     context_.tracer()->info( "novatelspandriver::readGpsTime(): GpsTime is not provided in this driver", 6 );
-    return;   
+    return;
 }
 
 void
@@ -389,6 +387,7 @@ NovatelSpanInsGpsDriver::readImu( orca::ImuData& data, int timeoutMs )
 {
     // blocking read with timeout. Also deletes the front element from the buffer
     int ret = imuDataBuffer_.getAndPopNext( data, timeoutMs );
+    //printf("%s gyro.x %f\n", __PRETTY_FUNCTION__, data.gyro.x);
     if ( ret != 0 ) {
         // throw NovatelSpanException( "Timeout while waiting for IMU packet" );
         context_.tracer()->debug( "novatelspandriver::readImu(): Timeout while waiting for IMU packet", 6 );
@@ -396,7 +395,7 @@ NovatelSpanInsGpsDriver::readImu( orca::ImuData& data, int timeoutMs )
     else
     {
         context_.tracer()->debug( "novatelspandriver::readImu(): got imu data", 6 );
-    
+
         if (imuCount_ > 2000 )
         {
             std::string str = "Imu Data Buffer is " + imuDataBuffer_.size()/100;
@@ -405,12 +404,12 @@ NovatelSpanInsGpsDriver::readImu( orca::ImuData& data, int timeoutMs )
             imuCount_ = 0;
         }
         imuCount_++;
-    
+
     }
-    
+
     return;
 }
-    
+
 void
 NovatelSpanInsGpsDriver::readOdometry3d( orca::Odometry3dData& data, int timeoutMs )
 {
@@ -424,10 +423,10 @@ NovatelSpanInsGpsDriver::readOdometry3d( orca::Odometry3dData& data, int timeout
         context_.tracer()->info( "novatelspandriver::readOdometry3d()): odometry3d is not provided by this driver", 6 );
     }
     else
-    {   
+    {
         context_.tracer()->debug( "novatelspandriver::readOdometry3d()): got odometry3d data", 6 );
     }
-    
+
     return;
 }
 
@@ -441,9 +440,9 @@ NovatelSpanInsGpsDriver::readLocalise3d( orca::Localise3dData& data, int timeout
         context_.tracer()->debug( "novatelspandriver::readLocalise3d()): Timeout while waiting for Localise3d packet", 6 );
     }
     else
-    {   
+    {
         context_.tracer()->debug( "novatelspandriver::readLocalise3d()): got localise3d data", 6 );
-        
+
         if (localise3dCount_ > 2000 )
         {
             std::string str = "Localise3d Data Buffer is " + localise3dDataBuffer_.size()/100;
@@ -452,9 +451,9 @@ NovatelSpanInsGpsDriver::readLocalise3d( orca::Localise3dData& data, int timeout
             localise3dCount_ = 0;
         }
         localise3dCount_++;
-    
+
     }
-    
+
     return;
 }
 
@@ -462,7 +461,7 @@ void
 NovatelSpanInsGpsDriver::run()
 {
     try
-    {   
+    {
 
     int retMsgs; 
         // We can't block in this loop -- have to keep it rolling so
@@ -519,7 +518,7 @@ NovatelSpanInsGpsDriver::run()
                 cout << "novatelspandriver::run(): Caught some other exception..." << endl;
             }
         } // end of while
-   
+
     } // end of try
     catch ( Ice::CommunicatorDestroyedException &e )
     {
@@ -649,7 +648,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
         {
             memcpy( &RXSTATUS_, &serial_data_.raw_message, sizeof(RXSTATUS_) );
             // printf("got RXSTATUS\n");
-            return 0;       
+            return 0;
             break;
         }
         // This case is used for dgps synchronisation which is not needed at the moment
@@ -795,10 +794,10 @@ NovatelSpanInsGpsDriver::populateData( int id )
             // printf("got INSPVASB\n");
             memcpy( &INSPVA_, &serial_data_.raw_message, sizeof(INSPVA_) );
 
-	        // cout << "GPS time: " << INSPVA_.data.seconds << endl;
+            // cout << "GPS time: " << INSPVA_.data.seconds << endl;
             //    printf("%10.10f\n",INSPVA_.data.seconds); 
-	        localise3dData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
-	        odometry3dData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
+            localise3dData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
+            odometry3dData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
                 //cout << "timeOfRead_: " << orcaice::toString(localise3dData_.timeStamp) << endl; 
 
             // load the pva data into the localise3d object       
@@ -824,10 +823,10 @@ NovatelSpanInsGpsDriver::populateData( int id )
 
             // TODO: Might want to put velocities into odometry
             // velocities
-            odometry3dData_.motion.v.x = INSPVA_.data.north_vel;
-            odometry3dData_.motion.v.y = INSPVA_.data.east_vel;
-            // down = -up
-            odometry3dData_.motion.v.z = -INSPVA_.data.up_vel;
+            odometry3dData_.motion.v.x = INSPVA_.data.east_vel;
+            odometry3dData_.motion.v.y = INSPVA_.data.north_vel;
+            // v.z used to be flipped; didn't match when integrated
+            odometry3dData_.motion.v.z = INSPVA_.data.up_vel;
 
             //attitude
             localise3dData_.hypotheses[0].mean.o.r = INSPVA_.data.roll/180*M_PI;
@@ -849,13 +848,13 @@ NovatelSpanInsGpsDriver::populateData( int id )
 
             localise3dDataBuffer_.push( localise3dData_ );
             odometry3dDataBuffer_.push( odometry3dData_ );
-            
+
             static int insStatusCnt;
             if(insStatusCnt++ >=100){
                 insStatusCnt = 0;
                 context_.tracer()->info( insStatusToString( INSPVA_.data.status ), 6 );
             }
-            
+
             return 0;       
             break;
         }
@@ -925,11 +924,11 @@ NovatelSpanInsGpsDriver::populateData( int id )
         }
         case novatel::RAWIMUSB_LOG_TYPE:
         {
-            // printf("got RAWIMUSB\n");
+            //printf("got RAWIMUSB\n");
             memcpy(&RAWIMU_, &serial_data_.raw_message, sizeof(RAWIMU_) );
 
             imuData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
-            
+
 	    // Note scale factors and axis translation
             // TODO: are these gyro values correct?
 	    double dt = 0.01;
@@ -937,11 +936,11 @@ NovatelSpanInsGpsDriver::populateData( int id )
             imuData_.gyro.x = -novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.y_gyro/dt;
             imuData_.gyro.y = novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.x_gyro/dt;
             imuData_.gyro.z = -novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.z_gyro/dt;
-            
+
             imuData_.accel.x = novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.y_accel/dt;
             imuData_.accel.y = -novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.x_accel/dt;
             imuData_.accel.z = novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.z_accel/dt;
-            
+
             // TODO: add this if needed       
             //Set time
             // mkutctime(RAWIMU_.data.week,
@@ -950,10 +949,11 @@ NovatelSpanInsGpsDriver::populateData( int id )
 
             //set flag
             // newImuData_ = true;   
-            
+
+            //printf("%s gyro.x %f\n", __PRETTY_FUNCTION__, imuData_.gyro.x);
             imuDataBuffer_.push( imuData_ );
-                
-            return 0;       
+
+            return 0;
             break;
         }
         default:
@@ -978,7 +978,7 @@ int NovatelSpanInsGpsDriver::read_message( novatel_message* msg )
     msg->hdr.sop1 = 0;
     int skip = -1;
     int got;
-    
+
     // read the first sync byte
     do{
         got = serial_->read_full( &msg->hdr.sop1, 1 );
@@ -1000,7 +1000,7 @@ int NovatelSpanInsGpsDriver::read_message( novatel_message* msg )
     {
         //printf("skipped %d bytes\n",skip);
     }
-    
+
     // read the second sync byte
     do
     {
@@ -1026,23 +1026,23 @@ int NovatelSpanInsGpsDriver::read_message( novatel_message* msg )
             got = serial_->read_full( &msg->hdr.header_length, 1 );
             if( got<0 ) return -1;
             //printf("got %d bytes, asked for %d\n",got,1);
-            
+
             // read all of the header...
             got = serial_->read_full( &msg->hdr.number, msg->hdr.header_length-4 );
             if( got<0 ) return -1;
             // printf("got %d bytes, asked for %d\n",got,msg->hdr.header_length-4);
-            
+
             // read the  message data
             got = serial_->read_full( &msg->data, msg->hdr.length );
             if( got<0 ) return -1;
             //  printf("got %d bytes, asked for %d\n",got,msg->hdr.length);
-            
+
             got = serial_->read_full( &in_crc, 4 );
             if( got<0 ) return -1;
             //printf("got %d bytes, asked for %d\n",got,1);
-            
+
             id = msg->hdr.number;
-            
+
             crc = novatel::CalculateCRC32( msg->raw_message,
                                msg->hdr.length+msg->hdr.header_length );
             break;
@@ -1061,7 +1061,7 @@ int NovatelSpanInsGpsDriver::read_message( novatel_message* msg )
             got = serial_->read_full( &in_crc, 4 );
             if( got<0 ) return -1;
             //printf("got %d bytes, asked for %d\n",got,1);
-            
+
             id = msg->short_hdr.number;
 
             crc = novatel::CalculateCRC32( msg->raw_message,msg->short_hdr.length + 12 );
@@ -1078,7 +1078,7 @@ int NovatelSpanInsGpsDriver::read_message( novatel_message* msg )
         throw NovatelSpanException( "CRC Error" );
         return -1;
     }
-    
+
     //printf("got message, id=%d\n",id);
     return  id;
 }
@@ -1113,8 +1113,8 @@ NovatelSpanInsGpsDriver::insStatusToString( const int& status )
             str = "Ins Status: Unknown Ins Status";
             break;
      }
-    
-    return str;            
+
+    return str;
 
 }
 
@@ -1160,7 +1160,7 @@ NovatelSpanInsGpsDriver::setNovatelSpecificParams()
     orca::CartesianPoint imuVehicleBodyRotation;
     orcaice::setInit( imuVehicleBodyRotation );
     orcaice::getPropertyAsCartesianPoint( prop, prefix+"VehicleBodyRotation", imuVehicleBodyRotation);
-    
+
     // vehicle to imu body rotation uncertainty
     orca::CartesianPoint imuVehicleBodyRotationUncertainty;
     orcaice::setInit( imuVehicleBodyRotationUncertainty );
@@ -1171,7 +1171,7 @@ NovatelSpanInsGpsDriver::setNovatelSpecificParams()
     orca::CartesianPoint imuToGpsAntennaOffset;
     orcaice::setInit( imuToGpsAntennaOffset );
     orcaice::getPropertyAsCartesianPoint( prop, prefix+"ImuToGpsAntennaOffset", imuToGpsAntennaOffset );
-    
+
     // imuToGpsAntennaOffsetUncertainty
     orca::CartesianPoint imuToGpsAntennaOffsetUncertainty;
     orcaice::setInit( imuToGpsAntennaOffsetUncertainty );
@@ -1211,7 +1211,7 @@ NovatelSpanInsGpsDriver::setNovatelSpecificParams()
 
 
     return;
-}  
+}
 
 void
 NovatelSpanInsGpsDriver::shutdown()

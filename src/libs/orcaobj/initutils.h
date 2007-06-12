@@ -90,6 +90,8 @@ void setSane( orca::TimeOfDay& );
 //! Set to randomized but sane values.
 void setSane( orca::CameraData&, int width=640, int height=480 );
 //! Set to randomized but sane values.
+void setSane( orca::DriveBicycleCommand& );
+//! Set to randomized but sane values.
 void setSane( orca::DriveBicycleData& );
 //! Set to randomized but sane values.
 void setSane( orca::GpsData& );

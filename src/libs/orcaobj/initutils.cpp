@@ -355,10 +355,19 @@ setSane( orca::PowerData& obj, int count )
 }
 
 void 
-setSane( orca::DriveBicycleData& obj )
+setSane( orca::DriveBicycleCommand& obj )
 {
     obj.speed = double(RINT%100000)/1000.0 - 30.0;
     obj.steerAngle = DEG2RAD( double(RINT%100000)/1000.0 - 50.0 );
+}
+
+void 
+setSane( orca::DriveBicycleData& obj )
+{
+    obj.referenceSpeed = double(RINT%100000)/1000.0 - 30.0;
+    obj.referenceSteerAngle = DEG2RAD( double(RINT%100000)/1000.0 - 50.0 );
+    obj.currentSpeed = double(RINT%100000)/1000.0 - 30.0;
+    obj.currentSteerAngle = DEG2RAD( double(RINT%100000)/1000.0 - 50.0 );
 }
 
 void 

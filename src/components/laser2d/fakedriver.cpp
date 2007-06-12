@@ -54,7 +54,7 @@ FakeDriver::read( orca::LaserScanner2dDataPtr &data )
         data->intensities[i] = i%2;
     }
 
-    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+    IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(100));
     return 0;
 }
 

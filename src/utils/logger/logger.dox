@@ -27,6 +27,7 @@
 
 - @ref orca_interface_camera [Logger.Requires.CameraX]
 - @ref orca_interface_cpu [Logger.Requires.CpuX]
+- @ref orca_interface_drivebicycle [Logger.Requires.DriveBicycleX]
 - @ref orca_interface_gps [Logger.Requires.GpsX]
 - @ref orca_interface_laserscanner2d [Logger.Requires.LaserScanner2dX]
 - @ref orca_interface_localise2d [Logger.Requires.Localise2dX]
@@ -54,11 +55,11 @@ e.g. with getData() or by subscribing for data @e pushes e.g. with subscribe().
 
 To allow the setup of several interfaces of the same type in one logger, the interface tags are numbered in the configuration file.  For example:
 
-\verbatim
+@verbatim
 Logger.Requires.Laser0.Proxy=laserscanner2d@alpha/laser2d
 Logger.Requires.Laser1.Proxy=laserscanner2d@bravo/laser2d
 Logger.Requires.Odometry2d0.Proxy=odometry2d@local/segwayrmp
-\endverbatim
+@endverbatim
 
 - @c Logger.Config.FactoryLibNames (string)
     - A space-separated list of libraries containing slave factories.
@@ -94,6 +95,7 @@ Details are give on a separate page: @ref orca_component_logger_log_format
 
 @par Details for specific interfaces
 
+- orcalogfactory::DriveBicycleLogger
 - orcalogfactory::LaserScanner2dLogger
 - orcalogfactory::Localise2dLogger
 - orcalogfactory::Localise3dLogger
@@ -125,6 +127,5 @@ To add a new plug-in slave factory, use orcalogfactory as an example.
 Compile the new factory into a .so, stick it somewhere in your
 LD_LIBRARY_PATH, and edit Logger.Config.FactoryLibNames to point to
 it.
-
 
 */

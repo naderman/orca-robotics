@@ -42,7 +42,7 @@ public:
 private:
 
     orca::DriveBicyclePrx prx_;
-    orca::DriveBicycleData command_;
+    orca::DriveBicycleCommand command_;
 
     double speedIncrement_;     // [m/s]
     double steerAngleIncrement_;  // [rad]
