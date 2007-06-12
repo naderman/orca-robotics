@@ -84,8 +84,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated libraries
 
-- OrcaObjects
+- libOrcaObjects
   - Bugfixes to 3D transformations in orcaobj/frameutils.cpp (Will Uther)
+
+- libOrcaDef
+  - fixed bug in XML generation: 'external' tag for config was ignored (alex m)
 
 @par Removed
 
