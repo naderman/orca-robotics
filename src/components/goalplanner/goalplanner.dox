@@ -51,6 +51,7 @@ directly to the low-level PathFollower2d interface.
 
 The following happens in sequencential order in the mainloop:
 - Wait for a "task" path which someone (e.g. @ref orca_util_orcaview2d ) sends via the provided PathFollower2d interface.
+- Work out how long it takes to get to the first waypoint based on a straight-line distance and adjust times of the task path accordingly.
 - Prepend the current position of the robot to the task path.
 - Send task path to the pathplanner and wait for an answer.
 - Send out resulting, fine-grained path through the required PathFollower2d interface.
@@ -59,7 +60,7 @@ The following happens in sequencential order in the mainloop:
 
 - @c GoalPlanner.Config.VelocityToFirstWaypoint (double) [m/s]
     - Velocity to reach the first waypoint from the current pose.
-    - Default: 3.0
+    - Default: 1.0
 
 - @c GoalPlanner.Config.PathPlanTimeout (double) [s]
     - Flag an error if it takes longer than this many seconds for the path planner to return a result.
