@@ -32,10 +32,14 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - libOrcaIce
     - Should components quit when there's no registry and Orca.RequireRegistry=1?
-      Right now they seem to hang. Look into component thread.
+      Right now they seem to hang. Look into component thread. (alexm)
+    - What happens when the component assumes a config file name but it's not there?
+      e.g. $ teleop (without teleop.cfg). This should be allowed for utilities like
+      probe but components with required interfaces should say something 
+      intelligent (alexm).
 
 - RegistryView
-    - fix stale display of components
+    - fix stale display of components (alexm)
 
 
 
