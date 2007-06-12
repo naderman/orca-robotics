@@ -1,0 +1,62 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@ingroup utils
+@ingroup apps
+@ingroup cpp
+@ingroup linux
+@ingroup qnx
+@ingroup win
+@defgroup orca_component_systemtracermon SystemTracerMon
+@brief A tool to monitor info/warning/error traces for an entire system.
+
+@par Provides
+
+- @ref orca_interface_home
+
+@par Requires
+
+- @ref orca_interface_tracer [TracerMon.Requires.TracerX]
+
+@par Operation
+
+Attaches to any number of components.
+Configure the interfaces sequentially starting from zero, ie:
+
+@verbatim
+SystemTracerMon.Requires.Tracer0.Proxy=interface0
+SystemTracerMon.Requires.Tracer0.Proxy=interface1
+ ...
+SystemTracerMon.Requires.TracerN.Proxy=interfaceN
+@endverbatim
+
+Configuring for a single component will configure for all components
+which:
+ - (a) are on the same platform, and
+ - (b) publish to the same IceStorm.
+
+In other words, if your system has one IceStorm service per platform,
+you only need to subscribe to one component per platform in order to
+see information from everything.
+
+If in doubt, it doesn't hurt to over-subscribe: repeated subscriptions
+will be ignored.
+
+@par Configuration
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
+@par Authors
+Alex Brooks
+
+*/
+

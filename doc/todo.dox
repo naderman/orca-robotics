@@ -65,11 +65,14 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated utilities
 
+- Name change: sysmon -> systemtracermon (alex b)
 - OrcaView2d (tobi)
   - new config parameter: time to reach first waypoint
   - goalplanner timing bug fixed, olympic marker displays properly
 
 @par Updated libraries
+
+- Bugfixes to 3D transformations in orcaobj/frameutils.cpp (Will Uther)
 
 @par Removed
 

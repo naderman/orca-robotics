@@ -31,11 +31,23 @@ namespace orcaqgui {
         case orca::feature::LINE:
             return Qt::black;
             break;
+        case 7:
+            return Qt::darkYellow;
+            break;
+        case 8:
+            return Qt::yellow;
+            break;
+        case 9:
+            return Qt::darkMagenta;
+            break;
+        case 10:
+            return Qt::darkRed;
+            break;
         default:
             // Don't know what this feature is.
             // Could probably do better, eg return
             // a (deterministic) random colour.
-            return Qt::yellow;
+            return Qt::darkBlue;
         }
     }
 

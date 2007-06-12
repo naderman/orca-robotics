@@ -37,6 +37,6 @@ Repeat tests under these conditions:
 
 @par Components dedicated to testing other components
 
-One way to test components is to write dedicated "test machines" in the distributions. They hook up to other components to excersize their functionality. See for example, @ref orca_component_orcaicetester and @ref orca_component_robot2dtester.
+One way to test components is to write dedicated "test machines" in the distributions. They hook up to other components to excersize their functionality. See for example, @ref orca_component_orcaicetester.
 
 */
