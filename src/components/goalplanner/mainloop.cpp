@@ -9,12 +9,16 @@
  */
  
 #include <orcaice/orcaice.h>
-#include "mainloop.h"
+#include <orcaobj/miscutils.h>
+#include <orcaobj/stringutils.h>
+#include <orcaobj/timeutils.h>
+
 #include "pathfollower2dI.h"
 #include "localise2dconsumerI.h"
 #include "pathplanner2dconsumerI.h"
-#include <orcaobj/miscutils.h>
-#include <orcaobj/stringutils.h>
+
+#include "mainloop.h"
+
 
 using namespace std;
 using namespace orca;
@@ -96,6 +100,7 @@ MainLoop::MainLoop( const orcaice::Context & context )
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.";
     pathPlanTimeout_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PathPlanTimeout", 10.0 );
+    velocityToFirstWaypoint_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityToFirstWaypoint", 3.0 );
 }
 
 MainLoop::~MainLoop()
@@ -245,10 +250,85 @@ void MainLoop::stopRobot()
     }
 }
 
+// void
+// MainLoop::adjustTimes( const orcanavutil::Pose &pose,
+//                        orca::PathFollower2dData &incomingPath )
+// {
+//     // compute time to reach 1st wp based on straight-line distance: timeDist
+//     assert( incomingPath.path.size()>0 );
+//     Waypoint2d &firstWp = incomingPath.path[0];
+//     double dX = pose.x()-firstWp.target.p.x;
+//     double dY = pose.y()-firstWp.target.p.y;
+//     double dist = sqrt( dX*dX + dY*dY );
+//     double timeDist = dist/velocityToFirstWaypoint_;
+//     
+//     // time to reach 1st waypoint according to incoming path: timeIn
+//     
+//     // if the first waypoint has a time>0, then we use the maximum 
+//     // of that one and the one we've just computed
+//     
+//     // compute difference between the two
+//     double timeDiff =  orcaice::timeAsDouble( firstWp.timeTarget ) - timeDist;
+//     
+//     cout << "==== dist, timeDist, timeDiff: " << dist << " " << timeDist << " " << timeDiff << endl;
+//     
+//     // nothing to change if preset wp time is bigger than time based on distance
+//     if (timeDiff>0.0) return; 
+//     
+//     // change all the time values
+//     double timeOffset = timeDist - orcaice::timeAsDouble( firstWp.timeTarget );
+//     for (unsigned int i=0; i<incomingPath.path.size(); i++)
+//     {
+//         Waypoint2d &wp = incomingPath.path[i];
+//         wp.timeTarget = orcaice::toOrcaTime( orcaice::timeAsDouble(wp.timeTarget) + timeOffset );
+//     }
+//     
+//     cout << "========RESULT========" << endl;
+//     cout << orcaice::toVerboseString(incomingPath) << endl;
+//     cout << "======================" << endl;
+//         
+//     
+// }
+
+void
+MainLoop::adjustTimes( const orcanavutil::Pose &pose,
+                       orca::PathFollower2dData &incomingPath )
+{  
+    // compute time to reach 1st wp based on straight-line distance: timeDist
+    assert( incomingPath.path.size()>0 );
+    Waypoint2d &firstWp = incomingPath.path[0];
+    double dX = pose.x()-firstWp.target.p.x;
+    double dY = pose.y()-firstWp.target.p.y;
+    double dist = sqrt( dX*dX + dY*dY );
+    double timeDist = dist/velocityToFirstWaypoint_;
+    
+    // time to reach 1st waypoint according to incoming path: timeIn
+    double timeIn = orcaice::timeAsDouble( firstWp.timeTarget );
+    
+    // compute difference between the two
+    double timeOffset =  timeDist - timeIn;
+    
+    cout << "timeDist, timeIn, timeOffset: " << timeDist << " " << timeIn << " " << timeOffset << endl;
+    
+    // nothing to change if timeIn is bigger than timeDist
+    if (timeOffset<0.0) return; 
+    
+    // otherwise: add the offset to all waypoints in the path
+    for (unsigned int i=0; i<incomingPath.path.size(); i++)
+    {
+        Waypoint2d &wp = incomingPath.path[i];
+        wp.timeTarget = orcaice::toOrcaTime( orcaice::timeAsDouble(wp.timeTarget) + timeOffset );
+    }
+    
+    cout << "========RESULT========" << endl;
+    cout << orcaice::toVerboseString(incomingPath) << endl;
+    cout << "======================" << endl;
+}
+
 void 
 MainLoop::computeAndSendPath( const orcanavutil::Pose &pose, 
                               const orca::PathFollower2dData &incomingPath )
-{
+{   
     // put together a task for the pathplanner
     // add the position of the robot as the first waypoint in the path
     Waypoint2d wp;
@@ -385,8 +465,12 @@ MainLoop::run()
             // TODO: what if localiseData is stale?
             orca::Localise2dData localiseData;
             localiseDataBuffer_.get( localiseData );
-
-            computeAndSendPath( mlPose(localiseData), incomingPath );
+            
+            // adjust timing
+            const orcanavutil::Pose &pose = mlPose(localiseData);
+            adjustTimes( pose, incomingPath );
+            
+            computeAndSendPath( pose, incomingPath );
 
             // We've only serviced the request properly if we're certain of our position.
             // If we're not certain, keep trying till we become certain.

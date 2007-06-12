@@ -31,14 +31,13 @@ class WpTable;
 class WaypointSettings
 {
     public:
-        WaypointSettings(std::string a, float b, float c, int d, float e, int f, float g):
+        WaypointSettings(std::string a, float b, float c, int d, float e, int f):
             spacingProperty(a), 
             spacingValue(b), 
             distanceTolerance(c), 
             headingTolerance(d), 
             maxApproachSpeed(e), 
-            maxApproachTurnrate(f),
-            timeFirstWaypoint(g)
+            maxApproachTurnrate(f)
             {}
             std::string spacingProperty;
             float spacingValue;
@@ -46,7 +45,6 @@ class WaypointSettings
             int headingTolerance;
             float maxApproachSpeed;
             int maxApproachTurnrate;
-            float timeFirstWaypoint;
 };
 
 class WpWidget : public QWidget

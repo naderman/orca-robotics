@@ -11,7 +11,6 @@ Config.Waypoints.DistanceTolerance.Default=1.0
 Config.Waypoints.HeadingTolerance.Default=90
 Config.Waypoints.MaxApproachSpeed.Default=2e6
 Config.Waypoints.MaxApproachTurnRate.Default=2000000
-Config.Waypoints.TimeFirstWaypoint.Default=10.0
 Config.PathFollower2d.ActivatePathImmediately.Default=1
 Config.ScreenCapture.TopPad.Default = 25
 Config.ScreenCapture.SidePad.Default = 2

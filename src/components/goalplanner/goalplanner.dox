@@ -57,7 +57,11 @@ The following happens in sequencential order in the mainloop:
 
 @par Configuration
 
-- @c GoalPlanner.Config.PathPlanTimeout (double)
+- @c GoalPlanner.Config.VelocityToFirstWaypoint (double) [m/s]
+    - Velocity to reach the first waypoint from the current pose.
+    - Default: 3.0
+
+- @c GoalPlanner.Config.PathPlanTimeout (double) [s]
     - Flag an error if it takes longer than this many seconds for the path planner to return a result.
     - Default: 10.0
 
