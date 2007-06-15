@@ -33,32 +33,36 @@ class WorldView : public QGLWidget
 {
    Q_OBJECT
 public:
-   WorldView( PlatformCSFinder* platformCSFinder,
+    WorldView( PlatformCSFinder* platformCSFinder,
                 orcaqgui::GuiElementModel* model,
                 QWidget* parent=0, 
                 orcaqgui::MainWindow* mainWin=0 );
-  ~WorldView();
-  
-//   virtual QSize sizeHint () const { return QSize( 600,600 ); };
-//   virtual QSize minimumSizeHint () const { return QSize( 200,200 ); };
+    ~WorldView();
+
+    QImage captureMap();
 
 signals:
     void platformFocusChanged( QString& );
-  
-public slots:
-      
-    public:
-        void initializeGL();
-        void paintGL();
-        void resizeGL(int w, int h);
-        QSize sizeHint();
-        QSize minimumSizeHint();
-        void keyPressEvent(QKeyEvent *e);
-//         void focusInEvent(QFocusEvent *fe);
-//         void focusOutEvent(QFocusEvent *fe);
-        QImage captureMap();
 
-    private:
+protected:
+    // from QGLWidget
+    virtual void initializeGL();
+    virtual void paintGL();
+    virtual void resizeGL(int w, int h);
+    // from QWidget
+//    virtual void paintEvent( QPaintEvent* paintEvent );
+    virtual void mousePressEvent( QMouseEvent* );
+    virtual void mouseMoveEvent( QMouseEvent* );
+//    virtual void mouseReleaseEvent( QMouseEvent* );
+//    virtual void mouseDoubleClickEvent( QMouseEvent* );
+//    virtual bool event(QEvent *event);
+//    virtual QSize sizeHint () const { return QSize( 600,600 ); };
+//    virtual QSize minimumSizeHint () const { return QSize( 200,200 ); };
+    virtual void keyPressEvent(QKeyEvent *e);
+//     virtual void focusInEvent(QFocusEvent *fe);
+//     virtual void focusOutEvent(QFocusEvent *fe);
+
+private:
 
     void paintAllGuiElements( bool isFocusLocalised );
     bool transformToFocusPlatformCS();
@@ -71,14 +75,6 @@ public slots:
 
     // void reset();
 
-    // event handlers
-//    void paintEvent( QPaintEvent* paintEvent );
-    void mousePressEvent( QMouseEvent* );
-    void mouseMoveEvent( QMouseEvent* );
-//    void mouseReleaseEvent( QMouseEvent* );
-//     void mouseDoubleClickEvent( QMouseEvent* );
-//    bool event(QEvent *event);
-
     QPointF         prevMousePt_;
     Qt::MouseButton currentButton_;
 //    QPointF mouseMovePnt_;
@@ -86,8 +82,8 @@ public slots:
     QPainter *painter_;
     
     // void renderPointCloud();
-    int screenWidth_;
-    int screenHeight_;
+//     int screenWidth_;
+//     int screenHeight_;
     float zoomFactor_;
     float xOffset_, yOffset_, zOffset_;
     float yaw_, pitch_;
@@ -101,9 +97,8 @@ public slots:
     bool showPointclouds_;
     bool showPatchBorders_;
     float pointSize_;
-  
 };
 
-}
+} // namespace
 
 #endif

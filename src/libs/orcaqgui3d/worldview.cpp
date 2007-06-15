@@ -26,12 +26,8 @@
 #include <orcaqgui/mainwin.h>
 #include <orcaqgui/ipermanentelement.h>
 
-#include <orcaqgui3d/glutil.h>
-#include <orcaqgui3d/guielement3d.h>
-
-
+#include "guielement3d.h"
 #include "glutil.h"
-
 #include "worldview.h"
 
 using namespace std;
@@ -109,82 +105,66 @@ WorldView::~WorldView()
 //     }
 // }
 
-void WorldView::initializeGL()
+void 
+WorldView::initializeGL()
 {
     glClearColor(0.70f, 0.7f, 0.7f, 1.0f);
+    glDepthFunc(GL_LEQUAL);
     glEnable(GL_DEPTH_TEST);
 
     {
         // light
         glShadeModel( GL_SMOOTH );
-        // GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
-        GLfloat light_ambient[] = { 1.0, 0.8, 0.8, 1.0 };
+
+        GLfloat lmodel_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+
+        GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };    
+//         GLfloat light_position[] = { 1.0, 0, 0, 0.0 };    
+        glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+        GLfloat light_ambient[] = { 0.5, 0.5, 0.5, 1.0 };
         glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+
         glEnable(GL_LIGHTING);
-        glEnable(GL_LIGHT0);
+        glEnable(GL_LIGHT0);    
+
     }
     
-
-
     // Some stupid crap for QT
 //    renderText(0,0,0,"");
 //     displayList_ = glGenLists(1);
 //     cerr << "Display list is: " <<  displayList_ << endl;
-
-    
 }
 
-void WorldView::resizeGL(int w, int h)
+void 
+WorldView::resizeGL(int w, int h)
 {
     cout<<"TRACE(worldview3d.cpp): resizeGL()" << endl;
-    screenWidth_ = w;
-    screenHeight_ = h;
+//     screenWidth_ = w;
+//     screenHeight_ = h;
     float aspectRatio = ((float) w)/((float) h);
+
+    // update projection
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     //qDebug("Aspect ratio set to %f", aspectRatio); 
     //glOrtho(-aspectRatio, aspectRatio, -1, 1, -1000, 1000); 
     gluPerspective(60, aspectRatio, 1,1000);
+
+    // update model/view matrix
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef(0,0,-2);
+
+    // viewport
     glViewport(0,0,w,h);
+
+    // Qt call to redraw
     updateGL();
 }
 
-bool
-WorldView::transformToFocusPlatformCS()
-{
-    // special case: global CS
-    if ( model_->coordinateFramePlatform() == "global" )
-    {
-        // TODO: should we set to identity here??
-        // focusMatrix = QMatrix();
-        return true;
-    }
-    else
-    {
-        float x, y, z, roll, pitch, yaw;
-        if ( platformCSFinder_->findPlatformCS( model_->elements(),
-                                                model_->coordinateFramePlatform(),
-                                                x,
-                                                y,
-                                                z,
-                                                roll,
-                                                pitch,
-                                                yaw ) )
-        {
-            orcaqgui3d::glutil::transform( x,y,z,roll,pitch,yaw );
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-}
-
-void WorldView::paintGL()
+void 
+WorldView::paintGL()
 {
     cout<<"TRACE(worldview3d.cpp): ==================== paintGL() ====================" << endl;
 
@@ -202,14 +182,19 @@ void WorldView::paintGL()
         glTranslatef(xOffset_, yOffset_, zOffset_);
     }
 
-//    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-    GLfloat mat_specular[] = { 0.0, 0.0, 1, 1 };
-    GLfloat mat_shininess[] = { 50.0 };
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+//     GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+//     GLfloat mat_specular[] = { 0.0, 0.0, 1, 1 };
+//     GLfloat mat_shininess[] = { 50.0 };
+//     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+//     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
-    glColor4f( 0, 0, 1, 0.5 );
+//     glColor3f( 0.0, 0.0, 1.0 );
+
+    GLfloat diffuseMaterial[4] = { 0.1, 0.1, 0.5, 1.0 };
+    glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuseMaterial);
+
     glutil::drawBox( 1, 1, 1, true, true );
+//     glutil::drawIcosahedron();
 
     glPopMatrix();
 }
@@ -341,7 +326,41 @@ WorldView::paintAllGuiElements( bool isFocusLocalised )
     }
 }
 
-void WorldView::keyPressEvent(QKeyEvent *e){
+bool
+WorldView::transformToFocusPlatformCS()
+{
+    // special case: global CS
+    if ( model_->coordinateFramePlatform() == "global" )
+    {
+        // TODO: should we set to identity here??
+        // focusMatrix = QMatrix();
+        return true;
+    }
+    else
+    {
+        float x, y, z, roll, pitch, yaw;
+        if ( platformCSFinder_->findPlatformCS( model_->elements(),
+                                                model_->coordinateFramePlatform(),
+                                                x,
+                                                y,
+                                                z,
+                                                roll,
+                                                pitch,
+                                                yaw ) )
+        {
+            orcaqgui3d::glutil::transform( x,y,z,roll,pitch,yaw );
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
+
+void 
+WorldView::keyPressEvent(QKeyEvent *e)
+{
     if(e->key() == Qt::Key_W){
         yOffset_ += 0.1*zoomFactor_;
     }
@@ -420,7 +439,9 @@ void WorldView::keyPressEvent(QKeyEvent *e){
 //     updateGL();
 // }
 
-QImage WorldView::captureMap(){
+QImage 
+WorldView::captureMap()
+{
     return grabFrameBuffer();
 }
 
@@ -533,4 +554,4 @@ WorldView::mouseMoveEvent( QMouseEvent* e )
 //     return QWidget::event(event);
 // }
 
-}
+} // namespace

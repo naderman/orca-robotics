@@ -13,30 +13,33 @@
 
 namespace orcaqgui3d {
 
-    namespace glutil {
+namespace glutil {
         
-        void transform( float x,
-                        float y,
-                        float z,
-                        float roll,
-                        float pitch,
-                        float yaw );
+void transform( float x,
+                float y,
+                float z,
+                float roll,
+                float pitch,
+                float yaw );
 
-        // Draws a box centred on the origin.
-        // Draws the surfaces in the current colour
-        void drawBox( float d, float w, float h, bool drawSurfaces, bool drawWireFrame );
+// Draws a box centred on the origin.
+// Draws the surfaces in the current colour
+void drawBox( float d, float w, float h, bool drawSurfaces, bool drawWireFrame );
 
-        //
-        // Calls glPushMatrix() in the constructor, and glPopMatrix() in the destructor.
-        //
-        class ScopedMatrixSave
-        {
-        public:
+void drawIcosahedron();
 
-            ScopedMatrixSave();
-            ~ScopedMatrixSave();
-        };
-    }
-}
+//
+// Calls glPushMatrix() in the constructor, and glPopMatrix() in the destructor.
+//
+class ScopedMatrixSave
+{
+public:
+
+    ScopedMatrixSave();
+    ~ScopedMatrixSave();
+};
+
+} // namespace
+} // namespace
 
 #endif
