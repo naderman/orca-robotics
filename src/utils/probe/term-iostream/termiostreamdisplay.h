@@ -32,6 +32,7 @@ public:
     virtual ~TermIostreamDisplay();
 
     // from orcaprobe::IDisplay
+    // for consistency with the Qt driver, this function will hug the thread
     virtual void enable( orcaprobe::IBrowser* browser );
     virtual void showNetworkActivity( bool isActive );
     virtual void setRegistryData( const orcacm::RegistryHierarchicalData1 & data );

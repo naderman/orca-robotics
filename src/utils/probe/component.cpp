@@ -19,7 +19,7 @@
 
 #include "term-iostream/termiostreamdisplay.h"
 #ifdef HAVE_GUI_QT_DRIVER   
-#include "gui-qt/guiqtdisplay.h"
+#   include "gui-qt/guiqtdisplay.h"
 #endif
 
 using namespace std;
@@ -119,23 +119,23 @@ Component::start()
     std::string driverName = orcaice::getPropertyWithDefault( props, prefix+"Driver", "term-iostream" );
 
     // generic interface to the user interface
-    orcaprobe::IBrowser* browserDriver = 0;
+    orcaprobe::IBrowser* browser = 0;
     // generic interface to the display interface
-    orcaprobe::IDisplay* displayDriver = 0;
+    orcaprobe::IDisplay* display = 0;
     
     if ( driverName == "gui-qt" ) 
     {
 #ifdef HAVE_GUI_QT_DRIVER        
         tracer()->info( "Loading GUI Qt driver");
-        displayDriver = new GuiQtDisplay( supportedInterfaces );
+        display = new GuiQtDisplay( supportedInterfaces );
 #else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver type 'qt' because it was not compiled." );
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver type 'gui-qt' because it was not compiled." );
 #endif
     }
     else if ( driverName == "term-iostream" ) 
     {
         tracer()->info( "Loading terminal iostream driver");
-        displayDriver = new TermIostreamDisplay( supportedInterfaces );
+        display = new TermIostreamDisplay( supportedInterfaces );
     }
     else {
         std::string errorStr = "Unknown driver type." + driverName + " Cannot talk to hardware.";
@@ -143,14 +143,15 @@ Component::start()
         throw orcaice::HardwareException( ERROR_INFO, errorStr );
     }
 
-    BrowserHandler browserHandler( *displayDriver, factories_, context() );
-    browserDriver = &browserHandler;
+    BrowserHandler browserHandler( *display, factories_, context() );
+    browser = &browserHandler;
     browserHandler.start();
 
     // for Qt driver, this will not return
-    displayDriver->enable( browserDriver );
+    display->enable( browser );
 
-    // normally ctrl-c handler does this, now we have to because MainBubble keeps the thread 
+    // normally the application does this, 
+    // now we have to because Qt display keeps the thread 
     context().communicator()->shutdown();
 
     // the rest is handled by the application/service
