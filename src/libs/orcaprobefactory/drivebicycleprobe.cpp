@@ -19,7 +19,7 @@ using namespace std;
 using namespace orcaprobefactory;
 
 DriveBicycleProbe::DriveBicycleProbe( const orca::FQInterfaceName& name, 
-                                      orcaprobe::DisplayDriver& display,
+                                      orcaprobe::IDisplay& display,
                                       const orcaice::Context& context ) :
     InterfaceProbe(name,display,context)
 {

@@ -119,9 +119,9 @@ Component::start()
     std::string driverName = orcaice::getPropertyWithDefault( props, prefix+"Driver", "term-iostream" );
 
     // generic interface to the user interface
-    IBrowser* browserDriver = 0;
+    orcaprobe::IBrowser* browserDriver = 0;
     // generic interface to the display interface
-    IDisplay* displayDriver = 0;
+    orcaprobe::IDisplay* displayDriver = 0;
     
     if ( driverName == "gui-qt" ) 
     {

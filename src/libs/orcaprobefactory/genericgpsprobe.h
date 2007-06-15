@@ -29,7 +29,7 @@ class GenericGpsProbe : public ConsumerType, public orcaprobe::InterfaceProbe
 public:
 
     GenericGpsProbe( const orca::FQInterfaceName& name,
-                     orcaprobe::DisplayDriver& display,                     
+                     orcaprobe::IDisplay& display,                     
                      const std::string &id,
                      const orcaice::Context& context );
 
@@ -58,7 +58,7 @@ GenericGpsProbe<ConsumerType,
                 InterfacePrxType,
                 DataType,
                 DescriptionType>::GenericGpsProbe( const orca::FQInterfaceName&  name,
-                                                   orcaprobe::DisplayDriver&     display,
+                                                   orcaprobe::IDisplay&     display,
                                                    const std::string&            id,
                                                    const orcaice::Context&       context )
     : InterfaceProbe(name,display,context)

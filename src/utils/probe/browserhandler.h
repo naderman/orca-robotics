@@ -17,11 +17,11 @@
 #include <orcacm/types.h>
 
 #include "browserfsm.h"
-#include "ibrowser.h"
+#include <orcaprobe/ibrowser.h>
 
 namespace orcaprobe
 {
-    class IDisplay;
+    class orcaprobe::IDisplay;
 }
 
 namespace probe
@@ -30,16 +30,16 @@ namespace probe
 class ProbeFactory;
 class InterfaceProbe;
 
-class BrowserHandler : public IBrowser, public orcaice::Thread, public BrowserFsm
+class BrowserHandler : public orcaprobe::IBrowser, public orcaice::Thread, public BrowserFsm
 {
 
 public:
-    BrowserHandler( IDisplay & display,
+    BrowserHandler( orcaprobe::IDisplay & display,
                     std::vector<orcaprobe::Factory*> &factories,
                     const orcaice::Context & context );
     virtual ~BrowserHandler();
 
-    // from IBrowser
+    // from orcaprobe::IBrowser
     virtual void chooseActivate();
     virtual void chooseReload();
     virtual void chooseUp();
@@ -75,7 +75,7 @@ private:
 
     std::vector<orcaprobe::Factory*> &factories_;
 
-    IDisplay & display_;
+    orcaprobe::IDisplay & display_;
 
     orcaice::EventQueuePtr events_;
  

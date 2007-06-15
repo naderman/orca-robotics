@@ -19,7 +19,7 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-HomeProbe::HomeProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+HomeProbe::HomeProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
                                 const orcaice::Context& context )
     : InterfaceProbe(name,display,context)
 {

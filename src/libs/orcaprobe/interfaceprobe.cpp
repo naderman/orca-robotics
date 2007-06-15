@@ -19,7 +19,7 @@
 using namespace std;
 using namespace orcaprobe;
 
-InterfaceProbe::InterfaceProbe( const orca::FQInterfaceName & name, DisplayDriver & display,
+InterfaceProbe::InterfaceProbe( const orca::FQInterfaceName & name, IDisplay & display,
                             const orcaice::Context & context )
     : name_(name),
       display_(display),

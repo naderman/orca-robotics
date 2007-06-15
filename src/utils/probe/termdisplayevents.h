@@ -13,7 +13,7 @@
 
 #include <orcaice/eventqueue.h>
 #include <orcacm/types.h>
-#include "idisplay.h" // for focus types
+#include <orcaprobe/idisplay.h> // for focus types
 
 namespace probe
 {
@@ -43,11 +43,11 @@ typedef IceUtil::Handle<NetworkActivityChangedEvent> NetworkActivityChangedEvent
 class FocusChangedEvent : public orcaice::Event
 {
 public:
-    FocusChangedEvent( IDisplay::FocusType focus )
+    FocusChangedEvent( orcaprobe::IDisplay::FocusType focus )
         : Event( FocusChanged ),
           focus_(focus)  {};
 
-    IDisplay::FocusType focus_;
+    orcaprobe::IDisplay::FocusType focus_;
 };
 typedef IceUtil::Handle<FocusChangedEvent> FocusChangedEventPtr;
 

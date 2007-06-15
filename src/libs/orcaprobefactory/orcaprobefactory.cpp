@@ -52,7 +52,7 @@ OrcaProbeFactory::OrcaProbeFactory()
 orcaprobe::InterfaceProbe* 
 OrcaProbeFactory::create( const std::string           & interfaceType, 
                           const orca::FQInterfaceName & name, 
-                          orcaprobe::DisplayDriver    & display, 
+                          orcaprobe::IDisplay    & display, 
                           const orcaice::Context      & context )
 {
     orcaprobe::InterfaceProbe* probe = 0;

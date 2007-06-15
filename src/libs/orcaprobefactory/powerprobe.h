@@ -22,7 +22,7 @@ class PowerProbe : public orca::PowerConsumer, public orcaprobe::InterfaceProbe
 
 public:
 
-    PowerProbe( const orca::FQInterfaceName & name, orcaprobe::DisplayDriver & display,
+    PowerProbe( const orca::FQInterfaceName & name, orcaprobe::IDisplay & display,
                                 const orcaice::Context & context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData & data );

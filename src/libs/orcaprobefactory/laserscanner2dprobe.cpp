@@ -18,7 +18,7 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-LaserScanner2dProbe::LaserScanner2dProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+LaserScanner2dProbe::LaserScanner2dProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
                                 const orcaice::Context& context ) : 
     InterfaceProbe(name,display,context)
 {

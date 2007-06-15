@@ -18,7 +18,7 @@
 namespace orcaprobe
 {
 
-class DisplayDriver;
+class IDisplay;
 
 enum OperationIndex
 {
@@ -31,7 +31,7 @@ class InterfaceProbe
 
 public:
     //! Constructor
-    InterfaceProbe( const orca::FQInterfaceName & name, DisplayDriver & display,
+    InterfaceProbe( const orca::FQInterfaceName & name, IDisplay & display,
                                 const orcaice::Context & context );
         
     virtual ~InterfaceProbe() {};
@@ -56,7 +56,7 @@ protected:
     //! keep a direct link to display so if get some data asynchronously from browser
     //! (e.g. through subscription) we can display it. it's safe because all of display's
     //! public API is thread-safe.
-    DisplayDriver & display_;
+    IDisplay & display_;
 
     //! Component communication context with pointers to Communicator, Tracer, etc.
     orcaice::Context context_;

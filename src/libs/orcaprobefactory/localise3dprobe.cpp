@@ -18,7 +18,7 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-Localise3dProbe::Localise3dProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+Localise3dProbe::Localise3dProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
                                 const orcaice::Context& context )
     : InterfaceProbe(name,display,context)
 {

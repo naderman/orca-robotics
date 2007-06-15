@@ -25,7 +25,7 @@
 using namespace std;
 using namespace probe;
 
-MainWindow::MainWindow( IBrowser *browser,
+MainWindow::MainWindow( orcaprobe::IBrowser *browser,
                         orcaqcm::OcmModel        *model,
                         const std::vector<std::string> & supportedInterfaces,
                         QWidget *parent, Qt::WFlags flags)
@@ -170,19 +170,19 @@ MainWindow::customEvent( QEvent* e )
 
         switch ( de->focus_ )
         {
-        case IDisplay::RegistryFocus :
+        case orcaprobe::IDisplay::RegistryFocus :
             regView_->setFocus( Qt::OtherFocusReason );
             break;
-        case IDisplay::PlatformFocus :
+        case orcaprobe::IDisplay::PlatformFocus :
             platfView_->setFocus( Qt::OtherFocusReason );
             break;
-        case IDisplay::ComponentFocus :
+        case orcaprobe::IDisplay::ComponentFocus :
             compView_->setFocus( Qt::OtherFocusReason );
             break;
-        case IDisplay::InterfaceFocus :
+        case orcaprobe::IDisplay::InterfaceFocus :
             ifaceView_->setFocus( Qt::OtherFocusReason );
             break;
-        case IDisplay::OperationFocus :
+        case orcaprobe::IDisplay::OperationFocus :
             operView_->setFocus( Qt::OtherFocusReason );
             break;
         default :

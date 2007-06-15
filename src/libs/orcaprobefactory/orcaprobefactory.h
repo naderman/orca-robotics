@@ -25,7 +25,7 @@ public:
     virtual orcaprobe::InterfaceProbe* create( 
                 const std::string           & interfaceType, 
                 const orca::FQInterfaceName & name, 
-                orcaprobe::DisplayDriver    & display, 
+                orcaprobe::IDisplay    & display, 
                 const orcaice::Context      & context );
 
 };

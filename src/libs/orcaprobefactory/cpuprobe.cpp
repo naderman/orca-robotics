@@ -18,7 +18,7 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-CpuProbe::CpuProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+CpuProbe::CpuProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
                                 const orcaice::Context& context )
     : InterfaceProbe(name,display,context)
 {

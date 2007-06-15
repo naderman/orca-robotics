@@ -8,10 +8,10 @@
  *
  */
 
-#ifndef ORCA2_PROBE_BROWSER_INTERFACE_H
-#define ORCA2_PROBE_BROWSER_INTERFACE_H
+#ifndef ORCA2_ORCAPROBE_BROWSER_INTERFACE_H
+#define ORCA2_ORCAPROBE_BROWSER_INTERFACE_H
 
-namespace probe
+namespace orcaprobe
 {
 
 class IBrowser

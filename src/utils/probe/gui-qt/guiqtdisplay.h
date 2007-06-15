@@ -14,8 +14,8 @@
 #include <vector>
 #include <orcaqcm/ocmmodel.h>
 
-#include "../idisplay.h"
-#include "../ibrowser.h"
+#include <orcaprobe/idisplay.h>
+#include <orcaprobe/ibrowser.h>
 
 namespace probe
 {
@@ -23,26 +23,26 @@ namespace probe
 class MainWindow;
 
 // need to be a QObject in order to post events into the Qt thread.
-class GuiQtDisplay : public QObject, public IDisplay
+class GuiQtDisplay : public QObject, public orcaprobe::IDisplay
 {
     Q_OBJECT
 public:
     GuiQtDisplay( const std::vector<std::string> & supportedInterfaces );
     virtual ~GuiQtDisplay();
 
-    // from IDisplay
-    virtual void enable( IBrowser* browser );
+    // from orcaprobe::IDisplay
+    virtual void enable( orcaprobe::IBrowser* browser );
     virtual void showNetworkActivity( bool isActive );
     virtual void setRegistryData( const orcacm::RegistryHierarchicalData1 & data );
     virtual void setPlatformData( const orcacm::RegistryHierarchicalData2 & data );
     virtual void setComponentData( const orcacm::ComponentData & data );
     virtual void setInterfaceData( const orcacm::InterfaceData & data );
     virtual void setOperationData( const orcacm::OperationData & data );
-    virtual void setFocus( IDisplay::FocusType focus );
+    virtual void setFocus( orcaprobe::IDisplay::FocusType focus );
     
 private:
     std::vector<std::string>    supportedInterfaces_;
-    IBrowser    *browser_;
+    orcaprobe::IBrowser    *browser_;
     orcaqcm::OcmModel           *model_;
     MainWindow                  *gui_;
 

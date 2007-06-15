@@ -8,12 +8,12 @@
  *
  */
 
-#ifndef ORCA2_PROBE_DISPLAY_INTERFACE_H
-#define ORCA2_PROBE_DISPLAY_INTERFACE_H
+#ifndef ORCA2_ORCAPROBE_DISPLAY_INTERFACE_H
+#define ORCA2_ORCAPROBE_DISPLAY_INTERFACE_H
 
 #include <orcacm/types.h>
 
-namespace probe
+namespace orcaprobe
 {
 
 class IBrowser;

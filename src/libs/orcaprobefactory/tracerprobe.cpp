@@ -18,7 +18,7 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-TracerProbe::TracerProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+TracerProbe::TracerProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
                                 const orcaice::Context& context )
     : InterfaceProbe(name,display,context)
 {

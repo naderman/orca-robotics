@@ -22,7 +22,7 @@ class LaserScanner2dProbe : public orca::RangeScanner2dConsumer, public orcaprob
 
 public:
 
-    LaserScanner2dProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+    LaserScanner2dProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
                                 const orcaice::Context& context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );

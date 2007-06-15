@@ -22,7 +22,7 @@ class StatusProbe : public orca::StatusConsumer, public orcaprobe::InterfaceProb
 
 public:
 
-    StatusProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+    StatusProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
                                 const orcaice::Context& context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );

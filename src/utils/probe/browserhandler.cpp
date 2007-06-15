@@ -20,7 +20,7 @@
 using namespace std;
 using namespace probe;
 
-BrowserHandler::BrowserHandler( IDisplay & display,
+BrowserHandler::BrowserHandler( orcaprobe::IDisplay & display,
                                 std::vector<orcaprobe::Factory*> &factories,
                                 const orcaice::Context & context )
     : factories_(factories),
@@ -176,7 +176,7 @@ BrowserHandler::loadRegistry()
 void 
 BrowserHandler::showRegistry()
 {
-    display_.setFocus( IDisplay::RegistryFocus );
+    display_.setFocus( orcaprobe::IDisplay::RegistryFocus );
 }
 
 void 
@@ -202,7 +202,7 @@ BrowserHandler::loadPlatform()
 void 
 BrowserHandler::showPlatform()
 {
-    display_.setFocus( IDisplay::PlatformFocus );
+    display_.setFocus( orcaprobe::IDisplay::PlatformFocus );
 }
 
 void 
@@ -228,7 +228,7 @@ BrowserHandler::loadComponent()
 void 
 BrowserHandler::showComponent()
 {
-    display_.setFocus( IDisplay::ComponentFocus );
+    display_.setFocus( orcaprobe::IDisplay::ComponentFocus );
 }
 
 void 
@@ -280,7 +280,7 @@ BrowserHandler::loadInterface()
 void 
 BrowserHandler::showInterface()
 {
-    display_.setFocus( IDisplay::InterfaceFocus );
+    display_.setFocus( orcaprobe::IDisplay::InterfaceFocus );
 }
 
 void 
@@ -307,7 +307,7 @@ BrowserHandler::loadOperation()
 void 
 BrowserHandler::showOperation()
 {
-    display_.setFocus( IDisplay::OperationFocus );
+    display_.setFocus( orcaprobe::IDisplay::OperationFocus );
 }
 
 void 

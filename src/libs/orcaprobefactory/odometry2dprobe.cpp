@@ -18,7 +18,7 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-Odometry2dProbe::Odometry2dProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+Odometry2dProbe::Odometry2dProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
                                 const orcaice::Context& context ) :
     InterfaceProbe(name,display,context)
 {

@@ -24,7 +24,7 @@ namespace orcaprobe
 {
 
 class InterfaceProbe;
-class DisplayDriver;
+class IDisplay;
 
 //!
 //! Factory of interface probes
@@ -50,7 +50,7 @@ public:
     //! successful or a NULL pointer if it fails.
     virtual InterfaceProbe* create( const std::string           & id, 
                                     const orca::FQInterfaceName & name, 
-                                    DisplayDriver               & display, 
+                                    IDisplay               & display, 
                                     const orcaice::Context      & context ) = 0;
 protected:
 

@@ -15,7 +15,7 @@
 
 #include <orcaqcm/ocmmodel.h>
 
-#include "../ibrowser.h"
+#include <orcaprobe/ibrowser.h>
 
 class QLabel;
 class QStatusBar;
@@ -41,7 +41,7 @@ public:
     // hooks up to the model using parent's current index
     void putIntoFocus();
 
-    static void config( IBrowser *browser,
+    static void config( orcaprobe::IBrowser *browser,
                         QLabel                   *label,
                         QStatusBar               *statusBar );
 
@@ -71,7 +71,7 @@ private:
     void turnOff();
     bool isOn_;
 
-    static IBrowser *_browser;
+    static orcaprobe::IBrowser *_browser;
     static QLabel                   *_label;
     static QStatusBar               *_statusBar;
 };

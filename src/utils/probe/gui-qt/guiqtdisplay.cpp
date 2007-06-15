@@ -32,7 +32,7 @@ GuiQtDisplay::~GuiQtDisplay()
 }
 
 void 
-GuiQtDisplay::enable( IBrowser* browser )
+GuiQtDisplay::enable( orcaprobe::IBrowser* browser )
 {
     browser_ = browser;
     assert( browser_ || "pointer to browser must be non-zero" );
@@ -112,7 +112,7 @@ GuiQtDisplay::setOperationData( const orcacm::OperationData & data )
 }
 
 void 
-GuiQtDisplay::setFocus( IDisplay::FocusType focus )
+GuiQtDisplay::setFocus( orcaprobe::IDisplay::FocusType focus )
 {
     if ( gui_ ) {
         qApp->postEvent( gui_, (QEvent*)new QorcaFocusChangedEvent( focus ) );

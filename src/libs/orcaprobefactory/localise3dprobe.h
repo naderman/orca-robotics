@@ -22,7 +22,7 @@ class Localise3dProbe : public orca::Localise3dConsumer, public orcaprobe::Inter
 
 public:
 
-    Localise3dProbe( const orca::FQInterfaceName& name, orcaprobe::DisplayDriver& display,
+    Localise3dProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
                                 const orcaice::Context& context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );

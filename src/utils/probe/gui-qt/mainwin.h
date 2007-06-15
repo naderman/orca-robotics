@@ -13,7 +13,7 @@
 
 #include <QMainWindow>
 
-#include "../ibrowser.h"
+#include <orcaprobe/ibrowser.h>
 
 class QListView;
 class QTableView;
@@ -37,7 +37,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow( IBrowser *browser,
+    MainWindow( orcaprobe::IBrowser *browser,
                 orcaqcm::OcmModel        *model,
                 const std::vector<std::string> & supportedInterfaces,
                 QWidget *parent = 0, Qt::WFlags flags = 0 );
@@ -57,7 +57,7 @@ private:
 
     void setupMenuBar();
 
-    IBrowser *browser_;
+    orcaprobe::IBrowser *browser_;
     orcaqcm::OcmModel        *model_;
     std::vector<std::string>    supportedInterfaces_;
     
