@@ -343,11 +343,6 @@ toXmlText( const ComponentDef &def )
     // component configs
 //     ss <<tab<<tab<<tab<<tab<<"<!-- Component configuration parameters -->" << endl;
     for ( unsigned int i=0; i < def.configs.size(); ++i ) {
-        ss <<tab<<tab<<tab<<tab
-            <<"<property "
-            <<"name=\""<<def.tag<<".Config."<<def.configs[i].tag<<"\" "
-            <<"value=\""<<def.configs[i].value<<"\"/>" << endl;
-
         // 2 cases: internal and external configs.
         if ( def.configs[i].isExternal ) {
             // External ones are printed as is
