@@ -23,14 +23,12 @@ namespace orcaice
 {
 
 /*!
- *  @brief A thread-safe data pipe with buffer semantics.
- *
- * For a type-safe buffer, template over the specific Object type you want to put in it.
- * Buffering Ice smart pointers requires a specialized class Buffer.
- *
- * You should always try to @ref get() data before blocking with @ref getNext() because
- * closely spaced push events may be lost. For example:
- * @verbatim
+@brief A thread-safe data pipe with buffer semantics.
+
+For a type-safe buffer, template over the specific object Type you want to put in it. Buffering Ice smart pointers requires a specialized class PtrBuffer.
+
+You should always try to @ref get() data before blocking with @ref getNext() because closely spaced push events may be lost. For example:
+@verbatim
 orcaice::Buffer<double> buffer( 10 );
 double data;
 while (1)
@@ -43,11 +41,11 @@ while (1)
     }
     // do something with data
 }
- * @endverbatim
- *
- * @note This implementation uses IceUtil threading classes. See example in sec. 28.9.2
- * @see PtrBuffer, Nofity, Proxy
- */
+@endverbatim
+
+@note This implementation uses IceUtil threading classes. See example in sec. 28.9.2 of the Ice manual.
+@see PtrBuffer, Notify, Proxy
+*/
 template<class Type>
 class Buffer : public IceUtil::Monitor<IceUtil::Mutex>
 {
@@ -119,10 +117,13 @@ public:
     void  getAndPop( Type & obj );
 
     /*! 
-     *  If the buffer is empty, @ref getNext() blocks until an object is pushed in and returns the new value.
-     *  By default, there is no timeout (negative value). Returns 0 if successful.
+     *  If there is an object in the buffer, sets the object and returns 0;
      *
-     *  If timeout is set to a positive value and the wait times out, the function returns -1
+     *  If the buffer is empty, @ref getNext() blocks until a new object is pushed in 
+     *  and returns the new value. By default, there is no timeout (negative value). 
+     *  Returns 0 if successful.
+     *
+     *  If timeout is set to a positive value and the wait times out, this function returns -1
      *  and the object argument itself is not touched. In the rare event of spurious wakeup,
      *  the return value is 1.
      */
