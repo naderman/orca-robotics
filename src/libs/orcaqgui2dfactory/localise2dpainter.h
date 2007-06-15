@@ -28,6 +28,7 @@ class Localise2dPainter
     Localise2dPainter( bool beginDisplayHistory );
 
     void setData( const orca::Localise2dData& data );
+    void setRobotSizeAndOrigin( double length, double width, int origin );
 
     void paint( QPainter *p, int z );
     bool paintThisLayer(int z) const {return z==Z_POSE || z==Z_POSE-2;}
@@ -41,6 +42,10 @@ class Localise2dPainter
 
   private:
 
+    double length_;
+    double width_;
+    RobotOrigin origin_;
+      
     void paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &hypothesis );
 
     orca::Localise2dData data_;

@@ -28,6 +28,7 @@ class Localise3dPainter
     Localise3dPainter( bool beginDisplayHistory );
 
     void setData( const orca::Localise3dData& data );
+    void setRobotSizeAndOrigin( double length, double width, int origin );
 
     void paint( QPainter *p, int z );
     bool paintThisLayer(int z) const {return z==Z_POSE || z==Z_POSE-2;}
@@ -40,6 +41,10 @@ class Localise3dPainter
     void toggleMultiHypothesis() { isDisplayMultiHypothesis_ = !isDisplayMultiHypothesis_; }
 
   private:
+      
+    double length_;
+    double width_;
+    RobotOrigin origin_;
 
     void paintHypothesis( QPainter* p, const orca::Pose3dHypothesis &hypothesis );
 

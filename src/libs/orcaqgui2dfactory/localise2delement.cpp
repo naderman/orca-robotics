@@ -24,6 +24,20 @@ Localise2dElement::actionOnConnection()
 {
     if (!isConnected_) return;
     
+    //TODO: we should get this from the interface but it's not implemented
+    //      for now, we'll get it from the config file
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag();
+    prefix += ".Config.";
+
+    orca::Size2d robotSize;
+    robotSize.l = 0.5;
+    robotSize.w = 0.4;
+    robotSize = orcaice::getPropertyAsSize2dWithDefault( prop, prefix+"Localise.RobotSize", robotSize );
+    
+    int robotOrigin = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Localise.RobotOrigin", 1 );
+    painter_.setRobotSizeAndOrigin( robotSize.l, robotSize.w, robotOrigin );
+    
     paintInitialData<orca::Localise2dPrx, Localise2dPainter>
         ( context_, listener_.interfaceName(), painter_ );
 }

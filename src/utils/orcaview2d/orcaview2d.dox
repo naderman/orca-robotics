@@ -61,7 +61,7 @@ main source code.
 @section MRS Multi-robot systems
 When many platforms need to be displayed, the element view table grows quickly and you it's hard to figure out which GuiElements belong to which platform. For this situation, it is possible to filter the element view list on a per-platform basis. By selecting a particular platform in the combo box above the list, only elements belonging to that platform will be displayed. At the same time, all GuiElements belonging to that platform are displayed in their respective platform color (assigned at startup). All other GuiElements are grayed out. If everything needs to be displayed, choose the special "global" platform from the list.
  
-A second way of putting a particular platform into focus, is to click on a localised representation of them in the world view (e.g. Localise2d or Gps of a robot). The combo box changes simultaneously. By hovering the mouse pointer above localised GuiElements, a tooltip with the platform name shows up. The origin of the world view (indicated by a cross) corresponds to the "global" platform (try clicking on it).
+A second way of putting a particular platform into focus, is to click on a localised representation of them in the world view (e.g. Localise2d of a robot). The combo box changes simultaneously. By hovering the mouse pointer above localised GuiElements, a tooltip with the platform name shows up. The origin of the world view (indicated by a cross) corresponds to the "global" platform (try clicking on it).
 
 @section user_input User input
  
@@ -110,7 +110,7 @@ GuiElements typically connect to one required interface but can also have zero o
 - @c OrcaView.Config.ElementX.Type (string)
      - GuiElement type
      - X is a number (need to be consecutive)
-     - Supported types are: Grid, LaserScanner2d, Localise2d, Particle2d, PolarFeature2d, PathFollower2d, PathPlanner2d, PixMap, FeatureMap2d, OgMap, Wifi, Gps, MultiOgMaps
+     - Supported types are: Grid, LaserScanner2d, Localise2d, Particle2d, PolarFeature2d, PathFollower2d, PathPlanner2d, PixMap, FeatureMap2d, OgMap, Wifi, MultiOgMaps
      
 - @c OrcaView.Config.ElementX.Details (string)
     - Network connection details
@@ -126,23 +126,23 @@ GuiElements typically connect to one required interface but can also have zero o
 
 - @c OrcaView.Config.General.FactoryLibNames (string)
      - names of plugin factory libraries
-     - default:: libOrcaQGui2dFactory.so
+     - default: libOrcaQGui2dFactory.so
 
 - @c OrcaView.Config.General.DisplayRefreshTime (int) [ms]
      - refresh time of the display
-     - default:: 200
+     - default: 200
      
 - @c OrcaView.Config.General.DumpPath (string)
     - directory to dump files
     - currently used for two purposes: 
         (1) screen dumps (filename @c orcaviewdumpXXXXX.png)
         (2) paths sent to pathfollower2d interface (filename @c pathdumpXXXXX.png)
-    - default:: "/tmp"
+    - default: "/tmp"
     
 - @c OrcaView.Config.General.Offset (Frame2d) [m,m,deg]
     - offset of the GUI's origin wrt the (arbitrarily defined) global coordinate system
     - format: x y orientation (space separated)
-    - default:: 0.0 0.0 0.0
+    - default: 0.0 0.0 0.0
 
 @par Waypoint Settings 
 
@@ -150,60 +150,69 @@ These are the default: waypoint settings that can be changed in the menu later. 
 
 - @c OrcaView.Config.Waypoints.DistanceTolerance (double) [m]
      - distance tolerance from waypoint before it has been set as reached
-     - default:: 1.0
+     - default: 1.0
 
 - @c OrcaView.Config.Waypoints.HeadingTolerance (integer) [deg]
      - heading tolerance from waypoint before it has been set as reached
-     - default:: 45
+     - default: 45
      
 - @c OrcaView.Config.Waypoints.MaxApproachSpeed (double) [m/s]
     - maximum approach speed to waypoint
-    - default:: 2e6
+    - default: 2e6
     
 - @c OrcaView.Config.Waypoints.MaxApproachTurnRate (int) [deg/s]
     - maximum approach turn rate to waypoint
-    - default:: 2000000
+    - default: 2000000
     
 - @c OrcaView.Config.Waypoints.SpacingProperty (string)
     - property that determines the time deltas of subsequent waypoints
     - Valid values: {'Time','Velocity'}, corresponding values are specified using @c SpacingValue (see below)
     - Time: time deltas are specified directly in sec; Velocity: time deltas are calculated based on a straight-line distance given the velocity
-    - default:: Velocity
+    - default: Velocity
     
 - @c OrcaView.Config.Waypoints.SpacingValue (double) [s] or [m/s]
     - value is interpreted according to the setting of @c SpacingProperty (see above)
-    - default:: 1.0
+    - default: 1.0
 
 @par Screencapture settings
     
 - @c OrcaView.Config.ScreenCapture.TopPad (int)
     - for screen dumps: number of pixels included in the dumps from the widget top (to get window decoration) 
-    - default:: 25
+    - default: 25
 
 - @c OrcaView.Config.ScreenCapture.SidePad (int)
     - for screen dumps: number of pixels included in the dumps from the widget side (to get window decoration) 
-    - default:: 2
+    - default: 2
     
 - @c OrcaView.Config.ScreenCapture.BottomPad (int)
     - for screen dumps: number of pixels included in the dumps from the widget bottom (to get window decoration) 
-    - default:: 2
+    - default: 2
 
 - @c OrcaView.Config.ScreenCapture.CaptureTimerInterval (int) [ms]
     - time interval between screen dumps
-    - default:: 1000
+    - default: 1000
     
 @par Specific Gui element configuration
 
 - @c OrcaView.Config.PathFollower2d.ActivatePathImmediately (int)
     - activate path immediately after sending (1) or wait until go button is pressed (0)
-    - default:: 1
+    - default: 1
     
 - @c OrcaView.Config.OgMapsCombined.LookupTableFileName (string)
     - Lookup table for fusing colors of two ogMaps in form of an image with size 256x256. 
     - Useful to display a combination of an og map and a hazard map.
     - X-axis represents hazard from high to low, y-axis represents occupancy from high to low.
     - You can generate your own lookup table (in any Qt-readable image format) or take the one provided with the distribution (in src/libs/orcaqgui2dfactory/) which is:
-    - default:: ogHazardLookupTable.png
+    - default: ogHazardLookupTable.png
+    
+- @c OrcaView.Config.Localiser.RobotSize (double double) [m m]
+    - The size of the robot (length, width) as displayed in the world view
+    - Note: ultimately, this information should come from an interface!
+    - default: 0.5 0.4 
+    
+- @c OrcaView.Config.Localiser.RobotOrigin (int) [0 1 2]
+    - For displaying: is the origin at the front of the robot (0), in the middle (1) or at the rear (2)?
+    - default: 1
     
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory. 
 

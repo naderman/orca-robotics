@@ -20,11 +20,32 @@ using namespace std;
 using namespace orcaqgui2d;
 
 Localise2dPainter::Localise2dPainter( bool beginDisplayHistory )
-    : isDataAvailable_(false),
+    : length_(0.5),
+      width_(0.3), 
+      origin_(RobotOriginMiddle),
+      isDataAvailable_(false),
       basicColor_(Qt::blue),
       isDisplayHistory_(beginDisplayHistory),
       isDisplayMultiHypothesis_(true)
 {
+}
+
+
+void 
+Localise2dPainter::setRobotSizeAndOrigin( double length, double width, int origin )
+{
+    length_ = length;
+    width_ = width;
+    
+    switch (origin) {
+        case 0: origin_ = RobotOriginFront;
+                break;
+        case 1: origin_ = RobotOriginMiddle;
+                break;
+        case 2: origin_ = RobotOriginRear;
+                break;
+        default: origin_ = RobotOriginMiddle;
+    }
 }
 
 void
@@ -89,6 +110,9 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
             paintPlatformPose( m2win,
                                p, 
                                color,
+                               length_,
+                               width_,
+                               origin_,
                                weight );
         }
 

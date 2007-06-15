@@ -327,11 +327,10 @@ getPropertyAsSize2d( const Ice::PropertiesPtr & prop, const ::std::string& key, 
         return -1;
     else
         return toSize2d( stringVal, value );
-    return 0;
 }
 
 orca::Size2d
-getPropertyAsSize3dWithDefault( const Ice::PropertiesPtr & prop, const ::std::string& key, const orca::Size2d & defaultValue )
+getPropertyAsSize2dWithDefault( const Ice::PropertiesPtr & prop, const ::std::string& key, const orca::Size2d & defaultValue )
 {
     orca::Size2d value;
     if ( getPropertyAsSize2d( prop, key, value ) )

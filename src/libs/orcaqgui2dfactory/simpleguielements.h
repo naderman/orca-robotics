@@ -148,11 +148,7 @@ public:
 
 }
     virtual bool isInGlobalCS() { return true; }
-    virtual void actionOnConnection()
-    {
-        paintInitialData<orca::Localise3dPrx, Localise3dPainter>
-            ( context_, listener_.interfaceName(), painter_ );
-    }
+    virtual void actionOnConnection();
     virtual QStringList contextMenu();
     virtual void execute( int action );
     

@@ -17,6 +17,10 @@ Config.ScreenCapture.SidePad.Default = 2
 Config.ScreenCapture.BottomPad.Default = 2
 Config.ScreenCapture.CaptureTimerInterval.Default = 1000
 Config.OgMapsCombined.LookupTableFileName.Default= ogHazardLookupTable.png
+Config.Localise.RobotSize.Default= 0.5 0.4
+Config.Localise.RobotOrigin.Comment = 0:front, 1:middle, 2:rear
+Config.Localise.RobotOrigin.Default = 1
+
 
 Config.Element0.Type.Default = Grid
 Config.Element1.Type.Default = LaserScanner2d
@@ -39,10 +43,8 @@ Config.Element9.Type.Default = OgMap
 Config.Element9.Detail.Default = ogmap@local/ogmaploader
 Config.Element10.Type.Default = Wifi
 Config.Element10.Detail.Default = wifi@local/wifi
-Config.Element11.Type.Default = Gps
-Config.Element11.Detail.Default = gps@local/gps
-Config.Element12.Type.Default = MultiOgMaps
-Config.Element12.Detail.Default = ogmap@local/ogmaploader:hazardmap@local/ogmaploader2
+Config.Element11.Type.Default = MultiOgMaps
+Config.Element11.Detail.Default = ogmap@local/ogmaploader:hazardmap@local/ogmaploader2
 
 # external configuration options
 Config.Ice.Override.ConnectTimeout.Default=150
