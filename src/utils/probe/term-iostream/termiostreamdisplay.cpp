@@ -74,7 +74,7 @@ TermIostreamDisplay::~TermIostreamDisplay()
 }
 
 void 
-TermIostreamDisplay::enable( orcaprobe::BrowserDriver* browser )
+TermIostreamDisplay::enable( IBrowser* browser )
 {
     assert( browser || "pointer to browser must be non-zero" );
     if ( !browser ) {
@@ -110,19 +110,19 @@ TermIostreamDisplay::enable( orcaprobe::BrowserDriver* browser )
 //             cout<<"changing focus to "<<e->focus_<<endl;
             switch ( e->focus_ )
             {
-            case orcaprobe::DisplayDriver::RegistryFocus :
+            case IDisplay::RegistryFocus :
                 printRegistryData( registryData_ );
                 break;
-            case orcaprobe::DisplayDriver::PlatformFocus :
+            case IDisplay::PlatformFocus :
                 printPlatformData( platformData_ );
                 break;
-            case orcaprobe::DisplayDriver::ComponentFocus :
+            case IDisplay::ComponentFocus :
                 printComponentData( componentData_ );
                 break;
-            case orcaprobe::DisplayDriver::InterfaceFocus :
+            case IDisplay::InterfaceFocus :
                 printInterfaceData( interfaceData_ );
                 break;
-            case orcaprobe::DisplayDriver::OperationFocus :
+            case IDisplay::OperationFocus :
                 printOperationData( operationData_ );
                 break;
             default : {}
@@ -222,7 +222,7 @@ TermIostreamDisplay::setOperationData( const orcacm::OperationData & data )
 }
 
 void 
-TermIostreamDisplay::setFocus( orcaprobe::DisplayDriver::FocusType focus )
+TermIostreamDisplay::setFocus( IDisplay::FocusType focus )
 {
     orcaice::EventPtr e = new probe::FocusChangedEvent( focus );
     events_->add( e );

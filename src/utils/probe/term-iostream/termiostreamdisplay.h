@@ -16,13 +16,14 @@
 #include <orcaice/proxy.h>
 
 #include <orcaprobe/factory.h>
-#include <orcaprobe/displaydriver.h>
-#include <orcaprobe/browserdriver.h>
+
+#include "../idisplay.h"
+#include "../ibrowser.h"
 
 namespace probe
 {
 
-class TermIostreamDisplay : public orcaprobe::DisplayDriver
+class TermIostreamDisplay : public IDisplay
 {
 
 public:
@@ -30,20 +31,20 @@ public:
     TermIostreamDisplay( const std::vector<std::string> & supportedInterfaces );
     virtual ~TermIostreamDisplay();
 
-    // from DisplayDriver
-    virtual void enable( orcaprobe::BrowserDriver* browser );
+    // from IDisplay
+    virtual void enable( IBrowser* browser );
     virtual void showNetworkActivity( bool isActive );
     virtual void setRegistryData( const orcacm::RegistryHierarchicalData1 & data );
     virtual void setPlatformData( const orcacm::RegistryHierarchicalData2 & data );
     virtual void setComponentData( const orcacm::ComponentData & data );
     virtual void setInterfaceData( const orcacm::InterfaceData & data );
     virtual void setOperationData( const orcacm::OperationData & data );
-    virtual void setFocus( orcaprobe::DisplayDriver::FocusType focus );
+    virtual void setFocus( IDisplay::FocusType focus );
 
 private:
 
     std::vector<std::string>    supportedInterfaces_;
-    orcaprobe::BrowserDriver    *browser_;
+    IBrowser    *browser_;
 
     orcaice::EventQueuePtr events_;
 

@@ -8,17 +8,17 @@
  *
  */
 
-#ifndef ORCA2_ORCAPROBE_DISPLAY_DRIVER_H
-#define ORCA2_ORCAPROBE_DISPLAY_DRIVER_H
+#ifndef ORCA2_PROBE_DISPLAY_INTERFACE_H
+#define ORCA2_PROBE_DISPLAY_INTERFACE_H
 
 #include <orcacm/types.h>
 
-namespace orcaprobe
+namespace probe
 {
 
-class BrowserDriver;
+class IBrowser;
 
-class DisplayDriver
+class IDisplay
 {
 
 public:
@@ -33,10 +33,10 @@ public:
         ResultFocus
     };
 
-    virtual ~DisplayDriver() {};
+    virtual ~IDisplay() {};
 
     // need a separate enable function because the Qt driver does not return
-    virtual void enable( BrowserDriver* browser )=0;
+    virtual void enable( IBrowser* browser )=0;
 
     virtual void showNetworkActivity( bool isActive )=0;
 

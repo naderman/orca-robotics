@@ -8,18 +8,18 @@
  *
  */
 
-#ifndef ORCA2_ORCAPROBE_BROWSER_DRIVER_H
-#define ORCA2_ORCAPROBE_BROWSER_DRIVER_H
+#ifndef ORCA2_PROBE_BROWSER_INTERFACE_H
+#define ORCA2_PROBE_BROWSER_INTERFACE_H
 
-namespace orcaprobe
+namespace probe
 {
 
-class BrowserDriver
+class IBrowser
 {
 
 public:
 
-    virtual ~BrowserDriver() {};
+    virtual ~IBrowser() {};
 
     virtual void chooseActivate()=0;
 

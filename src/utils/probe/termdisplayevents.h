@@ -12,8 +12,8 @@
 #define ORCA2_PROBE_TERM_DISPLAY_EVENTS_H
 
 #include <orcaice/eventqueue.h>
-#include <orcaprobe/displaydriver.h> // for focus types
 #include <orcacm/types.h>
+#include "idisplay.h" // for focus types
 
 namespace probe
 {
@@ -43,11 +43,11 @@ typedef IceUtil::Handle<NetworkActivityChangedEvent> NetworkActivityChangedEvent
 class FocusChangedEvent : public orcaice::Event
 {
 public:
-    FocusChangedEvent( orcaprobe::DisplayDriver::FocusType focus )
+    FocusChangedEvent( IDisplay::FocusType focus )
         : Event( FocusChanged ),
           focus_(focus)  {};
 
-    orcaprobe::DisplayDriver::FocusType focus_;
+    IDisplay::FocusType focus_;
 };
 typedef IceUtil::Handle<FocusChangedEvent> FocusChangedEventPtr;
 

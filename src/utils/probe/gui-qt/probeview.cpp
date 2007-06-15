@@ -19,12 +19,12 @@
 using namespace std;
 using namespace probe;
 
-orcaprobe::BrowserDriver* ProbeView::_browser = 0;
+IBrowser* ProbeView::_browser = 0;
 QLabel* ProbeView::_label = 0;
 QStatusBar* ProbeView::_statusBar = 0;
 
 void 
-ProbeView::config( orcaprobe::BrowserDriver *browser,
+ProbeView::config( IBrowser *browser,
                    QLabel                   *label,
                    QStatusBar               *statusBar )
 {

@@ -12,8 +12,8 @@
 #define ORCA2_PROBE_GUI_QT_DISPLAY_EVENTS_H
 
 #include <QEvent>
-#include <orcaprobe/displaydriver.h> // for focus types
 #include <orcacm/types.h>
+#include "../idisplay.h" // for focus types
 
 namespace probe
 {
@@ -42,11 +42,11 @@ public:
 class QorcaFocusChangedEvent : public QEvent
 {
 public:
-    QorcaFocusChangedEvent( orcaprobe::DisplayDriver::FocusType focus )
+    QorcaFocusChangedEvent( IDisplay::FocusType focus )
         : QEvent( QEvent::Type(FocusChanged) ),
           focus_(focus)  {};
 
-    orcaprobe::DisplayDriver::FocusType focus_;
+    IDisplay::FocusType focus_;
 };
 
 class QorcaRegistryDataChangedEvent : public QEvent
