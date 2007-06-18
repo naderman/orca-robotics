@@ -27,26 +27,17 @@ namespace orcaifaceimpl {
 //!
 class PolarFeature2dIface : public IceUtil::Shared
 {
+friend class PolarFeature2dI;
+
 public:
+    //! Constructor
     PolarFeature2dIface( const std::string                     &ifaceTag,
                          const orcaice::Context                &context );
     ~PolarFeature2dIface();
 
     //
-    // Remote calls:
-    //
-
-    ::orca::PolarFeature2dDataPtr     getData() const;
-
-    void subscribe(const ::orca::PolarFeature2dConsumerPrx&);
-
-    void unsubscribe(const ::orca::PolarFeature2dConsumerPrx&);
-
-
-    //
     // Local calls:
     //
-
     //! may throw orcaice::Exceptions
     void initInterface();
 
@@ -58,6 +49,10 @@ public:
     void localSetAndSend( const ::orca::PolarFeature2dDataPtr &data );
 
 private:
+    // remote call implementations, mimic (but do not inherit) the orca interface
+    ::orca::PolarFeature2dDataPtr     getData() const;
+    void subscribe(const ::orca::PolarFeature2dConsumerPrx&);
+    void unsubscribe(const ::orca::PolarFeature2dConsumerPrx&);
 
     // Holds the latest data
     orcaice::PtrProxy<orca::PolarFeature2dDataPtr> dataProxy_;

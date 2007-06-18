@@ -25,25 +25,15 @@ namespace orcaifaceimpl {
 //!
 class Localise2dIface : public IceUtil::Shared
 {
+friend class Localise2dI;
+
 public:
+    //! Constructor
     Localise2dIface( const std::string &ifaceTag,
                      const orcaice::Context &context );
     ~Localise2dIface();
 
-    // remote calls:
-
-    ::orca::Localise2dData getData() const;
-
-    void subscribe(const ::orca::Localise2dConsumerPrx& );
-
-    void unsubscribe(const ::orca::Localise2dConsumerPrx& );
-
-    // Note: could do smoothing/interpolation here...
-    orca::Localise2dData getDataAtTime(const orca::Time&) const
-        { return getData(); }
-
     // Local calls:
-
     //! may throw orcaice::Exceptions
     void initInterface();
 
@@ -55,6 +45,13 @@ public:
     void localSetAndSend( const orca::Localise2dData &data );
 
 private:
+    // remote call implementations, mimic (but do not inherit) the orca interface
+    ::orca::Localise2dData getData() const;
+    void subscribe(const ::orca::Localise2dConsumerPrx& );
+    void unsubscribe(const ::orca::Localise2dConsumerPrx& );
+    // Note: could do smoothing/interpolation here...
+    orca::Localise2dData getDataAtTime(const orca::Time&) const
+        { return getData(); }
 
     orcaice::Proxy<orca::Localise2dData> dataProxy_;
 

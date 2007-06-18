@@ -25,6 +25,8 @@ namespace orcaifaceimpl {
 //!
 class Odometry2dIface : public IceUtil::Shared
 {
+friend class Odometry2dI;
+
 public:
     //! constructor
     Odometry2dIface( const orca::VehicleDescription& descr,
@@ -32,19 +34,7 @@ public:
                      const orcaice::Context& context );
     ~Odometry2dIface();
 
-    // remote interface
-
-    ::orca::Odometry2dData getData() const;
-
-    ::orca::VehicleDescription getDescription() const;
-
-    void subscribe(const ::orca::Odometry2dConsumerPrx&);
-
-    void unsubscribe(const ::orca::Odometry2dConsumerPrx&);
-
-
     // local interface:
-
     //! May throw orcaice::Exceptions.
     void initInterface();
 
@@ -56,6 +46,11 @@ public:
     void localSetAndSend( const orca::Odometry2dData& data );
 
 private:
+    // remote call implementations, mimic (but do not inherit) the orca interface
+    ::orca::Odometry2dData getData() const;
+    ::orca::VehicleDescription getDescription() const;
+    void subscribe(const ::orca::Odometry2dConsumerPrx&);
+    void unsubscribe(const ::orca::Odometry2dConsumerPrx&);
 
     orca::VehicleDescription     descr_;
     orcaice::Proxy<orca::Odometry2dData> dataProxy_;

@@ -25,6 +25,8 @@ namespace orcaifaceimpl {
 //!
 class CameraIface : public IceUtil::Shared
 {
+friend class CameraI;
+
 public:
     //! constructor
     CameraIface( const orca::CameraDescription& descr,
@@ -32,19 +34,7 @@ public:
                  const orcaice::Context& context );
     ~CameraIface();
 
-    // remote interface
-
-    ::orca::CameraData getData() const;
-
-    ::orca::CameraDescription getDescription() const;
-
-    void subscribe(const ::orca::CameraConsumerPrx&);
-
-    void unsubscribe(const ::orca::CameraConsumerPrx&);
-
-
     // local interface:
-
     //! May throw orcaice::Exceptions.
     void initInterface();
 
@@ -56,6 +46,11 @@ public:
     void localSetAndSend( const orca::CameraData& data );
 
 private:
+    // remote call implementations, mimic (but do not inherit) the orca interface
+    ::orca::CameraData getData() const;
+    ::orca::CameraDescription getDescription() const;
+    void subscribe(const ::orca::CameraConsumerPrx&);
+    void unsubscribe(const ::orca::CameraConsumerPrx&);
 
     orca::CameraDescription     descr_;
     orcaice::Proxy<orca::CameraData> dataProxy_;

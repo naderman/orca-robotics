@@ -25,23 +25,15 @@ namespace orcaifaceimpl {
 //!
 class PowerIface : public IceUtil::Shared
 {
+friend class PowerI;
+
 public:
     //! constructor
     PowerIface( const std::string& ifaceTag, 
             const orcaice::Context& context );
     ~PowerIface();
 
-    // remote interface
-
-    ::orca::PowerData getData() const;
-
-    void subscribe(const ::orca::PowerConsumerPrx&);
-
-    void unsubscribe(const ::orca::PowerConsumerPrx&);
-
-
     // local interface:
-
     //! May throw orcaice::Exceptions.
     void initInterface();
 
@@ -53,6 +45,10 @@ public:
     void localSetAndSend( const orca::PowerData& data );
 
 private:
+    // remote call implementations, mimic (but do not inherit) the orca interface
+    ::orca::PowerData getData() const;
+    void subscribe(const ::orca::PowerConsumerPrx&);
+    void unsubscribe(const ::orca::PowerConsumerPrx&);
 
     orcaice::Proxy<orca::PowerData> dataProxy_;
 

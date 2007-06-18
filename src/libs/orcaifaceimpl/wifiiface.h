@@ -20,28 +20,26 @@ namespace orcaifaceimpl
 //!
 class WifiIface : public IceUtil::Shared
 {
-public:
+friend class WifiI;
 
+public:
+    //! Constructor
     WifiIface( const std::string       &ifaceTag, 
                const orcaice::Context  &context );
     ~WifiIface();
-
-    // remote functions
-
-    ::orca::WifiData getData() const;
-    
-    void subscribe(const ::orca::WifiConsumerPrx&);
-    
-    void unsubscribe(const ::orca::WifiConsumerPrx& );
     
     // local functions
-    // may throw orcaice::Exceptions
+    //! may throw orcaice::Exceptions
     void initInterface();
-    // A local call which sets the data reported by the interface, 
-    // and sends it through IceStorm
+    //! A local call which sets the data reported by the interface, 
+    //! and sends it through IceStorm
     void localSetAndSend( const orca::WifiData &data );
 
 private:
+    // remote call implementations, mimic (but do not inherit) the orca interface
+    ::orca::WifiData getData() const;
+    void subscribe(const ::orca::WifiConsumerPrx&);
+    void unsubscribe(const ::orca::WifiConsumerPrx& );
 
     orcaice::Proxy<orca::WifiData> dataProxy_;
 

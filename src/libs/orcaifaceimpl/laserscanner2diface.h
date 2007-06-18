@@ -27,25 +27,13 @@ namespace orcaifaceimpl {
 //!
 class LaserScanner2dIface : public IceUtil::Shared
 {
+friend class LaserScanner2dI;
+
 public:
     LaserScanner2dIface( const orca::RangeScanner2dDescription &descr,
                          const std::string                     &ifaceTag,
                          const orcaice::Context                &context );
-
     ~LaserScanner2dIface();
-
-    //
-    // Remote calls:
-    //
-
-    ::orca::RangeScanner2dDataPtr     getData() const;
-
-    ::orca::RangeScanner2dDescription getDescription() const;
-
-    void subscribe(const ::orca::RangeScanner2dConsumerPrx& );
-
-    void unsubscribe(const ::orca::RangeScanner2dConsumerPrx& );
-
 
     //
     // Local calls:
@@ -62,6 +50,11 @@ public:
     void localSetAndSend( const ::orca::LaserScanner2dDataPtr &data );
 
 private:
+    // remote call implementations, mimic (but do not inherit) the orca interface
+    ::orca::RangeScanner2dDataPtr     getData() const;
+    ::orca::RangeScanner2dDescription getDescription() const;
+    void subscribe(const ::orca::RangeScanner2dConsumerPrx& );
+    void unsubscribe(const ::orca::RangeScanner2dConsumerPrx& );
 
     // Holds the latest data
     orcaice::PtrProxy<orca::LaserScanner2dDataPtr> dataProxy_;

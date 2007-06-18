@@ -28,8 +28,6 @@ public:
     DriveBicycleI( DriveBicycleIface &iface )
         : iface_(iface) {}
 
-    // remote calls:
-
     virtual ::orca::DriveBicycleData getData(const ::Ice::Current& ) const
         { return iface_.getData(); }
 
@@ -57,11 +55,9 @@ private:
 DriveBicycleIface::DriveBicycleIface( 
             const orca::VehicleDescription& descr,
             const std::string &ifaceTag,
-//             orcaice::Notify<orca::DriveBicycleCommand>& commandPipe,
             const orcaice::Context &context ) :
     description_(descr),
     ifaceTag_(ifaceTag),
-//     commandPipe_(commandPipe),
     context_(context)
 {
 }

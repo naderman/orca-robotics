@@ -27,28 +27,26 @@ namespace orcaifaceimpl {
 //!
 class OgMapIface : public IceUtil::Shared
 {
-public:
+friend class OgMapI;
 
+public:
+    //! Constructor
     OgMapIface( const std::string      &ifaceTag,
                 const orcaice::Context &context );
     ~OgMapIface();
 
-    // Remote calls:
-    orca::OgMapData getData() const;
-
-    void subscribe(const ::orca::OgMapConsumerPrx& );
-
-    void unsubscribe(const ::orca::OgMapConsumerPrx& );
-
     // Local calls:
-
-    // may throw orcaice::Exceptions
+    //! may throw orcaice::Exceptions
     void initInterface();
-    // A local call which sets the data reported by the interface, 
-    // and sends it through IceStorm
+    //! A local call which sets the data reported by the interface, 
+    //! and sends it through IceStorm
     void localSetAndSend( const ::orca::OgMapData &data );
 
 private:
+    // remote call implementations, mimic (but do not inherit) the orca interface
+    orca::OgMapData getData() const;
+    void subscribe(const ::orca::OgMapConsumerPrx& );
+    void unsubscribe(const ::orca::OgMapConsumerPrx& );
 
     // Holds the latest data
     orcaice::Proxy<orca::OgMapData> dataProxy_;
