@@ -17,7 +17,7 @@
 #include <orcaice/proxy.h>
 #include <orcaice/timer.h>
 
-#include <orca/velocitycontrol2d.h>
+// this is the only Orca data structure used on the hardware side.
 #include <orca/vehicledescription.h>
 
 #include "hwdriver.h"
@@ -32,23 +32,24 @@ class RmpIo;
 // A thread that looks after the Segway hardware (ie HwDriver).
 //
 // Note: this thing self-destructs when run() returns.
-class HwHandler : public orcaice::Thread, public orcaice::NotifyHandler<orca::VelocityControl2dData>
+class HwHandler : public orcaice::Thread, 
+                  public orcaice::NotifyHandler<Command>
 {
 public:
         
     // The VehicleDescription is non-const, so the handler (and driver)
     // can update it with actual hardware limits.
-    HwHandler( orcaice::Proxy<Data>& dataPipe,
-               orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
-               orca::VehicleDescription&             descr,
-               const orcaice::Context& context );
+    HwHandler( orcaice::Proxy<Data>&        dataPipe,
+               orcaice::Notify<Command>&   commandPipe,
+               orca::VehicleDescription&    descr,
+               const orcaice::Context&      context );
     virtual ~HwHandler();
 
     // from Thread
     virtual void run();
 
-    // from PtrNotifyHandler
-    virtual void handleData( const orca::VelocityControl2dData & obj );
+    // from NotifyHandler
+    virtual void handleData( const Command& obj );
 
 private:
 
@@ -97,9 +98,6 @@ private:
     // debug
     orcaice::Timer readTimer_;
     orcaice::Timer writeTimer_;
-
-    // utilities
-    static void convert( const orca::VelocityControl2dData& network, segwayrmp::Command& internal );
 };
 
 } // namespace

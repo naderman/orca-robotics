@@ -75,6 +75,7 @@ Component::stop()
 {
     tracer()->debug( "stopping component", 2 );
     orcaice::stopAndJoin( netHandler_ );
+    tracer()->info( "stopped net handler", 2 );
     orcaice::stopAndJoin( hwHandler_ );
-    tracer()->info( "stopped component", 2 );
+    tracer()->info( "stopped hw handler", 2 );
 }

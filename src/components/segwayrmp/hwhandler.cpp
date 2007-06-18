@@ -37,18 +37,11 @@ namespace {
     const char *SUBSYSTEM_NAME = "hardware";
 }
 
-void 
-HwHandler::convert( const orca::VelocityControl2dData& network, segwayrmp::Command& internal )
-{
-    internal.vx = network.motion.v.x;
-    internal.w = network.motion.w;
-}
-
 HwHandler::HwHandler(
-        orcaice::Proxy<Data>& dataPipe,
-        orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
-        orca::VehicleDescription&               descr,
-        const orcaice::Context& context ) :
+        orcaice::Proxy<Data>&       dataPipe,
+        orcaice::Notify<Command>&   commandPipe,
+        orca::VehicleDescription&   descr,
+        const orcaice::Context&     context ) :
     dataPipe_(dataPipe),
     rmpIo_(0),
     driver_(0),
@@ -328,13 +321,8 @@ HwHandler::run()
 // Here we handle command arriving through Platform2d interface.
 //
 void
-HwHandler::handleData( const orca::VelocityControl2dData & origObj )
+HwHandler::handleData( const Command& command )
 {
-    //cout<<"handling: "<<orcaice::toString(obj)<<endl;
-
-    // make a copy so we can apply limits
-    orca::VelocityControl2dData obj = origObj;
-
     // if we know we can't write, don't try: inform remote component of problem
     FaultInfo faultInfo;
     faultProxy_.get( faultInfo );
@@ -359,24 +347,24 @@ HwHandler::handleData( const orca::VelocityControl2dData & origObj )
     //
     // apply max limits
     //
-    if ( fabs(obj.motion.v.x) > config_.maxSpeed ) {
-        obj.motion.v.x =
-                (obj.motion.v.x / fabs(obj.motion.v.x)) * config_.maxSpeed;
-    }
-    if ( fabs(obj.motion.w) > config_.maxTurnrate ) {
-        obj.motion.w =
-                (obj.motion.w / fabs(obj.motion.w)) * config_.maxTurnrate;
-    }
 
-    // convert from network to internal format
-    segwayrmp::Command segwayRmpCommand;
-    convert( obj, segwayRmpCommand );
+    // make a copy so we can apply limits
+    Command limitedCommand = command;
+
+    if ( fabs(command.vx) > config_.maxSpeed ) {
+        limitedCommand.vx =
+                (command.vx / fabs(command.vx)) * config_.maxSpeed;
+    }
+    if ( fabs(command.w) > config_.maxTurnrate ) {
+        limitedCommand.w =
+                (command.w / fabs(command.w)) * config_.maxTurnrate;
+    }
 
     //
     // write to hardware
     //
     try {
-        driver_->write( segwayRmpCommand );
+        driver_->write( limitedCommand );
     }
     catch ( RmpException &e )
     {

@@ -15,16 +15,11 @@
 #include <orcaice/context.h>
 #include <orcaice/proxy.h>
 #include <orcaice/notify.h>
-#include <orcaice/timer.h>
-
-#include <orca/odometry2d.h>
-#include <orca/velocitycontrol2d.h>
-#include <orca/odometry3d.h>
-#include <orca/power.h>
 
 #include <orcaifaceimpl/odometry2diface.h>
 #include <orcaifaceimpl/odometry3diface.h>
 #include <orcaifaceimpl/poweriface.h>
+#include <orcaifaceimpl/velocitycontrol2diface.h>
 
 #include "types.h"
 
@@ -32,19 +27,22 @@ namespace segwayrmp
 {
 
 // Note: this thing self-destructs when run() returns.
-//class NetHandler : public orcaice::Thread, public NetFsm
-class NetHandler : public orcaice::Thread
+class NetHandler : public orcaice::Thread,
+                   public orcaice::NotifyHandler<orca::VelocityControl2dData>
 {
 public:
 
     NetHandler( orcaice::Proxy<Data>&              dataPipe,
-                orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
-                const orca::VehicleDescription&               descr,
-                const orcaice::Context&                       context );
+                orcaice::Notify<Command>&          commandPipe,
+                const orca::VehicleDescription&    descr,
+                const orcaice::Context&            context );
     virtual ~NetHandler();
 
     // from Thread
     virtual void run();
+
+    // from NotifyHandler
+    virtual void handleData(const orca::VelocityControl2dData& obj);
 
 private:
 
@@ -52,17 +50,20 @@ private:
     void initOdom2d();
     void initOdom3d();
     void initPower();
+    void initVelocityControl2d();
 
     // external interfaces
-    orcaifaceimpl::Odometry2dIfacePtr odometry2dI_;
-    orcaifaceimpl::Odometry3dIfacePtr odometry3dI_;
-    orcaifaceimpl::PowerIfacePtr      powerI_;
+    orcaifaceimpl::Odometry2dIfacePtr           odometry2dI_;
+    orcaifaceimpl::Odometry3dIfacePtr           odometry3dI_;
+    orcaifaceimpl::PowerIfacePtr                powerI_;
+    orcaifaceimpl::VelocityControl2dIfacePtr    velocityControl2dI_;
 
-    // network/hardware interface
-    orcaice::Proxy<Data>&              dataPipe_;
-    orcaice::Notify<orca::VelocityControl2dData>& commandPipe_;
+    // hardware->network data flow
+    orcaice::Proxy<Data>& dataPipe_;
+    // network->hardware command flow
+    orcaice::Notify<Command>& commandPipe_;
 
-    orca::VehicleDescription                    descr_;
+    orca::VehicleDescription descr_;
 
     // component current context
     orcaice::Context context_;

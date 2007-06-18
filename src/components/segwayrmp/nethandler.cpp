@@ -14,9 +14,6 @@
 #include <orcaice/orcaice.h>
 #include "nethandler.h"
 
-// implementations of Ice objects
-#include "velocitycontrol2dI.h"
-
 using namespace std;
 using namespace segwayrmp;
 
@@ -86,9 +83,9 @@ NetHandler::convert( const orca::VelocityControl2dData& network, segwayrmp::Comm
 
 NetHandler::NetHandler(
         orcaice::Proxy<Data>&               dataPipe,
-        orcaice::Notify<orca::VelocityControl2dData>&  commandPipe,
-        const orca::VehicleDescription&               descr,
-        const orcaice::Context&                    context ) :
+        orcaice::Notify<Command>&           commandPipe,
+        const orca::VehicleDescription&     descr,
+        const orcaice::Context&             context ) :
     dataPipe_(dataPipe),
     commandPipe_(commandPipe),
     descr_(descr),
@@ -105,22 +102,26 @@ NetHandler::~NetHandler()
 void
 NetHandler::activate()
 {
+    int retryInterval = 2;
     while ( isActive() )
     {
         try {
             context_.activate();
             break;
-        }
-        catch ( orcaice::NetworkException & e )
-        {
-            std::stringstream ss;
-            ss << "nethandler::run: Caught NetworkException: " << e.what() << endl << "Will try again...";
+        }     
+        // alexm: in all of these exception handlers we would like to just catch
+        // std::exception but Ice 3.2 does not overload e.what() so we have to do it
+        // separately.
+        catch ( const Ice::Exception& e ) {
+            stringstream ss;
+            ss << "Failed to activate component: " << e 
+               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
             context_.tracer()->warning( ss.str() );
         }
-        catch ( Ice::Exception & e )
-        {
-            std::stringstream ss;
-            ss << "nethandler::run: Caught Ice::Exception while activating: " << e << endl << "Will try again...";
+        catch ( const std::exception& e ) {
+            stringstream ss;
+            ss << "Failed to activate component: " << e.what() 
+               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
             context_.tracer()->warning( ss.str() );
         }
         catch ( ... )
@@ -128,104 +129,146 @@ NetHandler::activate()
             cout << "Caught some other exception while activating." << endl;
         }
         context_.status()->initialising( SUBSYSTEM_NAME, "activating..." );
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
     }
 }
 
 void
 NetHandler::initOdom2d()
 {
-    //
-    // PROVIDED: Odometry2d
-    //
     odometry2dI_ =
         new orcaifaceimpl::Odometry2dIface( descr_, "Odometry2d", context_ );
 
+    int retryInterval = 2;
     while ( isActive() ) {
         try {
             odometry2dI_->initInterface();
             context_.tracer()->debug( "odometry 2d interface initialized",2);
             break;
         }
-        catch ( const orcaice::NetworkException& e ) {
-            stringstream ss;
-            ss << "Failed to setup interface: " << e.what() << ".  Check Registry and IceStorm. Will try again in 2 secs...";
-            context_.tracer()->warning( ss.str() );
-        }
         catch ( const Ice::Exception& e ) {
             stringstream ss;
-            ss << "Failed to setup interface: " << e << ".  Check Registry and IceStorm. Will try again in 2 secs...";
+            ss << "Failed to setup interface: " << e 
+               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
+            context_.tracer()->warning( ss.str() );
+        }
+        catch ( const std::exception& e ) {
+            stringstream ss;
+            ss << "Failed to setup interface: " << e.what() 
+               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
             context_.tracer()->warning( ss.str() );
         }
 
         context_.status()->initialising( SUBSYSTEM_NAME, "initOdom2d..." );
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
     }
 }
 
 void
 NetHandler::initOdom3d()
 {
-    //
-    // PROVIDED: Odometry3d
-    //
     odometry3dI_ = 
         new orcaifaceimpl::Odometry3dIface( descr_, "Odometry3d", context_ );
 
-
+    int retryInterval = 2;
     while ( isActive() ) {
         try {
             odometry3dI_->initInterface();
             context_.tracer()->debug( "odometry 3d interface initialized",2);
             break;
         }
-        catch ( const orcaice::NetworkException& e ) {
-            stringstream ss;
-            ss << "Failed to setup interface: " << e.what() << ".  Check Registry and IceStorm. Will try again in 2 secs...";
-            context_.tracer()->warning( ss.str() );
-        }
         catch ( const Ice::Exception& e ) {
             stringstream ss;
-            ss << "Failed to setup interface: " << e << ".  Check Registry and IceStorm. Will try again in 2 secs...";
+            ss << "Failed to setup interface: " << e 
+               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
+            context_.tracer()->warning( ss.str() );
+        }
+        catch ( const std::exception& e ) {
+            stringstream ss;
+            ss << "Failed to setup interface: " << e.what() 
+               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
             context_.tracer()->warning( ss.str() );
         }
         
         context_.status()->initialising( SUBSYSTEM_NAME, "initOdom3d..." );
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
     }    
 }
 
 void
 NetHandler::initPower()
 {
-    //
-    // PROVIDED: Power
-    //
     powerI_ = new orcaifaceimpl::PowerIface( "Power", context_ );
-
-
+    
+    int retryInterval = 2;
     while ( isActive() ) {
         try {
             powerI_->initInterface();
             context_.tracer()->debug( "power interface initialized",2);
             break;
         }
-        catch ( const orcaice::NetworkException& e ) {
-            stringstream ss;
-            ss << "Failed to setup interface: " << e.what() << ".  Check Registry and IceStorm. Will try again in 2 secs...";
-            context_.tracer()->warning( ss.str() );
-        }
         catch ( const Ice::Exception& e ) {
             stringstream ss;
-            ss << "Failed to setup interface: " << e << ".  Check Registry and IceStorm. Will try again in 2 secs...";
+            ss << "Failed to setup interface: " << e 
+               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
+            context_.tracer()->warning( ss.str() );
+        }
+        catch ( const std::exception& e ) {
+            stringstream ss;
+            ss << "Failed to setup interface: " << e.what() 
+               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
             context_.tracer()->warning( ss.str() );
         }
         
         context_.status()->initialising( SUBSYSTEM_NAME, "initPower..." );
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
     }
 }
 
+void
+NetHandler::initVelocityControl2d()
+{
+    velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dIface( descr_, "VelocityControl2d", context_ );
+    
+    int retryInterval = 2;
+    while ( isActive() ) {
+        try {
+            velocityControl2dI_->initInterface();
+            context_.tracer()->debug( "VelocityControl2d interface initialized",2);
+            break;
+        }
+        catch ( const Ice::Exception& e ) {
+            stringstream ss;
+            ss << "Failed to setup interface: " << e 
+               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
+            context_.tracer()->warning( ss.str() );
+        }
+        catch ( const std::exception& e ) {
+            stringstream ss;
+            ss << "Failed to setup interface: " << e.what() 
+               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
+            context_.tracer()->warning( ss.str() );
+        }
+        
+        context_.status()->initialising( SUBSYSTEM_NAME, "initVelocityControl2d..." );
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+    }
+
+    // register ourselves as data handlers (it will call the handleData() callback).
+    velocityControl2dI_->setNotifyHandler( this );
+}
+
+// This is a direct callback from the VelocityControl2dIface object.
+// It's executed in Ice thread.
+// Here we convert to our internal format and stick it into
+// another Notify pipe to be handled the HwHandler.
+void 
+NetHandler::handleData(const orca::VelocityControl2dData& obj)
+{
+    segwayrmp::Command command;
+    convert( obj, command );
+    commandPipe_.set( command );
+}
 
 void
 NetHandler::run()
@@ -236,26 +279,17 @@ NetHandler::run()
     
         std::string prefix = context_.tag() + ".Config.";
 
-        //
-        // PROVIDED: VelocityControl2d
-        //
-
-        // create servant for direct connections and tell adapter about it
-        // don't need to store it as a member variable, adapter will keep it alive
-        Ice::ObjectPtr velocityControl2dI = new VelocityControl2dI( descr_, commandPipe_ );
-
-        // two possible exceptions will kill it here, that's what we want
-        orcaice::createInterfaceWithTag( context_, velocityControl2dI, "VelocityControl2d" );
-
-        // Initialise external interfaces
         // alexm: this option used to be in HwHandler. The external interface was always enabled,
         //        but when ProvideOdometry3d=0, the HwHandler would not push any 3D data 
         //        to NetHandler.
 //         bool provideOdometry3d = (bool)orcaice::getPropertyAsIntWithDefault( 
 //                 context_.properties(), prefix+".ProvideOdometry3d", 1 );
+
+        // Initialise external interfaces
         initOdom2d();
         initOdom3d();
         initPower();
+        initVelocityControl2d();
 
         // temp objects in internal format
         Data data;

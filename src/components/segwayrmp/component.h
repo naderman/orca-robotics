@@ -13,16 +13,10 @@
 
 #include <orcaice/component.h>
 
-// external interface definitions
-#include <orca/odometry2d.h>
-#include <orca/velocitycontrol2d.h>
-#include <orca/odometry3d.h>
-#include <orca/power.h>
-
 // data pipes
 #include <orcaice/proxy.h>
 #include <orcaice/notify.h>
-
+// internal data structures
 #include "types.h"
 
 namespace segwayrmp
@@ -53,9 +47,8 @@ private:
     //
     // hardware->network
     orcaice::Proxy<Data> dataPipe_;
-
     // network->hardware
-    orcaice::Notify<orca::VelocityControl2dData> commandPipe_;
+    orcaice::Notify<Command> commandPipe_;
 };
 
 } // namespace
