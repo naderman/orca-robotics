@@ -10,15 +10,14 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcamisc/configutils.h>
+#include <orca/vehicledescription.h>
 
 #include "component.h"
 #include "nethandler.h"
 #include "hwhandler.h"
-#include <orca/vehicledescription.h>
-#include <orcamisc/configutils.h>
 
 using namespace std;
-using namespace orca;
 using namespace segwayrmp;
 
 Component::Component() :
@@ -38,7 +37,7 @@ Component::~Component()
 void
 Component::start()
 {
-    tracer()->info( "Starting Component." );
+    tracer()->debug( "Starting Component",2 );
 
     // 
     // Read vehicle description
