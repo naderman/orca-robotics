@@ -80,6 +80,12 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Imu (ben u.)
   - Added configurable offset between the IMU sensor and the platform.
 
+- SegwayRmp
+  - Internal source cleanup. Not using ::orca:: structures internally. (alex m)
+
+- Robot2d
+  - Internal source cleanup. Not using ::orca:: structures internally. (alex m)
+
 @par Updated utilities
 
 - Name change: sysmon -> systemtracermon (alex b)
