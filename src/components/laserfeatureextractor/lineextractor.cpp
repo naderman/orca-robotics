@@ -123,7 +123,7 @@ LineExtractor::isStartVisible( const Section &section,
                                double alpha,
                                const Section *prevSection )
 {
-    //cout<<"TRACE(lineextractor.cpp): isStartVisible()" << endl;
+    cout<<"TRACE(lineextractor.cpp): --------- isStartVisible() ---------" << endl;
 
     // Check for section at edge of scan
     if ( section.rangeBeforeStart() < 0 )
@@ -135,7 +135,7 @@ LineExtractor::isStartVisible( const Section &section,
          prevSection->isNextCon() &&
          prevSection->lineLength() > minLineLength_ )
     {
-        // cout<<"TRACE(lineextractor.cpp): junction of two lines" << endl;
+        cout<<"TRACE(lineextractor.cpp): junction of two lines" << endl;
         // Find the angle between them
         double d = prevSection->eigVectX()*prevSection->eigVectX()+prevSection->eigVectY()*prevSection->eigVectY();
         double px = -prevSection->eigVectX()*prevSection->c() / d;
@@ -146,7 +146,7 @@ LineExtractor::isStartVisible( const Section &section,
 
         if ( fabs(meetAngle) > 30.0*M_PI/180.0 )
         {
-            // cout<<"TRACE(lineextractor.cpp): Junction of two lines meeting at a reasonable angle" << endl;
+            cout<<"TRACE(lineextractor.cpp): Junction of two lines meeting at a reasonable angle" << endl;
             return true;
         }
     }
@@ -157,18 +157,20 @@ LineExtractor::isStartVisible( const Section &section,
     double startAngle = M_PI/2.0 - (section.start().bearing() - alpha);
     if ( startAngle > ANGLE_THRESHOLD )
     {
-        //cout<<"TRACE(lineextractor.cpp): can't see around corner" << endl;
+        cout<<"TRACE(lineextractor.cpp): can't see around corner" << endl;
         return false;
     }
     
     // Is the end obscured by a foreground obstacle?
+    cout<<"TRACE(lineextractor.cpp): rangeBeforeStart: " << section.rangeBeforeStart() << endl;
+    cout<<"TRACE(lineextractor.cpp): front range: " << section.elements().front().range() << endl;
     if ( section.rangeBeforeStart() < section.elements().front().range() )
     {
-        //cout<<"TRACE(lineextractor.cpp): obscured by fg obstacle" << endl;
+        cout<<"TRACE(lineextractor.cpp): obscured by fg obstacle" << endl;
         return false;
     }
 
-    //cout<<"TRACE(lineextractor.cpp): isStartVisible() returning true." << endl;
+    cout<<"TRACE(lineextractor.cpp): isStartVisible() returning true." << endl;
     return true;
 }
 
@@ -177,7 +179,7 @@ LineExtractor::isEndVisible( const Section &section,
                              double alpha,
                              const Section *nextSection )
 {
-    //cout<<"TRACE(lineextractor.cpp): isEndVisible()" << endl;
+    // cout<<"TRACE(lineextractor.cpp): ----------- isEndVisible() ------------" << endl;
 
     // Check for section at edge of scan
     if ( section.rangeAfterEnd() < 0 )
@@ -222,6 +224,7 @@ LineExtractor::isEndVisible( const Section &section,
         return false;
     }
 
+    // cout<<"TRACE(lineextractor.cpp): returning true." << endl;
     return true;
 }
              
