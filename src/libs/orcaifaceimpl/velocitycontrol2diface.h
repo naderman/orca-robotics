@@ -54,7 +54,7 @@ private:
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
 };
-typedef IceUtil::Handle<VelocityControl2dIface> DriveBicycleIfacePtr;
+typedef IceUtil::Handle<VelocityControl2dIface> VelocityControl2dIfacePtr;
 
 } // namespace
 
