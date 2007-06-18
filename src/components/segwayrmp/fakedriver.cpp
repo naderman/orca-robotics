@@ -39,7 +39,7 @@ FakeDriver::disable()
 }
 
 bool
-FakeDriver::read( SegwayRmpData& data )
+FakeDriver::read( Data& data )
 {
     orca::Time t = orcaice::toOrcaTime( IceUtil::Time::now() );
     data.seconds = t.seconds;
@@ -63,7 +63,7 @@ FakeDriver::read( SegwayRmpData& data )
 }
 
 void
-FakeDriver::write( const SegwayRmpCommand& command )
+FakeDriver::write( const Command& command )
 {
     // debug: simulated failure
     if ( command.vx < 2.0 ) {

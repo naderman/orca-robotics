@@ -15,104 +15,47 @@
 #include <orcaice/orcaice.h>
 
 #include "hwhandler.h"
-#include "fakedriver.h"
 #include "rmpexception.h"
 
 // segway rmp drivers
+#include "fakedriver.h"
 #include "rmpdriver/rmpdriver.h"
 #ifdef HAVE_USB_DRIVER
-    #include "rmpdriver/usb/rmpusbioftdi.h"
+#   include "rmpdriver/usb/rmpusbioftdi.h"
 #endif
 #ifdef HAVE_CAN_DRIVER
-    #include "rmpdriver/can/peakcandriver.h"
+#   include "rmpdriver/can/peakcandriver.h"
 #endif
 #ifdef HAVE_PLAYERCLIENT_DRIVER
-    #include "playerclient/playerclientdriver.h"
+#   include "playerclient/playerclientdriver.h"
 #endif
 
 using namespace std;
 using namespace segwayrmp;
 
 namespace {
-    const char *SUBSYSTEM = "hardware";
+    const char *SUBSYSTEM_NAME = "hardware";
 }
 
 void 
-HwHandler::convert( const HwDriver::SegwayRmpData& internal, orca::Odometry2dData& network )
-{
-    network.timeStamp.seconds = internal.seconds;
-    network.timeStamp.useconds = internal.useconds;
-
-    network.pose.p.x = internal.x;
-    network.pose.p.y = internal.y;
-    network.pose.o = internal.yaw;
-    
-    network.motion.v.x = internal.vx;
-    network.motion.v.y = 0.0;
-    network.motion.w = internal.dyaw;
-}
-
-void 
-HwHandler::convert( const HwDriver::SegwayRmpData& internal, orca::Odometry3dData& network )
-{
-    network.timeStamp.seconds = internal.seconds;
-    network.timeStamp.useconds = internal.useconds;
-
-    network.pose.p.x = internal.x;
-    network.pose.p.y = internal.y;
-    network.pose.p.z = 0.0;
-
-    network.pose.o.r = internal.roll;
-    network.pose.o.p = internal.pitch;
-    network.pose.o.y = internal.yaw;
-    
-    network.motion.v.x = internal.vx;
-    network.motion.v.y = 0.0;
-    network.motion.v.z = 0.0;
-
-    network.motion.w.x = internal.droll;
-    network.motion.w.y = internal.dpitch;
-    network.motion.w.z = internal.dyaw;
-}
-
-void 
-HwHandler::convert( const HwDriver::SegwayRmpData& internal, orca::PowerData& network )
-{
-    network.timeStamp.seconds = internal.seconds;
-    network.timeStamp.useconds = internal.useconds;
-
-    network.batteries[0].voltage = internal.mainvolt;
-    network.batteries[1].voltage = internal.mainvolt;
-    network.batteries[2].voltage = internal.uivolt;
-    
-    network.batteries[0].isBatteryCharging = orca::ChargingUnknown;
-    network.batteries[1].isBatteryCharging = orca::ChargingUnknown;
-    network.batteries[2].isBatteryCharging = orca::ChargingUnknown;
-}
-
-void 
-HwHandler::convert( const orca::VelocityControl2dData& network, HwDriver::SegwayRmpCommand& internal )
+HwHandler::convert( const orca::VelocityControl2dData& network, segwayrmp::Command& internal )
 {
     internal.vx = network.motion.v.x;
     internal.w = network.motion.w;
 }
 
 HwHandler::HwHandler(
-                 orcaice::Proxy<orca::Odometry2dData>& odometry2dPipe,
-                 orcaice::Proxy<orca::Odometry3dData>& odometry3dPipe,
-                 orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
-                 orcaice::Proxy<orca::PowerData>& powerPipe,
-                 orca::VehicleDescription&               descr,
-                 const orcaice::Context& context ) :
-    odometry2dPipe_(odometry2dPipe),
-    odometry3dPipe_(odometry3dPipe),
-    powerPipe_(powerPipe),
+        orcaice::Proxy<Data>& dataPipe,
+        orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
+        orca::VehicleDescription&               descr,
+        const orcaice::Context& context ) :
+    dataPipe_(dataPipe),
     rmpIo_(0),
     driver_(0),
     context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
-    context_.status()->initialising( SUBSYSTEM );
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM_NAME, 10.0 );
+    context_.status()->initialising( SUBSYSTEM_NAME );
 
     // we'll handle incoming messages
     commandPipe.setNotifyHandler( this );
@@ -134,13 +77,12 @@ HwHandler::HwHandler(
 
     config_.maxSpeed = controlDescr->maxForwardSpeed;
     config_.maxTurnrate = controlDescr->maxTurnrate;
-    config_.isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( context_.properties(),
-                                                                          prefix+".EnableMotion", 1 );
-    config_.provideOdometry3d = (bool)orcaice::getPropertyAsIntWithDefault( context_.properties(),
-                                                                            prefix+".ProvideOdometry3d", 1 );
+    config_.isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( 
+            context_.properties(), prefix+".EnableMotion", 1 );
 
     // based on the config parameter, create the right driver
-    string driverName = orcaice::getPropertyWithDefault( context_.properties(), prefix+"Driver", "segwayrmpusb" );
+    string driverName = orcaice::getPropertyWithDefault( 
+            context_.properties(), prefix+"Driver", "segwayrmpusb" );
             
     if ( driverName == "segwayrmpusb" )
     {
@@ -224,7 +166,7 @@ HwHandler::enableDriver()
             stringstream ss;
             ss << "HwHandler::enableDriver(): Failed to enable: " << e.what();
             context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.status()->fault( SUBSYSTEM_NAME, ss.str() );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
@@ -238,17 +180,8 @@ HwHandler::run()
     std::string driverStatus = "";
     std::string currDriverStatus = "";
 
-    HwDriver::SegwayRmpData segwayRmpData;
-    orca::Odometry2dData odometry2dData;
-    orca::Odometry3dData odometry3dData;
-    orca::PowerData powerData;
-
-    // set up data structure for 3 batteries
-    powerData.batteries.resize(3);
-    powerData.batteries[0].name = "main-front";
-    powerData.batteries[1].name = "main-rear";
-    powerData.batteries[2].name = "ui";
-
+    // temp data object
+    Data data;
 
     //
     // Main loop
@@ -264,12 +197,12 @@ HwHandler::run()
             faultProxy_.get( faultInfo );
             if ( faultInfo.isError() )
             {
-                context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 5.0 );    
+                context_.status()->setMaxHeartbeatInterval( SUBSYSTEM_NAME, 5.0 );    
                 enableDriver();
 
                 // we enabled, so presume we're OK.
                 faultProxy_.set( FaultInfo(false) );
-                context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 2.0 );
+                context_.status()->setMaxHeartbeatInterval( SUBSYSTEM_NAME, 2.0 );
 
                 // but make sure we're not shutting down.
                 if ( !isActive() )
@@ -280,22 +213,10 @@ HwHandler::run()
             // Read data from the hardware
             //
             try {
-                bool stateChanged = driver_->read( segwayRmpData );
+                bool stateChanged = driver_->read( data );
 
-                // convert internal to network format, and
-                // stick it in the proxies so pullers can get it
-                
-                convert( segwayRmpData, odometry2dData );
-                odometry2dPipe_.set( odometry2dData );
-
-                if ( config_.provideOdometry3d )
-                {
-                    convert( segwayRmpData, odometry3dData );
-                    odometry3dPipe_.set( odometry3dData );
-                }
-
-                convert( segwayRmpData, powerData );
-                powerPipe_.set( powerData );
+                // stick it in the proxy, so that NetHandler can distribute it                
+                dataPipe_.set( data );
 
                 // Update status
                 if ( stateChanged ) 
@@ -308,28 +229,28 @@ HwHandler::run()
                     if ( isFault )
                     {
                         context_.tracer()->error( ss.str() );
-                        context_.status()->fault( SUBSYSTEM, status );
+                        context_.status()->fault( SUBSYSTEM_NAME, status );
                     }
                     else if ( isWarn )
                     {
                         context_.tracer()->warning( ss.str() );
-                        context_.status()->warning( SUBSYSTEM, status );
+                        context_.status()->warning( SUBSYSTEM_NAME, status );
                     }
                     else
                     {
                         context_.tracer()->info( ss.str() );
-                        context_.status()->ok( SUBSYSTEM, status );
+                        context_.status()->ok( SUBSYSTEM_NAME, status );
                     }
                 }
                 else
-                    context_.status()->ok( SUBSYSTEM );
+                    context_.status()->ok( SUBSYSTEM_NAME );
             }
             catch ( RmpException &e )
             {
                 stringstream ss;
                 ss << "HwHandler: Failed to read: " << e.what();
                 context_.tracer()->error( ss.str() );
-                context_.status()->fault( SUBSYSTEM, ss.str() );
+                context_.status()->fault( SUBSYSTEM_NAME, ss.str() );
                 faultProxy_.set( FaultInfo( true, ss.str() ) );
             }
 
@@ -338,16 +259,6 @@ HwHandler::run()
         {
             stringstream ss;
             ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-            context_.tracer()->error( ss.str() );
-            if ( context_.isApplication() ) {
-                context_.tracer()->info( "this is an stand-alone component. Quitting...");
-                context_.communicator()->destroy();
-            }
-        }
-        catch ( const Ice::Exception & e )
-        {
-            stringstream ss;
-            ss << "unexpected Ice exception: " << e;
             context_.tracer()->error( ss.str() );
             if ( context_.isApplication() ) {
                 context_.tracer()->info( "this is an stand-alone component. Quitting...");
@@ -458,7 +369,7 @@ HwHandler::handleData( const orca::VelocityControl2dData & origObj )
     }
 
     // convert from network to internal format
-    HwDriver::SegwayRmpCommand segwayRmpCommand;
+    segwayrmp::Command segwayRmpCommand;
     convert( obj, segwayRmpCommand );
 
     //

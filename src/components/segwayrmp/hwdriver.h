@@ -11,6 +11,8 @@
 #ifndef ORCA2_SEGWAY_RMP_HARDWARE_DRIVER_H
 #define ORCA2_SEGWAY_RMP_HARDWARE_DRIVER_H
 
+#include "types.h"
+
 namespace segwayrmp
 {
 
@@ -25,34 +27,6 @@ class HwDriver
 
 public:
 
-    struct SegwayRmpData
-    {
-        int seconds;
-        int useconds;
-        double x;
-        double y;
-        double roll;
-        double pitch;
-        double yaw;
-        double vx;
-        double droll;
-        double dpitch;
-        double dyaw;
-        double mainvolt;
-        double uivolt;
-    };
-
-    struct SegwayRmpCommand
-    {
-        double vx;
-        double w;
-    };
-
-    struct SegwayRmpStats
-    {
-        double distanceTravelled;
-    };
-
     virtual ~HwDriver() {};
     
     virtual void enable()=0;
@@ -61,14 +35,14 @@ public:
     // Returns: 
     //   true:  important change in internal state occured (details can be read with getStatus).
     //   false: no important change
-    virtual bool read( SegwayRmpData& data )=0;
+    virtual bool read( Data& data )=0;
     // Writes velocity command.
-    virtual void write( const SegwayRmpCommand& command )=0;
+    virtual void write( const Command& command )=0;
     // Apply physical limits of this hardare.
     virtual void applyHardwareLimits( double& forwardSpeed, double& reverseSpeed, 
         double& turnrate, double& turnrateAtMaxSpeed ) {};
     // Non-blocking read of secondary data.
-    virtual void get( SegwayRmpStats& stats ) {};
+    virtual void get( Stats& stats ) {};
     // For debugging, convert to string as much of internal state as possible
     virtual std::string toString() { return std::string(""); };
 

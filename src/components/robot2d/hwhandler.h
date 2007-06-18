@@ -19,9 +19,10 @@
 
 #include "hwdriver.h"
 
-#include <orca/odometry2d.h>
 #include <orca/velocitycontrol2d.h>
 #include <orca/vehicledescription.h>
+
+#include "types.h"
 
 namespace robot2d
 {
@@ -30,7 +31,7 @@ class HwHandler : public orcaice::Thread, public orcaice::NotifyHandler<orca::Ve
 {
 public:
 
-    HwHandler( orcaice::Buffer<orca::Odometry2dData>& odometryPipe,
+    HwHandler( orcaice::Buffer<Data>& dataPipe,
                orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
                const orca::VehicleDescription &descr,
                const orcaice::Context& context );
@@ -45,7 +46,7 @@ public:
 private:
 
     // network/hardware interface
-    orcaice::Buffer<orca::Odometry2dData>& odometryPipe_;
+    orcaice::Buffer<Data>& dataPipe_;
 
     // generic interface to the hardware
     HwDriver* driver_;
@@ -70,8 +71,7 @@ private:
     orcaice::Timer writeTimer_;
 
     // utilities
-    static void convert( const HwDriver::Robot2dData& internal, orca::Odometry2dData& network );
-    static void convert( const orca::VelocityControl2dData& network, HwDriver::Robot2dCommand& internal );
+    static void convert( const orca::VelocityControl2dData& network, robot2d::Command& internal );
 
 };
 

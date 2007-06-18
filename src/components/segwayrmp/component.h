@@ -23,6 +23,8 @@
 #include <orcaice/proxy.h>
 #include <orcaice/notify.h>
 
+#include "types.h"
+
 namespace segwayrmp
 {
 
@@ -50,9 +52,7 @@ private:
     // INTERFACES BETWEEN NETWORK AND HARDWARE HANDLERS
     //
     // hardware->network
-    orcaice::Proxy<orca::Odometry2dData> odometry2dPipe_;
-    orcaice::Proxy<orca::Odometry3dData> odometry3dPipe_;
-    orcaice::Proxy<orca::PowerData> powerPipe_;
+    orcaice::Proxy<Data> dataPipe_;
 
     // network->hardware
     orcaice::Notify<orca::VelocityControl2dData> commandPipe_;

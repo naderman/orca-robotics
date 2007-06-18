@@ -17,12 +17,11 @@
 #include <orcaice/proxy.h>
 #include <orcaice/timer.h>
 
-#include <orca/odometry2d.h>
-#include <orca/odometry3d.h>
 #include <orca/velocitycontrol2d.h>
-#include <orca/power.h>
+#include <orca/vehicledescription.h>
 
 #include "hwdriver.h"
+#include "types.h"
 
 namespace segwayrmp
 {
@@ -39,10 +38,8 @@ public:
         
     // The VehicleDescription is non-const, so the handler (and driver)
     // can update it with actual hardware limits.
-    HwHandler( orcaice::Proxy<orca::Odometry2dData>& odometry2dPipe,
-               orcaice::Proxy<orca::Odometry3dData>& odometry3dPipe,
+    HwHandler( orcaice::Proxy<Data>& dataPipe,
                orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
-               orcaice::Proxy<orca::PowerData>& powerPipe,
                orca::VehicleDescription&             descr,
                const orcaice::Context& context );
     virtual ~HwHandler();
@@ -59,9 +56,7 @@ private:
     void enableDriver();
 
     // network/hardware interface
-    orcaice::Proxy<orca::Odometry2dData>    & odometry2dPipe_;
-    orcaice::Proxy<orca::Odometry3dData>    & odometry3dPipe_;
-    orcaice::Proxy<orca::PowerData>         & powerPipe_;
+    orcaice::Proxy<Data>& dataPipe_;
 
     // generic interface to the hardware
     RmpIo*    rmpIo_;
@@ -72,7 +67,6 @@ private:
         bool   isMotionEnabled;
         double maxSpeed;
         double maxTurnrate;
-        bool   provideOdometry3d;
     };
     Config config_;
 
@@ -105,10 +99,7 @@ private:
     orcaice::Timer writeTimer_;
 
     // utilities
-    static void convert( const HwDriver::SegwayRmpData& internal, orca::Odometry2dData& network );
-    static void convert( const HwDriver::SegwayRmpData& internal, orca::Odometry3dData& network );
-    static void convert( const HwDriver::SegwayRmpData& internal, orca::PowerData& network );
-    static void convert( const orca::VelocityControl2dData& network, HwDriver::SegwayRmpCommand& internal );
+    static void convert( const orca::VelocityControl2dData& network, segwayrmp::Command& internal );
 };
 
 } // namespace

@@ -89,7 +89,7 @@ PlayerClientDriver::disable()
 }
 
 bool
-PlayerClientDriver::read( SegwayRmpData& data )
+PlayerClientDriver::read( Data& data )
 {
     if ( ! enabled_ ) {
         stringstream ss;
@@ -136,7 +136,7 @@ PlayerClientDriver::read( SegwayRmpData& data )
 }
 
 void
-PlayerClientDriver::write( const SegwayRmpCommand& command )
+PlayerClientDriver::write( const Command& command )
 {
     // this version of Player client takes speed command in  [m, m, rad/s]
     try

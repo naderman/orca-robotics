@@ -21,6 +21,8 @@
 #include <orcaice/buffer.h>
 #include <orcaice/notify.h>
 
+#include "types.h"
+
 namespace robot2d
 {
 
@@ -48,7 +50,7 @@ private:
     // INTERFACES BETWEEN NETWORK AND HARDWARE HANDLERS
     //
     // hardware->network
-    orcaice::Buffer<orca::Odometry2dData> odometryPipe_;
+    orcaice::Buffer<Data> dataPipe_;
 
     // network->hardware
     orcaice::Notify<orca::VelocityControl2dData> commandPipe_;

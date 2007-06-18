@@ -44,17 +44,17 @@ public:
     void disable() {}
 
     // Inherited from HwDriver
-    bool read( SegwayRmpData& data );
+    bool read( Data& data );
 
     // Inherited from HwDriver
-    void write( const SegwayRmpCommand& command );
+    void write( const Command& command );
 
     // Inherited from HwDriver
     void applyHardwareLimits( double& forwardSpeed, double& reverseSpeed, 
         double& turnrate, double& turnrateAtMaxSpeed );
 
     // Inherited from HwDriver
-    void get( SegwayRmpStats& stats );
+    void get( Stats& stats );
 
     // Inherited from HwDriver
     std::string toString();
@@ -96,7 +96,7 @@ private:
     void setGainSchedule( int sched );
     void enableBalanceMode( bool enable );
 
-    void applyScaling( const SegwayRmpCommand& original, SegwayRmpCommand &scaledCommand );
+    void applyScaling( const Command& original, Command &scaledCommand );
 
     // driver/hardware interface
     RmpIo         &rmpIo_;
@@ -127,10 +127,10 @@ private:
 
     void readFrame();
     void integrateMotion();
-    void updateData( SegwayRmpData& data, Status & status );
+    void updateData( Data& data, Status & status );
 
     // helper to take a player command and turn it into a CAN command packet
-    void makeMotionCommandPacket( CanPacket* pkt, const SegwayRmpCommand& command );
+    void makeMotionCommandPacket( CanPacket* pkt, const Command& command );
     void makeStatusCommandPacket( CanPacket* pkt, uint16_t commandId, uint16_t value );
     void makeShutdownCommandPacket( CanPacket* pkt );
 

@@ -20,6 +20,8 @@
 #include <orca/velocitycontrol2d.h>
 #include <orca/vehicledescription.h>
 
+#include "types.h"
+
 namespace robot2d
 {
 
@@ -29,7 +31,7 @@ class NetHandler : public orcaice::Thread
 {
 public:
 
-    NetHandler( orcaice::Buffer<orca::Odometry2dData>& odometryPipe,
+    NetHandler( orcaice::Buffer<Data>& dataPipe,
                 orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
                 const orca::VehicleDescription &descr,
                 const orcaice::Context& context );
@@ -41,13 +43,16 @@ public:
 private:
 
     // network/hardware interface
-    orcaice::Buffer<orca::Odometry2dData>& odometryPipe_;
+    orcaice::Buffer<Data>& dataPipe_;
     orcaice::Notify<orca::VelocityControl2dData>& commandPipe_;
 
     orca::VehicleDescription descr_;
 
     // component current context
     orcaice::Context context_;
+
+    // utilities
+    static void convert( const robot2d::Data& internal, orca::Odometry2dData& network );
 };
 
 } // namespace

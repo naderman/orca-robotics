@@ -26,6 +26,8 @@
 #include <orcaifaceimpl/odometry3diface.h>
 #include <orcaifaceimpl/poweriface.h>
 
+#include "types.h"
+
 namespace segwayrmp
 {
 
@@ -35,10 +37,8 @@ class NetHandler : public orcaice::Thread
 {
 public:
 
-    NetHandler( orcaice::Proxy<orca::Odometry2dData>&         odometry2dPipe,
-                orcaice::Proxy<orca::Odometry3dData>&         odometry3dPipe,
+    NetHandler( orcaice::Proxy<Data>&              dataPipe,
                 orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
-                orcaice::Proxy<orca::PowerData>&              powerPipe,
                 const orca::VehicleDescription&               descr,
                 const orcaice::Context&                       context );
     virtual ~NetHandler();
@@ -59,15 +59,19 @@ private:
     orcaifaceimpl::PowerIfacePtr      powerI_;
 
     // network/hardware interface
-    orcaice::Proxy<orca::Odometry2dData>&       odometry2dPipe_;
-    orcaice::Proxy<orca::Odometry3dData>&       odometry3dPipe_;
+    orcaice::Proxy<Data>&              dataPipe_;
     orcaice::Notify<orca::VelocityControl2dData>& commandPipe_;
-    orcaice::Proxy<orca::PowerData>&            powerPipe_;
 
     orca::VehicleDescription                    descr_;
 
     // component current context
     orcaice::Context context_;
+
+    // utilities
+    static void convert( const Data& internal, orca::Odometry2dData& network );
+    static void convert( const Data& internal, orca::Odometry3dData& network );
+    static void convert( const Data& internal, orca::PowerData& network );
+    static void convert( const orca::VelocityControl2dData& network, segwayrmp::Command& internal );
 };
 
 } // namespace

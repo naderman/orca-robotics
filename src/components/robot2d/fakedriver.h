@@ -31,9 +31,9 @@ public:
     virtual int repair();
     virtual int disable();
 
-    virtual int read( Robot2dData& data, std::string & status );
+    virtual int read( Data& data, std::string & status );
 
-    virtual int write( const Robot2dCommand& command );
+    virtual int write( const Command& command );
 
 private:
     orcaice::Context context_;

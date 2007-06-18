@@ -49,7 +49,7 @@ FakeDriver::disable()
 }
 
 int 
-FakeDriver::read( Robot2dData& data, std::string& status )
+FakeDriver::read( Data& data, std::string& status )
 {
     context_.tracer()->info( "Generating fake info for robot2d..." );
 
@@ -71,12 +71,12 @@ FakeDriver::read( Robot2dData& data, std::string& status )
 }
 
 int 
-FakeDriver::write( const Robot2dCommand& command )
+FakeDriver::write( const Command& command )
 {
     // debug: simulated failure
     if ( command.vx < 2.0 ) {
         stringstream ss;
-        ss << "Wrote: Robot2dCommand (vx,vy,w(deg/s)) : ("
+        ss << "Wrote: Command (vx,vy,w(deg/s)) : ("
             << command.vx << ", "
             << command.vy << ", "
             << RAD2DEG(command.w) << ")";

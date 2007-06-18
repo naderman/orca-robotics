@@ -51,7 +51,7 @@ Component::start()
     // Network handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    netHandler_ = new NetHandler( odometryPipe_, commandPipe_, descr, context() );
+    netHandler_ = new NetHandler( dataPipe_, commandPipe_, descr, context() );
     // this thread will try to activate and register the adapter
     netHandler_->start();
 
@@ -59,7 +59,7 @@ Component::start()
     // Hardware handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    hwHandler_ = new HwHandler( odometryPipe_, commandPipe_, descr, context() );
+    hwHandler_ = new HwHandler( dataPipe_, commandPipe_, descr, context() );
     hwHandler_->start();
 
     // the rest is handled by the application/service

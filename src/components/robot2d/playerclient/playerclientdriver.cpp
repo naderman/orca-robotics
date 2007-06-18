@@ -91,7 +91,7 @@ PlayerClientDriver::disable()
 
 
 int
-PlayerClientDriver::read( Robot2dData& data, std::string & status )
+PlayerClientDriver::read( Data& data, std::string & status )
 {
     if ( ! enabled_ ) {
         //cout << "ERROR(playerclientdriver.cpp): Can't read: not connected to Player/Stage yet." << endl;
@@ -131,7 +131,7 @@ PlayerClientDriver::read( Robot2dData& data, std::string & status )
 }
 
 int
-PlayerClientDriver::write( const Robot2dCommand& command )
+PlayerClientDriver::write( const Command& command )
 {
     // this version of Player client takes speed command in  [m, m, rad/s]
     try

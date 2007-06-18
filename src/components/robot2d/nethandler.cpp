@@ -19,15 +19,29 @@
 #include "velocitycontrol2dI.h"
 
 using namespace std;
-using namespace orca;
 using namespace robot2d;
 
+void 
+NetHandler::convert( const robot2d::Data& internal, orca::Odometry2dData& network )
+{
+    network.timeStamp.seconds = internal.seconds;
+    network.timeStamp.useconds = internal.useconds;
+
+    network.pose.p.x = internal.x;
+    network.pose.p.y = internal.y;
+    network.pose.o = internal.o;
+    
+    network.motion.v.x = internal.vx;
+    network.motion.v.y = internal.vy;
+    network.motion.w = internal.w;
+}
+
 NetHandler::NetHandler(
-                 orcaice::Buffer<orca::Odometry2dData>& odometryPipe,
+                 orcaice::Buffer<Data>& dataPipe,
                  orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
                  const orca::VehicleDescription &descr,
                  const orcaice::Context& context ) :
-    odometryPipe_(odometryPipe),
+    dataPipe_(dataPipe),
     commandPipe_(commandPipe),
     descr_(descr),
     context_(context)
@@ -70,7 +84,6 @@ NetHandler::run()
         }
     
         std::string prefix = context_.tag() + ".Config.";
-        Ice::PropertiesPtr prop = context_.properties();
     
         //
         // PROVIDED: VelocityControl2d
@@ -107,11 +120,15 @@ NetHandler::run()
             }
         }
 
+        // temp objects in internal format
+        robot2d::Data data;
+        // temp objects in network format
         orca::Odometry2dData odometry2dData;
+
         const int odometryReadTimeout = 500; // [ms]
         orcaice::Timer publishTimer;
-        double publishInterval = orcaice::getPropertyAsDoubleWithDefault( context_.properties(),
-                                                                          prefix+"Odometry2dPublishInterval", 0 );
+        double publishInterval = orcaice::getPropertyAsDoubleWithDefault( 
+                context_.properties(), prefix+"Odometry2dPublishInterval", 0 );
 
         //
         // Main loop
@@ -121,11 +138,13 @@ NetHandler::run()
 //         context_.tracer()->debug( "net handler loop spinning ",1);
 
             // block on the most frequent data source: odometry
-            if ( odometryPipe_.getAndPopNext( odometry2dData, odometryReadTimeout ) ) {
+            if ( dataPipe_.getAndPopNext( data, odometryReadTimeout ) ) {
 //             context_.tracer()->debug( "Net loop timed out", 1);
                 continue;
             }
 
+            // convert internal to network format
+            convert( data, odometry2dData );
             // check that we were not told to terminate while we were sleeping
             // otherwise, we'll get segfault (there's probably a way to prevent this inside the library)
             if ( isActive() && publishTimer.elapsed().toSecondsDouble()>=publishInterval ) {
@@ -142,12 +161,6 @@ NetHandler::run()
     {
         context_.tracer()->debug( "net handler cought CommunicatorDestroyedException",1);        
         // it's ok, we must be quitting.
-    }
-    catch ( Ice::Exception &e )
-    {
-        stringstream ss;
-        ss << "NetHandler: Caught unexpected exception: " << e;
-        context_.tracer()->error( ss.str() );
     }
     catch ( std::exception &e )
     {

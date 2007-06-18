@@ -32,9 +32,9 @@ public:
 
     virtual void disable();
 
-    virtual bool read( SegwayRmpData& data );
+    virtual bool read( Data& data );
 
-    virtual void write( const SegwayRmpCommand& command );
+    virtual void write( const Command& command );
 
     virtual void getStatus( std::string &status, bool &isWarn, bool &isFault );
 

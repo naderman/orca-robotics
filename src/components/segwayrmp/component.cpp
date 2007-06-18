@@ -56,14 +56,14 @@ Component::start()
     // the constructor may throw, we'll let the application shut us down
     // Until here the VehicleDescription is interpreted as "user preferences". After the hardware
     // in started, it can be modified to reflect actual physical limits of the robot.
-    hwHandler_ = new HwHandler( odometry2dPipe_, odometry3dPipe_, commandPipe_, powerPipe_, descr, context() );
+    hwHandler_ = new HwHandler( dataPipe_, commandPipe_, descr, context() );
     hwHandler_->start();
 
     //
     // Network handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    netHandler_ = new NetHandler( odometry2dPipe_, odometry3dPipe_, commandPipe_, powerPipe_, descr, context() );
+    netHandler_ = new NetHandler( dataPipe_, commandPipe_, descr, context() );
     // this thread will try to activate and register the adapter
     netHandler_->start();
 

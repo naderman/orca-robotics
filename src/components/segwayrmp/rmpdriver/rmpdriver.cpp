@@ -67,7 +67,7 @@ RmpDriver::enable()
     // segway is physically connected; try to configure
 
     // first, tell it to stand still.
-    SegwayRmpCommand zero;
+    Command zero;
     zero.vx = 0.0;
     zero.w = 0.0;
     write( zero  );
@@ -117,7 +117,7 @@ RmpDriver::enable()
 // }
 
 bool
-RmpDriver::read( SegwayRmpData &data )
+RmpDriver::read( Data &data )
 {
     bool stateChanged = false;
 
@@ -169,7 +169,7 @@ RmpDriver::getStatus( std::string &status, bool &isWarn, bool &isFault )
 }
 
 void
-RmpDriver::applyScaling( const SegwayRmpCommand& original, SegwayRmpCommand &scaledCommand )
+RmpDriver::applyScaling( const Command& original, Command &scaledCommand )
 {
     scaledCommand.vx = original.vx / config_.maxVelocityScale;
 
@@ -180,9 +180,9 @@ RmpDriver::applyScaling( const SegwayRmpCommand& original, SegwayRmpCommand &sca
 }
 
 void
-RmpDriver::write( const SegwayRmpCommand& command )
+RmpDriver::write( const Command& command )
 {
-    SegwayRmpCommand scaledCommand;
+    Command scaledCommand;
     applyScaling( command, scaledCommand );
 
     try {
@@ -223,7 +223,7 @@ RmpDriver::applyHardwareLimits( double& forwardSpeed, double& reverseSpeed,
 }
 
 void
-RmpDriver::get( SegwayRmpStats& stats )
+RmpDriver::get( Stats& stats )
 {
     stats.distanceTravelled = frame_.foreaft;
 }
@@ -336,7 +336,7 @@ RmpDriver::integrateMotion()
 }
 
 void
-RmpDriver::updateData( SegwayRmpData& data, Status & status )
+RmpDriver::updateData( Data& data, Status & status )
 {
     // set all time stamps right away
     orca::Time t = orcaice::toOrcaTime( IceUtil::Time::now() );
@@ -573,7 +573,7 @@ RmpDriver::enableBalanceMode( bool enable )
  *  Takes an Orca command object and turns it into CAN packets for the RMP
  */
 void
-RmpDriver::makeMotionCommandPacket( CanPacket* pkt, const SegwayRmpCommand& command )
+RmpDriver::makeMotionCommandPacket( CanPacket* pkt, const Command& command )
 {
     pkt->id = RMP_CAN_ID_COMMAND;
 
