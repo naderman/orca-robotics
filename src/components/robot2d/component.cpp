@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orca/vehicledescription.h>
 
 #include "component.h"
 #include "nethandler.h"
@@ -17,7 +18,6 @@
 #include <orcamisc/configutils.h>
 
 using namespace std;
-using namespace orca;
 using namespace robot2d;
 
 Component::Component() :
@@ -37,6 +37,8 @@ Component::~Component()
 void
 Component::start()
 {
+    tracer()->debug( "Starting Component",2 );
+
     // 
     // Read vehicle description
     //
@@ -68,15 +70,9 @@ Component::start()
 void
 Component::stop()
 {
-    // Get all thread control objects
-    IceUtil::ThreadControl tcNet = netHandler_->getThreadControl();
-    IceUtil::ThreadControl tcHw  = hwHandler_->getThreadControl();
-
-    // Stop them all simultaneously
-    netHandler_->stop();
-    hwHandler_->stop();
-
-    // Wait for them all
-    tcNet.join();
-    tcHw.join();
+    tracer()->debug( "stopping component", 2 );
+    orcaice::stopAndJoin( netHandler_ );
+    tracer()->info( "stopped net handler", 2 );
+    orcaice::stopAndJoin( hwHandler_ );
+    tracer()->info( "stopped hw handler", 2 );
 }

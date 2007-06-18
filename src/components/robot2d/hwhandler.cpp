@@ -24,19 +24,11 @@
 using namespace std;
 using namespace robot2d;
 
-void 
-HwHandler::convert( const orca::VelocityControl2dData& network, robot2d::Command& internal )
-{
-    internal.vx = network.motion.v.x;
-    internal.vy = network.motion.v.y;
-    internal.w = network.motion.w;
-}
-
 HwHandler::HwHandler(
-                 orcaice::Buffer<Data>& dataPipe,
-                 orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
-                 const orca::VehicleDescription &descr,
-                 const orcaice::Context& context ) :
+                 orcaice::Proxy<Data>&          dataPipe,
+                 orcaice::Notify<Command>&      commandPipe,
+                 const orca::VehicleDescription& descr,
+                 const orcaice::Context&        context ) :
     dataPipe_(dataPipe),
     driver_(0),
     context_(context)
@@ -157,7 +149,7 @@ HwHandler::run()
     
         if ( readStatus==0 ) {        
             // Stick it in the buffer so pullers can get it
-            dataPipe_.push( data );
+            dataPipe_.set( data );
 
             if ( driverStatus != currDriverStatus ) {
 //                 context_.status()->status( currDriverStatus );
@@ -224,12 +216,9 @@ HwHandler::run()
 // Here we handle command arriving through Platform2d interface.
 //
 void
-HwHandler::handleData( const orca::VelocityControl2dData& origObj )
+HwHandler::handleData( const Command& command )
 {
     //cout<<"handling: "<<orcaice::toString(obj)<<endl;
-    
-    // make a copy so we can apply limits
-    orca::VelocityControl2dData obj = origObj;
 
 /*
     // if we know we can't write, don't try again
@@ -244,34 +233,27 @@ HwHandler::handleData( const orca::VelocityControl2dData& origObj )
     if ( config_.isMotionEnabled==false ) {
         return;
     }
-
-    // debug
-    double msecs=writeTimer_.elapsed().toMilliSecondsDouble();
-    writeTimer_.restart();
-    // this will certainly be 'late' when we throw an exception below
-    if ( msecs>300 ) {
-        cout<<"late: " << msecs <<endl;
-    }
     
     //
     // apply max limits
     //
-    if ( fabs(obj.motion.v.x) > config_.maxSpeed ) {
-        obj.motion.v.x =
-                (obj.motion.v.x / fabs(obj.motion.v.x)) * config_.maxSpeed;
+
+    // make a copy so we can apply limits
+    Command limitedCommand = command;
+
+    if ( fabs(command.vx) > config_.maxSpeed ) {
+        limitedCommand.vx =
+                (command.vx / fabs(command.vx)) * config_.maxSpeed;
     }
-    if ( fabs(obj.motion.w) > config_.maxTurnrate ) {
-        obj.motion.w =
-                (obj.motion.w / fabs(obj.motion.w)) * config_.maxTurnrate;
+    if ( fabs(command.w) > config_.maxTurnrate ) {
+        limitedCommand.w =
+                (command.w / fabs(command.w)) * config_.maxTurnrate;
     }
 
-    // convert from network to internal format
-    robot2d::Command robot2dCommand;
-    convert( obj, robot2dCommand );
     //
     // write to hardware
     //
-    if( driver_->write( robot2dCommand ) == 0 ) {
+    if( driver_->write( limitedCommand ) == 0 ) {
         writeStatusPipe_.set( true );
     }
     else {

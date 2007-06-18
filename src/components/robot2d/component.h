@@ -13,14 +13,10 @@
 
 #include <orcaice/component.h>
 
-// external interface definitions
-#include <orca/odometry2d.h>
-#include <orca/velocitycontrol2d.h>
-
 // data pipes
-#include <orcaice/buffer.h>
+#include <orcaice/proxy.h>
 #include <orcaice/notify.h>
-
+// internal data structures
 #include "types.h"
 
 namespace robot2d
@@ -50,10 +46,9 @@ private:
     // INTERFACES BETWEEN NETWORK AND HARDWARE HANDLERS
     //
     // hardware->network
-    orcaice::Buffer<Data> dataPipe_;
-
+    orcaice::Proxy<Data> dataPipe_;
     // network->hardware
-    orcaice::Notify<orca::VelocityControl2dData> commandPipe_;
+    orcaice::Notify<Command> commandPipe_;
 };
 
 } // namespace

@@ -17,36 +17,36 @@
 #include <orcaice/proxy.h>
 #include <orcaice/timer.h>
 
-#include "hwdriver.h"
-
-#include <orca/velocitycontrol2d.h>
+// this is the only Orca data structure used on the hardware side.
 #include <orca/vehicledescription.h>
 
+#include "hwdriver.h"
 #include "types.h"
 
 namespace robot2d
 {
 
-class HwHandler : public orcaice::Thread, public orcaice::NotifyHandler<orca::VelocityControl2dData>
+class HwHandler : public orcaice::Thread, 
+                  public orcaice::NotifyHandler<Command>
 {
 public:
 
-    HwHandler( orcaice::Buffer<Data>& dataPipe,
-               orcaice::Notify<orca::VelocityControl2dData>& commandPipe,
-               const orca::VehicleDescription &descr,
-               const orcaice::Context& context );
+    HwHandler( orcaice::Proxy<Data>&            dataPipe,
+               orcaice::Notify<Command>&        commandPipe,
+               const orca::VehicleDescription&  descr,
+               const orcaice::Context&          context );
     virtual ~HwHandler();
 
     // from Thread
     virtual void run();
 
-    // from PtrNotifyHandler
-    virtual void handleData( const orca::VelocityControl2dData & obj );
+    // from NotifyHandler
+    virtual void handleData( const Command& obj );
 
 private:
 
     // network/hardware interface
-    orcaice::Buffer<Data>& dataPipe_;
+    orcaice::Proxy<Data>& dataPipe_;
 
     // generic interface to the hardware
     HwDriver* driver_;
@@ -69,10 +69,6 @@ private:
     // debug
     orcaice::Timer readTimer_;
     orcaice::Timer writeTimer_;
-
-    // utilities
-    static void convert( const orca::VelocityControl2dData& network, robot2d::Command& internal );
-
 };
 
 } // namespace
