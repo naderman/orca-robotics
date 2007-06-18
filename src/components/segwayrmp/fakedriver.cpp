@@ -72,7 +72,11 @@ FakeDriver::write( const Command& command )
             << command.vx << ", "
             << RAD2DEG(command.w) << ")";
         context_.tracer()->info( ss.str() );
-        throw RmpException( ss.str() );
+    }
+    else {
+        string s = "Simulating hardware failure for velocity over 2m/s";
+        context_.tracer()->info( s );
+        throw RmpException( s );
     }
 }
 
