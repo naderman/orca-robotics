@@ -1132,6 +1132,41 @@ toString( const orca::ImuDescription& obj )
 }
 
 std::string 
+toString( const orca::SinglePolarFeature2dPtr& obj )
+{
+    std::ostringstream s;
+
+    if ( obj == 0 )
+    {
+        s << "ERROR: Feature was NULL!" << endl;
+        return s.str();
+    }
+
+    s << "(t" << obj->type
+      << ",pf" << obj->pFalsePositive
+      << ",pt" << obj->pTruePositive
+      << ")";
+
+    // a bit ugly...
+    if ( obj->ice_isA( "::orca::PointPolarFeature2d" ) )
+    {
+        const orca::PointPolarFeature2d& f = dynamic_cast<const orca::PointPolarFeature2d&>(*obj);
+        s << "(r="<<f.p.r<<",b="<<f.p.o*180.0/M_PI << "deg)";
+    }
+    else if ( obj->ice_isA( "::orca::LinePolarFeature2d" ) )
+    {
+        const orca::LinePolarFeature2d& f = dynamic_cast<const orca::LinePolarFeature2d&>(*obj);
+        s << "(r="<<f.start.r<<",b="<<f.start.o*180.0/M_PI << "deg -> r="
+          <<f.end.r<<",b="<<f.end.o*180.0/M_PI << "deg)";
+    }
+    else
+    {
+        s << "(generic)" << endl;
+    }
+    return s.str();
+}
+
+std::string 
 toString( const orca::PolarFeature2dDataPtr& obj )
 {
     std::ostringstream s;
@@ -1141,35 +1176,7 @@ toString( const orca::PolarFeature2dDataPtr& obj )
     const orca::PolarFeature2dSequence &features = obj->features;
     for (unsigned int i=0; i < obj->features.size(); i++)
     {
-        if ( features[i] == 0 )
-        {
-            s << "  " << i << ": ERROR: Feature was NULL!" << endl;
-            continue;
-        }
-
-        const orca::SinglePolarFeature2dPtr &ftr = features[i];
-        s << "  " << i << ": "
-          << "(t" << ftr->type
-          << ",pf" << ftr->pFalsePositive
-          << ",pt" << ftr->pTruePositive
-          << ")";
-
-        // a bit ugly...
-        if ( ftr->ice_isA( "::orca::PointPolarFeature2d" ) )
-        {
-            const orca::PointPolarFeature2d& f = dynamic_cast<const orca::PointPolarFeature2d&>(*ftr);
-            s << "(r="<<f.p.r<<",b="<<f.p.o*180.0/M_PI << "deg)"<<endl;
-        }
-        else if ( ftr->ice_isA( "::orca::LinePolarFeature2d" ) )
-        {
-            const orca::LinePolarFeature2d& f = dynamic_cast<const orca::LinePolarFeature2d&>(*ftr);
-            s << "(r="<<f.start.r<<",b="<<f.start.o*180.0/M_PI << "deg -> r="
-              <<f.end.r<<",b="<<f.end.o*180.0/M_PI << "deg)" << endl;
-        }
-        else
-        {
-            s << "(generic)" << endl;
-        }
+        s << "  " << i << ": " << toString(features[i]) << endl;
     }
     s << endl;
     

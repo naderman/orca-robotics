@@ -31,23 +31,40 @@ namespace orcaqgui {
         case orca::feature::LINE:
             return Qt::black;
             break;
-        case 7:
-            return Qt::darkYellow;
+        case orca::feature::EXTERNALCORNER:
+            return Qt::green;
             break;
-        case 8:
+        case orca::feature::INTERNALCORNER:
             return Qt::yellow;
             break;
-        case 9:
+
+        case 10 + orca::feature::LASERREFLECTOR:
+            return Qt::darkBlue;
+            break;
+        case 10 + orca::feature::FOREGROUNDPOINT:
+            return Qt::darkCyan;
+            break;
+        case 10 + orca::feature::DOOR:
             return Qt::darkMagenta;
             break;
-        case 10:
-            return Qt::darkRed;
+        case 10 + orca::feature::CORNER:
+            return Qt::darkGreen;
             break;
+        case 10 + orca::feature::LINE:
+            return Qt::darkCyan;
+            break;
+        case 10 + orca::feature::EXTERNALCORNER:
+            return Qt::darkGreen;
+            break;
+        case 10 + orca::feature::INTERNALCORNER:
+            return Qt::darkYellow;
+            break;
+
         default:
             // Don't know what this feature is.
             // Could probably do better, eg return
             // a (deterministic) random colour.
-            return Qt::darkBlue;
+            return Qt::gray;
         }
     }
 

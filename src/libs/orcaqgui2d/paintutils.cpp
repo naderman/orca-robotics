@@ -174,14 +174,25 @@ void paintPlatformPose( QMatrix &m2win, QPainter *p, QColor colour, float length
 }
 
 void
-paintUncertaintyInfo( QMatrix &m2win, QPainter *p, QColor colour, float thetaMean, float pxx, float pxy, float pyy, float ptt )
+paintUncertaintyInfo( QMatrix &m2win,
+                      QPainter *p,
+                      QColor colour,
+                      float thetaMean,
+                      float pxx,
+                      float pxy,
+                      float pyy,
+                      float ptt )
 {
     paintUncertaintyWedge( m2win, p, colour, thetaMean, ptt );
     paintCovarianceEllipse( m2win, p, colour, pxx, pxy, pyy );
 }
 
 void
-paintUncertaintyWedge( QMatrix &m2win, QPainter *p, QColor colour, float thetaMean, float ptt )
+paintUncertaintyWedge( QMatrix &m2win,
+                       QPainter *p,
+                       QColor colour,
+                       float thetaMean,
+                       float ptt )
 {
     const double length = FRAME_LENGTH/m2win.m11();
     const double lineThickness = THIN_LINE_THICKNESS/m2win.m11();
@@ -192,8 +203,10 @@ paintUncertaintyWedge( QMatrix &m2win, QPainter *p, QColor colour, float thetaMe
         p->setPen( QPen(colour, lineThickness) );
         p->setBrush( Qt::NoBrush );
         int pTheta = (int) (ptt * (180.0/M_PI));
+        if ( pTheta > 360 )
+            cout<<"TRACE(paintutils.cpp): pTheta: " << pTheta << endl;
         p->drawPie( QRectF(-N_LENGTH*length,-N_LENGTH*length,
-                    2.0*N_LENGTH*length,2.0*N_LENGTH*length),
+                           2.0*N_LENGTH*length,2.0*N_LENGTH*length),
                     -N_SIGMA*pTheta*16, 2*N_SIGMA*pTheta*16 );
     }
     p->restore();

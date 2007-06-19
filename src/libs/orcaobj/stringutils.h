@@ -212,6 +212,8 @@ std::string toString( const orca::RangeScanner2dDataPtr &, int skip=-1  );
 //! Converts to string
 std::string toString( const orca::RangeScanner2dDescription& );
 //! Converts to string
+std::string toString( const orca::SinglePolarFeature2dPtr& obj );
+//! Converts to string
 std::string toString( const orca::PolarFeature2dDataPtr& );
 //! Converts to string
 std::string toString( const orca::FeatureMap2dDataPtr& );

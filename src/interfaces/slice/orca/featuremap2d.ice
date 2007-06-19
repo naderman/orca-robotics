@@ -41,6 +41,11 @@ module feature
 //     const int POSSIBLECORNER   = 4;
     //! A line segment.
     const int LINE             = 4;
+    //! corner on eg the inside of a room
+    const int INTERNALCORNER  = 5;
+    //! corner on eg the outside of a building
+    const int EXTERNALCORNER  = 6;
+
 };
 
 //! Generic 2D feature.
