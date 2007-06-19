@@ -19,19 +19,25 @@
 
 #define REJECT_GROUND_OBSERVATIONS 1  // 0  1
 
+#define MIN_DELTA_RANGE_FOR_LINE_ENDPOINT 0.2
 
 using namespace std;
 
 namespace laserfeatures {
 
-LineExtractor::LineExtractor( const orcaice::Context & context, double laserMaxRange, bool extractLines, bool extractCorners )
+LineExtractor::LineExtractor( const orcaice::Context &context,
+                              double laserMaxRange,
+                              bool extractLines,
+                              bool extractCorners,
+                              bool extractLineEndpoints )
     : laserMaxRange_( laserMaxRange ),
       extractLines_(extractLines),
       extractCorners_(extractCorners),
+      extractLineEndpoints_(extractLineEndpoints),
       context_(context)
 {
     assert( laserMaxRange_ > 0.0 );
-    assert( extractLines_ || extractCorners_ );
+    assert( extractLines_ || extractCorners_ || extractLineEndpoints_ );
 
     std::string prefix = context.tag() + ".Config.Lines.";
     Ice::PropertiesPtr prop = context.properties();
@@ -45,20 +51,26 @@ LineExtractor::LineExtractor( const orcaice::Context & context, double laserMaxR
     linePFalsePositivePossibleGround_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PFalsePositivePossibleGround", 0.55 );
     linePTruePositive_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PTruePositive", 0.6 );
 
+    lineEndpointPFalsePositive_   = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PFalsePositive", 0.2 );
+    lineEndpointPTruePositive_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PTruePositive", 0.6 );
+
     rangeSd_        = orcaice::getPropertyAsDoubleWithDefault( prop, "Config.RangeSd", 0.2 );
     bearingSd_      = (M_PI/180.0)*orcaice::getPropertyAsDoubleWithDefault( prop, "Config.BearingSd", 5.0 );
 
     cout<<"TRACE(lineextractor.cpp): Line Extractor Config:" << endl;
-    cout<<"TRACE(lineextractor.cpp):   ClusterMaxRangeDelta: "<<clusterMaxRangeDelta_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   BreakDistThreshold  : "<<breakDistThreshold_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   MinPointsInLine     : "<<minPointsInLine_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   MinLineLength       : "<<minLineLength_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   ExtractLines        : "<<extractLines_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   ExtractCorners      : "<<extractCorners_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   ClusterMaxRangeDelta : "<<clusterMaxRangeDelta_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   BreakDistThreshold   : "<<breakDistThreshold_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   MinPointsInLine      : "<<minPointsInLine_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   MinLineLength        : "<<minLineLength_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   ExtractLines         : "<<extractLines_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   ExtractCorners       : "<<extractCorners_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   ExtractLineEndpoints : "<<extractLineEndpoints_ << endl;
     cout<<"TRACE(lineextractor.cpp):   RejectLikelyGroundObservations: " << rejectLikelyGroundObservations_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   PFalsePositive                : " << linePFalsePositive_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   PFalsePositivePossibleGround  : " << linePFalsePositivePossibleGround_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   PTruePositive                 : " << linePTruePositive_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   LinePFalsePositive               : " << linePFalsePositive_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   LinePFalsePositivePossibleGround : " << linePFalsePositivePossibleGround_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   LinePTruePositive                : " << linePTruePositive_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   LineEndpointPFalsePositive       : " << lineEndpointPFalsePositive_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   LineEndpointPTruePositive        : " << lineEndpointPTruePositive_ << endl;
 }
     
 void LineExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
@@ -112,120 +124,168 @@ void LineExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
         // Find line features, add them to the list of features
         addLines( sections, features );
     }
+
+    if ( extractLineEndpoints_ )
+    {
+        addLineEndpoints( sections, features );
+    }
 }
 
 namespace {
         const double ANGLE_THRESHOLD = 60*M_PI/180.0;
 }
 
-bool 
-LineExtractor::isStartVisible( const Section &section,
-                               double alpha,
-                               const Section *prevSection )
+bool
+isEndpointVisible( double endRange,
+                   double rangeBeyondEnd,
+                   bool   meetsLine,
+                   double meetAngle,
+                   bool   isInternalAngle,
+                   double angleToEnd,
+                   LineExtractor::VisibilityReason *reason )                   
 {
-    cout<<"TRACE(lineextractor.cpp): --------- isStartVisible() ---------" << endl;
-
-    // Check for section at edge of scan
-    if ( section.rangeBeforeStart() < 0 )
-        return false;
-
-    // Junction of two lines
-    if ( prevSection != NULL &&
-         prevSection->isALine() &&
-         prevSection->isNextCon() &&
-         prevSection->lineLength() > minLineLength_ )
+    if ( meetsLine )
     {
         cout<<"TRACE(lineextractor.cpp): junction of two lines" << endl;
-        // Find the angle between them
-        double d = prevSection->eigVectX()*prevSection->eigVectX()+prevSection->eigVectY()*prevSection->eigVectY();
-        double px = -prevSection->eigVectX()*prevSection->c() / d;
-        double py = -prevSection->eigVectY()*prevSection->c() / d;
-        double prevAlpha = atan2( py, px );
-        double meetAngle = alpha-prevAlpha;
-        NORMALISE_ANGLE(meetAngle);
-
-        if ( fabs(meetAngle) > 30.0*M_PI/180.0 )
+        if ( fabs(meetAngle) > 45.0*M_PI/180.0 )
         {
-            cout<<"TRACE(lineextractor.cpp): Junction of two lines meeting at a reasonable angle" << endl;
+            if ( reason != NULL )
+            {
+                if ( isInternalAngle )
+                    *reason = LineExtractor::InternalLineJunction;                    
+                else
+                    *reason = LineExtractor::ExternalLineJunction;
+            }
             return true;
         }
     }
 
-    // Is it a free-standing line that we can see the end of?
-    // Find the angle (external to the endpoint) 
-    // between the infinite line and the endpoint
-    double startAngle = M_PI/2.0 - (section.start().bearing() - alpha);
-    if ( startAngle > ANGLE_THRESHOLD )
+    if ( angleToEnd > ANGLE_THRESHOLD )
     {
         cout<<"TRACE(lineextractor.cpp): can't see around corner" << endl;
         return false;
     }
-    
-    // Is the end obscured by a foreground obstacle?
-    cout<<"TRACE(lineextractor.cpp): rangeBeforeStart: " << section.rangeBeforeStart() << endl;
-    cout<<"TRACE(lineextractor.cpp): front range: " << section.elements().front().range() << endl;
-    if ( section.rangeBeforeStart() < section.elements().front().range() )
+
+    if ( rangeBeyondEnd < 0 )
+    {
+        cout<<"TRACE(lineextractor.cpp): ends with invalid range" << endl;
+        return false;
+    }
+
+    if ( rangeBeyondEnd < ( endRange + MIN_DELTA_RANGE_FOR_LINE_ENDPOINT ) )
     {
         cout<<"TRACE(lineextractor.cpp): obscured by fg obstacle" << endl;
         return false;
     }
 
     cout<<"TRACE(lineextractor.cpp): isStartVisible() returning true." << endl;
+    cout<<"TRACE(lineextractor.cpp): rangeBeyondEnd: " << rangeBeyondEnd << endl;
+    if ( reason != NULL )
+        *reason = LineExtractor::Unknown;
     return true;
 }
 
-bool 
-LineExtractor::isEndVisible( const Section &section,
-                             double alpha,
-                             const Section *nextSection )
+bool
+LineExtractor::isStartVisible( const Section &section,
+                               double alpha,
+                               const Section *prevSection,
+                               VisibilityReason *reason,
+                               double minLineLength )
 {
-    // cout<<"TRACE(lineextractor.cpp): ----------- isEndVisible() ------------" << endl;
-
-    // Check for section at edge of scan
-    if ( section.rangeAfterEnd() < 0 )
+    cout<<"TRACE(lineextractor.cpp): --------- isStartVisible() ---------" << endl;
+    if ( section.lineLength() < minLineLength )
         return false;
 
-    // Junction of two lines
-    if ( nextSection != NULL &&
-         nextSection->isALine() &&
-         section.isNextCon() &&
-         nextSection->lineLength() > minLineLength_ )
-    {
-        // cout<<"TRACE(lineextractor.cpp): junction of two lines" << endl;
-        // Find the angle between them
-        double d = nextSection->eigVectX()*nextSection->eigVectX()+nextSection->eigVectY()*nextSection->eigVectY();
-        double px = -nextSection->eigVectX()*nextSection->c() / d;
-        double py = -nextSection->eigVectY()*nextSection->c() / d;
-        double nextAlpha = atan2( py, px );
-        double meetAngle = alpha-nextAlpha;
-        NORMALISE_ANGLE(meetAngle);
+    // Check for section at edge of scan
+    if ( section.rangeBeforeStart() < 0 )
+        return false;
 
-        if ( fabs(meetAngle) > 30.0*M_PI/180.0 )
-        {
-            // cout<<"TRACE(lineextractor.cpp): Junction of two lines meeting at a reasonable angle" << endl;
-            return true;
-        }
+    bool meetsLine = false;
+    double meetAngle = -999;
+    bool isInternalAngle = false;
+
+    // Junction of two lines
+    if ( prevSection != NULL &&
+         prevSection->isALine() &&
+         prevSection->isNextCon() )
+    {
+        meetsLine = true;
+        cout<<"TRACE(lineextractor.cpp): junction of two lines" << endl;
+        // Find the angle between them
+        double d = prevSection->eigVectX()*prevSection->eigVectX()+prevSection->eigVectY()*prevSection->eigVectY();
+        double px = -prevSection->eigVectX()*prevSection->c() / d;
+        double py = -prevSection->eigVectY()*prevSection->c() / d;
+        double prevAlpha = atan2( py, px );
+        meetAngle = alpha-prevAlpha;
+        isInternalAngle = meetAngle > 0;
+
+        NORMALISE_ANGLE(meetAngle);
     }
 
     // Is it a free-standing line that we can see the end of?
     // Find the angle (external to the endpoint) 
     // between the infinite line and the endpoint
-    double endAngle = M_PI/2.0 + (section.end().bearing() - alpha);
-    if ( endAngle > ANGLE_THRESHOLD )
-    {
-        //cout<<"TRACE(lineextractor.cpp): can't see around corner" << endl;
+    double angleToStart = M_PI/2.0 - (section.start().bearing() - alpha);
+
+    return isEndpointVisible( section.elements().front().range(),
+                              section.rangeBeforeStart(),
+                              meetsLine,
+                              meetAngle,
+                              isInternalAngle,
+                              angleToStart,
+                              reason );
+}
+
+bool 
+LineExtractor::isEndVisible( const Section &section,
+                             double alpha,
+                             const Section *nextSection,
+                             VisibilityReason *reason,
+                             double minLineLength )
+{
+    cout<<"TRACE(lineextractor.cpp): ----------- isEndVisible() ------------" << endl;
+
+    assert ( section.isALine() );
+    if ( section.lineLength() < minLineLength )
         return false;
-    }
-    
-    // Is the end obscured by a foreground obstacle?
-    if ( section.rangeAfterEnd() < section.elements().back().range() )
-    {
-        //cout<<"TRACE(lineextractor.cpp): obscured by fg obstacle" << endl;
+
+    // Check for section at edge of scan
+    if ( section.rangeAfterEnd() < 0 )
         return false;
+
+    bool meetsLine = false;
+    double meetAngle = -999;
+    bool isInternalAngle = true;
+
+    // Junction of two lines
+    if ( nextSection != NULL &&
+         nextSection->isALine() &&
+         section.isNextCon() )
+    {
+        meetsLine = true;
+        cout<<"TRACE(lineextractor.cpp): junction of two lines" << endl;
+        // Find the angle between them
+        double d = nextSection->eigVectX()*nextSection->eigVectX()+nextSection->eigVectY()*nextSection->eigVectY();
+        double px = -nextSection->eigVectX()*nextSection->c() / d;
+        double py = -nextSection->eigVectY()*nextSection->c() / d;
+        double nextAlpha = atan2( py, px );
+        meetAngle = alpha-nextAlpha;
+        isInternalAngle = meetAngle < 0;
+        NORMALISE_ANGLE(meetAngle);
     }
 
-    // cout<<"TRACE(lineextractor.cpp): returning true." << endl;
-    return true;
+    // Is it a free-standing line that we can see the end of?
+    // Find the angle (external to the endpoint) 
+    // between the infinite line and the endpoint
+    double angleToEnd = M_PI/2.0 + (section.end().bearing() - alpha);
+    
+    return isEndpointVisible( section.elements().back().range(),
+                              section.rangeAfterEnd(),
+                              meetsLine,
+                              meetAngle,
+                              isInternalAngle,
+                              angleToEnd,
+                              reason );
 }
              
 bool lineMightBeGround( const Section &section )
@@ -342,8 +402,8 @@ LineExtractor::addLines( const std::vector<Section> &sections,
 }
 
 void
-LineExtractor::addCorners( const std::vector<Section> &sections, 
-                             orca::PolarFeature2dDataPtr &features )
+LineExtractor::addCorners( const std::vector<Section>  &sections, 
+                           orca::PolarFeature2dDataPtr &features )
 {
     const double P_FALSE_POSITIVE = 0.3;
     const double P_FALSE_POSITIVE_POSSIBLE_GROUND = 0.5;
@@ -439,6 +499,120 @@ LineExtractor::addCorners( const std::vector<Section> &sections,
         }
     }
 }
+
+void
+LineExtractor::addLineEndpoints( const std::vector<Section>  &sections, 
+                                 orca::PolarFeature2dDataPtr &features )
+{
+    cout<<"TRACE(lineextractor.cpp): addLineEndpoints(): features.features.size() == " << features->features.size() << endl;
+
+    const double MIN_LINE_LENGTH = 0.5;
+
+    std::vector<Section>::const_iterator i=sections.begin();
+    std::vector<Section>::const_iterator prev = sections.begin();
+    VisibilityReason reason;
+    for ( i = sections.begin(), prev=sections.begin();
+          i != sections.end(); 
+          prev=i, ++i )
+    {
+        if ( !i->isALine() )
+            continue;
+
+//         double pFalsePositive = linePFalsePositive_;
+//         if ( REJECT_GROUND_OBSERVATIONS )
+//         {
+//             // Look for lines with near-horizontal slope
+//             if ( rejectLikelyGroundObservations_ &&
+//                  fabs( i->eigVectY() ) < 0.1 )
+//             {
+//                 context_.tracer()->debug( "Rejecting likely ground observation", 3 );
+//                 continue;
+//             }
+//             if ( fabs( i->eigVectY() ) < 0.25 )
+//             {
+//                 // cout<<"TRACE(lineextractor.cpp): lowering prob" << endl;
+//                 pFalsePositive = linePFalsePositivePossibleGround_;
+//             }
+//         }
+
+        if ( (*i).end().bearing() < (*i).start().bearing() )
+            continue;
+
+        //
+        // Determine visibility of endpoints.
+        //
+        
+        // Find the meeting between the (infinite) line and 
+        // its perpendicular bisector from the origin.
+        // Call this point (px,py).
+        double d = i->eigVectX()*i->eigVectX()+i->eigVectY()*i->eigVectY();
+        double px = -i->eigVectX()*i->c() / d;
+        double py = -i->eigVectY()*i->c() / d;
+
+        // Convert to rho-alpha
+        // double rho   = hypotf( py, px );
+        double alpha = atan2( py, px );
+
+        const Section *prevPtr=NULL;
+        if ( i != sections.begin() )
+            prevPtr = &(*prev);
+        if ( isStartVisible( *i, alpha, prevPtr, &reason, MIN_LINE_LENGTH ) )
+        {
+            if ( reason == InternalLineJunction || reason == ExternalLineJunction )
+            {
+                orca::PointPolarFeature2dPtr newFeature = new orca::PointPolarFeature2d;
+                if ( reason == ExternalLineJunction )
+                    newFeature->type = orca::feature::EXTERNALCORNER;
+                else if ( reason == InternalLineJunction )
+                    newFeature->type = orca::feature::INTERNALCORNER;
+                else
+                    assert( false );
+                newFeature->p.r = i->start().range();
+                newFeature->p.o = i->start().bearing();
+                newFeature->rangeSd = rangeSd_;
+                newFeature->bearingSd = bearingSd_;
+                newFeature->pFalsePositive = lineEndpointPFalsePositive_;
+                newFeature->pTruePositive  = lineEndpointPTruePositive_;
+                features->features.push_back( newFeature );
+                cout<<"TRACE(lineextractor.cpp): added start-point: " 
+                    << "r="<<newFeature->p.r<<", b="<<newFeature->p.o*180/M_PI << endl;
+
+                if ( i->isNextCon() ) 
+                {
+                    // don't double-count.
+                    continue;
+                }
+            }
+        }
+        const Section *nextPtr=NULL;
+        if ( i+1 != sections.end() )
+            nextPtr = &(*(i+1));
+        if ( isEndVisible( *i, alpha, nextPtr, &reason, MIN_LINE_LENGTH ) )
+        {
+            if ( reason == InternalLineJunction || reason == ExternalLineJunction )
+            {
+                orca::PointPolarFeature2dPtr newFeature = new orca::PointPolarFeature2d;
+                if ( reason == ExternalLineJunction )
+                    newFeature->type = orca::feature::EXTERNALCORNER;
+                else if ( reason == InternalLineJunction )
+                    newFeature->type = orca::feature::INTERNALCORNER;
+                else
+                    assert( false );
+                newFeature->p.r = i->end().range();
+                newFeature->p.o = i->end().bearing();
+                newFeature->rangeSd = rangeSd_;
+                newFeature->bearingSd = bearingSd_;
+                newFeature->pFalsePositive = lineEndpointPFalsePositive_;
+                newFeature->pTruePositive  = lineEndpointPTruePositive_;
+                features->features.push_back( newFeature );
+                cout<<"TRACE(lineextractor.cpp): added end-point: " 
+                    << "r="<<newFeature->p.r<<", b="<<newFeature->p.o*180/M_PI << endl;
+            }
+        }
+    }
+    cout<<"TRACE(lineextractor.cpp): addLineEndpoints returning: features.features.size() == " << features->features.size() << endl;
+}
+
 
 // bool LineExtractor::extractPossibleCorners( const orca::PolarFeature2dDataPtr & featureDataPtr )
 // {

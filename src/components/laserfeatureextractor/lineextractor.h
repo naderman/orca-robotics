@@ -24,18 +24,31 @@ class LineExtractor : public IExtractor
 
 public: 
 
-    LineExtractor( const orcaice::Context & context, double laserMaxRange, bool extractLines, bool extractCorners );
+    LineExtractor( const orcaice::Context &context,
+                   double laserMaxRange,
+                   bool extractLines,
+                   bool extractCorners,
+                   bool extractLineEndpoints );
 
     // Adds laser features to the 'features' data structure
     void addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                       orca::PolarFeature2dDataPtr &features );  
     
+    ////////////////////////////////////////
+
+    enum VisibilityReason {
+        InternalLineJunction,
+        ExternalLineJunction,
+        Unknown
+    };
+
 private: 
     
     double laserMaxRange_;
 
     bool extractLines_;
     bool extractCorners_;
+    bool extractLineEndpoints_;
 
     // config
     double clusterMaxRangeDelta_;
@@ -53,6 +66,9 @@ private:
     double linePFalsePositivePossibleGround_;
     double linePTruePositive_;
 
+    double lineEndpointPFalsePositive_;
+    double lineEndpointPTruePositive_;
+
     orcaice::Context context_;
 
     // Not used at the moment
@@ -62,13 +78,19 @@ private:
                      orca::PolarFeature2dDataPtr &features );
     void addLines( const std::vector<Section> &sections, 
                    orca::PolarFeature2dDataPtr &features );
+    void addLineEndpoints( const std::vector<Section> &sections, 
+                           orca::PolarFeature2dDataPtr &features );
 
     bool isStartVisible( const Section &section,
                          double alpha,
-                         const Section *prevSection );
+                         const Section *prevSection,
+                         VisibilityReason *reason=NULL,
+                         double minLineLength=-1 );
     bool isEndVisible( const Section &section,
                        double alpha,
-                       const Section *nextSection );
+                       const Section *nextSection,
+                       VisibilityReason *reason=NULL,
+                       double minLineLength=-1 );
 
     void determineUncertainty( double &rhoSd, double &alphaSd, const Section &s );
 

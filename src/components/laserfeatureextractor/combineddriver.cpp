@@ -38,6 +38,8 @@ CombinedDriver::CombinedDriver( const orcaice::Context & context, double maxRang
         orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractLines", 0);
     bool extractCorners                    =
         orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractCorners", 0);
+    bool extractLineEndpoints              =
+        orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractLineEndpoints", 0);
     bool extractDoors                      =
         orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractDoors", 0);
     
@@ -47,8 +49,8 @@ CombinedDriver::CombinedDriver( const orcaice::Context & context, double maxRang
         extractors_.push_back( new ForegroundExtractor(context,maxRange) );
     if ( extractDoors )
         extractors_.push_back( new DoorExtractor(context) );
-    if ( extractCorners || extractLines ) 
-        extractors_.push_back( new LineExtractor(context,maxRange,extractLines,extractCorners) );
+    if ( extractCorners || extractLines || extractLineEndpoints ) 
+        extractors_.push_back( new LineExtractor(context,maxRange,extractLines,extractCorners,extractLineEndpoints) );
 
     if ( extractors_.size() == 0 )
     {

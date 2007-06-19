@@ -142,7 +142,11 @@ extractSections( const std::vector<float> &ranges,
             double b = angleStart + i*angleIncrement;
             current.elements().push_back( SectionEl(r,b) );
             if ( current.elements().size() == 1 )
+            {
                 current.rangeBeforeStart() = ranges[i-1];
+                if ( current.rangeBeforeStart() >= maxRange )
+                    current.rangeBeforeStart() = -1;
+            }
         }
     }
 
