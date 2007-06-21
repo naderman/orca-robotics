@@ -98,7 +98,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Bugfixes to 3D transformations in orcaobj/frameutils.cpp (Will Uther)
 
 - libOrcaDef
-  - fixed bug in XML generation: 'external' tag for config was ignored (alex m)
+  - fixed bug in XML generation: 'external' tag for config was ignored (alexm)
+
+- libOrcaIce
+  - added two config properties with the following defaults: Orca.Warn.DefaultProperty=1 
+    and Orca.Warn.FactoryProperty=0 (alexm)
 
 @par Removed
 
