@@ -433,9 +433,37 @@ MainLoop::run()
         setup();
         driver_->init( clock_.time() );
     }
+    catch ( Ice::Exception &e )
+    {
+        std::stringstream ss;
+        ss << "ERROR(mainloop.cpp): caught exception during setup/init: " << e;
+        context_.tracer()->error( ss.str() );
+        context_.status()->fault( SUBSYSTEM, ss.str() );
+    }
+    catch ( std::exception &e )
+    {
+        std::stringstream ss;
+        ss << "mainloop.cpp: caught exception during setup/init: " << e.what();
+        context_.tracer()->error( ss.str() );
+        context_.status()->fault( SUBSYSTEM, ss.str() );
+    }
+    catch ( std::string &e )
+    {
+        std::stringstream ss;
+        ss << "mainloop.cpp: caught exception during setup/init: " << e;
+        context_.tracer()->error( ss.str() );
+        context_.status()->fault( SUBSYSTEM, ss.str() );
+    }
+    catch ( char *e )
+    {
+        std::stringstream ss;
+        ss << "mainloop.cpp: caught exception during setup/init: " << e;
+        context_.tracer()->error( ss.str() );
+        context_.status()->fault( SUBSYSTEM, ss.str() );
+    }
     catch ( ... )
     {
-        context_.tracer()->error( "Caught exception during setup/init.  This shouldn't happen." );
+        context_.tracer()->error( "Caught unknown exception during setup/init." );
         exit(1);
     }
 
