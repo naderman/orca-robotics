@@ -76,7 +76,7 @@ getProvidedInterface( const Context & context, const std::string &ifaceTag )
     if ( ifaceTag.empty() ) {
         throw orcaice::ConfigFileException(ERROR_INFO, "Empty interface tag");
     }
-    context.tracer()->print("getting getProvidedInterface for tag="+ifaceTag);
+
     orca::FQInterfaceName fqIName;
     fqIName.platform = context.name().platform;
     fqIName.component = context.name().component;
