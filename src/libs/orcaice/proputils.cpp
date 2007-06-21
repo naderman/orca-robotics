@@ -15,9 +15,9 @@
 #include <orcaobj/stringutils.h>
 
 #include "proputils.h"
-#include "configutils.h"        // ??? for initTracerInfo(), etc.
+#include "configutils.h"
 #include "exceptions.h"
-#include "privateutils.h"       // initTracerInfo()
+#include "printutils.h"       // initTracerInfo()
 
 using namespace std;
 
@@ -185,7 +185,10 @@ getPropertyWithDefault( const Ice::PropertiesPtr &prop, const ::std::string& key
     {
         // use default
         value = defaultValue;
-        //initTracerInfo( "using default value '"+value+"' for '"+key+"'");
+
+        if ( prop->getPropertyAsIntWithDefault( "Orca.Warn.DefaultProperty", 1 ) ) {
+            initTracerInfo( "using default value '"+value+"' for '"+key+"'" );
+        }
     }
     return value;
 }

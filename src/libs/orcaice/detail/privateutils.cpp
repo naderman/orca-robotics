@@ -22,28 +22,35 @@ namespace detail
 {
 
 // Transfer a property from one property set to another
-// returns 0 if it was transferred successfully
+// returns:
+//  0 if it was transferred successfully
+//  1 if the property already existed in the target set and it was left untouched
+// -1 if the property was not set in the source set, the target was left untouched
 int
 transferProperty( Ice::PropertiesPtr &fromProperties, Ice::PropertiesPtr &toProperties,
                         const string &fromKey, const string &toKey, bool force )
 {
+    // not forcing the transfer
     if ( !force ) {
-        // if we asked not to force the transfer,
         // check that the target does not have the property already set
         string toValue = toProperties->getProperty( toKey );
-        if ( !toValue.empty() ) {
+        bool existToValue = !toValue.empty();
+        if ( existToValue ) {
             // there's something already in the target properties, don't touch it.
-            return 0;
+            return 1;
         }
         // debug
 //         cout<<"DEBUG: nothing in the 'to' field: value='"<<toValue<<"'"<<endl;
     }
 
     string fromValue = fromProperties->getProperty( fromKey );
-    if ( fromValue.empty() )
-    {
+    bool existFromValue = !fromValue.empty();
+    if ( !existFromValue ) {
+        // the property is not set in the source set, leave the target one untouched
         return -1;
     }
+    
+    // transerring the value
     toProperties->setProperty( toKey, fromValue );
     return 0;
 }
@@ -137,6 +144,8 @@ setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag
     tempProperties->setProperty( "Orca.PrintProperties",       "0" );
     tempProperties->setProperty( "Orca.PrintComponentStarted", "0" );
     tempProperties->setProperty( "Orca.RequireRegistry",       "1" );
+    tempProperties->setProperty( "Orca.Warn.DefaultProperty",  "1" );
+    tempProperties->setProperty( "Orca.Warn.FactoryProperty",  "0" );
 
     // all tracer tempProperties have default values
     tempProperties->setProperty( "Orca.Tracer.RequireIceStorm",    "0" );
@@ -165,9 +174,17 @@ setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag
     // if a property is already defined in the target property set, it is used and not the one from the source.
     bool forceTransfer = false;
 
+    // no point in sticking this property into the set used by the component
+    // because it's only used here.
+    bool warnFactoryProp = (bool)properties->getPropertyAsIntWithDefault(
+        "Orca.Warn.FactoryProperty", 0);
+
     std::map<string,string> props = tempProperties->getPropertiesForPrefix("");
     for ( std::map<string,string>::iterator it=props.begin(); it!=props.end(); ++it ) {
-        transferProperty( tempProperties, properties, it->first, it->first, forceTransfer );
+        bool ret = transferProperty( tempProperties, properties, it->first, it->first, forceTransfer );
+        if ( warnFactoryProp && ret==0 ) {
+            initTracerInfo( "using factory default value '"+it->second+"' for '"+it->first+"'" );
+        }
     }
 }
 

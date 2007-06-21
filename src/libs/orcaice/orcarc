@@ -7,6 +7,10 @@ Orca.PrintProperties=0
 Orca.PrintComponentStarted=0
 Orca.RequireRegisty=1
 
+# Orca warnings
+Orca.Warn.DefaultProperty=1
+Orca.Warn.FactoryProperty=0
+
 # Orca Tracer config
 Orca.Tracer.RequireIceStorm=0
 Orca.Tracer.Filename=orca_component_trace.txt
@@ -26,6 +30,4 @@ Orca.Tracer.DebugToDisplay=0
 Orca.Tracer.DebugToNetwork=0
 Orca.Tracer.DebugToLog=0
 Orca.Tracer.DebugToFile=0
-Orca.Tracer.IgnoreRepeatedWarnings=1
-Orca.Tracer.IgnoreRepeatedErrors=1
 Orca.Tracer.Timestamp=1
