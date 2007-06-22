@@ -37,13 +37,20 @@
 
 This utility connects to the registry and gets a list of components. The user can then select an component and get a list of its interfaces (if Home interface is available). Then choose an interface (if supported by Probe) and get a list of operations. Choose an operation to call, e.g. getData(). 
 
-Supported interfaces:
+This utility loads plug-in libraries containing a @e probe per interface. Custom probes can be supplied with external factory libraries. The default library which comes with the Orca distribution supports the following interfaces:
 - @ref orca_interface_binaryswitch
 - @ref orca_interface_camera
 - @ref orca_interface_cpu
+- @ref orca_interface_drivebicycle
+- @ref orca_interface_gps
 - @ref orca_interface_home
 - @ref orca_interface_laserscanner2d
+- @ref orca_interface_localise2d
+- @ref orca_interface_localise3d
+- @ref orca_interface_pathfollower2d
 - @ref orca_interface_power
+- @ref orca_interface_status
+- @ref orca_interface_tracer
 
 @par Configuration
 
@@ -54,8 +61,7 @@ Supported interfaces:
 
 - @c Probe.Config.FactoryLibNames (string)
     - A space-separated list of libraries containing slave factories.
-    - This list is ordered.  Putting a custom library earlier in the list means that it will be used to 
-      instantiate slaves before later factories.
+    - This list is ordered.  Putting a custom library earlier in the list means that it will be used to instantiate interface probes before later factories.
     - Example: 'libMyProbeFactory.so libOrcaProbeFactory.so'. If MyProbeFactory implements the LaserScanner2d probe it will be used in place of the standard one. 
     - Default: 'libOrcaProbeFactory.so'
 
@@ -63,18 +69,26 @@ An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ director
 
 @section orca_probe_iostream Basic display driver to terminal window.
 
-Displays lists of options with available entries numbered. Here's an example of the Interface menu. The component here has 3 interfaces but only one (Home) is supported by Probe.
+Displays lists of options with available entries numbered. Here's an example of the Component menu. The platform @e agave has 6 components registered but only 3 could be reached (ice_pinged).
 
 @verbatim
-Component : pomdpbitch/faithlocaliser
-Select an interface from the list:
-        localise2d      ::orca::Localise2d
-        status          ::orca::Status
-2       home            ::orca::Home
-u       Up
-r       Reload
-q       Quit
-==>  
+=======================================================
+Platform : agave
+-------------------------------------------------------
+Select a component from the list:
+        agave/brick
+        agave/logger
+ 2      agave/roverapp
+        agave/mastertest
+ 4      agave/pingserver
+        agave/logreplaytest
+ 6      agave/systemadmindatabase
+-------------------------------------------------------
+ u      up
+ U      top
+ r      reload
+ q      quit
+=======================================================
 @endverbatim
 
 @section orca_probe_qt GUI driver using Qt
