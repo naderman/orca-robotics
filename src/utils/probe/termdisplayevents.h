@@ -15,6 +15,10 @@
 #include <orcacm/types.h>
 #include <orcaprobe/idisplay.h> // for focus types
 
+// alexm: we put these event definitions on the top level (not with term-iostream driver)
+// in case we write another terminal display driver (e.g. ncurses) which is likely to 
+// use the same events.
+
 namespace probe
 {
 
