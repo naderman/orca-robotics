@@ -117,8 +117,8 @@ Component::finalise()
 Tracer*
 Component::initTracer()
 {
-    orcaice::initTracerInfo( tag()+": Initializing application trace handler...");
     if ( !(interfaceFlag_ & TracerInterface) ) {
+        orcaice::initTracerInfo( tag()+": Initialized local trace handler.");
         return new orcaice::detail::LocalTracer( context_ );
     }
         
@@ -143,17 +143,17 @@ Component::initTracer()
     // a bit of a hack: keep this smart pointer so it's not destroyed with the adapter
     tracerObj_ = obj;
     
-    initTracerInfo( tag()+": Tracer initialized" );
+    orcaice::initTracerInfo( tag()+": Initialized trace handler.");
     return trac;
 }
 
 Status*
 Component::initStatus()
 {
-    orcaice::initTracerInfo( tag()+": Initializing application status handler ...");
 
     if ( !(interfaceFlag_ & StatusInterface) ) 
     {
+        orcaice::initTracerInfo( tag()+": Initialized local status handler");
         return new orcaice::detail::LocalStatus( context_, NULL );
     }
 
@@ -177,8 +177,7 @@ Component::initStatus()
     
     localStatus_ = new orcaice::detail::LocalStatus( context_, pobj );
 
-    initTracerInfo( tag()+": Status initialized" );
-
+    orcaice::initTracerInfo( tag()+": Initialized status handler");
     return localStatus_;
 }
 
@@ -198,6 +197,7 @@ Component::initHome()
     std::string homeIdentity = toHomeIdentity( context_.name() );
     homePrx_ = context_.adapter()->add( homeObj, context_.communicator()->stringToIdentity(homeIdentity) );
 
+    orcaice::initTracerInfo( tag()+": Initialized Home interface");
     return (Home*)hobj;
 }
 
@@ -207,7 +207,7 @@ Component::activate()
     try
     {
         context_.adapter()->activate();
-        tracer()->debug( "adapter activated", 5 );
+        tracer()->debug( "Adapter activated", 2 );
     }
     catch ( Ice::DNSException& e )
     {

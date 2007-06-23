@@ -27,8 +27,8 @@ namespace detail
 //  1 if the property already existed in the target set and it was left untouched
 // -1 if the property was not set in the source set, the target was left untouched
 int
-transferProperty( Ice::PropertiesPtr &fromProperties, Ice::PropertiesPtr &toProperties,
-                        const string &fromKey, const string &toKey, bool force )
+transferProperty( Ice::PropertiesPtr& fromProperties, Ice::PropertiesPtr& toProperties,
+                        const string& fromKey, const string& toKey, bool force )
 {
     // not forcing the transfer
     if ( !force ) {
@@ -58,8 +58,8 @@ transferProperty( Ice::PropertiesPtr &fromProperties, Ice::PropertiesPtr &toProp
 // Internal helper function.
 // behaves like the function above. if key is missing, sets the toValue to defaultValue.
 void
-transferPropertyWithDefault( Ice::PropertiesPtr &fromProperties, Ice::PropertiesPtr &toProperties,
-                      const string &fromKey, const string &toKey, const string &defaultValue, bool force )
+transferPropertyWithDefault( Ice::PropertiesPtr& fromProperties, Ice::PropertiesPtr& toProperties,
+                      const string& fromKey, const string& toKey, const string& defaultValue, bool force )
 {
     if ( !force ) {
         // if we asked not to force the transfer,
@@ -77,7 +77,7 @@ transferPropertyWithDefault( Ice::PropertiesPtr &fromProperties, Ice::Properties
 
 // Internal helper function.
 void
-setPropertyDefault( Ice::PropertiesPtr &toProperties, const string &key, const string &defaultValue, bool force )
+setPropertyDefault( Ice::PropertiesPtr& toProperties, const string& key, const string& defaultValue, bool force )
 {
     if ( !force ) {
         // if we asked not to force the transfer,
@@ -94,7 +94,7 @@ setPropertyDefault( Ice::PropertiesPtr &toProperties, const string &key, const s
 
 // this is just a place-holder, the code which is here right now is actually done in Application::Application()
 void
-parseOrcaCommandLineOptions( const Ice::StringSeq & args )
+parseOrcaCommandLineOptions( const Ice::StringSeq& args )
 {
     for ( unsigned int i=0; i<args.size(); ++i ) {
         if ( !args[i].compare( 0,2, "-v" ) ||
@@ -109,7 +109,7 @@ parseOrcaCommandLineOptions( const Ice::StringSeq & args )
 }
 
 void
-setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag )
+setFactoryProperties( Ice::PropertiesPtr& properties, const std::string& compTag )
 {
     // Instantiate a separate property set
     Ice::PropertiesPtr tempProperties = Ice::createProperties();
@@ -174,8 +174,8 @@ setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag
     // if a property is already defined in the target property set, it is used and not the one from the source.
     bool forceTransfer = false;
 
-    // no point in sticking this property into the set used by the component
-    // because it's only used here.
+    // this property is self-referncial, as a special case look it up with default.
+    // it will also appear in the component property set.
     bool warnFactoryProp = (bool)properties->getPropertyAsIntWithDefault(
         "Orca.Warn.FactoryProperty", 0);
 
@@ -183,13 +183,13 @@ setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag
     for ( std::map<string,string>::iterator it=props.begin(); it!=props.end(); ++it ) {
         bool ret = transferProperty( tempProperties, properties, it->first, it->first, forceTransfer );
         if ( warnFactoryProp && ret==0 ) {
-            initTracerInfo( "using factory default value '"+it->second+"' for '"+it->first+"'" );
+            initTracerInfo( "Set property to factory default value: "+it->first+"="+it->second );
         }
     }
 }
 
 void
-setGlobalProperties( Ice::PropertiesPtr & properties, const std::string & filename )
+setGlobalProperties( Ice::PropertiesPtr& properties, const std::string& filename )
 {    
     // Instantiate a separate property set
     Ice::PropertiesPtr tempProperties = Ice::createProperties();
@@ -198,7 +198,7 @@ setGlobalProperties( Ice::PropertiesPtr & properties, const std::string & filena
     {
         tempProperties->load( filename );
     }
-    catch ( Ice::SyscallException &e ) 
+    catch ( Ice::SyscallException& e ) 
     {
         stringstream ss; ss<<"Couldn't load global configuration file '"<<filename<<"': "<<e;
         initTracerError( ss.str() );
@@ -216,7 +216,7 @@ setGlobalProperties( Ice::PropertiesPtr & properties, const std::string & filena
 }
 
 void
-setComponentProperties( Ice::PropertiesPtr & properties, const std::string & filename )
+setComponentProperties( Ice::PropertiesPtr& properties, const std::string& filename )
 {    
     // Instantiate a separate property set
     Ice::PropertiesPtr tempProperties = Ice::createProperties();
@@ -225,7 +225,7 @@ setComponentProperties( Ice::PropertiesPtr & properties, const std::string & fil
     {
         tempProperties->load( filename );
     }
-    catch ( Ice::SyscallException &e ) 
+    catch ( Ice::SyscallException& e ) 
     {
         stringstream ss;ss<<"Couldn't load component configuration file '"<<filename<<"': "<<e;
         throw orcaice::Exception( ERROR_INFO, ss.str() );
@@ -251,11 +251,13 @@ setComponentProperties( Ice::PropertiesPtr & properties, const std::string & fil
 //     transferProperty( properties, properties, "Ice.Default.Locator", compTag + ".Locator", forceTransfer );
 }
 
-// This function is called before the tracer is created, so we can't use it.
 orca::FQComponentName
-parseComponentProperties( const Ice::CommunicatorPtr & communicator, const std::string & compTag )
+parseComponentProperties( const Ice::CommunicatorPtr& communicator, const std::string& compTag )
 {
     Ice::PropertiesPtr properties = communicator->getProperties();
+
+    // default was already set
+    bool warnFactoryProp = (bool)properties->getPropertyAsInt("Orca.Warn.FactoryProperty");
 
     orca::FQComponentName fqCName;
 
@@ -273,20 +275,16 @@ parseComponentProperties( const Ice::CommunicatorPtr & communicator, const std::
 
     // check that we have platform name, if missing set it to 'local'
     if ( fqCName.platform.empty() ) {
-        string warnString = compTag + ": " + warnMissingPropertyWithDefault( compTag+".Platform", "local" );
-        initTracerInfo( warnString );
         fqCName.platform = "local";
+        if ( warnFactoryProp )
+            initTracerInfo( "Set property to factory default value: "+compTag+".Platform="+fqCName.platform );
     }
     // check that we have component name, if missing set it to 'ComponentTag' converted to lower case
     if( fqCName.component.empty() )
     {
-//         if ( we are picky ) {
-//             initTracerError( errorString );
-//             throw orcaice::Exception( ERROR_INFO, errorString );
-//         }
-        string warnString = compTag + ": " + warnMissingPropertyWithDefault( compTag+".Component", "<component tag>" );
-        initTracerInfo( warnString );
         fqCName.component = orcaice::toLowerCase( compTag );
+        if ( warnFactoryProp )
+            initTracerInfo( "Set property to factory default value: "+compTag+".Component="+fqCName.component );
     }
 
     // special case: replace 'local' platform with actual hostname
@@ -295,16 +293,17 @@ parseComponentProperties( const Ice::CommunicatorPtr & communicator, const std::
         // update properties
         properties->setProperty( compTag+".Platform", fqCName.platform );
         properties->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
-        initTracerInfo( compTag+": Replaced platform name 'local' with hostname '"+fqCName.platform+"'" );
+        if ( warnFactoryProp ) {
+            initTracerInfo( "Replaced property (local<-hostname): "+compTag+".Platform="+fqCName.platform );
+            initTracerInfo( "Replaced property (local<-hostname): "+compTag+".AdapterId="+orcaice::toString(fqCName) );
+        }
     }
-
-    initTracerInfo( compTag+": Will register component (adapter) as '"+orcaice::toString(fqCName)+"'" );
 
     return fqCName;
 }
 
 void
-printComponentProperties( const Ice::PropertiesPtr &properties, const std::string &compTag )
+printComponentProperties( const Ice::PropertiesPtr& properties, const std::string& compTag )
 {
     Ice::StringSeq propSeq = properties->getCommandLineOptions();
 

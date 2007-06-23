@@ -187,7 +187,7 @@ getPropertyWithDefault( const Ice::PropertiesPtr &prop, const ::std::string& key
         value = defaultValue;
 
         if ( prop->getPropertyAsIntWithDefault( "Orca.Warn.DefaultProperty", 1 ) ) {
-            initTracerInfo( "using default value '"+value+"' for '"+key+"'" );
+            initTracerInfo( "Set property to default value: "+key+"="+value );
         }
     }
     return value;

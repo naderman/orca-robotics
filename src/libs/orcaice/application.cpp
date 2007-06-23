@@ -89,7 +89,7 @@ Application::main(int argc, char* argv[])
     {
         compFilename = orcaice::getApplicationConfigFilename( args );
         if ( compFilename.empty() ) {
-            initTracerInfo( component_.tag()+": "+warnMissingProperty("component properties file","Orca.Ice") );
+            initTracerInfo( component_.tag()+": "+warnMissingProperty("component properties file","Orca.Config") );
         }
         else {
             orcaice::detail::setComponentProperties( initData.properties, compFilename );
@@ -140,7 +140,7 @@ Application::main(int argc, char* argv[])
 
     // Level 1. apply Orca factory defaults
     orcaice::detail::setFactoryProperties( initData.properties, component_.tag() );
-    initTracerInfo( component_.tag()+": Loaded factory default properties." );
+    initTracerInfo( component_.tag()+": Loaded factory default properties" );
             // debug
 //             initTracerInfo("after setFactoryProperties()");
 //             orcaice::detail::printComponentProperties( initData.properties, component_.tag() );
@@ -165,7 +165,7 @@ Application::run( int argc, char* argv[] )
 
     // create the one-and-only component adapter
     adapter_ = communicator()->createObjectAdapter(component_.tag());
-    initTracerInfo( component_.tag()+": Object adapter created" );
+    initTracerInfo( component_.tag()+": Created object adapter" );
 
     //
     // Give the component all the stuff it needs to initialize

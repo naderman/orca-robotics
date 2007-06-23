@@ -176,7 +176,7 @@ Service::start( const ::std::string        & name,
 
     // create the one-and-only component adapter
     adapter_ = communicator->createObjectAdapter( component_->tag() );
-    initTracerInfo( component_->tag()+": Object adapter created" );
+    initTracerInfo( component_->tag()+": Created object adapter" );
 
     //
     // Give the component all the stuff it needs
