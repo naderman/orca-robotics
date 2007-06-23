@@ -104,7 +104,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - libOrcaIce
   - added two config properties with the following defaults: Orca.Warn.DefaultProperty=1 
-    and Orca.Warn.FactoryProperty=0 (alexm)
+    and Orca.Warn.FactoryProperty=0. Streamlined and standardized progress reports
+    during component initialization. (alexm)
 
 @par Removed
 
