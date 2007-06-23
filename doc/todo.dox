@@ -88,6 +88,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Robot2d
   - Internal source cleanup. Not using ::orca:: structures internally. (alex m)
 
+- LocalNav
+  - Catch exceptions properly on driver initialisation. (alex b)
+
 @par Updated utilities
 
 - Name change: sysmon -> systemtracermon (alex b)
