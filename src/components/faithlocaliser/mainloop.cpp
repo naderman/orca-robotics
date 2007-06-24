@@ -56,8 +56,11 @@ MainLoop::run()
             // cout<<"============================================="<<endl;
 
             // Get odometry info, time out every so often to check if we are cancelled
-            if ( odoBuffer_.getAndPopNext( odomData, 200 ) != 0 ) {
+            const int TIMEOUT_MS = 1000;
+            if ( odoBuffer_.getAndPopNext( odomData, TIMEOUT_MS ) != 0 ) 
+            {
                 // no new value
+                cout<<"TRACE(mainloop.cpp): MainLoop: received no odometry for " << TIMEOUT_MS << "ms" << endl;
                 continue;
             }
 
