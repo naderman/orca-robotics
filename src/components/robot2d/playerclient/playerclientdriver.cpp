@@ -65,6 +65,9 @@ PlayerClientDriver::enable()
         std::cerr << e << std::endl;
         cout << "ERROR(playerclientdriver.cpp): player error" << endl;
         disable();
+
+        // Slow things down a little...
+        sleep(1);
         return -1;
     }
 
