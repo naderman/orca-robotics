@@ -386,8 +386,6 @@ Serial::bytesAvailable()
 int 
 Serial::bytesAvailableWait()
 {
-    throw SerialException( "AlexB: Serial::bytesAvailableWait(): interface changed: -1 on timeout!" );
-
     fd_set rfds;
     struct timeval tv;
     FD_ZERO(&rfds);
@@ -623,8 +621,6 @@ Serial::bytesAvailable()
 int 
 Serial::bytesAvailableWait()
 {
-    throw SerialException( "AlexB: Serial::bytesAvailableWait(): interface changed: -1 on timeout!" );
-
     fd_set rfds;
     struct timeval tv;
     FD_ZERO(&rfds);
