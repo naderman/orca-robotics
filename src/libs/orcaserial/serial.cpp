@@ -263,7 +263,8 @@ Serial::readFullNonblocking(void *buf, size_t count)
         cout<<"TRACE(serial.cpp): readFullNonblocking(): count=" << count << endl;
 
     int got=0;
-    while(got<(int)count){
+    while ( got < (int) count ) 
+    {
         char *offset=(char*)buf+got;
         int ret = ::read(portFd_, offset, count-got);
         if ( ret >= 0 )
@@ -280,7 +281,7 @@ Serial::readFullNonblocking(void *buf, size_t count)
             tv.tv_sec = timeoutSec_;
             tv.tv_usec = timeoutUSec_;
             int selval = select(portFd_+1, &rfds, NULL, NULL, &tv);
-            if(selval==0)
+            if ( selval == 0 )
             {
                 // select timed out: no data
                 return -1;
