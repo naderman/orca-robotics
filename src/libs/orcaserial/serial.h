@@ -49,6 +49,9 @@ public:
     //! Destructor closes serial port
     ~Serial();
 
+    //! turn on/off debug messages
+    void setDebugLevel( int debugLevel ) { debugLevel_ = debugLevel; }
+
     //! Sets the baud rate. Flushes any data.
     void setBaudRate(int baud);
 
@@ -98,7 +101,7 @@ public:
 
     //! Writes a ('\0'-terminated) string (default up to 256 chars). 
     //! Returns the number of bytes written.
-    int write(const char *buf, size_t maxlen=256);
+    int writeString(const char *buf, size_t maxlen=256);
 
     //! Flushs both input and output buffers.
     //! This discards all data in buffers.
@@ -130,7 +133,7 @@ private:
     int timeoutUSec_;
     bool blockingMode_;
     
-    std::string lastError_;
+    int debugLevel_;
 };
 
 }

@@ -36,11 +36,14 @@ using namespace std;
 
 namespace orcaserial {
     
-Serial::Serial( const char *dev, int baudRate, bool blockingMode )
+Serial::Serial( const char *dev,
+                int baudRate,
+                bool blockingMode )
     : portFd_(-1),
       timeoutSec_(0),
       timeoutUSec_(0),
-      blockingMode_(blockingMode)
+      blockingMode_(blockingMode),
+      debugLevel_(0)
 {
     open( dev );
     setBaudRate( baudRate );
@@ -54,6 +57,9 @@ Serial::~Serial()
 void
 Serial::close()
 {
+    if ( debugLevel_ > 0 )
+        cout<<"TRACE(serial.cpp): close()" << endl;
+
     if(portFd_!=-1)
     {
         if(tcdrain(portFd_))
@@ -69,6 +75,9 @@ Serial::close()
 void 
 Serial::setBaudRate(int baud)
 {
+    if ( debugLevel_ > 0 )
+        cout<<"TRACE(serial.cpp): setBaudRate()" << endl;
+
     if(portFd_==-1)
     {
         throw SerialException( "Serial:baud() no valid device open" );
@@ -219,6 +228,9 @@ Serial::open(const char *device, int flags)
 int 
 Serial::read(void *buf, size_t count)
 {
+    if ( debugLevel_ > 0 )
+        cout<<"TRACE(serial.cpp): read()" << endl;
+
     int got;
     got = ::read(portFd_, buf, count);
     if ( got < 0 )
@@ -231,6 +243,9 @@ Serial::read(void *buf, size_t count)
 int
 Serial::readFullBlocking(void *buf, size_t count)
 {
+    if ( debugLevel_ > 0 )
+        cout<<"TRACE(serial.cpp): readFullBlocking(): count=" << count << endl;
+
     int got=0;
     while( got < (int)count )
     {
@@ -244,6 +259,9 @@ Serial::readFullBlocking(void *buf, size_t count)
 int
 Serial::readFullNonblocking(void *buf, size_t count)
 {
+    if ( debugLevel_ > 0 )
+        cout<<"TRACE(serial.cpp): readFullNonblocking(): count=" << count << endl;
+
     int got=0;
     while( got < (int)count )
     {
@@ -281,6 +299,9 @@ Serial::readFull(void *buf, size_t count)
 int 
 Serial::readLineBlocking(void *buf, size_t count, char termchar)
 {
+    if ( debugLevel_ > 0 )
+        cout<<"TRACE(serial.cpp): readLineBlocking()" << endl;
+
     int got = 0;
     char lastchar=0;
     do{
@@ -306,14 +327,16 @@ Serial::readLineBlocking(void *buf, size_t count, char termchar)
 int 
 Serial::readLineNonblocking(void *buf, size_t count, char termchar)
 {
+    if ( debugLevel_ > 0 )
+        cout<<"TRACE(serial.cpp): readLineNonblocking()" << endl;
+
     int got = 0;
     char lastchar=0;
     do{
         //not enough room in buffer
         if(got==(int)count-1)
         {
-            lastError_ = "Serial::read_line(): Not enough room in buffer.";
-            return -1;
+            throw SerialException( "Serial::readLineNonblocking(): Not enough room in buffer" );
         }
         char *offset=(char*)buf+got;
 
@@ -387,6 +410,10 @@ Serial::bytesAvailableWait()
 int 
 Serial::write(const void *buf, size_t count)
 {
+    if ( debugLevel_ > 0 )
+        cout<<"TRACE(serial.cpp): write()" << endl;
+
+
     int put;
     put = ::write(portFd_, buf, count);
     if ( put < 0 )
@@ -397,8 +424,11 @@ Serial::write(const void *buf, size_t count)
 }
 
 int 
-Serial::write(const char *str, size_t maxlen)
+Serial::writeString(const char *str, size_t maxlen)
 {
+    if ( debugLevel_ > 0 )
+        cout<<"TRACE(serial.cpp): writeString()" << endl;
+
     int toput=strnlen(str, maxlen);
     int put;
     put = ::write(portFd_, str, toput);
@@ -628,14 +658,14 @@ Serial::write(const void *buf, size_t count)
 }
 
 int 
-Serial::write(const char *str, size_t maxlen)
+Serial::writeString(const char *str, size_t maxlen)
 {
     int toput=strnlen(str, maxlen);
     int put;
     put = ::write(portFd_, str, toput);
     if ( put < 0 )
     {
-        throw SerialException( string("Serial::write(): ")+strerror(errno) );
+        throw SerialException( string("Serial::writeString(): ")+strerror(errno) );
     }
     return put;
 }
