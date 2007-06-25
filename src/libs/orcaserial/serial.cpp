@@ -263,25 +263,36 @@ Serial::readFullNonblocking(void *buf, size_t count)
         cout<<"TRACE(serial.cpp): readFullNonblocking(): count=" << count << endl;
 
     int got=0;
-    while( got < (int)count )
-    {
+    while(got<(int)count){
         char *offset=(char*)buf+got;
-
-        fd_set rfds;
-        struct timeval tv;
-        FD_ZERO(&rfds);
-        FD_SET(portFd_, &rfds);
-        tv.tv_sec = timeoutSec_;
-        tv.tv_usec = timeoutUSec_;
-        int selval = select(portFd_+1, &rfds, NULL, NULL, &tv);
-        if ( selval==0 )
+        int ret = ::read(portFd_, offset, count-got);
+        if ( ret >= 0 )
         {
-            // select timed out: no data
-            return -1;
+            got += ret;
         }
-        else if ( selval < 0 )
+        else if ( ret == -1 && errno == EAGAIN )
         {
-            throw SerialException( std::string("Serial::readFullNonblocking: ")+strerror(errno) );
+            // No data available yet -- if timeout is set we will block
+            fd_set rfds;
+            struct timeval tv;
+            FD_ZERO(&rfds);
+            FD_SET(portFd_, &rfds);
+            tv.tv_sec = timeoutSec_;
+            tv.tv_usec = timeoutUSec_;
+            int selval = select(portFd_+1, &rfds, NULL, NULL, &tv);
+            if(selval==0)
+            {
+                // select timed out: no data
+                return -1;
+            }
+            else if ( selval < 0 )
+            {
+                throw SerialException( std::string("Serial::readFullNonblocking: ")+strerror(errno) );
+            }
+        }
+        else
+        {
+            throw SerialException( std::string("Serial::readFullNonblocking: read(): ")+strerror(errno) );
         }
     }
     return got;
@@ -330,31 +341,44 @@ Serial::readLineNonblocking(void *buf, size_t count, char termchar)
     if ( debugLevel_ > 0 )
         cout<<"TRACE(serial.cpp): readLineNonblocking()" << endl;
 
-    int got = 0;
+   int got = 0;
     char lastchar=0;
-    do{
-        //not enough room in buffer
-        if(got==(int)count-1)
+    do 
+    {
+        if ( got == (int) count-1 )
         {
-            throw SerialException( "Serial::readLineNonblocking(): Not enough room in buffer" );
+            throw SerialException( "Serial::readLineBlocking(): Not enough room in buffer" );
         }
         char *offset=(char*)buf+got;
-
-        fd_set rfds;
-        struct timeval tv;
-        FD_ZERO(&rfds);
-        FD_SET(portFd_, &rfds);
-        tv.tv_sec = timeoutSec_;
-        tv.tv_usec = timeoutUSec_;
-        int selval = select(portFd_+1, &rfds, NULL, NULL, &tv);
-        if(selval==0)
+        int ret = ::read(portFd_, offset, 1);
+        if(ret>=0)
         {
-            // select timed out: no data
-            return -1;
+            got += ret;
+            lastchar=((char*)buf)[got-1];
         }
-        else if(selval<0)
+        else if ( ret == -1 && errno == EAGAIN )
+        {  
+            // No data available yet -- if timeout is set we will block
+            fd_set rfds;
+            struct timeval tv;
+            FD_ZERO(&rfds);
+            FD_SET(portFd_, &rfds);
+            tv.tv_sec = timeoutSec_;
+            tv.tv_usec = timeoutUSec_;
+            int selval = select(portFd_+1, &rfds, NULL, NULL, &tv);
+            if(selval==0)
+            {
+                // select timed out: no data
+                return -1;
+            }
+            if(selval<0)
+            {
+                throw SerialException( std::string("Serial::readFullNonblocking: select(): ")+strerror(errno) );
+            }
+        }
+        else
         {
-            throw SerialException( std::string("Serial::readLineNonblocking(): ")+strerror(errno) );
+            throw SerialException( std::string("Serial::readLineNonblocking: read(): ")+strerror(errno) );            
         }
     } while(lastchar!=termchar);
 
