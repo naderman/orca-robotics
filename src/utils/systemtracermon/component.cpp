@@ -19,7 +19,7 @@ using namespace std;
 namespace sysmon {
 
 Component::Component()
-    : orcaice::Component( "SysMon" )
+    : orcaice::Component( "SystemTracerMon" )
 {
 }
 
