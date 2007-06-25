@@ -113,7 +113,7 @@ Some components require @c pkg-config utility to check for dependencies
 @endverbatim
 
 
-@section orca_doc_installdebian_player Player/Stage
+@section orca_doc_installdebian_player_source Player/Stage from source
 
 <a href="http://playerstage.sourceforge.net/" target="_blank">Player/Stage</a> is an open-source device server and simulator. These notes were tested with Player 2.0.3 and Stage 2.0.3. 
 
@@ -168,11 +168,34 @@ For a quick start:
 $ player [STAGE_SRC]/worlds/simple.cfg
 @endverbatim
 
+@section orca_doc_installdebian_player_package Player/Stage using debian package
+You can download Player and Stage as a debian packages from their website. This has been tested with Player 2.0.4 and Stage 2.0.3.
+
+On top of the dependencies mentioned in @ref orca_doc_installdebian_player_source, boost needs to be installed:
+
+@verbatim
+$ apt-get install libboost-dev libboost-signals-dev libboost-thread-dev
+@endverbatim
+
+Now, simply install the Player and Stage packages (as root):
+
+@verbatim
+$ dpkg -i player_xxx_i386.deb
+$ dpkg -i stage_xxx_i386.deb
+@endverbatim
+
+This will install the libraries in /usr/lib, the executables in /usr/bin and the configuration files in /usr/share/player and /usr/share/stage.
+
+For a quick start:
+@verbatim
+$ player /usr/share/stage/worlds/simple.cfg
+@endverbatim
+
 @section orca_doc_installdebian_gazebo Gazebo
 
 <a href="http://playerstage.sourceforge.net/" target="_blank">Gazebo</a> is part of the Player/Stage project. It is an open-source 3D multiple robot simulator with dynamics. These notes were tested with Player 2.0.3, Gazebo 0.7.0, and Open Dynamics Engine 0.7. Note that Gazebo's documentation is not very well maintained at the moment and it has a number of bugs which are not always trivial to fix. Please see the Gazebo <a href="http://sourceforge.net/mailarchive/forum.php?forum=playerstage-gazebo" target="_blank">mailing list</a> and Gazebo manual pages for more help.
 
-Make sure that you have installed @ref orca_doc_installdebian_player Player/Stage first. 
+Make sure that you have installed Player/Stage first (@ref orca_doc_installdebian_player_source or @ref orca_doc_installdebian_player_package).
 
 Start with Gazebo/ODE dependencies.
 @verbatim
