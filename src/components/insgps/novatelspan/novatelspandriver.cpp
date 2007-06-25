@@ -127,7 +127,7 @@ NovatelSpanInsGpsDriver::reset()
 
     //IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(2000));
     // serial_->flush();
-    put = serial_->write( "unlogall\r\n" );
+    put = serial_->writeString( "unlogall\r\n" );
     // printf("put %d bytes\n",put);
     serial_->drain();
 
@@ -135,7 +135,7 @@ NovatelSpanInsGpsDriver::reset()
     // put = serial_->write( "com com1 115200 n 8 1 n off on\r\n" );
     char str[256];
     sprintf( str,"com com1 %d n 8 1 n off on\r\n", baud_ );
-    put = serial_->write( str );
+    put = serial_->writeString( str );
     
 
 //     // set the port to the requested baudrate
@@ -191,7 +191,7 @@ NovatelSpanInsGpsDriver::init()
     
     // just in case something is running... stops the novatel logging any messages
     // serial_->flush();
-    put = serial_->write( "unlogall\r\n" );
+    put = serial_->writeString( "unlogall\r\n" );
     //printf("put %d bytes\n",put);
     serial_->drain();
 
@@ -199,9 +199,9 @@ NovatelSpanInsGpsDriver::init()
     // IMU Specific settings
     //
     // tell the novatel what serial port the imu is attached to (com3 = aux)
-    put = serial_->write( "interfacemode com3 imu imu on\r\n" );
+    put = serial_->writeString( "interfacemode com3 imu imu on\r\n" );
     // the type of imu being used
-    put = serial_->write( "setimutype imu_hg1700_ag62\r\n" );
+    put = serial_->writeString( "setimutype imu_hg1700_ag62\r\n" );
 
     // read and set the imu params (orientation of imu and offset to gps antenna)
     setNovatelSpecificParams();
@@ -211,13 +211,13 @@ NovatelSpanInsGpsDriver::init()
     // put = serial_->write( "interfacemode com2 rtca none off\r\n" ); // My Addition
 
     // turn off posave as this command implements position averaging for base stations.
-    put = serial_->write( "posave off\r\n" );
+    put = serial_->writeString( "posave off\r\n" );
 
     // make sure that fixposition has not been set
-    put = serial_->write( "fix none\r\n" );
+    put = serial_->writeString( "fix none\r\n" );
 
     // select the geodetic datum for operation of the receiver (wgs84 = default)
-    put = serial_->write( "datum wgs84\r\n" );
+    put = serial_->writeString( "datum wgs84\r\n" );
 
     /////////////////////////////////////////////////
     // tell the receiver what kind of info it should spit out
@@ -234,21 +234,21 @@ NovatelSpanInsGpsDriver::init()
     enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"rawimusb", 0 );
     if(enableMsg){
         cout << "requesting raw imu data!" << endl;
-        put = serial_->write( "log rawimusb onnew\r\n" );
+        put = serial_->writeString( "log rawimusb onnew\r\n" );
     }
 
     // receiver status
     enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"rxstatusb", 0 );
     if(enableMsg){
-        put = serial_->write( "log rxstatusb ontime 1.0\r\n" );
+        put = serial_->writeString( "log rxstatusb ontime 1.0\r\n" );
     }
 
     // PPS pulse will be triggered before this arrives
     // time used to sync with the pps signal
     enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"timesyncb", 0 );
     if(enableMsg){
-        put = serial_->write( "log timeb ontime 1.0\r\n" );
-        put = serial_->write("log timesyncb ontime 1.0\r\n");
+        put = serial_->writeString( "log timeb ontime 1.0\r\n" );
+        put = serial_->writeString("log timesyncb ontime 1.0\r\n");
     }
 
     // IMU message
@@ -256,20 +256,20 @@ NovatelSpanInsGpsDriver::init()
     // gps position without ins
     enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"bestgpsposb", 0 );
     if(enableMsg){
-        put = serial_->write( "log bestgpsposb ontime 1.0\r\n" );
+        put = serial_->writeString( "log bestgpsposb ontime 1.0\r\n" );
     }
 
     // short IMU messages
     // pva data in wgs84 coordinates
     enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"inspvasb", 1 );
     if(enableMsg){
-        put = serial_->write( "log inspvasb ontime 0.01\r\n" );
+        put = serial_->writeString( "log inspvasb ontime 0.01\r\n" );
     }
 
     // pva covariances
     enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"inscovsb", 0 );
     if(enableMsg){
-        put = serial_->write( "log inscovsb onchanged\r\n" );
+        put = serial_->writeString( "log inscovsb onchanged\r\n" );
     }
 
     /////////////////////////////////////////////////
@@ -286,19 +286,19 @@ NovatelSpanInsGpsDriver::init()
     // turn SBAS on/off (essentially global DGPS)
     enableMode = orcaice::getPropertyAsIntWithDefault( modeProp, modePrefix+"SBAS", 0 );
     if(enableMode){
-        put = serial_->write( "SBASCONTROL ENABLE Auto 0 ZEROTOTWO\r\n");
+        put = serial_->writeString( "SBASCONTROL ENABLE Auto 0 ZEROTOTWO\r\n");
         //we try to use WAAS satellites even below the horizon
-        put = serial_->write( "WAASECUTOFF -5.0\r\n");
+        put = serial_->writeString( "WAASECUTOFF -5.0\r\n");
     }
     else{
-        put = serial_->write( "SBASCONTROL DISABLE Auto 0 NONE\r\n");
+        put = serial_->writeString( "SBASCONTROL DISABLE Auto 0 NONE\r\n");
     }
     
     //rtk
     enableMode = orcaice::getPropertyAsIntWithDefault( modeProp, prefix+"rtk", 0 );
     if(enableMode){
-        put = serial_->write( "com com2,9600,n,8,1,n,off,on\r\n" );
-        put = serial_->write( "interfacemode com2 rtca none\r\n" );
+        put = serial_->writeString( "com com2,9600,n,8,1,n,off,on\r\n" );
+        put = serial_->writeString( "interfacemode com2 rtca none\r\n" );
     }
 
 
@@ -321,7 +321,7 @@ NovatelSpanInsGpsDriver::disable()
 
     // just in case something is running... stops the novatel logging any messages
     serial_->flush();
-    put = serial_->write( "unlogall\r\n" );
+    put = serial_->writeString( "unlogall\r\n" );
     //printf("put %d bytes\n",put);
     serial_->drain();
 
@@ -1163,7 +1163,7 @@ NovatelSpanInsGpsDriver::setNovatelSpecificParams()
     //  this tells the imu where its z axis (up) is pointing. constants defined in manual.
     //  with imu mounted upside down, constant is 6 and axes are remapped: x = y, y = x, -z = z 
     sprintf( str,"setimuorientation %d\r\n", imuOrientation);
-    put = serial_->write( str );
+    put = serial_->writeString( str );
 
     // angular offset from the vehicle to the imu body. unclear how this relates to imu orientation command 
     sprintf( str,"vehiclebodyrotation %f %f %f %f %f %f\r\n",
@@ -1173,7 +1173,7 @@ NovatelSpanInsGpsDriver::setNovatelSpecificParams()
                 imuToGpsAntennaOffsetUncertainty.x, 
                 imuToGpsAntennaOffsetUncertainty.y, 
                 imuToGpsAntennaOffsetUncertainty.z );
-    put = serial_->write( str );
+    put = serial_->writeString( str );
 
     // imu to gps antenna offset
     sprintf( str,"setimutoantoffset %f %f %f %f %f %f\r\n",
@@ -1183,7 +1183,7 @@ NovatelSpanInsGpsDriver::setNovatelSpecificParams()
                 imuToGpsAntennaOffsetUncertainty.x, 
                 imuToGpsAntennaOffsetUncertainty.y, 
                 imuToGpsAntennaOffsetUncertainty.z );
-    put = serial_->write( str );
+    put = serial_->writeString( str );
 
 
     return;
