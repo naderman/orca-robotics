@@ -176,7 +176,7 @@ Serial::setBaudRate(int baud)
 void 
 Serial::open(const char *device, int flags)
 {
-    if ( blockingMode_ )
+    if ( !blockingMode_ )
         flags |= O_NONBLOCK;
 
     portFd_ = ::open(device, flags|O_RDWR|O_NOCTTY);
@@ -352,7 +352,7 @@ Serial::readLineNonblocking(void *buf, size_t count, char termchar)
         }
         char *offset=(char*)buf+got;
         int ret = ::read(portFd_, offset, 1);
-        if(ret>=0)
+        if(ret>0)
         {
             got += ret;
             lastchar=((char*)buf)[got-1];
@@ -377,7 +377,7 @@ Serial::readLineNonblocking(void *buf, size_t count, char termchar)
                 throw SerialException( std::string("Serial::readFullNonblocking: select(): ")+strerror(errno) );
             }
         }
-        else
+        else if ( ret < 0 )
         {
             throw SerialException( std::string("Serial::readLineNonblocking: read(): ")+strerror(errno) );            
         }
