@@ -17,323 +17,382 @@
 #include <string.h>
 #include <iostream>
 #include "serial.h"
-
+#include <sstream>
+ 
 #include <config.h>
 #if HAVE_FILIO_H
-   // FIONREAD
+// FIONREAD
 #  include <sys/filio.h>
 #endif
 // Ensure we have strnlen
 #include <orcaportability/strnlen.h>
-
+ 
 #ifdef __QNX__
 #include <sys/modem.h>
 #include <time.h>
 #endif
-
+ 
 using namespace std;
 
 namespace orcaserial {
-
-Serial::Serial()
+    
+Serial::Serial( const char *dev, int baudRate, bool blockingMode )
+    : portFd_(-1),
+      timeoutSec_(0),
+      timeoutUSec_(0),
+      blockingMode_(blockingMode)
 {
-    port_fd=-1;
-    to_sec=0;
-    to_usec=0;
+    open( dev );
+    setBaudRate( baudRate );
 }
-
+    
 Serial::~Serial()
 {
-    if(port_fd!=-1)
+    close();
+}
+
+void
+Serial::close()
+{
+    if(portFd_!=-1)
     {
-        if(tcdrain(port_fd)){
-            perror("Serial::drain():tcdrain()");
-            lastError_="Serial::drain():tcdrain()";
+        if(tcdrain(portFd_))
+        {
+            perror("Serial::close():tcdrain()");
         }
-        ::close(port_fd);
-    }
+        ::close(portFd_);
+    }    
 }
 
 #ifdef __linux
 
-int 
-Serial::baud(int baud)
+void 
+Serial::setBaudRate(int baud)
 {
-    if(port_fd==-1){
-        fprintf(stderr,"Serial:baud() no valid device open\n");
-        lastError_ = "Serial:baud() no valid device open\n";
-        return -1;
-    }
-    if(tcgetattr(port_fd, &ser_opts) == -1)
+    if(portFd_==-1)
     {
-        fprintf(stderr,"Serial::baud():tcgetattr() Error reading attr.\n");
-        lastError_ = "Serial:baud() no valid device open\n";
+        throw SerialException( "Serial:baud() no valid device open" );
     }
-
+    if(tcgetattr(portFd_, &serialOptions_) == -1)
+    {
+        stringstream ss;
+        ss << "Serial::baud():tcgetattr() Error reading attr: " << strerror(errno);
+        throw SerialException( ss.str() );
+    }
+    
     switch(baud){
     case 0:
-        cfsetispeed(&ser_opts, B0);
-        cfsetospeed(&ser_opts, B0);
+        cfsetispeed(&serialOptions_, B0);
+        cfsetospeed(&serialOptions_, B0);
         break;
     case 50:
-        cfsetispeed(&ser_opts, B50);
-        cfsetospeed(&ser_opts, B50);
+        cfsetispeed(&serialOptions_, B50);
+        cfsetospeed(&serialOptions_, B50);
         break;
     case 75:
-        cfsetispeed(&ser_opts, B75);
-        cfsetospeed(&ser_opts, B75);
+        cfsetispeed(&serialOptions_, B75);
+        cfsetospeed(&serialOptions_, B75);
         break;
     case 110:
-        cfsetispeed(&ser_opts, B110);
-        cfsetospeed(&ser_opts, B110);
+        cfsetispeed(&serialOptions_, B110);
+        cfsetospeed(&serialOptions_, B110);
         break;
     case 134:
-        cfsetispeed(&ser_opts, B134);
-        cfsetospeed(&ser_opts, B134);
+        cfsetispeed(&serialOptions_, B134);
+        cfsetospeed(&serialOptions_, B134);
         break;
     case 150:
-        cfsetispeed(&ser_opts, B150);
-        cfsetospeed(&ser_opts, B150);
+        cfsetispeed(&serialOptions_, B150);
+        cfsetospeed(&serialOptions_, B150);
         break;
     case 300:
-        cfsetispeed(&ser_opts, B300);
-        cfsetospeed(&ser_opts, B300);
+        cfsetispeed(&serialOptions_, B300);
+        cfsetospeed(&serialOptions_, B300);
         break;
     case 600:
-        cfsetispeed(&ser_opts, B600);
-        cfsetospeed(&ser_opts, B600);
+        cfsetispeed(&serialOptions_, B600);
+        cfsetospeed(&serialOptions_, B600);
         break;
     case 1200:
-        cfsetispeed(&ser_opts, B1200);
-        cfsetospeed(&ser_opts, B1200);
+        cfsetispeed(&serialOptions_, B1200);
+        cfsetospeed(&serialOptions_, B1200);
         break;
     case 2400:
-        cfsetispeed(&ser_opts, B2400);
-        cfsetospeed(&ser_opts, B2400);
+        cfsetispeed(&serialOptions_, B2400);
+        cfsetospeed(&serialOptions_, B2400);
         break;
     case 4800:
-        cfsetispeed(&ser_opts, B4800);
-        cfsetospeed(&ser_opts, B4800);
+        cfsetispeed(&serialOptions_, B4800);
+        cfsetospeed(&serialOptions_, B4800);
         break;
     case 9600:
-        cfsetispeed(&ser_opts, B9600);
-        cfsetospeed(&ser_opts, B9600);
+        cfsetispeed(&serialOptions_, B9600);
+        cfsetospeed(&serialOptions_, B9600);
         break;
     case 19200:
-        cfsetispeed(&ser_opts, B19200);
-        cfsetospeed(&ser_opts, B19200);
+        cfsetispeed(&serialOptions_, B19200);
+        cfsetospeed(&serialOptions_, B19200);
         break;
     case 38400:
-        cfsetispeed(&ser_opts, B38400);
-        cfsetospeed(&ser_opts, B38400);
+        cfsetispeed(&serialOptions_, B38400);
+        cfsetospeed(&serialOptions_, B38400);
         break;
     case 57600:
-        cfsetispeed(&ser_opts, B57600);
-        cfsetospeed(&ser_opts, B57600);
+        cfsetispeed(&serialOptions_, B57600);
+        cfsetospeed(&serialOptions_, B57600);
         break;
     case 115200:
-        cfsetispeed(&ser_opts, B115200);
-        cfsetospeed(&ser_opts, B115200);
+        cfsetispeed(&serialOptions_, B115200);
+        cfsetospeed(&serialOptions_, B115200);
         break;
     case 230400:
-        cfsetispeed(&ser_opts, B230400);
-        cfsetospeed(&ser_opts, B230400);
+        cfsetispeed(&serialOptions_, B230400);
+        cfsetospeed(&serialOptions_, B230400);
         break;
     default:
-        fprintf(stderr,"Serial::baud() Invalid baud rate.\n");
-        lastError_ = "Serial::baud() Invalid baud rate.";
-        return -1;
+        stringstream ss;
+        ss << "Serial::baud() Invalid baud rate: " << baud;
+        throw SerialException( ss.str() );
         break;
     }
 
-    if(tcsetattr(port_fd, TCSAFLUSH, &ser_opts) == -1)
+    if ( tcsetattr(portFd_, TCSAFLUSH, &serialOptions_) == -1 )
     {
-        fprintf(stderr,"Serial::baud():tcsetattr() Error setting attr.\n");
-        lastError_ = "Serial::baud():tcsetattr() Error setting attr.";
-        return -1;
+        stringstream ss;
+        ss << "Serial::baud():tcsetattr() Error setting attr: " << strerror(errno);
+        throw SerialException( ss.str() );
     }
-
-    return 0;
 }
 
-int 
-Serial::open(const char *device, const int flags)
+void 
+Serial::open(const char *device, int flags)
 {
-    if((port_fd = ::open(device, flags|O_RDWR|O_NOCTTY))== -1)
+    if ( blockingMode_ )
+        flags |= O_NONBLOCK;
+
+    portFd_ = ::open(device, flags|O_RDWR|O_NOCTTY);
+    if ( portFd_ == -1 )
     {
-        perror("Serial::open()");
-        lastError_ = string("Serial::open()") + strerror(errno);
-        return -1;
+        stringstream ss;
+        ss << "Serial::open(): failed to open '"<<device<<"': "<<strerror(errno);
+        throw SerialException( ss.str() );
     }
 
-    if(tcgetattr(port_fd, &ser_opts) == -1)
+    if(tcgetattr(portFd_, &serialOptions_) == -1)
     {
-        fprintf(stderr,"Serial::tcgetattr() Error reading attr.\n");
-        lastError_ = "Serial::tcgetattr() Error reading attr.";
-        return -1;
+        close();
+        throw SerialException( std::string("Serial::open(): tcgetattr(): ")+strerror(errno) );
     }
 
     // enable receiver & ignore control lines
-    ser_opts.c_cflag |=  (CLOCAL | CREAD) ;
+    serialOptions_.c_cflag |=  (CLOCAL | CREAD) ;
 
     // set 8 data bits
-    ser_opts.c_cflag &= ~CSIZE;
-    ser_opts.c_cflag |= CS8;
+    serialOptions_.c_cflag &= ~CSIZE;
+    serialOptions_.c_cflag |= CS8;
 
     // set parity to none with no stop bit
-    ser_opts.c_cflag &= ~PARENB;
-    ser_opts.c_cflag &= ~CSTOPB;
+    serialOptions_.c_cflag &= ~PARENB;
+    serialOptions_.c_cflag &= ~CSTOPB;
 
     // disable hardware flow control
-    ser_opts.c_cflag &= ~CRTSCTS;
+    serialOptions_.c_cflag &= ~CRTSCTS;
 
 #if defined(__sun)
     // http://www.sunmanagers.org/pipermail/summaries/2005-October/006871.html
-    ser_opts.c_iflag &= ~(IGNBRK|BRKINT|PARMRK|ISTRIP|INLCR|IGNCR|ICRNL|IXON);
-    ser_opts.c_oflag &= ~OPOST;
-    ser_opts.c_lflag &= ~(ECHO|ECHONL|ICANON|ISIG|IEXTEN);
-    ser_opts.c_cflag &= ~(CSIZE|PARENB);
-    ser_opts.c_cflag |= CS8;
+    serialOptions_.c_iflag &= ~(IGNBRK|BRKINT|PARMRK|ISTRIP|INLCR|IGNCR|ICRNL|IXON);
+    serialOptions_.c_oflag &= ~OPOST;
+    serialOptions_.c_lflag &= ~(ECHO|ECHONL|ICANON|ISIG|IEXTEN);
+    serialOptions_.c_cflag &= ~(CSIZE|PARENB);
+    serialOptions_.c_cflag |= CS8;
 #else
-    cfmakeraw(&ser_opts);
+    cfmakeraw(&serialOptions_);
 #endif
 
-    if(tcsetattr(port_fd, TCSAFLUSH, &ser_opts) == -1)
+    if(tcsetattr(portFd_, TCSAFLUSH, &serialOptions_) == -1)
     {
-        fprintf(stderr,"Serial::tcsetattr() Error setting attr.\n");
-        lastError_ = "Serial::tcsetattr() Error setting attr.";
-        return -1;
+        close();
+        throw SerialException( std::string("Serial::open(): tcsetattr(): ")+strerror(errno) );
     }
-    return 0;
 }
 
 int 
 Serial::read(void *buf, size_t count)
 {
     int got;
-    got = ::read(port_fd, buf, count);
+    got = ::read(portFd_, buf, count);
     if ( got < 0 )
-        lastError_ = string("Serial::read(): ") + strerror(errno);
+    {
+        throw SerialException( string("Serial::read(): ") + strerror(errno) );
+    }
+    return got;
+}
+
+int
+Serial::readFullBlocking(void *buf, size_t count)
+{
+    int got=0;
+    while( got < (int)count )
+    {
+        char *offset=(char*)buf+got;
+        int ret = read( offset, count-got );
+        got += ret;
+    }
+    return got;
+}
+
+int
+Serial::readFullNonblocking(void *buf, size_t count)
+{
+    int got=0;
+    while( got < (int)count )
+    {
+        char *offset=(char*)buf+got;
+
+        fd_set rfds;
+        struct timeval tv;
+        FD_ZERO(&rfds);
+        FD_SET(portFd_, &rfds);
+        tv.tv_sec = timeoutSec_;
+        tv.tv_usec = timeoutUSec_;
+        int selval = select(portFd_+1, &rfds, NULL, NULL, &tv);
+        if ( selval==0 )
+        {
+            // select timed out: no data
+            return -1;
+        }
+        else if ( selval < 0 )
+        {
+            throw SerialException( std::string("Serial::readFullNonblocking: ")+strerror(errno) );
+        }
+    }
     return got;
 }
 
 int 
-Serial::read_line(void *buf, size_t count, char termchar)
+Serial::readFull(void *buf, size_t count)
+{
+    if ( blockingMode_ )
+        return readFullBlocking( buf, count );
+    else
+        return readFullNonblocking( buf, count );
+}
+
+int 
+Serial::readLineBlocking(void *buf, size_t count, char termchar)
 {
     int got = 0;
     char lastchar=0;
     do{
         //not enough room in buffer
-        if(got==(int)count-1){
+        if(got==(int)count-1)
+        {
+            throw SerialException( "Serial::readLineBlocking(): Not enough room in buffer" );
+        }
+        char *offset=(char*)buf+got;
+        int ret = ::read( portFd_, offset, 1 );
+        if ( ret < 0 )
+        {
+            throw SerialException( std::string( "Serial::readLineBlocking(): ")+strerror(errno) );
+        }
+        got += ret;
+        lastchar=((char*)buf)[got-1];
+
+    } while(lastchar!=termchar);
+
+    return got;
+}
+
+int 
+Serial::readLineNonblocking(void *buf, size_t count, char termchar)
+{
+    int got = 0;
+    char lastchar=0;
+    do{
+        //not enough room in buffer
+        if(got==(int)count-1)
+        {
             lastError_ = "Serial::read_line(): Not enough room in buffer.";
             return -1;
         }
         char *offset=(char*)buf+got;
-        int ret = ::read(port_fd, offset, 1);
-        if(ret>=0){
-            got += ret;
-            lastchar=((char*)buf)[got-1];
-            //((char*)buf)[got]=0;
-            //printf("got %d bytes: %s\n",got,(char*)buf);
-        }else if(ret==-1&&errno==EAGAIN){  // we must be in non-blocking mode, if timeout is set we will block (see below)
-            fd_set rfds;
-            struct timeval tv;
-            FD_ZERO(&rfds);
-            FD_SET(port_fd, &rfds);
-            tv.tv_sec = to_sec;
-            tv.tv_usec = to_usec;
-            // Tobi: this call blocks if a timeout is set
-            int selval = select(port_fd+1, &rfds, NULL, NULL, &tv);
-            if(selval==0){
-                //printf("select timed out no data\n");
-                return 0;
-            }
-            if(selval<0){
-                //perror("select()");
-                lastError_ = string("Serial::read_line(): select(): ")+strerror(errno);
-                return -1;
-            }
+
+        fd_set rfds;
+        struct timeval tv;
+        FD_ZERO(&rfds);
+        FD_SET(portFd_, &rfds);
+        tv.tv_sec = timeoutSec_;
+        tv.tv_usec = timeoutUSec_;
+        int selval = select(portFd_+1, &rfds, NULL, NULL, &tv);
+        if(selval==0)
+        {
+            // select timed out: no data
+            return -1;
         }
-    }while(lastchar!=termchar);
+        else if(selval<0)
+        {
+            throw SerialException( std::string("Serial::readLineNonblocking(): ")+strerror(errno) );
+        }
+    } while(lastchar!=termchar);
 
     return got;
 }
 
 int 
-Serial::read_full(void *buf, size_t count)
+Serial::readLine(void *buf, size_t count, char termchar)
 {
-    int got=0;
-    while(got<(int)count){
-        char *offset=(char*)buf+got;
-        int ret = ::read(port_fd, offset, count-got);
-        if(ret>=0){
-            got += ret;
-        }else if(ret==-1&&errno==EAGAIN){  // we must be in non-blocking mode
-            fd_set rfds;
-            struct timeval tv;
-            FD_ZERO(&rfds);
-            FD_SET(port_fd, &rfds);
-            tv.tv_sec = to_sec;
-            tv.tv_usec = to_usec;
-            int selval = select(port_fd+1, &rfds, NULL, NULL, &tv);
-            if(selval==0){
-                //printf("select timed out no data\n");
-                lastError_ = "Serial::read_full(): select timed out: no data.";
-                return -1;
-            }
-            if(selval<0){
-                lastError_ = string("Serial::read_full(): select(): ")+strerror(errno);
-                //perror("select()");
-                return -1;
-            }
-        }
-    }
-    return got;
+    if ( blockingMode_ )
+        return readLineBlocking(buf,count,termchar);
+    else
+        return readLineNonblocking(buf,count,termchar);
 }
 
 int 
-Serial::data_avail()
+Serial::bytesAvailable()
 {
     int ret,n_read;
-    ret=ioctl(port_fd,FIONREAD,&n_read);
+    ret=ioctl(portFd_,FIONREAD,&n_read);
 
-    if(ret==-1){
-        perror("Serial:data_avail()");
-        lastError_ = string("Serial::data_avail(): ")+strerror(errno);
-        return -1;
+    if(ret==-1)
+    {
+        throw SerialException( std::string("Serial::bytesAvailable(): ")+strerror(errno) );
     }
     return n_read;
 }
 
 int 
-Serial::data_avail_wait()
+Serial::bytesAvailableWait()
 {
+    throw SerialException( "AlexB: Serial::bytesAvailableWait(): interface changed: -1 on timeout!" );
+
     fd_set rfds;
     struct timeval tv;
     FD_ZERO(&rfds);
-    FD_SET(port_fd, &rfds);
-    tv.tv_sec = to_sec;
-    tv.tv_usec = to_usec;
-    int selval = select(port_fd+1, &rfds, NULL, NULL, &tv);
-    if(selval==0){
-        //printf("select timed out no data\n");
-        return 0;
-    }
-    if(selval<0){
-        //perror("select()");
-        lastError_ = string("Serial::data_avail_wait(): select(): ")+strerror(errno);
+    FD_SET(portFd_, &rfds);
+    tv.tv_sec = timeoutSec_;
+    tv.tv_usec = timeoutUSec_;
+    int selval = select(portFd_+1, &rfds, NULL, NULL, &tv);
+    if(selval==0)
+    {
+        //printf("select timed out: no data\n");
         return -1;
     }
-    return data_avail();
+    if( selval < 0 )
+    {
+        throw SerialException( std::string("Serial::bytesAvailableWait(): ")+strerror(errno) );
+    }
+    return bytesAvailable();
 }
 
 int 
 Serial::write(const void *buf, size_t count)
 {
     int put;
-    put = ::write(port_fd, buf, count);
+    put = ::write(portFd_, buf, count);
     if ( put < 0 )
-        lastError_ = string("Serial::write(): ")+strerror(errno);
+    {
+        throw SerialException( string("Serial::write(): ")+strerror(errno) );
+    }
     return put;
 }
 
@@ -342,29 +401,31 @@ Serial::write(const char *str, size_t maxlen)
 {
     int toput=strnlen(str, maxlen);
     int put;
-    put = ::write(port_fd, str, toput);
+    put = ::write(portFd_, str, toput);
     if ( put < 0 )
-        lastError_ = string("Serial::write(): ")+strerror(errno);
+    {
+        throw SerialException( string("Serial::write(): ")+strerror(errno) );
+    }
     return put;
 }
 
-int 
+void 
 Serial::flush()
 {
-    return(tcflush(port_fd,TCIOFLUSH));
+    int ret = tcflush(portFd_,TCIOFLUSH);
+    if ( ret < 0 )
+    {
+        throw SerialException( std::string("Serial::flush(): ")+strerror(errno) );
+    }
 }
 
-int 
+void 
 Serial::drain()
 {
     // wait till all output sent
-    if(tcdrain(port_fd)){
-        perror("Serial::drain():tcdrain()");
-        lastError_ = string("Serial::drain():tcdrain(): ")+strerror(errno);
-        return -1;
-    }
-    else{
-        return 0;
+    if(tcdrain(portFd_))
+    {
+        throw SerialException( std::string("Serial::drain(): tcdrain: ")+strerror(errno) );
     }
 }
 
@@ -372,79 +433,84 @@ Serial::drain()
 
 #ifdef __QNX__
 
-int 
-Serial::baud(int baud)
+void
+Serial::setBaudRate(int baud)
 {
     int ret;
 	int c;
 
-	ret = cfsetispeed( &ser_opts, (speed_t) baud );
+	ret = cfsetispeed( &serialOptions_, (speed_t) baud );
 	if ( ret<0 )
-	{	
-		return(-1) ; 
+	{
+        throw SerialException( std::string("Serial::setBaudRate: ")+strerror(errno) );
 	}
 	
-	ret = cfsetospeed( &ser_opts, (speed_t) baud );
+	ret = cfsetospeed( &serialOptions_, (speed_t) baud );
 	if ( ret<0 )
 	{	
-		return(-1) ; 
+        throw SerialException( std::string("Serial::setBaudRate: ")+strerror(errno) );
 	}
 	
-    ret = tcsetattr( port_fd, TCSANOW, &ser_opts ) ; 
+    ret = tcsetattr( portFd_, TCSANOW, &serialOptions_ ) ; 
+	if ( ret<0 )
+	{	
+        throw SerialException( std::string("Serial::setBaudRate: ")+strerror(errno) );
+	}
 
-    tcgetattr( port_fd, &ser_opts ) ;
+    ret = tcgetattr( portFd_, &serialOptions_ ) ;
+	if ( ret<0 )
+	{	
+        throw SerialException( std::string("Serial::setBaudRate: ")+strerror(errno) );
+	}
  
- 	c = (int)cfgetospeed( &ser_opts ) ;
-   
-	return(ret) ;
+ 	// c = (int)cfgetospeed( &serialOptions_ ) ;
+    cfgetospeed( &serialOptions_ ) ;
 }
 
 // flags are not used here
-int 
+void 
 Serial::open(const char* device, const int flags)
 {
 	int ret;
 	int baud = 9600;
  
     // argument to modem_open requires a non_const pointer
-	port_fd = modem_open( const_cast<char*>(device), baud ) ;
-	if( port_fd < 0)
+	portFd_ = modem_open( const_cast<char*>(device), baud ) ;
+	if( portFd_ < 0)
 	{  
         printf("ERROR(serial.c): Could not open serial device\n");
-		return 0; 
+        throw SerialException( "ERROR(serial.c): Could not open serial device." );
 	} 
 
-	ret = tcgetattr( port_fd, &ser_opts ) ;
+	ret = tcgetattr( portFd_, &serialOptions_ ) ;
 	
-	ser_opts.c_cflag = CS8|CREAD|HUPCL|CLOCAL ;  //|IHFLOW 
-	ser_opts.c_lflag =IEXTEN ;
-	ser_opts.c_oflag =0 ;
-	ser_opts.c_iflag = IGNBRK |  IGNPAR ;  //IGNCR |
+	serialOptions_.c_cflag = CS8|CREAD|HUPCL|CLOCAL ;  //|IHFLOW 
+	serialOptions_.c_lflag =IEXTEN ;
+	serialOptions_.c_oflag =0 ;
+	serialOptions_.c_iflag = IGNBRK |  IGNPAR ;  //IGNCR |
 
-	ret = tcsetattr( port_fd, TCSANOW, &ser_opts ) ;
-
-	return 1 ;
+	ret = tcsetattr( portFd_, TCSANOW, &serialOptions_ ) ;
 }
 
 
 int 
 Serial::read(void *buf, size_t count)
 {
-	cout << "WARNING(serial.cpp::read()): NOT IMPLEMENTED YET" << endl;
+	throw SerialException("WARNING(serial.cpp::read()): NOT IMPLEMENTED YET FOR QNX");
 }
 
 int 
-Serial::read_line(void *buf, size_t count, char termchar)
+Serial::readLine(void *buf, size_t count, char termchar)
 {
-   cout << "WARNING(serial.cpp::read_line()): NOT IMPLEMENTED YET" << endl;
+    throw SerialException("WARNING(serial.cpp::read_line()): NOT IMPLEMENTED YET FOR QNX");
 }
 
 int 
-Serial::read_full(void *buf, size_t count)
+Serial::readFull(void *buf, size_t count)
 {
     // these timeouts and elapsedTime do not have to be accurate so can just
 	// use ints
-	int timeOut = to_sec + to_usec/1000000;
+	int timeOut = timeoutSec_ + timeoutUSec_/1000000;
 	// cout << "timeout: " << timeOut << endl;
 
 	// total time elapsed while trying to read from serial device
@@ -489,7 +555,7 @@ Serial::read_full(void *buf, size_t count)
 			countChunk = bytesLeft;
 		}
 		
-		ret = ::readcond(port_fd, (void*)offset, countChunk, countChunk, timeOut, timeOut );
+		ret = ::readcond(portFd_, (void*)offset, countChunk, countChunk, timeOut, timeOut );
 		// cout << "Read " << ret << " bytes out of " << count  << " bytes" << endl;
 		got += ret;
 
@@ -504,48 +570,47 @@ Serial::read_full(void *buf, size_t count)
 		
 	}
 	
-	//int n = readcond(port_fd, buf, count, count, timeOut, timeOut);
+	//int n = readcond(portFd_, buf, count, count, timeOut, timeOut);
 	// cout << "got: " << got << endl;
 	return(got) ;
 }
 
 int 
-Serial::data_avail()
+Serial::bytesAvailable()
 {	
     int ret,n_read;
-    ret = ioctl(port_fd,FIONREAD,&n_read);
+    ret = ioctl(portFd_,FIONREAD,&n_read);
 
     if( ret==-1 )
 	{
-        perror( "Serial:data_avail()" );
-        lastError_ = string("Serial::data_avail(): ")+strerror(errno);
-        return -1;
+        throw SerialException( std::string("Serial::bytesAvailable: ")+strerror(errno) );
     }
     return n_read;
 
-// return( tcischars(port_fd) );	 
+// return( tcischars(portFd_) );	 
 }
 
 int 
-Serial::data_avail_wait()
+Serial::bytesAvailableWait()
 {
+    throw SerialException( "AlexB: Serial::bytesAvailableWait(): interface changed: -1 on timeout!" );
+
     fd_set rfds;
     struct timeval tv;
     FD_ZERO(&rfds);
-    FD_SET(port_fd, &rfds);
-    tv.tv_sec = to_sec;
-    tv.tv_usec = to_usec;
-    int selval = select(port_fd+1, &rfds, NULL, NULL, &tv);
+    FD_SET(portFd_, &rfds);
+    tv.tv_sec = timeoutSec_;
+    tv.tv_usec = timeoutUSec_;
+    int selval = select(portFd_+1, &rfds, NULL, NULL, &tv);
     if(selval==0){
         //printf("select timed out no data\n");
-        return 0;
+        return -1;
     }
     if(selval<0){
         //perror("select()");
-        lastError_ = string("Serial::data_avail_wait(): select(): ")+strerror(errno);
-        return -1;
+        throw SerialException( "Serial::bytesAvailableWait(): select(): "+strerror(errno) );
     }
-    return data_avail();
+    return bytesAvailable();
 }
 
 int 
@@ -553,10 +618,12 @@ Serial::write(const void *buf, size_t count)
 {
     ssize_t put;
 	
-	put = ::write( port_fd, buf, count );	
+	put = ::write( portFd_, buf, count );	
 	// *nw = n ;
     if ( put < 0 )
-        lastError_ = string("Serial::write(): ")+strerror(errno);
+    {
+        throw SerialException( string("Serial::write(): ")+strerror(errno) );
+    }
     return put ;
 }
 
@@ -565,26 +632,27 @@ Serial::write(const char *str, size_t maxlen)
 {
     int toput=strnlen(str, maxlen);
     int put;
-    put = ::write(port_fd, str, toput);
+    put = ::write(portFd_, str, toput);
     if ( put < 0 )
-        lastError_ = string("Serial::write(): ")+strerror(errno);
+    {
+        throw SerialException( string("Serial::write(): ")+strerror(errno) );
+    }
     return put;
 }
 
 int 
 Serial::flush()
 {
-	return(tcflush(port_fd,TCIOFLUSH)); 
+	return(tcflush(portFd_,TCIOFLUSH)); 
 }
 
 int 
 Serial::drain()
 {
     // wait till all output sent
-    if(tcdrain(port_fd)){
-        perror("Serial::drain():tcdrain()");
-        lastError_ = string("Serial::drain():tcdrain(): ")+strerror(errno);
-        return -1;
+    if(tcdrain(portFd_))
+    {
+        throw SerialException( string("Serial::drain():tcdrain(): ")+strerror(errno) );
     }
     else{
         return 0;

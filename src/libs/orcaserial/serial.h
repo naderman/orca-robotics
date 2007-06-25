@@ -18,71 +18,118 @@
 namespace orcaserial {
 
 //!
+//! @brief Exception thrown by Serial.
+//!
+class SerialException : public std::exception
+{ 
+    std::string  message_;
+public:
+    SerialException(const char *message)
+        : message_(message) {}
+    SerialException(const std::string &message)
+        : message_(message) {}
+    ~SerialException()throw(){}
+    virtual const char* what() const throw() { return message_.c_str(); }
+};
+
+//!
 //! @brief Encapsulates a serial port.  
+//!
+//! @author Matthew Ridley, Alex Brooks
 //!
 class Serial
 {
 public:
-    //! Constructor.
-    Serial();
+
+    //! Constructor.  
+    //! Opens a device @ref dev.
+    //! Throws exceptions on error
+    Serial( const char *dev, int baudRate, bool blockingMode );
+
+    //! Destructor closes serial port
     ~Serial();
 
-    //! Opens a device @ref dev.
-    //! O_NONBLOCK might be handy in flags.
-    int open(const char *dev, const int flags);
+    //! Sets the baud rate. Flushes any data.
+    void setBaudRate(int baud);
 
-    //! Reads some data into buffer @ref buf.
+    //! Sets timeout for non-blocking operations.
+    void setTimeout(int sec, int usec) { timeoutSec_=sec; timeoutUSec_=usec; };
+
+    //! Reads up to @ref count bytes into buffer @ref buf.
+    //! Returns the number of bytes read.
+    //! Will never return <0 -- throws exceptions instead.
     int read(void *buf, size_t count);
 
-    //! Reads some data (exactly @ref count bytes or error).
-    //! Returns the number of bytes read, or -1 on error.
-    int read_full(void *buf, size_t count);
+    //! Tries to read exactly @ref count bytes into @ref buf.  
+    //! Returns the number of bytes read, or throws an exception.
+    //!
+    //! In blocking mode we might block forever, waiting for the number of bytes we want or an error.
+    //!
+    //! In non-blocking mode we won't block more than the timeout specified.
+    //! Returns -1 if it timed out.
+    //! NOTE: The timeout applies for each individual read() call.  We might have to make lots of them,
+    //!       so the total time for which this function blocks might be longer than the specified timeout.
+    //!
+    int readFull(void *buf, size_t count);
 
-    //! Reads a line of data up to @ref count bytes (including \0) terminated by termchar.
-    //! Returns the number of bytes read, or -1 on error.
-    //! This is a blocking call with a timeout even if O_NONBLOCK was specified on open
-    int read_line(void *buf, size_t count, char termchar);
+    //! Reads a line of data up to @ref count bytes (including @ref termchar), terminated by @ref termchar.
+    //! Returns the number of bytes read.
+    //!
+    //! In blocking mode we might block forever, waiting for the number of bytes we want or an error.
+    //!
+    //! In non-blocking mode we won't block more than the timeout specified.
+    //! Returns -1 if it timed out.
+    //! NOTE: The timeout applies for each individual read() call.  We might have to make lots of them,
+    //!       so the total time for which this function blocks might be longer than the specified timeout.
+    //!
+    int readLine(void *buf, size_t count, char termchar='\0');
 
     //! Returns the number of bytes available for reading (non-blocking).
-    int data_avail();
+    int bytesAvailable();
 
     //! Returns the number of bytes available for reading.  Waits according to the timeout.
     //! Returns:
-    //! - 0  :  timed out
+    //! - <0 :  timed out
     //! - >0 :  data ready
-    //! - <0 :  error
-    int data_avail_wait();
+    int bytesAvailableWait();
 
-    //! Writes some data.
+    //! Writes some data.  Returns the number of bytes written.
     int write(const void *buf, size_t count);
 
-    //! Writes a string (default up to 256 chars)
+    //! Writes a ('\0'-terminated) string (default up to 256 chars). 
+    //! Returns the number of bytes written.
     int write(const char *buf, size_t maxlen=256);
-
-    //! Sets the baud rate of an open device. Flushes any data.
-    int baud(int baud);
-
-    //! Sets timeout for blocking operations.
-    void timeout(int sec, int usec) { to_sec=sec; to_usec=usec; };
 
     //! Flushs both input and output buffers.
     //! This discards all data in buffers.
-    int flush();
+    void flush();
 
     //! Finishes transmission from output buffers and drains input buffers.
-    int drain();
+    void drain();
 
-    //! If any of the functions above produced an error, you can see it with this call.
-    std::string last_error() const { return lastError_; }
-
-    int fileDescriptor() { return port_fd; }
+    //! This gives direct access to the file descriptor: be careful with this...
+    int fileDescriptor() { return portFd_; }
 
 private:
-    struct termios ser_opts;
-    int port_fd;
-    int to_sec;
-    int to_usec;
 
+    // Opens a device @ref dev.
+    void open(const char *dev, int flags=0);
+
+    // Won't throw exceptions.
+    void close();
+
+    int readFullBlocking(void *buf, size_t count);
+    int readFullNonblocking(void *buf, size_t count);
+
+    int readLineBlocking(void *buf, size_t count, char termchar);
+    int readLineNonblocking(void *buf, size_t count, char termchar);
+    
+    struct termios serialOptions_;
+    int portFd_;
+    int timeoutSec_;
+    int timeoutUSec_;
+    bool blockingMode_;
+    
     std::string lastError_;
 };
 

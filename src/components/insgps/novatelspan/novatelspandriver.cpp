@@ -47,21 +47,11 @@ NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device
 //     localise3dData_(0),
     context_(context)
 {
-    serial_ = new Serial();
-    
-    // TODO: stick this in an openPort function like the AtmelDriver
-    if(serial_->open(device, O_NONBLOCK ) ==-1){
-	cout << "NovatelSpanInsGps: ERROR: Failed to open serial device: " << device << endl;
-        std::string errString = "Failed to open serial device.";
-        throw orcaice::Exception( ERROR_INFO, errString );
-    }
-    if(serial_->baud(baud_)==-1){
-	cout << "NovatelSpanInsGps: ERROR: Failed to set baud rate.\n";
-        std::string errString = "Failed to set baud rate.";
-        throw orcaice::Exception( ERROR_INFO, errString );
-    }
-    // set to 1 second timeout
-    serial_->timeout( 2, 0 );
+    const bool blockingMode = false;
+    serial_ = new Serial( device, baud, blockingMode );
+
+    // set to n second timeout
+    serial_->setTimeout( 2, 0 );
     // hasFix_       = false;
     // havePps_      = false;
     // havePosition_ = false;
@@ -133,26 +123,19 @@ NovatelSpanInsGpsDriver::reset()
     // for the device after it has been reset.
 
     // Change the baudrate of the serial port to the requested baudrate
-    if( serial_->baud( baud_ )==-1 )
-    {
-        std::string errString = "Failed to set baud rate.";
-        context_.tracer()->error( errString );
-        throw orcaice::Exception( ERROR_INFO, errString );
-    }
-    else
-    {
-        //IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(2000));
-        // serial_->flush();
-        put = serial_->write( "unlogall\r\n" );
-        // printf("put %d bytes\n",put);
-        serial_->drain();
+    serial_->setBaudRate( baud_ );
 
-        // set the device to the requested baud rate 
-        // put = serial_->write( "com com1 115200 n 8 1 n off on\r\n" );
-        char str[256];
-        sprintf( str,"com com1 %d n 8 1 n off on\r\n", baud_ );
-        put = serial_->write( str );
-    }
+    //IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(2000));
+    // serial_->flush();
+    put = serial_->write( "unlogall\r\n" );
+    // printf("put %d bytes\n",put);
+    serial_->drain();
+
+    // set the device to the requested baud rate 
+    // put = serial_->write( "com com1 115200 n 8 1 n off on\r\n" );
+    char str[256];
+    sprintf( str,"com com1 %d n 8 1 n off on\r\n", baud_ );
+    put = serial_->write( str );
     
 
 //     // set the port to the requested baudrate
@@ -475,7 +458,7 @@ NovatelSpanInsGpsDriver::run()
                 #endif
 
                 // Guaranteed not to block for long.
-                int ret = serial_->data_avail_wait();
+                int ret = serial_->bytesAvailableWait();
                 // timeOfRead_ = IceUtil::Time::now();
                 if ( ret < 0 )
                 {
@@ -981,7 +964,7 @@ int NovatelSpanInsGpsDriver::read_message( novatel_message* msg )
 
     // read the first sync byte
     do{
-        got = serial_->read_full( &msg->hdr.sop1, 1 );
+        got = serial_->readFull( &msg->hdr.sop1, 1 );
         if ( got <= 0 )
         {
             // server has disconnected somehow
@@ -1004,7 +987,7 @@ int NovatelSpanInsGpsDriver::read_message( novatel_message* msg )
     // read the second sync byte
     do
     {
-        got = serial_->read_full( &msg->hdr.sop2, 1 );
+        got = serial_->readFull( &msg->hdr.sop2, 1 );
     }while( got!=1 );
 
     if( msg->hdr.sop2 != 0x44 )
@@ -1016,29 +999,25 @@ int NovatelSpanInsGpsDriver::read_message( novatel_message* msg )
      // read the third sync byte
     do
     {
-        got = serial_->read_full( &msg->hdr.sop3, 1 );
+        got = serial_->readFull( &msg->hdr.sop3, 1 );
     }while( got != 1 );
 
     switch( msg->hdr.sop3 )
     {
         case 0x12: //long packet
             // how long is the header ?
-            got = serial_->read_full( &msg->hdr.header_length, 1 );
-            if( got<0 ) return -1;
+            got = serial_->readFull( &msg->hdr.header_length, 1 );
             //printf("got %d bytes, asked for %d\n",got,1);
 
             // read all of the header...
-            got = serial_->read_full( &msg->hdr.number, msg->hdr.header_length-4 );
-            if( got<0 ) return -1;
+            got = serial_->readFull( &msg->hdr.number, msg->hdr.header_length-4 );
             // printf("got %d bytes, asked for %d\n",got,msg->hdr.header_length-4);
 
             // read the  message data
-            got = serial_->read_full( &msg->data, msg->hdr.length );
-            if( got<0 ) return -1;
+            got = serial_->readFull( &msg->data, msg->hdr.length );
             //  printf("got %d bytes, asked for %d\n",got,msg->hdr.length);
 
-            got = serial_->read_full( &in_crc, 4 );
-            if( got<0 ) return -1;
+            got = serial_->readFull( &in_crc, 4 );
             //printf("got %d bytes, asked for %d\n",got,1);
 
             id = msg->hdr.number;
@@ -1049,17 +1028,14 @@ int NovatelSpanInsGpsDriver::read_message( novatel_message* msg )
 
         case 0x13: //short packet
             // read rest of the header 12 bytes - 3 bytes already read
-            got = serial_->read_full( &msg->short_hdr.length, 9 );
-            if( got<0 ) return -1;
+            got = serial_->readFull( &msg->short_hdr.length, 9 );
             // printf("got %d bytes, asked for %d\n",got,1);
 
             // read the rest of the message
-            got = serial_->read_full( &msg->short_data, msg->short_hdr.length );
-            if( got<0 ) return -1;
+            got = serial_->readFull( &msg->short_data, msg->short_hdr.length );
             // printf("got %d bytes, asked for %d\n",got,msg->short_hdr.length-4);
 
-            got = serial_->read_full( &in_crc, 4 );
-            if( got<0 ) return -1;
+            got = serial_->readFull( &in_crc, 4 );
             //printf("got %d bytes, asked for %d\n",got,1);
 
             id = msg->short_hdr.number;
