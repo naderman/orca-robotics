@@ -692,13 +692,13 @@ Serial::writeString(const char *str, size_t maxlen)
     return put;
 }
 
-int 
+void 
 Serial::flush()
 {
 	return(tcflush(portFd_,TCIOFLUSH)); 
 }
 
-int 
+void
 Serial::drain()
 {
     // wait till all output sent
