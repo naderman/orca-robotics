@@ -280,7 +280,10 @@ int sick_set_baudrate(sick_laser_p laser, int brate )
 int sick_serial_connect(sick_laser_p laser)
 {
   if((laser->dev.fd = open(laser->dev.ttyport.c_str(), O_RDWR | O_NOCTTY, 0)) < 0)
-    return(-1);
+  {
+      perror( "open ");
+      return(-1);
+  }
   sick_set_serial_params(laser);
   return(laser->dev.fd);
 }

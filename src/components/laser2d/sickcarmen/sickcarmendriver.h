@@ -19,8 +19,6 @@ class sick_laser_t;
 namespace laser2d {
 
 //
-// This driver does not throw exceptions.
-//
 // @author Alex Brooks
 //
 class SickCarmenDriver : public Driver
@@ -28,21 +26,20 @@ class SickCarmenDriver : public Driver
 
 public: 
 
-    SickCarmenDriver( const Config & cfg, const orcaice::Context & context );
+    SickCarmenDriver( const Config & cfg, 
+                      const orcaice::Context & context );
     virtual ~SickCarmenDriver();
 
-    // returns: 0 = success, non-zero = failure
-    virtual int init();
-
     // Blocks till new data is available
-    // returns: 0 = success, non-zero = failure
-    virtual int read( orca::LaserScanner2dDataPtr &data );
-
-    virtual const std::string heartbeatMessage();
+    virtual void read( float *ranges, unsigned char *intensities, orca::Time &timeStamp );
 
 private: 
 
+    void init();
+
     int setupParams( double maxRange, int numberOfSamples, int baudrate );
+
+    laser2d::Driver::Config config_;
 
     // carmen core object
     sick_laser_t *laser_;

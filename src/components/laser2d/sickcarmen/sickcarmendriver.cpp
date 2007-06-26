@@ -19,8 +19,9 @@ using namespace std;
 
 namespace laser2d {
 
-SickCarmenDriver::SickCarmenDriver( const Config & cfg, const orcaice::Context & context )
-    : Driver(cfg),
+SickCarmenDriver::SickCarmenDriver( const Config           &cfg,
+                                    const orcaice::Context &context )
+    : config_(cfg),
       laser_(0),
       context_(context)
 {
@@ -35,6 +36,8 @@ SickCarmenDriver::SickCarmenDriver( const Config & cfg, const orcaice::Context &
 
     std::string laserType = orcaice::getPropertyWithDefault( prop, prefix+"LaserType", "LMS" );
     type_ = strdup(laserType.c_str());
+
+    init();
 }
 
 SickCarmenDriver::~SickCarmenDriver()
@@ -102,14 +105,14 @@ SickCarmenDriver::setupParams( double maxRange, int numberOfSamples, int baudrat
     }
     catch ( std::string &e )
     {
-        infoMessages_ += "Error setting params: " + e;
+        context_.tracer()->error( "Error setting params: " + e );
         return -1;
     }
     return 0;
 }
 
-int 
-SickCarmenDriver::init( )
+void
+SickCarmenDriver::init()
 {
     firstRead_     = false;
     laserStalled_  = false;
@@ -119,8 +122,8 @@ SickCarmenDriver::init( )
     //
     if ( setupParams( config_.maxRange, config_.numberOfSamples, baudrate_ ) )
     {
-        context_.tracer()->error( "Failed to setup factory config parameters." );
-        exit(1);
+        throw orcaice::HardwareException( ERROR_INFO,
+                                          "SickCarmenDriver::init(): Failed to setup factory config parameters." );
     }
  
     std::stringstream ss;
@@ -133,22 +136,19 @@ SickCarmenDriver::init( )
     int ret = sick_start_laser(laser_);
     if ( ret == 0 )
     {
-        context_.tracer()->info( "connect succeeded." );
-        infoMessages_ += infoMessages_ + string("Successfully enabled laser:\n") + sick_info();
+        context_.tracer()->info( "SickCarmenDriver::init(): connect succeeded." );
     }
     else
     {
-        context_.tracer()->info( "connect failed." );
-        infoMessages_ += infoMessages_ + string("Problem enabling laser:\n") + sick_info();
+        context_.tracer()->info( "SickCarmenDriver::init(): connect failed." );
+        throw orcaice::HardwareException( ERROR_INFO,
+                                          "SickCarmenDriver::init(): sick_start_laser failed" );
     }
-    return ret;
 }
 
-int 
-SickCarmenDriver::read( orca::LaserScanner2dDataPtr &data )
+void
+SickCarmenDriver::read( float *ranges, unsigned char *intensities, orca::Time &timeStamp )
 {
-    infoMessages_ = "";
-
     context_.tracer()->debug( "SickCarmenDriver::read()", 4 );
 
     double currentTime;
@@ -162,6 +162,7 @@ SickCarmenDriver::read( orca::LaserScanner2dDataPtr &data )
     }
 
     int i=0;
+    std::string infoMessages = "";
 
     // Poll till we get new data, or the laser is screwed.
     while ( true )
@@ -179,22 +180,19 @@ SickCarmenDriver::read( orca::LaserScanner2dDataPtr &data )
 
         sick_handle_laser(laser_);
         if ( strlen(sick_info()) != 0 ) {
-            infoMessages_ = string("sick_handle_laser: %s") + sick_info();
+            infoMessages = string("sick_handle_laser: %s") + sick_info();
         }
 
         laserStalled_ = ( currentTime - laser_->timestamp > LASER_STALL_TIMEOUT );
         if ( laserStalled_ )
         {
 //             cout<<"TRACE(nativelaserdriver.cpp): returning on stall" << endl;
-            return -1;
+            throw orcaice::Exception( ERROR_INFO, "SickCarmenDriver: laser stalled." );
         }
 
         if ( laser_->new_reading ) {
             // set the time stamp right away
-            orcaice::setToNow( data->timeStamp );
-            
-            data->ranges.resize( laser_->numvalues );
-            data->intensities.resize( laser_->numvalues );
+            orcaice::setToNow( timeStamp );
             
             //debug
 //            cout<<"SickCarmenDriver::read"<<endl;
@@ -202,39 +200,27 @@ SickCarmenDriver::read( orca::LaserScanner2dDataPtr &data )
             {
                 // alexm: dodgy hack in response to sudden shrinkage of the scan
                 // "/1000.0" was in the original
-                data->ranges[i]      = laser_->range[i]/100.0;
-                //data->ranges[i]      = laser_->range[i]/1000.0;
-                data->intensities[i] = laser_->glare[i];
+                ranges[i]      = laser_->range[i]/100.0;
+                //ranges[i]      = laser_->range[i]/1000.0;
+                intensities[i] = laser_->glare[i];
 
                 // debug
 //                cout<<data->ranges[i]<<" ";
             }
 //            cout<<endl;
-            
-
-            // default settings
-            data->minRange     = config_.minRange;
-            data->maxRange     = config_.maxRange;
-            data->fieldOfView  = config_.fieldOfView;
-            data->startAngle   = config_.startAngle;
-
-            // alexm: before laser iface change:
-//             data->startAngle     = -M_PI/2;
-//             data->angleIncrement = DEG2RAD(((laser_->settings.angle_resolution==RES_1_00_DEGREE)?1.0:((laser_->settings.angle_resolution==RES_0_50_DEGREE)?0.5:((laser_->settings.angle_resolution==RES_0_25_DEGREE)?0.25:0.0))));
-//             cout<<"TRACE(nativelaserdriver.cpp): read() ok." << endl;
-            return 0;
+            return;
         }
     }
 }
 
-const std::string
-SickCarmenDriver::heartbeatMessage()
-{
-    sprintf(sickInfoMessage_, 
-            "Buffer: %s(%.1fpct full) ", 
-            laserStalled_ ? "STALLED " : " ", 
-            (laser_->buffer_position-laser_->processed_mark) / (float)LASER_BUFFER_SIZE * 100.0);
-    return sickInfoMessage_;
-}
+// const std::string
+// SickCarmenDriver::heartbeatMessage()
+// {
+//     sprintf(sickInfoMessage_, 
+//             "Buffer: %s(%.1fpct full) ", 
+//             laserStalled_ ? "STALLED " : " ", 
+//             (laser_->buffer_position-laser_->processed_mark) / (float)LASER_BUFFER_SIZE * 100.0);
+//     return sickInfoMessage_;
+// }
 
 } // namespace
