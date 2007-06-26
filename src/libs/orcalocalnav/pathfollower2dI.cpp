@@ -18,6 +18,47 @@ using namespace orcaice;
 
 namespace orcalocalnav {
 
+namespace {
+    
+    bool isDodgy( const orca::PathFollower2dData &pathData, std::string &reason )
+    {
+        std::stringstream ss;
+        bool dodgy=false;
+        for ( unsigned int i=0; i < pathData.path.size(); i++ )
+        {
+            const orca::Waypoint2d &wp = pathData.path[i];
+
+            if ( wp.distanceTolerance < 1e-3 )
+            {
+                ss << "Waypoint " << i << ": tiny distance tolerance: " 
+                   << wp.distanceTolerance << "m" << endl;
+                dodgy = true;
+            }
+            if ( wp.headingTolerance < 1e-3 )
+            {
+                ss << "Waypoint " << i << ": tiny heading tolerance: " 
+                   << wp.headingTolerance*180.0/M_PI << "deg" << endl;
+                dodgy = true;;
+            }
+            if ( wp.maxApproachSpeed < 1e-3 )
+            {
+                ss << "Waypoint " << i << ": tiny maxApproachSpeed: " 
+                   << wp.maxApproachSpeed << "m/s" << endl;
+                dodgy = true;;
+            }
+            if ( wp.maxApproachTurnrate < 1e-3 )
+            {
+                ss << "Waypoint " << i << ": tiny maxApproachTurnrate: " 
+                   << wp.maxApproachTurnrate*180.0/M_PI << "deg/s" << endl;
+                dodgy = true;;
+            }
+        }
+        reason = ss.str();
+        return dodgy;
+    }
+
+}
+
 PathFollower2dI::PathFollower2dI( const std::string      &ifaceTag,
                                   const Clock            &clock,
                                   const orcaice::Context &context ) 
@@ -63,11 +104,20 @@ void
 PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateImmediately, const ::Ice::Current& )
 {
     // Sanity check
-    std::string insanityReason;
-    if ( !orcaice::isSane( data, insanityReason ) )
+    std::string reason;
+    if ( !orcaice::isSane( data, reason ) )
     {
-        cout<<"TRACE(pathfollower2dI.cpp): Received dodgy path: " << orcaice::toString(data) << endl;
-        throw orca::MalformedParametersException( insanityReason );
+        stringstream ss;
+        ss << "PathFollower2dI: Received screwy path: " << orcaice::toString(data) << endl << reason;
+        context_.tracer()->warning( ss.str() );
+        throw orca::MalformedParametersException( reason );
+    }
+
+    if ( isDodgy( data, reason ) )
+    {
+        stringstream ss;
+        ss << "Received dodgy path: " << orcaice::toString(data) << endl << reason;
+        context_.tracer()->warning( ss.str() );
     }
 
     cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << orcaice::toVerboseString(data) << endl;

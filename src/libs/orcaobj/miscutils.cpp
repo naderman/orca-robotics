@@ -314,6 +314,7 @@ bool isSane( const orca::PathFollower2dData& pathData, std::string& reason )
                << wp.maxApproachTurnrate*180.0/M_PI << "deg/s" << endl;
             sane = false;
         }
+
     }
     reason = ss.str();
     return sane;
