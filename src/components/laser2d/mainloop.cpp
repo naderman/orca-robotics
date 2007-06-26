@@ -10,30 +10,47 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaice/heartbeater.h>
-
 #include "mainloop.h"
+
+// Various bits of hardware we can drive
+#include "fakedriver.h"
+#ifdef HAVE_CARMEN_DRIVER
+#  include "sickcarmen/sickcarmendriver.h"
+#endif
+#ifdef HAVE_ACFR_DRIVER
+#  include "sickacfr/sickacfrdriver.h"
+#endif
+#ifdef HAVE_PLAYERCLIENT_DRIVER
+#  include "playerclient/playerclientdriver.h"
+#endif
+//#include "yasick/sicklaser.h"
 
 using namespace std;
 using namespace orca;
 
 namespace laser2d {
 
+namespace {
+    const char *SUBSYSTEM = "MainLoop";
+}
+
 MainLoop::MainLoop( orcaifaceimpl::LaserScanner2dIface &laserInterface,
-                    Driver                             *hwDriver,
+                    const Driver::Config               &config,
                     bool                                compensateRoll,
                     const orcaice::Context             &context )
     : laserInterface_(laserInterface),
-      hwDriver_(hwDriver),
+      config_(config),
+      driver_(0),
       compensateRoll_(compensateRoll),
       context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( "hardware", 10.0 );
-    context_.status()->initialising( "hardware" );
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
+    context_.status()->initialising( SUBSYSTEM );
 }
 
 MainLoop::~MainLoop()
 {
+    if ( driver_ ) delete driver_;
 }
 
 void
@@ -62,7 +79,7 @@ MainLoop::activate()
             context_.tracer()->warning( "MainLoop::activate(): caught unknown exception." );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-        context_.status()->heartbeat( "hardware" );
+        context_.status()->heartbeat( SUBSYSTEM );
     }
 }
 
@@ -85,57 +102,137 @@ MainLoop::establishInterface()
             context_.tracer()->warning( "MainLoop::establishInterface(): caught unknown exception." );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-        context_.status()->heartbeat( "hardware" );
+        context_.status()->heartbeat( SUBSYSTEM );
     }
 }
 
-int
-MainLoop::readData( orca::LaserScanner2dDataPtr & data )
+Driver*
+MainLoop::instantiateDriver()
 {
-//     context_.tracer()->debug( "Reading laser data...", 8 );
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag()+".Config.";
 
+    //
+    // HARDWARE INTERFACES
+    //
+    std::string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "sickcarmen" );
+
+    if ( driverName == "sickcarmen" )
+    {
+#ifdef HAVE_CARMEN_DRIVER
+        context_.tracer()->debug( "loading 'sickcarmen' driver",3);
+        return new SickCarmenDriver( config_, context_ );
+#else
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'sickcarmen' because it wasn't built!" );
+#endif
+    }
+    else if ( driverName == "sickacfr" )
+    {
+#ifdef HAVE_ACFR_DRIVER
+        context_.tracer()->debug( "loading 'sickacfr' driver",3);
+        return new SickAcfrDriver( config_, context_ );
+#else
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'sickacfr' because it wasn't built!" );
+#endif
+    }
+    else if ( driverName == "playerclient" )
+    {
+#ifdef HAVE_PLAYERCLIENT_DRIVER
+        context_.tracer()->debug( "loading 'playerclient' driver",3);
+        return new PlayerClientDriver( config_, context_ );
+#else
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'playerclient' because it wasn't built!" );
+#endif
+    }
+    else if ( driverName == "yasick" )
+    {
+        context_.tracer()->debug( "loading 'yasick' driver",3);
+        return NULL;
+//        return new yasick::SickLaser( config_, context_ );
+    }
+    else if ( driverName == "fake" )
+    {
+        context_.tracer()->debug( "loading 'fake' driver",3);
+        return new FakeDriver( config_, context_ );
+    }
+    else
+    {
+        std::string errString = "Unknown laser type: "+driverName;
+        context_.tracer()->error( errString );
+        throw orcaice::Exception( ERROR_INFO, errString );
+    }
+    context_.tracer()->debug( "Loaded '"+driverName+"' driver", 2 );
+}
+
+void
+MainLoop::initialiseDriver()
+{
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
+
+    if ( driver_ ) delete driver_;
+
+    while ( isActive() )
+    {
+        try {
+            context_.tracer()->info( "MainLoop: Initialising driver..." );
+            driver_ = instantiateDriver();
+            return;
+        }
+        catch ( std::exception &e )
+        {
+            stringstream ss;
+            ss << "MainLoop: Caught exception while initialising driver: " << e.what();
+            context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
+        }
+        catch ( ... )
+        {
+            stringstream ss;
+            ss << "MainLoop: Caught unknown exception while initialising driver";
+            context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
+        }
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
+    }
+
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 1.0 );
+}
+
+void
+MainLoop::readData( orca::LaserScanner2dDataPtr &laserData )
+{
     //
     // Read from the laser driver
     //            
-    if ( hwDriver_->read( data ) ) 
-    {
-        context_.tracer()->warning( "Problem reading from laser. Re-initialising hardware." );
-        
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-        int ret = hwDriver_->init();
-        if ( ret == 0 )
-            context_.tracer()->info( "Re-Initialisation succeeded." );
-        else
-            context_.tracer()->info( "Re-Initialisation failed." );
-        return -1;
-    }
+    driver_->read( &(laserData->ranges[0]), 
+                   &(laserData->intensities[0]),
+                   laserData->timeStamp );
 
     // flip the scan left-to-right if we are configured to do so
     if ( compensateRoll_ ) {
         // NOTE: instead of copying around, we should be able to simply change the
         // start bearing and bearing increment.
-        std::reverse( data->ranges.begin(), data->ranges.end() );
-        std::reverse( data->intensities.begin(), data->intensities.end() );
+        std::reverse( laserData->ranges.begin(), laserData->ranges.end() );
+        std::reverse( laserData->intensities.begin(), laserData->intensities.end() );
     }
-
-    return 0;
 }
 
 void
 MainLoop::run()
 {
+    // Set up the laser-scan object
     LaserScanner2dDataPtr laserData = new LaserScanner2dData;
-    orcaice::Heartbeater heartbeater( context_ );
+    laserData->minRange     = config_.minRange;
+    laserData->maxRange     = config_.maxRange;
+    laserData->fieldOfView  = config_.fieldOfView;
+    laserData->startAngle   = config_.startAngle;
+    laserData->ranges.resize( config_.numberOfSamples );
+    laserData->intensities.resize( config_.numberOfSamples );
 
-    // Catches all its exceptions.
+    // These functions catch their exceptions.
     activate();
     establishInterface();
-
-    hwDriver_->init();
-    context_.status()->setMaxHeartbeatInterval( "hardware", 1.0 );
-
-//    int prevReadResult = 0;
-    int currReadResult = 0;
+    initialiseDriver();
 
     //
     // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
@@ -146,55 +243,15 @@ MainLoop::run()
         try 
         {
             // this blocks until new data arrives
-            currReadResult = readData( laserData );
+            readData( laserData );
+            laserInterface_.localSetAndSend( laserData );
+            context_.status()->ok( SUBSYSTEM );
 
-            // make sure we are not shutting down, otherwise we'll segfault while trying to send
-            if ( currReadResult == 0 && isActive() ) {
-                laserInterface_.localSetAndSend( laserData );
-            }
+            stringstream ss;
+            ss << "MainLoop: Read laser data: " << orcaice::toString(laserData);
+            context_.tracer()->debug( ss.str(), 5 );
 
-            // Set subsystem status
-            if ( currReadResult == 0 )
-            {
-                context_.status()->ok( "hardware" );
-            }
-            else
-            {
-                context_.status()->fault( "hardware", hwDriver_->heartbeatMessage() );
-            }
-
-//             // old way to send heartbeats
-//             if ( heartbeater.isHeartbeatTime() )
-//             {
-//                 stringstream ss;
-//                 if ( currReadResult == 0 ) {
-//                     ss << "Laser enabled. ";
-//                 }
-//                 else {
-//                     ss << "Laser having problems.";
-//                 }
-//                 heartbeater.beat( ss.str() + hwDriver_->heartbeatMessage() );
-//             }
-
-//             // new way to send heartbeats
-//             // status has changed
-//             if ( currReadResult != prevReadResult ) {
-//                 if ( currReadResult==0 ) {
-//                     context_.status()->ok( "hardware", "Laser enabled. "+hwDriver_->heartbeatMessage() );
-//                 }
-//                 else {
-//                     context_.status()->fault( "hardware", "Laser having problems. "+hwDriver_->heartbeatMessage() );
-//                 }
-//             }
-//             // status has not changed
-//             else {
-//                 cout<<"TRACE(mainloop.cpp): setting status." << endl;
-//                 orcaice::Status *status = context_.status();
-//                 status->heartbeat( "hardware" );
-//                 //context_.status()->heartbeat( "hardware" );
-//                 cout<<"TRACE(mainloop.cpp): set status." << endl;
-//             }
-//             prevReadResult = currReadResult;
+            continue;
 
         } // end of try
         catch ( Ice::CommunicatorDestroyedException & )
@@ -202,24 +259,45 @@ MainLoop::run()
             // This is OK: it means that the communicator shut down (eg via Ctrl-C)
             // somewhere in mainLoop. Eventually, component will tell us to stop.
         }
-        catch ( Ice::Exception &e )
+        catch ( const Ice::Exception &e )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e;
             context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
         }
-        catch ( std::exception &e )
+        catch ( const std::exception &e )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e.what();
             context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
+        }
+        catch ( const std::string &e )
+        {
+            std::stringstream ss;
+            ss << "ERROR(mainloop.cpp): Caught unexpected string: " << e;
+            context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );            
+        }
+        catch ( const char *e )
+        {
+            std::stringstream ss;
+            ss << "ERROR(mainloop.cpp): Caught unexpected char *: " << e;
+            context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
         }
         catch ( ... )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected unknown exception.";
             context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
         }
+
+        // If we got to here there's a problem.
+        // Re-initialise the driver.
+        initialiseDriver();
 
     } // end of while
 

@@ -27,8 +27,9 @@ namespace laser2d {
 /*
   NOTE: as of player v1.5 the LaserProxy returns range in [m], the multiplication factor is no longer needed.
 */
-PlayerClientDriver::PlayerClientDriver( const Config & cfg, const orcaice::Context & context )
-    : Driver(cfg),
+PlayerClientDriver::PlayerClientDriver( const Config &cfg, 
+                                        const orcaice::Context &context )
+    : config_(cfg),
       robot_(0),
       laser_(0),
       context_(context)
@@ -46,33 +47,23 @@ PlayerClientDriver::PlayerClientDriver( const Config & cfg, const orcaice::Conte
     device_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Device", 0 );
 
     playerDriver_ = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "sicklms200" );
+
+    init();
 }
 
 PlayerClientDriver::~PlayerClientDriver()
 {
+    if ( laser_ ) delete laser_;
+    if ( robot_ ) delete robot_;
 }
 
-int
+void
 PlayerClientDriver::init()
 {
     std::stringstream ss;
-    if ( robot_ || laser_ ) {
-        ss << "Re-initializing";
-    }
-    else {
-        ss << "Initializing";
-    }
+    ss << "initializing";
     ss << " playerclient driver with host="<<host_<<" port="<<port_<<" id="<<device_<<" drvr="<<playerDriver_;
     context_.tracer()->info( ss.str() );
-
-    if ( laser_ ) {
-        delete laser_;
-        laser_ = 0;
-    }
-    if ( robot_ ) {
-        delete robot_;
-        robot_ = 0;
-    }
 
     // player throws exceptions on creation if we fail
     try
@@ -87,8 +78,7 @@ PlayerClientDriver::init()
     {
         stringstream ss;
         ss << "Player exception on init: " << e;
-        context_.tracer()->debug( ss.str(), 3 );
-        return -1;
+        throw orcaice::Exception( ERROR_INFO, ss.str() );
     }
 
     // we  are left with sicklms200 (real hardware) for which we can get live config data.
@@ -101,13 +91,16 @@ PlayerClientDriver::init()
     {
         stringstream ss;
         ss << "Player exception on get config: " << e;
-        context_.tracer()->debug( ss.str(), 3 );
-        return -1;
+        throw orcaice::Exception( ERROR_INFO, ss.str() );
     }
 
     // convert scan and range resolutions
     Config playerCfg;
-    orcaplayer::convert( *laser_, playerCfg.maxRange, playerCfg.fieldOfView, playerCfg.startAngle, playerCfg.numberOfSamples );
+    orcaplayer::convert( *laser_,
+                         playerCfg.maxRange,
+                         playerCfg.fieldOfView,
+                         playerCfg.startAngle,
+                         playerCfg.numberOfSamples );
 
     ss.str( "" );
     ss << "Config info from Player: maxrange="<<playerCfg.maxRange<<" fov="<<playerCfg.fieldOfView<<" start="<<playerCfg.startAngle<<" num="<<playerCfg.numberOfSamples;
@@ -121,7 +114,7 @@ PlayerClientDriver::init()
         if ( config_.numberOfSamples != playerCfg.numberOfSamples ) {
             context_.tracer()->warning( "Config file does not match parameters reported by Player server" );
             // should we update the config structure?
-            return 1;
+            return ;
         }
     } 
     else if ( playerDriver_=="urglaser" ) {
@@ -130,31 +123,27 @@ PlayerClientDriver::init()
         if ( config_.numberOfSamples != playerCfg.numberOfSamples ) {
             context_.tracer()->warning( "Config file does not match parameters reported by Player server" );
             // should we update the config structure?
-            return 1;
+            return;
         }
         if ( config_.fieldOfView != playerCfg.numberOfSamples ) {
             context_.tracer()->warning( "Config file does not match parameters reported by Player server" );
             // should we update the config structure?
-            return 1;
+            return;
         }
     } 
     else {        
         if ( config_ != playerCfg ) {
             context_.tracer()->warning( "Config file does not match parameters reported by Player server" );
             // should we update the config structure?
-            return 1;
+            return;
         }
     }
-    
-    return 0;
 }
 
-int
-PlayerClientDriver::read( LaserScanner2dDataPtr &data )
+void
+PlayerClientDriver::read( float *ranges, unsigned char *intensities, orca::Time &timeStamp )
 {
-    if ( !robot_ || !laser_ ) {
-        return -1;
-    }
+    assert( robot_ && laser_ );
 
     try
     {
@@ -164,21 +153,23 @@ PlayerClientDriver::read( LaserScanner2dDataPtr &data )
     {
         stringstream ss;
         ss << "Player exception on read: " << e;
-        context_.tracer()->debug( ss.str(), 3 );
-        return -1;
+        throw orcaice::Exception( ERROR_INFO, ss.str() );
     }
 
     // don't convert headers again, we've already done it on initialization
-    bool convertHeaders = false;
-    orcaplayer::convert( *laser_, data, convertHeaders );
-
-    // copy description from config
-    data->minRange    = config_.minRange;
-    data->maxRange    = config_.maxRange;
-    data->fieldOfView = config_.fieldOfView;
-    data->startAngle  = config_.startAngle;
-
-    return 0;
+    if ( (int)(laser_->GetCount()) != config_.numberOfSamples )
+    {
+        stringstream ss;
+        ss << "PlayerClientDriver::read(): number of samples returned by player ("<<laser_->GetCount()<<") != number we expect ("<<config_.numberOfSamples<<")";
+        throw orcaice::Exception( ERROR_INFO, ss.str() );
+    }
+    for ( unsigned int i = 0; i < laser_->GetCount(); ++i )
+    {
+        ranges[i]      = laser_->GetRange(i);
+        // GetIntensity returns a double. is this a bug in player2?
+        intensities[i] = (int)floor( laser_->GetIntensity(i) );
+    }
+    timeStamp = orcaice::toOrcaTime( laser_->GetDataTime() );
 }
 
 } // namespace

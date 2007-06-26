@@ -24,15 +24,15 @@ class FakeDriver : public Driver
 
 public:
 
-    FakeDriver( const Config & cfg, const orcaice::Context & context );
+    FakeDriver( const Config &cfg, const orcaice::Context &context );
     virtual ~FakeDriver();
 
-    virtual int init();
-
     // Blocks till new data is available
-    virtual int read( orca::LaserScanner2dDataPtr &data );
+    virtual void read( float *ranges, unsigned char *intensities, orca::Time &timeStamp );
 
 private:
+
+    Driver::Config config_;
     orcaice::Context context_;
 };
 

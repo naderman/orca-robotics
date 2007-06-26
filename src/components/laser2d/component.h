@@ -38,11 +38,6 @@ private:
     // External Interface
     //
     orcaifaceimpl::LaserScanner2dIfacePtr laserInterface_;
-    
-    //
-    // Hardware Interface
-    //
-    Driver *hwDriver_;
 };
 
 }

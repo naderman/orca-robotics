@@ -11,18 +11,6 @@
 #include <orcaice/orcaice.h>
 #include "component.h"
 
-// Various bits of hardware we can drive
-#include "driver.h"
-#include "fakedriver.h"
-#ifdef HAVE_CARMEN_DRIVER
-#  include "sickcarmen/sickcarmendriver.h"
-#endif
-#ifdef HAVE_ACFR_DRIVER
-#  include "sickacfr/sickacfrdriver.h"
-#endif
-#ifdef HAVE_PLAYERCLIENT_DRIVER
-#  include "playerclient/playerclientdriver.h"
-#endif
 #include "sickutil/sickutil.h"
 
 namespace laser2d {
@@ -31,15 +19,12 @@ using namespace std;
 using namespace orca;
 
 Component::Component()
-    : orcaice::Component( "Laser2d" ),
-      hwDriver_(0)
+    : orcaice::Component( "Laser2d" )
 {
 }
 
 Component::~Component()
 {
-    delete hwDriver_;
-    
     // do not delete mainLoop_!!! It is held in a smart pointer and will self-destruct.
 }
 
@@ -69,52 +54,6 @@ Component::start()
         // this will kill this component
         throw orcaice::Exception( ERROR_INFO, "Failed to validate laser configuration" );
     }
-
-    //
-    // HARDWARE INTERFACES
-    //
-    std::string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "sickcarmen" );
-
-    if ( driverName == "sickcarmen" )
-    {
-#ifdef HAVE_CARMEN_DRIVER
-        context().tracer()->debug( "loading 'sickcarmen' driver",3);
-        hwDriver_ = new SickCarmenDriver( cfg, context() );
-#else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'sickcarmen' because it wasn't built!" );
-#endif
-    }
-    else if ( driverName == "sickacfr" )
-    {
-#ifdef HAVE_ACFR_DRIVER
-        context().tracer()->debug( "loading 'sickacfr' driver",3);
-        hwDriver_ = new SickAcfrDriver( cfg, context() );
-#else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'sickacfr' because it wasn't built!" );
-#endif
-    }
-    else if ( driverName == "playerclient" )
-    {
-#ifdef HAVE_PLAYERCLIENT_DRIVER
-        context().tracer()->debug( "loading 'playerclient' driver",3);
-        hwDriver_ = new PlayerClientDriver( cfg, context() );
-#else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'playerclient' because it wasn't built!" );
-#endif
-    }
-    else if ( driverName == "fake" )
-    {
-        context().tracer()->debug( "loading 'fake' driver",3);
-        hwDriver_ = new FakeDriver( cfg, context() );
-    }
-    else
-    {
-        std::string errString = "Unknown laser type: "+driverName;
-        context().tracer()->error( errString );
-        throw orcaice::Exception( ERROR_INFO, errString );
-        return;
-    }
-    tracer()->debug( "Loaded '"+driverName+"' driver", 2 );
 
     //
     // SENSOR DESCRIPTION
@@ -168,7 +107,7 @@ Component::start()
     //
 
     mainLoop_ = new MainLoop( *laserInterface_,
-                               hwDriver_,
+                               cfg,
                                compensateRoll,
                                context() );
     

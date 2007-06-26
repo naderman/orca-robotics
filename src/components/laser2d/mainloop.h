@@ -28,7 +28,7 @@ class MainLoop : public orcaice::Thread
 public:
 
     MainLoop( orcaifaceimpl::LaserScanner2dIface &laserInterface,
-              Driver                             *hwDriver,
+              const Driver::Config               &config,
               bool                                compensateRoll,
               const orcaice::Context             &context );
     ~MainLoop();
@@ -37,19 +37,25 @@ public:
 
 private:
 
+    // Returns a Driver of the correct type
+    Driver* instantiateDriver();
+    // Tries repeatedly to instantiate the driver
+    void initialiseDriver();
+
     // Loops until activated
     void activate();
     // Loops until established
     void establishInterface();
 
-    // Returns zero on succcess
-    int readData( orca::LaserScanner2dDataPtr & data );
+    void readData( orca::LaserScanner2dDataPtr &data );
 
     // The laser object
     orcaifaceimpl::LaserScanner2dIface &laserInterface_;
 
+    Driver::Config config_;
+
     // Generic driver for the hardware
-    Driver *hwDriver_;
+    Driver *driver_;
 
     bool compensateRoll_;
 

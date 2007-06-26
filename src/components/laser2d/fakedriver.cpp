@@ -17,8 +17,8 @@ using namespace std;
 
 namespace laser2d {
 
-FakeDriver::FakeDriver( const Config & cfg, const orcaice::Context & context ) :
-    Driver(cfg),
+FakeDriver::FakeDriver( const Config &cfg, const orcaice::Context &context ) :
+    config_(cfg),
     context_(context)
 {
 }
@@ -27,35 +27,22 @@ FakeDriver::~FakeDriver()
 {
 }
 
-int
-FakeDriver::init()
-{ 
-    return 0;
-}
-
-int 
-FakeDriver::read( orca::LaserScanner2dDataPtr &data )
+void
+FakeDriver::read( float *ranges, unsigned char *intensities, orca::Time &timeStamp )
 {
     context_.tracer()->info( "Generating fake laser data..." );
 
-    orcaice::setToNow( data->timeStamp );
+    orcaice::setToNow( timeStamp );
     
-    data->minRange          = config_.minRange;
-    data->maxRange          = config_.maxRange;
-    data->fieldOfView       = config_.fieldOfView;
-    data->startAngle        = config_.startAngle;
-
-    data->ranges.resize(config_.numberOfSamples);
-    data->intensities.resize(config_.numberOfSamples);
-
-    for ( unsigned int i=0; i < data->ranges.size(); i++ )
+    for ( int i=0; i < config_.numberOfSamples; i++ )
     {
-        data->ranges[i] = (float)((i/(float)(config_.numberOfSamples))*data->maxRange);
-        data->intensities[i] = i%2;
+        ranges[i] = (float)((i/(float)(config_.numberOfSamples))*config_.maxRange);
+        intensities[i] = i%2;
     }
 
     IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(100));
-    return 0;
+
+    timeStamp = orcaice::getNow();
 }
 
 
