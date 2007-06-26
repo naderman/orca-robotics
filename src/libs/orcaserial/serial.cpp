@@ -653,13 +653,14 @@ Serial::bytesAvailableWait()
     tv.tv_sec = timeoutSec_;
     tv.tv_usec = timeoutUSec_;
     int selval = select(portFd_+1, &rfds, NULL, NULL, &tv);
-    if(selval==0){
+    if(selval==0)
+    {
         //printf("select timed out no data\n");
         return -1;
     }
     if(selval<0){
         //perror("select()");
-        throw SerialException( "Serial::bytesAvailableWait(): select(): "+strerror(errno) );
+        throw SerialException( string("Serial::bytesAvailableWait(): select(): ")+strerror(errno) );
     }
     return bytesAvailable();
 }
