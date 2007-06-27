@@ -58,6 +58,7 @@ src
         *                                  LGPL
     libs
         orcacm                             LGPL
+        orcacolourtext                     LGPL
         orcadef                            LGPL
         orcaice                            LGPL
         orcaimage                           GPL

@@ -139,6 +139,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New libraries
 
+- libOrcaColourText (alexb)
+  - Simple text colours on the Linux terminal, using escape-codes.
+
 @par Updated interfaces
 
 - PathPlanner

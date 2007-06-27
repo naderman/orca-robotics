@@ -7,6 +7,7 @@ MESSAGE ( STATUS "== LIBRARIES ==" )
 
 ADD_SUBDIRECTORY ( orcaice )
 ADD_SUBDIRECTORY ( orcacm )
+ADD_SUBDIRECTORY ( orcacolourtext )
 ADD_SUBDIRECTORY ( orcadef )
 ADD_SUBDIRECTORY ( orcadynamicload )
 ADD_SUBDIRECTORY ( orcageom2d )
