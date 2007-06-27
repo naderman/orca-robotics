@@ -1,12 +1,17 @@
-SET( SICK_CORE_SRCS laser )
+IF ( NOT OS_QNX )
+  MESSAGE( STATUS "Not building OrcaLaser2dSickAcfr -- OS is not QNX" )
+ELSE ( NOT OS_QNX )
 
-ADD_LIBRARY( OrcaLaser2dSickAcfr SHARED ${SICK_CORE_SRCS} sickacfrdriver )
-TARGET_LINK_LIBRARIES( OrcaLaser2dSickAcfr sickutil OrcaSerial )
+  SET( SICK_CORE_SRCS laser )
 
-INSTALL_TARGETS( /lib OrcaLaser2dSickAcfr )
+  ADD_LIBRARY( OrcaLaser2dSickAcfr SHARED ${SICK_CORE_SRCS} sickacfrdriver )
+  TARGET_LINK_LIBRARIES( OrcaLaser2dSickAcfr OrcaLaser2dUtil OrcaSerial )
 
-INCLUDE_DIRECTORIES( 
+  INSTALL_TARGETS( /lib OrcaLaser2dSickAcfr )
+
+  INCLUDE_DIRECTORIES( 
     # for <confi$.h>
     ${PROJECT_BINARY_DIR}
-    ${PROJECT_SOURCE_DIR}/src/components/laser2d/sickutil
     )
+
+ENDIF ( NOT OS_QNX )

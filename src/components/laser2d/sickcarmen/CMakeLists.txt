@@ -1,12 +1,23 @@
-SET( SICK_CORE_SRCS sickdefines sick serial carmen_conversion )
+IF ( NOT OS_LINUX )
+  MESSAGE( STATUS "Not building OrcaLaser2dSickCarmen -- not Linux." )
+ELSE ( NOT OS_LINUX )
 
-ADD_LIBRARY( OrcaLaser2dSickCarmen SHARED ${SICK_CORE_SRCS} sickcarmendriver )
-TARGET_LINK_LIBRARIES( OrcaLaser2dSickCarmen sickutil )
+  SET( SICK_CORE_SRCS sickdefines sick serial carmen_conversion )
 
-INSTALL_TARGETS( /lib OrcaLaser2dSickCarmen )
+  ADD_LIBRARY( OrcaLaser2dSickCarmen SHARED ${SICK_CORE_SRCS} sickcarmendriver )
+  TARGET_LINK_LIBRARIES( OrcaLaser2dSickCarmen OrcaLaser2dUtil )
 
-INCLUDE_DIRECTORIES( 
+  INSTALL_TARGETS( /lib OrcaLaser2dSickCarmen )
+
+  INCLUDE_DIRECTORIES( 
     # for <config.h>
     ${PROJECT_BINARY_DIR}
-    ${PROJECT_SOURCE_DIR}/src/components/laser2d/sickutil
     )
+
+  # Test for correct linking.
+  LIST( REMOVE_ITEM SRCS 
+    "${CMAKE_CURRENT_SOURCE_DIR}/linktest.cpp" )
+  ADD_EXECUTABLE( linktest linktest.cpp )
+  TARGET_LINK_LIBRARIES( linktest OrcaLaser2dSickCarmen )
+
+ENDIF ( NOT OS_LINUX )

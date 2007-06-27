@@ -9,7 +9,7 @@
  */
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <sickutil.h>
+#include <laser2dutil/sickutil.h>
 
 #include "sickcarmendriver.h"
 #include "sick.h"
@@ -224,3 +224,8 @@ SickCarmenDriver::read( float *ranges, unsigned char *intensities, orca::Time &t
 // }
 
 } // namespace
+
+extern "C" {
+    laser2d::DriverFactory *createDriverFactory()
+    { return new laser2d::SickCarmenDriverFactory; }
+}

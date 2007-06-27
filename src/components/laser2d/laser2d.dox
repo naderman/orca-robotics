@@ -33,9 +33,15 @@
 
 @par Drivers
 
-- @b sickcarmen @ref orca_laser_sickcarmen
-- @b playerclient @ref orca_laser_playerclient
-- @b fake Useful for testing or if you don't have hardware or a simulator.
+Laser2d dynamically loads an implementation of a driver (ie the thing
+which actually talks to the (possibly simulated) laser hardware).
+
+The driver libraries included in orca2 are:
+
+- @b libOrcaLaser2dSickCarmen @ref orca_laser_sickcarmen
+- @b libOrcaLaser2dPlayerClient @ref orca_laser_playerclient
+- @b libOrcaLaser2dAcfr only works in QNX
+- @b libOrcaLaser2dFake Useful for testing or if you don't have hardware or a simulator.
 
 @par Operation
 
@@ -43,10 +49,10 @@ This component encapsulates a SICK Laser Range-Finder (see @ref how_sick_works )
 
 @par Configuration
 
-- @c Laser2d.Config.Driver (string)
-    - Which hardware driver to use
-    - Valid values: { "sickcarmen", "playerclient", "fake" }
-    - Default: "sickcarmen"
+- @c Laser2d.Config.DriverLib (string)
+    - Library to dynamically load to implement laser driver
+    - Valid values are at least: { 'libOrcaLaser2dSickCarmen.so', 'libOrcaLaser2dSickAcfr.so', 'libOrcaLaser2dSickAcfr.so', 'libOrcaLaser2dFake.so' }
+    - Default: "libOrcaLaser2dSickCarmen.so"
 
 Laser Settings
 - @c Laser2d.Config.MinRange (double) [m]

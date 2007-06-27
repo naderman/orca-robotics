@@ -12,19 +12,6 @@
 #include <orcaice/orcaice.h>
 #include "mainloop.h"
 
-// Various bits of hardware we can drive
-#include "fakedriver.h"
-#ifdef HAVE_CARMEN_DRIVER
-#  include "sickcarmen/sickcarmendriver.h"
-#endif
-#ifdef HAVE_ACFR_DRIVER
-#  include "sickacfr/sickacfrdriver.h"
-#endif
-#ifdef HAVE_PLAYERCLIENT_DRIVER
-#  include "playerclient/playerclientdriver.h"
-#endif
-//#include "yasick/sicklaser.h"
-
 using namespace std;
 using namespace orca;
 
@@ -36,11 +23,13 @@ namespace {
 
 MainLoop::MainLoop( orcaifaceimpl::LaserScanner2dIface &laserInterface,
                     const Driver::Config               &config,
+                    DriverFactory                      &driverFactory,
                     bool                                compensateRoll,
                     const orcaice::Context             &context )
     : laserInterface_(laserInterface),
       config_(config),
       driver_(0),
+      driverFactory_(driverFactory),
       compensateRoll_(compensateRoll),
       context_(context)
 {
@@ -106,64 +95,6 @@ MainLoop::establishInterface()
     }
 }
 
-Driver*
-MainLoop::instantiateDriver()
-{
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag()+".Config.";
-
-    //
-    // HARDWARE INTERFACES
-    //
-    std::string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "sickcarmen" );
-
-    if ( driverName == "sickcarmen" )
-    {
-#ifdef HAVE_CARMEN_DRIVER
-        context_.tracer()->debug( "loading 'sickcarmen' driver",3);
-        return new SickCarmenDriver( config_, context_ );
-#else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'sickcarmen' because it wasn't built!" );
-#endif
-    }
-    else if ( driverName == "sickacfr" )
-    {
-#ifdef HAVE_ACFR_DRIVER
-        context_.tracer()->debug( "loading 'sickacfr' driver",3);
-        return new SickAcfrDriver( config_, context_ );
-#else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'sickacfr' because it wasn't built!" );
-#endif
-    }
-    else if ( driverName == "playerclient" )
-    {
-#ifdef HAVE_PLAYERCLIENT_DRIVER
-        context_.tracer()->debug( "loading 'playerclient' driver",3);
-        return new PlayerClientDriver( config_, context_ );
-#else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'playerclient' because it wasn't built!" );
-#endif
-    }
-    else if ( driverName == "yasick" )
-    {
-        context_.tracer()->debug( "loading 'yasick' driver",3);
-        return NULL;
-//        return new yasick::SickLaser( config_, context_ );
-    }
-    else if ( driverName == "fake" )
-    {
-        context_.tracer()->debug( "loading 'fake' driver",3);
-        return new FakeDriver( config_, context_ );
-    }
-    else
-    {
-        std::string errString = "Unknown laser type: "+driverName;
-        context_.tracer()->error( errString );
-        throw orcaice::Exception( ERROR_INFO, errString );
-    }
-    context_.tracer()->debug( "Loaded '"+driverName+"' driver", 2 );
-}
-
 void
 MainLoop::initialiseDriver()
 {
@@ -175,13 +106,27 @@ MainLoop::initialiseDriver()
     {
         try {
             context_.tracer()->info( "MainLoop: Initialising driver..." );
-            driver_ = instantiateDriver();
+            driver_ = driverFactory_.createDriver( config_, context_ );
             return;
         }
         catch ( std::exception &e )
         {
             stringstream ss;
             ss << "MainLoop: Caught exception while initialising driver: " << e.what();
+            context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
+        }
+        catch ( char *e )
+        {
+            stringstream ss;
+            ss << "MainLoop: Caught exception while initialising driver: " << e;
+            context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
+        }
+        catch ( std::string &e )
+        {
+            stringstream ss;
+            ss << "MainLoop: Caught exception while initialising driver: " << e;
             context_.tracer()->error( ss.str() );
             context_.status()->fault( SUBSYSTEM, ss.str() );
         }

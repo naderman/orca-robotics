@@ -11,7 +11,7 @@
 #define ORCA2_LASER2D_SICK_ACFR_DRIVER_H
 
 #include <orcaice/context.h>
-#include <driver.h>
+#include <laser2dutil/driver.h>
 
 #include "laser.h"
 
@@ -70,6 +70,22 @@ private:
     orcaice::Context context_;
 };
 
+// Used for dynamically loading driver
+class SickAcfrDriverFactory : public laser2d::DriverFactory
+{
+public:
+    laser2d::Driver *createDriver( const Driver::Config &config,
+                                   const orcaice::Context &context ) const
+        {
+            return new SickAcfrDriver( config, context );
+        }
+};
+
 } // namespace
+
+// Used for dynamically loading driver
+extern "C" {
+    laser2d::DriverFactory *createDriverFactory();
+}
 
 #endif

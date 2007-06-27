@@ -13,7 +13,7 @@
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/laserscanner2diface.h>
-#include "driver.h"
+#include <laser2dutil/driver.h>
 
 namespace laser2d {
 
@@ -29,6 +29,7 @@ public:
 
     MainLoop( orcaifaceimpl::LaserScanner2dIface &laserInterface,
               const Driver::Config               &config,
+              DriverFactory                      &driverFactory,
               bool                                compensateRoll,
               const orcaice::Context             &context );
     ~MainLoop();
@@ -37,8 +38,6 @@ public:
 
 private:
 
-    // Returns a Driver of the correct type
-    Driver* instantiateDriver();
     // Tries repeatedly to instantiate the driver
     void initialiseDriver();
 
@@ -56,6 +55,9 @@ private:
 
     // Generic driver for the hardware
     Driver *driver_;
+
+    // Loaded with this
+    DriverFactory &driverFactory_;
 
     bool compensateRoll_;
 

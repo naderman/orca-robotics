@@ -9,7 +9,7 @@
  */
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <sickutil.h>
+#include <laser2dutil/sickutil.h>
 
 #include "sickacfrdriver.h"
 #include "laser.h"
@@ -232,3 +232,8 @@ SickAcfrDriver::heartbeatMessage()
 }
 
 } // namespace
+
+extern "C" {
+    laser2d::DriverFactory *createDriverFactory()
+    { return new laser2d::SickAcfrDriverFactory; }
+}

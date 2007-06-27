@@ -173,3 +173,8 @@ PlayerClientDriver::read( float *ranges, unsigned char *intensities, orca::Time 
 }
 
 } // namespace
+
+extern "C" {
+    laser2d::DriverFactory *createDriverFactory()
+    { return new laser2d::PlayerClientDriverFactory; }
+}

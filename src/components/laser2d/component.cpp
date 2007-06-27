@@ -10,8 +10,8 @@
 
 #include <orcaice/orcaice.h>
 #include "component.h"
-
-#include "sickutil/sickutil.h"
+#include <laser2dutil/driver.h>
+#include <laser2dutil/sickutil.h>
 
 namespace laser2d {
 
@@ -19,13 +19,19 @@ using namespace std;
 using namespace orca;
 
 Component::Component()
-    : orcaice::Component( "Laser2d" )
+    : orcaice::Component( "Laser2d" ),
+      driverFactory_(0),
+      driverLib_(0)
 {
 }
 
 Component::~Component()
 {
-    // do not delete mainLoop_!!! It is held in a smart pointer and will self-destruct.
+    // This will cause destruction of the main loop.
+    mainLoop_ = 0;
+
+    if ( driverFactory_ ) delete driverFactory_;    
+    if ( driverLib_  )    delete driverLib_;
 }
 
 void
@@ -103,13 +109,34 @@ Component::start()
                                                               context() );
 
     //
+    // Instantiate the thing that communicates with the laser hardware
+    //
+    
+    context().tracer()->debug( "Component: Loading driver library.", 4 );
+    std::string driverLibName = 
+        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libOrcaLaser2dSickCarmen.so" );
+    try {
+        // Dynamically load the driver from its library
+        driverLib_ = new orcadynamicload::DynamicallyLoadedLibrary(driverLibName);
+        driverFactory_ = 
+            orcadynamicload::dynamicallyLoadClass<DriverFactory,DriverFactoryMakerFunc>
+            ( *driverLib_, "createDriverFactory" );
+    }
+    catch (orcadynamicload::DynamicLoadException &e)
+    {
+        context().tracer()->error( e.what() );
+        throw;
+    }
+
+    //
     // MAIN DRIVER LOOP
     //
 
     mainLoop_ = new MainLoop( *laserInterface_,
-                               cfg,
-                               compensateRoll,
-                               context() );
+                              cfg,
+                              *driverFactory_,
+                              compensateRoll,
+                              context() );
     
     mainLoop_->start();
 }

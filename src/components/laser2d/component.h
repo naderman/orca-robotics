@@ -14,11 +14,12 @@
 #include <orca/laserscanner2d.h>
 #include <orcaice/component.h>
 #include <orcaifaceimpl/laserscanner2diface.h>
+#include <orcadynamicload/dynamicload.h>
 #include "mainloop.h"
 
 namespace laser2d {
 
-class Driver;
+class DriverFactory;
 
 class Component : public orcaice::Component
 {
@@ -38,6 +39,11 @@ private:
     // External Interface
     //
     orcaifaceimpl::LaserScanner2dIfacePtr laserInterface_;
+
+    // A factory to instantiate the driver
+    DriverFactory   *driverFactory_;
+    // And the library that provides it
+    orcadynamicload::DynamicallyLoadedLibrary *driverLib_;
 };
 
 }

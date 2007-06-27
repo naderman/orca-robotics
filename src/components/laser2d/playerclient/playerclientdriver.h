@@ -12,7 +12,7 @@
 #define ORCA2_LASER2D_PLAYERCLIENT_DRIVER_H
 
 #include <orcaice/context.h>
-#include <driver.h>
+#include <laser2dutil/driver.h>
 
 // Player proxies
 namespace PlayerCc
@@ -54,6 +54,22 @@ private:
     orcaice::Context context_;
 };
 
+// Used for dynamically loading driver
+class PlayerClientDriverFactory : public laser2d::DriverFactory
+{
+public:
+    laser2d::Driver *createDriver( const Driver::Config &config,
+                                   const orcaice::Context &context ) const
+        {
+            return new PlayerClientDriver( config, context );
+        }
+};
+
 } // namespace
+
+// Used for dynamically loading driver
+extern "C" {
+    laser2d::DriverFactory *createDriverFactory();
+}
 
 #endif

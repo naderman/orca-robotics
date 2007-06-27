@@ -11,7 +11,7 @@
 #define ORCA2_LASER2D_SICK_CARMEN_DRIVER_H
 
 #include <orcaice/context.h>
-#include <driver.h>
+#include <laser2dutil/driver.h>
 
 // forward declaration of Carmen class
 class sick_laser_t;
@@ -58,6 +58,22 @@ private:
     bool   laserStalled_;
 };
 
+// Used for dynamically loading driver
+class SickCarmenDriverFactory : public laser2d::DriverFactory
+{
+public:
+    laser2d::Driver *createDriver( const Driver::Config &config,
+                                   const orcaice::Context &context ) const
+        {
+            return new SickCarmenDriver( config, context );
+        }
+};
+
 } // namespace
+
+// Used for dynamically loading driver
+extern "C" {
+    laser2d::DriverFactory *createDriverFactory();
+}
 
 #endif
