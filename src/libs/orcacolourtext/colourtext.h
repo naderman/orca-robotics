@@ -13,7 +13,7 @@
 
 #include <string>
 
-namespace colourtext {
+namespace orcactext {
 
 ////////////////////////////////////////
 

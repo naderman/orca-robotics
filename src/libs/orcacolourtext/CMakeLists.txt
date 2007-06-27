@@ -5,5 +5,9 @@ IF ( OS_LINUX )
   GLOBAL_ADD_LIBRARY( OrcaColourText SHARED ${SRCS} )
 
   INSTALL_FILES( /include/orcacolourtext .*\\.h$ )
+
+  IF ( BUILD_TESTS )
+    ADD_SUBDIRECTORY( test )
+  ENDIF ( BUILD_TESTS )
   
 ENDIF ( OS_LINUX )

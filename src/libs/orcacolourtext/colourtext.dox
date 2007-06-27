@@ -14,7 +14,7 @@
 
 @section overview Overview
 
-For a full list of functions and classes see the documentation for @ref orcacolourtext namespace.
+For a full list of functions and classes see the documentation for @ref orcactext namespace.
 
 For more information on the underlying Linux functionality
 @verbatim
@@ -23,7 +23,7 @@ $ man console_codes
 
 Header file:
 @verbatim
-#include <orcacolourtext/orcacolourtext.h>
+#include <orcacolourtext/colourtext.h>
 @endverbatim
 
 
@@ -35,7 +35,7 @@ Alex Brooks, Alex Makarenko
 
 /*!
 @brief Simple text colours on the Linux terminal, using escape-codes.
-@namespace orcacolourtext
+@namespace orcactext
 
 This namespace is part of a library @ref orca_library_orcacolourtext.
 

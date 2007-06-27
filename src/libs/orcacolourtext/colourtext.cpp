@@ -20,7 +20,7 @@ using namespace std;
 // See: man console_codes
 //
 
-namespace colourtext {
+namespace orcactext {
 
 std::string reset()
 {
