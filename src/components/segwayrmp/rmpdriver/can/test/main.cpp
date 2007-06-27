@@ -21,61 +21,58 @@
 using namespace std;
 using namespace segwayrmp;
 
-void CINToRawMode(void);
-void* read_kbd(void*);
+void cInToRawMode(void);
+void* readKbd(void*);
 volatile double timeout=100;
 
 //******************************************************************
 // Very basic stand alone main that purely attempts to 
-// read and print CAN packets received from the bus....
+// read and print CAN packets received from the bus. Also
+// continually sends a slow move command to the RMP
 
 int main(void){
 
-    segwayrmp::CanPacket dataMovePacket;           //Store a motion command
-    segwayrmp::CanPacket dataPacketCollected;      //Data read from the card
+    CanPacket dataPacketCollected;      // Data read from the card
 
 
     orcaice::Timer delayTimer;
-
-
-    std::string portName("/dev/pcan40");
+    string portName("/dev/pcan40");    //The default port we are using
 
     //declare our Can Driver object
-    segwayrmp::PeakCanDriver testCan( portName );
+    PeakCanDriver testCan( portName );
 
     //And then enable the interface
     testCan.enable(4);
     
-    //Simple setup of the can packet to be a slow move forward....
-    dataMovePacket.id = RMP_CAN_ID_COMMAND;
-    // velocity command does not change any other values
-    dataMovePacket.PutSlot(2, (uint16_t)RMP_CMD_NONE);
+    // Simple setup of the can packet to be a slow move forward....
+    CanPacket dataMovePacket;      
+    dataMovePacket.id = RMP_CAN_ID_COMMAND;  // Store a motion command
 
     // put commands into the packet
-    dataMovePacket.PutSlot(0, 0x1BB); //Slow move
-    dataMovePacket.PutSlot(1, 0); //Rotation zero
-    dataMovePacket.PutSlot(3, 0); //No command param
-
-    
+    dataMovePacket.PutSlot(0, 0x1BB); // Slow move
+    dataMovePacket.PutSlot(1, 0);     // Rotation zero
+    dataMovePacket.PutSlot(2, (uint16_t)RMP_CMD_NONE);
+    dataMovePacket.PutSlot(3, 0);    // No command param
+ 
 
     cerr << "\n\nWarning This code is going to spin the wheels on the segway\n";
+    cerr << "Use i / r to increase / reduce message send repetion rate\n";
     cerr << "Hit return to continue\n";
+
     cin.get();
 
-    cerr << "Use i / k to increase / kill loop speed\n";
     
     double msecs;
 
-    pthread_t thread_id;
+    pthread_t threadId;
         
     
-    //start a new thread here that reads the keyboard.
-    pthread_create( &thread_id, NULL, &read_kbd, NULL);
-
+    // start a new thread here that reads the keyboard.
+    pthread_create( &threadId, NULL, &readKbd, NULL);
 
 
     while(true){ //**??** how should this be escaped?
-      //Keep trying to read data from the CAN interface
+      // Keep trying to read data from the CAN interface
         if ( testCan.readPacket(&dataPacketCollected) == RmpIo::OK ){ 
             cout<< dataPacketCollected.toString() << endl;
         }
@@ -99,9 +96,9 @@ int main(void){
 
 //*************************************************
 // thread that just reads the keyboard input
-void* read_kbd(void*){
+void* readKbd(void*){
 
-    CINToRawMode();
+    cInToRawMode();
     char keystroke;    
 
     while(true){
@@ -110,7 +107,7 @@ void* read_kbd(void*){
         case 'i':
             timeout += 2;
             break;
-        case 'k':
+        case 'r':
             timeout -=2;
             break;
         default:
@@ -127,8 +124,9 @@ void* read_kbd(void*){
 
 
 //***********************************************************
-// 
-void CINToRawMode(void){
+// Put stdin into a raw (non-buffered & not line terminated)
+// mode. 
+void cInToRawMode(void){
     struct termios raw;
     struct termios cooked;
     int stdin_fd = 0;
