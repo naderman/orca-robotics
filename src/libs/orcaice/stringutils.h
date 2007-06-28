@@ -16,10 +16,16 @@
 namespace orcaice
 {
     //! Converts the whole string to lower case.
-    std::string toLowerCase( const std::string & s );
+    std::string toLowerCase( const std::string& s );
 
     //! Converts the whole string to upper case.
-    std::string toUpperCase( const std::string & s );
+    std::string toUpperCase( const std::string& s );
+
+    //! Unlike std::setw() function, this functions pads and truncates.
+    //! When width=0, an empty string is returned.
+    //! When width<0, the string is quietly returned unmodified.
+    //! Default fill character is a space.
+    std::string toFixedWidth( const std::string& s, uint width, char filler=' ' );
 
     //! Returns version of libOrcaIce, e.g. "3.2.1"
     std::string orcaVersion();
@@ -33,13 +39,13 @@ namespace orcaice
     //! If the optional flag removeExtension is set to TRUE, then all trailing
     //! characters following and including the last '.' are removed as well.
     //! E.g. basename("/path/filename.ext", true) returns "filename".
-    std::string basename( const std::string & path, bool removeExtension=false );
+    std::string basename( const std::string& path, bool removeExtension=false );
 
     //! Similar to UNIX dirname command. Removes the trailing characters following
     //! and including the last path delimeter ('/' in Linux, '\' in Windows).
     //! E.g. dirname("/path/filename.ext") returns "/path".
     //! If the path delimeters are absent, returns ".".
-    std::string dirname( const std::string & path );
+    std::string dirname( const std::string& path );
 
 } // namespace
 

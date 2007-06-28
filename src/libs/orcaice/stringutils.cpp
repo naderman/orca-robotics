@@ -9,6 +9,8 @@
  */
 
 #include "stringutils.h"
+#include <sstream>
+#include <iomanip> // for setw()
 
 using namespace std;
 
@@ -33,6 +35,28 @@ toUpperCase( const std::string & s )
         s2[i] = toupper( s2[i] );
     }
     return s2;
+}
+
+std::string 
+toFixedWidth( const std::string& s, uint width, char filler )
+{
+    if ( width<0 )
+        return s;
+
+    if ( s.size()<width ) {
+        // need padding
+        stringstream ss;
+        ss<<std::setfill(filler)<<std::setw(width)<<s;
+        return ss.str();
+    } 
+    else if ( s.size()>width ) {
+        // need trunkating
+        return s.substr(0,width);
+    } 
+    else {
+        // needs no change
+        return s;
+    }
 }
 
 std::string 
