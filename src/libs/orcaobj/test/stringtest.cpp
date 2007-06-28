@@ -222,5 +222,22 @@ int main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
 
+    cout<<"testing toTimeDuration() with negative time ... ";
+    {
+        orca::Time in, out;
+        in.seconds = -3673;
+        in.useconds = -45000;
+        std::string s = "-1:1:13.045";
+        int ret = orcaice::toTimeDuration( s, out );
+        if ( ret || in != out ) {
+            cout<<"failed ("<<ret<<")"<<endl
+                <<"in ="<<in.seconds<<" "<<in.useconds<<endl
+                <<"str="<<s<<endl
+                <<"out="<<out.seconds<<" "<<out.useconds<<endl;
+            return EXIT_FAILURE;
+        }
+    }
+    cout<<"ok"<<endl;
+
     return EXIT_SUCCESS;
 }

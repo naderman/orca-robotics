@@ -148,9 +148,13 @@ int toSize3d( const std::string &, orca::Size3d& );
 
 //! For durations less than 24hrs returns string HH:MM:SS.sss.
 //! Otherwise, DD:HH:MM:SS.sss
+//! Negative times are supported but only if seconds and microseconds
+//! are both negative.
 std::string toStringDuration( const orca::Time& );
 //! Parses result of the correspondinng toString().
 //! Returns: 0 = parsing successful, non-zero = parsing failed.
+//! Negative durations are supported, but only if the very first 
+//! character of the string is '-'.
 int toTimeDuration( const std::string &, orca::Time& );
 
 //! Returns string in human readable format:

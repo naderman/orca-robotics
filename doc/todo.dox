@@ -109,6 +109,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - added two config properties with the following defaults: Orca.Warn.DefaultProperty=1 
     and Orca.Warn.FactoryProperty=0. Streamlined and standardized progress reports
     during component initialization. (alexm)
+  - fixed bugs handling negative times in conversions between orca::Time, doubles, 
+    durations, and strings. Added more tests. (alexm)
 
 - libOrcaSerial (alex b)
   - Big overhaul:

@@ -353,17 +353,32 @@ toSize3d( const std::string& s, orca::Size3d& obj )
 // adapted from IceUtil::Time::toDuration()
 // the only difference is in NOT printing 'd' after the number of days
 // this is to make it easier to parse back
+// also dealing with negative time durations
 std::string 
 toStringDuration( const orca::Time& obj )
 {
-    int secs  = obj.seconds % 60;
-    int mins  = obj.seconds / 60 % 60;
-    int hours = obj.seconds / 60 / 60 % 24;
-    int days  = obj.seconds / 60 / 60 / 24;
+    // first decide the sign
+    bool isNegative;
+    if ( obj.seconds<0 )  {
+        assert( obj.useconds<=0 && "seconds and useconds must have the same sign" );
+        isNegative = true;
+    }
+    else {
+        assert( obj.useconds>=0 && "seconds and useconds must have the same sign" );
+        isNegative = false;
+    }
+
+    int secs  = abs(obj.seconds) % 60;
+    int mins  = abs(obj.seconds) / 60 % 60;
+    int hours = abs(obj.seconds) / 60 / 60 % 24;
+    int days  = abs(obj.seconds) / 60 / 60 / 24;
 
     using namespace std;
 
     ostringstream os;
+    if ( isNegative )
+        os << "-";
+
     if(days != 0)
     {
         os << days << ":";
@@ -371,7 +386,7 @@ toStringDuration( const orca::Time& obj )
     os << setfill('0') << setw(2) << hours << ":" << setw(2) << mins << ":" << setw(2) << secs;
     if(obj.useconds != 0)
     {
-        os << "." << setw(6) << obj.useconds;
+        os << "." << setw(6) << abs(obj.useconds);
     }
 
     return os.str();
@@ -380,7 +395,22 @@ toStringDuration( const orca::Time& obj )
 int 
 toTimeDuration( const std::string& s, orca::Time& obj )
 {
-    Ice::StringSeq sseq = orcaice::toStringSeq( s );
+    if ( s.empty() ) return -1;
+
+    // check for minus sign
+    bool isNegative = false;
+    if ( s[0]=='-' ) {
+//         cout<<"detected negative time"<<endl;
+        isNegative = true;
+    }
+
+    Ice::StringSeq sseq;
+    if ( isNegative ) {
+        sseq = orcaice::toStringSeq( s.substr( 1 ) );
+    }
+    else {
+        sseq = orcaice::toStringSeq( s );
+    }
     if ( sseq.empty() ) return -1;
 //     cout<<"forward :"<<endl; for ( unsigned int i=0; i<sseq.size(); ++i ) cout<<sseq[i]<<endl;
 
@@ -407,6 +437,10 @@ toTimeDuration( const std::string& s, orca::Time& obj )
     ss >> mins;
     if ( !ss ) {
         obj = toOrcaTime( t );
+        if ( isNegative ) {
+            obj.seconds *= -1;
+            obj.useconds *= -1;
+        }
         return 0;
     }
 //     cout<<mins<<" mins"<<endl;
@@ -416,6 +450,10 @@ toTimeDuration( const std::string& s, orca::Time& obj )
     ss >> hours;
     if ( !ss ) {
         obj = toOrcaTime( t );
+        if ( isNegative ) {
+            obj.seconds *= -1;
+            obj.useconds *= -1;
+        }
         return 0;
     }
 //     cout<<hours<<" hrs"<<endl;
@@ -425,12 +463,20 @@ toTimeDuration( const std::string& s, orca::Time& obj )
     ss >> days;
     if ( !ss ) {
         obj = toOrcaTime( t );
+        if ( isNegative ) {
+            obj.seconds *= -1;
+            obj.useconds *= -1;
+        }
         return 0;
     }
 //     cout<<days<<" days"<<endl;
     t += IceUtil::Time::seconds( days*24*3600 );
 
     obj = toOrcaTime( t );
+    if ( isNegative ) {
+        obj.seconds *= -1;
+        obj.useconds *= -1;
+    }
     return 0;
 }
 

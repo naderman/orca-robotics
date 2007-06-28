@@ -48,10 +48,20 @@ toOrcaTime( const IceUtil::Time & icetime )
 orca::Time 
 toOrcaTime( double sec )
 {
+    // first decide the sign
+    int sign;
+    if ( sec<0 ) 
+        sign = -1;
+    else
+        sign = 1;
+
     orca::Time orcatime;
-    //! @todo are these casts ok?
-    orcatime.seconds = (int)floor( sec );
-    orcatime.useconds = (int)floor( (sec - (double)orcatime.seconds) * 1000000 );
+
+    orcatime.seconds = (int)floor( fabs(sec) );
+    orcatime.useconds = (int)floor( (fabs(sec) - (double)orcatime.seconds) * 1000000 );
+
+    orcatime.seconds *= sign;
+    orcatime.useconds *= sign;
     return orcatime;
 }
 
@@ -127,11 +137,7 @@ toOrcaDate( const IceUtil::Time & icetime )
 orca::Time 
 timeDiff( const orca::Time &t1, const orca::Time &t2 )
 {
-    orca::Time diff;
-    double diffDouble = timeDiffAsDouble( t1, t2 );
-    diff.seconds  = (int) diffDouble;
-    diff.useconds = (int) ((diffDouble-diff.seconds)*1e6);
-    return diff;
+    return toOrcaTime( timeDiffAsDouble( t1, t2 ) );
 }
 
 double 
