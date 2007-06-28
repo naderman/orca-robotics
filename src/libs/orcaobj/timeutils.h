@@ -45,7 +45,7 @@ orca::TimeOfDay toOrcaTimeOfDay( const IceUtil::Time & t );
 //! Unlike IceUtil::Time::toDateTime(), we use UTC time and not local time.
 orca::Date toOrcaDate( const IceUtil::Time & t );
 
-//! Returns the difference between two time values as a double (ie: t1-t2)
+//! Returns the difference between two time values (ie: t1-t2)
 //! The result is negative if t1 is earlier than t2.
 orca::Time timeDiff( const orca::Time &t1, const orca::Time &t2 );
 //! Returns the difference between two time values as a double (in seconds) (ie: t1-t2)
