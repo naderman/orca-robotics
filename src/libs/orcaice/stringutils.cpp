@@ -38,7 +38,7 @@ toUpperCase( const std::string & s )
 }
 
 std::string 
-toFixedWidth( const std::string& s, uint width, char filler )
+toFixedWidth( const std::string& s, uint width, char filler, bool adjustLeft )
 {
     if ( width<0 )
         return s;
@@ -46,6 +46,9 @@ toFixedWidth( const std::string& s, uint width, char filler )
     if ( s.size()<width ) {
         // need padding
         stringstream ss;
+        if ( adjustLeft ) 
+            ss<<std::left;
+
         ss<<std::setfill(filler)<<std::setw(width)<<s;
         return ss.str();
     } 

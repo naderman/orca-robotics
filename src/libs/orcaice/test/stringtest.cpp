@@ -90,6 +90,18 @@ main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
 
+    cout<<"testing toFixedWidth() with left adjustment ... ";
+    {
+        std::string in = "abcd";
+        std::string out = orcaice::toFixedWidth( in, 7, 'x', true );
+        std::string expect = "abcdxxx";
+        if ( out != expect ) {
+            cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<out<<"'"<<endl;
+            return EXIT_FAILURE;
+        }
+    }
+    cout<<"ok"<<endl;
+
     cout<<"testing toFixedWidth() with trunkating ... ";
     {
         std::string in = "abcd";

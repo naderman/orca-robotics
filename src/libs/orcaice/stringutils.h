@@ -25,7 +25,8 @@ namespace orcaice
     //! When width=0, an empty string is returned.
     //! When width<0, the string is quietly returned unmodified.
     //! Default fill character is a space.
-    std::string toFixedWidth( const std::string& s, uint width, char filler=' ' );
+    std::string toFixedWidth( const std::string& s, uint width, char filler=' ', 
+                              bool adjustLeft=false );
 
     //! Returns version of libOrcaIce, e.g. "3.2.1"
     std::string orcaVersion();
