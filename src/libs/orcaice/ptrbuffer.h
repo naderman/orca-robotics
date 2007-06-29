@@ -34,7 +34,7 @@ public:
      *      - zero is undefined
      *  Default buffer type is CIRCULAR, of depth 1.
      */
-    PtrBuffer( int depth=1, BufferType type=BufferTypeCircular );
+    PtrBuffer( int depth=-1, BufferType type=BufferTypeCircular );
     
 protected:
     virtual void internalGet( Type & obj ) const ;

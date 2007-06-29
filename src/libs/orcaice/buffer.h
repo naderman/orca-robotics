@@ -58,7 +58,7 @@ public:
      *      - zero is undefined
      *  Default configuration: buffer type is BufferTypeCircular, of depth 1.
      */
-    Buffer( int depth=1, BufferType type=BufferTypeCircular );
+    Buffer( int depth=-1, BufferType type=BufferTypeCircular );
 
     virtual ~Buffer();
 
@@ -320,6 +320,7 @@ int Buffer<Type>::getNext( Type &obj, int timeoutMs )
     }
     else {
         // wait timedout, nobody woke us up
+        std::cout<<"TRACE(buffer.h): on timeout, isEmpty: " << queue_.empty() << std::endl;
         return -1;
     }
 }
