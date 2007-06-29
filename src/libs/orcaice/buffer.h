@@ -320,7 +320,6 @@ int Buffer<Type>::getNext( Type &obj, int timeoutMs )
     }
     else {
         // wait timedout, nobody woke us up
-        std::cout<<"TRACE(buffer.h): on timeout, isEmpty: " << queue_.empty() << std::endl;
         return -1;
     }
 }
