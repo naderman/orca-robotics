@@ -33,7 +33,7 @@ MainLoop::MainLoop( orcaifaceimpl::LaserScanner2dIface &laserInterface,
       compensateRoll_(compensateRoll),
       context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 20.0 );
     context_.status()->initialising( SUBSYSTEM );
 }
 
@@ -98,7 +98,7 @@ MainLoop::establishInterface()
 void
 MainLoop::initialiseDriver()
 {
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 20.0 );
 
     if ( driver_ ) delete driver_;
 
