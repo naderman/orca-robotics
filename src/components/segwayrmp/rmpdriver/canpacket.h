@@ -19,9 +19,12 @@ namespace segwayrmp
 {
 
 /*
-    @note This code originates from Player/Stage project
-    http://playerstage.sf.net, file: canio.h
-    @author Alex Makarenko
+  Even if we're interfacing with USB, we still pass CAN packets
+  (wrapped up in USB packets).
+
+  @note This code originates from Player/Stage project
+  http://playerstage.sf.net, file: canio.h
+  @author Alex Makarenko
 */
 class CanPacket
 {
