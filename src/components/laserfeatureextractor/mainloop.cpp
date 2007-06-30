@@ -228,7 +228,7 @@ MainLoop::run()
             //
             // block on arrival of laser data
             //
-            int ret = laserConsumer_->proxy().getNext ( rangeData, timeoutMs );
+            int ret = laserConsumer_->proxy().getNext( rangeData, timeoutMs );
             if ( ret != 0 ) {
                 stringstream ss;
                 ss << "Timed out (" << timeoutMs << "ms) waiting for laser data.  Reconnecting.";

@@ -21,11 +21,9 @@
 #include <orcadynamicload/dynamicload.h>
 #include <orcalocalnav/pathfollower2dI.h>
 #include <orcalocalnav/clock.h>
-// #include <localnavutil/idriver.h>
 
 namespace localnav {
 
-class IDriver;
 class MainLoop;
 class DriverFactory;
 class Simulator;

@@ -24,6 +24,7 @@ Component::Component()
     : orcaice::Component( "LocalNav" ),
       testSimulator_(NULL),
       mainLoop_(NULL),
+      driverFactory_(NULL),
       driverLib_(NULL),
       clock_(NULL),
       pathFollowerInterface_(NULL)
