@@ -35,6 +35,8 @@ public:
 //!
 //! @brief Encapsulates a serial port.  
 //!
+//! Warning: this thing is _NOT_ thread-safe.
+//!
 //! @author Matthew Ridley, Alex Brooks
 //!
 class Serial
@@ -61,6 +63,8 @@ public:
     //! Reads up to @ref count bytes into buffer @ref buf.
     //! Returns the number of bytes read.
     //! Will never return <0 -- throws exceptions instead.
+    //! In blocking mode, blocks till it gets something.
+    //! In non-blocking mode, throws an exception if data isn't available.
     int read(void *buf, size_t count);
 
     //! Tries to read exactly @ref count bytes into @ref buf.  

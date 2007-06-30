@@ -88,75 +88,102 @@ Serial::setBaudRate(int baud)
         ss << "Serial::baud():tcgetattr() Error reading attr: " << strerror(errno);
         throw SerialException( ss.str() );
     }
-    
-    switch(baud){
+
+    int baudId;
+    switch(baud)
+    {
     case 0:
-        cfsetispeed(&serialOptions_, B0);
-        cfsetospeed(&serialOptions_, B0);
+        baudId = B0;
         break;
     case 50:
-        cfsetispeed(&serialOptions_, B50);
-        cfsetospeed(&serialOptions_, B50);
+        baudId = B50;
         break;
     case 75:
-        cfsetispeed(&serialOptions_, B75);
-        cfsetospeed(&serialOptions_, B75);
+        baudId = B75;
         break;
     case 110:
-        cfsetispeed(&serialOptions_, B110);
-        cfsetospeed(&serialOptions_, B110);
+        baudId = B110;
         break;
     case 134:
-        cfsetispeed(&serialOptions_, B134);
-        cfsetospeed(&serialOptions_, B134);
+        baudId = B134;
         break;
     case 150:
-        cfsetispeed(&serialOptions_, B150);
-        cfsetospeed(&serialOptions_, B150);
+        baudId = B150;
+        break;
+    case 200:
+        baudId = B200;
         break;
     case 300:
-        cfsetispeed(&serialOptions_, B300);
-        cfsetospeed(&serialOptions_, B300);
+        baudId = B300;
         break;
     case 600:
-        cfsetispeed(&serialOptions_, B600);
-        cfsetospeed(&serialOptions_, B600);
+        baudId = B600;
         break;
     case 1200:
-        cfsetispeed(&serialOptions_, B1200);
-        cfsetospeed(&serialOptions_, B1200);
+        baudId = B1200;
+        break;
+    case 1800:
+        baudId = B1800;
         break;
     case 2400:
-        cfsetispeed(&serialOptions_, B2400);
-        cfsetospeed(&serialOptions_, B2400);
+        baudId = B2400;
         break;
     case 4800:
-        cfsetispeed(&serialOptions_, B4800);
-        cfsetospeed(&serialOptions_, B4800);
+        baudId = B4800;
         break;
     case 9600:
-        cfsetispeed(&serialOptions_, B9600);
-        cfsetospeed(&serialOptions_, B9600);
+        baudId = B9600;
         break;
     case 19200:
-        cfsetispeed(&serialOptions_, B19200);
-        cfsetospeed(&serialOptions_, B19200);
+        baudId = B19200;
         break;
     case 38400:
-        cfsetispeed(&serialOptions_, B38400);
-        cfsetospeed(&serialOptions_, B38400);
+        baudId = B38400;
         break;
     case 57600:
-        cfsetispeed(&serialOptions_, B57600);
-        cfsetospeed(&serialOptions_, B57600);
+        baudId = B57600;
         break;
     case 115200:
-        cfsetispeed(&serialOptions_, B115200);
-        cfsetospeed(&serialOptions_, B115200);
+        baudId = B115200;
         break;
     case 230400:
-        cfsetispeed(&serialOptions_, B230400);
-        cfsetospeed(&serialOptions_, B230400);
+        baudId = B230400;
+        break;
+    case 460800:
+        baudId = B460800;
+        break;
+    case 500000:
+        baudId = B500000;
+        break;
+    case 576000:
+        baudId = B576000;
+        break;
+    case 921600:
+        baudId = B921600;
+        break;
+    case 1000000:
+        baudId = B1000000;
+        break;
+    case 1152000:
+        baudId = B1152000;
+        break;
+    case 1500000:
+        baudId = B1500000;
+        break;
+    case 2000000:
+        baudId = B2000000;
+        break;
+    case 2500000:
+        baudId = B2500000;
+        break;
+    case 3000000:
+        baudId = B3000000;
+        break;
+    case 3500000:
+        baudId = B3500000;
+        break;
+    case 4000000:
+        baudId = B4000000;
         break;
     default:
         stringstream ss;
@@ -164,6 +191,9 @@ Serial::setBaudRate(int baud)
         throw SerialException( ss.str() );
         break;
     }
+
+    cfsetispeed(&serialOptions_, baudId);
+    cfsetospeed(&serialOptions_, baudId);
 
     if ( tcsetattr(portFd_, TCSAFLUSH, &serialOptions_) == -1 )
     {
@@ -695,7 +725,7 @@ Serial::writeString(const char *str, size_t maxlen)
 void 
 Serial::flush()
 {
-	return(tcflush(portFd_,TCIOFLUSH)); 
+	tcflush(portFd_,TCIOFLUSH);
 }
 
 void
@@ -705,9 +735,6 @@ Serial::drain()
     if(tcdrain(portFd_))
     {
         throw SerialException( string("Serial::drain():tcdrain(): ")+strerror(errno) );
-    }
-    else{
-        return 0;
     }
 }
 
