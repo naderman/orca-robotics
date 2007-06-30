@@ -74,7 +74,8 @@ SessionManager::tryCreateSession()
             
     try
     {
-        session_ = registry->createAdminSession( "sessionmanager.cpp-assume-no-access-control", "sessionmanager.cpp-assume-no-access-control" );
+        session_ = registry->createAdminSession( "sessionmanager.cpp-assume-no-access-control",
+                                                 "sessionmanager.cpp-assume-no-access-control" );
         timeoutSec_ = registry->getSessionTimeout();
         stringstream ss; ss<<"SessionManager: Created session (timeout="<<timeoutSec_<<"s)";
         context_.tracer()->info( ss.str() );
@@ -94,14 +95,14 @@ SessionManager::tryCreateSession()
     catch( const std::exception& e)
     {
         stringstream ss;
-        ss << "SessionManager: Error creating Admin Session: " << e.what();
+        ss << "SessionManager: Error during actionOnSessionCreation: " << e.what();
         context_.tracer()->error( ss.str() );
         return false;
     }
     catch( ... )
     {
         stringstream ss;
-        ss << "SessionManager: Unknown exception when creating Admin Session.";
+        ss << "SessionManager: Unknown exception during actionOnSessionCreation.";
         context_.tracer()->error( ss.str() );
         return false;
     }
