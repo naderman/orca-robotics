@@ -28,7 +28,7 @@ These instructions are also applicable for Ubuntu/Kubuntu 6.10 (Edgy). For Ubunt
 
 @section orca_doc_installdebian_cmake CMake
 
-Minimum version required 2.4-patch 2 (latest tested: 2.4-patch 5).
+Minimum version required 2.4-patch 2 (latest tested: 2.4-patch 6).
 
 @verbatim
 # apt-get install cmake
@@ -97,7 +97,7 @@ Doxygen is a tool to produce documentation from source code. It can be easily in
 
 @section orca_doc_installdebian_qt Qt
 
-Qt is a cross-platform GUI framework. Minimum version required 4.1.0 (latest tested: 4.2.1)
+Qt is a cross-platform GUI framework. Minimum version required 4.1.0 (latest tested: 4.2.2)
 
 @verbatim
 # apt-get install libqt4-dev qt4-doc qt4-dev-tools
