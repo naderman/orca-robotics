@@ -23,7 +23,7 @@ int main(int argc, char * argv[])
     int data;
 
     cout<<"testing default constructor and depth() and type() ... ";
-    if ( buffer.depth()!=1 || buffer.type()!=orcaice::BufferTypeCircular ) {
+    if ( buffer.depth()!=-1 || buffer.type()!=orcaice::BufferTypeCircular ) {
         cout<<"failed. depth: exp=1 got="<<buffer.depth()<<" type: exp="<<(int)orcaice::BufferTypeCircular<<" got="<<(int)buffer.type()<<endl;
         return EXIT_FAILURE;
     }
