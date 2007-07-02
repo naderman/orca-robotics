@@ -75,8 +75,8 @@ int main(int argc, char * argv[])
     cout<<"ok"<<endl;
 
     cout<<"testing isEmpty() and size() ... ";
-    if ( buffer.isEmpty() || buffer.size()!=1 ) {
-        cout<<"failed. expecting a buffer of size 1."<<endl;
+    if ( buffer.isEmpty() || buffer.size()!=-1 ) {
+        cout<<"failed. expecting a buffer of size -1."<<endl;
         return EXIT_FAILURE;
     }
     cout<<"ok"<<endl;
