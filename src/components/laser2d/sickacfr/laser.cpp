@@ -33,7 +33,7 @@ Laser::Laser()
 	: pxl(0),
       serial_(0)
 {
-	serial_ = new orcaserial::Serial();
+	// serial_ = new orcaserial::Serial();
 	
     // configure the buffers so they have depth 100 and are of type queue
     laserDataBuffer_.configure( 100 , orcaice::BufferTypeCircular );
@@ -119,7 +119,7 @@ static void* castFnPtr(Laser *pl)
 int 
 Laser::IniLSRXCode(int *pflag, struct LaserData *pxl)
 {
-	int a1=-1,stc=-1;
+	int a1=-1;
 	char *str ;
 	 
 	pxl->ThreadData.pflag = pflag;
@@ -128,13 +128,23 @@ Laser::IniLSRXCode(int *pflag, struct LaserData *pxl)
 	pxl->cx=0 ;
 	pxl->CxReset=pxl->CxReset2=0;
 
-		stc = serial_->open( pxl->NamePort, 0 ) ;
- 
-		if (stc<=0)
-		{
-			printf("FAIL: serial not valid");
-			goto chau ;
-		}
+//     stc = serial_->open( pxl->NamePort, 0 ) ; 
+//     if (stc<=0)
+//     {
+//         printf("FAIL: serial not valid");
+//         goto chau ;
+//     }
+
+    const bool blockingMode = false;
+    const int baudRate = 9600;
+    try {
+        serial_ = new orcaserial::Serial( pxl->NamePort, baudRate, blockingMode );
+    }
+    catch ( const orcaserial::SerialException &e )
+    {
+        cout << "ERROR(laser.cpp): " << e << endl;
+        goto chau;
+    }
 		
 		//a1 = pthread_create( &(pxl->tid), NULL, (FunciThread)readSickLaserX, pxl ) ;
    	    // hack to deal with casting a function pointer in C++
@@ -263,9 +273,9 @@ Laser::readResponseInfo1(int FComLsr)
 	static char str[1000] ;
     int n,i,m=0,n0 ;
 	
-	serial_->timeout( 1, 0 );
+	serial_->setTimeout( 1, 0 );
 	// n = serial_->read_full( (unsigned char*)s, 200, T5segs/10 );
-	n = serial_->read_full( (unsigned char*)s, 200 ); 
+	n = serial_->readFull( (unsigned char*)s, 200 ); 
 	if (n>6)
 	{	
 		n=6 ; 
@@ -294,8 +304,8 @@ Laser::readResponseB(int FComLsr,struct LaserData *pg)
 	char s[1200] ;
     static char str[1000] ;
 	int n,i,m=0,n0 ;
- 	serial_->timeout( 1, 0 );
-	n = serial_->read_full( (unsigned char *)s, 1000 );
+ 	serial_->setTimeout( 1, 0 );
+	n = serial_->readFull( (unsigned char *)s, 1000 );
 	if (n>10)
 	{	
 		n=10 ; 
@@ -392,16 +402,13 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 	////PrintiEtc1("--- [%s]: being configured------ ",pg->NameUnit);	
 	
 	//fflush(FComLsr);
-	if( serial_->baud( pg->speed ) < 0 )
-	{
-		 std::cout << "ERROR(laser.cpp): baudrate could not be set" << std::endl;
-	}
+	serial_->setBaudRate( pg->speed );
 
 	////PrintiEtc2("[%s]: serial at [%d]",pg->NameUnit,pg->speed);
 
 	// set to 'install' mode
 	// serial_->SerialWriteJEG( (unsigned char*)string1, STR1, &hkswrite );
-	serial_->write( (unsigned char*)string1, STR1 );
+	serial_->writeString( (unsigned char*)string1, STR1 );
 	  
 	////PrintiEtc1("[%s]: Sent init string1",pg->NameUnit);
 	if (pg->speedB>100)
@@ -417,7 +424,7 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 
 	// set baud rate to 38400
 	// serial_->SerialWriteJEG( (unsigned char*)string2b, STR2, &hkswrite);
-    serial_->write( (unsigned char*)string2b, STR2 );
+    serial_->writeString( (unsigned char*)string2b, STR2 );
 
 	////PrintiEtc2("[%s]: Sent init string2b, s[5]=[%x]",pg->NameUnit,(int)string2b[5]);
 	if (pg->speedB>100)
@@ -433,14 +440,11 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 
 	// ---------- at speed  pg->speed (usually 38400 or 115200b (->500000))
 	// change the port speed  to higher
-	if ( serial_->baud( pg->speedB ) < 0 )
- 	{
-		 std::cout << "ERROR(laser.cpp): operating baudrate could not be set" << std::endl;
-	}
+	serial_->setBaudRate( pg->speedB );
     ////PrintiEtc2("[%s]: serial at [%d]baud",pg->NameUnit,pg->speedB);
 
 	// new
-	serial_->write( (unsigned char*)string1, STR1 );
+	serial_->writeString( (unsigned char*)string1, STR1 );
 	
 	////PrintiEtc1("[%s]: send init string1",pg->NameUnit);
 	if (pg->speedB>100)
@@ -457,7 +461,7 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 
 	// more initialisation
 	// laser configuration string
-	serial_->write( (unsigned char*)string4b, STR4 );
+	serial_->writeString( (unsigned char*)string4b, STR4 );
 	
 	////PrintiEtc1("[%s]: Sent init string4**",pg->NameUnit);
 	if (pg->speedB>100)
@@ -471,12 +475,12 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 
     delay(100);
 
-	serial_->write( (unsigned char*)stringAskInfo1, sizeof(stringAskInfo1) );
+	serial_->writeString( (unsigned char*)stringAskInfo1, sizeof(stringAskInfo1) );
 
 	readResponseInfo1(FComLsr);
 
 	// set mode to send data continuously
-	serial_->write( (unsigned char*)string5, STR5 );
+	serial_->writeString( (unsigned char*)string5, STR5 );
 
 	////PrintiEtc1("[%s]: Sent init string5**",pg->NameUnit);
 	if (pg->speedB>100)
@@ -547,8 +551,8 @@ Laser::readSickLaser(struct LaserData *pxl,int *pFlag)
 			//hkSleep(1) ;
 			string[0] = '\x02' ; // it is not important, it is only to have it.
             // check the next 3 bytes to confirm that the incoming bytes are really part of a laser frame
-			serial_->timeout( 5, 0 );
-			nnn = serial_->read_full( (unsigned char*)string+1, 3 );
+			serial_->setTimeout( 5, 0 );
+			nnn = serial_->readFull( (unsigned char*)string+1, 3 );
 
 			// if next character in packet = 0x80
 			if ( (nnn==3) && (string[1] == '\x80'))
@@ -561,8 +565,8 @@ Laser::readSickLaser(struct LaserData *pxl,int *pFlag)
 				}
 				
 				// continue reading the rest of the laser frame
-				serial_->timeout( 5, 0 );
-                nnn = serial_->read_full( (unsigned char*)string+4, 728 );
+				serial_->setTimeout( 5, 0 );
+                nnn = serial_->readFull( (unsigned char*)string+4, 728 );
 
 				//if ( (errorno != 728) ||((errorno == 728) && (string[731] != 0x02)))
 				if  (nnn != 728)
