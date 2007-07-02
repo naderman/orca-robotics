@@ -142,7 +142,7 @@ Laser::IniLSRXCode(int *pflag, struct LaserData *pxl)
     }
     catch ( const orcaserial::SerialException &e )
     {
-        cout << "ERROR(laser.cpp): " << e << endl;
+        std::cout << "ERROR(laser.cpp): " << e << std::endl;
         goto chau;
     }
 		
