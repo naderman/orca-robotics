@@ -67,6 +67,11 @@ TermIostreamDisplay::TermIostreamDisplay( const std::vector<std::string> & suppo
     browser_(0),
     events_(new orcaice::EventQueue)
 {
+    cout<<"The following interfaces are supported:";
+    for ( unsigned int j=0; j<supportedInterfaces_.size(); ++j ) {
+        cout << "\n\t" << supportedInterfaces_[j];
+    }
+    cout<<endl;
 }
 
 TermIostreamDisplay::~TermIostreamDisplay()
