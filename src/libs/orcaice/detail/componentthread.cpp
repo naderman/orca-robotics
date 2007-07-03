@@ -1,11 +1,7 @@
 #include "componentthread.h"
 #include <orcaice/exceptions.h>
 #include <iostream>
-#ifdef ICE_32
 #include <IceGrid/Registry.h>  // used to register Home interface as a well-known object
-#else
-#include <IceGrid/Admin.h>  // used to register Home interface as a well-known object
-#endif
 
 using namespace std;
 
@@ -71,7 +67,6 @@ ComponentThread::run()
 bool
 ComponentThread::tryRegisterHome()
 {
-#ifdef ICE_32
     //
     // PROVIDED INTERFACE: Home
     // Make Home a well-known object, by adding it to the registry
@@ -117,44 +112,6 @@ ComponentThread::tryRegisterHome()
             return true;
         }
     }
-#else
-    //
-    // PROVIDED INTERFACE: Home
-    // Make Home a well-known object, by adding it to the registry
-    //
-    std::string instanceName = properties()->getPropertyWithDefault( "IceGrid.InstanceName", "IceGrid" );
-    Ice::ObjectPrx adminPrx = context_.communicator()->stringToProxy( instanceName+"/Admin" );
-    
-    IceGrid::AdminPrx admin;
-    try {
-        admin = IceGrid::AdminPrx::checkedCast( adminPrx );
-        admin->addObjectWithType( homePrx_, "::orca::Home" );
-    } 
-    catch (const IceGrid::ObjectExistsException&) {
-        admin->updateObject( homePrx_ );
-    }
-    catch ( Ice::CommunicatorDestroyedException& e ) 
-    {
-        // Ignore -- we're shutting down.
-    }
-    catch ( Ice::Exception& e ) {
-        bool requireRegistry = context_.properties()->getPropertyAsInt( "Orca.RequireRegistry" );
-        if ( requireRegistry ) {
-            std::stringstream ss;
-            ss << "Failed to register Home interface: "<<e<<".  Check IceGrid Registry.  You may allow things to continue without registration by setting Orca.RequireRegistry=0.";
-            context_.tracer()->error( ss.str() );
-            return false;
-        }
-        else {
-            std::stringstream ss;
-            ss << "Failed to register Home interface: "<<e<<".";
-            context_.tracer()->warning( ss.str() );
-            context_.tracer()->info( "You may enforce registration by setting Orca.RequireRegistry=1." );
-            return true;
-        }
-    }
-    return (Home*)hobj;
-#endif
     return true;
 }
 
