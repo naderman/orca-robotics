@@ -24,7 +24,7 @@ int main(int argc, char * argv[])
 
     cout<<"testing default constructor and depth() and type() ... ";
     if ( buffer.depth()!=-1 || buffer.type()!=orcaice::BufferTypeCircular ) {
-        cout<<"failed. depth: exp=1 got="<<buffer.depth()<<" type: exp="<<(int)orcaice::BufferTypeCircular<<" got="<<(int)buffer.type()<<endl;
+        cout<<"failed. depth: exp=-1 got="<<buffer.depth()<<" type: exp="<<(int)orcaice::BufferTypeCircular<<" got="<<(int)buffer.type()<<endl;
         return EXIT_FAILURE;
     }
     cout<<"ok"<<endl;
@@ -84,8 +84,8 @@ int main(int argc, char * argv[])
     cout<<"ok"<<endl;
 
     cout<<"testing isEmpty() and size() ... ";
-    if ( buffer.isEmpty() || buffer.size()!=1 ) {
-        cout<<"failed. expecting a buffer of size 1."<<endl;
+    if ( buffer.isEmpty() || buffer.size()!=-1 ) {
+        cout<<"failed. expecting a buffer of size -1."<<endl;
         return EXIT_FAILURE;
     }
     cout<<"ok"<<endl;
@@ -100,8 +100,8 @@ int main(int argc, char * argv[])
         cout<<"failed. should be a non-empty buffer."<<endl;
         return EXIT_FAILURE;
     }
-    if ( buffer.isEmpty() || buffer.size()!=1 ) {
-        cout<<"failed. expecting a buffer of size 1."<<endl;
+    if ( buffer.isEmpty() || buffer.size()!=-1 ) {
+        cout<<"failed. expecting a buffer of size -1."<<endl;
         return EXIT_FAILURE;
     }
     cout<<"ok"<<endl;

@@ -206,6 +206,9 @@ Component::activate()
 {
     try
     {
+        // This next line is to work around an Ice3.2 bug.
+        // See: http://www.zeroc.com/forums/help-center/3266-icegrid-activationtimedout.html#post14380
+        context_.communicator()->setDefaultLocator(Ice::LocatorPrx::uncheckedCast(context_.communicator()->getDefaultLocator()->ice_collocationOptimized(false)));
         context_.adapter()->activate();
         tracer()->debug( "Adapter activated", 2 );
     }

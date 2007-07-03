@@ -91,8 +91,8 @@ int main(int argc, char * argv[])
         cout<<"failed. should be a non-empty buffer."<<endl;
         return EXIT_FAILURE;
     }
-    if ( buffer.isEmpty() || buffer.size()!=1 ) {
-        cout<<"failed. expecting a buffer of size 1."<<endl;
+    if ( buffer.isEmpty() || buffer.size()!=-1 ) {
+        cout<<"failed. expecting a buffer of size -1."<<endl;
         return EXIT_FAILURE;
     }
     cout<<"ok"<<endl;
