@@ -7,7 +7,7 @@ Provides.LaserScanner2d.DefaultName=laserscanner2d
 # Required Interfaces
 
 # Config Parameters
-Config.DriverLib.Comment=Valid values are at least: { 'libOrcaLaser2dSickCarmen.so', 'libOrcaLaser2dSickAcfr.so', 'libOrcaLaser2dSickAcfr.so', 'libOrcaLaser2dFake.so' }
+Config.DriverLib.Comment=Valid values are at least: { 'libOrcaLaser2dSickCarmen.so', 'libOrcaLaser2dPlayerClient.so', 'libOrcaLaser2dSickAcfr.so', 'libOrcaLaser2dFake.so' }
 Config.DriverLib.Default=libOrcaLaser2dSickCarmen.so
 
 Config.MinRange.Default=0.0
