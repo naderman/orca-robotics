@@ -118,16 +118,17 @@ namespace orcaserial {
         }
     }
     
-Serial::Serial( const char *dev,
+Serial::Serial( const std::string &dev,
                 int baudRate,
                 bool blockingMode )
-    : portFd_(-1),
+    : dev_(dev),
+      portFd_(-1),
       timeoutSec_(0),
       timeoutUSec_(0),
       blockingMode_(blockingMode),
       debugLevel_(0)
 {
-    open( dev );
+    open();
     setBaudRate( baudRate );
 }
     
@@ -176,16 +177,35 @@ Serial::setBaudRate(int baud)
     cfsetispeed(&serialOptions_, cBaudrate(baud));
     cfsetospeed(&serialOptions_, cBaudrate(baud));
 
-    struct serial_struct  serinfo;
-    serinfo.reserved_char[0] = 0;
-    if (ioctl(portFd_, TIOCGSERIAL, &serinfo) < 0) 
-        throw SerialException( string("Serial::setBaudRate: ")+strerror(errno) );
+    //
+    // AlexB: This code doesn't seem to work for USB devices...
+    //        See: http://ozlabs.org/pipermail/linuxppc-embedded/2005-February/016848.html
+    //
+    if ( strstr( dev_.c_str(), "USB" ) == 0 )
+    {
+        //
+        // AlexB: For reasons I don't fully understand, this chunk is required to make the
+        //        laser work at standard baud rates.
+        //
+        struct serial_struct  serinfo;
+        serinfo.reserved_char[0] = 0;
+        if (ioctl(portFd_, TIOCGSERIAL, &serinfo) < 0) 
+        {
+            stringstream ss;
+            ss << "Serial::setBaudRate("<<baud<<"): error calling 'ioctl(portFd_, TIOCGSERIAL, &serinfo)': "<<strerror(errno);
+            throw SerialException( ss.str() );
+        }
     
-    serinfo.flags &= ~ASYNC_SPD_CUST;
-    serinfo.custom_divisor = 0;
+        serinfo.flags &= ~ASYNC_SPD_CUST;
+        serinfo.custom_divisor = 0;
     
-    if (ioctl(portFd_, TIOCSSERIAL, &serinfo) < 0) 
-        throw SerialException( string("Serial::setBaudRate: ")+strerror(errno) );
+        if (ioctl(portFd_, TIOCSSERIAL, &serinfo) < 0) 
+        {
+            stringstream ss;
+            ss << "Serial::setBaudRate("<<baud<<"): error calling 'ioctl(portFd_, TIOCSSERIAL, &serinfo)': "<<strerror(errno);
+            throw SerialException( ss.str() );
+        }
+    }
 
     if ( tcsetattr(portFd_, TCSAFLUSH, &serialOptions_) == -1 )
     {
@@ -196,16 +216,16 @@ Serial::setBaudRate(int baud)
 }
 
 void 
-Serial::open(const char *device, int flags)
+Serial::open(int flags)
 {
     if ( !blockingMode_ )
         flags |= O_NONBLOCK;
 
-    portFd_ = ::open(device, flags|O_RDWR|O_NOCTTY);
+    portFd_ = ::open(dev_.c_str(), flags|O_RDWR|O_NOCTTY);
     if ( portFd_ == -1 )
     {
         stringstream ss;
-        ss << "Serial::open(): failed to open '"<<device<<"': "<<strerror(errno);
+        ss << "Serial::open(): failed to open '"<<dev_<<"': "<<strerror(errno);
         throw SerialException( ss.str() );
     }
 
@@ -567,13 +587,13 @@ Serial::setBaudRate(int baud)
 
 // flags are not used here
 void 
-Serial::open(const char* device, const int flags)
+Serial::open(const int flags)
 {
 	int ret;
 	int baud = 9600;
  
     // argument to modem_open requires a non_const pointer
-	portFd_ = modem_open( const_cast<char*>(device), baud ) ;
+	portFd_ = modem_open( dev_.c_str(), baud ) ;
 	if( portFd_ < 0)
 	{  
         printf("ERROR(serial.c): Could not open serial device\n");

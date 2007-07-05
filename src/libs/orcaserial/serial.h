@@ -46,7 +46,7 @@ public:
     //! Constructor.  
     //! Opens a device @ref dev.
     //! Throws exceptions on error
-    Serial( const char *dev, int baudRate, bool blockingMode );
+    Serial( const std::string &dev, int baudRate, bool blockingMode );
 
     //! Destructor closes serial port
     ~Serial();
@@ -120,7 +120,7 @@ public:
 private:
 
     // Opens a device @ref dev.
-    void open(const char *dev, int flags=0);
+    void open(int flags=0);
 
     // Won't throw exceptions.
     void close();
@@ -130,7 +130,8 @@ private:
 
     int readLineBlocking(void *buf, size_t count, char termchar);
     int readLineNonblocking(void *buf, size_t count, char termchar);
-    
+
+    const std::string dev_;
     struct termios serialOptions_;
     int portFd_;
     int timeoutSec_;
