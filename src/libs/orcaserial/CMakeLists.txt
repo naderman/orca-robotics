@@ -10,5 +10,7 @@ IF ( NOT OS_WIN )
   GLOBAL_ADD_LIBRARY( OrcaSerial SHARED ${SRCS} )
 
   INSTALL_FILES( /include/orcaserial .*\\.h$ )
+
+  ADD_SUBDIRECTORY( test )
   
 ENDIF ( NOT OS_WIN )
