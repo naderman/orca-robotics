@@ -408,7 +408,7 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 
 	// set to 'install' mode
 	// serial_->SerialWriteJEG( (unsigned char*)string1, STR1, &hkswrite );
-	serial_->writeString( (unsigned char*)string1, STR1 );
+	serial_->writeString( string1, STR1 );
 	  
 	////PrintiEtc1("[%s]: Sent init string1",pg->NameUnit);
 	if (pg->speedB>100)
@@ -424,7 +424,7 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 
 	// set baud rate to 38400
 	// serial_->SerialWriteJEG( (unsigned char*)string2b, STR2, &hkswrite);
-    serial_->writeString( (unsigned char*)string2b, STR2 );
+    serial_->writeString( string2b, STR2 );
 
 	////PrintiEtc2("[%s]: Sent init string2b, s[5]=[%x]",pg->NameUnit,(int)string2b[5]);
 	if (pg->speedB>100)
@@ -444,7 +444,7 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
     ////PrintiEtc2("[%s]: serial at [%d]baud",pg->NameUnit,pg->speedB);
 
 	// new
-	serial_->writeString( (unsigned char*)string1, STR1 );
+	serial_->writeString( string1, STR1 );
 	
 	////PrintiEtc1("[%s]: send init string1",pg->NameUnit);
 	if (pg->speedB>100)
@@ -461,7 +461,7 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 
 	// more initialisation
 	// laser configuration string
-	serial_->writeString( (unsigned char*)string4b, STR4 );
+	serial_->writeString( string4b, STR4 );
 	
 	////PrintiEtc1("[%s]: Sent init string4**",pg->NameUnit);
 	if (pg->speedB>100)
@@ -475,12 +475,12 @@ Laser::SetLaser(int FComLsr,struct LaserData *pg)
 
     delay(100);
 
-	serial_->writeString( (unsigned char*)stringAskInfo1, sizeof(stringAskInfo1) );
+	serial_->writeString( stringAskInfo1, sizeof(stringAskInfo1) );
 
 	readResponseInfo1(FComLsr);
 
 	// set mode to send data continuously
-	serial_->writeString( (unsigned char*)string5, STR5 );
+	serial_->writeString( string5, STR5 );
 
 	////PrintiEtc1("[%s]: Sent init string5**",pg->NameUnit);
 	if (pg->speedB>100)

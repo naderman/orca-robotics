@@ -51,7 +51,7 @@ This component encapsulates a SICK Laser Range-Finder (see @ref how_sick_works )
 
 - @c Laser2d.Config.DriverLib (string)
     - Library to dynamically load to implement laser driver
-    - Valid values are at least: { 'libOrcaLaser2dSickCarmen.so', 'libOrcaLaser2dSickAcfr.so', 'libOrcaLaser2dSickAcfr.so', 'libOrcaLaser2dFake.so' }
+    - Valid values are at least: { 'libOrcaLaser2dSickCarmen.so', 'libOrcaLaser2dPlayerClient.so', 'libOrcaLaser2dSickAcfr.so', 'libOrcaLaser2dFake.so' }
     - Default: "libOrcaLaser2dSickCarmen.so"
 
 Laser Settings
