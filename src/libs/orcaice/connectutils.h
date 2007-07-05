@@ -76,6 +76,12 @@ void createInterfaceWithTag( const Context      & context,
  * them by specifying the direct proxy to them.
  *
  * This is a local operation which does not throw any exceptions.
+
+@verbatim
+Ice::ObjectPtr consumer = new Odometry2dConsumerI;
+orca::Odometry2dConsumerPrx consumerPrx =
+    orcaice::createConsumerInterface<orca::Odometry2dConsumerPrx>( context(), consumer );
+@endverbatim
  */
 template<class ConsumerProxyType>
 ConsumerProxyType
