@@ -18,8 +18,16 @@
 SET( ICE_FOUND 0 CACHE BOOL "Do we have Ice?" )
 
 FIND_PATH( ICE_HOME_INCLUDE_ICE Ice.h
+  # rational for this search order:
+  #    source install w/env.var -> source install
+  #    package -> package
+  #    package + source install w/env.var -> source install
+  #    package + source install w/out env.var -> package 
+  #
   # installation selected by user
   $ENV{ICE_HOME}/include/Ice
+  # debian package installs Ice here
+  /usr/include/Ice
   # Test standard installation points: newer versions first
   /opt/Ice-3.2.0/include/Ice
   /opt/Ice-3.1.1/include/Ice
@@ -27,8 +35,6 @@ FIND_PATH( ICE_HOME_INCLUDE_ICE Ice.h
   /opt/Ice-3.0.1/include/Ice
   /opt/Ice-3.0.0/include/Ice
   /opt/Ice-2.1.2/include/Ice
-  # debian package installs Ice here
-  /usr/include/Ice
   # some people may manually choose to install Ice here
   /usr/local/include/Ice
   # windows
