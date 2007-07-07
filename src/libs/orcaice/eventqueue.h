@@ -98,6 +98,15 @@ private:
 
 typedef IceUtil::Handle<EventQueue> EventQueuePtr;
 
+//! A class which lets outsiders to post events into its own event queue.
+class EventQueueHolder
+{
+public:
+    virtual ~EventQueueHolder() {};
+    //! Adds event to the queue.
+    virtual void postEvent( const EventPtr& e )=0;
+};
+
 } // namespace
 
 #endif
