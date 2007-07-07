@@ -49,6 +49,18 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Project wide
 
+- Changed the order of places where we search for Ice. The new order is this:
+  - specified by env. var. $ICE_HOME
+  - Debian package install point: /usr/
+  - standard Ice istall point: /opt/Ice-[VERSION]
+  - possible install point when built from source: /usr/local
+ This change simplifies switching between source and package Ice installs.
+ Common situations with outcomes:
+  - source install w/env.var -> source install
+  - package -> package
+  - package + source install w/env.var -> source install
+  - package + source install w/out env.var -> package
+
 @par New interfaces
 
 @par New components
@@ -56,6 +68,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New utilities
 
 @par New libraries
+
+- libOrcaColourText (alexb, alexm)
+  - Simple text colours on the Linux terminal, using escape-codes. 
 
 @par New examples
 
