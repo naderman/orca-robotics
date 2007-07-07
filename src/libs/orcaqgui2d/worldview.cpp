@@ -51,7 +51,10 @@ WorldView::WorldView( PlatformCSFinder* platformCSFinder,
  
     // Use mouse tracking to show tooltips with robot names.
     // TODO: make this configurable?
-    setMouseTracking(true);
+    //
+    // Tobi: causes a segfault in qt version 4.3.0-2+b1 when calling event()
+    //       disabling for now, have to investigate
+    setMouseTracking(false);
 
     setupInterface();
 
