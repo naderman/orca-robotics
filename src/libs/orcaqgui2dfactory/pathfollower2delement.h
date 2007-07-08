@@ -177,6 +177,7 @@ private:
 
     int connectToInterface();
     bool isConnected_;
+    void getInitialData();
 
     PathUpdateConsumer *pathUpdateConsumer_;
     orca::PathFollower2dConsumerPrx callbackPrx_;

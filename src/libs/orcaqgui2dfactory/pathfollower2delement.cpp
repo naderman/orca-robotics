@@ -153,6 +153,8 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
     if (connectToInterface()!=0) 
         throw orcaqgui::Exception("Problem connecting to interface with proxyString " + proxyString);
     
+    getInitialData();
+    
     timer_ = new orcaice::Timer;
     activationTimer_ = new orcaice::Timer;
     activationTimer_->restart();
@@ -278,10 +280,8 @@ PathFollower2dElement::connectToInterface()
 }
 
 void
-PathFollower2dElement::doInitialSetup()
+PathFollower2dElement::getInitialData()
 {
-    connectToInterface();
-    
     try
     {        
         // get initial path and set pipe
@@ -296,7 +296,13 @@ PathFollower2dElement::doInitialSetup()
     {
         humanManager_->showStatusMsg(Warning, "PathFollower2d: Problem getting initial data.");
     }
-    
+}
+
+void
+PathFollower2dElement::doInitialSetup()
+{
+    connectToInterface();
+    getInitialData();
 }
 
 QStringList
