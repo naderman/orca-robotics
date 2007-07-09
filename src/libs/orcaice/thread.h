@@ -56,10 +56,10 @@ public:
     //! from inside or outside this thread.
     void stop();
 
-protected:
-
-    //! Check from inside the thread if it's time to exit.
+    //! Check from inside or outside the thread if it's time to exit.
     bool isActive();
+
+protected:
 
     //! Wait for someone from the outside to call @ref stop.
     //! It may be necessary to call this function before exitting from Ice::Thread::run after
