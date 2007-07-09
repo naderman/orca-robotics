@@ -61,6 +61,7 @@ public:
     //! Set tracing flags to TRUE to print messages to standard output.
     EventQueue( bool traceAddEvents=false, bool traceGetEvents=false );
 
+    //! Set the optimizer.
     void setOptimizer( EventQueueOptimizerPtr optimizer );
 
     //! Add event to the queue.
@@ -68,7 +69,7 @@ public:
 
     //! Add event to the queue but, before the event is added, the queue tries to
     //! combine it with the last event already in the queue. This is done by calling 
-    //! cobmine() function of the queue's optimizer. The default optimizer does not
+    //! combine() function of the queue's optimizer. The default optimizer does not
     //! support any combinations. To implement combination(s) for your events, implement
     //! your own optimizer by deriving from EventQueueOptimizer.
     //! Calling this function when the event is empty or when the queue's optimizer is not set
