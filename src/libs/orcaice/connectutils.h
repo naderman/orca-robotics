@@ -17,6 +17,7 @@
 
 #include <orcaice/context.h>
 #include <orcaice/exceptions.h>
+#include <orcaice/thread.h>
 #include <orcaice/configutils.h>
 #include <orcaice/sysutils.h>
 #include <orcaice/printutils.h>
@@ -150,6 +151,10 @@ connectToInterfaceWithString( const Context     & context,
  *  Convenience function, behaves like @ref connectToInterfaceWithString but the proxy information
  *  comes from the configuration file and the @p interfaceTag.
  *
+@verbatim
+MyInterfacePrx myInterfacePrx;
+orcaice::connectToInterfaceWithTag<MyInterfacePrx>( context(), myInterfacePrx, "MyInterface" );
+@endverbatim
  *  Throws ConfigFileException if the interface name cannot be read for some reason.
  */
 template<class ProxyType>
@@ -331,6 +336,117 @@ connectToTopicWithString( const Context     & context,
 //                                 bool                createIfMissing=false );
 
 //@}
+
+/*!
+ *  @name Multi-Try Connection Functions
+ */
+//@{
+
+/*!
+    Tries to activate the adapter (by calling Context::activate(). If fails, sleeps for
+    @c retryInterval seconds. Will repeat indefinitely until the thread is stopped (checks
+    orcaice::Thread::isAlive() ).
+*/
+void activate( Context& context, orcaice::Thread* thread, int retryInterval=2 );
+
+/*!
+Convenience function. Tries to connect to the specified remote interface until is successful or
+the @c thread is stopped. 
+
+We catch orcaice::NetworkException, and sleep for @c retryInterval and try again.
+
+We do NOT catch a possible orcaice::TypeMismatchException because this condition is unlikely to
+change.
+
+Example:
+@verbatim
+MyInterfacePrx myInterfacePrx;
+try {
+    orcaice::connectToInterfaceWithString<MyInterfacePrx>( 
+        context_, myInterfacePrx, "iface@platform/component", (orcaice::Thread*)this );
+}
+catch ( const orcaice::TypeMismatchException& e ) {
+    // what do we do?
+}
+@endverbatim
+ */
+template<class ProxyType>
+void
+connectToInterfaceWithString( const Context     & context,
+                              ProxyType         & proxy,
+                              const std::string & proxyString,
+                              orcaice::Thread*    thread, int retryInterval=2 )
+{    
+    while ( thread->isActive() )
+    {
+        try 
+        {
+            connectToInterfaceWithString<ProxyType>( context, proxy, proxyString );
+            break;
+        }
+        catch ( const orcaice::NetworkException& e ) 
+        {
+            std::stringstream ss;
+            ss << "Failed to connect: " << e.what() 
+               << ".  Will try again in "<<retryInterval<<"secs...";
+            context.tracer()->warning( ss.str() );
+        }
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+    }
+}
+
+/*!
+Convenience function. Tries to connect to the specified remote interface until is successful or
+the @c thread is stopped. 
+
+We catch orcaice::NetworkException, and sleep for @c retryInterval and try again.
+
+We do NOT catch a possible orcaice::TypeMismatchException because this condition is unlikely to
+change.
+
+We do NOT catch a possible orcaice::ConfigFileException exception.
+
+Example:
+@verbatim
+MyInterfacePrx myInterfacePrx;
+try {
+    orcaice::connectToInterfaceWithTag<MyInterfacePrx>( 
+        context_, myInterfacePrx, "MyInterface", (orcaice::Thread*)this );
+}
+catch ( const orcaice::TypeMismatchException& e ) {
+    // what do we do?
+}
+catch ( const orcaice::ConfigFileException& e ) {
+    // what do we do?
+}
+@endverbatim
+ */
+template<class ProxyType>
+void
+connectToInterfaceWithTag( const Context     & context,
+                           ProxyType         & proxy,
+                           const std::string & interfaceTag,
+                           orcaice::Thread*  thread, int retryInterval=2 )
+{    
+    while ( thread->isActive() )
+    {
+        try 
+        {
+            connectToInterfaceWithTag<ProxyType>( context, proxy, interfaceTag );
+            break;
+        }
+        catch ( const orcaice::NetworkException& e ) 
+        {
+            std::stringstream ss;
+            ss << "Failed to connect: " << e.what()
+               << ".  Will try again in "<<retryInterval<<"secs...";
+            context.tracer()->warning( ss.str() );
+        }
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+    }
+}
+//@}
+
 } // namespace
 
 #endif

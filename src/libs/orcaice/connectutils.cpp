@@ -14,6 +14,8 @@
 #include "configutils.h"
 #include "exceptions.h"
 
+using namespace std;
+
 namespace orcaice {
 
 void
@@ -224,6 +226,38 @@ getNetworkState( const Context  & context,
         std::stringstream ss;
         ss << "orcaice::getNetworkState(): caught exception: " << e.what();
         context.tracer()->debug( ss.str() ,5 );
+    }
+}
+
+void
+activate( Context& context, orcaice::Thread* thread, int retryInterval )
+{
+    while ( thread->isActive() )
+    {
+        try {
+            context.activate();
+            break;
+        }     
+        // alexm: in all of these exception handlers we would like to just catch
+        // std::exception but Ice 3.2 does not overload e.what() so we have to do it
+        // separately.
+        catch ( const Ice::Exception& e ) {
+            std::stringstream ss;
+            ss << "Failed to activate component: " << e 
+               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
+            context.tracer()->warning( ss.str() );
+        }
+        catch ( const std::exception& e ) {
+            std::stringstream ss;
+            ss << "Failed to activate component: " << e.what() 
+               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
+            context.tracer()->warning( ss.str() );
+        }
+        catch ( ... )
+        {
+            cout << "Caught some other exception while activating." << endl;
+        }
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
     }
 }
 
