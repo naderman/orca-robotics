@@ -126,6 +126,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     during component initialization. (alexm)
   - fixed bugs handling negative times in conversions between orca::Time, doubles, 
     durations, and strings. Added more tests. (alexm)
+  - added functions for looped multi-try connections. these wrap the existing activate(),
+    connectToInterfaceWithString() and connectToInterfaceWithTag(). (alexm)
 
 - libOrcaSerial (alex b)
   - Big overhaul:
