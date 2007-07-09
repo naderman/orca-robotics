@@ -1,5 +1,10 @@
 #!/usr/bin/perl 
 
+
+# A rough and ready perl script used to parse the peak CAN data from the segway
+# It is expecting data in format that the command 'cat /dev/pcan40 | grab_data.pl'
+# will produce.
+
 use warnings;
 use strict;
 
@@ -87,9 +92,12 @@ while(<>){
     }elsif($canData[2] eq "0x00000680"){
         $Last680Msg = $line;
         print "New 680 $Last680Msg";
+        parse680 (@canData);
     }elsif($canData[2] eq "0x00000412"){
         $Last412Msg = $line;
         print "New 412 $Last412Msg";
+    }else{
+        print "\n";
     }
 
     if(($ReceivedSpeed != $CommandSpeed) && $checkSpeeds){
@@ -144,3 +152,41 @@ sub getnum {
         return $num;
     } 
 } 
+
+
+
+#**********************************************************************************
+#Function to parse the status flags in the #0x680 message
+sub parse680{
+
+    my @data = shift;
+
+    my $Byte2 = getnum($canData[6]);
+    my $Byte3 = getnum($canData[7]);
+    my $Word1 = ($Byte2 << 8) + $Byte3;
+    
+    my $Byte4 = getnum($canData[8]);
+    my $Byte5 = getnum($canData[9]);
+    my $Word2 = ($Byte4 << 8) + $Byte5;
+
+
+    print "Msg 0x680 Flags set:- ";
+    if($Word1 & 0x0001){print "SafteyShutdown1 ";}
+    if($Word1 & 0x0002){print "NotUsed1 ";}
+    if($Word1 & 0x0004){print "SafteyShutdown2 ";}
+    if($Word1 & 0x0008){print "DisableResponse ";}
+    if($Word1 & 0x0010){print "SpeedLimitTo4MPH ";}
+    if($Word1 & 0x0020){print "SpeedLimitTo0MPH ";}
+    if($Word1 & 0x0040){print "SystemIntegrityFault ";}
+    if($Word1 & 0x0080){print "MotorsEnabled ";}
+    if($Word1 & 0x0100){print "BalanceMode ";}
+    if($Word1 & 0x0200){print "YawTransientFlag ";}
+    if($Word1 & 0x0400){print "EmptyBatteryHazard ";}
+    if($Word1 & 0x0800){print "NotUsed2 ";}
+    if($Word1 & 0x1000){print "WheelSlipFlag ";}
+    if($Word1 & 0x2000){print "MotorHazardFault ";}
+    if($Word1 & 0x4000){print "LowBatteryFault ";}
+    if($Word1 & 0x8000){print "NotUsed3 ";}
+    print "\n\n";
+        
+}
