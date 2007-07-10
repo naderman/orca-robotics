@@ -45,6 +45,9 @@ Config.Element10.Type.Default = Wifi
 Config.Element10.Detail.Default = wifi@local/wifi
 Config.Element11.Type.Default = MultiOgMaps
 Config.Element11.Detail.Default = ogmap@local/ogmaploader:hazardmap@local/ogmaploader2
+Config.Element12.Type.Default = Odometry2d
+Config.Element12.Detail.Default = odometry2d@local/robot2d
+
 
 # external configuration options
 Config.Ice.Override.ConnectTimeout.Default=150

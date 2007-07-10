@@ -29,6 +29,7 @@
 #include <orcaqgui2dfactory/laserscanner2dpainter.h>
 #include <orcaqgui2dfactory/localise2dpainter.h>
 #include <orcaqgui2dfactory/localise3dpainter.h>
+#include <orcaqgui2dfactory/odometry2dpainter.h>
 #include <orcaqgui2dfactory/particle2dpainter.h>
 #include <orcaqgui2dfactory/polarfeature2dpainter.h>
 #include <orcaqgui2dfactory/wifipainter.h>
@@ -244,6 +245,37 @@ public:
 private:
     void getInitialAppearance();
     QGraphics2dPainter painter_;
+};
+
+class Odometry2dElement
+    : public IceStormElement<Odometry2dPainter,
+                             orca::Odometry2dData,
+                             orca::Odometry2dPrx,
+                             orca::Odometry2dConsumer,
+                             orca::Odometry2dConsumerPrx>
+{
+public:
+    Odometry2dElement( const orcaice::Context  &context,
+                       const std::string       &proxyString,
+                       int                      timeoutMs=60000 )
+        : IceStormElement<Odometry2dPainter,
+                            orca::Odometry2dData,
+                            orca::Odometry2dPrx,
+                            orca::Odometry2dConsumer,
+                            orca::Odometry2dConsumerPrx>(context, proxyString, painter_, timeoutMs )
+        {};
+
+    virtual bool isInGlobalCS() { return false; }
+    virtual void actionOnConnection()
+    {
+        paintInitialData<orca::Odometry2dPrx, Odometry2dPainter>
+            ( context_, listener_.interfaceName(), painter_ );
+    }
+    virtual void setColor( QColor color ) { painter_.setColor(color); }
+    virtual void setTransparency( bool useTransparency ) { painter_.setTransparency( useTransparency ); };
+
+private:
+    Odometry2dPainter painter_;
 };
 
 } // namespace

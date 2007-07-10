@@ -270,6 +270,12 @@ getTransparentVersion( const QColor &c, float transparencyMultiplier )
                    alpha );
 }
 
+QColor 
+getDarkVersion( QColor &color )
+{
+    return QColor(color.red()/2,color.green()/2,color.blue()/2);
+}
+
 void paintWaypoint( QPainter *p,
                     QColor &fillColor,
                     QColor &drawColor,

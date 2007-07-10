@@ -32,20 +32,21 @@ namespace orcaqgui2d {
 
 DefaultFactory::DefaultFactory()
 {
+    addSupportedType("FeatureMap2d");
     addSupportedType("Grid");
     addSupportedType("LaserScanner2d");
     addSupportedType("Localise2d");
     addSupportedType("Localise3d");
+    addSupportedType("MuliOgMaps");
+    addSupportedType("Odometry2d");
     addSupportedType("OgMap");
-    addSupportedType("PolarFeature2d");
     addSupportedType("PathFollower2d");
     addSupportedType("PathPlanner2d");
-    addSupportedType("FeatureMap2d");
     addSupportedType("Particle2d");
     addSupportedType("PixMap");
+    addSupportedType("PolarFeature2d");
     addSupportedType("QGraphics2d");
     addSupportedType("Wifi");
-    addSupportedType("MuliOgMaps");
 }
 
 
@@ -105,6 +106,10 @@ DefaultFactory::create( const orcaice::Context         &context,
         else if ( elementType == "Localise3d" ) {
             cout<<"creating Localise3d element"<<endl;
             elem = new orcaqgui2d::Localise3dElement( context, elementDetails[0].toStdString() );
+        }
+        else if ( elementType == "Odometry2d" ) {
+            cout<<"creating Odometry2d element"<<endl;
+            elem = new orcaqgui2d::Odometry2dElement( context, elementDetails[0].toStdString() );
         }
         else if ( elementType == "OgMap" ) {
             cout<<"creating OgMap element"<<endl;

@@ -110,6 +110,9 @@ void paintCovarianceEllipse( QMatrix &m2win, QPainter *p, QColor colour, float p
 //! transparencyMultiplier=1.0 gives the same colour.
 QColor getTransparentVersion( const QColor &c, float transparencyMultiplier=0.5 );
 
+//! Get a darker version of the given colour
+QColor getDarkVersion( QColor &color );
+
 //! Paint a waypoint with distance tolerance [m] as a circle and heading tolerance [deg] as a wedge around targetHeading [deg]
 void paintWaypoint( QPainter *p, 
                     QColor &fillColor,
