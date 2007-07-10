@@ -208,6 +208,17 @@ MainWindow::loadElementsFromConfigFile( const orcaice::Context & context )
                 elementDetails.push_back(QString(strOut[k].c_str()));
             }
         }
+        
+        // Debug output
+        cout << "TRACER(mainwin.cpp): Loading element of type: " << elementType.toStdString() << endl;
+        cout << "TRACER(mainwin.cpp): Loading element with details: ";
+        for (int k=0; k<elementDetails.size(); k++)
+        {
+            cout << elementDetails[k].toStdString() << " ";
+        }
+        cout << endl;
+        // end of debug output
+        
         elemModel_->createGuiElement( elementType, elementDetails );
         i++;
     }
