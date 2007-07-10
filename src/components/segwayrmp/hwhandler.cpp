@@ -124,7 +124,7 @@ HwHandler::HwHandler(
     else {
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
         context_.tracer()->error( errorStr);
-        context_.tracer()->info( "Valid driver values are {'segwayrmpusb', 'playerclient', 'fake'}" );
+        context_.tracer()->info( "Valid driver values are {'segwayrmpcan', 'segwayrmpusb', 'playerclient', 'fake'}" );
         throw orcaice::Exception( ERROR_INFO, errorStr );
     }
 
