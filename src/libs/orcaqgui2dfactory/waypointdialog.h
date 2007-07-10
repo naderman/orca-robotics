@@ -1,3 +1,4 @@
+
 /********************************************************************************
 ** Form generated from reading ui file 'waypointdialog.ui'
 **
