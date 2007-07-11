@@ -84,6 +84,7 @@ namespace orcaserial {
                 return B57600;
             case 115200:
                 return B115200;
+#ifdef __linux            
             case 230400:
                 return B230400;
             case 460800:
@@ -110,6 +111,7 @@ namespace orcaserial {
                 return B3500000;
             case 4000000:
                 return B4000000;
+#endif
             default:
                 stringstream ss;
                 ss << "Serial::baud() Invalid baud rate: " << baudRate;
@@ -593,7 +595,7 @@ Serial::open(const int flags)
 	int baud = 9600;
  
     // argument to modem_open requires a non_const pointer
-	portFd_ = modem_open( dev_.c_str(), baud ) ;
+	portFd_ = modem_open( (const char*)dev_.c_str(), baud ) ;
 	if( portFd_ < 0)
 	{  
         printf("ERROR(serial.c): Could not open serial device\n");
