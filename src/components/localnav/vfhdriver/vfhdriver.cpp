@@ -70,7 +70,7 @@ VfhDriver::setSpeedConstraints( float maxSpeed, float maxTurnrate )
         ss << "VFH: requested maxSpeed ("
            <<maxSpeed_<<") faster than its configured maximum ("<<vfhConfig_.maxSpeed
            <<").  Thresholding.";
-        context_.tracer()->debug( ss.str(), 1 );
+        context_.tracer()->debug( ss.str(), 2 );
         maxSpeed_ = vfhConfig_.maxSpeed;
     }
     if ( maxTurnrate_ > vfhConfig_.maxTurnrate1ms )
@@ -79,7 +79,7 @@ VfhDriver::setSpeedConstraints( float maxSpeed, float maxTurnrate )
         ss << "VFH: requested maxTurnrate ("<<maxTurnrate*180.0/M_PI
            <<"deg) faster than its configured maximum ("<<vfhConfig_.absoluteMaxTurnrate*180.0/M_PI
            <<"deg).  Thresholding.";
-        context_.tracer()->debug( ss.str(), 1 );
+        context_.tracer()->debug( ss.str(), 2 );
         maxTurnrate_ = vfhConfig_.absoluteMaxTurnrate;
     }
 

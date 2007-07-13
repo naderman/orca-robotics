@@ -100,7 +100,7 @@ within reasonable safe limits.
       obstacle to be afraid of it, when travelling at 0 m/s.  A small value makes 
       the robot cautious, a large value makes it brave.
 
-- @c LocalNav.Config.Vfh.FreeSpaceCutoff0ms (double) [m]
+- @c LocalNav.Config.Vfh.FreeSpaceCutoff1ms (double) [m]
     - See FreeSpaceCutoff0ms.  The value used scales linearly with speed.
 
 - @c LocalNav.Config.Vfh.ObsCutoff0ms (double) [m]
