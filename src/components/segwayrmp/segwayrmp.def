@@ -17,7 +17,7 @@ Provides.Power.DefaultName=power
 
 # Config Parameters
 Config.Driver.Comment=Options are { 'segwayrmpcan', 'segwayrmpusb', 'playerclient', 'fake' }
-Config.Driver.Default=segwayrmpusb
+Config.Driver.Default=segwayrmpcan
 Config.EnableMotion.Default=1
 Config.LogStats.Default=1
 Config.LogStatsFilename.Default=segwayrmp-stats.txt
