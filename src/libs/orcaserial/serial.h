@@ -79,8 +79,9 @@ public:
     //!
     int readFull(void *buf, size_t count);
 
-    //! Reads a line of data up to @ref count bytes (including @ref termchar), terminated by @ref termchar.
+    //! Reads a line of data up to @ref count bytes-1 (including @ref termchar), terminated by @ref termchar.
     //! Returns the number of bytes read.
+    //! After reading the line then the string will be NULL terminated.
     //!
     //! In blocking mode we might block forever, waiting for the number of bytes we want or an error.
     //!
@@ -119,6 +120,9 @@ public:
 
 private:
 
+    // Utility function to do the blocking for the file accesses
+    int doBlocking(void);
+
     // Opens a device @ref dev.
     void open(int flags=0);
 
@@ -127,9 +131,6 @@ private:
 
     int readFullBlocking(void *buf, size_t count);
     int readFullNonblocking(void *buf, size_t count);
-
-    int readLineBlocking(void *buf, size_t count, char termchar);
-    int readLineNonblocking(void *buf, size_t count, char termchar);
 
     const std::string dev_;
     struct termios serialOptions_;

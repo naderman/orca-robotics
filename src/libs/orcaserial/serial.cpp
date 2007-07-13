@@ -84,7 +84,6 @@ namespace orcaserial {
                 return B57600;
             case 115200:
                 return B115200;
-#ifdef __linux            
             case 230400:
                 return B230400;
             case 460800:
@@ -111,7 +110,6 @@ namespace orcaserial {
                 return B3500000;
             case 4000000:
                 return B4000000;
-#endif
             default:
                 stringstream ss;
                 ss << "Serial::baud() Invalid baud rate: " << baudRate;
@@ -352,92 +350,66 @@ Serial::readFull(void *buf, size_t count)
         return readFullNonblocking( buf, count );
 }
 
-int 
-Serial::readLineBlocking(void *buf, size_t count, char termchar)
-{
-    if ( debugLevel_ > 0 )
-        cout<<"TRACE(serial.cpp): readLineBlocking()" << endl;
 
-    int got = 0;
-    char lastchar=0;
-    do{
-        //not enough room in buffer
-        if(got==(int)count-1)
-        {
-            throw SerialException( "Serial::readLineBlocking(): Not enough room in buffer" );
-        }
-        char *offset=(char*)buf+got;
-        int ret = ::read( portFd_, offset, 1 );
-        if ( ret < 0 )
-        {
-            throw SerialException( std::string( "Serial::readLineBlocking(): ")+strerror(errno) );
-        }
-        got += ret;
-        lastchar=((char*)buf)[got-1];
-
-    } while(lastchar!=termchar);
-
-    return got;
-}
-
-int 
-Serial::readLineNonblocking(void *buf, size_t count, char termchar)
-{
-    if ( debugLevel_ > 0 )
-        cout<<"TRACE(serial.cpp): readLineNonblocking()" << endl;
-
-   int got = 0;
-    char lastchar=0;
-    do 
-    {
-        if ( got == (int) count-1 )
-        {
-            throw SerialException( "Serial::readLineBlocking(): Not enough room in buffer" );
-        }
-        char *offset=(char*)buf+got;
-        int ret = ::read(portFd_, offset, 1);
-        if(ret>0)
-        {
-            got += ret;
-            lastchar=((char*)buf)[got-1];
-        }
-        else if ( ret == -1 && errno == EAGAIN )
-        {  
-            // No data available yet -- if timeout is set we will block
-            fd_set rfds;
-            struct timeval tv;
-            FD_ZERO(&rfds);
-            FD_SET(portFd_, &rfds);
-            tv.tv_sec = timeoutSec_;
-            tv.tv_usec = timeoutUSec_;
-            int selval = select(portFd_+1, &rfds, NULL, NULL, &tv);
-            if(selval==0)
-            {
-                // select timed out: no data
-                return -1;
-            }
-            if(selval<0)
-            {
-                throw SerialException( std::string("Serial::readFullNonblocking: select(): ")+strerror(errno) );
-            }
-        }
-        else if ( ret < 0 )
-        {
-            throw SerialException( std::string("Serial::readLineNonblocking: read(): ")+strerror(errno) );            
-        }
-    } while(lastchar!=termchar);
-
-    return got;
-}
+//////////////////////////////////////
+//Start Duncan rewrite...
+//DUNCAN; Combined blocking and non-blocking...
 
 int 
 Serial::readLine(void *buf, size_t count, char termchar)
 {
-    if ( blockingMode_ )
-        return readLineBlocking(buf,count,termchar);
-    else
-        return readLineNonblocking(buf,count,termchar);
+    if ( debugLevel_ > 0 )
+        cout<<"TRACE(serial.cpp): readLineBlocking()" << endl;
+
+    //There must be at least room for a terminating char and NULL terminator!
+    assert (count >= 2);
+
+    char* dataPtr = static_cast<char*>(buf);
+    char nextChar = 0;
+
+    do{        
+        //Check for buf overrun Must leave room for NULL terminator
+        if(dataPtr >= (static_cast<char*>(buf) + (count - 1)))
+        {
+            throw SerialException( "Serial::readLineBlocking(): Not enough room in buffer" );
+        }
+
+        int ret = ::read( portFd_, &nextChar, 1 );
+        if (ret == 1)
+        {
+            *(dataPtr++) = nextChar; //got data let's store it...
+        }
+        else if ( ret < 0 )
+        {
+
+            //If blocking and no data, wait and then go again
+            if(blockingMode_ &&  ret == -1 && errno == EAGAIN ){  
+                if(doBlocking() != -1)
+                {
+                    continue;
+                }else{
+                    *dataPtr = 0x00; //terminate string just incase it's used anyway
+                    return -1;
+                }
+            }
+
+            throw SerialException( std::string( "Serial::readLineBlocking(): ")+strerror(errno) );
+        }
+
+    }while (nextChar != termchar);
+
+//It's a string. It must be NULL terminated...
+    *dataPtr = 0x00;
+
+//Return the number of chars not including the NULL
+    return ( static_cast<int> (dataPtr - static_cast<char*>(buf)) );
+
+ 
+//TODO: Duncan! I think that this should cope with any <CR><LF> pair gracefully!
+
 }
+
+
 
 int 
 Serial::bytesAvailable()
@@ -455,6 +427,18 @@ Serial::bytesAvailable()
 int 
 Serial::bytesAvailableWait()
 {
+    if ( doBlocking() == -1){
+        return -1;
+    }
+
+    return bytesAvailable();
+}
+
+
+int 
+Serial::doBlocking()
+{
+    // No data available yet -- if timeout is set we will block
     fd_set rfds;
     struct timeval tv;
     FD_ZERO(&rfds);
@@ -464,15 +448,21 @@ Serial::bytesAvailableWait()
     int selval = select(portFd_+1, &rfds, NULL, NULL, &tv);
     if(selval==0)
     {
-        //printf("select timed out: no data\n");
+        // select timed out: no data
         return -1;
     }
-    if( selval < 0 )
+    if(selval<0)
     {
-        throw SerialException( std::string("Serial::bytesAvailableWait(): ")+strerror(errno) );
+        throw SerialException( std::string("Serial::doBlocking: select(): ")+strerror(errno) );
     }
-    return bytesAvailable();
+    
+    return 0;
 }
+
+
+//// END DUNCAN REWRITE ////
+
+
 
 int 
 Serial::write(const void *buf, size_t count)
@@ -549,6 +539,9 @@ Serial::drain()
     }
 }
 
+
+
+
 #endif
 
 #ifdef __QNX__
@@ -595,7 +588,7 @@ Serial::open(const int flags)
 	int baud = 9600;
  
     // argument to modem_open requires a non_const pointer
-	portFd_ = modem_open( (char*)dev_.c_str(), baud ) ;
+	portFd_ = modem_open( const_cast<char*>(dev_.c_str()), baud ) ;
 	if( portFd_ < 0)
 	{  
         printf("ERROR(serial.c): Could not open serial device\n");

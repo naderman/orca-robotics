@@ -76,7 +76,7 @@ main(int argc, char* argv[])
         // we'll use indirect proxy here to connect to the sicklaser component
         // setup according to the Quick Start tutorial of Orca2
         // see: orca-robotics.sf.net/orca_doc_quickstart.html
-        Ice::ObjectPrx base = ic->stringToProxy( "laser@"+getHostname()+"/sicklaser" );
+        Ice::ObjectPrx base = ic->stringToProxy( getHostname()+"/laser2d" );
         if (!base) {
             throw "Could not create proxy";
         }

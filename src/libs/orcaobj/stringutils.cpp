@@ -484,7 +484,7 @@ std::string
 toString( const orca::Time& obj )
 {
     std::ostringstream s;
-    s << toIceTime( obj ).toDateTime();
+    s <<toIceTime( obj ).toDateTime();
     return s.str();
 }
 
