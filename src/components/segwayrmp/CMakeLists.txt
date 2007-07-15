@@ -31,7 +31,7 @@ IF ( BUILD_SEGWAYRMP )
       MESSAGE( STATUS "--     USB driver for Segway RMP line of platforms -- CANNOT be built" )
     ENDIF ( FTD2XX_FOUND )
 
-    OPTION( BUILD_PEAKCAN "Try to build the optional peak CAN drivers" ON )
+    OPTION( BUILD_PEAKCAN "Try to build the optional peak CAN drivers" OFF )
     
     IF ( PEAKCAN_FOUND AND BUILD_PEAKCAN )
       MESSAGE( STATUS "--    Peak CAN driver for Segway RMP line of platforms -- can be built" )
