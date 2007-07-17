@@ -31,12 +31,11 @@ std::string
 getProvidedName( const Context & context, const std::string &ifaceTag )
 {
     std::string ifaceName;
-    orcaice::getProperty( context.properties(),
-                              context.tag()+".Provides."+ifaceTag+".Name", ifaceName );
+    orcaice::getProperty( context.properties(), context.tag()+".Provides."+ifaceTag+".Name", ifaceName );
     if( ifaceName.empty() )
     {
-context.tracer()->print("getting getProvidedName for tag="+ifaceTag);
-cout<<"getting getProvidedName for tag="+ifaceTag<<endl;
+        context.tracer()->print("getting getProvidedName for tag="+ifaceTag);
+        cout<<"getting getProvidedName for tag="+ifaceTag<<endl;
         std::string errorString = context.tag()+": "
             + warnMissingProperty("provided interface name for tag '" + ifaceTag + "'",
                                    context.tag()+".Provides."+ifaceTag+".Name");

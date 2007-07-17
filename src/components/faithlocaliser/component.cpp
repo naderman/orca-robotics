@@ -72,9 +72,30 @@ Component::start()
     // EXTERNAL REQUIRED INTERFACES
     //
     Odometry2dPrx odo2dPrx;
-    orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context(),
-                                                             odo2dPrx,
-                                                             "Odometry2d" );
+    
+    // will try forever until the user quits with ctrl-c
+    // TODO: this will not actually quit on ctrl-c
+    while (true)
+    {
+        try
+        {
+            orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context(), odo2dPrx, "Odometry2d" );
+            break;
+        }
+        catch ( const Ice::Exception &e )
+        {
+            stringstream ss;
+            ss << "failed to connect to remote Odometry2d object: " << e << ". Will try again after 3 seconds.";
+            tracer()->error( ss.str() );
+        }
+        catch ( const std::exception &e )
+        {
+            stringstream ss;
+            ss << "failed to connect to remote Odometry2d object: " << e.what() << ". Will try again after 3 seconds.";
+            tracer()->error( ss.str() );
+        }
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+    }
 
     // create a callback object to recieve scans
     Ice::ObjectPtr consumer = new Odometry2dConsumerI( posPipe_ );
