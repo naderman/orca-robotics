@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2007 Ben Upcroft
+ * Copyright (c) 2004-2007 Ben Upcroft, Tobias Kaupp
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -11,7 +11,7 @@
 /*!
 
 @page orca_doc_tute_gazebo Using Orca with Player/Gazebo simulator
-@note Reviewed for release 2.1.0, Player 2.0.3, and Gazebo 0.7.0.
+@note Reviewed for release 2.5.0, Player 2.0.4, and Gazebo 0.7.0.
 
 In this tutorial we will assemble a simple robotic system and connect it to the 3D Player/Gazebo simulator. The system diagram is the same as in the this tutorial @ref orca_doc_tute_stage (with Stage replaced by Gazebo). It is recommended to do the Stage tutorial first because the simulator setup is simpler. Here we assume that you've done that and so all the prerequisites are already met.
 
@@ -113,7 +113,7 @@ driver
 )
 @endverbatim
 
-Start up Player using the @c example.cfg file.
+Start up Player using the @c example.cfg file (make sure you are still running gazebo or wxgazebo).
 @verbatim
 $ player example.cfg
 @endverbatim
@@ -129,15 +129,15 @@ $ cp [ORCA_INSTALL]/cfg/teleop.cfg ./
 $ cp [ORCA_INSTALL]/cfg/orcaview2d.cfg ./
 @endverbatim
 
-From here on in, each component will need a separate terminal. In the tutorial @ref orca_doc_tute_icebox, you can learn how to put several components into an application server called IceBox so that you can run all these components from one process.
+From here on, each component will need a separate terminal.
 
 @section orca_doc_tute_gazebo_laser Setting up the Laser on the Robot
 
 Tell the component to use the @e gazebo driver by modifying the @c laser2d.cfg file. Check that the following lines look like this.
 @verbatim
 ...
-Laser2d.Config.Driver=playerclient
-aser2d.Config.PlayerClient.Driver=gazebo
+Laser2d.Config.DriverLib=libOrcaLaser2dPlayerClient.so
+Laser2d.Config.PlayerClient.Driver=gazebo
 ...
 @endverbatim
 
@@ -167,7 +167,7 @@ $ faithlocaliser
 To view the world and the robot we use @c orcaview. One line of the standard config file needs to be modified:
 @verbatim
 ...
-OrcaView.Requires.Localise2d.Proxy=localise2d@local/faithlocaliser
+OrcaView2d.Config.Element2.Detail=localise2d@local/faithlocaliser
 ...
 @endverbatim
 Start the GUI component
