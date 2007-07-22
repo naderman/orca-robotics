@@ -229,9 +229,17 @@ WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFrame
                         {
                             // cout<<"TRACE(worldview.cpp): transforming painter by " << x << ", " << y << ", " << theta*180.0/M_PI << endl;
                             painter->translate( x, y );
-                            painter->rotate( RAD2DEG(theta) );
+                            painter->rotate( RAD2DEG(theta));
+                            elem->paint( painter, z );
                         }
-                        elem->paint( painter, z );
+                        else
+                        {
+                            painter->save();
+                            // local view is aligned with y-axis
+                            painter->rotate( 90.0 );
+                            elem->paint( painter, z );
+                            painter->restore();
+                        }
                     }
                     painter->restore();
                 }
