@@ -27,7 +27,7 @@ $ mkdir -p ~/sys/tutegazebo; cd ~/sys/tutegazebo
 $ cp [GAZEBO_SRC]/worlds ./
 @endverbatim
 
-One of the most important things that you should make sure of is that Gazebo runs by itself. Please see <a href=http://playerstage.sourceforge.net/doc/Gazebo-manual-0.5-html/install.html target="_blank">Gazebo installation instructions</a>, <a href=http://playerstage.sourceforge.net/doc/Gazebo-manual-0.5-html/ target="_blank">Gazebo quick start</a>, and the Gazebo mailing lists before anything else. Note that some of the instructions on the Gazebo website are out of date. These issues are hopefully addressed as we come across them below.
+One of the most important things that you should make sure of is that Gazebo runs by itself. Please see <a href="http://playerstage.sourceforge.net/doc/Gazebo-manual-0.7.0-html/install.html" target="_blank">Gazebo installation instructions</a>, <a href="http://playerstage.sourceforge.net/doc/Gazebo-manual-0.7.0-html/pages.html" target="_blank">Gazebo user guide</a>, and the Gazebo mailing lists before anything else. Note that some of the instructions on the Gazebo website are out of date. These issues are hopefully addressed as we come across them below.
 
 After Gazebo has been installed, run it from the @c tutegazebo directory by typing
 @verbatim
@@ -49,18 +49,18 @@ rendering: [GLX offscreen] direct [no] RGBA [5 6 5 0] depth [16]
    Current serial number in output stream:  36
 @endverbatim 
 
-For more information about OpenGL rendering methods see the <a href="http://playerstage.sourceforge.net/doc/Gazebo-manual-0.5-html/gazebo_opengl.html">Gazebo documentation</a>. It is suggested to try all rendering methods to see which gives the best results because it is highly dependent on the video card, video card driver and xserver.
+For more information about OpenGL rendering methods see the <a href="http://playerstage.sourceforge.net/doc/Gazebo-manual-0.7.0-html/gazebo_opengl.html">Gazebo documentation</a>. It is suggested to try all rendering methods to see which gives the best results because it is highly dependent on the video card, video card driver and xserver.
 
 Select the most appropriate rendering method by changing the renderMethod tag in @c example.world (the file you just copied to the @c tutegazebo directory). For example, to select GLX rendering use the following tag:    
 @verbatim
 <renderMethod>glx</renderMethod>
 @endverbatim
-If you are still having problems, it was found that by commenting the following lines out that both gazebo and wxgazebo could be run without errors.
+You also need to add this to the Sony camera's configuration:
 @verbatim
-<!-- <model:SonyVID30>
-   <id>camera1</id>
-   <xyz>0 0 0.2</xyz>
-</model:SonyVID30> -->
+<model:SonyVID30>
+  ...
+  <renderMethod>glx</renderMethod>
+</model:SonyVID30>
 @endverbatim
 
 Once Gazebo is running, you will need to stop it and change the @c example.world file so that it reports laser readings that orca will interpret properly. Add the following tags within the SickLMS200 model. 
@@ -113,7 +113,7 @@ driver
 )
 @endverbatim
 
-Start up Player using the @c example.cfg file (make sure you are still running gazebo or wxgazebo).
+Start up Player using the @c example.cfg file (make sure you are still running gazebo or wxgazebo!).
 @verbatim
 $ player example.cfg
 @endverbatim
