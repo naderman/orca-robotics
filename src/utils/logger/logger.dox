@@ -65,17 +65,17 @@ Logger.Requires.Odometry2d0.Proxy=odometry2d@local/segwayrmp
     - A space-separated list of libraries containing slave factories.
     - This list is ordered.  Putting a custom library earlier in the list means that it will be used to 
       instantiate slaves before later factories.
-    - default: libOrcaLogFactory.so
+    - Default: libOrcaLogFactory.so
 
 - @c Logger.Config.FilenameTimestamp (bool)
     - If set to one, creation timestamp is pre-pended to the filenames of the master and log files. Time stamp format is YYMMDD_HHMMSS, e.g. the default master file becomes 060804_153321_master.log. This is usful to avoid accidently overwriting the files when restarting the logger.
-    - default: 1
+    - Default: 1
 
-- @c Logger.Config.<interfaceType><number> (string)
-    - specifies the encodingType (see @ref subfiles for more info)
-    - valid values: {'ice', 'ascii', 'acfr'}
-    - default: 'ice'
-    - example: @c Logger.Config.Laser0=ascii
+- @c Logger.Config.<interfaceType><number>.Format (string)
+    - Specifies the encoding format for the log file
+    - Valid values: common formats: {'ice', 'ascii'}. When format is 'ice', the data is logged in binary form and can be easily played back. It is not human-readable however. The 'ascii' format is human-readable but requires parsing to be interpreted. See "Details for specific interfaces" below for supported formats for individual interfaces.
+    - Default: 'ice'
+    - Example: @c Logger.Config.Laser0.Format=ascii
 
 @par Logfile Format
 
