@@ -325,7 +325,7 @@ Serial::readFullNonblocking(void *buf, size_t count)
             int selval = select(portFd_+1, &rfds, NULL, NULL, &tv);
             if ( selval == 0 )
             {
-                // select timed out: no data
+                // select timed out: no data, or an error occured
                 return -1;
             }
             else if ( selval < 0 )
@@ -358,9 +358,14 @@ Serial::readFull(void *buf, size_t count)
 int 
 Serial::readLine(void *buf, size_t count, char termchar)
 {
-    if ( debugLevel_ > 0 )
-        cout<<"TRACE(serial.cpp): readLineBlocking()" << endl;
-
+    if ( debugLevel_ > 0 ){
+        cout<<"TRACE(serial.cpp): readLine ";
+        if(blockingMode_){ 
+            cout << "In blocking mode"<<endl; 
+        }else{
+            cout << "Non blocking mode"<<endl;
+        }
+    }
     //There must be at least room for a terminating char and NULL terminator!
     assert (count >= 2);
 
@@ -371,7 +376,7 @@ Serial::readLine(void *buf, size_t count, char termchar)
         //Check for buf overrun Must leave room for NULL terminator
         if(dataPtr >= (static_cast<char*>(buf) + (count - 1)))
         {
-            throw SerialException( "Serial::readLineBlocking(): Not enough room in buffer" );
+            throw SerialException( "Serial::readLine: Not enough room in buffer" );
         }
 
         int ret = ::read( portFd_, &nextChar, 1 );
@@ -383,7 +388,7 @@ Serial::readLine(void *buf, size_t count, char termchar)
         {
 
             //If blocking and no data, wait and then go again
-            if(blockingMode_ &&  ret == -1 && errno == EAGAIN ){  
+            if(blockingMode_ &&  (ret == -1) && (errno == EAGAIN) ){  
                 if(doBlocking() != -1)
                 {
                     continue;
@@ -393,7 +398,8 @@ Serial::readLine(void *buf, size_t count, char termchar)
                 }
             }
 
-            throw SerialException( std::string( "Serial::readLineBlocking(): ")+strerror(errno) );
+            //If we get here then it was a more serious error
+            throw SerialException( std::string( "Serial::readLine(): ")+strerror(errno) );
         }
 
     }while (nextChar != termchar);

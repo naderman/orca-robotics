@@ -90,7 +90,7 @@ public:
     //! NOTE: The timeout applies for each individual read() call.  We might have to make lots of them,
     //!       so the total time for which this function blocks might be longer than the specified timeout.
     //!
-    int readLine(void *buf, size_t count, char termchar='\0');
+    int readLine(void *buf, size_t count, char termchar='\n');
 
     //! Returns the number of bytes available for reading (non-blocking).
     int bytesAvailable();
