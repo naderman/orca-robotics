@@ -59,7 +59,7 @@ Logger.Config.Odometry2d0.Format=acfr
 
 A couple of things to note about this configuration:
 - We are using the 'ascii' format which is human-readable.
-- We've changed the @c FilenameTimestamp property to 0 for convenience. This way the timestamp will @b not be pre-pended to the filenames. In real-world usage this option is very useful because it reduces the chances of accidental deletion of log files.
+- We've changed the @c FilenameTimestamp property to 0 for convenience. This way the timestamp will @b not be pre-pended to the filenames. In real-world usage enabling this option (by setting it to 1) is very useful because it reduces the chances of accidental deletion of log files.
 
 Run the logger.
 @verbatim
@@ -76,7 +76,9 @@ master.log  odometry2d0.log
 
 Lets examine the log files and compare their contents with the log file format described in the documentation of the @ref orca_component_logger component.
 
-First the master log file @c master.log. Its data section contains the list of data messages from all interfaces (in our case there's only one with ID=0). The time stamps here are the time when the message was received.
+@par Master file 
+
+The data section contains the list of data messages from all interfaces (in our case there's only one with ID=0). The time stamps here are the time when the message was received.
 @verbatim
 #data
 1185086269 26512 0 0
@@ -84,7 +86,9 @@ First the master log file @c master.log. Its data section contains the list of d
 1185086269 541920 0 2
 @endverbatim
 
-Now let's look at the interface log file @c odometry2d0.log. Its data section consists of 2-line segments, one for each data message. A typical one is shown below:
+@par Interface log file
+
+The data section consists of 2-line segments, one for each data message. A typical one is shown below:
 @verbatim
 601 899999
 1.3562 -0.236412 -34.8 0.25 0 -12
@@ -92,6 +96,8 @@ Now let's look at the interface log file @c odometry2d0.log. Its data section co
 To understand it, we have to examine the documentation for orcalogfactory::Odometry2dLogger (there is a link to it from @ref orca_component_logger documentation under the heading "Details for specific interfaces"). 
 
 Now we can interpret the segment above. This data point was collected at the time 601 seconds and 899999 microseconds (this is Stage simulation time, not processor time). At that time, the odometric position of the robot was x=1.3562m, y=-0.236412m, theta=-34.8deg. The robot was moving with speed vx=0.25m/s, no cross speed, and turnrate=-12deg/s.
+
+@par Parsing in Matlab
 
 As noted in the @ref orca_component_logger documentation, there's a simple Matlab parsing function for this interface in @c [ORCA_SRC]/scripts/matlab/logutils/parseodometry2ddata.m.
 
