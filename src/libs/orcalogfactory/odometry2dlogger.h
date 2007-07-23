@@ -18,6 +18,11 @@
 namespace orcalogfactory
 {
 
+/*!
+Supports two formats:
+- ice
+- ascii: see orcalog::toLogString( const orca::Odometry2dData& obj ) for log format
+*/
 class Odometry2dLogger : public orca::Odometry2dConsumer, public orcalog::Logger
 {
     public:

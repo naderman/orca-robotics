@@ -14,17 +14,24 @@
 
 @section orca_doc_tutorials_composition System composition
 
-- @ref orca_doc_quickstart
-- @ref orca_doc_quickstart_explained
-- @ref orca_doc_tute_icebox
-- @ref orca_doc_tute_direct
+- @ref orca_doc_quickstart (with optional @ref orca_doc_quickstart_explained "explanation")
+- @ref orca_doc_tute_teleop
 - @ref orca_doc_tute_stage
 - @ref orca_doc_tute_gazebo
+
+@section orca_doc_tutorials_special Special topics
+
+- @ref orca_doc_tute_direct
 - @ref orca_doc_tute_win32
+
+@section orca_doc_tutorials_services Using Ice Services
+
+- @ref orca_doc_tute_icebox
 - @ref orca_doc_tute_icegrid
 
 @section orca_doc_tutorials_operation Operation
 
+- @ref orca_doc_tute_logtxt
 - @ref orca_doc_tute_utils
 - @ref orca_doc_tute_perf_test
 

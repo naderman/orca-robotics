@@ -49,7 +49,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Project wide
 
-- Changed the order of places where we search for Ice. The new order is this:
+- Build system: changed the order of places where we search for Ice. The new order is this:
   - specified by env. var. $ICE_HOME
   - Debian package install point: /usr/
   - standard Ice istall point: /opt/Ice-[VERSION]
@@ -60,6 +60,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - package -> package
   - package + source install w/env.var -> source install
   - package + source install w/out env.var -> package
+
+- Documentation
+  - added tutorial with simple robot teleop in stage
+  - added tutorial on logging interface data in text format
 
 @par New interfaces
 

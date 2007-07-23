@@ -322,7 +322,9 @@ toLogString( const orca::LaserScanner2dDataPtr& obj )
 - line2+N: hypothesis N
 
 The state is written in this order: {x y yaw}
+
 The covariance matrix is written in this order, e.i. {xx xy yy xyaw yyaw yawyaw}
+
 Units: means are in [m], angles are in [deg].
 */
 std::string 
@@ -365,7 +367,9 @@ toLogString( const orca::Localise2dData& obj )
 - line2+N: hypothesis N
 
 The state is written in this order: {x y z roll pitch yaw}
+
 The covariance matrix (its upper triangle) is written rows first, e.i. {xx xy xz xroll xpitch xyaw yy yz yroll...}
+
 Units: means are in [m], angles are in [deg].
 */
 std::string 
@@ -415,6 +419,16 @@ toLogString( const orca::Localise3dData& obj )
     return s.str();
 }
 
+/*! 
+@brief Prints out Odometry2d data to text which is easy to parse.
+
+- line1: timestamp in seconds and microseconds of Unix time
+- line2: {2D pose} {2D velocities}
+
+Components of both pose and velocities are written in this order {x y yaw}.
+
+Units: positions are in [m], angles are in [deg], linear velocities are in [m/s], angular velocities are in [deg/s]
+*/
 std::string 
 toLogString( const orca::Odometry2dData& obj )
 {

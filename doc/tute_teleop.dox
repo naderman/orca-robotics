@@ -1,0 +1,72 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Ben Upcroft, Alex Makarenko
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@page orca_doc_tute_teleop Driving a robot simulated with Player/Stage
+
+@note Reviewed for release 2.5.0.
+
+In this tutorial we will teleoperate a robot simulated using 2-D Player/Stage simulator. The system diagram is shown below (IceGrid Registry and IceStorm are not shown).
+
+@image html doc_tute_teleop.png
+
+In this tutorial we will use components which have external dependencies.
+- Player/Stage to simulate the robotic platform. Debian installation instructions for Player can be found in @ref orca_doc_installdebian. This tutorial was tested with Player/Stage version 2.0.4.
+
+@section orca_doc_tute_teleop_orca Starting Orca
+
+Start IceGrid Registry and IceStorm server as described in the @ref orca_doc_quickstart. (We won't actually use IceStorm in this tutorial, so you don't have to start it).
+
+Create a new system directory and copy Orca sample files.
+@verbatim
+$ mkdir -p ~/sys/tuteteleop; cd ~/sys/tuteteleop
+$ cp [ORCA2-INSTALL]/cfg/robot2d.cfg .
+$ cp [ORCA2-INSTALL]/cfg/teleop.cfg .
+@endverbatim
+
+@section orca_doc_tute_teleop_player Starting Player/Stage
+
+Copy Stage sample files.
+@verbatim
+$ cp -r [STAGE-SRC]/worlds .
+@endverbatim
+
+Start up the Stage simulator with the @e simple world.
+@verbatim
+$ player worlds/simple.cfg
+@endverbatim
+
+@section orca_doc_tute_teleop_robot Robot component
+
+We're now going to set up the low level control to the actuators for the simulated robot using the @ref orca_component_robot2d component. The @c robot2d.cfg file is already configured the way we want it here, so simply run the component:
+
+@verbatim
+$ robot2d
+@endverbatim
+
+@section orca_doc_tute_teleop_keyboard Teleop using keyboard
+
+To tell the robot to move we can use the @ref orca_component_teleop component which allows us to send commands to the @ref orca_component_robot2d component via keyboard (a joystick driver is also available, see component documentation).
+@verbatim
+$ teleop
+@endverbatim
+
+Keyboard command options are printed to the screen. Give the robot a motion command and watch it move in the Stage GUI.
+
+@section orca_doc_tute_teleop_next What else?
+
+Take a look at the configuration files to understand how this system was setup. 
+- Find the properties which determine the drivers ('playerclient' for Robot2d, and {'keyboard','term-iostream'} for Teleop).
+- Find the properties which configured the provided and required interfaces. Matching them insured that the two components connected to each other.
+
+Check out more @ref orca_doc_tutorials.
+
+*/
