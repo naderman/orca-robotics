@@ -120,17 +120,8 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
 void
 LaserScanner2dPainter::paint( QPainter *painter, int z )
 {
-//     cout << "LaserScanner2dPainter:paint: z,isDisplayScan_: " << z << " " << isDisplayScan_ << endl;
     if ( z != Z_LASER || !isDisplayScan_ ) return;
     if ( qScan_.isEmpty() ) return;
-
-//     // debug
-//     cout<<"["<<qScan_.size()<<"] ";
-//     for ( int i=0; i<qScan_.size(); i+=10 ) {
-//         cout<<" ("<<qScan_[i].x()<<","<<qScan_[i].y()<<")";
-//         //if ( i>10 ) break;
-//     }
-//     cout<<endl;
     
     painter->save();
     
@@ -145,7 +136,6 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
         painter->setPen( QPen( outlineColor_, outlineThickness_ ) );
     }
     if ( isFilledPolygon_ ) {
-//         painter->setBrush( QColor( 204,204,255, 127  ) );
         painter->setBrush( fillColor_ );
     }
 
@@ -156,18 +146,15 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
 
     // draw the walls
     if ( isDisplayWalls_ ) {
-        //debug
-//         cout<<"painting walls: max range="<<laserMaxRange_<<endl;
 
-        // alexm: temp hack! laserMaxRange_ is not set on connection
-        bool isCurrWall = (data_->ranges[1] < 80.0 ); //laserMaxRange_ );
+        bool isCurrWall = (data_->ranges[1] < data_->maxRange );
         bool isPrevWall = isCurrWall;
         bool isWallSegment = isCurrWall;
         int start = 1;
         int finish = 1;
         
         for ( int i=2; i<qScan_.size(); ++i ) {
-            isCurrWall = ( data_->ranges[i-1] < 80.0
+            isCurrWall = ( data_->ranges[i-1] < data_->maxRange
                            && fabs(data_->ranges[i-1]-data_->ranges[i-2])<0.5 );
 
             // look for state change or end of data
@@ -176,16 +163,11 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
                     finish = i-1;
                     painter->setPen( QPen( outlineColor_, .2 ) );
                     painter->drawPolyline( &qScan_[start], finish-start+1 );
-
                     // start of next segment
                     start = i-1;
-
-//                     cout<<"painted segment ("<<start<<":"<<finish<<")"<<endl;
-                    
                 }
                 else {
                     finish = i;
-                    
                     // start of next segment
                     start = i;
                 }
@@ -221,9 +203,6 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
 
                 painter->save();
                 painter->translate( qScan_[i+1].x(), qScan_[i+1].y() );
-
-//                 cout<<"TRACE(laserscanner2dpainter.cpp): drawing ellipse:" << endl;
-//                 cout << " brightReturnWidth: " << brightReturnWidth_ << endl;
 
                 painter->drawEllipse( QRectF(-brightReturnWidth_/2.0,
                                              -brightReturnWidth_/2.0,
