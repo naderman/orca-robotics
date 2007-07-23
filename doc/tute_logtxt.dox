@@ -14,15 +14,17 @@
 
 @note Reviewed for release 2.5.0.
 
-In this tutorial we will demonstrate the use of the Orca data logging utility.
+In this tutorial we will demonstrate the use of the Orca data logging utility. The system diagram is shown below (IceGrid Registry and IceStorm are not shown).
+
+@image html doc_tute_logtxt.png
 
 @section orca_doc_tute_logtxt_startup Start up Orca and Player/Stage
 
-Repeat the start up instructions of @ref orca_doc_tute_teleop (this time IceStorm is not optional).
+Repeat the start up instructions of @ref orca_doc_tute_teleop -- but this time IceStorm is not optional, it has to run.
 
 Create a new system directory and copy Orca sample files.
 @verbatim
-$ mkdir -p ~/sys/tutelog; cd ~/sys/tutelog
+$ mkdir -p ~/sys/tutelogtxt; cd ~/sys/tutelogtxt
 $ cp [ORCA2-INSTALL]/cfg/robot2d.cfg .
 $ cp [ORCA2-INSTALL]/cfg/teleop.cfg .
 $ cp [ORCA2-INSTALL]/cfg/logger.cfg .
@@ -38,7 +40,7 @@ $ robot2d
 
 Make sure that you can move the robot with @ref orca_component_teleop (same as described in @ref orca_doc_tute_teleop).
 
-@section orca_doc_tute_logtxt_keyboard Odometry logger.
+@section orca_doc_tute_logtxt_keyboard Odometry logger
 
 The sample config file for the @ref orca_component_logger contains a sample line for each supported interface. Most of them need to be deleted because we will log a single interface: orca::Odometry2d. The resulting config file is shown below.
 @verbatim
