@@ -63,13 +63,16 @@ public:
     
     // sets the coordinate frame to the guielement's platform
     void setCoordinateFramePlatform( int guiElementIndex );
+    void setOriginPlatform( int guiElementIndex );
     
     void selectedAdaptersInView( std::vector<int> &indices );
     void changePlatformFocus( const QString &platform );
     
     // access method for platform in focus
-    const QString& coordinateFramePlatform() { return coordinateFramePlatform_; };
+    const QString& coordinateFramePlatform() { return coordinateFramePlatform_; }
     QString coordinateFramePlatform() const { return coordinateFramePlatform_; }
+
+    bool ignoreCoordinateFrameRotation() const { return ignoreCoordinateFrameRotation_; }
     
     const QList<GuiElement*> elements() { return elements_; };
     
@@ -100,6 +103,7 @@ private:
     const std::vector<orcaqgui::GuiElementFactory*> factories_;
     QStringList headers_;
     QString coordinateFramePlatform_;
+    bool ignoreCoordinateFrameRotation_;
     orcaice::Context context_;
     IHumanManager *humanManager_;
     bool doesPlatformExist( QString &platformName );

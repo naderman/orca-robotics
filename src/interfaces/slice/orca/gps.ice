@@ -43,7 +43,11 @@ struct GpsDescription
     Frame3d antennaOffset;
 };
 
-//! Gps position types
+//! Gps position types.
+//! Using Novatel codes here is probably not the best thing. With more
+//! thought it's probably possible to categorize these position types
+//! into more generic categories. For now, non-Novatel receivers should
+//! use the generic types listed first.
 enum GpsPositionType {
     //! Invalid or not available
     GpsPositionTypeNotAvailable,
@@ -51,7 +55,33 @@ enum GpsPositionType {
     //! (This is the normal case for non-differential GPS)
     GpsPositionTypeAutonomous,
     //! Differentially corrected
-    GpsPositionTypeDifferential
+    GpsPositionTypeDifferential,
+    NovatelNone,
+    NovatelFixedPos,
+    NovatelFixedHeigth,
+    NovatelFloatConv,
+    NovatelWideLane,
+    NovatelNarrowLane,
+    NovatelDopplerVelocity,
+    NovatelSingle,
+    NovatelPsrDiff,
+    NovatelWAAS,
+    NovatelPropagated,
+    NovatelOmnistar,
+    NovatelL1Float,
+    NovatelIonFreeFloat,
+    NovatelNarrowFloat,
+    NovatelL1Int,
+    NovatelWideInt,
+    NovatelNarrowInt,
+    NovatelRTKDirectINS,
+    NovatelINS,
+    NovatelINSPSRSP,
+    NovatelINSPSRFLOAT,
+    NovatelINSRTKFLOAT,
+    NovatelINSRTKFIXED,
+    NovatelOmnistarHP,
+    NovatelUnknown
 };
 
 //! Gps time structure
@@ -128,6 +158,8 @@ struct GpsData
     
     //! Number of satellites
     int satellites;
+    int observationCountOnL1;
+    int observationCountOnL2;
     //! Position type (see above)
     GpsPositionType positionType;
     //! Geoidal Separation (metres)

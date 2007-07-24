@@ -130,8 +130,12 @@ An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ director
     - Format: (roll uncertainty) (pitch uncertainty) (yaw uncertainty)
     - Default: [0 0 0] 
 
+  @c InsGps.Config.Novatel.SwappedRollPitch (bool)
+    - Adapt Novatel output coordinate system to Orca's.
+    - Default: 1
+
 @par Authors
-Ben Upcroft, Matthew Ridley
+Ben Upcroft, Matthew Ridley, Michael Moser
 
 */
 

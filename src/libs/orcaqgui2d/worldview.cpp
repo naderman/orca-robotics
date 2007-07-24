@@ -152,7 +152,8 @@ WorldView::transformToPlatformOwningCS( QPainter *p )
         {
             QMatrix m;
             m.translate( x, y);
-            m.rotate( RAD2DEG(theta));
+            if (!model_->ignoreCoordinateFrameRotation())
+                m.rotate( RAD2DEG(theta) + 90);
             platformCsMatrix = m.inverted();
         }
         else

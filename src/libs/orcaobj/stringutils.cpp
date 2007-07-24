@@ -616,18 +616,76 @@ toString( const orca::GpsDescription& obj )
     return s.str();
 }
 
+std::string
+toString( const orca::GpsPositionType &p )
+{
+    switch ( p )
+    {
+    case orca::GpsPositionTypeNotAvailable:
+        return "GpsPositionTypeNotAvailable";
+    case orca::GpsPositionTypeAutonomous:
+        return "GpsPositionTypeAutonomous";
+    case orca::GpsPositionTypeDifferential:
+        return "GpsPositionTypeDifferential";
+    case orca::NovatelNone:
+        return "NovatelNone";
+    case orca::NovatelFixedPos:
+        return "NovatelFixedPos";
+    case orca::NovatelFixedHeigth:
+        return "NovatelFixedHeigth";
+    case orca::NovatelFloatConv:
+        return "NovatelFloatConv";
+    case orca::NovatelWideLane:
+        return "NovatelWideLane";
+    case orca::NovatelNarrowLane:
+        return "NovatelNarrowLane";
+    case orca::NovatelDopplerVelocity:
+        return "NovatelDopplerVelocity";
+    case orca::NovatelSingle:
+        return "NovatelSingle";
+    case orca::NovatelPsrDiff:
+        return "NovatelPsrDiff";
+    case orca::NovatelWAAS:
+        return "NovatelWAAS";
+    case orca::NovatelPropagated:
+        return "NovatelPropagated";
+    case orca::NovatelOmnistar:
+        return "NovatelOmnistar";
+    case orca::NovatelL1Float:
+        return "NovatelL1Float";
+    case orca::NovatelIonFreeFloat:
+        return "NovatelIonFreeFloat";
+    case orca::NovatelNarrowFloat:
+        return "NovatelNarrowFloat";
+    case orca::NovatelL1Int:
+        return "NovatelL1Int";
+    case orca::NovatelWideInt:
+        return "NovatelWideInt";
+    case orca::NovatelNarrowInt:
+        return "NovatelNarrowInt";
+    case orca::NovatelRTKDirectINS:
+        return "NovatelRTKDirectINS";
+    case orca::NovatelINS:
+        return "NovatelINS";
+    case orca::NovatelINSPSRSP:
+        return "NovatelINSPSRSP";
+    case orca::NovatelINSPSRFLOAT:
+        return "NovatelINSPSRFLOAT";
+    case orca::NovatelINSRTKFLOAT:
+        return "NovatelINSRTKFLOAT";
+    case orca::NovatelINSRTKFIXED:
+        return "NovatelINSRTKFIXED";
+    case orca::NovatelOmnistarHP:
+        return "NovatelOmnistarHP";
+    default:
+        return "??Unknown??";
+    }
+    // assert( false && "Unknown GpsPositionType" );
+}
+
 std::string 
 toString( const orca::GpsData&  obj )
 {
-    int positionType = 0;
-    if (obj.positionType==orca::GpsPositionTypeNotAvailable) {
-        positionType = 0;
-    } else if (obj.positionType==orca::GpsPositionTypeAutonomous) {
-        positionType = 1;
-    } else if (obj.positionType==orca::GpsPositionTypeDifferential) {
-        positionType = 2;
-    }
-    
     std::ostringstream s;
     s   << toString(obj.timeStamp) <<"\n"
         << " UTC: " << toString(obj.utcTime) << "\n"
@@ -641,44 +699,21 @@ toString( const orca::GpsData&  obj )
         << obj.verticalPositionError << "\n"
         << " Gps (heading,speed,climbrate) : ("
         << obj.heading << ","
-    	<< obj.speed << ","
-	    << obj.climbRate << ")" << "\n"
-        << " Gps (satellites,positionType,geoidalSeparation) : ("
-	    << obj.satellites << ","
-	    << positionType << ","
+        << obj.speed << ","
+        << obj.climbRate << ")" << "\n"
+        << " Gps (satellites,l1,l2,positionType,geoidalSeparation) : ("
+        << obj.satellites << ","
+        << obj.observationCountOnL1 << ","
+        << obj.observationCountOnL2 << ","
+        << toString(obj.positionType) << ","
         << obj.geoidalSeparation << ")";
 
     return s.str();
 }
 
-std::string
-toString( const orca::GpsPositionType &p )
-{
-    switch ( p )
-    {
-    case orca::GpsPositionTypeNotAvailable:
-        return "GpsPositionTypeNotAvailable";
-    case orca::GpsPositionTypeAutonomous:
-        return "GpsPositionTypeAutonomous";
-    case orca::GpsPositionTypeDifferential:
-        return "GpsPositionTypeDifferential";
-    }
-    // assert( false && "Unknown GpsPositionType" );
-    return "??Unknown??";
-}
-
 std::string 
 toString( const orca::GpsMapGridData& obj )
 {
-    int positionType = 0;
-    if (obj.positionType==orca::GpsPositionTypeNotAvailable) {
-        positionType = 0;
-    } else if (obj.positionType==orca::GpsPositionTypeAutonomous) {
-        positionType = 1;
-    } else if (obj.positionType==orca::GpsPositionTypeDifferential) {
-        positionType = 2;
-    }
-    
     std::ostringstream s;
     s   << toString(obj.timeStamp) <<"\n"
         << " UTC: " << toString(obj.utcTime) << "\n"
@@ -732,6 +767,7 @@ toString( const orca::Odometry3dData& obj )
 {
     std::ostringstream s;
     s << toString(obj.timeStamp)
+    << setprecision(15)
     << "Position (x,y,z): "
     << obj.pose.p.x << ","
     << obj.pose.p.y << ","
@@ -740,7 +776,7 @@ toString( const orca::Odometry3dData& obj )
     << RAD2DEG(obj.pose.o.r) << ", "
     << RAD2DEG(obj.pose.o.p) << ", "
     << RAD2DEG(obj.pose.o.y) << "\n"
-    << "Velocity vx,vy,vz:"     
+    << "Velocity vx,vy,vz: "
     << obj.motion.v.x << ","
     << obj.motion.v.y << ","
     << obj.motion.v.z << "\n"
@@ -908,6 +944,7 @@ toString( const orca::Localise3dData& obj )
         const orca::Pose3dHypothesis &h = obj.hypotheses[i];
         s << "  " << i << ": [" 
           << h.weight << "] (" 
+          << setprecision(15)
           << h.mean.p.x << ","
           << h.mean.p.y << ","
           << h.mean.p.z << ","

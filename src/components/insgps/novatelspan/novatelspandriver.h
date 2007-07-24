@@ -128,6 +128,7 @@ private:
     orcaserial::Serial* serial_;
     
     bool enabled_;
+    bool swappedRollPitch_;
     // timestamp recorded after the first byte for accuracy
     IceUtil::Time timeOfRead_;
     

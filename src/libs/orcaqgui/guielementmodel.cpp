@@ -38,6 +38,7 @@ GuiElementModel::GuiElementModel( const std::vector<orcaqgui::GuiElementFactory*
     platformColors_ = new StringToColorMap;
     headers_ << "Type" << "Details";
     coordinateFramePlatform_ = "global";
+    ignoreCoordinateFrameRotation_ = false;
     platformInFocus_ = "global";
 }
 
@@ -446,6 +447,17 @@ GuiElementModel::setCoordinateFramePlatform( int guiElementIndex )
     
     // by convention, Grid's platform is "global"
     coordinateFramePlatform_ = elements_[guiElementIndex]->platform();
+    ignoreCoordinateFrameRotation_ = false;
+}
+
+void
+GuiElementModel::setOriginPlatform( int guiElementIndex )
+{
+    if ( guiElementIndex<0 || guiElementIndex >= elements_.size() ) return;
+    
+    // by convention, Grid's platform is "global"
+    coordinateFramePlatform_ = elements_[guiElementIndex]->platform();
+    ignoreCoordinateFrameRotation_ = true;
 }
 
 void

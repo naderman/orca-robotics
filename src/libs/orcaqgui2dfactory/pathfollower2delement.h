@@ -136,7 +136,10 @@ private:
     QString lastSavedPathFile_;
 };
 
-// We need to inherit from GuiElement2d, not from IceStormElement. Reason is that PathFollower2dConsumer has a non-standard purely virtual member function setWaypointIndex. Disadvantage is that we have to subscribe ourselves.
+// We need to inherit from GuiElement2d, not from IceStormElement. 
+// Reason is that PathFollower2dConsumer has a non-standard purely virtual 
+// member function setWaypointIndex. 
+// Disadvantage is that we have to subscribe ourselves.
 class PathFollower2dElement : public GuiElement2d
 {
 

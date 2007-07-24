@@ -142,29 +142,131 @@ toLogString( const orca::CpuData& obj )
 
 int convertToNumeric( orca::GpsPositionType p )
 {
-    if ( p == orca::GpsPositionTypeNotAvailable ) {
+    switch ( p )
+    {
+    case orca::GpsPositionTypeNotAvailable:
         return 0;
-    } else if ( p == orca::GpsPositionTypeAutonomous ) {
+    case orca::GpsPositionTypeAutonomous:
         return 1;
-    } else if ( p == orca::GpsPositionTypeDifferential ) {
+    case orca::GpsPositionTypeDifferential:
         return 2;
-    } else {
-        assert( false && "Unknown positionType" );
+    case orca::NovatelNone:
+        return 3;
+    case orca::NovatelFixedPos:
+        return 4;
+    case orca::NovatelFixedHeigth:
+        return 5;
+    case orca::NovatelFloatConv:
+        return 6;
+    case orca::NovatelWideLane:
+        return 7;
+    case orca::NovatelNarrowLane:
+        return 8;
+    case orca::NovatelDopplerVelocity:
+        return 9;
+    case orca::NovatelSingle:
+        return 10;
+    case orca::NovatelPsrDiff:
+        return 11;
+    case orca::NovatelWAAS:
+        return 12;
+    case orca::NovatelPropagated:
+        return 13;
+    case orca::NovatelOmnistar:
+        return 14;
+    case orca::NovatelL1Float:
+        return 15;
+    case orca::NovatelIonFreeFloat:
+        return 16;
+    case orca::NovatelNarrowFloat:
+        return 17;
+    case orca::NovatelL1Int:
+        return 18;
+    case orca::NovatelWideInt:
+        return 19;
+    case orca::NovatelNarrowInt:
+        return 20;
+    case orca::NovatelRTKDirectINS:
+        return 21;
+    case orca::NovatelINS:
+        return 22;
+    case orca::NovatelINSPSRSP:
+        return 23;
+    case orca::NovatelINSPSRFLOAT:
+        return 24;
+    case orca::NovatelINSRTKFLOAT:
+        return 25;
+    case orca::NovatelINSRTKFIXED:
+        return 26;
+    case orca::NovatelOmnistarHP:
+        return 27;
+    default:
         return -1;
     }
 }
 
 orca::GpsPositionType convertFromNumeric( int p )
 {
-    if ( p == 0 ) {
+    switch ( p )
+    {
+    case 0:
         return orca::GpsPositionTypeNotAvailable;
-    } else if ( p == 1 ) {
+    case 1:
         return orca::GpsPositionTypeAutonomous;
-    } else if ( p == 2 ) {
+    case 2:
         return orca::GpsPositionTypeDifferential;
-    } else {
-        assert( false && "Unknown positionType" );
-        return orca::GpsPositionTypeNotAvailable;
+    case 3:
+        return orca::NovatelNone;
+    case 4:
+        return orca::NovatelFixedPos;
+    case 5:
+        return orca::NovatelFixedHeigth;
+    case 6:
+        return orca::NovatelFloatConv;
+    case 7:
+        return orca::NovatelWideLane;
+    case 8:
+        return orca::NovatelNarrowLane;
+    case 9:
+        return orca::NovatelDopplerVelocity;
+    case 10:
+        return orca::NovatelSingle;
+    case 11:
+        return orca::NovatelPsrDiff;
+    case 12:
+        return orca::NovatelWAAS;
+    case 13:
+        return orca::NovatelPropagated;
+    case 14:
+        return orca::NovatelOmnistar;
+    case 15:
+        return orca::NovatelL1Float;
+    case 16:
+        return orca::NovatelIonFreeFloat;
+    case 17:
+        return orca::NovatelNarrowFloat;
+    case 18:
+        return orca::NovatelL1Int;
+    case 19:
+        return orca::NovatelWideInt;
+    case 20:
+        return orca::NovatelNarrowInt;
+    case 21:
+        return orca::NovatelRTKDirectINS;
+    case 22:
+        return orca::NovatelINS;
+    case 23:
+        return orca::NovatelINSPSRSP;
+    case 24:
+        return orca::NovatelINSPSRFLOAT;
+    case 25:
+        return orca::NovatelINSRTKFLOAT;
+    case 26:
+        return orca::NovatelINSRTKFIXED;
+    case 27:
+        return orca::NovatelOmnistarHP;
+    default:
+        return orca::NovatelUnknown;
     }
 }
 
@@ -189,6 +291,8 @@ toLogString( const orca::GpsData& obj )
       << obj.speed << " "
       << obj.climbRate << " "
       << obj.satellites << " "
+      << obj.observationCountOnL1 << " "
+      << obj.observationCountOnL2 << " "
       << positionType << " "
       << obj.geoidalSeparation;
     return s.str();
@@ -210,6 +314,8 @@ fromLogString( std::stringstream &s, orca::GpsData& obj )
     fromLogString( s, obj.speed );
     fromLogString( s, obj.climbRate );
     fromLogString( s, obj.satellites );
+    fromLogString( s, obj.observationCountOnL1 );
+    fromLogString( s, obj.observationCountOnL2 );
     int numericPosType;
     fromLogString( s, numericPosType );
     obj.positionType = convertFromNumeric( numericPosType );
@@ -387,7 +493,8 @@ toLogString( const orca::Localise3dData& obj )
     {
         const orca::Pose3dHypothesis &h = obj.hypotheses[i];
 
-        s << h.mean.p.x << " "
+        s << setprecision(15)
+          << h.mean.p.x << " "
           << h.mean.p.y << " "
           << h.mean.p.z << " "
           << RAD2DEG(h.mean.o.r) << " "
@@ -457,7 +564,8 @@ toLogString( const orca::Odometry3dData& obj )
     s << toLogString(obj.timeStamp) << " \n";
 
     // x,y,z position, roll,pitch,yaw(deg), and respective velocities on the second line
-    s << obj.pose.p.x << " " 
+    s << setprecision(15)
+      << obj.pose.p.x << " " 
       << obj.pose.p.y << " "
       << obj.pose.p.z << " "
       << RAD2DEG(obj.pose.o.r) << " "

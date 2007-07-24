@@ -53,12 +53,15 @@ private:
 
     // use opencv to convert to jpg
    #ifdef OPENCV_FOUND
-       IplImage* cvImage_;
-   #endif
-    
+       	IplImage* cvImage_;
+		//alen: directory prefix length
+  #endif
+
+	//alen: directory prefix for jpeg images
+	std::string directoryPrefix_;
+	int directoryPrefixLength_;
     int nChannels_;
 };
-
 } // namespace
 
 #endif

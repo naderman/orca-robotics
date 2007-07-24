@@ -19,8 +19,10 @@
 #include "cameralogger.h"
 
 #ifdef OPENCV_FOUND
-//    #include <cv.h>
-    #include <highgui.h>
+	#include <highgui.h>
+//alen - Added the below to create a directory to save images
+	#include <sys/stat.h>
+	#include <sys/types.h>
 #endif
 
 using namespace std;
@@ -37,7 +39,8 @@ CameraLogger::CameraLogger( orcalog::LogMaster *master,
              "Camera"+typeSuffix,
              format,
              filenamePrefix+"camera"+typeSuffix+".log",
-             context )
+             context ),
+	directoryPrefix_(filenamePrefix)
 {
 #ifndef OPENCV_FOUND
     // check that we support this format
@@ -80,6 +83,12 @@ CameraLogger::CameraLogger( orcalog::LogMaster *master,
     // for "jpeg" 
     if (format_ == "jpeg" )
     {
+		//alen: obtain directory name from file prefix
+		directoryPrefixLength_ = directoryPrefix_.length();
+		if (directoryPrefixLength_>0)
+		{
+			directoryPrefix_=directoryPrefix_.substr(0,--directoryPrefixLength_);
+		}
         createLogFile();
     }
 }
@@ -138,7 +147,11 @@ CameraLogger::setData(const orca::CameraData& data, const Ice::Current&)
     {        
         // image filename (different file for each image)
         std::ostringstream filename;
-        filename << "image" << std::setw(5) << std::setfill('0') << dataCounter_ << ".jpg";
+		if (directoryPrefixLength_>0)
+		{
+        	filename << ".//" << directoryPrefix_ << "//";
+		}
+		filename << "image" << std::setw(5) << std::setfill('0') << dataCounter_ << ".jpg";
 
         // write object meta data into a binary file
         orcalog::IceWriteHelper helper( context_.communicator() );
@@ -207,15 +220,24 @@ void
 CameraLogger::writeCameraDataAsJpeg( const orca::CameraData& data, const std::string & filename )
 {
 #ifdef OPENCV_FOUND
-//    IplImage* cvImage_ = 0;
-//      cvImage_ = 0;
-    
     if ( dataCounter_ == 1 )
     {    
         nChannels_ = orcaimage::numChannels( data.format );
         
         // setup opencv image
         cvImage_  = cvCreateImage( cvSize( data.imageWidth, data.imageHeight ),  8, nChannels_ );
+
+		//alen: create directory to store images
+		if (directoryPrefixLength_>0)
+		{
+			int ret= mkdir(directoryPrefix_.c_str(),0755);
+			if (ret != 0)
+			{	
+					std::string s = "Camera Logger: Could not create directory " + directoryPrefix_;
+					context_.tracer()->warning( s );
+					throw orcalog::FileException( ERROR_INFO, s );
+			}
+		}
     }
     
     // cout << "Image Format: " << orcaimage::formatName( data.format ) << endl;

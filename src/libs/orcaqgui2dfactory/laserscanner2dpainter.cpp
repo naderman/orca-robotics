@@ -57,6 +57,7 @@ LaserScanner2dPainter::setOffset( orca::Frame3d &offset )
     offsetX_   = offset.p.x;
     offsetY_   = offset.p.y;
     offsetYaw_ = offset.o.y;
+	offsetPitch_ = offset.o.p;
 
     // for 2D display, the only thing we know how to paint
     // is a laser mounted horizontally, either right-way-up or upside-down
@@ -73,11 +74,11 @@ LaserScanner2dPainter::setOffset( orca::Frame3d &offset )
     }
     
     // Don't really know how to deal with non-zero values here...
-    if ( ( offset.p.z != 0.0 ) || ( offset.o.p != 0.0 ) )
+    if ( offset.p.z != 0.0 )
     {
         isNotHorizontal_ = true;
         stringstream ss;
-        ss << "LaserScanner2dPainter::setOffset(): Cannot properly deal with non-zero z or pitch.  Offset: " << orcaice::toString(offset);
+        ss << "LaserScanner2dPainter::setOffset(): Cannot properly deal with non-zero z.  Offset: " << orcaice::toString(offset);
         throw orcaqgui::Exception( ss.str() );
     }
 }
@@ -109,7 +110,7 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
             bearing = -bearing;
         }
         
-        point.setX( data_->ranges[i] * cos(bearing) );
+        point.setX( (data_->ranges[i] * cos(bearing))*cos(offsetPitch_) );
         point.setY( data_->ranges[i] * sin(bearing) );
 
         qScan_.push_back( point );

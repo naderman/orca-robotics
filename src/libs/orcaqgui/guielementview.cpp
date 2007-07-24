@@ -85,6 +85,7 @@ GuiElementView::contextMenuEvent( QContextMenuEvent* e )
 //         act->setCheckable(true);
 //         menu.addAction( act );
         menu.addAction( "Set As Coordinate Frame", this, SLOT( setCooFrameToCurrentGuiElement() ) );
+        menu.addAction( "Set As Origin", this, SLOT( setOriginToCurrentGuiElement() ) );
     }
     
     menu.addAction( "Remove", this, SLOT( removeCurrentGuiElement() ) );
@@ -158,6 +159,13 @@ GuiElementView::setCooFrameToCurrentGuiElement()
 {
     GuiElementModel* guiElementModel = dynamic_cast<GuiElementModel*>( model() );
     guiElementModel->setCoordinateFramePlatform( currentIndex().row() );
+}
+
+void
+GuiElementView::setOriginToCurrentGuiElement()
+{
+    GuiElementModel* guiElementModel = dynamic_cast<GuiElementModel*>( model() );
+    guiElementModel->setOriginPlatform( currentIndex().row() );
 }
 
 void

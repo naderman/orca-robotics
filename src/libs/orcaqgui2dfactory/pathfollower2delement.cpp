@@ -41,7 +41,13 @@ PathUpdateConsumer::setWaypointIndex( int index, const ::Ice::Current& )
 
 void PathUpdateConsumer::setActivationTime( const orca::Time& absoluteTime, double relativeTime, const ::Ice::Current& )
 {
-    cout << "PathFollower2d: got a new activation time. Not used, we rely on getData calls." << endl;
+    static bool _havePrintedDbug(false);
+    if (!_havePrintedDbug)
+    {
+        cout << "PathFollower2d: got a new activation time. Not used, we rely on getData calls." << endl;
+        cout << "That warning is only printed once." << endl;
+        _havePrintedDbug = true;
+    }
 }
 
 void PathUpdateConsumer::setEnabledState( bool enabledState, const ::Ice::Current& )

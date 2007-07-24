@@ -56,6 +56,7 @@ private slots:
     void action9() { action(9); };
     
     void setCooFrameToCurrentGuiElement();
+    void setOriginToCurrentGuiElement();
     void removeCurrentGuiElement();
     
     //void showSelectedInterface(const QModelIndex&);
