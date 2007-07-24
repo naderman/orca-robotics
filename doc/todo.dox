@@ -89,6 +89,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - DriveBicycle (alex m.)
   - provides information on the current state of the actuators (speed and steer angle).
 
+- Gps (michael m.)
+  - added Novatel-specific position types.
+
 @par Updated components
 
 - GoalPlanner (tobi)
