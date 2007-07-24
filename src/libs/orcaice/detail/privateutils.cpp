@@ -13,6 +13,7 @@
 #include "privateutils.h"
 
 #include "../orcaice.h"
+#include "../component.h"
 
 using namespace std;
 
@@ -91,22 +92,6 @@ setPropertyDefault( Ice::PropertiesPtr& toProperties, const string& key, const s
     // target properties don't have this property set, set to default
     toProperties->setProperty( key, defaultValue );
 }    
-
-// this is just a place-holder, the code which is here right now is actually done in Application::Application()
-void
-parseOrcaCommandLineOptions( const Ice::StringSeq& args )
-{
-    for ( unsigned int i=0; i<args.size(); ++i ) {
-        if ( !args[i].compare( 0,2, "-v" ) ||
-                  !args[i].compare( 0,9, "--version" ) )
-        {
-            // print out Ice and libOrcaIce versions.
-            orcaice::detail::printVersion();
-            // nothing to clean up yet
-            exit(0);
-        }
-    }
-}
 
 void
 setFactoryProperties( Ice::PropertiesPtr& properties, const std::string& compTag )
@@ -320,11 +305,15 @@ printComponentProperties( const Ice::PropertiesPtr& properties, const std::strin
 }
 
 void
-printVersion()
+printAllVersions( const Component& component )
 {
-    std::ostringstream os;
-    os << "Ice version: "<<ICE_STRING_VERSION<<" libOrcaIce version: "<<orcaice::orcaVersion();
-    initTracerInfo( os.str() );
+    std::stringstream ss;
+    ss << "Versions: Ice="<<ICE_STRING_VERSION<<"  Orca="<<orcaice::orcaVersion();
+    // if this is NOT an Orca component, print its version as well
+    if ( !component.version().empty() ) {
+        ss << "  Project="<<component.version();
+    }
+    initTracerInfo( ss.str() );
 }
 
 } // namespace

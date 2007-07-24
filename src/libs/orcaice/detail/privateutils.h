@@ -17,11 +17,12 @@
 
 #include <orca/orca.h>
 
-//  This file should contain internal functions used inside libOrcaIce
+//  This file contains only internal functions used inside libOrcaIce
 //  Don't make Doxygen tags so these functions are not included in the public documentation.
 
 namespace orcaice
 {
+class Component;
 namespace detail
 {
     // Transfer a property from one property set to another
@@ -33,8 +34,6 @@ namespace detail
     // behaves like the function above. if key is missing, sets the toValue to defaultValue.
     void transferPropertyWithDefault( Ice::PropertiesPtr &fromProperties, Ice::PropertiesPtr &toProperties,
                         const std::string &fromKey, const std::string &toKey, const std::string &defaultValue, bool force );
-
-    void parseOrcaCommandLineOptions( const Ice::StringSeq & args );
 
     void setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag );
 
@@ -60,7 +59,9 @@ namespace detail
     // Prints out all component properties. Tag is used only for tracing.
     void printComponentProperties( const Ice::PropertiesPtr &properties, const std::string &compTag );
 
-    void printVersion();
+    // Prints Ice, Orca, and (if not empty) Project version.
+    // Project version is obatained from the component, this allows for non-orca projects
+    void printAllVersions( const Component& component );
     
 } // namespace
 } // namespace

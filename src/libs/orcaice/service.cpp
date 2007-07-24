@@ -48,7 +48,7 @@ Service::start( const ::std::string        & name,
 //     cout<<args.size()<<" args :"<<orcaice::toString( args )<<endl;
 
     // print version information on the first line
-    orcaice::detail::printVersion();
+    orcaice::detail::printAllVersions( *component_ );
 
     // Unlike in Application, the component tag may change when used with Service. This is to 
     // allow multiple components of the same type to be placed inside the same IceBox. The

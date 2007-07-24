@@ -12,7 +12,7 @@
 #include <orcaice/component.h>
 #include <orcaice/orcaice.h>
 
-#include "privateutils.h"
+#include "detail/privateutils.h"
 
 using namespace std;
 
@@ -47,22 +47,21 @@ Application::main(int argc, char* argv[])
         if ( !args[i].compare( 0,2, "-h" ) ||
              !args[i].compare( 0,6, "--help" ) )
         {
-            orcaice::initTracerInfo( component_.help() );
+            orcaice::initTracerInfo( component_.help( basename(args[0]) ) );
             // nothing to clean up yet
             exit(0);
         }
         else if ( !args[i].compare( 0,2, "-v" ) ||
                   !args[i].compare( 0,9, "--version" ) )
         {
-            // print out Ice and libOrcaIce versions.
-            orcaice::detail::printVersion();
+            orcaice::detail::printAllVersions( component_ );
             // nothing to clean up yet
             exit(0);
         }
     }
 
     // print version information on the first line
-    orcaice::detail::printVersion();
+    orcaice::detail::printAllVersions( component_ );
 
     Ice::InitializationData initData;
     // Note that we don't use the version which takes argumets so that the config file which may be

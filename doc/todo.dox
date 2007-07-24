@@ -135,6 +135,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     durations, and strings. Added more tests. (alexm)
   - added functions for looped multi-try connections. these wrap the existing activate(),
     connectToInterfaceWithString() and connectToInterfaceWithTag(). (alexm)
+  - version info printed out on startup (or with --version) now includes project version,
+    which could be useful for non-orca projects. (alexm)
 
 - libOrcaSerial (alex b)
   - Big overhaul:

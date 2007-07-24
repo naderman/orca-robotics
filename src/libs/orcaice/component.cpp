@@ -28,6 +28,7 @@
 #include "component.h"
 
 #include "detail/componentthread.h"
+#include "detail/privateutils.h"
 
 // debug only
 #include <iostream>
@@ -250,13 +251,17 @@ Component::activate()
     }
 }
 
-std::string
-Component::help()
+const std::string
+Component::help( const std::string& executable ) const
 {
+    // strip possible extension
+    std::string exec = orcaice::basename( executable, true );
     std::string s;
     s += "Standard usage:\n";
-    s += "\t--help\n";
-    s += "\t--version\n";
+    s += "  " + executable + " --help           Prints this help and exists.\n";
+    s += "  " + executable + " --version        Prints version info and exists.\n";
+    s += "  " + executable + " configfile.cfg   Same as "+executable+" --Orca.Config=configfile.cfg\n";
+    s += "  " + executable + "                  Same as "+executable+" --Orca.Config="+exec+".cfg\n";
     return s;
 }
 

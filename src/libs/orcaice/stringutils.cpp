@@ -65,7 +65,7 @@ toFixedWidth( const std::string& s, unsigned int width, char filler, bool adjust
 std::string 
 orcaVersion()
 {
-    return std::string(ORCA_VERSION);
+    return std::string(PROJECT_VERSION);
 }
 
 std::string 

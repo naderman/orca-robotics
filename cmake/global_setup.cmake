@@ -7,7 +7,17 @@ MESSAGE( STATUS "Setting project interface lib name to ${PROJECT_INTERFACE_LIB}"
 
 ###########################################################
 #
-# Determin OS
+# define the project version so we can have access to it from the code
+#
+###########################################################
+# alexm: for gcc need to produce this in the Makefile: -DORCA_VERSION=\"X.Y.Z\", 
+#        without escaping the quotes the compiler will strip them off.
+# alexb: it seems that you also need to escape the quotes for windoze??
+ADD_DEFINITIONS( "-DPROJECT_VERSION=\\\"${PROJECT_VERSION}\\\"" )
+
+###########################################################
+#
+# Determine OS
 #
 ###########################################################
 INCLUDE( ${ORCA_CMAKE_DIR}/os.cmake )

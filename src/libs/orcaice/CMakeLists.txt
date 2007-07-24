@@ -12,15 +12,11 @@ INCLUDE_DIRECTORIES( BEFORE
 
 LINK_DIRECTORIES ( ${ICE_HOME}/lib )
 
-# pass the Orca release version to the library so it can report it through its API
 IF ( NOT OS_WIN )
-  # note: for gcc need to produce this in the Makefile: -DORCA_VERSION=\"X.Y.Z\", without
-  # escaping the quotes the compiler will strip them off.
-  ADD_DEFINITIONS( "-Wall -DORCA_VERSION=\\\"${PROJECT_VERSION}\\\"" )
+  ADD_DEFINITIONS( "-Wall" )
 ELSE ( NOT OS_WIN )
   # windows: turn off deprication warnings  
-  # alexb: it seems that you also need to escape the quotes for windoze??
-  ADD_DEFINITIONS( "-Wall -DORCA_VERSION=\\\"${PROJECT_VERSION}\\\" -D_CRT_SECURE_NO_DEPRECATE" )
+  ADD_DEFINITIONS( "-Wall -D_CRT_SECURE_NO_DEPRECATE" )
 ENDIF ( NOT OS_WIN )
 
 #

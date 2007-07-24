@@ -112,7 +112,19 @@ public:
 
     //! This function is called by Application when the executable is called with @c --help
     //! command line option.
-    virtual std::string help();
+    virtual const std::string help( const std::string& executable ) const;
+
+    /*! This function is called by Application on startup (including when the executable is 
+    //! called with @c --version command line option). Standard Orca components return an
+    //! empty string. Component from external project may reimplement this function to supply
+    //! the project version, which is probably different from the Orca version. 
+    //! Example:
+@verbatim
+virtual const std::string version() const { return std::string(PROJECT_VERSION); };
+@endverbatim
+    //! Note that PROJECT_VERSION is defined automatically for all projects.
+    */
+    virtual const std::string version() const { return std::string(""); };
 
 protected:
 
