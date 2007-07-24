@@ -104,7 +104,7 @@ JoystickDriver::read()
         }
     }
     
-    printf( "======== type 0x%-2x code 0x%-2x value %d\n", event.type, event.code, event.value );
+//     printf( "type 0x%-2x code 0x%-2x value %d\n", event.type, event.code, event.value );
     switch( event.type )
     {
         // we respond to only one event type
