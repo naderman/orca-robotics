@@ -39,6 +39,9 @@ public:
     //! initialization.
     std::vector<QString> supportedElementTypes() const;
 
+    //! A version of the function of the function above.
+    std::vector<std::string> supportedElementTypesAsStdString() const;
+
     //! Returns TRUE if the specified list of interface types is supported by this factory.
     //! Use addSupportedType() to define a list of supported types during
     //! initialization.

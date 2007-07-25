@@ -82,6 +82,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
         }
         catch (orcadynamicload::DynamicLoadException &e)
         {
+            cout << "ERROR(loggercomponent.cpp): " << e.what() << endl;
             throw;
         }
     }

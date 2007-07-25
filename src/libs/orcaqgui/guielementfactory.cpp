@@ -11,6 +11,16 @@ GuiElementFactory::supportedElementTypes() const
     return supportedElementTypes_;
 }
 
+std::vector<std::string> 
+GuiElementFactory::supportedElementTypesAsStdString() const
+{
+    std::vector<std::string> types;
+    for ( uint i=0; i<supportedElementTypes_.size(); ++i ) {
+        types.push_back( supportedElementTypes_[i].toStdString() );
+    }
+    return types;
+}
+
 bool 
 GuiElementFactory::isSupported( const QString &elementType ) const
 {

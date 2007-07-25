@@ -32,11 +32,11 @@ public:
 
 private:
 
-    void loadPluginLibraries( const std::string &factoryLibNames );
-
     std::vector<orcaqgui::GuiElementFactory*>               factories_;
     std::vector<orcadynamicload::DynamicallyLoadedLibrary*> libraries_;
-          
+        
+    // loads all factory libs and returns a listing of supported interfaces
+    std::vector<std::string> loadPluginLibraries( const std::string &factoryLibNames );  
 };
 
 }

@@ -48,6 +48,7 @@ public:
                 orcaqcm::NetworkHandler           *networkHandler,           
                 ScreenDumpParams                   screenDumpParams,
                 int                                displayRefreshTime,
+                const std::vector<std::string>    &supportedInterfaces,
                 QWidget                           *parent = 0, 
                 Qt::WFlags                         flags = 0 );
 
@@ -124,6 +125,7 @@ private:
 
     QTimer* regTimer_;
     QTimer* displayTimer_;
+    std::vector<std::string>    supportedInterfaces_;
     
     // human input
     QAction* hiSelect_;

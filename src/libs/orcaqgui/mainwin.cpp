@@ -34,6 +34,7 @@ namespace orcaqgui
                             orcaqcm::NetworkHandler *networkHandler,
                             ScreenDumpParams         screenDumpParams,
                             int                      displayRefreshTime,
+                            const std::vector<std::string> &supportedInterfaces,
                             QWidget                 *parent, 
                             Qt::WFlags               flags )
     : QMainWindow(parent, flags), 
@@ -42,6 +43,7 @@ namespace orcaqgui
       displayRefreshTime_(displayRefreshTime),
       elemModel_(NULL),
       displayView_(NULL),
+      supportedInterfaces_(supportedInterfaces),
       firstTime_(true),
       modeOwner_(NULL)
 {
@@ -362,7 +364,14 @@ void
 MainWindow::aboutApp()
 {
     QString text;
-    text += "Connects to Orca components and displays information arriving from their interfaces.\n";
+    text += "Connects to Orca components and displays\n";
+    text += "information arriving from their interfaces.\n";
+    text += "Supported interfaces:\n";
+    for ( unsigned int i=0; i<supportedInterfaces_.size(); ++i ) {
+        text += "    ";
+        text += QString::fromStdString( supportedInterfaces_[i] );
+        text += "\n";
+    }
     orcaqt::aboutApp( this, "About OrcaView", text );
 }
 
@@ -386,12 +395,14 @@ MainWindow::removePlatformFromList(const QString& platform)
 }
 
 
-void MainWindow::changePlatformFocus(const QString& platform)
+void 
+MainWindow::changePlatformFocus(const QString& platform)
 {
     elemModel_->changePlatformFocus( platform );
 }
 
-void MainWindow::changePlatformFocusFromView(const QString& platform)
+void 
+MainWindow::changePlatformFocusFromView(const QString& platform)
 {
     cout << "TRACE(mainwin.cpp): changePlatformFocusFromView, platform: " << platform.toStdString() << endl;
     changePlatformFocus(platform);
@@ -401,7 +412,8 @@ void MainWindow::changePlatformFocusFromView(const QString& platform)
     platformCombo_->setCurrentIndex( i );
 }
 
-void MainWindow::toggleScreenCapture( bool capture )
+void 
+MainWindow::toggleScreenCapture( bool capture )
 {
     QString str;
 
@@ -418,7 +430,8 @@ void MainWindow::toggleScreenCapture( bool capture )
     
 }
 
-void MainWindow::grabWindow()
+void 
+MainWindow::grabWindow()
 {    
     // don't eat resources when iconified
     if ( !isVisible() ) return;
@@ -518,4 +531,4 @@ MainWindow::changePlatformColor(const QString&)
 {
 }
 
-}
+} // namespace

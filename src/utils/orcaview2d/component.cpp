@@ -47,12 +47,16 @@ Component::~Component()
     }
 }       
 
-void
-Component::loadPluginLibraries( const std::string & factoryLibNames )
+std::vector<std::string>
+Component::loadPluginLibraries( const std::string& factoryLibNames )
 {
     // Parse space-separated list of lib names
     Ice::StringSeq libNames = orcaice::toStringSeq( factoryLibNames, ' ' );
     
+    // this will be a listing of unique supported interfaces
+    std::vector<std::string> supportedInterfaces;
+    std::vector<std::string> ifaces;
+
     for ( unsigned int i=0; i < libNames.size(); i++ )
     {
         stringstream ss;
@@ -64,6 +68,11 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
             orcaqgui::GuiElementFactory *f = loadFactory( *lib );
             libraries_.push_back(lib);
             factories_.push_back(f);
+
+            ifaces = f->supportedElementTypesAsStdString();
+            for ( unsigned int j=0; j<ifaces.size(); ++j ) {
+                supportedInterfaces.push_back( ifaces[j] );
+            }    
         }
         catch (orcadynamicload::DynamicLoadException &e)
         {
@@ -77,6 +86,12 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
         context().tracer()->error( err );
         throw err;
     }
+
+    // eliminate duplicates from the listing of supported interfaces
+    std::sort( supportedInterfaces.begin(), supportedInterfaces.end() );
+    std::unique( supportedInterfaces.begin(), supportedInterfaces.end() );
+
+    return supportedInterfaces;
 }
 
 void
@@ -95,7 +110,8 @@ readScreenDumpParams( const orcaice::Context &context,
     screenDumpParams.captureTimerInterval = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ScreenCapture.CaptureTimerInterval", 1000 );
 }
 
-void Component::start()
+void 
+Component::start()
 {
     //
     // INITIAL CONFIGURATION
@@ -125,13 +141,15 @@ void Component::start()
     int displayRefreshTime = orcaice::getPropertyAsIntWithDefault( props, prefix+"General.DisplayRefreshTime", 200 );
 
     string libNames = orcaice::getPropertyWithDefault( props, prefix+"General.FactoryLibNames", DEFAULT_FACTORY_LIB_NAME );
-    loadPluginLibraries( libNames );
+    // returns a listing of unique supported interfaces, for display drivers to know what's supported
+    std::vector<std::string> supportedInterfaces = loadPluginLibraries( libNames );
 
     // main window for display
     orcaqgui::MainWindow gui( "OrcaView",
                               &networkHandler,
                               screenDumpParams,
-                              displayRefreshTime );
+                              displayRefreshTime,
+                              supportedInterfaces );
 
     // Qt model for handling elements and their display in each of the widgets
     orcaqgui::GuiElementModel guiElemModel( factories_,
