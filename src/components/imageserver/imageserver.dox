@@ -76,7 +76,7 @@ This component encapsulates an image grabber for usb and firewire cameras. It ca
     - Valid values: { "0, 1"} - will return an error if the index is less than 0 or greater than 1.
     - Default: "0": A value of 0 causes the driver to find the first available camera.
 
-- @c Laser2d.Config.Offset (Frame3d) [m, deg]
+- @c ImageServer.Config.Offset (Frame3d) [m, deg]
     - Position of the laser with respect to the robot's local coordinate system.
     - Format: x y z roll pitch yaw (space separated)
     - Example: a laser mounted upside down with now translation: "0.0 0.0 0.0  180.0 0.0 0.0"
