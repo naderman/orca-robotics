@@ -73,7 +73,7 @@ private:
     void mouseMoveEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );
     void mouseDoubleClickEvent( QMouseEvent* );
-    bool event(QEvent *event);
+//     bool event(QEvent *event);
 
     QPointF mouseDownPnt_;
     QPointF mouseMovePnt_;

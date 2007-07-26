@@ -54,6 +54,8 @@ WorldView::WorldView( PlatformCSFinder* platformCSFinder,
     //
     // Tobi: causes a segfault in qt version 4.3.0-2+b1 when calling event()
     //       disabling for now, have to investigate
+    //       event() is called even with mouse tracking off 
+    //          -> commenting out event() member function
     setMouseTracking(false);
 
     setupInterface();
@@ -378,17 +380,17 @@ WorldView::zoomAllPix()
     zoomPixelSize( QSizeF(pixelSize,pixelSize) );
 }
 
-bool WorldView::event(QEvent *event)
-{
-    if (event->type() == QEvent::ToolTip) 
-    {
-        QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
-        const double SELECTED_RADIUS_PIXEL = 20.0;
-        QString platform = nearestComponent( mouseMovePnt_, SELECTED_RADIUS_PIXEL );
-        if (platform!="") QToolTip::showText(helpEvent->globalPos(), platform);
-    }
-    return QWidget::event(event);
-}
+// bool WorldView::event(QEvent *event)
+// {
+//     if (event->type() == QEvent::ToolTip) 
+//     {
+//         QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
+//         const double SELECTED_RADIUS_PIXEL = 20.0;
+//         QString platform = nearestComponent( mouseMovePnt_, SELECTED_RADIUS_PIXEL );
+//         if (platform!="") QToolTip::showText(helpEvent->globalPos(), platform);
+//     }
+//     return QWidget::event(event);
+// }
 
 QString 
 WorldView::nearestComponent( const QPointF& pclick, const double & pixelRadius )
