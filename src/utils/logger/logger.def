@@ -27,6 +27,12 @@ Requires.Odometry2d0.DefaultProxy=odometry2d@local/robot2d
 Requires.Odometry3d0.Type=Odometry3d
 Requires.Odometry3d0.DefaultProxy=odometry3d@local/imu
 
+Requires.Localise2d0.Type=Localise2d
+Requires.Localise2d0.DefaultProxy=localise2d@local/faithlocaliser
+
+Requires.Localise3d0.Type=Localise3d
+Requires.Localise3d0.DefaultProxy=localise3d@local/segwayrmp
+
 Requires.Power0.Type=Power
 Requires.Power0.DefaultProxy=power@local/segwayrmp
 
@@ -47,5 +53,7 @@ Config.LaserScanner2d0.Format.Default=ice
 Config.PolarFeature2d0.Format.Default=ice
 Config.Odometry2d0.Format.Default=ice
 Config.Odometry3d0.Format.Default=ice
+Config.Localise2d0.Format.Default=ice
+Config.Localise3d0.Format.Default=ice
 Config.Power0.Format.Default=ice
 Config.Wifi0.Format.Default=ascii
