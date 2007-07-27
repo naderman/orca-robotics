@@ -37,6 +37,7 @@ class CallQueue : public IceUtil::Thread, public IceUtil::Monitor<IceUtil::Mutex
 public:
 
     CallQueue();
+    ~CallQueue() {};
 
     void add( const CallPtr & );
     void stop();
