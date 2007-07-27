@@ -555,6 +555,17 @@ toLogString( const orca::Odometry2dData& obj )
     return s.str();
 }
 
+/*! 
+@brief Prints out Odometry3d data to text which is easy to parse.
+
+- line1: timestamp in seconds and microseconds of Unix time
+- line2: {3D pose} 
+- line3: {3D velocities}
+
+Components of both pose and velocities are written in this order {x y z roll pitch yaw}.
+
+Units: positions are in [m], angles are in [deg], linear velocities are in [m/s], angular velocities are in [deg/s]
+*/
 std::string 
 toLogString( const orca::Odometry3dData& obj )
 {

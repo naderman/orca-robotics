@@ -71,7 +71,6 @@ std::string toLogString( const orca::PathPlanner2dTask& );
 // //! Prints out polarfeature2d data to text which is easy to parse
 // std::string toLogString( const orca::PolarFeature2dData& )
 std::string toLogString( const orca::Odometry2dData& );
-//! Prints out Odometry3d data to text which is easy to parse
 std::string toLogString( const orca::Odometry3dData& );
 //! Prints out imu data to text which is easy to parse
 std::string toLogString( const orca::ImuData& obj );
