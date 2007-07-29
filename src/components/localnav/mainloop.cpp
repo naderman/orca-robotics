@@ -439,6 +439,7 @@ MainLoop::run()
         ss << "ERROR(mainloop.cpp): caught exception during setup/init: " << e;
         context_.tracer()->error( ss.str() );
         context_.status()->fault( SUBSYSTEM, ss.str() );
+		exit(1);
     }
     catch ( std::exception &e )
     {
@@ -446,6 +447,7 @@ MainLoop::run()
         ss << "mainloop.cpp: caught exception during setup/init: " << e.what();
         context_.tracer()->error( ss.str() );
         context_.status()->fault( SUBSYSTEM, ss.str() );
+		exit(1);
     }
     catch ( std::string &e )
     {
@@ -453,6 +455,7 @@ MainLoop::run()
         ss << "mainloop.cpp: caught exception during setup/init: " << e;
         context_.tracer()->error( ss.str() );
         context_.status()->fault( SUBSYSTEM, ss.str() );
+		exit(1);
     }
     catch ( char *e )
     {
@@ -460,6 +463,7 @@ MainLoop::run()
         ss << "mainloop.cpp: caught exception during setup/init: " << e;
         context_.tracer()->error( ss.str() );
         context_.status()->fault( SUBSYSTEM, ss.str() );
+		exit(1);
     }
     catch ( ... )
     {
@@ -479,8 +483,6 @@ MainLoop::run()
     {
         try 
         {
-            //cout<<"============================================="<<endl;
-
             // The rangeScanner provides the 'clock' which is the trigger for this loop
             int sensorRet = obsProxy_->getNext( rangeData_, TIMEOUT_MS );
 
@@ -550,6 +552,8 @@ MainLoop::run()
             // we are in that path. So get the next set of current goals in local 
             // coord system for the pathplanner.
             // Also return a flag indicating if we have an active goal
+			
+			assert(driver_!=NULL && "Driver is not instantiated" );
             bool haveGoal = pathMaintainer_->getActiveGoals( currentGoals,
                                                              driver_->waypointHorizon(),
                                                              pose );
