@@ -317,6 +317,9 @@ Serial::open(int flags)
 {
     struct termios localOptions;
     
+    
+    cout << "TODO: Need to implement a file system lock /var/lock for port access " << dev_ <<endl;
+
     if ( !blockingMode_ )
         flags |= O_NONBLOCK;
 
@@ -329,17 +332,12 @@ Serial::open(int flags)
     }
 
 
-    
-
-    cout << "TODO remove: Going to tcgetattr in open() for " << dev_ <<endl;
-
     if(tcgetattr(portFd_, &localOptions) == -1)
     {
         close();
         throw SerialException( std::string("Serial::open(): tcgetattr(): ")+strerror(errno) );
     }
 
-//TODO is this the best way of having this code conditional? 
     if(debugLevel_ > 1){
         cout << "Displaying status"<<endl;
         showStatus("At beginning of Open():");
