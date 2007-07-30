@@ -16,9 +16,12 @@
 #include <unistd.h>    // read and write to ports
 #include <string.h>
 #include <iostream>
-#include "serial.h"
+#include <iomanip>
 #include <sstream>
 #include <assert.h>
+#include "serial.h"
+#include "serialutil.h"
+
 
 #if __linux
 #  include <linux/serial.h>
@@ -36,6 +39,10 @@
 #include <sys/modem.h>
 #include <time.h>
 #endif
+
+// define for a debug compile
+#define DEBUG
+
  
 using namespace std;
 
@@ -118,20 +125,103 @@ namespace orcaserial {
                 throw SerialException( ss.str() );
             }            
         }
+
+        int iBaudrate( int baudRate )
+        {
+            switch(baudRate)
+            {
+            case B0:
+                return 0;
+            case B50:
+                return 50;
+            case B75:
+                return 75;
+            case B110:
+                return 110;
+            case B134:
+                return 134;
+            case B150:
+                return 150;
+            case B200:
+                return 200;
+            case B300:
+                return 300;
+            case B600:
+                return 600;
+            case B1200:
+                return 1200;
+            case B1800:
+                return 1800;
+            case B2400:
+                return 2400;
+            case B4800:
+                return 4800;
+            case B9600:
+                return 9600;
+            case B19200:
+                return 19200;
+            case B38400:
+                return 38400;
+            case B57600:
+                return 57600;
+            case B115200:
+                return 115200;
+            case B230400:
+                return 230400;
+            case B460800:
+                return 460800;
+            case B500000:
+                return 500000;
+            case B576000:
+                return 576000;
+            case B921600:
+                return 921600;
+            case B1000000:
+                return 1000000;
+            case B1152000:
+                return 1152000;
+            case B1500000:
+                return 1500000;
+            case B2000000:
+                return 2000000;
+            case B2500000:
+                return 2500000;
+            case B3000000:
+                return 3000000;
+            case B3500000:
+                return 3500000;
+            case B4000000:
+                return 4000000;
+            default:
+                stringstream ss;
+                ss << "Serial::baud() Invalid baud rate: " << baudRate;
+                throw SerialException( ss.str() );
+            }            
+        }
     }
+
+
+
+
+
     
 Serial::Serial( const std::string &dev,
                 int baudRate,
-                bool blockingMode )
+                bool blockingMode, 
+                int debuglevel)
     : dev_(dev),
       portFd_(-1),
       timeoutSec_(0),
       timeoutUSec_(0),
       blockingMode_(blockingMode),
-      debugLevel_(0)
+      debugLevel_(debuglevel)
 {
     open();
     setBaudRate( baudRate );
+    
+    if(debugLevel_ > 1){
+        showStatus("At end of Serial::Serial:");
+    }
 }
     
 Serial::~Serial()
@@ -155,6 +245,9 @@ Serial::close()
     {
         perror("Serial::close():close()");
     }
+
+    //Make sure that we force this back to an invalid state
+    portFd_ = -1;
 }
 
 #ifdef __linux
@@ -162,6 +255,8 @@ Serial::close()
 void 
 Serial::setBaudRate(int baud)
 {
+    struct termios localOptions;
+
     if ( debugLevel_ > 0 )
         cout<<"TRACE(serial.cpp): setBaudRate()" << endl;
 
@@ -169,15 +264,15 @@ Serial::setBaudRate(int baud)
     {
         throw SerialException( "Serial:baud() no valid device open" );
     }
-    if(tcgetattr(portFd_, &serialOptions_) == -1)
+    if(tcgetattr(portFd_, &localOptions) == -1)
     {
         stringstream ss;
         ss << "Serial::baud():tcgetattr() Error reading attr: " << strerror(errno);
         throw SerialException( ss.str() );
     }
 
-    cfsetispeed(&serialOptions_, cBaudrate(baud));
-    cfsetospeed(&serialOptions_, cBaudrate(baud));
+    cfsetispeed(&localOptions, cBaudrate(baud));
+    cfsetospeed(&localOptions, cBaudrate(baud));
 
     //
     // AlexB: This code doesn't seem to work for USB devices...
@@ -209,7 +304,7 @@ Serial::setBaudRate(int baud)
         }
     }
 
-    if ( tcsetattr(portFd_, TCSAFLUSH, &serialOptions_) == -1 )
+    if ( tcsetattr(portFd_, TCSAFLUSH, &localOptions) == -1 )
     {
         stringstream ss;
         ss << "Serial::baud():tcsetattr() Error setting attr: " << strerror(errno);
@@ -220,6 +315,8 @@ Serial::setBaudRate(int baud)
 void 
 Serial::open(int flags)
 {
+    struct termios localOptions;
+    
     if ( !blockingMode_ )
         flags |= O_NONBLOCK;
 
@@ -231,42 +328,60 @@ Serial::open(int flags)
         throw SerialException( ss.str() );
     }
 
-    if(tcgetattr(portFd_, &serialOptions_) == -1)
+
+    
+
+    cout << "TODO remove: Going to tcgetattr in open() for " << dev_ <<endl;
+
+    if(tcgetattr(portFd_, &localOptions) == -1)
     {
         close();
         throw SerialException( std::string("Serial::open(): tcgetattr(): ")+strerror(errno) );
     }
 
+//TODO is this the best way of having this code conditional? 
+    if(debugLevel_ > 1){
+        cout << "Displaying status"<<endl;
+        showStatus("At beginning of Open():");
+    }
+
+
+
     // enable receiver & ignore control lines
-    serialOptions_.c_cflag |=  (CLOCAL | CREAD) ;
+    localOptions.c_cflag |=  (CLOCAL | CREAD) ;
 
     // set 8 data bits
-    serialOptions_.c_cflag &= ~CSIZE;
-    serialOptions_.c_cflag |= CS8;
+    localOptions.c_cflag &= ~CSIZE;
+    localOptions.c_cflag |= CS8;
 
     // set parity to none with no stop bit
-    serialOptions_.c_cflag &= ~PARENB;
-    serialOptions_.c_cflag &= ~CSTOPB;
+    localOptions.c_cflag &= ~PARENB;
+    localOptions.c_cflag &= ~CSTOPB;
 
     // disable hardware flow control
-    serialOptions_.c_cflag &= ~CRTSCTS;
+    localOptions.c_cflag &= ~CRTSCTS;
 
 #if defined(__sun)
     // http://www.sunmanagers.org/pipermail/summaries/2005-October/006871.html
-    serialOptions_.c_iflag &= ~(IGNBRK|BRKINT|PARMRK|ISTRIP|INLCR|IGNCR|ICRNL|IXON);
-    serialOptions_.c_oflag &= ~OPOST;
-    serialOptions_.c_lflag &= ~(ECHO|ECHONL|ICANON|ISIG|IEXTEN);
-    serialOptions_.c_cflag &= ~(CSIZE|PARENB);
-    serialOptions_.c_cflag |= CS8;
+    localOptions.c_iflag &= ~(IGNBRK|BRKINT|PARMRK|ISTRIP|INLCR|IGNCR|ICRNL|IXON);
+    localOptions.c_oflag &= ~OPOST;
+    localOptions.c_lflag &= ~(ECHO|ECHONL|ICANON|ISIG|IEXTEN);
+    localOptions.c_cflag &= ~(CSIZE|PARENB);
+    localOptions.c_cflag |= CS8;
 #else
-    cfmakeraw(&serialOptions_);
+    cfmakeraw(&localOptions);
 #endif
 
-    if(tcsetattr(portFd_, TCSAFLUSH, &serialOptions_) == -1)
+    if(tcsetattr(portFd_, TCSAFLUSH, &localOptions) == -1)
     {
         close();
         throw SerialException( std::string("Serial::open(): tcsetattr(): ")+strerror(errno) );
     }
+
+    if ( debugLevel_ > 1 ){
+        showStatus("At end of Open():");
+    }
+
 }
 
 int 
@@ -353,9 +468,15 @@ Serial::readFull(void *buf, size_t count)
 }
 
 
+
+
+
+
 //////////////////////////////////////
 //Start Duncan rewrite...
 //DUNCAN; Combined blocking and non-blocking...
+
+
 
 int 
 Serial::readLine(void *buf, size_t count, char termchar)
@@ -468,6 +589,180 @@ Serial::doBlocking()
 }
 
 
+//TODO: Duncan can we ditch the un-needed length field (ignore_this_field)?
+int 
+Serial::writeString(const char *str, int ignore_this_field)
+{
+    (void) ignore_this_field;
+
+    if ( debugLevel_ > 0 )
+        cout<<"TRACE(serial.cpp): writeString()" << endl;
+
+    int put;
+    put = ::write(portFd_, str, strlen(str) );
+    if ( put < 0 )
+    {
+        throw SerialException( string("Serial::write(): ")+strerror(errno) );
+    }
+    else if ( put == 0 )
+    {
+        throw SerialException( "Serial::writeString(): ::write() returned 0" );
+    }
+    if ( debugLevel_ > 1 )
+    {
+        cout<<"TRACE(serial.cpp): wrote " << put << " bytes" << endl;
+    }
+
+    return put;
+}
+
+
+void
+Serial::showStatus(std::string identify){
+    struct termios status;
+    if(tcgetattr(portFd_, &status) == -1)
+    {
+        close();
+        throw SerialException( std::string(identify + "tcgetattr():")+strerror(errno) );
+    }
+
+    cout << endl << identify << " Device " << dev_ << " Status:-" << endl;
+    cout << "In baud_rate: " << iBaudrate(cfgetispeed(&status)) 
+         << " Out baud_rate: " << iBaudrate(cfgetospeed(&status)) << endl;
+    cout << status;
+    
+    showFdState();
+}
+
+
+//TODO This was supposed to be in serialutil but I couldn't get it to
+//compile (Duncan)
+//Allow streaming of the term status structure type
+std::ostream &operator<<( std::ostream &s, struct termios &stat ){
+
+    s.setf(ios::hex,ios::basefield);
+    s.fill('0');
+
+    s << "c_iflag -> 0x"  << setw(4) <<  stat.c_iflag << endl;
+    s << "c_oflag -> 0x"  << setw(4) <<  stat.c_oflag << endl;
+    s << "c_cflag -> 0x"  << setw(4) <<  stat.c_cflag << endl;
+    s << "c_lflag -> 0x"  << setw(4) <<  stat.c_lflag << endl;
+
+    s << "c_cc_array ->" << endl;
+    s << "VINTR 0x"   << setw(2) <<  static_cast<int>(stat.c_cc[VINTR])  
+      << ", VQUIT 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VQUIT]) 
+      << ", VERASE 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VERASE]) 
+      << ", VKILL 0x"  << setw(2) <<  static_cast<int>(stat.c_cc[VKILL]) << endl ;
+    s << "VEOF 0x"   << setw(2) <<  static_cast<int>(stat.c_cc[VEOF])
+      << ", VEOL 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VEOL])
+      << ", VEOL2 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VEOL2]) 
+      << ", VSTART 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VSTART]) << endl ;
+    s << "VSTOP 0x"   << setw(2) <<  static_cast<int>(stat.c_cc[VSTOP])
+      << ", VSUSP 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VSUSP])
+      << ", VREPRINT 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VREPRINT])
+      << ", VLNEXT 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VLNEXT]) << endl;
+    s << "VMIN 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VMIN])
+      << ", VTIME 0x"   << setw(2) <<  static_cast<int>(stat.c_cc[VTIME]) << endl;
+   
+
+    s << "c_iflag, Bits set" << endl;
+    if (stat.c_iflag & IGNBRK){ s << "IGNBRK,";}
+    if (stat.c_iflag & BRKINT){ s << "BRKINT,";}
+    if (stat.c_iflag & IGNPAR){ s << "IGNPAR,";}
+    if (stat.c_iflag & PARMRK){ s << "PARMRK,";}
+    if (stat.c_iflag & INPCK){ s << "INPCK,";}
+    if (stat.c_iflag & ISTRIP){ s << "ISTRIP,";}
+    if (stat.c_iflag & INLCR){ s << "INLCR,";}
+    if (stat.c_iflag & IGNCR){ s << "IGNCR,";}
+    if (stat.c_iflag & ICRNL){ s << "ICRNL,";}
+    if (stat.c_iflag & IUCLC){ s << "IUCLC,";}
+    if (stat.c_iflag & IXON){ s << "IXON,";}
+    if (stat.c_iflag & IXANY){ s << "IXANY,";}
+    if (stat.c_iflag & IXOFF){ s << "IXOFF,";}
+    if (stat.c_iflag & IMAXBEL){ s << "IMAXBEL,";}
+    s << endl;
+
+    s << "c_oflag, Bits set" << endl;
+    if (stat.c_oflag & OPOST){ s << "OPOST,";}
+    if (stat.c_oflag & OLCUC){ s << "OLCUC,";}
+    if (stat.c_oflag & ONLCR){ s << "ONLCR,";}
+    if (stat.c_oflag & OCRNL){ s << "OCRNL,";}
+    if (stat.c_oflag & ONOCR){ s << "ONOCR,";}
+    if (stat.c_oflag & ONLRET){ s << "ONLRET,";}
+    if (stat.c_oflag & OFILL){ s << "OFILL,";}
+    if (stat.c_oflag & OFDEL){ s << "OFDEL,";}
+    if (stat.c_oflag & NLDLY){ s << "NLDLY,";}
+    if (stat.c_oflag & CRDLY){ s << "CRDLY,";}
+    if (stat.c_oflag & TABDLY){ s << "TABDLY,";}
+    if (stat.c_oflag & BSDLY){ s << "BSDLY,";}
+    if (stat.c_oflag & VTDLY){ s << "VTDLY,";}
+    if (stat.c_oflag & FFDLY){ s << "FFDLY,";}
+    s << endl;
+
+    s << "c_cflag, Bits set" << endl;
+    if (stat.c_cflag & CSTOPB){ s << "CSTOPB,";}
+    if (stat.c_cflag & CREAD){ s << "CREAD,";}
+    if (stat.c_cflag & PARENB){ s << "PARENB,";}
+    if (stat.c_cflag & PARODD){ s << "PARODD,";}
+    if (stat.c_cflag & HUPCL){ s << "HUPCL,";}
+    if (stat.c_cflag & CLOCAL){ s << "CLOCAL,";}
+    if (stat.c_cflag & CIBAUD){ s << "CIBAUD,";}
+    s << endl;
+
+
+    s << "c_lflag, Bits set" << endl;
+    if (stat.c_lflag & ISIG){ s << "ISIG,";}
+    if (stat.c_lflag & ICANON){ s << "ICANON,";}
+    if (stat.c_lflag & PARENB){ s << "PARENB,";}
+    if (stat.c_lflag & XCASE){ s << "XCASE,";}
+    if (stat.c_lflag & NOFLSH){ s << "NOFLSH,";}
+    if (stat.c_lflag & FLUSHO){ s << "FLUSHO,";}
+    if (stat.c_lflag & PENDIN){ s << "PENDIN,";}
+    if (stat.c_lflag & IEXTEN){ s << "IEXTEN,";}
+    if (stat.c_lflag & TOSTOP){ s << "TOSTOP,";}
+    if (stat.c_lflag & ECHO){ s << "ECHO,";}
+    if (stat.c_lflag & ECHOE){ s << "ECHOE,";}
+    if (stat.c_lflag & ECHOPRT){ s << "ECHOPRT,";}
+    if (stat.c_lflag & ECHOKE){ s << "ECHOKE,";}
+    if (stat.c_lflag & NOFLSH){ s << "ECHONL,";}
+    if (stat.c_lflag & FLUSHO){ s << "ECHOCTL,";}
+    s << endl;
+
+    s << endl;
+    s.setf(ios::dec,ios::basefield);
+
+
+}
+
+
+void 
+Serial::showFdState(){
+
+    struct serial_struct  serinfo;
+    if (ioctl(portFd_, TIOCGSERIAL, &serinfo) < 0) 
+    {
+        stringstream ss;
+        ss << "error calling 'ioctl(portFd_, TIOCGSERIAL, &serinfo)': "<<strerror(errno);
+        throw SerialException( ss.str() );
+    }
+    
+    cout.setf(ios::hex,ios::basefield);
+
+    cout << "TIOCGSERIAL:-> " << endl;
+    cout << "Flags: 0x"   << setw(2) << serinfo.flags
+         << ", Type: 0x" << setw(2) << serinfo.type
+         << ", Line: 0x" << setw(2) << serinfo.line << endl;
+    cout << "Port: 0x"   << setw(2) << serinfo.port
+         << ", IRQ: 0x" << setw(2) << serinfo.irq
+         << ", xmit_fifo_size: 0x" << setw(2) << serinfo.xmit_fifo_size << endl;
+    cout << "Baud_base: 0x"   << setw(2) << serinfo.baud_base
+         << ", Custom_divisor: 0x" << setw(2) << serinfo.custom_divisor
+         << ", Io_type: 0x" << setw(2) << serinfo.io_type << endl;
+
+    cout.setf(ios::dec,ios::basefield);
+
+}
+
 //// END DUNCAN REWRITE ////
 
 
@@ -499,33 +794,10 @@ Serial::write(const void *buf, size_t count)
     return put;
 }
 
-int 
-Serial::writeString(const char *str, size_t maxlen)
-{
-    if ( debugLevel_ > 0 )
-        cout<<"TRACE(serial.cpp): writeString()" << endl;
 
-    if ( maxlen == 0 )
-        throw SerialException( "Serial::writeString() was called with zero bytes" );
 
-    int toput=strnlen(str, maxlen);
-    int put;
-    put = ::write(portFd_, str, toput);
-    if ( put < 0 )
-    {
-        throw SerialException( string("Serial::write(): ")+strerror(errno) );
-    }
-    else if ( put == 0 )
-    {
-        throw SerialException( "Serial::writeString(): ::write() returned 0" );
-    }
-    if ( debugLevel_ > 1 )
-    {
-        cout<<"TRACE(serial.cpp): wrote " << put << " bytes" << endl;
-    }
 
-    return put;
-}
+
 
 void 
 Serial::flush()

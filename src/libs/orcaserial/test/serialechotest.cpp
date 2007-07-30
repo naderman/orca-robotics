@@ -29,6 +29,7 @@ int main( int argc, char **argv )
     if ( argc < 3 )
     {
         cout << "USAGE: " << argv[0] << " <dev> <baudrate>";
+        exit(1);
     }
 
     const bool isBlockingMode = true;

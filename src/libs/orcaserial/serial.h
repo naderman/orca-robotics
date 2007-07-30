@@ -45,8 +45,9 @@ public:
 
     //! Constructor.  
     //! Opens a device @ref dev.
-    //! Throws exceptions on error
-    Serial( const std::string &dev, int baudRate, bool blockingMode );
+    //! Throws exceptions on error.
+    //! Note that a default debugLevel other than 0 can be passed to the constructor
+    Serial( const std::string &dev, int baudRate, bool blockingMode, int debuglevel = 0 );
 
     //! Destructor closes serial port
     ~Serial();
@@ -104,9 +105,15 @@ public:
     //! Writes some data.  Returns the number of bytes written.
     int write(const void *buf, size_t count);
 
-    //! Writes a ('\0'-terminated) string (default up to 256 chars). 
+    //! Writes a ('\0'-terminated) string. 
     //! Returns the number of bytes written.
-    int writeString(const char *buf, size_t maxlen=256);
+    //! NOTE:- this call originally was written to take an extra length
+    //! field this is unused and should be ignored!
+    //TODO Can we throw away the unused field?
+    int writeString(const char *buf, int ignore_this_field = -1);
+    inline int writeString(std::string &s, int ignore_this_field = -1){
+        return writeString(s.c_str(),ignore_this_field);
+    }
 
     //! Flushs both input and output buffers.
     //! This discards all data in buffers.
@@ -117,6 +124,11 @@ public:
 
     //! This gives direct access to the file descriptor: be careful with this...
     int fileDescriptor() { return portFd_; }
+
+    //! Print some diagnostic information on the current status of the port
+    //! Takes a string to 'identify' which helps to show where call made
+    void showStatus(std::string identify);
+
 
 private:
 
@@ -132,8 +144,10 @@ private:
     int readFullBlocking(void *buf, size_t count);
     int readFullNonblocking(void *buf, size_t count);
 
+    void showFdState();
+
     const std::string dev_;
-    struct termios serialOptions_;
+//    struct termios serialOptions_;
     int portFd_;
     int timeoutSec_;
     int timeoutUSec_;
@@ -141,6 +155,13 @@ private:
     
     int debugLevel_;
 };
+
+
+//TODO This was supposed to be in serialutil but I couldn't get it to
+//compile (Duncan)
+std::ostream &operator<<( std::ostream &s, struct termios &stat );
+
+
 
 }
 

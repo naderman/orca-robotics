@@ -24,6 +24,10 @@ namespace orcaserial {
 //!
 
 int waitForByte( char byte, int timeout, int port_fd );
+    
+//TODO Duncan added this for testing. Remove it!
+//Allow streaming of our data type
+std::ostream &operator<<( std::ostream &s, struct termios &io_status );
 
 
 } // namespace

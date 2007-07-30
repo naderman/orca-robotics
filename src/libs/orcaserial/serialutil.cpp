@@ -20,6 +20,12 @@ using namespace std;
 
 namespace orcaserial {
 
+
+
+
+
+
+//TODO: Duncan, comment. This should be using the doBlocking()
 // get rid of port_fd
 int
 waitForByte( char byte, int timeout, int port_fd )
