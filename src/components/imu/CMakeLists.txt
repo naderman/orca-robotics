@@ -1,4 +1,4 @@
-IF ( NOT OS_WIN  )
+IF ( OS_LINUX  )
 
 OPTION( BUILD_IMU "Try to build Imu component" ON )
 
@@ -50,4 +50,4 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
     GENERATE_CONFIG_FILE( imu.def )
 
 ENDIF ( BUILD_IMU )
-ENDIF ( NOT OS_WIN )
+ENDIF ( OS_LINUX )
