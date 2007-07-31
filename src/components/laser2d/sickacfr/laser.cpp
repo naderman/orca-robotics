@@ -33,8 +33,6 @@ Laser::Laser()
 	: pxl(0),
       serial_(0)
 {
-	// serial_ = new orcaserial::Serial();
-	
     // configure the buffers so they have depth 100 and are of type queue
     laserDataBuffer_.configure( 100 , orcaice::BufferTypeCircular );
  
@@ -135,10 +133,10 @@ Laser::IniLSRXCode(int *pflag, struct LaserData *pxl)
 //         goto chau ;
 //     }
 
-    const bool blockingMode = false;
+    const bool enableTimeouts = true;
     const int baudRate = 9600;
     try {
-        serial_ = new orcaserial::Serial( pxl->NamePort, baudRate, blockingMode );
+        serial_ = new orcaserial::Serial( pxl->NamePort, baudRate, enableTimeouts );
     }
     catch ( const orcaserial::SerialException &e )
     {

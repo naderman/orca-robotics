@@ -20,8 +20,6 @@
 #include <sstream>
 #include <assert.h>
 #include "serial.h"
-#include "serialutil.h"
-
 
 #if __linux
 #  include <linux/serial.h>
@@ -35,11 +33,6 @@
 // Ensure we have strnlen
 #include <orcaportability/strnlen.h>
  
-#ifdef __QNX__
-#include <sys/modem.h>
-#include <time.h>
-#endif
-
 // define for a debug compile
 #define DEBUG
 
@@ -198,35 +191,158 @@ namespace orcaserial {
                 throw SerialException( ss.str() );
             }            
         }
+
+        //Allow streaming of the term status structure type
+        std::ostream &operator<<( std::ostream &s, struct termios &stat )
+        {
+            s.setf(ios::hex,ios::basefield);
+            s.fill('0');
+
+            s << "c_iflag -> 0x"  << setw(4) <<  stat.c_iflag << endl;
+            s << "c_oflag -> 0x"  << setw(4) <<  stat.c_oflag << endl;
+            s << "c_cflag -> 0x"  << setw(4) <<  stat.c_cflag << endl;
+            s << "c_lflag -> 0x"  << setw(4) <<  stat.c_lflag << endl;
+
+            s << "c_cc_array ->" << endl;
+            s << "VINTR 0x"      << setw(2) <<  static_cast<int>(stat.c_cc[VINTR])  
+              << ", VQUIT 0x"    << setw(2) <<  static_cast<int>(stat.c_cc[VQUIT]) 
+              << ", VERASE 0x"   << setw(2) <<  static_cast<int>(stat.c_cc[VERASE]) 
+              << ", VKILL 0x"    << setw(2) <<  static_cast<int>(stat.c_cc[VKILL]) << endl ;
+            s << "VEOF 0x"       << setw(2) <<  static_cast<int>(stat.c_cc[VEOF])
+              << ", VEOL 0x"     << setw(2) <<  static_cast<int>(stat.c_cc[VEOL])
+              << ", VEOL2 0x"    << setw(2) <<  static_cast<int>(stat.c_cc[VEOL2]) 
+              << ", VSTART 0x"   << setw(2) <<  static_cast<int>(stat.c_cc[VSTART]) << endl ;
+            s << "VSTOP 0x"      << setw(2) <<  static_cast<int>(stat.c_cc[VSTOP])
+              << ", VSUSP 0x"    << setw(2) <<  static_cast<int>(stat.c_cc[VSUSP])
+              << ", VREPRINT 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VREPRINT])
+              << ", VLNEXT 0x"   << setw(2) <<  static_cast<int>(stat.c_cc[VLNEXT]) << endl;
+            s << "VMIN 0x"       << setw(2) <<  static_cast<int>(stat.c_cc[VMIN])
+              << ", VTIME 0x"    << setw(2) <<  static_cast<int>(stat.c_cc[VTIME]) << endl;
+   
+
+            s << "c_iflag, Bits set" << endl;
+            if (stat.c_iflag & IGNBRK) { s << "IGNBRK,";}
+            if (stat.c_iflag & BRKINT) { s << "BRKINT,";}
+            if (stat.c_iflag & IGNPAR) { s << "IGNPAR,";}
+            if (stat.c_iflag & PARMRK) { s << "PARMRK,";}
+            if (stat.c_iflag & INPCK)  { s << "INPCK,";}
+            if (stat.c_iflag & ISTRIP) { s << "ISTRIP,";}
+            if (stat.c_iflag & INLCR)  { s << "INLCR,";}
+            if (stat.c_iflag & IGNCR)  { s << "IGNCR,";}
+            if (stat.c_iflag & ICRNL)  { s << "ICRNL,";}
+            if (stat.c_iflag & IUCLC)  { s << "IUCLC,";}
+            if (stat.c_iflag & IXON)   { s << "IXON,";}
+            if (stat.c_iflag & IXANY)  { s << "IXANY,";}
+            if (stat.c_iflag & IXOFF)  { s << "IXOFF,";}
+            if (stat.c_iflag & IMAXBEL){ s << "IMAXBEL,";}
+            s << endl;
+
+            s << "c_oflag, Bits set" << endl;
+            if (stat.c_oflag & OPOST){ s << "OPOST,";}
+            if (stat.c_oflag & OLCUC){ s << "OLCUC,";}
+            if (stat.c_oflag & ONLCR){ s << "ONLCR,";}
+            if (stat.c_oflag & OCRNL){ s << "OCRNL,";}
+            if (stat.c_oflag & ONOCR){ s << "ONOCR,";}
+            if (stat.c_oflag & ONLRET){ s << "ONLRET,";}
+            if (stat.c_oflag & OFILL){ s << "OFILL,";}
+            if (stat.c_oflag & OFDEL){ s << "OFDEL,";}
+            if (stat.c_oflag & NLDLY){ s << "NLDLY,";}
+            if (stat.c_oflag & CRDLY){ s << "CRDLY,";}
+            if (stat.c_oflag & TABDLY){ s << "TABDLY,";}
+            if (stat.c_oflag & BSDLY){ s << "BSDLY,";}
+            if (stat.c_oflag & VTDLY){ s << "VTDLY,";}
+            if (stat.c_oflag & FFDLY){ s << "FFDLY,";}
+            s << endl;
+
+            s << "c_cflag, Bits set" << endl;
+            if (stat.c_cflag & CSTOPB){ s << "CSTOPB,";}
+            if (stat.c_cflag & CREAD){ s << "CREAD,";}
+            if (stat.c_cflag & PARENB){ s << "PARENB,";}
+            if (stat.c_cflag & PARODD){ s << "PARODD,";}
+            if (stat.c_cflag & HUPCL){ s << "HUPCL,";}
+            if (stat.c_cflag & CLOCAL){ s << "CLOCAL,";}
+            if (stat.c_cflag & CIBAUD){ s << "CIBAUD,";}
+            s << endl;
+
+
+            s << "c_lflag, Bits set" << endl;
+            if (stat.c_lflag & ISIG){ s << "ISIG,";}
+            if (stat.c_lflag & ICANON){ s << "ICANON,";}
+            if (stat.c_lflag & PARENB){ s << "PARENB,";}
+            if (stat.c_lflag & XCASE){ s << "XCASE,";}
+            if (stat.c_lflag & NOFLSH){ s << "NOFLSH,";}
+            if (stat.c_lflag & FLUSHO){ s << "FLUSHO,";}
+            if (stat.c_lflag & PENDIN){ s << "PENDIN,";}
+            if (stat.c_lflag & IEXTEN){ s << "IEXTEN,";}
+            if (stat.c_lflag & TOSTOP){ s << "TOSTOP,";}
+            if (stat.c_lflag & ECHO){ s << "ECHO,";}
+            if (stat.c_lflag & ECHOE){ s << "ECHOE,";}
+            if (stat.c_lflag & ECHOPRT){ s << "ECHOPRT,";}
+            if (stat.c_lflag & ECHOKE){ s << "ECHOKE,";}
+            if (stat.c_lflag & NOFLSH){ s << "ECHONL,";}
+            if (stat.c_lflag & FLUSHO){ s << "ECHOCTL,";}
+            s << endl;
+
+            s << endl;
+            s.setf(ios::dec,ios::basefield);
+        }
+
+
+        std::ostream &operator<<( std::ostream &s, struct serial_struct &serinfo )
+        {
+            s.setf(ios::hex,ios::basefield);
+
+            s << "TIOCGSERIAL:-> " << endl;
+            s << "Flags: 0x"            << setw(2) << serinfo.flags
+              << ", Type: 0x"           << setw(2) << serinfo.type
+              << ", Line: 0x"           << setw(2) << serinfo.line << endl;
+            s << "Port: 0x"             << setw(2) << serinfo.port
+              << ", IRQ: 0x"            << setw(2) << serinfo.irq
+              << ", xmit_fifo_size: 0x" << setw(2) << serinfo.xmit_fifo_size << endl;
+            s << "Baud_base: 0x"        << setw(2) << serinfo.baud_base
+              << ", Custom_divisor: 0x" << setw(2) << serinfo.custom_divisor
+              << ", Io_type: 0x"        << setw(2) << serinfo.io_type << endl;
+
+            s.setf(ios::dec,ios::basefield);
+        }
+
     }
-
-
-
 
 
     
 Serial::Serial( const std::string &dev,
                 int baudRate,
-                bool blockingMode, 
+                bool enableTimeouts,
                 int debuglevel)
     : dev_(dev),
       portFd_(-1),
       timeoutSec_(0),
       timeoutUSec_(0),
-      blockingMode_(blockingMode),
+      timeoutsEnabled_(enableTimeouts),
       debugLevel_(debuglevel)
 {
     open();
     setBaudRate( baudRate );
     
     if(debugLevel_ > 1){
-        showStatus("At end of Serial::Serial:");
+        cout << "At end of Serial::Serial: " << getStatusString();
     }
 }
     
 Serial::~Serial()
 {
     close();
+}
+
+void 
+Serial::setTimeout(int sec, int usec) 
+{ 
+    if ( !timeoutsEnabled_ )
+    {
+        throw SerialException( "setTimeout() called but timeouts not enabled!" );
+    }
+
+    timeoutSec_=sec; timeoutUSec_=usec; 
 }
 
 void
@@ -249,8 +365,6 @@ Serial::close()
     //Make sure that we force this back to an invalid state
     portFd_ = -1;
 }
-
-#ifdef __linux
 
 void 
 Serial::setBaudRate(int baud)
@@ -320,7 +434,7 @@ Serial::open(int flags)
     
     cout << "TODO: Need to implement a file system lock /var/lock for port access " << dev_ <<endl;
 
-    if ( !blockingMode_ )
+    if ( timeoutsEnabled_ )
         flags |= O_NONBLOCK;
 
     portFd_ = ::open(dev_.c_str(), flags|O_RDWR|O_NOCTTY);
@@ -339,8 +453,7 @@ Serial::open(int flags)
     }
 
     if(debugLevel_ > 1){
-        cout << "Displaying status"<<endl;
-        showStatus("At beginning of Open():");
+        cout << "At beginning of open(): "<<getStatusString()<<endl;
     }
 
 
@@ -377,19 +490,18 @@ Serial::open(int flags)
     }
 
     if ( debugLevel_ > 1 ){
-        showStatus("At end of Open():");
+        cout << "At end of open():" << getStatusString();
     }
 
 }
 
 int 
-Serial::read(void *buf, size_t count)
+Serial::read(void *buf, int count)
 {
     if ( debugLevel_ > 0 )
         cout<<"TRACE(serial.cpp): read()" << endl;
 
-    int got;
-    got = ::read(portFd_, buf, count);
+    ssize_t got = ::read(portFd_, buf, count);
     if ( got < 0 )
     {
         throw SerialException( string("Serial::read(): ") + strerror(errno) );
@@ -398,39 +510,39 @@ Serial::read(void *buf, size_t count)
 }
 
 int
-Serial::readFullBlocking(void *buf, size_t count)
+Serial::readFullBlocking(void *buf, int count)
 {
     if ( debugLevel_ > 0 )
         cout<<"TRACE(serial.cpp): readFullBlocking(): count=" << count << endl;
 
-    int got=0;
-    while( got < (int)count )
+    ssize_t got=0;
+    while( got < count )
     {
         char *offset=(char*)buf+got;
-        int ret = read( offset, count-got );
+        ssize_t ret = read( offset, count-got );
         got += ret;
     }
     return got;
 }
 
 int
-Serial::readFullNonblocking(void *buf, size_t count)
+Serial::readFullWithTimeout(void *buf, int count)
 {
     if ( debugLevel_ > 0 )
-        cout<<"TRACE(serial.cpp): readFullNonblocking(): count=" << count << endl;
+        cout<<"TRACE(serial.cpp): readFullWithTimeout(): count=" << count << endl;
 
     int got=0;
-    while ( got < (int) count ) 
+    while ( got < count ) 
     {
         char *offset=(char*)buf+got;
-        int ret = ::read(portFd_, offset, count-got);
+        ssize_t ret = ::read(portFd_, offset, count-got);
         if ( ret >= 0 )
         {
             got += ret;
         }
         else if ( ret == -1 && errno == EAGAIN )
         {
-            // No data available yet -- if timeout is set we will block
+            // No data available yet -- if timeout is set we will wait
             fd_set rfds;
             struct timeval tv;
             FD_ZERO(&rfds);
@@ -445,73 +557,64 @@ Serial::readFullNonblocking(void *buf, size_t count)
             }
             else if ( selval < 0 )
             {
-                throw SerialException( std::string("Serial::readFullNonblocking: ")+strerror(errno) );
+                throw SerialException( std::string("Serial::readFullWithTimeout: ")+strerror(errno) );
             }
         }
         else
         {
-            throw SerialException( std::string("Serial::readFullNonblocking: read(): ")+strerror(errno) );
+            throw SerialException( std::string("Serial::readFullWithTimeout: read(): ")+strerror(errno) );
         }
     }
     return got;
 }
 
 int 
-Serial::readFull(void *buf, size_t count)
+Serial::readFull(void *buf, int count)
 {
-    if ( blockingMode_ )
+    if ( !timeoutsEnabled_ )
         return readFullBlocking( buf, count );
     else
-        return readFullNonblocking( buf, count );
+        return readFullWithTimeout( buf, count );
 }
 
-
-
-
-
-
-//////////////////////////////////////
-//Start Duncan rewrite...
-//DUNCAN; Combined blocking and non-blocking...
-
-
-
 int 
-Serial::readLine(void *buf, size_t count, char termchar)
+Serial::readLine(void *buf, int count, char termchar)
 {
     if ( debugLevel_ > 0 ){
         cout<<"TRACE(serial.cpp): readLine ";
-        if(blockingMode_){ 
-            cout << "In blocking mode"<<endl; 
+        if(timeoutsEnabled_){ 
+            cout << "timeouts enabled"<<endl; 
         }else{
-            cout << "Non blocking mode"<<endl;
+            cout << "timeouts not enabled"<<endl;
         }
     }
     //There must be at least room for a terminating char and NULL terminator!
     assert (count >= 2);
 
     char* dataPtr = static_cast<char*>(buf);
+    const char* bufPtr = static_cast<char*>(buf);
     char nextChar = 0;
 
     do{        
         //Check for buf overrun Must leave room for NULL terminator
-        if(dataPtr >= (static_cast<char*>(buf) + (count - 1)))
+        if ( dataPtr >= bufPtr + (count - 1) )
         {
             throw SerialException( "Serial::readLine: Not enough room in buffer" );
         }
 
-        int ret = ::read( portFd_, &nextChar, 1 );
+        ssize_t ret = ::read( portFd_, &nextChar, 1 );
         if (ret == 1)
         {
             *(dataPtr++) = nextChar; //got data let's store it...
         }
         else if ( ret < 0 )
         {
-
-            //If blocking and no data, wait and then go again
-            if(blockingMode_ &&  (ret == -1) && (errno == EAGAIN) ){  
-                if(doBlocking() != -1)
+            //If timeouts enabled and no data, wait and then go again
+            if( timeoutsEnabled_ &&  (ret == -1) && (errno == EAGAIN) )
+            {
+                if(waitForTimeout() != -1)
                 {
+                    // timed out
                     continue;
                 }else{
                     *dataPtr = 0x00; //terminate string just incase it's used anyway
@@ -523,26 +626,22 @@ Serial::readLine(void *buf, size_t count, char termchar)
             throw SerialException( std::string( "Serial::readLine(): ")+strerror(errno) );
         }
 
-    }while (nextChar != termchar);
+    } while (nextChar != termchar);
 
-//It's a string. It must be NULL terminated...
+    // It's a string. It must be NULL terminated...
     *dataPtr = 0x00;
 
-//Return the number of chars not including the NULL
-    return ( static_cast<int> (dataPtr - static_cast<char*>(buf)) );
+    // Return the number of chars not including the NULL
+    return ( (int) (dataPtr - bufPtr) );
 
- 
-//TODO: Duncan! I think that this should cope with any <CR><LF> pair gracefully!
-
+    //TODO: Duncan! I think that this should cope with any <CR><LF> pair gracefully!
 }
-
-
 
 int 
 Serial::bytesAvailable()
 {
-    int ret,n_read;
-    ret=ioctl(portFd_,FIONREAD,&n_read);
+    int n_read;
+    int ret = ioctl(portFd_,FIONREAD,&n_read);
 
     if(ret==-1)
     {
@@ -554,7 +653,7 @@ Serial::bytesAvailable()
 int 
 Serial::bytesAvailableWait()
 {
-    if ( doBlocking() == -1){
+    if ( waitForTimeout() == -1){
         return -1;
     }
 
@@ -563,9 +662,8 @@ Serial::bytesAvailableWait()
 
 
 int 
-Serial::doBlocking()
+Serial::waitForTimeout()
 {
-    // No data available yet -- if timeout is set we will block
     fd_set rfds;
     struct timeval tv;
     FD_ZERO(&rfds);
@@ -580,19 +678,16 @@ Serial::doBlocking()
     }
     if(selval<0)
     {
-        throw SerialException( std::string("Serial::doBlocking: select(): ")+strerror(errno) );
+        throw SerialException( std::string("Serial::waitForTimeout: select(): ")+strerror(errno) );
     }
     
     return 0;
 }
 
 
-//TODO: Duncan can we ditch the un-needed length field (ignore_this_field)?
 int 
-Serial::writeString(const char *str, int ignore_this_field)
+Serial::writeString(const char *str)
 {
-    (void) ignore_this_field;
-
     if ( debugLevel_ > 0 )
         cout<<"TRACE(serial.cpp): writeString()" << endl;
 
@@ -615,192 +710,39 @@ Serial::writeString(const char *str, int ignore_this_field)
 }
 
 
-void
-Serial::showStatus(std::string identify){
+std::string
+Serial::getStatusString()
+{
     struct termios status;
     if(tcgetattr(portFd_, &status) == -1)
     {
         close();
-        throw SerialException( std::string(identify + "tcgetattr():")+strerror(errno) );
+        throw SerialException( std::string("Serial::getStatusString(): tcgetattr():")+strerror(errno) );
     }
 
-    cout << endl << identify << " Device " << dev_ << " Status:-" << endl;
-    cout << "In baud_rate: " << iBaudrate(cfgetispeed(&status)) 
+    stringstream ss;
+    ss << endl << " Device " << dev_ << " Status:-" << endl;
+    ss << "In baud_rate: " << iBaudrate(cfgetispeed(&status)) 
          << " Out baud_rate: " << iBaudrate(cfgetospeed(&status)) << endl;
-    cout << status;
+    ss << status;
     
-    showFdState();
-}
-
-
-//TODO This was supposed to be in serialutil but I couldn't get it to
-//compile (Duncan)
-//Allow streaming of the term status structure type
-std::ostream &operator<<( std::ostream &s, struct termios &stat ){
-
-    s.setf(ios::hex,ios::basefield);
-    s.fill('0');
-
-    s << "c_iflag -> 0x"  << setw(4) <<  stat.c_iflag << endl;
-    s << "c_oflag -> 0x"  << setw(4) <<  stat.c_oflag << endl;
-    s << "c_cflag -> 0x"  << setw(4) <<  stat.c_cflag << endl;
-    s << "c_lflag -> 0x"  << setw(4) <<  stat.c_lflag << endl;
-
-    s << "c_cc_array ->" << endl;
-    s << "VINTR 0x"   << setw(2) <<  static_cast<int>(stat.c_cc[VINTR])  
-      << ", VQUIT 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VQUIT]) 
-      << ", VERASE 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VERASE]) 
-      << ", VKILL 0x"  << setw(2) <<  static_cast<int>(stat.c_cc[VKILL]) << endl ;
-    s << "VEOF 0x"   << setw(2) <<  static_cast<int>(stat.c_cc[VEOF])
-      << ", VEOL 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VEOL])
-      << ", VEOL2 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VEOL2]) 
-      << ", VSTART 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VSTART]) << endl ;
-    s << "VSTOP 0x"   << setw(2) <<  static_cast<int>(stat.c_cc[VSTOP])
-      << ", VSUSP 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VSUSP])
-      << ", VREPRINT 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VREPRINT])
-      << ", VLNEXT 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VLNEXT]) << endl;
-    s << "VMIN 0x" << setw(2) <<  static_cast<int>(stat.c_cc[VMIN])
-      << ", VTIME 0x"   << setw(2) <<  static_cast<int>(stat.c_cc[VTIME]) << endl;
-   
-
-    s << "c_iflag, Bits set" << endl;
-    if (stat.c_iflag & IGNBRK){ s << "IGNBRK,";}
-    if (stat.c_iflag & BRKINT){ s << "BRKINT,";}
-    if (stat.c_iflag & IGNPAR){ s << "IGNPAR,";}
-    if (stat.c_iflag & PARMRK){ s << "PARMRK,";}
-    if (stat.c_iflag & INPCK){ s << "INPCK,";}
-    if (stat.c_iflag & ISTRIP){ s << "ISTRIP,";}
-    if (stat.c_iflag & INLCR){ s << "INLCR,";}
-    if (stat.c_iflag & IGNCR){ s << "IGNCR,";}
-    if (stat.c_iflag & ICRNL){ s << "ICRNL,";}
-    if (stat.c_iflag & IUCLC){ s << "IUCLC,";}
-    if (stat.c_iflag & IXON){ s << "IXON,";}
-    if (stat.c_iflag & IXANY){ s << "IXANY,";}
-    if (stat.c_iflag & IXOFF){ s << "IXOFF,";}
-    if (stat.c_iflag & IMAXBEL){ s << "IMAXBEL,";}
-    s << endl;
-
-    s << "c_oflag, Bits set" << endl;
-    if (stat.c_oflag & OPOST){ s << "OPOST,";}
-    if (stat.c_oflag & OLCUC){ s << "OLCUC,";}
-    if (stat.c_oflag & ONLCR){ s << "ONLCR,";}
-    if (stat.c_oflag & OCRNL){ s << "OCRNL,";}
-    if (stat.c_oflag & ONOCR){ s << "ONOCR,";}
-    if (stat.c_oflag & ONLRET){ s << "ONLRET,";}
-    if (stat.c_oflag & OFILL){ s << "OFILL,";}
-    if (stat.c_oflag & OFDEL){ s << "OFDEL,";}
-    if (stat.c_oflag & NLDLY){ s << "NLDLY,";}
-    if (stat.c_oflag & CRDLY){ s << "CRDLY,";}
-    if (stat.c_oflag & TABDLY){ s << "TABDLY,";}
-    if (stat.c_oflag & BSDLY){ s << "BSDLY,";}
-    if (stat.c_oflag & VTDLY){ s << "VTDLY,";}
-    if (stat.c_oflag & FFDLY){ s << "FFDLY,";}
-    s << endl;
-
-    s << "c_cflag, Bits set" << endl;
-    if (stat.c_cflag & CSTOPB){ s << "CSTOPB,";}
-    if (stat.c_cflag & CREAD){ s << "CREAD,";}
-    if (stat.c_cflag & PARENB){ s << "PARENB,";}
-    if (stat.c_cflag & PARODD){ s << "PARODD,";}
-    if (stat.c_cflag & HUPCL){ s << "HUPCL,";}
-    if (stat.c_cflag & CLOCAL){ s << "CLOCAL,";}
-    if (stat.c_cflag & CIBAUD){ s << "CIBAUD,";}
-    s << endl;
-
-
-    s << "c_lflag, Bits set" << endl;
-    if (stat.c_lflag & ISIG){ s << "ISIG,";}
-    if (stat.c_lflag & ICANON){ s << "ICANON,";}
-    if (stat.c_lflag & PARENB){ s << "PARENB,";}
-    if (stat.c_lflag & XCASE){ s << "XCASE,";}
-    if (stat.c_lflag & NOFLSH){ s << "NOFLSH,";}
-    if (stat.c_lflag & FLUSHO){ s << "FLUSHO,";}
-    if (stat.c_lflag & PENDIN){ s << "PENDIN,";}
-    if (stat.c_lflag & IEXTEN){ s << "IEXTEN,";}
-    if (stat.c_lflag & TOSTOP){ s << "TOSTOP,";}
-    if (stat.c_lflag & ECHO){ s << "ECHO,";}
-    if (stat.c_lflag & ECHOE){ s << "ECHOE,";}
-    if (stat.c_lflag & ECHOPRT){ s << "ECHOPRT,";}
-    if (stat.c_lflag & ECHOKE){ s << "ECHOKE,";}
-    if (stat.c_lflag & NOFLSH){ s << "ECHONL,";}
-    if (stat.c_lflag & FLUSHO){ s << "ECHOCTL,";}
-    s << endl;
-
-    s << endl;
-    s.setf(ios::dec,ios::basefield);
-
-
-}
-
-
-void 
-Serial::showFdState(){
-
     struct serial_struct  serinfo;
     if (ioctl(portFd_, TIOCGSERIAL, &serinfo) < 0) 
     {
         stringstream ss;
-        ss << "error calling 'ioctl(portFd_, TIOCGSERIAL, &serinfo)': "<<strerror(errno);
+        ss << "Serial::getStatusString(): error calling 'ioctl(portFd_, TIOCGSERIAL, &serinfo)': "<<strerror(errno);
         throw SerialException( ss.str() );
     }
-    
-    cout.setf(ios::hex,ios::basefield);
+    ss << serinfo;
 
-    cout << "TIOCGSERIAL:-> " << endl;
-    cout << "Flags: 0x"   << setw(2) << serinfo.flags
-         << ", Type: 0x" << setw(2) << serinfo.type
-         << ", Line: 0x" << setw(2) << serinfo.line << endl;
-    cout << "Port: 0x"   << setw(2) << serinfo.port
-         << ", IRQ: 0x" << setw(2) << serinfo.irq
-         << ", xmit_fifo_size: 0x" << setw(2) << serinfo.xmit_fifo_size << endl;
-    cout << "Baud_base: 0x"   << setw(2) << serinfo.baud_base
-         << ", Custom_divisor: 0x" << setw(2) << serinfo.custom_divisor
-         << ", Io_type: 0x" << setw(2) << serinfo.io_type << endl;
-
-    cout.setf(ios::dec,ios::basefield);
-
+    return ss.str();
 }
-
-//// END DUNCAN REWRITE ////
-
-
-
-int 
-Serial::write(const void *buf, size_t count)
-{
-    if ( debugLevel_ > 0 )
-        cout<<"TRACE(serial.cpp): write()" << endl;
-
-    if ( count == 0 )
-        throw SerialException( "Serial::write() was called with zero bytes" );
-
-    int put;
-    put = ::write(portFd_, buf, count);
-    if ( put < 0 )
-    {
-        throw SerialException( string("Serial::write(): ")+strerror(errno) );
-    }
-    else if ( put == 0 )
-    {
-        throw SerialException( "Serial::write(): ::write() returned 0" );
-    }
-    if ( debugLevel_ > 1 )
-    {
-        cout<<"TRACE(serial.cpp): wrote " << put << " bytes" << endl;
-    }
-
-    return put;
-}
-
-
-
-
 
 
 void 
 Serial::flush()
 {
-    int ret = tcflush(portFd_,TCIOFLUSH);
+    ssize_t ret = tcflush(portFd_,TCIOFLUSH);
     if ( ret < 0 )
     {
         throw SerialException( std::string("Serial::flush(): ")+strerror(errno) );
@@ -817,237 +759,30 @@ Serial::drain()
     }
 }
 
-
-
-
-#endif
-
-#ifdef __QNX__
-
-void
-Serial::setBaudRate(int baud)
-{
-    int ret;
-	int c;
-
-	ret = cfsetispeed( &serialOptions_, (speed_t) baud );
-	if ( ret<0 )
-	{
-        throw SerialException( std::string("Serial::setBaudRate: ")+strerror(errno) );
-	}
-	
-	ret = cfsetospeed( &serialOptions_, (speed_t) baud );
-	if ( ret<0 )
-	{	
-        throw SerialException( std::string("Serial::setBaudRate: ")+strerror(errno) );
-	}
-	
-    ret = tcsetattr( portFd_, TCSANOW, &serialOptions_ ) ; 
-	if ( ret<0 )
-	{	
-        throw SerialException( std::string("Serial::setBaudRate: ")+strerror(errno) );
-	}
-
-    ret = tcgetattr( portFd_, &serialOptions_ ) ;
-	if ( ret<0 )
-	{	
-        throw SerialException( std::string("Serial::setBaudRate: ")+strerror(errno) );
-	}
- 
- 	// c = (int)cfgetospeed( &serialOptions_ ) ;
-    cfgetospeed( &serialOptions_ ) ;
-}
-
-// flags are not used here
-void 
-Serial::open(const int flags)
-{
-	int ret;
-	int baud = 9600;
- 
-    // argument to modem_open requires a non_const pointer
-	portFd_ = modem_open( const_cast<char*>(dev_.c_str()), baud ) ;
-	if( portFd_ < 0)
-	{  
-        printf("ERROR(serial.c): Could not open serial device\n");
-        throw SerialException( "ERROR(serial.c): Could not open serial device." );
-	} 
-
-	ret = tcgetattr( portFd_, &serialOptions_ ) ;
-	
-	serialOptions_.c_cflag = CS8|CREAD|HUPCL|CLOCAL ;  //|IHFLOW 
-	serialOptions_.c_lflag =IEXTEN ;
-	serialOptions_.c_oflag =0 ;
-	serialOptions_.c_iflag = IGNBRK |  IGNPAR ;  //IGNCR |
-
-	ret = tcsetattr( portFd_, TCSANOW, &serialOptions_ ) ;
-}
-
-
 int 
-Serial::read(void *buf, size_t count)
+Serial::write(const void *buf, int count)
 {
-	throw SerialException("WARNING(serial.cpp::read()): NOT IMPLEMENTED YET FOR QNX");
-}
+    if ( debugLevel_ > 0 )
+        cout<<"TRACE(serial.cpp): write()" << endl;
 
-int 
-Serial::readLine(void *buf, size_t count, char termchar)
-{
-    throw SerialException("WARNING(serial.cpp::read_line()): NOT IMPLEMENTED YET FOR QNX");
-}
+    if ( count == 0 )
+        throw SerialException( "Serial::write() was called with zero bytes" );
 
-int 
-Serial::readFull(void *buf, size_t count)
-{
-    // these timeouts and elapsedTime do not have to be accurate so can just
-	// use ints
-	int timeOut = timeoutSec_ + timeoutUSec_/1000000;
-	// cout << "timeout: " << timeOut << endl;
-
-	// total time elapsed while trying to read from serial device
-	int elapsedTime;
-
-	// total number of bytes read 
-	int got = 0;
-    
-	// number of bytes read in one readcond() function call 
-	int ret = 0;
-	
-    // maximum number of bytes to read in one readcond() function call
-	int max = 1000;
-
-	// number of bytes in each chunk that "count" is split into
-    int countChunk;
-	
-    // total bytes left to read
-	int bytesLeft;
-	
-    struct timespec tStart;
-    struct timespec tEnd;
- 
-	clock_gettime( CLOCK_MONOTONIC, &tStart );
-
-	while (got < count)
-	{
- 	    // offset to the start of the buffer
-		char* offset=(char*)buf+got;
-    
-        // We need to read in small chunks for certain serial managers.
-		// This is a little more inefficient than reading all bytes at once 
-		
-        bytesLeft = count-got;
-		
-		if ( bytesLeft>max )
-		{
-		    countChunk = max; 
-		}
-		else
-		{
-			countChunk = bytesLeft;
-		}
-		
-		ret = ::readcond(portFd_, (void*)offset, countChunk, countChunk, timeOut, timeOut );
-		// cout << "Read " << ret << " bytes out of " << count  << " bytes" << endl;
-		got += ret;
-
- 		clock_gettime( CLOCK_MONOTONIC, &tEnd );
-        // cout << "TIMEOUT: " << tEnd.tv_sec-tStart.tv_sec << endl;
-		elapsedTime = tEnd.tv_sec-tStart.tv_sec + (tEnd.tv_nsec-tStart.tv_nsec)/1000000000; 
-		
-		if ( elapsedTime > timeOut*5 )
-		{
-			break;
-		}
-		
-	}
-	
-	//int n = readcond(portFd_, buf, count, count, timeOut, timeOut);
-	// cout << "got: " << got << endl;
-	return(got) ;
-}
-
-int 
-Serial::bytesAvailable()
-{	
-    int ret,n_read;
-    ret = ioctl(portFd_,FIONREAD,&n_read);
-
-    if( ret==-1 )
-	{
-        throw SerialException( std::string("Serial::bytesAvailable: ")+strerror(errno) );
-    }
-    return n_read;
-
-// return( tcischars(portFd_) );	 
-}
-
-int 
-Serial::bytesAvailableWait()
-{
-    fd_set rfds;
-    struct timeval tv;
-    FD_ZERO(&rfds);
-    FD_SET(portFd_, &rfds);
-    tv.tv_sec = timeoutSec_;
-    tv.tv_usec = timeoutUSec_;
-    int selval = select(portFd_+1, &rfds, NULL, NULL, &tv);
-    if(selval==0)
-    {
-        //printf("select timed out no data\n");
-        return -1;
-    }
-    if(selval<0){
-        //perror("select()");
-        throw SerialException( string("Serial::bytesAvailableWait(): select(): ")+strerror(errno) );
-    }
-    return bytesAvailable();
-}
-
-int 
-Serial::write(const void *buf, size_t count)
-{
-    ssize_t put;
-	
-	put = ::write( portFd_, buf, count );	
-	// *nw = n ;
+    ssize_t put = ::write(portFd_, buf, count);
     if ( put < 0 )
     {
         throw SerialException( string("Serial::write(): ")+strerror(errno) );
     }
-    return put ;
-}
-
-int 
-Serial::writeString(const char *str, size_t maxlen)
-{
-    int toput=strnlen(str, maxlen);
-    int put;
-    put = ::write(portFd_, str, toput);
-    if ( put < 0 )
+    else if ( put == 0 )
     {
-        throw SerialException( string("Serial::writeString(): ")+strerror(errno) );
+        throw SerialException( "Serial::write(): ::write() returned 0" );
     }
+    if ( debugLevel_ > 1 )
+    {
+        cout<<"TRACE(serial.cpp): wrote " << put << " bytes" << endl;
+    }
+
     return put;
 }
-
-void 
-Serial::flush()
-{
-	tcflush(portFd_,TCIOFLUSH);
-}
-
-void
-Serial::drain()
-{
-    // wait till all output sent
-    if(tcdrain(portFd_))
-    {
-        throw SerialException( string("Serial::drain():tcdrain(): ")+strerror(errno) );
-    }
-}
-
-
-#endif
-
 
 } // namespace

@@ -33,7 +33,11 @@ public:
 };
 
 //!
-//! @brief Encapsulates a serial port.  
+//! @brief Encapsulates a serial port.
+//!
+//! This class hard-codes some options, such as:
+//!  - 8 data bits
+//!  - no handshaking
 //!
 //! Warning: this thing is _NOT_ thread-safe.
 //!
@@ -47,7 +51,7 @@ public:
     //! Opens a device @ref dev.
     //! Throws exceptions on error.
     //! Note that a default debugLevel other than 0 can be passed to the constructor
-    Serial( const std::string &dev, int baudRate, bool blockingMode, int debuglevel = 0 );
+    Serial( const std::string &dev, int baudRate, bool enableTimeouts, int debuglevel = 0 );
 
     //! Destructor closes serial port
     ~Serial();
@@ -58,40 +62,40 @@ public:
     //! Sets the baud rate. Flushes any data.
     void setBaudRate(int baud);
 
-    //! Sets timeout for non-blocking operations.
-    void setTimeout(int sec, int usec) { timeoutSec_=sec; timeoutUSec_=usec; };
+    //! Sets timeout (timeouts must be enabled)
+    void setTimeout(int sec, int usec);
 
     //! Reads up to @ref count bytes into buffer @ref buf.
     //! Returns the number of bytes read.
     //! Will never return <0 -- throws exceptions instead.
-    //! In blocking mode, blocks till it gets something.
-    //! In non-blocking mode, throws an exception if data isn't available.
-    int read(void *buf, size_t count);
+    //! If timeouts are not enabled, blocks till it gets something.
+    //! If timeouts are enabled, throws an exception if data isn't available.
+    int read(void *buf, int count);
 
     //! Tries to read exactly @ref count bytes into @ref buf.  
     //! Returns the number of bytes read, or throws an exception.
     //!
-    //! In blocking mode we might block forever, waiting for the number of bytes we want or an error.
+    //! If timeouts are not enabled we might block forever, waiting for the number of bytes we want or an error.
     //!
-    //! In non-blocking mode we won't block more than the timeout specified.
+    //! If timeouts are enabled we won't block more than the timeout specified.
     //! Returns -1 if it timed out.
     //! NOTE: The timeout applies for each individual read() call.  We might have to make lots of them,
     //!       so the total time for which this function blocks might be longer than the specified timeout.
     //!
-    int readFull(void *buf, size_t count);
+    int readFull(void *buf, int count);
 
     //! Reads a line of data up to @ref count bytes-1 (including @ref termchar), terminated by @ref termchar.
     //! Returns the number of bytes read.
     //! After reading the line then the string will be NULL terminated.
     //!
-    //! In blocking mode we might block forever, waiting for the number of bytes we want or an error.
+    //! If timeouts are not enabled we might block forever, waiting for the number of bytes we want or an error.
     //!
-    //! In non-blocking mode we won't block more than the timeout specified.
+    //! If timeouts are enabled we won't block more than the timeout specified.
     //! Returns -1 if it timed out.
     //! NOTE: The timeout applies for each individual read() call.  We might have to make lots of them,
     //!       so the total time for which this function blocks might be longer than the specified timeout.
     //!
-    int readLine(void *buf, size_t count, char termchar='\n');
+    int readLine(void *buf, int count, char termchar='\n');
 
     //! Returns the number of bytes available for reading (non-blocking).
     int bytesAvailable();
@@ -103,16 +107,13 @@ public:
     int bytesAvailableWait();
 
     //! Writes some data.  Returns the number of bytes written.
-    int write(const void *buf, size_t count);
+    int write(const void *buf, int count);
 
     //! Writes a ('\0'-terminated) string. 
     //! Returns the number of bytes written.
-    //! NOTE:- this call originally was written to take an extra length
-    //! field this is unused and should be ignored!
-    //TODO Can we throw away the unused field?
-    int writeString(const char *buf, int ignore_this_field = -1);
-    inline int writeString(std::string &s, int ignore_this_field = -1){
-        return writeString(s.c_str(),ignore_this_field);
+    int writeString(const char *buf);
+    inline int writeString(std::string &s) {
+        return writeString(s.c_str());
     }
 
     //! Flushs both input and output buffers.
@@ -125,15 +126,17 @@ public:
     //! This gives direct access to the file descriptor: be careful with this...
     int fileDescriptor() { return portFd_; }
 
-    //! Print some diagnostic information on the current status of the port
-    //! Takes a string to 'identify' which helps to show where call made
-    void showStatus(std::string identify);
+    //! Print some diagnostic information about the current status of the port to cout.
+    std::string getStatusString();
 
 
 private:
 
-    // Utility function to do the blocking for the file accesses
-    int doBlocking(void);
+    // Utility function to wait up to the timeout for data to appear.
+    // Returns:
+    //  -1: timed out
+    //   0: data available
+    int waitForTimeout(void);
 
     // Opens a device @ref dev.
     void open(int flags=0);
@@ -141,27 +144,17 @@ private:
     // Won't throw exceptions.
     void close();
 
-    int readFullBlocking(void *buf, size_t count);
-    int readFullNonblocking(void *buf, size_t count);
-
-    void showFdState();
+    int readFullBlocking(void *buf, int count);
+    int readFullWithTimeout(void *buf, int count);
 
     const std::string dev_;
-//    struct termios serialOptions_;
     int portFd_;
     int timeoutSec_;
     int timeoutUSec_;
-    bool blockingMode_;
+    bool timeoutsEnabled_;
     
     int debugLevel_;
 };
-
-
-//TODO This was supposed to be in serialutil but I couldn't get it to
-//compile (Duncan)
-std::ostream &operator<<( std::ostream &s, struct termios &stat );
-
-
 
 }
 

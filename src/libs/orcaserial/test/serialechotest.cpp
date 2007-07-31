@@ -32,8 +32,8 @@ int main( int argc, char **argv )
         exit(1);
     }
 
-    const bool isBlockingMode = true;
-    orcaserial::Serial serial( argv[1], atoi(argv[2]), isBlockingMode );
+    const bool enableTimeouts = true;
+    orcaserial::Serial serial( argv[1], atoi(argv[2]), enableTimeouts );
     serial.setTimeout( 1, 0 );
 
     std::vector<unsigned char> data;
