@@ -70,7 +70,7 @@ public:
     //! Will never return <0 -- throws exceptions instead.
     //! If timeouts are not enabled, blocks till it gets something.
     //! If timeouts are enabled, throws an exception if data isn't available.
-    int read(void *buf, int count);
+    ssize_t read(void *buf, int count);
 
     //! Tries to read exactly @ref count bytes into @ref buf.  
     //! Returns the number of bytes read, or throws an exception.
@@ -82,7 +82,7 @@ public:
     //! NOTE: The timeout applies for each individual read() call.  We might have to make lots of them,
     //!       so the total time for which this function blocks might be longer than the specified timeout.
     //!
-    int readFull(void *buf, int count);
+    ssize_t readFull(void *buf, int count);
 
     //! Reads a line of data up to @ref count bytes-1 (including @ref termchar), terminated by @ref termchar.
     //! Returns the number of bytes read.
@@ -95,7 +95,7 @@ public:
     //! NOTE: The timeout applies for each individual read() call.  We might have to make lots of them,
     //!       so the total time for which this function blocks might be longer than the specified timeout.
     //!
-    int readLine(void *buf, int count, char termchar='\n');
+    ssize_t readLine(void *buf, int count, char termchar='\n');
 
     //! Returns the number of bytes available for reading (non-blocking).
     int bytesAvailable();
@@ -107,11 +107,11 @@ public:
     int bytesAvailableWait();
 
     //! Writes some data.  Returns the number of bytes written.
-    int write(const void *buf, int count);
+    ssize_t write(const void *buf, int count);
 
     //! Writes a ('\0'-terminated) string. 
     //! Returns the number of bytes written.
-    int writeString(const char *buf);
+    ssize_t writeString(const char *buf);
     inline int writeString(std::string &s) {
         return writeString(s.c_str());
     }
@@ -134,18 +134,15 @@ private:
 
     // Utility function to wait up to the timeout for data to appear.
     // Returns:
-    //  -1: timed out
-    //   0: data available
-    int waitForTimeout(void);
+    //  TIMED_OUT: timed out
+    //  GOT_DATA : data available
+    int waitForDataOrTimeout(void);
 
     // Opens a device @ref dev.
     void open(int flags=0);
 
     // Won't throw exceptions.
     void close();
-
-    int readFullBlocking(void *buf, int count);
-    int readFullWithTimeout(void *buf, int count);
 
     const std::string dev_;
     int portFd_;

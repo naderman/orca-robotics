@@ -43,6 +43,10 @@ namespace orcaserial {
 
     namespace {
 
+        //Used for calls to waitForDataOrTimeout()
+        enum{TIMED_OUT=-1, GOT_DATA};
+
+
         // Converts an integer baud-rate into a c-style '#define'd baudrate
         int cBaudrate( int baudRate )
         {
@@ -339,7 +343,9 @@ Serial::setTimeout(int sec, int usec)
 { 
     if ( !timeoutsEnabled_ )
     {
-        throw SerialException( "setTimeout() called but timeouts not enabled!" );
+        stringstream s;
+        s << "setTimeout() called for port" << dev_ <<" but timeouts not enabled!";
+        throw SerialException( s.str() );
     }
 
     timeoutSec_=sec; timeoutUSec_=usec; 
@@ -495,7 +501,7 @@ Serial::open(int flags)
 
 }
 
-int 
+ssize_t
 Serial::read(void *buf, int count)
 {
     if ( debugLevel_ > 0 )
@@ -509,75 +515,49 @@ Serial::read(void *buf, int count)
     return got;
 }
 
-int
-Serial::readFullBlocking(void *buf, int count)
+
+
+ssize_t
+Serial::readFull(void *buf, int count)
 {
     if ( debugLevel_ > 0 )
-        cout<<"TRACE(serial.cpp): readFullBlocking(): count=" << count << endl;
+        cout<<"TRACE(serial.cpp): readFull(): count=" << count << endl;
+
+    char* bufPtr = static_cast<char*>(buf);
 
     ssize_t got=0;
-    while( got < count )
-    {
-        char *offset=(char*)buf+got;
-        ssize_t ret = read( offset, count-got );
-        got += ret;
-    }
-    return got;
-}
-
-int
-Serial::readFullWithTimeout(void *buf, int count)
-{
-    if ( debugLevel_ > 0 )
-        cout<<"TRACE(serial.cpp): readFullWithTimeout(): count=" << count << endl;
-
-    int got=0;
     while ( got < count ) 
     {
-        char *offset=(char*)buf+got;
+        char *offset = bufPtr + got;
         ssize_t ret = ::read(portFd_, offset, count-got);
         if ( ret >= 0 )
         {
             got += ret;
         }
-        else if ( ret == -1 && errno == EAGAIN )
+    
+        else if (timeoutsEnabled_ && (errno == EAGAIN) )
         {
-            // No data available yet -- if timeout is set we will wait
-            fd_set rfds;
-            struct timeval tv;
-            FD_ZERO(&rfds);
-            FD_SET(portFd_, &rfds);
-            tv.tv_sec = timeoutSec_;
-            tv.tv_usec = timeoutUSec_;
-            int selval = select(portFd_+1, &rfds, NULL, NULL, &tv);
-            if ( selval == 0 )
+            if ( waitForDataOrTimeout() == TIMED_OUT )
             {
-                // select timed out: no data, or an error occured
+                // select timed out: no data
                 return -1;
             }
-            else if ( selval < 0 )
-            {
-                throw SerialException( std::string("Serial::readFullWithTimeout: ")+strerror(errno) );
-            }
         }
+        
         else
         {
             throw SerialException( std::string("Serial::readFullWithTimeout: read(): ")+strerror(errno) );
         }
+   
     }
-    return got;
+
+    return got; //The number of bytes that we read.
 }
 
-int 
-Serial::readFull(void *buf, int count)
-{
-    if ( !timeoutsEnabled_ )
-        return readFullBlocking( buf, count );
-    else
-        return readFullWithTimeout( buf, count );
-}
 
-int 
+
+
+ssize_t 
 Serial::readLine(void *buf, int count, char termchar)
 {
     if ( debugLevel_ > 0 ){
@@ -588,6 +568,7 @@ Serial::readLine(void *buf, int count, char termchar)
             cout << "timeouts not enabled"<<endl;
         }
     }
+
     //There must be at least room for a terminating char and NULL terminator!
     assert (count >= 2);
 
@@ -607,17 +588,16 @@ Serial::readLine(void *buf, int count, char termchar)
         {
             *(dataPtr++) = nextChar; //got data let's store it...
         }
-        else if ( ret < 0 )
+        else
         {
             //If timeouts enabled and no data, wait and then go again
             if( timeoutsEnabled_ &&  (ret == -1) && (errno == EAGAIN) )
             {
-                if(waitForTimeout() != -1)
+                if(waitForDataOrTimeout() == GOT_DATA)
                 {
-                    // timed out
                     continue;
                 }else{
-                    *dataPtr = 0x00; //terminate string just incase it's used anyway
+                    *dataPtr = 0x00; //Timed out. terminate string just incase it's used anyway
                     return -1;
                 }
             }
@@ -625,7 +605,7 @@ Serial::readLine(void *buf, int count, char termchar)
             //If we get here then it was a more serious error
             throw SerialException( std::string( "Serial::readLine(): ")+strerror(errno) );
         }
-
+    
     } while (nextChar != termchar);
 
     // It's a string. It must be NULL terminated...
@@ -637,10 +617,11 @@ Serial::readLine(void *buf, int count, char termchar)
     //TODO: Duncan! I think that this should cope with any <CR><LF> pair gracefully!
 }
 
-int 
+
+ssize_t 
 Serial::bytesAvailable()
 {
-    int n_read;
+    ssize_t n_read;
     int ret = ioctl(portFd_,FIONREAD,&n_read);
 
     if(ret==-1)
@@ -650,10 +631,10 @@ Serial::bytesAvailable()
     return n_read;
 }
 
-int 
+ssize_t 
 Serial::bytesAvailableWait()
 {
-    if ( waitForTimeout() == -1){
+    if ( waitForDataOrTimeout() == TIMED_OUT){
         return -1;
     }
 
@@ -662,7 +643,7 @@ Serial::bytesAvailableWait()
 
 
 int 
-Serial::waitForTimeout()
+Serial::waitForDataOrTimeout()
 {
     fd_set rfds;
     struct timeval tv;
@@ -674,18 +655,18 @@ Serial::waitForTimeout()
     if(selval==0)
     {
         // select timed out: no data
-        return -1;
+        return TIMED_OUT;
     }
     if(selval<0)
     {
         throw SerialException( std::string("Serial::waitForTimeout: select(): ")+strerror(errno) );
     }
     
-    return 0;
+    return GOT_DATA;
 }
 
 
-int 
+ssize_t 
 Serial::writeString(const char *str)
 {
     if ( debugLevel_ > 0 )
@@ -759,7 +740,7 @@ Serial::drain()
     }
 }
 
-int 
+ssize_t 
 Serial::write(const void *buf, int count)
 {
     if ( debugLevel_ > 0 )
