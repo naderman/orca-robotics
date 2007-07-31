@@ -240,13 +240,12 @@ has been tested with driver version 6.0 on Debian / Ubuntu systems. Download the
 This should
 work for PCMCIA, USB, PCI cards etc, though only the PCMCIA version has been tested!
 
-@par Concise Debian Instructions
+@par Concise Debian Instructions (AlexB: Only half-finished)
 
 The following should work on Debian:
 
 @verbatim
 $ sudo apt-get install linux-kernel-headers linux-source
-$ 
 @endverbatim
 
 
