@@ -22,7 +22,7 @@
 #define ERROR_MACROS_HPP_
 
 #if defined(STRINGIZE_HELPER) || defined(STRINGIZE) || defined(ERROR_INFO)
-#   error OrcaIceUtil error macros have already been defined elsewhere 
+#   error OrcaIce error macros have already been defined elsewhere 
 #endif
 
 #define STRINGIZE_HELPER(exp) #exp

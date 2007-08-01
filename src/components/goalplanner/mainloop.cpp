@@ -142,7 +142,8 @@ MainLoop::initNetwork()
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
     }
 
-    //create a callback to receive localisation data
+    // create a callback to receive localisation data
+    // TODO: AlexB: should we really be subscribing for localise data?  Probably it's sufficient to just poll as necessary??
     Ice::ObjectPtr consumer = new Localise2dConsumerI(localiseDataBuffer_);
     localiseConsumerPrx_ =
             orcaice::createConsumerInterface<orca::Localise2dConsumerPrx>( context_, consumer );

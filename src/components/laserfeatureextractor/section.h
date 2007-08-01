@@ -149,9 +149,6 @@ void extractLines( std::vector<Section> &sections, int minPointsInLine );
 // Sets its index and the distance, or negative values if non found.
 // Returns true if a break-point was found.
 //
-// TODO: This algorithm has problems...  In an 'L'-shaped segment,
-//       it chooses to break near the lower-right rather than the lower-left.
-//
 bool findBreakPoint( const std::vector<SectionEl> &sectionElements,
                      double eigVectX,
                      double eigVectY,

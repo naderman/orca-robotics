@@ -174,7 +174,7 @@ fitLine( const std::vector<SectionEl> &elements,
          double &eigVectX, double &eigVectY, double &c )
 {
     assert( elements.size() > 2 );
-    // TODO: range-weight this calculation?
+    // AlexB: Not sure... Should we range-weight this calculation?
 
     int n = 2;
     int m = elements.size();
