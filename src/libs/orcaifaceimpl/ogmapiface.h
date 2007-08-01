@@ -36,7 +36,7 @@ public:
     ~OgMapIface();
 
     // Local calls:
-    //! may throw orcaice::Exceptions
+    //! Sets up interface and connects to IceStorm. May throw orcaice::Exceptions.
     void initInterface();
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm

@@ -30,13 +30,11 @@ class ProxiedConsumer : public Consumer<ConsumerType,ConsumerPrxType,ObjectType>
 public:
 
     ProxiedConsumer( const orcaice::Context &context )
-        : Consumer<ConsumerType,ConsumerPrxType,ObjectType>(context)
-        {}
-    void setData( const ObjectType& data )
-        {
-            proxy_.set( data );
-        }
+        : Consumer<ConsumerType,ConsumerPrxType,ObjectType>(context) {}
 
+    void setData( const ObjectType& data ) { proxy_.set( data ); }
+
+    //! Returns reference to local proxy.
     orcaice::Proxy<ObjectType> &proxy() { return proxy_; }
 
 private:
