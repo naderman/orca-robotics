@@ -25,8 +25,6 @@ namespace {
     void
     lock_dev(const char *dev, int lpid)
     {
-        cout<<"TRACE(lockfile.cpp): lock_dev" << endl;
-
         FILE *fd;
         char  pbuf[260], lbuf[260];
         int   ret;
@@ -34,13 +32,11 @@ namespace {
         char *devBase = strrchr(dev, '/')+1;
         if ( devBase == NULL )
         {
-            throw LockfileException( string("Expected to find '/' somewhere in device name: ")+dev );
+            throw LockFileException( string("Expected to find '/' somewhere in device name: ")+dev );
         }
 
         sprintf(pbuf, "%s/PID..%d", LOCK_DIR, getpid());
         sprintf(lbuf, "%s/LCK..%s", LOCK_DIR, devBase);
-
-        cout<<"TRACE(lockfile.cpp): pbuf: " << pbuf << ", lbuf: " << lbuf << endl;
 
         // Create a file with our PID
         fd = fopen(pbuf, "w");
@@ -48,14 +44,14 @@ namespace {
         {
             stringstream ss;
             ss << "Failed to open file '"<<pbuf<<"' for writing: "<<strerror(errno);
-            throw LockfileException( ss.str() );
+            throw LockFileException( ss.str() );
         }
         fprintf(fd, "%10d\n", lpid);
         ret = fclose(fd);
         if ( ret != 0 )
         {
             stringstream ss; ss << "Problem closing lockfile '"<<pbuf<<"': " << strerror(errno);
-            throw LockfileException( ss.str() );
+            throw LockFileException( ss.str() );
         }
 
         // Create a file for the device
@@ -68,7 +64,7 @@ namespace {
                 unlink(pbuf);
                 stringstream ss;
                 ss << "Couldn't open file '"<<lbuf<<"' for reading: " << strerror(errno);
-                throw LockfileException( ss.str() );
+                throw LockFileException( ss.str() );
             }
 
             // Read the PID of the locker
@@ -79,13 +75,13 @@ namespace {
             if ( ret != 1 )
             {
                 unlink(pbuf);
-                throw LockfileException( "Couldn't read PID of locker" );
+                throw LockFileException( "Couldn't read PID of locker" );
             }
             if ( pidOfLocker <= 0 )
             {
                 unlink(pbuf);
                 stringstream ss; ss << "Invalid PID of locker: " << pidOfLocker;
-                throw LockfileException( ss.str() );
+                throw LockFileException( ss.str() );
             }
 
             if ( pidOfLocker == lpid )
@@ -93,7 +89,7 @@ namespace {
                 // I'm the locker ?!?!
                 unlink(pbuf);
                 stringstream ss; ss << "device " << dev << " is already locked by me!";
-                throw LockfileException( ss.str() );
+                throw LockFileException( ss.str() );
             }
 
             // Look for the process which owns the lock
@@ -101,7 +97,7 @@ namespace {
             {
                 unlink(pbuf);
                 stringstream ss; ss << "device " << dev << " is already locked by process PID " << pidOfLocker;
-                throw LockfileException( ss.str() );
+                throw LockFileException( ss.str() );
             }
             else
             {
@@ -111,7 +107,7 @@ namespace {
                 {
                     unlink(pbuf);
                     stringstream ss; ss << "Couldn't unlink " << lbuf << ": " << strerror(errno);
-                    throw LockfileException( ss.str() );
+                    throw LockFileException( ss.str() );
                 }
 
                 // Now create our own
@@ -120,7 +116,7 @@ namespace {
                 {
                     unlink(pbuf);
                     stringstream ss; ss << "Couldn't link("<<pbuf<<","<<lbuf<<"): " << strerror(errno);
-                    throw LockfileException( ss.str() );
+                    throw LockFileException( ss.str() );
                 }
             }
         }        
@@ -130,7 +126,7 @@ namespace {
         {
             stringstream ss;
             ss << "Couldn't unlink pbuf: " << strerror(errno);
-            throw LockfileException( ss.str() );
+            throw LockFileException( ss.str() );
         }
     }
 

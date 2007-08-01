@@ -32,6 +32,8 @@ public:
     virtual const char* what() const throw() { return message_.c_str(); }
 };
 
+class LockFile;
+
 //!
 //! @brief Encapsulates a serial port.
 //!
@@ -47,11 +49,15 @@ class Serial
 {
 public:
 
-    //! Constructor.  
     //! Opens a device @ref dev.
     //! Throws exceptions on error.
-    //! Note that a default debugLevel other than 0 can be passed to the constructor
-    Serial( const std::string &dev, int baudRate, bool enableTimeouts, int debuglevel = 0 );
+    //! If useLockFile is set to true, Serial will use the file-system to 
+    //! prevent concurrent access to a serial device by multiple instances of Serial.
+    Serial( const std::string &dev,
+            int  baudRate,
+            bool enableTimeouts,
+            int  debuglevel = 0,
+            bool useLockFile = true );
 
     //! Destructor closes serial port
     ~Serial();
@@ -151,6 +157,8 @@ private:
     bool timeoutsEnabled_;
     
     int debugLevel_;
+
+    LockFile *lockFile_;
 };
 
 }

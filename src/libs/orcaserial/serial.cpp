@@ -20,6 +20,7 @@
 #include <sstream>
 #include <assert.h>
 #include "serial.h"
+#include <orcaserial/lockfile.h>
 
 #if __linux
 #  include <linux/serial.h>
@@ -312,12 +313,14 @@ namespace orcaserial {
 
     }
 
-
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
     
 Serial::Serial( const std::string &dev,
                 int baudRate,
                 bool enableTimeouts,
-                int debuglevel)
+                int debuglevel,
+                bool useLockFile )
     : dev_(dev),
       portFd_(-1),
       timeoutSec_(0),
@@ -325,17 +328,38 @@ Serial::Serial( const std::string &dev,
       timeoutsEnabled_(enableTimeouts),
       debugLevel_(debuglevel)
 {
-    open();
-    setBaudRate( baudRate );
+    if ( useLockFile )
+    {
+        try { 
+            lockFile_ = new LockFile( dev );
+        }
+        catch ( const LockFileException &e )
+        {
+            stringstream ss;
+            ss << "Couldn't get lock for device " << dev << ": " << e.what();
+            throw SerialException( ss.str() );
+        }
+    }
+
+    try {
+        open();
+        setBaudRate( baudRate );
     
-    if(debugLevel_ > 1){
-        cout << "At end of Serial::Serial: " << getStatusString();
+        if(debugLevel_ > 1){
+            cout << "At end of Serial::Serial: " << getStatusString();
+        }
+    }
+    catch ( const SerialException &e )
+    {
+        if ( lockFile_ ) delete lockFile_;
+        throw;
     }
 }
     
 Serial::~Serial()
 {
     close();
+    if ( lockFile_ ) delete lockFile_;
 }
 
 void 

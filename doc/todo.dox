@@ -147,11 +147,13 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - version info printed out on startup (or with --version) now includes project version,
     which could be useful for non-orca projects. (alexm)
 
-- libOrcaSerial (alex b)
+- libOrcaSerial (alex b, duncan)
   - Big overhaul:
     - The interface is substantially different, hopefully more sane
       and consistent and easier to understand.  Plus error checking
-      and reporting is improved.
+      and reporting is improved.  Plus lockfiles have been implemented,
+      to prevent concurrent access to a device from multiple instances
+      of orcaserial.
 
 @par Removed
 

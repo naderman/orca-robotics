@@ -28,7 +28,7 @@ int main( int argc, char **argv )
 {
     if ( argc < 3 )
     {
-        cout << "USAGE: " << argv[0] << " <dev> <baudrate>";
+        cout << "USAGE: " << argv[0] << " <dev> <baudrate>" << endl;
         exit(1);
     }
 
