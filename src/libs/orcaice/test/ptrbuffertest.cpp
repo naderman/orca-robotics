@@ -75,8 +75,8 @@ int main(int argc, char * argv[])
     cout<<"ok"<<endl;
 
     cout<<"testing isEmpty() and size() ... ";
-    if ( buffer.isEmpty() || buffer.size()!=-1 ) {
-        cout<<"failed. expecting a buffer of size -1."<<endl;
+    if ( buffer.isEmpty() || buffer.size()!=3 ) {
+        cout<<"failed. expecting a buffer of size 3."<<endl;
         return EXIT_FAILURE;
     }
     cout<<"ok"<<endl;
@@ -91,8 +91,8 @@ int main(int argc, char * argv[])
         cout<<"failed. should be a non-empty buffer."<<endl;
         return EXIT_FAILURE;
     }
-    if ( buffer.isEmpty() || buffer.size()!=-1 ) {
-        cout<<"failed. expecting a buffer of size -1."<<endl;
+    if ( buffer.isEmpty() || buffer.size()!=3 ) {
+        cout<<"failed. expecting a buffer of size 3."<<endl;
         return EXIT_FAILURE;
     }
     cout<<"ok"<<endl;
@@ -100,7 +100,11 @@ int main(int argc, char * argv[])
     cout<<"testing getAndPop()... ";
     try
     {
-        buffer.getAndPop( data );
+        int size = buffer.size();
+        for ( int i=0; i < size; i++ )
+        {
+            buffer.getAndPop( data );
+        }
     }
     catch ( const orcaice::Exception & )
     {
@@ -108,7 +112,7 @@ int main(int argc, char * argv[])
         return EXIT_FAILURE;
     }
     if ( !buffer.isEmpty() || buffer.size()!=0 ) {
-        cout<<"failed. expecting an empty buffer."<<endl;
+        cout<<"failed. expecting an empty buffer, but size is "<<buffer.size()<<endl;
         return EXIT_FAILURE;
     }
     cout<<"ok"<<endl;
