@@ -222,6 +222,8 @@ std::string toString( const orca::PolarFeature2dDataPtr& );
 //! Converts to string
 std::string toString( const orca::FeatureMap2dDataPtr& );
 //! Converts to string
+std::string toString( const orca::Feature2d& );
+//! Converts to string
 std::string toString( const orca::Twist2d& );
 //! Converts to string
 std::string toString( const orca::Localise2dData& );

@@ -1369,26 +1369,38 @@ toString( const orca::FeatureMap2dDataPtr &obj )
         // I'm not convinced that this is the best way of doing things...
         //
         const orca::Feature2dPtr &f = obj->features[i];
-        s << "  " << i << ": [t"<<f->type<<",p"<<f->pExists<<"] ";
-
-        if ( f->ice_isA( "::orca::CartesianPointFeature2d" ) )
-        {
-            const orca::CartesianPointFeature2d& r = dynamic_cast<const orca::CartesianPointFeature2d&>(*f);
-            s << "("<<r.p.x<<","<<r.p.y<<") ("<<r.c.xx<<","<<r.c.xy<<","<<r.c.yy<<")";
-        }
-        else if ( f->ice_isA( "::orca::CartesianLineFeature2d" ) )
-        {
-            const orca::CartesianLineFeature2d& r = dynamic_cast<const orca::CartesianLineFeature2d&>(*f);
-            s << "(r="<<r.rho<<",a="<<r.alpha*180.0/M_PI<<"deg) ("<<r.c.xx<<","<<r.c.xy<<","<<r.c.yy<<")" << " ("<<r.start.x<<","<<r.start.y<<")->("<<r.end.x<<","<<r.end.y<<")";
-        }
-        else
-        {
-            // Don't really know how to display info about this feature.
-            assert( false );
-        }
-        s << endl;
+        s << "  " << i << ": " << toString(*f) << endl;
     }    
     s << endl;
+    
+    return s.str();
+}
+
+std::string 
+toString( const orca::Feature2d &f )
+{
+    std::ostringstream s;
+
+    //
+    // I'm not convinced that this is the best way of doing things...
+    //
+    s << "[t"<<f.type<<",p"<<f.pExists<<"]";
+
+    if ( f.ice_isA( "::orca::CartesianPointFeature2d" ) )
+    {
+        const orca::CartesianPointFeature2d& r = dynamic_cast<const orca::CartesianPointFeature2d&>(f);
+        s << "("<<r.p.x<<","<<r.p.y<<") ("<<r.c.xx<<","<<r.c.xy<<","<<r.c.yy<<")";
+    }
+    else if ( f.ice_isA( "::orca::CartesianLineFeature2d" ) )
+    {
+        const orca::CartesianLineFeature2d& r = dynamic_cast<const orca::CartesianLineFeature2d&>(f);
+        s << "(r="<<r.rho<<",a="<<r.alpha*180.0/M_PI<<"deg) ("<<r.c.xx<<","<<r.c.xy<<","<<r.c.yy<<")" << " ("<<r.start.x<<","<<r.start.y<<")->("<<r.end.x<<","<<r.end.y<<")";
+    }
+    else
+    {
+        // Don't really know how to display info about this feature.
+        assert( false );
+    }
     
     return s.str();
 }

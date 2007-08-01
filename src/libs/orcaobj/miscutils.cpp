@@ -64,11 +64,7 @@ mlHypothesis( const orca::Localise2dData& obj )
     {
         std::stringstream ss;
         ss << "Dodgy Localise2dDataPtr: " << orcaice::toString(obj);
-        cout << "ERROR(miscutils.cpp): " << ss.str() << endl;
-        assert( false && "dodgy Localise2dDataPtr" );
-        exit(1);
-        // TODO: throw an exception here...
-        //throw orcaice::Exception( ERROR_INFO, ss.str() );
+        throw orcaice::Exception( ERROR_INFO, ss.str() );
     }
 #endif
     return obj.hypotheses[mlI];
@@ -92,11 +88,7 @@ mlHypothesis( const orca::Localise3dData& obj )
     {
         std::stringstream ss;
         ss << "Dodgy Localise3dDataPtr: " << orcaice::toString(obj);
-        cout << "ERROR(miscutils.cpp): " << ss.str() << endl;
-        assert( false && "dodgy Localise3dDataPtr" );
-        exit(1);
-        // TODO: throw an exception here...
-        //throw orcaice::Exception( ERROR_INFO, ss.str() );
+        throw orcaice::Exception( ERROR_INFO, ss.str() );
     }
 #endif
     return obj.hypotheses[mlI];
@@ -145,9 +137,9 @@ saveToFile( const orca::FeatureMap2dDataPtr& fmap, FILE *f )
         }
         else
         {
-            // Don't really know how to display info about this feature.
-            cout<<"TRACE(objutils.cpp): TODO: saveToFile: Deal with other feature types" << endl;
-            exit(1);
+            stringstream ss;
+            ss << "Don't know how to save feature to file: " << orcaice::toString( *feature );
+            throw orcaice::Exception( ERROR_INFO, ss.str() );
         }
     }
 }
@@ -273,9 +265,9 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
         }
         default:
         {
-            cout<<"TRACE(objutils.cpp): TODO: loadFromFile: deal with feature type " << type << endl;
-            exit(1);
-            break;
+            stringstream ss;
+            ss<<"loadFromFile: don't know how to deal with feature type " << type << endl;
+            throw orcaice::Exception( ERROR_INFO, ss.str() );
         }
         }
     }
