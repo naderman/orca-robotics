@@ -245,11 +245,14 @@ work for PCMCIA, USB, PCI cards etc, though only the PCMCIA version has been tes
 The following should work on Debian, using pcan driver version 6.4 (as of 1-Aug-2007):
 
 @verbatim
-$ sudo apt-get install linux-kernel-headers linux-source
+$ sudo apt-get install linux-headers linux-source
 $ cd /usr/src/
-$ sudo bunzip2 linux-source-<version>.tar.bz2
-$ sudo tar -xvf linux-source-<version>.tar
 $ sudo ln -s linux-headers-<version>-686 linux
+@endverbatim
+
+Then build the the peak drivers with 'make; sudo make install'.  Then:
+
+@verbatim
 $ sudo ldconfig
 @endverbatim
 
