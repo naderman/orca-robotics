@@ -461,9 +461,6 @@ Serial::open(int flags)
 {
     struct termios localOptions;
     
-    
-    cout << "TODO: Need to implement a file system lock /var/lock for port access " << dev_ <<endl;
-
     if ( timeoutsEnabled_ )
         flags |= O_NONBLOCK;
 
