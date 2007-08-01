@@ -87,6 +87,11 @@ namespace {
               h.cov.yy > LIN_THRESHOLD ||
               h.cov.tt > ROT_THRESHOLD );
     }
+
+    double ageOf( const orca::Time &ts )
+    {
+        return orcaice::timeDiffAsDouble( orcaice::getNow(), ts );
+    }
 }
 
 MainLoop::MainLoop( const orcaice::Context & context )
@@ -419,7 +424,15 @@ MainLoop::run()
             // TODO: what if localiseData is stale?
             orca::Localise2dData localiseData;
             localiseDataBuffer_.get( localiseData );
-            
+            const double AGE_FOR_STALE = 3; // seconds
+            if ( ageOf( localiseData.timeStamp ) > AGE_FOR_STALE )
+            {
+                stringstream ss;
+                ss << "MainLoop: LocaliseData is stale: age is " << ageOf( localiseData.timeStamp ) << " sec";
+                context_.tracer()->warning( ss.str() );
+                context_.status()->warning( SUBSYSTEM, ss.str() );
+            }
+                        
             // Adjust timing: work out how long it takes to the first waypoint based on straight-line distance 
             // and configured velocityToFirstWaypoint_. Take the max of first wp time and the computed time.
             const orcanavutil::Pose &pose = mlPose(localiseData);
