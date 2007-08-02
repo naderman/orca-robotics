@@ -40,7 +40,7 @@ enum OgMapType
 };
 
 /*!
-  Occupancy-grid representation of a portion of the world.
+  @brief Occupancy-grid representation of a portion of the world.
 
   There are conceptually two coordinate systems:
 
@@ -53,7 +53,7 @@ enum OgMapType
 
   The three methods of referring to cells are defined as follows:
 
-      <pre>
+@verbatim
      1) GLOBAL COORDINATE SYSTEM              2) CELL INDEXING                 3) DATA STORAGE
          worldCell(double,double)              gridCell(int,int)            e.g. OgMapData->data(index)
            _________________                   _________________                _________________
@@ -72,7 +72,7 @@ enum OgMapType
    (oX = offset.p.x, oY = offset.p.y)
 
    (note: in (1), the map is aligned with the world axes.  This need not be the case.)
-   </pre>
+@endverbatim
 
    For OgMapData manipulation functions, see @ref orca_library_orcaogmap
 */
@@ -90,12 +90,16 @@ struct OgMapData
     //! Example: if the global CS starts in the middle of a OG map and there are
     //! no rotations, then the OG map offset is (-width/2, -height/2, 0).
     Frame2d offset;
+
     //! The number of cells along the x axis
     int numCellsX;
+
     //! The number of cells along the y axis
     int numCellsY;
+
     //! The size of each cell, in the x dimension
     float metresPerCellX;
+
     //! The size of each cell, in the y dimension
     float metresPerCellY;
 
@@ -106,12 +110,6 @@ struct OgMapData
     //! Type of certainty grid map (see above)
     //! Useful to distinguish between occupancy, motion, hazard maps etc.
     OgMapType mapType;
-};
-
-module ogmapvalues
-{
-    //! The midpoint between occupied and empty
-    const int UNKNOWN = 127;
 };
 
 /*!
@@ -151,6 +149,12 @@ interface OgMap
      */
     idempotent void unsubscribe( OgMapConsumer *subscriber );
 }; 
+
+module ogmapvalues
+{
+    //! The midpoint between occupied and empty
+    const int UNKNOWN = 127;
+}; // submodule
 
 }; // module
 
