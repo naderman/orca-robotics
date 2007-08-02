@@ -122,13 +122,21 @@ struct Wrench2d
     //! %Moment [N*m]
     double   m;
 };
-//! Planar dimensions
+//! Planar continuous dimensions
 struct Size2d
 {
     //! Length [m]
     double l;
     //! Width [m]
     double w;
+};
+//! Planar discrete dimensions
+struct DiscreteSize2d
+{
+    //! Length [m]
+    int l;
+    //! Width [m]
+    int w;
 };
 
 // Three-dimensional (standard) objects
@@ -248,7 +256,7 @@ struct Frame3d
     //! Orientation
     OrientationE   o;
 };
-//! Spatial dimensions
+//! Spatial continuous dimensions.
 struct Size3d
 {
     //! Length [m]
@@ -257,6 +265,16 @@ struct Size3d
     double w;
     //! Height [m]
     double h;
+};
+//! Spatial discrete dimensions.
+struct DiscreteSize3d
+{
+    //! Length [m]
+    int l;
+    //! Width [m]
+    int w;
+    //! Height [m]
+    int h;
 };
 
 }; // module
