@@ -18,6 +18,10 @@
 #include <orcaice/notify.h>
 #include <orcaice/context.h>
 
+namespace orcaice {
+    class Thread;
+}
+
 namespace orcaifaceimpl {
 
 //!

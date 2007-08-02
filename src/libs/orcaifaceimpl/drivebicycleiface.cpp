@@ -81,6 +81,16 @@ DriveBicycleIface::initInterface()
     orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_ );
 }
 
+void 
+DriveBicycleIface::initInterface( orcaice::Thread* thread, int retryInterval )
+{
+    topicPrx_ = orcaice::connectToTopicWithTag<orca::DriveBicycleConsumerPrx>
+        ( context_, consumerPrx_, ifaceTag_, "*", thread, retryInterval );
+
+    ptr_ = new DriveBicycleI( *this );
+    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_, thread, retryInterval );
+}
+
 ::orca::DriveBicycleData 
 DriveBicycleIface::getData() const
 {

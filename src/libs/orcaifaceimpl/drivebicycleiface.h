@@ -18,6 +18,10 @@
 #include <orcaice/notify.h>
 #include <orcaice/context.h>
 
+namespace orcaice {
+    class Thread;
+}
+
 namespace orcaifaceimpl {
 
 //!
@@ -36,8 +40,12 @@ public:
     ~DriveBicycleIface();
 
     // Local calls:
-    //! may throw orcaice::Exceptions
+    //! Sets up interface and connects to IceStorm. May throw orcaice::Exceptions.
     void initInterface();
+
+    //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
+    //! until sucessful. At every iteration, checks if the thread was stopped.
+    void initInterface( orcaice::Thread* thread, int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::DriveBicycleData &data );
