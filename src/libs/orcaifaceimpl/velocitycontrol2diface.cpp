@@ -67,6 +67,13 @@ VelocityControl2dIface::initInterface()
     orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_ );
 }
 
+void 
+VelocityControl2dIface::initInterface( orcaice::Thread* thread, int retryInterval )
+{
+    ptr_ = new VelocityControl2dI( *this );
+    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_, thread, retryInterval );
+}
+
 void
 VelocityControl2dIface::setCommand(const ::orca::VelocityControl2dData& command )
 {

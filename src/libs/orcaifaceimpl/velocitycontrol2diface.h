@@ -35,8 +35,12 @@ public:
                        const orcaice::Context& context );
     ~VelocityControl2dIface();
 
-    //! May throw orcaice::Exception's
+    //! Sets up interface and connects to IceStorm. May throw orcaice::Exceptions.
     void initInterface();
+
+    //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
+    //! until sucessful. At every iteration, checks if the thread was stopped.
+    void initInterface( orcaice::Thread* thread, int retryInterval=2 );
 
 private:
 

@@ -41,7 +41,7 @@ LaserMonComponent::LaserMonComponent()
 void
 LaserMonComponent::start()
 {
-    cout<<"LaserMonComponent::start"<<endl;
+    tracer()->debug( "Starting component", 2 );
 
     //
     // ENABLE NETWORK
@@ -56,8 +56,8 @@ LaserMonComponent::start()
 
     // Connect directly to the interface
     orca::LaserScanner2dPrx laserPrx;
-    // TODO: this will not actually quit on ctrl-c
-    while ( true ) // ( isActive() )
+    // will try forever (to be able Ctrl-C, use a separate thread)
+    while ( true )
     {
         try
         {
@@ -78,12 +78,14 @@ LaserMonComponent::start()
     // Get laser description
     try
     {
-        cout << orcaice::toString( laserPrx->getDescription() ) << endl;
+        std::string descr = orcaice::toString( laserPrx->getDescription() );
+        tracer()->info( "Got laser description:\n"+descr );
     }
     catch ( const Ice::Exception & e ) 
     {
-        cout<<e<<endl;
-        tracer()->warning( "Failed to get laser description. Continue anyway." );
+        std::stringstream ss;
+        ss << "Failed to get laser description. Will continue anyway."<<e;
+        tracer()->warning( ss.str() );
     }
 
     // Get laser data once
@@ -118,9 +120,8 @@ LaserMonComponent::start()
     //
     // Subscribe for data
     //
-    // will try forever until the user quits with ctrl-c
-    // TODO: this will not actually quit on ctrl-c
-    while ( true ) // ( isActive() )
+    // will try forever (to be able Ctrl-C, use a separate thread)
+    while ( true )
     {
         try
         {

@@ -26,7 +26,6 @@ namespace orcaifaceimpl {
 class Odometry2dI : public orca::Odometry2d
 {
 public:
-    //! constructor
     Odometry2dI( Odometry2dIface &iface )
         : iface_(iface) {}
     virtual ~Odometry2dI() {}
@@ -57,7 +56,7 @@ Odometry2dIface::Odometry2dIface( const orca::VehicleDescription& descr,
                           const std::string& ifaceTag,
                           const orcaice::Context& context ) :
     descr_(descr),
-    tag_(ifaceTag),
+    ifaceTag_(ifaceTag),
     context_(context)
 {
 }
@@ -72,13 +71,23 @@ Odometry2dIface::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithTag<orca::Odometry2dConsumerPrx>
-        ( context_, consumerPrx_, tag_ );
+        ( context_, consumerPrx_, ifaceTag_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new Odometry2dI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, tag_ );
+    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_ );
+}
+
+void 
+Odometry2dIface::initInterface( orcaice::Thread* thread, int retryInterval )
+{
+    topicPrx_ = orcaice::connectToTopicWithTag<orca::Odometry2dConsumerPrx>
+        ( context_, consumerPrx_, ifaceTag_, "*", thread, retryInterval );
+
+    ptr_ = new Odometry2dI( *this );
+    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_, thread, retryInterval );
 }
 
 ::orca::Odometry2dData 
@@ -89,7 +98,7 @@ Odometry2dIface::getData() const
     if ( dataProxy_.isEmpty() )
     {
         std::stringstream ss;
-        ss << "No data available! (ifaceTag="<<tag_<<")";
+        ss << "No data available! (ifaceTag="<<ifaceTag_<<")";
         throw orca::DataNotExistException( ss.str() );
     }
 
@@ -150,7 +159,7 @@ Odometry2dIface::localSetAndSend( const orca::Odometry2dData& data )
         consumerPrx_,
         data,
         topicPrx_,
-        tag_ );
+        ifaceTag_ );
 }
 
 } // namespace

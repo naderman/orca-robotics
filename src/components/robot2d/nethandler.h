@@ -44,11 +44,6 @@ public:
     virtual void handleData(const orca::VelocityControl2dData& obj);
 
 private:
-
-    void activate();
-    void initOdom2d();
-    void initVelocityControl2d();
-
     // external interfaces
     orcaifaceimpl::Odometry2dIfacePtr           odometry2dI_;
     orcaifaceimpl::VelocityControl2dIfacePtr    velocityControl2dI_;

@@ -55,102 +55,6 @@ NetHandler::~NetHandler()
 {
 }
 
-
-void
-NetHandler::activate()
-{
-    int retryInterval = 2;
-    while ( isActive() )
-    {
-        try {
-            context_.activate();
-            break;
-        }     
-        // alexm: in all of these exception handlers we would like to just catch
-        // std::exception but Ice 3.2 does not overload e.what() so we have to do it
-        // separately.
-        catch ( const Ice::Exception& e ) {
-            stringstream ss;
-            ss << "Failed to activate component: " << e 
-               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
-            context_.tracer()->warning( ss.str() );
-        }
-        catch ( const std::exception& e ) {
-            stringstream ss;
-            ss << "Failed to activate component: " << e.what() 
-               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
-            context_.tracer()->warning( ss.str() );
-        }
-        catch ( ... )
-        {
-            cout << "Caught some other exception while activating." << endl;
-        }
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
-    }
-}
-
-void
-NetHandler::initOdom2d()
-{
-    odometry2dI_ =
-        new orcaifaceimpl::Odometry2dIface( descr_, "Odometry2d", context_ );
-
-    int retryInterval = 2;
-    while ( isActive() ) {
-        try {
-            odometry2dI_->initInterface();
-            context_.tracer()->debug( "odometry 2d interface initialized",2);
-            break;
-        }
-        catch ( const Ice::Exception& e ) {
-            stringstream ss;
-            ss << "Failed to setup interface: " << e 
-               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
-            context_.tracer()->warning( ss.str() );
-        }
-        catch ( const std::exception& e ) {
-            stringstream ss;
-            ss << "Failed to setup interface: " << e.what() 
-               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
-            context_.tracer()->warning( ss.str() );
-        }
-
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
-    }
-}
-
-void
-NetHandler::initVelocityControl2d()
-{
-    velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dIface( descr_, "VelocityControl2d", context_ );
-    
-    int retryInterval = 2;
-    while ( isActive() ) {
-        try {
-            velocityControl2dI_->initInterface();
-            context_.tracer()->debug( "VelocityControl2d interface initialized",2);
-            break;
-        }
-        catch ( const Ice::Exception& e ) {
-            stringstream ss;
-            ss << "Failed to setup interface: " << e 
-               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
-            context_.tracer()->warning( ss.str() );
-        }
-        catch ( const std::exception& e ) {
-            stringstream ss;
-            ss << "Failed to setup interface: " << e.what() 
-               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
-            context_.tracer()->warning( ss.str() );
-        }
-        
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
-    }
-
-    // register ourselves as data handlers (it will call the handleData() callback).
-    velocityControl2dI_->setNotifyHandler( this );
-}
-
 // This is a direct callback from the VelocityControl2dIface object.
 // It's executed in Ice thread.
 // Here we convert to our internal format and stick it into
@@ -168,13 +72,17 @@ NetHandler::run()
 {
     try // this is once per run try/catch: waiting for the communicator to be destroyed
     {
-        activate();
+        // multi-try function
+        orcaice::activate( context_, this );
     
         std::string prefix = context_.tag() + ".Config.";
     
-        // Initialise external interfaces
-        initOdom2d();
-        initVelocityControl2d();
+        // Initialise external interfaces, multi-try init functions
+        odometry2dI_ = new orcaifaceimpl::Odometry2dIface( descr_, "Odometry2d", context_ );
+        odometry2dI_->initInterface( this );
+
+        velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dIface( descr_, "VelocityControl2d", context_ );
+        velocityControl2dI_->initInterface( this );
 
         // temp objects in internal format
         Data data;
