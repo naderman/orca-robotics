@@ -4,12 +4,24 @@ DefaultComponentTag=ConfigTest
 Provides.P1.Type=PT1
 Provides.P1.DefaultName=p1
 
+Provides.SpecialP2.Type=PT2
+Provides.SpecialP2.DefaultName=p2
+
+Provides.SpecialP3.Type=PT3
+Provides.SpecialP3.DefaultName=p3
+
 # Required Interfaces
 Requires.R1.Type=RT1
 Requires.R1.DefaultProxy=r1@remote/random
 
 Requires.R2.Type=RT2
 Requires.R2.DefaultProxy=r2 -t:tcp -h localhost -p 15000
+
+Requires.SpecialR3.Type=RT3
+Requires.SpecialR3.DefaultProxy=r3@remote/random
+
+Requires.SpecialR4.Type=RT4
+Requires.SpecialR4.DefaultProxy=r4@remote/random
 
 # Ensure timeouts
 Config.Ice.Override.ConnectTimeout.Default=150

@@ -26,6 +26,27 @@ using namespace std;
 namespace orcaice
 {
 
+namespace {
+
+// removes entries from the vector of strings if they don't start from the 
+// pattern specified.
+void filter_start( std::vector<std::string>& s, const std::string& pattern )
+{
+    for ( std::vector<std::string>::iterator it=s.begin(); it<s.end(); ) {
+//         cout<<"DEBUG: comparing tag="<<*it<<" with pattern="<<pattern<<endl;
+        // pattern may not be longer than the tag itself
+        if ( pattern.size()>it->size() || pattern != it->substr(0,pattern.size()) ) {
+//             cout<<"DEBUG: erasing "<<*it<<endl;
+            s.erase(it);
+        }
+        else {
+            ++it;
+        }
+    }
+}
+
+}
+
 // NOTE: utility function, not part of public interface
 std::string
 getProvidedName( const Context & context, const std::string &ifaceTag )
@@ -34,8 +55,7 @@ getProvidedName( const Context & context, const std::string &ifaceTag )
     orcaice::getProperty( context.properties(), context.tag()+".Provides."+ifaceTag+".Name", ifaceName );
     if( ifaceName.empty() )
     {
-        context.tracer()->print("getting getProvidedName for tag="+ifaceTag);
-        cout<<"getting getProvidedName for tag="+ifaceTag<<endl;
+//         context.tracer()->debug("getting getProvidedName for tag="+ifaceTag);
         std::string errorString = context.tag()+": "
             + warnMissingProperty("provided interface name for tag '" + ifaceTag + "'",
                                    context.tag()+".Provides."+ifaceTag+".Name");
@@ -132,17 +152,27 @@ getRequiredInterfaceAsString( const Context & context, const std::string &ifaceT
 }
 
 std::vector<std::string>
-getProvidedTags( const Context & context )
+getProvidedTags( const Context & context, const std::string& pattern )
 {
     std::string prefix = context.tag()+".Provides.";
-    return getFieldsForPrefix( context, prefix );
+    std::vector<std::string> tags = getFieldsForPrefix( context, prefix );
+
+    if ( !pattern.empty() )
+        filter_start( tags, pattern );
+
+    return tags;
 }
 
 std::vector<std::string>
-getRequiredTags( const Context & context )
+getRequiredTags( const Context & context, const std::string& pattern )
 {
-    std::string prefix = context.tag()+".Requires.";
-    return getFieldsForPrefix( context, prefix );
+    std::string prefix = context.tag() + ".Requires.";
+    std::vector<std::string> tags = getFieldsForPrefix( context, prefix );
+
+    if ( !pattern.empty() )
+        filter_start( tags, pattern );
+
+    return tags;
 }
 
 orca::ComponentData

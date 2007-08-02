@@ -29,6 +29,7 @@
 
 #include <orcaice/configutils.h>
 #include <orcaice/connectutils.h>
+#include <orcaice/multiconnectutils.h>
 #include <orcaice/proputils.h>
 #include <orcaice/printutils.h>
 #include <orcaice/stringutils.h>

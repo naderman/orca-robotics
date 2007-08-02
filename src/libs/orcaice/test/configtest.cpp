@@ -24,7 +24,7 @@ using namespace std;
 class TestComponent : public orcaice::Component
 {
 public:
-    TestComponent() : orcaice::Component( "ConfigTest" ) {};
+    TestComponent() : orcaice::Component( "ConfigTest", orcaice::NoStandardInterfaces ) {};
     virtual ~TestComponent() {};
 
     // component interface
@@ -35,7 +35,7 @@ public:
 void 
 TestComponent::start()
 {
-    cout<<"testing getProvidedInterface() ... ";
+    cout<<"testing getProvidedInterface() with existing tag ... ";
     try {
         orca::FQInterfaceName fqIface = orcaice::getProvidedInterface( context(), "P1" );
         std::string strIface = orcaice::toString( fqIface );
@@ -48,7 +48,9 @@ TestComponent::start()
         cout<<"failed"<<endl<<"interface P1 should exist"<<endl;
         exit(EXIT_FAILURE);
     }
-    
+    cout<<"ok"<<endl;
+        
+    cout<<"testing getProvidedInterface() with NON-existing tag ... ";
     try {
         orca::FQInterfaceName fqIface = orcaice::getProvidedInterface( context(), "P100" );
         cout<<"failed"<<endl<<"interface P100 should not exist"<<endl;
@@ -68,8 +70,9 @@ TestComponent::start()
     catch ( const orcaice::ConfigFileException & ) {
         // ok
     }
+    cout<<"ok"<<endl;
 
-    cout<<"testing getProvidedTopic() ... ";
+    cout<<"testing getProvidedTopic() with existing tag ... ";
     try {
         orca::FQTopicName fqTopic = orcaice::getProvidedTopic( context(), "P1" );
         std::string strTopic = orcaice::toString( fqTopic );
@@ -82,7 +85,9 @@ TestComponent::start()
         cout<<"failed"<<endl<<"interface P1 should exist"<<endl;
         exit(EXIT_FAILURE);
     }
+    cout<<"ok"<<endl;
     
+    cout<<"testing getProvidedTopic() with NON-existing tag ... ";
     try {
         orca::FQTopicName fqTopic = orcaice::getProvidedTopic( context(), "P100" );
         cout<<"failed"<<endl<<"interface P100 should not exist"<<endl;
@@ -104,7 +109,7 @@ TestComponent::start()
     }
     cout<<"ok"<<endl;
 
-    cout<<"testing getRequiredInterfaceAsString() ... ";
+    cout<<"testing getRequiredInterfaceAsString() with existing tag, indirect ... ";
     try {
         std::string strPrx = orcaice::getRequiredInterfaceAsString( context(), "R1" );
         std::string expect = "r1@remote/random";
@@ -117,7 +122,9 @@ TestComponent::start()
         cout<<"failed"<<endl<<"interface R1 (indirect proxy syntax) should exist"<<endl;
         exit(EXIT_FAILURE);
     }
+    cout<<"ok"<<endl;
 
+    cout<<"testing getRequiredInterfaceAsString() with existing tag, direct ... ";
     try {
         std::string strPrx = orcaice::getRequiredInterfaceAsString( context(), "R2" );
         std::string expect = "r2 -t:tcp -h localhost -p 15000";
@@ -130,7 +137,9 @@ TestComponent::start()
         cout<<"failed"<<endl<<"interface R2 (direct proxy syntax) should exist"<<endl;
         exit(EXIT_FAILURE);
     }
+    cout<<"ok"<<endl;
     
+    cout<<"testing getRequiredInterfaceAsString() with NON-existing tag ... ";
     try {
         std::string strPrx = orcaice::getRequiredInterfaceAsString( context(), "R100" );
         cout<<"failed"<<endl<<"interface R100 should not exist"<<endl;
@@ -151,7 +160,55 @@ TestComponent::start()
         // ok
     }
     cout<<"ok"<<endl;
-    
+
+    cout<<"testing getProvidedTags() with empty pattern ... ";
+    {
+        std::vector<std::string> tags = orcaice::getProvidedTags( context() );
+        int out = tags.size();
+        int expect = 3;
+        if ( out != expect ) {
+            cout<<"failed, wrong number of tags, expected="<<expect<<"; got="<<out<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing getProvidedTags() with pattern ... ";
+    {
+        std::vector<std::string> tags = orcaice::getProvidedTags( context(), "Special" );
+        int out = tags.size();
+        int expect = 2;
+        if ( out != expect ) {
+            cout<<"failed, wrong number of tags, expected="<<expect<<"; got="<<out<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing getRequiredTags() with empty pattern ... ";
+    {
+        std::vector<std::string> tags = orcaice::getRequiredTags( context() );
+        int out = tags.size();
+        int expect = 4;
+        if ( out != expect ) {
+            cout<<"failed, wrong number of tags, expected="<<expect<<"; got="<<out<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing getRequiredTags() with pattern ... ";
+    {
+        std::vector<std::string> tags = orcaice::getRequiredTags( context(), "Special" );
+        int out = tags.size();
+        int expect = 2;
+        if ( out != expect ) {
+            cout<<"failed, wrong number of tags, expected="<<expect<<"; got="<<out<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    cout<<"ok"<<endl;
+
     // NOTE: cannot call communicator()->destroy() from here
     // because they'll be caught by Ice::Application and show up as failed ctest.
     exit(EXIT_SUCCESS);

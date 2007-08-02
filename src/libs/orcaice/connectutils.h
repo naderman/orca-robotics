@@ -234,6 +234,8 @@ connectToTopicWithTag( const Context           & context,
                        const std::string       & interfaceTag,
                        const std::string       & subtopic="*" )
 {
+    context.tracer()->debug( "orcaice::connectToTopicWithTag() tag="+interfaceTag, 10 );
+
     std::string topicName;
 
     // lookup the name of the interface in the config file and generate topic name.
@@ -292,7 +294,7 @@ connectToTopicWithString( const Context     & context,
         // Give some feedback as to why this isn't working
         std::stringstream ss; ss<<"Error while connecting to IceStorm topic publisher '"<<topicName<<"': "<<e;
         initTracerError( context, ss.str(), 2 );
-        initTracerInfo( context, "hint: Is IceStorm running?", 5 );
+        initTracerInfo( context, "hint: Is IceStorm running?", 10 );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
     catch( const Ice::LocalException &e )
@@ -313,138 +315,6 @@ connectToTopicWithString( const Context     & context,
     return topicPrx;
 }
 
-// THESE FUNCTIONS WERE OBSOLETED TO REDUCE THE SIZE OF THE API
-/*
- * Subscribe to an IceStorm topic, when you know its name.
- * Utility function, use with care. Standard components should subscribe
- * themselves by talking directly to provided interfaces.
- */
-// void
-// subscribeToIceStormTopicWithName( const Context         & context,
-//                                     Ice::ObjectPtr      & consumer,
-//                                     const std::string   & topicName,
-//                                     bool                createIfMissing=false );
-
-/*
- * Behaves the same as the one above but the topic information
- * comes from the configuration file and the interfaceTag.
- */
-// void
-// subscribeToIceStormTopicWithTag( const Context      & context,
-//                                 Ice::ObjectPtr      & consumer,
-//                                 const std::string   & interfaceTag,
-//                                 bool                createIfMissing=false );
-
-//@}
-
-/*!
- *  @name Multi-Try Connection Functions
- */
-//@{
-
-/*!
-    Tries to activate the adapter (by calling Context::activate(). If fails, sleeps for
-    @c retryInterval seconds. Will repeat indefinitely until the thread is stopped (checks
-    orcaice::Thread::isAlive() ).
-*/
-void activate( Context& context, orcaice::Thread* thread, int retryInterval=2 );
-
-/*!
-Convenience function. Tries to connect to the specified remote interface until is successful or
-the @c thread is stopped. 
-
-We catch orcaice::NetworkException, and sleep for @c retryInterval and try again.
-
-We do NOT catch a possible orcaice::TypeMismatchException because this condition is unlikely to
-change.
-
-Example:
-@verbatim
-MyInterfacePrx myInterfacePrx;
-try {
-    orcaice::connectToInterfaceWithString<MyInterfacePrx>( 
-        context_, myInterfacePrx, "iface@platform/component", (orcaice::Thread*)this );
-}
-catch ( const orcaice::TypeMismatchException& e ) {
-    // what do we do?
-}
-@endverbatim
- */
-template<class ProxyType>
-void
-connectToInterfaceWithString( const Context     & context,
-                              ProxyType         & proxy,
-                              const std::string & proxyString,
-                              orcaice::Thread*    thread, int retryInterval=2 )
-{    
-    while ( thread->isActive() )
-    {
-        try 
-        {
-            connectToInterfaceWithString<ProxyType>( context, proxy, proxyString );
-            break;
-        }
-        catch ( const orcaice::NetworkException& e ) 
-        {
-            std::stringstream ss;
-            ss << "Failed to connect: " << e.what() 
-               << ".  Will try again in "<<retryInterval<<"secs...";
-            context.tracer()->warning( ss.str() );
-        }
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
-    }
-}
-
-/*!
-Convenience function. Tries to connect to the specified remote interface until is successful or
-the @c thread is stopped. 
-
-We catch orcaice::NetworkException, and sleep for @c retryInterval and try again.
-
-We do NOT catch a possible orcaice::TypeMismatchException because this condition is unlikely to
-change.
-
-We do NOT catch a possible orcaice::ConfigFileException exception.
-
-Example:
-@verbatim
-MyInterfacePrx myInterfacePrx;
-try {
-    orcaice::connectToInterfaceWithTag<MyInterfacePrx>( 
-        context_, myInterfacePrx, "MyInterface", (orcaice::Thread*)this );
-}
-catch ( const orcaice::TypeMismatchException& e ) {
-    // what do we do?
-}
-catch ( const orcaice::ConfigFileException& e ) {
-    // what do we do?
-}
-@endverbatim
- */
-template<class ProxyType>
-void
-connectToInterfaceWithTag( const Context     & context,
-                           ProxyType         & proxy,
-                           const std::string & interfaceTag,
-                           orcaice::Thread*  thread, int retryInterval=2 )
-{    
-    while ( thread->isActive() )
-    {
-        try 
-        {
-            connectToInterfaceWithTag<ProxyType>( context, proxy, interfaceTag );
-            break;
-        }
-        catch ( const orcaice::NetworkException& e ) 
-        {
-            std::stringstream ss;
-            ss << "Failed to connect: " << e.what()
-               << ".  Will try again in "<<retryInterval<<"secs...";
-            context.tracer()->warning( ss.str() );
-        }
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
-    }
-}
 //@}
 
 } // namespace

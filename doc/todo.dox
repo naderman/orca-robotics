@@ -142,10 +142,14 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     durations, and strings. Added more tests. (alexm)
   - Worked around an Ice3.2 bug which occasionally resulted in a
     deadlock on adapter activation. (alex b)
-  - added functions for looped multi-try connections. these wrap the existing activate(),
-    connectToInterfaceWithString() and connectToInterfaceWithTag(). (alexm)
+  - added functions for looped multi-try connections and interface setup. 
+    these wrap the existing "single-shot" function e.g. activate(),
+    connectToInterfaceWithTag(), but catch the exceptions which indicate conditions
+    which may change (service unavailability) and try again.  (alexm)
   - version info printed out on startup (or with --version) now includes project version,
     which could be useful for non-orca projects. (alexm)
+  - getRequiredTags() and getProvidedTags() now takes an optional string parameter to
+    filter the list of tags by initial text. (alexm)
 
 - libOrcaSerial (alex b, duncan)
   - Big overhaul:
@@ -154,6 +158,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
       and reporting is improved.  Plus lockfiles have been implemented,
       to prevent concurrent access to a device from multiple instances
       of orcaserial.
+
+- libOrcaIfaceImpl
+  - (for some interfaces) added multi-try function for interface initialization. (alex m)
 
 @par Removed
 

@@ -13,7 +13,6 @@
 #include "util.h"
 
 using namespace std;
-using namespace orca;
 
 namespace orcaifaceimpl {
 
@@ -62,8 +61,10 @@ OgMapIface::~OgMapIface()
 void
 OgMapIface::initInterface()
 {
+    context_.tracer()->debug( "OgMapIface::initInterface()", 5 );
+
     // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithTag<OgMapConsumerPrx>
+    topicPrx_ = orcaice::connectToTopicWithTag<orca::OgMapConsumerPrx>
         ( context_, consumerPrx_, ifaceTag_ );
 
     // Register with the adapter
@@ -73,7 +74,19 @@ OgMapIface::initInterface()
     orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_ );
 }
 
-OgMapData
+void 
+OgMapIface::initInterface( orcaice::Thread* thread, int retryInterval )
+{
+    context_.tracer()->debug( "OgMapIface::initInterface(thread)", 5 );
+
+    topicPrx_ = orcaice::connectToTopicWithTag<orca::OgMapConsumerPrx>
+        ( context_, consumerPrx_, ifaceTag_, "*", thread, retryInterval );
+
+    ptr_ = new OgMapI( *this );
+    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_, thread, retryInterval );
+}
+
+orca::OgMapData
 OgMapIface::getData() const
 {
     context_.tracer()->debug( "OgMapIface::getData()", 5 );
@@ -85,13 +98,13 @@ OgMapIface::getData() const
         throw orca::DataNotExistException( ss.str() );
     }
 
-    OgMapData data;
+    orca::OgMapData data;
     dataProxy_.get( data );
     return data;
 }
 
 void
-OgMapIface::subscribe(const ::OgMapConsumerPrx& subscriber )
+OgMapIface::subscribe(const ::orca::OgMapConsumerPrx& subscriber )
 {
     context_.tracer()->debug( "OgMapIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     try {
@@ -111,7 +124,7 @@ OgMapIface::subscribe(const ::OgMapConsumerPrx& subscriber )
 }
 
 void
-OgMapIface::unsubscribe(const ::OgMapConsumerPrx& subscriber )
+OgMapIface::unsubscribe(const ::orca::OgMapConsumerPrx& subscriber )
 {
     context_.tracer()->debug( "OgMapIface::unsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
@@ -125,7 +138,7 @@ OgMapIface::localSetAndSend( const ::orca::OgMapData &data )
     dataProxy_.set( data );
     
     // Try to push to IceStorm.
-    tryPushToIceStormWithReconnect<OgMapConsumerPrx,orca::OgMapData>
+    tryPushToIceStormWithReconnect<orca::OgMapConsumerPrx,orca::OgMapData>
         ( context_,
           consumerPrx_,
           data,

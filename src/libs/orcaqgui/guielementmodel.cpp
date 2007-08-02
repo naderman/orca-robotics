@@ -268,8 +268,10 @@ GuiElementModel::createGuiElement( const QString &elementType,
     bool isSupported = instantiateFromFactories( element, elementType, platformColor, elementDetails );
     if (!isSupported || element==NULL)
     {
-        if (!isSupported) humanManager_->showStatusMsg(orcaqgui::Warning, "Element type " + elementType + " is not supported by any factory.");
-        if (element==NULL) humanManager_->showStatusMsg(orcaqgui::Warning, "Element " + elementDetails.join(" ") + " returned from factory is NULL");
+        if (!isSupported) 
+            humanManager_->showStatusMsg(orcaqgui::Warning, "Element type " + elementType + " is not supported by any factory.");
+        if (element==NULL) 
+            humanManager_->showStatusMsg(orcaqgui::Warning, "Element " + elementDetails.join(" ") + " is supported but the factory returned NULL pointer.");
         delete element;
         if (!doesPlatformExist( platform ) ) 
             emit platformNeedsRemoval(platform);

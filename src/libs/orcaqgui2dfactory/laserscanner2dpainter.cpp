@@ -57,7 +57,7 @@ LaserScanner2dPainter::setOffset( orca::Frame3d &offset )
     offsetX_   = offset.p.x;
     offsetY_   = offset.p.y;
     offsetYaw_ = offset.o.y;
-	offsetPitch_ = offset.o.p;
+    offsetPitch_ = offset.o.p;
 
     // for 2D display, the only thing we know how to paint
     // is a laser mounted horizontally, either right-way-up or upside-down
@@ -110,7 +110,8 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
             bearing = -bearing;
         }
         
-        point.setX( (data_->ranges[i] * cos(bearing))*cos(offsetPitch_) );
+        // only the x-coordinate becomes "compressed", y is not affected
+        point.setX( data_->ranges[i] * cos(bearing) * cos(offsetPitch_) );
         point.setY( data_->ranges[i] * sin(bearing) );
 
         qScan_.push_back( point );

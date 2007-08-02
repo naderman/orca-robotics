@@ -20,6 +20,10 @@
 #include <orcaice/proxy.h>
 #include <orcaice/context.h>
 
+namespace orcaice {
+    class Thread;
+}
+
 namespace orcaifaceimpl {
 
 //!
@@ -38,6 +42,11 @@ public:
     // Local calls:
     //! Sets up interface and connects to IceStorm. May throw orcaice::Exceptions.
     void initInterface();
+
+    //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
+    //! until sucessful. At every iteration, checks if the thread was stopped.
+    void initInterface( orcaice::Thread* thread, int retryInterval=2 );
+
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
     void localSetAndSend( const ::orca::OgMapData &data );

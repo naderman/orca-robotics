@@ -47,11 +47,31 @@ std::string getRequiredInterfaceAsString( const Context &, const std::string &in
 
 //! For components with variable number of interfaces it may be useful to get a listing
 //! of all provided interfaces described in the configuration file.
-std::vector<std::string> getProvidedTags( const Context & context );
+//!
+//! See getRequiredTags() for the usage of @c pattern.
+std::vector<std::string> getProvidedTags( const Context & context, const std::string& pattern="" );
 
-//! For components with variable number of interfaces it may be useful to get a listing
-//! of all required interfaces described in the configuration file.
-std::vector<std::string> getRequiredTags( const Context & context );
+/*! 
+For components with variable number of interfaces it may be useful to get a listing
+of all required interfaces described in the configuration file.
+
+You may have a group of permanent required interfaces and group of variable or optional ones. To 
+separate the two groups you may want to start all optional tags with a certain @e pattern. 
+For example, your config file may look like this:
+@verbatim
+MyComponent.Requires.Locolise2d.Proxy=something
+MyComponent.Requires.LaserScanner2dFront.Proxy=something
+MyComponent.Requires.LaserScanner2dBack.Proxy=something
+@endverbatim
+In this case you would get a list of "laser" required interfaces by supplying the pattern="LaserScanner2d"
+or pattern="Laser" or pattern="La". For example:
+@verbatim
+std::vector<std::string> laserTags;
+laserTags = orcaice::getRequiredTags( context_, "Laser" );
+@endverbatim
+The default empty string pattern will match all required interfaces.
+*/
+std::vector<std::string> getRequiredTags( const Context & context, const std::string& pattern="" );
     
 //! Parses properties to build static component information.
 //! Interfaces which are not in the config file will not appear here, e.g. Home, Tracer, Status.

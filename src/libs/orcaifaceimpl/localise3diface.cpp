@@ -8,9 +8,9 @@
  *
  */
 
-#include "localise3diface.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include "localise3diface.h"
 #include "util.h"
 
 using namespace std;
@@ -76,6 +76,16 @@ Localise3dIface::initInterface()
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new Localise3dI( *this );
     orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_ );
+}
+
+void 
+Localise3dIface::initInterface( orcaice::Thread* thread, int retryInterval )
+{
+    topicPrx_ = orcaice::connectToTopicWithTag<orca::Localise3dConsumerPrx>
+        ( context_, consumerPrx_, ifaceTag_, "*", thread, retryInterval );
+
+    ptr_ = new Localise3dI( *this );
+    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_, thread, retryInterval );
 }
 
 ::orca::Localise3dData 
