@@ -476,7 +476,9 @@ Serial::open(int flags)
     if(tcgetattr(portFd_, &localOptions) == -1)
     {
         close();
-        throw SerialException( std::string("Serial::open(): tcgetattr(): ")+strerror(errno) );
+        stringstream ss;
+        ss << "Serial::open(): tcgetattr() failed for '"<<dev_<<"': "<<strerror(errno);
+        throw SerialException( ss.str() );
     }
 
     if(debugLevel_ > 1){
@@ -513,7 +515,9 @@ Serial::open(int flags)
     if(tcsetattr(portFd_, TCSAFLUSH, &localOptions) == -1)
     {
         close();
-        throw SerialException( std::string("Serial::open(): tcsetattr(): ")+strerror(errno) );
+        stringstream ss;
+        ss << "Serial::open(): tcsetattr() failed for '"<<dev_<<"': "<<strerror(errno);
+        throw SerialException( ss.str() );
     }
 
     if ( debugLevel_ > 1 ){
