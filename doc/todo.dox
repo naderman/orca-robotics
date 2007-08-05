@@ -109,6 +109,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - SegwayRmp
   - Internal source cleanup. Not using ::orca:: structures internally. (alex m)
+  - Added Peak CAN interface (Duncan Mercer)
 
 - Robot2d
   - Internal source cleanup. Not using ::orca:: structures internally. (alex m)
@@ -125,6 +126,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Name change: sysmon -> systemtracermon (alex b)
 - OrcaView2d (tobi)
   - olympic marker displays properly
+- Probe: added support for wifi interface (alex b)
 
 @par Updated libraries
 
