@@ -38,10 +38,7 @@ class WifiWidget : public QWidget
         QVector<QLabel*> interfaceLabels_;
         void setupDisplay();
         unsigned int numInterfaces_;
-        
-    
 };
-
 
 class WifiElement
     : public IceStormElement<WifiPainter,
@@ -59,8 +56,6 @@ public:
     virtual bool isInGlobalCS() { return true; };
     virtual void update();
     virtual void actionOnConnection() {};
-    virtual void setColor( QColor color ) { painter_.setColor(color); };
-    virtual void setTransparency( bool useTransparency ) { painter_.setTransparency( useTransparency ); };
 
 private:
     WifiPainter painter_;

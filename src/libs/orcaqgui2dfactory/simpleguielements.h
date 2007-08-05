@@ -32,7 +32,6 @@
 #include <orcaqgui2dfactory/odometry2dpainter.h>
 #include <orcaqgui2dfactory/particle2dpainter.h>
 #include <orcaqgui2dfactory/polarfeature2dpainter.h>
-#include <orcaqgui2dfactory/wifipainter.h>
 #include <orcaqgui2dfactory/qgraphics2dpainter.h>
 
 //

@@ -11,7 +11,6 @@
 #include <orcaice/orcaice.h>
 #include <orcaobj/initutils.h>
 #include "hardwaredriver.h"
-#include <orcawifi/wifiutil.h>
 
 using namespace std;
 
@@ -103,6 +102,30 @@ void fillIn( const vector<wifiutil::IoctlData> &ioctlData,
         data.interfaces[i] = w;
     }
 }
+
+HardwareDriver::HardwareDriver(orcaice::Context &context)
+  : context_(context),
+    haveConfig_(false)
+{
+}
+
+void
+HardwareDriver::init()
+{
+    try
+    {
+        wifiutil::readConfig( config_ );
+        haveConfig_ = true;
+    }
+    catch (wifiutil::Exception &e) 
+    {
+        stringstream ss;
+        ss << "HardwareDriver: Caught exception: " << e.what();
+        ss << "We can't read using ioctl. Will just read from proc in the future"; 
+        context_.tracer()->debug( ss.str(), 1 );
+    }
+  
+}
   
 void 
 HardwareDriver::read( orca::WifiData &data )
@@ -116,26 +139,11 @@ HardwareDriver::read( orca::WifiData &data )
     wifiutil::readFromProc( procData );
     fillIn( procData, data );
     
+    // if we didn't manage to get the config, reading from ioctl doesn't work and we just return 
+    if (!haveConfig_) return;
     
-    // we are basically finished here
-    // we can try to add more information by using ioctl but it's not critical
-    
-    // ======= config data ===========
-    bool haveConfig = true;
-    vector<wifiutil::WirelessConfig> config;
-    try
-    {
-        wifiutil::readConfig( config );
-    }
-    catch (wifiutil::Exception &e) 
-    {
-        cout << "HardwareDriver: Caught exception: " << e.what();
-        cout << "We'll continue because this operation is not critical" << endl;      
-        haveConfig = false;
-    }
-    // if we managed to get config, we'll add and refine the data
-    if (haveConfig) fillIn( config, data );
-    
+    // assumption: config does not change
+    fillIn( config_, data );
     
     // ======== ioctl data =============
     bool haveIoctl = true;
@@ -146,8 +154,10 @@ HardwareDriver::read( orca::WifiData &data )
     } 
     catch (wifiutil::Exception &e) 
     {
-        cout << "HardwareDriver: Caught exception: " << e.what();
-        cout << "We'll continue because this operation is not critical" << endl;      
+        stringstream ss;
+        ss << "HardwareDriver: Caught exception: " << e.what();
+        ss << "We'll continue because this operation is not critical" << endl;      
+        context_.tracer()->info( ss.str() );
         haveIoctl = false;
     }
     // if we managed to get information from ioctl, we'll add and refine the data

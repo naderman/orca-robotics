@@ -112,9 +112,8 @@ WifiElement::update()
     
     // get data from the buffer
     listener_.buffer().getAndPop( data );
-
-    // transfer data into painter
-    painter_.setData( data );
+    
+    cout << orcaice::toString(data) << endl;
     
     if (wifiWidget_==0) {
         wifiWidget_ = new WifiWidget( data.interfaces.size(), proxyString_ );

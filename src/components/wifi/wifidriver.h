@@ -25,6 +25,7 @@ class WifiDriver
 public:
     virtual ~WifiDriver() {};
     
+    virtual void init() = 0;
     virtual void read( orca::WifiData &data ) = 0;
 };
 

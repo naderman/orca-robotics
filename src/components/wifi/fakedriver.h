@@ -22,6 +22,7 @@ public:
     FakeDriver() {}; 
     ~FakeDriver() {};
     
+    virtual void init() {};
     virtual void read( orca::WifiData &data );
     
 };

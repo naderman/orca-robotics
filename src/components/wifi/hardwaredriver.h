@@ -11,6 +11,9 @@
 #ifndef ORCA2_HARDWARE_DRIVER_H
 #define ORCA2_HARDWARE_DRIVER_H
 
+#include <orcaice/orcaice.h>
+#include <orcawifi/wifiutil.h>
+
 #include "wifidriver.h"
 
 namespace wifi
@@ -20,10 +23,16 @@ class HardwareDriver : public WifiDriver
 {
 public:
     
-    HardwareDriver() {}; 
+    HardwareDriver( orcaice::Context &context ); 
     ~HardwareDriver() {};
     
+    virtual void init();
     virtual void read( orca::WifiData &data );
+    
+private:
+    orcaice::Context context_;
+    std::vector<wifiutil::WirelessConfig> config_;
+    bool haveConfig_;
 };
 
 } // namespace

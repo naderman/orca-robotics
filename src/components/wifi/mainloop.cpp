@@ -79,7 +79,7 @@ void MainLoop::initDriver()
     context_.tracer()->debug( std::string("loading ")+driverName+" driver",3);
     if ( driverName == "hardware" )
     {
-        driver_ = new HardwareDriver();
+        driver_ = new HardwareDriver( context_ );
     }
     else if (driverName == "fake" )
     {
@@ -92,8 +92,10 @@ void MainLoop::initDriver()
         context_.tracer()->info( "Valid driver values are {'hardware','fake'}" );
         throw orcaice::Exception( ERROR_INFO, errorStr );
     }
-    
     context_.tracer()->debug("driver instantiated",5);
+    
+    driver_->init();
+    context_.tracer()->debug("driver initialized",5);
 }
 
 void 

@@ -279,6 +279,7 @@ void readConfig( vector<WirelessConfig> &wifiConfigs )
     if (socketFd < 0)
     {
         cout << "Didn't get a socket!" << endl;
+        close(socketFd);
         throw Exception( "Error:\nUnable to get a socket.\n" );
     }
     
@@ -310,18 +311,19 @@ void readConfig( vector<WirelessConfig> &wifiConfigs )
 }
 
 void readUsingIoctl( vector<IoctlData> &wifiDataIoctl )
-{
-    struct iwreq* iwRequest = new struct iwreq;
-    struct iw_range* iwRange = new struct iw_range;
-    struct iw_statistics* iwStats = new struct iw_statistics;  
-    
+{    
     // this is the socket to use for wireless info
     int socketFd = socket(AF_INET, SOCK_DGRAM, 0);
     if (socketFd < 0)
     {
         cout << "Didn't get a socket!" << endl;
+        close(socketFd);
         throw Exception( "Error:\nUnable to get a socket.\n" );
     }
+    
+    struct iwreq* iwRequest = new struct iwreq;
+    struct iw_range* iwRange = new struct iw_range;
+    struct iw_statistics* iwStats = new struct iw_statistics; 
     
     // get a list of all current wireless interfaces
     vector<string> interfaceNames;
@@ -351,6 +353,8 @@ void readUsingIoctl( vector<IoctlData> &wifiDataIoctl )
         }
         else
         {
+            cout << "Ioctl for range failed" << endl;
+            close(socketFd);
             throw Exception( "Error:\nIoctl for range failed.\n" );    
         }
         
@@ -384,6 +388,8 @@ void readUsingIoctl( vector<IoctlData> &wifiDataIoctl )
         }
         else
         {
+            cout << "Ioctl for stats failed" << endl;
+            close(socketFd);
             throw Exception( "Error:\nIoctl for stats failed.\n" );    
         }
     
