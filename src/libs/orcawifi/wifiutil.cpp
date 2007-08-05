@@ -96,9 +96,10 @@ void readFromProc( vector<ProcData> &wifiData )
         while(*bp&&isspace(*bp)) bp++;
         
         /* Get interface names */
-        sscanf(buf, "  eth%d:", &numEth);
+        char c;
+        sscanf(buf, "  %cth%d:", &c, &numEth);
         stringstream ss; 
-        ss << "eth" << numEth;
+        ss << c << "th" << numEth;
         data.interfaceName = ss.str();
     
         /* Skip ethX: */
