@@ -1375,11 +1375,11 @@ toString( const orca::WifiData &obj )
           << ", numInvalidMisc: " << iface.numInvalidMisc
           << ", numMissedBeacons: " << iface.numMissedBeacons << "\n";
           
-        s << "mode: " << iface.mode 
+        s << "mode: " << toString(iface.mode) 
           << ", bitrate: " << iface.bitrate 
           << ", accessPoint: " << iface.accessPoint 
           << ", throughPut: " << iface.throughPut 
-          << ", linkQualityType: " << iface.linkType << "\n";
+          << ", linkQualityType: " << toString(iface.linkType) << "\n";
         
         s << "maxLinkQuality: " << iface.maxLinkQuality 
           << ", maxSignalLevel: " << iface.maxSignalLevel 
