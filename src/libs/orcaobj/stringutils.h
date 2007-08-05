@@ -247,6 +247,10 @@ std::string toString( const orca::PathFollower2dData& );
 std::string toString( const orca::Waypoint2d& );
 //! Converts to string
 std::string toString( const orca::WifiData& );
+//! Converts to string (part of wifi interface)
+std::string toString( const orca::OperationMode &o );
+//! Converts to string (part of wifi interface)
+std::string toString( const orca::LinkQualityType &l );
 
 //std::string toString( const orca::PathPlanner2dData& );
 //std::string toString( const orca::PathPlanner2dTask& );
