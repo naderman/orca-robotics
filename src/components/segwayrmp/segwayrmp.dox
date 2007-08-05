@@ -250,11 +250,7 @@ $ cd /usr/src/
 $ sudo ln -s linux-headers-<version>-686 linux
 @endverbatim
 
-Then build the the peak drivers with 'make; sudo make install'.  Then:
-
-@verbatim
-$ sudo ldconfig
-@endverbatim
+Then build the the peak drivers with 'make; sudo make install'.
 
 @par Ubuntu Instructions
 
