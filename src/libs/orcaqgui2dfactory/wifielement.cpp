@@ -41,11 +41,11 @@ WifiWidget::refresh( WifiData &data )
     for (unsigned int i=0; i<numInterfaces_; i++)
     {
         WifiInterface &wifiInt = data.interfaces[i];
-        if (wifiInt.linkType!=LinkQualityTypeDbm) {
-            lcds_[i]->display("Err");
-        } else {
+//         if (wifiInt.linkType!=LinkQualityTypeDbm) {
+//             lcds_[i]->display("Err");
+//         } else {
             lcds_[i]->display(wifiInt.signalLevel);
-        }
+//         }
         
         progressBars_[i]->setMinimum(0);
         progressBars_[i]->setMaximum(wifiInt.maxLinkQuality);
@@ -67,7 +67,7 @@ void WifiWidget::setupDisplay()
         QLCDNumber *lcdSignalLevel = new QLCDNumber;
         lcdSignalLevel->setSegmentStyle(QLCDNumber::Filled);
         lcds_.push_back(lcdSignalLevel);
-        QLabel *signalLabel = new QLabel("Signal level (dbm): ");
+        QLabel *signalLabel = new QLabel("Signal level: ");
         globalLayout->addWidget( signalLabel,3*i+1,0);
         globalLayout->addWidget( lcdSignalLevel,3*i+1,1);
     
@@ -113,7 +113,7 @@ WifiElement::update()
     // get data from the buffer
     listener_.buffer().getAndPop( data );
     
-    cout << orcaice::toString(data) << endl;
+    //cout << orcaice::toString(data) << endl;
     
     if (wifiWidget_==0) {
         wifiWidget_ = new WifiWidget( data.interfaces.size(), proxyString_ );
