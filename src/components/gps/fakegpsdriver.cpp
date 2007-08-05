@@ -43,7 +43,7 @@ FakeGpsDriver::hasFix()
     }
 }
 
-int 
+void
 FakeGpsDriver::read()
 {
 //     cout<<"TRACE(fakelaserdriver.cpp): Generating fake gps data..." << endl;
@@ -89,7 +89,6 @@ FakeGpsDriver::read()
     numReads_++;
         
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    return 0;
 }
 
 int 

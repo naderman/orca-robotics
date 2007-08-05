@@ -28,15 +28,14 @@ public:
     FakeGpsDriver(std::vector<double> &latitudes, std::vector<double> &longitudes);
     virtual ~FakeGpsDriver();
 
-    virtual int init() { return 0; };
+    virtual void init() {};
 
     virtual bool hasFix();
 
-    // Blocks till timout expires, returns number of messages read, -1 if failure
-    virtual int read();
-    // Fetch latest GPS data. return -1 if unavailable
+    virtual void read();
+
     virtual int getData(orca::GpsData& data );
-    // Fetch latest GPS Time information. return -1 if unavailable
+
     virtual int getTimeData(orca::GpsTimeData& data );
 
 private:

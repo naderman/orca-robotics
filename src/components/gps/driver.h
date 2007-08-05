@@ -15,8 +15,25 @@
 #include <string>
 
 namespace gps {
+    
+// Exception class for GPS
+class GpsException : public std::exception
+{
+public:
 
-static const ::std::string __orca__gps_default_heartbeat_msg = "";
+    GpsException(const char *message)
+        : message_(message) {}
+    GpsException(const std::string &message)
+        : message_(message) {}
+
+    virtual ~GpsException() throw() {}
+
+    virtual const char* what() const throw() { return message_.c_str(); }
+
+protected:
+
+    std::string  message_;
+};
 
 /*
 
@@ -43,11 +60,12 @@ public:
 
     // Initializes the device. If it's aleady initialized, then it
     // quietly re-initializes it.
-    // returns: 0 = success, non-zero = failure
-    virtual int init()=0;
+    // May throw GpsException
+    virtual void init()=0;
 
-    // Reads from GPS, blocks till timout expires, returns 0 if ok, -1 if failure
-    virtual int read()=0;
+    // Reads from GPS, blocks till timout expires
+    // May throw GpsException
+    virtual void read()=0;
     
     // Returns true if we have a GPS fix otherwise false
     virtual bool hasFix()=0;
@@ -58,28 +76,17 @@ public:
     // Fetches latest GpsTimeData. Returns -1 if it there is no new data.
     virtual int getTimeData(orca::GpsTimeData& data )=0;
 
-    // mechanism to get error messages etc back from driver.
-    virtual const std::string &infoMessages() { return infoMessages_; };
-
-    // Any special info to put in the heartbeat messages?
-    virtual const std::string heartbeatMessage() { return __orca__gps_default_heartbeat_msg; };
 
 protected:
-    // set to false by call to getData()
+
     bool newGpsData_;
-    // set to false by call to getMapGridData()
     bool newGpsMapGridData_;
-    // set to false by call to getTimeData()
     bool newGpsTime_;
-    // do we have a fix yet ?
+
     bool hasFix_;
 
     orca::GpsData GpsData_;
     orca::GpsTimeData GpsTimeData_;
-
-    std::string infoMessages_;
-
-private:
 
 };
 

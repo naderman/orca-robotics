@@ -53,9 +53,9 @@ Component::start()
     int ret = orcaice::getProperty( prop, prefix+"Driver", driverName );
     if ( ret != 0 )
     {
-        std::string errString = "Couldn't determine gps type. Expected property '";
+        std::string errString = "Component: Couldn't determine gps type. Expected property '";
         errString += prefix + "Driver'";
-        throw orcaice::Exception( ERROR_INFO, errString );
+        throw GpsException( errString );
     }
 
     if ( driverName == "ashtech" )
@@ -82,18 +82,22 @@ Component::start()
     }
     else
     {
-        std::string errString = "unknown gps type: "+driverName;
+        std::string errString = "Component: Unknown driver: " + driverName;
         context().tracer()->error( errString );
-        throw orcaice::Exception( ERROR_INFO, errString );
+        throw GpsException( errString );
         return;
     }
 
     // initialize driver
-    if(hwDriver_->init()<0)
+    try {
+        hwDriver_->init();
+    }
+    catch( GpsException &e )
     {
-        std::string errString = "Failed to initialize GPS.";
-        context().tracer()->error( errString );
-        throw orcaice::Exception( ERROR_INFO, errString );
+        stringstream ss;
+        ss << "Component: Failed to initialize GPS: " << e.what();
+        context().tracer()->error( ss.str() );
+        throw GpsException( ss.str() );
         return;
     }
 

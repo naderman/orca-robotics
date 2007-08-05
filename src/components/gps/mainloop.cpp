@@ -122,13 +122,31 @@ MainLoop::run()
             
             while ( isActive() )
             {
-                // Read from hardware: blocking call with timeout, drives the loop
-                int ret = hwDriver_->read();
-                if (ret != -1) break;
-                string err = "Problem reading from GPS. Trying to reinitialize.";
-                context_.tracer()->error( err );
-                context_.status()->fault( SUBSYSTEM, err );
-                hwDriver_->init();
+                try 
+                {
+                    // Read from hardware: blocking call with timeout, drives the loop
+                    hwDriver_->read();
+                    break;
+                }
+                catch (GpsException &e)
+                {
+                    stringstream ss;
+                    ss << "MainLoop: Problem reading from GPS: " << e.what();
+                    context_.tracer()->error( ss.str() );
+                    context_.status()->fault( SUBSYSTEM, ss.str() );
+                }
+                try 
+                {
+                    context_.tracer()->debug("Trying to reinitialize now", 2);
+                    hwDriver_->init();
+                }
+                catch (GpsException &e)
+                {
+                    stringstream ss;
+                    ss << "MainLoop: Problem reinitializing: " << e.what();
+                    context_.tracer()->error( ss.str() );
+                }
+                    
             }
             context_.tracer()->debug("Read successfully from driver.", 3);
 
