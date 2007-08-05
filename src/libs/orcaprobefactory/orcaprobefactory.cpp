@@ -17,6 +17,7 @@
 #include "drivebicycleprobe.h"
 #include "homeprobe.h"
 #include "laserscanner2dprobe.h"
+#include "wifiprobe.h"
 #include "localise2dprobe.h"
 #include "localise3dprobe.h"
 #include "odometry2dprobe.h"
@@ -38,6 +39,7 @@ OrcaProbeFactory::OrcaProbeFactory()
     addSupportedType("::orca::Gps");
     addSupportedType("::orca::Home");
     addSupportedType("::orca::LaserScanner2d");
+    addSupportedType("::orca::Wifi");
     addSupportedType("::orca::Localise2d");
     addSupportedType("::orca::Localise3d");
 //     addSupportedType("::orca::PolarFeature2d");
@@ -77,6 +79,9 @@ OrcaProbeFactory::create( const std::string           & interfaceType,
     }
     else if ( interfaceType == "::orca::LaserScanner2d" ) {
         probe = new LaserScanner2dProbe( name, display, context );
+    }
+    else if ( interfaceType == "::orca::Wifi" ) {
+        probe = new WifiProbe( name, display, context );
     }
     else if ( interfaceType == "::orca::Localise2d" ) {
         probe = new Localise2dProbe( name, display, context );
