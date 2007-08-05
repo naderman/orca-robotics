@@ -81,18 +81,18 @@ HwHandler::HwHandler(
     {
 
 #ifdef HAVE_USB_DRIVER
-        context_.tracer()->debug( "loading 'segwayrmpusb' driver",3);
+        context_.tracer()->debug( "HwHandler: loading 'segwayrmpusb' driver",3);
         rmpIo_  = new RmpUsbIoFtdi;
         driver_ = new RmpDriver( context_, *rmpIo_ );
 #else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'usb' because it was not built!" );
+        throw orcaice::Exception( ERROR_INFO, "HwHandler: Can't instantiate driver 'usb' because it was not built!" );
 #endif
     
     }
     else if ( driverName == "segwayrmpcan" )
     {
 #ifdef HAVE_CAN_DRIVER
-        context_.tracer()->debug( "loading 'peakcan' driver",3);
+        context_.tracer()->debug( "HwHandler: loading 'peakcan' driver",3);
         
         //Get the port name that we are being asked to open
         string portName;
@@ -103,28 +103,28 @@ HwHandler::HwHandler(
         rmpIo_ = new PeakCanDriver ( portName );
         driver_ = new RmpDriver( context_, *rmpIo_ );
 #else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'peakcan' because it was not built!" );
+        throw orcaice::Exception( ERROR_INFO, "HwHandler: Can't instantiate driver 'peakcan' because it was not built!" );
 #endif
 
     }
     else if ( driverName == "playerclient" )
     {
 #ifdef HAVE_PLAYERCLIENT_DRIVER
-        context_.tracer()->debug( "loading 'playerclient' driver",3);
+        context_.tracer()->debug( "HwHandler: loading 'playerclient' driver",3);
         driver_ = new PlayerClientDriver( context_ );
 #else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'playerclient' because it was not built!" );
+        throw orcaice::Exception( ERROR_INFO, "HwHandler: Can't instantiate driver 'playerclient' because it was not built!" );
 #endif
     }
     else if ( driverName == "fake" )
     {
-        context_.tracer()->debug( "loading 'fake' driver",3);
+        context_.tracer()->debug( "HwHandler: loading 'fake' driver",3);
         driver_ = new FakeDriver( context_ );
     }
     else {
-        string errorStr = "Unknown driver type. Cannot talk to hardware.";
+        string errorStr = "HwHandler: Unknown driver type. Cannot talk to hardware.";
         context_.tracer()->error( errorStr);
-        context_.tracer()->info( "Valid driver values are {'segwayrmpcan', 'segwayrmpusb', 'playerclient', 'fake'}" );
+        context_.tracer()->info( "HwHandler: Valid driver values are {'segwayrmpcan', 'segwayrmpusb', 'playerclient', 'fake'}" );
         throw orcaice::Exception( ERROR_INFO, errorStr );
     }
 
@@ -134,7 +134,7 @@ HwHandler::HwHandler(
                         controlDescr->maxTurnrate,
                         controlDescr->maxTurnrateAtMaxSpeed );
 
-    context_.tracer()->debug("driver instantiated",3);
+    context_.tracer()->debug("HwHandler: driver instantiated",3);
 }
 
 HwHandler::~HwHandler()
