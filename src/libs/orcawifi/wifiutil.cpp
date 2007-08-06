@@ -46,9 +46,10 @@ void getInterfaceNames( vector<string> &interfaceNames )
     
     while (true)
     {
-        sscanf(buf, "  eth%d:", &numEth);
+        char c;
+        sscanf(buf, "  %cth%d:", &c, &numEth);
         stringstream ss; 
-        ss << "eth" << numEth;
+        ss << c << "th" << numEth;
         interfaceNames.push_back( ss.str() );
         // read the next line
         if (fgets(buf, sizeof(buf),wifiInfoFile) == NULL) break;
@@ -69,10 +70,11 @@ void readFromProc( vector<ProcData> &wifiData )
     while(1)
     {
         // get the wireless device from /proc/net/wireless
-        if ((wifiInfoFile = fopen("/proc/net/wireless", "r")) == NULL) 
+        if ((wifiInfoFile = fopen("/proc/net/wireless", "r")) == NULL)
         {
+            fclose(wifiInfoFile);
             numTries++;
-            cout << "Warning(readFromProc): Couldn't open for reading. Tried " << numTries << " times." << endl;
+            cout << "WARNING(readFromProc): Couldn't open for reading. Tried " << numTries << " times." << endl;
             if (numTries==5) throw Exception( "Error:\nCouldn't open /proc/net/wireless for reading.\n" );
         } else {
             break;

@@ -29,7 +29,7 @@ Component::~Component()
 void
 Component::start()
 {
-    tracer()->debug( "Starting component", 2 );
+    tracer()->info( "Starting component" );
     
     //
     // ENABLE NETWORK CONNECTIONS
@@ -53,8 +53,8 @@ Component::start()
 void Component::stop()
 {    
     tracer()->debug( "Stopping component", 2 );
-    orcaice::stopAndJoin( mainloop_ );
-    tracer()->debug( "Component stopped", 2 );
+//    orcaice::stopAndJoin( mainloop_ );
+    tracer()->info( "Component stopped" );
 }
 
 }
