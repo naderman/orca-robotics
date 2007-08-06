@@ -218,7 +218,7 @@ HwHandler::run()
 void
 HwHandler::handleData( const Command& command )
 {
-    //cout<<"handling: "<<orcaice::toString(obj)<<endl;
+//    cout<<"handling: "<<toString(command)<<endl;
 
 /*
     // if we know we can't write, don't try again
@@ -270,4 +270,8 @@ HwHandler::handleData( const Command& command )
         // inform remote client of hardware failure
         throw orca::HardwareFailedException( errorStr );
     }
+
+    stringstream ssDebug;
+    ssDebug << "HwHandler: Received and wrote command: vx = " << command.vx << " m/s, w = " << command.w*180.0/M_PI << " deg/s";
+    context_.tracer()->debug( ssDebug.str() );
 }

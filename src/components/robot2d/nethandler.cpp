@@ -62,6 +62,8 @@ NetHandler::~NetHandler()
 void 
 NetHandler::handleData(const orca::VelocityControl2dData& obj)
 {
+//    cout<<"TRACE(nethandler.cpp): handleData: " << orcaice::toString(obj) << endl;
+
     robot2d::Command command;
     convert( obj, command );
     commandPipe_.set( command );
@@ -83,6 +85,7 @@ NetHandler::run()
 
         velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dIface( descr_, "VelocityControl2d", context_ );
         velocityControl2dI_->initInterface( this );
+        velocityControl2dI_->setNotifyHandler( this );
 
         // temp objects in internal format
         Data data;

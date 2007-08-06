@@ -11,6 +11,8 @@
 #ifndef ORCA2_ROBOT2D_TYPES_H
 #define ORCA2_ROBOT2D_TYPES_H
 
+#include <string>
+
 namespace robot2d
 {
 
@@ -37,6 +39,8 @@ struct Stats
 {
     double distanceTravelled;
 };
+
+std::string toString( const Command &c );
 
 } // namespace
 
