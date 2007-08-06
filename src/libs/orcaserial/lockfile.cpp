@@ -88,7 +88,7 @@ namespace {
             {
                 // I'm the locker ?!?!
                 unlink(pbuf);
-                stringstream ss; ss << "device " << dev << " is already locked by me!";
+                stringstream ss; ss << "device " << dev << " is already locked by me! (pid "<<lpid<<")";
                 throw LockFileException( ss.str() );
             }
 
