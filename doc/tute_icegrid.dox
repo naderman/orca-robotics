@@ -65,6 +65,7 @@ Load the application described in @c laser2d.xml into the IceGrid Node using @c 
 @verbatim
 $ icegridadmin --Ice.Default.Locator="IceGrid/Locator:default -p 12000" -e "application add 'laser2d.xml'"
 @endverbatim
+(Any username and password will do, since no access controls are configured).
 
 @par The Client
 
