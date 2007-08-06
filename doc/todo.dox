@@ -43,6 +43,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - possible useful utilities
    - xml2cfg converter
+     - AlexB: Note: IceGrid writes '.cfg'-style config files to eg. nodedb/servers/<host>.<component>/config/config
    - converter between bin/ascii logs (if can be done automatically)
 
 @section orca_doc_history_head Changes in CVS since Last Release
