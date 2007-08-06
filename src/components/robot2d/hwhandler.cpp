@@ -56,7 +56,7 @@ HwHandler::HwHandler(
     config_.maxSideSpeed = 0.0;
     config_.maxTurnrate = controlDescr->maxTurnrate;
     config_.isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( context_.properties(),
-                                                                          prefix+".EnableMotion", 1 );
+                                                                          prefix+"EnableMotion", 1 );
 
     // based on the config parameter, create the right driver
     string driverName = orcaice::getPropertyWithDefault( 
