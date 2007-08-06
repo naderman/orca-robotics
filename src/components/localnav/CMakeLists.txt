@@ -47,7 +47,7 @@ IF ( BUILD_LOCALNAV )
       # AlexB: The /lib/ld-linux stuff is a bit of magic to make Linux
       # find the vfh library so it can be dynamically loaded.
       #
-      ADD_TEST( LocalNavVfhTest /lib/ld-linux.so.2 --library-path vfhdriver:$ENV{LD_LIBRARY_PATH} ${CMAKE_CURRENT_BINARY_DIR}/localnav --Orca.Config=${PROJECT_BINARY_DIR}/src/components/localnav/localnav.cfg --LocalNav.Config.TestMode=1 --LocalNav.Config.Vfh.MaxSpeed=2.0 --LocalNav.Config.Test.NumWaypoints=20 --LocalNav.Config.Test.BatchMode=1 )
+      ADD_TEST( LocalNavVfhTest /lib/ld-linux.so.2 --library-path vfhdriver:$ENV{LD_LIBRARY_PATH} ${CMAKE_CURRENT_BINARY_DIR}/localnav --Orca.Config=${PROJECT_BINARY_DIR}/src/components/localnav/localnav.cfg --LocalNav.Config.TestInSimulationMode=1 --LocalNav.Config.Vfh.MaxSpeed=2.0 --LocalNav.Config.Test.NumWaypoints=20 --LocalNav.Config.Test.BatchMode=1 )
     ENDIF ( BUILD_TESTS )
 
 ENDIF ( BUILD_LOCALNAV )

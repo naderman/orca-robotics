@@ -56,7 +56,7 @@ Component::start()
     std::string prefix = tag();
     prefix += ".Config.";
 
-    bool testMode = orcaice::getPropertyAsIntWithDefault( prop, prefix+"TestMode", 0 );
+    bool testInSimulationMode = orcaice::getPropertyAsIntWithDefault( prop, prefix+"TestInSimulationMode", 0 );
 
     //
     // Create our provided interface
@@ -64,9 +64,9 @@ Component::start()
     pathFollowerInterface_ = new orcalocalnav::PathFollower2dI( "PathFollower2d", *clock_, context() );
 
     //
-    // Instantiate bogus info sources in test mode
+    // Instantiate bogus info sources in test-in-simulation-mode
     //
-    if ( testMode )
+    if ( testInSimulationMode )
     {
         int numWaypoints = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Test.NumWaypoints", 10 );
         cout<<"TRACE(component.cpp): Using " << numWaypoints << " waypoints" << endl;
@@ -99,7 +99,7 @@ Component::start()
     }
 
     context().tracer()->debug( "Component: Instantiating main loop.", 3 );
-    if ( !testMode )
+    if ( !testInSimulationMode )
     {
         mainLoop_ = new MainLoop( *driverFactory_,
                                   *clock_,

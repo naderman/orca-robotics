@@ -28,7 +28,7 @@ Requires.Observations.DefaultProxy=laserscanner2d@local/laser2d
 
 # Config Parameters
 Config.DriverLib.Default=libOrcaLocalNavVfh.so
-Config.TestMode.Default=0
+Config.TestInSimulationMode.Default=0
 Config.Test.BatchMode.Default=0
 Config.Test.NumWaypoints.Default=10
 

@@ -231,7 +231,7 @@ The Main pieces of LocalNav are:
 @section testing Testing
 
 Localnav has an internal simulator which can be used for automated
-testing.  When TestMode is enabled, LocalNav will use this internal
+testing.  When TestInSimulationMode is enabled, LocalNav will use this internal
 simulator rather than hooking up to external sources of information.
 It will establish the following interfaces to provide external access
 to the state of the simulated world:
@@ -240,10 +240,10 @@ to the state of the simulated world:
 - @ref orca_interface_localise2d     [LocalNav.Provides.TestLocalise]
 - @ref orca_interface_ogmap          [LocalNav.Provides.TestOgMap]
 
-The following configuration parameters affect the behaviour of TestMode:
+The following configuration parameters affect the behaviour of TestInSimulationMode:
 
-- @c LocalNav.Config.TestMode (bool)
-    - Enables/Disables test mode
+- @c LocalNav.Config.TestInSimulationMode (bool)
+    - Enables/Disables test-in-simulation-mode
     - Default: 0
 
 - @c LocalNav.Config.Test.BatchMode (bool)
