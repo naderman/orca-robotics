@@ -339,9 +339,12 @@ HwHandler::handleData( const Command& command )
     // debug
     double msecs=writeTimer_.elapsed().toMilliSecondsDouble();
     writeTimer_.restart();
-    // this will certainly be 'late' when we throw an exception below
-    if ( msecs>300 ) {
-        cout<<"HwHandler: late: " << msecs <<endl;
+    // Check how long since we received our last command
+    if ( msecs>300 ) 
+    {
+        stringstream ss;
+        ss << "HwHandler: It's been " << msecs << "ms since we last received a command!";
+        context_.tracer()->debug( ss.str() );
     }
     
     //
@@ -377,4 +380,8 @@ HwHandler::handleData( const Command& command )
         // inform remote client of hardware failure
         throw orca::HardwareFailedException( ss.str() );
     }
+
+    stringstream ssDebug;
+    ssDebug << "HwHandler: Received and wrote command: vx = " << command.vx << " m/s, w = " << command.w*180.0/M_PI << " deg/s";
+    context_.tracer()->debug( ssDebug.str() );
 }
