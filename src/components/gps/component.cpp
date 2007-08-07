@@ -67,8 +67,7 @@ Component::start()
             errString += prefix + "Device'";
             throw GpsException( errString );
         }
-        int baud = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Baud", 4800 );
-        hwDriver_ = new AshtechGpsDriver( device.c_str(), baud, context() );
+        hwDriver_ = new AshtechGpsDriver( device.c_str(), context() );
     }
     else if ( driverName == "fake" )
     {

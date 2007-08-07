@@ -26,7 +26,6 @@ Config.AntennaOffset.Comment=Offset of the gps antenna from the vehicle coordina
 Config.AntennaOffset.Default=0.0 0.0 0.0  0.0 0.0 0.0
 
 Config.Device.Default=/dev/ttyS0
-Config.Baud.Default=4800
 
 Config.ReportIfNoFix.Default=1
 
