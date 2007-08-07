@@ -13,7 +13,7 @@
 
 // Definitions in this file are based on the discussion in the Player mailing list
 // taken place in 2003. Specifically, these are Slice encoding of standard
-// definitions proposed by XXX.
+// definitions proposed by Herman Bruyninckx.
 
 module orca
 {
