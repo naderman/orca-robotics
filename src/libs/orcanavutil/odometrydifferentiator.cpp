@@ -6,11 +6,10 @@ using namespace std;
 
 namespace orcanavutil {
 
-void
-OdometryDifferentiator::addOdom( double x,
-                                 double y,
-                                 double theta,
-                                 Offset &delta )
+orcanavutil::Offset
+OdometryDifferentiator::calcDelta( double x,
+                                   double y,
+                                   double theta )
 {
     if ( !prevOdomInitialised_ )
     {
@@ -18,16 +17,13 @@ OdometryDifferentiator::addOdom( double x,
         prevY_     = y;
         prevTheta_ = theta;
 
-        delta.x     = 0.0;
-        delta.y     = 0.0;
-        delta.theta = 0.0;
-
         prevOdomInitialised_ = true;
-//         cout<<"TRACE(odometrydifferentiator.cpp): Initialising prevOdom_" << endl;
-        return;
+
+        return Offset( 0.0, 0.0, 0.0 );
     }
 
     // Calculate the offset that this new odometry info represents
+    Offset delta;
     orcanavutil::subtractInitialOffset( x,
                                         y,
                                         theta,
@@ -43,6 +39,8 @@ OdometryDifferentiator::addOdom( double x,
     prevX_     = x;
     prevY_     = y;
     prevTheta_ = theta;
+
+    return delta;
 }
 
 }

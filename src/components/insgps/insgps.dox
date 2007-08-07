@@ -86,7 +86,7 @@ Serial
         
 - @c InsGps.Config.Device (string)
     - The device to use
-    - Example values: /dev/ttyS0 (for linux) or /dev/ser1 (for QNX)
+    - Example values: /dev/ttyS0 (for linux)
     - Default: "/dev/ttyS0"
 
 - @c InsGps.Config.Baud (int)

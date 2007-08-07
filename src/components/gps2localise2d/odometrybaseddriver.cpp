@@ -141,8 +141,9 @@ OdometryBasedDriver::compute( const orca::GpsData  &gpsData,
     {
         orca::Odometry2dData odom;
         odomConsumer_->proxy().get( odom );
-        orcanavutil::Offset delta;
-        odometryDifferentiator_.addOdom( odom.pose.p.x, odom.pose.p.y, odom.pose.o, delta );
+        orcanavutil::Offset delta = odometryDifferentiator_.calcDelta( odom.pose.p.x,
+                                                                       odom.pose.p.y,
+                                                                       odom.pose.o );
 
         assert( localiseData.hypotheses.size() == 1 );
         localiseData.hypotheses[0].cov.tt = calcHeadingUncertainty( delta, dt );

@@ -19,11 +19,10 @@ public:
         : prevOdomInitialised_(false)
         {}
 
-    //! Calculates the delta that this new odometry reading represents
-    void addOdom( double x,
-                  double y,
-                  double theta,
-                  orcanavutil::Offset &delta );
+    //! Returns the delta that this new odometry reading represents
+    orcanavutil::Offset calcDelta( double x,
+                                   double y,
+                                   double theta );
 
 private: 
 
