@@ -60,7 +60,13 @@ Component::start()
 
     if ( driverName == "ashtech" )
     {
-        std::string device = orcaice::getPropertyWithDefault( prop, prefix+"Device", "/dev/ttyS0" );
+        std::string device;
+        int ret = orcaice::getProperty( prop, prefix+"Device", device );
+        if (ret!=0) {
+            std::string errString = "Component: Couldn't determine device (e.g. /dev/ttyS0) for ashtech. Expected property '";
+            errString += prefix + "Device'";
+            throw GpsException( errString );
+        }
         int baud = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Baud", 4800 );
         hwDriver_ = new AshtechGpsDriver( device.c_str(), baud, context() );
     }
@@ -69,11 +75,10 @@ Component::start()
         std::vector<double> latitudes, longitudes;
         for(unsigned int i=0; ; i++)
         {
-            stringstream* ss = new stringstream;
-            *ss << i;
+            stringstream ss; ss << i;
             double latitude, longitude;
-            if ( (orcaice::getPropertyAsDouble( prop, prefix+"FakeDriver.Latitude" + ss->str(), latitude )) ||
-                 (orcaice::getPropertyAsDouble( prop, prefix+"FakeDriver.Longitude" + ss->str(), longitude )) )
+            if ( (orcaice::getPropertyAsDouble( prop, prefix+"FakeDriver.Latitude" + ss.str(), latitude )) ||
+                 (orcaice::getPropertyAsDouble( prop, prefix+"FakeDriver.Longitude" + ss.str(), longitude )) )
             break;
             latitudes.push_back(latitude);
             longitudes.push_back(longitude);
