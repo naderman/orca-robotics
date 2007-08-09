@@ -9,9 +9,8 @@
  */
 
 #include <iostream>
-
 #include <orcaice/orcaice.h>
-#include "cameraiface.h"
+#include "imageiface.h"
 #include "util.h"
 
 using namespace std;
@@ -23,35 +22,35 @@ namespace orcaifaceimpl {
 //
 // This is the implementation of the slice-defined interface
 //
-class CameraI : public orca::Camera
+class ImageI : public orca::Image
 {
 public:
-    CameraI( CameraIface &iface )
+    ImageI( ImageIface &iface )
         : iface_(iface) {}
 
     // remote interface
 
-    virtual ::orca::CameraData getData(const ::Ice::Current& ) const
+    virtual ::orca::ImageDataPtr getData(const ::Ice::Current& )
         { return iface_.getData(); }
 
-    virtual ::orca::CameraDescription getDescription(const ::Ice::Current& ) const
+    virtual ::orca::ImageDescription getDescription(const ::Ice::Current& )
         { return iface_.getDescription(); }
 
-    virtual void subscribe(const ::orca::CameraConsumerPrx& consumer,
+    virtual void subscribe(const ::orca::ImageConsumerPrx& consumer,
                            const ::Ice::Current& = ::Ice::Current())
         { iface_.subscribe( consumer ); }
 
-    virtual void unsubscribe(const ::orca::CameraConsumerPrx& consumer,
+    virtual void unsubscribe(const ::orca::ImageConsumerPrx& consumer,
                              const ::Ice::Current& = ::Ice::Current())
         { iface_.subscribe( consumer ); }
 
 private:
-    CameraIface &iface_;
+    ImageIface &iface_;
 };
 
 //////////////////////////////////////////////////////////////////////
 
-CameraIface::CameraIface( const orca::CameraDescription& descr,
+ImageIface::ImageIface( const orca::ImageDescription& descr,
                           const std::string& ifaceTag,
                           const orcaice::Context& context )
     : descr_(descr),
@@ -60,39 +59,39 @@ CameraIface::CameraIface( const orca::CameraDescription& descr,
 {
 }
 
-CameraIface::~CameraIface()
+ImageIface::~ImageIface()
 {
     tryRemovePtr( context_, ptr_ );
 }
 
 void
-CameraIface::initInterface()
+ImageIface::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithTag<orca::CameraConsumerPrx>
+    topicPrx_ = orcaice::connectToTopicWithTag<orca::ImageConsumerPrx>
         ( context_, consumerPrx_, ifaceTag_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
-    ptr_ = new CameraI( *this );
+    ptr_ = new ImageI( *this );
     orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_ );
 }
 
 void 
-CameraIface::initInterface( orcaice::Thread* thread, int retryInterval )
+ImageIface::initInterface( orcaice::Thread* thread, int retryInterval )
 {
-    topicPrx_ = orcaice::connectToTopicWithTag<orca::CameraConsumerPrx>
+    topicPrx_ = orcaice::connectToTopicWithTag<orca::ImageConsumerPrx>
         ( context_, consumerPrx_, ifaceTag_, "*", thread, retryInterval );
 
-    ptr_ = new CameraI( *this );
+    ptr_ = new ImageI( *this );
     orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_, thread, retryInterval );
 }
 
-::orca::CameraData 
-CameraIface::getData() const
+::orca::ImageDataPtr 
+ImageIface::getData() const
 {
-    context_.tracer()->debug( "CameraIface::getData()", 5 );
+    context_.tracer()->debug( "ImageIface::getData()", 10 );
 
     if ( dataProxy_.isEmpty() )
     {
@@ -101,21 +100,21 @@ CameraIface::getData() const
         throw orca::DataNotExistException( ss.str() );
     }
 
-    orca::CameraData data;
+    orca::ImageDataPtr data;
     dataProxy_.get( data );
     return data;
 }
 
-::orca::CameraDescription
-CameraIface::getDescription() const
+::orca::ImageDescription
+ImageIface::getDescription() const
 {
     return descr_;
 }
 
 void 
-CameraIface::subscribe(const ::orca::CameraConsumerPrx& subscriber)
+ImageIface::subscribe(const ::orca::ImageConsumerPrx& subscriber)
 {
-    context_.tracer()->debug( "CameraIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "ImageIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     try {
         topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
@@ -126,34 +125,33 @@ CameraIface::subscribe(const ::orca::CameraConsumerPrx& subscriber)
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
-        ss <<"CameraIface::subscribe: failed to subscribe: "<< e << endl;
+        ss <<"ImageIface::subscribe: failed to subscribe: "<< e << endl;
         context_.tracer()->warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
 
 void 
-CameraIface::unsubscribe(const ::orca::CameraConsumerPrx& subscriber)
+ImageIface::unsubscribe(const ::orca::ImageConsumerPrx& subscriber)
 {
-    context_.tracer()->debug( "CameraIface::unsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "ImageIface::unsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 
 void
-CameraIface::localSet( const orca::CameraData& data )
+ImageIface::localSet( const orca::ImageDataPtr& data )
 {
     dataProxy_.set( data );
 }
 
 void
-CameraIface::localSetAndSend( const orca::CameraData& data )
+ImageIface::localSetAndSend( const orca::ImageDataPtr& data )
 {
-//     cout<<"TRACE(CameraIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
-
+//     cout<<"TRACE(ImageIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
     dataProxy_.set( data );
 
     // Try to push to IceStorm.
-    tryPushToIceStormWithReconnect<orca::CameraConsumerPrx,orca::CameraData>
+    tryPushToIceStormWithReconnect<orca::ImageConsumerPrx,orca::ImageDataPtr>
         ( context_,
         consumerPrx_,
         data,

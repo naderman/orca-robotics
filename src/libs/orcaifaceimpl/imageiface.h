@@ -8,10 +8,10 @@
  *
  */
 
-#ifndef ORCA2_CAMERA_IFACE_H
-#define ORCA2_CAMERA_IFACE_H
+#ifndef ORCA2_IMAGE_IFACE_H
+#define ORCA2_IMAGE_IFACE_H
 
-#include <orca/camera.h>
+#include <orca/image.h>
 #include <IceStorm/IceStorm.h>
 
 // utilities
@@ -25,18 +25,18 @@ namespace orcaice {
 namespace orcaifaceimpl {
 
 //!
-//! Implements the orca::Camera interface. Handles remote calls.
+//! Implements the orca::Image interface. Handles remote calls.
 //!
-class CameraIface : public IceUtil::Shared
+class ImageIface : public IceUtil::Shared
 {
-friend class CameraI;
+friend class ImageI;
 
 public:
-    //! constructor
-    CameraIface( const orca::CameraDescription& descr,
+    //! Constructor
+    ImageIface( const orca::ImageDescription& descr,
                  const std::string& ifaceTag, 
                  const orcaice::Context& context );
-    ~CameraIface();
+    ~ImageIface();
 
     // local interface:
     //! Sets up interface and connects to IceStorm. May throw orcaice::Exceptions.
@@ -47,24 +47,25 @@ public:
     void initInterface( orcaice::Thread* thread, int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
-    void localSet( const orca::CameraData& data );
+    void localSet( const orca::ImageDataPtr& data );
 
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
-    void localSetAndSend( const orca::CameraData& data );
+    void localSetAndSend( const orca::ImageDataPtr& data );
 
 private:
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::CameraData getData() const;
-    ::orca::CameraDescription getDescription() const;
-    void subscribe(const ::orca::CameraConsumerPrx&);
-    void unsubscribe(const ::orca::CameraConsumerPrx&);
+    ::orca::ImageDataPtr getData() const;
+    ::orca::ImageDescription getDescription() const;
+    void subscribe(const ::orca::ImageConsumerPrx&);
+    void unsubscribe(const ::orca::ImageConsumerPrx&);
 
-    orca::CameraDescription     descr_;
-    orcaice::Proxy<orca::CameraData> dataProxy_;
+    orca::ImageDescription     descr_;
+    // yes, this is not a typo! It's safe to use a normal proxy with an Ice smart pointer.
+    orcaice::Proxy<orca::ImageDataPtr> dataProxy_;
 
-    orca::CameraConsumerPrx    consumerPrx_;
-    IceStorm::TopicPrx             topicPrx_;
+    orca::ImageConsumerPrx    consumerPrx_;
+    IceStorm::TopicPrx        topicPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
@@ -73,7 +74,7 @@ private:
     orcaice::Context               context_;
 };
 
-typedef IceUtil::Handle<CameraIface> CameraIfacePtr;
+typedef IceUtil::Handle<ImageIface> ImageIfacePtr;
 
 }
 
