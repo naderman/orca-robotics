@@ -224,8 +224,7 @@ FeatureMap2dPainter::paintPoseFeature( QPainter *painter,
     paintPointFeature( painter, f.type, featureNum, f.pExists,
                        f.p.p.x, f.p.p.y, f.c.xx, f.c.xy, f.c.yy );
 
-    cout<<"TRACE(featuremap2dpainter.cpp): TODO: paint heading and uncertainty." << endl;
-    
+    paintUncertaintyWedge( painter->worldMatrix(), painter, orcaqgui::featureColour(f.type), f.p.o, f.c.tt );
 }
 
 void FeatureMap2dPainter::paint( QPainter *painter, const int z )
