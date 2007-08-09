@@ -46,8 +46,22 @@ class FeatureMap2dPainter
 
   private:
 
+    void 
+    paintPointFeature( QPainter *painter, 
+                       int featureType,
+                       int featureNum,
+                       double probExists,
+                       double centreX,
+                       double centreY,
+                       double covXX,
+                       double covXY,
+                       double covYY );
+
     void paintPointFeature( QPainter *painter,
                             const orca::CartesianPointFeature2d &f,
+                            int featureNum );
+    void  paintPoseFeature( QPainter *painter, 
+                            const orca::CartesianPoseFeature2d &f,
                             int featureNum );
     void paintLineFeature(  QPainter *painter,
                             const orca::CartesianLineFeature2d  &f,

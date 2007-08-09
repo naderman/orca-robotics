@@ -75,21 +75,27 @@ paintFeatureNum( QPainter *painter, int featureType, int featureNum, bool useTra
 
 void 
 FeatureMap2dPainter::paintPointFeature( QPainter *painter, 
-                                        const orca::CartesianPointFeature2d &f,
-                                        int featureNum )
+                                        int featureType,
+                                        int featureNum,
+                                        double probExists,
+                                        double centreX,
+                                        double centreY,
+                                        double covXX,
+                                        double covXY,
+                                        double covYY )
 {
     // draw a little square on the mean, with weight proportional to pExists.
     const float boxWidth = 0.2;
-    QPen pen(orcaqgui::featureColour(f.type));
-    double newWidth =  MAX(0.1, 0.1 * (f.pExists-0.2));
+    QPen pen(orcaqgui::featureColour(featureType));
+    double newWidth =  MAX(0.1, 0.1 * (probExists-0.2));
     pen.setWidthF( newWidth );
     painter->setPen( pen );
-    painter->drawRect( QRectF( f.p.x-boxWidth/2, f.p.y-boxWidth/2, boxWidth, boxWidth ) );
+    painter->drawRect( QRectF( centreX-boxWidth/2, centreY-boxWidth/2, boxWidth, boxWidth ) );
 
     // Draw the covariance ellipse and feature number
     painter->save();
     {
-        painter->translate( f.p.x, f.p.y );
+        painter->translate( centreX, centreY );
         if ( displayUncertainty_ )
         {
             //cout<<"TRACE(featuremap2dpainter.cpp): painting: " << f.c.xx << ","<<f.c.xy<<","<<f.c.yy << endl;
@@ -97,17 +103,26 @@ FeatureMap2dPainter::paintPointFeature( QPainter *painter,
             QMatrix m2win = painter->worldMatrix();
             paintCovarianceEllipse( m2win,
                                     painter,
-                                    orcaqgui::featureColour(f.type),
-                                    f.c.xx,
-                                    f.c.xy,
-                                    f.c.yy );
+                                    orcaqgui::featureColour(featureType),
+                                    covXX,
+                                    covXY,
+                                    covYY );
         }
 
         // Numbers
         if ( displayFeatureNumbers_ )
-            paintFeatureNum( painter, f.type, featureNum, useTransparency_ );
+            paintFeatureNum( painter, featureType, featureNum, useTransparency_ );
     }
     painter->restore();
+}
+
+void 
+FeatureMap2dPainter::paintPointFeature( QPainter *painter, 
+                                        const orca::CartesianPointFeature2d &f,
+                                        int featureNum )
+{
+    paintPointFeature( painter, f.type, featureNum, f.pExists,
+                       f.p.x, f.p.y, f.c.xx, f.c.xy, f.c.yy );
 }
 
 void 
@@ -199,7 +214,17 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
             paintFeatureNum( painter, f.type, featureNum, useTransparency_ );
     }
     painter->restore();
-    
+}
+
+void 
+FeatureMap2dPainter::paintPoseFeature( QPainter *painter, 
+                                       const orca::CartesianPoseFeature2d &f,
+                                       int featureNum )
+{
+    paintPointFeature( painter, f.type, featureNum, f.pExists,
+                       f.p.p.x, f.p.p.y, f.c.xx, f.c.xy, f.c.yy );
+
+    cout<<"TRACE(featuremap2dpainter.cpp): TODO: paint heading and uncertainty." << endl;
     
 }
 
@@ -233,6 +258,14 @@ void FeatureMap2dPainter::paint( QPainter *painter, const int z )
             assert( f != NULL );
 
             paintPointFeature( painter, *f, i );
+        }
+        else if ( data_->features[i]->ice_isA( "::orca::CartesianPoseFeature2d" ) )
+        {
+            const orca::CartesianPoseFeature2d *f = 
+                dynamic_cast<const orca::CartesianPoseFeature2d*>(&(*(data_->features[i])));
+            assert( f != NULL );
+
+            paintPoseFeature( painter, *f, i );
         }
     }
 }

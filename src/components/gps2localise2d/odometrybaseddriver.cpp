@@ -101,12 +101,12 @@ OdometryBasedDriver::calcHeadingUncertainty( orcanavutil::Offset &delta,
         rotFactor_ * rotVal     +
         linFactor_ * linVal;
 
-    cout<<"TRACE(odometrybaseddriver.cpp): -----------------" << endl;
-    cout<<"TRACE(odometrybaseddriver.cpp): linSpeed: " << linSpeed << endl;
-    cout<<"TRACE(odometrybaseddriver.cpp): rotSpeed: " << rotSpeed*180.0/M_PI << "deg/s" << endl;
-    cout<<"TRACE(odometrybaseddriver.cpp): rotFactor_*rotVal = (" << rotFactor_ << "*" << rotVal << ")="<<rotFactor_*rotVal * 180.0/M_PI << "deg" << endl;
-    cout<<"TRACE(odometrybaseddriver.cpp): linFactor_*linVal = (" << linFactor_ << "*" << linVal << ")="<<linFactor_*linVal * 180.0/M_PI << "deg" << endl;
-    cout<<"TRACE(odometrybaseddriver.cpp): uncertainty: " << uncertainty*180.0/M_PI << "deg" << endl;
+//     cout<<"TRACE(odometrybaseddriver.cpp): -----------------" << endl;
+//     cout<<"TRACE(odometrybaseddriver.cpp): linSpeed: " << linSpeed << endl;
+//     cout<<"TRACE(odometrybaseddriver.cpp): rotSpeed: " << rotSpeed*180.0/M_PI << "deg/s" << endl;
+//     cout<<"TRACE(odometrybaseddriver.cpp): rotFactor_*rotVal = (" << rotFactor_ << "*" << rotVal << ")="<<rotFactor_*rotVal * 180.0/M_PI << "deg" << endl;
+//     cout<<"TRACE(odometrybaseddriver.cpp): linFactor_*linVal = (" << linFactor_ << "*" << linVal << ")="<<linFactor_*linVal * 180.0/M_PI << "deg" << endl;
+//     cout<<"TRACE(odometrybaseddriver.cpp): uncertainty: " << uncertainty*180.0/M_PI << "deg" << endl;
 
 
     return uncertainty;
@@ -124,6 +124,13 @@ OdometryBasedDriver::compute( const orca::GpsData  &gpsData,
 
     if ( simpleDriver_.compute( gpsData, localiseData ) == false )
         return false;
+
+    // Expand position uncertainty: the GPS unit is calculating it
+    // based on the locations of satellites, but it's not taking into
+    // account things like the proximity of metal structures.
+    // This dodgy hack might help.
+    localiseData.hypotheses[0].cov.xx *= 2.0;
+    localiseData.hypotheses[0].cov.yy *= 2.0;
 
     if ( odomConsumer_->proxy().isEmpty() )
     {

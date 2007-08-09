@@ -27,7 +27,7 @@ orca_polefinder::detect_poles( const std::vector<float> &scan,
                                double max_width,
                                double min_distance_to_background,
                                double min_angle_from_dodge,
-                               std::vector<positionRB> &poles )
+                               std::vector<Pole> &poles )
 {
     poles.clear();
 
@@ -36,8 +36,6 @@ orca_polefinder::detect_poles( const std::vector<float> &scan,
     double pole_width;
     int    num_poles = 0;
     int    previous_point = 0;
-    double temp_range;
-    float  temp_bearing;
     int    last_dodgy_range = 0;
     int    last_pole_end_in_returns = -99999999;
     int    min_clearance_from_dodge_in_returns = (int) (rint( min_angle_from_dodge / angleIncrement ));
@@ -69,12 +67,13 @@ orca_polefinder::detect_poles( const std::vector<float> &scan,
                          (i-potential_pole_start > 1) )
                     {
                         // We have a pole!
-                        temp_range   = scan[(potential_pole_start+(i-1))/2];
-                        temp_bearing = (((i-1)+potential_pole_start)/2)*angleIncrement + startAngle;
-                        
-                        poles.resize( poles.size()+1 );
-                        poles[poles.size()-1].range   = temp_range;
-                        poles[poles.size()-1].bearing = temp_bearing;
+//                         temp_range   = scan[(potential_pole_start+(i-1))/2];
+//                         temp_bearing = (((i-1)+potential_pole_start)/2)*angleIncrement + startAngle;
+//                         poles.resize( poles.size()+1 );
+//                         poles[poles.size()-1].range   = temp_range;
+//                         poles[poles.size()-1].bearing = temp_bearing;
+
+                        poles.push_back( Pole( potential_pole_start, i-1 ) );
 
 //                         cout<<"TRACE(polefinder.cpp): Adding pole at " 
 //                             << temp_range << ", " << temp_bearing*180.0/M_PI << "deg" << endl;

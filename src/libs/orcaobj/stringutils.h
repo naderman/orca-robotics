@@ -124,6 +124,8 @@ std::string toString( const orca::Frame2d& );
 //! Parses result of the correspondinng toString().
 //! Returns: 0 = parsing successful, non-zero = parsing failed.
 int toFrame2d( const std::string &, orca::Frame2d& );
+//! Converts to string
+std::string toString( const orca::Covariance2d& );
 
 //! Converts to string
 //! @see toFrame3d()

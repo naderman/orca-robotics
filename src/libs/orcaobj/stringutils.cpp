@@ -910,6 +910,20 @@ toString( const orca::Twist2d &t )
     return s.str();
 }
 
+std::string
+toString( const orca::Covariance2d &cov )
+{
+    stringstream ss;
+    ss << "("
+       << cov.xx << ","
+       << cov.xy << ","
+       << cov.yy << ","
+       << cov.xt << ","
+       << cov.yt << ","
+       << cov.tt*180.0/M_PI << "deg)" << endl;
+    return ss.str();
+}
+
 std::string 
 toString( const orca::Localise2dData& obj )
 {
@@ -923,13 +937,8 @@ toString( const orca::Localise2dData& obj )
           << h.weight << "] (" 
           << h.mean.p.x << ","
           << h.mean.p.y << ","
-          << h.mean.o*180.0/M_PI << "deg) ("
-          << h.cov.xx << ","
-          << h.cov.xy << ","
-          << h.cov.yy << ","
-          << h.cov.xt << ","
-          << h.cov.yt << ","
-          << h.cov.tt*180.0/M_PI << "deg)" << endl;
+          << h.mean.o*180.0/M_PI << "deg) "
+          << toString(h.cov) << endl;
     }
     return s.str();
 }
@@ -1403,9 +1412,6 @@ toString( const orca::FeatureMap2dDataPtr &obj )
     {
         assert( obj->features[i] != 0 );
 
-        //
-        // I'm not convinced that this is the best way of doing things...
-        //
         const orca::Feature2dPtr &f = obj->features[i];
         s << "  " << i << ": " << toString(*f) << endl;
     }    
@@ -1428,6 +1434,11 @@ toString( const orca::Feature2d &f )
     {
         const orca::CartesianPointFeature2d& r = dynamic_cast<const orca::CartesianPointFeature2d&>(f);
         s << "("<<r.p.x<<","<<r.p.y<<") ("<<r.c.xx<<","<<r.c.xy<<","<<r.c.yy<<")";
+    }
+    else if ( f.ice_isA( "::orca::CartesianPoseFeature2d" ) )
+    {
+        const orca::CartesianPoseFeature2d& r = dynamic_cast<const orca::CartesianPoseFeature2d&>(f);
+        s << "("<<r.p.p.x<<","<<r.p.p.y<<","<<r.p.o*180.0/M_PI<<") ("<<r.c.xx<<","<<r.c.xy<<","<<r.c.yy<<")";
     }
     else if ( f.ice_isA( "::orca::CartesianLineFeature2d" ) )
     {

@@ -35,17 +35,14 @@ module feature
     const int DOOR             = 2;
     //! The junction of two lines.
     const int CORNER           = 3;
-//     //! The end of a wall.  The junction of two walls looks 
-//     //! like this when viewed from a position such that the 
-//     //! other wall is obscured.  The other wall may not exist however.
-//     const int POSSIBLECORNER   = 4;
     //! A line segment.
     const int LINE             = 4;
     //! corner on eg the inside of a room
-    const int INTERNALCORNER  = 5;
+    const int INTERNALCORNER   = 5;
     //! corner on eg the outside of a building
-    const int EXTERNALCORNER  = 6;
-
+    const int EXTERNALCORNER   = 6;
+    //! corner on eg the outside of a building
+    const int VEHICLEPOSE      = 7;
 };
 
 //! Generic 2D feature.
@@ -110,6 +107,15 @@ class CartesianLineFeature2d extends Feature2d
 
     //! Is the reported end point the actual extent of the line? 
     bool endSighted;
+};
+
+//! A point feature with a heading
+class CartesianPoseFeature2d extends Feature2d
+{
+    //! mean
+    Frame2d      p;
+    //! uncertainty
+    Covariance2d c;
 };
 
 //! A list of features

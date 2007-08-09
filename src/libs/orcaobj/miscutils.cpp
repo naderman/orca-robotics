@@ -119,6 +119,20 @@ saveToFile( const orca::FeatureMap2dDataPtr& fmap, FILE *f )
                     r.c.xy,
                     r.c.yy );
         }
+        else if ( feature->ice_isA( "::orca::CartesianPoseFeature2d" ) )
+        {
+            const orca::CartesianPoseFeature2d& r = dynamic_cast<const orca::CartesianPoseFeature2d&>(*feature);
+            fprintf(f, "%f %f %f %f %f %f %f %f %F\n",
+                    r.p.p.x,
+                    r.p.p.y,
+                    r.p.o,
+                    r.c.xx,
+                    r.c.xy,
+                    r.c.xt,
+                    r.c.yy,
+                    r.c.yt,
+                    r.c.tt );
+        }
         else if ( feature->ice_isA( "::orca::CartesianLineFeature2d" ) )
         {
             const orca::CartesianLineFeature2d& r = dynamic_cast<const orca::CartesianLineFeature2d&>(*feature);
@@ -261,6 +275,35 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
 
             fmap->features.push_back( feature );
             line++;
+            break;
+        }
+        case orca::feature::VEHICLEPOSE:
+        {
+            orca::CartesianPoseFeature2dPtr feature = new orca::CartesianPoseFeature2d;
+            feature->type = type;
+            // include conversion char 'l' before 'f' to indicate that the pointers are to doubles
+            // (rather than floats)
+            const int numElements = 6;
+            int num = sscanf(featureInfoBuf,"%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf\n",
+                             &(feature->pExists),
+                             &(feature->p.p.x),
+                             &(feature->p.p.y),
+                             &(feature->p.o),
+                             &(feature->c.xx),
+                             &(feature->c.xy),
+                             &(feature->c.xt),
+                             &(feature->c.yy),
+                             &(feature->c.yt),
+                             &(feature->c.tt) );
+            if ( num != numElements )
+            {
+                std::stringstream ss;
+                ss << "Malformed featuremap file!  Couldn't understand line " << line <<":"<<endl<<buf;
+                f.close();
+                throw( ss.str() );
+            }
+
+            fmap->features.push_back( feature );
             break;
         }
         default:

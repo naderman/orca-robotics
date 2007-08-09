@@ -37,6 +37,8 @@ private:
     double laserMaxRange_;
     double rangeSd_;
     double bearingSd_;
+    double pFalsePositive_;
+    double pTruePositive_;
 };
 
 } // namespace

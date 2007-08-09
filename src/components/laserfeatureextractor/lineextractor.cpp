@@ -146,7 +146,7 @@ isEndpointVisible( double endRange,
 {
     if ( meetsLine )
     {
-        cout<<"TRACE(lineextractor.cpp): junction of two lines" << endl;
+        // cout<<"TRACE(lineextractor.cpp): junction of two lines" << endl;
         if ( fabs(meetAngle) > 45.0*M_PI/180.0 )
         {
             if ( reason != NULL )
@@ -162,24 +162,24 @@ isEndpointVisible( double endRange,
 
     if ( angleToEnd > ANGLE_THRESHOLD )
     {
-        cout<<"TRACE(lineextractor.cpp): can't see around corner" << endl;
+        // cout<<"TRACE(lineextractor.cpp): can't see around corner" << endl;
         return false;
     }
 
     if ( rangeBeyondEnd < 0 )
     {
-        cout<<"TRACE(lineextractor.cpp): ends with invalid range" << endl;
+        // cout<<"TRACE(lineextractor.cpp): ends with invalid range" << endl;
         return false;
     }
 
     if ( rangeBeyondEnd < ( endRange + MIN_DELTA_RANGE_FOR_LINE_ENDPOINT ) )
     {
-        cout<<"TRACE(lineextractor.cpp): obscured by fg obstacle" << endl;
+        // cout<<"TRACE(lineextractor.cpp): obscured by fg obstacle" << endl;
         return false;
     }
 
-    cout<<"TRACE(lineextractor.cpp): isStartVisible() returning true." << endl;
-    cout<<"TRACE(lineextractor.cpp): rangeBeyondEnd: " << rangeBeyondEnd << endl;
+//     cout<<"TRACE(lineextractor.cpp): isStartVisible() returning true." << endl;
+//     cout<<"TRACE(lineextractor.cpp): rangeBeyondEnd: " << rangeBeyondEnd << endl;
     if ( reason != NULL )
         *reason = LineExtractor::Unknown;
     return true;
@@ -192,7 +192,7 @@ LineExtractor::isStartVisible( const Section &section,
                                VisibilityReason *reason,
                                double minLineLength )
 {
-    cout<<"TRACE(lineextractor.cpp): --------- isStartVisible() ---------" << endl;
+    // cout<<"TRACE(lineextractor.cpp): --------- isStartVisible() ---------" << endl;
     if ( section.lineLength() < minLineLength )
         return false;
 
@@ -210,7 +210,7 @@ LineExtractor::isStartVisible( const Section &section,
          prevSection->isNextCon() )
     {
         meetsLine = true;
-        cout<<"TRACE(lineextractor.cpp): junction of two lines" << endl;
+        // cout<<"TRACE(lineextractor.cpp): junction of two lines" << endl;
         // Find the angle between them
         double d = prevSection->eigVectX()*prevSection->eigVectX()+prevSection->eigVectY()*prevSection->eigVectY();
         double px = -prevSection->eigVectX()*prevSection->c() / d;
@@ -243,7 +243,7 @@ LineExtractor::isEndVisible( const Section &section,
                              VisibilityReason *reason,
                              double minLineLength )
 {
-    cout<<"TRACE(lineextractor.cpp): ----------- isEndVisible() ------------" << endl;
+    // cout<<"TRACE(lineextractor.cpp): ----------- isEndVisible() ------------" << endl;
 
     assert ( section.isALine() );
     if ( section.lineLength() < minLineLength )
@@ -263,7 +263,7 @@ LineExtractor::isEndVisible( const Section &section,
          section.isNextCon() )
     {
         meetsLine = true;
-        cout<<"TRACE(lineextractor.cpp): junction of two lines" << endl;
+        // cout<<"TRACE(lineextractor.cpp): junction of two lines" << endl;
         // Find the angle between them
         double d = nextSection->eigVectX()*nextSection->eigVectX()+nextSection->eigVectY()*nextSection->eigVectY();
         double px = -nextSection->eigVectX()*nextSection->c() / d;

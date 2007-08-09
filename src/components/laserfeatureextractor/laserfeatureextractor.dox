@@ -101,6 +101,14 @@ Foreground Points
     - how far the pole or tree must be from the background
     - Default: 1.0
 
+- @c LaserFeatureExtractor.Config.FGPoints.PFalsePositive (double)
+    - Probability of detecting a false-positive foreground point
+    - Default: 0.3
+
+- @c LaserFeatureExtractor.Config.FGPoints.PTruePositive (double)
+    - Probability of detecting a true-positive foreground point
+    - Default: 0.5
+
 Lines
 
 - @c LaserFeatureExtractor.Config.ExtractLines (bool)

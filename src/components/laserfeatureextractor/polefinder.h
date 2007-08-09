@@ -16,17 +16,16 @@
 
 namespace orca_polefinder {
 
-// Suggested values
-// #define MIN_LEG_WIDTH      0.05 // [m]
-// #define MAX_LEG_WIDTH      0.2  // [m]
-// #define MIN_LEG_DIST_FROM_BACKGROUND 0.3 // [m]
-// #define MAX_LEG_SEPARATION 0.5 // [m]
-
-    typedef struct
+    // The pole goes from from startI to endI inclusive,
+    // where startI and endI are indices into the scan
+    struct Pole
     {
-        double range;   // [m]
-        double bearing; // [rad]
-    } positionRB;
+        Pole() {}
+        Pole( int startI, int endI )
+            { this->startI = startI; this->endI = endI; }
+        int    startI;
+        int    endI;
+    };
 
     //
     // \author Alex Brooks
@@ -63,7 +62,7 @@ namespace orca_polefinder {
                       double max_width,
                       double min_distance_to_background,
                       double min_angle_from_dodge,
-                      std::vector<positionRB> &poles );
+                      std::vector<Pole> &poles );
 }
 
 #endif
