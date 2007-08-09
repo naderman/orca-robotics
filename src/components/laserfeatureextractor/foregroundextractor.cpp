@@ -36,8 +36,6 @@ namespace {
         double yj = ranges[j]*sin((j-i)*angleIncrement);
 
         const double distance = hypotf( yi-yj, xi-xj );
-
-        cout<<"TRACE(foregroundextractor.cpp): dist: " << distance << endl;
         return distance;
     }
 
@@ -57,7 +55,7 @@ namespace {
         double angleEitherSide = minDistToClutter / poleRange;
         int numScansEitherSide = (int)(ceil(angleEitherSide / angleIncrement));
 
-        cout<<"TRACE(foregroundextractor.cpp): poleRange: " << poleRange << ", numScansEitherSide: " << numScansEitherSide << endl;
+        // cout<<"TRACE(foregroundextractor.cpp): poleRange: " << poleRange << ", numScansEitherSide: " << numScansEitherSide << endl;
 
         // If the pole's too close to the edge of the scan, maybe
         // there's clutter just outside our field of view
@@ -78,7 +76,7 @@ namespace {
                 return true;
         }
 
-        cout<<"TRACE(foregroundextractor.cpp): not too close to clutter." << endl;
+        // cout<<"TRACE(foregroundextractor.cpp): not too close to clutter." << endl;
         return false;
     }
 }
