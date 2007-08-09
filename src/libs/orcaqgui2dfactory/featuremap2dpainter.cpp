@@ -224,7 +224,15 @@ FeatureMap2dPainter::paintPoseFeature( QPainter *painter,
     paintPointFeature( painter, f.type, featureNum, f.pExists,
                        f.p.p.x, f.p.p.y, f.c.xx, f.c.xy, f.c.yy );
 
-    paintUncertaintyWedge( painter->worldMatrix(), painter, orcaqgui::featureColour(f.type), f.p.o, f.c.tt );
+    if ( displayUncertainty_ )
+    {
+        painter->save();
+        {
+            painter->translate( f.p.p.x, f.p.p.y );
+            paintUncertaintyWedge( painter->worldMatrix(), painter, orcaqgui::featureColour(f.type), f.p.o, f.c.tt );
+        }
+        painter->restore();
+    }
 }
 
 void FeatureMap2dPainter::paint( QPainter *painter, const int z )
