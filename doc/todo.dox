@@ -71,6 +71,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New interfaces
 
+- Image (alexm)
+  - Represents an image source. It is similar to PixMap and Camera. Unlike the
+    other two its defines its main data object as a class.
+
 @par New components
 
 @par New utilities
