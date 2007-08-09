@@ -89,22 +89,22 @@ void paintOrigin( QPainter *p, QColor colour );
 
 //! Paint a robot icon, painted with minimum pixel sizes, independent of zoom configuration.  Uses consts at the top of the file to specify if the origin of the robot is at the front, middle or rear of the robot, and to specify the size in metres of the robot.
 //! m2win is the worldmatrix BEFORE any painter rotation
-void paintPlatformPose( QMatrix &m2win, QPainter *p, QColor colour, float length, float width, RobotOrigin origin, float transparencyMultiplier=1.0 );
+void paintPlatformPose( const QMatrix &m2win, QPainter *p, QColor colour, float length, float width, RobotOrigin origin, float transparencyMultiplier=1.0 );
 
 //!
 //! Paints an ellipse for the position uncertainty, plus
 //! a little wedge for the heading uncertainty, by calling
 //! 'paintUncertaintyInfo' and 'paintCovarianceEllipse'
 //! m2win is the worldmatrix BEFORE any painter rotation.
-void paintUncertaintyInfo( QMatrix &m2win, QPainter *p, QColor colour, float thetaMean, float pxx, float pxy, float pyy, float ptt );
+void paintUncertaintyInfo( const QMatrix &m2win, QPainter *p, QColor colour, float thetaMean, float pxx, float pxy, float pyy, float ptt );
 
 //! Paints a little wedge representing rotational uncertainty
 //! m2win is the worldmatrix BEFORE any painter rotation
-void paintUncertaintyWedge( QMatrix &m2win, QPainter *p, QColor colour, float thetaMean, float ptt );
+void paintUncertaintyWedge( const QMatrix &m2win, QPainter *p, QColor colour, float thetaMean, float ptt );
 
 //! Paints 2-sigma ellipse for the position uncertainty
 //! m2win is the worldmatrix BEFORE any painter rotation
-void paintCovarianceEllipse( QMatrix &m2win, QPainter *p, QColor colour, float pxx, float pxy, float pyy );
+void paintCovarianceEllipse( const QMatrix &m2win, QPainter *p, QColor colour, float pxx, float pxy, float pyy );
 
 //! Get a more transparent version of the given colour
 //! transparencyMultiplier=1.0 gives the same colour.

@@ -133,7 +133,7 @@ paintOrigin( QPainter *p, QColor colour )
     p->restore();
 }
 
-void paintPlatformPose( QMatrix &m2win, QPainter *p, QColor colour, float length, float width, RobotOrigin origin, float transparencyMultiplier )
+void paintPlatformPose( const QMatrix &m2win, QPainter *p, QColor colour, float length, float width, RobotOrigin origin, float transparencyMultiplier )
 {
     const double min_length = FRAME_LENGTH/m2win.m11();
     const double lineThickness = THIN_LINE_THICKNESS/m2win.m11();
@@ -174,7 +174,7 @@ void paintPlatformPose( QMatrix &m2win, QPainter *p, QColor colour, float length
 }
 
 void
-paintUncertaintyInfo( QMatrix &m2win,
+paintUncertaintyInfo( const QMatrix &m2win,
                       QPainter *p,
                       QColor colour,
                       float thetaMean,
@@ -188,7 +188,7 @@ paintUncertaintyInfo( QMatrix &m2win,
 }
 
 void
-paintUncertaintyWedge( QMatrix &m2win,
+paintUncertaintyWedge( const QMatrix &m2win,
                        QPainter *p,
                        QColor colour,
                        float thetaMean,
@@ -213,7 +213,7 @@ paintUncertaintyWedge( QMatrix &m2win,
 }
 
 void
-paintCovarianceEllipse( QMatrix &m2win, QPainter *p, QColor colour, float pxx, float pxy, float pyy )
+paintCovarianceEllipse( const QMatrix &m2win, QPainter *p, QColor colour, float pxx, float pxy, float pyy )
 {
     const double lineThickness = THIN_LINE_THICKNESS/m2win.m11();
     
