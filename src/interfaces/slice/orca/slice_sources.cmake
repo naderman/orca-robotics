@@ -27,6 +27,7 @@ SET( SLICE_SOURCE_FILES
     gps.ice
     hand.ice
     home.ice
+    image.ice
     imu.ice
     localise2d.ice
     localise3d.ice
