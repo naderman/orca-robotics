@@ -32,8 +32,11 @@ module orca
 //! Represents a single pixel encoded as Red-Green-Blue intensities.
 struct Pixel
 {
+    //! Red intensity.
     byte r;
+    //! Green intensity.
     byte g;
+    //! Blue intensity.
     byte b;    
 };
 
