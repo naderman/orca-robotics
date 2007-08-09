@@ -52,7 +52,10 @@ public:
     virtual ~Driver() {};
 
     // Blocks till new data is available, but shouldn't occupy the thread indefinitely.
-    virtual void read( float *ranges, unsigned char *intensities, orca::Time &timeStamp )=0;
+    // ranges and intensities are pre-sized correctly.
+    virtual void read( std::vector<float> &ranges, 
+                       std::vector<unsigned char> &intensities, 
+                       orca::Time &timeStamp )=0;
 
 private:
 

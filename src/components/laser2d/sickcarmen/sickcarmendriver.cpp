@@ -147,7 +147,9 @@ SickCarmenDriver::init()
 }
 
 void
-SickCarmenDriver::read( float *ranges, unsigned char *intensities, orca::Time &timeStamp )
+SickCarmenDriver::read( std::vector<float> &ranges, 
+                        std::vector<unsigned char> &intensities, 
+                        orca::Time &timeStamp )
 {
     context_.tracer()->debug( "SickCarmenDriver::read()", 4 );
 

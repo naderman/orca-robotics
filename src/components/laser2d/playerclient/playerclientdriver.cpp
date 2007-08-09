@@ -141,7 +141,9 @@ PlayerClientDriver::init()
 }
 
 void
-PlayerClientDriver::read( float *ranges, unsigned char *intensities, orca::Time &timeStamp )
+PlayerClientDriver::read( std::vector<float> &ranges, 
+                          std::vector<unsigned char> &intensities, 
+                          orca::Time &timeStamp )
 {
     assert( robot_ && laser_ );
 

@@ -149,9 +149,11 @@ MainLoop::readData( orca::LaserScanner2dDataPtr &laserData )
     //
     // Read from the laser driver
     //            
-    driver_->read( &(laserData->ranges[0]), 
-                   &(laserData->intensities[0]),
+    driver_->read( laserData->ranges, 
+                   laserData->intensities,
                    laserData->timeStamp );
+    assert( laserData->ranges.size()      == config_.numberOfSamples );
+    assert( laserData->intensities.size() == config_.numberOfSamples );
 
     // flip the scan left-to-right if we are configured to do so
     if ( compensateRoll_ ) {

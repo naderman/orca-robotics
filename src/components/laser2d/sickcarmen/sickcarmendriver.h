@@ -31,7 +31,9 @@ public:
     virtual ~SickCarmenDriver();
 
     // Blocks till new data is available
-    virtual void read( float *ranges, unsigned char *intensities, orca::Time &timeStamp );
+    virtual void read( std::vector<float> &ranges, 
+                       std::vector<unsigned char> &intensities, 
+                       orca::Time &timeStamp );
 
 private: 
 

@@ -28,7 +28,9 @@ FakeDriver::~FakeDriver()
 }
 
 void
-FakeDriver::read( float *ranges, unsigned char *intensities, orca::Time &timeStamp )
+FakeDriver::read( std::vector<float> &ranges, 
+                  std::vector<unsigned char> &intensities, 
+                  orca::Time &timeStamp )
 {
     context_.tracer()->info( "Generating fake laser data..." );
 

@@ -35,7 +35,9 @@ public:
     PlayerClientDriver( const Config &cfg, const orcaice::Context& context );
     virtual ~PlayerClientDriver();
 
-    virtual void read( float *ranges, unsigned char *intensities, orca::Time &timeStamp );
+    virtual void read( std::vector<float> &ranges, 
+                       std::vector<unsigned char> &intensities, 
+                       orca::Time &timeStamp );
 
 private:
 
