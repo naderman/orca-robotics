@@ -31,16 +31,16 @@ This and several other interfaces -- @ref orca_interface_camera, @ref orca_inter
 //! Static description of the image source.
 struct ImageDescription 
 {
-    //! Image width [pixels]
+    //! %Image width [pixels]
     int imageWidth; 
 
-    //! Image height [pixels]
+    //! %Image height [pixels]
     int imageHeight;
 
-    //! Image format type
+    //! %Image format type
     ImageFormat format;
 
-    //! Image compression type
+    //! %Image compression type
     ImageCompression compression;
 }; 
 
@@ -50,16 +50,16 @@ class ImageData
     //! Time when data was measured.
     Time timeStamp;
 
-    //! Image width [pixels]
+    //! %Image width [pixels]
     int width; 
 
-    //! Image height [pixels]
+    //! %Image height [pixels]
     int height;
 
-    //! Image format type.
+    //! %Image format type.
     ImageFormat format;
 
-    //! Image compression type.
+    //! %Image compression type.
     ImageCompression compression;
 
     //! The image data itself. The structure of this byte sequence

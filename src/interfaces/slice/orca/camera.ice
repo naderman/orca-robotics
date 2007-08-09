@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
+ * Copyright (c) 2004-2007 Alex Brooks, Ben Upcroft
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -29,24 +29,38 @@ Remote access to images captured by a variety of monocular cameras.
 //! Specifies the format once it is decoded.
 //! @TODO: is this list reasonable/exhaustive?
 enum ImageFormat {
+    //! Not Quite Sure
     ImageFormatModeNfi,
-    ImageFormatModeGray,  
-    ImageFormatModeRgb,   
-    ImageFormatModeBgr,   
+    //! Gray scale
+    ImageFormatModeGray,
+    //! Red-Green-Blue  
+    ImageFormatModeRgb,
+    //! Blue-Green-Red   
+    ImageFormatModeBgr,
+    //! YUV422   
     ImageFormatModeYuv422,
-    ImageFormatBayerBg,  
-    ImageFormatBayerGb,   
-    ImageFormatBayerRg,   
+    //! Bayer Blue-Green
+    ImageFormatBayerBg, 
+    //! Bayer Green-Blue 
+    ImageFormatBayerGb, 
+    //! Bayer Red-Green  
+    ImageFormatBayerRg,
+    //! Bayer Green-Red   
     ImageFormatBayerGr,
+    //! Digiclops Stereo
     ImageFormatDigiclopsStereo,
+    //! Digiclops Right
     ImageFormatDigiclopsRight,
+    //! Digiclops Both
     ImageFormatDigiclopsBoth
 };
 
 //! Specifies any encoding of the image. 
 //! @TODO: Is this list reasonable/exhaustive?
 enum ImageCompression { 
+    //! None
     ImageCompressionNone,
+    //! JPEG
     ImageCompressionJpeg
 };
 
@@ -55,22 +69,22 @@ struct CameraDescription {
     //! Time when data was measured.
     Time timeStamp;
 
-    //! Image width [pixels]
+    //! %Image width [pixels]
     int   imageWidth; 
 
-    //! Image height [pixels]
+    //! %Image height [pixels]
     int   imageHeight;
 
     //! Frame rate [frames/seconds]
     double frameRate; 
 
-    //! Image format type
+    //! %Image format type
     ImageFormat format;
 
-    //! Image compression type
+    //! %Image compression type
     ImageCompression compression;
 
-    //! Image size [bytes]
+    //! %Image size [bytes]
     int imageSize;
 
     //! Offset of the sensor with respect to the robot, 
@@ -89,16 +103,16 @@ struct CameraData
     //! Time when data was measured.
     Time timeStamp;
 
-    //! Image width [pixels]
+    //! %Image width [pixels]
     int imageWidth;
 
-    //! Image height [pixels]
+    //! %Image height [pixels]
     int imageHeight;
 
-    //! Image format type.
+    //! %Image format type.
     ImageFormat format;
 
-    //! Image compression type.
+    //! %Image compression type.
     ImageCompression compression;
 
     //! The image data itself. The structure of this byte sequence
@@ -119,7 +133,7 @@ interface CameraConsumer
 interface Camera
 {
     //! Returns the latest data.
-    ["cpp:const"] idempotent CameraData      getData()
+    ["cpp:const"] idempotent CameraData getData()
         throws HardwareFailedException;
             
     //! Returns the current configuration.
