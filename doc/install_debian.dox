@@ -28,7 +28,7 @@ These instructions are also applicable for Ubuntu/Kubuntu 6.10 (Edgy). For Ubunt
 
 @section orca_doc_installdebian_cmake CMake
 
-Minimum version required 2.4-patch 2 (latest tested: 2.4-patch 6).
+Minimum version required 2.4-patch 2 (latest tested: 2.4-patch 7).
 
 @verbatim
 # apt-get install cmake
