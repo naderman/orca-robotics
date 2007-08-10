@@ -28,7 +28,7 @@ class ShortcutAction : public QAction
 {
     Q_OBJECT
     public:
-        ShortcutAction(QKeySequence keySequence);
+        ShortcutAction( QKeySequence keySequence, bool isMultiple );
         ~ShortcutAction() {};
         void subscribe( QObject *parent, QAction *action );
         void unsubscribe( QObject *parent );
@@ -39,6 +39,7 @@ class ShortcutAction : public QAction
         
     private:
         QKeySequence keySequence_;
+        bool isMultiple_;
         QMultiMap<QObject*,QAction*> actionMap_;
 };
 

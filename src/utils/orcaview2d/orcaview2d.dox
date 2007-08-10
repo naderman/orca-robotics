@@ -67,12 +67,12 @@ A second way of putting a particular platform into focus, is to click on a local
  
 Apart from receiving information from interfaces, users can also send data to them via their corresponding GuiElements. Each element adds its own buttons to the toolbar and entries into the menu. Right-clicking on the elements in the element view brings up some interaction options too. 
  
-The following interactions are currently implemented. Note that they work on a per-element basis:
+The following interactions are currently implemented. Note that they work on a per-element basis, i.e. you only interact with a single element:
 
 - <b>PathFollower2d interactions:</b>
-  - <i>drawing paths</i>: choose the "Pathfollower waypoints mode" icon. Draw connecting waypoints by left-clicks. They show up as circles with uncertainty in distance (circle diameter) and heading (filled wedge). The default settings for the waypoints can be found at Options->Waypoint Settings. Right-clicking close to the last waypoint removes it. Middle-clicking close to a waypoint lets you change the waypoint parameters. All waypoints can be discarded by clicking the "Discard" icon. When satisfied, click the "Send" icon to send it to the interface(s). A moment later, you should see the path sent back by the interface in blue. 
-  - <i>activate path</i>: After sending a new path, clicking on the "Go robot" icon will activate the path.
-  - <i>stopping robot</i>: clicking on the "Stop robot" icon will send an empty path to the pathfollower which stops the robot(s).
+  - <i>drawing paths</i> (shortcut F10): choose the "Pathfollower waypoints mode" icon. Draw connecting waypoints by left-clicks. They show up as circles with uncertainty in distance (circle diameter) and heading (filled wedge). The default settings for the waypoints can be found at Options->Waypoint Settings. Right-clicking close to the last waypoint removes it. Middle-clicking close to a waypoint lets you change the waypoint parameters. All waypoints can be discarded by clicking the "Discard" icon. When satisfied, click the "Send" icon (shortcut F11) to send it to the interface. A moment later, you should see the path sent back by the interface in the platform's color. 
+  - <i>activate path</i> (shortcut F12): After sending a new path, clicking on the "Go robot" icon will activate the path.
+  - <i>stopping robot</i> (shortcut ESC): clicking on the "Stop robot" icon will send an empty path to the pathfollower which stops the robot.
   
 - <b>Open/save pathfollower waypoints:</b> once subscribed to a @ref orca_interface_pathfollower2d interface, you can save the displayed path to a text file (could be the one you just sent to it). You can load the path back into the GUI later. It can then be sent to the interface(s) by clicking the "Send" button.
 
@@ -105,7 +105,7 @@ Here's a screenshot of the GUI connected to a few interfaces belonging to two pl
 
 @par Elements and their interfaces
 
-GuiElements typically connect to one required interface but can also have zero or several. To be able to configure them, they have "type" and "details" configuration options. When the GUI starts up, it will go through the list of Elements and will try to set them up (which typically involves trying to connect to interfaces).
+GuiElements typically connect to a single required interface but can also have none or several. To be able to configure them, they have "type" and "details" configuration options. When the GUI starts up, it will go through the list of Elements and will try to set them up (which typically involves trying to connect to interfaces).
 
 - @c OrcaView.Config.ElementX.Type (string)
      - GuiElement type

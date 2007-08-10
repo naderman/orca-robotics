@@ -483,7 +483,7 @@ MainWindow::relinquishMode( GuiElement *relinquisher )
 }
 
 void
-MainWindow::subscribeToKey( QAction *elementAction, QKeySequence key, QObject *parent )
+MainWindow::subscribeToKey( QAction *elementAction, QKeySequence key, bool isMultiple, QObject *parent )
 {
     cout << "TRACE(mainwin.cpp): subscribeToKey: number of shortcutActions " << shortcutActions_.size() << endl;
     
@@ -503,7 +503,7 @@ MainWindow::subscribeToKey( QAction *elementAction, QKeySequence key, QObject *p
             
     // if we get here then the shortcut doesn't exist yet
     cout << "TRACE(mainwin.cpp): we have a new shortcut" << endl;
-    ShortcutAction *shortcutAction = new ShortcutAction(key);
+    ShortcutAction *shortcutAction = new ShortcutAction(key,isMultiple);
     shortcutAction->subscribe( parent, elementAction );
     // add the action to this widget, so it can catch keys
     addAction(shortcutAction);

@@ -15,9 +15,10 @@
 using namespace orcaqgui;
 using namespace std;
 
-ShortcutAction::ShortcutAction( QKeySequence keySequence )
+ShortcutAction::ShortcutAction( QKeySequence keySequence, bool isMultiple )
     :  QAction(this),
-       keySequence_(keySequence)
+       keySequence_(keySequence),
+       isMultiple_(isMultiple)
 {
     setShortcut(keySequence);
     connect(this,SIGNAL(triggered()),this,SLOT(triggerElementActions()));
@@ -42,6 +43,13 @@ ShortcutAction::triggerElementActions()
 {
     cout << "TRACE(shortcutaction.cpp): triggerElementActions: map has size: " << actionMap_.size() << endl;    
     QMultiMap<QObject*, QAction*>::const_iterator i = actionMap_.constBegin();
+    
+    // if we are not handling multiple shortcuts, just trigger the first one and return
+    if (!isMultiple_) {
+        i.value()->trigger();
+        return;
+    }
+    
     while (i != actionMap_.constEnd()) 
     {
         i.value()->trigger();

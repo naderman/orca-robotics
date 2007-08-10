@@ -24,6 +24,7 @@
 #include <QVBoxLayout>
 #include <QFileDialog>
 #include <QComboBox>
+#include <QShortcut>
 
 #include "pathinput.h"
 
@@ -87,7 +88,9 @@ WpWidget::WpWidget( PathInput *pathInput,
     QObject::connect(loadPreviousPath,SIGNAL(clicked()),pathInput,SLOT(loadPreviousPath()));
     
     QPushButton *sendPath = new QPushButton(sendIcon, tr("Send Path"), this);
+    QShortcut *sendShortcut = new QShortcut(QKeySequence(tr("F11")), this );
     QPushButton *cancelPath = new QPushButton(cancelIcon, tr("Cancel Path"), this);
+    QObject::connect(sendShortcut,SIGNAL(activated()),pathInput,SIGNAL(sendPathClicked()));
     QObject::connect(sendPath,SIGNAL(clicked()),pathInput,SIGNAL(sendPathClicked()));
     QObject::connect(cancelPath,SIGNAL(clicked()),pathInput,SIGNAL(cancelPathClicked()));
     

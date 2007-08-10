@@ -100,14 +100,17 @@ PathfollowerButtons::PathfollowerButtons( QObject *parent, orcaqgui::IHumanManag
 //     humanManager->toolBar()->addAction(fileSavePathAs);
 //     humanManager->toolBar()->addAction(fileSavePath);
 
-    humanManager->toolBar()->addAction( hiWaypoints_ );
-    humanManager->toolBar()->addAction( hiSend );
-    humanManager->toolBar()->addAction( hiCancel );
+//     humanManager->toolBar()->addAction( hiWaypoints_ );
+//     humanManager->toolBar()->addAction( hiSend );
+//     humanManager->toolBar()->addAction( hiCancel );
 //     humanManager->toolBar()->addAction( hiStop );
 //     humanManager->toolBar()->addAction( hiGo );
     
-    humanManager->subscribeToKey( hiStop, QKeySequence(Qt::Key_Escape), this );
-    humanManager->subscribeToKey( hiGo, QKeySequence(Qt::Key_F12), this );
+    humanManager->subscribeToKey( hiStop, QKeySequence(Qt::Key_Escape), true, this );
+    humanManager->subscribeToKey( hiWaypoints_, QKeySequence(Qt::Key_F10), false, this );
+    humanManager->subscribeToKey( hiSend, QKeySequence(Qt::Key_F11), false, this );
+    humanManager->subscribeToKey( hiGo, QKeySequence(Qt::Key_F12), true, this );
+    humanManager->toolBar()->addAction( hiCancel );
 
     QAction *wpDialogAction = new QAction( QString(proxyString.c_str()) + "\n" + "&PathFollower Waypoint settings", this );
     connect( wpDialogAction, SIGNAL(activated()), parent, SLOT(waypointSettingsDialog()) );
@@ -120,6 +123,8 @@ PathfollowerButtons::PathfollowerButtons( QObject *parent, orcaqgui::IHumanManag
 PathfollowerButtons::~PathfollowerButtons() 
 {
     humanManager_->unsubscribeFromKey( QKeySequence(Qt::Key_Escape), this ); 
+    humanManager_->unsubscribeFromKey( QKeySequence(Qt::Key_F10), this ); 
+    humanManager_->unsubscribeFromKey( QKeySequence(Qt::Key_F11), this ); 
     humanManager_->unsubscribeFromKey( QKeySequence(Qt::Key_F12), this ); 
 }
 
