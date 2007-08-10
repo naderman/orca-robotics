@@ -12,9 +12,9 @@
 #define ORCA2_FAITH_LOCALISER_MAIN_LOOP_H
 
 #include <orcaice/thread.h>
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/buffer.h>
 #include <orcaice/context.h>
-#include <orca/localise2d.h>
+#include <orcaifaceimpl/localise2diface.h>
 
 namespace faithlocaliser
 {
@@ -25,34 +25,23 @@ class MainLoop : public orcaice::Thread
 
 public:
 
-    MainLoop( const orca::Localise2dConsumerPrx          localise2dConsumer,
-              orcaice::Buffer<orca::Odometry2dData>     &odoBuffer,
- 	          orcaice::Buffer<orca::Localise2dData>     &locBuffer,
-              orcaice::Buffer<orca::Localise2dData>     &historyBuffer,
-              double                                     stdDevPosition,
-              double                                     stdDevHeading,
-	          const orcaice::Context                    & context
-	    );
+    MainLoop( const orcaice::Context &context );
     ~MainLoop();
 
     virtual void run();
 
 private:
-
-    // IceStorm consumer
-    const orca::Localise2dConsumerPrx  localise2dConsumer_;
-
-    // incoming
-    orcaice::Buffer<orca::Odometry2dData> &odoBuffer_;
     
-    // outgoing
-    orcaice::Buffer<orca::Localise2dData> &locBuffer_;
-    orcaice::Buffer<orca::Localise2dData> &historyBuffer_;
+    void initNetwork();
+    
+    orca::Odometry2dPrx odometryPrx_;
+    orcaice::Buffer<orca::Odometry2dData> odometryPipe_;
+    
+    orcaifaceimpl::Localise2dIfacePtr localiseInterface_;
 
     orcaice::Context context_;
 
     double stdDevPosition_;
-
     double stdDevHeading_;
 };
 

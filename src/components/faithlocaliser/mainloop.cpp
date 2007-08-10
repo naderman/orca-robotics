@@ -12,28 +12,48 @@
 #include <orcaice/orcaice.h>
 
 #include "mainloop.h"
+#include "odometry2dconsumerI.h"
 
 using namespace std;
 using namespace orca;
 using namespace faithlocaliser;
 
-MainLoop::MainLoop( const orca::Localise2dConsumerPrx    localise2dConsumer,
-              orcaice::Buffer<orca::Odometry2dData>     &odoBuffer,
-              orcaice::Buffer<orca::Localise2dData>     &locBuffer,
-              orcaice::Buffer<orca::Localise2dData>     &historyBuffer,
-              double                                     stdDevPosition,
-              double                                     stdDevHeading,
-              const orcaice::Context                    & context )
+namespace {
+    const char *SUBSYSTEM = "mainloop";
 
-    : localise2dConsumer_(localise2dConsumer),
-      odoBuffer_(odoBuffer),
-      locBuffer_(locBuffer),
-      historyBuffer_(historyBuffer),
-      context_(context),
-      stdDevPosition_(stdDevPosition),
-      stdDevHeading_(stdDevHeading)
+    void odometryToLocalise( const Odometry2dData &odData,
+                            Localise2dData        &loData,
+                            const double          &varPosition,
+                            const double          &varHeading )
+    {
+    
+        loData.timeStamp = odData.timeStamp;
+        loData.hypotheses.resize(1);
+        loData.hypotheses[0].weight = 1.0;
+        loData.hypotheses[0].mean.p.x = odData.pose.p.x;
+        loData.hypotheses[0].mean.p.y = odData.pose.p.y;
+        loData.hypotheses[0].mean.o   = odData.pose.o;
+        loData.hypotheses[0].cov.xx   = varPosition;
+        loData.hypotheses[0].cov.yy   = varPosition;
+        loData.hypotheses[0].cov.tt   = varHeading;
+        loData.hypotheses[0].cov.xy   = 0.0;
+        loData.hypotheses[0].cov.xt   = 0.0;
+        loData.hypotheses[0].cov.yt   = 0.0;    
+    }
+
+}
+
+MainLoop::MainLoop( const orcaice::Context &context )
+    : context_(context)
 {
-    assert(localise2dConsumer_ != 0);
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
+    context_.status()->initialising( SUBSYSTEM );
+    initNetwork();
+
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag()+".Config.";
+    stdDevPosition_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StdDevPosition", 0.05 );
+    stdDevHeading_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StdDevHeading", 1.0 );
 }
 
 MainLoop::~MainLoop()
@@ -41,74 +61,110 @@ MainLoop::~MainLoop()
 }
 
 void
+MainLoop::initNetwork()
+{
+    
+    //
+    // EXTERNAL REQUIRED INTERFACES
+    //
+    while ( isActive() )
+    {
+        try
+        {
+            orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odometryPrx_, "Odometry2d" );
+            break;
+        }
+        catch ( const Ice::Exception &e )
+        {
+            stringstream ss;
+            ss << "failed to connect to remote Odometry2d object: " << e << ". Will try again after 3 seconds.";
+            context_.tracer()->error( ss.str() );
+        }
+        catch ( const std::exception &e )
+        {
+            stringstream ss;
+            ss << "failed to connect to remote Odometry2d object: " << e.what() << ". Will try again after 3 seconds.";
+            context_.tracer()->error( ss.str() );
+        }
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+    }
+
+    // create a callback object to recieve scans
+    Ice::ObjectPtr consumer = new Odometry2dConsumerI( odometryPipe_ );
+    orca::Odometry2dConsumerPrx consumerPrx =
+        orcaice::createConsumerInterface<orca::Odometry2dConsumerPrx>( context_, consumer );
+
+    //
+    // Subscribe for data
+    //
+    while ( isActive() )
+    {
+        try
+        {
+            odometryPrx_->subscribe( consumerPrx );
+            break;
+        }
+        catch ( const orca::SubscriptionFailedException & e )
+        {
+            context_.tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+        }
+    }
+    
+    // 
+    // EXTERNAL PROVIDED INTERFACE
+    //
+    localiseInterface_ = new orcaifaceimpl::Localise2dIface( "Localise2d", context_);
+    localiseInterface_->initInterface();
+}
+
+
+void
 MainLoop::run()
 {
     Localise2dData localiseData;
     Odometry2dData odomData;
-
-    try 
-    {
-	double varPosition = stdDevPosition_*stdDevPosition_;
+    double varPosition = stdDevPosition_*stdDevPosition_;
     double varHeading = (stdDevHeading_*M_PI/180.0)*(stdDevHeading_*M_PI/180.0);
     
+    try 
+    {
         while ( isActive() )
         {
-            // cout<<"============================================="<<endl;
-
             // Get odometry info, time out every so often to check if we are cancelled
             const int TIMEOUT_MS = 1000;
-            if ( odoBuffer_.getAndPopNext( odomData, TIMEOUT_MS ) != 0 ) 
+            if ( odometryPipe_.getAndPopNext( odomData, TIMEOUT_MS ) != 0 ) 
             {
-                // no new value
-                cout<<"TRACE(mainloop.cpp): MainLoop: received no odometry for " << TIMEOUT_MS << "ms" << endl;
+                stringstream ss;
+                ss << "MainLoop: received no odometry for " << TIMEOUT_MS << "ms";
+                context_.tracer()->debug( ss.str(), 2 );
                 continue;
             }
 
-            // Copy the odometry
-            localiseData.timeStamp = odomData.timeStamp;
-            localiseData.hypotheses.resize(1);
-            localiseData.hypotheses[0].weight = 1.0;
-            localiseData.hypotheses[0].mean.p.x = odomData.pose.p.x;
-            localiseData.hypotheses[0].mean.p.y = odomData.pose.p.y;
-            localiseData.hypotheses[0].mean.o   = odomData.pose.o;
-            localiseData.hypotheses[0].cov.xx   = varPosition;
-            localiseData.hypotheses[0].cov.yy   = varPosition;
-            localiseData.hypotheses[0].cov.tt   = varHeading;
-            localiseData.hypotheses[0].cov.xy   = 0.0;
-            localiseData.hypotheses[0].cov.xt   = 0.0;
-            localiseData.hypotheses[0].cov.yt   = 0.0;
-
+            odometryToLocalise( odomData, localiseData, varPosition, varHeading );
             context_.tracer()->debug( orcaice::toString(localiseData), 5 );
-
-            // Stick the new data in the buffer
-            locBuffer_.push( localiseData );
-	        historyBuffer_.push( localiseData );
-
-	        Localise2dData Data0;
-
-            /*cout << "contents of history\n";
-            for(int i=0;i<historyBuffer_.size();i++){
-                historyBuffer_.get(Data0,i);
-		cout << "time: " << orcaice::timeAsDouble(Data0->timeStamp) << endl;
-            }*/
-
-            try {
-                // push to IceStorm
-                localise2dConsumer_->setData( localiseData );
-            }
-            catch ( Ice::ConnectionRefusedException &e )
-            {
-                // This could happen if IceStorm dies.
-                // If we're running in an IceBox and the IceBox is shutting down, 
-                // this is expected (our co-located IceStorm is obviously going down).
-                context_.tracer()->warning( "Failed to push to IceStorm." );
-            }
+            
+            localiseInterface_->localSetAndSend( localiseData );
         }
     }
-    catch ( Ice::CommunicatorDestroyedException &e )
+    catch ( const Ice::Exception & e )
     {
-        // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-        // somewhere in mainLoop.
+        stringstream ss;
+        ss << "MainLoop:: Caught exception: " << e;
+        context_.tracer()->error( ss.str() );
+        context_.status()->fault( SUBSYSTEM, ss.str() );
+    }
+    catch ( const std::exception & e )
+    {
+        stringstream ss;
+        ss << "MainLoop: Caught exception: " << e.what();
+        context_.tracer()->error( ss.str() );
+        context_.status()->fault( SUBSYSTEM, ss.str() );
+    }
+    catch ( ... )
+    {
+        context_.tracer()->error( "MainLoop: caught unknown unexpected exception.");
+        context_.status()->fault( SUBSYSTEM, "MainLoop: caught unknown unexpected exception.");
     }
 
     // wait for the component to realize that we are quitting and tell us to stop.

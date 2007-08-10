@@ -141,38 +141,6 @@ MainLoop::initNetwork()
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
     }
-
-    // create a callback to receive localisation data
-    // TODO: AlexB: should we really be subscribing for localise data?  Probably it's sufficient to just poll as necessary??
-    Ice::ObjectPtr consumer = new Localise2dConsumerI(localiseDataBuffer_);
-    localiseConsumerPrx_ =
-            orcaice::createConsumerInterface<orca::Localise2dConsumerPrx>( context_, consumer );
-
-    while ( isActive() )
-    {
-        context_.status()->initialising( SUBSYSTEM, "Subscribing to Localise2d" );
-        try
-        {
-            localise2dPrx_->subscribe( localiseConsumerPrx_ );
-            break;
-        }
-        catch ( const Ice::Exception &e )
-        {
-            stringstream ss;
-            ss << "MainLoop: failed to subscribe for localise2d data updates: " << e << ". Will try again after 3 seconds.";
-            context_.tracer()->error( ss.str() );
-        }
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
-    }    
-    
-    while( isActive() )
-    {
-        context_.status()->initialising( SUBSYSTEM, "Waiting for Localise2d data" );
-        orca::Localise2dData data;
-        int ret = localiseDataBuffer_.getNext( data, 1000 );
-        if ( ret == 0 )
-            break;
-    }
     
     while( isActive() )
     {
@@ -367,6 +335,46 @@ MainLoop::computeAndSendPath( const orcanavutil::Pose &pose,
 }
 
 void 
+MainLoop::tryGetLocaliseData( Localise2dData &data )
+{
+    const unsigned int maxNumTries = 20;
+    unsigned int numTries=0;
+    
+    while( isActive() )
+    {
+        try 
+        {
+            data = localise2dPrx_->getData();
+            stringstream ss; ss << "MainLoop: received pose: " << orcaice::toString( data );
+            context_.tracer()->debug( ss.str(), 4 );
+            break;
+        }
+        catch( orca::DataNotExistException e )
+        {
+            std::stringstream ss;
+            ss << "Mainloop: could not fetch pose because of: " << e.what;
+            context_.tracer()->warning( ss.str() );
+            numTries++;
+            if (numTries>=maxNumTries) throw;
+        }
+        IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(500));
+    }
+}
+
+void 
+MainLoop::checkForStaleness( Localise2dData &data )
+{
+    const double AGE_FOR_STALE = 3; // seconds
+    if ( ageOf( data.timeStamp ) > AGE_FOR_STALE )
+    {
+        stringstream ss;
+        ss << "MainLoop: LocaliseData is stale: age is " << ageOf( data.timeStamp ) << " sec";
+        context_.tracer()->warning( ss.str() );
+        context_.status()->warning( SUBSYSTEM, ss.str() );
+    }
+}
+
+void 
 MainLoop::run()
 {
     PathFollower2dData incomingPath;
@@ -422,18 +430,11 @@ MainLoop::run()
                 continue;
             }
 
-            // TODO: what if localiseData is stale?
+            // get robot pose and check what we got, may throw
             orca::Localise2dData localiseData;
-            localiseDataBuffer_.get( localiseData );
-            const double AGE_FOR_STALE = 3; // seconds
-            if ( ageOf( localiseData.timeStamp ) > AGE_FOR_STALE )
-            {
-                stringstream ss;
-                ss << "MainLoop: LocaliseData is stale: age is " << ageOf( localiseData.timeStamp ) << " sec";
-                context_.tracer()->warning( ss.str() );
-                context_.status()->warning( SUBSYSTEM, ss.str() );
-            }
-                        
+            tryGetLocaliseData( localiseData );
+            checkForStaleness( localiseData );
+            
             // Adjust timing: work out how long it takes to the first waypoint based on straight-line distance 
             // and configured velocityToFirstWaypoint_. Take the max of first wp time and the computed time.
             const orcanavutil::Pose &pose = mlPose(localiseData);

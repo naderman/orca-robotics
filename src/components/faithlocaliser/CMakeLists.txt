@@ -12,11 +12,11 @@ IF ( BUILD_FAITHLOCALISER )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( faithlocaliser main )
-    TARGET_LINK_LIBRARIES( faithlocaliser FaithLocaliserSources )
+    TARGET_LINK_LIBRARIES( faithlocaliser FaithLocaliserSources OrcaIfaceImpl )
     
     # build IceBox service
     GLOBAL_ADD_LIBRARY( OrcaFaithLocaliser SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaFaithLocaliser FaithLocaliserSources )
+    TARGET_LINK_LIBRARIES( OrcaFaithLocaliser FaithLocaliserSources OrcaIfaceImpl )
     
     GENERATE_CONFIG_FILE( faithlocaliser.def )
 

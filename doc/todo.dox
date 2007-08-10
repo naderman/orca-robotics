@@ -100,11 +100,23 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Gps (michael m.)
   - added Novatel-specific position types.
 
+- Localise2d (tobi)
+  - got rid of getDataAtTime which was not implemented
+
 @par Updated components
+
+- FaithLocaliser (tobi)
+  - complete overhaul
+  - got rid off storing history and interpolation
+  
+- Wifi (tobi)
+  - reading using ioctl only attempted once
+  - bug fix with open sockets
 
 - GoalPlanner (tobi)
   - new config parameter: velocity to reach first waypoint
   - figures out the timing to the first wp and changes subsequent times accordingly
+  - localisation data is obtained using getData rather than through Icestorm
 
 - PathPlanner (tobi)
   - policy for adding timing to waypoints changed: distances are taken into account
@@ -131,6 +143,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Name change: sysmon -> systemtracermon (alex b)
 - OrcaView2d (tobi)
   - olympic marker displays properly
+  - more shortcuts for path input added
+  - improved display of table in main window
 - Probe: added support for wifi interface (alex b)
 
 @par Updated libraries

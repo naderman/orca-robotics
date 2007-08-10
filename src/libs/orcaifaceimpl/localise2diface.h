@@ -57,9 +57,6 @@ private:
     ::orca::Localise2dData getData() const;
     void subscribe(const ::orca::Localise2dConsumerPrx& );
     void unsubscribe(const ::orca::Localise2dConsumerPrx& );
-    // Note: could do smoothing/interpolation here...
-    orca::Localise2dData getDataAtTime(const orca::Time&) const
-        { return getData(); }
 
     orcaice::Proxy<orca::Localise2dData> dataProxy_;
 

@@ -194,7 +194,9 @@ Handler::run()
                 
             try
             {
-                pose=localise2dPrx_->getDataAtTime(rangeScan->timeStamp);
+                //TODO: Implement getDataAtTime locally
+                pose=localise2dPrx_->getData();
+//                 pose=localise2dPrx_->getDataAtTime(rangeScan->timeStamp);
             }
             catch( orca::DataNotExistException e )
             {

@@ -43,9 +43,6 @@ private:
     // required interface to localiser
     orca::Localise2dPrx localise2dPrx_;
     
-    // localisation comes in through icestorm
-    orca::Localise2dConsumerPrx localiseConsumerPrx_;
-    
     // required interface to localnav
     orca::PathFollower2dPrx localNavPrx_;
     
@@ -57,9 +54,6 @@ private:
     
     // buffer which stores computed path from pathplanner
     orcaice::Proxy<orca::PathPlanner2dData> computedPathBuffer_;
-    
-    // buffer that stores current localisation data
-    orcaice::Proxy<orca::Localise2dData> localiseDataBuffer_;
         
     // ========== provided pathfollower interface (incoming paths) ===============
     PathFollower2dI* incomingPathI_;
@@ -76,6 +70,12 @@ private:
     double velocityToFirstWaypoint_;
     void adjustTimes( const orcanavutil::Pose &pose,
                       orca::PathFollower2dData &incomingPath );
+    
+    // tries a few times to get localise data by issueing remote calls
+    void tryGetLocaliseData( orca::Localise2dData &data );
+    
+    // check whether the localise data is stale, if yes throws an exception
+    void checkForStaleness( orca::Localise2dData &data );
 
     orcaice::Context context_;
 

@@ -7,6 +7,7 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
+ 
 #ifndef ORCA2_FAITH_LOCALISER_COMPONENT_H
 #define ORCA2_FAITH_LOCALISER_COMPONENT_H
 
@@ -35,17 +36,6 @@ public:
 private:
 
     MainLoop *mainLoop_;
-
-    //
-    // EXTERNAL PROVIDED INTERFACE
-    //
-    orca::Localise2dConsumerPrx localise2dPublisher_;
-
-    orcaice::Buffer<orca::Localise2dData> locBuffer_;
-    orcaice::Buffer<orca::Localise2dData> historyBuffer_;
-
-    // REQUIRED INTERFACE
-    orcaice::Buffer<orca::Odometry2dData> posPipe_;
 
 };
 

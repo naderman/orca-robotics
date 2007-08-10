@@ -41,10 +41,6 @@ public:
                              const ::Ice::Current& = ::Ice::Current())
         { iface_.unsubscribe( subscriber ); }
 
-    virtual orca::Localise2dData getDataAtTime(const orca::Time& time, 
-                                               const Ice::Current& c) const
-        { return iface_.getDataAtTime( time ); }
-
 private:
     Localise2dIface &iface_;
 };
