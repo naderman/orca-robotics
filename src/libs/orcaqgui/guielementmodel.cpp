@@ -316,6 +316,8 @@ GuiElementModel::createGuiElement( const QString &elementType,
         }
         
     }
+    // resize the columns so we can read the text
+    view_->resizeColumnsToContents();
 }
         
 

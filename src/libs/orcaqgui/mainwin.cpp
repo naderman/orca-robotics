@@ -140,7 +140,7 @@ void MainWindow::init( GuiElementModel                   *guiElemModel,
     QObject::connect( elemModel_, SIGNAL(newPlatform(const QString&)), this, SLOT(addPlatformToList(const QString&)) );    
     QObject::connect( elemModel_, SIGNAL(platformNeedsRemoval(const QString&)), this, SLOT(removePlatformFromList(const QString&)) );
 
-    // View
+    // Bottom left part: element view
     elemView_ = new GuiElementView(side_);
     elemView_->setModel( elemModel_ );
     elemView_->horizontalHeader()->setMovable(true);
