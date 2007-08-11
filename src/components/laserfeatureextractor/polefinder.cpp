@@ -63,21 +63,12 @@ orca_polefinder::detect_poles( const std::vector<float> &scan,
                     // Check for end of pole
                     // The last condition says we shouldn't declare a pole off just a single point.
                     if ( (pole_width > min_width) && 
-                         (pole_width < max_width) &&
-                         (i-potential_pole_start > 1) )
+                         (pole_width < max_width) )
+//  &&
+//                          (i-potential_pole_start > 1) )
                     {
                         // We have a pole!
-//                         temp_range   = scan[(potential_pole_start+(i-1))/2];
-//                         temp_bearing = (((i-1)+potential_pole_start)/2)*angleIncrement + startAngle;
-//                         poles.resize( poles.size()+1 );
-//                         poles[poles.size()-1].range   = temp_range;
-//                         poles[poles.size()-1].bearing = temp_bearing;
-
                         poles.push_back( Pole( potential_pole_start, i-1 ) );
-
-//                         cout<<"TRACE(polefinder.cpp): Adding pole at " 
-//                             << temp_range << ", " << temp_bearing*180.0/M_PI << "deg" << endl;
-//                         cout<<"TRACE(polefinder.cpp): num Points: " << i-potential_pole_start+1 << endl;
                         
                         num_poles++;
                         potential_pole_start = 0;

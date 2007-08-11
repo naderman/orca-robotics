@@ -127,7 +127,7 @@ void LineExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
 
     if ( extractLineEndpoints_ )
     {
-        addLineEndpoints( sections, features );
+        addLineEndpoints( sections, features, angleIncrement );
     }
 }
 
@@ -501,12 +501,46 @@ LineExtractor::addCorners( const std::vector<Section>  &sections,
 }
 
 void
+mergeDuplicateLineEndpoints( orca::PolarFeature2dDataPtr &f,
+                             int beginningOfLineEndpoints,
+                             double angleIncrement )
+{
+    for ( uint i=beginningOfLineEndpoints; i < f->features.size(); i++ )
+    {
+        if ( f->features.size() == i+1 )
+            break;
+
+        orca::PointPolarFeature2d *pre  = dynamic_cast<orca::PointPolarFeature2d*>(&(*(f->features[i])));
+        orca::PointPolarFeature2d *post = dynamic_cast<orca::PointPolarFeature2d*>(&(*(f->features[i+1])));
+
+        assert( pre != NULL && post != NULL );
+
+        if ( ( pre->type == post->type ) &&
+             ( abs(pre->p.o - post->p.o) <= 2.0*angleIncrement ) )
+        {
+            cout<<"TRACE(lineextractor.cpp): Merging duplicate line endpoints." << endl;
+            pre->p.r = (pre->p.r+post->p.r)/2.0;
+            pre->p.o = (pre->p.o+post->p.o)/2.0;
+            
+            // delete post
+            orca::PolarFeature2dSequence::iterator it = f->features.begin();
+            it += i+1;
+            f->features.erase( it );
+            i=i-1;
+        }
+    }
+}
+
+void
 LineExtractor::addLineEndpoints( const std::vector<Section>  &sections, 
-                                 orca::PolarFeature2dDataPtr &features )
+                                 orca::PolarFeature2dDataPtr &features,
+                                 double angleIncrement )
 {
     cout<<"TRACE(lineextractor.cpp): addLineEndpoints(): features.features.size() == " << features->features.size() << endl;
 
     const double MIN_LINE_LENGTH = 0.5;
+
+    int beginningOfLineEndPoints = features->features.size();
 
     std::vector<Section>::const_iterator i=sections.begin();
     std::vector<Section>::const_iterator prev = sections.begin();
@@ -517,23 +551,6 @@ LineExtractor::addLineEndpoints( const std::vector<Section>  &sections,
     {
         if ( !i->isALine() )
             continue;
-
-//         double pFalsePositive = linePFalsePositive_;
-//         if ( REJECT_GROUND_OBSERVATIONS )
-//         {
-//             // Look for lines with near-horizontal slope
-//             if ( rejectLikelyGroundObservations_ &&
-//                  fabs( i->eigVectY() ) < 0.1 )
-//             {
-//                 context_.tracer()->debug( "Rejecting likely ground observation", 3 );
-//                 continue;
-//             }
-//             if ( fabs( i->eigVectY() ) < 0.25 )
-//             {
-//                 // cout<<"TRACE(lineextractor.cpp): lowering prob" << endl;
-//                 pFalsePositive = linePFalsePositivePossibleGround_;
-//             }
-//         }
 
         if ( (*i).end().bearing() < (*i).start().bearing() )
             continue;
@@ -560,27 +577,25 @@ LineExtractor::addLineEndpoints( const std::vector<Section>  &sections,
         {
             if ( reason == InternalLineJunction || reason == ExternalLineJunction )
             {
-                orca::PointPolarFeature2dPtr newFeature = new orca::PointPolarFeature2d;
-                if ( reason == ExternalLineJunction )
-                    newFeature->type = orca::feature::EXTERNALCORNER;
-                else if ( reason == InternalLineJunction )
-                    newFeature->type = orca::feature::INTERNALCORNER;
-                else
-                    assert( false );
-                newFeature->p.r = i->start().range();
-                newFeature->p.o = i->start().bearing();
-                newFeature->rangeSd = rangeSd_;
-                newFeature->bearingSd = bearingSd_;
-                newFeature->pFalsePositive = lineEndpointPFalsePositive_;
-                newFeature->pTruePositive  = lineEndpointPTruePositive_;
-                features->features.push_back( newFeature );
-                cout<<"TRACE(lineextractor.cpp): added start-point: " 
-                    << "r="<<newFeature->p.r<<", b="<<newFeature->p.o*180/M_PI << endl;
-
-                if ( i->isNextCon() ) 
+                if ( prevPtr != NULL &&
+                     prevPtr->lineLength() >= MIN_LINE_LENGTH )
                 {
-                    // don't double-count.
-                    continue;
+                    orca::PointPolarFeature2dPtr newFeature = new orca::PointPolarFeature2d;
+                    if ( reason == ExternalLineJunction )
+                        newFeature->type = orca::feature::EXTERNALCORNER;
+                    else if ( reason == InternalLineJunction )
+                        newFeature->type = orca::feature::INTERNALCORNER;
+                    else
+                        assert( false );
+                    newFeature->p.r = i->start().range();
+                    newFeature->p.o = i->start().bearing();
+                    newFeature->rangeSd = rangeSd_;
+                    newFeature->bearingSd = bearingSd_;
+                    newFeature->pFalsePositive = lineEndpointPFalsePositive_;
+                    newFeature->pTruePositive  = lineEndpointPTruePositive_;
+                    features->features.push_back( newFeature );
+                    cout<<"TRACE(lineextractor.cpp): added start-point: " 
+                        << "r="<<newFeature->p.r<<", b="<<newFeature->p.o*180/M_PI << endl;
                 }
             }
         }
@@ -591,25 +606,32 @@ LineExtractor::addLineEndpoints( const std::vector<Section>  &sections,
         {
             if ( reason == InternalLineJunction || reason == ExternalLineJunction )
             {
-                orca::PointPolarFeature2dPtr newFeature = new orca::PointPolarFeature2d;
-                if ( reason == ExternalLineJunction )
-                    newFeature->type = orca::feature::EXTERNALCORNER;
-                else if ( reason == InternalLineJunction )
-                    newFeature->type = orca::feature::INTERNALCORNER;
-                else
-                    assert( false );
-                newFeature->p.r = i->end().range();
-                newFeature->p.o = i->end().bearing();
-                newFeature->rangeSd = rangeSd_;
-                newFeature->bearingSd = bearingSd_;
-                newFeature->pFalsePositive = lineEndpointPFalsePositive_;
-                newFeature->pTruePositive  = lineEndpointPTruePositive_;
-                features->features.push_back( newFeature );
-                cout<<"TRACE(lineextractor.cpp): added end-point: " 
-                    << "r="<<newFeature->p.r<<", b="<<newFeature->p.o*180/M_PI << endl;
+                if ( nextPtr != NULL &&
+                     nextPtr->lineLength() >= MIN_LINE_LENGTH )
+                {
+                    orca::PointPolarFeature2dPtr newFeature = new orca::PointPolarFeature2d;
+                    if ( reason == ExternalLineJunction )
+                        newFeature->type = orca::feature::EXTERNALCORNER;
+                    else if ( reason == InternalLineJunction )
+                        newFeature->type = orca::feature::INTERNALCORNER;
+                    else
+                        assert( false );
+                    newFeature->p.r = i->end().range();
+                    newFeature->p.o = i->end().bearing();
+                    newFeature->rangeSd = rangeSd_;
+                    newFeature->bearingSd = bearingSd_;
+                    newFeature->pFalsePositive = lineEndpointPFalsePositive_;
+                    newFeature->pTruePositive  = lineEndpointPTruePositive_;
+                    features->features.push_back( newFeature );
+                    cout<<"TRACE(lineextractor.cpp): added end-point: " 
+                        << "r="<<newFeature->p.r<<", b="<<newFeature->p.o*180/M_PI << endl;
+                }
             }
         }
     }
+
+    mergeDuplicateLineEndpoints( features, beginningOfLineEndPoints, angleIncrement );
+
     cout<<"TRACE(lineextractor.cpp): addLineEndpoints returning: features.features.size() == " << features->features.size() << endl;
 }
 

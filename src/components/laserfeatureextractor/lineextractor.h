@@ -79,7 +79,8 @@ private:
     void addLines( const std::vector<Section> &sections, 
                    orca::PolarFeature2dDataPtr &features );
     void addLineEndpoints( const std::vector<Section> &sections, 
-                           orca::PolarFeature2dDataPtr &features );
+                           orca::PolarFeature2dDataPtr &features,
+                           double angleIncrement );
 
     bool isStartVisible( const Section &section,
                          double alpha,

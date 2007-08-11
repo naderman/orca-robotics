@@ -143,10 +143,19 @@ void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserD
         pp->type = orca::feature::FOREGROUNDPOINT;
         pp->p.r  = range;
         pp->p.o  = bearing;
-        pp->pFalsePositive = pFalsePositive_;
-        pp->pTruePositive = pTruePositive_;
         pp->rangeSd = rangeSd_;
         pp->bearingSd = bearingSd_;
+        if ( poles[i].startI == poles[i].endI )
+        {
+            // Pole consists of just a single point...  Don't trust it so much.
+            pp->pFalsePositive = 0.45;
+            pp->pTruePositive = 0.55;
+        }
+        else
+        {
+            pp->pFalsePositive = pFalsePositive_;
+            pp->pTruePositive = pTruePositive_;
+        }
         features->features.push_back(pp);
     }
 
