@@ -12,7 +12,7 @@
 
 @page orca_doc_tute_direct Connecting components without the Registry
 
-@note Reviewed for release 2.4.0.
+@note Reviewed for release 2.5.0.
 
 In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now without running the IceGrid Registry. The system diagram is shown below.
 
@@ -28,7 +28,6 @@ Modify the global configuration file ~/.orcarc to disable adapter registration (
 @verbatim
 # Standard Ice Configuration for Orca
 #Ice.Default.Locator=IceGrid/Locator:default -p 12000
-IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 10000
 @endverbatim
 
 @section orca_doc_tute_direct_talk Connect Two Components
@@ -43,19 +42,22 @@ $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 @par The Server
 
 Edit @c laser2d.cfg file:
-- Change driver type from @e 'sickcarmen' to @e 'fake'.
-- Configure the @ref orca_component_laser2d component to accept connections on a specific port (we will use port 15000 in this tutorial) instead of a random one assigned by the operating system.  
+- Configure the component to accept connections on a specific port (we will use port 15000 in this tutorial) instead of a random one assigned by the operating system.  
+- Change driver library from @c 'libOrcaLaser2dSickCarmen.so' to @c 'libOrcaLaser2dFake.so'.
 - Tell the component to ignore the fact the registry is not there on activation by setting the @c Orca.RequireRegistry property to zero. 
 
 The config file should now contain the following lines:
 @verbatim
 Laser2d.Endpoints=tcp -t 5000 -p 15000
 ...
-Laser2d.Config.Driver=fake
+Laser2d.Config.DriverLib=libOrcaLaser2dFake.so
 ...
 Orca.RequireRegistry=0
 @endverbatim
+
 Start the server.
+
+@note alexm: HERE WE HAVE A PROBLEM! THE SERVER CANNOT CONNECT!
 
 @verbatim
 $ laser2d
@@ -65,7 +67,7 @@ $ laser2d
 
 Start a new shell where we will run the client @ref orca_component_lasermon. This time we have to tell it explicitely where to find the LaserScanner2d interface instead of relying on the Registry to supply this information. As in the case of the server, we disable registry pinging on activation. This @c lasermon.cfg file should contain these lines:
 @verbatim
-LaserMon.Requires.Laser.Proxy=laser:tcp -p 15000
+LaserMon.Requires.LaserScanner2d.Proxy=laserscanner2d:tcp -p 15000
 ...
 Orca.RequireRegistry=0
 @endverbatim
