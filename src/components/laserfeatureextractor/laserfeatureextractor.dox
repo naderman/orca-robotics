@@ -142,7 +142,7 @@ Lines
     - Default: 0.4
 
 - @c LaserFeatureExtractor.Config.Lines.PFalsePositivePossibleGround (double)
-    - Probability of detecting a false possitive when observing a line with near-zero slope
+    - Probability of detecting a false positive when observing a line with near-zero slope
     - Default: 0.55
 
 - @c LaserFeatureExtractor.Config.Lines.PTruePositive (double)
@@ -153,9 +153,19 @@ Corners
 
 - @c LaserFeatureExtractor.Config.ExtractCorners (bool)
     - Default: 1
+- @c LaserFeatureExtractor.Config.PFalsePositive (double)
+    - Probability of detecting a false-positive corner
+    - Default: 0.2
+- @c LaserFeatureExtractor.Config.PTruePositive (double)
+    - Probability of detecting a true-positive corner
+    - Default: 0.6
 
-- The corner extractor looks for lines that intersect at 90 degrees.  It relies
-  on the line extractor, and is therefore affected by the line extractor's configuration.
+- The corner extractor looks for intersecting lines.  It relies
+  on the line extractor, and is therefore affected by the line
+  extractor's configuration (with the exception of the MinLineLength
+  parameter: the corner detector will look for the intersection of 
+  smaller lines than the line detector is configured for).
+
 
 Doors
 

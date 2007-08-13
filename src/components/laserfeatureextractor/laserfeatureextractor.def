@@ -40,6 +40,9 @@ Config.Lines.PFalsePositive.Default=0.4
 Config.Lines.PFalsePositivePossibleGround.Default=0.55
 Config.Lines.PTruePositive.Default=0.6
 
+Config.Corners.PFalsePositive.Default=0.2
+Config.Corners.PTruePositive.Default=0.6
+
 Config.Doors.MinDoorWidth.Default=0.9
 Config.Doors.MaxDoorWidth.Default=1.2
 Config.Doors.MinDeltaRangeThruDoor.Default=2.0

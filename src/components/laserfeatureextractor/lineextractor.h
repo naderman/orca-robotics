@@ -27,8 +27,7 @@ public:
     LineExtractor( const orcaice::Context &context,
                    double laserMaxRange,
                    bool extractLines,
-                   bool extractCorners,
-                   bool extractLineEndpoints );
+                   bool extractCorners );
 
     // Adds laser features to the 'features' data structure
     void addFeatures( const orca::LaserScanner2dDataPtr &laserData,
@@ -48,7 +47,6 @@ private:
 
     bool extractLines_;
     bool extractCorners_;
-    bool extractLineEndpoints_;
 
     // config
     double clusterMaxRangeDelta_;
@@ -66,21 +64,16 @@ private:
     double linePFalsePositivePossibleGround_;
     double linePTruePositive_;
 
-    double lineEndpointPFalsePositive_;
-    double lineEndpointPTruePositive_;
+    double cornerPFalsePositive_;
+    double cornerPTruePositive_;
 
     orcaice::Context context_;
 
-    // Not used at the moment
-    // bool extractPossibleCorners( const orca::PolarFeature2dDataPtr & featureDataPtr );
-    
-    void addCorners( const std::vector<Section> &sections, 
-                     orca::PolarFeature2dDataPtr &features );
     void addLines( const std::vector<Section> &sections, 
                    orca::PolarFeature2dDataPtr &features );
-    void addLineEndpoints( const std::vector<Section> &sections, 
-                           orca::PolarFeature2dDataPtr &features,
-                           double angleIncrement );
+    void addCorners( const std::vector<Section> &sections, 
+                     orca::PolarFeature2dDataPtr &features,
+                     double angleIncrement );
 
     bool isStartVisible( const Section &section,
                          double alpha,

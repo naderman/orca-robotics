@@ -28,16 +28,14 @@ namespace laserfeatures {
 LineExtractor::LineExtractor( const orcaice::Context &context,
                               double laserMaxRange,
                               bool extractLines,
-                              bool extractCorners,
-                              bool extractLineEndpoints )
+                              bool extractCorners )
     : laserMaxRange_( laserMaxRange ),
       extractLines_(extractLines),
       extractCorners_(extractCorners),
-      extractLineEndpoints_(extractLineEndpoints),
       context_(context)
 {
     assert( laserMaxRange_ > 0.0 );
-    assert( extractLines_ || extractCorners_ || extractLineEndpoints_ );
+    assert( extractLines_ || extractCorners_ );
 
     std::string prefix = context.tag() + ".Config.Lines.";
     Ice::PropertiesPtr prop = context.properties();
@@ -51,26 +49,26 @@ LineExtractor::LineExtractor( const orcaice::Context &context,
     linePFalsePositivePossibleGround_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PFalsePositivePossibleGround", 0.55 );
     linePTruePositive_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PTruePositive", 0.6 );
 
-    lineEndpointPFalsePositive_   = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PFalsePositive", 0.2 );
-    lineEndpointPTruePositive_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PTruePositive", 0.6 );
+
+    cornerPFalsePositive_   = orcaice::getPropertyAsDoubleWithDefault( prop, "Config.Corners.PFalsePositive", 0.2 );
+    cornerPTruePositive_ = orcaice::getPropertyAsDoubleWithDefault( prop, "Config.Corners.PTruePositive", 0.6 );
 
     rangeSd_        = orcaice::getPropertyAsDoubleWithDefault( prop, "Config.RangeSd", 0.2 );
     bearingSd_      = (M_PI/180.0)*orcaice::getPropertyAsDoubleWithDefault( prop, "Config.BearingSd", 5.0 );
 
     cout<<"TRACE(lineextractor.cpp): Line Extractor Config:" << endl;
-    cout<<"TRACE(lineextractor.cpp):   ClusterMaxRangeDelta : "<<clusterMaxRangeDelta_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   BreakDistThreshold   : "<<breakDistThreshold_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   MinPointsInLine      : "<<minPointsInLine_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   MinLineLength        : "<<minLineLength_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   ExtractLines         : "<<extractLines_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   ExtractCorners       : "<<extractCorners_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   ExtractLineEndpoints : "<<extractLineEndpoints_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   RejectLikelyGroundObservations: " << rejectLikelyGroundObservations_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   LinePFalsePositive               : " << linePFalsePositive_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   LinePFalsePositivePossibleGround : " << linePFalsePositivePossibleGround_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   LinePTruePositive                : " << linePTruePositive_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   LineEndpointPFalsePositive       : " << lineEndpointPFalsePositive_ << endl;
-    cout<<"TRACE(lineextractor.cpp):   LineEndpointPTruePositive        : " << lineEndpointPTruePositive_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   Lines.ClusterMaxRangeDelta : "<<clusterMaxRangeDelta_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   Lines.BreakDistThreshold   : "<<breakDistThreshold_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   Lines.MinPointsInLine      : "<<minPointsInLine_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   Lines.MinLineLength        : "<<minLineLength_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   Lines.ExtractLines         : "<<extractLines_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   Lines.RejectLikelyGroundObservations : " << rejectLikelyGroundObservations_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   Lines.PFalsePositive                 : " << linePFalsePositive_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   Lines.PFalsePositivePossibleGround   : " << linePFalsePositivePossibleGround_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   Lines.PTruePositive                  : " << linePTruePositive_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   ExtractCorners               : "<<extractCorners_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   Corners.PFalsePositive       : " << cornerPFalsePositive_ << endl;
+    cout<<"TRACE(lineextractor.cpp):   Corners.PTruePositive        : " << cornerPTruePositive_ << endl;
 }
     
 void LineExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
@@ -113,26 +111,17 @@ void LineExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
     // Fit lines to the sections
     breakAndFitLines( sections, minPointsInLine_, breakDistThreshold_ );
 
-    if ( extractCorners_ )
-    {
-        // Find corner features, add them to the list of features
-        addCorners( sections, features );
-    }
-
     if ( extractLines_ )
     {
         // Find line features, add them to the list of features
         addLines( sections, features );
     }
 
-    if ( extractLineEndpoints_ )
+    if ( extractCorners_ )
     {
-        addLineEndpoints( sections, features, angleIncrement );
+        // Find corner features, add them to the list of features
+        addCorners( sections, features, angleIncrement );
     }
-}
-
-namespace {
-        const double ANGLE_THRESHOLD = 60*M_PI/180.0;
 }
 
 bool
@@ -160,6 +149,7 @@ isEndpointVisible( double endRange,
         }
     }
 
+    const double ANGLE_THRESHOLD = 60*M_PI/180.0;
     if ( angleToEnd > ANGLE_THRESHOLD )
     {
         // cout<<"TRACE(lineextractor.cpp): can't see around corner" << endl;
@@ -402,110 +392,11 @@ LineExtractor::addLines( const std::vector<Section> &sections,
 }
 
 void
-LineExtractor::addCorners( const std::vector<Section>  &sections, 
-                           orca::PolarFeature2dDataPtr &features )
+mergeDuplicateCorners( orca::PolarFeature2dDataPtr &f,
+                       int beginningOfCorners,
+                       double angleIncrement )
 {
-    const double P_FALSE_POSITIVE = 0.3;
-    const double P_FALSE_POSITIVE_POSSIBLE_GROUND = 0.5;
-    const double P_TRUE_POSITIVE  = 0.6;
-    const double CORNER_BOUND = 0.2;
-
-    std::vector<Section>::const_iterator itr;
-    std::vector<Section>::const_iterator next;
-  
-    for (itr = sections.begin(), next = sections.begin() + 1; itr != sections.end() && next != sections.end(); itr++, next++)
-    {
-        // check that we have two connected lines before computing the angle between them
-        // We also want to avoid extracting corners at the junction between observations of the
-        // ground and a wall.
-        if (itr->isALine() && itr->isNextCon() && next->isALine()) 
-        {
-            if ( itr->lineLength() < minLineLength_ )
-            {
-                //cout<<"TRACE(lineextractor.cpp): line too small: length is " << itr->lineLength() << endl;
-                continue;
-            }
-            if ( next->lineLength() < minLineLength_ )
-            {
-                //cout<<"TRACE(lineextractor.cpp): line too small: length is " << next->lineLength() << endl;
-                continue;
-            }
-
-            double pFalsePositive = P_FALSE_POSITIVE;
-
-            if ( REJECT_GROUND_OBSERVATIONS && 
-                 (lineMightBeGround( *itr ) || lineMightBeGround( *next )) )
-            {
-              //std::cout << "We have a line with a near horizontal slope.  Could be the ground??? Slope A : " << itr->eigVectY << " Slope B : " << next->eigVectY << std::endl;
-              pFalsePositive = P_FALSE_POSITIVE_POSSIBLE_GROUND;
-            }
-  
-            // We have a corner
-            double A1 = itr->eigVectX();
-            double B1 = itr->eigVectY();
-            double C1 = itr->c();
-  
-            double A2 = next->eigVectX();
-            double B2 = next->eigVectY();
-            double C2 = next->c();
-  
-            double dot_prod = A1*A2 + B1*B2;
-              
-            // the dot product of the two unit vectors will be 0 if the lines are perpendicular
-            if (fabs(dot_prod) < CORNER_BOUND) {
-                double cornerX;
-                double cornerY;
-  
-                // use Kramer's rule to find the intersection point of the two lines
-                // The equations for the lines are:
-                // A1 x + B1 y + C1 = 0 and
-                // A2 x + B2 y + C2 = 0
-                //
-                // We need to solve for the (x, y) that satisfies both equations
-                //
-                // x = | C1 B1 |  / | A1 B1 | 
-                //     | C2 B2 | /  | A2 B2 |
-                //
-                // y = | A1 C1 |  / | A1 B1 | 
-                //     | A2 C2 | /  | A2 B2 |
-  
-                double den = (B1*A2 - B2*A1);
-                  
-                // this check isn't really necessary as we have already established that the lines
-                // are close to perpendicular.  The determinant will only be zero if the lines
-                // are parallel
-                if (den != 0)
-                {
-                    cornerX = (B2*C1 - B1*C2)/den;
-                    cornerY = (A1*C2 - A2*C1)/den;
-    
-                    double range = sqrt(pow(cornerX,2) + pow(cornerY,2));
-                    double bearing = acos(cornerX/range);
-                    if (cornerY < 0) {
-                        bearing = -bearing;
-                    }
-    
-                    orca::PointPolarFeature2dPtr pp = new orca::PointPolarFeature2d;
-                    pp->type = orca::feature::CORNER;
-                    pp->p.r = range;
-                    pp->p.o = bearing;
-                    pp->rangeSd   = rangeSd_;
-                    pp->bearingSd = bearingSd_;
-                    pp->pFalsePositive = pFalsePositive;
-                    pp->pTruePositive  = P_TRUE_POSITIVE;
-                    features->features.push_back( pp );
-                }
-            }
-        }
-    }
-}
-
-void
-mergeDuplicateLineEndpoints( orca::PolarFeature2dDataPtr &f,
-                             int beginningOfLineEndpoints,
-                             double angleIncrement )
-{
-    for ( uint i=beginningOfLineEndpoints; i < f->features.size(); i++ )
+    for ( uint i=beginningOfCorners; i < f->features.size(); i++ )
     {
         if ( f->features.size() == i+1 )
             break;
@@ -518,7 +409,7 @@ mergeDuplicateLineEndpoints( orca::PolarFeature2dDataPtr &f,
         if ( ( pre->type == post->type ) &&
              ( abs(pre->p.o - post->p.o) <= 2.0*angleIncrement ) )
         {
-            cout<<"TRACE(lineextractor.cpp): Merging duplicate line endpoints." << endl;
+            // cout<<"TRACE(lineextractor.cpp): Merging duplicate line endpoints." << endl;
             pre->p.r = (pre->p.r+post->p.r)/2.0;
             pre->p.o = (pre->p.o+post->p.o)/2.0;
             
@@ -532,15 +423,15 @@ mergeDuplicateLineEndpoints( orca::PolarFeature2dDataPtr &f,
 }
 
 void
-LineExtractor::addLineEndpoints( const std::vector<Section>  &sections, 
-                                 orca::PolarFeature2dDataPtr &features,
-                                 double angleIncrement )
+LineExtractor::addCorners( const std::vector<Section>  &sections, 
+                           orca::PolarFeature2dDataPtr &features,
+                           double angleIncrement )
 {
-    cout<<"TRACE(lineextractor.cpp): addLineEndpoints(): features.features.size() == " << features->features.size() << endl;
+    // cout<<"TRACE(lineextractor.cpp): addCorners(): features.features.size() == " << features->features.size() << endl;
 
     const double MIN_LINE_LENGTH = 0.5;
 
-    int beginningOfLineEndPoints = features->features.size();
+    int beginningOfCorners = features->features.size();
 
     std::vector<Section>::const_iterator i=sections.begin();
     std::vector<Section>::const_iterator prev = sections.begin();
@@ -591,11 +482,11 @@ LineExtractor::addLineEndpoints( const std::vector<Section>  &sections,
                     newFeature->p.o = i->start().bearing();
                     newFeature->rangeSd = rangeSd_;
                     newFeature->bearingSd = bearingSd_;
-                    newFeature->pFalsePositive = lineEndpointPFalsePositive_;
-                    newFeature->pTruePositive  = lineEndpointPTruePositive_;
+                    newFeature->pFalsePositive = cornerPFalsePositive_;
+                    newFeature->pTruePositive  = cornerPTruePositive_;
                     features->features.push_back( newFeature );
-                    cout<<"TRACE(lineextractor.cpp): added start-point: " 
-                        << "r="<<newFeature->p.r<<", b="<<newFeature->p.o*180/M_PI << endl;
+                    // cout<<"TRACE(lineextractor.cpp): added start-point: " 
+                    //     << "r="<<newFeature->p.r<<", b="<<newFeature->p.o*180/M_PI << endl;
                 }
             }
         }
@@ -620,73 +511,19 @@ LineExtractor::addLineEndpoints( const std::vector<Section>  &sections,
                     newFeature->p.o = i->end().bearing();
                     newFeature->rangeSd = rangeSd_;
                     newFeature->bearingSd = bearingSd_;
-                    newFeature->pFalsePositive = lineEndpointPFalsePositive_;
-                    newFeature->pTruePositive  = lineEndpointPTruePositive_;
+                    newFeature->pFalsePositive = cornerPFalsePositive_;
+                    newFeature->pTruePositive  = cornerPTruePositive_;
                     features->features.push_back( newFeature );
-                    cout<<"TRACE(lineextractor.cpp): added end-point: " 
-                        << "r="<<newFeature->p.r<<", b="<<newFeature->p.o*180/M_PI << endl;
+                    // cout<<"TRACE(lineextractor.cpp): added corner: " 
+                    //     << "r="<<newFeature->p.r<<", b="<<newFeature->p.o*180/M_PI << endl;
                 }
             }
         }
     }
 
-    mergeDuplicateLineEndpoints( features, beginningOfLineEndPoints, angleIncrement );
+    mergeDuplicateCorners( features, beginningOfCorners, angleIncrement );
 
-    cout<<"TRACE(lineextractor.cpp): addLineEndpoints returning: features.features.size() == " << features->features.size() << endl;
+    // cout<<"TRACE(lineextractor.cpp): addCorners returning: features.features.size() == " << features->features.size() << endl;
 }
-
-
-// bool LineExtractor::extractPossibleCorners( const orca::PolarFeature2dDataPtr & featureDataPtr )
-// {
-// //  return false; // for now, we won't be looking for possible corners...
-
-//     const double POSSIBLE_BOUND = 0.2;
-//
-//     if (sections.size() <= 1) 
-//         return false;
-
-//     //Section *itr = sec->next;
-//     //Section *prev = sec;
-//     std::vector<Section>::iterator prev;
-//     std::vector<Section>::iterator itr;
-  
-//     for (prev = sections.begin(), itr = sections.begin() + 1; itr != sections.end() && prev != sections.end(); itr++, prev++) 
-//     {
-//         if ( prev->elements.size() > 0 && itr->elements.size() > 0)
-//         {
-//             //while (itr != NULL) {
-//             // check the end of the previous line 
-//             if (!prev->isNextCon && prev->isALine) {
-//                 SectionEl pret = prev->elements.back();
-//                 SectionEl iret = itr->elements.front();
-//                 if (iret.range() > pret.range() + POSSIBLE_BOUND) {
-//                     orca::PointPolarFeature2dPtr pp = new orca::PointPolarFeature2d;
-//                     pp->type = orca::feature::POSSIBLECORNER;
-//                     pp->p.r = pret.range();
-//                     pp->p.o = pret.bearing();
-//                     pp->pFalsePositive = P_FALSE_POSITIVE;
-//                     pp->pTruePositive  = P_TRUE_POSITIVE;
-//                     featureDataPtr->features.push_back( pp );
-//                 }
-//             }
-  
-//             // Check the start of the line for possible corner...
-//             if (itr->isALine && !prev->isNextCon) {
-//                 SectionEl pret = prev->elements.back();
-//                 SectionEl iret = itr->elements.front();
-//                 if (pret.range() > iret.range() + POSSIBLE_BOUND) {
-//                     orca::PointPolarFeature2dPtr pp = new orca::PointPolarFeature2d;
-//                     pp->type = orca::feature::POSSIBLECORNER;
-//                     pp->p.r = iret.range();
-//                     pp->p.o = iret.bearing();
-//                     pp->pFalsePositive = P_FALSE_POSITIVE;
-//                     pp->pTruePositive  = P_TRUE_POSITIVE;
-//                     featureDataPtr->features.push_back( pp );
-//                 }
-//             }
-//         }
-//     }
-//     return true;
-// }
 
 }
