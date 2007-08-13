@@ -218,6 +218,8 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
         case orca::feature::FOREGROUNDPOINT:
         case orca::feature::DOOR:
         case orca::feature::CORNER:
+        case orca::feature::INTERNALCORNER:
+        case orca::feature::EXTERNALCORNER:
         {
             orca::CartesianPointFeature2dPtr feature = new orca::CartesianPointFeature2d;
             feature->type = type;
@@ -283,7 +285,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
             feature->type = type;
             // include conversion char 'l' before 'f' to indicate that the pointers are to doubles
             // (rather than floats)
-            const int numElements = 6;
+            const int numElements = 10;
             int num = sscanf(featureInfoBuf,"%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf\n",
                              &(feature->pExists),
                              &(feature->p.p.x),
@@ -309,7 +311,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
         default:
         {
             stringstream ss;
-            ss<<"loadFromFile: don't know how to deal with feature type " << type << endl;
+            ss<<"loadFromFile: don't know how to load with feature type " << type << endl;
             throw orcaice::Exception( ERROR_INFO, ss.str() );
         }
         }
