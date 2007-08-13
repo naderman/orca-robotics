@@ -125,11 +125,27 @@ FeatureMap2dPainter::paintPointFeature( QPainter *painter,
                        f.p.x, f.p.y, f.c.xx, f.c.xy, f.c.yy );
 }
 
+void
+checkForDodgyEndpoints( const orca::CartesianLineFeature2d &f )
+{
+    if ( isnan( f.start.x ) ||
+         isnan( f.start.y ) ||
+         isnan( f.end.x ) ||
+         isnan( f.end.y ) )
+    {
+        stringstream ss;
+        ss << "NaN found in start/end of line: " << orcaice::toString(f);
+        throw orcaice::Exception( ERROR_INFO, ss.str() );
+    }
+}
+
 void 
 FeatureMap2dPainter::paintLineFeature( QPainter *painter,
                                        const orca::CartesianLineFeature2d &f,
                                        int featureNum )
 {
+    checkForDodgyEndpoints( f );
+
     // draw the line
     QPen pen(orcaqgui::featureColour(f.type));
     double newWidth =  MAX(0.1, 0.2 * (f.pExists-0.2));
@@ -143,33 +159,6 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
         painter->drawRect( QRectF( f.start.x-boxWidth/2, f.start.y-boxWidth/2, boxWidth, boxWidth ) );
     if ( f.endSighted )
         painter->drawRect( QRectF( f.end.x-boxWidth/2, f.end.y-boxWidth/2, boxWidth, boxWidth ) );
-
-//     // DEBUG
-//     painter->save();
-//     {
-//         painter->translate( f.start.x, f.start.y );
-//         painter->setPen(Qt::black);
-//     painter->setFont( QFont("Helvetica [Cronyx]", 12) );
-//     const double offset = 0.3;
-//     QMatrix m = painter->matrix();  // this is m2win matrix
-//     QPointF labelPos = QPointF(offset,offset) * m;       // x-label position in window cs
-//     painter->setMatrix( QMatrix() );
-//     painter->drawText( labelPos, "S" );
-//     }
-//     painter->restore();
-//     painter->save();
-//     {
-//         painter->translate( f.end.x, f.end.y );
-//         painter->setPen(Qt::black);
-//     painter->setFont( QFont("Helvetica [Cronyx]", 12) );
-//     const double offset = 0.3;
-//     QMatrix m = painter->matrix();  // this is m2win matrix
-//     QPointF labelPos = QPointF(offset,offset) * m;       // x-label position in window cs
-//     painter->setMatrix( QMatrix() );
-//     painter->drawText( labelPos, "E" );
-//     }
-//     painter->restore();
-//     // end DEBUG
 
     // Need to represent the uncertainty and direction
     painter->save();
@@ -252,6 +241,7 @@ void FeatureMap2dPainter::paint( QPainter *painter, const int z )
             const orca::CartesianLineFeature2d *f = 
                 dynamic_cast<const orca::CartesianLineFeature2d*>(&(*(data_->features[i])));
             assert( f != NULL );
+            assert( f->type == orca::feature::LINE || f->type == orca::feature::LINE+10 );
             
             paintLineFeature( painter, *f, i );
         }
