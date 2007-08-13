@@ -70,11 +70,13 @@ Sorca = [ ...
 % BASE: cd src; sloccount libs/orcaice/ MINUS sloccount libs/orcaice/test PLUS sloccount interfaces/slice
 % COMP: cd src; sloccount components/ libs/ MINUS sloccount libs/orcaice/ libs/orcaq* libs/orcalog* libs/orcaprobe*
 % UTIL: cd src; sloccount utils libs/orcaq* libs/orcalog* libs/orcaprobe*
+% to count lines in *.ice files, rename them to *.cpp like this:
+% $cd src/interfaces/slice/orca; for file in *; do mv $file `echo $file | sed s/.ice/.cpp/`; done
 2006    12  17  0   Sice311 5615-1784+1240  60241-25885     24644  % 2.1.1
 2007     2   2  1   Sice311 6225-2011+1671  70376-29436     28519  % 2.2.0
 2007     4  10  1   Sice320 6232-2011+1671  72704-30907     30121  % 2.3.0
 2007     6   3  1   Sice320 6837-2056+1682  75506-31245     30166  % 2.4.0
-2007     8   3  1   Sice320 7035-2166+1682  79398-33880     33172  % 2.5.0
+2007     8  13  1   Sice320 7247-2226+1772  78939-33535     32062  % 2.5.0
 ];
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
     '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.1.0', '2.1.1', ...
