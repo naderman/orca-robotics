@@ -68,6 +68,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated components
 
+- LaserFeatureExtractor (alex b)
+  - Improved Corner and ForegroundPoint detectors.
+
 @par Updated utilities
 
 @par Updated libraries
