@@ -46,7 +46,44 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
      - AlexB: Note: IceGrid writes '.cfg'-style config files to eg. nodedb/servers/<host>.<component>/config/config
    - converter between bin/ascii logs (if can be done automatically)
 
+
+
+
+
 @section orca_doc_history_head Changes in CVS since Last Release
+
+@par Project wide
+
+@par New interfaces
+
+@par New components
+
+@par New utilities
+
+@par New libraries
+
+@par New examples
+
+@par Updated interfaces
+
+@par Updated components
+
+@par Updated utilities
+
+@par Updated libraries
+
+@par Removed
+
+
+
+
+
+
+
+
+
+
+@section orca_doc_history_250 Changes in Release 2.5.0
 
 @par Project wide
 
@@ -137,6 +174,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Laser2d (alex b)
   - Simplified interaction between component code and driver code.
   - Allowed dynamically-loaded drivers from libraries outside the orca2 distribution.
+  - remove SickAcfr (QNX implementation no longer compatible with OrcaSerial)
 
 @par Updated utilities
 
