@@ -91,23 +91,23 @@ Foreground Points
 
 - @c LaserFeatureExtractor.Config.FGPoints.MinForegroundWidth (float) [m]
     - minimum width of poles/trees
-    - Default: 0.1
+    - Default: 0.01
 
 - @c LaserFeatureExtractor.Config.FGPoints.MaxForegroundWidth (float) [m]
     - maximum width of poles and trees
     - Default: 0.5
 
 - @c LaserFeatureExtractor.Config.FGPoints.MinForegroundBackgroundSeparation (float) [m]
-    - how far the pole or tree must be from the background
-    - Default: 1.0
+    - how far the pole or tree must be from the background or other clutter
+    - Default: 2.0
 
 - @c LaserFeatureExtractor.Config.FGPoints.PFalsePositive (double)
     - Probability of detecting a false-positive foreground point
-    - Default: 0.3
+    - Default: 0.2
 
 - @c LaserFeatureExtractor.Config.FGPoints.PTruePositive (double)
     - Probability of detecting a true-positive foreground point
-    - Default: 0.5
+    - Default: 0.6
 
 Lines
 
@@ -122,7 +122,7 @@ Lines
 - @c LaserFeatureExtractor.Config.Lines.BreakDistThreshold (float) [m]
     - For a line to be fit, the orthogonal distance of each point from
       the line must be less than this.
-    - Default: 0.02
+    - Default: 0.1
 
 - @c LaserFeatureExtractor.Config.Lines.MinPointsInLine (int)
     - Self-explanatory
@@ -130,7 +130,7 @@ Lines
 
 - @c LaserFeatureExtractor.Config.Lines.MinLineLength (float) [m]
     - Self-explanatory
-    - Default: 1.0
+    - Default: 2.0
 
 - @c LaserFeatureExtractor.Config.Lines.RejectLikelyGroundObservations (bool)
     - Reject lines with near-zero slope

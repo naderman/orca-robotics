@@ -25,11 +25,11 @@ Config.Reflectors.MinBrightness.Default=1
 Config.Reflectors.PFalsePositive.Default=0.1
 Config.Reflectors.PTruePositive.Default=0.6
 
-Config.FGPoints.MinForegroundWidth.Default=0.1
+Config.FGPoints.MinForegroundWidth.Default=0.01
 Config.FGPoints.MaxForegroundWidth.Default=0.5
-Config.FGPoints.MinForegroundBackgroundSeparation.Default=1.0
-Config.FGPoints.PFalsePositive.Default=0.3
-Config.FGPoints.PTruePositive.Default=0.5
+Config.FGPoints.MinForegroundBackgroundSeparation.Default=2.0
+Config.FGPoints.PFalsePositive.Default=0.2
+Config.FGPoints.PTruePositive.Default=0.6
 
 Config.Lines.ClusterMaxRangeDelta.Default=0.5
 Config.Lines.BreakDistThreshold.Default=0.02
