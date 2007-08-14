@@ -89,7 +89,6 @@ Component::start()
         std::string errString = "Component: Unknown driver: " + driverName;
         context().tracer()->error( errString );
         throw GpsException( errString );
-        return;
     }
 
     // initialize driver
@@ -102,7 +101,6 @@ Component::start()
         ss << "Component: Failed to initialize GPS: " << e.what();
         context().tracer()->error( ss.str() );
         throw GpsException( ss.str() );
-        return;
     }
 
     //
