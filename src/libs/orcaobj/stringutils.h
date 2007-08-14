@@ -20,6 +20,7 @@
 #include <orca/gps.h>
 #include <orca/ogmap.h>
 #include <orca/home.h>
+#include <orca/image.h>
 #include <orca/imu.h>
 #include <orca/odometry2d.h>
 #include <orca/odometry3d.h>
@@ -148,6 +149,14 @@ std::string toString( const orca::Size3d& );
 //! Returns: 0 = parsing successful, non-zero = parsing failed.
 int toSize3d( const std::string &, orca::Size3d& );
 
+//! Parses string of ints separated by spaces.
+//! Returns: 0 = parsing successful, non-zero = parsing failed.
+int toIntVector( const std::string &, std::vector<int>& );
+
+//! Parses string of doubles separated by spaces.
+//! Returns: 0 = parsing successful, non-zero = parsing failed.
+int toDoubleVector( const std::string &, std::vector<double>& );
+
 //! For durations less than 24hrs returns string HH:MM:SS.sss.
 //! Otherwise, DD:HH:MM:SS.sss
 //! Negative times are supported but only if seconds and microseconds
@@ -193,6 +202,10 @@ std::string toString( const orca::GpsTimeData&  );
 std::string toString( const orca::HomeData& );
 //! Converts to string
 std::string toString( const orca::ImuDescription& );
+//! Converts to string
+std::string toString( const orca::ImageDataPtr& );
+//! Converts to string
+std::string toString( const orca::ImageDescription& );
 //! Converts to string
 std::string toString( const orca::ImuData& );
 //! Converts to string

@@ -54,6 +54,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Project wide
 
+- Build system
+    - Modularized cmake scripts which contain dependencies and build preferences.
+
 @par New interfaces
 
 @par New components
@@ -61,6 +64,13 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New utilities
 
 @par New libraries
+
+- libBros1 (alex m)
+    - C++ implementation of the proposed BROS-I standard. 
+
+- libOrcaBros1 (alex m)
+    - utility library to convert between BROS-I data structures defined in Slice 
+      (libOrcaInterfaces.so) and in C++ (libBros1.so).
 
 @par New examples
 
@@ -74,6 +84,24 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Updated utilities
 
 @par Updated libraries
+
+- libOrcaIce
+  - added getPropertyAsIntVector/WithDefault() and getPropertyAsDoubleVector/WithDefault() which loads
+    ints and doubles respectively separated by spaces from a cfg file into
+    vector<int> and vector<double> resp. (ben u)
+
+- libOrcaImage
+  - added support for Image interface in image conversion functions. (alex m)
+
+- libOrcaObjects
+  - added functions to parse a sequence of int's and double's into an std::vector. (ben u)
+  - added support for Image interface. (alex m)
+
+- libOrcaProbeFactory
+  - added support for Image interface. (alex m)
+
+- libOrcaQGui2d
+  - PixMap gets repainted if its offset has changed (ben u)
 
 @par Removed
 
@@ -192,6 +220,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - libOrcaObjects
   - Bugfixes to 3D transformations in orcaobj/frameutils.cpp (Will Uther)
+  - added toIntVector() and toDoubleVector() which parses a string of ints/doubles
+    separated by spaces. (ben u)
+
 
 - libOrcaDef
   - fixed bug in XML generation: 'external' tag for config was ignored (alexm)

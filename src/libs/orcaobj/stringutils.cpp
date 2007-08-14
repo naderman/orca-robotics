@@ -351,6 +351,76 @@ toSize3d( const std::string& s, orca::Size3d& obj )
     return 0;
 }
 
+int 
+toIntVector( const std::string& s, std::vector<int>& obj )
+{
+    std::istringstream ss( s );
+    
+    //check that there's something in the input stream
+    if ( !ss )
+    {
+        return -1;
+    }
+    
+    int tmp;
+    while ( true )
+    {
+        ss >> tmp;
+        
+        // if we're not at the end of the line but something went wrong, return error
+        if ( !ss && !ss.eof() )
+        {
+            return -1;
+        }
+        
+        obj.push_back( tmp );
+    
+        // check if we're at the end of the line
+        if ( ss.eof() )
+        {
+            break;
+        }
+    }
+    
+    // success
+    return 0;
+}
+
+int 
+toDoubleVector( const std::string& s, std::vector<double>& obj )
+{
+    std::istringstream ss( s );
+    
+    //check that there's something in the input stream
+    if ( !ss )
+    {
+        return -1;
+    }
+    
+    double tmp;
+    while ( true )
+    {
+        ss >> tmp;
+        
+        // if we're not at the end of the line but something went wrong, return error
+        if ( !ss && !ss.eof() )
+        {
+            return -1;
+        }
+        
+        obj.push_back( tmp );
+    
+        // check if we're at the end of the line
+        if ( ss.eof() )
+        {
+            break;
+        }
+    }
+    
+    // success
+    return 0;
+}
+
 // adapted from IceUtil::Time::toDuration()
 // the only difference is in NOT printing 'd' after the number of days
 // this is to make it easier to parse back
@@ -744,6 +814,31 @@ toString( const orca::GpsTimeData&  obj )
     std::ostringstream s;
     s << toString(obj.timeStamp) <<"\n"
       << " UTC: " << toString(obj.utcDate) << " " << toString(obj.utcTime);
+    return s.str();
+}
+
+std::string 
+toString( const orca::ImageDataPtr& obj )
+{
+    std::ostringstream s;
+    s << toString(obj->timeStamp)
+        << " ImageData:\n" 
+        << "Image height              " << obj->height << "pix\n"
+        << "Image width               " << obj->width << "pix\n"
+        << "Format                    " << obj->format << "\n"
+        << "Compression               " << obj->compression << "\n";
+    return s.str();
+}
+
+std::string 
+toString( const orca::ImageDescription& obj )
+{
+    std::ostringstream s;
+    s << "ImageDescription:\n" 
+        << "Image height              " << obj.imageHeight << "pix\n"
+        << "Image width               " << obj.imageWidth << "pix\n"
+        << "Format                    " << obj.format << "\n"
+        << "Compression               " << obj.compression << "\n";
     return s.str();
 }
 

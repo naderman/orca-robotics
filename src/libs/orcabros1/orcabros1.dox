@@ -1,0 +1,36 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+/*!
+
+@ingroup libs
+@defgroup orca_library_orcabros1 libOrcaBros1
+@brief Converts between the types of BROS-I C++ library and Orca types.
+
+For a full list of functions and classes see @ref orcabros1.
+
+Header file:
+@verbatim
+#include <orcabros1/orcabros1.h>
+@endverbatim
+
+@par Responsible Developer
+Alex Makarenko
+  
+*/
+
+/*!
+@namespace orcabros1
+@brief Converts between the types of BROS-I C++ library and Orca types.
+
+This namespace is part of a library which converts between BROS-I types implemented directly in C++ and with Slice.
+
+@see @ref orca_library_orcabros1 
+*/
+

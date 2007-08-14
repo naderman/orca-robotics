@@ -38,6 +38,11 @@ int main(int argc, char * argv[])
     props->setProperty( "Size3d.Good", "1.0 2.0 3.0" );
     props->setProperty( "Size3d.Short", "1.0 2.0" );
     props->setProperty( "Size3d.Alpha", "1.0 2.0 three" );
+    props->setProperty( "IntVector.Good", "1 2 3" );
+    props->setProperty( "IntVector.Double", "1 2.0 3" );
+    props->setProperty( "IntVector.Alpha", "1 two 3" );
+    props->setProperty( "DoubleVector.Good", "1.0 2.0 3.0" );
+    props->setProperty( "DoubleVector.Alpha", "1.0 two 3.0" );
     int ret;
 
     cout<<"testing getProperty() ... ";
@@ -279,6 +284,88 @@ int main(int argc, char * argv[])
     ret = orcaice::getPropertyAsSize3d( props, "NotExist", size3d );
     if ( ret==0 ) {
         cout<<"failed"<<endl<<"\tnon-existing key with Size3d: ret="<<ret<<endl;
+        return EXIT_FAILURE;
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing getPropertyAsIntVector() ... ";
+    std::vector<int> intVector;
+    ret = orcaice::getPropertyAsIntVector( props, "IntVector.Good", intVector );
+    if ( ret!=0 || intVector.size()!=3 || (intVector.at(0)+intVector.at(1)+intVector.at(2))!=6 ) {
+        cout<<"failed"<<endl<<"\texisting key with good IntVector: ret="<<ret<<endl;
+        return EXIT_FAILURE;
+    }
+    intVector.clear();
+    ret = orcaice::getPropertyAsIntVector( props, "NotExist", intVector );
+    if ( ret==0 ) {
+        cout<<"failed"<<endl<<"\tnon-existing key with IntVector: ret="<<ret<<endl;
+        return EXIT_FAILURE;
+    }
+    intVector.clear();
+    ret = orcaice::getPropertyAsIntVector( props, "IntVector.Double", intVector );
+    if ( ret==0 ) {
+        cout<<"failed"<<endl<<"\texisting key with double IntVector: ret="<<ret<<endl;
+        return EXIT_FAILURE;
+    }
+    intVector.clear();
+    ret = orcaice::getPropertyAsIntVector( props, "IntVector.Alpha", intVector );
+    if ( ret==0 ) {
+        cout<<"failed"<<endl<<"\texisting key with alpha IntVector: ret="<<ret<<endl;
+        return EXIT_FAILURE;
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing getPropertyAsIntVectorWithDefault() ... ";
+    intVector.clear();
+    intVector.push_back( 1 );
+    std::vector<int> retIntVector;
+    retIntVector = orcaice::getPropertyAsIntVectorWithDefault( props, "IntVector.Good", intVector );
+    if ( retIntVector.size()!=3 || (retIntVector.at(0)+retIntVector.at(1)+retIntVector.at(2))!=6 ) {
+        cout<<"failed"<<endl<<"\texisting key with default good IntVector: ret(0)="<<retIntVector.at(0)<<endl;
+        return EXIT_FAILURE;
+    }
+    retIntVector.clear();
+    retIntVector = orcaice::getPropertyAsIntVectorWithDefault( props, "NotExist", intVector );
+    if (  retIntVector.size()!=1 || retIntVector.at(0)!=1 ) {
+        cout<<"failed"<<endl<<"\tnon-existing key with default IntVector: ret(0)="<<retIntVector.at(0)<<endl;
+        return EXIT_FAILURE;
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing getPropertyAsDoubleVector() ... ";
+    std::vector<double> doubleVector;
+    ret = orcaice::getPropertyAsDoubleVector( props, "DoubleVector.Good", doubleVector );
+    if ( ret!=0 || doubleVector.size()!=3 || !NEAR(doubleVector.at(0)+doubleVector.at(1)+doubleVector.at(2), 6.0, 1E-6) ) {
+        cout<<"failed"<<endl<<"\texisting key with good DoubleVector: ret="<<ret<<endl;
+        return EXIT_FAILURE;
+    }
+    doubleVector.clear();
+    ret = orcaice::getPropertyAsDoubleVector( props, "NotExist", doubleVector );
+    if ( ret==0 ) {
+        cout<<"failed"<<endl<<"\tnon-existing key with DoubleVector: ret="<<ret<<endl;
+        return EXIT_FAILURE;
+    }
+    doubleVector.clear();
+    ret = orcaice::getPropertyAsDoubleVector( props, "DoubleVector.Alpha", doubleVector );
+    if ( ret==0 ) {
+        cout<<"failed"<<endl<<"\texisting key with alpha DoubleVector: ret="<<ret<<endl;
+        return EXIT_FAILURE;
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing getPropertyAsDoubleVectorWithDefault() ... ";
+    doubleVector.clear();
+    doubleVector.push_back( 1.0 );
+    std::vector<double> retDoubleVector;
+    retDoubleVector = orcaice::getPropertyAsDoubleVectorWithDefault( props, "DoubleVector.Good", doubleVector );
+    if ( retDoubleVector.size()!=3 || !NEAR(retDoubleVector.at(0)+retDoubleVector.at(1)+retDoubleVector.at(2), 6.0, 1E-6) ) {
+        cout<<"failed"<<endl<<"\texisting key with default good DoubleVector: ret="<<retDoubleVector.at(0)<<endl;
+        return EXIT_FAILURE;
+    }
+    retDoubleVector.clear();
+    retDoubleVector = orcaice::getPropertyAsDoubleVectorWithDefault( props, "NotExist", doubleVector );
+    if (  retDoubleVector.size()!=1 || !NEAR(retDoubleVector.at(0), 1.0, 1E-6) ) {
+        cout<<"failed"<<endl<<"\tnon-existing key with default DoubleVector: ret="<<retDoubleVector.at(0)<<endl;
         return EXIT_FAILURE;
     }
     cout<<"ok"<<endl;

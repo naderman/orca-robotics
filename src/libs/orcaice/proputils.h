@@ -89,6 +89,8 @@ int getPropertyAsDouble( const Ice::PropertiesPtr &, const ::std::string& key, I
 //! Returns: 0 = property found (and set in value), non-zero = property not found.
 int getPropertyAsInt(    const Ice::PropertiesPtr &, const ::std::string& key, int         &value );
 //! Returns: 0 = property found (and set in value), non-zero = property not found.
+//! Note that the Ice PropertiesI::load() method has a line size limitation of 1024 characters 
+//! but quietly fails so there is no way of knowing if you have exceeded this limitation
 int getProperty(         const Ice::PropertiesPtr &, const ::std::string& key, std::string &value );
 //! Parses the value into a sequence of strings assuming ":" delimeters (like a sequence of endopoints).
 //! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
@@ -110,6 +112,18 @@ int getPropertyAsSize3d( const Ice::PropertiesPtr &, const ::std::string& key, o
 //! Parses the value into a CartesianPoint object assuming empty space delimeters.
 //! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
 int getPropertyAsCartesianPoint( const Ice::PropertiesPtr &, const ::std::string& key, orca::CartesianPoint &value );
+//! Parses the value into a vector of ints assuming empty space delimeters. Elements will continue
+//! to be added to the end of the vector until the end of the line is reached.
+//! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
+//! Note that the Ice PropertiesI::load() method has a line size limitation of 1024 characters 
+//! but quietly fails so there is no way of knowing if you have exceeded this limitation
+int getPropertyAsIntVector( const Ice::PropertiesPtr &, const ::std::string& key, std::vector<int> &value );
+//! Parses the value into a vector of doubles assuming empty space delimeters. Elements will continue
+//! to be added to the end of the vector until the end of the line is reached.
+//! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
+//! Note that the Ice PropertiesI::load() method has a line size limitation of 1024 characters 
+//! but quietly fails so there is no way of knowing if you have exceeded this limitation
+int getPropertyAsDoubleVector( const Ice::PropertiesPtr &, const ::std::string& key, std::vector<double> &value );
 //! Parses the value into a Time object assuming ':' delimeters.
 //! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
 int getPropertyAsTimeDuration( const Ice::PropertiesPtr &, const ::std::string& key, orca::Time &value );
@@ -132,6 +146,10 @@ orca::Size2d getPropertyAsSize2dWithDefault( const Ice::PropertiesPtr &, const :
 orca::Size3d getPropertyAsSize3dWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::Size3d &defaultValue );
 //! Returns the default value if key is not found or cannot be converted to a CartesianPoint.
 orca::CartesianPoint getPropertyAsCartesianPointWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::CartesianPoint &defaultValue );
+//! Returns the default value if key is not found or cannot be converted to a vector<int>.
+std::vector<int> getPropertyAsIntVectorWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const std::vector<int> &defaultValue );
+//! Returns the default value if key is not found or cannot be converted to a vector<double>.
+std::vector<double> getPropertyAsDoubleVectorWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const std::vector<double> &defaultValue );
 //! Returns the default value if key is not found or cannot be converted to a Time.
 orca::Time getPropertyAsTimeDurationWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::Time &d );
 

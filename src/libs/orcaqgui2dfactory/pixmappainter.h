@@ -85,6 +85,11 @@ class PixmapPainter
     bool isDisplayMap_;
 
     bool haveMap_;
+
+    // record the offset so that we can check if it's changed and then update
+    // if necessary  
+    QPointF previousOffset_; 
+
 };
 
 } // namespace

@@ -3,6 +3,8 @@
 # alexm: is this true? component_rules does not link OrcaIce.
 #
 
+INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
+
 INCLUDE_DIRECTORIES( BEFORE
     ${ICE_HOME}/include
     ${PROJECT_BINARY_DIR}/src/interfaces/cpp

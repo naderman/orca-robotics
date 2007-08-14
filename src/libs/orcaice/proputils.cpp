@@ -384,6 +384,75 @@ getPropertyAsCartesianPointWithDefault( const Ice::PropertiesPtr & prop, const :
         return value;
 }
 
+int
+getPropertyAsIntVector( const Ice::PropertiesPtr & prop, const ::std::string& key, std::vector<int> & value )
+{
+    std::string stringVal;
+    if ( getProperty( prop, key, stringVal ) )
+        return -1;
+    else
+        return toIntVector( stringVal, value );
+    return 0;
+}
+
+std::vector<int>
+getPropertyAsIntVectorWithDefault( const Ice::PropertiesPtr & prop, const ::std::string& key, const std::vector<int>& defaultValue )
+{
+    std::vector<int> value;
+    if ( getPropertyAsIntVector( prop, key, value ) )
+    {
+        std::ostringstream s;
+        for ( uint i=0; i<defaultValue.size(); i++ )
+        {
+            s << defaultValue.at(i) << " ";
+        }
+        
+        initTracerInfo( "Set property to default value: "+key+"="+s.str() );
+        
+        return defaultValue;
+    }
+    else
+    {
+        return value;
+    }
+}
+
+int
+getPropertyAsDoubleVector( const Ice::PropertiesPtr & prop, const ::std::string& key, std::vector<double> & value )
+{
+    std::string stringVal;
+    if ( getProperty( prop, key, stringVal ) )
+    {
+        return -1;
+    }
+    else
+    {
+        return toDoubleVector( stringVal, value );
+    }
+    return 0;
+}
+
+std::vector<double>
+getPropertyAsDoubleVectorWithDefault( const Ice::PropertiesPtr & prop, const ::std::string& key, const std::vector<double>& defaultValue )
+{
+    std::vector<double> value;
+    if ( getPropertyAsDoubleVector( prop, key, value ) )
+    {
+        std::ostringstream s;
+        for ( uint i=0; i<defaultValue.size(); i++ )
+        {
+            s << defaultValue.at(i) << " ";
+        }
+        
+        initTracerInfo( "Set property to default value: "+key+"="+s.str() );
+        return defaultValue;
+    }
+    else
+    {
+        return value;
+    }
+}
+
 int 
 getPropertyAsTimeDuration( const Ice::PropertiesPtr & prop, const ::std::string& key, orca::Time &value )
 {

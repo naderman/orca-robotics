@@ -27,7 +27,8 @@ PixmapPainter::PixmapPainter()
 PixmapPainter::PixmapPainter( PixmapData &pixmapData )
     : data_(pixmapData),
       isDisplayMap_(true),
-      haveMap_(false)
+      haveMap_(false),
+      previousOffset_(0.0,0.0)
 {
 }        
 
@@ -91,13 +92,17 @@ PixmapPainter::paint( QPainter *painter )
 bool
 PixmapPainter::updateWorldMatrix( const QMatrix & m )
 {
-    // don't waste time resizing to the same scale
-    if ( m2win_ == m ) {
+    // don't waste time resizing to the same scale and if the offset 
+    // of the pixmap hasn't changed
+    if ( m2win_ == m && previousOffset_==data_.offset ) {
         return false;
     }
-//     cout << "TRACE(pixmappainter.cpp): updateWorldMatrix " << endl;
+    // cout << "TRACE(pixmappainter.cpp): updateWorldMatrix " << endl;
 
     m2win_ = m;
+    
+    // record the offset to check next time if it has changed
+    previousOffset_ = data_.offset;
 
     // copy "m2win" matrix ...
     map2win_ = m2win_;
