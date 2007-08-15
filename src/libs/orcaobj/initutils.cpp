@@ -96,6 +96,17 @@ setInit( orca::CartesianPoint& obj, double x, double y, double z )
     obj.z = z;
 }
 
+void 
+setInit( orca::Covariance2d& obj, double pxx, double pxy, double pyy, double pxt, double pyt, double ptt )
+{
+    obj.xx = pxx;
+    obj.xy = pxy;
+    obj.yy = pyy;
+    obj.xt = pxt;
+    obj.yt = pyt;
+    obj.tt = ptt;
+}
+
 void
 setInit( orca::Time& obj )
 {
@@ -246,6 +257,17 @@ setSane( orca::Twist3d& obj )
 }
 
 void 
+setSane( orca::Covariance2d& obj )
+{
+    obj.xx = double(RINT%100000)/100000.0;
+    obj.xy = double(RINT%100000)/100000.0;
+    obj.yy = double(RINT%100000)/100000.0;
+    obj.xt = 0.0;
+    obj.yt = 0.0;
+    obj.tt = 0.0;
+}
+
+void 
 setSane( orca::Size2d& obj )
 {
     obj.l = double(RINT%100000)/1000.0;
@@ -269,6 +291,19 @@ setSane( orca::Odometry2dData& obj )
 
     setSane( obj.pose );
     setSane( obj.motion );
+}
+
+void 
+setSane( orca::Localise2dData& obj )
+{
+    orca::Time t;
+    setSane( t );
+    obj.timeStamp = t;
+
+    obj.hypotheses.push_back( orca::Pose2dHypothesis() );
+    setSane( obj.hypotheses[0].mean );
+    setSane( obj.hypotheses[0].cov );
+    obj.hypotheses[0].weight=1.0;
 }
 
 void 

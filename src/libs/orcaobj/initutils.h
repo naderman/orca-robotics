@@ -52,6 +52,8 @@ void setInit( orca::Size3d&, double l=0.0, double w=0.0, double h=0.0 );
 void setInit( orca::CartesianPoint2d&, double x=0.0, double y=0.0 );
 //! Sets all fields to specified values
 void setInit( orca::CartesianPoint&, double x=0.0, double y=0.0, double z=0.0 );
+//! Sets all fields to specified values
+void setInit( orca::Covariance2d&, double pxx=0.0, double pxy=0.0, double pyy=0.0, double pxt=0.0, double pyt=0.0, double ptt=0.0 );
 //! Sets all fields to zero.
 void setInit( orca::Time& );
 //! Sets all fields to zero
@@ -82,6 +84,8 @@ void setSane( orca::Frame3d& );
 void setSane( orca::Size2d& );
 //! Set to randomized but sane values.
 void setSane( orca::Size3d& );
+//! Set to randomized but sane values.
+void setSane( orca::Covariance2d& );
 //! Sets to current time.
 void setSane( orca::Time& );
 //! Sets to current time.
@@ -99,6 +103,8 @@ void setSane( orca::GpsData& );
 void setSane( orca::GpsTimeData& );
 //! Set to randomized but sane values.
 void setSane( orca::GpsMapGridData& );
+//! Set to randomized but sane values.
+void setSane( orca::Localise2dData& );
 //! Set to randomized but sane values.
 void setSane( const orca::RangeScanner2dDataPtr&, int numberOfSamples=361 );
 //! Set to randomized but sane values.
