@@ -402,7 +402,7 @@ getPropertyAsIntVectorWithDefault( const Ice::PropertiesPtr & prop, const ::std:
     if ( getPropertyAsIntVector( prop, key, value ) )
     {
         std::ostringstream s;
-        for ( uint i=0; i<defaultValue.size(); i++ )
+        for ( unsigned int i=0; i<defaultValue.size(); i++ )
         {
             s << defaultValue.at(i) << " ";
         }
@@ -439,7 +439,7 @@ getPropertyAsDoubleVectorWithDefault( const Ice::PropertiesPtr & prop, const ::s
     if ( getPropertyAsDoubleVector( prop, key, value ) )
     {
         std::ostringstream s;
-        for ( uint i=0; i<defaultValue.size(); i++ )
+        for ( unsigned int i=0; i<defaultValue.size(); i++ )
         {
             s << defaultValue.at(i) << " ";
         }
