@@ -1,0 +1,76 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@page orca_doc_tute_wall Using Wall Interface Simulator
+
+@note Reviewed for release 2.6.0.
+
+In this tutorial we will demonstrate the use of @ref orca_util_wall utility -- a configurable interface simulator. This utility is useful during component development. It lets the developer to setup all required interfaces in one component. The capabilities of this utility are limited. It generally does NOT let you debug the algorithms, for this you can work from logged data (see @ref orca_util_logger) or use a simulator such as Player/Stage. Nevertheless, sometimes all you need from an interface is just to "be there" -- in those cases Wall is exactly what you need.
+
+Let's say you require an implementation of @ref orca_interface_laserscanner2d and @ref orca_interface_localiser2d. A component which provides these two does not (currently) exist. You could run @ref orca_component_laser2d using a @e Fake driver. None of the existing localisers have fake drivers. Instead you could run @ref orca_component_robot2d with a @e Fake driver and then convert its @ref orca_interface_odometry2d with @ref orca_component_faithlocaliser. This is possible but rather complicated. Instead, we will configure @ref orca_util_wall to simulated the two interfaces we need.
+
+@section orca_doc_tute_wall_startup Start Up the Infrastructure and a System
+
+Repeat the instructions of @ref orca_doc_quickstart for starting up IceGrid Regisry and the IceBox/IceStorm combination.
+
+Create a new system directory and copy Orca sample files.
+@verbatim
+$ mkdir -p ~/sys/tutewall; cd ~/sys/tutewall
+$ cp [ORCA2-INSTALL]/cfg/wall.cfg .
+@endverbatim
+
+@section orca_doc_tute_wall_config Configuring Interface Simulation
+
+Edit the standard config file @c wall.cfg so that it looks like this (comments are removed).
+@verbatim
+Wall.Platform=local
+Wall.Component=wall
+
+Wall.Provides.LaserScanner2d0.Name=laserscanner2d0
+Wall.Provides.Localise2d0.Name=localise2d0
+
+Wall.Config.FactoryLibNames=libOrcaWallFactory.so
+Wall.Config.LaserScanner2d0.Driver=random
+Wall.Config.LaserScanner2d0.MaxRange=200.0
+Wall.Config.Localise2d0.Driver=random
+@endverbatim
+
+Run the utility:
+@verbatim
+$ wall
+@endverbatim
+
+You can verify that the interfaces we wanted are available by using @ref orca_utility_probe or @ref orca_util_iceping or by connecting @ref orca_component_lasermon to the laser interface. The output of @ref orca_utility_probe is shown below:
+@verbatim
+Component : agave/wall
+-------------------------------------------------------
+Select an interface from the list:
+ 0 *  orca.agave.wall/Home              ::orca::Home
+ 1 *  tracer                            ::orca::Tracer
+ 2 *  status                            ::orca::Status
+ 3 *  localise2d0                       ::orca::Localise2d
+ 4 *  laserscanner2d0                   ::orca::LaserScanner2d
+-------------------------------------------------------
+@endverbatim
+ 
+@section orca_doc_tute_wall_onemore Adding an Interface of the Same Type
+
+Let's add another @ref orca_interface_laserscanner2d interface. This is possible because we use indeces at the end of interface tags (exactly the same as in config files for @ref orca_util_logger). Append the following lines to the config file (line order in config files is not important).
+
+@verbatim
+Wall.Provides.LaserScanner2d1.Name=laserscanner2d1
+Wall.Config.LaserScanner2d1.Driver=random
+@endverbatim
+
+Restart the Wall utility. Verify that two LaserScanner2d interfaces are now provided.
+
+*/

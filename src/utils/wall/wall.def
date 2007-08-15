@@ -1,0 +1,22 @@
+DefaultComponentTag=Wall
+
+# Provided (simulated) interfaces with their own config parameters
+Provides.LaserScanner2d0.Type=LaserScanner2d
+Provides.LaserScanner2d0.DefaultProxy=laserscanner2d@local/wall
+Config.LaserScanner2d0.Driver.Comment=Valid values: {'random'}
+Config.LaserScanner2d0.Driver.Default=random
+Config.LaserScanner2d0.MaxRange.Default=200.0
+
+Provides.Localise2d0.Type=Localise2d
+Provides.Localise2d0.DefaultProxy=localise2d@local/wall
+Config.Localise2d0.Driver.Comment=Valid values: {'random'}
+Config.Localise2d0.Driver.Default=random
+
+Provides.Odometry2d0.Type=Odometry2d
+Provides.Odometry2d0.DefaultProxy=odometry2d@local/wall
+Config.Odometry2d0.Driver.Comment=Valid values: {'random'}
+Config.Odometry2d0.Driver.Default=random
+Config.Odometry2d0.VehicleDescription.Geometry.Cylindrical.Height.Default=2.2
+
+# Config Parameters
+Config.FactoryLibNames.Default=libOrcaWallFactory.so
