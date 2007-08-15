@@ -14,6 +14,7 @@
 #include "laserscanner2dsim.h"
 #include "localise2dsim.h"
 #include "odometry2dsim.h"
+#include "velocitycontrol2dsim.h"
 
 using namespace orcawallfactory;
 
@@ -36,6 +37,7 @@ OrcaWallFactory::OrcaWallFactory()
 //     addSupportedType("PathFollower2d");
 //     addSupportedType("Status");
 //     addSupportedType("Tracer");
+    addSupportedType("VelocityControl2d");
 }
 
 orcawall::InterfaceSim* 
@@ -93,6 +95,9 @@ OrcaWallFactory::create( const std::string& interfaceType, const std::string& ta
 //     else if ( interfaceType == "Tracer" ) {
 //         sim = new TracerSim( tag, context );
 //     }
+    else if ( interfaceType == "VelocityControl2d" ) {
+        sim = new VelocityControl2dSim( tag, context );
+    }
 
     return sim;
 }
