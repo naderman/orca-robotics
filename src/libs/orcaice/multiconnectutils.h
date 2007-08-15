@@ -239,6 +239,26 @@ connectToTopicWithTag( const Context      & context,
     return topicPrx;
 }
 
+/*!
+Convenience function. Tries to connect to the specified topic by calling getInterfaceIdWithString() 
+until is successful or the @c thread is stopped (in this case an empty string is returned).
+
+We catch all orcaice::NetworkException, sleep for @c retryInterval [s] and try again.
+*/
+std::string getInterfaceIdWithString( const Context& context, const std::string& proxyString,
+                       orcaice::Thread*  thread, int retryInterval=2 );
+
+/*!
+Convenience function. Tries to connect to the specified topic by calling getInterfaceIdWithString() 
+until is successful or the @c thread is stopped (in this case an empty string is returned).
+
+We catch all orcaice::NetworkException, sleep for @c retryInterval [s] and try again.
+
+All other exceptions are not likely to be resolved over time so we don't catch them.
+*/
+std::string getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
+                       orcaice::Thread*  thread, int retryInterval=2 );
+
 //@}
 
 } // namespace

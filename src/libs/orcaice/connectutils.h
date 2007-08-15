@@ -176,6 +176,7 @@ std::string getInterfaceIdWithString( const Context& context, const std::string&
 
 //! Tries to connect the interface described in the config file and gets its ID.
 //! Throws NetworkException if the interface is unreachable.
+//! Throws ConfigFileException if there's a problem with reading from the config file.
 std::string getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag );
 
 // FUNCTIONS WITHOUT DOXYGEN TAGS ARE UTILITY FUNCTIONS

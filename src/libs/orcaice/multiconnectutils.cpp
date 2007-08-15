@@ -112,4 +112,52 @@ activate( Context& context, orcaice::Thread* thread, int retryInterval )
     }
 }
 
+std::string 
+getInterfaceIdWithString( const Context& context, const std::string& proxyString,
+                       orcaice::Thread*  thread, int retryInterval )
+{
+    std::string ifaceId;
+    while ( thread->isActive() )
+    {
+        try {
+            ifaceId = getInterfaceIdWithString( context, proxyString );
+            break;
+        }
+        catch ( const std::exception& e ) {
+            std::stringstream ss;
+            ss << "Failed to get interface ID with string="<<proxyString<<". Check Registry. "
+                <<"Will retry in "<<retryInterval<<"s.\n"
+                << e.what();
+            context.tracer()->warning( ss.str() );
+
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+        }
+    }
+    return ifaceId;
+}
+
+std::string 
+getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
+                       orcaice::Thread*  thread, int retryInterval )
+{
+    std::string ifaceId;
+    while ( thread->isActive() )
+    {
+        try {
+            ifaceId = getInterfaceIdWithTag( context, interfaceTag );
+            break;
+        }
+        catch ( const std::exception& e ) {
+            std::stringstream ss;
+            ss << "Failed to get interface ID with tag="<<interfaceTag<<". Check Registry. "
+                <<"Will retry in "<<retryInterval<<"s.\n"
+                << e.what();
+            context.tracer()->warning( ss.str() );
+
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+        }
+    }
+    return ifaceId;
+}
+
 } // namespace
