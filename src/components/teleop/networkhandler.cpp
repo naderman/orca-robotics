@@ -62,21 +62,8 @@ NetworkHandler::run()
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
-    std::string ifaceId;
-    while ( isActive() )
-    {
-        try {
-            ifaceId = getInterfaceIdWithTag( context_, "Generic" );
-            break;
-        }
-        catch ( const orcaice::NetworkException& e ) {
-            std::stringstream ss;
-            ss << "Failed to get interface with tag 'Generic': " << e.what() << endl;
-            ss << "Will try again in 2 seconds.";
-            context_.tracer()->warning(ss.str());
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-        }
-    }
+    // multi-try function
+    std::string ifaceId = orcaice::getInterfaceIdWithTag( context_, "Generic", this );
 
     // based on the ID of the interface, create the right network driver
     if ( ifaceId == "::orca::VelocityControl2d" )
