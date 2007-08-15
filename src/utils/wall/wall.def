@@ -18,5 +18,9 @@ Config.Odometry2d0.Driver.Comment=Valid values: {'random'}
 Config.Odometry2d0.Driver.Default=random
 Config.Odometry2d0.VehicleDescription.Geometry.Cylindrical.Height.Default=2.2
 
+Provides.VelocityControl2d0.Type=VelocityControl2d
+Provides.VelocityControl2d0.DefaultProxy=velocitycontrol2d@local/wall
+Config.VelocityControl2d0.VehicleDescription.Control.VelocityDifferential.MaxForwardSpeed.Default=10.0
+
 # Config Parameters
 Config.FactoryLibNames.Default=libOrcaWallFactory.so
