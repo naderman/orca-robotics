@@ -79,6 +79,16 @@ LaserScanner2dIface::initInterface()
     orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_ );
 }
 
+void 
+LaserScanner2dIface::initInterface( orcaice::Thread* thread, int retryInterval )
+{
+    topicPrx_ = orcaice::connectToTopicWithTag<orca::RangeScanner2dConsumerPrx>
+        ( context_, consumerPrx_, ifaceTag_, "*", thread, retryInterval );
+
+    ptr_ = new LaserScanner2dI( *this );
+    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_, thread, retryInterval );
+}
+
 orca::RangeScanner2dDataPtr 
 LaserScanner2dIface::getData() const
 {
