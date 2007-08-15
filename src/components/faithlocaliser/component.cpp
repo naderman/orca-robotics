@@ -30,13 +30,6 @@ Component::~Component()
 void
 Component::start()
 {
-
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // this may throw, but may as well quit right then
-    activate();
-
     //
     // MAIN DRIVER LOOP
     //

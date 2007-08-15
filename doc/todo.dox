@@ -100,6 +100,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - added getPropertyAsIntVector/WithDefault() and getPropertyAsDoubleVector/WithDefault() which loads
     ints and doubles respectively separated by spaces from a cfg file into
     vector<int> and vector<double> resp. (ben u)
+  - added multi-try versions of getInterfaceIdWithString() and getInterfaceIdWithTag() functions. (alex m)
 
 - libOrcaImage
   - added support for Image interface in image conversion functions. (alex m)

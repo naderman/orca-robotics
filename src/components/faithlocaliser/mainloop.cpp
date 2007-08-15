@@ -15,14 +15,13 @@
 #include "odometry2dconsumerI.h"
 
 using namespace std;
-using namespace orca;
 using namespace faithlocaliser;
 
 namespace {
     const char *SUBSYSTEM = "mainloop";
 
-    void odometryToLocalise( const Odometry2dData &odData,
-                            Localise2dData        &loData,
+    void odometryToLocalise( const orca::Odometry2dData &odData,
+                            orca::Localise2dData        &loData,
                             const double          &varPosition,
                             const double          &varHeading )
     {
@@ -63,32 +62,18 @@ MainLoop::~MainLoop()
 void
 MainLoop::initNetwork()
 {
-    
+    //
+    // ENABLE NETWORK CONNECTIONS
+    //
+    // multi-try function
+    orcaice::activate( context_, this );
+
     //
     // EXTERNAL REQUIRED INTERFACES
-    //
-    while ( isActive() )
-    {
-        try
-        {
-            orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odometryPrx_, "Odometry2d" );
-            break;
-        }
-        catch ( const Ice::Exception &e )
-        {
-            stringstream ss;
-            ss << "failed to connect to remote Odometry2d object: " << e << ". Will try again after 3 seconds.";
-            context_.tracer()->error( ss.str() );
-        }
-        catch ( const std::exception &e )
-        {
-            stringstream ss;
-            ss << "failed to connect to remote Odometry2d object: " << e.what() << ". Will try again after 3 seconds.";
-            context_.tracer()->error( ss.str() );
-        }
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
-    }
-
+    //            
+    // multi-try function
+    orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odometryPrx_, "Odometry2d", this );
+ 
     // create a callback object to recieve scans
     Ice::ObjectPtr consumer = new Odometry2dConsumerI( odometryPipe_ );
     orca::Odometry2dConsumerPrx consumerPrx =
@@ -122,8 +107,8 @@ MainLoop::initNetwork()
 void
 MainLoop::run()
 {
-    Localise2dData localiseData;
-    Odometry2dData odomData;
+    orca::Localise2dData localiseData;
+    orca::Odometry2dData odomData;
     double varPosition = stdDevPosition_*stdDevPosition_;
     double varHeading = (stdDevHeading_*M_PI/180.0)*(stdDevHeading_*M_PI/180.0);
     

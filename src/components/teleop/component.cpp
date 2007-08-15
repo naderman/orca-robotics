@@ -38,13 +38,6 @@ Component::start()
 {
     tracer()->debug("starting component",2);
 
-    // The only provided interfaces are the 2 standard ones: Home and Status.
-    // We can just skip this activation step and they will not be visible on
-    // on the network (if network traffic is an issue, for example).
-    //
-    // this may throw, but may as well quit right then
-    activate();
-
     //
     // USER DISPLAY
     //

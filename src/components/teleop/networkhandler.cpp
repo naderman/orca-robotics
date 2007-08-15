@@ -56,6 +56,14 @@ NetworkHandler::run()
     // we are in a different thread now, catch all stray exceptions
     try
     {
+
+    // The only provided interfaces are the 2 standard ones: Home and Status.
+    // We can just skip this activation step and they will not be visible on
+    // on the network (if network traffic is an issue, for example).
+    //
+    // multi-try function
+    orcaice::activate( context_, this );
+
     //
     // Read settings
     //
