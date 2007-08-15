@@ -55,7 +55,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Project wide
 
 - Build system
-    - Modularized cmake scripts which contain dependencies and build preferences.
+    - Modularized cmake scripts which contain dependencies and build preferences. This will allow
+      reduce the number of unintended dependencies.
 
 @par New interfaces
 
@@ -66,6 +67,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New utilities
 
+- Wall (alex m)
+   - Simulates Orca interfaces. Use it during component development and debugging to easily create 
+     'fake' implementations of standard interfaces. Then plug your component into 'the wall'.
+
 @par New libraries
 
 - libBros1 (alex m)
@@ -74,6 +79,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - libOrcaBros1 (alex m)
     - utility library to convert between BROS-I data structures defined in Slice 
       (libOrcaInterfaces.so) and in C++ (libBros1.so).
+
+- libOrcaWall and libOrcaWallFactory (alex m)
+    - Dynamically loadable implementation of the interface simulators used by the Wall utility.
 
 @par New examples
 
