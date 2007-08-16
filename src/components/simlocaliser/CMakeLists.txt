@@ -24,14 +24,16 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
 
     # build common sources into a convenience library
     BUILD_COMPONENT_SOURCES( SimLocaliserSources )
-    
+
+    SET( DEP_LIBS SimLocaliserSources OrcaIfaceImpl ${STAGE_LIBS} )
+
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( simlocaliser main )
-    TARGET_LINK_LIBRARIES( simlocaliser SimLocaliserSources ${STAGE_LIBS} )
+    TARGET_LINK_LIBRARIES( simlocaliser ${DEP_LIBS} )
     
     # build IceBox service
     GLOBAL_ADD_LIBRARY( OrcaSimLocaliser SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaSimLocaliser SimLocaliserSources ${STAGE_LIBS} )
+    TARGET_LINK_LIBRARIES( OrcaSimLocaliser ${DEP_LIBS} )
     
     GENERATE_CONFIG_FILE( simlocaliser.def )
 

@@ -12,36 +12,24 @@
 #define ORCA2_STAGE_LOCALISER_MAIN_LOOP_H
 
 #include <orcaice/thread.h>
-#include <orcaice/ptrbuffer.h>
 #include <orcaice/context.h>
-#include <orca/localise2d.h>
-
-#include "driver.h"
 
 namespace simlocaliser
 {
 
-// Note: this thing self-destructs when run() returns.
+class Driver;
+
 class MainLoop : public orcaice::Thread
 {
 
 public:
-
-    MainLoop( const orca::Localise2dConsumerPrx                localise2dConsumer,
-              orcaice::Buffer<orca::Localise2dData>     &locBuffer,
-              const orcaice::Context & context );
+    MainLoop( const orcaice::Context& context );
     virtual ~MainLoop();
 
+    // from orcaice::Thread
     virtual void run();
 
 private:
-
-    // IceStorm consumer
-    const orca::Localise2dConsumerPrx  localise2dConsumer_;
-    
-    // outgoing
-    orcaice::Buffer<orca::Localise2dData> &locBuffer_;
-
     // generic interface to the hardware
     Driver* driver_;
     

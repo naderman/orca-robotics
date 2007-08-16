@@ -12,16 +12,12 @@
 #define ORCA2_STAGE_LOCALISER_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orcaice/ptrbuffer.h>
-
-#include <orca/localise2d.h>
 
 namespace simlocaliser
 {
 
 class MainLoop;
 
-// Deriving from orcaice::Component means we have to implement start() and stop()
 class Component : public orcaice::Component
 {
 public:
@@ -29,17 +25,12 @@ public:
     Component();
     virtual ~Component();
 
+    // from orcaice::Component
     virtual void start();
     virtual void stop();
 
 private:
-
-    //
-    // EXTERNAL PROVIDED INTERFACE
-    //
-    orcaice::Buffer<orca::Localise2dData> locBuffer_;
-
-    MainLoop *mainLoop_;
+    MainLoop* mainLoop_;
 };
 
 } // namespace

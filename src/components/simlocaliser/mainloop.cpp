@@ -10,27 +10,20 @@
  
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaifaceimpl/localise2diface.h>
 
 #include "mainloop.h"
 #include "staticdriver.h"
-
 #ifdef HAVE_STAGE_DRIVER
-    #include "stage/stagedriver.h"
+#   include "stage/stagedriver.h"
 #endif
 
 using namespace std;
-using namespace orca;
 using namespace simlocaliser;
 
-MainLoop::MainLoop( const Localise2dConsumerPrx                    localise2dConsumer,
-                    orcaice::Buffer<orca::Localise2dData>         &locBuffer,
-                    const orcaice::Context & context )
-    : localise2dConsumer_(localise2dConsumer),
-      locBuffer_(locBuffer),
-      context_(context)
+MainLoop::MainLoop( const orcaice::Context & context )
+    : context_(context)
 {
-    assert(localise2dConsumer_ != 0);
-
     //
     // Read settings
     //
@@ -79,11 +72,22 @@ MainLoop::~MainLoop()
 void
 MainLoop::run()
 {
-    Localise2dData localiseData;
-
     // we are in a different thread now, catch all stray exceptions
     try
     {
+
+    //
+    // EXTERNAL PROVIDED INTERFACE
+    //
+    orcaifaceimpl::Localise2dIfacePtr iface;
+    iface = new orcaifaceimpl::Localise2dIface( "Localise2d", context_ );
+    iface->initInterface( this );
+
+    //
+    // ENABLE NETWORK CONNECTIONS
+    //
+    // this may throw, but may as well quit right then
+    orcaice::activate( context_, this );
 
     //
     // Enable driver
@@ -105,28 +109,17 @@ MainLoop::run()
             //
             // Read data
             //
+            orca::Localise2dData localiseData;
             // readTimer_.restart();
             readStatus = driver_->read( localiseData );
             // cout<<"read: " << readTimer_.elapsed().toMilliSecondsDouble()<<endl;
         
-            if ( readStatus==0 ) {
-//                 cout<<"TRACE(mainloop.cpp): new localise data: " << localiseData << endl;
-                
-                // Stick the new data in the buffer
-                locBuffer_.push( localiseData );
-    
-                try {
-                    // push to IceStorm
-                    localise2dConsumer_->setData( localiseData );
-                }
-                catch ( Ice::ConnectionRefusedException &e )
-                {
-                    // This could happen if IceStorm dies.
-                    // If we're running in an IceBox and the IceBox is shutting down, 
-                    // this is expected (our co-located IceStorm is obviously going down).
-                    context_.tracer()->warning( "Failed push to IceStorm." );
-                }
-            } else {
+            if ( readStatus==0 ) 
+            {
+                iface->localSetAndSend( localiseData );
+            } 
+            else 
+            {
                 context_.tracer()->error("failed to read data from Segway hardware. Repairing....");
                 driver_->repair();
             }
