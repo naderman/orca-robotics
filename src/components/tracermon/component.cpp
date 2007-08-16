@@ -44,9 +44,6 @@ Component::start()
     // which driver to load?
     std::string driverName = orcaice::getPropertyWithDefault( props, prefix+"Driver", "term-iostream" );
 
-    // this may throw, but may as well quit right then
-    activate();  
-
     //
     // USER & DISPLAY
     //

@@ -16,7 +16,6 @@
 #include "tracerconsumerI.h"
 
 using namespace std;
-using namespace orca;
 using namespace tracermon;
 
 NetworkHandler::NetworkHandler( User* user,
@@ -58,28 +57,19 @@ NetworkHandler::run()
     int errorVerb = orcaice::getPropertyAsIntWithDefault( props, prefix+"ErrorVerbosity", 10 );
     int debugVerb = orcaice::getPropertyAsIntWithDefault( props, prefix+"DebugVerbosity", 10 );
 
+    // multi-try
+    orcaice::activate( context_, this ); 
+
     // REQUIRED : Tracer
-    while ( isActive() ) {
-        try
-        {
-            orcaice::connectToInterfaceWithTag<orca::TracerPrx >( context_, tracerPrx_, "Tracer" );
-            context_.tracer()->debug("connected to a 'Tracer' interface",5);
-            break;
-        }
-        // includes common ex's: ConnectionRefusedException, ConnectTimeoutException
-        catch ( const Ice::LocalException & e )
-        {
-            context_.tracer()->info("failed to connect to a remote interface. Will try again after 2 seconds.");
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-        }
-    }
+    // multi-try
+    orcaice::connectToInterfaceWithTag<orca::TracerPrx >( context_, tracerPrx_, "Tracer", this );
 
     //
     // this loop until it succeeds
     //
-stringstream ss;
-ss<<"init verbosity with ["<<errorVerb<<","<<warnVerb<<","<<infoVerb<<","<<debugVerb<<"]";
-user_->newLocalTrace( ss.str() );
+// stringstream ss;
+// ss<<"init verbosity with ["<<errorVerb<<","<<warnVerb<<","<<infoVerb<<","<<debugVerb<<"]";
+// user_->newLocalTrace( ss.str() );
     setRemoteVerbosity( errorVerb, warnVerb, infoVerb, debugVerb );
 
     //
@@ -91,7 +81,7 @@ user_->newLocalTrace( ss.str() );
             orcaice::createConsumerInterface<orca::TracerConsumerPrx>( context_, consumer );
 
 
-user_->newLocalTrace( "subscribing..." );
+// user_->newLocalTrace( "subscribing..." );
     while ( isActive() ) {
         try
         {
