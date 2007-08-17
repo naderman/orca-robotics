@@ -47,7 +47,6 @@ MainLoop::MainLoop( const orcaice::Context &context )
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
     context_.status()->initialising( SUBSYSTEM );
-    initNetwork();
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.";
@@ -107,6 +106,8 @@ MainLoop::initNetwork()
 void
 MainLoop::run()
 {
+    initNetwork();
+
     orca::Localise2dData localiseData;
     orca::Odometry2dData odomData;
     double varPosition = stdDevPosition_*stdDevPosition_;
