@@ -2,13 +2,13 @@
 
 
 # A rough and ready perl script used to parse the peak CAN data from the segway
-# It is expecting data in format that the command 'cat /dev/pcan40 | grab_data.pl'
+# It is expecting data in format that the command 'cat /dev/pcan40 | parse_peakcandata.pl'
 # will produce.
 
 use warnings;
 use strict;
 
-my ($TimeStamp,$CommandSpeed,@canData,$ReceivedSpeed,$ActualSpeed);
+my ($TimeStamp,$CommandSpeed,@canData,$ReceivedSpeed,$ActualSpeed,$UiVoltage,$CUAVoltage,$CUBVoltage);
 my $LastT413 = 0;
 my $LastT407 = 0;
 my $LastT402 = 0;
@@ -77,9 +77,15 @@ while(<>){
         $checkSpeeds = 1;
     }
 
+    elsif($canData[2] eq "0x00000406"){
+        my $CuVoltage = ((getnum($canData[10]) << 8)  + getnum($canData[11])) / 4;
+        print "CU_Voltage $CuVoltage\n";
+    }
+
     #These are the 'actual' wheel velocities
     elsif($canData[2] eq "0x00000402"){
-        print "Delta Time 0x402 " .($TimeStamp - $LastT402) ." millisec. ";
+
+      print "Delta Time 0x402 " .($TimeStamp - $LastT402) ." millisec. ";
         $ActualSpeed = (getnum($canData[4]) << 8)  + getnum($canData[5]);
         $ActualSpeed += (getnum($canData[6]) << 8)  + getnum($canData[7]);
         $ActualSpeed /= 2;
@@ -87,8 +93,13 @@ while(<>){
         $LastT402 = $TimeStamp;
         print $line;
     }elsif($canData[2] eq "0x00000688"){
+
         $Last688Msg = $line;
         print "New 688 $Last688Msg";
+        my $UiVoltage = 0x03FF & (getnum($canData[8]) << 8)  + getnum($canData[9]);
+        $UiVoltage = 1.4 + ($UiVoltage * 0.0125);
+        my $UiBatFlags = getnum($canData[8]) & 0xC0;
+        print "New 688: UiVoltage $UiVoltage, UiFlags $UiBatFlags, $Last688Msg";
     }elsif($canData[2] eq "0x00000680"){
         $Last680Msg = $line;
         print "New 680 $Last680Msg";
