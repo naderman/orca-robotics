@@ -39,9 +39,6 @@ public:
     // expect to be provided with)
     virtual int waypointHorizon() { return 1; }
 
-//     // Driver sets everything up, and is told what time it is
-//     virtual void init( const orca::Time &time )=0;
-
     //
     // Sets cmd.
     //
