@@ -157,7 +157,7 @@ MainLoop::connectToController()
         try 
         {
             // connect to the controller
-            orcaice::connectToInterfaceWithTag<VelocityControl2dPrx>( context_, velControl2dPrx_, "VelocityControl2d" );
+            orcaice::connectToInterfaceWithTag( context_, velControl2dPrx_, "VelocityControl2d" );
             context_.tracer()->debug("connected to a 'VelocityControl2d' interface",5);
             break;
         }
@@ -205,7 +205,7 @@ MainLoop::subscribeForOdometry()
     while ( isActive() )
     {
         try {
-            orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odomPrx, "Odometry2d" );
+            orcaice::connectToInterfaceWithTag( context_, odomPrx, "Odometry2d" );
             break;
         }
         catch( Ice::Exception &e )
@@ -251,7 +251,7 @@ MainLoop::subscribeForLocalisation()
     while ( isActive() )
     {
         try {
-            orcaice::connectToInterfaceWithTag<orca::Localise2dPrx>( context_, locPrx, "Localisation" );
+            orcaice::connectToInterfaceWithTag( context_, locPrx, "Localisation" );
             break;
         }
         catch( Ice::Exception &e )
@@ -302,7 +302,7 @@ MainLoop::subscribeForObservations()
     while ( isActive() )
     {
         try {
-            orcaice::connectToInterfaceWithTag<orca::RangeScanner2dPrx>( context_, obsPrx, "Observations" );
+            orcaice::connectToInterfaceWithTag( context_, obsPrx, "Observations" );
             break;
         }
         catch( Ice::Exception &e )
