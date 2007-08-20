@@ -39,8 +39,8 @@ public:
     // expect to be provided with)
     virtual int waypointHorizon() { return 1; }
 
-    // Driver sets everything up, and is told what time it is
-    virtual void init( const orca::Time &time )=0;
+//     // Driver sets everything up, and is told what time it is
+//     virtual void init( const orca::Time &time )=0;
 
     //
     // Sets cmd.
@@ -49,7 +49,6 @@ public:
     // in the local coordinate frame.
     //
     virtual void getCommand( bool                                   stalled,
-                             double                                 localisationLagSec,
                              bool                                   localisationUncertain,
                              const orcanavutil::Pose               &pose,
                              const orca::Twist2d                   &currentVelocity,

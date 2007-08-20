@@ -46,7 +46,6 @@ MainLoop::MainLoop( DriverFactory                    &driverFactory,
       odomProxy_(NULL),
       pathFollowerInterface_(pathFollowerInterface),
       clock_(clock),
-      localisationLagSec_(0),
       testMode_(false),
       context_(context)
 {
@@ -72,7 +71,6 @@ MainLoop::MainLoop( DriverFactory                   &driverFactory,
       pathFollowerInterface_(pathFollowerInterface),
       testSimulator_(&testSimulator),
       clock_(clock),
-      localisationLagSec_(0),
       testMode_(true),
       context_(context)
 {
@@ -366,10 +364,6 @@ MainLoop::setup()
 {
     if ( !testMode_ )
     {
-        Ice::PropertiesPtr prop = context_.properties();
-        std::string prefix = context_.tag() + ".Config.";
-        onSameClock_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"OnSameClock", 1 );
-
         connectToController();
 
         subscribeForOdometry();
@@ -382,7 +376,6 @@ MainLoop::setup()
     }
     else
     {
-        onSameClock_ = false;
         vehicleDescr_ = testSimulator_->getVehicleDescription();
         scannerDescr_ = testSimulator_->rangeScanner2dDescription();
         obsProxy_  = &(testSimulator_->obsProxy_);
@@ -431,7 +424,6 @@ MainLoop::run()
 {
     try {
         setup();
-        driver_->init( clock_.time() );
     }
     catch ( Ice::Exception &e )
     {
@@ -534,13 +526,6 @@ MainLoop::run()
                << "\t now:          " << orcaice::toString(now);
             context_.tracer()->debug( ss.str(), 3 );
 
-//             if ( localiseData_.timeStamp != odomData_.timeStamp )
-//             {
-//                 stringstream warnSS;
-//                 warnSS << "localiseData and odomData have different timestamps:" << endl << ss.str();
-//                 context_.tracer()->warning( warnSS.str() );
-//             }
-
             // grab the maximum likelihood pose of the vehicle
             orcanavutil::Pose pose = getMLPose( localiseData_ );
             
@@ -569,7 +554,6 @@ MainLoop::run()
             // The odometry is required for the velocity, which isn't contained
             // in Localise2d.
             driver_->getCommand( obsoleteStall,
-                                 localisationLagSec_,
                                  uncertainLocalisation,
                                  pose,
                                  odomData_.motion,
@@ -600,18 +584,6 @@ MainLoop::run()
             std::stringstream timerSS;
             timerSS << "MainLoop: time to make and send decision: " << timer.elapsedSeconds()*1000.0 << "ms";
             context_.tracer()->debug( timerSS.str(), 3 );
-
-            localisationLagSec_ = timer.elapsedSeconds(); // decision time
-            if ( onSameClock_ )
-            {
-                double rangeLocalisationLag = orcaice::timeDiffAsDouble( now, localiseData_.timeStamp );
-                localisationLagSec_ += rangeLocalisationLag;
-                // cout<<"TRACE(mainloop.cpp): rangeLocalisationLag: " << rangeLocalisationLag*1000.0 << "ms" << endl;
-            }
-
-            stringstream sss;
-            sss << "localisationLagSec_: " << localisationLagSec_*1000.0 << "ms";
-            context_.tracer()->debug( sss.str(), 3 );
 
             checkWithOutsideWorld();
 

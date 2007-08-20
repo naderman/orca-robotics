@@ -49,12 +49,8 @@ public:
                const orca::VehicleDescription &descr );
     virtual ~VfhDriver();
 
-    // Driver sets everything up, and is told what time it is
-    virtual void init( const orca::Time &time ) {};
-
     // Goal location is in robot's coordinate frame
     virtual void getCommand( bool                                   stalled,
-                             double                                 localisationLagSec,
                              bool                                   localisationUncertain,
                              const orcanavutil::Pose               &pose,
                              const orca::Twist2d                   &currentVelocity,

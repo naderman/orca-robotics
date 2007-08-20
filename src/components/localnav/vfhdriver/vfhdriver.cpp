@@ -45,7 +45,9 @@ VfhDriver::VfhDriver( const orcaice::Context & context,
         if ( errors != "" )
         {
             context_.tracer()->error( "Erroneous VFH configuration: " + errors );
-            throw( std::string( "Bad VFH config" ) );
+            stringstream ss;
+            ss << "VfhDriver: Bad VFH config: " << errors;
+            throw orcaice::Exception( ERROR_INFO, ss.str() );
         }
     }
 
@@ -90,7 +92,6 @@ VfhDriver::setSpeedConstraints( float maxSpeed, float maxTurnrate )
 // Goal location is in robot's coordinate frame
 void
 VfhDriver::getCommand( bool                                   stalled,
-                       double                                 localisationLagSec,
                        bool                                   localisationUncertain,
                        const orcanavutil::Pose               &pose,
                        const orca::Twist2d                   &currentVelocity,
@@ -257,9 +258,9 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
     {
         if ( angleIncrement - 1.0*M_PI/180.0 > EPS ) 
         {
-            cout<<"TRACE(vfhdriver.cpp): obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << endl;
-            context_.tracer()->error( "VfhDriver: Can't handle weird angle increment." );
-            throw( std::string("VfhDriver: Can't handle weird angle increment.") );
+            stringstream ss;
+            ss << "VfhDriver: Can't handle weird angle increment: obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << "deg";
+            throw orcaice::Exception( ERROR_INFO, ss.str() );
         }
         replicateNum = 2;
     }
@@ -267,12 +268,9 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
     {
         if ( angleIncrement - 0.5*M_PI/180.0 > EPS ) 
         {
-            cout<<"TRACE(vfhdriver.cpp): obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << endl;
-            cout<<"TRACE(vfhdriver.cpp): expected " << 0.5*M_PI/180.0 << ", found " << angleIncrement << endl;
-            printf("%.20f, %.20f\n",0.5*M_PI/180.0,angleIncrement);
-
-            context_.tracer()->error( "VfhDriver: Can't handle weird angle increment." );
-            throw( std::string("VfhDriver: Can't handle weird angle increment.") );
+            stringstream ss;
+            ss << "VfhDriver: Can't handle weird angle increment: obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << "deg";
+            throw orcaice::Exception( ERROR_INFO, ss.str() );
         }
         replicateNum = 1;
     }
@@ -280,11 +278,13 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
     {
         stringstream ss;
         ss << "VfhDriver: Scan size of " << obs->ranges.size() << " is not implemented";
-        throw( ss.str() );
+        throw orcaice::Exception( ERROR_INFO, ss.str() );
     }
     if ( obs->startAngle - -90.0*M_PI/180.0 > EPS )
     {
-        throw( std::string("VfhDriver: Don't know how to handle weird startAngle.") );
+        stringstream ss;
+        ss << "VfhDriver: Don't know how to handle weird startAngle: " << obs->startAngle;
+        throw orcaice::Exception( ERROR_INFO, ss.str() );
     }
 
     // Copy the ranges into a player-style structure.  This means converting units: m -> mm.
