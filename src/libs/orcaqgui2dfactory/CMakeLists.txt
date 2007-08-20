@@ -22,6 +22,8 @@ IF ( NOT OS_WIN AND QT4_FOUND )
                             OrcaNavUtil
                             OrcaQGui2d
                             OrcaQGui )
+
+    INSTALL_FILES( /include/orcaqgui2dfactory .*\\.h$ )
     
 ELSE  ( NOT OS_WIN AND QT4_FOUND )
 
