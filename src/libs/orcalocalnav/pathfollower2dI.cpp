@@ -38,19 +38,19 @@ namespace {
             {
                 ss << "Waypoint " << i << ": tiny heading tolerance: " 
                    << wp.headingTolerance*180.0/M_PI << "deg" << endl;
-                dodgy = true;;
+                dodgy = true;
             }
             if ( wp.maxApproachSpeed < 1e-3 )
             {
                 ss << "Waypoint " << i << ": tiny maxApproachSpeed: " 
                    << wp.maxApproachSpeed << "m/s" << endl;
-                dodgy = true;;
+                dodgy = true;
             }
             if ( wp.maxApproachTurnrate < 1e-3 )
             {
                 ss << "Waypoint " << i << ": tiny maxApproachTurnrate: " 
                    << wp.maxApproachTurnrate*180.0/M_PI << "deg/s" << endl;
-                dodgy = true;;
+                dodgy = true;
             }
         }
         reason = ss.str();
@@ -116,7 +116,7 @@ PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateI
     if ( isDodgy( data, reason ) )
     {
         stringstream ss;
-        ss << "Received dodgy path: " << orcaice::toString(data) << endl << reason;
+        ss << "Received dodgy path: " << orcaice::toVerboseString(data) << endl << reason;
         context_.tracer()->warning( ss.str() );
     }
 
