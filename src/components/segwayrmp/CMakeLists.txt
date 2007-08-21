@@ -24,7 +24,7 @@ IF ( BUILD_SEGWAYRMP )
 
     IF ( FTD2XX_FOUND )
       MESSAGE( STATUS "    USB driver for Segway RMP line of platforms -- can be built" )
-      TARGET_LINK_LIBRARIES( segwayrmp OrcaSegwayRmpUsb )
+      SET( SEGWAY_RMP_USB_LIBS OrcaSegwayRmpUsb )
       ADD_DEFINITIONS( -DHAVE_USB_DRIVER )
       SET( HAVE_USB_DRIVER TRUE )
     ELSE ( FTD2XX_FOUND )
@@ -35,7 +35,7 @@ IF ( BUILD_SEGWAYRMP )
     
     IF ( PEAKCAN_FOUND AND BUILD_PEAKCAN )
       MESSAGE( STATUS "    Peak CAN driver for Segway RMP line of platforms -- can be built" )
-      TARGET_LINK_LIBRARIES( segwayrmp OrcaSegwayRmpCan )
+      SET( SEGWAY_RMP_CAN_LIBS OrcaSegwayRmpCan )
       ADD_DEFINITIONS( -DHAVE_CAN_DRIVER )
       SET( HAVE_CAN_DRIVER TRUE )
     ELSE ( PEAKCAN_FOUND AND BUILD_PEAKCAN )
@@ -62,6 +62,7 @@ IF ( BUILD_SEGWAYRMP )
       OrcaMisc 
       OrcaIfaceImpl 
       ${SEGWAY_RMP_USB_LIBS} 
+      ${SEGWAY_RMP_CAN_LIBS} 
       ${PLAYERCLIENT_LIBS} )
     
     TARGET_LINK_LIBRARIES( segwayrmp ${DEP_LIBS} )
