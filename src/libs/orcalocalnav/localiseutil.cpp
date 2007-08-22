@@ -24,8 +24,8 @@ bool localisationIsUncertain( const orca::Localise2dData &localiseData )
         return true;
 
     const orca::Pose2dHypothesis h = orcaice::mlHypothesis( localiseData );
-    if ( h.cov.xx > 20 ||
-         h.cov.yy > 20 )
+    if ( h.cov.xx > 5 ||
+         h.cov.yy > 5 )
         return true;
 
     return false;
