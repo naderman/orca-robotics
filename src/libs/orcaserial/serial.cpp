@@ -707,6 +707,14 @@ Serial::writeString(const char *str)
     {
         throw SerialException( "Serial::writeString(): ::write() returned 0" );
     }
+    else if ( put < strlen(str) )
+    {
+        // AlexB: Not sure what to do here...  This can happen eg if the buffer is full.
+        //        I'm not convinced that we want to throw an exception, but chances are
+        //        lots of users won't check the return code.
+        cout << "WARNING: Serial::writeString: only wrote " << put << " of " << strlen(str) << " bytes." << endl;
+    }
+
     if ( debugLevel_ > 1 )
     {
         cout<<"TRACE(serial.cpp): wrote " << put << " bytes" << endl;

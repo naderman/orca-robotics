@@ -94,6 +94,12 @@ public:
     //! Returns the number of bytes read.
     //! After reading the line then the string will be NULL terminated.
     //!
+    //! Example: if you expect to read the string "1234\n", you need something like:
+    //!                char buf[6];
+    //!                serial.readLine( buf, 6 );
+    //!
+    //!          where the two extra characters are for the '\n' and the terminating '\0'.
+    //!
     //! If timeouts are not enabled we might block forever, waiting for the number of bytes we want or an error.
     //!
     //! If timeouts are enabled we won't block more than the timeout specified.
@@ -118,7 +124,7 @@ public:
     //! Writes a ('\0'-terminated) string. 
     //! Returns the number of bytes written.
     ssize_t writeString(const char *buf);
-    inline int writeString(std::string &s) {
+    inline ssize_t writeString(const std::string &s) {
         return writeString(s.c_str());
     }
 
