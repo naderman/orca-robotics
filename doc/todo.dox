@@ -60,6 +60,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New interfaces
 
+- Pinger (alex b)
+  - Interface for requesting that a host be 'ping'ed.
+
 @par New components
 
 - ImageServer
@@ -98,6 +101,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - LaserFeatureExtractor (alex b)
   - Improved Corner and ForegroundPoint detectors.
+
+- Laser2d (alex b)
+  - Added SickAcfr driver library.
 
 @par Updated utilities
 

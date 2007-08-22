@@ -9,6 +9,7 @@ IF ( BUILD_LASER2D )
 
     # Driver implementations
     ADD_SUBDIRECTORY( fakedriver )
+    ADD_SUBDIRECTORY( sickacfr )
     ADD_SUBDIRECTORY( sickcarmen )
     ADD_SUBDIRECTORY( playerclient )
     

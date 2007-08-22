@@ -7,7 +7,7 @@ Provides.LaserScanner2d.DefaultName=laserscanner2d
 # Required Interfaces
 
 # Config Parameters
-Config.DriverLib.Comment=Valid values are at least: { 'libOrcaLaser2dSickCarmen.so', 'libOrcaLaser2dPlayerClient.so', 'libOrcaLaser2dFake.so' }
+Config.DriverLib.Comment=Valid values are at least: { 'libOrcaLaser2dSickAcfr.so', 'libOrcaLaser2dSickCarmen.so', 'libOrcaLaser2dPlayerClient.so', 'libOrcaLaser2dFake.so' }
 Config.DriverLib.Default=libOrcaLaser2dSickCarmen.so
 
 Config.MinRange.Default=0.0
@@ -28,6 +28,10 @@ Config.SickCarmen.Device.Default=/dev/ttyS0
 Config.SickCarmen.LaserType.Default=LMS
 Config.SickCarmen.Baudrate.Comment=Valid values: { 9600, 19200, 38400, 500000 }
 Config.SickCarmen.Baudrate.Default=38400
+
+Config.SickAcfr.Device.Default=/dev/ttyS0
+Config.SickAcfr.Baudrate.Comment=Valid values: { 9600, 19200, 38400, 500000 }
+Config.SickAcfr.Baudrate.Default=38400
 
 Config.PlayerClient.Host.Default=localhost
 Config.PlayerClient.Port.Default=6665

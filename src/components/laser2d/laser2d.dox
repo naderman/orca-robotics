@@ -38,6 +38,7 @@ which actually talks to the (possibly simulated) laser hardware).
 
 The driver libraries included in orca2 are:
 
+- @b libOrcaLaser2dSickAcfr @ref orca_laser_sickacfr
 - @b libOrcaLaser2dSickCarmen @ref orca_laser_sickcarmen
 - @b libOrcaLaser2dPlayerClient @ref orca_laser_playerclient
 - @b libOrcaLaser2dFake Useful for testing or if you don't have hardware or a simulator.
@@ -50,7 +51,7 @@ This component encapsulates a SICK Laser Range-Finder (see @ref how_sick_works )
 
 - @c Laser2d.Config.DriverLib (string)
     - Library to dynamically load to implement laser driver
-    - Valid values are at least: { 'libOrcaLaser2dSickCarmen.so', 'libOrcaLaser2dPlayerClient.so', 'libOrcaLaser2dFake.so' }
+    - Valid values are at least: { 'libOrcaLaser2dSickAcfr.so', 'libOrcaLaser2dSickCarmen.so', 'libOrcaLaser2dPlayerClient.so', 'libOrcaLaser2dFake.so' }
     - Default: "libOrcaLaser2dSickCarmen.so"
 
 Laser Settings
@@ -114,6 +115,21 @@ Limitations: This is a Linux-only implementation. Does NOT work with kernel 2.6.
   - Valid Values: { 9600, 19200, 38400, 500000 }
   - Default: 38400
 
+@section orca_laser_sickacfr SickAcfr driver
+
+Drives real laser hardware, directly connected to the computer. 
+
+Limitations: This is a Linux-only implementation.  It has not been
+tested at 500k baud.
+
+@par Extra configuration
+
+- @c Laser2d.Config.SickAcfr.Device (string)
+  - The unix device to use
+  - Default: "/dev/ttyS0"
+- @c Laser2d.Config.SickAcfr.Baudrate (int) [bps]
+  - Valid Values: { 9600, 19200, 38400, 500000 }
+  - Default: 38400
   
 @section orca_laser_playerclient PlayerClient driver
 
