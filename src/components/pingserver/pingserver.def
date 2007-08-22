@@ -1,0 +1,9 @@
+DefaultComponentTag=PingServer
+
+# Provided Interfaces
+Provides.Pinger.Type=Pinger
+Provides.Pinger.DefaultInterface=pinger
+
+# Required Interfaces
+
+# component configuration

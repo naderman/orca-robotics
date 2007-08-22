@@ -20,9 +20,6 @@
 #include "testsim/simulator.h"
 
 using namespace std;
-using namespace orca;
-using namespace orcaice;
-using namespace orcalocalnav;
 
 namespace localnav {
 
@@ -200,7 +197,7 @@ MainLoop::connectToController()
 void
 MainLoop::subscribeForOdometry()
 {
-    Odometry2dPrx   odomPrx;
+    orca::Odometry2dPrx   odomPrx;
     
     while ( isActive() )
     {
@@ -246,7 +243,7 @@ MainLoop::subscribeForOdometry()
 void
 MainLoop::subscribeForLocalisation()
 {
-    Localise2dPrx   locPrx;
+    orca::Localise2dPrx   locPrx;
         
     while ( isActive() )
     {
@@ -297,7 +294,7 @@ MainLoop::subscribeForLocalisation()
 void
 MainLoop::subscribeForObservations()
 {
-    RangeScanner2dPrx obsPrx;
+    orca::RangeScanner2dPrx obsPrx;
 
     while ( isActive() )
     {
