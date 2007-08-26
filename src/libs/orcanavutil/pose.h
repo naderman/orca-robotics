@@ -49,8 +49,9 @@ private:
 };
 std::ostream &operator<<( std::ostream &s, const Pose &p );
 
+//////////////////////////////////////////////////////////////////////
 //
-// Pose manipulation convenience functions (see offset.h)
+// Non-member convenience functions for pose manipulation (see offset.h)
 //
 
 inline void addPoseOffset( Pose       &pose,
@@ -91,6 +92,6 @@ inline void subtractInitialOffset( const Pose &pose,
 
 
 
-}
+} // end namespace
 
 #endif

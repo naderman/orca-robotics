@@ -109,6 +109,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated libraries
 
+- libOrcaNavUtil
+  - added convenience functions for transformations between poses (alex b)
+
 - libOrcaIce
   - added getPropertyAsIntVector/WithDefault() and getPropertyAsDoubleVector/WithDefault() which loads
     ints and doubles respectively separated by spaces from a cfg file into
