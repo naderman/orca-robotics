@@ -33,7 +33,8 @@ friend class Localise2dI;
 
 public:
     //! Constructor
-    Localise2dIface( const std::string &ifaceTag,
+    Localise2dIface( const orca::VehicleGeometryDescriptionPtr &geometry,
+                     const std::string &ifaceTag,
                      const orcaice::Context &context );
     ~Localise2dIface();
 
@@ -55,8 +56,11 @@ public:
 private:
     // remote call implementations, mimic (but do not inherit) the orca interface
     ::orca::Localise2dData getData() const;
+    ::orca::VehicleGeometryDescriptionPtr getVehicleGeometry() const;
     void subscribe(const ::orca::Localise2dConsumerPrx& );
     void unsubscribe(const ::orca::Localise2dConsumerPrx& );
+    
+    orca::VehicleGeometryDescriptionPtr geometry_;
 
     orcaice::Proxy<orca::Localise2dData> dataProxy_;
 

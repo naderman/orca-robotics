@@ -22,7 +22,8 @@ using namespace orcaqgui2d;
 Localise3dPainter::Localise3dPainter( bool beginDisplayHistory )
     : length_(0.5), 
       width_(0.3), 
-      origin_(RobotOriginMiddle),
+      radius_(0.25),
+      platformType_(PlatformTypeCubic),
       isDataAvailable_(false),
       basicColor_(Qt::blue),
       isDisplayHistory_(beginDisplayHistory),
@@ -30,23 +31,6 @@ Localise3dPainter::Localise3dPainter( bool beginDisplayHistory )
 {
 }
 
-
-void 
-Localise3dPainter::setRobotSizeAndOrigin( double length, double width, int origin )
-{
-    length_ = length;
-    width_ = width;
-    
-    switch (origin) {
-        case 0: origin_ = RobotOriginFront;
-                break;
-        case 1: origin_ = RobotOriginMiddle;
-                break;
-        case 2: origin_ = RobotOriginRear;
-                break;
-        default: origin_ = RobotOriginMiddle;
-    }
-}
 
 void
 Localise3dPainter::clear()
@@ -89,7 +73,7 @@ Localise3dPainter::paintHypothesis( QPainter* p, const orca::Pose3dHypothesis &h
     // Translate to where the hypothesis is at
     {
         ScopedSaver translateSaver(p);
-        p->translate( mean.p.x, mean.p.y );
+        p->translate( mean.p.x+originX_, mean.p.y+originY_ );
 
         QColor color;
         if (useTransparency_) {
@@ -103,14 +87,11 @@ Localise3dPainter::paintHypothesis( QPainter* p, const orca::Pose3dHypothesis &h
         {
             // Rotate to draw the platform correctly
             ScopedSaver rotateSaver(p);
-            p->rotate( RAD2DEG( mean.o.y ) );
-            paintPlatformPose( m2win,
-                               p, 
-                               color,                               
-                               length_,
-                               width_,
-                               origin_,
-                               weight );
+            p->rotate( RAD2DEG( mean.o.y ) + originRot_ );
+            if (platformType_ == PlatformTypeCylindrical)
+                paintCylindricalPlatformPose(m2win, p, color, radius_, weight );
+            else
+                paintCubicPlatformPose( m2win, p, color, length_, width_, weight );
         }
 
         paintUncertaintyInfo( m2win,

@@ -10,9 +10,10 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include "mainloop.h"
+#include <orca/odometry2d.h>
 #include "simpledriver.h"
 #include "odometrybaseddriver.h"
+#include "mainloop.h"
 
 using namespace std;
 
@@ -22,10 +23,8 @@ namespace {
     const char *SUBSYSTEM = "mainloop";
 }
 
-MainLoop::MainLoop( orcaifaceimpl::Localise2dIface &localiseInterface,
-                    const orcaice::Context &context )
+MainLoop::MainLoop( const orcaice::Context &context )
     : driver_(NULL),
-      localiseInterface_(localiseInterface),
       context_(context)
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
@@ -176,11 +175,55 @@ MainLoop::getGpsDescription()
 void
 MainLoop::initInterface()
 {
+    //
+    // connect to odometry to get vehicle description
+    //
+    orca::VehicleDescription vehicleDesc;
+    orca::Odometry2dPrx odoPrx;
+    
+    while ( isActive() )
+    {
+        try
+        {
+            context_.tracer()->debug( "Connecting to Odometry2d...", 3 );
+            orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odoPrx, "Odometry2d" );
+            context_.tracer()->debug("connected to a 'Odometry2d' interface", 4 );
+            context_.tracer()->debug( "Getting vehicle description...", 2 );
+            vehicleDesc = odoPrx->getDescription();
+            stringstream ss;
+            ss << "Got vehicle description: " << orcaice::toString( vehicleDesc );
+            context_.tracer()->info( ss.str() );
+        }
+        catch ( const Ice::Exception &e )
+        {
+            stringstream ss;
+            ss << "failed to retrieve vehicle description: " << e;
+            context_.tracer()->error( ss.str() );
+        }
+        catch ( const std::exception &e )
+        {
+            stringstream ss;
+            ss << "failed to retreive vehicle description: " << e.what();
+            context_.tracer()->error( ss.str() );
+        }
+        catch ( ... )
+        {
+            context_.tracer()->error( "Failed to retreive vehicle description for unknown reason." );
+        }
+        context_.status()->initialising( SUBSYSTEM, "getVehicleDescription()" );
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+    }
+    
+    //
+    // Instantiate External Interface
+    //
+    localiseInterface_ = new orcaifaceimpl::Localise2dIface( vehicleDesc.geometry, "Localise2d", context_ );
+
     while ( isActive() )
     {
         try {
             context_.tracer()->debug( "Initialising PolarFeature2d interface...",3 );
-            localiseInterface_.initInterface();
+            localiseInterface_->initInterface();
             context_.tracer()->debug( "Initialised PolarFeature2d interface",3 );
             return;
         }
@@ -248,7 +291,7 @@ MainLoop::run()
             // copy the timestamp
             localiseData.timeStamp = gpsData.timeStamp;
 
-            localiseInterface_.localSetAndSend( localiseData );
+            localiseInterface_->localSetAndSend( localiseData );
 
             context_.status()->ok( SUBSYSTEM );
 

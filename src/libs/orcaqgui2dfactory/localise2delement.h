@@ -48,7 +48,8 @@ public:
           painter_( beginDisplayHistory ),
           x_(0),
           y_(0),
-          theta_(0)
+          theta_(0),
+          haveGeometry_(false)
         {
         };
 
@@ -81,6 +82,9 @@ private:
     double x_;
     double y_;
     double theta_;
+    
+    void tryToGetGeometry();
+    bool haveGeometry_;
 };
 
 }

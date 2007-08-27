@@ -133,15 +133,29 @@ paintOrigin( QPainter *p, QColor colour )
     p->restore();
 }
 
-void paintPlatformPose( const QMatrix &m2win, QPainter *p, QColor colour, float length, float width, RobotOrigin origin, float transparencyMultiplier )
+void paintCylindricalPlatformPose( const QMatrix &m2win, QPainter *p, QColor colour, float radius, float transparencyMultiplier )
 {
-    const double min_length = FRAME_LENGTH/m2win.m11();
+    const double minRadius = FRAME_LENGTH/m2win.m11();
+    const double lineThickness = THIN_LINE_THICKNESS/m2win.m11();
+    if (radius < minRadius)
+    {
+       radius = minRadius;
+    }
+    p->setBrush( colour );
+    p->setPen( QPen( Qt::black, lineThickness ) );
+    p->drawEllipse( QRectF( -radius, -radius, 2*radius, 2*radius) );
+    p->drawLine( QPointF(0.0,0.0), QPointF(radius,0.0) );
+}
+
+void paintCubicPlatformPose( const QMatrix &m2win, QPainter *p, QColor colour, float length, float width, float transparencyMultiplier )
+{
+    const double minLength = FRAME_LENGTH/m2win.m11();
     const double lineThickness = THIN_LINE_THICKNESS/m2win.m11();
 
-    if (length < min_length)
+    if (length < minLength)
     {
-       width *= min_length/length;
-	   length = min_length;
+       width *= minLength/length;
+	   length = minLength;
     }
 
     double halfWidth = width/2.0;
@@ -152,25 +166,10 @@ void paintPlatformPose( const QMatrix &m2win, QPainter *p, QColor colour, float 
     // The outline
     p->setPen( QPen( Qt::black, lineThickness ) );
     
-    switch(origin) {
-        case RobotOriginMiddle:
-            p->drawRect( QRectF( -halfLength, -halfWidth, length, width) ); // top,left, width,height
-            p->drawLine( QPointF(0.0,0.0), QPointF(halfLength,halfWidth) );
-            p->drawLine( QPointF(0.0,0.0), QPointF(halfLength,-halfWidth) );
-            break;
-        case RobotOriginRear:
-            p->drawRect( QRectF( 0.0, -halfWidth, length, width) ); // top,left, width,height        
-            p->drawLine( QPointF(0.0,0.0), QPointF(length,halfWidth) );
-            p->drawLine( QPointF(0.0,0.0), QPointF(length,-halfWidth) );
-            break;
-        case RobotOriginFront:
-            p->drawRect( QRectF( -length, -halfWidth, length, width) ); // top,left, width,height
-            p->drawLine( QPointF(-length/4.0,0.0), QPointF(0.0,halfWidth) );
-            p->drawLine( QPointF(-length/4.0,0.0), QPointF(0.0,-halfWidth) );
-            break;
-        default:
-            cout << "WARNING: unknown robot origin in paintPlatformPose().  Using middle of platform." << endl;
-     }
+    p->drawRect( QRectF( -halfLength, -halfWidth, length, width) ); // top,left, width,height
+    p->drawLine( QPointF(0.0,0.0), QPointF(halfLength,halfWidth) );
+    p->drawLine( QPointF(0.0,0.0), QPointF(halfLength,-halfWidth) );
+
 }
 
 void

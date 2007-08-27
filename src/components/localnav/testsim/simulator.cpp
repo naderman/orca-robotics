@@ -111,8 +111,13 @@ Simulator::setupInterfaces()
     scannerDescr_.offset.o.y = 0;
     scannerDescr_.timeStamp = orcaice::getNow();
     
+    orca::VehicleGeometryCuboidDescriptionPtr geom;
+    geom->type = orca::VehicleGeometryCuboid;
+    orcaice::setSane( geom->size );
+    orcaice::setSane( geom->vehicleToGeometryTransform );
+    
     laserInterface_    = new orcaifaceimpl::LaserScanner2dIface( scannerDescr_, "TestLaserScanner", context_ );
-    localiseInterface_ = new orcaifaceimpl::Localise2dIface( "TestLocalise", context_ );
+    localiseInterface_ = new orcaifaceimpl::Localise2dIface( geom, "TestLocalise", context_ );
     ogMapInterface_    = new orcaifaceimpl::OgMapIface( "TestOgMap", context_ );
 
     try {

@@ -39,7 +39,7 @@ class Localise2dLogger : public orca::Localise2dConsumer, public orcalog::Logger
         virtual void setData(const orca::Localise2dData& data, const Ice::Current&);
 
     private:
-
+        void writeGeometryToFile( const orca::VehicleGeometryDescriptionPtr& obj );
 };
 
 }

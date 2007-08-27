@@ -29,8 +29,7 @@ class MainLoop : public orcaice::Thread
 {
 public:
 
-    MainLoop( orcaifaceimpl::Localise2dIface &localiseInterface,
-              const orcaice::Context &context );
+    MainLoop( const orcaice::Context &context );
 
     ~MainLoop();
 
@@ -50,7 +49,7 @@ private:
     Driver* driver_;
     
     // Our external interface
-    orcaifaceimpl::Localise2dIface &localiseInterface_;
+    orcaifaceimpl::Localise2dIfacePtr localiseInterface_;
     
     orca::GpsPrx gpsPrx_;
     orca::Frame3d antennaOffset_;

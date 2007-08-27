@@ -65,11 +65,10 @@ Localise2dReplayer::getData(const Ice::Current& current) const
 }
 
 
-::orca::Localise2dData
-Localise2dReplayer::getDataAtTime(const orca::Time&, const Ice::Current& current) const
+orca::VehicleGeometryDescriptionPtr
+Localise2dReplayer::getVehicleGeometry( const ::Ice::Current& ) const
 {
-    context_.tracer()->warning( "Localise2dReplayer::getDataAtTime(): Not implemented yet. Just returning latest data!" );
-    return getData( current );
+    return geometry_;
 }
 
 void 
@@ -96,6 +95,15 @@ Localise2dReplayer::unsubscribe(const ::orca::Localise2dConsumerPrx &subscriber,
 {
     topicPrx_->unsubscribe( subscriber );
 }
+
+void 
+Localise2dReplayer::initDescription()
+{
+    orcalog::IceReadHelper helper( context_.communicator(), file_ );
+    ice_readVehicleGeometryDescription( helper.stream_, geometry_ );
+    helper.read();
+}
+
 
 void 
 Localise2dReplayer::replayData( int index, bool isTest )

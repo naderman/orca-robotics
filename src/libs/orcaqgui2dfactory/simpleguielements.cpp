@@ -62,6 +62,9 @@ PolarFeature2dElement::contextMenu()
 void
 Localise3dElement::update()
 {
+    if (!haveGeometry_)
+        tryToGetGeometry();
+    
     // standard update as in IceStormElement
     if ( !IceStormElement<Localise3dPainter,
             orca::Localise3dData,
@@ -97,8 +100,20 @@ Localise3dElement::update()
 void
 Localise3dElement::actionOnConnection()
 {   
-    //TODO: we should get this from the interface but it's not implemented
-    //      for now, we'll get it from the config file
+    
+    if (!isConnected_) return;
+    
+    tryToGetGeometry();
+    
+    paintInitialData<orca::Localise3dPrx, Localise3dPainter>
+        ( context_, listener_.interfaceName(), painter_ );
+}
+
+void 
+Localise3dElement::tryToGetGeometry()
+{
+    //TODO: update the localise3d interface, so we can get geometry from there
+    //      for now, we get it from the config file
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag();
     prefix += ".Config.";
@@ -109,10 +124,15 @@ Localise3dElement::actionOnConnection()
     orcaice::setInit( robotSize );
     robotSize = orcaice::getPropertyAsSize2dWithDefault( prop, prefix+"Localise.RobotSize", robotSize );
     int robotOrigin = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Localise.RobotOrigin", 1 );
-    painter_.setRobotSizeAndOrigin( robotSize.l, robotSize.w, robotOrigin );
     
-    paintInitialData<orca::Localise3dPrx, Localise3dPainter>
-        ( context_, listener_.interfaceName(), painter_ );
+    painter_.setTypeAndGeometry( PlatformTypeCubic, robotSize.l, robotSize.w );
+    if (robotOrigin==0)
+        painter_.setOrigin( -robotSize.l/2, 0.0, 0.0 );
+    else if (robotOrigin==1)
+        painter_.setOrigin( 0.0, 0.0, 0.0 );
+    else if (robotOrigin==2)
+        painter_.setOrigin( robotSize.l/2, 0.0, 0.0 );
+
 }
 
 QStringList

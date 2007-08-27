@@ -79,8 +79,14 @@ MainLoop::run()
     //
     // EXTERNAL PROVIDED INTERFACE
     //
+        
+    orca::VehicleGeometryCuboidDescriptionPtr geom;
+    geom->type = orca::VehicleGeometryCuboid;
+    orcaice::setSane( geom->size );
+    orcaice::setSane( geom->vehicleToGeometryTransform );
+    
     orcaifaceimpl::Localise2dIfacePtr iface;
-    iface = new orcaifaceimpl::Localise2dIface( "Localise2d", context_ );
+    iface = new orcaifaceimpl::Localise2dIface( geom, "Localise2d", context_ );
     iface->initInterface( this );
 
     //

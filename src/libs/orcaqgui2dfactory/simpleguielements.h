@@ -27,7 +27,6 @@
 
 // Include various painter types
 #include <orcaqgui2dfactory/laserscanner2dpainter.h>
-#include <orcaqgui2dfactory/localise2dpainter.h>
 #include <orcaqgui2dfactory/localise3dpainter.h>
 #include <orcaqgui2dfactory/odometry2dpainter.h>
 #include <orcaqgui2dfactory/particle2dpainter.h>
@@ -175,6 +174,9 @@ private:
     double x_;
     double y_;
     double theta_;
+    
+    void tryToGetGeometry();
+    bool haveGeometry_;
 
     orca::CartesianPoint origin_; 
 };

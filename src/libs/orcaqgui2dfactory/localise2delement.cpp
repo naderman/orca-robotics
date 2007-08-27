@@ -23,28 +23,62 @@ void
 Localise2dElement::actionOnConnection()
 {
     if (!isConnected_) return;
-    
-    //TODO: we should get this from the interface but it's not implemented
-    //      for now, we'll get it from the config file
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag();
-    prefix += ".Config.";
 
-    orca::Size2d robotSize;
-    robotSize.l = 0.5;
-    robotSize.w = 0.4;
-    robotSize = orcaice::getPropertyAsSize2dWithDefault( prop, prefix+"Localise.RobotSize", robotSize );
-    
-    int robotOrigin = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Localise.RobotOrigin", 1 );
-    painter_.setRobotSizeAndOrigin( robotSize.l, robotSize.w, robotOrigin );
+    tryToGetGeometry();
     
     paintInitialData<orca::Localise2dPrx, Localise2dPainter>
         ( context_, listener_.interfaceName(), painter_ );
 }
 
+void 
+Localise2dElement::tryToGetGeometry()
+{
+    
+    VehicleGeometryDescriptionPtr geom;
+    
+    try 
+    {
+        geom = listener_.proxy()->getVehicleGeometry();
+        haveGeometry_=true;
+    }
+    catch ( std::exception &e)
+    {
+        humanManager_->showStatusMsg(Error,"Exception when trying to get geometry: " + QString(e.what()) );
+    }
+    
+    if (!haveGeometry_) {
+        painter_.setTypeAndGeometry(PlatformTypeCubic, 0.5, 0.4 );
+        painter_.setOrigin( 0.0, 0.0, 0.0 );
+        return;
+    }
+    
+    if (geom->type==VehicleGeometryCuboid)
+    {
+        VehicleGeometryCuboidDescriptionPtr geom = VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
+        painter_.setTypeAndGeometry( PlatformTypeCubic, geom->size.l, geom->size.w );
+        painter_.setOrigin( geom->vehicleToGeometryTransform.p.x, geom->vehicleToGeometryTransform.p.y, geom->vehicleToGeometryTransform.o.y );
+    }
+    else if (geom->type==VehicleGeometryCylindrical)
+    {
+        VehicleGeometryCylindricalDescriptionPtr cylGeom = VehicleGeometryCylindricalDescriptionPtr::dynamicCast( geom );
+        painter_.setTypeAndGeometry( PlatformTypeCylindrical, cylGeom->radius );
+        painter_.setOrigin( cylGeom->vehicleToGeometryTransform.p.x, cylGeom->vehicleToGeometryTransform.p.y, cylGeom->vehicleToGeometryTransform.o.y );
+    }
+    else
+    {
+        humanManager_->showStatusMsg(Warning, "Unknown platform type. Will paint a rectangle");
+        VehicleGeometryCuboidDescriptionPtr cubGeom = VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
+        painter_.setTypeAndGeometry( PlatformTypeCubic, cubGeom->size.l, cubGeom->size.w );
+        painter_.setOrigin( cubGeom->vehicleToGeometryTransform.p.x, cubGeom->vehicleToGeometryTransform.p.y, cubGeom->vehicleToGeometryTransform.o.y );
+    }
+}
+
 void
 Localise2dElement::update()
 {
+    if (!haveGeometry_)
+        tryToGetGeometry();
+    
     // standard update as in IceStormElement
     if ( !IceStormElement<Localise2dPainter,
             orca::Localise2dData,

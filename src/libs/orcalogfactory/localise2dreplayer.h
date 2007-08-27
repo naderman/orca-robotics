@@ -32,7 +32,7 @@ public:
 
     virtual ::orca::Localise2dData getData(const ::Ice::Current& ) const;
     
-    virtual ::orca::Localise2dData getDataAtTime(const orca::Time&, const Ice::Current&) const;
+    virtual ::orca::VehicleGeometryDescriptionPtr getVehicleGeometry( const ::Ice::Current& ) const;
     
     virtual void subscribe(const ::orca::Localise2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
@@ -46,11 +46,12 @@ private:
     orcaice::Buffer<orca::Localise2dData> dataPipe_;
     
     orca::Localise2dData data_;
+    orca::VehicleGeometryDescriptionPtr geometry_;
     orca::Localise2dConsumerPrx publisher_;
     IceStorm::TopicPrx topicPrx_;
 
     virtual void initInterfaces();
-    virtual void initDescription() {};
+    virtual void initDescription();
 
     // this is a counter of instaces of this type, used for registered interface name
     static int _counter;

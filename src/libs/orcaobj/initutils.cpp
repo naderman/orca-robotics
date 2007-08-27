@@ -486,5 +486,5 @@ setSane( orca::CameraData& obj, int width, int height )
     // assume RGB/BGR mode
     obj.image.resize( obj.imageWidth*obj.imageHeight*3, char(88) );
 }
-
+    
 } // namespace

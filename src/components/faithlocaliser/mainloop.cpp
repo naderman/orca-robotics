@@ -95,10 +95,29 @@ MainLoop::initNetwork()
         }
     }
     
+    //
+    // Get vehicleDescription
+    //
+    orca::VehicleDescription vehicleDescription;
+    while ( isActive() )
+    {
+        try
+        {
+            vehicleDescription = odometryPrx_->getDescription();
+            break;
+        }
+        catch ( std::exception &e )
+        {
+            stringstream ss; ss << "Failed to get description from odometry interface: " << e.what() << " Will try again after 3 seconds.";
+            context_.tracer()->error( ss.str() );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+        }
+    }
+    
     // 
     // EXTERNAL PROVIDED INTERFACE
     //
-    localiseInterface_ = new orcaifaceimpl::Localise2dIface( "Localise2d", context_);
+    localiseInterface_ = new orcaifaceimpl::Localise2dIface( vehicleDescription.geometry, "Localise2d", context_);
     localiseInterface_->initInterface();
 }
 

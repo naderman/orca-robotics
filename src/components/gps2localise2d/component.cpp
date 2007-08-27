@@ -31,19 +31,14 @@ void
 Component::start()
 {
     context().tracer()->info( "Starting component...",2 );
-
-    //
-    // Instantiate External Interface
-    //
-    localiseInterface_ = new orcaifaceimpl::Localise2dIface( "Localise2d", context() );
-
+    
     //
     // ENABLE NETWORK CONNECTIONS
     //
     // this may throw, but may as well quit right then
     activate();
 
-    mainLoop_ = new MainLoop( *localiseInterface_, context() );
+    mainLoop_ = new MainLoop( context() );
     mainLoop_->start();
 }
 

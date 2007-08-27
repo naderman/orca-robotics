@@ -96,6 +96,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New examples
 
 @par Updated interfaces
+- Localise2d
+    - added getGeometry() which describes the geometry of the localised robot (Tobi)
 
 @par Updated components
 
@@ -104,8 +106,14 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - Laser2d (alex b)
   - Added SickAcfr driver library.
+  
+- Gps2Localise2d, FaithLocaliser, SimLocaliser
+    - get vehicle description from odometry interface and relay to localise2d (Tobi)
 
 @par Updated utilities
+
+- Orcaview2d
+  - LocaliseElement gets VehicleGeometryDescription and draws robot properly (Tobi)
 
 @par Updated libraries
 

@@ -49,6 +49,9 @@ Localise2dLogger::init()
     orca::Localise2dPrx objectPrx;
     orcaice::connectToInterfaceWithTag<orca::Localise2dPrx>( context_, objectPrx, interfaceTag_ );
     
+    // write geometry to file
+    writeGeometryToFile( objectPrx->getVehicleGeometry() );
+    
     // consumer
     Ice::ObjectPtr consumer = this;
     orca::Localise2dConsumerPrx callbackPrx = 
@@ -56,6 +59,30 @@ Localise2dLogger::init()
 
     context_.tracer()->debug("Subscribing to IceStorm now.",5);
     objectPrx->subscribe( callbackPrx );
+}
+
+
+void
+Localise2dLogger::writeGeometryToFile( const orca::VehicleGeometryDescriptionPtr& obj )
+{
+    context_.tracer()->print( "Localise2dLogger: Writing geometry to file" );
+    
+    if ( format_ == "ice" )
+    {
+        orcalog::IceWriteHelper helper( context_.communicator() );
+        ice_writeVehicleGeometryDescription( helper.stream_, obj );
+        helper.write( file_ ); 
+    }
+    else if ( format_ == "ascii" )
+    {
+        (*file_) << orcalog::toLogString(obj) << flush;
+    }
+    else
+    {
+        context_.tracer()->warning( interfaceType_+"Logger: unknown log format: "+format_ );
+        throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: unknown log format: "+format_ );
+    }
+    
 }
 
 void 

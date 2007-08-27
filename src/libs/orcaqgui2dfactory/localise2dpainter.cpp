@@ -21,31 +21,14 @@ using namespace orcaqgui2d;
 
 Localise2dPainter::Localise2dPainter( bool beginDisplayHistory )
     : length_(0.5),
-      width_(0.3), 
-      origin_(RobotOriginMiddle),
+      width_(0.3),
+      radius_(0.25),
+      platformType_(PlatformTypeCubic),
       isDataAvailable_(false),
       basicColor_(Qt::blue),
       isDisplayHistory_(beginDisplayHistory),
       isDisplayMultiHypothesis_(true)
 {
-}
-
-
-void 
-Localise2dPainter::setRobotSizeAndOrigin( double length, double width, int origin )
-{
-    length_ = length;
-    width_ = width;
-    
-    switch (origin) {
-        case 0: origin_ = RobotOriginFront;
-                break;
-        case 1: origin_ = RobotOriginMiddle;
-                break;
-        case 2: origin_ = RobotOriginRear;
-                break;
-        default: origin_ = RobotOriginMiddle;
-    }
 }
 
 void
@@ -90,8 +73,8 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
     {
         ScopedSaver translateSaver(p);
         
-        // translate to mean
-        p->translate( mean.p.x, mean.p.y );
+        // translate to mean+origin
+        p->translate( mean.p.x+originX_, mean.p.y+originY_ );
 
         QColor color;
         if (useTransparency_) {
@@ -106,14 +89,12 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
             // Rotate to draw the platform correctly
             ScopedSaver rotateSaver(p);
             
-            p->rotate( RAD2DEG( mean.o ) );
-            paintPlatformPose( m2win,
-                               p, 
-                               color,
-                               length_,
-                               width_,
-                               origin_,
-                               weight );
+            p->rotate( RAD2DEG( mean.o ) + originRot_ );
+            
+            if (platformType_ == PlatformTypeCylindrical)
+                paintCylindricalPlatformPose(m2win, p, color, radius_, weight );
+            else
+                paintCubicPlatformPose( m2win, p, color, length_, width_, weight );
         }
 
         paintUncertaintyInfo( m2win,

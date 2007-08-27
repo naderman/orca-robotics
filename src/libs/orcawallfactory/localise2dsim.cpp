@@ -25,8 +25,13 @@ Localise2dSim::Localise2dSim( const std::string& tag, const orcaice::Context& co
 void 
 Localise2dSim::run()
 {
+    orca::VehicleGeometryCuboidDescriptionPtr geom;
+    geom->type = orca::VehicleGeometryCuboid;
+    orcaice::setSane( geom->size );
+    orcaice::setSane( geom->vehicleToGeometryTransform );
+    
     orcaifaceimpl::Localise2dIfacePtr iface;
-    iface = new orcaifaceimpl::Localise2dIface( tag_, context_ );
+    iface = new orcaifaceimpl::Localise2dIface( geom, tag_, context_ );
     iface->initInterface( this );
 
     while ( isActive() )

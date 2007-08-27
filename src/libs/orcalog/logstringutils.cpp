@@ -107,6 +107,17 @@ namespace {
         fromLogString( s, o.p );
         s >> o.o;
     }
+    
+    std::string toLogString( const orca::Size3d &o )
+    {
+        stringstream ss;
+        ss << o.l << " " << o.w << " " << o.h;
+        return ss.str();
+    }
+    void fromLogString( std::stringstream &s, orca::Size3d &o )
+    {
+        s >> o.l >> o.w >> o.h;
+    }
 
 //////////////////////////////////////////////////////////////////////
 }
@@ -834,6 +845,30 @@ fromLogString( std::stringstream& s, orca::GpsDescription& obj )
     fromLogString( s, obj.antennaOffset );
 }
 
+std::string
+toLogString( const orca::VehicleGeometryDescriptionPtr& obj )
+{
+    std::ostringstream s;
+
+    if ( (obj->type)==(orca::VehicleGeometryCylindrical) )
+    {
+        s << "VehicleGeometryCylindrical" << " ";
+        orca::VehicleGeometryCylindricalDescriptionPtr cylObj =
+                orca::VehicleGeometryCylindricalDescriptionPtr::dynamicCast( obj );
+        s << cylObj->radius << " " << cylObj->height;
+        s << toLogString( cylObj->vehicleToGeometryTransform );
+    }
+    else if (obj->type==orca::VehicleGeometryCuboid)
+    {
+        s << "VehicleGeometryCuboid" << " ";
+        orca::VehicleGeometryCuboidDescriptionPtr cubObj =
+                orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( obj );
+        s << toLogString( cubObj->size );   
+        s << toLogString( cubObj->vehicleToGeometryTransform );
+    }
+    
+    return s.str();
+}
 
 }
 

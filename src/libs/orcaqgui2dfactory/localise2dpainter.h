@@ -12,7 +12,6 @@
 
 #include <QColor>
 #include <orcaqgui2d/definitions2d.h>
-#include <orca/localise2d.h>
 #include <orcaqgui2d/paintutils.h>
 
 // forward declarations
@@ -20,6 +19,12 @@ class QPainter;
 
 namespace orcaqgui2d
 {
+    
+enum PlatformType
+{
+    PlatformTypeCubic,
+    PlatformTypeCylindrical
+};
 
 class Localise2dPainter
 {
@@ -28,7 +33,11 @@ class Localise2dPainter
     Localise2dPainter( bool beginDisplayHistory );
 
     void setData( const orca::Localise2dData& data );
-    void setRobotSizeAndOrigin( double length, double width, int origin );
+    void setPlatformType( PlatformType &type );
+    
+    void setTypeAndGeometry( PlatformType type, double length, double width ) { platformType_ = type; length_ = length; width_ = width;};
+    void setTypeAndGeometry( PlatformType type, double radius ) { platformType_ = type; radius_ = radius; };
+    void setOrigin( double x, double y, double o ) { originX_ = x; originY_ = y; originRot_ = o; };
 
     void paint( QPainter *p, int z );
     bool paintThisLayer(int z) const {return z==Z_POSE || z==Z_POSE-2;}
@@ -44,7 +53,13 @@ class Localise2dPainter
 
     double length_;
     double width_;
-    RobotOrigin origin_;
+    double radius_;
+    
+    PlatformType platformType_;
+    
+    double originX_;
+    double originY_;
+    double originRot_;
       
     void paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &hypothesis );
 

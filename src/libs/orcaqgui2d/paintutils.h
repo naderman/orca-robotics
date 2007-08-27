@@ -23,14 +23,6 @@
 //
 namespace orcaqgui2d
 {
-    
-//! The origin of the robot for displaying purposes
-enum RobotOrigin 
-{
-    RobotOriginFront, 
-    RobotOriginMiddle, 
-    RobotOriginRear
-};
 
 //!
 //! class for remembering the path of a robot
@@ -87,9 +79,12 @@ private:
 //! Warning: Don't rotate painter before calling this function
 void paintOrigin( QPainter *p, QColor colour );
 
-//! Paint a robot icon, painted with minimum pixel sizes, independent of zoom configuration.  Uses consts at the top of the file to specify if the origin of the robot is at the front, middle or rear of the robot, and to specify the size in metres of the robot.
+//! Paints a rectangular robot icon, painted with minimum pixel sizes, independent of zoom configuration. The painter needs to be translated and rotated before calling this function. The robot's geometry extends around the painter's current position.
 //! m2win is the worldmatrix BEFORE any painter rotation
-void paintPlatformPose( const QMatrix &m2win, QPainter *p, QColor colour, float length, float width, RobotOrigin origin, float transparencyMultiplier=1.0 );
+void paintCubicPlatformPose( const QMatrix &m2win, QPainter *p, QColor colour, float length, float width, float transparencyMultiplier=1.0 );
+
+//! As above but paints a circular platform
+void paintCylindricalPlatformPose( const QMatrix &m2win, QPainter *p, QColor colour, float radius, float transparencyMultiplier=1.0 );
 
 //!
 //! Paints an ellipse for the position uncertainty, plus

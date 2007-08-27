@@ -92,6 +92,9 @@ void fromLogString( std::stringstream& stream, orca::Time& );
 std::string toLogString( const orca::GpsDescription& );
 //! Parses from ASCII log. Throws orcalog::ParseException on error.
 void fromLogString( std::stringstream& stream, orca::GpsDescription& );
+
+//! Converts vehicle geometry to text which is easy to parse
+std::string toLogString( const orca::VehicleGeometryDescriptionPtr& );
 //}
 
 

@@ -32,9 +32,6 @@ public:
 
 private:
 
-    // External interface
-    orcaifaceimpl::Localise2dIfacePtr localiseInterface_;
-
     orcaice::ThreadPtr mainLoop_;
 };
 
