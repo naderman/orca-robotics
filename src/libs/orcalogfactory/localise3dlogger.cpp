@@ -49,9 +49,8 @@ Localise3dLogger::init()
     orca::Localise3dPrx objectPrx;
     orcaice::connectToInterfaceWithTag<orca::Localise3dPrx>( context_, objectPrx, interfaceTag_ );
     
-    // description
-    // orca::Localise3dDescription descr = objectPrx->getDescription();
-    // writeDescriptionToFile( descr );
+    // write geometry to file
+    writeGeometryToFile( objectPrx->getVehicleGeometry() );
 
     // consumer
     Ice::ObjectPtr consumer = this;
@@ -62,16 +61,28 @@ Localise3dLogger::init()
     objectPrx->subscribe( callbackPrx );
 }
 
-// void 
-// Localise3dLogger::writeDescriptionToFile( const orca::Localise3dDescription& obj )
-// {
-//     if ( format_=="ice" )
-//     {
-//         orcalog::IceWriteHelper helper( context_.communicator() );
-//         ice_writeLocalise3dDescription( helper.stream_, obj );
-//         helper.write( file_ );  
-//     }
-// }
+void
+Localise3dLogger::writeGeometryToFile( const orca::VehicleGeometryDescriptionPtr& obj )
+{
+    context_.tracer()->print( "Localise3dLogger: Writing geometry to file" );
+    
+    if ( format_ == "ice" )
+    {
+        orcalog::IceWriteHelper helper( context_.communicator() );
+        ice_writeVehicleGeometryDescription( helper.stream_, obj );
+        helper.write( file_ ); 
+    }
+    else if ( format_ == "ascii" )
+    {
+        (*file_) << orcalog::toLogString(obj) << flush;
+    }
+    else
+    {
+        context_.tracer()->warning( interfaceType_+"Logger: unknown log format: "+format_ );
+        throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: unknown log format: "+format_ );
+    }
+    
+}
 
 void 
 Localise3dLogger::setData(const orca::Localise3dData& data, const Ice::Current&)

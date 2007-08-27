@@ -53,29 +53,10 @@ Localise3dReplayer::initInterfaces()
 void 
 Localise3dReplayer::initDescription()
 {
-// Localise3d does not have a description
-//     orca::Localise3dDescription localDescription;
-//     
-//     orcalog::IceReadHelper helper( context_.communicator(), file_ );
-//     ice_readLocalise3dDescription( helper.stream_, localDescription );
-//     helper.read();
-// 
-//     descriptionBuffer_.push( localDescription );
+    orcalog::IceReadHelper helper( context_.communicator(), file_ );
+    ice_readVehicleGeometryDescription( helper.stream_, geometry_ );
+    helper.read();
 }
-
-// orca::Localise3dDescription
-// Localise3dReplayer::getDescription(const Ice::Current& c) const
-// {    
-// Localise3d does not have a description
-//     if ( descriptionBuffer_.isEmpty() )
-//     {
-//         throw orca::DataNotExistException( "logplayer buffer is empty, probably because we are not replaying yet" );
-//     }
-//  
-//     orca::Localise3dDescription descr;
-//     descriptionBuffer_.get( descr );
-//     return descr;
-// }
  
 
 orca::Localise3dData
@@ -92,12 +73,10 @@ Localise3dReplayer::getData(const Ice::Current& current) const
     return data;
 }
 
-
-::orca::Localise3dData
-Localise3dReplayer::getDataAtTime(const orca::Time&, const Ice::Current& current) const
+orca::VehicleGeometryDescriptionPtr
+Localise3dReplayer::getVehicleGeometry( const ::Ice::Current& ) const
 {
-    context_.tracer()->warning( "Localise3dReplayer::getDataAtTime(): Not implemented yet. Just returning latest data!" );
-    return getData( current );
+    return geometry_;
 }
 
 void 

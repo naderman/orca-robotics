@@ -112,26 +112,44 @@ Localise3dElement::actionOnConnection()
 void 
 Localise3dElement::tryToGetGeometry()
 {
-    //TODO: update the localise3d interface, so we can get geometry from there
-    //      for now, we get it from the config file
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag();
-    prefix += ".Config.";
+    VehicleGeometryDescriptionPtr geom;
     
-    orca::Size2d robotSize;
-    robotSize.l = 0.5;
-    robotSize.w = 0.4;
-    orcaice::setInit( robotSize );
-    robotSize = orcaice::getPropertyAsSize2dWithDefault( prop, prefix+"Localise.RobotSize", robotSize );
-    int robotOrigin = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Localise.RobotOrigin", 1 );
+    try 
+    {
+        geom = listener_.proxy()->getVehicleGeometry();
+        haveGeometry_=true;
+    }
+    catch ( std::exception &e)
+    {
+//         humanManager_->showStatusMsg(Error,"Exception when trying to get geometry: " + QString(e.what()) );
+        cout << "Exception when trying to get geometry: " << e.what();
+    }
     
-    painter_.setTypeAndGeometry( PlatformTypeCubic, robotSize.l, robotSize.w );
-    if (robotOrigin==0)
-        painter_.setOrigin( -robotSize.l/2, 0.0, 0.0 );
-    else if (robotOrigin==1)
+    if (!haveGeometry_) {
+        painter_.setTypeAndGeometry(PlatformTypeCubic, 0.5, 0.4 );
         painter_.setOrigin( 0.0, 0.0, 0.0 );
-    else if (robotOrigin==2)
-        painter_.setOrigin( robotSize.l/2, 0.0, 0.0 );
+        return;
+    }
+    
+    if (geom->type==VehicleGeometryCuboid)
+    {
+        VehicleGeometryCuboidDescriptionPtr geom = VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
+        painter_.setTypeAndGeometry( PlatformTypeCubic, geom->size.l, geom->size.w );
+        painter_.setOrigin( geom->vehicleToGeometryTransform.p.x, geom->vehicleToGeometryTransform.p.y, geom->vehicleToGeometryTransform.o.y );
+    }
+    else if (geom->type==VehicleGeometryCylindrical)
+    {
+        VehicleGeometryCylindricalDescriptionPtr cylGeom = VehicleGeometryCylindricalDescriptionPtr::dynamicCast( geom );
+        painter_.setTypeAndGeometry( PlatformTypeCylindrical, cylGeom->radius );
+        painter_.setOrigin( cylGeom->vehicleToGeometryTransform.p.x, cylGeom->vehicleToGeometryTransform.p.y, cylGeom->vehicleToGeometryTransform.o.y );
+    }
+    else
+    {
+//         humanManager_->showStatusMsg(Warning, "Unknown platform type. Will paint a rectangle");
+        VehicleGeometryCuboidDescriptionPtr cubGeom = VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
+        painter_.setTypeAndGeometry( PlatformTypeCubic, cubGeom->size.l, cubGeom->size.w );
+        painter_.setOrigin( cubGeom->vehicleToGeometryTransform.p.x, cubGeom->vehicleToGeometryTransform.p.y, cubGeom->vehicleToGeometryTransform.o.y );
+    }
 
 }
 

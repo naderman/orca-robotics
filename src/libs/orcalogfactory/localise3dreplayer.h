@@ -32,10 +32,8 @@ public:
 
     virtual ::orca::Localise3dData getData(const ::Ice::Current& ) const;
     
-    virtual ::orca::Localise3dData getDataAtTime(const orca::Time&, const Ice::Current&) const;
-    
-//     virtual orca::Localise3dDescription getDescription(const Ice::Current& c) const;
-    
+    virtual ::orca::VehicleGeometryDescriptionPtr getVehicleGeometry( const ::Ice::Current& ) const;
+      
     virtual void subscribe(const ::orca::Localise3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
     virtual void unsubscribe(const ::orca::Localise3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
@@ -46,7 +44,7 @@ public:
 
 private:
     orcaice::Buffer<orca::Localise3dData> dataPipe_;
-//     orcaice::Buffer<orca::Localise3dDescription> descriptionBuffer_;
+    orca::VehicleGeometryDescriptionPtr geometry_;
     
     orca::Localise3dData data_;
     orca::Localise3dConsumerPrx publisher_;

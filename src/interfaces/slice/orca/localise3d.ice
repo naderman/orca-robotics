@@ -15,6 +15,7 @@
 #include <orca/orca.ice>
 #include <orca/bros1.ice>
 #include <orca/stochastic.ice>
+#include <orca/vehicledescription.ice>
 
 module orca
 {
@@ -65,10 +66,9 @@ interface Localise3d
     //! Returns the latest data.
     ["cpp:const"] idempotent Localise3dData getData()
             throws DataNotExistException;
-
-    //! Returns the data at a particular time
-    ["cpp:const"] idempotent Localise3dData getDataAtTime(Time timeStamp)
-            throws DataNotExistException;
+    
+    //! Get the geometry of the localised vehicle
+    ["cpp:const"] idempotent VehicleGeometryDescription getVehicleGeometry();
 
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy

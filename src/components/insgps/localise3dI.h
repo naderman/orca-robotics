@@ -59,7 +59,7 @@ public:
     // Get pva localise3d Data
     virtual ::orca::Localise3dData getData(const ::Ice::Current& ) const;
     virtual ::orca::Localise3dData getDataAtTime(const orca::Time&, const Ice::Current&) const;
-    virtual ::orca::VehicleDescription getDescription(const ::Ice::Current& ) const;
+    virtual ::orca::VehicleGeometryDescriptionPtr getVehicleGeometry(const ::Ice::Current& ) const;
 
     // Subscribe and unsubscribe people
     virtual void subscribe(const ::orca::Localise3dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());

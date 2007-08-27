@@ -32,6 +32,9 @@ public:
 
     virtual ::orca::Localise3dData getData(const ::Ice::Current& ) const
         { return iface_.getData(); }
+    
+    virtual ::orca::VehicleGeometryDescriptionPtr getVehicleGeometry( const ::Ice::Current& ) const
+        { return iface_.getVehicleGeometry(); }    
 
     virtual void subscribe(const ::orca::Localise3dConsumerPrx& subscriber,
                            const ::Ice::Current& = ::Ice::Current())
@@ -41,10 +44,6 @@ public:
                              const ::Ice::Current& = ::Ice::Current())
         { iface_.unsubscribe( subscriber ); }
 
-    virtual orca::Localise3dData getDataAtTime(const orca::Time& t,
-                                               const Ice::Current& c) const
-        { return iface_.getDataAtTime(t); }
-
 private:
 
     Localise3dIface &iface_;
@@ -52,11 +51,16 @@ private:
 
 //////////////////////////////////////////////////////////////////////
 
-Localise3dIface::Localise3dIface( const std::string &ifaceTag,
-                          const orcaice::Context &context ) :
+Localise3dIface::Localise3dIface( const orca::VehicleGeometryDescriptionPtr &geometry,
+                                  const std::string &ifaceTag,
+                                  const orcaice::Context &context ) :
+    geometry_(geometry),
     ifaceTag_(ifaceTag),
     context_(context)
-{
+{    
+    stringstream ss;
+    ss << "Localise2dIface::geometry: " << orcaice::toString( geometry );
+    context_.tracer()->debug( ss.str(), 5 );
 }
 
 Localise3dIface::~Localise3dIface()
@@ -103,6 +107,12 @@ Localise3dIface::getData() const
     orca::Localise3dData data;
     dataProxy_.get( data );
     return data;
+}
+
+::orca::VehicleGeometryDescriptionPtr
+Localise3dIface::getVehicleGeometry() const
+{
+    return geometry_;
 }
 
 void 

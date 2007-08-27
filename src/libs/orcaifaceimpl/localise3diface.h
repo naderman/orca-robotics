@@ -33,7 +33,8 @@ friend class Localise3dI;
 
 public:
     //! Constructor
-    Localise3dIface( const std::string &ifaceTag,
+    Localise3dIface( const orca::VehicleGeometryDescriptionPtr &geometry,
+                     const std::string &ifaceTag,
                      const orcaice::Context &context );
     ~Localise3dIface();
 
@@ -55,11 +56,11 @@ public:
 private:
     // remote call implementations, mimic (but do not inherit) the orca interface
     ::orca::Localise3dData getData() const;
+    ::orca::VehicleGeometryDescriptionPtr getVehicleGeometry() const;
     void subscribe(const ::orca::Localise3dConsumerPrx&);
     void unsubscribe(const ::orca::Localise3dConsumerPrx&);
-    // Note: could do smoothing/interpolation here...
-    orca::Localise3dData getDataAtTime(const orca::Time&) const
-        { return getData(); }
+    
+    orca::VehicleGeometryDescriptionPtr geometry_;
 
     orcaice::Proxy<orca::Localise3dData> dataProxy_;
 

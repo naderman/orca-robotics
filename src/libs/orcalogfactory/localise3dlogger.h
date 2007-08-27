@@ -40,10 +40,9 @@ class Localise3dLogger : public orca::Localise3dConsumer, public orcalog::Logger
         virtual void setData(const orca::Localise3dData& data, const Ice::Current&);
 
     private:
+        
+        void writeGeometryToFile( const orca::VehicleGeometryDescriptionPtr& obj );
 
-        // utility
-        // localise3d has no description yet
-        // void writeDescriptionToFile( const orca::Localise3dDescription& descr );
     
 };
 

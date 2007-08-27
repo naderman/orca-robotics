@@ -91,11 +91,11 @@ Localise3dI::getDataAtTime(const orca::Time& timeStamp, const ::Ice::Current& ) 
     return data;
 }
 
-::orca::VehicleDescription
-Localise3dI::getDescription(const ::Ice::Current& ) const
+::orca::VehicleGeometryDescriptionPtr
+Localise3dI::getVehicleGeometry(const ::Ice::Current& ) const
 {
     std::cout << "getDescription()" << std::endl;
-    return descr_;
+    return descr_.geometry;
 }
 
 // Subscribe people
