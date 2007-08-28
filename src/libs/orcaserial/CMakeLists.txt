@@ -8,6 +8,7 @@ IF ( OS_LINUX )
   FILE( GLOB SRCS *.cpp )
 
   GLOBAL_ADD_LIBRARY( OrcaSerial SHARED ${SRCS} )
+  TARGET_LINK_LIBRARIES( OrcaSerial OrcaLockFile )
 
   INSTALL_FILES( /include/orcaserial .*\\.h$ )
 

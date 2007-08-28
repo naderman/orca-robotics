@@ -14,6 +14,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <string>
+#include <orcalockfile/lockfile.h>
 
 namespace orcaserial {
 
@@ -31,8 +32,6 @@ public:
     ~SerialException()throw(){}
     virtual const char* what() const throw() { return message_.c_str(); }
 };
-
-class LockFile;
 
 //!
 //! @brief Encapsulates a serial port.
@@ -164,7 +163,7 @@ private:
     
     int debugLevel_;
 
-    LockFile *lockFile_;
+    orcalockfile::LockFile *lockFile_;
 };
 
 }

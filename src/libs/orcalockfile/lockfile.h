@@ -13,7 +13,7 @@
 #include <exception>
 #include <string>
 
-namespace orcaserial {
+namespace orcalockfile {
 
 //!
 //! @brief Exception thrown by lockfile functions

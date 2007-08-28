@@ -1,8 +1,8 @@
 #include <iostream>
-#include <orcaserial/lockfile.h>
+#include <orcalockfile/lockfile.h>
 
 using namespace std;
-using namespace orcaserial;
+using namespace orcalockfile;
 
 int main( int argc, char **argv )
 {

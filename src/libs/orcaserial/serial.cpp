@@ -20,7 +20,6 @@
 #include <sstream>
 #include <assert.h>
 #include "serial.h"
-#include <orcaserial/lockfile.h>
 
 #if __linux
 #  include <linux/serial.h>
@@ -331,9 +330,9 @@ Serial::Serial( const std::string &dev,
     if ( useLockFile )
     {
         try { 
-            lockFile_ = new LockFile( dev );
+            lockFile_ = new orcalockfile::LockFile( dev );
         }
-        catch ( const LockFileException &e )
+        catch ( const orcalockfile::LockFileException &e )
         {
             stringstream ss;
             ss << "Couldn't get lock for device " << dev << ": " << e.what();

@@ -17,7 +17,7 @@
 
 using namespace std;
 
-namespace orcaserial {
+namespace orcalockfile {
 
 namespace {
 
