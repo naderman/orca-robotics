@@ -52,14 +52,19 @@ We're now going to set up the low level control to the actuators for the simulat
 $ robot2d
 @endverbatim
 
-@section orca_doc_tute_teleop_keyboard Teleop using keyboard
+@section orca_doc_tute_teleop_keyboard Teleoperation using keyboard
 
 To tell the robot to move we can use the @ref orca_component_teleop component which allows us to send commands to the @ref orca_component_robot2d component via keyboard (a joystick driver is also available, see component documentation).
 @verbatim
 $ teleop
 @endverbatim
 
-Keyboard command options are printed to the screen. Give the robot a motion command and watch it move in the Stage GUI.
+Keyboard command options are printed to the screen. Give the robot a motion command by typing in @b this terminal and watch it move in the Stage GUI.
+
+You'll see a simple feedback in this terminal:
+- a text print-out of every new command (e.i. when you press a key on the keyboard).
+- a '.' when the previous command is re-sent (after an interval specified in the config file)
+- an 'x' when sending a command has failed some reason (the robot2d component is down or the network call has timed out)
 
 @section orca_doc_tute_teleop_next What else?
 
