@@ -27,30 +27,32 @@
 
 namespace orcaice
 {
-    // Rotate a 2d point by an angle (about Z-axis)
+    //! Rotate a 2d point by an angle (about Z-axis)
     orca::CartesianPoint2d rotate2d(const orca::CartesianPoint2d &point, const double &angle);
 
-    // Rotate a 3d point by an angle about the X axis
+    //! Rotate a 3d point by an angle about the X axis
     orca::CartesianPoint rotate3dX(const orca::CartesianPoint &point, const double &angle);
 
-    // Rotate a 3d point by an angle about the Y axis
+    //! Rotate a 3d point by an angle about the Y axis
     orca::CartesianPoint rotate3dY(const orca::CartesianPoint &point, const double &angle);
 
-    // Rotate a 3d point by an angle about the Z axis
+    //! Rotate a 3d point by an angle about the Z axis
     orca::CartesianPoint rotate3dZ(const orca::CartesianPoint &point, const double &angle);
 
-    // Convert a global point to another, relative to a frame
+    //! Convert a global point to another, relative to a frame
     orca::CartesianPoint2d convertToFrame2d(const orca::Frame2d &frame, const orca::CartesianPoint2d &point);
 
-    // Convert a global point to another, relative to a frame
+    //! Convert a global point to another, relative to a frame
     orca::CartesianPoint convertToFrame3d(const orca::Frame3d &frame, const orca::CartesianPoint &point);
 
-    // Convert a point relative to a frame back to the global frame
+    //! Convert a point relative to a frame back to the global frame
     orca::CartesianPoint2d convertFromFrame2d(const orca::Frame2d &frame, const orca::CartesianPoint2d &point);
 
-    // Convert a point relative to a frame back to the global frame
+    //! Convert a point relative to a frame back to the global frame
     orca::CartesianPoint convertFromFrame3d(const orca::Frame3d &frame, const orca::CartesianPoint &point);
 
+    //! Returns a frame 3d filled out with all zeros.
+    orca::Frame3d zeroFrame3d();
 }
 
 #endif

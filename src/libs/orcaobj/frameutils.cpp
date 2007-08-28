@@ -120,5 +120,18 @@ namespace orcaice {
         return p;
     }
 
+    orca::Frame3d 
+    zeroFrame3d()
+    {
+        orca::Frame3d f;
+        f.p.x = 0;
+        f.p.y = 0;
+        f.p.z = 0;
+        f.o.r = 0;
+        f.o.p = 0;
+        f.o.y = 0;
+        return f;
+    }
+
 }
 
