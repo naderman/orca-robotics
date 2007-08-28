@@ -39,7 +39,7 @@ struct PingReplyData
 /*!
     @brief Test component which initiates timed transmission.
 */
-interface Pinger
+interface LatencyPinger
 {
     //! Excepts data returned in the response to calling ping1 operation of Replier.
     void callback( OrcaObject data );
@@ -51,7 +51,7 @@ interface Pinger
 /*!
     @brief Test component which replies to timed transmission.
 */
-interface Replier
+interface LatencyReplier
 {
     //! Specifies the Pinger proxy, only required for tests with ping1().
     idempotent void setPinger( Pinger* server );

@@ -1,13 +1,22 @@
-#ifndef ORCA2_ROVERHARDWARE_INTERFACE_ICE
-#define ORCA2_ROVERHARDWARE_INTERFACE_ICE
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+#ifndef ORCA2_PINGER_INTERFACE_ICE
+#define ORCA2_PINGER_INTERFACE_ICE
 
 #include <orca/orca.ice>
-#include <orca/power.ice>
 
 module orca
 {
 /*!
-    @ingroup orca_interfaces
+    @ingroup interfaces
     @defgroup orca_interface_pinger Pinger
     @brief An interface which provides the well-known 'ping' service.
     @{
@@ -19,10 +28,10 @@ exception PingException extends OrcaException {};
 /*!
     @brief An interface which provides the well-known 'ping' service.
            
-    This is provided as an ice interface because 'ping' requires root
+    This is provided as an Ice interface because calling Unix 'ping' requires root
     priveliges, so it's hard to do from within a large C++ program
-    (assuming you don't want to run the entire thing as root).  The
-    'pinger' interface allows a small component to be run with root
+    (assuming you don't want to run the entire executable as super user).  This
+    interface allows a small component to be run with root
     priveliges, and provide this service to other non-superuser
     components.
 
