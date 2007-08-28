@@ -118,7 +118,7 @@ int TestASCII( char* ucBuf_ )
 {
    char*          szCheckCrc32;                 // Location of the Crc32
    unsigned long  ulCrc32;                      // Log's Crc32
-   int            dataSize;                     // Length of data used to compute crc-32
+   size_t         dataSize;                     // Length of data used to compute crc-32
    int            bufSize;                      // Size of buffer including crc-32
    int            crcSize;
    unsigned char* willy;                        // Temporary buffer containing binary crc32 appended to guts of ucBuf_ 
