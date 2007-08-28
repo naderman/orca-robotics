@@ -526,13 +526,13 @@ Serial::open(int flags)
 
 }
 
-ssize_t
+int
 Serial::read(void *buf, int count)
 {
     if ( debugLevel_ > 0 )
         cout<<"TRACE(serial.cpp): read()" << endl;
 
-    ssize_t got = ::read(portFd_, buf, count);
+    int got = ::read(portFd_, buf, count);
     if ( got < 0 )
     {
         throw SerialException( string("Serial::read(): ") + strerror(errno) );
@@ -542,7 +542,7 @@ Serial::read(void *buf, int count)
 
 
 
-ssize_t
+int
 Serial::readFull(void *buf, int count)
 {
     if ( debugLevel_ > 0 )
@@ -550,11 +550,11 @@ Serial::readFull(void *buf, int count)
 
     char* bufPtr = static_cast<char*>(buf);
 
-    ssize_t got=0;
+    int got=0;
     while ( got < count ) 
     {
         char *offset = bufPtr + got;
-        ssize_t ret = ::read(portFd_, offset, count-got);
+        int ret = ::read(portFd_, offset, count-got);
         if ( ret >= 0 )
         {
             got += ret;
@@ -582,7 +582,7 @@ Serial::readFull(void *buf, int count)
 
 
 
-ssize_t 
+int 
 Serial::readLine(void *buf, int count, char termchar)
 {
     if ( debugLevel_ > 0 ){
@@ -608,7 +608,7 @@ Serial::readLine(void *buf, int count, char termchar)
             throw SerialException( "Serial::readLine: Not enough room in buffer" );
         }
 
-        ssize_t ret = ::read( portFd_, &nextChar, 1 );
+        int ret = ::read( portFd_, &nextChar, 1 );
         if (ret == 1)
         {
             *(dataPtr++) = nextChar; //got data let's store it...
@@ -643,10 +643,10 @@ Serial::readLine(void *buf, int count, char termchar)
 }
 
 
-ssize_t 
+int
 Serial::bytesAvailable()
 {
-    ssize_t n_read;
+    int n_read;
     int ret = ioctl(portFd_,FIONREAD,&n_read);
 
     if(ret==-1)
@@ -656,7 +656,7 @@ Serial::bytesAvailable()
     return n_read;
 }
 
-ssize_t 
+int
 Serial::bytesAvailableWait()
 {
     if ( waitForDataOrTimeout() == TIMED_OUT){
@@ -691,7 +691,7 @@ Serial::waitForDataOrTimeout()
 }
 
 
-ssize_t 
+int 
 Serial::writeString(const char *str)
 {
     if ( debugLevel_ > 0 )
@@ -756,7 +756,7 @@ Serial::getStatusString()
 void 
 Serial::flush()
 {
-    ssize_t ret = tcflush(portFd_,TCIOFLUSH);
+    int ret = tcflush(portFd_,TCIOFLUSH);
     if ( ret < 0 )
     {
         throw SerialException( std::string("Serial::flush(): ")+strerror(errno) );
@@ -773,7 +773,7 @@ Serial::drain()
     }
 }
 
-ssize_t 
+int 
 Serial::write(const void *buf, int count)
 {
     if ( debugLevel_ > 0 )
@@ -782,7 +782,7 @@ Serial::write(const void *buf, int count)
     if ( count == 0 )
         throw SerialException( "Serial::write() was called with zero bytes" );
 
-    ssize_t put = ::write(portFd_, buf, count);
+    int put = ::write(portFd_, buf, count);
     if ( put < 0 )
     {
         throw SerialException( string("Serial::write(): ")+strerror(errno) );

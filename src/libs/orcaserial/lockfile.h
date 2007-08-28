@@ -32,8 +32,9 @@ public:
 
 //!
 //! Creates a lock-file which can be used to prevent multiple access to
-//! a device (ie /dev/xxx).
+//! a unique resource (eg "/dev/xxx").
 //! Stores the PID of the locking process (lockPid), so it can check for stale lock-files.
+//!
 //! Throws LockFileException's on errors (including 'device locked').
 //!
 //! The destructor removes the lock-file (guarantees that no exceptions are thrown).

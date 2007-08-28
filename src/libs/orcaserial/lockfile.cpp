@@ -13,6 +13,7 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <sstream>
+#include <libgen.h>
 
 using namespace std;
 
@@ -21,6 +22,17 @@ namespace orcaserial {
 namespace {
 
     const char *LOCK_DIR = "/var/lock";
+
+    // This function is inefficient, but avoids
+    // all the weirdness of basename().
+    std::string getBasename( const char *path )
+    {
+        char *pathCopy = strdup( path );
+        char *base = basename( pathCopy );
+        std::string baseString = base;
+        delete pathCopy;
+        return baseString;
+    }
     
     void
     lock_dev(const char *dev, int lpid)
@@ -29,14 +41,10 @@ namespace {
         char  pbuf[260], lbuf[260];
         int   ret;
 
-        char *devBase = strrchr(dev, '/')+1;
-        if ( devBase == NULL )
-        {
-            throw LockFileException( string("Expected to find '/' somewhere in device name: ")+dev );
-        }
+        std::string devBase = getBasename( dev );
 
         sprintf(pbuf, "%s/PID..%d", LOCK_DIR, getpid());
-        sprintf(lbuf, "%s/LCK..%s", LOCK_DIR, devBase);
+        sprintf(lbuf, "%s/LCK..%s", LOCK_DIR, devBase.c_str());
 
         // Create a file with our PID
         fd = fopen(pbuf, "w");

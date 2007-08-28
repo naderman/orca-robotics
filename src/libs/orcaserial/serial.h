@@ -76,7 +76,7 @@ public:
     //! Will never return <0 -- throws exceptions instead.
     //! If timeouts are not enabled, blocks till it gets something.
     //! If timeouts are enabled, throws an exception if data isn't available.
-    ssize_t read(void *buf, int count);
+    int read(void *buf, int count);
 
     //! Tries to read exactly @ref count bytes into @ref buf.  
     //! Returns the number of bytes read, or throws an exception.
@@ -88,7 +88,7 @@ public:
     //! NOTE: The timeout applies for each individual read() call.  We might have to make lots of them,
     //!       so the total time for which this function blocks might be longer than the specified timeout.
     //!
-    ssize_t readFull(void *buf, int count);
+    int readFull(void *buf, int count);
 
     //! Reads a line of data up to @ref count bytes-1 (including @ref termchar), terminated by @ref termchar.
     //! Returns the number of bytes read.
@@ -107,7 +107,7 @@ public:
     //! NOTE: The timeout applies for each individual read() call.  We might have to make lots of them,
     //!       so the total time for which this function blocks might be longer than the specified timeout.
     //!
-    ssize_t readLine(void *buf, int count, char termchar='\n');
+    int readLine(void *buf, int count, char termchar='\n');
 
     //! Returns the number of bytes available for reading (non-blocking).
     int bytesAvailable();
@@ -119,12 +119,12 @@ public:
     int bytesAvailableWait();
 
     //! Writes some data.  Returns the number of bytes written.
-    ssize_t write(const void *buf, int count);
+    int write(const void *buf, int count);
 
     //! Writes a ('\0'-terminated) string. 
     //! Returns the number of bytes written.
-    ssize_t writeString(const char *buf);
-    inline ssize_t writeString(const std::string &s) {
+    int writeString(const char *buf);
+    inline int writeString(const std::string &s) {
         return writeString(s.c_str());
     }
 
