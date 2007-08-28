@@ -46,6 +46,7 @@ Component::~Component()
 void
 Component::start()
 {
+    try {
     context().tracer()->info( "start()" );
 
     //
@@ -126,7 +127,18 @@ Component::start()
     // MAIN DRIVER LOOP
     //
 
-    mainLoop_->start();    
+    mainLoop_->start();
+    }
+    catch ( Ice::Exception &e )
+    {
+        stringstream ss; ss << "Exception during component::start(): " << e;
+        context().tracer()->error( ss.str() );
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss; ss << "Exception during component::start(): " << e.what();
+        context().tracer()->error( ss.str() );
+    }
 }
 
 void Component::stop()

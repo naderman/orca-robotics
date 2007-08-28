@@ -94,6 +94,8 @@ Simulator::~Simulator()
 void
 Simulator::setupInterfaces()
 {
+    cout<<"TRACE(simulator.cpp): setupInterfaces()" << endl;
+
     scannerDescr_.minRange = 0.0;
     scannerDescr_.maxRange = MAX_RANGE;
     scannerDescr_.fieldOfView = M_PI;
@@ -111,14 +113,14 @@ Simulator::setupInterfaces()
     scannerDescr_.offset.o.y = 0;
     scannerDescr_.timeStamp = orcaice::getNow();
     
-    orca::VehicleGeometryCuboidDescriptionPtr geom;
-    geom->type = orca::VehicleGeometryCuboid;
-    orcaice::setSane( geom->size );
-    orcaice::setSane( geom->vehicleToGeometryTransform );
-    
-    laserInterface_    = new orcaifaceimpl::LaserScanner2dIface( scannerDescr_, "TestLaserScanner", context_ );
-    localiseInterface_ = new orcaifaceimpl::Localise2dIface( geom, "TestLocalise", context_ );
-    ogMapInterface_    = new orcaifaceimpl::OgMapIface( "TestOgMap", context_ );
+    laserInterface_    = new orcaifaceimpl::LaserScanner2dIface( scannerDescr_,
+                                                                 "TestLaserScanner",
+                                                                 context_ );
+    localiseInterface_ = new orcaifaceimpl::Localise2dIface( getVehicleDescription().geometry,
+                                                             "TestLocalise",
+                                                             context_ );
+    ogMapInterface_    = new orcaifaceimpl::OgMapIface( "TestOgMap",
+                                                        context_ );
 
     try {
         laserInterface_->initInterface();
@@ -136,6 +138,9 @@ Simulator::setupInterfaces()
         // cout<<"TRACE(simulator.cpp): map is: " << orcaice::toVerboseString(orcaOgMap) << endl;
 
     } catch (...) {}
+
+    cout<<"TRACE(simulator.cpp): Done setup interfaces" << endl;
+
 }
 
 void
