@@ -49,7 +49,7 @@ Run the utility:
 $ wall
 @endverbatim
 
-You can verify that the interfaces we wanted are available by using @ref orca_util_probe or @ref orca_util_iceping or by connecting @ref orca_component_lasermon to the laser interface. The output of @ref orca_utility_probe is shown below:
+You can verify that the interfaces we wanted are available by using @ref orca_util_probe or @ref orca_util_iceping or by connecting @ref orca_component_lasermon to the laser interface. The output of Probe utility is shown below:
 @verbatim
 Component : agave/wall
 -------------------------------------------------------
@@ -64,7 +64,7 @@ Select an interface from the list:
  
 @section orca_doc_tute_wall_onemore Adding an Interface of the Same Type
 
-Let's add another @ref orca_interface_laserscanner2d interface. This is possible because we use indeces at the end of interface tags (exactly the same as in config files for @ref orca_util_logger). Append the following lines to the config file (line order in config files is not important).
+Let's add another @ref orca_interface_laserscanner2d interface. This is possible because we use indeces at the end of interface tags (exactly the same as in config files for @ref orca_component_logger). Append the following lines to the config file (line order in config files is not important).
 
 @verbatim
 Wall.Provides.LaserScanner2d1.Name=laserscanner2d1
