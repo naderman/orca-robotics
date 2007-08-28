@@ -93,6 +93,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - libOrcaPing (alex b)
     - C++ Wrapper for the 'oping' library: a C library for executing the 'ping' command.
 
+- libOrcaLockFile (alex b)
+    - Pulled code for creating lockfiles (for ensuring unique access to resources) out of libOrcaSerial
+      and into separate lib, to allow use elsewhere.
+
 @par New examples
 
 @par Updated interfaces
