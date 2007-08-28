@@ -23,7 +23,7 @@ In this tutorial we will use components which have external dependencies.
 
 @section orca_doc_tute_teleop_orca Starting Orca
 
-Start IceGrid Registry and IceStorm server as described in the @ref orca_doc_quickstart. (We won't actually use IceStorm in this tutorial, so you don't have to start it).
+Start IceGrid Registry and IceStorm server as described in the @ref orca_doc_quickstart.
 
 Create a new system directory and copy Orca sample files.
 @verbatim
