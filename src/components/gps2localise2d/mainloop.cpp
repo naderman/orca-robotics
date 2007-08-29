@@ -193,6 +193,7 @@ MainLoop::initInterface()
             stringstream ss;
             ss << "Got vehicle description: " << orcaice::toString( vehicleDesc );
             context_.tracer()->info( ss.str() );
+            break;
         }
         catch ( const Ice::Exception &e )
         {
