@@ -102,13 +102,13 @@ HwHandler::run()
     //
     // Enable driver
     //
-    while ( isActive() && driver_->enable() ) {
+    while ( !isStopping() && driver_->enable() ) {
         context_.tracer()->warning("HwHandler: failed to enable the driver; will try again in 2 seconds.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
     // make we actually managed to enable the driver and are not shutting down
-    if ( isActive() ) {
+    if ( !isStopping() ) {
         context_.tracer()->debug("driver enabled",2);
     }
     
@@ -128,7 +128,7 @@ HwHandler::run()
     // All operations inside are local.
     // We do not expect to catch any exceptions.
     //
-    while( isActive() )
+    while( !isStopping() )
     {
         writeStatusPipe_.get( writeStatus );
         if ( writeStatus == false ) {

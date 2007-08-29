@@ -102,7 +102,7 @@ NetHandler::run()
         //
         // Main loop
         //
-        while( isActive() )
+        while( !isStopping() )
         {
 //         context_.tracer()->debug( "net handler loop spinning ",1);
 
@@ -117,7 +117,7 @@ NetHandler::run()
             convert( data, odometry2dData );
             // check that we were not told to terminate while we were sleeping
             // otherwise, we'll get segfault (there's probably a way to prevent this inside the library)
-            if ( isActive() && publishTimer.elapsed().toSecondsDouble()>=publishInterval ) {
+            if ( !isStopping() && publishTimer.elapsed().toSecondsDouble()>=publishInterval ) {
                 odometry2dI_->localSetAndSend( odometry2dData );
                 publishTimer.restart();
             } 
