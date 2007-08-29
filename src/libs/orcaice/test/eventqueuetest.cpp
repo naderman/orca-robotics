@@ -55,10 +55,10 @@ public:
     // from thread
     virtual void run()
     {
-        while ( isActive() )
+        while ( !isStopping() )
         {
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-cout<<"thread ok"<<endl;
+//             cout<<"thread ok"<<endl;
         }
     };
 

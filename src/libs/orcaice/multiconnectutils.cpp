@@ -24,7 +24,7 @@ createInterfaceWithString( const Context       & context,
                             const std::string   & name,
                             orcaice::Thread*  thread, int retryInterval )
 {
-    while ( thread->isActive() )
+    while ( !thread->isStopping() )
     {
         try {
             createInterfaceWithString( context, object, name );
@@ -53,7 +53,7 @@ createInterfaceWithTag( const Context       & context,
                         const std::string   & interfaceTag,
                         orcaice::Thread*  thread, int retryInterval )
 {
-    while ( thread->isActive() )
+    while ( !thread->isStopping() )
     {
         try {
             createInterfaceWithTag( context, object, interfaceTag );
@@ -79,7 +79,7 @@ createInterfaceWithTag( const Context       & context,
 void
 activate( Context& context, orcaice::Thread* thread, int retryInterval )
 {
-    while ( thread->isActive() )
+    while ( !thread->isStopping() )
     {
         try {
             context.activate();
@@ -117,7 +117,7 @@ getInterfaceIdWithString( const Context& context, const std::string& proxyString
                        orcaice::Thread*  thread, int retryInterval )
 {
     std::string ifaceId;
-    while ( thread->isActive() )
+    while ( !thread->isStopping() )
     {
         try {
             ifaceId = getInterfaceIdWithString( context, proxyString );
@@ -141,7 +141,7 @@ getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
                        orcaice::Thread*  thread, int retryInterval )
 {
     std::string ifaceId;
-    while ( thread->isActive() )
+    while ( !thread->isStopping() )
     {
         try {
             ifaceId = getInterfaceIdWithTag( context, interfaceTag );

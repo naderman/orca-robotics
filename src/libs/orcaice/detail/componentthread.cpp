@@ -30,7 +30,7 @@ ComponentThread::run()
     bool hasHomeInterface   = (interfaceFlag_ & HomeInterface);
 
     try {
-        while ( isActive() )
+        while ( !isStopping() )
         {
             bool needToRegisterHome = hasHomeInterface && !registeredHome_;
             if ( !needToRegisterHome && !hasStatusInterface )

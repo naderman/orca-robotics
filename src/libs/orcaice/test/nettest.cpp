@@ -46,7 +46,7 @@ Handler::run()
         //
         // Main loop
         //   
-        while( isActive() )
+        while( !isStopping() )
         {
             if ( count==replays && replays>0 ) {
                 throw orcaice::Exception( ERROR_INFO, "we just want to quit" );

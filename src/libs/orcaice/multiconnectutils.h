@@ -98,7 +98,7 @@ connectToInterfaceWithString( const Context     & context,
                               orcaice::Thread*    thread, int retryInterval=2 )
 {    
     context.tracer()->debug( "orcaice::connectToInterfaceWithString(thread) proxy="+proxyString, 10 );
-    while ( thread->isActive() )
+    while ( !thread->isStopping() )
     {
         try {
             connectToInterfaceWithString<ProxyType>( context, proxy, proxyString );
@@ -149,7 +149,7 @@ connectToInterfaceWithTag( const Context     & context,
                            orcaice::Thread*  thread, int retryInterval=2 )
 {    
     context.tracer()->debug( "orcaice::connectToInterfaceWithTag(thread) tag="+interfaceTag, 10 );
-    while ( thread->isActive() )
+    while ( !thread->isStopping() )
     {
         try {
             connectToInterfaceWithTag<ProxyType>( context, proxy, interfaceTag );
@@ -184,7 +184,7 @@ connectToTopicWithString( const Context     & context,
     context.tracer()->debug( "orcaice::connectToTopicWithString(thread) topic="+topicName, 10 );
     IceStorm::TopicPrx topicPrx;
 
-    while ( thread->isActive() )
+    while ( !thread->isStopping() )
     {
         try {
             topicPrx = connectToTopicWithString<ConsumerProxyType>( context, publisher, topicName );
@@ -221,7 +221,7 @@ connectToTopicWithTag( const Context      & context,
     context.tracer()->debug( "orcaice::connectToTopicWithTag(thread) tag="+interfaceTag, 10 );
     IceStorm::TopicPrx topicPrx;
 
-    while ( thread->isActive() )
+    while ( !thread->isStopping() )
     {
         try {
             topicPrx = connectToTopicWithTag<ConsumerProxyType>( context, publisher, interfaceTag, subtopic );

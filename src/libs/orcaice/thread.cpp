@@ -15,27 +15,40 @@
 using namespace orcaice;
 
 Thread::Thread() : 
-    isActive_(true) 
+    isStopping_(false) 
 {
 }
 
-void Thread::stop()
+bool 
+Thread::isStarted()
 {
-    IceUtil::Mutex::Lock lock(mutex_);
-    isActive_ = false;
+    // must use this mutex from IceUtil::Thread
+    IceUtil::Mutex::Lock lock(_stateMutex);
+    return _started;
 }
 
-void Thread::waitForStop()
+void 
+Thread::stop()
 {
-    while ( isActive() ) {
+    // using the mutex from IceUtil::Thread for convenience
+    IceUtil::Mutex::Lock lock(_stateMutex);
+    isStopping_ = true;
+}
+
+bool 
+Thread::isStopping()
+{
+    // using the mutex from IceUtil::Thread for convenience
+    IceUtil::Mutex::Lock lock(_stateMutex);
+    return isStopping_;
+}
+
+void 
+Thread::waitForStop()
+{
+    while ( !isStopping() ) {
         IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(10));
     }
-}
-
-bool Thread::isActive()
-{
-    IceUtil::Mutex::Lock lock(mutex_);
-    return isActive_;
 }
 
 void orcaice::stopAndJoin( orcaice::Thread* thread )
