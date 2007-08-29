@@ -129,6 +129,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     ints and doubles respectively separated by spaces from a cfg file into
     vector<int> and vector<double> resp. (ben u)
   - added multi-try versions of getInterfaceIdWithString() and getInterfaceIdWithTag() functions. (alex m)
+  - changed Thread API. isActive() is depricated, isStopping() should be used instead. added isStarted(). The
+    implicit state machine is explained in the documentation. (alex m)
 
 - libOrcaImage
   - added support for Image interface in image conversion functions. (alex m)
