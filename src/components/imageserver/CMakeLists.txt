@@ -49,19 +49,19 @@ IF ( BUILD_IMAGE_SERVER )
     ENDIF ( HAVE_CAMERA_HW_LIB )
     
     # LINK_DIRECTORIES( imagegrabber )
-    SET( DEP_LIBS OrcaImage OrcaIfaceImpl )
+    SET( COMP_DEPS OrcaImage OrcaIfaceImpl )
     
     IF ( OPENCV_FOUND AND HAVE_CAMERA_HW_LIB )
         ADD_DEFINITIONS( -DBUILD_OPENCV_GRABBER )
         INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )
         LINK_DIRECTORIES( ${OPENCV_LINK_DIRS} )
-        SET( DEP_LIBS ${DEP_LIBS} ${OPENCV_LIBS} OrcaImageGrabber )
+        SET( COMP_DEPS ${COMP_DEPS} ${OPENCV_LIBS} OrcaImageGrabber )
     ENDIF ( OPENCV_FOUND AND HAVE_CAMERA_HW_LIB )
     
     IF ( DIGICLOPS_AND_TRICLOPS_FOUND )
         ADD_DEFINITIONS( -DBUILD_DIGICLOPS_GRABBER )
         INCLUDE_DIRECTORIES( /usr/local/include/digiclops /usr/local/include/triclops)
-        SET( DEP_LIBS ${DEP_LIBS} ${OPENCV_LIBS} digiclops triclops OrcaImageGrabber )
+        SET( COMP_DEPS ${COMP_DEPS} ${OPENCV_LIBS} digiclops triclops OrcaImageGrabber )
     ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND )
     
     # CANNOT use standard macro, because some driver files are optional
@@ -72,8 +72,8 @@ IF ( BUILD_IMAGE_SERVER )
     # build an IceBox service
     GLOBAL_ADD_LIBRARY( OrcaImageServer SHARED service ${COMMON_SRCS} )
 
-    TARGET_LINK_LIBRARIES( imageserver ${DEP_LIBS} )
-    TARGET_LINK_LIBRARIES( OrcaImageServer ${DEP_LIBS} )
+    TARGET_LINK_LIBRARIES( imageserver ${COMP_DEPS} )
+    TARGET_LINK_LIBRARIES( OrcaImageServer ${COMP_DEPS} )
 
     GENERATE_CONFIG_FILE( imageserver.def )
 

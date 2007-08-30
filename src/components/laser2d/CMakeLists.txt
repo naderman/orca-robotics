@@ -18,23 +18,19 @@ IF ( BUILD_LASER2D )
     #
     ADD_SUBDIRECTORY ( laser2dutil )
 
-    # build common sources into a convenience library
-    BUILD_COMPONENT_SOURCES( Laser2dSources )
-
-    SET( DEP_LIBS
-      Laser2dSources
-      OrcaLaser2dUtil
-      OrcaDynamicLoad
-      OrcaIfaceImpl )
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    SET( COMP_DEPS OrcaLaser2dUtil OrcaDynamicLoad OrcaIfaceImpl )
 
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( laser2d main )
-    TARGET_LINK_LIBRARIES( laser2d ${DEP_LIBS} )
+    GLOBAL_ADD_EXECUTABLE( laser2d ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( laser2d ${COMP_DEPS} )
 
     IF ( NOT OS_WIN )
         # build IceBox service
-        GLOBAL_ADD_LIBRARY( OrcaLaser2d SHARED service )
-        TARGET_LINK_LIBRARIES( OrcaLaser2d ${DEP_LIBS} )
+        IF ( BUILD_SERVICES )
+            GLOBAL_ADD_LIBRARY( OrcaLaser2d SHARED ${COMP_SRCS} service )
+            TARGET_LINK_LIBRARIES( OrcaLaser2d ${COMP_DEPS} ) 
+        ENDIF ( BUILD_SERVICES )
     ENDIF ( NOT OS_WIN )
 
     GENERATE_CONFIG_FILE( laser2d.def )

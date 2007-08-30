@@ -166,11 +166,12 @@ ASSERT ( ICE_WORKS
 # (these are defaults. after the user modifies these in GUI they stay in cache)
 #
 ###########################################################
-OPTION( BUILD_JAVA    "Turn me on to enable compilation of all Java interfaces and components" OFF  )
-OPTION( BUILD_PYTHON    "Turn me on to enable compilation of all Python interfaces and components" OFF  )
-OPTION( BUILD_TESTS   "Turn me off to disable compilation of all tests"               ON  )
-OPTION( BUILD_EXAMPLES "Turn me off to disable compilation of all examples"           ON  )
-OPTION( BUILD_SANDBOX "Turn me on to enable compilation of everything in the sandbox" OFF )
+OPTION( BUILD_SERVICES "Enables compilation of all IceBox services" OFF )
+OPTION( BUILD_JAVA     "Enables compilation of all Java interfaces and components" OFF  )
+OPTION( BUILD_PYTHON   "Enables compilation of all Python interfaces and components" OFF  )
+OPTION( BUILD_TESTS    "Enables compilation of all tests" ON  )
+OPTION( BUILD_EXAMPLES "Enables compilation of all examples" ON  )
+OPTION( BUILD_SANDBOX  "Enables compilation of everything in the sandbox" OFF )
 
 ###########################################################
 #                                                         #

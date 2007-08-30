@@ -7,21 +7,18 @@ IF ( BUILD_WIFI )
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
     
-    # build common sources into a convenience library
-    BUILD_COMPONENT_SOURCES( WifiSources )
-    
-    SET( DEP_LIBS
-         WifiSources
-         OrcaIfaceImpl
-         OrcaWifi )
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    SET( COMP_DEPS OrcaIfaceImpl OrcaWifi )
     
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( wifi main)
-    TARGET_LINK_LIBRARIES( wifi ${DEP_LIBS} )
+    GLOBAL_ADD_EXECUTABLE( wifi ${COMP_SRCS} main)
+    TARGET_LINK_LIBRARIES( wifi ${COMP_DEPS} )
     
     # build IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaWifiService SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaWifiService ${DEP_LIBS} )
+    IF ( BUILD_SERVICES )
+        GLOBAL_ADD_LIBRARY( OrcaWifiService SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( OrcaWifiService ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( wifi.def )
 

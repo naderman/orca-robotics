@@ -36,16 +36,18 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
         ${PLAYER_LIBS} OrcaPlayer
     )
 
-    # build common sources into a convenience library
-    BUILD_COMPONENT_SOURCES( OrcaImuSources )
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    SET( COMP_DEPS OrcaSerial OrcaNavUtil OrcaIfaceImpl ${PLAYERCLIENT_LIBS} )
     
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( imu main )
-    TARGET_LINK_LIBRARIES( imu OrcaImuSources OrcaSerial OrcaNavUtil OrcaIfaceImpl ${PLAYERCLIENT_LIBS} )
+    GLOBAL_ADD_EXECUTABLE( imu ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( imu ${COMP_DEPS} )
     
     # build IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaImu SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaImu OrcaImuSources OrcaSerial OrcaNavUtil OrcaIfaceImpl ${PLAYERCLIENT_LIBS} )
+    IF ( BUILD_SERVICES )
+    GLOBAL_ADD_LIBRARY( OrcaImu SHARED ${COMP_SRCS} service )
+    TARGET_LINK_LIBRARIES( OrcaImu ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( imu.def )
 

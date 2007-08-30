@@ -22,18 +22,18 @@ IF ( NOT OS_WIN AND BUILD_IMAGE_VIEWER )
           MESSAGE( STATUS "    The Triclops libraries have not been found - you will not be able to view images from a digiclops camera")
         ENDIF ( TRICLOPS_FOUND )
     
-        # build common sources into a convenience library
-        BUILD_COMPONENT_SOURCES( ImageViewerSources )
-
-        SET ( DEP_LIBS ImageViewerSources ${OPENCV_LIBS} OrcaImage ) 
+        FIND_COMPONENT_SOURCES( COMP_SRCS )
+        SET ( COMP_DEPS ${OPENCV_LIBS} OrcaImage ) 
         
         # build stand-alone component  
-        GLOBAL_ADD_EXECUTABLE( imageviewer main )
-        TARGET_LINK_LIBRARIES( imageviewer ${DEP_LIBS} )
+        GLOBAL_ADD_EXECUTABLE( imageviewer ${COMP_SRCS} main )
+        TARGET_LINK_LIBRARIES( imageviewer ${COMP_DEPS} )
         
         # build IceBox service
-        GLOBAL_ADD_LIBRARY( OrcaImageViewer SHARED service )
-        TARGET_LINK_LIBRARIES( OrcaImageViewer ${DEP_LIBS} )
+        IF ( BUILD_SERVICES )
+            GLOBAL_ADD_LIBRARY( OrcaImageViewer SHARED ${COMP_SRCS} service )
+            TARGET_LINK_LIBRARIES( OrcaImageViewer ${COMP_DEPS} ) 
+        ENDIF ( BUILD_SERVICES )
 
         GENERATE_CONFIG_FILE( imageviewer.def )
 

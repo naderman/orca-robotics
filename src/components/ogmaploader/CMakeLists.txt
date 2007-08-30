@@ -13,28 +13,20 @@ IF ( REALLY_BUILD_OGMAPLOADER )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
-
-    INCLUDE_DIRECTORIES(
-        ${QT_INCLUDES}
-      )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
     
-    # build common sources into a convenience library
-    BUILD_COMPONENT_SOURCES( OgMapLoaderSources )
-
-    SET( DEP_LIBS
-      OgMapLoaderSources
-      OrcaMapLoad 
-      ${QT_QTGUI_LIBRARY} 
-      ${QT_QTCORE_LIBRARY}
-      OrcaIfaceImpl )
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    SET( COMP_DEPS OrcaIfaceImpl OrcaMapLoad )
     
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( ogmaploader main )
-    TARGET_LINK_LIBRARIES( ogmaploader ${DEP_LIBS} )
+    GLOBAL_ADD_EXECUTABLE( ogmaploader ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( ogmaploader ${COMP_DEPS} )
     
     # build IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaOgMapLoader SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaOgMapLoader ${DEP_LIBS} )
+    IF ( BUILD_SERVICES )
+        GLOBAL_ADD_LIBRARY( OrcaOgMapLoader SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( OrcaOgMapLoader ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( ogmaploader.def )
 

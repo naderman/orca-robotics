@@ -23,19 +23,18 @@ IF ( BUILD_ROBOT2D )
         MESSAGE( STATUS "    WARNING: only default 'fake' driver can be built")
     ENDIF ( NOT HAVE_PLAYERCLIENT_DRIVER )
 
-    # build common sources into a convenience library
-    BUILD_COMPONENT_SOURCES( Robot2dSources )
-    
-    SET( DEP_LIBS
-      Robot2dSources OrcaIfaceImpl OrcaMisc ${PLAYERCLIENT_LIBS} )
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    SET( COMP_DEPS OrcaIfaceImpl OrcaMisc ${PLAYERCLIENT_LIBS} )
 
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( robot2d main )
-    TARGET_LINK_LIBRARIES( robot2d ${DEP_LIBS} )
+    GLOBAL_ADD_EXECUTABLE( robot2d ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( robot2d ${COMP_DEPS} )
     
     # build IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaRobot2d SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaRobot2d ${DEP_LIBS} )
+    IF ( BUILD_SERVICES )
+        GLOBAL_ADD_LIBRARY( OrcaRobot2d SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( OrcaRobot2d ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES )
     
     GENERATE_CONFIG_FILE( robot2d.def )
 

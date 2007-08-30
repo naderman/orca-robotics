@@ -7,16 +7,18 @@ IF ( BUILD_FEATUREMAPLOADER )
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
-    # build common sources into a convenience library
-    BUILD_COMPONENT_SOURCES( FeatureMapLoaderSources )
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
+#     SET( COMP_DEPS ??? )
     
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( featuremaploader main )
-    TARGET_LINK_LIBRARIES( featuremaploader FeatureMapLoaderSources )
+    GLOBAL_ADD_EXECUTABLE( featuremaploader ${COMP_SRCS} main )
+#     TARGET_LINK_LIBRARIES( featuremaploader ${COMP_DEPS} )
     
     # build IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaFeatureMapLoader SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaFeatureMapLoader FeatureMapLoaderSources )
+    IF ( BUILD_SERVICES )
+        GLOBAL_ADD_LIBRARY( OrcaFeatureMapLoader SHARED ${COMP_SRCS} service )
+#         TARGET_LINK_LIBRARIES( OrcaFeatureMapLoader ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( featuremaploader.def )
 

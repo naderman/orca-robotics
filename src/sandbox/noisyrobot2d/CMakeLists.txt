@@ -7,16 +7,18 @@ IF ( BUILD_NOISYROBOT2D )
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
-    # build common sources into a convenience library
-    BUILD_COMPONENT_SOURCES( NoisyRobot2dSources )
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    SET( COMP_DEPS OrcaNavUtil OrcaMisc )
     
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( noisyrobot2d main )
-    TARGET_LINK_LIBRARIES( noisyrobot2d NoisyRobot2dSources OrcaNavUtil OrcaMisc )
+    GLOBAL_ADD_EXECUTABLE( noisyrobot2d ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( noisyrobot2d ${COMP_DEPS} )
     
     # build IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaNoisyRobot2d SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaNoisyRobot2d NoisyRobot2dSources OrcaNavUtil OrcaMisc )
+    IF ( BUILD_SERVICES )
+        GLOBAL_ADD_LIBRARY( OrcaNoisyRobot2d SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( OrcaNoisyRobot2d ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( noisyrobot2d.def )
 

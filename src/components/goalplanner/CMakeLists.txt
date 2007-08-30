@@ -5,16 +5,18 @@ IF ( BUILD_GOAL_PLANNER )
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
-    # build common sources into a convenience library
-    BUILD_COMPONENT_SOURCES( GoalPlannerSources )
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    SET( COMP_DEPS OrcaMisc )
     
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( goalplanner main )
-    TARGET_LINK_LIBRARIES( goalplanner GoalPlannerSources OrcaMisc )
+    GLOBAL_ADD_EXECUTABLE( goalplanner ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( goalplanner ${COMP_DEPS} )
     
     # build IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaGoalPlanner SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaGoalPlanner GoalPlannerSources OrcaMisc )
+    IF ( BUILD_SERVICES )
+        GLOBAL_ADD_LIBRARY( OrcaGoalPlanner SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( OrcaGoalPlanner ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES )
     
     GENERATE_CONFIG_FILE( goalplanner.def )
 

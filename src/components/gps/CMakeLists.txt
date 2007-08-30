@@ -25,16 +25,18 @@ IF ( BUILD_GPS )
         OrcaGpsUtil
     )
 
-    # build common sources into a convenience library
-    BUILD_COMPONENT_SOURCES( GpsSources )
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    SET( COMP_DEPS OrcaIfaceImpl ${ASHTECHGPS_LIBS} )
     
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( gps main )
-    TARGET_LINK_LIBRARIES( gps OrcaIfaceImpl GpsSources ${ASHTECHGPS_LIBS} )
+    GLOBAL_ADD_EXECUTABLE( gps ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( gps ${COMP_DEPS} )
     
     # build IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaGps SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaGps OrcaIfaceImpl GpsSources ${ASHTECHGPS_LIBS} )
+    IF ( BUILD_SERVICES )
+        GLOBAL_ADD_LIBRARY( OrcaGps SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( OrcaGps ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( gps.def )
 

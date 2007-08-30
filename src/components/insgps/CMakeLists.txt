@@ -24,16 +24,18 @@ IF ( BUILD_INSGPS )
         OrcaSerial novatel
     )
     
-    # build common sources into a convenience library
-    BUILD_COMPONENT_SOURCES( InsGpsSources )
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    SET( COMP_DEPS OrcaGpsUtil ${NOVATELSPANINSGPS_LIBS} )
     
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( insgps main )
-    TARGET_LINK_LIBRARIES( insgps InsGpsSources ${NOVATELSPANINSGPS_LIBS} OrcaGpsUtil )
+    GLOBAL_ADD_EXECUTABLE( insgps ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( insgps ${COMP_DEPS} )
     
     # build IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaInsGps SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaInsGps InsGpsSources ${NOVATELSPANINSGPS_LIBS} OrcaGpsUtil )
+    IF ( BUILD_SERVICES )
+        GLOBAL_ADD_LIBRARY( OrcaInsGps SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( OrcaInsGps ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( insgps.def )
 

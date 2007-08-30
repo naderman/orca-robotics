@@ -108,6 +108,7 @@ ENDMACRO( OPTIONAL_SUB_LIBRARY DESCRIPTION DIRECTORY LIBNAME )
 
 
 # BUILD_COMPONENT_SOURCES
+#   DEPRICATED!!!! Not portable!!!
 #   Builds source files common to stand-alone component and IceStorm service.
 #
 #       BUILD_COMPONENT_SOURCES( CONV_LIB_NAME )
@@ -128,6 +129,22 @@ MACRO( BUILD_COMPONENT_SOURCES CONV_LIB_NAME )
     # (each project should wait for its own interface lib)
     ADD_DEPENDENCIES( ${CONV_LIB_NAME} ${PROJECT_INTERFACE_LIB} )
 ENDMACRO( BUILD_COMPONENT_SOURCES CONV_LIB_NAME )
+
+# FIND_COMPONENT_SOURCES
+#   Returns a list of source files except main.cpp and service.cpp
+#
+#       FIND_COMPONENT_SOURCES( VAR_NAME )
+#
+MACRO( FIND_COMPONENT_SOURCES VAR_NAME )
+    # "common sources" are common to stand-alone component and IceStorm service 
+    # these include ALL .cpp files EXCEPT main.cpp and service.cpp
+    FILE( GLOB COMMON_SRCS *.cpp )
+    LIST( REMOVE_ITEM COMMON_SRCS 
+        "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp" 
+        "${CMAKE_CURRENT_SOURCE_DIR}/service.cpp" )
+
+    SET( ${VAR_NAME} ${COMMON_SRCS} )
+ENDMACRO( FIND_COMPONENT_SOURCES VAR_NAME )
 
 #
 # GENERATE_CONFIG_FILE

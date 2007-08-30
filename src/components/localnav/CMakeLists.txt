@@ -14,31 +14,23 @@ IF ( BUILD_LOCALNAV )
        ${PROJECT_SOURCE_DIR}/src/components/localnav
        ${PROJECT_SOURCE_DIR}/src/libs/orcalocalnav
        )
-      
 
     ADD_SUBDIRECTORY( testsim )
     ADD_SUBDIRECTORY( localnavutil )
 
-    # build common sources into a convenience library
-    BUILD_COMPONENT_SOURCES( LocalNavSources )
-    
-    SET( DEP_LIBS
-      LocalNavSources
-      # OrcaLocalNavVfh
-      OrcaLocalNav
-      OrcaLocalNavUtil
-      OrcaDynamicLoad
-      OrcaLocalNavTestSim
-      OrcaNavUtil )
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    SET( COMP_DEPS OrcaLocalNav OrcaLocalNavUtil OrcaDynamicLoad OrcaLocalNavTestSim OrcaNavUtil )
 
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( localnav main )
-    TARGET_LINK_LIBRARIES( localnav ${DEP_LIBS} )
+    GLOBAL_ADD_EXECUTABLE( localnav ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( localnav ${COMP_DEPS} )
     
     # build IceBox service
-    # Naming clashes with OrcaLocalNav library in src/libs
-    GLOBAL_ADD_LIBRARY( OrcaLocalNavComponent SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaLocalNavComponent ${DEP_LIBS} )
+    IF ( BUILD_SERVICES )
+        # Naming clashes with OrcaLocalNav library in src/libs
+        GLOBAL_ADD_LIBRARY( OrcaLocalNavComponent SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( OrcaLocalNavComponent ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( localnav.def )
 

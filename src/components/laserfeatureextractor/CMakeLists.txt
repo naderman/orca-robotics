@@ -7,16 +7,18 @@ IF ( BUILD_LASERFEATUREEXTRACTOR )
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
     
-    # build common sources into a convenience library
-    BUILD_COMPONENT_SOURCES( LaserFeatureExtractorSources )
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    SET( COMP_DEPS OrcaIfaceImpl )
     
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( laserfeatureextractor main )
-    TARGET_LINK_LIBRARIES( laserfeatureextractor LaserFeatureExtractorSources OrcaIfaceImpl )
+    GLOBAL_ADD_EXECUTABLE( laserfeatureextractor ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( laserfeatureextractor ${COMP_DEPS} )
     
     # build IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaLaserFeatureExtractor SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaLaserFeatureExtractor LaserFeatureExtractorSources OrcaIfaceImpl )
+    IF ( BUILD_SERVICES )
+        GLOBAL_ADD_LIBRARY( OrcaLaserFeatureExtractor SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( OrcaLaserFeatureExtractor ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( laserfeatureextractor.def )
 

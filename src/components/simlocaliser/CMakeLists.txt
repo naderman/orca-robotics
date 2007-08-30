@@ -7,10 +7,10 @@ IF ( BUILD_SIM_LOCALISER )
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
-# these should be in the subdir, but they have no effect there for some reason
-INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
-LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
-ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
+    # these should be in the subdir, but they have no effect there for some reason
+    INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
+    LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
+    ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
 
     OPTIONAL_SUB_LIBRARY(
         "Stage Driver for SimLocaliser"
@@ -22,18 +22,18 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
         ${PLAYER_LIBS} OrcaPlayer
     )
 
-    # build common sources into a convenience library
-    BUILD_COMPONENT_SOURCES( SimLocaliserSources )
-
-    SET( DEP_LIBS SimLocaliserSources OrcaIfaceImpl ${STAGE_LIBS} )
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    SET( COMP_DEPS OrcaIfaceImpl ${STAGE_LIBS} )
 
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( simlocaliser main )
-    TARGET_LINK_LIBRARIES( simlocaliser ${DEP_LIBS} )
+    GLOBAL_ADD_EXECUTABLE( simlocaliser ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( simlocaliser ${COMP_DEPS} )
     
     # build IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaSimLocaliser SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaSimLocaliser ${DEP_LIBS} )
+    IF ( BUILD_SERVICES )
+        GLOBAL_ADD_LIBRARY( OrcaSimLocaliser SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( OrcaSimLocaliser ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES )
     
     GENERATE_CONFIG_FILE( simlocaliser.def )
 

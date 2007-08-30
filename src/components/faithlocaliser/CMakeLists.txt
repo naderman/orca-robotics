@@ -7,17 +7,19 @@ IF ( BUILD_FAITHLOCALISER )
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
-    # build common sources into a convenience library
-    BUILD_COMPONENT_SOURCES( FaithLocaliserSources )
-    
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    SET( COMP_DEPS OrcaIfaceImpl )
+
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( faithlocaliser main )
-    TARGET_LINK_LIBRARIES( faithlocaliser FaithLocaliserSources OrcaIfaceImpl )
+    GLOBAL_ADD_EXECUTABLE( faithlocaliser ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( faithlocaliser ${COMP_DEPS} )
     
     # build IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaFaithLocaliser SHARED service )
-    TARGET_LINK_LIBRARIES( OrcaFaithLocaliser FaithLocaliserSources OrcaIfaceImpl )
-    
+    IF ( BUILD_SERVICES )
+        GLOBAL_ADD_LIBRARY( OrcaFaithLocaliser SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( OrcaFaithLocaliser ${COMP_DEPS} )    
+    ENDIF ( BUILD_SERVICES )
+
     GENERATE_CONFIG_FILE( faithlocaliser.def )
 
 ENDIF ( BUILD_FAITHLOCALISER )

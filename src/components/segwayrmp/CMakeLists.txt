@@ -13,15 +13,6 @@ IF ( BUILD_SEGWAYRMP )
 
     ADD_SUBDIRECTORY( rmpdriver )
 
-    # build common sources into a convenience library
-    BUILD_COMPONENT_SOURCES( SegwayRmpSources )
-
-    # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( segwayrmp main )
-
-    # build IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaSegwayRmp SHARED service )
-
     IF ( FTD2XX_FOUND )
       MESSAGE( STATUS "    USB driver for Segway RMP line of platforms -- can be built" )
       SET( SEGWAY_RMP_USB_LIBS OrcaSegwayRmpUsb )
@@ -59,16 +50,19 @@ IF ( BUILD_SEGWAYRMP )
         MESSAGE( STATUS "    WARNING: only default 'fake' driver can be built")
     ENDIF ( NOT HAVE_USB_DRIVER AND NOT HAVE_CAN_DRIVER AND NOT HAVE_PLAYERCLIENT_DRIVER )
     
-    SET( DEP_LIBS SegwayRmpSources 
-      OrcaSegwayRmpDriver
-      OrcaMisc 
-      OrcaIfaceImpl 
-      ${SEGWAY_RMP_USB_LIBS} 
-      ${SEGWAY_RMP_CAN_LIBS} 
-      ${PLAYERCLIENT_LIBS} )
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    SET( COMP_DEPS  OrcaMisc OrcaIfaceImpl OrcaSegwayRmpDriver
+                    ${SEGWAY_RMP_USB_LIBS} ${SEGWAY_RMP_CAN_LIBS} ${PLAYERCLIENT_LIBS} )
     
-    TARGET_LINK_LIBRARIES( segwayrmp ${DEP_LIBS} )
-    TARGET_LINK_LIBRARIES( OrcaSegwayRmp ${DEP_LIBS} )
+    # build stand-alone component  
+    GLOBAL_ADD_EXECUTABLE( segwayrmp ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( segwayrmp ${COMP_DEPS} )
+
+    # build IceBox service
+    IF ( BUILD_SERVICES )
+        GLOBAL_ADD_LIBRARY( OrcaSegwayRmp SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( OrcaSegwayRmp ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( segwayrmp.def )
 
