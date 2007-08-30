@@ -38,7 +38,7 @@ toUpperCase( const std::string & s )
 }
 
 std::string 
-toFixedWidth( const std::string& s, unsigned int width, char filler, bool adjustLeft )
+toFixedWidth( const std::string& s, int width, char filler, bool adjustLeft )
 {
     if ( width<0 )
         return s;
