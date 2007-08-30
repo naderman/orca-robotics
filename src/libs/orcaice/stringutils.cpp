@@ -43,7 +43,7 @@ toFixedWidth( const std::string& s, int width, char filler, bool adjustLeft )
     if ( width<0 )
         return s;
 
-    if ( s.size()<width ) {
+    if ( s.size()<(unsigned int)width ) {
         // need padding
         stringstream ss;
         if ( adjustLeft ) 
@@ -52,7 +52,7 @@ toFixedWidth( const std::string& s, int width, char filler, bool adjustLeft )
         ss<<std::setfill(filler)<<std::setw(width)<<s;
         return ss.str();
     } 
-    else if ( s.size()>width ) {
+    else if ( s.size()>(unsigned int)width ) {
         // need trunkating
         return s.substr(0,width);
     } 
