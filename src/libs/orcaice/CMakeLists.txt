@@ -21,17 +21,11 @@ ELSE ( NOT OS_WIN )
   ADD_DEFINITIONS( "-Wall -D_CRT_SECURE_NO_DEPRECATE" )
 ENDIF ( NOT OS_WIN )
 
-#
-# private classes which are not part of the public API
-#
-ADD_SUBDIRECTORY( detail )
-
-FILE( GLOB SRCS *.cpp )
+FILE( GLOB SRCS *.cpp detail/*.cpp )
 
 IF( NOT OS_WIN )
   GLOBAL_ADD_LIBRARY( OrcaIce SHARED ${SRCS} )
   TARGET_LINK_LIBRARIES( OrcaIce
-              OrcaIceDetail
               Ice
               IceUtil
               IceStorm
