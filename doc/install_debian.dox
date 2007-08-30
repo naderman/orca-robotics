@@ -97,7 +97,7 @@ Doxygen is a tool to produce documentation from source code. It can be easily in
 
 @section orca_doc_installdebian_qt Qt
 
-Qt is a cross-platform GUI framework. Minimum version required 4.1.0 (latest tested: 4.2.2)
+Qt is a cross-platform GUI framework. Minimum version required 4.1.0 (latest tested: 4.3.1)
 
 @verbatim
 # apt-get install libqt4-dev qt4-doc qt4-dev-tools
@@ -274,10 +274,6 @@ Download source from  <a href="http://www.zeroc.com/download.html">download page
 @verbatim
 $ tar -xzf Ice-[VERSION].tar.gz
 $ cd Ice-[VERSION]
-@endverbatim
-    - For Ice 3.1.0 only: Download the following patch to the @c Ice-[VERSION] directory: <a href="http://www.zeroc.com/vbulletin/showthread.php?t=2499">patch.icegrid-5.txt</a> and apply the patch:
-@verbatim
-$ patch -p0 \< patch.icegrid-5.txt
 @endverbatim
     - Ice installer is particular about the name of the compiler. If you are using a version of gcc, make sure the names are standard: @c gcc/g++ ! If you skip this step you'll see a cryptic message about @c mkshlib not defined.
 @verbatim
