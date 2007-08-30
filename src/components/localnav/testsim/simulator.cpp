@@ -279,9 +279,9 @@ Simulator::setCommand( const orca::VelocityControl2dData &cmd )
 {
 //     cmd.timeStamp = scan_->timeStamp;
     
+    cout<<"TRACE(simulator.cpp): iteration " << iterationNum_ << ": pose_: " << pose_ << endl;
     if ( !batchMode_ )
     {
-        cout<<"TRACE(simulator.cpp): iteration " << iterationNum_ << ": pose_: " << pose_ << endl;
         cout<<"TRACE(simulator.cpp): received cmd: " << orcaice::toString(cmd) << endl;
         cout<<"TRACE(simulator.cpp): pose_: " << pose_ << endl;
         cout<<"TRACE(simulator.cpp): ============= hit return to continue ============" << endl;
