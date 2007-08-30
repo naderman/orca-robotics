@@ -144,7 +144,12 @@ void paintCylindricalPlatformPose( const QMatrix &m2win, QPainter *p, QColor col
     p->setBrush( colour );
     p->setPen( QPen( Qt::black, lineThickness ) );
     p->drawEllipse( QRectF( -radius, -radius, 2*radius, 2*radius) );
-    p->drawLine( QPointF(0.0,0.0), QPointF(radius,0.0) );
+
+    // 30 degrees either side
+    const double lineLengthX = radius * std::sqrt(3)/2.0;
+    const double lineLengthY = radius * 0.5;
+    p->drawLine( QPointF(0.0,0.0), QPointF(lineLengthX,-lineLengthY) );
+    p->drawLine( QPointF(0.0,0.0), QPointF(lineLengthX, lineLengthY) );
 }
 
 void paintCubicPlatformPose( const QMatrix &m2win, QPainter *p, QColor colour, float length, float width, float transparencyMultiplier )
