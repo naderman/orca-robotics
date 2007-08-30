@@ -12,13 +12,17 @@
 
 @page orca_doc_tute_icebox Running components inside the IceBox server
 
-@note Reviewed for release 2.5.0.
+@note Reviewed for release 2.6.0.
 
-In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now the Laser2d component will run as a service inside the IceBox application server. The difference is that a @b single process is used to run the Laser2d component and IceStorm. Later you can run many components within one IceBox which has advantages with respect to performance and deployment.
+In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now the @ref orca_component_laser2d component will run as a service inside the IceBox application server. The difference is that a @b single process is used to run the Laser2d component and IceStorm. Later you can run many components within one IceBox which has advantages with respect to performance and deployment.
+
+@section orca_doc_tute_icebox_compile Compiling Services
+
+Because IceBox services are not used by everyone, their compilation is disabled by default. To turn it on, use @c ccmake utitilty (or the GUI equivalent). Find the option is @c BUILD_SERVICES, hit @c Enter to toggle, hit @c C to configure), then @c G to generate. Recompile and install.
 
 @section orca_doc_tute_icebox_startup Start Up the Infrastructure
 
-Make sure the IceGrid Registry is running and the IceStorm server is NOT (See @ref orca_doc_quickstart for instructions).
+Make sure the IceGrid Registry is running and the IceStorm server is @b NOT (See @ref orca_doc_quickstart for instructions).
 
 @section orca_doc_tute_icebox_talk Connect Two Components
 
