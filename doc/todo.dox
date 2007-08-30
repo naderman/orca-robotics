@@ -58,6 +58,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Modularized cmake scripts which contain dependencies and build preferences. This will allow
       reduce the number of unintended dependencies.
     - Added experimental support for Python. (ben u.)
+    - Stopped using convenience libraries because they were problematic on 64bit systems. (alex m)
 
 @par New interfaces
 
