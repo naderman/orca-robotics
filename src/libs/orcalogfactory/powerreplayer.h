@@ -15,7 +15,7 @@
 #include <orca/power.h>
 #include <orcalog/replayer.h>
 
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/proxy.h>
 
 namespace orcalogfactory
 {
@@ -41,7 +41,7 @@ public:
     virtual void replayData( int index, bool isTest=false );
 
 private:
-    orcaice::Buffer<orca::PowerData> dataPipe_;
+    orcaice::Proxy<orca::PowerData> dataPipe_;
     
     orca::PowerData data_;
     orca::PowerConsumerPrx publisher_;

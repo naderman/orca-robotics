@@ -64,12 +64,12 @@ orca::RangeScanner2dDescription
 LaserScanner2dReplayer::getDescription(const Ice::Current& current) const
 {    
 //     std::cout << "Sending config back" << std::endl;
-    if ( laserDescriptionBuffer_.isEmpty() )
+    if ( laserDescriptionPipe_.isEmpty() )
     {
         throw orca::DataNotExistException( "logplayer buffer is empty, probably because we are not replaying yet" );
     }
     orca::RangeScanner2dDescription obj;
-    laserDescriptionBuffer_.get( obj );
+    laserDescriptionPipe_.get( obj );
     return obj;
 }
 
@@ -133,7 +133,7 @@ LaserScanner2dReplayer::replayData( int index, bool isTest )
     }
 
     // push to buffer for direct remote access
-    dataPipe_.push( data_ );
+    dataPipe_.set( data_ );
 
     if ( !isTest ) 
     {
@@ -152,7 +152,7 @@ LaserScanner2dReplayer::loadHeaderIce()
     ice_readRangeScanner2dDescription( helper.stream_, obj );
     helper.read();
 
-    laserDescriptionBuffer_.push( obj );  
+    laserDescriptionPipe_.set( obj );  
 }
 
 void 

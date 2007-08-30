@@ -15,7 +15,7 @@
 #include <orca/localise2d.h>
 #include <orcalog/replayer.h>
 
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/proxy.h>
 
 namespace orcalogfactory
 {
@@ -43,7 +43,7 @@ public:
     virtual void replayData( int index, bool isTest=false );
 
 private:
-    orcaice::Buffer<orca::Localise2dData> dataPipe_;
+    orcaice::Proxy<orca::Localise2dData> dataPipe_;
     
     orca::Localise2dData data_;
     orca::VehicleGeometryDescriptionPtr geometry_;

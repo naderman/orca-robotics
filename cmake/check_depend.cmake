@@ -66,6 +66,10 @@ IF ( JAVA_RUNTIME )
 ENDIF ( JAVA_RUNTIME )
 ASSERT( JAVA_FOUND "Looking for Java - not found" "Looking for Java - found" )
 
+# Check for Python interpreter installation
+INCLUDE (${CMAKE_ROOT}/Modules/FindPythonInterp.cmake)
+ASSERT( PYTHONINTERP_FOUND "Looking for the Python interpreter - not found" "Looking for the Python interpreter - found" )
+
 # # Check for OpenCV
 # FIND_LIBRARY( OPENCV_FOUND NAMES opencv cv cv0.9 PATHS /usr/lib /usr/local/lib )
 # ASSERT( OPENCV_FOUND "Looking for OpenCV - not found" "Looking for OpenCV - found" )

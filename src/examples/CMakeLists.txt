@@ -13,6 +13,10 @@ IF ( BUILD_EXAMPLES )
     IF ( JAVA_FOUND AND BUILD_JAVA )
         ADD_SUBDIRECTORY ( pureicej )
     ENDIF ( JAVA_FOUND AND BUILD_JAVA )
+    # much easier to check for python here, because the example is build as a separate project
+    IF ( PYTHON_FOUND AND BUILD_PYTHON )
+        ADD_SUBDIRECTORY ( pureicepython )
+    ENDIF ( PYTHON_FOUND AND BUILD_PYTHON )
 
 ELSE ( BUILD_EXAMPLES )
 

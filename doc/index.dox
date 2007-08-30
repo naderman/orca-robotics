@@ -24,6 +24,7 @@
 @defgroup cpp C++
 @defgroup java Java
 @defgroup matlab Matlab
+@defgroup python Python
 
 @defgroup linux Linux
 @defgroup qnx QNX

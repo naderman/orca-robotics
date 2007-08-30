@@ -119,7 +119,7 @@ Localise3dReplayer::replayData( int index, bool isTest )
     }
 
     // push to buffer for direct remote access
-    dataPipe_.push( data_ );
+    dataPipe_.set( data_ );
 
     if ( !isTest ) 
     {

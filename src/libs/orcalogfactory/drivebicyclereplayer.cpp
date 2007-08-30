@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -12,17 +12,17 @@
 #include <orcaice/orcaice.h>
 #include <orcalog/orcalog.h>
 
-#include "localise2dreplayer.h"
+#include "drivebicyclereplayer.h"
 
 using namespace std;
 using namespace orcalogfactory;
 
-int Localise2dReplayer::_counter = 0;
+int DriveBicycleReplayer::_counter = 0;
 
-Localise2dReplayer::Localise2dReplayer( const std::string      &format,
+DriveBicycleReplayer::DriveBicycleReplayer( const std::string      &format,
                             const std::string      &filename,
                             const orcaice::Context &context )
-    : orcalog::Replayer("Localise2d", format, filename, context)
+    : orcalog::Replayer("DriveBicycle", format, filename, context)
 {
     // check that we support this format
     if ( format_!="ice" )
@@ -32,17 +32,17 @@ Localise2dReplayer::Localise2dReplayer( const std::string      &format,
     }
 
     stringstream ss;
-    ss << "localise2d" << _counter;
+    ss << "drivebicycle" << _counter;
     interfaceName_ = ss.str();
     _counter++;
 }
 
-Localise2dReplayer::~Localise2dReplayer()
+DriveBicycleReplayer::~DriveBicycleReplayer()
 {
 }
 
 void 
-Localise2dReplayer::initInterfaces()
+DriveBicycleReplayer::initInterfaces()
 {
     topicPrx_ = orcaice::connectToTopicWithString( context_, publisher_, interfaceName_ );
 
@@ -50,29 +50,56 @@ Localise2dReplayer::initInterfaces()
     orcaice::createInterfaceWithString( context_, obj, interfaceName_ );
 }
 
-orca::Localise2dData
-Localise2dReplayer::getData(const Ice::Current& current) const
+void 
+DriveBicycleReplayer::initDescription()
+{
+    orca::VehicleDescription localDescription;
+    
+    orcalog::IceReadHelper helper( context_.communicator(), file_ );
+    ice_readVehicleDescription( helper.stream_, localDescription );
+    helper.read();
+
+    descriptionPipe.set( localDescription );
+}
+
+orca::VehicleDescription
+DriveBicycleReplayer::getDescription(const Ice::Current& c) const
+{    
+    if ( descriptionPipe.isEmpty() )
+    {
+        throw orca::DataNotExistException( "logplayer buffer is empty, probably because we are not replaying yet" );
+    }
+ 
+    orca::VehicleDescription descr;
+    descriptionPipe.get( descr );
+    return descr;
+}
+ 
+void
+DriveBicycleReplayer::setCommand(const ::orca::DriveBicycleCommand& command,  const Ice::Current& current)
+{
+    if ( this->hasNotifyHandler() ) {
+        this->set( command );
+    }
+}
+
+
+orca::DriveBicycleData
+DriveBicycleReplayer::getData(const Ice::Current& current) const
 {
     if ( dataPipe_.isEmpty() )
     {
         throw orca::DataNotExistException( "logplayer buffer is empty, probably because we are not replaying yet" );
     }
 
-    orca::Localise2dData data;
+    orca::DriveBicycleData data;
     dataPipe_.get( data );
 
     return data;
 }
 
-
-orca::VehicleGeometryDescriptionPtr
-Localise2dReplayer::getVehicleGeometry( const ::Ice::Current& ) const
-{
-    return geometry_;
-}
-
 void 
-Localise2dReplayer::subscribe(const ::orca::Localise2dConsumerPrx &subscriber, const ::Ice::Current&)
+DriveBicycleReplayer::subscribe(const ::orca::DriveBicycleConsumerPrx &subscriber, const ::Ice::Current&)
 {
     try {
         topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
@@ -91,29 +118,20 @@ Localise2dReplayer::subscribe(const ::orca::Localise2dConsumerPrx &subscriber, c
 }
 
 void 
-Localise2dReplayer::unsubscribe(const ::orca::Localise2dConsumerPrx &subscriber, const ::Ice::Current&)
+DriveBicycleReplayer::unsubscribe(const ::orca::DriveBicycleConsumerPrx &subscriber, const ::Ice::Current&)
 {
     topicPrx_->unsubscribe( subscriber );
 }
 
 void 
-Localise2dReplayer::initDescription()
-{
-    orcalog::IceReadHelper helper( context_.communicator(), file_ );
-    ice_readVehicleGeometryDescription( helper.stream_, geometry_ );
-    helper.read();
-}
-
-
-void 
-Localise2dReplayer::replayData( int index, bool isTest )
+DriveBicycleReplayer::replayData( int index, bool isTest )
 {
     checkIndex( index );
     
     while ( !file_->eof() && index != (dataCounter_) )
     {
         orcalog::IceReadHelper helper( context_.communicator(), file_ );
-        ice_readLocalise2dData( helper.stream_, data_ );
+        ice_readDriveBicycleData( helper.stream_, data_ );
         helper.read();
 
         dataCounter_++;

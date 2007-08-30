@@ -67,13 +67,13 @@ orca::GpsDescription
 GpsReplayer::getDescription(const ::Ice::Current& ) const
 {    
     cout << "INFO(gpsreplayer.cpp): getDescription " << endl;
-    if ( gpsDescriptionBuffer_.isEmpty() )
+    if ( gpsDescriptionPipe_.isEmpty() )
     {
         throw orca::DataNotExistException( "logplayer buffer is empty, probably because we are not replaying yet" );
     }
  
     orca::GpsDescription descr;
-    gpsDescriptionBuffer_.get( descr );
+    gpsDescriptionPipe_.get( descr );
     return descr;
 }
 
@@ -83,14 +83,14 @@ GpsReplayer::getData(const Ice::Current& current) const
     
     cout << "INFO(gpsreplayer.cpp): getData " << endl;
     // we don't need to pop the data here because we don't block on it.
-    if ( gpsDataBuffer_.isEmpty() )
+    if ( gpsDataPipe_.isEmpty() )
     {
         throw orca::DataNotExistException( "logplayer buffer is empty, probably because we are not replaying yet" );
     }
 
     // create a null pointer. data will be cloned into it.
     orca::GpsData data;
-    gpsDataBuffer_.get( data );
+    gpsDataPipe_.get( data );
 
     return data;
 }
@@ -136,7 +136,7 @@ GpsReplayer::initDescription()
         std::stringstream ss( line );
         orcalog::fromLogString( ss, descr );
         cout<<"TRACE(gpsreplayer.cpp): read description: " << orcaice::toString(descr) << endl;
-        gpsDescriptionBuffer_.push( descr );
+        gpsDescriptionPipe_.set( descr );
     }
     else
     {
@@ -166,7 +166,7 @@ GpsReplayer::replayData( int index, bool isTest )
     }
     
     // push to buffer for direct remote access
-    gpsDataBuffer_.push( gpsData );
+    gpsDataPipe_.set( gpsData );
 
     if ( !isTest ) 
     {
@@ -200,7 +200,7 @@ GpsReplayer::loadHeaderIce()
     
     cout << "INFO(gpsreplayer.cpp): GpsDescription: " << orcaice::toString( description ) << endl;
     
-    gpsDescriptionBuffer_.push( description );
+    gpsDescriptionPipe_.set( description );
 }
 
 void

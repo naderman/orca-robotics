@@ -18,7 +18,7 @@ SET ( SLICE2CPP_BINARY_DIR      ${PROJECT_BINARY_DIR}/src/interfaces/cpp )
 # which is typically the same as the name of the namespace, e.g. 'orca'
 GET_FILENAME_COMPONENT( INTERFACE_NAMESPACE ${CMAKE_CURRENT_SOURCE_DIR} NAME )
 
-# satelite projects need to include slice files from orca installation
+# satellite projects need to include slice files from orca installation
 IF ( DEFINED ORCA2_HOME )
     SET ( SLICE_ARGS ${SLICE_PROJECT_ARGS} -I${SLICE_SOURCE_DIR} -I${ICE_SLICE_HOME}/slice -I${ORCA2_HOME}/slice --stream --output-dir ${SLICE2CPP_BINARY_DIR}/${INTERFACE_NAMESPACE} )
 ELSE ( DEFINED ORCA2_HOME )

@@ -166,7 +166,7 @@ CameraReplayer::loadHeaderIce()
     ice_readCameraDescription( helper.stream_, obj );
     helper.read();
 
-    descrPipe_.push( obj );  
+    descrPipe_.set( obj );  
 }
 
 void 
@@ -198,7 +198,7 @@ CameraReplayer::replayData( int index, bool isTest )
     }
 
     // push to buffer for direct remote access
-    dataPipe_.push( data_ );
+    dataPipe_.set( data_ );
 
     if ( !isTest ) 
     {   

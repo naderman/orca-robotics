@@ -167,6 +167,7 @@ ASSERT ( ICE_WORKS
 #
 ###########################################################
 OPTION( BUILD_JAVA    "Turn me on to enable compilation of all Java interfaces and components" OFF  )
+OPTION( BUILD_PYTHON    "Turn me on to enable compilation of all Python interfaces and components" OFF  )
 OPTION( BUILD_TESTS   "Turn me off to disable compilation of all tests"               ON  )
 OPTION( BUILD_EXAMPLES "Turn me off to disable compilation of all examples"           ON  )
 OPTION( BUILD_SANDBOX "Turn me on to enable compilation of everything in the sandbox" OFF )

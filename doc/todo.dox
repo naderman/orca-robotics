@@ -57,6 +57,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Build system
     - Modularized cmake scripts which contain dependencies and build preferences. This will allow
       reduce the number of unintended dependencies.
+    - Added experimental support for Python. (ben u.)
 
 @par New interfaces
 
@@ -98,6 +99,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
       and into separate lib, to allow use elsewhere.
 
 @par New examples
+
+- PureIcePython (ben u.)
+    - Example of Orca component in Python.
 
 @par Updated interfaces
 - Localise2d
@@ -144,6 +148,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - libOrcaQGui2d
   - PixMap gets repainted if its offset has changed (ben u)
+
+- libOrcaLogFactory
+  - added replayer for DriveBicycle interface (ben u)
+  - fixed bug which led to unbounded growth in internal buffer sizes in all replayers (michael m)
 
 @par Removed
 
