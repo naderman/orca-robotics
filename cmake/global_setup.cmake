@@ -172,6 +172,7 @@ OPTION( BUILD_PYTHON   "Enables compilation of all Python interfaces and compone
 OPTION( BUILD_TESTS    "Enables compilation of all tests" ON  )
 OPTION( BUILD_EXAMPLES "Enables compilation of all examples" ON  )
 OPTION( BUILD_SANDBOX  "Enables compilation of everything in the sandbox" OFF )
+OPTION( GENERATE_XML   "Enables generation of XML file for IceGrid" ON )
 
 ###########################################################
 #                                                         #
