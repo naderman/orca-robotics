@@ -59,6 +59,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
       reduce the number of unintended dependencies.
     - Added experimental support for Python. (ben u.)
     - Stopped using convenience libraries because they were problematic on 64bit systems. (alex m)
+    - Fixed CMake bug with ORCA_MOTHERSHIP, it was unusalbe in satellite projects. (thanks John Yamokoski)
 
 @par New interfaces
 
