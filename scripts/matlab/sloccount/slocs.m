@@ -67,8 +67,11 @@ Sorca = [ ...
 2006     9  18  0   Sice310 3647+1094   19317+30847-3647    0      % 2.0.1
 2006    10   5  0   Sice310 3644+1094   20384+31798-3644    0      % 2.0.2
 2006    11  23  1   Sice311 3831+1178   21408+35311-3831    0      % 2.1.0
-% BASE: cd src; sloccount libs/orcaice/ MINUS sloccount libs/orcaice/test PLUS sloccount interfaces/slice
-% COMP: cd src; sloccount components/ libs/ MINUS sloccount libs/orcaice/ libs/orcaq* libs/orcalog* libs/orcaprobe* libs/orcawall*
+% BASE: cd src; sloccount libs/orcaice/ 
+%          MINUS sloccount libs/orcaice/test 
+%          PLUS sloccount interfaces/slice
+% COMP: cd src; sloccount components/ libs/ 
+%          MINUS sloccount libs/orcaice/ libs/orcaq* libs/orcalog* libs/orcaprobe* libs/orcawall*
 % UTIL: cd src; sloccount utils libs/orcaq* libs/orcalog* libs/orcaprobe* libs/orcawall*
 % to count lines in *.ice files, rename them to *.cpp like this:
 % $cd src/interfaces/slice/orca; for file in *; do mv $file `echo $file | sed s/.ice/.cpp/`; done
@@ -77,7 +80,7 @@ Sorca = [ ...
 2007     4  10  1   Sice320 6232-2011+1671  72704-30907     30121  % 2.3.0
 2007     6   3  1   Sice320 6837-2056+1682  75506-31245     30166  % 2.4.0
 2007     8  13  1   Sice320 7247-2226+1772  78939-33535     32062  % 2.5.0
-2007    10  13  1   Sice321 7247-2226+1772  80193-34196     32751  % 2.6.0
+2007    10  13  1   Sice321 7467-2332+1772  83281-34638     33122  % 2.6.0
 ];
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
     '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.1.0', '2.1.1', ...
@@ -126,7 +129,7 @@ Splayer = [
 2006    6   9   1  0    69083-51546-1319        61421       0     % 2.0.2
 2006    9  26   1  0    69388-51546-1319        64088       13606       % 2.0.3
 2007    5   2   1  0    69602-51686-1359        58396       9589+13606  % 2.0.4
-2007    8  21   1  0    23336-109               75537       11404+13606  % 2.0.4+
+2007    8  31   1  0    23526-109               77242       11404+13606  % 2.0.4+
 ];
 Tplayer = datenum(Splayer(:,1),Splayer(:,2),Splayer(:,3));
 
@@ -190,7 +193,7 @@ set(ha(3),'facecolor',min(255,[255 153 0]+60)/255);
 set(ha(4),'facecolor',min(255,[60 255 109]+60)/255);
 set(ha(5),'facecolor',min(255,[51 102 255]+60)/255);
 ha(1)=[];
-legend(ha,'Ice middleware','Orca infrastructure', 'Orca utilities','Orca components+libs', 'Location','NorthWest')
+legend(fliplr(ha),'Orca components+libs','Orca utilities','Orca infrastructure','Ice middleware', 'Location','NorthWest')
 %  xlim(datenum([2004;2005],[7;7],[1;1]) )
 ylim([-Smax 100])
 ax=axis;
