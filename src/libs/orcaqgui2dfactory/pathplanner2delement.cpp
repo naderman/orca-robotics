@@ -43,7 +43,7 @@ PathPlannerTaskAnswerConsumer::setData(const ::orca::PathPlanner2dData& data, co
     msg.append( ": " );
     msg.append( QString(data.resultDescription.c_str()) );
 
-    msgBuffer_.set(msg); 
+    msgProxy_.set(msg); 
 }
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -135,10 +135,10 @@ PathPlanner2dElement::update()
     listener_.buffer().getAndPop( data_ );
     painter_.setData( data_ );
     
-    if ( pathTaskAnswerConsumer_->msgBuffer_.isNewData() )
+    if ( pathTaskAnswerConsumer_->msgProxy_.isNewData() )
     {
         QString msg;
-        pathTaskAnswerConsumer_->msgBuffer_.get( msg );
+        pathTaskAnswerConsumer_->msgProxy_.get( msg );
         humanManager_->showBoxMsg(Error, msg);    
     }
 }

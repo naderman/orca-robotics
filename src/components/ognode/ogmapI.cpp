@@ -25,8 +25,8 @@ OgMapI::OgMapI( const orca::OgMapData& theMap,
     topicPrx_ = orcaice::connectToTopicWithTag<OgMapConsumerPrx>
         ( context_, consumerPrx_, tag );
 
-    // Stick it in the buffer so pullers can get it
-    ogMapDataBuffer_.push( theMap );
+    // Stick it in the proxy so pullers can get it
+    ogMapDataProxy_.set( theMap );
 }
 
 OgMapData
@@ -34,19 +34,19 @@ OgMapI::getData(const Ice::Current& current) const
 {
     std::cout << "getData()" << std::endl;
 
-    if ( ogMapDataBuffer_.isEmpty() )
+    if ( ogMapDataProxy_.isEmpty() )
 	throw orca::DataNotExistException("No Map");
 
     orca::OgMapData data;
-    ogMapDataBuffer_.get(data);
+    ogMapDataProxy_.get(data);
     return data;
 }
 
 void
 OgMapI::localSetData( const OgMapData& data )
 {
-    // Stick it in the buffer so pullers can get it
-    ogMapDataBuffer_.push( data );
+    // Stick it in the proxy so pullers can get it
+    ogMapDataProxy_.set( data );
 
     // Try to push the map out to IceStorm
     try {

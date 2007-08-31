@@ -34,11 +34,11 @@ SkeletonGraphicsI::getData(const Ice::Current& current) const
 
     // we don't need to pop the data here because we don't block on it.
     // we always want to have the latest copy in there
-    if ( dataBuffer_.isEmpty() )
+    if ( dataProxy_.isEmpty() )
     {
         throw orca::DataNotExistException( "No graphics available." );
     }
-    dataBuffer_.get( data );
+    dataProxy_.get( data );
     return data;
 }
 
@@ -193,7 +193,7 @@ SkeletonGraphicsI::localSetSkel( const orcaogmap::OgMap           &ogMap,
     memcpy( &(data.qpicture[0]), qpic.data(), qpic.size() );
 
     // Stick it in the buffer
-    dataBuffer_.set( data );
+    dataProxy_.set( data );
     
     // Then push to IceStorm.
     try {

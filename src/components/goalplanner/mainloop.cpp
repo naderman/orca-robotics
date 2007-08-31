@@ -188,7 +188,7 @@ MainLoop::initNetwork()
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
     }
     
-    Ice::ObjectPtr pathConsumer = new PathPlanner2dConsumerI( computedPathBuffer_ );
+    Ice::ObjectPtr pathConsumer = new PathPlanner2dConsumerI( computedPathProxy_ );
     taskPrx_ = orcaice::createConsumerInterface<PathPlanner2dConsumerPrx>( context_, pathConsumer );
 
     //
@@ -196,8 +196,8 @@ MainLoop::initNetwork()
     //
     
     // create the proxy/buffer for incoming path
-    incomingPathI_ = new PathFollower2dI( incomingPathBuffer_,
-                                          activationBuffer_,
+    incomingPathI_ = new PathFollower2dI( incomingPathProxy_,
+                                          activationProxy_,
                                           localNavPrx_ );
     
     Ice::ObjectPtr pathFollowerObj = incomingPathI_;
@@ -280,7 +280,7 @@ MainLoop::computeAndSendPath( const orcanavutil::Pose &pose,
     int secWaited=0;
     while ( isActive() )
     {
-        int ret = computedPathBuffer_.getNext( computedPath, 1000 );
+        int ret = computedPathProxy_.getNext( computedPath, 1000 );
         if ( ret == 0 )
             break;
         else
@@ -316,7 +316,7 @@ MainLoop::computeAndSendPath( const orcanavutil::Pose &pose,
                 
     // Work out whether we're supposed to activate immediately
     bool activation=0;
-    activationBuffer_.get( activation );
+    activationProxy_.get( activation );
     stringstream ss; ss << "Activation is " << activation;
     context_.tracer()->debug(ss.str());
 
@@ -392,10 +392,10 @@ MainLoop::run()
             // Otherwise, wait for a new request.
             if ( requestIsOutstanding )
             {
-                if ( !incomingPathBuffer_.isEmpty() )
+                if ( !incomingPathProxy_.isEmpty() )
                 {
                     // Overwrite the unserviced request with the new one.
-                    incomingPathBuffer_.get( incomingPath );
+                    incomingPathProxy_.get( incomingPath );
                 }
             }
             else
@@ -403,7 +403,7 @@ MainLoop::run()
                 context_.tracer()->info("Waiting for a goal path");
                 while( isActive() )
                 {
-                    int ret = incomingPathBuffer_.getNext( incomingPath, 1000 );
+                    int ret = incomingPathProxy_.getNext( incomingPath, 1000 );
                     if (ret==0)
                     {
                         requestIsOutstanding = true;

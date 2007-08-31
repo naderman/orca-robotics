@@ -17,8 +17,8 @@ using namespace std;
 using namespace orca;
 using namespace goalplanner;
 
-PathPlanner2dConsumerI::PathPlanner2dConsumerI(orcaice::Proxy<orca::PathPlanner2dData> &pathBuffer)
-    : pathBuffer_(pathBuffer)
+PathPlanner2dConsumerI::PathPlanner2dConsumerI(orcaice::Proxy<orca::PathPlanner2dData> &pathProxy)
+    : pathProxy_(pathProxy)
 {
 }
 
@@ -29,7 +29,7 @@ PathPlanner2dConsumerI::setData(const ::orca::PathPlanner2dData& data, const ::I
     cout << orcaice::toVerboseString(data) << endl;
     
     // put them in the buffer now
-    pathBuffer_.set( data );
+    pathProxy_.set( data );
     
 }
 

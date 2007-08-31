@@ -20,7 +20,7 @@
 #include <orca/ogmap.h>
 
 // utilities
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/proxy.h>
 #include <orcaice/context.h>
 
 namespace ognode
@@ -57,8 +57,8 @@ private:
     // The interface to which we'll publish
     orca::OgMapConsumerPrx         consumerPrx_;
 
-    // The latest data goes into this buffer
-    orcaice::Buffer<orca::OgMapData> ogMapDataBuffer_;
+    // The latest data goes into this
+    orcaice::Proxy<orca::OgMapData> ogMapDataProxy_;
 
     orcaice::Context context_;
 };

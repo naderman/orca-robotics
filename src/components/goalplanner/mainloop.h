@@ -53,14 +53,14 @@ private:
     orca::PathPlanner2dConsumerPrx taskPrx_;
     
     // buffer which stores computed path from pathplanner
-    orcaice::Proxy<orca::PathPlanner2dData> computedPathBuffer_;
+    orcaice::Proxy<orca::PathPlanner2dData> computedPathProxy_;
         
     // ========== provided pathfollower interface (incoming paths) ===============
     PathFollower2dI* incomingPathI_;
     
-    orcaice::Proxy<orca::PathFollower2dData> incomingPathBuffer_;
+    orcaice::Proxy<orca::PathFollower2dData> incomingPathProxy_;
     
-    orcaice::Proxy<bool> activationBuffer_;
+    orcaice::Proxy<bool> activationProxy_;
     // ===========================================================================
 
     // If the path planner takes more than this amount of time, assume something's wrong.

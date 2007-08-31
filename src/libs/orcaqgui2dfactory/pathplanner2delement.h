@@ -33,7 +33,7 @@ class PathPlannerTaskAnswerConsumer : public orca::PathPlanner2dConsumer
     public:
 
         virtual void setData(const ::orca::PathPlanner2dData& data, const ::Ice::Current& = ::Ice::Current());
-        orcaice::Proxy<QString> msgBuffer_;
+        orcaice::Proxy<QString> msgProxy_;
 };
 ////////////////////////////////////////////////////////////////////////////////
 

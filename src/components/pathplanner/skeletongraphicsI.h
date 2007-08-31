@@ -60,7 +60,7 @@ private:
                          const orcapathplan::SparseSkel   &skel,
                          QPainter                         &p );
     
-    orcaice::Proxy<orca::QGraphics2dData> dataBuffer_;
+    orcaice::Proxy<orca::QGraphics2dData> dataProxy_;
 
     orca::QGraphics2dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx              topicPrx_;
