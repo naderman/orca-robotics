@@ -4,10 +4,8 @@ ELSE ( NOT OS_LINUX )
 
   SET( SICK_CORE_SRCS sickdefines sick serial carmen_conversion )
 
-  ADD_LIBRARY( OrcaLaser2dSickCarmen SHARED ${SICK_CORE_SRCS} sickcarmendriver )
+  GLOBAL_ADD_LIBRARY( OrcaLaser2dSickCarmen SHARED ${SICK_CORE_SRCS} sickcarmendriver )
   TARGET_LINK_LIBRARIES( OrcaLaser2dSickCarmen OrcaLaser2dUtil )
-
-  INSTALL_TARGETS( /lib OrcaLaser2dSickCarmen )
 
   INCLUDE_DIRECTORIES( 
     # for <config.h>

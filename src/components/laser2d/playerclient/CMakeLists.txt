@@ -12,10 +12,8 @@ ELSE ( NOT PLAYER_FOUND )
   LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
   ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
 
-  ADD_LIBRARY( OrcaLaser2dPlayerClient SHARED ${SRCS} )
+  GLOBAL_ADD_LIBRARY( OrcaLaser2dPlayerClient SHARED ${SRCS} )
   TARGET_LINK_LIBRARIES( OrcaLaser2dPlayerClient ${PLAYER_LIBS} OrcaLaser2dUtil OrcaPlayer )
-
-  INSTALL_TARGETS( /lib OrcaLaser2dPlayerClient )
 
   # Test for correct linking.
   ADD_EXECUTABLE( linktest linktest.cpp )
