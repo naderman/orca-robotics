@@ -138,7 +138,7 @@ int TestASCII( char* ucBuf_ )
 
    // Make a copy of the log with the '#' and '*' wrapper removed
    crcSize  = sizeof(ulCrc32);
-   dataSize = (int) szCheckCrc32 - (int) &ucBuf_[1]; 
+   dataSize = szCheckCrc32 - &ucBuf_[1]; 
    bufSize  = dataSize + crcSize;
    willy    = (unsigned char *) malloc(bufSize);
    memset(willy,0,bufSize);
