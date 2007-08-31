@@ -144,8 +144,3 @@ ADD_TEST( ConnectUtilsTest connecttest )
 GENERATE_CONFIG_FILE( connecttest.def connecttest 0 )
 MESSAGE ( STATUS "Planning to Build Test      : ConnectUtilsTest [libOrcaIce]")
 ENDIF ( NOT OS_QNX )
-
-ADD_EXECUTABLE( nettest nettest.cpp )
-# ADD_TEST( NetUtilsTest nettest )
-GENERATE_CONFIG_FILE( nettest.def nettest 0 )
-# MESSAGE ( STATUS "Planning to Build Test      : NetUtilsTest [libOrcaIce]")

@@ -33,11 +33,9 @@ namespace orcaice
 
 /*!
  *  Tries to ping the default Locator and, based on success or the exceptions
- *  it catches, determines if the network is up and if the registry is reachable.
+ *  it catches, determines if the registry is reachable.
  */
-void getNetworkState( const Context  & context,
-                      bool           & isNetworkUp, 
-                      bool           & isRegistryUp );
+bool isRegistryReachable( const Context &context );
 
 /*!
  *  Adds the @p object to the component adapter and gives it the @p name.

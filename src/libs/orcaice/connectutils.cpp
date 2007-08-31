@@ -190,10 +190,8 @@ connectToIceStormTopicPublisherPrx( const IceStorm::TopicPrx & topic )
     return obj;
 }
 
-void
-getNetworkState( const Context  & context,
-                 bool           & isNetworkUp, 
-                 bool           & isRegistryUp )
+bool
+isRegistryReachable( const Context  & context )
 {
     assert( context.communicator() );
 
@@ -207,26 +205,21 @@ getNetworkState( const Context  & context,
         // ping the registry
         locator->ice_ping();
 
-        isNetworkUp = true;
-        isRegistryUp = true;
-        context.tracer()->debug( "orcaice::getNetworkState(): all good",5 );
+        return true;
     }
     catch( const Ice::Exception &e )
     {
-        isNetworkUp = false;
-        isRegistryUp = false;
         std::stringstream ss;
-        ss << "orcaice::getNetworkState(): caught exception: " << e;
+        ss << "orcaice::isRegistryReachable(): caught exception: " << e;
         context.tracer()->debug( ss.str() ,5 );
     }
     catch( const std::exception &e )
     {
-        isNetworkUp = false;
-        isRegistryUp = false;
         std::stringstream ss;
-        ss << "orcaice::getNetworkState(): caught exception: " << e.what();
+        ss << "orcaice::isRegistryReachable(): caught exception: " << e.what();
         context.tracer()->debug( ss.str() ,5 );
     }
+    return false;
 }
 
 } // namespace
