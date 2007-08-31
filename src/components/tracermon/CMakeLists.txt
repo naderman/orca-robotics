@@ -7,10 +7,6 @@ IF ( BUILD_TRACERMON )
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
-    INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/components/tracermon )
-
-    ADD_SUBDIRECTORY( termutil )
-
     # keyboard driver with iostream
     SET ( ALL_FOUND 1 )
     OPTIONAL_SUB_LIBRARY(
@@ -20,10 +16,10 @@ IF ( BUILD_TRACERMON )
         TERM_IOSTREAM_LIBS
         ALL_FOUND
         HAVE_TERM_IOSTREAM_DRIVER
-        termutil
+        # no dependencies
     )
 
-# curses exist in QNX but apparently don't support assume_default_colors() is not supported
+# curses exist in QNX but apparently assume_default_colors() is not supported
 IF ( OS_LINUX )
     # keyboard driver with libncurses
     OPTIONAL_SUB_LIBRARY(
@@ -33,14 +29,15 @@ IF ( OS_LINUX )
         TERM_NCURSES_LIBS
         CURSES_FOUND
         HAVE_TERM_NCURSES_DRIVER
-        termutil ncurses form
+        ncurses form
     )
 ENDIF ( OS_LINUX )
 
-    FILE( GLOB SRCS *.cpp )
+    FILE( GLOB COMP_SRCS *.cpp )
+    SET( COMP_DEPS ${TERM_IOSTREAM_LIBS} ${TERM_NCURSES_LIBS} )
 
-    GLOBAL_ADD_EXECUTABLE( tracermon ${SRCS} )
-    TARGET_LINK_LIBRARIES( tracermon ${TERM_IOSTREAM_LIBS} ${TERM_NCURSES_LIBS} )
+    GLOBAL_ADD_EXECUTABLE( tracermon ${COMP_SRCS} )
+    TARGET_LINK_LIBRARIES( tracermon ${COMP_DEPS} )
 
     GENERATE_CONFIG_FILE( tracermon.def )
 
