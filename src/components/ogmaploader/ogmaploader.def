@@ -11,7 +11,7 @@ Config.Driver.Comment=Options are { 'file', 'fake' }
 Config.Driver.Default=file
 Config.MapFileName.Default=mapfile.png
 Config.Negate.Default=0
-Config.Driver.Comment= 0:occupancy, 1:hazard, 2:motion
+Config.MapType.Comment= 0:occupancy, 1:hazard, 2:motion
 Config.MapType.Default=0
 
 # Geometry Config
