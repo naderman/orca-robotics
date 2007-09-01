@@ -94,6 +94,21 @@ mlHypothesis( const orca::Localise3dData& obj )
     return obj.hypotheses[mlI];
 }
 
+bool localisationIsUncertain( const orca::Localise2dData &localiseData,
+                              double linearThreshold )
+{
+    // Some dodgy heuristics
+    if ( localiseData.hypotheses.size() > 2 )
+        return true;
+
+    const orca::Pose2dHypothesis h = orcaice::mlHypothesis( localiseData );
+    if ( h.cov.xx > linearThreshold ||
+         h.cov.yy > linearThreshold )
+        return true;
+
+    return false;
+}
+
 void 
 saveToFile( const orca::FeatureMap2dDataPtr& fmap, FILE *f )
 {

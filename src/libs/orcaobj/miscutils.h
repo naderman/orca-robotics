@@ -39,6 +39,8 @@ inline double calcAngleIncrement( double fieldOfView, int numReturns )
 //! Returns the @b reference to max-likelihood hypothesis.
 const orca::Pose2dHypothesis& mlHypothesis( const orca::Localise2dData& obj );
 const orca::Pose3dHypothesis& mlHypothesis( const orca::Localise3dData& obj );
+bool localisationIsUncertain( const orca::Localise2dData &localiseData,
+                              double linearThreshold = 5 );
 
 //!
 //! If there's something wrong with the pathData objects, returns false

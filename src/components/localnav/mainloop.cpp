@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 #include <orcanavutil/pose.h>
 #include <orcalocalnav/pathfollower2dI.h>
-#include <orcalocalnav/localiseutil.h>
 #include <localnavutil/pose.h>
 #include <orcamisc/realtimestopwatch.h>
 
@@ -526,7 +525,7 @@ MainLoop::run()
             // grab the maximum likelihood pose of the vehicle
             orcanavutil::Pose pose = getMLPose( localiseData_ );
             
-            bool uncertainLocalisation = orcalocalnav::localisationIsUncertain( localiseData_ );
+            bool uncertainLocalisation = orcaice::localisationIsUncertain( localiseData_ );
             if ( uncertainLocalisation )
                 context_.tracer()->warning( "MainLoop: Localisation is uncertain..." );
 
