@@ -84,10 +84,12 @@ AlgoHandler::initNetwork()
             orcaice::connectToInterfaceWithTag<orca::OgMapPrx>( context_, ogMapPrx_, "OgMap" );
             break;
         }
-        catch ( const orcaice::NetworkException & e )
+        catch ( const std::exception & e )
         {
-            context_.tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+            stringstream ss;
+            ss << "AlgoHandler: failed to connect to ogMap interface: " << e.what();
+            context_.tracer()->error( ss.str() );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         }
         // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
         //       but if this happens it's ok if we just quit.
@@ -106,10 +108,12 @@ AlgoHandler::initNetwork()
                 orcaice::connectToInterfaceWithTag<orca::OgMapPrx>( context_, hazardMapPrx_, "HazardMap" );
                 break;
             }
-            catch ( const orcaice::NetworkException & e )
+            catch ( const std::exception & e )
             {
-                context_.tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
-                IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+                stringstream ss;
+                ss << "AlgoHandler: failed to connect to hazardMap interface: " << e.what();
+                context_.tracer()->error( ss.str() );
+                IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
             }
             // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
             //       but if this happens it's ok if we just quit.
