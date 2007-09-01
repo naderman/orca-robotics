@@ -88,9 +88,18 @@ MainLoop::initNetwork()
             odometryPrx_->subscribe( consumerPrx );
             break;
         }
-        catch ( const orca::SubscriptionFailedException & e )
+        catch ( const Ice::Exception &e )
         {
-            context_.tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            stringstream ss;
+            ss << "MainLoop: Failed to subscribe: " << e;
+            context_.tracer()->error( ss.str() );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+        }
+        catch ( const std::exception &e )
+        {
+            stringstream ss;
+            ss << "MainLoop: Failed to subscribe: " << e.what();
+            context_.tracer()->error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }
