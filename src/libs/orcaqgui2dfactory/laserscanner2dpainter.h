@@ -31,8 +31,8 @@ class LaserScanner2dPainter
   public:
     // -1 means 'default'
     LaserScanner2dPainter( QColor outlineColor=QColor( 102,102,153, 255 ),
-                  float  outlineThickness=-1,
-                  float  brightReturnWidth=0.2 );
+                           float  outlineThickness=-1,
+                           float  brightReturnWidth=0.2 );
     ~LaserScanner2dPainter();
 
     void setOffset( orca::Frame3d &offset );
@@ -52,12 +52,12 @@ class LaserScanner2dPainter
 
   private:
 
-    orca::LaserScanner2dDataPtr data_;
+    std::vector<float>         ranges_;
+    std::vector<unsigned char> intensities_;
     
     QPolygonF qScan_;
     
     double laserMaxRange_;
-    double bearingStart_;
 
     bool isDisplayScan_;
     bool isDisplayPoints_;

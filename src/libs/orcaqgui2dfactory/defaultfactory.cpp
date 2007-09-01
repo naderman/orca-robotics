@@ -35,9 +35,10 @@ DefaultFactory::DefaultFactory()
     addSupportedType("FeatureMap2d");
     addSupportedType("Grid");
     addSupportedType("LaserScanner2d");
+    addSupportedType("RangeScanner2d");
     addSupportedType("Localise2d");
     addSupportedType("Localise3d");
-    addSupportedType("MuliOgMaps");
+    addSupportedType("MultiOgMaps");
     addSupportedType("Odometry2d");
     addSupportedType("OgMap");
     addSupportedType("PathFollower2d");
@@ -64,7 +65,7 @@ DefaultFactory::lookupElementType( const QStringList &ids, QString &elementType 
     else if (ids.size()==2)
     {
         if (ids[0]=="::orca::OgMap" && ids[1]=="::orca::OgMap")
-            elementType="MuliOgMaps";
+            elementType="MultiOgMaps";
         else
             return false;
     }
@@ -95,7 +96,11 @@ DefaultFactory::create( const orcaice::Context         &context,
             cout<<"creating LaserScanner2d element"<<endl;
                 elem = new orcaqgui2d::LaserScanner2dElement( context, elementDetails[0].toStdString() );
         }
-        else if ( elementType == "MuliOgMaps" ) {
+        else if ( elementType == "RangeScanner2d" ) {
+            cout<<"creating RangeScanner2d element"<<endl;
+                elem = new orcaqgui2d::RangeScanner2dElement( context, elementDetails[0].toStdString() );
+        }
+        else if ( elementType == "MultiOgMaps" ) {
             cout<<"creating OgMapsCombined element"<<endl;
             elem = new orcaqgui2d::OgMapsCombinedElement( context, elementDetails );
         }

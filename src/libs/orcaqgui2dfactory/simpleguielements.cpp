@@ -51,6 +51,40 @@ LaserScanner2dElement::contextMenu()
     return s;
 }
 
+void
+RangeScanner2dElement::getScannerInfo()
+{
+    // Subscribe directly to get geometry etc
+    LaserScanner2dPrx laserPrx;
+
+    // Don't bother catching exceptions: they'll get caught higher up.
+
+    orcaice::connectToInterfaceWithString( context_, laserPrx, listener_.interfaceName() );
+    
+    RangeScanner2dDescription descr;
+    descr = laserPrx->getDescription();
+
+    // we may get an exception if the laser is not mounted horizontal
+    // we display a warning but paint it anyway.
+    try
+    {
+        painter_.setOffset( descr.offset );
+    }
+    catch ( const orcaqgui::Exception& e )
+    {
+        context_.tracer()->warning( e.what() );
+    }
+    painter_.setLaserMaxRange( descr.maxRange );
+}
+
+QStringList
+RangeScanner2dElement::contextMenu()
+{
+    QStringList s;
+    s<<"Toggle Scan"<<"Toggle Points"<<"Toggle Walls"<<"Toggle Reflectors"<<"Toggle Filling Polygon"<<"Toggle Transparency";
+    return s;
+}
+
 QStringList
 PolarFeature2dElement::contextMenu()
 {

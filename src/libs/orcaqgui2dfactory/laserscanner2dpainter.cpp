@@ -26,7 +26,7 @@ using namespace orcaqgui2d;
 LaserScanner2dPainter::LaserScanner2dPainter( QColor outlineColor,
                             float  outlineThickness,
                             float  brightReturnWidth )
-    : bearingStart_(0),
+    : laserMaxRange_(0),
       isDisplayScan_(true),
       isDisplayPoints_(false),
       isDisplayWalls_(true),
@@ -88,14 +88,13 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
 {
     if ( data==0 ) return;
 
-    // Assume that this thing is really a laser data_.
+    // Assume that this thing is really a laser scan.
     LaserScanner2dDataPtr scan = LaserScanner2dDataPtr::dynamicCast( data );
-        
     assert( scan && "check that data is actually a laser scan" );
 
-    data_ = scan;
-
-    bearingStart_ = data_->startAngle;
+    ranges_        = scan->ranges;
+    intensities_   = scan->intensities;
+    laserMaxRange_ = scan->maxRange;
 
     QPointF point;
     qScan_.clear();
@@ -103,16 +102,16 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
 
     // convert from polar to cartesian coord. sys.
     double bearing;
-    double angleIncrement = data_->fieldOfView / double(data_->ranges.size()-1);
-    for ( unsigned int i=0; i<data_->ranges.size(); ++i ) {
-        bearing = data_->startAngle + i * angleIncrement;
+    double angleIncrement = scan->fieldOfView / double(ranges_.size()-1);
+    for ( unsigned int i=0; i<ranges_.size(); ++i ) {
+        bearing = scan->startAngle + i * angleIncrement;
         if ( isUpsideDown_ ) {
             bearing = -bearing;
         }
         
         // only the x-coordinate becomes "compressed", y is not affected
-        point.setX( data_->ranges[i] * cos(bearing) * cos(offsetPitch_) );
-        point.setY( data_->ranges[i] * sin(bearing) );
+        point.setX( ranges_[i] * cos(bearing) * cos(offsetPitch_) );
+        point.setY( ranges_[i] * sin(bearing) );
 
         qScan_.push_back( point );
     }
@@ -149,15 +148,15 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
     // draw the walls
     if ( isDisplayWalls_ ) {
 
-        bool isCurrWall = (data_->ranges[1] < data_->maxRange );
+        bool isCurrWall = (ranges_[1] < laserMaxRange_ );
         bool isPrevWall = isCurrWall;
         bool isWallSegment = isCurrWall;
         int start = 1;
         int finish = 1;
         
         for ( int i=2; i<qScan_.size(); ++i ) {
-            isCurrWall = ( data_->ranges[i-1] < data_->maxRange
-                           && fabs(data_->ranges[i-1]-data_->ranges[i-2])<0.5 );
+            isCurrWall = ( ranges_[i-1] < laserMaxRange_
+                           && fabs(ranges_[i-1]-ranges_[i-2])<0.5 );
 
             // look for state change or end of data
             if ( isCurrWall != isPrevWall || i==qScan_.size()-1 ) {
@@ -191,14 +190,13 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
     if ( isDisplayReflectors_ ) 
     {
         QColor intensityColor;
-        int greenness;
     
         // bright returns
         for ( int i=0; i<qScan_.size()-1; ++i )
         {
-            if ( data_->intensities[i] > 0 )
+            if ( intensities_[i] > 0 )
             {
-                greenness = data_->intensities[i] * 36;    // splits up the green colorspace into 8 equal spaces
+                int greenness = intensities_[i] * 36;    // splits up the green colorspace into 8 equal spaces
                 intensityColor.setRgb( 0, greenness, 255 );
                 painter->setPen( QPen( intensityColor ) );
                 painter->setBrush( intensityColor );
@@ -228,7 +226,7 @@ LaserScanner2dPainter::execute( int action )
     switch ( action )
     {
     case 0 :
-        // toggle data_
+        // toggle scan
         isDisplayScan_ = !isDisplayScan_;
         break;
     case 1 :

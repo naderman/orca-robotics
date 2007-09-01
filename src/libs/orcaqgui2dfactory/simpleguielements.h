@@ -40,6 +40,7 @@
 namespace orcaqgui2d
 {
 
+////////////////////////////////////////////////////////////////////////////////
 class PolarFeature2dElement
     : public PtrIceStormElement<PolarFeature2dPainter,
                                orca::PolarFeature2dData,
@@ -76,7 +77,6 @@ private:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// A laser GUI element
 class LaserScanner2dElement
     : public PtrIceStormElement<LaserScanner2dPainter,
                              orca::RangeScanner2dData,
@@ -114,7 +114,46 @@ private:
     
 };
 
+////////////////////////////////////////////////////////////////////////////////
+class RangeScanner2dElement
+    : public PtrIceStormElement<LaserScanner2dPainter,
+                                orca::RangeScanner2dData,
+                                orca::RangeScanner2dDataPtr,
+                                orca::RangeScanner2dPrx,
+                                orca::RangeScanner2dConsumer,
+                                orca::RangeScanner2dConsumerPrx>
+{           
+public:
+    RangeScanner2dElement( const orcaice::Context  &context,
+                  const std::string       &proxyString,
+                  int                      timeoutMs=30000,
+                  QColor                   outlineColor=QColor( 102,102,153, 255 ),
+                  float                    outlineThickness=-1,
+                  float                    brightReturnWidth=0.2 )
+        : PtrIceStormElement<LaserScanner2dPainter,
+                             orca::RangeScanner2dData,
+                             orca::RangeScanner2dDataPtr,
+                             orca::RangeScanner2dPrx,
+                             orca::RangeScanner2dConsumer,
+                             orca::RangeScanner2dConsumerPrx>(context, proxyString, painter_, timeoutMs ),
+          painter_( outlineColor, outlineThickness, brightReturnWidth )
+        {};
 
+    virtual bool isInGlobalCS() { return false; }
+    virtual void actionOnConnection() { getScannerInfo(); }
+    virtual QStringList contextMenu();
+    virtual void execute( int action ) { painter_.execute( action ); };
+    virtual void setColor( QColor color ) { painter_.setColor(color); }
+    virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); };
+
+private:
+    void getScannerInfo();
+    LaserScanner2dPainter painter_;
+    
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
 class Localise3dElement
     : public IceStormElement<Localise3dPainter,
                              orca::Localise3dData,
@@ -248,6 +287,7 @@ private:
     QGraphics2dPainter painter_;
 };
 
+////////////////////////////////////////////////////////////////////////////////
 class Odometry2dElement
     : public IceStormElement<Odometry2dPainter,
                              orca::Odometry2dData,
