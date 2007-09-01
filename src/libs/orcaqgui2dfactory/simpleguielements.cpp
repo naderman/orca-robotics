@@ -55,14 +55,14 @@ void
 RangeScanner2dElement::getScannerInfo()
 {
     // Subscribe directly to get geometry etc
-    LaserScanner2dPrx laserPrx;
+    RangeScanner2dPrx scannerPrx;
 
     // Don't bother catching exceptions: they'll get caught higher up.
 
-    orcaice::connectToInterfaceWithString( context_, laserPrx, listener_.interfaceName() );
+    orcaice::connectToInterfaceWithString( context_, scannerPrx, listener_.interfaceName() );
     
     RangeScanner2dDescription descr;
-    descr = laserPrx->getDescription();
+    descr = scannerPrx->getDescription();
 
     // we may get an exception if the laser is not mounted horizontal
     // we display a warning but paint it anyway.

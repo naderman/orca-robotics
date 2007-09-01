@@ -54,6 +54,7 @@ class LaserScanner2dPainter
 
     std::vector<float>         ranges_;
     std::vector<unsigned char> intensities_;
+    bool                       intensitiesValid_;
     
     QPolygonF qScan_;
     

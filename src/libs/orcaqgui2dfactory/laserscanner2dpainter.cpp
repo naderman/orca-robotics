@@ -26,7 +26,8 @@ using namespace orcaqgui2d;
 LaserScanner2dPainter::LaserScanner2dPainter( QColor outlineColor,
                             float  outlineThickness,
                             float  brightReturnWidth )
-    : laserMaxRange_(0),
+    : intensitiesValid_(false),
+      laserMaxRange_(0),
       isDisplayScan_(true),
       isDisplayPoints_(false),
       isDisplayWalls_(true),
@@ -88,13 +89,16 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
 {
     if ( data==0 ) return;
 
-    // Assume that this thing is really a laser scan.
-    LaserScanner2dDataPtr scan = LaserScanner2dDataPtr::dynamicCast( data );
-    assert( scan && "check that data is actually a laser scan" );
+    // Check if this thing is a laser scan.
+    LaserScanner2dDataPtr laserScan = LaserScanner2dDataPtr::dynamicCast( data );
+    if ( laserScan )
+    {
+        intensitiesValid_ = true;
+        intensities_      = laserScan->intensities;        
+    }
 
-    ranges_        = scan->ranges;
-    intensities_   = scan->intensities;
-    laserMaxRange_ = scan->maxRange;
+    ranges_        = data->ranges;
+    laserMaxRange_ = data->maxRange;
 
     QPointF point;
     qScan_.clear();
@@ -102,9 +106,9 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
 
     // convert from polar to cartesian coord. sys.
     double bearing;
-    double angleIncrement = scan->fieldOfView / double(ranges_.size()-1);
+    double angleIncrement = data->fieldOfView / double(ranges_.size()-1);
     for ( unsigned int i=0; i<ranges_.size(); ++i ) {
-        bearing = scan->startAngle + i * angleIncrement;
+        bearing = data->startAngle + i * angleIncrement;
         if ( isUpsideDown_ ) {
             bearing = -bearing;
         }
@@ -187,7 +191,7 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
     }
 
     // draw bright rectangles for high intensity returns
-    if ( isDisplayReflectors_ ) 
+    if ( intensitiesValid_ && isDisplayReflectors_ ) 
     {
         QColor intensityColor;
     
