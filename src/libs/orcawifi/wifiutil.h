@@ -12,6 +12,7 @@ namespace wifiutil {
     enum Result
     {
         NoWirelessInterface,
+        IoctlProblem,
         OtherError
     };
     
@@ -42,6 +43,14 @@ namespace wifiutil {
             NoWirelessInterfaceException( const char * message )
                 : Exception( message ) {}
             virtual Result type() const { return NoWirelessInterface; }        
+    };
+    
+    class IoctlException : public Exception
+    {  
+        public:
+            IoctlException( const char * message )
+                : Exception( message ) {}
+            virtual Result type() const { return IoctlProblem; }        
     };
     
     //! Wireless data structure for data obtainable from /etc/proc

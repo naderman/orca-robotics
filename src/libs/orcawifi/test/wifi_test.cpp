@@ -7,6 +7,7 @@ using namespace wifiutil;
 int main()
 {
     int numLoops = 0;
+    bool haveIoctl = true;
             
     while(true)
     {
@@ -27,23 +28,29 @@ int main()
             printData( wifiData );
             cout << "Reading proc test successful!" << endl << endl;
             
-            cout << "Testing reading config" << endl;
-            vector<WirelessConfig> configs;
-            readConfig( configs );
-            printConfig( configs );
-            cout << "Reading config test successful" << endl << endl;
-            
-            cout << "Testing reading data using ioctl" << endl;
-            vector<IoctlData> wifiDataIoctl;
-            readUsingIoctl( wifiDataIoctl );
-            printDataIoctl( wifiDataIoctl );
-            cout << "Reading ioctl test successful" << endl;
+            if (haveIoctl)
+            {
+                cout << "Testing reading config" << endl;
+                vector<WirelessConfig> configs;
+                readConfig( configs );
+                printConfig( configs );
+                cout << "Reading config test successful" << endl << endl;
+                
+                cout << "Testing reading data using ioctl" << endl;
+                vector<IoctlData> wifiDataIoctl;
+                readUsingIoctl( wifiDataIoctl );
+                printDataIoctl( wifiDataIoctl );
+                cout << "Reading ioctl test successful" << endl;
+            }
         }
         catch ( wifiutil::Exception &e )
         {
             if (e.type()==NoWirelessInterface) {
                 cout << "We don't have a wireless interface. Test will just pass" << endl;
                 return 0;
+            } else if (e.type()==IoctlProblem) {
+                cout << "Hardware does not seem to support ioctl access. Will only test proc." << endl;
+                haveIoctl = false;
             } else {
                 cout << "Test failed! We've done " << numLoops << " loops. More info: " << e.what();
                 return -1;

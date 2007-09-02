@@ -217,7 +217,7 @@ orca::OperationMode getMode( int socketFd, iwreq* iwRequest )
     orca::OperationMode mode;
     
     if (ioctl(socketFd, SIOCGIWMODE, iwRequest) < 0)
-        throw Exception( "Error:\nIoctl for mode failed.\n" );
+        throw IoctlException( "Error:\nIoctl for mode failed.\n" );
         
     switch(iwRequest->u.mode) {
         case IW_MODE_AUTO:
@@ -249,7 +249,7 @@ string getAccessPointMac( int socketFd, iwreq* iwRequest )
     char accessPoint[32];
     
     if (ioctl(socketFd, SIOCGIWAP, iwRequest) < 0)
-        throw Exception( "Error:\nIoctl for access point failed.\n" );
+        throw IoctlException( "Error:\nIoctl for access point failed.\n" );
     
     struct sockaddr sa;
     memcpy(&sa, &(iwRequest->u.ap_addr), sizeof(sa));
@@ -261,7 +261,7 @@ string getAccessPointMac( int socketFd, iwreq* iwRequest )
 int getBitrate( int socketFd, iwreq* iwRequest )
 {
     if (ioctl(socketFd, SIOCGIWRATE, iwRequest) < 0) 
-        throw Exception( "Error:\nIoctl for bitrate failed.\n" );
+        throw IoctlException( "Error:\nIoctl for bitrate failed.\n" );
     
     int bitrate = iwRequest->u.bitrate.value;
     
@@ -282,7 +282,7 @@ void readConfig( vector<WirelessConfig> &wifiConfigs )
     {
         cout << "Didn't get a socket!" << endl;
         close(socketFd);
-        throw Exception( "Error:\nUnable to get a socket.\n" );
+        throw IoctlException( "Error:\nUnable to get a socket.\n" );
     }
     
     WirelessConfig cfg;
@@ -320,7 +320,7 @@ void readUsingIoctl( vector<IoctlData> &wifiDataIoctl )
     {
         cout << "Didn't get a socket!" << endl;
         close(socketFd);
-        throw Exception( "Error:\nUnable to get a socket.\n" );
+        throw IoctlException( "Error:\nUnable to get a socket.\n" );
     }
     
     struct iwreq* iwRequest = new struct iwreq;
@@ -357,7 +357,7 @@ void readUsingIoctl( vector<IoctlData> &wifiDataIoctl )
         {
             cout << "Ioctl for range failed" << endl;
             close(socketFd);
-            throw Exception( "Error:\nIoctl for range failed.\n" );    
+            throw IoctlException( "Error:\nIoctl for range failed.\n" );    
         }
         
         // ============= Request for stats ================
@@ -392,7 +392,7 @@ void readUsingIoctl( vector<IoctlData> &wifiDataIoctl )
         {
             cout << "Ioctl for stats failed" << endl;
             close(socketFd);
-            throw Exception( "Error:\nIoctl for stats failed.\n" );    
+            throw IoctlException( "Error:\nIoctl for stats failed.\n" );    
         }
     
         wifiDataIoctl.push_back( data );
