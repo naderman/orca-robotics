@@ -149,6 +149,15 @@ setInit( orca::WifiInterface &w )
     w.maxNoiseLevel = 0;
 }
 
+void setInit( orca::BatteryData& obj )
+{
+    obj.name="";
+    obj.voltage = -1.0;
+    obj.percent = -1.0;
+    obj.isBatteryCharging = orca::ChargingUnknown;
+    obj.secRemaining = -1.0;    
+}
+
 void
 setInit( orca::Odometry2dData& obj )
 {

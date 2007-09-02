@@ -62,8 +62,8 @@ void setInit( orca::Waypoint2d& );
 void setInit( orca::WifiInterface &w );
 //! Sets all fields to zero and stalled to FALSE.
 void setInit( orca::Odometry2dData& );
-
-
+//! Sets all fields to negative numbers
+void setInit( orca::BatteryData& );
 //! Set to randomized but sane values.
 void setSane( orca::CartesianPoint2d& );
 //! Set to randomized but sane values.

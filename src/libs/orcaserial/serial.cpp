@@ -694,7 +694,7 @@ int
 Serial::writeString(const char *str)
 {
     if ( debugLevel_ > 0 )
-        cout<<"TRACE(serial.cpp): writeString()" << endl;
+        cout<<"TRACE(serial.cpp): writeString(): writing '"<<str<<"'" << endl;
 
     int put;
     put = ::write(portFd_, str, strlen(str) );
