@@ -30,7 +30,7 @@ namespace {
         char *pathCopy = strdup( path );
         char *base = basename( pathCopy );
         std::string baseString = base;
-        delete pathCopy;
+        free( pathCopy );
         return baseString;
     }
     
