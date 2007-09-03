@@ -227,7 +227,7 @@ To see how the first option works, check out the orcagui::LaserScanner2dElement.
 
 If there are problems with OrcaView2d, a good place to start looking
 is the console from which OrcaView2d was launched.  It usually outputs
-a bunch of diagnostic information to the console when something goes
+a bunch of diagnostic information to stdout when something goes
 wrong.
 
 @section authors Authors
