@@ -223,6 +223,13 @@ Orcaview is designed in a modular way to allow easy extensions. There are two op
 
 To see how the first option works, check out the orcagui::LaserScanner2dElement. To see how the second option works, check out @ref orca_component_pathplanner which can display the skeleton for a grid-potential-based pathplanning algorithm.
 
+@section orcaview2d_troubleshooting Troubleshooting
+
+If there are problems with OrcaView2d, a good place to start looking
+is the console from which OrcaView2d was launched.  It usually outputs
+a bunch of diagnostic information to the console when something goes
+wrong.
+
 @section authors Authors
 Tobias Kaupp, Alex Brooks, Alex Makarenko
 
