@@ -20,10 +20,10 @@ namespace orcaqgui2d {
 
 class OgMapElement
     : public IceStormElement<OgMapPainter,
-                                             orca::OgMapData,
-                                             orca::OgMapPrx,
-                                             orca::OgMapConsumer,
-                                             orca::OgMapConsumerPrx>
+                             orca::OgMapData,
+                             orca::OgMapPrx,
+                             orca::OgMapConsumer,
+                             orca::OgMapConsumerPrx>
 {
 
 public:
@@ -37,7 +37,7 @@ public:
         std::cout << "Paint initial data begin" << std::endl;
         paintInitialData<orca::OgMapPrx, OgMapPainter>
             ( context_, listener_.interfaceName(), painter_ );
-            std::cout << "Paint initial data finished" << std::endl;
+        std::cout << "Paint initial data finished" << std::endl;
     }
     virtual QStringList contextMenu();
     virtual void execute( int action );
