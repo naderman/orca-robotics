@@ -14,6 +14,7 @@ MESSAGE( STATUS "Setting project interface lib name to ${PROJECT_INTERFACE_LIB}"
 #        without escaping the quotes the compiler will strip them off.
 # alexb: it seems that you also need to escape the quotes for windoze??
 ADD_DEFINITIONS( "-DPROJECT_VERSION=\\\"${PROJECT_VERSION}\\\"" )
+ADD_DEFINITIONS( "-DCMAKE_INSTALL_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\"" )
 
 ###########################################################
 #

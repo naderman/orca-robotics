@@ -35,6 +35,11 @@ OgMapsCombinedElement::OgMapsCombinedElement( const orcaice::Context  &context,
                                              OgMapPrx,
                                              OgMapConsumer,
                                              OgMapConsumerPrx>(context, proxyStrList[i].toStdString());
+        if ( listener->connect() != 0 ) 
+        {
+            throw orcaqgui::Exception("Problem connecting to interface with proxyString " + proxyStrList[i].toStdString());
+        }
+        
         listeners_.push_back(listener);
     }
     

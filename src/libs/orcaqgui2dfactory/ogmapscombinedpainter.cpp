@@ -19,16 +19,9 @@ using namespace orca;
 
 
 OgMapsCombinedPainter::OgMapsCombinedPainter( const orcaice::Context &context )
-{
-    Ice::PropertiesPtr prop = context.properties();
-    std::string prefix = context.tag();
-    prefix += ".Config.";
-    Ice::StringSeq strIn; strIn.push_back("ogHazardLookupTable.png"); Ice::StringSeq strOut;
-    strOut = orcaice::getPropertyAsStringSeqWithDefault( prop, prefix+"OgMapsCombined.LookupTableFileName", strIn );
-    
-    lookupTable_ = new QImage( QString(strOut[0].c_str()) );
+{       
+    lookupTable_ = new QImage( QString(CMAKE_INSTALL_PREFIX) + "/share/orcaqgui/ogHazardLookupTable.png"  );
     assert( !lookupTable_->isNull() && "Lookup table file not found" );
-    
     pixmapPainter_ = new PixmapPainter();
 }
 

@@ -198,22 +198,6 @@ These are the default: waypoint settings that can be changed in the menu later. 
     - activate path immediately after sending (1) or wait until go button is pressed (0)
     - default: 1
     
-- @c OrcaView.Config.OgMapsCombined.LookupTableFileName (string)
-    - Lookup table for fusing colors of two ogMaps in form of an image with size 256x256. 
-    - Useful to display a combination of an og map and a hazard map.
-    - X-axis represents hazard from high to low, y-axis represents occupancy from high to low.
-    - You can generate your own lookup table (in any Qt-readable image format) or take the one provided with the distribution (in src/libs/orcaqgui2dfactory/) which is:
-    - default: ogHazardLookupTable.png
-    
-- @c OrcaView.Config.Localiser.RobotSize (double double) [m m]
-    - The size of the robot (length, width) as displayed in the world view
-    - Note: ultimately, this information should come from an interface!
-    - default: 0.5 0.4 
-    
-- @c OrcaView.Config.Localiser.RobotOrigin (int) [0 1 2]
-    - For displaying: is the origin at the front of the robot (0), in the middle (1) or at the rear (2)?
-    - default: 1
-    
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory. 
 
 @section extensibility Extensibility

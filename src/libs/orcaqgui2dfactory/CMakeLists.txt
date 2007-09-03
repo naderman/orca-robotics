@@ -24,6 +24,7 @@ IF ( NOT OS_WIN AND QT4_FOUND )
                             OrcaQGui )
 
     INSTALL_FILES( /include/orcaqgui2dfactory .*\\.h$ )
+    INSTALL_FILES( /share/orcaqgui/ ogHazardLookupTable.png )
     
 ELSE  ( NOT OS_WIN AND QT4_FOUND )
 

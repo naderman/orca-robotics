@@ -16,11 +16,6 @@ Config.ScreenCapture.TopPad.Default = 25
 Config.ScreenCapture.SidePad.Default = 2
 Config.ScreenCapture.BottomPad.Default = 2
 Config.ScreenCapture.CaptureTimerInterval.Default = 1000
-Config.OgMapsCombined.LookupTableFileName.Default= ogHazardLookupTable.png
-Config.Localise.RobotSize.Default= 0.5 0.4
-Config.Localise.RobotOrigin.Comment = 0:front, 1:middle, 2:rear
-Config.Localise.RobotOrigin.Default = 1
-
 
 Config.Element0.Type.Default = Grid
 Config.Element1.Type.Default = LaserScanner2d
