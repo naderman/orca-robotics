@@ -126,6 +126,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Orcaview2d
   - LocaliseElement gets VehicleGeometryDescription and draws robot properly (Tobi)
   - Lookup table (hazardmap) is installed and accessed from there (Tobi)
+  - Hazard map by itself is displayed properly (Tobi)
 
 @par Updated libraries
 

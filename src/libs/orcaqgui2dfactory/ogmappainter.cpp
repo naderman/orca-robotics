@@ -43,8 +43,6 @@ void
 OgMapPainter::setData( const orca::OgMapData& data )
 {
 //     cout << orcaice::toVerboseString(data);
-    // alexm: why do we save this big mother?
-    // tobi: to be able to save to binary file (see below)
     data_ = data;
 
     if ( data.offset.o != 0.0 ) 
@@ -60,11 +58,25 @@ OgMapPainter::setData( const orca::OgMapData& data )
     pixmapData.mapSizePix = QSize(data.numCellsX,data.numCellsY);
     pixmapData.offset = QPointF(data.offset.p.x,data.offset.p.y);
     
-    for (int i=0; i<(data.numCellsX*data.numCellsY); i++)
+    if (data.mapType==orca::OgMapHazard) 
     {
-        pixmapData.rgbR.push_back(255-data.data[i]);
-        pixmapData.rgbG.push_back(255-data.data[i]);
-        pixmapData.rgbB.push_back(255-data.data[i]);
+        for (int i=0; i<(data.numCellsX*data.numCellsY); i++)
+        {   
+            // unoccupied: yellow, occupied: red
+            pixmapData.rgbR.push_back(255);
+            pixmapData.rgbG.push_back(255-data.data[i]);
+            pixmapData.rgbB.push_back(0);
+        }
+    } 
+    else 
+    {
+        for (int i=0; i<(data.numCellsX*data.numCellsY); i++)
+        {
+            // unoccupied: white, occupied: black
+            pixmapData.rgbR.push_back(255-data.data[i]);
+            pixmapData.rgbG.push_back(255-data.data[i]);
+            pixmapData.rgbB.push_back(255-data.data[i]);
+        }
     }
     
     pixmapPainter_->setData( pixmapData );
