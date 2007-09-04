@@ -26,6 +26,7 @@ using namespace drunk;
 
 Component::Component():
     orcaice::Component( "DrunkRobot" ), 
+    posBuffer_(100,orcaice::BufferTypeCircular),
     mainLoop_(0)
 {
 

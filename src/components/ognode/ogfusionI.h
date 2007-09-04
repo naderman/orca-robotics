@@ -19,7 +19,7 @@
 #include <orcaice/orcaice.h>
 
 // utilities
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/buffer.h>
 
 namespace ognode
 {

@@ -28,12 +28,8 @@ InputHandler::~InputHandler()
 
 // read commands from the keyboard. Launced in a separate thread.
 void
-InputHandler::run()
-{
-    // we are in a different thread now, catch all stray exceptions
-    try
-    {
-    
+InputHandler::walk()
+{    
     // storage for loop variables
     int ch;
 //     char keych[2] = {0};
@@ -83,13 +79,4 @@ InputHandler::run()
 //     if ( driver_->disable() ) {
 //         context_.tracer()->warning("failed to disable driver");
 //     }
-
-    } // try
-    catch ( ... )
-    {
-        cerr<<"unexpected exception from somewhere."<<endl;
-    }
-
-    // wait for the component to realize that we are quitting and tell us to stop.
-    waitForStop();
 }

@@ -17,7 +17,7 @@ using namespace std;
 
 int main(int argc, char * argv[])
 {
-    orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> buffer;
+    orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> buffer(-1,orcaice::BufferTypeCircular);
     orca::RangeScanner2dDataPtr data = new orca::RangeScanner2dData;
 
     cout<<"testing get() ... ";

@@ -43,7 +43,7 @@ namespace {
 SerialHandler::SerialHandler( const std::string &dev,
                               const orcaice::Context &context )
     : serial_(dev.c_str(), 9600, true),
-      responseBuffer_(-1),
+      responseBuffer_(-1,orcaice::BufferTypeCircular),
       isMessageWaitingToBeSent_(false),
       baudRateChangePending_(false),
       context_(context)

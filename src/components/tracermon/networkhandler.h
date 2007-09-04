@@ -12,7 +12,7 @@
 #define ORCA2_TRACERMON_NETWORK_HANDLER_H
 
 #include <orca/tracer.h>
-#include <orcaice/thread.h>
+#include <orcaice/safethread.h>
 #include <orcaice/context.h>
 #include <orcaice/eventqueue.h>
 #include "user.h"
@@ -22,7 +22,7 @@ namespace tracermon
 {
 
 // class NetworkHandler : public Network
-class NetworkHandler : public orcaice::Thread, public Network //, virtual public orca::TracerConsumer
+class NetworkHandler : public orcaice::SafeThread, public Network //, virtual public orca::TracerConsumer
 {
 public:
 
@@ -31,7 +31,7 @@ public:
     virtual ~NetworkHandler();
 
     // from thread
-    virtual void run();
+    virtual void walk();
     
     // from Network
     virtual void setVerbosityLevel( int error, int warn, int info, int debug );

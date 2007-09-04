@@ -16,7 +16,7 @@
 
 #include <orca/camera.h>
 #include <orcaice/thread.h>
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/buffer.h>
 #include <orcaice/context.h>
 
 

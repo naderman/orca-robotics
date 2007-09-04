@@ -63,12 +63,8 @@ TermIostreamUser::newLocalTrace( const std::string& msg )
 
 // read commands from the keyboard. Launced in a separate thread.
 void
-TermIostreamUser::run()
+TermIostreamUser::walk()
 {
-    // we are in a different thread now, catch all stray exceptions
-    try
-    {
-    
     orcaice::EventPtr event;
     int timeoutMs = 500;
     
@@ -108,15 +104,6 @@ TermIostreamUser::run()
 //         context_.tracer()->warning("failed to disable driver");
 //     }
 
-    } // try
-    catch ( ... )
-    {
-        context_.tracer()->error( "unexpected exception from somewhere.");
-        context_.communicator()->destroy();
-    }
-
-    // wait for the component to realize that we are quitting and tell us to stop.
-    waitForStop();
     context_.tracer()->debug( "TermIostreamUser: stopped.",5 );
 }
 

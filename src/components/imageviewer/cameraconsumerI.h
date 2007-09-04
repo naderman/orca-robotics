@@ -12,7 +12,7 @@
 #define ORCA2_IMAGEVIEWER_CAMERA_CONSUMER_I_H
 
 #include <orcaice/component.h>
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/buffer.h>
 #include <orca/camera.h>
 
 namespace imageviewer{

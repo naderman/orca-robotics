@@ -24,6 +24,9 @@ template<class ConsumerType, class ObjectType>
 class BufferedConsumerI : public ConsumerType
 {
 public:
+    BufferedConsumerI() : 
+        buffer_(-1,orcaice::BufferTypeCircular) {};
+
     // from ConsumerType
     virtual void setData( const ObjectType& data, const Ice::Current& )
     {

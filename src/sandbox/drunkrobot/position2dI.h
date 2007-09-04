@@ -15,7 +15,7 @@
 #include <orca/position2d.h>
 
 // utilities
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/buffer.h>
 #include <orcaice/connectutils.h>
 
 namespace drunk 

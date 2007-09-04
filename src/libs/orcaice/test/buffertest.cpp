@@ -19,7 +19,7 @@ int main(int argc, char * argv[])
 {
 //     orcaice::Buffer<orca::Frame2d> buffer;
 //     orca::Frame2d data;
-    orcaice::Buffer<int> buffer;
+    orcaice::Buffer<int> buffer(10, orcaice::BufferTypeCircular);
     int data;
 
     cout<<"testing default constructor and depth() and type() ... ";

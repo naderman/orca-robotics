@@ -11,7 +11,7 @@
 #ifndef ORCA2_FAITH_LOCALISER_MAIN_LOOP_H
 #define ORCA2_FAITH_LOCALISER_MAIN_LOOP_H
 
-#include <orcaice/thread.h>
+#include <orcaice/safethread.h>
 #include <orcaice/buffer.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/localise2diface.h>
@@ -19,8 +19,7 @@
 namespace faithlocaliser
 {
 
-// Note: this thing self-destructs when run() returns.
-class MainLoop : public orcaice::Thread
+class MainLoop : public orcaice::SafeThread
 {
 
 public:
@@ -28,7 +27,7 @@ public:
     MainLoop( const orcaice::Context &context );
     ~MainLoop();
 
-    virtual void run();
+    virtual void walk();
 
 private:
     

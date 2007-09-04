@@ -13,7 +13,6 @@
 
 #include <orca/gps.h>
 #include <orcaice/thread.h>
-#include <orcaice/ptrbuffer.h>
 #include <orcaice/context.h>
 
 #include "driver.h"

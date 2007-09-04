@@ -11,14 +11,14 @@
 #ifndef ORCA2_TRACERMON_TERM_NCURSES_INPUT_HANDLER_H
 #define ORCA2_TRACERMON_TERM_NCURSES_INPUT_HANDLER_H
 
-#include <orcaice/thread.h>
+#include <orcaice/safethread.h>
 #include "../user.h"
 #include "../network.h"
 
 namespace tracermon
 {
 
-class InputHandler : public orcaice::Thread
+class InputHandler : public orcaice::SafeThread
 {
 public:
 
@@ -26,7 +26,7 @@ public:
     virtual ~InputHandler();
 
     // from Thread
-    virtual void run();
+    virtual void walk();
     
 private:
 

@@ -21,6 +21,7 @@ ImuI::ImuI( const orca::ImuDescription& descr,
             Driver*      hwDriver,
             const orcaice::Context & context )
     : InsGpsI(context),
+      imuDataBuffer_(100,orcaice::BufferTypeCircular),
       descr_(descr),
       hwDriver_(hwDriver),
       context_(context)

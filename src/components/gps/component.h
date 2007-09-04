@@ -12,9 +12,6 @@
 #define ORCA2_GPS_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orcaice/ptrbuffer.h>
-#include <orca/bros1.h>
-#include <orca/gps.h>
 #include "gpsinterfaces.h"
 #include <orcaice/thread.h>
 

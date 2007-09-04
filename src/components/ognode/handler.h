@@ -11,7 +11,7 @@
 #define _ORCA2_OGNODE_HANDLER_H_
 
 #include <orcaice/thread.h>
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/buffer.h>
 #include <orcaice/context.h>
 
 #include <orca/ogfusion.h>

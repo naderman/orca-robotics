@@ -12,10 +12,6 @@
 
 
 #include <orcaice/component.h>
-#include <orcaice/ptrbuffer.h>
-#include <orca/rangescanner2d.h>
-#include <orca/ogfusion.h>
-#include <orca/localise2d.h>
 
 namespace laser2og 
 {

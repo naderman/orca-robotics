@@ -23,6 +23,7 @@ using namespace imageviewer;
 
 Component::Component()
     : orcaice::Component( "ImageViewer", orcaice::HomeInterface  ),
+      dataPipe_(2,orcaice::BufferTypeCircular),
       mainloop_(0)
 {
 }

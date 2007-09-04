@@ -11,7 +11,7 @@
 #ifndef ORCA2_TRACERMON_TERM_IOSTREAM_USER_H
 #define ORCA2_TRACERMON_TERM_IOSTREAM_USER_H
 
-#include <orcaice/thread.h>
+#include <orcaice/safethread.h>
 #include <orcaice/context.h>
 #include <orcaice/eventqueue.h>
 #include "../user.h"
@@ -20,7 +20,7 @@
 namespace tracermon
 {
 
-class TermIostreamUser : public orcaice::Thread, public User
+class TermIostreamUser : public orcaice::SafeThread, public User
 {
 public:
 
@@ -28,7 +28,7 @@ public:
     virtual ~TermIostreamUser();
 
     // from Thread
-    virtual void run();
+    virtual void walk();
 
     // from User
     virtual void enable( Network* network );

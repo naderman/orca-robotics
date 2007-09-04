@@ -13,7 +13,7 @@
 
 
 #include <orcaice/thread.h>
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/buffer.h>
 
 #include <orca/position2d.h>
 

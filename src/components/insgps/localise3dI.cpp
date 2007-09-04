@@ -21,6 +21,7 @@ Localise3dI::Localise3dI( const VehicleDescription&  descr,
                           Driver*                   hwDriver,
                           const orcaice::Context & context )
     :   InsGpsI(context),
+        localise3dDataBuffer_(100,orcaice::BufferTypeQueue),
         descr_(descr),
         hwDriver_(hwDriver),
         context_(context)

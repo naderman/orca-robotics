@@ -25,6 +25,7 @@ using namespace laser2og;
 
 Handler::Handler( const orcaice::Context &context )
     :   context_(context),
+        rangeScannerDataBuffer_(-1,orcaice::BufferTypeCircular),
         laser2Og_(0)
 {
     init();

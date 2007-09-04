@@ -42,8 +42,9 @@ namespace {
 
 }
 
-MainLoop::MainLoop( const orcaice::Context &context )
-    : context_(context)
+MainLoop::MainLoop( const orcaice::Context &context ) : 
+    odometryPipe_(10, orcaice::BufferTypeCircular),
+    context_(context)
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
     context_.status()->initialising( SUBSYSTEM );
@@ -132,7 +133,7 @@ MainLoop::initNetwork()
 
 
 void
-MainLoop::run()
+MainLoop::walk()
 {
     initNetwork();
 
@@ -141,46 +142,21 @@ MainLoop::run()
     double varPosition = stdDevPosition_*stdDevPosition_;
     double varHeading = (stdDevHeading_*M_PI/180.0)*(stdDevHeading_*M_PI/180.0);
     
-    try 
+    while ( isActive() )
     {
-        while ( isActive() )
+        // Get odometry info, time out every so often to check if we are cancelled
+        const int TIMEOUT_MS = 1000;
+        if ( odometryPipe_.getAndPopNext( odomData, TIMEOUT_MS ) != 0 ) 
         {
-            // Get odometry info, time out every so often to check if we are cancelled
-            const int TIMEOUT_MS = 1000;
-            if ( odometryPipe_.getAndPopNext( odomData, TIMEOUT_MS ) != 0 ) 
-            {
-                stringstream ss;
-                ss << "MainLoop: received no odometry for " << TIMEOUT_MS << "ms";
-                context_.tracer()->debug( ss.str(), 2 );
-                continue;
-            }
-
-            odometryToLocalise( odomData, localiseData, varPosition, varHeading );
-            context_.tracer()->debug( orcaice::toString(localiseData), 5 );
-            
-            localiseInterface_->localSetAndSend( localiseData );
+            stringstream ss;
+            ss << "MainLoop: received no odometry for " << TIMEOUT_MS << "ms";
+            context_.tracer()->debug( ss.str(), 2 );
+            continue;
         }
-    }
-    catch ( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss << "MainLoop:: Caught exception: " << e;
-        context_.tracer()->error( ss.str() );
-        context_.status()->fault( SUBSYSTEM, ss.str() );
-    }
-    catch ( const std::exception & e )
-    {
-        stringstream ss;
-        ss << "MainLoop: Caught exception: " << e.what();
-        context_.tracer()->error( ss.str() );
-        context_.status()->fault( SUBSYSTEM, ss.str() );
-    }
-    catch ( ... )
-    {
-        context_.tracer()->error( "MainLoop: caught unknown unexpected exception.");
-        context_.status()->fault( SUBSYSTEM, "MainLoop: caught unknown unexpected exception.");
-    }
 
-    // wait for the component to realize that we are quitting and tell us to stop.
-    waitForStop();
+        odometryToLocalise( odomData, localiseData, varPosition, varHeading );
+        context_.tracer()->debug( orcaice::toString(localiseData), 5 );
+        
+        localiseInterface_->localSetAndSend( localiseData );
+    }
 }

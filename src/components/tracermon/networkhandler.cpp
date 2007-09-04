@@ -43,12 +43,8 @@ NetworkHandler::setVerbosityLevel( int error, int warn, int info, int debug )
 }
 
 void
-NetworkHandler::run()
-{
-    // we are in a different thread now, catch all stray exceptions
-    try
-    {
-    
+NetworkHandler::walk()
+{    
     // configs
     std::string prefix = context_.tag() + ".Config.";
     Ice::PropertiesPtr props = context_.properties();
@@ -130,51 +126,6 @@ NetworkHandler::run()
         } // switch
     } // end of main loop
 
-    //
-    // unexpected exceptions
-    //
-    } // try
-    catch ( const orca::OrcaException & e )
-    {
-        stringstream ss;
-        ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss << "unexpected Ice exception: " << e;
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( const std::exception & e )
-    {
-        stringstream ss;
-        ss << "unexpected std exception, possibly orcaice: " << e.what();
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( ... )
-    {
-        context_.tracer()->error( "unexpected exception from somewhere.");
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    
-    // wait for the component to realize that we are quitting and tell us to stop.
-    waitForStop();
     context_.tracer()->debug( "NetworkHandler: stopped.",2 );
 }
 

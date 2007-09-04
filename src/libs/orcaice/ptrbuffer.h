@@ -30,11 +30,10 @@ public:
     /*!
      *  Buffer depth:
      *      - positive numbers to specify finite depth,
-     *      - negative numbers for infinite depth, limited by memory size (DEFAULT)
+     *      - negative numbers for infinite depth, limited by memory size
      *      - zero is undefined
-     *  Default buffer type is CIRCULAR, of depth 1.
      */
-    PtrBuffer( int depth=-1, BufferType type=BufferTypeCircular );
+    PtrBuffer( int depth, BufferType type );
     
 protected:
     virtual void internalGet( Type & obj ) const ;

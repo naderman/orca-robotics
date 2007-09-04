@@ -21,15 +21,14 @@ namespace insgps{
 FakeInsGpsDriver::FakeInsGpsDriver( const Config&           cfg,
                                     const orcaice::Context& context )
     : Driver(cfg, context),
+      // configure the buffers so they have size 100 and are of type queue
+      gpsDataBuffer_( 100 , orcaice::BufferTypeQueue ),
+      imuDataBuffer_( 100 , orcaice::BufferTypeQueue ),
+      odometry3dDataBuffer_( 100 , orcaice::BufferTypeQueue ),
+      localise3dDataBuffer_( 100 , orcaice::BufferTypeQueue ),
       numReads_(0),
       context_(context)         
-{
-    // configure the buffers so they have size 100 and are of type queue
-    gpsDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
-    imuDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
-    odometry3dDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
-    localise3dDataBuffer_.configure( 100 , orcaice::BufferTypeQueue );
-    
+{   
     context_.tracer()->info( "Initializing fake insgps driver with config: "+config_.toString() );
 }
 

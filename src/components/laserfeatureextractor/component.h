@@ -13,11 +13,8 @@
 #define ORCA2_LASER_FEATURE_EXTRACTOR_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orcaice/ptrbuffer.h>
 
 // interface definitions
-#include <orca/laserscanner2d.h>
-#include <orca/polarfeature2d.h>
 #include <orcaifaceimpl/polarfeature2diface.h>
 
 namespace laserfeatures

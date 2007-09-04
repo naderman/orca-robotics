@@ -12,7 +12,7 @@
 
 #include <orca/ogfusion.h>
 #include <orcaice/component.h>
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/buffer.h>
 #include <orcaogmap/orcaogmap.h>
 
 namespace ognode

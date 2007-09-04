@@ -29,7 +29,7 @@ For a type-safe buffer, template over the specific object Type you want to put i
 
 You should always try to @ref get() data before blocking with @ref getNext() because closely spaced push events may be lost. For example:
 @verbatim
-orcaice::Buffer<double> buffer( 10 );
+orcaice::Buffer<double> buffer( 10, orcaice::BufferTypeCircular );
 double data;
 while (1)
 {
@@ -56,9 +56,8 @@ public:
      *      - positive numbers to specify finite depth,
      *      - negative numbers for infinite depth, limited by memory size
      *      - zero is undefined
-     *  Default configuration: buffer type is BufferTypeCircular, of depth 1.
      */
-    Buffer( int depth=-1, BufferType type=BufferTypeCircular );
+    Buffer( int depth, BufferType type );
 
     virtual ~Buffer();
 

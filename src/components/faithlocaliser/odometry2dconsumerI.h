@@ -13,7 +13,7 @@
 
 // include defnition of Ice runtime
 #include <Ice/Ice.h>
-#include <orcaice/ptrbuffer.h>
+#include <orcaice/buffer.h>
 #include <orca/odometry2d.h>
 
 class Odometry2dConsumerI : public orca::Odometry2dConsumer

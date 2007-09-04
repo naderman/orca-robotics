@@ -19,7 +19,8 @@ using namespace orca;
 using namespace ognode;
 
 Component::Component()
-    : orcaice::Component( "OgNode", orcaice::HomeInterface  )
+    : orcaice::Component( "OgNode", orcaice::HomeInterface  ),
+    OgFusionDataBuffer_(10,orcaice::BufferTypeCircular)
 {
 }
 
