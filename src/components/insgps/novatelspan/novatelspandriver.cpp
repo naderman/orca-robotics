@@ -36,14 +36,14 @@ NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device
                                                   const Config&           cfg,
                                                   const orcaice::Context& context ) : 
     Driver(cfg, context),
+    baud_(baud),
+    serial_(0),
+    enabled_( false ),
     // configure the buffers so they have depth 100 and are of type queue
     gpsDataBuffer_( 100 , orcaice::BufferTypeQueue ),
     imuDataBuffer_( 100 , orcaice::BufferTypeQueue ),
     odometry3dDataBuffer_( 100 , orcaice::BufferTypeQueue ),
     localise3dDataBuffer_( 200 , orcaice::BufferTypeQueue ),
-    baud_(baud),
-    serial_(0),
-    enabled_( false ),
     gpsCount_(0),
     imuCount_(0),
     localise3dCount_(0),
