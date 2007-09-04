@@ -33,7 +33,7 @@ public:
     TestThreadWithThrow( bool shouldIThrow )
     {
         if ( shouldIThrow ) {
-            throw "trowing from constructor";
+            throw "throwing from constructor";
         }
     };
     

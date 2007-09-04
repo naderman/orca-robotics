@@ -17,13 +17,13 @@ namespace orcaice
 {
 
 /*!
-@brief A minor extention of the Ice::Thread class.
+@brief A minor extention of the IceUtil::Thread class.
 
 Adds an option to stop a thread with @ref stop(). Requires that the thread periodically checks
 whether it has to stop by calling isStopping(); Since @ref stop() is public, it can be called
 from inside or outside of the derived class.
 
-To use this class, simply overload the virtual Ice::Thread::run() function.
+To use this class, simply overload the virtual IceUtil::Thread::run() function.
 @verbatim
 void MyThread::run()
 {
@@ -63,6 +63,8 @@ Caveats:
 - Make sure you catch all exception which can possibly be raised inside Ice::Thread::run.
 Otherwise, you'll see "uncaught exception" printed out and the component will hang.
 - orcaice::Threads self-destruct (ie call their own destructor) when orcaice::Thread::run returns, unless you hold onto an orcaice::ThreadPtr which points to it. So never call @c delete on the pointer to a thread, doing so will result in segmentation fault.
+
+@see SafeThread
  */
 class Thread : public IceUtil::Thread
 {
