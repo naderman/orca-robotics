@@ -38,6 +38,10 @@ ADD_EXECUTABLE( threadtest threadtest.cpp )
 ADD_TEST( ThreadTest threadtest )
 MESSAGE ( STATUS "Planning to Build Test      : ThreadTest [libOrcaIce]")
 
+ADD_EXECUTABLE( safethreadtest safethreadtest.cpp )
+ADD_TEST( SafeThreadTest safethreadtest )
+MESSAGE ( STATUS "Planning to Build Test      : SafeThreadTest [libOrcaIce]")
+
 ADD_EXECUTABLE( eventqueuetest eventqueuetest.cpp )
 ADD_TEST( EventQueueTest eventqueuetest )
 MESSAGE ( STATUS "Planning to Build Test      : EventQueueTest [libOrcaIce]")
