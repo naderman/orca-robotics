@@ -16,24 +16,39 @@
 namespace orcaifaceimpl
 {
 
-//!
-//! Implements a consumer interface whose set method is 'SetData'.
-//! Does nothing more than sticking incoming data into an orcaice::Buffer.
-//!
+/*!
+ *  @brief A convenience class for consumers with setData() operation.
+ *
+ *  Relies on the fact that the Consumer objects has only one operation
+ *  to implement and it's called setData().
+ */
 template<class ConsumerType, class ObjectType>
 class BufferedConsumerI : public ConsumerType
 {
 public:
-    BufferedConsumerI() : 
-        buffer_(-1,orcaice::BufferTypeCircular) {};
+    //! Passes the arguments to its internal buffer.
+    BufferedConsumerI( int bufferDepth, orcaice::BufferType bufferType ) : 
+        buffer_(bufferDepth,bufferType) {};
 
     // from ConsumerType
     virtual void setData( const ObjectType& data, const Ice::Current& )
     {
+        // push recieved object into the internal buffer
         buffer_.push( data );
+    
+        // call event handler which can be reimplemented in derived classes
+        handleData( data );
     }
 
+    //! Access to the internal buffer.
     orcaice::Buffer<ObjectType> &buffer() { return buffer_; }
+
+protected:
+
+    //! You can reimplement this function in the derived class and do something when 
+    //! an object is received (besides sticking it in the buffer). 
+    //! This adds the functionality of orcaice::Notify.
+    virtual void handleData( const ObjectType & obj ) {};
 
 private:
     orcaice::Buffer<ObjectType> buffer_;

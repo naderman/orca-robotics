@@ -135,13 +135,15 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - libOrcaIce
   - added getPropertyAsIntVector/WithDefault() and getPropertyAsDoubleVector/WithDefault() which loads
-    ints and doubles respectively separated by spaces from a cfg file into
-    vector<int> and vector<double> resp. (ben u)
+    ints and doubles respectively separated by spaces from a cfg file into vector<int> and 
+    vector<double> resp. (ben u)
   - added multi-try versions of getInterfaceIdWithString() and getInterfaceIdWithTag() functions. (alex m)
   - changed API for Thread class. isActive() is depricated, isStopping() should be used instead. added isStarted(). The
     implicit state machine is explained in the documentation. (alex m)
   - added a specialized thread class SafeThread which defines a new entry point called walk() and catches 
     all possible exceptions around it. (alex m)
+  - Buffer and PtrBuffer classes now require explicit configuration (depth and buffer type). The latest defaults
+    (infinite depth, circular type) were used at the point of instantiation. (alex m)
 
 - libOrcaImage
   - added support for Image interface in image conversion functions. (alex m)
