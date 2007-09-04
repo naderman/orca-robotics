@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <QFileDialog>
+#include <orcaice/orcaice.h>
 #include <orcaobj/stringutils.h>
 #include <orcaqgui/ihumanmanager.h>
 #include <orcaqgui/guiicons.h>

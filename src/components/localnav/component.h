@@ -11,13 +11,7 @@
 #ifndef ORCA2_LOCALNAV_COMPONENT_H
 #define ORCA2_LOCALNAV_COMPONENT_H
 
-#include <orca/rangescanner2d.h>
-#include <orca/velocitycontrol2d.h>
-#include <orca/odometry2d.h>
-#include <orca/localise2d.h>
-#include <orca/pathfollower2d.h>
 #include <orcaice/component.h>
-#include <orcaice/ptrproxy.h>
 #include <orcadynamicload/dynamicload.h>
 #include <orcalocalnav/pathfollower2dI.h>
 #include <orcalocalnav/clock.h>

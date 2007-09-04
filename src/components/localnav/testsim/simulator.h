@@ -8,7 +8,6 @@
 #include <orcaifaceimpl/ogmapiface.h>
 #include <orca/velocitycontrol2d.h>
 #include <orca/odometry2d.h>
-#include <orcaice/ptrproxy.h>
 #include <orcaice/proxy.h>
 #include <orcaice/context.h>
 #include <orca/pathfollower2d.h>

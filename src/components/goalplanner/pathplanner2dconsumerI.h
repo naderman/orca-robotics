@@ -13,7 +13,7 @@
 
 #include <orca/pathplanner2d.h>
 #include <orcaice/orcaice.h>
-#include <orcaice/ptrproxy.h>
+#include <orcaice/proxy.h>
 
 
 namespace goalplanner

@@ -14,7 +14,7 @@
 // include defnition of Ice runtime
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
-#include <orcaice/ptrproxy.h>
+#include <orcaice/proxy.h>
 
 // include provided interfaces
 #include <orca/pathfollower2d.h>

@@ -13,7 +13,6 @@
 #define ORCA2_FEATURE_EXTRACTOR_MAIN_LOOP_H
 
 #include <orcaice/thread.h>
-#include <orcaice/ptrproxy.h>
 #include <orcaice/context.h>
 
 #include <orca/polarfeature2d.h>

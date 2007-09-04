@@ -13,7 +13,7 @@
 #include <iostream>
 
 #include <orca/localise2d.h>
-#include <orcaice/ptrproxy.h>
+#include <orcaice/proxy.h>
 
 class Localise2dConsumerI : public orca::Localise2dConsumer
 {

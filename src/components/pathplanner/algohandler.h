@@ -13,7 +13,7 @@
 
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
-#include <orcaice/ptrproxy.h>
+#include <orcaice/proxy.h>
 
 #include <orca/ogmap.h>
 #include <orca/pathplanner2d.h>

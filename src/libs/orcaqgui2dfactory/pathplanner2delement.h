@@ -13,7 +13,7 @@
 
 #include <iostream>
 #include <orca/pathplanner2d.h>
-#include <orcaice/ptrproxy.h>
+#include <orcaice/proxy.h>
 #include <orcaqgui2d/icestormelement.h>
 #include <orcaqgui2d/guielement2d.h>
 #include <orcaqgui2dfactory/pathpainter.h>

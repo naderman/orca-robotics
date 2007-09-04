@@ -13,7 +13,7 @@
 
 #include <IceStorm/IceStorm.h>
 #include <orca/platform2d.h>
-#include <orcaice/ptrproxy.h>
+#include <orcaice/proxy.h>
 #include <orcaice/context.h>
 #include "inoisemodel.h"
 

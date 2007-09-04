@@ -14,7 +14,6 @@
 #include <orca/localise2d.h>
 #include <orca/rangescanner2d.h>
 #include <orcaice/context.h>
-#include <orcaice/ptrproxy.h>
 #include <orcaice/thread.h>
 #include <orcaice/proxy.h>
 #include <orcaifaceimpl/consumertypes.h>

@@ -11,7 +11,6 @@
 #define ORCA_PATHMAINTAINER_H
 
 #include <orca/pathfollower2d.h>
-#include <orcaice/ptrproxy.h>
 #include <orcaice/context.h>
 #include <orcanavutil/pose.h>
 #include "goal.h"

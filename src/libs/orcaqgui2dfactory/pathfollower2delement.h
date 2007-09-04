@@ -13,8 +13,7 @@
 
 #include <orca/pathfollower2d.h>
 
-#include <orcaice/ptrproxy.h>
-#include <orcaice/orcaice.h>
+#include <orcaice/proxy.h>
 #include <orcaice/timer.h>
 
 #include <orcaqgui2d/guielement2d.h>
