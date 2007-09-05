@@ -16,7 +16,6 @@
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
 
-#include <orcaqgui/bufferedtimedconsumerI.h>
 #include <orcaice/connectutils.h>
 #include <orcaice/context.h>
 #include <orcaice/timer.h>
@@ -51,15 +50,14 @@ public:
           isSubscribed_(false)
         {
             // Register with the adapter
-            consumer_ = new BufferedTimedConsumerI<ConsumerType,DataType>;
+            consumer_ = new detail::BufferedTimedConsumerI<ConsumerType,DataType>;
             registerWithAdapter();
         }
 
     ~IceStormListener()
         {
             shutdown();
-            // delete timer_;
-            // do not delete consumer_, it's deletedwhen the smart pointers fall out of scope.
+            // do not delete consumer_, it's deleted when the smart pointers fall out of scope.
         }
 
     orcaice::Buffer<DataType> &buffer() { return consumer_->buffer_; }
@@ -96,13 +94,11 @@ public:
 
 private:
 
-    DataType                                       data_;
-    BufferedTimedConsumerI<ConsumerType,DataType> *consumer_;
+    DataType                                               data_;
+    detail::BufferedTimedConsumerI<ConsumerType,DataType> *consumer_;
 
     orcaice::Context  context_;
     std::string       proxyString_;
-
-    orcaice::Timer timer_;
 
     void registerWithAdapter()
         {

@@ -19,7 +19,6 @@
 #include <orcaice/connectutils.h>
 #include <orcaice/context.h>
 #include <orcaice/timer.h>
-#include <orcaqgui/ptrbufferedtimedconsumerI.h>
 
 #include <orcaqgui/detail.h>
 
@@ -55,14 +54,13 @@ public:
           isSubscribed_(false)
         {
             // Register with the adapter
-            consumer_ = new PtrBufferedTimedConsumerI<ConsumerType,DataPtrType>;
+            consumer_ = new detail::PtrBufferedTimedConsumerI<ConsumerType,DataPtrType>;
             registerWithAdapter();
         }
 
     ~PtrIceStormListener()
         {
             shutdown();
-            // delete timer_;
             // do not delete consumer_, it's deletedwhen the smart pointers fall out of scope.
         }
 
@@ -98,13 +96,11 @@ public:
 
 private:
 
-    DataPtrType                                          data_;
-    PtrBufferedTimedConsumerI<ConsumerType,DataPtrType> *consumer_;
+    DataPtrType                                                  data_;
+    detail::PtrBufferedTimedConsumerI<ConsumerType,DataPtrType> *consumer_;
 
     orcaice::Context  context_;
     std::string       proxyString_;
-
-    orcaice::Timer timer_;
 
     void registerWithAdapter()
         {
@@ -146,6 +142,7 @@ private:
     ConsumerPrxType callbackPrx_;
     bool            isSubscribed_;
 };
+
 
 } // namespace
 
