@@ -74,7 +74,7 @@ MainLoop::walk()
     orcaifaceimpl::BufferedOdometry2dConsumerImplPtr odometry2dInterface =
         new orcaifaceimpl::BufferedOdometry2dConsumerImpl( 10, orcaice::BufferTypeCircular,context_);
     // multi-try function
-    odometry2dInterface->subscribe( "Odometry2d", this );
+    odometry2dInterface->subscribeWithTag( "Odometry2d", this );
 
     //
     // Get vehicleDescription

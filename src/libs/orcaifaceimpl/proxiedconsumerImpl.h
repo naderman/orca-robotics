@@ -21,12 +21,9 @@ namespace orcaifaceimpl
 //! Implements a consumer interface whose set method is 'SetData'.
 //! Does nothing more than sticking incoming data into an orcaice::Proxy.
 //!
-//  Note: inheriting from IceUtil::Shared allows us to use Ice smart
-//  pointers with these things.
 template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
 class ProxiedConsumerImpl : 
-        public ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>,
-        public IceUtil::Shared
+        public ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>
 {
 public:
     //! Constructor.
@@ -37,7 +34,10 @@ public:
     orcaice::Proxy<ObjectType> &proxy() { return proxy_; }
 
     //! This callback simply puts the data object into the internal proxy.
-    virtual void handleData( const ObjectType& data ) { proxy_.set( data ); }
+    virtual void handleData( const ObjectType& data ) 
+    { 
+        proxy_.set( data ); 
+    }
 
 private:
     orcaice::Proxy<ObjectType> proxy_;

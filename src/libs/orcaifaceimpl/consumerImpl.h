@@ -12,7 +12,7 @@
 #define ORCAIFACEIMPL_CONSUMER_IMPL_H
 
 #include <orcaice/context.h>
-#include <orcaice/connectutils.h>
+#include <orcaice/multiconnectutils.h>
 #include <orcaice/thread.h>
 
 namespace orcaifaceimpl
@@ -51,24 +51,61 @@ private:
     ConsumerDataHandler<ObjectType> &handler_;
 };
 
+//! Functionality which end users needs to know about when telling the ConsumerImpl class
+//! class to subscribe to data provider. Because this class is not templated it is possible
+//! to have a generic pointer to ConsumerImpl regardless of template parameters.
+class ConsumerSubscriber
+{
+public:
+    virtual ~ConsumerSubscriber() {};
+
+    //! Tries to connect to remote interface with stringified proxy @c proxyString.
+    //! If succesful, tries to subscribe for data using the internal consumer interface.
+    //! Does not catch any exceptions.
+    virtual void subscribeWithString( const std::string& proxyString )=0;
+
+    //! Tries to connect to remote interface with stringified proxy @c proxyString.
+    //! If succesful, tries to unsubscribe the internal consumer interface.
+    //! Does not catch any exceptions.
+    virtual void unsubscribeWithString( const std::string& proxyString )=0;
+
+    //! Same as subscribeWithString() but the interface is looked up using the config file and tag interfaceTag.
+    virtual void subscribeWithTag( const std::string& interfaceTag )=0;
+
+    //! Same as unsubscribeWithString() but the interface is looked up using the config file and tag interfaceTag.
+    virtual void unsubscribeWithTag( const std::string& interfaceTag )=0;
+
+    //! Tries to connect to remote interface with stringified proxy @c proxyString.
+    //! If succesful, tries to subscribe for data using the internal consumer interface.
+    //! Catches appropriate exceptions. DOCUMENT!
+    virtual void subscribeWithString( const std::string& proxyString, orcaice::Thread* thread, int retryInterval=2 )=0;
+
+    //! Same as unsubscribeWithString() but the interface is looked up using the config file and tag interfaceTag.
+    virtual void subscribeWithTag( const std::string& interfaceTag, orcaice::Thread* thread, int retryInterval=2 )=0;
+};
+
 /*!
  A generic consumer: instantiates and looks after a consumerI.
  By 'looks after' I mean: adds it to/removes it from the adapter.
 
  Derived classes need to implement the handleData() callback.
 */
+//  Note: inheriting from IceUtil::Shared allows us to use Ice smart
+//  pointers with these things.
 template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
-class ConsumerImpl : public ConsumerDataHandler<ObjectType>
+class ConsumerImpl : public ConsumerDataHandler<ObjectType>,
+                     public ConsumerSubscriber,
+                     public IceUtil::Shared
 {
 friend class ConsumerI<ConsumerType,ObjectType>;
 
 public:
     //! Constructor
     ConsumerImpl( const orcaice::Context &context )
-        : ptr_(new ConsumerI<ConsumerType,ObjectType>(*this)),
+        : context_(context),
+          ptr_(new ConsumerI<ConsumerType,ObjectType>(*this)),
           // this function does not throw
-          prx_(orcaice::createConsumerInterface<ConsumerPrxType>(context,ptr_)),
-          context_(context)
+          prx_(orcaice::createConsumerInterface<ConsumerPrxType>(context,ptr_))
     {}
 
     virtual ~ConsumerImpl() 
@@ -80,36 +117,45 @@ public:
         catch ( ... ) {}
     }
 
-    //! Tries to connect to remote interface using interface tag and component config file.
-    //! If succesful, tries to subscribe for data using the internal consumer interface.
-    //! Does not catch any exceptions.
-    void subscribe( const std::string& interfaceTag )
+    virtual void subscribeWithString( const std::string& proxyString )
     {
         ProviderPrxType providerPrx;
-        orcaice::connectToInterfaceWithTag<ProviderPrxType>( context_, providerPrx, interfaceTag );
+        orcaice::connectToInterfaceWithString<ProviderPrxType>( context_, providerPrx, proxyString );
 
         providerPrx->subscribe( prx_ );
     }
 
-    //! Tries to connect to remote interface using interface tag and component config file.
-    //! If succesful, tries to unsubscribe the internal consumer interface.
-    //! Does not catch any exceptions.
-    void unsubscribe( const std::string& interfaceTag )
+    virtual void subscribeWithTag( const std::string& interfaceTag )
+    {
+        // this may throw ConfigFileException, we don't catch it, let the user catch it at the component level
+        std::string proxyString = orcaice::getRequiredInterfaceAsString( context_, interfaceTag );
+    
+        // now that we have the stingified proxy, use the function above.
+        subscribeWithString( proxyString );
+    }
+
+    virtual void unsubscribeWithString( const std::string& proxyString )
     {
         ProviderPrxType providerPrx;
-        orcaice::connectToInterfaceWithTag<ProviderPrxType>( context_, providerPrx, interfaceTag );
+        orcaice::connectToInterfaceWithString<ProviderPrxType>( context_, providerPrx, proxyString );
 
         providerPrx->unsubscribe( prx_ );
     }
 
-    //! Tries to connect to remote interface using interface tag and component config file.
-    //! If succesful, tries to subscribe for data using the internal consumer interface.
-    //! Does not catch any exceptions.
-    void subscribe( const std::string& interfaceTag, orcaice::Thread* thread, int retryInterval=2  )
+    virtual void unsubscribeWithTag( const std::string& interfaceTag )
+    {
+        // this may throw ConfigFileException, we don't catch it, let the user catch it at the component level
+        std::string proxyString = orcaice::getRequiredInterfaceAsString( context_, interfaceTag );
+    
+        // now that we have the stingified proxy, use the function above.
+        unsubscribeWithString( proxyString );
+    }
+
+    virtual void subscribeWithString( const std::string& proxyString, orcaice::Thread* thread, int retryInterval=2  )
     {
         ProviderPrxType providerPrx;
         // multi-try
-        orcaice::connectToInterfaceWithTag<ProviderPrxType>( context_, providerPrx, interfaceTag, thread, retryInterval );
+        orcaice::connectToInterfaceWithString<ProviderPrxType>( context_, providerPrx, proxyString, thread, retryInterval );
 
         while ( !thread->isStopping() )
         {
@@ -138,12 +184,24 @@ public:
 
     }
 
+    virtual void subscribeWithTag( const std::string& interfaceTag, orcaice::Thread* thread, int retryInterval=2  )
+    {
+        // this may throw ConfigFileException, we don't catch it, let the user catch it at the component level
+        std::string proxyString = orcaice::getRequiredInterfaceAsString( context_, interfaceTag );
+    
+        // now that we have the stingified proxy, use the function above.
+        subscribeWithString( proxyString, thread, retryInterval );
+    }
+
     //! Access to the proxy to the internal consumer interface implementation.
     ConsumerPrxType consumerPrx() const { return prx_; }
 
 protected:
     //! Implement this call back in the derived class. 
     virtual void handleData( const ObjectType &data )=0;
+
+    //! Component context.
+    orcaice::Context context_;
 
 private:
     // from ConsumerDataHandler
@@ -157,7 +215,6 @@ private:
     Ice::ObjectPtr   ptr_;
     // proxy to the internal consumer interface implementation
     ConsumerPrxType  prx_;
-    orcaice::Context context_;
 };
 
 } // namespace

@@ -13,6 +13,7 @@
 
 #include <orcaifaceimpl/proxiedconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
+#include <orcaifaceimpl/printingconsumerImpl.h>
 
 #include <orca/rangescanner2d.h>
 #include <orca/localise3d.h>
@@ -91,6 +92,16 @@ typedef BufferedConsumerImpl<orca::Odometry2dPrx,
                         orca::Odometry2dConsumerPrx,
                         orca::Odometry2dData>              BufferedOdometry2dConsumerImpl;
 typedef IceUtil::Handle<BufferedOdometry2dConsumerImpl>    BufferedOdometry2dConsumerImplPtr;
+
+
+//
+// Printing consumers
+//
+typedef PrintingConsumerImpl<orca::Odometry2dPrx,
+                        orca::Odometry2dConsumer,
+                        orca::Odometry2dConsumerPrx,
+                        orca::Odometry2dData>              PrintingOdometry2dConsumerImpl;
+typedef IceUtil::Handle<PrintingOdometry2dConsumerImpl>    PrintingOdometry2dConsumerImplPtr;
 
 } // namespace
 

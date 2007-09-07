@@ -12,15 +12,13 @@
 #define ORCA2_FAITH_LOCALISER_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orcaice/buffer.h>
+#include <orcaice/thread.h>
 
 #include <orca/localise2d.h>
 #include <orca/odometry2d.h>
 
 namespace faithlocaliser
 {
-
-class MainLoop;
 
 // Deriving from orcaice::Component means we have to implement start() and stop()
 class Component : public orcaice::Component
@@ -34,8 +32,7 @@ public:
     virtual void stop();
 
 private:
-
-    MainLoop *mainLoop_;
+    orcaice::Thread* mainLoop_;
 
 };
 

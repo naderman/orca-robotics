@@ -21,12 +21,9 @@ namespace orcaifaceimpl
 //! Implements a consumer interface whose set method is 'SetData'.
 //! Does nothing more than sticking incoming data into an orcaice::Buffer.
 //!
-//  Note: inheriting from IceUtil::Shared allows us to use Ice smart
-//  pointers with these things.
 template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
 class BufferedConsumerImpl : 
-        public ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>,
-        public IceUtil::Shared
+        public ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>
 {
 public:
     //! Constructor.
