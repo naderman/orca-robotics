@@ -24,7 +24,7 @@ OdometryBasedDriver::OdometryBasedDriver( const orca::GpsDescription &descr,
       isSetup_(false),
       context_(context)
 {
-    odomConsumer_ = new orcaifaceimpl::ProxiedOdometry2dConsumer(context);
+    odomConsumer_ = new orcaifaceimpl::ProxiedOdometry2dConsumerImpl(context);
 
     prevTime_.seconds  = 0;
     prevTime_.useconds = 0;

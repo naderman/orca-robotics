@@ -46,7 +46,7 @@ private:
                                    double dt );
 
     SimpleDriver                                simpleDriver_;
-    orcaifaceimpl::ProxiedOdometry2dConsumerPtr odomConsumer_;
+    orcaifaceimpl::ProxiedOdometry2dConsumerImplPtr odomConsumer_;
     bool                                        isSetup_;
 
     orcanavutil::OdometryDifferentiator         odometryDifferentiator_;

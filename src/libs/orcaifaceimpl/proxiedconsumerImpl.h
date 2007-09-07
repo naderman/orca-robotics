@@ -8,11 +8,11 @@
  *
  */
  
-#ifndef ORCAIFACEIMPL_PROXIED_CONSUMER_H
-#define ORCAIFACEIMPL_PROXIED_CONSUMER_H
+#ifndef ORCAIFACEIMPL_PROXIED_CONSUMER_IMPL_H
+#define ORCAIFACEIMPL_PROXIED_CONSUMER_IMPL_H
 
 #include <orcaice/proxy.h>
-#include <orcaifaceimpl/consumer.h>
+#include <orcaifaceimpl/consumerImpl.h>
 
 namespace orcaifaceimpl
 {
@@ -23,19 +23,21 @@ namespace orcaifaceimpl
 //!
 //  Note: inheriting from IceUtil::Shared allows us to use Ice smart
 //  pointers with these things.
-template<class ConsumerType, class ConsumerPrxType, class ObjectType>
-class ProxiedConsumer : public Consumer<ConsumerType,ConsumerPrxType,ObjectType>,
-                        public IceUtil::Shared
+template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
+class ProxiedConsumerImpl : 
+        public ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>,
+        public IceUtil::Shared
 {
 public:
-
-    ProxiedConsumer( const orcaice::Context &context )
-        : Consumer<ConsumerType,ConsumerPrxType,ObjectType>(context) {}
-
-    void setData( const ObjectType& data ) { proxy_.set( data ); }
+    //! Constructor.
+    ProxiedConsumerImpl( const orcaice::Context &context )
+        : ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context) {}
 
     //! Returns reference to local proxy.
     orcaice::Proxy<ObjectType> &proxy() { return proxy_; }
+
+    //! This callback simply puts the data object into the internal proxy.
+    virtual void handleData( const ObjectType& data ) { proxy_.set( data ); }
 
 private:
     orcaice::Proxy<ObjectType> proxy_;

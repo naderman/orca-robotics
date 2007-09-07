@@ -55,14 +55,15 @@ public:
 
 private:
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::Odometry2dData getData() const;
-    ::orca::VehicleDescription getDescription() const;
-    void subscribe(const ::orca::Odometry2dConsumerPrx&);
-    void unsubscribe(const ::orca::Odometry2dConsumerPrx&);
+    ::orca::Odometry2dData internalGetData() const;
+    ::orca::VehicleDescription internalGetDescription() const;
+    void internalSubscribe(const ::orca::Odometry2dConsumerPrx&);
+    void internalUnsubscribe(const ::orca::Odometry2dConsumerPrx&);
 
     orca::VehicleDescription     descr_;
     orcaice::Proxy<orca::Odometry2dData> dataProxy_;
 
+    // IceStorm proxies
     orca::Odometry2dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;
 

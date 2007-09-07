@@ -12,9 +12,7 @@
 #define ORCA2_FAITH_LOCALISER_MAIN_LOOP_H
 
 #include <orcaice/safethread.h>
-#include <orcaice/buffer.h>
 #include <orcaice/context.h>
-#include <orcaifaceimpl/localise2diface.h>
 
 namespace faithlocaliser
 {
@@ -27,21 +25,14 @@ public:
     MainLoop( const orcaice::Context &context );
     ~MainLoop();
 
+    // from SafeThread
     virtual void walk();
 
 private:
-    
-    void initNetwork();
-    
-    orca::Odometry2dPrx odometryPrx_;
-    orcaice::Buffer<orca::Odometry2dData> odometryPipe_;
-    
-    orcaifaceimpl::Localise2dIfacePtr localiseInterface_;
-
-    orcaice::Context context_;
-
     double stdDevPosition_;
     double stdDevHeading_;
+
+    orcaice::Context context_;
 };
 
 } // namespace

@@ -11,7 +11,9 @@
 #ifndef ORCAIFACEIMPL_CONSUMER_TYPES_H
 #define ORCAIFACEIMPL_CONSUMER_TYEPS_H
 
-#include <orcaifaceimpl/proxiedconsumer.h>
+#include <orcaifaceimpl/proxiedconsumerImpl.h>
+#include <orcaifaceimpl/bufferedconsumerImpl.h>
+
 #include <orca/rangescanner2d.h>
 #include <orca/localise3d.h>
 #include <orca/localise2d.h>
@@ -28,46 +30,67 @@ namespace orcaifaceimpl
 // An attempt to minimise template kung-fu in component code.
 //
 
-typedef ProxiedConsumer<orca::RangeScanner2dConsumer,
+//
+// Proxied consumers
+//
+
+typedef ProxiedConsumerImpl<orca::RangeScanner2dPrx,
+                        orca::RangeScanner2dConsumer,
                         orca::RangeScanner2dConsumerPrx,
-                        orca::RangeScanner2dDataPtr>       ProxiedRangeScanner2dConsumer;
-typedef IceUtil::Handle<ProxiedRangeScanner2dConsumer>     ProxiedRangeScanner2dConsumerPtr;
+                        orca::RangeScanner2dDataPtr>       ProxiedRangeScanner2dConsumerImpl;
+typedef IceUtil::Handle<ProxiedRangeScanner2dConsumerImpl> ProxiedRangeScanner2dConsumerImplPtr;
 
-typedef ProxiedConsumer<orca::Localise3dConsumer,
-                        orca::Localise3dConsumerPrx,
-                        orca::Localise3dData>              ProxiedLocalise3dConsumer;
-typedef IceUtil::Handle<ProxiedLocalise3dConsumer>         ProxiedLocalise3dConsumerPtr;
-
-typedef ProxiedConsumer<orca::Localise2dConsumer,
+typedef ProxiedConsumerImpl<orca::Localise2dPrx,
+                        orca::Localise2dConsumer,
                         orca::Localise2dConsumerPrx,
-                        orca::Localise2dData>              ProxiedLocalise2dConsumer;
-typedef IceUtil::Handle<ProxiedLocalise2dConsumer>         ProxiedLocalise2dConsumerPtr;
+                        orca::Localise2dData>              ProxiedLocalise2dConsumerImpl;
+typedef IceUtil::Handle<ProxiedLocalise2dConsumerImpl>     ProxiedLocalise2dConsumerImplPtr;
 
-typedef ProxiedConsumer<orca::Odometry3dConsumer,
-                        orca::Odometry3dConsumerPrx,
-                        orca::Odometry3dData>              ProxiedOdometry3dConsumer;
-typedef IceUtil::Handle<ProxiedOdometry3dConsumer>         ProxiedOdometry3dConsumerPtr;
+typedef ProxiedConsumerImpl<orca::Localise3dPrx,
+                        orca::Localise3dConsumer,
+                        orca::Localise3dConsumerPrx,
+                        orca::Localise3dData>              ProxiedLocalise3dConsumerImpl;
+typedef IceUtil::Handle<ProxiedLocalise3dConsumerImpl>     ProxiedLocalise3dConsumerImplPtr;
 
-typedef ProxiedConsumer<orca::Odometry2dConsumer,
+typedef ProxiedConsumerImpl<orca::Odometry2dPrx,
+                        orca::Odometry2dConsumer,
                         orca::Odometry2dConsumerPrx,
-                        orca::Odometry2dData>              ProxiedOdometry2dConsumer;
-typedef IceUtil::Handle<ProxiedOdometry2dConsumer>         ProxiedOdometry2dConsumerPtr;
+                        orca::Odometry2dData>              ProxiedOdometry2dConsumerImpl;
+typedef IceUtil::Handle<ProxiedOdometry2dConsumerImpl>     ProxiedOdometry2dConsumerImplPtr;
 
-typedef ProxiedConsumer<orca::DriveBicycleConsumer,
+typedef ProxiedConsumerImpl<orca::Odometry3dPrx,
+                        orca::Odometry3dConsumer,
+                        orca::Odometry3dConsumerPrx,
+                        orca::Odometry3dData>              ProxiedOdometry3dConsumerImpl;
+typedef IceUtil::Handle<ProxiedOdometry3dConsumerImpl>     ProxiedOdometry3dConsumerImplPtr;
+
+
+typedef ProxiedConsumerImpl<orca::DriveBicyclePrx,
+                        orca::DriveBicycleConsumer,
                         orca::DriveBicycleConsumerPrx,
-                        orca::DriveBicycleData>            ProxiedDriveBicycleConsumer;
-typedef IceUtil::Handle<ProxiedDriveBicycleConsumer>       ProxiedDriveBicycleConsumerPtr;
+                        orca::DriveBicycleData>            ProxiedDriveBicycleConsumerImpl;
+typedef IceUtil::Handle<ProxiedDriveBicycleConsumerImpl>   ProxiedDriveBicycleConsumerImplPtr;
 
-typedef ProxiedConsumer<orca::OgMapConsumer,
+typedef ProxiedConsumerImpl<orca::OgMapPrx,
+                        orca::OgMapConsumer,
                         orca::OgMapConsumerPrx,
-                        orca::OgMapData>                   ProxiedOgMapConsumer;
-typedef IceUtil::Handle<ProxiedOgMapConsumer>              ProxiedOgMapConsumerPtr;
+                        orca::OgMapData>                   ProxiedOgMapConsumerImpl;
+typedef IceUtil::Handle<ProxiedOgMapConsumerImpl>          ProxiedOgMapConsumerImplPtr;
 
-typedef ProxiedConsumer<orca::GpsConsumer,
+typedef ProxiedConsumerImpl<orca::GpsPrx,
+                        orca::GpsConsumer,
                         orca::GpsConsumerPrx,
-                        orca::GpsData>                     ProxiedGpsConsumer;
-typedef IceUtil::Handle<ProxiedGpsConsumer>                ProxiedGpsConsumerPtr;
+                        orca::GpsData>                     ProxiedGpsConsumerImpl;
+typedef IceUtil::Handle<ProxiedGpsConsumerImpl>            ProxiedGpsConsumerImplPtr;
 
+//
+// Buffered consumers
+//
+typedef BufferedConsumerImpl<orca::Odometry2dPrx,
+                        orca::Odometry2dConsumer,
+                        orca::Odometry2dConsumerPrx,
+                        orca::Odometry2dData>              BufferedOdometry2dConsumerImpl;
+typedef IceUtil::Handle<BufferedOdometry2dConsumerImpl>    BufferedOdometry2dConsumerImplPtr;
 
 } // namespace
 

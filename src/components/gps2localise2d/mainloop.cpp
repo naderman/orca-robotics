@@ -31,7 +31,7 @@ MainLoop::MainLoop( const orcaice::Context &context )
     context_.status()->initialising( SUBSYSTEM );
 
     // create a callback object to recieve data
-    gpsConsumer_ = new orcaifaceimpl::ProxiedGpsConsumer( context_ );
+    gpsConsumer_ = new orcaifaceimpl::ProxiedGpsConsumerImpl( context_ );
 }
 
 MainLoop::~MainLoop()

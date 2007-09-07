@@ -27,27 +27,27 @@ class Odometry2dI : public orca::Odometry2d
 {
 public:
     Odometry2dI( Odometry2dIface &iface )
-        : iface_(iface) {}
+        : impl_(iface) {}
     virtual ~Odometry2dI() {}
 
     // remote interface
 
     virtual ::orca::Odometry2dData getData(const ::Ice::Current& ) const
-        { return iface_.getData(); }
+        { return impl_.internalGetData(); }
 
     virtual ::orca::VehicleDescription getDescription(const ::Ice::Current& ) const
-        { return iface_.getDescription(); }
+        { return impl_.internalGetDescription(); }
 
     virtual void subscribe(const ::orca::Odometry2dConsumerPrx& consumer,
                            const ::Ice::Current& = ::Ice::Current())
-        { iface_.subscribe( consumer ); }
+        { impl_.internalSubscribe( consumer ); }
 
     virtual void unsubscribe(const ::orca::Odometry2dConsumerPrx& consumer,
                              const ::Ice::Current& = ::Ice::Current())
-        { iface_.unsubscribe(consumer); }
+        { impl_.internalUnsubscribe(consumer); }
 
 private:
-    Odometry2dIface &iface_;
+    Odometry2dIface &impl_;
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -91,7 +91,7 @@ Odometry2dIface::initInterface( orcaice::Thread* thread, int retryInterval )
 }
 
 ::orca::Odometry2dData 
-Odometry2dIface::getData() const
+Odometry2dIface::internalGetData() const
 {
     context_.tracer()->debug( "Odometry2dIface::getData()", 5 );
 
@@ -108,13 +108,13 @@ Odometry2dIface::getData() const
 }
 
 ::orca::VehicleDescription
-Odometry2dIface::getDescription() const
+Odometry2dIface::internalGetDescription() const
 {
     return descr_;
 }
 
 void 
-Odometry2dIface::subscribe(const ::orca::Odometry2dConsumerPrx& subscriber )
+Odometry2dIface::internalSubscribe(const ::orca::Odometry2dConsumerPrx& subscriber )
 {
     context_.tracer()->debug( "Odometry2dIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     try {
@@ -134,7 +134,7 @@ Odometry2dIface::subscribe(const ::orca::Odometry2dConsumerPrx& subscriber )
 }
 
 void 
-Odometry2dIface::unsubscribe(const ::orca::Odometry2dConsumerPrx& subscriber)
+Odometry2dIface::internalUnsubscribe(const ::orca::Odometry2dConsumerPrx& subscriber)
 {
     context_.tracer()->debug( "Odometry2dIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );

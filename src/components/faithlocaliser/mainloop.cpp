@@ -12,7 +12,8 @@
 #include <orcaice/orcaice.h>
 
 #include "mainloop.h"
-#include "odometry2dconsumerI.h"
+#include <orcaifaceimpl/localise2diface.h>
+#include <orcaifaceimpl/consumertypes.h>
 
 using namespace std;
 using namespace faithlocaliser;
@@ -43,7 +44,6 @@ namespace {
 }
 
 MainLoop::MainLoop( const orcaice::Context &context ) : 
-    odometryPipe_(10, orcaice::BufferTypeCircular),
     context_(context)
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
@@ -60,7 +60,7 @@ MainLoop::~MainLoop()
 }
 
 void
-MainLoop::initNetwork()
+MainLoop::walk()
 {
     //
     // ENABLE NETWORK CONNECTIONS
@@ -70,55 +70,30 @@ MainLoop::initNetwork()
 
     //
     // EXTERNAL REQUIRED INTERFACES
-    //            
+    //           
+    orcaifaceimpl::BufferedOdometry2dConsumerImplPtr odometry2dInterface =
+        new orcaifaceimpl::BufferedOdometry2dConsumerImpl( 10, orcaice::BufferTypeCircular,context_);
     // multi-try function
-    orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odometryPrx_, "Odometry2d", this );
- 
-    // create a callback object to recieve scans
-    Ice::ObjectPtr consumer = new Odometry2dConsumerI( odometryPipe_ );
-    orca::Odometry2dConsumerPrx consumerPrx =
-        orcaice::createConsumerInterface<orca::Odometry2dConsumerPrx>( context_, consumer );
+    odometry2dInterface->subscribe( "Odometry2d", this );
 
-    //
-    // Subscribe for data
-    //
-    while ( isActive() )
-    {
-        try
-        {
-            odometryPrx_->subscribe( consumerPrx );
-            break;
-        }
-        catch ( const Ice::Exception &e )
-        {
-            stringstream ss;
-            ss << "MainLoop: Failed to subscribe: " << e;
-            context_.tracer()->error( ss.str() );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
-        }
-        catch ( const std::exception &e )
-        {
-            stringstream ss;
-            ss << "MainLoop: Failed to subscribe: " << e.what();
-            context_.tracer()->error( ss.str() );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
-        }
-    }
-    
     //
     // Get vehicleDescription
     //
+    orca::Odometry2dPrx odometryPrx;
+    // multi-try function
+    orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odometryPrx, "Odometry2d", this );
+ 
     orca::VehicleDescription vehicleDescription;
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {
-            vehicleDescription = odometryPrx_->getDescription();
+            vehicleDescription = odometryPrx->getDescription();
             break;
         }
         catch ( std::exception &e )
         {
-            stringstream ss; ss << "Failed to get description from odometry interface: " << e.what() << " Will try again after 3 seconds.";
+            stringstream ss; ss << "Failed to get vehicle description from odometry interface: " << e.what() << " Will try again after 3 seconds.";
             context_.tracer()->error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
@@ -127,26 +102,25 @@ MainLoop::initNetwork()
     // 
     // EXTERNAL PROVIDED INTERFACE
     //
-    localiseInterface_ = new orcaifaceimpl::Localise2dIface( vehicleDescription.geometry, "Localise2d", context_);
-    localiseInterface_->initInterface();
-}
+    orcaifaceimpl::Localise2dIfacePtr localiseInterface =
+        new orcaifaceimpl::Localise2dIface( vehicleDescription.geometry, "Localise2d", context_);
+    // multi-try function
+    localiseInterface->initInterface( this );
 
-
-void
-MainLoop::walk()
-{
-    initNetwork();
-
+    // temp variables
     orca::Localise2dData localiseData;
     orca::Odometry2dData odomData;
     double varPosition = stdDevPosition_*stdDevPosition_;
     double varHeading = (stdDevHeading_*M_PI/180.0)*(stdDevHeading_*M_PI/180.0);
     
-    while ( isActive() )
+    //
+    // MAIN LOOP
+    //
+    while ( !isStopping() )
     {
         // Get odometry info, time out every so often to check if we are cancelled
         const int TIMEOUT_MS = 1000;
-        if ( odometryPipe_.getAndPopNext( odomData, TIMEOUT_MS ) != 0 ) 
+        if ( odometry2dInterface->buffer().getAndPopNext( odomData, TIMEOUT_MS ) != 0 ) 
         {
             stringstream ss;
             ss << "MainLoop: received no odometry for " << TIMEOUT_MS << "ms";
@@ -157,6 +131,6 @@ MainLoop::walk()
         odometryToLocalise( odomData, localiseData, varPosition, varHeading );
         context_.tracer()->debug( orcaice::toString(localiseData), 5 );
         
-        localiseInterface_->localSetAndSend( localiseData );
+        localiseInterface->localSetAndSend( localiseData );
     }
 }
