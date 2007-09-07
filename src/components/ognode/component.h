@@ -10,10 +10,8 @@
 #ifndef _ORCA2_OGNODE_COMPONENT_H_
 #define _ORCA2_OGNODE_COMPONENT_H_
 
-#include <orca/ogfusion.h>
 #include <orcaice/component.h>
-#include <orcaice/buffer.h>
-#include <orcaogmap/orcaogmap.h>
+#include <orcaice/thread.h>
 
 namespace ognode
 {
@@ -31,12 +29,8 @@ public:
     virtual void stop();
 
 private:
-    Handler *handler_;
+    orcaice::ThreadPtr handler_;
 
-    orcaice::Buffer<orca::OgFusionData> OgFusionDataBuffer_;
-    Ice::ObjectPtr ogFusionObjPtr_;
-    Ice::ObjectPtr ogMapObjPtr_;
-    orcaogmap::OgMap localMap_;
 };
 
 } // namespace

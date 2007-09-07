@@ -12,33 +12,34 @@
 
 // orca objects
 #include <orca/laserscanner2d.h>
-#include <orca/localise2d.h>
 #include <orca/ogfusion.h>
-
 #include <vector>
-#include <orcaogfusion/orcaogfusion.h>
-
+#include <orcanavutil/pose.h>
 #include "ogsensormodel.h"
+#include <orcaogfusion/orcaogfusion.h>
 
 namespace laser2og
 {
 
-// forward declaration
-class OgSensorModel;
-
 class Laser2Og
 {
 public:
-    Laser2Og(ogfusion::MapConfig& mapConfig, OgLaserModelConfig& sensorConfig);
+    Laser2Og( ogfusion::MapConfig &mapConfig,
+              OgLaserModelConfig  &sensorConfig );
     ~Laser2Og();
 
-    int process( const orca::Localise2dData &pose, const orca::RangeScanner2dData & scan );
-    int getObs( orca::OgObservation &obs );
+    orca::OgObservation process( const orcanavutil::Pose &pose, const orca::RangeScanner2dData & scan );
+
+    // If the vehicle pose uncertainty is greater than this, we shouldn't process sensor data
+    double positionStdDevMax() const { return sensorModel_->posStDevMax(); }
+    double headingStdDevMax() const { return sensorModel_->hedStDevMax(); }
 
 private:
     
+    orca::OgObservation getObs( const ogfusion::OgBuffer &buffer );
+
     // sensor config
-    double laserRange_;
+    double maxLaserRange_;
         
     // sensor model
     OgSensorModel* sensorModel_;
@@ -50,9 +51,6 @@ private:
     int mapSizeY_;
     double mapOriginX_;
     double mapOriginY_;
-
-    ogfusion::OgBuffer buffer_;
-   
 };
 
 } // namespace

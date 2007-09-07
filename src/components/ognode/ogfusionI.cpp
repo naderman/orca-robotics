@@ -14,10 +14,10 @@
 using namespace std;
 using namespace ognode;
 
-OgFusionI::OgFusionI(orca::OgFusionConfig& config,
-		     orcaice::Buffer<orca::OgFusionData>& OgFusionDataBuffer) :
-    config_(config),
-    ogFusionDataBuffer_(OgFusionDataBuffer)
+OgFusionI::OgFusionI( orca::OgFusionConfig& config,
+                      orcaice::Buffer<orca::OgFusionData>& OgFusionDataBuffer )
+    : config_(config),
+      ogFusionDataBuffer_(OgFusionDataBuffer)
 {
 }
 

@@ -12,13 +12,9 @@
 
 #include <vector>
 #include <string>
+#include <orcaogmap/ogmap.h>
 
 #include <orca/pixmap.h>
-
-// fwd decl
-namespace orcaogmap {
-    class OgMap;
-}
 
 namespace orcaogmapload {
 

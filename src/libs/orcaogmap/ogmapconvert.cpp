@@ -28,7 +28,7 @@ convert( const orca::OgMapData & input, orcaogmap::OgMap & output )
 }
 
 void 
-convert( const orcaogmap::OgMap   & input, orca::OgMapData & output )
+convert( const orcaogmap::OgMap &input, orca::OgMapData &output, orca::OgMapType mapType )
 {
     output.numCellsX = input.numCellsX();
     output.numCellsY = input.numCellsY();
@@ -40,7 +40,7 @@ convert( const orcaogmap::OgMap   & input, orca::OgMapData & output )
     output.offset.o   = input.offset().o;
     output.metresPerCellX = input.metresPerCellX();
     output.metresPerCellY = input.metresPerCellY();
-
+    output.mapType = mapType;
 }
 
 void 

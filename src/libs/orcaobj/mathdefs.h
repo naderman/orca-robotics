@@ -17,6 +17,8 @@
 #ifndef ORCA2_MATH_DEFINITIONS_H
 #define ORCA2_MATH_DEFINITIONS_H	
 
+#include <assert.h>
+
 /*****************************************************************************
  * INCLUDE THE RELEVANT MATHS LIBRARIES
  *****************************************************************************/
@@ -170,11 +172,18 @@ inline void NORMALISE_ANGLE( float &theta )
 //!  Compares using less_than and greater_than.
 #define NEAR(x,y,epsilon) (((x) > (y)-(epsilon)) && ((x) < (y)+(epsilon))) 
 #endif
-#ifndef CHECK_LIMITS
-//! Check that a number lies within limits. 
-//! Compares using less_than and greater_than.
-#define CHECK_LIMITS(max_x, x, min_x) \
-        ((x)>(max_x)?(max_x):((x)<(min_x)?(min_x):(x)))
-#endif
+
+//! Modifies x to lie within [x_min,x_max]
+//!
+template<typename T>
+void
+CLIP_TO_LIMITS( const T &min_x, T &x, const T &max_x )
+{
+    assert( min_x <= max_x );
+    if ( x > max_x )
+        x = max_x;
+    else if ( x < min_x )
+        x = min_x;
+}
      
 #endif

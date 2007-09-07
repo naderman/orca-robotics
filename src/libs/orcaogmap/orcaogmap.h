@@ -12,7 +12,7 @@
 
 #include <orcaogmap/simpleograytrace.h>
 #include <orcaogmap/ograytracer.h>
-#include <orcaogmap/ogmaputils.h>
+#include <orcaogmap/ogmap.h>
 #include <orcaogmap/ogmapconvert.h>
 
 #endif

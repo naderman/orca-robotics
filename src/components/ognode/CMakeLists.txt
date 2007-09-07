@@ -13,7 +13,7 @@ IF ( BUILD_OGNODE )
     FILE( GLOB SRCS *.cpp )           
     
     GLOBAL_ADD_EXECUTABLE( ognode ${SRCS} )
-    TARGET_LINK_LIBRARIES( ognode OrcaOgFusion OrcaOgMap )
+    TARGET_LINK_LIBRARIES( ognode OrcaOgFusion OrcaOgMap OrcaIfaceImpl )
     
     GENERATE_CONFIG_FILE( ognode.def )
 

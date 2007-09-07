@@ -53,7 +53,7 @@ namespace {
 
                 if ( orcapathplan::isTraversable( ogMap, cell.x(), cell.y(), traversabilityThreshhold ) )
                 {
-                    float worldX, worldY;
+                    double worldX, worldY;
                     ogMap.getWorldCoords( cell.x(), cell.y(), worldX, worldY );
                     wp.target.p.x = worldX;
                     wp.target.p.y = worldY;

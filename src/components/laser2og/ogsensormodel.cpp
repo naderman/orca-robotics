@@ -93,7 +93,8 @@ OgSensorModel::likelihood( const double rangeToCell, const double rangeToReturn,
     
     // look up sensor model
     int halfSize = (config_.size-1 ) / 2;
-    double r = CHECK_LIMITS( 2.0*halfSize, (ro/config_.rangeStDevMax+1.0) * (double)halfSize, 0.0 );
+    double r = (ro/config_.rangeStDevMax+1.0) * (double)halfSize;
+    CLIP_TO_LIMITS( 0.0, r, 2.0*halfSize );
     int ri = (int) floor( r );
     double d = r - ri;
     

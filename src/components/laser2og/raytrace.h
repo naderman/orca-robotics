@@ -17,7 +17,7 @@
 #include <orcaobj/mathdefs.h>
 
 #include <orcapathplan/cell2d.h>
-#include <orcaogmap/ogmaputils.h>
+#include <orcaogmap/ogmap.h>
 
 
 namespace laser2og

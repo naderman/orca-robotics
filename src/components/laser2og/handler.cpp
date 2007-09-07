@@ -13,6 +13,7 @@
 #include <orca/localise2d.h>
 #include <orca/ogfusion.h>
 #include <orcaice/orcaice.h>
+#include <orcamisc/cov2d.h>
 
 #include "laser2og.h"
 #include "handler.h"
@@ -22,6 +23,60 @@
 using namespace std;
 using namespace orca;
 using namespace laser2og;
+
+namespace {
+
+    // Returns isPoseClear:
+    //   true:  worked out pose OK
+    //   false: localisation is too uncertain.
+    bool calcPose( const orca::Localise2dData &localiseData,
+                   orcanavutil::Pose &pose,
+                   double maxPositionSd,
+                   double maxHeadingSd )
+    {
+        if ( localiseData.hypotheses.size() > 1 )
+        {
+            cout<<"TRACE(handler.cpp): Can only deal with exactly one localisation hypothesis.  Found: " 
+                << localiseData.hypotheses.size() << endl;
+            return false;
+        }
+
+        // Ellipse of position uncertainty
+        orcamisc::Cov2d posEll(localiseData.hypotheses[0].cov.xx,
+                               localiseData.hypotheses[0].cov.xy,
+                               localiseData.hypotheses[0].cov.yy );
+
+        double a,b,t;
+        posEll.ellipse(a,b,t);
+
+        // Find larger of two components
+        double posStDev = a > b ? sqrt(a) : sqrt(b);
+
+        if(posStDev > maxPositionSd )
+        {
+            cout << "WARNING(handler.cpp)::calcPose(): position std dev " << posStDev << " m is too big." << endl;
+            return false;
+        }
+
+        // check heading uncertainty
+        double headingStdDev = sqrt(localiseData.hypotheses[0].cov.tt);
+
+        if( headingStdDev > maxHeadingSd )
+        {
+            cout << "WARNING(handler.cpp)::calcPose(): heading std dev " << RAD2DEG(headingStdDev) << " deg is too big." <<endl;
+            return false;
+        }
+
+        // Localisation is certain enough.
+        pose = orcanavutil::Pose( localiseData.hypotheses[0].mean.p.x,
+                                  localiseData.hypotheses[0].mean.p.y,
+                                  localiseData.hypotheses[0].mean.o );
+        return true;
+    }
+
+}
+
+//////////////////////////////////////////////////////////////////////
 
 Handler::Handler( const orcaice::Context &context )
     :   context_(context),
@@ -171,8 +226,7 @@ Handler::run()
 {
 
 	RangeScanner2dDataPtr rangeScan = new RangeScanner2dData;
-	Localise2dData pose;
-	OgFusionData obs;
+	Localise2dData localiseData;
 
     //
     // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
@@ -195,9 +249,7 @@ Handler::run()
                 
             try
             {
-                //TODO: Implement getDataAtTime locally
-                pose=localise2dPrx_->getData();
-//                 pose=localise2dPrx_->getDataAtTime(rangeScan->timeStamp);
+                localiseData = localise2dPrx_->getData();
             }
             catch( orca::DataNotExistException e )
             {
@@ -207,12 +259,23 @@ Handler::run()
                 throw;
             }
     
-            laser2Og_->process(pose,*rangeScan);
-            laser2Og_->getObs(obs.observation);
-            obs.timeStamp = rangeScan->timeStamp;
+            // TODO: could be more accurate by interpolating here...
+            // TODO: add laser offset
+            orcanavutil::Pose pose;
+            bool isPoseClear = calcPose( localiseData,
+                                         pose,
+                                         laser2Og_->positionStdDevMax(),
+                                         laser2Og_->headingStdDevMax() );
             
-            //send out OgFusionData
-            ogFusionPrx_->setData(obs);
+            if ( isPoseClear )
+            {
+                OgFusionData obs;
+                obs.observation = laser2Og_->process(pose,*rangeScan);
+                obs.timeStamp   = rangeScan->timeStamp;
+            
+                //send out OgFusionData
+                ogFusionPrx_->setData(obs);
+            }
             
         }   // end of try
         catch ( orca::DataNotExistException e )

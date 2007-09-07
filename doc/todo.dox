@@ -121,6 +121,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Gps2Localise2d, FaithLocaliser, SimLocaliser
     - get vehicle description from odometry interface and relay to localise2d (Tobi)
 
+- OgNode/Laser2Og (alex b)
+  - big cleanup.  fixed problem where skinny objects are missed.
+
 @par Updated utilities
 
 - Orcaview2d
@@ -161,6 +164,13 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - libOrcaLogFactory
   - added replayer for DriveBicycle interface (ben u)
   - fixed bug which led to unbounded growth in internal buffer sizes in all replayers (michael m)
+
+- libOrcaOgMap (alex b)
+  - use doubles instead of floats to represent world coords
+  - map orcaogmap::OgMap a specific instance of the more general orcaogmap::GenericMap
+
+- libOrcaObj (alex b)
+  - mathdefs.h: changed CHECK_LIMITS to CLIP_TO_LIMITS.
 
 @par Removed
 

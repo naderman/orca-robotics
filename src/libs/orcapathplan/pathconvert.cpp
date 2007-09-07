@@ -105,7 +105,7 @@ convertAndAppend( const orcaogmap::OgMap  &ogMap,
                   orca::PathPlanner2dData &output,
                   double                   firstHeading)
 {
-    float worldX, worldY;
+    double worldX, worldY;
     orca::Waypoint2d wp;
     orcaice::setInit( wp );
 
@@ -132,7 +132,7 @@ convertAndAppend( const orcaogmap::OgMap               &ogMap,
                   double                                firstHeading)
 {
     
-    float worldX, worldY;
+    double worldX, worldY;
     orca::Waypoint2d wp;
     orcaice::setInit( wp );
 

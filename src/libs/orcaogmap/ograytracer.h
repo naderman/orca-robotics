@@ -10,7 +10,7 @@
 #ifndef OGRAYTRACER_H
 #define OGRAYTRACER_H
 
-#include <orcaogmap/ogmaputils.h>
+#include <orcaogmap/ogmap.h>
 
 namespace orcaogmap {
 

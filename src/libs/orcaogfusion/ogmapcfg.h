@@ -10,7 +10,7 @@
 #ifndef OG_MAP_CFG_H
 #define OG_MAP_CFG_H
 
-namespace ogfusion{
+namespace ogfusion {
 
 typedef struct
 {
@@ -22,7 +22,7 @@ typedef struct
     double mapOriginY;
     double mapOrientation;
 
-}MapConfig;
+} MapConfig;
 
 }
 #endif

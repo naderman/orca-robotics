@@ -51,8 +51,8 @@ int main( int argc, char **argv )
 //     internalMap2.gridCell( 10, 10 ) = 133;
     
     // compare
-    unsigned char cell1;
-    unsigned char cell2;
+    unsigned char cell1=0;
+    unsigned char cell2=0;
     bool ret1;
     bool ret2;
     

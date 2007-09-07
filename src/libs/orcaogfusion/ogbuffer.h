@@ -25,6 +25,16 @@ namespace ogfusion{
 class OgBuffer
 {
 public:
+
+    // What to do when we try to insert an element that's already there
+    enum ReplacementPolicy {
+        PolicyReplaceLikelihood, // Most recent takes precedence
+        PolicyAddLikelihood,     // Fuse the two
+        PolicyMaxLikelihood      // Take the maximum likelihood of occupancy
+    };
+
+    ////////////////////////////////////////
+
     OgBuffer();
     ~OgBuffer();
 
@@ -35,8 +45,7 @@ public:
     orca::OgCellLikelihood& begin();
     orca::OgCellLikelihood& end();
 
-    orca::OgCellLikelihood& insertAdd(const int ind, orca::OgCellLikelihood& Obs );
-    orca::OgCellLikelihood& insertReplace(const int ind, orca::OgCellLikelihood& Obs );
+    orca::OgCellLikelihood& insert( int ind, const orca::OgCellLikelihood &obs, ReplacementPolicy policy );
 
     void erase( const int ind ) {};
     void eraseFront();
@@ -46,6 +55,8 @@ public:
     void popBack( orca::OgCellLikelihood& obs );
 
     void operator[] (const int ) const {};
+
+    const std::map<int,orca::OgCellLikelihood> &bufferAsMap() const { return buffer_; }
 
 private:
 

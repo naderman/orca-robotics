@@ -25,26 +25,9 @@ ogfusion::add (const orca::OgCellLikelihood& f, const orca::OgCellLikelihood& g 
     orca::OgCellLikelihood out;
     out.x=f.x;
     out.y=f.y;
-    out.likelihood = d / (2.0*d + 1.0 - f.likelihood - g.likelihood );
+    double resultLikelihood = d / (2.0*d + 1.0 - f.likelihood - g.likelihood );
 
-    out.likelihood = CHECK_LIMITS(ogLimitHighD, out.likelihood, ogLimitLowD);
+    CLIP_TO_LIMITS(ogLimitLowD, resultLikelihood, ogLimitHighD);
+    out.likelihood = resultLikelihood;
     return out;
-}
- 
-int 
-ogfusion::add (orcaogmap::OgMap& m, const orca::OgCellLikelihood& f )
-{
-    unsigned char cell;
-    if(!m.tryGridCell( f.x, f.y, cell ))
-        return -1;
-
-    double g = (double)cell/254.0;
-    double d = f.likelihood * g;
-    double out = d / (2.0*d + 1.0 - f.likelihood - g );
-
-    unsigned char out_uc = (unsigned char)floor(out*254.0+0.5);
-    // do not allow to reach "0" or "1"
-    m.gridCell( f.x, f.y ) = CHECK_LIMITS(ogLimitHighUC, out_uc, ogLimitLowUC);
-
-    return 0;
 }

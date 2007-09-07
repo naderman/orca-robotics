@@ -16,8 +16,7 @@
 
 #include <orca/ogfusion.h>
 #include <orcaogmap/orcaogmap.h>
-#include <orcaogfusion/orcaogfusion.h>
-#include "ogmapI.h"
+#include <orcaifaceimpl/ogmapiface.h>
 
 namespace ognode
 {
@@ -25,19 +24,20 @@ namespace ognode
 class Handler : public orcaice::Thread
 {
 public:
-    Handler(OgMapI& OgMapInterface,
-            orcaice::Buffer<orca::OgFusionData>& OgFusionDataBuffer,
-            orcaogmap::OgMap& localMap_,
-            const orcaice::Context & context);
+    Handler( const orcaice::Context              &context);
     ~Handler();
 
     virtual void run();
 private:
-    OgMapI& ogMapInterface_;
 
-    orcaice::Buffer<orca::OgFusionData>& OgFusionDataBuffer_;
+    void init();
 
-    orcaogmap::OgMap& localMap_;
+    Ice::ObjectPtr                      ogFusionObjPtr_;
+    orcaifaceimpl::OgMapIfacePtr        ogMapIface_;
+    orcaice::Buffer<orca::OgFusionData> ogFusionDataBuffer_;
+
+    // Representt he occupancy certainty values using doubles internally.
+    orcaogmap::GenericMap<double> internalMap_;
 
     orcaice::Context context_;
 };

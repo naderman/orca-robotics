@@ -41,10 +41,10 @@ public:
 
 void testBasic( std::ostream &s )
 {
-    orcaogmap::OgMap theMap;
-    theMap.offset().o = 0;
-    theMap.reallocate( 20, 20 );
-    theMap.fill( 0 );
+    orcaogmap::OgMap theMap( 20, 20,
+                             0, 0, 0,
+                             0.1, 0.1,
+                             0 );
 
     MarkCellTracer t(theMap);
     OgRayTracer<MarkCellTracer> rayTracer( t );
@@ -65,10 +65,10 @@ void testBasic( std::ostream &s )
 
 void testBorders( std::ostream &s )
 {
-    orcaogmap::OgMap theMap;
-    theMap.offset().o = 0;
-    theMap.reallocate( 20, 20 );
-    theMap.fill( 0 );
+    orcaogmap::OgMap theMap( 20, 20,
+                             0, 0, 0,
+                             0.1, 0.1,
+                             0 );
 
     MarkCellTracer t(theMap);
     OgRayTracer<MarkCellTracer> rayTracer( t );
@@ -93,10 +93,10 @@ void testBorders( std::ostream &s )
 
 void testLos()
 {
-    orcaogmap::OgMap theMap;
-    theMap.offset().o = 0;
-    theMap.reallocate( 20, 20 );
-    theMap.fill( 0 );
+    orcaogmap::OgMap theMap( 20, 20,
+                             0, 0, 0,
+                             0.1, 0.1,
+                             0 );
 
     OgLosTracer losTracer( theMap );
 

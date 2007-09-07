@@ -27,16 +27,19 @@ namespace ognode
 class OgFusionI : public orca::OgFusion
 {
 public:
-    OgFusionI(orca::OgFusionConfig& config, orcaice::Buffer<orca::OgFusionData> &OgFusionDataBuffer);
+    OgFusionI( orca::OgFusionConfig &config, 
+               orcaice::Buffer<orca::OgFusionData> &OgFusionDataBuffer);
+
     virtual void setData(const orca::OgFusionData&, const Ice::Current&);
-    virtual orca::OgFusionConfig getConfig(const ::Ice::Current& ) const;
+    virtual orca::OgFusionConfig getConfig(const ::Ice::Current &) const;
+
 private:
+
     //config
     orca::OgFusionConfig config_;
 
     //buffer
-    orcaice::Buffer<orca::OgFusionData>& ogFusionDataBuffer_;
-
+    orcaice::Buffer<orca::OgFusionData> &ogFusionDataBuffer_;
 
 };
 

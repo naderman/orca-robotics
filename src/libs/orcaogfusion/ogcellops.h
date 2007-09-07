@@ -23,10 +23,6 @@ namespace ogfusion{
     //! Fuses two probability distributions and performs normalization.
     orca::OgCellLikelihood add(const orca::OgCellLikelihood& f, const orca::OgCellLikelihood& g );
 
-    //! Fuses two a cell from a map with likelihood performing normalization.
-    //! Returns -1 if failed else 0
-    int add(orcaogmap::OgMap& m, const orca::OgCellLikelihood& f );
-
 }
  
 #endif

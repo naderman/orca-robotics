@@ -12,7 +12,7 @@
 #define ORCA2_CELL2D_UTIL_H
 
 #include "cell2d.h"
-#include <orcaogmap/ogmaputils.h>
+#include <orcaogmap/ogmap.h>
 
 namespace orcapathplan
 {

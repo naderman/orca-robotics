@@ -97,7 +97,7 @@ SkeletonGraphicsI::drawSkel( const orcaogmap::OgMap           &ogMap,
         
     for (unsigned int i=0; i<denseSkelToDisplay.size(); i++ )
     {
-        float worldX, worldY;
+        double worldX, worldY;
         ogMap.getWorldCoords( denseSkelToDisplay[i].x(),
                               denseSkelToDisplay[i].y(),
                               worldX,
@@ -137,7 +137,7 @@ SkeletonGraphicsI::drawSparseSkel( const orcaogmap::OgMap           &ogMap,
         for ( unsigned int j=0; j < nodes.size(); j++ )
         {
             const orcapathplan::SparseSkelNode *node = nodes[j];
-            float nodeX, nodeY;
+            double nodeX, nodeY;
 
             // draw node
             ogMap.getWorldCoords( node->pos.x(), node->pos.y(), nodeX, nodeY );
@@ -151,7 +151,7 @@ SkeletonGraphicsI::drawSparseSkel( const orcaogmap::OgMap           &ogMap,
             for ( unsigned int k=0; k < node->arcs.size(); k++ )
             {
                 const orcapathplan::SparseSkelArc *arc = node->arcs[k];
-                float toX, toY;
+                double toX, toY;
                 ogMap.getWorldCoords( arc->toNode->pos.x(), arc->toNode->pos.y(), toX, toY );
                 p.drawLine( QLineF( nodeX, nodeY, toX, toY ) );
 

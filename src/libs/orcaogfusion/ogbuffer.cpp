@@ -26,10 +26,8 @@ OgBuffer::~OgBuffer()
 {	
 }
 
-/*!
-    No normalization?
-*/
-orca::OgCellLikelihood& OgBuffer::insertAdd( const int ind, orca::OgCellLikelihood& feature )
+orca::OgCellLikelihood& 
+OgBuffer::insert( const int ind, const orca::OgCellLikelihood &feature, ReplacementPolicy policy )
 {
     // check if the element is already in the list
     map<int,orca::OgCellLikelihood>::iterator it = buffer_.find( ind );
@@ -45,32 +43,25 @@ orca::OgCellLikelihood& OgBuffer::insertAdd( const int ind, orca::OgCellLikeliho
     }
     else  // element with specified key already exists
     {
-	// add new info to the existing feature (normalize or not?)
-        //TODO FUSION
-	it->second=ogfusion::add(it->second, feature );
-    }
-    
-    return it->second;
-}
-
-orca::OgCellLikelihood& OgBuffer::insertReplace(const int ind, orca::OgCellLikelihood& feature )
-{
-    // check if the element is already in the list
-    map<int,orca::OgCellLikelihood>::iterator it = buffer_.find( ind );
-    //pair<map<int,OgFeature>::iterator,bool> that;
-    
-    if ( it == buffer_.end() ) 	// element with specified key does not exist
-    {
-        //buffer_.insert( make_pair( feature->index(),*feature ) );
-        
-        pair<map<int,orca::OgCellLikelihood>::iterator,bool> that;
-        that = buffer_.insert( make_pair( ind, feature ) );
-        it = that.first;
-    }
-    else  // element with specified key already exists
-    {
-        // replace existing feature
-        it->second = feature;
+        if ( policy == PolicyReplaceLikelihood )
+        {
+            // replace existing feature
+            it->second = feature;
+        }
+        else if ( policy == PolicyAddLikelihood )
+        {
+            // add new info to the existing feature (normalize or not?)
+            it->second = ogfusion::add(it->second, feature );
+        }
+        else if ( policy == PolicyMaxLikelihood )
+        {
+            it->second.likelihood = max( it->second.likelihood, 
+                                         feature.likelihood );
+        }
+        else
+        {
+            assert( false && "Unknown policy" );
+        }
     }
     
     return it->second;

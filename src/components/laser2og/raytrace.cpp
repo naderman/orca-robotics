@@ -12,7 +12,7 @@
 #include <orca/bros1.h>
 
 #include <orcapathplan/orcapathplan.h>
-#include <orcaogmap/ogmaputils.h>
+#include <orcaogmap/ogmap.h>
 
 #include <orcaobj/mathdefs.h>
 

@@ -1,79 +1,11 @@
-/*
- * Orca Project: Components for robotics 
- *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp, George Mathews
- *
- * This copy of Orca is licensed to you under the terms described in the
- * ORCA_LICENSE file included in this distribution.
- *
- */
-#include "ogmaputils.h"
-#include <string>
-#include <sstream>
+#include "ogmap.h"
 #include <iostream>
-#include <cmath>
+#include <sstream>
 #include <orcaobj/mathdefs.h>
 
 using namespace std;
 
 namespace orcaogmap {
-
-float OgMap::worldXCoord( int gridX ) const
-{
-    return float(offset_.p.x + (gridX+0.5)*metresPerCellX_);
-}
-        
-float OgMap::worldYCoord( int gridY ) const
-{
-    return float(offset_.p.y + (gridY+0.5)*metresPerCellY_);
-}
-
-void OgMap::getWorldCoords( int gridX, int gridY, float &worldX, float &worldY ) const
-{
-    // Todo: handle non-zero orientation.
-    assert(offset_.o == 0.0 );
-
-    worldX = worldXCoord( gridX );
-    worldY = worldYCoord( gridY );
-}
-
-void OgMap::getCellIndices( float worldX, float worldY, int &gridX, int &gridY ) const
-{
-    gridX = worldToIndexX( worldX );
-    gridY = worldToIndexY( worldY );
-}
-
-
-void OgMap::reallocate( int numCellsX, int numCellsY )
-{
-    numCellsX_ = numCellsX;
-    numCellsY_ = numCellsY;
-    data_.resize( numCellsX_ * numCellsY_ );
-}
-
-
-void OgMap::fill( unsigned char cellValue )
-{
-    assert( numCellsX_*numCellsY_ == (int) (data_.size()) );
-    memset( &(data_[0]), cellValue, numCellsX_*numCellsY_*sizeof(char) );
-}
-
-bool OgMap::tryGridCell( int indX, int indY, unsigned char & cell ) const
-{
-    float worldX, worldY;
-    getWorldCoords( indX, indY, worldX, worldY );
-    return tryWorldCell( worldX, worldY, cell);
-}
-
-bool OgMap::tryWorldCell( float worldX, float worldY, unsigned char & cell ) const
-{
-    if ( coordsWithinMap( worldX, worldY ) == true )
-    {
-        cell = worldCell( worldX, worldY );
-        return true;
-    }
-    return false;
-}
 
 std::string toText( const OgMap &map )
 {
@@ -291,15 +223,5 @@ std::string toString(const Frame2d &f)
     return ss.str();
 }
 
-}
-
-std::ostream &operator<<( std::ostream &s, const orcaogmap::OgMap &o )
-{
-    s << " OgMap: \n"
-      << "\toffset:        [" << o.offset().p.x << ", " << o.offset().p.y << ", " << o.offset().o*180.0/M_PI << "]\n"
-      << "\tnumCells:      [" << o.numCellsX() << ", " << o.numCellsY() << "]\n"
-      << "\tmetresPerCell: [" << o.metresPerCellX() << ", " << o.metresPerCellY() << "]\n";
-
-    return s;
 }
 

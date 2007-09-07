@@ -18,9 +18,6 @@
 #include <orcaobj/mathdefs.h>
 
 #include <orcapathplan/orcapathplan.h>
-#include <orcaogfusion/orcaogfusion.h>
-
-#include <orcamisc/cov2d.h>
 
 #include "laser2og.h"
 #include "ogsensormodel.h"
@@ -30,7 +27,6 @@ using namespace std;
 using namespace orcapathplan;
 using namespace orca;
 using namespace laser2og;
-using namespace orcamisc;
 
 static float laserScanBearing(const orca::RangeScanner2dData& scan, const int i)
 {
@@ -49,7 +45,7 @@ Laser2Og::Laser2Og(ogfusion::MapConfig& mapConfig, OgLaserModelConfig& sensorCon
     mapOriginY_=mapConfig.mapOriginY;
 
     //copy this other one
-    laserRange_ = sensorConfig.rangeMax;
+    maxLaserRange_ = sensorConfig.rangeMax;
 
     // logical model of occupancy
     sensorModel_ = new OgSensorModel( sensorConfig );
@@ -63,75 +59,39 @@ Laser2Og::~Laser2Og()
 
 
 // NOTE: assumes both POSE in map coordinate system
-int 
-Laser2Og::process( const orca::Localise2dData &sensorPose, const orca::RangeScanner2dData & scan )
+orca::OgObservation
+Laser2Og::process( const orcanavutil::Pose &sensorPose, const orca::RangeScanner2dData &scan )
 {
-    if ( scan.ranges.size() == 0 )
-    {
-        cout << "WARNING(laser2og.cpp)::process(): empty laser scan" << endl;
-        return -1;
-    }
-    if(sensorPose.hypotheses.size() != 1)
-    {
-        cout << "WARNING(laser2og.cpp)::process(): more than one hypothesis. Can't handle this!" << endl;
-        return -1;
-    }
-
-    // Ellipse of position uncertainty
-    Cov2d posEll(sensorPose.hypotheses[0].cov.xx,
-		 sensorPose.hypotheses[0].cov.xy,
-                 sensorPose.hypotheses[0].cov.yy );
-
-    double a,b,t;
-    posEll.ellipse(a,b,t);
-
-    // Find larger of two components
-    double posStDev = a > b ? sqrt(a) : sqrt(b);
-
-    if(posStDev > sensorModel_->posStDevMax() )
-    {
-        cout << "WARNING(laser2og.cpp)::process(): position std dev " << posStDev << " m is too big." << endl;
-        return -1;
-    }
-
-    // check heading uncertainty
-    double hedStdDev = sqrt(sensorPose.hypotheses[0].cov.tt);
-
-    if( hedStdDev > sensorModel_->hedStDevMax() )
-    {
-        cout << "WARNING(laser2og.cpp)::process(): heading std dev " << RAD2DEG(hedStdDev) << " deg is too big." <<endl;
-        return -1;
-    }
-
-
-    //! @todo where to get these settings from?
+    // @todo where to get these settings from?
     const double RAY_EXTENSION = 1.25;
-    
+
+    // holds the set of cell likelihoods 
+    ogfusion::OgBuffer buffer;
+       
     // for each return
     for ( int i=0; i<(int)scan.ranges.size(); i++ )
     {
         // Ignore non-returns
-        if ( scan.ranges[i] >= laserRange_-1e-3 ) continue;
+        if ( scan.ranges[i] >= maxLaserRange_-1e-3 ) continue;
 
         // limit useful range. Note: negative range should be considered an error, but here it's just clipped to 0.
-        double rangeEff = CHECK_LIMITS( laserRange_, scan.ranges[i], 0.0 );
+        double rangeEff = scan.ranges[i];
+        CLIP_TO_LIMITS( 0.0, rangeEff, maxLaserRange_ );
         
         // find (x,y) coordinates of laser return in global
 	    // NOTE!!! : arbitrary 25% overshoot on range.
-        orcaogmap::CartesianPoint2d sensorPosePoint;
-
-        sensorPosePoint.x=sensorPose.hypotheses[0].mean.p.x;
-        sensorPosePoint.y=sensorPose.hypotheses[0].mean.p.y;
-
         orcaogmap::CartesianPoint2d returnPoint;
-        double rayBearing = sensorPose.hypotheses[0].mean.o+laserScanBearing(scan, i );
-        returnPoint.x = sensorPose.hypotheses[0].mean.p.x +
+        double rayBearing = sensorPose.theta() + laserScanBearing(scan, i );
+        returnPoint.x = sensorPose.x() +
             RAY_EXTENSION*rangeEff*cos( rayBearing );
 
-        returnPoint.y = sensorPose.hypotheses[0].mean.p.y +
+        returnPoint.y = sensorPose.y() +
             RAY_EXTENSION*rangeEff*sin( rayBearing );
         
         // find cells crossed by the vehicle-to-return_point ray
+        orcaogmap::CartesianPoint2d sensorPosePoint;
+        sensorPosePoint.x = sensorPose.x();
+        sensorPosePoint.y = sensorPose.y();
         std::vector<Cell2D> ray = rayTrace( sensorPosePoint, returnPoint, mapOriginX_, mapOriginY_, mapResX_, mapResY_ );
 
         //cout<<"Laser2Og::process: traced a ray with "<<ray.size()<<" cells. "<<
@@ -156,58 +116,50 @@ Laser2Og::process( const orca::Localise2dData &sensorPose, const orca::RangeScan
 
             // Distance to a particular cell along the ray.
             // NOTE: use distance from midcell to robot location instead of distance btw cell centers.
-            double dist = orcapathplan::euclideanDistance( sensorPosePoint,  cell2point(currentCell, mapOriginX_, mapOriginY_, mapResX_, mapResY_) );
-            
-            // cell index
-            int currentCellIndex = orcapathplan::sub2ind( currentCell, mapSizeX_, mapSizeY_ );
-            
-            //cout<<"Laser2Og::process: looking up cell ("<<currentCell.x()<<","<<currentCell.y()<<")="<<currentCellIndex<<endl;
+            double dist = orcapathplan::euclideanDistance( sensorPosePoint,
+                                                           cell2point(currentCell,
+                                                                      mapOriginX_,
+                                                                      mapOriginY_,
+                                                                      mapResX_,
+                                                                      mapResY_) );
             
             // =========== LIKELIHOOD ====================
-            // get position varienace in direction of ray
-            //double SPos = sqrt(posEll.rotCov(rayBearing,a,b,t));
-            //double Pzx = sensorModel_->likelihood( dist, rangeEff, SPos , hedStdDev );
+            const double posSD=0, headSD=0;
+            double Pzx = sensorModel_->likelihood( dist, rangeEff, posSD, headSD );
 
-            double Pzx = sensorModel_->likelihood( dist, rangeEff, 0.0 , 0.0 );
-
-            //cout << Pzx <<" ";
-            //cout<<"C:"<<currentCell<<"I:"<<currentCellIndex<<"L:"<<Pzx<<endl;
-            
             currentFeature.likelihood=Pzx;
             currentFeature.x=currentCell.x();
             currentFeature.y=currentCell.y();
 
-            buffer_.insertAdd(currentCellIndex, currentFeature );
+            // cell index
+            int currentCellIndex = orcapathplan::sub2ind( currentCell, mapSizeX_, mapSizeY_ );
+            buffer.insert( currentCellIndex,
+                           currentFeature,
+//                           ogfusion::OgBuffer::PolicyAddLikelihood );
+                           ogfusion::OgBuffer::PolicyMaxLikelihood );
         
         }  // end for each traversed cell
     
     }  // end for each return
     
     
-    //cout<<"Laser2Og::process: current buffer size "<<buffer_.size()<<endl;
-
-    return 0;
+    return getObs( buffer );
 }
 
-int Laser2Og::getObs( orca::OgObservation &obs )
+orca::OgObservation
+Laser2Og::getObs( const ogfusion::OgBuffer &buffer )
 {
-    // empty referenced object
-    obs.clear();
+    orca::OgObservation obs( buffer.size() );
 
-    //sequence.setSize( buffer_.size() );
-    OgCellLikelihood feature;
+    const std::map<int,orca::OgCellLikelihood> &bufferAsMap = buffer.bufferAsMap();
 
-    while ( !buffer_.isEmpty() )
+    int i=0;
+    for ( std::map<int,orca::OgCellLikelihood>::const_iterator it = bufferAsMap.begin();
+          it != bufferAsMap.end();
+          it++ )
     {
-        // pop feature from buffer
-        //buffer_.popFront( &feature );
-        feature = buffer_.begin();
-        
-        obs.push_back(feature);
-
-        // erase feature from buffer
-        buffer_.eraseFront();
+        obs[i++] = it->second;
     }
 
-    return 0;
+    return obs;
 }
