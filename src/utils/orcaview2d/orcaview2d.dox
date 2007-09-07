@@ -94,7 +94,7 @@ Sometimes, it is desirable to interact with many elements at the same time, e.g.
 - Go for all PathFollower2dElementss: F12
 
 @section screenshot Screenshot
-Here's a screenshot of the GUI connected to a few interfaces belonging to two platforms. Robot "hemp" is in focus and thus its GuiElements are displayed in color: they are Laser, Localise2d, and PathPlanner2d. The other platform's GuiElements are grayed out.
+Here's a screenshot of the GUI connected to a few interfaces belonging to two platforms. Robot "hemp" is in focus and thus its GuiElements are displayed in color: they are Laser, Localise2d, and PathFollower2d. The other platform's GuiElements are grayed out.
 
 @image html orcaview_screenshot.png
 
