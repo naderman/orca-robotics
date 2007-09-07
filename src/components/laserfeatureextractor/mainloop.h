@@ -18,7 +18,7 @@
 #include <orca/polarfeature2d.h>
 #include <orca/laserscanner2d.h>
 #include <orcaifaceimpl/polarfeature2diface.h>
-#include <orcaifaceimpl/consumertypes.h>
+#include <orcaifaceimpl/proxiedconsumers.h>
 
 namespace laserfeatures
 {

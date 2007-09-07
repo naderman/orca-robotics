@@ -13,7 +13,7 @@
 
 #include "mainloop.h"
 #include <orcaifaceimpl/localise2diface.h>
-#include <orcaifaceimpl/consumertypes.h>
+#include <orcaifaceimpl/bufferedconsumers.h>
 
 using namespace std;
 using namespace faithlocaliser;

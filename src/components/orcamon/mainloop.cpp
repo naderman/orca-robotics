@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 
 #include "mainloop.h"
-#include <orcaifaceimpl/consumertypes.h>
+#include <orcaifaceimpl/printingconsumers.h>
 
 using namespace std;
 using namespace orcamon;
@@ -70,47 +70,46 @@ MainLoop::walk()
 
     // now that we know the interface type, we can create an appropriate consumer and subscribe ourselves
     orcaifaceimpl::ConsumerSubscriber* consumerSubscriber = 0;
-//     if ( objId=="::orca::LaserScanner2d" || objId=="::orca::RangeScanner2d" )
-//     {
-//         consumerSubscriber = new orcaifaceimpl::PrintingRangeScanner2dConsumerImpl(context_);
-//     }
+    if ( objId=="::orca::LaserScanner2d" || objId=="::orca::RangeScanner2d" )
+    {
+        consumerSubscriber = new orcaifaceimpl::PrintingRangeScanner2dConsumerImpl(context_);
+    }
 //     else if ( objId=="::orca::Imu" )
 //     {
 //         consumerSubscriber = new orcaifaceimpl::PrintingImuConsumerImpl(context_);
 //     }
-//     else if ( objId=="::orca::Localise2d" )
-//     {
-//         consumerSubscriber = new orcaifaceimpl::PrintingLocalise2dConsumerImpl(context_);
-//     }
-//     else if ( objId=="::orca::Localise3d" )
-//     {
-//         consumerSubscriber = new orcaifaceimpl::PrintingLocalise3dConsumerImpl(context_);
-//     }
-//     else if ( objId=="::orca::OgMap" )
-//     {
-//         consumerSubscriber = new orcaifaceimpl::PrintingOgMapConsumerImpl(context_);
-//     }
+    else if ( objId=="::orca::Localise2d" )
+    {
+        consumerSubscriber = new orcaifaceimpl::PrintingLocalise2dConsumerImpl(context_);
+    }
+    else if ( objId=="::orca::Localise3d" )
+    {
+        consumerSubscriber = new orcaifaceimpl::PrintingLocalise3dConsumerImpl(context_);
+    }
+    else if ( objId=="::orca::OgMap" )
+    {
+        consumerSubscriber = new orcaifaceimpl::PrintingOgMapConsumerImpl(context_);
+    }
 //     else if ( objId=="::orca::FeatureMap2d" )
 //     {
 //         consumerSubscriber = new orcaifaceimpl::PrintingFeatureMap2dConsumerImpl(context_);
 //     }
-//     else if ( objId=="::orca::Odometry2d" )
-    if ( objId=="::orca::Odometry2d" )
+    else if ( objId=="::orca::Odometry2d" )
     {
         consumerSubscriber = new orcaifaceimpl::PrintingOdometry2dConsumerImpl(context_);
     }
-//     else if ( objId=="::orca::Odometry3d" )
-//     {
-//         consumerSubscriber = new orcaifaceimpl::PrintingOdometry3dConsumerImpl(context_);
-//     }
+    else if ( objId=="::orca::Odometry3d" )
+    {
+        consumerSubscriber = new orcaifaceimpl::PrintingOdometry3dConsumerImpl(context_);
+    }
 //     else if ( objId=="::orca::Status" )
 //     {
 //         consumerSubscriber = new orcaifaceimpl::PrintingStatusConsumerImpl(context_);
 //     }
-//     else if ( objId=="::orca::Gps" )
-//     {
-//         consumerSubscriber = new orcaifaceimpl::PrintingGpsConsumerImpl(context_);
-//     }
+    else if ( objId=="::orca::Gps" )
+    {
+        consumerSubscriber = new orcaifaceimpl::PrintingGpsConsumerImpl(context_);
+    }
 //     else if ( objId=="::orca::GpsMapGrid" )
 //     {
 //         consumerSubscriber = new orcaifaceimpl::PrintingGpsMapGridConsumerImpl(context_);

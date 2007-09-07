@@ -18,7 +18,7 @@
 #include <orca/localise2d.h>
 #include <orca/gps.h>
 #include <orcaifaceimpl/localise2diface.h>
-#include <orcaifaceimpl/consumertypes.h>
+#include <orcaifaceimpl/proxiedconsumers.h>
 
 namespace gps2localise2d
 {

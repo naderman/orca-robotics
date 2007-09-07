@@ -16,7 +16,7 @@
 #include <orcaice/context.h>
 #include <orcaice/thread.h>
 #include <orcaice/proxy.h>
-#include <orcaifaceimpl/consumertypes.h>
+#include <orcaifaceimpl/proxiedconsumers.h>
 #include <orcalocalnav/speedlimiter.h>
 #include <orcalocalnav/pathmaintainer.h>
 #include <orcalocalnav/clock.h>
