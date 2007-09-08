@@ -179,6 +179,13 @@ public:
                     <<e.what();
                 context_.tracer()->warning( ss.str() );
             }
+            catch ( ... )
+            {
+                std::stringstream ss;
+                ss << "Failed to subscribe for unknown reason. "
+                    <<"Will retry in "<<retryInterval<<"s.";
+                context_.tracer()->warning( ss.str() );
+            }
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
         }
 
