@@ -21,7 +21,7 @@ namespace {
     const char *SUBSYSTEM = "MainLoop";
 }
 
-MainLoop::MainLoop( orcaifaceimpl::LaserScanner2dIface &laserInterface,
+MainLoop::MainLoop( orcaifaceimpl::LaserScanner2dImpl &laserInterface,
                     const Driver::Config               &config,
                     DriverFactory                      &driverFactory,
                     bool                                compensateRoll,

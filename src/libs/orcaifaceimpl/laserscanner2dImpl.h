@@ -8,13 +8,13 @@
  *
  */
 
-#ifndef ORCA2_RANGESCANNER2D_IFACE_H
-#define ORCA2_RANGESCANNER2D_IFACE_H
+#ifndef ORCA2_LASER2D_LASERSCANNER2D_IMPL_H
+#define ORCA2_LASER2D_LASERSCANNER2D_IMPL_H
 
 #include <IceStorm/IceStorm.h>
 
 // include provided interfaces
-#include <orca/rangescanner2d.h>
+#include <orca/laserscanner2d.h>
 
 // utilities
 #include <orcaice/ptrproxy.h>
@@ -29,16 +29,16 @@ namespace orcaifaceimpl {
 //!
 //! Sets up an implementation of the remote interface, and handles remote calls.
 //!
-class RangeScanner2dIface : public IceUtil::Shared
+class LaserScanner2dImpl : public IceUtil::Shared
 {
-friend class RangeScanner2dI;
+friend class LaserScanner2dI;
 
 public:
     //! constructor
-    RangeScanner2dIface( const orca::RangeScanner2dDescription &descr,
-                         const std::string                     &ifaceTag,
+    LaserScanner2dImpl( const orca::RangeScanner2dDescription &descr,
+                         const std::string                     &interfaceTag,
                          const orcaice::Context                &context );
-    ~RangeScanner2dIface();
+    ~LaserScanner2dImpl();
 
     // local interface:
     //! Sets up interface and connects to IceStorm. May throw orcaice::Exceptions.
@@ -49,21 +49,21 @@ public:
     void initInterface( orcaice::Thread* thread, int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
-    void localSet( const orca::RangeScanner2dDataPtr& data );
+    void localSet( const orca::LaserScanner2dDataPtr& data );
 
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
-    void localSetAndSend( const ::orca::RangeScanner2dDataPtr &data );
+    void localSetAndSend( const ::orca::LaserScanner2dDataPtr &data );
 
 private:
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::RangeScanner2dDataPtr     getData() const;
-    ::orca::RangeScanner2dDescription getDescription() const;
-    void subscribe(const ::orca::RangeScanner2dConsumerPrx& );
-    void unsubscribe(const ::orca::RangeScanner2dConsumerPrx& );
+    ::orca::RangeScanner2dDataPtr     internalGetData() const;
+    ::orca::RangeScanner2dDescription internalGetDescription() const;
+    void internalSubscribe(const ::orca::RangeScanner2dConsumerPrx& );
+    void internalUnsubscribe(const ::orca::RangeScanner2dConsumerPrx& );
 
     // Holds the latest data
-    orcaice::PtrProxy<orca::RangeScanner2dDataPtr> dataProxy_;
+    orcaice::PtrProxy<orca::LaserScanner2dDataPtr> dataProxy_;
 
     orca::RangeScanner2dDescription descr_;
 
@@ -75,10 +75,10 @@ private:
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
 
-    std::string        ifaceTag_;
+    std::string        interfaceTag_;
     orcaice::Context   context_;
 };
-typedef IceUtil::Handle<RangeScanner2dIface> RangeScanner2dIfacePtr;
+typedef IceUtil::Handle<LaserScanner2dImpl> LaserScanner2dImplPtr;
 
 } // namespace
 

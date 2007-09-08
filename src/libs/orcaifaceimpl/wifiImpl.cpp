@@ -1,7 +1,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include "util.h"
-#include "wifiiface.h"
+#include "wifiImpl.h"
 
 using namespace std;
 
@@ -16,64 +16,64 @@ class WifiI : virtual public ::orca::Wifi
 {
 public:
 
-    WifiI( WifiIface &iface )
-        : iface_(iface) {}
+    WifiI( WifiImpl &impl )
+        : impl_(impl) {}
 
     // remote functions
 
     virtual ::orca::WifiData getData(const Ice::Current&) const
-        { return iface_.getData(); }
+        { return impl_.internalGetData(); }
 
     virtual void subscribe(const ::orca::WifiConsumerPrx& consumer,
                            const Ice::Current&)
-        { iface_.subscribe( consumer ); }
+        { impl_.internalSubscribe( consumer ); }
 
     virtual void unsubscribe(const ::orca::WifiConsumerPrx& consumer,
                  const Ice::Current&)
-        { iface_.unsubscribe( consumer ); }
+        { impl_.internalUnsubscribe( consumer ); }
 
 private:
-    WifiIface &iface_;
+    WifiImpl &impl_;
 };
 
 //////////////////////////////////////////////////////////////////////
 
-WifiIface::WifiIface( const std::string       &ifaceTag, 
+WifiImpl::WifiImpl( const std::string       &interfaceTag, 
                       const orcaice::Context  &context  )
-    : ifaceTag_(ifaceTag),
+    : interfaceTag_(interfaceTag),
       context_(context)
 {
 }
 
-WifiIface::~WifiIface()
+WifiImpl::~WifiImpl()
 {
     tryRemovePtr( context_, ptr_ );
 }
 
 void
-WifiIface::initInterface()
+WifiImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithTag<orca::WifiConsumerPrx>
-        ( context_, consumerPrx_, ifaceTag_ );
+        ( context_, consumerPrx_, interfaceTag_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new WifiI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_ );
+    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_ );
 }
 
 
 ::orca::WifiData
-WifiIface::getData() const
+WifiImpl::internalGetData() const
 {
-    context_.tracer()->debug( "WifiIface::getData()", 5 );
+    context_.tracer()->debug( "WifiImpl::internalGetData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
         std::stringstream ss;
-        ss << "No data available! (ifaceTag="<<ifaceTag_<<")";
+        ss << "No data available! (interfaceTag="<<interfaceTag_<<")";
         throw orca::DataNotExistException( ss.str() );
     }
 
@@ -83,9 +83,9 @@ WifiIface::getData() const
 }
 
 void
-WifiIface::subscribe(const ::orca::WifiConsumerPrx& subscriber)
+WifiImpl::internalSubscribe(const ::orca::WifiConsumerPrx& subscriber)
 {   
-    context_.tracer()->debug( "WifiIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "WifiImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     try {
         topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
@@ -96,21 +96,21 @@ WifiIface::subscribe(const ::orca::WifiConsumerPrx& subscriber)
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
-        ss <<"WifiIface::subscribe: failed to subscribe: "<< e << endl;
+        ss <<"WifiImpl::internalSubscribe: failed to subscribe: "<< e << endl;
         context_.tracer()->warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
 
 void
-WifiIface::unsubscribe(const ::orca::WifiConsumerPrx& subscriber)
+WifiImpl::internalUnsubscribe(const ::orca::WifiConsumerPrx& subscriber)
 {
-    context_.tracer()->debug( "WifiIface::unsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "WifiImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 
 void
-WifiIface::localSetAndSend( const orca::WifiData& data )
+WifiImpl::localSetAndSend( const orca::WifiData& data )
 {
     dataProxy_.set( data );
     
@@ -120,7 +120,7 @@ WifiIface::localSetAndSend( const orca::WifiData& data )
           consumerPrx_,
           data,
           topicPrx_,
-          ifaceTag_ );
+          interfaceTag_ );
 }
 
 }

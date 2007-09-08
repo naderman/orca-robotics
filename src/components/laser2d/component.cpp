@@ -104,7 +104,7 @@ Component::start()
     // EXTERNAL PROVIDED INTERFACE
     //
 
-    laserInterface_ = new orcaifaceimpl::LaserScanner2dIface( descr,
+    laserInterface_ = new orcaifaceimpl::LaserScanner2dImpl( descr,
                                                               "LaserScanner2d",
                                                               context() );
 

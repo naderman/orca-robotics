@@ -14,7 +14,7 @@
 #include <orcaice/component.h>
 #include <orcaimagegrabber/imagegrabber.h>
 // implementations of Ice objects
-#include <orcaifaceimpl/cameraiface.h>
+#include <orcaifaceimpl/cameraImpl.h>
 
 namespace imageserver {
 
@@ -42,7 +42,7 @@ private:
     orcaimage::ImageGrabber* imageGrabber_; 
 
     // Provided interface
-    orcaifaceimpl::CameraIfacePtr cameraInterface_;
+    orcaifaceimpl::CameraImplPtr cameraInterface_;
 };
 
 }

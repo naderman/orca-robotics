@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaifaceimpl/laserscanner2diface.h>
+#include <orcaifaceimpl/laserscanner2dImpl.h>
 
 #include "laserscanner2dsim.h"
 
@@ -37,8 +37,8 @@ LaserScanner2dSim::run()
 //     descr.startAngle      = cfg.startAngle;
 //     descr.numberOfSamples = cfg.numberOfSamples;
 
-    orcaifaceimpl::LaserScanner2dIfacePtr iface;
-    iface = new orcaifaceimpl::LaserScanner2dIface( descr, tag_, context_ );
+    orcaifaceimpl::LaserScanner2dImplPtr iface;
+    iface = new orcaifaceimpl::LaserScanner2dImpl( descr, tag_, context_ );
     iface->initInterface( this );
 
     while ( isActive() )

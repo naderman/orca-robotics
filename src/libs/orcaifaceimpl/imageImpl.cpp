@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include "imageiface.h"
+#include "imageImpl.h"
 #include "util.h"
 
 using namespace std;
@@ -25,78 +25,78 @@ namespace orcaifaceimpl {
 class ImageI : public orca::Image
 {
 public:
-    ImageI( ImageIface &iface )
-        : iface_(iface) {}
+    ImageI( ImageImpl &impl )
+        : impl_(impl) {}
 
     // remote interface
 
     virtual ::orca::ImageDataPtr getData(const ::Ice::Current& )
-        { return iface_.getData(); }
+        { return impl_.internalGetData(); }
 
     virtual ::orca::ImageDescription getDescription(const ::Ice::Current& )
-        { return iface_.getDescription(); }
+        { return impl_.internalGetDescription(); }
 
     virtual void subscribe(const ::orca::ImageConsumerPrx& consumer,
                            const ::Ice::Current& = ::Ice::Current())
-        { iface_.subscribe( consumer ); }
+        { impl_.internalSubscribe( consumer ); }
 
     virtual void unsubscribe(const ::orca::ImageConsumerPrx& consumer,
                              const ::Ice::Current& = ::Ice::Current())
-        { iface_.subscribe( consumer ); }
+        { impl_.internalSubscribe( consumer ); }
 
 private:
-    ImageIface &iface_;
+    ImageImpl &impl_;
 };
 
 //////////////////////////////////////////////////////////////////////
 
-ImageIface::ImageIface( const orca::ImageDescription& descr,
-                          const std::string& ifaceTag,
+ImageImpl::ImageImpl( const orca::ImageDescription& descr,
+                          const std::string& interfaceTag,
                           const orcaice::Context& context )
     : descr_(descr),
-      ifaceTag_(ifaceTag),
+      interfaceTag_(interfaceTag),
       context_(context)
 {
 }
 
-ImageIface::~ImageIface()
+ImageImpl::~ImageImpl()
 {
     tryRemovePtr( context_, ptr_ );
 }
 
 void
-ImageIface::initInterface()
+ImageImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithTag<orca::ImageConsumerPrx>
-        ( context_, consumerPrx_, ifaceTag_ );
+        ( context_, consumerPrx_, interfaceTag_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new ImageI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_ );
+    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_ );
 }
 
 void 
-ImageIface::initInterface( orcaice::Thread* thread, int retryInterval )
+ImageImpl::initInterface( orcaice::Thread* thread, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithTag<orca::ImageConsumerPrx>
-        ( context_, consumerPrx_, ifaceTag_, "*", thread, retryInterval );
+        ( context_, consumerPrx_, interfaceTag_, "*", thread, retryInterval );
 
     ptr_ = new ImageI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_, thread, retryInterval );
+    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_, thread, retryInterval );
 }
 
 ::orca::ImageDataPtr 
-ImageIface::getData() const
+ImageImpl::internalGetData() const
 {
-    context_.tracer()->debug( "ImageIface::getData()", 10 );
+    context_.tracer()->debug( "ImageImpl::internalGetData()", 10 );
 
     if ( dataProxy_.isEmpty() )
     {
         std::stringstream ss;
-        ss << "No data available! (ifaceTag="<<ifaceTag_<<")";
+        ss << "No data available! (interfaceTag="<<interfaceTag_<<")";
         throw orca::DataNotExistException( ss.str() );
     }
 
@@ -106,15 +106,15 @@ ImageIface::getData() const
 }
 
 ::orca::ImageDescription
-ImageIface::getDescription() const
+ImageImpl::internalGetDescription() const
 {
     return descr_;
 }
 
 void 
-ImageIface::subscribe(const ::orca::ImageConsumerPrx& subscriber)
+ImageImpl::internalSubscribe(const ::orca::ImageConsumerPrx& subscriber)
 {
-    context_.tracer()->debug( "ImageIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "ImageImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     try {
         topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
@@ -125,27 +125,27 @@ ImageIface::subscribe(const ::orca::ImageConsumerPrx& subscriber)
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
-        ss <<"ImageIface::subscribe: failed to subscribe: "<< e << endl;
+        ss <<"ImageImpl::internalSubscribe: failed to subscribe: "<< e << endl;
         context_.tracer()->warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
 
 void 
-ImageIface::unsubscribe(const ::orca::ImageConsumerPrx& subscriber)
+ImageImpl::internalUnsubscribe(const ::orca::ImageConsumerPrx& subscriber)
 {
-    context_.tracer()->debug( "ImageIface::unsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "ImageImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 
 void
-ImageIface::localSet( const orca::ImageDataPtr& data )
+ImageImpl::localSet( const orca::ImageDataPtr& data )
 {
     dataProxy_.set( data );
 }
 
 void
-ImageIface::localSetAndSend( const orca::ImageDataPtr& data )
+ImageImpl::localSetAndSend( const orca::ImageDataPtr& data )
 {
 //     cout<<"TRACE(ImageIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
     dataProxy_.set( data );
@@ -156,7 +156,7 @@ ImageIface::localSetAndSend( const orca::ImageDataPtr& data )
         consumerPrx_,
         data,
         topicPrx_,
-        ifaceTag_ );
+        interfaceTag_ );
 }
 
 } // namespace

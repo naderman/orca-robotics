@@ -30,9 +30,9 @@ class MainLoop : public orcaice::Thread
 
 public:
 
-    MainLoop( GpsIfacePtr         &gpsInterface,
-              GpsMapGridIfacePtr  &gpsMapGridInterface,
-              GpsTimeIfacePtr     &gpsTimeInterface,
+    MainLoop( GpsImplPtr         &gpsInterface,
+              GpsMapGridImplPtr  &gpsMapGridInterface,
+              GpsTimeImplPtr     &gpsTimeInterface,
               Driver              *hwDriver,
               const orca::Frame3d &antennaOffset,
               orcaice::Context     current );
@@ -42,9 +42,9 @@ public:
 
 private:
 
-    GpsIfacePtr        &gpsInterface_;
-    GpsMapGridIfacePtr &gpsMapGridInterface_;
-    GpsTimeIfacePtr    &gpsTimeInterface_;
+    GpsImplPtr        &gpsInterface_;
+    GpsMapGridImplPtr &gpsMapGridInterface_;
+    GpsTimeImplPtr    &gpsTimeInterface_;
 
     Driver *hwDriver_;
 

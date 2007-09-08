@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaifaceimpl/util.h>
-#include "polarfeature2diface.h"
+#include "polarfeature2dImpl.h"
 
 using namespace std;
 using namespace orca;
@@ -26,65 +26,65 @@ namespace orcaifaceimpl {
 class PolarFeature2dI : public virtual orca::PolarFeature2d
 {
 public:
-    PolarFeature2dI( PolarFeature2dIface &iface )
-        : iface_(iface) {}
+    PolarFeature2dI( PolarFeature2dImpl &impl )
+        : impl_(impl) {}
 
     //
     // Remote calls:
     //
 
     virtual ::orca::PolarFeature2dDataPtr     getData(const ::Ice::Current& ) const
-        { return iface_.getData(); }
+        { return impl_.internalGetData(); }
 
     virtual void subscribe(const ::orca::PolarFeature2dConsumerPrx& consumer,
                            const ::Ice::Current& = ::Ice::Current())
-        { iface_.subscribe( consumer ); }
+        { impl_.internalSubscribe( consumer ); }
 
     virtual void unsubscribe(const ::orca::PolarFeature2dConsumerPrx& consumer,
                              const ::Ice::Current& = ::Ice::Current())
-        { iface_.unsubscribe( consumer ); }
+        { impl_.internalUnsubscribe( consumer ); }
 
 private:
-    PolarFeature2dIface &iface_;
+    PolarFeature2dImpl &impl_;
 };
 
 //////////////////////////////////////////////////////////////////////
 
-PolarFeature2dIface::PolarFeature2dIface( const std::string             &ifaceTag,
+PolarFeature2dImpl::PolarFeature2dImpl( const std::string             &interfaceTag,
                                   const orcaice::Context        &context )
-    : ifaceTag_(ifaceTag),
+    : interfaceTag_(interfaceTag),
       context_(context)
 {
 }
 
-PolarFeature2dIface::~PolarFeature2dIface()
+PolarFeature2dImpl::~PolarFeature2dImpl()
 {
     tryRemovePtr( context_, ptr_ );
 }
 
 void
-PolarFeature2dIface::initInterface()
+PolarFeature2dImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithTag<orca::PolarFeature2dConsumerPrx>
-        ( context_, consumerPrx_, ifaceTag_ );
+        ( context_, consumerPrx_, interfaceTag_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new PolarFeature2dI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_ );
+    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_ );
 }
 
 orca::PolarFeature2dDataPtr 
-PolarFeature2dIface::getData() const
+PolarFeature2dImpl::internalGetData() const
 {
-    context_.tracer()->debug( "PolarFeature2dIface::getData()", 5 );
+    context_.tracer()->debug( "PolarFeature2dImpl::internalGetData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
         std::stringstream ss;
-        ss << "No data available! (ifaceTag="<<ifaceTag_<<")";
+        ss << "No data available! (interfaceTag="<<interfaceTag_<<")";
         throw orca::DataNotExistException( ss.str() );
     }
 
@@ -97,9 +97,9 @@ PolarFeature2dIface::getData() const
 
 // Subscribe people
 void 
-PolarFeature2dIface::subscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber)
+PolarFeature2dImpl::internalSubscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber)
 {
-    context_.tracer()->debug( "PolarFeature2dIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "PolarFeature2dImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
 
     if ( topicPrx_==0 ) {
         throw orca::SubscriptionFailedException( "null topic proxy." );
@@ -115,7 +115,7 @@ PolarFeature2dIface::subscribe(const ::orca::PolarFeature2dConsumerPrx &subscrib
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
-        ss <<"PolarFeature2dIface::subscribe::failed to subscribe: "<< e << endl;
+        ss <<"PolarFeature2dImpl::internalSubscribe::failed to subscribe: "<< e << endl;
         context_.tracer()->warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
@@ -123,23 +123,23 @@ PolarFeature2dIface::subscribe(const ::orca::PolarFeature2dConsumerPrx &subscrib
 
 // Unsubscribe people
 void 
-PolarFeature2dIface::unsubscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber)
+PolarFeature2dImpl::internalUnsubscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber)
 {
-    context_.tracer()->debug( "PolarFeature2dIface::unsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "PolarFeature2dImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
 
     topicPrx_->unsubscribe( subscriber );
 }
 
 void
-PolarFeature2dIface::localSet( const ::orca::PolarFeature2dDataPtr &data )
+PolarFeature2dImpl::localSet( const ::orca::PolarFeature2dDataPtr &data )
 {
-    // cout << "PolarFeature2dIface::set data: " << orcaice::toString( data ) << endl;
+    // cout << "PolarFeature2dImpl::internalSet data: " << orcaice::toString( data ) << endl;
     
     dataProxy_.set( data );
 }
 
 void
-PolarFeature2dIface::localSetAndSend( const ::orca::PolarFeature2dDataPtr &data )
+PolarFeature2dImpl::localSetAndSend( const ::orca::PolarFeature2dDataPtr &data )
 {
     if ( context_.tracer()->verbosity( orcaice::Tracer::DebugTrace, orcaice::Tracer::ToAny ) >= 5 )
     {
@@ -148,7 +148,7 @@ PolarFeature2dIface::localSetAndSend( const ::orca::PolarFeature2dDataPtr &data 
         context_.tracer()->debug( ss.str(), 5 );
     }
 
-    // cout << "PolarFeature2dIface::set data: " << orcaice::toString( data ) << endl;
+    // cout << "PolarFeature2dImpl::internalSet data: " << orcaice::toString( data ) << endl;
     
     dataProxy_.set( data );
 
@@ -157,7 +157,7 @@ PolarFeature2dIface::localSetAndSend( const ::orca::PolarFeature2dDataPtr &data 
                                                                                      consumerPrx_,
                                                                                      data,
                                                                                      topicPrx_,
-                                                                                     ifaceTag_ );
+                                                                                     interfaceTag_ );
 }
 
 } // namespace

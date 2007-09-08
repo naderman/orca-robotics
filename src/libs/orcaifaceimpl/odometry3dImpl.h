@@ -8,10 +8,10 @@
  *
  */
 
-#ifndef ORCA2_POWER_IFACE_H
-#define ORCA2_POWER_IFACE_H
+#ifndef ORCA2_ODOMETRY3D_IMPL_H
+#define ORCA2_ODOMETRY3D_IMPL_H
 
-#include <orca/power.h>
+#include <orca/odometry3d.h>
 #include <IceStorm/IceStorm.h>
 
 // utilities
@@ -21,38 +21,41 @@
 namespace orcaifaceimpl {
 
 //!
-//! Implements the orca::Power interface: Handles remote calls.
+//! Implements the orca::Odometry3d interface: Handles remote calls.
 //!
-class PowerIface : public IceUtil::Shared
+class Odometry3dImpl : public IceUtil::Shared
 {
-friend class PowerI;
+friend class Odometry3dI;
 
 public:
     //! constructor
-    PowerIface( const std::string& ifaceTag, 
-            const orcaice::Context& context );
-    ~PowerIface();
+    Odometry3dImpl( const orca::VehicleDescription& descr,
+                 const std::string& interfaceTag, 
+                 const orcaice::Context& context );
+    ~Odometry3dImpl();
 
     // local interface:
     //! May throw orcaice::Exceptions.
     void initInterface();
 
     //! A local call which sets the data reported by the interface
-    void localSet( const orca::PowerData& data );
+    void localSet( const orca::Odometry3dData& data );
 
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
-    void localSetAndSend( const orca::PowerData& data );
+    void localSetAndSend( const orca::Odometry3dData& data );
 
 private:
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::PowerData getData() const;
-    void subscribe(const ::orca::PowerConsumerPrx&);
-    void unsubscribe(const ::orca::PowerConsumerPrx&);
+    ::orca::Odometry3dData internalGetData() const;
+    ::orca::VehicleDescription internalGetDescription() const;
+    void internalSubscribe(const ::orca::Odometry3dConsumerPrx&);
+    void internalUnsubscribe(const ::orca::Odometry3dConsumerPrx&);
 
-    orcaice::Proxy<orca::PowerData> dataProxy_;
+    orca::VehicleDescription     descr_;
+    orcaice::Proxy<orca::Odometry3dData> dataProxy_;
 
-    orca::PowerConsumerPrx    consumerPrx_;
+    orca::Odometry3dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted
@@ -61,7 +64,7 @@ private:
     const std::string              tag_;
     orcaice::Context               context_;
 };
-typedef IceUtil::Handle<PowerIface> PowerIfacePtr;
+typedef IceUtil::Handle<Odometry3dImpl> Odometry3dImplPtr;
 
 }
 

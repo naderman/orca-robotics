@@ -8,10 +8,10 @@
  *
  */
 
-#ifndef ORCA2_CAMERA_IFACE_H
-#define ORCA2_CAMERA_IFACE_H
+#ifndef ORCA2_ORCAIFACEIMPL_LOCALISE3D_IMPL_H
+#define ORCA2_ORCAIFACEIMPL_LOCALISE3D_IMPL_H
 
-#include <orca/camera.h>
+#include <orca/localise3d.h>
 #include <IceStorm/IceStorm.h>
 
 // utilities
@@ -25,20 +25,20 @@ namespace orcaice {
 namespace orcaifaceimpl {
 
 //!
-//! Implements the orca::Camera interface. Handles remote calls.
+//! Implements the Localise3d interface: Handles remote calls.
 //!
-class CameraIface : public IceUtil::Shared
+class Localise3dImpl : public IceUtil::Shared
 {
-friend class CameraI;
+friend class Localise3dI;
 
 public:
-    //! constructor
-    CameraIface( const orca::CameraDescription& descr,
-                 const std::string& ifaceTag, 
-                 const orcaice::Context& context );
-    ~CameraIface();
+    //! Constructor
+    Localise3dImpl( const orca::VehicleGeometryDescriptionPtr &geometry,
+                     const std::string &interfaceTag,
+                     const orcaice::Context &context );
+    ~Localise3dImpl();
 
-    // local interface:
+    // Local calls:
     //! Sets up interface and connects to IceStorm. May throw orcaice::Exceptions.
     void initInterface();
 
@@ -47,34 +47,34 @@ public:
     void initInterface( orcaice::Thread* thread, int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
-    void localSet( const orca::CameraData& data );
+    void localSet( const orca::Localise3dData &data );
 
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
-    void localSetAndSend( const orca::CameraData& data );
+    void localSetAndSend( const orca::Localise3dData &data );
 
 private:
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::CameraData getData() const;
-    ::orca::CameraDescription getDescription() const;
-    void subscribe(const ::orca::CameraConsumerPrx&);
-    void unsubscribe(const ::orca::CameraConsumerPrx&);
+    ::orca::Localise3dData internalGetData() const;
+    ::orca::VehicleGeometryDescriptionPtr internalGetVehicleGeometry() const;
+    void internalSubscribe(const ::orca::Localise3dConsumerPrx&);
+    void internalUnsubscribe(const ::orca::Localise3dConsumerPrx&);
+    
+    orca::VehicleGeometryDescriptionPtr geometry_;
 
-    orca::CameraDescription     descr_;
-    orcaice::Proxy<orca::CameraData> dataProxy_;
+    orcaice::Proxy<orca::Localise3dData> dataProxy_;
 
-    orca::CameraConsumerPrx    consumerPrx_;
+    orca::Localise3dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
 
-    const std::string              ifaceTag_;
+    const std::string              interfaceTag_;
     orcaice::Context               context_;
 };
+typedef IceUtil::Handle<Localise3dImpl> Localise3dImplPtr;
 
-typedef IceUtil::Handle<CameraIface> CameraIfacePtr;
-
-}
+} // namespace
 
 #endif

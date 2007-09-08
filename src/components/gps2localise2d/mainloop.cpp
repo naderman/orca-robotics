@@ -218,7 +218,7 @@ MainLoop::initInterface()
     //
     // Instantiate External Interface
     //
-    localiseInterface_ = new orcaifaceimpl::Localise2dIface( vehicleDesc.geometry, "Localise2d", context_ );
+    localiseInterface_ = new orcaifaceimpl::Localise2dImpl( vehicleDesc.geometry, "Localise2d", context_ );
 
     while ( isActive() )
     {

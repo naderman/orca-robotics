@@ -1,28 +1,28 @@
 #ifndef GPSINTERFACES_H
 #define GPSINTERFACES_H
 
-#include "genericiface.h"
+#include "genericImpl.h"
 #include <orca/gps.h>
 
 namespace gps {
 
-    typedef GenericIface<orca::Gps,
+    typedef GenericImpl<orca::Gps,
                          orca::GpsData,
                          orca::GpsConsumerPrx,
-                         orca::GpsDescription>          GpsIface;
-    typedef IceUtil::Handle<GpsIface> GpsIfacePtr;
+                         orca::GpsDescription>          GpsImpl;
+    typedef IceUtil::Handle<GpsImpl> GpsImplPtr;
 
-    typedef GenericIface<orca::GpsMapGrid,
+    typedef GenericImpl<orca::GpsMapGrid,
                          orca::GpsMapGridData,
                          orca::GpsMapGridConsumerPrx,
-                         orca::GpsDescription>          GpsMapGridIface;
-    typedef IceUtil::Handle<GpsMapGridIface> GpsMapGridIfacePtr;
+                         orca::GpsDescription>          GpsMapGridImpl;
+    typedef IceUtil::Handle<GpsMapGridImpl> GpsMapGridImplPtr;
 
-    typedef GenericIface<orca::GpsTime,
+    typedef GenericImpl<orca::GpsTime,
                          orca::GpsTimeData,
                          orca::GpsTimeConsumerPrx,
-                         orca::GpsDescription> GpsTimeIface;
-    typedef IceUtil::Handle<GpsTimeIface> GpsTimeIfacePtr;
+                         orca::GpsDescription> GpsTimeImpl;
+    typedef IceUtil::Handle<GpsTimeImpl> GpsTimeImplPtr;
 
 }
 

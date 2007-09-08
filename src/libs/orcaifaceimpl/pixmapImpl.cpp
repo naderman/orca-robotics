@@ -7,7 +7,7 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#include "pixmapiface.h"
+#include "pixmapImpl.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include "util.h"
@@ -26,62 +26,62 @@ class PixMapI : public orca::PixMap
 {
 public:
 
-    PixMapI( PixMapIface &iface )
-        : iface_(iface) {}
+    PixMapI( PixMapImpl &impl )
+        : impl_(impl) {}
 
     // Remote calls:
     orca::PixMapData getData(const Ice::Current&) const
-        { return iface_.getData(); }
+        { return impl_.internalGetData(); }
 
     virtual void subscribe(const ::orca::PixMapConsumerPrx& consumer,
                            const Ice::Current&)
-        { iface_.subscribe( consumer ); }
+        { impl_.internalSubscribe( consumer ); }
 
     virtual void unsubscribe(const ::orca::PixMapConsumerPrx& consumer,
                              const Ice::Current&)
-        { iface_.unsubscribe( consumer ); }
+        { impl_.internalUnsubscribe( consumer ); }
 
 private:
-    PixMapIface &iface_;
+    PixMapImpl &impl_;
 };
 
 //////////////////////////////////////////////////////////////////////
 
-PixMapIface::PixMapIface( const std::string      &ifaceTag,
+PixMapImpl::PixMapImpl( const std::string      &interfaceTag,
                   const orcaice::Context &context ) 
-    : ifaceTag_(ifaceTag),
+    : interfaceTag_(interfaceTag),
       context_(context)      
 {
 }
 
-PixMapIface::~PixMapIface()
+PixMapImpl::~PixMapImpl()
 {
     tryRemovePtr( context_, ptr_ );
 }
 
 void
-PixMapIface::initInterface()
+PixMapImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithTag<PixMapConsumerPrx>
-        ( context_, consumerPrx_, ifaceTag_ );
+        ( context_, consumerPrx_, interfaceTag_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new PixMapI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_ );
+    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_ );
 }
 
 PixMapData
-PixMapIface::getData() const
+PixMapImpl::internalGetData() const
 {
-    context_.tracer()->debug( "PixMapIface::getData()", 5 );
+    context_.tracer()->debug( "PixMapImpl::internalGetData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
         std::stringstream ss;
-        ss << "No data available! (ifaceTag="<<ifaceTag_<<")";
+        ss << "No data available! (interfaceTag="<<interfaceTag_<<")";
         throw orca::DataNotExistException( ss.str() );
     }
 
@@ -91,9 +91,9 @@ PixMapIface::getData() const
 }
 
 void
-PixMapIface::subscribe(const ::PixMapConsumerPrx& subscriber )
+PixMapImpl::internalSubscribe(const ::PixMapConsumerPrx& subscriber )
 {
-    context_.tracer()->debug( "PixMapIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "PixMapImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     try {
         topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
@@ -104,21 +104,21 @@ PixMapIface::subscribe(const ::PixMapConsumerPrx& subscriber )
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
-        ss <<"PixMapIface::subscribe: failed to subscribe: "<< e << endl;
+        ss <<"PixMapImpl::internalSubscribe: failed to subscribe: "<< e << endl;
         context_.tracer()->warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
 
 void
-PixMapIface::unsubscribe(const ::PixMapConsumerPrx& subscriber )
+PixMapImpl::internalUnsubscribe(const ::PixMapConsumerPrx& subscriber )
 {
-    context_.tracer()->debug( "PixMapIface::unsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "PixMapImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 
 void 
-PixMapIface::localSetAndSend( const ::orca::PixMapData &data )
+PixMapImpl::localSetAndSend( const ::orca::PixMapData &data )
 {
     //cout<<"TRACE(ogmapI.cpp): localSetData: " << orcaice::toString(data) << endl;
 
@@ -130,7 +130,7 @@ PixMapIface::localSetAndSend( const ::orca::PixMapData &data )
           consumerPrx_,
           data,
           topicPrx_,
-          ifaceTag_ );
+          interfaceTag_ );
 }
 
 }

@@ -8,10 +8,10 @@
  *
  */
 
-#ifndef ORCA2_ORCAIFACEIMPL_LOCALISE2D_IFACE_H
-#define ORCA2_ORCAIFACEIMPL_LOCALISE2D_IFACE_H
+#ifndef ORCA2_IMAGE_IMPL_H
+#define ORCA2_IMAGE_IMPL_H
 
-#include <orca/localise2d.h>
+#include <orca/image.h>
 #include <IceStorm/IceStorm.h>
 
 // utilities
@@ -25,20 +25,20 @@ namespace orcaice {
 namespace orcaifaceimpl {
 
 //!
-//! Implements the Localise2d interface: Handles remote calls.
+//! Implements the orca::Image interface. Handles remote calls.
 //!
-class Localise2dIface : public IceUtil::Shared
+class ImageImpl : public IceUtil::Shared
 {
-friend class Localise2dI;
+friend class ImageI;
 
 public:
     //! Constructor
-    Localise2dIface( const orca::VehicleGeometryDescriptionPtr &geometry,
-                     const std::string &ifaceTag,
-                     const orcaice::Context &context );
-    ~Localise2dIface();
+    ImageImpl( const orca::ImageDescription& descr,
+                 const std::string& interfaceTag, 
+                 const orcaice::Context& context );
+    ~ImageImpl();
 
-    // Local calls:
+    // local interface:
     //! Sets up interface and connects to IceStorm. May throw orcaice::Exceptions.
     void initInterface();
 
@@ -47,34 +47,35 @@ public:
     void initInterface( orcaice::Thread* thread, int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
-    void localSet( const orca::Localise2dData &data );
+    void localSet( const orca::ImageDataPtr& data );
 
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
-    void localSetAndSend( const orca::Localise2dData &data );
+    void localSetAndSend( const orca::ImageDataPtr& data );
 
 private:
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::Localise2dData getData() const;
-    ::orca::VehicleGeometryDescriptionPtr getVehicleGeometry() const;
-    void subscribe(const ::orca::Localise2dConsumerPrx& );
-    void unsubscribe(const ::orca::Localise2dConsumerPrx& );
-    
-    orca::VehicleGeometryDescriptionPtr geometry_;
+    ::orca::ImageDataPtr internalGetData() const;
+    ::orca::ImageDescription internalGetDescription() const;
+    void internalSubscribe(const ::orca::ImageConsumerPrx&);
+    void internalUnsubscribe(const ::orca::ImageConsumerPrx&);
 
-    orcaice::Proxy<orca::Localise2dData> dataProxy_;
+    orca::ImageDescription     descr_;
+    // yes, this is not a typo! It's safe to use a normal proxy with an Ice smart pointer.
+    orcaice::Proxy<orca::ImageDataPtr> dataProxy_;
 
-    orca::Localise2dConsumerPrx    consumerPrx_;
-    IceStorm::TopicPrx             topicPrx_;
+    orca::ImageConsumerPrx    consumerPrx_;
+    IceStorm::TopicPrx        topicPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
 
-    const std::string                 ifaceTag_;
-    orcaice::Context                  context_;
+    const std::string              interfaceTag_;
+    orcaice::Context               context_;
 };
-typedef IceUtil::Handle<Localise2dIface> Localise2dIfacePtr;
 
-} // namespace
+typedef IceUtil::Handle<ImageImpl> ImageImplPtr;
+
+}
 
 #endif

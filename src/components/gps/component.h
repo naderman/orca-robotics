@@ -37,9 +37,9 @@ private:
     //
     // EXTERNAL INTERFACES
     //
-    GpsIfacePtr        gpsInterface_;
-    GpsMapGridIfacePtr gpsMapGridInterface_;
-    GpsTimeIfacePtr    gpsTimeInterface_;
+    GpsImplPtr        gpsInterface_;
+    GpsMapGridImplPtr gpsMapGridInterface_;
+    GpsTimeImplPtr    gpsTimeInterface_;
 
     //
     // HARDWARE INTERFACES

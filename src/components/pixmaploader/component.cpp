@@ -64,7 +64,7 @@ Component::start()
     // EXTERNAL PROVIDED INTERFACES
     //
 
-    pixMapInterface_ = new orcaifaceimpl::PixMapIface( "PixMap", context() );
+    pixMapInterface_ = new orcaifaceimpl::PixMapImpl( "PixMap", context() );
     pixMapInterface_->initInterface();
     pixMapInterface_->localSetAndSend( theMap );
 

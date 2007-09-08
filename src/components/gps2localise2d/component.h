@@ -14,7 +14,7 @@
 #include <orcaice/component.h>
 
 // interface definitions
-#include <orcaifaceimpl/localise2diface.h>
+#include <orcaifaceimpl/localise2dImpl.h>
 
 namespace gps2localise2d
 {

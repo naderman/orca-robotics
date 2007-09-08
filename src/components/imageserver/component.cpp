@@ -193,7 +193,7 @@ Component::start()
     //
 
     // create servant for direct connections
-    cameraInterface_ = new orcaifaceimpl::CameraIface( descr, "Camera", context() );
+    cameraInterface_ = new orcaifaceimpl::CameraImpl( descr, "Camera", context() );
 
     //
     // MAIN DRIVER LOOP

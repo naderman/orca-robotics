@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 
-#include "velocitycontrol2diface.h"
+#include "velocitycontrol2dImpl.h"
 #include "util.h"
 
 using namespace std;
@@ -26,56 +26,56 @@ namespace orcaifaceimpl {
 class VelocityControl2dI : public orca::VelocityControl2d
 {
 public:
-    VelocityControl2dI( VelocityControl2dIface& iface )
-        : iface_(iface) {}
+    VelocityControl2dI( VelocityControl2dImpl &impl )
+        : impl_(impl) {}
 
     virtual orca::VehicleDescription getDescription( const Ice::Current& c ) const
-        { return iface_.getDescription(); }
+        { return impl_.internalGetDescription(); }
 
     virtual void setCommand(const ::orca::VelocityControl2dData& command, 
                             const ::Ice::Current& current )
-        {  iface_.setCommand( command ); }
+        {  impl_.internalSetCommand( command ); }
 
 private:
-    VelocityControl2dIface &iface_;
+    VelocityControl2dImpl &impl_;
 };
 
 //////////////////////////////////////////////////////////////////////
 
-VelocityControl2dIface::VelocityControl2dIface( 
+VelocityControl2dImpl::VelocityControl2dImpl( 
             const orca::VehicleDescription& descr,
-            const std::string &ifaceTag,
+            const std::string &interfaceTag,
             const orcaice::Context &context ) :
     description_(descr),
-    ifaceTag_(ifaceTag),
+    interfaceTag_(interfaceTag),
     context_(context)
 {
 }
 
-VelocityControl2dIface::~VelocityControl2dIface()
+VelocityControl2dImpl::~VelocityControl2dImpl()
 {
     tryRemovePtr( context_, ptr_ );
 }
 
 void
-VelocityControl2dIface::initInterface()
+VelocityControl2dImpl::initInterface()
 {
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new VelocityControl2dI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_ );
+    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_ );
 }
 
 void 
-VelocityControl2dIface::initInterface( orcaice::Thread* thread, int retryInterval )
+VelocityControl2dImpl::initInterface( orcaice::Thread* thread, int retryInterval )
 {
     ptr_ = new VelocityControl2dI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_, thread, retryInterval );
+    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_, thread, retryInterval );
 }
 
 void
-VelocityControl2dIface::setCommand(const ::orca::VelocityControl2dData& command )
+VelocityControl2dImpl::internalSetCommand(const ::orca::VelocityControl2dData& command )
 {
     if ( this->hasNotifyHandler() ) {
         this->set( command );

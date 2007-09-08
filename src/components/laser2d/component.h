@@ -13,7 +13,7 @@
 
 #include <orca/laserscanner2d.h>
 #include <orcaice/component.h>
-#include <orcaifaceimpl/laserscanner2diface.h>
+#include <orcaifaceimpl/laserscanner2dImpl.h>
 #include <orcadynamicload/dynamicload.h>
 #include "mainloop.h"
 
@@ -38,7 +38,7 @@ private:
     //
     // External Interface
     //
-    orcaifaceimpl::LaserScanner2dIfacePtr laserInterface_;
+    orcaifaceimpl::LaserScanner2dImplPtr laserInterface_;
 
     // A factory to instantiate the driver
     DriverFactory   *driverFactory_;

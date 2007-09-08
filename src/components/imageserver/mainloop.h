@@ -12,7 +12,7 @@
 
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
-#include <orcaifaceimpl/cameraiface.h>
+#include <orcaifaceimpl/cameraImpl.h>
 
 #include "driver.h"
 
@@ -29,7 +29,7 @@ class MainLoop : public orcaice::Thread
 
 public:
 
-    MainLoop( orcaifaceimpl::CameraIface&   cameraObj,
+    MainLoop( orcaifaceimpl::CameraImpl&   cameraObj,
               Driver*                       hwDriver,
               const orcaice::Context&       context );
 
@@ -40,7 +40,7 @@ public:
 private:
 
     // The camera object
-    orcaifaceimpl::CameraIface& cameraObj_;
+    orcaifaceimpl::CameraImpl& cameraObj_;
 
     // Generic driver for the hardware
     Driver *hwDriver_;

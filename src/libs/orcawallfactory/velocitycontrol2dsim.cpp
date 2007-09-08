@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcamisc/orcamisc.h>
-#include <orcaifaceimpl/velocitycontrol2diface.h>
+#include <orcaifaceimpl/velocitycontrol2dImpl.h>
 
 #include "velocitycontrol2dsim.h"
 
@@ -45,8 +45,8 @@ VelocityControl2dSim::run()
     orca::VehicleDescription descr;
     orcamisc::readVehicleDescription( context_.properties(), configPrefix(), descr );
 
-    orcaifaceimpl::VelocityControl2dIfacePtr iface;
-    iface = new orcaifaceimpl::VelocityControl2dIface( descr, tag_, context_ );
+    orcaifaceimpl::VelocityControl2dImplPtr iface;
+    iface = new orcaifaceimpl::VelocityControl2dImpl( descr, tag_, context_ );
     iface->initInterface( this );
 
     // create notify handler and hook him up to the notify guy.

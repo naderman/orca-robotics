@@ -120,9 +120,9 @@ Component::start()
     context().tracer()->debug( ss.str() );
 
     // create servant for direct connections
-    gpsInterface_        = new GpsIface(        "Gps", descr_, context() );
-    gpsMapGridInterface_ = new GpsMapGridIface( "GpsMapGrid", descr_, context() );
-    gpsTimeInterface_    = new GpsTimeIface(    "GpsTime", descr_, context() );
+    gpsInterface_        = new GpsImpl(        "Gps", descr_, context() );
+    gpsMapGridInterface_ = new GpsMapGridImpl( "GpsMapGrid", descr_, context() );
+    gpsTimeInterface_    = new GpsTimeImpl(    "GpsTime", descr_, context() );
 
     gpsInterface_->initInterface();
     gpsMapGridInterface_->initInterface();

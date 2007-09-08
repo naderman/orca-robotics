@@ -11,7 +11,7 @@
 #include <iostream>
 
 #include <orcaice/orcaice.h>
-#include "odometry2diface.h"
+#include "odometry3dImpl.h"
 #include "util.h"
 
 using namespace std;
@@ -23,100 +23,91 @@ namespace orcaifaceimpl {
 //
 // This is the implementation of the slice-defined interface
 //
-class Odometry2dI : public orca::Odometry2d
+class Odometry3dI : public orca::Odometry3d
 {
 public:
-    Odometry2dI( Odometry2dIface &iface )
-        : impl_(iface) {}
-    virtual ~Odometry2dI() {}
+    //! constructor
+    Odometry3dI( Odometry3dImpl &impl )
+        : impl_(impl) {}
+    virtual ~Odometry3dI() {}
 
     // remote interface
 
-    virtual ::orca::Odometry2dData getData(const ::Ice::Current& ) const
+    virtual ::orca::Odometry3dData getData(const ::Ice::Current& ) const
         { return impl_.internalGetData(); }
 
     virtual ::orca::VehicleDescription getDescription(const ::Ice::Current& ) const
         { return impl_.internalGetDescription(); }
 
-    virtual void subscribe(const ::orca::Odometry2dConsumerPrx& consumer,
+    virtual void subscribe(const ::orca::Odometry3dConsumerPrx& consumer,
                            const ::Ice::Current& = ::Ice::Current())
         { impl_.internalSubscribe( consumer ); }
 
-    virtual void unsubscribe(const ::orca::Odometry2dConsumerPrx& consumer,
+    virtual void unsubscribe(const ::orca::Odometry3dConsumerPrx& consumer,
                              const ::Ice::Current& = ::Ice::Current())
         { impl_.internalUnsubscribe(consumer); }
 
 private:
-    Odometry2dIface &impl_;
+    Odometry3dImpl &impl_;
 };
 
 //////////////////////////////////////////////////////////////////////
 
-Odometry2dIface::Odometry2dIface( const orca::VehicleDescription& descr,
-                          const std::string& ifaceTag,
+Odometry3dImpl::Odometry3dImpl( const orca::VehicleDescription& descr,
+                          const std::string& interfaceTag,
                           const orcaice::Context& context ) :
     descr_(descr),
-    ifaceTag_(ifaceTag),
+    tag_(interfaceTag),
     context_(context)
 {
 }
 
-Odometry2dIface::~Odometry2dIface()
+Odometry3dImpl::~Odometry3dImpl()
 {
     tryRemovePtr( context_, ptr_ );
 }
 
 void
-Odometry2dIface::initInterface()
+Odometry3dImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithTag<orca::Odometry2dConsumerPrx>
-        ( context_, consumerPrx_, ifaceTag_ );
+    topicPrx_ = orcaice::connectToTopicWithTag<orca::Odometry3dConsumerPrx>
+        ( context_, consumerPrx_, tag_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
-    ptr_ = new Odometry2dI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_ );
+    ptr_ = new Odometry3dI( *this );
+    orcaice::createInterfaceWithTag( context_, ptr_, tag_ );
 }
 
-void 
-Odometry2dIface::initInterface( orcaice::Thread* thread, int retryInterval )
+::orca::Odometry3dData 
+Odometry3dImpl::internalGetData() const
 {
-    topicPrx_ = orcaice::connectToTopicWithTag<orca::Odometry2dConsumerPrx>
-        ( context_, consumerPrx_, ifaceTag_, "*", thread, retryInterval );
-
-    ptr_ = new Odometry2dI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_, thread, retryInterval );
-}
-
-::orca::Odometry2dData 
-Odometry2dIface::internalGetData() const
-{
-    context_.tracer()->debug( "Odometry2dIface::getData()", 5 );
+    context_.tracer()->debug( "Odometry3dImpl::internalGetData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
         std::stringstream ss;
-        ss << "No data available! (ifaceTag="<<ifaceTag_<<")";
+        ss << "No data available! (interfaceTag="<<tag_<<")";
         throw orca::DataNotExistException( ss.str() );
     }
 
-    orca::Odometry2dData data;
+    orca::Odometry3dData data;
     dataProxy_.get( data );
     return data;
 }
 
 ::orca::VehicleDescription
-Odometry2dIface::internalGetDescription() const
+Odometry3dImpl::internalGetDescription() const
 {
     return descr_;
 }
 
 void 
-Odometry2dIface::internalSubscribe(const ::orca::Odometry2dConsumerPrx& subscriber )
+Odometry3dImpl::internalSubscribe(const ::orca::Odometry3dConsumerPrx& subscriber )
 {
-    context_.tracer()->debug( "Odometry2dIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "Odometry3dImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     try {
         topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
@@ -127,39 +118,39 @@ Odometry2dIface::internalSubscribe(const ::orca::Odometry2dConsumerPrx& subscrib
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
-        ss <<"Odometry2dIface::subscribe: failed to subscribe: "<< e << endl;
+        ss <<"Odometry3dImpl::internalSubscribe: failed to subscribe: "<< e << endl;
         context_.tracer()->warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
 
 void 
-Odometry2dIface::internalUnsubscribe(const ::orca::Odometry2dConsumerPrx& subscriber)
+Odometry3dImpl::internalUnsubscribe(const ::orca::Odometry3dConsumerPrx& subscriber)
 {
-    context_.tracer()->debug( "Odometry2dIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "Odometry3dImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 
 void
-Odometry2dIface::localSet( const orca::Odometry2dData& data )
+Odometry3dImpl::localSet( const orca::Odometry3dData& data )
 {
     dataProxy_.set( data );
 }
 
 void
-Odometry2dIface::localSetAndSend( const orca::Odometry2dData& data )
+Odometry3dImpl::localSetAndSend( const orca::Odometry3dData& data )
 {
-//     cout<<"TRACE(Odometry2dIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
+//     cout<<"TRACE(Odometry3dIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
 
     dataProxy_.set( data );
 
     // Try to push to IceStorm.
-    tryPushToIceStormWithReconnect<orca::Odometry2dConsumerPrx,orca::Odometry2dData>
+    tryPushToIceStormWithReconnect<orca::Odometry3dConsumerPrx,orca::Odometry3dData>
         ( context_,
         consumerPrx_,
         data,
         topicPrx_,
-        ifaceTag_ );
+        tag_ );
 }
 
 } // namespace

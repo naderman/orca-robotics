@@ -20,7 +20,7 @@ using namespace orcaice;
 namespace imu {
 
 ImuHandler::ImuHandler(ImuI                            &imuObj,
-                       orcaifaceimpl::Odometry3dIface  &odometry3dObj,
+                       orcaifaceimpl::Odometry3dImpl  &odometry3dObj,
                        ImuDriver                       *hwDriver,
                        orca::CartesianPoint            frameOffset,
                        orcaice::Context                context,

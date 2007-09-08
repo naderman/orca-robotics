@@ -25,15 +25,15 @@ namespace orcaifaceimpl {
 //!
 //! Implements the PixMap interface: Handles remote calls.
 //!
-class PixMapIface : public IceUtil::Shared
+class PixMapImpl : public IceUtil::Shared
 {
 friend class PixMapI;
 
 public:
     //! Constructor
-    PixMapIface( const std::string      &ifaceTag,
+    PixMapImpl( const std::string      &interfaceTag,
              const orcaice::Context &context );
-    ~PixMapIface();
+    ~PixMapImpl();
 
     // Local calls:
     // may throw orcaice::Exceptions
@@ -44,9 +44,9 @@ public:
 
 private:
     // remote call implementations, mimic (but do not inherit) the orca interface
-    orca::PixMapData getData() const;
-    void subscribe(const ::orca::PixMapConsumerPrx&);
-    void unsubscribe(const ::orca::PixMapConsumerPrx&);
+    orca::PixMapData internalGetData() const;
+    void internalSubscribe(const ::orca::PixMapConsumerPrx&);
+    void internalUnsubscribe(const ::orca::PixMapConsumerPrx&);
 
     // Holds the latest data
     orcaice::Proxy<orca::PixMapData> dataProxy_;
@@ -59,10 +59,10 @@ private:
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
 
-    std::string ifaceTag_;
+    std::string interfaceTag_;
     orcaice::Context context_;
 };
-typedef IceUtil::Handle<PixMapIface> PixMapIfacePtr;
+typedef IceUtil::Handle<PixMapImpl> PixMapImplPtr;
 
 }
 

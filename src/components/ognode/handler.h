@@ -16,7 +16,7 @@
 
 #include <orca/ogfusion.h>
 #include <orcaogmap/orcaogmap.h>
-#include <orcaifaceimpl/ogmapiface.h>
+#include <orcaifaceimpl/ogmapImpl.h>
 
 namespace ognode
 {
@@ -33,7 +33,7 @@ private:
     void init();
 
     Ice::ObjectPtr                      ogFusionObjPtr_;
-    orcaifaceimpl::OgMapIfacePtr        ogMapIface_;
+    orcaifaceimpl::OgMapImplPtr        ogMapImpl_;
     orcaice::Buffer<orca::OgFusionData> ogFusionDataBuffer_;
 
     // Representt he occupancy certainty values using doubles internally.

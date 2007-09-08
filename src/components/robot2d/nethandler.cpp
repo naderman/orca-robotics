@@ -55,7 +55,7 @@ NetHandler::~NetHandler()
 {
 }
 
-// This is a direct callback from the VelocityControl2dIface object.
+// This is a direct callback from the VelocityControl2dImpl object.
 // It's executed in Ice thread.
 // Here we convert to our internal format and stick it into
 // another Notify pipe to be handled the HwHandler.
@@ -80,10 +80,10 @@ NetHandler::run()
         std::string prefix = context_.tag() + ".Config.";
     
         // Initialise external interfaces, multi-try init functions
-        odometry2dI_ = new orcaifaceimpl::Odometry2dIface( descr_, "Odometry2d", context_ );
+        odometry2dI_ = new orcaifaceimpl::Odometry2dImpl( descr_, "Odometry2d", context_ );
         odometry2dI_->initInterface( this );
 
-        velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dIface( descr_, "VelocityControl2d", context_ );
+        velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dImpl( descr_, "VelocityControl2d", context_ );
         velocityControl2dI_->initInterface( this );
         velocityControl2dI_->setNotifyHandler( this );
 

@@ -17,7 +17,7 @@
 
 #include <orca/localise2d.h>
 #include <orca/gps.h>
-#include <orcaifaceimpl/localise2diface.h>
+#include <orcaifaceimpl/localise2dImpl.h>
 #include <orcaifaceimpl/proxiedconsumers.h>
 
 namespace gps2localise2d
@@ -49,7 +49,7 @@ private:
     Driver* driver_;
     
     // Our external interface
-    orcaifaceimpl::Localise2dIfacePtr localiseInterface_;
+    orcaifaceimpl::Localise2dImplPtr localiseInterface_;
     
     orca::GpsPrx gpsPrx_;
     orca::Frame3d antennaOffset_;

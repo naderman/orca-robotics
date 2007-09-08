@@ -15,7 +15,7 @@
 #include <orcaice/component.h>
 
 // interface definitions
-#include <orcaifaceimpl/polarfeature2diface.h>
+#include <orcaifaceimpl/polarfeature2dImpl.h>
 
 namespace laserfeatures
 {
@@ -36,7 +36,7 @@ public:
 private:
 
     // External interface: polar features
-    orcaifaceimpl::PolarFeature2dIfacePtr featureInterface_;
+    orcaifaceimpl::PolarFeature2dImplPtr featureInterface_;
 
     MainLoop *mainLoop_;
 };

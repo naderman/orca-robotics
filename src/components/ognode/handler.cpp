@@ -98,7 +98,7 @@ Handler::init()
             mapConfig.mapOriginY=orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.OriginY", -25.0 );
             mapConfig.mapOrientation=orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.Orientation", 0.0 );
             
-            if ( !ogMapIface_ )
+            if ( !ogMapImpl_ )
             {
                 // setup internal map
                 internalMap_.reallocate( mapConfig.mapSizeX, 
@@ -114,9 +114,9 @@ Handler::init()
                 convert( internalMap_, initialOrcaMap );
 
                 // set up ogmap interface
-                ogMapIface_ = new orcaifaceimpl::OgMapIface( "OgMap", context_ );
-                ogMapIface_->initInterface( this );
-                ogMapIface_->localSetAndSend( initialOrcaMap );
+                ogMapImpl_ = new orcaifaceimpl::OgMapImpl( "OgMap", context_ );
+                ogMapImpl_->initInterface( this );
+                ogMapImpl_->localSetAndSend( initialOrcaMap );
             }
 
             if ( !ogFusionObjPtr_ )
@@ -200,7 +200,7 @@ Handler::run()
             // cout<<"TRACE(handler.cpp): orcaOgMap: " << orcaice::toString(orcaOgMap) << endl;
             
 
-            ogMapIface_->localSetAndSend( orcaOgMap );
+            ogMapImpl_->localSetAndSend( orcaOgMap );
 
         } // try
         catch ( const Ice::Exception & e )

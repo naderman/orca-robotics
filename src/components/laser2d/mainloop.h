@@ -12,7 +12,7 @@
 
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
-#include <orcaifaceimpl/laserscanner2diface.h>
+#include <orcaifaceimpl/laserscanner2dImpl.h>
 #include <laser2dutil/driver.h>
 
 namespace laser2d {
@@ -27,7 +27,7 @@ class MainLoop : public orcaice::Thread
 
 public:
 
-    MainLoop( orcaifaceimpl::LaserScanner2dIface &laserInterface,
+    MainLoop( orcaifaceimpl::LaserScanner2dImpl &laserInterface,
               const Driver::Config               &config,
               DriverFactory                      &driverFactory,
               bool                                compensateRoll,
@@ -49,7 +49,7 @@ private:
     void readData( orca::LaserScanner2dDataPtr &data );
 
     // The laser object
-    orcaifaceimpl::LaserScanner2dIface &laserInterface_;
+    orcaifaceimpl::LaserScanner2dImpl &laserInterface_;
 
     Driver::Config config_;
 

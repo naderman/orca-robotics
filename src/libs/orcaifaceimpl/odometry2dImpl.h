@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ODOMETRY2D_IFACE_H
-#define ORCA2_ODOMETRY2D_IFACE_H
+#ifndef ORCA2_ODOMETRY2D_IMPL_H
+#define ORCA2_ODOMETRY2D_IMPL_H
 
 #include <orca/odometry2d.h>
 #include <IceStorm/IceStorm.h>
@@ -27,16 +27,16 @@ namespace orcaifaceimpl {
 //!
 //! Implements the orca::Odometry2d interface: Handles remote calls.
 //!
-class Odometry2dIface : public IceUtil::Shared
+class Odometry2dImpl : public IceUtil::Shared
 {
 friend class Odometry2dI;
 
 public:
     //! constructor
-    Odometry2dIface( const orca::VehicleDescription& descr,
-                     const std::string& ifaceTag, 
+    Odometry2dImpl( const orca::VehicleDescription& descr,
+                     const std::string& interfaceTag, 
                      const orcaice::Context& context );
-    ~Odometry2dIface();
+    ~Odometry2dImpl();
 
     // local interface:
     //! Sets up interface and connects to IceStorm. May throw orcaice::Exceptions.
@@ -70,11 +70,11 @@ private:
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr                 ptr_;
 
-    const std::string              ifaceTag_;
+    const std::string              interfaceTag_;
     orcaice::Context               context_;
 };
 
-typedef IceUtil::Handle<Odometry2dIface> Odometry2dIfacePtr;
+typedef IceUtil::Handle<Odometry2dImpl> Odometry2dImplPtr;
 
 }
 

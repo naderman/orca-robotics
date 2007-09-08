@@ -26,7 +26,7 @@ namespace {
     const char *SUBSYSTEM = "mainloop";
 }
 
-MainLoop::MainLoop( orcaifaceimpl::PolarFeature2dIface &featureInterface,
+MainLoop::MainLoop( orcaifaceimpl::PolarFeature2dImpl &featureInterface,
                     const orcaice::Context &context )
     : driver_(NULL),
       featureInterface_(featureInterface),

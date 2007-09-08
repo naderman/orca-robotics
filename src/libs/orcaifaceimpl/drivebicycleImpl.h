@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAIFACEIMPL_DRIVEBICYCLE_IFACE_H
-#define ORCA2_ORCAIFACEIMPL_DRIVEBICYCLE_IFACE_H
+#ifndef ORCA2_ORCAIFACEIMPL_DRIVEBICYCLE_IMPL_H
+#define ORCA2_ORCAIFACEIMPL_DRIVEBICYCLE_IMPL_H
 
 #include <orca/drivebicycle.h>
 #include <IceStorm/IceStorm.h>
@@ -27,17 +27,17 @@ namespace orcaifaceimpl {
 //!
 //! Implements the DriveBicycle interface: Handles remote calls.
 //!
-class DriveBicycleIface : public IceUtil::Shared,
+class DriveBicycleImpl : public IceUtil::Shared,
                           public orcaice::Notify<orca::DriveBicycleCommand>
 {
 friend class DriveBicycleI;
 
 public:
     //! Constructor
-    DriveBicycleIface( const orca::VehicleDescription& descr,
-                       const std::string &ifaceTag,
+    DriveBicycleImpl( const orca::VehicleDescription& descr,
+                       const std::string &interfaceTag,
                        const orcaice::Context &context );
-    ~DriveBicycleIface();
+    ~DriveBicycleImpl();
 
     // Local calls:
     //! Sets up interface and connects to IceStorm. May throw orcaice::Exceptions.
@@ -57,15 +57,15 @@ public:
 private:
 
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::DriveBicycleData getData() const;
-    void subscribe(const ::orca::DriveBicycleConsumerPrx& );
-    void unsubscribe(const ::orca::DriveBicycleConsumerPrx& );
-    orca::VehicleDescription getDescription() const
+    ::orca::DriveBicycleData internalGetData() const;
+    void internalSubscribe(const ::orca::DriveBicycleConsumerPrx& );
+    void internalUnsubscribe(const ::orca::DriveBicycleConsumerPrx& );
+    orca::VehicleDescription internalGetDescription() const
         { return description_; }
-    void setCommand( const ::orca::DriveBicycleCommand& );
+    void internalSetCommand( const ::orca::DriveBicycleCommand& );
 
     const orca::VehicleDescription    description_;
-    const std::string                 ifaceTag_;
+    const std::string                 interfaceTag_;
     IceStorm::TopicPrx                topicPrx_;
 
     // outgoing data
@@ -78,7 +78,7 @@ private:
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
 };
-typedef IceUtil::Handle<DriveBicycleIface> DriveBicycleIfacePtr;
+typedef IceUtil::Handle<DriveBicycleImpl> DriveBicycleImplPtr;
 
 } // namespace
 

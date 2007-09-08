@@ -21,7 +21,7 @@
 
 // implementations of Ice objects
 #include "imuI.h"
-// #include <orcaifaceimpl/odometry3diface.h>
+// #include <orcaifaceimpl/odometry3dImpl.h>
 
 #ifdef HAVE_PLAYERCLIENT_DRIVER
 #  include "playerclientodometry3d/playerclientodometry3ddriver.h"
@@ -146,14 +146,14 @@ Component::start()
     //
     // PROVIDED: Odometry3d
     //
-    odometry3dIface_ = 
-        new orcaifaceimpl::Odometry3dIface( odom3dDescr, "Odometry3d", context() );
+    odometry3dImpl_ = 
+        new orcaifaceimpl::Odometry3dImpl( odom3dDescr, "Odometry3d", context() );
 
 
     while ( true ) // isActive() 
     { 
         try {
-            odometry3dIface_->initInterface();
+            odometry3dImpl_->initInterface();
             context().tracer()->debug( "odometry interface initialized",2);
             break;
         }
@@ -181,7 +181,7 @@ Component::start()
     context().tracer()->debug( "entering handler_...",5 );
 
     handler_ = new ImuHandler(*imuObj,
-                              *odometry3dIface_,
+                              *odometry3dImpl_,
                               hwDriver_,
                               frameOffset,
                               context(),

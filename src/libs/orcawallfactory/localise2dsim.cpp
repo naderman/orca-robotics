@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaifaceimpl/localise2diface.h>
+#include <orcaifaceimpl/localise2dImpl.h>
 
 #include "localise2dsim.h"
 
@@ -30,8 +30,8 @@ Localise2dSim::run()
     orcaice::setSane( geom->size );
     orcaice::setSane( geom->vehicleToGeometryTransform );
     
-    orcaifaceimpl::Localise2dIfacePtr iface;
-    iface = new orcaifaceimpl::Localise2dIface( geom, tag_, context_ );
+    orcaifaceimpl::Localise2dImplPtr iface;
+    iface = new orcaifaceimpl::Localise2dImpl( geom, tag_, context_ );
     iface->initInterface( this );
 
     while ( isActive() )

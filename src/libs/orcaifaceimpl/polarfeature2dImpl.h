@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_IFACEIMPL_POLARFEATURE2D_IFACE_H
-#define ORCA2_IFACEIMPL_POLARFEATURE2D_IFACE_H
+#ifndef ORCA2_IFACEIMPL_POLARFEATURE2D_IMPL_H
+#define ORCA2_IFACEIMPL_POLARFEATURE2D_IMPL_H
 
 #include <IceStorm/IceStorm.h>
 
@@ -25,15 +25,15 @@ namespace orcaifaceimpl {
 //!
 //! Implements the interface
 //!
-class PolarFeature2dIface : public IceUtil::Shared
+class PolarFeature2dImpl : public IceUtil::Shared
 {
 friend class PolarFeature2dI;
 
 public:
     //! Constructor
-    PolarFeature2dIface( const std::string                     &ifaceTag,
+    PolarFeature2dImpl( const std::string                     &interfaceTag,
                          const orcaice::Context                &context );
-    ~PolarFeature2dIface();
+    ~PolarFeature2dImpl();
 
     //
     // Local calls:
@@ -50,9 +50,9 @@ public:
 
 private:
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::PolarFeature2dDataPtr     getData() const;
-    void subscribe(const ::orca::PolarFeature2dConsumerPrx&);
-    void unsubscribe(const ::orca::PolarFeature2dConsumerPrx&);
+    ::orca::PolarFeature2dDataPtr     internalGetData() const;
+    void internalSubscribe(const ::orca::PolarFeature2dConsumerPrx&);
+    void internalUnsubscribe(const ::orca::PolarFeature2dConsumerPrx&);
 
     // Holds the latest data
     orcaice::PtrProxy<orca::PolarFeature2dDataPtr> dataProxy_;
@@ -65,10 +65,10 @@ private:
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
 
-    std::string                     ifaceTag_;
+    std::string                     interfaceTag_;
     orcaice::Context                context_;
 };
-typedef IceUtil::Handle<PolarFeature2dIface> PolarFeature2dIfacePtr;
+typedef IceUtil::Handle<PolarFeature2dImpl> PolarFeature2dImplPtr;
 
 } // namespace
 

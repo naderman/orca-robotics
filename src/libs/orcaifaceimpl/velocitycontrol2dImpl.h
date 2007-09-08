@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAIFACEIMPL_VELOCITYCONTROL2D_IFACE_H
-#define ORCA2_ORCAIFACEIMPL_VELOCITYCONTROL2D_IFACE_H
+#ifndef ORCA2_ORCAIFACEIMPL_VELOCITYCONTROL2D_IMPL_H
+#define ORCA2_ORCAIFACEIMPL_VELOCITYCONTROL2D_IMPL_H
 
 #include <orca/velocitycontrol2d.h>
 #include <IceStorm/IceStorm.h>
@@ -27,17 +27,17 @@ namespace orcaifaceimpl {
 //!
 //! Implements the VelocityControl2d interface: Handles remote calls.
 //!
-class VelocityControl2dIface : public IceUtil::Shared,
+class VelocityControl2dImpl : public IceUtil::Shared,
                                public orcaice::Notify<orca::VelocityControl2dData>
 {
 friend class VelocityControl2dI;
 
 public:
     //! Constructor
-    VelocityControl2dIface( const orca::VehicleDescription& descr,
-                       const std::string& ifaceTag,
+    VelocityControl2dImpl( const orca::VehicleDescription& descr,
+                       const std::string& interfaceTag,
                        const orcaice::Context& context );
-    ~VelocityControl2dIface();
+    ~VelocityControl2dImpl();
 
     //! Sets up interface and connects to IceStorm. May throw orcaice::Exceptions.
     void initInterface();
@@ -49,12 +49,12 @@ public:
 private:
 
     // remote call implementations, mimic (but do not inherit) the orca interface
-    orca::VehicleDescription getDescription() const
+    orca::VehicleDescription internalGetDescription() const
         { return description_; }
-    void setCommand( const ::orca::VelocityControl2dData& );
+    void internalSetCommand( const ::orca::VelocityControl2dData& );
 
     const orca::VehicleDescription    description_;
-    const std::string                 ifaceTag_;
+    const std::string                 interfaceTag_;
     IceStorm::TopicPrx                topicPrx_;
 
     orcaice::Context                  context_;
@@ -62,7 +62,7 @@ private:
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
 };
-typedef IceUtil::Handle<VelocityControl2dIface> VelocityControl2dIfacePtr;
+typedef IceUtil::Handle<VelocityControl2dImpl> VelocityControl2dImplPtr;
 
 } // namespace
 

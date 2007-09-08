@@ -17,7 +17,7 @@
 
 #include <orca/polarfeature2d.h>
 #include <orca/laserscanner2d.h>
-#include <orcaifaceimpl/polarfeature2diface.h>
+#include <orcaifaceimpl/polarfeature2dImpl.h>
 #include <orcaifaceimpl/proxiedconsumers.h>
 
 namespace laserfeatures
@@ -29,7 +29,7 @@ class MainLoop : public orcaice::Thread
 {
 public:
 
-    MainLoop( orcaifaceimpl::PolarFeature2dIface &featureInterface,
+    MainLoop( orcaifaceimpl::PolarFeature2dImpl &featureInterface,
               const orcaice::Context &context );
 
     ~MainLoop();
@@ -52,7 +52,7 @@ private:
     AlgorithmDriver* driver_;
     
     // Our external interface
-    orcaifaceimpl::PolarFeature2dIface &featureInterface_;
+    orcaifaceimpl::PolarFeature2dImpl &featureInterface_;
     
     // Laser proxy
     orca::LaserScanner2dPrx laserPrx_;

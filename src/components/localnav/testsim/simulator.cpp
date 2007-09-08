@@ -113,13 +113,13 @@ Simulator::setupInterfaces()
     scannerDescr_.offset.o.y = 0;
     scannerDescr_.timeStamp = orcaice::getNow();
     
-    laserInterface_    = new orcaifaceimpl::LaserScanner2dIface( scannerDescr_,
+    laserInterface_    = new orcaifaceimpl::LaserScanner2dImpl( scannerDescr_,
                                                                  "TestLaserScanner",
                                                                  context_ );
-    localiseInterface_ = new orcaifaceimpl::Localise2dIface( getVehicleDescription().geometry,
+    localiseInterface_ = new orcaifaceimpl::Localise2dImpl( getVehicleDescription().geometry,
                                                              "TestLocalise",
                                                              context_ );
-    ogMapInterface_    = new orcaifaceimpl::OgMapIface( "TestOgMap",
+    ogMapInterface_    = new orcaifaceimpl::OgMapImpl( "TestOgMap",
                                                         context_ );
 
     try {

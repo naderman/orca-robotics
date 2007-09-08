@@ -11,7 +11,7 @@
 // orca includes
 #include <orcaice/orcaice.h>
 #include <orca/odometry2d.h>
-#include <orcaifaceimpl/odometry2diface.h>
+#include <orcaifaceimpl/odometry2dImpl.h>
 
 // player includes
 #include <libplayerc++/playerc++.h>
@@ -48,8 +48,8 @@ Handler::run()
 
     // setup provided interface Odometry2d (use generic vehicle description)
     orca::VehicleDescription descr;
-    orcaifaceimpl::Odometry2dIfacePtr odometry2dI = 
-        new orcaifaceimpl::Odometry2dIface( descr, "Odometry2d", context_ );
+    orcaifaceimpl::Odometry2dImplPtr odometry2dI = 
+        new orcaifaceimpl::Odometry2dImpl( descr, "Odometry2d", context_ );
     // this may fail, catch exceptions
     odometry2dI->initInterface();
 

@@ -13,7 +13,7 @@
 
 #include <orcaice/component.h>
 #include <orca/bros1.h>
-#include <orcaifaceimpl/odometry3diface.h>
+#include <orcaifaceimpl/odometry3dImpl.h>
 
 namespace imu {
 
@@ -38,7 +38,7 @@ private:
     // EXTERNAL PROVIDED INTERFACE
     //
     Ice::ObjectPtr imuObjPtr_;
-    orcaifaceimpl::Odometry3dIfacePtr odometry3dIface_;
+    orcaifaceimpl::Odometry3dImplPtr odometry3dImpl_;
 
     // Ice::ObjectPtr position3dObjPtr_;
 

@@ -67,9 +67,9 @@ namespace {
 
 }
 
-MainLoop::MainLoop( GpsIfacePtr         &gpsInterface,
-                    GpsMapGridIfacePtr  &gpsMapGridInterface,
-                    GpsTimeIfacePtr     &gpsTimeInterface,
+MainLoop::MainLoop( GpsImplPtr         &gpsInterface,
+                    GpsMapGridImplPtr  &gpsMapGridInterface,
+                    GpsTimeImplPtr     &gpsTimeInterface,
                     Driver              *hwDriver,
                     const orca::Frame3d &antennaOffset,
                     orcaice::Context     context )

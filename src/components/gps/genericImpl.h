@@ -26,13 +26,13 @@ template<typename InterfaceType,
          typename DataType,
          typename ConsumerPrxType,
          typename DescriptionType>
-class GenericIface : public IceUtil::Shared
+class GenericImpl : public IceUtil::Shared
 {
 public:
-    GenericIface( const std::string      &ifaceTag,
+    GenericImpl( const std::string      &ifaceTag,
                   const DescriptionType  &descr,
                   const orcaice::Context &context );
-    ~GenericIface();
+    ~GenericImpl();
 
     // remote calls:
 
@@ -80,10 +80,10 @@ namespace detail {
               typename DescriptionType>
     class InterfaceI : public InterfaceType 
     {
-        typedef GenericIface<InterfaceType,DataType,ConsumerPrxType,DescriptionType> GenericIfaceType;
+        typedef GenericImpl<InterfaceType,DataType,ConsumerPrxType,DescriptionType> GenericImplType;
 
     public:
-        InterfaceI( GenericIfaceType &iface )
+        InterfaceI( GenericImplType &iface )
             : iface_(iface) {}
 
         // remote calls:
@@ -103,7 +103,7 @@ namespace detail {
             { return iface_.getDescription(); }
 
     private:
-        GenericIfaceType &iface_;
+        GenericImplType &iface_;
     };
 }
 
@@ -113,7 +113,7 @@ template<typename InterfaceType,
          typename DataType,
          typename ConsumerPrxType,
          typename DescriptionType>
-GenericIface<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::GenericIface( const std::string &ifaceTag,
+GenericImpl<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::GenericImpl( const std::string &ifaceTag,
                                                                                     const DescriptionType &descr,
                                                                                     const orcaice::Context &context ) :
     ifaceTag_(ifaceTag),
@@ -126,7 +126,7 @@ template<typename InterfaceType,
          typename DataType,
          typename ConsumerPrxType,
          typename DescriptionType>
-GenericIface<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::~GenericIface()
+GenericImpl<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::~GenericImpl()
 {
     orcaifaceimpl::tryRemovePtr( context_, ptr_ );
 }
@@ -136,7 +136,7 @@ template<typename InterfaceType,
          typename ConsumerPrxType,
          typename DescriptionType>
 void
-GenericIface<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::initInterface()
+GenericImpl<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithTag<ConsumerPrxType>
@@ -154,9 +154,9 @@ template<typename InterfaceType,
          typename ConsumerPrxType,
          typename DescriptionType>
 DataType
-GenericIface<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::getData() const
+GenericImpl<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::getData() const
 {
-    context_.tracer()->debug( "GenericIface::getData()", 5 );
+    context_.tracer()->debug( "GenericImpl::getData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
@@ -175,9 +175,9 @@ template<typename InterfaceType,
          typename ConsumerPrxType,
          typename DescriptionType>
 void 
-GenericIface<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::subscribe(const ConsumerPrxType& subscriber)
+GenericImpl<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::subscribe(const ConsumerPrxType& subscriber)
 {
-    context_.tracer()->debug( "GenericIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "GenericImpl::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     try {
         topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
@@ -188,7 +188,7 @@ GenericIface<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::subscribe(
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
-        ss <<"GenericIface::subscribe: failed to subscribe: "<< e << std::endl;
+        ss <<"GenericImpl::subscribe: failed to subscribe: "<< e << std::endl;
         context_.tracer()->warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
@@ -199,9 +199,9 @@ template<typename InterfaceType,
          typename ConsumerPrxType,
          typename DescriptionType>
 void 
-GenericIface<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::unsubscribe(const ConsumerPrxType& subscriber)
+GenericImpl<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::unsubscribe(const ConsumerPrxType& subscriber)
 {
-    context_.tracer()->debug( "GenericIface::unsubscribe(): unsubscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "GenericImpl::unsubscribe(): unsubscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 
@@ -210,9 +210,9 @@ template<typename InterfaceType,
          typename ConsumerPrxType,
          typename DescriptionType>
 void
-GenericIface<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::localSet( const DataType &data )
+GenericImpl<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::localSet( const DataType &data )
 {
-    //cout<<"TRACE(localise2dIface.cpp): localSetData: " << orcaice::toString(data) << std::endl;
+    //cout<<"TRACE(localise2dImpl.cpp): localSetData: " << orcaice::toString(data) << std::endl;
 
     dataProxy_.set( data );
 }
@@ -222,7 +222,7 @@ template<typename InterfaceType,
          typename ConsumerPrxType,
          typename DescriptionType>
 void
-GenericIface<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::localSetAndSend( const DataType &data )
+GenericImpl<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::localSetAndSend( const DataType &data )
 {
     dataProxy_.set( data );
     

@@ -41,7 +41,7 @@ Component::start()
     //
     // Instantiate External Interface
     //
-    featureInterface_ = new orcaifaceimpl::PolarFeature2dIface( "PolarFeature2d", context() );
+    featureInterface_ = new orcaifaceimpl::PolarFeature2dImpl( "PolarFeature2d", context() );
 
     //
     // ENABLE NETWORK CONNECTIONS

@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 
 #include "mainloop.h"
-#include <orcaifaceimpl/localise2diface.h>
+#include <orcaifaceimpl/localise2dImpl.h>
 #include <orcaifaceimpl/bufferedconsumers.h>
 
 using namespace std;
@@ -102,8 +102,8 @@ MainLoop::walk()
     // 
     // EXTERNAL PROVIDED INTERFACE
     //
-    orcaifaceimpl::Localise2dIfacePtr localiseInterface =
-        new orcaifaceimpl::Localise2dIface( vehicleDescription.geometry, "Localise2d", context_);
+    orcaifaceimpl::Localise2dImplPtr localiseInterface =
+        new orcaifaceimpl::Localise2dImpl( vehicleDescription.geometry, "Localise2d", context_);
     // multi-try function
     localiseInterface->initInterface( this );
 

@@ -31,7 +31,7 @@ namespace orcaifaceimpl {
                                     ConsumerPrxType    &consumerPrx,
                                     const DataType     &data,
                                     IceStorm::TopicPrx &topicPrx,
-                                    const std::string  &ifaceTag )
+                                    const std::string  &interfaceTag )
     {
         // check that communicator still exists
         if ( !context.communicator() ) {
@@ -50,7 +50,7 @@ namespace orcaifaceimpl {
             // This could happen if IceStorm dies.
             // If we're running in an IceBox and the IceBox is shutting down, 
             // this is expected (our co-located IceStorm is obviously going down).
-            std::stringstream ss; ss << ifaceTag << ": Failed push to IceStorm: " << e;
+            std::stringstream ss; ss << interfaceTag << ": Failed push to IceStorm: " << e;
             context.tracer()->warning( ss.str() );
 
             // If IceStorm just re-started for some reason though, we want to try to re-connect
@@ -58,7 +58,7 @@ namespace orcaifaceimpl {
             {
                 context.tracer()->info( "Re-connecting to IceStorm..." );
                 topicPrx = orcaice::connectToTopicWithTag<ConsumerPrxType>
-                    ( context, consumerPrx, ifaceTag );
+                    ( context, consumerPrx, interfaceTag );
                 context.tracer()->info( "Re-connected to IceStorm." );
 
                 // try again to push that bit of info

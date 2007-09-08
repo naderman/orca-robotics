@@ -8,7 +8,7 @@
  *
  */
 
-#include "drivebicycleiface.h"
+#include "drivebicycleImpl.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include "util.h"
@@ -25,81 +25,81 @@ namespace orcaifaceimpl {
 class DriveBicycleI : public orca::DriveBicycle
 {
 public:
-    DriveBicycleI( DriveBicycleIface &iface )
-        : iface_(iface) {}
+    DriveBicycleI( DriveBicycleImpl &impl )
+        : impl_(impl) {}
 
     virtual ::orca::DriveBicycleData getData(const ::Ice::Current& ) const
-        { return iface_.getData(); }
+        { return impl_.internalGetData(); }
 
     virtual void subscribe(const ::orca::DriveBicycleConsumerPrx& subscriber,
                            const ::Ice::Current& = ::Ice::Current())
-        { iface_.subscribe( subscriber ); }
+        { impl_.internalSubscribe( subscriber ); }
 
     virtual void unsubscribe(const ::orca::DriveBicycleConsumerPrx& subscriber,
                              const ::Ice::Current& = ::Ice::Current())
-        { iface_.unsubscribe( subscriber ); }
+        { impl_.internalUnsubscribe( subscriber ); }
 
     virtual orca::VehicleDescription getDescription( const Ice::Current& c ) const
-        { return iface_.getDescription(); }
+        { return impl_.internalGetDescription(); }
 
     virtual void setCommand(const ::orca::DriveBicycleCommand& command, 
                             const ::Ice::Current& current )
-        {  iface_.setCommand( command ); }
+        {  impl_.internalSetCommand( command ); }
 
 private:
-    DriveBicycleIface &iface_;
+    DriveBicycleImpl &impl_;
 };
 
 //////////////////////////////////////////////////////////////////////
 
-DriveBicycleIface::DriveBicycleIface( 
+DriveBicycleImpl::DriveBicycleImpl( 
             const orca::VehicleDescription& descr,
-            const std::string &ifaceTag,
+            const std::string &interfaceTag,
             const orcaice::Context &context ) :
     description_(descr),
-    ifaceTag_(ifaceTag),
+    interfaceTag_(interfaceTag),
     context_(context)
 {
 }
 
-DriveBicycleIface::~DriveBicycleIface()
+DriveBicycleImpl::~DriveBicycleImpl()
 {
     tryRemovePtr( context_, ptr_ );
 }
 
 void
-DriveBicycleIface::initInterface()
+DriveBicycleImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithTag<orca::DriveBicycleConsumerPrx>
-        ( context_, consumerPrx_, ifaceTag_ );
+        ( context_, consumerPrx_, interfaceTag_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new DriveBicycleI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_ );
+    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_ );
 }
 
 void 
-DriveBicycleIface::initInterface( orcaice::Thread* thread, int retryInterval )
+DriveBicycleImpl::initInterface( orcaice::Thread* thread, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithTag<orca::DriveBicycleConsumerPrx>
-        ( context_, consumerPrx_, ifaceTag_, "*", thread, retryInterval );
+        ( context_, consumerPrx_, interfaceTag_, "*", thread, retryInterval );
 
     ptr_ = new DriveBicycleI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_, thread, retryInterval );
+    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_, thread, retryInterval );
 }
 
 ::orca::DriveBicycleData 
-DriveBicycleIface::getData() const
+DriveBicycleImpl::internalGetData() const
 {
-    context_.tracer()->debug( "DriveBicycleIface::getData()", 5 );
+    context_.tracer()->debug( "DriveBicycleImpl::internalGetData()", 5 );
 
     if ( dataPipe_.isEmpty() )
     {
         std::stringstream ss;
-        ss << "No data available! (ifaceTag="<<ifaceTag_<<")";
+        ss << "No data available! (interfaceTag="<<interfaceTag_<<")";
         throw orca::DataNotExistException( ss.str() );
     }
 
@@ -109,7 +109,7 @@ DriveBicycleIface::getData() const
 }
 
 void
-DriveBicycleIface::setCommand(const ::orca::DriveBicycleCommand& command )
+DriveBicycleImpl::internalSetCommand(const ::orca::DriveBicycleCommand& command )
 {
     if ( this->hasNotifyHandler() ) {
         this->set( command );
@@ -117,9 +117,9 @@ DriveBicycleIface::setCommand(const ::orca::DriveBicycleCommand& command )
 }
 
 void 
-DriveBicycleIface::subscribe(const ::orca::DriveBicycleConsumerPrx& subscriber)
+DriveBicycleImpl::internalSubscribe(const ::orca::DriveBicycleConsumerPrx& subscriber)
 {
-    context_.tracer()->debug( "DriveBicycleIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "DriveBicycleImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     try {
         topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
@@ -130,21 +130,21 @@ DriveBicycleIface::subscribe(const ::orca::DriveBicycleConsumerPrx& subscriber)
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
-        ss <<"DriveBicycleIface::subscribe: failed to subscribe: "<< e << endl;
+        ss <<"DriveBicycleImpl::internalSubscribe: failed to subscribe: "<< e << endl;
         context_.tracer()->warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
 
 void 
-DriveBicycleIface::unsubscribe(const ::orca::DriveBicycleConsumerPrx& subscriber)
+DriveBicycleImpl::internalUnsubscribe(const ::orca::DriveBicycleConsumerPrx& subscriber)
 {
-    context_.tracer()->debug( "DriveBicycleIface::subscribe(): unsubscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "DriveBicycleImpl::internalSubscribe(): unsubscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 
 void
-DriveBicycleIface::localSet( const orca::DriveBicycleData &data )
+DriveBicycleImpl::localSet( const orca::DriveBicycleData &data )
 {
 //     cout<<"TRACE(drivebicycleIface.cpp): localSet(): " << orcaice::toString(data) << endl;
 
@@ -152,7 +152,7 @@ DriveBicycleIface::localSet( const orca::DriveBicycleData &data )
 }
 
 void
-DriveBicycleIface::localSetAndSend( const orca::DriveBicycleData &data )
+DriveBicycleImpl::localSetAndSend( const orca::DriveBicycleData &data )
 {
 //     cout<<"TRACE(drivebicycleiface.cpp): localSetAndSend(): " << orcaice::toString(data) << endl;
 
@@ -164,7 +164,7 @@ DriveBicycleIface::localSetAndSend( const orca::DriveBicycleData &data )
           consumerPrx_,
           data,
           topicPrx_,
-          ifaceTag_ );
+          interfaceTag_ );
 }
 
 } // namespace

@@ -12,7 +12,7 @@
 #define ORCA2_WIFI_MAINLOOP_H
 
 #include <orcaice/thread.h>
-#include <orcaifaceimpl/wifiiface.h>
+#include <orcaifaceimpl/wifiImpl.h>
 
 namespace wifi
 {
@@ -31,7 +31,7 @@ public:
 
 private:
     orcaice::Context context_;
-    orcaifaceimpl::WifiIfacePtr wifiInterface_;
+    orcaifaceimpl::WifiImplPtr wifiInterface_;
     WifiDriver *driver_;
     
     void initNetwork();

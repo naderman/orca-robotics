@@ -154,6 +154,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - libOrcaObjects
   - added functions to parse a sequence of int's and double's into an std::vector. (ben u)
   - added support for Image interface. (alex m)
+  - mathdefs.h: changed CHECK_LIMITS to CLIP_TO_LIMITS. (alex b)
 
 - libOrcaProbeFactory
   - added support for Image interface. (alex m)
@@ -169,8 +170,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - use doubles instead of floats to represent world coords
   - map orcaogmap::OgMap a specific instance of the more general orcaogmap::GenericMap
 
-- libOrcaObj (alex b)
-  - mathdefs.h: changed CHECK_LIMITS to CLIP_TO_LIMITS.
+- libOrcaIfaceImpl
+  - added fully-featured Consumer implementations which can subscribe themselves, including multi-try 
+    versions. Name cleaning up so that Impl classes of consumer and 'provider' interfaces have similar
+    names and API. (alex m)
 
 @par Removed
 

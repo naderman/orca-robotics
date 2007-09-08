@@ -7,7 +7,7 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#include "ogmapiface.h"
+#include "ogmapImpl.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include "util.h"
@@ -25,76 +25,76 @@ class OgMapI : public orca::OgMap
 {
 public:
 
-    OgMapI( OgMapIface &iface )
-        : iface_(iface) {}
+    OgMapI( OgMapImpl &impl )
+        : impl_(impl) {}
 
     // Remote calls:
     orca::OgMapData getData(const Ice::Current&) const
-        { return iface_.getData(); }
+        { return impl_.internalGetData(); }
 
     virtual void subscribe(const ::orca::OgMapConsumerPrx& consumer,
                            const Ice::Current&)
-        { iface_.subscribe( consumer ); }
+        { impl_.internalSubscribe( consumer ); }
 
     virtual void unsubscribe(const ::orca::OgMapConsumerPrx& consumer,
                              const Ice::Current&)
-        { iface_.unsubscribe( consumer ); }
+        { impl_.internalUnsubscribe( consumer ); }
 
 private:
-    OgMapIface &iface_;
+    OgMapImpl &impl_;
 };
 
 //////////////////////////////////////////////////////////////////////
 
-OgMapIface::OgMapIface( const std::string      &ifaceTag,
+OgMapImpl::OgMapImpl( const std::string      &interfaceTag,
                         const orcaice::Context &context ) 
-    : ifaceTag_(ifaceTag),
+    : interfaceTag_(interfaceTag),
       context_(context)      
 {
 }
 
-OgMapIface::~OgMapIface()
+OgMapImpl::~OgMapImpl()
 {
     tryRemovePtr( context_, ptr_ );
 }
 
 void
-OgMapIface::initInterface()
+OgMapImpl::initInterface()
 {
-    context_.tracer()->debug( "OgMapIface::initInterface()", 5 );
+    context_.tracer()->debug( "OgMapImpl::initInterface()", 5 );
 
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithTag<orca::OgMapConsumerPrx>
-        ( context_, consumerPrx_, ifaceTag_ );
+        ( context_, consumerPrx_, interfaceTag_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new OgMapI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_ );
+    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_ );
 }
 
 void 
-OgMapIface::initInterface( orcaice::Thread* thread, int retryInterval )
+OgMapImpl::initInterface( orcaice::Thread* thread, int retryInterval )
 {
-    context_.tracer()->debug( "OgMapIface::initInterface(thread)", 5 );
+    context_.tracer()->debug( "OgMapImpl::initInterface(thread)", 5 );
 
     topicPrx_ = orcaice::connectToTopicWithTag<orca::OgMapConsumerPrx>
-        ( context_, consumerPrx_, ifaceTag_, "*", thread, retryInterval );
+        ( context_, consumerPrx_, interfaceTag_, "*", thread, retryInterval );
 
     ptr_ = new OgMapI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, ifaceTag_, thread, retryInterval );
+    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_, thread, retryInterval );
 }
 
 orca::OgMapData
-OgMapIface::getData() const
+OgMapImpl::internalGetData() const
 {
-    context_.tracer()->debug( "OgMapIface::getData()", 5 );
+    context_.tracer()->debug( "OgMapImpl::internalGetData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
         std::stringstream ss;
-        ss << "No data available! (ifaceTag="<<ifaceTag_<<")";
+        ss << "No data available! (interfaceTag="<<interfaceTag_<<")";
         throw orca::DataNotExistException( ss.str() );
     }
 
@@ -104,9 +104,9 @@ OgMapIface::getData() const
 }
 
 void
-OgMapIface::subscribe(const ::orca::OgMapConsumerPrx& subscriber )
+OgMapImpl::internalSubscribe(const ::orca::OgMapConsumerPrx& subscriber )
 {
-    context_.tracer()->debug( "OgMapIface::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "OgMapImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     try {
         topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
@@ -117,21 +117,21 @@ OgMapIface::subscribe(const ::orca::OgMapConsumerPrx& subscriber )
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
-        ss <<"OgMapIface::subscribe: failed to subscribe: "<< e << endl;
+        ss <<"OgMapImpl::internalSubscribe: failed to subscribe: "<< e << endl;
         context_.tracer()->warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
 
 void
-OgMapIface::unsubscribe(const ::orca::OgMapConsumerPrx& subscriber )
+OgMapImpl::internalUnsubscribe(const ::orca::OgMapConsumerPrx& subscriber )
 {
-    context_.tracer()->debug( "OgMapIface::unsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "OgMapImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 
 void 
-OgMapIface::localSetAndSend( const ::orca::OgMapData &data )
+OgMapImpl::localSetAndSend( const ::orca::OgMapData &data )
 {
     //cout<<"TRACE(ogmapI.cpp): localSetData: " << orcaice::toString(data) << endl;
 
@@ -143,7 +143,7 @@ OgMapIface::localSetAndSend( const ::orca::OgMapData &data )
           consumerPrx_,
           data,
           topicPrx_,
-          ifaceTag_ );
+          interfaceTag_ );
 }
 
 }

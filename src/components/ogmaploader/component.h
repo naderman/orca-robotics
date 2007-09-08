@@ -12,7 +12,7 @@
 
 #include <orcaice/component.h>
 #include <orca/ogmap.h>
-#include <orcaifaceimpl/ogmapiface.h>
+#include <orcaifaceimpl/ogmapImpl.h>
 
 namespace ogmaploader {
 
@@ -34,7 +34,7 @@ private:
     //
     // EXTERNAL INTERFACE
     //
-    orcaifaceimpl::OgMapIfacePtr ogMapInterface_;
+    orcaifaceimpl::OgMapImplPtr ogMapInterface_;
 };
 
 }

@@ -42,7 +42,7 @@ MainLoop::~MainLoop()
 void 
 MainLoop::initNetwork()
 {
-    wifiInterface_ = new orcaifaceimpl::WifiIface( "Wifi", context_ );
+    wifiInterface_ = new orcaifaceimpl::WifiImpl( "Wifi", context_ );
 
     while ( isActive() ) 
     {

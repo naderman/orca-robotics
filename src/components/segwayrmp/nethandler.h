@@ -16,10 +16,10 @@
 #include <orcaice/proxy.h>
 #include <orcaice/notify.h>
 
-#include <orcaifaceimpl/odometry2diface.h>
-#include <orcaifaceimpl/odometry3diface.h>
-#include <orcaifaceimpl/poweriface.h>
-#include <orcaifaceimpl/velocitycontrol2diface.h>
+#include <orcaifaceimpl/odometry2dImpl.h>
+#include <orcaifaceimpl/odometry3dImpl.h>
+#include <orcaifaceimpl/powerImpl.h>
+#include <orcaifaceimpl/velocitycontrol2dImpl.h>
 
 #include "types.h"
 
@@ -53,10 +53,10 @@ private:
     void initVelocityControl2d();
 
     // external interfaces
-    orcaifaceimpl::Odometry2dIfacePtr           odometry2dI_;
-    orcaifaceimpl::Odometry3dIfacePtr           odometry3dI_;
-    orcaifaceimpl::PowerIfacePtr                powerI_;
-    orcaifaceimpl::VelocityControl2dIfacePtr    velocityControl2dI_;
+    orcaifaceimpl::Odometry2dImplPtr           odometry2dI_;
+    orcaifaceimpl::Odometry3dImplPtr           odometry3dI_;
+    orcaifaceimpl::PowerImplPtr                powerI_;
+    orcaifaceimpl::VelocityControl2dImplPtr    velocityControl2dI_;
 
     // hardware->network data flow
     orcaice::Proxy<Data>& dataPipe_;

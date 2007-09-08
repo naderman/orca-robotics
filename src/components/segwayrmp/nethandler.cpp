@@ -137,7 +137,7 @@ void
 NetHandler::initOdom2d()
 {
     odometry2dI_ =
-        new orcaifaceimpl::Odometry2dIface( descr_, "Odometry2d", context_ );
+        new orcaifaceimpl::Odometry2dImpl( descr_, "Odometry2d", context_ );
 
     int retryInterval = 2;
     while ( isActive() ) {
@@ -168,7 +168,7 @@ void
 NetHandler::initOdom3d()
 {
     odometry3dI_ = 
-        new orcaifaceimpl::Odometry3dIface( descr_, "Odometry3d", context_ );
+        new orcaifaceimpl::Odometry3dImpl( descr_, "Odometry3d", context_ );
 
     int retryInterval = 2;
     while ( isActive() ) {
@@ -198,7 +198,7 @@ NetHandler::initOdom3d()
 void
 NetHandler::initPower()
 {
-    powerI_ = new orcaifaceimpl::PowerIface( "Power", context_ );
+    powerI_ = new orcaifaceimpl::PowerImpl( "Power", context_ );
     
     int retryInterval = 2;
     while ( isActive() ) {
@@ -228,7 +228,7 @@ NetHandler::initPower()
 void
 NetHandler::initVelocityControl2d()
 {
-    velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dIface( descr_, "VelocityControl2d", context_ );
+    velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dImpl( descr_, "VelocityControl2d", context_ );
     
     int retryInterval = 2;
     while ( isActive() ) {
@@ -258,7 +258,7 @@ NetHandler::initVelocityControl2d()
     velocityControl2dI_->setNotifyHandler( this );
 }
 
-// This is a direct callback from the VelocityControl2dIface object.
+// This is a direct callback from the VelocityControl2dImpl object.
 // It's executed in Ice thread.
 // Here we convert to our internal format and stick it into
 // another Notify pipe to be handled the HwHandler.

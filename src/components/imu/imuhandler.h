@@ -19,7 +19,7 @@
 
 #include "imudriver.h"
 #include "imuI.h"
-#include <orcaifaceimpl/odometry3diface.h>
+#include <orcaifaceimpl/odometry3dImpl.h>
 
 namespace imu {
 
@@ -34,7 +34,7 @@ class ImuHandler : public orcaice::Thread
 public:
 
     ImuHandler(ImuI                            &imuObj,
-               orcaifaceimpl::Odometry3dIface  &odometry3dObj,
+               orcaifaceimpl::Odometry3dImpl  &odometry3dObj,
 	           ImuDriver                       *hwDriver,
                    orca::CartesianPoint            frameOffset,
 	           orcaice::Context                current,
@@ -45,7 +45,7 @@ public:
 
 private:
     ImuI& imuObj_;
-    orcaifaceimpl::Odometry3dIface& odometry3dObj_;
+    orcaifaceimpl::Odometry3dImpl& odometry3dObj_;
     // Generic driver for the hardware
     ImuDriver* hwDriver_;
     const orca::CartesianPoint frameOffset_;

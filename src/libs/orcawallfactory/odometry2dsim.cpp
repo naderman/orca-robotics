@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcamisc/orcamisc.h>
-#include <orcaifaceimpl/odometry2diface.h>
+#include <orcaifaceimpl/odometry2dImpl.h>
 
 #include "odometry2dsim.h"
 
@@ -29,8 +29,8 @@ Odometry2dSim::run()
     orca::VehicleDescription descr;
     orcamisc::readVehicleDescription( context_.properties(), configPrefix(), descr );
 
-    orcaifaceimpl::Odometry2dIfacePtr iface;
-    iface = new orcaifaceimpl::Odometry2dIface( descr, tag_, context_ );
+    orcaifaceimpl::Odometry2dImplPtr iface;
+    iface = new orcaifaceimpl::Odometry2dImpl( descr, tag_, context_ );
     iface->initInterface( this );
 
     while ( isActive() )
