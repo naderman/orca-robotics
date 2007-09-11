@@ -1,0 +1,15 @@
+OPTION( BUILD_GARMIN_GPS "Try to build garmin GPS driver" OFF )
+
+IF ( BUILD_GARMIN_GPS )
+
+
+INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+
+INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/components/gps )
+
+FILE( GLOB SRCS *.cpp )
+ADD_LIBRARY( OrcaGarminGps SHARED ${SRCS} )
+
+INSTALL_TARGETS( /lib OrcaGarminGps )
+
+END (BUILD_GARMIN_GPS)
