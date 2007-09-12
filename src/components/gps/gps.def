@@ -14,7 +14,7 @@ Provides.GpsMapGrid.DefaultInterface=gpsmapgrid
 
 # Config Parameters
 
-Config.Driver.Comment=Options are { 'ashtech', 'fake' }
+Config.Driver.Comment=Options are { 'ashtech', 'garmin', 'fake' }
 Config.Driver.Default=ashtech
 
 Config.StartEnabled.Default=1

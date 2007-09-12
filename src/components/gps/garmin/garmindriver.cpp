@@ -49,7 +49,7 @@ GarminGpsDriver::init()
             context_.tracer()->warning(ss.str());
             if (numTries>2) {
                 context_.tracer()->error("Giving up now...");
-                throw GpsException("AshtechGpsDriver: Resetting device failed twice.");
+                throw GpsException("GarminGpsDriver: Resetting device failed twice.");
             }
             numTries++;
             sleep(1);
@@ -59,16 +59,16 @@ GarminGpsDriver::init()
     catch ( const orcaserial::SerialException &e )
     {
         stringstream ss;
-        ss << "AshtechGpsDriver: Caught SerialException: " << e.what();
+        ss << "GarminGpsDriver: Caught SerialException: " << e.what();
         context_.tracer()->error( ss.str() );
         throw GpsException( ss.str() );
     }
 }
 
 int
-AshtechGpsDriver::resetDevice()
+GarminGpsDriver::resetDevice()
 {
-    context_.tracer()->info("AshtechGpsDriver: Trying to reset Ashtech GPS device");
+    context_.tracer()->info("GarminGpsDriver: Trying to reset Garmin GPS device");
 
     serial_.flush();
     const char *reset_string = "$PASHS,RST\r\n";
@@ -82,7 +82,7 @@ AshtechGpsDriver::resetDevice()
     // do this multiple times just in case it is already spitting out data
     do
     {
-        context_.tracer()->debug( "AshtechGpsDriver: Trying to read a line from GPS" );
+        context_.tracer()->debug( "GarminGpsDriver: Trying to read a line from GPS" );
 
         ret = serial_.readLine(sdata,256,'\n');
 
@@ -100,18 +100,18 @@ AshtechGpsDriver::resetDevice()
         }
         else if ( ret < 0 )
         {
-            context_.tracer()->debug( "AshtechGpsDriver: read timed out..." );
+            context_.tracer()->debug( "GarminGpsDriver: read timed out..." );
         }
         else
         {
-            context_.tracer()->error( "AshtechGpsDriver: shouldn't get ret==0" );
+            context_.tracer()->error( "GarminGpsDriver: shouldn't get ret==0" );
         }
     }
     while(ret>0);
 
     if(reset_ok==false)
     {
-        context_.tracer()->error("Resetting Ashtech GPS device failed");   
+        context_.tracer()->error("Resetting Garmin GPS device failed");   
         return -1;
     }
 
@@ -125,7 +125,7 @@ AshtechGpsDriver::resetDevice()
 void
 GarminGpsDriver::enableDevice()
 {
-    context_.tracer()->info("Enabling Ashtech GPS device");
+    context_.tracer()->info("Enabling Garmin GPS device");
 
     const char *gga_string = "$PASHS,NME,GGA,A,ON,1\r\n";
     const char *vtg_string = "$PASHS,NME,VTG,A,ON,1\r\n";
@@ -146,7 +146,7 @@ GarminGpsDriver::enableDevice()
 void
 GarminGpsDriver::disableDevice()
 {
-    context_.tracer()->info("Disabling Ashtech GPS device");
+    context_.tracer()->info("Disabling Garmin GPS device");
     
     const char *disable_string = "$PASHS,NME,ALL,A,OFF\r\n";
     serial_.writeString(disable_string);
@@ -190,11 +190,11 @@ GarminGpsDriver::read()
     timeOfRead_ = IceUtil::Time::now();
         
     if ( ret<0 ) {
-        throw GpsException( "AshtechGpsDriver: Timeout reading from serial port" );
+        throw GpsException( "GarminGpsDriver: Timeout reading from serial port" );
     }
     
     if (ret==0) {
-        throw GpsException("AshtechGpsDriver: Read 0 bytes from serial port");
+        throw GpsException("GarminGpsDriver: Read 0 bytes from serial port");
     }
     
     // 
@@ -204,20 +204,20 @@ GarminGpsDriver::read()
     nmeaMessage_.setSentence(serial_data);
     int check = nmeaParser_.parseMessage(nmeaMessage_);
     if (check!=0) {
-        throw GpsException("AshtechGpsDriver: Parsing message failed");
+        throw GpsException("GarminGpsDriver: Parsing message failed");
     }
 
     //printf("checksum is: 0x%x calc: 0x%x\n", nmeaMessage_.checksum(), nmeaMessage_.calcChecksum());
     if(nmeaMessage_.haveChecksum()) 
     {
         if(nmeaMessage_.checksum() != nmeaMessage_.calcChecksum()) {
-            throw GpsException("AshtechGpsDriver: Checksum is wrong");
+            throw GpsException("GarminGpsDriver: Checksum is wrong");
         }
     }
     
     check = nmeaParser_.parseData(nmeaMessage_);
     if (check!=0) {
-        throw GpsException("AshtechGpsDriver: Parsing data failed");
+        throw GpsException("GarminGpsDriver: Parsing data failed");
     }
     
     // this may throw
@@ -332,7 +332,7 @@ GarminGpsDriver::populateData()
        return;
        
     } else if(strncmp(nmeaMessage_.command(),"PASHR",3)==0) {
-        // Ashtech specific messages
+        // Garmin specific messages
         //cout << "got PASHR message\n";
         if(strncmp(nmeaMessage_.dataField(0),"ACK",3)==0){
 	       //cout << "got ACK response\n";
