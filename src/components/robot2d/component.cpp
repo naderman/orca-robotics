@@ -29,6 +29,7 @@ Component::Component() :
 
 Component::~Component()
 {
+    cout<<"TRACE(component.cpp): destructor()" << endl;
     // do not delete handlers!!! They derive from Ice::Thread and self-destruct.
 }
 
@@ -65,6 +66,7 @@ Component::start()
     hwHandler_->start();
 
     // the rest is handled by the application/service
+    context().tracer()->debug( "Component::start() done." );
 }
 
 void

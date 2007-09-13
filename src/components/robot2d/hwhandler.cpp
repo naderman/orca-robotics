@@ -89,6 +89,7 @@ HwHandler::HwHandler(
 
 HwHandler::~HwHandler()
 {
+    cout<<"TRACE(hwhandler.cpp): destructor()" << endl;
     delete driver_;
 }
 

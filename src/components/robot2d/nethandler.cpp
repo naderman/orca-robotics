@@ -53,6 +53,7 @@ NetHandler::NetHandler(
 
 NetHandler::~NetHandler()
 {
+    cout<<"TRACE(nethandler.cpp): destructor()" << endl;
 }
 
 // This is a direct callback from the VelocityControl2dImpl object.
@@ -62,7 +63,9 @@ NetHandler::~NetHandler()
 void 
 NetHandler::handleData(const orca::VelocityControl2dData& obj)
 {
-//    cout<<"TRACE(nethandler.cpp): handleData: " << orcaice::toString(obj) << endl;
+    stringstream ss;
+    ss << "NetHandler::handleData: " << orcaice::toString(obj);
+    context_.tracer()->debug( ss.str() );
 
     robot2d::Command command;
     convert( obj, command );
@@ -75,6 +78,7 @@ NetHandler::run()
     try // this is once per run try/catch: waiting for the communicator to be destroyed
     {
         // multi-try function
+        context_.tracer()->debug( "NetHandler: activating..." );
         orcaice::activate( context_, this );
     
         std::string prefix = context_.tag() + ".Config.";
@@ -99,16 +103,18 @@ NetHandler::run()
 
         const int odometryReadTimeout = 500; // [ms]
 
+        context_.tracer()->debug( "NetHandler: interface is set up." );
+
         //
         // Main loop
         //
         while( !isStopping() )
         {
-//         context_.tracer()->debug( "net handler loop spinning ",1);
+            // context_.tracer()->debug( "NetHandler: loop spinning ",9);
 
             // block on the most frequent data source: odometry
             if ( dataPipe_.getNext( data, odometryReadTimeout ) ) {
-//             context_.tracer()->debug( "Net loop timed out", 1);
+                context_.tracer()->debug( "Net loop timed out", 5);
                 continue;
             }
 

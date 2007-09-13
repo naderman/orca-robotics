@@ -106,6 +106,8 @@ DriveBicycleDriver::processNewCommandIncrement(int longitudinal, int transverse,
     {
         command_.speed = 0.0;
         command_.steerAngle = 0.0;
+        stringstream ss; ss << "DriveBicycleDriver: " << e;
+        context_.tracer()->warning( ss.str() );
         display_->failedToSendCommand();
     }
 }

@@ -37,7 +37,7 @@ ComponentThread::run()
             {
                 // Nothing left for us to do!
                 stringstream ss;
-                ss << "ComponentThread: Nothing left to do, so quitting. hasStatusInterface: " << hasStatusInterface;
+                ss << "orcaice::ComponentThread: Nothing left to do, so quitting. hasStatusInterface: " << hasStatusInterface;
                 context_.tracer()->debug( ss.str() );
                 return;
             }
@@ -59,7 +59,7 @@ ComponentThread::run()
     catch ( std::exception &e )
     {
         stringstream ss;
-        ss << "ComponentThread: caught unexpected exception: " << e.what() <<".  This shouldn't happen.";
+        ss << "orcaice::ComponentThread: caught unexpected exception: " << e.what() <<".  This shouldn't happen.";
         context_.tracer()->error( ss.str() );
     }
 }

@@ -112,6 +112,7 @@ NetworkHandler::run()
     //
     while ( isActive() )
     {
+        context_.tracer()->debug( "NetworkHandler: waiting for event...", 5 );
         if ( !events_->timedGet( event, timeoutMs ) ) {
             driver_->repeatCommand();
             continue;
@@ -145,30 +146,10 @@ NetworkHandler::run()
     // unexpected exceptions
     //
     } // try
-    catch ( const orca::OrcaException & e )
-    {
-        stringstream ss;
-        ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( const orcaice::Exception & e )
-    {
-        stringstream ss;
-        ss << "unexpected (local?) orcaice exception: " << e.what();
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
     catch ( const Ice::Exception & e )
     {
         stringstream ss;
-        ss << "unexpected Ice exception: " << e;
+        ss << "NetworkHandler: unexpected Ice exception: " << e;
         context_.tracer()->error( ss.str() );
         if ( context_.isApplication() ) {
             context_.tracer()->info( "this is an stand-alone component. Quitting...");
@@ -177,9 +158,8 @@ NetworkHandler::run()
     }
     catch ( const std::exception & e )
     {
-        // once caught this beast in here, don't know who threw it 'St9bad_alloc'
         stringstream ss;
-        ss << "unexpected std exception: " << e.what();
+        ss << "NetworkHandler: unexpected exception: " << e.what();
         context_.tracer()->error( ss.str() );
         if ( context_.isApplication() ) {
             context_.tracer()->info( "this is an stand-alone component. Quitting...");
@@ -188,7 +168,7 @@ NetworkHandler::run()
     }
     catch ( ... )
     {
-        context_.tracer()->error( "unexpected exception from somewhere.");
+        context_.tracer()->error( "NetworkHandler: unexpected unknown exception.");
         if ( context_.isApplication() ) {
             context_.tracer()->info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();

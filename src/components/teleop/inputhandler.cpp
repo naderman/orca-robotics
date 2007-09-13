@@ -97,13 +97,14 @@ InputHandler::run()
     if ( !isActive() ) {
         return;
     }
-    context_.tracer()->debug("Input driver enabled",2);
+    context_.tracer()->debug("InputHandler: Input driver enabled",2);
 
     //
     // Main loop
     //
     while ( isActive() )
     {
+        context_.tracer()->debug( "InputHandler: calling driver_->read()", 9 );
         driver_->read();
     } // end of main loop
 
@@ -117,16 +118,6 @@ InputHandler::run()
     // unexpected exceptions
     //
     } // try
-    catch ( const orca::OrcaException & e )
-    {
-        stringstream ss;
-        ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
     catch ( const Ice::Exception & e )
     {
         stringstream ss;
@@ -139,9 +130,8 @@ InputHandler::run()
     }
     catch ( const std::exception & e )
     {
-        // once caught this beast in here, don't know who threw it 'St9bad_alloc'
         stringstream ss;
-        ss << "unexpected std exception (possibly OrcaIce): " << e.what();
+        ss << "unexpected std exception: " << e.what();
         context_.tracer()->error( ss.str() );
         if ( context_.isApplication() ) {
             context_.tracer()->info( "this is an stand-alone component. Quitting...");

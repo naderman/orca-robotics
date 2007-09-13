@@ -52,6 +52,9 @@ VelocityControl2dDriver::enable()
     // includes common ex's: ConnectionRefusedException, ConnectTimeoutException
     catch ( const Ice::LocalException & e )
     {
+        stringstream ss;
+        ss << "VelocityControl2dDriver::enable() failed: " << e;
+        context_.tracer()->warning( ss.str() );
         return 1;
     }
 
@@ -78,6 +81,8 @@ VelocityControl2dDriver::repeatCommand()
         command_.motion.v.x = 0.0;
         command_.motion.v.y = 0.0;
         command_.motion.w = 0.0;
+        stringstream ss; ss << "VelocityControl2dDriver::repeatCommand(): " << e;
+        context_.tracer()->warning( ss.str() );
         display_->failedToSendCommand();
     }
 }
@@ -109,6 +114,8 @@ VelocityControl2dDriver::processNewCommandIncrement(int longitudinal, int transv
         command_.motion.v.x = 0.0;
         command_.motion.v.y = 0.0;
         command_.motion.w = 0.0;
+        stringstream ss; ss << "VelocityControl2dDriver:processNewCommandIncrement: " << e;
+        context_.tracer()->warning( ss.str() );
         display_->failedToSendCommand();
     }
 }
@@ -140,6 +147,8 @@ VelocityControl2dDriver::processNewRelativeCommand( double longitudinal, double 
         command_.motion.v.x = 0.0;
         command_.motion.v.y = 0.0;
         command_.motion.w = 0.0;
+        stringstream ss; ss << "VelocityControl2dDriver::processNewRelativeCommand(): " << e;
+        context_.tracer()->warning( ss.str() );
         display_->failedToSendCommand();
     }
 }
