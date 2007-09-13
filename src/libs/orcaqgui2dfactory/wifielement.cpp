@@ -40,12 +40,15 @@ WifiWidget::refresh( WifiData &data )
     {
         WifiInterface &wifiInt = data.interfaces[i];
         lcdsSignal_[i]->display(wifiInt.signalLevel);
+        lcdsNoise_[i]->display(wifiInt.noiseLevel);
         lcdsLink_[i]->display(wifiInt.linkQuality);
         
         if (wifiInt.linkType==LinkQualityTypeDbm) {
             lcdsMaxSignal_[i]->display("DB");
+            lcdsMaxNoise_[i]->display("DB");
         } else {
             lcdsMaxSignal_[i]->display(wifiInt.maxSignalLevel);
+            lcdsMaxNoise_[i]->display(wifiInt.maxNoiseLevel);
         }
         lcdsMaxLink_[i]->display(wifiInt.maxLinkQuality);
         
@@ -58,6 +61,9 @@ WifiWidget::refresh( WifiData &data )
 
 void WifiWidget::setupDisplay()
 {
+    const int numRowsPerInterface = 4; 
+    const int numDigits = 3;
+    
     QGridLayout *globalLayout = new QGridLayout(this);
     globalLayout->setColumnStretch(0,0);
     globalLayout->setColumnStretch(1,1);
@@ -66,30 +72,41 @@ void WifiWidget::setupDisplay()
     for (unsigned int i=0; i<numInterfaces_; i++)
     {
         QLabel *interfaceLabel = new QLabel;
-        globalLayout->addWidget(interfaceLabel,3*i,0);
+        globalLayout->addWidget(interfaceLabel,numRowsPerInterface*i,0);
         interfaceLabels_.push_back( interfaceLabel );
         
-        QLCDNumber *lcdSignalLevel = new QLCDNumber(3, this);
+        QLCDNumber *lcdSignalLevel = new QLCDNumber(numDigits, this);
         lcdSignalLevel->setSegmentStyle(QLCDNumber::Filled);
         lcdsSignal_.push_back(lcdSignalLevel);
-        QLCDNumber *lcdMaxSignalLevel = new QLCDNumber(3, this);
+        QLCDNumber *lcdMaxSignalLevel = new QLCDNumber(numDigits, this);
         lcdMaxSignalLevel->setSegmentStyle(QLCDNumber::Filled);
         lcdsMaxSignal_.push_back(lcdMaxSignalLevel);
         QLabel *signalLabel = new QLabel("Signal: ");
-        globalLayout->addWidget( signalLabel,3*i+1,0);
-        globalLayout->addWidget( lcdSignalLevel,3*i+1,1);
-        globalLayout->addWidget( lcdMaxSignalLevel,3*i+1,2);
+        globalLayout->addWidget( signalLabel,numRowsPerInterface*i+1,0);
+        globalLayout->addWidget( lcdSignalLevel,numRowsPerInterface*i+1,1);
+        globalLayout->addWidget( lcdMaxSignalLevel,numRowsPerInterface*i+1,2);
         
-        QLCDNumber *lcdLinkLevel = new QLCDNumber(3, this);
+        QLCDNumber *lcdNoiseLevel = new QLCDNumber(numDigits, this);
+        lcdNoiseLevel->setSegmentStyle(QLCDNumber::Filled);
+        lcdsNoise_.push_back(lcdNoiseLevel);
+        QLCDNumber *lcdMaxNoiseLevel = new QLCDNumber(numDigits, this);
+        lcdMaxNoiseLevel->setSegmentStyle(QLCDNumber::Filled);
+        lcdsMaxNoise_.push_back(lcdMaxNoiseLevel);
+        QLabel *noiseLabel = new QLabel("Noise: ");
+        globalLayout->addWidget( noiseLabel,numRowsPerInterface*i+2,0);
+        globalLayout->addWidget( lcdNoiseLevel,numRowsPerInterface*i+2,1);
+        globalLayout->addWidget( lcdMaxNoiseLevel,numRowsPerInterface*i+2,2);
+        
+        QLCDNumber *lcdLinkLevel = new QLCDNumber(numDigits, this);
         lcdLinkLevel->setSegmentStyle(QLCDNumber::Filled);
         lcdsLink_.push_back(lcdLinkLevel);
-        QLCDNumber *lcdMaxLinkLevel = new QLCDNumber(3, this);
+        QLCDNumber *lcdMaxLinkLevel = new QLCDNumber(numDigits, this);
         lcdMaxLinkLevel->setSegmentStyle(QLCDNumber::Filled);
         lcdsMaxLink_.push_back(lcdMaxLinkLevel);
         QLabel *linkLabel = new QLabel("Link quality: ");
-        globalLayout->addWidget( linkLabel,3*i+2,0);
-        globalLayout->addWidget( lcdLinkLevel,3*i+2,1);
-        globalLayout->addWidget( lcdMaxLinkLevel,3*i+2,2);
+        globalLayout->addWidget( linkLabel,numRowsPerInterface*i+3,0);
+        globalLayout->addWidget( lcdLinkLevel,numRowsPerInterface*i+3,1);
+        globalLayout->addWidget( lcdMaxLinkLevel,numRowsPerInterface*i+3,2);
         
     
 //         QProgressBar *barLinkQuality = new QProgressBar;

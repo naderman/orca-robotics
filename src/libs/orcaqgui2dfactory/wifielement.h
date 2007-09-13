@@ -36,6 +36,8 @@ class WifiWidget : public QWidget
         QVector<QProgressBar*> progressBars_;
         QVector<QLCDNumber*> lcdsSignal_;
         QVector<QLCDNumber*> lcdsMaxSignal_;
+        QVector<QLCDNumber*> lcdsNoise_;
+        QVector<QLCDNumber*> lcdsMaxNoise_;
         QVector<QLCDNumber*> lcdsLink_;
         QVector<QLCDNumber*> lcdsMaxLink_;
         QVector<QLabel*> interfaceLabels_;
