@@ -13,8 +13,8 @@
 
 #include <orcaice/exceptions.h>
 
-#include <Ice/Ice.h>
 #include <IceUtil/Monitor.h>
+#include <IceUtil/Mutex.h>
 #include <IceUtil/Time.h>
 
 namespace orcaice

@@ -12,6 +12,7 @@
 #define ORCAICE_ICE_PTR_PROXY_H
 
 #include <orcaice/proxy.h>
+#include <Ice/Ice.h>
 
 namespace orcaice
 {
