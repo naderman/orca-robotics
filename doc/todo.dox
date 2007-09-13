@@ -147,6 +147,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     all possible exceptions around it. (alex m)
   - Buffer and PtrBuffer classes now require explicit configuration (depth and buffer type). The latest defaults
     (infinite depth, circular type) were used at the point of instantiation. (alex m)
+  - Renamed Proxy storage class into (hopefully less confusing) Store. Proxy still exists but is depricated.
 
 - libOrcaImage
   - added support for Image interface in image conversion functions. (alex m)

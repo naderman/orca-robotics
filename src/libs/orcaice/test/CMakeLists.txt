@@ -10,6 +10,10 @@ ADD_EXECUTABLE( ptrproxytest ptrproxytest.cpp )
 ADD_TEST( PtrProxyTest ptrproxytest )
 MESSAGE ( STATUS "Planning to Build Test      : PtrProxyTest [libOrcaIce]")
 
+ADD_EXECUTABLE( ptrstoretest ptrstoretest.cpp )
+ADD_TEST( PtrStoreTest ptrstoretest )
+MESSAGE ( STATUS "Planning to Build Test      : PtrStoreTest [libOrcaIce]")
+
 ADD_EXECUTABLE( ptrnotifytest ptrnotifytest.cpp )
 ADD_TEST( PtrNotifyTest ptrnotifytest )
 MESSAGE ( STATUS "Planning to Build Test      : PtrNotifyTest [libOrcaIce]")
@@ -21,6 +25,10 @@ MESSAGE ( STATUS "Planning to Build Test      : BufferTest [libOrcaIce]")
 ADD_EXECUTABLE( proxytest proxytest.cpp )
 ADD_TEST( ProxyTest proxytest )
 MESSAGE ( STATUS "Planning to Build Test      : ProxyTest [libOrcaIce]")
+
+ADD_EXECUTABLE( storetest storetest.cpp )
+ADD_TEST( StoreTest storetest )
+MESSAGE ( STATUS "Planning to Build Test      : StoreTest [libOrcaIce]")
 
 ADD_EXECUTABLE( notifytest notifytest.cpp )
 ADD_TEST( NotifyTest notifytest )
