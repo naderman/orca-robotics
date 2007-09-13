@@ -312,6 +312,9 @@ void readConfig( vector<WirelessConfig> &wifiConfigs )
     close(socketFd);
 }
 
+//
+// Some of this code is adapted from wireless tools: iwlib.c
+//
 void readUsingIoctl( vector<IoctlData> &wifiDataIoctl )
 {    
     // this is the socket to use for wireless info
@@ -369,24 +372,29 @@ void readUsingIoctl( vector<IoctlData> &wifiDataIoctl )
         {
             qual = &iwStats->qual;
             data.throughPut = iwRange->throughput;
-            if (qual->level != 0) {
-                if (qual->level > iwRange->max_qual.level) {
-                    data.linkType = orca::LinkQualityTypeDbm;
-                } else {
-                    data.linkType = orca::LinkQualityTypeRelative;
-                }
+            
+            data.linkQuality = qual->qual;
+            data.maxLinkQuality = iwRange->max_qual.qual;
+            
+            if((qual->updated & IW_QUAL_DBM) || (qual->level > iwRange->max_qual.level))
+            {
+                // dbm
+                data.linkType = orca::LinkQualityTypeDbm;
+                data.signalLevel = qual->level - 0x100;
+                data.maxSignalLevel = iwRange->max_qual.level;
+                data.noiseLevel = qual->noise - 0x100;
+                data.maxNoiseLevel = iwRange->max_qual.noise;
+                
             }
             else
             {
-                data.linkType = orca::LinkQualityTypeUnknown;
+                // relative
+                data.linkType = orca::LinkQualityTypeRelative;
+                data.signalLevel = qual->level;
+                data.maxSignalLevel = iwRange->max_qual.level;
+                data.noiseLevel = qual->noise;
+                data.maxNoiseLevel = iwRange->max_qual.noise;
             }
-        
-            data.linkQuality = qual->qual;
-            data.maxLinkQuality = iwRange->max_qual.qual;
-            data.signalLevel = qual->level;
-            data.maxSignalLevel = iwRange->max_qual.level;
-            data.noiseLevel = qual->noise;
-            data.maxNoiseLevel = iwRange->max_qual.noise;
         }
         else
         {

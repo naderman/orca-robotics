@@ -34,7 +34,10 @@ class WifiWidget : public QWidget
         
     private:
         QVector<QProgressBar*> progressBars_;
-        QVector<QLCDNumber*> lcds_;
+        QVector<QLCDNumber*> lcdsSignal_;
+        QVector<QLCDNumber*> lcdsMaxSignal_;
+        QVector<QLCDNumber*> lcdsLink_;
+        QVector<QLCDNumber*> lcdsMaxLink_;
         QVector<QLabel*> interfaceLabels_;
         void setupDisplay();
         unsigned int numInterfaces_;

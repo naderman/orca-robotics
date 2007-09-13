@@ -25,8 +25,6 @@ WifiWidget::WifiWidget( unsigned int numInterfaces, std::string proxyString )
     : numInterfaces_(numInterfaces)
 {
     setupDisplay();
-    setMinimumWidth(200);
-    setMinimumHeight(150);
     setWindowTitle( QString(proxyString.c_str()) );
 }
 
@@ -41,22 +39,29 @@ WifiWidget::refresh( WifiData &data )
     for (unsigned int i=0; i<numInterfaces_; i++)
     {
         WifiInterface &wifiInt = data.interfaces[i];
-//         if (wifiInt.linkType!=LinkQualityTypeDbm) {
-//             lcds_[i]->display("Err");
-//         } else {
-            lcds_[i]->display(wifiInt.signalLevel);
-//         }
+        lcdsSignal_[i]->display(wifiInt.signalLevel);
+        lcdsLink_[i]->display(wifiInt.linkQuality);
         
-        progressBars_[i]->setMinimum(0);
-        progressBars_[i]->setMaximum(wifiInt.maxLinkQuality);
-        progressBars_[i]->setValue(wifiInt.linkQuality);
+        if (wifiInt.linkType==LinkQualityTypeDbm) {
+            lcdsMaxSignal_[i]->display("DB");
+        } else {
+            lcdsMaxSignal_[i]->display(wifiInt.maxSignalLevel);
+        }
+        lcdsMaxLink_[i]->display(wifiInt.maxLinkQuality);
+        
+//         progressBars_[i]->setMinimum(0);
+//         progressBars_[i]->setMaximum(wifiInt.maxLinkQuality);
+//         progressBars_[i]->setValue(wifiInt.linkQuality);
     }
     
 }
 
 void WifiWidget::setupDisplay()
 {
-    QGridLayout *globalLayout = new QGridLayout;
+    QGridLayout *globalLayout = new QGridLayout(this);
+    globalLayout->setColumnStretch(0,0);
+    globalLayout->setColumnStretch(1,1);
+    globalLayout->setColumnStretch(2,1);
     
     for (unsigned int i=0; i<numInterfaces_; i++)
     {
@@ -64,18 +69,34 @@ void WifiWidget::setupDisplay()
         globalLayout->addWidget(interfaceLabel,3*i,0);
         interfaceLabels_.push_back( interfaceLabel );
         
-        QLCDNumber *lcdSignalLevel = new QLCDNumber;
+        QLCDNumber *lcdSignalLevel = new QLCDNumber(3, this);
         lcdSignalLevel->setSegmentStyle(QLCDNumber::Filled);
-        lcds_.push_back(lcdSignalLevel);
-        QLabel *signalLabel = new QLabel("Signal level: ");
+        lcdsSignal_.push_back(lcdSignalLevel);
+        QLCDNumber *lcdMaxSignalLevel = new QLCDNumber(3, this);
+        lcdMaxSignalLevel->setSegmentStyle(QLCDNumber::Filled);
+        lcdsMaxSignal_.push_back(lcdMaxSignalLevel);
+        QLabel *signalLabel = new QLabel("Signal: ");
         globalLayout->addWidget( signalLabel,3*i+1,0);
         globalLayout->addWidget( lcdSignalLevel,3*i+1,1);
-    
-        QProgressBar *barLinkQuality = new QProgressBar;
-        progressBars_.push_back(barLinkQuality);
-        QLabel *linkLabel = new QLabel("Link quality level: ");
+        globalLayout->addWidget( lcdMaxSignalLevel,3*i+1,2);
+        
+        QLCDNumber *lcdLinkLevel = new QLCDNumber(3, this);
+        lcdLinkLevel->setSegmentStyle(QLCDNumber::Filled);
+        lcdsLink_.push_back(lcdLinkLevel);
+        QLCDNumber *lcdMaxLinkLevel = new QLCDNumber(3, this);
+        lcdMaxLinkLevel->setSegmentStyle(QLCDNumber::Filled);
+        lcdsMaxLink_.push_back(lcdMaxLinkLevel);
+        QLabel *linkLabel = new QLabel("Link quality: ");
         globalLayout->addWidget( linkLabel,3*i+2,0);
-        globalLayout->addWidget( barLinkQuality,3*i+2,1);
+        globalLayout->addWidget( lcdLinkLevel,3*i+2,1);
+        globalLayout->addWidget( lcdMaxLinkLevel,3*i+2,2);
+        
+    
+//         QProgressBar *barLinkQuality = new QProgressBar;
+//         progressBars_.push_back(barLinkQuality);
+//         QLabel *linkLabel = new QLabel("Link quality level: ");
+//         globalLayout->addWidget( linkLabel,3*i+2,0);
+//         globalLayout->addWidget( barLinkQuality,3*i+2,1);
     }
     setLayout(globalLayout);
 }
