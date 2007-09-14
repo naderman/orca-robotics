@@ -9,8 +9,10 @@
  */
 
 #include <stdio.h>
-#include <string.h>
+#include <string>
 #include <iostream>
+#include <assert.h>
+#include <orcamisc/tokenise.h>
 
 // Make sure strnlen is defined.
 #include <orcaportability/strnlen.h>
@@ -18,278 +20,177 @@
 #include "nmea.h"
 
 using namespace std;
+using namespace orcagpsutil;
 
-namespace orcagpsutil{
-
-    const char StartOfSentence = '$';
-    const unsigned int CommandLen = 5;
-    const char FieldDelim = ',';
-    const char ChecksumDelim = '*';
-    const unsigned int ChecksumFieldLen = 2;
-    const char *EndofSentence = "\r\n";
-    // wrong wrong wrong, should be 82!
-    const unsigned int MaxSentenceLen = 256;
-    const unsigned int MaxDataLen = MaxSentenceLen - 7;
-    const int MaxNumFields = 128;
+const char NMEAStartOfSentence  = '$';
+const char NMEAChecksumDelim    = '*';
 
 
-    NmeaMessage::NmeaMessage()
+//*************************************************************
+//The blank constructor
+NmeaMessage::NmeaMessage()
+{
+    init();
+}
+
+//**************************************************************
+void NmeaMessage::init()
+{
+    haveSentence_ = false;
+    haveTokens_   = false;
+    haveCheckSum_ = false;
+    checkSumOK_   = false;
+
+    //! Now clear the internal data store
+    sentence_[0]   = 0;
+    dataTokens_.clear();
+}
+
+
+//****************************************************************
+NmeaMessage::NmeaMessage(const char *sentence, int testCheckSum)
+{
+    init();
+    setSentence(sentence,testCheckSum);
+}
+
+
+//****************************************************************************
+
+NmeaMessage::~NmeaMessage()
+{    
+}
+
+
+//**********************************************************************
+//Load the data as requested and test the checksum if we are asked to.
+void NmeaMessage::setSentence(const char *data, int AddOrTestCheckSum)
+{
+    init();
+    
+    strncpy(sentence_,data, MAX_SENTENCE_LEN);
+
+    //terminate just in case, Note that we have a buffer which is
+    //MAX_SENTENCE_LEN + 1 long!
+    
+    sentence_[MAX_SENTENCE_LEN] = '\0';
+    haveSentence_             = true;
+
+    switch(AddOrTestCheckSum)
     {
-	init();
+    case TestChecksum:  //This is for Rx'd data that we need to test for correct reception
+        testChecksumOk(); break;
+    case AddChecksum:   //This is for Tx data that needs to checksummed before sending
+        addCheckSum(); checkSumOK_ = true; break;
+    case DontTestOrAddChecksum: 
+        break;
+    default:
+        assert(true);
     }
 
-    void NmeaMessage::init()
-    {
-	haveSentence_=false;
-	haveData_=false;
-	haveFields_=false;
-        haveChecksum_=false;
-	checksum_=-1;
-
-        //! The raw sentence
-	sentence_ = new char[MaxSentenceLen+1];
-        //! The command as a string
-	command_ = new char[CommandLen+1];
-        //! The raw data string
-	data_ = new char[MaxDataLen+1];
-	//! The fields
-	dataFieldsPtr_ = new char*[MaxNumFields];
-        dataFields_ = new char[MaxSentenceLen];
+}
 
 
-        sentence_[0]=0;
-	command_[0]=0;
-	data_[0]=0;
-	dataLen_=0;
-        dataFieldsPtr_[0]=0;
-        dataFields_[0]=0;
-        numDataFields_=0;
-    }
+//*****************************************************************
+bool NmeaMessage::testChecksumOk()
+{
+    haveCheckSum_ = true;
+    checkSumOK_   = false;
 
-    NmeaMessage::NmeaMessage(const char *sentence)
-    {
-	init();
-	strncpy(sentence_,sentence,MaxSentenceLen);
-        // terminate just in case
-	sentence_[MaxSentenceLen]='\0';
-        haveSentence_=true;
-    }
+    //First save the checksum chars from the existing message
+    char* ptr;
+    char  chksum_HIB,chksum_LOB;
+   
+    //First save the existing two checksum chars from the message
+    //These are straight after the '*' character
+    ptr = strchr(sentence_, NMEAChecksumDelim);
+    if(!ptr){return false;}
+   
+    //save the high and low bytes of the checksum
+    //Make sure they are in upper case!
+    chksum_HIB = toupper(*(++ptr));  
+    chksum_LOB = toupper(*(ptr + 1));
+   
 
-    NmeaMessage::NmeaMessage(const char *command, const char *data)
-    {
-	init();
-    }
+    //invalidate the existing checksum
+    *ptr = *(ptr+1) = 'x';
+        
+    //****NOTE** We leave the ptr pointing at the first chksum byte
+       
+    //Re-calculate our own copy of the checksum
+    addCheckSum();
 
-    NmeaMessage::NmeaMessage(const char *command, int fields, ...)
-    {
-	init();
-    }
-
-    NmeaMessage::~NmeaMessage()
-    {
-    }
-
-    const char *NmeaMessage::dataField(int i)
-    {
-	if(i>=numDataFields_||i<0||!haveFields_){
-            return NULL;
-	}else{
-            return dataFieldsPtr_[i];
-	}
-    }
-
-    bool NmeaMessage::setSentence(const char *data)
-    {
-	strncpy(sentence_,data,MaxSentenceLen);
-        // terminate just in case
-	sentence_[MaxSentenceLen]='\0';
-	haveSentence_=true;
-        // reset other fields
-	haveData_=false;
-	haveFields_=false;
-        haveChecksum_=false;
-	checksum_=-1;
+    //Now compare our saved version with our new ones
+    if((chksum_HIB == *ptr) && (chksum_LOB == *(ptr+1))){
+        //all looked good!
+        checkSumOK_ = true;
         return true;
     }
+   
+    //failed the checksum!
+    return false;
+        
+}
 
-    int NmeaMessage::calcChecksum()
-    {
-	if(haveSentence_){
-            if(sentence_[0]!=StartOfSentence){
-                return -1;
-	    }
-            unsigned char chk=0;
 
-	    for(unsigned int i=1;i<MaxSentenceLen;i++){
-                // no delimiter uh oh
-		if((sentence_[i]=='\r')||(sentence_[i]=='\n')||(sentence_[i]=='\0')){
-		    cerr << "nmea: cannot calculate checksum, missing *\n";
-		    return -1;
-		}
-                // goodie we found it
-		if(sentence_[i]==ChecksumDelim)
-                    break;
-		chk^=(unsigned char)sentence_[i];
-	    }
-            return chk;
-	}
-	else{
-            return -1;
-	}
+//*****************************************************
+// Add the checksum chars to an existing message
+// NOTE: this assumes that there is allready space in the message for
+// the checksum, and that the checksum delimiter is there
+ 
+void NmeaMessage::addCheckSum(){   
+      
+    assert( haveSentence_ );
+    
+    haveCheckSum_ = true;
+
+    //check that we have the '$' at the start
+    if(sentence_[0]!= NMEAStartOfSentence)
+       {return;}
+
+    unsigned char chkRunning = 0;
+    
+    int loopCount;
+    unsigned char nextChar;
+    for( loopCount =1; loopCount < MAX_SENTENCE_LEN; loopCount++){
+    
+        nextChar = static_cast<unsigned char>(sentence_[loopCount]);
+    
+        // no delimiter uh oh
+        if((nextChar=='\r')||(nextChar=='\n')||(nextChar=='\0')){
+            throw NmeaException("nmea: cannot calculate checksum, missing '*'\n");
+            return;
+        }
+		
+            // goodie we found it
+        if(nextChar==NMEAChecksumDelim)
+          {break;}
+    
+        //Keep the running total going
+        chkRunning ^= nextChar;
     }
+        
+    //Put the byte values as upper case HEX back into the message
+    sprintf(sentence_ + loopCount + 1,"%02X",chkRunning);
 
-    //! Return the checksum
-    int NmeaMessage::checksum(){
-        if(haveChecksum_)
-            return checksum_;
-        else
-            return -1;
-    };
+}
 
 
-// The Parser
+//**********************************************************************
+// Parse the data fields of our message...
+void NmeaMessage::parseTokens(){
 
-    NmeaParser::NmeaParser()
-    {
-    }
+    //We should not attempt to be parsing a message twice...
+    assert (numDataTokens() == 0);
 
-    NmeaParser::~NmeaParser()
-    {
-    }
+    //Split the message at the commas
+    //TODO cope with missing fields
+    orcamisc::tokenise(sentence_, dataTokens_, ",");
+    
+    //Now discard the $ and the * from the first and last tokens...
+    //TODO : - dataTokens_[0] = 
 
-    int NmeaParser::parseMessage(NmeaMessage &message)
-    {
-	if(!message.haveSentence_){
-	    cerr << "nmea: No Sentence\n";
-            return -1;
-	}
-
-	if(message.sentence_[0]!=StartOfSentence){
-	    cerr << "nmea: Start of sentence($) not found\n";
-	    return -1;
-	}
-
-	if(strnlen(message.sentence_,MaxSentenceLen+1)>=(MaxSentenceLen)){
-	    cerr << "nmea: Sentence incorrect length\n";
-            return -1;
-	}
-
-        //copy and check the command length
-	strncpy(message.command_,&message.sentence_[1],CommandLen);
-	if(message.sentence_[6]!=FieldDelim){
-	    cerr << "Data delimiter not found\n";
-            return -1;
-	}
-	message.command_[CommandLen]='\0';
-	if(strnlen(message.command_,CommandLen)!=CommandLen){
-	    cerr << "nmea: Command incorrect length\n";
-            return -1;
-	}
-
-	char *ptr=&message.sentence_[7];
-        unsigned int i=0;
-	for(i=0;i<MaxDataLen;i++)
-	{
-	    if(*(ptr+i)=='\r')
-		break;
-	    if(*(ptr+i)=='\n'){
-		cerr << "nmea: Sentence incorrectly terminated\n";
-		cerr << "nmea:  encountered \\n before \\r\n";
-		return -1;
-                break;
-	    }
-	    if(*(ptr+i)==ChecksumDelim)
-		break;
-	    if(*(ptr+i)=='\0'){
-		cerr << "nmea: Sentence incorrectly terminated\n";
-		cerr << "nmea:  encountered \\0 before endof sentence\n";
-		return -1;
-		break;
-	    }
-            // copy each byte (of data)
-	    message.data_[i]=*(ptr+i);
-
-	}
-
-	if(i==MaxDataLen){
-	    cerr << "nmea: Sentence incorrectly terminated\n";
-	    cerr << "nmea:  message exceeds maximum length\n";
-	    return -1;
-	}
-        // terminate the copied data string
-	message.data_[i]='\0';
-        message.dataLen_=i;
-
-        // optional Checksum
-	if(*(ptr+i)==ChecksumDelim){
-            i+=1;
-            char *endptr=NULL;
-	    message.checksum_=strtol(ptr+i,&endptr,16);
-	    if(endptr!=NULL){
-                // check if strtol worked
-                if(endptr==ptr+i+2){
-                    message.haveChecksum_=true;
-		}
-	    }
-            i+=2;
-	}
-
-        //we are done
-	if(strncmp(ptr+i,EndofSentence,2)==0){
-	    message.haveData_=true;
-	    return 0;
-	}
-	cerr << "nmea: Sentence incorrectly terminated\n";
-	cerr << "nmea:  End of sentence not found\n";
-	fprintf(stderr,"nmea:  found: %x%x\n",(int)(*(ptr+i)),(int)(*(ptr+i+1)));
-
-
-        return -1;
-
-    }
-
-    int NmeaParser::parseData(NmeaMessage &message)
-    {
-        if(message.haveData_!=true)
-	    return -1;
-
-	int field_index=0;
-        //reset stuff in message
-	message.numDataFields_=0;
-        message.haveFields_=false;
-        char *field_start=&message.dataFields_[0];
-	for( int i=0;i<=message.dataLen_;i++)
-	{
-            //copy the char
-	    message.dataFields_[i]=message.data_[i];
-	    if(message.dataFields_[i]==FieldDelim||message.data_[i]=='\0')
-	    {
-                //terminate current field
-		message.dataFields_[i]='\0';
-                //assign pointer to field
-		message.dataFieldsPtr_[field_index]=field_start;
-                // point to start of next field
-		field_start=&message.dataFields_[i+1];
-                //increment index
-		field_index++;
-		//increment counter
-                message.numDataFields_++;
-	    }
-            //are we there yet ?
-	    if(message.data_[i]=='\0')
-	    {
-                break;
-	    }
-
-	}
-	//printf("found %d data fields\n",message.numDataFields_);
-	if(message.numDataFields_>0)
-	{
-            message.haveFields_=true;
-	}
-        return 0;
-    }
-
-
+    //keep track of what we have done.
+    haveTokens_ = true;
 
 }

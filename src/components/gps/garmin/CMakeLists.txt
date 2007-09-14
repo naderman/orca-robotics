@@ -1,4 +1,4 @@
-OPTION( BUILD_GARMIN_GPS "Try to build garmin GPS driver" OFF )
+OPTION( BUILD_GARMIN_GPS "Try to build garmin GPS driver" ON )
 
 IF ( BUILD_GARMIN_GPS )
 
@@ -12,4 +12,4 @@ ADD_LIBRARY( OrcaGarminGps SHARED ${SRCS} )
 
 INSTALL_TARGETS( /lib OrcaGarminGps )
 
-END (BUILD_GARMIN_GPS)
+ENDIF(BUILD_GARMIN_GPS)

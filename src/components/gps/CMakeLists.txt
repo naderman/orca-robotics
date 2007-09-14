@@ -25,8 +25,21 @@ IF ( BUILD_GPS )
         OrcaGpsUtil
     )
 
+    # OPTIONAL_SUB_LIBRARY macro defined in component_rules.cmake
+    SET( GARMINGPS_FOUND 1 )
+    OPTIONAL_SUB_LIBRARY(
+        "Garmin Driver for Gps"
+    	garmin
+        OrcaGarminGps
+        GARMINGPS_LIBS
+        GARMINGPS_FOUND
+        HAVE_GARMINGPS_DRIVER
+        OrcaSerial
+        OrcaGpsUtil
+    )
+
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaIfaceImpl ${ASHTECHGPS_LIBS} )
+    SET( COMP_DEPS OrcaIfaceImpl ${ASHTECHGPS_LIBS} ${GARMINGPS_LIBS})
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( gps ${COMP_SRCS} main )

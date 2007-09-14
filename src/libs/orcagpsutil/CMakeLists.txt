@@ -5,7 +5,7 @@ IF ( NOT OS_WIN )
     FILE( GLOB SRCS *.cpp )
 
     GLOBAL_ADD_LIBRARY( OrcaGpsUtil SHARED ${SRCS} )
-    TARGET_LINK_LIBRARIES( OrcaGpsUtil )
+    TARGET_LINK_LIBRARIES( OrcaGpsUtil OrcaMisc)
     INSTALL_FILES( /include/orcagpsutil .*\\.h$ )
     
     IF ( BUILD_TESTS )

@@ -21,7 +21,6 @@ class GpsProxy;
 
 /*
     @brief Interface to Garmin Gps
-
     @author Duncan Mercer
  */
 class GarminGpsDriver : public Driver
@@ -34,28 +33,25 @@ public:
     virtual ~GarminGpsDriver();
 
     virtual void init();
-
     virtual bool hasFix() { return hasFix_; };
-
     virtual void read();
-    
     virtual int getData( orca::GpsData& data );
-    
     virtual int getTimeData( orca::GpsTimeData& data );
 
 private:
 
     void populateData();
-    
     void enableDevice();
     void disableDevice();
     int resetDevice();
+    void ExtractGGAData();
+    void ExtractVTGData();
+    void ExtractRMEData();
 
     orcaice::Context context_;
     
     orcaserial::Serial serial_;
     GpsProxy *gpsProxy_;
-    orcagpsutil::NmeaParser nmeaParser_;
     orcagpsutil::NmeaMessage nmeaMessage_;
     IceUtil::Time timeOfRead_;
 

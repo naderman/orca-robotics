@@ -15,7 +15,7 @@
 
 #include "driver.h"
 #include "fakegpsdriver.h"
-#include "ashtech/ashtechdriver.h"
+#include "garmin/garmindriver.h"
 
 using namespace std;
 using namespace orca;
@@ -58,16 +58,16 @@ Component::start()
         throw GpsException( errString );
     }
 
-    if ( driverName == "ashtech" )
+    if ( driverName == "garmin" )
     {
         std::string device;
         int ret = orcaice::getProperty( prop, prefix+"Device", device );
         if (ret!=0) {
-            std::string errString = "Component: Couldn't determine device (e.g. /dev/ttyS0) for ashtech. Expected property '";
+            std::string errString = "Component: Couldn't determine serial port for garmin gps. Expected property '";
             errString += prefix + "Device'";
             throw GpsException( errString );
         }
-        hwDriver_ = new AshtechGpsDriver( device.c_str(), context() );
+        hwDriver_ = new GarminGpsDriver( device.c_str(), context() );
     }
     else if ( driverName == "fake" )
     {

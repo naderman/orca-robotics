@@ -14,8 +14,8 @@ Provides.GpsMapGrid.DefaultInterface=gpsmapgrid
 
 # Config Parameters
 
-Config.Driver.Comment=Options are { 'ashtech', 'garmin', 'fake' }
-Config.Driver.Default=ashtech
+Config.Driver.Comment=Options are {  'garmin', 'fake' }
+Config.Driver.Default=garmin
 
 Config.StartEnabled.Default=1
 
@@ -25,8 +25,7 @@ Config.Offset.Default=0.0 0.0 0.0
 Config.AntennaOffset.Comment=Offset of the gps antenna from the vehicle coordinate system: x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
 Config.AntennaOffset.Default=0.0 0.0 0.0  0.0 0.0 0.0
 
-Config.Device.Default=/dev/ttyS0
-
+Config.Device.Default=/dev/ttyS2
 Config.ReportIfNoFix.Default=1
 
 Config.FakeDriver.Latitude0.Comment=FakeDriver can be used to spit out known locations
