@@ -199,6 +199,10 @@ TestComponent::start()
         cout<<e.what()<<endl;
         exit(EXIT_FAILURE);
     }
+    catch ( ... ) {
+        cout<<"TestComponent::start(): caught unknown exception."<<endl;
+        exit(EXIT_FAILURE);
+    }
     
     // NOTE: cannot call communicator()->destroy() from here
     // because they'll be caught by Ice::Application and show up as failed ctest.
