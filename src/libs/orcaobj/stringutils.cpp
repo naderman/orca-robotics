@@ -1470,7 +1470,7 @@ toString( const orca::WifiData &obj )
           << ", status: " << iface.status 
           << ", link quality: " <<  iface.linkQuality 
           << ", signal level: " << iface.signalLevel 
-          << ", noise level: " << iface.signalLevel << "\n"; 
+          << ", noise level: " << iface.noiseLevel << "\n"; 
         
         s << "numInvalidNwid: " << iface.numInvalidNwid
           << ", numInvalidCrypt: " << iface.numInvalidCrypt
