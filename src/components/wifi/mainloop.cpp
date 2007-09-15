@@ -151,7 +151,7 @@ MainLoop::run()
             
             checkWifiSignal( data );
             
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));            
+            IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(500));            
         }
         catch ( const wifiutil::Exception & e )
         {
