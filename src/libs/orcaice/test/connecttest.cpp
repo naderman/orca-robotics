@@ -35,6 +35,27 @@ public:
 void 
 TestComponent::start()
 {
+    // if set to FALSE, will return success when registry is not available
+    bool failWithoutRegistry = false;
+
+    cout<<"testing activate() ... ";
+    try {
+        activate();
+    }
+    catch ( const orcaice::NetworkException & e ) {
+        if ( failWithoutRegistry ) {
+            cout<<"failed"<<endl<<e.what()<<endl;
+            exit(EXIT_FAILURE);
+        }
+        else {
+            cout<<"could not connect to registry:"<<endl<<e.what()<<endl;
+            cout<<"The test is configured not to fail."<<endl;
+            exit(EXIT_SUCCESS);
+        }
+    }
+    cout<<"ok"<<endl;
+    // from now on, we know that the registry exists, so we don't tolerate exceptions
+
     Ice::ObjectPtr homeObj = new orcaice::HomeI( interfaceFlag(), context() );
     
     cout<<"testing createInterfaceWithString() ... ";
@@ -83,18 +104,6 @@ TestComponent::start()
     homeDirPrx->ice_getIdentity();            
     // it doesn't throw and there's nothing to test, just make sure it works            
     cout<<"ok"<<endl;
-
-    
-    cout<<"testing activate() ... ";
-    try {
-        activate();
-    }
-    catch ( const orcaice::NetworkException & e ) {
-        cout<<"failed"<<endl<<e.what()<<endl;
-        exit(EXIT_FAILURE);
-    }
-    cout<<"ok"<<endl;
-
 
     cout<<"testing connectToInterfaceWithString() ... ";
     orca::HomePrx homePrx;
